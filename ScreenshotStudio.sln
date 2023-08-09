@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34003.232
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScreenshotStudio", "ScreenshotStudio.csproj", "{436E1332-8857-47B4-9BD6-253771B5D1FF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScreenshotStudio", "ScreenshotStudio.csproj", "{436E1332-8857-47B4-9BD6-253771B5D1FF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{8DB40DF5-7E4D-4ACF-81BC-6D8B3290C3BE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "XivToolsWpf", "Lib\XivToolsWpf\XivToolsWpf.csproj", "{E63B871C-1492-4AE7-8B1E-460EDCF0273D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,9 +19,16 @@ Global
 		{436E1332-8857-47B4-9BD6-253771B5D1FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{436E1332-8857-47B4-9BD6-253771B5D1FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{436E1332-8857-47B4-9BD6-253771B5D1FF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E63B871C-1492-4AE7-8B1E-460EDCF0273D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E63B871C-1492-4AE7-8B1E-460EDCF0273D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E63B871C-1492-4AE7-8B1E-460EDCF0273D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E63B871C-1492-4AE7-8B1E-460EDCF0273D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E63B871C-1492-4AE7-8B1E-460EDCF0273D} = {8DB40DF5-7E4D-4ACF-81BC-6D8B3290C3BE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C1E3BDD6-B182-4692-A407-317E885D5181}

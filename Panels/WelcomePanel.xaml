@@ -1,0 +1,25 @@
+﻿<local:PanelBase
+	x:Class="ScreenshotStudio.Panels.WelcomePanel"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="clr-namespace:ScreenshotStudio.Panels"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	Title="Screenshot Studio"
+	Width="500"
+	Height="250"
+	Icon="HandHeart"
+	mc:Ignorable="d">
+
+	<local:PanelBase.Resources>
+		<ResourceDictionary Source="../Resources.xaml" />
+	</local:PanelBase.Resources>
+
+
+	<Grid>
+		<TextBlock
+			HorizontalAlignment="Center"
+			VerticalAlignment="Center"
+			Text="Hello World" />
+	</Grid>
+</local:PanelBase>
