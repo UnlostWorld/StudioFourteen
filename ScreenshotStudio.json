@@ -1,0 +1,11 @@
+{
+  "Author": "XIV tools",
+  "Name": "Screenshot Studio",
+  "Punchline": "A short one-liner that shows up in /xlplugins.",
+  "Description": "A description that shows up in /xlplugins. List any major slash-command(s).",
+  "InternalName": "ScreenshotStudio",
+  "ApplicableVersion": "any",
+  "Tags": [
+    "Anamnesis"
+  ]
+}
