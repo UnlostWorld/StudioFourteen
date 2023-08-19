@@ -4,14 +4,13 @@ using Dalamud.Game;
 using Dalamud.Game.Command;
 using Dalamud.Game.Gui;
 using Dalamud.IoC;
-using Dalamud.Logging;
 using Dalamud.Plugin;
 using ScreenshotStudio.Studio;
 using ScreenshotStudio.Utilities;
 using ScreenshotStudio.Windows;
 using Serilog;
+using System.Collections.Generic;
 using System.Diagnostics;
-using System.Reflection;
 using System.Threading.Tasks;
 
 public sealed class DalamudPlugin : IDalamudPlugin
@@ -23,7 +22,7 @@ public sealed class DalamudPlugin : IDalamudPlugin
     [PluginService][RequiredVersion("1.0")] public static ChatGui ChatGui { get; private set; } = null!;
     [PluginService][RequiredVersion("1.0")] public static SigScanner SigScanner { get; private set; } = null!;
 
-    HelloWorldWindow? wnd;
+    List<Panel?> panels = new();
 
 	public DalamudPlugin() => Task.Run(Start);
     public void Dispose() => Task.Run(Stop);
@@ -40,14 +39,19 @@ public sealed class DalamudPlugin : IDalamudPlugin
 		XivWindow.Process = Process.GetCurrentProcess();
         Log.Information($"Ensure XivProcess {XivWindow.Process} - {XivWindow.Process.MainWindowHandle} - {XivWindow.Process.MainWindowTitle}");
 
-		wnd = await Panel.ShowAsync<HelloWorldWindow>();
-    }
+		panels.Add(await Panel.ShowAsync<HelloWorldWindow>());
+		panels.Add(await Panel.ShowAsync<TargetPanel>());
+		panels.Add(await Panel.ShowAsync<InspectorPanel>());
+	}
 
 	private async Task Stop()
 	{
-        if (wnd != null)
+        foreach(Panel? panel in this.panels)
         {
-            await wnd.CloseAsync();
+            if (panel == null)
+                continue;
+
+            await panel.CloseAsync();
         }
 	}
 }
