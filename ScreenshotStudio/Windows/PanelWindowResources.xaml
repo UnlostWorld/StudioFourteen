@@ -111,7 +111,7 @@
 						Click="OnCloseClicked"
 						IsEnabled="{TemplateBinding CanClose}"
 						Style="{DynamicResource TransparentIconButton}"
-						ToolTip="Close Panel">
+						ToolTip="{DynamicResource ClosePanelTooltip}">
 						<xivToolsWpf:IconBlock
 							Foreground="{DynamicResource ForegroundLightBrush}"
 							Icon="Times" />

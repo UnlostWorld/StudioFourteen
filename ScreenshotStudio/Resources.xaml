@@ -5,9 +5,14 @@
 	xmlns:windows="clr-namespace:ScreenshotStudio.Windows">
 
 	<ResourceDictionary.MergedDictionaries>
+		<!--  XivToolsWpf styles  -->
 		<ResourceDictionary Source="pack://application:,,,/XivToolsWpf;component/Styles.xaml" />
 
+		<!--  Custom controls  -->
 		<ResourceDictionary Source="./Windows/PanelWindowResources.xaml" />
+
+		<!--  Default Language  -->
+		<ResourceDictionary Source="./Languages/English.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 
 </local:Resources>
