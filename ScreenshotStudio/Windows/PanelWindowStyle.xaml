@@ -148,8 +148,4 @@
 		<Setter Property="Template" Value="{StaticResource PanelWindowTemplate}" />
 	</Style>
 
-	<Style
-		BasedOn="{StaticResource PanelWindowStyle}"
-		TargetType="{x:Type local:PanelWindow}" />
-
 </ResourceDictionary>

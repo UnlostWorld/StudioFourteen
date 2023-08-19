@@ -1,5 +1,6 @@
 ﻿namespace ScreenshotStudio.Utilities;
 
+using Serilog;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -9,6 +10,7 @@ using System.Windows.Interop;
 public static class XivWindow
 {
 	private static Process? process;
+	private static Rect size = new();
 
 	public static Process Process
 	{
@@ -21,6 +23,21 @@ public static class XivWindow
 		}
 
 		set => process = value;
+	}
+
+	public static Rect Size
+	{
+		get
+		{
+			const double titlebarHeight = 22;
+
+			GetWindowRect(Process.MainWindowHandle, out Win32Rect xivWindowRect);
+			size.X = xivWindowRect.Left;
+			size.Y = xivWindowRect.Top + titlebarHeight;
+			size.Width = xivWindowRect.Right - size.X;
+			size.Height = xivWindowRect.Bottom - size.Y;
+			return size;
+		}
 	}
 
 	public static void Embed(Window wnd)
@@ -40,7 +57,7 @@ public static class XivWindow
 		style = (int)((style & ~WS_POPUP) | WS_CHILD);
 		SetWindowLong(wndInterop.Handle, GWL_STYLE, style);
 
-		////SetPosition(wnd, new Point(0, 0));
+		SetPosition(wnd, new Point(0.5, 0.5));
 	}
 
 	public static void SetPosition(Window wnd, Point position)
@@ -50,19 +67,10 @@ public static class XivWindow
 
 		WindowInteropHelper wndInterop = new(wnd);
 
-		int x = (int)position.X;
-		int y = (int)position.Y;
+		int x = (int)((XivWindow.Size.Width * position.X) - (wnd.ActualWidth * position.X));
+		int y = (int)((XivWindow.Size.Height * position.Y) - (wnd.ActualHeight * position.Y));
 		int w = (int)wnd.ActualWidth;
 		int h = (int)wnd.ActualHeight;
-
-		/*int w = (int)wnd.ActualWidth - 1;
-		int h = (int)wnd.ActualHeight - 1;
-
-		int x = (int)(wnd.Left - position.Left);
-		int y = (int)(wnd.Top - position.Top);
-
-		x = Math.Clamp(x, 0, Math.Max((int)position.Width - w, 0));
-		y = Math.Clamp(y, 0, Math.Max((int)position.Height - h, 0));*/
 
 		// SHOWWINDOW
 		SetWindowPos(wndInterop.Handle, IntPtr.Zero, x, y, w, h, 0x0040);
@@ -88,4 +96,16 @@ public static class XivWindow
 
 	[DllImport("user32.dll", SetLastError = true)]
 	private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy, uint uFlags);
+
+	[DllImport("user32.dll", SetLastError = true)]
+	private static extern bool GetWindowRect(IntPtr hwnd, out Win32Rect rect);
+
+	[StructLayout(LayoutKind.Sequential)]
+	public struct Win32Rect
+	{
+		public int Left;        // x position of upper-left corner
+		public int Top;         // y position of upper-left corner
+		public int Right;       // x position of lower-right corner
+		public int Bottom;      // y position of lower-right corner
+	}
 }

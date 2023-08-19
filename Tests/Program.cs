@@ -37,6 +37,7 @@ internal class Program
 
 		Panel.Show<HelloWorldWindow>();
 		Panel.Show<InspectorPanel>();
+		Panel.Show<TargetPanel>();
 
 		Log.Information("Done");
 	}

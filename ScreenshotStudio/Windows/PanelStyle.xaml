@@ -31,7 +31,7 @@
 
 			<ContentPresenter
 				Grid.Row="1"
-				Margin="12"
+				Margin="{TemplateBinding Padding}"
 				Content="{TemplateBinding Content}"
 				ContentTemplate="{TemplateBinding ContentTemplate}" />
 
@@ -41,17 +41,13 @@
 	<Style
 		x:Key="PanelStyle"
 		TargetType="{x:Type local:Panel}">
-		<Setter Property="MinWidth" Value="128" />
-		<Setter Property="MinHeight" Value="128" />
+		<Setter Property="MinWidth" Value="10" />
+		<Setter Property="MinHeight" Value="10" />
 		<Setter Property="AllowsTransparency" Value="True" />
 		<Setter Property="Background" Value="Transparent" />
 		<Setter Property="ResizeMode" Value="CanResizeWithGrip" />
 		<Setter Property="WindowStyle" Value="None" />
 		<Setter Property="Template" Value="{StaticResource PanelTemplate}" />
 	</Style>
-
-	<Style
-		BasedOn="{StaticResource PanelStyle}"
-		TargetType="{x:Type local:Panel}" />
 
 </ResourceDictionary>

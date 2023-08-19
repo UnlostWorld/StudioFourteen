@@ -20,7 +20,7 @@ public abstract partial class Panel : Window
 		this.GetType().GetMethod("InitializeComponent")?.Invoke(this, null);
 	}
 
-	private void OnLoaded(object sender, RoutedEventArgs e)
+	protected virtual void OnLoaded(object sender, RoutedEventArgs e)
 	{
 		XivWindow.Embed(this);
 	}
