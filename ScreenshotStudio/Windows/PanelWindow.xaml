@@ -1,7 +1,47 @@
 ﻿<ResourceDictionary
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:converters="clr-namespace:XivToolsWpf.Converters;assembly=XivToolsWpf"
 	xmlns:local="clr-namespace:ScreenshotStudio.Windows">
+
+	<BooleanToVisibilityConverter x:Key="B2V" />
+	<converters:InvertedBoolToVisibilityConverter x:Key="!B2V" />
+
+	<ControlTemplate
+		x:Key="PanelWindowTemplate"
+		TargetType="{x:Type local:PanelWindowBase}">
+
+		<Grid Margin="12">
+			<Border
+				x:Name="WindowShadow"
+				Background="Black"
+				CornerRadius="6"
+				Opacity="0.25">
+				<Border.BitmapEffect>
+					<DropShadowBitmapEffect
+						ShadowDepth="0"
+						Softness="0.75" />
+				</Border.BitmapEffect>
+			</Border>
+
+			<Border
+				x:Name="WindowBorder"
+				Background="{DynamicResource BackgroundBrush}"
+				BorderBrush="{DynamicResource BackgroundBrush}"
+				BorderThickness="1"
+				CornerRadius="6" />
+
+			<ContentPresenter Margin="12" />
+		</Grid>
+
+		<ControlTemplate.Triggers>
+			<Trigger Property="IsActive" Value="True">
+				<Setter TargetName="WindowBorder" Property="BorderBrush" Value="{DynamicResource TrimBrush}" />
+				<Setter TargetName="WindowShadow" Property="Opacity" Value="1" />
+			</Trigger>
+		</ControlTemplate.Triggers>
+
+	</ControlTemplate>
 
 	<Style
 		x:Key="PanelWindowBaseStyle"
@@ -11,20 +51,8 @@
 		<Setter Property="AllowsTransparency" Value="True" />
 		<Setter Property="Background" Value="Transparent" />
 		<Setter Property="ResizeMode" Value="CanResizeWithGrip" />
-		<Setter Property="SizeToContent" Value="WidthAndHeight" />
 		<Setter Property="WindowStyle" Value="None" />
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="{x:Type local:PanelWindowBase}">
-					<Grid
-						Width="200"
-						Height="200"
-						Background="Purple">
-						<ContentPresenter />
-					</Grid>
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
+		<Setter Property="Template" Value="{StaticResource PanelWindowTemplate}" />
 	</Style>
 
 	<Style

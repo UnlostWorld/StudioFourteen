@@ -14,7 +14,8 @@ public abstract partial class PanelWindowBase : Window
 
 	public PanelWindowBase()
 	{
-		////this.GetType().GetMethod("InitializeComponent")?.Invoke(this, null);
+		this.Resources = ScreenshotStudio.Resources.Instance;
+		this.GetType().GetMethod("InitializeComponent")?.Invoke(this, null);
 	}
 
 	public bool ShowBackground

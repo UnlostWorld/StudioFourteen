@@ -1,13 +1,28 @@
-﻿namespace ScreenshotStudio
-{
-	using Dalamud.Logging;
-	using System.Windows;
+﻿namespace ScreenshotStudio;
 
-	public partial class Resources : ResourceDictionary
+using System;
+using System.Windows;
+
+public partial class Resources : ResourceDictionary
+{
+	protected override void OnGettingValue(object key, ref object value, out bool canCache)
 	{
-		protected override void OnGettingValue(object key, ref object value, out bool canCache)
+		base.OnGettingValue(key, ref value, out canCache);
+	}
+
+	private static Resources? instance;
+
+	public static Resources Instance
+	{
+		get
 		{
-			base.OnGettingValue(key, ref value, out canCache);
+			if (instance == null)
+			{
+				instance = new();
+				instance.Source = new("pack://application:,,,/ScreenshotStudio;component/Resources.xaml");
+			}
+
+			return instance;
 		}
 	}
 }
