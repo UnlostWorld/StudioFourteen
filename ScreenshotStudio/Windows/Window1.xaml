@@ -1,4 +1,4 @@
-﻿<local:PanelWindowBase
+﻿<local:PanelWindow
 	x:Class="ScreenshotStudio.Windows.Window1"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -13,6 +13,12 @@
 	TitleIcon="Exclamation"
 	mc:Ignorable="d">
 
+	<local:PanelWindow.Actions>
+		<local:PanelAction
+			Icon="ExclamationCircle"
+			ToolTip="Hello!" />
+	</local:PanelWindow.Actions>
+
 	<Grid>
 		<StackPanel>
 			<TextBlock
@@ -24,4 +30,4 @@
 		</StackPanel>
 
 	</Grid>
-</local:PanelWindowBase>
+</local:PanelWindow>

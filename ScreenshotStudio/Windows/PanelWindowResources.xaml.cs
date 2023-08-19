@@ -1,17 +1,18 @@
 ﻿namespace ScreenshotStudio.Windows;
 
 using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
-public partial class PanelWindow
+public partial class PanelWindowResources
 {
-	private static PanelWindowBase GetWindow(object sender)
+	private static PanelWindow GetWindow(object sender)
 	{
-		PanelWindowBase? window = null;
+		PanelWindow? window = null;
 		if (sender is FrameworkElement el)
 		{
-			window = el.FindParent<PanelWindowBase>();
+			window = el.FindParent<PanelWindow>();
 		}
 
 		if (window == null)

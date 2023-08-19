@@ -15,11 +15,8 @@ internal class Program
 
 		Serilog.Log.Logger = config.CreateLogger();
 
-		Task.Run(async () =>
-		{
-			Window1? wnd = await Window1.CreateInstance<Window1>();
-			wnd?.Show();
+		Window1.Show();
 
-		}).Wait();
+		Serilog.Log.Information("Done");
 	}
 }

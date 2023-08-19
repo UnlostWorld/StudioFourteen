@@ -6,25 +6,18 @@ using Dalamud.Game.Gui;
 using Dalamud.IoC;
 using Dalamud.Logging;
 using Dalamud.Plugin;
-using ScreenshotStudio.Services;
 using ScreenshotStudio.Windows;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
 using System;
 using System.Diagnostics;
-using System.Reflection;
 using System.Runtime.ExceptionServices;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Threading;
 using XivToolsWpf.Dialogs;
 
 public sealed class Plugin : IDalamudPlugin
 {
-	public static readonly ServiceManager Services = new ServiceManager();
-
 	public string Name => "Screenshot Studio";
 
 	[PluginService][RequiredVersion("1.0")] public static DalamudPluginInterface PluginInterface { get; private set; } = null!;
@@ -45,13 +38,11 @@ public sealed class Plugin : IDalamudPlugin
 	public void Dispose()
 	{
 		this.wnd?.Close();
-		Task.Run(this.Stop);
 	}
 
 	private async Task Start()
 	{
-		this.wnd = await Window1.CreateInstance<Window1>();
-		this.wnd?.Show();
+		this.wnd = await Window1.ShowAsync();
 
 		/*Stopwatch sw = new Stopwatch();
 		sw.Start();
@@ -83,19 +74,6 @@ public sealed class Plugin : IDalamudPlugin
 
 		sw.Stop();
 		Log.Information($"Started in {sw.ElapsedMilliseconds}ms");*/
-	}
-
-	private async Task Stop()
-	{
-		try
-		{
-			this.Log.Information("Stopping...");
-			await Services.ShutdownServices();
-		}
-		catch (Exception ex)
-		{
-			Log.Error(ex, "Failed to stop");
-		}
 	}
 
 	private class XlLogDestination : ILogEventSink

@@ -7,7 +7,7 @@
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="pack://application:,,,/XivToolsWpf;component/Styles.xaml" />
 
-		<ResourceDictionary Source="./Windows/PanelWindow.xaml" />
+		<ResourceDictionary Source="./Windows/PanelWindowResources.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 
 </local:Resources>
