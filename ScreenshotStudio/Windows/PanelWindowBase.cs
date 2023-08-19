@@ -1,15 +1,18 @@
 ﻿namespace ScreenshotStudio.Windows;
+
+using FontAwesome.Sharp.Pro;
 using Serilog;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 
 public abstract partial class PanelWindowBase : Window
 {
-	public static readonly DependencyProperty ShowBackgroundProperty = DependencyProperty.Register(
-		"ShowBackground",
-		typeof(bool),
+	public static readonly DependencyProperty TitleIconProperty = DependencyProperty.Register(
+		"TitleIcon",
+		typeof(ProIcons),
 		typeof(PanelWindowBase));
 
 	public PanelWindowBase()
@@ -18,11 +21,12 @@ public abstract partial class PanelWindowBase : Window
 		this.GetType().GetMethod("InitializeComponent")?.Invoke(this, null);
 	}
 
-	public bool ShowBackground
+	public ProIcons TitleIcon
 	{
-		get => (bool)GetValue(ShowBackgroundProperty);
-		set => SetValue(ShowBackgroundProperty, value);
+		get => (ProIcons)GetValue(TitleIconProperty);
+		set => SetValue(TitleIconProperty, value);
 	}
+
 
 	public new void Show() => this.Dispatcher.BeginInvoke(() => base.Show());
 	public new void Close() => this.Dispatcher.BeginInvoke(() => base.Close());
