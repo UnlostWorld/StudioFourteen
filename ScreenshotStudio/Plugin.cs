@@ -7,6 +7,7 @@ using Dalamud.IoC;
 using Dalamud.Logging;
 using Dalamud.Plugin;
 using ScreenshotStudio.Services;
+using ScreenshotStudio.Windows;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;
@@ -17,6 +18,7 @@ using System.Runtime.ExceptionServices;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Threading;
 using XivToolsWpf.Dialogs;
 
 public sealed class Plugin : IDalamudPlugin
@@ -30,6 +32,8 @@ public sealed class Plugin : IDalamudPlugin
 	[PluginService][RequiredVersion("1.0")] public static ChatGui ChatGui { get; private set; } = null!;
 	[PluginService][RequiredVersion("1.0")] public static SigScanner SigScanner { get; private set; } = null!;
 
+	Window1? wnd;
+
 	public Plugin()
 	{
 		Task.Run(this.Start);
@@ -40,12 +44,16 @@ public sealed class Plugin : IDalamudPlugin
 
 	public void Dispose()
 	{
+		this.wnd?.Close();
 		Task.Run(this.Stop);
 	}
 
 	private async Task Start()
 	{
-		Stopwatch sw = new Stopwatch();
+		this.wnd = await Window1.CreateInstance<Window1>();
+		this.wnd?.Show();
+
+		/*Stopwatch sw = new Stopwatch();
 		sw.Start();
 		
 		try
@@ -74,7 +82,7 @@ public sealed class Plugin : IDalamudPlugin
 		}
 
 		sw.Stop();
-		Log.Information($"Started in {sw.ElapsedMilliseconds}ms");
+		Log.Information($"Started in {sw.ElapsedMilliseconds}ms");*/
 	}
 
 	private async Task Stop()

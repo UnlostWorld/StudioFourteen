@@ -39,12 +39,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="Lib\XivToolsWpf\XivToolsWpf.csproj">
-	    <CopyLocalSatelliteAssemblies>False</CopyLocalSatelliteAssemblies>
-	  </ProjectReference>
-	</ItemGroup>
-
-	<ItemGroup>
 		<Reference Include="FFXIVClientStructs">
 			<HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>
 			<Private>false</Private>
@@ -79,6 +73,18 @@
 	  <None Update="ScreenshotStudio.json">
 	    <CopyToOutputDirectory>Never</CopyToOutputDirectory>
 	  </None>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Page Include="Properties\DesignTimeResources.xaml" Condition="'$(DesignTime)'=='true' OR ('$(SolutionPath)'!='' AND Exists('$(SolutionPath)') AND '$(BuildingInsideVisualStudio)'!='true' AND '$(BuildingInsideExpressionBlend)'!='true')">
+	    <Generator>MSBuild:Compile</Generator>
+	    <SubType>Designer</SubType>
+	    <ContainsDesignTimeResources>true</ContainsDesignTimeResources>
+	  </Page>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <ProjectReference Include="..\Lib\XivToolsWpf\XivToolsWpf.csproj" />
 	</ItemGroup>
 
 	<Target Name="RemoveDuplicateAnalyzers" BeforeTargets="CoreCompile">

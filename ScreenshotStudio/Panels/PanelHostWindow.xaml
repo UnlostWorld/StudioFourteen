@@ -18,7 +18,7 @@
 	LocationChanged="OnLocationChanged"
 	MouseEnter="OnMouseEnter"
 	MouseLeave="OnMouseLeave"
-	Opacity="0"
+	Opacity="1"
 	PreviewKeyDown="OnPreviewKeyDown"
 	PreviewKeyUp="OnPreviewKeyUp"
 	PreviewMouseDown="OnPreviewMouseDown"
