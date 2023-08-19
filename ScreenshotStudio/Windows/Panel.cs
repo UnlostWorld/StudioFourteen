@@ -6,6 +6,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using XivToolsWpf;
 
 public abstract partial class Panel : Window
 {
@@ -26,7 +27,19 @@ public abstract partial class Panel : Window
 	}
 
 	public new void Show() => this.Dispatcher.BeginInvoke(() => base.Show());
-	public new void Close() => this.Dispatcher.BeginInvoke(() => base.Close());
+
+	public new void Close()
+	{
+		this.Dispatcher.BeginInvoke(() => base.Close());
+		this.Dispatcher.InvokeShutdown();
+	}
+
+	public async Task CloseAsync()
+	{
+		await this.Dispatcher.MainThread();
+		base.Close();
+		this.Dispatcher.InvokeShutdown();
+	}
 
 	public static T? Show<T>()
 		where T : Panel

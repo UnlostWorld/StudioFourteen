@@ -84,7 +84,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Lib\XivToolsWpf\XivToolsWpf.csproj" />
+	  <ProjectReference Include="..\Lib\XivToolsWpf\XivToolsWpf.csproj">
+	    <Private>True</Private>
+	    <EmbedInteropTypes>False</EmbedInteropTypes>
+	    <CopyLocalSatelliteAssemblies>True</CopyLocalSatelliteAssemblies>
+	  </ProjectReference>
 	</ItemGroup>
 
 	<Target Name="RemoveDuplicateAnalyzers" BeforeTargets="CoreCompile">

@@ -9,26 +9,17 @@ using System.Windows.Interop;
 
 public static class XivWindow
 {
-	private static Process? process;
 	private static Rect size = new();
 
-	public static Process Process
-	{
-		get
-		{
-			if (process == null)
-				process = Process.GetCurrentProcess();
-
-			return process;
-		}
-
-		set => process = value;
-	}
+	public static Process? Process { get; set; }
 
 	public static Rect Size
 	{
 		get
 		{
+			if (Process == null)
+				return new Rect(0, 0, 0, 0);
+
 			const double titlebarHeight = 22;
 
 			GetWindowRect(Process.MainWindowHandle, out Win32Rect xivWindowRect);

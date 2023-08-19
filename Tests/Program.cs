@@ -1,5 +1,6 @@
 ﻿namespace Tests;
 
+using ScreenshotStudio;
 using ScreenshotStudio.Studio;
 using ScreenshotStudio.Utilities;
 using ScreenshotStudio.Windows;
