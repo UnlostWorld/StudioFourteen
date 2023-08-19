@@ -1,4 +1,5 @@
-﻿
+﻿// © XivTools.
+// Licensed under the MIT license.
 
 namespace ScreenshotStudio.Studio;
 

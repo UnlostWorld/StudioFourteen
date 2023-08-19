@@ -1,4 +1,5 @@
-﻿
+﻿// © XivTools.
+// Licensed under the MIT license.
 
 namespace ScreenshotStudio.Windows;
 
@@ -30,20 +31,20 @@ public class PanelWindow : Panel
 
 	public ProIcons TitleIcon
 	{
-		get => (ProIcons)GetValue(TitleIconProperty);
-		set => SetValue(TitleIconProperty, value);
+		get => (ProIcons)this.GetValue(TitleIconProperty);
+		set => this.SetValue(TitleIconProperty, value);
 	}
 
 	public FastObservableCollection<PanelWindowAction> Actions
 	{
-		get => (FastObservableCollection<PanelWindowAction>)GetValue(ActionsProperty);
-		set => SetValue(ActionsProperty, value);
+		get => (FastObservableCollection<PanelWindowAction>)this.GetValue(ActionsProperty);
+		set => this.SetValue(ActionsProperty, value);
 	}
 
 	public bool CanClose
 	{
-		get => (bool)GetValue(CanCloseProperty);
-		set => SetValue(CanCloseProperty, value);
+		get => (bool)this.GetValue(CanCloseProperty);
+		set => this.SetValue(CanCloseProperty, value);
 	}
 
 	protected override Style GetDefaultStyle() => (Style)this.FindResource("PanelWindowStyle");
@@ -51,10 +52,6 @@ public class PanelWindow : Panel
 
 public class PanelWindowAction
 {
-	public string? ToolTip { get; set; }
-	public ProIcons Icon { get; set; } = ProIcons.None;
-	public ICommand? Command { get; set; }
-
 	public PanelWindowAction()
 	{
 	}
@@ -65,4 +62,8 @@ public class PanelWindowAction
 		this.ToolTip = tooltip;
 		this.Command = new SimpleCommand(callback);
 	}
+
+	public string? ToolTip { get; set; }
+	public ProIcons Icon { get; set; } = ProIcons.None;
+	public ICommand? Command { get; set; }
 }

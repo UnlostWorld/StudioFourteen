@@ -1,4 +1,7 @@
-﻿namespace ScreenshotStudio.Windows;
+﻿// © XivTools.
+// Licensed under the MIT license.
+
+namespace ScreenshotStudio.Windows;
 
 using ScreenshotStudio.Utilities;
 using Serilog;
@@ -12,33 +15,13 @@ public abstract partial class Panel : Window
 {
 	public Panel()
 	{
-		this.Loaded += OnLoaded;
+		this.Loaded += this.OnLoaded;
 
 		// Load a new copy of the resources. Each panel needs its own instance for threading reasons.
 		this.Resources = ScreenshotStudio.Resources.Load();
 		this.Style = this.GetDefaultStyle();
 
 		this.GetType().GetMethod("InitializeComponent")?.Invoke(this, null);
-	}
-
-	protected virtual void OnLoaded(object sender, RoutedEventArgs e)
-	{
-		XivWindow.Embed(this);
-	}
-
-	public new void Show() => this.Dispatcher.BeginInvoke(() => base.Show());
-
-	public new void Close()
-	{
-		this.Dispatcher.BeginInvoke(() => base.Close());
-		this.Dispatcher.InvokeShutdown();
-	}
-
-	public async Task CloseAsync()
-	{
-		await this.Dispatcher.MainThread();
-		base.Close();
-		this.Dispatcher.InvokeShutdown();
 	}
 
 	public static T? Show<T>()
@@ -69,11 +52,31 @@ public abstract partial class Panel : Window
 		return await new PanelThread().Start(panelWindowType);
 	}
 
+	public new void Show() => this.Dispatcher.BeginInvoke(() => base.Show());
+
+	public new void Close()
+	{
+		this.Dispatcher.BeginInvoke(() => base.Close());
+		this.Dispatcher.InvokeShutdown();
+	}
+
+	public async Task CloseAsync()
+	{
+		await this.Dispatcher.MainThread();
+		base.Close();
+		this.Dispatcher.InvokeShutdown();
+	}
+
 	protected virtual Style GetDefaultStyle() => (Style)this.FindResource("PanelStyle");
+
+	protected virtual void OnLoaded(object sender, RoutedEventArgs e)
+	{
+		XivWindow.Embed(this);
+	}
 
 	private class PanelThread
 	{
-		private static readonly object createInstanceLock = new();
+		private static readonly object CreateInstanceLock = new();
 
 		private Panel? panel;
 		private Type? panelType;
@@ -97,7 +100,7 @@ public abstract partial class Panel : Window
 			}
 
 			if (this.panel == null)
-				Log.Error($"Failed to create panel window {this.panelType}");
+				this.Log.Error($"Failed to create panel window {this.panelType}");
 
 			return this.panel;
 		}
@@ -111,14 +114,14 @@ public abstract partial class Panel : Window
 			{
 				// Even though we're doing this on another thread, we can still only do one panel
 				// at a time since WPF's LoadComponent system isn't thread safe.
-				lock (PanelThread.createInstanceLock)
+				lock (PanelThread.CreateInstanceLock)
 				{
 					this.panel = Activator.CreateInstance(this.panelType) as Panel;
 				}
 			}
 			catch (Exception ex)
 			{
-				Log.Error(ex, $"Exception during panel construction: {this.panelType}");
+				this.Log.Error(ex, $"Exception during panel construction: {this.panelType}");
 				return;
 			}
 

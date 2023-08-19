@@ -1,6 +1,8 @@
-﻿namespace ScreenshotStudio;
+﻿// © XivTools.
+// Licensed under the MIT license.
 
-using System;
+namespace ScreenshotStudio;
+
 using System.Windows;
 
 public partial class Resources : ResourceDictionary

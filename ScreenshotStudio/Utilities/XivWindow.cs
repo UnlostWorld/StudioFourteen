@@ -1,6 +1,8 @@
-﻿namespace ScreenshotStudio.Utilities;
+﻿// © XivTools.
+// Licensed under the MIT license.
 
-using Serilog;
+namespace ScreenshotStudio.Utilities;
+
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;

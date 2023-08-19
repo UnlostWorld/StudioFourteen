@@ -1,4 +1,7 @@
-﻿namespace ScreenshotStudio.Plugin;
+﻿// © XivTools.
+// Licensed under the MIT license.
+
+namespace ScreenshotStudio.Plugin;
 
 using Dalamud.Game;
 using Dalamud.Game.Command;
@@ -15,19 +18,20 @@ using System.Threading.Tasks;
 
 public sealed class DalamudPlugin : IDalamudPlugin
 {
-    public string Name => "Screenshot Studio";
+	private readonly List<Panel?> panels = new();
 
-    [PluginService][RequiredVersion("1.0")] public static DalamudPluginInterface PluginInterface { get; private set; } = null!;
-    [PluginService][RequiredVersion("1.0")] public static CommandManager CommandManager { get; private set; } = null!;
-    [PluginService][RequiredVersion("1.0")] public static ChatGui ChatGui { get; private set; } = null!;
-    [PluginService][RequiredVersion("1.0")] public static SigScanner SigScanner { get; private set; } = null!;
+	public DalamudPlugin() => Task.Run(this.Start);
 
-    List<Panel?> panels = new();
+	[PluginService][RequiredVersion("1.0")] public static DalamudPluginInterface PluginInterface { get; private set; } = null!;
+	[PluginService][RequiredVersion("1.0")] public static CommandManager CommandManager { get; private set; } = null!;
+	[PluginService][RequiredVersion("1.0")] public static ChatGui ChatGui { get; private set; } = null!;
+	[PluginService][RequiredVersion("1.0")] public static SigScanner SigScanner { get; private set; } = null!;
 
-	public DalamudPlugin() => Task.Run(Start);
-    public void Dispose() => Task.Run(Stop);
-    
-    private async Task Start()
+	public string Name => "Screenshot Studio";
+
+	public void Dispose() => Task.Run(this.Stop);
+
+	private async Task Start()
     {
 		// Hard reference our required sattelite assemblies to make sure dalamuds plugin loader picks them up.
 		Log.Information($"Ensure assembly XivToolWpf {typeof(XivToolsWpf.Dispatch).Assembly}");
@@ -37,11 +41,11 @@ public sealed class DalamudPlugin : IDalamudPlugin
         // Get the Xiv process for window manipulation.
         // NOTE: if we _dont_ log out the value here, then things break. I don't know why.
 		XivWindow.Process = Process.GetCurrentProcess();
-        Log.Information($"Ensure XivProcess {XivWindow.Process} - {XivWindow.Process.MainWindowHandle} - {XivWindow.Process.MainWindowTitle}");
+		Log.Information($"Ensure XivProcess {XivWindow.Process} - {XivWindow.Process.MainWindowHandle} - {XivWindow.Process.MainWindowTitle}");
 
-		panels.Add(await Panel.ShowAsync<HelloWorldWindow>());
-		panels.Add(await Panel.ShowAsync<TargetPanel>());
-		panels.Add(await Panel.ShowAsync<InspectorPanel>());
+		this.panels.Add(await Panel.ShowAsync<HelloWorldWindow>());
+		this.panels.Add(await Panel.ShowAsync<TargetPanel>());
+		this.panels.Add(await Panel.ShowAsync<InspectorPanel>());
 	}
 
 	private async Task Stop()

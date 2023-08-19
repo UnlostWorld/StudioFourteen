@@ -1,4 +1,7 @@
-﻿namespace ScreenshotStudio.Windows;
+﻿// © XivTools.
+// Licensed under the MIT license.
+
+namespace ScreenshotStudio.Windows;
 
 using ScreenshotStudio.Utilities;
 using System.Windows;
@@ -13,8 +16,8 @@ public class DockPanel : Panel
 
 	public Point DockPosition
 	{
-		get => (Point)GetValue(DockPositionProperty);
-		set => SetValue(DockPositionProperty, value);
+		get => (Point)this.GetValue(DockPositionProperty);
+		set => this.SetValue(DockPositionProperty, value);
 	}
 
 	protected override Style GetDefaultStyle() => (Style)this.FindResource("DockPanelStyle");
@@ -22,7 +25,7 @@ public class DockPanel : Panel
 	protected override void OnLoaded(object sender, RoutedEventArgs e)
 	{
 		base.OnLoaded(sender, e);
-		this.UpdatePosition();	
+		this.UpdatePosition();
 	}
 
 	private static void OnDockPositionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -40,5 +43,4 @@ public class DockPanel : Panel
 
 		XivWindow.SetPosition(this, this.DockPosition);
 	}
-
 }
