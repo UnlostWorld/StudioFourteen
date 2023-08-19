@@ -5,17 +5,27 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="clr-namespace:ScreenshotStudio.Studio"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:services="clr-namespace:ScreenshotStudio.Services"
 	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
 	Title="TargetPanel"
 	Width="450"
+	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	DockPosition="0.5,0"
 	SizeToContent="Height"
 	mc:Ignorable="d">
-	<Grid>
-		<ListBox Style="{DynamicResource XivToolsSwitchSelector}">
-			<ListBoxItem Content="Yuki" />
-			<ListBoxItem Content="Codes" />
-			<ListBoxItem Content="Sometimes" />
+
+	<StackPanel>
+		<ListBox
+			ItemsSource="{Binding Services.Targets.Actors}"
+			SelectedItem="{Binding Services.Targets.CurrentTarget}"
+			Style="{DynamicResource XivToolsSwitchSelector}">
+			<ListBox.ItemTemplate>
+				<DataTemplate DataType="{x:Type services:Actor}">
+					<TextBlock Text="{Binding DisplayName}" />
+				</DataTemplate>
+			</ListBox.ItemTemplate>
 		</ListBox>
-	</Grid>
+
+	</StackPanel>
+
 </windows:DockPanel>

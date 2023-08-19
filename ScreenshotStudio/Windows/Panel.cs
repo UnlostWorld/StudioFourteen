@@ -3,6 +3,7 @@
 
 namespace ScreenshotStudio.Windows;
 
+using ScreenshotStudio.Services;
 using ScreenshotStudio.Utilities;
 using Serilog;
 using System;
@@ -22,7 +23,10 @@ public abstract partial class Panel : Window
 		this.Style = this.GetDefaultStyle();
 
 		this.GetType().GetMethod("InitializeComponent")?.Invoke(this, null);
+		this.DataContext = this;
 	}
+
+	public ServiceManager Services => ServiceManager.Instance;
 
 	public static T? Show<T>()
 		where T : Panel
@@ -36,7 +40,10 @@ public abstract partial class Panel : Window
 		where T : Panel
 	{
 		T? wnd = await CreateInstance<T>();
-		wnd?.Show();
+
+		if (wnd != null)
+			await wnd.ShowAsync();
+
 		return wnd;
 	}
 
@@ -52,16 +59,29 @@ public abstract partial class Panel : Window
 		return await new PanelThread().Start(panelWindowType);
 	}
 
-	public new void Show() => this.Dispatcher.BeginInvoke(() => base.Show());
+	public new void Show()
+	{
+		this.Services.Panels.OpenPanels.Add(this);
+		this.Dispatcher.BeginInvoke(() => base.Show());
+	}
+
+	public async Task ShowAsync()
+	{
+		this.Services.Panels.OpenPanels.Add(this);
+		await this.Dispatcher.MainThread();
+		base.Show();
+	}
 
 	public new void Close()
 	{
+		this.Services.Panels.OpenPanels.Remove(this);
 		this.Dispatcher.BeginInvoke(() => base.Close());
 		this.Dispatcher.InvokeShutdown();
 	}
 
 	public async Task CloseAsync()
 	{
+		this.Services.Panels.OpenPanels.Remove(this);
 		await this.Dispatcher.MainThread();
 		base.Close();
 		this.Dispatcher.InvokeShutdown();

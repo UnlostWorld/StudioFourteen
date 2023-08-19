@@ -1,0 +1,66 @@
+﻿// © XivTools.
+// Licensed under the MIT license.
+
+namespace ScreenshotStudio.Services;
+
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+public class ServiceManager
+{
+	private static ServiceManager? instance;
+	private readonly List<ServiceBase> services = new();
+
+	private ServiceManager()
+	{
+		this.services.Add(this.Targets);
+		this.services.Add(this.Panels);
+	}
+
+	public static ServiceManager Instance
+	{
+		get
+		{
+			if (instance == null)
+				instance = new();
+
+			return instance;
+		}
+	}
+
+	// Service properties for bindings
+	public TargetService Targets { get; init; } = new();
+	public PanelService Panels { get; init; } = new();
+
+	/// <summary>
+	/// Initialize and Start all services.
+	/// </summary>
+	public async Task Start()
+	{
+		foreach(ServiceBase service in this.services)
+		{
+			await service.Initialize();
+		}
+
+		foreach (ServiceBase service in this.services)
+		{
+			await service.Start();
+		}
+	}
+
+	/// <summary>
+	/// Stop and shutdown all services.
+	/// </summary>
+	public async Task Stop()
+	{
+		foreach (ServiceBase service in this.services)
+		{
+			await service.Stop();
+		}
+
+		foreach (ServiceBase service in this.services)
+		{
+			await service.Shutdown();
+		}
+	}
+}

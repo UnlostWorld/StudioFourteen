@@ -8,6 +8,7 @@ using Dalamud.Game.Command;
 using Dalamud.Game.Gui;
 using Dalamud.IoC;
 using Dalamud.Plugin;
+using ScreenshotStudio.Services;
 using ScreenshotStudio.Studio;
 using ScreenshotStudio.Utilities;
 using ScreenshotStudio.Windows;
@@ -18,14 +19,11 @@ using System.Threading.Tasks;
 
 public sealed class DalamudPlugin : IDalamudPlugin
 {
-	private readonly List<Panel?> panels = new();
-
-	public DalamudPlugin() => Task.Run(this.Start);
-
-	[PluginService][RequiredVersion("1.0")] public static DalamudPluginInterface PluginInterface { get; private set; } = null!;
-	[PluginService][RequiredVersion("1.0")] public static CommandManager CommandManager { get; private set; } = null!;
-	[PluginService][RequiredVersion("1.0")] public static ChatGui ChatGui { get; private set; } = null!;
-	[PluginService][RequiredVersion("1.0")] public static SigScanner SigScanner { get; private set; } = null!;
+	public DalamudPlugin(DalamudPluginInterface pluginInterface)
+	{
+		pluginInterface.Create<DalamudServices>();
+		Task.Run(this.Start);
+	}
 
 	public string Name => "Screenshot Studio";
 
@@ -43,19 +41,11 @@ public sealed class DalamudPlugin : IDalamudPlugin
 		XivWindow.Process = Process.GetCurrentProcess();
 		Log.Information($"Ensure XivProcess {XivWindow.Process} - {XivWindow.Process.MainWindowHandle} - {XivWindow.Process.MainWindowTitle}");
 
-		this.panels.Add(await Panel.ShowAsync<HelloWorldWindow>());
-		this.panels.Add(await Panel.ShowAsync<TargetPanel>());
-		this.panels.Add(await Panel.ShowAsync<InspectorPanel>());
+		await ServiceManager.Instance.Start();
 	}
 
 	private async Task Stop()
 	{
-        foreach(Panel? panel in this.panels)
-        {
-            if (panel == null)
-                continue;
-
-            await panel.CloseAsync();
-        }
+		await ServiceManager.Instance.Stop();
 	}
 }

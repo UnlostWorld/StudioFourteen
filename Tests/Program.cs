@@ -1,9 +1,10 @@
-﻿namespace Tests;
+﻿// © XivTools.
+// Licensed under the MIT license.
 
-using ScreenshotStudio;
-using ScreenshotStudio.Studio;
+namespace Tests;
+
+using ScreenshotStudio.Services;
 using ScreenshotStudio.Utilities;
-using ScreenshotStudio.Windows;
 using Serilog;
 using System.Diagnostics;
 
@@ -36,9 +37,7 @@ internal class Program
 			return;
 		}
 
-		Panel.Show<HelloWorldWindow>();
-		Panel.Show<InspectorPanel>();
-		Panel.Show<TargetPanel>();
+		ServiceManager.Instance.Start().Wait();
 
 		Log.Information("Done");
 	}
