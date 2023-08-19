@@ -6,9 +6,6 @@
 	xmlns:local="clr-namespace:ScreenshotStudio.Windows"
 	xmlns:xivToolsWpf="clr-namespace:XivToolsWpf.Controls;assembly=XivToolsWpf">
 
-	<BooleanToVisibilityConverter x:Key="B2V" />
-	<converters:InvertedBoolToVisibilityConverter x:Key="!B2V" />
-
 	<ControlTemplate
 		x:Key="PanelWindowTemplate"
 		TargetType="{x:Type local:PanelWindow}">
@@ -84,7 +81,7 @@
 						</ItemsControl.ItemsPanel>
 
 						<ItemsControl.ItemTemplate>
-							<DataTemplate DataType="{x:Type local:PanelAction}">
+							<DataTemplate DataType="{x:Type local:PanelWindowAction}">
 								<Button
 									Width="28"
 									Height="22"
@@ -140,7 +137,7 @@
 	</ControlTemplate>
 
 	<Style
-		x:Key="PanelWindowBaseStyle"
+		x:Key="PanelWindowStyle"
 		TargetType="{x:Type local:PanelWindow}">
 		<Setter Property="MinWidth" Value="128" />
 		<Setter Property="MinHeight" Value="128" />
@@ -152,7 +149,7 @@
 	</Style>
 
 	<Style
-		BasedOn="{StaticResource PanelWindowBaseStyle}"
+		BasedOn="{StaticResource PanelWindowStyle}"
 		TargetType="{x:Type local:PanelWindow}" />
 
 </ResourceDictionary>

@@ -1,5 +1,6 @@
 ﻿namespace Tests;
 
+using ScreenshotStudio.Studio;
 using ScreenshotStudio.Utilities;
 using ScreenshotStudio.Windows;
 using Serilog;
@@ -22,7 +23,7 @@ internal class Program
 		{
 			if (proc.ProcessName.ToLower().Contains("ffxiv_dx11"))
 			{
-				XivProcessUtility.Process = proc;
+				XivWindow.Process = proc;
 				foundProcess = true;
 				break;
 			}
@@ -34,7 +35,8 @@ internal class Program
 			return;
 		}
 
-		Window1.Show();
+		Panel.Show<HelloWorldWindow>();
+		Panel.Show<InspectorPanel>();
 
 		Log.Information("Done");
 	}

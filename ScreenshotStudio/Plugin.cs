@@ -6,6 +6,7 @@ using Dalamud.Game.Gui;
 using Dalamud.IoC;
 using Dalamud.Logging;
 using Dalamud.Plugin;
+using ScreenshotStudio.Studio;
 using ScreenshotStudio.Windows;
 using Serilog;
 using Serilog.Core;
@@ -25,7 +26,7 @@ public sealed class Plugin : IDalamudPlugin
 	[PluginService][RequiredVersion("1.0")] public static ChatGui ChatGui { get; private set; } = null!;
 	[PluginService][RequiredVersion("1.0")] public static SigScanner SigScanner { get; private set; } = null!;
 
-	Window1? wnd;
+	HelloWorldWindow? wnd;
 
 	public Plugin()
 	{
@@ -42,7 +43,7 @@ public sealed class Plugin : IDalamudPlugin
 
 	private async Task Start()
 	{
-		this.wnd = await Window1.ShowAsync();
+		this.wnd = await Panel.ShowAsync<HelloWorldWindow>();
 
 		/*Stopwatch sw = new Stopwatch();
 		sw.Start();

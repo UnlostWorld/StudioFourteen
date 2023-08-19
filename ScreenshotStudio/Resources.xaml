@@ -9,6 +9,7 @@
 		<ResourceDictionary Source="pack://application:,,,/XivToolsWpf;component/Styles.xaml" />
 
 		<!--  Custom controls  -->
+		<ResourceDictionary Source="./Windows/PanelResources.xaml" />
 		<ResourceDictionary Source="./Windows/PanelWindowResources.xaml" />
 
 		<!--  Default Language  -->
