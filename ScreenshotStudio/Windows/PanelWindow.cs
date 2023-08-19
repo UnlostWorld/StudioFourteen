@@ -31,8 +31,14 @@ public abstract partial class PanelWindow : Window
 
 	public PanelWindow()
 	{
+		this.Loaded += OnLoaded;
 		this.Resources = ScreenshotStudio.Resources.Instance;
 		this.GetType().GetMethod("InitializeComponent")?.Invoke(this, null);
+	}
+
+	private void OnLoaded(object sender, RoutedEventArgs e)
+	{
+		XivWindow.Embed(this);
 	}
 
 	public ProIcons TitleIcon
