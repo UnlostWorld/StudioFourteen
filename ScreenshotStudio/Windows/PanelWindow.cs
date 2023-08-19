@@ -33,8 +33,6 @@ public abstract partial class PanelWindow : Window
 	{
 		this.Resources = ScreenshotStudio.Resources.Instance;
 		this.GetType().GetMethod("InitializeComponent")?.Invoke(this, null);
-
-		this.Actions.Add(new(ProIcons.Times, "Close Panel", this.Close));
 	}
 
 	public ProIcons TitleIcon

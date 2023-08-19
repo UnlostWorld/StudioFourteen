@@ -1,7 +1,6 @@
 ﻿namespace ScreenshotStudio.Windows;
 
 using System;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 
@@ -27,5 +26,10 @@ public partial class PanelWindowResources
 		{
 			GetWindow(sender).DragMove();
 		}
+	}
+
+	private void OnCloseClicked(object sender, RoutedEventArgs e)
+	{
+		GetWindow(sender).Close();
 	}
 }

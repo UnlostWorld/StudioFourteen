@@ -70,35 +70,54 @@
 						Text="{TemplateBinding Title}" />
 				</StackPanel>
 
-				<ItemsControl
+				<StackPanel
 					Grid.Row="0"
 					Margin="1"
 					HorizontalAlignment="Right"
-					ItemsSource="{TemplateBinding Actions}">
-					<ItemsControl.ItemsPanel>
-						<ItemsPanelTemplate>
-							<StackPanel Orientation="Horizontal" />
-						</ItemsPanelTemplate>
-					</ItemsControl.ItemsPanel>
+					Orientation="Horizontal">
 
-					<ItemsControl.ItemTemplate>
-						<DataTemplate DataType="{x:Type local:PanelAction}">
-							<Button
-								Width="28"
-								Height="22"
-								Margin="-3,0,0,0"
-								Background="Transparent"
-								Command="{Binding Command}"
-								Style="{DynamicResource TransparentIconButton}"
-								ToolTip="{Binding ToolTip}">
-								<xivToolsWpf:IconBlock
-									Foreground="{DynamicResource ForegroundLightBrush}"
-									Icon="{Binding Icon}" />
-							</Button>
-						</DataTemplate>
-					</ItemsControl.ItemTemplate>
+					<ItemsControl ItemsSource="{TemplateBinding Actions}">
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<StackPanel Orientation="Horizontal" />
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
 
-				</ItemsControl>
+						<ItemsControl.ItemTemplate>
+							<DataTemplate DataType="{x:Type local:PanelAction}">
+								<Button
+									Width="28"
+									Height="22"
+									Margin="-3,0,0,0"
+									Background="Transparent"
+									Command="{Binding Command}"
+									Style="{DynamicResource TransparentIconButton}"
+									ToolTip="{Binding ToolTip}">
+									<xivToolsWpf:IconBlock
+										Foreground="{DynamicResource ForegroundLightBrush}"
+										Icon="{Binding Icon}" />
+								</Button>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+
+					</ItemsControl>
+
+					<!--  Close Button  -->
+					<Button
+						Width="28"
+						Height="22"
+						Margin="-3,0,0,0"
+						Background="Transparent"
+						Click="OnCloseClicked"
+						IsEnabled="{TemplateBinding CanClose}"
+						Style="{DynamicResource TransparentIconButton}"
+						ToolTip="Close Panel">
+						<xivToolsWpf:IconBlock
+							Foreground="{DynamicResource ForegroundLightBrush}"
+							Icon="Times" />
+					</Button>
+
+				</StackPanel>
 
 			</Grid>
 

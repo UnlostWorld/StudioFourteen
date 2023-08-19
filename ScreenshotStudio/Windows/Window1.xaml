@@ -9,6 +9,7 @@
 	Width="400"
 	Height="250"
 	Background="{DynamicResource BackgroundBrush}"
+	CanClose="True"
 	Style="{DynamicResource PanelWindowBaseStyle}"
 	TitleIcon="Exclamation"
 	mc:Ignorable="d">
