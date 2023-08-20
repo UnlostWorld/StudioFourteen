@@ -10,9 +10,14 @@
 		x:Key="PanelTemplate"
 		TargetType="{x:Type local:Panel}">
 
-		<Grid Margin="12">
+		<Grid
+			x:Name="MainGrid"
+			Margin="12"
+			HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+			VerticalAlignment="{TemplateBinding VerticalAlignment}">
 
 			<Border
+				x:Name="PanelShadow"
 				Background="Black"
 				CornerRadius="6"
 				Opacity="0.25">
@@ -24,6 +29,7 @@
 			</Border>
 
 			<Border
+				x:Name="PanelBackground"
 				Background="{DynamicResource BackgroundBrush}"
 				BorderBrush="{DynamicResource BackgroundBrush}"
 				BorderThickness="1"
@@ -36,6 +42,15 @@
 				ContentTemplate="{TemplateBinding ContentTemplate}" />
 
 		</Grid>
+
+		<ControlTemplate.Triggers>
+			<Trigger Property="ShowBackground" Value="False">
+				<Setter TargetName="PanelShadow" Property="Opacity" Value="0" />
+				<Setter TargetName="PanelBackground" Property="Opacity" Value="0" />
+				<Setter TargetName="MainGrid" Property="Margin" Value="0" />
+			</Trigger>
+		</ControlTemplate.Triggers>
+
 	</ControlTemplate>
 
 	<Style

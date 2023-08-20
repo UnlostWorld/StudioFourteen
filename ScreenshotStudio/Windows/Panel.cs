@@ -14,6 +14,12 @@ using XivToolsWpf;
 
 public abstract partial class Panel : Window
 {
+	public static readonly DependencyProperty ShowBackgroundProperty = DependencyProperty.Register(
+		nameof(Panel.ShowBackground),
+		typeof(bool),
+		typeof(Panel),
+		new(true));
+
 	public Panel()
 	{
 		this.Loaded += this.OnLoaded;
@@ -27,6 +33,12 @@ public abstract partial class Panel : Window
 	}
 
 	public ServiceManager Services => ServiceManager.Instance;
+
+	public bool ShowBackground
+	{
+		get => (bool)this.GetValue(ShowBackgroundProperty);
+		set => this.SetValue(ShowBackgroundProperty, value);
+	}
 
 	public static T? Show<T>()
 		where T : Panel
