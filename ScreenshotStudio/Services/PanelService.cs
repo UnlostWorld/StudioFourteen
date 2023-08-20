@@ -17,9 +17,10 @@ public class PanelService : ServiceBase
 	{
 		await base.Start();
 
-		await Panel.ShowAsync<HelloWorldWindow>();
+		////await Panel.ShowAsync<HelloWorldWindow>();
 		await Panel.ShowAsync<TargetPanel>();
-		await Panel.ShowAsync<InspectorPanel>();
+		await Panel.ShowAsync<NavigationPanel>();
+		////await Panel.ShowAsync<InspectorPanel>();
 	}
 
 	public override async Task Stop()

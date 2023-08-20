@@ -1,0 +1,84 @@
+﻿<windows:DockPanel
+	x:Class="ScreenshotStudio.Studio.NavigationPanel"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="clr-namespace:ScreenshotStudio.Studio"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
+	xmlns:xivToolsWpf="clr-namespace:XivToolsWpf.Controls;assembly=XivToolsWpf"
+	Title="NavigationPanel"
+	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
+	DockPosition="0,0"
+	SizeToContent="WidthAndHeight"
+	mc:Ignorable="d">
+
+	<Border
+		Margin="2"
+		Style="{DynamicResource XivToolsControlBorder}">
+		<StackPanel>
+
+			<StackPanel.Resources>
+				<Style
+					BasedOn="{StaticResource XivToolsButton}"
+					TargetType="{x:Type Button}">
+					<Setter Property="Width" Value="32" />
+					<Setter Property="Height" Value="32" />
+				</Style>
+			</StackPanel.Resources>
+
+			<Button ToolTip="{DynamicResource Library}">
+				<xivToolsWpf:IconBlock Icon="Books" />
+			</Button>
+
+			<Button ToolTip="{DynamicResource TimeWeather}">
+				<xivToolsWpf:IconBlock Icon="CloudMoonRain" />
+			</Button>
+
+			<Button ToolTip="{DynamicResource Camera}">
+				<xivToolsWpf:IconBlock Icon="CameraMovie" />
+			</Button>
+
+			<Line
+				Width="30"
+				Margin="3"
+				Stretch="Fill"
+				Stroke="{DynamicResource BackgroundLightBrush}"
+				StrokeThickness="1"
+				X1="0"
+				X2="1" />
+
+			<Button ToolTip="{DynamicResource Customize}">
+				<xivToolsWpf:IconBlock Icon="UserAlt" />
+			</Button>
+
+			<Button ToolTip="{DynamicResource Equipment}">
+				<xivToolsWpf:IconBlock Icon="HelmetBattle" />
+			</Button>
+
+			<Button ToolTip="{DynamicResource ShaderParameters}">
+				<xivToolsWpf:IconBlock Icon="PaintBrush" />
+			</Button>
+
+			<Button ToolTip="{DynamicResource Pose}">
+				<xivToolsWpf:IconBlock Icon="Running" />
+			</Button>
+
+			<Line
+				Width="30"
+				Margin="3"
+				Stretch="Fill"
+				Stroke="{DynamicResource BackgroundLightBrush}"
+				StrokeThickness="1"
+				X1="0"
+				X2="1" />
+
+			<Button ToolTip="{DynamicResource Settings}">
+				<xivToolsWpf:IconBlock Icon="cogs" />
+			</Button>
+
+
+		</StackPanel>
+	</Border>
+
+</windows:DockPanel>
