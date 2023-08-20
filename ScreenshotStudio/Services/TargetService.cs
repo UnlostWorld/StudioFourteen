@@ -1,17 +1,19 @@
 ﻿// © XivTools.
 // Licensed under the MIT license.
 
-//// Special thanks to Ktisis, @chirpxiv
+//// Ktisis
 //// https://github.com/ktisis-tools/Ktisis/
+//// https://github.com/ktisis-tools/Ktisis/blob/main/Ktisis/Ktisis.cs
 
-//// Special thanks to Brio, @AsgardXIV
+//// Brio
 //// https://github.com/AsgardXIV/Brio
+//// https://github.com/AsgardXIV/Brio/blob/main/Brio/UI/Components/Actor/ActorTab.cs
 
 namespace ScreenshotStudio.Services;
 
-using Dalamud.Game.ClientState.Objects.Types;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using ScreenshotStudio.Plugin;
+using ScreenshotStudio.Structs;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -26,12 +28,12 @@ public class TargetService : ServiceBase
 
 	private static readonly unsafe TargetSystem* Targets = TargetSystem.Instance();
 
-	private readonly Dictionary<IntPtr, Actor> actorLookup = new();
-	private Actor? currentTarget;
+	private readonly Dictionary<IntPtr, ActorViewModel> actorLookup = new();
+	private ActorViewModel? currentTarget;
 
-	public ObservableCollection<Actor> AllGPoseActors { get; init; } = new();
+	public ObservableCollection<ActorViewModel> AllGPoseActors { get; init; } = new();
 
-	public Actor? CurrentTarget
+	public ActorViewModel? CurrentTarget
 	{
 		get => this.currentTarget;
 		set
@@ -105,7 +107,7 @@ public class TargetService : ServiceBase
 				{
 					lastTarget = currentTarget;
 
-					this.actorLookup.TryGetValue(currentTarget, out Actor? targetActor);
+					this.actorLookup.TryGetValue(currentTarget, out ActorViewModel? targetActor);
 					this.CurrentTarget = targetActor;
 				}
 			}
@@ -122,17 +124,19 @@ public class TargetService : ServiceBase
 		for (int i = GPoseFirstActor; i < GPoseFirstActor + GPoseActorCount; ++i)
 		{
 			IntPtr objectAddress = DalamudServices.ObjectTable.GetObjectAddress(i);
+
+			if (objectAddress == IntPtr.Zero)
+				continue;
+
 			oldPointers.Remove(objectAddress);
 
 			if (!this.actorLookup.ContainsKey(objectAddress))
 			{
-				GameObject? obj = DalamudServices.ObjectTable.CreateObjectReference(objectAddress);
-				if (obj != null)
-				{
-					this.actorLookup.Add(objectAddress, new(obj));
-					this.AllGPoseActors.Add(this.actorLookup[objectAddress]);
-					this.Log.Information("got actor " + this.actorLookup[objectAddress]);
-				}
+				ActorViewModel actor = new(objectAddress);
+
+				this.actorLookup.Add(objectAddress, actor);
+				this.AllGPoseActors.Add(actor);
+				this.Log.Information("got actor " + actor);
 			}
 		}
 
@@ -143,16 +147,4 @@ public class TargetService : ServiceBase
 			this.actorLookup.Remove(oldPtr);
 		}
 	}
-}
-
-public class Actor
-{
-	public Actor(GameObject obj)
-	{
-		this.Object = obj;
-	}
-
-	public GameObject Object { get; init; }
-	public string DisplayName => this.Object.Name.ToString();
-	public IntPtr Address => this.Object.Address;
 }

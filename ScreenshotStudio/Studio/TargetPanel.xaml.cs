@@ -17,7 +17,7 @@ public partial class TargetPanel : DockPanel
 		this.Actors.AddRange(this.Services.Targets.AllGPoseActors);
 	}
 
-	public FastObservableCollection<Actor> Actors { get; init; } = new();
+	public FastObservableCollection<ActorViewModel> Actors { get; init; } = new();
 
 	private async void OnGPoseActorsChanged(object? sender, NotifyCollectionChangedEventArgs e)
 	{

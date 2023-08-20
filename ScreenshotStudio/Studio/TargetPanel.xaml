@@ -24,7 +24,7 @@
 			SelectedItem="{Binding Services.Targets.CurrentTarget}"
 			Style="{DynamicResource XivToolsSwitchSelector}">
 			<ListBox.ItemTemplate>
-				<DataTemplate DataType="{x:Type services:Actor}">
+				<DataTemplate DataType="{x:Type services:ActorViewModel}">
 					<Grid Width="75">
 						<TextBlock
 							HorizontalAlignment="Center"

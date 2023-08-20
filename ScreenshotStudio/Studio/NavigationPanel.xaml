@@ -52,7 +52,9 @@
 				<xivToolsWpf:IconBlock Icon="UserAlt" />
 			</Button>
 
-			<Button ToolTip="{DynamicResource Equipment}">
+			<Button
+				Click="OnGearClicked"
+				ToolTip="{DynamicResource Gear}">
 				<xivToolsWpf:IconBlock Icon="HelmetBattle" />
 			</Button>
 

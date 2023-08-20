@@ -40,12 +40,10 @@ public abstract partial class Panel : Window
 		set => this.SetValue(ShowBackgroundProperty, value);
 	}
 
-	public static T? Show<T>()
+	public static void Show<T>()
 		where T : Panel
 	{
-		T? wnd = CreateInstance<T>().Result;
-		wnd?.Show();
-		return wnd;
+		Task.Run(async () => await ShowAsync<T>());
 	}
 
 	public static async Task<T?> ShowAsync<T>()

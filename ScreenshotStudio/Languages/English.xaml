@@ -9,7 +9,7 @@
 	<sys:String x:Key="TimeWeather">Time &amp; Weather</sys:String>
 	<sys:String x:Key="Camera">Camera</sys:String>
 	<sys:String x:Key="Customize">Customize</sys:String>
-	<sys:String x:Key="Equipment">Equipment</sys:String>
+	<sys:String x:Key="Gear">Gear</sys:String>
 	<sys:String x:Key="ShaderParameters">Shader Parameters</sys:String>
 	<sys:String x:Key="Pose">Pose</sys:String>
 	<sys:String x:Key="Settings">Settings</sys:String>
