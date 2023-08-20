@@ -3,8 +3,25 @@
 
 namespace ScreenshotStudio.Studio;
 
+using ScreenshotStudio.Services;
 using ScreenshotStudio.Windows;
+using System.Collections.Specialized;
+using XivToolsWpf;
+using XivToolsWpf.Extensions;
 
 public partial class TargetPanel : DockPanel
 {
+	public TargetPanel()
+	{
+		this.Services.Targets.AllGPoseActors.CollectionChanged += this.OnGPoseActorsChanged;
+		this.Actors.AddRange(this.Services.Targets.AllGPoseActors);
+	}
+
+	public FastObservableCollection<Actor> Actors { get; init; } = new();
+
+	private async void OnGPoseActorsChanged(object? sender, NotifyCollectionChangedEventArgs e)
+	{
+		await this.Dispatcher.MainThread();
+		this.Actors.Synchronize(e);
+	}
 }

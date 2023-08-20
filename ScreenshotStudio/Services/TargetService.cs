@@ -17,6 +17,8 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 
+using NativeObject = FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject;
+
 public class TargetService : ServiceBase
 {
 	private const int GPoseActorCount = 39;
@@ -24,10 +26,10 @@ public class TargetService : ServiceBase
 
 	private static readonly unsafe TargetSystem* Targets = TargetSystem.Instance();
 
-	private readonly Dictionary<IntPtr, Actor> actorTable = new();
+	private readonly Dictionary<IntPtr, Actor> actorLookup = new();
 	private Actor? currentTarget;
 
-	public ObservableCollection<Actor> Actors { get; init; } = new();
+	public ObservableCollection<Actor> AllGPoseActors { get; init; } = new();
 
 	public Actor? CurrentTarget
 	{
@@ -37,17 +39,44 @@ public class TargetService : ServiceBase
 			this.currentTarget = value;
 			this.RaisePropertyChanged(nameof(TargetService.CurrentTarget));
 
-			// TODO: set target in game!
+			if (value != null)
+			{
+				this.TargetPtr = value.Address;
+			}
 		}
 	}
 
 	public bool IsInGPose => DalamudServices.PluginInterface.UiBuilder.GposeActive;
-	public unsafe IntPtr TargetPtr => (IntPtr)Targets->GPoseTarget;
+	public unsafe IntPtr TargetPtr
+	{
+		get => (IntPtr)Targets->GPoseTarget;
+		set
+		{
+			if (this.IsValidGPoseActorAddress(value))
+			{
+				Targets->GPoseTarget = (NativeObject*)value;
+			}
+		}
+	}
 
 	public override async Task Start()
 	{
 		await base.Start();
 		_ = Task.Run(this.TargetWatcher);
+	}
+
+	public bool IsValidGPoseActorAddress(IntPtr address)
+	{
+		for (int i = GPoseFirstActor; i < GPoseFirstActor + GPoseActorCount; ++i)
+		{
+			IntPtr objectAddress = DalamudServices.ObjectTable.GetObjectAddress(i);
+			if (objectAddress == address)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	private async Task TargetWatcher()
@@ -59,50 +88,59 @@ public class TargetService : ServiceBase
 		{
 			await Task.Delay(100);
 
-			if (!this.IsInGPose)
+			try
 			{
-				this.CurrentTarget = null;
-				this.Actors.Clear();
-				continue;
+				if (!this.IsInGPose)
+				{
+					this.CurrentTarget = null;
+					this.AllGPoseActors.Clear();
+					continue;
+				}
+
+				this.UpdateActorTable();
+
+				// Update actor target
+				currentTarget = this.TargetPtr;
+				if (currentTarget != lastTarget)
+				{
+					lastTarget = currentTarget;
+
+					this.actorLookup.TryGetValue(currentTarget, out Actor? targetActor);
+					this.CurrentTarget = targetActor;
+				}
 			}
-
-			this.UpdateActorTable();
-
-			// Update actor target
-			currentTarget = this.TargetPtr;
-			if (currentTarget != lastTarget)
+			catch(Exception ex)
 			{
-				lastTarget = currentTarget;
-
-				this.actorTable.TryGetValue(currentTarget, out Actor? targetActor);
-				this.CurrentTarget = targetActor;
+				this.Log.Error(ex, "Error in TargetService Target Watcher task");
 			}
 		}
 	}
 
 	private void UpdateActorTable()
 	{
-		HashSet<IntPtr> oldPointers = new(this.actorTable.Keys);
+		HashSet<IntPtr> oldPointers = new(this.actorLookup.Keys);
 		for (int i = GPoseFirstActor; i < GPoseFirstActor + GPoseActorCount; ++i)
 		{
 			IntPtr objectAddress = DalamudServices.ObjectTable.GetObjectAddress(i);
 			oldPointers.Remove(objectAddress);
 
-			if (!this.actorTable.ContainsKey(objectAddress))
+			if (!this.actorLookup.ContainsKey(objectAddress))
 			{
 				GameObject? obj = DalamudServices.ObjectTable.CreateObjectReference(objectAddress);
 				if (obj != null)
 				{
-					this.actorTable.Add(objectAddress, new(obj));
-					this.Actors.Add(this.actorTable[objectAddress]);
+					this.actorLookup.Add(objectAddress, new(obj));
+					this.AllGPoseActors.Add(this.actorLookup[objectAddress]);
+					this.Log.Information("got actor " + this.actorLookup[objectAddress]);
 				}
 			}
 		}
 
 		foreach (IntPtr oldPtr in oldPointers)
 		{
-			this.Actors.Remove(this.actorTable[oldPtr]);
-			this.actorTable.Remove(oldPtr);
+			this.Log.Information("lost actor " + this.actorLookup[oldPtr]);
+			this.AllGPoseActors.Remove(this.actorLookup[oldPtr]);
+			this.actorLookup.Remove(oldPtr);
 		}
 	}
 }
@@ -116,4 +154,5 @@ public class Actor
 
 	public GameObject Object { get; init; }
 	public string DisplayName => this.Object.Name.ToString();
+	public IntPtr Address => this.Object.Address;
 }

@@ -7,24 +7,43 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:services="clr-namespace:ScreenshotStudio.Services"
 	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
+	xmlns:xivToolsWpf="clr-namespace:XivToolsWpf.Controls;assembly=XivToolsWpf"
 	Title="TargetPanel"
-	Width="450"
+	Width="800"
+	HorizontalAlignment="Center"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	DockPosition="0.5,0"
 	SizeToContent="Height"
 	mc:Ignorable="d">
 
-	<StackPanel>
+	<StackPanel
+		Margin="1"
+		Orientation="Horizontal">
 		<ListBox
-			ItemsSource="{Binding Services.Targets.Actors}"
+			ItemsSource="{Binding Actors}"
 			SelectedItem="{Binding Services.Targets.CurrentTarget}"
 			Style="{DynamicResource XivToolsSwitchSelector}">
 			<ListBox.ItemTemplate>
 				<DataTemplate DataType="{x:Type services:Actor}">
-					<TextBlock Text="{Binding DisplayName}" />
+					<Grid Width="75">
+						<TextBlock
+							HorizontalAlignment="Center"
+							Text="{Binding DisplayName}" />
+					</Grid>
+
 				</DataTemplate>
 			</ListBox.ItemTemplate>
 		</ListBox>
+
+		<Button Width="32">
+			<xivToolsWpf:IconBlock Icon="Plus" />
+		</Button>
+
+		<Button
+			Width="32"
+			IsEnabled="False">
+			<xivToolsWpf:IconBlock Icon="TrashAlt" />
+		</Button>
 
 	</StackPanel>
 
