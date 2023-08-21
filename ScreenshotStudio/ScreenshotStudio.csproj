@@ -17,6 +17,7 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<PublishTrimmed>false</PublishTrimmed>
 		<DalamudLibPath>$(appdata)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -31,6 +32,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="FontAwesome.Sharp" Version="6.3.0" />
+		<PackageReference Include="FontAwesome.Sharp.Pro" Version="6.3.0" />
 	  <PackageReference Include="PropertyChanged.SourceGenerator" Version="1.0.8">
 	    <PrivateAssets>all</PrivateAssets>
 	    <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
