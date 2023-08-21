@@ -13,31 +13,24 @@ namespace ScreenshotStudio.Structs;
 
 using System.Runtime.InteropServices;
 
-public class ItemEquipViewModel
+public class ItemEquipViewModel : StructViewModelBase<ItemEquip>
 {
-	private ItemEquip item;
-
-	public ItemEquipViewModel(ItemEquip item)
-	{
-		this.item = item;
-	}
-
 	public ushort Id
 	{
-		get => this.item.Id;
-		set => this.item.Id = value;
+		get => this.GetValue<ushort>();
+		set => this.SetValue(value);
 	}
 
 	public byte Variant
 	{
-		get => this.item.Variant;
-		set => this.item.Variant = value;
+		get => this.GetValue<byte>();
+		set => this.SetValue(value);
 	}
 
 	public byte Dye
 	{
-		get => this.item.Dye;
-		set => this.item.Dye = value;
+		get => this.GetValue<byte>();
+		set => this.SetValue(value);
 	}
 
 	public override string ToString()

@@ -13,6 +13,7 @@ public class ServiceManager
 
 	private ServiceManager()
 	{
+		this.services.Add(this.Structs);
 		this.services.Add(this.Targets);
 		this.services.Add(this.Panels);
 	}
@@ -29,6 +30,7 @@ public class ServiceManager
 	}
 
 	// Service properties for bindings
+	public StructViewModelService Structs { get; init; } = new();
 	public TargetService Targets { get; init; } = new();
 	public PanelService Panels { get; init; } = new();
 

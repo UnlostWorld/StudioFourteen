@@ -15,25 +15,16 @@ using System;
 using System.Runtime.InteropServices;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 
-public unsafe class ActorViewModel
+public unsafe class ActorViewModel : StructPtrViewModelBase<Actor>
 {
-	private readonly Actor* pActor;
-
-	public ActorViewModel(IntPtr actorPointer)
-	: this((Actor*)actorPointer)
+	public ActorViewModel(IntPtr ptr)
+		: base(ptr)
 	{
 	}
 
-	public ActorViewModel(Actor* pActor)
-	{
-		this.pActor = pActor;
-		this.DrawData = new(this.pActor->DrawData);
-	}
+	public string DisplayName => this.Struct.Name ?? "Unknown Actor";
 
-	public string DisplayName => this.pActor->Name ?? "Unknown Actor";
-	public IntPtr Address => (IntPtr)this.pActor;
-
-	public ActorDrawDataViewModel DrawData { get; init; }
+	public ActorDrawDataViewModel DrawData { get; init; } = new();
 }
 
 [StructLayout(LayoutKind.Explicit, Size = 0x84A)]
