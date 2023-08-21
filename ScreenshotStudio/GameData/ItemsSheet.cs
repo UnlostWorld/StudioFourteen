@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 
 public class ItemsSheet : DataSheet<Item>
 {
-	private readonly ConcurrentDictionary<string, Item?> itemCache = new();
+	private readonly ConcurrentDictionary<string, uint> itemCache = new();
 
 	public Item? Find(EquipSlots slot, ushort modelSet, ushort modelBase, ushort modelVariant, bool isChocobo)
 	{
@@ -30,8 +30,8 @@ public class ItemsSheet : DataSheet<Item>
 			return null;
 
 		string lookupKey = slot + "_" + modelSet + "_" + modelBase + "_" + modelVariant;
-		this.itemCache.TryGetValue(lookupKey, out Item? item);
-		return item;
+		this.itemCache.TryGetValue(lookupKey, out uint itemRow);
+		return this.GetRow(itemRow);
 	}
 
 	public async Task PopulateCache()
@@ -76,7 +76,7 @@ public class ItemsSheet : DataSheet<Item>
 
 				if (!this.itemCache.ContainsKey(lookupKey))
 				{
-					this.itemCache.TryAdd(lookupKey, tItem);
+					this.itemCache.TryAdd(lookupKey, tItem.RowId);
 				}
 
 				if (tItem.HasSubModel)
@@ -85,7 +85,7 @@ public class ItemsSheet : DataSheet<Item>
 
 					if (!this.itemCache.ContainsKey(lookupKey))
 					{
-						this.itemCache.TryAdd(lookupKey, tItem);
+						this.itemCache.TryAdd(lookupKey, tItem.RowId);
 					}
 				}
 			}
@@ -100,6 +100,8 @@ public class ItemsSheet : DataSheet<Item>
 public class Item : Lumina.Excel.GeneratedSheets.Item
 {
 	private byte equipSlotCategoryRow;
+
+	public new ImageReference? Icon { get; private set; }
 
 	public ushort ModelMainSet { get; private set; }
 	public ushort ModelMainBase { get; private set; }
@@ -120,6 +122,7 @@ public class Item : Lumina.Excel.GeneratedSheets.Item
 	{
 		base.PopulateData(parser, gameData, language);
 		this.equipSlotCategoryRow = parser.ReadColumn<byte>(17);
+		this.Icon = new(base.Icon);
 
 		this.IsWeapon = this.CanEquipToSlot(EquipSlots.MainHand) || this.CanEquipToSlot(EquipSlots.OffHand);
 
