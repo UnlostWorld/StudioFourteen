@@ -92,23 +92,27 @@ public class TargetService : ServiceBase
 
 			try
 			{
-				if (!this.IsInGPose)
+				lock (this)
 				{
-					this.CurrentTarget = null;
-					this.AllGPoseActors.Clear();
-					continue;
-				}
+					if (!this.IsInGPose)
+					{
+						this.CurrentTarget = null;
+						this.AllGPoseActors.Clear();
 
-				this.UpdateActorTable();
+						continue;
+					}
 
-				// Update actor target
-				currentTarget = this.TargetPtr;
-				if (currentTarget != lastTarget)
-				{
-					lastTarget = currentTarget;
+					this.UpdateActorTable();
 
-					this.actorLookup.TryGetValue(currentTarget, out ActorViewModel? targetActor);
-					this.CurrentTarget = targetActor;
+					// Update actor target
+					currentTarget = this.TargetPtr;
+					if (currentTarget != lastTarget)
+					{
+						lastTarget = currentTarget;
+
+						this.actorLookup.TryGetValue(currentTarget, out ActorViewModel? targetActor);
+						this.CurrentTarget = targetActor;
+					}
 				}
 			}
 			catch(Exception ex)
@@ -120,31 +124,34 @@ public class TargetService : ServiceBase
 
 	private void UpdateActorTable()
 	{
-		HashSet<IntPtr> oldPointers = new(this.actorLookup.Keys);
-		for (int i = GPoseFirstActor; i < GPoseFirstActor + GPoseActorCount; ++i)
+		lock (this)
 		{
-			IntPtr objectAddress = DalamudServices.ObjectTable.GetObjectAddress(i);
-
-			if (objectAddress == IntPtr.Zero)
-				continue;
-
-			oldPointers.Remove(objectAddress);
-
-			if (!this.actorLookup.ContainsKey(objectAddress))
+			HashSet<IntPtr> oldPointers = new(this.actorLookup.Keys);
+			for (int i = GPoseFirstActor; i < GPoseFirstActor + GPoseActorCount; ++i)
 			{
-				ActorViewModel actor = new(objectAddress);
+				IntPtr objectAddress = DalamudServices.ObjectTable.GetObjectAddress(i);
 
-				this.actorLookup.Add(objectAddress, actor);
-				this.AllGPoseActors.Add(actor);
-				this.Log.Information("got actor " + actor);
+				if (objectAddress == IntPtr.Zero)
+					continue;
+
+				oldPointers.Remove(objectAddress);
+
+				if (!this.actorLookup.ContainsKey(objectAddress))
+				{
+					ActorViewModel actor = new(objectAddress);
+
+					this.actorLookup.Add(objectAddress, actor);
+					this.AllGPoseActors.Add(actor);
+					this.Log.Information("got actor " + actor);
+				}
 			}
-		}
 
-		foreach (IntPtr oldPtr in oldPointers)
-		{
-			this.Log.Information("lost actor " + this.actorLookup[oldPtr]);
-			this.AllGPoseActors.Remove(this.actorLookup[oldPtr]);
-			this.actorLookup.Remove(oldPtr);
+			foreach (IntPtr oldPtr in oldPointers)
+			{
+				this.Log.Information("lost actor " + this.actorLookup[oldPtr]);
+				this.AllGPoseActors.Remove(this.actorLookup[oldPtr]);
+				this.actorLookup.Remove(oldPtr);
+			}
 		}
 	}
 }

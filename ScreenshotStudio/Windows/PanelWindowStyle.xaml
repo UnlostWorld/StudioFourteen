@@ -55,7 +55,7 @@
 					Orientation="Horizontal">
 
 					<xivToolsWpf:IconBlock
-						Width="12"
+						MinWidth="12"
 						Margin="0,0,6,0"
 						VerticalAlignment="Center"
 						Foreground="{DynamicResource ForegroundLightBrush}"

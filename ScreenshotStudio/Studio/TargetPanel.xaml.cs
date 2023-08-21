@@ -3,7 +3,7 @@
 
 namespace ScreenshotStudio.Studio;
 
-using ScreenshotStudio.Services;
+using ScreenshotStudio.Structs;
 using ScreenshotStudio.Windows;
 using System.Collections.Specialized;
 using XivToolsWpf;
@@ -14,7 +14,11 @@ public partial class TargetPanel : DockPanel
 	public TargetPanel()
 	{
 		this.Services.Targets.AllGPoseActors.CollectionChanged += this.OnGPoseActorsChanged;
-		this.Actors.AddRange(this.Services.Targets.AllGPoseActors);
+
+		lock (this.Services.Targets)
+		{
+			this.Actors.AddRange(this.Services.Targets.AllGPoseActors);
+		}
 	}
 
 	public FastObservableCollection<ActorViewModel> Actors { get; init; } = new();

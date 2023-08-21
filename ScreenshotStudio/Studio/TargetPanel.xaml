@@ -5,7 +5,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="clr-namespace:ScreenshotStudio.Studio"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:services="clr-namespace:ScreenshotStudio.Services"
+	xmlns:structs="clr-namespace:ScreenshotStudio.Structs"
 	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
 	xmlns:xivToolsWpf="clr-namespace:XivToolsWpf.Controls;assembly=XivToolsWpf"
 	Title="TargetPanel"
@@ -24,7 +24,7 @@
 			SelectedItem="{Binding Services.Targets.CurrentTarget}"
 			Style="{DynamicResource XivToolsSwitchSelector}">
 			<ListBox.ItemTemplate>
-				<DataTemplate DataType="{x:Type services:ActorViewModel}">
+				<DataTemplate DataType="{x:Type structs:ActorViewModel}">
 					<Grid Width="75">
 						<TextBlock
 							HorizontalAlignment="Center"
