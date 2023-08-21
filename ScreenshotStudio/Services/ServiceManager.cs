@@ -5,6 +5,7 @@ namespace ScreenshotStudio.Services;
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using ScreenshotStudio.GameData;
 
 public class ServiceManager
 {
@@ -16,6 +17,7 @@ public class ServiceManager
 		this.services.Add(this.Structs);
 		this.services.Add(this.Targets);
 		this.services.Add(this.Panels);
+		this.services.Add(this.Data);
 	}
 
 	public static ServiceManager Instance
@@ -33,6 +35,7 @@ public class ServiceManager
 	public StructViewModelService Structs { get; init; } = new();
 	public TargetService Targets { get; init; } = new();
 	public PanelService Panels { get; init; } = new();
+	public GameDataService Data { get; init; } = new();
 
 	/// <summary>
 	/// Initialize and Start all services.

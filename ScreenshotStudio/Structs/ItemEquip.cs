@@ -12,10 +12,18 @@
 namespace ScreenshotStudio.Structs;
 
 using System.Runtime.InteropServices;
+using ScreenshotStudio.GameData;
 
 public class ItemEquipViewModel : StructViewModelBase<ItemEquip>
 {
-	public ushort Id
+	public ItemEquipViewModel(EquipSlots slot)
+	{
+		this.Slot = slot;
+	}
+
+	public EquipSlots Slot { get; init; }
+
+	public ushort Base
 	{
 		get => this.GetValue<ushort>();
 		set => this.SetValue(value);
@@ -33,16 +41,18 @@ public class ItemEquipViewModel : StructViewModelBase<ItemEquip>
 		set => this.SetValue(value);
 	}
 
+	public Item? ItemData => this.Services.Data.Items.Find(this.Slot, 0, this.Base, this.Variant, false);
+
 	public override string ToString()
 	{
-		return $"{this.Id}, {this.Variant} ({this.Dye})";
+		return $"{this.Base}, {this.Variant} ({this.Dye})";
 	}
 }
 
 [StructLayout(LayoutKind.Explicit, Size = 0x4)]
 public struct ItemEquip
 {
-	[FieldOffset(0)] public ushort Id;
+	[FieldOffset(0)] public ushort Base;
 	[FieldOffset(2)] public byte Variant;
 	[FieldOffset(3)] public byte Dye;
 }

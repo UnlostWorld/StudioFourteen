@@ -11,20 +11,21 @@
 
 namespace ScreenshotStudio.Structs;
 
+using ScreenshotStudio.GameData;
 using System.Runtime.InteropServices;
 
 public class EquipmentViewModel : StructViewModelBase<Equipment>
 {
-	public ItemEquipViewModel Head { get; init; } = new();
-	public ItemEquipViewModel Chest { get; init; } = new();
-	public ItemEquipViewModel Hands { get; init; } = new();
-	public ItemEquipViewModel Legs { get; init; } = new();
-	public ItemEquipViewModel Feet { get; init; } = new();
-	public ItemEquipViewModel Earring { get; init; } = new();
-	public ItemEquipViewModel Necklace { get; init; } = new();
-	public ItemEquipViewModel Bracelet { get; init; } = new();
-	public ItemEquipViewModel RingRight { get; init; } = new();
-	public ItemEquipViewModel RingLeft { get; init; } = new();
+	public ItemEquipViewModel Head { get; init; } = new(EquipSlots.Head);
+	public ItemEquipViewModel Chest { get; init; } = new(EquipSlots.Chest);
+	public ItemEquipViewModel Hands { get; init; } = new(EquipSlots.Hands);
+	public ItemEquipViewModel Legs { get; init; } = new(EquipSlots.Legs);
+	public ItemEquipViewModel Feet { get; init; } = new(EquipSlots.Feet);
+	public ItemEquipViewModel Earring { get; init; } = new(EquipSlots.Earring);
+	public ItemEquipViewModel Necklace { get; init; } = new(EquipSlots.Necklace);
+	public ItemEquipViewModel Bracelet { get; init; } = new(EquipSlots.Bracelet);
+	public ItemEquipViewModel RingRight { get; init; } = new(EquipSlots.RingRight);
+	public ItemEquipViewModel RingLeft { get; init; } = new(EquipSlots.RingLeft);
 }
 
 [StructLayout(LayoutKind.Explicit)]

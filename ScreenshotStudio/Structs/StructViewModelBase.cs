@@ -105,6 +105,7 @@ public abstract class StructViewModelBase : INotifyPropertyChanged, IDisposable
 
 	public bool IsDisposed => this.isDisposed;
 	public ILogger Log { get; init; }
+	public ServiceManager Services => ServiceManager.Instance;
 	public object? Struct { get; private set; }
 
 	public void Dispose()
