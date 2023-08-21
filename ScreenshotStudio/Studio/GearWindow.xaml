@@ -2,6 +2,7 @@
 	x:Class="ScreenshotStudio.Studio.GearWindow"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:ScreenshotStudio.Controls"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="clr-namespace:ScreenshotStudio.Studio"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -22,41 +23,104 @@
 				DataType="{x:Type structs:ItemEquipViewModel}">
 				<Grid
 					Width="200"
-					Margin="1,1,6,1">
+					Height="56"
+					Margin="2,2,6,2">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="75" />
 						<ColumnDefinition />
 					</Grid.ColumnDefinitions>
 
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
+						<RowDefinition />
 					</Grid.RowDefinitions>
 
-					<Border
-						Grid.RowSpan="3"
+					<Grid
+						Grid.RowSpan="2"
 						Grid.Column="0"
 						Width="48"
 						Height="48"
-						Margin="0,1,0,0"
-						Style="{DynamicResource XivToolsControlBorder}" />
+						Margin="0,3,0,0"
+						VerticalAlignment="Center">
 
-					<xivToolsWpf:MultiNumberBox
+						<Image
+							Margin="4,3,4,5"
+							SnapsToDevicePixels="True"
+							Source="{Binding ItemData.Icon.Source}" />
+
+						<controls:XivTexImage
+							Path="ui/uld/icona_frame_hr1.tex"
+							Rect="0, 0, 96, 96"
+							SnapsToDevicePixels="True" />
+					</Grid>
+
+					<Button
 						Grid.Row="0"
 						Grid.Column="1"
-						Margin="2,0,0,0"
+						Grid.ColumnSpan="3"
+						Margin="0,3,0,0"
+						HorizontalContentAlignment="Stretch">
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition />
+								<ColumnDefinition Width="Auto" />
+							</Grid.ColumnDefinitions>
+
+							<TextBlock
+								Grid.Column="0"
+								Margin="0,0,3,0"
+								Style="{DynamicResource Body}"
+								Text="{Binding ItemData.Name, FallbackValue=Unknown}" />
+
+							<xivToolsWpf:IconBlock
+								Grid.Column="1"
+								Foreground="{DynamicResource BackgroundBrush}"
+								Icon="ExternalLinkSquare" />
+						</Grid>
+					</Button>
+
+
+					<xivToolsWpf:MultiNumberBox
+						Grid.Row="1"
+						Grid.Column="1"
+						Height="24"
+						Margin="0,1,1,3"
 						X="{Binding Set}"
 						Y="{Binding Base}"
 						Z="{Binding Variant}" />
 
-					<TextBlock
+					<Button
 						Grid.Row="1"
-						Grid.Column="1"
-						Margin="4,2,0,0"
-						Style="{DynamicResource Body}"
-						Text="{Binding ItemData.Name, FallbackValue=Unknown}" />
+						Grid.Column="2"
+						Grid.ColumnSpan="3"
+						Margin="0,1,0,3"
+						Padding="0"
+						HorizontalContentAlignment="Stretch">
+
+						<Grid Margin="4">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition />
+								<ColumnDefinition Width="Auto" />
+							</Grid.ColumnDefinitions>
+
+							<TextBlock
+								x:Name="TextArea"
+								Grid.Column="1"
+								Margin="6,0,3,1"
+								Style="{DynamicResource Body}"
+								Text="{Binding Dye, FallbackValue=0}" />
+
+							<xivToolsWpf:IconBlock
+								Grid.Column="2"
+								Foreground="{DynamicResource BackgroundBrush}"
+								Icon="ExternalLinkSquare" />
+						</Grid>
+					</Button>
 
 				</Grid>
+
 			</DataTemplate>
 
 		</UniformGrid.Resources>
