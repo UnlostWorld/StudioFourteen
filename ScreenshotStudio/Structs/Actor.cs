@@ -19,18 +19,21 @@ public unsafe class ActorViewModel
 {
 	private readonly Actor* pActor;
 
+	public ActorViewModel(IntPtr actorPointer)
+	: this((Actor*)actorPointer)
+	{
+	}
+
 	public ActorViewModel(Actor* pActor)
 	{
 		this.pActor = pActor;
-	}
-
-	public ActorViewModel(IntPtr actorPointer)
-	{
-		this.pActor = (Actor*)actorPointer;
+		this.DrawData = new(this.pActor->DrawData);
 	}
 
 	public string DisplayName => this.pActor->Name ?? "Unknown Actor";
 	public IntPtr Address => (IntPtr)this.pActor;
+
+	public ActorDrawDataViewModel DrawData { get; init; }
 }
 
 [StructLayout(LayoutKind.Explicit, Size = 0x84A)]

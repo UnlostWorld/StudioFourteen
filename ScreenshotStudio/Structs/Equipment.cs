@@ -13,6 +13,34 @@ namespace ScreenshotStudio.Structs;
 
 using System.Runtime.InteropServices;
 
+public class EquipmentViewModel
+{
+	public EquipmentViewModel(Equipment equipment)
+	{
+		this.Head = new(equipment.Head);
+		this.Chest = new(equipment.Chest);
+		this.Hands = new(equipment.Hands);
+		this.Legs = new(equipment.Legs);
+		this.Feet = new(equipment.Feet);
+		this.Earring = new(equipment.Earring);
+		this.Necklace = new(equipment.Necklace);
+		this.Bracelet = new(equipment.Bracelet);
+		this.RingRight = new(equipment.RingRight);
+		this.RingLeft = new(equipment.RingLeft);
+	}
+
+	public ItemEquipViewModel Head { get; init; }
+	public ItemEquipViewModel Chest { get; init; }
+	public ItemEquipViewModel Hands { get; init; }
+	public ItemEquipViewModel Legs { get; init; }
+	public ItemEquipViewModel Feet { get; init; }
+	public ItemEquipViewModel Earring { get; init; }
+	public ItemEquipViewModel Necklace { get; init; }
+	public ItemEquipViewModel Bracelet { get; init; }
+	public ItemEquipViewModel RingRight { get; init; }
+	public ItemEquipViewModel RingLeft { get; init; }
+}
+
 [StructLayout(LayoutKind.Explicit)]
 public struct Equipment
 {

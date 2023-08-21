@@ -9,11 +9,12 @@
 	Title="{DynamicResource Gear}"
 	Width="800"
 	Height="450"
+	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	TitleIcon="HelmetBattle"
 	mc:Ignorable="d">
 
 	<UniformGrid Columns="2">
-		<TextBlock Text="Hi?" />
+		<TextBlock Text="{Binding Services.Targets.CurrentTarget.DrawData.Equipment.Chest}" />
 	</UniformGrid>
 
 </windows:PanelWindow>

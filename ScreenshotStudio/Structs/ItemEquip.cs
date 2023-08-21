@@ -13,19 +13,43 @@ namespace ScreenshotStudio.Structs;
 
 using System.Runtime.InteropServices;
 
+public class ItemEquipViewModel
+{
+	private ItemEquip item;
+
+	public ItemEquipViewModel(ItemEquip item)
+	{
+		this.item = item;
+	}
+
+	public ushort Id
+	{
+		get => this.item.Id;
+		set => this.item.Id = value;
+	}
+
+	public byte Variant
+	{
+		get => this.item.Variant;
+		set => this.item.Variant = value;
+	}
+
+	public byte Dye
+	{
+		get => this.item.Dye;
+		set => this.item.Dye = value;
+	}
+
+	public override string ToString()
+	{
+		return $"{this.Id}, {this.Variant} ({this.Dye})";
+	}
+}
+
 [StructLayout(LayoutKind.Explicit, Size = 0x4)]
 public struct ItemEquip
 {
 	[FieldOffset(0)] public ushort Id;
 	[FieldOffset(2)] public byte Variant;
 	[FieldOffset(3)] public byte Dye;
-
-	public static explicit operator ItemEquip(uint num) => new()
-	{
-		Id = (ushort)(num & 0xFFFF),
-		Variant = (byte)(num >> 16 & 0xFF),
-		Dye = (byte)(num >> 24),
-	};
-
-	public bool Equals(ItemEquip other) => this.Id == other.Id && this.Variant == other.Variant;
 }
