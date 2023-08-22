@@ -16,6 +16,7 @@ using Dalamud.Game.Command;
 using Dalamud.Game.Gui;
 using Dalamud.IoC;
 using Dalamud.Plugin;
+using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 
 public class DalamudServices
@@ -29,6 +30,7 @@ public class DalamudServices
 	[PluginService] internal static Framework Framework { get; private set; } = null!;
 	[PluginService] internal static KeyState KeyState { get; private set; } = null!;
 	[PluginService] internal static GameGui GameGui { get; private set; } = null!;
+	[PluginService] internal static ITextureSubstitutionProvider TextureSubstitutionProvider { get; private set; } = null!;
 
 	internal static unsafe CameraManager* Camera { get; private set; } = CameraManager.Instance;
 }
