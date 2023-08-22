@@ -12,7 +12,7 @@ public abstract class ServiceBase : INotifyPropertyChanged
 {
 	public ServiceBase()
 	{
-		this.Log = Serilog.Log.ForContext(this.GetType());
+		this.Log = Logging.ForContext(this.GetType());
 	}
 
 	public event PropertyChangedEventHandler? PropertyChanged;

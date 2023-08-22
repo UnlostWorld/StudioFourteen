@@ -7,12 +7,15 @@ using System;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Lumina.Data.Files;
+using ScreenshotStudio.Controls;
 using ScreenshotStudio.Plugin;
 using Serilog;
 
 public class ImageReference
 {
 	public readonly uint ImageId;
+
+	protected readonly ILogger Log = Logging.ForContext<ImageReference>();
 
 	private WeakReference<ImageSource>? cachedImage;
 
@@ -46,7 +49,7 @@ public class ImageReference
 
 			try
 			{
-				Log.Verbose($"Loading image {this.ImageId}");
+				this.Log.Verbose($"Loading image {this.ImageId}");
 
 				////string path = $"ui/icon/{this.ImageId / 1000u * 1000:000000}/{this.ImageId:000000}.tex";
 				string path = $"ui/icon/{this.ImageId / 1000u * 1000:000000}/{this.ImageId:000000}_hr1.tex";
@@ -67,7 +70,7 @@ public class ImageReference
 			}
 			catch (Exception ex)
 			{
-				Log.Warning(ex, $"Failed to load Image: {this.ImageId} ");
+				this.Log.Warning(ex, $"Failed to load Image: {this.ImageId} ");
 			}
 
 			return null;

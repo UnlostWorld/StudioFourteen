@@ -27,8 +27,6 @@ public class StructViewModelService : ServiceBase
 		{
 			ViewModels.Remove(vm);
 		}
-
-		Serilog.Log.Information($"Lost VM {vm}");
 	}
 
 	public override async Task Start()

@@ -22,7 +22,7 @@ public class PanelService : ServiceBase
 		await Panel.ShowAsync<NavigationPanel>();
 		////await Panel.ShowAsync<InspectorPanel>();
 
-		await Panel.ShowAsync<GearWindow>();
+		////await Panel.ShowAsync<GearWindow>();
 	}
 
 	public override async Task Stop()

@@ -4,6 +4,7 @@
 namespace ScreenshotStudio.Structs;
 
 using Dalamud.Game.ClientState.JobGauge.Enums;
+using ScreenshotStudio.GameData;
 using ScreenshotStudio.Services;
 using Serilog;
 using System;
@@ -18,6 +19,8 @@ public static class StructFieldBindCache
 {
 	private static readonly Dictionary<Type, List<FieldBind>> FieldBindsLookup = new();
 	private static readonly Dictionary<Type, Dictionary<string, FieldInfo>> FieldInfosLookup = new();
+
+	private static readonly ILogger Log = Logging.ForContext(typeof(StructFieldBindCache));
 
 	public static List<FieldBind> GetBinds(Type viewModelType, Type structType)
 	{
@@ -94,7 +97,7 @@ public abstract class StructViewModelBase : INotifyPropertyChanged, IDisposable
 	public StructViewModelBase()
 	{
 		Type thisType = this.GetType();
-		this.Log = Serilog.Log.ForContext(thisType);
+		this.Log = Logging.ForContext(thisType);
 		this.fieldBinds = StructFieldBindCache.GetBinds(thisType, this.GetModelType());
 		this.fieldLookup = StructFieldBindCache.GetFields(this.GetModelType());
 

@@ -20,8 +20,12 @@ public abstract partial class Panel : Window
 		typeof(Panel),
 		new(true));
 
+	protected readonly ILogger Log;
+
 	public Panel()
 	{
+		this.Log = Logging.ForContext(this.GetType());
+
 		this.Loaded += this.OnLoaded;
 
 		// Load a new copy of the resources. Each panel needs its own instance for threading reasons.
@@ -111,7 +115,7 @@ public abstract partial class Panel : Window
 		private Panel? panel;
 		private Type? panelType;
 
-		protected ILogger Log => Serilog.Log.ForContext<PanelThread>();
+		protected ILogger Log => Logging.ForContext<PanelThread>();
 
 		public async Task<Panel?> Start(Type panelType)
 		{

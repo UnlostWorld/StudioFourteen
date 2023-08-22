@@ -13,7 +13,7 @@ public class DataSheet<T> : IEnumerable<T>
 {
 	public DataSheet()
 	{
-		this.Log = Serilog.Log.ForContext(this.GetType());
+		this.Log = Logging.ForContext(this.GetType());
 		this.Sheet = DalamudServices.DataManager.GetExcelSheet<T>();
 
 		if (this.Sheet == null)

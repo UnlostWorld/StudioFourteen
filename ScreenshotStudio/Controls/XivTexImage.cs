@@ -15,6 +15,9 @@ using Serilog;
 
 public class XivTexImage : Image
 {
+	protected readonly ILogger Log = Logging.ForContext<XivTexImage>();
+
+	// dont cache across threads?
 	private static readonly Dictionary<string, CroppedBitmap> Cache = new();
 
 	public XivTexImage()
@@ -29,7 +32,7 @@ public class XivTexImage : Image
 				return;
 			}
 
-			Log.Information($"Load xiv texture {cacheKey}");
+			this.Log.Information($"Load xiv texture {cacheKey}");
 			TexFile? tex = DalamudServices.DataManager.GetFile<TexFile>(this.Path);
 
 			if (tex == null)
@@ -46,7 +49,7 @@ public class XivTexImage : Image
 		}
 		catch (Exception ex)
 		{
-			Log.Error(ex, $"Error loading xiv texture {this.Path}");
+			this.Log.Error(ex, $"Error loading xiv texture {this.Path}");
 		}
 	}
 
