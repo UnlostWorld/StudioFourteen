@@ -5,10 +5,13 @@ namespace ScreenshotStudio.Controls;
 
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Dalamud.Interface.Internal;
+using Dalamud.Plugin.Services;
 using Lumina.Data.Files;
 using ScreenshotStudio.Plugin;
 using Serilog;
@@ -16,8 +19,6 @@ using Serilog;
 public class XivTexImage : Image
 {
 	protected readonly ILogger Log = Logging.ForContext<XivTexImage>();
-
-	// dont cache across threads?
 	private static readonly Dictionary<string, CroppedBitmap> Cache = new();
 
 	public XivTexImage()
@@ -32,6 +33,8 @@ public class XivTexImage : Image
 				return;
 			}
 
+			////string path = DalamudServices.TextureSubstitutionProvider.GetSubstitutedPath(this.Path);
+
 			this.Log.Information($"Load xiv texture {cacheKey}");
 			TexFile? tex = DalamudServices.DataManager.GetFile<TexFile>(this.Path);
 
@@ -43,6 +46,7 @@ public class XivTexImage : Image
 
 			Int32Rect rect = new((int)this.Rect.X, (int)this.Rect.Y, (int)this.Rect.Width, (int)this.Rect.Height);
 			CroppedBitmap newSource = new CroppedBitmap(bmp, rect);
+			newSource.Freeze();
 			this.Source = newSource;
 
 			Cache.Add(cacheKey, newSource);
