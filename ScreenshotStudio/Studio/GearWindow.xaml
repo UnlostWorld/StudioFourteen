@@ -16,145 +16,169 @@
 	TitleIcon="HelmetBattle"
 	mc:Ignorable="d">
 
-	<UniformGrid Columns="2">
-		<UniformGrid.Resources>
-			<DataTemplate
-				x:Key="ItemView"
-				DataType="{x:Type structs:ItemEquipViewModel}">
-				<Grid
-					Width="200"
-					Height="56"
-					Margin="2,2,6,2">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="75" />
-						<ColumnDefinition />
-					</Grid.ColumnDefinitions>
+	<Grid>
 
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
-						<RowDefinition />
-					</Grid.RowDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition />
+		</Grid.RowDefinitions>
 
+		<StackPanel>
+
+			<TextBlock Text="{Binding Services.Targets.CurrentTarget.Model.Height}" />
+
+			<xivToolsWpf:NumberBox
+				Width="200"
+				Margin="3"
+				Maximum="2"
+				Minimum="0"
+				Slider="Absolute"
+				TickFrequency="0.01"
+				Value="{Binding Services.Targets.CurrentTarget.Model.Height}" />
+		</StackPanel>
+
+		<UniformGrid
+			Grid.Row="1"
+			Columns="2">
+			<UniformGrid.Resources>
+				<DataTemplate
+					x:Key="ItemView"
+					DataType="{x:Type structs:ItemEquipViewModel}">
 					<Grid
-						Grid.RowSpan="2"
-						Grid.Column="0"
-						Width="48"
-						Height="48"
-						Margin="0,3,0,0"
-						VerticalAlignment="Center">
+						Width="200"
+						Height="56"
+						Margin="2,2,6,2">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="75" />
+							<ColumnDefinition />
+						</Grid.ColumnDefinitions>
 
-						<Image
-							Margin="4,3,4,5"
-							SnapsToDevicePixels="True"
-							Source="{Binding ItemData.Icon.Source}" />
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition />
+						</Grid.RowDefinitions>
 
-						<controls:XivTexImage
-							Path="ui/uld/icona_frame_hr1.tex"
-							Rect="0, 0, 96, 96"
-							SnapsToDevicePixels="True" />
+						<Grid
+							Grid.RowSpan="2"
+							Grid.Column="0"
+							Width="48"
+							Height="48"
+							Margin="0,3,0,0"
+							VerticalAlignment="Center">
+
+							<Image
+								Margin="4,3,4,5"
+								SnapsToDevicePixels="True"
+								Source="{Binding ItemData.Icon.Source}" />
+
+							<controls:XivTexImage
+								Path="ui/uld/icona_frame_hr1.tex"
+								Rect="0, 0, 96, 96"
+								SnapsToDevicePixels="True" />
+						</Grid>
+
+						<Button
+							Grid.Row="0"
+							Grid.Column="1"
+							Grid.ColumnSpan="3"
+							Margin="0,3,0,0"
+							HorizontalContentAlignment="Stretch">
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition />
+									<ColumnDefinition Width="Auto" />
+								</Grid.ColumnDefinitions>
+
+								<TextBlock
+									Grid.Column="0"
+									Margin="0,0,3,0"
+									Style="{DynamicResource Body}"
+									Text="{Binding ItemData.Name, FallbackValue=Unknown}"
+									TextWrapping="NoWrap" />
+
+								<xivToolsWpf:IconBlock
+									Grid.Column="1"
+									Foreground="{DynamicResource BackgroundBrush}"
+									Icon="ExternalLinkSquare" />
+							</Grid>
+						</Button>
+
+
+						<xivToolsWpf:MultiNumberBox
+							Grid.Row="1"
+							Grid.Column="1"
+							Height="24"
+							Margin="0,1,1,3"
+							X="{Binding Set}"
+							Y="{Binding Base}"
+							Z="{Binding Variant}" />
+
+						<Button
+							Grid.Row="1"
+							Grid.Column="2"
+							Grid.ColumnSpan="3"
+							Margin="0,1,0,3"
+							Padding="0"
+							HorizontalContentAlignment="Stretch">
+
+							<Grid Margin="4">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition />
+									<ColumnDefinition Width="Auto" />
+								</Grid.ColumnDefinitions>
+
+								<TextBlock
+									x:Name="TextArea"
+									Grid.Column="1"
+									Margin="6,0,3,1"
+									Style="{DynamicResource Body}"
+									Text="{Binding Dye, FallbackValue=0}" />
+
+								<xivToolsWpf:IconBlock
+									Grid.Column="2"
+									Foreground="{DynamicResource BackgroundBrush}"
+									Icon="ExternalLinkSquare" />
+							</Grid>
+						</Button>
+
 					</Grid>
 
-					<Button
-						Grid.Row="0"
-						Grid.Column="1"
-						Grid.ColumnSpan="3"
-						Margin="0,3,0,0"
-						HorizontalContentAlignment="Stretch">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition />
-								<ColumnDefinition Width="Auto" />
-							</Grid.ColumnDefinitions>
+				</DataTemplate>
 
-							<TextBlock
-								Grid.Column="0"
-								Margin="0,0,3,0"
-								Style="{DynamicResource Body}"
-								Text="{Binding ItemData.Name, FallbackValue=Unknown}" />
+			</UniformGrid.Resources>
 
-							<xivToolsWpf:IconBlock
-								Grid.Column="1"
-								Foreground="{DynamicResource BackgroundBrush}"
-								Icon="ExternalLinkSquare" />
-						</Grid>
-					</Button>
-
-
-					<xivToolsWpf:MultiNumberBox
-						Grid.Row="1"
-						Grid.Column="1"
-						Height="24"
-						Margin="0,1,1,3"
-						X="{Binding Set}"
-						Y="{Binding Base}"
-						Z="{Binding Variant}" />
-
-					<Button
-						Grid.Row="1"
-						Grid.Column="2"
-						Grid.ColumnSpan="3"
-						Margin="0,1,0,3"
-						Padding="0"
-						HorizontalContentAlignment="Stretch">
-
-						<Grid Margin="4">
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition />
-								<ColumnDefinition Width="Auto" />
-							</Grid.ColumnDefinitions>
-
-							<TextBlock
-								x:Name="TextArea"
-								Grid.Column="1"
-								Margin="6,0,3,1"
-								Style="{DynamicResource Body}"
-								Text="{Binding Dye, FallbackValue=0}" />
-
-							<xivToolsWpf:IconBlock
-								Grid.Column="2"
-								Foreground="{DynamicResource BackgroundBrush}"
-								Icon="ExternalLinkSquare" />
-						</Grid>
-					</Button>
-
-				</Grid>
-
-			</DataTemplate>
-
-		</UniformGrid.Resources>
-
-		<ContentPresenter
-			Content="{Binding Services.Targets.CurrentTarget.DrawData.Equipment.Head}"
-			ContentTemplate="{StaticResource ItemView}" />
-		<ContentPresenter
-			Content="{Binding Services.Targets.CurrentTarget.DrawData.Equipment.Earring}"
-			ContentTemplate="{StaticResource ItemView}" />
-		<ContentPresenter
-			Content="{Binding Services.Targets.CurrentTarget.DrawData.Equipment.Chest}"
-			ContentTemplate="{StaticResource ItemView}" />
-		<ContentPresenter
-			Content="{Binding Services.Targets.CurrentTarget.DrawData.Equipment.Necklace}"
-			ContentTemplate="{StaticResource ItemView}" />
-		<ContentPresenter
-			Content="{Binding Services.Targets.CurrentTarget.DrawData.Equipment.Hands}"
-			ContentTemplate="{StaticResource ItemView}" />
-		<ContentPresenter
-			Content="{Binding Services.Targets.CurrentTarget.DrawData.Equipment.Bracelet}"
-			ContentTemplate="{StaticResource ItemView}" />
-		<ContentPresenter
-			Content="{Binding Services.Targets.CurrentTarget.DrawData.Equipment.Legs}"
-			ContentTemplate="{StaticResource ItemView}" />
-		<ContentPresenter
-			Content="{Binding Services.Targets.CurrentTarget.DrawData.Equipment.RingRight}"
-			ContentTemplate="{StaticResource ItemView}" />
-		<ContentPresenter
-			Content="{Binding Services.Targets.CurrentTarget.DrawData.Equipment.Feet}"
-			ContentTemplate="{StaticResource ItemView}" />
-		<ContentPresenter
-			Content="{Binding Services.Targets.CurrentTarget.DrawData.Equipment.RingLeft}"
-			ContentTemplate="{StaticResource ItemView}" />
-	</UniformGrid>
-
+			<ContentPresenter
+				Content="{Binding Services.Targets.CurrentTarget.DrawData.Equipment.Head}"
+				ContentTemplate="{StaticResource ItemView}" />
+			<ContentPresenter
+				Content="{Binding Services.Targets.CurrentTarget.DrawData.Equipment.Earring}"
+				ContentTemplate="{StaticResource ItemView}" />
+			<ContentPresenter
+				Content="{Binding Services.Targets.CurrentTarget.DrawData.Equipment.Chest}"
+				ContentTemplate="{StaticResource ItemView}" />
+			<ContentPresenter
+				Content="{Binding Services.Targets.CurrentTarget.DrawData.Equipment.Necklace}"
+				ContentTemplate="{StaticResource ItemView}" />
+			<ContentPresenter
+				Content="{Binding Services.Targets.CurrentTarget.DrawData.Equipment.Hands}"
+				ContentTemplate="{StaticResource ItemView}" />
+			<ContentPresenter
+				Content="{Binding Services.Targets.CurrentTarget.DrawData.Equipment.Bracelet}"
+				ContentTemplate="{StaticResource ItemView}" />
+			<ContentPresenter
+				Content="{Binding Services.Targets.CurrentTarget.DrawData.Equipment.Legs}"
+				ContentTemplate="{StaticResource ItemView}" />
+			<ContentPresenter
+				Content="{Binding Services.Targets.CurrentTarget.DrawData.Equipment.RingRight}"
+				ContentTemplate="{StaticResource ItemView}" />
+			<ContentPresenter
+				Content="{Binding Services.Targets.CurrentTarget.DrawData.Equipment.Feet}"
+				ContentTemplate="{StaticResource ItemView}" />
+			<ContentPresenter
+				Content="{Binding Services.Targets.CurrentTarget.DrawData.Equipment.RingLeft}"
+				ContentTemplate="{StaticResource ItemView}" />
+		</UniformGrid>
+	</Grid>
 </windows:PanelWindow>

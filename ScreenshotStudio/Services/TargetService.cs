@@ -41,9 +41,9 @@ public class TargetService : ServiceBase
 			this.currentTarget = value;
 			this.RaisePropertyChanged(nameof(TargetService.CurrentTarget));
 
-			if (value != null)
+			if (value != null && value.Address != null)
 			{
-				this.TargetPtr = value.Address;
+				this.TargetPtr = (IntPtr)value.Address;
 			}
 		}
 	}

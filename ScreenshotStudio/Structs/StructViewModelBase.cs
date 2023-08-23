@@ -4,15 +4,22 @@
 namespace ScreenshotStudio.Structs;
 
 using Dalamud.Game.ClientState.JobGauge.Enums;
+using Dalamud.Logging;
+using FFXIVClientStructs.Interop;
+using Newtonsoft.Json.Linq;
 using ScreenshotStudio.GameData;
 using ScreenshotStudio.Services;
 using Serilog;
+using Serilog.Events;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
+using System.Windows.Forms;
+using static FFXIVClientStructs.FFXIV.Client.UI.Info.InfoProxyFriendList;
 using static ScreenshotStudio.Structs.StructViewModelBase;
 
 public static class StructFieldBindCache
@@ -93,6 +100,7 @@ public abstract class StructViewModelBase : INotifyPropertyChanged, IDisposable
 	private readonly Dictionary<string, FieldInfo> fieldLookup = new();
 
 	private bool isDisposed = false;
+	private object? structObject = null;
 
 	public StructViewModelBase()
 	{
@@ -109,7 +117,7 @@ public abstract class StructViewModelBase : INotifyPropertyChanged, IDisposable
 	public bool IsDisposed => this.isDisposed;
 	public ILogger Log { get; init; }
 	public ServiceManager Services => ServiceManager.Instance;
-	public object? Struct { get; private set; }
+	public virtual object? StructObject => this.structObject;
 
 	public void Dispose()
 	{
@@ -117,55 +125,68 @@ public abstract class StructViewModelBase : INotifyPropertyChanged, IDisposable
 		StructViewModelService.Unregister(this);
 	}
 
-	public virtual void Tick()
+	public virtual unsafe void Tick()
 	{
-		if (this.IsDisposed)
-			return;
-
-		if (this.Struct == null)
-			return;
-
-		foreach (FieldBind bind in this.fieldBinds)
+		try
 		{
-			object? fieldVal = this.GetValue(bind.Field);
+			if (this.IsDisposed)
+				return;
 
-			if (fieldVal == null)
-				continue;
-
-			if (!fieldVal.Equals(bind.LastValue))
+			foreach (FieldBind bind in this.fieldBinds)
 			{
-				bind.LastValue = fieldVal;
+				object? fieldVal = this.GetValue(bind.Field);
 
-				if (typeof(StructViewModelBase).IsAssignableFrom(bind.Property.PropertyType))
+				if (fieldVal == null)
+					continue;
+
+				if (!fieldVal.Equals(bind.LastValue))
 				{
-					// if this is a view model, update it
-					StructViewModelBase? vm = bind.Property.GetValue(this) as StructViewModelBase;
-					if (vm == null)
+					bind.LastValue = fieldVal;
+
+					if (typeof(StructViewModelBase).IsAssignableFrom(bind.Property.PropertyType))
 					{
-						this.Log.Error($"No view model in Property: {bind.Property.Name} for View Model: {this.GetType()}");
-						continue;
+						// if this is a view model, update it
+						StructViewModelBase? vm = bind.Property.GetValue(this) as StructViewModelBase;
+						if (vm == null)
+						{
+							this.Log.Error($"No view model in Property: {bind.Property.Name} for View Model: {this.GetType()}");
+							continue;
+						}
+
+						if (fieldVal is IntPtr address)
+						{
+							vm.SetAddress(address);
+						}
+						else if(fieldVal is Pointer pointer)
+						{
+							vm.SetAddress((IntPtr)Pointer.Unbox(pointer));
+						}
+						else
+						{
+							vm.SetStruct(fieldVal);
+						}
 					}
 
-					vm.SetModel(fieldVal);
+					this.NotifyPropertyChanged(bind.Property.Name);
 				}
-				else
-				{
-					bind.Property.SetValue(this, fieldVal);
-				}
-
-				this.NotifyPropertyChanged(bind.Property.Name);
 			}
+		}
+		catch(Exception ex)
+		{
+			this.Log.Error(ex, $"Error ticking struct view model {this}");
 		}
 	}
 
-	public void SetModel(object? model)
+	public virtual void SetStruct(object? model)
 	{
-		this.Struct = model;
+		this.structObject = model;
 	}
+
+	public abstract void SetAddress(IntPtr address);
 
 	public abstract Type GetModelType();
 
-	protected virtual void SetValue(object? value, [CallerMemberName] string fieldName = "")
+	protected void SetValue(object? value, [CallerMemberName] string fieldName = "")
 	{
 		if (!this.fieldLookup.TryGetValue(fieldName, out var field))
 		{
@@ -173,25 +194,38 @@ public abstract class StructViewModelBase : INotifyPropertyChanged, IDisposable
 			return;
 		}
 
-		field.SetValue(this.Struct, value);
+		this.SetValue(field, value);
+	}
+
+	protected virtual void SetValue(FieldInfo field, object? value)
+	{
+		object? obj = this.StructObject;
+		field.SetValue(obj, value);
+
+		object? writtenVal = field.GetValue(obj);
+		object? liveWrittenVal = field.GetValue(this.StructObject);
+
+		this.Log.Information($"SetValue {field.Name} -> {value} -> {writtenVal} - {liveWrittenVal}");
+
+		this.NotifyPropertyChanged(field.Name);
 	}
 
 	protected virtual object? GetValue(FieldInfo field)
 	{
-		if (this.Struct == null)
+		if (this.StructObject == null)
 		{
-			this.Log.Error($"Attempt to get struct value without a model: {field.Name}");
+			////this.Log.Error($"Attempt to get value without a struct: {field.Name}");
 			return default;
 		}
 
-		return field.GetValue(this.Struct);
+		return field.GetValue(this.StructObject);
 	}
 
 	protected object? GetValue([CallerMemberName] string fieldName = "")
 	{
 		if (!this.fieldLookup.TryGetValue(fieldName, out var field))
 		{
-			this.Log.Error($"Attempt to get struct value for missing field: {fieldName}");
+			////this.Log.Error($"Attempt to get struct value for missing field: {fieldName}");
 			return default;
 		}
 
@@ -226,31 +260,41 @@ public abstract class StructViewModelBase : INotifyPropertyChanged, IDisposable
 public abstract class StructViewModelBase<T> : StructViewModelBase
 	where T : unmanaged
 {
-	public new T Struct => (T)base.Struct!;
+	public IntPtr? Address { get; private set; }
+
+	public unsafe override object? StructObject
+	{
+		get
+		{
+			// This gives me a freaking copy of the object, so dont do this I guess.
+			if (this.Address != null)
+				return *(T*)(IntPtr)this.Address;
+
+			return base.StructObject;
+		}
+	}
+
+	public T? Struct => (T?)this.StructObject;
+
 	public override sealed Type GetModelType() => typeof(T);
-}
 
-public unsafe abstract class StructPtrViewModelBase<T> : StructViewModelBase<T>
-	where T : unmanaged
-{
-	public StructPtrViewModelBase(IntPtr ptr)
+	public override void SetAddress(IntPtr address)
 	{
-		this.SetAddress(ptr);
-	}
+		if (this.Address == address)
+			return;
 
-	public IntPtr Address { get; private set; }
-
-	public void SetAddress(IntPtr address)
-	{
+		this.Log.Information($"SetAddress {this.Address} -> {address}");
 		this.Address = address;
-
-		T model = Marshal.PtrToStructure<T>(address);
-		this.SetModel(model);
 	}
 
-	public override void Tick()
+	public override void SetStruct(object? structObject)
 	{
-		this.SetAddress(this.Address);
-		base.Tick();
+		if (this.Address != null)
+		{
+			this.Log.Warning($"Attempt to set struct for struct view model with pointer address");
+			return;
+		}
+
+		base.SetStruct(structObject);
 	}
 }
