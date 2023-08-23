@@ -8,9 +8,12 @@ using System.Threading.Tasks;
 using PropertyChanged.SourceGenerator;
 using System.Windows;
 using ScreenshotStudio.Plugin;
+using System.ComponentModel;
 
 public partial class ErrorWindow : PanelWindow
 {
+	private static int windowCount = 0;
+
 	[Notify] private string? errorMessage = "An Unknown error has occurred";
 
 	public static void Show(string message)
@@ -20,11 +23,22 @@ public partial class ErrorWindow : PanelWindow
 
 	public static async Task ShowAsync(string message)
 	{
+		if (windowCount > 5)
+			return;
+
+		windowCount++;
+
 		ErrorWindow? wnd = await Panel.ShowAsync<ErrorWindow>();
 		if (wnd != null)
 		{
 			wnd.ErrorMessage = message;
 		}
+	}
+
+	protected override void OnClosing(CancelEventArgs e)
+	{
+		windowCount--;
+		base.OnClosing(e);
 	}
 
 	private void OnConsoleClicked(object sender, RoutedEventArgs e)
