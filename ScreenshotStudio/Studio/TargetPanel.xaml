@@ -19,7 +19,7 @@
 	<StackPanel
 		Margin="1"
 		Orientation="Horizontal">
-		<ListBox
+		<!--<ListBox
 			ItemsSource="{Binding Actors}"
 			SelectedItem="{Binding Services.Targets.CurrentTarget}"
 			Style="{DynamicResource XivToolsSwitchSelector}">
@@ -33,7 +33,7 @@
 
 				</DataTemplate>
 			</ListBox.ItemTemplate>
-		</ListBox>
+		</ListBox>-->
 
 		<Button Width="32">
 			<xivToolsWpf:IconBlock Icon="Plus" />

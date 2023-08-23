@@ -14,10 +14,10 @@ public class ServiceManager
 
 	private ServiceManager()
 	{
-		this.services.Add(this.Structs);
 		this.services.Add(this.Targets);
 		this.services.Add(this.Panels);
 		this.services.Add(this.Data);
+		this.services.Add(this.AutoNotify);
 	}
 
 	public static ServiceManager Instance
@@ -32,7 +32,7 @@ public class ServiceManager
 	}
 
 	// Service properties for bindings
-	public StructViewModelService Structs { get; init; } = new();
+	public AutoPropertyNotifyService AutoNotify { get; init; } = new();
 	public TargetService Targets { get; init; } = new();
 	public PanelService Panels { get; init; } = new();
 	public GameDataService Data { get; init; } = new();

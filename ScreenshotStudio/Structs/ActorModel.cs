@@ -14,15 +14,6 @@ using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.Havok;
 
-public class ActorModelViewModel : StructViewModelBase<ActorModel>
-{
-	public double Height
-	{
-		get => this.GetValue<float>();
-		set => this.SetValue((float)value);
-	}
-}
-
 [StructLayout(LayoutKind.Explicit)]
 public struct ActorModel
 {

@@ -25,7 +25,7 @@
 
 		<StackPanel>
 
-			<TextBlock Text="{Binding Services.Targets.CurrentTarget.Model.Height}" />
+			<TextBlock Text="{Binding ModelHeight}" />
 
 			<xivToolsWpf:NumberBox
 				Width="200"
@@ -34,10 +34,10 @@
 				Minimum="0"
 				Slider="Absolute"
 				TickFrequency="0.01"
-				Value="{Binding Services.Targets.CurrentTarget.Model.Height}" />
+				Value="{Binding ModelHeight}" />
 		</StackPanel>
 
-		<UniformGrid
+		<!--<UniformGrid
 			Grid.Row="1"
 			Columns="2">
 			<UniformGrid.Resources>
@@ -179,6 +179,6 @@
 			<ContentPresenter
 				Content="{Binding Services.Targets.CurrentTarget.DrawData.Equipment.RingLeft}"
 				ContentTemplate="{StaticResource ItemView}" />
-		</UniformGrid>
+		</UniformGrid>-->
 	</Grid>
 </windows:PanelWindow>

@@ -14,11 +14,6 @@ namespace ScreenshotStudio.Structs;
 using System.Runtime.InteropServices;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 
-public unsafe class ActorDrawDataViewModel : StructViewModelBase<ActorDrawData>
-{
-	public EquipmentViewModel Equipment { get; init; } = new();
-}
-
 [StructLayout(LayoutKind.Explicit)]
 public struct ActorDrawData
 {

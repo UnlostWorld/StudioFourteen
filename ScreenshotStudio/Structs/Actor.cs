@@ -15,24 +15,6 @@ using System;
 using System.Runtime.InteropServices;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 
-public unsafe class ActorViewModel : StructViewModelBase<Actor>
-{
-	public ActorViewModel(IntPtr ptr)
-	{
-		this.SetAddress(ptr);
-	}
-
-	public string DisplayName => this.Struct?.Name ?? "Unknown Actor";
-
-	public ActorDrawDataViewModel DrawData { get; init; } = new();
-	public ActorModelViewModel Model { get; init; } = new();
-
-	public override void Tick()
-	{
-		base.Tick();
-	}
-}
-
 [StructLayout(LayoutKind.Explicit, Size = 0x84A)]
 public struct Actor
 {
