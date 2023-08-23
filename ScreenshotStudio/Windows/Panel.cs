@@ -4,15 +4,18 @@
 namespace ScreenshotStudio.Windows;
 
 using ScreenshotStudio.Services;
+using ScreenshotStudio.Structs;
 using ScreenshotStudio.Utilities;
 using Serilog;
 using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using XivToolsWpf;
 
-public abstract partial class Panel : Window
+public abstract partial class Panel : Window, IAutoNotify
 {
 	public static readonly DependencyProperty ShowBackgroundProperty = DependencyProperty.Register(
 		nameof(Panel.ShowBackground),
@@ -27,6 +30,7 @@ public abstract partial class Panel : Window
 		this.Log = Logging.ForContext(this.GetType());
 
 		this.Loaded += this.OnLoaded;
+		this.Unloaded += this.OnUnloaded;
 
 		// Load a new copy of the resources. Each panel needs its own instance for threading reasons.
 		this.Resources = ScreenshotStudio.Resources.Load();
@@ -36,6 +40,8 @@ public abstract partial class Panel : Window
 		this.DataContext = this;
 	}
 
+	public event PropertyChangedEventHandler? PropertyChanged;
+
 	public ServiceManager Services => ServiceManager.Instance;
 
 	public bool ShowBackground
@@ -43,6 +49,8 @@ public abstract partial class Panel : Window
 		get => (bool)this.GetValue(ShowBackgroundProperty);
 		set => this.SetValue(ShowBackgroundProperty, value);
 	}
+
+	public unsafe Actor* Target => this.Services.Targets.Target;
 
 	public static void Show<T>()
 		where T : Panel
@@ -101,11 +109,22 @@ public abstract partial class Panel : Window
 		this.Dispatcher.InvokeShutdown();
 	}
 
+	public virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
+	{
+		this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+	}
+
 	protected virtual Style GetDefaultStyle() => (Style)this.FindResource("PanelStyle");
 
 	protected virtual void OnLoaded(object sender, RoutedEventArgs e)
 	{
 		XivWindow.Embed(this);
+		AutoPropertyNotifyService.Register(this);
+	}
+
+	private void OnUnloaded(object sender, RoutedEventArgs e)
+	{
+		AutoPropertyNotifyService.Remove(this);
 	}
 
 	private class PanelThread
