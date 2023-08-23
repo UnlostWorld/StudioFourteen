@@ -3,10 +3,12 @@
 
 namespace Tests;
 
+using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Utilities;
 using Serilog;
 using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
 internal class Program
 {
@@ -37,7 +39,7 @@ internal class Program
 			return;
 		}
 
-		ServiceManager.Instance.Start().Wait();
+		// Test something
 
 		Log.Information("Done");
 	}
