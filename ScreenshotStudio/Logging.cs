@@ -8,6 +8,9 @@ using ScreenshotStudio.Studio;
 using Serilog;
 using Serilog.Events;
 using System;
+using System.Diagnostics;
+using System.Text;
+using System.Windows.Forms;
 
 public static class Logging
 {
@@ -31,6 +34,15 @@ public static class Logging
 	{
 		return new Logger(context);
 	}
+
+	public static void Init()
+	{
+		XivToolsWpf.Logging.Log.HandleMessage = XivtoolsWpfLog;
+		XivToolsWpf.Logging.Log.HandleError = XivtoolsWpfError;
+	}
+
+	public static void XivtoolsWpfLog(string message) => Shared.Information(message);
+	public static void XivtoolsWpfError(Exception ex, string message) => Shared.Error(ex, message);
 }
 
 public class Logger : ILogger
@@ -44,7 +56,17 @@ public class Logger : ILogger
 
 	public void Write(LogEvent logEvent)
 	{
-		string message = $"[{this.context}] {logEvent.MessageTemplate.Text}";
+		string message;
+		if (logEvent.Level > LogEventLevel.Warning || logEvent.Exception != null)
+		{
+			// Include a stack trace for warnings or above or events with an exception from where the log originated.
+			StackTrace stack = new(3, true);
+			message = $"[{this.context}] {logEvent.MessageTemplate.Text} \n\nfrom:\n{stack}";
+		}
+		else
+		{
+			message = $"[{this.context}] {logEvent.MessageTemplate.Text}";
+		}
 
 		// Unsure why PluginLog.LogRaw doesn't work. possibly due to the Serilog.LogEventLevel not matching up?
 		switch (logEvent.Level)

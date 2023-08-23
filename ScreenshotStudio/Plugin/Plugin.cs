@@ -24,14 +24,16 @@ public sealed class DalamudPlugin : IDalamudPlugin
 	public void Dispose() => Task.Run(this.Stop);
 
 	private async Task Start()
-    {
+	{
+		Logging.Init();
+
 		// Hard reference our required sattelite assemblies to make sure dalamuds plugin loader picks them up.
 		this.Log.Information($"Ensure assembly XivToolWpf {typeof(XivToolsWpf.Dispatch).Assembly}");
 		this.Log.Information($"Ensure assembly FontAwesome {typeof(FontAwesome.Sharp.Icon).Assembly}");
 		this.Log.Information($"Ensure assembly FontAwesome Pro {typeof(FontAwesome.Sharp.Pro.Icon).Assembly}");
 
-        // Get the Xiv process for window manipulation.
-        // NOTE: if we _dont_ log out the value here, then things break. I don't know why.
+		// Get the Xiv process for window manipulation.
+		// NOTE: if we _dont_ log out the value here, then things break. I don't know why.
 		XivWindow.Process = Process.GetCurrentProcess();
 		this.Log.Information($"Ensure XivProcess {XivWindow.Process} - {XivWindow.Process.MainWindowHandle} - {XivWindow.Process.MainWindowTitle}");
 
