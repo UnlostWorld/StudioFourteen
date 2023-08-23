@@ -199,15 +199,8 @@ public abstract class StructViewModelBase : INotifyPropertyChanged, IDisposable
 
 	protected virtual void SetValue(FieldInfo field, object? value)
 	{
-		object? obj = this.StructObject;
-		field.SetValue(obj, value);
-
-		object? writtenVal = field.GetValue(obj);
-		object? liveWrittenVal = field.GetValue(this.StructObject);
-
-		this.Log.Information($"SetValue {field.Name} -> {value} -> {writtenVal} - {liveWrittenVal}");
-
-		this.NotifyPropertyChanged(field.Name);
+		this.Log.Information($"SetValue {field.Name} -> {value}");
+		field.SetValue(this.StructObject, value);
 	}
 
 	protected virtual object? GetValue(FieldInfo field)
@@ -262,19 +255,7 @@ public abstract class StructViewModelBase<T> : StructViewModelBase
 {
 	public IntPtr? Address { get; private set; }
 
-	public unsafe override object? StructObject
-	{
-		get
-		{
-			// This gives me a freaking copy of the object, so dont do this I guess.
-			if (this.Address != null)
-				return *(T*)(IntPtr)this.Address;
-
-			return base.StructObject;
-		}
-	}
-
-	public T? Struct => (T?)this.StructObject;
+	public unsafe T* StructPointer => (T*)(IntPtr)this.Address!;
 
 	public override sealed Type GetModelType() => typeof(T);
 
@@ -296,5 +277,33 @@ public abstract class StructViewModelBase<T> : StructViewModelBase
 		}
 
 		base.SetStruct(structObject);
+	}
+
+	protected unsafe override object? GetValue(FieldInfo field)
+	{
+		if (this.Address != null)
+		{
+			// This reads from a copy, this is ok I guess?
+			return field.GetValue(*this.StructPointer);
+		}
+		else
+		{
+			return base.GetValue(field);
+		}
+	}
+
+	protected unsafe override void SetValue(FieldInfo field, object? value)
+	{
+		if (this.Address != null)
+		{
+			// this writes to a copy, obviously useless
+			field.SetValue(*this.StructPointer, value);
+		}
+		else
+		{
+			base.SetValue(field, value);
+		}
+
+		this.NotifyPropertyChanged(field.Name);
 	}
 }
