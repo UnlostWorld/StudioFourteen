@@ -47,6 +47,13 @@ public class AutoPropertyNotifyService : ServiceBase
 		this.TickTask().Run();
 	}
 
+	public override Task Stop()
+	{
+		TrackedObjects.Clear();
+		DeadObjects.Clear();
+		return base.Stop();
+	}
+
 	private static void Remove(TrackedObject obj)
 	{
 		DeadObjects.Add(obj);
