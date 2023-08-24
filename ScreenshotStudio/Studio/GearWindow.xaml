@@ -37,13 +37,13 @@
 				Value="{Binding ModelHeight}" />
 		</StackPanel>
 
-		<!--<UniformGrid
+		<UniformGrid
 			Grid.Row="1"
 			Columns="2">
 			<UniformGrid.Resources>
 				<DataTemplate
 					x:Key="ItemView"
-					DataType="{x:Type structs:ItemEquipViewModel}">
+					DataType="{x:Type local:ItemEquipViewModel}">
 					<Grid
 						Width="200"
 						Height="56"
@@ -70,7 +70,7 @@
 							<Image
 								Margin="4,3,4,5"
 								SnapsToDevicePixels="True"
-								Source="{Binding ItemData.Icon.Source}" />
+								Source="{Binding Item.Icon.Source}" />
 
 							<controls:XivTexImage
 								Path="ui/uld/icona_frame_hr1.tex"
@@ -94,7 +94,7 @@
 									Grid.Column="0"
 									Margin="0,0,3,0"
 									Style="{DynamicResource Body}"
-									Text="{Binding ItemData.Name, FallbackValue=Unknown}"
+									Text="{Binding Item.DisplayName}"
 									TextWrapping="NoWrap" />
 
 								<xivToolsWpf:IconBlock
@@ -150,35 +150,35 @@
 			</UniformGrid.Resources>
 
 			<ContentPresenter
-				Content="{Binding Services.Targets.CurrentTarget.DrawData.Equipment.Head}"
+				Content="{Binding Head}"
 				ContentTemplate="{StaticResource ItemView}" />
 			<ContentPresenter
-				Content="{Binding Services.Targets.CurrentTarget.DrawData.Equipment.Earring}"
+				Content="{Binding Earring}"
 				ContentTemplate="{StaticResource ItemView}" />
 			<ContentPresenter
-				Content="{Binding Services.Targets.CurrentTarget.DrawData.Equipment.Chest}"
+				Content="{Binding Chest}"
 				ContentTemplate="{StaticResource ItemView}" />
 			<ContentPresenter
-				Content="{Binding Services.Targets.CurrentTarget.DrawData.Equipment.Necklace}"
+				Content="{Binding Necklace}"
 				ContentTemplate="{StaticResource ItemView}" />
 			<ContentPresenter
-				Content="{Binding Services.Targets.CurrentTarget.DrawData.Equipment.Hands}"
+				Content="{Binding Hands}"
 				ContentTemplate="{StaticResource ItemView}" />
 			<ContentPresenter
-				Content="{Binding Services.Targets.CurrentTarget.DrawData.Equipment.Bracelet}"
+				Content="{Binding Bracelet}"
 				ContentTemplate="{StaticResource ItemView}" />
 			<ContentPresenter
-				Content="{Binding Services.Targets.CurrentTarget.DrawData.Equipment.Legs}"
+				Content="{Binding Legs}"
 				ContentTemplate="{StaticResource ItemView}" />
 			<ContentPresenter
-				Content="{Binding Services.Targets.CurrentTarget.DrawData.Equipment.RingRight}"
+				Content="{Binding RingRight}"
 				ContentTemplate="{StaticResource ItemView}" />
 			<ContentPresenter
-				Content="{Binding Services.Targets.CurrentTarget.DrawData.Equipment.Feet}"
+				Content="{Binding Feet}"
 				ContentTemplate="{StaticResource ItemView}" />
 			<ContentPresenter
-				Content="{Binding Services.Targets.CurrentTarget.DrawData.Equipment.RingLeft}"
+				Content="{Binding RingLeft}"
 				ContentTemplate="{StaticResource ItemView}" />
-		</UniformGrid>-->
+		</UniformGrid>
 	</Grid>
 </windows:PanelWindow>

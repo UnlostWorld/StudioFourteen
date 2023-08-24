@@ -14,6 +14,7 @@ using Lumina;
 using Lumina.Data;
 using Lumina.Excel;
 using ScreenshotStudio.Services;
+using ScreenshotStudio.Structs;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -31,6 +32,10 @@ public class ItemsSheet : DataSheet<Item>
 
 		string lookupKey = slot + "_" + modelSet + "_" + modelBase + "_" + modelVariant;
 		this.itemCache.TryGetValue(lookupKey, out uint itemRow);
+
+		if (itemRow == 0)
+			return null;
+
 		return this.GetRow(itemRow);
 	}
 
@@ -101,22 +106,22 @@ public class Item : Lumina.Excel.GeneratedSheets.Item
 {
 	private byte equipSlotCategoryRow;
 
-	public new ImageReference? Icon { get; private set; }
+	public virtual new ImageReference? Icon { get; private set; }
 
-	public ushort ModelMainSet { get; private set; }
-	public ushort ModelMainBase { get; private set; }
-	public ushort ModelMainVariant { get; private set; }
+	public virtual ushort ModelMainSet { get; private set; }
+	public virtual ushort ModelMainBase { get; private set; }
+	public virtual ushort ModelMainVariant { get; private set; }
 
-	public ushort ModelSubSet { get; private set; }
-	public ushort ModelSubBase { get; private set; }
-	public ushort ModelSubVariant { get; private set; }
+	public virtual ushort ModelSubSet { get; private set; }
+	public virtual ushort ModelSubBase { get; private set; }
+	public virtual ushort ModelSubVariant { get; private set; }
 
-	public new EquipSlotCategory? EquipSlotCategory => ServiceManager.Instance.Data.EquipSlotCategories.GetRow(this.equipSlotCategoryRow);
-	public bool IsWeapon { get; private set; }
-	public bool IsEquippable => this.equipSlotCategoryRow != 0;
-	public bool HasSubModel => this.ModelSubSet != 0;
+	public virtual new EquipSlotCategory? EquipSlotCategory => ServiceManager.Instance.Data.EquipSlotCategories.GetRow(this.equipSlotCategoryRow);
+	public virtual bool IsWeapon { get; private set; }
+	public virtual bool IsEquippable => this.equipSlotCategoryRow != 0;
+	public virtual bool HasSubModel => this.ModelSubSet != 0;
 
-	public string DisplayName => this.Name.RawString;
+	public virtual string DisplayName => this.Name.RawString;
 
 	public override void PopulateData(RowParser parser, GameData gameData, Language language)
 	{
@@ -148,5 +153,20 @@ public class Item : Lumina.Excel.GeneratedSheets.Item
 		}
 	}
 
-	public bool CanEquipToSlot(EquipSlots slot) => this.IsEquippable && (this.EquipSlotCategory?.IsEquippable(slot) ?? false);
+	public virtual bool CanEquipToSlot(EquipSlots slot) => this.IsEquippable && (this.EquipSlotCategory?.IsEquippable(slot) ?? false);
+
+	public virtual bool IsItemEquip(ItemEquip item)
+	{
+		if (this.ModelMainSet == 0
+			&& this.ModelMainBase == item.Base
+			&& this.ModelMainVariant == item.Variant)
+			return true;
+
+		if (this.ModelSubSet == 0
+			&& this.ModelSubBase == item.Base
+			&& this.ModelSubVariant == item.Variant)
+			return true;
+
+		return false;
+	}
 }

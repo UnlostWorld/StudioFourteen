@@ -1,10 +1,8 @@
 ﻿// © XivTools.
 // Licensed under the MIT license.
 
-namespace ScreenshotStudio;
+namespace ScreenshotStudio.Services;
 
-using Lumina.Excel.GeneratedSheets;
-using ScreenshotStudio.Services;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -145,4 +143,19 @@ public class AutoNotifyAttribute : Attribute
 public interface IAutoNotify : INotifyPropertyChanged
 {
 	void NotifyPropertyChanged(string propertyName);
+}
+
+public class AutoNotify : IAutoNotify
+{
+	public AutoNotify()
+	{
+		AutoPropertyNotifyService.Register(this);
+	}
+
+	public event PropertyChangedEventHandler? PropertyChanged;
+
+	public void NotifyPropertyChanged([CallerMemberName]string propertyName = "")
+	{
+		this.PropertyChanged?.Invoke(this, new(propertyName));
+	}
 }
