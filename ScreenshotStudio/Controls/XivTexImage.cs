@@ -5,23 +5,65 @@ namespace ScreenshotStudio.Controls;
 
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Dalamud.Interface.Internal;
-using Dalamud.Plugin.Services;
 using Lumina.Data.Files;
 using ScreenshotStudio.Plugin;
 using Serilog;
 
 public class XivTexImage : Image
 {
+	public static readonly DependencyProperty PathProperty = DependencyProperty.Register(
+		nameof(XivTexImage.Path),
+		typeof(string),
+		typeof(XivTexImage),
+		new(string.Empty, OnPathChanged));
+
+	public static readonly DependencyProperty RectProperty = DependencyProperty.Register(
+		nameof(XivTexImage.Rect),
+		typeof(Rect),
+		typeof(XivTexImage),
+		new(new Rect(0, 0, 0, 0), OnRectChanged));
+
 	protected readonly ILogger Log = Logging.ForContext<XivTexImage>();
 	private static readonly Dictionary<string, CroppedBitmap> Cache = new();
 
 	public XivTexImage()
+	{
+		this.UpdateSource();
+	}
+
+	public string Path
+	{
+		get => (string)this.GetValue(PathProperty);
+		set => this.SetValue(PathProperty, value);
+	}
+
+	public Rect Rect
+	{
+		get => (Rect)this.GetValue(RectProperty);
+		set => this.SetValue(RectProperty, value);
+	}
+
+	private static void OnPathChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+	{
+		if (d is XivTexImage image)
+		{
+			image.UpdateSource();
+		}
+	}
+
+	private static void OnRectChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+	{
+		if (d is XivTexImage image)
+		{
+			image.UpdateSource();
+		}
+	}
+
+	private void UpdateSource()
 	{
 		try
 		{
@@ -56,7 +98,4 @@ public class XivTexImage : Image
 			this.Log.Error(ex, $"Error loading xiv texture {this.Path}");
 		}
 	}
-
-	public string Path { get; set; } = "ui/uld/icona_frame.tex";
-	public Rect Rect { get; set; } = new Rect(0, 0, 48, 48);
 }

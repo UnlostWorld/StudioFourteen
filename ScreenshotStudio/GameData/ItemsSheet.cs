@@ -123,6 +123,8 @@ public class Item : Lumina.Excel.GeneratedSheets.Item
 
 	public virtual string DisplayName => this.Name.RawString;
 
+	public virtual bool HasIcon => this.Icon != null && this.Icon.ImageId != 0;
+
 	public override void PopulateData(RowParser parser, GameData gameData, Language language)
 	{
 		base.PopulateData(parser, gameData, language);

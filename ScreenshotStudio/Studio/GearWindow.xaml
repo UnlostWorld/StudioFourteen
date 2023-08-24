@@ -53,12 +53,21 @@
 							Margin="0,3,0,0"
 							VerticalAlignment="Center">
 
+							<controls:XivTexImage
+								x:Name="IconBack"
+								Margin="0,-1,0,1"
+								Path="ui/uld/icona_frame_hr1.tex"
+								Rect="0, 192, 96, 96"
+								SnapsToDevicePixels="True"
+								Visibility="Collapsed" />
+
 							<Image
 								Margin="4,3,4,5"
 								SnapsToDevicePixels="True"
 								Source="{Binding Item.Icon.Source}" />
 
 							<controls:XivTexImage
+								x:Name="IconShine"
 								Path="ui/uld/icona_frame_hr1.tex"
 								Rect="0, 0, 96, 96"
 								SnapsToDevicePixels="True" />
@@ -130,6 +139,15 @@
 						</Button>
 
 					</Grid>
+
+					<DataTemplate.Triggers>
+						<DataTrigger
+							Binding="{Binding Item.HasIcon, FallbackValue=False}"
+							Value="False">
+							<Setter TargetName="IconShine" Property="Visibility" Value="Collapsed" />
+							<Setter TargetName="IconBack" Property="Visibility" Value="Visible" />
+						</DataTrigger>
+					</DataTemplate.Triggers>
 
 				</DataTemplate>
 

@@ -150,6 +150,8 @@ public class ItemEquipViewModel : ViewModel
 
 		public override string DisplayName => "???";
 
+		public override bool HasIcon => false;
+
 		public override bool IsItemEquip(ItemEquip item)
 		{
 			return this.modelSet == 0 && this.modelBase == item.Base && this.modelVariant == item.Variant;
