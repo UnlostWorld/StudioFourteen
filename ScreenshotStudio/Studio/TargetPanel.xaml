@@ -91,12 +91,15 @@
 			</ItemsControl>
 		</Border>
 
-		<Button Width="32">
+		<Button
+			Width="32"
+			Click="OnAddActorClicked">
 			<xivToolsWpf:IconBlock Icon="Plus" />
 		</Button>
 
 		<Button
 			Width="32"
+			Click="OnRemoveActorClicked"
 			IsEnabled="False">
 			<xivToolsWpf:IconBlock Icon="TrashAlt" />
 		</Button>

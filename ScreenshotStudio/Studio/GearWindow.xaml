@@ -23,20 +23,6 @@
 			<RowDefinition />
 		</Grid.RowDefinitions>
 
-		<StackPanel>
-
-			<TextBlock Text="{Binding ModelHeight}" />
-
-			<xivToolsWpf:NumberBox
-				Width="200"
-				Margin="3"
-				Maximum="2"
-				Minimum="0"
-				Slider="Absolute"
-				TickFrequency="0.01"
-				Value="{Binding ModelHeight}" />
-		</StackPanel>
-
 		<UniformGrid
 			Grid.Row="1"
 			Columns="2">

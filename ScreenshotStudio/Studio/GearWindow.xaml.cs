@@ -10,13 +10,6 @@ using ScreenshotStudio.Windows;
 
 public partial class GearWindow : PanelWindow
 {
-	[AutoNotify]
-	public unsafe float ModelHeight
-	{
-		get => this.TargetValid ? this.Target->Model->Height : 0.0f;
-		set => this.Target->Model->Height = value;
-	}
-
 	public ItemEquipViewModel Head { get; init; } = new(EquipSlots.Head);
 	public ItemEquipViewModel Chest { get; init; } = new(EquipSlots.Chest);
 	public ItemEquipViewModel Hands { get; init; } = new(EquipSlots.Hands);

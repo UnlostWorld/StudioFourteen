@@ -8,6 +8,7 @@ using ScreenshotStudio.Structs;
 using ScreenshotStudio.Windows;
 using System;
 using System.Collections.Generic;
+using System.Windows;
 
 public partial class TargetPanel : DockPanel
 {
@@ -20,6 +21,14 @@ public partial class TargetPanel : DockPanel
 	}
 
 	public List<ActorViewModel> Actors { get; init; } = new();
+
+	private void OnAddActorClicked(object sender, RoutedEventArgs e)
+	{
+    }
+
+	private void OnRemoveActorClicked(object sender, RoutedEventArgs e)
+	{
+    }
 }
 
 public unsafe class ActorViewModel : ViewModel
