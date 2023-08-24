@@ -41,6 +41,6 @@ internal class Program
 
 		// Test something
 
-		Log.Information("Done");
+		Log.Information("Done!");
 	}
 }
