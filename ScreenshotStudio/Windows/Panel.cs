@@ -50,7 +50,7 @@ public abstract partial class Panel : Window, IAutoNotify
 		set => this.SetValue(ShowBackgroundProperty, value);
 	}
 
-	public unsafe Actor* Target => this.Services.Targets.Target;
+	public unsafe Actor* Target => this.Services.Targets.GPoseTarget;
 
 	public static void Show<T>()
 		where T : Panel

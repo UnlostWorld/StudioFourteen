@@ -5,7 +5,9 @@ namespace Tests;
 
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
+using ScreenshotStudio.Studio;
 using ScreenshotStudio.Utilities;
+using ScreenshotStudio.Windows;
 using Serilog;
 using System.Diagnostics;
 using System.Runtime.CompilerServices;
@@ -39,7 +41,9 @@ internal class Program
 			return;
 		}
 
-		// Test something
+
+		Panel.Show<TargetPanel>();
+		Panel.Show<NavigationPanel>();
 
 		Log.Information("Done!");
 	}

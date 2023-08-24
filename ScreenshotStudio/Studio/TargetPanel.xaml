@@ -19,21 +19,77 @@
 	<StackPanel
 		Margin="1"
 		Orientation="Horizontal">
-		<!--<ListBox
-			ItemsSource="{Binding Actors}"
-			SelectedItem="{Binding Services.Targets.CurrentTarget}"
-			Style="{DynamicResource XivToolsSwitchSelector}">
-			<ListBox.ItemTemplate>
-				<DataTemplate DataType="{x:Type structs:ActorViewModel}">
-					<Grid Width="75">
-						<TextBlock
-							HorizontalAlignment="Center"
-							Text="{Binding DisplayName}" />
-					</Grid>
+		<Border
+			Margin="1"
+			Style="{DynamicResource XivToolsControlBorder}">
+			<ItemsControl
+				MinWidth="75"
+				ItemsSource="{Binding Actors}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<StackPanel Orientation="Horizontal" />
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
 
-				</DataTemplate>
-			</ListBox.ItemTemplate>
-		</ListBox>-->
+				<ItemsControl.ItemTemplate>
+					<DataTemplate DataType="{x:Type local:ActorViewModel}">
+
+						<Grid
+							x:Name="ContentArea"
+							Width="0">
+
+							<ToggleButton
+								Width="75"
+								HorizontalAlignment="Center"
+								Background="Transparent"
+								IsChecked="{Binding IsCurrent}">
+								<TextBlock
+									HorizontalAlignment="Center"
+									Text="{Binding Name}" />
+							</ToggleButton>
+						</Grid>
+
+						<DataTemplate.Triggers>
+							<DataTrigger
+								Binding="{Binding IsValid}"
+								Value="True">
+								<DataTrigger.EnterActions>
+									<BeginStoryboard>
+										<Storyboard>
+											<DoubleAnimation
+												Storyboard.TargetName="ContentArea"
+												Storyboard.TargetProperty="Width"
+												To="75"
+												Duration="0:00:00.150">
+												<DoubleAnimation.EasingFunction>
+													<SineEase EasingMode="EaseOut" />
+												</DoubleAnimation.EasingFunction>
+											</DoubleAnimation>
+										</Storyboard>
+									</BeginStoryboard>
+								</DataTrigger.EnterActions>
+								<DataTrigger.ExitActions>
+									<BeginStoryboard>
+										<Storyboard>
+											<DoubleAnimation
+												Storyboard.TargetName="ContentArea"
+												Storyboard.TargetProperty="Width"
+												To="0"
+												Duration="0:00:00.250">
+												<DoubleAnimation.EasingFunction>
+													<SineEase EasingMode="EaseIn" />
+												</DoubleAnimation.EasingFunction>
+											</DoubleAnimation>
+										</Storyboard>
+									</BeginStoryboard>
+								</DataTrigger.ExitActions>
+							</DataTrigger>
+						</DataTemplate.Triggers>
+
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</Border>
 
 		<Button Width="32">
 			<xivToolsWpf:IconBlock Icon="Plus" />

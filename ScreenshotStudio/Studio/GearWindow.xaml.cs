@@ -88,7 +88,7 @@ public class ItemEquipViewModel : ViewModel
 		set => this.item = value;
 	}
 
-	protected unsafe ref Equipment Equipment => ref this.Services.Targets.Target->DrawData.Equipment;
+	protected unsafe ref Equipment Equipment => ref this.Services.Targets.GPoseTarget->DrawData.Equipment;
 
 	protected ref ItemEquip ItemEquip
 	{

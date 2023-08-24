@@ -14,16 +14,21 @@ namespace ScreenshotStudio.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Structs;
-
+using System;
 using NativeObject = FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject;
 
 public class TargetService : ServiceBase
 {
-	private const int GPoseActorCount = 39;
-	private const int GPoseFirstActor = 201;
+	public const int GPoseActorCount = 39;
+	public const int GPoseFirstActor = 201;
 
-	private static readonly unsafe TargetSystem* Targets = TargetSystem.Instance();
-
-	public unsafe Actor* Target => (Actor*)Targets->GPoseTarget;
 	public bool IsInGPose => DalamudServices.PluginInterface.UiBuilder.GposeActive;
+
+	public unsafe Actor* GPoseTarget
+	{
+		get => (Actor*)TargetSystem.Instance()->GPoseTarget;
+		set => TargetSystem.Instance()->GPoseTarget = (NativeObject*)value;
+	}
+
+	public IntPtr GetObjectTable(int index) => DalamudServices.ObjectTable.GetObjectAddress(index);
 }
