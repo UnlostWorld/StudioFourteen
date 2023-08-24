@@ -23,6 +23,7 @@ public class TargetService : ServiceBase
 	public const int GPoseFirstActor = 201;
 
 	public bool IsInGPose => DalamudServices.PluginInterface.UiBuilder.GposeActive;
+	public unsafe bool HasTarget => (IntPtr)TargetSystem.Instance()->GPoseTarget != IntPtr.Zero;
 
 	public unsafe Actor* GPoseTarget
 	{

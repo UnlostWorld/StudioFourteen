@@ -13,7 +13,7 @@ public partial class GearWindow : PanelWindow
 	[AutoNotify]
 	public unsafe float ModelHeight
 	{
-		get => this.Target->Model->Height;
+		get => this.TargetValid ? this.Target->Model->Height : 0.0f;
 		set => this.Target->Model->Height = value;
 	}
 
@@ -49,21 +49,21 @@ public class ItemEquipViewModel : ViewModel
 	[AutoNotify]
 	public ushort Base
 	{
-		get => this.ItemEquip.Base;
+		get => this.IsValid ? this.ItemEquip.Base : (ushort)0;
 		set => this.ItemEquip.Base = value;
 	}
 
 	[AutoNotify]
 	public byte Variant
 	{
-		get => this.ItemEquip.Variant;
+		get => this.IsValid ? this.ItemEquip.Variant : (byte)0;
 		set => this.ItemEquip.Variant = value;
 	}
 
 	[AutoNotify]
 	public byte Dye
 	{
-		get => this.ItemEquip.Dye;
+		get => this.IsValid ? this.ItemEquip.Dye : (byte)0;
 		set => this.ItemEquip.Dye = value;
 	}
 
@@ -72,6 +72,9 @@ public class ItemEquipViewModel : ViewModel
 	{
 		get
 		{
+			if (!this.IsValid)
+				return null;
+
 			if (this.item == null || !this.item.IsItemEquip(this.ItemEquip))
 			{
 				this.item = this.Services.Data.Items.Find(this.slot, this.Set, this.Base, this.Variant, false);
@@ -89,6 +92,8 @@ public class ItemEquipViewModel : ViewModel
 	}
 
 	protected unsafe ref Equipment Equipment => ref this.Services.Targets.GPoseTarget->DrawData.Equipment;
+
+	protected bool IsValid => this.Services.Targets.HasTarget;
 
 	protected ref ItemEquip ItemEquip
 	{
