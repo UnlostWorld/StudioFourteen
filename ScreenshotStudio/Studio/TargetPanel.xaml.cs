@@ -35,6 +35,7 @@ public unsafe class ActorViewModel : ViewModel
 	[AutoNotify] public IntPtr Address => this.Services.Targets.GetObjectTable(this.ObjectTableIndex);
 	[AutoNotify] public bool IsValid => this.Address != IntPtr.Zero;
 	[AutoNotify] public unsafe Actor* Actor => (Actor*)this.Address;
+
 	[AutoNotify]
 	public string? Name
 	{

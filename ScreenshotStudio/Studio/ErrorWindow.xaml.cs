@@ -14,7 +14,17 @@ public partial class ErrorWindow : PanelWindow
 {
 	private static int windowCount = 0;
 
-	[Notify] private string? errorMessage = "An Unknown error has occurred";
+	private string? errorMessage = "An Unknown error has occurred";
+
+	public string? ErrorMessage
+	{
+		get => this.errorMessage;
+		set
+		{
+			this.errorMessage = value;
+			this.NotifyPropertyChanged();
+		}
+	}
 
 	public static void Show(string message)
 	{
