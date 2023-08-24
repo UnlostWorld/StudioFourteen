@@ -46,8 +46,6 @@ public unsafe class ActorViewModel : ViewModel
 
 			this.lastName = this.Actor->Name ?? "???";
 
-			this.lastName = this.lastName.Replace(" Fullko", string.Empty);
-
 			return this.lastName;
 		}
 	}
