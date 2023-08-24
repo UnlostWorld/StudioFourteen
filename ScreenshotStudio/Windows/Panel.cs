@@ -38,6 +38,8 @@ public abstract partial class Panel : Window, IAutoNotify
 
 		this.GetType().GetMethod("InitializeComponent")?.Invoke(this, null);
 		this.DataContext = this;
+
+		this.PreviewMouseDown += this.OnPreviewMouseDown;
 	}
 
 	public event PropertyChangedEventHandler? PropertyChanged;
@@ -51,6 +53,7 @@ public abstract partial class Panel : Window, IAutoNotify
 	}
 
 	public unsafe Actor* Target => this.Services.Targets.GPoseTarget;
+	public unsafe bool TargetValid => (IntPtr)this.Services.Targets.GPoseTarget != IntPtr.Zero;
 
 	public static void Show<T>()
 		where T : Panel
@@ -120,6 +123,11 @@ public abstract partial class Panel : Window, IAutoNotify
 	{
 		XivWindow.Embed(this);
 		AutoPropertyNotifyService.Register(this);
+	}
+
+	private void OnPreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+	{
+		this.Activate();
 	}
 
 	private void OnUnloaded(object sender, RoutedEventArgs e)
