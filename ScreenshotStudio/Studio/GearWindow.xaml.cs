@@ -43,14 +43,22 @@ public class ItemEquipViewModel : ViewModel
 	public ushort Base
 	{
 		get => this.IsValid ? this.ItemEquip.Base : (ushort)0;
-		set => this.ItemEquip.Base = value;
+		set
+		{
+			this.ItemEquip.Base = value;
+			this.ApplyChangeItem();
+		}
 	}
 
 	[AutoNotify]
 	public byte Variant
 	{
 		get => this.IsValid ? this.ItemEquip.Variant : (byte)0;
-		set => this.ItemEquip.Variant = value;
+		set
+		{
+			this.ItemEquip.Variant = value;
+			this.ApplyChangeItem();
+		}
 	}
 
 	[AutoNotify]
@@ -81,10 +89,20 @@ public class ItemEquipViewModel : ViewModel
 			return this.item;
 		}
 
-		set => this.item = value;
+		set
+		{
+			this.item = value;
+
+			if (this.item != null)
+			{
+				this.Base = this.item.ModelMainBase;
+				this.Variant = (byte)this.item.ModelMainVariant;
+			}
+		}
 	}
 
-	protected unsafe ref Equipment Equipment => ref this.Services.Targets.GPoseTarget->DrawData.Equipment;
+	protected unsafe Actor* Actor => this.Services.Targets.GPoseTarget;
+	protected unsafe ref Equipment Equipment => ref this.Actor->DrawData.Equipment;
 
 	protected bool IsValid => this.Services.Targets.HasTarget;
 
@@ -110,6 +128,11 @@ public class ItemEquipViewModel : ViewModel
 
 			return ref this.Equipment.Head;
 		}
+	}
+
+	public unsafe void ApplyChangeItem()
+	{
+		ActorDrawDataExtensions.ChangeEquip(&this.Actor->DrawData, this.slot, this.ItemEquip);
 	}
 
 	public class DummyItem : Item

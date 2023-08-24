@@ -27,4 +27,18 @@ public struct Equipment
 	[FieldOffset(0x1C)] public ItemEquip Bracelet;
 	[FieldOffset(0x20)] public ItemEquip RingRight;
 	[FieldOffset(0x24)] public ItemEquip RingLeft;
+
+	public enum EquipIndex : uint
+	{
+		Head,
+		Chest,
+		Hands,
+		Legs,
+		Feet,
+		Earring,
+		Necklace,
+		Bracelet,
+		RingRight,
+		RingLeft,
+	}
 }

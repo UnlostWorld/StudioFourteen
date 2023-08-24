@@ -18,6 +18,7 @@ using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
+using System.Runtime.InteropServices;
 
 public class DalamudServices
 {
@@ -33,4 +34,6 @@ public class DalamudServices
 	[PluginService] internal static ITextureSubstitutionProvider TextureSubstitutionProvider { get; private set; } = null!;
 
 	internal static unsafe CameraManager* Camera { get; private set; } = CameraManager.Instance;
+
+	public static TDelegate DelegateFromSignature<TDelegate>(string sig) => Marshal.GetDelegateForFunctionPointer<TDelegate>(SigScanner.ScanText(sig));
 }

@@ -5,6 +5,7 @@ namespace ScreenshotStudio.GameData;
 
 using Lumina.Data;
 using Lumina.Excel;
+using ScreenshotStudio.Structs;
 
 public class EquipSlotCategorySheet : DataSheet<EquipSlotCategory>
 {
