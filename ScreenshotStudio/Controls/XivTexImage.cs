@@ -5,6 +5,7 @@ namespace ScreenshotStudio.Controls;
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -66,6 +67,9 @@ public class XivTexImage : Image
 
 	private void UpdateSource()
 	{
+		if (DesignerProperties.GetIsInDesignMode(this))
+			return;
+
 		try
 		{
 			string cacheKey = $"{this.Path} ({this.Rect})";
