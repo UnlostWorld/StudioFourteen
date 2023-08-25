@@ -19,8 +19,6 @@ public class Tag : IEquatable<Tag?>, INotifyPropertyChanged
 	public event PropertyChangedEventHandler? PropertyChanged;
 
 	public string? Name { get; private set; }
-
-	public virtual bool CanCompare => true;
 	public virtual ProIcons Icon => ProIcons.Tag;
 
 	public static implicit operator Tag(string name)

@@ -2,11 +2,16 @@
 // Licensed under the MIT license.
 
 namespace ScreenshotStudio.Tags;
+
+using System.Collections;
 using System.Collections.Generic;
 
-public class TagCollection : HashSet<Tag>
+public class TagCollection : IEnumerable<Tag>
 {
 	public static readonly TagCollection Empty = new();
+
+	private readonly HashSet<Tag> tags = new();
+	private readonly List<string> searchTagStrings = new();
 
 	public TagCollection()
 	{
@@ -17,9 +22,22 @@ public class TagCollection : HashSet<Tag>
 		this.AddRange(other);
 	}
 
+	public int Count => this.tags.Count;
+	public string[] Query => this.searchTagStrings.ToArray();
+
 	public void Add(string name)
 	{
-		base.Add(new(name));
+		this.tags.Add(new(name));
+	}
+
+	public void Add(Tag tag)
+	{
+		this.tags.Add(tag);
+
+		if (tag is SearchTag search)
+		{
+			this.searchTagStrings.Add(search.Query);
+		}
 	}
 
 	public void AddRange(IEnumerable<string> names)
@@ -40,7 +58,9 @@ public class TagCollection : HashSet<Tag>
 
 	public void Replace(IEnumerable<Tag> tags)
 	{
-		this.Clear();
+		this.tags.Clear();
+		this.searchTagStrings.Clear();
+
 		this.AddRange(tags);
 	}
 
@@ -48,10 +68,10 @@ public class TagCollection : HashSet<Tag>
 	{
 		foreach(Tag tag in other)
 		{
-			if (!tag.CanCompare)
+			if (tag is SearchTag)
 				continue;
 
-			if (!this.Contains(tag))
+			if (!this.tags.Contains(tag))
 			{
 				return false;
 			}
@@ -59,4 +79,7 @@ public class TagCollection : HashSet<Tag>
 
 		return true;
 	}
+
+	public IEnumerator<Tag> GetEnumerator() => this.tags.GetEnumerator();
+	IEnumerator IEnumerable.GetEnumerator() => this.tags.GetEnumerator();
 }

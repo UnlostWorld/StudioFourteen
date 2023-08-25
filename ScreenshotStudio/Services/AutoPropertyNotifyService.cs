@@ -66,12 +66,15 @@ public class AutoPropertyNotifyService : ServiceBase
 
 			try
 			{
-				for (int i = TrackedObjects.Count - 1; i >= 0; i--)
+				if (TrackedObjects.Count > 0)
 				{
-					bool alive = TrackedObjects[i].Tick();
-					if (!alive)
+					for (int i = TrackedObjects.Count - 1; i >= 0; i--)
 					{
-						Remove(TrackedObjects[i]);
+						bool alive = TrackedObjects[i].Tick();
+						if (!alive)
+						{
+							Remove(TrackedObjects[i]);
+						}
 					}
 				}
 

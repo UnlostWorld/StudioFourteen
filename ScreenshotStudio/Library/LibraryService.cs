@@ -11,6 +11,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using ScreenshotStudio.GameData.Excel;
 
 public class LibraryService : ServiceBase
 {
@@ -29,25 +30,27 @@ public class LibraryService : ServiceBase
 	public override Task Start()
 	{
 		TagCollection tags = new();
-		tags.Add("White Mage");
-		this.Search<ITagged>(tags);
+		tags.Add(new Tag("White Mage"));
+		tags.Add(new SearchTag("Sin"));
+
+		this.Search<ILibraryItem>(tags);
 
 		return base.Start();
 	}
 
 	public List<T> Search<T>(TagCollection tags)
-		where T : ITagged
+		where T : ILibraryItem
 	{
 		 return this.Search<T>(typeof(T), tags);
 	}
 
-	public List<ITagged> Search(Type targetType, TagCollection tags)
+	public List<ILibraryItem> Search(Type targetType, TagCollection tags)
 	{
-		return this.Search<ITagged>(targetType, tags);
+		return this.Search<ILibraryItem>(targetType, tags);
 	}
 
 	private List<T> Search<T>(Type targetType, TagCollection tags)
-		where T : ITagged
+		where T : ILibraryItem
 	{
 		Stopwatch sw = new();
 		sw.Start();
@@ -72,7 +75,7 @@ public class LibraryService : ServiceBase
 				if (obj is not T tObj)
 					continue;
 
-				if (!tObj.Tags.Matches(tags))
+				if (!tObj.Search(tags))
 					continue;
 
 				results.Add(tObj);
@@ -80,7 +83,7 @@ public class LibraryService : ServiceBase
 		}
 
 		sw.Stop();
-		this.Log.Information($"Searched {checkCount} items and found {results.Count} items in {sw.ElapsedMilliseconds}ms");
+		this.Log.Information($"Searched {checkCount} {targetType.Name}s and found {results.Count} in {sw.ElapsedMilliseconds}ms");
 
 		return results;
 	}

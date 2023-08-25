@@ -7,6 +7,8 @@ using Lumina.Data;
 using Lumina.Excel;
 using Lumina.Text;
 using ScreenshotStudio.Structs;
+using ScreenshotStudio.Tags;
+using XivToolsWpf;
 
 [Sheet("Item", 0x800968c9)]
 public class Item : LibraryExcelRow
@@ -25,6 +27,17 @@ public class Item : LibraryExcelRow
 	public EquipSlotCategory? EquipSlot { get; protected set; }
 	public EquipRaceCategory? EquipRestriction { get; protected set; }
 	public bool HasSubModel => this.SubModelSet != 0;
+
+	public override bool Search(string[]? query)
+	{
+		if (SearchUtility.Matches(this.Name, query))
+			return true;
+
+		if (SearchUtility.Matches(this.Description, query))
+			return true;
+
+		return base.Search(query);
+	}
 
 	public override void PopulateData(RowParser parser, Lumina.GameData gameData, Language language)
 	{
