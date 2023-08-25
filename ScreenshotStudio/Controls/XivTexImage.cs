@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Lumina.Data.Files;
+using ScreenshotStudio.GameData;
 using ScreenshotStudio.Plugin;
 using Serilog;
 
@@ -75,10 +76,8 @@ public class XivTexImage : Image
 				return;
 			}
 
-			////string path = DalamudServices.TextureSubstitutionProvider.GetSubstitutedPath(this.Path);
-
 			this.Log.Information($"Load xiv texture {cacheKey}");
-			TexFile? tex = DalamudServices.DataManager.GetFile<TexFile>(this.Path);
+			TexFile? tex = GameDataService.GetFile<TexFile>(this.Path);
 
 			if (tex == null)
 				return;

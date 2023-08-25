@@ -6,6 +6,7 @@ namespace ScreenshotStudio.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ScreenshotStudio.GameData;
+using ScreenshotStudio.Library;
 
 public class ServiceManager
 {
@@ -36,6 +37,7 @@ public class ServiceManager
 	public TargetService Targets { get; init; } = new();
 	public PanelService Panels { get; init; } = new();
 	public GameDataService Data { get; init; } = new();
+	public LibraryService Library { get; init; } = new();
 
 	/// <summary>
 	/// Initialize and Start all services.

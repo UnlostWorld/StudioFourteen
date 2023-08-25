@@ -7,27 +7,28 @@ using ScreenshotStudio.GameData;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Structs;
 using ScreenshotStudio.Windows;
+using ScreenshotStudio.GameData.Excel;
 
 public partial class GearWindow : PanelWindow
 {
-	public ItemEquipViewModel Head { get; init; } = new(EquipSlots.Head);
-	public ItemEquipViewModel Chest { get; init; } = new(EquipSlots.Chest);
-	public ItemEquipViewModel Hands { get; init; } = new(EquipSlots.Hands);
-	public ItemEquipViewModel Legs { get; init; } = new(EquipSlots.Legs);
-	public ItemEquipViewModel Feet { get; init; } = new(EquipSlots.Feet);
-	public ItemEquipViewModel Earring { get; init; } = new(EquipSlots.Earring);
-	public ItemEquipViewModel Necklace { get; init; } = new(EquipSlots.Necklace);
-	public ItemEquipViewModel Bracelet { get; init; } = new(EquipSlots.Bracelet);
-	public ItemEquipViewModel RingRight { get; init; } = new(EquipSlots.RingRight);
-	public ItemEquipViewModel RingLeft { get; init; } = new(EquipSlots.RingLeft);
+	public ItemEquipViewModel Head { get; init; } = new(ItemSlots.Head);
+	public ItemEquipViewModel Chest { get; init; } = new(ItemSlots.Chest);
+	public ItemEquipViewModel Hands { get; init; } = new(ItemSlots.Hands);
+	public ItemEquipViewModel Legs { get; init; } = new(ItemSlots.Legs);
+	public ItemEquipViewModel Feet { get; init; } = new(ItemSlots.Feet);
+	public ItemEquipViewModel Earring { get; init; } = new(ItemSlots.Earring);
+	public ItemEquipViewModel Necklace { get; init; } = new(ItemSlots.Necklace);
+	public ItemEquipViewModel Bracelet { get; init; } = new(ItemSlots.Bracelet);
+	public ItemEquipViewModel RingRight { get; init; } = new(ItemSlots.RingRight);
+	public ItemEquipViewModel RingLeft { get; init; } = new(ItemSlots.RingLeft);
 }
 
 public class ItemEquipViewModel : ViewModel
 {
-	private readonly EquipSlots slot;
+	private readonly ItemSlots slot;
 	private Item? item;
 
-	public ItemEquipViewModel(EquipSlots slot)
+	public ItemEquipViewModel(ItemSlots slot)
 	{
 		this.slot = slot;
 	}
@@ -78,12 +79,7 @@ public class ItemEquipViewModel : ViewModel
 
 			if (this.item == null || !this.item.IsItemEquip(this.ItemEquip))
 			{
-				this.item = this.Services.Data.Items.Find(this.slot, this.Set, this.Base, this.Variant, false);
-
-				if (this.item == null)
-				{
-					this.item = new DummyItem(this.slot, this.Set, this.Base, this.Variant);
-				}
+				this.item = GameDataService.Items?.Find(this.slot, this.Set, this.Base, this.Variant);
 			}
 
 			return this.item;
@@ -95,8 +91,8 @@ public class ItemEquipViewModel : ViewModel
 
 			if (this.item != null)
 			{
-				this.Base = this.item.ModelMainBase;
-				this.Variant = (byte)this.item.ModelMainVariant;
+				this.Base = this.item.ModelBase;
+				this.Variant = (byte)this.item.ModelVariant;
 			}
 		}
 	}
@@ -112,18 +108,18 @@ public class ItemEquipViewModel : ViewModel
 		{
 			switch (this.slot)
 			{
-				case EquipSlots.MainHand:
-				case EquipSlots.OffHand:
-				case EquipSlots.Head: return ref this.Equipment.Head;
-				case EquipSlots.Chest: return ref this.Equipment.Chest;
-				case EquipSlots.Hands: return ref this.Equipment.Hands;
-				case EquipSlots.Legs: return ref this.Equipment.Legs;
-				case EquipSlots.Feet: return ref this.Equipment.Feet;
-				case EquipSlots.Earring: return ref this.Equipment.Earring;
-				case EquipSlots.Necklace: return ref this.Equipment.Necklace;
-				case EquipSlots.Bracelet: return ref this.Equipment.Bracelet;
-				case EquipSlots.RingLeft: return ref this.Equipment.RingLeft;
-				case EquipSlots.RingRight: return ref this.Equipment.RingRight;
+				case ItemSlots.MainHand:
+				case ItemSlots.OffHand:
+				case ItemSlots.Head: return ref this.Equipment.Head;
+				case ItemSlots.Chest: return ref this.Equipment.Chest;
+				case ItemSlots.Hands: return ref this.Equipment.Hands;
+				case ItemSlots.Legs: return ref this.Equipment.Legs;
+				case ItemSlots.Feet: return ref this.Equipment.Feet;
+				case ItemSlots.Earring: return ref this.Equipment.Earring;
+				case ItemSlots.Necklace: return ref this.Equipment.Necklace;
+				case ItemSlots.Bracelet: return ref this.Equipment.Bracelet;
+				case ItemSlots.RingLeft: return ref this.Equipment.RingLeft;
+				case ItemSlots.RingRight: return ref this.Equipment.RingRight;
 			}
 
 			return ref this.Equipment.Head;
@@ -133,28 +129,5 @@ public class ItemEquipViewModel : ViewModel
 	public unsafe void ApplyChangeItem()
 	{
 		ActorDrawDataExtensions.ChangeEquip(&this.Actor->DrawData, this.slot, this.ItemEquip);
-	}
-
-	public class DummyItem : Item
-	{
-		private readonly ushort modelSet;
-		private readonly ushort modelBase;
-		private readonly ushort modelVariant;
-
-		public DummyItem(EquipSlots slot, ushort modelSet, ushort modelBase, ushort modelVariant)
-		{
-			this.modelSet = modelSet;
-			this.modelBase = modelBase;
-			this.modelVariant = modelVariant;
-		}
-
-		public override string DisplayName => "???";
-
-		public override bool HasIcon => false;
-
-		public override bool IsItemEquip(ItemEquip item)
-		{
-			return this.modelSet == 0 && this.modelBase == item.Base && this.modelVariant == item.Variant;
-		}
 	}
 }

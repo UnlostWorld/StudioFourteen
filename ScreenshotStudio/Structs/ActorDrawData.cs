@@ -31,20 +31,20 @@ public static class ActorDrawDataExtensions
 		actorChangeEquip.Invoke(drawData, index, item);
 	}
 
-	public static unsafe void ChangeEquip(ActorDrawData* drawData, EquipSlots slot, ItemEquip item)
+	public static unsafe void ChangeEquip(ActorDrawData* drawData, ItemSlots slot, ItemEquip item)
 	{
 		EquipIndex? index = slot switch
 		{
-			EquipSlots.Head => EquipIndex.Head,
-			EquipSlots.Chest => EquipIndex.Chest,
-			EquipSlots.Hands => EquipIndex.Hands,
-			EquipSlots.Legs => EquipIndex.Legs,
-			EquipSlots.Feet => EquipIndex.Feet,
-			EquipSlots.Earring => EquipIndex.Earring,
-			EquipSlots.Necklace => EquipIndex.Necklace,
-			EquipSlots.Bracelet => EquipIndex.Bracelet,
-			EquipSlots.RingLeft => EquipIndex.RingLeft,
-			EquipSlots.RingRight => EquipIndex.RingRight,
+			ItemSlots.Head => EquipIndex.Head,
+			ItemSlots.Chest => EquipIndex.Chest,
+			ItemSlots.Hands => EquipIndex.Hands,
+			ItemSlots.Legs => EquipIndex.Legs,
+			ItemSlots.Feet => EquipIndex.Feet,
+			ItemSlots.Earring => EquipIndex.Earring,
+			ItemSlots.Necklace => EquipIndex.Necklace,
+			ItemSlots.Bracelet => EquipIndex.Bracelet,
+			ItemSlots.RingLeft => EquipIndex.RingLeft,
+			ItemSlots.RingRight => EquipIndex.RingRight,
 			_ => null,
 		};
 

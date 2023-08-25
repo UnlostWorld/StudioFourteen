@@ -3,17 +3,133 @@
 
 namespace ScreenshotStudio.GameData;
 
+using Lumina.Excel;
 using ScreenshotStudio.Services;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using ScreenshotStudio.GameData.Excel;
+using ScreenshotStudio.Plugin;
+using Lumina.Data;
+using ScreenshotStudio.GameData.Sheets;
 
 public class GameDataService : ServiceBase
 {
-	public ItemsSheet Items { get; init; } = new();
-	public EquipSlotCategorySheet EquipSlotCategories { get; init; } = new();
+	private readonly Dictionary<Type, DataSheet> sheets = new();
+
+	public static ItemsSheet? Items => Get<Item>() as ItemsSheet;
+	public static CharaMakeCustomizeSheet? CharaMakeCustomizes => Get<CharaMakeCustomize>() as CharaMakeCustomizeSheet;
+	public static BuddyEquipsSheet? BuddyEquips => Get<BuddyEquip>() as BuddyEquipsSheet;
+
+	public static T? GetFile<T>(string path)
+		where T : FileResource
+	{
+		////string path = DalamudServices.TextureSubstitutionProvider.GetSubstitutedPath(path);
+		return DalamudServices.DataManager.GetFile<T>(path);
+	}
+
+	public static DataSheet<T>? Get<T>()
+		where T : ExcelRow
+	{
+		return ServiceManager.Instance.Data.GetSheet<T>();
+	}
+
+	public static T? GetRow<T>(uint row)
+		where T : ExcelRow
+	{
+		return Get<T>()?.GetRow(row);
+	}
+
+	public static T? GetRow<T>(byte row)
+		where T : ExcelRow
+	{
+		return Get<T>()?.GetRow(row);
+	}
+
+	public static T? GetRow<T>(int row)
+		where T : ExcelRow
+	{
+		return Get<T>()?.GetRow(row);
+	}
+
+	public DataSheet<T>? GetSheet<T>()
+		where T : ExcelRow
+	{
+		Type type = typeof(T);
+		if (!this.sheets.ContainsKey(type))
+		{
+			this.Log.Error($"No sheet for row type: {type}");
+			return null;
+		}
+
+		return this.sheets[type] as DataSheet<T>;
+	}
 
 	public override async Task Initialize()
 	{
 		await base.Initialize();
-		await this.Items.PopulateCache();
+
+		// Add sheets here
+		this.AddSheet(new ItemsSheet());
+		this.AddSheet(new CharaMakeCustomizeSheet());
+		this.AddSheet(new BuddyEquipsSheet());
+
+		this.AddSheet<Race>();
+		this.AddSheet<Tribe>();
+		this.AddSheet<BattleNpc>();
+		this.AddSheet<BattleNpcCustomize>();
+		this.AddSheet<BattleNpcName>();
+		this.AddSheet<CharaMakeType>();
+		this.AddSheet<ClassJobCategory>();
+		this.AddSheet<Companion>();
+		this.AddSheet<EquipRaceCategory>();
+		this.AddSheet<EquipSlotCategory>();
+		this.AddSheet<EventNpc>();
+		this.AddSheet<Lobby>();
+		this.AddSheet<ModelChara>();
+		this.AddSheet<Mount>();
+		this.AddSheet<MountCustomize>();
+		this.AddSheet<NpcEquip>();
+		this.AddSheet<Ornament>();
+		this.AddSheet<Perform>();
+		this.AddSheet<ResidentNpc>();
+		this.AddSheet<Stain>();
+		this.AddSheet<Territory>();
+		this.AddSheet<Weather>();
+		this.AddSheet<WeatherRate>();
+
+		// Initialize all sheets
+		// TODO: possibly do this in parallel
+		foreach (DataSheet sheet in this.sheets.Values)
+		{
+			await sheet.Initialize();
+		}
+	}
+
+	public override async Task Shutdown()
+	{
+		await base.Shutdown();
+
+		foreach (DataSheet sheet in this.sheets.Values)
+		{
+			await sheet.Shutdown();
+		}
+	}
+
+	private void AddSheet<T>()
+		where T : ExcelRow
+	{
+		this.AddSheet(new DataSheet<T>());
+	}
+
+	private void AddSheet(DataSheet sheet)
+	{
+		if (this.sheets.ContainsKey(sheet.RowType))
+		{
+			this.Log.Error($"Dplicate data sheet: {sheet.RowType}");
+			return;
+		}
+
+		this.sheets.Add(sheet.RowType, sheet);
 	}
 }

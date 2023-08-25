@@ -2,18 +2,52 @@
 // Licensed under the MIT license.
 
 namespace ScreenshotStudio.GameData;
+
 using Lumina.Excel;
+using ScreenshotStudio.Library;
 using ScreenshotStudio.Plugin;
+using ScreenshotStudio.Services;
+using ScreenshotStudio.Tags;
 using Serilog;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
-public class DataSheet<T> : IEnumerable<T>
-	where T : ExcelRow
+public abstract class DataSheet : IEnumerable
 {
+	protected readonly ILogger Log;
+
 	public DataSheet()
 	{
 		this.Log = Logging.ForContext(this.GetType());
+	}
+
+	public bool IsInitialized { get; private set; } = false;
+	public abstract Type RowType { get; }
+	protected ServiceManager Services => ServiceManager.Instance;
+
+	public virtual Task Initialize()
+	{
+		this.IsInitialized = true;
+		return Task.CompletedTask;
+	}
+
+	public virtual Task Shutdown()
+	{
+		return Task.CompletedTask;
+	}
+
+	IEnumerator IEnumerable.GetEnumerator() => this.GetEnumeratorGeneric();
+	protected abstract IEnumerator GetEnumeratorGeneric();
+}
+
+public class DataSheet<T> : DataSheet, IEnumerable<T>, ILibraryProvider<T>
+	where T : ExcelRow
+{
+	public DataSheet()
+		: base()
+	{
 		this.Sheet = DalamudServices.DataManager.GetExcelSheet<T>();
 
 		if (this.Sheet == null)
@@ -22,10 +56,10 @@ public class DataSheet<T> : IEnumerable<T>
 		}
 	}
 
-	protected ILogger Log { get; init; }
-
+	public override Type RowType => typeof(T);
 	protected ExcelSheet<T>? Sheet { get; init; }
 
+	public T? GetRow(int row) => this.Sheet?.GetRow((uint)row);
 	public T? GetRow(uint row) => this.Sheet?.GetRow(row);
 	public T? GetRow(uint row, uint subRow) => this.Sheet?.GetRow(row, subRow);
 
@@ -37,11 +71,5 @@ public class DataSheet<T> : IEnumerable<T>
 		return this.Sheet.GetEnumerator();
 	}
 
-	IEnumerator IEnumerable.GetEnumerator()
-	{
-		if (this.Sheet == null)
-			return new List<T>().GetEnumerator();
-
-		return this.Sheet.GetEnumerator();
-	}
+	protected override IEnumerator GetEnumeratorGeneric() => this.GetEnumerator();
 }

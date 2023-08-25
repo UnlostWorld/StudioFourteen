@@ -89,7 +89,7 @@
 									Grid.Column="0"
 									Margin="0,0,3,0"
 									Style="{DynamicResource Body}"
-									Text="{Binding Item.DisplayName}"
+									Text="{Binding Item.Name}"
 									TextWrapping="NoWrap" />
 
 								<xivToolsWpf:IconBlock
@@ -142,8 +142,8 @@
 
 					<DataTemplate.Triggers>
 						<DataTrigger
-							Binding="{Binding Item.HasIcon, FallbackValue=False}"
-							Value="False">
+							Binding="{Binding Item.Icon}"
+							Value="{x:Null}">
 							<Setter TargetName="IconShine" Property="Visibility" Value="Collapsed" />
 							<Setter TargetName="IconBack" Property="Visibility" Value="Visible" />
 						</DataTrigger>
