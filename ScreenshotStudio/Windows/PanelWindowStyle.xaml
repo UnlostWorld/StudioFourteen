@@ -65,6 +65,19 @@
 						VerticalAlignment="Center"
 						Foreground="{DynamicResource ForegroundLightBrush}"
 						Text="{TemplateBinding Title}" />
+
+					<Ellipse
+						x:Name="SubtitleSeperator"
+						Width="4"
+						Height="4"
+						Margin="6,1,6,0"
+						VerticalAlignment="Center"
+						Fill="{DynamicResource ForegroundLightBrush}" />
+
+					<TextBlock
+						VerticalAlignment="Center"
+						Foreground="{DynamicResource ForegroundLightBrush}"
+						Text="{TemplateBinding Subtitle}" />
 				</StackPanel>
 
 				<StackPanel
@@ -131,6 +144,9 @@
 			<Trigger Property="IsActive" Value="True">
 				<Setter TargetName="WindowBorder" Property="BorderBrush" Value="{DynamicResource TrimBrush}" />
 				<Setter TargetName="WindowShadow" Property="Opacity" Value="1" />
+			</Trigger>
+			<Trigger Property="Subtitle" Value="{x:Null}">
+				<Setter TargetName="SubtitleSeperator" Property="Visibility" Value="Collapsed" />
 			</Trigger>
 		</ControlTemplate.Triggers>
 

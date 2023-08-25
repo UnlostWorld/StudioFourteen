@@ -13,21 +13,26 @@ using XivToolsWpf.Extensions;
 public class PanelWindow : Panel
 {
 	public static readonly DependencyProperty TitleIconProperty = DependencyProperty.Register(
-		"TitleIcon",
+		nameof(PanelWindow.TitleIcon),
 		typeof(ProIcons),
-		typeof(Panel));
+		typeof(PanelWindow));
 
 	public static readonly DependencyProperty ActionsProperty = DependencyProperty.Register(
-		"Actions",
+		nameof(PanelWindow.Actions),
 		typeof(FastObservableCollection<PanelWindowAction>),
-		typeof(Panel),
+		typeof(PanelWindow),
 		new(new FastObservableCollection<PanelWindowAction>()));
 
 	public static readonly DependencyProperty CanCloseProperty = DependencyProperty.Register(
-		"CanClose",
+		nameof(PanelWindow.CanClose),
 		typeof(bool),
-		typeof(Panel),
+		typeof(PanelWindow),
 		new(true));
+
+	public static readonly DependencyProperty SubtitleProperty = DependencyProperty.Register(
+		nameof(PanelWindow.Subtitle),
+		typeof(string),
+		typeof(PanelWindow));
 
 	public ProIcons TitleIcon
 	{
@@ -45,6 +50,12 @@ public class PanelWindow : Panel
 	{
 		get => (bool)this.GetValue(CanCloseProperty);
 		set => this.SetValue(CanCloseProperty, value);
+	}
+
+	public string Subtitle
+	{
+		get => (string)this.GetValue(SubtitleProperty);
+		set => this.SetValue(SubtitleProperty, value);
 	}
 
 	protected override Style GetDefaultStyle() => (Style)this.FindResource("PanelWindowStyle");
