@@ -11,6 +11,8 @@ using ScreenshotStudio.GameData.Excel;
 
 public partial class GearWindow : PanelWindow
 {
+	[AutoNotify] public unsafe string? ActorName => this.Target->Name;
+
 	public ItemEquipViewModel Head { get; init; } = new(ItemSlots.Head);
 	public ItemEquipViewModel Chest { get; init; } = new(ItemSlots.Chest);
 	public ItemEquipViewModel Hands { get; init; } = new(ItemSlots.Hands);

@@ -13,6 +13,7 @@
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	SizeToContent="WidthAndHeight"
+	Subtitle="{Binding ActorName}"
 	TitleIcon="HelmetBattle"
 	mc:Ignorable="d">
 
