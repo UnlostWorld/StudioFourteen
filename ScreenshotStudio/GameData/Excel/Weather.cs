@@ -7,7 +7,7 @@ using Lumina.Data;
 using Lumina.Excel;
 
 [Sheet("Weather", 0x02cf2541)]
-public class Weather : ExcelRow
+public class Weather : LibraryExcelRow
 {
 	public string Name { get; private set; } = string.Empty;
 	public string Description { get; private set; } = string.Empty;

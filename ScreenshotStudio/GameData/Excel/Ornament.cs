@@ -7,7 +7,7 @@ using Lumina.Data;
 using Lumina.Excel;
 
 [Sheet("Ornament", 0x3d312c8f)]
-public class Ornament : ExcelRow
+public class Ornament : LibraryExcelRow
 {
 	public string? Name { get; protected set; }
 	public ModelChara? ModelChara { get; protected set; }

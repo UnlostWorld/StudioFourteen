@@ -9,7 +9,7 @@ using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
 
 [Sheet("TerritoryType", 0x5baa595e)]
-public class Territory : ExcelRow
+public class Territory : LibraryExcelRow
 {
 	private static readonly HashSet<uint> HousingTerritories = new()
 	{

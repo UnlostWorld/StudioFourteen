@@ -9,7 +9,7 @@ using Lumina.Excel;
 using Lumina.Text;
 using ScreenshotStudio.GameData.Sheets;
 
-[Sheet("BuddyEquip", columnHash: 0xb429792a)]
+[Sheet("BuddyEquip", 0xb429792a)]
 public class BuddyEquip : ExcelRow
 {
 	public BuddyItem? Head { get; protected set; }

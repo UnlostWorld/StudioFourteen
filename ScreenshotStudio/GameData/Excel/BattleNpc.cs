@@ -7,7 +7,7 @@ using Lumina.Data;
 using Lumina.Excel;
 
 [Sheet("BNpcBase", 0xe136dda3)]
-public class BattleNpc : ExcelRow
+public class BattleNpc : LibraryExcelRow
 {
 	public string Name { get; protected set; } = string.Empty;
 	public byte Battalion { get; protected set; }

@@ -19,6 +19,7 @@ public class ServiceManager
 		this.services.Add(this.Panels);
 		this.services.Add(this.Data);
 		this.services.Add(this.AutoNotify);
+		this.services.Add(this.Library);
 	}
 
 	public static ServiceManager Instance

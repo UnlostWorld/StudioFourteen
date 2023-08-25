@@ -7,7 +7,7 @@ using Lumina.Data;
 using Lumina.Excel;
 using ScreenshotStudio.Tags;
 
-public class EquipSlotCategory : Lumina.Excel.GeneratedSheets.EquipSlotCategory, ITagged
+public class EquipSlotCategory : Lumina.Excel.GeneratedSheets.EquipSlotCategory
 {
 	private readonly bool[] slots = new bool[(int)ItemSlots.Count];
 

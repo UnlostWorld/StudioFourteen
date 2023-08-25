@@ -6,10 +6,9 @@ namespace ScreenshotStudio.GameData.Excel;
 using Lumina.Data;
 using Lumina.Excel;
 using Lumina.Text;
-using ScreenshotStudio.Tags;
 
 [Sheet("Perform", 0x7bf81fa9)]
-public class Perform : ExcelRow, ITagged
+public class Perform : LibraryExcelRow
 {
 	public string Name { get; private set; } = string.Empty;
 	public string Description { get; private set; } = string.Empty;
@@ -25,12 +24,6 @@ public class Perform : ExcelRow, ITagged
 	public ushort SubModelVariant => 0;
 	public byte EquipLevel => 0;
 
-	public TagCollection Tags { get; init; } = new()
-	{
-		"Performance",
-		"MainHand",
-	};
-
 	public bool FitsInSlot(ItemSlots slot)
 	{
 		return slot == ItemSlots.MainHand;
@@ -41,6 +34,9 @@ public class Perform : ExcelRow, ITagged
 		base.PopulateData(parser, gameData, language);
 
 		this.Name = parser.ReadColumn<SeString>(0) ?? string.Empty;
+
+		this.Tags.Add("Performance");
+		this.Tags.Add("MainHand");
 
 		ulong mainModel = parser.ReadColumn<ulong>(2);
 		this.ModelSet = (ushort)mainModel;

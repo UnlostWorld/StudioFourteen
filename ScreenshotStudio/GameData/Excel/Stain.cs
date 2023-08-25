@@ -12,7 +12,7 @@ using ScreenshotStudio.GameData.Sheets;
 using MediaColor = System.Windows.Media.Color;
 
 [Sheet("Stain", 0x97c471bd)]
-public class Stain : ExcelRow
+public class Stain : LibraryExcelRow
 {
 	public byte Id { get; protected set; }
 	public string Name { get; protected set; } = string.Empty;

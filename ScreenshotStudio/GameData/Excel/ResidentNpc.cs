@@ -7,7 +7,7 @@ using Lumina.Data;
 using Lumina.Excel;
 
 [Sheet("ENpcResident", 0xf74fa88c)]
-public class ResidentNpc : ExcelRow
+public class ResidentNpc : LibraryExcelRow
 {
 	private EventNpc? eventNpc;
 

@@ -3,16 +3,13 @@
 
 namespace ScreenshotStudio.GameData.Excel;
 
-using System;
 using Lumina.Data;
 using Lumina.Excel;
-using Lumina.Excel.GeneratedSheets;
 using Lumina.Text;
 using ScreenshotStudio.Structs;
-using ScreenshotStudio.Tags;
 
 [Sheet("Item", 0x800968c9)]
-public class Item : ExcelRow
+public class Item : LibraryExcelRow
 {
 	public string Name { get; protected set; } = string.Empty;
 	public string Description { get; protected set; } = string.Empty;
@@ -28,8 +25,6 @@ public class Item : ExcelRow
 	public EquipSlotCategory? EquipSlot { get; protected set; }
 	public EquipRaceCategory? EquipRestriction { get; protected set; }
 	public bool HasSubModel => this.SubModelSet != 0;
-
-	public TagCollection Tags { get; init; } = new();
 
 	public override void PopulateData(RowParser parser, Lumina.GameData gameData, Language language)
 	{

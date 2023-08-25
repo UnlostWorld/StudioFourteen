@@ -98,6 +98,8 @@ public class GameDataService : ServiceBase
 		this.AddSheet<Weather>();
 		this.AddSheet<WeatherRate>();
 
+		this.AddSheet<Lumina.Excel.GeneratedSheets.PlaceName>();
+
 		// Initialize all sheets
 		// TODO: possibly do this in parallel
 		foreach (DataSheet sheet in this.sheets.Values)

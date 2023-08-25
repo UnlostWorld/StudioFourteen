@@ -14,7 +14,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-public abstract class DataSheet : IEnumerable
+public abstract class DataSheet : LibraryProvider
 {
 	protected readonly ILogger Log;
 
@@ -29,20 +29,19 @@ public abstract class DataSheet : IEnumerable
 
 	public virtual Task Initialize()
 	{
+		this.Services.Library.AddProvider(this);
 		this.IsInitialized = true;
 		return Task.CompletedTask;
 	}
 
 	public virtual Task Shutdown()
 	{
+		this.Services.Library.RemoveProvider(this);
 		return Task.CompletedTask;
 	}
-
-	IEnumerator IEnumerable.GetEnumerator() => this.GetEnumeratorGeneric();
-	protected abstract IEnumerator GetEnumeratorGeneric();
 }
 
-public class DataSheet<T> : DataSheet, IEnumerable<T>, ILibraryProvider<T>
+public class DataSheet<T> : DataSheet
 	where T : ExcelRow
 {
 	public DataSheet()
@@ -63,7 +62,7 @@ public class DataSheet<T> : DataSheet, IEnumerable<T>, ILibraryProvider<T>
 	public T? GetRow(uint row) => this.Sheet?.GetRow(row);
 	public T? GetRow(uint row, uint subRow) => this.Sheet?.GetRow(row, subRow);
 
-	public IEnumerator<T> GetEnumerator()
+	public override IEnumerator GetEnumerator()
 	{
 		if (this.Sheet == null)
 			return new List<T>().GetEnumerator();
@@ -71,5 +70,5 @@ public class DataSheet<T> : DataSheet, IEnumerable<T>, ILibraryProvider<T>
 		return this.Sheet.GetEnumerator();
 	}
 
-	protected override IEnumerator GetEnumeratorGeneric() => this.GetEnumerator();
+	public override bool Contains(Type targetType) => targetType.IsAssignableFrom(typeof(T));
 }

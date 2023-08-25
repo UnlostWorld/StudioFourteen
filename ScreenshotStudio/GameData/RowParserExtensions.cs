@@ -54,25 +54,25 @@ public static class RowParserExtensions
 		if (id == null)
 			throw new Exception($"Failed to read column: {column} as type: {typeof(TColumn)} for row reference.");
 
-		DataSheet<TRow>? sheet = ServiceManager.Instance.Data.GetSheet<TRow>();
-		if (sheet != null)
+		DataSheet<TRow>? sheet = GameDataService.Get<TRow>();
+		if (sheet == null)
+			return null;
+
+		if (id is byte bVal)
 		{
-			if (id is byte bVal)
-			{
-				return sheet.GetRow((byte)Math.Max(bVal, minValue));
-			}
-			else if (id is uint uVal)
-			{
-				return sheet.GetRow((uint)Math.Max(uVal, minValue));
-			}
-			else if (id is int iVal)
-			{
-				return sheet.GetRow((uint)Math.Max(iVal, minValue));
-			}
-			else if (id is ushort sVal)
-			{
-				return sheet.GetRow((ushort)Math.Max(sVal, minValue));
-			}
+			return sheet.GetRow((byte)Math.Max(bVal, minValue));
+		}
+		else if (id is uint uVal)
+		{
+			return sheet.GetRow((uint)Math.Max(uVal, minValue));
+		}
+		else if (id is int iVal)
+		{
+			return sheet.GetRow((uint)Math.Max(iVal, minValue));
+		}
+		else if (id is ushort sVal)
+		{
+			return sheet.GetRow((ushort)Math.Max(sVal, minValue));
 		}
 
 		Logging.Shared.Error($"Unrecognized row reference key type: {typeof(TColumn)}");

@@ -5,9 +5,10 @@ namespace ScreenshotStudio.GameData.Excel;
 
 using Lumina.Data;
 using Lumina.Excel;
+using ScreenshotStudio.GameData.Sheets;
 
 [Sheet("ENpcBase", 0x927347d8)]
-public class EventNpc : ExcelRow
+public class EventNpc : LibraryExcelRow
 {
 	public string? Name { get; protected set; }
 
@@ -103,8 +104,7 @@ public class EventNpc : ExcelRow
 		this.FacePaint = parser.ReadColumn<byte>(60);
 		this.FacePaintColor = parser.ReadColumn<byte>(61);
 
-		Lumina.Excel.GeneratedSheets.NpcEquip? npcEquip = parser.ReadRowReference<ushort, Lumina.Excel.GeneratedSheets.NpcEquip>(63);
-
+		NpcEquip? npcEquip = parser.ReadRowReference<ushort, NpcEquip>(63);
 		if (npcEquip?.RowId == 175)
 			npcEquip = null;
 
@@ -113,34 +113,34 @@ public class EventNpc : ExcelRow
 		this.DyeMainHand = parser.ReadRowReference<byte, Stain>(66);
 		this.OffHand = GameDataService.Items?.Find(ItemSlots.OffHand, parser.ReadColumn<ulong>(67));
 		this.DyeOffHand = parser.ReadRowReference<byte, Stain>(68);
-		this.Head = this.GetItem(ItemSlots.Head, parser.ReadColumn<uint>(69), npcEquip?.ModelHead);
+		this.Head = this.GetItem(ItemSlots.Head, parser.ReadColumn<uint>(69), npcEquip?.Head);
 		this.DyeHead = parser.ReadRowReference<byte, Stain>(70);
-		this.Body = this.GetItem(ItemSlots.Chest, parser.ReadColumn<uint>(72), npcEquip?.ModelBody);
+		this.Body = this.GetItem(ItemSlots.Chest, parser.ReadColumn<uint>(72), npcEquip?.Body);
 		this.DyeBody = parser.ReadRowReference<byte, Stain>(73);
-		this.Hands = this.GetItem(ItemSlots.Hands, parser.ReadColumn<uint>(74), npcEquip?.ModelHands);
+		this.Hands = this.GetItem(ItemSlots.Hands, parser.ReadColumn<uint>(74), npcEquip?.Hands);
 		this.DyeHands = parser.ReadRowReference<byte, Stain>(75);
-		this.Legs = this.GetItem(ItemSlots.Legs, parser.ReadColumn<uint>(76), npcEquip?.ModelLegs);
+		this.Legs = this.GetItem(ItemSlots.Legs, parser.ReadColumn<uint>(76), npcEquip?.Legs);
 		this.DyeLegs = parser.ReadRowReference<byte, Stain>(77);
-		this.Feet = this.GetItem(ItemSlots.Feet, parser.ReadColumn<uint>(78), npcEquip?.ModelFeet);
+		this.Feet = this.GetItem(ItemSlots.Feet, parser.ReadColumn<uint>(78), npcEquip?.Feet);
 		this.DyeFeet = parser.ReadRowReference<byte, Stain>(79);
-		this.Ears = this.GetItem(ItemSlots.Earring, parser.ReadColumn<uint>(80), npcEquip?.ModelEars);
+		this.Ears = this.GetItem(ItemSlots.Earring, parser.ReadColumn<uint>(80), npcEquip?.Ears);
 		this.DyeEars = parser.ReadRowReference<byte, Stain>(81);
-		this.Neck = this.GetItem(ItemSlots.Necklace, parser.ReadColumn<uint>(82), npcEquip?.ModelNeck);
+		this.Neck = this.GetItem(ItemSlots.Necklace, parser.ReadColumn<uint>(82), npcEquip?.Neck);
 		this.DyeNeck = parser.ReadRowReference<byte, Stain>(83);
-		this.Wrists = this.GetItem(ItemSlots.Bracelet, parser.ReadColumn<uint>(84), npcEquip?.ModelWrists);
+		this.Wrists = this.GetItem(ItemSlots.Bracelet, parser.ReadColumn<uint>(84), npcEquip?.Wrists);
 		this.DyeWrists = parser.ReadRowReference<byte, Stain>(85);
-		this.LeftRing = this.GetItem(ItemSlots.RingLeft, parser.ReadColumn<uint>(86), npcEquip?.ModelLeftRing);
+		this.LeftRing = this.GetItem(ItemSlots.RingLeft, parser.ReadColumn<uint>(86), npcEquip?.LeftRing);
 		this.DyeLeftRing = parser.ReadRowReference<byte, Stain>(87);
-		this.RightRing = this.GetItem(ItemSlots.RingRight, parser.ReadColumn<uint>(88), npcEquip?.ModelRightRing);
+		this.RightRing = this.GetItem(ItemSlots.RingRight, parser.ReadColumn<uint>(88), npcEquip?.RightRing);
 		this.DyeRightRing = parser.ReadRowReference<byte, Stain>(89);
 	}
 
 	// This is a little funky, but as some point (Heavenswars?) SQEX changed where NPC's stored their equipment
 	// so we need to check both the old data and the new for valid values.
-	protected Item? GetItem(ItemSlots slot, uint baseVal, uint? equipVal)
+	protected Item? GetItem(ItemSlots slot, uint baseVal, Item? equipVal)
 	{
-		if (equipVal != null && equipVal != 0 && equipVal != uint.MaxValue && equipVal != long.MaxValue)
-			return GameDataService.Items?.Find(slot, (uint)equipVal);
+		if (equipVal != null && equipVal != ItemsSheet.None)
+			return equipVal;
 
 		return GameDataService.Items?.Find(slot, baseVal);
 	}

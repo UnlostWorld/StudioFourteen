@@ -7,7 +7,7 @@ using Lumina.Data;
 using Lumina.Excel;
 
 [Sheet("Companion", 0x776048c3)]
-public class Companion : ExcelRow
+public class Companion : LibraryExcelRow
 {
 	public string? Name { get; protected set; }
 	public ModelChara? ModelChara { get; protected set; }

@@ -49,6 +49,9 @@ public class ItemsSheet : DataSheet<Item>
 		if (val == 0)
 			return None;
 
+		if (val == uint.MaxValue || val == long.MaxValue || val == ulong.MaxValue)
+			return null;
+
 		bool isWeapon = slot == ItemSlots.MainHand || slot == ItemSlots.OffHand;
 		short modelSet;
 		short modelBase;
