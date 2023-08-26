@@ -20,7 +20,10 @@ public class AutoPropertyNotifyService : ServiceBase
 	{
 		try
 		{
-			TrackedObjects.Add(new(obj));
+			lock (TrackedObjects)
+			{
+				TrackedObjects.Add(new(obj));
+			}
 		}
 		catch(Exception ex)
 		{
@@ -30,11 +33,14 @@ public class AutoPropertyNotifyService : ServiceBase
 
 	public static void Remove(IAutoNotify obj)
 	{
-		foreach(TrackedObject trackedObject in TrackedObjects)
+		lock (TrackedObjects)
 		{
-			if (trackedObject.Object.TryGetTarget(out IAutoNotify? target) && target == obj)
+			foreach (TrackedObject trackedObject in TrackedObjects)
 			{
-				Remove(trackedObject);
+				if (trackedObject.Object.TryGetTarget(out IAutoNotify? target) && target == obj)
+				{
+					Remove(trackedObject);
+				}
 			}
 		}
 	}
@@ -47,7 +53,11 @@ public class AutoPropertyNotifyService : ServiceBase
 
 	public override Task Stop()
 	{
-		TrackedObjects.Clear();
+		lock (TrackedObjects)
+		{
+			TrackedObjects.Clear();
+		}
+
 		DeadObjects.Clear();
 		return base.Stop();
 	}
@@ -68,19 +78,28 @@ public class AutoPropertyNotifyService : ServiceBase
 			{
 				if (TrackedObjects.Count > 0)
 				{
-					for (int i = TrackedObjects.Count - 1; i >= 0; i--)
+					List<TrackedObject> objects;
+					lock (TrackedObjects)
 					{
-						bool alive = TrackedObjects[i].Tick();
+						objects = new(TrackedObjects);
+					}
+
+					for (int i = objects.Count - 1; i >= 0; i--)
+					{
+						bool alive = objects[i].Tick();
 						if (!alive)
 						{
-							Remove(TrackedObjects[i]);
+							Remove(objects[i]);
 						}
 					}
 				}
 
-				foreach(TrackedObject tracked in DeadObjects)
+				lock (TrackedObjects)
 				{
-					TrackedObjects.Remove(tracked);
+					foreach (TrackedObject tracked in DeadObjects)
+					{
+						TrackedObjects.Remove(tracked);
+					}
 				}
 
 				DeadObjects.Clear();
