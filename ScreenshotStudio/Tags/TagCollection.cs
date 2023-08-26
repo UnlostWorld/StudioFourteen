@@ -40,6 +40,14 @@ public class TagCollection : IEnumerable<Tag>
 		}
 	}
 
+	public void Add(TagCollection tags)
+	{
+		foreach (Tag tag in tags)
+		{
+			this.Add(tag);
+		}
+	}
+
 	public void AddRange(IEnumerable<string> names)
 	{
 		foreach (string name in names)
@@ -62,6 +70,11 @@ public class TagCollection : IEnumerable<Tag>
 		this.searchTagStrings.Clear();
 
 		this.AddRange(tags);
+	}
+
+	public void Clear()
+	{
+		this.tags.Clear();
 	}
 
 	public bool Matches(TagCollection other)

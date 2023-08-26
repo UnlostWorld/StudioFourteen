@@ -11,7 +11,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using ScreenshotStudio.GameData.Excel;
 
 public class LibraryService : ServiceBase
 {
@@ -20,6 +19,7 @@ public class LibraryService : ServiceBase
 	public void AddProvider(LibraryProvider provider)
 	{
 		this.providers.Add(provider);
+		provider.CacheAllTags();
 	}
 
 	public void RemoveProvider(LibraryProvider provider)
@@ -97,8 +97,19 @@ public abstract class LibraryProvider<T> : LibraryProvider
 
 public abstract class LibraryProvider : IEnumerable
 {
+	private TagCollection allTags = new();
+
+	public TagCollection AllTags => this.allTags;
+
+	public void CacheAllTags()
+	{
+		this.allTags.Clear();
+		this.GetAllTags(ref this.allTags);
+	}
+
 	public abstract IEnumerator GetEnumerator();
 	public abstract bool Contains(Type targetType);
+	protected abstract void GetAllTags(ref TagCollection tags);
 }
 
 public interface ILibraryItem : ITagged
