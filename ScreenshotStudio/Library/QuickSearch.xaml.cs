@@ -3,9 +3,8 @@
 
 namespace ScreenshotStudio.Library;
 
-using ScreenshotStudio.Services;
+using ScreenshotStudio.Tags;
 using ScreenshotStudio.Windows;
-using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -19,35 +18,43 @@ public partial class QuickSearch : PanelWindow
 		this.InitializeComponent();
 	}
 
-	[AutoNotify] public string SearchTitle { get; private set; } = "Library Search";
+	public string SearchTitle { get; private set; } = "Library Search";
+	public TagCollection? AvailableTags { get; private set; }
 
-	public static void Show(object placementTarget, string title)
+	public static void Show<T>(object placementTarget, string title)
+			where T : ILibraryItem
 	{
 		if (placementTarget is UIElement el)
 		{
-			Show(el, title);
+			Show<T>(el, title);
 		}
 	}
 
-	public static void Show(UIElement placementTarget, string title)
+	public static void Show<T>(UIElement placementTarget, string title)
+		where T : ILibraryItem
 	{
 		if (instance == null)
 		{
 			Task.Run(async () =>
 			{
 				await Panel.ShowAsync<QuickSearch>();
-				instance?.OnShow(placementTarget, title);
+				instance?.OnShow<T>(placementTarget, title);
 			});
 		}
 		else
 		{
-			instance.OnShow(placementTarget, title);
+			instance.OnShow<T>(placementTarget, title);
 		}
 	}
 
-	public void OnShow(UIElement placementTarget, string title)
+	public void OnShow<T>(UIElement placementTarget, string title)
+		where T : ILibraryItem
 	{
 		this.SearchTitle = title;
+		this.NotifyPropertyChanged(nameof(QuickSearch.SearchTitle));
+
+		this.AvailableTags = this.Services.Library.GetAvailableTags<T>();
+		this.NotifyPropertyChanged(nameof(QuickSearch.AvailableTags));
 	}
 
 	protected override void OnClosed()

@@ -20,7 +20,7 @@ public class SearchTag : Tag
 	public string Query
 	{
 		get => this.Name ?? string.Empty;
-		set => this.SetName(value);
+		set => this.Name = value;
 	}
 
 	public override ProIcons Icon => ProIcons.Search;

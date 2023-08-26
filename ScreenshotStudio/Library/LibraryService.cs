@@ -38,6 +38,22 @@ public class LibraryService : ServiceBase
 		return base.Start();
 	}
 
+	public TagCollection GetAvailableTags<T>()
+		where T : ILibraryItem
+	{
+		TagCollection tags = new();
+
+		foreach (LibraryProvider provider in this.providers)
+		{
+			if (provider.Contains(typeof(T)))
+			{
+				tags.Add(provider.AllTags);
+			}
+		}
+
+		return tags;
+	}
+
 	public List<T> Search<T>(TagCollection tags)
 		where T : ILibraryItem
 	{

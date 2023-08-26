@@ -1,0 +1,481 @@
+﻿<UserControl
+	x:Class="ScreenshotStudio.Tags.TagFilter"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:XivToolsWpf="clr-namespace:XivToolsWpf.Controls;assembly=XivToolsWpf"
+	xmlns:controls="clr-namespace:ScreenshotStudio.Controls"
+	xmlns:converters="clr-namespace:XivToolsWpf.Converters;assembly=XivToolsWpf"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="clr-namespace:ScreenshotStudio.Tags"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	d:DesignHeight="450"
+	d:DesignWidth="800"
+	Loaded="OnLoaded"
+	mc:Ignorable="d">
+
+	<UserControl.Resources>
+
+		<local:CanTagAddConverter x:Key="CanTagAdd" />
+		<converters:StringHasContentToBoolConverter x:Key="StringHasContentToBool" />
+		<BooleanToVisibilityConverter x:Key="B2V" />
+		<converters:InvertedBoolToVisibilityConverter x:Key="!B2V" />
+		<converters:MultiBoolOrConverter x:Key="MultiBoolOr" />
+		<converters:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter" />
+		<converters:StringHasContentToVisibilityConverter x:Key="StringHasContentToVisibility" />
+
+		<Style
+			x:Key="TagControl"
+			TargetType="{x:Type ItemsControl}">
+			<Style.Setters>
+				<Setter Property="ItemsPanel">
+					<Setter.Value>
+						<ItemsPanelTemplate>
+							<WrapPanel />
+						</ItemsPanelTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style.Setters>
+		</Style>
+
+		<DataTemplate DataType="{x:Type local:Tag}">
+			<Button
+				Height="20"
+				Margin="1"
+				Click="OnTagClicked"
+				Cursor="Hand"
+				Focusable="False"
+				IsEnabled="{Binding Name, Converter={StaticResource StringHasContentToBool}}">
+				<Button.Style>
+					<Style TargetType="{x:Type Button}">
+						<Setter Property="Template">
+							<Setter.Value>
+								<ControlTemplate TargetType="{x:Type Button}">
+									<Grid>
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="Auto" />
+											<ColumnDefinition />
+										</Grid.ColumnDefinitions>
+
+										<Border
+											Grid.ColumnSpan="2"
+											Background="{DynamicResource BackgroundLightBrush}"
+											CornerRadius="10"
+											Opacity="0.5" />
+
+										<XivToolsWpf:IconBlock
+											x:Name="TagIcon"
+											Margin="4,1,0,0"
+											FontSize="11"
+											Foreground="{DynamicResource ForegroundLightBrush}"
+											Icon="{Binding Icon}"
+											Opacity="0.5" />
+
+										<Grid
+											x:Name="CloseIcon"
+											Margin="4,0,0,0"
+											Opacity="0">
+
+											<XivToolsWpf:IconBlock
+												FontSize="13"
+												Foreground="{DynamicResource ForegroundLightBrush}"
+												Icon="PlusCircle"
+												Visibility="{Binding Path=., RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}, Converter={StaticResource CanTagAdd}, ConverterParameter=Add}" />
+
+											<XivToolsWpf:IconBlock
+												FontSize="13"
+												Foreground="{DynamicResource ForegroundLightBrush}"
+												Icon="MinusCircle"
+												Visibility="{Binding Path=., RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}, Converter={StaticResource CanTagAdd}, ConverterParameter=Remove}" />
+										</Grid>
+
+										<TextBlock
+											Grid.Column="1"
+											Margin="3,0,6,0"
+											VerticalAlignment="Center"
+											FontSize="11"
+											Foreground="{DynamicResource ForegroundLightBrush}"
+											Text="{Binding Name}"
+											TextTrimming="CharacterEllipsis" />
+									</Grid>
+									<ControlTemplate.Triggers>
+										<Trigger Property="IsMouseOver" Value="True">
+
+											<Trigger.EnterActions>
+												<BeginStoryboard>
+													<Storyboard>
+														<DoubleAnimation
+															Storyboard.TargetName="TagIcon"
+															Storyboard.TargetProperty="Opacity"
+															To="0"
+															Duration="0:0:0.150">
+															<DoubleAnimation.EasingFunction>
+																<SineEase EasingMode="EaseIn" />
+															</DoubleAnimation.EasingFunction>
+														</DoubleAnimation>
+
+														<DoubleAnimation
+															Storyboard.TargetName="CloseIcon"
+															Storyboard.TargetProperty="Opacity"
+															To="1"
+															Duration="0:0:0.150">
+															<DoubleAnimation.EasingFunction>
+																<SineEase EasingMode="EaseIn" />
+															</DoubleAnimation.EasingFunction>
+														</DoubleAnimation>
+													</Storyboard>
+												</BeginStoryboard>
+											</Trigger.EnterActions>
+
+											<Trigger.ExitActions>
+												<BeginStoryboard>
+													<Storyboard>
+														<DoubleAnimation
+															Storyboard.TargetName="TagIcon"
+															Storyboard.TargetProperty="Opacity"
+															To="0.5"
+															Duration="0:0:0.200">
+															<DoubleAnimation.EasingFunction>
+																<SineEase EasingMode="EaseOut" />
+															</DoubleAnimation.EasingFunction>
+														</DoubleAnimation>
+
+														<DoubleAnimation
+															Storyboard.TargetName="CloseIcon"
+															Storyboard.TargetProperty="Opacity"
+															To="0"
+															Duration="0:0:0.200">
+															<DoubleAnimation.EasingFunction>
+																<SineEase EasingMode="EaseOut" />
+															</DoubleAnimation.EasingFunction>
+														</DoubleAnimation>
+													</Storyboard>
+												</BeginStoryboard>
+											</Trigger.ExitActions>
+
+										</Trigger>
+									</ControlTemplate.Triggers>
+
+								</ControlTemplate>
+							</Setter.Value>
+						</Setter>
+					</Style>
+				</Button.Style>
+			</Button>
+		</DataTemplate>
+	</UserControl.Resources>
+
+	<Grid x:Name="ContentArea">
+		<Grid.RowDefinitions>
+			<RowDefinition />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+
+		<Grid x:Name="TagList">
+
+			<Border Style="{DynamicResource XivToolsControlBorder}" />
+
+			<ItemsControl
+				x:Name="FilterTagsControl"
+				MinHeight="24"
+				Margin="2,3,2,1"
+				ItemsSource="{Binding FilterByTags}"
+				Style="{StaticResource TagControl}">
+
+				<ItemsControl.Resources>
+					<DataTemplate DataType="{x:Type local:AddTag}">
+
+						<ToggleButton
+							x:Name="AddTagInput"
+							Height="20"
+							MinWidth="75"
+							Margin="1"
+							Cursor="Hand"
+							Focusable="False">
+							<ToggleButton.Style>
+								<Style TargetType="{x:Type ToggleButton}">
+									<Setter Property="Template">
+										<Setter.Value>
+											<ControlTemplate TargetType="{x:Type ToggleButton}">
+												<Grid Background="Transparent">
+													<Grid HorizontalAlignment="Left">
+														<Grid.ColumnDefinitions>
+															<ColumnDefinition Width="Auto" />
+															<ColumnDefinition />
+														</Grid.ColumnDefinitions>
+
+														<Border
+															Grid.Column="0"
+															Background="{DynamicResource BackgroundLightBrush}"
+															CornerRadius="10"
+															Opacity="0.5" />
+
+														<TextBlock
+															x:Name="HintText"
+															Grid.Column="1"
+															Margin="6,0"
+															VerticalAlignment="Center"
+															Foreground="{DynamicResource ForegroundLightBrush}"
+															Opacity="0.5"
+															Text="Search or filter by tags..."
+															Visibility="{Binding ShowHint, Converter={StaticResource B2V}}" />
+
+														<XivToolsWpf:IconBlock
+															x:Name="AddIcon"
+															Grid.Column="0"
+															Margin="4,0"
+															HorizontalAlignment="Left"
+															FontSize="13"
+															Foreground="{DynamicResource ForegroundLightBrush}"
+															Icon="PlusCircle"
+															Opacity="0.5" />
+
+														<TextBox
+															x:Name="InputBox"
+															Grid.Column="0"
+															Margin="3,1,6,-2"
+															Padding="0,0,0,0"
+															AcceptsReturn="False"
+															Background="Transparent"
+															GotKeyboardFocus="OnTagSearchGotKeyboardFocus"
+															LostKeyboardFocus="OnTagSearchLostKeyboardFocus"
+															PreviewKeyDown="OnTagSearchPreviewKeyDown"
+															Text="{Binding TagSearchText, RelativeSource={RelativeSource AncestorType={x:Type local:TagFilter}}, UpdateSourceTrigger=PropertyChanged}" />
+
+													</Grid>
+												</Grid>
+												<ControlTemplate.Triggers>
+													<DataTrigger Value="True">
+
+														<DataTrigger.Binding>
+															<MultiBinding Converter="{StaticResource MultiBoolOr}">
+																<Binding
+																	Path="IsMouseOver"
+																	RelativeSource="{RelativeSource Self}" />
+																<Binding
+																	ElementName="InputBox"
+																	Path="IsKeyboardFocused" />
+
+																<Binding
+																	Converter="{StaticResource StringHasContentToBool}"
+																	Path="TagSearchText"
+																	RelativeSource="{RelativeSource AncestorType={x:Type local:TagFilter}}" />
+															</MultiBinding>
+														</DataTrigger.Binding>
+
+														<DataTrigger.EnterActions>
+															<BeginStoryboard>
+																<Storyboard>
+																	<DoubleAnimation
+																		Storyboard.TargetName="AddIcon"
+																		Storyboard.TargetProperty="Opacity"
+																		To="1"
+																		Duration="0:0:0.150">
+																		<DoubleAnimation.EasingFunction>
+																			<SineEase EasingMode="EaseIn" />
+																		</DoubleAnimation.EasingFunction>
+																	</DoubleAnimation>
+																	<DoubleAnimation
+																		Storyboard.TargetName="InputBox"
+																		Storyboard.TargetProperty="MinWidth"
+																		To="75"
+																		Duration="0:0:0.150">
+																		<DoubleAnimation.EasingFunction>
+																			<SineEase EasingMode="EaseIn" />
+																		</DoubleAnimation.EasingFunction>
+																	</DoubleAnimation>
+																	<ThicknessAnimation
+																		Storyboard.TargetName="InputBox"
+																		Storyboard.TargetProperty="Padding"
+																		To="8,0,0,0"
+																		Duration="0:0:0.150">
+																		<ThicknessAnimation.EasingFunction>
+																			<SineEase EasingMode="EaseIn" />
+																		</ThicknessAnimation.EasingFunction>
+																	</ThicknessAnimation>
+																</Storyboard>
+															</BeginStoryboard>
+														</DataTrigger.EnterActions>
+
+														<DataTrigger.ExitActions>
+															<BeginStoryboard>
+																<Storyboard>
+																	<DoubleAnimation
+																		Storyboard.TargetName="AddIcon"
+																		Storyboard.TargetProperty="Opacity"
+																		To="0.5"
+																		Duration="0:0:0.200">
+																		<DoubleAnimation.EasingFunction>
+																			<SineEase EasingMode="EaseOut" />
+																		</DoubleAnimation.EasingFunction>
+																	</DoubleAnimation>
+																	<DoubleAnimation
+																		Storyboard.TargetName="InputBox"
+																		Storyboard.TargetProperty="MinWidth"
+																		To="0"
+																		Duration="0:0:0.150">
+																		<DoubleAnimation.EasingFunction>
+																			<SineEase EasingMode="EaseOut" />
+																		</DoubleAnimation.EasingFunction>
+																	</DoubleAnimation>
+																	<ThicknessAnimation
+																		Storyboard.TargetName="InputBox"
+																		Storyboard.TargetProperty="Padding"
+																		To="0,0,0,0"
+																		Duration="0:0:0.150">
+																		<ThicknessAnimation.EasingFunction>
+																			<SineEase EasingMode="EaseOut" />
+																		</ThicknessAnimation.EasingFunction>
+																	</ThicknessAnimation>
+																</Storyboard>
+															</BeginStoryboard>
+														</DataTrigger.ExitActions>
+
+													</DataTrigger>
+
+													<Trigger Property="IsChecked" Value="True">
+														<Setter TargetName="InputBox" Property="FocusManager.FocusedElement" Value="{Binding ElementName=InputBox}" />
+													</Trigger>
+
+													<DataTrigger
+														Binding="{Binding IsKeyboardFocused, ElementName=InputBox}"
+														Value="False">
+														<Setter Property="IsChecked" Value="False" />
+													</DataTrigger>
+
+													<DataTrigger
+														Binding="{Binding IsKeyboardFocused, ElementName=InputBox}"
+														Value="True">
+														<Setter Property="IsChecked" Value="True" />
+
+														<DataTrigger.EnterActions>
+															<BeginStoryboard>
+																<Storyboard>
+																	<DoubleAnimation
+																		Storyboard.TargetName="HintText"
+																		Storyboard.TargetProperty="Opacity"
+																		To="0"
+																		Duration="0:0:0.400">
+																		<DoubleAnimation.EasingFunction>
+																			<SineEase EasingMode="EaseInOut" />
+																		</DoubleAnimation.EasingFunction>
+																	</DoubleAnimation>
+
+																</Storyboard>
+															</BeginStoryboard>
+														</DataTrigger.EnterActions>
+
+														<DataTrigger.ExitActions>
+															<BeginStoryboard>
+																<Storyboard>
+																	<DoubleAnimation
+																		Storyboard.TargetName="HintText"
+																		Storyboard.TargetProperty="Opacity"
+																		To="0.5"
+																		Duration="0:0:0.400">
+																		<DoubleAnimation.EasingFunction>
+																			<SineEase EasingMode="EaseInOut" />
+																		</DoubleAnimation.EasingFunction>
+																	</DoubleAnimation>
+																</Storyboard>
+															</BeginStoryboard>
+														</DataTrigger.ExitActions>
+													</DataTrigger>
+
+													<DataTrigger
+														Binding="{Binding IsSelected}"
+														Value="True">
+														<Setter Property="Opacity" Value="0" />
+														<Setter Property="IsChecked" Value="True" />
+														<Setter TargetName="InputBox" Property="FocusManager.FocusedElement" Value="{Binding ElementName=InputBox}" />
+													</DataTrigger>
+
+												</ControlTemplate.Triggers>
+
+											</ControlTemplate>
+										</Setter.Value>
+									</Setter>
+								</Style>
+							</ToggleButton.Style>
+						</ToggleButton>
+
+					</DataTemplate>
+				</ItemsControl.Resources>
+
+			</ItemsControl>
+		</Grid>
+
+		<Grid
+			Grid.Row="1"
+			Width="{Binding ActualWidth, ElementName=TagList}"
+			Height="100"
+			Margin="0,2,0,0"
+			Visibility="{Binding HasFocus, Converter={StaticResource B2V}}">
+
+			<Grid>
+
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition />
+				</Grid.RowDefinitions>
+
+				<Border
+					Grid.RowSpan="2"
+					Style="{DynamicResource XivToolsControlBorder}" />
+
+				<Grid
+					Margin="3"
+					Visibility="{Binding TagSearchText, Converter={StaticResource StringHasContentToVisibility}}">
+
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition />
+						<ColumnDefinition />
+					</Grid.ColumnDefinitions>
+
+					<Grid Grid.Column="0">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition />
+						</Grid.ColumnDefinitions>
+
+						<controls:KeyPrompt
+							Key="Return"
+							Grid.Column="0" />
+
+						<ContentPresenter
+							Grid.Column="1"
+							Content="{Binding SearchTag}" />
+					</Grid>
+
+					<Grid
+						Grid.Column="1"
+						Visibility="{Binding SuggestTag, Converter={StaticResource NotNullToVisibilityConverter}}">
+
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition />
+						</Grid.ColumnDefinitions>
+
+						<controls:KeyPrompt
+							Key="Tab"
+							Grid.Column="0" />
+
+						<ContentPresenter
+							Grid.Column="1"
+							Content="{Binding SuggestTag}" />
+					</Grid>
+
+				</Grid>
+
+				<ScrollViewer
+					Grid.Row="1"
+					Margin="3"
+					Focusable="False">
+					<ItemsControl
+						Focusable="False"
+						ItemsSource="{Binding AvailableTags}"
+						Style="{StaticResource TagControl}" />
+				</ScrollViewer>
+			</Grid>
+		</Grid>
+	</Grid>
+</UserControl>

@@ -5,6 +5,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="clr-namespace:ScreenshotStudio.Library"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:tags="clr-namespace:ScreenshotStudio.Tags"
 	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
 	Title="Library Search"
 	Width="300"
@@ -16,8 +17,24 @@
 	mc:Ignorable="d">
 
 	<Grid>
-		<TextBox
-			VerticalAlignment="Top"
-			Text="Search" />
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition />
+		</Grid.RowDefinitions>
+
+		<tags:TagFilter
+			Grid.Row="0"
+			Margin="0,1"
+			AllTags="{Binding AvailableTags}" />
+
+		<ListBox
+			Grid.Row="1"
+			Margin="0,1,0,0">
+			<ListBoxItem Content="Hi" />
+			<ListBoxItem Content="these" />
+			<ListBoxItem Content="should" />
+			<ListBoxItem Content="be" />
+			<ListBoxItem Content="results" />
+		</ListBox>
 	</Grid>
 </windows:PanelWindow>
