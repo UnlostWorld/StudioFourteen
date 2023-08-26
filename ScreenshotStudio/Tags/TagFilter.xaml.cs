@@ -5,10 +5,9 @@ namespace ScreenshotStudio.Tags;
 
 using Serilog;
 using System;
-using System.Collections;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -16,7 +15,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using XivToolsWpf;
 using XivToolsWpf.Converters;
-using XivToolsWpf.DependencyProperties;
 using XivToolsWpf.Extensions;
 using XivToolsWpf.Utils;
 
@@ -39,6 +37,7 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 	private readonly AddTag addTagItem = new();
 	private readonly FuncQueue tagSearchQueue;
 	private string? tagSearchText;
+	private bool isChangingTags = false;
 
 	public TagFilter()
 	{
@@ -91,10 +90,27 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 			if (tagFilter.Tags == null)
 				return;
 
-			tagFilter.FilterByTags.Replace(tagFilter.Tags);
-			tagFilter.FilterByTags.Add(tagFilter.addTagItem);
-			tagFilter.addTagItem.ShowHint = tagFilter.Tags.Count == 0;
+			if (e.OldValue != null && e.OldValue is TagCollection oldTc)
+				oldTc.CollectionChanged -= tagFilter.OnTagsChanged;
+
+			if (e.NewValue != null && e.NewValue is TagCollection newTc)
+				newTc.CollectionChanged += tagFilter.OnTagsChanged;
+
+			tagFilter.OnTagsChanged(null, null);
 		}
+	}
+
+	private void OnTagsChanged(object? sender, NotifyCollectionChangedEventArgs? e)
+	{
+		if (this.isChangingTags)
+			return;
+
+		this.Dispatcher.Invoke(() =>
+		{
+			this.FilterByTags.Replace(this.Tags);
+			this.FilterByTags.Add(this.addTagItem);
+			this.addTagItem.ShowHint = this.Tags.Count == 0;
+		});
 	}
 
 	private void OnLoaded(object sender, RoutedEventArgs e)
@@ -112,11 +128,13 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 
 	private async void RemoveTag(Tag tag)
 	{
+		this.isChangingTags = true;
 		this.FilterByTags.Remove(tag);
 		this.AvailableTags.Add(tag);
 		this.AvailableTags.Sort(this);
 
 		this.Tags.Replace(this.FilterByTags);
+		this.Tags.Remove(this.addTagItem);
 
 		if (this.FilterByTags.Count <= 1)
 		{
@@ -125,10 +143,13 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 			await Task.Delay(50);
 			this.addTagItem.IsSelected = false;
 		}
+
+		this.isChangingTags = false;
 	}
 
 	private void AddTag(Tag tag)
 	{
+		this.isChangingTags = true;
 		this.addTagItem.ShowHint = false;
 
 		this.FilterByTags.Insert(this.FilterByTags.Count - 1, tag);
@@ -137,6 +158,8 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 		this.AvailableTags.Sort(this);
 
 		this.Tags.Replace(this.FilterByTags);
+		this.Tags.Remove(this.addTagItem);
+		this.isChangingTags = false;
 	}
 
 	private void OnTagClicked(object sender, RoutedEventArgs e)

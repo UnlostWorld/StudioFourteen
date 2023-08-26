@@ -30,12 +30,8 @@
 
 		<ListBox
 			Grid.Row="1"
-			Margin="0,1,0,0">
-			<ListBoxItem Content="Hi" />
-			<ListBoxItem Content="these" />
-			<ListBoxItem Content="should" />
-			<ListBoxItem Content="be" />
-			<ListBoxItem Content="results" />
-		</ListBox>
+			Margin="0,1,0,0"
+			ItemsSource="{Binding Results}" />
+
 	</Grid>
 </windows:PanelWindow>

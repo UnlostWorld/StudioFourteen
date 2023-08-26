@@ -3,24 +3,38 @@
 
 namespace ScreenshotStudio.Library;
 
+using Lumina.Excel.GeneratedSheets;
 using ScreenshotStudio.Tags;
 using ScreenshotStudio.Windows;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Threading.Tasks;
 using System.Windows;
+using XivToolsWpf;
+using XivToolsWpf.Extensions;
+using XivToolsWpf.Utils;
 
 public partial class QuickSearch : PanelWindow
 {
 	private static QuickSearch? instance;
+	private readonly FuncQueue searchQueue;
+
+	private Type? targetType;
 
 	public QuickSearch()
 	{
 		instance = this;
 		this.InitializeComponent();
+		this.Tags.CollectionChanged += this.OnTagsChanged;
+		this.searchQueue = new(this.SearchAsync, 250);
 	}
 
 	public string SearchTitle { get; private set; } = "Library Search";
 	public TagCollection? AvailableTags { get; private set; }
-	public TagCollection? Tags { get; set; }
+	public TagCollection Tags { get; init; } = new();
+	public FastObservableCollection<object> Results { get; init; } = new();
 
 	public static void Show<T>(object placementTarget, string title, TagCollection defaultTags)
 			where T : ILibraryItem
@@ -51,7 +65,9 @@ public partial class QuickSearch : PanelWindow
 	public void OnShow<T>(UIElement placementTarget, string title, TagCollection defaultTags)
 		where T : ILibraryItem
 	{
-		this.Tags = defaultTags;
+		this.targetType = typeof(T);
+
+		this.Tags.Replace(defaultTags);
 		this.NotifyPropertyChanged(nameof(QuickSearch.Tags));
 
 		this.SearchTitle = title;
@@ -65,5 +81,26 @@ public partial class QuickSearch : PanelWindow
 	{
 		base.OnClosed();
 		instance = null;
+	}
+
+	private void OnTagsChanged(object? sender, NotifyCollectionChangedEventArgs e)
+	{
+		this.searchQueue.Invoke();
+	}
+
+	private async Task SearchAsync()
+	{
+		if (this.targetType == null)
+			return;
+
+		await this.Dispatcher.MainThread();
+		TagCollection tags = new(this.Tags);
+
+		await Dispatch.NonUiThread();
+
+		List<ILibraryItem> results = this.Services.Library.Search(this.targetType, tags);
+
+		await this.Dispatcher.MainThread();
+		this.Results.Replace(results);
 	}
 }
