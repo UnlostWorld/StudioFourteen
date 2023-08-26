@@ -20,17 +20,18 @@ public partial class QuickSearch : PanelWindow
 
 	public string SearchTitle { get; private set; } = "Library Search";
 	public TagCollection? AvailableTags { get; private set; }
+	public TagCollection? Tags { get; set; }
 
-	public static void Show<T>(object placementTarget, string title)
+	public static void Show<T>(object placementTarget, string title, TagCollection defaultTags)
 			where T : ILibraryItem
 	{
 		if (placementTarget is UIElement el)
 		{
-			Show<T>(el, title);
+			Show<T>(el, title, defaultTags);
 		}
 	}
 
-	public static void Show<T>(UIElement placementTarget, string title)
+	public static void Show<T>(UIElement placementTarget, string title, TagCollection defaultTags)
 		where T : ILibraryItem
 	{
 		if (instance == null)
@@ -38,18 +39,21 @@ public partial class QuickSearch : PanelWindow
 			Task.Run(async () =>
 			{
 				await Panel.ShowAsync<QuickSearch>();
-				instance?.OnShow<T>(placementTarget, title);
+				instance?.OnShow<T>(placementTarget, title, defaultTags);
 			});
 		}
 		else
 		{
-			instance.OnShow<T>(placementTarget, title);
+			instance.OnShow<T>(placementTarget, title, defaultTags);
 		}
 	}
 
-	public void OnShow<T>(UIElement placementTarget, string title)
+	public void OnShow<T>(UIElement placementTarget, string title, TagCollection defaultTags)
 		where T : ILibraryItem
 	{
+		this.Tags = defaultTags;
+		this.NotifyPropertyChanged(nameof(QuickSearch.Tags));
+
 		this.SearchTitle = title;
 		this.NotifyPropertyChanged(nameof(QuickSearch.SearchTitle));
 

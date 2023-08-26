@@ -22,6 +22,7 @@
 		<converters:MultiBoolOrConverter x:Key="MultiBoolOr" />
 		<converters:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter" />
 		<converters:StringHasContentToVisibilityConverter x:Key="StringHasContentToVisibility" />
+		<converters:NotZeroToVisibilityConverter x:Key="NotZeroToVisibility" />
 
 		<Style
 			x:Key="TagControl"
@@ -45,121 +46,117 @@
 				Cursor="Hand"
 				Focusable="False"
 				IsEnabled="{Binding Name, Converter={StaticResource StringHasContentToBool}}">
-				<Button.Style>
-					<Style TargetType="{x:Type Button}">
-						<Setter Property="Template">
-							<Setter.Value>
-								<ControlTemplate TargetType="{x:Type Button}">
-									<Grid>
-										<Grid.ColumnDefinitions>
-											<ColumnDefinition Width="Auto" />
-											<ColumnDefinition />
-										</Grid.ColumnDefinitions>
 
-										<Border
-											Grid.ColumnSpan="2"
-											Background="{DynamicResource BackgroundLightBrush}"
-											CornerRadius="10"
-											Opacity="0.5" />
+				<Button.Template>
+					<ControlTemplate TargetType="{x:Type Button}">
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition />
+							</Grid.ColumnDefinitions>
 
-										<XivToolsWpf:IconBlock
-											x:Name="TagIcon"
-											Margin="4,1,0,0"
-											FontSize="11"
-											Foreground="{DynamicResource ForegroundLightBrush}"
-											Icon="{Binding Icon}"
-											Opacity="0.5" />
+							<Border
+								Grid.ColumnSpan="2"
+								Background="{DynamicResource BackgroundLightBrush}"
+								CornerRadius="10"
+								Opacity="0.5" />
 
-										<Grid
-											x:Name="CloseIcon"
-											Margin="4,0,0,0"
-											Opacity="0">
+							<XivToolsWpf:IconBlock
+								x:Name="TagIcon"
+								Margin="4,1,0,0"
+								FontSize="11"
+								Foreground="{DynamicResource ForegroundLightBrush}"
+								Icon="{Binding Icon}"
+								Opacity="0.5" />
 
-											<XivToolsWpf:IconBlock
-												FontSize="13"
-												Foreground="{DynamicResource ForegroundLightBrush}"
-												Icon="PlusCircle"
-												Visibility="{Binding Path=., RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}, Converter={StaticResource CanTagAdd}, ConverterParameter=Add}" />
+							<Grid
+								x:Name="CloseIcon"
+								Margin="4,0,0,0"
+								Opacity="0">
 
-											<XivToolsWpf:IconBlock
-												FontSize="13"
-												Foreground="{DynamicResource ForegroundLightBrush}"
-												Icon="MinusCircle"
-												Visibility="{Binding Path=., RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}, Converter={StaticResource CanTagAdd}, ConverterParameter=Remove}" />
-										</Grid>
+								<XivToolsWpf:IconBlock
+									FontSize="13"
+									Foreground="{DynamicResource ForegroundLightBrush}"
+									Icon="PlusCircle"
+									Visibility="{Binding Path=., RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}, Converter={StaticResource CanTagAdd}, ConverterParameter=Add}" />
 
-										<TextBlock
-											Grid.Column="1"
-											Margin="3,0,6,0"
-											VerticalAlignment="Center"
-											FontSize="11"
-											Foreground="{DynamicResource ForegroundLightBrush}"
-											Text="{Binding Name}"
-											TextTrimming="CharacterEllipsis" />
-									</Grid>
-									<ControlTemplate.Triggers>
-										<Trigger Property="IsMouseOver" Value="True">
+								<XivToolsWpf:IconBlock
+									FontSize="13"
+									Foreground="{DynamicResource ForegroundLightBrush}"
+									Icon="MinusCircle"
+									Visibility="{Binding Path=., RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Button}}, Converter={StaticResource CanTagAdd}, ConverterParameter=Remove}" />
+							</Grid>
 
-											<Trigger.EnterActions>
-												<BeginStoryboard>
-													<Storyboard>
-														<DoubleAnimation
-															Storyboard.TargetName="TagIcon"
-															Storyboard.TargetProperty="Opacity"
-															To="0"
-															Duration="0:0:0.150">
-															<DoubleAnimation.EasingFunction>
-																<SineEase EasingMode="EaseIn" />
-															</DoubleAnimation.EasingFunction>
-														</DoubleAnimation>
+							<TextBlock
+								Grid.Column="1"
+								Margin="3,0,6,0"
+								VerticalAlignment="Center"
+								FontSize="11"
+								Foreground="{DynamicResource ForegroundLightBrush}"
+								Text="{Binding Name}"
+								TextTrimming="CharacterEllipsis" />
+						</Grid>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsMouseOver" Value="True">
 
-														<DoubleAnimation
-															Storyboard.TargetName="CloseIcon"
-															Storyboard.TargetProperty="Opacity"
-															To="1"
-															Duration="0:0:0.150">
-															<DoubleAnimation.EasingFunction>
-																<SineEase EasingMode="EaseIn" />
-															</DoubleAnimation.EasingFunction>
-														</DoubleAnimation>
-													</Storyboard>
-												</BeginStoryboard>
-											</Trigger.EnterActions>
+								<Trigger.EnterActions>
+									<BeginStoryboard>
+										<Storyboard>
+											<DoubleAnimation
+												Storyboard.TargetName="TagIcon"
+												Storyboard.TargetProperty="Opacity"
+												To="0"
+												Duration="0:0:0.150">
+												<DoubleAnimation.EasingFunction>
+													<SineEase EasingMode="EaseIn" />
+												</DoubleAnimation.EasingFunction>
+											</DoubleAnimation>
 
-											<Trigger.ExitActions>
-												<BeginStoryboard>
-													<Storyboard>
-														<DoubleAnimation
-															Storyboard.TargetName="TagIcon"
-															Storyboard.TargetProperty="Opacity"
-															To="0.5"
-															Duration="0:0:0.200">
-															<DoubleAnimation.EasingFunction>
-																<SineEase EasingMode="EaseOut" />
-															</DoubleAnimation.EasingFunction>
-														</DoubleAnimation>
+											<DoubleAnimation
+												Storyboard.TargetName="CloseIcon"
+												Storyboard.TargetProperty="Opacity"
+												To="1"
+												Duration="0:0:0.150">
+												<DoubleAnimation.EasingFunction>
+													<SineEase EasingMode="EaseIn" />
+												</DoubleAnimation.EasingFunction>
+											</DoubleAnimation>
+										</Storyboard>
+									</BeginStoryboard>
+								</Trigger.EnterActions>
 
-														<DoubleAnimation
-															Storyboard.TargetName="CloseIcon"
-															Storyboard.TargetProperty="Opacity"
-															To="0"
-															Duration="0:0:0.200">
-															<DoubleAnimation.EasingFunction>
-																<SineEase EasingMode="EaseOut" />
-															</DoubleAnimation.EasingFunction>
-														</DoubleAnimation>
-													</Storyboard>
-												</BeginStoryboard>
-											</Trigger.ExitActions>
+								<Trigger.ExitActions>
+									<BeginStoryboard>
+										<Storyboard>
+											<DoubleAnimation
+												Storyboard.TargetName="TagIcon"
+												Storyboard.TargetProperty="Opacity"
+												To="0.5"
+												Duration="0:0:0.200">
+												<DoubleAnimation.EasingFunction>
+													<SineEase EasingMode="EaseOut" />
+												</DoubleAnimation.EasingFunction>
+											</DoubleAnimation>
 
-										</Trigger>
-									</ControlTemplate.Triggers>
+											<DoubleAnimation
+												Storyboard.TargetName="CloseIcon"
+												Storyboard.TargetProperty="Opacity"
+												To="0"
+												Duration="0:0:0.200">
+												<DoubleAnimation.EasingFunction>
+													<SineEase EasingMode="EaseOut" />
+												</DoubleAnimation.EasingFunction>
+											</DoubleAnimation>
+										</Storyboard>
+									</BeginStoryboard>
+								</Trigger.ExitActions>
 
-								</ControlTemplate>
-							</Setter.Value>
-						</Setter>
-					</Style>
-				</Button.Style>
+							</Trigger>
+						</ControlTemplate.Triggers>
+
+					</ControlTemplate>
+				</Button.Template>
+
 			</Button>
 		</DataTemplate>
 	</UserControl.Resources>
@@ -406,12 +403,49 @@
 
 		<Grid
 			Grid.Row="1"
-			Width="{Binding ActualWidth, ElementName=TagList}"
-			Height="100"
-			Margin="0,2,0,0"
-			Visibility="{Binding HasFocus, Converter={StaticResource B2V}}">
+			Height="0"
+			Margin="0,2,0,0">
 
-			<Grid>
+			<Grid.Style>
+				<Style>
+					<Style.Triggers>
+						<DataTrigger
+							Binding="{Binding HasFocus}"
+							Value="True">
+							<DataTrigger.EnterActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation
+											Storyboard.TargetProperty="Height"
+											To="80"
+											Duration="0:00:00.150">
+											<DoubleAnimation.EasingFunction>
+												<SineEase EasingMode="EaseOut" />
+											</DoubleAnimation.EasingFunction>
+										</DoubleAnimation>
+									</Storyboard>
+								</BeginStoryboard>
+							</DataTrigger.EnterActions>
+							<DataTrigger.ExitActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation
+											Storyboard.TargetProperty="Height"
+											To="0"
+											Duration="0:00:00.250">
+											<DoubleAnimation.EasingFunction>
+												<SineEase EasingMode="EaseOut" />
+											</DoubleAnimation.EasingFunction>
+										</DoubleAnimation>
+									</Storyboard>
+								</BeginStoryboard>
+							</DataTrigger.ExitActions>
+						</DataTrigger>
+					</Style.Triggers>
+				</Style>
+			</Grid.Style>
+
+			<Grid Height="79">
 
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
@@ -466,15 +500,42 @@
 
 				</Grid>
 
-				<ScrollViewer
+				<ItemsControl
 					Grid.Row="1"
 					Margin="3"
-					Focusable="False">
-					<ItemsControl
-						Focusable="False"
-						ItemsSource="{Binding AvailableTags}"
-						Style="{StaticResource TagControl}" />
-				</ScrollViewer>
+					Focusable="False"
+					ItemsSource="{Binding AvailableTags}"
+					Style="{StaticResource TagControl}" />
+
+				<Grid
+					Grid.Row="1"
+					Margin="0,0,3,3"
+					HorizontalAlignment="Right"
+					VerticalAlignment="Bottom"
+					Visibility="{Binding AvailableTagsExtra, Converter={StaticResource NotZeroToVisibility}}">
+
+					<Rectangle
+						Margin="-6,-3,-3,-3"
+						Fill="{DynamicResource ControlBackgroundBrush}">
+						<Rectangle.Effect>
+							<BlurEffect Radius="10" />
+						</Rectangle.Effect>
+					</Rectangle>
+
+					<StackPanel
+						Margin="2"
+						Orientation="Horizontal">
+						<TextBlock
+							Margin="0"
+							Style="{DynamicResource Label}"
+							Text="+" />
+						<TextBlock
+							Margin="0"
+							Style="{DynamicResource Label}"
+							Text="{Binding AvailableTagsExtra}" />
+					</StackPanel>
+				</Grid>
+
 			</Grid>
 		</Grid>
 	</Grid>

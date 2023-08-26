@@ -5,8 +5,10 @@ namespace ScreenshotStudio.Tags;
 
 using Serilog;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
@@ -30,7 +32,7 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 		nameof(TagFilter.Tags),
 		typeof(TagCollection),
 		typeof(TagFilter),
-		new(new TagCollection()));
+		new(new TagCollection(), OnTagsChanged));
 
 	protected readonly ILogger Log = Logging.Shared.ForContext<TagFilter>();
 
@@ -48,6 +50,7 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 	public event PropertyChangedEventHandler? PropertyChanged;
 
 	public FastObservableCollection<Tag> AvailableTags { get; init; } = new();
+	public int AvailableTagsExtra { get; private set; } = 0;
 	public FastObservableCollection<Tag> FilterByTags { get; init; } = new();
 
 	public SearchTag SearchTag { get; init; } = new(string.Empty);
@@ -80,6 +83,19 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 	public bool HasFocus { get; private set; }
 
 	public int Compare(Tag? x, Tag? y) => string.Compare(x?.Name, y?.Name);
+
+	private static void OnTagsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+	{
+		if (d is TagFilter tagFilter)
+		{
+			if (tagFilter.Tags == null)
+				return;
+
+			tagFilter.FilterByTags.Replace(tagFilter.Tags);
+			tagFilter.FilterByTags.Add(tagFilter.addTagItem);
+			tagFilter.addTagItem.ShowHint = tagFilter.Tags.Count == 0;
+		}
+	}
 
 	private void OnLoaded(object sender, RoutedEventArgs e)
 	{
@@ -182,7 +198,7 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 			{
 				e.Handled = true;
 
-				this.tagSearchQueue.InvokeImmediate();
+				////this.tagSearchQueue.InvokeImmediate();
 				await this.tagSearchQueue.WaitForPendingExecute();
 
 				if (this.AvailableTags.Count > 0)
@@ -193,6 +209,19 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 				// clear the serach and run it again so the next time we open we have blank results.
 				this.TagSearchText = null;
 				this.tagSearchQueue.InvokeImmediate();
+			}
+			else if (e.Key == Key.Back)
+			{
+				if (string.IsNullOrEmpty(this.tagSearchText) && this.FilterByTags.Count > 1)
+				{
+					Tag removeTag = this.FilterByTags[this.FilterByTags.Count - 2];
+					this.TagSearchText = removeTag.Name;
+					this.FilterByTags.Remove(removeTag);
+				}
+				else
+				{
+					this.tagSearchQueue.Invoke();
+				}
 			}
 			else
 			{
@@ -209,15 +238,20 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 	{
 		await this.Dispatcher.MainThread();
 		string? str = this.TagSearchText;
+
 		HashSet<Tag> filterByTags = new(this.FilterByTags);
 		HashSet<Tag>? allTags = this.AllTags != null ? new(this.AllTags) : null;
+
 		await Dispatch.NonUiThread();
 
 		string[]? querry = null;
-		if (str != null)
+		if (!string.IsNullOrEmpty(str))
 		{
-			str = str.ToLower();
-			querry = str.Split(' ');
+			if (str != null)
+			{
+				str = str.ToLower();
+				querry = str.Split(' ');
+			}
 		}
 
 		List<Tag> tags = new List<Tag>();
@@ -228,18 +262,28 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 				if (filterByTags.Contains(tag))
 					continue;
 
-				if (!tag.Search(querry))
+				if (querry != null && !tag.Search(querry))
 					continue;
 
 				tags.Add(tag);
 			}
+
+			tags.Sort(this);
 		}
 
-		await this.Dispatcher.MainThread();
+		this.AvailableTagsExtra = tags.Count;
+		this.SuggestTag = tags.FirstOrDefault();
 
-		this.AvailableTags.SortAndReplace(tags, this);
-		this.SuggestTag = this.AvailableTags.FirstOrDefault();
-		this.PropertyChanged?.Invoke(this, new(nameof(this.SuggestTag)));
+		while (tags.Count > 9)
+			tags.RemoveAt(9);
+
+		this.AvailableTagsExtra -= tags.Count;
+		this.AvailableTagsExtra = Math.Max(this.AvailableTagsExtra, 0);
+
+		await this.Dispatcher.MainThread();
+		this.AvailableTags.Replace(tags);
+		this.PropertyChanged?.Invoke(this, new(nameof(TagFilter.AvailableTagsExtra)));
+		this.PropertyChanged?.Invoke(this, new(nameof(TagFilter.SuggestTag)));
 	}
 }
 

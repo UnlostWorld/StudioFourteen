@@ -47,7 +47,7 @@ public class EquipSlotCategory : Lumina.Excel.GeneratedSheets.EquipSlotCategory
 			ItemSlots slot = (ItemSlots)i;
 			if (this.Contains(slot))
 			{
-				tags.Add(slot.ToString());
+				tags.Add(slot.ToTag());
 			}
 		}
 

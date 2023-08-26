@@ -3,6 +3,8 @@
 
 namespace ScreenshotStudio.GameData;
 
+using ScreenshotStudio.Tags;
+
 public enum ItemSlots
 {
 	MainHand,
@@ -32,5 +34,18 @@ public static class ItemSlotsExtensions
 	{
 		string? localized = Resources.Find($"ItemSlots_{self}") as string;
 		return localized ?? self.ToString();
+	}
+
+	public static ItemSlotTag ToTag(this ItemSlots self) => new (self);
+}
+
+public class ItemSlotTag : Tag
+{
+	private readonly ItemSlots slot;
+
+	public ItemSlotTag(ItemSlots slot)
+		: base(slot.ToString())
+	{
+		this.slot = slot;
 	}
 }

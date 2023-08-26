@@ -11,6 +11,7 @@ using ScreenshotStudio.GameData.Excel;
 using System.Windows;
 using ScreenshotStudio.Library;
 using System.Windows.Controls;
+using ScreenshotStudio.Tags;
 
 public partial class GearWindow : PanelWindow
 {
@@ -31,7 +32,10 @@ public partial class GearWindow : PanelWindow
 	{
 		if (sender is Button btn && btn.DataContext is ItemEquipViewModel equip)
 		{
-			QuickSearch.Show<Item>(btn, equip.Slot.GetDisplayName());
+			TagCollection defaultTags = new();
+			defaultTags.Add(equip.Slot.ToTag());
+
+			QuickSearch.Show<Item>(btn, equip.Slot.GetDisplayName(), defaultTags);
 		}
 	}
 }

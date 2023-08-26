@@ -25,7 +25,8 @@
 		<tags:TagFilter
 			Grid.Row="0"
 			Margin="0,1"
-			AllTags="{Binding AvailableTags}" />
+			AllTags="{Binding AvailableTags}"
+			Tags="{Binding Tags}" />
 
 		<ListBox
 			Grid.Row="1"
