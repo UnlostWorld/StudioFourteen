@@ -25,3 +25,12 @@ public enum ItemSlots
 
 	Count,
 }
+
+public static class ItemSlotsExtensions
+{
+	public static string GetDisplayName(this ItemSlots self)
+	{
+		string? localized = Resources.Find($"ItemSlots_{self}") as string;
+		return localized ?? self.ToString();
+	}
+}

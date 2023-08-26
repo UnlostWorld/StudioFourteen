@@ -13,4 +13,9 @@ public partial class Resources : ResourceDictionary
 		resources.Source = new("pack://application:,,,/ScreenshotStudio;component/Resources.xaml");
 		return resources;
 	}
+
+	public static object? Find(object key)
+	{
+		return null;
+	}
 }
