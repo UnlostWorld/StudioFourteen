@@ -30,7 +30,6 @@ public abstract partial class Panel : Window, IAutoNotify
 		this.Log = Logging.ForContext(this.GetType());
 
 		this.Loaded += this.OnLoaded;
-		this.Unloaded += this.OnUnloaded;
 
 		// Load a new copy of the resources. Each panel needs its own instance for threading reasons.
 		this.Resources = ScreenshotStudio.Resources.Load();
@@ -99,14 +98,15 @@ public abstract partial class Panel : Window, IAutoNotify
 
 	public new void Close()
 	{
-		this.Services.Panels.OpenPanels.Remove(this);
+		this.OnClosed();
+
 		this.Dispatcher.BeginInvoke(() => base.Close());
 		this.Dispatcher.InvokeShutdown();
 	}
 
 	public async Task CloseAsync()
 	{
-		this.Services.Panels.OpenPanels.Remove(this);
+		this.OnClosed();
 		await this.Dispatcher.MainThread();
 		base.Close();
 		this.Dispatcher.InvokeShutdown();
@@ -125,14 +125,15 @@ public abstract partial class Panel : Window, IAutoNotify
 		AutoPropertyNotifyService.Register(this);
 	}
 
+	protected virtual void OnClosed()
+	{
+		AutoPropertyNotifyService.Remove(this);
+		this.Services.Panels.OpenPanels.Remove(this);
+	}
+
 	private void OnPreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
 	{
 		this.Activate();
-	}
-
-	private void OnUnloaded(object sender, RoutedEventArgs e)
-	{
-		AutoPropertyNotifyService.Remove(this);
 	}
 
 	private class PanelThread
