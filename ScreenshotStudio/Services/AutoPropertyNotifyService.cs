@@ -65,7 +65,6 @@ public class AutoPropertyNotifyService : ServiceBase
 	private static void Remove(TrackedObject obj)
 	{
 		DeadObjects.Add(obj);
-		Logging.Shared.Information($"remove: {obj}");
 	}
 
 	private async Task TickTask()
