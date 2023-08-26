@@ -79,7 +79,8 @@
 							Grid.Column="1"
 							Grid.ColumnSpan="3"
 							Margin="0,3,0,0"
-							HorizontalContentAlignment="Stretch">
+							HorizontalContentAlignment="Stretch"
+							Click="OnChangeClicked">
 							<Grid>
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition />

@@ -8,10 +8,13 @@ using ScreenshotStudio.Services;
 using ScreenshotStudio.Structs;
 using ScreenshotStudio.Windows;
 using ScreenshotStudio.GameData.Excel;
+using System.Windows;
+using ScreenshotStudio.Library;
+using System.Windows.Controls;
 
 public partial class GearWindow : PanelWindow
 {
-	[AutoNotify] public unsafe string? ActorName => this.Target->Name;
+	[AutoNotify] public unsafe string? ActorName => this.TargetValid ? this.Target->Name : "Nobody";
 
 	public ItemEquipViewModel Head { get; init; } = new(ItemSlots.Head);
 	public ItemEquipViewModel Chest { get; init; } = new(ItemSlots.Chest);
@@ -23,16 +26,24 @@ public partial class GearWindow : PanelWindow
 	public ItemEquipViewModel Bracelet { get; init; } = new(ItemSlots.Bracelet);
 	public ItemEquipViewModel RingRight { get; init; } = new(ItemSlots.RingRight);
 	public ItemEquipViewModel RingLeft { get; init; } = new(ItemSlots.RingLeft);
+
+	private void OnChangeClicked(object sender, RoutedEventArgs e)
+	{
+		if (sender is Button btn && btn.DataContext is ItemEquipViewModel equip)
+		{
+			QuickSearch.Show<Item>(btn, equip.Slot.GetDisplayName());
+		}
+	}
 }
 
 public class ItemEquipViewModel : ViewModel
 {
-	private readonly ItemSlots slot;
+	public readonly ItemSlots Slot;
 	private Item? item;
 
 	public ItemEquipViewModel(ItemSlots slot)
 	{
-		this.slot = slot;
+		this.Slot = slot;
 	}
 
 	[AutoNotify]
@@ -81,7 +92,7 @@ public class ItemEquipViewModel : ViewModel
 
 			if (this.item == null || !this.item.IsItemEquip(this.ItemEquip))
 			{
-				this.item = GameDataService.Items?.Find(this.slot, this.Set, this.Base, this.Variant);
+				this.item = GameDataService.Items?.Find(this.Slot, this.Set, this.Base, this.Variant);
 			}
 
 			return this.item;
@@ -108,7 +119,7 @@ public class ItemEquipViewModel : ViewModel
 	{
 		get
 		{
-			switch (this.slot)
+			switch (this.Slot)
 			{
 				case ItemSlots.MainHand:
 				case ItemSlots.OffHand:
@@ -130,6 +141,6 @@ public class ItemEquipViewModel : ViewModel
 
 	public unsafe void ApplyChangeItem()
 	{
-		ActorDrawDataExtensions.ChangeEquip(&this.Actor->DrawData, this.slot, this.ItemEquip);
+		ActorDrawDataExtensions.ChangeEquip(&this.Actor->DrawData, this.Slot, this.ItemEquip);
 	}
 }
