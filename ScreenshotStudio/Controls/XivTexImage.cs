@@ -72,6 +72,12 @@ public class XivTexImage : Image
 
 		try
 		{
+			if (string.IsNullOrEmpty(this.Path))
+				return;
+
+			if (this.Rect == Rect.Empty)
+				return;
+
 			string cacheKey = $"{this.Path} ({this.Rect})";
 
 			if (Cache.TryGetValue(cacheKey, out CroppedBitmap? source))
