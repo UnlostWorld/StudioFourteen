@@ -3,12 +3,10 @@
 
 namespace ScreenshotStudio.Library;
 
-using Lumina.Excel.GeneratedSheets;
 using ScreenshotStudio.Tags;
 using ScreenshotStudio.Windows;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
 using System.Windows;
@@ -22,6 +20,12 @@ public partial class QuickSearch : PanelWindow
 	private readonly FuncQueue searchQueue;
 
 	private Type? targetType;
+	private object? selectedItem;
+	private string searchTitle = "Library Search";
+	private TagCollection? availableTags;
+	private TagCollection tags = new();
+	private Action<object>? selectionChanged;
+	private bool isLoading = false;
 
 	public QuickSearch()
 	{
@@ -31,21 +35,62 @@ public partial class QuickSearch : PanelWindow
 		this.searchQueue = new(this.SearchAsync, 250);
 	}
 
-	public string SearchTitle { get; private set; } = "Library Search";
-	public TagCollection? AvailableTags { get; private set; }
-	public TagCollection Tags { get; init; } = new();
 	public FastObservableCollection<object> Results { get; init; } = new();
 
-	public static void Show<T>(object placementTarget, string title, TagCollection defaultTags)
+	public TagCollection? AvailableTags
+	{
+		get => this.availableTags;
+		set
+		{
+			this.availableTags = value;
+			this.NotifyPropertyChanged();
+		}
+	}
+
+	public TagCollection Tags
+	{
+		get => this.tags;
+		set
+		{
+			this.tags = value;
+			this.NotifyPropertyChanged();
+		}
+	}
+
+	public string SearchTitle
+	{
+		get => this.searchTitle;
+		set
+		{
+			this.searchTitle = value;
+			this.NotifyPropertyChanged();
+		}
+	}
+
+	public object? SelectedItem
+	{
+		get => this.selectedItem;
+		set
+		{
+			this.selectedItem = value;
+
+			if (value != null && !this.isLoading)
+				this.selectionChanged?.Invoke(value);
+
+			this.NotifyPropertyChanged();
+		}
+	}
+
+	public static void Show<T>(object placementTarget, string title, TagCollection defaultTags, T? current, Action<T> selectionChanged)
 			where T : ILibraryItem
 	{
 		if (placementTarget is UIElement el)
 		{
-			Show<T>(el, title, defaultTags);
+			Show<T>(el, title, defaultTags, current, selectionChanged);
 		}
 	}
 
-	public static void Show<T>(UIElement placementTarget, string title, TagCollection defaultTags)
+	public static void Show<T>(UIElement placementTarget, string title, TagCollection defaultTags, T? current, Action<T> selectionChanged)
 		where T : ILibraryItem
 	{
 		if (instance == null)
@@ -53,28 +98,39 @@ public partial class QuickSearch : PanelWindow
 			Task.Run(async () =>
 			{
 				await Panel.ShowAsync<QuickSearch>();
-				instance?.OnShow<T>(placementTarget, title, defaultTags);
+				instance?.OnShow<T>(placementTarget, title, defaultTags, current, selectionChanged);
 			});
 		}
 		else
 		{
-			instance.OnShow<T>(placementTarget, title, defaultTags);
+			instance.OnShow<T>(placementTarget, title, defaultTags, current, selectionChanged);
 		}
 	}
 
-	public void OnShow<T>(UIElement placementTarget, string title, TagCollection defaultTags)
+	public void OnShow<T>(UIElement placementTarget, string title, TagCollection defaultTags, T? current, Action<T> selectionChanged)
 		where T : ILibraryItem
 	{
+		this.isLoading = true;
 		this.targetType = typeof(T);
+
+		this.selectionChanged = (obj) =>
+		{
+			if (obj is T item)
+			{
+				selectionChanged.Invoke(item);
+			}
+		};
 
 		this.Tags.Replace(defaultTags);
 		this.NotifyPropertyChanged(nameof(QuickSearch.Tags));
 
 		this.SearchTitle = title;
-		this.NotifyPropertyChanged(nameof(QuickSearch.SearchTitle));
 
 		this.AvailableTags = this.Services.Library.GetAvailableTags<T>();
 		this.NotifyPropertyChanged(nameof(QuickSearch.AvailableTags));
+
+		this.SelectedItem = current;
+		this.isLoading = false;
 	}
 
 	protected override void OnClosed()
@@ -101,6 +157,10 @@ public partial class QuickSearch : PanelWindow
 		List<ILibraryItem> results = this.Services.Library.Search(this.targetType, tags);
 
 		await this.Dispatcher.MainThread();
+
+		this.isLoading = true;
 		this.Results.Replace(results);
+		this.ResultsList.ScrollIntoView(this.SelectedItem);
+		this.isLoading = false;
 	}
 }

@@ -35,7 +35,15 @@ public partial class GearWindow : PanelWindow
 			TagCollection defaultTags = new();
 			defaultTags.Add(equip.Slot.ToTag());
 
-			QuickSearch.Show<Item>(btn, equip.Slot.GetDisplayName(), defaultTags);
+			QuickSearch.Show<Item>(
+				btn,
+				equip.Slot.GetDisplayName(),
+				defaultTags,
+				equip.Item,
+				(item) =>
+			{
+				equip.Item = item;
+			});
 		}
 	}
 }
