@@ -111,7 +111,7 @@ public class ItemsSheet : DataSheet<Item>
 			try
 			{
 				// Big old hack, but we prefer the emperors bracelets to the promise bracelets (even though they are the same model)
-				if (slot == ItemSlots.Bracelet && tItem.Name.StartsWith("Promise of"))
+				if (slot == ItemSlots.Bracelet && tItem.Name != null && tItem.Name.StartsWith("Promise of"))
 					continue;
 
 				if (!tItem.FitsInSlot(slot))

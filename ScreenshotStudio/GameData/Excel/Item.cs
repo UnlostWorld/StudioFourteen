@@ -13,8 +13,8 @@ using XivToolsWpf;
 [Sheet("Item", 0x800968c9)]
 public class Item : LibraryExcelRow
 {
-	public string Name { get; protected set; } = string.Empty;
-	public string Description { get; protected set; } = string.Empty;
+	public string? Name { get; protected set; }
+	public string? Description { get; protected set; }
 	public ImageReference? Icon { get; protected set; }
 	public byte EquipLevel { get; protected set; }
 	public ushort ModelSet { get; protected set; }
@@ -43,8 +43,8 @@ public class Item : LibraryExcelRow
 	{
 		base.PopulateData(parser, gameData, language);
 
-		this.Description = parser.ReadColumn<SeString>(8) ?? string.Empty;
-		this.Name = parser.ReadColumn<SeString>(9) ?? string.Empty;
+		this.Description = parser.ReadString(8);
+		this.Name = parser.ReadString(9);
 		this.Icon = parser.ReadImageReference<ushort>(10);
 		////ItemLevel? itemLevel = parser.ReadRowReference<ushort, ItemLevel>(11);
 

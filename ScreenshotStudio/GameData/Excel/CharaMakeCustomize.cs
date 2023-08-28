@@ -9,7 +9,7 @@ using Lumina.Excel;
 [Sheet("CharaMakeCustomize", 0xc30e9b73)]
 public class CharaMakeCustomize : ExcelRow
 {
-	public string Name { get; set; } = string.Empty;
+	public string? Name { get; set; }
 	public ImageReference? Icon { get; private set; }
 	public ImageReference? ItemIcon { get; private set; }
 	public byte FeatureId { get; private set; }
