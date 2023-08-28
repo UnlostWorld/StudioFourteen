@@ -1,0 +1,90 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:ScreenshotStudio.Controls"
+	xmlns:excel="clr-namespace:ScreenshotStudio.GameData.Excel">
+
+
+
+	<DataTemplate DataType="{x:Type excel:Item}">
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition />
+			</Grid.ColumnDefinitions>
+
+			<Grid
+				Grid.RowSpan="3"
+				Grid.Column="0"
+				Width="48"
+				Height="48"
+				Margin="0,0,6,0">
+
+				<controls:XivTexImage
+					x:Name="IconBack"
+					Margin="0,-1,0,1"
+					Path="ui/uld/icona_frame_hr1.tex"
+					Rect="0, 192, 96, 96"
+					SnapsToDevicePixels="True"
+					Visibility="Collapsed" />
+
+				<Image
+					Margin="4,3,4,5"
+					SnapsToDevicePixels="True"
+					Source="{Binding Icon.Source}" />
+
+				<controls:XivTexImage
+					x:Name="IconShine"
+					Path="ui/uld/icona_frame_hr1.tex"
+					Rect="0, 0, 96, 96"
+					SnapsToDevicePixels="True" />
+			</Grid>
+
+			<Grid Grid.Column="1">
+
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+
+
+				<TextBlock
+					Grid.Row="0"
+					Text="{Binding Name}"
+					TextWrapping="Wrap" />
+
+				<TextBlock
+					x:Name="DescriptionBlock"
+					Grid.Row="1"
+					Foreground="{DynamicResource ForegroundLightBrush}"
+					Text="{Binding Description}"
+					TextTrimming="CharacterEllipsis"
+					TextWrapping="NoWrap" />
+
+				<TextBlock
+					Grid.Row="2"
+					Style="{DynamicResource Subscript}"
+					Text="{Binding RowName}"
+					TextWrapping="NoWrap" />
+			</Grid>
+
+		</Grid>
+
+		<DataTemplate.Triggers>
+			<DataTrigger
+				Binding="{Binding Icon}"
+				Value="{x:Null}">
+				<Setter TargetName="IconShine" Property="Visibility" Value="Collapsed" />
+				<Setter TargetName="IconBack" Property="Visibility" Value="Visible" />
+			</DataTrigger>
+			<DataTrigger
+				Binding="{Binding Description}"
+				Value="{x:Null}">
+				<Setter TargetName="DescriptionBlock" Property="Visibility" Value="Collapsed" />
+			</DataTrigger>
+		</DataTemplate.Triggers>
+
+	</DataTemplate>
+
+</ResourceDictionary>
