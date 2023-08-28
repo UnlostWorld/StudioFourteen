@@ -3,12 +3,11 @@
 
 namespace ScreenshotStudio.GameData.Excel;
 
-using Lumina.Excel;
 using ScreenshotStudio.Library;
 using ScreenshotStudio.Tags;
 using XivToolsWpf;
 
-public class LibraryExcelRow : ExcelRow, ILibraryItem
+public class LibraryExcelRow : StudioExcelRow, ILibraryItem
 {
 	public TagCollection Tags { get; init; } = new();
 
