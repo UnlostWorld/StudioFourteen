@@ -17,10 +17,14 @@ public class SearchTag : Tag
 	{
 	}
 
-	public string Query
+	public string? Query
 	{
-		get => this.Name ?? string.Empty;
-		set => this.Name = value;
+		get => this.Name;
+		set
+		{
+			this.Name = value;
+			this.NotifyPropertyChanged();
+		}
 	}
 
 	public override ProIcons Icon => ProIcons.Search;

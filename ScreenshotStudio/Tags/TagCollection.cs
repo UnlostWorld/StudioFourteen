@@ -40,7 +40,7 @@ public class TagCollection : IEnumerable<Tag>, INotifyCollectionChanged
 	{
 		this.tags.Add(tag);
 
-		if (tag is SearchTag search)
+		if (tag is SearchTag search && search.Query != null)
 		{
 			this.searchTagStrings.Add(search.Query);
 		}

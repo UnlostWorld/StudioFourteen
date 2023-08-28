@@ -3,12 +3,14 @@
 
 namespace ScreenshotStudio.Tags;
 
+using ImGuiNET;
 using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -34,9 +36,7 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 
 	protected readonly ILogger Log = Logging.Shared.ForContext<TagFilter>();
 
-	private readonly AddTag addTagItem = new();
 	private readonly FuncQueue tagSearchQueue;
-	private string? tagSearchText;
 	private bool isChangingTags = false;
 
 	public TagFilter()
@@ -48,24 +48,12 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 
 	public event PropertyChangedEventHandler? PropertyChanged;
 
-	public FastObservableCollection<Tag> AvailableTags { get; init; } = new();
+	public FastObservableCollection<Tag> SuggestTags { get; init; } = new();
+	public Tag? SelectedSuggestTag { get; set; } = null;
 	public int AvailableTagsExtra { get; private set; } = 0;
-	public FastObservableCollection<Tag> FilterByTags { get; init; } = new();
+	public FastObservableCollection<Tag> SelectedTags { get; init; } = new();
 
 	public SearchTag SearchTag { get; init; } = new(string.Empty);
-	public Tag? SuggestTag { get; set; }
-
-	public string? TagSearchText
-	{
-		get => this.tagSearchText;
-		set
-		{
-			this.tagSearchText = value;
-			this.SearchTag.Name = value;
-
-			this.PropertyChanged?.Invoke(this, new(nameof(TagFilter.TagSearchText)));
-		}
-	}
 
 	public TagCollection AllTags
 	{
@@ -79,9 +67,12 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 		set => this.SetValue(TagsProperty, value);
 	}
 
-	public bool HasFocus { get; private set; }
-
 	public int Compare(Tag? x, Tag? y) => string.Compare(x?.Name, y?.Name);
+
+	protected void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
+	{
+		this.PropertyChanged?.Invoke(this, new(propertyName));
+	}
 
 	private static void OnTagsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 	{
@@ -107,42 +98,31 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 
 		this.Dispatcher.Invoke(() =>
 		{
-			this.FilterByTags.Replace(this.Tags);
-			this.FilterByTags.Add(this.addTagItem);
-			this.addTagItem.ShowHint = this.Tags.Count == 0;
+			this.SelectedTags.Replace(this.Tags);
 		});
 	}
 
 	private void OnLoaded(object sender, RoutedEventArgs e)
 	{
-		if (!this.FilterByTags.Contains(this.addTagItem))
+		if (this.SuggestTags != null)
 		{
-			this.FilterByTags.Add(this.addTagItem);
-		}
-
-		if (this.AvailableTags != null)
-		{
-			this.AvailableTags.SortAndReplace(this.AvailableTags, this);
+			this.SuggestTags.SortAndReplace(this.SuggestTags, this);
 		}
 	}
 
-	private async void RemoveTag(Tag tag)
+	private void RemoveTag(Tag tag)
 	{
 		this.isChangingTags = true;
-		this.FilterByTags.Remove(tag);
-		this.AvailableTags.Add(tag);
-		this.AvailableTags.Sort(this);
 
-		this.Tags.Replace(this.FilterByTags);
-		this.Tags.Remove(this.addTagItem);
+		this.SelectedTags.Remove(tag);
 
-		if (this.FilterByTags.Count <= 1)
+		if (!string.IsNullOrEmpty(this.SearchTag.Query))
 		{
-			this.addTagItem.ShowHint = true;
-			this.addTagItem.IsSelected = true;
-			await Task.Delay(50);
-			this.addTagItem.IsSelected = false;
+			this.SuggestTags.Add(tag);
+			this.SuggestTags.Sort(this);
 		}
+
+		this.Tags.Replace(this.SelectedTags);
 
 		this.isChangingTags = false;
 	}
@@ -150,101 +130,78 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 	private void AddTag(Tag tag)
 	{
 		this.isChangingTags = true;
-		this.addTagItem.ShowHint = false;
 
-		this.FilterByTags.Insert(this.FilterByTags.Count - 1, tag);
+		this.SelectedTags.Add(tag);
+		this.SuggestTags.Remove(tag);
+		this.SuggestTags.Sort(this);
+		this.Tags.Replace(this.SelectedTags);
+		this.SearchTag.Query = null;
 
-		this.AvailableTags.Remove(tag);
-		this.AvailableTags.Sort(this);
-
-		this.Tags.Replace(this.FilterByTags);
-		this.Tags.Remove(this.addTagItem);
 		this.isChangingTags = false;
 	}
 
-	private void OnTagClicked(object sender, RoutedEventArgs e)
+	private void OnAddTagMouseDown(object sender, MouseButtonEventArgs e)
 	{
-		try
+		e.Handled = true;
+	}
+
+	private void OnAddTagMouseUp(object sender, MouseButtonEventArgs e)
+	{
+		e.Handled = true;
+		if (sender is FrameworkElement el && el.DataContext is Tag tag)
 		{
-			if (sender is Button btn && btn.DataContext is Tag tag)
-			{
-				if (this.FilterByTags.Contains(tag))
-				{
-					this.RemoveTag(tag);
-				}
-				else
-				{
-					this.AddTag(tag);
-				}
-			}
-		}
-		catch(Exception ex)
-		{
-			this.Log.Error(ex, "Error in OnTagClicked");
+			this.AddTag(tag);
 		}
 	}
 
 	private void OnTagSearchGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
 	{
-		this.HasFocus = true;
-		this.PropertyChanged?.Invoke(this, new(nameof(TagFilter.HasFocus)));
-
 		this.tagSearchQueue.Invoke();
 	}
 
 	private void OnTagSearchLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
 	{
-		this.HasFocus = false;
-		this.PropertyChanged?.Invoke(this, new(nameof(TagFilter.HasFocus)));
+		this.SuggestTags.Clear();
 	}
 
-	private async void OnTagSearchPreviewKeyDown(object sender, KeyEventArgs e)
+	private void OnTagSearchPreviewKeyDown(object sender, KeyEventArgs e)
 	{
 		try
 		{
-			if (e.Key == Key.Escape)
+			if (e.Key == Key.Escape || e.Key == Key.Return)
 			{
-				this.TagSearchText = null;
 				Keyboard.ClearFocus();
-				return;
-			}
-			else if (e.Key == Key.Return)
-			{
-				if (string.IsNullOrEmpty(this.SearchTag.Name) || string.IsNullOrEmpty(this.TagSearchText))
-					return;
-
-				this.AddTag(new SearchTag(this.SearchTag.Name));
-				this.TagSearchText = null;
-				this.SearchTag.Query = string.Empty;
+				e.Handled = true;
 			}
 			else if (e.Key == Key.Tab)
 			{
+				if(this.SelectedSuggestTag != null)
+					this.AddTag(this.SelectedSuggestTag);
+
 				e.Handled = true;
-
-				////this.tagSearchQueue.InvokeImmediate();
-				await this.tagSearchQueue.WaitForPendingExecute();
-
-				if (this.AvailableTags.Count > 0)
-				{
-					this.AddTag(this.AvailableTags[0]);
-				}
-
-				// clear the serach and run it again so the next time we open we have blank results.
-				this.TagSearchText = null;
-				this.tagSearchQueue.InvokeImmediate();
+			}
+			else if (e.Key == Key.Down)
+			{
+				this.IncrementSuggestIndex(1);
+				e.Handled = true;
+			}
+			else if (e.Key == Key.Up)
+			{
+				this.IncrementSuggestIndex(-1);
+				e.Handled = true;
 			}
 			else if (e.Key == Key.Back)
 			{
-				if (string.IsNullOrEmpty(this.tagSearchText) && this.FilterByTags.Count > 1)
+				if (string.IsNullOrEmpty(this.SearchTag.Query) && this.SelectedTags.Count > 0)
 				{
-					Tag removeTag = this.FilterByTags[this.FilterByTags.Count - 2];
-					this.TagSearchText = removeTag.Name;
-					this.FilterByTags.Remove(removeTag);
+					Tag tag = this.SelectedTags[this.SelectedTags.Count - 1];
+					this.RemoveTag(tag);
+					this.SearchTag.Query = tag.Name;
+					this.SearchTextBox.CaretIndex = int.MaxValue;
+					e.Handled = true;
 				}
-				else
-				{
-					this.tagSearchQueue.Invoke();
-				}
+
+				this.tagSearchQueue.Invoke();
 			}
 			else
 			{
@@ -257,12 +214,47 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 		}
 	}
 
+	private void IncrementSuggestIndex(int ammount)
+	{
+		int currentIndex = 0;
+
+		if (this.SelectedSuggestTag != null)
+		{
+			currentIndex = this.SuggestTags.IndexOf(this.SelectedSuggestTag);
+
+			if (currentIndex < 0)
+			{
+				this.SelectedSuggestTag = this.SuggestTags[0];
+				this.NotifyPropertyChanged(nameof(TagFilter.SelectedSuggestTag));
+				return;
+			}
+		}
+
+		currentIndex += ammount;
+
+		if (currentIndex < 0)
+			currentIndex = this.SuggestTags.Count - 1;
+
+		if (currentIndex >= this.SuggestTags.Count)
+			currentIndex = 0;
+
+		this.SelectedSuggestTag = this.SuggestTags[currentIndex];
+		this.NotifyPropertyChanged(nameof(TagFilter.SelectedSuggestTag));
+	}
+
 	private async Task SearchAsync()
 	{
 		await this.Dispatcher.MainThread();
-		string? str = this.TagSearchText;
+		string? str = this.SearchTag.Query;
 
-		HashSet<Tag> filterByTags = new(this.FilterByTags);
+		if (string.IsNullOrEmpty(str))
+		{
+			await this.Dispatcher.MainThread();
+			this.SuggestTags.Clear();
+			return;
+		}
+
+		HashSet<Tag> filterByTags = new(this.SelectedTags);
 		HashSet<Tag>? allTags = this.AllTags != null ? new(this.AllTags) : null;
 
 		await Dispatch.NonUiThread();
@@ -295,7 +287,6 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 		}
 
 		this.AvailableTagsExtra = tags.Count;
-		this.SuggestTag = tags.FirstOrDefault();
 
 		while (tags.Count > 9)
 			tags.RemoveAt(9);
@@ -304,70 +295,14 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 		this.AvailableTagsExtra = Math.Max(this.AvailableTagsExtra, 0);
 
 		await this.Dispatcher.MainThread();
-		this.AvailableTags.Replace(tags);
-		this.PropertyChanged?.Invoke(this, new(nameof(TagFilter.AvailableTagsExtra)));
-		this.PropertyChanged?.Invoke(this, new(nameof(TagFilter.SuggestTag)));
-	}
-}
+		this.SuggestTags.Replace(tags);
 
-public class AddTag : Tag, INotifyPropertyChanged
-{
-	private bool showHint = true;
-	private bool isSelected = false;
-
-	public AddTag()
-		: base("New Tag")
-	{
-	}
-
-	public bool ShowHint
-	{
-		get => this.showHint;
-		set
+		if (this.SuggestTags.Count > 0)
 		{
-			this.showHint = value;
-			this.NotifyPropertyChanged();
-		}
-	}
-
-	public bool IsSelected
-	{
-		get => this.isSelected;
-		set
-		{
-			this.isSelected = value;
-			this.NotifyPropertyChanged();
-		}
-	}
-
-	public override bool Search(string[]? querry) => false;
-}
-
-// This is aweful, but if the button is a child of the FilterTagsControl then its for removing tags,
-// otherwise its for adding.
-public class CanTagAddConverter : ConverterBase<Button, Visibility>
-{
-	protected override Visibility Convert(Button? value)
-	{
-		if (value == null)
-			return Visibility.Collapsed;
-
-		bool isAdding = this.IsButtonForAddingTags(value);
-
-		if (this.Parameter is string str && str == "Remove")
-			isAdding = !isAdding;
-
-		return isAdding ? Visibility.Visible : Visibility.Collapsed;
-	}
-
-	protected bool IsButtonForAddingTags(Button value)
-	{
-		ItemsControl? host = value.FindParent<ItemsControl>();
-		if (host?.Name == "FilterTagsControl")
-		{
-			return false;
+			this.SelectedSuggestTag = this.SuggestTags[0];
+			this.NotifyPropertyChanged(nameof(TagFilter.SelectedSuggestTag));
 		}
 
-		return true;
+		this.NotifyPropertyChanged(nameof(TagFilter.AvailableTagsExtra));
 	}
 }
