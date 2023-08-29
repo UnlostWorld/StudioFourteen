@@ -154,6 +154,20 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 		}
 	}
 
+	private void OnRemoveTagMouseDown(object sender, MouseButtonEventArgs e)
+	{
+		e.Handled = true;
+	}
+
+	private void OnRemoveTagMouseUp(object sender, MouseButtonEventArgs e)
+	{
+		e.Handled = true;
+		if (sender is FrameworkElement el && el.DataContext is Tag tag)
+		{
+			this.RemoveTag(tag);
+		}
+	}
+
 	private void OnTagSearchGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
 	{
 		this.tagSearchQueue.Invoke();

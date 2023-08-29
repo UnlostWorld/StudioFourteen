@@ -36,84 +36,39 @@
 			</Grid>
 		</DataTemplate>
 
+		<!--  Tag animations  -->
+		<Storyboard x:Key="AddRemoveIconAreaIn">
+			<DoubleAnimation
+				Storyboard.TargetName="AddRemoveIconArea"
+				Storyboard.TargetProperty="Opacity"
+				To="1"
+				Duration="0:00:00.150">
+				<DoubleAnimation.EasingFunction>
+					<SineEase EasingMode="EaseOut" />
+				</DoubleAnimation.EasingFunction>
+			</DoubleAnimation>
+		</Storyboard>
+
+		<Storyboard x:Key="AddRemoveIconAreaOut">
+			<DoubleAnimation
+				Storyboard.TargetName="AddRemoveIconArea"
+				Storyboard.TargetProperty="Opacity"
+				To="0"
+				Duration="0:00:00.250">
+				<DoubleAnimation.EasingFunction>
+					<SineEase EasingMode="EaseIn" />
+				</DoubleAnimation.EasingFunction>
+			</DoubleAnimation>
+		</Storyboard>
+
+		<!--  Suggested tags (appear as the user types)  -->
 		<ControlTemplate
-			x:Key="TagListboxItem"
+			x:Key="SuggestedTagListboxItem"
 			TargetType="{x:Type ListBoxItem}">
 
-			<ControlTemplate.Resources>
-				<Storyboard x:Key="AddRemoveIconAreaIn">
-					<DoubleAnimation
-						Storyboard.TargetName="AddRemoveIconArea"
-						Storyboard.TargetProperty="Opacity"
-						To="1"
-						Duration="0:00:00.150">
-						<DoubleAnimation.EasingFunction>
-							<SineEase EasingMode="EaseOut" />
-						</DoubleAnimation.EasingFunction>
-					</DoubleAnimation>
-					<DoubleAnimation
-						Storyboard.TargetName="AddRemoveIconAreaScale"
-						Storyboard.TargetProperty="ScaleX"
-						To="1.25"
-						Duration="0:00:00.150">
-						<DoubleAnimation.EasingFunction>
-							<SineEase EasingMode="EaseOut" />
-						</DoubleAnimation.EasingFunction>
-					</DoubleAnimation>
-					<DoubleAnimation
-						Storyboard.TargetName="AddRemoveIconAreaScale"
-						Storyboard.TargetProperty="ScaleY"
-						To="1.25"
-						Duration="0:00:00.150">
-						<DoubleAnimation.EasingFunction>
-							<SineEase EasingMode="EaseOut" />
-						</DoubleAnimation.EasingFunction>
-					</DoubleAnimation>
-				</Storyboard>
-
-				<Storyboard x:Key="AddRemoveIconAreaOut">
-					<DoubleAnimation
-						Storyboard.TargetName="HoverBorder"
-						Storyboard.TargetProperty="Opacity"
-						To="0"
-						Duration="0:00:00.250">
-						<DoubleAnimation.EasingFunction>
-							<SineEase EasingMode="EaseIn" />
-						</DoubleAnimation.EasingFunction>
-					</DoubleAnimation>
-					<DoubleAnimation
-						Storyboard.TargetName="AddRemoveIconArea"
-						Storyboard.TargetProperty="Opacity"
-						To="0"
-						Duration="0:00:00.250">
-						<DoubleAnimation.EasingFunction>
-							<SineEase EasingMode="EaseIn" />
-						</DoubleAnimation.EasingFunction>
-					</DoubleAnimation>
-					<DoubleAnimation
-						Storyboard.TargetName="AddRemoveIconAreaScale"
-						Storyboard.TargetProperty="ScaleX"
-						To="1"
-						Duration="0:00:00.250">
-						<DoubleAnimation.EasingFunction>
-							<SineEase EasingMode="EaseIn" />
-						</DoubleAnimation.EasingFunction>
-					</DoubleAnimation>
-					<DoubleAnimation
-						Storyboard.TargetName="AddRemoveIconAreaScale"
-						Storyboard.TargetProperty="ScaleY"
-						To="1"
-						Duration="0:00:00.250">
-						<DoubleAnimation.EasingFunction>
-							<SineEase EasingMode="EaseIn" />
-						</DoubleAnimation.EasingFunction>
-					</DoubleAnimation>
-				</Storyboard>
-			</ControlTemplate.Resources>
-
 			<Grid
-				Height="22"
-				Margin="1"
+				Height="20"
+				Margin="1,2"
 				Cursor="Hand"
 				MouseDown="OnAddTagMouseDown"
 				MouseUp="OnAddTagMouseUp">
@@ -137,39 +92,31 @@
 					Opacity="0" />
 
 				<Ellipse
-					Width="12"
-					Height="12"
-					Margin="5"
+					Width="10"
+					Height="10"
+					Margin="4"
 					HorizontalAlignment="Left"
 					Fill="{DynamicResource ControlBackgroundBrush}" />
 
 				<Grid
 					x:Name="AddRemoveIconArea"
-					Width="12"
-					Height="12"
-					Margin="5,0"
+					Width="14"
+					Height="14"
+					Margin="3,1,3,0"
 					HorizontalAlignment="Left"
 					VerticalAlignment="Center"
-					Opacity="0"
-					RenderTransformOrigin="0.5,0.5">
-
-					<Grid.RenderTransform>
-						<ScaleTransform x:Name="AddRemoveIconAreaScale" ScaleX="1" ScaleY="1" />
-					</Grid.RenderTransform>
-
-					<Ellipse
-						Margin="1"
-						Fill="{DynamicResource ForegroundLightBrush}" />
+					Opacity="0">
 
 					<XivToolsWpf:IconBlock
 						HorizontalAlignment="Center"
 						VerticalAlignment="Center"
-						Foreground="{DynamicResource ControlBackgroundBrush}"
+						FontSize="14"
+						Foreground="{DynamicResource ControlHighlightBrush}"
 						Icon="PlusCircle" />
 				</Grid>
 
 				<ContentPresenter
-					Margin="18,2,2,2"
+					Margin="14,2,2,2"
 					Content="{TemplateBinding Content}"
 					ContentTemplate="{TemplateBinding ContentTemplate}" />
 			</Grid>
@@ -279,6 +226,137 @@
 			</ControlTemplate.Triggers>
 
 		</ControlTemplate>
+
+		<!--  Selected tags (within search box)  -->
+		<ControlTemplate
+			x:Key="SelectedTagListboxItem"
+			TargetType="{x:Type ListBoxItem}">
+
+			<Grid
+				Height="20"
+				Margin="1"
+				Cursor="Hand"
+				MouseDown="OnRemoveTagMouseDown"
+				MouseUp="OnRemoveTagMouseUp">
+
+				<Grid.LayoutTransform>
+					<ScaleTransform x:Name="ScaleTransform" ScaleX="1" />
+				</Grid.LayoutTransform>
+
+				<Border
+					Background="{DynamicResource BackgroundLightBrush}"
+					CornerRadius="10"
+					Opacity="0.5" />
+
+				<Border
+					x:Name="HoverBorder"
+					Background="{DynamicResource ControlHighlightBrush}"
+					CornerRadius="10"
+					Opacity="0" />
+
+				<Ellipse
+					Width="10"
+					Height="10"
+					Margin="4"
+					HorizontalAlignment="Left"
+					Fill="{DynamicResource ControlBackgroundBrush}" />
+
+				<Grid
+					x:Name="AddRemoveIconArea"
+					Width="14"
+					Height="14"
+					Margin="1,1,3,0"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Center"
+					Opacity="0">
+
+					<XivToolsWpf:IconBlock
+						HorizontalAlignment="Center"
+						VerticalAlignment="Center"
+						FontSize="14"
+						Foreground="{DynamicResource ControlHighlightBrush}"
+						Icon="MinusCircle" />
+				</Grid>
+
+				<ContentPresenter
+					Margin="14,0,2,2"
+					Content="{TemplateBinding Content}"
+					ContentTemplate="{TemplateBinding ContentTemplate}" />
+			</Grid>
+
+			<ControlTemplate.Triggers>
+
+				<Trigger Property="IsEnabled" Value="True">
+					<Trigger.EnterActions>
+						<BeginStoryboard>
+							<Storyboard>
+								<DoubleAnimation
+									Storyboard.TargetName="ScaleTransform"
+									Storyboard.TargetProperty="ScaleX"
+									From="0"
+									To="1"
+									Duration="0:00:00.150">
+									<DoubleAnimation.EasingFunction>
+										<SineEase EasingMode="EaseOut" />
+									</DoubleAnimation.EasingFunction>
+								</DoubleAnimation>
+							</Storyboard>
+						</BeginStoryboard>
+					</Trigger.EnterActions>
+				</Trigger>
+
+				<Trigger Property="IsMouseOver" Value="True">
+					<Trigger.EnterActions>
+						<StopStoryboard BeginStoryboardName="BeginIconOut" />
+						<BeginStoryboard
+							x:Name="BeginIconIn"
+							Storyboard="{StaticResource AddRemoveIconAreaIn}" />
+					</Trigger.EnterActions>
+					<Trigger.ExitActions>
+						<StopStoryboard BeginStoryboardName="BeginIconIn" />
+						<BeginStoryboard
+							x:Name="BeginIconOut"
+							Storyboard="{StaticResource AddRemoveIconAreaOut}" />
+					</Trigger.ExitActions>
+				</Trigger>
+
+				<Trigger Property="IsMouseOver" Value="True">
+					<Trigger.EnterActions>
+						<BeginStoryboard>
+							<Storyboard>
+								<DoubleAnimation
+									Storyboard.TargetName="HoverBorder"
+									Storyboard.TargetProperty="Opacity"
+									To="1"
+									Duration="0:00:00.150">
+									<DoubleAnimation.EasingFunction>
+										<SineEase EasingMode="EaseOut" />
+									</DoubleAnimation.EasingFunction>
+								</DoubleAnimation>
+							</Storyboard>
+						</BeginStoryboard>
+					</Trigger.EnterActions>
+					<Trigger.ExitActions>
+						<BeginStoryboard>
+							<Storyboard>
+								<DoubleAnimation
+									Storyboard.TargetName="HoverBorder"
+									Storyboard.TargetProperty="Opacity"
+									To="0"
+									Duration="0:00:00.250">
+									<DoubleAnimation.EasingFunction>
+										<SineEase EasingMode="EaseIn" />
+									</DoubleAnimation.EasingFunction>
+								</DoubleAnimation>
+							</Storyboard>
+						</BeginStoryboard>
+					</Trigger.ExitActions>
+				</Trigger>
+
+
+			</ControlTemplate.Triggers>
+
+		</ControlTemplate>
 	</UserControl.Resources>
 
 	<Grid x:Name="ContentArea">
@@ -314,7 +392,7 @@
 				</ListBox.ItemsPanel>
 				<ListBox.ItemContainerStyle>
 					<Style TargetType="{x:Type ListBoxItem}">
-						<Setter Property="Template" Value="{StaticResource TagListboxItem}" />
+						<Setter Property="Template" Value="{StaticResource SelectedTagListboxItem}" />
 					</Style>
 				</ListBox.ItemContainerStyle>
 			</ListBox>
@@ -370,7 +448,7 @@
 				<Border Style="{DynamicResource XivToolsControlBorder}" />
 
 				<ListBox
-					Margin="3"
+					Margin="2,1"
 					Focusable="False"
 					ItemsSource="{Binding SuggestTags}"
 					ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -384,7 +462,7 @@
 
 					<ListBox.ItemContainerStyle>
 						<Style TargetType="{x:Type ListBoxItem}">
-							<Setter Property="Template" Value="{StaticResource TagListboxItem}" />
+							<Setter Property="Template" Value="{StaticResource SuggestedTagListboxItem}" />
 						</Style>
 					</ListBox.ItemContainerStyle>
 				</ListBox>
