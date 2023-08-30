@@ -6,6 +6,7 @@ namespace ScreenshotStudio.Tags;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Text;
 
 public class TagCollection : IEnumerable<Tag>, INotifyCollectionChanged
 {
@@ -128,4 +129,16 @@ public class TagCollection : IEnumerable<Tag>, INotifyCollectionChanged
 
 	public IEnumerator<Tag> GetEnumerator() => this.tags.GetEnumerator();
 	IEnumerator IEnumerable.GetEnumerator() => this.tags.GetEnumerator();
+
+	public override string ToString()
+	{
+		StringBuilder builder = new();
+		foreach(Tag tag in this)
+		{
+			builder.Append(tag.Name);
+			builder.Append(" ");
+		}
+
+		return builder.ToString();
+	}
 }

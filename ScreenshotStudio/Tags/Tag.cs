@@ -59,8 +59,11 @@ public class Tag : IEquatable<Tag?>
 		TagCache.Clear();
 	}
 
-	public Tag WithAlias(string alias)
+	public Tag WithAlias(string? alias)
 	{
+		if (alias == null)
+			return this;
+
 		this.aliases.Add(alias);
 		return this;
 	}
