@@ -370,7 +370,7 @@
 				x:Name="SearchTextBox"
 				Grid.Row="0"
 				Height="30"
-				Padding="{Binding ActualWidth, ElementName=FilterTagsControl, Converter={StaticResource ThicknessLeft}, ConverterParameter='6,0,3,0'}"
+				Padding="{Binding ActualWidth, ElementName=FilterTagsControl, Converter={StaticResource ThicknessLeft}, ConverterParameter='6,0,23,0'}"
 				VerticalContentAlignment="Center"
 				GotKeyboardFocus="OnTagSearchGotKeyboardFocus"
 				LostKeyboardFocus="OnTagSearchLostKeyboardFocus"
@@ -396,6 +396,14 @@
 					</Style>
 				</ListBox.ItemContainerStyle>
 			</ListBox>
+
+			<XivToolsWpf:IconBlock
+				Margin="0,0,6,0"
+				HorizontalAlignment="Right"
+				VerticalAlignment="Center"
+				FontSize="14"
+				Foreground="{DynamicResource BackgroundLightBrush}"
+				Icon="Search" />
 		</Grid>
 
 
