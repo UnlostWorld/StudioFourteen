@@ -27,7 +27,7 @@
 			Grid.Row="0"
 			Margin="0,1"
 			AllTags="{Binding AvailableTags}"
-			Search="{Binding Search}"
+			Search="{Binding Search, Mode=TwoWay}"
 			Tags="{Binding Tags}" />
 
 		<ListBox

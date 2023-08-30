@@ -89,6 +89,7 @@ public partial class QuickSearch : PanelWindow
 		{
 			this.search = value;
 			this.NotifyPropertyChanged();
+			this.searchQueue.Invoke();
 		}
 	}
 
