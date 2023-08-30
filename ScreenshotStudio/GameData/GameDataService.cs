@@ -97,6 +97,7 @@ public class GameDataService : ServiceBase
 		this.AddSheet<Territory>();
 		this.AddSheet<Weather>();
 		this.AddSheet<WeatherRate>();
+		this.AddSheet<ClassJob>();
 
 		this.AddSheet<Lumina.Excel.GeneratedSheets.PlaceName>();
 
@@ -128,7 +129,7 @@ public class GameDataService : ServiceBase
 	{
 		if (this.sheets.ContainsKey(sheet.RowType))
 		{
-			this.Log.Error($"Dplicate data sheet: {sheet.RowType}");
+			this.Log.Error($"Duplicate data sheet: {sheet.RowType}");
 			return;
 		}
 
