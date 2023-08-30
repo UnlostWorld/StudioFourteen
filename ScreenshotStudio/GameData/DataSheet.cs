@@ -55,6 +55,7 @@ public class DataSheet<T> : DataSheet
 		}
 	}
 
+	public virtual uint Count => this.Sheet?.RowCount ?? 0;
 	public override Type RowType => typeof(T);
 	protected ExcelSheet<T>? Sheet { get; init; }
 

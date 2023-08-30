@@ -73,6 +73,8 @@ public class GameDataService : ServiceBase
 		this.AddSheet(new ItemsSheet());
 		this.AddSheet(new CharaMakeCustomizeSheet());
 		this.AddSheet(new BuddyEquipsSheet());
+		this.AddSheet(new EventNpcSheet());
+		this.AddSheet(new ResidentNpcSheet());
 
 		this.AddSheet<Race>();
 		this.AddSheet<Tribe>();
@@ -84,7 +86,6 @@ public class GameDataService : ServiceBase
 		this.AddSheet<Companion>();
 		this.AddSheet<EquipRaceCategory>();
 		this.AddSheet<EquipSlotCategory>();
-		this.AddSheet<EventNpc>();
 		this.AddSheet<Lobby>();
 		this.AddSheet<ModelChara>();
 		this.AddSheet<Mount>();
@@ -92,7 +93,6 @@ public class GameDataService : ServiceBase
 		this.AddSheet<NpcEquip>();
 		this.AddSheet<Ornament>();
 		this.AddSheet<Perform>();
-		this.AddSheet<ResidentNpc>();
 		this.AddSheet<Stain>();
 		this.AddSheet<Territory>();
 		this.AddSheet<Weather>();
