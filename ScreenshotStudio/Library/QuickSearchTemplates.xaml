@@ -65,7 +65,7 @@
 				<TextBlock
 					Grid.Row="2"
 					Style="{DynamicResource Subscript}"
-					Text="{Binding RowName}"
+					Text="{Binding ClassJobs.Name}"
 					TextWrapping="NoWrap" />
 			</Grid>
 
