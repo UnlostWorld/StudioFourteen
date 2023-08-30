@@ -9,16 +9,10 @@ using Lumina.Excel;
 using Lumina.Text;
 using System.Collections.Generic;
 
-using CustomizeGenders = ScreenshotStudio.GameData.Excel.Genders;
-
-public enum Genders
-{
-	Masculine,
-	Feminine,
-}
+using ScreenshotStudio.Tags;
 
 [Sheet("Race", 0x3403807a)]
-public class Race : ExcelRow
+public class Race : LibraryExcelRow
 {
 	public enum RaceRows : byte
 	{
@@ -126,18 +120,26 @@ public class Race : ExcelRow
 		// Hrothgar. Maybe in 7.0 huh!?
 		if (this.RowId == 7)
 		{
-			this.Genders.Add(CustomizeGenders.Masculine);
+			this.Genders.Add(Excel.Genders.Masculine);
 		}
 		else
 		{
-			this.Genders.Add(CustomizeGenders.Masculine);
-			this.Genders.Add(CustomizeGenders.Feminine);
+			this.Genders.Add(Excel.Genders.Masculine);
+			this.Genders.Add(Excel.Genders.Feminine);
 		}
 	}
 
 	public bool Is(RaceRows raceRow)
 	{
 		return this.RowId == (uint)raceRow;
+	}
+
+	public TagCollection ToTags()
+	{
+		TagCollection tags = new();
+		tags.Add(this.Feminine);
+		tags.Add(this.Masculine);
+		return tags;
 	}
 
 	/*public Item? GetRacialGear(CustomizeGenders gender, ItemSlots slot)

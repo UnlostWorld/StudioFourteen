@@ -37,8 +37,11 @@ public class TagCollection : IEnumerable<Tag>, INotifyCollectionChanged
 		return tag;
 	}
 
-	public void Add(Tag tag)
+	public void Add(Tag? tag)
 	{
+		if (tag == null)
+			return;
+
 		this.tags.Add(tag);
 
 		if (!this.supressChangedEvents)
@@ -47,8 +50,11 @@ public class TagCollection : IEnumerable<Tag>, INotifyCollectionChanged
 		}
 	}
 
-	public void Add(TagCollection tags)
+	public void Add(TagCollection? tags)
 	{
+		if (tags == null)
+			return;
+
 		foreach (Tag tag in tags)
 		{
 			this.Add(tag);

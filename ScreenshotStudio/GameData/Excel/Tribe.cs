@@ -6,6 +6,7 @@ namespace ScreenshotStudio.GameData.Excel;
 using Lumina.Data;
 using Lumina.Excel;
 using Lumina.Text;
+using ScreenshotStudio.Tags;
 
 [Sheet("Tribe", 0xe74759fb)]
 public class Tribe : ExcelRow
@@ -39,5 +40,13 @@ public class Tribe : ExcelRow
 
 		this.Masculine = parser.ReadColumn<SeString>(0) ?? string.Empty;
 		this.Feminine = parser.ReadColumn<SeString>(1) ?? string.Empty;
+	}
+
+	public TagCollection ToTags()
+	{
+		TagCollection tags = new();
+		tags.Add(this.Feminine);
+		tags.Add(this.Masculine);
+		return tags;
 	}
 }
