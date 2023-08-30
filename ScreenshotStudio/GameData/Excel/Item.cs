@@ -5,9 +5,7 @@ namespace ScreenshotStudio.GameData.Excel;
 
 using Lumina.Data;
 using Lumina.Excel;
-using Lumina.Text;
 using ScreenshotStudio.Structs;
-using ScreenshotStudio.Tags;
 using XivToolsWpf;
 
 [Sheet("Item", 0x800968c9)]
