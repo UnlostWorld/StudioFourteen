@@ -59,6 +59,11 @@ public class Tag : IEquatable<Tag?>
 		TagCache.Clear();
 	}
 
+	public static int TagCount()
+	{
+		return TagCache.Count;
+	}
+
 	public Tag WithAlias(string? alias)
 	{
 		if (alias == null)
