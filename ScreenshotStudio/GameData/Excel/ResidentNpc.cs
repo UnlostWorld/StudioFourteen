@@ -21,7 +21,7 @@ public class ResidentNpc : LibraryExcelRow, IActorAppearance
 		base.PopulateData(parser, gameData, language);
 
 		this.Name = parser.ReadString(0);
-		this.Description = parser.ReadString(8) ?? string.Empty;
+		this.Description = parser.ReadString(8);
 
 		this.EventNpc = GameDataService.GetRow<EventNpc>(this.RowId);
 
@@ -31,6 +31,16 @@ public class ResidentNpc : LibraryExcelRow, IActorAppearance
 		if (this.Name != null)
 		{
 			this.Tags.Add("Named");
+		}
+
+		if (!string.IsNullOrEmpty(this.Description))
+		{
+			this.Tags.Add("Described");
+		}
+
+		if (this.EventNpc != null)
+		{
+			this.Tags.Add(this.EventNpc.Tags);
 		}
 	}
 

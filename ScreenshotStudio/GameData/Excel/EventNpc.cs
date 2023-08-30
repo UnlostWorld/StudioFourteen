@@ -27,7 +27,7 @@ public class EventNpc : LibraryExcelRow
 	public int ExtraFeature2OrBust { get; protected set; }
 	public int ExtraFeature1 { get; protected set; }
 	public Race? Race { get; protected set; }
-	public int Gender { get; protected set; }
+	public Genders Gender { get; protected set; }
 	public int BodyType { get; protected set; }
 	public int Height { get; protected set; }
 	public Tribe? Tribe { get; protected set; }
@@ -83,7 +83,7 @@ public class EventNpc : LibraryExcelRow
 		this.Scale = parser.ReadColumn<float>(34);
 		this.ModelChara = parser.ReadRowReference<ushort, ModelChara>(35);
 		this.Race = parser.ReadRowReference<byte, Race>(36, 1);
-		this.Gender = parser.ReadColumn<byte>(37);
+		this.Gender = (Genders)parser.ReadColumn<byte>(37);
 		this.BodyType = parser.ReadColumn<byte>(38);
 		this.Height = parser.ReadColumn<byte>(39);
 		this.Tribe = parser.ReadRowReference<byte, Tribe>(40, 1);
@@ -139,9 +139,9 @@ public class EventNpc : LibraryExcelRow
 		this.RightRing = this.GetItem(ItemSlots.RingRight, parser.ReadColumn<uint>(88), npcEquip?.RightRing);
 		this.DyeRightRing = parser.ReadRowReference<byte, Stain>(89);
 
-		this.Tags.Add("NPC");
-		this.Tags.Add("Event");
-		this.Tags.Add("Unnamed");
+		this.Tags.Add(this.Race?.ToTags());
+		this.Tags.Add(this.Tribe?.ToTags());
+		this.Tags.Add(this.Gender.ToTags());
 
 		this.GenerateAppearanceHash();
 	}
