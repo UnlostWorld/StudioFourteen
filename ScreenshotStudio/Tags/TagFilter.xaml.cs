@@ -3,20 +3,17 @@
 
 namespace ScreenshotStudio.Tags;
 
-using ImGuiNET;
 using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
-using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using XivToolsWpf;
-using XivToolsWpf.Converters;
 using XivToolsWpf.Extensions;
 using XivToolsWpf.Utils;
 
@@ -33,6 +30,12 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 		typeof(TagCollection),
 		typeof(TagFilter),
 		new(new TagCollection(), OnTagsChanged));
+
+	public static readonly DependencyProperty SearchProperty = DependencyProperty.Register(
+		nameof(TagFilter.Search),
+		typeof(string),
+		typeof(TagFilter),
+		new(null));
 
 	protected readonly ILogger Log = Logging.Shared.ForContext<TagFilter>();
 
@@ -53,7 +56,11 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 	public int AvailableTagsExtra { get; private set; } = 0;
 	public FastObservableCollection<Tag> SelectedTags { get; init; } = new();
 
-	public SearchTag SearchTag { get; init; } = new(string.Empty);
+	public string Search
+	{
+		get => (string)this.GetValue(SearchProperty);
+		set => this.SetValue(SearchProperty, value);
+	}
 
 	public TagCollection AllTags
 	{
@@ -116,7 +123,7 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 
 		this.SelectedTags.Remove(tag);
 
-		if (!string.IsNullOrEmpty(this.SearchTag.Query))
+		if (!string.IsNullOrEmpty(this.Search))
 		{
 			this.SuggestTags.Add(tag);
 			this.SuggestTags.Sort(this);
@@ -135,7 +142,7 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 		this.SuggestTags.Remove(tag);
 		this.SuggestTags.Sort(this);
 		this.Tags.Replace(this.SelectedTags);
-		this.SearchTag.Query = null;
+		this.Search = string.Empty;
 
 		this.isChangingTags = false;
 	}
@@ -206,11 +213,11 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 			}
 			else if (e.Key == Key.Back)
 			{
-				if (string.IsNullOrEmpty(this.SearchTag.Query) && this.SelectedTags.Count > 0)
+				if (string.IsNullOrEmpty(this.Search) && this.SelectedTags.Count > 0)
 				{
 					Tag tag = this.SelectedTags[this.SelectedTags.Count - 1];
 					this.RemoveTag(tag);
-					this.SearchTag.Query = tag.Name;
+					this.Search = tag.Name;
 					this.SearchTextBox.CaretIndex = int.MaxValue;
 					e.Handled = true;
 				}
@@ -259,7 +266,7 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 	private async Task SearchAsync()
 	{
 		await this.Dispatcher.MainThread();
-		string? str = this.SearchTag.Query;
+		string? str = this.Search;
 
 		if (string.IsNullOrEmpty(str))
 		{

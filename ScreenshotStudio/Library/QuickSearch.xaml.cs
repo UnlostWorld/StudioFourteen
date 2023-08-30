@@ -26,6 +26,7 @@ public partial class QuickSearch : PanelWindow
 	private TagCollection tags = new();
 	private Action<object>? selectionChanged;
 	private bool isLoading = false;
+	private string search = string.Empty;
 
 	public QuickSearch()
 	{
@@ -77,6 +78,16 @@ public partial class QuickSearch : PanelWindow
 			if (value != null && !this.isLoading)
 				this.selectionChanged?.Invoke(value);
 
+			this.NotifyPropertyChanged();
+		}
+	}
+
+	public string Search
+	{
+		get => this.search;
+		set
+		{
+			this.search = value;
 			this.NotifyPropertyChanged();
 		}
 	}
@@ -151,10 +162,11 @@ public partial class QuickSearch : PanelWindow
 
 		await this.Dispatcher.MainThread();
 		TagCollection tags = new(this.Tags);
+		string[] query = SearchUtility.ToQuery(this.Search);
 
 		await Dispatch.NonUiThread();
 
-		List<ILibraryItem> results = this.Services.Library.Search(this.targetType, tags);
+		List<ILibraryItem> results = this.Services.Library.Search(this.targetType, tags, query);
 
 		await this.Dispatcher.MainThread();
 

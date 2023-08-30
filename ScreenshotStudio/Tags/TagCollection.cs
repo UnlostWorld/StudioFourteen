@@ -12,7 +12,6 @@ public class TagCollection : IEnumerable<Tag>, INotifyCollectionChanged
 	public static readonly TagCollection Empty = new();
 
 	private readonly HashSet<Tag> tags = new();
-	private readonly List<string> searchTagStrings = new();
 
 	private bool supressChangedEvents = false;
 
@@ -29,21 +28,17 @@ public class TagCollection : IEnumerable<Tag>, INotifyCollectionChanged
 	public event NotifyCollectionChangedEventHandler? CollectionChanged;
 
 	public int Count => this.tags.Count;
-	public string[] Query => this.searchTagStrings.ToArray();
 
-	public void Add(string name)
+	public Tag Add(string name)
 	{
-		this.Add(new Tag(name));
+		Tag tag = Tag.Get(name);
+		this.Add(tag);
+		return tag;
 	}
 
 	public void Add(Tag tag)
 	{
 		this.tags.Add(tag);
-
-		if (tag is SearchTag search && search.Query != null)
-		{
-			this.searchTagStrings.Add(search.Query);
-		}
 
 		if (!this.supressChangedEvents)
 		{
@@ -102,8 +97,6 @@ public class TagCollection : IEnumerable<Tag>, INotifyCollectionChanged
 		this.supressChangedEvents = true;
 
 		this.Clear();
-		this.searchTagStrings.Clear();
-
 		this.AddRange(tags);
 
 		this.supressChangedEvents = false;
@@ -124,9 +117,6 @@ public class TagCollection : IEnumerable<Tag>, INotifyCollectionChanged
 	{
 		foreach(Tag tag in other)
 		{
-			if (tag is SearchTag)
-				continue;
-
 			if (!this.tags.Contains(tag))
 			{
 				return false;

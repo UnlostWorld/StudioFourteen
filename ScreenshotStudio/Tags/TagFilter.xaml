@@ -375,7 +375,7 @@
 				GotKeyboardFocus="OnTagSearchGotKeyboardFocus"
 				LostKeyboardFocus="OnTagSearchLostKeyboardFocus"
 				PreviewKeyDown="OnTagSearchPreviewKeyDown"
-				Text="{Binding SearchTag.Query, UpdateSourceTrigger=PropertyChanged}" />
+				Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" />
 
 			<ListBox
 				x:Name="FilterTagsControl"
