@@ -2,7 +2,8 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:ScreenshotStudio.Controls"
-	xmlns:excel="clr-namespace:ScreenshotStudio.GameData.Excel">
+	xmlns:excel="clr-namespace:ScreenshotStudio.GameData.Excel"
+	xmlns:xivToolsWpf="clr-namespace:XivToolsWpf.Controls;assembly=XivToolsWpf">
 
 
 
@@ -84,6 +85,68 @@
 				<Setter TargetName="DescriptionBlock" Property="Visibility" Value="Collapsed" />
 			</DataTrigger>
 		</DataTemplate.Triggers>
+
+	</DataTemplate>
+
+
+	<!--  Event NPC  -->
+	<DataTemplate DataType="{x:Type excel:EventNpc}">
+		<TextBlock Text="{Binding RowName}" />
+	</DataTemplate>
+
+	<!--  Resident NPC  -->
+	<DataTemplate DataType="{x:Type excel:ResidentNpc}">
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition />
+			</Grid.ColumnDefinitions>
+
+			<Grid
+				Grid.Column="0"
+				Width="48"
+				Height="48"
+				Margin="0,0,6,0">
+
+				<xivToolsWpf:IconBlock
+					HorizontalAlignment="Center"
+					VerticalAlignment="Center"
+					FontSize="28"
+					Foreground="{DynamicResource BackgroundLightBrush}"
+					Icon="Database" />
+			</Grid>
+
+			<Grid Grid.Column="1">
+
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+
+				<TextBlock
+					Grid.Row="0"
+					Text="{Binding Name}"
+					TextWrapping="Wrap" />
+
+				<TextBlock
+					x:Name="DescriptionBlock"
+					Grid.Row="1"
+					Foreground="{DynamicResource ForegroundLightBrush}"
+					Text="{Binding Description}"
+					TextTrimming="CharacterEllipsis"
+					TextWrapping="NoWrap" />
+			</Grid>
+
+		</Grid>
+
+		<DataTemplate.Triggers>
+			<DataTrigger
+				Binding="{Binding Description}"
+				Value="{x:Null}">
+				<Setter TargetName="DescriptionBlock" Property="Visibility" Value="Collapsed" />
+			</DataTrigger>
+		</DataTemplate.Triggers>
+
 
 	</DataTemplate>
 

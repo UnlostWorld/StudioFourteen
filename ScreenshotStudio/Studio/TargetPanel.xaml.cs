@@ -3,8 +3,10 @@
 
 namespace ScreenshotStudio.Studio;
 
+using ScreenshotStudio.Library;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Structs;
+using ScreenshotStudio.Tags;
 using ScreenshotStudio.Windows;
 using System;
 using System.Collections.Generic;
@@ -24,7 +26,19 @@ public partial class TargetPanel : DockPanel
 
 	private void OnAddActorClicked(object sender, RoutedEventArgs e)
 	{
-    }
+		TagCollection defaultTags = new();
+		defaultTags.Add("Named");
+
+		QuickSearch.Show<IActorAppearance>(
+			sender,
+			"Spawn Actor",
+			defaultTags,
+			null,
+			(appearance) =>
+			{
+				// TODO
+			});
+	}
 
 	private void OnRemoveActorClicked(object sender, RoutedEventArgs e)
 	{
