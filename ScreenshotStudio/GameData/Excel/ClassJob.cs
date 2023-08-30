@@ -100,7 +100,8 @@ public partial class ClassJob : ExcelRow
 		if (this.NameEnglish != null)
 			tags.Add(this.NameEnglish).WithAlias(this.Abbreviation);
 
-		tags.Add(this.Role.ToString());
+		if (this.Role != Roles.None)
+			tags.Add(this.Role.ToString());
 
 		if (this.IsClass)
 			tags.Add("Class");

@@ -37,9 +37,9 @@ public class ClassJobCategory : LibraryExcelRow
 
 		////ADV = ((parser.ReadColumn<bool>(1) ? ((byte)1) : ((byte)0)) != 0);
 
-		for (var i = 0; i < (int)ClassJob.ClassJobRows.Count; i++)
+		for (var i = 1; i < (int)ClassJob.ClassJobRows.Count; i++)
 		{
-			this.classJobs[i] = parser.ReadColumn<bool>(i + 2);
+			this.classJobs[i - 1] = parser.ReadColumn<bool>(i + 1);
 		}
 	}
 
@@ -62,9 +62,9 @@ public class ClassJobCategory : LibraryExcelRow
 	{
 		TagCollection tags = new();
 
-		for (var i = 0; i < (int)ClassJob.ClassJobRows.Count; i++)
+		for (var i = 1; i < (int)ClassJob.ClassJobRows.Count; i++)
 		{
-			if (this.classJobs[i])
+			if (this.classJobs[i - 1])
 			{
 				ClassJob? classJob = GameDataService.GetRow<ClassJob>(i);
 
