@@ -32,6 +32,10 @@ public class ResidentNpc : LibraryExcelRow, IActorAppearance
 		{
 			this.Tags.Add("Named");
 		}
+		else
+		{
+			this.Tags.Add("Unnamed");
+		}
 
 		if (!string.IsNullOrEmpty(this.Description))
 		{
