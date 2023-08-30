@@ -3,7 +3,6 @@
 
 namespace ScreenshotStudio.Library;
 
-using Lumina.Data.Parsing.Layer;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Tags;
 using System;
@@ -27,15 +26,10 @@ public class LibraryService : ServiceBase
 		this.providers.Add(provider);
 	}
 
-	public override Task Start()
+	public override Task Shutdown()
 	{
-		TagCollection tags = new();
-		tags.Add(new Tag("White Mage"));
-		tags.Add(new SearchTag("Sin"));
-
-		this.Search<ILibraryItem>(tags);
-
-		return base.Start();
+		Tag.ClearTagCache();
+		return base.Shutdown();
 	}
 
 	public TagCollection GetAvailableTags<T>()
@@ -54,18 +48,18 @@ public class LibraryService : ServiceBase
 		return tags;
 	}
 
-	public List<T> Search<T>(TagCollection tags)
+	public List<T> Search<T>(TagCollection tags, string[]? query)
 		where T : ILibraryItem
 	{
-		 return this.Search<T>(typeof(T), tags);
+		 return this.Search<T>(typeof(T), tags, query);
 	}
 
-	public List<ILibraryItem> Search(Type targetType, TagCollection tags)
+	public List<ILibraryItem> Search(Type targetType, TagCollection tags, string[]? query)
 	{
-		return this.Search<ILibraryItem>(targetType, tags);
+		return this.Search<ILibraryItem>(targetType, tags, query);
 	}
 
-	private List<T> Search<T>(Type targetType, TagCollection tags)
+	private List<T> Search<T>(Type targetType, TagCollection tags, string[]? query)
 		where T : ILibraryItem
 	{
 		Stopwatch sw = new();
@@ -91,7 +85,7 @@ public class LibraryService : ServiceBase
 				if (obj is not T tObj)
 					continue;
 
-				if (!tObj.Search(tags))
+				if (!tObj.Search(tags, query))
 					continue;
 
 				results.Add(tObj);
@@ -130,5 +124,5 @@ public abstract class LibraryProvider : IEnumerable
 
 public interface ILibraryItem : ITagged
 {
-	bool Search(TagCollection tags);
+	bool Search(TagCollection tags, string[]? query);
 }
