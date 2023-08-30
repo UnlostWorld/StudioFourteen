@@ -36,16 +36,8 @@ public static class ItemSlotsExtensions
 		return localized ?? self.ToString();
 	}
 
-	public static ItemSlotTag ToTag(this ItemSlots self) => new (self);
-}
-
-public class ItemSlotTag : Tag
-{
-	private readonly ItemSlots slot;
-
-	public ItemSlotTag(ItemSlots slot)
-		: base(slot.ToString())
+	public static Tag ToTag(this ItemSlots self)
 	{
-		this.slot = slot;
+		return Tag.Get(self.ToString());
 	}
 }
