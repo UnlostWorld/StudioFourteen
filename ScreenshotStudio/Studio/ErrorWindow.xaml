@@ -117,8 +117,9 @@
 					Width="75"
 					HorizontalAlignment="Right"
 					Background="Transparent"
-					Click="OnConfirmClicked"
-					Content="{DynamicResource Confirm}" />
+					Click="OnConfirmClicked">
+					<TextBlock Text="{DynamicResource Confirm}" />
+				</Button>
 			</Grid>
 		</Border>
 
