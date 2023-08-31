@@ -50,6 +50,7 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 	}
 
 	public event PropertyChangedEventHandler? PropertyChanged;
+	public event RoutedEventHandler? OnDone;
 
 	public FastObservableCollection<Tag> SuggestTags { get; init; } = new();
 	public Tag? SelectedSuggestTag { get; set; } = null;
@@ -105,14 +106,7 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 
 		this.Dispatcher.Invoke(() =>
 		{
-			if (e != null)
-			{
-				this.SelectedTags.Synchronize(e);
-			}
-			else
-			{
-				this.SelectedTags.Replace(this.Tags);
-			}
+			this.SelectedTags.Replace(this.Tags);
 		});
 	}
 
@@ -122,6 +116,10 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 		{
 			this.SuggestTags.SortAndReplace(this.SuggestTags, this);
 		}
+
+		Keyboard.Focus(this.SearchTextBox);
+		this.SearchTextBox.Focus();
+		this.SearchTextBox.CaretIndex = int.MaxValue;
 	}
 
 	private void RemoveTag(Tag tag)
@@ -200,6 +198,8 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 			{
 				Keyboard.ClearFocus();
 				e.Handled = true;
+
+				this.OnDone?.Invoke(this, new());
 			}
 			else if (e.Key == Key.Tab)
 			{

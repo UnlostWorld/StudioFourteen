@@ -40,7 +40,7 @@ public partial class GearWindow : PanelWindow
 				equip.Slot.GetDisplayName(),
 				defaultTags,
 				equip.Item,
-				(item) =>
+				(item, isFinal) =>
 			{
 				equip.Item = item;
 			});

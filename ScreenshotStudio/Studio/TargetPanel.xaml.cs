@@ -34,8 +34,11 @@ public partial class TargetPanel : DockPanel
 			"Spawn Actor",
 			defaultTags,
 			null,
-			(appearance) =>
+			(appearance, isFinal) =>
 			{
+				if (!isFinal)
+					return;
+
 				// TODO
 			});
 	}

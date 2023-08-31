@@ -11,10 +11,12 @@ using System.Collections.Specialized;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using XivToolsWpf;
 using XivToolsWpf.Extensions;
 using XivToolsWpf.Utils;
-using Panel = Windows.Panel;
+
+using Panel = ScreenshotStudio.Windows.Panel;
 
 public partial class QuickSearch : PanelWindow
 {
@@ -26,7 +28,7 @@ public partial class QuickSearch : PanelWindow
 	private string searchTitle = "Library Search";
 	private TagCollection? availableTags;
 	private TagCollection tags = new();
-	private Action<object>? selectionChanged;
+	private Action<object, bool>? selectionChanged;
 	private bool isLoading = false;
 	private string search = string.Empty;
 	private bool isAllTagsExpanded = true;
@@ -79,7 +81,7 @@ public partial class QuickSearch : PanelWindow
 			this.selectedItem = value;
 
 			if (value != null && !this.isLoading)
-				this.selectionChanged?.Invoke(value);
+				this.selectionChanged?.Invoke(value, false);
 
 			this.NotifyPropertyChanged();
 		}
@@ -106,7 +108,7 @@ public partial class QuickSearch : PanelWindow
 		}
 	}
 
-	public static void Show<T>(object placementTarget, string title, TagCollection defaultTags, T? current, Action<T> selectionChanged)
+	public static void Show<T>(object placementTarget, string title, TagCollection defaultTags, T? current, Action<T, bool> selectionChanged)
 			where T : ILibraryItem
 	{
 		if (placementTarget is UIElement el)
@@ -115,7 +117,7 @@ public partial class QuickSearch : PanelWindow
 		}
 	}
 
-	public static void Show<T>(UIElement placementTarget, string title, TagCollection defaultTags, T? current, Action<T> selectionChanged)
+	public static void Show<T>(UIElement placementTarget, string title, TagCollection defaultTags, T? current, Action<T, bool> selectionChanged)
 		where T : ILibraryItem
 	{
 		if (instance == null)
@@ -132,17 +134,17 @@ public partial class QuickSearch : PanelWindow
 		}
 	}
 
-	public void OnShow<T>(UIElement placementTarget, string title, TagCollection defaultTags, T? current, Action<T> selectionChanged)
+	public void OnShow<T>(UIElement placementTarget, string title, TagCollection defaultTags, T? current, Action<T, bool> selectionChanged)
 		where T : ILibraryItem
 	{
 		this.isLoading = true;
 		this.targetType = typeof(T);
 
-		this.selectionChanged = (obj) =>
+		this.selectionChanged = (obj, isFinal) =>
 		{
 			if (obj is T item)
 			{
-				selectionChanged.Invoke(item);
+				selectionChanged.Invoke(item, isFinal);
 			}
 		};
 
@@ -186,7 +188,7 @@ public partial class QuickSearch : PanelWindow
 
 		this.isLoading = true;
 		this.Results.Replace(results);
-		////this.ResultsList.ScrollIntoView(this.SelectedItem);
+		this.ResultsList.ScrollIntoView(this.SelectedItem);
 		this.isLoading = false;
 	}
 
@@ -204,4 +206,30 @@ public partial class QuickSearch : PanelWindow
 			}
 		}
     }
+
+	private void OnConfirmClicked(object sender, RoutedEventArgs? e)
+	{
+		this.Close();
+
+		if (this.selectedItem == null)
+			return;
+
+		this.selectionChanged?.Invoke(this.selectedItem, true);
+	}
+
+	private void OnTagFilterDone(object sender, RoutedEventArgs e)
+	{
+		if (this.Results.Count > 0)
+			this.SelectedItem = this.Results[0];
+
+		this.ResultsList.Focus();
+	}
+
+	private void OnResultsListKeyDown(object sender, KeyEventArgs e)
+	{
+		if (e.Key == Key.Return && this.selectedItem != null)
+		{
+			this.OnConfirmClicked(sender, null);
+		}
+	}
 }
