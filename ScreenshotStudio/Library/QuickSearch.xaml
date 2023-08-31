@@ -8,40 +8,214 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:tags="clr-namespace:ScreenshotStudio.Tags"
 	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
+	xmlns:xivToolsWpf="clr-namespace:XivToolsWpf.Controls;assembly=XivToolsWpf"
 	Title="Library Search"
-	Width="300"
-	Height="450"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
+	SizeToContent="WidthAndHeight"
 	Subtitle="{Binding SearchTitle}"
 	TitleIcon="Search"
 	mc:Ignorable="d">
 
-	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition />
-		</Grid.RowDefinitions>
+	<Grid Grid.Column="0">
 
-		<tags:TagFilter
-			Grid.Row="0"
-			Margin="0,1"
-			AllTags="{Binding AvailableTags}"
-			Search="{Binding Search, Mode=TwoWay}"
-			Tags="{Binding Tags}" />
+		<Grid.Resources>
+			<DataTemplate
+				x:Key="TagTemplate"
+				DataType="{x:Type tags:Tag}">
+				<Grid
+					Height="20"
+					Margin="2,1"
+					Cursor="Hand">
 
-		<ListBox
-			x:Name="ResultsList"
-			Grid.Row="1"
-			Margin="0,1,0,0"
-			ItemsSource="{Binding Results}"
-			ScrollViewer.VerticalScrollBarVisibility="Visible"
-			SelectedItem="{Binding SelectedItem}">
-			<ListBox.Resources>
-				<ResourceDictionary Source="QuickSearchTemplates.xaml" />
-			</ListBox.Resources>
+					<Border
+						Background="{DynamicResource BackgroundLightBrush}"
+						CornerRadius="10"
+						Opacity="0.5" />
 
-		</ListBox>
+					<Border
+						x:Name="HoverBorder"
+						Background="{DynamicResource ControlHighlightBrush}"
+						CornerRadius="10"
+						Opacity="0" />
+
+					<Border
+						x:Name="SelectedBorder"
+						BorderBrush="{DynamicResource ForegroundLightBrush}"
+						BorderThickness="1"
+						CornerRadius="10"
+						Opacity="0" />
+
+					<Ellipse
+						Width="10"
+						Height="10"
+						Margin="4"
+						HorizontalAlignment="Left"
+						Fill="{DynamicResource ControlBackgroundBrush}" />
+
+					<Grid
+						x:Name="AddRemoveIconArea"
+						Width="14"
+						Height="14"
+						Margin="3,1,3,0"
+						HorizontalAlignment="Left"
+						VerticalAlignment="Center"
+						Opacity="0">
+
+						<xivToolsWpf:IconBlock
+							HorizontalAlignment="Center"
+							VerticalAlignment="Center"
+							FontSize="14"
+							Foreground="{DynamicResource ControlHighlightBrush}"
+							Icon="PlusCircle" />
+					</Grid>
+
+					<TextBlock
+						Margin="17,2,2,2"
+						Foreground="{DynamicResource ForegroundLightBrush}"
+						Text="{Binding Name}"
+						TextTrimming="CharacterEllipsis" />
+				</Grid>
+			</DataTemplate>
+		</Grid.Resources>
+
+		<Expander IsExpanded="False">
+			<Expander.Template>
+				<ControlTemplate TargetType="{x:Type Expander}">
+
+					<Grid
+						x:Name="MainGrid"
+						Width="250"
+						Height="400">
+
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition />
+							<ColumnDefinition
+								x:Name="ButtonColumn"
+								Width="30" />
+							<ColumnDefinition
+								x:Name="TagsColumn"
+								Width="0" />
+						</Grid.ColumnDefinitions>
+
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition />
+						</Grid.RowDefinitions>
+
+						<tags:TagFilter
+							Margin="0,1"
+							AllTags="{Binding AvailableTags}"
+							Search="{Binding Search, Mode=TwoWay}"
+							Tags="{Binding Tags}" />
+
+						<ToggleButton
+							x:Name="HeaderSite"
+							Grid.Row="0"
+							Grid.Column="1"
+							Grid.ColumnSpan="2"
+							Height="30"
+							Margin="2,2,0,1"
+							VerticalAlignment="Top"
+							IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="28" />
+									<ColumnDefinition />
+								</Grid.ColumnDefinitions>
+								<xivToolsWpf:IconBlock
+									Grid.Column="0"
+									Icon="Tags" />
+								<TextBlock
+									Grid.Column="1"
+									Margin="6,0,0,0"
+									HorizontalAlignment="Center"
+									Foreground="{DynamicResource ForegroundLightBrush}"
+									Text="All Tags" />
+							</Grid>
+						</ToggleButton>
+
+						<ListBox
+							x:Name="ResultsList"
+							Grid.Row="1"
+							Grid.Column="0"
+							Grid.ColumnSpan="2"
+							Width="250"
+							HorizontalAlignment="Left"
+							ItemsSource="{Binding Results}"
+							ScrollViewer.VerticalScrollBarVisibility="Visible"
+							SelectedItem="{Binding SelectedItem}">
+							<ListBox.Resources>
+								<ResourceDictionary Source="QuickSearchTemplates.xaml" />
+							</ListBox.Resources>
+
+						</ListBox>
+
+						<Grid
+							Grid.Row="1"
+							Grid.Column="2"
+							Margin="2,0,0,0">
+
+							<Border
+								Margin="0"
+								Style="{DynamicResource XivToolsControlBorder}" />
+
+							<ScrollViewer
+								Margin="1"
+								behaviours:SmoothScrollBehaviour.SmoothScroll="True"
+								VerticalScrollBarVisibility="Auto">
+								<ItemsControl
+									Margin="0,2"
+									ItemTemplate="{StaticResource TagTemplate}"
+									ItemsSource="{Binding AvailableTags}" />
+							</ScrollViewer>
+						</Grid>
+
+					</Grid>
+
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsExpanded" Value="true">
+							<Setter TargetName="ButtonColumn" Property="Width" Value="0" />
+							<Setter TargetName="TagsColumn" Property="Width" Value="150" />
+
+							<Trigger.EnterActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation
+											Storyboard.TargetName="MainGrid"
+											Storyboard.TargetProperty="Width"
+											To="400"
+											Duration="0:00:00.150">
+											<DoubleAnimation.EasingFunction>
+												<SineEase EasingMode="EaseOut" />
+											</DoubleAnimation.EasingFunction>
+										</DoubleAnimation>
+									</Storyboard>
+								</BeginStoryboard>
+							</Trigger.EnterActions>
+							<Trigger.ExitActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation
+											Storyboard.TargetName="MainGrid"
+											Storyboard.TargetProperty="Width"
+											To="250"
+											Duration="0:00:00.250">
+											<DoubleAnimation.EasingFunction>
+												<SineEase EasingMode="EaseOut" />
+											</DoubleAnimation.EasingFunction>
+										</DoubleAnimation>
+									</Storyboard>
+								</BeginStoryboard>
+							</Trigger.ExitActions>
+						</Trigger>
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Expander.Template>
+		</Expander>
+
+
 
 	</Grid>
+
 </windows:PanelWindow>

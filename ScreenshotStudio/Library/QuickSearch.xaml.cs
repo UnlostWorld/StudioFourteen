@@ -27,6 +27,7 @@ public partial class QuickSearch : PanelWindow
 	private Action<object>? selectionChanged;
 	private bool isLoading = false;
 	private string search = string.Empty;
+	private bool isAllTagsExpanded = true;
 
 	public QuickSearch()
 	{
@@ -90,6 +91,16 @@ public partial class QuickSearch : PanelWindow
 			this.search = value;
 			this.NotifyPropertyChanged();
 			this.searchQueue.Invoke();
+		}
+	}
+
+	public bool IsAllTagsExpanded
+	{
+		get => this.isAllTagsExpanded;
+		set
+		{
+			this.isAllTagsExpanded = value;
+			this.NotifyPropertyChanged();
 		}
 	}
 
@@ -173,7 +184,7 @@ public partial class QuickSearch : PanelWindow
 
 		this.isLoading = true;
 		this.Results.Replace(results);
-		this.ResultsList.ScrollIntoView(this.SelectedItem);
+		////this.ResultsList.ScrollIntoView(this.SelectedItem);
 		this.isLoading = false;
 	}
 }
