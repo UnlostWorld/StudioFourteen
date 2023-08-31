@@ -31,7 +31,7 @@ public partial class TargetPanel : DockPanel
 
 		QuickSearch.Show<IActorAppearance>(
 			sender,
-			"Spawn Actor",
+			"Create Actor",
 			defaultTags,
 			null,
 			(appearance, isFinal) =>
@@ -39,12 +39,13 @@ public partial class TargetPanel : DockPanel
 				if (!isFinal)
 					return;
 
-				// TODO
+				this.Services.ActorLifecycle.Create(appearance);
 			});
 	}
 
 	private void OnRemoveActorClicked(object sender, RoutedEventArgs e)
 	{
+		this.Services.ActorLifecycle.DestroyAllCreated();
     }
 }
 

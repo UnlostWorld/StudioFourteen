@@ -20,6 +20,7 @@ public class ServiceManager
 		this.services.Add(this.Data);
 		this.services.Add(this.AutoNotify);
 		this.services.Add(this.Library);
+		this.services.Add(this.ActorLifecycle);
 	}
 
 	public static ServiceManager Instance
@@ -39,6 +40,7 @@ public class ServiceManager
 	public PanelService Panels { get; init; } = new();
 	public GameDataService Data { get; init; } = new();
 	public LibraryService Library { get; init; } = new();
+	public ActorLifecycleService ActorLifecycle { get; init; } = new();
 
 	/// <summary>
 	/// Initialize and Start all services.

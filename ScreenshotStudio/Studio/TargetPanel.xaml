@@ -99,8 +99,7 @@
 
 		<Button
 			Width="32"
-			Click="OnRemoveActorClicked"
-			IsEnabled="False">
+			Click="OnRemoveActorClicked">
 			<xivToolsWpf:IconBlock Icon="TrashAlt" />
 		</Button>
 

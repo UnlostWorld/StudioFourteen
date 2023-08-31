@@ -20,6 +20,8 @@ public abstract class ServiceBase : INotifyPropertyChanged
 	public bool IsAlive { get; private set; }
 	public ILogger Log { get; private set; }
 
+	public ServiceManager Services => ServiceManager.Instance;
+
 	public virtual Task Initialize()
 	{
 		this.IsAlive = true;
