@@ -10,9 +10,11 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using XivToolsWpf;
 using XivToolsWpf.Extensions;
 using XivToolsWpf.Utils;
+using Panel = Windows.Panel;
 
 public partial class QuickSearch : PanelWindow
 {
@@ -187,4 +189,19 @@ public partial class QuickSearch : PanelWindow
 		////this.ResultsList.ScrollIntoView(this.SelectedItem);
 		this.isLoading = false;
 	}
+
+	private void OnTagClicked(object sender, RoutedEventArgs e)
+	{
+		if (sender is Button btn && btn.DataContext is Tag tag)
+		{
+			if (this.Tags.Contains(tag))
+			{
+				this.Tags.Remove(tag);
+			}
+			else
+			{
+				this.Tags.Add(tag);
+			}
+		}
+    }
 }

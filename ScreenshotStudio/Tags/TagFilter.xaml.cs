@@ -105,7 +105,14 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 
 		this.Dispatcher.Invoke(() =>
 		{
-			this.SelectedTags.Replace(this.Tags);
+			if (e != null)
+			{
+				this.SelectedTags.Synchronize(e);
+			}
+			else
+			{
+				this.SelectedTags.Replace(this.Tags);
+			}
 		});
 	}
 
