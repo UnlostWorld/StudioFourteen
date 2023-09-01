@@ -1,6 +1,7 @@
 ﻿<local:Resources
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:converters="clr-namespace:XivToolsWpf.Converters;assembly=XivToolsWpf"
 	xmlns:local="clr-namespace:ScreenshotStudio">
 
 	<ResourceDictionary.MergedDictionaries>
@@ -15,5 +16,39 @@
 		<!--  Default Language  -->
 		<ResourceDictionary Source="./Languages/English.xaml" />
 	</ResourceDictionary.MergedDictionaries>
+
+	<!--  Custom converters  -->
+	<converters:StringHasContentToVisibilityConverter x:Key="StringHasContentToVisibility" />
+	<converters:StringHasContentToBoolConverter x:Key="StringHasContentToBool" />
+	<converters:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter" />
+	<converters:NotEmptyToVisibilityConverter x:Key="NotEmptyToVisibilityConverter" />
+	<converters:IsEmptyToVisibilityConverter x:Key="IsEmptyToVisibilityConverter" />
+	<converters:NullToVisibilityConverter x:Key="NullToVisibilityConverter" />
+	<converters:NotNullToBoolConverter x:Key="NotNullToBoolConverter" />
+	<converters:NullToBoolConverter x:Key="NullToBoolConverter" />
+	<BooleanToVisibilityConverter x:Key="B2V" />
+	<converters:InvertedBoolToVisibilityConverter x:Key="!B2V" />
+	<converters:RadiansToDegreesConverter x:Key="Rad2Deg" />
+	<converters:NotZeroToVisibilityConverter x:Key="NotZeroToVisibility" />
+	<converters:IsZeroToVisibilityConverter x:Key="IsZeroToVisibility" />
+	<converters:NotZeroToBoolConverter x:Key="NotZeroToBool" />
+	<converters:IsZeroToBoolConverter x:Key="IsZeroToBool" />
+	<converters:BoolInversionConverter x:Key="!B" />
+	<converters:ListToStringConverter x:Key="ListToStringConverter" />
+	<converters:ColorToBrushConverter x:Key="ColorToBrush" />
+	<converters:EnumToBoolConverter x:Key="EnumToBool" />
+	<converters:EnumToVisibilityConverter x:Key="EnumToVisibility" />
+	<converters:LessThanToVisibilityConverter x:Key="LessThanToVisibility" />
+	<converters:LessThanToBoolConverter x:Key="LessThanToBool" />
+	<converters:GreaterThanToVisibilityConverter x:Key="GreaterThanToVisibility" />
+	<converters:AbsoluteNumberConverter x:Key="AbsoluteNumber" />
+	<converters:NumberConverter x:Key="NumberConverter" />
+
+	<!--  Multi converters  -->
+	<converters:MultiBoolAndConverter x:Key="MultiBoolAnd" />
+	<converters:MultiBoolOrConverter x:Key="MultiBoolOr" />
+	<converters:MultiBoolOrToVisibilityConverter x:Key="MultiBoolOrToVisibility" />
+	<converters:MultiBoolAndToVisibilityConverter x:Key="MultiBoolAndToVisibility" />
+	<converters:AnyBoolIsFalseToBoolMultiConverter x:Key="AnyBoolIsFalseToBool" />
 
 </local:Resources>
