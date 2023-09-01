@@ -138,6 +138,9 @@ public class AutoPropertyNotifyService : ServiceBase
 			if (!this.Object.TryGetTarget(out IAutoNotify? notify))
 				return false;
 
+			if (!notify.ShouldTickAutoProperties())
+				return true;
+
 			foreach (PropertyInfo property in this.Properties)
 			{
 				object? currentVal = property.GetValue(notify);
@@ -164,6 +167,7 @@ public class AutoNotifyAttribute : Attribute
 public interface IAutoNotify : INotifyPropertyChanged
 {
 	void NotifyPropertyChanged(string propertyName);
+	bool ShouldTickAutoProperties();
 }
 
 public class AutoNotify : IAutoNotify
@@ -178,5 +182,10 @@ public class AutoNotify : IAutoNotify
 	public void NotifyPropertyChanged([CallerMemberName]string propertyName = "")
 	{
 		this.PropertyChanged?.Invoke(this, new(propertyName));
+	}
+
+	public virtual bool ShouldTickAutoProperties()
+	{
+		return true;
 	}
 }
