@@ -7,6 +7,8 @@ using Anamnesis.Utils;
 using Lumina.Data;
 using Lumina.Excel;
 using ScreenshotStudio.GameData.Sheets;
+using ScreenshotStudio.Library;
+using ScreenshotStudio.Structs;
 using System.Text;
 
 [Sheet("ENpcBase", 0x927347d8)]
@@ -144,6 +146,11 @@ public class EventNpc : LibraryExcelRow
 		this.Tags.Add(this.Gender.ToTags());
 
 		this.GenerateAppearanceHash();
+	}
+
+	public unsafe void Apply(Actor* actor)
+	{
+		this.Log.Error("Not Implemented");
 	}
 
 	// This is a little funky, but as some point (Heavensward?) SQEX changed where NPC's stored their equipment

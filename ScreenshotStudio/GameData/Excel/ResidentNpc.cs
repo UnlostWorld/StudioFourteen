@@ -6,6 +6,7 @@ namespace ScreenshotStudio.GameData.Excel;
 using Lumina.Data;
 using Lumina.Excel;
 using ScreenshotStudio.Library;
+using ScreenshotStudio.Structs;
 using XivToolsWpf;
 
 [Sheet("ENpcResident", 0xf74fa88c)]
@@ -60,5 +61,10 @@ public class ResidentNpc : LibraryExcelRow, IActorAppearance
 			return true;
 
 		return base.Search(query);
+	}
+
+	public unsafe void Apply(Actor* actor)
+	{
+		this.EventNpc?.Apply(actor);
 	}
 }

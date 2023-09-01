@@ -50,15 +50,17 @@ public class ActorLifecycleService : ServiceBase
 		this.DestroyAllCreated();
 	}
 
-	public void Create(IActorAppearance? appearance = null) => this.CreateAsync(appearance).Run();
-
-	public Task CreateAsync(IActorAppearance? appearance = null)
+	public unsafe void Create(IActorAppearance? appearance = null)
 	{
 		if (!this.CanSpawn)
-			return Task.CompletedTask;
+			return;
 
-		this.Spawn("Test Actor");
-		return Task.CompletedTask;
+		Actor* pActor = this.Spawn("Test Actor");
+
+		if (pActor != null && appearance != null)
+		{
+			appearance?.Apply(pActor);
+		}
 	}
 
 	public unsafe void DestroyAllCreated()
@@ -121,56 +123,56 @@ public class ActorLifecycleService : ServiceBase
 		this.destroyGameActorHook.Original.Invoke(addr);
 	}
 
-	private unsafe bool Spawn(string name)
+	private unsafe Actor* Spawn(string name)
 	{
 		if (DalamudServices.ClientState.LocalPlayer == null)
-			return false;
+			return null;
 
 		Character* player = (Character*)DalamudServices.ClientState.LocalPlayer.Address;
 
 		if (player == null)
-			return false;
+			return null;
 
 		ClientObjectManager* com = ClientObjectManager.Instance();
 		uint idCheck = com->CreateBattleCharacter();
 		if (idCheck == 0xffffffff)
-			return false;
+			return null;
 
 		ushort spawnedActorId = (ushort)idCheck;
 
-		Character* newCharacter = (Character*)com->GetObjectByIndex(spawnedActorId);
-		if (newCharacter == null)
-			return false;
+		Character* pSpawned = (Character*)com->GetObjectByIndex(spawnedActorId);
+		if (pSpawned == null)
+			return null;
 
-		var gposeController = &EventFramework.Instance()->EventSceneModule.EventGPoseController;
-		gposeController->AddCharacterToGPose(newCharacter); // This is safe even if the list is full. The game will also cleanup for us.
+		EventGPoseController* gposeController = &EventFramework.Instance()->EventSceneModule.EventGPoseController;
+		gposeController->AddCharacterToGPose(pSpawned); // This is safe even if the list is full. The game will also cleanup for us.
 
-		newCharacter->CopyFromCharacter(player, Character.CopyFlags.None); // We copy the Player as the created actor is just blank
+		pSpawned->CopyFromCharacter(player, Character.CopyFlags.None); // We copy the Player as the created actor is just blank
 
-		*((sbyte*)newCharacter + 0x95) &= ~2; // Disable selection just incase this somehow leaks out of GPose
+		*((sbyte*)pSpawned + 0x95) &= ~2; // Disable selection just incase this somehow leaks out of GPose
 
-		newCharacter->GameObject.Position = player->GameObject.Position;
-		newCharacter->GameObject.DefaultPosition = player->GameObject.Position;
-		newCharacter->GameObject.Rotation = player->GameObject.Rotation;
-		newCharacter->GameObject.DefaultRotation = player->GameObject.Rotation;
+		pSpawned->GameObject.Position = player->GameObject.Position;
+		pSpawned->GameObject.DefaultPosition = player->GameObject.Position;
+		pSpawned->GameObject.Rotation = player->GameObject.Rotation;
+		pSpawned->GameObject.DefaultRotation = player->GameObject.Rotation;
 
 		// Set name
 		for (int x = 0; x < name.Length; x++)
 		{
-			newCharacter->GameObject.Name[x] = (byte)name[x];
+			pSpawned->GameObject.Name[x] = (byte)name[x];
 		}
 
-		newCharacter->GameObject.Name[name.Length] = 0;
+		pSpawned->GameObject.Name[name.Length] = 0;
 
-		newCharacter->GameObject.DisableDraw();
-		newCharacter->CopyFromCharacter(newCharacter, Character.CopyFlags.None); // Some tools get confused (Like Penumbra) unless we copy onto ourselves after name change
-		newCharacter->GameObject.EnableDraw();
+		pSpawned->GameObject.DisableDraw();
+		pSpawned->CopyFromCharacter(pSpawned, Character.CopyFlags.None); // Some tools get confused (Like Penumbra) unless we copy onto ourselves after name change
+		pSpawned->GameObject.EnableDraw();
 
 		CreatedIndexes.Add(spawnedActorId);
 
 		this.Log.Information($"Spawning actor {name} with id {spawnedActorId}");
 
-		return true;
+		return (Actor*)pSpawned;
 	}
 
 	private async Task WatchGPose()
