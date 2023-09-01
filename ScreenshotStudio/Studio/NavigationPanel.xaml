@@ -27,15 +27,21 @@
 				</Style>
 			</StackPanel.Resources>
 
-			<Button ToolTip="{DynamicResource Library}">
+			<Button
+				IsEnabled="False"
+				ToolTip="{DynamicResource Library}">
 				<xivToolsWpf:IconBlock Icon="Books" />
 			</Button>
 
-			<Button ToolTip="{DynamicResource TimeWeather}">
+			<Button
+				IsEnabled="False"
+				ToolTip="{DynamicResource TimeWeather}">
 				<xivToolsWpf:IconBlock Icon="CloudMoonRain" />
 			</Button>
 
-			<Button ToolTip="{DynamicResource Camera}">
+			<Button
+				IsEnabled="False"
+				ToolTip="{DynamicResource Camera}">
 				<xivToolsWpf:IconBlock Icon="CameraMovie" />
 			</Button>
 
@@ -48,8 +54,10 @@
 				X1="0"
 				X2="1" />
 
-			<Button ToolTip="{DynamicResource Customize}">
-				<xivToolsWpf:IconBlock Icon="UserAlt" />
+			<Button
+				Click="OnCustomizeClicked"
+				ToolTip="{DynamicResource Customize}">
+				<xivToolsWpf:IconBlock Icon="UserEdit" />
 			</Button>
 
 			<Button
@@ -58,11 +66,15 @@
 				<xivToolsWpf:IconBlock Icon="HelmetBattle" />
 			</Button>
 
-			<Button ToolTip="{DynamicResource ShaderParameters}">
+			<Button
+				IsEnabled="False"
+				ToolTip="{DynamicResource ShaderParameters}">
 				<xivToolsWpf:IconBlock Icon="PaintBrush" />
 			</Button>
 
-			<Button ToolTip="{DynamicResource Pose}">
+			<Button
+				IsEnabled="False"
+				ToolTip="{DynamicResource Pose}">
 				<xivToolsWpf:IconBlock Icon="Running" />
 			</Button>
 
@@ -75,7 +87,9 @@
 				X1="0"
 				X2="1" />
 
-			<Button ToolTip="{DynamicResource Settings}">
+			<Button
+				IsEnabled="False"
+				ToolTip="{DynamicResource Settings}">
 				<xivToolsWpf:IconBlock Icon="cogs" />
 			</Button>
 
