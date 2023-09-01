@@ -5,7 +5,7 @@ namespace ScreenshotStudio.GameData.Excel;
 
 using ScreenshotStudio.Tags;
 
-public enum Genders
+public enum Genders : byte
 {
 	Masculine,
 	Feminine,
