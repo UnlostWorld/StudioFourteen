@@ -117,6 +117,11 @@ public abstract partial class Panel : Window, IAutoNotify
 		this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 	}
 
+	public virtual bool ShouldTickAutoProperties()
+	{
+		return this.IsVisible;
+	}
+
 	protected virtual Style GetDefaultStyle() => (Style)this.FindResource("PanelStyle");
 
 	protected virtual void OnLoaded(object sender, RoutedEventArgs e)
@@ -188,7 +193,15 @@ public abstract partial class Panel : Window, IAutoNotify
 			}
 
 			this.Log.Information($"Panel: {this.panelType} has started");
-			System.Windows.Threading.Dispatcher.Run();
+			try
+			{
+				System.Windows.Threading.Dispatcher.Run();
+			}
+			catch(Exception ex)
+			{
+				this.Log.Error(ex, $"Error in {this.panelType} thread");
+			}
+
 			this.Log.Information($"Panel: {this.panelType} has shutdown");
 		}
 	}
