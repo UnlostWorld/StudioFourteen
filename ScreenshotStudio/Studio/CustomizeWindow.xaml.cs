@@ -9,17 +9,10 @@ using ScreenshotStudio.Services;
 using ScreenshotStudio.GameData.Excel;
 using ScreenshotStudio.GameData;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
-using ImGuiNET;
-using System.ComponentModel;
 using ScreenshotStudio.Plugin;
 
 public partial class CustomizeWindow : PanelWindow
 {
-	public CustomizeWindow()
-	{
-		this.PropertyChanged += this.OnSelfPropertyChanged;
-	}
-
 	public DataSheet<Race>? Races => this.Services.Data.GetSheet<Race>();
 	public DataSheet<Tribe>? Tribes => this.Services.Data.GetSheet<Tribe>();
 
@@ -40,7 +33,12 @@ public partial class CustomizeWindow : PanelWindow
 				return;
 
 			this.Customize.Race = (Race.RaceRows)value.RowId;
+			this.NotifyPropertyChanged(nameof(CustomizeWindow.Race));
+
 			this.Customize.Tribe = (Tribe.TribeRows)tribe.RowId;
+			this.NotifyPropertyChanged(nameof(CustomizeWindow.Tribe));
+
+			this.Apply(true);
 		}
 	}
 
@@ -69,7 +67,14 @@ public partial class CustomizeWindow : PanelWindow
 	public Tribe? Tribe
 	{
 		get => this.Tribes?.GetRow((int)this.Customize.Tribe);
-		set => this.Customize.Tribe = value != null ? (Tribe.TribeRows)value.RowId : Tribe.TribeRows.Midlander;
+		set
+		{
+			if (value == null)
+				return;
+
+			this.Customize.Tribe = (Tribe.TribeRows)value.RowId;
+			this.Apply(true);
+		}
 	}
 
 	[AutoNotify]
@@ -228,18 +233,6 @@ public partial class CustomizeWindow : PanelWindow
 			return false;
 
 		return base.ShouldTickAutoProperties();
-	}
-
-	private void OnSelfPropertyChanged(object? sender, PropertyChangedEventArgs e)
-	{
-		this.Log.Information($"Changed {e.PropertyName}");
-
-		bool needsRedraw = e.PropertyName == nameof(CustomizeWindow.Race)
-			|| e.PropertyName == nameof(CustomizeWindow.Tribe)
-			|| e.PropertyName == nameof(CustomizeWindow.Gender)
-			|| e.PropertyName == nameof(CustomizeWindow.Face);
-
-		this.Apply(needsRedraw);
 	}
 
 	private unsafe void Apply(bool redraw)
