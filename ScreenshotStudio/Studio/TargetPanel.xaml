@@ -18,7 +18,8 @@
 
 	<StackPanel
 		Margin="1"
-		Orientation="Horizontal">
+		Orientation="Horizontal"
+		Visibility="{Binding IsInGPose, Converter={StaticResource B2V}}">
 		<Border
 			Margin="1"
 			Style="{DynamicResource XivToolsControlBorder}">

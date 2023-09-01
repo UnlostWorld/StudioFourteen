@@ -4,6 +4,7 @@
 namespace ScreenshotStudio.Studio;
 
 using ScreenshotStudio.Library;
+using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Structs;
 using ScreenshotStudio.Tags;
@@ -23,6 +24,8 @@ public partial class TargetPanel : DockPanel
 	}
 
 	public List<ActorViewModel> Actors { get; init; } = new();
+
+	[AutoNotify] public bool IsInGPose => DalamudServices.PluginInterface.UiBuilder.GposeActive;
 
 	private void OnAddActorClicked(object sender, RoutedEventArgs e)
 	{
