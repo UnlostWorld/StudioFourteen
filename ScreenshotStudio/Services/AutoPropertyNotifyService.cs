@@ -115,7 +115,7 @@ public class AutoPropertyNotifyService : ServiceBase
 		public readonly WeakReference<IAutoNotify> Object;
 		public readonly List<PropertyInfo> Properties = new();
 
-		private object? lastValue = null;
+		private readonly Dictionary<PropertyInfo, object?> lastValues = new();
 
 		public TrackedObject(IAutoNotify obj)
 		{
@@ -130,6 +130,7 @@ public class AutoPropertyNotifyService : ServiceBase
 					continue;
 
 				this.Properties.Add(property);
+				this.lastValues.Add(property, property.GetValue(obj));
 			}
 		}
 
@@ -147,9 +148,13 @@ public class AutoPropertyNotifyService : ServiceBase
 				if (currentVal == null)
 					continue;
 
-				if (!currentVal.Equals(this.lastValue))
+				this.lastValues.TryGetValue(property, out object? lastValue);
+
+				if (!currentVal.Equals(lastValue))
 				{
-					this.lastValue = currentVal;
+					Logging.Shared.Information($"changed {property.Name} from {lastValue} to {currentVal}");
+
+					this.lastValues[property] = currentVal;
 					notify.NotifyPropertyChanged(property.Name);
 				}
 			}
