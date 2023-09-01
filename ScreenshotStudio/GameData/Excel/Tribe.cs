@@ -31,6 +31,8 @@ public class Tribe : ExcelRow
 		Veena = 16,
 	}
 
+	public string Name => this.Masculine;
+
 	public string Feminine { get; private set; } = string.Empty;
 	public string Masculine { get; private set; } = string.Empty;
 
