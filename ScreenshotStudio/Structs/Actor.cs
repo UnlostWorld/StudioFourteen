@@ -14,6 +14,7 @@ namespace ScreenshotStudio.Structs;
 using System;
 using System.Runtime.InteropServices;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
+using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 
 [StructLayout(LayoutKind.Explicit, Size = 0x84A)]
 public struct Actor
@@ -34,6 +35,14 @@ public struct Actor
 			{
 				return ptr == null ? null : Marshal.PtrToStringUTF8((IntPtr)ptr);
 			}
+		}
+	}
+
+	public unsafe bool UpdateCustomize()
+	{
+		fixed (Customize* custom = &this.DrawData.Customize)
+		{
+			return ((Human*)this.Model)->UpdateDrawData((byte*)custom, true);
 		}
 	}
 }
