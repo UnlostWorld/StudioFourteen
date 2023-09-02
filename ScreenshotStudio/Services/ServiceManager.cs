@@ -15,7 +15,6 @@ public class ServiceManager
 
 	private ServiceManager()
 	{
-		this.services.Add(this.Targets);
 		this.services.Add(this.Panels);
 		this.services.Add(this.Data);
 		this.services.Add(this.AutoNotify);
@@ -36,7 +35,6 @@ public class ServiceManager
 
 	// Service properties for bindings
 	public AutoPropertyNotifyService AutoNotify { get; init; } = new();
-	public TargetService Targets { get; init; } = new();
 	public PanelService Panels { get; init; } = new();
 	public GameDataService Data { get; init; } = new();
 	public LibraryService Library { get; init; } = new();

@@ -16,16 +16,30 @@ using System;
 
 public partial class GearWindow : ActorWindow
 {
-	public ItemEquipViewModel Head { get; init; } = new(ItemSlots.Head);
-	public ItemEquipViewModel Chest { get; init; } = new(ItemSlots.Chest);
-	public ItemEquipViewModel Hands { get; init; } = new(ItemSlots.Hands);
-	public ItemEquipViewModel Legs { get; init; } = new(ItemSlots.Legs);
-	public ItemEquipViewModel Feet { get; init; } = new(ItemSlots.Feet);
-	public ItemEquipViewModel Earring { get; init; } = new(ItemSlots.Earring);
-	public ItemEquipViewModel Necklace { get; init; } = new(ItemSlots.Necklace);
-	public ItemEquipViewModel Bracelet { get; init; } = new(ItemSlots.Bracelet);
-	public ItemEquipViewModel RingRight { get; init; } = new(ItemSlots.RingRight);
-	public ItemEquipViewModel RingLeft { get; init; } = new(ItemSlots.RingLeft);
+	public GearWindow()
+	{
+		this.Head = new(ItemSlots.Head, this);
+		this.Chest = new(ItemSlots.Chest, this);
+		this.Hands = new(ItemSlots.Hands, this);
+		this.Legs = new(ItemSlots.Legs, this);
+		this.Feet = new(ItemSlots.Feet, this);
+		this.Earring = new(ItemSlots.Earring, this);
+		this.Necklace = new(ItemSlots.Necklace, this);
+		this.Bracelet = new(ItemSlots.Bracelet, this);
+		this.RingRight = new(ItemSlots.RingRight, this);
+		this.RingLeft = new(ItemSlots.RingLeft, this);
+	}
+
+	public ItemEquipViewModel Head { get; init; }
+	public ItemEquipViewModel Chest { get; init; }
+	public ItemEquipViewModel Hands { get; init; }
+	public ItemEquipViewModel Legs { get; init; }
+	public ItemEquipViewModel Feet { get; init; }
+	public ItemEquipViewModel Earring { get; init; }
+	public ItemEquipViewModel Necklace { get; init; }
+	public ItemEquipViewModel Bracelet { get; init; }
+	public ItemEquipViewModel RingRight { get; init; }
+	public ItemEquipViewModel RingLeft { get; init; }
 
 	private void OnChangeClicked(object sender, RoutedEventArgs e)
 	{
@@ -50,10 +64,12 @@ public partial class GearWindow : ActorWindow
 public class ItemEquipViewModel : ViewModel
 {
 	public readonly ItemSlots Slot;
+	private readonly GearWindow window;
 	private Item? item;
 
-	public ItemEquipViewModel(ItemSlots slot)
+	public ItemEquipViewModel(ItemSlots slot, GearWindow window)
 	{
+		this.window = window;
 		this.Slot = slot;
 	}
 
@@ -67,7 +83,7 @@ public class ItemEquipViewModel : ViewModel
 	[AutoNotify]
 	public ushort Base
 	{
-		get => this.IsValid ? this.ItemEquip.Base : (ushort)0;
+		get => this.ItemEquip.Base;
 		set
 		{
 			this.ItemEquip.Base = value;
@@ -78,7 +94,7 @@ public class ItemEquipViewModel : ViewModel
 	[AutoNotify]
 	public byte Variant
 	{
-		get => this.IsValid ? this.ItemEquip.Variant : (byte)0;
+		get => this.ItemEquip.Variant;
 		set
 		{
 			this.ItemEquip.Variant = value;
@@ -89,7 +105,7 @@ public class ItemEquipViewModel : ViewModel
 	[AutoNotify]
 	public byte Dye
 	{
-		get => this.IsValid ? this.ItemEquip.Dye : (byte)0;
+		get => this.ItemEquip.Dye;
 		set => this.ItemEquip.Dye = value;
 	}
 
@@ -98,7 +114,7 @@ public class ItemEquipViewModel : ViewModel
 	{
 		get
 		{
-			if (!this.IsValid)
+			if (!this.window.HasValidTarget)
 				return null;
 
 			if (this.item == null || !this.item.IsItemEquip(this.ItemEquip))
@@ -121,10 +137,7 @@ public class ItemEquipViewModel : ViewModel
 		}
 	}
 
-	protected unsafe Actor* Actor => this.Services.Targets.GPoseTarget;
-	protected unsafe ref Equipment Equipment => ref this.Actor->DrawData.Equipment;
-
-	protected bool IsValid => this.Services.Targets.HasTarget;
+	protected unsafe ref Equipment Equipment => ref this.window.Actor->DrawData.Equipment;
 
 	protected ref ItemEquip ItemEquip
 	{
@@ -150,8 +163,10 @@ public class ItemEquipViewModel : ViewModel
 		}
 	}
 
+	public override bool ShouldTickAutoProperties() => this.window.ShouldTickAutoProperties();
+
 	public unsafe void ApplyChangeItem()
 	{
-		ActorDrawDataExtensions.ChangeEquip(&this.Actor->DrawData, this.Slot, this.ItemEquip);
+		ActorDrawDataExtensions.ChangeEquip(&this.window.Actor->DrawData, this.Slot, this.ItemEquip);
 	}
 }

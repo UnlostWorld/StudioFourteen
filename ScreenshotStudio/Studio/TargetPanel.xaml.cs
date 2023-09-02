@@ -3,6 +3,7 @@
 
 namespace ScreenshotStudio.Studio;
 
+using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using ScreenshotStudio.Library;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
@@ -13,11 +14,16 @@ using System;
 using System.Collections.Generic;
 using System.Windows;
 
+using NativeObject = FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject;
+
 public partial class TargetPanel : DockPanel
 {
+	public const int GPoseActorCount = 39;
+	public const int GPoseFirstActor = 201;
+
 	public TargetPanel()
 	{
-		for (int i = TargetService.GPoseFirstActor; i < TargetService.GPoseFirstActor + TargetService.GPoseActorCount; ++i)
+		for (int i = GPoseFirstActor; i < GPoseFirstActor + GPoseActorCount; ++i)
 		{
 			this.Actors.Add(new(i));
 		}
@@ -62,7 +68,7 @@ public unsafe class ActorViewModel : ViewModel
 		this.ObjectTableIndex = index;
 	}
 
-	[AutoNotify] public IntPtr Address => this.Services.Targets.GetObjectTable(this.ObjectTableIndex);
+	[AutoNotify] public IntPtr Address => DalamudServices.ObjectTable.GetObjectAddress(this.ObjectTableIndex);
 	[AutoNotify] public bool IsValid => this.Address != IntPtr.Zero;
 	[AutoNotify] public unsafe Actor* Actor => (Actor*)this.Address;
 
@@ -88,7 +94,7 @@ public unsafe class ActorViewModel : ViewModel
 			if (!this.IsValid)
 				return false;
 
-			return this.Services.Targets.GPoseTarget == this.Actor;
+			return (Actor*)TargetSystem.Instance()->GPoseTarget == this.Actor;
 		}
 
 		set
@@ -96,7 +102,7 @@ public unsafe class ActorViewModel : ViewModel
 			if (!this.IsValid)
 				return;
 
-			this.Services.Targets.GPoseTarget = this.Actor;
+			TargetSystem.Instance()->GPoseTarget = (NativeObject*)this.Actor;
 		}
 	}
 }
