@@ -9,6 +9,7 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using XivToolsWpf.Converters;
 using XivToolsWpf.Extensions;
 
 public class AutoPropertyNotifyService : ServiceBase
@@ -114,6 +115,7 @@ public class AutoPropertyNotifyService : ServiceBase
 	{
 		public readonly WeakReference<IAutoNotify> Object;
 		public readonly List<PropertyInfo> Properties = new();
+		public readonly List<PropertyInfo> AlwaysProperties = new();
 
 		private readonly Dictionary<PropertyInfo, object?> lastValues = new();
 
@@ -126,11 +128,18 @@ public class AutoPropertyNotifyService : ServiceBase
 			foreach (PropertyInfo property in properties)
 			{
 				AutoNotifyAttribute? attribute = property.GetCustomAttribute<AutoNotifyAttribute>();
-				if (attribute == null)
-					continue;
+				if (attribute != null)
+				{
+					this.Properties.Add(property);
+					this.lastValues.TryAdd(property, null);
+				}
 
-				this.Properties.Add(property);
-				this.lastValues.Add(property, property.GetValue(obj));
+				AlwaysNotifyAttribute? alwaysAtribute = property.GetCustomAttribute<AlwaysNotifyAttribute>();
+				if (alwaysAtribute != null)
+				{
+					this.AlwaysProperties.Add(property);
+					this.lastValues.TryAdd(property, null);
+				}
 			}
 		}
 
@@ -139,32 +148,47 @@ public class AutoPropertyNotifyService : ServiceBase
 			if (!this.Object.TryGetTarget(out IAutoNotify? notify))
 				return false;
 
+			foreach (PropertyInfo property in this.AlwaysProperties)
+			{
+				this.Tick(property, notify);
+			}
+
 			if (!notify.ShouldTickAutoProperties())
 				return true;
 
 			foreach (PropertyInfo property in this.Properties)
 			{
-				object? currentVal = property.GetValue(notify);
-				if (currentVal == null)
-					continue;
-
-				this.lastValues.TryGetValue(property, out object? lastValue);
-
-				if (!currentVal.Equals(lastValue))
-				{
-					////Logging.Shared.Information($"Changed {property.Name} from {lastValue} to {currentVal}");
-					this.lastValues[property] = currentVal;
-					notify.NotifyPropertyChanged(property.Name);
-				}
+				this.Tick(property, notify);
 			}
 
 			return true;
+		}
+
+		private void Tick(PropertyInfo property, IAutoNotify notify)
+		{
+			object? currentVal = property.GetValue(notify);
+			if (currentVal == null)
+				return;
+
+			this.lastValues.TryGetValue(property, out object? lastValue);
+
+			if (!currentVal.Equals(lastValue))
+			{
+				////Logging.Shared.Information($"Changed {property.Name} from {lastValue} to {currentVal}");
+				this.lastValues[property] = currentVal;
+				notify.NotifyPropertyChanged(property.Name);
+			}
 		}
 	}
 }
 
 [AttributeUsage(AttributeTargets.Property)]
 public class AutoNotifyAttribute : Attribute
+{
+}
+
+[AttributeUsage(AttributeTargets.Property)]
+public class AlwaysNotifyAttribute : Attribute
 {
 }
 
