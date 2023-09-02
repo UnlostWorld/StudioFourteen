@@ -3,6 +3,7 @@
 
 namespace ScreenshotStudio.Services;
 
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using ScreenshotStudio.GameData;
@@ -12,6 +13,7 @@ public class ServiceManager
 {
 	private static ServiceManager? instance;
 	private readonly List<ServiceBase> services = new();
+	private bool isRunning = false;
 
 	private ServiceManager()
 	{
@@ -20,6 +22,7 @@ public class ServiceManager
 		this.services.Add(this.AutoNotify);
 		this.services.Add(this.Library);
 		this.services.Add(this.ActorLifecycle);
+		this.services.Add(this.Studio);
 	}
 
 	public static ServiceManager Instance
@@ -39,13 +42,16 @@ public class ServiceManager
 	public GameDataService Data { get; init; } = new();
 	public LibraryService Library { get; init; } = new();
 	public ActorLifecycleService ActorLifecycle { get; init; } = new();
+	public StudioService Studio { get; init; } = new();
 
 	/// <summary>
 	/// Initialize and Start all services.
 	/// </summary>
 	public async Task Start()
 	{
-		foreach(ServiceBase service in this.services)
+		this.isRunning = true;
+
+		foreach (ServiceBase service in this.services)
 		{
 			await service.Initialize();
 		}
@@ -54,6 +60,8 @@ public class ServiceManager
 		{
 			await service.Start();
 		}
+
+		_ = Task.Run(async () => await this.Tick());
 	}
 
 	/// <summary>
@@ -61,6 +69,8 @@ public class ServiceManager
 	/// </summary>
 	public async Task Stop()
 	{
+		this.isRunning = false;
+
 		foreach (ServiceBase service in this.services)
 		{
 			await service.Stop();
@@ -69,6 +79,29 @@ public class ServiceManager
 		foreach (ServiceBase service in this.services)
 		{
 			await service.Shutdown();
+		}
+	}
+
+	private async Task Tick()
+	{
+		while (this.isRunning)
+		{
+			foreach (ServiceBase service in this.services)
+			{
+				await Task.Delay(10);
+
+				try
+				{
+					if (service.IsAlive)
+					{
+						await service.Tick();
+					}
+				}
+				catch (Exception ex)
+				{
+					Logging.Shared.Error(ex, "Error ticking services");
+				}
+			}
 		}
 	}
 }

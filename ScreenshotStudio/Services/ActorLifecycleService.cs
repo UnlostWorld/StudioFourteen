@@ -38,8 +38,6 @@ public class ActorLifecycleService : ServiceBase
 	public override async Task Start()
 	{
 		await base.Start();
-		this.WatchGPose().Run();
-
 		this.Attach();
 	}
 
@@ -48,6 +46,24 @@ public class ActorLifecycleService : ServiceBase
 		await base.Stop();
 		this.Detatch();
 		this.DestroyAllCreated();
+	}
+
+	public override Task Tick()
+	{
+		try
+		{
+			if (!DalamudServices.PluginInterface.UiBuilder.GposeActive && CreatedIndexes.Count > 0)
+			{
+				this.DestroyAllCreated();
+				this.Log.Warning("Left GPose with spawned actors. deleting...");
+			}
+		}
+		catch (Exception ex)
+		{
+			this.Log.Error(ex, "Error checking gpose state");
+		}
+
+		return base.Tick();
 	}
 
 	public unsafe void Create(IActorAppearance? appearance = null)
@@ -173,26 +189,5 @@ public class ActorLifecycleService : ServiceBase
 		this.Log.Information($"Spawning actor {name} with id {spawnedActorId}");
 
 		return (Actor*)pSpawned;
-	}
-
-	private async Task WatchGPose()
-	{
-		while (this.IsAlive)
-		{
-			try
-			{
-				if (!DalamudServices.PluginInterface.UiBuilder.GposeActive && CreatedIndexes.Count > 0)
-				{
-					this.DestroyAllCreated();
-					this.Log.Warning("Left GPose with spawned actors. deleting...");
-				}
-			}
-			catch (Exception ex)
-			{
-				this.Log.Error(ex, "Error checking gpose state");
-			}
-
-			await Task.Delay(10);
-		}
 	}
 }

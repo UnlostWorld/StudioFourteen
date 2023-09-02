@@ -44,6 +44,11 @@ public abstract class ServiceBase : INotifyPropertyChanged
 		return Task.CompletedTask;
 	}
 
+	public virtual Task Tick()
+	{
+		return Task.CompletedTask;
+	}
+
 	protected virtual void RaisePropertyChanged([CallerMemberName]string propertyName = "")
 	{
 		this.PropertyChanged?.Invoke(this, new(propertyName));

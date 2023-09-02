@@ -46,12 +46,6 @@ public class AutoPropertyNotifyService : ServiceBase
 		}
 	}
 
-	public override async Task Start()
-	{
-		await base.Start();
-		this.TickTask().Run();
-	}
-
 	public override Task Stop()
 	{
 		lock (TrackedObjects)
@@ -63,52 +57,49 @@ public class AutoPropertyNotifyService : ServiceBase
 		return base.Stop();
 	}
 
+	public override Task Tick()
+	{
+		try
+		{
+			if (TrackedObjects.Count > 0)
+			{
+				List<TrackedObject> objects;
+				lock (TrackedObjects)
+				{
+					objects = new(TrackedObjects);
+				}
+
+				for (int i = objects.Count - 1; i >= 0; i--)
+				{
+					bool alive = objects[i].Tick();
+					if (!alive)
+					{
+						Remove(objects[i]);
+					}
+				}
+			}
+
+			lock (TrackedObjects)
+			{
+				foreach (TrackedObject tracked in DeadObjects)
+				{
+					TrackedObjects.Remove(tracked);
+				}
+			}
+
+			DeadObjects.Clear();
+		}
+		catch (Exception ex)
+		{
+			this.Log.Error(ex, "error ticking auto properties");
+		}
+
+		return base.Tick();
+	}
+
 	private static void Remove(TrackedObject obj)
 	{
 		DeadObjects.Add(obj);
-	}
-
-	private async Task TickTask()
-	{
-		while (this.IsAlive)
-		{
-			await Task.Delay(10);
-
-			try
-			{
-				if (TrackedObjects.Count > 0)
-				{
-					List<TrackedObject> objects;
-					lock (TrackedObjects)
-					{
-						objects = new(TrackedObjects);
-					}
-
-					for (int i = objects.Count - 1; i >= 0; i--)
-					{
-						bool alive = objects[i].Tick();
-						if (!alive)
-						{
-							Remove(objects[i]);
-						}
-					}
-				}
-
-				lock (TrackedObjects)
-				{
-					foreach (TrackedObject tracked in DeadObjects)
-					{
-						TrackedObjects.Remove(tracked);
-					}
-				}
-
-				DeadObjects.Clear();
-			}
-			catch(Exception ex)
-			{
-				this.Log.Error(ex, "error ticking auto properties");
-			}
-		}
 	}
 
 	private class TrackedObject
