@@ -1,0 +1,67 @@
+﻿// © XivTools.
+// Licensed under the MIT license.
+
+namespace ScreenshotStudio.Studio.Customize;
+
+using ScreenshotStudio.GameData.Excel;
+using System.ComponentModel;
+using System.Windows.Controls;
+using XivToolsWpf.DependencyProperties;
+
+public partial class CustomizeNumberOption : UserControl, INotifyPropertyChanged
+{
+	public static IBind<byte> ValueDp = Binder.Register<byte, CustomizeNumberOption>(nameof(Value), OnValueChanged);
+	public static IBind<CharaMakeType.Menu?> MenuDp = Binder.Register<CharaMakeType.Menu?, CustomizeNumberOption>(nameof(Menu), OnMenuChanged);
+	private bool manualEntry;
+
+	public CustomizeNumberOption()
+	{
+		this.InitializeComponent();
+		this.ContentArea.DataContext = this;
+	}
+
+	public event PropertyChangedEventHandler? PropertyChanged;
+
+	public bool ManualEntry
+	{
+		get => this.manualEntry;
+		set
+		{
+			this.manualEntry = value;
+			this.PropertyChanged?.Invoke(this, new(nameof(CustomizeNumberOption.ManualEntry)));
+		}
+	}
+
+	public byte Value
+	{
+		get => ValueDp.Get(this);
+		set => ValueDp.Set(this, value);
+	}
+
+	public CharaMakeType.Menu? Menu
+	{
+		get => MenuDp.Get(this);
+		set => MenuDp.Set(this, value);
+	}
+
+	////[AlsoNotifyFor(nameof(Menu), nameof(Value))]
+	public CharaMakeType.Menu.Option? Option
+	{
+		get => this.Menu?.GetOption(this.Value);
+		set => this.Value = value?.Value ?? this.Menu?.InitVal ?? 0;
+	}
+
+	public static void OnValueChanged(CustomizeNumberOption sender, byte newalue)
+	{
+		sender.PropertyChanged?.Invoke(sender, new(nameof(Option)));
+	}
+
+	public static void OnMenuChanged(CustomizeNumberOption sender, CharaMakeType.Menu? newalue)
+	{
+		sender.PropertyChanged?.Invoke(sender, new(nameof(Option)));
+
+		// A bit of a hack, but as the selected value has not changed, while the list of options has,
+		// refresh the selector so it shows the correct selected item.
+		sender.ValueList.SelectedItem = sender.Value;
+	}
+}

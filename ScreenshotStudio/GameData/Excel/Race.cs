@@ -28,6 +28,7 @@ public class Race : LibraryExcelRow
 		Count,
 	}
 
+	public RaceRows RowEnum => (RaceRows)this.RowId;
 	public string Name => this.Masculine;
 
 	public string Feminine { get; private set; } = string.Empty;
