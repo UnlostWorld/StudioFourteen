@@ -10,11 +10,14 @@ using ScreenshotStudio.GameData.Excel;
 using ScreenshotStudio.GameData;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using ScreenshotStudio.Plugin;
+using System.Collections.Generic;
 
 public partial class CustomizeWindow : PanelWindow
 {
 	public DataSheet<Race>? Races => this.Services.Data.GetSheet<Race>();
 	public DataSheet<Tribe>? Tribes => this.Services.Data.GetSheet<Tribe>();
+
+	public IEnumerable<Race?>? AvailableRaces => this.Services.Data.GetSheet<Race>()?.GetFrom(1);
 
 	[AutoNotify] public unsafe bool HasValidTarget => this.Actor != null;
 	[AutoNotify] public unsafe string? ActorName => this.HasValidTarget ? this.Target->Name : "Nobody";
@@ -43,6 +46,20 @@ public partial class CustomizeWindow : PanelWindow
 	}
 
 	[AutoNotify]
+	public Tribe? Tribe
+	{
+		get => this.Tribes?.GetRow((int)this.Customize.Tribe);
+		set
+		{
+			if (value == null)
+				return;
+
+			this.Customize.Tribe = (Tribe.TribeRows)value.RowId;
+			this.Apply(true);
+		}
+	}
+
+	[AutoNotify]
 	public Genders Gender
 	{
 		get => this.Customize.Gender;
@@ -61,20 +78,6 @@ public partial class CustomizeWindow : PanelWindow
 	{
 		get => this.Customize.Height;
 		set { }
-	}
-
-	[AutoNotify]
-	public Tribe? Tribe
-	{
-		get => this.Tribes?.GetRow((int)this.Customize.Tribe);
-		set
-		{
-			if (value == null)
-				return;
-
-			this.Customize.Tribe = (Tribe.TribeRows)value.RowId;
-			this.Apply(true);
-		}
 	}
 
 	[AutoNotify]

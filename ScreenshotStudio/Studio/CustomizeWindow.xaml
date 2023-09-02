@@ -28,7 +28,7 @@
 
 				<ComboBox
 					Grid.Column="0"
-					ItemsSource="{Binding Races}"
+					ItemsSource="{Binding AvailableRaces}"
 					SelectedItem="{Binding Race}">
 					<ComboBox.ItemTemplate>
 						<DataTemplate>
