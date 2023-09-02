@@ -8,7 +8,7 @@
 	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
 	xmlns:xivToolsWpf="clr-namespace:XivToolsWpf.Controls;assembly=XivToolsWpf"
 	Title="{DynamicResource Customize}"
-	Width="350"
+	Width="300"
 	Height="450"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
@@ -18,36 +18,28 @@
 
 	<ScrollViewer>
 		<StackPanel IsEnabled="{Binding HasValidTarget}">
-			<Grid
-				Grid.Row="0"
-				Grid.Column="1">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition />
-					<ColumnDefinition />
-				</Grid.ColumnDefinitions>
 
-				<ComboBox
-					Grid.Column="0"
-					ItemsSource="{Binding AvailableRaces}"
-					SelectedItem="{Binding Race}">
-					<ComboBox.ItemTemplate>
-						<DataTemplate>
-							<TextBlock Text="{Binding Name}" />
-						</DataTemplate>
-					</ComboBox.ItemTemplate>
-				</ComboBox>
+			<ComboBox
+				Grid.Column="0"
+				ItemsSource="{Binding AvailableRaces}"
+				SelectedItem="{Binding Race}">
+				<ComboBox.ItemTemplate>
+					<DataTemplate>
+						<TextBlock Text="{Binding Name}" />
+					</DataTemplate>
+				</ComboBox.ItemTemplate>
+			</ComboBox>
 
-				<ComboBox
-					Grid.Column="1"
-					ItemsSource="{Binding Race.Tribes}"
-					SelectedItem="{Binding Tribe}">
-					<ComboBox.ItemTemplate>
-						<DataTemplate>
-							<TextBlock Text="{Binding Name}" />
-						</DataTemplate>
-					</ComboBox.ItemTemplate>
-				</ComboBox>
-			</Grid>
+			<ListBox
+				ItemsSource="{Binding Race.Tribes}"
+				SelectedItem="{Binding Tribe}"
+				Style="{DynamicResource XivToolsSwitchSelector}">
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<TextBlock Text="{Binding Name}" />
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
 
 
 		</StackPanel>
