@@ -149,24 +149,33 @@ public abstract partial class Panel : Window, IAutoNotify
 
 		public async Task<Panel?> Start(Type panelType)
 		{
-			this.panelType = panelType;
-
-			Thread panelMainThread = new Thread(this.PanelMainThread);
-			panelMainThread.SetApartmentState(ApartmentState.STA);
-			panelMainThread.Start(this);
-
-			// Wait for the panel to load for up to 5 seconds.
-			int timeOut = 5000;
-			while (this.panel == null && timeOut > 0)
+			try
 			{
-				await Task.Delay(10);
-				timeOut -= 10;
+				this.panelType = panelType;
+
+				Thread panelMainThread = new Thread(this.PanelMainThread);
+				panelMainThread.SetApartmentState(ApartmentState.STA);
+				panelMainThread.Start(this);
+
+				// Wait for the panel to load for up to 5 seconds.
+				int timeOut = 5000;
+				while (this.panel == null && timeOut > 0)
+				{
+					await Task.Delay(10);
+					timeOut -= 10;
+				}
+
+				if (this.panel == null)
+					this.Log.Error($"Failed to create panel window {this.panelType}");
+
+				return this.panel;
+			}
+			catch (Exception ex)
+			{
+				this.Log.Error(ex, $"Failed to create panel window {this.panelType}");
 			}
 
-			if (this.panel == null)
-				this.Log.Error($"Failed to create panel window {this.panelType}");
-
-			return this.panel;
+			return null;
 		}
 
 		private void PanelMainThread(object? param)
