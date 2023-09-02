@@ -13,6 +13,7 @@
 	Height="450"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
+	d:DesignHeight="1024"
 	Subtitle="{Binding ActorName}"
 	TitleIcon="UserEdit"
 	mc:Ignorable="d">
@@ -189,12 +190,69 @@
 
 			<!--  Skin Color  -->
 			<TextBlock
-				Style="{StaticResource LeftLabel}"
+				Style="{DynamicResource LeftLabel}"
 				Text="{Binding MakeType.SkinTones.Name}" />
-
 			<customize:CustomizeColorOption
 				Menu="{Binding MakeType.SkinTones}"
 				Value="{Binding SkinTone}" />
+
+			<!--  Hairstyle  -->
+			<TextBlock
+				Style="{DynamicResource LeftLabel}"
+				Text="{Binding MakeType.Hairs.Name}" />
+
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="80" />
+					<ColumnDefinition />
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition />
+					<RowDefinition />
+					<RowDefinition />
+				</Grid.RowDefinitions>
+
+				<customize:CustomizeIconOption
+					Grid.RowSpan="2"
+					Grid.Column="0"
+					Margin="0,0,1,0"
+					Menu="{Binding MakeType.Hairs}"
+					Value="{Binding Hair}" />
+
+				<xivToolsWpf:NumberBox
+					Grid.Row="0"
+					Grid.Column="1"
+					Grid.ColumnSpan="2"
+					Buttons="True"
+					Minimum="0"
+					Value="{Binding Hair}" />
+
+				<customize:CustomizeColorOption
+					Grid.Row="1"
+					Grid.Column="1"
+					Menu="{Binding MakeType.HairTones}"
+					Value="{Binding HairTone}" />
+
+				<Border
+					Grid.Row="2"
+					Height="26"
+					HorizontalAlignment="Right"
+					CornerRadius="6,0,0,6"
+					Style="{DynamicResource XivToolsControlBorder}">
+					<CheckBox
+						Background="Transparent"
+						IsChecked="{Binding EnableHighlights}" />
+				</Border>
+
+
+				<customize:CustomizeColorOption
+					Grid.Row="2"
+					Grid.Column="2"
+					CornerRadius="0,6,6,0"
+					IsEnabled="{Binding EnableHighlights}"
+					Menu="{Binding MakeType.HairTones}"
+					Value="{Binding Highlights}" />
+			</Grid>
 
 		</StackPanel>
 	</ScrollViewer>

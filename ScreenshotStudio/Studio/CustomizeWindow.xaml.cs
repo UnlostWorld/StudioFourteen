@@ -155,12 +155,12 @@ public partial class CustomizeWindow : PanelWindow
 	}
 
 	[AutoNotify]
-	public byte HighlightType
+	public bool EnableHighlights
 	{
-		get => this.Customize.HighlightType;
+		get => this.Customize.HighlightType != 0;
 		set
 		{
-			this.Customize.HighlightType = value;
+			this.Customize.HighlightType = value ? (byte)128 : (byte)0;
 			this.Apply(false);
 		}
 	}
