@@ -28,6 +28,21 @@
 			</StackPanel.Resources>
 
 			<Button
+				Click="OnCloseClicked"
+				ToolTip="{DynamicResource CloseScreenshotStudio}">
+				<xivToolsWpf:IconBlock Icon="Close" />
+			</Button>
+
+			<Line
+				Width="30"
+				Margin="3"
+				Stretch="Fill"
+				Stroke="{DynamicResource BackgroundLightBrush}"
+				StrokeThickness="1"
+				X1="0"
+				X2="1" />
+
+			<Button
 				IsEnabled="False"
 				ToolTip="{DynamicResource Library}">
 				<xivToolsWpf:IconBlock Icon="Books" />

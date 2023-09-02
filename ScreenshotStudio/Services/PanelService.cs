@@ -13,18 +13,6 @@ public class PanelService : ServiceBase
 {
 	public ObservableCollection<Panel> OpenPanels { get; init; } = new();
 
-	public override async Task Start()
-	{
-		await base.Start();
-
-		////await Panel.ShowAsync<HelloWorldWindow>();
-		await Panel.ShowAsync<TargetPanel>();
-		await Panel.ShowAsync<NavigationPanel>();
-		////await Panel.ShowAsync<InspectorPanel>();
-
-		////await Panel.ShowAsync<GearWindow>();
-	}
-
 	public override async Task Stop()
 	{
 		await base.Stop();

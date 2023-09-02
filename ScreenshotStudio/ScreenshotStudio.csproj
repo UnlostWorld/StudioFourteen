@@ -32,6 +32,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Resource Include="Assets\*.*" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<None Include="$(DalamudLibPath)\..\..\..\dalamud.boot.log" Link="dalamud.boot.log" />
 		<None Include="$(DalamudLibPath)\..\..\..\dalamud.log" Link="dalamud.log" />
 	</ItemGroup>
