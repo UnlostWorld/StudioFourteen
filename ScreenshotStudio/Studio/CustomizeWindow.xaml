@@ -91,7 +91,7 @@
 
 			<!--  Muscle Tone  -->
 			<TextBlock
-				Style="{StaticResource LeftLabel}"
+				Style="{DynamicResource LeftLabel}"
 				Text="{Binding MakeType.EarMuscleTailSizes.Name}"
 				Visibility="{Binding Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Hyur|Roegadyn}" />
 
@@ -103,16 +103,24 @@
 				Value="{Binding EarMuscleTailSize}" />
 
 			<!--  Bust Size  -->
+			<TextBlock
+				Style="{DynamicResource LeftLabel}"
+				Text="{Binding MakeType.Busts.Name}"
+				Visibility="{Binding Gender, Converter={StaticResource EnumToVisibility}, ConverterParameter=Feminine}" />
+			<xivToolsWpf:NumberBox
+				Maximum="{Binding MakeType.Busts.Max}"
+				Minimum="{Binding MakeType.Busts.Min}"
+				Slider="Absolute"
+				Visibility="{Binding Gender, Converter={StaticResource EnumToVisibility}, ConverterParameter=Feminine}"
+				Value="{Binding Bust}" />
+
 
 			<!--  Tail Shape  -->
 			<TextBlock
-				Style="{StaticResource LeftLabel}"
+				Style="{DynamicResource LeftLabel}"
 				Text="{Binding MakeType.TailEarsTypes.Name}"
 				Visibility="{Binding Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Hrothgar|Miqote|AuRa}" />
-			<Grid
-				Grid.Row="6"
-				Grid.Column="1"
-				Visibility="{Binding Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Hrothgar|Miqote|AuRa}">
+			<Grid Visibility="{Binding Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Hrothgar|Miqote|AuRa}">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
@@ -147,6 +155,46 @@
 					TickFrequency="1"
 					Value="{Binding EarMuscleTailSize}" />
 			</Grid>
+
+			<!--  Face  -->
+			<TextBlock
+				Style="{DynamicResource LeftLabel}"
+				Text="{Binding MakeType.Faces.Name}" />
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition />
+				</Grid.ColumnDefinitions>
+
+				<customize:CustomizeIconOption
+					Grid.RowSpan="2"
+					Grid.Column="0"
+					Margin="0,0,1,0"
+					Menu="{Binding MakeType.Faces}"
+					Value="{Binding Face}" />
+
+				<customize:CustomizeNumberOption
+					Grid.Row="0"
+					Grid.Column="1"
+					Menu="{Binding MakeType.Faces}"
+					Value="{Binding Face}" />
+
+
+			</Grid>
+
+			<!--  Skin Color  -->
+			<TextBlock
+				Style="{StaticResource LeftLabel}"
+				Text="{Binding MakeType.SkinTones.Name}" />
+
+			<customize:CustomizeColorOption
+				Menu="{Binding MakeType.SkinTones}"
+				Value="{Binding SkinTone}" />
 
 		</StackPanel>
 	</ScrollViewer>
