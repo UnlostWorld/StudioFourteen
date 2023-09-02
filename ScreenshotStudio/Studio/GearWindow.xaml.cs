@@ -12,11 +12,10 @@ using System.Windows;
 using ScreenshotStudio.Library;
 using System.Windows.Controls;
 using ScreenshotStudio.Tags;
+using System;
 
-public partial class GearWindow : PanelWindow
+public partial class GearWindow : ActorWindow
 {
-	[AutoNotify] public unsafe string? ActorName => this.TargetValid ? this.Target->Name : "Nobody";
-
 	public ItemEquipViewModel Head { get; init; } = new(ItemSlots.Head);
 	public ItemEquipViewModel Chest { get; init; } = new(ItemSlots.Chest);
 	public ItemEquipViewModel Hands { get; init; } = new(ItemSlots.Hands);

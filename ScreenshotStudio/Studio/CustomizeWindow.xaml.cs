@@ -11,7 +11,7 @@ using ScreenshotStudio.GameData;
 using ScreenshotStudio.Plugin;
 using System.Collections.Generic;
 
-public partial class CustomizeWindow : PanelWindow
+public partial class CustomizeWindow : ActorWindow
 {
 	private CharaMakeType? makeType;
 	private bool linkEyeColors = false;
@@ -20,9 +20,6 @@ public partial class CustomizeWindow : PanelWindow
 	public DataSheet<Tribe>? Tribes => this.Services.Data.GetSheet<Tribe>();
 
 	public IEnumerable<Race?>? AvailableRaces => this.Services.Data.GetSheet<Race>()?.GetFrom(1);
-
-	[AutoNotify] public unsafe bool HasValidTarget => this.Actor != null;
-	[AutoNotify] public unsafe string? ActorName => this.HasValidTarget ? this.Target->Name : "Nobody";
 
 	[AutoNotify]
 	public CharaMakeType? MakeType
@@ -436,7 +433,6 @@ public partial class CustomizeWindow : PanelWindow
 		}
 	}
 
-	protected unsafe Actor* Actor => this.Services.Targets.GPoseTarget;
 	protected unsafe ref Structs.Customize Customize => ref this.Actor->DrawData.Customize;
 
 	public override bool ShouldTickAutoProperties()

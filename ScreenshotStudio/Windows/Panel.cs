@@ -51,9 +51,6 @@ public abstract partial class Panel : Window, IAutoNotify
 		set => this.SetValue(ShowBackgroundProperty, value);
 	}
 
-	public unsafe Actor* Target => this.Services.Targets.GPoseTarget;
-	public unsafe bool TargetValid => (IntPtr)this.Services.Targets.GPoseTarget != IntPtr.Zero;
-
 	public static void Show<T>()
 		where T : Panel
 	{
