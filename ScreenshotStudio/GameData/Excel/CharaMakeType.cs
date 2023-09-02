@@ -7,6 +7,7 @@ using Anamnesis.Actor.Utilities;
 using Lumina.Data;
 using Lumina.Excel;
 using ScreenshotStudio.GameData.Sheets;
+using ScreenshotStudio.Structs;
 using System.Collections.Generic;
 using LuminaData = Lumina.GameData;
 
@@ -199,18 +200,18 @@ public class CharaMakeType : ExcelRow
 				this.FacialFeatureByFace[i].Options[j] = option;
 			}
 
-			this.FacialFeatureByFace[i].Options[0].Value = 1;
-			this.FacialFeatureByFace[i].Options[1].Value = 2;
-			this.FacialFeatureByFace[i].Options[2].Value = 4;
-			this.FacialFeatureByFace[i].Options[3].Value = 8;
-			this.FacialFeatureByFace[i].Options[4].Value = 16;
-			this.FacialFeatureByFace[i].Options[5].Value = 32;
-			this.FacialFeatureByFace[i].Options[6].Value = 64;
+			this.FacialFeatureByFace[i].Options[0].Value = Customize.FacialFeatures.First;
+			this.FacialFeatureByFace[i].Options[1].Value = Customize.FacialFeatures.Second;
+			this.FacialFeatureByFace[i].Options[2].Value = Customize.FacialFeatures.Third;
+			this.FacialFeatureByFace[i].Options[3].Value = Customize.FacialFeatures.Fourth;
+			this.FacialFeatureByFace[i].Options[4].Value = Customize.FacialFeatures.Fifth;
+			this.FacialFeatureByFace[i].Options[5].Value = Customize.FacialFeatures.Sixth;
+			this.FacialFeatureByFace[i].Options[6].Value = Customize.FacialFeatures.Seventh;
 
 			FacialFeatureOptions.Option legacyTattooOption = new();
 			////legacyTattooOption.Icon = // hmmm
 			this.FacialFeatureByFace[i].Options[7] = legacyTattooOption;
-			this.FacialFeatureByFace[i].Options[7].Value = 128;
+			this.FacialFeatureByFace[i].Options[7].Value = Customize.FacialFeatures.LegacyTattoo;
 		}
 
 		/*for (var i = 0; i < NumEquip; ++i)
@@ -340,9 +341,14 @@ public class CharaMakeType : ExcelRow
 		public byte Face { get; init; }
 		public Option[] Options { get; init; } = new Option[NumFeatures];
 
+		public override string ToString()
+		{
+			return $"Facial Feature Options for face {this.Face}";
+		}
+
 		public class Option
 		{
-			public byte Value { get; set; }
+			public Structs.Customize.FacialFeatures Value { get; set; }
 			public ImageReference? Icon { get; set; }
 			public bool Enabled => true;
 		}

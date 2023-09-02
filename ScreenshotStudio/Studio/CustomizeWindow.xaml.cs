@@ -222,6 +222,9 @@ public partial class CustomizeWindow : PanelWindow
 	}
 
 	[AutoNotify]
+	public CharaMakeType.FacialFeatureOptions? FacialFeatureOptions => this.MakeType?.GetFacialFeatures(this.Face);
+
+	[AutoNotify]
 	public byte FacialFeatureColor
 	{
 		get => this.Customize.FacialFeatureColor;

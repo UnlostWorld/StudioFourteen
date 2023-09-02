@@ -487,9 +487,9 @@
 			<TextBlock
 				Style="{DynamicResource LeftLabel}"
 				Text="{Binding MakeType.FacialFeatures.Name}" />
-			<!--<customize:CustomizeFacialFeaturesOption
+			<customize:CustomizeFacialFeaturesOption
 				FacialFeatures="{Binding FacialFeatureOptions}"
-				Value="{Binding FacialFeatures}" />-->
+				Value="{Binding FacialFeature}" />
 
 			<!--  Tattoo Color  -->
 			<TextBlock
