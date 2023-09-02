@@ -27,7 +27,7 @@ public class XivTexImage : Image
 		nameof(XivTexImage.Rect),
 		typeof(Rect),
 		typeof(XivTexImage),
-		new(new Rect(0, 0, 0, 0), OnRectChanged));
+		new(new Rect(0, 0, int.MaxValue, int.MaxValue), OnRectChanged));
 
 	protected readonly ILogger Log = Logging.ForContext<XivTexImage>();
 	private static readonly Dictionary<string, CroppedBitmap> Cache = new();
@@ -96,6 +96,9 @@ public class XivTexImage : Image
 			bmp.Freeze();
 
 			Int32Rect rect = new((int)this.Rect.X, (int)this.Rect.Y, (int)this.Rect.Width, (int)this.Rect.Height);
+			rect.Width = (int)Math.Min(bmp.Width, rect.Width);
+			rect.Height = (int)Math.Min(bmp.Height, rect.Height);
+
 			CroppedBitmap newSource = new CroppedBitmap(bmp, rect);
 			newSource.Freeze();
 			this.Source = newSource;
