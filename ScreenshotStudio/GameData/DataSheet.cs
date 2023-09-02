@@ -73,6 +73,21 @@ public class DataSheet<T> : DataSheet
 
 	public override bool Contains(Type targetType) => targetType.IsAssignableFrom(typeof(T));
 
+	public IEnumerable<T?> GetFrom(int startRow)
+	{
+		List<T?> results = new List<T?>();
+
+		if (startRow >= this.Count)
+			return results;
+
+		for (int i = startRow; i < this.Count; i++)
+		{
+			results.Add(this.GetRow(i));
+		}
+
+		return results;
+	}
+
 	protected override void GetAllTags(ref TagCollection tags)
 	{
 		foreach (T item in this)
