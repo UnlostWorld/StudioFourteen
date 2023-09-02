@@ -8,6 +8,8 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="clr-namespace:ScreenshotStudio.Studio.Customize"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	Height="26"
+	Margin="1"
 	mc:Ignorable="d">
 
 	<UserControl.Resources>
@@ -31,7 +33,7 @@
 
 		<Border
 			Grid.Column="0"
-			Margin="1,1,0,1"
+			Margin="0"
 			BorderBrush="{DynamicResource ControlBackgroundBrush}"
 			BorderThickness="2"
 			CornerRadius="{Binding LeftElementCornerRadius}"
@@ -43,13 +45,14 @@
 
 		<Border
 			Grid.Column="1"
-			Margin="2,2,0,2"
+			Margin="0"
 			CornerRadius="{Binding RightElementCornerRadius}"
 			Style="{DynamicResource XivToolsControlBorder}" />
 
 		<ComboBox
 			Grid.Column="0"
 			Height="26"
+			Margin="0"
 			Foreground="Black"
 			ItemsSource="{Binding Menu.Options}"
 			SelectedItem="{Binding Option}"
@@ -199,6 +202,7 @@
 
 		<controls:NumberBox
 			Grid.Column="1"
+			Margin="0"
 			BorderBrush="Transparent"
 			Buttons="True"
 			Maximum="255"

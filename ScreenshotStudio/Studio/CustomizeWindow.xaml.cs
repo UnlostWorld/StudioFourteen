@@ -14,6 +14,7 @@ using System.Collections.Generic;
 public partial class CustomizeWindow : PanelWindow
 {
 	private CharaMakeType? makeType;
+	private bool linkEyeColors = false;
 
 	public DataSheet<Race>? Races => this.Services.Data.GetSheet<Race>();
 	public DataSheet<Tribe>? Tribes => this.Services.Data.GetSheet<Tribe>();
@@ -254,6 +255,33 @@ public partial class CustomizeWindow : PanelWindow
 	}
 
 	[AutoNotify]
+	public byte MainEyeColor
+	{
+		get => this.LeftEyeColor;
+		set
+		{
+			if (this.LinkEyeColors)
+				this.RightEyeColor = value;
+
+			this.LeftEyeColor = value;
+		}
+	}
+
+	[AutoNotify]
+	public bool LinkEyeColors
+	{
+		get => this.linkEyeColors;
+		set
+		{
+			this.linkEyeColors = value;
+			if (value)
+			{
+				this.RightEyeColor = this.LeftEyeColor;
+			}
+		}
+	}
+
+	[AutoNotify]
 	public byte Eyes
 	{
 		get => this.Customize.Eyes;
@@ -262,6 +290,20 @@ public partial class CustomizeWindow : PanelWindow
 			this.Customize.Eyes = value;
 			this.Apply(false);
 		}
+	}
+
+	[AutoNotify]
+	public bool SmallIris
+	{
+		get => this.Eyes >= 128;
+		set => this.Eyes = (byte)(this.EyeShape + (value ? 128 : 0));
+	}
+
+	[AutoNotify]
+	public byte EyeShape
+	{
+		get => (byte)(this.Eyes - (this.SmallIris ? 128 : 0));
+		set => this.Eyes = (byte)(value + (this.SmallIris ? 128 : 0));
 	}
 
 	[AutoNotify]
@@ -295,6 +337,20 @@ public partial class CustomizeWindow : PanelWindow
 			this.Customize.MouthId = value;
 			this.Apply(false);
 		}
+	}
+
+	[AutoNotify]
+	public byte Mouth
+	{
+		get => (byte)(this.EnableLipColor ? this.MouthId - 128 : this.MouthId);
+		set => this.MouthId = (byte)(this.EnableLipColor ? value - 128 : value);
+	}
+
+	[AutoNotify]
+	public bool EnableLipColor
+	{
+		get => this.MouthId >= 128;
+		set => this.MouthId = (byte)(this.Mouth + (value ? 128 : 0));
 	}
 
 	[AutoNotify]
@@ -350,6 +406,20 @@ public partial class CustomizeWindow : PanelWindow
 			this.Customize.FacePaintId = value;
 			this.Apply(false);
 		}
+	}
+
+	[AutoNotify]
+	public bool FlipFacePaint
+	{
+		get => this.FacePaintId > 128;
+		set => this.FacePaintId = (byte)(this.FacePaint + (value ? 128 : 0));
+	}
+
+	[AutoNotify]
+	public byte FacePaint
+	{
+		get => (byte)(this.FacePaintId - (this.FlipFacePaint ? 128 : 0));
+		set => this.FacePaintId = (byte)(value + (this.FlipFacePaint ? 128 : 0));
 	}
 
 	[AutoNotify]
