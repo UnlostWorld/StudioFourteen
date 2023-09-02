@@ -152,8 +152,6 @@ public class AutoPropertyNotifyService : ServiceBase
 
 				if (!currentVal.Equals(lastValue))
 				{
-					Logging.Shared.Information($"changed {property.Name} from {lastValue} to {currentVal}");
-
 					this.lastValues[property] = currentVal;
 					notify.NotifyPropertyChanged(property.Name);
 				}
