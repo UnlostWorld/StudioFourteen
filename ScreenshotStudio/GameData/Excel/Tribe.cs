@@ -7,6 +7,7 @@ using Lumina.Data;
 using Lumina.Excel;
 using Lumina.Text;
 using ScreenshotStudio.Tags;
+using System.Collections.Generic;
 
 [Sheet("Tribe", 0xe74759fb)]
 public class Tribe : ExcelRow
@@ -36,12 +37,45 @@ public class Tribe : ExcelRow
 	public string Feminine { get; private set; } = string.Empty;
 	public string Masculine { get; private set; } = string.Empty;
 
+	public List<Ages> Ages { get; private set; } = new();
+
 	public override void PopulateData(RowParser parser, Lumina.GameData gameData, Language language)
 	{
 		base.PopulateData(parser, gameData, language);
 
 		this.Masculine = parser.ReadColumn<SeString>(0) ?? string.Empty;
 		this.Feminine = parser.ReadColumn<SeString>(1) ?? string.Empty;
+
+		switch((TribeRows)this.RowId)
+		{
+			case TribeRows.Midlander:
+			case TribeRows.Wildwood:
+			case TribeRows.Duskwight:
+			case TribeRows.SeekerOfTheSun:
+			case TribeRows.KeeperOfTheMoon:
+			case TribeRows.Raen:
+			case TribeRows.Xaela:
+			{
+				this.Ages.Add(Excel.Ages.Young);
+				this.Ages.Add(Excel.Ages.Normal);
+				this.Ages.Add(Excel.Ages.Old);
+				break;
+			}
+
+			case TribeRows.Highlander:
+			case TribeRows.Plainsfolk:
+			case TribeRows.Dunesfolk:
+			case TribeRows.SeaWolf:
+			case TribeRows.Hellsguard:
+			case TribeRows.Helions:
+			case TribeRows.TheLost:
+			case TribeRows.Rava:
+			case TribeRows.Veena:
+			{
+				this.Ages.Add(Excel.Ages.Normal);
+				break;
+			}
+		}
 	}
 
 	public TagCollection ToTags()

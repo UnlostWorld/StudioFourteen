@@ -19,6 +19,21 @@
 	<ScrollViewer>
 		<StackPanel IsEnabled="{Binding HasValidTarget}">
 
+			<StackPanel.Resources>
+				<Style
+					x:Key="LeftLabel"
+					BasedOn="{StaticResource Subscript}"
+					TargetType="{x:Type TextBlock}">
+					<Setter Property="HorizontalAlignment" Value="Left" />
+					<Setter Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
+					<Setter Property="Margin" Value="2,2,0,0" />
+				</Style>
+			</StackPanel.Resources>
+
+			<!--  Race  -->
+			<TextBlock
+				Style="{DynamicResource LeftLabel}"
+				Text="Race" />
 			<ComboBox
 				Grid.Column="0"
 				ItemsSource="{Binding AvailableRaces}"
@@ -30,6 +45,10 @@
 				</ComboBox.ItemTemplate>
 			</ComboBox>
 
+			<!--  Tribe  -->
+			<TextBlock
+				Style="{DynamicResource LeftLabel}"
+				Text="Tribe" />
 			<ListBox
 				ItemsSource="{Binding Race.Tribes}"
 				SelectedItem="{Binding Tribe}"
@@ -41,6 +60,33 @@
 				</ListBox.ItemTemplate>
 			</ListBox>
 
+			<!--  Gender  -->
+			<TextBlock
+				Style="{DynamicResource LeftLabel}"
+				Text="Gender" />
+			<ListBox
+				ItemsSource="{Binding Race.Genders}"
+				SelectedItem="{Binding Gender}"
+				Style="{DynamicResource XivToolsSwitchSelector}" />
+
+			<!--  Age  -->
+			<TextBlock
+				Style="{DynamicResource LeftLabel}"
+				Text="Age" />
+			<ListBox
+				ItemsSource="{Binding Tribe.Ages}"
+				SelectedItem="{Binding Age}"
+				Style="{DynamicResource XivToolsSwitchSelector}" />
+
+			<!--  Height  -->
+			<TextBlock
+				Style="{DynamicResource LeftLabel}"
+				Text="Height" />
+			<xivToolsWpf:NumberBox
+				Maximum="100"
+				Minimum="0"
+				Slider="Absolute"
+				Value="{Binding ActorHeight}" />
 
 		</StackPanel>
 	</ScrollViewer>

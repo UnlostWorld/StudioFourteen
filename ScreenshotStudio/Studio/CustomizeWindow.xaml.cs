@@ -8,7 +8,6 @@ using ScreenshotStudio.Windows;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.GameData.Excel;
 using ScreenshotStudio.GameData;
-using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using ScreenshotStudio.Plugin;
 using System.Collections.Generic;
 
@@ -41,6 +40,12 @@ public partial class CustomizeWindow : PanelWindow
 			this.Customize.Tribe = (Tribe.TribeRows)tribe.RowId;
 			this.NotifyPropertyChanged(nameof(CustomizeWindow.Tribe));
 
+			if (!value.Genders.Contains(this.Gender))
+				this.Gender = value.Genders[0];
+
+			if (this.Tribe?.Ages.Contains(this.Age) == false)
+				this.Age = Ages.Normal;
+
 			this.Apply(true);
 		}
 	}
@@ -55,6 +60,10 @@ public partial class CustomizeWindow : PanelWindow
 				return;
 
 			this.Customize.Tribe = (Tribe.TribeRows)value.RowId;
+
+			if (!value.Ages.Contains(this.Age))
+				this.Age = Ages.Normal;
+
 			this.Apply(true);
 		}
 	}
@@ -63,21 +72,33 @@ public partial class CustomizeWindow : PanelWindow
 	public Genders Gender
 	{
 		get => this.Customize.Gender;
-		set { }
+		set
+		{
+			this.Customize.Gender = value;
+			this.Apply(true);
+		}
 	}
 
 	[AutoNotify]
-	public Customize.Ages Age
+	public Ages Age
 	{
 		get => this.Customize.Age;
-		set { }
+		set
+		{
+			this.Customize.Age = value;
+			this.Apply(true);
+		}
 	}
 
 	[AutoNotify]
 	public byte ActorHeight
 	{
 		get => this.Customize.Height;
-		set { }
+		set
+		{
+			this.Customize.Height = value;
+			this.Apply(false);
+		}
 	}
 
 	[AutoNotify]
@@ -245,8 +266,6 @@ public partial class CustomizeWindow : PanelWindow
 
 		DalamudServices.Framework.RunOnFrameworkThread(() =>
 		{
-			this.Log.Information($"Apply... Redraw: {redraw}");
-
 			if (redraw)
 			{
 				this.Actor->GameObject.DisableDraw();
@@ -254,8 +273,11 @@ public partial class CustomizeWindow : PanelWindow
 			}
 			else
 			{
-				Customize* custom = &this.Actor->DrawData.Customize;
-				bool result = ((Human*)this.Actor)->UpdateDrawData((byte*)custom, true);
+				////Customize custom = this.Actor->DrawData.Customize;
+				////this.Actor->DrawData.Customize = custom;
+
+				bool result = this.Actor->UpdateCustomize();
+
 				if (!result)
 				{
 					this.Log.Error("Failed to update actor customize");
