@@ -42,8 +42,8 @@ jobs:
 
       - name: Download Dalamud Library
         run: |
-          wget https://goatcorp.github.io/dalamud-distrib/latest.zip -O /tmp/dalamud.zip
-          unzip /tmp/dalamud.zip -d /tmp/dalamud
+          curl.exe -o /tmp/dalamud.zip https://goatcorp.github.io/dalamud-distrib/latest.zip
+          tar /tmp/dalamud.zip -xf /tmp/dalamud
 
       - name: Restore Dependencies
         run: dotnet restore
