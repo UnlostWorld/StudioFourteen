@@ -35,16 +35,11 @@ jobs:
         with:
           submodules: true # Grab any submodules that may be required
           
-      - name: Make Directories
-        run: |
-          mkdir .\tmp\dalamud
-          dir
-          
       - name: Download Dalamud
         uses: gamedev-thingy/Download-Extract@v2
         with:
           url: "https://goatcorp.github.io/dalamud-distrib/latest.zip"
-          destination: .\tmp\dalamud
+          destination: .
           ZIPname: latest
 
       - name: Setup .NET
