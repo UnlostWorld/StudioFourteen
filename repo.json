@@ -15,8 +15,8 @@
         "screenshot"
       ],
       "IconUrl": "https://github.com/XIV-Tools/ScreenshotStudio/blob/main/Assets/Icon/light-pride.png",
-      "DownloadLinkInstall": "https://github.com/XIV-Tools/ScreenshotStudio/releases/download/main/latest.zip",
-      "DownloadLinkTesting": "https://github.com/XIV-Tools/ScreenshotStudio/releases/download/main/latest.zip",
-      "DownloadLinkUpdate": "https://github.com/XIV-Tools/ScreenshotStudio/releases/download/main/latest.zip",
+      "DownloadLinkInstall": "https://github.com/XIV-Tools/ScreenshotStudio/releases/download/v2023-09-03/latest.zip",
+      "DownloadLinkTesting": "https://github.com/XIV-Tools/ScreenshotStudio/releases/download/v2023-09-03/latest.zip",
+      "DownloadLinkUpdate": "https://github.com/XIV-Tools/ScreenshotStudio/releases/download/v2023-09-03/latest.zip",
     }
   ]
