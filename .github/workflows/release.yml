@@ -27,7 +27,7 @@ jobs:
         working-directory: ScreenshotStudio/
         shell: bash
     env:
-      DALAMUD_HOME: .
+      DALAMUD_HOME: ${{ github.workspace }}/ScreenshotStudio/Lib/Dalamud
       IsCI: true
     steps:
       - name: Checkout Repository
@@ -39,7 +39,7 @@ jobs:
         uses: gamedev-thingy/Download-Extract@v2
         with:
           url: "https://goatcorp.github.io/dalamud-distrib/latest.zip"
-          destination: .
+          destination: ${{ github.workspace }}/ScreenshotStudio/Lib/Dalamud
           ZIPname: latest
 
       - name: Setup .NET
