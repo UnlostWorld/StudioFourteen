@@ -30,8 +30,7 @@ jobs:
       DALAMUD_HOME: .\tmp\dalamud
       IsCI: true
     steps:
-      - name: Generate Checksums
-        working-directory: ScreenshotStudio/bin/Release/ScreenshotStudio
+      - name: Sanity Check
         run: |
           mkdir .\tmp\dalamud
           dir
