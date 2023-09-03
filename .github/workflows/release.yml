@@ -24,7 +24,7 @@ jobs:
     runs-on: windows-latest
     defaults:
       run:
-        working-directory: ScreenshotStudio/
+        working-directory: .
         shell: bash
     env:
       DALAMUD_HOME: ${{ github.workspace }}/Lib/Dalamud
@@ -39,7 +39,7 @@ jobs:
         uses: gamedev-thingy/Download-Extract@v2
         with:
           url: "https://goatcorp.github.io/dalamud-distrib/latest.zip"
-          destination: $DALAMUD_HOME
+          destination: ${{ env.DALAMUD_HOME }}
           ZIPname: latest
 
       - name: Setup .NET
