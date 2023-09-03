@@ -51,19 +51,20 @@ jobs:
         run: dotnet restore
 
       - name: Build plugin in release mode
-        run: dotnet build -c Release --no-restore --nologo -o ./bin/Release
+        run: dotnet build -c Release --no-restore --nologo -o
 
-      - name: Generate Checksums
-        working-directory: ScreenshotStudio/bin/Release/ScreenshotStudio
-        run: |
-          sha512sum latest.zip >> checksums.sha512
+      - name: Zip Release
+        uses: TheDoctor0/zip-release@0.6.0
+        with:
+          filename: './latest.zip'
+          directory: './ScreenshotStudio/bin/'
+          exclusions: '*.pdb* *.xml*'
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            ScreenshotStudio/bin/Release/ScreenshotStudio/latest.zip
-            ScreenshotStudio/bin/Release/ScreenshotStudio/checksums.sha512
+            ./latest.zip
           prerelease: false # Releases cant be marked as prereleases as Dalamud wont be able to find them
           append_body: true # Append the release notes to the release body
           body_path: .github/release-notices.md # These notes are automatically added to the release body every time.
@@ -75,8 +76,7 @@ jobs:
         with:
           name: Release Artifacts
           path: |
-            ScreenshotStudio/bin/Release/ScreenshotStudio/latest.zip
-            ScreenshotStudio/bin/Release/ScreenshotStudio/checksums.sha512
+            ./latest.zip
 
       - name: Update repo.json
         run: |
