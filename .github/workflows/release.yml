@@ -30,11 +30,12 @@ jobs:
       DALAMUD_HOME: /tmp/dalamud
       IsCI: true
     steps:
-      - name: schmiddim-wget-unzip
-        uses: schmiddim/action-wget-unzip@v2
+      - name: Download Dalamud
+        uses: gamedev-thingy/Download-Extract@v2
         with:
-          url: https://goatcorp.github.io/dalamud-distrib/latest.zip
+          url: "https://goatcorp.github.io/dalamud-distrib/latest.zip"
           destination: tmp/dalamud
+          ZIPname: latest
           
       - name: Checkout Repository
         uses: actions/checkout@v3
