@@ -62,15 +62,15 @@ jobs:
       - name: Zip Release
         uses: TheDoctor0/zip-release@0.6.0
         with:
-          filename: './latest.zip'
+          filename: '${{ github.workspace }}/latest.zip'
           directory: './ScreenshotStudio/bin/'
           exclusions: '*.pdb* *.xml*'
 
       - name: Create GitHub Release
         uses: ncipollo/release-action@v1
         with:
-          allowUpdates: false
-          artifacts: "latest.zip"
+          allowUpdates: true
+          artifacts: '${{ github.workspace }}/latest.zip'
           name: ${{ steps.version-date.outputs.formattedTime }}
           tag: v${{ steps.version-date.outputs.formattedTime }}
           #body: ${{ steps.Changelog.outputs.changelog }}
