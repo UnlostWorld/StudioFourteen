@@ -100,9 +100,9 @@ jobs:
                     "screenshot"
                   ],
                   "IconUrl": "https://github.com/XIV-Tools/ScreenshotStudio/blob/main/Assets/Icon/light-pride.png",
-                  "DownloadLinkInstall": "https://github.com/XIV-Tools/ScreenshotStudio/releases/download/${{ github.ref_name }}/latest.zip",
-                  "DownloadLinkTesting": "https://github.com/XIV-Tools/ScreenshotStudio/releases/download/${{ github.ref_name }}/latest.zip",
-                  "DownloadLinkUpdate": "https://github.com/XIV-Tools/ScreenshotStudio/releases/download/${{ github.ref_name }}/latest.zip",
+                  "DownloadLinkInstall": "https://github.com/XIV-Tools/ScreenshotStudio/releases/download/v${{ steps.version-date.outputs.formattedTime }}/latest.zip",
+                  "DownloadLinkTesting": "https://github.com/XIV-Tools/ScreenshotStudio/releases/download/v${{ steps.version-date.outputs.formattedTime }}/latest.zip",
+                  "DownloadLinkUpdate": "https://github.com/XIV-Tools/ScreenshotStudio/releases/download/v${{ steps.version-date.outputs.formattedTime }}/latest.zip",
                 }
               ]
           
