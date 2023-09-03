@@ -7,11 +7,12 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
 
-# Only run this workflow when a tag is pushed when the tag starts with "v".
+# Only run this workflow when a tag is pushed when the tag starts with "v" or when run manually.
 on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
 
 # So we can use the GitHub API to create releases with the run token.
 permissions:
