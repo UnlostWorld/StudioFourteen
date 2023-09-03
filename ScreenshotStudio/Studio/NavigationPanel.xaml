@@ -38,7 +38,7 @@
 
 					<Border
 						x:Name="MainBorder"
-						Margin="15,30,0,0"
+						Margin="14,30,0,0"
 						Background="{DynamicResource BackgroundBrush}"
 						CornerRadius="0,0,6,6">
 
