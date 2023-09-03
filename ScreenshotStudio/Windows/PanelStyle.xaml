@@ -49,6 +49,42 @@
 				<Setter TargetName="PanelBackground" Property="Opacity" Value="0" />
 				<Setter TargetName="MainGrid" Property="Margin" Value="0" />
 			</Trigger>
+
+			<DataTrigger
+				Binding="{Binding IsShown}"
+				Value="False">
+
+				<DataTrigger.EnterActions>
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetProperty="Opacity"
+								To="0"
+								Duration="0:00:00.200">
+								<DoubleAnimation.EasingFunction>
+									<SineEase EasingMode="EaseOut" />
+								</DoubleAnimation.EasingFunction>
+							</DoubleAnimation>
+						</Storyboard>
+					</BeginStoryboard>
+				</DataTrigger.EnterActions>
+
+				<DataTrigger.ExitActions>
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetProperty="Opacity"
+								To="1"
+								Duration="0:00:00.100">
+								<DoubleAnimation.EasingFunction>
+									<SineEase EasingMode="EaseIn" />
+								</DoubleAnimation.EasingFunction>
+							</DoubleAnimation>
+						</Storyboard>
+					</BeginStoryboard>
+				</DataTrigger.ExitActions>
+
+			</DataTrigger>
 		</ControlTemplate.Triggers>
 
 	</ControlTemplate>

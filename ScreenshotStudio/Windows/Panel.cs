@@ -23,6 +23,12 @@ public abstract partial class Panel : Window, IAutoNotify
 		typeof(Panel),
 		new(true));
 
+	public static readonly DependencyProperty IsShownProperty = DependencyProperty.Register(
+		nameof(Panel.IsShown),
+		typeof(bool),
+		typeof(Panel),
+		new(true));
+
 	protected readonly ILogger Log;
 
 	public Panel()
@@ -49,6 +55,12 @@ public abstract partial class Panel : Window, IAutoNotify
 	{
 		get => (bool)this.GetValue(ShowBackgroundProperty);
 		set => this.SetValue(ShowBackgroundProperty, value);
+	}
+
+	public bool IsShown
+	{
+		get => (bool)this.GetValue(IsShownProperty);
+		set => this.SetValue(IsShownProperty, value);
 	}
 
 	public static void Show<T>()
