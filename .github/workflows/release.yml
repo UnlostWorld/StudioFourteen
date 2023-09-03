@@ -39,7 +39,7 @@ jobs:
         uses: gamedev-thingy/Download-Extract@v2
         with:
           url: "https://goatcorp.github.io/dalamud-distrib/latest.zip"
-          destination: ${{ env:DALAMUD_HOME }}
+          destination: ${{ env.DALAMUD_HOME }}
           ZIPname: latest
 
       - name: Setup .NET
