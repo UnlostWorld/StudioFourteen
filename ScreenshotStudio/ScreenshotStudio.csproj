@@ -16,7 +16,14 @@
 		<TrimMode>CopyUsed</TrimMode>
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<PublishTrimmed>false</PublishTrimmed>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
+	</PropertyGroup>
+
+	<PropertyGroup>
 		<DalamudLibPath>$(appdata)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(CI)' == 'true' OR '$(IsCI)' == 'true'">
+		<DalamudLibPath>$(DALAMUD_HOME)/</DalamudLibPath>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	</PropertyGroup>
 
