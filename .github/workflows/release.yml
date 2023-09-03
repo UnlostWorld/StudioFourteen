@@ -24,7 +24,7 @@ jobs:
     runs-on: windows-latest
     defaults:
       run:
-        working-directory: ScreenshotStudio/
+        working-directory: .
         shell: bash
     env:
       DALAMUD_HOME: ${{ github.workspace }}/Lib/Dalamud
