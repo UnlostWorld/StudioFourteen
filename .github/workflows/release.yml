@@ -43,7 +43,12 @@ jobs:
       - name: Download Dalamud Library
         run: |
           curl.exe -o /tmp/dalamud.zip https://goatcorp.github.io/dalamud-distrib/latest.zip
-          tar --extract tmp/dalamud.zip --directory tmp/dalamud
+
+      - name: extract-7z-action
+        uses: DuckSoft/extract-7z-action@v1.0
+        with:
+          pathSource: tmp/dalamud.zip
+          pathTarget: tmp/dalamud
 
       - name: Restore Dependencies
         run: dotnet restore
