@@ -38,14 +38,12 @@ jobs:
       - name: Make Directories
         run: |
           mkdir D:\tmp\dalamud
-          D:
-          dir
           
       - name: Download Dalamud
         uses: gamedev-thingy/Download-Extract@v2
         with:
           url: "https://goatcorp.github.io/dalamud-distrib/latest.zip"
-          destination: \tmp\dalamud
+          destination: D:\tmp\dalamud
           ZIPname: latest
 
       - name: Setup .NET
