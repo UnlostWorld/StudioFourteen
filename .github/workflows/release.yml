@@ -27,15 +27,21 @@ jobs:
         working-directory: ScreenshotStudio/
         shell: bash
     env:
-      DALAMUD_HOME: /tmp/dalamud
+      DALAMUD_HOME: .\tmp\dalamud
       IsCI: true
     steps:
+      - name: Generate Checksums
+        working-directory: ScreenshotStudio/bin/Release/ScreenshotStudio
+        run: |
+          mkdir .\tmp\dalamud
+          dir
+          
       - name: Download Dalamud
         uses: gamedev-thingy/Download-Extract@v2
         with:
           url: "https://goatcorp.github.io/dalamud-distrib/latest.zip"
-          destination: /tmp/dalamud
-          ZIPname: latest.zip
+          destination: .\tmp\dalamud
+          ZIPname: latest
           
       - name: Checkout Repository
         uses: actions/checkout@v3
