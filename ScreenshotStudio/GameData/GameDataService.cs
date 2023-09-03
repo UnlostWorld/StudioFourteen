@@ -12,6 +12,8 @@ using ScreenshotStudio.GameData.Excel;
 using ScreenshotStudio.Plugin;
 using Lumina.Data;
 using ScreenshotStudio.GameData.Sheets;
+using System.Runtime.CompilerServices;
+using System.IO;
 
 public class GameDataService : ServiceBase
 {
@@ -24,8 +26,16 @@ public class GameDataService : ServiceBase
 	public static T? GetFile<T>(string path)
 		where T : FileResource
 	{
-		////string path = DalamudServices.TextureSubstitutionProvider.GetSubstitutedPath(path);
-		return DalamudServices.DataManager.GetFile<T>(path);
+		string newPath = DalamudServices.TextureSubstitutionProvider.GetSubstitutedPath(path);
+
+		if (Path.IsPathRooted(newPath))
+		{
+			return DalamudServices.DataManager.GameData.GetFileFromDisk<T>(newPath);
+		}
+		else
+		{
+			return DalamudServices.DataManager.GetFile<T>(newPath);
+		}
 	}
 
 	public static DataSheet<T>? Get<T>()
