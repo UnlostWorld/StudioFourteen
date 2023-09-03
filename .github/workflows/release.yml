@@ -38,6 +38,7 @@ jobs:
       - name: Make Directories
         run: |
           mkdir .\tmp\dalamud
+          dir
           
       - name: Download Dalamud
         uses: gamedev-thingy/Download-Extract@v2
