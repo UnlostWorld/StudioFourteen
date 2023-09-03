@@ -3,6 +3,8 @@
 
 namespace ScreenshotStudio.Studio;
 
+using FFXIVClientStructs.FFXIV.Client.UI;
+using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Windows;
 using System.Windows;
@@ -10,6 +12,30 @@ using System.Windows;
 public partial class NavigationPanel : DockPanel
 {
 	[AutoNotify] public bool IsExpanded { get; set; } = false;
+
+	[AutoNotify]
+	public unsafe bool IsInGPose
+	{
+		get => DalamudServices.PluginInterface.UiBuilder.GposeActive;
+		set
+		{
+			DalamudServices.Framework.RunOnFrameworkThread(() =>
+			{
+				UIModule* pModule = (UIModule*)DalamudServices.GameGui.GetUIModule();
+				if (pModule != null)
+				{
+					if (value)
+					{
+						pModule->EnterGPose();
+					}
+					else
+					{
+						pModule->ExitGPose();
+					}
+				}
+			});
+		}
+	}
 
 	public void Expand()
 	{

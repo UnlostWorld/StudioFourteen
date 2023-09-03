@@ -16,6 +16,7 @@
 	<sys:String x:Key="ClosePanelTooltip">Close Panel</sys:String>
 	<sys:String x:Key="CloseScreenshotStudio">Close the Studio interface</sys:String>
 
+	<sys:String x:Key="ToggleGPose">Toggle GPose</sys:String>
 	<sys:String x:Key="Library">Library</sys:String>
 	<sys:String x:Key="TimeWeather">Time &amp; Weather</sys:String>
 	<sys:String x:Key="Camera">Camera</sys:String>

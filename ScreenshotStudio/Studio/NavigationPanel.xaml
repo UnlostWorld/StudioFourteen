@@ -2,6 +2,7 @@
 	x:Class="ScreenshotStudio.Studio.NavigationPanel"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:ScreenshotStudio.Controls"
 	xmlns:converters="clr-namespace:XivToolsWpf.Converters;assembly=XivToolsWpf"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="clr-namespace:ScreenshotStudio.Studio"
@@ -70,6 +71,23 @@
 								</StackPanel.Resources>
 
 								<Rectangle Height="10" />
+
+								<ToggleButton
+									Width="32"
+									Height="32"
+									IsChecked="{Binding IsInGPose}"
+									ToolTip="{DynamicResource ToggleGPose}">
+									<!--<xivToolsWpf:IconBlock Icon="Video">
+										<xivToolsWpf:IconBlock.LayoutTransform>
+											<ScaleTransform ScaleX="-1" ScaleY="0.8" />
+										</xivToolsWpf:IconBlock.LayoutTransform>
+									</xivToolsWpf:IconBlock>-->
+									<controls:XivTexImage
+										Margin="3"
+										Path="ui/icon/061000/061546.tex" />
+								</ToggleButton>
+
+								<Line />
 
 								<Button
 									x:Name="LibraryButton"
