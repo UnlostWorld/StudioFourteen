@@ -30,11 +30,6 @@ jobs:
       DALAMUD_HOME: .\tmp\dalamud
       IsCI: true
     steps:
-      - name: Sanity Check
-        run: |
-          mkdir .\tmp\dalamud
-          dir
-          
       - name: Download Dalamud
         uses: gamedev-thingy/Download-Extract@v2
         with:
