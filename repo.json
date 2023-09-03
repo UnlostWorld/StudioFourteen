@@ -1,0 +1,22 @@
+[
+  {
+      "Author": "Xiv Tools",
+      "Name": "Screenshot Studio",
+      "InternalName": "ScreenshotStudio",
+      "Description": "A plugin for enhancing GPose functionality",
+      "AssemblyVersion": "1.0.0.0",
+      "TestingAssemblyVersion": "1.0.0.0",
+      "RepoUrl": "https://github.com/XIV-Tools/ScreenshotStudio",
+      "ApplicableVersion": "any",
+      "DalamudApiLevel": 8,
+      "Tags": [
+        "gpose",
+        "posing",
+        "screenshot"
+      ],
+      "IconUrl": "https://github.com/XIV-Tools/ScreenshotStudio/blob/main/Assets/Icon/light-pride.png",
+      "DownloadLinkInstall": "https://github.com/XIV-Tools/ScreenshotStudio/releases/download/main/latest.zip",
+      "DownloadLinkTesting": "https://github.com/XIV-Tools/ScreenshotStudio/releases/download/main/latest.zip",
+      "DownloadLinkUpdate": "https://github.com/XIV-Tools/ScreenshotStudio/releases/download/main/latest.zip",
+    }
+  ]
