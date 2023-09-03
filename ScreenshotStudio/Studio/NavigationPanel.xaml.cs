@@ -3,12 +3,36 @@
 
 namespace ScreenshotStudio.Studio;
 
+using ScreenshotStudio.Services;
 using ScreenshotStudio.Windows;
 using System.Windows;
 
 public partial class NavigationPanel : DockPanel
 {
-	private void OnCloseClicked(object sender, RoutedEventArgs e) => this.Services.Studio.CloseStudio();
+	[AutoNotify] public bool IsExpanded { get; set; } = false;
+
+	public void Expand()
+	{
+		this.IsExpanded = true;
+	}
+
+	public void Collapse()
+	{
+		this.IsExpanded = false;
+	}
+
+	private void OnStudioClicked(object sender, RoutedEventArgs e)
+	{
+		if (this.IsExpanded)
+		{
+			this.Services.Studio.CloseStudio();
+		}
+		else
+		{
+			this.Services.Studio.OpenStudio();
+		}
+	}
+
 	private void OnGearClicked(object sender, RoutedEventArgs e) => Panel.Show<GearWindow>();
 	private void OnCustomizeClicked(object sender, RoutedEventArgs e) => Panel.Show<CustomizeWindow>();
 }

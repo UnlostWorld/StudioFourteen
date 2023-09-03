@@ -2,114 +2,356 @@
 	x:Class="ScreenshotStudio.Studio.NavigationPanel"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:converters="clr-namespace:XivToolsWpf.Converters;assembly=XivToolsWpf"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="clr-namespace:ScreenshotStudio.Studio"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
 	xmlns:xivToolsWpf="clr-namespace:XivToolsWpf.Controls;assembly=XivToolsWpf"
 	Title="NavigationPanel"
+	Width="70"
+	Height="400"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	DockPosition="0,0"
-	SizeToContent="WidthAndHeight"
+	ShowBackground="False"
 	mc:Ignorable="d">
 
-	<Border
-		Margin="2"
-		Style="{DynamicResource XivToolsControlBorder}">
-		<StackPanel>
+	<Grid Margin="0,6,0,0">
+		<Grid.Resources>
+			<ResourceDictionary>
+				<ResourceDictionary.MergedDictionaries>
+					<ResourceDictionary Source="StudioButtonStyle.xaml" />
+				</ResourceDictionary.MergedDictionaries>
 
-			<StackPanel.Resources>
-				<Style
-					BasedOn="{StaticResource XivToolsButton}"
-					TargetType="{x:Type Button}">
-					<Setter Property="Width" Value="32" />
-					<Setter Property="Height" Value="32" />
-				</Style>
-			</StackPanel.Resources>
+				<BooleanToVisibilityConverter x:Key="B2V" />
+				<converters:InvertedBoolToVisibilityConverter x:Key="!B2V" />
+			</ResourceDictionary>
+		</Grid.Resources>
 
-			<Button
-				Click="OnCloseClicked"
-				ToolTip="{DynamicResource CloseScreenshotStudio}">
-				<xivToolsWpf:IconBlock Icon="Close" />
-			</Button>
+		<ContentPresenter
+			HorizontalAlignment="Left"
+			VerticalAlignment="Top"
+			Content="{Binding .}">
+			<ContentPresenter.ContentTemplate>
+				<DataTemplate>
 
-			<Line
-				Width="30"
-				Margin="3"
-				Stretch="Fill"
-				Stroke="{DynamicResource BackgroundLightBrush}"
-				StrokeThickness="1"
-				X1="0"
-				X2="1" />
+					<Border
+						x:Name="MainBorder"
+						Margin="15,30,0,0"
+						Background="{DynamicResource BackgroundBrush}"
+						CornerRadius="0,0,6,6">
 
-			<Button
-				IsEnabled="False"
-				ToolTip="{DynamicResource Library}">
-				<xivToolsWpf:IconBlock Icon="Books" />
-			</Button>
+						<Border.RenderTransform>
+							<TranslateTransform x:Name="PanelTranslate" Y="0" />
+						</Border.RenderTransform>
 
-			<Button
-				IsEnabled="False"
-				ToolTip="{DynamicResource TimeWeather}">
-				<xivToolsWpf:IconBlock Icon="CloudMoonRain" />
-			</Button>
+						<Border
+							Margin="3"
+							Style="{DynamicResource XivToolsControlBorder}">
+							<StackPanel>
+								<StackPanel.Resources>
+									<Style
+										BasedOn="{StaticResource XivToolsButton}"
+										TargetType="{x:Type Button}">
+										<Setter Property="Width" Value="32" />
+										<Setter Property="Height" Value="32" />
+										<Setter Property="Margin" Value="0" />
+									</Style>
 
-			<Button
-				IsEnabled="False"
-				ToolTip="{DynamicResource Camera}">
-				<xivToolsWpf:IconBlock Icon="CameraMovie" />
-			</Button>
+									<Style TargetType="{x:Type Line}">
+										<Setter Property="Width" Value="24" />
+										<Setter Property="Margin" Value="0,3" />
+										<Setter Property="Stroke" Value="{DynamicResource BackgroundLightBrush}" />
+										<Setter Property="X1" Value="0" />
+										<Setter Property="X2" Value="1" />
+										<Setter Property="StrokeThickness" Value="1" />
+										<Setter Property="Stretch" Value="Fill" />
+									</Style>
+								</StackPanel.Resources>
 
-			<Line
-				Width="30"
-				Margin="3"
-				Stretch="Fill"
-				Stroke="{DynamicResource BackgroundLightBrush}"
-				StrokeThickness="1"
-				X1="0"
-				X2="1" />
+								<Rectangle Height="10" />
 
-			<Button
-				Click="OnCustomizeClicked"
-				ToolTip="{DynamicResource Customize}">
-				<xivToolsWpf:IconBlock Icon="UserEdit" />
-			</Button>
+								<Button
+									x:Name="LibraryButton"
+									IsEnabled="False"
+									ToolTip="{DynamicResource Library}">
+									<xivToolsWpf:IconBlock Icon="Books" />
+								</Button>
 
-			<Button
-				Click="OnGearClicked"
-				ToolTip="{DynamicResource Gear}">
-				<xivToolsWpf:IconBlock Icon="HelmetBattle" />
-			</Button>
+								<Button
+									x:Name="WeatherButton"
+									IsEnabled="False"
+									ToolTip="{DynamicResource TimeWeather}">
+									<xivToolsWpf:IconBlock Icon="CloudMoonRain" />
+								</Button>
 
-			<Button
-				IsEnabled="False"
-				ToolTip="{DynamicResource ShaderParameters}">
-				<xivToolsWpf:IconBlock Icon="PaintBrush" />
-			</Button>
+								<Button
+									x:Name="CameraButton"
+									IsEnabled="False"
+									ToolTip="{DynamicResource Camera}">
+									<xivToolsWpf:IconBlock Icon="CameraMovie" />
+								</Button>
 
-			<Button
-				IsEnabled="False"
-				ToolTip="{DynamicResource Pose}">
-				<xivToolsWpf:IconBlock Icon="Running" />
-			</Button>
+								<Line />
 
-			<Line
-				Width="30"
-				Margin="3"
-				Stretch="Fill"
-				Stroke="{DynamicResource BackgroundLightBrush}"
-				StrokeThickness="1"
-				X1="0"
-				X2="1" />
+								<Button
+									x:Name="CustomizeButton"
+									Click="OnCustomizeClicked"
+									ToolTip="{DynamicResource Customize}">
+									<xivToolsWpf:IconBlock Icon="UserEdit" />
+								</Button>
 
-			<Button
-				IsEnabled="False"
-				ToolTip="{DynamicResource Settings}">
-				<xivToolsWpf:IconBlock Icon="cogs" />
-			</Button>
+								<Button
+									x:Name="GearButton"
+									Click="OnGearClicked"
+									ToolTip="{DynamicResource Gear}">
+									<xivToolsWpf:IconBlock Icon="HelmetBattle" />
+								</Button>
+
+								<Button
+									x:Name="ShaderButton"
+									IsEnabled="False"
+									ToolTip="{DynamicResource ShaderParameters}">
+									<xivToolsWpf:IconBlock Icon="PaintBrush" />
+								</Button>
+
+								<Button
+									x:Name="PoseButton"
+									IsEnabled="False"
+									ToolTip="{DynamicResource Pose}">
+									<xivToolsWpf:IconBlock Icon="Running" />
+								</Button>
+
+								<Line />
+
+								<Button
+									x:Name="SettingsButton"
+									IsEnabled="False"
+									ToolTip="{DynamicResource Settings}">
+									<xivToolsWpf:IconBlock Icon="cogs" />
+								</Button>
 
 
-		</StackPanel>
-	</Border>
+							</StackPanel>
+						</Border>
+					</Border>
 
+					<DataTemplate.Triggers>
+						<DataTrigger
+							Binding="{Binding IsExpanded}"
+							Value="False">
+							<Setter Property="IsHitTestVisible" Value="False" />
+
+							<DataTrigger.EnterActions>
+								<BeginStoryboard>
+									<Storyboard>
+
+										<DoubleAnimation
+											Storyboard.TargetName="PanelTranslate"
+											Storyboard.TargetProperty="Y"
+											From="0"
+											To="-25"
+											Duration="0:00:00.250">
+											<DoubleAnimation.EasingFunction>
+												<SineEase EasingMode="EaseOut" />
+											</DoubleAnimation.EasingFunction>
+										</DoubleAnimation>
+
+										<DoubleAnimation
+											Storyboard.TargetName="MainBorder"
+											Storyboard.TargetProperty="Opacity"
+											To="0"
+											Duration="0:00:00.250">
+											<DoubleAnimation.EasingFunction>
+												<SineEase EasingMode="EaseOut" />
+											</DoubleAnimation.EasingFunction>
+										</DoubleAnimation>
+
+										<DoubleAnimation
+											Storyboard.TargetName="LibraryButton"
+											Storyboard.TargetProperty="Opacity"
+											To="0"
+											Duration="0:00:00.100" />
+
+										<DoubleAnimation
+											Storyboard.TargetName="WeatherButton"
+											Storyboard.TargetProperty="Opacity"
+											To="0"
+											Duration="0:00:00.100" />
+
+										<DoubleAnimation
+											Storyboard.TargetName="CameraButton"
+											Storyboard.TargetProperty="Opacity"
+											To="0"
+											Duration="0:00:00.100" />
+
+										<DoubleAnimation
+											Storyboard.TargetName="CustomizeButton"
+											Storyboard.TargetProperty="Opacity"
+											To="0"
+											Duration="0:00:00.100" />
+
+										<DoubleAnimation
+											Storyboard.TargetName="GearButton"
+											Storyboard.TargetProperty="Opacity"
+											To="0"
+											Duration="0:00:00.100" />
+
+										<DoubleAnimation
+											Storyboard.TargetName="ShaderButton"
+											Storyboard.TargetProperty="Opacity"
+											To="0"
+											Duration="0:00:00.100" />
+
+										<DoubleAnimation
+											Storyboard.TargetName="PoseButton"
+											Storyboard.TargetProperty="Opacity"
+											To="0"
+											Duration="0:00:00.100" />
+
+										<DoubleAnimation
+											Storyboard.TargetName="SettingsButton"
+											Storyboard.TargetProperty="Opacity"
+											To="0"
+											Duration="0:00:00.100" />
+									</Storyboard>
+								</BeginStoryboard>
+							</DataTrigger.EnterActions>
+							<DataTrigger.ExitActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation
+											Storyboard.TargetName="PanelTranslate"
+											Storyboard.TargetProperty="Y"
+											From="-25"
+											To="0"
+											Duration="0:00:00.350">
+											<DoubleAnimation.EasingFunction>
+												<SineEase EasingMode="EaseOut" />
+											</DoubleAnimation.EasingFunction>
+										</DoubleAnimation>
+
+										<DoubleAnimation
+											Storyboard.TargetName="MainBorder"
+											Storyboard.TargetProperty="Opacity"
+											To="1"
+											Duration="0:00:00.100">
+											<DoubleAnimation.EasingFunction>
+												<SineEase EasingMode="EaseIn" />
+											</DoubleAnimation.EasingFunction>
+										</DoubleAnimation>
+
+										<DoubleAnimation
+											BeginTime="0:00:00.100"
+											Storyboard.TargetName="LibraryButton"
+											Storyboard.TargetProperty="Opacity"
+											From="0"
+											To="1"
+											Duration="0:00:00.100">
+											<DoubleAnimation.EasingFunction>
+												<SineEase EasingMode="EaseOut" />
+											</DoubleAnimation.EasingFunction>
+										</DoubleAnimation>
+
+										<DoubleAnimation
+											BeginTime="0:00:00.150"
+											Storyboard.TargetName="WeatherButton"
+											Storyboard.TargetProperty="Opacity"
+											From="0"
+											To="1"
+											Duration="0:00:00.100">
+											<DoubleAnimation.EasingFunction>
+												<SineEase EasingMode="EaseOut" />
+											</DoubleAnimation.EasingFunction>
+										</DoubleAnimation>
+
+										<DoubleAnimation
+											BeginTime="0:00:00.200"
+											Storyboard.TargetName="CameraButton"
+											Storyboard.TargetProperty="Opacity"
+											From="0"
+											To="1"
+											Duration="0:00:00.100">
+											<DoubleAnimation.EasingFunction>
+												<SineEase EasingMode="EaseOut" />
+											</DoubleAnimation.EasingFunction>
+										</DoubleAnimation>
+
+										<DoubleAnimation
+											BeginTime="0:00:00.250"
+											Storyboard.TargetName="CustomizeButton"
+											Storyboard.TargetProperty="Opacity"
+											From="0"
+											To="1"
+											Duration="0:00:00.100">
+											<DoubleAnimation.EasingFunction>
+												<SineEase EasingMode="EaseOut" />
+											</DoubleAnimation.EasingFunction>
+										</DoubleAnimation>
+
+										<DoubleAnimation
+											BeginTime="0:00:00.300"
+											Storyboard.TargetName="GearButton"
+											Storyboard.TargetProperty="Opacity"
+											From="0"
+											To="1"
+											Duration="0:00:00.100">
+											<DoubleAnimation.EasingFunction>
+												<SineEase EasingMode="EaseOut" />
+											</DoubleAnimation.EasingFunction>
+										</DoubleAnimation>
+
+										<DoubleAnimation
+											BeginTime="0:00:00.350"
+											Storyboard.TargetName="ShaderButton"
+											Storyboard.TargetProperty="Opacity"
+											From="0"
+											To="1"
+											Duration="0:00:00.100">
+											<DoubleAnimation.EasingFunction>
+												<SineEase EasingMode="EaseOut" />
+											</DoubleAnimation.EasingFunction>
+										</DoubleAnimation>
+
+										<DoubleAnimation
+											BeginTime="0:00:00.400"
+											Storyboard.TargetName="PoseButton"
+											Storyboard.TargetProperty="Opacity"
+											From="0"
+											To="1"
+											Duration="0:00:00.100">
+											<DoubleAnimation.EasingFunction>
+												<SineEase EasingMode="EaseOut" />
+											</DoubleAnimation.EasingFunction>
+										</DoubleAnimation>
+
+										<DoubleAnimation
+											BeginTime="0:00:00.450"
+											Storyboard.TargetName="SettingsButton"
+											Storyboard.TargetProperty="Opacity"
+											From="0"
+											To="1"
+											Duration="0:00:00.100">
+											<DoubleAnimation.EasingFunction>
+												<SineEase EasingMode="EaseOut" />
+											</DoubleAnimation.EasingFunction>
+										</DoubleAnimation>
+									</Storyboard>
+								</BeginStoryboard>
+							</DataTrigger.ExitActions>
+						</DataTrigger>
+					</DataTemplate.Triggers>
+
+				</DataTemplate>
+			</ContentPresenter.ContentTemplate>
+		</ContentPresenter>
+
+		<Button
+			Name="StudioButton"
+			HorizontalAlignment="Left"
+			VerticalAlignment="Top"
+			Click="OnStudioClicked"
+			Style="{StaticResource StudioButton}" />
+
+	</Grid>
 </windows:DockPanel>

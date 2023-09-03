@@ -3,61 +3,56 @@
 
 namespace ScreenshotStudio.Services;
 
-using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Studio;
 using ScreenshotStudio.Windows;
 using System.Threading.Tasks;
-using XivToolsWpf.Extensions;
-using FFXIVClientStructs.FFXIV.Client.UI;
 using System;
 
 public class StudioService : ServiceBase
 {
-	private StudioButtonWindow? buttonWindow;
 	private NavigationPanel? navigationPanel;
 	private TargetPanel? targetPanel;
+
+	public bool IsOpen { get; private set; }
 
 	public override async Task Start()
 	{
 		await base.Start();
 
-		this.buttonWindow = await Panel.ShowAsync<StudioButtonWindow>();
+		this.navigationPanel = await Panel.ShowAsync<NavigationPanel>();
+		this.targetPanel = await Panel.ShowAsync<TargetPanel>();
 	}
 
 	public void OpenStudio() => Task.Run(async () => await this.OpenStudioAsync());
 	public void CloseStudio() => Task.Run(async () => await this.CloseStudioAsync());
 
-	public async Task OpenStudioAsync()
+	public Task OpenStudioAsync()
 	{
 		try
 		{
-			if (this.buttonWindow != null)
-				await this.buttonWindow.CloseAsync();
-
-			this.navigationPanel = await Panel.ShowAsync<NavigationPanel>();
-			this.targetPanel = await Panel.ShowAsync<TargetPanel>();
+			this.IsOpen = true;
+			this.navigationPanel?.Expand();
 		}
 		catch(Exception ex)
 		{
 			this.Log.Error(ex, "Error opening Screenshot Studio");
 		}
+
+		return Task.CompletedTask;
 	}
 
-	public async Task CloseStudioAsync()
+	public Task CloseStudioAsync()
 	{
 		try
 		{
-			if (this.navigationPanel != null)
-				await this.navigationPanel.CloseAsync();
-
-			if (this.targetPanel != null)
-				await this.targetPanel.CloseAsync();
-
-			this.buttonWindow = await Panel.ShowAsync<StudioButtonWindow>();
+			this.IsOpen = false;
+			this.navigationPanel?.Collapse();
 		}
 		catch(Exception ex)
 		{
 			this.Log.Error(ex, "Error closing Screenshot Studio");
 		}
+
+		return Task.CompletedTask;
 	}
 }
