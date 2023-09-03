@@ -27,7 +27,7 @@ jobs:
         working-directory: ScreenshotStudio/
         shell: bash
     env:
-      DALAMUD_HOME: /tmp/dalamud
+      DALAMUD_HOME: .
       IsCI: true
     steps:
       - name: Checkout Repository
