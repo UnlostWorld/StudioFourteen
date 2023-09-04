@@ -22,9 +22,9 @@ public class DockPanel : Panel
 
 	protected override Style GetDefaultStyle() => (Style)this.FindResource("DockPanelStyle");
 
-	protected override void OnLoaded(object sender, RoutedEventArgs e)
+	protected override void OnOpened()
 	{
-		base.OnLoaded(sender, e);
+		base.OnOpened();
 		this.UpdatePosition();
 	}
 

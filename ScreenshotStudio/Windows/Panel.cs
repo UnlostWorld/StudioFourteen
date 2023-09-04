@@ -10,6 +10,7 @@ using Serilog;
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
@@ -133,10 +134,16 @@ public abstract partial class Panel : Window, IAutoNotify
 
 	protected virtual Style GetDefaultStyle() => (Style)this.FindResource("PanelStyle");
 
-	protected virtual void OnLoaded(object sender, RoutedEventArgs e)
+	protected void OnLoaded(object sender, RoutedEventArgs e)
 	{
 		XivWindow.Embed(this);
 		AutoPropertyNotifyService.Register(this);
+
+		this.OnOpened();
+	}
+
+	protected virtual void OnOpened()
+	{
 	}
 
 	protected virtual void OnClosed()
