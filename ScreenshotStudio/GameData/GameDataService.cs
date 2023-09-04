@@ -85,6 +85,7 @@ public class GameDataService : ServiceBase
 		this.AddSheet(new BuddyEquipsSheet());
 		this.AddSheet(new EventNpcSheet());
 		this.AddSheet(new ResidentNpcSheet());
+		this.AddSheet(new TerritoryTypeSheet());
 
 		this.AddSheet<Race>();
 		this.AddSheet<Tribe>();
@@ -104,7 +105,6 @@ public class GameDataService : ServiceBase
 		this.AddSheet<Ornament>();
 		this.AddSheet<Perform>();
 		this.AddSheet<Stain>();
-		this.AddSheet<Territory>();
 		this.AddSheet<Weather>();
 		this.AddSheet<WeatherRate>();
 		this.AddSheet<ClassJob>();

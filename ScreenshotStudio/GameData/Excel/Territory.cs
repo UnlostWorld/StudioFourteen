@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Lumina.Data;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
+using XivToolsWpf;
 
 [Sheet("TerritoryType", 0x5baa595e)]
 public class Territory : LibraryExcelRow
@@ -35,9 +36,10 @@ public class Territory : LibraryExcelRow
 	};
 
 	public string? Name { get; protected set; }
-	public string? Place { get; protected set; }
-	public string? Region { get; protected set; }
-	public string? Zone { get; protected set; }
+	public string? Background { get; protected set; }
+	public PlaceName? Place { get; protected set; }
+	public PlaceName? Region { get; protected set; }
+	public PlaceName? Zone { get; protected set; }
 	public List<Weather?> Weathers { get; init; } = new();
 
 	public bool IsHouse => HousingTerritories.Contains(this.RowId);
@@ -47,9 +49,16 @@ public class Territory : LibraryExcelRow
 		base.PopulateData(parser, gameData, language);
 
 		this.Name = parser.ReadString(0);
-		this.Region = parser.ReadRowReference<ushort, PlaceName>(3)?.Name ?? "Unknown";
-		this.Zone = parser.ReadRowReference<ushort, PlaceName>(4)?.Name ?? "Unknown";
-		this.Place = parser.ReadRowReference<ushort, PlaceName>(5)?.Name ?? "Unknown";
+		this.Background = parser.ReadString(1);
+		this.Region = parser.ReadRowReference<ushort, PlaceName>(3);
+		this.Zone = parser.ReadRowReference<ushort, PlaceName>(4);
+		this.Place = parser.ReadRowReference<ushort, PlaceName>(5);
+
+		if (this.Zone != null)
+			this.Tags.Add(this.Zone.Name.RawString);
+
+		if (this.Region != null)
+			this.Tags.Add(this.Region.Name.RawString);
 
 		WeatherRate? weatherRate = parser.ReadRowReference<byte, WeatherRate>(12);
 
@@ -64,5 +73,22 @@ public class Territory : LibraryExcelRow
 				this.Weathers.Add(GameDataService.GetRow<Weather>(wr.Weather));
 			}
 		}
+	}
+
+	public override bool Search(string[]? query)
+	{
+		if (SearchUtility.Matches(this.Name, query))
+			return true;
+
+		if (SearchUtility.Matches(this.Background, query))
+			return true;
+
+		if (this.Place != null)
+		{
+			if (SearchUtility.Matches(this.Place.Name.RawString, query))
+				return true;
+		}
+
+		return base.Search(query);
 	}
 }
