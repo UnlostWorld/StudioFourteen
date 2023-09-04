@@ -10,16 +10,18 @@
 	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
 	xmlns:xivToolsWpf="clr-namespace:XivToolsWpf.Controls;assembly=XivToolsWpf"
 	Title="{DynamicResource Customize}"
-	Width="300"
 	Height="450"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	d:DesignHeight="2048"
+	SizeToContent="Width"
 	Subtitle="{Binding ActorName}"
 	TitleIcon="UserEdit"
 	mc:Ignorable="d">
 
-	<ScrollViewer behaviours:SmoothScrollBehaviour.SmoothScroll="True">
+	<ScrollViewer
+		Width="300"
+		behaviours:SmoothScrollBehaviour.SmoothScroll="True">
 		<StackPanel IsEnabled="{Binding HasValidTarget}">
 
 			<StackPanel.Resources>
