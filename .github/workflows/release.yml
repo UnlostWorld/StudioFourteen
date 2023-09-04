@@ -51,7 +51,7 @@ jobs:
         run: dotnet restore
 
       - name: Build plugin in release mode
-        run: dotnet build "./ScreenshotStudio/ScreenshotStudio.csproj" -c Release --no-restore --nologo /p:Version='1.0.0.${{github.run_number}}'
+        run: dotnet build -c Release --no-restore --nologo
 
       - name: Zip Release
         uses: TheDoctor0/zip-release@0.6.0
