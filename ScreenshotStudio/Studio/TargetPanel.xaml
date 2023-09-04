@@ -10,11 +10,11 @@
 	xmlns:xivToolsWpf="clr-namespace:XivToolsWpf.Controls;assembly=XivToolsWpf"
 	Title="TargetPanel"
 	Width="800"
-	Height="56"
 	HorizontalAlignment="Center"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	DockPosition="0.5,0"
 	IsShown="{Binding IsInGPose}"
+	SizeToContent="Height"
 	mc:Ignorable="d">
 
 	<StackPanel
