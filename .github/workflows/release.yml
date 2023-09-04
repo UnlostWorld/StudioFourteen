@@ -30,12 +30,6 @@ jobs:
       DALAMUD_HOME: ${{ github.workspace }}/Lib/Dalamud
       IsCI: true
     steps:
-      - name: Get version date
-        uses: 1466587594/get-current-time@v2
-        id: version-date
-        with:
-          format: YYYY-MM-DD
-        
       - name: Checkout Repository
         uses: actions/checkout@v3
         with:
@@ -57,7 +51,7 @@ jobs:
         run: dotnet restore
 
       - name: Build plugin in release mode
-        run: dotnet build -c Release --no-restore --nologo
+        run: dotnet build -c Release --no-restore --nologo /p:Version=1.0.0.${{github.run_number}}
 
       - name: Zip Release
         uses: TheDoctor0/zip-release@0.6.0
@@ -71,8 +65,8 @@ jobs:
         with:
           allowUpdates: true
           artifacts: '${{ github.workspace }}/latest.zip'
-          name: ${{ steps.version-date.outputs.formattedTime }}
-          tag: v${{ steps.version-date.outputs.formattedTime }}
+          name: ${{github.run_number}}
+          tag: v${{github.run_number}}
           #body: ${{ steps.Changelog.outputs.changelog }}
           draft: false
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -89,8 +83,8 @@ jobs:
                   "Name": "Screenshot Studio",
                   "InternalName": "ScreenshotStudio",
                   "Description": "A plugin for enhancing GPose functionality",
-                  "AssemblyVersion": "1.0.0.0",
-                  "TestingAssemblyVersion": "1.0.0.0",
+                  "AssemblyVersion": "1.0.0.${{github.run_number}}",
+                  "TestingAssemblyVersion": "1.0.0.${{github.run_number}}",
                   "RepoUrl": "https://github.com/XIV-Tools/ScreenshotStudio",
                   "ApplicableVersion": "any",
                   "DalamudApiLevel": 8,
@@ -100,9 +94,9 @@ jobs:
                     "screenshot"
                   ],
                   "IconUrl": "https://github.com/XIV-Tools/ScreenshotStudio/blob/main/Assets/Icon/light-pride.png",
-                  "DownloadLinkInstall": "https://github.com/XIV-Tools/ScreenshotStudio/releases/download/v${{ steps.version-date.outputs.formattedTime }}/latest.zip",
-                  "DownloadLinkTesting": "https://github.com/XIV-Tools/ScreenshotStudio/releases/download/v${{ steps.version-date.outputs.formattedTime }}/latest.zip",
-                  "DownloadLinkUpdate": "https://github.com/XIV-Tools/ScreenshotStudio/releases/download/v${{ steps.version-date.outputs.formattedTime }}/latest.zip",
+                  "DownloadLinkInstall": "https://github.com/XIV-Tools/ScreenshotStudio/releases/download/v${{github.run_number}}/latest.zip",
+                  "DownloadLinkTesting": "https://github.com/XIV-Tools/ScreenshotStudio/releases/download/v$${{github.run_number}}/latest.zip",
+                  "DownloadLinkUpdate": "https://github.com/XIV-Tools/ScreenshotStudio/releases/download/v$${{github.run_number}}/latest.zip",
                 }
               ]
           
