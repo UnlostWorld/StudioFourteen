@@ -18,11 +18,13 @@
 
 	<sys:String x:Key="ToggleGPose">Toggle GPose</sys:String>
 	<sys:String x:Key="Library">Library</sys:String>
-	<sys:String x:Key="TimeWeather">Time &amp; Weather</sys:String>
+	<sys:String x:Key="Zone">Zone</sys:String>
 	<sys:String x:Key="Camera">Camera</sys:String>
 	<sys:String x:Key="Customize">Customize</sys:String>
 	<sys:String x:Key="Gear">Gear</sys:String>
 	<sys:String x:Key="ShaderParameters">Shader Parameters</sys:String>
 	<sys:String x:Key="Pose">Pose</sys:String>
 	<sys:String x:Key="Settings">Settings</sys:String>
+
+	<sys:String x:Key="ChangeZoneWarning">You may only change zones in the title screen on a fresh launch of FFXIV. Restart your game and do not enter character select.</sys:String>
 </ResourceDictionary>

@@ -61,4 +61,5 @@ public partial class NavigationPanel : DockPanel
 
 	private void OnGearClicked(object sender, RoutedEventArgs e) => Panel.Show<GearWindow>();
 	private void OnCustomizeClicked(object sender, RoutedEventArgs e) => Panel.Show<CustomizeWindow>();
+	private void OnZoneClicked(object sender, RoutedEventArgs e) => Panel.Show<ZoneWindow>();
 }

@@ -96,9 +96,9 @@
 								</Button>
 
 								<Button
-									x:Name="WeatherButton"
-									IsEnabled="False"
-									ToolTip="{DynamicResource TimeWeather}">
+									x:Name="ZoneButton"
+									Click="OnZoneClicked"
+									ToolTip="{DynamicResource Zone}">
 									<xivToolsWpf:IconBlock Icon="CloudMoonRain" />
 								</Button>
 
@@ -191,7 +191,7 @@
 											Duration="0:00:00.100" />
 
 										<DoubleAnimation
-											Storyboard.TargetName="WeatherButton"
+											Storyboard.TargetName="ZoneButton"
 											Storyboard.TargetProperty="Opacity"
 											To="0"
 											Duration="0:00:00.100" />
@@ -272,7 +272,7 @@
 
 										<DoubleAnimation
 											BeginTime="0:00:00.150"
-											Storyboard.TargetName="WeatherButton"
+											Storyboard.TargetName="ZoneButton"
 											Storyboard.TargetProperty="Opacity"
 											From="0"
 											To="1"

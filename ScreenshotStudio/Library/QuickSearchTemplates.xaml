@@ -6,7 +6,7 @@
 	xmlns:xivToolsWpf="clr-namespace:XivToolsWpf.Controls;assembly=XivToolsWpf">
 
 
-
+	<!--  Item  -->
 	<DataTemplate DataType="{x:Type excel:Item}">
 		<Grid>
 			<Grid.ColumnDefinitions>
@@ -148,6 +148,29 @@
 		</DataTemplate.Triggers>
 
 
+	</DataTemplate>
+
+	<!--  Territory  -->
+	<DataTemplate DataType="{x:Type excel:Territory}">
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+			</Grid.RowDefinitions>
+
+			<TextBlock
+				Grid.Row="0"
+				Text="{Binding Place.Name}"
+				TextWrapping="Wrap" />
+
+			<TextBlock
+				x:Name="DescriptionBlock"
+				Grid.Row="1"
+				Foreground="{DynamicResource ForegroundLightBrush}"
+				Text="{Binding Background}"
+				TextTrimming="CharacterEllipsis"
+				TextWrapping="NoWrap" />
+		</Grid>
 	</DataTemplate>
 
 </ResourceDictionary>
