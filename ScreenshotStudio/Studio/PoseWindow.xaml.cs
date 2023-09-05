@@ -5,6 +5,6 @@ namespace ScreenshotStudio.Studio;
 
 using ScreenshotStudio.Windows;
 
-public partial class PoseWindow : DockPanel
+public partial class PoseWindow : ActorWindow
 {
 }
