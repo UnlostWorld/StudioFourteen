@@ -120,11 +120,8 @@
 							<StackPanel Margin="3">
 
 								<CheckBox
-									Content="Bone GUI"
-									Style="{DynamicResource StudioVisibilityCheckBox}" />
-
-								<CheckBox
-									Content="Gizmo GUI"
+									Content="{DynamicResource BonesGuiOption}"
+									IsChecked="{Binding IsBonesWindowOpen}"
 									Style="{DynamicResource StudioVisibilityCheckBox}" />
 
 								<CheckBox

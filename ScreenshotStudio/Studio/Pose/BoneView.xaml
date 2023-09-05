@@ -1,0 +1,111 @@
+﻿<UserControl
+	x:Class="ScreenshotStudio.Studio.Pose.BoneView"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	Width="18"
+	Height="18"
+	Margin="2"
+	mc:Ignorable="d">
+
+	<Grid
+		x:Name="ContentArea"
+		Cursor="Hand">
+
+		<Grid.ToolTip>
+			<StackPanel>
+				<TextBlock
+					FontWeight="Bold"
+					Text="{Binding LocalizedBoneName}" />
+				<TextBlock Text="{Binding InternalBoneName}" />
+			</StackPanel>
+		</Grid.ToolTip>
+
+		<ToggleButton
+			x:Name="Radio"
+			Margin="0"
+			HorizontalAlignment="Center"
+			VerticalAlignment="Center"
+			Checked="OnChecked"
+			Content="O"
+			IsChecked="{Binding IsSelected}"
+			Unchecked="OnUnchecked">
+			<ToggleButton.Style>
+				<Style TargetType="{x:Type ToggleButton}">
+					<Setter Property="Template">
+						<Setter.Value>
+							<ControlTemplate TargetType="{x:Type ToggleButton}">
+								<Grid
+									Width="16"
+									Height="16"
+									Cursor="Hand"
+									TextBlock.Foreground="{DynamicResource ForegroundLightBrush}">
+
+									<Ellipse
+										Margin="-1"
+										Fill="{DynamicResource ControlBackgroundBrush}" />
+
+									<Ellipse
+										x:Name="BackgroundElipse"
+										Fill="{DynamicResource ControlBackgroundBrush}"
+										Opacity="1"
+										Stroke="{DynamicResource ForegroundBrush}"
+										StrokeThickness="1" />
+
+									<Ellipse
+										x:Name="HoverElipse"
+										Fill="{DynamicResource ControlHighlightBrush}"
+										Opacity="0"
+										Stroke="{DynamicResource ControlHighlightBrush}"
+										StrokeThickness="1" />
+
+									<Ellipse
+										x:Name="SelectionElipse"
+										Margin="4"
+										Fill="{DynamicResource TrimBrush}"
+										Opacity="0" />
+
+									<Ellipse
+										x:Name="ParentSelectedElipse"
+										Opacity="0"
+										Stroke="{DynamicResource TrimBrush}"
+										StrokeThickness="1" />
+
+									<TextBlock
+										HorizontalAlignment="Center"
+										VerticalAlignment="Center"
+										FontSize="8"
+										Text="{Binding Label}" />
+
+								</Grid>
+
+								<ControlTemplate.Triggers>
+									<Trigger Property="IsMouseOver" Value="true">
+										<Setter TargetName="HoverElipse" Property="Opacity" Value="1" />
+									</Trigger>
+									<Trigger Property="IsEnabled" Value="false">
+										<Setter TargetName="BackgroundElipse" Property="Opacity" Value="0" />
+									</Trigger>
+									<Trigger Property="IsChecked" Value="True">
+										<Setter TargetName="SelectionElipse" Property="Opacity" Value="1" />
+									</Trigger>
+									<DataTrigger
+										Binding="{Binding IsHighlighted}"
+										Value="True">
+										<Setter TargetName="HoverElipse" Property="Opacity" Value="1" />
+									</DataTrigger>
+									<DataTrigger
+										Binding="{Binding IsParentSelected}"
+										Value="True">
+										<Setter TargetName="ParentSelectedElipse" Property="Opacity" Value="1" />
+									</DataTrigger>
+								</ControlTemplate.Triggers>
+							</ControlTemplate>
+						</Setter.Value>
+					</Setter>
+				</Style>
+			</ToggleButton.Style>
+		</ToggleButton>
+	</Grid>
+</UserControl>
