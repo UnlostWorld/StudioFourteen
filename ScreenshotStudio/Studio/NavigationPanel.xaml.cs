@@ -37,6 +37,62 @@ public partial class NavigationPanel : DockPanel
 		}
 	}
 
+	[AutoNotify]
+	public bool IsLibraryOpen
+	{
+		get => this.Services.Panels.GetIsOpen<HelloWorldWindow>();
+		set => this.Services.Panels.SetIsOpen<HelloWorldWindow>(value);
+	}
+
+	[AutoNotify]
+	public bool IsZoneOpen
+	{
+		get => this.Services.Panels.GetIsOpen<ZoneWindow>();
+		set => this.Services.Panels.SetIsOpen<ZoneWindow>(value);
+	}
+
+	[AutoNotify]
+	public bool IsCameraOpen
+	{
+		get => this.Services.Panels.GetIsOpen<HelloWorldWindow>();
+		set => this.Services.Panels.SetIsOpen<HelloWorldWindow>(value);
+	}
+
+	[AutoNotify]
+	public bool IsCustomizeOpen
+	{
+		get => this.Services.Panels.GetIsOpen<CustomizeWindow>();
+		set => this.Services.Panels.SetIsOpen<CustomizeWindow>(value);
+	}
+
+	[AutoNotify]
+	public bool IsGearOpen
+	{
+		get => this.Services.Panels.GetIsOpen<GearWindow>();
+		set => this.Services.Panels.SetIsOpen<GearWindow>(value);
+	}
+
+	[AutoNotify]
+	public bool IsShadersOpen
+	{
+		get => this.Services.Panels.GetIsOpen<HelloWorldWindow>();
+		set => this.Services.Panels.SetIsOpen<HelloWorldWindow>(value);
+	}
+
+	[AutoNotify]
+	public bool IsPoseOpen
+	{
+		get => this.Services.Panels.GetIsOpen<PoseWindow>();
+		set => this.Services.Panels.SetIsOpen<PoseWindow>(value);
+	}
+
+	[AutoNotify]
+	public bool IsSettingsOpen
+	{
+		get => this.Services.Panels.GetIsOpen<HelloWorldWindow>();
+		set => this.Services.Panels.SetIsOpen<HelloWorldWindow>(value);
+	}
+
 	public void Expand()
 	{
 		this.IsExpanded = true;
@@ -58,9 +114,4 @@ public partial class NavigationPanel : DockPanel
 			this.Services.Studio.OpenStudio();
 		}
 	}
-
-	private void OnGearClicked(object sender, RoutedEventArgs e) => Panel.Show<GearWindow>();
-	private void OnCustomizeClicked(object sender, RoutedEventArgs e) => Panel.Show<CustomizeWindow>();
-	private void OnZoneClicked(object sender, RoutedEventArgs e) => Panel.Show<ZoneWindow>();
-	private void OnPoseclicked(object sender, RoutedEventArgs e) => Panel.Show<PoseWindow>();
 }

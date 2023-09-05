@@ -51,8 +51,8 @@
 							<StackPanel>
 								<StackPanel.Resources>
 									<Style
-										BasedOn="{StaticResource XivToolsButton}"
-										TargetType="{x:Type Button}">
+										BasedOn="{StaticResource XivToolsToggleButton}"
+										TargetType="{x:Type ToggleButton}">
 										<Setter Property="Width" Value="32" />
 										<Setter Property="Height" Value="32" />
 										<Setter Property="Margin" Value="0" />
@@ -88,65 +88,69 @@
 
 								<Line />
 
-								<Button
+								<ToggleButton
 									x:Name="LibraryButton"
+									IsChecked="{Binding IsLibraryOpen}"
 									IsEnabled="False"
 									ToolTip="{DynamicResource Library}">
 									<xivToolsWpf:IconBlock Icon="Books" />
-								</Button>
+								</ToggleButton>
 
-								<Button
+								<ToggleButton
 									x:Name="ZoneButton"
-									Click="OnZoneClicked"
+									IsChecked="{Binding IsZoneOpen}"
 									ToolTip="{DynamicResource Zone}">
 									<xivToolsWpf:IconBlock Icon="CloudMoonRain" />
-								</Button>
+								</ToggleButton>
 
-								<Button
+								<ToggleButton
 									x:Name="CameraButton"
+									IsChecked="{Binding IsCameraOpen}"
 									IsEnabled="False"
 									ToolTip="{DynamicResource Camera}">
 									<xivToolsWpf:IconBlock Icon="CameraMovie" />
-								</Button>
+								</ToggleButton>
 
 								<Line />
 
-								<Button
+								<ToggleButton
 									x:Name="CustomizeButton"
-									Click="OnCustomizeClicked"
+									IsChecked="{Binding IsCustomizeOpen}"
 									ToolTip="{DynamicResource Customize}">
 									<xivToolsWpf:IconBlock Icon="UserEdit" />
-								</Button>
+								</ToggleButton>
 
-								<Button
+								<ToggleButton
 									x:Name="GearButton"
-									Click="OnGearClicked"
+									IsChecked="{Binding IsGearOpen}"
 									ToolTip="{DynamicResource Gear}">
 									<xivToolsWpf:IconBlock Icon="HelmetBattle" />
-								</Button>
+								</ToggleButton>
 
-								<Button
+								<ToggleButton
 									x:Name="ShaderButton"
+									IsChecked="{Binding IsShadersOpen}"
 									IsEnabled="False"
 									ToolTip="{DynamicResource ShaderParameters}">
 									<xivToolsWpf:IconBlock Icon="PaintBrush" />
-								</Button>
+								</ToggleButton>
 
-								<Button
+								<ToggleButton
 									x:Name="PoseButton"
-									Click="OnPoseclicked"
+									IsChecked="{Binding IsPoseOpen}"
 									ToolTip="{DynamicResource Pose}">
 									<xivToolsWpf:IconBlock Icon="Running" />
-								</Button>
+								</ToggleButton>
 
 								<Line />
 
-								<Button
+								<ToggleButton
 									x:Name="SettingsButton"
+									IsChecked="{Binding IsSettingsOpen}"
 									IsEnabled="False"
 									ToolTip="{DynamicResource Settings}">
 									<xivToolsWpf:IconBlock Icon="cogs" />
-								</Button>
+								</ToggleButton>
 
 
 							</StackPanel>

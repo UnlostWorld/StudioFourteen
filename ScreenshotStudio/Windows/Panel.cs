@@ -95,13 +95,13 @@ public abstract partial class Panel : Window, IAutoNotify
 
 	public new void Show()
 	{
-		this.Services.Panels.OpenPanels.Add(this);
+		this.Services.Panels.OnPanelOpened(this);
 		this.Dispatcher.BeginInvoke(() => base.Show());
 	}
 
 	public async Task ShowAsync()
 	{
-		this.Services.Panels.OpenPanels.Add(this);
+		this.Services.Panels.OnPanelOpened(this);
 		await this.Dispatcher.MainThread();
 		base.Show();
 	}
@@ -149,7 +149,7 @@ public abstract partial class Panel : Window, IAutoNotify
 	protected virtual void OnClosed()
 	{
 		AutoPropertyNotifyService.Remove(this);
-		this.Services.Panels.OpenPanels.Remove(this);
+		this.Services.Panels.OnPanelClosed(this);
 	}
 
 	private void OnPreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
