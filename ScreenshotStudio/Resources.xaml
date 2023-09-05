@@ -8,6 +8,9 @@
 		<!--  XivToolsWpf styles  -->
 		<ResourceDictionary Source="pack://application:,,,/XivToolsWpf;component/Styles.xaml" />
 
+		<!--  Custom styles  -->
+		<ResourceDictionary Source="./Styles/CheckBoxStyles.xaml" />
+
 		<!--  Custom controls  -->
 		<ResourceDictionary Source="./Windows/PanelStyle.xaml" />
 		<ResourceDictionary Source="./Windows/PanelWindowStyle.xaml" />

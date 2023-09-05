@@ -15,6 +15,8 @@
 		<Setter Property="Height" Value="9999" />
 		<Setter Property="MaxWidth" Value="1920" />
 		<Setter Property="MaxHeight" Value="1080" />
+		<Setter Property="HorizontalAlignment" Value="Center" />
+		<Setter Property="VerticalAlignment" Value="Center" />
 
 	</Style>
 </ResourceDictionary>
