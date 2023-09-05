@@ -24,17 +24,6 @@
 		behaviours:SmoothScrollBehaviour.SmoothScroll="True">
 		<StackPanel IsEnabled="{Binding HasValidTarget}">
 
-			<StackPanel.Resources>
-				<Style
-					x:Key="LeftLabel"
-					BasedOn="{StaticResource Subscript}"
-					TargetType="{x:Type TextBlock}">
-					<Setter Property="HorizontalAlignment" Value="Left" />
-					<Setter Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
-					<Setter Property="Margin" Value="2,2,0,0" />
-				</Style>
-			</StackPanel.Resources>
-
 			<!--  Race  -->
 			<TextBlock
 				Style="{DynamicResource LeftLabel}"

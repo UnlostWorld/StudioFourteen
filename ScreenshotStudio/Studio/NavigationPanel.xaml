@@ -134,7 +134,7 @@
 
 								<Button
 									x:Name="PoseButton"
-									IsEnabled="False"
+									Click="OnPoseclicked"
 									ToolTip="{DynamicResource Pose}">
 									<xivToolsWpf:IconBlock Icon="Running" />
 								</Button>
