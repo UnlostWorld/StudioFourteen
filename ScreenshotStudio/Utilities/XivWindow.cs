@@ -62,11 +62,11 @@ public static class XivWindow
 
 		int x = (int)((XivWindow.Size.Width * position.X) - (wnd.ActualWidth * position.X));
 		int y = (int)((XivWindow.Size.Height * position.Y) - (wnd.ActualHeight * position.Y));
-		int w = (int)wnd.ActualWidth;
-		int h = (int)wnd.ActualHeight;
+		int w = 0;
+		int h = 0;
 
-		// SHOWWINDOW
-		SetWindowPos(wndInterop.Handle, IntPtr.Zero, x, y, w, h, 0x0040);
+		// SHOWWINDOW | NOSIZE
+		SetWindowPos(wndInterop.Handle, IntPtr.Zero, x, y, w, h, 0x0040 | 0x0001);
 
 		// NOSIZE
 		SetWindowPos(wndInterop.Handle, IntPtr.Zero, x, y, w, h, 0x0001);
