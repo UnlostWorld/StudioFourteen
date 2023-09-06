@@ -3,6 +3,7 @@
 
 namespace ScreenshotStudio.Windows;
 
+using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Structs;
 using ScreenshotStudio.Utilities;
@@ -63,6 +64,8 @@ public abstract partial class Panel : Window, IAutoNotify
 		get => (bool)this.GetValue(IsShownProperty);
 		set => this.SetValue(IsShownProperty, value);
 	}
+
+	public bool IsUiVisible => !DalamudServices.GameGui.GameUiHidden;
 
 	public static void Show<T>()
 		where T : Panel
@@ -137,17 +140,19 @@ public abstract partial class Panel : Window, IAutoNotify
 	protected void OnLoaded(object sender, RoutedEventArgs e)
 	{
 		XivWindow.Embed(this);
-		AutoPropertyNotifyService.Register(this);
 
 		this.OnOpened();
 	}
 
 	protected virtual void OnOpened()
 	{
+		DalamudServices.GameGui.UiHideToggled += this.OnGameUiToggled;
+		AutoPropertyNotifyService.Register(this);
 	}
 
 	protected virtual void OnClosed()
 	{
+		DalamudServices.GameGui.UiHideToggled -= this.OnGameUiToggled;
 		AutoPropertyNotifyService.Remove(this);
 		this.Services.Panels.OnPanelClosed(this);
 	}
@@ -155,6 +160,11 @@ public abstract partial class Panel : Window, IAutoNotify
 	private void OnPreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
 	{
 		this.Activate();
+	}
+
+	private void OnGameUiToggled(object? sender, bool e)
+	{
+		this.NotifyPropertyChanged(nameof(Panel.IsUiVisible));
 	}
 
 	private class PanelThread
