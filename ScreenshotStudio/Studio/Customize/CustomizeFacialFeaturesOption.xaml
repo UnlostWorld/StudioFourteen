@@ -30,12 +30,12 @@
 						IsChecked="{Binding IsEnabled}">
 
 						<Grid>
-							<controls:XivTexImage
+							<Image
 								Width="48"
 								Height="48"
-								Path="ui/uld/charaselect_legacy.tex"
-								Stretch="Uniform"
+								Source="pack://application:,,,/ScreenshotStudio;component/Assets/LegacyTattoo.png"
 								Visibility="{Binding IsLegacy, Converter={StaticResource B2V}}" />
+
 							<Image
 								Width="48"
 								Height="48"
