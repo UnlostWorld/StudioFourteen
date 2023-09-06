@@ -51,7 +51,9 @@
 							Grid.Column="0"
 							Width="54"
 							Height="54"
-							Content="{Binding Item.Icon.Source}">
+							Click="OnChangeClicked"
+							Content="{Binding Item.Icon.Source}"
+							MouseUp="OnMouseUp">
 
 							<Button.Template>
 								<ControlTemplate TargetType="Button">
@@ -165,7 +167,8 @@
 							Grid.Column="1"
 							Grid.ColumnSpan="3"
 							HorizontalContentAlignment="Stretch"
-							Click="OnChangeClicked">
+							Click="OnChangeClicked"
+							MouseUp="OnMouseUp">
 							<Grid>
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition />

@@ -13,6 +13,8 @@ using ScreenshotStudio.Library;
 using System.Windows.Controls;
 using ScreenshotStudio.Tags;
 using System;
+using System.Windows.Input;
+using ScreenshotStudio.GameData.Sheets;
 
 public partial class GearWindow : ActorWindow
 {
@@ -43,7 +45,8 @@ public partial class GearWindow : ActorWindow
 
 	private void OnChangeClicked(object sender, RoutedEventArgs e)
 	{
-		if (sender is Button btn && btn.DataContext is ItemEquipViewModel equip)
+		if (sender is Button btn
+			&& btn.DataContext is ItemEquipViewModel equip)
 		{
 			TagCollection defaultTags = new();
 			defaultTags.Add(equip.Slot.ToTag());
@@ -57,6 +60,18 @@ public partial class GearWindow : ActorWindow
 			{
 				equip.Item = item;
 			});
+		}
+	}
+
+	private void OnMouseUp(object sender, MouseButtonEventArgs e)
+	{
+		if (sender is Button btn
+			&& btn.DataContext is ItemEquipViewModel equip)
+		{
+			if (e.ChangedButton == MouseButton.Middle || e.ChangedButton == MouseButton.Right)
+			{
+				equip.Item = ItemsSheet.None;
+			}
 		}
 	}
 }
