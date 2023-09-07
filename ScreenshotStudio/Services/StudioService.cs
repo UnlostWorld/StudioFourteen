@@ -7,6 +7,7 @@ using ScreenshotStudio.Studio;
 using ScreenshotStudio.Windows;
 using System.Threading.Tasks;
 using System;
+using ScreenshotStudio.Plugin;
 
 public class StudioService : ServiceBase
 {
@@ -14,6 +15,17 @@ public class StudioService : ServiceBase
 	private TargetPanel? targetPanel;
 
 	public bool IsOpen { get; private set; }
+
+	public bool IsOpenAndInGPose
+	{
+		get
+		{
+			if (!this.Services.Studio.IsOpen)
+				return false;
+
+			return DalamudServices.PluginInterface.UiBuilder.GposeActive;
+		}
+	}
 
 	public override async Task Start()
 	{

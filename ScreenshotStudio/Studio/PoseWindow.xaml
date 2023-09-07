@@ -95,9 +95,9 @@
 			<Separator Margin="0,6" />
 
 			<!--  Posing  -->
-			<Grid>
+			<Grid IsEnabled="{Binding CanPose}">
 				<StackPanel>
-					<CheckBox>
+					<CheckBox IsChecked="{Binding PosingEnabled}">
 						<TextBlock Text="Enable Posing" />
 					</CheckBox>
 

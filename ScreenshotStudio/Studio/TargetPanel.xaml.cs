@@ -32,16 +32,7 @@ public partial class TargetPanel : DockPanel
 	public List<ActorViewModel> Actors { get; init; } = new();
 
 	[AutoNotify]
-	public bool IsInGPose
-	{
-		get
-		{
-			if (!this.Services.Studio.IsOpen)
-				return false;
-
-			return DalamudServices.PluginInterface.UiBuilder.GposeActive;
-		}
-	}
+	public bool IsInGPose => this.Services.Studio.IsOpenAndInGPose;
 
 	private void OnAddActorClicked(object sender, RoutedEventArgs e)
 	{
