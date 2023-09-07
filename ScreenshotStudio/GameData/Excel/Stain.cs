@@ -8,7 +8,7 @@ using Lumina.Data;
 using Lumina.Excel;
 using Lumina.Text;
 using ScreenshotStudio.GameData.Sheets;
-
+using XivToolsWpf;
 using MediaColor = System.Windows.Media.Color;
 
 [Sheet("Stain", 0x97c471bd)]
@@ -40,5 +40,21 @@ public class Stain : LibraryExcelRow
 		{
 			this.Item = GameDataService.GetRow<Item>(itemKey);
 		}
+
+		if (!string.IsNullOrEmpty(this.Name))
+		{
+			this.Tags.Add("Named");
+		}
+	}
+
+	public override bool Search(string[]? query)
+	{
+		if (SearchUtility.Matches(this.Name, query))
+			return true;
+
+		if (SearchUtility.Matches(this.Shade, query))
+			return true;
+
+		return base.Search(query);
 	}
 }

@@ -14,8 +14,8 @@ public partial class Resources : ResourceDictionary
 		return resources;
 	}
 
-	public static object? Find(object key)
+	public static object? Find(object key, object? fallback = null)
 	{
-		return null;
+		return fallback;
 	}
 }

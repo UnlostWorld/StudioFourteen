@@ -15,6 +15,7 @@ using ScreenshotStudio.Tags;
 using System;
 using System.Windows.Input;
 using ScreenshotStudio.GameData.Sheets;
+using System.Text;
 
 public partial class GearWindow : ActorWindow
 {
@@ -51,9 +52,11 @@ public partial class GearWindow : ActorWindow
 			TagCollection defaultTags = new();
 			defaultTags.Add(equip.Slot.ToTag());
 
+			string searchTitle = $"{equip.Slot.GetDisplayName()} {ScreenshotStudio.Resources.Find("Item", "Item")}";
+
 			QuickSearch.Show<Item>(
 				btn,
-				equip.Slot.GetDisplayName(),
+				searchTitle,
 				defaultTags,
 				equip.Item,
 				(item, isFinal) =>
@@ -72,6 +75,28 @@ public partial class GearWindow : ActorWindow
 			{
 				equip.Item = ItemsSheet.None;
 			}
+		}
+	}
+
+	private void OnChangeDyeClicked(object sender, RoutedEventArgs e)
+	{
+		if (sender is Button btn
+			&& btn.DataContext is ItemEquipViewModel equip)
+		{
+			TagCollection defaultTags = new();
+			defaultTags.Add("Named");
+
+			string searchTitle = $"{equip.Slot.GetDisplayName()} {ScreenshotStudio.Resources.Find("Dye", "Dye")}";
+
+			QuickSearch.Show<Stain>(
+				btn,
+				searchTitle,
+				defaultTags,
+				equip.Stain,
+				(stain, isFinal) =>
+				{
+					equip.Stain = stain;
+				});
 		}
 	}
 }

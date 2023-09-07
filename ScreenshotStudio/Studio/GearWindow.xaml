@@ -208,7 +208,8 @@
 								Padding="0"
 								HorizontalContentAlignment="Stretch"
 								VerticalContentAlignment="Stretch"
-								Background="Transparent">
+								Background="Transparent"
+								Click="OnChangeDyeClicked">
 
 								<Border
 									Margin="4"
