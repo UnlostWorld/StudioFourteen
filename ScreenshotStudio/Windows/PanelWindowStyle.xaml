@@ -162,6 +162,7 @@
 		<Setter Property="ResizeMode" Value="CanResizeWithGrip" />
 		<Setter Property="WindowStyle" Value="None" />
 		<Setter Property="Template" Value="{StaticResource PanelWindowTemplate}" />
+		<Setter Property="UseLayoutRounding" Value="True" />
 	</Style>
 
 </ResourceDictionary>
