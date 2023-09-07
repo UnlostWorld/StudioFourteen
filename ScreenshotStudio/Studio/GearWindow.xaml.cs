@@ -81,6 +81,7 @@ public class ItemEquipViewModel : ViewModel
 	public readonly ItemSlots Slot;
 	private readonly GearWindow window;
 	private Item? item;
+	private Stain? stain;
 
 	public ItemEquipViewModel(ItemSlots slot, GearWindow window)
 	{
@@ -121,7 +122,11 @@ public class ItemEquipViewModel : ViewModel
 	public byte Dye
 	{
 		get => this.ItemEquip.Dye;
-		set => this.ItemEquip.Dye = value;
+		set
+		{
+			this.ItemEquip.Dye = value;
+			this.ApplyChangeItem();
+		}
 	}
 
 	[AutoNotify]
@@ -148,6 +153,33 @@ public class ItemEquipViewModel : ViewModel
 			{
 				this.Base = this.item.ModelBase;
 				this.Variant = (byte)this.item.ModelVariant;
+			}
+		}
+	}
+
+	[AutoNotify]
+	public Stain? Stain
+	{
+		get
+		{
+			if (!this.window.HasValidTarget)
+				return null;
+
+			if (this.stain == null || this.stain.RowId != this.Dye)
+			{
+				this.stain = GameDataService.GetRow<Stain>(this.Dye);
+			}
+
+			return this.stain;
+		}
+
+		set
+		{
+			this.stain = value;
+
+			if (this.stain != null)
+			{
+				this.Dye = (byte)this.stain.RowId;
 			}
 		}
 	}

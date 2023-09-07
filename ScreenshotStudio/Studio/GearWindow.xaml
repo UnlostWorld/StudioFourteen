@@ -37,8 +37,8 @@
 						Margin="2,2,6,2">
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="75" />
 							<ColumnDefinition />
+							<ColumnDefinition Width="Auto" />
 						</Grid.ColumnDefinitions>
 
 						<Grid.RowDefinitions>
@@ -169,24 +169,14 @@
 							HorizontalContentAlignment="Stretch"
 							Click="OnChangeClicked"
 							MouseUp="OnMouseUp">
-							<Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition />
-									<ColumnDefinition Width="Auto" />
-								</Grid.ColumnDefinitions>
 
-								<TextBlock
-									Grid.Column="0"
-									Margin="0,0,3,0"
-									Style="{DynamicResource Body}"
-									Text="{Binding Item.Name}"
-									TextWrapping="NoWrap" />
+							<TextBlock
+								Grid.Column="0"
+								Margin="0,0,3,0"
+								Style="{DynamicResource Body}"
+								Text="{Binding Item.Name}"
+								TextWrapping="NoWrap" />
 
-								<xivToolsWpf:IconBlock
-									Grid.Column="1"
-									Foreground="{DynamicResource BackgroundBrush}"
-									Icon="ExternalLinkSquare" />
-							</Grid>
 						</Button>
 
 
@@ -197,33 +187,47 @@
 							Y="{Binding Base}"
 							Z="{Binding Variant}" />
 
-						<Button
+						<Grid
 							Grid.Row="1"
-							Grid.Column="2"
-							Grid.ColumnSpan="3"
-							Padding="0"
-							HorizontalContentAlignment="Stretch">
+							Grid.Column="2">
 
-							<Grid Margin="4">
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="Auto" />
-									<ColumnDefinition />
-									<ColumnDefinition Width="Auto" />
-								</Grid.ColumnDefinitions>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="Auto" />
+							</Grid.ColumnDefinitions>
 
-								<TextBlock
-									x:Name="TextArea"
-									Grid.Column="1"
-									Margin="6,0,3,1"
-									Style="{DynamicResource Body}"
-									Text="{Binding Dye, FallbackValue=0}" />
+							<Border
+								Grid.ColumnSpan="2"
+								Height="26"
+								Style="{DynamicResource XivToolsControlBorder}" />
 
-								<xivToolsWpf:IconBlock
-									Grid.Column="2"
-									Foreground="{DynamicResource BackgroundBrush}"
-									Icon="ExternalLinkSquare" />
-							</Grid>
-						</Button>
+							<Button
+								Grid.Column="0"
+								Width="26"
+								Margin="0,0,-3,0"
+								Padding="0"
+								HorizontalContentAlignment="Stretch"
+								VerticalContentAlignment="Stretch"
+								Background="Transparent">
+
+								<Border
+									Margin="4"
+									BorderBrush="{DynamicResource BackgroundBrush}"
+									BorderThickness="1"
+									CornerRadius="3">
+
+									<Border.Background>
+										<ImageBrush ImageSource="{Binding Stain.Item.Icon.Source}" />
+									</Border.Background>
+								</Border>
+							</Button>
+
+							<xivToolsWpf:NumberBox
+								Grid.Column="1"
+								Maximum="255"
+								Minimum="0"
+								Value="{Binding Dye}" />
+						</Grid>
 
 					</Grid>
 

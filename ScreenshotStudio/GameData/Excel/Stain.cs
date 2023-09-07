@@ -4,11 +4,11 @@
 namespace ScreenshotStudio.GameData.Excel;
 
 using System;
-using System.Windows.Media;
 using Lumina.Data;
 using Lumina.Excel;
 using Lumina.Text;
 using ScreenshotStudio.GameData.Sheets;
+
 using MediaColor = System.Windows.Media.Color;
 
 [Sheet("Stain", 0x97c471bd)]
