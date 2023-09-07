@@ -87,8 +87,133 @@
 						</ControlTemplate>
 					</Button.Template>
 				</Button>
-
 			</DataTemplate>
+
+			<ControlTemplate
+				x:Key="ListBoxItemTemplate"
+				TargetType="{x:Type ListBoxItem}">
+
+				<Border
+					Margin="{TemplateBinding Margin}"
+					Background="Transparent"
+					BorderBrush="{TemplateBinding BorderBrush}"
+					BorderThickness="{TemplateBinding BorderThickness}"
+					ClipToBounds="{TemplateBinding ClipToBounds}">
+					<Grid>
+
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition />
+						</Grid.ColumnDefinitions>
+
+						<Border
+							x:Name="SelectionBorder"
+							Grid.ColumnSpan="2"
+							Opacity="0"
+							Style="{DynamicResource XivToolsSelectedBorder}" />
+
+						<Border
+							x:Name="HoverBorder"
+							Grid.Column="1"
+							Margin="1"
+							Background="{DynamicResource BackgroundLightBrush}"
+							BorderBrush="{DynamicResource BackgroundLightBrush}"
+							BorderThickness="1"
+							CornerRadius="3"
+							Opacity="0" />
+
+						<ContentPresenter
+							Grid.Column="1"
+							Margin="{TemplateBinding Padding}"
+							HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+							VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+							Content="{TemplateBinding Content}"
+							ContentTemplate="{TemplateBinding ContentTemplate}"
+							ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+							Focusable="False"
+							RecognizesAccessKey="False"
+							SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+
+						<ToggleButton
+							Margin="8,1,2,1"
+							VerticalAlignment="Stretch"
+							Background="Transparent"
+							Style="{DynamicResource TransparentToggleButton}">
+							<Grid>
+								<xivToolsWpf:IconBlock
+									Margin="6"
+									Foreground="{DynamicResource ForegroundLightBrush}"
+									Icon="Heart"
+									IconStyle="OutlineThin" />
+							</Grid>
+
+						</ToggleButton>
+					</Grid>
+				</Border>
+
+				<ControlTemplate.Triggers>
+					<Trigger Property="IsEnabled" Value="False">
+						<Setter Property="Opacity" Value="0.5" />
+					</Trigger>
+
+					<Trigger Property="IsMouseOver" Value="True">
+						<Trigger.EnterActions>
+							<BeginStoryboard>
+								<Storyboard>
+									<DoubleAnimation
+										Storyboard.TargetName="HoverBorder"
+										Storyboard.TargetProperty="Opacity"
+										To="1"
+										Duration="0:0:0.100" />
+								</Storyboard>
+							</BeginStoryboard>
+						</Trigger.EnterActions>
+
+						<Trigger.ExitActions>
+							<BeginStoryboard>
+								<Storyboard>
+									<DoubleAnimation
+										Storyboard.TargetName="HoverBorder"
+										Storyboard.TargetProperty="Opacity"
+										From="1"
+										To="0"
+										Duration="0:0:0.250" />
+								</Storyboard>
+							</BeginStoryboard>
+						</Trigger.ExitActions>
+					</Trigger>
+
+					<Trigger Property="IsSelected" Value="True">
+						<Trigger.EnterActions>
+							<BeginStoryboard>
+								<Storyboard>
+									<DoubleAnimation
+										Storyboard.TargetName="SelectionBorder"
+										Storyboard.TargetProperty="Opacity"
+										To="1"
+										Duration="0:0:0.100" />
+								</Storyboard>
+							</BeginStoryboard>
+						</Trigger.EnterActions>
+
+						<Trigger.ExitActions>
+							<BeginStoryboard>
+								<Storyboard>
+									<DoubleAnimation
+										Storyboard.TargetName="SelectionBorder"
+										Storyboard.TargetProperty="Opacity"
+										To="0"
+										Duration="0:0:0.250" />
+								</Storyboard>
+							</BeginStoryboard>
+						</Trigger.ExitActions>
+					</Trigger>
+
+
+				</ControlTemplate.Triggers>
+
+			</ControlTemplate>
+
 		</Grid.Resources>
 
 		<Grid.RowDefinitions>
@@ -108,8 +233,16 @@
 					HorizontalAlignment="Left"
 					ItemsSource="{Binding Results}"
 					KeyDown="OnResultsListKeyDown"
+					MouseDoubleClick="ResultsListDoubleClicked"
 					ScrollViewer.VerticalScrollBarVisibility="Visible"
 					SelectedItem="{Binding SelectedItem}">
+					<ListBox.ItemContainerStyle>
+						<Style
+							BasedOn="{StaticResource XivToolsListBoxItem}"
+							TargetType="{x:Type ListBoxItem}">
+							<Setter Property="Template" Value="{StaticResource ListBoxItemTemplate}" />
+						</Style>
+					</ListBox.ItemContainerStyle>
 					<ListBox.Resources>
 						<ResourceDictionary Source="QuickSearchTemplates.xaml" />
 					</ListBox.Resources>

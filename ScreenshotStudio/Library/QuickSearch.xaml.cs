@@ -232,4 +232,9 @@ public partial class QuickSearch : PanelWindow
 			this.OnConfirmClicked(sender, null);
 		}
 	}
+
+	private void ResultsListDoubleClicked(object sender, MouseButtonEventArgs e)
+	{
+		this.OnConfirmClicked(sender, null);
+	}
 }
