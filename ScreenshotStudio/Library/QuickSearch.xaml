@@ -122,17 +122,21 @@
 							CornerRadius="3"
 							Opacity="0" />
 
-						<ContentPresenter
-							Grid.Column="1"
-							Margin="{TemplateBinding Padding}"
-							HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-							VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-							Content="{TemplateBinding Content}"
-							ContentTemplate="{TemplateBinding ContentTemplate}"
-							ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
-							Focusable="False"
-							RecognizesAccessKey="False"
-							SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+						<Grid
+							x:Name="Content"
+							Grid.Column="1">
+							<ContentPresenter
+								Margin="{TemplateBinding Padding}"
+								HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+								VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+								Content="{TemplateBinding Content}"
+								ContentTemplate="{TemplateBinding ContentTemplate}"
+								ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+								Focusable="False"
+								RecognizesAccessKey="False"
+								SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+
+						</Grid>
 
 						<ToggleButton
 							Margin="8,1,2,1"
@@ -156,8 +160,10 @@
 						<Setter Property="Opacity" Value="0.5" />
 					</Trigger>
 
-					<Trigger Property="IsMouseOver" Value="True">
-						<Trigger.EnterActions>
+					<DataTrigger
+						Binding="{Binding IsMouseOver, ElementName=Content}"
+						Value="True">
+						<DataTrigger.EnterActions>
 							<BeginStoryboard>
 								<Storyboard>
 									<DoubleAnimation
@@ -167,9 +173,9 @@
 										Duration="0:0:0.100" />
 								</Storyboard>
 							</BeginStoryboard>
-						</Trigger.EnterActions>
+						</DataTrigger.EnterActions>
 
-						<Trigger.ExitActions>
+						<DataTrigger.ExitActions>
 							<BeginStoryboard>
 								<Storyboard>
 									<DoubleAnimation
@@ -180,8 +186,8 @@
 										Duration="0:0:0.250" />
 								</Storyboard>
 							</BeginStoryboard>
-						</Trigger.ExitActions>
-					</Trigger>
+						</DataTrigger.ExitActions>
+					</DataTrigger>
 
 					<Trigger Property="IsSelected" Value="True">
 						<Trigger.EnterActions>
