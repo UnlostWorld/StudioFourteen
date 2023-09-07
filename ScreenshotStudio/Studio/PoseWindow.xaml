@@ -54,10 +54,13 @@
 							Grid.Row="0"
 							Grid.Column="0"
 							Style="{DynamicResource RightLabel}"
-							Text="Rot:" />
+							Text="T:" />
 						<xivToolsWpf:MultiNumberBox
 							Grid.Row="0"
-							Grid.Column="1" />
+							Grid.Column="1"
+							X="{Binding TranslationX}"
+							Y="{Binding TranslationY}"
+							Z="{Binding TranslationZ}" />
 						<ToggleButton
 							Grid.Row="0"
 							Grid.Column="2"
@@ -67,10 +70,13 @@
 							Grid.Row="1"
 							Grid.Column="0"
 							Style="{DynamicResource RightLabel}"
-							Text="Pos:" />
+							Text="R:" />
 						<xivToolsWpf:MultiNumberBox
 							Grid.Row="1"
-							Grid.Column="1" />
+							Grid.Column="1"
+							X="{Binding EulerRotationX}"
+							Y="{Binding EulerRotationY}"
+							Z="{Binding EulerRotationZ}" />
 						<ToggleButton
 							Grid.Row="1"
 							Grid.Column="2"
@@ -80,10 +86,13 @@
 							Grid.Row="2"
 							Grid.Column="0"
 							Style="{DynamicResource RightLabel}"
-							Text="Scale:" />
+							Text="S:" />
 						<xivToolsWpf:MultiNumberBox
 							Grid.Row="2"
-							Grid.Column="1" />
+							Grid.Column="1"
+							X="{Binding ScaleX}"
+							Y="{Binding ScaleY}"
+							Z="{Binding ScaleZ}" />
 						<ToggleButton
 							Grid.Row="2"
 							Grid.Column="2"

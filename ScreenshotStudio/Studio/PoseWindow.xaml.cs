@@ -13,6 +13,7 @@ using FFXIVClientStructs.Havok;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Structs;
+using ScreenshotStudio.Structs.Extensions;
 using ScreenshotStudio.Studio.Pose;
 using ScreenshotStudio.Windows;
 using System;
@@ -52,7 +53,6 @@ public partial class PoseWindow : ActorWindow
 
 		nint loadSkele = DalamudServices.SigScanner.ScanText("E8 ?? ?? ?? ?? 48 C1 E5 08");
 		this.setSkeletonHook = Hook<SetSkeletonDelegate>.FromAddress(loadSkele, this.SetSkeletonDetour);
-		this.setSkeletonHook.Enable();
 
 		nint loadBust = DalamudServices.SigScanner.ScanText("E8 ?? ?? ?? ?? F6 84 24 ?? ?? ?? ?? ?? 0F 28 74 24 ??");
 		this.bustHook = Hook<BustDelegate>.FromAddress(loadBust, this.BustDetour);
@@ -90,6 +90,7 @@ public partial class PoseWindow : ActorWindow
 				this.lookAtIKHook?.Enable();
 				this.updatePosHook?.Enable();
 				this.animFrozenHook?.Enable();
+				this.setSkeletonHook.Enable();
 				this.bustHook?.Enable();
 			}
 			else
@@ -100,6 +101,7 @@ public partial class PoseWindow : ActorWindow
 				this.lookAtIKHook?.Disable();
 				this.updatePosHook?.Disable();
 				this.animFrozenHook?.Disable();
+				this.setSkeletonHook.Disable();
 				this.bustHook?.Disable();
 			}
 		}
@@ -115,9 +117,105 @@ public partial class PoseWindow : ActorWindow
 	[AutoNotify]
 	public bool CanPose => this.Services.Studio.IsOpenAndInGPose;
 
+	public unsafe ref hkQsTransformf Transform => ref this.Actor->Model->Transform;
+
+	[AutoNotify]
+	public float TranslationX
+	{
+		get => this.Transform.Translation.X;
+		set => this.Transform.Translation.X = value;
+	}
+
+	[AutoNotify]
+	public float TranslationY
+	{
+		get => this.Transform.Translation.Y;
+		set => this.Transform.Translation.Y = value;
+	}
+
+	[AutoNotify]
+	public float TranslationZ
+	{
+		get => this.Transform.Translation.Z;
+		set => this.Transform.Translation.Z = value;
+	}
+
+	public hkVector4f EulerRotation
+	{
+		get => this.Transform.Rotation.ToEuler();
+		set => this.Transform.Rotation = HkQuaternionExtensions.FromEuler(value);
+	}
+
+	[AutoNotify]
+	public float EulerRotationX
+	{
+		get => this.EulerRotation.X;
+		set
+		{
+			hkVector4f euler = this.EulerRotation;
+			euler.X = value;
+			this.EulerRotation = euler;
+		}
+	}
+
+	[AutoNotify]
+	public float EulerRotationY
+	{
+		get => this.EulerRotation.Y;
+		set
+		{
+			hkVector4f euler = this.EulerRotation;
+			euler.Y = value;
+			this.EulerRotation = euler;
+		}
+	}
+
+	[AutoNotify]
+	public float EulerRotationZ
+	{
+		get => this.EulerRotation.Z;
+		set
+		{
+			hkVector4f euler = this.EulerRotation;
+			euler.Z = value;
+			this.EulerRotation = euler;
+		}
+	}
+
+	[AutoNotify]
+	public float ScaleX
+	{
+		get => this.Transform.Scale.X;
+		set => this.Transform.Scale.X = value;
+	}
+
+	[AutoNotify]
+	public float ScaleY
+	{
+		get => this.Transform.Scale.Y;
+		set => this.Transform.Scale.Y = value;
+	}
+
+	[AutoNotify]
+	public float ScaleZ
+	{
+		get => this.Transform.Scale.Z;
+		set => this.Transform.Scale.Z = value;
+	}
+
 	protected override void OnClosed()
 	{
 		this.PosingEnabled = false;
+
+		this.calculateBoneModelSpaceHook?.Dispose();
+		this.setBoneModelSpaceFfxivHook?.Dispose();
+		this.syncModelSpaceHook?.Dispose();
+		this.lookAtIKHook?.Dispose();
+		this.updatePosHook?.Dispose();
+		this.animFrozenHook?.Dispose();
+		this.setSkeletonHook.Dispose();
+		this.bustHook?.Dispose();
+
 		base.OnClosed();
 	}
 
