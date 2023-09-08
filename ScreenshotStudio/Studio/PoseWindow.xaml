@@ -171,6 +171,7 @@
 
 							<Button
 								Background="Transparent"
+								Click="OnClearSelectionClicked"
 								Style="{StaticResource TransparentIconButton}">
 								<xivToolsWpf:IconBlock Icon="TimesCircle" />
 							</Button>

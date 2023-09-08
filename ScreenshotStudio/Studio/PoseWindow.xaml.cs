@@ -17,6 +17,8 @@ using ScreenshotStudio.Structs.Extensions;
 using ScreenshotStudio.Studio.Pose;
 using ScreenshotStudio.Windows;
 using System;
+using System.Windows;
+using System.Windows.Documents;
 
 public partial class PoseWindow : ActorWindow
 {
@@ -30,6 +32,7 @@ public partial class PoseWindow : ActorWindow
 	private readonly Hook<BustDelegate> bustHook;
 
 	private bool posingEnabled = false;
+	private BoneReferences? selectedBones;
 
 	public unsafe PoseWindow()
 	{
@@ -117,33 +120,78 @@ public partial class PoseWindow : ActorWindow
 	[AutoNotify]
 	public bool CanPose => this.Services.Studio.IsOpenAndInGPose;
 
-	public unsafe ref hkQsTransformf Transform => ref this.Actor->Model->Transform;
+	public unsafe hkQsTransformf Transform
+	{
+		get
+		{
+			if (this.selectedBones != null)
+			{
+				return this.selectedBones.Transform;
+			}
+			else
+			{
+				return this.Actor->Model->Transform;
+			}
+		}
+
+		set
+		{
+			if (this.selectedBones != null)
+			{
+				this.selectedBones.Transform = value;
+			}
+			else
+			{
+				this.Actor->Model->Transform = value;
+			}
+		}
+	}
 
 	[AutoNotify]
 	public float TranslationX
 	{
 		get => this.Transform.Translation.X;
-		set => this.Transform.Translation.X = value;
+		set
+		{
+			hkQsTransformf transform = this.Transform;
+			transform.Translation.X = value;
+			this.Transform = transform;
+		}
 	}
 
 	[AutoNotify]
 	public float TranslationY
 	{
 		get => this.Transform.Translation.Y;
-		set => this.Transform.Translation.Y = value;
+		set
+		{
+			hkQsTransformf transform = this.Transform;
+			transform.Translation.Y = value;
+			this.Transform = transform;
+		}
 	}
 
 	[AutoNotify]
 	public float TranslationZ
 	{
 		get => this.Transform.Translation.Z;
-		set => this.Transform.Translation.Z = value;
+		set
+		{
+			hkQsTransformf transform = this.Transform;
+			transform.Translation.Z = value;
+			this.Transform = transform;
+		}
 	}
 
 	public hkVector4f EulerRotation
 	{
 		get => this.Transform.Rotation.ToEuler();
-		set => this.Transform.Rotation = HkQuaternionExtensions.FromEuler(value);
+		set
+		{
+			hkQsTransformf transform = this.Transform;
+			transform.Rotation = HkQuaternionExtensions.FromEuler(value);
+			this.Transform = transform;
+		}
 	}
 
 	[AutoNotify]
@@ -186,21 +234,45 @@ public partial class PoseWindow : ActorWindow
 	public float ScaleX
 	{
 		get => this.Transform.Scale.X;
-		set => this.Transform.Scale.X = value;
+		set
+		{
+			hkQsTransformf transform = this.Transform;
+			transform.Scale.X = value;
+			this.Transform = transform;
+		}
 	}
 
 	[AutoNotify]
 	public float ScaleY
 	{
 		get => this.Transform.Scale.Y;
-		set => this.Transform.Scale.Y = value;
+		set
+		{
+			hkQsTransformf transform = this.Transform;
+			transform.Scale.Y = value;
+			this.Transform = transform;
+		}
 	}
 
 	[AutoNotify]
 	public float ScaleZ
 	{
 		get => this.Transform.Scale.Z;
-		set => this.Transform.Scale.Z = value;
+		set
+		{
+			hkQsTransformf transform = this.Transform;
+			transform.Scale.Z = value;
+			this.Transform = transform;
+		}
+	}
+
+	public unsafe void SelectBone(string name)
+	{
+		if (!this.CanPose)
+			return;
+
+		Skeleton* skeleton = this.Actor->Model->Skeleton;
+		this.selectedBones = BoneReferences.Search(skeleton, name);
 	}
 
 	protected override void OnClosed()
@@ -258,5 +330,10 @@ public partial class PoseWindow : ActorWindow
 
 	private unsafe void UpdatePosDetour(Actor* a1)
 	{
+	}
+
+	private void OnClearSelectionClicked(object sender, RoutedEventArgs e)
+	{
+		this.SelectBone("j_ude_a_l");
 	}
 }
