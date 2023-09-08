@@ -59,6 +59,8 @@ public class BoneReferences : List<BoneReference>
 		}
 	}
 
+	public string? Name => this.Count <= 0 ? null : this[0].Name;
+
 	public static unsafe BoneReferences? Search(Skeleton* skeleton, string boneName)
 	{
 		BoneReferences results = new();
@@ -82,8 +84,6 @@ public class BoneReferences : List<BoneReference>
 				}
 			}
 		}
-
-		Logging.Shared.Information($"found {results.Count} bones with name {boneName}");
 
 		if (results.Count == 0)
 			return null;

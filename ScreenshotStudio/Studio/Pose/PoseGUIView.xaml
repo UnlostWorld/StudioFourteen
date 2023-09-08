@@ -83,7 +83,7 @@
 				Foreground="{DynamicResource ControlBackgroundBrush}"
 				IsHitTestVisible="False"
 				Opacity="{DynamicResource LeftOrRightLabelOpacity}"
-				Text="[Pose_Left]"
+				Text="L"
 				Visibility="{Binding FlipSides, Converter={StaticResource !B2V}, FallbackValue=Visible}" />
 			<TextBlock
 				Grid.Column="0"
@@ -94,7 +94,7 @@
 				Foreground="{DynamicResource ControlBackgroundBrush}"
 				IsHitTestVisible="False"
 				Opacity="{DynamicResource LeftOrRightLabelOpacity}"
-				Text="[Pose_Right]"
+				Text="R"
 				Visibility="{Binding FlipSides, Converter={StaticResource !B2V}, FallbackValue=Visible}" />
 			<TextBlock
 				Grid.Column="0"
@@ -105,7 +105,7 @@
 				Foreground="{DynamicResource ControlBackgroundBrush}"
 				IsHitTestVisible="False"
 				Opacity="{DynamicResource LeftOrRightLabelOpacity}"
-				Text="[Pose_Right]"
+				Text="R"
 				Visibility="{Binding FlipSides, Converter={StaticResource B2V}, FallbackValue=Hidden}" />
 			<TextBlock
 				Grid.Column="0"
@@ -116,7 +116,7 @@
 				Foreground="{DynamicResource ControlBackgroundBrush}"
 				IsHitTestVisible="False"
 				Opacity="{DynamicResource LeftOrRightLabelOpacity}"
-				Text="[Pose_Left]"
+				Text="L"
 				Visibility="{Binding FlipSides, Converter={StaticResource B2V}, FallbackValue=Hidden}" />
 
 			<TextBlock
@@ -128,7 +128,7 @@
 				Foreground="{DynamicResource ControlBackgroundBrush}"
 				IsHitTestVisible="False"
 				Opacity="{DynamicResource LeftOrRightLabelOpacity}"
-				Text="[Pose_Left]"
+				Text="L"
 				Visibility="{Binding FlipSides, Converter={StaticResource !B2V}, FallbackValue=Visible}" />
 			<TextBlock
 				Grid.Column="1"
@@ -139,7 +139,7 @@
 				Foreground="{DynamicResource ControlBackgroundBrush}"
 				IsHitTestVisible="False"
 				Opacity="{DynamicResource LeftOrRightLabelOpacity}"
-				Text="[Pose_Right]"
+				Text="R"
 				Visibility="{Binding FlipSides, Converter={StaticResource !B2V}, FallbackValue=Visible}" />
 			<TextBlock
 				Grid.Column="1"
@@ -150,7 +150,7 @@
 				Foreground="{DynamicResource ControlBackgroundBrush}"
 				IsHitTestVisible="False"
 				Opacity="{DynamicResource LeftOrRightLabelOpacity}"
-				Text="[Pose_Right]"
+				Text="R"
 				Visibility="{Binding FlipSides, Converter={StaticResource B2V}, FallbackValue=Hidden}" />
 			<TextBlock
 				Grid.Column="1"
@@ -161,7 +161,7 @@
 				Foreground="{DynamicResource ControlBackgroundBrush}"
 				IsHitTestVisible="False"
 				Opacity="{DynamicResource LeftOrRightLabelOpacity}"
-				Text="[Pose_Left]"
+				Text="L"
 				Visibility="{Binding FlipSides, Converter={StaticResource B2V}, FallbackValue=Hidden}" />
 
 			<TextBlock
@@ -173,7 +173,7 @@
 				Foreground="{DynamicResource ControlBackgroundBrush}"
 				IsHitTestVisible="False"
 				Opacity="{DynamicResource LeftOrRightLabelOpacity}"
-				Text="[Pose_Left]"
+				Text="L"
 				Visibility="{Binding FlipSides, Converter={StaticResource !B2V}, FallbackValue=Visible}" />
 			<TextBlock
 				Grid.Column="2"
@@ -184,7 +184,7 @@
 				Foreground="{DynamicResource ControlBackgroundBrush}"
 				IsHitTestVisible="False"
 				Opacity="{DynamicResource LeftOrRightLabelOpacity}"
-				Text="[Pose_Right]"
+				Text="R"
 				Visibility="{Binding FlipSides, Converter={StaticResource !B2V}, FallbackValue=Visible}" />
 			<TextBlock
 				Grid.Column="2"
@@ -195,7 +195,7 @@
 				Foreground="{DynamicResource ControlBackgroundBrush}"
 				IsHitTestVisible="False"
 				Opacity="{DynamicResource LeftOrRightLabelOpacity}"
-				Text="[Pose_Right]"
+				Text="R"
 				Visibility="{Binding FlipSides, Converter={StaticResource B2V}, FallbackValue=Hidden}" />
 			<TextBlock
 				Grid.Column="2"
@@ -206,7 +206,7 @@
 				Foreground="{DynamicResource ControlBackgroundBrush}"
 				IsHitTestVisible="False"
 				Opacity="{DynamicResource LeftOrRightLabelOpacity}"
-				Text="[Pose_Left]"
+				Text="L"
 				Visibility="{Binding FlipSides, Converter={StaticResource B2V}, FallbackValue=Hidden}" />
 
 			<!--  Body  -->
@@ -225,7 +225,7 @@
 						Height="512"
 						IsHitTestVisible="False"
 						Opacity="{DynamicResource ImageOpacity}"
-						Source="pack://application:,,,/ScreenshotStudio;component/Assets/Pose/PoseCharacterBodyBackground.png"
+						Source="pack://application:,,,/ScreenshotStudio;component/Assets/PoseCharacterBodyBackground.png"
 						Stretch="Uniform" />
 
 					<local:BoneView
@@ -524,7 +524,7 @@
 						Height="512"
 						IsHitTestVisible="False"
 						Opacity="{DynamicResource ImageOpacity}"
-						Source="pack://application:,,,/ScreenshotStudio;component/Assets/Pose/PoseCharacterClothesBackground.png"
+						Source="pack://application:,,,/ScreenshotStudio;component/Assets/PoseCharacterClothesBackground.png"
 						Stretch="Uniform" />
 
 					<local:BoneView
@@ -750,7 +750,7 @@
 								Height="250"
 								IsHitTestVisible="False"
 								Opacity="{DynamicResource ImageOpacity}"
-								Source=".pack://application:,,,/ScreenshotStudio;component/Assets/Pose/PoseCharacterVieraEarsStraightBackground.png"
+								Source=".pack://application:,,,/ScreenshotStudio;component/Assets/PoseCharacterVieraEarsStraightBackground.png"
 								Stretch="Uniform" />
 
 							<local:BoneView
@@ -891,7 +891,7 @@
 								Height="122"
 								IsHitTestVisible="False"
 								Opacity="{DynamicResource ImageOpacity}"
-								Source=".pack://application:,,,/ScreenshotStudio;component/Assets/Pose/PoseCharacterVieraEarsFlopBackground.png"
+								Source=".pack://application:,,,/ScreenshotStudio;component/Assets/PoseCharacterVieraEarsFlopBackground.png"
 								Stretch="Uniform" />
 
 							<!--  Feminine ears are ear 03  -->
@@ -985,7 +985,7 @@
 							Height="300"
 							IsHitTestVisible="False"
 							Opacity="{DynamicResource ImageOpacity}"
-							Source="pack://application:,,,/ScreenshotStudio;component/Assets/Pose/PoseCharacterHrothFaceBackground.png"
+							Source="pack://application:,,,/ScreenshotStudio;component/Assets/PoseCharacterHrothFaceBackground.png"
 							Stretch="Uniform" />
 
 						<local:BoneView
@@ -1134,7 +1134,7 @@
 							Height="300"
 							IsHitTestVisible="False"
 							Opacity="{DynamicResource ImageOpacity}"
-							Source="pack://application:,,,/ScreenshotStudio;component/Assets/Pose/PoseCharacterMiqoFaceBackground.png"
+							Source="pack://application:,,,/ScreenshotStudio;component/Assets/PoseCharacterMiqoFaceBackground.png"
 							Stretch="Uniform" />
 
 						<local:BoneView
@@ -1291,7 +1291,7 @@
 							Height="300"
 							IsHitTestVisible="False"
 							Opacity="{DynamicResource ImageOpacity}"
-							Source="pack://application:,,,/ScreenshotStudio;component/Assets/Pose/PoseCharacterFaceBackground.png"
+							Source="pack://application:,,,/ScreenshotStudio;component/Assets/PoseCharacterFaceBackground.png"
 							Stretch="Uniform"
 							Visibility="{Binding IsViera, Converter={StaticResource !B2V}}" />
 
@@ -1302,7 +1302,7 @@
 							Height="300"
 							IsHitTestVisible="False"
 							Opacity="{DynamicResource ImageOpacity}"
-							Source="pack://application:,,,/ScreenshotStudio;component/Assets/Pose/PoseCharacterVieraFaceBackground.png"
+							Source="pack://application:,,,/ScreenshotStudio;component/Assets/PoseCharacterVieraFaceBackground.png"
 							Stretch="Uniform"
 							Visibility="{Binding IsViera, Converter={StaticResource B2V}}" />
 
@@ -1469,7 +1469,7 @@
 								Height="200"
 								IsHitTestVisible="False"
 								Opacity="{DynamicResource ImageOpacity}"
-								Source="pack://application:,,,/ScreenshotStudio;component/Assets/Pose/PoseCharacterHandBackground.png"
+								Source="pack://application:,,,/ScreenshotStudio;component/Assets/PoseCharacterHandBackground.png"
 								Stretch="Uniform" />
 
 							<local:BoneView
@@ -1578,7 +1578,7 @@
 								Height="200"
 								IsHitTestVisible="False"
 								Opacity="{DynamicResource ImageOpacity}"
-								Source="pack://application:,,,/ScreenshotStudio;component/Assets/Pose/PoseCharacterHandBackground.png"
+								Source="pack://application:,,,/ScreenshotStudio;component/Assets/PoseCharacterHandBackground.png"
 								Stretch="Uniform">
 								<Image.RenderTransform>
 									<TransformGroup>
@@ -1701,7 +1701,7 @@
 									Height="200"
 									IsHitTestVisible="False"
 									Opacity="{DynamicResource ImageOpacity}"
-									Source="pack://application:,,,/ScreenshotStudio;component/Assets/Pose/PoseCharacterTailBackground.png"
+									Source="pack://application:,,,/ScreenshotStudio;component/Assets/PoseCharacterTailBackground.png"
 									Stretch="Uniform" />
 
 								<local:BoneView

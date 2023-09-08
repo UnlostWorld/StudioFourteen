@@ -14,18 +14,13 @@ public partial class BoneView : UserControl
 	public static readonly IBind<string> NameDp = Binder.Register<string, BoneView>(nameof(BoneName));
 	public static readonly IBind<string> FlippedNameDp = Binder.Register<string, BoneView>(nameof(FlippedBoneName));
 
+	private BoneWindow? owner;
+
 	public BoneView()
 	{
 		this.InitializeComponent();
 		this.ContentArea.DataContext = this;
 	}
-
-	public string? InternalBoneName => "TODO";
-	public string? LocalizedBoneName => "HUH";
-
-	public bool IsSelected { get; set; }
-	public bool IsHighlighted { get; set; }
-	public bool IsParentSelected { get; set; }
 
 	public string Label
 	{
@@ -45,6 +40,21 @@ public partial class BoneView : UserControl
 		set => FlippedNameDp.Set(this, value);
 	}
 
+	public unsafe void OnSkeletonChanged()
+	{
+		if (this.owner == null)
+			return;
+
+		this.Dispatcher.Invoke(() =>
+		{
+			string name = LegacyBoneNameConverter.GetModernName(this.BoneName) ?? this.BoneName;
+			BoneReferences? bones = BoneReferences.Search(this.owner.Skeleton, name);
+
+			this.IsEnabled = bones != null;
+			this.TooltipInternalNameText.Text = bones?.Name;
+		});
+	}
+
 	public void Select(bool select, bool add)
 	{
 	}
@@ -58,5 +68,20 @@ public partial class BoneView : UserControl
 	private void OnUnchecked(object sender, RoutedEventArgs e)
 	{
 		this.Select(false, false);
+	}
+
+	private void OnLoaded(object sender, RoutedEventArgs e)
+	{
+		this.TooltipDisplayNameText.Text = this.BoneName;
+
+		this.owner = this.FindParent<BoneWindow>();
+		this.owner?.BoneViews.Add(this);
+
+		this.OnSkeletonChanged();
+	}
+
+	private void OnUnloaded(object sender, RoutedEventArgs e)
+	{
+		this.owner?.BoneViews.Remove(this);
 	}
 }

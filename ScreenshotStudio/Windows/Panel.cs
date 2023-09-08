@@ -67,6 +67,12 @@ public abstract partial class Panel : Window, IAutoNotify
 
 	public bool IsUiVisible => !DalamudServices.GameGui.GameUiHidden;
 
+	public bool IsOpen
+	{
+		get;
+		private set;
+	}
+
 	public static void Show<T>()
 		where T : Panel
 	{
@@ -148,6 +154,7 @@ public abstract partial class Panel : Window, IAutoNotify
 	{
 		DalamudServices.GameGui.UiHideToggled += this.OnGameUiToggled;
 		AutoPropertyNotifyService.Register(this);
+		this.IsOpen = true;
 	}
 
 	protected virtual void OnClosed()
@@ -155,6 +162,7 @@ public abstract partial class Panel : Window, IAutoNotify
 		DalamudServices.GameGui.UiHideToggled -= this.OnGameUiToggled;
 		AutoPropertyNotifyService.Remove(this);
 		this.Services.Panels.OnPanelClosed(this);
+		this.IsOpen = false;
 	}
 
 	private void OnPreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)

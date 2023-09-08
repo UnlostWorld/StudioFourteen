@@ -7,6 +7,8 @@
 	Width="18"
 	Height="18"
 	Margin="2"
+	Loaded="OnLoaded"
+	Unloaded="OnUnloaded"
 	mc:Ignorable="d">
 
 	<Grid
@@ -16,9 +18,9 @@
 		<Grid.ToolTip>
 			<StackPanel>
 				<TextBlock
-					FontWeight="Bold"
-					Text="{Binding LocalizedBoneName}" />
-				<TextBlock Text="{Binding InternalBoneName}" />
+					x:Name="TooltipDisplayNameText"
+					FontWeight="Bold" />
+				<TextBlock x:Name="TooltipInternalNameText" />
 			</StackPanel>
 		</Grid.ToolTip>
 
@@ -29,7 +31,6 @@
 			VerticalAlignment="Center"
 			Checked="OnChecked"
 			Content="O"
-			IsChecked="{Binding IsSelected}"
 			Unchecked="OnUnchecked">
 			<ToggleButton.Style>
 				<Style TargetType="{x:Type ToggleButton}">
@@ -90,7 +91,7 @@
 									<Trigger Property="IsChecked" Value="True">
 										<Setter TargetName="SelectionElipse" Property="Opacity" Value="1" />
 									</Trigger>
-									<DataTrigger
+									<!--<DataTrigger
 										Binding="{Binding IsHighlighted}"
 										Value="True">
 										<Setter TargetName="HoverElipse" Property="Opacity" Value="1" />
@@ -99,7 +100,7 @@
 										Binding="{Binding IsParentSelected}"
 										Value="True">
 										<Setter TargetName="ParentSelectedElipse" Property="Opacity" Value="1" />
-									</DataTrigger>
+									</DataTrigger>-->
 								</ControlTemplate.Triggers>
 							</ControlTemplate>
 						</Setter.Value>
