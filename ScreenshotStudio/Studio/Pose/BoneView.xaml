@@ -30,7 +30,6 @@
 			HorizontalAlignment="Center"
 			VerticalAlignment="Center"
 			Checked="OnChecked"
-			Content="O"
 			Unchecked="OnUnchecked">
 			<ToggleButton.Style>
 				<Style TargetType="{x:Type ToggleButton}">
@@ -91,7 +90,7 @@
 									<Trigger Property="IsChecked" Value="True">
 										<Setter TargetName="SelectionElipse" Property="Opacity" Value="1" />
 									</Trigger>
-									<!--<DataTrigger
+									<DataTrigger
 										Binding="{Binding IsHighlighted}"
 										Value="True">
 										<Setter TargetName="HoverElipse" Property="Opacity" Value="1" />
@@ -100,7 +99,7 @@
 										Binding="{Binding IsParentSelected}"
 										Value="True">
 										<Setter TargetName="ParentSelectedElipse" Property="Opacity" Value="1" />
-									</DataTrigger>-->
+									</DataTrigger>
 								</ControlTemplate.Triggers>
 							</ControlTemplate>
 						</Setter.Value>

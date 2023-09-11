@@ -2,6 +2,7 @@
 	x:Class="ScreenshotStudio.Studio.PoseWindow"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:converters="clr-namespace:XivToolsWpf.Converters;assembly=XivToolsWpf"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="clr-namespace:ScreenshotStudio.Studio"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -20,6 +21,12 @@
 	mc:Ignorable="d">
 
 	<Grid Width="200">
+
+		<Grid.Resources>
+			<converters:NotNullToBoolConverter x:Key="NotNullToBoolConverter" />
+			<converters:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter" />
+		</Grid.Resources>
+
 		<StackPanel>
 
 			<!--  Transform  -->
@@ -30,7 +37,7 @@
 						Height="194"
 						Margin="0,0,0,10">
 						<Border Style="{DynamicResource XivToolsControlBorder}" />
-						<pose:Gizmo Value="{Binding Rotation}"/>
+						<pose:Gizmo Value="{Binding Rotation}" />
 					</Grid>
 
 
@@ -148,39 +155,41 @@
 					</Popup>
 
 
-					<TextBlock
-						Margin="0,10,0,0"
-						HorizontalAlignment="Center"
-						Style="{DynamicResource Header}"
-						Text="Some Bone Name" />
-
-					<Border
-						Grid.Column="1"
-						Style="{DynamicResource XivToolsControlBorder}">
-
-						<StackPanel
+					<StackPanel IsEnabled="{Binding SelectedBones, Converter={StaticResource NotNullToBoolConverter}}">
+						<TextBlock
+							Margin="0,10,0,0"
 							HorizontalAlignment="Center"
-							Orientation="Horizontal">
-							<Button
-								Background="Transparent"
-								Style="{StaticResource TransparentIconButton}">
-								<xivToolsWpf:IconBlock Icon="ArrowCircleUp" />
-							</Button>
+							Style="{DynamicResource Header}"
+							Text="{Binding SelectedBones.Name, FallbackValue='Actor'}" />
 
-							<Button
-								Background="Transparent"
-								Click="OnClearSelectionClicked"
-								Style="{StaticResource TransparentIconButton}">
-								<xivToolsWpf:IconBlock Icon="TimesCircle" />
-							</Button>
+						<Border
+							Grid.Column="1"
+							Style="{DynamicResource XivToolsControlBorder}">
 
-							<Button
-								Background="Transparent"
-								Style="{StaticResource TransparentIconButton}">
-								<xivToolsWpf:IconBlock Icon="ArrowCircleDown" />
-							</Button>
-						</StackPanel>
-					</Border>
+							<StackPanel
+								HorizontalAlignment="Center"
+								Orientation="Horizontal">
+								<Button
+									Background="Transparent"
+									Style="{StaticResource TransparentIconButton}">
+									<xivToolsWpf:IconBlock Icon="ArrowCircleUp" />
+								</Button>
+
+								<Button
+									Background="Transparent"
+									Click="OnClearSelectionClicked"
+									Style="{StaticResource TransparentIconButton}">
+									<xivToolsWpf:IconBlock Icon="TimesCircle" />
+								</Button>
+
+								<Button
+									Background="Transparent"
+									Style="{StaticResource TransparentIconButton}">
+									<xivToolsWpf:IconBlock Icon="ArrowCircleDown" />
+								</Button>
+							</StackPanel>
+						</Border>
+					</StackPanel>
 				</StackPanel>
 			</Grid>
 		</StackPanel>

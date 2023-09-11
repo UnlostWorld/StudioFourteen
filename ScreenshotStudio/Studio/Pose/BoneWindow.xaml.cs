@@ -4,6 +4,7 @@
 namespace ScreenshotStudio.Studio.Pose;
 
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
+using ScreenshotStudio.Services;
 using ScreenshotStudio.Windows;
 using System;
 using System.Collections.ObjectModel;
@@ -17,10 +18,75 @@ public partial class BoneWindow : ActorWindow
 
 	public unsafe Skeleton* Skeleton => this.Actor->Model->Skeleton;
 
+	protected PoseWindow? PoseWindow => this.Services.Panels.Get<PoseWindow>();
+
+	public unsafe void Select(string boneName, bool add)
+	{
+		if (this.PoseWindow == null)
+			return;
+
+		BoneReferences? bones = BoneReferences.Search(this.Skeleton, boneName);
+
+		if (bones == null)
+			return;
+
+		if (add)
+		{
+			if (this.PoseWindow.SelectedBones == null)
+				this.PoseWindow.SelectedBones = new();
+
+			this.PoseWindow.SelectedBones.Add(bones);
+		}
+		else
+		{
+			this.PoseWindow.SelectedBones = bones;
+		}
+	}
+
+	public unsafe void UnSelect(string boneName)
+	{
+		if (this.PoseWindow == null)
+			return;
+
+		BoneReferences? bones = BoneReferences.Search(this.Skeleton, boneName);
+
+		if (bones == null)
+			return;
+
+		this.PoseWindow.SelectedBones?.Remove(bones);
+		if (this.PoseWindow.SelectedBones?.Count <= 0)
+		{
+			this.PoseWindow.SelectedBones = null;
+		}
+	}
+
 	protected override void OnOpened()
 	{
 		base.OnOpened();
 		Task.Run(this.SkeletonWatcher);
+
+		if (this.PoseWindow == null)
+			return;
+
+		this.PoseWindow.SelectedBonesChanged += this.OnSelectedBonesChanged;
+	}
+
+	protected override void OnClosed()
+	{
+		base.OnClosed();
+
+		if (this.PoseWindow != null)
+		{
+			this.PoseWindow.SelectedBonesChanged -= this.OnSelectedBonesChanged;
+		}
+	}
+
+	private void OnSelectedBonesChanged(BoneReferences? bones)
+	{
+		foreach (BoneView boneView in this.BoneViews)
+		{
+			boneView.OnSelectionChanged(bones);
+		}
 	}
 
 	private async Task SkeletonWatcher()
@@ -45,8 +111,6 @@ public partial class BoneWindow : ActorWindow
 		if (this.oldSkeleton != this.Skeleton)
 		{
 			this.oldSkeleton = this.Skeleton;
-
-			this.Log.Information($"On Skeleton Changed");
 
 			foreach(BoneView boneView in this.BoneViews)
 			{

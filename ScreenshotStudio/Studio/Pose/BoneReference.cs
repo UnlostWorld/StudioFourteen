@@ -5,6 +5,8 @@ namespace ScreenshotStudio.Studio.Pose;
 
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.Havok;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 
 public unsafe class BoneReference
@@ -13,6 +15,7 @@ public unsafe class BoneReference
 	private readonly int partialSkeletonIndex;
 	private readonly int poseIndex;
 	private readonly int boneIndex;
+	private BoneReferences? children = null;
 
 	public BoneReference(Skeleton* skeleton, int partialSkeletonIndex, int poseIndex, int boneIndex)
 	{
@@ -36,18 +39,78 @@ public unsafe class BoneReference
 		get => HkaPose->ModelPose[this.boneIndex];
 		set => HkaPose->ModelPose[this.boneIndex] = value;
 	}
+
+	public static bool operator !=(BoneReference? left, BoneReference? right) => !(left == right);
+
+	public static bool operator ==(BoneReference? left, BoneReference? right)
+	{
+		if (left is null && right is null)
+			return true;
+
+		if (left is null)
+			return false;
+
+		return left.Equals(right);
+	}
+
+	public override int GetHashCode() => HashCode.Combine(this.partialSkeletonIndex, this.poseIndex, this.boneIndex);
+
+	public override bool Equals(object? obj)
+	{
+		if (ReferenceEquals(this, obj))
+			return true;
+
+		if (obj is null)
+			return false;
+
+		if (obj is not BoneReference right)
+			return false;
+
+		return this.partialSkeletonIndex == right.partialSkeletonIndex
+			&& this.poseIndex == right.poseIndex
+			&& this.boneIndex == right.boneIndex;
+	}
+
+	public BoneReference? GetParent()
+	{
+		int? parentIndex = this.HkaPose->Skeleton->ParentIndices[this.boneIndex];
+		if (parentIndex == -1 || parentIndex == null)
+			return null;
+
+		return new BoneReference(this.skeleton, this.partialSkeletonIndex, this.poseIndex, (int)parentIndex);
+	}
+
+	public BoneReferences? GetChildren()
+	{
+		if (this.children != null)
+			return this.children;
+
+		this.children = new();
+
+		for (int childIndex = 0; childIndex < this.HkaPose->Skeleton->ParentIndices.Length; childIndex++)
+		{
+			if (this.HkaPose->Skeleton->ParentIndices[childIndex] == this.boneIndex)
+			{
+				this.children.Add(new BoneReference(this.skeleton, this.partialSkeletonIndex, this.poseIndex, childIndex));
+			}
+		}
+
+		return this.children;
+	}
 }
 
-public class BoneReferences : List<BoneReference>
+public class BoneReferences : HashSet<BoneReference>
 {
 	public hkQsTransformf Transform
 	{
 		get
 		{
-			if (this.Count < 1)
-				return default;
+			foreach(BoneReference reference in this)
+			{
+				return reference.Transform;
+			}
 
-			return this[0].Transform;
+			return default;
 		}
 
 		set
@@ -59,7 +122,19 @@ public class BoneReferences : List<BoneReference>
 		}
 	}
 
-	public string? Name => this.Count <= 0 ? null : this[0].Name;
+	public string? DisplayName
+	{
+		get
+		{
+			// TODO: append these together?
+			foreach (BoneReference reference in this)
+			{
+				return reference.Name;
+			}
+
+			return null;
+		}
+	}
 
 	public static unsafe BoneReferences? Search(Skeleton* skeleton, string boneName)
 	{
@@ -89,5 +164,70 @@ public class BoneReferences : List<BoneReference>
 			return null;
 
 		return results;
+	}
+
+	public void Remove(IEnumerable<BoneReference> bones)
+	{
+		foreach (BoneReference bone in bones)
+		{
+			this.Remove(bone);
+		}
+	}
+
+	public void Add(IEnumerable<BoneReference> childBones)
+	{
+		foreach (BoneReference bone in childBones)
+		{
+			this.Add(bone);
+		}
+	}
+
+	public bool Contains(IEnumerable<BoneReference> bones)
+	{
+		bool contains = true;
+		foreach (BoneReference bone in bones)
+		{
+			contains &= this.Contains(bone);
+		}
+
+		return contains;
+	}
+
+	public BoneReferences? GetParents()
+	{
+		BoneReferences parents = new();
+		foreach (BoneReference bone in this)
+		{
+			BoneReference? parent = bone.GetParent();
+
+			if (parent == null)
+				continue;
+
+			parents.Add(parent);
+		}
+
+		if (parents.Count <= 0)
+			return null;
+
+		return parents;
+	}
+
+	public BoneReferences? Getchildren()
+	{
+		BoneReferences allChildren = new();
+		foreach (BoneReference bone in this)
+		{
+			BoneReferences? children = bone.GetChildren();
+
+			if (children == null)
+				continue;
+
+			allChildren.Add(children);
+		}
+
+		if (allChildren.Count <= 0)
+			return null;
+
+		return allChildren;
 	}
 }

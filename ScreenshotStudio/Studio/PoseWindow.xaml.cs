@@ -16,11 +16,8 @@ using ScreenshotStudio.Structs;
 using ScreenshotStudio.Structs.Extensions;
 using ScreenshotStudio.Studio.Pose;
 using ScreenshotStudio.Windows;
-using System;
-using System.Collections.ObjectModel;
-using System.Threading.Tasks;
+using System.ComponentModel;
 using System.Windows;
-using System.Windows.Documents;
 
 public partial class PoseWindow : ActorWindow
 {
@@ -63,6 +60,8 @@ public partial class PoseWindow : ActorWindow
 		this.bustHook = Hook<BustDelegate>.FromAddress(loadBust, this.BustDetour);
 	}
 
+	public delegate void BonesChangedEventHandler(BoneReferences? bones);
+
 	private delegate ulong SetBoneModelSpaceFfxivDelegate(nint partialSkeleton, ushort boneId, nint transform, bool enableSecondary, bool enablePropagate);
 	private delegate nint CalculateBoneModelSpaceDelegate(ref hkaPose pose, int boneIdx);
 	private unsafe delegate void SyncModelSpaceDelegate(hkaPose* pose);
@@ -72,13 +71,26 @@ public partial class PoseWindow : ActorWindow
 	private unsafe delegate char SetSkeletonDelegate(Skeleton* a1, ushort a2, nint a3);
 	private unsafe delegate nint BustDelegate(ActorModel* a1, Bust* a2);
 
+	public event BonesChangedEventHandler? SelectedBonesChanged;
+
+	public BoneReferences? SelectedBones
+	{
+		get => this.selectedBones;
+		set
+		{
+			this.selectedBones = value;
+			this.NotifyPropertyChanged();
+			this.SelectedBonesChanged?.Invoke(value);
+		}
+	}
+
 	[AutoNotify]
 	public bool PosingEnabled
 	{
 		get
 		{
 			if (this.posingEnabled && !this.CanPose)
-				this.PosingEnabled = false;
+				this.posingEnabled = false;
 
 			return this.posingEnabled;
 		}
@@ -126,7 +138,7 @@ public partial class PoseWindow : ActorWindow
 	{
 		get
 		{
-			if (this.selectedBones != null)
+			if (this.CanPose && this.selectedBones != null)
 			{
 				return this.selectedBones.Transform;
 			}
@@ -138,7 +150,7 @@ public partial class PoseWindow : ActorWindow
 
 		set
 		{
-			if (this.selectedBones != null)
+			if (this.CanPose && this.selectedBones != null)
 			{
 				this.selectedBones.Transform = value;
 			}
@@ -280,15 +292,6 @@ public partial class PoseWindow : ActorWindow
 		}
 	}
 
-	public unsafe void SelectBone(string name)
-	{
-		if (!this.CanPose)
-			return;
-
-		Skeleton* skeleton = this.Actor->Model->Skeleton;
-		this.selectedBones = BoneReferences.Search(skeleton, name);
-	}
-
 	protected override void OnClosed()
 	{
 		this.PosingEnabled = false;
@@ -301,6 +304,8 @@ public partial class PoseWindow : ActorWindow
 		this.animFrozenHook?.Dispose();
 		this.setSkeletonHook.Dispose();
 		this.bustHook?.Dispose();
+
+		this.IsBonesWindowOpen = false;
 
 		base.OnClosed();
 	}
@@ -348,6 +353,6 @@ public partial class PoseWindow : ActorWindow
 
 	private void OnClearSelectionClicked(object sender, RoutedEventArgs e)
 	{
-		this.SelectBone("j_ude_a_l");
+		this.SelectedBones = null;
 	}
 }
