@@ -5,11 +5,22 @@ namespace ScreenshotStudio.Structs.Extensions;
 
 using FFXIVClientStructs.Havok;
 using System;
+using System.Windows.Markup;
 
 public static class HkQuaternionExtensions
 {
 	private static readonly float Deg2Rad = ((float)Math.PI * 2) / 360;
 	private static readonly float Rad2Deg = 360 / ((float)Math.PI * 2);
+
+	public static hkQuaternionf New(float x, float y, float z, float w)
+	{
+		hkQuaternionf v = default;
+		v.X = x;
+		v.Y = y;
+		v.Z = z;
+		v.W = w;
+		return v;
+	}
 
 	public static hkQuaternionf FromEuler(hkVector4f euler)
 	{

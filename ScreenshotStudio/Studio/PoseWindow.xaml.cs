@@ -185,6 +185,18 @@ public partial class PoseWindow : ActorWindow
 		}
 	}
 
+	[AutoNotify]
+	public hkQuaternionf Rotation
+	{
+		get => this.Transform.Rotation;
+		set
+		{
+			hkQsTransformf transform = this.Transform;
+			transform.Rotation = value;
+			this.Transform = transform;
+		}
+	}
+
 	public hkVector4f EulerRotation
 	{
 		get => this.Transform.Rotation.ToEuler();
