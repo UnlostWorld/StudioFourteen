@@ -158,12 +158,16 @@ public class AutoPropertyNotifyService : ServiceBase
 		private void Tick(PropertyInfo property, IAutoNotify notify)
 		{
 			object? currentVal = property.GetValue(notify);
-			if (currentVal == null)
-				return;
 
 			this.lastValues.TryGetValue(property, out object? lastValue);
 
-			if (!currentVal.Equals(lastValue))
+			if (currentVal is null && lastValue is not null)
+			{
+				this.lastValues[property] = currentVal;
+				notify.NotifyPropertyChanged(property.Name);
+			}
+
+			if (currentVal is not null && !currentVal.Equals(lastValue))
 			{
 				////Logging.Shared.Information($"Changed {property.Name} from {lastValue} to {currentVal}");
 				this.lastValues[property] = currentVal;
