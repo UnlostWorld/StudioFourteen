@@ -38,6 +38,7 @@ public class Gizmo : UserControl
 
 	private Quaternion worldSpaceDelta;
 	private bool worldSpace;
+	private bool isMouseDown = false;
 
 	public Gizmo()
 	{
@@ -138,6 +139,9 @@ public class Gizmo : UserControl
 
 	private static void OnValueChanged(Gizmo sender, hkQuaternionf value)
 	{
+		if (sender.isMouseDown)
+			return;
+
 		Quaternion valueQuat = new Quaternion(value.X, value.Y, value.Z, value.W);
 
 		if (sender.RootRotation != null)
@@ -208,11 +212,13 @@ public class Gizmo : UserControl
 
 	private void OnMouseDown(object sender, MouseButtonEventArgs e)
 	{
+		this.isMouseDown = true;
 		Mouse.Capture(this);
 	}
 
 	private void OnMouseUp(object sender, MouseButtonEventArgs e)
 	{
+		this.isMouseDown = false;
 		Mouse.Capture(null);
 
 		if (e.ChangedButton == MouseButton.Right)
