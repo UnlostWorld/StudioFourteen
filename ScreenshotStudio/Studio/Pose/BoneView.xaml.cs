@@ -69,19 +69,19 @@ public partial class BoneView : UserControl, INotifyPropertyChanged
 
 		this.Dispatcher.Invoke(() =>
 		{
-			BoneReferences? bones = BoneReferences.Search(this.owner.Skeleton, this.CurrentName);
+			BoneCollection? bones = BoneCollection.Search(this.owner.Skeleton, this.CurrentName);
 
 			this.IsEnabled = bones != null;
 			this.TooltipInternalNameText.Text = bones?.DisplayName;
 		});
 	}
 
-	public unsafe void OnSelectionChanged(BoneReferences? selection)
+	public unsafe void OnSelectionChanged(BoneCollection? selection)
 	{
 		bool isSelected = false;
 		if (selection != null)
 		{
-			foreach (BoneReference bone in selection)
+			foreach (Bone bone in selection)
 			{
 				if (bone.Name == this.CurrentName)
 				{
@@ -94,9 +94,9 @@ public partial class BoneView : UserControl, INotifyPropertyChanged
 
 		if (!isParentSelected && selection != null && this.owner != null)
 		{
-			BoneReferences? bones = BoneReferences.Search(this.owner.Skeleton, this.CurrentName);
+			BoneCollection? bones = BoneCollection.Search(this.owner.Skeleton, this.CurrentName);
 
-			BoneReferences? parents = bones?.GetParents();
+			BoneCollection? parents = bones?.GetParents();
 			while (parents != null)
 			{
 				if (selection.Contains(parents))

@@ -5,7 +5,7 @@ namespace ScreenshotStudio.Structs.Extensions;
 
 using FFXIVClientStructs.Havok;
 using System;
-using System.Windows.Markup;
+using System.Numerics;
 
 public static class HkQuaternionExtensions
 {
@@ -20,6 +20,24 @@ public static class HkQuaternionExtensions
 		v.Z = z;
 		v.W = w;
 		return v;
+	}
+
+	public static Quaternion ToQuaternion(this hkQuaternionf q) => new Quaternion(q.X, q.Y, q.Z, q.W);
+	public static hkQuaternionf ToHavok(this Quaternion q) => new hkQuaternionf
+	{
+		X = q.X,
+		Y = q.Y,
+		Z = q.Z,
+		W = q.W,
+	};
+
+	public static hkQuaternionf FromQuaternion(this hkQuaternionf tar, Quaternion q)
+	{
+		tar.X = q.X;
+		tar.Y = q.Y;
+		tar.Z = q.Z;
+		tar.W = q.W;
+		return tar;
 	}
 
 	public static hkQuaternionf FromEuler(hkVector4f euler)

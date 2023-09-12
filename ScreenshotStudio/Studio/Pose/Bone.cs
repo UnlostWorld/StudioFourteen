@@ -1,0 +1,190 @@
+﻿// © XivTools.
+// Licensed under the MIT license.
+
+//// Ktisis
+//// https://github.com/ktisis-tools/Ktisis/
+//// https://github.com/ktisis-tools/Ktisis/blob/main/Ktisis/Structs/Bones/Bone.cs#L71
+
+namespace ScreenshotStudio.Studio.Pose;
+
+using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
+using FFXIVClientStructs.Havok;
+using ScreenshotStudio.Plugin;
+using ScreenshotStudio.Structs;
+using ScreenshotStudio.Structs.Extensions;
+using Serilog;
+using System;
+using System.Numerics;
+
+using static FFXIVClientStructs.Havok.hkaPose;
+
+public unsafe class Bone
+{
+	protected readonly ILogger Log = Logging.ForContext<Gizmo>();
+
+	private readonly Skeleton* skeleton;
+	private readonly int partialSkeletonIndex;
+	private readonly int poseIndex;
+	private readonly int boneIndex;
+
+	public Bone(Skeleton* skeleton, int partialSkeletonIndex, int poseIndex, int boneIndex)
+	{
+		this.skeleton = skeleton;
+		this.partialSkeletonIndex = partialSkeletonIndex;
+		this.poseIndex = poseIndex;
+		this.boneIndex = boneIndex;
+	}
+
+	public Skeleton* Skeleton => this.skeleton;
+	public ref PartialSkeleton PartialSkeleton => ref Skeleton->PartialSkeletons[this.partialSkeletonIndex];
+	public hkaPose* HkaPose => this.PartialSkeleton.GetHavokPose(this.poseIndex);
+
+	public unsafe hkaBone HkaBone => HkaPose->Skeleton->Bones[this.boneIndex];
+	public unsafe int ParentId => HkaPose->Skeleton->ParentIndices[this.boneIndex];
+
+	public string? Name => this.HkaBone.Name.String;
+
+	public hkQsTransformf Transform
+	{
+		get => HkaPose->ModelPose[this.boneIndex];
+		protected set => HkaPose->ModelPose[this.boneIndex] = value;
+	}
+
+	public static bool operator !=(Bone? left, Bone? right) => !(left == right);
+
+	public static bool operator ==(Bone? left, Bone? right)
+	{
+		if (left is null && right is null)
+			return true;
+
+		if (left is null)
+			return false;
+
+		return left.Equals(right);
+	}
+
+	public override int GetHashCode() => HashCode.Combine(this.partialSkeletonIndex, this.poseIndex, this.boneIndex);
+
+	public override bool Equals(object? obj)
+	{
+		if (ReferenceEquals(this, obj))
+			return true;
+
+		if (obj is null)
+			return false;
+
+		if (obj is not Bone right)
+			return false;
+
+		return this.partialSkeletonIndex == right.partialSkeletonIndex
+			&& this.poseIndex == right.poseIndex
+			&& this.boneIndex == right.boneIndex;
+	}
+
+	public unsafe hkQsTransformf* AccessModelSpace(PropagateOrNot propagate = PropagateOrNot.DontPropagate) => this.HkaPose->AccessBoneModelSpace(this.boneIndex, propagate);
+	public unsafe hkQsTransformf* AccessLocalSpace() => this.HkaPose->AccessBoneLocalSpace(this.boneIndex);
+
+	public Bone? GetParent()
+	{
+		int? parentIndex = this.HkaPose->Skeleton->ParentIndices[this.boneIndex];
+		if (parentIndex == -1 || parentIndex == null)
+			return null;
+
+		return new Bone(this.skeleton, this.partialSkeletonIndex, this.poseIndex, (int)parentIndex);
+	}
+
+	public BoneCollection GetChildren(bool includePartials = true, bool usePartialRoot = false)
+	{
+		BoneCollection results = new();
+
+		// Add child bones from same partial
+		for (int childIndex = 0; childIndex < this.HkaPose->Skeleton->ParentIndices.Length; childIndex++)
+		{
+			if (this.HkaPose->Skeleton->ParentIndices[childIndex] == this.boneIndex)
+			{
+				results.Add(new Bone(this.skeleton, this.partialSkeletonIndex, this.poseIndex, childIndex));
+			}
+		}
+
+		// Add child bones from connected partials
+		if (includePartials && this.partialSkeletonIndex == 0)
+		{
+			for (int partialSkeletonIndex = 0; partialSkeletonIndex < Skeleton->PartialSkeletonCount; partialSkeletonIndex++)
+			{
+				if (partialSkeletonIndex == this.partialSkeletonIndex)
+					continue;
+
+				PartialSkeleton partial = Skeleton->PartialSkeletons[partialSkeletonIndex];
+				if (partial.ConnectedParentBoneIndex == this.boneIndex)
+				{
+					Bone partialRoot = new Bone(this.skeleton, partialSkeletonIndex, this.poseIndex, partial.ConnectedBoneIndex);
+					if (usePartialRoot)
+					{
+						results.Add(partialRoot);
+					}
+					else
+					{
+						BoneCollection? rootChildren = partialRoot.GetChildren();
+						foreach (Bone child in rootChildren)
+						{
+							results.Add(child);
+						}
+					}
+				}
+			}
+		}
+
+		return results;
+	}
+
+	public BoneCollection GetDescendants(ref BoneCollection results, bool includePartials = true, bool usePartialRoot = false)
+	{
+		BoneCollection children = this.GetChildren(includePartials, usePartialRoot);
+		results.Add(children);
+
+		foreach (Bone bone in children)
+		{
+			bone.GetDescendants(ref results, includePartials, usePartialRoot);
+		}
+
+		return children;
+	}
+
+	public unsafe void Apply(hkQsTransformf transform)
+	{
+		DalamudServices.Framework.RunOnFrameworkThread(() =>
+		{
+			Matrix4x4 matrix = Matrix4x4.Identity;
+
+			// unsure why we cant just add scale like this. Yuki no good at maths. =(
+			////matrix *= Matrix4x4.CreateScale(transform.Scale.ToVector3() - this.Transform.Scale.ToVector3());
+			matrix *= Matrix4x4.CreateFromQuaternion(transform.Rotation.ToQuaternion() / this.Transform.Rotation.ToQuaternion());
+			matrix *= Matrix4x4.CreateTranslation(transform.Translation.ToVector3() - this.Transform.Translation.ToVector3());
+
+			this.Transform = transform;
+
+			// if enable parenting?
+			this.PropagateChildren(matrix, true);
+		});
+	}
+
+	public unsafe void PropagateChildren(Matrix4x4 transformation, bool includePartials = true)
+	{
+		// Bone parenting
+		// Adapted from Ktisis code shared by Chirp - thank you!
+		BoneCollection descendants = new();
+		this.GetDescendants(ref descendants, includePartials, true);
+
+		DalamudServices.Framework.RunOnFrameworkThread(() =>
+		{
+			foreach (Bone descendant in descendants)
+			{
+				hkQsTransformf* access = descendant.AccessModelSpace(PropagateOrNot.DontPropagate);
+
+				Matrix4x4 matrix = Alloc.GetMatrix(access);
+				matrix *= transformation;
+				Alloc.SetMatrix(access, matrix);
+			}
+		});
+	}
+}

@@ -31,7 +31,7 @@ public partial class PoseWindow : ActorWindow
 	private readonly Hook<BustDelegate> bustHook;
 
 	private bool posingEnabled = false;
-	private BoneReferences? selectedBones;
+	private BoneCollection? selectedBones;
 
 	public unsafe PoseWindow()
 	{
@@ -60,7 +60,7 @@ public partial class PoseWindow : ActorWindow
 		this.bustHook = Hook<BustDelegate>.FromAddress(loadBust, this.BustDetour);
 	}
 
-	public delegate void BonesChangedEventHandler(BoneReferences? bones);
+	public delegate void BonesChangedEventHandler(BoneCollection? bones);
 
 	private delegate ulong SetBoneModelSpaceFfxivDelegate(nint partialSkeleton, ushort boneId, nint transform, bool enableSecondary, bool enablePropagate);
 	private delegate nint CalculateBoneModelSpaceDelegate(ref hkaPose pose, int boneIdx);
@@ -73,7 +73,7 @@ public partial class PoseWindow : ActorWindow
 
 	public event BonesChangedEventHandler? SelectedBonesChanged;
 
-	public BoneReferences? SelectedBones
+	public BoneCollection? SelectedBones
 	{
 		get => this.selectedBones;
 		set

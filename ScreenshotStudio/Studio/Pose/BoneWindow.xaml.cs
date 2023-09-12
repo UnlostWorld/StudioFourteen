@@ -25,7 +25,7 @@ public partial class BoneWindow : ActorWindow
 		if (this.PoseWindow == null)
 			return;
 
-		BoneReferences? bones = BoneReferences.Search(this.Skeleton, boneName);
+		BoneCollection? bones = BoneCollection.Search(this.Skeleton, boneName);
 
 		if (bones == null)
 			return;
@@ -48,7 +48,7 @@ public partial class BoneWindow : ActorWindow
 		if (this.PoseWindow == null)
 			return;
 
-		BoneReferences? bones = BoneReferences.Search(this.Skeleton, boneName);
+		BoneCollection? bones = BoneCollection.Search(this.Skeleton, boneName);
 
 		if (bones == null)
 			return;
@@ -81,7 +81,7 @@ public partial class BoneWindow : ActorWindow
 		}
 	}
 
-	private void OnSelectedBonesChanged(BoneReferences? bones)
+	private void OnSelectedBonesChanged(BoneCollection? bones)
 	{
 		foreach (BoneView boneView in this.BoneViews)
 		{

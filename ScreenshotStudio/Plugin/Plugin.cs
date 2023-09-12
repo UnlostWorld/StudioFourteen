@@ -37,11 +37,14 @@ public sealed class DalamudPlugin : IDalamudPlugin
 		XivWindow.Process = Process.GetCurrentProcess();
 		this.Log.Information($"Ensure XivProcess {XivWindow.Process} - {XivWindow.Process.MainWindowHandle} - {XivWindow.Process.MainWindowTitle}");
 
+		Alloc.Init();
+
 		await ServiceManager.Instance.Start();
 	}
 
 	private async Task Stop()
 	{
 		await ServiceManager.Instance.Stop();
+		Alloc.Dispose();
 	}
 }
