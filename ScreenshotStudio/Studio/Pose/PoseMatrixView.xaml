@@ -18,7 +18,6 @@
 
 
 	<ScrollViewer
-		Margin="0,22,0,0"
 		HorizontalScrollBarVisibility="Disabled"
 		VerticalScrollBarVisibility="Auto">
 		<Grid

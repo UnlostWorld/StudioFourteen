@@ -31,4 +31,13 @@
 
 	<sys:String x:Key="BonesGuiOption">Bones Window</sys:String>
 	<sys:String x:Key="BonesGui">Bones</sys:String>
+
+	<sys:String x:Key="PoseGui">GUI</sys:String>
+	<sys:String x:Key="PoseMatrix">Matrix</sys:String>
+	<sys:String x:Key="PoseList">List</sys:String>
+
+	<sys:String x:Key="PoseGuiFlipSides">Flip Sides</sys:String>
+	<sys:String x:Key="PoseGuiFlipSidesFlipped">Facing Towards</sys:String>
+	<sys:String x:Key="PoseGuiFlipSidesNotflipped">Facing Away</sys:String>
+
 </ResourceDictionary>

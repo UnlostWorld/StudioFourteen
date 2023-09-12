@@ -116,6 +116,8 @@ public partial class BoneWindow : ActorWindow
 			{
 				boneView.OnSkeletonChanged();
 			}
+
+			this.List.OnSkeletonChanged(this.Skeleton);
 		}
 	}
 }
