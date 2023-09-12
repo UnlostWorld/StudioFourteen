@@ -17,6 +17,7 @@ using ScreenshotStudio.Structs.Extensions;
 using ScreenshotStudio.Studio.Pose;
 using ScreenshotStudio.Windows;
 using System.ComponentModel;
+using System.Numerics;
 using System.Windows;
 
 public partial class PoseWindow : ActorWindow
@@ -157,6 +158,22 @@ public partial class PoseWindow : ActorWindow
 			else
 			{
 				this.Actor->Model->Transform = value;
+			}
+		}
+	}
+
+	[AutoNotify]
+	public unsafe hkQuaternionf? RootRotation
+	{
+		get
+		{
+			if (this.selectedBones != null && this.CanPose)
+			{
+				return this.Actor->Model->Transform.Rotation;
+			}
+			else
+			{
+				return null;
 			}
 		}
 	}

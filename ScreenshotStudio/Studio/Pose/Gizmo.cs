@@ -24,7 +24,7 @@ using Serilog;
 public class Gizmo : UserControl
 {
 	public static readonly IBind<hkQuaternionf> ValueDp = Binder.Register<hkQuaternionf, Gizmo>(nameof(Value), OnValueChanged);
-	public static readonly IBind<hkQuaternionf?> RootRotationdp = Binder.Register<hkQuaternionf?, Gizmo>(nameof(RootRotation), OnRootRotationChanged);
+	public static readonly IBind<hkQuaternionf?> RootRotationDp = Binder.Register<hkQuaternionf?, Gizmo>(nameof(RootRotation), OnRootRotationChanged, BindMode.OneWay);
 	public static readonly IBind<double> TickDp = Binder.Register<double, Gizmo>(nameof(TickFrequency));
 
 	public static readonly IBind<Quaternion> ValueQuatDp = Binder.Register<Quaternion, Gizmo>(nameof(ValueQuat), OnValueQuatChanged);
@@ -86,8 +86,8 @@ public class Gizmo : UserControl
 
 	public hkQuaternionf? RootRotation
 	{
-		get => RootRotationdp.Get(this);
-		set => RootRotationdp.Set(this, value);
+		get => RootRotationDp.Get(this);
+		set => RootRotationDp.Set(this, value);
 	}
 
 	public Quaternion ValueQuat

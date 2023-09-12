@@ -37,7 +37,9 @@
 						Height="194"
 						Margin="0,0,0,10">
 						<Border Style="{DynamicResource XivToolsControlBorder}" />
-						<pose:Gizmo Value="{Binding Rotation}" />
+						<pose:Gizmo
+							RootRotation="{Binding RootRotation}"
+							Value="{Binding Rotation}" />
 					</Grid>
 
 
