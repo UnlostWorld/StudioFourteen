@@ -39,15 +39,23 @@ public unsafe class Bone
 	public ref PartialSkeleton PartialSkeleton => ref Skeleton->PartialSkeletons[this.partialSkeletonIndex];
 	public hkaPose* HkaPose => this.PartialSkeleton.GetHavokPose(this.poseIndex);
 
-	public unsafe hkaBone HkaBone => HkaPose->Skeleton->Bones[this.boneIndex];
-	public unsafe int ParentId => HkaPose->Skeleton->ParentIndices[this.boneIndex];
+	public unsafe int ParentId => this.HkaPose->Skeleton->ParentIndices[this.boneIndex];
 
-	public string? Name => this.HkaBone.Name.String;
+	public string? Name
+	{
+		get
+		{
+			if (this.HkaPose == null || this.HkaPose->Skeleton == null)
+				return null;
+
+			return this.HkaPose->Skeleton->Bones[this.boneIndex].Name.String;
+		}
+	}
 
 	public hkQsTransformf Transform
 	{
-		get => HkaPose->ModelPose[this.boneIndex];
-		protected set => HkaPose->ModelPose[this.boneIndex] = value;
+		get => this.HkaPose->ModelPose[this.boneIndex];
+		protected set => this.HkaPose->ModelPose[this.boneIndex] = value;
 	}
 
 	public static bool operator !=(Bone? left, Bone? right) => !(left == right);
@@ -154,21 +162,20 @@ public unsafe class Bone
 	{
 		DalamudServices.Framework.RunOnFrameworkThread(() =>
 		{
-			Matrix4x4 matrix = Matrix4x4.Identity;
+			hkQsTransformf origin = transform;
 
-			// unsure why we cant just add scale like this. Yuki no good at maths. =(
-			////matrix *= Matrix4x4.CreateScale(transform.Scale.ToVector3() - this.Transform.Scale.ToVector3());
-			matrix *= Matrix4x4.CreateFromQuaternion(transform.Rotation.ToQuaternion() / this.Transform.Rotation.ToQuaternion());
-			matrix *= Matrix4x4.CreateTranslation(transform.Translation.ToVector3() - this.Transform.Translation.ToVector3());
+			Vector3 deltaScale = transform.Scale.ToVector3() - this.Transform.Scale.ToVector3();
+			Quaternion deltaRotation = transform.Rotation.ToQuaternion() / this.Transform.Rotation.ToQuaternion();
+			Vector3 deltaTranslate = transform.Translation.ToVector3() - this.Transform.Translation.ToVector3();
 
 			this.Transform = transform;
 
 			// if enable parenting?
-			this.PropagateChildren(matrix, true);
+			this.PropagateChildren(origin, deltaTranslate, deltaRotation, deltaScale, true);
 		});
 	}
 
-	public unsafe void PropagateChildren(Matrix4x4 transformation, bool includePartials = true)
+	public unsafe void PropagateChildren(hkQsTransformf origin, Vector3 deltaTranslate, Quaternion deltaRotation, Vector3 deltaScale, bool includePartials = true)
 	{
 		// Bone parenting
 		// Adapted from Ktisis code shared by Chirp - thank you!
@@ -179,10 +186,14 @@ public unsafe class Bone
 		{
 			foreach (Bone descendant in descendants)
 			{
-				hkQsTransformf* access = descendant.AccessModelSpace(PropagateOrNot.DontPropagate);
+				hkQsTransformf* access = descendant.AccessModelSpace();
+
+				Vector3 offset = access->Translation.ToVector3() - origin.Translation.ToVector3();
+				offset = Vector3.Transform(offset, deltaRotation);
 
 				Matrix4x4 matrix = Alloc.GetMatrix(access);
-				matrix *= transformation;
+				matrix *= Matrix4x4.CreateFromQuaternion(deltaRotation);
+				matrix.Translation = origin.Translation.ToVector3() + offset + deltaTranslate;
 				Alloc.SetMatrix(access, matrix);
 			}
 		});
