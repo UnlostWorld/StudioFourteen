@@ -15,6 +15,7 @@ using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using XivToolsWpf;
 
 public abstract partial class Panel : Window, IAutoNotify
@@ -165,7 +166,7 @@ public abstract partial class Panel : Window, IAutoNotify
 		this.IsOpen = false;
 	}
 
-	private void OnPreviewMouseDown(object sender, System.Windows.Input.MouseButtonEventArgs e)
+	private void OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
 	{
 		this.Activate();
 	}
