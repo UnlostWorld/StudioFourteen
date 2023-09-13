@@ -318,22 +318,17 @@
 							<StackPanel
 								HorizontalAlignment="Center"
 								Orientation="Horizontal">
-								<Button
-									Background="Transparent"
-									Style="{StaticResource TransparentIconButton}">
+								<Button Background="Transparent">
 									<xivToolsWpf:IconBlock Icon="ArrowCircleUp" />
 								</Button>
 
 								<Button
 									Background="Transparent"
-									Click="OnClearSelectionClicked"
-									Style="{StaticResource TransparentIconButton}">
+									Click="OnClearSelectionClicked">
 									<xivToolsWpf:IconBlock Icon="TimesCircle" />
 								</Button>
 
-								<Button
-									Background="Transparent"
-									Style="{StaticResource TransparentIconButton}">
+								<Button Background="Transparent">
 									<xivToolsWpf:IconBlock Icon="ArrowCircleDown" />
 								</Button>
 							</StackPanel>
