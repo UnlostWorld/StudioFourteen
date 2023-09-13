@@ -31,80 +31,227 @@
 
 			<!--  Transform  -->
 			<Grid>
-				<StackPanel Margin="3">
+				<StackPanel>
 					<Grid
-						Width="194"
-						Height="194"
-						Margin="0,0,0,10">
+						Width="198"
+						Height="198"
+						Margin="0,0,0,1">
 						<Border Style="{DynamicResource XivToolsControlBorder}" />
 						<pose:Gizmo
 							RootRotation="{Binding RootRotation}"
 							Value="{Binding Rotation}" />
 					</Grid>
 
+					<!--  Translate  -->
+					<Expander>
+						<Expander.Header>
+							<xivToolsWpf:MultiNumberBox
+								Margin="0"
+								X="{Binding TranslationX}"
+								Y="{Binding TranslationY}"
+								Z="{Binding TranslationZ}">
+								<xivToolsWpf:MultiNumberBox.Prefix>
+									<xivToolsWpf:IconBlock
+										Margin="6,1,2,0"
+										Foreground="{DynamicResource BackgroundLightBrush}"
+										Icon="Arrows"
+										ToolTip="{DynamicResource TransformT}" />
+								</xivToolsWpf:MultiNumberBox.Prefix>
+							</xivToolsWpf:MultiNumberBox>
 
-					<Grid>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition />
-							<ColumnDefinition Width="Auto" />
-						</Grid.ColumnDefinitions>
+						</Expander.Header>
 
-						<Grid.RowDefinitions>
-							<RowDefinition />
-							<RowDefinition />
-							<RowDefinition />
-						</Grid.RowDefinitions>
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition />
+								<RowDefinition />
+								<RowDefinition />
+							</Grid.RowDefinitions>
 
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition />
+							</Grid.ColumnDefinitions>
 
-						<TextBlock
-							Grid.Row="0"
-							Grid.Column="0"
-							Style="{DynamicResource RightLabel}"
-							Text="T:" />
-						<xivToolsWpf:MultiNumberBox
-							Grid.Row="0"
-							Grid.Column="1"
-							X="{Binding TranslationX}"
-							Y="{Binding TranslationY}"
-							Z="{Binding TranslationZ}" />
-						<ToggleButton
-							Grid.Row="0"
-							Grid.Column="2"
-							Style="{DynamicResource XivToolsComboBoxButton}" />
+							<TextBlock
+								Grid.Row="0"
+								Grid.Column="0"
+								Margin="3,0"
+								Style="{DynamicResource RightLabel}"
+								Text="X:" />
+							<xivToolsWpf:RelativeSlider
+								Grid.Row="0"
+								Grid.Column="1"
+								RelativeRange="5"
+								RelativeValue="{Binding TranslationX}" />
 
-						<TextBlock
-							Grid.Row="1"
-							Grid.Column="0"
-							Style="{DynamicResource RightLabel}"
-							Text="R:" />
-						<xivToolsWpf:MultiNumberBox
-							Grid.Row="1"
-							Grid.Column="1"
-							X="{Binding EulerRotationX}"
-							Y="{Binding EulerRotationY}"
-							Z="{Binding EulerRotationZ}" />
-						<ToggleButton
-							Grid.Row="1"
-							Grid.Column="2"
-							Style="{DynamicResource XivToolsComboBoxButton}" />
+							<TextBlock
+								Grid.Row="1"
+								Grid.Column="0"
+								Margin="3,0"
+								Style="{DynamicResource RightLabel}"
+								Text="Y:" />
+							<xivToolsWpf:RelativeSlider
+								Grid.Row="1"
+								Grid.Column="1"
+								RelativeRange="5"
+								RelativeValue="{Binding TranslationY}" />
 
-						<TextBlock
-							Grid.Row="2"
-							Grid.Column="0"
-							Style="{DynamicResource RightLabel}"
-							Text="S:" />
-						<xivToolsWpf:MultiNumberBox
-							Grid.Row="2"
-							Grid.Column="1"
-							X="{Binding ScaleX}"
-							Y="{Binding ScaleY}"
-							Z="{Binding ScaleZ}" />
-						<ToggleButton
-							Grid.Row="2"
-							Grid.Column="2"
-							Style="{DynamicResource XivToolsComboBoxButton}" />
-					</Grid>
+							<TextBlock
+								Grid.Row="2"
+								Grid.Column="0"
+								Margin="3,0"
+								Style="{DynamicResource RightLabel}"
+								Text="Z:" />
+							<xivToolsWpf:RelativeSlider
+								Grid.Row="2"
+								Grid.Column="1"
+								RelativeRange="5"
+								RelativeValue="{Binding TranslationZ}" />
+						</Grid>
+					</Expander>
+
+					<!--  Rotate  -->
+					<Expander>
+						<Expander.Header>
+							<xivToolsWpf:MultiNumberBox
+								Margin="0"
+								X="{Binding EulerRotationX}"
+								Y="{Binding EulerRotationY}"
+								Z="{Binding EulerRotationZ}">
+								<xivToolsWpf:MultiNumberBox.Prefix>
+									<xivToolsWpf:IconBlock
+										Margin="6,1,2,0"
+										Foreground="{DynamicResource BackgroundLightBrush}"
+										Icon="Rotate"
+										ToolTip="{DynamicResource TransformR}" />
+								</xivToolsWpf:MultiNumberBox.Prefix>
+							</xivToolsWpf:MultiNumberBox>
+
+						</Expander.Header>
+
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition />
+								<RowDefinition />
+								<RowDefinition />
+							</Grid.RowDefinitions>
+
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition />
+							</Grid.ColumnDefinitions>
+
+							<TextBlock
+								Grid.Row="0"
+								Grid.Column="0"
+								Margin="3,0"
+								Style="{DynamicResource RightLabel}"
+								Text="X:" />
+							<xivToolsWpf:RelativeSlider
+								Grid.Row="0"
+								Grid.Column="1"
+								RelativeRange="180"
+								RelativeValue="{Binding EulerRotationX}"
+								SmallChange="1" />
+
+							<TextBlock
+								Grid.Row="1"
+								Grid.Column="0"
+								Margin="3,0"
+								Style="{DynamicResource RightLabel}"
+								Text="Y:" />
+							<xivToolsWpf:RelativeSlider
+								Grid.Row="1"
+								Grid.Column="1"
+								RelativeRange="180"
+								RelativeValue="{Binding EulerRotationY}"
+								SmallChange="1" />
+
+							<TextBlock
+								Grid.Row="2"
+								Grid.Column="0"
+								Margin="3,0"
+								Style="{DynamicResource RightLabel}"
+								Text="Z:" />
+							<xivToolsWpf:RelativeSlider
+								Grid.Row="2"
+								Grid.Column="1"
+								RelativeRange="180"
+								RelativeValue="{Binding EulerRotationZ}"
+								SmallChange="1" />
+						</Grid>
+					</Expander>
+
+					<!--  Scale  -->
+					<Expander>
+						<Expander.Header>
+							<xivToolsWpf:MultiNumberBox
+								Margin="0"
+								X="{Binding ScaleX}"
+								Y="{Binding ScaleY}"
+								Z="{Binding ScaleZ}">
+								<xivToolsWpf:MultiNumberBox.Prefix>
+									<xivToolsWpf:IconBlock
+										Margin="6,1,2,0"
+										Foreground="{DynamicResource BackgroundLightBrush}"
+										Icon="ArrowsMaximize"
+										ToolTip="{DynamicResource TransformS}" />
+								</xivToolsWpf:MultiNumberBox.Prefix>
+							</xivToolsWpf:MultiNumberBox>
+
+						</Expander.Header>
+
+						<Grid>
+							<Grid.RowDefinitions>
+								<RowDefinition />
+								<RowDefinition />
+								<RowDefinition />
+							</Grid.RowDefinitions>
+
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition />
+							</Grid.ColumnDefinitions>
+
+							<TextBlock
+								Grid.Row="0"
+								Grid.Column="0"
+								Margin="3,0"
+								Style="{DynamicResource RightLabel}"
+								Text="X:" />
+							<xivToolsWpf:RelativeSlider
+								Grid.Row="0"
+								Grid.Column="1"
+								RelativeRange="1"
+								RelativeValue="{Binding ScaleX}" />
+
+							<TextBlock
+								Grid.Row="1"
+								Grid.Column="0"
+								Margin="3,0"
+								Style="{DynamicResource RightLabel}"
+								Text="Y:" />
+							<xivToolsWpf:RelativeSlider
+								Grid.Row="1"
+								Grid.Column="1"
+								RelativeRange="1"
+								RelativeValue="{Binding ScaleY}" />
+
+							<TextBlock
+								Grid.Row="2"
+								Grid.Column="0"
+								Margin="3,0"
+								Style="{DynamicResource RightLabel}"
+								Text="Z:" />
+							<xivToolsWpf:RelativeSlider
+								Grid.Row="2"
+								Grid.Column="1"
+								RelativeRange="1"
+								RelativeValue="{Binding ScaleZ}" />
+						</Grid>
+					</Expander>
+
 				</StackPanel>
 			</Grid>
 
@@ -162,7 +309,7 @@
 							Margin="0,10,0,0"
 							HorizontalAlignment="Center"
 							Style="{DynamicResource Header}"
-							Text="{Binding SelectedBones.Name, FallbackValue='Actor'}" />
+							Text="{Binding SelectedBones.DisplayName, FallbackValue='Actor'}" />
 
 						<Border
 							Grid.Column="1"

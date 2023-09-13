@@ -28,7 +28,9 @@
 
 	<sys:String x:Key="ChangeZoneWarning">You may only change zones in the title screen on a fresh launch of FFXIV. Restart your game and do not enter character select.</sys:String>
 
-
+	<sys:String x:Key="TransformT">Translate</sys:String>
+	<sys:String x:Key="TransformR">Rotate</sys:String>
+	<sys:String x:Key="TransformS">Scale</sys:String>
 	<sys:String x:Key="BonesGuiOption">Bones Window</sys:String>
 	<sys:String x:Key="BonesGui">Bones</sys:String>
 
