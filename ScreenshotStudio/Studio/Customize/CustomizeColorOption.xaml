@@ -32,18 +32,6 @@
 		</Grid.ColumnDefinitions>
 
 		<Border
-			Grid.Column="0"
-			Margin="0"
-			BorderBrush="{DynamicResource ControlBackgroundBrush}"
-			BorderThickness="2"
-			CornerRadius="{Binding LeftElementCornerRadius}"
-			Style="{DynamicResource XivToolsControlBorder}">
-			<Border.Background>
-				<SolidColorBrush Color="{Binding Option.Color.WpfColor}" />
-			</Border.Background>
-		</Border>
-
-		<Border
 			Grid.Column="1"
 			Margin="0"
 			CornerRadius="{Binding RightElementCornerRadius}"
@@ -65,19 +53,33 @@
 
 						<ToggleButton
 							Name="toggleButton"
+							Margin="0"
 							Padding="{TemplateBinding Padding}"
 							HorizontalContentAlignment="Stretch"
+							VerticalContentAlignment="Stretch"
+							Background="Transparent"
 							Foreground="Black"
-							IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-							Style="{DynamicResource InvisibleToggleButton}">
+							IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
 
-							<controls:IconBlock
-								x:Name="Chevron"
-								Margin="0,1,6,0"
-								HorizontalAlignment="Right"
-								FontSize="12"
-								Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"
-								Icon="ChevronDown" />
+							<Border
+								Margin="0"
+								BorderBrush="{DynamicResource ControlBackgroundBrush}"
+								BorderThickness="1"
+								CornerRadius="6,0,0,6">
+								<Border.Background>
+									<SolidColorBrush Color="{Binding Option.Color.WpfColor}" />
+								</Border.Background>
+
+								<Path
+									x:Name="Chevron"
+									Margin="3"
+									HorizontalAlignment="Right"
+									VerticalAlignment="Center"
+									Data="M 0,0 5,3 10,0"
+									Stroke="{TemplateBinding Foreground}"
+									StrokeThickness="1" />
+							</Border>
+
 						</ToggleButton>
 
 						<Popup
@@ -128,7 +130,7 @@
 
 					<ControlTemplate.Triggers>
 						<Trigger Property="IsMouseOver" Value="True">
-							<Setter TargetName="Chevron" Property="Foreground" Value="#77FFFFFF" />
+							<Setter TargetName="Chevron" Property="Stroke" Value="#77FFFFFF" />
 						</Trigger>
 						<Trigger Property="IsEnabled" Value="False">
 							<Setter TargetName="Chevron" Property="Opacity" Value="0.1" />
