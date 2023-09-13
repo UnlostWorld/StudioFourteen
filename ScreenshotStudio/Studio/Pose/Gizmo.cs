@@ -32,8 +32,8 @@ public class Gizmo : UserControl
 
 	protected readonly ILogger Log = Logging.ForContext<Gizmo>();
 
-	private readonly QuaternionRotation3D cameraRotation;
-	private readonly RotationGizmo rotationGizmo;
+	private readonly QuaternionRotation3D? cameraRotation;
+	private readonly RotationGizmo? rotationGizmo;
 	private bool lockdp = false;
 
 	private Quaternion worldSpaceDelta;
@@ -43,6 +43,9 @@ public class Gizmo : UserControl
 	public Gizmo()
 	{
 		this.Background = new SolidColorBrush(Colors.Transparent);
+
+		if (DesignerProperties.GetIsInDesignMode(this))
+			return;
 
 		this.MouseDown += this.OnMouseDown;
 		this.MouseUp += this.OnMouseUp;
@@ -61,15 +64,6 @@ public class Gizmo : UserControl
 
 		this.cameraRotation = new();
 		viewport.Camera.Transform = new RotateTransform3D(this.cameraRotation);
-
-		if (DesignerProperties.GetIsInDesignMode(this))
-		{
-			hkVector4f euler = default;
-			euler.X = 0;
-			euler.Y = 45;
-			euler.Z = 0;
-			this.Euler = euler;
-		}
 	}
 
 	public double TickFrequency
@@ -132,7 +126,11 @@ public class Gizmo : UserControl
 			else
 			{
 				this.ValueQuat = Quaternion.Identity;
-				this.rotationGizmo.Transform = new RotateTransform3D(new QuaternionRotation3D(Quaternion.Identity));
+
+				if (this.rotationGizmo != null)
+				{
+					this.rotationGizmo.Transform = new RotateTransform3D(new QuaternionRotation3D(Quaternion.Identity));
+				}
 			}
 		}
 	}
@@ -152,7 +150,9 @@ public class Gizmo : UserControl
 		if (sender.WorldSpace)
 			valueQuat = Quaternion.Identity;
 
-		sender.rotationGizmo.Transform = new RotateTransform3D(new QuaternionRotation3D(valueQuat));
+		if (sender.rotationGizmo != null)
+			sender.rotationGizmo.Transform = new RotateTransform3D(new QuaternionRotation3D(valueQuat));
+
 		sender.ValueQuat = valueQuat;
 
 		if (sender.lockdp)
@@ -173,12 +173,18 @@ public class Gizmo : UserControl
 	private static void OnValueQuatChanged(Gizmo sender, Quaternion value)
 	{
 		Quaternion newrot = value;
-		sender.rotationGizmo.Transform = new RotateTransform3D(new QuaternionRotation3D(newrot));
+
+		if (sender.rotationGizmo != null)
+			sender.rotationGizmo.Transform = new RotateTransform3D(new QuaternionRotation3D(newrot));
 
 		if (sender.WorldSpace)
 		{
 			newrot *= sender.worldSpaceDelta;
-			sender.rotationGizmo.Transform = new RotateTransform3D(new QuaternionRotation3D(Quaternion.Identity));
+
+			if (sender.rotationGizmo != null)
+			{
+				sender.rotationGizmo.Transform = new RotateTransform3D(new QuaternionRotation3D(Quaternion.Identity));
+			}
 		}
 
 		if (sender.lockdp)
@@ -228,7 +234,7 @@ public class Gizmo : UserControl
 			////this.LockedAxisDisplay.Text = GetAxisName(this.rotationGizmo.Locked?.Axis);
 		}
 
-		this.rotationGizmo.Hover(null);
+		this.rotationGizmo?.Hover(null);
 	}
 
 	private void OnMouseMove(object sender, MouseEventArgs e)
@@ -238,12 +244,12 @@ public class Gizmo : UserControl
 		if (e.LeftButton != MouseButtonState.Pressed)
 		{
 			HitTestResult result = VisualTreeHelper.HitTest(this, mousePosition);
-			this.rotationGizmo.Hover(result?.VisualHit);
+			this.rotationGizmo?.Hover(result?.VisualHit);
 		}
 		else
 		{
 			Point3D mousePos3D = new Point3D(mousePosition.X, mousePosition.Y, 0);
-			this.rotationGizmo.Drag(mousePos3D);
+			this.rotationGizmo?.Drag(mousePos3D);
 		}
 	}
 
@@ -252,7 +258,7 @@ public class Gizmo : UserControl
 		if (e.LeftButton == MouseButtonState.Pressed)
 			return;
 
-		this.rotationGizmo.Hover(null);
+		this.rotationGizmo?.Hover(null);
 	}
 
 	private void OnMouseWheel(object sender, MouseWheelEventArgs e)
@@ -262,7 +268,7 @@ public class Gizmo : UserControl
 		if (Keyboard.IsKeyDown(Key.LeftShift))
 			delta *= 10;
 
-		this.rotationGizmo.Scroll(delta);
+		this.rotationGizmo?.Scroll(delta);
 	}
 
 	private async Task WatchCamera()
@@ -288,6 +294,9 @@ public class Gizmo : UserControl
 
 	private unsafe void UpdateCamera()
 	{
+		if (this.cameraRotation == null)
+			return;
+
 		StudioCamera* pCamera = (StudioCamera*)DalamudServices.Camera->Camera;
 		hkQuaternionf camRot = pCamera->Rotation;
 
