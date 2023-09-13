@@ -10,13 +10,19 @@ using ScreenshotStudio.Utilities;
 using Serilog;
 using System;
 using System.ComponentModel;
+using System.Drawing;
+using System.Resources;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
+using System.Windows.Media;
 using XivToolsWpf;
+using XivToolsWpf.Utility;
+using Color = System.Windows.Media.Color;
 
 public abstract partial class Panel : Window, IAutoNotify
 {
@@ -48,6 +54,11 @@ public abstract partial class Panel : Window, IAutoNotify
 		this.DataContext = this;
 
 		this.PreviewMouseDown += this.OnPreviewMouseDown;
+
+		if (this.Services.Panels.IsUserARealGamer)
+		{
+			GamerRGBUtility.RGBarf(this);
+		}
 	}
 
 	public event PropertyChangedEventHandler? PropertyChanged;

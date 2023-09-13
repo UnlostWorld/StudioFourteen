@@ -13,6 +13,9 @@ public class PanelService : ServiceBase
 	private readonly List<Panel> openPanels = new List<Panel>();
 	private readonly Dictionary<Type, Panel> lastOpenPanels = new();
 
+	// Temp till we have theme settings
+	public bool IsUserARealGamer { get; set; } = false;
+
 	public void OnPanelOpened(Panel panel)
 	{
 		this.openPanels.Add(panel);
