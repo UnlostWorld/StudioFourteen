@@ -139,10 +139,10 @@
 						</Grid>
 
 						<ToggleButton
+							Height="Auto"
 							Margin="8,1,2,1"
 							VerticalAlignment="Stretch"
-							Background="Transparent"
-							Style="{DynamicResource TransparentToggleButton}">
+							Background="Transparent">
 							<Grid>
 								<xivToolsWpf:IconBlock
 									Margin="6"
