@@ -101,7 +101,6 @@
 									Margin="-3,0,0,0"
 									Background="Transparent"
 									Command="{Binding Command}"
-									Style="{DynamicResource TransparentIconButton}"
 									ToolTip="{Binding ToolTip}">
 									<xivToolsWpf:IconBlock
 										Foreground="{DynamicResource ForegroundLightBrush}"
@@ -114,13 +113,12 @@
 
 					<!--  Close Button  -->
 					<Button
-						Width="28"
-						Height="22"
-						Margin="-3,0,0,0"
+						Width="26"
+						Height="20"
+						Margin="-3,2,2,0"
 						Background="Transparent"
 						Click="OnCloseClicked"
 						IsEnabled="{TemplateBinding CanClose}"
-						Style="{DynamicResource TransparentIconButton}"
 						ToolTip="{DynamicResource ClosePanelTooltip}">
 						<xivToolsWpf:IconBlock
 							Foreground="{DynamicResource ForegroundLightBrush}"
