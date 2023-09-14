@@ -56,7 +56,7 @@ public partial class TargetPanel : DockPanel
 	private void OnRemoveActorClicked(object sender, RoutedEventArgs e)
 	{
 		this.Services.ActorLifecycle.DestroyAllCreated();
-    }
+	}
 }
 
 public unsafe class ActorViewModel : ViewModel
