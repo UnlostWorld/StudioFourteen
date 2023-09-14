@@ -51,14 +51,30 @@ public class ServiceManager
 	{
 		this.isRunning = true;
 
+		Logging.Shared.Information("Screenshot Studio is starting");
+
 		foreach (ServiceBase service in this.services)
 		{
-			await service.Initialize();
+			try
+			{
+				await service.Initialize();
+			}
+			catch (Exception ex)
+			{
+				Logging.Shared.Error(ex, $"Error initializing service: {service}");
+			}
 		}
 
 		foreach (ServiceBase service in this.services)
 		{
-			await service.Start();
+			try
+			{
+				await service.Start();
+			}
+			catch (Exception ex)
+			{
+				Logging.Shared.Error(ex, $"Error starting service: {service}");
+			}
 		}
 
 		_ = Task.Run(async () => await this.Tick());
@@ -73,13 +89,30 @@ public class ServiceManager
 
 		foreach (ServiceBase service in this.services)
 		{
-			await service.Stop();
+			try
+			{
+				await service.Stop();
+			}
+			catch (Exception ex)
+			{
+				Logging.Shared.Error(ex, $"Error stopping service: {service}");
+			}
 		}
 
 		foreach (ServiceBase service in this.services)
 		{
-			await service.Shutdown();
+			try
+			{
+				await service.Shutdown();
+			}
+			catch (Exception ex)
+			{
+				Logging.Shared.Error(ex, $"Error shutting down service: {service}");
+			}
 		}
+
+		Logging.Shared.Information("Screenshot Studio has shutdown");
+		instance = null;
 	}
 
 	private async Task Tick()
