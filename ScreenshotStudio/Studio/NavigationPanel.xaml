@@ -146,9 +146,10 @@
 
 								<ToggleButton
 									x:Name="SettingsButton"
-									IsChecked="{Binding Services.Panels.IsUserARealGamer}"
+									IsChecked="{Binding IsSettingsOpen}"
+									IsEnabled="False"
 									ToolTip="{DynamicResource Settings}">
-									<xivToolsWpf:IconBlock Icon="HeadSideCough" />
+									<xivToolsWpf:IconBlock Icon="cogs" />
 								</ToggleButton>
 
 
