@@ -4,8 +4,8 @@
       "Name": "Screenshot Studio",
       "InternalName": "ScreenshotStudio",
       "Description": "A plugin for enhancing GPose functionality",
-      "AssemblyVersion": "1.0.0.50",
-      "TestingAssemblyVersion": "1.0.0.50",
+      "AssemblyVersion": "1.0.0.52",
+      "TestingAssemblyVersion": "1.0.0.52",
       "RepoUrl": "https://github.com/XIV-Tools/ScreenshotStudio",
       "ApplicableVersion": "any",
       "DalamudApiLevel": 8,
@@ -15,8 +15,8 @@
         "screenshot"
       ],
       "IconUrl": "https://github.com/XIV-Tools/ScreenshotStudio/blob/main/Assets/Icon/light-pride.png",
-      "DownloadLinkInstall": "https://github.com/XIV-Tools/ScreenshotStudio/releases/download/v50/latest.zip",
-      "DownloadLinkTesting": "https://github.com/XIV-Tools/ScreenshotStudio/releases/download/v50/latest.zip",
-      "DownloadLinkUpdate": "https://github.com/XIV-Tools/ScreenshotStudio/releases/download/v50/latest.zip",
+      "DownloadLinkInstall": "https://github.com/XIV-Tools/ScreenshotStudio/releases/download/v52/latest.zip",
+      "DownloadLinkTesting": "https://github.com/XIV-Tools/ScreenshotStudio/releases/download/v52/latest.zip",
+      "DownloadLinkUpdate": "https://github.com/XIV-Tools/ScreenshotStudio/releases/download/v52/latest.zip",
     }
   ]
