@@ -124,7 +124,7 @@ public class ActorLifecycleService : ServiceBase
 
 	private void Detatch()
 	{
-		this.destroyGameActorHook.Dispose();
+		this.destroyGameActorHook?.Dispose();
 	}
 
 	private unsafe void ActorDestructorDetour(IntPtr addr)
