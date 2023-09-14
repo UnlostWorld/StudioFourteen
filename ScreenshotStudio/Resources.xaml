@@ -54,8 +54,10 @@
 	<converters:MultiBoolAndToVisibilityConverter x:Key="MultiBoolAndToVisibility" />
 	<converters:AnyBoolIsFalseToBoolMultiConverter x:Key="AnyBoolIsFalseToBool" />
 
+	<!--
 	<ImageBrush
 		x:Key="TrimBrush"
 		ImageSource="pack://application:,,,/ScreenshotStudio;component/Assets/rainbow-wheel.png" />
+	-->
 
 </local:Resources>
