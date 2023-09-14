@@ -127,6 +127,8 @@ public class GameDataService : ServiceBase
 		{
 			await sheet.Shutdown();
 		}
+
+		this.sheets.Clear();
 	}
 
 	private void AddSheet<T>()
