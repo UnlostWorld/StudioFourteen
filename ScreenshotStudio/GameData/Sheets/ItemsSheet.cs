@@ -97,6 +97,12 @@ public class ItemsSheet : DataSheet<Item>
 		this.Log.Information($"Cached {this.itemCache.Count} item models in {sw.ElapsedMilliseconds}ms");
 	}
 
+	public override Task Shutdown()
+	{
+		this.itemCache.Clear();
+		return base.Shutdown();
+	}
+
 	private void PopulateCache(ItemSlots slot)
 	{
 		if (this.Sheet == null)
