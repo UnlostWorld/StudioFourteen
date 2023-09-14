@@ -114,6 +114,8 @@ public class ItemEquipViewModel : ViewModel
 		this.Slot = slot;
 	}
 
+	public bool HasValidTarget => this.window.HasValidTarget;
+
 	[AutoNotify]
 	public ushort Set
 	{
@@ -124,7 +126,7 @@ public class ItemEquipViewModel : ViewModel
 	[AutoNotify]
 	public ushort Base
 	{
-		get => this.ItemEquip.Base;
+		get => this.HasValidTarget ? this.ItemEquip.Base : (ushort)0;
 		set
 		{
 			this.ItemEquip.Base = value;
@@ -135,7 +137,7 @@ public class ItemEquipViewModel : ViewModel
 	[AutoNotify]
 	public byte Variant
 	{
-		get => this.ItemEquip.Variant;
+		get => this.HasValidTarget ? this.ItemEquip.Variant : (byte)0;
 		set
 		{
 			this.ItemEquip.Variant = value;
@@ -146,7 +148,7 @@ public class ItemEquipViewModel : ViewModel
 	[AutoNotify]
 	public byte Dye
 	{
-		get => this.ItemEquip.Dye;
+		get => this.HasValidTarget ? this.ItemEquip.Dye : (byte)0;
 		set
 		{
 			this.ItemEquip.Dye = value;
@@ -159,7 +161,7 @@ public class ItemEquipViewModel : ViewModel
 	{
 		get
 		{
-			if (!this.window.HasValidTarget)
+			if (!this.HasValidTarget)
 				return null;
 
 			if (this.item == null || !this.item.IsItemEquip(this.ItemEquip))
@@ -187,7 +189,7 @@ public class ItemEquipViewModel : ViewModel
 	{
 		get
 		{
-			if (!this.window.HasValidTarget)
+			if (!this.HasValidTarget)
 				return null;
 
 			if (this.stain == null || this.stain.RowId != this.Dye)
