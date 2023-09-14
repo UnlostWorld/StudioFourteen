@@ -7,7 +7,7 @@ using Lumina.Data;
 using Lumina.Excel;
 
 [Sheet("ModelChara", 0x8d35f5ed)]
-public partial class ModelChara : ExcelRow
+public partial class ModelChara : StudioExcelRow
 {
 	public byte Type { get; protected set; }
 	public ushort Model { get; protected set; }

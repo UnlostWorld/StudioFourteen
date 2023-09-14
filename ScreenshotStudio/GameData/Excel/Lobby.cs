@@ -7,7 +7,7 @@ using Lumina.Data;
 using Lumina.Excel;
 
 [Sheet("Lobby", columnHash: 0x54075F2E)]
-public class Lobby : ExcelRow
+public class Lobby : StudioExcelRow
 {
 	public string? Text { get; set; }
 	public string? Unknown4 { get; set; }

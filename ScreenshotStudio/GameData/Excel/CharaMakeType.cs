@@ -14,7 +14,7 @@ using LuminaData = Lumina.GameData;
 // Much of this has been taken from  Ottermandias / Glamourer.
 // https://github.com/Ottermandias/Glamourer/blob/main/Glamourer.GameData/Customization/CharaMakeParams.cs
 [Sheet("CharaMakeType", columnHash: 0x80d7db6d)]
-public class CharaMakeType : ExcelRow
+public class CharaMakeType : StudioExcelRow
 {
 	public const int NumMenus = 28;
 	public const int NumVoices = 12;

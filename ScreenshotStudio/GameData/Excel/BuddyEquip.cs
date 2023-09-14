@@ -10,7 +10,7 @@ using Lumina.Text;
 using ScreenshotStudio.GameData.Sheets;
 
 [Sheet("BuddyEquip", 0xb429792a)]
-public class BuddyEquip : ExcelRow
+public class BuddyEquip : StudioExcelRow
 {
 	public BuddyItem? Head { get; protected set; }
 	public BuddyItem? Body { get; protected set; }

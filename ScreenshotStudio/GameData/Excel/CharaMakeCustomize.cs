@@ -7,7 +7,7 @@ using Lumina.Data;
 using Lumina.Excel;
 
 [Sheet("CharaMakeCustomize", 0xc30e9b73)]
-public class CharaMakeCustomize : ExcelRow
+public class CharaMakeCustomize : StudioExcelRow
 {
 	public string? Name { get; set; }
 	public ImageReference? Icon { get; private set; }

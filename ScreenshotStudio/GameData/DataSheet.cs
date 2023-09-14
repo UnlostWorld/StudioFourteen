@@ -4,6 +4,7 @@
 namespace ScreenshotStudio.GameData;
 
 using Lumina.Excel;
+using ScreenshotStudio.GameData.Excel;
 using ScreenshotStudio.Library;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
@@ -12,6 +13,7 @@ using Serilog;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
 
 public abstract class DataSheet : LibraryProvider
@@ -58,6 +60,30 @@ public class DataSheet<T> : DataSheet
 	public virtual uint Count => this.Sheet?.RowCount ?? 0;
 	public override Type RowType => typeof(T);
 	protected ExcelSheet<T>? Sheet { get; init; }
+
+	public override Task Shutdown()
+	{
+		// If this is a custom sheet, get it out of the sheet cache so it unloads.
+		if (typeof(T).IsAssignableTo(typeof(StudioExcelRow)))
+		{
+			if (this.Sheet != null)
+			{
+				FieldInfo? field = this.Sheet.GetType().GetField("_rowCache", BindingFlags.NonPublic | BindingFlags.Instance);
+				if (field != null)
+				{
+					IDictionary? dict = field.GetValue(this.Sheet) as IDictionary;
+					if (dict != null)
+					{
+						dict.Clear();
+					}
+				}
+			}
+
+			DalamudServices.DataManager.Excel.RemoveSheetFromCache<T>();
+		}
+
+		return base.Shutdown();
+	}
 
 	public T? GetRow(int row) => this.Sheet?.GetRow((uint)row);
 	public T? GetRow(uint row) => this.Sheet?.GetRow(row);

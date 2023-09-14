@@ -8,7 +8,7 @@ using Lumina.Excel;
 using ScreenshotStudio.Tags;
 
 [Sheet("ClassJob", columnHash: 0x16808bcd)]
-public partial class ClassJob : ExcelRow
+public partial class ClassJob : StudioExcelRow
 {
 	public enum ClassJobRows
 	{

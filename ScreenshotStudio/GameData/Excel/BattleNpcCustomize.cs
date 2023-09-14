@@ -8,7 +8,7 @@ using Lumina.Data;
 using Lumina.Excel;
 
 [Sheet("BNpcCustomize", 0x18f060d4)]
-public class BattleNpcCustomize : ExcelRow
+public class BattleNpcCustomize : StudioExcelRow
 {
 	public int FacePaintColor { get; private set; }
 	public int FacePaint { get; private set; }

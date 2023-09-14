@@ -7,7 +7,7 @@ using Lumina.Data;
 using Lumina.Excel;
 
 [Sheet("WeatherRate", 0x474abce2)]
-public class WeatherRate : ExcelRow
+public class WeatherRate : StudioExcelRow
 {
 	public WeatherInstance[]? Weathers { get; private set; }
 

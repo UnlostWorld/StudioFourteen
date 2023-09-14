@@ -57,4 +57,10 @@ public class EventNpcSheet : DataSheet<EventNpc>
 			yield return this.GetRow(rowId);
 		}
 	}
+
+	public override Task Shutdown()
+	{
+		this.uniqueAppearances.Clear();
+		return base.Shutdown();
+	}
 }

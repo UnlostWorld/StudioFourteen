@@ -10,7 +10,7 @@ using ScreenshotStudio.Tags;
 using System.Collections.Generic;
 
 [Sheet("Tribe", 0xe74759fb)]
-public class Tribe : ExcelRow
+public class Tribe : StudioExcelRow
 {
 	public enum TribeRows : byte
 	{

@@ -9,7 +9,7 @@ using Lumina.Excel;
 using ScreenshotStudio.GameData.Sheets;
 
 [Sheet("NpcEquip", 0xe91c87ba)]
-public class NpcEquip : ExcelRow
+public class NpcEquip : StudioExcelRow
 {
 	public Item? MainHand { get; protected set; } = null;
 	public Stain? DyeMainHand { get; protected set; } = null;

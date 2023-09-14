@@ -8,7 +8,7 @@ using Lumina.Excel;
 using ScreenshotStudio.Tags;
 
 [Sheet("EquipRaceCategory", 0xf914b198)]
-public class EquipRaceCategory : ExcelRow
+public class EquipRaceCategory : StudioExcelRow
 {
 	private readonly bool[] races = new bool[(int)Race.RaceRows.Count];
 

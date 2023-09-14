@@ -7,7 +7,7 @@ using Lumina.Data;
 using Lumina.Excel;
 
 [Sheet("BNpcName", 0x77a72da0)]
-public class BattleNpcName : ExcelRow
+public class BattleNpcName : StudioExcelRow
 {
 	public string Name { get; private set; } = string.Empty;
 	public string? Description => $"N:{this.RowId.ToString("D7")}";
