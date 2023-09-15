@@ -118,16 +118,36 @@ public abstract partial class Panel : Window, IAutoNotify
 
 	public new void Close()
 	{
-		this.OnClosed();
+		this.Dispatcher.BeginInvoke(() =>
+		{
+			try
+			{
+				this.OnClosed();
+			}
+			catch (Exception ex)
+			{
+				this.Log.Error(ex, "Error closing window");
+			}
 
-		this.Dispatcher.BeginInvoke(() => base.Close());
-		this.Dispatcher.InvokeShutdown();
+			base.Close();
+
+			this.Dispatcher.InvokeShutdown();
+		});
 	}
 
 	public async Task CloseAsync()
 	{
-		this.OnClosed();
 		await this.Dispatcher.MainThread();
+
+		try
+		{
+			this.OnClosed();
+		}
+		catch (Exception ex)
+		{
+			this.Log.Error(ex, "Error closing window");
+		}
+
 		base.Close();
 		this.Dispatcher.InvokeShutdown();
 	}
