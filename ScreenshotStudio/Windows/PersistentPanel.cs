@@ -7,10 +7,13 @@ using ScreenshotStudio.Services;
 using Newtonsoft.Json;
 using System;
 using System.Runtime.CompilerServices;
+using System.Collections.Generic;
+using ScreenshotStudio.Studio;
 
 public class PersistentPanel : Panel
 {
 	private readonly string panelId;
+	private readonly Dictionary<string, object?> persistenceCache = new();
 
 	public PersistentPanel()
 	{
@@ -21,12 +24,22 @@ public class PersistentPanel : Panel
 	{
 		try
 		{
+			lock (this.persistenceCache)
+			{
+				if (this.persistenceCache.ContainsKey(id))
+				{
+					return (T?)this.persistenceCache[id];
+				}
+			}
+
 			string persistenceId = this.panelId + "_" + id;
 
 			if (!Settings.Current.PanelPersistence.TryGetValue(persistenceId, out string? json) || json == null)
 				return default;
 
-			return JsonConvert.DeserializeObject<T>(json);
+			T? value = JsonConvert.DeserializeObject<T>(json);
+			this.persistenceCache.Add(id, value);
+			return value;
 		}
 		catch (Exception ex)
 		{
@@ -44,6 +57,14 @@ public class PersistentPanel : Panel
 	{
 		try
 		{
+			lock (this.persistenceCache)
+			{
+				if (!this.persistenceCache.ContainsKey(id))
+					this.persistenceCache.Add(id, value);
+
+				this.persistenceCache[id] = value;
+			}
+
 			this.Dispatcher.Invoke(() =>
 			{
 				string persistenceId = this.panelId + "_" + id;
