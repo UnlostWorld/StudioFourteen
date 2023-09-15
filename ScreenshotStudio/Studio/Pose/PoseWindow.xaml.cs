@@ -89,13 +89,7 @@ public partial class PoseWindow : ActorWindow
 	[AutoNotify]
 	public bool PosingEnabled
 	{
-		get
-		{
-			if (this.posingEnabled && !this.CanPose)
-				this.posingEnabled = false;
-
-			return this.posingEnabled;
-		}
+		get => this.posingEnabled;
 
 		set
 		{
@@ -144,7 +138,39 @@ public partial class PoseWindow : ActorWindow
 	}
 
 	[AutoNotify]
-	public bool CanPose => this.Services.Studio.IsOpenAndInGPose;
+	public bool ExpandTranslationSliders
+	{
+		get => this.GetPersistence<bool>();
+		set => this.SetPersistence(value);
+	}
+
+	[AutoNotify]
+	public bool ExpandRotationSliders
+	{
+		get => this.GetPersistence<bool>();
+		set => this.SetPersistence(value);
+	}
+
+	[AutoNotify]
+	public bool ExpandScaleSliders
+	{
+		get => this.GetPersistence<bool>();
+		set => this.SetPersistence(value);
+	}
+
+	[AutoNotify]
+	public bool CanPose
+	{
+		get
+		{
+			bool canPose = this.Services.Studio.IsOpenAndInGPose;
+
+			if (!canPose && this.PosingEnabled)
+				this.PosingEnabled = false;
+
+			return canPose;
+		}
+	}
 
 	public unsafe hkQsTransformf Transform
 	{

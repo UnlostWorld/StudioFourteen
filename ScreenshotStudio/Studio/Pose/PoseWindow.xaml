@@ -10,17 +10,18 @@
 	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
 	xmlns:xivToolsWpf="clr-namespace:XivToolsWpf.Controls;assembly=XivToolsWpf"
 	Title="{DynamicResource Pose}"
+	Width="230"
 	VerticalAlignment="Top"
 	VerticalContentAlignment="Top"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	ShowBackground="False"
-	SizeToContent="WidthAndHeight"
+	SizeToContent="Height"
 	Subtitle="{Binding ActorName}"
 	TitleIcon="Running"
 	mc:Ignorable="d">
 
-	<Grid Width="200">
+	<Grid>
 
 		<Grid.Resources>
 			<converters:NotNullToBoolConverter x:Key="NotNullToBoolConverter" />
@@ -43,7 +44,7 @@
 					</Grid>
 
 					<!--  Translate  -->
-					<Expander>
+					<Expander IsExpanded="{Binding ExpandTranslationSliders}">
 						<Expander.Header>
 							<xivToolsWpf:MultiNumberBox
 								Margin="0"
@@ -112,7 +113,7 @@
 					</Expander>
 
 					<!--  Rotate  -->
-					<Expander>
+					<Expander IsExpanded="{Binding ExpandRotationSliders}">
 						<Expander.Header>
 							<xivToolsWpf:MultiNumberBox
 								Margin="0"
@@ -184,7 +185,7 @@
 					</Expander>
 
 					<!--  Scale  -->
-					<Expander>
+					<Expander IsExpanded="{Binding ExpandScaleSliders}">
 						<Expander.Header>
 							<xivToolsWpf:MultiNumberBox
 								Margin="0"
