@@ -125,8 +125,8 @@ public class AutoPropertyNotifyService : ServiceBase
 					this.lastValues.TryAdd(property, null);
 				}
 
-				AlwaysNotifyAttribute? alwaysAtribute = property.GetCustomAttribute<AlwaysNotifyAttribute>();
-				if (alwaysAtribute != null)
+				AlwaysNotifyAttribute? alwaysAttribute = property.GetCustomAttribute<AlwaysNotifyAttribute>();
+				if (alwaysAttribute != null)
 				{
 					this.AlwaysProperties.Add(property);
 					this.lastValues.TryAdd(property, null);
