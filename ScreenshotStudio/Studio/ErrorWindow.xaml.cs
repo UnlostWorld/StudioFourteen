@@ -26,6 +26,12 @@ public partial class ErrorWindow : PanelWindow
 		}
 	}
 
+	public override Point SavedPosition
+	{
+		get => new Point(0.5, 0.5);
+		set { }
+	}
+
 	public static void Show(string message)
 	{
 		Task.Run(async () => await ShowAsync(message));

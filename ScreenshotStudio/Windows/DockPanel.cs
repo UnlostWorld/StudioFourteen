@@ -6,7 +6,7 @@ namespace ScreenshotStudio.Windows;
 using ScreenshotStudio.Utilities;
 using System.Windows;
 
-public class DockPanel : Panel
+public class DockPanel : PersistentPanel
 {
 	public static readonly DependencyProperty DockPositionProperty = DependencyProperty.Register(
 		nameof(DockPanel.DockPosition),

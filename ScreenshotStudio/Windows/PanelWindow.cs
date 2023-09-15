@@ -4,13 +4,14 @@
 namespace ScreenshotStudio.Windows;
 
 using FontAwesome.Sharp.Pro;
+using ScreenshotStudio.Utilities;
 using System;
 using System.Windows;
 using System.Windows.Input;
 using XivToolsWpf.Commands;
 using XivToolsWpf.Extensions;
 
-public class PanelWindow : Panel
+public class PanelWindow : PersistentPanel
 {
 	public static readonly DependencyProperty TitleIconProperty = DependencyProperty.Register(
 		nameof(PanelWindow.TitleIcon),
@@ -58,7 +59,33 @@ public class PanelWindow : Panel
 		set => this.SetValue(SubtitleProperty, value);
 	}
 
+	public virtual Point SavedPosition
+	{
+		get => this.GetPersistence<Point>();
+		set => this.SetPersistence(value);
+	}
+
+	public Point Position
+	{
+		get => XivWindow.GetPosition(this);
+		set => XivWindow.SetPosition(this, value);
+	}
+
 	protected override Style GetDefaultStyle() => (Style)this.FindResource("PanelWindowStyle");
+
+	protected override void OnOpened()
+	{
+		if (this.SavedPosition.X != 0 && this.SavedPosition.Y != 0)
+			this.Position = this.SavedPosition;
+
+		base.OnOpened();
+	}
+
+	protected override void OnClosed()
+	{
+		base.OnClosed();
+		this.SavedPosition = this.Position;
+	}
 }
 
 public class PanelWindowAction

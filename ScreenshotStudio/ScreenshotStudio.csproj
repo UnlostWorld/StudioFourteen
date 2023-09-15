@@ -49,6 +49,7 @@
 	<ItemGroup>
 		<None Include="$(DalamudLibPath)\..\..\..\dalamud.boot.log" Link="dalamud.boot.log" />
 		<None Include="$(DalamudLibPath)\..\..\..\dalamud.log" Link="dalamud.log" />
+		<None Include="$(DalamudLibPath)\..\..\..\pluginConfigs\ScreenshotStudio.json" Link="config.json" />
 	</ItemGroup>
 
 	<ItemGroup>

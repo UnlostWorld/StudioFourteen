@@ -78,6 +78,16 @@ public static class XivWindow
 		}
 	}
 
+	public static Point GetPosition(Window wnd)
+	{
+		Rect xivSize = XivWindow.Size;
+
+		double l = (wnd.Left - xivSize.Left) / (xivSize.Width - wnd.ActualWidth);
+		double t = (wnd.Top - xivSize.Top) / (xivSize.Height - wnd.ActualHeight);
+
+		return new Point(l, t);
+	}
+
 	[DllImport("user32.dll", SetLastError = true)]
 	private static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
 
