@@ -10,6 +10,7 @@ namespace ScreenshotStudio.Studio;
 using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.Havok;
+using Newtonsoft.Json.Linq;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Structs;
@@ -129,7 +130,17 @@ public partial class PoseWindow : ActorWindow
 	public bool IsBonesWindowOpen
 	{
 		get => this.Services.Panels.GetIsOpen<BoneWindow>();
-		set => this.Services.Panels.SetIsOpen<BoneWindow>(value);
+		set
+		{
+			this.Services.Panels.SetIsOpen<BoneWindow>(value);
+			this.SavedIsBonesWindowOpen = value;
+		}
+	}
+
+	public bool SavedIsBonesWindowOpen
+	{
+		get => this.GetPersistence<bool>();
+		set => this.SetPersistence(value);
 	}
 
 	[AutoNotify]
@@ -309,6 +320,13 @@ public partial class PoseWindow : ActorWindow
 		}
 	}
 
+	protected override void OnOpened()
+	{
+		base.OnOpened();
+
+		this.IsBonesWindowOpen = this.SavedIsBonesWindowOpen;
+	}
+
 	protected override void OnClosed()
 	{
 		this.PosingEnabled = false;
@@ -322,7 +340,7 @@ public partial class PoseWindow : ActorWindow
 		this.setSkeletonHook.Dispose();
 		this.bustHook?.Dispose();
 
-		this.IsBonesWindowOpen = false;
+		this.Services.Panels.SetIsOpen<BoneWindow>(false);
 
 		base.OnClosed();
 	}

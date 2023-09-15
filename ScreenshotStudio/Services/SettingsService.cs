@@ -37,6 +37,9 @@ public class Settings : IPluginConfiguration
 
 	public void Save()
 	{
-		DalamudServices.PluginInterface.SavePluginConfig(this);
+		lock (this)
+		{
+			DalamudServices.PluginInterface.SavePluginConfig(this);
+		}
 	}
 }

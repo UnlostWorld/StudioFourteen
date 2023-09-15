@@ -44,15 +44,17 @@ public class PersistentPanel : Panel
 	{
 		try
 		{
-			string persistenceId = this.panelId + "_" + id;
+			this.Dispatcher.Invoke(() =>
+			{
+				string persistenceId = this.panelId + "_" + id;
 
-			if (!Settings.Current.PanelPersistence.ContainsKey(persistenceId))
-				Settings.Current.PanelPersistence.Add(persistenceId, string.Empty);
+				if (!Settings.Current.PanelPersistence.ContainsKey(persistenceId))
+					Settings.Current.PanelPersistence.Add(persistenceId, string.Empty);
 
-			Settings.Current.PanelPersistence[persistenceId] = JsonConvert.SerializeObject(value);
+				Settings.Current.PanelPersistence[persistenceId] = JsonConvert.SerializeObject(value);
+			});
+
 			Settings.Current.Save();
-
-			this.Log.Information($" Save {persistenceId} - {Settings.Current.PanelPersistence[persistenceId]}");
 		}
 		catch (Exception ex)
 		{
