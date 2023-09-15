@@ -3,45 +3,96 @@
 
 namespace ScreenshotStudio.Studio.Pose;
 
+using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
+using ScreenshotStudio.GameData.Excel;
+using ScreenshotStudio.Services;
+using ScreenshotStudio.Structs;
+using System.ComponentModel;
+using System.Windows;
 using System.Windows.Controls;
 
-public partial class PoseGuiView : UserControl
+public partial class PoseGuiView : UserControl, IAutoNotify
 {
+	private BoneWindow? window;
+
 	public PoseGuiView()
 	{
 		this.InitializeComponent();
 		this.ContentArea.DataContext = this;
+
+		this.Loaded += this.OnLoaded;
+		this.Unloaded += this.OnUnloaded;
 	}
 
+	public event PropertyChangedEventHandler? PropertyChanged;
+
 	// TODO: this might be better as a setting, or a value per actor
-	public bool FlipSides { get; set; }
+	[AutoNotify] public bool FlipSides { get; set; }
 
-	public bool HasTail => true;
+	[AutoNotify] public bool IsValid => this.window != null && this.window.HasValidTarget;
+	[AutoNotify] public bool HasTail => this.IsMiqote || this.IsAuRa || this.IsHrothgar || this.IsIVCS;
+	[AutoNotify] public unsafe bool IsCustomFace => this.IsMiqote || this.IsHrothgar;
+	[AutoNotify] public unsafe bool IsMiqote => !this.IsValid ? false : this.Customize.Race == Race.RaceRows.Miqote;
+	[AutoNotify] public unsafe bool IsViera => !this.IsValid ? false : this.Customize.Race == Race.RaceRows.Viera;
+	[AutoNotify] public unsafe bool IsAuRa => !this.IsValid ? false : this.Customize.Race == Race.RaceRows.AuRa;
+	[AutoNotify] public unsafe bool IsElezen => !this.IsValid ? false : this.Customize.Race == Race.RaceRows.Elezen;
+	[AutoNotify] public unsafe bool IsHrothgar => !this.IsValid ? false : this.Customize.Race == Race.RaceRows.Hrothgar;
+	[AutoNotify] public unsafe bool HasTailOrEars => this.IsViera || this.HasTail;
+	[AutoNotify] public unsafe bool IsEars01 => this.IsViera && this.Customize.TailEarsType <= 1;
+	[AutoNotify] public unsafe bool IsEars02 => this.IsViera && this.Customize.TailEarsType == 2;
+	[AutoNotify] public unsafe bool IsEars03 => this.IsViera && this.Customize.TailEarsType == 3;
+	[AutoNotify] public unsafe bool IsEars04 => this.IsViera && this.Customize.TailEarsType == 4;
+	[AutoNotify] public unsafe bool IsIVCS { get; private set; }
 
-	public bool IsCustomFace => false; // this.Actor == null ? false : this.IsMiqote || this.IsHrothgar;
-	public bool IsMiqote => false; // this.Actor?.Customize?.RaceId == ActorCustomizeMemory.Races.Miqote;
-	public bool IsViera => false; // this.Actor?.Customize?.RaceId == ActorCustomizeMemory.Races.Viera;
-	public bool IsElezen => false; // this.Actor?.Customize?.RaceId == ActorCustomizeMemory.Races.Elezen;
-	public bool IsHrothgar => false; // this.Actor?.Customize?.RaceId == ActorCustomizeMemory.Races.Hrothgar;
-	public bool HasTailOrEars => this.IsViera || this.HasTail;
-	public bool IsEars01 => false; // this.IsViera && this.Actor?.Customize?.TailEarsType <= 1;
-	public bool IsEars02 => false; // this.IsViera && this.Actor?.Customize?.TailEarsType == 2;
-	public bool IsEars03 => false; // this.IsViera && this.Actor?.Customize?.TailEarsType == 3;
-	public bool IsEars04 => false; // this.IsViera && this.Actor?.Customize?.TailEarsType == 4;
-	public bool IsIVCS => false; // this.Actor?.ModelObject?.Skeleton?.GetBone("iv_ko_c_l") != null;
-
-	public bool IsVieraEarsFlop
+	[AutoNotify]
+	public unsafe bool IsVieraEarsFlop
 	{
 		get
 		{
-			/*if (this.IsViera && this.Actor?.Customize?.Gender == ActorCustomizeMemory.Genders.Feminine && this.Actor?.Customize?.TailEarsType == 3)
+			if (!this.IsValid)
+				return false;
+
+			if (this.IsViera && this.Actor->DrawData.Customize.Gender == Genders.Feminine
+				&& this.Actor->DrawData.Customize.TailEarsType == 3)
 				return true;
 
-			if (this.IsViera && this.Actor?.Customize?.Gender == ActorCustomizeMemory.Genders.Masculine && this.Actor?.Customize?.TailEarsType == 2)
+			if (this.IsViera && this.Actor->DrawData.Customize.Gender == Genders.Masculine
+				&& this.Actor->DrawData.Customize.TailEarsType == 2)
 				return true;
 
-			return false;*/
 			return false;
 		}
+	}
+
+	protected unsafe Actor* Actor => this.window == null ? default : this.window.Actor;
+	protected unsafe ref Customize Customize => ref this.Actor->DrawData.Customize;
+
+	public unsafe void OnSkeletonChanged(Skeleton* skeleton)
+	{
+		this.Dispatcher.Invoke(() =>
+		{
+			this.IsIVCS = BoneCollection.Search(skeleton, "iv_ko_c_l") != null;
+		});
+	}
+
+	public void NotifyPropertyChanged(string propertyName)
+	{
+		this.PropertyChanged?.Invoke(this, new(propertyName));
+	}
+
+	public bool ShouldTickAutoProperties()
+	{
+		return this.IsValid;
+	}
+
+	private void OnLoaded(object sender, RoutedEventArgs e)
+	{
+		this.window = this.FindParent<BoneWindow>();
+		AutoPropertyNotifyService.Register(this);
+	}
+
+	private void OnUnloaded(object sender, RoutedEventArgs e)
+	{
+		AutoPropertyNotifyService.Remove(this);
 	}
 }

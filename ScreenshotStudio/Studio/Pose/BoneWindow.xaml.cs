@@ -19,7 +19,7 @@ public partial class BoneWindow : ActorWindow
 	public unsafe Skeleton* Skeleton => this.Actor->Model->Skeleton;
 
 	[AlwaysNotify]
-	public bool ShouldShow => this.Services.Studio.IsOpenAndInGPose && this.HasValidTarget;
+	public bool ShouldShow => this.Services.Studio.IsOpenAndInGPose;
 
 	protected PoseWindow? PoseWindow => this.Services.Panels.Get<PoseWindow>();
 
@@ -96,10 +96,9 @@ public partial class BoneWindow : ActorWindow
 	{
 		while(this.IsOpen)
 		{
-			await Task.Delay(100);
-
 			try
 			{
+				await Task.Delay(100);
 				this.CheckSkeleton();
 			}
 			catch(Exception ex)
@@ -114,16 +113,27 @@ public partial class BoneWindow : ActorWindow
 		if (!this.HasValidTarget)
 			return;
 
+		if (this.Actor->RenderMode != Structs.RenderMode.Draw)
+			return;
+
 		if (this.oldSkeleton != this.Skeleton)
 		{
 			this.oldSkeleton = this.Skeleton;
 
-			foreach(BoneView boneView in this.BoneViews)
+			try
 			{
-				boneView.OnSkeletonChanged();
-			}
+				this.Gui.OnSkeletonChanged(this.Skeleton);
+				this.List.OnSkeletonChanged(this.Skeleton);
 
-			this.List.OnSkeletonChanged(this.Skeleton);
+				foreach (BoneView boneView in this.BoneViews)
+				{
+					boneView.OnSkeletonChanged();
+				}
+			}
+			catch(Exception ex)
+			{
+				this.Log.Error(ex, "Error updating skeleton");
+			}
 		}
 	}
 }

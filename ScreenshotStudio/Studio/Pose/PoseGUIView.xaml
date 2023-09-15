@@ -8,6 +8,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:sys="clr-namespace:System;assembly=mscorlib"
 	d:Background="{DynamicResource BackgroundBrush}"
+	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	d:DesignHeight="512"
 	d:DesignWidth="800"
 	mc:Ignorable="d">
@@ -21,7 +22,8 @@
 
 	<Grid
 		x:Name="ContentArea"
-		Margin="0,-4,0,0">
+		Margin="0,-4,0,0"
+		IsEnabled="{Binding IsValid}">
 
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
@@ -751,7 +753,7 @@
 								Height="250"
 								IsHitTestVisible="False"
 								Opacity="{DynamicResource ImageOpacity}"
-								Source=".pack://application:,,,/ScreenshotStudio;component/Assets/PoseCharacterVieraEarsStraightBackground.png"
+								Source="pack://application:,,,/ScreenshotStudio;component/Assets/PoseCharacterVieraEarsStraightBackground.png"
 								Stretch="Uniform" />
 
 							<local:BoneView

@@ -9,14 +9,14 @@
 	xmlns:xivToolsWpf="clr-namespace:XivToolsWpf.Controls;assembly=XivToolsWpf"
 	Title="{DynamicResource BonesGui}"
 	Width="800"
-	Height="512"
+	Height="550"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	IsShown="{Binding ShouldShow}"
 	Subtitle="{Binding ActorName}"
 	TitleIcon="Bone"
 	mc:Ignorable="d">
-	<Grid>
+	<Grid IsEnabled="{Binding HasValidTarget}">
 		<TabControl>
 			<TabItem Header="{DynamicResource PoseGui}">
 				<local:PoseGuiView x:Name="Gui" />

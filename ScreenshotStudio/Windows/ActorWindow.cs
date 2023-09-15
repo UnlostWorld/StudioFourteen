@@ -11,8 +11,21 @@ using ScreenshotStudio.Structs;
 
 public abstract class ActorWindow : PanelWindow
 {
-	[AlwaysNotify] public unsafe bool HasValidTarget => this.Actor != null;
 	[AlwaysNotify] public unsafe string? ActorName => this.HasValidTarget ? this.Actor->Name : "Nobody";
+
+	[AlwaysNotify] public unsafe bool HasValidTarget
+	{
+		get
+		{
+			if (this.Actor == null)
+				return false;
+
+			if (this.Actor->RenderMode != RenderMode.Draw)
+				return false;
+
+			return true;
+		}
+	}
 
 	/// <summary>
 	///  Gets a pointer to the player, the players target, or the gpose target.

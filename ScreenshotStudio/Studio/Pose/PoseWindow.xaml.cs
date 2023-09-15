@@ -176,6 +176,9 @@ public partial class PoseWindow : ActorWindow
 	{
 		get
 		{
+			if (!this.HasValidTarget)
+				return default;
+
 			if (this.CanPose && this.selectedBones != null)
 			{
 				return this.selectedBones.Transform;
