@@ -18,6 +18,9 @@ public partial class BoneWindow : ActorWindow
 
 	public unsafe Skeleton* Skeleton => this.Actor->Model->Skeleton;
 
+	[AlwaysNotify]
+	public bool ShouldShow => this.Services.Studio.IsOpenAndInGPose && this.HasValidTarget;
+
 	protected PoseWindow? PoseWindow => this.Services.Panels.Get<PoseWindow>();
 
 	public unsafe void Select(string boneName, bool add)
@@ -108,6 +111,9 @@ public partial class BoneWindow : ActorWindow
 
 	private unsafe void CheckSkeleton()
 	{
+		if (!this.HasValidTarget)
+			return;
+
 		if (this.oldSkeleton != this.Skeleton)
 		{
 			this.oldSkeleton = this.Skeleton;

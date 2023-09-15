@@ -12,6 +12,7 @@
 	Height="512"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
+	IsShown="{Binding ShouldShow}"
 	Subtitle="{Binding ActorName}"
 	TitleIcon="Bone"
 	mc:Ignorable="d">
