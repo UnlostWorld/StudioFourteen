@@ -60,8 +60,15 @@ public static class XivWindow
 
 		WindowInteropHelper wndInterop = new(wnd);
 
-		int x = (int)((XivWindow.Size.Width * position.X) - (wnd.ActualWidth * position.X));
-		int y = (int)((XivWindow.Size.Height * position.Y) - (wnd.ActualHeight * position.Y));
+		int x = (int)(XivWindow.Size.Width * position.X);
+		int y = (int)(XivWindow.Size.Height * position.Y);
+
+		if (wnd.SizeToContent == SizeToContent.Manual)
+		{
+			x = (int)((XivWindow.Size.Width * position.X) - (wnd.ActualWidth * position.X));
+			y = (int)((XivWindow.Size.Height * position.Y) - (wnd.ActualHeight * position.Y));
+		}
+
 		int w = 0;
 		int h = 0;
 
@@ -82,8 +89,14 @@ public static class XivWindow
 	{
 		Rect xivSize = XivWindow.Size;
 
-		double l = (wnd.Left - xivSize.Left) / (xivSize.Width - wnd.ActualWidth);
-		double t = (wnd.Top - xivSize.Top) / (xivSize.Height - wnd.ActualHeight);
+		double l = (wnd.Left - xivSize.Left) / xivSize.Width;
+		double t = (wnd.Top - xivSize.Top) / xivSize.Height;
+
+		if (wnd.SizeToContent == SizeToContent.Manual)
+		{
+			l = (wnd.Left - xivSize.Left) / (xivSize.Width - wnd.ActualWidth);
+			t = (wnd.Top - xivSize.Top) / (xivSize.Height - wnd.ActualHeight);
+		}
 
 		return new Point(l, t);
 	}
