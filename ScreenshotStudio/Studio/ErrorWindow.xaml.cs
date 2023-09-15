@@ -26,9 +26,9 @@ public partial class ErrorWindow : PanelWindow
 		}
 	}
 
-	public override Point SavedPosition
+	public override Point? SavedPosition
 	{
-		get => new Point(0.5, 0.5);
+		get => null;
 		set { }
 	}
 

@@ -4,11 +4,11 @@
 namespace ScreenshotStudio.Windows;
 
 using ScreenshotStudio.Services;
-using Newtonsoft.Json;
 using System;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
 using ScreenshotStudio.Studio;
+using ScreenshotStudio.Serialization;
 
 public class PersistentPanel : Panel
 {
@@ -37,7 +37,7 @@ public class PersistentPanel : Panel
 			if (!Settings.Current.PanelPersistence.TryGetValue(persistenceId, out string? json) || json == null)
 				return default;
 
-			T? value = JsonConvert.DeserializeObject<T>(json);
+			T? value = Serializer.Deserialize<T>(json);
 			this.persistenceCache.Add(id, value);
 			return value;
 		}
@@ -48,12 +48,12 @@ public class PersistentPanel : Panel
 		}
 	}
 
-	public void SetPersistence(object value, [CallerMemberName] string id = "")
+	public void SetPersistence(object? value, [CallerMemberName] string id = "")
 	{
 		this.SetPersistence(id, value);
 	}
 
-	public void SetPersistence(string id, object value)
+	public void SetPersistence(string id, object? value)
 	{
 		try
 		{
@@ -69,10 +69,20 @@ public class PersistentPanel : Panel
 			{
 				string persistenceId = this.panelId + "_" + id;
 
-				if (!Settings.Current.PanelPersistence.ContainsKey(persistenceId))
-					Settings.Current.PanelPersistence.Add(persistenceId, string.Empty);
+				if (value != null)
+				{
+					if (!Settings.Current.PanelPersistence.ContainsKey(persistenceId))
+						Settings.Current.PanelPersistence.Add(persistenceId, string.Empty);
 
-				Settings.Current.PanelPersistence[persistenceId] = JsonConvert.SerializeObject(value);
+					Settings.Current.PanelPersistence[persistenceId] = Serializer.Serialize(value);
+				}
+				else
+				{
+					if (Settings.Current.PanelPersistence.ContainsKey(persistenceId))
+					{
+						Settings.Current.PanelPersistence.Remove(persistenceId);
+					}
+				}
 			});
 
 			Settings.Current.Save();

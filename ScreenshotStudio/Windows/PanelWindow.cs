@@ -59,9 +59,9 @@ public class PanelWindow : PersistentPanel
 		set => this.SetValue(SubtitleProperty, value);
 	}
 
-	public virtual Point SavedPosition
+	public virtual Point? SavedPosition
 	{
-		get => this.GetPersistence<Point>();
+		get => this.GetPersistence<Point?>();
 		set => this.SetPersistence(value);
 	}
 
@@ -75,8 +75,8 @@ public class PanelWindow : PersistentPanel
 
 	protected override void OnOpened()
 	{
-		if (this.SavedPosition.X != 0 && this.SavedPosition.Y != 0)
-			this.Position = this.SavedPosition;
+		if (this.SavedPosition != null)
+			this.Position = (Point)this.SavedPosition;
 
 		base.OnOpened();
 	}
