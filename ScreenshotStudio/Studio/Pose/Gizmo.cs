@@ -1,16 +1,13 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-namespace ScreenshotStudio.Studio.Pose;
+﻿namespace ScreenshotStudio.Studio.Pose;
 using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
-using XivToolsWpf.Meida3D.Lines;
-using XivToolsWpf.Meida3D;
-using XivToolsWpf.DependencyProperties;
+using WpfUtils.Meida3D.Lines;
+using WpfUtils.Meida3D;
+using WpfUtils.DependencyProperties;
 using FFXIVClientStructs.Havok;
 using ScreenshotStudio.Structs.Extensions;
 using System.ComponentModel;
@@ -18,7 +15,7 @@ using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Structs;
 using System.Threading;
 using System.Threading.Tasks;
-using XivToolsWpf;
+using WpfUtils;
 using Serilog;
 
 public class Gizmo : UserControl

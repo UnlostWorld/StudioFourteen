@@ -1,14 +1,11 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-namespace ScreenshotStudio.Studio.Pose;
+﻿namespace ScreenshotStudio.Studio.Pose;
 
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml.Linq;
-using XivToolsWpf.DependencyProperties;
+using WpfUtils.DependencyProperties;
 
 public partial class BoneView : UserControl, INotifyPropertyChanged
 {

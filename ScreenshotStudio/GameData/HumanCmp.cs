@@ -1,7 +1,4 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-namespace Anamnesis.Actor.Utilities;
+﻿namespace Anamnesis.Actor.Utilities;
 
 using System;
 using System.Collections.Generic;

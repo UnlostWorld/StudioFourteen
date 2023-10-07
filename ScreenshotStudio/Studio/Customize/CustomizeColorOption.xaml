@@ -2,9 +2,9 @@
 	x:Class="ScreenshotStudio.Studio.Customize.CustomizeColorOption"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:behaviours="clr-namespace:XivToolsWpf.Behaviours;assembly=XivToolsWpf"
-	xmlns:controls="clr-namespace:XivToolsWpf.Controls;assembly=XivToolsWpf"
-	xmlns:converters="clr-namespace:XivToolsWpf.Converters;assembly=XivToolsWpf"
+	xmlns:behaviours="clr-namespace:WpfUtils.Behaviours;assembly=wpfUtils"
+	xmlns:controls="clr-namespace:WpfUtils.Controls;assembly=wpfUtils"
+	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="clr-namespace:ScreenshotStudio.Studio.Customize"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -15,7 +15,7 @@
 	<UserControl.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="pack://application:,,,/XivToolsWpf;component/Styles/ComboBoxStyles.xaml" />
+				<ResourceDictionary Source="pack://application:,,,/wpfUtils;component/Styles/ComboBoxStyles.xaml" />
 			</ResourceDictionary.MergedDictionaries>
 
 			<BooleanToVisibilityConverter x:Key="B2V" />
@@ -35,7 +35,7 @@
 			Grid.Column="1"
 			Margin="0"
 			CornerRadius="{Binding RightElementCornerRadius}"
-			Style="{DynamicResource XivToolsControlBorder}" />
+			Style="{DynamicResource WpfUtilsControlBorder}" />
 
 		<ComboBox
 			Grid.Column="0"
@@ -44,7 +44,7 @@
 			Foreground="Black"
 			ItemsSource="{Binding Menu.Options}"
 			SelectedItem="{Binding Option}"
-			Style="{DynamicResource XivToolsComboBoxNoBorder}">
+			Style="{DynamicResource WpfUtilsComboBoxNoBorder}">
 
 			<ComboBox.Template>
 				<ControlTemplate TargetType="{x:Type ComboBox}">
@@ -113,7 +113,7 @@
 
 								<Border
 									Margin="3"
-									Style="{DynamicResource XivToolsControlBorder}" />
+									Style="{DynamicResource WpfUtilsControlBorder}" />
 
 								<ScrollViewer
 									MinHeight="1"
@@ -148,7 +148,7 @@
 
 			<ComboBox.ItemContainerStyle>
 				<Style
-					BasedOn="{StaticResource XivToolsComboBoxItem}"
+					BasedOn="{StaticResource WpfUtilsComboBoxItem}"
 					TargetType="{x:Type ComboBoxItem}">
 					<Setter Property="Padding" Value="0" />
 					<Setter Property="Margin" Value="0" />

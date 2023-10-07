@@ -1,7 +1,4 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-namespace ScreenshotStudio.Services;
+﻿namespace ScreenshotStudio.Services;
 
 using System;
 using System.Collections.Generic;
@@ -9,8 +6,8 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using XivToolsWpf.Converters;
-using XivToolsWpf.Extensions;
+using WpfUtils.Converters;
+using WpfUtils.Extensions;
 
 public class AutoPropertyNotifyService : ServiceBase
 {

@@ -1,7 +1,4 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-namespace Anamnesis.Utils;
+﻿namespace Anamnesis.Utils;
 
 using System;
 using System.Security.Cryptography;

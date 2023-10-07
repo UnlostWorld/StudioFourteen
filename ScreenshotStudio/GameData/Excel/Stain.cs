@@ -1,14 +1,11 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-namespace ScreenshotStudio.GameData.Excel;
+﻿namespace ScreenshotStudio.GameData.Excel;
 
 using System;
 using Lumina.Data;
 using Lumina.Excel;
 using Lumina.Text;
 using ScreenshotStudio.GameData.Sheets;
-using XivToolsWpf;
+using WpfUtils;
 using MediaColor = System.Windows.Media.Color;
 
 [Sheet("Stain", 0x97c471bd)]

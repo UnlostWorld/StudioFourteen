@@ -1,12 +1,9 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-namespace ScreenshotStudio.Studio.Customize;
+﻿namespace ScreenshotStudio.Studio.Customize;
 
 using ScreenshotStudio.GameData.Excel;
 using System.ComponentModel;
 using System.Windows.Controls;
-using XivToolsWpf.DependencyProperties;
+using WpfUtils.DependencyProperties;
 
 public partial class CustomizeIconOption : UserControl, INotifyPropertyChanged
 {

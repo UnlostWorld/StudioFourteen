@@ -1,7 +1,4 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-namespace ScreenshotStudio.Studio;
+﻿namespace ScreenshotStudio.Studio;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using ScreenshotStudio.Library;

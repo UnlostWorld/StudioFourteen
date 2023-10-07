@@ -1,7 +1,4 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-namespace ScreenshotStudio.Studio.Customize;
+﻿namespace ScreenshotStudio.Studio.Customize;
 
 using ScreenshotStudio.GameData;
 using ScreenshotStudio.GameData.Excel;
@@ -10,7 +7,7 @@ using ScreenshotStudio.GameData.Sheets;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Controls;
-using XivToolsWpf.DependencyProperties;
+using WpfUtils.DependencyProperties;
 
 using FacialFeatures = Structs.Customize.FacialFeatures;
 

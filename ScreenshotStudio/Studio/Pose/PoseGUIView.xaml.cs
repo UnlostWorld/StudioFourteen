@@ -1,7 +1,4 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-namespace ScreenshotStudio.Studio.Pose;
+﻿namespace ScreenshotStudio.Studio.Pose;
 
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using ScreenshotStudio.GameData.Excel;

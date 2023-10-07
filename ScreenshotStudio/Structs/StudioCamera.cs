@@ -1,12 +1,9 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-namespace ScreenshotStudio.Structs;
+﻿namespace ScreenshotStudio.Structs;
 
 using FFXIVClientStructs.Havok;
 using ScreenshotStudio.Structs.Extensions;
 using System.Runtime.InteropServices;
-using XivToolsWpf.Meida3D;
+using WpfUtils.Meida3D;
 
 [StructLayout(LayoutKind.Explicit, Size = 688)]
 public struct StudioCamera // : FFXIVClientStructs.FFXIV.Client.Game.Camera

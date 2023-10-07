@@ -1,13 +1,10 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-namespace ScreenshotStudio.GameData.Excel;
+﻿namespace ScreenshotStudio.GameData.Excel;
 
 using Lumina.Data;
 using Lumina.Excel;
 using ScreenshotStudio.Library;
 using ScreenshotStudio.Structs;
-using XivToolsWpf;
+using WpfUtils;
 
 [Sheet("ENpcResident", 0xf74fa88c)]
 public class ResidentNpc : LibraryExcelRow, IActorAppearance

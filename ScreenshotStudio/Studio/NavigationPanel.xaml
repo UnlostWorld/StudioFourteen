@@ -3,12 +3,12 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:ScreenshotStudio.Controls"
-	xmlns:converters="clr-namespace:XivToolsWpf.Converters;assembly=XivToolsWpf"
+	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="clr-namespace:ScreenshotStudio.Studio"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
-	xmlns:xivToolsWpf="clr-namespace:XivToolsWpf.Controls;assembly=XivToolsWpf"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="NavigationPanel"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	DockPosition="0,0"
@@ -47,11 +47,11 @@
 
 						<Border
 							Margin="3"
-							Style="{DynamicResource XivToolsControlBorder}">
+							Style="{DynamicResource WpfUtilsControlBorder}">
 							<StackPanel>
 								<StackPanel.Resources>
 									<Style
-										BasedOn="{StaticResource XivToolsToggleButton}"
+										BasedOn="{StaticResource WpfUtilsToggleButton}"
 										TargetType="{x:Type ToggleButton}">
 										<Setter Property="Width" Value="32" />
 										<Setter Property="Height" Value="32" />
@@ -76,11 +76,11 @@
 									Height="32"
 									IsChecked="{Binding IsInGPose}"
 									ToolTip="{DynamicResource ToggleGPose}">
-									<!--<xivToolsWpf:IconBlock Icon="Video">
-										<xivToolsWpf:IconBlock.LayoutTransform>
+									<!--<wpfUtils:IconBlock Icon="Video">
+										<wpfUtils:IconBlock.LayoutTransform>
 											<ScaleTransform ScaleX="-1" ScaleY="0.8" />
-										</xivToolsWpf:IconBlock.LayoutTransform>
-									</xivToolsWpf:IconBlock>-->
+										</wpfUtils:IconBlock.LayoutTransform>
+									</wpfUtils:IconBlock>-->
 									<controls:XivTexImage
 										Margin="3"
 										Path="ui/icon/061000/061546.tex" />
@@ -93,14 +93,14 @@
 									IsChecked="{Binding IsLibraryOpen}"
 									IsEnabled="False"
 									ToolTip="{DynamicResource Library}">
-									<xivToolsWpf:IconBlock Icon="Books" />
+									<wpfUtils:IconBlock Icon="Books" />
 								</ToggleButton>
 
 								<ToggleButton
 									x:Name="ZoneButton"
 									IsChecked="{Binding IsZoneOpen}"
 									ToolTip="{DynamicResource Zone}">
-									<xivToolsWpf:IconBlock Icon="CloudMoonRain" />
+									<wpfUtils:IconBlock Icon="CloudMoonRain" />
 								</ToggleButton>
 
 								<ToggleButton
@@ -108,7 +108,7 @@
 									IsChecked="{Binding IsCameraOpen}"
 									IsEnabled="False"
 									ToolTip="{DynamicResource Camera}">
-									<xivToolsWpf:IconBlock Icon="CameraMovie" />
+									<wpfUtils:IconBlock Icon="CameraMovie" />
 								</ToggleButton>
 
 								<Line />
@@ -117,14 +117,14 @@
 									x:Name="CustomizeButton"
 									IsChecked="{Binding IsCustomizeOpen}"
 									ToolTip="{DynamicResource Customize}">
-									<xivToolsWpf:IconBlock Icon="UserEdit" />
+									<wpfUtils:IconBlock Icon="UserEdit" />
 								</ToggleButton>
 
 								<ToggleButton
 									x:Name="GearButton"
 									IsChecked="{Binding IsGearOpen}"
 									ToolTip="{DynamicResource Gear}">
-									<xivToolsWpf:IconBlock Icon="HelmetBattle" />
+									<wpfUtils:IconBlock Icon="HelmetBattle" />
 								</ToggleButton>
 
 								<ToggleButton
@@ -132,14 +132,14 @@
 									IsChecked="{Binding IsShadersOpen}"
 									IsEnabled="False"
 									ToolTip="{DynamicResource ShaderParameters}">
-									<xivToolsWpf:IconBlock Icon="PaintBrush" />
+									<wpfUtils:IconBlock Icon="PaintBrush" />
 								</ToggleButton>
 
 								<ToggleButton
 									x:Name="PoseButton"
 									IsChecked="{Binding IsPoseOpen}"
 									ToolTip="{DynamicResource Pose}">
-									<xivToolsWpf:IconBlock Icon="Running" />
+									<wpfUtils:IconBlock Icon="Running" />
 								</ToggleButton>
 
 								<Line />
@@ -149,7 +149,7 @@
 									IsChecked="{Binding IsSettingsOpen}"
 									IsEnabled="False"
 									ToolTip="{DynamicResource Settings}">
-									<xivToolsWpf:IconBlock Icon="cogs" />
+									<wpfUtils:IconBlock Icon="cogs" />
 								</ToggleButton>
 
 

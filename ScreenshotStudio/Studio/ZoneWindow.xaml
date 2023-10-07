@@ -8,7 +8,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:structs="clr-namespace:ScreenshotStudio.Structs"
 	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
-	xmlns:xivToolsWpf="clr-namespace:XivToolsWpf.Controls;assembly=XivToolsWpf"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="Zone"
 	Width="350"
 	Height="150"
@@ -30,7 +30,7 @@
 				ToolTipService.ShowOnDisabled="True">
 				<Button.Style>
 					<Style
-						BasedOn="{StaticResource XivToolsButton}"
+						BasedOn="{StaticResource WpfUtilsButton}"
 						TargetType="{x:Type Button}">
 						<Style.Triggers>
 							<DataTrigger
@@ -44,7 +44,7 @@
 												<ColumnDefinition />
 											</Grid.ColumnDefinitions>
 
-											<xivToolsWpf:IconBlock
+											<wpfUtils:IconBlock
 												Grid.Column="0"
 												FontSize="32"
 												Icon="TriangleExclamation" />

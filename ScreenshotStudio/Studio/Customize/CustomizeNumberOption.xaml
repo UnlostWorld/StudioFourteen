@@ -2,7 +2,7 @@
 	x:Class="ScreenshotStudio.Studio.Customize.CustomizeNumberOption"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:XivToolsWpf="clr-namespace:XivToolsWpf.Controls;assembly=XivToolsWpf"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=wpfUtils"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="clr-namespace:ScreenshotStudio.Studio.Customize"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -13,7 +13,7 @@
 	<UserControl.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="pack://application:,,,/XivToolsWpf;component/Styles/ListBoxStyles.xaml" />
+				<ResourceDictionary Source="pack://application:,,,/wpfUtils;component/Styles/ListBoxStyles.xaml" />
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</UserControl.Resources>
@@ -28,7 +28,7 @@
 			Grid.Column="1"
 			Margin="1,0,0,0"
 			CornerRadius="0,6,6,0"
-			Style="{DynamicResource XivToolsControlBorder}">
+			Style="{DynamicResource WpfUtilsControlBorder}">
 
 			<ToggleButton
 				x:Name="ShowCustom"
@@ -36,7 +36,7 @@
 				Margin="0"
 				Background="Transparent"
 				IsChecked="{Binding ManualEntry}">
-				<XivToolsWpf:IconBlock
+				<wpfUtils:IconBlock
 					FontSize="10"
 					Icon="Pen" />
 			</ToggleButton>
@@ -45,7 +45,7 @@
 		<Border
 			Grid.Column="0"
 			CornerRadius="6,0,0,6"
-			Style="{DynamicResource XivToolsControlBorder}">
+			Style="{DynamicResource WpfUtilsControlBorder}">
 			<Grid>
 
 				<ListBox
@@ -60,7 +60,7 @@
 
 					<ListBox.Style>
 						<Style
-							BasedOn="{StaticResource XivToolsSwitchSelectorNoBorder}"
+							BasedOn="{StaticResource WpfUtilsSwitchSelectorNoBorder}"
 							TargetType="{x:Type ListBox}">
 							<Style.Triggers>
 								<DataTrigger
@@ -103,19 +103,19 @@
 					</ListBox.Style>
 				</ListBox>
 
-				<XivToolsWpf:NumberBox
+				<wpfUtils:NumberBox
 					Grid.Column="0"
 					Height="{Binding ActualHeight, ElementName=ListSelector}"
 					Margin="0"
 					BorderBrush="Transparent"
 					Buttons="True"
 					Value="{Binding Value}">
-					<XivToolsWpf:NumberBox.RenderTransform>
+					<wpfUtils:NumberBox.RenderTransform>
 						<TranslateTransform Y="28" />
-					</XivToolsWpf:NumberBox.RenderTransform>
+					</wpfUtils:NumberBox.RenderTransform>
 
-					<XivToolsWpf:NumberBox.Style>
-						<Style TargetType="{x:Type XivToolsWpf:NumberBox}">
+					<wpfUtils:NumberBox.Style>
+						<Style TargetType="{x:Type wpfUtils:NumberBox}">
 							<Style.Triggers>
 								<DataTrigger
 									Binding="{Binding ManualEntry}"
@@ -157,9 +157,9 @@
 								</DataTrigger>
 							</Style.Triggers>
 						</Style>
-					</XivToolsWpf:NumberBox.Style>
+					</wpfUtils:NumberBox.Style>
 
-				</XivToolsWpf:NumberBox>
+				</wpfUtils:NumberBox>
 
 			</Grid>
 

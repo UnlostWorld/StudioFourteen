@@ -1,7 +1,4 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-namespace ScreenshotStudio.Services;
+﻿namespace ScreenshotStudio.Services;
 
 using ScreenshotStudio.Windows;
 using System;

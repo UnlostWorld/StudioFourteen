@@ -2,7 +2,7 @@
 	x:Class="ScreenshotStudio.Studio.Pose.PoseMatrixView"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:converters="clr-namespace:XivToolsWpf.Converters;assembly=XivToolsWpf"
+	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="clr-namespace:ScreenshotStudio.Studio.Pose"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -24,7 +24,7 @@
 			x:Name="ContentArea"
 			Margin="3">
 
-			<Border Style="{DynamicResource XivToolsControlBorder}" />
+			<Border Style="{DynamicResource WpfUtilsControlBorder}" />
 
 			<StackPanel Margin="3,0">
 				<GroupBox>

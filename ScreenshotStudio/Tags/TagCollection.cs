@@ -1,7 +1,4 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-namespace ScreenshotStudio.Tags;
+﻿namespace ScreenshotStudio.Tags;
 
 using System.Collections;
 using System.Collections.Generic;

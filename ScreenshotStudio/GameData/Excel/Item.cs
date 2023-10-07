@@ -1,12 +1,9 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-namespace ScreenshotStudio.GameData.Excel;
+﻿namespace ScreenshotStudio.GameData.Excel;
 
 using Lumina.Data;
 using Lumina.Excel;
 using ScreenshotStudio.Structs;
-using XivToolsWpf;
+using WpfUtils;
 
 [Sheet("Item", 0x800968c9)]
 public class Item : LibraryExcelRow

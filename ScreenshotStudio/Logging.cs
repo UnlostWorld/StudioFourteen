@@ -1,7 +1,4 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-namespace ScreenshotStudio;
+﻿namespace ScreenshotStudio;
 
 using Dalamud.Logging;
 using ScreenshotStudio.Studio;
@@ -37,8 +34,8 @@ public static class Logging
 
 	public static void Init()
 	{
-		XivToolsWpf.Logging.Log.HandleMessage = XivtoolsWpfLog;
-		XivToolsWpf.Logging.Log.HandleError = XivtoolsWpfError;
+		WpfUtils.Logging.Log.HandleMessage = XivtoolsWpfLog;
+		WpfUtils.Logging.Log.HandleError = XivtoolsWpfError;
 	}
 
 	public static void XivtoolsWpfLog(string message) => Shared.Information(message);

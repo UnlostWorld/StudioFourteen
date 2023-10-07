@@ -1,7 +1,4 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-//// TitleEdit
+﻿//// TitleEdit
 //// https://github.com/lmcintyre/TitleEditPlugin/tree/main/TitleEdit
 //// https://github.com/lmcintyre/TitleEditPlugin/blob/main/TitleEdit/TitleEditAddressResolver.cs
 

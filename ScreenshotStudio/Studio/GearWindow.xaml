@@ -8,7 +8,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:structs="clr-namespace:ScreenshotStudio.Structs"
 	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
-	xmlns:xivToolsWpf="clr-namespace:XivToolsWpf.Controls;assembly=XivToolsWpf"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="{DynamicResource Gear}"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
@@ -64,7 +64,7 @@
 
 										<Border
 											Background="{TemplateBinding Background}"
-											Style="{DynamicResource XivToolsControlBorder}" />
+											Style="{DynamicResource WpfUtilsControlBorder}" />
 
 										<Grid Margin="2">
 
@@ -72,7 +72,7 @@
 												x:Name="HoverBackground"
 												CornerRadius="4"
 												Opacity="0"
-												Style="{DynamicResource XivToolsControlHoverBorder}"
+												Style="{DynamicResource WpfUtilsControlHoverBorder}"
 												Visibility="Collapsed" />
 
 											<Grid x:Name="IconHost">
@@ -180,7 +180,7 @@
 						</Button>
 
 
-						<xivToolsWpf:MultiNumberBox
+						<wpfUtils:MultiNumberBox
 							Grid.Row="1"
 							Grid.Column="1"
 							X="{Binding Set}"
@@ -199,7 +199,7 @@
 							<Border
 								Grid.ColumnSpan="2"
 								Height="26"
-								Style="{DynamicResource XivToolsControlBorder}" />
+								Style="{DynamicResource WpfUtilsControlBorder}" />
 
 							<Button
 								Grid.Column="0"
@@ -223,7 +223,7 @@
 								</Border>
 							</Button>
 
-							<xivToolsWpf:NumberBox
+							<wpfUtils:NumberBox
 								Grid.Column="1"
 								Maximum="255"
 								Minimum="0"

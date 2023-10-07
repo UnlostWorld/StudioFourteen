@@ -2,13 +2,13 @@
 	x:Class="ScreenshotStudio.Studio.PoseWindow"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:converters="clr-namespace:XivToolsWpf.Converters;assembly=XivToolsWpf"
+	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="clr-namespace:ScreenshotStudio.Studio"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:pose="clr-namespace:ScreenshotStudio.Studio.Pose"
 	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
-	xmlns:xivToolsWpf="clr-namespace:XivToolsWpf.Controls;assembly=XivToolsWpf"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="{DynamicResource Pose}"
 	Width="230"
 	VerticalAlignment="Top"
@@ -37,7 +37,7 @@
 						Width="198"
 						Height="198"
 						Margin="0,0,0,1">
-						<Border Style="{DynamicResource XivToolsControlBorder}" />
+						<Border Style="{DynamicResource WpfUtilsControlBorder}" />
 						<pose:Gizmo
 							RootRotation="{Binding RootRotation}"
 							Value="{Binding Rotation}" />
@@ -46,19 +46,19 @@
 					<!--  Translate  -->
 					<Expander IsExpanded="{Binding ExpandTranslationSliders}">
 						<Expander.Header>
-							<xivToolsWpf:MultiNumberBox
+							<wpfUtils:MultiNumberBox
 								Margin="0"
 								X="{Binding TranslationX}"
 								Y="{Binding TranslationY}"
 								Z="{Binding TranslationZ}">
-								<xivToolsWpf:MultiNumberBox.Prefix>
-									<xivToolsWpf:IconBlock
+								<wpfUtils:MultiNumberBox.Prefix>
+									<wpfUtils:IconBlock
 										Margin="6,1,2,0"
 										Foreground="{DynamicResource BackgroundLightBrush}"
 										Icon="Arrows"
 										ToolTip="{DynamicResource TransformT}" />
-								</xivToolsWpf:MultiNumberBox.Prefix>
-							</xivToolsWpf:MultiNumberBox>
+								</wpfUtils:MultiNumberBox.Prefix>
+							</wpfUtils:MultiNumberBox>
 
 						</Expander.Header>
 
@@ -80,7 +80,7 @@
 								Margin="3,0"
 								Style="{DynamicResource RightLabel}"
 								Text="X:" />
-							<xivToolsWpf:RelativeSlider
+							<wpfUtils:RelativeSlider
 								Grid.Row="0"
 								Grid.Column="1"
 								RelativeRange="5"
@@ -92,7 +92,7 @@
 								Margin="3,0"
 								Style="{DynamicResource RightLabel}"
 								Text="Y:" />
-							<xivToolsWpf:RelativeSlider
+							<wpfUtils:RelativeSlider
 								Grid.Row="1"
 								Grid.Column="1"
 								RelativeRange="5"
@@ -104,7 +104,7 @@
 								Margin="3,0"
 								Style="{DynamicResource RightLabel}"
 								Text="Z:" />
-							<xivToolsWpf:RelativeSlider
+							<wpfUtils:RelativeSlider
 								Grid.Row="2"
 								Grid.Column="1"
 								RelativeRange="5"
@@ -115,19 +115,19 @@
 					<!--  Rotate  -->
 					<Expander IsExpanded="{Binding ExpandRotationSliders}">
 						<Expander.Header>
-							<xivToolsWpf:MultiNumberBox
+							<wpfUtils:MultiNumberBox
 								Margin="0"
 								X="{Binding EulerRotationX}"
 								Y="{Binding EulerRotationY}"
 								Z="{Binding EulerRotationZ}">
-								<xivToolsWpf:MultiNumberBox.Prefix>
-									<xivToolsWpf:IconBlock
+								<wpfUtils:MultiNumberBox.Prefix>
+									<wpfUtils:IconBlock
 										Margin="6,1,2,0"
 										Foreground="{DynamicResource BackgroundLightBrush}"
 										Icon="Rotate"
 										ToolTip="{DynamicResource TransformR}" />
-								</xivToolsWpf:MultiNumberBox.Prefix>
-							</xivToolsWpf:MultiNumberBox>
+								</wpfUtils:MultiNumberBox.Prefix>
+							</wpfUtils:MultiNumberBox>
 
 						</Expander.Header>
 
@@ -149,7 +149,7 @@
 								Margin="3,0"
 								Style="{DynamicResource RightLabel}"
 								Text="X:" />
-							<xivToolsWpf:RelativeSlider
+							<wpfUtils:RelativeSlider
 								Grid.Row="0"
 								Grid.Column="1"
 								RelativeRange="180"
@@ -162,7 +162,7 @@
 								Margin="3,0"
 								Style="{DynamicResource RightLabel}"
 								Text="Y:" />
-							<xivToolsWpf:RelativeSlider
+							<wpfUtils:RelativeSlider
 								Grid.Row="1"
 								Grid.Column="1"
 								RelativeRange="180"
@@ -175,7 +175,7 @@
 								Margin="3,0"
 								Style="{DynamicResource RightLabel}"
 								Text="Z:" />
-							<xivToolsWpf:RelativeSlider
+							<wpfUtils:RelativeSlider
 								Grid.Row="2"
 								Grid.Column="1"
 								RelativeRange="180"
@@ -187,19 +187,19 @@
 					<!--  Scale  -->
 					<Expander IsExpanded="{Binding ExpandScaleSliders}">
 						<Expander.Header>
-							<xivToolsWpf:MultiNumberBox
+							<wpfUtils:MultiNumberBox
 								Margin="0"
 								X="{Binding ScaleX}"
 								Y="{Binding ScaleY}"
 								Z="{Binding ScaleZ}">
-								<xivToolsWpf:MultiNumberBox.Prefix>
-									<xivToolsWpf:IconBlock
+								<wpfUtils:MultiNumberBox.Prefix>
+									<wpfUtils:IconBlock
 										Margin="6,1,2,0"
 										Foreground="{DynamicResource BackgroundLightBrush}"
 										Icon="ArrowsMaximize"
 										ToolTip="{DynamicResource TransformS}" />
-								</xivToolsWpf:MultiNumberBox.Prefix>
-							</xivToolsWpf:MultiNumberBox>
+								</wpfUtils:MultiNumberBox.Prefix>
+							</wpfUtils:MultiNumberBox>
 
 						</Expander.Header>
 
@@ -221,7 +221,7 @@
 								Margin="3,0"
 								Style="{DynamicResource RightLabel}"
 								Text="X:" />
-							<xivToolsWpf:RelativeSlider
+							<wpfUtils:RelativeSlider
 								Grid.Row="0"
 								Grid.Column="1"
 								RelativeRange="1"
@@ -233,7 +233,7 @@
 								Margin="3,0"
 								Style="{DynamicResource RightLabel}"
 								Text="Y:" />
-							<xivToolsWpf:RelativeSlider
+							<wpfUtils:RelativeSlider
 								Grid.Row="1"
 								Grid.Column="1"
 								RelativeRange="1"
@@ -245,7 +245,7 @@
 								Margin="3,0"
 								Style="{DynamicResource RightLabel}"
 								Text="Z:" />
-							<xivToolsWpf:RelativeSlider
+							<wpfUtils:RelativeSlider
 								Grid.Row="2"
 								Grid.Column="1"
 								RelativeRange="1"
@@ -268,7 +268,7 @@
 					<ToggleButton
 						x:Name="ViewsToggle"
 						Content="Views"
-						Style="{DynamicResource XivToolsComboBoxButton}" />
+						Style="{DynamicResource WpfUtilsComboBoxButton}" />
 
 					<Popup
 						AllowsTransparency="True"
@@ -280,7 +280,7 @@
 							Grid.Column="1"
 							Width="190"
 							Margin="0,2"
-							Style="{DynamicResource XivToolsControlBorder}">
+							Style="{DynamicResource WpfUtilsControlBorder}">
 							<StackPanel Margin="3">
 
 								<CheckBox
@@ -314,23 +314,23 @@
 
 						<Border
 							Grid.Column="1"
-							Style="{DynamicResource XivToolsControlBorder}">
+							Style="{DynamicResource WpfUtilsControlBorder}">
 
 							<StackPanel
 								HorizontalAlignment="Center"
 								Orientation="Horizontal">
 								<Button Background="Transparent">
-									<xivToolsWpf:IconBlock Icon="ArrowCircleUp" />
+									<wpfUtils:IconBlock Icon="ArrowCircleUp" />
 								</Button>
 
 								<Button
 									Background="Transparent"
 									Click="OnClearSelectionClicked">
-									<xivToolsWpf:IconBlock Icon="TimesCircle" />
+									<wpfUtils:IconBlock Icon="TimesCircle" />
 								</Button>
 
 								<Button Background="Transparent">
-									<xivToolsWpf:IconBlock Icon="ArrowCircleDown" />
+									<wpfUtils:IconBlock Icon="ArrowCircleDown" />
 								</Button>
 							</StackPanel>
 						</Border>

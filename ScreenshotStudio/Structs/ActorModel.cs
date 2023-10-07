@@ -1,7 +1,4 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-//// Ktisis
+﻿//// Ktisis
 //// https://github.com/ktisis-tools/Ktisis/
 //// https://github.com/ktisis-tools/Ktisis/blob/main/Ktisis/Structs/Actor/ActorModel.cs
 //// https://github.com/ktisis-tools/Ktisis/blob/main/Ktisis/Structs/Actor/Attach.cs

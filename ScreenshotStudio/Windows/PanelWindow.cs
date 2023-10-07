@@ -1,15 +1,12 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-namespace ScreenshotStudio.Windows;
+﻿namespace ScreenshotStudio.Windows;
 
 using FontAwesome.Sharp.Pro;
 using ScreenshotStudio.Utilities;
 using System;
 using System.Windows;
 using System.Windows.Input;
-using XivToolsWpf.Commands;
-using XivToolsWpf.Extensions;
+using WpfUtils.Commands;
+using WpfUtils.Extensions;
 
 public class PanelWindow : PersistentPanel
 {

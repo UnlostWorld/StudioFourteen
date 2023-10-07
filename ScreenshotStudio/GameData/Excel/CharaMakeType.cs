@@ -1,6 +1,3 @@
-// © XivTools.
-// Licensed under the MIT license.
-
 namespace ScreenshotStudio.GameData.Excel;
 
 using Anamnesis.Actor.Utilities;

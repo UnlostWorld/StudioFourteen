@@ -1,7 +1,4 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-namespace ScreenshotStudio.Controls;
+﻿namespace ScreenshotStudio.Controls;
 
 using System;
 using System.Collections.Generic;

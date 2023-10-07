@@ -1,11 +1,8 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-namespace ScreenshotStudio.GameData.Excel;
+﻿namespace ScreenshotStudio.GameData.Excel;
 
 using ScreenshotStudio.Library;
 using ScreenshotStudio.Tags;
-using XivToolsWpf;
+using WpfUtils;
 
 public class LibraryExcelRow : StudioExcelRow, ILibraryItem
 {

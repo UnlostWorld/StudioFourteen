@@ -1,7 +1,4 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-namespace ScreenshotStudio.Studio.Pose;
+﻿namespace ScreenshotStudio.Studio.Pose;
 
 using System.Threading.Tasks;
 using System.Windows;

@@ -1,7 +1,4 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-namespace ScreenshotStudio.Windows;
+﻿namespace ScreenshotStudio.Windows;
 
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
@@ -16,7 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using XivToolsWpf;
+using WpfUtils;
 
 public abstract partial class Panel : Window, IAutoNotify
 {

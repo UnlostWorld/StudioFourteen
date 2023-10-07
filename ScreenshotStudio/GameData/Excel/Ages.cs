@@ -1,7 +1,4 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-namespace ScreenshotStudio.GameData.Excel;
+﻿namespace ScreenshotStudio.GameData.Excel;
 
 public enum Ages : byte
 {

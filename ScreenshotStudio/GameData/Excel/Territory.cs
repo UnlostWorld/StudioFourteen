@@ -1,13 +1,10 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-namespace ScreenshotStudio.GameData.Excel;
+﻿namespace ScreenshotStudio.GameData.Excel;
 
 using System.Collections.Generic;
 using Lumina.Data;
 using Lumina.Excel;
 using Lumina.Excel.GeneratedSheets;
-using XivToolsWpf;
+using WpfUtils;
 
 [Sheet("TerritoryType", 0x5baa595e)]
 public class Territory : LibraryExcelRow

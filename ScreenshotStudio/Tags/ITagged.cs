@@ -1,7 +1,4 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-namespace ScreenshotStudio.Tags;
+﻿namespace ScreenshotStudio.Tags;
 
 public interface ITagged
 {

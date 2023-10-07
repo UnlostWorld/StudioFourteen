@@ -1,13 +1,10 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-namespace ScreenshotStudio.Controls;
+﻿namespace ScreenshotStudio.Controls;
 
 using FontAwesome.Sharp.Pro;
 using System.Windows.Controls;
 using System.Windows.Input;
-using XivToolsWpf.Controls;
-using XivToolsWpf.DependencyProperties;
+using WpfUtils.Controls;
+using WpfUtils.DependencyProperties;
 
 public partial class KeyPrompt : UserControl
 {

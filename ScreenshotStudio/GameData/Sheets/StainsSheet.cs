@@ -1,7 +1,4 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-namespace ScreenshotStudio.GameData.Sheets;
+﻿namespace ScreenshotStudio.GameData.Sheets;
 
 using ScreenshotStudio.GameData.Excel;
 using System.Windows.Media;

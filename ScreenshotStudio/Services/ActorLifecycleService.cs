@@ -1,7 +1,4 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-//// Brio
+﻿//// Brio
 //// https://github.com/AsgardXIV/Brio/
 //// https://github.com/AsgardXIV/Brio/blob/main/Brio/Game/Actor/ActorSpawnService.cs
 
@@ -16,7 +13,7 @@ using System.Collections.Generic;
 using FFXIVClientStructs.FFXIV.Client.Game.Event;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using System.Linq;
-using XivToolsWpf.Extensions;
+using WpfUtils.Extensions;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using ScreenshotStudio.Structs;
 

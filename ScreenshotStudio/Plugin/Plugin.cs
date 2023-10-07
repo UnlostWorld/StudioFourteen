@@ -1,7 +1,4 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-namespace ScreenshotStudio.Plugin;
+﻿namespace ScreenshotStudio.Plugin;
 
 using Dalamud.Plugin;
 using ScreenshotStudio.Services;
@@ -28,7 +25,7 @@ public sealed class DalamudPlugin : IDalamudPlugin
 		Logging.Init();
 
 		// Hard reference our required sattelite assemblies to make sure dalamuds plugin loader picks them up.
-		this.Log.Information($"Ensure assembly XivToolWpf {typeof(XivToolsWpf.Dispatch).Assembly}");
+		this.Log.Information($"Ensure assembly XivToolWpf {typeof(WpfUtils.Dispatch).Assembly}");
 		this.Log.Information($"Ensure assembly FontAwesome {typeof(FontAwesome.Sharp.Icon).Assembly}");
 		this.Log.Information($"Ensure assembly FontAwesome Pro {typeof(FontAwesome.Sharp.Pro.Icon).Assembly}");
 

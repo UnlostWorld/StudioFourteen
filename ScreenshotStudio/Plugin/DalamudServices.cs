@@ -1,7 +1,4 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-//// Special thanks to Ktisis, @chirpxiv
+﻿//// Special thanks to Ktisis, @chirpxiv
 //// https://github.com/ktisis-tools/Ktisis/
 //// https://github.com/ktisis-tools/Ktisis/blob/main/Ktisis/Services.cs
 

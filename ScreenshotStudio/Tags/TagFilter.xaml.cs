@@ -1,7 +1,4 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-namespace ScreenshotStudio.Tags;
+﻿namespace ScreenshotStudio.Tags;
 
 using Serilog;
 using System;
@@ -13,9 +10,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using XivToolsWpf;
-using XivToolsWpf.Extensions;
-using XivToolsWpf.Utils;
+using WpfUtils;
+using WpfUtils.Extensions;
+using WpfUtils.Utils;
 
 public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyChanged
 {

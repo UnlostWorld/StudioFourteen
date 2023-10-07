@@ -1,7 +1,4 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-namespace ScreenshotStudio.Serialization;
+﻿namespace ScreenshotStudio.Serialization;
 
 using Newtonsoft.Json;
 using System.Globalization;

@@ -4,7 +4,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:xivToolsWpf="clr-namespace:XivToolsWpf.Controls;assembly=XivToolsWpf"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	mc:Ignorable="d">
 
 	<Grid
@@ -38,16 +38,16 @@
 				FontSize="10"
 				Foreground="{DynamicResource ForegroundLightBrush}" />
 
-			<xivToolsWpf:IconBlock
+			<wpfUtils:IconBlock
 				x:Name="IconDisplay"
 				FontSize="10"
 				Foreground="{DynamicResource ForegroundLightBrush}"
 				RenderTransformOrigin="0.5, 0.5">
 
-				<xivToolsWpf:IconBlock.RenderTransform>
+				<wpfUtils:IconBlock.RenderTransform>
 					<RotateTransform x:Name="IconRotation" />
-				</xivToolsWpf:IconBlock.RenderTransform>
-			</xivToolsWpf:IconBlock>
+				</wpfUtils:IconBlock.RenderTransform>
+			</wpfUtils:IconBlock>
 		</StackPanel>
 
 	</Grid>

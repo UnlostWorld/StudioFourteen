@@ -1,7 +1,4 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-namespace ScreenshotStudio.Plugin;
+﻿namespace ScreenshotStudio.Plugin;
 
 using System.Reflection;
 using Dalamud.Plugin.Services;

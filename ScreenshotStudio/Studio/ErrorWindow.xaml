@@ -6,7 +6,7 @@
 	xmlns:local="clr-namespace:ScreenshotStudio.Studio"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
-	xmlns:xivToolsWpf="clr-namespace:XivToolsWpf.Controls;assembly=XivToolsWpf"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="{DynamicResource Error}"
 	Width="400"
 	MaxHeight="800"
@@ -67,7 +67,7 @@
 
 		<Border
 			Grid.Row="4"
-			Style="{DynamicResource XivToolsControlBorder}">
+			Style="{DynamicResource WpfUtilsControlBorder}">
 			<Grid>
 				<StackPanel
 					HorizontalAlignment="Left"
@@ -87,7 +87,7 @@
 						<StackPanel
 							Margin="3,0"
 							Orientation="Horizontal">
-							<xivToolsWpf:IconBlock
+							<wpfUtils:IconBlock
 								Margin="0,0,6,0"
 								FontSize="10"
 								Icon="Github"
@@ -102,7 +102,7 @@
 						<StackPanel
 							Margin="3,0"
 							Orientation="Horizontal">
-							<xivToolsWpf:IconBlock
+							<wpfUtils:IconBlock
 								Margin="0,0,6,0"
 								FontSize="10"
 								Icon="Discord"

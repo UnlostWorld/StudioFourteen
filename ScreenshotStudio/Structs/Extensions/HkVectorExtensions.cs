@@ -1,7 +1,4 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-namespace ScreenshotStudio.Structs;
+﻿namespace ScreenshotStudio.Structs;
 
 using System.Numerics;
 using FFXIVClientStructs.Havok;

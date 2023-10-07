@@ -1,7 +1,4 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-namespace ScreenshotStudio;
+﻿namespace ScreenshotStudio;
 
 using ScreenshotStudio.Services;
 using Serilog;

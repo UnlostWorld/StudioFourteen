@@ -1,7 +1,4 @@
-﻿// © XivTools.
-// Licensed under the MIT license.
-
-namespace ScreenshotStudio.GameData;
+﻿namespace ScreenshotStudio.GameData;
 
 using Lumina.Excel;
 using ScreenshotStudio.GameData.Excel;

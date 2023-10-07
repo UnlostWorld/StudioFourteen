@@ -2,9 +2,9 @@
 	x:Class="ScreenshotStudio.Windows.PanelWindowResources"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:converters="clr-namespace:XivToolsWpf.Converters;assembly=XivToolsWpf"
+	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
 	xmlns:local="clr-namespace:ScreenshotStudio.Windows"
-	xmlns:xivToolsWpf="clr-namespace:XivToolsWpf.Controls;assembly=XivToolsWpf">
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
 	<ControlTemplate
 		x:Key="PanelWindowTemplate"
@@ -54,7 +54,7 @@
 					IsHitTestVisible="False"
 					Orientation="Horizontal">
 
-					<xivToolsWpf:IconBlock
+					<wpfUtils:IconBlock
 						MinWidth="12"
 						Margin="0,0,6,0"
 						VerticalAlignment="Center"
@@ -102,7 +102,7 @@
 									Background="Transparent"
 									Command="{Binding Command}"
 									ToolTip="{Binding ToolTip}">
-									<xivToolsWpf:IconBlock
+									<wpfUtils:IconBlock
 										Foreground="{DynamicResource ForegroundLightBrush}"
 										Icon="{Binding Icon}" />
 								</Button>
@@ -120,7 +120,7 @@
 						Click="OnCloseClicked"
 						IsEnabled="{TemplateBinding CanClose}"
 						ToolTip="{DynamicResource ClosePanelTooltip}">
-						<xivToolsWpf:IconBlock
+						<wpfUtils:IconBlock
 							Foreground="{DynamicResource ForegroundLightBrush}"
 							Icon="Times" />
 					</Button>
