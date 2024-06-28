@@ -13,7 +13,7 @@ public partial class NavigationPanel : DockPanel
 	[AutoNotify]
 	public unsafe bool IsInGPose
 	{
-		get => DalamudServices.PluginInterface.UiBuilder.GposeActive;
+		get => DalamudServices.ClientState.IsGPosing;
 		set
 		{
 			DalamudServices.Framework.RunOnFrameworkThread(() =>

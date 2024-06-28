@@ -31,7 +31,7 @@ public abstract class ActorWindow : PanelWindow
 	{
 		get
 		{
-			if (DalamudServices.PluginInterface.UiBuilder.GposeActive)
+			if (DalamudServices.ClientState.IsGPosing)
 			{
 				// GPose target
 				return (Actor*)TargetSystem.Instance()->GPoseTarget;

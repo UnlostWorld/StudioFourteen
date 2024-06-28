@@ -20,16 +20,16 @@ using ScreenshotStudio.Structs;
 public class ActorLifecycleService : ServiceBase
 {
 	private static readonly List<ushort> CreatedIndexes = new();
-	private Hook<DestroyGameActorDelegate> destroyGameActorHook = null!;
+	private Hook<DestroyGameActorDelegate>? destroyGameActorHook;
 	private delegate void DestroyGameActorDelegate(IntPtr addr);
 
-	public bool CanSpawn => DalamudServices.PluginInterface.UiBuilder.GposeActive;
+	public bool CanSpawn => DalamudServices.ClientState.IsGPosing;
 
 	public override async Task Initialize()
 	{
 		await base.Initialize();
 
-		DalamudServices.ClientState.TerritoryChanged += (s, e) => CreatedIndexes.Clear();
+		DalamudServices.ClientState.TerritoryChanged += (s) => CreatedIndexes.Clear();
 	}
 
 	public override async Task Start()
@@ -49,7 +49,7 @@ public class ActorLifecycleService : ServiceBase
 	{
 		try
 		{
-			if (!DalamudServices.PluginInterface.UiBuilder.GposeActive && CreatedIndexes.Count > 0)
+			if (!DalamudServices.ClientState.IsGPosing && CreatedIndexes.Count > 0)
 			{
 				this.DestroyAllCreated();
 				this.Log.Warning("Left GPose with spawned actors. deleting...");
@@ -115,7 +115,7 @@ public class ActorLifecycleService : ServiceBase
 	private void Attach()
 	{
 		var destroyAddress = DalamudServices.SigScanner.ScanText("48 89 5C 24 ?? 48 89 74 24 ?? 57 48 83 EC ?? 48 8D 05 ?? ?? ?? ?? 48 8B D9 48 89 01 48 8D 05 ?? ?? ?? ?? 48 89 81 ?? ?? ?? ?? 48 8D 05");
-		this.destroyGameActorHook = Hook<DestroyGameActorDelegate>.FromAddress(destroyAddress, this.ActorDestructorDetour);
+		this.destroyGameActorHook = DalamudServices.InteropProvider.HookFromAddress<DestroyGameActorDelegate>(destroyAddress, this.ActorDestructorDetour);
 		this.destroyGameActorHook.Enable();
 	}
 
@@ -133,7 +133,7 @@ public class ActorLifecycleService : ServiceBase
 			this.Log.Information($"created actor was destroyed: {idx}");
 		}
 
-		this.destroyGameActorHook.Original.Invoke(addr);
+		this.destroyGameActorHook?.Original.Invoke(addr);
 	}
 
 	private unsafe Actor* Spawn(string name)
@@ -160,7 +160,7 @@ public class ActorLifecycleService : ServiceBase
 		EventGPoseController* gposeController = &EventFramework.Instance()->EventSceneModule.EventGPoseController;
 		gposeController->AddCharacterToGPose(pSpawned); // This is safe even if the list is full. The game will also cleanup for us.
 
-		pSpawned->CopyFromCharacter(player, Character.CopyFlags.None); // We copy the Player as the created actor is just blank
+		pSpawned->CharacterSetup.CopyFromCharacter(player, CharacterSetup.CopyFlags.None); // We copy the Player as the created actor is just blank
 
 		*((sbyte*)pSpawned + 0x95) &= ~2; // Disable selection just incase this somehow leaks out of GPose
 
@@ -178,7 +178,7 @@ public class ActorLifecycleService : ServiceBase
 		pSpawned->GameObject.Name[name.Length] = 0;
 
 		pSpawned->GameObject.DisableDraw();
-		pSpawned->CopyFromCharacter(pSpawned, Character.CopyFlags.None); // Some tools get confused (Like Penumbra) unless we copy onto ourselves after name change
+		pSpawned->CharacterSetup.CopyFromCharacter(pSpawned, CharacterSetup.CopyFlags.None); // Some tools get confused (Like Penumbra) unless we copy onto ourselves after name change
 		pSpawned->GameObject.EnableDraw();
 
 		CreatedIndexes.Add(spawnedActorId);

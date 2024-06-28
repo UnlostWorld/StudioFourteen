@@ -24,7 +24,7 @@ public partial class ZoneWindow : PanelWindow
 	public ZoneWindow()
 	{
 		nint createScene = DalamudServices.SigScanner.ScanText("E8 ?? ?? ?? ?? 66 89 1D ?? ?? ?? ?? E9 ?? ?? ?? ??");
-		this.createSceneHook = Hook<OnCreateScene>.FromAddress(createScene, this.HandleCreateScene);
+		this.createSceneHook = DalamudServices.InteropProvider.HookFromAddress<OnCreateScene>(createScene, this.HandleCreateScene);
 	}
 
 	private delegate int OnCreateScene(string p1, uint p2, IntPtr p3, uint p4, IntPtr p5, int p6, uint p7);

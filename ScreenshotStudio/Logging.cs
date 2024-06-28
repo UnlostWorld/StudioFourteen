@@ -1,6 +1,7 @@
 ﻿namespace ScreenshotStudio;
 
 using Dalamud.Logging;
+using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Studio;
 using Serilog;
 using Serilog.Events;
@@ -34,12 +35,12 @@ public static class Logging
 
 	public static void Init()
 	{
-		WpfUtils.Logging.Log.HandleMessage = XivtoolsWpfLog;
-		WpfUtils.Logging.Log.HandleError = XivtoolsWpfError;
+		WpfUtils.Logging.Log.HandleMessage = WpfLog;
+		WpfUtils.Logging.Log.HandleError = WpfError;
 	}
 
-	public static void XivtoolsWpfLog(string message) => Shared.Information(message);
-	public static void XivtoolsWpfError(Exception ex, string message) => Shared.Error(ex, message);
+	public static void WpfLog(string message) => Shared.Information(message);
+	public static void WpfError(Exception ex, string message) => Shared.Error(ex, message);
 }
 
 public class Logger : ILogger
@@ -70,32 +71,32 @@ public class Logger : ILogger
 		{
 			case LogEventLevel.Verbose:
 			{
-				PluginLog.Verbose(logEvent.Exception, message);
+				DalamudServices.Log.Verbose(logEvent.Exception, message);
 				break;
 			}
 
 			case LogEventLevel.Debug:
 			{
-				PluginLog.Debug(logEvent.Exception, message);
+				DalamudServices.Log.Debug(logEvent.Exception, message);
 				break;
 			}
 
 			case LogEventLevel.Information:
 			{
-				PluginLog.Information(logEvent.Exception, message);
+				DalamudServices.Log.Information(logEvent.Exception, message);
 				break;
 			}
 
 			case LogEventLevel.Warning:
 			{
-				PluginLog.Warning(logEvent.Exception, message);
+				DalamudServices.Log.Warning(logEvent.Exception, message);
 				break;
 			}
 
 			case LogEventLevel.Error:
 			case LogEventLevel.Fatal:
 			{
-				PluginLog.Error(logEvent.Exception, message);
+				DalamudServices.Log.Error(logEvent.Exception, message);
 				ErrorWindow.Show(logEvent.MessageTemplate.Text);
 				break;
 			}

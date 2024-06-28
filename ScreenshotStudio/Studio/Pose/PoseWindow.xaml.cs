@@ -35,28 +35,28 @@ public partial class PoseWindow : ActorWindow
 	public unsafe PoseWindow()
 	{
 		nint setBoneModelSpaceFfxiv = DalamudServices.SigScanner.ScanText("48 8B C4 48 89 58 18 55 56 57 41 54 41 55 41 56 41 57 48 81 EC ?? ?? ?? ?? 0F 29 70 B8 0F 29 78 A8 44 0F 29 40 ?? 44 0F 29 48 ?? 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 84 24 ?? ?? ?? ?? 48 8B B1");
-		this.setBoneModelSpaceFfxivHook = Hook<SetBoneModelSpaceFfxivDelegate>.FromAddress(setBoneModelSpaceFfxiv, this.SetBoneModelSpaceFfxivDetour);
+		this.setBoneModelSpaceFfxivHook = DalamudServices.InteropProvider.HookFromAddress<SetBoneModelSpaceFfxivDelegate>(setBoneModelSpaceFfxiv, this.SetBoneModelSpaceFfxivDetour);
 
 		nint calculateBoneModelSpace = DalamudServices.SigScanner.ScanText("40 53 48 83 EC 10 4C 8B 49 28");
-		this.calculateBoneModelSpaceHook = Hook<CalculateBoneModelSpaceDelegate>.FromAddress(calculateBoneModelSpace, this.CalculateBoneModelSpaceDetour);
+		this.calculateBoneModelSpaceHook = DalamudServices.InteropProvider.HookFromAddress<CalculateBoneModelSpaceDelegate>(calculateBoneModelSpace, this.CalculateBoneModelSpaceDetour);
 
 		nint syncModelSpace = DalamudServices.SigScanner.ScanText("48 83 EC 18 80 79 38 00");
-		this.syncModelSpaceHook = Hook<SyncModelSpaceDelegate>.FromAddress(syncModelSpace, this.SyncModelSpaceDetour);
+		this.syncModelSpaceHook = DalamudServices.InteropProvider.HookFromAddress<SyncModelSpaceDelegate>(syncModelSpace, this.SyncModelSpaceDetour);
 
 		nint lookAtIK = DalamudServices.SigScanner.ScanText("48 8B C4 48 89 58 08 48 89 70 10 F3 0F 11 58 ??");
-		this.lookAtIKHook = Hook<LookAtIKDelegate>.FromAddress(lookAtIK, this.LookAtIKDetour);
+		this.lookAtIKHook = DalamudServices.InteropProvider.HookFromAddress<LookAtIKDelegate>(lookAtIK, this.LookAtIKDetour);
 
 		nint animFrozen = DalamudServices.SigScanner.ScanText("E8 ?? ?? ?? ?? 0F B6 F0 84 C0 74 0E");
-		this.animFrozenHook = Hook<AnimFrozenDelegate>.FromAddress(animFrozen, this.AnimFrozenDetour);
+		this.animFrozenHook = DalamudServices.InteropProvider.HookFromAddress<AnimFrozenDelegate>(animFrozen, this.AnimFrozenDetour);
 
 		nint updatePos = DalamudServices.SigScanner.ScanText("E8 ?? ?? ?? ?? EB 29 48 8B 5F 08");
-		this.updatePosHook = Hook<UpdatePosDelegate>.FromAddress(updatePos, this.UpdatePosDetour);
+		this.updatePosHook = DalamudServices.InteropProvider.HookFromAddress<UpdatePosDelegate>(updatePos, this.UpdatePosDetour);
 
 		nint loadSkele = DalamudServices.SigScanner.ScanText("E8 ?? ?? ?? ?? 48 C1 E5 08");
-		this.setSkeletonHook = Hook<SetSkeletonDelegate>.FromAddress(loadSkele, this.SetSkeletonDetour);
+		this.setSkeletonHook = DalamudServices.InteropProvider.HookFromAddress<SetSkeletonDelegate>(loadSkele, this.SetSkeletonDetour);
 
 		nint loadBust = DalamudServices.SigScanner.ScanText("E8 ?? ?? ?? ?? F6 84 24 ?? ?? ?? ?? ?? 0F 28 74 24 ??");
-		this.bustHook = Hook<BustDelegate>.FromAddress(loadBust, this.BustDetour);
+		this.bustHook = DalamudServices.InteropProvider.HookFromAddress<BustDelegate>(loadBust, this.BustDetour);
 	}
 
 	public delegate void BonesChangedEventHandler(BoneCollection? bones);

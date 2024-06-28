@@ -20,7 +20,7 @@ public class StudioService : ServiceBase
 			if (!this.Services.Studio.IsOpen)
 				return false;
 
-			return DalamudServices.PluginInterface.UiBuilder.GposeActive;
+			return DalamudServices.ClientState.IsGPosing;
 		}
 	}
 
