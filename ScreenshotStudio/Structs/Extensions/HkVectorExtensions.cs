@@ -1,7 +1,7 @@
 ﻿namespace ScreenshotStudio.Structs;
 
 using System.Numerics;
-using FFXIVClientStructs.Havok;
+using FFXIVClientStructs.Havok.Common.Base.Math.Vector;
 
 public static class HkVectorExtensions
 {

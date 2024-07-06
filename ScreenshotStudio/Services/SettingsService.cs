@@ -14,7 +14,7 @@ public class Settings : IPluginConfiguration
 		{
 			if (current == null)
 			{
-				current = DalamudServices.PluginInterface.GetPluginConfig() as Settings;
+				current = DalamudServices.PluginInterface?.GetPluginConfig() as Settings;
 
 				if (current == null)
 				{
@@ -36,7 +36,7 @@ public class Settings : IPluginConfiguration
 	{
 		lock (this)
 		{
-			DalamudServices.PluginInterface.SavePluginConfig(this);
+			DalamudServices.PluginInterface?.SavePluginConfig(this);
 		}
 	}
 }

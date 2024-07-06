@@ -25,7 +25,7 @@ public static class ActorDrawDataExtensions
 		if (actorChangeEquip == null)
 			actorChangeEquip = DalamudServices.DelegateFromSignature<ChangeEquipDelegate>("E8 ?? ?? ?? ?? 41 B5 01 FF C6");
 
-		actorChangeEquip.Invoke(drawData, index, item);
+		actorChangeEquip?.Invoke(drawData, index, item);
 	}
 
 	public static unsafe void ChangeEquip(ActorDrawData* drawData, ItemSlots slot, ItemEquip item)

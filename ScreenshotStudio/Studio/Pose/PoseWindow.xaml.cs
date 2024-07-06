@@ -6,57 +6,42 @@ namespace ScreenshotStudio.Studio;
 
 using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
-using FFXIVClientStructs.Havok;
-using Newtonsoft.Json.Linq;
+using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
+using FFXIVClientStructs.Havok.Common.Base.Math.Vector;
+using FFXIVClientStructs.Havok.Common.Base.Math.Quaternion;
+using FFXIVClientStructs.Havok.Animation.Rig;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Structs;
 using ScreenshotStudio.Structs.Extensions;
 using ScreenshotStudio.Studio.Pose;
 using ScreenshotStudio.Windows;
-using System.ComponentModel;
-using System.Numerics;
 using System.Windows;
 
 public partial class PoseWindow : ActorWindow
 {
-	private readonly Hook<SetBoneModelSpaceFfxivDelegate> setBoneModelSpaceFfxivHook;
-	private readonly Hook<CalculateBoneModelSpaceDelegate> calculateBoneModelSpaceHook;
-	private readonly Hook<SyncModelSpaceDelegate> syncModelSpaceHook;
-	private readonly Hook<LookAtIKDelegate> lookAtIKHook;
-	private readonly Hook<AnimFrozenDelegate> animFrozenHook;
-	private readonly Hook<UpdatePosDelegate> updatePosHook;
-	private readonly Hook<SetSkeletonDelegate> setSkeletonHook;
-	private readonly Hook<BustDelegate> bustHook;
+	private readonly Hook<SetBoneModelSpaceFfxivDelegate>? setBoneModelSpaceFfxivHook;
+	private readonly Hook<CalculateBoneModelSpaceDelegate>? calculateBoneModelSpaceHook;
+	private readonly Hook<SyncModelSpaceDelegate>? syncModelSpaceHook;
+	private readonly Hook<LookAtIKDelegate>? lookAtIKHook;
+	private readonly Hook<AnimFrozenDelegate>? animFrozenHook;
+	private readonly Hook<UpdatePosDelegate>? updatePosHook;
+	private readonly Hook<SetSkeletonDelegate>? setSkeletonHook;
+	private readonly Hook<BustDelegate>? bustHook;
 
 	private bool posingEnabled = false;
 	private BoneCollection? selectedBones;
 
 	public unsafe PoseWindow()
 	{
-		nint setBoneModelSpaceFfxiv = DalamudServices.SigScanner.ScanText("48 8B C4 48 89 58 18 55 56 57 41 54 41 55 41 56 41 57 48 81 EC ?? ?? ?? ?? 0F 29 70 B8 0F 29 78 A8 44 0F 29 40 ?? 44 0F 29 48 ?? 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 84 24 ?? ?? ?? ?? 48 8B B1");
-		this.setBoneModelSpaceFfxivHook = DalamudServices.InteropProvider.HookFromAddress<SetBoneModelSpaceFfxivDelegate>(setBoneModelSpaceFfxiv, this.SetBoneModelSpaceFfxivDetour);
-
-		nint calculateBoneModelSpace = DalamudServices.SigScanner.ScanText("40 53 48 83 EC 10 4C 8B 49 28");
-		this.calculateBoneModelSpaceHook = DalamudServices.InteropProvider.HookFromAddress<CalculateBoneModelSpaceDelegate>(calculateBoneModelSpace, this.CalculateBoneModelSpaceDetour);
-
-		nint syncModelSpace = DalamudServices.SigScanner.ScanText("48 83 EC 18 80 79 38 00");
-		this.syncModelSpaceHook = DalamudServices.InteropProvider.HookFromAddress<SyncModelSpaceDelegate>(syncModelSpace, this.SyncModelSpaceDetour);
-
-		nint lookAtIK = DalamudServices.SigScanner.ScanText("48 8B C4 48 89 58 08 48 89 70 10 F3 0F 11 58 ??");
-		this.lookAtIKHook = DalamudServices.InteropProvider.HookFromAddress<LookAtIKDelegate>(lookAtIK, this.LookAtIKDetour);
-
-		nint animFrozen = DalamudServices.SigScanner.ScanText("E8 ?? ?? ?? ?? 0F B6 F0 84 C0 74 0E");
-		this.animFrozenHook = DalamudServices.InteropProvider.HookFromAddress<AnimFrozenDelegate>(animFrozen, this.AnimFrozenDetour);
-
-		nint updatePos = DalamudServices.SigScanner.ScanText("E8 ?? ?? ?? ?? EB 29 48 8B 5F 08");
-		this.updatePosHook = DalamudServices.InteropProvider.HookFromAddress<UpdatePosDelegate>(updatePos, this.UpdatePosDetour);
-
-		nint loadSkele = DalamudServices.SigScanner.ScanText("E8 ?? ?? ?? ?? 48 C1 E5 08");
-		this.setSkeletonHook = DalamudServices.InteropProvider.HookFromAddress<SetSkeletonDelegate>(loadSkele, this.SetSkeletonDetour);
-
-		nint loadBust = DalamudServices.SigScanner.ScanText("E8 ?? ?? ?? ?? F6 84 24 ?? ?? ?? ?? ?? 0F 28 74 24 ??");
-		this.bustHook = DalamudServices.InteropProvider.HookFromAddress<BustDelegate>(loadBust, this.BustDetour);
+		this.setBoneModelSpaceFfxivHook = DalamudServices.HookFromSignature<SetBoneModelSpaceFfxivDelegate>("48 8B C4 48 89 58 18 55 56 57 41 54 41 55 41 56 41 57 48 81 EC ?? ?? ?? ?? 0F 29 70 B8 0F 29 78 A8 44 0F 29 40 ?? 44 0F 29 48 ?? 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 84 24 ?? ?? ?? ?? 48 8B B1", this.SetBoneModelSpaceFfxivDetour);
+		this.calculateBoneModelSpaceHook = DalamudServices.HookFromSignature<CalculateBoneModelSpaceDelegate>("40 53 48 83 EC 10 4C 8B 49 28", this.CalculateBoneModelSpaceDetour);
+		this.syncModelSpaceHook = DalamudServices.HookFromSignature<SyncModelSpaceDelegate>("48 83 EC 18 80 79 38 00", this.SyncModelSpaceDetour);
+		this.lookAtIKHook = DalamudServices.HookFromSignature<LookAtIKDelegate>("48 8B C4 48 89 58 08 48 89 70 10 F3 0F 11 58 ??", this.LookAtIKDetour);
+		this.animFrozenHook = DalamudServices.HookFromSignature<AnimFrozenDelegate>("E8 ?? ?? ?? ?? 0F B6 F0 84 C0 74 0E", this.AnimFrozenDetour);
+		this.updatePosHook = DalamudServices.HookFromSignature<UpdatePosDelegate>("E8 ?? ?? ?? ?? EB 29 48 8B 5F 08", this.UpdatePosDetour);
+		this.setSkeletonHook = DalamudServices.HookFromSignature<SetSkeletonDelegate>("E8 ?? ?? ?? ?? 48 C1 E5 08", this.SetSkeletonDetour);
+		this.bustHook = DalamudServices.HookFromSignature<BustDelegate>("E8 ?? ?? ?? ?? F6 84 24 ?? ?? ?? ?? ?? 0F 28 74 24 ??", this.BustDetour);
 	}
 
 	public delegate void BonesChangedEventHandler(BoneCollection? bones);
@@ -100,7 +85,7 @@ public partial class PoseWindow : ActorWindow
 				this.lookAtIKHook?.Enable();
 				this.updatePosHook?.Enable();
 				this.animFrozenHook?.Enable();
-				this.setSkeletonHook.Enable();
+				this.setSkeletonHook?.Enable();
 				this.bustHook?.Enable();
 			}
 			else
@@ -111,7 +96,7 @@ public partial class PoseWindow : ActorWindow
 				this.lookAtIKHook?.Disable();
 				this.updatePosHook?.Disable();
 				this.animFrozenHook?.Disable();
-				this.setSkeletonHook.Disable();
+				this.setSkeletonHook?.Disable();
 				this.bustHook?.Disable();
 			}
 		}
@@ -363,7 +348,7 @@ public partial class PoseWindow : ActorWindow
 		this.lookAtIKHook?.Dispose();
 		this.updatePosHook?.Dispose();
 		this.animFrozenHook?.Dispose();
-		this.setSkeletonHook.Dispose();
+		this.setSkeletonHook?.Dispose();
 		this.bustHook?.Dispose();
 
 		this.Services.Panels.SetIsOpen<BoneWindow>(false);
@@ -388,11 +373,17 @@ public partial class PoseWindow : ActorWindow
 
 	private unsafe char SetSkeletonDetour(Skeleton* a1, ushort a2, nint a3)
 	{
+		if (this.setSkeletonHook == null)
+			return default;
+
 		return this.setSkeletonHook.Original(a1, a2, a3);
 	}
 
 	private unsafe nint BustDetour(ActorModel* a1, Bust* a2)
 	{
+		if (this.bustHook == null)
+			return default;
+
 		var exec = this.bustHook.Original(a1, a2);
 		////a1->ScaleBust(true);
 		return exec;

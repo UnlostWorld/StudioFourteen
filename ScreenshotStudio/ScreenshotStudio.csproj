@@ -95,7 +95,7 @@
 
 	<ItemGroup>
 		<None Update="ScreenshotStudio.json">
-			<CopyToOutputDirectory>Never</CopyToOutputDirectory>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>
 

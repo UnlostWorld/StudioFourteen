@@ -13,10 +13,13 @@ public partial class NavigationPanel : DockPanel
 	[AutoNotify]
 	public unsafe bool IsInGPose
 	{
-		get => DalamudServices.ClientState.IsGPosing;
+		get => GroupPoseService.IsGroupPosing;
 		set
 		{
-			DalamudServices.Framework.RunOnFrameworkThread(() =>
+			if (DalamudServices.GameGui == null)
+				return;
+
+			DalamudServices.Framework?.RunOnFrameworkThread(() =>
 			{
 				UIModule* pModule = (UIModule*)DalamudServices.GameGui.GetUIModule();
 				if (pModule != null)

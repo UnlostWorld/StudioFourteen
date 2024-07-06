@@ -1,6 +1,7 @@
 ﻿namespace ScreenshotStudio.Structs;
 
-using FFXIVClientStructs.Havok;
+using FFXIVClientStructs.Havok.Common.Base.Math.Vector;
+using FFXIVClientStructs.Havok.Common.Base.Math.Quaternion;
 using ScreenshotStudio.Structs.Extensions;
 using System.Runtime.InteropServices;
 using WpfUtils.Meida3D;

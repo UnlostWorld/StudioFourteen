@@ -20,7 +20,7 @@ public class StudioService : ServiceBase
 			if (!this.Services.Studio.IsOpen)
 				return false;
 
-			return DalamudServices.ClientState.IsGPosing;
+			return GroupPoseService.IsGroupPosing;
 		}
 	}
 

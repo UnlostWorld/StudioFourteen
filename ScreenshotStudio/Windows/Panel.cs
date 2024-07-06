@@ -63,7 +63,7 @@ public abstract partial class Panel : Window, IAutoNotify
 		set => this.SetValue(IsShownProperty, value);
 	}
 
-	public bool IsUiVisible => !DalamudServices.GameGui.GameUiHidden;
+	public bool IsUiVisible => !DalamudServices.GameGui?.GameUiHidden ?? true;
 
 	public bool IsOpen
 	{
@@ -170,14 +170,18 @@ public abstract partial class Panel : Window, IAutoNotify
 
 	protected virtual void OnOpened()
 	{
-		DalamudServices.GameGui.UiHideToggled += this.OnGameUiToggled;
+		if (DalamudServices.GameGui != null)
+			DalamudServices.GameGui.UiHideToggled += this.OnGameUiToggled;
+
 		AutoPropertyNotifyService.Register(this);
 		this.IsOpen = true;
 	}
 
 	protected virtual void OnClosed()
 	{
-		DalamudServices.GameGui.UiHideToggled -= this.OnGameUiToggled;
+		if (DalamudServices.GameGui != null)
+			DalamudServices.GameGui.UiHideToggled -= this.OnGameUiToggled;
+
 		AutoPropertyNotifyService.Remove(this);
 		this.Services.Panels.OnPanelClosed(this);
 		this.IsOpen = false;

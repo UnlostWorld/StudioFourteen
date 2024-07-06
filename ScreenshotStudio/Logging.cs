@@ -71,32 +71,32 @@ public class Logger : ILogger
 		{
 			case LogEventLevel.Verbose:
 			{
-				DalamudServices.Log.Verbose(logEvent.Exception, message);
+				DalamudServices.Log?.Verbose(logEvent.Exception, message);
 				break;
 			}
 
 			case LogEventLevel.Debug:
 			{
-				DalamudServices.Log.Debug(logEvent.Exception, message);
+				DalamudServices.Log?.Debug(logEvent.Exception, message);
 				break;
 			}
 
 			case LogEventLevel.Information:
 			{
-				DalamudServices.Log.Information(logEvent.Exception, message);
+				DalamudServices.Log?.Information(logEvent.Exception, message);
 				break;
 			}
 
 			case LogEventLevel.Warning:
 			{
-				DalamudServices.Log.Warning(logEvent.Exception, message);
+				DalamudServices.Log?.Warning(logEvent.Exception, message);
 				break;
 			}
 
 			case LogEventLevel.Error:
 			case LogEventLevel.Fatal:
 			{
-				DalamudServices.Log.Error(logEvent.Exception, message);
+				DalamudServices.Log?.Error(logEvent.Exception, message);
 				ErrorWindow.Show(logEvent.MessageTemplate.Text);
 				break;
 			}

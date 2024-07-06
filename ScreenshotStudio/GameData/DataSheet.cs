@@ -46,7 +46,7 @@ public class DataSheet<T> : DataSheet
 	public DataSheet()
 		: base()
 	{
-		this.Sheet = DalamudServices.DataManager.GetExcelSheet<T>();
+		this.Sheet = DalamudServices.DataManager?.GetExcelSheet<T>();
 
 		if (this.Sheet == null)
 		{
@@ -76,7 +76,7 @@ public class DataSheet<T> : DataSheet
 				}
 			}
 
-			DalamudServices.DataManager.Excel.RemoveSheetFromCache<T>();
+			DalamudServices.DataManager?.Excel.RemoveSheetFromCache<T>();
 		}
 
 		return base.Shutdown();

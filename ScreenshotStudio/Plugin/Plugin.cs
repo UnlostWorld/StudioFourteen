@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 public sealed class DalamudPlugin : IDalamudPlugin
 {
-	public DalamudPlugin(DalamudPluginInterface pluginInterface)
+	public DalamudPlugin(IDalamudPluginInterface pluginInterface)
 	{
 		pluginInterface.Create<DalamudServices>();
 		Task.Run(this.Start);
@@ -24,7 +24,7 @@ public sealed class DalamudPlugin : IDalamudPlugin
 	{
 		Logging.Init();
 
-		// Hard reference our required sattelite assemblies to make sure dalamuds plugin loader picks them up.
+		// Hard reference our required satellite assemblies to make sure dalamuds plugin loader picks them up.
 		this.Log.Information($"Ensure assembly XivToolWpf {typeof(WpfUtils.Dispatch).Assembly}");
 		this.Log.Information($"Ensure assembly FontAwesome {typeof(FontAwesome.Sharp.Icon).Assembly}");
 		this.Log.Information($"Ensure assembly FontAwesome Pro {typeof(FontAwesome.Sharp.Pro.Icon).Assembly}");

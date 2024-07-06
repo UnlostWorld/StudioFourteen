@@ -6,7 +6,6 @@ namespace ScreenshotStudio.Studio;
 
 using Dalamud.Game.ClientState;
 using Dalamud.Hooking;
-using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using ScreenshotStudio.GameData.Excel;
 using ScreenshotStudio.Library;
@@ -19,12 +18,11 @@ using System.Windows;
 
 public partial class ZoneWindow : PanelWindow
 {
-	private readonly Hook<OnCreateScene> createSceneHook;
+	private readonly Hook<OnCreateScene>? createSceneHook;
 
 	public ZoneWindow()
 	{
-		nint createScene = DalamudServices.SigScanner.ScanText("E8 ?? ?? ?? ?? 66 89 1D ?? ?? ?? ?? E9 ?? ?? ?? ??");
-		this.createSceneHook = DalamudServices.InteropProvider.HookFromAddress<OnCreateScene>(createScene, this.HandleCreateScene);
+		this.createSceneHook = DalamudServices.HookFromSignature<OnCreateScene>("E8 ?? ?? ?? ?? 66 89 1D ?? ?? ?? ?? E9 ?? ?? ?? ??", this.HandleCreateScene);
 	}
 
 	private delegate int OnCreateScene(string p1, uint p2, IntPtr p3, uint p4, IntPtr p5, int p6, uint p7);
@@ -36,18 +34,18 @@ public partial class ZoneWindow : PanelWindow
 		{
 			try
 			{
-				// Has the user already logged in? don't let them change zones, jsut for safteys sake.
+				// Has the user already logged in? don't let them change zones, just for safeties sake.
 				if (AgentLobby.Instance()->DataCenter != 0 || AgentLobby.Instance()->WorldId != 0)
 					return false;
 
 				// Is the user on the title screen?
-				nint charaSelect = DalamudServices.GameGui.GetAddonByName("CharaSelect");
-				nint charaMake = DalamudServices.GameGui.GetAddonByName("CharaMake");
-				nint titleDcWorldMap = DalamudServices.GameGui.GetAddonByName("TitleDCWorldMap");
+				nint? charaSelect = DalamudServices.GameGui?.GetAddonByName("CharaSelect");
+				nint? charaMake = DalamudServices.GameGui?.GetAddonByName("CharaMake");
+				nint? titleDcWorldMap = DalamudServices.GameGui?.GetAddonByName("TitleDCWorldMap");
 				if (charaMake != nint.Zero || charaSelect != nint.Zero || titleDcWorldMap != nint.Zero)
 					return false;
 
-				return !DalamudServices.ClientState.IsLoggedIn;
+				return !(DalamudServices.ClientState?.IsLoggedIn ?? false);
 			}
 			catch(Exception ex)
 			{
@@ -59,34 +57,38 @@ public partial class ZoneWindow : PanelWindow
 
 	protected override void OnOpened()
 	{
-		this.createSceneHook.Enable();
+		this.createSceneHook?.Enable();
 		base.OnOpened();
 	}
 
 	protected override void OnClosed()
 	{
-		this.createSceneHook.Dispose();
+		this.createSceneHook?.Dispose();
 		base.OnClosed();
 	}
 
 	private void LoadScene(string path)
 	{
-		DalamudServices.Framework.RunOnFrameworkThread(() =>
+		DalamudServices.Framework?.RunOnFrameworkThread(() =>
 		{
 			this.Log.Information($"Changing Scene: {path}");
-			this.createSceneHook.Original(path, 0, 0, 0, 0, -1, 0);
+			this.createSceneHook?.Original(path, 0, 0, 0, 0, -1, 0);
 		});
 	}
 
 	private int HandleCreateScene(string backgroundPath, uint p2, IntPtr p3, uint p4, IntPtr p5, int p6, uint p7)
 	{
 		this.Log.Information($"Changed Scene: {backgroundPath}");
+
+		if (this.createSceneHook == null)
+			return 0;
+
 		return this.createSceneHook.Original(backgroundPath, p2, p3, p4, p5, p6, p7);
 	}
 
 	private void OnChangeZoneClicked(object sender, RoutedEventArgs e)
 	{
-		if (DalamudServices.ClientState.IsLoggedIn)
+		if (DalamudServices.ClientState == null || DalamudServices.ClientState.IsLoggedIn)
 			return;
 
 		TagCollection defaultTags = new();

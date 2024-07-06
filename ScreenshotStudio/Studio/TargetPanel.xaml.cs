@@ -1,5 +1,6 @@
 ﻿namespace ScreenshotStudio.Studio;
 
+using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using ScreenshotStudio.Library;
 using ScreenshotStudio.Plugin;
@@ -64,9 +65,14 @@ public unsafe class ActorViewModel : ViewModel
 	public ActorViewModel(int index)
 	{
 		this.ObjectTableIndex = index;
+
+		if (DalamudServices.Framework != null)
+		{
+			DalamudServices.Framework.Update += this.OnFrameworkUpdate;
+		}
 	}
 
-	[AutoNotify] public IntPtr Address => DalamudServices.ObjectTable.GetObjectAddress(this.ObjectTableIndex);
+	[AutoNotify] public IntPtr Address { get; set; } = IntPtr.Zero;
 	[AutoNotify] public bool IsValid => this.Address != IntPtr.Zero;
 	[AutoNotify] public unsafe Actor* Actor => (Actor*)this.Address;
 
@@ -102,5 +108,10 @@ public unsafe class ActorViewModel : ViewModel
 
 			TargetSystem.Instance()->GPoseTarget = (NativeObject*)this.Actor;
 		}
+	}
+
+	private void OnFrameworkUpdate(IFramework framework)
+	{
+		this.Address = DalamudServices.ObjectTable?.GetObjectAddress(this.ObjectTableIndex) ?? IntPtr.Zero;
 	}
 }

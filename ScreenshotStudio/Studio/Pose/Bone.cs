@@ -5,7 +5,9 @@
 namespace ScreenshotStudio.Studio.Pose;
 
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
-using FFXIVClientStructs.Havok;
+using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
+using FFXIVClientStructs.Havok.Common.Base.Math.Matrix;
+using FFXIVClientStructs.Havok.Animation.Rig;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Structs;
 using ScreenshotStudio.Structs.Extensions;
@@ -13,7 +15,7 @@ using Serilog;
 using System;
 using System.Numerics;
 
-using static FFXIVClientStructs.Havok.hkaPose;
+using static FFXIVClientStructs.Havok.Animation.Rig.hkaPose;
 
 public unsafe class Bone
 {
@@ -157,7 +159,7 @@ public unsafe class Bone
 
 	public unsafe void Apply(hkQsTransformf transform)
 	{
-		DalamudServices.Framework.RunOnFrameworkThread(() =>
+		DalamudServices.Framework?.RunOnFrameworkThread(() =>
 		{
 			hkQsTransformf origin = transform;
 
@@ -179,7 +181,7 @@ public unsafe class Bone
 		BoneCollection descendants = new();
 		this.GetDescendants(ref descendants, includePartials, true);
 
-		DalamudServices.Framework.RunOnFrameworkThread(() =>
+		DalamudServices.Framework?.RunOnFrameworkThread(() =>
 		{
 			foreach (Bone descendant in descendants)
 			{

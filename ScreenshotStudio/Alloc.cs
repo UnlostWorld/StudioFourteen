@@ -4,7 +4,8 @@
 
 namespace ScreenshotStudio;
 
-using FFXIVClientStructs.Havok;
+using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
+using FFXIVClientStructs.Havok.Common.Base.Math.Matrix;
 using System;
 using System.Numerics;
 using System.Runtime.InteropServices;

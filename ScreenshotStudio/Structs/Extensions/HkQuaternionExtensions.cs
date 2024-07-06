@@ -1,6 +1,7 @@
 ﻿namespace ScreenshotStudio.Structs.Extensions;
 
-using FFXIVClientStructs.Havok;
+using FFXIVClientStructs.Havok.Common.Base.Math.Vector;
+using FFXIVClientStructs.Havok.Common.Base.Math.Quaternion;
 using System;
 using System.Numerics;
 

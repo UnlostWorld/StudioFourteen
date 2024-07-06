@@ -445,7 +445,7 @@ public partial class CustomizeWindow : ActorWindow
 		if (this.Actor == null)
 			return;
 
-		DalamudServices.Framework.RunOnFrameworkThread(() =>
+		DalamudServices.Framework?.RunOnFrameworkThread(() =>
 		{
 			if (!redraw)
 			{

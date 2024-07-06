@@ -23,15 +23,18 @@ public class GameDataService : ServiceBase
 	public static T? GetFile<T>(string path)
 		where T : FileResource
 	{
-		string newPath = DalamudServices.TextureSubstitutionProvider.GetSubstitutedPath(path);
+		string? newPath = DalamudServices.TextureSubstitutionProvider?.GetSubstitutedPath(path);
+
+		if (newPath == null)
+			newPath = path;
 
 		if (Path.IsPathRooted(newPath))
 		{
-			return DalamudServices.DataManager.GameData.GetFileFromDisk<T>(newPath);
+			return DalamudServices.DataManager?.GameData.GetFileFromDisk<T>(newPath);
 		}
 		else
 		{
-			return DalamudServices.DataManager.GetFile<T>(newPath);
+			return DalamudServices.DataManager?.GetFile<T>(newPath);
 		}
 	}
 

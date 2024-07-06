@@ -5,7 +5,9 @@
 namespace ScreenshotStudio.Studio.Pose;
 
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
-using FFXIVClientStructs.Havok;
+using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
+using FFXIVClientStructs.Havok.Common.Base.Math.Matrix;
+using FFXIVClientStructs.Havok.Animation.Rig;
 using System.Collections.Generic;
 
 public class BoneCollection : HashSet<Bone>

@@ -25,13 +25,16 @@ public abstract class ActorWindow : PanelWindow
 	}
 
 	/// <summary>
-	///  Gets a pointer to the player, the players target, or the gpose target.
+	///  Gets a pointer to the player, the players target, or the group pose target.
 	/// </summary>
 	public unsafe Actor* Actor
 	{
 		get
 		{
-			if (DalamudServices.ClientState.IsGPosing)
+			if (DalamudServices.ObjectTable == null)
+				return null;
+
+			if (GroupPoseService.IsGroupPosing)
 			{
 				// GPose target
 				return (Actor*)TargetSystem.Instance()->GPoseTarget;

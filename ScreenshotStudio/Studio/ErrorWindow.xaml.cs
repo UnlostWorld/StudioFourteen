@@ -56,7 +56,7 @@ public partial class ErrorWindow : PanelWindow
 
 	private void OnConsoleClicked(object sender, RoutedEventArgs e)
 	{
-		DalamudServices.CommandManager.ProcessCommand("/xllog");
+		DalamudServices.CommandManager?.ProcessCommand("/xllog");
 	}
 
 	private void OnGitHubClicked(object sender, RoutedEventArgs e)
