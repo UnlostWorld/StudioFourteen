@@ -1,8 +1,4 @@
-﻿//// Special thanks to Ktisis, @chirpxiv
-//// https://github.com/ktisis-tools/Ktisis/
-//// https://github.com/ktisis-tools/Ktisis/blob/main/Ktisis/Services.cs
-
-namespace ScreenshotStudio.Plugin;
+﻿namespace ScreenshotStudio.Plugin;
 
 using Dalamud.Game;
 using Dalamud.Hooking;
