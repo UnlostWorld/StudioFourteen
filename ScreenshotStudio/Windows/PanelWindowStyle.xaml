@@ -56,7 +56,7 @@
 
 					<wpfUtils:IconBlock
 						MinWidth="12"
-						Margin="0,0,6,0"
+						Margin="0,1,6,0"
 						VerticalAlignment="Center"
 						Foreground="{DynamicResource ForegroundLightBrush}"
 						Icon="{TemplateBinding TitleIcon}" />
@@ -114,7 +114,7 @@
 					<!--  Close Button  -->
 					<Button
 						Width="26"
-						Height="20"
+						Height="Auto"
 						Margin="-3,2,2,0"
 						Background="Transparent"
 						Click="OnCloseClicked"
