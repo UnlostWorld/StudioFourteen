@@ -298,6 +298,6 @@ public class ItemEquipViewModel : ViewModel
 
 	public unsafe void ApplyChangeItem()
 	{
-		ActorDrawDataExtensions.ChangeEquip(&this.window.Actor->DrawData, this.Slot, this.ItemEquip);
+		ActorDrawDataExtensions.ChangeEquip(&this.window.Actor->DrawData, this.Slot, this.ItemEquip, true);
 	}
 }

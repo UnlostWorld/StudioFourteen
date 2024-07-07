@@ -18,17 +18,17 @@ using static ScreenshotStudio.Structs.Equipment;
 public static class ActorDrawDataExtensions
 {
 	private static ChangeEquipDelegate? actorChangeEquip;
-	private unsafe delegate void ChangeEquipDelegate(ActorDrawData* writeTo, Equipment.EquipIndex index, ItemEquip item);
+	private unsafe delegate void ChangeEquipDelegate(ActorDrawData* writeTo, Equipment.EquipIndex index, ItemEquip item, bool force);
 
-	public static unsafe void ChangeEquip(ActorDrawData* drawData, Equipment.EquipIndex index, ItemEquip item)
+	public static unsafe void ChangeEquip(ActorDrawData* drawData, Equipment.EquipIndex index, ItemEquip item, bool force)
 	{
 		if (actorChangeEquip == null)
-			actorChangeEquip = DalamudServices.DelegateFromSignature<ChangeEquipDelegate>("E8 ?? ?? ?? ?? 41 B5 01 FF C6");
+			actorChangeEquip = DalamudServices.DelegateFromSignature<ChangeEquipDelegate>("E8 ?? ?? ?? ?? B1 01 41 FF C6");
 
-		actorChangeEquip?.Invoke(drawData, index, item);
+		actorChangeEquip?.Invoke(drawData, index, item, force);
 	}
 
-	public static unsafe void ChangeEquip(ActorDrawData* drawData, ItemSlots slot, ItemEquip item)
+	public static unsafe void ChangeEquip(ActorDrawData* drawData, ItemSlots slot, ItemEquip item, bool force)
 	{
 		EquipIndex? index = slot switch
 		{
@@ -51,7 +51,7 @@ public static class ActorDrawDataExtensions
 			return;
 		}
 
-		ChangeEquip(drawData, (EquipIndex)index, item);
+		ChangeEquip(drawData, (EquipIndex)index, item, force);
 	}
 }
 
