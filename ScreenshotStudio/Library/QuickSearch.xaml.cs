@@ -155,6 +155,23 @@ public partial class QuickSearch : PanelWindow
 
 		this.SelectedItem = current;
 		this.isLoading = false;
+
+		/*Point pos;
+		placementTarget.Dispatcher.Invoke(() =>
+		{
+			PanelWindow? targetPanel = placementTarget.FindParent<PanelWindow>();
+
+			if (targetPanel != null)
+			{
+				////Point targetOffset = placementTarget.TransformToAncestor(targetPanel).Transform(new());
+				pos = new Point(targetPanel.Position.X, targetPanel.Position.Y);
+			}
+		});
+
+		this.Dispatcher.Invoke(() =>
+		{
+			this.Position = pos;
+		});*/
 	}
 
 	protected override void OnClosed()
@@ -202,7 +219,7 @@ public partial class QuickSearch : PanelWindow
 				this.Tags.Add(tag);
 			}
 		}
-    }
+	}
 
 	private void OnConfirmClicked(object sender, RoutedEventArgs? e)
 	{
