@@ -14,16 +14,16 @@ using System.Runtime.InteropServices;
 [StructLayout(LayoutKind.Explicit)]
 public struct Equipment
 {
-	[FieldOffset(0x00)] public ItemEquip Head;
-	[FieldOffset(0x04)] public ItemEquip Chest;
-	[FieldOffset(0x08)] public ItemEquip Hands;
-	[FieldOffset(0x0C)] public ItemEquip Legs;
-	[FieldOffset(0x10)] public ItemEquip Feet;
-	[FieldOffset(0x14)] public ItemEquip Earring;
-	[FieldOffset(0x18)] public ItemEquip Necklace;
-	[FieldOffset(0x1C)] public ItemEquip Bracelet;
-	[FieldOffset(0x20)] public ItemEquip RingRight;
-	[FieldOffset(0x24)] public ItemEquip RingLeft;
+	[FieldOffset(0x000)] public ItemEquip Head;
+	[FieldOffset(0x008)] public ItemEquip Chest;
+	[FieldOffset(0x010)] public ItemEquip Hands;
+	[FieldOffset(0x018)] public ItemEquip Legs;
+	[FieldOffset(0x020)] public ItemEquip Feet;
+	[FieldOffset(0x028)] public ItemEquip Earring;
+	[FieldOffset(0x030)] public ItemEquip Necklace;
+	[FieldOffset(0x038)] public ItemEquip Bracelet;
+	[FieldOffset(0x040)] public ItemEquip RingRight;
+	[FieldOffset(0x048)] public ItemEquip RingLeft;
 
 	public enum EquipIndex : uint
 	{

@@ -20,9 +20,9 @@ public struct Actor
 	[FieldOffset(0x88)] public byte ObjectID;
 	[FieldOffset(0x100)] public unsafe ActorModel* Model;
 	[FieldOffset(0x114)] public RenderMode RenderMode;
-	[FieldOffset(0x1B4)] public uint ModelId;
-	[FieldOffset(0x6E8)] public ActorDrawData DrawData;
-	[FieldOffset(0x876)] public bool IsHatHidden;
+	[FieldOffset(0x1AC)] public uint ModelId;
+	[FieldOffset(0x708)] public ActorDrawData DrawData;
+	[FieldOffset(0x89E)] public bool IsHatHidden;
 
 	public unsafe string? Name
 	{

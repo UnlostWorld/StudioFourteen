@@ -75,26 +75,47 @@ public partial class GearWindow : ActorWindow
 		}
 	}
 
-	private void OnChangeDyeClicked(object sender, RoutedEventArgs e)
+	private void OnChangeDye1Clicked(object sender, RoutedEventArgs e)
 	{
 		if (sender is Button btn
 			&& btn.DataContext is ItemEquipViewModel equip)
 		{
-			TagCollection defaultTags = new();
-			defaultTags.Add("Named");
-
-			string searchTitle = $"{equip.Slot.GetDisplayName()} {ScreenshotStudio.Resources.Find("Dye", "Dye")}";
-
-			QuickSearch.Show<Stain>(
-				btn,
-				searchTitle,
-				defaultTags,
-				equip.Stain,
-				(stain, isFinal) =>
-				{
-					equip.Stain = stain;
-				});
+			this.OnChangeDye(sender, equip, 0);
 		}
+	}
+
+	private void OnChangeDye2Clicked(object sender, RoutedEventArgs e)
+	{
+		if (sender is Button btn
+			&& btn.DataContext is ItemEquipViewModel equip)
+		{
+			this.OnChangeDye(sender, equip, 1);
+		}
+	}
+
+	private void OnChangeDye(object sender, ItemEquipViewModel equip, int dyeChanel)
+	{
+		TagCollection defaultTags = new();
+		defaultTags.Add("Named");
+
+		string searchTitle = $"{equip.Slot.GetDisplayName()} {ScreenshotStudio.Resources.Find("Dye", "Dye")}";
+
+		QuickSearch.Show<Stain>(
+			sender,
+			searchTitle,
+			defaultTags,
+			equip.Stain1,
+			(stain, isFinal) =>
+			{
+				if (dyeChanel == 0)
+				{
+					equip.Stain1 = stain;
+				}
+				else
+				{
+					equip.Stain2 = stain;
+				}
+			});
 	}
 }
 
@@ -103,7 +124,8 @@ public class ItemEquipViewModel : ViewModel
 	public readonly ItemSlots Slot;
 	private readonly GearWindow window;
 	private Item? item;
-	private Stain? stain;
+	private Stain? stain1;
+	private Stain? stain2;
 
 	public ItemEquipViewModel(ItemSlots slot, GearWindow window)
 	{
@@ -143,12 +165,23 @@ public class ItemEquipViewModel : ViewModel
 	}
 
 	[AutoNotify]
-	public byte Dye
+	public byte Dye1
 	{
-		get => this.HasValidTarget ? this.ItemEquip.Dye : (byte)0;
+		get => this.HasValidTarget ? this.ItemEquip.Dye1 : (byte)0;
 		set
 		{
-			this.ItemEquip.Dye = value;
+			this.ItemEquip.Dye1 = value;
+			this.ApplyChangeItem();
+		}
+	}
+
+	[AutoNotify]
+	public byte Dye2
+	{
+		get => this.HasValidTarget ? this.ItemEquip.Dye2 : (byte)0;
+		set
+		{
+			this.ItemEquip.Dye2 = value;
 			this.ApplyChangeItem();
 		}
 	}
@@ -182,28 +215,55 @@ public class ItemEquipViewModel : ViewModel
 	}
 
 	[AutoNotify]
-	public Stain? Stain
+	public Stain? Stain1
 	{
 		get
 		{
 			if (!this.HasValidTarget)
 				return null;
 
-			if (this.stain == null || this.stain.RowId != this.Dye)
+			if (this.stain1 == null || this.stain1.RowId != this.Dye1)
 			{
-				this.stain = GameDataService.GetRow<Stain>(this.Dye);
+				this.stain1 = GameDataService.GetRow<Stain>(this.Dye1);
 			}
 
-			return this.stain;
+			return this.stain1;
 		}
 
 		set
 		{
-			this.stain = value;
+			this.stain1 = value;
 
-			if (this.stain != null)
+			if (this.stain1 != null)
 			{
-				this.Dye = (byte)this.stain.RowId;
+				this.Dye1 = (byte)this.stain1.RowId;
+			}
+		}
+	}
+
+	[AutoNotify]
+	public Stain? Stain2
+	{
+		get
+		{
+			if (!this.HasValidTarget)
+				return null;
+
+			if (this.stain2 == null || this.stain2.RowId != this.Dye2)
+			{
+				this.stain2 = GameDataService.GetRow<Stain>(this.Dye2);
+			}
+
+			return this.stain2;
+		}
+
+		set
+		{
+			this.stain2 = value;
+
+			if (this.stain2 != null)
+			{
+				this.Dye2 = (byte)this.stain2.RowId;
 			}
 		}
 	}

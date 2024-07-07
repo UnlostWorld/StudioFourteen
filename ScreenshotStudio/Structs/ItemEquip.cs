@@ -16,5 +16,6 @@ public struct ItemEquip
 {
 	[FieldOffset(0)] public ushort Base;
 	[FieldOffset(2)] public byte Variant;
-	[FieldOffset(3)] public byte Dye;
+	[FieldOffset(3)] public byte Dye1;
+	[FieldOffset(4)] public byte Dye2;
 }
