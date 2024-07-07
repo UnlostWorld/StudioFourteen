@@ -32,6 +32,16 @@ public partial class TargetPanel : DockPanel
 	[AutoNotify]
 	public bool IsInGPose => this.Services.Studio.IsOpenAndInGPose;
 
+	protected override void OnFrameworkUpdate(IFramework framework)
+	{
+		base.OnFrameworkUpdate(framework);
+
+		foreach (ActorViewModel actor in this.Actors)
+		{
+			actor.OnFrameworkUpdate();
+		}
+	}
+
 	private void OnAddActorClicked(object sender, RoutedEventArgs e)
 	{
 		TagCollection defaultTags = new();
@@ -65,11 +75,6 @@ public unsafe class ActorViewModel : ViewModel
 	public ActorViewModel(int index)
 	{
 		this.ObjectTableIndex = index;
-
-		if (DalamudServices.Framework != null)
-		{
-			DalamudServices.Framework.Update += this.OnFrameworkUpdate;
-		}
 	}
 
 	[AutoNotify] public IntPtr Address { get; set; } = IntPtr.Zero;
@@ -110,7 +115,7 @@ public unsafe class ActorViewModel : ViewModel
 		}
 	}
 
-	private void OnFrameworkUpdate(IFramework framework)
+	public void OnFrameworkUpdate()
 	{
 		this.Address = DalamudServices.ObjectTable?.GetObjectAddress(this.ObjectTableIndex) ?? IntPtr.Zero;
 	}

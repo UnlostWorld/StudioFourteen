@@ -1,5 +1,6 @@
 ﻿namespace ScreenshotStudio.Windows;
 
+using Dalamud.Plugin.Services;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Structs;
@@ -173,6 +174,9 @@ public abstract partial class Panel : Window, IAutoNotify
 		if (DalamudServices.GameGui != null)
 			DalamudServices.GameGui.UiHideToggled += this.OnGameUiToggled;
 
+		if (DalamudServices.Framework != null)
+			DalamudServices.Framework.Update += this.OnFrameworkUpdate;
+
 		AutoPropertyNotifyService.Register(this);
 		this.IsOpen = true;
 	}
@@ -182,9 +186,16 @@ public abstract partial class Panel : Window, IAutoNotify
 		if (DalamudServices.GameGui != null)
 			DalamudServices.GameGui.UiHideToggled -= this.OnGameUiToggled;
 
+		if (DalamudServices.Framework != null)
+			DalamudServices.Framework.Update -= this.OnFrameworkUpdate;
+
 		AutoPropertyNotifyService.Remove(this);
 		this.Services.Panels.OnPanelClosed(this);
 		this.IsOpen = false;
+	}
+
+	protected virtual void OnFrameworkUpdate(IFramework framework)
+	{
 	}
 
 	private void OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
