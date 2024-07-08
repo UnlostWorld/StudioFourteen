@@ -5,20 +5,37 @@
 	xmlns:excel="clr-namespace:ScreenshotStudio.GameData.Excel">
 
 	<DataTemplate DataType="{x:Type excel:Item}">
+		<Grid Margin="0,-3,0,3">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition />
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+			</Grid.RowDefinitions>
 
-		<Grid>
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="Auto" />
 				<ColumnDefinition />
 			</Grid.ColumnDefinitions>
 
+			<TextBlock
+				Grid.Row="0"
+				Grid.ColumnSpan="2"
+				MinWidth="200"
+				Style="{DynamicResource Header}"
+				Text="{Binding Name}" />
+
 			<Grid
+				Grid.Row="1"
+				Grid.RowSpan="4"
 				Grid.Column="0"
-				Width="64"
-				Height="64">
+				Width="72"
+				Height="72"
+				Margin="-3,0,3,-3">
 
 				<Image
-					Margin="4,3,4,5"
+					Margin="6,4,6,7"
 					SnapsToDevicePixels="True"
 					Source="{Binding Icon.Source}" />
 
@@ -29,28 +46,34 @@
 					SnapsToDevicePixels="True" />
 			</Grid>
 
-			<StackPanel Grid.Column="1">
+			<TextBlock
+				Grid.Row="1"
+				Grid.Column="1"
+				Margin="0,2,0,0"
+				Foreground="{DynamicResource ForegroundLightBrush}"
+				Text="{Binding Description}" />
 
-				<TextBlock
-					Grid.Column="1"
-					Style="{DynamicResource Body}"
-					Text="{Binding Name}" />
+			<TextBlock
+				Grid.Row="2"
+				Grid.Column="1"
+				Foreground="{DynamicResource ForegroundLightBrush}"
+				Text="{Binding ClassJobs.Name}" />
 
-				<TextBlock
-					Grid.Row="1"
-					Style="{DynamicResource Body}"
-					Text="{Binding Description}" />
+			<TextBlock
+				Grid.Row="3"
+				Grid.Column="1"
+				Foreground="{DynamicResource ForegroundLightBrush}">
+				<Run Text="Lv." />
+				<Run Text="{Binding EquipLevel, Mode=OneWay}" />
+			</TextBlock>
 
-				<TextBlock
-					Grid.Row="2"
-					Style="{DynamicResource Body}"
-					Text="{Binding EquipLevel}" />
-			</StackPanel>
+			<TextBlock
+				Grid.Row="4"
+				Grid.Column="1"
+				Foreground="{DynamicResource ForegroundLightBrush}"
+				Text="{Binding UICategory.Name}" />
+
 		</Grid>
-
-
-
-
 	</DataTemplate>
 
 </ResourceDictionary>
