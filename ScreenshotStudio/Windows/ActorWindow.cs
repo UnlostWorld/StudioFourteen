@@ -31,6 +31,11 @@ public abstract class ActorWindow : PanelWindow
 	/// </summary>
 	public unsafe Actor* Actor { get; private set; }
 
+	/// <summary>
+	/// Gets the DrawData for the current Actor.
+	/// </summary>
+	public unsafe ActorDrawData DrawData => this.Actor->DrawData;
+
 	public override bool ShouldTickAutoProperties()
 	{
 		if (!this.HasValidTarget)
