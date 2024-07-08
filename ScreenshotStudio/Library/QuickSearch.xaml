@@ -98,7 +98,8 @@
 					Background="Transparent"
 					BorderBrush="{TemplateBinding BorderBrush}"
 					BorderThickness="{TemplateBinding BorderThickness}"
-					ClipToBounds="{TemplateBinding ClipToBounds}">
+					ClipToBounds="{TemplateBinding ClipToBounds}"
+					ToolTip="{TemplateBinding Content}">
 					<Grid>
 
 						<Grid.ColumnDefinitions>
@@ -125,6 +126,11 @@
 						<Grid
 							x:Name="Content"
 							Grid.Column="1">
+
+							<Grid.Resources>
+								<ResourceDictionary Source="QuickSearchTemplates.xaml" />
+							</Grid.Resources>
+
 							<ContentPresenter
 								Margin="{TemplateBinding Padding}"
 								HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -249,9 +255,6 @@
 							<Setter Property="Template" Value="{StaticResource ListBoxItemTemplate}" />
 						</Style>
 					</ListBox.ItemContainerStyle>
-					<ListBox.Resources>
-						<ResourceDictionary Source="QuickSearchTemplates.xaml" />
-					</ListBox.Resources>
 				</ListBox>
 			</Expander.Header>
 
