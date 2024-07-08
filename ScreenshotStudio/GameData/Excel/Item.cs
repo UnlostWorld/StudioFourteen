@@ -19,6 +19,7 @@ public class Item : LibraryExcelRow
 	public ushort SubModelBase { get; protected set; }
 	public ushort SubModelVariant { get; protected set; }
 	public ClassJobCategory? ClassJobs { get; protected set; }
+	public ItemUICategory? UICategory { get; protected set; }
 	public EquipSlotCategory? EquipSlot { get; protected set; }
 	public EquipRaceCategory? EquipRestriction { get; protected set; }
 	public bool HasSubModel => this.SubModelSet != 0;
@@ -43,6 +44,7 @@ public class Item : LibraryExcelRow
 		this.Icon = parser.ReadImageReference<ushort>(10);
 		////ItemLevel? itemLevel = parser.ReadRowReference<ushort, ItemLevel>(11);
 
+		this.UICategory = parser.ReadRowReference<byte, ItemUICategory>(15);
 		this.EquipSlot = parser.ReadRowReference<byte, EquipSlotCategory>(17);
 		this.EquipLevel = parser.ReadColumn<byte>(40);
 		this.EquipRestriction = parser.ReadRowReference<byte, EquipRaceCategory>(42);

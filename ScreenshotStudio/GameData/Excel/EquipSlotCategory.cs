@@ -3,21 +3,33 @@
 using Lumina.Data;
 using Lumina.Excel;
 using ScreenshotStudio.Tags;
+using System.Text;
 
 public class EquipSlotCategory : Lumina.Excel.GeneratedSheets.EquipSlotCategory
 {
 	private readonly bool[] slots = new bool[(int)ItemSlots.Count];
 
 	public TagCollection Tags { get; init; } = new();
+	public string? Name { get; private set; }
 
 	public override void PopulateData(RowParser parser, Lumina.GameData gameData, Language language)
 	{
 		base.PopulateData(parser, gameData, language);
 
+		StringBuilder nameBuilder = new();
+
 		for (var i = 0; i < (int)ItemSlots.Count; i++)
 		{
 			this.slots[i] = parser.ReadColumn<sbyte>(i) != 0;
+
+			if (this.slots[i])
+			{
+				nameBuilder.Append(((ItemSlots)i).GetDisplayName());
+				nameBuilder.Append(" ");
+			}
 		}
+
+		this.Name = nameBuilder.ToString();
 	}
 
 	public bool Contains(ItemSlots slot)

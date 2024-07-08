@@ -9,7 +9,6 @@ using ScreenshotStudio.GameData.Excel;
 using ScreenshotStudio.Plugin;
 using Lumina.Data;
 using ScreenshotStudio.GameData.Sheets;
-using System.Runtime.CompilerServices;
 using System.IO;
 
 public class GameDataService : ServiceBase
@@ -108,6 +107,7 @@ public class GameDataService : ServiceBase
 		this.AddSheet<Weather>();
 		this.AddSheet<WeatherRate>();
 		this.AddSheet<ClassJob>();
+		this.AddSheet<ItemUICategory>();
 
 		this.AddSheet<Lumina.Excel.GeneratedSheets.PlaceName>();
 

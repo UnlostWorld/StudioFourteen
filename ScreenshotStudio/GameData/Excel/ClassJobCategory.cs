@@ -3,29 +3,27 @@
 using Lumina.Data;
 using Lumina.Excel;
 using ScreenshotStudio.Tags;
-using System;
+using System.Collections.Generic;
 
-[Sheet("ClassJobCategory", 2091841742u)]
+[Sheet("ClassJobCategory", 0x65bbdb12)]
 public class ClassJobCategory : LibraryExcelRow
 {
 	private readonly bool[] classJobs = new bool[(int)ClassJob.ClassJobRows.Count];
 
-	public enum ClassJobCategoryRows : uint
-	{
-		None,
-		AllClasses,
-
-		DiscipleOfWar = 30,
-		DiscipleOfMagic = 31,
-		DiscipleOfTheLand = 32,
-		DiscipleOfTheHand = 33,
-		DiscipleOfWarOrMagic = 34,
-		DiscipleOfTheLandOrHand = 45,
-		DiscipleOfWarOrMagic2 = 110,
-		DiscipleOfWarOrMagic3 = 192,
-	}
-
 	public string? Name { get; set; }
+
+	public List<Entry> ClassJobs { get; init; } = new();
+
+	public bool IsAllClasses => this.RowId == 1;
+	public bool IsDiscipleOfWar => this.RowId == 30;
+	public bool IsDiscipleOfMagic => this.RowId == 31;
+	public bool IsDiscipleOfTheLand => this.RowId == 32;
+	public bool IsDiscipleOfTheHand => this.RowId == 33;
+	public bool IsDiscipleOfWarOrMagic => this.RowId == 34 || this.RowId == 110 || this.RowId == 192;
+	public bool IsDiscipleOfTheLandOrHand => this.RowId == 45;
+
+	public bool IsTanks => this.RowId == 59;
+	public bool IsHealers => this.RowId == 64;
 
 	public override void PopulateData(RowParser parser, Lumina.GameData gameData, Language language)
 	{
@@ -36,7 +34,10 @@ public class ClassJobCategory : LibraryExcelRow
 
 		for (var i = 1; i < (int)ClassJob.ClassJobRows.Count; i++)
 		{
-			this.classJobs[i - 1] = parser.ReadColumn<bool>(i + 1);
+			bool val = parser.ReadColumn<bool>(i + 1);
+
+			this.classJobs[i - 1] = val;
+			this.ClassJobs.Add(new((ClassJob.ClassJobRows)i, val));
 		}
 	}
 
@@ -76,40 +77,41 @@ public class ClassJobCategory : LibraryExcelRow
 		}
 
 		// Special tags
-		if (Enum.IsDefined((ClassJobCategoryRows)this.RowId))
+		if (this.IsDiscipleOfWar)
 		{
-			ClassJobCategoryRows row = (ClassJobCategoryRows)this.RowId;
-
-			if (this.RowId == (uint)ClassJobCategoryRows.DiscipleOfWar)
-			{
-				tags.Add(row.ToString()).WithAlias("DOW");
-			}
-			else if (this.RowId == (uint)ClassJobCategoryRows.DiscipleOfMagic)
-			{
-				tags.Add(row.ToString()).WithAlias("DOM");
-			}
-			else if (this.RowId == (uint)ClassJobCategoryRows.DiscipleOfTheLand)
-			{
-				tags.Add(row.ToString()).WithAlias("DOL");
-			}
-			else if (this.RowId == (uint)ClassJobCategoryRows.DiscipleOfTheHand)
-			{
-				tags.Add(row.ToString()).WithAlias("DOH");
-			}
-			else if (this.RowId == (uint)ClassJobCategoryRows.DiscipleOfWarOrMagic
-				|| this.RowId == (uint)ClassJobCategoryRows.DiscipleOfWarOrMagic2
-				|| this.RowId == (uint)ClassJobCategoryRows.DiscipleOfWarOrMagic3)
-			{
-				tags.Add(ClassJobCategoryRows.DiscipleOfWar.ToString()).WithAlias("DOW");
-				tags.Add(ClassJobCategoryRows.DiscipleOfMagic.ToString()).WithAlias("DOM");
-			}
-			else if (this.RowId == (uint)ClassJobCategoryRows.DiscipleOfTheLandOrHand)
-			{
-				tags.Add(ClassJobCategoryRows.DiscipleOfTheLand.ToString()).WithAlias("DOL");
-				tags.Add(ClassJobCategoryRows.DiscipleOfTheHand.ToString()).WithAlias("DOH");
-			}
+			tags.Add("DOW");
+		}
+		else if (this.IsDiscipleOfMagic)
+		{
+			tags.Add("DOM");
+		}
+		else if (this.IsDiscipleOfTheLand)
+		{
+			tags.Add("DOL");
+		}
+		else if (this.IsDiscipleOfTheHand)
+		{
+			tags.Add("DOH");
+		}
+		else if (this.IsDiscipleOfWarOrMagic)
+		{
+			tags.Add("DOW");
+			tags.Add("DOM");
+		}
+		else if (this.IsDiscipleOfTheLandOrHand)
+		{
+			tags.Add("DOL");
+			tags.Add("DOH");
 		}
 
 		return tags;
+	}
+
+	public class Entry(ClassJob.ClassJobRows classJob, bool enabled)
+	{
+		public ClassJob.ClassJobRows ClassJobRow { get; private set; } = classJob;
+		public bool Enabled { get; private set; } = enabled;
+
+		public ClassJob? ClassJob => GameDataService.GetRow<ClassJob>((int)this.ClassJobRow);
 	}
 }
