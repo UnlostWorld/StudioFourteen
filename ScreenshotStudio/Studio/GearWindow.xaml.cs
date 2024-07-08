@@ -13,6 +13,7 @@ using System;
 using System.Windows.Input;
 using ScreenshotStudio.GameData.Sheets;
 using System.Text;
+using Dalamud.Game.ClientState.Objects.Enums;
 
 public partial class GearWindow : ActorWindow
 {
@@ -50,7 +51,7 @@ public partial class GearWindow : ActorWindow
 			defaultTags.Add(equip.Slot.ToTag());
 
 			// Filter by the current race.
-			Race? race = GameDataService.GetRow<Race>((uint)this.DrawData.Customize.Race);
+			Race? race = GameDataService.GetRow<Race>((uint)this.DrawData.Customize.GetValue(CustomizeIndex.Race));
 			if (race != null)
 				defaultTags.Add(race.Name);
 

@@ -7,6 +7,7 @@ using ScreenshotStudio.GameData.Excel;
 using ScreenshotStudio.GameData;
 using ScreenshotStudio.Plugin;
 using System.Collections.Generic;
+using Dalamud.Game.ClientState.Objects.Enums;
 
 public partial class CustomizeWindow : ActorWindow
 {
@@ -50,7 +51,7 @@ public partial class CustomizeWindow : ActorWindow
 	[AutoNotify]
 	public Race? Race
 	{
-		get => this.Races?.GetRow((int)this.Customize.Race);
+		get => this.Races?.GetRow((int)this.Customize.GetValue(CustomizeIndex.Race));
 		set
 		{
 			if (value == null || value.Tribes.Count <= 0)
@@ -60,10 +61,10 @@ public partial class CustomizeWindow : ActorWindow
 			if (tribe == null)
 				return;
 
-			this.Customize.Race = (Race.RaceRows)value.RowId;
+			this.Customize.SetValue(CustomizeIndex.Race, (byte)value.RowId);
 			this.NotifyPropertyChanged(nameof(CustomizeWindow.Race));
 
-			this.Customize.Tribe = (Tribe.TribeRows)tribe.RowId;
+			this.Customize.SetValue(CustomizeIndex.Tribe, (byte)tribe.RowId);
 			this.NotifyPropertyChanged(nameof(CustomizeWindow.Tribe));
 
 			if (!value.Genders.Contains(this.Gender))
@@ -79,13 +80,13 @@ public partial class CustomizeWindow : ActorWindow
 	[AutoNotify]
 	public Tribe? Tribe
 	{
-		get => this.Tribes?.GetRow((int)this.Customize.Tribe);
+		get => this.Tribes?.GetRow((int)this.Customize.GetValue(CustomizeIndex.Tribe));
 		set
 		{
 			if (value == null)
 				return;
 
-			this.Customize.Tribe = (Tribe.TribeRows)value.RowId;
+			this.Customize.SetValue(CustomizeIndex.Tribe, (byte)value.RowId);
 
 			if (!value.Ages.Contains(this.Age))
 				this.Age = Ages.Normal;
@@ -97,10 +98,10 @@ public partial class CustomizeWindow : ActorWindow
 	[AutoNotify]
 	public Genders Gender
 	{
-		get => this.Customize.Gender;
+		get => (Genders)this.Customize.GetValue(CustomizeIndex.Gender);
 		set
 		{
-			this.Customize.Gender = value;
+			this.Customize.SetValue(CustomizeIndex.Gender, (byte)value);
 			this.Apply(true);
 		}
 	}
@@ -108,10 +109,10 @@ public partial class CustomizeWindow : ActorWindow
 	[AutoNotify]
 	public Ages Age
 	{
-		get => this.Customize.Age;
+		get => (Ages)this.Customize.GetValue(CustomizeIndex.ModelType);
 		set
 		{
-			this.Customize.Age = value;
+			this.Customize.SetValue(CustomizeIndex.ModelType, (byte)value);
 			this.Apply(true);
 		}
 	}
@@ -119,10 +120,10 @@ public partial class CustomizeWindow : ActorWindow
 	[AutoNotify]
 	public byte ActorHeight
 	{
-		get => this.Customize.Height;
+		get => this.Customize.GetValue(CustomizeIndex.Height);
 		set
 		{
-			this.Customize.Height = value;
+			this.Customize.SetValue(CustomizeIndex.Height, value);
 			this.Apply(false);
 		}
 	}
@@ -130,10 +131,10 @@ public partial class CustomizeWindow : ActorWindow
 	[AutoNotify]
 	public byte Face
 	{
-		get => this.Customize.Face;
+		get => this.Customize.GetValue(CustomizeIndex.FaceType);
 		set
 		{
-			this.Customize.Face = value;
+			this.Customize.SetValue(CustomizeIndex.FaceType, value);
 			this.Apply(false);
 		}
 	}
@@ -141,10 +142,10 @@ public partial class CustomizeWindow : ActorWindow
 	[AutoNotify]
 	public byte Hair
 	{
-		get => this.Customize.Hair;
+		get => this.Customize.GetValue(CustomizeIndex.HairStyle);
 		set
 		{
-			this.Customize.Hair = value;
+			this.Customize.SetValue(CustomizeIndex.HairStyle, value);
 			this.Apply(false);
 		}
 	}
@@ -152,10 +153,10 @@ public partial class CustomizeWindow : ActorWindow
 	[AutoNotify]
 	public bool EnableHighlights
 	{
-		get => this.Customize.HighlightType != 0;
+		get => this.Customize.GetValue(CustomizeIndex.HairColor2) != 0;
 		set
 		{
-			this.Customize.HighlightType = value ? (byte)128 : (byte)0;
+			this.Customize.SetValue(CustomizeIndex.HairColor2, value ? (byte)128 : (byte)0);
 			this.Apply(false);
 		}
 	}
@@ -163,10 +164,10 @@ public partial class CustomizeWindow : ActorWindow
 	[AutoNotify]
 	public byte SkinTone
 	{
-		get => this.Customize.SkinTone;
+		get => this.Customize.GetValue(CustomizeIndex.SkinColor);
 		set
 		{
-			this.Customize.SkinTone = value;
+			this.Customize.SetValue(CustomizeIndex.SkinColor, value);
 			this.Apply(false);
 		}
 	}
@@ -174,10 +175,10 @@ public partial class CustomizeWindow : ActorWindow
 	[AutoNotify]
 	public byte RightEyeColor
 	{
-		get => this.Customize.RightEyeColor;
+		get => this.Customize.GetValue(CustomizeIndex.EyeColor);
 		set
 		{
-			this.Customize.RightEyeColor = value;
+			this.Customize.SetValue(CustomizeIndex.EyeColor, value);
 			this.Apply(false);
 		}
 	}
@@ -185,10 +186,10 @@ public partial class CustomizeWindow : ActorWindow
 	[AutoNotify]
 	public byte HairTone
 	{
-		get => this.Customize.HairTone;
+		get => this.Customize.GetValue(CustomizeIndex.HairColor);
 		set
 		{
-			this.Customize.HairTone = value;
+			this.Customize.SetValue(CustomizeIndex.HairColor, value);
 			this.Apply(false);
 		}
 	}
@@ -196,10 +197,10 @@ public partial class CustomizeWindow : ActorWindow
 	[AutoNotify]
 	public byte Highlights
 	{
-		get => this.Customize.Highlights;
+		get => this.Customize.GetValue(CustomizeIndex.HairColor2);
 		set
 		{
-			this.Customize.Highlights = value;
+			this.Customize.SetValue(CustomizeIndex.HairColor2, value);
 			this.Apply(false);
 		}
 	}
@@ -207,10 +208,10 @@ public partial class CustomizeWindow : ActorWindow
 	[AutoNotify]
 	public Structs.Customize.FacialFeatures FacialFeature
 	{
-		get => this.Customize.FacialFeature;
+		get => (Structs.Customize.FacialFeatures)this.Customize.GetValue(CustomizeIndex.FaceFeatures);
 		set
 		{
-			this.Customize.FacialFeature = value;
+			this.Customize.SetValue(CustomizeIndex.FaceFeatures, (byte)value);
 			this.Apply(false);
 		}
 	}
@@ -221,10 +222,10 @@ public partial class CustomizeWindow : ActorWindow
 	[AutoNotify]
 	public byte FacialFeatureColor
 	{
-		get => this.Customize.FacialFeatureColor;
+		get => this.Customize.GetValue(CustomizeIndex.FaceFeaturesColor);
 		set
 		{
-			this.Customize.FacialFeatureColor = value;
+			this.Customize.SetValue(CustomizeIndex.FaceFeaturesColor, value);
 			this.Apply(false);
 		}
 	}
@@ -232,10 +233,10 @@ public partial class CustomizeWindow : ActorWindow
 	[AutoNotify]
 	public byte Eyebrows
 	{
-		get => this.Customize.Eyebrows;
+		get => this.Customize.GetValue(CustomizeIndex.Eyebrows);
 		set
 		{
-			this.Customize.Eyebrows = value;
+			this.Customize.SetValue(CustomizeIndex.Eyebrows, value);
 			this.Apply(false);
 		}
 	}
@@ -243,10 +244,10 @@ public partial class CustomizeWindow : ActorWindow
 	[AutoNotify]
 	public byte LeftEyeColor
 	{
-		get => this.Customize.LeftEyeColor;
+		get => this.Customize.GetValue(CustomizeIndex.EyeColor2);
 		set
 		{
-			this.Customize.LeftEyeColor = value;
+			this.Customize.SetValue(CustomizeIndex.EyeColor2, value);
 			this.Apply(false);
 		}
 	}
@@ -281,10 +282,10 @@ public partial class CustomizeWindow : ActorWindow
 	[AutoNotify]
 	public byte Eyes
 	{
-		get => this.Customize.Eyes;
+		get => this.Customize.GetValue(CustomizeIndex.EyeShape);
 		set
 		{
-			this.Customize.Eyes = value;
+			this.Customize.SetValue(CustomizeIndex.EyeShape, value);
 			this.Apply(false);
 		}
 	}
@@ -306,10 +307,10 @@ public partial class CustomizeWindow : ActorWindow
 	[AutoNotify]
 	public byte Nose
 	{
-		get => this.Customize.Nose;
+		get => this.Customize.GetValue(CustomizeIndex.NoseShape);
 		set
 		{
-			this.Customize.Nose = value;
+			this.Customize.SetValue(CustomizeIndex.NoseShape, value);
 			this.Apply(false);
 		}
 	}
@@ -317,10 +318,10 @@ public partial class CustomizeWindow : ActorWindow
 	[AutoNotify]
 	public byte Jaw
 	{
-		get => this.Customize.Jaw;
+		get => this.Customize.GetValue(CustomizeIndex.JawShape);
 		set
 		{
-			this.Customize.Jaw = value;
+			this.Customize.SetValue(CustomizeIndex.JawShape, value);
 			this.Apply(false);
 		}
 	}
@@ -328,10 +329,10 @@ public partial class CustomizeWindow : ActorWindow
 	[AutoNotify]
 	public byte MouthId
 	{
-		get => this.Customize.MouthId;
+		get => this.Customize.GetValue(CustomizeIndex.LipStyle);
 		set
 		{
-			this.Customize.MouthId = value;
+			this.Customize.SetValue(CustomizeIndex.LipStyle, value);
 			this.Apply(false);
 		}
 	}
@@ -353,10 +354,10 @@ public partial class CustomizeWindow : ActorWindow
 	[AutoNotify]
 	public byte LipsToneFurPattern
 	{
-		get => this.Customize.LipsToneFurPattern;
+		get => this.Customize.GetValue(CustomizeIndex.LipColor);
 		set
 		{
-			this.Customize.LipsToneFurPattern = value;
+			this.Customize.SetValue(CustomizeIndex.LipColor, value);
 			this.Apply(false);
 		}
 	}
@@ -364,10 +365,10 @@ public partial class CustomizeWindow : ActorWindow
 	[AutoNotify]
 	public byte EarMuscleTailSize
 	{
-		get => this.Customize.EarMuscleTailSize;
+		get => this.Customize.GetValue(CustomizeIndex.RaceFeatureSize);
 		set
 		{
-			this.Customize.EarMuscleTailSize = value;
+			this.Customize.SetValue(CustomizeIndex.RaceFeatureSize, value);
 			this.Apply(false);
 		}
 	}
@@ -375,10 +376,10 @@ public partial class CustomizeWindow : ActorWindow
 	[AutoNotify]
 	public byte TailEarsType
 	{
-		get => this.Customize.TailEarsType;
+		get => this.Customize.GetValue(CustomizeIndex.RaceFeatureType);
 		set
 		{
-			this.Customize.TailEarsType = value;
+			this.Customize.SetValue(CustomizeIndex.RaceFeatureType, value);
 			this.Apply(false);
 		}
 	}
@@ -386,10 +387,10 @@ public partial class CustomizeWindow : ActorWindow
 	[AutoNotify]
 	public byte Bust
 	{
-		get => this.Customize.Bust;
+		get => this.Customize.GetValue(CustomizeIndex.BustSize);
 		set
 		{
-			this.Customize.Bust = value;
+			this.Customize.SetValue(CustomizeIndex.BustSize, value);
 			this.Apply(false);
 		}
 	}
@@ -397,10 +398,10 @@ public partial class CustomizeWindow : ActorWindow
 	[AutoNotify]
 	public byte FacePaintId
 	{
-		get => this.Customize.FacePaintId;
+		get => this.Customize.GetValue(CustomizeIndex.Facepaint);
 		set
 		{
-			this.Customize.FacePaintId = value;
+			this.Customize.SetValue(CustomizeIndex.Facepaint, value);
 			this.Apply(false);
 		}
 	}
@@ -422,10 +423,10 @@ public partial class CustomizeWindow : ActorWindow
 	[AutoNotify]
 	public byte FacePaintColor
 	{
-		get => this.Customize.FacePaintColor;
+		get => this.Customize.GetValue(CustomizeIndex.FacepaintColor);
 		set
 		{
-			this.Customize.FacePaintColor = value;
+			this.Customize.SetValue(CustomizeIndex.FacepaintColor, value);
 			this.Apply(false);
 		}
 	}
@@ -445,7 +446,7 @@ public partial class CustomizeWindow : ActorWindow
 		if (this.Actor == null)
 			return;
 
-		DalamudServices.Framework?.RunOnFrameworkThread(() =>
+		/*DalamudServices.Framework?.RunOnFrameworkThread(() =>
 		{
 			if (!redraw)
 			{
@@ -462,6 +463,6 @@ public partial class CustomizeWindow : ActorWindow
 				this.Actor->GameObject.DisableDraw();
 				this.Actor->GameObject.EnableDraw();
 			}
-		});
+		});*/
 	}
 }
