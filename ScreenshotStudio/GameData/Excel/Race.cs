@@ -31,14 +31,29 @@ public class Race : LibraryExcelRow
 	public string Feminine { get; private set; } = string.Empty;
 	public string Masculine { get; private set; } = string.Empty;
 
-	public Item? RacialGearMasculineBody { get; private set; }
-	public Item? RacialGearMasculineHands { get; private set; }
-	public Item? RacialGearMasculineLegs { get; private set; }
-	public Item? RacialGearMasculineFeet { get; private set; }
-	public Item? RacialGearFeminineBody { get; private set; }
-	public Item? RacialGearFeminineHands { get; private set; }
-	public Item? RacialGearFeminineLegs { get; private set; }
-	public Item? RacialGearFeminineFeet { get; private set; }
+	public int RacialGearMasculineBodyId { get; private set; }
+	public Item? RacialGearMasculineBody => GameDataService.GetRow<Item>(this.RacialGearMasculineBodyId);
+
+	public int RacialGearMasculineHandsId { get; private set; }
+	public Item? RacialGearMasculineHands => GameDataService.GetRow<Item>(this.RacialGearMasculineHandsId);
+
+	public int RacialGearMasculineLegsId { get; private set; }
+	public Item? RacialGearMasculineLegs => GameDataService.GetRow<Item>(this.RacialGearMasculineLegsId);
+
+	public int RacialGearMasculineFeetId { get; private set; }
+	public Item? RacialGearMasculineFeet => GameDataService.GetRow<Item>(this.RacialGearMasculineFeetId);
+
+	public int RacialGearFeminineBodyId { get; private set; }
+	public Item? RacialGearFeminineBody => GameDataService.GetRow<Item>(this.RacialGearFeminineBodyId);
+
+	public int RacialGearFeminineHandsId { get; private set; }
+	public Item? RacialGearFeminineHands => GameDataService.GetRow<Item>(this.RacialGearFeminineHandsId);
+
+	public int RacialGearFeminineLegsId { get; private set; }
+	public Item? RacialGearFeminineLegs => GameDataService.GetRow<Item>(this.RacialGearFeminineLegsId);
+
+	public int RacialGearFeminineFeetId { get; private set; }
+	public Item? RacialGearFeminineFeet => GameDataService.GetRow<Item>(this.RacialGearFeminineFeetId);
 
 	// Customize options
 	public List<Tribe?> Tribes { get; private set; } = new();
@@ -51,14 +66,14 @@ public class Race : LibraryExcelRow
 		this.Masculine = parser.ReadColumn<SeString>(0) ?? string.Empty;
 		this.Feminine = parser.ReadColumn<SeString>(1) ?? string.Empty;
 
-		this.RacialGearMasculineBody = GameDataService.GetRow<Item>(parser.ReadColumn<int>(2));
-		this.RacialGearMasculineHands = GameDataService.GetRow<Item>(parser.ReadColumn<int>(3));
-		this.RacialGearMasculineLegs = GameDataService.GetRow<Item>(parser.ReadColumn<int>(4));
-		this.RacialGearMasculineFeet = GameDataService.GetRow<Item>(parser.ReadColumn<int>(5));
-		this.RacialGearFeminineBody = GameDataService.GetRow<Item>(parser.ReadColumn<int>(6));
-		this.RacialGearFeminineHands = GameDataService.GetRow<Item>(parser.ReadColumn<int>(7));
-		this.RacialGearFeminineLegs = GameDataService.GetRow<Item>(parser.ReadColumn<int>(8));
-		this.RacialGearFeminineFeet = GameDataService.GetRow<Item>(parser.ReadColumn<int>(9));
+		this.RacialGearMasculineBodyId = parser.ReadColumn<int>(2);
+		this.RacialGearMasculineHandsId = parser.ReadColumn<int>(3);
+		this.RacialGearMasculineLegsId = parser.ReadColumn<int>(4);
+		this.RacialGearMasculineFeetId = parser.ReadColumn<int>(5);
+		this.RacialGearFeminineBodyId = parser.ReadColumn<int>(6);
+		this.RacialGearFeminineHandsId = parser.ReadColumn<int>(7);
+		this.RacialGearFeminineLegsId = parser.ReadColumn<int>(8);
+		this.RacialGearFeminineFeetId = parser.ReadColumn<int>(9);
 
 		this.Tribes = (RaceRows)this.RowId switch
 		{
