@@ -3,7 +3,7 @@
 using Lumina.Data;
 using Lumina.Excel;
 
-[Sheet("Mount", 0x33b2e4b2)]
+[Sheet("Mount", 0x304b5115)]
 public class Mount : LibraryExcelRow
 {
 	public string? Name { get; protected set; }

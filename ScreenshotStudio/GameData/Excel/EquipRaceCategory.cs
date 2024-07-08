@@ -48,6 +48,11 @@ public class EquipRaceCategory : StudioExcelRow
 
 		for(int i = 1; i < (int)Race.RaceRows.Count; i++)
 		{
+			if (i == (int)Race.RaceRows.Hyur)
+			{
+				this.Log.Information($"{i} = {this.races[i - 1]}");
+			}
+
 			if (this.races[i - 1] == true)
 			{
 				Race? race = GameDataService.GetRow<Race>(i);

@@ -3,7 +3,7 @@
 using Lumina.Data;
 using Lumina.Excel;
 
-[Sheet("BNpcBase", 0xe136dda3)]
+[Sheet("BNpcBase", 0x86278126)]
 public class BattleNpc : LibraryExcelRow
 {
 	public string Name { get; protected set; } = string.Empty;

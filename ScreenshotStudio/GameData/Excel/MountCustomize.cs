@@ -3,7 +3,7 @@
 using Lumina.Data;
 using Lumina.Excel;
 
-[Sheet("MountCustomize", 0x859ade0f)]
+[Sheet("MountCustomize", 0xdde90e69)]
 public class MountCustomize : StudioExcelRow
 {
 	public ushort HyurMidlanderMaleScale { get; set; }

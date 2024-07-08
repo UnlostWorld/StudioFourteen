@@ -5,7 +5,7 @@ using Lumina.Excel;
 using ScreenshotStudio.Structs;
 using WpfUtils;
 
-[Sheet("Item", 0x800968c9)]
+[Sheet("Item", 0xe9a33c9d)]
 public class Item : LibraryExcelRow
 {
 	public string? Name { get; protected set; }

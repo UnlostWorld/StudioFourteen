@@ -8,7 +8,7 @@ using ScreenshotStudio.Library;
 using ScreenshotStudio.Structs;
 using System.Text;
 
-[Sheet("ENpcBase", 0x927347d8)]
+[Sheet("ENpcBase", 0x464052cd)]
 public class EventNpc : LibraryExcelRow
 {
 	public string? AppearanceHash { get; private set; }
