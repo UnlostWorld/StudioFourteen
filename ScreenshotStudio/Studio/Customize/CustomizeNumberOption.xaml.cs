@@ -41,24 +41,15 @@ public partial class CustomizeNumberOption : UserControl, INotifyPropertyChanged
 		set => MenuDp.Set(this, value);
 	}
 
-	////[AlsoNotifyFor(nameof(Menu), nameof(Value))]
-	public CharaMakeType.Menu.Option? Option
+	public static void OnValueChanged(CustomizeNumberOption sender, byte newValue)
 	{
-		get => this.Menu?.GetOption(this.Value);
-		set => this.Value = value?.Value ?? this.Menu?.InitVal ?? 0;
 	}
 
-	public static void OnValueChanged(CustomizeNumberOption sender, byte newalue)
+	public static void OnMenuChanged(CustomizeNumberOption sender, CharaMakeType.Menu? newValue)
 	{
-		sender.PropertyChanged?.Invoke(sender, new(nameof(Option)));
-	}
-
-	public static void OnMenuChanged(CustomizeNumberOption sender, CharaMakeType.Menu? newalue)
-	{
-		sender.PropertyChanged?.Invoke(sender, new(nameof(Option)));
-
 		// A bit of a hack, but as the selected value has not changed, while the list of options has,
 		// refresh the selector so it shows the correct selected item.
-		sender.ValueList.SelectedItem = sender.Value;
+		// Doing this will set the value to 0 on load, so ... don't.
+		////sender.ValueList.SelectedItem = sender.Value;
 	}
 }

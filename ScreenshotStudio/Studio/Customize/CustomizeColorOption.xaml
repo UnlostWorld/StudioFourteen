@@ -37,13 +37,15 @@
 			CornerRadius="{Binding RightElementCornerRadius}"
 			Style="{DynamicResource WpfUtilsControlBorder}" />
 
+
+
 		<ComboBox
 			Grid.Column="0"
 			Height="26"
 			Margin="0"
 			Foreground="Black"
-			ItemsSource="{Binding Menu.Options}"
-			SelectedItem="{Binding Option}"
+			ItemsSource="{Binding Options}"
+			SelectedItem="{Binding SelectedOption}"
 			Style="{DynamicResource WpfUtilsComboBoxNoBorder}">
 
 			<ComboBox.Template>
@@ -51,36 +53,38 @@
 
 					<Grid>
 
-						<ToggleButton
-							Name="toggleButton"
-							Margin="0"
-							Padding="{TemplateBinding Padding}"
-							HorizontalContentAlignment="Stretch"
-							VerticalContentAlignment="Stretch"
-							Background="Transparent"
-							Foreground="Black"
-							IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+						<Border
+							Background="{DynamicResource ControlBackgroundBrush}"
+							CornerRadius="{Binding LeftElementCornerRadius}">
 
-							<Border
+							<ToggleButton
+								Name="toggleButton"
 								Margin="0"
-								BorderBrush="{DynamicResource ControlBackgroundBrush}"
-								BorderThickness="1"
-								CornerRadius="6,0,0,6">
-								<Border.Background>
-									<SolidColorBrush Color="{Binding Option.Color.WpfColor}" />
-								</Border.Background>
+								Padding="{TemplateBinding Padding}"
+								HorizontalContentAlignment="Stretch"
+								VerticalContentAlignment="Stretch"
+								Background="Transparent"
+								Foreground="Black"
+								IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
 
-								<Path
-									x:Name="Chevron"
-									Margin="3"
-									HorizontalAlignment="Right"
-									VerticalAlignment="Center"
-									Data="M 0,0 5,3 10,0"
-									Stroke="{TemplateBinding Foreground}"
-									StrokeThickness="1" />
-							</Border>
+								<Border
+									Margin="4"
+									CornerRadius="3">
+									<Border.Background>
+										<SolidColorBrush Color="{Binding SelectedOption.Entry.Color}" />
+									</Border.Background>
 
-						</ToggleButton>
+									<Path
+										x:Name="Chevron"
+										Margin="3"
+										HorizontalAlignment="Right"
+										VerticalAlignment="Center"
+										Data="M 0,0 5,3 10,0"
+										Stroke="{TemplateBinding Foreground}"
+										StrokeThickness="1" />
+								</Border>
+							</ToggleButton>
+						</Border>
 
 						<Popup
 							Name="PART_Popup"
@@ -169,7 +173,7 @@
 						BorderThickness="1"
 						CornerRadius="3">
 						<Border.BorderBrush>
-							<SolidColorBrush Color="{Binding Color.WpfColor, FallbackValue=Transparent}" />
+							<SolidColorBrush Color="{Binding Entry.Color, FallbackValue=Transparent}" />
 						</Border.BorderBrush>
 
 						<Grid>
@@ -178,7 +182,7 @@
 								HorizontalAlignment="Left"
 								CornerRadius="2,0,0,2">
 								<Border.Background>
-									<SolidColorBrush Color="{Binding Color.WpfColor, FallbackValue=Transparent}" />
+									<SolidColorBrush Color="{Binding Entry.Color, FallbackValue=Transparent}" />
 								</Border.Background>
 							</Border>
 
@@ -193,7 +197,7 @@
 						<Border.ToolTip>
 							<StackPanel Orientation="Vertical">
 								<TextBlock Text="{Binding Value}" />
-								<TextBlock Text="{Binding Color.Hex}" />
+								<TextBlock Text="{Binding Entry.Hex}" />
 							</StackPanel>
 						</Border.ToolTip>
 					</Border>
@@ -209,7 +213,6 @@
 			Buttons="True"
 			Maximum="255"
 			Minimum="0"
-			ValueOffset="1"
 			Value="{Binding Value}" />
 
 	</Grid>

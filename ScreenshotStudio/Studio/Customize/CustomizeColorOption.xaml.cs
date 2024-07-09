@@ -1,10 +1,13 @@
 ﻿namespace ScreenshotStudio.Studio.Customize;
 
+using Anamnesis.Actor.Utilities;
 using ScreenshotStudio.GameData.Excel;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using WpfUtils.DependencyProperties;
+using static FFXIVClientStructs.FFXIV.Component.GUI.AtkComponentNumericInput.Delegates;
 
 public partial class CustomizeColorOption : UserControl, INotifyPropertyChanged
 {
@@ -21,6 +24,26 @@ public partial class CustomizeColorOption : UserControl, INotifyPropertyChanged
 
 	public event PropertyChangedEventHandler? PropertyChanged;
 
+	public List<ColorOption> Options { get; init; } = new();
+
+	public ColorOption? SelectedOption
+	{
+		get
+		{
+			foreach (var option in this.Options)
+			{
+				if (option.Value == this.Value)
+				{
+					return option;
+				}
+			}
+
+			return null;
+		}
+
+		set => this.Value = value?.Value ?? 0;
+	}
+
 	public byte Value
 	{
 		get => ValueDp.Get(this);
@@ -36,29 +59,54 @@ public partial class CustomizeColorOption : UserControl, INotifyPropertyChanged
 	public CornerRadius CornerRadius
 	{
 		get => CornerRadiusDp.Get(this);
-		set => CornerRadiusDp.Set(this, value);
+		set
+		{
+			CornerRadiusDp.Set(this, value);
+			this.PropertyChanged?.Invoke(this, new(nameof(CustomizeColorOption.LeftElementCornerRadius)));
+			this.PropertyChanged?.Invoke(this, new(nameof(CustomizeColorOption.RightElementCornerRadius)));
+		}
 	}
 
-	// [AlsoNotifyFor(nameof(CornerRadius))]
 	public CornerRadius LeftElementCornerRadius => new(this.CornerRadius.TopLeft, 0, 0, this.CornerRadius.BottomLeft);
-
-	// [AlsoNotifyFor(nameof(CornerRadius))]
 	public CornerRadius RightElementCornerRadius => new(0, this.CornerRadius.TopRight, this.CornerRadius.BottomRight, 0);
 
-	// [AlsoNotifyFor(nameof(Menu), nameof(Value))]
-	public CharaMakeType.Menu.Option? Option
+	public static void OnValueChanged(CustomizeColorOption sender, byte newValue)
 	{
-		get => this.Menu?.GetOption(this.Value);
-		set => this.Value = value?.Value ?? this.Menu?.InitVal ?? 0;
+		sender.PropertyChanged?.Invoke(sender, new(nameof(CustomizeColorOption.SelectedOption)));
 	}
 
-	public static void OnValueChanged(CustomizeColorOption sender, byte newalue)
+	public static void OnMenuChanged(CustomizeColorOption sender, CharaMakeType.Menu? newValue)
 	{
-		sender.PropertyChanged?.Invoke(sender, new(nameof(Option)));
+		sender.PopulateColors();
+		sender.PropertyChanged?.Invoke(sender, new(nameof(CustomizeColorOption.SelectedOption)));
+		sender.PropertyChanged?.Invoke(sender, new(nameof(CustomizeColorOption.Value)));
 	}
 
-	public static void OnMenuChanged(CustomizeColorOption sender, CharaMakeType.Menu? newalue)
+	private void PopulateColors()
 	{
-		sender.PropertyChanged?.Invoke(sender, new(nameof(Option)));
+		this.Options.Clear();
+
+		if (this.Menu != null)
+		{
+			HumanCmp.Entry[]? entries = HumanCmp.Get(this.Menu);
+			if (entries != null)
+			{
+				for (byte j = 0; j < this.Menu.NumOptions; ++j)
+				{
+					if (entries != null && j < entries.Length)
+					{
+						this.Options.Add(new((byte)(this.Menu.Min + j), entries[j]));
+					}
+				}
+			}
+		}
+
+		this.PropertyChanged?.Invoke(this, new(nameof(CustomizeColorOption.Options)));
+	}
+
+	public class ColorOption(byte value, HumanCmp.Entry entry)
+	{
+		public byte Value { get; init; } = value;
+		public HumanCmp.Entry Entry { get; init; } = entry;
 	}
 }

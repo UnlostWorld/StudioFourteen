@@ -1,16 +1,21 @@
+//// Glamourer
+//// https://github.com/Ottermandias/Glamourer/tree/main/Glamourer/GameData/CharaMakeParams.cs
+//// Brio
+//// https://github.com/Etheirys/Brio/blob/main/Brio/Resources/Sheets/BrioCharaMakeType.cs
+
 namespace ScreenshotStudio.GameData.Excel;
 
 using Anamnesis.Actor.Utilities;
+using Dalamud.Game.ClientState.Objects.Enums;
 using Lumina.Data;
 using Lumina.Excel;
 using ScreenshotStudio.GameData.Sheets;
 using ScreenshotStudio.Structs;
 using System.Collections.Generic;
+using System.Security.AccessControl;
 using LuminaData = Lumina.GameData;
 
-// Much of this has been taken from  Ottermandias / Glamourer.
-// https://github.com/Ottermandias/Glamourer/blob/main/Glamourer.GameData/Customization/CharaMakeParams.cs
-[Sheet("CharaMakeType", columnHash: 0x80d7db6d)]
+[Sheet("CharaMakeType", 0x80d7db6d)]
 public class CharaMakeType : StudioExcelRow
 {
 	public const int NumMenus = 28;
@@ -73,76 +78,23 @@ public class CharaMakeType : StudioExcelRow
 			uint index = parser.ReadColumn<uint>(3 + (6 * NumMenus) + i);
 
 			Menu menu = new();
+			menu.Race = this.Race;
+			menu.Tribe = this.Tribe;
+			menu.Gender = this.Gender;
 			menu.Id = parser.ReadColumn<uint>(3 + (0 * NumMenus) + i);
 			menu.InitVal = parser.ReadColumn<byte>(3 + (1 * NumMenus) + i);
 			menu.Type = (Menu.Types)parser.ReadColumn<byte>(3 + (2 * NumMenus) + i);
 			menu.NumOptions = parser.ReadColumn<byte>(3 + (3 * NumMenus) + i);
 			menu.LookAt = parser.ReadColumn<byte>(3 + (4 * NumMenus) + i);
 			menu.Mask = parser.ReadColumn<uint>(3 + (5 * NumMenus) + i);
-			menu.CustomizationIndex = parser.ReadColumn<uint>(3 + (6 * NumMenus) + i);
+			menu.CustomizationIndex = (CustomizeIndex)parser.ReadColumn<uint>(3 + (6 * NumMenus) + i);
 			menu.Min = parser.ReadColumn<byte>(2999 + i);
 			menu.Max = (byte)(parser.ReadColumn<byte>(87 + i) - 1 + menu.Min);
 
-			// Hairstyles are MakeCustomize
-			if (index == 6 || index == 24)
+			menu.Icons = new ImageReference[menu.NumOptions];
+			for (byte j = 0; j < menu.NumOptions; ++j)
 			{
-				CharaMakeCustomizeSheet.Features featureType = index == 6 ? CharaMakeCustomizeSheet.Features.Hair : CharaMakeCustomizeSheet.Features.FacePaint;
-				List<CharaMakeCustomize>? customize = GameDataService.CharaMakeCustomizes?.GetFeatureOptions(featureType, this.Tribe, this.Gender);
-
-				if (customize != null)
-				{
-					menu.NumOptions = (byte)customize.Count;
-					menu.AllOptions = new Menu.Option[menu.NumOptions];
-					for (byte j = 0; j < menu.NumOptions; ++j)
-					{
-						menu.AllOptions[j] = new Menu.Option();
-						menu.AllOptions[j].Value = customize[j].FeatureId;
-						menu.AllOptions[j].Icon = customize[j].Icon;
-						menu.AllOptions[j].Customize = customize[j];
-						menu.AllOptions[j].Enabled = true;
-					}
-				}
-			}
-			else
-			{
-				// Colors are Human.cmp
-				HumanCmp.Entry[]? colors = index switch
-				{
-					8 => HumanCmp.GetSkin(this.Tribe, this.Gender),
-					9 => HumanCmp.GetEyeColors(),
-					10 => HumanCmp.GetHair(this.Tribe, this.Gender),
-					11 => HumanCmp.GetHairHighlights(),
-					13 => HumanCmp.GetLimbalColors(), // what about for non au-ra? hmmm
-					20 => HumanCmp.GetLipColors(),
-					25 => HumanCmp.GetFacePaintColor(),
-					_ => null,
-				};
-
-				if (colors != null)
-					menu.NumOptions = (byte)colors.Length;
-
-				menu.AllOptions = new Menu.Option[menu.NumOptions];
-				for (byte j = 0; j < menu.NumOptions; ++j)
-				{
-					menu.AllOptions[j] = new Menu.Option();
-					menu.AllOptions[j].Value = (byte)(menu.Min + j);
-					menu.AllOptions[j].Enabled = menu.AllOptions[j].Value >= menu.Min && menu.AllOptions[j].Value <= menu.Max;
-
-					if (menu.Type == Menu.Types.ColorPicker || menu.Type == Menu.Types.DoubleColorPicker)
-					{
-						////if (colors == null || colors.Length != menu.NumOptions)
-						////	throw new Exception("No color or colors where wrong count for menu type");
-
-						if (colors != null && j < colors.Length)
-						{
-							menu.AllOptions[j].Color = colors[j];
-						}
-					}
-					else
-					{
-						menu.AllOptions[j].Icon = new ImageReference(parser.ReadColumn<uint>(3 + ((7 + j) * NumMenus) + i));
-					}
-				}
+				menu.Icons[j] = new ImageReference(parser.ReadColumn<uint>(3 + ((7 + j) * NumMenus) + i));
 			}
 
 			/*option.Graphic = new byte[NumGraphics];
@@ -247,6 +199,9 @@ public class CharaMakeType : StudioExcelRow
 		}
 
 		public string? Name => GameDataService.GetRow<Lobby>(this.Id)?.Text;
+		public Race? Race { get; set; }
+		public Tribe? Tribe { get; set; }
+		public Genders Gender { get; set; }
 
 		public int OptionIndex { get; set; }
 		public uint Id { get; set; }
@@ -255,87 +210,30 @@ public class CharaMakeType : StudioExcelRow
 		public byte NumOptions { get; set; }
 		public byte LookAt { get; set; }
 		public uint Mask { get; set; }
-		public uint CustomizationIndex { get; set; }
+		public CustomizeIndex CustomizationIndex { get; set; }
 		public byte Min { get; set; }
 		public byte Max { get; set; }
-		public Option[]? AllOptions { get; set; }
 
-		public Option[] Options
-		{
-			get
-			{
-				List<Option> options = new();
-
-				if (this.AllOptions != null)
-				{
-					foreach (var option in this.AllOptions)
-					{
-						if (!option.Enabled)
-							continue;
-
-						options.Add(option);
-					}
-				}
-
-				return options.ToArray();
-			}
-		}
+		public ImageReference[]? Icons { get; set; }
 
 		public byte[]? Values
 		{
 			get
 			{
-				if (this.AllOptions == null)
-					return null;
-
 				List<byte> values = new();
-				foreach (Option op in this.AllOptions)
+				for (byte i = this.Min; i <= this.Max; i++)
 				{
-					if (!op.Enabled)
-						continue;
-
-					values.Add(op.Value);
+					values.Add(i);
 				}
 
 				return values.ToArray();
 			}
 		}
-
-		public Option? GetOption(byte value)
-		{
-			if (this.AllOptions == null)
-				return null;
-
-			foreach (Option op in this.AllOptions)
-			{
-				if (op.Value == value)
-				{
-					return op;
-				}
-			}
-
-			return null;
-		}
-
-		public class Option
-		{
-			public string? Name { get; set; }
-			public byte Value { get; set; }
-			public ImageReference? Icon { get; set; }
-			public HumanCmp.Entry Color { get; set; }
-			public CharaMakeCustomize? Customize { get; set; }
-			public bool Enabled { get; set; }
-		}
 	}
 
-	public class FacialFeatureOptions
+	public class FacialFeatureOptions(byte face)
 	{
-		public FacialFeatureOptions(byte face)
-		{
-			this.Face = face;
-		}
-
-		public byte Face { get; init; }
+		public byte Face { get; init; } = face;
 		public Option[] Options { get; init; } = new Option[NumFeatures];
 
 		public override string ToString()

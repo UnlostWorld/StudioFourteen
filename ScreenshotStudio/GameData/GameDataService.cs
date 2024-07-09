@@ -16,7 +16,6 @@ public class GameDataService : ServiceBase
 	private readonly Dictionary<Type, DataSheet> sheets = new();
 
 	public static ItemsSheet? Items => Get<Item>() as ItemsSheet;
-	public static CharaMakeCustomizeSheet? CharaMakeCustomizes => Get<CharaMakeCustomize>() as CharaMakeCustomizeSheet;
 	public static BuddyEquipsSheet? BuddyEquips => Get<BuddyEquip>() as BuddyEquipsSheet;
 
 	public static T? GetFile<T>(string path)
@@ -80,7 +79,6 @@ public class GameDataService : ServiceBase
 
 		// Add sheets here
 		this.AddSheet(new ItemsSheet());
-		this.AddSheet(new CharaMakeCustomizeSheet());
 		this.AddSheet(new BuddyEquipsSheet());
 		this.AddSheet(new EventNpcSheet());
 		this.AddSheet(new ResidentNpcSheet());
@@ -91,6 +89,8 @@ public class GameDataService : ServiceBase
 		this.AddSheet<BattleNpc>();
 		this.AddSheet<BattleNpcCustomize>();
 		this.AddSheet<BattleNpcName>();
+		this.AddSheet<CharaMakeCustomize>();
+		this.AddSheet<HairMakeType>();
 		this.AddSheet<CharaMakeType>();
 		this.AddSheet<ClassJobCategory>();
 		this.AddSheet<Companion>();

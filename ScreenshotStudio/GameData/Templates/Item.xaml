@@ -32,7 +32,8 @@
 				Grid.Column="0"
 				Width="72"
 				Height="72"
-				Margin="-3,0,3,-3">
+				Margin="-3,0,3,-3"
+				VerticalAlignment="Top">
 
 				<Image
 					Margin="6,4,6,7"
@@ -49,9 +50,11 @@
 			<TextBlock
 				Grid.Row="1"
 				Grid.Column="1"
+				MaxWidth="200"
 				Margin="0,2,0,0"
 				Foreground="{DynamicResource ForegroundLightBrush}"
-				Text="{Binding Description}" />
+				Text="{Binding Description}"
+				TextWrapping="Wrap" />
 
 			<TextBlock
 				Grid.Row="2"

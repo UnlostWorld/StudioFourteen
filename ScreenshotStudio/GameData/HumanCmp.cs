@@ -2,13 +2,12 @@
 
 using System;
 using System.Collections.Generic;
+using Dalamud.Game.ClientState.Objects.Enums;
 using Lumina.Data;
 using ScreenshotStudio.GameData;
 using ScreenshotStudio.GameData.Excel;
 using Serilog;
-
-////using cmColor = Anamnesis.Memory.Color;
-using wpfColor = System.Windows.Media.Color;
+using System.Windows.Media;
 
 public static class HumanCmp
 {
@@ -38,12 +37,12 @@ public static class HumanCmp
 				// Hey do this
 				////entry.CmColor = new cmColor(r / 255.0f, g / 255.0f, b / 255.0f);
 
-				wpfColor c2 = (wpfColor)entry.WpfColor;
+				Color c2 = (Color)entry.Color;
 				c2.R = buffer[at + 0];
 				c2.G = buffer[at + 1];
 				c2.B = buffer[at + 2];
 				c2.A = buffer[at + 3];
-				entry.WpfColor = c2;
+				entry.Color = c2;
 
 				////= new Color.FromArgb((a << 24) | (r << 16) | (g << 8) | b);
 
@@ -60,36 +59,28 @@ public static class HumanCmp
 		Colors = colors.ToArray();
 	}
 
-	public static Entry[] GetSkin(Tribe tribe, Genders gender)
+	public static Entry[]? Get(CharaMakeType.Menu menu)
 	{
-		int from = GetTribeSkinStartIndex(tribe, gender);
-		return Span(from, 192);
+		if (menu.Race == null || menu.Tribe == null)
+			return null;
+
+		return Get(menu.CustomizationIndex, menu.Tribe, menu.Gender);
 	}
 
-	public static Entry[] GetHair(Tribe tribe, Genders gender)
+	public static Entry[] Get(CustomizeIndex index, Tribe tribe, Genders gender)
 	{
-		int from = GetTribeHairStartIndex(tribe, gender);
-		return Span(from, 192);
-	}
+		switch (index)
+		{
+			case CustomizeIndex.SkinColor: return Span(GetTribeSkinStartIndex(tribe, gender), 192);
+			case CustomizeIndex.EyeColor: return Span(0, 192);
+			case CustomizeIndex.HairColor: return Span(GetTribeHairStartIndex(tribe, gender), 192);
+			case CustomizeIndex.HairColor2: return Span(256, 192);
+			case CustomizeIndex.FaceFeaturesColor: return Span(0, 192);
+			case CustomizeIndex.LipColor: return GetLipColors();
+			case CustomizeIndex.FacepaintColor: return Span(512, 224);
+		}
 
-	public static Entry[] GetHairHighlights()
-	{
-		return Span(256, 192);
-	}
-
-	public static Entry[] GetEyeColors()
-	{
-		return Span(0, 192);
-	}
-
-	public static Entry[] GetLimbalColors()
-	{
-		return Span(0, 192);
-	}
-
-	public static Entry[] GetFacePaintColor()
-	{
-		return Span(512, 224);
+		throw new NotSupportedException($"HumanCmp color not supported for customization index: {index}");
 	}
 
 	public static Entry[] GetLipColors()
@@ -140,9 +131,8 @@ public static class HumanCmp
 
 	public struct Entry
 	{
-		public string Hex => $"#{this.WpfColor.R:X2}{this.WpfColor.G:X2}{this.WpfColor.B:X2}";
-		////public cmColor CmColor { get; set; }
-		public wpfColor WpfColor { get; set; }
+		public string Hex => $"#{this.Color.R:X2}{this.Color.G:X2}{this.Color.B:X2}";
+		public Color Color { get; set; }
 		public bool Skip { get; set; }
 	}
 }
