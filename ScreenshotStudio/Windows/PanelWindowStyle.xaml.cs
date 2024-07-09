@@ -2,6 +2,7 @@
 
 using System;
 using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
 public partial class PanelWindowResources
@@ -31,5 +32,10 @@ public partial class PanelWindowResources
 	private void OnCloseClicked(object sender, RoutedEventArgs e)
 	{
 		GetWindow(sender).Close();
+	}
+
+	private void OnResizeThumbDragDelta(object sender, DragDeltaEventArgs e)
+	{
+		GetWindow(sender).OnResizeDelta(e);
 	}
 }

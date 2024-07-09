@@ -14,6 +14,7 @@
 	Title="{DynamicResource Gear}"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
+	ResizeMode="NoResize"
 	SizeToContent="WidthAndHeight"
 	Subtitle="{Binding ActorName}"
 	TitleIcon="HelmetBattle"

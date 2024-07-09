@@ -135,10 +135,22 @@
 				Content="{TemplateBinding Content}"
 				ContentTemplate="{TemplateBinding ContentTemplate}" />
 
+			<Thumb
+				x:Name="ResizeGrip"
+				Grid.Row="1"
+				HorizontalAlignment="Right"
+				VerticalAlignment="Bottom"
+				DragDelta="OnResizeThumbDragDelta"
+				Style="{DynamicResource WpfUtilsResizeThumbCorner}"
+				Visibility="Collapsed" />
 
 		</Grid>
 
 		<ControlTemplate.Triggers>
+			<Trigger Property="ResizeMode" Value="CanResizeWithGrip">
+				<Setter TargetName="ResizeGrip" Property="Visibility" Value="Visible" />
+			</Trigger>
+
 			<Trigger Property="IsActive" Value="True">
 				<Setter TargetName="WindowBorder" Property="BorderBrush" Value="{DynamicResource TrimBrush}" />
 				<Setter TargetName="WindowShadow" Property="Opacity" Value="1" />
