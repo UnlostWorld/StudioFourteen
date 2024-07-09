@@ -446,7 +446,7 @@ public partial class CustomizeWindow : ActorWindow
 		if (this.Actor == null)
 			return;
 
-		/*DalamudServices.Framework?.RunOnFrameworkThread(() =>
+		DalamudServices.Framework?.RunOnFrameworkThread(() =>
 		{
 			if (!redraw)
 			{
@@ -463,6 +463,6 @@ public partial class CustomizeWindow : ActorWindow
 				this.Actor->GameObject.DisableDraw();
 				this.Actor->GameObject.EnableDraw();
 			}
-		});*/
+		});
 	}
 }
