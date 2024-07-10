@@ -20,6 +20,8 @@ public class ServiceManager
 		this.services.Add(this.Library);
 		this.services.Add(this.ActorLifecycle);
 		this.services.Add(this.Studio);
+		this.services.Add(this.GroupPose);
+		this.services.Add(this.ActorAppearanceBackup);
 	}
 
 	public static ServiceManager Instance
@@ -40,6 +42,8 @@ public class ServiceManager
 	public LibraryService Library { get; init; } = new();
 	public ActorLifecycleService ActorLifecycle { get; init; } = new();
 	public StudioService Studio { get; init; } = new();
+	public GroupPoseService GroupPose { get; init; } = new();
+	public ActorAppearanceBackupService ActorAppearanceBackup { get; init; } = new();
 
 	/// <summary>
 	/// Initialize and Start all services.
