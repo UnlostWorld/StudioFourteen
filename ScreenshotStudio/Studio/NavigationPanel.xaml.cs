@@ -3,6 +3,7 @@
 using FFXIVClientStructs.FFXIV.Client.UI;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
+using ScreenshotStudio.Studio.Library;
 using ScreenshotStudio.Windows;
 using System.Windows;
 
@@ -40,8 +41,8 @@ public partial class NavigationPanel : DockPanel
 	[AutoNotify]
 	public bool IsLibraryOpen
 	{
-		get => this.Services.Panels.GetIsOpen<HelloWorldWindow>();
-		set => this.Services.Panels.SetIsOpen<HelloWorldWindow>(value);
+		get => this.Services.Panels.GetIsOpen<LibraryWindow>();
+		set => this.Services.Panels.SetIsOpen<LibraryWindow>(value);
 	}
 
 	[AutoNotify]

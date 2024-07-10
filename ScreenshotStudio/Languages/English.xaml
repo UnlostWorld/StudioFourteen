@@ -42,4 +42,18 @@
 	<sys:String x:Key="PoseGuiFlipSidesFlipped">Facing Towards</sys:String>
 	<sys:String x:Key="PoseGuiFlipSidesNotflipped">Facing Away</sys:String>
 
+
+	<sys:String x:Key="LOC_Revert">Revert</sys:String>
+	<sys:String x:Key="LOC_Apply">Apply</sys:String>
+
+	<sys:String x:Key="LOC_FileMeta_Author">Author</sys:String>
+	<sys:String x:Key="LOC_FileMeta_Version">Version</sys:String>
+
+	<sys:String x:Key="LOC_Library_LivePreviewTooltip">Live Preview</sys:String>
+	<sys:String x:Key="LOC_Library_GoUpTooltip">Go Up</sys:String>
+	<sys:String x:Key="LOC_Library_IconViewTooltip">Icon View</sys:String>
+	<sys:String x:Key="LOC_Library_ListViewTooltip">List View</sys:String>
+	<sys:String x:Key="LOC_Library_DirectoryViewTooltip">Directory View</sys:String>
+	<sys:String x:Key="LOC_Library_FlattenViewTooltip">Flatten View</sys:String>
+
 </ResourceDictionary>

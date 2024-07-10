@@ -91,7 +91,6 @@
 								<ToggleButton
 									x:Name="LibraryButton"
 									IsChecked="{Binding IsLibraryOpen}"
-									IsEnabled="False"
 									ToolTip="{DynamicResource Library}">
 									<wpfUtils:IconBlock Icon="Books" />
 								</ToggleButton>
@@ -99,6 +98,7 @@
 								<ToggleButton
 									x:Name="ZoneButton"
 									IsChecked="{Binding IsZoneOpen}"
+									IsEnabled="False"
 									ToolTip="{DynamicResource Zone}">
 									<wpfUtils:IconBlock Icon="CloudMoonRain" />
 								</ToggleButton>
