@@ -16,6 +16,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using System.Linq;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using ScreenshotStudio.Structs;
+using ScreenshotStudio.Utilities;
 
 public class ActorLifecycleService : ServiceBase
 {
@@ -161,6 +162,8 @@ public class ActorLifecycleService : ServiceBase
 	{
 		if (DalamudServices.ClientState?.LocalPlayer == null)
 			return null;
+
+		Threads.VerifyFrameworkThread();
 
 		Character* player = (Character*)DalamudServices.ClientState.LocalPlayer.Address;
 
