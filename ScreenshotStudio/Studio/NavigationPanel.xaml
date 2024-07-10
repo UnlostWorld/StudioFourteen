@@ -132,12 +132,13 @@
 									IsChecked="{Binding IsShadersOpen}"
 									IsEnabled="False"
 									ToolTip="{DynamicResource ShaderParameters}">
-									<wpfUtils:IconBlock Icon="PaintBrush" />
+									<wpfUtils:IconBlock Icon="Shapes" />
 								</ToggleButton>
 
 								<ToggleButton
 									x:Name="PoseButton"
 									IsChecked="{Binding IsPoseOpen}"
+									IsEnabled="False"
 									ToolTip="{DynamicResource Pose}">
 									<wpfUtils:IconBlock Icon="Running" />
 								</ToggleButton>

@@ -36,8 +36,8 @@ public unsafe struct Customize
 		return this.options[(int)option];
 	}
 
-	public byte SetValue(CustomizeIndex option, byte value)
+	public void SetValue(CustomizeIndex option, byte value)
 	{
-		return this.options[(int)option] = value;
+		this.options[(int)option] = value;
 	}
 }

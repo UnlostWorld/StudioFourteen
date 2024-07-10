@@ -141,7 +141,7 @@
 					Grid.Row="1"
 					Grid.Column="1"
 					Grid.ColumnSpan="2"
-					Margin="0,1,0,1"
+					Margin="0,2,0,1"
 					Maximum="{Binding MakeType.EarMuscleTailSizes.Max}"
 					Minimum="{Binding MakeType.EarMuscleTailSizes.Min}"
 					Slider="Absolute"
@@ -154,10 +154,6 @@
 				Style="{DynamicResource LeftLabel}"
 				Text="{Binding MakeType.Faces.Name}" />
 			<Grid>
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-				</Grid.RowDefinitions>
 
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto" />
@@ -165,18 +161,16 @@
 				</Grid.ColumnDefinitions>
 
 				<customize:CustomizeIconOption
-					Grid.RowSpan="2"
 					Grid.Column="0"
 					Margin="0,0,1,0"
 					Menu="{Binding MakeType.Faces}"
 					Value="{Binding Face}" />
 
 				<customize:CustomizeNumberOption
-					Grid.Row="0"
 					Grid.Column="1"
+					VerticalAlignment="Top"
 					Menu="{Binding MakeType.Faces}"
 					Value="{Binding Face}" />
-
 
 			</Grid>
 

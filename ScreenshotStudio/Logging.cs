@@ -1,14 +1,11 @@
 ﻿namespace ScreenshotStudio;
 
-using Dalamud.Logging;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Studio;
 using Serilog;
 using Serilog.Events;
 using System;
 using System.Diagnostics;
-using System.Text;
-using System.Windows.Forms;
 
 public static class Logging
 {
@@ -41,6 +38,8 @@ public static class Logging
 
 	public static void WpfLog(string message) => Shared.Information(message);
 	public static void WpfError(Exception ex, string message) => Shared.Error(ex, message);
+
+	public static void Information(string message) => Shared.Information(message);
 }
 
 public class Logger : ILogger
