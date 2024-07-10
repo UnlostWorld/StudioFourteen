@@ -16,12 +16,9 @@ using NativeObject = FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject;
 
 public partial class TargetPanel : DockPanel
 {
-	public const int GPoseActorCount = 39;
-	public const int GPoseFirstActor = 201;
-
 	public TargetPanel()
 	{
-		for (int i = GPoseFirstActor; i < GPoseFirstActor + GPoseActorCount; ++i)
+		for (int i = GroupPoseService.GPoseFirstActor; i < GroupPoseService.GPoseFirstActor + GroupPoseService.GPoseActorCount; ++i)
 		{
 			this.Actors.Add(new(i));
 		}

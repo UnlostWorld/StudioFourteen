@@ -12,6 +12,7 @@ using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using System.Windows.Documents;
 using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
@@ -62,9 +63,25 @@ public struct Actor
 		return needsRedraw;
 	}
 
+	public unsafe void UpdateCustomize(Customize customize)
+	{
+		Threads.RunOnFrameworkThread(this, (p) => ((Actor*)p)->UpdateCustomizeInternal(customize));
+	}
+
 	public unsafe void UpdateCustomize(bool redraw)
 	{
 		Threads.RunOnFrameworkThread(this, (p) => ((Actor*)p)->UpdateCustomizeInternal(redraw));
+	}
+
+	private unsafe void UpdateCustomizeInternal(Customize customize)
+	{
+		Threads.VerifyFrameworkThread();
+
+		// compare race, tribe, model type, and gender!
+		bool redraw = false;
+
+		this.DrawData.Customize.Import(customize);
+		this.UpdateCustomizeInternal(redraw);
 	}
 
 	private unsafe void UpdateCustomizeInternal(bool redraw)
@@ -75,12 +92,7 @@ public struct Actor
 		{
 			fixed (Customize* custom = &this.DrawData.Customize)
 			{
-				bool success = ((Human*)this.Model)->UpdateDrawData((byte*)custom, true);
-				if (!success)
-				{
-					Logging.Shared.Warning("Updating Draw Data failed. (should this have been a redraw?)");
-					redraw = true;
-				}
+				redraw |= ((Human*)this.Model)->UpdateDrawData((byte*)custom, true) == false;
 			}
 		}
 

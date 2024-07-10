@@ -1,11 +1,14 @@
 ﻿namespace ScreenshotStudio.GameData.Excel;
 
 using Anamnesis.Utils;
+using Dalamud.Game.ClientState.Objects.Enums;
 using Lumina.Data;
 using Lumina.Excel;
 using ScreenshotStudio.GameData.Sheets;
 using ScreenshotStudio.Library;
 using ScreenshotStudio.Structs;
+using ScreenshotStudio.Utilities;
+using System;
 using System.Text;
 
 [Sheet("ENpcBase", 0x464052cd)]
@@ -21,32 +24,8 @@ public class EventNpc : LibraryExcelRow
 	// Customize
 	public float Scale { get; protected set; } = 1.0f;
 	public ModelChara? ModelChara { get; protected set; }
-	public int FacePaintColor { get; protected set; }
-	public int FacePaint { get; protected set; }
-	public int ExtraFeature2OrBust { get; protected set; }
-	public int ExtraFeature1 { get; protected set; }
-	public Race? Race { get; protected set; }
-	public Genders Gender { get; protected set; }
-	public int BodyType { get; protected set; }
-	public int Height { get; protected set; }
-	public Tribe? Tribe { get; protected set; }
-	public int Face { get; protected set; }
-	public int HairStyle { get; protected set; }
-	public bool EnableHairHighlight { get; protected set; } = false;
-	public int SkinColor { get; protected set; }
-	public int EyeHeterochromia { get; protected set; }
-	public int HairHighlightColor { get; protected set; }
-	public int FacialFeature { get; protected set; }
-	public int FacialFeatureColor { get; protected set; }
-	public int Eyebrows { get; protected set; }
-	public int EyeColor { get; protected set; }
-	public int EyeShape { get; protected set; }
-	public int Nose { get; protected set; }
-	public int Jaw { get; protected set; }
-	public int Mouth { get; protected set; }
-	public int LipColor { get; protected set; }
-	public int BustOrTone1 { get; protected set; }
-	public int HairColor { get; protected set; }
+
+	public Customize Customize { get; protected set; }
 
 	// Gear
 	public Item? MainHand { get; protected set; }
@@ -81,32 +60,19 @@ public class EventNpc : LibraryExcelRow
 		// Customize
 		this.Scale = parser.ReadColumn<float>(34);
 		this.ModelChara = parser.ReadRowReference<ushort, ModelChara>(35);
-		this.Race = parser.ReadRowReference<byte, Race>(36, 1);
-		this.Gender = (Genders)parser.ReadColumn<byte>(37);
-		this.BodyType = parser.ReadColumn<byte>(38);
-		this.Height = parser.ReadColumn<byte>(39);
-		this.Tribe = parser.ReadRowReference<byte, Tribe>(40, 1);
-		this.Face = parser.ReadColumn<byte>(41);
-		this.HairStyle = parser.ReadColumn<byte>(42);
-		this.EnableHairHighlight = parser.ReadColumn<byte>(43) > 1;
-		this.SkinColor = parser.ReadColumn<byte>(44);
-		this.EyeHeterochromia = parser.ReadColumn<byte>(45);
-		this.HairColor = parser.ReadColumn<byte>(46);
-		this.HairHighlightColor = parser.ReadColumn<byte>(47);
-		this.FacialFeature = parser.ReadColumn<byte>(48);
-		this.FacialFeatureColor = parser.ReadColumn<byte>(49);
-		this.Eyebrows = parser.ReadColumn<byte>(50);
-		this.EyeColor = parser.ReadColumn<byte>(51);
-		this.EyeShape = parser.ReadColumn<byte>(52);
-		this.Nose = parser.ReadColumn<byte>(53);
-		this.Jaw = parser.ReadColumn<byte>(54);
-		this.Mouth = parser.ReadColumn<byte>(55);
-		this.LipColor = parser.ReadColumn<byte>(56);
-		this.BustOrTone1 = parser.ReadColumn<byte>(57);
-		this.ExtraFeature2OrBust = parser.ReadColumn<byte>(58);
-		this.ExtraFeature1 = parser.ReadColumn<byte>(59);
-		this.FacePaint = parser.ReadColumn<byte>(60);
-		this.FacePaintColor = parser.ReadColumn<byte>(61);
+
+		Customize c;
+
+		for(int i = 0; i < Customize.NumOptions; i++)
+		{
+			CustomizeIndex index = (CustomizeIndex)i;
+			int row = 36 + i;
+			byte val = parser.ReadColumn<byte>(row);
+
+			c.SetValue(index, val);
+		}
+
+		this.Customize = c;
 
 		NpcEquip? npcEquip = parser.ReadRowReference<ushort, NpcEquip>(63);
 		if (npcEquip?.RowId == 175)
@@ -138,16 +104,16 @@ public class EventNpc : LibraryExcelRow
 		this.RightRing = this.GetItem(ItemSlots.RingRight, parser.ReadColumn<uint>(88), npcEquip?.RightRing);
 		this.DyeRightRing = parser.ReadRowReference<byte, Stain>(89);
 
-		this.Tags.Add(this.Race?.ToTags());
-		this.Tags.Add(this.Tribe?.ToTags());
-		this.Tags.Add(this.Gender.ToTags());
+		this.Tags.Add(this.Customize.Race?.ToTags());
+		this.Tags.Add(this.Customize.Tribe?.ToTags());
+		this.Tags.Add(this.Customize.Gender.ToTags());
 
 		this.GenerateAppearanceHash();
 	}
 
 	public unsafe void Apply(Actor* actor)
 	{
-		this.Log.Error("Not Implemented");
+		actor->UpdateCustomize(this.Customize);
 	}
 
 	// This is a little funky, but as some point (Heavensward?) SQEX changed where NPC's stored their equipment
@@ -167,32 +133,11 @@ public class EventNpc : LibraryExcelRow
 		// Customize
 		this.AddToString(this.Scale, sb);
 		this.AddToString(this.ModelChara, sb);
-		this.AddToString(this.FacePaintColor, sb);
-		this.AddToString(this.FacePaint, sb);
-		this.AddToString(this.ExtraFeature2OrBust, sb);
-		this.AddToString(this.ExtraFeature1, sb);
-		this.AddToString(this.Race, sb);
-		this.AddToString(this.Gender, sb);
-		this.AddToString(this.BodyType, sb);
-		this.AddToString(this.Height, sb);
-		this.AddToString(this.Tribe, sb);
-		this.AddToString(this.Face, sb);
-		this.AddToString(this.HairStyle, sb);
-		this.AddToString(this.EnableHairHighlight, sb);
-		this.AddToString(this.SkinColor, sb);
-		this.AddToString(this.EyeHeterochromia, sb);
-		this.AddToString(this.HairHighlightColor, sb);
-		this.AddToString(this.FacialFeature, sb);
-		this.AddToString(this.FacialFeatureColor, sb);
-		this.AddToString(this.Eyebrows, sb);
-		this.AddToString(this.EyeColor, sb);
-		this.AddToString(this.EyeShape, sb);
-		this.AddToString(this.Nose, sb);
-		this.AddToString(this.Jaw, sb);
-		this.AddToString(this.Mouth, sb);
-		this.AddToString(this.LipColor, sb);
-		this.AddToString(this.BustOrTone1, sb);
-		this.AddToString(this.HairColor, sb);
+
+		for (int i = 0; i < Customize.NumOptions; i++)
+		{
+			this.AddToString(this.Customize.GetValue((CustomizeIndex)i), sb);
+		}
 
 		// Gear
 		this.AddToString(this.MainHand, sb);
