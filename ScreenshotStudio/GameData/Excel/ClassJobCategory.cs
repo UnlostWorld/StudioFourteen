@@ -10,8 +10,6 @@ public class ClassJobCategory : LibraryExcelRow
 {
 	private readonly bool[] classJobs = new bool[(int)ClassJob.ClassJobRows.Count];
 
-	public string? Name { get; set; }
-
 	public List<Entry> ClassJobs { get; init; } = new();
 
 	public bool IsAllClasses => this.RowId == 1;

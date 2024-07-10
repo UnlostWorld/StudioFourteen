@@ -12,7 +12,6 @@ using MediaColor = System.Windows.Media.Color;
 public class Stain : LibraryExcelRow
 {
 	public byte Id { get; protected set; }
-	public string Name { get; protected set; } = string.Empty;
 	public byte Shade { get; protected set; }
 	public MediaColor? Color { get; protected set; }
 	public Item? Item { get; protected set; } = null;

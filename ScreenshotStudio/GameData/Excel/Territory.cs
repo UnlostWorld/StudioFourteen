@@ -32,7 +32,6 @@ public class Territory : LibraryExcelRow
 		652,
 	};
 
-	public string? Name { get; protected set; }
 	public string? Background { get; protected set; }
 	public PlaceName? Place { get; protected set; }
 	public PlaceName? Region { get; protected set; }

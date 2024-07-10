@@ -8,7 +8,6 @@ using WpfUtils;
 [Sheet("Item", 0xe9a33c9d)]
 public class Item : LibraryExcelRow
 {
-	public string? Name { get; protected set; }
 	public string? Description { get; protected set; }
 	public ImageReference? Icon { get; protected set; }
 	public byte EquipLevel { get; protected set; }

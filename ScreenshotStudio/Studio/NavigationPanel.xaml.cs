@@ -1,9 +1,9 @@
 ﻿namespace ScreenshotStudio.Studio;
 
 using FFXIVClientStructs.FFXIV.Client.UI;
+using ScreenshotStudio.Library;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
-using ScreenshotStudio.Studio.Library;
 using ScreenshotStudio.Windows;
 using System.Windows;
 

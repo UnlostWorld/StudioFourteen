@@ -1,6 +1,5 @@
-﻿namespace ScreenshotStudio.Studio.Library;
+﻿namespace ScreenshotStudio.Library;
 
-using ScreenshotStudio.Library;
 using ScreenshotStudio.Tags;
 using ScreenshotStudio.Windows;
 using System;
@@ -18,14 +17,34 @@ public partial class LibraryWindow : PanelWindow
 	private string search = string.Empty;
 	private TagCollection tags = new();
 	private bool isLoading = false;
+	private Tabs currentTab = Tabs.Favorites;
 
 	public LibraryWindow()
 	{
 		this.searchQueue = new(this.SearchAsync, 250);
 	}
 
+	public enum Tabs
+	{
+		Favorites,
+		Poses,
+		Characters,
+		Scenes,
+	}
+
 	public FastObservableCollection<object> Entries { get; init; } = new();
 	public bool ViewList { get; set; } = false;
+
+	public Tabs CurrentTab
+	{
+		get => this.currentTab;
+		set
+		{
+			this.currentTab = value;
+			this.NotifyPropertyChanged();
+			this.searchQueue.Invoke();
+		}
+	}
 
 	public TagCollection Tags
 	{
@@ -56,7 +75,14 @@ public partial class LibraryWindow : PanelWindow
 
 	private async Task SearchAsync()
 	{
-		Type targetType = typeof(IActorAppearance);
+		Type[] targetTypes = this.currentTab switch
+		{
+			Tabs.Poses => new[] { typeof(IActorAppearance) },
+			Tabs.Favorites => new[] { typeof(IActorAppearance) },
+			Tabs.Characters => new[] { typeof(IActorAppearance) },
+			Tabs.Scenes => new[] { typeof(IActorAppearance) },
+			_ => throw new Exception("No Tab"),
+		};
 
 		await this.Dispatcher.MainThread();
 		TagCollection tags = new(this.Tags);
@@ -64,7 +90,10 @@ public partial class LibraryWindow : PanelWindow
 
 		await Dispatch.NonUiThread();
 
-		List<ILibraryItem> results = this.Services.Library.Search(targetType, tags, query);
+		this.isLoading = true;
+		this.isLoading = false;
+
+		/*List<ILibraryItem> results = this.Services.Library.Search(targetTypes, tags, query);
 
 		this.Log.Information($">> {results.Count} results");
 
@@ -73,7 +102,7 @@ public partial class LibraryWindow : PanelWindow
 		this.isLoading = true;
 		this.Entries.Replace(results);
 		////this.ResultsList.ScrollIntoView(this.SelectedItem);
-		this.isLoading = false;
+		this.isLoading = false;*/
 	}
 
 	private void OnTabChanged(object sender, RoutedEventArgs e)

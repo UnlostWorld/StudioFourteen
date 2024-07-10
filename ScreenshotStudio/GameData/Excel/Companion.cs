@@ -6,7 +6,6 @@ using Lumina.Excel;
 [Sheet("Companion", 0x776048c3)]
 public class Companion : LibraryExcelRow
 {
-	public string? Name { get; protected set; }
 	public ModelChara? ModelChara { get; protected set; }
 	public byte Scale { get; protected set; }
 	public ImageReference? Icon { get; protected set; }

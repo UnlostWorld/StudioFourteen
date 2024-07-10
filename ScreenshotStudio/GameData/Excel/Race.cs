@@ -26,7 +26,6 @@ public class Race : LibraryExcelRow
 	}
 
 	public RaceRows RowEnum => (RaceRows)this.RowId;
-	public string Name => this.Masculine;
 
 	public string Feminine { get; private set; } = string.Empty;
 	public string Masculine { get; private set; } = string.Empty;
@@ -65,6 +64,8 @@ public class Race : LibraryExcelRow
 
 		this.Masculine = parser.ReadColumn<SeString>(0) ?? string.Empty;
 		this.Feminine = parser.ReadColumn<SeString>(1) ?? string.Empty;
+
+		this.Name = this.Masculine;
 
 		this.RacialGearMasculineBodyId = parser.ReadColumn<int>(2);
 		this.RacialGearMasculineHandsId = parser.ReadColumn<int>(3);

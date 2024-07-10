@@ -1,125 +1,230 @@
 ﻿namespace ScreenshotStudio.Library;
 
-using ScreenshotStudio.Services;
+using ScreenshotStudio.Library.Filters;
+using ScreenshotStudio.Library.Sources;
 using ScreenshotStudio.Tags;
+using Dalamud.Interface;
+using Dalamud.Plugin.Services;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.IO;
+using System.Text;
 using System.Threading.Tasks;
+using ScreenshotStudio.Services;
 
 public class LibraryService : ServiceBase
 {
-	private readonly List<LibraryProvider> providers = new();
+	private readonly LibraryRoot rootItem = new();
+	private readonly List<SourceBase> sources = new();
 
-	public void AddProvider(LibraryProvider provider)
+	public delegate void OnScanFinishedDelegate();
+	public event OnScanFinishedDelegate? OnScanFinished;
+
+	public bool IsScanning { get; private set; }
+	public bool IsLoadingSources { get; private set; }
+	public GroupEntryBase Root => this.rootItem;
+
+	public void AddSource(SourceBase source)
 	{
-		this.providers.Add(provider);
-		provider.CacheAllTags();
+		this.sources.Add(source);
 	}
 
-	public void RemoveProvider(LibraryProvider provider)
+	public override Task Start()
 	{
-		this.providers.Add(provider);
+		this.LoadSources();
+		return base.Start();
 	}
 
-	public override Task Shutdown()
+	public override Task Stop()
 	{
 		Tag.ClearTagCache();
-		return base.Shutdown();
+
+		foreach (SourceBase source in this.sources)
+		{
+			source.Dispose();
+		}
+
+		return base.Stop();
 	}
 
-	public TagCollection GetAvailableTags<T>()
-		where T : ILibraryItem
+	/*public void ShowFilePicker(FilterBase filter, Action<object> callback)
 	{
-		TagCollection tags = new();
+		string title = $"Import {filter.Name}###import_browse";
 
-		foreach (LibraryProvider provider in this.providers)
+		// Build the filter string for Dalamud's file picker
+		// "Pose File (*.pose | *.cmp){.pose,.cmp}"
+		StringBuilder filterBuilder = new();
+		StringBuilder typeIdBuilder = new();
+
+		if(filter is TypeFilter typeFilter)
 		{
-			if (provider.Contains(typeof(T)))
+			List<FileTypeInfoBase> allInfos = new();
+			foreach(Type filterType in typeFilter.Types)
 			{
-				tags.Add(provider.AllTags);
+				FileTypeInfoBase? typeInfo = _fileService.GetFileTypeInfo(filterType);
+				if(typeInfo == null)
+					continue;
+
+				allInfos.Add(typeInfo);
+			}
+
+			foreach(FileTypeInfoBase typeInfo in allInfos)
+			{
+				typeIdBuilder.Append(typeInfo.Extension);
+			}
+
+			filterBuilder.Append("Any File(");
+			for(int i = 0; i < allInfos.Count; i++)
+			{
+				if(i > 0)
+					filterBuilder.Append(" | ");
+
+				filterBuilder.Append("*");
+				filterBuilder.Append(allInfos[i].Extension);
+			}
+
+			filterBuilder.Append("){");
+			foreach(FileTypeInfoBase typeInfo in allInfos)
+			{
+				filterBuilder.Append(typeInfo.Extension);
+				filterBuilder.Append(",");
+			}
+			filterBuilder.Append("},");
+
+			foreach(FileTypeInfoBase typeInfo in allInfos)
+			{
+				filterBuilder.Append(",");
+				filterBuilder.Append(typeInfo.Name);
+				filterBuilder.Append(" (*");
+				filterBuilder.Append(typeInfo.Extension);
+				filterBuilder.Append("){");
+				filterBuilder.Append(typeInfo.Extension);
+				filterBuilder.Append("}");
+
 			}
 		}
 
-		return tags;
-	}
-
-	public List<T> Search<T>(TagCollection tags, string[]? query)
-		where T : ILibraryItem
-	{
-		 return this.Search<T>(typeof(T), tags, query);
-	}
-
-	public List<ILibraryItem> Search(Type targetType, TagCollection tags, string[]? query)
-	{
-		return this.Search<ILibraryItem>(targetType, tags, query);
-	}
-
-	private List<T> Search<T>(Type targetType, TagCollection tags, string[]? query)
-		where T : ILibraryItem
-	{
-		Stopwatch sw = new();
-		sw.Start();
-		int checkCount = 0;
-
-		List<T> results = new();
-		foreach (LibraryProvider provider in this.providers)
+		// Add the file source directories as shortcuts
+		UIManager.Instance.FileDialogManager.CustomSideBarItems.Clear();
+		foreach(SourceBase source in this.sources)
 		{
-			if (!this.IsAlive)
-				return results;
-
-			if (!provider.Contains(targetType))
-				continue;
-
-			foreach (object? obj in provider)
+			if(source is FileSource fs)
 			{
-				if (!this.IsAlive)
-					return results;
-
-				checkCount++;
-
-				if (obj is not T tObj)
+				if(!Directory.Exists(fs.DirectoryPath))
 					continue;
 
-				if (!tObj.Search(tags, query))
-					continue;
-
-				results.Add(tObj);
+				UIManager.Instance.FileDialogManager.CustomSideBarItems.Add((fs.Name, fs.DirectoryPath, FontAwesomeIcon.FolderClosed, 0));
 			}
 		}
 
-		sw.Stop();
-		this.Log.Information($"Searched {checkCount} {targetType.Name}s and found {results.Count} in {sw.ElapsedMilliseconds}ms");
+		// Get the last directory the user used for these types
+		string typesId = typeIdBuilder.ToString();
+		string? lastDirectory = null;
+		var lastDirectories = _configurationService.Configuration.Library.LastBrowsePaths;
+		lastDirectories.TryGetValue(typesId, out lastDirectory);
 
-		return results;
-	}
-}
+		// Show the dalamud file picker
+		UIManager.Instance.FileDialogManager.OpenFileDialog(
+			title,
+			filterBuilder.ToString(),
+			(success, paths) =>
+			{
+				if(success && paths.Count == 1)
+				{
+					var path = paths[0];
+					object? result = _fileService.Load(path);
 
-public abstract class LibraryProvider<T> : LibraryProvider
-	where T : ITagged
-{
-	public override bool Contains(Type targetType) => targetType.IsAssignableFrom(typeof(T));
-}
+					if(result == null)
+						return;
 
-public abstract class LibraryProvider : IEnumerable
-{
-	private TagCollection allTags = new();
+					string? dir = Path.GetDirectoryName(path);
 
-	public TagCollection AllTags => this.allTags;
+					if(dir != null)
+					{
+						if(!lastDirectories.ContainsKey(typesId))
+							lastDirectories.Add(typesId, dir);
 
-	public void CacheAllTags()
+						lastDirectories[typesId] = dir;
+						_configurationService.Save();
+					}
+
+					callback.Invoke(result);
+				}
+			},
+			1,
+			lastDirectory,
+			true);
+	}*/
+
+	public void LoadSources()
 	{
-		this.allTags.Clear();
-		this.GetAllTags(ref this.allTags);
+		this.IsLoadingSources = true;
+
+		this.rootItem.Clear();
+
+		foreach(SourceBase source in this.sources)
+		{
+			this.rootItem.Add(source);
+		}
+
+		this.Scan();
+
+		this.IsLoadingSources = false;
 	}
 
-	public abstract IEnumerator GetEnumerator();
-	public abstract bool Contains(Type targetType);
-	protected abstract void GetAllTags(ref TagCollection tags);
-}
+	public void Scan()
+	{
+		Task.Run(this.ScanAsync);
+	}
 
-public interface ILibraryItem : ITagged
-{
-	bool Search(TagCollection tags, string[]? query);
+	public async Task ScanAsync()
+	{
+		lock (this)
+		{
+			if(this.IsScanning)
+				return;
+
+			this.IsScanning = true;
+		}
+
+		try
+		{
+			List<Task> scanTasks = new();
+			foreach(SourceBase source in this.sources)
+			{
+				scanTasks.Add(Task.Run(() => this.ScanSource(source)));
+			}
+
+			await Task.WhenAll(scanTasks.ToArray());
+		}
+		catch(Exception ex)
+		{
+			this.Log.Error(ex, "Error during library scan");
+		}
+
+		this.IsScanning = false;
+		this.OnScanFinished?.Invoke();
+	}
+
+	private void OnConfigurationChanged()
+	{
+		if (this.IsLoadingSources || this.IsScanning)
+			return;
+
+		this.LoadSources();
+		this.Scan();
+	}
+
+	private void ScanSource(SourceBase source)
+	{
+		try
+		{
+			source.Clear();
+			source.Scan();
+		}
+		catch(Exception ex)
+		{
+			this.Log.Error(ex, $"Error in library source: {source.Name}");
+		}
+	}
 }

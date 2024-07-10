@@ -7,7 +7,6 @@ using Lumina.Text;
 [Sheet("Perform", 0x7bf81fa9)]
 public class Perform : LibraryExcelRow
 {
-	public string Name { get; private set; } = string.Empty;
 	public string Description { get; private set; } = string.Empty;
 
 	public ushort ModelSet { get; private set; }

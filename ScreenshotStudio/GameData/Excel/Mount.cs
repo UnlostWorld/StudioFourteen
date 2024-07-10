@@ -6,7 +6,6 @@ using Lumina.Excel;
 [Sheet("Mount", 0x304b5115)]
 public class Mount : LibraryExcelRow
 {
-	public string? Name { get; protected set; }
 	public ModelChara? ModelChara { get; protected set; }
 	public MountCustomize? MountCustomize { get; protected set; }
 	public Item? Head { get; protected set; }

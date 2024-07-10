@@ -12,7 +12,7 @@ using Serilog;
 
 public class ActorAppearanceBackupService : ServiceBase
 {
-	private readonly CurrentActorsLibraryProvider provider = new();
+	/*private readonly CurrentActorsLibraryProvider provider = new();
 
 	public override Task Start()
 	{
@@ -74,5 +74,5 @@ public class ActorAppearanceBackupService : ServiceBase
 		protected override void GetAllTags(ref TagCollection tags)
 		{
 		}
-	}
+	}*/
 }

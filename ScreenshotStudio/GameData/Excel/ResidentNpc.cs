@@ -9,7 +9,6 @@ using WpfUtils;
 [Sheet("ENpcResident", 0xf74fa88c)]
 public class ResidentNpc : LibraryExcelRow, IActorAppearance
 {
-	public string? Name { get; protected set; }
 	public string? Description { get; protected set; }
 
 	public EventNpc? EventNpc { get; protected set; }

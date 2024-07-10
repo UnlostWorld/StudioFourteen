@@ -6,7 +6,6 @@ using Lumina.Excel;
 [Sheet("BNpcBase", 0x86278126)]
 public class BattleNpc : LibraryExcelRow
 {
-	public string Name { get; protected set; } = string.Empty;
 	public byte Battalion { get; protected set; }
 	public byte LinkRace { get; protected set; }
 	public byte Rank { get; protected set; }

@@ -51,8 +51,8 @@ public partial class GearWindow : ActorWindow
 			defaultTags.Add(equip.Slot.ToTag());
 
 			// Filter by the current race.
-			Race? race = GameDataService.GetRow<Race>((uint)this.DrawData.Customize.GetValue(CustomizeIndex.Race));
-			if (race != null)
+			Race? race = this.DrawData.Customize.Race;
+			if (race != null && race.Name != null)
 				defaultTags.Add(race.Name);
 
 			string searchTitle = $"{equip.Slot.GetDisplayName()} {ScreenshotStudio.Resources.Find("Item", "Item")}";

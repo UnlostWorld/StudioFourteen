@@ -3,6 +3,7 @@
 using Lumina.Excel;
 using ScreenshotStudio.GameData.Excel;
 using ScreenshotStudio.Library;
+using ScreenshotStudio.Library.Sources;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Tags;
@@ -13,29 +14,61 @@ using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 
-public abstract class DataSheet : LibraryProvider
+public class DataSheetLibrarySource : SourceBase
+{
+	private readonly DataSheet sheet;
+	private readonly List<IEntryBase> allEntries = new();
+
+	public DataSheetLibrarySource(DataSheet sheet)
+	{
+		this.sheet = sheet;
+	}
+
+	public override string? Description { get; }
+	public override string Name => $"{this.sheet.RowType.Name}";
+
+	public override void Scan()
+	{
+		foreach(ExcelRow row in this.sheet)
+		{
+			if (row is IEntryBase entry)
+			{
+				this.Add(entry);
+			}
+		}
+	}
+
+	public override string ToString() => this.GetInternalId();
+	protected override string GetInternalId() => $"DataSheet_{this.sheet.RowType.Name}";
+}
+
+public abstract class DataSheet : IEnumerable
 {
 	protected readonly ILogger Log;
+	private readonly DataSheetLibrarySource librarySource;
 
 	public DataSheet()
 	{
 		this.Log = Logging.ForContext(this.GetType());
+		this.librarySource = new(this);
 	}
 
+	public virtual uint Count => 0;
 	public bool IsInitialized { get; private set; } = false;
 	public abstract Type RowType { get; }
 	protected ServiceManager Services => ServiceManager.Instance;
 
+	public abstract IEnumerator GetEnumerator();
+
 	public virtual Task Initialize()
 	{
-		this.Services.Library.AddProvider(this);
+		this.Services.Library.AddSource(this.librarySource);
 		this.IsInitialized = true;
 		return Task.CompletedTask;
 	}
 
 	public virtual Task Shutdown()
 	{
-		this.Services.Library.RemoveProvider(this);
 		return Task.CompletedTask;
 	}
 }
@@ -54,7 +87,7 @@ public class DataSheet<T> : DataSheet
 		}
 	}
 
-	public virtual uint Count => this.Sheet?.RowCount ?? 0;
+	public override uint Count => this.Sheet?.RowCount ?? 0;
 	public override Type RowType => typeof(T);
 	protected ExcelSheet<T>? Sheet { get; init; }
 
@@ -94,8 +127,6 @@ public class DataSheet<T> : DataSheet
 		return this.Sheet.GetEnumerator();
 	}
 
-	public override bool Contains(Type targetType) => targetType.IsAssignableFrom(typeof(T));
-
 	public IEnumerable<T?> GetFrom(int startRow)
 	{
 		List<T?> results = new List<T?>();
@@ -109,16 +140,5 @@ public class DataSheet<T> : DataSheet
 		}
 
 		return results;
-	}
-
-	protected override void GetAllTags(ref TagCollection tags)
-	{
-		foreach (T item in this)
-		{
-			if (item is ITagged taggedItem)
-			{
-				tags.Add(taggedItem.Tags);
-			}
-		}
 	}
 }

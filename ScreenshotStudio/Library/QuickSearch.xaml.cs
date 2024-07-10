@@ -106,7 +106,7 @@ public partial class QuickSearch : PanelWindow
 	}
 
 	public static void Show<T>(object placementTarget, string title, TagCollection defaultTags, T? current, Action<T, bool> selectionChanged)
-			where T : ILibraryItem
+			where T : IEntryBase
 	{
 		if (placementTarget is UIElement el)
 		{
@@ -115,7 +115,7 @@ public partial class QuickSearch : PanelWindow
 	}
 
 	public static void Show<T>(UIElement placementTarget, string title, TagCollection defaultTags, T? current, Action<T, bool> selectionChanged)
-		where T : ILibraryItem
+		where T : IEntryBase
 	{
 		if (instance == null)
 		{
@@ -132,7 +132,7 @@ public partial class QuickSearch : PanelWindow
 	}
 
 	public void OnShow<T>(UIElement placementTarget, string title, TagCollection defaultTags, T? current, Action<T, bool> selectionChanged)
-		where T : ILibraryItem
+		where T : IEntryBase
 	{
 		this.isLoading = true;
 		this.targetType = typeof(T);
@@ -150,7 +150,7 @@ public partial class QuickSearch : PanelWindow
 
 		this.SearchTitle = title;
 
-		this.AvailableTags = this.Services.Library.GetAvailableTags<T>();
+		////this.AvailableTags = this.Services.Library.GetAvailableTags<T>();
 		this.NotifyPropertyChanged(nameof(QuickSearch.AvailableTags));
 
 		this.SelectedItem = current;
@@ -196,14 +196,15 @@ public partial class QuickSearch : PanelWindow
 
 		await Dispatch.NonUiThread();
 
-		List<ILibraryItem> results = this.Services.Library.Search(this.targetType, tags, query);
+		// TODO!
+		/*List<ILibraryItem> results = this.Services.Library.Search(new[] { this.targetType }, tags, query);
 
 		await this.Dispatcher.MainThread();
 
 		this.isLoading = true;
 		this.Results.Replace(results);
 		this.ResultsList.ScrollIntoView(this.SelectedItem);
-		this.isLoading = false;
+		this.isLoading = false;*/
 	}
 
 	private void OnTagClicked(object sender, RoutedEventArgs e)

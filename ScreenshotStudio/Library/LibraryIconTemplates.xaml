@@ -1,0 +1,15 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:excel="clr-namespace:ScreenshotStudio.GameData.Excel"
+	xmlns:library="clr-namespace:ScreenshotStudio.Library"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
+
+
+	<DataTemplate DataType="{x:Type excel:ResidentNpc}">
+		<wpfUtils:IconBlock
+			FontSize="72"
+			Icon="User" />
+	</DataTemplate>
+
+</ResourceDictionary>

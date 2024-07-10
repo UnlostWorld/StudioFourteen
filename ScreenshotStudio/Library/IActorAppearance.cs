@@ -2,7 +2,7 @@
 
 using ScreenshotStudio.Structs;
 
-public interface IActorAppearance : ILibraryItem
+public interface IActorAppearance : IEntryBase
 {
 	public unsafe void Apply(Actor* actor);
 }

@@ -51,7 +51,7 @@ public class EquipRaceCategory : StudioExcelRow
 			if (this.races[i] == true)
 			{
 				Race? race = GameDataService.GetRow<Race>(i + 1);
-				if (race != null)
+				if (race != null && race.Name != null)
 				{
 					tags.Add(race.Name);
 				}
