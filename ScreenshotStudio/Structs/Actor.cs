@@ -9,6 +9,7 @@
 namespace ScreenshotStudio.Structs;
 
 using System;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Dalamud.Game.ClientState.Objects.Enums;
@@ -61,10 +62,9 @@ public struct Actor
 		return needsRedraw;
 	}
 
-	public void UpdateCustomize(bool redraw)
+	public unsafe void UpdateCustomize(bool redraw)
 	{
-		var actor = this;
-		Threads.RunOnFrameworkThread(() => actor.UpdateCustomizeInternal(redraw));
+		Threads.RunOnFrameworkThread(this, (p) => ((Actor*)p)->UpdateCustomizeInternal(redraw));
 	}
 
 	private unsafe void UpdateCustomizeInternal(bool redraw)
@@ -86,11 +86,8 @@ public struct Actor
 
 		if (redraw)
 		{
-			Threads.VerifyFrameworkThread();
-
-			// Hey, yea, this just crashes for some reason. =(
-			////this.GameObject.DisableDraw();
-			////this.GameObject.EnableDraw();
+			this.GameObject.DisableDraw();
+			this.GameObject.EnableDraw();
 		}
 	}
 }

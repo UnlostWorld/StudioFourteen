@@ -8,6 +8,9 @@ using ScreenshotStudio.GameData;
 using ScreenshotStudio.Plugin;
 using System.Collections.Generic;
 using Dalamud.Game.ClientState.Objects.Enums;
+using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
+using ScreenshotStudio.Utilities;
+using FFXIVClientStructs.FFXIV.Common.Lua;
 
 public partial class CustomizeWindow : ActorWindow
 {
@@ -51,7 +54,7 @@ public partial class CustomizeWindow : ActorWindow
 	[AutoNotify]
 	public unsafe Race? Race
 	{
-		get => this.Races?.GetRow((int)this.Actor->GetCustomizeValue(CustomizeIndex.Race));
+		get => this.Races?.GetRow((int)this.GetCustomizeValue(CustomizeIndex.Race));
 		set
 		{
 			if (value == null || value.Tribes.Count <= 0)
@@ -61,112 +64,112 @@ public partial class CustomizeWindow : ActorWindow
 			if (tribe == null)
 				return;
 
-			this.Actor->SetCustomizeValue(CustomizeIndex.Race, (byte)value.RowId, false);
-			this.Actor->SetCustomizeValue(CustomizeIndex.Tribe, (byte)tribe.RowId, false);
+			this.SetCustomizeValue(CustomizeIndex.Race, (byte)value.RowId, false);
+			this.SetCustomizeValue(CustomizeIndex.Tribe, (byte)tribe.RowId, false);
 
 			if (!value.Genders.Contains(this.Gender))
-				this.Actor->SetCustomizeValue(CustomizeIndex.Gender, (byte)value.Genders[0], false);
+				this.SetCustomizeValue(CustomizeIndex.Gender, (byte)value.Genders[0], false);
 
 			if (this.Tribe?.Ages.Contains(this.Age) == false)
-				this.Actor->SetCustomizeValue(CustomizeIndex.ModelType, (byte)Ages.Normal, false);
+				this.SetCustomizeValue(CustomizeIndex.ModelType, (byte)Ages.Normal, false);
 
-			this.Actor->UpdateCustomize(true);
+			this.UpdateCustomize(true);
 		}
 	}
 
 	[AutoNotify]
 	public unsafe Tribe? Tribe
 	{
-		get => this.Tribes?.GetRow((int)this.Actor->GetCustomizeValue(CustomizeIndex.Tribe));
+		get => this.Tribes?.GetRow((int)this.GetCustomizeValue(CustomizeIndex.Tribe));
 		set
 		{
 			if (value == null)
 				return;
 
-			this.Actor->SetCustomizeValue(CustomizeIndex.Tribe, (byte)value.RowId, false);
+			this.SetCustomizeValue(CustomizeIndex.Tribe, (byte)value.RowId, false);
 
 			if (!value.Ages.Contains(this.Age))
-				this.Actor->SetCustomizeValue(CustomizeIndex.ModelType, (byte)Ages.Normal, false);
+				this.SetCustomizeValue(CustomizeIndex.ModelType, (byte)Ages.Normal, false);
 
-			this.Actor->UpdateCustomize(true);
+			this.UpdateCustomize(true);
 		}
 	}
 
 	[AutoNotify]
 	public unsafe Genders Gender
 	{
-		get => (Genders)this.Actor->GetCustomizeValue(CustomizeIndex.Gender);
-		set => this.Actor->SetCustomizeValue(CustomizeIndex.Gender, (byte)value);
+		get => (Genders)this.GetCustomizeValue(CustomizeIndex.Gender);
+		set => this.SetCustomizeValue(CustomizeIndex.Gender, (byte)value);
 	}
 
 	[AutoNotify]
 	public unsafe Ages Age
 	{
-		get => (Ages)this.Actor->GetCustomizeValue(CustomizeIndex.ModelType);
-		set => this.Actor->SetCustomizeValue(CustomizeIndex.ModelType, (byte)value);
+		get => (Ages)this.GetCustomizeValue(CustomizeIndex.ModelType);
+		set => this.SetCustomizeValue(CustomizeIndex.ModelType, (byte)value);
 	}
 
 	[AutoNotify]
 	public unsafe byte ActorHeight
 	{
-		get => this.Actor->GetCustomizeValue(CustomizeIndex.Height);
-		set => this.Actor->SetCustomizeValue(CustomizeIndex.Height, value);
+		get => this.GetCustomizeValue(CustomizeIndex.Height);
+		set => this.SetCustomizeValue(CustomizeIndex.Height, value);
 	}
 
 	[AutoNotify]
 	public unsafe byte Face
 	{
-		get => this.Actor->GetCustomizeValue(CustomizeIndex.FaceType);
-		set => this.Actor->SetCustomizeValue(CustomizeIndex.FaceType, value);
+		get => this.GetCustomizeValue(CustomizeIndex.FaceType);
+		set => this.SetCustomizeValue(CustomizeIndex.FaceType, value);
 	}
 
 	[AutoNotify]
 	public unsafe byte Hair
 	{
-		get => this.Actor->GetCustomizeValue(CustomizeIndex.HairStyle);
-		set => this.Actor->SetCustomizeValue(CustomizeIndex.HairStyle, value);
+		get => this.GetCustomizeValue(CustomizeIndex.HairStyle);
+		set => this.SetCustomizeValue(CustomizeIndex.HairStyle, value);
 	}
 
 	[AutoNotify]
 	public unsafe bool EnableHighlights
 	{
-		get => this.Actor->GetCustomizeValue(CustomizeIndex.HairColor2) != 0;
-		set => this.Actor->SetCustomizeValue(CustomizeIndex.HairColor2, value ? (byte)128 : (byte)0);
+		get => this.GetCustomizeValue(CustomizeIndex.HairColor2) != 0;
+		set => this.SetCustomizeValue(CustomizeIndex.HairColor2, value ? (byte)128 : (byte)0);
 	}
 
 	[AutoNotify]
 	public unsafe byte SkinTone
 	{
-		get => this.Actor->GetCustomizeValue(CustomizeIndex.SkinColor);
-		set => this.Actor->SetCustomizeValue(CustomizeIndex.SkinColor, value);
+		get => this.GetCustomizeValue(CustomizeIndex.SkinColor);
+		set => this.SetCustomizeValue(CustomizeIndex.SkinColor, value);
 	}
 
 	[AutoNotify]
 	public unsafe byte RightEyeColor
 	{
-		get => this.Actor->GetCustomizeValue(CustomizeIndex.EyeColor);
-		set => this.Actor->SetCustomizeValue(CustomizeIndex.EyeColor, value);
+		get => this.GetCustomizeValue(CustomizeIndex.EyeColor);
+		set => this.SetCustomizeValue(CustomizeIndex.EyeColor, value);
 	}
 
 	[AutoNotify]
 	public unsafe byte HairTone
 	{
-		get => this.Actor->GetCustomizeValue(CustomizeIndex.HairColor);
-		set => this.Actor->SetCustomizeValue(CustomizeIndex.HairColor, value);
+		get => this.GetCustomizeValue(CustomizeIndex.HairColor);
+		set => this.SetCustomizeValue(CustomizeIndex.HairColor, value);
 	}
 
 	[AutoNotify]
 	public unsafe byte Highlights
 	{
-		get => this.Actor->GetCustomizeValue(CustomizeIndex.HairColor2);
-		set => this.Actor->SetCustomizeValue(CustomizeIndex.HairColor2, value);
+		get => this.GetCustomizeValue(CustomizeIndex.HairColor2);
+		set => this.SetCustomizeValue(CustomizeIndex.HairColor2, value);
 	}
 
 	[AutoNotify]
 	public unsafe Structs.Customize.FacialFeatures FacialFeature
 	{
-		get => (Structs.Customize.FacialFeatures)this.Actor->GetCustomizeValue(CustomizeIndex.FaceFeatures);
-		set => this.Actor->SetCustomizeValue(CustomizeIndex.FaceFeatures, (byte)value);
+		get => (Structs.Customize.FacialFeatures)this.GetCustomizeValue(CustomizeIndex.FaceFeatures);
+		set => this.SetCustomizeValue(CustomizeIndex.FaceFeatures, (byte)value);
 	}
 
 	[AutoNotify]
@@ -175,22 +178,22 @@ public partial class CustomizeWindow : ActorWindow
 	[AutoNotify]
 	public unsafe byte FacialFeatureColor
 	{
-		get => this.Actor->GetCustomizeValue(CustomizeIndex.FaceFeaturesColor);
-		set => this.Actor->SetCustomizeValue(CustomizeIndex.FaceFeaturesColor, value);
+		get => this.GetCustomizeValue(CustomizeIndex.FaceFeaturesColor);
+		set => this.SetCustomizeValue(CustomizeIndex.FaceFeaturesColor, value);
 	}
 
 	[AutoNotify]
 	public unsafe byte Eyebrows
 	{
-		get => this.Actor->GetCustomizeValue(CustomizeIndex.Eyebrows);
-		set => this.Actor->SetCustomizeValue(CustomizeIndex.Eyebrows, value);
+		get => this.GetCustomizeValue(CustomizeIndex.Eyebrows);
+		set => this.SetCustomizeValue(CustomizeIndex.Eyebrows, value);
 	}
 
 	[AutoNotify]
 	public unsafe byte LeftEyeColor
 	{
-		get => this.Actor->GetCustomizeValue(CustomizeIndex.EyeColor2);
-		set => this.Actor->SetCustomizeValue(CustomizeIndex.EyeColor2, value);
+		get => this.GetCustomizeValue(CustomizeIndex.EyeColor2);
+		set => this.SetCustomizeValue(CustomizeIndex.EyeColor2, value);
 	}
 
 	[AutoNotify]
@@ -223,8 +226,8 @@ public partial class CustomizeWindow : ActorWindow
 	[AutoNotify]
 	public unsafe byte Eyes
 	{
-		get => this.Actor->GetCustomizeValue(CustomizeIndex.EyeShape);
-		set => this.Actor->SetCustomizeValue(CustomizeIndex.EyeShape, value);
+		get => this.GetCustomizeValue(CustomizeIndex.EyeShape);
+		set => this.SetCustomizeValue(CustomizeIndex.EyeShape, value);
 	}
 
 	[AutoNotify]
@@ -244,22 +247,22 @@ public partial class CustomizeWindow : ActorWindow
 	[AutoNotify]
 	public unsafe byte Nose
 	{
-		get => this.Actor->GetCustomizeValue(CustomizeIndex.NoseShape);
-		set => this.Actor->SetCustomizeValue(CustomizeIndex.NoseShape, value);
+		get => this.GetCustomizeValue(CustomizeIndex.NoseShape);
+		set => this.SetCustomizeValue(CustomizeIndex.NoseShape, value);
 	}
 
 	[AutoNotify]
 	public unsafe byte Jaw
 	{
-		get => this.Actor->GetCustomizeValue(CustomizeIndex.JawShape);
-		set => this.Actor->SetCustomizeValue(CustomizeIndex.JawShape, value);
+		get => this.GetCustomizeValue(CustomizeIndex.JawShape);
+		set => this.SetCustomizeValue(CustomizeIndex.JawShape, value);
 	}
 
 	[AutoNotify]
 	public unsafe byte MouthId
 	{
-		get => this.Actor->GetCustomizeValue(CustomizeIndex.LipStyle);
-		set => this.Actor->SetCustomizeValue(CustomizeIndex.LipStyle, value);
+		get => this.GetCustomizeValue(CustomizeIndex.LipStyle);
+		set => this.SetCustomizeValue(CustomizeIndex.LipStyle, value);
 	}
 
 	[AutoNotify]
@@ -279,36 +282,36 @@ public partial class CustomizeWindow : ActorWindow
 	[AutoNotify]
 	public unsafe byte LipsToneFurPattern
 	{
-		get => this.Actor->GetCustomizeValue(CustomizeIndex.LipColor);
-		set => this.Actor->SetCustomizeValue(CustomizeIndex.LipColor, value);
+		get => this.GetCustomizeValue(CustomizeIndex.LipColor);
+		set => this.SetCustomizeValue(CustomizeIndex.LipColor, value);
 	}
 
 	[AutoNotify]
 	public unsafe byte EarMuscleTailSize
 	{
-		get => this.Actor->GetCustomizeValue(CustomizeIndex.RaceFeatureSize);
-		set => this.Actor->SetCustomizeValue(CustomizeIndex.RaceFeatureSize, value);
+		get => this.GetCustomizeValue(CustomizeIndex.RaceFeatureSize);
+		set => this.SetCustomizeValue(CustomizeIndex.RaceFeatureSize, value);
 	}
 
 	[AutoNotify]
 	public unsafe byte TailEarsType
 	{
-		get => this.Actor->GetCustomizeValue(CustomizeIndex.RaceFeatureType);
-		set => this.Actor->SetCustomizeValue(CustomizeIndex.RaceFeatureType, value);
+		get => this.GetCustomizeValue(CustomizeIndex.RaceFeatureType);
+		set => this.SetCustomizeValue(CustomizeIndex.RaceFeatureType, value);
 	}
 
 	[AutoNotify]
 	public unsafe byte Bust
 	{
-		get => this.Actor->GetCustomizeValue(CustomizeIndex.BustSize);
-		set => this.Actor->SetCustomizeValue(CustomizeIndex.BustSize, value);
+		get => this.GetCustomizeValue(CustomizeIndex.BustSize);
+		set => this.SetCustomizeValue(CustomizeIndex.BustSize, value);
 	}
 
 	[AutoNotify]
 	public unsafe byte FacePaintId
 	{
-		get => this.Actor->GetCustomizeValue(CustomizeIndex.Facepaint);
-		set => this.Actor->SetCustomizeValue(CustomizeIndex.Facepaint, value);
+		get => this.GetCustomizeValue(CustomizeIndex.Facepaint);
+		set => this.SetCustomizeValue(CustomizeIndex.Facepaint, value);
 	}
 
 	[AutoNotify]
@@ -328,10 +331,10 @@ public partial class CustomizeWindow : ActorWindow
 	[AutoNotify]
 	public unsafe byte FacePaintColor
 	{
-		get => this.Actor->GetCustomizeValue(CustomizeIndex.FacepaintColor);
+		get => this.GetCustomizeValue(CustomizeIndex.FacepaintColor);
 		set
 		{
-			this.Actor->SetCustomizeValue(CustomizeIndex.FacepaintColor, value);
+			this.SetCustomizeValue(CustomizeIndex.FacepaintColor, value);
 		}
 	}
 
@@ -342,4 +345,8 @@ public partial class CustomizeWindow : ActorWindow
 
 		return base.ShouldTickAutoProperties();
 	}
+
+	public unsafe byte GetCustomizeValue(CustomizeIndex option) => this.Actor->GetCustomizeValue(option);
+	public unsafe bool SetCustomizeValue(CustomizeIndex option, byte value, bool apply = true) => this.Actor->SetCustomizeValue(option, value, apply);
+	public unsafe void UpdateCustomize(bool redraw) => this.Actor->UpdateCustomize(redraw);
 }
