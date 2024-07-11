@@ -10,141 +10,143 @@
 		x:Key="PanelWindowTemplate"
 		TargetType="{x:Type local:PanelWindow}">
 
-		<Grid Margin="12">
+		<AdornerDecorator>
 
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto" />
-				<RowDefinition />
-			</Grid.RowDefinitions>
+			<Grid Margin="12">
 
-			<Border
-				x:Name="WindowShadow"
-				Grid.RowSpan="2"
-				Background="Black"
-				CornerRadius="6"
-				Opacity="0.25">
-				<Border.BitmapEffect>
-					<DropShadowBitmapEffect
-						ShadowDepth="0"
-						Softness="0.75" />
-				</Border.BitmapEffect>
-			</Border>
-
-			<Border
-				x:Name="WindowBorder"
-				Grid.RowSpan="2"
-				Background="{DynamicResource BackgroundBrush}"
-				BorderBrush="{DynamicResource BackgroundBrush}"
-				BorderThickness="1"
-				CornerRadius="6" />
-
-			<Grid
-				Grid.Row="0"
-				Height="22"
-				Margin="0,0,0,3">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition />
+				</Grid.RowDefinitions>
 
 				<Border
-					Margin="1,1,1,-1"
-					Background="{DynamicResource ControlBackgroundBrush}"
-					CornerRadius="6,6,0,0"
-					MouseDown="OnTitleMouseDown" />
+					x:Name="WindowShadow"
+					Grid.RowSpan="2"
+					Background="Black"
+					CornerRadius="6"
+					Opacity="0.25">
+					<Border.BitmapEffect>
+						<DropShadowBitmapEffect
+							ShadowDepth="0"
+							Softness="0.75" />
+					</Border.BitmapEffect>
+				</Border>
 
-				<StackPanel
-					Margin="6,0"
-					IsHitTestVisible="False"
-					Orientation="Horizontal">
+				<Border
+					x:Name="WindowBorder"
+					Grid.RowSpan="2"
+					Background="{DynamicResource BackgroundBrush}"
+					BorderBrush="{DynamicResource BackgroundBrush}"
+					BorderThickness="1"
+					CornerRadius="6" />
 
-					<wpfUtils:IconBlock
-						MinWidth="12"
-						Margin="0,1,6,0"
-						VerticalAlignment="Center"
-						Foreground="{DynamicResource ForegroundLightBrush}"
-						Icon="{TemplateBinding TitleIcon}" />
-
-					<TextBlock
-						VerticalAlignment="Center"
-						Foreground="{DynamicResource ForegroundLightBrush}"
-						Text="{TemplateBinding Title}" />
-
-					<Ellipse
-						x:Name="SubtitleSeperator"
-						Width="4"
-						Height="4"
-						Margin="6,1,6,0"
-						VerticalAlignment="Center"
-						Fill="{DynamicResource ForegroundLightBrush}" />
-
-					<TextBlock
-						VerticalAlignment="Center"
-						Foreground="{DynamicResource ForegroundLightBrush}"
-						Text="{TemplateBinding Subtitle}" />
-				</StackPanel>
-
-				<StackPanel
+				<Grid
 					Grid.Row="0"
-					Margin="1"
-					HorizontalAlignment="Right"
-					Orientation="Horizontal">
+					Height="22"
+					Margin="0,0,0,3">
 
-					<ItemsControl ItemsSource="{TemplateBinding Actions}">
-						<ItemsControl.ItemsPanel>
-							<ItemsPanelTemplate>
-								<StackPanel Orientation="Horizontal" />
-							</ItemsPanelTemplate>
-						</ItemsControl.ItemsPanel>
+					<Border
+						Margin="1,1,1,-1"
+						Background="{DynamicResource ControlBackgroundBrush}"
+						CornerRadius="6,6,0,0"
+						MouseDown="OnTitleMouseDown" />
 
-						<ItemsControl.ItemTemplate>
-							<DataTemplate DataType="{x:Type local:PanelWindowAction}">
-								<Button
-									Width="28"
-									Height="22"
-									Margin="-3,0,0,0"
-									Background="Transparent"
-									Command="{Binding Command}"
-									ToolTip="{Binding ToolTip}">
-									<wpfUtils:IconBlock
-										Foreground="{DynamicResource ForegroundLightBrush}"
-										Icon="{Binding Icon}" />
-								</Button>
-							</DataTemplate>
-						</ItemsControl.ItemTemplate>
+					<StackPanel
+						Margin="6,0"
+						IsHitTestVisible="False"
+						Orientation="Horizontal">
 
-					</ItemsControl>
-
-					<!--  Close Button  -->
-					<Button
-						Width="26"
-						Height="Auto"
-						Margin="-3,2,2,0"
-						Background="Transparent"
-						Click="OnCloseClicked"
-						IsEnabled="{TemplateBinding CanClose}"
-						ToolTip="{DynamicResource ClosePanelTooltip}">
 						<wpfUtils:IconBlock
+							MinWidth="12"
+							Margin="0,1,6,0"
+							VerticalAlignment="Center"
 							Foreground="{DynamicResource ForegroundLightBrush}"
-							Icon="Times" />
-					</Button>
+							Icon="{TemplateBinding TitleIcon}" />
 
-				</StackPanel>
+						<TextBlock
+							VerticalAlignment="Center"
+							Foreground="{DynamicResource ForegroundLightBrush}"
+							Text="{TemplateBinding Title}" />
 
+						<Ellipse
+							x:Name="SubtitleSeperator"
+							Width="4"
+							Height="4"
+							Margin="6,1,6,0"
+							VerticalAlignment="Center"
+							Fill="{DynamicResource ForegroundLightBrush}" />
+
+						<TextBlock
+							VerticalAlignment="Center"
+							Foreground="{DynamicResource ForegroundLightBrush}"
+							Text="{TemplateBinding Subtitle}" />
+					</StackPanel>
+
+					<StackPanel
+						Grid.Row="0"
+						Margin="1"
+						HorizontalAlignment="Right"
+						Orientation="Horizontal">
+
+						<ItemsControl ItemsSource="{TemplateBinding Actions}">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<StackPanel Orientation="Horizontal" />
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+
+							<ItemsControl.ItemTemplate>
+								<DataTemplate DataType="{x:Type local:PanelWindowAction}">
+									<Button
+										Width="28"
+										Height="22"
+										Margin="-3,0,0,0"
+										Background="Transparent"
+										Command="{Binding Command}"
+										ToolTip="{Binding ToolTip}">
+										<wpfUtils:IconBlock
+											Foreground="{DynamicResource ForegroundLightBrush}"
+											Icon="{Binding Icon}" />
+									</Button>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+
+						</ItemsControl>
+
+						<!--  Close Button  -->
+						<Button
+							Width="26"
+							Height="Auto"
+							Margin="-3,2,2,0"
+							Background="Transparent"
+							Click="OnCloseClicked"
+							IsEnabled="{TemplateBinding CanClose}"
+							ToolTip="{DynamicResource ClosePanelTooltip}">
+							<wpfUtils:IconBlock
+								Foreground="{DynamicResource ForegroundLightBrush}"
+								Icon="Times" />
+						</Button>
+
+					</StackPanel>
+
+				</Grid>
+
+				<ContentPresenter
+					Grid.Row="1"
+					Margin="3,0,3,3"
+					Content="{TemplateBinding Content}"
+					ContentTemplate="{TemplateBinding ContentTemplate}" />
+
+				<Thumb
+					x:Name="ResizeGrip"
+					Grid.Row="1"
+					HorizontalAlignment="Right"
+					VerticalAlignment="Bottom"
+					DragDelta="OnResizeThumbDragDelta"
+					Style="{DynamicResource WpfUtilsResizeThumbCorner}"
+					Visibility="Collapsed" />
 			</Grid>
-
-			<ContentPresenter
-				Grid.Row="1"
-				Margin="3,0,3,3"
-				Content="{TemplateBinding Content}"
-				ContentTemplate="{TemplateBinding ContentTemplate}" />
-
-			<Thumb
-				x:Name="ResizeGrip"
-				Grid.Row="1"
-				HorizontalAlignment="Right"
-				VerticalAlignment="Bottom"
-				DragDelta="OnResizeThumbDragDelta"
-				Style="{DynamicResource WpfUtilsResizeThumbCorner}"
-				Visibility="Collapsed" />
-
-		</Grid>
+		</AdornerDecorator>
 
 		<ControlTemplate.Triggers>
 			<Trigger Property="ResizeMode" Value="CanResizeWithGrip">

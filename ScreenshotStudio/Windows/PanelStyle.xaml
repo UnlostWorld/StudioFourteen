@@ -9,39 +9,42 @@
 	<ControlTemplate
 		x:Key="PanelTemplate"
 		TargetType="{x:Type local:Panel}">
+		<AdornerDecorator>
+			<Grid
+				x:Name="MainGrid"
+				Margin="12"
+				HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+				VerticalAlignment="{TemplateBinding VerticalAlignment}">
 
-		<Grid
-			x:Name="MainGrid"
-			Margin="12"
-			HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-			VerticalAlignment="{TemplateBinding VerticalAlignment}">
+				<Border
+					x:Name="PanelShadow"
+					Background="Black"
+					CornerRadius="6"
+					Opacity="0.25">
+					<Border.BitmapEffect>
+						<DropShadowBitmapEffect
+							ShadowDepth="0"
+							Softness="0.75" />
+					</Border.BitmapEffect>
+				</Border>
 
-			<Border
-				x:Name="PanelShadow"
-				Background="Black"
-				CornerRadius="6"
-				Opacity="0.25">
-				<Border.BitmapEffect>
-					<DropShadowBitmapEffect
-						ShadowDepth="0"
-						Softness="0.75" />
-				</Border.BitmapEffect>
-			</Border>
+				<Border
+					x:Name="PanelBackground"
+					Background="{DynamicResource BackgroundBrush}"
+					BorderBrush="{DynamicResource BackgroundBrush}"
+					BorderThickness="1"
+					CornerRadius="6" />
 
-			<Border
-				x:Name="PanelBackground"
-				Background="{DynamicResource BackgroundBrush}"
-				BorderBrush="{DynamicResource BackgroundBrush}"
-				BorderThickness="1"
-				CornerRadius="6" />
 
-			<ContentPresenter
-				Grid.Row="1"
-				Margin="{TemplateBinding Padding}"
-				Content="{TemplateBinding Content}"
-				ContentTemplate="{TemplateBinding ContentTemplate}" />
+				<ContentPresenter
+					Grid.Row="1"
+					Margin="{TemplateBinding Padding}"
+					Content="{TemplateBinding Content}"
+					ContentTemplate="{TemplateBinding ContentTemplate}" />
 
-		</Grid>
+			</Grid>
+
+		</AdornerDecorator>
 
 		<ControlTemplate.Triggers>
 			<Trigger Property="ShowBackground" Value="False">
