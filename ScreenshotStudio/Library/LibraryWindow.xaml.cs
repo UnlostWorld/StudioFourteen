@@ -21,8 +21,8 @@ public partial class LibraryWindow : PanelWindow
 {
 	private readonly FuncQueue searchQueue;
 	private string search = string.Empty;
-	private TagCollection tags = new();
 	private LibraryTab currentTab;
+	private bool flatten = false;
 
 	public LibraryWindow()
 	{
@@ -35,10 +35,10 @@ public partial class LibraryWindow : PanelWindow
 	[AutoNotify]
 	public FastObservableCollection<LibraryTab> Tabs { get; init; } = new()
 	{
-		new("Favorites", ProIcons.Heart, new LibraryFavoritesFilter()),
-		new("Poses", ProIcons.Running, new TagFilter()),
-		new("Characters", ProIcons.User, new TypeFilter(typeof(IActorAppearance))),
-		new("Scenes", ProIcons.Users,  new TagFilter()),
+		new("LOC_Library_Favorites", ProIcons.Heart, new LibraryFavoritesFilter()),
+		new("LOC_Library_Poses", ProIcons.Running, new TagFilter()),
+		new("LOC_Library_Characters", ProIcons.User, new TypeFilter(typeof(IActorAppearance))),
+		new("LOC_Library_Scenes", ProIcons.Users,  new TagFilter()),
 	};
 
 	public LibraryTab CurrentTab
@@ -63,13 +63,14 @@ public partial class LibraryWindow : PanelWindow
 	[AutoNotify] public ObservableCollection<GroupEntryBase> Path { get; init; } = new();
 	[AutoNotify] public GroupEntryBase CurrentGroup => this.Path[this.Path.Count - 1];
 
-	public TagCollection Tags
+	[AutoNotify] public bool Flatten
 	{
-		get => this.tags;
+		get => this.flatten;
 		set
 		{
-			this.tags = value;
+			this.flatten = value;
 			this.NotifyPropertyChanged();
+			this.searchQueue.InvokeImmediate();
 		}
 	}
 
@@ -97,13 +98,13 @@ public partial class LibraryWindow : PanelWindow
 	private async Task SearchAsync()
 	{
 		await this.Dispatcher.MainThread();
-		TagCollection tags = new(this.Tags);
+
 		string[] query = SearchUtility.ToQuery(this.Search);
 
 		await Dispatch.NonUiThread();
 
 		this.CurrentGroup.FilterEntries(this.CurrentTab.Filters);
-		IEnumerable<IEntryBase>? results = this.CurrentGroup.GetFilteredEntries(false);
+		IEnumerable<IEntryBase>? results = this.CurrentGroup.GetFilteredEntries(this.Flatten);
 
 		await this.Dispatcher.MainThread();
 
@@ -165,7 +166,7 @@ public partial class LibraryWindow : PanelWindow
 public class LibraryTab(string name, ProIcons icon, params FilterBase[] filters)
 	: ViewModel
 {
-	public string Name { get; private set; } = name;
-	public ProIcons Icon { get; private set; } = icon;
-	public FilterBase[] Filters { get; private set; } = filters;
+	public string Name { get; init; } = Resources.Find(name, string.Empty);
+	public ProIcons Icon { get; init; } = icon;
+	public FilterBase[] Filters { get; init; } = filters;
 }

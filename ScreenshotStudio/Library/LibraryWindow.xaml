@@ -338,15 +338,34 @@
 								Margin="-3,0,0,0"
 								Background="Transparent"
 								Click="OnDirectorySelected">
+
 								<StackPanel Orientation="Horizontal">
+
 									<wpfUtils:IconBlock
+										x:Name="Caret"
 										Margin="0,4,6,2"
 										FontSize="10"
-										Icon="CaretRight"
-										Visibility="{Binding IsRoot, Converter={StaticResource !B2V}}" />
+										Icon="CaretRight" />
+
+									<wpfUtils:IconBlock
+										x:Name="Icon"
+										Margin="0,4,6,2"
+										Icon="Books"
+										Visibility="Collapsed" />
+
 									<TextBlock Text="{Binding Name}" />
 								</StackPanel>
 							</Button>
+
+							<DataTemplate.Triggers>
+								<DataTrigger
+									Binding="{Binding IsRoot}"
+									Value="True">
+									<Setter TargetName="Icon" Property="Visibility" Value="Visible" />
+									<Setter TargetName="Caret" Property="Visibility" Value="Collapsed" />
+								</DataTrigger>
+							</DataTemplate.Triggers>
+
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
 
@@ -415,7 +434,7 @@
 						<RadioButton
 							Grid.Column="0"
 							Background="Transparent"
-							IsChecked="{Binding Filter.Flatten, Converter={StaticResource !B}}"
+							IsChecked="{Binding Flatten, Converter={StaticResource !B}}"
 							ToolTip="{DynamicResource LOC_Library_DirectoryViewTooltip}">
 							<wpfUtils:IconBlock Icon="Folder" />
 						</RadioButton>
@@ -423,7 +442,7 @@
 						<RadioButton
 							Grid.Column="1"
 							Background="Transparent"
-							IsChecked="{Binding Filter.Flatten}"
+							IsChecked="{Binding Flatten}"
 							ToolTip="{DynamicResource LOC_Library_FlattenViewTooltip}">
 							<wpfUtils:IconBlock Icon="FileAlt" />
 						</RadioButton>
