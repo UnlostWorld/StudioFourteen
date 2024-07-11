@@ -9,6 +9,8 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
+
 using System.Windows.Input;
 using WpfUtils;
 using WpfUtils.Extensions;
@@ -170,23 +172,29 @@ public partial class TagSelector : UserControl, IComparer<Tag>, INotifyPropertyC
 		this.isChangingTags = false;
 	}
 
-	private void OnAddTagMouseDown(object sender, MouseButtonEventArgs e)
+	private void OnTagMouseDown(object sender, MouseButtonEventArgs e)
 	{
 		e.Handled = true;
 	}
 
-	private void OnAddTagMouseUp(object sender, MouseButtonEventArgs e)
+	private void OnTagMouseUp(object sender, MouseButtonEventArgs e)
 	{
 		e.Handled = true;
 		if (sender is FrameworkElement el && el.DataContext is Tag tag)
 		{
-			this.AddTag(tag);
-		}
-	}
+			ListBox? lb = el.FindParent<ListBox>();
+			if (lb == null)
+				return;
 
-	private void OnRemoveTagMouseDown(object sender, MouseButtonEventArgs e)
-	{
-		e.Handled = true;
+			if (lb.ItemsSource == this.SuggestTags)
+			{
+				this.AddTag(tag);
+			}
+			else
+			{
+				this.RemoveTag(tag);
+			}
+		}
 	}
 
 	private void OnRemoveTagMouseUp(object sender, MouseButtonEventArgs e)
@@ -268,6 +276,12 @@ public partial class TagSelector : UserControl, IComparer<Tag>, INotifyPropertyC
 		{
 			this.Log.Error(ex, "Error in OnTagSearchPreviewKeyDown");
 		}
+	}
+
+	private void OnShowTagsClicked(object sender, RoutedEventArgs e)
+	{
+		this.bypassTagSearch = true;
+		this.tagSearchQueue.InvokeImmediate();
 	}
 
 	private void IncrementSuggestIndex(int amount)

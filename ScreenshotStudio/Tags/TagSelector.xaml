@@ -36,59 +36,33 @@
 			</Grid>
 		</DataTemplate>
 
-		<!--  Tag animations  -->
-		<Storyboard x:Key="AddRemoveIconAreaIn">
-			<DoubleAnimation
-				Storyboard.TargetName="AddRemoveIconArea"
-				Storyboard.TargetProperty="Opacity"
-				To="1"
-				Duration="0:00:00.150">
-				<DoubleAnimation.EasingFunction>
-					<SineEase EasingMode="EaseOut" />
-				</DoubleAnimation.EasingFunction>
-			</DoubleAnimation>
-		</Storyboard>
-
-		<Storyboard x:Key="AddRemoveIconAreaOut">
-			<DoubleAnimation
-				Storyboard.TargetName="AddRemoveIconArea"
-				Storyboard.TargetProperty="Opacity"
-				To="0"
-				Duration="0:00:00.250">
-				<DoubleAnimation.EasingFunction>
-					<SineEase EasingMode="EaseIn" />
-				</DoubleAnimation.EasingFunction>
-			</DoubleAnimation>
-		</Storyboard>
-
-		<!--  Suggested tags (appear as the user types)  -->
 		<ControlTemplate
-			x:Key="SuggestedTagListboxItem"
+			x:Key="TagItem"
 			TargetType="{x:Type ListBoxItem}">
 
 			<Grid
 				Height="20"
-				Margin="1,2"
+				Margin="2,3"
 				Cursor="Hand"
-				MouseDown="OnAddTagMouseDown"
-				MouseUp="OnAddTagMouseUp">
+				MouseDown="OnTagMouseDown"
+				MouseUp="OnTagMouseUp">
 
 				<Border
 					Background="{DynamicResource BackgroundLightBrush}"
-					CornerRadius="10"
+					CornerRadius="10,4,4,10"
 					Opacity="0.5" />
 
 				<Border
 					x:Name="HoverBorder"
 					Background="{DynamicResource ControlHighlightBrush}"
-					CornerRadius="10"
+					CornerRadius="10,4,4,10"
 					Opacity="0" />
 
 				<Border
 					x:Name="SelectedBorder"
 					BorderBrush="{DynamicResource ForegroundLightBrush}"
 					BorderThickness="1"
-					CornerRadius="10"
+					CornerRadius="10,4,4,10"
 					Opacity="0" />
 
 				<Ellipse
@@ -97,23 +71,6 @@
 					Margin="4"
 					HorizontalAlignment="Left"
 					Fill="{DynamicResource ControlBackgroundBrush}" />
-
-				<Grid
-					x:Name="AddRemoveIconArea"
-					Width="14"
-					Height="14"
-					Margin="3,1,3,0"
-					HorizontalAlignment="Left"
-					VerticalAlignment="Center"
-					Opacity="0">
-
-					<wpfUtils:IconBlock
-						HorizontalAlignment="Center"
-						VerticalAlignment="Center"
-						FontSize="14"
-						Foreground="{DynamicResource ControlHighlightBrush}"
-						Icon="PlusCircle" />
-				</Grid>
 
 				<ContentPresenter
 					Margin="14,2,2,2"
@@ -125,11 +82,6 @@
 
 				<Trigger Property="IsSelected" Value="True">
 					<Trigger.EnterActions>
-						<StopStoryboard BeginStoryboardName="BeginIconOut" />
-						<StopStoryboard BeginStoryboardName="BeginSelectIconOut" />
-						<BeginStoryboard
-							x:Name="BeginSelectIconIn"
-							Storyboard="{StaticResource AddRemoveIconAreaIn}" />
 						<BeginStoryboard>
 							<Storyboard>
 								<DoubleAnimation
@@ -145,11 +97,6 @@
 						</BeginStoryboard>
 					</Trigger.EnterActions>
 					<Trigger.ExitActions>
-						<StopStoryboard BeginStoryboardName="BeginIconIn" />
-						<StopStoryboard BeginStoryboardName="BeginSelectIconIn" />
-						<BeginStoryboard
-							x:Name="BeginSelectIconOut"
-							Storyboard="{StaticResource AddRemoveIconAreaOut}" />
 						<BeginStoryboard>
 							<Storyboard>
 								<DoubleAnimation
@@ -166,28 +113,6 @@
 					</Trigger.ExitActions>
 				</Trigger>
 
-				<MultiTrigger>
-					<MultiTrigger.Conditions>
-						<Condition Property="IsSelected" Value="False" />
-						<Condition Property="IsMouseOver" Value="True" />
-					</MultiTrigger.Conditions>
-
-					<MultiTrigger.EnterActions>
-						<StopStoryboard BeginStoryboardName="BeginIconOut" />
-						<StopStoryboard BeginStoryboardName="BeginSelectIconOut" />
-						<BeginStoryboard
-							x:Name="BeginIconIn"
-							Storyboard="{StaticResource AddRemoveIconAreaIn}" />
-					</MultiTrigger.EnterActions>
-					<MultiTrigger.ExitActions>
-						<StopStoryboard BeginStoryboardName="BeginIconIn" />
-						<StopStoryboard BeginStoryboardName="BeginSelectIconIn" />
-						<BeginStoryboard
-							x:Name="BeginIconOut"
-							Storyboard="{StaticResource AddRemoveIconAreaOut}" />
-					</MultiTrigger.ExitActions>
-				</MultiTrigger>
-
 				<Trigger Property="IsMouseOver" Value="True">
 					<Trigger.EnterActions>
 						<BeginStoryboard>
@@ -221,142 +146,9 @@
 						</BeginStoryboard>
 					</Trigger.ExitActions>
 				</Trigger>
-
-
 			</ControlTemplate.Triggers>
-
 		</ControlTemplate>
 
-		<!--  Selected tags (within search box)  -->
-		<ControlTemplate
-			x:Key="SelectedTagListboxItem"
-			TargetType="{x:Type ListBoxItem}">
-
-			<Grid
-				Height="20"
-				Margin="1"
-				Cursor="Hand"
-				MouseDown="OnRemoveTagMouseDown"
-				MouseUp="OnRemoveTagMouseUp">
-
-				<Grid.LayoutTransform>
-					<ScaleTransform x:Name="ScaleTransform" ScaleX="1" />
-				</Grid.LayoutTransform>
-
-				<Border
-					Background="{DynamicResource BackgroundLightBrush}"
-					CornerRadius="10"
-					Opacity="0.5" />
-
-				<Border
-					x:Name="HoverBorder"
-					Background="{DynamicResource ControlHighlightBrush}"
-					CornerRadius="10"
-					Opacity="0" />
-
-				<Ellipse
-					Width="10"
-					Height="10"
-					Margin="4"
-					HorizontalAlignment="Left"
-					Fill="{DynamicResource ControlBackgroundBrush}" />
-
-				<Grid
-					x:Name="AddRemoveIconArea"
-					Width="14"
-					Height="14"
-					Margin="1,1,3,0"
-					HorizontalAlignment="Left"
-					VerticalAlignment="Center"
-					Opacity="0">
-
-					<wpfUtils:IconBlock
-						HorizontalAlignment="Center"
-						VerticalAlignment="Center"
-						FontSize="14"
-						Foreground="{DynamicResource ControlHighlightBrush}"
-						Icon="MinusCircle" />
-				</Grid>
-
-				<ContentPresenter
-					Margin="14,0,2,2"
-					Content="{TemplateBinding Content}"
-					ContentTemplate="{TemplateBinding ContentTemplate}" />
-			</Grid>
-
-			<ControlTemplate.Triggers>
-
-				<Trigger Property="IsEnabled" Value="True">
-					<Trigger.EnterActions>
-						<BeginStoryboard>
-							<Storyboard>
-								<DoubleAnimation
-									Storyboard.TargetName="ScaleTransform"
-									Storyboard.TargetProperty="ScaleX"
-									From="0"
-									To="1"
-									Duration="0:00:00.150">
-									<DoubleAnimation.EasingFunction>
-										<SineEase EasingMode="EaseOut" />
-									</DoubleAnimation.EasingFunction>
-								</DoubleAnimation>
-							</Storyboard>
-						</BeginStoryboard>
-					</Trigger.EnterActions>
-				</Trigger>
-
-				<Trigger Property="IsMouseOver" Value="True">
-					<Trigger.EnterActions>
-						<StopStoryboard BeginStoryboardName="BeginIconOut" />
-						<BeginStoryboard
-							x:Name="BeginIconIn"
-							Storyboard="{StaticResource AddRemoveIconAreaIn}" />
-					</Trigger.EnterActions>
-					<Trigger.ExitActions>
-						<StopStoryboard BeginStoryboardName="BeginIconIn" />
-						<BeginStoryboard
-							x:Name="BeginIconOut"
-							Storyboard="{StaticResource AddRemoveIconAreaOut}" />
-					</Trigger.ExitActions>
-				</Trigger>
-
-				<Trigger Property="IsMouseOver" Value="True">
-					<Trigger.EnterActions>
-						<BeginStoryboard>
-							<Storyboard>
-								<DoubleAnimation
-									Storyboard.TargetName="HoverBorder"
-									Storyboard.TargetProperty="Opacity"
-									To="1"
-									Duration="0:00:00.150">
-									<DoubleAnimation.EasingFunction>
-										<SineEase EasingMode="EaseOut" />
-									</DoubleAnimation.EasingFunction>
-								</DoubleAnimation>
-							</Storyboard>
-						</BeginStoryboard>
-					</Trigger.EnterActions>
-					<Trigger.ExitActions>
-						<BeginStoryboard>
-							<Storyboard>
-								<DoubleAnimation
-									Storyboard.TargetName="HoverBorder"
-									Storyboard.TargetProperty="Opacity"
-									To="0"
-									Duration="0:00:00.250">
-									<DoubleAnimation.EasingFunction>
-										<SineEase EasingMode="EaseIn" />
-									</DoubleAnimation.EasingFunction>
-								</DoubleAnimation>
-							</Storyboard>
-						</BeginStoryboard>
-					</Trigger.ExitActions>
-				</Trigger>
-
-
-			</ControlTemplate.Triggers>
-
-		</ControlTemplate>
 	</UserControl.Resources>
 
 
@@ -388,7 +180,7 @@
 				</ListBox.ItemsPanel>
 				<ListBox.ItemContainerStyle>
 					<Style TargetType="{x:Type ListBoxItem}">
-						<Setter Property="Template" Value="{StaticResource SelectedTagListboxItem}" />
+						<Setter Property="Template" Value="{StaticResource TagItem}" />
 					</Style>
 				</ListBox.ItemContainerStyle>
 			</ListBox>
@@ -399,7 +191,20 @@
 				VerticalAlignment="Center"
 				FontSize="14"
 				Foreground="{DynamicResource BackgroundLightBrush}"
-				Icon="Search" />
+				Icon="Search"
+				Visibility="{Binding ElementName=SearchTextBox, Path=IsKeyboardFocused, Converter={StaticResource !B2V}}" />
+
+			<Button
+				Margin="0,0,2,0"
+				HorizontalAlignment="Right"
+				Background="Transparent"
+				Click="OnShowTagsClicked"
+				Focusable="False"
+				Visibility="{Binding ElementName=SearchTextBox, Path=IsKeyboardFocused, Converter={StaticResource B2V}}">
+				<wpfUtils:IconBlock
+					FontSize="14"
+					Icon="Tag" />
+			</Button>
 		</Grid>
 
 		<!--  yea this should be a popup duh  -->
@@ -407,6 +212,7 @@
 			Width="{Binding ActualWidth, ElementName=ContentArea}"
 			MaxHeight="250"
 			AllowsTransparency="True"
+			HorizontalOffset="-6"
 			IsOpen="{Binding DataContext.IsSuggestTags, ElementName=ContentArea}"
 			PlacementTarget="{Binding ElementName=ContentArea}"
 			StaysOpen="False">
@@ -435,7 +241,7 @@
 					CornerRadius="6" />
 
 				<ListBox
-					Margin="2,1"
+					Margin="3"
 					Focusable="False"
 					ItemsSource="{Binding SuggestTags}"
 					ScrollViewer.HorizontalScrollBarVisibility="Disabled"
@@ -449,7 +255,7 @@
 
 					<ListBox.ItemContainerStyle>
 						<Style TargetType="{x:Type ListBoxItem}">
-							<Setter Property="Template" Value="{StaticResource SuggestedTagListboxItem}" />
+							<Setter Property="Template" Value="{StaticResource TagItem}" />
 						</Style>
 					</ListBox.ItemContainerStyle>
 				</ListBox>
