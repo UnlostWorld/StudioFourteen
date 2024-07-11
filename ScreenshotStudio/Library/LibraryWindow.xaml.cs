@@ -1,5 +1,7 @@
 ﻿namespace ScreenshotStudio.Library;
 
+using FontAwesome.Sharp;
+using FontAwesome.Sharp.Pro;
 using ScreenshotStudio.Library.Filters;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Tags;
@@ -20,19 +22,39 @@ public partial class LibraryWindow : PanelWindow
 	private readonly FuncQueue searchQueue;
 	private string search = string.Empty;
 	private TagCollection tags = new();
-	private Tabs currentTab = Tabs.Favorites;
+	private LibraryTab currentTab;
 
 	public LibraryWindow()
 	{
 		this.searchQueue = new(this.SearchAsync, 250);
+
+		// Remember?
+		this.currentTab = this.Tabs[0];
 	}
 
-	public enum Tabs
+	[AutoNotify]
+	public FastObservableCollection<LibraryTab> Tabs { get; init; } = new()
 	{
-		Favorites,
-		Poses,
-		Characters,
-		Scenes,
+		new("Favorites", ProIcons.Heart, new LibraryFavoritesFilter()),
+		new("Poses", ProIcons.Running, new TagFilter()),
+		new("Characters", ProIcons.User, new TypeFilter(typeof(IActorAppearance))),
+		new("Scenes", ProIcons.Users,  new TagFilter()),
+	};
+
+	public LibraryTab CurrentTab
+	{
+		get => this.currentTab;
+		set
+		{
+			this.currentTab = value;
+			this.NotifyPropertyChanged();
+
+			// clear the path
+			this.Path.Clear();
+			this.Path.Add(this.Services.Library.Root);
+
+			this.searchQueue.InvokeImmediate();
+		}
 	}
 
 	[AutoNotify] public FastObservableCollection<object> Entries { get; init; } = new();
@@ -40,17 +62,6 @@ public partial class LibraryWindow : PanelWindow
 	[AutoNotify] public bool ViewList { get; set; } = false;
 	[AutoNotify] public ObservableCollection<GroupEntryBase> Path { get; init; } = new();
 	[AutoNotify] public GroupEntryBase CurrentGroup => this.Path[this.Path.Count - 1];
-
-	public Tabs CurrentTab
-	{
-		get => this.currentTab;
-		set
-		{
-			this.currentTab = value;
-			this.NotifyPropertyChanged();
-			this.searchQueue.Invoke();
-		}
-	}
 
 	public TagCollection Tags
 	{
@@ -85,27 +96,13 @@ public partial class LibraryWindow : PanelWindow
 
 	private async Task SearchAsync()
 	{
-		Type[] targetTypes = this.currentTab switch
-		{
-			Tabs.Poses => new[] { typeof(IActorAppearance) },
-			Tabs.Favorites => new[] { typeof(IActorAppearance) },
-			Tabs.Characters => new[] { typeof(IActorAppearance) },
-			Tabs.Scenes => new[] { typeof(IActorAppearance) },
-			_ => throw new Exception("No Tab"),
-		};
-
 		await this.Dispatcher.MainThread();
 		TagCollection tags = new(this.Tags);
 		string[] query = SearchUtility.ToQuery(this.Search);
 
 		await Dispatch.NonUiThread();
 
-		FilterBase[] filters = new[]
-		{
-			new TypeFilter("Characters", new[] { typeof(IActorAppearance) }),
-		};
-
-		this.CurrentGroup.FilterEntries(filters);
+		this.CurrentGroup.FilterEntries(this.CurrentTab.Filters);
 		IEnumerable<IEntryBase>? results = this.CurrentGroup.GetFilteredEntries(false);
 
 		await this.Dispatcher.MainThread();
@@ -120,11 +117,6 @@ public partial class LibraryWindow : PanelWindow
 		}
 
 		////this.ResultsList.ScrollIntoView(this.SelectedItem);
-	}
-
-	private void OnTabChanged(object sender, RoutedEventArgs e)
-	{
-		////this.Path.RemoveRange(1, this.Path.Count - 1);
 	}
 
 	private void OnRevertClicked(object sender, RoutedEventArgs e)
@@ -168,4 +160,12 @@ public partial class LibraryWindow : PanelWindow
 	private void OnApplyClicked(object sender, RoutedEventArgs e)
 	{
 	}
+}
+
+public class LibraryTab(string name, ProIcons icon, params FilterBase[] filters)
+	: ViewModel
+{
+	public string Name { get; private set; } = name;
+	public ProIcons Icon { get; private set; } = icon;
+	public FilterBase[] Filters { get; private set; } = filters;
 }

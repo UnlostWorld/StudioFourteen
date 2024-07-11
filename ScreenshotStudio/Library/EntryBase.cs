@@ -1,6 +1,5 @@
 ﻿namespace ScreenshotStudio.Library;
 
-using ScreenshotStudio.Library.Filters;
 using ScreenshotStudio.Library.Sources;
 using ScreenshotStudio.Tags;
 using System;
@@ -16,7 +15,6 @@ public interface IEntryBase : IDisposable
 	string Identifier { get; }
 	bool IsValid { get; }
 
-	bool PassesFilters(params FilterBase[] filters);
 	bool Search(string[] query);
 }
 
@@ -42,8 +40,6 @@ public abstract class EntryBase : ITagged, IEntryBase, INotifyPropertyChanged
 	public virtual bool IsValid => true;
 
 	public string Identifier => $"{this.Source?.GetInternalId()}||{this.GetInternalId()}";
-
-	public abstract bool PassesFilters(params FilterBase[] filters);
 
 	public virtual bool Search(string[] query)
 	{

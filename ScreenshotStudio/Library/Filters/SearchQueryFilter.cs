@@ -4,17 +4,12 @@ internal class SearchQueryFilter : FilterBase
 {
     public string[]? Query;
 
-    public SearchQueryFilter()
-        : base("Search")
-    {
-    }
-
     public override void Clear()
     {
         this.Query = null;
     }
 
-    public override bool Filter(EntryBase entry)
+    public override bool Filter(IEntryBase entry)
     {
         if(this.Query == null)
             return false;

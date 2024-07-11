@@ -4,7 +4,7 @@ using ScreenshotStudio.Studio;
 using ScreenshotStudio.Windows;
 using System.Threading.Tasks;
 using System;
-using ScreenshotStudio.Plugin;
+using ScreenshotStudio.Library;
 
 public class StudioService : ServiceBase
 {
@@ -30,6 +30,10 @@ public class StudioService : ServiceBase
 
 		this.navigationPanel = await Panel.ShowAsync<NavigationPanel>();
 		this.targetPanel = await Panel.ShowAsync<TargetPanel>();
+
+		// Go fast
+		this.OpenStudio();
+		this.Services.Panels.SetIsOpen<LibraryWindow>(true);
 	}
 
 	public void OpenStudio() => Task.Run(async () => await this.OpenStudioAsync());

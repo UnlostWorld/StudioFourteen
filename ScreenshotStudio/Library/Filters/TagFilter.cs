@@ -6,11 +6,6 @@ internal class TagFilter : FilterBase
 {
     public TagCollection? Tags;
 
-    public TagFilter()
-        : base("Tags")
-    {
-    }
-
     public override void Clear()
     {
         this.Tags = null;
@@ -24,7 +19,7 @@ internal class TagFilter : FilterBase
         this.Tags.Add(tag);
     }
 
-    public override bool Filter(EntryBase entry)
+    public override bool Filter(IEntryBase entry)
     {
         if(this.Tags == null)
             return true;

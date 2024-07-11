@@ -24,6 +24,7 @@ public abstract class GroupEntryBase : EntryBase
 	public IEnumerable<IEntryBase>? AllEntries => this.allEntries;
 
 	public int AllCount => this.allEntries.Count;
+	public int FilteredCount => this.filteredEntries.Count;
 
 	public void Add(IEntryBase entry)
 	{
@@ -37,11 +38,6 @@ public abstract class GroupEntryBase : EntryBase
 
 		this.filteredEntries.Clear();
 		this.NotifyPropertyChanged(nameof(GroupEntryBase.FilteredEntries));
-	}
-
-	public override bool PassesFilters(params FilterBase[] filters)
-	{
-		return this.filteredEntries.Count > 0;
 	}
 
 	public void FilterEntries(params FilterBase[] filters)
@@ -64,12 +60,27 @@ public abstract class GroupEntryBase : EntryBase
 					if (entry == null)
 						continue;
 
+					bool passesFilters = true;
+
 					if (entry is GroupEntryBase dir)
 					{
 						dir.FilterEntries(filters);
+						passesFilters = dir.FilteredCount > 0;
+					}
+					else
+					{
+						foreach (FilterBase filter in filters)
+						{
+							passesFilters &= filter.Filter(entry);
+
+							if (!passesFilters)
+							{
+								break;
+							}
+						}
 					}
 
-					if (entry.PassesFilters(filters))
+					if (passesFilters)
 					{
 						this.filteredEntries.Add(entry);
 					}

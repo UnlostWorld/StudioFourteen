@@ -1,7 +1,6 @@
 ﻿namespace ScreenshotStudio.GameData.Excel;
 
 using ScreenshotStudio.Library;
-using ScreenshotStudio.Library.Filters;
 using ScreenshotStudio.Library.Sources;
 using ScreenshotStudio.Tags;
 using WpfUtils;
@@ -19,11 +18,6 @@ public class LibraryExcelRow : StudioExcelRow, IEntryBase
 
 	public void Dispose()
 	{
-	}
-
-	public bool PassesFilters(params FilterBase[] filters)
-	{
-		return true;
 	}
 
 	public bool Search(TagCollection tags, string[]? query)

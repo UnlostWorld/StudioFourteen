@@ -8,7 +8,7 @@ using System.Numerics;
 using WpfUtils;
 
 /// <summary>
-/// An item entry is an entry in teh library that the user can load, or otherwise perform actions on.
+/// An item entry is an entry in the library that the user can load, or otherwise perform actions on.
 /// </summary>
 internal abstract class ItemEntryBase : EntryBase
 {
@@ -24,19 +24,6 @@ internal abstract class ItemEntryBase : EntryBase
     public abstract Type LoadsType { get; }
 
     public abstract object? Load();
-
-    public override bool PassesFilters(params FilterBase[] filters)
-    {
-        foreach (FilterBase filter in filters)
-        {
-            if (!filter.Filter(this))
-            {
-                return false;
-            }
-        }
-
-        return true;
-    }
 
     public override bool Search(string[] query)
     {

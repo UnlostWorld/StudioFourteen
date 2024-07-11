@@ -298,7 +298,7 @@
 							<RowDefinition />
 						</Grid.RowDefinitions>
 
-						<tags:TagFilter
+						<tags:TagSelector
 							Margin="0,1"
 							AllTags="{Binding AvailableTags}"
 							OnDone="OnTagFilterDone"

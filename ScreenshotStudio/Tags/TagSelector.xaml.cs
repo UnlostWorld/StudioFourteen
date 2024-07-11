@@ -14,32 +14,32 @@ using WpfUtils;
 using WpfUtils.Extensions;
 using WpfUtils.Utils;
 
-public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyChanged
+public partial class TagSelector : UserControl, IComparer<Tag>, INotifyPropertyChanged
 {
 	public static readonly DependencyProperty AllTagsProperty = DependencyProperty.Register(
-		nameof(TagFilter.AllTags),
+		nameof(TagSelector.AllTags),
 		typeof(TagCollection),
-		typeof(TagFilter),
+		typeof(TagSelector),
 		new(new TagCollection()));
 
 	public static readonly DependencyProperty TagsProperty = DependencyProperty.Register(
-		nameof(TagFilter.Tags),
+		nameof(TagSelector.Tags),
 		typeof(TagCollection),
-		typeof(TagFilter),
+		typeof(TagSelector),
 		new(new TagCollection(), OnTagsChanged));
 
 	public static readonly DependencyProperty SearchProperty = DependencyProperty.Register(
-		nameof(TagFilter.Search),
+		nameof(TagSelector.Search),
 		typeof(string),
-		typeof(TagFilter),
+		typeof(TagSelector),
 		new(null));
 
-	protected readonly ILogger Log = Logging.Shared.ForContext<TagFilter>();
+	protected readonly ILogger Log = Logging.Shared.ForContext<TagSelector>();
 
 	private readonly FuncQueue tagSearchQueue;
 	private bool isChangingTags = false;
 
-	public TagFilter()
+	public TagSelector()
 	{
 		this.InitializeComponent();
 		this.ContentArea.DataContext = this;
@@ -81,7 +81,7 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 
 	private static void OnTagsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 	{
-		if (d is TagFilter tagFilter)
+		if (d is TagSelector tagFilter)
 		{
 			if (tagFilter.Tags == null)
 				return;
@@ -250,7 +250,7 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 			if (currentIndex < 0)
 			{
 				this.SelectedSuggestTag = this.SuggestTags[0];
-				this.NotifyPropertyChanged(nameof(TagFilter.SelectedSuggestTag));
+				this.NotifyPropertyChanged(nameof(TagSelector.SelectedSuggestTag));
 				return;
 			}
 		}
@@ -264,7 +264,7 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 			currentIndex = 0;
 
 		this.SelectedSuggestTag = this.SuggestTags[currentIndex];
-		this.NotifyPropertyChanged(nameof(TagFilter.SelectedSuggestTag));
+		this.NotifyPropertyChanged(nameof(TagSelector.SelectedSuggestTag));
 	}
 
 	private async Task SearchAsync()
@@ -325,9 +325,9 @@ public partial class TagFilter : UserControl, IComparer<Tag>, INotifyPropertyCha
 		if (this.SuggestTags.Count > 0)
 		{
 			this.SelectedSuggestTag = this.SuggestTags[0];
-			this.NotifyPropertyChanged(nameof(TagFilter.SelectedSuggestTag));
+			this.NotifyPropertyChanged(nameof(TagSelector.SelectedSuggestTag));
 		}
 
-		this.NotifyPropertyChanged(nameof(TagFilter.AvailableTagsExtra));
+		this.NotifyPropertyChanged(nameof(TagSelector.AvailableTagsExtra));
 	}
 }
