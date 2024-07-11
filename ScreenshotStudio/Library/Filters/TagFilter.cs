@@ -6,6 +6,8 @@ public class TagFilter : FilterBase
 {
 	public TagCollection Tags { get; init; } = new();
 
+	public override bool IsEmpty => this.Tags.Count == 0;
+
 	public override void Clear()
 	{
 		this.Tags.Clear();

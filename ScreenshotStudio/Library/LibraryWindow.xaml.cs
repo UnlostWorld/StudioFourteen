@@ -22,7 +22,6 @@ using static FFXIVClientStructs.FFXIV.Client.LayoutEngine.LayoutManager;
 public partial class LibraryWindow : PanelWindow
 {
 	private readonly FuncQueue searchQueue;
-	private string search = string.Empty;
 	private LibraryTab currentTab;
 	private bool flatten = false;
 
@@ -68,6 +67,8 @@ public partial class LibraryWindow : PanelWindow
 	[AutoNotify] public GroupEntryBase CurrentGroup => this.Path[this.Path.Count - 1];
 	[AutoNotify] public TagCollection AvailableTags { get; init; } = new();
 	[AutoNotify] public TagFilter TagFilter { get; init; } = new();
+	[AutoNotify] public SearchQueryFilter SearchQueryFilter { get; init; } = new();
+	[AutoNotify] public bool CanChangeFlatten => this.SearchQueryFilter.IsEmpty;
 
 	public bool Flatten
 	{
@@ -80,12 +81,12 @@ public partial class LibraryWindow : PanelWindow
 		}
 	}
 
-	public string Search
+	public string? Search
 	{
-		get => this.search;
+		get => this.SearchQueryFilter.Search;
 		set
 		{
-			this.search = value;
+			this.SearchQueryFilter.Search = value;
 			this.NotifyPropertyChanged();
 			this.searchQueue.Invoke();
 		}
@@ -105,16 +106,18 @@ public partial class LibraryWindow : PanelWindow
 	{
 		await this.Dispatcher.MainThread();
 
-		string[] query = SearchUtility.ToQuery(this.Search);
+		bool flattenResults = this.flatten;
+		flattenResults |= !this.SearchQueryFilter.IsEmpty;
 
 		await Dispatch.NonUiThread();
 
 		List<FilterBase> filters = new List<FilterBase>();
 		filters.AddRange(this.CurrentTab.Filters);
 		filters.Add(this.TagFilter);
+		filters.Add(this.SearchQueryFilter);
 
 		this.CurrentGroup.FilterEntries(filters.ToArray());
-		IEnumerable<IEntryBase>? results = this.CurrentGroup.GetFilteredEntries(this.Flatten);
+		IEnumerable<IEntryBase>? results = this.CurrentGroup.GetFilteredEntries(flattenResults);
 
 		await this.Dispatcher.MainThread();
 

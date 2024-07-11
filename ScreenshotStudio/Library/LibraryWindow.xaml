@@ -376,6 +376,7 @@
 					Grid.Column="2"
 					Margin="1,0"
 					AllTags="{Binding AvailableTags}"
+					Search="{Binding Search, Mode=TwoWay}"
 					Tags="{Binding TagFilter.Tags}" />
 
 				<Border
@@ -414,6 +415,7 @@
 					Grid.Column="4"
 					Width="64"
 					Margin="1,0,0,0"
+					IsEnabled="{Binding CanChangeFlatten}"
 					Style="{DynamicResource WpfUtilsControlBorder}">
 
 					<Grid>

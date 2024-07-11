@@ -17,6 +17,8 @@ internal class TypeFilter : FilterBase
 
 	public IEnumerable<Type> Types => this.types;
 
+	public override bool IsEmpty => this.types.Count == 0;
+
 	public override void Clear()
 	{
 		this.types.Clear();

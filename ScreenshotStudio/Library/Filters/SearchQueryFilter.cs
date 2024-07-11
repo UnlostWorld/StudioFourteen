@@ -1,19 +1,43 @@
 ﻿namespace ScreenshotStudio.Library.Filters;
 
-internal class SearchQueryFilter : FilterBase
+using WpfUtils;
+
+public class SearchQueryFilter : FilterBase
 {
-    public string[]? Query;
+	public string[]? Query;
 
-    public override void Clear()
-    {
-        this.Query = null;
-    }
+	private string? search;
 
-    public override bool Filter(IEntryBase entry)
-    {
-        if(this.Query == null)
-            return false;
+	public string? Search
+	{
+		get => this.search;
+		set
+		{
+			this.search = value;
 
-        return entry.Search(this.Query);
-    }
+			if (string.IsNullOrWhiteSpace(value))
+			{
+				this.Query = null;
+			}
+			else
+			{
+				this.Query = SearchUtility.ToQuery(value);
+			}
+		}
+	}
+
+	public override bool IsEmpty => this.Query == null;
+
+	public override void Clear()
+	{
+		this.Query = null;
+	}
+
+	public override bool Filter(IEntryBase entry)
+	{
+		if(this.Query == null)
+			return true;
+
+		return entry.Search(this.Query);
+	}
 }
