@@ -8,6 +8,7 @@
 	xmlns:local="clr-namespace:ScreenshotStudio.Library"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:structs="clr-namespace:ScreenshotStudio.Structs"
+	xmlns:tags="clr-namespace:ScreenshotStudio.Tags"
 	xmlns:vwp="clr-namespace:WpfToolkit.Controls;assembly=VirtualizingWrapPanel"
 	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
@@ -309,13 +310,13 @@
 				<Button
 					Grid.Column="0"
 					Width="28"
-					VerticalAlignment="Top"
+					Height="Auto"
 					Background="Transparent"
 					Click="OnBackClicked"
 					IsEnabled="{Binding CurrentGroup.IsRoot, Converter={StaticResource !B}}"
 					ToolTip="{DynamicResource LOC_Library_GoUpTooltip}">
 
-					<wpfUtils:IconBlock Icon="LevelUp" />
+					<wpfUtils:IconBlock Icon="Up" />
 
 				</Button>
 
@@ -371,23 +372,11 @@
 
 				</ItemsControl>
 
-				<!--<TextBlock
-					Grid.Column="1"
-					HorizontalAlignment="Center"
-					VerticalAlignment="Center"
-					Text="{Binding Filter.CurrentDirectory.Name}" />-->
-
-				<Border
+				<tags:TagSelector
 					Grid.Column="2"
 					Margin="1,0"
-					Style="{DynamicResource WpfUtilsControlBorder}">
-					<TextBlock Text="{Binding Entries.Count}" />
-				</Border>
-				<!--TODO <tags:TagFilter
-				Grid.Column="2"
-				Filter="{Binding Filter}" />-->
-
-
+					AllTags="{Binding AvailableTags}"
+					Tags="{Binding TagFilter.Tags}" />
 
 				<Border
 					Grid.Column="3"
@@ -403,6 +392,7 @@
 
 						<RadioButton
 							Grid.Column="0"
+							Height="Auto"
 							Background="Transparent"
 							IsChecked="{Binding ViewList, Converter={StaticResource !B}}"
 							ToolTip="{DynamicResource LOC_Library_IconViewTooltip}">
@@ -411,6 +401,7 @@
 
 						<RadioButton
 							Grid.Column="1"
+							Height="Auto"
 							Background="Transparent"
 							IsChecked="{Binding ViewList}"
 							ToolTip="{DynamicResource LOC_Library_ListViewTooltip}">
@@ -433,6 +424,7 @@
 
 						<RadioButton
 							Grid.Column="0"
+							Height="Auto"
 							Background="Transparent"
 							IsChecked="{Binding Flatten, Converter={StaticResource !B}}"
 							ToolTip="{DynamicResource LOC_Library_DirectoryViewTooltip}">
@@ -441,6 +433,7 @@
 
 						<RadioButton
 							Grid.Column="1"
+							Height="Auto"
 							Background="Transparent"
 							IsChecked="{Binding Flatten}"
 							ToolTip="{DynamicResource LOC_Library_FlattenViewTooltip}">

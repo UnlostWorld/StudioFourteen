@@ -9,6 +9,7 @@ using ScreenshotStudio.Windows;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,6 +17,7 @@ using System.Windows.Input;
 using WpfUtils;
 using WpfUtils.Extensions;
 using WpfUtils.Utils;
+using static FFXIVClientStructs.FFXIV.Client.LayoutEngine.LayoutManager;
 
 public partial class LibraryWindow : PanelWindow
 {
@@ -27,6 +29,8 @@ public partial class LibraryWindow : PanelWindow
 	public LibraryWindow()
 	{
 		this.searchQueue = new(this.SearchAsync, 250);
+
+		this.TagFilter.Tags.CollectionChanged += this.OnTagsFilterChanged;
 
 		// Remember?
 		this.currentTab = this.Tabs[0];
@@ -62,8 +66,10 @@ public partial class LibraryWindow : PanelWindow
 	[AutoNotify] public bool ViewList { get; set; } = false;
 	[AutoNotify] public ObservableCollection<GroupEntryBase> Path { get; init; } = new();
 	[AutoNotify] public GroupEntryBase CurrentGroup => this.Path[this.Path.Count - 1];
+	[AutoNotify] public TagCollection AvailableTags { get; init; } = new();
+	[AutoNotify] public TagFilter TagFilter { get; init; } = new();
 
-	[AutoNotify] public bool Flatten
+	public bool Flatten
 	{
 		get => this.flatten;
 		set
@@ -103,7 +109,11 @@ public partial class LibraryWindow : PanelWindow
 
 		await Dispatch.NonUiThread();
 
-		this.CurrentGroup.FilterEntries(this.CurrentTab.Filters);
+		List<FilterBase> filters = new List<FilterBase>();
+		filters.AddRange(this.CurrentTab.Filters);
+		filters.Add(this.TagFilter);
+
+		this.CurrentGroup.FilterEntries(filters.ToArray());
 		IEnumerable<IEntryBase>? results = this.CurrentGroup.GetFilteredEntries(this.Flatten);
 
 		await this.Dispatcher.MainThread();
@@ -116,6 +126,10 @@ public partial class LibraryWindow : PanelWindow
 		{
 			this.Entries.Replace(results);
 		}
+
+		TagCollection tags = new();
+		this.CurrentGroup.GetAllTags(ref tags);
+		this.AvailableTags.Replace(tags);
 
 		////this.ResultsList.ScrollIntoView(this.SelectedItem);
 	}
@@ -156,6 +170,13 @@ public partial class LibraryWindow : PanelWindow
 	{
 		this.Path.RemoveAt(this.Path.Count - 1);
 		this.searchQueue.InvokeImmediate();
+	}
+
+	private void OnTagsFilterChanged(object? sender, NotifyCollectionChangedEventArgs e)
+	{
+		this.searchQueue.Invoke();
+
+		this.Log.Information("TAGS!");
 	}
 
 	private void OnApplyClicked(object sender, RoutedEventArgs e)

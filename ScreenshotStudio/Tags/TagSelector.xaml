@@ -8,8 +8,7 @@
 	xmlns:local="clr-namespace:ScreenshotStudio.Tags"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
-	d:DesignHeight="450"
-	d:DesignWidth="800"
+	MinWidth="100"
 	Loaded="OnLoaded"
 	mc:Ignorable="d">
 
@@ -406,11 +405,11 @@
 				Icon="Search" />
 		</Grid>
 
-
+		<!--  yea this should be a popup duh  -->
 		<Grid
 			Grid.Row="1"
 			Height="0"
-			Margin="0,1,0,0">
+			Margin="0,0,0,0">
 
 			<Grid.Style>
 				<Style>
