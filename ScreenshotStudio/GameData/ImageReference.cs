@@ -1,20 +1,18 @@
 ﻿namespace ScreenshotStudio.GameData;
 
+using Lumina.Data.Files;
+using ScreenshotStudio.Plugin;
+using Serilog;
 using System;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Lumina.Data.Files;
-using ScreenshotStudio.Controls;
-using ScreenshotStudio.Plugin;
-using Serilog;
 
 public class ImageReference
 {
-	public readonly uint ImageId;
-
 	protected readonly ILogger Log = Logging.ForContext<ImageReference>();
 
 	private WeakReference<ImageSource>? cachedImage;
+	private uint imageId;
 
 	public ImageReference(uint imageId)
 	{
@@ -29,6 +27,16 @@ public class ImageReference
 	public ImageReference(int imageId)
 	{
 		this.ImageId = (uint)imageId;
+	}
+
+	public uint ImageId
+	{
+		get => this.imageId;
+		set
+		{
+			this.cachedImage = null;
+			this.imageId = value;
+		}
 	}
 
 	public ImageSource? Source

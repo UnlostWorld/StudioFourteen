@@ -1,10 +1,15 @@
 ﻿<ResourceDictionary
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:ScreenshotStudio.Controls"
 	xmlns:excel="clr-namespace:ScreenshotStudio.GameData.Excel"
+	xmlns:gameData="clr-namespace:ScreenshotStudio.GameData"
 	xmlns:library="clr-namespace:ScreenshotStudio.Library"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
+	<DataTemplate DataType="{x:Type gameData:DataSheetLibrarySource}">
+		<controls:XivIconImage Id="065012" />
+	</DataTemplate>
 
 	<DataTemplate DataType="{x:Type excel:ResidentNpc}">
 		<wpfUtils:IconBlock
