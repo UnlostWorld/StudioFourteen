@@ -6,10 +6,11 @@ using ScreenshotStudio.Tags;
 using System.Collections.Generic;
 
 [Sheet("ClassJobCategory", 0x65bbdb12)]
-public class ClassJobCategory : LibraryExcelRow
+public class ClassJobCategory : ExcelRow
 {
 	private readonly bool[] classJobs = new bool[(int)ClassJob.ClassJobRows.Count];
 
+	public string? Name { get; private set; }
 	public List<Entry> ClassJobs { get; init; } = new();
 
 	public bool IsAllClasses => this.RowId == 1;
@@ -66,7 +67,7 @@ public class ClassJobCategory : LibraryExcelRow
 
 				if (classJob == null)
 				{
-					this.Log.Error($"Unable to find class job row: {i}");
+					Logging.Shared.Error($"Unable to find class job row: {i}");
 					continue;
 				}
 

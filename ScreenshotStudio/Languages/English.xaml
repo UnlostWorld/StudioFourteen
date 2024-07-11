@@ -60,4 +60,17 @@
 	<sys:String x:Key="LOC_Library_Characters">Characters</sys:String>
 	<sys:String x:Key="LOC_Library_Scenes">Scenes</sys:String>
 
+	<sys:String x:Key="LOC_SheetItem">Items</sys:String>
+	<sys:String x:Key="LOC_SheetEventNpc">Event NPCs</sys:String>
+	<sys:String x:Key="LOC_SheetResidentNpc">Resident NPCs</sys:String>
+	<sys:String x:Key="LOC_SheetTerritory">Territory</sys:String>
+	<sys:String x:Key="LOC_SheetRace">Race</sys:String>
+	<sys:String x:Key="LOC_SheetBattleNpc">Battle NPCs</sys:String>
+	<sys:String x:Key="LOC_SheetCompanion">Companions</sys:String>
+	<sys:String x:Key="LOC_SheetMount">Mounts</sys:String>
+	<sys:String x:Key="LOC_SheetOrnament">Ornaments</sys:String>
+	<sys:String x:Key="LOC_SheetPerform">Instruments</sys:String>
+	<sys:String x:Key="LOC_SheetStain">Dyes</sys:String>
+	<sys:String x:Key="LOC_SheetWeather">Weathers</sys:String>
+
 </ResourceDictionary>

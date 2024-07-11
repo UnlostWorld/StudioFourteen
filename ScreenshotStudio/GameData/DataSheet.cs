@@ -25,7 +25,7 @@ public class DataSheetLibrarySource : SourceBase
 	}
 
 	public override string? Description { get; }
-	public override string Name => $"{this.sheet.RowType.Name}";
+	public override string Name => Resources.Find($"LOC_Sheet{this.sheet.RowType.Name}", this.sheet.RowType.Name);
 
 	public override void Scan()
 	{

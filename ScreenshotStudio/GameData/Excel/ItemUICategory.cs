@@ -4,8 +4,9 @@ using Lumina.Data;
 using Lumina.Excel;
 
 [Sheet("ItemUICategory", 0xdc1f7844)]
-public class ItemUICategory : LibraryExcelRow
+public class ItemUICategory : ExcelRow
 {
+	public string? Name { get; private set; }
 	public ImageReference? Icon { get; private set; }
 
 	public override void PopulateData(RowParser parser, Lumina.GameData gameData, Language language)
