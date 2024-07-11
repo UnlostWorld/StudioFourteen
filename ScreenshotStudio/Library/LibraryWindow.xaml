@@ -11,8 +11,8 @@
 	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="Library"
-	Width="800"
-	Height="400"
+	Width="1000"
+	Height="650"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	TitleIcon="Books"
@@ -343,26 +343,17 @@
 				</Grid.ColumnDefinitions>
 
 				<Border
-					Grid.Column="0"
-					Margin="1,1,2,1"
-					CornerRadius="6,0,0,6"
-					Style="{DynamicResource WpfUtilsControlBorder}" />
-
-				<Border
-					Grid.Column="1"
-					Margin="1,1,3,1"
-					CornerRadius="0,6,6,0"
+					Grid.ColumnSpan="2"
+					Margin="0,0,1,0"
 					Style="{DynamicResource WpfUtilsControlBorder}" />
 
 				<Button
 					Grid.Column="0"
 					Width="28"
-					Height="28"
-					Margin="1"
 					VerticalAlignment="Top"
 					Background="Transparent"
 					Click="OnBackClicked"
-					IsEnabled="{Binding Filter.CurrentDirectory.Parent, Converter={StaticResource NotNullToBoolConverter}}"
+					IsEnabled="{Binding CurrentGroup.IsRoot, Converter={StaticResource !B}}"
 					ToolTip="{DynamicResource LOC_Library_GoUpTooltip}">
 
 					<wpfUtils:IconBlock Icon="LevelUp" />
@@ -374,7 +365,7 @@
 					Margin="4,1,3,1"
 					HorizontalAlignment="Left"
 					VerticalAlignment="Center"
-					ItemsSource="{Binding CurrentPath}">
+					ItemsSource="{Binding Path}">
 
 					<ItemsControl.ItemsPanel>
 						<ItemsPanelTemplate>
@@ -393,7 +384,7 @@
 										Margin="0,4,6,2"
 										FontSize="10"
 										Icon="CaretRight"
-										Visibility="{Binding Parent, Converter={StaticResource NotNullToVisibilityConverter}}" />
+										Visibility="{Binding IsRoot, Converter={StaticResource !B2V}}" />
 									<TextBlock Text="{Binding Name}" />
 								</StackPanel>
 							</Button>
@@ -408,6 +399,10 @@
 					VerticalAlignment="Center"
 					Text="{Binding Filter.CurrentDirectory.Name}" />-->
 
+				<Border
+					Grid.Column="2"
+					Margin="1,0"
+					Style="{DynamicResource WpfUtilsControlBorder}" />
 				<!--TODO <tags:TagFilter
 				Grid.Column="2"
 				Filter="{Binding Filter}" />-->
@@ -417,12 +412,8 @@
 				<Border
 					Grid.Column="3"
 					Width="64"
-					Height="28"
-					Margin="3,1,0,0"
-					HorizontalAlignment="Right"
-					VerticalAlignment="Top"
-					Background="{DynamicResource ControlBackgroundBrush}"
-					CornerRadius="6">
+					Margin="1,0"
+					Style="{DynamicResource WpfUtilsControlBorder}">
 
 					<Grid>
 						<Grid.ColumnDefinitions>
@@ -451,12 +442,8 @@
 				<Border
 					Grid.Column="4"
 					Width="64"
-					Height="28"
-					Margin="3,1,0,0"
-					HorizontalAlignment="Right"
-					VerticalAlignment="Top"
-					Background="#33000000"
-					CornerRadius="6">
+					Margin="1,0,0,0"
+					Style="{DynamicResource WpfUtilsControlBorder}">
 
 					<Grid>
 						<Grid.ColumnDefinitions>

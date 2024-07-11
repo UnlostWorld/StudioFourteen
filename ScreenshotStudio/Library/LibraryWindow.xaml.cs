@@ -6,9 +6,11 @@ using ScreenshotStudio.Tags;
 using ScreenshotStudio.Windows;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using WpfUtils;
 using WpfUtils.Extensions;
 using WpfUtils.Utils;
@@ -18,7 +20,6 @@ public partial class LibraryWindow : PanelWindow
 	private readonly FuncQueue searchQueue;
 	private string search = string.Empty;
 	private TagCollection tags = new();
-	private bool isLoading = false;
 	private Tabs currentTab = Tabs.Favorites;
 
 	public LibraryWindow()
@@ -34,10 +35,11 @@ public partial class LibraryWindow : PanelWindow
 		Scenes,
 	}
 
-	public FastObservableCollection<object> Entries { get; init; } = new();
-
-	[AutoNotify]
-	public bool ViewList { get; set; } = false;
+	[AutoNotify] public FastObservableCollection<object> Entries { get; init; } = new();
+	[AutoNotify] public EntryBase? SelectedEntry { get; set; } = null;
+	[AutoNotify] public bool ViewList { get; set; } = false;
+	[AutoNotify] public ObservableCollection<GroupEntryBase> Path { get; init; } = new();
+	[AutoNotify] public GroupEntryBase CurrentGroup => this.Path[this.Path.Count - 1];
 
 	public Tabs CurrentTab
 	{
@@ -74,6 +76,10 @@ public partial class LibraryWindow : PanelWindow
 	protected override void OnOpened()
 	{
 		base.OnOpened();
+
+		this.Path.Clear();
+		this.Path.Add(this.Services.Library.Root);
+
 		this.searchQueue.Invoke();
 	}
 
@@ -94,21 +100,15 @@ public partial class LibraryWindow : PanelWindow
 
 		await Dispatch.NonUiThread();
 
-		this.isLoading = true;
-		this.isLoading = false;
-
 		FilterBase[] filters = new[]
 		{
 			new TypeFilter("Characters", new[] { typeof(IActorAppearance) }),
 		};
 
-		this.Services.Library.Root.FilterEntries(filters);
-
-		IEnumerable<IEntryBase>? results = this.Services.Library.Root.GetFilteredEntries(false);
+		this.CurrentGroup.FilterEntries(filters);
+		IEnumerable<IEntryBase>? results = this.CurrentGroup.GetFilteredEntries(false);
 
 		await this.Dispatcher.MainThread();
-
-		this.isLoading = true;
 
 		if (results == null)
 		{
@@ -120,22 +120,24 @@ public partial class LibraryWindow : PanelWindow
 		}
 
 		////this.ResultsList.ScrollIntoView(this.SelectedItem);
-		this.isLoading = false;
 	}
 
 	private void OnTabChanged(object sender, RoutedEventArgs e)
 	{
-		if (this.isLoading)
-		{
-		}
+		////this.Path.RemoveRange(1, this.Path.Count - 1);
 	}
 
 	private void OnRevertClicked(object sender, RoutedEventArgs e)
 	{
 	}
 
-	private void OnItemDoubleClicked(object sender, System.Windows.Input.MouseButtonEventArgs e)
+	private void OnItemDoubleClicked(object sender, MouseButtonEventArgs e)
 	{
+		if (this.SelectedEntry is GroupEntryBase group)
+		{
+			this.Path.Add(group);
+			this.searchQueue.InvokeImmediate();
+		}
 	}
 
 	private void OnFavoritesChecked(object sender, RoutedEventArgs e)
@@ -144,10 +146,23 @@ public partial class LibraryWindow : PanelWindow
 
 	private void OnDirectorySelected(object sender, RoutedEventArgs e)
 	{
+		if (sender is Button btn && btn.DataContext is GroupEntryBase group)
+		{
+			int index = this.Path.IndexOf(group);
+
+			while (this.Path.Count > index + 1)
+			{
+				this.Path.RemoveAt(index + 1);
+			}
+
+			this.searchQueue.InvokeImmediate();
+		}
 	}
 
 	private void OnBackClicked(object sender, RoutedEventArgs e)
 	{
+		this.Path.RemoveAt(this.Path.Count - 1);
+		this.searchQueue.InvokeImmediate();
 	}
 
 	private void OnApplyClicked(object sender, RoutedEventArgs e)

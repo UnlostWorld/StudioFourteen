@@ -2,16 +2,16 @@
 
 internal class LibraryRoot : GroupEntryBase
 {
-    public LibraryRoot()
-        : base(null)
-    {
-    }
+	public LibraryRoot()
+		: base(null)
+	{
+	}
 
-    public override string Name => "Library";
-    ////public override IDalamudTextureWrap? Icon => null;
+	public override string Name => "Library";
+	public bool IsRoot => true;
 
-    protected override string GetInternalId()
-    {
-        return "Root";
-    }
+	protected override string GetInternalId()
+	{
+		return "Root";
+	}
 }
