@@ -33,6 +33,9 @@ public class DataSheetLibrarySource : SourceBase
 		{
 			if (row is IEntryBase entry)
 			{
+				if (!entry.IsValid)
+					continue;
+
 				this.Add(entry);
 			}
 		}

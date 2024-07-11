@@ -488,9 +488,7 @@
 				VirtualizingPanel.VirtualizationMode="Recycling"
 				Visibility="{Binding ViewList, Converter={StaticResource !B2V}}">
 
-				<ListBox.Resources>
-					<ResourceDictionary Source="LibraryIconTemplates.xaml" />
-				</ListBox.Resources>
+
 
 				<ListBox.ItemsPanel>
 					<ItemsPanelTemplate>
@@ -503,7 +501,9 @@
 
 						<Grid
 							Width="92"
-							Height="128">
+							Height="128"
+							Background="Transparent"
+							ToolTip="{Binding .}">
 
 							<Grid.RowDefinitions>
 								<RowDefinition Height="96" />
@@ -513,7 +513,11 @@
 							<ContentPresenter
 								Width="96"
 								Height="96"
-								Content="{Binding .}" />
+								Content="{Binding .}">
+								<ContentPresenter.Resources>
+									<ResourceDictionary Source="LibraryIconTemplates.xaml" />
+								</ContentPresenter.Resources>
+							</ContentPresenter>
 
 							<TextBlock
 								Grid.Row="1"

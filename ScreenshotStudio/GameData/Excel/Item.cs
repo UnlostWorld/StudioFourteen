@@ -23,6 +23,8 @@ public class Item : LibraryExcelRow
 	public EquipRaceCategory? EquipRestriction { get; protected set; }
 	public bool HasSubModel => this.SubModelSet != 0;
 
+	public override bool IsValid => base.IsValid && this.RowId > 0 && this.EquipLevel > 0;
+
 	public override bool Search(string[]? query)
 	{
 		if (SearchUtility.Matches(this.Name, query))
