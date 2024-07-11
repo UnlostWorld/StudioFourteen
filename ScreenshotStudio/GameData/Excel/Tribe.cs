@@ -78,8 +78,13 @@ public class Tribe : StudioExcelRow
 	public TagCollection ToTags()
 	{
 		TagCollection tags = new();
-		tags.Add(this.Feminine);
-		tags.Add(this.Masculine);
+
+		if (!string.IsNullOrEmpty(this.Feminine))
+			tags.Add(this.Feminine);
+
+		if (!string.IsNullOrEmpty(this.Masculine))
+			tags.Add(this.Masculine);
+
 		return tags;
 	}
 }

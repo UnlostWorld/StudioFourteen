@@ -39,6 +39,9 @@ public class Tag : IEquatable<Tag?>
 
 	public static Tag Get(string name)
 	{
+		if (string.IsNullOrEmpty(name))
+			throw new InvalidOperationException("Attempt to get empty tag");
+
 		lock (TagCache)
 		{
 			Tag? tag = null;
@@ -66,7 +69,11 @@ public class Tag : IEquatable<Tag?>
 		if (alias == null)
 			return this;
 
-		this.aliases.Add(alias);
+		lock (this.aliases)
+		{
+			this.aliases.Add(alias);
+		}
+
 		return this;
 	}
 

@@ -9,6 +9,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	MinWidth="100"
+	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	Loaded="OnLoaded"
 	mc:Ignorable="d">
 
@@ -358,13 +359,9 @@
 		</ControlTemplate>
 	</UserControl.Resources>
 
-	<Grid x:Name="ContentArea">
-		<Grid.RowDefinitions>
-			<RowDefinition />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
 
-		<Grid>
+	<Grid>
+		<Grid x:Name="ContentArea">
 			<TextBox
 				x:Name="SearchTextBox"
 				Grid.Row="0"
@@ -406,53 +403,36 @@
 		</Grid>
 
 		<!--  yea this should be a popup duh  -->
-		<Grid
-			Grid.Row="1"
-			Height="0"
-			Margin="0,0,0,0">
+		<Popup
+			Width="{Binding ActualWidth, ElementName=ContentArea}"
+			MaxHeight="250"
+			AllowsTransparency="True"
+			IsOpen="{Binding DataContext.IsSuggestTags, ElementName=ContentArea}"
+			PlacementTarget="{Binding ElementName=ContentArea}"
+			StaysOpen="False">
 
-			<Grid.Style>
-				<Style>
-					<Style.Triggers>
-						<DataTrigger
-							Binding="{Binding SuggestTags.Count}"
-							Value="0">
-							<DataTrigger.EnterActions>
-								<BeginStoryboard>
-									<Storyboard>
-										<DoubleAnimation
-											Storyboard.TargetProperty="Height"
-											To="0"
-											Duration="0:00:00.250">
-											<DoubleAnimation.EasingFunction>
-												<SineEase EasingMode="EaseOut" />
-											</DoubleAnimation.EasingFunction>
-										</DoubleAnimation>
-									</Storyboard>
-								</BeginStoryboard>
-							</DataTrigger.EnterActions>
-							<DataTrigger.ExitActions>
-								<BeginStoryboard>
-									<Storyboard>
-										<DoubleAnimation
-											Storyboard.TargetProperty="Height"
-											To="80"
-											Duration="0:00:00.150">
-											<DoubleAnimation.EasingFunction>
-												<SineEase EasingMode="EaseOut" />
-											</DoubleAnimation.EasingFunction>
-										</DoubleAnimation>
-									</Storyboard>
-								</BeginStoryboard>
-							</DataTrigger.ExitActions>
-						</DataTrigger>
-					</Style.Triggers>
-				</Style>
-			</Grid.Style>
+			<Grid
+				Margin="6"
+				DataContext="{Binding DataContext, ElementName=ContentArea, Mode=OneWay}">
 
-			<Grid Height="79">
+				<Border
+					x:Name="PanelShadow"
+					Background="Black"
+					CornerRadius="6"
+					Opacity="0.25">
+					<Border.BitmapEffect>
+						<DropShadowBitmapEffect
+							ShadowDepth="0"
+							Softness="0.75" />
+					</Border.BitmapEffect>
+				</Border>
 
-				<Border Style="{DynamicResource WpfUtilsControlBorder}" />
+				<Border
+					x:Name="PanelBackground"
+					Background="{DynamicResource BackgroundBrush}"
+					BorderBrush="{DynamicResource BackgroundBrush}"
+					BorderThickness="1"
+					CornerRadius="6" />
 
 				<ListBox
 					Margin="2,1"
@@ -473,36 +453,8 @@
 						</Style>
 					</ListBox.ItemContainerStyle>
 				</ListBox>
-
-				<Grid
-					Margin="0,0,3,3"
-					HorizontalAlignment="Right"
-					VerticalAlignment="Bottom"
-					Visibility="{Binding AvailableTagsExtra, Converter={StaticResource NotZeroToVisibility}}">
-
-					<Rectangle
-						Margin="-6,-3,-3,-3"
-						Fill="{DynamicResource ControlBackgroundBrush}">
-						<Rectangle.Effect>
-							<BlurEffect Radius="10" />
-						</Rectangle.Effect>
-					</Rectangle>
-
-					<StackPanel
-						Margin="2"
-						Orientation="Horizontal">
-						<TextBlock
-							Margin="0"
-							Style="{DynamicResource Label}"
-							Text="+" />
-						<TextBlock
-							Margin="0"
-							Style="{DynamicResource Label}"
-							Text="{Binding AvailableTagsExtra}" />
-					</StackPanel>
-				</Grid>
-
 			</Grid>
-		</Grid>
+		</Popup>
 	</Grid>
+
 </UserControl>

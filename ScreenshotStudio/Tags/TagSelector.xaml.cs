@@ -36,8 +36,11 @@ public partial class TagSelector : UserControl, IComparer<Tag>, INotifyPropertyC
 
 	protected readonly ILogger Log = Logging.Shared.ForContext<TagSelector>();
 
+	private const int MaxSuggestTags = 30;
 	private readonly FuncQueue tagSearchQueue;
 	private bool isChangingTags = false;
+	private bool isSuggestTags;
+	private bool bypassTagSearch = false;
 
 	public TagSelector()
 	{
@@ -49,9 +52,21 @@ public partial class TagSelector : UserControl, IComparer<Tag>, INotifyPropertyC
 	public event PropertyChangedEventHandler? PropertyChanged;
 	public event RoutedEventHandler? OnDone;
 
+	public bool IsSuggestTags
+	{
+		get => this.isSuggestTags;
+		set
+		{
+			if (!value)
+				this.bypassTagSearch = false;
+
+			this.isSuggestTags = value;
+			this.NotifyPropertyChanged(nameof(TagSelector.IsSuggestTags));
+		}
+	}
+
 	public FastObservableCollection<Tag> SuggestTags { get; init; } = new();
 	public Tag? SelectedSuggestTag { get; set; } = null;
-	public int AvailableTagsExtra { get; private set; } = 0;
 	public FastObservableCollection<Tag> SelectedTags { get; init; } = new();
 
 	public string Search
@@ -112,6 +127,7 @@ public partial class TagSelector : UserControl, IComparer<Tag>, INotifyPropertyC
 		if (this.SuggestTags != null)
 		{
 			this.SuggestTags.SortAndReplace(this.SuggestTags, this);
+			this.IsSuggestTags = this.SuggestTags.Count > 0;
 		}
 
 		Keyboard.Focus(this.SearchTextBox);
@@ -132,6 +148,7 @@ public partial class TagSelector : UserControl, IComparer<Tag>, INotifyPropertyC
 		}
 
 		this.Tags.Replace(this.SelectedTags);
+		this.IsSuggestTags = this.SuggestTags.Count > 0;
 
 		this.isChangingTags = false;
 	}
@@ -144,7 +161,11 @@ public partial class TagSelector : UserControl, IComparer<Tag>, INotifyPropertyC
 		this.SuggestTags.Remove(tag);
 		this.SuggestTags.Sort(this);
 		this.Tags.Replace(this.SelectedTags);
-		this.Search = string.Empty;
+
+		if (!this.bypassTagSearch)
+			this.Search = string.Empty;
+
+		this.IsSuggestTags = false;
 
 		this.isChangingTags = false;
 	}
@@ -179,12 +200,16 @@ public partial class TagSelector : UserControl, IComparer<Tag>, INotifyPropertyC
 
 	private void OnTagSearchGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
 	{
-		this.tagSearchQueue.Invoke();
+		if (!string.IsNullOrEmpty(this.Search))
+		{
+			this.tagSearchQueue.Invoke();
+		}
 	}
 
 	private void OnTagSearchLostKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
 	{
 		this.SuggestTags.Clear();
+		this.IsSuggestTags = false;
 	}
 
 	private void OnTagSearchPreviewKeyDown(object sender, KeyEventArgs e)
@@ -205,12 +230,18 @@ public partial class TagSelector : UserControl, IComparer<Tag>, INotifyPropertyC
 
 				e.Handled = true;
 			}
-			else if (e.Key == Key.Down)
+			else if (e.Key == Key.Down && this.IsSuggestTags)
 			{
 				this.IncrementSuggestIndex(1);
 				e.Handled = true;
 			}
-			else if (e.Key == Key.Up)
+			else if (e.Key == Key.Down && !this.IsSuggestTags)
+			{
+				this.bypassTagSearch = true;
+				this.tagSearchQueue.InvokeImmediate();
+				e.Handled = true;
+			}
+			else if (e.Key == Key.Up && this.IsSuggestTags)
 			{
 				this.IncrementSuggestIndex(-1);
 				e.Handled = true;
@@ -239,7 +270,7 @@ public partial class TagSelector : UserControl, IComparer<Tag>, INotifyPropertyC
 		}
 	}
 
-	private void IncrementSuggestIndex(int ammount)
+	private void IncrementSuggestIndex(int amount)
 	{
 		int currentIndex = 0;
 
@@ -255,7 +286,7 @@ public partial class TagSelector : UserControl, IComparer<Tag>, INotifyPropertyC
 			}
 		}
 
-		currentIndex += ammount;
+		currentIndex += amount;
 
 		if (currentIndex < 0)
 			currentIndex = this.SuggestTags.Count - 1;
@@ -270,54 +301,48 @@ public partial class TagSelector : UserControl, IComparer<Tag>, INotifyPropertyC
 	private async Task SearchAsync()
 	{
 		await this.Dispatcher.MainThread();
-		string? str = this.Search;
 
-		if (string.IsNullOrEmpty(str))
+		List<Tag> tags;
+		if (!this.bypassTagSearch)
 		{
-			await this.Dispatcher.MainThread();
-			this.SuggestTags.Clear();
-			return;
-		}
+			string? str = this.Search;
 
-		HashSet<Tag> filterByTags = new(this.SelectedTags);
-		HashSet<Tag>? allTags = this.AllTags != null ? new(this.AllTags) : null;
+			HashSet<Tag> filterByTags = new(this.SelectedTags);
+			HashSet<Tag>? allTags = this.AllTags != null ? new(this.AllTags) : null;
 
-		await Dispatch.NonUiThread();
+			await Dispatch.NonUiThread();
 
-		string[]? querry = null;
-		if (!string.IsNullOrEmpty(str))
-		{
-			if (str != null)
+			string[]? query = null;
+			if (!string.IsNullOrEmpty(str))
 			{
-				str = str.ToLower();
-				querry = str.Split(' ');
-			}
-		}
-
-		List<Tag> tags = new List<Tag>();
-		if (allTags != null)
-		{
-			foreach (Tag tag in allTags)
-			{
-				if (filterByTags.Contains(tag))
-					continue;
-
-				if (querry != null && !tag.Search(querry))
-					continue;
-
-				tags.Add(tag);
+				if (str != null)
+				{
+					str = str.ToLower();
+					query = str.Split(' ');
+				}
 			}
 
-			tags.Sort(this);
+			tags = new();
+			if (allTags != null)
+			{
+				foreach (Tag tag in allTags)
+				{
+					if (filterByTags.Contains(tag))
+						continue;
+
+					if (query != null && !tag.Search(query))
+						continue;
+
+					tags.Add(tag);
+				}
+			}
+		}
+		else
+		{
+			tags = new(this.AllTags);
 		}
 
-		this.AvailableTagsExtra = tags.Count;
-
-		while (tags.Count > 9)
-			tags.RemoveAt(9);
-
-		this.AvailableTagsExtra -= tags.Count;
-		this.AvailableTagsExtra = Math.Max(this.AvailableTagsExtra, 0);
+		tags.Sort(this);
 
 		await this.Dispatcher.MainThread();
 		this.SuggestTags.Replace(tags);
@@ -328,6 +353,6 @@ public partial class TagSelector : UserControl, IComparer<Tag>, INotifyPropertyC
 			this.NotifyPropertyChanged(nameof(TagSelector.SelectedSuggestTag));
 		}
 
-		this.NotifyPropertyChanged(nameof(TagSelector.AvailableTagsExtra));
+		this.IsSuggestTags = this.SuggestTags.Count > 0;
 	}
 }

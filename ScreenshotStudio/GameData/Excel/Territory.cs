@@ -50,10 +50,10 @@ public class Territory : LibraryExcelRow
 		this.Zone = parser.ReadRowReference<ushort, PlaceName>(4);
 		this.Place = parser.ReadRowReference<ushort, PlaceName>(5);
 
-		if (this.Zone != null)
+		if (this.Zone != null && !string.IsNullOrEmpty(this.Zone.Name.RawString))
 			this.Tags.Add(this.Zone.Name.RawString);
 
-		if (this.Region != null)
+		if (this.Region != null && !string.IsNullOrEmpty(this.Region.Name.RawString))
 			this.Tags.Add(this.Region.Name.RawString);
 
 		WeatherRate? weatherRate = parser.ReadRowReference<byte, WeatherRate>(12);

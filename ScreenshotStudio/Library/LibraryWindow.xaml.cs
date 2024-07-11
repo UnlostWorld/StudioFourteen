@@ -175,8 +175,6 @@ public partial class LibraryWindow : PanelWindow
 	private void OnTagsFilterChanged(object? sender, NotifyCollectionChangedEventArgs e)
 	{
 		this.searchQueue.Invoke();
-
-		this.Log.Information("TAGS!");
 	}
 
 	private void OnApplyClicked(object sender, RoutedEventArgs e)

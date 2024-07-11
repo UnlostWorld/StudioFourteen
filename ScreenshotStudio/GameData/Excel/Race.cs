@@ -130,17 +130,8 @@ public class Race : LibraryExcelRow
 		};
 
 		this.Genders.Clear();
-
-		// Hrothgar. Maybe in 7.0 huh!?
-		if (this.RowId == 7)
-		{
-			this.Genders.Add(Excel.Genders.Masculine);
-		}
-		else
-		{
-			this.Genders.Add(Excel.Genders.Masculine);
-			this.Genders.Add(Excel.Genders.Feminine);
-		}
+		this.Genders.Add(Excel.Genders.Masculine);
+		this.Genders.Add(Excel.Genders.Feminine);
 	}
 
 	public bool Is(RaceRows raceRow)
@@ -151,8 +142,13 @@ public class Race : LibraryExcelRow
 	public TagCollection ToTags()
 	{
 		TagCollection tags = new();
-		tags.Add(this.Feminine);
-		tags.Add(this.Masculine);
+
+		if (!string.IsNullOrEmpty(this.Feminine))
+			tags.Add(this.Feminine);
+
+		if (!string.IsNullOrEmpty(this.Masculine))
+			tags.Add(this.Masculine);
+
 		return tags;
 	}
 
