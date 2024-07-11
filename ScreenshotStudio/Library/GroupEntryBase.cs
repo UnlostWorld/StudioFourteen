@@ -5,6 +5,7 @@ using ScreenshotStudio.Library.Sources;
 using ScreenshotStudio.Tags;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 
 /// <summary>
 /// An group entry is an entry in the library that contains other entries, such as a directory or folder.
@@ -32,7 +33,10 @@ public abstract class GroupEntryBase : EntryBase
 	public void Clear()
 	{
 		this.allEntries.Clear();
+		this.NotifyPropertyChanged(nameof(GroupEntryBase.AllEntries));
+
 		this.filteredEntries.Clear();
+		this.NotifyPropertyChanged(nameof(GroupEntryBase.FilteredEntries));
 	}
 
 	public override bool PassesFilters(params FilterBase[] filters)
@@ -76,6 +80,8 @@ public abstract class GroupEntryBase : EntryBase
 		{
 			Logging.Shared.Error(ex, "Exception while filtering entries");
 		}
+
+		this.NotifyPropertyChanged(nameof(GroupEntryBase.FilteredEntries));
 	}
 
 	public IEnumerable<IEntryBase>? GetFilteredEntries(bool flatten)

@@ -4,6 +4,8 @@ using ScreenshotStudio.Library.Filters;
 using ScreenshotStudio.Library.Sources;
 using ScreenshotStudio.Tags;
 using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using WpfUtils;
 
 public interface IEntryBase : IDisposable
@@ -23,7 +25,7 @@ public interface IEntryBase : IDisposable
 /// <summary>
 /// An entry is a library object.
 /// </summary>
-public abstract class EntryBase : ITagged, IEntryBase
+public abstract class EntryBase : ITagged, IEntryBase, INotifyPropertyChanged
 {
 	private readonly SourceBase? source;
 
@@ -31,6 +33,8 @@ public abstract class EntryBase : ITagged, IEntryBase
 	{
 		this.source = source;
 	}
+
+	public event PropertyChangedEventHandler? PropertyChanged;
 
 	public abstract string Name { get; }
 	//// public object Icon {get;}
@@ -50,6 +54,11 @@ public abstract class EntryBase : ITagged, IEntryBase
 
 	public virtual void Dispose()
 	{
+	}
+
+	public virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
+	{
+		this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 	}
 
 	protected abstract string GetInternalId();

@@ -412,6 +412,8 @@
 				Grid.Column="2"
 				Filter="{Binding Filter}" />-->
 
+
+
 				<Border
 					Grid.Column="3"
 					Width="64"
@@ -419,7 +421,7 @@
 					Margin="3,1,0,0"
 					HorizontalAlignment="Right"
 					VerticalAlignment="Top"
-					Background="#33000000"
+					Background="{DynamicResource ControlBackgroundBrush}"
 					CornerRadius="6">
 
 					<Grid>

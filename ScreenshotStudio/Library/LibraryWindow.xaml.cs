@@ -1,5 +1,7 @@
 ﻿namespace ScreenshotStudio.Library;
 
+using ScreenshotStudio.Library.Filters;
+using ScreenshotStudio.Services;
 using ScreenshotStudio.Tags;
 using ScreenshotStudio.Windows;
 using System;
@@ -33,6 +35,8 @@ public partial class LibraryWindow : PanelWindow
 	}
 
 	public FastObservableCollection<object> Entries { get; init; } = new();
+
+	[AutoNotify]
 	public bool ViewList { get; set; } = false;
 
 	public Tabs CurrentTab
@@ -93,16 +97,30 @@ public partial class LibraryWindow : PanelWindow
 		this.isLoading = true;
 		this.isLoading = false;
 
-		/*List<ILibraryItem> results = this.Services.Library.Search(targetTypes, tags, query);
+		FilterBase[] filters = new[]
+		{
+			new TypeFilter("Characters", new[] { typeof(IActorAppearance) }),
+		};
 
-		this.Log.Information($">> {results.Count} results");
+		this.Services.Library.Root.FilterEntries(filters);
+
+		IEnumerable<IEntryBase>? results = this.Services.Library.Root.GetFilteredEntries(false);
 
 		await this.Dispatcher.MainThread();
 
 		this.isLoading = true;
-		this.Entries.Replace(results);
+
+		if (results == null)
+		{
+			this.Entries.Clear();
+		}
+		else
+		{
+			this.Entries.Replace(results);
+		}
+
 		////this.ResultsList.ScrollIntoView(this.SelectedItem);
-		this.isLoading = false;*/
+		this.isLoading = false;
 	}
 
 	private void OnTabChanged(object sender, RoutedEventArgs e)
