@@ -56,12 +56,19 @@ public class InteropService : ServiceBase
 
 	public override Task Shutdown()
 	{
+		int leaks = 0;
 		foreach (IDalamudHook hook in Hooks)
 		{
 			if (!hook.IsDisposed)
 			{
 				this.Log.Warning($"Hook {hook.Address} was not disposed!");
+				leaks++;
 			}
+		}
+
+		if (leaks <= 0)
+		{
+			this.Log.Information($"No hooks leaked during shutdown");
 		}
 
 		return base.Shutdown();

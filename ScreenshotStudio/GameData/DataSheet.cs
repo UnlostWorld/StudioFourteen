@@ -5,8 +5,6 @@ using ScreenshotStudio.GameData.Excel;
 using ScreenshotStudio.Library;
 using ScreenshotStudio.Library.Sources;
 using ScreenshotStudio.Plugin;
-using ScreenshotStudio.Services;
-using ScreenshotStudio.Tags;
 using Serilog;
 using System;
 using System.Collections;
@@ -24,7 +22,6 @@ public class DataSheetLibrarySource : SourceBase
 		this.sheet = sheet;
 	}
 
-	public override string? Description { get; }
 	public override string Name => Resources.Find($"LOC_Sheet{this.sheet.RowType.Name}", this.sheet.RowType.Name);
 
 	public override void Scan()

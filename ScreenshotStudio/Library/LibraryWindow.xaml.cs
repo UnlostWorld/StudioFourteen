@@ -61,7 +61,7 @@ public partial class LibraryWindow : PanelWindow
 	}
 
 	[AutoNotify] public FastObservableCollection<object> Entries { get; init; } = new();
-	[AutoNotify] public EntryBase? SelectedEntry { get; set; } = null;
+	[AutoNotify] public IEntryBase? SelectedEntry { get; set; } = null;
 	[AutoNotify] public bool ViewList { get; set; } = false;
 	[AutoNotify] public ObservableCollection<GroupEntryBase> Path { get; init; } = new();
 	[AutoNotify] public GroupEntryBase CurrentGroup => this.Path[this.Path.Count - 1];
@@ -137,10 +137,6 @@ public partial class LibraryWindow : PanelWindow
 		////this.ResultsList.ScrollIntoView(this.SelectedItem);
 	}
 
-	private void OnRevertClicked(object sender, RoutedEventArgs e)
-	{
-	}
-
 	private void OnItemDoubleClicked(object sender, MouseButtonEventArgs e)
 	{
 		if (this.SelectedEntry is GroupEntryBase group)
@@ -148,10 +144,6 @@ public partial class LibraryWindow : PanelWindow
 			this.Path.Add(group);
 			this.searchQueue.InvokeImmediate();
 		}
-	}
-
-	private void OnFavoritesChecked(object sender, RoutedEventArgs e)
-	{
 	}
 
 	private void OnDirectorySelected(object sender, RoutedEventArgs e)
@@ -180,8 +172,9 @@ public partial class LibraryWindow : PanelWindow
 		this.searchQueue.Invoke();
 	}
 
-	private void OnApplyClicked(object sender, RoutedEventArgs e)
+	private void OnInfoTagSelected(Tag tag)
 	{
+		this.TagFilter.Tags.Add(tag);
 	}
 }
 

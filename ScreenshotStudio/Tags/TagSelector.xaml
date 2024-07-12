@@ -207,7 +207,6 @@
 			</Button>
 		</Grid>
 
-		<!--  yea this should be a popup duh  -->
 		<Popup
 			Width="{Binding ActualWidth, ElementName=ContentArea}"
 			MaxHeight="250"

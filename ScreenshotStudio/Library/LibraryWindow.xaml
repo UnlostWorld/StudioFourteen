@@ -70,221 +70,34 @@
 			<Grid
 				Grid.Row="2"
 				Grid.Column="1"
-				Margin="3,0,3,0"
-				IsEnabled="{Binding IsRunningAction, Converter={StaticResource !B}}">
+				Margin="3,0,0,0">
 
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
-					<RowDefinition Height="6" />
 					<RowDefinition />
-					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
 
 				<TextBlock
 					Grid.Row="0"
-					Margin="3,0,0,4"
+					Margin="6,3,0,3"
 					Style="{DynamicResource Header}"
 					Text="{Binding SelectedEntry.Name}" />
 
-				<!--  Actions  -->
-				<Grid Grid.Row="1">
+				<tags:TagDisplay
+					Grid.Row="1"
+					Margin="0,0,0,4"
+					TagSelected="OnInfoTagSelected"
+					Tags="{Binding SelectedEntry.Tags}" />
 
-					<Border Style="{DynamicResource WpfUtilsControlBorder}" />
-
-					<ItemsControl ItemsSource="{Binding SelectedEntry.Actions}">
-						<ItemsControl.ItemsPanel>
-							<ItemsPanelTemplate>
-								<WrapPanel Orientation="Horizontal" />
-							</ItemsPanelTemplate>
-						</ItemsControl.ItemsPanel>
-
-						<ItemsControl.ItemTemplate>
-							<DataTemplate>
-								<Button
-									Command="{Binding Command}"
-									IsEnabled="{Binding CanExecute}"
-									Style="{DynamicResource WpfUtilsButton}"
-									ToolTip="{Binding Label}">
-
-									<wpfUtils:IconBlock
-										Margin="2,0"
-										Icon="{Binding Icon}" />
-
-								</Button>
-							</DataTemplate>
-						</ItemsControl.ItemTemplate>
-					</ItemsControl>
-				</Grid>
-
-				<!--  Info  -->
-				<Grid
-					Grid.Row="3"
-					Grid.Column="1">
-					<Grid.RowDefinitions>
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition Height="Auto" />
-						<RowDefinition />
-					</Grid.RowDefinitions>
-
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition />
-					</Grid.ColumnDefinitions>
-
-					<!--  Thumbnail  -->
-					<Grid
-						x:Name="ImageBorder"
-						Grid.Row="2"
-						Grid.RowSpan="6"
-						Grid.Column="0"
-						MaxWidth="100"
-						MaxHeight="200"
-						Margin="0,3,3,0"
-						HorizontalAlignment="Center"
-						VerticalAlignment="Top"
-						Visibility="{Binding SelectedEntry.Thumbnail, Converter={StaticResource NotNullToVisibilityConverter}}">
-
-						<Grid.OpacityMask>
-							<VisualBrush
-								AlignmentX="Left"
-								AlignmentY="Top"
-								Stretch="None"
-								TileMode="None"
-								ViewboxUnits="Absolute">
-								<VisualBrush.Visual>
-									<Border
-										Width="{Binding ActualWidth, ElementName=ImageBorder}"
-										Height="{Binding ActualHeight, ElementName=ImageBorder}"
-										Background="Black"
-										BorderBrush="Transparent"
-										BorderThickness="0"
-										CornerRadius="6" />
-								</VisualBrush.Visual>
-							</VisualBrush>
-						</Grid.OpacityMask>
-
-						<Image
-							HorizontalAlignment="Center"
-							VerticalAlignment="Center"
-							Source="{Binding SelectedEntry.Thumbnail}"
-							Stretch="Uniform" />
-
-					</Grid>
-
-					<TextBlock
-						Grid.Row="2"
-						Grid.Column="1"
-						Grid.ColumnSpan="2"
-						Margin="3,2,0,12"
-						Text="{Binding SelectedEntry.Description}"
-						TextWrapping="Wrap"
-						Visibility="{Binding SelectedEntry.Description, Converter={StaticResource NotEmptyToVisibilityConverter}, FallbackValue=Collapsed}" />
-
-
-					<TextBlock
-						Grid.Row="3"
-						Grid.Column="1"
-						Margin="3,0,6,0"
-						Style="{DynamicResource Label}"
-						Text="{DynamicResource LOC_Library_Author}"
-						Visibility="{Binding SelectedEntry.Author, Converter={StaticResource NotEmptyToVisibilityConverter}, FallbackValue=Collapsed}" />
-					<TextBlock
-						Grid.Row="3"
-						Grid.Column="2"
-						Text="{Binding SelectedEntry.Author}"
-						TextWrapping="Wrap"
-						Visibility="{Binding SelectedEntry.Author, Converter={StaticResource NotEmptyToVisibilityConverter}, FallbackValue=Collapsed}" />
-
-					<TextBlock
-						Grid.Row="4"
-						Grid.Column="1"
-						Margin="3,0,6,0"
-						Style="{DynamicResource Label}"
-						Text="{DynamicResource LOC_FileMeta_Version}"
-						Visibility="{Binding SelectedEntry.Version, Converter={StaticResource NotEmptyToVisibilityConverter}, FallbackValue=Collapsed}" />
-					<TextBlock
-						Grid.Row="4"
-						Grid.Column="2"
-						Text="{Binding SelectedEntry.Version}"
-						TextWrapping="Wrap"
-						Visibility="{Binding SelectedEntry.Version, Converter={StaticResource NotEmptyToVisibilityConverter}, FallbackValue=Collapsed}" />
-
-					<!--TODO <tags:TagList
-					Grid.Row="5"
-					Grid.Column="1"
-					Grid.ColumnSpan="2"
-					Margin="0,3,0,3"
-					Tags="{Binding SelectedEntry.Tags}" />-->
-				</Grid>
-
-				<!--  Import panel  -->
-				<Grid
-					Grid.Row="5"
-					Grid.ColumnSpan="2"
-					Visibility="{Binding Importer, Converter={StaticResource NotNullToVisibilityConverter}}">
-
-					<Grid.RowDefinitions>
-						<RowDefinition />
-						<RowDefinition Height="Auto" />
-					</Grid.RowDefinitions>
-
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition />
-						<ColumnDefinition />
-					</Grid.ColumnDefinitions>
-
-					<ContentPresenter
-						Grid.Row="0"
-						Grid.ColumnSpan="2"
-						Margin="0,0,0,3"
-						Content="{Binding Importer}"
-						IsEnabled="{Binding SelectedEntry.ImporterType, Converter={StaticResource NotNullToBoolConverter}}" />
-
-					<Button
-						Grid.Row="1"
-						Grid.Column="0"
-						Click="OnRevertClicked"
-						Content="{DynamicResource LOC_Revert}"
-						IsEnabled="{Binding Importer.CanRevert}" />
-
-					<Grid
-						Grid.Row="1"
-						Grid.Column="1"
-						IsEnabled="{Binding SelectedEntry.ImporterType, Converter={StaticResource NotNullToBoolConverter}}">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition />
-						</Grid.ColumnDefinitions>
-
-						<Border
-							Grid.ColumnSpan="2"
-							Margin="1"
-							Style="{DynamicResource WpfUtilsControlBorder}" />
-
-						<ToggleButton
-							Grid.Column="0"
-							Background="Transparent"
-							IsChecked="{Binding LivePreview}"
-							Style="{DynamicResource WpfUtilsToggleButton}"
-							ToolTip="{DynamicResource LOC_Library_LivePreviewTooltip}">
-							<wpfUtils:IconBlock
-								Margin="2,0"
-								Icon="Sync" />
-						</ToggleButton>
-
-						<Button
-							Grid.Column="1"
-							Background="Transparent"
-							Click="OnApplyClicked"
-							Content="{DynamicResource LOC_Apply}"
-							IsEnabled="{Binding Importer.CanApply}" />
-					</Grid>
-				</Grid>
+				<ContentPresenter
+					Grid.Row="2"
+					Content="{Binding SelectedEntry}"
+					TextBlock.Foreground="{DynamicResource ForegroundBrush}">
+					<ContentPresenter.Resources>
+						<ResourceDictionary Source="./LibraryInfoTemplates.xaml" />
+					</ContentPresenter.Resources>
+				</ContentPresenter>
 
 			</Grid>
 
