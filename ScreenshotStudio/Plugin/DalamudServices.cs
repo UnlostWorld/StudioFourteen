@@ -11,6 +11,7 @@ using System.Runtime.InteropServices;
 
 public class DalamudServices
 {
+	[PluginService] internal static IPluginLog? Log { get; private set; }
 	[PluginService] internal static IDalamudPluginInterface? PluginInterface { get; private set; }
 	[PluginService] internal static ICommandManager? CommandManager { get; private set; }
 	[PluginService] internal static IDataManager? DataManager { get; private set; }
@@ -22,7 +23,6 @@ public class DalamudServices
 	[PluginService] internal static IGameGui? GameGui { get; private set; }
 	[PluginService] internal static ITextureSubstitutionProvider? TextureSubstitutionProvider { get; private set; }
 	[PluginService] internal static IGameInteropProvider? InteropProvider { get; private set; }
-	[PluginService] internal static IPluginLog? Log { get; private set; }
 
 	internal static unsafe CameraManager* Camera { get; private set; } = CameraManager.Instance();
 
@@ -40,24 +40,6 @@ public class DalamudServices
 		catch (Exception ex)
 		{
 			Logging.ForContext<DalamudServices>().Error(ex, "Error creating delegate from signature");
-			return null;
-		}
-	}
-
-	public static Hook<TDelegate>? HookFromSignature<TDelegate>(string sig, TDelegate detour)
-			where TDelegate : System.Delegate
-	{
-		if (SigScanner == null || InteropProvider == null)
-			return null;
-
-		try
-		{
-			nint address = SigScanner.ScanText(sig);
-			return InteropProvider.HookFromAddress<TDelegate>(address, detour);
-		}
-		catch (Exception ex)
-		{
-			Logging.ForContext<DalamudServices>().Error(ex, "Error creating hook from signature");
 			return null;
 		}
 	}

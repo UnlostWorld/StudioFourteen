@@ -120,10 +120,10 @@ public class ActorLifecycleService : ServiceBase
 
 	private unsafe void Attach()
 	{
-		this.characterInitializeHook = DalamudServices.HookFromSignature<CharacterEventDelegate>("E8 ?? ?? ?? ?? 8D 57 ?? C6 83", this.CharacterInitializeDetour);
+		this.characterInitializeHook = InteropService.HookFromSignature<CharacterEventDelegate>("E8 ?? ?? ?? ?? 8D 57 ?? C6 83", this.CharacterInitializeDetour);
 		this.characterInitializeHook?.Enable();
 
-		this.characterFinalizeHook = DalamudServices.HookFromSignature<CharacterEventDelegate>("48 89 5C 24 ?? 48 89 74 24 ?? 57 48 83 EC ?? 48 8D 05 ?? ?? ?? ?? 48 8B D9 48 89 01 48 8D 05 ?? ?? ?? ?? 48 89 81 ?? ?? ?? ?? 48 81 C1", this.CharacterFinalizeDetour);
+		this.characterFinalizeHook = InteropService.HookFromSignature<CharacterEventDelegate>("48 89 5C 24 ?? 48 89 74 24 ?? 57 48 83 EC ?? 48 8D 05 ?? ?? ?? ?? 48 8B D9 48 89 01 48 8D 05 ?? ?? ?? ?? 48 89 81 ?? ?? ?? ?? 48 81 C1", this.CharacterFinalizeDetour);
 		this.characterFinalizeHook?.Enable();
 	}
 

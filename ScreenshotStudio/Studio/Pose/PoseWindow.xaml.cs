@@ -20,29 +20,17 @@ using System.Windows;
 
 public partial class PoseWindow : ActorWindow
 {
-	private readonly Hook<SetBoneModelSpaceFfxivDelegate>? setBoneModelSpaceFfxivHook;
-	private readonly Hook<CalculateBoneModelSpaceDelegate>? calculateBoneModelSpaceHook;
-	private readonly Hook<SyncModelSpaceDelegate>? syncModelSpaceHook;
-	private readonly Hook<LookAtIKDelegate>? lookAtIKHook;
-	private readonly Hook<AnimFrozenDelegate>? animFrozenHook;
-	private readonly Hook<UpdatePosDelegate>? updatePosHook;
-	private readonly Hook<SetSkeletonDelegate>? setSkeletonHook;
-	private readonly Hook<BustDelegate>? bustHook;
+	private Hook<SetBoneModelSpaceFfxivDelegate>? setBoneModelSpaceFfxivHook;
+	private Hook<CalculateBoneModelSpaceDelegate>? calculateBoneModelSpaceHook;
+	private Hook<SyncModelSpaceDelegate>? syncModelSpaceHook;
+	private Hook<LookAtIKDelegate>? lookAtIKHook;
+	private Hook<AnimFrozenDelegate>? animFrozenHook;
+	private Hook<UpdatePosDelegate>? updatePosHook;
+	private Hook<SetSkeletonDelegate>? setSkeletonHook;
+	private Hook<BustDelegate>? bustHook;
 
 	private bool posingEnabled = false;
 	private BoneCollection? selectedBones;
-
-	public unsafe PoseWindow()
-	{
-		this.setBoneModelSpaceFfxivHook = DalamudServices.HookFromSignature<SetBoneModelSpaceFfxivDelegate>("48 8B C4 48 89 58 18 55 56 57 41 54 41 55 41 56 41 57 48 81 EC ?? ?? ?? ?? 0F 29 70 B8 0F 29 78 A8 44 0F 29 40 ?? 44 0F 29 48 ?? 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 84 24 ?? ?? ?? ?? 48 8B B1", this.SetBoneModelSpaceFfxivDetour);
-		this.calculateBoneModelSpaceHook = DalamudServices.HookFromSignature<CalculateBoneModelSpaceDelegate>("40 53 48 83 EC 10 4C 8B 49 28", this.CalculateBoneModelSpaceDetour);
-		this.syncModelSpaceHook = DalamudServices.HookFromSignature<SyncModelSpaceDelegate>("48 83 EC 18 80 79 38 00", this.SyncModelSpaceDetour);
-		this.lookAtIKHook = DalamudServices.HookFromSignature<LookAtIKDelegate>("48 8B C4 48 89 58 08 48 89 70 10 F3 0F 11 58 ??", this.LookAtIKDetour);
-		this.animFrozenHook = DalamudServices.HookFromSignature<AnimFrozenDelegate>("E8 ?? ?? ?? ?? 0F B6 F0 84 C0 74 0E", this.AnimFrozenDetour);
-		this.updatePosHook = DalamudServices.HookFromSignature<UpdatePosDelegate>("E8 ?? ?? ?? ?? EB 29 48 8B 5F 08", this.UpdatePosDetour);
-		this.setSkeletonHook = DalamudServices.HookFromSignature<SetSkeletonDelegate>("E8 ?? ?? ?? ?? 48 C1 E5 08", this.SetSkeletonDetour);
-		this.bustHook = DalamudServices.HookFromSignature<BustDelegate>("E8 ?? ?? ?? ?? F6 84 24 ?? ?? ?? ?? ?? 0F 28 74 24 ??", this.BustDetour);
-	}
 
 	public delegate void BonesChangedEventHandler(BoneCollection? bones);
 
@@ -331,9 +319,18 @@ public partial class PoseWindow : ActorWindow
 		}
 	}
 
-	protected override void OnOpened()
+	protected unsafe override void OnOpened()
 	{
 		base.OnOpened();
+
+		this.setBoneModelSpaceFfxivHook = InteropService.HookFromSignature<SetBoneModelSpaceFfxivDelegate>("48 8B C4 48 89 58 18 55 56 57 41 54 41 55 41 56 41 57 48 81 EC ?? ?? ?? ?? 0F 29 70 B8 0F 29 78 A8 44 0F 29 40 ?? 44 0F 29 48 ?? 48 8B 05 ?? ?? ?? ?? 48 33 C4 48 89 84 24 ?? ?? ?? ?? 48 8B B1", this.SetBoneModelSpaceFfxivDetour);
+		this.calculateBoneModelSpaceHook = InteropService.HookFromSignature<CalculateBoneModelSpaceDelegate>("40 53 48 83 EC 10 4C 8B 49 28", this.CalculateBoneModelSpaceDetour);
+		this.syncModelSpaceHook = InteropService.HookFromSignature<SyncModelSpaceDelegate>("48 83 EC 18 80 79 38 00", this.SyncModelSpaceDetour);
+		this.lookAtIKHook = InteropService.HookFromSignature<LookAtIKDelegate>("48 8B C4 48 89 58 08 48 89 70 10 F3 0F 11 58 ??", this.LookAtIKDetour);
+		this.animFrozenHook = InteropService.HookFromSignature<AnimFrozenDelegate>("E8 ?? ?? ?? ?? 0F B6 F0 84 C0 74 0E", this.AnimFrozenDetour);
+		this.updatePosHook = InteropService.HookFromSignature<UpdatePosDelegate>("E8 ?? ?? ?? ?? EB 29 48 8B 5F 08", this.UpdatePosDetour);
+		this.setSkeletonHook = InteropService.HookFromSignature<SetSkeletonDelegate>("E8 ?? ?? ?? ?? 48 C1 E5 08", this.SetSkeletonDetour);
+		this.bustHook = InteropService.HookFromSignature<BustDelegate>("E8 ?? ?? ?? ?? F6 84 24 ?? ?? ?? ?? ?? 0F 28 74 24 ??", this.BustDetour);
 
 		this.IsBonesWindowOpen = this.SavedIsBonesWindowOpen;
 	}

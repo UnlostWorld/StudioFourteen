@@ -1,5 +1,7 @@
 ﻿namespace ScreenshotStudio;
 
+using System;
+using System.IO.Packaging;
 using System.Windows;
 
 public partial class Resources : ResourceDictionary
@@ -8,6 +10,8 @@ public partial class Resources : ResourceDictionary
 
 	public static Resources Load()
 	{
+		LoadShared();
+
 		Resources resources = new();
 		resources.Source = new("pack://application:,,,/ScreenshotStudio;component/Resources.xaml");
 		return resources;
@@ -15,7 +19,19 @@ public partial class Resources : ResourceDictionary
 
 	public static void LoadShared()
 	{
-		Shared = Load();
+		if (Shared != null)
+			return;
+
+		try
+		{
+			Resources resources = new();
+			resources.Source = new("pack://application:,,,/ScreenshotStudio;component/Resources.xaml");
+			Shared = resources;
+		}
+		catch (Exception ex)
+		{
+			Logging.Shared.Error(ex, "Error loading resources");
+		}
 	}
 
 	public static string Find(object key, string fallback)
@@ -31,7 +47,10 @@ public partial class Resources : ResourceDictionary
 	public static object? Find(object key, object? fallback = null)
 	{
 		if (Shared == null)
+		{
+			Logging.Shared.Warning($"No shared resources for lookup: {key}, using fallback {fallback}");
 			return fallback;
+		}
 
 		if (Shared.Contains(key))
 			return Shared[key];

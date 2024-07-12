@@ -18,12 +18,7 @@ using System.Windows;
 
 public partial class ZoneWindow : PanelWindow
 {
-	private readonly Hook<OnCreateScene>? createSceneHook;
-
-	public ZoneWindow()
-	{
-		this.createSceneHook = DalamudServices.HookFromSignature<OnCreateScene>("E8 ?? ?? ?? ?? 66 89 1D ?? ?? ?? ?? E9 ?? ?? ?? ??", this.HandleCreateScene);
-	}
+	private Hook<OnCreateScene>? createSceneHook;
 
 	private delegate int OnCreateScene(string p1, uint p2, IntPtr p3, uint p4, IntPtr p5, int p6, uint p7);
 
@@ -57,7 +52,9 @@ public partial class ZoneWindow : PanelWindow
 
 	protected override void OnOpened()
 	{
+		this.createSceneHook = InteropService.HookFromSignature<OnCreateScene>("E8 ?? ?? ?? ?? 66 89 1D ?? ?? ?? ?? E9 ?? ?? ?? ??", this.HandleCreateScene);
 		this.createSceneHook?.Enable();
+
 		base.OnOpened();
 	}
 

@@ -21,6 +21,9 @@ public class GameDataService : ServiceBase
 	public static T? GetFile<T>(string path)
 		where T : FileResource
 	{
+		if (ServiceManager.ShutdownRequested)
+			return null;
+
 		string? newPath = DalamudServices.TextureSubstitutionProvider?.GetSubstitutedPath(path);
 
 		if (newPath == null)

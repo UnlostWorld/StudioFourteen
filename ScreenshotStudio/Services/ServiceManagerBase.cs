@@ -1,0 +1,214 @@
+﻿namespace ScreenshotStudio.Services;
+
+using System;
+using System.Collections.Generic;
+using System.Reflection;
+using System.Threading.Tasks;
+using Serilog;
+
+public class ServiceManagerBase
+{
+	private static ServiceManagerBase? instance;
+	private readonly List<ServiceBase> services = new();
+	private States state = States.None;
+	private bool isTicking = false;
+
+	public ServiceManagerBase()
+	{
+		this.Log = Logging.ForContext(this.GetType());
+		instance = this;
+
+		PropertyInfo[] properties = this.GetType().GetProperties();
+		foreach(PropertyInfo property in properties)
+		{
+			if (property.GetValue(this) is ServiceBase service)
+			{
+				this.services.Add(service);
+			}
+		}
+	}
+
+	public enum States
+	{
+		None,
+		Initializing,
+		Initialized,
+		Starting,
+		Started,
+		Stopping,
+		Stopped,
+		ShuttingDown,
+		ShutDown,
+	}
+
+	public static ServiceManagerBase Instance
+	{
+		get
+		{
+			if (instance == null)
+				throw new Exception("No Service Manager");
+
+			return instance;
+		}
+	}
+
+	public static bool ShutdownRequested { get; private set; } = false;
+
+	public ILogger Log { get; private set; }
+
+	/// <summary>
+	/// Initialize and Start all services.
+	/// </summary>
+	public async Task Start()
+	{
+		this.state = States.Initializing;
+
+		ShutdownRequested = false;
+
+		Logging.Shared.Information($"Screenshot Studio is initializing {this.services.Count} services");
+
+		try
+		{
+			this.OnStart();
+		}
+		catch (Exception ex)
+		{
+			this.Log.Error(ex, $"Error in service manager OnStart");
+		}
+
+		foreach (ServiceBase service in this.services)
+		{
+			try
+			{
+				await service.Initialize();
+
+				if (ShutdownRequested)
+					break;
+			}
+			catch (Exception ex)
+			{
+				this.Log.Error(ex, $"Error initializing service: {service}");
+			}
+		}
+
+		this.state = States.Initialized;
+
+		this.Log.Information($"Screenshot Studio is starting {this.services.Count} services");
+		this.state = States.Starting;
+
+		foreach (ServiceBase service in this.services)
+		{
+			try
+			{
+				await service.Start();
+
+				if (ShutdownRequested)
+					break;
+			}
+			catch (Exception ex)
+			{
+				this.Log.Error(ex, $"Error starting service: {service}");
+			}
+		}
+
+		this.state = States.Started;
+
+		this.Log.Information("Screenshot Studio has started");
+
+		_ = Task.Run(async () => await this.Tick());
+	}
+
+	/// <summary>
+	/// Stop and shutdown all services.
+	/// </summary>
+	public async Task Stop()
+	{
+		this.Log.Information("Screenshot Studio shut down requested");
+
+		ShutdownRequested = true;
+
+		this.OnStop();
+
+		// Wait until Start() is done before stopping.
+		while (this.state < States.Started)
+		{
+			this.Log.Information("Awaiting start completion");
+			await Task.Delay(1000);
+		}
+
+		this.state = States.Stopping;
+
+		// wait for any in progress ticks
+		while (this.isTicking)
+			await Task.Delay(100);
+
+		foreach (ServiceBase service in this.services)
+		{
+			try
+			{
+				await service.Stop();
+			}
+			catch (Exception ex)
+			{
+				this.Log.Error(ex, $"Error stopping service: {service}");
+			}
+		}
+
+		this.state = States.Stopped;
+		this.state = States.ShuttingDown;
+
+		foreach (ServiceBase service in this.services)
+		{
+			try
+			{
+				await service.Shutdown();
+			}
+			catch (Exception ex)
+			{
+				this.Log.Error(ex, $"Error shutting down service: {service}");
+			}
+		}
+
+		this.Log.Information("Screenshot Studio has shut down");
+		instance = null;
+
+		this.state = States.ShutDown;
+	}
+
+	protected virtual void OnStart()
+	{
+	}
+
+	protected virtual void OnStop()
+	{
+	}
+
+	private async Task Tick()
+	{
+		while (this.state == States.Started)
+		{
+			this.isTicking = true;
+			foreach (ServiceBase service in this.services)
+			{
+				if (ShutdownRequested)
+					break;
+
+				await Task.Delay(10);
+
+				try
+				{
+					if (service.IsAlive)
+					{
+						await service.Tick();
+					}
+				}
+				catch (Exception ex)
+				{
+					Logging.Shared.Error(ex, "Error ticking services");
+				}
+			}
+
+			this.isTicking = false;
+		}
+	}
+}

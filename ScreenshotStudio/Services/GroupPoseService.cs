@@ -44,10 +44,10 @@ public class GroupPoseService : ServiceBase
 		var enterAddress = (nint)uiModule->VirtualTable->EnterGPose;
 		var exitAddress = (nint)uiModule->VirtualTable->ExitGPose;
 
-		this.enterHook = DalamudServices.InteropProvider?.HookFromAddress<EnterDelegate>(enterAddress, this.EnterDetour);
+		this.enterHook = InteropService.HookFromAddress<EnterDelegate>(enterAddress, this.EnterDetour);
 		this.enterHook?.Enable();
 
-		this.exitHook = DalamudServices.InteropProvider?.HookFromAddress<ExitDelegate>(exitAddress, this.ExitDetour);
+		this.exitHook = InteropService.HookFromAddress<ExitDelegate>(exitAddress, this.ExitDetour);
 		this.exitHook?.Enable();
 	}
 
