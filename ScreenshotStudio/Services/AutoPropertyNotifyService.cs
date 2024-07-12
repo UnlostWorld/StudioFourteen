@@ -135,10 +135,19 @@ public class AutoPropertyNotifyService : ServiceBase
 			if (!this.Object.TryGetTarget(out IAutoNotify? notify))
 				return false;
 
-			// If the target object has a dispatcher, use that isntead of our own thread.
+			// If the target object has a dispatcher, use that instead of our own thread.
 			if (notify is DispatcherObject dispatcherObj)
 			{
-				dispatcherObj.Dispatcher.Invoke(() => this.TickProperties(notify));
+				if (dispatcherObj.Dispatcher.HasShutdownStarted)
+					return false;
+
+				try
+				{
+					dispatcherObj.Dispatcher.Invoke(() => this.TickProperties(notify));
+				}
+				catch (TaskCanceledException)
+				{
+				}
 			}
 			else
 			{
