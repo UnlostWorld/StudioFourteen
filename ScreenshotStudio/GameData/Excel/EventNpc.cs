@@ -5,10 +5,7 @@ using Dalamud.Game.ClientState.Objects.Enums;
 using Lumina.Data;
 using Lumina.Excel;
 using ScreenshotStudio.GameData.Sheets;
-using ScreenshotStudio.Library;
 using ScreenshotStudio.Structs;
-using ScreenshotStudio.Utilities;
-using System;
 using System.Text;
 
 [Sheet("ENpcBase", 0x464052cd)]
@@ -26,32 +23,8 @@ public class EventNpc : LibraryExcelRow
 	public ModelChara? ModelChara { get; protected set; }
 
 	public Customize Customize { get; protected set; }
-
-	// Gear
-	public Item? MainHand { get; protected set; }
-	public Stain? DyeMainHand { get; protected set; }
-	public Item? OffHand { get; protected set; }
-	public Stain? DyeOffHand { get; protected set; }
-	public Item? Head { get; protected set; }
-	public Stain? DyeHead { get; protected set; }
-	public Item? Body { get; protected set; }
-	public Stain? DyeBody { get; protected set; }
-	public Item? Legs { get; protected set; }
-	public Stain? DyeLegs { get; protected set; }
-	public Item? Feet { get; protected set; }
-	public Stain? DyeFeet { get; protected set; }
-	public Item? Hands { get; protected set; }
-	public Stain? DyeHands { get; protected set; }
-	public Item? Wrists { get; protected set; }
-	public Stain? DyeWrists { get; protected set; }
-	public Item? Neck { get; protected set; }
-	public Stain? DyeNeck { get; protected set; }
-	public Item? Ears { get; protected set; }
-	public Stain? DyeEars { get; protected set; }
-	public Item? LeftRing { get; protected set; }
-	public Stain? DyeLeftRing { get; protected set; }
-	public Item? RightRing { get; protected set; }
-	public Stain? DyeRightRing { get; protected set; }
+	public NpcEquipment Equipment { get; protected set; } = new();
+	public NpcEquip? NpcEquip { get; protected set; }
 
 	public override void PopulateData(RowParser parser, Lumina.GameData gameData, Language language)
 	{
@@ -74,35 +47,13 @@ public class EventNpc : LibraryExcelRow
 
 		this.Customize = c;
 
-		NpcEquip? npcEquip = parser.ReadRowReference<ushort, NpcEquip>(63);
-		if (npcEquip?.RowId == 175)
-			npcEquip = null;
+		this.Equipment.Parse(parser, 65);
 
-		// Gear
-		this.MainHand = GameDataService.Items?.Find(ItemSlots.MainHand, parser.ReadColumn<ulong>(65));
-		this.DyeMainHand = parser.ReadRowReference<byte, Stain>(66);
-		this.OffHand = GameDataService.Items?.Find(ItemSlots.OffHand, parser.ReadColumn<ulong>(67));
-		this.DyeOffHand = parser.ReadRowReference<byte, Stain>(68);
-		this.Head = this.GetItem(ItemSlots.Head, parser.ReadColumn<uint>(69), npcEquip?.Head);
-		this.DyeHead = parser.ReadRowReference<byte, Stain>(70);
-		this.Body = this.GetItem(ItemSlots.Chest, parser.ReadColumn<uint>(72), npcEquip?.Body);
-		this.DyeBody = parser.ReadRowReference<byte, Stain>(73);
-		this.Hands = this.GetItem(ItemSlots.Hands, parser.ReadColumn<uint>(74), npcEquip?.Hands);
-		this.DyeHands = parser.ReadRowReference<byte, Stain>(75);
-		this.Legs = this.GetItem(ItemSlots.Legs, parser.ReadColumn<uint>(76), npcEquip?.Legs);
-		this.DyeLegs = parser.ReadRowReference<byte, Stain>(77);
-		this.Feet = this.GetItem(ItemSlots.Feet, parser.ReadColumn<uint>(78), npcEquip?.Feet);
-		this.DyeFeet = parser.ReadRowReference<byte, Stain>(79);
-		this.Ears = this.GetItem(ItemSlots.Earring, parser.ReadColumn<uint>(80), npcEquip?.Ears);
-		this.DyeEars = parser.ReadRowReference<byte, Stain>(81);
-		this.Neck = this.GetItem(ItemSlots.Necklace, parser.ReadColumn<uint>(82), npcEquip?.Neck);
-		this.DyeNeck = parser.ReadRowReference<byte, Stain>(83);
-		this.Wrists = this.GetItem(ItemSlots.Bracelet, parser.ReadColumn<uint>(84), npcEquip?.Wrists);
-		this.DyeWrists = parser.ReadRowReference<byte, Stain>(85);
-		this.LeftRing = this.GetItem(ItemSlots.RingLeft, parser.ReadColumn<uint>(86), npcEquip?.LeftRing);
-		this.DyeLeftRing = parser.ReadRowReference<byte, Stain>(87);
-		this.RightRing = this.GetItem(ItemSlots.RingRight, parser.ReadColumn<uint>(88), npcEquip?.RightRing);
-		this.DyeRightRing = parser.ReadRowReference<byte, Stain>(89);
+		this.NpcEquip = parser.ReadRowReference<ushort, NpcEquip>(63);
+		/*if (npcEquip?.RowId == 175 || npcEquip?.RowId == 0)
+		{
+			this.Equipment = npcEquip.Equipment;
+		}*/
 
 		this.Tags.Add(this.Customize.Race?.ToTags());
 		this.Tags.Add(this.Customize.Tribe?.ToTags());
@@ -114,16 +65,7 @@ public class EventNpc : LibraryExcelRow
 	public unsafe void Apply(Actor* actor)
 	{
 		actor->UpdateCustomize(this.Customize);
-	}
-
-	// This is a little funky, but as some point (Heavensward?) SQEX changed where NPC's stored their equipment
-	// so we need to check both the old data and the new for valid values.
-	protected Item? GetItem(ItemSlots slot, uint baseVal, Item? equipVal)
-	{
-		if (equipVal != null && equipVal != ItemsSheet.None)
-			return equipVal;
-
-		return GameDataService.Items?.Find(slot, baseVal);
+		this.Equipment.ApplyToActor(actor, this.NpcEquip?.Equipment);
 	}
 
 	protected void GenerateAppearanceHash()
@@ -139,31 +81,7 @@ public class EventNpc : LibraryExcelRow
 			this.AddToString(this.Customize.GetValue((CustomizeIndex)i), sb);
 		}
 
-		// Gear
-		this.AddToString(this.MainHand, sb);
-		this.AddToString(this.DyeMainHand, sb);
-		this.AddToString(this.OffHand, sb);
-		this.AddToString(this.DyeOffHand, sb);
-		this.AddToString(this.Head, sb);
-		this.AddToString(this.DyeHead, sb);
-		this.AddToString(this.Body, sb);
-		this.AddToString(this.DyeBody, sb);
-		this.AddToString(this.Legs, sb);
-		this.AddToString(this.DyeLegs, sb);
-		this.AddToString(this.Feet, sb);
-		this.AddToString(this.DyeFeet, sb);
-		this.AddToString(this.Hands, sb);
-		this.AddToString(this.DyeHands, sb);
-		this.AddToString(this.Wrists, sb);
-		this.AddToString(this.DyeWrists, sb);
-		this.AddToString(this.Neck, sb);
-		this.AddToString(this.DyeNeck, sb);
-		this.AddToString(this.Ears, sb);
-		this.AddToString(this.DyeEars, sb);
-		this.AddToString(this.LeftRing, sb);
-		this.AddToString(this.DyeLeftRing, sb);
-		this.AddToString(this.RightRing, sb);
-		this.AddToString(this.DyeRightRing, sb);
+		this.Equipment.GetStringForHash(sb);
 
 		this.AppearanceHash = HashUtility.GetHashString(sb.ToString());
 	}

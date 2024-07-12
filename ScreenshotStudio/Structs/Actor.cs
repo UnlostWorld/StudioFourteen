@@ -8,16 +8,13 @@
 // https://github.com/imchillin/Anamnesis/blob/master/Anamnesis/Memory/ActorBasicMemory.cs
 namespace ScreenshotStudio.Structs;
 
-using System;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
-using System.Windows.Documents;
 using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
-using ScreenshotStudio.Plugin;
+using ScreenshotStudio.GameData.Excel;
 using ScreenshotStudio.Utilities;
+using System;
+using System.Runtime.InteropServices;
 
 [StructLayout(LayoutKind.Explicit, Size = 0x84A)]
 public struct Actor
@@ -61,6 +58,14 @@ public struct Actor
 		}
 
 		return needsRedraw;
+	}
+
+	public unsafe void UpdateEquipment(Equipment.EquipIndex index, ItemEquip item)
+	{
+		fixed (ActorDrawData* drawData = &this.DrawData)
+		{
+			ActorDrawDataExtensions.ChangeEquip(drawData, index, (ItemEquip)item, true);
+		}
 	}
 
 	public unsafe void UpdateCustomize(Customize customize)
