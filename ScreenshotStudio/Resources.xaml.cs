@@ -4,13 +4,18 @@ using System.Windows;
 
 public partial class Resources : ResourceDictionary
 {
-	private static readonly Resources Instance = Load();
+	public static Resources? Shared { get; private set; }
 
 	public static Resources Load()
 	{
 		Resources resources = new();
 		resources.Source = new("pack://application:,,,/ScreenshotStudio;component/Resources.xaml");
 		return resources;
+	}
+
+	public static void LoadShared()
+	{
+		Shared = Load();
 	}
 
 	public static string Find(object key, string fallback)
@@ -25,8 +30,11 @@ public partial class Resources : ResourceDictionary
 
 	public static object? Find(object key, object? fallback = null)
 	{
-		if (Instance.Contains(key))
-			return Instance[key];
+		if (Shared == null)
+			return fallback;
+
+		if (Shared.Contains(key))
+			return Shared[key];
 
 		return fallback;
 	}

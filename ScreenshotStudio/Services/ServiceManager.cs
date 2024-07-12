@@ -54,6 +54,8 @@ public class ServiceManager
 
 		Logging.Shared.Information("Screenshot Studio is starting");
 
+		Resources.LoadShared();
+
 		foreach (ServiceBase service in this.services)
 		{
 			try
