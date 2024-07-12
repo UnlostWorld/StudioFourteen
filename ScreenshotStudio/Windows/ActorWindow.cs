@@ -6,6 +6,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Structs;
+using ScreenshotStudio.Utilities;
 
 public abstract class ActorWindow : PanelWindow
 {
@@ -36,6 +37,40 @@ public abstract class ActorWindow : PanelWindow
 	/// </summary>
 	public unsafe ref ActorDrawData DrawData => ref this.Actor->DrawData;
 
+	// should put this somewhere...
+	public static unsafe Actor* GetTarget()
+	{
+		Threads.VerifyFrameworkThread();
+
+		if (DalamudServices.ObjectTable == null)
+			return null;
+
+		if (GroupPoseService.IsGroupPosing)
+		{
+			// GPose target
+			return (Actor*)TargetSystem.Instance()->GPoseTarget;
+		}
+		else
+		{
+			// Focus Target
+			GameObject* pTargetObject = TargetSystem.Instance()->FocusTarget;
+			if (pTargetObject != null && pTargetObject->IsCharacter())
+			{
+				return (Actor*)pTargetObject;
+			}
+
+			// Target
+			pTargetObject = TargetSystem.Instance()->Target;
+			if (pTargetObject != null && pTargetObject->IsCharacter())
+			{
+				return (Actor*)pTargetObject;
+			}
+
+			// Player
+			return (Actor*)DalamudServices.ObjectTable.GetObjectAddress(0);
+		}
+	}
+
 	public override bool ShouldTickAutoProperties()
 	{
 		if (!this.HasValidTarget)
@@ -47,35 +82,6 @@ public abstract class ActorWindow : PanelWindow
 	protected unsafe override void OnFrameworkUpdate(IFramework framework)
 	{
 		base.OnFrameworkUpdate(framework);
-
-		if (DalamudServices.ObjectTable == null)
-			return;
-
-		if (GroupPoseService.IsGroupPosing)
-		{
-			// GPose target
-			this.Actor = (Actor*)TargetSystem.Instance()->GPoseTarget;
-		}
-		else
-		{
-			// Focus Target
-			GameObject* pTargetObject = TargetSystem.Instance()->FocusTarget;
-			if (pTargetObject != null && pTargetObject->IsCharacter())
-			{
-				this.Actor = (Actor*)pTargetObject;
-				return;
-			}
-
-			// Target
-			pTargetObject = TargetSystem.Instance()->Target;
-			if (pTargetObject != null && pTargetObject->IsCharacter())
-			{
-				this.Actor = (Actor*)pTargetObject;
-				return;
-			}
-
-			// Player
-			this.Actor = (Actor*)DalamudServices.ObjectTable.GetObjectAddress(0);
-		}
+		this.Actor = GetTarget();
 	}
 }

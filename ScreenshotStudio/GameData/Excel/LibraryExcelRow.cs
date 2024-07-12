@@ -3,9 +3,10 @@
 using ScreenshotStudio.Library;
 using ScreenshotStudio.Library.Sources;
 using ScreenshotStudio.Tags;
+using System;
 using WpfUtils;
 
-public class LibraryExcelRow : StudioExcelRow, IEntryBase
+public abstract class LibraryExcelRow : StudioExcelRow, IEntryBase
 {
 	public TagCollection Tags { get; init; } = new();
 	public string? Name { get; protected set; }

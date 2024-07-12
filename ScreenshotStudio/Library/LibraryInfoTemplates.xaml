@@ -4,6 +4,7 @@
 	xmlns:controls="clr-namespace:ScreenshotStudio.Controls"
 	xmlns:excel="clr-namespace:ScreenshotStudio.GameData.Excel"
 	xmlns:gameData="clr-namespace:ScreenshotStudio.GameData"
+	xmlns:library="clr-namespace:ScreenshotStudio.Library.Controls"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
 	<DataTemplate DataType="{x:Type gameData:DataSheetLibrarySource}">
@@ -43,6 +44,7 @@
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />
 				<RowDefinition />
+				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
 
 			<Grid.ColumnDefinitions>
@@ -61,6 +63,12 @@
 				Foreground="{DynamicResource ForegroundLightBrush}"
 				Style="{DynamicResource Body}"
 				Text="{Binding Description}" />
+
+			<!--  actions  -->
+			<library:ActorAppearanceActions
+				Grid.Row="3"
+				Grid.ColumnSpan="2"
+				Appearance="{Binding .}" />
 		</Grid>
 	</DataTemplate>
 
