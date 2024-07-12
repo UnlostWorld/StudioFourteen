@@ -24,11 +24,17 @@ public class StudioService : ServiceBase
 		}
 	}
 
+	public override async Task Initialize()
+	{
+		await base.Initialize();
+
+		this.navigationPanel = await Panel.ShowAsync<NavigationPanel>();
+	}
+
 	public override async Task Start()
 	{
 		await base.Start();
 
-		this.navigationPanel = await Panel.ShowAsync<NavigationPanel>();
 		this.targetPanel = await Panel.ShowAsync<TargetPanel>();
 
 		// Go fast

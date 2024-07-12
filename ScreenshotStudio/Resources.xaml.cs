@@ -1,7 +1,6 @@
 ﻿namespace ScreenshotStudio;
 
 using System;
-using System.IO.Packaging;
 using System.Windows;
 
 public partial class Resources : ResourceDictionary
