@@ -6,8 +6,7 @@ using System.ComponentModel;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using WpfUtils.Converters;
-using WpfUtils.Extensions;
+using System.Windows.Threading;
 
 public class AutoPropertyNotifyService : ServiceBase
 {
@@ -136,20 +135,35 @@ public class AutoPropertyNotifyService : ServiceBase
 			if (!this.Object.TryGetTarget(out IAutoNotify? notify))
 				return false;
 
+			// If the target object has a dispatcher, use that isntead of our own thread.
+			if (notify is DispatcherObject dispatcherObj)
+			{
+				dispatcherObj.Dispatcher.Invoke(() => this.TickProperties(notify));
+			}
+			else
+			{
+				this.TickProperties(notify);
+			}
+
+			return true;
+		}
+
+		private void TickProperties(IAutoNotify notify)
+		{
 			foreach (PropertyInfo property in this.AlwaysProperties)
 			{
 				this.Tick(property, notify);
 			}
 
 			if (!notify.ShouldTickAutoProperties())
-				return true;
+				return;
 
 			foreach (PropertyInfo property in this.Properties)
 			{
 				this.Tick(property, notify);
 			}
 
-			return true;
+			return;
 		}
 
 		private void Tick(PropertyInfo property, IAutoNotify notify)
