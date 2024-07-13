@@ -36,11 +36,6 @@ public class ResidentNpc : LibraryExcelRow, IActorAppearance
 				this.EventNpc.Tags.Add("Named");
 			}
 		}
-		else
-		{
-			this.Tags.Add("Unnamed");
-			this.Name = $"Resident NPC #{this.RowId}";
-		}
 
 		if (!string.IsNullOrEmpty(this.Description))
 		{
