@@ -12,15 +12,28 @@
 	</DataTemplate>
 
 	<DataTemplate DataType="{x:Type excel:ResidentNpc}">
-		<wpfUtils:IconBlock
-			FontSize="72"
-			Icon="User" />
+		<Viewbox>
+			<wpfUtils:IconBlock
+				FontSize="72"
+				Icon="User" />
+		</Viewbox>
 	</DataTemplate>
 
 	<DataTemplate DataType="{x:Type excel:EventNpc}">
-		<wpfUtils:IconBlock
-			FontSize="72"
-			Icon="User" />
+		<Viewbox>
+			<wpfUtils:IconBlock
+				FontSize="72"
+				Icon="UserTie" />
+		</Viewbox>
+	</DataTemplate>
+
+	<DataTemplate DataType="{x:Type excel:BattleNpc}">
+		<Viewbox>
+			<wpfUtils:IconBlock
+				Margin="10,0"
+				FontSize="72"
+				Icon="UserShield" />
+		</Viewbox>
 	</DataTemplate>
 
 	<DataTemplate DataType="{x:Type excel:Item}">

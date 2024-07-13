@@ -34,6 +34,9 @@ public class PersistentPanel : Panel
 			if (!Settings.Current.PanelPersistence.TryGetValue(persistenceId, out string? json) || json == null)
 				return default;
 
+			if (!json.StartsWith('"') || !json.EndsWith('"'))
+				json = '"' + json + '"';
+
 			T? value = Serializer.Deserialize<T>(json);
 			this.persistenceCache.Add(id, value);
 			return value;

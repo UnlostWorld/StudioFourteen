@@ -9,36 +9,14 @@
 
 	<DataTemplate DataType="{x:Type gameData:DataSheetLibrarySource}">
 		<Grid>
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="Auto" />
-				<RowDefinition />
-			</Grid.RowDefinitions>
-
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="Auto" />
-				<ColumnDefinition />
-			</Grid.ColumnDefinitions>
-
-			<controls:XivIconImage
-				Grid.Row="0"
-				Grid.RowSpan="2"
-				Grid.Column="0"
-				Width="72"
-				Height="72"
-				Margin="6,0"
-				Id="065012" />
-
 			<TextBlock
-				Grid.Row="0"
-				Grid.Column="1"
 				Foreground="{DynamicResource ForegroundLightBrush}"
 				Style="{DynamicResource Body}"
 				Text="{DynamicResource LOC_Library_DataSheetLibrarySourceDesc}" />
 		</Grid>
 	</DataTemplate>
 
-	<DataTemplate DataType="{x:Type excel:ResidentNpc}">
+	<DataTemplate x:Key="ActorAppearance">
 		<Grid>
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
@@ -47,19 +25,9 @@
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
 
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="Auto" />
-				<ColumnDefinition />
-			</Grid.ColumnDefinitions>
-
-			<wpfUtils:IconBlock
-				Margin="6,0"
-				FontSize="72"
-				Icon="User" />
 
 			<TextBlock
 				Grid.Row="0"
-				Grid.Column="1"
 				Foreground="{DynamicResource ForegroundLightBrush}"
 				Style="{DynamicResource Body}"
 				Text="{Binding Description}" />
@@ -67,9 +35,26 @@
 			<!--  actions  -->
 			<library:ActorAppearanceActions
 				Grid.Row="3"
-				Grid.ColumnSpan="2"
 				Appearance="{Binding .}" />
 		</Grid>
+	</DataTemplate>
+
+	<DataTemplate DataType="{x:Type excel:ResidentNpc}">
+		<ContentPresenter
+			Content="{Binding .}"
+			ContentTemplate="{StaticResource ActorAppearance}" />
+	</DataTemplate>
+
+	<DataTemplate DataType="{x:Type excel:BattleNpc}">
+		<ContentPresenter
+			Content="{Binding .}"
+			ContentTemplate="{StaticResource ActorAppearance}" />
+	</DataTemplate>
+
+	<DataTemplate DataType="{x:Type excel:EventNpc}">
+		<ContentPresenter
+			Content="{Binding .}"
+			ContentTemplate="{StaticResource ActorAppearance}" />
 	</DataTemplate>
 
 </ResourceDictionary>

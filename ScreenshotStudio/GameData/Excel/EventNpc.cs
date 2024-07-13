@@ -4,13 +4,13 @@ using Anamnesis.Utils;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Lumina.Data;
 using Lumina.Excel;
-using ScreenshotStudio.GameData.Sheets;
 using ScreenshotStudio.Structs;
 using System.Text;
-using ScreenshotStudio.Structs.Extensions;
+using ScreenshotStudio.Library;
+using ScreenshotStudio.Data;
 
 [Sheet("ENpcBase", 0x464052cd)]
-public class EventNpc : LibraryExcelRow
+public class EventNpc : LibraryExcelRow, IActorAppearance
 {
 	public string? AppearanceHash { get; private set; }
 
@@ -27,9 +27,42 @@ public class EventNpc : LibraryExcelRow
 	public NpcEquipment Equipment { get; protected set; } = new();
 	public NpcEquip? NpcEquip { get; protected set; }
 
+	public string Key => $"E:{this.RowId.ToString(DataService.NpcNamesIdFormat)}";
+
 	public override void PopulateData(RowParser parser, Lumina.GameData gameData, Language language)
 	{
 		base.PopulateData(parser, gameData, language);
+
+		// lookup name
+		string? name = null;
+		if (DataService.NpcNames?.TryGetValue(this.Key, out string? npcNameKey) ?? false)
+		{
+			if (npcNameKey.StartsWith("N:"))
+			{
+				uint nameId = uint.Parse(npcNameKey.Substring(2));
+				BattleNpcName? npcName = GameDataService.GetRow<BattleNpcName>(nameId);
+				if (npcName != null)
+				{
+					name = npcName.Name;
+				}
+			}
+			else
+			{
+				name = npcNameKey;
+			}
+		}
+
+		this.Name = $"Event NPC #{this.RowId}";
+
+		if (name != null)
+		{
+			this.Tags.Add("Named");
+			this.Name = name;
+		}
+		else
+		{
+			this.Tags.Add("Unnamed");
+		}
 
 		// Customize
 		this.Scale = parser.ReadColumn<float>(34);
@@ -37,7 +70,7 @@ public class EventNpc : LibraryExcelRow
 
 		Customize c;
 
-		for(int i = 0; i < Customize.NumOptions; i++)
+		for (int i = 0; i < Customize.NumOptions; i++)
 		{
 			CustomizeIndex index = (CustomizeIndex)i;
 			int row = 36 + i;
@@ -49,16 +82,16 @@ public class EventNpc : LibraryExcelRow
 		this.Customize = c;
 
 		this.Equipment.Parse(parser, 65);
-
 		this.NpcEquip = parser.ReadRowReference<ushort, NpcEquip>(63);
-		/*if (npcEquip?.RowId == 175 || npcEquip?.RowId == 0)
-		{
-			this.Equipment = npcEquip.Equipment;
-		}*/
 
-		this.Tags.Add(this.Customize.Race?.ToTags());
-		this.Tags.Add(this.Customize.Tribe?.ToTags());
-		this.Tags.Add(this.Customize.Gender.ToTags());
+		this.Tags.Add("NPC");
+
+		if (this.ModelChara != null && this.ModelChara.Type == 1)
+		{
+			this.Tags.Add(this.Customize.Race?.ToTags());
+			this.Tags.Add(this.Customize.Tribe?.ToTags());
+			this.Tags.Add(this.Customize.Gender.ToTags());
+		}
 
 		this.GenerateAppearanceHash();
 	}

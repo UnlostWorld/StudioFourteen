@@ -1,5 +1,6 @@
 ﻿namespace ScreenshotStudio;
 
+using ScreenshotStudio.Data;
 using ScreenshotStudio.GameData;
 using ScreenshotStudio.Library;
 using ScreenshotStudio.Services;
@@ -15,7 +16,8 @@ public class ServiceManager : ServiceManagerBase
 
 	public PanelService Panels { get; init; } = new();
 	public StudioService Studio { get; init; } = new();
-	public GameDataService Data { get; init; } = new();
+	public DataService Data { get; init; } = new();
+	public GameDataService GameData { get; init; } = new();
 	public LibraryService Library { get; init; } = new();
 	public ActorLifecycleService ActorLifecycle { get; init; } = new();
 	public GroupPoseService GroupPose { get; init; } = new();

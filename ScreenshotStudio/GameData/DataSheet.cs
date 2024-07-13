@@ -28,6 +28,11 @@ public class DataSheetLibrarySource : SourceBase
 	{
 		foreach(ExcelRow row in this.sheet)
 		{
+			if (row is LibraryExcelRow excelRow)
+			{
+				excelRow.Source = this;
+			}
+
 			if (row is IEntryBase entry)
 			{
 				if (!entry.IsValid)

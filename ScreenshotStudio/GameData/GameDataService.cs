@@ -42,7 +42,7 @@ public class GameDataService : ServiceBase
 	public static DataSheet<T>? Get<T>()
 		where T : ExcelRow
 	{
-		return ServiceManager.Instance.Data.GetSheet<T>();
+		return ServiceManager.Instance.GameData.GetSheet<T>();
 	}
 
 	public static T? GetRow<T>(uint row)

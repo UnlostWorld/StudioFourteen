@@ -2,6 +2,7 @@
 
 using Newtonsoft.Json;
 using System.Globalization;
+using System.IO;
 
 public static class Serializer
 {
@@ -25,9 +26,6 @@ public static class Serializer
 
 	public static T? Deserialize<T>(string json)
 	{
-		if (!json.StartsWith('"') || !json.EndsWith('"'))
-			json = '"' + json + '"';
-
 		return JsonConvert.DeserializeObject<T>(json, Settings);
 	}
 }

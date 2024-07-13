@@ -11,7 +11,7 @@ public abstract class LibraryExcelRow : StudioExcelRow, IEntryBase
 	public TagCollection Tags { get; init; } = new();
 	public string? Name { get; protected set; }
 	public bool IsVisible { get; set; }
-	public SourceBase? Source { get; }
+	public SourceBase? Source { get; set; }
 	public string? SourceInfo { get; set; }
 	public string Identifier => $"{this.GetType().Name} #{this.RowId}";
 

@@ -43,6 +43,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<EmbeddedResource Include="Data\Documents\*.*" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Remove="Assets\LegacyTattoo.png" />
 	</ItemGroup>
 

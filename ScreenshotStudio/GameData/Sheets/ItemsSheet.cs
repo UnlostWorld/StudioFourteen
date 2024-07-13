@@ -108,7 +108,7 @@ public class ItemsSheet : DataSheet<Item>
 		foreach (Item tItem in this.Sheet)
 		{
 			// Abort
-			if (!ServiceManager.Instance.Data.IsAlive)
+			if (!ServiceManager.Instance.GameData.IsAlive)
 				return;
 
 			try

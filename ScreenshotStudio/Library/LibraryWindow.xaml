@@ -72,26 +72,58 @@
 				Grid.Column="1"
 				Margin="3,0,0,0">
 
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition />
+				</Grid.ColumnDefinitions>
+
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 					<RowDefinition />
 				</Grid.RowDefinitions>
 
-				<TextBlock
+				<ContentPresenter
+					Width="48"
+					Height="48"
+					Margin="3,6,3,3"
+					VerticalAlignment="Top"
+					Content="{Binding SelectedEntry}"
+					TextBlock.Foreground="{DynamicResource ForegroundBrush}">
+					<ContentPresenter.Resources>
+						<ResourceDictionary Source="./LibraryIconTemplates.xaml" />
+					</ContentPresenter.Resources>
+				</ContentPresenter>
+
+				<StackPanel
 					Grid.Row="0"
+					Grid.Column="1"
 					Margin="6,3,0,3"
-					Style="{DynamicResource Header}"
-					Text="{Binding SelectedEntry.Name}" />
+					VerticalAlignment="Top">
+					<TextBlock
+						Style="{DynamicResource Header}"
+						Text="{Binding SelectedEntry.Name}" />
+					<TextBlock
+						Foreground="{DynamicResource ForegroundLightBrush}"
+						Style="{DynamicResource Body}"
+						Text="{Binding SelectedEntry.Source.Name}" />
+					<TextBlock
+						Foreground="{DynamicResource ForegroundLightBrush}"
+						Style="{DynamicResource Body}"
+						Text="{Binding SelectedEntry.Identifier}" />
+				</StackPanel>
+
 
 				<tags:TagDisplay
 					Grid.Row="1"
+					Grid.ColumnSpan="2"
 					Margin="0,0,0,4"
 					TagSelected="OnInfoTagSelected"
 					Tags="{Binding SelectedEntry.Tags}" />
 
 				<ContentPresenter
 					Grid.Row="2"
+					Grid.ColumnSpan="2"
 					Content="{Binding SelectedEntry}"
 					TextBlock.Foreground="{DynamicResource ForegroundBrush}">
 					<ContentPresenter.Resources>

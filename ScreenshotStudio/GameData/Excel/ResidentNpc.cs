@@ -23,7 +23,6 @@ public class ResidentNpc : LibraryExcelRow, IActorAppearance
 		this.EventNpc = GameDataService.GetRow<EventNpc>(this.RowId);
 
 		this.Tags.Add("NPC");
-		this.Tags.Add("Resident");
 
 		if (this.Name != null)
 		{
@@ -32,6 +31,7 @@ public class ResidentNpc : LibraryExcelRow, IActorAppearance
 		else
 		{
 			this.Tags.Add("Unnamed");
+			this.Name = $"Resident NPC #{this.RowId}";
 		}
 
 		if (!string.IsNullOrEmpty(this.Description))

@@ -18,10 +18,10 @@ public partial class CustomizeWindow : ActorWindow
 	private CharaMakeType? makeType;
 	private bool linkEyeColors = false;
 
-	public DataSheet<Race>? Races => this.Services.Data.GetSheet<Race>();
-	public DataSheet<Tribe>? Tribes => this.Services.Data.GetSheet<Tribe>();
+	public DataSheet<Race>? Races => this.Services.GameData.GetSheet<Race>();
+	public DataSheet<Tribe>? Tribes => this.Services.GameData.GetSheet<Tribe>();
 
-	public IEnumerable<Race?>? AvailableRaces => this.Services.Data.GetSheet<Race>()?.GetFrom(1);
+	public IEnumerable<Race?>? AvailableRaces => this.Services.GameData.GetSheet<Race>()?.GetFrom(1);
 
 	[AutoNotify]
 	public unsafe CharaMakeType? MakeType
@@ -34,7 +34,7 @@ public partial class CustomizeWindow : ActorWindow
 			{
 				this.makeType = null;
 
-				DataSheet<CharaMakeType>? charaMakeTypeSheet = this.Services.Data.GetSheet<CharaMakeType>();
+				DataSheet<CharaMakeType>? charaMakeTypeSheet = this.Services.GameData.GetSheet<CharaMakeType>();
 				if (charaMakeTypeSheet == null)
 					return null;
 
