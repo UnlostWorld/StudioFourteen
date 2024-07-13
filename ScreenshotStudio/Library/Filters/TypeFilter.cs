@@ -3,7 +3,7 @@
 using System;
 using System.Collections.Generic;
 
-internal class TypeFilter : FilterBase
+public class TypeFilter : FilterBase
 {
 	private readonly HashSet<Type> types = new();
 

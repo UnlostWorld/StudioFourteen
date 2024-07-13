@@ -12,82 +12,17 @@
 	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="Library Search"
+	Width="300"
+	Height="450"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
-	SizeToContent="WidthAndHeight"
 	Subtitle="{Binding SearchTitle}"
 	TitleIcon="Search"
 	mc:Ignorable="d">
 
-	<Grid>
+	<Grid Margin="1">
 		<Grid.Resources>
-
 			<converters:NotNullToBoolConverter x:Key="NotNullToBoolConverter" />
-
-			<DataTemplate
-				x:Key="TagTemplate"
-				DataType="{x:Type tags:Tag}">
-				<Button
-					Margin="0,-1"
-					Click="OnTagClicked">
-					<Button.Template>
-						<ControlTemplate TargetType="{x:Type Button}">
-							<Grid
-								Height="20"
-								Cursor="Hand">
-
-								<Border
-									Background="{DynamicResource BackgroundLightBrush}"
-									CornerRadius="10"
-									Opacity="0.5" />
-
-								<Border
-									x:Name="HoverBorder"
-									Background="{DynamicResource ControlHighlightBrush}"
-									CornerRadius="10"
-									Opacity="0" />
-
-								<Ellipse
-									Width="10"
-									Height="10"
-									Margin="4"
-									HorizontalAlignment="Left"
-									Fill="{DynamicResource ControlBackgroundBrush}" />
-
-								<Grid
-									x:Name="AddRemoveIconArea"
-									Width="14"
-									Height="14"
-									Margin="3,1,3,0"
-									HorizontalAlignment="Left"
-									VerticalAlignment="Center"
-									Opacity="0">
-
-									<wpfUtils:IconBlock
-										HorizontalAlignment="Center"
-										VerticalAlignment="Center"
-										FontSize="14"
-										Foreground="{DynamicResource ControlHighlightBrush}"
-										Icon="PlusCircle" />
-								</Grid>
-
-								<TextBlock
-									Margin="17,2,2,2"
-									Foreground="{DynamicResource ForegroundLightBrush}"
-									Text="{Binding Name}"
-									TextTrimming="CharacterEllipsis" />
-							</Grid>
-
-							<ControlTemplate.Triggers>
-								<Trigger Property="IsMouseOver" Value="True">
-									<Setter TargetName="HoverBorder" Property="Opacity" Value="1" />
-								</Trigger>
-							</ControlTemplate.Triggers>
-
-						</ControlTemplate>
-					</Button.Template>
-				</Button>
-			</DataTemplate>
 
 			<ControlTemplate
 				x:Key="ListBoxItemTemplate"
@@ -225,171 +160,40 @@
 				</ControlTemplate.Triggers>
 
 			</ControlTemplate>
-
 		</Grid.Resources>
 
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
+			<RowDefinition />
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
-		<Expander IsExpanded="False">
+		<tags:TagSelector
+			Grid.Row="0"
+			Margin="0,0,0,2"
+			AllTags="{Binding AvailableTags}"
+			Search="{Binding Search, Mode=TwoWay}"
+			Tags="{Binding TagFilter.Tags}" />
 
-			<Expander.Header>
-				<ListBox
-					x:Name="ResultsList"
-					Grid.Row="1"
-					Grid.Column="0"
-					Grid.ColumnSpan="2"
-					Width="250"
-					HorizontalAlignment="Left"
-					ItemsSource="{Binding Results}"
-					KeyDown="OnResultsListKeyDown"
-					MouseDoubleClick="ResultsListDoubleClicked"
-					ScrollViewer.VerticalScrollBarVisibility="Visible"
-					SelectedItem="{Binding SelectedItem}">
-					<ListBox.ItemContainerStyle>
-						<Style
-							BasedOn="{StaticResource WpfUtilsListBoxItem}"
-							TargetType="{x:Type ListBoxItem}">
-							<Setter Property="Template" Value="{StaticResource ListBoxItemTemplate}" />
-						</Style>
-					</ListBox.ItemContainerStyle>
-				</ListBox>
-			</Expander.Header>
-
-			<Grid Margin="2,0,0,0">
-
-				<Border
-					Margin="0"
-					Style="{DynamicResource WpfUtilsControlBorder}" />
-
-				<ScrollViewer
-					Margin="1"
-					behaviours:SmoothScrollBehaviour.SmoothScroll="True"
-					VerticalScrollBarVisibility="Auto">
-					<ItemsControl
-						Margin="0,2"
-						ItemTemplate="{StaticResource TagTemplate}"
-						ItemsSource="{Binding AvailableTags}" />
-				</ScrollViewer>
-			</Grid>
-
-			<Expander.Template>
-				<ControlTemplate TargetType="{x:Type Expander}">
-
-					<Grid
-						x:Name="MainGrid"
-						Width="250"
-						Height="400">
-
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition />
-							<ColumnDefinition
-								x:Name="ButtonColumn"
-								Width="30" />
-							<ColumnDefinition
-								x:Name="TagsColumn"
-								Width="0" />
-						</Grid.ColumnDefinitions>
-
-						<Grid.RowDefinitions>
-							<RowDefinition Height="Auto" />
-							<RowDefinition />
-						</Grid.RowDefinitions>
-
-						<tags:TagSelector
-							Margin="0,1"
-							AllTags="{Binding AvailableTags}"
-							OnDone="OnTagFilterDone"
-							Search="{Binding Search, Mode=TwoWay}"
-							Tags="{Binding Tags}" />
-
-						<ToggleButton
-							x:Name="HeaderSite"
-							Grid.Row="0"
-							Grid.Column="1"
-							Grid.ColumnSpan="2"
-							Height="30"
-							Margin="2,2,0,1"
-							VerticalAlignment="Top"
-							IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
-							<Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="28" />
-									<ColumnDefinition />
-								</Grid.ColumnDefinitions>
-								<wpfUtils:IconBlock
-									Grid.Column="0"
-									Icon="Tags" />
-								<TextBlock
-									Grid.Column="1"
-									Margin="6,0,0,0"
-									HorizontalAlignment="Center"
-									Foreground="{DynamicResource ForegroundLightBrush}"
-									Text="All Tags" />
-							</Grid>
-						</ToggleButton>
-
-						<ContentPresenter
-							Grid.Row="1"
-							Grid.Column="0"
-							Grid.ColumnSpan="2"
-							Content="{TemplateBinding Header}"
-							ContentTemplate="{TemplateBinding HeaderTemplate}" />
-
-						<ContentPresenter
-							Grid.Row="1"
-							Grid.Column="2"
-							Content="{TemplateBinding Content}"
-							ContentTemplate="{TemplateBinding ContentTemplate}" />
-
-					</Grid>
-
-					<ControlTemplate.Triggers>
-						<Trigger Property="IsExpanded" Value="true">
-							<Setter TargetName="ButtonColumn" Property="Width" Value="0" />
-							<Setter TargetName="TagsColumn" Property="Width" Value="150" />
-
-							<Trigger.EnterActions>
-								<BeginStoryboard>
-									<Storyboard>
-										<DoubleAnimation
-											Storyboard.TargetName="MainGrid"
-											Storyboard.TargetProperty="Width"
-											To="400"
-											Duration="0:00:00.150">
-											<DoubleAnimation.EasingFunction>
-												<SineEase EasingMode="EaseOut" />
-											</DoubleAnimation.EasingFunction>
-										</DoubleAnimation>
-									</Storyboard>
-								</BeginStoryboard>
-							</Trigger.EnterActions>
-							<Trigger.ExitActions>
-								<BeginStoryboard>
-									<Storyboard>
-										<DoubleAnimation
-											Storyboard.TargetName="MainGrid"
-											Storyboard.TargetProperty="Width"
-											To="250"
-											Duration="0:00:00.250">
-											<DoubleAnimation.EasingFunction>
-												<SineEase EasingMode="EaseOut" />
-											</DoubleAnimation.EasingFunction>
-										</DoubleAnimation>
-									</Storyboard>
-								</BeginStoryboard>
-							</Trigger.ExitActions>
-						</Trigger>
-					</ControlTemplate.Triggers>
-				</ControlTemplate>
-			</Expander.Template>
-		</Expander>
-
+		<ListBox
+			x:Name="ResultsList"
+			Grid.Row="1"
+			ItemsSource="{Binding Results}"
+			KeyDown="OnResultsListKeyDown"
+			MouseDoubleClick="ResultsListDoubleClicked"
+			ScrollViewer.VerticalScrollBarVisibility="Visible"
+			SelectedItem="{Binding SelectedItem}">
+			<ListBox.ItemContainerStyle>
+				<Style
+					BasedOn="{StaticResource WpfUtilsListBoxItem}"
+					TargetType="{x:Type ListBoxItem}">
+					<Setter Property="Template" Value="{StaticResource ListBoxItemTemplate}" />
+				</Style>
+			</ListBox.ItemContainerStyle>
+		</ListBox>
 
 		<Border
-			Grid.Row="1"
+			Grid.Row="2"
 			Margin="0,2,0,0"
 			Style="{DynamicResource WpfUtilsControlBorder}">
 

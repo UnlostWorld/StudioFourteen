@@ -39,7 +39,7 @@ public class StudioService : ServiceBase
 
 		// Go fast
 		this.OpenStudio();
-		this.Services.Panels.SetIsOpen<LibraryWindow>(true);
+		this.Services.Panels.SetIsOpen<GearWindow>(true);
 	}
 
 	public void OpenStudio() => Task.Run(async () => await this.OpenStudioAsync());

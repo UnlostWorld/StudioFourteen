@@ -1,5 +1,7 @@
 ﻿namespace ScreenshotStudio.Library;
 
+using ScreenshotStudio.Library.Filters;
+using ScreenshotStudio.Services;
 using ScreenshotStudio.Tags;
 using ScreenshotStudio.Windows;
 using System;
@@ -22,51 +24,32 @@ public partial class QuickSearch : PanelWindow
 
 	private Type? targetType;
 	private object? selectedItem;
-	private string searchTitle = "Library Search";
-	private TagCollection? availableTags;
-	private TagCollection tags = new();
 	private Action<object, bool>? selectionChanged;
 	private bool isLoading = false;
-	private string search = string.Empty;
-	private bool isAllTagsExpanded = true;
 
 	public QuickSearch()
 	{
 		instance = this;
 		this.InitializeComponent();
-		this.Tags.CollectionChanged += this.OnTagsChanged;
+		this.TagFilter.Tags.CollectionChanged += this.OnTagsChanged;
 		this.searchQueue = new(this.SearchAsync, 250);
 	}
 
-	public FastObservableCollection<object> Results { get; init; } = new();
+	[AutoNotify] public FastObservableCollection<object> Results { get; init; } = new();
+	[AutoNotify] public TagFilter TagFilter { get; init; } = new();
+	[AutoNotify] public SearchQueryFilter SearchQueryFilter { get; init; } = new();
+	[AutoNotify] public TypeFilter? TypeFilter { get; protected set; }
+	[AutoNotify] public TagCollection AvailableTags { get; init; } = new();
+	[AutoNotify] public string SearchTitle { get; set; } = "Library Search";
 
-	public TagCollection? AvailableTags
+	public string? Search
 	{
-		get => this.availableTags;
+		get => this.SearchQueryFilter.Search;
 		set
 		{
-			this.availableTags = value;
+			this.SearchQueryFilter.Search = value;
 			this.NotifyPropertyChanged();
-		}
-	}
-
-	public TagCollection Tags
-	{
-		get => this.tags;
-		set
-		{
-			this.tags = value;
-			this.NotifyPropertyChanged();
-		}
-	}
-
-	public string SearchTitle
-	{
-		get => this.searchTitle;
-		set
-		{
-			this.searchTitle = value;
-			this.NotifyPropertyChanged();
+			this.searchQueue.Invoke();
 		}
 	}
 
@@ -80,27 +63,6 @@ public partial class QuickSearch : PanelWindow
 			if (value != null && !this.isLoading)
 				this.selectionChanged?.Invoke(value, false);
 
-			this.NotifyPropertyChanged();
-		}
-	}
-
-	public string Search
-	{
-		get => this.search;
-		set
-		{
-			this.search = value;
-			this.NotifyPropertyChanged();
-			this.searchQueue.Invoke();
-		}
-	}
-
-	public bool IsAllTagsExpanded
-	{
-		get => this.isAllTagsExpanded;
-		set
-		{
-			this.isAllTagsExpanded = value;
 			this.NotifyPropertyChanged();
 		}
 	}
@@ -145,13 +107,10 @@ public partial class QuickSearch : PanelWindow
 			}
 		};
 
-		this.Tags.Replace(defaultTags);
-		this.NotifyPropertyChanged(nameof(QuickSearch.Tags));
+		this.TagFilter.Tags.Replace(defaultTags);
+		this.TypeFilter = new(typeof(T));
 
 		this.SearchTitle = title;
-
-		////this.AvailableTags = this.Services.Library.GetAvailableTags<T>();
-		this.NotifyPropertyChanged(nameof(QuickSearch.AvailableTags));
 
 		this.SelectedItem = current;
 		this.isLoading = false;
@@ -190,36 +149,33 @@ public partial class QuickSearch : PanelWindow
 		if (this.targetType == null)
 			return;
 
-		await this.Dispatcher.MainThread();
-		TagCollection tags = new(this.Tags);
-		string[] query = SearchUtility.ToQuery(this.Search);
-
 		await Dispatch.NonUiThread();
 
-		// TODO!
-		/*List<ILibraryItem> results = this.Services.Library.Search(new[] { this.targetType }, tags, query);
+		List<FilterBase> filters = new List<FilterBase>();
+		filters.Add(this.TagFilter);
+		filters.Add(this.SearchQueryFilter);
+
+		if (this.TypeFilter != null)
+			filters.Add(this.TypeFilter);
+
+		this.Services.Library.Root.FilterEntries(filters.ToArray());
+		IEnumerable<IEntryBase>? results = this.Services.Library.Root.GetFilteredEntries(true);
 
 		await this.Dispatcher.MainThread();
 
 		this.isLoading = true;
-		this.Results.Replace(results);
-		this.ResultsList.ScrollIntoView(this.SelectedItem);
-		this.isLoading = false;*/
-	}
 
-	private void OnTagClicked(object sender, RoutedEventArgs e)
-	{
-		if (sender is Button btn && btn.DataContext is Tag tag)
+		TagCollection tags = new();
+		this.Services.Library.Root.GetAllTags(ref tags);
+		this.AvailableTags.Replace(tags);
+
+		if (results != null)
 		{
-			if (this.Tags.Contains(tag))
-			{
-				this.Tags.Remove(tag);
-			}
-			else
-			{
-				this.Tags.Add(tag);
-			}
+			this.Results.Replace(results);
+			this.ResultsList.ScrollIntoView(this.SelectedItem);
 		}
+
+		this.isLoading = false;
 	}
 
 	private void OnConfirmClicked(object sender, RoutedEventArgs? e)
@@ -230,14 +186,6 @@ public partial class QuickSearch : PanelWindow
 			return;
 
 		this.selectionChanged?.Invoke(this.selectedItem, true);
-	}
-
-	private void OnTagFilterDone(object sender, RoutedEventArgs e)
-	{
-		if (this.Results.Count > 0)
-			this.SelectedItem = this.Results[0];
-
-		this.ResultsList.Focus();
 	}
 
 	private void OnResultsListKeyDown(object sender, KeyEventArgs e)
