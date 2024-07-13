@@ -1,17 +1,60 @@
 ﻿namespace ScreenshotStudio.Services;
 
-using ScreenshotStudio.Library;
-using ScreenshotStudio.Plugin;
-using ScreenshotStudio.Tags;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using ScreenshotStudio.Structs;
-using Serilog;
+using System.Collections.Generic;
 
 public class ActorAppearanceBackupService : ServiceBase
 {
+	private readonly Dictionary<ushort, Appearance> backup = new();
+
+	public unsafe bool CanRestore(Actor* actor)
+	{
+		ushort index = actor->GameObject.ObjectIndex;
+		return this.backup.ContainsKey(index);
+	}
+
+	public unsafe void Backup(Actor actor)
+	{
+		ushort index = actor.GameObject.ObjectIndex;
+
+		if (this.backup.ContainsKey(index))
+			return;
+
+		this.backup.Add(index, new(actor.DrawData));
+	}
+
+	public unsafe void Backup(Actor* actor)
+	{
+		ushort index = actor->GameObject.ObjectIndex;
+
+		if (this.backup.ContainsKey(index))
+			return;
+
+		this.backup.Add(index, new(actor->DrawData));
+	}
+
+	public unsafe void Restore(Actor* actor)
+	{
+		ushort index = actor->GameObject.ObjectIndex;
+
+		if (!this.backup.ContainsKey(index))
+			return;
+
+		this.backup[index].Apply(actor, Actor.UpdateSource.Restore);
+		this.backup.Remove(index);
+	}
+
+	public class Appearance(ActorDrawData drawData)
+	{
+		public readonly ActorDrawData DrawData = drawData;
+
+		public unsafe void Apply(Actor* actor, Actor.UpdateSource source)
+		{
+			actor->UpdateCustomize(this.DrawData.Customize, source);
+			actor->UpdateEquipment(this.DrawData.Equipment, source);
+		}
+	}
+
 	/*private readonly CurrentActorsLibraryProvider provider = new();
 
 	public override Task Start()

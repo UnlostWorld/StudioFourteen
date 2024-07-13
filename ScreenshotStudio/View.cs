@@ -2,14 +2,10 @@
 
 using ScreenshotStudio.Services;
 using Serilog;
-using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Markup;
-using System.Windows.Media;
 
 public class View : UserControl, IAutoNotify
 {
@@ -33,6 +29,8 @@ public class View : UserControl, IAutoNotify
 	}
 
 	public event PropertyChangedEventHandler? PropertyChanged;
+
+	public ServiceManager Services => ServiceManager.Instance;
 
 	public void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
 	{

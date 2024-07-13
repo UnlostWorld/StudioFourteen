@@ -23,6 +23,7 @@ public partial class ActorAppearanceActions : View
 	public unsafe Actor* Actor { get; private set; }
 	[AutoNotify] public unsafe string? ActorName => this.HasValidTarget ? this.Actor->Name : "Nobody";
 	[AutoNotify] public bool CanApply => this.Appearance != null && this.HasValidTarget;
+	[AutoNotify] public unsafe bool CanRevert => this.Services.ActorAppearanceBackup.CanRestore(this.Actor);
 
 	[AutoNotify]
 	public unsafe bool HasValidTarget
@@ -52,6 +53,12 @@ public partial class ActorAppearanceActions : View
 
 	private void OnLoaded(object sender, RoutedEventArgs e)
 	{
+		LibraryWindow? window = this.FindParent<LibraryWindow>();
+		if (window != null)
+		{
+			window.ItemDoubleClicked += this.OnItemDoubleClicked;
+		}
+
 		if (DalamudServices.Framework != null)
 		{
 			DalamudServices.Framework.Update += this.OnFrameworkUpdate;
@@ -60,9 +67,26 @@ public partial class ActorAppearanceActions : View
 
 	private void OnUnloaded(object sender, RoutedEventArgs e)
 	{
+		LibraryWindow? window = this.FindParent<LibraryWindow>();
+		if (window != null)
+		{
+			window.ItemDoubleClicked += this.OnItemDoubleClicked;
+		}
+
 		if (DalamudServices.Framework != null)
 		{
 			DalamudServices.Framework.Update -= this.OnFrameworkUpdate;
+		}
+	}
+
+	private unsafe void OnItemDoubleClicked(IEntryBase entry)
+	{
+		if (!this.CanApply)
+			return;
+
+		if (entry is IActorAppearance appearance)
+		{
+			appearance.Apply(this.Actor);
 		}
 	}
 
@@ -72,5 +96,10 @@ public partial class ActorAppearanceActions : View
 			return;
 
 		this.Appearance.Apply(this.Actor);
+	}
+
+	private unsafe void OnRevertClicked(object sender, RoutedEventArgs e)
+	{
+		this.Services.ActorAppearanceBackup.Restore(this.Actor);
 	}
 }

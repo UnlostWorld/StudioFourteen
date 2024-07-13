@@ -11,7 +11,6 @@ namespace ScreenshotStudio.Structs;
 using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
-using ScreenshotStudio.GameData.Excel;
 using ScreenshotStudio.Utilities;
 using System;
 using System.Runtime.InteropServices;
@@ -26,6 +25,13 @@ public struct Actor
 	[FieldOffset(0x1AC)] public uint ModelId;
 	[FieldOffset(0x708)] public ActorDrawData DrawData;
 	[FieldOffset(0x89E)] public bool IsHatHidden;
+
+	public enum UpdateSource
+	{
+		Interface,
+		Library,
+		Restore,
+	}
 
 	public unsafe string? Name
 	{
@@ -43,8 +49,11 @@ public struct Actor
 		return this.DrawData.Customize.GetValue(option);
 	}
 
-	public bool SetCustomizeValue(CustomizeIndex option, byte value, bool apply = true)
+	public bool SetCustomizeValue(CustomizeIndex option, byte value, UpdateSource source, bool apply = true)
 	{
+		if (source != UpdateSource.Restore)
+			ServiceManager.Instance.ActorAppearanceBackup.Backup(this);
+
 		this.DrawData.Customize.SetValue(option, value);
 
 		bool needsRedraw = option == CustomizeIndex.Race;
@@ -54,42 +63,63 @@ public struct Actor
 
 		if (apply)
 		{
-			this.UpdateCustomize(needsRedraw);
+			this.UpdateCustomize(needsRedraw, source);
 		}
 
 		return needsRedraw;
 	}
 
-	public unsafe void UpdateEquipment(Equipment.EquipIndex index, ItemEquip item)
+	public unsafe void UpdateCustomize(Customize customize, UpdateSource source)
 	{
+		Threads.RunOnFrameworkThread(this, (p) => ((Actor*)p)->UpdateCustomizeInternal(customize, source));
+	}
+
+	public unsafe void UpdateCustomize(bool redraw, UpdateSource source)
+	{
+		Threads.RunOnFrameworkThread(this, (p) => ((Actor*)p)->UpdateCustomizeInternal(redraw, source));
+	}
+
+	public unsafe void UpdateEquipment(Equipment equipment, UpdateSource source)
+	{
+		if (source != UpdateSource.Restore)
+			ServiceManager.Instance.ActorAppearanceBackup.Backup(this);
+
+		fixed (ActorDrawData* drawData = &this.DrawData)
+		{
+			for (int i = 0; i < (int)Equipment.EquipIndex.Count; i++)
+			{
+				Equipment.EquipIndex index = (Equipment.EquipIndex)i;
+				ActorDrawDataExtensions.ChangeEquip(drawData, index, equipment.GetItem(index), true);
+			}
+		}
+	}
+
+	public unsafe void UpdateEquipment(Equipment.EquipIndex index, ItemEquip item, UpdateSource source)
+	{
+		if (source != UpdateSource.Restore)
+			ServiceManager.Instance.ActorAppearanceBackup.Backup(this);
+
 		fixed (ActorDrawData* drawData = &this.DrawData)
 		{
 			ActorDrawDataExtensions.ChangeEquip(drawData, index, (ItemEquip)item, true);
 		}
 	}
 
-	public unsafe void UpdateCustomize(Customize customize)
+	private unsafe void UpdateCustomizeInternal(Customize customize, UpdateSource source)
 	{
-		Threads.RunOnFrameworkThread(this, (p) => ((Actor*)p)->UpdateCustomizeInternal(customize));
-	}
+		if (source != UpdateSource.Restore)
+			ServiceManager.Instance.ActorAppearanceBackup.Backup(this);
 
-	public unsafe void UpdateCustomize(bool redraw)
-	{
-		Threads.RunOnFrameworkThread(this, (p) => ((Actor*)p)->UpdateCustomizeInternal(redraw));
-	}
-
-	private unsafe void UpdateCustomizeInternal(Customize customize)
-	{
 		Threads.VerifyFrameworkThread();
 
 		// compare race, tribe, model type, and gender!
 		bool redraw = false;
 
 		this.DrawData.Customize.Import(customize);
-		this.UpdateCustomizeInternal(redraw);
+		this.UpdateCustomizeInternal(redraw, source);
 	}
 
-	private unsafe void UpdateCustomizeInternal(bool redraw)
+	private unsafe void UpdateCustomizeInternal(bool redraw, UpdateSource source)
 	{
 		Threads.VerifyFrameworkThread();
 

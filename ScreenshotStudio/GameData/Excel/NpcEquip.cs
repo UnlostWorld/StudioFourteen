@@ -1,15 +1,12 @@
 ﻿namespace ScreenshotStudio.GameData.Excel;
 
-using Anamnesis.Utils;
-using Dalamud.Game.ClientState.Objects.Enums;
-using FFXIVClientStructs.FFXIV.Client.Game.Event;
 using Lumina;
 using Lumina.Data;
 using Lumina.Excel;
-using ScreenshotStudio.Library;
 using ScreenshotStudio.Structs;
 using System.Text;
 using static ScreenshotStudio.Structs.Equipment;
+using ScreenshotStudio.Structs.Extensions;
 
 [Sheet("NpcEquip", 0xe91c87ba)]
 public class NpcEquip : StudioExcelRow
@@ -109,7 +106,7 @@ public class NpcEquipment
 		if (b != null && b.Value.Base > 0)
 			toUse = b.Value;
 
-		actor->UpdateEquipment(index, toUse);
+		actor->UpdateEquipment(index, toUse, Actor.UpdateSource.Library);
 	}
 
 	private ItemEquip ParseItem(RowParser parser, int column)

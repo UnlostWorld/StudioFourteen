@@ -7,6 +7,7 @@ using Lumina.Excel;
 using ScreenshotStudio.GameData.Sheets;
 using ScreenshotStudio.Structs;
 using System.Text;
+using ScreenshotStudio.Structs.Extensions;
 
 [Sheet("ENpcBase", 0x464052cd)]
 public class EventNpc : LibraryExcelRow
@@ -64,7 +65,7 @@ public class EventNpc : LibraryExcelRow
 
 	public unsafe void Apply(Actor* actor)
 	{
-		actor->UpdateCustomize(this.Customize);
+		actor->UpdateCustomize(this.Customize, Actor.UpdateSource.Library);
 		this.Equipment.ApplyToActor(actor, this.NpcEquip?.Equipment);
 	}
 

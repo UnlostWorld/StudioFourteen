@@ -11,6 +11,7 @@ using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using ScreenshotStudio.Utilities;
 using FFXIVClientStructs.FFXIV.Common.Lua;
+using ScreenshotStudio.Structs.Extensions;
 
 public partial class CustomizeWindow : ActorWindow
 {
@@ -347,6 +348,6 @@ public partial class CustomizeWindow : ActorWindow
 	}
 
 	public unsafe byte GetCustomizeValue(CustomizeIndex option) => this.Actor->GetCustomizeValue(option);
-	public unsafe bool SetCustomizeValue(CustomizeIndex option, byte value, bool apply = true) => this.Actor->SetCustomizeValue(option, value, apply);
-	public unsafe void UpdateCustomize(bool redraw) => this.Actor->UpdateCustomize(redraw);
+	public unsafe bool SetCustomizeValue(CustomizeIndex option, byte value, bool apply = true) => this.Actor->SetCustomizeValue(option, value, Structs.Actor.UpdateSource.Interface, apply);
+	public unsafe void UpdateCustomize(bool redraw) => this.Actor->UpdateCustomize(redraw, Structs.Actor.UpdateSource.Interface);
 }

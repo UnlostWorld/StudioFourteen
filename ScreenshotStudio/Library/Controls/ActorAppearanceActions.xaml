@@ -6,6 +6,7 @@
 	xmlns:local="clr-namespace:ScreenshotStudio.Library.Controls"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:studio="clr-namespace:ScreenshotStudio"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	d:DesignWidth="150"
 	Loaded="OnLoaded"
@@ -14,9 +15,23 @@
 
 	<Grid x:Name="ContentArea">
 		<Border Style="{DynamicResource WpfUtilsControlBorder}">
-			<StackPanel>
+			<Grid>
+
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition />
+				</Grid.ColumnDefinitions>
 
 				<Button
+					Grid.Column="0"
+					Click="OnRevertClicked"
+					IsEnabled="{Binding CanRevert}">
+					<wpfUtils:IconBlock Icon="Undo" />
+				</Button>
+
+				<Button
+					Grid.Column="2"
 					Click="OnApplyClicked"
 					IsEnabled="{Binding CanApply}">
 					<Button.Content>
@@ -26,7 +41,7 @@
 						</TextBlock>
 					</Button.Content>
 				</Button>
-			</StackPanel>
+			</Grid>
 		</Border>
 	</Grid>
 

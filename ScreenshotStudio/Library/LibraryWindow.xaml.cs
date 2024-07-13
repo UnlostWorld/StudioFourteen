@@ -15,6 +15,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using WpfUtils;
+using WpfUtils.Commands;
 using WpfUtils.Extensions;
 using WpfUtils.Utils;
 using static FFXIVClientStructs.FFXIV.Client.LayoutEngine.LayoutManager;
@@ -34,6 +35,10 @@ public partial class LibraryWindow : PanelWindow
 		// Remember?
 		this.currentTab = this.Tabs[0];
 	}
+
+	public delegate void ItemDoubleClickedDelegate(IEntryBase entry);
+
+	public event ItemDoubleClickedDelegate? ItemDoubleClicked;
 
 	[AutoNotify]
 	public FastObservableCollection<LibraryTab> Tabs { get; init; } = new()
@@ -143,6 +148,10 @@ public partial class LibraryWindow : PanelWindow
 		{
 			this.Path.Add(group);
 			this.searchQueue.InvokeImmediate();
+		}
+		else if (this.SelectedEntry is IEntryBase entry)
+		{
+			this.ItemDoubleClicked?.Invoke(entry);
 		}
 	}
 
