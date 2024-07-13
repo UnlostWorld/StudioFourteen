@@ -50,16 +50,10 @@ public abstract class NpcBase : LibraryExcelRow, IActorAppearance
 			}
 		}
 
-		////this.Name = $"{this.NpcType} NPC #{this.RowId}";
-
 		if (name != null)
 		{
 			this.Tags.Add("Named");
 			this.Name = name;
-		}
-		else
-		{
-			this.Tags.Add("Unnamed");
 		}
 	}
 
