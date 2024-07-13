@@ -26,9 +26,18 @@
 				<Button
 					Grid.Column="0"
 					Click="OnRevertClicked"
-					IsEnabled="{Binding CanRevert}">
+					IsEnabled="{Binding CanRevert}"
+					ToolTip="{DynamicResource LOC_Revert}">
 					<wpfUtils:IconBlock Icon="Undo" />
 				</Button>
+
+				<ToggleButton
+					Grid.Column="1"
+					MinWidth="28"
+					IsChecked="{Binding IsLive}"
+					ToolTip="{DynamicResource LOC_Library_LivePreview}">
+					<wpfUtils:IconBlock Icon="Bolt" />
+				</ToggleButton>
 
 				<Button
 					Grid.Column="2"

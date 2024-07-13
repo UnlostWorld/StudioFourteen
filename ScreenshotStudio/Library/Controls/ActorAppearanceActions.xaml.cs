@@ -5,6 +5,7 @@ using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Structs;
 using ScreenshotStudio.Windows;
+using System;
 using System.Windows;
 
 public partial class ActorAppearanceActions : View
@@ -13,7 +14,7 @@ public partial class ActorAppearanceActions : View
 		nameof(ActorAppearanceActions.Appearance),
 		typeof(IActorAppearance),
 		typeof(ActorAppearanceActions),
-		new(null));
+		new(null, OnAppearanceChanged));
 
 	public ActorAppearanceActions()
 	{
@@ -24,6 +25,7 @@ public partial class ActorAppearanceActions : View
 	[AutoNotify] public unsafe string? ActorName => this.HasValidTarget ? this.Actor->Name : "Nobody";
 	[AutoNotify] public bool CanApply => this.Appearance != null && this.HasValidTarget;
 	[AutoNotify] public unsafe bool CanRevert => this.Services.ActorAppearanceBackup.CanRestore(this.Actor);
+	[AutoNotify] public bool IsLive { get; set; }
 
 	[AutoNotify]
 	public unsafe bool HasValidTarget
@@ -49,6 +51,17 @@ public partial class ActorAppearanceActions : View
 	protected unsafe void OnFrameworkUpdate(IFramework framework)
 	{
 		this.Actor = ActorWindow.GetTarget();
+	}
+
+	private static unsafe void OnAppearanceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+	{
+		if (d is ActorAppearanceActions actionsView)
+		{
+			if (actionsView.IsLive && actionsView.Appearance != null)
+			{
+				actionsView.Appearance.Apply(actionsView.Actor);
+			}
+		}
 	}
 
 	private void OnLoaded(object sender, RoutedEventArgs e)
@@ -101,5 +114,6 @@ public partial class ActorAppearanceActions : View
 	private unsafe void OnRevertClicked(object sender, RoutedEventArgs e)
 	{
 		this.Services.ActorAppearanceBackup.Restore(this.Actor);
+		this.IsLive = false;
 	}
 }

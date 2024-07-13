@@ -60,6 +60,8 @@
 	<sys:String x:Key="LOC_Library_Characters">Characters</sys:String>
 	<sys:String x:Key="LOC_Library_Scenes">Scenes</sys:String>
 
+	<sys:String x:Key="LOC_Library_LivePreview">Automatically apply selected item to target</sys:String>
+
 	<sys:String x:Key="LOC_Library_DataSheetLibrarySourceDesc">Files from the local game installation.</sys:String>
 
 	<sys:String x:Key="LOC_SheetItem">Items</sys:String>
