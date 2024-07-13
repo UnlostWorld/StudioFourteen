@@ -3,13 +3,12 @@
 using ScreenshotStudio.Library;
 using ScreenshotStudio.Library.Sources;
 using ScreenshotStudio.Tags;
-using System;
 using WpfUtils;
 
 public abstract class LibraryExcelRow : StudioExcelRow, IEntryBase
 {
 	public TagCollection Tags { get; init; } = new();
-	public string? Name { get; protected set; }
+	public string? Name { get; set; }
 	public bool IsVisible { get; set; }
 	public SourceBase? Source { get; set; }
 	public string? SourceInfo { get; set; }
@@ -32,5 +31,11 @@ public abstract class LibraryExcelRow : StudioExcelRow, IEntryBase
 		return true;
 	}
 
-	public virtual bool Search(string[]? query) => SearchUtility.Matches(this.RowId, query);
+	public virtual bool Search(string[]? query)
+	{
+		bool result = false;
+		result |= SearchUtility.Matches(this.RowId, query);
+		result |= SearchUtility.Matches(this.Name, query);
+		return result;
+	}
 }

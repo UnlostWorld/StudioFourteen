@@ -11,6 +11,7 @@ namespace ScreenshotStudio.Structs;
 using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
+using ScreenshotStudio.GameData.Excel;
 using ScreenshotStudio.Utilities;
 using System;
 using System.Runtime.InteropServices;
@@ -22,7 +23,7 @@ public struct Actor
 	[FieldOffset(0x88)] public byte ObjectID;
 	[FieldOffset(0x100)] public unsafe ActorModel* Model;
 	[FieldOffset(0x118)] public RenderMode RenderMode;
-	[FieldOffset(0x1AC)] public uint ModelId;
+	[FieldOffset(0x1AC)] public uint ModelCharaRowId;
 	[FieldOffset(0x708)] public ActorDrawData DrawData;
 	[FieldOffset(0x89E)] public bool IsHatHidden;
 
@@ -41,6 +42,24 @@ public struct Actor
 			{
 				return ptr == null ? null : Marshal.PtrToStringUTF8((IntPtr)ptr);
 			}
+		}
+	}
+
+	public void UpdateModel(ModelChara modelChara, UpdateSource source, bool apply = true)
+	{
+		this.UpdateModel(modelChara.RowId, source, apply);
+	}
+
+	public void UpdateModel(uint modelCharaRowId, UpdateSource source, bool apply = true)
+	{
+		if (source != UpdateSource.Restore)
+			ServiceManager.Instance.ActorAppearanceBackup.Backup(this);
+
+		this.ModelCharaRowId = modelCharaRowId;
+
+		if (apply)
+		{
+			this.UpdateCustomize(true, source);
 		}
 	}
 
@@ -69,9 +88,9 @@ public struct Actor
 		return needsRedraw;
 	}
 
-	public unsafe void UpdateCustomize(Customize customize, UpdateSource source)
+	public unsafe void UpdateCustomize(Customize customize, UpdateSource source, bool redraw = false)
 	{
-		Threads.RunOnFrameworkThread(this, (p) => ((Actor*)p)->UpdateCustomizeInternal(customize, source));
+		Threads.RunOnFrameworkThread(this, (p) => ((Actor*)p)->UpdateCustomizeInternal(customize, redraw, source));
 	}
 
 	public unsafe void UpdateCustomize(bool redraw, UpdateSource source)
@@ -105,15 +124,12 @@ public struct Actor
 		}
 	}
 
-	private unsafe void UpdateCustomizeInternal(Customize customize, UpdateSource source)
+	private unsafe void UpdateCustomizeInternal(Customize customize, bool redraw, UpdateSource source)
 	{
 		if (source != UpdateSource.Restore)
 			ServiceManager.Instance.ActorAppearanceBackup.Backup(this);
 
 		Threads.VerifyFrameworkThread();
-
-		// compare race, tribe, model type, and gender!
-		bool redraw = false;
 
 		this.DrawData.Customize.Import(customize);
 		this.UpdateCustomizeInternal(redraw, source);

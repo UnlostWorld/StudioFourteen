@@ -2,6 +2,7 @@
 
 using Lumina.Data;
 using Lumina.Excel;
+using ScreenshotStudio.Tags;
 
 [Sheet("ModelChara", 0x8d35f5ed)]
 public partial class ModelChara : StudioExcelRow
@@ -19,5 +20,17 @@ public partial class ModelChara : StudioExcelRow
 		this.Model = parser.ReadColumn<ushort>(1);
 		this.Base = parser.ReadColumn<byte>(2);
 		this.Variant = parser.ReadColumn<byte>(3);
+	}
+
+	public void GetTags(TagCollection tags)
+	{
+		if (this.Type == 1)
+		{
+			tags.Add("Humanoid");
+		}
+		else
+		{
+			tags.Add("Monster");
+		}
 	}
 }

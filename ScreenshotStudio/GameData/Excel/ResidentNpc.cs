@@ -10,8 +10,10 @@ using WpfUtils;
 public class ResidentNpc : LibraryExcelRow, IActorAppearance
 {
 	public string? Description { get; protected set; }
-
 	public EventNpc? EventNpc { get; protected set; }
+
+	// don't show duplicates in the library
+	public override bool IsValid => base.IsValid && this.EventNpc?.DuplicateRow == null;
 
 	public override void PopulateData(RowParser parser, Lumina.GameData gameData, Language language)
 	{
@@ -27,6 +29,12 @@ public class ResidentNpc : LibraryExcelRow, IActorAppearance
 		if (this.Name != null)
 		{
 			this.Tags.Add("Named");
+
+			if (this.EventNpc != null)
+			{
+				this.EventNpc.Name = this.Name;
+				this.EventNpc.Tags.Add("Named");
+			}
 		}
 		else
 		{

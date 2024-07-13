@@ -20,7 +20,7 @@ public class ActorAppearanceBackupService : ServiceBase
 		if (this.backup.ContainsKey(index))
 			return;
 
-		this.backup.Add(index, new(actor.DrawData));
+		this.backup.Add(index, new(actor.DrawData, actor.ModelCharaRowId));
 	}
 
 	public unsafe void Backup(Actor* actor)
@@ -30,7 +30,7 @@ public class ActorAppearanceBackupService : ServiceBase
 		if (this.backup.ContainsKey(index))
 			return;
 
-		this.backup.Add(index, new(actor->DrawData));
+		this.backup.Add(index, new(actor->DrawData, actor->ModelCharaRowId));
 	}
 
 	public unsafe void Restore(Actor* actor)
@@ -44,13 +44,17 @@ public class ActorAppearanceBackupService : ServiceBase
 		this.backup.Remove(index);
 	}
 
-	public class Appearance(ActorDrawData drawData)
+	public class Appearance(ActorDrawData drawData, uint modelId)
 	{
 		public readonly ActorDrawData DrawData = drawData;
+		public uint ModelId = modelId;
 
 		public unsafe void Apply(Actor* actor, Actor.UpdateSource source)
 		{
-			actor->UpdateCustomize(this.DrawData.Customize, source);
+			bool redraw = this.ModelId != actor->ModelCharaRowId;
+
+			actor->UpdateModel(this.ModelId, source, false);
+			actor->UpdateCustomize(this.DrawData.Customize, source, redraw);
 			actor->UpdateEquipment(this.DrawData.Equipment, source);
 		}
 	}
