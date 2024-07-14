@@ -59,6 +59,8 @@ public class ClassJobCategory : ExcelRow
 	{
 		TagCollection tags = new();
 
+		int numJobs = 0;
+		ClassJob? exclusiveJob = null;
 		for (var i = 1; i < (int)ClassJob.ClassJobRows.Count; i++)
 		{
 			if (this.classJobs[i - 1])
@@ -71,8 +73,15 @@ public class ClassJobCategory : ExcelRow
 					continue;
 				}
 
+				numJobs++;
 				tags.Add(classJob.ToTags());
+				exclusiveJob = classJob;
 			}
+		}
+
+		if (numJobs == 1 && exclusiveJob != null)
+		{
+			tags.Add(exclusiveJob.ToExclusiveTag());
 		}
 
 		// Special tags

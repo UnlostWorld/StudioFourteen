@@ -6,6 +6,7 @@ namespace ScreenshotStudio.GameData.Excel;
 using Lumina.Data;
 using Lumina.Excel;
 using ScreenshotStudio.Tags;
+using System.Xml.Linq;
 
 [Sheet("ClassJob", 0xe62cb7ae)]
 public partial class ClassJob : StudioExcelRow
@@ -118,5 +119,13 @@ public partial class ClassJob : StudioExcelRow
 		}
 
 		return tags;
+	}
+
+	public Tag? ToExclusiveTag()
+	{
+		if (this.NameEnglish == null)
+			return null;
+
+		return Tag.Get($"{this.NameEnglish} exclusive").WithAlias($"{this.Abbreviation} exclusive");
 	}
 }
