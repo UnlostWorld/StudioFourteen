@@ -2,18 +2,16 @@
 
 using ScreenshotStudio.GameData;
 using ScreenshotStudio.GameData.Excel;
-using ScreenshotStudio.GameData.Sheets;
-
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Controls;
 using WpfUtils.DependencyProperties;
 
-using FacialFeatures = Structs.Customize.FacialFeatures;
+using CustomizeFacialFeatures = FFXIVClientStructs.FFXIV.Client.Game.Character.CustomizeDataExtensions.FacialFeatures;
 
 public partial class CustomizeFacialFeaturesOption : UserControl
 {
-	public static IBind<FacialFeatures> ValueDp = Binder.Register<FacialFeatures, CustomizeFacialFeaturesOption>(nameof(Value), OnValueChanged);
+	public static IBind<CustomizeFacialFeatures> ValueDp = Binder.Register<CustomizeFacialFeatures, CustomizeFacialFeaturesOption>(nameof(Value), OnValueChanged);
 	public static IBind<CharaMakeType.FacialFeatureOptions?> FacialFeaturesDp = Binder.Register<CharaMakeType.FacialFeatureOptions?, CustomizeFacialFeaturesOption>(nameof(FacialFeatures), OnFeaturesChanged, BindMode.OneWay);
 
 	public CustomizeFacialFeaturesOption()
@@ -24,7 +22,7 @@ public partial class CustomizeFacialFeaturesOption : UserControl
 
 	public ObservableCollection<Option> Options { get; init; } = new();
 
-	public FacialFeatures Value
+	public CustomizeFacialFeatures Value
 	{
 		get => ValueDp.Get(this);
 		set => ValueDp.Set(this, value);
@@ -36,7 +34,7 @@ public partial class CustomizeFacialFeaturesOption : UserControl
 		set => FacialFeaturesDp.Set(this, value);
 	}
 
-	public static void OnValueChanged(CustomizeFacialFeaturesOption sender, FacialFeatures newValue)
+	public static void OnValueChanged(CustomizeFacialFeaturesOption sender, CustomizeFacialFeatures newValue)
 	{
 		foreach (Option op in sender.Options)
 		{
@@ -70,10 +68,10 @@ public partial class CustomizeFacialFeaturesOption : UserControl
 		public event PropertyChangedEventHandler? PropertyChanged;
 
 		public CustomizeFacialFeaturesOption Owner { get; init; }
-		public FacialFeatures Value { get; set; }
+		public CustomizeFacialFeatures Value { get; set; }
 		public ImageReference? Icon { get; set; }
 
-		public bool IsLegacy => this.Value == Structs.Customize.FacialFeatures.LegacyTattoo;
+		public bool IsLegacy => this.Value == CustomizeFacialFeatures.LegacyTattoo;
 
 		public bool IsEnabled
 		{

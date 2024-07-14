@@ -15,6 +15,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 
 public class ItemsSheet : DataSheet<Item>
 {
@@ -22,7 +23,7 @@ public class ItemsSheet : DataSheet<Item>
 
 	private readonly ConcurrentDictionary<string, uint> itemCache = new();
 
-	public Item? Find(ItemSlots slot, ushort modelSet, ushort modelBase, ushort modelVariant)
+	public Item? Find(EquipmentSlot slot, ushort modelSet, ushort modelBase, ushort modelVariant)
 	{
 		if (this.Sheet == null)
 			return null;
@@ -41,7 +42,7 @@ public class ItemsSheet : DataSheet<Item>
 		return this.GetRow(itemRow);
 	}
 
-	public Item? Find(ItemSlots slot, ulong val)
+	public Item? Find(EquipmentSlot slot, ulong val)
 	{
 		if (val == 0)
 			return None;
@@ -49,23 +50,49 @@ public class ItemsSheet : DataSheet<Item>
 		if (val == uint.MaxValue || val == long.MaxValue || val == ulong.MaxValue)
 			return null;
 
-		bool isWeapon = slot == ItemSlots.MainHand || slot == ItemSlots.OffHand;
-		short modelSet;
-		short modelBase;
-		short modelVariant;
+		short modelSet = 0;
+		short modelBase = (short)val;
+		short modelVariant = (short)(val >> 16);
 
-		if (isWeapon)
+		if (modelSet < 0 || modelBase < 0 || modelVariant < 0)
 		{
-			modelSet = (short)val;
-			modelBase = (short)(val >> 16);
-			modelVariant = (short)(val >> 32);
+			this.Log.Warning($"Invalid item value: {val}");
+			return null;
 		}
-		else
+
+		return this.Find(slot, (ushort)modelSet, (ushort)modelBase, (ushort)modelVariant);
+	}
+
+	public Item? Find(WeaponSlot slot, ushort modelSet, ushort modelBase, ushort modelVariant)
+	{
+		if (this.Sheet == null)
+			return null;
+
+		if (modelSet == 0 && modelBase == 0 && modelVariant == 0)
+			return None;
+
+		string lookupKey = slot + "_" + modelSet + "_" + modelBase + "_" + modelVariant;
+		this.itemCache.TryGetValue(lookupKey, out uint itemRow);
+
+		if (itemRow == 0)
 		{
-			modelSet = 0;
-			modelBase = (short)val;
-			modelVariant = (short)(val >> 16);
+			return new DummyItem(modelSet, modelBase, modelVariant);
 		}
+
+		return this.GetRow(itemRow);
+	}
+
+	public Item? Find(WeaponSlot slot, ulong val)
+	{
+		if (val == 0)
+			return None;
+
+		if (val == uint.MaxValue || val == long.MaxValue || val == ulong.MaxValue)
+			return null;
+
+		short modelSet = (short)val;
+		short modelBase = (short)(val >> 16);
+		short modelVariant = (short)(val >> 32);
 
 		if (modelSet < 0 || modelBase < 0 || modelVariant < 0)
 		{
@@ -84,9 +111,13 @@ public class ItemsSheet : DataSheet<Item>
 		sw.Start();
 
 		List<Task> tasks = new();
-		for(int i = 0; i < (int)ItemSlots.SoulCrystal; i++)
+		foreach (EquipmentSlot slot in Enum.GetValues<EquipmentSlot>())
 		{
-			ItemSlots slot = (ItemSlots)i;
+			tasks.Add(Task.Run(() => this.PopulateCache(slot)));
+		}
+
+		foreach (WeaponSlot slot in Enum.GetValues<WeaponSlot>())
+		{
 			tasks.Add(Task.Run(() => this.PopulateCache(slot)));
 		}
 
@@ -100,7 +131,45 @@ public class ItemsSheet : DataSheet<Item>
 		return base.Shutdown();
 	}
 
-	private void PopulateCache(ItemSlots slot)
+	private void PopulateCache(WeaponSlot slot)
+	{
+		if (this.Sheet == null)
+			return;
+
+		foreach (Item tItem in this.Sheet)
+		{
+			// Abort
+			if (!ServiceManager.Instance.GameData.IsAlive)
+				return;
+
+			try
+			{
+				if (!tItem.FitsInSlot(slot))
+					continue;
+
+				string lookupKey = $"{slot}_{tItem.ModelSet}_{tItem.ModelBase}_{tItem.ModelVariant}";
+				if (!this.itemCache.ContainsKey(lookupKey))
+				{
+					this.itemCache.TryAdd(lookupKey, tItem.RowId);
+				}
+
+				if (tItem.HasSubModel)
+				{
+					lookupKey = $"{slot}_{tItem.SubModelSet}_{tItem.SubModelBase}_{tItem.SubModelVariant}";
+					if (!this.itemCache.ContainsKey(lookupKey))
+					{
+						this.itemCache.TryAdd(lookupKey, tItem.RowId);
+					}
+				}
+			}
+			catch (Exception ex)
+			{
+				this.Log.Error(ex, $"Error caching {tItem}");
+			}
+		}
+	}
+
+	private void PopulateCache(EquipmentSlot slot)
 	{
 		if (this.Sheet == null)
 			return;
@@ -114,7 +183,7 @@ public class ItemsSheet : DataSheet<Item>
 			try
 			{
 				// Big old hack, but we prefer the emperors bracelets to the promise bracelets (even though they are the same model)
-				if (slot == ItemSlots.Bracelet && tItem.Name != null && tItem.Name.StartsWith("Promise of"))
+				if (slot == EquipmentSlot.Wrists && tItem.Name != null && tItem.Name.StartsWith("Promise of"))
 					continue;
 
 				if (!tItem.FitsInSlot(slot))

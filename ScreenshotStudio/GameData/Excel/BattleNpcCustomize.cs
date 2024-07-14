@@ -1,23 +1,23 @@
 ﻿namespace ScreenshotStudio.GameData.Excel;
 
 using Dalamud.Game.ClientState.Objects.Enums;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Lumina;
 using Lumina.Data;
 using Lumina.Excel;
-using ScreenshotStudio.Structs;
 
 [Sheet("BNpcCustomize", 0x18f060d4)]
 public class BattleNpcCustomize : StudioExcelRow
 {
-	public Customize Customize { get; private set; }
+	public CustomizeData Customize { get; private set; }
 
 	public override void PopulateData(RowParser parser, GameData gameData, Language language)
 	{
 		base.PopulateData(parser, gameData, language);
 
-		Customize c;
+		CustomizeData c = default;
 
-		for (int i = 0; i < Customize.NumOptions; i++)
+		for (int i = 0; i < CustomizeDataExtensions.NumOptions; i++)
 		{
 			CustomizeIndex index = (CustomizeIndex)i;
 			byte val = parser.ReadColumn<byte>(i);

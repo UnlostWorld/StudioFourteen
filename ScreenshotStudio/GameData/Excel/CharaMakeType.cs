@@ -7,6 +7,7 @@ namespace ScreenshotStudio.GameData.Excel;
 
 using Anamnesis.Actor.Utilities;
 using Dalamud.Game.ClientState.Objects.Enums;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Lumina.Data;
 using Lumina.Excel;
 using ScreenshotStudio.GameData.Sheets;
@@ -149,18 +150,18 @@ public class CharaMakeType : StudioExcelRow
 				this.FacialFeatureByFace[i].Options[j] = option;
 			}
 
-			this.FacialFeatureByFace[i].Options[0].Value = Customize.FacialFeatures.First;
-			this.FacialFeatureByFace[i].Options[1].Value = Customize.FacialFeatures.Second;
-			this.FacialFeatureByFace[i].Options[2].Value = Customize.FacialFeatures.Third;
-			this.FacialFeatureByFace[i].Options[3].Value = Customize.FacialFeatures.Fourth;
-			this.FacialFeatureByFace[i].Options[4].Value = Customize.FacialFeatures.Fifth;
-			this.FacialFeatureByFace[i].Options[5].Value = Customize.FacialFeatures.Sixth;
-			this.FacialFeatureByFace[i].Options[6].Value = Customize.FacialFeatures.Seventh;
+			this.FacialFeatureByFace[i].Options[0].Value = CustomizeDataExtensions.FacialFeatures.First;
+			this.FacialFeatureByFace[i].Options[1].Value = CustomizeDataExtensions.FacialFeatures.Second;
+			this.FacialFeatureByFace[i].Options[2].Value = CustomizeDataExtensions.FacialFeatures.Third;
+			this.FacialFeatureByFace[i].Options[3].Value = CustomizeDataExtensions.FacialFeatures.Fourth;
+			this.FacialFeatureByFace[i].Options[4].Value = CustomizeDataExtensions.FacialFeatures.Fifth;
+			this.FacialFeatureByFace[i].Options[5].Value = CustomizeDataExtensions.FacialFeatures.Sixth;
+			this.FacialFeatureByFace[i].Options[6].Value = CustomizeDataExtensions.FacialFeatures.Seventh;
 
 			FacialFeatureOptions.Option legacyTattooOption = new();
 			////legacyTattooOption.Icon = // hmmm
 			this.FacialFeatureByFace[i].Options[7] = legacyTattooOption;
-			this.FacialFeatureByFace[i].Options[7].Value = Customize.FacialFeatures.LegacyTattoo;
+			this.FacialFeatureByFace[i].Options[7].Value = CustomizeDataExtensions.FacialFeatures.LegacyTattoo;
 		}
 
 		/*for (var i = 0; i < NumEquip; ++i)
@@ -243,7 +244,7 @@ public class CharaMakeType : StudioExcelRow
 
 		public class Option
 		{
-			public Structs.Customize.FacialFeatures Value { get; set; }
+			public CustomizeDataExtensions.FacialFeatures Value { get; set; }
 			public ImageReference? Icon { get; set; }
 			public bool Enabled => true;
 		}

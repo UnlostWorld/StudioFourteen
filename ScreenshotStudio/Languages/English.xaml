@@ -77,4 +77,7 @@
 	<sys:String x:Key="LOC_SheetStain">Dyes</sys:String>
 	<sys:String x:Key="LOC_SheetWeather">Weathers</sys:String>
 
+	<sys:String x:Key="LOC_Equipment">Equipment</sys:String>
+	<sys:String x:Key="LOC_Weapon">Weapon</sys:String>
+
 </ResourceDictionary>

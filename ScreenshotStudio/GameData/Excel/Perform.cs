@@ -3,6 +3,7 @@
 using Lumina.Data;
 using Lumina.Excel;
 using Lumina.Text;
+using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 
 [Sheet("Perform", 0x7bf81fa9)]
 public class Perform : LibraryExcelRow
@@ -20,10 +21,8 @@ public class Perform : LibraryExcelRow
 	public ushort SubModelVariant => 0;
 	public byte EquipLevel => 0;
 
-	public bool FitsInSlot(ItemSlots slot)
-	{
-		return slot == ItemSlots.MainHand;
-	}
+	public bool FitsInSlot(EquipmentSlot slot) => false;
+	public bool FitsInSlot(WeaponSlot slot) => slot == WeaponSlot.MainHand;
 
 	public override void PopulateData(RowParser parser, Lumina.GameData gameData, Language language)
 	{

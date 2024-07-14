@@ -1,6 +1,7 @@
 ﻿namespace ScreenshotStudio.Windows;
 
 using Dalamud.Plugin.Services;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using ScreenshotStudio.Plugin;
@@ -43,7 +44,7 @@ public abstract class ActorWindow : PanelWindow
 	/// <summary>
 	/// Gets the DrawData for the current Actor.
 	/// </summary>
-	public unsafe ref ActorDrawData DrawData => ref this.Actor->DrawData;
+	public unsafe ref DrawDataContainer DrawData => ref this.Actor->DrawData;
 
 	// should put this somewhere...
 	public static unsafe Actor* GetTarget()

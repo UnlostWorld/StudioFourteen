@@ -1,9 +1,12 @@
 ﻿namespace ScreenshotStudio.GameData.Excel;
 
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using Lumina.Data;
 using Lumina.Excel;
 using ScreenshotStudio.Structs;
 using WpfUtils;
+using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 
 [Sheet("Item", 0xe9a33c9d)]
 public class Item : LibraryExcelRow
@@ -51,7 +54,7 @@ public class Item : LibraryExcelRow
 		this.EquipRestriction = parser.ReadRowReference<byte, EquipRaceCategory>(42);
 		this.ClassJobs = parser.ReadRowReference<byte, ClassJobCategory>(43);
 
-		bool isWeapon = this.FitsInSlot(ItemSlots.MainHand) || this.FitsInSlot(ItemSlots.OffHand);
+		bool isWeapon = this.FitsInSlot(WeaponSlot.MainHand) || this.FitsInSlot(WeaponSlot.OffHand);
 
 		ulong mainModel = parser.ReadColumn<ulong>(47);
 		ulong subModel = parser.ReadColumn<ulong>(48);
@@ -96,17 +99,33 @@ public class Item : LibraryExcelRow
 		}
 	}
 
-	public virtual bool FitsInSlot(ItemSlots slot)
+	public virtual bool FitsInSlot(EquipmentSlot slot)
 	{
 		return this.EquipSlot?.Contains(slot) ?? false;
 	}
 
-	public virtual bool IsItemEquip(ItemEquip item)
+	public virtual bool FitsInSlot(WeaponSlot slot)
 	{
-		if (this.ModelSet == 0 && this.ModelBase == item.Base && this.ModelVariant == item.Variant)
+		return this.EquipSlot?.Contains(slot) ?? false;
+	}
+
+	public virtual bool IsWeapon(Weapon item)
+	{
+		if (this.ModelSet == 0 && this.ModelBase == item.SecondaryId && this.ModelVariant == item.Variant)
 			return true;
 
-		if (this.SubModelSet == 0 && this.SubModelBase == item.Base && this.SubModelVariant == item.Variant)
+		if (this.SubModelSet == 0 && this.SubModelBase == item.SecondaryId && this.SubModelVariant == item.Variant)
+			return true;
+
+		return false;
+	}
+
+	public virtual bool IsItemEquip(EquipmentModelId item)
+	{
+		if (this.ModelSet == 0 && this.ModelBase == item.Id && this.ModelVariant == item.Variant)
+			return true;
+
+		if (this.SubModelSet == 0 && this.SubModelBase == item.Id && this.SubModelVariant == item.Variant)
 			return true;
 
 		return false;

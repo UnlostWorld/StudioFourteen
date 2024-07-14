@@ -3,12 +3,14 @@
 using Lumina.Data;
 using Lumina.Excel;
 using ScreenshotStudio.Tags;
+using System;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
+
+using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 using System.Text;
 
 public class EquipSlotCategory : Lumina.Excel.GeneratedSheets.EquipSlotCategory
 {
-	private readonly bool[] slots = new bool[(int)ItemSlots.Count];
-
 	public TagCollection Tags { get; init; } = new();
 	public string? Name { get; private set; }
 
@@ -17,43 +19,66 @@ public class EquipSlotCategory : Lumina.Excel.GeneratedSheets.EquipSlotCategory
 		base.PopulateData(parser, gameData, language);
 
 		StringBuilder nameBuilder = new();
-
-		for (var i = 0; i < (int)ItemSlots.Count; i++)
+		foreach (EquipmentSlot slot in Enum.GetValues<EquipmentSlot>())
 		{
-			this.slots[i] = parser.ReadColumn<sbyte>(i) != 0;
+			nameBuilder.Append(slot.GetDisplayName());
+			nameBuilder.Append(" ");
+		}
 
-			if (this.slots[i])
-			{
-				nameBuilder.Append(((ItemSlots)i).GetDisplayName());
-				nameBuilder.Append(" ");
-			}
+		foreach (WeaponSlot slot in Enum.GetValues<WeaponSlot>())
+		{
+			nameBuilder.Append(slot.GetDisplayName());
+			nameBuilder.Append(" ");
 		}
 
 		this.Name = nameBuilder.ToString();
 	}
 
-	public bool Contains(ItemSlots slot)
+	public bool Contains(WeaponSlot slot)
 	{
-		if (slot == ItemSlots.MainHand && this.slots[(int)ItemSlots.OffHand])
-			return true;
+		switch (slot)
+		{
+			case WeaponSlot.MainHand: return this.MainHand == 1;
+			case WeaponSlot.OffHand: return this.OffHand == 1;
+			case WeaponSlot.Unk: return false;
+		}
 
-		if (slot == ItemSlots.OffHand && this.slots[(int)ItemSlots.MainHand])
-			return true;
+		throw new Exception($"Invalid Weapon Slot: {slot}");
+	}
 
-		// >=(
-		if (slot == ItemSlots.Count)
-			return false;
+	public bool Contains(EquipmentSlot slot)
+	{
+		switch (slot)
+		{
+			case EquipmentSlot.Head: return this.Head == 1;
+			case EquipmentSlot.Body: return this.Body == 1;
+			case EquipmentSlot.Hands: return this.Gloves == 1;
+			case EquipmentSlot.Legs: return this.Legs == 1;
+			case EquipmentSlot.Feet: return this.Feet == 1;
+			case EquipmentSlot.Ears: return this.Ears == 1;
+			case EquipmentSlot.Neck: return this.Neck == 1;
+			case EquipmentSlot.Wrists: return this.Wrists == 1;
+			case EquipmentSlot.RFinger: return this.FingerR == 1;
+			case EquipmentSlot.LFinger: return this.FingerL == 1;
+		}
 
-		return this.slots[(int)slot];
+		throw new Exception($"Invalid Equipment Slot: {slot}");
 	}
 
 	public TagCollection ToTags()
 	{
 		TagCollection tags = new();
 
-		for (var i = 0; i < (int)ItemSlots.Count; i++)
+		foreach (EquipmentSlot slot in Enum.GetValues<EquipmentSlot>())
 		{
-			ItemSlots slot = (ItemSlots)i;
+			if (this.Contains(slot))
+			{
+				tags.Add(slot.ToTag());
+			}
+		}
+
+		foreach (WeaponSlot slot in Enum.GetValues<WeaponSlot>())
+		{
 			if (this.Contains(slot))
 			{
 				tags.Add(slot.ToTag());

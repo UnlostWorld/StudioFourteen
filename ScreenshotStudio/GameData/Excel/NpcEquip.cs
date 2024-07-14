@@ -5,8 +5,9 @@ using Lumina.Data;
 using Lumina.Excel;
 using ScreenshotStudio.Structs;
 using System.Text;
-using static ScreenshotStudio.Structs.Equipment;
-using ScreenshotStudio.Structs.Extensions;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
+
+using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 
 [Sheet("NpcEquip", 0xe91c87ba)]
 public class NpcEquip : StudioExcelRow
@@ -31,17 +32,17 @@ public class NpcEquipment
 	public byte DyeOffHand { get; protected set; }
 	public byte Dye2OffHand { get; protected set; }
 
-	public ItemEquip Head { get; protected set; }
+	public EquipmentModelId Head { get; protected set; }
 	public bool Visor { get; protected set; } = true;
-	public ItemEquip Body { get; protected set; }
-	public ItemEquip Legs { get; protected set; }
-	public ItemEquip Feet { get; protected set; }
-	public ItemEquip Hands { get; protected set; }
-	public ItemEquip Wrists { get; protected set; }
-	public ItemEquip Neck { get; protected set; }
-	public ItemEquip Ears { get; protected set; }
-	public ItemEquip LeftRing { get; protected set; }
-	public ItemEquip RightRing { get; protected set; }
+	public EquipmentModelId Body { get; protected set; }
+	public EquipmentModelId Legs { get; protected set; }
+	public EquipmentModelId Feet { get; protected set; }
+	public EquipmentModelId Hands { get; protected set; }
+	public EquipmentModelId Wrists { get; protected set; }
+	public EquipmentModelId Neck { get; protected set; }
+	public EquipmentModelId Ears { get; protected set; }
+	public EquipmentModelId LeftRing { get; protected set; }
+	public EquipmentModelId RightRing { get; protected set; }
 
 	public void Parse(RowParser parser, int startColumn)
 	{
@@ -68,16 +69,16 @@ public class NpcEquipment
 
 	public unsafe void ApplyToActor(Actor* actor, NpcEquipment? fallback = null)
 	{
-		this.ApplyToActor(actor, EquipIndex.Head, this.Head, fallback?.Head);
-		this.ApplyToActor(actor, EquipIndex.Chest, this.Body, fallback?.Body);
-		this.ApplyToActor(actor, EquipIndex.Hands, this.Hands, fallback?.Hands);
-		this.ApplyToActor(actor, EquipIndex.Legs, this.Legs, fallback?.Legs);
-		this.ApplyToActor(actor, EquipIndex.Feet, this.Feet, fallback?.Feet);
-		this.ApplyToActor(actor, EquipIndex.Earring, this.Ears, fallback?.Ears);
-		this.ApplyToActor(actor, EquipIndex.Necklace, this.Neck, fallback?.Neck);
-		this.ApplyToActor(actor, EquipIndex.Bracelet, this.Wrists, fallback?.Wrists);
-		this.ApplyToActor(actor, EquipIndex.RingRight, this.RightRing, fallback?.RightRing);
-		this.ApplyToActor(actor, EquipIndex.RingLeft, this.LeftRing, fallback?.LeftRing);
+		this.ApplyToActor(actor, EquipmentSlot.Head, this.Head, fallback?.Head);
+		this.ApplyToActor(actor, EquipmentSlot.Body, this.Body, fallback?.Body);
+		this.ApplyToActor(actor, EquipmentSlot.Hands, this.Hands, fallback?.Hands);
+		this.ApplyToActor(actor, EquipmentSlot.Legs, this.Legs, fallback?.Legs);
+		this.ApplyToActor(actor, EquipmentSlot.Feet, this.Feet, fallback?.Feet);
+		this.ApplyToActor(actor, EquipmentSlot.Ears, this.Ears, fallback?.Ears);
+		this.ApplyToActor(actor, EquipmentSlot.Neck, this.Neck, fallback?.Neck);
+		this.ApplyToActor(actor, EquipmentSlot.Wrists, this.Wrists, fallback?.Wrists);
+		this.ApplyToActor(actor, EquipmentSlot.RFinger, this.RightRing, fallback?.RightRing);
+		this.ApplyToActor(actor, EquipmentSlot.LFinger, this.LeftRing, fallback?.LeftRing);
 	}
 
 	public void GetStringForHash(StringBuilder sb)
@@ -100,32 +101,32 @@ public class NpcEquipment
 		this.AddToString(this.RightRing, sb);
 	}
 
-	private unsafe void ApplyToActor(Actor* actor, EquipIndex index, ItemEquip a, ItemEquip? b)
+	private unsafe void ApplyToActor(Actor* actor, EquipmentSlot index, EquipmentModelId a, EquipmentModelId? b)
 	{
-		ItemEquip toUse = a;
-		if (b != null && b.Value.Base > 0)
+		EquipmentModelId toUse = a;
+		if (b != null && b.Value.Id > 0)
 			toUse = b.Value;
 
 		actor->UpdateEquipment(index, toUse, Actor.UpdateSource.Library);
 	}
 
-	private ItemEquip ParseItem(RowParser parser, int column)
+	private EquipmentModelId ParseItem(RowParser parser, int column)
 	{
-		ItemEquip eq = default;
+		EquipmentModelId eq = default;
 
 		var model = parser.ReadColumn<uint>(column + 0);
 
 		short b = (short)model;
 
 		if (b > ushort.MinValue)
-			eq.Base = (ushort)b;
+			eq.Id = (ushort)b;
 
 		short variant = (short)(model >> 16);
 		if (variant >= byte.MinValue && variant < byte.MaxValue)
 			eq.Variant = (byte)variant;
 
-		eq.Dye1 = parser.ReadColumn<byte>(column + 1);
-		eq.Dye2 = parser.ReadColumn<byte>(column + 2);
+		eq.Stain0 = parser.ReadColumn<byte>(column + 1);
+		eq.Stain1 = parser.ReadColumn<byte>(column + 2);
 		return eq;
 	}
 
@@ -135,12 +136,12 @@ public class NpcEquipment
 		{
 			builder.Append("_");
 		}
-		else if (val is ItemEquip eq)
+		else if (val is EquipmentModelId eq)
 		{
-			builder.Append(eq.Base);
+			builder.Append(eq.Id);
 			builder.Append(eq.Variant);
-			builder.Append(eq.Dye1);
-			builder.Append(eq.Dye2);
+			builder.Append(eq.Stain0);
+			builder.Append(eq.Stain1);
 		}
 		else
 		{

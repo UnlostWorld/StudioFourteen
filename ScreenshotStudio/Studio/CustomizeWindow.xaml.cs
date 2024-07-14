@@ -12,6 +12,7 @@ using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using ScreenshotStudio.Utilities;
 using FFXIVClientStructs.FFXIV.Common.Lua;
 using ScreenshotStudio.Structs.Extensions;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 
 public partial class CustomizeWindow : ActorWindow
 {
@@ -167,9 +168,9 @@ public partial class CustomizeWindow : ActorWindow
 	}
 
 	[AutoNotify]
-	public unsafe Structs.Customize.FacialFeatures FacialFeature
+	public unsafe CustomizeDataExtensions.FacialFeatures FacialFeature
 	{
-		get => (Structs.Customize.FacialFeatures)this.GetCustomizeValue(CustomizeIndex.FaceFeatures);
+		get => (CustomizeDataExtensions.FacialFeatures)this.GetCustomizeValue(CustomizeIndex.FaceFeatures);
 		set => this.SetCustomizeValue(CustomizeIndex.FaceFeatures, (byte)value);
 	}
 
@@ -349,5 +350,12 @@ public partial class CustomizeWindow : ActorWindow
 
 	public unsafe byte GetCustomizeValue(CustomizeIndex option) => this.Actor->GetCustomizeValue(option);
 	public unsafe bool SetCustomizeValue(CustomizeIndex option, byte value, bool apply = true) => this.Actor->SetCustomizeValue(option, value, Structs.Actor.UpdateSource.Interface, apply);
-	public unsafe void UpdateCustomize(bool redraw) => this.Actor->UpdateCustomize(redraw, Structs.Actor.UpdateSource.Interface);
+
+	public unsafe void UpdateCustomize(bool redraw)
+	{
+		Threads.RunOnFrameworkThread(() =>
+		{
+			ActorWindow.GetTarget()->UpdateCustomize(redraw, Structs.Actor.UpdateSource.Interface);
+		});
+	}
 }

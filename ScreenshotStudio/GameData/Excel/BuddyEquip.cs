@@ -6,6 +6,8 @@ using Lumina.Excel;
 using Lumina.Text;
 using ScreenshotStudio.GameData.Sheets;
 
+using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
+
 [Sheet("BuddyEquip", 0xb429792a)]
 public class BuddyEquip : StudioExcelRow
 {
@@ -24,14 +26,14 @@ public class BuddyEquip : StudioExcelRow
 		ushort headVariant = (ushort)(h >> 16);
 		ushort headIcon = parser.ReadColumn<ushort>(13);
 		if (headBase != 0 || headVariant != 0)
-			this.Head = new(name, ItemSlots.Head, headBase, headVariant, headIcon);
+			this.Head = new(name, EquipmentSlot.Head, headBase, headVariant, headIcon);
 
 		int b = parser.ReadColumn<int>(10);
 		ushort bodyBase = (ushort)b;
 		ushort bodyVariant = (ushort)(b >> 16);
 		ushort bodyIcon = parser.ReadColumn<ushort>(14);
 		if (bodyBase != 0 || bodyVariant != 0)
-			this.Body = new(name, ItemSlots.Chest, bodyBase, bodyVariant, bodyIcon);
+			this.Body = new(name, EquipmentSlot.Body, bodyBase, bodyVariant, bodyIcon);
 
 		int l = parser.ReadColumn<int>(11);
 		ushort legsBase = (ushort)l;
@@ -39,7 +41,7 @@ public class BuddyEquip : StudioExcelRow
 		ushort legsIcon = parser.ReadColumn<ushort>(15);
 		if (legsBase != 0 || legsVariant != 0)
 		{
-			this.Feet = new(name, ItemSlots.Feet, legsBase, legsVariant, legsIcon);
+			this.Feet = new(name, EquipmentSlot.Feet, legsBase, legsVariant, legsIcon);
 		}
 	}
 }

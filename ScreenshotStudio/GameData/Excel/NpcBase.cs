@@ -8,6 +8,7 @@ using System.Text;
 using ScreenshotStudio.Library;
 using ScreenshotStudio.Data;
 using WpfUtils;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 
 public abstract class NpcBase : LibraryExcelRow, IActorAppearance
 {
@@ -20,7 +21,7 @@ public abstract class NpcBase : LibraryExcelRow, IActorAppearance
 	public float Scale { get; protected set; } = 1.0f;
 	public ModelChara? ModelChara { get; protected set; }
 
-	public Customize Customize { get; protected set; }
+	public CustomizeData Customize { get; protected set; }
 	public NpcEquipment Equipment { get; protected set; } = new();
 	public virtual NpcEquipment? BackupEquipment => null;
 
@@ -65,9 +66,9 @@ public abstract class NpcBase : LibraryExcelRow, IActorAppearance
 		{
 			if (this.ModelChara.Type == 1)
 			{
-				this.Tags.Add(this.Customize.Race?.ToTags());
-				this.Tags.Add(this.Customize.Tribe?.ToTags());
-				this.Tags.Add(this.Customize.Gender.ToTags());
+				this.Tags.Add(this.Customize.GetRace()?.ToTags());
+				this.Tags.Add(this.Customize.GetTribe()?.ToTags());
+				this.Tags.Add(this.Customize.GetGender().ToTags());
 			}
 
 			this.ModelChara.GetTags(this.Tags);
@@ -83,7 +84,7 @@ public abstract class NpcBase : LibraryExcelRow, IActorAppearance
 			actor->UpdateModel(this.ModelChara, Actor.UpdateSource.Library, false);
 		}
 
-		actor->UpdateCustomize(this.Customize, Actor.UpdateSource.Library, redraw);
+		actor->UpdateCustomize(this.Customize, redraw, Actor.UpdateSource.Library);
 		this.Equipment.ApplyToActor(actor, this.BackupEquipment);
 	}
 
@@ -109,7 +110,7 @@ public abstract class NpcBase : LibraryExcelRow, IActorAppearance
 		this.AddToString(this.Scale, sb);
 		this.AddToString(this.ModelChara, sb);
 
-		for (int i = 0; i < Customize.NumOptions; i++)
+		for (int i = 0; i < CustomizeDataExtensions.NumOptions; i++)
 		{
 			this.AddToString(this.Customize.GetValue((CustomizeIndex)i), sb);
 		}

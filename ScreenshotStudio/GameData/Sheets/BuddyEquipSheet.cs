@@ -1,19 +1,20 @@
 ﻿namespace ScreenshotStudio.GameData.Sheets;
 
 using ScreenshotStudio.GameData.Excel;
+using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 
 public class BuddyEquipsSheet : DataSheet<BuddyEquip>
 {
 	public static readonly DummyBuddyItem None = new(string.Empty, 0, 0, 0);
 
-	public BuddyItem? Find(ItemSlots slot, ushort modelSet, ushort modelBase, ushort modelVariant)
+	public BuddyItem? Find(EquipmentSlot slot, ushort modelSet, ushort modelBase, ushort modelVariant)
 	{
 		if (this.Sheet == null)
 			return null;
 
 		foreach(BuddyEquip equip in this)
 		{
-			if (slot == ItemSlots.Head
+			if (slot == EquipmentSlot.Head
 				&& equip.Head != null
 				&& equip.Head.ModelSet == modelSet
 				&& equip.Head.ModelBase == modelBase
@@ -22,7 +23,7 @@ public class BuddyEquipsSheet : DataSheet<BuddyEquip>
 				return equip.Head;
 			}
 
-			if (slot == ItemSlots.Chest
+			if (slot == EquipmentSlot.Body
 				&& equip.Body != null
 				&& equip.Body.ModelSet == modelSet
 				&& equip.Body.ModelBase == modelBase
@@ -31,7 +32,7 @@ public class BuddyEquipsSheet : DataSheet<BuddyEquip>
 				return equip.Body;
 			}
 
-			if (slot == ItemSlots.Feet
+			if (slot == EquipmentSlot.Feet
 				&& equip.Feet != null
 				&& equip.Feet.ModelSet == modelSet
 				&& equip.Feet.ModelBase == modelBase
@@ -44,28 +45,19 @@ public class BuddyEquipsSheet : DataSheet<BuddyEquip>
 		return null;
 	}
 
-	public BuddyItem? Find(ItemSlots slot, int val)
+	public BuddyItem? Find(WeaponSlot slot, int val)
+	{
+		return null;
+	}
+
+	public BuddyItem? Find(EquipmentSlot slot, int val)
 	{
 		if (val == 0)
 			return None;
 
-		bool isWeapon = slot == ItemSlots.MainHand || slot == ItemSlots.OffHand;
-		short modelSet;
-		short modelBase;
-		short modelVariant;
-
-		if (isWeapon)
-		{
-			modelSet = (short)val;
-			modelBase = (short)(val >> 16);
-			modelVariant = (short)(val >> 32);
-		}
-		else
-		{
-			modelSet = 0;
-			modelBase = (short)val;
-			modelVariant = (short)(val >> 16);
-		}
+		short modelSet = 0;
+		short modelBase = (short)val;
+		short modelVariant = (short)(val >> 16);
 
 		if (modelSet < 0 || modelBase < 0 || modelVariant < 0)
 		{
@@ -83,7 +75,7 @@ public class BuddyItem : Item
 	{
 	}
 
-	public BuddyItem(string name, ItemSlots slot, ushort modelBase, ushort modelVariant, ushort icon)
+	public BuddyItem(string name, EquipmentSlot slot, ushort modelBase, ushort modelVariant, ushort icon)
 	{
 		this.Name = name;
 		this.Slot = slot;
@@ -95,9 +87,9 @@ public class BuddyItem : Item
 		this.Tags.Add(slot.ToString());
 	}
 
-	public ItemSlots Slot { get; private set; }
+	public EquipmentSlot Slot { get; private set; }
 
-	public override bool FitsInSlot(ItemSlots slot)
+	public override bool FitsInSlot(EquipmentSlot slot)
 	{
 		return slot == this.Slot;
 	}
@@ -115,8 +107,13 @@ public class DummyBuddyItem : BuddyItem
 		this.Tags.Add("Chocobo");
 	}
 
-	public override bool FitsInSlot(ItemSlots slot)
+	public override bool FitsInSlot(EquipmentSlot slot)
 	{
 		return true;
+	}
+
+	public override bool FitsInSlot(WeaponSlot slot)
+	{
+		return false;
 	}
 }

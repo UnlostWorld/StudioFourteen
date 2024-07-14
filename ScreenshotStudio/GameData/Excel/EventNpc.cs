@@ -1,10 +1,11 @@
 ﻿namespace ScreenshotStudio.GameData.Excel;
 
 using Dalamud.Game.ClientState.Objects.Enums;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Lumina.Data;
 using Lumina.Excel;
-using ScreenshotStudio.Structs;
 using ScreenshotStudio.Data;
+using System;
 
 [Sheet("ENpcBase", 0x464052cd)]
 public class EventNpc : NpcBase
@@ -24,12 +25,10 @@ public class EventNpc : NpcBase
 		this.Scale = parser.ReadColumn<float>(34);
 		this.ModelChara = parser.ReadRowReference<ushort, ModelChara>(35);
 
-		Customize c;
-
-		for (int i = 0; i < Customize.NumOptions; i++)
+		CustomizeData c = default;
+		foreach(CustomizeIndex index in Enum.GetValues<CustomizeIndex>())
 		{
-			CustomizeIndex index = (CustomizeIndex)i;
-			int row = 36 + i;
+			int row = 36 + (int)index;
 			byte val = parser.ReadColumn<byte>(row);
 
 			c.SetValue(index, val);

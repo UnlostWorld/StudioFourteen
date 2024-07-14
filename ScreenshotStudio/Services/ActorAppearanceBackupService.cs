@@ -1,6 +1,8 @@
 ﻿namespace ScreenshotStudio.Services;
 
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using ScreenshotStudio.Structs;
+using ScreenshotStudio.Utilities;
 using System.Collections.Generic;
 
 public class ActorAppearanceBackupService : ServiceBase
@@ -40,13 +42,16 @@ public class ActorAppearanceBackupService : ServiceBase
 		if (!this.backup.ContainsKey(index))
 			return;
 
-		this.backup[index].Apply(actor, Actor.UpdateSource.Restore);
-		this.backup.Remove(index);
+		Threads.RunOnFrameworkThread(() =>
+		{
+			this.backup[index].Apply(actor, Actor.UpdateSource.Restore);
+			this.backup.Remove(index);
+		});
 	}
 
-	public class Appearance(ActorDrawData drawData, uint modelId)
+	public class Appearance(DrawDataContainer drawData, uint modelId)
 	{
-		public readonly ActorDrawData DrawData = drawData;
+		public readonly DrawDataContainer DrawData = drawData;
 		public uint ModelId = modelId;
 
 		public unsafe void Apply(Actor* actor, Actor.UpdateSource source)
@@ -54,8 +59,8 @@ public class ActorAppearanceBackupService : ServiceBase
 			bool redraw = this.ModelId != actor->ModelCharaRowId;
 
 			actor->UpdateModel(this.ModelId, source, false);
-			actor->UpdateCustomize(this.DrawData.Customize, source, redraw);
-			actor->UpdateEquipment(this.DrawData.Equipment, source);
+			actor->UpdateCustomize(this.DrawData.CustomizeData, redraw, source);
+			actor->UpdateEquipment(this.DrawData.EquipmentModelIds, source);
 		}
 	}
 
