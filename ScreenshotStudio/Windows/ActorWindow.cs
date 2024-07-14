@@ -7,6 +7,7 @@ using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Structs;
 using ScreenshotStudio.Utilities;
+using System;
 
 public abstract class ActorWindow : PanelWindow
 {
@@ -17,13 +18,20 @@ public abstract class ActorWindow : PanelWindow
 	{
 		get
 		{
-			if (this.Actor == null)
-				return false;
+			try
+			{
+				if (this.Actor == null)
+					return false;
 
-			if (this.Actor->RenderMode != RenderMode.Draw)
-				return false;
+				if (this.Actor->RenderMode != RenderMode.Draw)
+					return false;
 
-			return true;
+				return true;
+			}
+			catch (Exception)
+			{
+				return false;
+			}
 		}
 	}
 
