@@ -26,7 +26,7 @@
 				<Grid
 					Width="200"
 					Height="56"
-					Margin="2,2,6,2">
+					Margin="0,2,0,2">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition />
@@ -245,10 +245,16 @@
 			</DataTemplate>
 		</Grid.Resources>
 
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+
 		<UniformGrid Columns="2">
 
 			<ContentPresenter
 				Grid.Column="0"
+				Margin="0,2,6,2"
 				Content="{Binding MainHand}"
 				ContentTemplate="{StaticResource ItemView}" />
 			<ContentPresenter
@@ -256,35 +262,55 @@
 				Content="{Binding OffHand}"
 				ContentTemplate="{StaticResource ItemView}" />
 			<ContentPresenter
+				Margin="0,2,6,2"
 				Content="{Binding Head}"
 				ContentTemplate="{StaticResource ItemView}" />
 			<ContentPresenter
 				Content="{Binding Earring}"
 				ContentTemplate="{StaticResource ItemView}" />
 			<ContentPresenter
+				Margin="0,2,6,2"
 				Content="{Binding Chest}"
 				ContentTemplate="{StaticResource ItemView}" />
 			<ContentPresenter
 				Content="{Binding Necklace}"
 				ContentTemplate="{StaticResource ItemView}" />
 			<ContentPresenter
+				Margin="0,2,6,2"
 				Content="{Binding Hands}"
 				ContentTemplate="{StaticResource ItemView}" />
 			<ContentPresenter
 				Content="{Binding Bracelet}"
 				ContentTemplate="{StaticResource ItemView}" />
 			<ContentPresenter
+				Margin="0,2,6,2"
 				Content="{Binding Legs}"
 				ContentTemplate="{StaticResource ItemView}" />
 			<ContentPresenter
 				Content="{Binding RingRight}"
 				ContentTemplate="{StaticResource ItemView}" />
 			<ContentPresenter
+				Margin="0,2,6,2"
 				Content="{Binding Feet}"
 				ContentTemplate="{StaticResource ItemView}" />
 			<ContentPresenter
 				Content="{Binding RingLeft}"
 				ContentTemplate="{StaticResource ItemView}" />
 		</UniformGrid>
+
+		<Border
+			Grid.Row="1"
+			Style="{DynamicResource WpfUtilsControlBorder}">
+			<StackPanel Orientation="Horizontal">
+				<Button
+					Grid.Column="0"
+					Click="OnRevertClicked"
+					IsEnabled="{Binding CanRevert}"
+					ToolTip="{DynamicResource LOC_Revert}">
+					<wpfUtils:IconBlock Icon="Undo" />
+				</Button>
+			</StackPanel>
+		</Border>
+
 	</Grid>
 </windows:ActorWindow>

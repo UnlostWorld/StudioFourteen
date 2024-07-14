@@ -50,6 +50,8 @@ public partial class GearWindow : ActorWindow
 	public ItemEquipViewModel RingRight { get; init; }
 	public ItemEquipViewModel RingLeft { get; init; }
 
+	[AutoNotify] public unsafe bool CanRevert => this.Services.ActorAppearanceBackup.CanRestore(this.Actor);
+
 	private void OnChangeClicked(object sender, RoutedEventArgs e)
 	{
 		if (sender is Button btn)
@@ -154,6 +156,11 @@ public partial class GearWindow : ActorWindow
 					equip.Stain1 = stain;
 				}
 			});
+	}
+
+	private unsafe void OnRevertClicked(object sender, RoutedEventArgs e)
+	{
+		this.Services.ActorAppearanceBackup.Restore(this.Actor);
 	}
 }
 
