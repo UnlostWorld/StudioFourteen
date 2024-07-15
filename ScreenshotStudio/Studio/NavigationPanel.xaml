@@ -84,7 +84,7 @@
 									Width="32"
 									Height="32"
 									IsChecked="{Binding IsInGPose}"
-									ToolTip="{DynamicResource ToggleGPose}">
+									ToolTip="{DynamicResource LOC_ToggleGPose}">
 									<!--<wpfUtils:IconBlock Icon="Video">
 										<wpfUtils:IconBlock.LayoutTransform>
 											<ScaleTransform ScaleX="-1" ScaleY="0.8" />
@@ -100,7 +100,7 @@
 								<ToggleButton
 									x:Name="LibraryButton"
 									IsChecked="{Binding IsLibraryOpen}"
-									ToolTip="{DynamicResource Library}">
+									ToolTip="{DynamicResource LOC_Library}">
 									<wpfUtils:IconBlock Icon="Books" />
 								</ToggleButton>
 
@@ -108,7 +108,7 @@
 									x:Name="ZoneButton"
 									IsChecked="{Binding IsZoneOpen}"
 									IsEnabled="False"
-									ToolTip="{DynamicResource Zone}">
+									ToolTip="{DynamicResource LOC_Zone}">
 									<wpfUtils:IconBlock Icon="CloudMoonRain" />
 								</ToggleButton>
 
@@ -116,7 +116,7 @@
 									x:Name="CameraButton"
 									IsChecked="{Binding IsCameraOpen}"
 									IsEnabled="False"
-									ToolTip="{DynamicResource Camera}">
+									ToolTip="{DynamicResource LOC_Camera}">
 									<wpfUtils:IconBlock Icon="CameraMovie" />
 								</ToggleButton>
 
@@ -125,14 +125,14 @@
 								<ToggleButton
 									x:Name="CustomizeButton"
 									IsChecked="{Binding IsCustomizeOpen}"
-									ToolTip="{DynamicResource Customize}">
+									ToolTip="{DynamicResource LOC_Customize}">
 									<wpfUtils:IconBlock Icon="UserEdit" />
 								</ToggleButton>
 
 								<ToggleButton
 									x:Name="GearButton"
 									IsChecked="{Binding IsGearOpen}"
-									ToolTip="{DynamicResource Gear}">
+									ToolTip="{DynamicResource LOC_Gear}">
 									<wpfUtils:IconBlock Icon="HelmetBattle" />
 								</ToggleButton>
 
@@ -140,7 +140,7 @@
 									x:Name="ShaderButton"
 									IsChecked="{Binding IsShadersOpen}"
 									IsEnabled="False"
-									ToolTip="{DynamicResource ShaderParameters}">
+									ToolTip="{DynamicResource LOC_ShaderParameters}">
 									<wpfUtils:IconBlock Icon="Shapes" />
 								</ToggleButton>
 
@@ -148,7 +148,7 @@
 									x:Name="PoseButton"
 									IsChecked="{Binding IsPoseOpen}"
 									IsEnabled="False"
-									ToolTip="{DynamicResource Pose}">
+									ToolTip="{DynamicResource LOC_Pose}">
 									<wpfUtils:IconBlock Icon="Running" />
 								</ToggleButton>
 
@@ -158,7 +158,7 @@
 									x:Name="SettingsButton"
 									IsChecked="{Binding IsSettingsOpen}"
 									IsEnabled="False"
-									ToolTip="{DynamicResource Settings}">
+									ToolTip="{DynamicResource LOC_Settings}">
 									<wpfUtils:IconBlock Icon="cogs" />
 								</ToggleButton>
 
@@ -166,7 +166,7 @@
 
 								<ToggleButton
 									IsEnabled="False"
-									ToolTip="Save Character">
+									ToolTip="{DynamicResource LOC_SaveCharacter}">
 									<Grid>
 										<wpfUtils:IconBlock
 											Margin="-3,-1,3,1"
@@ -182,7 +182,7 @@
 
 								<ToggleButton
 									IsEnabled="False"
-									ToolTip="Save Pose">
+									ToolTip="{DynamicResource LOC_SavePose}">
 									<Grid>
 										<wpfUtils:IconBlock
 											Margin="-3,-1,3,1"

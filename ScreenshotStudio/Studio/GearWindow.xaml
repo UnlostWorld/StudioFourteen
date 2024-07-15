@@ -11,7 +11,7 @@
 	xmlns:studio="clr-namespace:ScreenshotStudio.Studio"
 	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
-	Title="{DynamicResource Gear}"
+	Title="{DynamicResource LOC_Gear}"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	ResizeMode="NoResize"
