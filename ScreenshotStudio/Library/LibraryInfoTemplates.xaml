@@ -7,54 +7,103 @@
 	xmlns:library="clr-namespace:ScreenshotStudio.Library.Controls"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
-	<DataTemplate DataType="{x:Type gameData:DataSheetLibrarySource}">
-		<Grid>
+
+	<DataTemplate DataType="{x:Type excel:ResidentNpc}">
+		<StackPanel>
 			<TextBlock
+				Grid.Row="0"
+				Text="{Binding Name}"
+				TextWrapping="Wrap" />
+
+			<TextBlock
+				x:Name="DescriptionBlock"
+				Grid.Row="1"
 				Foreground="{DynamicResource ForegroundLightBrush}"
-				Style="{DynamicResource Body}"
-				Text="{DynamicResource LOC_Library_DataSheetLibrarySourceDesc}" />
-		</Grid>
+				Text="{Binding Description}"
+				TextTrimming="CharacterEllipsis"
+				TextWrapping="NoWrap" />
+		</StackPanel>
 	</DataTemplate>
 
-	<DataTemplate x:Key="ActorAppearance">
+
+
+	<DataTemplate DataType="{x:Type excel:BattleNpc}">
+		<TextBlock
+			Grid.Row="0"
+			Text="{Binding Name}"
+			TextWrapping="Wrap" />
+	</DataTemplate>
+
+
+
+	<DataTemplate DataType="{x:Type excel:EventNpc}">
+		<TextBlock
+			Grid.Row="0"
+			Text="{Binding Name}"
+			TextWrapping="Wrap" />
+	</DataTemplate>
+
+
+
+	<DataTemplate DataType="{x:Type excel:Item}">
 		<Grid>
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />
-				<RowDefinition />
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
 
 
 			<TextBlock
 				Grid.Row="0"
-				Foreground="{DynamicResource ForegroundLightBrush}"
-				Style="{DynamicResource Body}"
-				Text="{Binding Description}" />
+				Text="{Binding Name}"
+				TextWrapping="Wrap" />
 
-			<!--  actions  -->
-			<library:ActorAppearanceActions
-				Grid.Row="3"
-				Appearance="{Binding .}" />
+			<TextBlock
+				x:Name="DescriptionBlock"
+				Grid.Row="1"
+				Foreground="{DynamicResource ForegroundLightBrush}"
+				Text="{Binding Description}"
+				TextTrimming="CharacterEllipsis"
+				TextWrapping="NoWrap" />
+
+			<TextBlock
+				Grid.Row="2"
+				Style="{DynamicResource Subscript}"
+				Text="{Binding ClassJobs.Name}"
+				TextWrapping="NoWrap" />
+		</Grid>
+
+		<DataTemplate.Triggers>
+			<DataTrigger
+				Binding="{Binding Description}"
+				Value="{x:Null}">
+				<Setter TargetName="DescriptionBlock" Property="Visibility" Value="Collapsed" />
+			</DataTrigger>
+		</DataTemplate.Triggers>
+	</DataTemplate>
+
+
+	<DataTemplate DataType="{x:Type excel:Stain}">
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+			</Grid.RowDefinitions>
+
+			<TextBlock
+				Grid.Row="0"
+				Text="{Binding Name}"
+				TextWrapping="Wrap" />
+
+			<TextBlock
+				Grid.Row="1"
+				Foreground="{DynamicResource ForegroundLightBrush}"
+				Text="{Binding Item.Description}"
+				TextTrimming="CharacterEllipsis"
+				TextWrapping="NoWrap" />
 		</Grid>
 	</DataTemplate>
 
-	<DataTemplate DataType="{x:Type excel:ResidentNpc}">
-		<ContentPresenter
-			Content="{Binding .}"
-			ContentTemplate="{StaticResource ActorAppearance}" />
-	</DataTemplate>
-
-	<DataTemplate DataType="{x:Type excel:BattleNpc}">
-		<ContentPresenter
-			Content="{Binding .}"
-			ContentTemplate="{StaticResource ActorAppearance}" />
-	</DataTemplate>
-
-	<DataTemplate DataType="{x:Type excel:EventNpc}">
-		<ContentPresenter
-			Content="{Binding .}"
-			ContentTemplate="{StaticResource ActorAppearance}" />
-	</DataTemplate>
 
 </ResourceDictionary>

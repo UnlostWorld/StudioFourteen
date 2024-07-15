@@ -87,7 +87,7 @@
 					Width="48"
 					Height="48"
 					Margin="3,6,3,3"
-					VerticalAlignment="Top"
+					VerticalAlignment="Center"
 					Content="{Binding SelectedEntry}"
 					TextBlock.Foreground="{DynamicResource ForegroundBrush}">
 					<ContentPresenter.Resources>
@@ -95,23 +95,16 @@
 					</ContentPresenter.Resources>
 				</ContentPresenter>
 
-				<StackPanel
+				<ContentPresenter
 					Grid.Row="0"
 					Grid.Column="1"
-					Margin="6,3,0,3"
-					VerticalAlignment="Top">
-					<TextBlock
-						Style="{DynamicResource Header}"
-						Text="{Binding SelectedEntry.Name}" />
-					<TextBlock
-						Foreground="{DynamicResource ForegroundLightBrush}"
-						Style="{DynamicResource Body}"
-						Text="{Binding SelectedEntry.Source.Name}" />
-					<TextBlock
-						Foreground="{DynamicResource ForegroundLightBrush}"
-						Style="{DynamicResource Body}"
-						Text="{Binding SelectedEntry.Identifier}" />
-				</StackPanel>
+					Height="64"
+					Content="{Binding SelectedEntry}"
+					TextBlock.Foreground="{DynamicResource ForegroundBrush}">
+					<ContentPresenter.Resources>
+						<ResourceDictionary Source="./LibraryInfoTemplates.xaml" />
+					</ContentPresenter.Resources>
+				</ContentPresenter>
 
 
 				<tags:TagDisplay
@@ -127,7 +120,7 @@
 					Content="{Binding SelectedEntry}"
 					TextBlock.Foreground="{DynamicResource ForegroundBrush}">
 					<ContentPresenter.Resources>
-						<ResourceDictionary Source="./LibraryInfoTemplates.xaml" />
+						<ResourceDictionary Source="./LibrarySidebarTemplates.xaml" />
 					</ContentPresenter.Resources>
 				</ContentPresenter>
 

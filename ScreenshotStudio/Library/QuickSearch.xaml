@@ -62,20 +62,33 @@
 							x:Name="Content"
 							Grid.Column="1">
 
-							<Grid.Resources>
-								<ResourceDictionary Source="QuickSearchTemplates.xaml" />
-							</Grid.Resources>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition />
+							</Grid.ColumnDefinitions>
 
 							<ContentPresenter
-								Margin="{TemplateBinding Padding}"
-								HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-								VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-								Content="{TemplateBinding Content}"
-								ContentTemplate="{TemplateBinding ContentTemplate}"
-								ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
-								Focusable="False"
-								RecognizesAccessKey="False"
-								SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+								Width="48"
+								Height="48"
+								Margin="3"
+								VerticalAlignment="Center"
+								Content="{Binding .}"
+								TextBlock.Foreground="{DynamicResource ForegroundBrush}">
+								<ContentPresenter.Resources>
+									<ResourceDictionary Source="./LibraryIconTemplates.xaml" />
+								</ContentPresenter.Resources>
+							</ContentPresenter>
+
+							<ContentPresenter
+								Grid.Column="1"
+								VerticalAlignment="Center"
+								Content="{Binding .}"
+								TextBlock.Foreground="{DynamicResource ForegroundBrush}">
+								<ContentPresenter.Resources>
+									<ResourceDictionary Source="./LibraryInfoTemplates.xaml" />
+								</ContentPresenter.Resources>
+							</ContentPresenter>
+
 
 						</Grid>
 

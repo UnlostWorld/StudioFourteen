@@ -4,7 +4,6 @@ using ScreenshotStudio.Studio;
 using ScreenshotStudio.Windows;
 using System.Threading.Tasks;
 using System;
-using ScreenshotStudio.Library;
 
 public class StudioService : ServiceBase
 {
@@ -36,10 +35,6 @@ public class StudioService : ServiceBase
 		await base.Start();
 
 		this.targetPanel = await Panel.ShowAsync<TargetPanel>();
-
-		// Go fast
-		this.OpenStudio();
-		this.Services.Panels.SetIsOpen<GearWindow>(true);
 	}
 
 	public void OpenStudio() => Task.Run(async () => await this.OpenStudioAsync());

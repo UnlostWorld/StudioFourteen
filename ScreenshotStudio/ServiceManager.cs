@@ -18,10 +18,10 @@ public class ServiceManager : ServiceManagerBase
 	public StudioService Studio { get; init; } = new();
 	public DataService Data { get; init; } = new();
 	public GameDataService GameData { get; init; } = new();
-	public LibraryService Library { get; init; } = new();
 	public ActorLifecycleService ActorLifecycle { get; init; } = new();
 	public GroupPoseService GroupPose { get; init; } = new();
 	public ActorAppearanceBackupService ActorAppearanceBackup { get; init; } = new();
+	public LibraryService Library { get; init; } = new();
 
 	protected override void OnStart()
 	{
