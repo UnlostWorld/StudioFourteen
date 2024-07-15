@@ -6,6 +6,7 @@
 	xmlns:local="clr-namespace:ScreenshotStudio.Studio"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:structs="clr-namespace:ScreenshotStudio.Structs"
+	xmlns:sys="clr-namespace:System;assembly=mscorlib"
 	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="TargetPanel"
@@ -22,11 +23,16 @@
 		HorizontalAlignment="Center"
 		VerticalAlignment="Top"
 		Orientation="Horizontal">
+
+		<StackPanel.Resources>
+			<sys:Double x:Key="ButtonWidth">100</sys:Double>
+		</StackPanel.Resources>
+
 		<Border
 			Margin="1"
 			Style="{DynamicResource WpfUtilsControlBorder}">
 			<ItemsControl
-				MinWidth="75"
+				MinWidth="{StaticResource ButtonWidth}"
 				ItemsSource="{Binding Actors}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
@@ -42,13 +48,16 @@
 							Width="0">
 
 							<ToggleButton
-								Width="75"
+								Width="{StaticResource ButtonWidth}"
 								HorizontalAlignment="Center"
 								Background="Transparent"
 								IsChecked="{Binding IsCurrent}">
 								<TextBlock
+									Margin="6,3"
 									HorizontalAlignment="Center"
-									Text="{Binding Name}" />
+									Text="{Binding Name}"
+									TextTrimming="CharacterEllipsis"
+									TextWrapping="NoWrap" />
 							</ToggleButton>
 						</Grid>
 
@@ -62,7 +71,7 @@
 											<DoubleAnimation
 												Storyboard.TargetName="ContentArea"
 												Storyboard.TargetProperty="Width"
-												To="75"
+												To="{StaticResource ButtonWidth}"
 												Duration="0:00:00.150">
 												<DoubleAnimation.EasingFunction>
 													<SineEase EasingMode="EaseOut" />
@@ -96,8 +105,9 @@
 
 		<Button
 			Width="32"
-			Click="OnAddActorClicked">
-			<wpfUtils:IconBlock Icon="Plus" />
+			Click="OnAddActorClicked"
+			ToolTip="{DynamicResource LOC_Target_CreateActor}">
+			<wpfUtils:IconBlock Icon="UserPlus" />
 		</Button>
 
 		<Button

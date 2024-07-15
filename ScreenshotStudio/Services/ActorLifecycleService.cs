@@ -74,12 +74,19 @@ public class ActorLifecycleService : ServiceBase
 		if (!this.CanSpawn)
 			return;
 
-		Actor* pActor = this.Spawn("Test Actor");
-
-		if (pActor != null && appearance != null)
+		Threads.RunOnFrameworkThread(() =>
 		{
-			appearance?.Apply(pActor);
-		}
+			string name = "Actor";
+			if (appearance != null && !string.IsNullOrEmpty(appearance.Name))
+				name = appearance.Name;
+
+			Actor* pActor = this.Spawn(name);
+
+			if (pActor != null && appearance != null)
+			{
+				appearance?.Apply(pActor);
+			}
+		});
 	}
 
 	public unsafe void DestroyAllCreated()
@@ -95,7 +102,7 @@ public class ActorLifecycleService : ServiceBase
 				continue;
 			}
 
-			DalamudServices.Framework?.RunOnFrameworkThread(() =>
+			Threads.RunOnFrameworkThread(() =>
 			{
 				this.Log.Information($"Deleting object: {idx} - {deletingCharacter->Name}");
 				com->DeleteObjectByIndex(idx, 0);
