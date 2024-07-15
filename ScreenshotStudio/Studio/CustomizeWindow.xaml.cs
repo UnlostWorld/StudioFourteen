@@ -1,18 +1,14 @@
 ﻿namespace ScreenshotStudio.Studio;
 
-using ScreenshotStudio.Structs;
-using ScreenshotStudio.Windows;
-using ScreenshotStudio.Services;
-using ScreenshotStudio.GameData.Excel;
-using ScreenshotStudio.GameData;
-using ScreenshotStudio.Plugin;
-using System.Collections.Generic;
 using Dalamud.Game.ClientState.Objects.Enums;
-using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
-using ScreenshotStudio.Utilities;
-using FFXIVClientStructs.FFXIV.Common.Lua;
-using ScreenshotStudio.Structs.Extensions;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using ScreenshotStudio.GameData;
+using ScreenshotStudio.GameData.Excel;
+using ScreenshotStudio.Services;
+using ScreenshotStudio.Utilities;
+using ScreenshotStudio.Windows;
+using System.Collections.Generic;
+using System.Windows;
 
 public partial class CustomizeWindow : ActorWindow
 {
@@ -23,6 +19,7 @@ public partial class CustomizeWindow : ActorWindow
 	public DataSheet<Tribe>? Tribes => this.Services.GameData.GetSheet<Tribe>();
 
 	public IEnumerable<Race?>? AvailableRaces => this.Services.GameData.GetSheet<Race>()?.GetFrom(1);
+	[AutoNotify] public unsafe bool CanRevert => this.Services.ActorAppearanceBackup.CanRestore(this.Actor);
 
 	[AutoNotify]
 	public unsafe CharaMakeType? MakeType
@@ -349,7 +346,14 @@ public partial class CustomizeWindow : ActorWindow
 	}
 
 	public unsafe byte GetCustomizeValue(CustomizeIndex option) => this.Actor->GetCustomizeValue(option);
-	public unsafe bool SetCustomizeValue(CustomizeIndex option, byte value, bool apply = true) => this.Actor->SetCustomizeValue(option, value, Structs.Actor.UpdateSource.Interface, apply);
+
+	public unsafe void SetCustomizeValue(CustomizeIndex option, byte value, bool apply = true)
+	{
+		Threads.RunOnFrameworkThread(() =>
+		{
+			this.Actor->SetCustomizeValue(option, value, Structs.Actor.UpdateSource.Interface, apply);
+		});
+	}
 
 	public unsafe void UpdateCustomize(bool redraw)
 	{
@@ -357,5 +361,10 @@ public partial class CustomizeWindow : ActorWindow
 		{
 			ActorWindow.GetTarget()->UpdateCustomize(redraw, Structs.Actor.UpdateSource.Interface);
 		});
+	}
+
+	private unsafe void OnRevertClicked(object sender, RoutedEventArgs e)
+	{
+		this.Services.ActorAppearanceBackup.Restore(this.Actor);
 	}
 }
