@@ -28,12 +28,18 @@
 			<sys:Double x:Key="ButtonWidth">100</sys:Double>
 		</StackPanel.Resources>
 
+		<Button
+			Width="32"
+			Click="OnAddActorClicked"
+			ToolTip="{DynamicResource LOC_Target_CreateActor}">
+			<wpfUtils:IconBlock Icon="UserPlus" />
+		</Button>
+
 		<Border
 			Margin="1"
 			Style="{DynamicResource WpfUtilsControlBorder}">
-			<ItemsControl
-				MinWidth="{StaticResource ButtonWidth}"
-				ItemsSource="{Binding Actors}">
+
+			<ItemsControl ItemsSource="{Binding Actors}">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
 						<StackPanel Orientation="Horizontal" />
@@ -105,14 +111,15 @@
 
 		<Button
 			Width="32"
-			Click="OnAddActorClicked"
-			ToolTip="{DynamicResource LOC_Target_CreateActor}">
-			<wpfUtils:IconBlock Icon="UserPlus" />
-		</Button>
-
-		<Button
-			Width="32"
-			Click="OnRemoveActorClicked">
+			Click="OnRemoveActorClicked"
+			IsEnabled="{Binding Target, Converter={StaticResource NotNullToBoolConverter}}">
+			<Button.ToolTip>
+				<TextBlock>
+					<Run Text="{DynamicResource LOC_Target_DeleteActor}" />
+					<Run Text=" - " />
+					<Run Text="{Binding Target.Name, Mode=OneWay}" />
+				</TextBlock>
+			</Button.ToolTip>
 			<wpfUtils:IconBlock Icon="TrashAlt" />
 		</Button>
 

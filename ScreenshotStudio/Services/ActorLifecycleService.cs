@@ -17,6 +17,7 @@ using System.Linq;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using ScreenshotStudio.Structs;
 using ScreenshotStudio.Utilities;
+using Dalamud.Game.ClientState.Objects.Types;
 
 public class ActorLifecycleService : ServiceBase
 {
@@ -69,24 +70,42 @@ public class ActorLifecycleService : ServiceBase
 		return base.Tick();
 	}
 
-	public unsafe void Create(IActorAppearance? appearance = null)
+	public unsafe Actor* Create(IActorAppearance? appearance = null)
 	{
+		Threads.VerifyFrameworkThread();
+
 		if (!this.CanSpawn)
-			return;
+			return null;
 
-		Threads.RunOnFrameworkThread(() =>
+		string name = "Actor";
+		if (appearance != null && !string.IsNullOrEmpty(appearance.Name))
+			name = appearance.Name;
+
+		Actor* actor = this.Spawn(name);
+
+		if (actor != null && appearance != null)
 		{
-			string name = "Actor";
-			if (appearance != null && !string.IsNullOrEmpty(appearance.Name))
-				name = appearance.Name;
+			appearance?.Apply(actor);
+		}
 
-			Actor* pActor = this.Spawn(name);
+		return actor;
+	}
 
-			if (pActor != null && appearance != null)
+	public unsafe bool Destroy(Actor* actor)
+	{
+		ClientObjectManager* com = ClientObjectManager.Instance();
+		uint idx = com->GetIndexByObject((GameObject*)actor);
+		if (idx != 0xFFFFFFFF)
+		{
+			Threads.RunOnFrameworkThread(() =>
 			{
-				appearance?.Apply(pActor);
-			}
-		});
+				com->DeleteObjectByIndex((ushort)idx, 0);
+			});
+
+			return true;
+		}
+
+		return false;
 	}
 
 	public unsafe void DestroyAllCreated()
@@ -111,19 +130,6 @@ public class ActorLifecycleService : ServiceBase
 
 		CreatedIndexes.Clear();
 	}
-
-	/*public unsafe bool DestroyGameObject(GameObject* gameObject)
-	{
-		ClientObjectManager* com = ClientObjectManager.Instance();
-		uint idx = com->GetIndexByObject(gameObject);
-		if (idx != 0xFFFFFFFF)
-		{
-			com->DeleteObjectByIndex((ushort)idx, 0);
-			return true;
-		}
-
-		return false;
-	}*/
 
 	private unsafe void Attach()
 	{

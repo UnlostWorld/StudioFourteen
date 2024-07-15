@@ -7,9 +7,11 @@ using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Structs;
 using ScreenshotStudio.Tags;
+using ScreenshotStudio.Utilities;
 using ScreenshotStudio.Windows;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
 
 using NativeObject = FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject;
@@ -26,8 +28,24 @@ public partial class TargetPanel : DockPanel
 
 	public List<ActorViewModel> Actors { get; init; } = new();
 
+	[AutoNotify] public bool IsInGPose => this.Services.Studio.IsOpenAndInGPose;
+
 	[AutoNotify]
-	public bool IsInGPose => this.Services.Studio.IsOpenAndInGPose;
+	public ActorViewModel? Target
+	{
+		get
+		{
+			foreach (ActorViewModel vm in this.Actors)
+			{
+				if (vm.IsCurrent)
+				{
+					return vm;
+				}
+			}
+
+			return null;
+		}
+	}
 
 	protected override void OnFrameworkUpdate(IFramework framework)
 	{
@@ -54,13 +72,74 @@ public partial class TargetPanel : DockPanel
 				if (!isFinal)
 					return;
 
-				this.Services.ActorLifecycle.Create(appearance);
+				this.CreateActor(appearance);
 			});
 	}
 
-	private void OnRemoveActorClicked(object sender, RoutedEventArgs e)
+	private unsafe void CreateActor(IActorAppearance appearance)
 	{
-		this.Services.ActorLifecycle.DestroyAllCreated();
+		Threads.RunOnFrameworkThread(() =>
+		{
+			Actor* actor = this.Services.ActorLifecycle.Create(appearance);
+			int index = actor->GameObject.ObjectIndex;
+			this.SelectObject(index);
+		});
+	}
+
+	private unsafe void OnRemoveActorClicked(object sender, RoutedEventArgs e)
+	{
+		ActorViewModel? target = this.Target;
+		if (target == null)
+			return;
+
+		int index = this.Actors.IndexOf(target);
+		this.Services.ActorLifecycle.Destroy(target.Actor);
+		this.SelectNearest(index);
+	}
+
+	private void SelectNearest(int index)
+	{
+		Task.Run(async () =>
+		{
+			await Task.Delay(100);
+
+			for (int i = index; i < this.Actors.Count; i++)
+			{
+				if (!this.Actors[i].IsValid)
+					continue;
+
+				this.Actors[i].IsCurrent = true;
+				break;
+			}
+
+			if (this.Target == null)
+			{
+				for (int i = index; i >= 0; i--)
+				{
+					if (!this.Actors[i].IsValid)
+						continue;
+
+					this.Actors[i].IsCurrent = true;
+					break;
+				}
+			}
+		});
+	}
+
+	private void SelectObject(int index)
+	{
+		Task.Run(async () =>
+		{
+			await Task.Delay(300);
+
+			foreach (ActorViewModel vm in this.Actors)
+			{
+				if (vm.ObjectTableIndex == index)
+				{
+					vm.IsCurrent = true;
+				}
+			}
+		});
 	}
 }
 
@@ -105,10 +184,15 @@ public unsafe class ActorViewModel : ViewModel
 
 		set
 		{
-			if (!this.IsValid)
-				return;
+			Threads.RunOnFrameworkThread(() =>
+			{
+				this.Address = DalamudServices.ObjectTable?.GetObjectAddress(this.ObjectTableIndex) ?? IntPtr.Zero;
 
-			TargetSystem.Instance()->GPoseTarget = (NativeObject*)this.Actor;
+				if (!this.IsValid)
+					return;
+
+				TargetSystem.Instance()->GPoseTarget = (NativeObject*)this.Actor;
+			});
 		}
 	}
 

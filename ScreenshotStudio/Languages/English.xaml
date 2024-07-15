@@ -46,7 +46,7 @@
 	<sys:String x:Key="PoseGuiFlipSidesNotflipped">Facing Away</sys:String>
 
 	<sys:String x:Key="LOC_Target_CreateActor">Add a new character</sys:String>
-
+	<sys:String x:Key="LOC_Target_DeleteActor">Remove character</sys:String>
 
 	<sys:String x:Key="LOC_Revert">Revert</sys:String>
 	<sys:String x:Key="LOC_Apply">Apply</sys:String>
