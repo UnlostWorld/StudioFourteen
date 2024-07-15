@@ -72,6 +72,7 @@
 		<ControlTemplate.Triggers>
 			<Trigger Property="IsMouseOver" Value="True">
 				<Trigger.EnterActions>
+					<StopStoryboard BeginStoryboardName="IsEnabledEnterStory" />
 					<StopStoryboard BeginStoryboardName="IsMouseOverExitStory" />
 					<StopStoryboard BeginStoryboardName="PressedInEnterStory" />
 					<StopStoryboard BeginStoryboardName="PressedInExitStory" />
@@ -116,6 +117,7 @@
 					</BeginStoryboard>
 				</Trigger.EnterActions>
 				<Trigger.ExitActions>
+					<StopStoryboard BeginStoryboardName="IsEnabledEnterStory" />
 					<StopStoryboard BeginStoryboardName="IsMouseOverEnterStory" />
 					<StopStoryboard BeginStoryboardName="PressedInEnterStory" />
 					<StopStoryboard BeginStoryboardName="PressedInExitStory" />
@@ -137,6 +139,7 @@
 
 			<Trigger Property="IsPressed" Value="True">
 				<Trigger.EnterActions>
+					<StopStoryboard BeginStoryboardName="IsEnabledEnterStory" />
 					<StopStoryboard BeginStoryboardName="IsMouseOverExitStory" />
 					<StopStoryboard BeginStoryboardName="IsMouseOverEnterStory" />
 					<StopStoryboard BeginStoryboardName="PressedInExitStory" />
@@ -177,6 +180,7 @@
 					</BeginStoryboard>
 				</Trigger.EnterActions>
 				<Trigger.ExitActions>
+					<StopStoryboard BeginStoryboardName="IsEnabledEnterStory" />
 					<StopStoryboard BeginStoryboardName="IsMouseOverExitStory" />
 					<StopStoryboard BeginStoryboardName="IsMouseOverEnterStory" />
 					<StopStoryboard BeginStoryboardName="PressedInEnterStory" />
@@ -217,6 +221,51 @@
 					</BeginStoryboard>
 				</Trigger.ExitActions>
 			</Trigger>
+
+			<Trigger Property="IsEnabled" Value="True">
+				<Trigger.EnterActions>
+					<BeginStoryboard x:Name="IsEnabledEnterStory">
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="ColorWheelTransform"
+								Storyboard.TargetProperty="Angle"
+								From="0"
+								To="1800"
+								Duration="0:00:01.000">
+								<DoubleAnimation.EasingFunction>
+									<ExponentialEase EasingMode="EaseInOut" />
+								</DoubleAnimation.EasingFunction>
+							</DoubleAnimation>
+
+							<DoubleAnimationUsingKeyFrames
+								Storyboard.TargetName="MeteorTransform"
+								Storyboard.TargetProperty="ScaleX"
+								Duration="0:00:01.000">
+								<EasingDoubleKeyFrame
+									KeyTime="0:00:00.000"
+									Value="1">
+									<EasingDoubleKeyFrame.EasingFunction>
+										<ExponentialEase EasingMode="EaseInOut" />
+									</EasingDoubleKeyFrame.EasingFunction>
+								</EasingDoubleKeyFrame>
+
+								<EasingDoubleKeyFrame
+									KeyTime="0:00:00.500"
+									Value="1.15">
+									<EasingDoubleKeyFrame.EasingFunction>
+										<ExponentialEase EasingMode="EaseInOut" />
+									</EasingDoubleKeyFrame.EasingFunction>
+								</EasingDoubleKeyFrame>
+
+								<EasingDoubleKeyFrame
+									KeyTime="0:00:01.000"
+									Value="1.1" />
+							</DoubleAnimationUsingKeyFrames>
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.EnterActions>
+			</Trigger>
+
 		</ControlTemplate.Triggers>
 	</ControlTemplate>
 
