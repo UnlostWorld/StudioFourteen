@@ -60,7 +60,8 @@
 
 						<Grid
 							x:Name="Content"
-							Grid.Column="1">
+							Grid.Column="1"
+							Background="Transparent">
 
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="Auto" />
