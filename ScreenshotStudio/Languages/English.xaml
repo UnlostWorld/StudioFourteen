@@ -23,6 +23,7 @@
 	<sys:String x:Key="LOC_Customize">Customize</sys:String>
 	<sys:String x:Key="LOC_Gear">Gear</sys:String>
 	<sys:String x:Key="LOC_ShaderParameters">Shader Parameters</sys:String>
+	<sys:String x:Key="LOC_Expression">Expression</sys:String>
 	<sys:String x:Key="LOC_Pose">Pose</sys:String>
 	<sys:String x:Key="LOC_Settings">Settings</sys:String>
 	<sys:String x:Key="LOC_SaveCharacter">Save Character</sys:String>

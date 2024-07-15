@@ -85,27 +85,36 @@
 									Height="32"
 									IsChecked="{Binding IsInGPose}"
 									ToolTip="{DynamicResource LOC_ToggleGPose}">
-									<!--<wpfUtils:IconBlock Icon="Video">
-										<wpfUtils:IconBlock.LayoutTransform>
-											<ScaleTransform ScaleX="-1" ScaleY="0.8" />
-										</wpfUtils:IconBlock.LayoutTransform>
-									</wpfUtils:IconBlock>-->
-									<controls:XivTexImage
-										Margin="3"
-										Path="ui/icon/061000/061546.tex" />
+
+									<Polygon Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}, Path=Foreground}">
+										<Polygon.Points>
+											0,0
+											0,8
+											1,8
+											5,4
+											5,7
+											6,8
+											15,8
+											16,7
+											16,1
+											15,0
+											6,0
+											5,1
+											5,4
+											1,0
+										</Polygon.Points>
+									</Polygon>
 								</ToggleButton>
 
 								<Line />
 
 								<ToggleButton
-									x:Name="LibraryButton"
 									IsChecked="{Binding IsLibraryOpen}"
 									ToolTip="{DynamicResource LOC_Library}">
 									<wpfUtils:IconBlock Icon="Books" />
 								</ToggleButton>
 
 								<ToggleButton
-									x:Name="ZoneButton"
 									IsChecked="{Binding IsZoneOpen}"
 									IsEnabled="False"
 									ToolTip="{DynamicResource LOC_Zone}">
@@ -113,7 +122,6 @@
 								</ToggleButton>
 
 								<ToggleButton
-									x:Name="CameraButton"
 									IsChecked="{Binding IsCameraOpen}"
 									IsEnabled="False"
 									ToolTip="{DynamicResource LOC_Camera}">
@@ -123,21 +131,18 @@
 								<Line />
 
 								<ToggleButton
-									x:Name="CustomizeButton"
 									IsChecked="{Binding IsCustomizeOpen}"
 									ToolTip="{DynamicResource LOC_Customize}">
 									<wpfUtils:IconBlock Icon="UserEdit" />
 								</ToggleButton>
 
 								<ToggleButton
-									x:Name="GearButton"
 									IsChecked="{Binding IsGearOpen}"
 									ToolTip="{DynamicResource LOC_Gear}">
 									<wpfUtils:IconBlock Icon="HelmetBattle" />
 								</ToggleButton>
 
 								<ToggleButton
-									x:Name="ShaderButton"
 									IsChecked="{Binding IsShadersOpen}"
 									IsEnabled="False"
 									ToolTip="{DynamicResource LOC_ShaderParameters}">
@@ -145,7 +150,12 @@
 								</ToggleButton>
 
 								<ToggleButton
-									x:Name="PoseButton"
+									IsEnabled="False"
+									ToolTip="{DynamicResource LOC_Expression}">
+									<wpfUtils:IconBlock Icon="FaceGrinHearts" />
+								</ToggleButton>
+
+								<ToggleButton
 									IsChecked="{Binding IsPoseOpen}"
 									IsEnabled="False"
 									ToolTip="{DynamicResource LOC_Pose}">
