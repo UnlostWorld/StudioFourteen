@@ -1,14 +1,24 @@
 ﻿namespace ScreenshotStudio.Services;
 
-using ScreenshotStudio.Windows;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
+
+using Panel = ScreenshotStudio.Windows.Panel;
 
 public class PanelService : ServiceBase
 {
 	private readonly List<Panel> openPanels = new List<Panel>();
 	private readonly Dictionary<Type, Panel> lastOpenPanels = new();
+
+	public override Task Initialize()
+	{
+		EventManager.RegisterClassHandler(typeof(FrameworkElement), FrameworkElement.LoadedEvent, new RoutedEventHandler((s, e) => this.OnLoaded(s, e)));
+
+		return base.Initialize();
+	}
 
 	public void OnPanelOpened(Panel panel)
 	{
@@ -77,5 +87,10 @@ public class PanelService : ServiceBase
 
 			await panel.CloseAsync();
 		}
+	}
+
+	private void OnLoaded(object s, RoutedEventArgs e)
+	{
+		ToolTipService.SetShowOnDisabled((DependencyObject)e.OriginalSource, true);
 	}
 }
