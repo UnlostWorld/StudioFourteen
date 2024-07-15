@@ -32,12 +32,12 @@ public static class CustomizeDataExtensions
 		return self.Data[(int)option];
 	}
 
-	public static void SetValue(this CustomizeData self, CustomizeIndex option, byte value)
+	public static void SetValue(ref this CustomizeData self, CustomizeIndex option, byte value)
 	{
 		self.Data[(int)option] = value;
 	}
 
-	public static void Import(this CustomizeData self, CustomizeData other)
+	public static void Import(ref this CustomizeData self, CustomizeData other)
 	{
 		for (int i = 0; i < NumOptions; i++)
 		{
