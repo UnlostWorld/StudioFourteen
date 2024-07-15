@@ -4,6 +4,7 @@ using Dalamud.Plugin.Services;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Structs;
+using ScreenshotStudio.Utilities;
 using ScreenshotStudio.Windows;
 using System;
 using System.Windows;
@@ -59,7 +60,11 @@ public partial class ActorAppearanceActions : View
 		{
 			if (actionsView.IsLive && actionsView.Appearance != null)
 			{
-				actionsView.Appearance.Apply(actionsView.Actor);
+				IActorAppearance appearance = actionsView.Appearance;
+				Threads.RunOnFrameworkThread(() =>
+				{
+					appearance.Apply(ActorWindow.GetTarget());
+				});
 			}
 		}
 	}
@@ -99,7 +104,10 @@ public partial class ActorAppearanceActions : View
 
 		if (entry is IActorAppearance appearance)
 		{
-			appearance.Apply(this.Actor);
+			Threads.RunOnFrameworkThread(() =>
+			{
+				appearance.Apply(ActorWindow.GetTarget());
+			});
 		}
 	}
 
@@ -108,7 +116,11 @@ public partial class ActorAppearanceActions : View
 		if (this.Appearance == null)
 			return;
 
-		this.Appearance.Apply(this.Actor);
+		IActorAppearance appearance = this.Appearance;
+		Threads.RunOnFrameworkThread(() =>
+		{
+			appearance.Apply(ActorWindow.GetTarget());
+		});
 	}
 
 	private unsafe void OnRevertClicked(object sender, RoutedEventArgs e)
