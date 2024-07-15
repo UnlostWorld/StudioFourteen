@@ -68,7 +68,7 @@ public partial class GearWindow : ActorWindow
 
 				string searchTitle = $"{equip.Slot.GetDisplayName()} {ScreenshotStudio.Resources.Find("LOC_Equipment", "Equipment")}";
 
-				QuickSearch.Show<Item>(
+				LibraryModal.Show<Item>(
 					btn,
 					searchTitle,
 					defaultTags,
@@ -90,7 +90,7 @@ public partial class GearWindow : ActorWindow
 
 				string searchTitle = $"{weapon.Slot.GetDisplayName()} {ScreenshotStudio.Resources.Find("LOC_Weapon", "Weapon")}";
 
-				QuickSearch.Show<Item>(
+				LibraryModal.Show<Item>(
 					btn,
 					searchTitle,
 					defaultTags,
@@ -140,7 +140,7 @@ public partial class GearWindow : ActorWindow
 
 		string searchTitle = $"{equip.Slot} {ScreenshotStudio.Resources.Find("Dye", "Dye")}";
 
-		QuickSearch.Show<Stain>(
+		LibraryModal.Show<Stain>(
 			sender,
 			searchTitle,
 			defaultTags,

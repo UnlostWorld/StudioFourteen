@@ -62,7 +62,7 @@ public partial class TargetPanel : DockPanel
 		TagCollection defaultTags = new();
 		defaultTags.Add("Named");
 
-		QuickSearch.Show<IActorAppearance>(
+		LibraryModal.Show<IActorAppearance>(
 			sender,
 			"Create Actor",
 			defaultTags,

@@ -89,7 +89,7 @@ public partial class ZoneWindow : PanelWindow
 			return;
 
 		TagCollection defaultTags = new();
-		QuickSearch.Show<Territory>(
+		LibraryModal.Show<Territory>(
 			this,
 			"Change Zone",
 			defaultTags,

@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using WpfUtils;
 using WpfUtils.Extensions;
@@ -17,9 +16,9 @@ using WpfUtils.Utils;
 
 using Panel = ScreenshotStudio.Windows.Panel;
 
-public partial class QuickSearch : PanelWindow
+public partial class LibraryModal : PanelWindow
 {
-	private static QuickSearch? instance;
+	private static LibraryModal? instance;
 	private readonly FuncQueue searchQueue;
 
 	private Type? targetType;
@@ -27,7 +26,7 @@ public partial class QuickSearch : PanelWindow
 	private Action<object, bool>? selectionChanged;
 	private bool isLoading = false;
 
-	public QuickSearch()
+	public LibraryModal()
 	{
 		instance = this;
 		this.InitializeComponent();
@@ -83,7 +82,7 @@ public partial class QuickSearch : PanelWindow
 		{
 			Task.Run(async () =>
 			{
-				await Panel.ShowAsync<QuickSearch>();
+				await Panel.ShowAsync<LibraryModal>();
 				instance?.OnShow<T>(placementTarget, title, defaultTags, current, selectionChanged);
 			});
 		}
