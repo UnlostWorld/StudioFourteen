@@ -4,43 +4,77 @@
 	xmlns:controls="clr-namespace:ScreenshotStudio.Controls"
 	xmlns:excel="clr-namespace:ScreenshotStudio.GameData.Excel"
 	xmlns:gameData="clr-namespace:ScreenshotStudio.GameData"
-	xmlns:library="clr-namespace:ScreenshotStudio.Library.Controls"
+	xmlns:library="clr-namespace:ScreenshotStudio.Library"
+	xmlns:libraryControls="clr-namespace:ScreenshotStudio.Library.Controls"
+	xmlns:services="clr-namespace:ScreenshotStudio.Services"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
 
-	<DataTemplate DataType="{x:Type excel:ResidentNpc}">
+	<DataTemplate DataType="{x:Type library:EntryBase}">
+		<TextBlock
+			Margin="3,0,0,0"
+			Text="{Binding Name}"
+			TextWrapping="Wrap" />
+	</DataTemplate>
+
+
+
+	<DataTemplate DataType="{x:Type excel:LibraryExcelRow}">
+		<TextBlock
+			Margin="3,0,0,0"
+			Text="{Binding Name}"
+			TextWrapping="Wrap" />
+	</DataTemplate>
+
+
+
+	<DataTemplate DataType="{x:Type gameData:DataSheetLibrarySource}">
 		<StackPanel>
 			<TextBlock
-				Grid.Row="0"
+				Margin="3,0,0,0"
 				Text="{Binding Name}"
 				TextWrapping="Wrap" />
 
 			<TextBlock
-				x:Name="DescriptionBlock"
-				Grid.Row="1"
 				Foreground="{DynamicResource ForegroundLightBrush}"
-				Text="{Binding Description}"
-				TextTrimming="CharacterEllipsis"
-				TextWrapping="NoWrap" />
+				Style="{DynamicResource Body}"
+				Text="{DynamicResource LOC_Library_DataSheetLibrarySourceDesc}" />
 		</StackPanel>
 	</DataTemplate>
 
 
 
-	<DataTemplate DataType="{x:Type excel:BattleNpc}">
-		<TextBlock
-			Grid.Row="0"
-			Text="{Binding Name}"
-			TextWrapping="Wrap" />
+	<DataTemplate DataType="{x:Type services:GroupPoseCharactersLibrarySource}">
+		<StackPanel>
+			<TextBlock
+				Margin="3,0,0,0"
+				Text="{Binding Name}"
+				TextWrapping="Wrap" />
+
+			<TextBlock
+				Foreground="{DynamicResource ForegroundLightBrush}"
+				Style="{DynamicResource Body}"
+				Text="{DynamicResource LOC_Library_GroupPoseCharactersLibrarySourceDesc}" />
+		</StackPanel>
 	</DataTemplate>
 
 
 
-	<DataTemplate DataType="{x:Type excel:EventNpc}">
-		<TextBlock
-			Grid.Row="0"
-			Text="{Binding Name}"
-			TextWrapping="Wrap" />
+	<DataTemplate DataType="{x:Type excel:ResidentNpc}">
+		<StackPanel>
+			<TextBlock
+				Margin="3,0,0,0"
+				Text="{Binding Name}"
+				TextWrapping="Wrap" />
+
+			<TextBlock
+				x:Name="DescriptionBlock"
+				Foreground="{DynamicResource ForegroundLightBrush}"
+				Style="{DynamicResource Body}"
+				Text="{Binding Description}"
+				TextTrimming="CharacterEllipsis"
+				TextWrapping="NoWrap" />
+		</StackPanel>
 	</DataTemplate>
 
 
@@ -63,6 +97,7 @@
 				x:Name="DescriptionBlock"
 				Grid.Row="1"
 				Foreground="{DynamicResource ForegroundLightBrush}"
+				Style="{DynamicResource Body}"
 				Text="{Binding Description}"
 				TextTrimming="CharacterEllipsis"
 				TextWrapping="NoWrap" />
@@ -85,12 +120,7 @@
 
 
 	<DataTemplate DataType="{x:Type excel:Stain}">
-		<Grid>
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="Auto" />
-			</Grid.RowDefinitions>
-
+		<StackPanel>
 			<TextBlock
 				Grid.Row="0"
 				Text="{Binding Name}"
@@ -99,10 +129,11 @@
 			<TextBlock
 				Grid.Row="1"
 				Foreground="{DynamicResource ForegroundLightBrush}"
+				Style="{DynamicResource Body}"
 				Text="{Binding Item.Description}"
 				TextTrimming="CharacterEllipsis"
 				TextWrapping="NoWrap" />
-		</Grid>
+		</StackPanel>
 	</DataTemplate>
 
 

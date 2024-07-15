@@ -98,7 +98,7 @@
 				<ContentPresenter
 					Grid.Row="0"
 					Grid.Column="1"
-					Height="64"
+					VerticalAlignment="Center"
 					Content="{Binding SelectedEntry}"
 					TextBlock.Foreground="{DynamicResource ForegroundBrush}">
 					<ContentPresenter.Resources>

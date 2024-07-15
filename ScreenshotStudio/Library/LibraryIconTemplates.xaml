@@ -5,10 +5,22 @@
 	xmlns:excel="clr-namespace:ScreenshotStudio.GameData.Excel"
 	xmlns:gameData="clr-namespace:ScreenshotStudio.GameData"
 	xmlns:library="clr-namespace:ScreenshotStudio.Library"
+	xmlns:services="clr-namespace:ScreenshotStudio.Services"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
+
+
+	<DataTemplate DataType="{x:Type library:EntryBase}" />
+
+
 
 	<DataTemplate DataType="{x:Type gameData:DataSheetLibrarySource}">
 		<controls:XivIconImage Id="065012" />
+	</DataTemplate>
+
+
+
+	<DataTemplate DataType="{x:Type services:GroupPoseCharactersLibrarySource}">
+		<controls:XivIconImage Id="061546" />
 	</DataTemplate>
 
 
@@ -39,6 +51,16 @@
 				Margin="10,0"
 				FontSize="72"
 				Icon="UserShield" />
+		</Viewbox>
+	</DataTemplate>
+
+
+
+	<DataTemplate DataType="{x:Type services:ActorBackupAppearance}">
+		<Viewbox>
+			<wpfUtils:IconBlock
+				FontSize="72"
+				Icon="User" />
 		</Viewbox>
 	</DataTemplate>
 
