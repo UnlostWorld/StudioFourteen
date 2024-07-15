@@ -2,6 +2,7 @@
 
 using ScreenshotStudio.Data;
 using ScreenshotStudio.GameData;
+using ScreenshotStudio.Input;
 using ScreenshotStudio.Library;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Utilities;
@@ -22,6 +23,7 @@ public class ServiceManager : ServiceManagerBase
 	public GroupPoseService GroupPose { get; init; } = new();
 	public ActorAppearanceBackupService ActorAppearanceBackup { get; init; } = new();
 	public LibraryService Library { get; init; } = new();
+	public InputService Input { get; init; } = new();
 
 	protected override void OnStart()
 	{
