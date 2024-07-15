@@ -238,6 +238,11 @@ public abstract class GearViewModelBase : ViewModel
 	protected unsafe ref DrawDataContainer DrawData => ref this.window.Actor->DrawData;
 
 	public override bool ShouldTickAutoProperties() => this.window.ShouldTickAutoProperties();
+
+	public unsafe void BackupActor()
+	{
+		this.Services.ActorAppearanceBackup.Backup(this.window.Actor);
+	}
 }
 
 public class WeaponViewModel : GearViewModelBase
@@ -255,6 +260,7 @@ public class WeaponViewModel : GearViewModelBase
 		get => this.Weapon.ModelId.Id;
 		set
 		{
+			this.BackupActor();
 			this.Weapon.ModelId.Id = value;
 			this.ApplyChangeItem();
 		}
@@ -265,6 +271,7 @@ public class WeaponViewModel : GearViewModelBase
 		get => this.Weapon.ModelId.Type;
 		set
 		{
+			this.BackupActor();
 			this.Weapon.ModelId.Type = value;
 			this.ApplyChangeItem();
 		}
@@ -275,6 +282,7 @@ public class WeaponViewModel : GearViewModelBase
 		get => this.Weapon.ModelId.Variant;
 		set
 		{
+			this.BackupActor();
 			this.Weapon.ModelId.Variant = (byte)value;
 			this.ApplyChangeItem();
 		}
@@ -285,6 +293,7 @@ public class WeaponViewModel : GearViewModelBase
 		get => this.Weapon.ModelId.Stain0;
 		set
 		{
+			this.BackupActor();
 			this.Weapon.ModelId.Stain0 = value;
 			this.ApplyChangeItem();
 		}
@@ -295,6 +304,7 @@ public class WeaponViewModel : GearViewModelBase
 		get => this.Weapon.ModelId.Stain1;
 		set
 		{
+			this.BackupActor();
 			this.Weapon.ModelId.Stain1 = value;
 			this.ApplyChangeItem();
 		}
@@ -321,6 +331,7 @@ public class WeaponViewModel : GearViewModelBase
 			if (this.item != null)
 			{
 				// Submodels?
+				this.BackupActor();
 				this.Set = this.item.ModelSet;
 				this.Base = this.item.ModelBase;
 				this.Variant = (byte)this.item.ModelVariant;
@@ -361,6 +372,7 @@ public class ItemEquipViewModel : GearViewModelBase
 		get => this.ItemEquip.Id;
 		set
 		{
+			this.BackupActor();
 			this.ItemEquip.Id = value;
 			this.ApplyChangeItem();
 		}
@@ -371,6 +383,7 @@ public class ItemEquipViewModel : GearViewModelBase
 		get => this.ItemEquip.Variant;
 		set
 		{
+			this.BackupActor();
 			this.ItemEquip.Variant = (byte)value;
 			this.ApplyChangeItem();
 		}
@@ -381,6 +394,7 @@ public class ItemEquipViewModel : GearViewModelBase
 		get => this.ItemEquip.Stain0;
 		set
 		{
+			this.BackupActor();
 			this.ItemEquip.Stain0 = value;
 			this.ApplyChangeItem();
 		}
@@ -391,6 +405,7 @@ public class ItemEquipViewModel : GearViewModelBase
 		get => this.ItemEquip.Stain1;
 		set
 		{
+			this.BackupActor();
 			this.ItemEquip.Stain1 = value;
 			this.ApplyChangeItem();
 		}
@@ -417,6 +432,7 @@ public class ItemEquipViewModel : GearViewModelBase
 			if (this.item != null)
 			{
 				// Submodels?
+				this.BackupActor();
 				this.ItemEquip.Id = this.item.ModelBase;
 				this.ItemEquip.Variant = (byte)this.item.ModelVariant;
 				this.ApplyChangeItem();
