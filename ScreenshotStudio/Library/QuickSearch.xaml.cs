@@ -7,6 +7,7 @@ using ScreenshotStudio.Windows;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -68,17 +69,21 @@ public partial class QuickSearch : DockPanel
 		}
 	}
 
-	public async void OnInvoke()
+	public void OnInvoke()
 	{
-		await this.Dispatcher.MainThread();
-		this.Visibility = Visibility.Collapsed;
-		this.StudioButton.IsEnabled = false;
-
-		await Task.Delay(1000);
-
-		await this.Dispatcher.MainThread();
-		this.Visibility = Visibility.Visible;
-		this.StudioButton.IsEnabled = true;
+		this.Dispatcher.Invoke(() =>
+		{
+			if (this.Visibility == Visibility.Collapsed)
+			{
+				this.Visibility = Visibility.Visible;
+				this.StudioButton.IsEnabled = true;
+			}
+			else
+			{
+				this.Visibility = Visibility.Collapsed;
+				this.StudioButton.IsEnabled = false;
+			}
+		});
 	}
 
 	public void OnShow<T>(string title, TagCollection defaultTags, T? current, Action<T, bool> selectionChanged)

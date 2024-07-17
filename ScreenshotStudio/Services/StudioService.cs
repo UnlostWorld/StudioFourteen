@@ -4,10 +4,12 @@ using ScreenshotStudio.Studio;
 using ScreenshotStudio.Windows;
 using System.Threading.Tasks;
 using System;
+using ScreenshotStudio.Library;
 
 public class StudioService : ServiceBase
 {
 	private NavigationPanel? navigationPanel;
+	private QuickSearch? quickSearchPanel;
 	private TargetPanel? targetPanel;
 
 	public bool IsOpen { get; private set; }
@@ -35,6 +37,7 @@ public class StudioService : ServiceBase
 		await base.Start();
 
 		this.targetPanel = await Panel.ShowAsync<TargetPanel>();
+		this.quickSearchPanel = await Panel.ShowAsync<QuickSearch>();
 	}
 
 	public void OpenStudio() => Task.Run(async () => await this.OpenStudioAsync());

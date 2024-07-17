@@ -5,11 +5,14 @@ namespace ScreenshotStudio.Input;
 
 using Dalamud.Game.ClientState.Keys;
 using Dalamud.Plugin.Services;
+using FFXIVClientStructs.FFXIV.Client.System.Framework;
+using FFXIVClientStructs.FFXIV.Client.UI;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
+using System.Reflection.Metadata.Ecma335;
+using Task = System.Threading.Tasks.Task;
 
 public class InputService : ServiceBase
 {
@@ -17,6 +20,9 @@ public class InputService : ServiceBase
 	private readonly Dictionary<KeyBindEvents, List<Action>> listeners = new();
 
 	public bool EnableKeyBinds => true;
+
+	public unsafe bool IsGameFocused => !Framework.Instance()->WindowInactive;
+	public unsafe bool IsGameTextInputActive => RaptureAtkModule.Instance()->AtkModule.IsTextInputActive();
 
 	public Dictionary<KeyBindEvents, KeyBind> Bindings { get; set; } = new()
 	{
@@ -89,7 +95,7 @@ public class InputService : ServiceBase
 
 	private void OnFrameworkUpdate(IFramework framework)
 	{
-		if (!this.Services.Studio.IsOpenAndInGPose)
+		if (!this.Services.Studio.IsOpen)
 			return;
 
 		if (!this.EnableKeyBinds)
@@ -107,6 +113,10 @@ public class InputService : ServiceBase
 		if (!this.Bindings.TryGetValue(evt, out bind) || bind == null)
 			return;
 
+		this.listeners.TryGetValue(evt, out List<Action>? listeners);
+		if (listeners == null || listeners.Count == 0)
+			return;
+
 		bool isDown = this.IsDown(bind);
 		bool wasDown = this.eventsDown.Contains(evt);
 
@@ -120,16 +130,22 @@ public class InputService : ServiceBase
 
 			try
 			{
-				// just released, invoke listeners
-				foreach (Action callback in this.listeners[evt])
+				// just pressed, invoke listeners
+				foreach (Action callback in listeners)
 				{
-					callback?.Invoke();
+					if (callback == null)
+						continue;
+
+					callback.Invoke();
 				}
 			}
-			catch (Exception)
+			catch (Exception ex)
 			{
+				this.Log.Error(ex, $"Error in event {evt} listener");
 			}
 		}
+
+		this.ResetBindKeys(bind);
 	}
 
 	private bool IsDown(KeyBind bind)
@@ -152,5 +168,13 @@ public class InputService : ServiceBase
 			down &= DalamudServices.KeyState[VirtualKey.SHIFT] == bind.Shift;
 
 		return down;
+	}
+
+	private void ResetBindKeys(KeyBind bind)
+	{
+		if (DalamudServices.KeyState == null)
+			return;
+
+		DalamudServices.KeyState[bind.Key] = false;
 	}
 }
