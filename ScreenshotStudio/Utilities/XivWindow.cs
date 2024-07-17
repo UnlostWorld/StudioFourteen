@@ -19,15 +19,23 @@ public static class XivWindow
 			if (Process == null)
 				return new Rect(0, 0, 0, 0);
 
-			const double titlebarHeight = 22;
+			const double titleBarHeight = 22;
 
 			GetWindowRect(Process.MainWindowHandle, out Win32Rect xivWindowRect);
 			size.X = xivWindowRect.Left;
-			size.Y = xivWindowRect.Top + titlebarHeight;
+			size.Y = xivWindowRect.Top + titleBarHeight;
 			size.Width = xivWindowRect.Right - size.X;
 			size.Height = xivWindowRect.Bottom - size.Y;
 			return size;
 		}
+	}
+
+	public static void Activate()
+	{
+		if (Process == null)
+			return;
+
+		SetForegroundWindow(Process.MainWindowHandle);
 	}
 
 	public static void Embed(Window wnd)
@@ -112,6 +120,9 @@ public static class XivWindow
 
 	[DllImport("user32.dll", SetLastError = true)]
 	private static extern bool GetWindowRect(IntPtr hwnd, out Win32Rect rect);
+
+	[DllImport("user32.dll", SetLastError = true)]
+	private static extern IntPtr SetForegroundWindow(IntPtr hWnd);
 
 	[StructLayout(LayoutKind.Sequential)]
 	public struct Win32Rect

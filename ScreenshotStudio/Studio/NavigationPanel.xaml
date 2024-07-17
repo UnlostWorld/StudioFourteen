@@ -39,6 +39,8 @@
 						x:Name="MainBorder"
 						Margin="14,30,0,0"
 						Background="{DynamicResource BackgroundBrush}"
+						BorderBrush="{DynamicResource BackgroundBrush}"
+						BorderThickness="1"
 						CornerRadius="0,0,6,6">
 
 						<Border.RenderTransform>
@@ -212,6 +214,13 @@
 					</Border>
 
 					<DataTemplate.Triggers>
+
+						<DataTrigger
+							Binding="{Binding IsActive, RelativeSource={RelativeSource AncestorType={x:Type Window}}}"
+							Value="True">
+							<Setter TargetName="MainBorder" Property="BorderBrush" Value="{DynamicResource TrimBrush}" />
+						</DataTrigger>
+
 						<DataTrigger
 							Binding="{Binding IsExpanded}"
 							Value="False">
