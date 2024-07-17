@@ -107,6 +107,25 @@ public abstract class GroupEntryBase : EntryBase
 
 	public void GetAllTags(ref TagCollection tags)
 	{
+		if (this.allEntries == null)
+			return;
+
+		foreach (IEntryBase entry in this.allEntries)
+		{
+			if (entry.Tags != null)
+			{
+				tags.AddRange(entry.Tags);
+			}
+
+			if (entry is GroupEntryBase dir)
+			{
+				dir.GetAllTags(ref tags);
+			}
+		}
+	}
+
+	public void GetFilteredTags(ref TagCollection tags)
+	{
 		if (this.FilteredEntries == null)
 			return;
 
@@ -119,7 +138,7 @@ public abstract class GroupEntryBase : EntryBase
 
 			if (entry is GroupEntryBase dir)
 			{
-				dir.GetAllTags(ref tags);
+				dir.GetFilteredTags(ref tags);
 			}
 		}
 	}

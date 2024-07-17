@@ -165,7 +165,7 @@ public partial class LibraryModal : PanelWindow
 		this.isLoading = true;
 
 		TagCollection tags = new();
-		this.Services.Library.Root.GetAllTags(ref tags);
+		this.Services.Library.Root.GetFilteredTags(ref tags);
 		this.AvailableTags.Replace(tags);
 
 		if (results != null)

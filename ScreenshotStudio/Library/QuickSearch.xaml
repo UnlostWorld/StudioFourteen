@@ -10,14 +10,16 @@
 	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Width="450"
-	Height="100"
+	Height="400"
 	CanActivate="True"
-	DockPosition="0.5, 0.2"
+	DockPosition="0.5, 0.5"
 	ShowBackground="False"
 	SizeToContent="Manual"
 	mc:Ignorable="d">
 
-	<Grid HorizontalAlignment="Center">
+	<Grid
+		Height="400"
+		HorizontalAlignment="Center">
 
 		<Grid.Resources>
 			<ResourceDictionary>
@@ -27,10 +29,164 @@
 
 				<BooleanToVisibilityConverter x:Key="B2V" />
 				<converters:InvertedBoolToVisibilityConverter x:Key="!B2V" />
+
+
+				<ControlTemplate
+					x:Key="ListBoxItemTemplate"
+					TargetType="{x:Type ListBoxItem}">
+
+					<Border
+						Margin="{TemplateBinding Margin}"
+						Background="Transparent"
+						BorderBrush="{TemplateBinding BorderBrush}"
+						BorderThickness="{TemplateBinding BorderThickness}"
+						ClipToBounds="{TemplateBinding ClipToBounds}"
+						ToolTip="{TemplateBinding Content}">
+						<Grid Background="Transparent">
+
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition />
+							</Grid.ColumnDefinitions>
+
+							<Border
+								x:Name="SelectionBorder"
+								Grid.ColumnSpan="2"
+								Opacity="0"
+								Style="{DynamicResource WpfUtilsSelectedBorder}" />
+
+							<Border
+								x:Name="HoverBorder"
+								Grid.Column="1"
+								Margin="1"
+								Background="{DynamicResource BackgroundLightBrush}"
+								BorderBrush="{DynamicResource BackgroundLightBrush}"
+								BorderThickness="1"
+								CornerRadius="3"
+								Opacity="0" />
+
+							<Grid
+								x:Name="Content"
+								Grid.Column="1"
+								Background="Transparent">
+
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition />
+								</Grid.ColumnDefinitions>
+
+								<ContentPresenter
+									Width="48"
+									Height="48"
+									Margin="3"
+									VerticalAlignment="Center"
+									Content="{Binding .}"
+									TextBlock.Foreground="{DynamicResource ForegroundBrush}">
+									<ContentPresenter.Resources>
+										<ResourceDictionary Source="./LibraryIconTemplates.xaml" />
+									</ContentPresenter.Resources>
+								</ContentPresenter>
+
+								<ContentPresenter
+									Grid.Column="1"
+									VerticalAlignment="Center"
+									Content="{Binding .}"
+									TextBlock.Foreground="{DynamicResource ForegroundBrush}">
+									<ContentPresenter.Resources>
+										<ResourceDictionary Source="./LibraryInfoTemplates.xaml" />
+									</ContentPresenter.Resources>
+								</ContentPresenter>
+
+
+							</Grid>
+
+							<ToggleButton
+								Height="Auto"
+								Margin="8,1,2,1"
+								VerticalAlignment="Stretch"
+								Background="Transparent">
+								<Grid>
+									<wpfUtils:IconBlock
+										Margin="6"
+										Foreground="{DynamicResource ForegroundLightBrush}"
+										Icon="Heart"
+										IconStyle="OutlineThin" />
+								</Grid>
+
+							</ToggleButton>
+						</Grid>
+					</Border>
+
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsEnabled" Value="False">
+							<Setter Property="Opacity" Value="0.5" />
+						</Trigger>
+
+						<DataTrigger
+							Binding="{Binding IsMouseOver, ElementName=Content}"
+							Value="True">
+							<DataTrigger.EnterActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation
+											Storyboard.TargetName="HoverBorder"
+											Storyboard.TargetProperty="Opacity"
+											To="1"
+											Duration="0:0:0.100" />
+									</Storyboard>
+								</BeginStoryboard>
+							</DataTrigger.EnterActions>
+
+							<DataTrigger.ExitActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation
+											Storyboard.TargetName="HoverBorder"
+											Storyboard.TargetProperty="Opacity"
+											From="1"
+											To="0"
+											Duration="0:0:0.250" />
+									</Storyboard>
+								</BeginStoryboard>
+							</DataTrigger.ExitActions>
+						</DataTrigger>
+
+						<Trigger Property="IsSelected" Value="True">
+							<Trigger.EnterActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation
+											Storyboard.TargetName="SelectionBorder"
+											Storyboard.TargetProperty="Opacity"
+											To="1"
+											Duration="0:0:0.100" />
+									</Storyboard>
+								</BeginStoryboard>
+							</Trigger.EnterActions>
+
+							<Trigger.ExitActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation
+											Storyboard.TargetName="SelectionBorder"
+											Storyboard.TargetProperty="Opacity"
+											To="0"
+											Duration="0:0:0.250" />
+									</Storyboard>
+								</BeginStoryboard>
+							</Trigger.ExitActions>
+						</Trigger>
+
+
+					</ControlTemplate.Triggers>
+
+				</ControlTemplate>
+
 			</ResourceDictionary>
 		</Grid.Resources>
 
 		<ContentPresenter
+			x:Name="SearchBar"
 			HorizontalAlignment="Left"
 			VerticalAlignment="Top"
 			Content="{Binding .}">
@@ -46,21 +202,50 @@
 							Background="{DynamicResource BackgroundBrush}"
 							Style="{DynamicResource WpfUtilsControlBorder}">
 
-							<tags:TagSelector
-								x:Name="SearchBox"
-								Grid.Row="0"
-								Height="32"
-								Margin="34,2,2,2"
-								AllTags="{Binding AvailableTags}"
-								OnDone="OnSearchDone"
-								Search="{Binding Search, Mode=TwoWay}"
-								Tags="{Binding TagFilter.Tags}" />
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto" />
+									<RowDefinition />
+								</Grid.RowDefinitions>
+
+								<tags:TagSelector
+									x:Name="SearchBox"
+									Grid.Row="0"
+									Height="32"
+									Margin="34,2,2,2"
+									AllTags="{Binding AvailableTags}"
+									OnDone="OnSearchDone"
+									Search="{Binding Search, Mode=TwoWay}"
+									Tags="{Binding TagFilter.Tags}" />
+
+								<Grid
+									x:Name="ResultsArea"
+									Grid.Row="1"
+									Height="0">
+									<ListBox
+										Margin="3"
+										ItemsSource="{Binding Results}"
+										KeyDown="OnResultsListKeyDown"
+										MouseDoubleClick="ResultsListDoubleClicked"
+										ScrollViewer.VerticalScrollBarVisibility="Visible"
+										SelectedItem="{Binding SelectedItem}"
+										VirtualizingPanel.VirtualizationMode="Recycling">
+										<ListBox.ItemContainerStyle>
+											<Style
+												BasedOn="{StaticResource WpfUtilsListBoxItem}"
+												TargetType="{x:Type ListBoxItem}">
+												<Setter Property="Template" Value="{StaticResource ListBoxItemTemplate}" />
+											</Style>
+										</ListBox.ItemContainerStyle>
+									</ListBox>
+								</Grid>
+							</Grid>
 						</Border>
 
 						<Button
 							Name="StudioButton"
 							HorizontalAlignment="Left"
-							VerticalAlignment="Center"
+							VerticalAlignment="Top"
 							IsHitTestVisible="False"
 							Style="{StaticResource StudioButton}" />
 					</Grid>
@@ -124,190 +309,23 @@
 								</BeginStoryboard>
 							</DataTrigger.ExitActions>
 						</DataTrigger>
+
+						<DataTrigger
+							Binding="{Binding Results.Count}"
+							Value="0">
+							<Setter TargetName="ResultsArea" Property="Height" Value="0" />
+						</DataTrigger>
+
+						<DataTrigger
+							Binding="{Binding Results.Count, Converter={StaticResource NotZeroToBool}}"
+							Value="True">
+							<Setter TargetName="ResultsArea" Property="Height" Value="300" />
+						</DataTrigger>
+
 					</DataTemplate.Triggers>
 
 				</DataTemplate>
 			</ContentPresenter.ContentTemplate>
 		</ContentPresenter>
-
-		<Popup
-			Margin="1"
-			AllowsTransparency="True"
-			IsOpen="False">
-			<Grid>
-				<Grid.Resources>
-					<converters:NotNullToBoolConverter x:Key="NotNullToBoolConverter" />
-
-					<ControlTemplate
-						x:Key="ListBoxItemTemplate"
-						TargetType="{x:Type ListBoxItem}">
-
-						<Border
-							Margin="{TemplateBinding Margin}"
-							Background="Transparent"
-							BorderBrush="{TemplateBinding BorderBrush}"
-							BorderThickness="{TemplateBinding BorderThickness}"
-							ClipToBounds="{TemplateBinding ClipToBounds}"
-							ToolTip="{TemplateBinding Content}">
-							<Grid Background="Transparent">
-
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="Auto" />
-									<ColumnDefinition />
-								</Grid.ColumnDefinitions>
-
-								<Border
-									x:Name="SelectionBorder"
-									Grid.ColumnSpan="2"
-									Opacity="0"
-									Style="{DynamicResource WpfUtilsSelectedBorder}" />
-
-								<Border
-									x:Name="HoverBorder"
-									Grid.Column="1"
-									Margin="1"
-									Background="{DynamicResource BackgroundLightBrush}"
-									BorderBrush="{DynamicResource BackgroundLightBrush}"
-									BorderThickness="1"
-									CornerRadius="3"
-									Opacity="0" />
-
-								<Grid
-									x:Name="Content"
-									Grid.Column="1"
-									Background="Transparent">
-
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition Width="Auto" />
-										<ColumnDefinition />
-									</Grid.ColumnDefinitions>
-
-									<ContentPresenter
-										Width="48"
-										Height="48"
-										Margin="3"
-										VerticalAlignment="Center"
-										Content="{Binding .}"
-										TextBlock.Foreground="{DynamicResource ForegroundBrush}">
-										<ContentPresenter.Resources>
-											<ResourceDictionary Source="./LibraryIconTemplates.xaml" />
-										</ContentPresenter.Resources>
-									</ContentPresenter>
-
-									<ContentPresenter
-										Grid.Column="1"
-										VerticalAlignment="Center"
-										Content="{Binding .}"
-										TextBlock.Foreground="{DynamicResource ForegroundBrush}">
-										<ContentPresenter.Resources>
-											<ResourceDictionary Source="./LibraryInfoTemplates.xaml" />
-										</ContentPresenter.Resources>
-									</ContentPresenter>
-
-
-								</Grid>
-
-								<ToggleButton
-									Height="Auto"
-									Margin="8,1,2,1"
-									VerticalAlignment="Stretch"
-									Background="Transparent">
-									<Grid>
-										<wpfUtils:IconBlock
-											Margin="6"
-											Foreground="{DynamicResource ForegroundLightBrush}"
-											Icon="Heart"
-											IconStyle="OutlineThin" />
-									</Grid>
-
-								</ToggleButton>
-							</Grid>
-						</Border>
-
-						<ControlTemplate.Triggers>
-							<Trigger Property="IsEnabled" Value="False">
-								<Setter Property="Opacity" Value="0.5" />
-							</Trigger>
-
-							<DataTrigger
-								Binding="{Binding IsMouseOver, ElementName=Content}"
-								Value="True">
-								<DataTrigger.EnterActions>
-									<BeginStoryboard>
-										<Storyboard>
-											<DoubleAnimation
-												Storyboard.TargetName="HoverBorder"
-												Storyboard.TargetProperty="Opacity"
-												To="1"
-												Duration="0:0:0.100" />
-										</Storyboard>
-									</BeginStoryboard>
-								</DataTrigger.EnterActions>
-
-								<DataTrigger.ExitActions>
-									<BeginStoryboard>
-										<Storyboard>
-											<DoubleAnimation
-												Storyboard.TargetName="HoverBorder"
-												Storyboard.TargetProperty="Opacity"
-												From="1"
-												To="0"
-												Duration="0:0:0.250" />
-										</Storyboard>
-									</BeginStoryboard>
-								</DataTrigger.ExitActions>
-							</DataTrigger>
-
-							<Trigger Property="IsSelected" Value="True">
-								<Trigger.EnterActions>
-									<BeginStoryboard>
-										<Storyboard>
-											<DoubleAnimation
-												Storyboard.TargetName="SelectionBorder"
-												Storyboard.TargetProperty="Opacity"
-												To="1"
-												Duration="0:0:0.100" />
-										</Storyboard>
-									</BeginStoryboard>
-								</Trigger.EnterActions>
-
-								<Trigger.ExitActions>
-									<BeginStoryboard>
-										<Storyboard>
-											<DoubleAnimation
-												Storyboard.TargetName="SelectionBorder"
-												Storyboard.TargetProperty="Opacity"
-												To="0"
-												Duration="0:0:0.250" />
-										</Storyboard>
-									</BeginStoryboard>
-								</Trigger.ExitActions>
-							</Trigger>
-
-
-						</ControlTemplate.Triggers>
-
-					</ControlTemplate>
-				</Grid.Resources>
-
-				<ListBox
-					x:Name="ResultsList"
-					Grid.Row="1"
-					ItemsSource="{Binding Results}"
-					KeyDown="OnResultsListKeyDown"
-					MouseDoubleClick="ResultsListDoubleClicked"
-					ScrollViewer.VerticalScrollBarVisibility="Visible"
-					SelectedItem="{Binding SelectedItem}">
-					<ListBox.ItemContainerStyle>
-						<Style
-							BasedOn="{StaticResource WpfUtilsListBoxItem}"
-							TargetType="{x:Type ListBoxItem}">
-							<Setter Property="Template" Value="{StaticResource ListBoxItemTemplate}" />
-						</Style>
-					</ListBox.ItemContainerStyle>
-				</ListBox>
-
-			</Grid>
-		</Popup>
 	</Grid>
 </windows:DockPanel>

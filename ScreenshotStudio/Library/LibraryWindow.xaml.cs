@@ -136,7 +136,7 @@ public partial class LibraryWindow : PanelWindow
 		}
 
 		TagCollection tags = new();
-		this.CurrentGroup.GetAllTags(ref tags);
+		this.CurrentGroup.GetFilteredTags(ref tags);
 		this.AvailableTags.Replace(tags);
 
 		////this.ResultsList.ScrollIntoView(this.SelectedItem);

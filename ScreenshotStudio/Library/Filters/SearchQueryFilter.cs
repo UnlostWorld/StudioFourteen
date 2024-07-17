@@ -31,6 +31,7 @@ public class SearchQueryFilter : FilterBase
 	public override void Clear()
 	{
 		this.Query = null;
+		this.search = null;
 	}
 
 	public override bool Filter(IEntryBase entry)
