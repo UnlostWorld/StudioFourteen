@@ -10,7 +10,6 @@
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	MinWidth="100"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
-	Loaded="OnLoaded"
 	mc:Ignorable="d">
 
 	<UserControl.Resources>

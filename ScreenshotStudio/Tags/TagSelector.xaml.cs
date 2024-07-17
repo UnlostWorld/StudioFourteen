@@ -49,6 +49,9 @@ public partial class TagSelector : UserControl, IComparer<Tag>, INotifyPropertyC
 		this.InitializeComponent();
 		this.ContentArea.DataContext = this;
 		this.tagSearchQueue = new(this.SearchAsync, 250);
+
+		this.Loaded += this.OnLoaded;
+		this.IsEnabledChanged += this.OnIsEnabledChanged;
 	}
 
 	public event PropertyChangedEventHandler? PropertyChanged;
@@ -91,6 +94,17 @@ public partial class TagSelector : UserControl, IComparer<Tag>, INotifyPropertyC
 
 	public int Compare(Tag? x, Tag? y) => string.Compare(x?.Name, y?.Name);
 
+	public async void SetFocus()
+	{
+		this.SearchTextBox.SetFocusToWindow();
+
+		await Task.Delay(1);
+		await this.Dispatcher.MainThread();
+
+		bool result = this.SearchTextBox.Focus();
+		this.SearchTextBox.CaretIndex = int.MaxValue;
+	}
+
 	protected void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
 	{
 		this.PropertyChanged?.Invoke(this, new(propertyName));
@@ -131,10 +145,6 @@ public partial class TagSelector : UserControl, IComparer<Tag>, INotifyPropertyC
 			this.SuggestTags.SortAndReplace(this.SuggestTags, this);
 			this.IsSuggestTags = this.SuggestTags.Count > 0;
 		}
-
-		Keyboard.Focus(this.SearchTextBox);
-		this.SearchTextBox.Focus();
-		this.SearchTextBox.CaretIndex = int.MaxValue;
 	}
 
 	private void RemoveTag(Tag tag)
@@ -206,6 +216,14 @@ public partial class TagSelector : UserControl, IComparer<Tag>, INotifyPropertyC
 		}
 	}
 
+	private void OnIsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
+	{
+		if (this.IsEnabled)
+		{
+			this.SetFocus();
+		}
+	}
+
 	private void OnTagSearchGotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
 	{
 		if (!string.IsNullOrEmpty(this.Search))
@@ -218,6 +236,8 @@ public partial class TagSelector : UserControl, IComparer<Tag>, INotifyPropertyC
 	{
 		this.SuggestTags.Clear();
 		this.IsSuggestTags = false;
+
+		this.OnDone?.Invoke(this, new());
 	}
 
 	private void OnTagSearchPreviewKeyDown(object sender, KeyEventArgs e)

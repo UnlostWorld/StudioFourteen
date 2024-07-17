@@ -11,6 +11,7 @@
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Width="450"
 	Height="100"
+	CanActivate="True"
 	DockPosition="0.5, 0.2"
 	ShowBackground="False"
 	SizeToContent="Manual"
@@ -29,35 +30,109 @@
 			</ResourceDictionary>
 		</Grid.Resources>
 
-
-
-		<Border
-			Margin="26,18,0,0"
-			VerticalAlignment="Center"
-			Background="{DynamicResource BackgroundBrush}"
-			IsHitTestVisible="False"
-			Style="{DynamicResource WpfUtilsControlBorder}">
-
-			<tags:TagSelector
-				Grid.Row="0"
-				Width="300"
-				Height="32"
-				Margin="34,2,2,2"
-				HorizontalAlignment="Left"
-				AllTags="{Binding AvailableTags}"
-				Search="{Binding Search, Mode=TwoWay}"
-				Tags="{Binding TagFilter.Tags}" />
-		</Border>
-
-		<Button
-			Name="StudioButton"
+		<ContentPresenter
 			HorizontalAlignment="Left"
-			VerticalAlignment="Center"
-			IsHitTestVisible="False"
-			Style="{StaticResource StudioButton}" />
+			VerticalAlignment="Top"
+			Content="{Binding .}">
+
+			<ContentPresenter.ContentTemplate>
+				<DataTemplate DataType="{x:Type local:QuickSearch}">
+					<Grid>
+						<Border
+							x:Name="InputBorder"
+							Width="300"
+							Margin="26,18,0,0"
+							VerticalAlignment="Center"
+							Background="{DynamicResource BackgroundBrush}"
+							Style="{DynamicResource WpfUtilsControlBorder}">
+
+							<tags:TagSelector
+								x:Name="SearchBox"
+								Grid.Row="0"
+								Height="32"
+								Margin="34,2,2,2"
+								AllTags="{Binding AvailableTags}"
+								OnDone="OnSearchDone"
+								Search="{Binding Search, Mode=TwoWay}"
+								Tags="{Binding TagFilter.Tags}" />
+						</Border>
+
+						<Button
+							Name="StudioButton"
+							HorizontalAlignment="Left"
+							VerticalAlignment="Center"
+							IsHitTestVisible="False"
+							Style="{StaticResource StudioButton}" />
+					</Grid>
+
+					<DataTemplate.Triggers>
+						<DataTrigger
+							Binding="{Binding IsQuickSearchOpen}"
+							Value="False">
+							<Setter Property="Opacity" Value="0" />
+							<Setter Property="IsEnabled" Value="False" />
+							<Setter Property="IsHitTestVisible" Value="False" />
+							<Setter TargetName="SearchBox" Property="IsEnabled" Value="False" />
+						</DataTrigger>
+						<DataTrigger
+							Binding="{Binding IsQuickSearchOpen}"
+							Value="True">
+
+							<Setter Property="IsEnabled" Value="True" />
+							<Setter Property="IsHitTestVisible" Value="True" />
+							<Setter TargetName="SearchBox" Property="IsEnabled" Value="True" />
+
+							<DataTrigger.EnterActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation
+											Storyboard.TargetProperty="Opacity"
+											From="0"
+											To="1"
+											Duration="0:00:00.250">
+											<DoubleAnimation.EasingFunction>
+												<SineEase EasingMode="EaseOut" />
+											</DoubleAnimation.EasingFunction>
+										</DoubleAnimation>
+
+										<DoubleAnimation
+											Storyboard.TargetName="InputBorder"
+											Storyboard.TargetProperty="Width"
+											From="0"
+											To="300"
+											Duration="0:00:00.200">
+											<DoubleAnimation.EasingFunction>
+												<SineEase EasingMode="EaseOut" />
+											</DoubleAnimation.EasingFunction>
+										</DoubleAnimation>
+									</Storyboard>
+								</BeginStoryboard>
+							</DataTrigger.EnterActions>
+							<DataTrigger.ExitActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation
+											Storyboard.TargetProperty="Opacity"
+											From="1"
+											To="0"
+											Duration="0:00:00.250">
+											<DoubleAnimation.EasingFunction>
+												<SineEase EasingMode="EaseIn" />
+											</DoubleAnimation.EasingFunction>
+										</DoubleAnimation>
+									</Storyboard>
+								</BeginStoryboard>
+							</DataTrigger.ExitActions>
+						</DataTrigger>
+					</DataTemplate.Triggers>
+
+				</DataTemplate>
+			</ContentPresenter.ContentTemplate>
+		</ContentPresenter>
 
 		<Popup
 			Margin="1"
+			AllowsTransparency="True"
 			IsOpen="False">
 			<Grid>
 				<Grid.Resources>

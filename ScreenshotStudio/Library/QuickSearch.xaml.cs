@@ -44,6 +44,13 @@ public partial class QuickSearch : DockPanel
 	[AutoNotify] public TagCollection AvailableTags { get; init; } = new();
 	[AutoNotify] public string SearchTitle { get; set; } = "Library Search";
 
+	[AutoNotify]
+	public bool IsQuickSearchOpen
+	{
+		get;
+		set;
+	}
+
 	public string? Search
 	{
 		get => this.SearchQueryFilter.Search;
@@ -73,16 +80,8 @@ public partial class QuickSearch : DockPanel
 	{
 		this.Dispatcher.Invoke(() =>
 		{
-			if (this.Visibility == Visibility.Collapsed)
-			{
-				this.Visibility = Visibility.Visible;
-				this.StudioButton.IsEnabled = true;
-			}
-			else
-			{
-				this.Visibility = Visibility.Collapsed;
-				this.StudioButton.IsEnabled = false;
-			}
+			this.Activate();
+			this.IsQuickSearchOpen = true;
 		});
 	}
 
@@ -175,5 +174,10 @@ public partial class QuickSearch : DockPanel
 	private void ResultsListDoubleClicked(object sender, MouseButtonEventArgs e)
 	{
 		this.OnConfirmClicked(sender, null);
+	}
+
+	private void OnSearchDone(object sender, RoutedEventArgs e)
+	{
+		this.IsQuickSearchOpen = false;
 	}
 }
