@@ -1,5 +1,6 @@
 ﻿namespace ScreenshotStudio.Utilities;
 
+using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -36,6 +37,14 @@ public static class XivWindow
 			return;
 
 		SetForegroundWindow(Process.MainWindowHandle);
+	}
+
+	public static bool IsActive()
+	{
+		if (Process == null)
+			return false;
+
+		return GetForegroundWindow() == Process.MainWindowHandle;
 	}
 
 	public static void Embed(Window wnd)
@@ -123,6 +132,9 @@ public static class XivWindow
 
 	[DllImport("user32.dll", SetLastError = true)]
 	private static extern IntPtr SetForegroundWindow(IntPtr hWnd);
+
+	[DllImport("user32.dll", SetLastError = true)]
+	private static extern IntPtr GetForegroundWindow();
 
 	[StructLayout(LayoutKind.Sequential)]
 	public struct Win32Rect

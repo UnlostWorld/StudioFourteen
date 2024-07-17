@@ -9,20 +9,23 @@ using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
+using ScreenshotStudio.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Reflection.Metadata.Ecma335;
+using System.Windows.Input;
 using Task = System.Threading.Tasks.Task;
 
 public class InputService : ServiceBase
 {
 	private readonly HashSet<KeyBindEvents> eventsDown = new();
 	private readonly Dictionary<KeyBindEvents, List<Action>> listeners = new();
+	private readonly HashSet<VirtualKey> windowsKeys = new();
 
 	public bool EnableKeyBinds => true;
 
-	public unsafe bool IsGameFocused => !Framework.Instance()->WindowInactive;
-	public unsafe bool IsGameTextInputActive => RaptureAtkModule.Instance()->AtkModule.IsTextInputActive();
+	public bool XivWindowIsActive { get; private set; }
+	public bool IsTextInputActive { get; private set; }
 
 	public Dictionary<KeyBindEvents, KeyBind> Bindings { get; set; } = new()
 	{
@@ -93,10 +96,37 @@ public class InputService : ServiceBase
 		return bind;
 	}
 
-	private void OnFrameworkUpdate(IFramework framework)
+	public void SetKeyDown(Key key, bool isDown)
+	{
+		VirtualKey virtualKey = (VirtualKey)KeyInterop.VirtualKeyFromKey(key);
+
+		// FFXIV doesn't support L/R modifiers, so neither do we. =(
+		if (virtualKey == VirtualKey.LSHIFT || virtualKey == VirtualKey.RSHIFT)
+			virtualKey = VirtualKey.SHIFT;
+
+		if (virtualKey == VirtualKey.LCONTROL || virtualKey == VirtualKey.RCONTROL)
+			virtualKey = VirtualKey.CONTROL;
+
+		if (virtualKey == VirtualKey.LMENU || virtualKey == VirtualKey.RMENU)
+			virtualKey = VirtualKey.MENU;
+
+		if (isDown)
+		{
+			this.windowsKeys.Add(virtualKey);
+		}
+		else
+		{
+			this.windowsKeys.Remove(virtualKey);
+		}
+	}
+
+	private unsafe void OnFrameworkUpdate(IFramework framework)
 	{
 		if (!this.Services.Studio.IsOpen)
 			return;
+
+		this.XivWindowIsActive = XivWindow.IsActive();
+		this.IsTextInputActive = RaptureAtkModule.Instance()->AtkModule.IsTextInputActive();
 
 		if (!this.EnableKeyBinds)
 			return;
@@ -145,29 +175,47 @@ public class InputService : ServiceBase
 			}
 		}
 
-		this.ResetBindKeys(bind);
+		if (isDown)
+		{
+			this.ResetBindKeys(bind);
+		}
 	}
 
 	private bool IsDown(KeyBind bind)
 	{
-		if (DalamudServices.KeyState == null)
-			return false;
-
 		if (bind.Key == VirtualKey.NO_KEY)
 			return false;
 
-		bool down = DalamudServices.KeyState[bind.Key];
+		bool down = this.IsDown(bind.Key);
 
 		if (bind.Key != VirtualKey.CONTROL)
-			down &= DalamudServices.KeyState[VirtualKey.CONTROL] == bind.Control;
+			down &= this.IsDown(VirtualKey.CONTROL) == bind.Control;
 
 		if (bind.Key != VirtualKey.MENU)
-			down &= DalamudServices.KeyState[VirtualKey.MENU] == bind.Alt;
+			down &= this.IsDown(VirtualKey.MENU) == bind.Alt;
 
 		if (bind.Key != VirtualKey.SHIFT)
-			down &= DalamudServices.KeyState[VirtualKey.SHIFT] == bind.Shift;
+			down &= this.IsDown(VirtualKey.SHIFT) == bind.Shift;
 
 		return down;
+	}
+
+	private bool IsDown(VirtualKey key)
+	{
+		if (key == VirtualKey.NO_KEY)
+			return false;
+
+		if (!this.XivWindowIsActive)
+		{
+			return this.windowsKeys.Contains(key);
+		}
+		else
+		{
+			if (DalamudServices.KeyState == null)
+				return false;
+
+			return DalamudServices.KeyState[key];
+		}
 	}
 
 	private void ResetBindKeys(KeyBind bind)

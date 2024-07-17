@@ -13,6 +13,7 @@ using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using WpfUtils;
@@ -47,6 +48,8 @@ public abstract partial class Panel : Window, IAutoNotify
 		this.DataContext = this;
 
 		this.PreviewMouseDown += this.OnPreviewMouseDown;
+		this.PreviewKeyDown += this.OnPreviewKeyDown;
+		this.PreviewKeyUp += this.OnPreviewKeyUp;
 	}
 
 	public event PropertyChangedEventHandler? PropertyChanged;
@@ -218,6 +221,19 @@ public abstract partial class Panel : Window, IAutoNotify
 	private void OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
 	{
 		this.Activate();
+	}
+
+	private void OnPreviewKeyDown(object sender, KeyEventArgs e)
+	{
+		if (Keyboard.FocusedElement is TextBox)
+			return;
+
+		this.Services.Input.SetKeyDown(e.Key, true);
+	}
+
+	private void OnPreviewKeyUp(object sender, KeyEventArgs e)
+	{
+		this.Services.Input.SetKeyDown(e.Key, false);
 	}
 
 	private void OnGameUiToggled(object? sender, bool e)
