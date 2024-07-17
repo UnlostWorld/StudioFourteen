@@ -226,7 +226,7 @@ public partial class TagSelector : UserControl, IComparer<Tag>, INotifyPropertyC
 		{
 			if (e.Key == Key.Escape || e.Key == Key.Return)
 			{
-				Keyboard.ClearFocus();
+				this.SetFocusToWindow();
 				e.Handled = true;
 
 				this.OnDone?.Invoke(this, new());

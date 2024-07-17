@@ -17,6 +17,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using WpfUtils;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 public abstract partial class Panel : Window, IAutoNotify
 {
@@ -225,14 +226,30 @@ public abstract partial class Panel : Window, IAutoNotify
 
 	private void OnPreviewKeyDown(object sender, KeyEventArgs e)
 	{
-		if (Keyboard.FocusedElement is TextBox)
+		if (!this.IsActive)
 			return;
+
+		if (Keyboard.FocusedElement is TextBoxBase tb)
+		{
+			if (tb.IsFocused && (tb.IsKeyboardFocused || tb.IsKeyboardFocusWithin))
+			{
+				if (e.Key == Key.Escape)
+				{
+					tb.SetFocusToWindow();
+				}
+
+				return;
+			}
+		}
 
 		this.Services.Input.SetKeyDown(e.Key, true);
 	}
 
 	private void OnPreviewKeyUp(object sender, KeyEventArgs e)
 	{
+		if (!this.IsActive)
+			return;
+
 		this.Services.Input.SetKeyDown(e.Key, false);
 	}
 
