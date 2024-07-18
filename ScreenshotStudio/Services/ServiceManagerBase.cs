@@ -53,7 +53,7 @@ public class ServiceManagerBase
 	}
 
 	public static bool ShutdownRequested { get; private set; } = false;
-
+	public States CurrentState => this.state;
 	public ILogger Log { get; private set; }
 
 	/// <summary>

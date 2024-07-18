@@ -313,6 +313,7 @@
 			HorizontalAlignment="Left"
 			VerticalAlignment="Top"
 			Click="OnStudioClicked"
+			IsEnabled="{Binding IsFullyLoaded}"
 			Style="{StaticResource StudioButton}" />
 
 	</Grid>

@@ -11,6 +11,14 @@ public partial class NavigationPanel : DockPanel
 {
 	[AutoNotify] public bool IsExpanded { get; set; } = false;
 
+	[AutoNotify] public bool IsFullyLoaded
+	{
+		get
+		{
+			return this.Services.CurrentState == ServiceManagerBase.States.Started;
+		}
+	}
+
 	[AutoNotify]
 	public unsafe bool IsInGPose
 	{

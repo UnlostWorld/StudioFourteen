@@ -41,7 +41,9 @@
 					<ScaleTransform x:Name="MeteorTransform" ScaleX="1" ScaleY="{Binding ScaleX, RelativeSource={RelativeSource Mode=Self}}" />
 				</Grid.RenderTransform>
 
-				<Grid Background="{DynamicResource TrimBrush}">
+				<Grid
+					x:Name="ForegroundArea"
+					Background="{DynamicResource TrimBrush}">
 
 					<Grid.OpacityMask>
 						<ImageBrush ImageSource="pack://application:,,,/ScreenshotStudio;component/Assets/icon-front-mask.png" />
@@ -220,6 +222,11 @@
 						</Storyboard>
 					</BeginStoryboard>
 				</Trigger.ExitActions>
+			</Trigger>
+
+			<Trigger Property="IsEnabled" Value="False">
+				<Setter TargetName="ForegroundArea" Property="Background" Value="{DynamicResource ForegroundLightBrush}" />
+				<Setter TargetName="ColorWheel" Property="Opacity" Value="0" />
 			</Trigger>
 
 			<Trigger Property="IsEnabled" Value="True">
