@@ -27,6 +27,8 @@ public partial class QuickSearch : DockPanel
 		this.searchQueue = new(this.SearchAsync, 250);
 
 		this.Services.Input.AddListener(Input.KeyBindEvents.Interface_InvokeQuickSearch, this.OnOpenQuickSearch);
+
+		this.Deactivated += this.OnDeactivated;
 	}
 
 	[AutoNotify] public FastObservableCollection<Result> Results { get; init; } = new();
@@ -69,6 +71,39 @@ public partial class QuickSearch : DockPanel
 	{
 		base.OnClosed();
 		instance = null;
+	}
+
+	protected override void OnPreviewKeyDown(KeyEventArgs e)
+	{
+		if (e.Key == Key.Down || e.Key == Key.Up)
+		{
+			e.Handled = true;
+		}
+
+		if (e.Key == Key.Return)
+		{
+			this.SelectedResult?.Entry?.Execute();
+			e.Handled = true;
+		}
+
+		if (e.Key == Key.Escape)
+		{
+			this.IsQuickSearchOpen = false;
+			this.Results.Clear();
+			e.Handled = true;
+		}
+
+		base.OnPreviewKeyDown(e);
+	}
+
+	protected override void OnPreviewKeyUp(KeyEventArgs e)
+	{
+		if (e.Key == Key.Down || e.Key == Key.Up)
+		{
+			e.Handled = true;
+		}
+
+		base.OnPreviewKeyUp(e);
 	}
 
 	private void OnTagsChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -115,18 +150,27 @@ public partial class QuickSearch : DockPanel
 
 	private void OnResultsListKeyDown(object sender, KeyEventArgs e)
 	{
-		if (e.Key == Key.Return && this.SelectedResult != null)
+		if (e.Key == Key.Return)
 		{
-			// RUN!
+			this.SelectedResult?.Entry?.Execute();
 		}
 	}
 
 	private void ResultsListDoubleClicked(object sender, MouseButtonEventArgs e)
 	{
-		// RUN!
+		this.SelectedResult?.Entry?.Execute();
 	}
 
 	private void OnSearchDone(object sender, RoutedEventArgs e)
+	{
+		if (!this.IsKeyboardFocusWithin)
+		{
+			this.IsQuickSearchOpen = false;
+			this.Results.Clear();
+		}
+	}
+
+	private void OnDeactivated(object? sender, System.EventArgs e)
 	{
 		this.IsQuickSearchOpen = false;
 		this.Results.Clear();

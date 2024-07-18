@@ -37,10 +37,6 @@ public partial class LibraryWindow : PanelWindow
 		this.currentTab = this.Tabs[0];
 	}
 
-	public delegate void ItemDoubleClickedDelegate(IEntryBase entry);
-
-	public event ItemDoubleClickedDelegate? ItemDoubleClicked;
-
 	[AutoNotify]
 	public FastObservableCollection<LibraryTab> Tabs { get; init; } = new()
 	{
@@ -153,7 +149,7 @@ public partial class LibraryWindow : PanelWindow
 		}
 		else if (this.SelectedResult is Result result)
 		{
-			this.ItemDoubleClicked?.Invoke(result.Entry);
+			result.Entry?.Execute();
 		}
 	}
 

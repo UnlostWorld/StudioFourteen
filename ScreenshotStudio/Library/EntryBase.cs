@@ -9,6 +9,8 @@ using WpfUtils;
 
 public interface IEntryBase : IDisposable
 {
+	event EntryEvent ExecuteRequested;
+
 	string? Name { get; }
 	TagCollection Tags { get; }
 	SourceBase? Source { get; }
@@ -16,7 +18,10 @@ public interface IEntryBase : IDisposable
 	bool IsValid { get; }
 
 	bool Search(string[] query);
+	void Execute();
 }
+
+public delegate void EntryEvent();
 
 /// <summary>
 /// An entry is a library object.
@@ -31,6 +36,7 @@ public abstract class EntryBase : ITagged, IEntryBase, INotifyPropertyChanged
 	}
 
 	public event PropertyChangedEventHandler? PropertyChanged;
+	public event EntryEvent? ExecuteRequested;
 
 	public abstract string Name { get; }
 	public virtual bool IsVisible { get; set; }
@@ -53,6 +59,11 @@ public abstract class EntryBase : ITagged, IEntryBase, INotifyPropertyChanged
 	public virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
 	{
 		this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+	}
+
+	public virtual void Execute()
+	{
+		this.ExecuteRequested?.Invoke();
 	}
 
 	protected abstract string GetInternalId();

@@ -31,11 +31,15 @@
 		</Grid>
 	</DataTemplate>
 
+
+
 	<DataTemplate DataType="{x:Type excel:ResidentNpc}">
 		<ContentPresenter
 			Content="{Binding .}"
 			ContentTemplate="{StaticResource ActorAppearance}" />
 	</DataTemplate>
+
+
 
 	<DataTemplate DataType="{x:Type excel:BattleNpc}">
 		<ContentPresenter
@@ -43,9 +47,35 @@
 			ContentTemplate="{StaticResource ActorAppearance}" />
 	</DataTemplate>
 
+
+
 	<DataTemplate DataType="{x:Type excel:EventNpc}">
 		<ContentPresenter
 			Content="{Binding .}"
 			ContentTemplate="{StaticResource ActorAppearance}" />
+	</DataTemplate>
+
+
+
+	<DataTemplate DataType="{x:Type excel:Item}">
+		<StackPanel>
+			<TextBlock
+				Foreground="{DynamicResource ForegroundLightBrush}"
+				Text="{Binding Description}"
+				TextWrapping="Wrap" />
+
+			<TextBlock
+				Foreground="{DynamicResource ForegroundLightBrush}"
+				Text="{Binding ClassJobs.Name}" />
+
+			<TextBlock Foreground="{DynamicResource ForegroundLightBrush}">
+				<Run Text="Lv." />
+				<Run Text="{Binding EquipLevel, Mode=OneWay}" />
+			</TextBlock>
+
+			<TextBlock
+				Foreground="{DynamicResource ForegroundLightBrush}"
+				Text="{Binding UICategory.Name}" />
+		</StackPanel>
 	</DataTemplate>
 </ResourceDictionary>

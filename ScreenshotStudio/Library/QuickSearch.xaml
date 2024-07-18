@@ -10,7 +10,7 @@
 	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Width="450"
-	Height="400"
+	Height="500"
 	CanActivate="True"
 	DockPosition="0.5, 0.5"
 	ShowBackground="False"
@@ -18,7 +18,7 @@
 	mc:Ignorable="d">
 
 	<Grid
-		Height="400"
+		Height="500"
 		HorizontalAlignment="Center">
 
 		<Grid.Resources>
@@ -36,6 +36,7 @@
 					TargetType="{x:Type ListBoxItem}">
 
 					<Border
+						x:Name="Content"
 						Margin="{TemplateBinding Margin}"
 						Background="Transparent"
 						BorderBrush="{TemplateBinding BorderBrush}"
@@ -44,20 +45,8 @@
 						ToolTip="{TemplateBinding Content}">
 						<Grid Background="Transparent">
 
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition />
-							</Grid.ColumnDefinitions>
-
-							<Border
-								x:Name="SelectionBorder"
-								Grid.ColumnSpan="2"
-								Opacity="0"
-								Style="{DynamicResource WpfUtilsSelectedBorder}" />
-
 							<Border
 								x:Name="HoverBorder"
-								Grid.Column="1"
 								Margin="1"
 								Background="{DynamicResource BackgroundLightBrush}"
 								BorderBrush="{DynamicResource BackgroundLightBrush}"
@@ -65,65 +54,22 @@
 								CornerRadius="3"
 								Opacity="0" />
 
-							<Grid
-								x:Name="Content"
-								Grid.Column="1"
-								Background="Transparent">
+							<Border
+								x:Name="SelectionBorder"
+								Opacity="0"
+								Style="{DynamicResource WpfUtilsSelectedBorder}" />
 
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="Auto" />
-									<ColumnDefinition />
-								</Grid.ColumnDefinitions>
+							<TextBlock
+								Margin="12,3,6,3"
+								Text="{Binding Entry.Name}" />
 
-								<ContentPresenter
-									Width="48"
-									Height="48"
-									Margin="3"
-									VerticalAlignment="Center"
-									Content="{Binding Entry}"
-									TextBlock.Foreground="{DynamicResource ForegroundBrush}">
-									<ContentPresenter.Resources>
-										<ResourceDictionary Source="./LibraryIconTemplates.xaml" />
-									</ContentPresenter.Resources>
-								</ContentPresenter>
 
-								<ContentPresenter
-									Grid.Column="1"
-									VerticalAlignment="Center"
-									Content="{Binding Entry}"
-									TextBlock.Foreground="{DynamicResource ForegroundBrush}">
-									<ContentPresenter.Resources>
-										<ResourceDictionary Source="./LibraryInfoTemplates.xaml" />
-									</ContentPresenter.Resources>
-								</ContentPresenter>
-							</Grid>
-
-							<ToggleButton
-								Height="Auto"
-								Margin="8,1,2,1"
-								VerticalAlignment="Stretch"
-								Background="Transparent">
-								<Grid>
-									<wpfUtils:IconBlock
-										Margin="6"
-										Foreground="{DynamicResource ForegroundLightBrush}"
-										Icon="Heart"
-										IconStyle="OutlineThin" />
-								</Grid>
-
-							</ToggleButton>
 						</Grid>
 					</Border>
 
 					<ControlTemplate.Triggers>
-						<Trigger Property="IsEnabled" Value="False">
-							<Setter Property="Opacity" Value="0.5" />
-						</Trigger>
-
-						<DataTrigger
-							Binding="{Binding IsMouseOver, ElementName=Content}"
-							Value="True">
-							<DataTrigger.EnterActions>
+						<Trigger Property="IsMouseOver" Value="True">
+							<Trigger.EnterActions>
 								<BeginStoryboard>
 									<Storyboard>
 										<DoubleAnimation
@@ -133,9 +79,9 @@
 											Duration="0:0:0.100" />
 									</Storyboard>
 								</BeginStoryboard>
-							</DataTrigger.EnterActions>
+							</Trigger.EnterActions>
 
-							<DataTrigger.ExitActions>
+							<Trigger.ExitActions>
 								<BeginStoryboard>
 									<Storyboard>
 										<DoubleAnimation
@@ -146,8 +92,8 @@
 											Duration="0:0:0.250" />
 									</Storyboard>
 								</BeginStoryboard>
-							</DataTrigger.ExitActions>
-						</DataTrigger>
+							</Trigger.ExitActions>
+						</Trigger>
 
 						<Trigger Property="IsSelected" Value="True">
 							<Trigger.EnterActions>
@@ -174,12 +120,8 @@
 								</BeginStoryboard>
 							</Trigger.ExitActions>
 						</Trigger>
-
-
 					</ControlTemplate.Triggers>
-
 				</ControlTemplate>
-
 			</ResourceDictionary>
 		</Grid.Resources>
 
@@ -203,6 +145,7 @@
 							<Grid>
 								<Grid.RowDefinitions>
 									<RowDefinition Height="Auto" />
+									<RowDefinition Height="Auto" />
 									<RowDefinition />
 								</Grid.RowDefinitions>
 
@@ -219,7 +162,7 @@
 								<Grid
 									x:Name="ResultsArea"
 									Grid.Row="1"
-									Height="0">
+									Height="200">
 									<ListBox
 										Margin="3"
 										ItemsSource="{Binding Results}"
@@ -236,6 +179,56 @@
 											</Style>
 										</ListBox.ItemContainerStyle>
 									</ListBox>
+								</Grid>
+
+								<Grid
+									x:Name="Selection"
+									Grid.Row="2"
+									Margin="3"
+									Visibility="{Binding SelectedResult, Converter={StaticResource NotNullToVisibilityConverter}}">
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="Auto" />
+										<ColumnDefinition />
+									</Grid.ColumnDefinitions>
+
+									<Grid.RowDefinitions>
+										<RowDefinition />
+										<RowDefinition Height="Auto" />
+									</Grid.RowDefinitions>
+
+									<ContentPresenter
+										Grid.Row="0"
+										Width="48"
+										Height="48"
+										Margin="3"
+										VerticalAlignment="Center"
+										Content="{Binding SelectedResult.Entry}"
+										TextBlock.Foreground="{DynamicResource ForegroundBrush}">
+										<ContentPresenter.Resources>
+											<ResourceDictionary Source="./LibraryIconTemplates.xaml" />
+										</ContentPresenter.Resources>
+									</ContentPresenter>
+
+									<ContentPresenter
+										Grid.Row="0"
+										Grid.Column="1"
+										VerticalAlignment="Center"
+										Content="{Binding SelectedResult.Entry}"
+										TextBlock.Foreground="{DynamicResource ForegroundBrush}">
+										<ContentPresenter.Resources>
+											<ResourceDictionary Source="./LibraryInfoTemplates.xaml" />
+										</ContentPresenter.Resources>
+									</ContentPresenter>
+
+									<ContentPresenter
+										Grid.Row="2"
+										Grid.ColumnSpan="2"
+										Content="{Binding SelectedResult.Entry}"
+										TextBlock.Foreground="{DynamicResource ForegroundBrush}">
+										<ContentPresenter.Resources>
+											<ResourceDictionary Source="./LibrarySidebarTemplates.xaml" />
+										</ContentPresenter.Resources>
+									</ContentPresenter>
 								</Grid>
 							</Grid>
 						</Border>
@@ -317,7 +310,37 @@
 						<DataTrigger
 							Binding="{Binding Results.Count, Converter={StaticResource NotZeroToBool}}"
 							Value="True">
-							<Setter TargetName="ResultsArea" Property="Height" Value="300" />
+
+							<DataTrigger.EnterActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation
+											Storyboard.TargetName="ResultsArea"
+											Storyboard.TargetProperty="Height"
+											To="200"
+											Duration="0:00:00.250">
+											<DoubleAnimation.EasingFunction>
+												<SineEase EasingMode="EaseIn" />
+											</DoubleAnimation.EasingFunction>
+										</DoubleAnimation>
+									</Storyboard>
+								</BeginStoryboard>
+							</DataTrigger.EnterActions>
+							<DataTrigger.ExitActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation
+											Storyboard.TargetName="ResultsArea"
+											Storyboard.TargetProperty="Height"
+											To="0"
+											Duration="0:00:00.250">
+											<DoubleAnimation.EasingFunction>
+												<SineEase EasingMode="EaseIn" />
+											</DoubleAnimation.EasingFunction>
+										</DoubleAnimation>
+									</Storyboard>
+								</BeginStoryboard>
+							</DataTrigger.ExitActions>
 						</DataTrigger>
 
 					</DataTemplate.Triggers>

@@ -7,6 +7,8 @@ using WpfUtils;
 
 public abstract class LibraryExcelRow : StudioExcelRow, IEntryBase
 {
+	public event EntryEvent? ExecuteRequested;
+
 	public TagCollection Tags { get; init; } = new();
 	public string? Name { get; set; }
 	public bool IsVisible { get; set; }
@@ -18,6 +20,11 @@ public abstract class LibraryExcelRow : StudioExcelRow, IEntryBase
 
 	public void Dispose()
 	{
+	}
+
+	public void Execute()
+	{
+		this.ExecuteRequested?.Invoke();
 	}
 
 	public virtual bool Search(string[]? query)

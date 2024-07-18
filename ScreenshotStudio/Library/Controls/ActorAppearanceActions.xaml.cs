@@ -58,6 +58,16 @@ public partial class ActorAppearanceActions : View
 	{
 		if (d is ActorAppearanceActions actionsView)
 		{
+			if (e.OldValue is IActorAppearance old)
+			{
+				old.ExecuteRequested -= actionsView.OnExecuteRequested;
+			}
+
+			if (e.NewValue is IActorAppearance newAppearance)
+			{
+				newAppearance.ExecuteRequested += actionsView.OnExecuteRequested;
+			}
+
 			if (actionsView.IsLive && actionsView.Appearance != null)
 			{
 				IActorAppearance appearance = actionsView.Appearance;
@@ -69,14 +79,13 @@ public partial class ActorAppearanceActions : View
 		}
 	}
 
+	private void OnExecuteRequested()
+	{
+		this.OnApplyClicked();
+	}
+
 	private void OnLoaded(object sender, RoutedEventArgs e)
 	{
-		LibraryWindow? window = this.FindParent<LibraryWindow>();
-		if (window != null)
-		{
-			window.ItemDoubleClicked += this.OnItemDoubleClicked;
-		}
-
 		if (DalamudServices.Framework != null)
 		{
 			DalamudServices.Framework.Update += this.OnFrameworkUpdate;
@@ -85,33 +94,13 @@ public partial class ActorAppearanceActions : View
 
 	private void OnUnloaded(object sender, RoutedEventArgs e)
 	{
-		LibraryWindow? window = this.FindParent<LibraryWindow>();
-		if (window != null)
-		{
-			window.ItemDoubleClicked += this.OnItemDoubleClicked;
-		}
-
 		if (DalamudServices.Framework != null)
 		{
 			DalamudServices.Framework.Update -= this.OnFrameworkUpdate;
 		}
 	}
 
-	private unsafe void OnItemDoubleClicked(IEntryBase entry)
-	{
-		if (!this.CanApply)
-			return;
-
-		if (entry is IActorAppearance appearance)
-		{
-			Threads.RunOnFrameworkThread(() =>
-			{
-				appearance.Apply(ActorWindow.GetTarget());
-			});
-		}
-	}
-
-	private unsafe void OnApplyClicked(object sender, RoutedEventArgs e)
+	private unsafe void OnApplyClicked(object? sender = null, RoutedEventArgs? e = null)
 	{
 		if (this.Appearance == null)
 			return;
