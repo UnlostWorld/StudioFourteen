@@ -48,16 +48,15 @@ public class ResidentNpc : LibraryExcelRow, IActorAppearance
 		}
 	}
 
-	public override double Search(string[]? query)
+	public override bool Search(string[]? query)
 	{
-		double result = 0;
-		result += SearchUtility.Search(this.Name, query);
-		result += SearchUtility.Search(this.Description, query);
+		bool matches = base.Search(query);
+		matches |= SearchUtility.Matches(this.Description, query);
 
 		if (this.EventNpc != null)
-			result += this.EventNpc.Search(query);
+			matches |= this.EventNpc.Search(query);
 
-		return base.Search(query);
+		return matches;
 	}
 
 	public unsafe void Apply(Actor* actor)

@@ -9,6 +9,7 @@ using static FFXIVClientStructs.FFXIV.Client.LayoutEngine.LayoutManager;
 public class Result(IEntryBase entry)
 {
 	public IEntryBase Entry { get; set; } = entry;
+	public double FilterMatch { get; set; }
 }
 
 public class GroupResult : Result
@@ -77,6 +78,7 @@ public class GroupResult : Result
 				if (entry is GroupEntryBase childGroup)
 				{
 					GroupResult childGroupResults = new(childGroup);
+					childGroupResults.FilterMatch = 1;
 					if (childGroupResults.FilterEntries(filters))
 					{
 						this.results.Add(childGroupResults);
@@ -88,15 +90,13 @@ public class GroupResult : Result
 					foreach (FilterBase filter in filters)
 					{
 						passesFilters &= filter.Filter(entry);
-						if (!passesFilters)
-						{
-							break;
-						}
 					}
 
 					if (passesFilters)
 					{
-						this.results.Add(new(entry));
+						Result result = new(entry);
+						result.FilterMatch = 1;
+						this.results.Add(result);
 					}
 				}
 			}
@@ -111,7 +111,7 @@ public class GroupResult : Result
 		return false;
 	}
 
-	public IEnumerable<Result>? Get(bool flatten)
+	public List<Result>? Get(bool flatten)
 	{
 		if (flatten)
 		{

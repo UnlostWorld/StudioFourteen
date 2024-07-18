@@ -90,17 +90,23 @@ public partial class QuickSearch : DockPanel
 			await Dispatch.NonUiThread();
 
 			List<FilterBase> filters = new List<FilterBase>();
-			filters.Add(this.TagFilter);
-			filters.Add(this.SearchQueryFilter);
+
+			if (!this.TagFilter.IsEmpty)
+				filters.Add(this.TagFilter);
+
+			if (!this.SearchQueryFilter.IsEmpty)
+				filters.Add(this.SearchQueryFilter);
 
 			GroupResult result = new(this.Services.Library.Root);
 			result.FilterEntries(filters.ToArray());
-			IEnumerable<Result>? results = result.Get(true);
-
-			await this.Dispatcher.MainThread();
+			List<Result>? results = result.Get(true);
 
 			if (results != null)
 			{
+				results.Sort((a, b) => a.FilterMatch.CompareTo(b.FilterMatch));
+
+				await this.Dispatcher.MainThread();
+
 				this.Results.Replace(results);
 				this.SelectedResult = this.Results.Count > 1 ? this.Results[0] : null;
 			}

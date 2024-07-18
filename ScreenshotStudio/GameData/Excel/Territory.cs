@@ -71,13 +71,13 @@ public class Territory : LibraryExcelRow
 		}
 	}
 
-	public override double Search(string[]? query)
+	public override bool Search(string[]? query)
 	{
-		double result = base.Search(query);
-		result += SearchUtility.Search(this.Background, query);
+		bool result = base.Search(query);
+		result |= SearchUtility.Matches(this.Background, query);
 
 		if (this.Place != null)
-			result += SearchUtility.Search(this.Place.Name.RawString, query);
+			result |= SearchUtility.Matches(this.Place.Name.RawString, query);
 
 		return result;
 	}

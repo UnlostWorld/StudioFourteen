@@ -3,7 +3,6 @@
 using ScreenshotStudio.Library;
 using ScreenshotStudio.Library.Sources;
 using ScreenshotStudio.Tags;
-using System;
 using WpfUtils;
 
 public abstract class LibraryExcelRow : StudioExcelRow, IEntryBase
@@ -21,20 +20,11 @@ public abstract class LibraryExcelRow : StudioExcelRow, IEntryBase
 	{
 	}
 
-	[Obsolete]
-	public double Search(TagCollection tags, string[]? query)
+	public virtual bool Search(string[]? query)
 	{
-		if (!this.Tags.Matches(tags))
-			return 0;
-
-		return this.Search(query);
-	}
-
-	public virtual double Search(string[]? query)
-	{
-		double result = 0;
-		result += SearchUtility.Search(this.RowId, query);
-		result += SearchUtility.Search(this.Name, query);
+		bool result = false;
+		result |= SearchUtility.Matches(this.RowId, query);
+		result |= SearchUtility.Matches(this.Name, query);
 		return result;
 	}
 }

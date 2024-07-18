@@ -28,10 +28,10 @@ public class Item : LibraryExcelRow
 
 	public override bool IsValid => base.IsValid && this.RowId > 0 && this.EquipLevel > 0;
 
-	public override double Search(string[]? query)
+	public override bool Search(string[]? query)
 	{
-		double result = base.Search(query);
-		result += SearchUtility.Search(this.Description, query);
+		bool result = base.Search(query);
+		result |= SearchUtility.Matches(this.Description, query);
 		return result;
 	}
 
