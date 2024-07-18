@@ -43,14 +43,11 @@ public class Stain : LibraryExcelRow
 		}
 	}
 
-	public override bool Search(string[]? query)
+	public override double Search(string[]? query)
 	{
-		if (SearchUtility.Matches(this.Name, query))
-			return true;
-
-		if (SearchUtility.Matches(this.Shade, query))
-			return true;
-
-		return base.Search(query);
+		double result = base.Search(query);
+		result += SearchUtility.Search(this.Name, query);
+		result += SearchUtility.Search(this.Shade, query);
+		return result;
 	}
 }

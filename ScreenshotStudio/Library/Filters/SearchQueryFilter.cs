@@ -39,6 +39,6 @@ public class SearchQueryFilter : FilterBase
 		if(this.Query == null)
 			return true;
 
-		return entry.Search(this.Query);
+		return entry.Search(this.Query) > 0;
 	}
 }

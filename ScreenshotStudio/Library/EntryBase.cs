@@ -15,7 +15,7 @@ public interface IEntryBase : IDisposable
 	string Identifier { get; }
 	bool IsValid { get; }
 
-	bool Search(string[] query);
+	double Search(string[] query);
 }
 
 /// <summary>
@@ -41,9 +41,9 @@ public abstract class EntryBase : ITagged, IEntryBase, INotifyPropertyChanged
 
 	public string Identifier => $"{this.Source?.GetInternalId()}||{this.GetInternalId()}";
 
-	public virtual bool Search(string[] query)
+	public virtual double Search(string[] query)
 	{
-		return SearchUtility.Matches(this.Name, query);
+		return SearchUtility.Search(this.Name, query);
 	}
 
 	public virtual void Dispose()

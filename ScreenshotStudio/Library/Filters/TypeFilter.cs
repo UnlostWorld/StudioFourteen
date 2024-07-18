@@ -26,11 +26,6 @@ public class TypeFilter : FilterBase
 
 	public override bool Filter(IEntryBase entry)
 	{
-		if(entry is ItemEntryBase file)
-		{
-			return this.types.Contains(file.LoadsType);
-		}
-
 		foreach (Type type in this.types)
 		{
 			if (entry.GetType().IsAssignableTo(type))

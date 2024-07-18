@@ -1,6 +1,7 @@
 ﻿namespace ScreenshotStudio.Library;
 
 using ScreenshotStudio.Library.Filters;
+using ScreenshotStudio.Library.Results;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Tags;
 using ScreenshotStudio.Windows;
@@ -22,7 +23,8 @@ public partial class LibraryModal : PanelWindow
 	private readonly FuncQueue searchQueue;
 
 	private Type? targetType;
-	private object? selectedItem;
+	private IEntryBase? currentEntry;
+	private Result? selectedResult;
 	private Action<object, bool>? selectionChanged;
 	private bool isLoading = false;
 
@@ -34,7 +36,7 @@ public partial class LibraryModal : PanelWindow
 		this.searchQueue = new(this.SearchAsync, 250);
 	}
 
-	[AutoNotify] public FastObservableCollection<object> Results { get; init; } = new();
+	[AutoNotify] public FastObservableCollection<Result> Results { get; init; } = new();
 	[AutoNotify] public TagFilter TagFilter { get; init; } = new();
 	[AutoNotify] public SearchQueryFilter SearchQueryFilter { get; init; } = new();
 	[AutoNotify] public TypeFilter? TypeFilter { get; protected set; }
@@ -52,15 +54,16 @@ public partial class LibraryModal : PanelWindow
 		}
 	}
 
-	public object? SelectedItem
+	public Result? SelectedResult
 	{
-		get => this.selectedItem;
+		get => this.selectedResult;
 		set
 		{
-			this.selectedItem = value;
+			this.selectedResult = value;
+			this.currentEntry = value?.Entry;
 
 			if (value != null && !this.isLoading)
-				this.selectionChanged?.Invoke(value, false);
+				this.selectionChanged?.Invoke(value.Entry, false);
 
 			this.NotifyPropertyChanged();
 		}
@@ -111,7 +114,7 @@ public partial class LibraryModal : PanelWindow
 
 		this.SearchTitle = title;
 
-		this.SelectedItem = current;
+		this.currentEntry = current;
 		this.isLoading = false;
 
 		/*Point pos;
@@ -157,21 +160,25 @@ public partial class LibraryModal : PanelWindow
 		if (this.TypeFilter != null)
 			filters.Add(this.TypeFilter);
 
-		this.Services.Library.Root.FilterEntries(filters.ToArray());
-		IEnumerable<IEntryBase>? results = this.Services.Library.Root.GetFilteredEntries(true);
+		GroupResult result = new(this.Services.Library.Root);
+		result.FilterEntries(filters.ToArray());
+		IEnumerable<Result>? results = result.Get(true);
+
+		Result? selectedResult = result.Find(this.currentEntry);
 
 		await this.Dispatcher.MainThread();
 
 		this.isLoading = true;
 
 		TagCollection tags = new();
-		this.Services.Library.Root.GetFilteredTags(ref tags);
+		result.GetTags(ref tags);
 		this.AvailableTags.Replace(tags);
 
 		if (results != null)
 		{
 			this.Results.Replace(results);
-			this.ResultsList.ScrollIntoView(this.SelectedItem);
+			this.SelectedResult = selectedResult;
+			this.ResultsList.ScrollIntoView(this.SelectedResult);
 		}
 
 		this.isLoading = false;
@@ -181,15 +188,15 @@ public partial class LibraryModal : PanelWindow
 	{
 		this.Close();
 
-		if (this.selectedItem == null)
+		if (this.selectedResult == null)
 			return;
 
-		this.selectionChanged?.Invoke(this.selectedItem, true);
+		this.selectionChanged?.Invoke(this.selectedResult.Entry, true);
 	}
 
 	private void OnResultsListKeyDown(object sender, KeyEventArgs e)
 	{
-		if (e.Key == Key.Return && this.selectedItem != null)
+		if (e.Key == Key.Return && this.selectedResult != null)
 		{
 			this.OnConfirmClicked(sender, null);
 		}

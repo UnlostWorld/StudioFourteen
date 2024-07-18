@@ -88,16 +88,16 @@ public abstract class NpcBase : LibraryExcelRow, IActorAppearance
 		this.Equipment.ApplyToActor(actor, this.BackupEquipment);
 	}
 
-	public override bool Search(string[]? query)
+	public override double Search(string[]? query)
 	{
-		bool result = false;
-		result |= base.Search(query);
+		double result = 0;
+		result += base.Search(query);
 
 		if (this.DuplicateRow != null)
-			result |= SearchUtility.Matches(this.DuplicateRow, query);
+			result += SearchUtility.Search(this.DuplicateRow, query);
 
 		if (this.ModelChara != null)
-			result |= SearchUtility.Matches(this.ModelChara.RowId, query);
+			result += SearchUtility.Search(this.ModelChara.RowId, query);
 
 		return result;
 	}

@@ -1,6 +1,7 @@
 ﻿namespace ScreenshotStudio.Library;
 
 using ScreenshotStudio.Library.Filters;
+using ScreenshotStudio.Library.Results;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Tags;
 using ScreenshotStudio.Windows;
@@ -28,13 +29,13 @@ public partial class QuickSearch : DockPanel
 		this.Services.Input.AddListener(Input.KeyBindEvents.Interface_InvokeQuickSearch, this.OnOpenQuickSearch);
 	}
 
-	[AutoNotify] public FastObservableCollection<object> Results { get; init; } = new();
+	[AutoNotify] public FastObservableCollection<Result> Results { get; init; } = new();
 	[AutoNotify] public TagFilter TagFilter { get; init; } = new();
 	[AutoNotify] public SearchQueryFilter SearchQueryFilter { get; init; } = new();
 	[AutoNotify] public TagCollection AvailableTags { get; init; } = new();
 
 	[AutoNotify] public bool IsQuickSearchOpen { get; set; }
-	[AutoNotify] public object? SelectedItem { get; set; }
+	[AutoNotify] public Result? SelectedResult { get; set; }
 
 	[AutoNotify]
 	public string? Search
@@ -82,7 +83,7 @@ public partial class QuickSearch : DockPanel
 			await this.Dispatcher.MainThread();
 
 			this.Results.Clear();
-			this.SelectedItem = null;
+			this.SelectedResult = null;
 		}
 		else
 		{
@@ -92,23 +93,23 @@ public partial class QuickSearch : DockPanel
 			filters.Add(this.TagFilter);
 			filters.Add(this.SearchQueryFilter);
 
-			this.Services.Library.Root.FilterEntries(filters.ToArray());
-
-			IEnumerable<IEntryBase>? results = this.Services.Library.Root.GetFilteredEntries(true);
+			GroupResult result = new(this.Services.Library.Root);
+			result.FilterEntries(filters.ToArray());
+			IEnumerable<Result>? results = result.Get(true);
 
 			await this.Dispatcher.MainThread();
 
 			if (results != null)
 			{
 				this.Results.Replace(results);
-				this.SelectedItem = this.Results.Count > 1 ? this.Results[0] : null;
+				this.SelectedResult = this.Results.Count > 1 ? this.Results[0] : null;
 			}
 		}
 	}
 
 	private void OnResultsListKeyDown(object sender, KeyEventArgs e)
 	{
-		if (e.Key == Key.Return && this.SelectedItem != null)
+		if (e.Key == Key.Return && this.SelectedResult != null)
 		{
 			// RUN!
 		}

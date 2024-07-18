@@ -7,6 +7,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="clr-namespace:ScreenshotStudio.Library"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:results="clr-namespace:ScreenshotStudio.Library.Results"
 	xmlns:structs="clr-namespace:ScreenshotStudio.Structs"
 	xmlns:tags="clr-namespace:ScreenshotStudio.Tags"
 	xmlns:vwp="clr-namespace:WpfToolkit.Controls;assembly=VirtualizingWrapPanel"
@@ -88,7 +89,7 @@
 					Height="48"
 					Margin="3,6,3,3"
 					VerticalAlignment="Center"
-					Content="{Binding SelectedEntry}"
+					Content="{Binding SelectedResult.Entry}"
 					TextBlock.Foreground="{DynamicResource ForegroundBrush}">
 					<ContentPresenter.Resources>
 						<ResourceDictionary Source="./LibraryIconTemplates.xaml" />
@@ -99,7 +100,7 @@
 					Grid.Row="0"
 					Grid.Column="1"
 					VerticalAlignment="Center"
-					Content="{Binding SelectedEntry}"
+					Content="{Binding SelectedResult.Entry}"
 					TextBlock.Foreground="{DynamicResource ForegroundBrush}">
 					<ContentPresenter.Resources>
 						<ResourceDictionary Source="./LibraryInfoTemplates.xaml" />
@@ -112,12 +113,12 @@
 					Grid.ColumnSpan="2"
 					Margin="0,0,0,4"
 					TagSelected="OnInfoTagSelected"
-					Tags="{Binding SelectedEntry.Tags}" />
+					Tags="{Binding SelectedResult.Entry.Tags}" />
 
 				<ContentPresenter
 					Grid.Row="2"
 					Grid.ColumnSpan="2"
-					Content="{Binding SelectedEntry}"
+					Content="{Binding SelectedResult}"
 					TextBlock.Foreground="{DynamicResource ForegroundBrush}">
 					<ContentPresenter.Resources>
 						<ResourceDictionary Source="./LibrarySidebarTemplates.xaml" />
@@ -294,9 +295,9 @@
 				Grid.Column="0"
 				Margin="0,1,1,1"
 				Background="Transparent"
-				ItemsSource="{Binding Entries, IsAsync=True}"
+				ItemsSource="{Binding Results, IsAsync=True}"
 				MouseDoubleClick="OnItemDoubleClicked"
-				SelectedItem="{Binding SelectedEntry}"
+				SelectedItem="{Binding SelectedResult}"
 				VirtualizingPanel.ScrollUnit="Pixel"
 				VirtualizingPanel.VirtualizationMode="Recycling"
 				Visibility="{Binding ViewList, Converter={StaticResource !B2V}}">
@@ -311,7 +312,7 @@
 				</ListBox.ItemsPanel>
 
 				<ListBox.ItemTemplate>
-					<DataTemplate>
+					<DataTemplate DataType="{x:Type results:Result}">
 
 						<Grid
 							Width="92"
@@ -327,7 +328,7 @@
 							<ContentPresenter
 								Width="96"
 								Height="96"
-								Content="{Binding .}">
+								Content="{Binding Entry}">
 								<ContentPresenter.Resources>
 									<ResourceDictionary Source="LibraryIconTemplates.xaml" />
 								</ContentPresenter.Resources>
@@ -336,7 +337,7 @@
 							<TextBlock
 								Grid.Row="1"
 								VerticalAlignment="Top"
-								Text="{Binding Name}"
+								Text="{Binding Entry.Name}"
 								TextAlignment="Center"
 								TextWrapping="Wrap" />
 						</Grid>
@@ -351,15 +352,15 @@
 				Grid.Row="3"
 				Grid.Column="0"
 				Background="Transparent"
-				ItemsSource="{Binding Entries, IsAsync=True}"
+				ItemsSource="{Binding Results, IsAsync=True}"
 				MouseDoubleClick="OnItemDoubleClicked"
-				SelectedItem="{Binding SelectedEntry}"
+				SelectedItem="{Binding SelectedResult}"
 				VirtualizingPanel.ScrollUnit="Pixel"
 				VirtualizingPanel.VirtualizationMode="Recycling"
 				Visibility="{Binding ViewList, Converter={StaticResource B2V}}">
 
 				<ListBox.ItemTemplate>
-					<DataTemplate>
+					<DataTemplate DataType="{x:Type results:Result}">
 						<Grid>
 
 							<Grid.ColumnDefinitions>
@@ -376,7 +377,7 @@
 								Grid.Column="1"
 								Margin="12,0,0,0"
 								VerticalAlignment="Center"
-								Text="{Binding Name}"
+								Text="{Binding Entry.Name}"
 								TextTrimming="CharacterEllipsis" />
 						</Grid>
 					</DataTemplate>

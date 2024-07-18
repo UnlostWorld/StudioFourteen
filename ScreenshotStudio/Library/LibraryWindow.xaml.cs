@@ -3,6 +3,7 @@
 using FontAwesome.Sharp;
 using FontAwesome.Sharp.Pro;
 using ScreenshotStudio.Library.Filters;
+using ScreenshotStudio.Library.Results;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Tags;
 using ScreenshotStudio.Windows;
@@ -65,8 +66,8 @@ public partial class LibraryWindow : PanelWindow
 		}
 	}
 
-	[AutoNotify] public FastObservableCollection<object> Entries { get; init; } = new();
-	[AutoNotify] public IEntryBase? SelectedEntry { get; set; } = null;
+	[AutoNotify] public FastObservableCollection<Result> Results { get; init; } = new();
+	[AutoNotify] public Result? SelectedResult { get; set; } = null;
 	[AutoNotify] public bool ViewList { get; set; } = false;
 	[AutoNotify] public ObservableCollection<GroupEntryBase> Path { get; init; } = new();
 	[AutoNotify] public GroupEntryBase CurrentGroup => this.Path[this.Path.Count - 1];
@@ -121,22 +122,23 @@ public partial class LibraryWindow : PanelWindow
 		filters.Add(this.TagFilter);
 		filters.Add(this.SearchQueryFilter);
 
-		this.CurrentGroup.FilterEntries(filters.ToArray());
-		IEnumerable<IEntryBase>? results = this.CurrentGroup.GetFilteredEntries(flattenResults);
+		GroupResult result = new(this.CurrentGroup);
+		result.FilterEntries(filters.ToArray());
+		IEnumerable<Result>? results = result.Get(flattenResults);
 
 		await this.Dispatcher.MainThread();
 
 		if (results == null)
 		{
-			this.Entries.Clear();
+			this.Results.Clear();
 		}
 		else
 		{
-			this.Entries.Replace(results);
+			this.Results.Replace(results);
 		}
 
 		TagCollection tags = new();
-		this.CurrentGroup.GetFilteredTags(ref tags);
+		result.GetTags(ref tags);
 		this.AvailableTags.Replace(tags);
 
 		////this.ResultsList.ScrollIntoView(this.SelectedItem);
@@ -144,14 +146,14 @@ public partial class LibraryWindow : PanelWindow
 
 	private void OnItemDoubleClicked(object sender, MouseButtonEventArgs e)
 	{
-		if (this.SelectedEntry is GroupEntryBase group)
+		if (this.SelectedResult is GroupResult groupResult)
 		{
-			this.Path.Add(group);
+			this.Path.Add(groupResult.Group);
 			this.searchQueue.InvokeImmediate();
 		}
-		else if (this.SelectedEntry is IEntryBase entry)
+		else if (this.SelectedResult is Result result)
 		{
-			this.ItemDoubleClicked?.Invoke(entry);
+			this.ItemDoubleClicked?.Invoke(result.Entry);
 		}
 	}
 

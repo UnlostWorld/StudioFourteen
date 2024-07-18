@@ -28,15 +28,11 @@ public class Item : LibraryExcelRow
 
 	public override bool IsValid => base.IsValid && this.RowId > 0 && this.EquipLevel > 0;
 
-	public override bool Search(string[]? query)
+	public override double Search(string[]? query)
 	{
-		if (SearchUtility.Matches(this.Name, query))
-			return true;
-
-		if (SearchUtility.Matches(this.Description, query))
-			return true;
-
-		return base.Search(query);
+		double result = base.Search(query);
+		result += SearchUtility.Search(this.Description, query);
+		return result;
 	}
 
 	public override void PopulateData(RowParser parser, Lumina.GameData gameData, Language language)

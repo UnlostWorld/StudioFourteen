@@ -73,7 +73,7 @@
 								Height="48"
 								Margin="3"
 								VerticalAlignment="Center"
-								Content="{Binding .}"
+								Content="{Binding Entry}"
 								TextBlock.Foreground="{DynamicResource ForegroundBrush}">
 								<ContentPresenter.Resources>
 									<ResourceDictionary Source="./LibraryIconTemplates.xaml" />
@@ -83,7 +83,7 @@
 							<ContentPresenter
 								Grid.Column="1"
 								VerticalAlignment="Center"
-								Content="{Binding .}"
+								Content="{Binding Entry}"
 								TextBlock.Foreground="{DynamicResource ForegroundBrush}">
 								<ContentPresenter.Resources>
 									<ResourceDictionary Source="./LibraryInfoTemplates.xaml" />
@@ -196,7 +196,7 @@
 			KeyDown="OnResultsListKeyDown"
 			MouseDoubleClick="ResultsListDoubleClicked"
 			ScrollViewer.VerticalScrollBarVisibility="Visible"
-			SelectedItem="{Binding SelectedItem}">
+			SelectedItem="{Binding SelectedResult}">
 			<ListBox.ItemContainerStyle>
 				<Style
 					BasedOn="{StaticResource WpfUtilsListBoxItem}"
@@ -216,7 +216,7 @@
 				HorizontalAlignment="Right"
 				Background="Transparent"
 				Click="OnConfirmClicked"
-				IsEnabled="{Binding SelectedItem, Converter={StaticResource NotNullToBoolConverter}}">
+				IsEnabled="{Binding SelectedResult, Converter={StaticResource NotNullToBoolConverter}}">
 
 				<TextBlock
 					Margin="3,0"
