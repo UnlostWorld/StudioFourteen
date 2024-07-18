@@ -91,7 +91,7 @@ public partial class QuickSearch : DockPanel
 			if (e.Key == Key.Up)
 				index--;
 
-			index = Math.Clamp(index, 0, this.Results.Count);
+			index = Math.Clamp(index, 0, this.Results.Count - 1);
 
 			this.SelectedResult = this.Results[index];
 
