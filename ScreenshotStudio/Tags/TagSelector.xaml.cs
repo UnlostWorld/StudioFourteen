@@ -35,7 +35,7 @@ public partial class TagSelector : UserControl, IComparer<Tag>, INotifyPropertyC
 		nameof(TagSelector.Search),
 		typeof(string),
 		typeof(TagSelector),
-		new(null));
+		new(null, OnSearchChanged));
 
 	protected readonly ILogger Log = Logging.Shared.ForContext<TagSelector>();
 
@@ -123,6 +123,14 @@ public partial class TagSelector : UserControl, IComparer<Tag>, INotifyPropertyC
 	protected void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
 	{
 		this.PropertyChanged?.Invoke(this, new(propertyName));
+	}
+
+	private static void OnSearchChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+	{
+		if (d is TagSelector tagFilter)
+		{
+			tagFilter.NotifyPropertyChanged(nameof(TagSelector.CanClear));
+		}
 	}
 
 	private static void OnTagsChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
