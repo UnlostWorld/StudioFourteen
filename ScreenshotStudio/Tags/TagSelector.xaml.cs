@@ -1,5 +1,6 @@
 ﻿namespace ScreenshotStudio.Tags;
 
+using ScreenshotStudio.Services;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -90,6 +91,20 @@ public partial class TagSelector : UserControl, IComparer<Tag>, INotifyPropertyC
 	{
 		get => (TagCollection)this.GetValue(TagsProperty);
 		set => this.SetValue(TagsProperty, value);
+	}
+
+	public bool CanClear
+	{
+		get
+		{
+			if (!string.IsNullOrEmpty(this.Search))
+				return true;
+
+			if (this.SelectedTags.Count > 0)
+				return true;
+
+			return false;
+		}
 	}
 
 	public int Compare(Tag? x, Tag? y) => string.Compare(x?.Name, y?.Name);
@@ -304,6 +319,18 @@ public partial class TagSelector : UserControl, IComparer<Tag>, INotifyPropertyC
 		this.tagSearchQueue.InvokeImmediate();
 	}
 
+	private void OnClearClicked(object sender, RoutedEventArgs e)
+	{
+		this.Search = string.Empty;
+		this.SelectedTags.Clear();
+		this.SuggestTags.Clear();
+		this.IsSuggestTags = false;
+
+		this.NotifyPropertyChanged(nameof(TagSelector.CanClear));
+
+		this.SetFocus();
+	}
+
 	private void IncrementSuggestIndex(int amount)
 	{
 		int currentIndex = 0;
@@ -388,5 +415,6 @@ public partial class TagSelector : UserControl, IComparer<Tag>, INotifyPropertyC
 		}
 
 		this.IsSuggestTags = this.SuggestTags.Count > 0;
+		this.NotifyPropertyChanged(nameof(TagSelector.CanClear));
 	}
 }

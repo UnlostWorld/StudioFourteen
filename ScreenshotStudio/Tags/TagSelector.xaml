@@ -13,14 +13,10 @@
 	mc:Ignorable="d">
 
 	<UserControl.Resources>
-		<converters:StringHasContentToBoolConverter x:Key="StringHasContentToBool" />
 		<BooleanToVisibilityConverter x:Key="B2V" />
 		<converters:InvertedBoolToVisibilityConverter x:Key="!B2V" />
-		<converters:MultiBoolOrConverter x:Key="MultiBoolOr" />
-		<converters:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter" />
-		<converters:StringHasContentToVisibilityConverter x:Key="StringHasContentToVisibility" />
-		<converters:NotZeroToVisibilityConverter x:Key="NotZeroToVisibility" />
 		<converters:NumberToThicknessLeftConverter x:Key="ThicknessLeft" />
+		<converters:NotZeroToBoolConverter x:Key="NotZeroToBool" />
 
 		<DataTemplate DataType="{x:Type local:Tag}">
 			<Grid>
@@ -157,7 +153,7 @@
 				x:Name="SearchTextBox"
 				Grid.Row="0"
 				Height="30"
-				Padding="{Binding ActualWidth, ElementName=FilterTagsControl, Converter={StaticResource ThicknessLeft}, ConverterParameter='6,0,23,0'}"
+				Padding="{Binding ActualWidth, ElementName=FilterTagsControl, Converter={StaticResource ThicknessLeft}, ConverterParameter='30,0,23,0'}"
 				VerticalContentAlignment="Center"
 				GotKeyboardFocus="OnTagSearchGotKeyboardFocus"
 				LostKeyboardFocus="OnTagSearchLostKeyboardFocus"
@@ -166,7 +162,7 @@
 
 			<ListBox
 				x:Name="FilterTagsControl"
-				Margin="4,1"
+				Margin="24,1,4,1"
 				HorizontalAlignment="Left"
 				Background="Transparent"
 				ItemsSource="{Binding SelectedTags}">
@@ -184,26 +180,35 @@
 				</ListBox.ItemContainerStyle>
 			</ListBox>
 
-			<wpfUtils:IconBlock
-				Margin="0,0,6,0"
-				HorizontalAlignment="Right"
-				VerticalAlignment="Center"
-				FontSize="14"
-				Foreground="{DynamicResource BackgroundLightBrush}"
-				Icon="Search"
-				Visibility="{Binding ElementName=SearchTextBox, Path=IsKeyboardFocused, Converter={StaticResource !B2V}}" />
 
 			<Button
-				Margin="0,0,2,0"
+				Height="Auto"
+				Margin="3"
+				HorizontalAlignment="Left"
+				Click="OnClearClicked"
+				IsEnabled="{Binding CanClear}">
+				<Grid>
+					<wpfUtils:IconBlock
+						FontSize="14"
+						Icon="TimesCircle"
+						Visibility="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type Button}}, Converter={StaticResource B2V}}" />
+
+					<wpfUtils:IconBlock
+						FontSize="14"
+						Icon="Search"
+						Visibility="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType={x:Type Button}}, Converter={StaticResource !B2V}}" />
+				</Grid>
+			</Button>
+
+
+			<ToggleButton
+				Margin="2,0"
 				HorizontalAlignment="Right"
 				Background="Transparent"
 				Click="OnShowTagsClicked"
 				Focusable="False"
-				Visibility="{Binding ElementName=SearchTextBox, Path=IsKeyboardFocused, Converter={StaticResource B2V}}">
-				<wpfUtils:IconBlock
-					FontSize="14"
-					Icon="Tag" />
-			</Button>
+				IsChecked="{Binding IsSuggestTags, Mode=OneWay}"
+				Style="{DynamicResource WpfUtilsComboBoxButton}" />
 		</Grid>
 
 		<Popup
