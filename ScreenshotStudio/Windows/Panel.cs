@@ -319,13 +319,19 @@ public abstract partial class Panel : Window, IAutoNotify
 			}
 
 			this.Log.Information($"Panel: {this.panelType} has started");
-			try
+
+			bool run = true;
+			while (run)
 			{
-				System.Windows.Threading.Dispatcher.Run();
-			}
-			catch(Exception ex)
-			{
-				this.Log.Error(ex, $"Error in {this.panelType} thread");
+				try
+				{
+					System.Windows.Threading.Dispatcher.Run();
+					run = false;
+				}
+				catch (Exception ex)
+				{
+					this.Log.Error(ex, $"Error in {this.panelType} thread");
+				}
 			}
 
 			this.Log.Information($"Panel: {this.panelType} has shutdown");
