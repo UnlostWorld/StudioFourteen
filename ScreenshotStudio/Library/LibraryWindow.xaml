@@ -118,7 +118,7 @@
 				<ContentPresenter
 					Grid.Row="2"
 					Grid.ColumnSpan="2"
-					Content="{Binding SelectedResult}"
+					Content="{Binding SelectedResult.Entry}"
 					TextBlock.Foreground="{DynamicResource ForegroundBrush}">
 					<ContentPresenter.Resources>
 						<ResourceDictionary Source="./LibrarySidebarTemplates.xaml" />
