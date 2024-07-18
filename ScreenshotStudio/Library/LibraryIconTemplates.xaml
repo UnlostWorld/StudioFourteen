@@ -67,27 +67,32 @@
 
 
 	<DataTemplate DataType="{x:Type excel:Item}">
-		<Grid Margin="0,0,6,0">
+		<Viewbox>
+			<Grid
+				Width="48"
+				Height="48"
+				Margin="0,0,6,0">
 
-			<controls:XivTexImage
-				x:Name="IconBack"
-				Margin="0,-1,0,1"
-				Path="ui/uld/icona_frame_hr1.tex"
-				Rect="0, 192, 96, 96"
-				SnapsToDevicePixels="True"
-				Visibility="Collapsed" />
+				<controls:XivTexImage
+					x:Name="IconBack"
+					Margin="0,-1,0,1"
+					Path="ui/uld/icona_frame_hr1.tex"
+					Rect="0, 192, 96, 96"
+					SnapsToDevicePixels="True"
+					Visibility="Collapsed" />
 
-			<Image
-				Margin="4,2,4,5"
-				SnapsToDevicePixels="True"
-				Source="{Binding Icon.Source}" />
+				<Image
+					Margin="4,3,4,3"
+					SnapsToDevicePixels="True"
+					Source="{Binding Icon.Source}" />
 
-			<controls:XivTexImage
-				x:Name="IconShine"
-				Path="ui/uld/icona_frame_hr1.tex"
-				Rect="0, 0, 96, 96"
-				SnapsToDevicePixels="True" />
-		</Grid>
+				<controls:XivTexImage
+					x:Name="IconShine"
+					Path="ui/uld/icona_frame_hr1.tex"
+					Rect="0, 0, 96, 96"
+					SnapsToDevicePixels="True" />
+			</Grid>
+		</Viewbox>
 
 		<DataTemplate.Triggers>
 			<DataTrigger
