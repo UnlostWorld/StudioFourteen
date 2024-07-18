@@ -39,6 +39,9 @@ public class ActorAppearanceBackupService : ServiceBase
 
 	public unsafe bool CanRestore(Actor* actor)
 	{
+		if (actor == null)
+			return false;
+
 		ushort index = actor->GameObject.ObjectIndex;
 		return this.backup.ContainsKey(index);
 	}
