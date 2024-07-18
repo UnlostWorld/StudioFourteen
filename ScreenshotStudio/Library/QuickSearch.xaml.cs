@@ -5,6 +5,7 @@ using ScreenshotStudio.Library.Results;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Tags;
 using ScreenshotStudio.Windows;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Threading.Tasks;
@@ -77,6 +78,23 @@ public partial class QuickSearch : DockPanel
 	{
 		if (e.Key == Key.Down || e.Key == Key.Up)
 		{
+			int index = 0;
+			if (this.SelectedResult != null)
+				index = this.Results.IndexOf(this.SelectedResult);
+
+			if (index == -1)
+				index = 0;
+
+			if (e.Key == Key.Down)
+				index++;
+
+			if (e.Key == Key.Up)
+				index--;
+
+			index = Math.Clamp(index, 0, this.Results.Count);
+
+			this.SelectedResult = this.Results[index];
+
 			e.Handled = true;
 		}
 
