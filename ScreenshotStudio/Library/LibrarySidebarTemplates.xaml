@@ -58,24 +58,31 @@
 
 
 	<DataTemplate DataType="{x:Type excel:Item}">
-		<StackPanel>
-			<TextBlock
-				Foreground="{DynamicResource ForegroundLightBrush}"
-				Text="{Binding Description}"
-				TextWrapping="Wrap" />
+		<Grid>
+			<StackPanel>
+				<TextBlock
+					Foreground="{DynamicResource ForegroundLightBrush}"
+					Text="{Binding Description}"
+					TextWrapping="Wrap" />
 
-			<TextBlock
-				Foreground="{DynamicResource ForegroundLightBrush}"
-				Text="{Binding ClassJobs.Name}" />
+				<TextBlock
+					Foreground="{DynamicResource ForegroundLightBrush}"
+					Text="{Binding ClassJobs.Name}" />
 
-			<TextBlock Foreground="{DynamicResource ForegroundLightBrush}">
-				<Run Text="Lv." />
-				<Run Text="{Binding EquipLevel, Mode=OneWay}" />
-			</TextBlock>
+				<TextBlock Foreground="{DynamicResource ForegroundLightBrush}">
+					<Run Text="Lv." />
+					<Run Text="{Binding EquipLevel, Mode=OneWay}" />
+				</TextBlock>
 
-			<TextBlock
-				Foreground="{DynamicResource ForegroundLightBrush}"
-				Text="{Binding UICategory.Name}" />
-		</StackPanel>
+				<TextBlock
+					Foreground="{DynamicResource ForegroundLightBrush}"
+					Text="{Binding UICategory.Name}" />
+			</StackPanel>
+
+			<!--  actions  -->
+			<libraryControls:ItemActions
+				VerticalAlignment="Bottom"
+				Item="{Binding .}" />
+		</Grid>
 	</DataTemplate>
 </ResourceDictionary>

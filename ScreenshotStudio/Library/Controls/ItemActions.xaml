@@ -1,0 +1,67 @@
+﻿<studio:View
+	x:Class="ScreenshotStudio.Library.Controls.ItemActions"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="clr-namespace:ScreenshotStudio.Library.Controls"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:studio="clr-namespace:ScreenshotStudio"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
+	d:DesignWidth="150"
+	Loaded="OnLoaded"
+	Unloaded="OnUnloaded"
+	mc:Ignorable="d">
+
+	<Grid x:Name="ContentArea">
+		<Border Style="{DynamicResource WpfUtilsControlBorder}">
+			<Grid>
+
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition />
+				</Grid.ColumnDefinitions>
+
+				<Button
+					Grid.Column="0"
+					MinWidth="28"
+					Click="OnInfoClicked"
+					ToolTip="{DynamicResource LOC_Info}">
+					<wpfUtils:IconBlock Icon="Info" />
+				</Button>
+
+				<Button
+					Grid.Column="1"
+					MinWidth="28"
+					Click="OnRevertClicked"
+					IsEnabled="{Binding CanRevert}"
+					ToolTip="{DynamicResource LOC_Revert}">
+					<wpfUtils:IconBlock Icon="Undo" />
+				</Button>
+
+				<ToggleButton
+					Grid.Column="2"
+					MinWidth="28"
+					IsChecked="{Binding IsLive}"
+					ToolTip="{DynamicResource LOC_Library_LivePreview}">
+					<wpfUtils:IconBlock Icon="Bolt" />
+				</ToggleButton>
+
+				<Button
+					Grid.Column="3"
+					Click="OnApplyClicked"
+					IsEnabled="{Binding CanApply}">
+					<Button.Content>
+						<TextBlock>
+							<Run Text="Equip on" />
+							<Run Text="{Binding ActorName, Mode=OneWay}" />
+						</TextBlock>
+					</Button.Content>
+				</Button>
+			</Grid>
+		</Border>
+	</Grid>
+
+</studio:View>
