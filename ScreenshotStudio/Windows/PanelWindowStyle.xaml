@@ -88,31 +88,6 @@
 						HorizontalAlignment="Right"
 						Orientation="Horizontal">
 
-						<ItemsControl ItemsSource="{TemplateBinding Actions}">
-							<ItemsControl.ItemsPanel>
-								<ItemsPanelTemplate>
-									<StackPanel Orientation="Horizontal" />
-								</ItemsPanelTemplate>
-							</ItemsControl.ItemsPanel>
-
-							<ItemsControl.ItemTemplate>
-								<DataTemplate DataType="{x:Type local:PanelWindowAction}">
-									<Button
-										Width="28"
-										Height="22"
-										Margin="-3,0,0,0"
-										Background="Transparent"
-										Command="{Binding Command}"
-										ToolTip="{Binding ToolTip}">
-										<wpfUtils:IconBlock
-											Foreground="{DynamicResource ForegroundLightBrush}"
-											Icon="{Binding Icon}" />
-									</Button>
-								</DataTemplate>
-							</ItemsControl.ItemTemplate>
-
-						</ItemsControl>
-
 						<!--  Close Button  -->
 						<Button
 							Width="26"

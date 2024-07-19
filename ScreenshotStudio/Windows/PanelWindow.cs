@@ -15,12 +15,6 @@ public class PanelWindow : PersistentPanel
 		typeof(ProIcons),
 		typeof(PanelWindow));
 
-	public static readonly DependencyProperty ActionsProperty = DependencyProperty.Register(
-		nameof(PanelWindow.Actions),
-		typeof(FastObservableCollection<PanelWindowAction>),
-		typeof(PanelWindow),
-		new(new FastObservableCollection<PanelWindowAction>()));
-
 	public static readonly DependencyProperty CanCloseProperty = DependencyProperty.Register(
 		nameof(PanelWindow.CanClose),
 		typeof(bool),
@@ -36,12 +30,6 @@ public class PanelWindow : PersistentPanel
 	{
 		get => (ProIcons)this.GetValue(TitleIconProperty);
 		set => this.SetValue(TitleIconProperty, value);
-	}
-
-	public FastObservableCollection<PanelWindowAction> Actions
-	{
-		get => (FastObservableCollection<PanelWindowAction>)this.GetValue(ActionsProperty);
-		set => this.SetValue(ActionsProperty, value);
 	}
 
 	public bool CanClose

@@ -13,12 +13,6 @@
 	TitleIcon="Exclamation"
 	mc:Ignorable="d">
 
-	<local:PanelWindow.Actions>
-		<local:PanelWindowAction
-			Icon="ExclamationCircle"
-			ToolTip="Hello!" />
-	</local:PanelWindow.Actions>
-
 	<Grid>
 		<StackPanel>
 			<TextBlock
