@@ -4,6 +4,8 @@
 // https://github.com/goatcorp/Dalamud/blob/master/Dalamud/Interface/Internal/InterfaceManager.cs
 
 namespace ScreenshotStudio.Studio;
+
+using Dalamud.Hooking;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
 using ScreenshotStudio.Plugin;
@@ -11,10 +13,6 @@ using ScreenshotStudio.Services;
 using ScreenshotStudio.Utilities;
 using ScreenshotStudio.Windows;
 using System;
-using System.Diagnostics;
-using System.Reflection;
-using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -30,13 +28,20 @@ public partial class PhotoWindow : PanelWindow
 	private int bufferWidth = 0;
 	private int bufferHeight = 0;
 	private ComPtr<ID3D11Texture2D> bufferTexture = default;
-	private bool isCapture = true;
+	private Hook<InterfaceManager.ReshadeOnPresentDelegate>? reshadeOnPresentHook;
 
-	[AutoNotify]
-	public WriteableBitmap? Bitmap => this.bitmap;
+	[AutoNotify] public WriteableBitmap? Bitmap => this.bitmap;
 
 	protected override void OnOpened()
 	{
+		if (SwapChainHelper.IsReshade)
+		{
+			InterfaceManager.DisableReshadePresent();
+
+			this.reshadeOnPresentHook = InteropService.HookFromAddress<InterfaceManager.ReshadeOnPresentDelegate>(SwapChainHelper.ReshadeOnPresent, this.ReshadeOnPresentDetour);
+			this.reshadeOnPresentHook?.Enable();
+		}
+
 		base.OnOpened();
 	}
 
@@ -44,26 +49,46 @@ public partial class PhotoWindow : PanelWindow
 	{
 		base.OnClosed();
 
+		this.reshadeOnPresentHook?.Disable();
 		this.bufferTexture.Dispose();
+
+		if (SwapChainHelper.IsReshade)
+		{
+			InterfaceManager.EnableReshadePresent();
+		}
 	}
 
 	protected override void OnFrameworkUpdate(IFramework framework)
 	{
 		base.OnFrameworkUpdate(framework);
 
-		// alternate capturing and drawing the bitmap to reduce load.
-		if (this.isCapture)
+		// If not using reshade, fallback to just run before ImGUI within dalamud's present
+		if (!SwapChainHelper.IsReshade)
 		{
 			InterfaceManager.RunBeforeImGuiRender(this.Capture);
-			this.isCapture = false;
 		}
-		else
-		{
-			this.Dispatcher.BeginInvoke(this.DrawBitmap);
-			this.isCapture = true;
-		}
+
+		this.Dispatcher.BeginInvoke(this.DrawBitmap);
 	}
 
+	// When running reshade, we intercept the present call to capture the screen after reshade.
+	// We also call into Dalamud's InterfaceManager detour to make sure the dalamud windows
+	// get rendered _after_ our capture is complete, since we disable their hook.
+	private void ReshadeOnPresentDetour(nint swapChain, uint flags, nint presentParams)
+	{
+		if (this.reshadeOnPresentHook == null)
+			return;
+
+		this.reshadeOnPresentHook.Original(swapChain, flags, presentParams);
+
+		this.Capture();
+
+		InterfaceManager.ReshadeOnPresentDetour(swapChain, flags, presentParams);
+	}
+
+	/// <summary>
+	/// Capture the contents of the games swap chain back buffer.
+	/// </summary>
 	private unsafe void Capture()
 	{
 		Threads.VerifyFrameworkThread();
@@ -147,6 +172,9 @@ public partial class PhotoWindow : PanelWindow
 		}
 	}
 
+	/// <summary>
+	/// Draw the contents of the buffer to the bitmap being displayed in the window
+	/// </summary>
 	private unsafe void DrawBitmap()
 	{
 		lock (this.lockObj)
@@ -154,7 +182,7 @@ public partial class PhotoWindow : PanelWindow
 			if (this.bufferWidth == 0 || this.bufferHeight == 0)
 				return;
 
-			if (this.bitmap == null || this.bitmap.Width != this.bufferWidth || this.bitmap.Height != this.bufferHeight)
+			if (this.bitmap == null || this.bitmap.PixelWidth != this.bufferWidth || this.bitmap.PixelHeight != this.bufferHeight)
 			{
 				this.bitmap = new WriteableBitmap(
 					this.bufferWidth,
@@ -191,8 +219,6 @@ public partial class PhotoWindow : PanelWindow
 
 			this.bitmap.AddDirtyRect(new Int32Rect(0, 0, this.bufferWidth, this.bufferHeight));
 			this.bitmap.Unlock();
-
-			////this.bitmap.WritePixels(new Int32Rect(0, 0, this.bufferWidth, this.bufferHeight), this.bufferData, this.bufferWidth * 4, 0);
 		}
 	}
 }
