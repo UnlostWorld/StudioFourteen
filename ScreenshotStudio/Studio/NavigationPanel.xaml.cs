@@ -102,6 +102,13 @@ public partial class NavigationPanel : DockPanel
 		set => this.Services.Panels.SetIsOpen<HelloWorldWindow>(value);
 	}
 
+	[AutoNotify]
+	public bool IsPhotoOpen
+	{
+		get => this.Services.Panels.GetIsOpen<PhotoWindow>();
+		set => this.Services.Panels.SetIsOpen<PhotoWindow>(value);
+	}
+
 	public void Expand()
 	{
 		this.IsExpanded = true;

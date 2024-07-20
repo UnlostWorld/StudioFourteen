@@ -13,6 +13,8 @@ public static class XivWindow
 
 	public static Process? Process { get; set; }
 
+	public static nint? Hwnd => Process?.MainWindowHandle;
+
 	public static Rect Size
 	{
 		get
