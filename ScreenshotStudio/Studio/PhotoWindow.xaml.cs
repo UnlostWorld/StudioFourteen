@@ -173,7 +173,7 @@ public partial class PhotoWindow : PanelWindow
 	}
 
 	/// <summary>
-	/// Draw the contents of the buffer to the bitmap being displayed in the window
+	/// Draw the contents of the buffer to the bitmap being displayed in the window.
 	/// </summary>
 	private unsafe void DrawBitmap()
 	{
