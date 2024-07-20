@@ -5,6 +5,7 @@ using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Interop;
 
 public static class XivWindow
@@ -117,6 +118,32 @@ public static class XivWindow
 		return new Point(l, t);
 	}
 
+	public static void SendKey(Key key, bool down)
+	{
+		if (Process == null)
+			return;
+
+		int virtualKey = KeyInterop.VirtualKeyFromKey(key);
+
+		if (key == Key.LeftShift || key == Key.RightShift)
+			virtualKey = 0x10;
+
+		if (key == Key.LeftCtrl || key == Key.RightCtrl)
+			virtualKey = 0x11;
+
+		if (key == Key.LeftAlt || key == Key.RightAlt)
+			virtualKey = 0x12;
+
+		if (down)
+		{
+			PostMessage(Process.MainWindowHandle, 0x100, (IntPtr)virtualKey, IntPtr.Zero);
+		}
+		else
+		{
+			PostMessage(Process.MainWindowHandle, 0x0101, (IntPtr)virtualKey, IntPtr.Zero);
+		}
+	}
+
 	[DllImport("user32.dll", SetLastError = true)]
 	private static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
 
@@ -137,6 +164,9 @@ public static class XivWindow
 
 	[DllImport("user32.dll", SetLastError = true)]
 	private static extern IntPtr GetForegroundWindow();
+
+	[DllImport("user32.dll")]
+	private static extern IntPtr PostMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
 	[StructLayout(LayoutKind.Sequential)]
 	public struct Win32Rect
