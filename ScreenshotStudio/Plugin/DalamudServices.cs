@@ -11,18 +11,19 @@ using System.Runtime.InteropServices;
 
 public class DalamudServices
 {
-	[PluginService] internal static IPluginLog? Log { get; private set; }
-	[PluginService] internal static IDalamudPluginInterface? PluginInterface { get; private set; }
-	[PluginService] internal static ICommandManager? CommandManager { get; private set; }
-	[PluginService] internal static IDataManager? DataManager { get; private set; }
-	[PluginService] internal static IClientState? ClientState { get; private set; }
-	[PluginService] internal static IObjectTable? ObjectTable { get; private set; }
-	[PluginService] internal static ISigScanner? SigScanner { get; private set; }
-	[PluginService] internal static IFramework? Framework { get; private set; }
-	[PluginService] internal static IKeyState? KeyState { get; private set; }
-	[PluginService] internal static IGameGui? GameGui { get; private set; }
-	[PluginService] internal static ITextureSubstitutionProvider? TextureSubstitutionProvider { get; private set; }
-	[PluginService] internal static IGameInteropProvider? InteropProvider { get; private set; }
+	[PluginService] public static IPluginLog? Log { get; private set; }
+	[PluginService] public static IDalamudPluginInterface? PluginInterface { get; private set; }
+	[PluginService] public static ICommandManager? CommandManager { get; private set; }
+	[PluginService] public static IDataManager? DataManager { get; private set; }
+	[PluginService] public static IClientState? ClientState { get; private set; }
+	[PluginService] public static IObjectTable? ObjectTable { get; private set; }
+	[PluginService] public static ISigScanner? SigScanner { get; private set; }
+	[PluginService] public static IFramework? Framework { get; private set; }
+	[PluginService] public static IKeyState? KeyState { get; private set; }
+	[PluginService] public static IGameGui? GameGui { get; private set; }
+	[PluginService] public static ITextureSubstitutionProvider? TextureSubstitutionProvider { get; private set; }
+	[PluginService] public static IGameInteropProvider? InteropProvider { get; private set; }
+	[PluginService] public static ITextureProvider? TextureProvider { get; private set; }
 
 	internal static unsafe CameraManager* Camera { get; private set; } = CameraManager.Instance();
 

@@ -9,11 +9,14 @@
 	Width="400"
 	Height="250"
 	d:Background="{DynamicResource BackgroundBrush}"
+	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	CanClose="True"
 	TitleIcon="ImagePolaroid"
 	mc:Ignorable="d">
 
 	<Grid>
-		<Image x:Name="Screen" />
+		<Image
+			x:Name="Screen"
+			Source="{Binding Bitmap}" />
 	</Grid>
 </local:PanelWindow>
