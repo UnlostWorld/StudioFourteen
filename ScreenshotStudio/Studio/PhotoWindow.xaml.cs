@@ -6,12 +6,16 @@ namespace ScreenshotStudio.Studio;
 
 using Dalamud.Interface.Textures;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
+using ImGuiNET;
 using Lumina.Models.Materials;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Utilities;
 using ScreenshotStudio.Windows;
 using System;
 using System.Diagnostics;
+using System.IO;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
 
@@ -55,7 +59,7 @@ public partial class PhotoWindow : PanelWindow
 			description.BindFlags = 0;
 			description.CPUAccessFlags = (uint)D3D11_CPU_ACCESS_FLAG.D3D11_CPU_ACCESS_READ;
 			description.Usage = D3D11_USAGE.D3D11_USAGE_STAGING;
-			////description.Format = DXGI_FORMAT_B8G8R8A8_UNORM;
+			description.Format = DXGI_FORMAT.DXGI_FORMAT_R8G8B8A8_UNORM;
 
 			using ComPtr<ID3D11Texture2D> tmpTex = default;
 			HRESULT hr = device.Get()->CreateTexture2D(&description, null, tmpTex.GetAddressOf());
@@ -68,7 +72,32 @@ public partial class PhotoWindow : PanelWindow
 
 			context.Get()->CopyResource((ID3D11Resource*)tmpTex.Get(), (ID3D11Resource*)buffer);
 
-			
+			D3D11_MAPPED_SUBRESOURCE mapped = default(D3D11_MAPPED_SUBRESOURCE);
+			hr = context.Get()->Map((ID3D11Resource*)tmpTex.Get(), 0, D3D11_MAP.D3D11_MAP_READ, 0u, &mapped);
+			if (hr.FAILED)
+				throw new Exception($"Failed to map texture resource {hr.Value}");
+
+			int len = (int)description.Width * (int)description.Height * 4;
+
+			BitmapSource bitmapSource = BitmapSource.Create(
+				(int)description.Width,
+				(int)description.Height,
+				72,
+				72,
+				PixelFormats.Bgra32,
+				BitmapPalettes.WebPalette,
+				(nint)mapped.pData,
+				len,
+				4 * (int)description.Width);
+
+			bitmapSource.Freeze();
+
+			context.Get()->Unmap((ID3D11Resource*)buffer, 0u);
+
+			this.Dispatcher.Invoke(() =>
+			{
+				this.Screen.Source = bitmapSource;
+			});
 		}
 		catch (Exception ex)
 		{
