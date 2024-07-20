@@ -7,12 +7,14 @@ namespace ScreenshotStudio.Studio;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
 using ScreenshotStudio.Plugin;
+using ScreenshotStudio.Services;
 using ScreenshotStudio.Utilities;
 using ScreenshotStudio.Windows;
 using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -21,26 +23,21 @@ using TerraFX.Interop.Windows;
 
 public partial class PhotoWindow : PanelWindow
 {
-	private readonly WriteableBitmap bitmap = new WriteableBitmap(
-					1920,
-					1080,
-					300,
-					300,
-					PixelFormats.Bgra32,
-					null);
-
+	private readonly object lockObj = new();
+	private WriteableBitmap? bitmap;
+	private nint bitmapBackBuffer;
 	private byte[] bufferData = Array.Empty<byte>();
 	private int bufferWidth = 0;
 	private int bufferHeight = 0;
 	private ComPtr<ID3D11Texture2D> bufferTexture = default;
+	private bool isCapture = true;
 
-	public WriteableBitmap Bitmap => this.bitmap;
+	[AutoNotify]
+	public WriteableBitmap? Bitmap => this.bitmap;
 
 	protected override void OnOpened()
 	{
 		base.OnOpened();
-
-		this.Dispatcher.BeginInvoke(this.DrawBitmap);
 	}
 
 	protected override void OnClosed()
@@ -54,7 +51,17 @@ public partial class PhotoWindow : PanelWindow
 	{
 		base.OnFrameworkUpdate(framework);
 
-		InterfaceManager.RunBeforeImGuiRender(this.Capture);
+		// alternate capturing and drawing the bitmap to reduce load.
+		if (this.isCapture)
+		{
+			InterfaceManager.RunBeforeImGuiRender(this.Capture);
+			this.isCapture = false;
+		}
+		else
+		{
+			this.Dispatcher.BeginInvoke(this.DrawBitmap);
+			this.isCapture = true;
+		}
 	}
 
 	private unsafe void Capture()
@@ -63,7 +70,7 @@ public partial class PhotoWindow : PanelWindow
 
 		try
 		{
-			lock (this)
+			lock (this.lockObj)
 			{
 				var kernelDev = Device.Instance();
 				if (kernelDev == null)
@@ -106,9 +113,9 @@ public partial class PhotoWindow : PanelWindow
 				if (this.bufferTexture.Get() == null)
 				{
 					this.Log.Information("Creating a back buffer texture");
-					HRESULT createResukt = device.Get()->CreateTexture2D(&description, null, this.bufferTexture.GetAddressOf());
+					HRESULT createResult = device.Get()->CreateTexture2D(&description, null, this.bufferTexture.GetAddressOf());
 
-					if (createResukt.FAILED)
+					if (createResult.FAILED)
 					{
 						throw new Exception("Failed to create texture");
 					}
@@ -140,48 +147,52 @@ public partial class PhotoWindow : PanelWindow
 		}
 	}
 
-	private void DrawBitmap()
+	private unsafe void DrawBitmap()
 	{
-		lock (this)
+		lock (this.lockObj)
 		{
-			Stopwatch sw = new();
-			sw.Start();
-
 			if (this.bufferWidth == 0 || this.bufferHeight == 0)
 				return;
 
-			if (this.bitmap.Width != this.bufferWidth || this.bitmap.Height != this.bufferHeight)
+			if (this.bitmap == null || this.bitmap.Width != this.bufferWidth || this.bitmap.Height != this.bufferHeight)
 			{
-				// Resize!
+				this.bitmap = new WriteableBitmap(
+					this.bufferWidth,
+					this.bufferHeight,
+					300,
+					300,
+					PixelFormats.Bgra32,
+					null);
+
+				this.bitmapBackBuffer = this.bitmap.BackBuffer;
 			}
 
 			this.bitmap.Lock();
 
-			// annoyingly, the buffer is in RGBA32, which is not supported by WPF here.
-			for (var x = 0; x < this.bufferWidth; x++)
+			// https://stackoverflow.com/questions/21428272/show-rgba-image-from-memory
+			int numPixels = this.bufferHeight * this.bufferWidth;
+			fixed (byte* pSrcData = &this.bufferData[0])
 			{
-				for (var y = 0; y < this.bufferHeight; y++)
+				uint* pCurrent = (uint*)pSrcData;
+				uint* pBitmapData = (uint*)this.bitmapBackBuffer;
+
+				for (int n = 0; n < numPixels; n++)
 				{
-					var offset = ((y * this.bufferWidth) + x) * 4;
+					uint x = *(pCurrent++);
 
-					IntPtr backbuffer = this.bitmap.BackBuffer;
-					backbuffer += offset;
-
-					var r = this.bufferData[offset];
-					var g = this.bufferData[offset + 1];
-					var b = this.bufferData[offset + 2];
-					var a = this.bufferData[offset + 3];
-					int color = a << 24 | r << 16 | g << 8 | b;
-
-					Marshal.WriteInt32(backbuffer, color);
+					// Swap R and B
+					*(pBitmapData + n) =
+							 0xFF000000 | // force alpha to 255
+						(x & 0x00FF0000) >> 16 |
+						(x & 0x0000FF00) |
+						(x & 0x000000FF) << 16;
 				}
 			}
 
 			this.bitmap.AddDirtyRect(new Int32Rect(0, 0, this.bufferWidth, this.bufferHeight));
 			this.bitmap.Unlock();
 
-			sw.Stop();
-			this.Log.Information($"{sw.ElapsedMilliseconds}ms");
+			////this.bitmap.WritePixels(new Int32Rect(0, 0, this.bufferWidth, this.bufferHeight), this.bufferData, this.bufferWidth * 4, 0);
 		}
 	}
 }
