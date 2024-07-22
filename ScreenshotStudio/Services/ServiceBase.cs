@@ -15,9 +15,9 @@ public abstract class ServiceBase : INotifyPropertyChanged
 	public event PropertyChangedEventHandler? PropertyChanged;
 
 	public bool IsAlive { get; private set; }
-	public ILogger Log { get; private set; }
 
-	public ServiceManager Services => ServiceManager.Instance;
+	protected ILogger Log { get; private set; }
+	protected ServiceManager Services => ServiceManager.Instance;
 
 	public virtual Task Initialize()
 	{
