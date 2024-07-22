@@ -7,22 +7,23 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using static System.Windows.Forms.LinkLabel;
 
 public class PoseView : Canvas
 {
 	protected readonly ILogger Log = Logging.ForContext<PoseView>();
 
 	private const double BackgroundOpacity = 0.25;
+	private const double MouseOverDistance = 20;
 
 	private readonly PoseViewDefinition? definition;
 	private readonly List<BoneLink> boneLinks = new();
 	private readonly int backgroundWidth;
 	private readonly int backgroundHeight;
+	private BoneLink? mouseOver;
 
 	public PoseView()
 	{
@@ -67,6 +68,48 @@ public class PoseView : Canvas
 		}
 	}
 
+	public BoneLink? MouseOver
+	{
+		get => this.mouseOver;
+		set
+		{
+			if (this.mouseOver == value)
+				return;
+
+			this.mouseOver?.OnMouseLeave();
+			this.mouseOver = value;
+			this.mouseOver?.OnMouseEnter();
+		}
+	}
+
+	protected override void OnMouseMove(MouseEventArgs e)
+	{
+		base.OnMouseMove(e);
+
+		Point mousePos = Mouse.GetPosition(this);
+
+		double closestDist = double.MaxValue;
+		BoneLink? closestLink = null;
+		foreach (BoneLink link in this.boneLinks)
+		{
+			double distance = Point.Subtract(mousePos, link.Position).Length;
+			if (distance < closestDist)
+			{
+				closestDist = distance;
+				closestLink = link;
+			}
+		}
+
+		if (closestLink != null && closestDist < MouseOverDistance)
+		{
+			this.MouseOver = closestLink;
+		}
+		else
+		{
+			this.MouseOver = null;
+		}
+	}
+
 	protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
 	{
 		base.OnRenderSizeChanged(sizeInfo);
@@ -103,18 +146,21 @@ public class PoseView : Canvas
 			}
 
 			finalPos.Y = pos.Y * scale;
-			link.SetPosition(finalPos);
+			link.Position = finalPos;
 		}
 	}
 
 	public class BoneLink
 	{
 		public const double Radius = 7;
+		public const double InnerRadius = 3;
 
 		public readonly string Name;
 		public readonly string? OriginalName;
 
 		private readonly Ellipse outer;
+		private readonly Ellipse inner;
+		private Point position;
 
 		public BoneLink(string name, string? originalName, Canvas parent)
 		{
@@ -124,17 +170,40 @@ public class PoseView : Canvas
 			this.outer = new();
 			this.outer.Width = Radius * 2;
 			this.outer.Height = Radius * 2;
-			this.outer.StrokeThickness = 1;
-			this.outer.SetResourceReference(Ellipse.StrokeProperty, "ForegroundLightBrush");
 			this.outer.SetResourceReference(Ellipse.FillProperty, "ControlBackgroundBrush");
-
+			this.outer.ToolTip = this.Name; // TODO: localize!
 			parent.Children.Add(this.outer);
+
+			this.inner = new();
+			this.inner.Width = InnerRadius * 2;
+			this.inner.Height = InnerRadius * 2;
+			this.inner.SetResourceReference(Ellipse.FillProperty, "ForegroundLightBrush");
+			this.inner.IsHitTestVisible = false;
+			parent.Children.Add(this.inner);
 		}
 
-		public void SetPosition(Point pos)
+		public Point Position
 		{
-			Canvas.SetLeft(this.outer, pos.X - Radius);
-			Canvas.SetTop(this.outer, pos.Y - Radius);
+			get => this.position;
+			set
+			{
+				this.position = value;
+				Canvas.SetLeft(this.outer, value.X - Radius);
+				Canvas.SetTop(this.outer, value.Y - Radius);
+
+				Canvas.SetLeft(this.inner, value.X - InnerRadius);
+				Canvas.SetTop(this.inner, value.Y - InnerRadius);
+			}
+		}
+
+		public void OnMouseEnter()
+		{
+			this.outer.SetResourceReference(Ellipse.FillProperty, "ControlHighlightBrush");
+		}
+
+		public void OnMouseLeave()
+		{
+			this.outer.SetResourceReference(Ellipse.FillProperty, "ControlBackgroundBrush");
 		}
 	}
 }
