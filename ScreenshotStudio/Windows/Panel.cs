@@ -103,6 +103,9 @@ public abstract partial class Panel : Window, IAutoNotify
 
 	public static async Task<Panel?> CreateInstance(Type panelWindowType)
 	{
+		if (ServiceManager.Instance.CurrentState > ServiceManagerBase.States.Started)
+			return null;
+
 		return await new PanelThread().Start(panelWindowType);
 	}
 
