@@ -10,13 +10,12 @@
 	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="{DynamicResource LOC_Pose}"
-	Width="230"
+	Width="850"
+	Height="560"
 	VerticalAlignment="Top"
 	VerticalContentAlignment="Top"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
-	ShowBackground="False"
-	SizeToContent="Height"
 	Subtitle="{Binding ActorName}"
 	TitleIcon="Running"
 	mc:Ignorable="d">
@@ -28,11 +27,32 @@
 			<converters:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter" />
 		</Grid.Resources>
 
-		<StackPanel>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition />
+			<ColumnDefinition Width="Auto" />
+		</Grid.ColumnDefinitions>
+
+		<Grid Grid.Column="0">
+			<TabControl>
+				<TabItem Header="Body">
+					<Grid>
+						<pose:PoseView />
+					</Grid>
+				</TabItem>
+				<TabItem Header="Face" />
+				<TabItem Header="Hands" />
+				<TabItem Header="Matrix" />
+				<TabItem Header="Tree" />
+			</TabControl>
+
+		</Grid>
+
+
+		<StackPanel Grid.Column="1">
 
 			<!--  Transform  -->
 			<Grid>
-				<StackPanel>
+				<StackPanel Width="180">
 
 					<TextBlock
 						HorizontalAlignment="Center"

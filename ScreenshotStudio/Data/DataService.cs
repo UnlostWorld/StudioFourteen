@@ -3,10 +3,9 @@
 
 namespace ScreenshotStudio.Data;
 
-using ScreenshotStudio.GameData.Excel;
 using ScreenshotStudio.Serialization;
 using ScreenshotStudio.Services;
-using System;
+using ScreenshotStudio.Studio.Pose;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -16,10 +15,12 @@ public class DataService : ServiceBase
 {
 	public const string NpcNamesIdFormat = "D7";
 	public static Dictionary<string, string>? NpcNames { get; set; }
+	public static Dictionary<string, PoseViewDefinition>? PoseViews { get; set; }
 
 	public override Task Initialize()
 	{
 		NpcNames = this.GetResourceDocument<Dictionary<string, string>>("NpcNames");
+		PoseViews = this.GetResourceDocument<Dictionary<string, PoseViewDefinition>>("Bones");
 
 		return base.Initialize();
 	}
