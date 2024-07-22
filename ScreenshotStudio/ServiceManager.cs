@@ -24,6 +24,7 @@ public class ServiceManager : ServiceManagerBase
 	public ActorAppearanceBackupService ActorAppearanceBackup { get; init; } = new();
 	public LibraryService Library { get; init; } = new();
 	public InputService Input { get; init; } = new();
+	public GameCaptureService GameCapture { get; init; } = new();
 
 	protected override void OnStart()
 	{
