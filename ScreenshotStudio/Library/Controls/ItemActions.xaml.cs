@@ -35,7 +35,7 @@ public partial class ItemActions : View
 			if (this.Actor == null)
 				return false;
 
-			if (this.Actor->RenderMode != RenderMode.Draw)
+			if (this.Actor->GameObject.RenderFlags != (int)RenderMode.Draw)
 				return false;
 
 			return true;

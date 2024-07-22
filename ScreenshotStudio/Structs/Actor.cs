@@ -6,6 +6,9 @@
 // Anamnesis
 // https://github.com/imchillin/Anamnesis/blob/master/Anamnesis/Memory/ActorCustomizeMemory.cs
 // https://github.com/imchillin/Anamnesis/blob/master/Anamnesis/Memory/ActorBasicMemory.cs
+
+// https://github.com/aers/FFXIVClientStructs/blob/main/FFXIVClientStructs/FFXIV/Client/Game/Character/Character.cs
+// https://github.com/aers/FFXIVClientStructs/blob/main/FFXIVClientStructs/FFXIV/Client/Game/Object/GameObject.cs
 namespace ScreenshotStudio.Structs;
 
 using Dalamud.Game.ClientState.Objects.Enums;
@@ -23,9 +26,7 @@ using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 public struct Actor
 {
 	[FieldOffset(0)] public GameObject GameObject;
-	[FieldOffset(0x88)] public byte ObjectID;
-	[FieldOffset(0x100)] public unsafe ActorModel* Model;
-	[FieldOffset(0x118)] public RenderMode RenderMode;
+
 	[FieldOffset(0x1AC)] public uint ModelCharaRowId;
 	[FieldOffset(0x708)] public DrawDataContainer DrawData;
 	[FieldOffset(0x89E)] public bool IsHatHidden;
@@ -156,7 +157,7 @@ public struct Actor
 		{
 			fixed (CustomizeData* custom = &this.DrawData.CustomizeData)
 			{
-				redraw |= ((Human*)this.Model)->UpdateDrawData((byte*)custom, true) == false;
+				redraw |= ((Human*)this.GameObject.DrawObject)->UpdateDrawData((byte*)custom, true) == false;
 			}
 		}
 

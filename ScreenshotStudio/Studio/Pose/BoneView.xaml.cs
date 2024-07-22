@@ -3,8 +3,6 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using System.Xml.Linq;
 using WpfUtils.DependencyProperties;
 
 public partial class BoneView : UserControl, INotifyPropertyChanged
@@ -12,9 +10,6 @@ public partial class BoneView : UserControl, INotifyPropertyChanged
 	public static readonly IBind<string> LabelDp = Binder.Register<string, BoneView>(nameof(Label));
 	public static readonly IBind<string> NameDp = Binder.Register<string, BoneView>(nameof(BoneName));
 	public static readonly IBind<string> FlippedNameDp = Binder.Register<string, BoneView>(nameof(FlippedBoneName));
-
-	private BoneWindow? owner;
-	private bool isPropagatingState = false;
 
 	public BoneView()
 	{
@@ -59,21 +54,7 @@ public partial class BoneView : UserControl, INotifyPropertyChanged
 		}
 	}
 
-	public unsafe void OnSkeletonChanged()
-	{
-		if (this.owner == null)
-			return;
-
-		this.Dispatcher.Invoke(() =>
-		{
-			BoneCollection? bones = BoneCollection.Search(this.owner.Skeleton, this.CurrentName);
-
-			this.IsEnabled = bones != null;
-			this.TooltipInternalNameText.Text = bones?.DisplayName;
-		});
-	}
-
-	public unsafe void OnSelectionChanged(BoneCollection? selection)
+	/*public unsafe void OnSelectionChanged(BoneCollection? selection)
 	{
 		bool isSelected = false;
 		if (selection != null)
@@ -134,23 +115,14 @@ public partial class BoneView : UserControl, INotifyPropertyChanged
 			return;
 
 		this.owner?.UnSelect(this.CurrentName);
-	}
+	}*/
 
 	private void OnLoaded(object sender, RoutedEventArgs e)
 	{
 		this.TooltipDisplayNameText.Text = this.BoneName;
-
-		this.owner = this.FindParent<BoneWindow>();
-
-		if (this.owner == null)
-			return;
-
-		this.owner?.BoneViews.Add(this);
-		this.OnSkeletonChanged();
 	}
 
 	private void OnUnloaded(object sender, RoutedEventArgs e)
 	{
-		this.owner?.BoneViews.Remove(this);
 	}
 }

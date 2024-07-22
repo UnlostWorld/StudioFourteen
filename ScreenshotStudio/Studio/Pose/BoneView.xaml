@@ -28,9 +28,7 @@
 			x:Name="Radio"
 			Margin="0"
 			HorizontalAlignment="Center"
-			VerticalAlignment="Center"
-			Checked="OnChecked"
-			Unchecked="OnUnchecked">
+			VerticalAlignment="Center">
 			<ToggleButton.Style>
 				<Style TargetType="{x:Type ToggleButton}">
 					<Setter Property="Template">

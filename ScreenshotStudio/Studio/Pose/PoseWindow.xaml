@@ -9,7 +9,7 @@
 	xmlns:pose="clr-namespace:ScreenshotStudio.Studio.Pose"
 	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
-	Title="{DynamicResource Pose}"
+	Title="{DynamicResource LOC_Pose}"
 	Width="230"
 	VerticalAlignment="Top"
 	VerticalContentAlignment="Top"
@@ -33,14 +33,39 @@
 			<!--  Transform  -->
 			<Grid>
 				<StackPanel>
+
+					<TextBlock
+						HorizontalAlignment="Center"
+						Style="{DynamicResource Header}"
+						Text="{Binding SelectedBones.DisplayName, FallbackValue='Actor'}" />
+
+					<StackPanel IsEnabled="{Binding SelectedBones, Converter={StaticResource NotNullToBoolConverter}}">
+						<Border
+							Grid.Column="1"
+							Style="{DynamicResource WpfUtilsControlBorder}">
+
+							<StackPanel
+								HorizontalAlignment="Center"
+								Orientation="Horizontal">
+								<Button Background="Transparent">
+									<wpfUtils:IconBlock Icon="ArrowCircleUp" />
+								</Button>
+
+								<Button Background="Transparent">
+									<wpfUtils:IconBlock Icon="TimesCircle" />
+								</Button>
+
+								<Button Background="Transparent">
+									<wpfUtils:IconBlock Icon="ArrowCircleDown" />
+								</Button>
+							</StackPanel>
+						</Border>
+					</StackPanel>
+
 					<Grid
-						Width="198"
-						Height="198"
-						Margin="0,0,0,1">
+						Height="{Binding ActualWidth, RelativeSource={RelativeSource Mode=Self}}"
+						Margin="1">
 						<Border Style="{DynamicResource WpfUtilsControlBorder}" />
-						<pose:Gizmo
-							RootRotation="{Binding RootRotation}"
-							Value="{Binding Rotation}" />
 					</Grid>
 
 					<!--  Translate  -->
@@ -253,88 +278,8 @@
 						</Grid>
 					</Expander>
 
-				</StackPanel>
-			</Grid>
-
-			<Separator Margin="0,6" />
-
-			<!--  Posing  -->
-			<Grid IsEnabled="{Binding CanPose}">
-				<StackPanel>
-					<CheckBox IsChecked="{Binding PosingEnabled}">
-						<TextBlock Text="Enable Posing" />
-					</CheckBox>
-
-					<ToggleButton
-						x:Name="ViewsToggle"
-						Content="Views"
-						Style="{DynamicResource WpfUtilsComboBoxButton}" />
-
-					<Popup
-						AllowsTransparency="True"
-						IsOpen="{Binding IsChecked, ElementName=ViewsToggle}"
-						PlacementTarget="{Binding ElementName=ViewsToggle}"
-						StaysOpen="False">
-
-						<Border
-							Grid.Column="1"
-							Width="190"
-							Margin="0,2"
-							Style="{DynamicResource WpfUtilsControlBorder}">
-							<StackPanel Margin="3">
-
-								<CheckBox
-									Content="{DynamicResource BonesGuiOption}"
-									IsChecked="{Binding IsBonesWindowOpen}"
-									Style="{DynamicResource StudioVisibilityCheckBox}" />
-
-								<CheckBox
-									Content="Bone Overlay"
-									Style="{DynamicResource StudioVisibilityCheckBox}" />
-
-								<CheckBox
-									Content="Gizmo Overlay"
-									Style="{DynamicResource StudioVisibilityCheckBox}" />
-
-								<CheckBox
-									Content="Control Deck"
-									Style="{DynamicResource StudioVisibilityCheckBox}" />
-
-							</StackPanel>
-						</Border>
-					</Popup>
 
 
-					<StackPanel IsEnabled="{Binding SelectedBones, Converter={StaticResource NotNullToBoolConverter}}">
-						<TextBlock
-							Margin="0,10,0,0"
-							HorizontalAlignment="Center"
-							Style="{DynamicResource Header}"
-							Text="{Binding SelectedBones.DisplayName, FallbackValue='Actor'}" />
-
-						<Border
-							Grid.Column="1"
-							Style="{DynamicResource WpfUtilsControlBorder}">
-
-							<StackPanel
-								HorizontalAlignment="Center"
-								Orientation="Horizontal">
-								<Button Background="Transparent">
-									<wpfUtils:IconBlock Icon="ArrowCircleUp" />
-								</Button>
-
-								<Button
-									Background="Transparent"
-									Click="OnClearSelectionClicked">
-									<wpfUtils:IconBlock Icon="TimesCircle" />
-								</Button>
-
-								<Button Background="Transparent">
-									<wpfUtils:IconBlock Icon="ArrowCircleDown" />
-								</Button>
-							</StackPanel>
-						</Border>
-					</StackPanel>
 				</StackPanel>
 			</Grid>
 		</StackPanel>

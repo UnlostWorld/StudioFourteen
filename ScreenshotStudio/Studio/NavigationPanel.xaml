@@ -159,7 +159,6 @@
 
 								<ToggleButton
 									IsChecked="{Binding IsPoseOpen}"
-									IsEnabled="False"
 									ToolTip="{DynamicResource LOC_Pose}">
 									<wpfUtils:IconBlock Icon="Running" />
 								</ToggleButton>

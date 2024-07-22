@@ -2,17 +2,16 @@
 
 using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using ScreenshotStudio.GameData.Excel;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Structs;
+using ScreenshotStudio.Windows;
 using System.ComponentModel;
 using System.Windows;
-using System.Windows.Controls;
 
-public partial class PoseGuiView : UserControl, IAutoNotify
+public partial class PoseGuiView : View
 {
-	private BoneWindow? window;
+	private ActorWindow? window;
 
 	public PoseGuiView()
 	{
@@ -20,10 +19,7 @@ public partial class PoseGuiView : UserControl, IAutoNotify
 		this.ContentArea.DataContext = this;
 
 		this.Loaded += this.OnLoaded;
-		this.Unloaded += this.OnUnloaded;
 	}
-
-	public event PropertyChangedEventHandler? PropertyChanged;
 
 	// TODO: this might be better as a setting, or a value per actor
 	[AutoNotify] public bool FlipSides { get; set; }
@@ -66,32 +62,8 @@ public partial class PoseGuiView : UserControl, IAutoNotify
 	protected unsafe Actor* Actor => this.window == null ? default : this.window.Actor;
 	protected unsafe ref DrawDataContainer DrawData => ref this.Actor->DrawData;
 
-	public unsafe void OnSkeletonChanged(Skeleton* skeleton)
-	{
-		this.Dispatcher.Invoke(() =>
-		{
-			this.IsIVCS = BoneCollection.Search(skeleton, "iv_ko_c_l") != null;
-		});
-	}
-
-	public void NotifyPropertyChanged(string propertyName)
-	{
-		this.PropertyChanged?.Invoke(this, new(propertyName));
-	}
-
-	public bool ShouldTickAutoProperties()
-	{
-		return this.IsValid;
-	}
-
 	private void OnLoaded(object sender, RoutedEventArgs e)
 	{
-		this.window = this.FindParent<BoneWindow>();
-		AutoPropertyNotifyService.Register(this);
-	}
-
-	private void OnUnloaded(object sender, RoutedEventArgs e)
-	{
-		AutoPropertyNotifyService.Remove(this);
+		this.window = this.FindParent<ActorWindow>();
 	}
 }
