@@ -10,6 +10,9 @@ using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Utilities;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp.PixelFormats;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -85,6 +88,17 @@ public class GameCaptureService : ServiceBase
 		this.bufferTexture.Dispose();
 
 		return base.Shutdown();
+	}
+
+	public Image? ToImage()
+	{
+		lock (this.lockObj)
+		{
+			if (this.bufferWidth == 0 || this.bufferHeight == 0)
+				return null;
+
+			return Image.LoadPixelData<Rgba32>(this.bufferData, this.bufferWidth, this.bufferHeight);
+		}
 	}
 
 	/// <summary>

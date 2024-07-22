@@ -3,15 +3,15 @@
 using ScreenshotStudio;
 using ScreenshotStudio.Services;
 using Serilog;
+using SixLabors.ImageSharp;
 using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media.Imaging;
 using WpfUtils;
 
-public class GameCapture : Image, ICaptureListener
+public class GameCapture : System.Windows.Controls.Image, ICaptureListener
 {
 	private WriteableBitmap? bitmap;
 	private bool hasCapture = false;
@@ -36,6 +36,11 @@ public class GameCapture : Image, ICaptureListener
 	public void OnCapture()
 	{
 		this.hasCapture = true;
+	}
+
+	public Image? ToImage()
+	{
+		return ServiceManager.Instance.GameCapture.ToImage();
 	}
 
 	private void OnLoaded(object sender, RoutedEventArgs e)
