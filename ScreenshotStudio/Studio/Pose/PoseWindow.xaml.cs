@@ -1,7 +1,11 @@
 ﻿namespace ScreenshotStudio.Studio;
 
+using ScreenshotStudio.Data;
 using ScreenshotStudio.Services;
+using ScreenshotStudio.Studio.Pose;
 using ScreenshotStudio.Windows;
+using System.Collections.Generic;
+using System.Windows.Controls;
 
 public partial class PoseWindow : ActorWindow
 {
@@ -37,4 +41,41 @@ public partial class PoseWindow : ActorWindow
 	public double ScaleX { get; set; }
 	public double ScaleY { get; set; }
 	public double ScaleZ { get; set; }
+
+	protected override void OnOpened()
+	{
+		base.OnOpened();
+
+		if (DataService.SkeletonViews == null)
+			return;
+
+		Dictionary<string, WrapPanel> panels = new();
+		int categoryIndex = 0;
+		foreach(PoseViewDefinition def in DataService.SkeletonViews)
+		{
+			if (def.Category == null)
+				continue;
+
+			if (!panels.ContainsKey(def.Category))
+			{
+				WrapPanel panel = new();
+				panel.Orientation = Orientation.Vertical;
+				panel.Height = 512;
+
+				TabItem item = new();
+				item.Header = def.Category; // localize me!
+				item.Content = panel;
+				this.GuiTabs.Items.Insert(categoryIndex, item);
+
+				panels.Add(def.Category, panel);
+				categoryIndex++;
+			}
+
+			SkeletonView view = new();
+			view.ViewDefinition = def;
+			panels[def.Category].Children.Add(view);
+		}
+
+		this.GuiTabs.SelectedIndex = 0;
+	}
 }

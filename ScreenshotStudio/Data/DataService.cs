@@ -15,12 +15,12 @@ public class DataService : ServiceBase
 {
 	public const string NpcNamesIdFormat = "D7";
 	public static Dictionary<string, string>? NpcNames { get; set; }
-	public static Dictionary<string, PoseViewDefinition>? PoseViews { get; set; }
+	public static List<PoseViewDefinition>? SkeletonViews { get; set; }
 
 	public override Task Initialize()
 	{
 		NpcNames = this.GetResourceDocument<Dictionary<string, string>>("NpcNames");
-		PoseViews = this.GetResourceDocument<Dictionary<string, PoseViewDefinition>>("Bones");
+		SkeletonViews = this.GetResourceDocument<List<PoseViewDefinition>>("Bones");
 
 		return base.Initialize();
 	}

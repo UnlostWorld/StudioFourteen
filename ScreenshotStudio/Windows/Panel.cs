@@ -188,9 +188,16 @@ public abstract partial class Panel : Window, IAutoNotify
 
 	protected void OnLoaded(object sender, RoutedEventArgs e)
 	{
-		XivWindow.Embed(this);
+		try
+		{
+			XivWindow.Embed(this);
 
-		this.OnOpened();
+			this.OnOpened();
+		}
+		catch (Exception ex)
+		{
+			this.Log.Error(ex, "Error opening panel");
+		}
 	}
 
 	protected virtual void OnOpened()

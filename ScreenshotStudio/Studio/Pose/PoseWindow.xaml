@@ -10,8 +10,10 @@
 	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="{DynamicResource LOC_Pose}"
-	Width="850"
-	Height="560"
+	Width="700"
+	Height="600"
+	MinWidth="700"
+	MinHeight="600"
 	VerticalAlignment="Top"
 	VerticalContentAlignment="Top"
 	d:Background="{DynamicResource BackgroundBrush}"
@@ -33,14 +35,7 @@
 		</Grid.ColumnDefinitions>
 
 		<Grid Grid.Column="0">
-			<TabControl>
-				<TabItem Header="Body">
-					<Grid>
-						<pose:PoseView />
-					</Grid>
-				</TabItem>
-				<TabItem Header="Face" />
-				<TabItem Header="Hands" />
+			<TabControl x:Name="GuiTabs">
 				<TabItem Header="Matrix" />
 				<TabItem Header="Tree" />
 			</TabControl>

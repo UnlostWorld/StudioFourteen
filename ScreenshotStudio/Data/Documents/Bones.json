@@ -1,6 +1,8 @@
-{
-	"Body": {
+[
+	{
+		"Category": "Body",
 		"Background": "/Assets/PoseCharacterBodyBackground.png",
+		"Padding": "-40,0,-40,0",
 		"Bones": {
 			"j_kao": "128, 60",
 			"j_kubi": "128, 85",
@@ -26,5 +28,82 @@
 			"j_asi_d_l": "90, 470",
 			"j_asi_e_l": "83, 490"
 		}
+	},
+	{
+		"Category": "Body",
+		"Background": "/Assets/PoseCharacterClothesBackground.png",
+		"Padding": "-40,0,0,0",
+		"Bones": {
+			"j_kosi": "130, 212",
+			"n_kataarmor_l": "80, 120",
+			"j_sk_f_a_l": "110, 240",
+			"j_sk_f_b_l": "84, 317",
+			"j_sk_f_c_l": "74, 414",
+			"j_sk_s_a_l": "90, 240",
+			"j_sk_s_b_l": "56, 302",
+			"j_sk_s_c_l": "36, 399",
+			"j_sk_b_a_l": "120, 260",
+			"j_sk_b_b_l": "120, 317",
+			"j_sk_b_c_l": "120, 432",
+			"j_ex_met_va": "130, 44",
+			"j_kami_a": "130, 64",
+			"j_kami_b": "130, 93",
+			"j_kami_f_l": "110, 64",
+			"j_buki2_kosi_l": "100, 160",
+			"j_buki_kosi_l": "100, 194",
+			"j_buki_sebo_l": "115, 120",
+			"n_hizasoubi_l": "95, 350",
+			"n_hijisoubi_l": "67, 180",
+			"n_buki_tate_l": "55, 220"
+		}
+	},
+	{
+		"Category": "Body",
+		"Background": "/Assets/PoseCharacterTailBackground.png",
+		"Padding": "0,20,0,0",
+		"Bones": {
+			"n_sippo_a": "16, 8",
+			"n_sippo_b": "33, 23",
+			"n_sippo_c": "28, 56",
+			"n_sippo_d": "21, 87",
+			"n_sippo_e": "28, 112"
+		}
+	},
+	{
+		"Category": "Body",
+		"Background": "/Assets/PoseCharacterPenisBackground.png",
+		"Padding": "0,20,0,0",
+		"Bones": {
+			"iv_ochinko_f": "32, 18",
+			"iv_ochinko_e": "32, 33",
+			"iv_ochinko_d": "32, 48",
+			"iv_ochinko_c": "32, 63",
+			"iv_ochinko_b": "32, 78",
+			"iv_ochinko_a": "32, 94",
+			"iv_kougan_l": "24, 106"
+		}
+	},
+	{
+		"Category": "Body",
+		"Size": "64,64",
+		"Bones": {
+			"iv_kuritto": "32, 20",
+			"iv_omanko": "32, 42",
+			"iv_inshin_l": "16, 42"
+		}
+	},
+
+
+	{
+		"Category": "Face",
+		"Bones": {
+		}
+	},
+
+
+	{
+		"Category": "Hands",
+		"Bones": {
+		}
 	}
-}
+]

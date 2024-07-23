@@ -1,10 +1,8 @@
 ﻿namespace ScreenshotStudio.Studio.Pose;
 
-using ScreenshotStudio.Data;
 using Serilog;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -12,60 +10,33 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 
-public class PoseView : Canvas
+public class SkeletonView : Canvas
 {
-	protected readonly ILogger Log = Logging.ForContext<PoseView>();
+	public static readonly DependencyProperty ViewDefinitionProperty = DependencyProperty.Register(
+		nameof(SkeletonView.ViewDefinition),
+		typeof(PoseViewDefinition),
+		typeof(SkeletonView),
+		new(null, OnViewDefinitionChanged));
+
+	protected readonly ILogger Log = Logging.ForContext<SkeletonView>();
 
 	private const double BackgroundOpacity = 0.25;
 	private const double MouseOverDistance = 20;
 
-	private readonly PoseViewDefinition? definition;
 	private readonly List<BoneLink> boneLinks = new();
-	private readonly int backgroundWidth;
-	private readonly int backgroundHeight;
+	private int backgroundWidth;
+	private int backgroundHeight;
 	private BoneLink? mouseOver;
 
-	public PoseView()
+	public SkeletonView()
 	{
-		if (DesignerProperties.GetIsInDesignMode(this))
-			return;
+		this.Loaded += this.OnLoaded;
+	}
 
-		PoseViewDefinition? def = null;
-		DataService.PoseViews?.TryGetValue("Body", out def);
-		this.definition = def;
-
-		if (def == null)
-			return;
-
-		// set background
-		BitmapImage bmp = new();
-		bmp.BeginInit();
-		bmp.UriSource = new($"pack://application:,,,/ScreenshotStudio;component/{def.Background}");
-		bmp.EndInit();
-
-		this.backgroundWidth = bmp.PixelWidth;
-		this.backgroundHeight = bmp.PixelHeight;
-
-		ImageBrush brush = new();
-		brush.ImageSource = bmp;
-		brush.Stretch = Stretch.Uniform;
-		brush.Opacity = BackgroundOpacity;
-		brush.AlignmentX = AlignmentX.Left;
-		brush.AlignmentY = AlignmentY.Top;
-		this.Background = brush;
-
-		// populate bones
-		this.boneLinks.Clear();
-		foreach ((string name, Point pos) in def.Bones)
-		{
-			this.boneLinks.Add(new(name, null, this));
-
-			if (name.EndsWith("_l"))
-			{
-				string rName = name.Substring(0, name.Length - 2) + "_r";
-				this.boneLinks.Add(new(rName, name, this));
-			}
-		}
+	public PoseViewDefinition? ViewDefinition
+	{
+		get => (PoseViewDefinition?)this.GetValue(ViewDefinitionProperty);
+		set => this.SetValue(ViewDefinitionProperty, value);
 	}
 
 	public BoneLink? MouseOver
@@ -80,6 +51,58 @@ public class PoseView : Canvas
 			this.mouseOver = value;
 			this.mouseOver?.OnMouseEnter();
 		}
+	}
+
+	protected void Load()
+	{
+		this.boneLinks.Clear();
+		this.Children.Clear();
+
+		if (this.ViewDefinition == null)
+			return;
+
+		this.Margin = this.ViewDefinition.Padding;
+
+		// set background
+		if (this.ViewDefinition.Background != null)
+		{
+			BitmapImage bmp = new();
+			bmp.BeginInit();
+			bmp.UriSource = new($"pack://application:,,,/ScreenshotStudio;component/{this.ViewDefinition.Background}");
+			bmp.EndInit();
+
+			this.backgroundWidth = bmp.PixelWidth;
+			this.backgroundHeight = bmp.PixelHeight;
+
+			ImageBrush brush = new();
+			brush.ImageSource = bmp;
+			brush.Stretch = Stretch.Uniform;
+			brush.Opacity = BackgroundOpacity;
+			brush.AlignmentX = AlignmentX.Left;
+			brush.AlignmentY = AlignmentY.Top;
+			this.Background = brush;
+		}
+
+		// populate bones
+		foreach ((string name, Point pos) in this.ViewDefinition.Bones)
+		{
+			this.boneLinks.Add(new(name, null, this));
+
+			if (name.EndsWith("_l"))
+			{
+				string rName = name.Substring(0, name.Length - 2) + "_r";
+				this.boneLinks.Add(new(rName, name, this));
+			}
+		}
+
+		if (this.ViewDefinition.Size.Width > 0 && this.ViewDefinition.Size.Height > 0)
+		{
+			this.backgroundWidth = (int)this.ViewDefinition.Size.Width;
+			this.backgroundHeight = (int)this.ViewDefinition.Size.Height;
+		}
+
+		this.Width = this.backgroundWidth;
+		this.Height = this.backgroundHeight;
 	}
 
 	protected override void OnMouseMove(MouseEventArgs e)
@@ -114,7 +137,7 @@ public class PoseView : Canvas
 	{
 		base.OnRenderSizeChanged(sizeInfo);
 
-		if (this.definition == null)
+		if (this.ViewDefinition == null)
 			return;
 
 		double scaleY = this.ActualHeight / (double)this.backgroundHeight;
@@ -132,7 +155,7 @@ public class PoseView : Canvas
 			}
 
 			Point pos;
-			if (!this.definition.Bones.TryGetValue(lookupName, out pos))
+			if (!this.ViewDefinition.Bones.TryGetValue(lookupName, out pos))
 				continue;
 
 			Point finalPos = default;
@@ -147,6 +170,23 @@ public class PoseView : Canvas
 
 			finalPos.Y = pos.Y * scale;
 			link.Position = finalPos;
+		}
+	}
+
+	private static void OnViewDefinitionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+	{
+		if (d is SkeletonView view)
+		{
+			view.Load();
+		}
+	}
+
+	private void OnLoaded(object sender, RoutedEventArgs e)
+	{
+		Window? wnd = this.FindParent<Window>();
+		if (wnd != null)
+		{
+			wnd.MouseMove += (s, e) => this.OnMouseMove(e);
 		}
 	}
 
@@ -171,7 +211,7 @@ public class PoseView : Canvas
 			this.outer.Width = Radius * 2;
 			this.outer.Height = Radius * 2;
 			this.outer.SetResourceReference(Ellipse.FillProperty, "ControlBackgroundBrush");
-			this.outer.ToolTip = this.Name; // TODO: localize!
+			this.outer.ToolTip = this.Name;
 			parent.Children.Add(this.outer);
 
 			this.inner = new();
@@ -210,6 +250,9 @@ public class PoseView : Canvas
 
 public class PoseViewDefinition
 {
+	public string? Category { get; set; }
 	public string? Background { get; set; }
 	public Dictionary<string, Point> Bones { get; set; } = new();
+	public Thickness Padding { get; set; }
+	public Size Size { get; set; }
 }
