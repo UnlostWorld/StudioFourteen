@@ -31,6 +31,8 @@ public class SkeletonView : Canvas
 	public SkeletonView()
 	{
 		this.Loaded += this.OnLoaded;
+
+		ServiceManager.Instance.Pose.SelectionChanged += this.OnSelectionChanged;
 	}
 
 	public PoseViewDefinition? ViewDefinition
@@ -47,9 +49,13 @@ public class SkeletonView : Canvas
 			if (this.mouseOver == value)
 				return;
 
-			this.mouseOver?.OnMouseLeave();
+			if (this.mouseOver != null)
+				this.mouseOver.IsMouseHover = false;
+
 			this.mouseOver = value;
-			this.mouseOver?.OnMouseEnter();
+
+			if (this.mouseOver != null)
+				this.mouseOver.IsMouseHover = true;
 		}
 	}
 
@@ -105,34 +111,6 @@ public class SkeletonView : Canvas
 		this.Height = this.backgroundHeight;
 	}
 
-	protected override void OnMouseMove(MouseEventArgs e)
-	{
-		base.OnMouseMove(e);
-
-		Point mousePos = Mouse.GetPosition(this);
-
-		double closestDist = double.MaxValue;
-		BoneLink? closestLink = null;
-		foreach (BoneLink link in this.boneLinks)
-		{
-			double distance = Point.Subtract(mousePos, link.Position).Length;
-			if (distance < closestDist)
-			{
-				closestDist = distance;
-				closestLink = link;
-			}
-		}
-
-		if (closestLink != null && closestDist < MouseOverDistance)
-		{
-			this.MouseOver = closestLink;
-		}
-		else
-		{
-			this.MouseOver = null;
-		}
-	}
-
 	protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
 	{
 		base.OnRenderSizeChanged(sizeInfo);
@@ -186,7 +164,54 @@ public class SkeletonView : Canvas
 		Window? wnd = this.FindParent<Window>();
 		if (wnd != null)
 		{
-			wnd.MouseMove += (s, e) => this.OnMouseMove(e);
+			wnd.MouseMove += (s, e) => this.OnWindowMouseMove();
+			wnd.MouseDown += (s, e) => this.OnWindowMouseDown(e);
+		}
+	}
+
+	private void OnSelectionChanged(object? newSelection)
+	{
+		if (newSelection is string boneName)
+		{
+			foreach(var link in this.boneLinks)
+			{
+				link.IsSelected = link.Name == boneName;
+			}
+		}
+	}
+
+	private void OnWindowMouseMove()
+	{
+		Point mousePos = Mouse.GetPosition(this);
+
+		double closestDist = double.MaxValue;
+		BoneLink? closestLink = null;
+		foreach (BoneLink link in this.boneLinks)
+		{
+			double distance = Point.Subtract(mousePos, link.Position).Length;
+			if (distance < closestDist)
+			{
+				closestDist = distance;
+				closestLink = link;
+			}
+		}
+
+		if (closestLink != null && closestDist < MouseOverDistance)
+		{
+			this.MouseOver = closestLink;
+		}
+		else
+		{
+			this.MouseOver = null;
+		}
+	}
+
+	private void OnWindowMouseDown(MouseButtonEventArgs e)
+	{
+		if (this.MouseOver != null)
+		{
+			ServiceManager.Instance.Pose.SelectedBone = this.MouseOver.Name;
+			e.Handled = true;
 		}
 	}
 
@@ -201,6 +226,9 @@ public class SkeletonView : Canvas
 		private readonly Ellipse outer;
 		private readonly Ellipse inner;
 		private Point position;
+
+		private bool isMouseHover = false;
+		private bool isSelected = false;
 
 		public BoneLink(string name, string? originalName, Canvas parent)
 		{
@@ -236,14 +264,24 @@ public class SkeletonView : Canvas
 			}
 		}
 
-		public void OnMouseEnter()
+		public bool IsMouseHover
 		{
-			this.outer.SetResourceReference(Ellipse.FillProperty, "ControlHighlightBrush");
+			get => this.isMouseHover;
+			set
+			{
+				this.outer.SetResourceReference(Ellipse.FillProperty, value ? "ControlHighlightBrush" : "ControlBackgroundBrush");
+				this.isMouseHover = value;
+			}
 		}
 
-		public void OnMouseLeave()
+		public bool IsSelected
 		{
-			this.outer.SetResourceReference(Ellipse.FillProperty, "ControlBackgroundBrush");
+			get => this.isSelected;
+			set
+			{
+				this.inner.SetResourceReference(Ellipse.FillProperty, value ? "TrimBrush" : "ForegroundLightBrush");
+				this.isSelected = value;
+			}
 		}
 	}
 }

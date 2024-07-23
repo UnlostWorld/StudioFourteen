@@ -25,6 +25,7 @@ public class ServiceManager : ServiceManagerBase
 	public LibraryService Library { get; init; } = new();
 	public InputService Input { get; init; } = new();
 	public GameCaptureService GameCapture { get; init; } = new();
+	public PoseService Pose { get; init; } = new();
 
 	protected override void OnStart()
 	{
