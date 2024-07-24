@@ -31,13 +31,14 @@ public partial class BackgroundWindow : PersistentPanel
 	protected override void OnActivated(EventArgs e)
 	{
 		base.OnActivated(e);
+		this.UpdatePosition();
 		XivWindow.Activate();
 	}
 
 	private void UpdatePosition()
 	{
 		this.Width = XivWindow.Size.Width;
-		this.Height = XivWindow.Size.Height;
+		this.Height = XivWindow.Size.Height - XivWindow.TitleBarHeight;
 
 		XivWindow.SetPosition(this, new(0, 0));
 	}

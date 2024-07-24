@@ -67,7 +67,7 @@ public class NpcEquipment
 		this.RightRing = this.ParseItem(parser, startColumn + 34);
 	}
 
-	public unsafe void ApplyToActor(Actor* actor, NpcEquipment? fallback = null)
+	public unsafe void ApplyToActor(Character* actor, NpcEquipment? fallback = null)
 	{
 		this.ApplyToActor(actor, EquipmentSlot.Head, this.Head, fallback?.Head);
 		this.ApplyToActor(actor, EquipmentSlot.Body, this.Body, fallback?.Body);
@@ -101,13 +101,13 @@ public class NpcEquipment
 		this.AddToString(this.RightRing, sb);
 	}
 
-	private unsafe void ApplyToActor(Actor* actor, EquipmentSlot index, EquipmentModelId a, EquipmentModelId? b)
+	private unsafe void ApplyToActor(Character* actor, EquipmentSlot index, EquipmentModelId a, EquipmentModelId? b)
 	{
 		EquipmentModelId toUse = a;
 		if (b != null && b.Value.Id > 0)
 			toUse = b.Value;
 
-		actor->UpdateEquipment(index, toUse, Actor.UpdateSource.Library);
+		actor->UpdateEquipment(index, toUse, CharacterExtensions.UpdateSource.Library);
 	}
 
 	private EquipmentModelId ParseItem(RowParser parser, int column)

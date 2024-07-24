@@ -37,7 +37,7 @@ public class ActorAppearanceBackupService : ServiceBase
 		return base.Stop();
 	}
 
-	public unsafe bool CanRestore(Actor* actor)
+	public unsafe bool CanRestore(Character* actor)
 	{
 		if (actor == null)
 			return false;
@@ -46,7 +46,7 @@ public class ActorAppearanceBackupService : ServiceBase
 		return this.backup.ContainsKey(index);
 	}
 
-	public unsafe void Backup(Actor actor)
+	public unsafe void Backup(Character actor)
 	{
 		ushort index = actor.GameObject.ObjectIndex;
 
@@ -56,7 +56,7 @@ public class ActorAppearanceBackupService : ServiceBase
 		this.backup.Add(index, new(actor));
 	}
 
-	public unsafe void Backup(Actor* actor)
+	public unsafe void Backup(Character* actor)
 	{
 		ushort index = actor->GameObject.ObjectIndex;
 
@@ -66,7 +66,7 @@ public class ActorAppearanceBackupService : ServiceBase
 		this.backup.Add(index, new(actor));
 	}
 
-	public unsafe void Restore(Actor* actor)
+	public unsafe void Restore(Character* actor)
 	{
 		ushort index = actor->GameObject.ObjectIndex;
 
@@ -75,7 +75,7 @@ public class ActorAppearanceBackupService : ServiceBase
 
 		Threads.RunOnFrameworkThread(() =>
 		{
-			this.backup[index].Apply(actor, Actor.UpdateSource.Restore);
+			this.backup[index].Apply(actor, CharacterExtensions.UpdateSource.Restore);
 			this.backup.Remove(index);
 		});
 	}
@@ -95,38 +95,38 @@ public class ActorBackupAppearance : EntryBase, IActorAppearance
 {
 	private readonly string? name;
 
-	public unsafe ActorBackupAppearance(Actor* actor)
+	public unsafe ActorBackupAppearance(Character* actor)
 		: base(null)
 	{
-		this.name = actor->Name;
+		this.name = actor->GetNameAsString();
 		this.DrawData = actor->DrawData;
-		this.ModelId = actor->ModelCharaRowId;
+		this.ModelId = actor->ModelCharaId;
 
 		this.Tags.Add("Named");
 	}
 
-	public ActorBackupAppearance(Actor actor)
+	public ActorBackupAppearance(Character actor)
 		: base(null)
 	{
-		this.name = actor.Name;
+		this.name = actor.GetNameAsString();
 		this.DrawData = actor.DrawData;
-		this.ModelId = actor.ModelCharaRowId;
+		this.ModelId = actor.ModelCharaId;
 
 		this.Tags.Add("Named");
 	}
 
 	public DrawDataContainer DrawData { get; private set; }
-	public uint ModelId { get; private set; }
+	public int ModelId { get; private set; }
 	public override string Name => this.name ?? string.Empty;
 
-	public unsafe void Apply(Actor* actor)
+	public unsafe void Apply(Character* actor)
 	{
-		this.Apply(actor, Actor.UpdateSource.Library);
+		this.Apply(actor, CharacterExtensions.UpdateSource.Library);
 	}
 
-	public unsafe void Apply(Actor* actor, Actor.UpdateSource source)
+	public unsafe void Apply(Character* actor, CharacterExtensions.UpdateSource source)
 	{
-		bool redraw = this.ModelId != actor->ModelCharaRowId;
+		bool redraw = this.ModelId != actor->ModelCharaId;
 
 		actor->UpdateModel(this.ModelId, source, false);
 		actor->UpdateCustomize(this.DrawData.CustomizeData, redraw, source);
@@ -167,7 +167,7 @@ public class GroupPoseCharactersLibrarySource : SourceBase
 			if (address == null || address == IntPtr.Zero)
 				continue;
 
-			Actor* actor = (Actor*)address;
+			Character* actor = (Character*)address;
 
 			ActorBackupAppearance appearance = new(actor);
 			this.Add(appearance);

@@ -1,5 +1,6 @@
 ﻿namespace ScreenshotStudio.Utilities;
 
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using ScreenshotStudio.Plugin;
 using System;
@@ -19,12 +20,12 @@ public static class Threads
 		return Task.CompletedTask;
 	}
 
-	public static unsafe Task RunOnFrameworkThread(this Structs.Actor actor, Action<nint> action)
+	public static unsafe Task RunOnFrameworkThread(this Character actor, Action<nint> action)
 	{
 		return RunOnFrameworkThread(actor.GameObject, action);
 	}
 
-	public static unsafe Task RunOnFrameworkThread(Structs.Actor* actor, Action<nint> action)
+	public static unsafe Task RunOnFrameworkThread(Character* actor, Action<nint> action)
 	{
 		return RunOnFrameworkThread(actor->GameObject, action);
 	}

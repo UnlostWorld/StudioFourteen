@@ -23,11 +23,11 @@ public static class CustomizeDataExtensions
 		LegacyTattoo = 0x80,
 	}
 
-	public static Race? GetRace(this CustomizeData self) => GameDataService.GetRow<Race>(self.GetValue(CustomizeIndex.Race));
-	public static Tribe? GetTribe(this CustomizeData self) => GameDataService.GetRow<Tribe>(self.GetValue(CustomizeIndex.Tribe));
-	public static Genders GetGender(this CustomizeData self) => (Genders)self.GetValue(CustomizeIndex.Gender);
+	public static Race? GetRace(ref this CustomizeData self) => GameDataService.GetRow<Race>(self.GetValue(CustomizeIndex.Race));
+	public static Tribe? GetTribe(ref this CustomizeData self) => GameDataService.GetRow<Tribe>(self.GetValue(CustomizeIndex.Tribe));
+	public static Genders GetGender(ref this CustomizeData self) => (Genders)self.GetValue(CustomizeIndex.Gender);
 
-	public static byte GetValue(this CustomizeData self, CustomizeIndex option)
+	public static byte GetValue(ref this CustomizeData self, CustomizeIndex option)
 	{
 		return self.Data[(int)option];
 	}

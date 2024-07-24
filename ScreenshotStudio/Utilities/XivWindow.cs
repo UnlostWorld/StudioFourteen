@@ -15,6 +15,8 @@ public static class XivWindow
 
 	public static nint? Hwnd => Process?.MainWindowHandle;
 
+	public static double TitleBarHeight => 22;
+
 	public static Rect Size
 	{
 		get
@@ -22,11 +24,9 @@ public static class XivWindow
 			if (Process == null)
 				return new Rect(0, 0, 0, 0);
 
-			const double titleBarHeight = 22;
-
 			GetWindowRect(Process.MainWindowHandle, out Win32Rect xivWindowRect);
 			size.X = xivWindowRect.Left;
-			size.Y = xivWindowRect.Top + titleBarHeight;
+			size.Y = xivWindowRect.Top + TitleBarHeight;
 			size.Width = xivWindowRect.Right - size.X;
 			size.Height = xivWindowRect.Bottom - size.Y;
 			return size;

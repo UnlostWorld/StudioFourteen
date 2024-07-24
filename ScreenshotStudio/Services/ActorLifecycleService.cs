@@ -70,7 +70,7 @@ public class ActorLifecycleService : ServiceBase
 		return base.Tick();
 	}
 
-	public unsafe Actor* Create(IActorAppearance? appearance = null)
+	public unsafe Character* Create(IActorAppearance? appearance = null)
 	{
 		Threads.VerifyFrameworkThread();
 
@@ -81,7 +81,7 @@ public class ActorLifecycleService : ServiceBase
 		if (appearance != null && !string.IsNullOrEmpty(appearance.Name))
 			name = appearance.Name;
 
-		Actor* actor = this.Spawn(name);
+		Character* actor = this.Spawn(name);
 
 		if (actor != null && appearance != null)
 		{
@@ -91,7 +91,7 @@ public class ActorLifecycleService : ServiceBase
 		return actor;
 	}
 
-	public unsafe bool Destroy(Actor* actor)
+	public unsafe bool Destroy(Character* actor)
 	{
 		ClientObjectManager* com = ClientObjectManager.Instance();
 		uint idx = com->GetIndexByObject((GameObject*)actor);
@@ -114,7 +114,7 @@ public class ActorLifecycleService : ServiceBase
 		ClientObjectManager* com = ClientObjectManager.Instance();
 		foreach (ushort idx in indexes)
 		{
-			Actor* deletingCharacter = (Actor*)com->GetObjectByIndex(idx);
+			Character* deletingCharacter = (Character*)com->GetObjectByIndex(idx);
 			if (deletingCharacter == null)
 			{
 				this.Log.Error($"Attempt to delete object by index {idx} was not a character");
@@ -123,7 +123,7 @@ public class ActorLifecycleService : ServiceBase
 
 			Threads.RunOnFrameworkThread(() =>
 			{
-				this.Log.Information($"Deleting object: {idx} - {deletingCharacter->Name}");
+				this.Log.Information($"Deleting object: {idx} - {deletingCharacter->GetNameAsString()}");
 				com->DeleteObjectByIndex(idx, 0);
 			});
 		}
@@ -171,7 +171,7 @@ public class ActorLifecycleService : ServiceBase
 		return this.characterFinalizeHook.Original.Invoke(character);
 	}
 
-	private unsafe Actor* Spawn(string name)
+	private unsafe Character* Spawn(string name)
 	{
 		if (DalamudServices.ClientState?.LocalPlayer == null)
 			return null;
@@ -222,6 +222,6 @@ public class ActorLifecycleService : ServiceBase
 
 		this.Log.Information($"Spawning actor {name} with id {spawnedActorId}");
 
-		return (Actor*)pSpawned;
+		return pSpawned;
 	}
 }

@@ -1,5 +1,6 @@
 ﻿namespace ScreenshotStudio.GameData.Excel;
 
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Lumina.Data;
 using Lumina.Excel;
 using ScreenshotStudio.Library;
@@ -59,7 +60,7 @@ public class ResidentNpc : LibraryExcelRow, IActorAppearance
 		return matches;
 	}
 
-	public unsafe void Apply(Actor* actor)
+	public unsafe void Apply(Character* actor)
 	{
 		this.EventNpc?.Apply(actor);
 	}

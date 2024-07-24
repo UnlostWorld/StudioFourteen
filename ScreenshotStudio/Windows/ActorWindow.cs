@@ -12,7 +12,7 @@ using System;
 
 public abstract class ActorWindow : PanelWindow
 {
-	[AlwaysNotify] public unsafe string? ActorName => this.HasValidTarget ? this.Actor->Name : "Nobody";
+	[AlwaysNotify] public unsafe string? ActorName => this.HasValidTarget ? this.Actor->GetNameAsString() : "Nobody";
 
 	[AlwaysNotify]
 	public unsafe bool HasValidTarget
@@ -39,7 +39,7 @@ public abstract class ActorWindow : PanelWindow
 	/// <summary>
 	///  Gets a pointer to the player, the players target, or the group pose target.
 	/// </summary>
-	public unsafe Actor* Actor { get; private set; }
+	public unsafe Character* Actor { get; private set; }
 
 	/// <summary>
 	/// Gets the DrawData for the current Actor.
@@ -47,7 +47,7 @@ public abstract class ActorWindow : PanelWindow
 	public unsafe ref DrawDataContainer DrawData => ref this.Actor->DrawData;
 
 	// should put this somewhere...
-	public static unsafe Actor* GetTarget()
+	public static unsafe Character* GetTarget()
 	{
 		Threads.VerifyFrameworkThread();
 
@@ -57,7 +57,7 @@ public abstract class ActorWindow : PanelWindow
 		if (ServiceManager.Instance.GroupPose.IsGroupPosing)
 		{
 			// GPose target
-			return (Actor*)TargetSystem.Instance()->GPoseTarget;
+			return (Character*)TargetSystem.Instance()->GPoseTarget;
 		}
 		else
 		{
@@ -65,18 +65,18 @@ public abstract class ActorWindow : PanelWindow
 			GameObject* pTargetObject = TargetSystem.Instance()->FocusTarget;
 			if (pTargetObject != null && pTargetObject->IsCharacter())
 			{
-				return (Actor*)pTargetObject;
+				return (Character*)pTargetObject;
 			}
 
 			// Target
 			pTargetObject = TargetSystem.Instance()->Target;
 			if (pTargetObject != null && pTargetObject->IsCharacter())
 			{
-				return (Actor*)pTargetObject;
+				return (Character*)pTargetObject;
 			}
 
 			// Player
-			return (Actor*)DalamudServices.ObjectTable.GetObjectAddress(0);
+			return (Character*)DalamudServices.ObjectTable.GetObjectAddress(0);
 		}
 	}
 

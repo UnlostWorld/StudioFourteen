@@ -1,6 +1,7 @@
 ﻿namespace ScreenshotStudio.Studio.Background;
 
 using Dalamud.Plugin.Services;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using ScreenshotStudio.Library;
 using ScreenshotStudio.Plugin;
@@ -80,7 +81,7 @@ public partial class Targets : View
 	{
 		Threads.RunOnFrameworkThread(() =>
 		{
-			Actor* actor = this.Services.ActorLifecycle.Create(appearance);
+			Character* actor = this.Services.ActorLifecycle.Create(appearance);
 			int index = actor->GameObject.ObjectIndex;
 			this.SelectObject(index);
 		});
@@ -155,7 +156,7 @@ public unsafe class ActorViewModel : ViewModel
 
 	[AutoNotify] public IntPtr Address { get; set; } = IntPtr.Zero;
 	[AutoNotify] public bool IsValid => this.Address != IntPtr.Zero;
-	[AutoNotify] public unsafe Actor* Actor => (Actor*)this.Address;
+	[AutoNotify] public unsafe Character* Actor => (Character*)this.Address;
 
 	[AutoNotify]
 	public string? Name
@@ -165,7 +166,7 @@ public unsafe class ActorViewModel : ViewModel
 			if (!this.IsValid)
 				return this.lastName ?? "Invalid";
 
-			this.lastName = this.Actor->Name ?? "???";
+			this.lastName = this.Actor->GetNameAsString() ?? "???";
 
 			return this.lastName;
 		}
@@ -179,7 +180,7 @@ public unsafe class ActorViewModel : ViewModel
 			if (!this.IsValid)
 				return false;
 
-			return (Actor*)TargetSystem.Instance()->GPoseTarget == this.Actor;
+			return (Character*)TargetSystem.Instance()->GPoseTarget == this.Actor;
 		}
 
 		set

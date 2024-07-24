@@ -1,6 +1,7 @@
 ﻿namespace ScreenshotStudio.Library.Controls;
 
 using Dalamud.Plugin.Services;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Structs;
@@ -22,8 +23,8 @@ public partial class ActorAppearanceActions : View
 		this.ContentArea.DataContext = this;
 	}
 
-	public unsafe Actor* Actor { get; private set; }
-	[AutoNotify] public unsafe string? ActorName => this.HasValidTarget ? this.Actor->Name : "Nobody";
+	public unsafe Character* Actor { get; private set; }
+	[AutoNotify] public unsafe string? ActorName => this.HasValidTarget ? this.Actor->GetNameAsString() : "Nobody";
 	[AutoNotify] public bool CanApply => this.Appearance != null && this.HasValidTarget;
 	[AutoNotify] public unsafe bool CanRevert => this.Services.ActorAppearanceBackup.CanRestore(this.Actor);
 	[AutoNotify] public bool IsLive { get; set; }

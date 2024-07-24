@@ -5,6 +5,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using ScreenshotStudio.GameData;
 using ScreenshotStudio.GameData.Excel;
 using ScreenshotStudio.Services;
+using ScreenshotStudio.Structs;
 using ScreenshotStudio.Utilities;
 using ScreenshotStudio.Windows;
 using System.Collections.Generic;
@@ -351,7 +352,7 @@ public partial class CustomizeWindow : ActorWindow
 	{
 		Threads.RunOnFrameworkThread(() =>
 		{
-			this.Actor->SetCustomizeValue(option, value, Structs.Actor.UpdateSource.Interface, apply);
+			this.Actor->SetCustomizeValue(option, value, CharacterExtensions.UpdateSource.Interface, apply);
 		});
 	}
 
@@ -359,7 +360,7 @@ public partial class CustomizeWindow : ActorWindow
 	{
 		Threads.RunOnFrameworkThread(() =>
 		{
-			ActorWindow.GetTarget()->UpdateCustomize(redraw, Structs.Actor.UpdateSource.Interface);
+			ActorWindow.GetTarget()->UpdateCustomize(redraw, CharacterExtensions.UpdateSource.Interface);
 		});
 	}
 

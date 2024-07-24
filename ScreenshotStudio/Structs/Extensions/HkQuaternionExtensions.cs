@@ -29,7 +29,7 @@ public static class HkQuaternionExtensions
 		W = q.W,
 	};
 
-	public static hkQuaternionf FromQuaternion(this hkQuaternionf tar, Quaternion q)
+	public static hkQuaternionf FromQuaternion(ref this hkQuaternionf tar, Quaternion q)
 	{
 		tar.X = q.X;
 		tar.Y = q.Y;
@@ -62,7 +62,7 @@ public static class HkQuaternionExtensions
 		return v;
 	}
 
-	public static hkVector4f ToEuler(this hkQuaternionf self)
+	public static hkVector4f ToEuler(ref this hkQuaternionf self)
 	{
 		hkVector4f v = default;
 

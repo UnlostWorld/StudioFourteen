@@ -346,7 +346,7 @@ public class WeaponViewModel : GearViewModelBase
 	{
 		Threads.RunOnFrameworkThread(() =>
 		{
-			ActorWindow.GetTarget()->UpdateWeapon(this.Slot, this.Weapon.ModelId, Actor.UpdateSource.Interface);
+			ActorWindow.GetTarget()->UpdateWeapon(this.Slot, this.Weapon.ModelId, CharacterExtensions.UpdateSource.Interface);
 		});
 	}
 }
@@ -446,7 +446,7 @@ public class ItemEquipViewModel : GearViewModelBase
 	{
 		Threads.RunOnFrameworkThread(() =>
 		{
-			ActorWindow.GetTarget()->UpdateEquipment(this.Slot, this.ItemEquip, Actor.UpdateSource.Interface);
+			ActorWindow.GetTarget()->UpdateEquipment(this.Slot, this.ItemEquip, CharacterExtensions.UpdateSource.Interface);
 		});
 	}
 }

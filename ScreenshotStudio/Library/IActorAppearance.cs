@@ -1,8 +1,8 @@
 ﻿namespace ScreenshotStudio.Library;
 
-using ScreenshotStudio.Structs;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 
 public interface IActorAppearance : IEntryBase
 {
-	public unsafe void Apply(Actor* actor);
+	public unsafe void Apply(Character* actor);
 }
