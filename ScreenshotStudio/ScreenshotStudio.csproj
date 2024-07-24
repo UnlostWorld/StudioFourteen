@@ -61,12 +61,12 @@
 		<PackageReference Include="FontAwesome.Sharp" Version="6.3.0" />
 		<PackageReference Include="FontAwesome.Sharp.Pro" Version="6.3.0" />
 		<PackageReference Include="Serilog.Sinks.Debug" Version="3.0.0" />
-		<PackageReference Include="SixLabors.ImageSharp" Version="3.1.4" />
+		<PackageReference Include="SixLabors.ImageSharp" Version="3.1.5" />
 		<PackageReference Include="StyleCop.Analyzers" Version="1.1.118">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="TerraFX.Interop.Windows" Version="10.0.22621.6" />
+		<PackageReference Include="TerraFX.Interop.Windows" Version="10.0.26100" />
 		<PackageReference Include="VirtualizingWrapPanel" Version="2.0.10" />
 	</ItemGroup>
 

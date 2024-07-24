@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio.Studio;
+﻿namespace ScreenshotStudio.Studio.Background;
 
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
@@ -16,9 +16,9 @@ using System.Windows;
 
 using NativeObject = FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject;
 
-public partial class TargetPanel : DockPanel
+public partial class Targets : View
 {
-	public TargetPanel()
+	public Targets()
 	{
 		for (int i = GroupPoseService.GPoseFirstActor; i < GroupPoseService.GPoseFirstActor + GroupPoseService.GPoseActorCount; ++i)
 		{

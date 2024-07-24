@@ -27,7 +27,7 @@ public class ActorLifecycleService : ServiceBase
 	private Hook<CharacterEventDelegate>? characterFinalizeHook;
 	private unsafe delegate nint CharacterEventDelegate(Character* character);
 
-	public bool CanSpawn => GroupPoseService.IsGroupPosing;
+	public bool CanSpawn => this.Services.GroupPose.IsGroupPosing;
 
 	public override async Task Initialize()
 	{
@@ -56,7 +56,7 @@ public class ActorLifecycleService : ServiceBase
 	{
 		try
 		{
-			if (!GroupPoseService.IsGroupPosing && CreatedIndexes.Count > 0)
+			if (!this.Services.GroupPose.IsGroupPosing && CreatedIndexes.Count > 0)
 			{
 				this.DestroyAllCreated();
 				this.Log.Warning("Left GPose with spawned actors. deleting...");

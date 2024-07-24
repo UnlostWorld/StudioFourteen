@@ -24,7 +24,7 @@ public class GroupPoseService : ServiceBase
 
 	public static event OnStateChangedDelegate? OnStateChange;
 
-	public static bool IsGroupPosing => DalamudServices.ClientState?.IsGPosing ?? false;
+	public bool IsGroupPosing => DalamudServices.ClientState?.IsGPosing ?? false;
 
 	public override Task Start()
 	{
@@ -66,6 +66,8 @@ public class GroupPoseService : ServiceBase
 			OnStateChange?.Invoke(true);
 		}
 
+		this.RaisePropertyChanged(nameof(GroupPoseService.IsGroupPosing));
+
 		return didEnter;
 	}
 
@@ -74,5 +76,6 @@ public class GroupPoseService : ServiceBase
 		this.exitHook?.Original.Invoke(uiModule);
 
 		OnStateChange?.Invoke(false);
+		this.RaisePropertyChanged(nameof(GroupPoseService.IsGroupPosing));
 	}
 }

@@ -1,28 +1,16 @@
-﻿namespace ScreenshotStudio.Studio;
+﻿namespace ScreenshotStudio.Studio.Background;
 
 using FFXIVClientStructs.FFXIV.Client.UI;
 using ScreenshotStudio.Library;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
-using ScreenshotStudio.Windows;
-using System.Windows;
 
-public partial class NavigationPanel : DockPanel
+public partial class Navigation : View
 {
-	[AutoNotify] public bool IsExpanded { get; set; } = false;
-
-	[AutoNotify] public bool IsFullyLoaded
-	{
-		get
-		{
-			return this.Services.CurrentState == ServiceManagerBase.States.Started;
-		}
-	}
-
 	[AutoNotify]
 	public unsafe bool IsInGPose
 	{
-		get => GroupPoseService.IsGroupPosing;
+		get => this.Services.GroupPose.IsGroupPosing;
 		set
 		{
 			if (DalamudServices.GameGui == null)
@@ -107,27 +95,5 @@ public partial class NavigationPanel : DockPanel
 	{
 		get => this.Services.Panels.GetIsOpen<PhotoWindow>();
 		set => this.Services.Panels.SetIsOpen<PhotoWindow>(value);
-	}
-
-	public void Expand()
-	{
-		this.IsExpanded = true;
-	}
-
-	public void Collapse()
-	{
-		this.IsExpanded = false;
-	}
-
-	private void OnStudioClicked(object sender, RoutedEventArgs e)
-	{
-		if (this.IsExpanded)
-		{
-			this.Services.Studio.CloseStudio();
-		}
-		else
-		{
-			this.Services.Studio.OpenStudio();
-		}
 	}
 }

@@ -6,6 +6,8 @@ using System.Windows.Input;
 using WpfUtils.Controls;
 using WpfUtils.DependencyProperties;
 
+using IconBlock = WpfUtils.Controls.IconBlock;
+
 public partial class KeyPrompt : UserControl
 {
 	public static readonly IBind<Key> KeyDp = Binder.Register<Key, KeyPrompt>(nameof(Key), OnKeyChanged);
@@ -26,7 +28,7 @@ public partial class KeyPrompt : UserControl
 	{
 		sender.Label.Text = null;
 		sender.IconDisplay.Icon = ProIcons.Question;
-		sender.IconDisplay.IconStyle = IconStyles.Solid;
+		sender.IconDisplay.IconStyle = IconBlock.IconStyles.Solid;
 		sender.IconRotation.Angle = 0;
 
 		if (key == Key.Return)
@@ -41,13 +43,13 @@ public partial class KeyPrompt : UserControl
 		else if (key == Key.LeftShift)
 		{
 			sender.IconDisplay.Icon = ProIcons.ArrowAltUp;
-			sender.IconDisplay.IconStyle = IconStyles.OutlineThin;
+			sender.IconDisplay.IconStyle = IconBlock.IconStyles.OutlineThin;
 			sender.Label.Text = "L";
 		}
 		else if (key == Key.RightShift)
 		{
 			sender.IconDisplay.Icon = ProIcons.ArrowAltUp;
-			sender.IconDisplay.IconStyle = IconStyles.OutlineThin;
+			sender.IconDisplay.IconStyle = IconBlock.IconStyles.OutlineThin;
 			sender.Label.Text = "R";
 		}
 		else

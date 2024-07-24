@@ -23,7 +23,7 @@ public class ActorAppearanceBackupService : ServiceBase
 		GroupPoseService.OnStateChange += this.OnGroupPoseStateChange;
 		this.Services.Library.AddSource(this.provider);
 
-		if (GroupPoseService.IsGroupPosing)
+		if (this.Services.GroupPose.IsGroupPosing)
 		{
 			this.provider.OnEnterGroupPose();
 		}

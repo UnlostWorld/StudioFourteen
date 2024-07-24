@@ -1,0 +1,65 @@
+﻿<windows:PersistentPanel
+	x:Class="ScreenshotStudio.Studio.BackgroundWindow"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:background="clr-namespace:ScreenshotStudio.Studio.Background"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="clr-namespace:ScreenshotStudio.Studio"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:studio="clr-namespace:ScreenshotStudio"
+	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	d:DesignHeight="1080"
+	d:DesignWidth="1920"
+	AllowsTransparency="True"
+	Background="Transparent"
+	ResizeMode="NoResize"
+	SnapsToDevicePixels="True"
+	UseLayoutRounding="True"
+	WindowStyle="None"
+	mc:Ignorable="d">
+
+	<windows:PersistentPanel.Template>
+		<ControlTemplate TargetType="{x:Type windows:PersistentPanel}">
+			<AdornerDecorator>
+				<ContentPresenter
+					Content="{TemplateBinding Content}"
+					ContentTemplate="{TemplateBinding ContentTemplate}" />
+			</AdornerDecorator>
+		</ControlTemplate>
+	</windows:PersistentPanel.Template>
+
+	<Grid x:Name="ContentArea">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition />
+			<ColumnDefinition Width="Auto" />
+		</Grid.ColumnDefinitions>
+
+		<!--  Navigation  -->
+		<background:Navigation
+			Grid.Column="0"
+			Margin="10,64,0,0" />
+
+
+		<Grid
+			Grid.Column="2"
+			Width="{Binding ActualWidth, ElementName=NavigationArea}" />
+
+		<background:Targets
+			Grid.Column="1"
+			Margin="0,10,0,0"
+			HorizontalAlignment="Center"
+			VerticalAlignment="Top" />
+
+		<Button
+			Name="StudioButton"
+			Grid.ColumnSpan="2"
+			HorizontalAlignment="Left"
+			VerticalAlignment="Top"
+			Click="OnStudioClicked"
+			IsEnabled="{Binding IsFullyLoaded}"
+			Style="{StaticResource StudioButton}" />
+
+	</Grid>
+</windows:PersistentPanel>

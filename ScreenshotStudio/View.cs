@@ -1,7 +1,10 @@
 ﻿namespace ScreenshotStudio;
 
+using Dalamud.Plugin.Services;
+using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
 using Serilog;
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -13,19 +16,56 @@ public class View : UserControl, IAutoNotify
 
 	public View()
 	{
+		this.GetType().GetMethod("InitializeComponent")?.Invoke(this, null);
+
+		if (this.Content is FrameworkElement el)
+		{
+			el.DataContext = this;
+		}
+
 		if (DesignerProperties.GetIsInDesignMode(this))
 		{
 			this.Log = null!;
+			return;
 		}
-		else
+
+		this.Log = Logging.ForContext(this.GetType());
+
+		this.Loaded += (s, e) =>
 		{
-			this.Log = Logging.ForContext(this.GetType());
-		}
+			try
+			{
+				this.OnLoaded();
+			}
+			catch (Exception ex)
+			{
+				this.Log.Error(ex, "Error loading View");
+			}
+		};
 
-		this.GetType().GetMethod("InitializeComponent")?.Invoke(this, null);
+		this.Unloaded += (s, e) =>
+		{
+			try
+			{
+				this.OnUnloaded();
+			}
+			catch (Exception ex)
+			{
+				this.Log.Error(ex, "Error unloading View");
+			}
+		};
 
-		this.Loaded += this.OnLoaded;
-		this.Unloaded += this.OnUnloaded;
+		this.Dispatcher.ShutdownStarted += (s, e) =>
+		{
+			try
+			{
+				this.OnUnloaded();
+			}
+			catch (Exception ex)
+			{
+				this.Log.Error(ex, "Error unloading View");
+			}
+		};
 	}
 
 	public event PropertyChangedEventHandler? PropertyChanged;
@@ -42,19 +82,33 @@ public class View : UserControl, IAutoNotify
 		return this.IsVisible;
 	}
 
-	private void OnLoaded(object sender, RoutedEventArgs e)
+	protected override void OnContentChanged(object oldContent, object newContent)
 	{
-		if (!DesignerProperties.GetIsInDesignMode(this))
+		base.OnContentChanged(oldContent, newContent);
+
+		if (this.Content is FrameworkElement el)
 		{
-			AutoPropertyNotifyService.Register(this);
+			el.DataContext = this;
 		}
 	}
 
-	private void OnUnloaded(object sender, RoutedEventArgs e)
+	protected virtual void OnLoaded()
 	{
-		if (!DesignerProperties.GetIsInDesignMode(this))
-		{
-			AutoPropertyNotifyService.Remove(this);
-		}
+		if (DalamudServices.Framework != null)
+			DalamudServices.Framework.Update += this.OnFrameworkUpdate;
+
+		AutoPropertyNotifyService.Register(this);
+	}
+
+	protected virtual void OnUnloaded()
+	{
+		if (DalamudServices.Framework != null)
+			DalamudServices.Framework.Update -= this.OnFrameworkUpdate;
+
+		AutoPropertyNotifyService.Remove(this);
+	}
+
+	protected virtual void OnFrameworkUpdate(IFramework framework)
+	{
 	}
 }

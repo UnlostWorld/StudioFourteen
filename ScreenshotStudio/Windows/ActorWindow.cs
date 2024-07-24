@@ -54,7 +54,7 @@ public abstract class ActorWindow : PanelWindow
 		if (DalamudServices.ObjectTable == null)
 			return null;
 
-		if (GroupPoseService.IsGroupPosing)
+		if (ServiceManager.Instance.GroupPose.IsGroupPosing)
 		{
 			// GPose target
 			return (Actor*)TargetSystem.Instance()->GPoseTarget;

@@ -1,0 +1,141 @@
+﻿<studio:View
+	x:Class="ScreenshotStudio.Studio.Background.Targets"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="clr-namespace:ScreenshotStudio.Studio.Background"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:structs="clr-namespace:ScreenshotStudio.Structs"
+	xmlns:studio="clr-namespace:ScreenshotStudio"
+	xmlns:sys="clr-namespace:System;assembly=mscorlib"
+	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	HorizontalAlignment="Center"
+	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
+	mc:Ignorable="d">
+
+	<studio:View.Resources>
+		<converters:NotNullToBoolConverter x:Key="NotNullToBoolConverter" />
+		<converters:NotNullToVisibilityConverter x:Key="!B2V" />
+		<BooleanToVisibilityConverter x:Key="B2V" />
+	</studio:View.Resources>
+
+	<Border
+		x:Name="MainBorder"
+		Background="{DynamicResource BackgroundBrush}"
+		BorderBrush="{DynamicResource BackgroundBrush}"
+		BorderThickness="1"
+		CornerRadius="6"
+		Visibility="{Binding IsInGPose, Converter={StaticResource B2V}}">
+
+
+		<StackPanel
+			Margin="1"
+			HorizontalAlignment="Center"
+			VerticalAlignment="Top"
+			Orientation="Horizontal">
+
+			<StackPanel.Resources>
+				<sys:Double x:Key="ButtonWidth">100</sys:Double>
+			</StackPanel.Resources>
+
+			<Button
+				Width="32"
+				Click="OnAddActorClicked"
+				ToolTip="{DynamicResource LOC_Target_CreateActor}">
+				<wpfUtils:IconBlock Icon="UserPlus" />
+			</Button>
+
+			<Border
+				Margin="1"
+				Style="{DynamicResource WpfUtilsControlBorder}">
+
+				<ItemsControl ItemsSource="{Binding Actors}">
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel Orientation="Horizontal" />
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+
+					<ItemsControl.ItemTemplate>
+						<DataTemplate DataType="{x:Type local:ActorViewModel}">
+
+							<Grid
+								x:Name="ContentArea"
+								Width="0">
+
+								<ToggleButton
+									Width="{StaticResource ButtonWidth}"
+									HorizontalAlignment="Center"
+									Background="Transparent"
+									IsChecked="{Binding IsCurrent}">
+									<TextBlock
+										Margin="6,3"
+										HorizontalAlignment="Center"
+										Text="{Binding Name}"
+										TextTrimming="CharacterEllipsis"
+										TextWrapping="NoWrap" />
+								</ToggleButton>
+							</Grid>
+
+							<DataTemplate.Triggers>
+								<DataTrigger
+									Binding="{Binding IsValid}"
+									Value="True">
+									<DataTrigger.EnterActions>
+										<BeginStoryboard>
+											<Storyboard>
+												<DoubleAnimation
+													Storyboard.TargetName="ContentArea"
+													Storyboard.TargetProperty="Width"
+													To="{StaticResource ButtonWidth}"
+													Duration="0:00:00.150">
+													<DoubleAnimation.EasingFunction>
+														<SineEase EasingMode="EaseOut" />
+													</DoubleAnimation.EasingFunction>
+												</DoubleAnimation>
+											</Storyboard>
+										</BeginStoryboard>
+									</DataTrigger.EnterActions>
+									<DataTrigger.ExitActions>
+										<BeginStoryboard>
+											<Storyboard>
+												<DoubleAnimation
+													Storyboard.TargetName="ContentArea"
+													Storyboard.TargetProperty="Width"
+													To="0"
+													Duration="0:00:00.250">
+													<DoubleAnimation.EasingFunction>
+														<SineEase EasingMode="EaseIn" />
+													</DoubleAnimation.EasingFunction>
+												</DoubleAnimation>
+											</Storyboard>
+										</BeginStoryboard>
+									</DataTrigger.ExitActions>
+								</DataTrigger>
+							</DataTemplate.Triggers>
+
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</Border>
+
+			<Button
+				Width="32"
+				Click="OnRemoveActorClicked"
+				IsEnabled="{Binding Target, Converter={StaticResource NotNullToBoolConverter}}">
+				<Button.ToolTip>
+					<TextBlock>
+						<Run Text="{DynamicResource LOC_Target_DeleteActor}" />
+						<Run Text=" - " />
+						<Run Text="{Binding Target.Name, Mode=OneWay}" />
+					</TextBlock>
+				</Button.ToolTip>
+				<wpfUtils:IconBlock Icon="TrashAlt" />
+			</Button>
+
+		</StackPanel>
+	</Border>
+
+</studio:View>

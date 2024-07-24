@@ -11,6 +11,7 @@
 
 		<!--  Custom styles  -->
 		<ResourceDictionary Source="./Styles/CheckBoxStyles.xaml" />
+		<ResourceDictionary Source="./Styles/StudioButtonStyle.xaml" />
 
 		<!--  Custom controls  -->
 		<ResourceDictionary Source="./Windows/PanelStyle.xaml" />

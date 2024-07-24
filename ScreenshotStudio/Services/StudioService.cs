@@ -4,40 +4,19 @@ using ScreenshotStudio.Studio;
 using ScreenshotStudio.Windows;
 using System.Threading.Tasks;
 using System;
-using ScreenshotStudio.Library;
 
 public class StudioService : ServiceBase
 {
-	private NavigationPanel? navigationPanel;
-	private QuickSearch? quickSearchPanel;
-	private TargetPanel? targetPanel;
+	private BackgroundWindow? backgroundWindow;
 
 	public bool IsOpen { get; private set; }
-
-	public bool IsOpenAndInGPose
-	{
-		get
-		{
-			if (!this.Services.Studio.IsOpen)
-				return false;
-
-			return GroupPoseService.IsGroupPosing;
-		}
-	}
-
-	public override async Task Initialize()
-	{
-		await base.Initialize();
-
-		this.navigationPanel = await Panel.ShowAsync<NavigationPanel>();
-	}
+	public bool IsOpenAndInGPose => this.Services.Studio.IsOpen && this.Services.GroupPose.IsGroupPosing;
 
 	public override async Task Start()
 	{
 		await base.Start();
 
-		this.targetPanel = await Panel.ShowAsync<TargetPanel>();
-		this.quickSearchPanel = await Panel.ShowAsync<QuickSearch>();
+		this.backgroundWindow = await Panel.ShowAsync<BackgroundWindow>();
 	}
 
 	public void OpenStudio() => Task.Run(async () => await this.OpenStudioAsync());
@@ -48,7 +27,8 @@ public class StudioService : ServiceBase
 		try
 		{
 			this.IsOpen = true;
-			this.navigationPanel?.Expand();
+			this.RaisePropertyChanged(nameof(StudioService.IsOpen));
+			this.RaisePropertyChanged(nameof(StudioService.IsOpenAndInGPose));
 		}
 		catch(Exception ex)
 		{
@@ -63,7 +43,8 @@ public class StudioService : ServiceBase
 		try
 		{
 			this.IsOpen = false;
-			this.navigationPanel?.Collapse();
+			this.RaisePropertyChanged(nameof(StudioService.IsOpen));
+			this.RaisePropertyChanged(nameof(StudioService.IsOpenAndInGPose));
 		}
 		catch(Exception ex)
 		{

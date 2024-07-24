@@ -48,7 +48,7 @@ public partial class ItemActions : View
 		set => this.SetValue(ItemProperty, value);
 	}
 
-	protected unsafe void OnFrameworkUpdate(IFramework framework)
+	protected override unsafe void OnFrameworkUpdate(IFramework framework)
 	{
 		this.Actor = ActorWindow.GetTarget();
 	}
@@ -72,22 +72,6 @@ public partial class ItemActions : View
 	private void OnExecuteRequested()
 	{
 		this.OnApplyClicked();
-	}
-
-	private void OnLoaded(object sender, RoutedEventArgs e)
-	{
-		if (DalamudServices.Framework != null)
-		{
-			DalamudServices.Framework.Update += this.OnFrameworkUpdate;
-		}
-	}
-
-	private void OnUnloaded(object sender, RoutedEventArgs e)
-	{
-		if (DalamudServices.Framework != null)
-		{
-			DalamudServices.Framework.Update -= this.OnFrameworkUpdate;
-		}
 	}
 
 	private unsafe void OnApplyClicked(object? sender = null, RoutedEventArgs? e = null)
