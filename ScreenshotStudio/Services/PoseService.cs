@@ -5,25 +5,27 @@ namespace ScreenshotStudio.Services;
 
 using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
-using ScreenshotStudio.Structs;
+using FFXIVClientStructs.Havok.Animation.Rig;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 public class PoseService : ServiceBase
 {
-	private string? selectedBone;
+	private SelectionBase? selectedBone;
 
 	private Hook<UpdateBonePhysicsDelegate>? updateBonePhysicsHook;
 	private Hook<FinalizeSkeletonsDelegate>? finalizeSkeletonsHook;
 
-	public delegate void SelectionChangedDelegate(object? newSelection);
+	public delegate void SelectionChangedDelegate(SelectionBase? newSelection);
 	private delegate nint UpdateBonePhysicsDelegate(nint a1);
 	private delegate void FinalizeSkeletonsDelegate(nint a1);
 
 	public event SelectionChangedDelegate? SelectionChanged;
 
-	public string? SelectedBone
+	public SelectionBase? Selection
 	{
 		get => this.selectedBone;
 		set
@@ -44,6 +46,50 @@ public class PoseService : ServiceBase
 	{
 		this.Detach();
 		return base.Shutdown();
+	}
+
+	public unsafe BoneSelection? FindBone(ref Character* character, string name)
+	{
+		CharacterBase* characterBase = character->GetCharacterBase();
+		if (characterBase == null)
+			return null;
+
+		Skeleton* skeleton = characterBase->Skeleton;
+		if (skeleton == null)
+			return null;
+
+		List<BoneReference> bones = new();
+
+		ushort partialCount = skeleton->PartialSkeletonCount;
+		for (int partialIdx = 0; partialIdx < partialCount; partialIdx++)
+		{
+			PartialSkeleton* partialSkeleton = &skeleton->PartialSkeletons[partialIdx];
+
+			byte poseCount = partialSkeleton->GetMaxPoses();
+			for (byte poseIdx = 0; poseIdx < poseCount; poseIdx++)
+			{
+				hkaPose* pose = partialSkeleton->GetHavokPose(poseIdx);
+				if (pose == null)
+					continue;
+
+				int boneCount = pose->Skeleton->Bones.Length;
+				for (int boneIdx = 0; boneIdx < boneCount; boneIdx++)
+				{
+					hkaBone bone = pose->Skeleton->Bones[boneIdx];
+					string? boneName = bone.Name.String;
+
+					if (boneName == name)
+					{
+						bones.Add(new(partialIdx, poseIdx, boneIdx));
+					}
+				}
+			}
+		}
+
+		if (bones.Count <= 0)
+			return null;
+
+		return new BoneSelection(bones, name);
 	}
 
 	private void Attach()
@@ -67,7 +113,7 @@ public class PoseService : ServiceBase
 		if (this.updateBonePhysicsHook == null)
 			return 0;
 
-		var result = this.updateBonePhysicsHook.Original(a1);
+		nint result = this.updateBonePhysicsHook.Original(a1);
 
 		try
 		{
@@ -113,10 +159,50 @@ public class PoseService : ServiceBase
 	}
 }
 
-public unsafe class SkeletonViewModel
+public class BoneReference(int partialSkeletonIndex, byte poseIndex, int boneIndex)
 {
-	public SkeletonViewModel(Character* character)
+	public readonly int PartialSkeletonIndex = partialSkeletonIndex;
+	public readonly byte PoseIndex = poseIndex;
+	public readonly int BoneIndex = boneIndex;
+
+	public unsafe object? GetBone(ref Skeleton* skeleton)
 	{
-		CharacterBase* characterBase = (CharacterBase*)character->GameObject.DrawObject;
+		PartialSkeleton* partialSkeleton = &skeleton->PartialSkeletons[this.PartialSkeletonIndex];
+		if (partialSkeleton == null)
+			return null;
+
+		hkaPose* pose = partialSkeleton->GetHavokPose(this.PoseIndex);
+		if (pose == null)
+			return null;
+
+		// ...
+		return null;
 	}
+
+	public unsafe BoneReference? GetParent(ref Skeleton* skeleton)
+	{
+		PartialSkeleton* partialSkeleton = &skeleton->PartialSkeletons[this.PartialSkeletonIndex];
+		if (partialSkeleton == null)
+			return null;
+
+		hkaPose* pose = partialSkeleton->GetHavokPose(this.PoseIndex);
+		if (pose == null)
+			return null;
+
+		short parentIndex = pose->Skeleton->ParentIndices[this.BoneIndex];
+		return new(this.PartialSkeletonIndex, this.PoseIndex, parentIndex);
+	}
+}
+
+public abstract class SelectionBase
+{
+	public abstract string Name { get; }
+}
+
+public class BoneSelection(List<BoneReference> bones, string name)
+	: SelectionBase
+{
+	public override string Name => Resources.Find($"LOC_Bone_{name}", name);
+	public string BoneName => name;
+	public List<BoneReference> Bones { get; init; } = bones;
 }

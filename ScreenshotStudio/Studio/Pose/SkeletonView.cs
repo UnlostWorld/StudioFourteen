@@ -1,14 +1,21 @@
 ﻿namespace ScreenshotStudio.Studio.Pose;
 
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using ScreenshotStudio.Services;
+using ScreenshotStudio.Utilities;
+using ScreenshotStudio.Windows;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using System.Xml.Linq;
 
 public class SkeletonView : Canvas
 {
@@ -59,7 +66,7 @@ public class SkeletonView : Canvas
 		}
 	}
 
-	protected void Load()
+	protected unsafe void Load()
 	{
 		this.boneLinks.Clear();
 		this.Children.Clear();
@@ -89,17 +96,51 @@ public class SkeletonView : Canvas
 			this.Background = brush;
 		}
 
-		// populate bones
-		foreach ((string name, Point pos) in this.ViewDefinition.Bones)
+		PoseViewDefinition definition = this.ViewDefinition;
+		Threads.RunOnFrameworkThread(() =>
 		{
-			this.boneLinks.Add(new(name, null, this));
+			Character* character = CharacterWindow.GetTarget();
+			if (character == null)
+				return;
 
-			if (name.EndsWith("_l"))
+			// populate bones
+			List<BoneSelection> selections = new();
+			foreach ((string name, Point pos) in definition.Bones)
 			{
-				string rName = name.Substring(0, name.Length - 2) + "_r";
-				this.boneLinks.Add(new(rName, name, this));
+				BoneSelection? selection = ServiceManager.Instance.Pose.FindBone(ref character, name);
+				if (selection != null)
+					selections.Add(selection);
+
+				if (name.EndsWith("_l"))
+				{
+					string rName = name.Substring(0, name.Length - 2) + "_r";
+
+					selection = ServiceManager.Instance.Pose.FindBone(ref character, rName);
+					if (selection != null)
+					{
+						selections.Add(selection);
+					}
+				}
 			}
-		}
+
+			this.Dispatcher.Invoke(() =>
+			{
+				if (selections.Count <= 0)
+				{
+					this.Visibility = Visibility.Collapsed;
+				}
+				else
+				{
+					this.Visibility = Visibility.Visible;
+					foreach (BoneSelection selection in selections)
+					{
+						this.boneLinks.Add(new(selection, this));
+					}
+
+					this.OnRenderSizeChanged(null);
+				}
+			});
+		});
 
 		if (this.ViewDefinition.Size.Width > 0 && this.ViewDefinition.Size.Height > 0)
 		{
@@ -111,9 +152,10 @@ public class SkeletonView : Canvas
 		this.Height = this.backgroundHeight;
 	}
 
-	protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+	protected override void OnRenderSizeChanged(SizeChangedInfo? sizeInfo)
 	{
-		base.OnRenderSizeChanged(sizeInfo);
+		if (sizeInfo != null)
+			base.OnRenderSizeChanged(sizeInfo);
 
 		if (this.ViewDefinition == null)
 			return;
@@ -124,12 +166,12 @@ public class SkeletonView : Canvas
 
 		foreach(BoneLink link in this.boneLinks)
 		{
-			string lookupName = link.Name;
+			string lookupName = link.Selection.BoneName;
 			bool isFlip = false;
-			if (link.OriginalName != null)
+			if (lookupName.EndsWith("_r"))
 			{
 				isFlip = true;
-				lookupName = link.OriginalName;
+				lookupName = lookupName.Substring(0, lookupName.Length - 2) + "_l";
 			}
 
 			Point pos;
@@ -171,11 +213,11 @@ public class SkeletonView : Canvas
 
 	private void OnSelectionChanged(object? newSelection)
 	{
-		if (newSelection is string boneName)
+		if (newSelection is SelectionBase selection)
 		{
 			foreach(var link in this.boneLinks)
 			{
-				link.IsSelected = link.Name == boneName;
+				link.IsSelected = link.Selection == selection;
 			}
 		}
 	}
@@ -210,7 +252,7 @@ public class SkeletonView : Canvas
 	{
 		if (this.MouseOver != null)
 		{
-			ServiceManager.Instance.Pose.SelectedBone = this.MouseOver.Name;
+			ServiceManager.Instance.Pose.Selection = this.MouseOver.Selection;
 			e.Handled = true;
 		}
 	}
@@ -220,8 +262,7 @@ public class SkeletonView : Canvas
 		public const double Radius = 7;
 		public const double InnerRadius = 3;
 
-		public readonly string Name;
-		public readonly string? OriginalName;
+		public readonly BoneSelection Selection;
 
 		private readonly Ellipse outer;
 		private readonly Ellipse inner;
@@ -230,16 +271,14 @@ public class SkeletonView : Canvas
 		private bool isMouseHover = false;
 		private bool isSelected = false;
 
-		public BoneLink(string name, string? originalName, Canvas parent)
+		public BoneLink(BoneSelection selection, Canvas parent)
 		{
-			this.Name = name;
-			this.OriginalName = originalName;
+			this.Selection = selection;
 
 			this.outer = new();
 			this.outer.Width = Radius * 2;
 			this.outer.Height = Radius * 2;
 			this.outer.SetResourceReference(Ellipse.FillProperty, "ControlBackgroundBrush");
-			this.outer.ToolTip = this.Name;
 			parent.Children.Add(this.outer);
 
 			this.inner = new();

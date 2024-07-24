@@ -52,7 +52,7 @@
 					<TextBlock
 						HorizontalAlignment="Center"
 						Style="{DynamicResource Header}"
-						Text="{Binding Services.Pose.SelectedBone}" />
+						Text="{Binding Services.Pose.Selection.Name}" />
 
 					<StackPanel IsEnabled="{Binding SelectedBones, Converter={StaticResource NotNullToBoolConverter}}">
 						<Border
