@@ -1,11 +1,11 @@
 ﻿namespace ScreenshotStudio.Windows;
 
-using ScreenshotStudio.Services;
 using System;
-using System.Runtime.CompilerServices;
 using System.Collections.Generic;
-using ScreenshotStudio.Studio;
+using System.Runtime.CompilerServices;
 using ScreenshotStudio.Serialization;
+using ScreenshotStudio.Services;
+using ScreenshotStudio.Studio;
 
 public class PersistentPanel : Panel
 {
@@ -31,7 +31,7 @@ public class PersistentPanel : Panel
 
 			string persistenceId = this.panelId + "_" + id;
 
-			if (!Settings.Current.PanelPersistence.TryGetValue(persistenceId, out string? json) || json == null)
+			if (!this.Services.Settings.Current.PanelPersistence.TryGetValue(persistenceId, out string? json) || json == null)
 				return default;
 
 			if (!json.StartsWith('"') || !json.EndsWith('"'))
@@ -71,21 +71,21 @@ public class PersistentPanel : Panel
 
 				if (value != null)
 				{
-					if (!Settings.Current.PanelPersistence.ContainsKey(persistenceId))
-						Settings.Current.PanelPersistence.Add(persistenceId, string.Empty);
+					if (!this.Services.Settings.Current.PanelPersistence.ContainsKey(persistenceId))
+						this.Services.Settings.Current.PanelPersistence.Add(persistenceId, string.Empty);
 
-					Settings.Current.PanelPersistence[persistenceId] = Serializer.Serialize(value);
+					this.Services.Settings.Current.PanelPersistence[persistenceId] = Serializer.Serialize(value);
 				}
 				else
 				{
-					if (Settings.Current.PanelPersistence.ContainsKey(persistenceId))
+					if (this.Services.Settings.Current.PanelPersistence.ContainsKey(persistenceId))
 					{
-						Settings.Current.PanelPersistence.Remove(persistenceId);
+						this.Services.Settings.Current.PanelPersistence.Remove(persistenceId);
 					}
 				}
 			});
 
-			Settings.Current.Save();
+			this.Services.Settings.Save();
 		}
 		catch (Exception ex)
 		{

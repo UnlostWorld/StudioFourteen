@@ -1,42 +1,33 @@
 ﻿namespace ScreenshotStudio.Services;
 
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Dalamud.Configuration;
 using ScreenshotStudio.Plugin;
-using System.Collections.Generic;
 
-public class Settings : IPluginConfiguration
+public class SettingsService : ServiceBase
 {
-	private static Settings? current;
+	public Configuration Current { get; private set; } = new Configuration();
 
-	public static Settings Current
+	public override Task Initialize()
 	{
-		get
+		Configuration? current = DalamudServices.PluginInterface?.GetPluginConfig() as Configuration;
+		if (current != null)
 		{
-			if (current == null)
-			{
-				current = DalamudServices.PluginInterface?.GetPluginConfig() as Settings;
-
-				if (current == null)
-				{
-					current = new();
-					current.Save();
-				}
-			}
-
-			return current;
+			this.Current = current;
 		}
+
+		return base.Initialize();
 	}
-
-	// Settings
-	public int Version { get; set; } = 0;
-
-	public Dictionary<string, string> PanelPersistence { get; set; } = new();
 
 	public void Save()
 	{
-		lock (this)
-		{
-			DalamudServices.PluginInterface?.SavePluginConfig(this);
-		}
+		DalamudServices.PluginInterface?.SavePluginConfig(this.Current);
+	}
+
+	public class Configuration : IPluginConfiguration
+	{
+		public int Version { get; set; } = 0;
+		public Dictionary<string, string> PanelPersistence { get; set; } = new();
 	}
 }
