@@ -1,6 +1,9 @@
 ﻿namespace ScreenshotStudio.Studio.Pose;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
+using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
+using FFXIVClientStructs.FFXIV.Common.Lua;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Utilities;
 using ScreenshotStudio.Windows;
@@ -8,6 +11,7 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Security.Policy;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Forms;
@@ -16,6 +20,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Xml.Linq;
+using TerraFX.Interop.DirectX;
+using static System.Windows.Forms.LinkLabel;
 
 public class SkeletonView : Canvas
 {
@@ -30,10 +36,11 @@ public class SkeletonView : Canvas
 	private const double BackgroundOpacity = 0.25;
 	private const double MouseOverDistance = 20;
 
-	private readonly List<BoneLink> boneLinks = new();
+	private readonly List<BoneButton> boneButtons = new();
+	private readonly List<BoneConnection> boneConnections = new();
 	private int backgroundWidth;
 	private int backgroundHeight;
-	private BoneLink? mouseOver;
+	private BoneButton? mouseOver;
 
 	public SkeletonView()
 	{
@@ -48,7 +55,7 @@ public class SkeletonView : Canvas
 		set => this.SetValue(ViewDefinitionProperty, value);
 	}
 
-	public BoneLink? MouseOver
+	public BoneButton? MouseOver
 	{
 		get => this.mouseOver;
 		set
@@ -68,7 +75,9 @@ public class SkeletonView : Canvas
 
 	protected unsafe void Load()
 	{
-		this.boneLinks.Clear();
+		this.boneButtons.Clear();
+		this.boneConnections.Clear();
+
 		this.Children.Clear();
 
 		if (this.ViewDefinition == null)
@@ -103,11 +112,19 @@ public class SkeletonView : Canvas
 			if (character == null)
 				return;
 
+			CharacterBase* characterBase = character->GetCharacterBase();
+			if (characterBase == null)
+				return;
+
+			Skeleton* skeleton = characterBase->Skeleton;
+			if (skeleton == null)
+				return;
+
 			// populate bones
 			List<BoneSelection> selections = new();
 			foreach ((string name, Point pos) in definition.Bones)
 			{
-				BoneSelection? selection = ServiceManager.Instance.Pose.FindBone(ref character, name);
+				BoneSelection? selection = ServiceManager.Instance.Pose.FindBone(ref skeleton, name);
 				if (selection != null)
 					selections.Add(selection);
 
@@ -115,7 +132,7 @@ public class SkeletonView : Canvas
 				{
 					string rName = name.Substring(0, name.Length - 2) + "_r";
 
-					selection = ServiceManager.Instance.Pose.FindBone(ref character, rName);
+					selection = ServiceManager.Instance.Pose.FindBone(ref skeleton, rName);
 					if (selection != null)
 					{
 						selections.Add(selection);
@@ -134,7 +151,20 @@ public class SkeletonView : Canvas
 					this.Visibility = Visibility.Visible;
 					foreach (BoneSelection selection in selections)
 					{
-						this.boneLinks.Add(new(selection, this));
+						BoneButton button = new(selection, this);
+						this.boneButtons.Add(button);
+
+						foreach (BoneReference bone in selection.Bones)
+						{
+							if (bone.Name != null && bone.Parent != null && bone.Parent.Name != null)
+							{
+								if (!this.HasBone(bone.Parent.Name))
+									continue;
+
+								BoneConnection connection = new(bone.Name, bone.Parent.Name, this);
+								this.boneConnections.Add(connection);
+							}
+						}
 					}
 
 					this.OnRenderSizeChanged(null);
@@ -161,36 +191,15 @@ public class SkeletonView : Canvas
 		if (this.ViewDefinition == null)
 			return;
 
-		double scaleY = this.ActualHeight / (double)this.backgroundHeight;
-		double scaleX = this.ActualWidth / (double)this.backgroundWidth;
-		double scale = Math.Min(scaleX, scaleY);
-
-		foreach(BoneLink link in this.boneLinks)
+		foreach (BoneButton link in this.boneButtons)
 		{
-			string lookupName = link.Selection.BoneName;
-			bool isFlip = false;
-			if (lookupName.EndsWith("_r"))
-			{
-				isFlip = true;
-				lookupName = lookupName.Substring(0, lookupName.Length - 2) + "_l";
-			}
+			link.Position = this.GetPosition(link.Selection.BoneName);
+		}
 
-			Point pos;
-			if (!this.ViewDefinition.Bones.TryGetValue(lookupName, out pos))
-				continue;
-
-			Point finalPos = default;
-			if (isFlip)
-			{
-				finalPos.X = (this.backgroundWidth - pos.X) * scale;
-			}
-			else
-			{
-				finalPos.X = pos.X * scale;
-			}
-
-			finalPos.Y = pos.Y * scale;
-			link.Position = finalPos;
+		foreach(BoneConnection connection in this.boneConnections)
+		{
+			connection.From = this.GetPosition(connection.FromBone);
+			connection.To = this.GetPosition(connection.ToBone);
 		}
 	}
 
@@ -200,6 +209,49 @@ public class SkeletonView : Canvas
 		{
 			view.Load();
 		}
+	}
+
+	private bool HasBone(string boneName)
+	{
+		if (this.ViewDefinition == null)
+			return false;
+
+		if (boneName.EndsWith("_r"))
+			boneName = boneName.Substring(0, boneName.Length - 2) + "_l";
+
+		return this.ViewDefinition.Bones.ContainsKey(boneName);
+	}
+
+	private Point GetPosition(string boneName)
+	{
+		string lookupName = boneName;
+		bool isFlip = false;
+		if (lookupName.EndsWith("_r"))
+		{
+			isFlip = true;
+			lookupName = lookupName.Substring(0, lookupName.Length - 2) + "_l";
+		}
+
+		Point pos;
+		if (this.ViewDefinition == null || !this.ViewDefinition.Bones.TryGetValue(lookupName, out pos))
+			return default;
+
+		double scaleY = this.ActualHeight / (double)this.backgroundHeight;
+		double scaleX = this.ActualWidth / (double)this.backgroundWidth;
+		double scale = Math.Min(scaleX, scaleY);
+
+		Point finalPos = default;
+		if (isFlip)
+		{
+			finalPos.X = (this.backgroundWidth - pos.X) * scale;
+		}
+		else
+		{
+			finalPos.X = pos.X * scale;
+		}
+
+		finalPos.Y = pos.Y * scale;
+		return finalPos;
 	}
 
 	private void OnLoaded()
@@ -225,7 +277,7 @@ public class SkeletonView : Canvas
 		{
 			this.Dispatcher.Invoke(() =>
 			{
-				foreach (var link in this.boneLinks)
+				foreach (var link in this.boneButtons)
 				{
 					link.IsSelected = link.Selection == selection;
 				}
@@ -238,8 +290,8 @@ public class SkeletonView : Canvas
 		Point mousePos = Mouse.GetPosition(this);
 
 		double closestDist = double.MaxValue;
-		BoneLink? closestLink = null;
-		foreach (BoneLink link in this.boneLinks)
+		BoneButton? closestLink = null;
+		foreach (BoneButton link in this.boneButtons)
 		{
 			double distance = Point.Subtract(mousePos, link.Position).Length;
 			if (distance < closestDist)
@@ -268,7 +320,7 @@ public class SkeletonView : Canvas
 		}
 	}
 
-	public class BoneLink
+	public class BoneButton
 	{
 		public const double Radius = 7;
 		public const double InnerRadius = 3;
@@ -282,7 +334,7 @@ public class SkeletonView : Canvas
 		private bool isMouseHover = false;
 		private bool isSelected = false;
 
-		public BoneLink(BoneSelection selection, Canvas parent)
+		public BoneButton(BoneSelection selection, Canvas parent)
 		{
 			this.Selection = selection;
 
@@ -292,12 +344,16 @@ public class SkeletonView : Canvas
 			this.outer.SetResourceReference(Ellipse.FillProperty, "ControlBackgroundBrush");
 			parent.Children.Add(this.outer);
 
+			Canvas.SetZIndex(this.outer, 0);
+
 			this.inner = new();
 			this.inner.Width = InnerRadius * 2;
 			this.inner.Height = InnerRadius * 2;
 			this.inner.SetResourceReference(Ellipse.FillProperty, "ForegroundLightBrush");
 			this.inner.IsHitTestVisible = false;
 			parent.Children.Add(this.inner);
+
+			Canvas.SetZIndex(this.inner, 200);
 		}
 
 		public Point Position
@@ -331,6 +387,49 @@ public class SkeletonView : Canvas
 			{
 				this.inner.SetResourceReference(Ellipse.FillProperty, value ? "TrimBrush" : "ForegroundLightBrush");
 				this.isSelected = value;
+			}
+		}
+	}
+
+	public class BoneConnection
+	{
+		public readonly string FromBone;
+		public readonly string ToBone;
+
+		private readonly Line line;
+
+		public BoneConnection(string fromBone, string toBone, Canvas parent)
+		{
+			this.FromBone = fromBone;
+			this.ToBone = toBone;
+
+			this.line = new();
+			this.line.SetResourceReference(Line.StrokeProperty, "ForegroundLightBrush");
+			this.line.StrokeThickness = 1;
+			this.line.Opacity = 0.15;
+
+			Canvas.SetZIndex(this.line, 100);
+
+			parent.Children.Add(this.line);
+		}
+
+		public Point From
+		{
+			get => new Point(this.line.X1, this.line.Y1);
+			set
+			{
+				this.line.X1 = value.X;
+				this.line.Y1 = value.Y;
+			}
+		}
+
+		public Point To
+		{
+			get => new Point(this.line.X2, this.line.Y2);
+			set
+			{
+				this.line.X2 = value.X;
+				this.line.Y2 = value.Y;
 			}
 		}
 	}

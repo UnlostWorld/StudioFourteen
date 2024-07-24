@@ -48,16 +48,8 @@ public class PoseService : ServiceBase
 		return base.Shutdown();
 	}
 
-	public unsafe BoneSelection? FindBone(ref Character* character, string name)
+	public unsafe BoneSelection? FindBone(ref Skeleton* skeleton, string name)
 	{
-		CharacterBase* characterBase = character->GetCharacterBase();
-		if (characterBase == null)
-			return null;
-
-		Skeleton* skeleton = characterBase->Skeleton;
-		if (skeleton == null)
-			return null;
-
 		List<BoneReference> bones = new();
 
 		ushort partialCount = skeleton->PartialSkeletonCount;
@@ -73,14 +65,19 @@ public class PoseService : ServiceBase
 					continue;
 
 				int boneCount = pose->Skeleton->Bones.Length;
-				for (int boneIdx = 0; boneIdx < boneCount; boneIdx++)
+				for (short boneIdx = 0; boneIdx < boneCount; boneIdx++)
 				{
 					hkaBone bone = pose->Skeleton->Bones[boneIdx];
 					string? boneName = bone.Name.String;
 
 					if (boneName == name)
 					{
-						bones.Add(new(partialIdx, poseIdx, boneIdx));
+						BoneReference boneReference = new(boneName, partialIdx, poseIdx, boneIdx);
+						bones.Add(boneReference);
+
+						short parentIndex = pose->Skeleton->ParentIndices[boneIdx];
+						hkaBone parentBone = pose->Skeleton->Bones[parentIndex];
+						boneReference.Parent = new(parentBone.Name.String, partialIdx, poseIdx, parentIndex);
 					}
 				}
 			}
@@ -159,11 +156,38 @@ public class PoseService : ServiceBase
 	}
 }
 
-public class BoneReference(int partialSkeletonIndex, byte poseIndex, int boneIndex)
+public class BoneReference(string? name, int partialSkeletonIndex, byte poseIndex, short boneIndex)
+	: IEquatable<BoneReference?>
 {
+	public readonly string? Name = name;
 	public readonly int PartialSkeletonIndex = partialSkeletonIndex;
 	public readonly byte PoseIndex = poseIndex;
-	public readonly int BoneIndex = boneIndex;
+	public readonly short BoneIndex = boneIndex;
+
+	public BoneReference? Parent { get; set; }
+
+	public static bool operator ==(BoneReference? left, BoneReference? right)
+	{
+		return EqualityComparer<BoneReference>.Default.Equals(left, right);
+	}
+
+	public static bool operator !=(BoneReference? left, BoneReference? right)
+	{
+		return !(left == right);
+	}
+
+	public override bool Equals(object? obj)
+	{
+		return this.Equals(obj as BoneReference);
+	}
+
+	public bool Equals(BoneReference? other)
+	{
+		return other is not null &&
+			   this.PartialSkeletonIndex == other.PartialSkeletonIndex &&
+			   this.PoseIndex == other.PoseIndex &&
+			   this.BoneIndex == other.BoneIndex;
+	}
 
 	public unsafe object? GetBone(ref Skeleton* skeleton)
 	{
@@ -176,21 +200,13 @@ public class BoneReference(int partialSkeletonIndex, byte poseIndex, int boneInd
 			return null;
 
 		// ...
+		// hkaBone bone = pose->Skeleton->Bones[ this.BoneIndex];
 		return null;
 	}
 
-	public unsafe BoneReference? GetParent(ref Skeleton* skeleton)
+	public override int GetHashCode()
 	{
-		PartialSkeleton* partialSkeleton = &skeleton->PartialSkeletons[this.PartialSkeletonIndex];
-		if (partialSkeleton == null)
-			return null;
-
-		hkaPose* pose = partialSkeleton->GetHavokPose(this.PoseIndex);
-		if (pose == null)
-			return null;
-
-		short parentIndex = pose->Skeleton->ParentIndices[this.BoneIndex];
-		return new(this.PartialSkeletonIndex, this.PoseIndex, parentIndex);
+		return HashCode.Combine(this.PartialSkeletonIndex, this.PoseIndex, this.BoneIndex);
 	}
 }
 
