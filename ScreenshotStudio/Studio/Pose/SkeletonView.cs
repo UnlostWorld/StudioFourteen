@@ -37,9 +37,9 @@ public class SkeletonView : Canvas
 
 	public SkeletonView()
 	{
-		this.Loaded += this.OnLoaded;
-
-		ServiceManager.Instance.Pose.SelectionChanged += this.OnSelectionChanged;
+		this.Loaded += (s, e) => this.OnLoaded();
+		this.Unloaded += (s, e) => this.OnUnloaded();
+		this.Dispatcher.ShutdownStarted += (s, e) => this.OnUnloaded();
 	}
 
 	public PoseViewDefinition? ViewDefinition
@@ -138,6 +138,7 @@ public class SkeletonView : Canvas
 					}
 
 					this.OnRenderSizeChanged(null);
+					this.OnSelectionChanged(ServiceManager.Instance.Pose.Selection);
 				}
 			});
 		});
@@ -201,8 +202,10 @@ public class SkeletonView : Canvas
 		}
 	}
 
-	private void OnLoaded(object sender, RoutedEventArgs e)
+	private void OnLoaded()
 	{
+		ServiceManager.Instance.Pose.SelectionChanged += this.OnSelectionChanged;
+
 		Window? wnd = this.FindParent<Window>();
 		if (wnd != null)
 		{
@@ -211,14 +214,22 @@ public class SkeletonView : Canvas
 		}
 	}
 
+	private void OnUnloaded()
+	{
+		ServiceManager.Instance.Pose.SelectionChanged -= this.OnSelectionChanged;
+	}
+
 	private void OnSelectionChanged(object? newSelection)
 	{
 		if (newSelection is SelectionBase selection)
 		{
-			foreach(var link in this.boneLinks)
+			this.Dispatcher.Invoke(() =>
 			{
-				link.IsSelected = link.Selection == selection;
-			}
+				foreach (var link in this.boneLinks)
+				{
+					link.IsSelected = link.Selection == selection;
+				}
+			});
 		}
 	}
 
