@@ -7,6 +7,8 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WpfUtils;
 
+public delegate void EntryEvent();
+
 public interface IEntryBase : IDisposable
 {
 	event EntryEvent ExecuteRequested;
@@ -20,8 +22,6 @@ public interface IEntryBase : IDisposable
 	bool Search(string[] query);
 	void Execute();
 }
-
-public delegate void EntryEvent();
 
 /// <summary>
 /// An entry is a library object.

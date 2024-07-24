@@ -156,107 +156,107 @@ public class GameDataService : ServiceBase
 
 		this.sheets.Add(sheet.RowType, sheet);
 	}
-}
 
-// updates the name of any unnamed npc that has a matching appearance that is named.
-public static class NameMergeUtil
-{
-	public static ILogger Log => Logging.ForContext("NameMergeUtil");
-
-	public static void MergeNpcNames()
+	// updates the name of any unnamed npc that has a matching appearance that is named.
+	public static class NameMergeUtil
 	{
-		Stopwatch sw = new();
-		sw.Start();
+		public static ILogger Log => Logging.ForContext("NameMergeUtil");
 
-		Dictionary<string, string> hashToName = new();
-
-		DataSheet? eventNpcSheet = GameDataService.Get<EventNpc>();
-		DataSheet? battleNpcSheet = GameDataService.Get<BattleNpc>();
-
-		int count = 0;
-
-		if (eventNpcSheet != null && battleNpcSheet != null)
+		public static void MergeNpcNames()
 		{
-			StoreNames(eventNpcSheet, ref hashToName);
-			StoreNames(battleNpcSheet, ref hashToName);
+			Stopwatch sw = new();
+			sw.Start();
 
-			UpdateNames(eventNpcSheet, ref hashToName, ref count);
-			UpdateNames(battleNpcSheet, ref hashToName, ref count);
+			Dictionary<string, string> hashToName = new();
+
+			DataSheet? eventNpcSheet = GameDataService.Get<EventNpc>();
+			DataSheet? battleNpcSheet = GameDataService.Get<BattleNpc>();
+
+			int count = 0;
+
+			if (eventNpcSheet != null && battleNpcSheet != null)
+			{
+				StoreNames(eventNpcSheet, ref hashToName);
+				StoreNames(battleNpcSheet, ref hashToName);
+
+				UpdateNames(eventNpcSheet, ref hashToName, ref count);
+				UpdateNames(battleNpcSheet, ref hashToName, ref count);
+			}
+
+			sw.Stop();
+			Log.Information($"Merged {count} NPC names in {sw.ElapsedMilliseconds}ms");
 		}
 
-		sw.Stop();
-		Log.Information($"Merged {count} NPC names in {sw.ElapsedMilliseconds}ms");
-	}
-
-	private static void StoreNames(DataSheet sheet, ref Dictionary<string, string> hashToName)
-	{
-		foreach (NpcBase npc in sheet)
+		private static void StoreNames(DataSheet sheet, ref Dictionary<string, string> hashToName)
 		{
-			if (npc.AppearanceHash != null && npc.Name != null)
+			foreach (NpcBase npc in sheet)
 			{
-				hashToName.TryAdd(npc.AppearanceHash, npc.Name);
+				if (npc.AppearanceHash != null && npc.Name != null)
+				{
+					hashToName.TryAdd(npc.AppearanceHash, npc.Name);
+				}
 			}
 		}
-	}
 
-	private static void UpdateNames(DataSheet sheet, ref Dictionary<string, string> hashToName, ref int count)
-	{
-		foreach (NpcBase npc in sheet)
+		private static void UpdateNames(DataSheet sheet, ref Dictionary<string, string> hashToName, ref int count)
 		{
-			if (npc.AppearanceHash != null)
+			foreach (NpcBase npc in sheet)
 			{
-				if (hashToName.TryGetValue(npc.AppearanceHash, out string? newName) && newName != npc.Name)
+				if (npc.AppearanceHash != null)
 				{
-					npc.Name = hashToName[npc.AppearanceHash];
-					count++;
+					if (hashToName.TryGetValue(npc.AppearanceHash, out string? newName) && newName != npc.Name)
+					{
+						npc.Name = hashToName[npc.AppearanceHash];
+						count++;
+					}
 				}
 			}
 		}
 	}
-}
 
-public static class AppearanceDeduplicationUtil
-{
-	public static ILogger Log => Logging.ForContext("AppearanceDeduplicationUtil");
-
-	public static void Deduplicate()
+	public static class AppearanceDeduplicationUtil
 	{
-		Stopwatch sw = new();
-		sw.Start();
-		int count = 0;
+		public static ILogger Log => Logging.ForContext("AppearanceDeduplicationUtil");
 
-		DataSheet? eventNpcSheet = GameDataService.Get<EventNpc>();
-		if (eventNpcSheet != null)
-			Deduplicate(eventNpcSheet, ref count);
-
-		DataSheet? battleNpcSheet = GameDataService.Get<BattleNpc>();
-		if (battleNpcSheet != null)
-			Deduplicate(battleNpcSheet, ref count);
-
-		sw.Stop();
-		Log.Information($"Found {count} duplicate appearances in {sw.ElapsedMilliseconds}ms");
-	}
-
-	private static void Deduplicate(DataSheet sheet, ref int count)
-	{
-		Dictionary<string, uint> hashes = new();
-		foreach (NpcBase npc in sheet)
+		public static void Deduplicate()
 		{
-			if (npc.AppearanceHash == null)
-			{
-				Log.Warning($"{npc.RowName} has no appearance hash");
-				continue;
-			}
+			Stopwatch sw = new();
+			sw.Start();
+			int count = 0;
 
-			if (hashes.TryGetValue(npc.AppearanceHash, out uint orignalRowId))
+			DataSheet? eventNpcSheet = GameDataService.Get<EventNpc>();
+			if (eventNpcSheet != null)
+				Deduplicate(eventNpcSheet, ref count);
+
+			DataSheet? battleNpcSheet = GameDataService.Get<BattleNpc>();
+			if (battleNpcSheet != null)
+				Deduplicate(battleNpcSheet, ref count);
+
+			sw.Stop();
+			Log.Information($"Found {count} duplicate appearances in {sw.ElapsedMilliseconds}ms");
+		}
+
+		private static void Deduplicate(DataSheet sheet, ref int count)
+		{
+			Dictionary<string, uint> hashes = new();
+			foreach (NpcBase npc in sheet)
 			{
-				npc.DuplicateRow = orignalRowId;
-				count++;
-			}
-			else
-			{
-				hashes.Add(npc.AppearanceHash, npc.RowId);
-				npc.DuplicateRow = null;
+				if (npc.AppearanceHash == null)
+				{
+					Log.Warning($"{npc.RowName} has no appearance hash");
+					continue;
+				}
+
+				if (hashes.TryGetValue(npc.AppearanceHash, out uint orignalRowId))
+				{
+					npc.DuplicateRow = orignalRowId;
+					count++;
+				}
+				else
+				{
+					hashes.Add(npc.AppearanceHash, npc.RowId);
+					npc.DuplicateRow = null;
+				}
 			}
 		}
 	}

@@ -1,13 +1,13 @@
 ﻿namespace ScreenshotStudio.GameData.Excel;
 
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Lumina.Data;
 using Lumina.Excel;
 using ScreenshotStudio.Tags;
 using System;
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using System.Text;
 
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
-using System.Text;
 
 public class EquipSlotCategory : Lumina.Excel.GeneratedSheets.EquipSlotCategory
 {

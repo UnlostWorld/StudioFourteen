@@ -22,6 +22,22 @@ using System;
 using System.Runtime.InteropServices;
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 
+public enum RenderMode : uint
+{
+	Draw = 0,
+	Unload = 2,
+	Load = 4,
+}
+
+[Flags]
+public enum ActorFlags : byte
+{
+	None = 0,
+	WeaponsVisible = 1,
+	WeaponsDrawn = 2,
+	VisorToggle = 8,
+}
+
 [StructLayout(LayoutKind.Explicit, Size = 0x84A)]
 public struct Actor
 {
@@ -167,20 +183,4 @@ public struct Actor
 			this.GameObject.EnableDraw();
 		}
 	}
-}
-
-public enum RenderMode : uint
-{
-	Draw = 0,
-	Unload = 2,
-	Load = 4,
-}
-
-[Flags]
-public enum ActorFlags : byte
-{
-	None = 0,
-	WeaponsVisible = 1,
-	WeaponsDrawn = 2,
-	VisorToggle = 8,
 }

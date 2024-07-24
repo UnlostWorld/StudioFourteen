@@ -8,6 +8,12 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 
+public interface IAutoNotify : INotifyPropertyChanged
+{
+	void NotifyPropertyChanged(string propertyName);
+	bool ShouldTickAutoProperties();
+}
+
 public class AutoPropertyNotifyService : ServiceBase
 {
 	private static readonly List<TrackedObject> TrackedObjects = new();
@@ -205,12 +211,6 @@ public class AutoNotifyAttribute : Attribute
 [AttributeUsage(AttributeTargets.Property)]
 public class AlwaysNotifyAttribute : Attribute
 {
-}
-
-public interface IAutoNotify : INotifyPropertyChanged
-{
-	void NotifyPropertyChanged(string propertyName);
-	bool ShouldTickAutoProperties();
 }
 
 public class AutoNotify : IAutoNotify

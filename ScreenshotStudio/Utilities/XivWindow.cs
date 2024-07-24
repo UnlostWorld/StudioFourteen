@@ -1,6 +1,5 @@
 ﻿namespace ScreenshotStudio.Utilities;
 
-using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
@@ -10,7 +9,7 @@ using System.Windows.Interop;
 
 public static class XivWindow
 {
-	private static Rect size = new();
+	private static Rect size = default;
 
 	public static Process? Process { get; set; }
 
