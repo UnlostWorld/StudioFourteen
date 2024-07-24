@@ -5,15 +5,12 @@
 
 namespace ScreenshotStudio.GameData.Excel;
 
-using Anamnesis.Actor.Utilities;
 using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Lumina.Data;
 using Lumina.Excel;
-using ScreenshotStudio.GameData.Sheets;
-using ScreenshotStudio.Structs;
 using System.Collections.Generic;
-using System.Security.AccessControl;
+
 using LuminaData = Lumina.GameData;
 
 [Sheet("CharaMakeType", 0x80d7db6d)]

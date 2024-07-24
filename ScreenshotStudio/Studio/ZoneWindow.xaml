@@ -14,7 +14,7 @@
 	Height="150"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
-	Subtitle="{Binding ActorName}"
+	Subtitle="{Binding CharacterName}"
 	TitleIcon="HelmetBattle"
 	mc:Ignorable="d">
 	<Grid>

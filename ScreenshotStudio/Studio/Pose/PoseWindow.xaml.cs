@@ -7,7 +7,7 @@ using ScreenshotStudio.Windows;
 using System.Collections.Generic;
 using System.Windows.Controls;
 
-public partial class PoseWindow : ActorWindow
+public partial class PoseWindow : CharacterWindow
 {
 	[AutoNotify]
 	public bool ExpandTranslationSliders

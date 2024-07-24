@@ -1,10 +1,9 @@
-﻿namespace Anamnesis.Actor.Utilities;
+﻿namespace ScreenshotStudio.GameData;
 
 using System;
 using System.Collections.Generic;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Lumina.Data;
-using ScreenshotStudio.GameData;
 using ScreenshotStudio.GameData.Excel;
 using Serilog;
 using System.Windows.Media;

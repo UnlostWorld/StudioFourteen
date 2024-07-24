@@ -21,22 +21,22 @@ public partial class Targets : View
 {
 	public Targets()
 	{
-		for (int i = GroupPoseService.GPoseFirstActor; i < GroupPoseService.GPoseFirstActor + GroupPoseService.GPoseActorCount; ++i)
+		for (int i = GroupPoseService.GPoseFirstCharacter; i < GroupPoseService.GPoseFirstCharacter + GroupPoseService.GPoseCharacterCount; ++i)
 		{
-			this.Actors.Add(new(i));
+			this.Characters.Add(new(i));
 		}
 	}
 
-	public List<ActorViewModel> Actors { get; init; } = new();
+	public List<CharacterViewModel> Characters { get; init; } = new();
 
 	[AutoNotify] public bool IsInGPose => this.Services.Studio.IsOpenAndInGPose;
 
 	[AutoNotify]
-	public ActorViewModel? Target
+	public CharacterViewModel? Target
 	{
 		get
 		{
-			foreach (ActorViewModel vm in this.Actors)
+			foreach (CharacterViewModel vm in this.Characters)
 			{
 				if (vm.IsCurrent)
 				{
@@ -52,20 +52,20 @@ public partial class Targets : View
 	{
 		base.OnFrameworkUpdate(framework);
 
-		foreach (ActorViewModel actor in this.Actors)
+		foreach (CharacterViewModel character in this.Characters)
 		{
-			actor.OnFrameworkUpdate();
+			character.OnFrameworkUpdate();
 		}
 	}
 
-	private void OnAddActorClicked(object sender, RoutedEventArgs e)
+	private void OnAddCharacterClicked(object sender, RoutedEventArgs e)
 	{
 		TagCollection defaultTags = new();
 		defaultTags.Add("Named");
 
-		LibraryModal.Show<IActorAppearance>(
+		LibraryModal.Show<ICharacterAppearance>(
 			sender,
-			"Create Actor",
+			"Create Character",
 			defaultTags,
 			null,
 			(appearance, isFinal) =>
@@ -73,28 +73,28 @@ public partial class Targets : View
 				if (!isFinal)
 					return;
 
-				this.CreateActor(appearance);
+				this.CreateCharacter(appearance);
 			});
 	}
 
-	private unsafe void CreateActor(IActorAppearance appearance)
+	private unsafe void CreateCharacter(ICharacterAppearance appearance)
 	{
 		Threads.RunOnFrameworkThread(() =>
 		{
-			Character* actor = this.Services.ActorLifecycle.Create(appearance);
-			int index = actor->GameObject.ObjectIndex;
+			Character* character = this.Services.CharacterLifecycle.Create(appearance);
+			int index = character->GameObject.ObjectIndex;
 			this.SelectObject(index);
 		});
 	}
 
-	private unsafe void OnRemoveActorClicked(object sender, RoutedEventArgs e)
+	private unsafe void OnRemoveCharacterClicked(object sender, RoutedEventArgs e)
 	{
-		ActorViewModel? target = this.Target;
+		CharacterViewModel? target = this.Target;
 		if (target == null)
 			return;
 
-		int index = this.Actors.IndexOf(target);
-		this.Services.ActorLifecycle.Destroy(target.Actor);
+		int index = this.Characters.IndexOf(target);
+		this.Services.CharacterLifecycle.Destroy(target.Character);
 		this.SelectNearest(index);
 	}
 
@@ -104,12 +104,12 @@ public partial class Targets : View
 		{
 			await Task.Delay(100);
 
-			for (int i = index; i < this.Actors.Count; i++)
+			for (int i = index; i < this.Characters.Count; i++)
 			{
-				if (!this.Actors[i].IsValid)
+				if (!this.Characters[i].IsValid)
 					continue;
 
-				this.Actors[i].IsCurrent = true;
+				this.Characters[i].IsCurrent = true;
 				break;
 			}
 
@@ -117,10 +117,10 @@ public partial class Targets : View
 			{
 				for (int i = index; i >= 0; i--)
 				{
-					if (!this.Actors[i].IsValid)
+					if (!this.Characters[i].IsValid)
 						continue;
 
-					this.Actors[i].IsCurrent = true;
+					this.Characters[i].IsCurrent = true;
 					break;
 				}
 			}
@@ -133,7 +133,7 @@ public partial class Targets : View
 		{
 			await Task.Delay(300);
 
-			foreach (ActorViewModel vm in this.Actors)
+			foreach (CharacterViewModel vm in this.Characters)
 			{
 				if (vm.ObjectTableIndex == index)
 				{
@@ -144,19 +144,19 @@ public partial class Targets : View
 	}
 }
 
-public unsafe class ActorViewModel : ViewModel
+public unsafe class CharacterViewModel : ViewModel
 {
 	public readonly int ObjectTableIndex = 0;
 	private string? lastName;
 
-	public ActorViewModel(int index)
+	public CharacterViewModel(int index)
 	{
 		this.ObjectTableIndex = index;
 	}
 
 	[AutoNotify] public IntPtr Address { get; set; } = IntPtr.Zero;
 	[AutoNotify] public bool IsValid => this.Address != IntPtr.Zero;
-	[AutoNotify] public unsafe Character* Actor => (Character*)this.Address;
+	[AutoNotify] public unsafe Character* Character => (Character*)this.Address;
 
 	[AutoNotify]
 	public string? Name
@@ -166,7 +166,7 @@ public unsafe class ActorViewModel : ViewModel
 			if (!this.IsValid)
 				return this.lastName ?? "Invalid";
 
-			this.lastName = this.Actor->GetNameAsString() ?? "???";
+			this.lastName = this.Character->GetNameAsString() ?? "???";
 
 			return this.lastName;
 		}
@@ -180,7 +180,7 @@ public unsafe class ActorViewModel : ViewModel
 			if (!this.IsValid)
 				return false;
 
-			return (Character*)TargetSystem.Instance()->GPoseTarget == this.Actor;
+			return (Character*)TargetSystem.Instance()->GPoseTarget == this.Character;
 		}
 
 		set
@@ -192,7 +192,7 @@ public unsafe class ActorViewModel : ViewModel
 				if (!this.IsValid)
 					return;
 
-				TargetSystem.Instance()->GPoseTarget = (NativeObject*)this.Actor;
+				TargetSystem.Instance()->GPoseTarget = (NativeObject*)this.Character;
 			});
 		}
 	}

@@ -22,10 +22,10 @@ public partial class ItemActions : View
 		this.ContentArea.DataContext = this;
 	}
 
-	public unsafe Character* Actor { get; private set; }
-	[AutoNotify] public unsafe string? ActorName => this.HasValidTarget ? this.Actor->GetNameAsString() : "Nobody";
+	public unsafe Character* Character { get; private set; }
+	[AutoNotify] public unsafe string? CharacterName => this.HasValidTarget ? this.Character->GetNameAsString() : "Nobody";
 	[AutoNotify] public bool CanApply => this.Item != null && this.HasValidTarget && this.Item.EquipSlot != null;
-	[AutoNotify] public unsafe bool CanRevert => this.Services.ActorAppearanceBackup.CanRestore(this.Actor);
+	[AutoNotify] public unsafe bool CanRevert => this.Services.CharacterAppearanceBackup.CanRestore(this.Character);
 	[AutoNotify] public bool IsLive { get; set; }
 
 	[AutoNotify]
@@ -33,10 +33,10 @@ public partial class ItemActions : View
 	{
 		get
 		{
-			if (this.Actor == null)
+			if (this.Character == null)
 				return false;
 
-			if (this.Actor->GameObject.RenderFlags != (int)RenderMode.Draw)
+			if (this.Character->GameObject.RenderFlags != (int)RenderMode.Draw)
 				return false;
 
 			return true;
@@ -51,7 +51,7 @@ public partial class ItemActions : View
 
 	protected override unsafe void OnFrameworkUpdate(IFramework framework)
 	{
-		this.Actor = ActorWindow.GetTarget();
+		this.Character = CharacterWindow.GetTarget();
 	}
 
 	private static unsafe void OnItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -82,7 +82,7 @@ public partial class ItemActions : View
 
 	private unsafe void OnRevertClicked(object sender, RoutedEventArgs e)
 	{
-		this.Services.ActorAppearanceBackup.Restore(this.Actor);
+		this.Services.CharacterAppearanceBackup.Restore(this.Character);
 		this.IsLive = false;
 	}
 

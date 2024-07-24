@@ -17,7 +17,7 @@ using System.Windows.Input;
 
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 
-public partial class GearWindow : ActorWindow
+public partial class GearWindow : CharacterWindow
 {
 	public GearWindow()
 	{
@@ -50,9 +50,9 @@ public partial class GearWindow : ActorWindow
 	public ItemEquipViewModel RingRight { get; init; }
 	public ItemEquipViewModel RingLeft { get; init; }
 
-	[AutoNotify] public unsafe bool CanRevert => this.Services.ActorAppearanceBackup.CanRestore(this.Actor);
+	[AutoNotify] public unsafe bool CanRevert => this.Services.CharacterAppearanceBackup.CanRestore(this.Target);
 
-	private void OnChangeClicked(object sender, RoutedEventArgs e)
+	private unsafe void OnChangeClicked(object sender, RoutedEventArgs e)
 	{
 		if (sender is Button btn)
 		{
@@ -62,7 +62,7 @@ public partial class GearWindow : ActorWindow
 				defaultTags.Add(equip.Slot.ToTag());
 
 				// Filter by the current race.
-				Race? race = this.DrawData.CustomizeData.GetRace();
+				Race? race = this.Target->DrawData.CustomizeData.GetRace();
 				if (race != null && race.Name != null)
 					defaultTags.Add(race.Name);
 
@@ -84,7 +84,7 @@ public partial class GearWindow : ActorWindow
 				defaultTags.Add(weapon.Slot.ToTag());
 
 				// Filter by the current race.
-				Race? race = this.DrawData.CustomizeData.GetRace();
+				Race? race = this.Target->DrawData.CustomizeData.GetRace();
 				if (race != null && race.Name != null)
 					defaultTags.Add(race.Name);
 
@@ -160,7 +160,7 @@ public partial class GearWindow : ActorWindow
 
 	private unsafe void OnRevertClicked(object sender, RoutedEventArgs e)
 	{
-		this.Services.ActorAppearanceBackup.Restore(this.Actor);
+		this.Services.CharacterAppearanceBackup.Restore(this.Target);
 	}
 }
 
@@ -235,13 +235,13 @@ public abstract class GearViewModelBase : ViewModel
 		}
 	}
 
-	protected unsafe ref DrawDataContainer DrawData => ref this.window.Actor->DrawData;
+	protected unsafe ref DrawDataContainer DrawData => ref this.window.Target->DrawData;
 
 	public override bool ShouldTickAutoProperties() => this.window.ShouldTickAutoProperties();
 
-	public unsafe void BackupActor()
+	public unsafe void BackupCharacter()
 	{
-		this.Services.ActorAppearanceBackup.Backup(this.window.Actor);
+		this.Services.CharacterAppearanceBackup.Backup(this.window.Target);
 	}
 }
 
@@ -260,7 +260,7 @@ public class WeaponViewModel : GearViewModelBase
 		get => this.Weapon.ModelId.Id;
 		set
 		{
-			this.BackupActor();
+			this.BackupCharacter();
 			this.Weapon.ModelId.Id = value;
 			this.ApplyChangeItem();
 		}
@@ -271,7 +271,7 @@ public class WeaponViewModel : GearViewModelBase
 		get => this.Weapon.ModelId.Type;
 		set
 		{
-			this.BackupActor();
+			this.BackupCharacter();
 			this.Weapon.ModelId.Type = value;
 			this.ApplyChangeItem();
 		}
@@ -282,7 +282,7 @@ public class WeaponViewModel : GearViewModelBase
 		get => this.Weapon.ModelId.Variant;
 		set
 		{
-			this.BackupActor();
+			this.BackupCharacter();
 			this.Weapon.ModelId.Variant = (byte)value;
 			this.ApplyChangeItem();
 		}
@@ -293,7 +293,7 @@ public class WeaponViewModel : GearViewModelBase
 		get => this.Weapon.ModelId.Stain0;
 		set
 		{
-			this.BackupActor();
+			this.BackupCharacter();
 			this.Weapon.ModelId.Stain0 = value;
 			this.ApplyChangeItem();
 		}
@@ -304,7 +304,7 @@ public class WeaponViewModel : GearViewModelBase
 		get => this.Weapon.ModelId.Stain1;
 		set
 		{
-			this.BackupActor();
+			this.BackupCharacter();
 			this.Weapon.ModelId.Stain1 = value;
 			this.ApplyChangeItem();
 		}
@@ -331,7 +331,7 @@ public class WeaponViewModel : GearViewModelBase
 			if (this.item != null)
 			{
 				// Submodels?
-				this.BackupActor();
+				this.BackupCharacter();
 				this.Set = this.item.ModelSet;
 				this.Base = this.item.ModelBase;
 				this.Variant = (byte)this.item.ModelVariant;
@@ -346,7 +346,7 @@ public class WeaponViewModel : GearViewModelBase
 	{
 		Threads.RunOnFrameworkThread(() =>
 		{
-			ActorWindow.GetTarget()->UpdateWeapon(this.Slot, this.Weapon.ModelId, CharacterExtensions.UpdateSource.Interface);
+			CharacterWindow.GetTarget()->UpdateWeapon(this.Slot, this.Weapon.ModelId, CharacterExtensions.UpdateSource.Interface);
 		});
 	}
 }
@@ -372,7 +372,7 @@ public class ItemEquipViewModel : GearViewModelBase
 		get => this.ItemEquip.Id;
 		set
 		{
-			this.BackupActor();
+			this.BackupCharacter();
 			this.ItemEquip.Id = value;
 			this.ApplyChangeItem();
 		}
@@ -383,7 +383,7 @@ public class ItemEquipViewModel : GearViewModelBase
 		get => this.ItemEquip.Variant;
 		set
 		{
-			this.BackupActor();
+			this.BackupCharacter();
 			this.ItemEquip.Variant = (byte)value;
 			this.ApplyChangeItem();
 		}
@@ -394,7 +394,7 @@ public class ItemEquipViewModel : GearViewModelBase
 		get => this.ItemEquip.Stain0;
 		set
 		{
-			this.BackupActor();
+			this.BackupCharacter();
 			this.ItemEquip.Stain0 = value;
 			this.ApplyChangeItem();
 		}
@@ -405,7 +405,7 @@ public class ItemEquipViewModel : GearViewModelBase
 		get => this.ItemEquip.Stain1;
 		set
 		{
-			this.BackupActor();
+			this.BackupCharacter();
 			this.ItemEquip.Stain1 = value;
 			this.ApplyChangeItem();
 		}
@@ -432,7 +432,7 @@ public class ItemEquipViewModel : GearViewModelBase
 			if (this.item != null)
 			{
 				// Submodels?
-				this.BackupActor();
+				this.BackupCharacter();
 				this.ItemEquip.Id = this.item.ModelBase;
 				this.ItemEquip.Variant = (byte)this.item.ModelVariant;
 				this.ApplyChangeItem();
@@ -446,7 +446,7 @@ public class ItemEquipViewModel : GearViewModelBase
 	{
 		Threads.RunOnFrameworkThread(() =>
 		{
-			ActorWindow.GetTarget()->UpdateEquipment(this.Slot, this.ItemEquip, CharacterExtensions.UpdateSource.Interface);
+			CharacterWindow.GetTarget()->UpdateEquipment(this.Slot, this.ItemEquip, CharacterExtensions.UpdateSource.Interface);
 		});
 	}
 }

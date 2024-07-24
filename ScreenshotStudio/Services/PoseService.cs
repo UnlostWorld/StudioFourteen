@@ -115,8 +115,8 @@ public class PoseService : ServiceBase
 
 public unsafe class SkeletonViewModel
 {
-	public SkeletonViewModel(Character* actor)
+	public SkeletonViewModel(Character* character)
 	{
-		CharacterBase* characterBase = (CharacterBase*)actor->GameObject.DrawObject;
+		CharacterBase* characterBase = (CharacterBase*)character->GameObject.DrawObject;
 	}
 }

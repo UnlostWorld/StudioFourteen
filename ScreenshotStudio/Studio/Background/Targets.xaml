@@ -78,8 +78,8 @@
 
 				<Button
 					Width="32"
-					Click="OnAddActorClicked"
-					ToolTip="{DynamicResource LOC_Target_CreateActor}">
+					Click="OnAddCharacterClicked"
+					ToolTip="{DynamicResource LOC_Target_CreateCharacter}">
 					<wpfUtils:IconBlock Icon="UserPlus" />
 				</Button>
 
@@ -87,7 +87,7 @@
 					Margin="1"
 					Style="{DynamicResource WpfUtilsControlBorder}">
 
-					<ItemsControl ItemsSource="{Binding Actors}">
+					<ItemsControl ItemsSource="{Binding Characters}">
 						<ItemsControl.ItemsPanel>
 							<ItemsPanelTemplate>
 								<StackPanel Orientation="Horizontal" />
@@ -95,7 +95,7 @@
 						</ItemsControl.ItemsPanel>
 
 						<ItemsControl.ItemTemplate>
-							<DataTemplate DataType="{x:Type local:ActorViewModel}">
+							<DataTemplate DataType="{x:Type local:CharacterViewModel}">
 
 								<Grid
 									x:Name="ContentArea"
@@ -159,11 +159,11 @@
 
 				<Button
 					Width="32"
-					Click="OnRemoveActorClicked"
+					Click="OnRemoveCharacterClicked"
 					IsEnabled="{Binding Target, Converter={StaticResource NotNullToBoolConverter}}">
 					<Button.ToolTip>
 						<TextBlock>
-							<Run Text="{DynamicResource LOC_Target_DeleteActor}" />
+							<Run Text="{DynamicResource LOC_Target_DeleteCharacter}" />
 							<Run Text=" - " />
 							<Run Text="{Binding Target.Name, Mode=OneWay}" />
 						</TextBlock>

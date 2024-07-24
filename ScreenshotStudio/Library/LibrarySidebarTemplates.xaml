@@ -13,7 +13,7 @@
 
 
 
-	<DataTemplate x:Key="ActorAppearance">
+	<DataTemplate x:Key="CharacterAppearance">
 		<Grid>
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
@@ -25,7 +25,7 @@
 			<!--  a big old picture would look soooo nice right here...  -->
 
 			<!--  actions  -->
-			<libraryControls:ActorAppearanceActions
+			<libraryControls:CharacterAppearanceActions
 				Grid.Row="3"
 				Appearance="{Binding .}" />
 		</Grid>
@@ -36,7 +36,7 @@
 	<DataTemplate DataType="{x:Type excel:ResidentNpc}">
 		<ContentPresenter
 			Content="{Binding .}"
-			ContentTemplate="{StaticResource ActorAppearance}" />
+			ContentTemplate="{StaticResource CharacterAppearance}" />
 	</DataTemplate>
 
 
@@ -44,7 +44,7 @@
 	<DataTemplate DataType="{x:Type excel:BattleNpc}">
 		<ContentPresenter
 			Content="{Binding .}"
-			ContentTemplate="{StaticResource ActorAppearance}" />
+			ContentTemplate="{StaticResource CharacterAppearance}" />
 	</DataTemplate>
 
 
@@ -52,7 +52,7 @@
 	<DataTemplate DataType="{x:Type excel:EventNpc}">
 		<ContentPresenter
 			Content="{Binding .}"
-			ContentTemplate="{StaticResource ActorAppearance}" />
+			ContentTemplate="{StaticResource CharacterAppearance}" />
 	</DataTemplate>
 
 

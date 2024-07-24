@@ -12,8 +12,8 @@ using Task = System.Threading.Tasks.Task;
 
 public class GroupPoseService : ServiceBase
 {
-	public const int GPoseActorCount = 39;
-	public const int GPoseFirstActor = 201;
+	public const int GPoseCharacterCount = 39;
+	public const int GPoseFirstCharacter = 201;
 
 	private Hook<EnterDelegate>? enterHook;
 	private Hook<ExitDelegate>? exitHook;

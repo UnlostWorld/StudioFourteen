@@ -42,7 +42,7 @@ public partial class LibraryWindow : PanelWindow
 	{
 		new("LOC_Library_Favorites", ProIcons.Heart, new LibraryFavoritesFilter()),
 		new("LOC_Library_Poses", ProIcons.Running, new TagFilter()),
-		new("LOC_Library_Characters", ProIcons.User, new TypeFilter(typeof(IActorAppearance))),
+		new("LOC_Library_Characters", ProIcons.User, new TypeFilter(typeof(ICharacterAppearance))),
 		new("LOC_Library_Scenes", ProIcons.Users,  new TagFilter()),
 	};
 

@@ -20,14 +20,14 @@ public static class Threads
 		return Task.CompletedTask;
 	}
 
-	public static unsafe Task RunOnFrameworkThread(this Character actor, Action<nint> action)
+	public static unsafe Task RunOnFrameworkThread(this Character character, Action<nint> action)
 	{
-		return RunOnFrameworkThread(actor.GameObject, action);
+		return RunOnFrameworkThread(character.GameObject, action);
 	}
 
-	public static unsafe Task RunOnFrameworkThread(Character* actor, Action<nint> action)
+	public static unsafe Task RunOnFrameworkThread(Character* character, Action<nint> action)
 	{
-		return RunOnFrameworkThread(actor->GameObject, action);
+		return RunOnFrameworkThread(character->GameObject, action);
 	}
 
 	public static Task RunOnFrameworkThread(GameObject obj, Action<nint> action)

@@ -8,7 +8,7 @@ using ScreenshotStudio.Structs;
 using WpfUtils;
 
 [Sheet("ENpcResident", 0xf74fa88c)]
-public class ResidentNpc : LibraryExcelRow, IActorAppearance
+public class ResidentNpc : LibraryExcelRow, ICharacterAppearance
 {
 	public string? Description { get; protected set; }
 	public EventNpc? EventNpc { get; protected set; }
@@ -60,8 +60,8 @@ public class ResidentNpc : LibraryExcelRow, IActorAppearance
 		return matches;
 	}
 
-	public unsafe void Apply(Character* actor)
+	public unsafe void Apply(Character* character)
 	{
-		this.EventNpc?.Apply(actor);
+		this.EventNpc?.Apply(character);
 	}
 }

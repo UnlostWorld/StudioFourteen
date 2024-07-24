@@ -1,13 +1,12 @@
 ﻿namespace ScreenshotStudio.Studio.Customize;
 
-using Anamnesis.Actor.Utilities;
+using ScreenshotStudio.GameData;
 using ScreenshotStudio.GameData.Excel;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using WpfUtils.DependencyProperties;
-using static FFXIVClientStructs.FFXIV.Component.GUI.AtkComponentNumericInput.Delegates;
 
 public partial class CustomizeColorOption : UserControl, INotifyPropertyChanged
 {

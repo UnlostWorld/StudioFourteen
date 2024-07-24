@@ -10,23 +10,23 @@ using ScreenshotStudio.Windows;
 using System;
 using System.Windows;
 
-public partial class ActorAppearanceActions : View
+public partial class CharacterAppearanceActions : View
 {
 	public static readonly DependencyProperty AppearanceProperty = DependencyProperty.Register(
-		nameof(ActorAppearanceActions.Appearance),
-		typeof(IActorAppearance),
-		typeof(ActorAppearanceActions),
+		nameof(CharacterAppearanceActions.Appearance),
+		typeof(ICharacterAppearance),
+		typeof(CharacterAppearanceActions),
 		new(null, OnAppearanceChanged));
 
-	public ActorAppearanceActions()
+	public CharacterAppearanceActions()
 	{
 		this.ContentArea.DataContext = this;
 	}
 
-	public unsafe Character* Actor { get; private set; }
-	[AutoNotify] public unsafe string? ActorName => this.HasValidTarget ? this.Actor->GetNameAsString() : "Nobody";
+	public unsafe Character* Character { get; private set; }
+	[AutoNotify] public unsafe string? CharacterName => this.HasValidTarget ? this.Character->GetNameAsString() : "Nobody";
 	[AutoNotify] public bool CanApply => this.Appearance != null && this.HasValidTarget;
-	[AutoNotify] public unsafe bool CanRevert => this.Services.ActorAppearanceBackup.CanRestore(this.Actor);
+	[AutoNotify] public unsafe bool CanRevert => this.Services.CharacterAppearanceBackup.CanRestore(this.Character);
 	[AutoNotify] public bool IsLive { get; set; }
 
 	[AutoNotify]
@@ -34,19 +34,19 @@ public partial class ActorAppearanceActions : View
 	{
 		get
 		{
-			if (this.Actor == null)
+			if (this.Character == null)
 				return false;
 
-			if (this.Actor->GameObject.RenderFlags != (int)RenderMode.Draw)
+			if (this.Character->GameObject.RenderFlags != (int)RenderMode.Draw)
 				return false;
 
 			return true;
 		}
 	}
 
-	public IActorAppearance? Appearance
+	public ICharacterAppearance? Appearance
 	{
-		get => (IActorAppearance?)this.GetValue(AppearanceProperty);
+		get => (ICharacterAppearance?)this.GetValue(AppearanceProperty);
 		set => this.SetValue(AppearanceProperty, value);
 	}
 
@@ -54,29 +54,29 @@ public partial class ActorAppearanceActions : View
 	{
 		base.OnFrameworkUpdate(framework);
 
-		this.Actor = ActorWindow.GetTarget();
+		this.Character = CharacterWindow.GetTarget();
 	}
 
 	private static unsafe void OnAppearanceChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 	{
-		if (d is ActorAppearanceActions actionsView)
+		if (d is CharacterAppearanceActions actionsView)
 		{
-			if (e.OldValue is IActorAppearance old)
+			if (e.OldValue is ICharacterAppearance old)
 			{
 				old.ExecuteRequested -= actionsView.OnExecuteRequested;
 			}
 
-			if (e.NewValue is IActorAppearance newAppearance)
+			if (e.NewValue is ICharacterAppearance newAppearance)
 			{
 				newAppearance.ExecuteRequested += actionsView.OnExecuteRequested;
 			}
 
 			if (actionsView.IsLive && actionsView.Appearance != null)
 			{
-				IActorAppearance appearance = actionsView.Appearance;
+				ICharacterAppearance appearance = actionsView.Appearance;
 				Threads.RunOnFrameworkThread(() =>
 				{
-					appearance.Apply(ActorWindow.GetTarget());
+					appearance.Apply(CharacterWindow.GetTarget());
 				});
 			}
 		}
@@ -92,16 +92,16 @@ public partial class ActorAppearanceActions : View
 		if (this.Appearance == null)
 			return;
 
-		IActorAppearance appearance = this.Appearance;
+		ICharacterAppearance appearance = this.Appearance;
 		Threads.RunOnFrameworkThread(() =>
 		{
-			appearance.Apply(ActorWindow.GetTarget());
+			appearance.Apply(CharacterWindow.GetTarget());
 		});
 	}
 
 	private unsafe void OnRevertClicked(object sender, RoutedEventArgs e)
 	{
-		this.Services.ActorAppearanceBackup.Restore(this.Actor);
+		this.Services.CharacterAppearanceBackup.Restore(this.Character);
 		this.IsLive = false;
 	}
 }

@@ -10,9 +10,9 @@ using ScreenshotStudio.Structs;
 using ScreenshotStudio.Utilities;
 using System;
 
-public abstract class ActorWindow : PanelWindow
+public abstract class CharacterWindow : PanelWindow
 {
-	[AlwaysNotify] public unsafe string? ActorName => this.HasValidTarget ? this.Actor->GetNameAsString() : "Nobody";
+	[AlwaysNotify] public unsafe string? CharacterName => this.HasValidTarget ? this.Target->GetNameAsString() : "Nobody";
 
 	[AlwaysNotify]
 	public unsafe bool HasValidTarget
@@ -21,10 +21,10 @@ public abstract class ActorWindow : PanelWindow
 		{
 			try
 			{
-				if (this.Actor == null)
+				if (this.Target == null)
 					return false;
 
-				if (this.Actor->GameObject.RenderFlags != (int)RenderMode.Draw)
+				if (this.Target->RenderFlags != (int)RenderMode.Draw)
 					return false;
 
 				return true;
@@ -39,12 +39,7 @@ public abstract class ActorWindow : PanelWindow
 	/// <summary>
 	///  Gets a pointer to the player, the players target, or the group pose target.
 	/// </summary>
-	public unsafe Character* Actor { get; private set; }
-
-	/// <summary>
-	/// Gets the DrawData for the current Actor.
-	/// </summary>
-	public unsafe ref DrawDataContainer DrawData => ref this.Actor->DrawData;
+	public unsafe Character* Target { get; private set; }
 
 	// should put this somewhere...
 	public static unsafe Character* GetTarget()
@@ -91,6 +86,6 @@ public abstract class ActorWindow : PanelWindow
 	protected unsafe override void OnFrameworkUpdate(IFramework framework)
 	{
 		base.OnFrameworkUpdate(framework);
-		this.Actor = GetTarget();
+		this.Target = GetTarget();
 	}
 }

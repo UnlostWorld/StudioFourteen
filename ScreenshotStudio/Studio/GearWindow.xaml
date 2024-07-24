@@ -1,4 +1,4 @@
-﻿<windows:ActorWindow
+﻿<windows:CharacterWindow
 	x:Class="ScreenshotStudio.Studio.GearWindow"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -16,7 +16,7 @@
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	ResizeMode="NoResize"
 	SizeToContent="WidthAndHeight"
-	Subtitle="{Binding ActorName}"
+	Subtitle="{Binding CharacterName}"
 	TitleIcon="HelmetBattle"
 	mc:Ignorable="d">
 
@@ -313,4 +313,4 @@
 		</Border>
 
 	</Grid>
-</windows:ActorWindow>
+</windows:CharacterWindow>

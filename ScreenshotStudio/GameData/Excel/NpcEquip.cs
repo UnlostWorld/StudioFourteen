@@ -67,18 +67,18 @@ public class NpcEquipment
 		this.RightRing = this.ParseItem(parser, startColumn + 34);
 	}
 
-	public unsafe void ApplyToActor(Character* actor, NpcEquipment? fallback = null)
+	public unsafe void ApplyTo(Character* character, NpcEquipment? fallback = null)
 	{
-		this.ApplyToActor(actor, EquipmentSlot.Head, this.Head, fallback?.Head);
-		this.ApplyToActor(actor, EquipmentSlot.Body, this.Body, fallback?.Body);
-		this.ApplyToActor(actor, EquipmentSlot.Hands, this.Hands, fallback?.Hands);
-		this.ApplyToActor(actor, EquipmentSlot.Legs, this.Legs, fallback?.Legs);
-		this.ApplyToActor(actor, EquipmentSlot.Feet, this.Feet, fallback?.Feet);
-		this.ApplyToActor(actor, EquipmentSlot.Ears, this.Ears, fallback?.Ears);
-		this.ApplyToActor(actor, EquipmentSlot.Neck, this.Neck, fallback?.Neck);
-		this.ApplyToActor(actor, EquipmentSlot.Wrists, this.Wrists, fallback?.Wrists);
-		this.ApplyToActor(actor, EquipmentSlot.RFinger, this.RightRing, fallback?.RightRing);
-		this.ApplyToActor(actor, EquipmentSlot.LFinger, this.LeftRing, fallback?.LeftRing);
+		this.ApplyTo(character, EquipmentSlot.Head, this.Head, fallback?.Head);
+		this.ApplyTo(character, EquipmentSlot.Body, this.Body, fallback?.Body);
+		this.ApplyTo(character, EquipmentSlot.Hands, this.Hands, fallback?.Hands);
+		this.ApplyTo(character, EquipmentSlot.Legs, this.Legs, fallback?.Legs);
+		this.ApplyTo(character, EquipmentSlot.Feet, this.Feet, fallback?.Feet);
+		this.ApplyTo(character, EquipmentSlot.Ears, this.Ears, fallback?.Ears);
+		this.ApplyTo(character, EquipmentSlot.Neck, this.Neck, fallback?.Neck);
+		this.ApplyTo(character, EquipmentSlot.Wrists, this.Wrists, fallback?.Wrists);
+		this.ApplyTo(character, EquipmentSlot.RFinger, this.RightRing, fallback?.RightRing);
+		this.ApplyTo(character, EquipmentSlot.LFinger, this.LeftRing, fallback?.LeftRing);
 	}
 
 	public void GetStringForHash(StringBuilder sb)
@@ -101,13 +101,13 @@ public class NpcEquipment
 		this.AddToString(this.RightRing, sb);
 	}
 
-	private unsafe void ApplyToActor(Character* actor, EquipmentSlot index, EquipmentModelId a, EquipmentModelId? b)
+	private unsafe void ApplyTo(Character* character, EquipmentSlot index, EquipmentModelId a, EquipmentModelId? b)
 	{
 		EquipmentModelId toUse = a;
 		if (b != null && b.Value.Id > 0)
 			toUse = b.Value;
 
-		actor->UpdateEquipment(index, toUse, CharacterExtensions.UpdateSource.Library);
+		character->UpdateEquipment(index, toUse, CharacterExtensions.UpdateSource.Library);
 	}
 
 	private EquipmentModelId ParseItem(RowParser parser, int column)

@@ -54,7 +54,7 @@
 					<Button.Content>
 						<TextBlock>
 							<Run Text="Equip on" />
-							<Run Text="{Binding ActorName, Mode=OneWay}" />
+							<Run Text="{Binding CharacterName, Mode=OneWay}" />
 						</TextBlock>
 					</Button.Content>
 				</Button>

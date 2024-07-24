@@ -11,7 +11,7 @@ using ScreenshotStudio.Windows;
 using System.Collections.Generic;
 using System.Windows;
 
-public partial class CustomizeWindow : ActorWindow
+public partial class CustomizeWindow : CharacterWindow
 {
 	private CharaMakeType? makeType;
 	private bool linkEyeColors = false;
@@ -20,7 +20,7 @@ public partial class CustomizeWindow : ActorWindow
 	public DataSheet<Tribe>? Tribes => this.Services.GameData.GetSheet<Tribe>();
 
 	public IEnumerable<Race?>? AvailableRaces => this.Services.GameData.GetSheet<Race>()?.GetFrom(1);
-	[AutoNotify] public unsafe bool CanRevert => this.Services.ActorAppearanceBackup.CanRestore(this.Actor);
+	[AutoNotify] public unsafe bool CanRevert => this.Services.CharacterAppearanceBackup.CanRestore(this.Target);
 
 	[AutoNotify]
 	public unsafe CharaMakeType? MakeType
@@ -110,7 +110,7 @@ public partial class CustomizeWindow : ActorWindow
 	}
 
 	[AutoNotify]
-	public unsafe byte ActorHeight
+	public unsafe byte CharacterHeight
 	{
 		get => this.GetCustomizeValue(CustomizeIndex.Height);
 		set => this.SetCustomizeValue(CustomizeIndex.Height, value);
@@ -346,13 +346,13 @@ public partial class CustomizeWindow : ActorWindow
 		return base.ShouldTickAutoProperties();
 	}
 
-	public unsafe byte GetCustomizeValue(CustomizeIndex option) => this.Actor->GetCustomizeValue(option);
+	public unsafe byte GetCustomizeValue(CustomizeIndex option) => this.Target->GetCustomizeValue(option);
 
 	public unsafe void SetCustomizeValue(CustomizeIndex option, byte value, bool apply = true)
 	{
 		Threads.RunOnFrameworkThread(() =>
 		{
-			this.Actor->SetCustomizeValue(option, value, CharacterExtensions.UpdateSource.Interface, apply);
+			this.Target->SetCustomizeValue(option, value, CharacterExtensions.UpdateSource.Interface, apply);
 		});
 	}
 
@@ -360,12 +360,12 @@ public partial class CustomizeWindow : ActorWindow
 	{
 		Threads.RunOnFrameworkThread(() =>
 		{
-			ActorWindow.GetTarget()->UpdateCustomize(redraw, CharacterExtensions.UpdateSource.Interface);
+			CharacterWindow.GetTarget()->UpdateCustomize(redraw, CharacterExtensions.UpdateSource.Interface);
 		});
 	}
 
 	private unsafe void OnRevertClicked(object sender, RoutedEventArgs e)
 	{
-		this.Services.ActorAppearanceBackup.Restore(this.Actor);
+		this.Services.CharacterAppearanceBackup.Restore(this.Target);
 	}
 }

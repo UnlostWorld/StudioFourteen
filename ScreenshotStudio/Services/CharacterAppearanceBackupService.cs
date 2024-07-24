@@ -13,10 +13,10 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using WpfUtils;
 
-public class ActorAppearanceBackupService : ServiceBase
+public class CharacterAppearanceBackupService : ServiceBase
 {
 	private readonly GroupPoseCharactersLibrarySource provider = new();
-	private readonly Dictionary<ushort, ActorBackupAppearance> backup = new();
+	private readonly Dictionary<ushort, CharacterBackupAppearance> backup = new();
 
 	public override Task Start()
 	{
@@ -37,45 +37,45 @@ public class ActorAppearanceBackupService : ServiceBase
 		return base.Stop();
 	}
 
-	public unsafe bool CanRestore(Character* actor)
+	public unsafe bool CanRestore(Character* character)
 	{
-		if (actor == null)
+		if (character == null)
 			return false;
 
-		ushort index = actor->GameObject.ObjectIndex;
+		ushort index = character->GameObject.ObjectIndex;
 		return this.backup.ContainsKey(index);
 	}
 
-	public unsafe void Backup(Character actor)
+	public unsafe void Backup(Character character)
 	{
-		ushort index = actor.GameObject.ObjectIndex;
+		ushort index = character.GameObject.ObjectIndex;
 
 		if (this.backup.ContainsKey(index))
 			return;
 
-		this.backup.Add(index, new(actor));
+		this.backup.Add(index, new(character));
 	}
 
-	public unsafe void Backup(Character* actor)
+	public unsafe void Backup(Character* character)
 	{
-		ushort index = actor->GameObject.ObjectIndex;
+		ushort index = character->GameObject.ObjectIndex;
 
 		if (this.backup.ContainsKey(index))
 			return;
 
-		this.backup.Add(index, new(actor));
+		this.backup.Add(index, new(character));
 	}
 
-	public unsafe void Restore(Character* actor)
+	public unsafe void Restore(Character* character)
 	{
-		ushort index = actor->GameObject.ObjectIndex;
+		ushort index = character->GameObject.ObjectIndex;
 
 		if (!this.backup.ContainsKey(index))
 			return;
 
 		Threads.RunOnFrameworkThread(() =>
 		{
-			this.backup[index].Apply(actor, CharacterExtensions.UpdateSource.Restore);
+			this.backup[index].Apply(character, CharacterExtensions.UpdateSource.Restore);
 			this.backup.Remove(index);
 		});
 	}
@@ -91,26 +91,26 @@ public class ActorAppearanceBackupService : ServiceBase
 	}
 }
 
-public class ActorBackupAppearance : EntryBase, IActorAppearance
+public class CharacterBackupAppearance : EntryBase, ICharacterAppearance
 {
 	private readonly string? name;
 
-	public unsafe ActorBackupAppearance(Character* actor)
+	public unsafe CharacterBackupAppearance(Character* character)
 		: base(null)
 	{
-		this.name = actor->GetNameAsString();
-		this.DrawData = actor->DrawData;
-		this.ModelId = actor->ModelCharaId;
+		this.name = character->GetNameAsString();
+		this.DrawData = character->DrawData;
+		this.ModelId = character->ModelCharaId;
 
 		this.Tags.Add("Named");
 	}
 
-	public ActorBackupAppearance(Character actor)
+	public CharacterBackupAppearance(Character character)
 		: base(null)
 	{
-		this.name = actor.GetNameAsString();
-		this.DrawData = actor.DrawData;
-		this.ModelId = actor.ModelCharaId;
+		this.name = character.GetNameAsString();
+		this.DrawData = character.DrawData;
+		this.ModelId = character.ModelCharaId;
 
 		this.Tags.Add("Named");
 	}
@@ -119,18 +119,18 @@ public class ActorBackupAppearance : EntryBase, IActorAppearance
 	public int ModelId { get; private set; }
 	public override string Name => this.name ?? string.Empty;
 
-	public unsafe void Apply(Character* actor)
+	public unsafe void Apply(Character* character)
 	{
-		this.Apply(actor, CharacterExtensions.UpdateSource.Library);
+		this.Apply(character, CharacterExtensions.UpdateSource.Library);
 	}
 
-	public unsafe void Apply(Character* actor, CharacterExtensions.UpdateSource source)
+	public unsafe void Apply(Character* character, CharacterExtensions.UpdateSource source)
 	{
-		bool redraw = this.ModelId != actor->ModelCharaId;
+		bool redraw = this.ModelId != character->ModelCharaId;
 
-		actor->UpdateModel(this.ModelId, source, false);
-		actor->UpdateCustomize(this.DrawData.CustomizeData, redraw, source);
-		actor->UpdateEquipment(this.DrawData.EquipmentModelIds, source);
+		character->UpdateModel(this.ModelId, source, false);
+		character->UpdateCustomize(this.DrawData.CustomizeData, redraw, source);
+		character->UpdateEquipment(this.DrawData.EquipmentModelIds, source);
 	}
 
 	protected override string GetInternalId() => this.Name;
@@ -139,7 +139,7 @@ public class ActorBackupAppearance : EntryBase, IActorAppearance
 public class GroupPoseCharactersLibrarySource : SourceBase
 {
 	public ILogger Log { get; init; } = Logging.ForContext<GroupPoseCharactersLibrarySource>();
-	public override string Name => Resources.Find("LOC_Library_GroupPoseCharactersLibrarySource", "GPose Actors");
+	public override string Name => Resources.Find("LOC_Library_GroupPoseCharactersLibrarySource", "GPose Characters");
 
 	public void OnEnterGroupPose()
 	{
@@ -156,20 +156,20 @@ public class GroupPoseCharactersLibrarySource : SourceBase
 	{
 	}
 
-	protected override string GetInternalId() => "CurrentActorsLibraryProvider";
+	protected override string GetInternalId() => "CurrentCharactersLibraryProvider";
 
 	private unsafe void BackupAll()
 	{
-		// back up the appearance of every actor in gpose
-		for (int i = GroupPoseService.GPoseFirstActor; i < GroupPoseService.GPoseFirstActor + GroupPoseService.GPoseActorCount; ++i)
+		// back up the appearance of every character in gpose
+		for (int i = GroupPoseService.GPoseFirstCharacter; i < GroupPoseService.GPoseFirstCharacter + GroupPoseService.GPoseCharacterCount; ++i)
 		{
 			IntPtr? address = DalamudServices.ObjectTable?.GetObjectAddress(i);
 			if (address == null || address == IntPtr.Zero)
 				continue;
 
-			Character* actor = (Character*)address;
+			Character* character = (Character*)address;
 
-			ActorBackupAppearance appearance = new(actor);
+			CharacterBackupAppearance appearance = new(character);
 			this.Add(appearance);
 		}
 	}

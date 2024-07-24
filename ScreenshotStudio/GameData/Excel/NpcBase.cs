@@ -2,15 +2,14 @@
 
 using Anamnesis.Utils;
 using Dalamud.Game.ClientState.Objects.Enums;
-using Lumina.Excel;
-using ScreenshotStudio.Structs;
-using System.Text;
-using ScreenshotStudio.Library;
-using ScreenshotStudio.Data;
-using WpfUtils;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using Lumina.Excel;
+using ScreenshotStudio.Data;
+using ScreenshotStudio.Library;
+using System.Text;
+using WpfUtils;
 
-public abstract class NpcBase : LibraryExcelRow, IActorAppearance
+public abstract class NpcBase : LibraryExcelRow, ICharacterAppearance
 {
 	private CustomizeData customize;
 
@@ -77,17 +76,17 @@ public abstract class NpcBase : LibraryExcelRow, IActorAppearance
 		}
 	}
 
-	public unsafe void Apply(Character* actor)
+	public unsafe void Apply(Character* character)
 	{
 		bool redraw = false;
 		if (this.ModelChara != null)
 		{
 			redraw = true;
-			actor->UpdateModel(this.ModelChara, CharacterExtensions.UpdateSource.Library, false);
+			character->UpdateModel(this.ModelChara, CharacterExtensions.UpdateSource.Library, false);
 		}
 
-		actor->UpdateCustomize(this.Customize, redraw, CharacterExtensions.UpdateSource.Library);
-		this.Equipment.ApplyToActor(actor, this.BackupEquipment);
+		character->UpdateCustomize(this.Customize, redraw, CharacterExtensions.UpdateSource.Library);
+		this.Equipment.ApplyTo(character, this.BackupEquipment);
 	}
 
 	public override bool Search(string[]? query)

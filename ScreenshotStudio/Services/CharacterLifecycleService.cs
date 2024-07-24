@@ -1,25 +1,23 @@
 ﻿//// Brio
 //// https://github.com/AsgardXIV/Brio/
-//// https://github.com/AsgardXIV/Brio/blob/main/Brio/Game/Actor/ActorSpawnService.cs
+//// https://github.com/AsgardXIV/Brio/blob/main/Brio/Game/Character/CharacterSpawnService.cs
 //// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Core/ObjectMonitorService.cs
 
 namespace ScreenshotStudio.Services;
 
 using Dalamud.Hooking;
-using ScreenshotStudio.Library;
-using ScreenshotStudio.Plugin;
-using System;
-using System.Threading.Tasks;
-using System.Collections.Generic;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Event;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
-using System.Linq;
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using ScreenshotStudio.Structs;
+using ScreenshotStudio.Library;
+using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Utilities;
-using Dalamud.Game.ClientState.Objects.Types;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
-public class ActorLifecycleService : ServiceBase
+public class CharacterLifecycleService : ServiceBase
 {
 	private static readonly List<ushort> CreatedIndexes = new();
 
@@ -59,7 +57,7 @@ public class ActorLifecycleService : ServiceBase
 			if (!this.Services.GroupPose.IsGroupPosing && CreatedIndexes.Count > 0)
 			{
 				this.DestroyAllCreated();
-				this.Log.Warning("Left GPose with spawned actors. deleting...");
+				this.Log.Warning("Left GPose with spawned characters. deleting...");
 			}
 		}
 		catch (Exception ex)
@@ -70,31 +68,31 @@ public class ActorLifecycleService : ServiceBase
 		return base.Tick();
 	}
 
-	public unsafe Character* Create(IActorAppearance? appearance = null)
+	public unsafe Character* Create(ICharacterAppearance? appearance = null)
 	{
 		Threads.VerifyFrameworkThread();
 
 		if (!this.CanSpawn)
 			return null;
 
-		string name = "Actor";
+		string name = "Character";
 		if (appearance != null && !string.IsNullOrEmpty(appearance.Name))
 			name = appearance.Name;
 
-		Character* actor = this.Spawn(name);
+		Character* character = this.Spawn(name);
 
-		if (actor != null && appearance != null)
+		if (character != null && appearance != null)
 		{
-			appearance?.Apply(actor);
+			appearance?.Apply(character);
 		}
 
-		return actor;
+		return character;
 	}
 
-	public unsafe bool Destroy(Character* actor)
+	public unsafe bool Destroy(Character* character)
 	{
 		ClientObjectManager* com = ClientObjectManager.Instance();
-		uint idx = com->GetIndexByObject((GameObject*)actor);
+		uint idx = com->GetIndexByObject((GameObject*)character);
 		if (idx != 0xFFFFFFFF)
 		{
 			Threads.RunOnFrameworkThread(() =>
@@ -162,7 +160,7 @@ public class ActorLifecycleService : ServiceBase
 		if (idx < ushort.MaxValue && CreatedIndexes.Contains((ushort)idx))
 		{
 			CreatedIndexes.Remove((ushort)idx);
-			this.Log.Information($"created actor was destroyed: {idx}");
+			this.Log.Information($"created character was destroyed: {idx}");
 		}
 
 		if (this.characterFinalizeHook == null)
@@ -188,16 +186,16 @@ public class ActorLifecycleService : ServiceBase
 		if (idCheck == 0xffffffff)
 			return null;
 
-		ushort spawnedActorId = (ushort)idCheck;
+		ushort spawnedCharacterId = (ushort)idCheck;
 
-		Character* pSpawned = (Character*)com->GetObjectByIndex(spawnedActorId);
+		Character* pSpawned = (Character*)com->GetObjectByIndex(spawnedCharacterId);
 		if (pSpawned == null)
 			return null;
 
 		EventGPoseController* gposeController = &EventFramework.Instance()->EventSceneModule.EventGPoseController;
 		gposeController->AddCharacterToGPose(pSpawned); // This is safe even if the list is full. The game will also cleanup for us.
 
-		pSpawned->CharacterSetup.CopyFromCharacter(player, CharacterSetupContainer.CopyFlags.None); // We copy the Player as the created actor is just blank
+		pSpawned->CharacterSetup.CopyFromCharacter(player, CharacterSetupContainer.CopyFlags.None); // We copy the Player as the created character is just blank
 
 		*((sbyte*)pSpawned + 0x95) &= ~2; // Disable selection just incase this somehow leaks out of GPose
 
@@ -218,9 +216,9 @@ public class ActorLifecycleService : ServiceBase
 		pSpawned->CharacterSetup.CopyFromCharacter(pSpawned, CharacterSetupContainer.CopyFlags.None); // Some tools get confused (Like Penumbra) unless we copy onto ourselves after name change
 		pSpawned->GameObject.EnableDraw();
 
-		CreatedIndexes.Add(spawnedActorId);
+		CreatedIndexes.Add(spawnedCharacterId);
 
-		this.Log.Information($"Spawning actor {name} with id {spawnedActorId}");
+		this.Log.Information($"Spawning character {name} with id {spawnedCharacterId}");
 
 		return pSpawned;
 	}
