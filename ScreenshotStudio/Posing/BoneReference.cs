@@ -6,19 +6,30 @@ using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.Havok.Animation.Rig;
 using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
 using ScreenshotStudio.Plugin;
+using ScreenshotStudio.Structs;
+using ScreenshotStudio.Structs.Extensions;
 using ScreenshotStudio.Utilities;
 using System;
 
-public class BoneReference(string? name, BoneId id) : IDisposable
+public class BoneReference : IDisposable
 {
-	public readonly string? Name = name;
-	public readonly BoneId Id = id;
+	public readonly string? Name;
+	public readonly BoneId Id;
 
-	public BoneReference? Parent { get; set; }
+	public hkQsTransformf LastTransform;
+	public hkQsTransformf CurrentTransform;
 
-	public bool IsValid { get; set; } = true;
+	public BoneReference? Parent;
+	public bool IsValid = true;
 
-	public hkQsTransformf LastTransform { get; set; }
+	public BoneReference(string? name, BoneId id)
+	{
+		this.Name = name;
+		this.Id = id;
+
+		this.CurrentTransform = default;
+		this.CurrentTransform.Rotation = HkQuaternionExtensions.Identity;
+	}
 
 	public unsafe Skeleton* Skeleton
 	{
@@ -72,11 +83,18 @@ public class BoneReference(string? name, BoneId id) : IDisposable
 		}
 	}
 
-	public unsafe void UpdateCachedTransform()
+	public unsafe void ApplyTransform()
 	{
 		Threads.VerifyFrameworkThread();
 
+		// Get a new copy of the live transform
 		this.LastTransform = *this.Pose->AccessBoneModelSpace(this.Id.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
+
+		// Modify the live transform
+		hkQsTransformf* transform = this.Pose->AccessBoneModelSpace(this.Id.BoneIndex, hkaPose.PropagateOrNot.Propagate);
+		transform->Translation.Add(this.CurrentTransform.Translation);
+		transform->Rotation.Multiply(this.CurrentTransform.Rotation);
+		transform->Scale.Add(this.CurrentTransform.Scale);
 	}
 
 	public void Dispose()

@@ -189,10 +189,10 @@
 								Margin="3,0"
 								Style="{DynamicResource RightLabel}"
 								Text="X:" />
-							<wpfUtils:RelativeSlider
+							<Slider
 								Grid.Row="0"
 								Grid.Column="1"
-								Maximum="180"
+								Maximum="359"
 								SmallChange="1"
 								Value="{Binding EulerRotationX}" />
 
@@ -202,10 +202,10 @@
 								Margin="3,0"
 								Style="{DynamicResource RightLabel}"
 								Text="Y:" />
-							<wpfUtils:RelativeSlider
+							<Slider
 								Grid.Row="1"
 								Grid.Column="1"
-								Maximum="180"
+								Maximum="359"
 								SmallChange="1"
 								Value="{Binding EulerRotationY}" />
 
@@ -215,10 +215,10 @@
 								Margin="3,0"
 								Style="{DynamicResource RightLabel}"
 								Text="Z:" />
-							<wpfUtils:RelativeSlider
+							<Slider
 								Grid.Row="2"
 								Grid.Column="1"
-								Maximum="180"
+								Maximum="359"
 								SmallChange="1"
 								Value="{Binding EulerRotationZ}" />
 						</Grid>

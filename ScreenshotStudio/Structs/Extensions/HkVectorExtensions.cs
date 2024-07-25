@@ -33,4 +33,12 @@ public static class HkVectorExtensions
 		tar.Z = vec.Z;
 		return tar;
 	}
+
+	public static void Add(ref this hkVector4f self, hkVector4f other)
+	{
+		self.X += other.X;
+		self.Y += other.Y;
+		self.Z += other.Z;
+		self.W += other.W;
+	}
 }

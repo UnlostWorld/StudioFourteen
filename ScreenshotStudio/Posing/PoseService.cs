@@ -9,6 +9,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.Havok.Animation.Rig;
+using FFXIVClientStructs.Havok.Common.Base.Math.Matrix;
 using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
 using FFXIVClientStructs.Havok.Common.Base.Math.Quaternion;
 using FFXIVClientStructs.Havok.Common.Base.Math.Vector;
@@ -211,7 +212,7 @@ public class PoseService : ServiceBase
 			if (!reference.IsValid)
 				continue;
 
-			reference.UpdateCachedTransform();
+			reference.ApplyTransform();
 		}
 	}
 
@@ -234,43 +235,29 @@ public abstract class SelectionBase
 {
 	public abstract string Name { get; }
 
-	public abstract hkVector4f Translation { get; }
-	public abstract hkQuaternionf Rotation { get; }
-	public abstract hkVector4f Scale { get; }
-	public abstract hkVector4f EulerRotation { get; }
+	public abstract ref hkQsTransformf Transform { get; }
 }
 
-public class BoneSelection(List<BoneReference> bones, string name)
-	: SelectionBase
+public class BoneSelection : SelectionBase
 {
-	public override string Name => Resources.Find($"LOC_Bone_{name}", name);
-	public string BoneName => name;
-	public List<BoneReference> Bones { get; init; } = bones;
-
-	public BoneReference? DefaultBone
+	public BoneSelection(List<BoneReference> bones, string name)
 	{
-		get
-		{
-			if (this.Bones.Count > 0)
-				return this.Bones[0];
-
-			return null;
-		}
+		this.BoneName = name;
+		this.Bones = bones;
+		this.Bone = bones[0];
 	}
 
-	public override hkVector4f Translation => this.DefaultBone?.LastTransform.Translation ?? HkVectorExtensions.Zero;
-	public override hkQuaternionf Rotation => this.DefaultBone?.LastTransform.Rotation ?? HkQuaternionExtensions.Identity;
-	public override hkVector4f Scale => this.DefaultBone?.LastTransform.Scale ?? HkVectorExtensions.Zero;
+	public override string Name => Resources.Find($"LOC_Bone_{this.BoneName}", this.BoneName);
+	public string BoneName { get; init; }
 
-	public override hkVector4f EulerRotation
+	public BoneReference Bone { get; init; }
+	public List<BoneReference> Bones { get; init; }
+
+	public override ref hkQsTransformf Transform
 	{
 		get
 		{
-			if (this.DefaultBone == null)
-				return HkVectorExtensions.Zero;
-
-			hkQsTransformf transform = this.DefaultBone.LastTransform;
-			return transform.Rotation.ToEuler();
+			return ref this.Bone.CurrentTransform;
 		}
 	}
 }
