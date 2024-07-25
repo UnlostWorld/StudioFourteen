@@ -140,6 +140,7 @@
 				<MultiDataTrigger.Conditions>
 					<Condition Binding="{Binding IsShown}" Value="True" />
 					<Condition Binding="{Binding IsUiVisible}" Value="True" />
+					<Condition Binding="{Binding Services.Studio.IsOpen}" Value="True" />
 				</MultiDataTrigger.Conditions>
 
 				<MultiDataTrigger.EnterActions>
