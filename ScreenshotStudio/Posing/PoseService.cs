@@ -79,16 +79,17 @@ public class PoseService : ServiceBase
 
 	public BoneReference GetOrCreateBoneReference(BoneId id, string? name = null)
 	{
-		BoneReference? reference = null;
-		if (this.boneReferences.TryGetValue(id, out reference))
+		lock (this.boneReferences)
+		{
+			BoneReference? reference = null;
+			if (this.boneReferences.TryGetValue(id, out reference))
+				return reference;
+
+			reference = new(name, id);
+			this.boneReferences.Add(id, reference);
+
 			return reference;
-
-		reference = new(name, id);
-		this.boneReferences.Add(id, reference);
-
-		this.Log.Information($"Creating bone reference {id}");
-
-		return reference;
+		}
 	}
 
 	public unsafe BoneSelection? FindBone(ref Character* character, string name)
@@ -191,12 +192,15 @@ public class PoseService : ServiceBase
 	// All the main skeleton stuff like positions, IK and physics is done at this point.
 	private void UpdateSkeletons()
 	{
-		foreach ((BoneId id, BoneReference reference) in this.boneReferences)
+		lock (this.boneReferences)
 		{
-			if (!reference.IsValid)
-				continue;
+			foreach ((BoneId id, BoneReference reference) in this.boneReferences)
+			{
+				if (!reference.IsValid)
+					continue;
 
-			reference.ApplyTransform();
+				reference.ApplyTransform();
+			}
 		}
 	}
 
