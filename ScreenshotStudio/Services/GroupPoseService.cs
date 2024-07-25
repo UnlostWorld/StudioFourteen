@@ -22,7 +22,7 @@ public class GroupPoseService : ServiceBase
 	private unsafe delegate bool EnterDelegate(UIModule* uiModule);
 	private unsafe delegate void ExitDelegate(UIModule* uiModule);
 
-	public static event OnStateChangedDelegate? OnStateChange;
+	public event OnStateChangedDelegate? StateChange;
 
 	public bool IsGroupPosing => DalamudServices.ClientState?.IsGPosing ?? false;
 
@@ -63,7 +63,7 @@ public class GroupPoseService : ServiceBase
 
 		if (didEnter)
 		{
-			OnStateChange?.Invoke(true);
+			this.StateChange?.Invoke(true);
 		}
 
 		this.RaisePropertyChanged(nameof(GroupPoseService.IsGroupPosing));
@@ -75,7 +75,7 @@ public class GroupPoseService : ServiceBase
 	{
 		this.exitHook?.Original.Invoke(uiModule);
 
-		OnStateChange?.Invoke(false);
+		this.StateChange?.Invoke(false);
 		this.RaisePropertyChanged(nameof(GroupPoseService.IsGroupPosing));
 	}
 }

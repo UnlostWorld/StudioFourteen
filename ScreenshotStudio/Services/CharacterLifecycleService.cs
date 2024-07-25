@@ -16,6 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TerraFX.Interop.Windows;
 
 public class CharacterLifecycleService : ServiceBase
 {
@@ -23,7 +24,12 @@ public class CharacterLifecycleService : ServiceBase
 
 	private Hook<CharacterEventDelegate>? characterInitializeHook;
 	private Hook<CharacterEventDelegate>? characterFinalizeHook;
+
+	public delegate void CharacterDelegate(uint objectTableIndex);
 	private unsafe delegate nint CharacterEventDelegate(Character* character);
+
+	public event CharacterDelegate? CharacterCreated;
+	public event CharacterDelegate? CharacterDestroyed;
 
 	public bool CanSpawn => this.Services.GroupPose.IsGroupPosing;
 
@@ -151,11 +157,15 @@ public class CharacterLifecycleService : ServiceBase
 
 		nint result = this.characterInitializeHook.Original.Invoke(character);
 
+		this.CharacterCreated?.Invoke(character->ObjectIndex);
+
 		return result;
 	}
 
 	private unsafe nint CharacterFinalizeDetour(Character* character)
 	{
+		ushort objectTableIndex = character->ObjectIndex;
+
 		uint idx = ClientObjectManager.Instance()->GetIndexByObject((GameObject*)character);
 		if (idx < ushort.MaxValue && CreatedIndexes.Contains((ushort)idx))
 		{
@@ -166,7 +176,11 @@ public class CharacterLifecycleService : ServiceBase
 		if (this.characterFinalizeHook == null)
 			return 0;
 
-		return this.characterFinalizeHook.Original.Invoke(character);
+		nint result = this.characterFinalizeHook.Original.Invoke(character);
+
+		this.CharacterDestroyed?.Invoke(objectTableIndex);
+
+		return result;
 	}
 
 	private unsafe Character* Spawn(string name)

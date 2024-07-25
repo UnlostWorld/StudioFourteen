@@ -46,15 +46,15 @@
 		<StackPanel Grid.Column="1">
 
 			<!--  Transform  -->
-			<Grid>
+			<Grid IsEnabled="{Binding Selection, Converter={StaticResource NotNullToBoolConverter}}">
 				<StackPanel Width="180">
 
 					<TextBlock
 						HorizontalAlignment="Center"
 						Style="{DynamicResource Header}"
-						Text="{Binding Services.Pose.Selection.Name}" />
+						Text="{Binding Selection.Name}" />
 
-					<StackPanel IsEnabled="{Binding SelectedBones, Converter={StaticResource NotNullToBoolConverter}}">
+					<StackPanel>
 						<Border
 							Grid.Column="1"
 							Style="{DynamicResource WpfUtilsControlBorder}">
@@ -192,9 +192,9 @@
 							<wpfUtils:RelativeSlider
 								Grid.Row="0"
 								Grid.Column="1"
-								RelativeRange="180"
-								RelativeValue="{Binding EulerRotationX}"
-								SmallChange="1" />
+								Maximum="180"
+								SmallChange="1"
+								Value="{Binding EulerRotationX}" />
 
 							<TextBlock
 								Grid.Row="1"
@@ -205,9 +205,9 @@
 							<wpfUtils:RelativeSlider
 								Grid.Row="1"
 								Grid.Column="1"
-								RelativeRange="180"
-								RelativeValue="{Binding EulerRotationY}"
-								SmallChange="1" />
+								Maximum="180"
+								SmallChange="1"
+								Value="{Binding EulerRotationY}" />
 
 							<TextBlock
 								Grid.Row="2"
@@ -218,9 +218,9 @@
 							<wpfUtils:RelativeSlider
 								Grid.Row="2"
 								Grid.Column="1"
-								RelativeRange="180"
-								RelativeValue="{Binding EulerRotationZ}"
-								SmallChange="1" />
+								Maximum="180"
+								SmallChange="1"
+								Value="{Binding EulerRotationZ}" />
 						</Grid>
 					</Expander>
 

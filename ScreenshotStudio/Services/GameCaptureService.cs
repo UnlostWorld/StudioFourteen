@@ -58,9 +58,6 @@ public class GameCaptureService : ServiceBase
 
 	public override Task Initialize()
 	{
-		if (DalamudServices.Framework != null)
-			DalamudServices.Framework.Update += this.OnFrameworkUpdate;
-
 		if (SwapChainHelper.IsReshade)
 		{
 			this.reshadeOnPresentHook = InteropService.HookFromAddress<InterfaceManager.ReshadeOnPresentDelegate>(SwapChainHelper.ReshadeOnPresent, this.ReshadeOnPresentDetour);
@@ -78,9 +75,6 @@ public class GameCaptureService : ServiceBase
 		{
 			InterfaceManager.EnableReshadePresent();
 		}
-
-		if (DalamudServices.Framework != null)
-			DalamudServices.Framework.Update -= this.OnFrameworkUpdate;
 
 		if (this.reshadeOnPresentHook != null && !this.reshadeOnPresentHook.IsDisposed)
 			this.reshadeOnPresentHook.Dispose();
@@ -149,6 +143,15 @@ public class GameCaptureService : ServiceBase
 		}
 	}
 
+	protected override void OnFrameworkUpdate(IFramework framework)
+	{
+		// If not using reshade, fallback to just run before ImGUI within dalamud's present
+		if (!SwapChainHelper.IsReshade)
+		{
+			InterfaceManager.RunBeforeImGuiRender(this.Capture);
+		}
+	}
+
 	// When running reshade, we intercept the present call to capture the screen after reshade.
 	// We also call into Dalamud's InterfaceManager detour to make sure the dalamud windows
 	// get rendered _after_ our capture is complete, since we disable their hook.
@@ -162,15 +165,6 @@ public class GameCaptureService : ServiceBase
 		this.Capture();
 
 		InterfaceManager.ReshadeOnPresentDetour(swapChain, flags, presentParams);
-	}
-
-	private void OnFrameworkUpdate(IFramework framework)
-	{
-		// If not using reshade, fallback to just run before ImGUI within dalamud's present
-		if (!SwapChainHelper.IsReshade)
-		{
-			InterfaceManager.RunBeforeImGuiRender(this.Capture);
-		}
 	}
 
 	/// <summary>

@@ -49,22 +49,6 @@ public class InputService : ServiceBase
 		return ServiceManager.Instance.Input.eventsDown.Contains(evt);
 	}
 
-	public override Task Initialize()
-	{
-		if (DalamudServices.Framework != null)
-			DalamudServices.Framework.Update += this.OnFrameworkUpdate;
-
-		return base.Initialize();
-	}
-
-	public override Task Shutdown()
-	{
-		if (DalamudServices.Framework != null)
-			DalamudServices.Framework.Update -= this.OnFrameworkUpdate;
-
-		return base.Shutdown();
-	}
-
 	public bool HasListener(KeyBindEvents evt)
 	{
 		if (!this.listeners.ContainsKey(evt))
@@ -120,8 +104,10 @@ public class InputService : ServiceBase
 		}
 	}
 
-	private unsafe void OnFrameworkUpdate(IFramework framework)
+	protected override unsafe void OnFrameworkUpdate(IFramework framework)
 	{
+		base.OnFrameworkUpdate(framework);
+
 		if (!this.Services.Studio.IsOpen)
 			return;
 

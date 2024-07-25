@@ -108,67 +108,75 @@ public class SkeletonView : Canvas
 		PoseViewDefinition definition = this.ViewDefinition;
 		Threads.RunOnFrameworkThread(() =>
 		{
-			Character* character = CharacterWindow.GetTarget();
-			if (character == null)
-				return;
-
-			CharacterBase* characterBase = character->GetCharacterBase();
-			if (characterBase == null)
-				return;
-
-			Skeleton* skeleton = characterBase->Skeleton;
-			if (skeleton == null)
-				return;
-
-			// populate bones
 			List<BoneSelection> selections = new();
-			foreach ((string name, Point pos) in definition.Bones)
+
+			try
 			{
-				BoneSelection? selection = ServiceManager.Instance.Pose.FindBone(ref skeleton, name);
-				if (selection != null)
-					selections.Add(selection);
+				Character* character = CharacterWindow.GetTarget();
+				if (character == null)
+					return;
 
-				if (name.EndsWith("_l"))
+				// populate bones
+				foreach ((string name, Point pos) in definition.Bones)
 				{
-					string rName = name.Substring(0, name.Length - 2) + "_r";
-
-					selection = ServiceManager.Instance.Pose.FindBone(ref skeleton, rName);
+					BoneSelection? selection = ServiceManager.Instance.Pose.FindBone(ref character, name);
 					if (selection != null)
-					{
 						selections.Add(selection);
+
+					if (name.EndsWith("_l"))
+					{
+						string rName = name.Substring(0, name.Length - 2) + "_r";
+
+						selection = ServiceManager.Instance.Pose.FindBone(ref character, rName);
+						if (selection != null)
+						{
+							selections.Add(selection);
+						}
 					}
 				}
+			}
+			catch(Exception ex)
+			{
+				this.Log.Error(ex, "Error getting bone selections");
+				return;
 			}
 
 			this.Dispatcher.Invoke(() =>
 			{
-				if (selections.Count <= 0)
+				try
 				{
-					this.Visibility = Visibility.Collapsed;
-				}
-				else
-				{
-					this.Visibility = Visibility.Visible;
-					foreach (BoneSelection selection in selections)
+					if (selections.Count <= 0)
 					{
-						BoneButton button = new(selection, this);
-						this.boneButtons.Add(button);
-
-						foreach (BoneReference bone in selection.Bones)
+						this.Visibility = Visibility.Collapsed;
+					}
+					else
+					{
+						this.Visibility = Visibility.Visible;
+						foreach (BoneSelection selection in selections)
 						{
-							if (bone.Name != null && bone.Parent != null && bone.Parent.Name != null)
-							{
-								if (!this.HasBone(bone.Parent.Name))
-									continue;
+							BoneButton button = new(selection, this);
+							this.boneButtons.Add(button);
 
-								BoneConnection connection = new(bone.Name, bone.Parent.Name, this);
-								this.boneConnections.Add(connection);
+							foreach (BoneReference bone in selection.Bones)
+							{
+								if (bone.Name != null && bone.Parent != null && bone.Parent.Name != null)
+								{
+									if (!this.HasBone(bone.Parent.Name))
+										continue;
+
+									BoneConnection connection = new(bone.Name, bone.Parent.Name, this);
+									this.boneConnections.Add(connection);
+								}
 							}
 						}
-					}
 
-					this.OnRenderSizeChanged(null);
-					this.OnSelectionChanged(ServiceManager.Instance.Pose.Selection);
+						this.OnRenderSizeChanged(null);
+						this.OnSelectionChanged(ServiceManager.Instance.Pose.Selection);
+					}
+				}
+				catch (Exception ex)
+				{
+					this.Log.Error(ex, "Error applying bone selections");
 				}
 			});
 		});

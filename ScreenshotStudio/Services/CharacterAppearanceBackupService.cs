@@ -4,14 +4,11 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using ScreenshotStudio.Library;
 using ScreenshotStudio.Library.Sources;
 using ScreenshotStudio.Plugin;
-using ScreenshotStudio.Structs;
-using ScreenshotStudio.Tags;
 using ScreenshotStudio.Utilities;
 using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using WpfUtils;
 
 public class CharacterAppearanceBackupService : ServiceBase
 {
@@ -20,7 +17,7 @@ public class CharacterAppearanceBackupService : ServiceBase
 
 	public override Task Start()
 	{
-		GroupPoseService.OnStateChange += this.OnGroupPoseStateChange;
+		this.Services.GroupPose.StateChange += this.OnGroupPoseStateChange;
 		this.Services.Library.AddSource(this.provider);
 
 		if (this.Services.GroupPose.IsGroupPosing)
@@ -33,7 +30,7 @@ public class CharacterAppearanceBackupService : ServiceBase
 
 	public override Task Stop()
 	{
-		GroupPoseService.OnStateChange -= this.OnGroupPoseStateChange;
+		this.Services.GroupPose.StateChange -= this.OnGroupPoseStateChange;
 		return base.Stop();
 	}
 

@@ -30,17 +30,70 @@ public partial class PoseWindow : CharacterWindow
 		set => this.SetPersistence(value);
 	}
 
-	public double TranslationX { get; set; }
-	public double TranslationY { get; set; }
-	public double TranslationZ { get; set; }
+	[AutoNotify] public SelectionBase? Selection => this.Services.Pose.Selection;
 
-	public double EulerRotationX { get; set; }
-	public double EulerRotationY { get; set; }
-	public double EulerRotationZ { get; set; }
+	[AutoNotify]
+	public double TranslationX
+	{
+		get => this.Selection?.Translation.X ?? 0;
+		set { }
+	}
 
-	public double ScaleX { get; set; }
-	public double ScaleY { get; set; }
-	public double ScaleZ { get; set; }
+	[AutoNotify]
+	public double TranslationY
+	{
+		get => this.Selection?.Translation.Y ?? 0;
+		set { }
+	}
+
+	[AutoNotify]
+	public double TranslationZ
+	{
+		get => this.Selection?.Translation.Z ?? 0;
+		set { }
+	}
+
+	[AutoNotify]
+	public double EulerRotationX
+	{
+		get => this.Selection?.EulerRotation.X ?? 0;
+		set { }
+	}
+
+	[AutoNotify]
+	public double EulerRotationY
+	{
+		get => this.Selection?.EulerRotation.Y ?? 0;
+		set { }
+	}
+
+	[AutoNotify]
+	public double EulerRotationZ
+	{
+		get => this.Selection?.EulerRotation.Z ?? 0;
+		set { }
+	}
+
+	[AutoNotify]
+	public double ScaleX
+	{
+		get => this.Selection?.Scale.X ?? 0;
+		set { }
+	}
+
+	[AutoNotify]
+	public double ScaleY
+	{
+		get => this.Selection?.Scale.Y ?? 0;
+		set { }
+	}
+
+	[AutoNotify]
+	public double ScaleZ
+	{
+		get => this.Selection?.Scale.Z ?? 0;
+		set { }
+	}
 
 	protected override void OnOpened()
 	{

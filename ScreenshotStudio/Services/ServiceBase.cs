@@ -1,5 +1,7 @@
 ﻿namespace ScreenshotStudio.Services;
 
+using Dalamud.Plugin.Services;
+using ScreenshotStudio.Plugin;
 using Serilog;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -27,17 +29,26 @@ public abstract class ServiceBase : INotifyPropertyChanged
 
 	public virtual Task Start()
 	{
+		if (DalamudServices.Framework != null)
+			DalamudServices.Framework.Update += this.OnFrameworkUpdate;
+
 		return Task.CompletedTask;
 	}
 
 	public virtual Task Stop()
 	{
+		if (DalamudServices.Framework != null)
+			DalamudServices.Framework.Update -= this.OnFrameworkUpdate;
+
 		this.IsAlive = false;
 		return Task.CompletedTask;
 	}
 
 	public virtual Task Shutdown()
 	{
+		if (DalamudServices.Framework != null)
+			DalamudServices.Framework.Update -= this.OnFrameworkUpdate;
+
 		return Task.CompletedTask;
 	}
 
@@ -49,5 +60,9 @@ public abstract class ServiceBase : INotifyPropertyChanged
 	protected virtual void RaisePropertyChanged([CallerMemberName]string propertyName = "")
 	{
 		this.PropertyChanged?.Invoke(this, new(propertyName));
+	}
+
+	protected virtual void OnFrameworkUpdate(IFramework framework)
+	{
 	}
 }

@@ -7,6 +7,14 @@ using System.Numerics;
 
 public static class HkQuaternionExtensions
 {
+	public static readonly hkQuaternionf Identity = new hkQuaternionf()
+	{
+		W = 0,
+		X = 0,
+		Y = 0,
+		Z = 1,
+	};
+
 	private static readonly float Deg2Rad = ((float)Math.PI * 2) / 360;
 	private static readonly float Rad2Deg = 360 / ((float)Math.PI * 2);
 
