@@ -212,6 +212,7 @@ public abstract class SelectionBase
 	public abstract string Name { get; }
 
 	public abstract ref hkQsTransformf Transform { get; }
+	public abstract bool LockTransform { get; set; }
 }
 
 public class BoneSelection : SelectionBase
@@ -235,5 +236,11 @@ public class BoneSelection : SelectionBase
 		{
 			return ref this.Bone.CurrentTransform;
 		}
+	}
+
+	public override bool LockTransform
+	{
+		get => this.Bone.LockTransform;
+		set => this.Bone.LockTransform = value;
 	}
 }

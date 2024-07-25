@@ -115,6 +115,19 @@ public partial class PoseWindow : CharacterWindow
 		set => this.Transform.Scale.Z = (float)value;
 	}
 
+	[AutoNotify]
+	public bool LockTransform
+	{
+		get => this.Selection?.LockTransform ?? false;
+		set
+		{
+			if (this.Selection != null)
+			{
+				this.Selection.LockTransform = value;
+			}
+		}
+	}
+
 	private ref hkQsTransformf Transform
 	{
 		get

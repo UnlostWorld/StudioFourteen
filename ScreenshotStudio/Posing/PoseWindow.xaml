@@ -73,6 +73,11 @@
 								<Button Background="Transparent">
 									<wpfUtils:IconBlock Icon="ArrowCircleDown" />
 								</Button>
+
+								<ToggleButton IsChecked="{Binding LockTransform}">
+									<wpfUtils:IconBlock Icon="Lock" />
+								</ToggleButton>
+
 							</StackPanel>
 						</Border>
 					</StackPanel>

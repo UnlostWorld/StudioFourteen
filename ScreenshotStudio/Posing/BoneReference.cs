@@ -18,6 +18,8 @@ public class BoneReference : IDisposable
 
 	public hkQsTransformf LastTransform;
 	public hkQsTransformf CurrentTransform;
+	public bool LockTransform;
+	public hkQsTransformf LastLocalransform;
 
 	public BoneReference? Parent;
 	public bool IsValid = true;
@@ -87,14 +89,31 @@ public class BoneReference : IDisposable
 	{
 		Threads.VerifyFrameworkThread();
 
-		// Get a new copy of the live transform
-		this.LastTransform = *this.Pose->AccessBoneModelSpace(this.Id.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
+		if (!this.LockTransform)
+		{
+			// Get a new copy of the live transforms
+			this.LastTransform = *this.Pose->AccessBoneModelSpace(this.Id.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
+			this.LastLocalransform = *this.Pose->AccessBoneLocalSpace(this.Id.BoneIndex);
 
-		// Modify the live transform
-		hkQsTransformf* transform = this.Pose->AccessBoneModelSpace(this.Id.BoneIndex, hkaPose.PropagateOrNot.Propagate);
-		transform->Translation.Add(this.CurrentTransform.Translation);
-		transform->Rotation.Multiply(this.CurrentTransform.Rotation);
-		transform->Scale.Add(this.CurrentTransform.Scale);
+			// Modify the live transform
+			hkQsTransformf* transform = this.Pose->AccessBoneModelSpace(this.Id.BoneIndex, hkaPose.PropagateOrNot.Propagate);
+			transform->Translation.Add(this.CurrentTransform.Translation);
+			transform->Rotation.Multiply(this.CurrentTransform.Rotation);
+			transform->Scale.Add(this.CurrentTransform.Scale);
+		}
+		else
+		{
+			hkQsTransformf newTransform = this.LastLocalransform;
+
+			newTransform.Translation.Add(this.CurrentTransform.Translation);
+			newTransform.Rotation.Multiply(this.CurrentTransform.Rotation);
+			newTransform.Scale.Add(this.CurrentTransform.Scale);
+
+			hkQsTransformf* transform = this.Pose->AccessBoneLocalSpace(this.Id.BoneIndex);
+			transform->Translation.Set(newTransform.Translation);
+			transform->Rotation.Set(newTransform.Rotation);
+			transform->Scale.Set(newTransform.Scale);
+		}
 	}
 
 	public void Dispose()

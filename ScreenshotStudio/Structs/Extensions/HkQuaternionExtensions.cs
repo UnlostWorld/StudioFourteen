@@ -65,6 +65,14 @@ public static class HkQuaternionExtensions
 		self.W = (q1w * q2w) - dot;
 	}
 
+	public static void Set(ref this hkQuaternionf self, hkQuaternionf other)
+	{
+		self.X = other.X;
+		self.Y = other.Y;
+		self.Z = other.Z;
+		self.W = other.W;
+	}
+
 	public static hkQuaternionf FromEuler(hkVector4f euler)
 	{
 		hkQuaternionf q = default;
