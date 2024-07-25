@@ -34,274 +34,289 @@
 			<ColumnDefinition Width="Auto" />
 		</Grid.ColumnDefinitions>
 
-		<Grid Grid.Column="0">
+		<Grid.RowDefinitions>
+			<RowDefinition />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+
+		<Grid
+			Grid.RowSpan="2"
+			Grid.Column="0">
 			<TabControl x:Name="GuiTabs">
 				<TabItem Header="Matrix" />
 				<TabItem Header="Tree" />
 			</TabControl>
-
 		</Grid>
 
+		<!--  Transform  -->
+		<StackPanel
+			Grid.Row="0"
+			Grid.Column="1"
+			Width="180"
+			IsEnabled="{Binding Selection, Converter={StaticResource NotNullToBoolConverter}}">
 
-		<StackPanel Grid.Column="1">
+			<TextBlock
+				HorizontalAlignment="Center"
+				Style="{DynamicResource Header}"
+				Text="{Binding Selection.Name}" />
 
-			<!--  Transform  -->
-			<Grid IsEnabled="{Binding Selection, Converter={StaticResource NotNullToBoolConverter}}">
-				<StackPanel Width="180">
+			<StackPanel>
+				<Border
+					Grid.Column="1"
+					Style="{DynamicResource WpfUtilsControlBorder}">
+
+					<StackPanel
+						HorizontalAlignment="Center"
+						Orientation="Horizontal">
+						<Button Background="Transparent">
+							<wpfUtils:IconBlock Icon="ArrowCircleUp" />
+						</Button>
+
+						<Button Background="Transparent">
+							<wpfUtils:IconBlock Icon="TimesCircle" />
+						</Button>
+
+						<Button Background="Transparent">
+							<wpfUtils:IconBlock Icon="ArrowCircleDown" />
+						</Button>
+
+						<ToggleButton IsChecked="{Binding LockTransform}">
+							<wpfUtils:IconBlock Icon="Lock" />
+						</ToggleButton>
+
+					</StackPanel>
+				</Border>
+			</StackPanel>
+
+			<Grid
+				Height="{Binding ActualWidth, RelativeSource={RelativeSource Mode=Self}}"
+				Margin="1">
+				<Border Style="{DynamicResource WpfUtilsControlBorder}" />
+			</Grid>
+
+			<!--  Translate  -->
+			<Expander IsExpanded="{Binding ExpandTranslationSliders}">
+				<Expander.Header>
+					<wpfUtils:MultiNumberBox
+						Margin="0"
+						X="{Binding TranslationX}"
+						Y="{Binding TranslationY}"
+						Z="{Binding TranslationZ}">
+						<wpfUtils:MultiNumberBox.Prefix>
+							<wpfUtils:IconBlock
+								Margin="6,1,2,0"
+								Foreground="{DynamicResource BackgroundLightBrush}"
+								Icon="Arrows"
+								ToolTip="{DynamicResource TransformT}" />
+						</wpfUtils:MultiNumberBox.Prefix>
+					</wpfUtils:MultiNumberBox>
+
+				</Expander.Header>
+
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition />
+						<RowDefinition />
+						<RowDefinition />
+					</Grid.RowDefinitions>
+
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition />
+					</Grid.ColumnDefinitions>
 
 					<TextBlock
-						HorizontalAlignment="Center"
-						Style="{DynamicResource Header}"
-						Text="{Binding Selection.Name}" />
+						Grid.Row="0"
+						Grid.Column="0"
+						Margin="3,0"
+						Style="{DynamicResource RightLabel}"
+						Text="X:" />
+					<wpfUtils:RelativeSlider
+						Grid.Row="0"
+						Grid.Column="1"
+						RelativeRange="5"
+						RelativeValue="{Binding TranslationX}" />
 
-					<StackPanel>
-						<Border
-							Grid.Column="1"
-							Style="{DynamicResource WpfUtilsControlBorder}">
+					<TextBlock
+						Grid.Row="1"
+						Grid.Column="0"
+						Margin="3,0"
+						Style="{DynamicResource RightLabel}"
+						Text="Y:" />
+					<wpfUtils:RelativeSlider
+						Grid.Row="1"
+						Grid.Column="1"
+						RelativeRange="5"
+						RelativeValue="{Binding TranslationY}" />
 
-							<StackPanel
-								HorizontalAlignment="Center"
-								Orientation="Horizontal">
-								<Button Background="Transparent">
-									<wpfUtils:IconBlock Icon="ArrowCircleUp" />
-								</Button>
+					<TextBlock
+						Grid.Row="2"
+						Grid.Column="0"
+						Margin="3,0"
+						Style="{DynamicResource RightLabel}"
+						Text="Z:" />
+					<wpfUtils:RelativeSlider
+						Grid.Row="2"
+						Grid.Column="1"
+						RelativeRange="5"
+						RelativeValue="{Binding TranslationZ}" />
+				</Grid>
+			</Expander>
 
-								<Button Background="Transparent">
-									<wpfUtils:IconBlock Icon="TimesCircle" />
-								</Button>
+			<!--  Rotate  -->
+			<Expander IsExpanded="{Binding ExpandRotationSliders}">
+				<Expander.Header>
+					<wpfUtils:MultiNumberBox
+						Margin="0"
+						X="{Binding EulerRotationX}"
+						Y="{Binding EulerRotationY}"
+						Z="{Binding EulerRotationZ}">
+						<wpfUtils:MultiNumberBox.Prefix>
+							<wpfUtils:IconBlock
+								Margin="6,1,2,0"
+								Foreground="{DynamicResource BackgroundLightBrush}"
+								Icon="Rotate"
+								ToolTip="{DynamicResource TransformR}" />
+						</wpfUtils:MultiNumberBox.Prefix>
+					</wpfUtils:MultiNumberBox>
 
-								<Button Background="Transparent">
-									<wpfUtils:IconBlock Icon="ArrowCircleDown" />
-								</Button>
+				</Expander.Header>
 
-								<ToggleButton IsChecked="{Binding LockTransform}">
-									<wpfUtils:IconBlock Icon="Lock" />
-								</ToggleButton>
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition />
+						<RowDefinition />
+						<RowDefinition />
+					</Grid.RowDefinitions>
 
-							</StackPanel>
-						</Border>
-					</StackPanel>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition />
+					</Grid.ColumnDefinitions>
 
-					<Grid
-						Height="{Binding ActualWidth, RelativeSource={RelativeSource Mode=Self}}"
-						Margin="1">
-						<Border Style="{DynamicResource WpfUtilsControlBorder}" />
-					</Grid>
+					<TextBlock
+						Grid.Row="0"
+						Grid.Column="0"
+						Margin="3,0"
+						Style="{DynamicResource RightLabel}"
+						Text="X:" />
+					<Slider
+						Grid.Row="0"
+						Grid.Column="1"
+						Maximum="359"
+						SmallChange="1"
+						Value="{Binding EulerRotationX}" />
 
-					<!--  Translate  -->
-					<Expander IsExpanded="{Binding ExpandTranslationSliders}">
-						<Expander.Header>
-							<wpfUtils:MultiNumberBox
-								Margin="0"
-								X="{Binding TranslationX}"
-								Y="{Binding TranslationY}"
-								Z="{Binding TranslationZ}">
-								<wpfUtils:MultiNumberBox.Prefix>
-									<wpfUtils:IconBlock
-										Margin="6,1,2,0"
-										Foreground="{DynamicResource BackgroundLightBrush}"
-										Icon="Arrows"
-										ToolTip="{DynamicResource TransformT}" />
-								</wpfUtils:MultiNumberBox.Prefix>
-							</wpfUtils:MultiNumberBox>
+					<TextBlock
+						Grid.Row="1"
+						Grid.Column="0"
+						Margin="3,0"
+						Style="{DynamicResource RightLabel}"
+						Text="Y:" />
+					<Slider
+						Grid.Row="1"
+						Grid.Column="1"
+						Maximum="359"
+						SmallChange="1"
+						Value="{Binding EulerRotationY}" />
 
-						</Expander.Header>
+					<TextBlock
+						Grid.Row="2"
+						Grid.Column="0"
+						Margin="3,0"
+						Style="{DynamicResource RightLabel}"
+						Text="Z:" />
+					<Slider
+						Grid.Row="2"
+						Grid.Column="1"
+						Maximum="359"
+						SmallChange="1"
+						Value="{Binding EulerRotationZ}" />
+				</Grid>
+			</Expander>
 
-						<Grid>
-							<Grid.RowDefinitions>
-								<RowDefinition />
-								<RowDefinition />
-								<RowDefinition />
-							</Grid.RowDefinitions>
+			<!--  Scale  -->
+			<Expander IsExpanded="{Binding ExpandScaleSliders}">
+				<Expander.Header>
+					<wpfUtils:MultiNumberBox
+						Margin="0"
+						X="{Binding ScaleX}"
+						Y="{Binding ScaleY}"
+						Z="{Binding ScaleZ}">
+						<wpfUtils:MultiNumberBox.Prefix>
+							<wpfUtils:IconBlock
+								Margin="6,1,2,0"
+								Foreground="{DynamicResource BackgroundLightBrush}"
+								Icon="ArrowsMaximize"
+								ToolTip="{DynamicResource TransformS}" />
+						</wpfUtils:MultiNumberBox.Prefix>
+					</wpfUtils:MultiNumberBox>
 
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition />
-							</Grid.ColumnDefinitions>
+				</Expander.Header>
 
-							<TextBlock
-								Grid.Row="0"
-								Grid.Column="0"
-								Margin="3,0"
-								Style="{DynamicResource RightLabel}"
-								Text="X:" />
-							<wpfUtils:RelativeSlider
-								Grid.Row="0"
-								Grid.Column="1"
-								RelativeRange="5"
-								RelativeValue="{Binding TranslationX}" />
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition />
+						<RowDefinition />
+						<RowDefinition />
+					</Grid.RowDefinitions>
 
-							<TextBlock
-								Grid.Row="1"
-								Grid.Column="0"
-								Margin="3,0"
-								Style="{DynamicResource RightLabel}"
-								Text="Y:" />
-							<wpfUtils:RelativeSlider
-								Grid.Row="1"
-								Grid.Column="1"
-								RelativeRange="5"
-								RelativeValue="{Binding TranslationY}" />
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition />
+					</Grid.ColumnDefinitions>
 
-							<TextBlock
-								Grid.Row="2"
-								Grid.Column="0"
-								Margin="3,0"
-								Style="{DynamicResource RightLabel}"
-								Text="Z:" />
-							<wpfUtils:RelativeSlider
-								Grid.Row="2"
-								Grid.Column="1"
-								RelativeRange="5"
-								RelativeValue="{Binding TranslationZ}" />
-						</Grid>
-					</Expander>
+					<TextBlock
+						Grid.Row="0"
+						Grid.Column="0"
+						Margin="3,0"
+						Style="{DynamicResource RightLabel}"
+						Text="X:" />
+					<wpfUtils:RelativeSlider
+						Grid.Row="0"
+						Grid.Column="1"
+						RelativeRange="1"
+						RelativeValue="{Binding ScaleX}" />
 
-					<!--  Rotate  -->
-					<Expander IsExpanded="{Binding ExpandRotationSliders}">
-						<Expander.Header>
-							<wpfUtils:MultiNumberBox
-								Margin="0"
-								X="{Binding EulerRotationX}"
-								Y="{Binding EulerRotationY}"
-								Z="{Binding EulerRotationZ}">
-								<wpfUtils:MultiNumberBox.Prefix>
-									<wpfUtils:IconBlock
-										Margin="6,1,2,0"
-										Foreground="{DynamicResource BackgroundLightBrush}"
-										Icon="Rotate"
-										ToolTip="{DynamicResource TransformR}" />
-								</wpfUtils:MultiNumberBox.Prefix>
-							</wpfUtils:MultiNumberBox>
+					<TextBlock
+						Grid.Row="1"
+						Grid.Column="0"
+						Margin="3,0"
+						Style="{DynamicResource RightLabel}"
+						Text="Y:" />
+					<wpfUtils:RelativeSlider
+						Grid.Row="1"
+						Grid.Column="1"
+						RelativeRange="1"
+						RelativeValue="{Binding ScaleY}" />
 
-						</Expander.Header>
-
-						<Grid>
-							<Grid.RowDefinitions>
-								<RowDefinition />
-								<RowDefinition />
-								<RowDefinition />
-							</Grid.RowDefinitions>
-
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition />
-							</Grid.ColumnDefinitions>
-
-							<TextBlock
-								Grid.Row="0"
-								Grid.Column="0"
-								Margin="3,0"
-								Style="{DynamicResource RightLabel}"
-								Text="X:" />
-							<Slider
-								Grid.Row="0"
-								Grid.Column="1"
-								Maximum="359"
-								SmallChange="1"
-								Value="{Binding EulerRotationX}" />
-
-							<TextBlock
-								Grid.Row="1"
-								Grid.Column="0"
-								Margin="3,0"
-								Style="{DynamicResource RightLabel}"
-								Text="Y:" />
-							<Slider
-								Grid.Row="1"
-								Grid.Column="1"
-								Maximum="359"
-								SmallChange="1"
-								Value="{Binding EulerRotationY}" />
-
-							<TextBlock
-								Grid.Row="2"
-								Grid.Column="0"
-								Margin="3,0"
-								Style="{DynamicResource RightLabel}"
-								Text="Z:" />
-							<Slider
-								Grid.Row="2"
-								Grid.Column="1"
-								Maximum="359"
-								SmallChange="1"
-								Value="{Binding EulerRotationZ}" />
-						</Grid>
-					</Expander>
-
-					<!--  Scale  -->
-					<Expander IsExpanded="{Binding ExpandScaleSliders}">
-						<Expander.Header>
-							<wpfUtils:MultiNumberBox
-								Margin="0"
-								X="{Binding ScaleX}"
-								Y="{Binding ScaleY}"
-								Z="{Binding ScaleZ}">
-								<wpfUtils:MultiNumberBox.Prefix>
-									<wpfUtils:IconBlock
-										Margin="6,1,2,0"
-										Foreground="{DynamicResource BackgroundLightBrush}"
-										Icon="ArrowsMaximize"
-										ToolTip="{DynamicResource TransformS}" />
-								</wpfUtils:MultiNumberBox.Prefix>
-							</wpfUtils:MultiNumberBox>
-
-						</Expander.Header>
-
-						<Grid>
-							<Grid.RowDefinitions>
-								<RowDefinition />
-								<RowDefinition />
-								<RowDefinition />
-							</Grid.RowDefinitions>
-
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition />
-							</Grid.ColumnDefinitions>
-
-							<TextBlock
-								Grid.Row="0"
-								Grid.Column="0"
-								Margin="3,0"
-								Style="{DynamicResource RightLabel}"
-								Text="X:" />
-							<wpfUtils:RelativeSlider
-								Grid.Row="0"
-								Grid.Column="1"
-								RelativeRange="1"
-								RelativeValue="{Binding ScaleX}" />
-
-							<TextBlock
-								Grid.Row="1"
-								Grid.Column="0"
-								Margin="3,0"
-								Style="{DynamicResource RightLabel}"
-								Text="Y:" />
-							<wpfUtils:RelativeSlider
-								Grid.Row="1"
-								Grid.Column="1"
-								RelativeRange="1"
-								RelativeValue="{Binding ScaleY}" />
-
-							<TextBlock
-								Grid.Row="2"
-								Grid.Column="0"
-								Margin="3,0"
-								Style="{DynamicResource RightLabel}"
-								Text="Z:" />
-							<wpfUtils:RelativeSlider
-								Grid.Row="2"
-								Grid.Column="1"
-								RelativeRange="1"
-								RelativeValue="{Binding ScaleZ}" />
-						</Grid>
-					</Expander>
-
-
-
-				</StackPanel>
-			</Grid>
+					<TextBlock
+						Grid.Row="2"
+						Grid.Column="0"
+						Margin="3,0"
+						Style="{DynamicResource RightLabel}"
+						Text="Z:" />
+					<wpfUtils:RelativeSlider
+						Grid.Row="2"
+						Grid.Column="1"
+						RelativeRange="1"
+						RelativeValue="{Binding ScaleZ}" />
+				</Grid>
+			</Expander>
 		</StackPanel>
+
+		<Border
+			Grid.Row="1"
+			Grid.Column="1"
+			Style="{DynamicResource WpfUtilsControlBorder}">
+			<StackPanel Orientation="Horizontal">
+				<Button
+					Click="OnRevertClicked"
+					ToolTip="{DynamicResource LOC_Revert}">
+					<wpfUtils:IconBlock Icon="Undo" />
+				</Button>
+			</StackPanel>
+		</Border>
+
 	</Grid>
 </windows:CharacterWindow>

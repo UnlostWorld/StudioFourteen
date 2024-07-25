@@ -33,70 +33,45 @@ public class BoneReference : IDisposable
 		this.CurrentTransform.Rotation = HkQuaternionExtensions.Identity;
 	}
 
-	public unsafe Skeleton* Skeleton
+	public unsafe hkaPose* GetPose()
 	{
-		get
-		{
-			if (DalamudServices.ObjectTable == null)
-				return null;
+		if (DalamudServices.ObjectTable == null)
+			return null;
 
-			Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(this.Id.ObjectTableIndex);
-			if (character == null)
-				return null;
+		Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(this.Id.ObjectTableIndex);
+		if (character == null)
+			return null;
 
-			CharacterBase* characterBase = character->GetCharacterBase();
-			if (characterBase == null)
-				return null;
+		CharacterBase* characterBase = character->GetCharacterBase();
+		if (characterBase == null)
+			return null;
 
-			return characterBase->Skeleton;
-		}
-	}
+		Skeleton* skeleton = characterBase->Skeleton;
+		if (skeleton == null)
+			return null;
 
-	public unsafe PartialSkeleton* PartialSkeleton
-	{
-		get
-		{
-			if (this.Skeleton == null)
-				return null;
+		PartialSkeleton* partialSkeleton = &skeleton->PartialSkeletons[this.Id.PartialSkeletonIndex];
 
-			return &this.Skeleton->PartialSkeletons[this.Id.PartialSkeletonIndex];
-		}
-	}
+		if (partialSkeleton == null)
+			return null;
 
-	public unsafe hkaPose* Pose
-	{
-		get
-		{
-			if (this.PartialSkeleton == null)
-				return null;
-
-			return this.PartialSkeleton->GetHavokPose(this.Id.PoseIndex);
-		}
-	}
-
-	public unsafe hkaBone? Bone
-	{
-		get
-		{
-			if (this.Pose == null)
-				return null;
-
-			return this.Pose->Skeleton->Bones[this.Id.BoneIndex];
-		}
+		return partialSkeleton->GetHavokPose(this.Id.PoseIndex);
 	}
 
 	public unsafe void ApplyTransform()
 	{
 		Threads.VerifyFrameworkThread();
 
+		hkaPose* pose = this.GetPose();
+
 		if (!this.LockTransform)
 		{
 			// Get a new copy of the live transforms
-			this.LastTransform = *this.Pose->AccessBoneModelSpace(this.Id.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
-			this.LastLocalransform = *this.Pose->AccessBoneLocalSpace(this.Id.BoneIndex);
+			this.LastTransform = *pose->AccessBoneModelSpace(this.Id.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
+			this.LastLocalransform = *pose->AccessBoneLocalSpace(this.Id.BoneIndex);
 
 			// Modify the live transform
-			hkQsTransformf* transform = this.Pose->AccessBoneModelSpace(this.Id.BoneIndex, hkaPose.PropagateOrNot.Propagate);
+			hkQsTransformf* transform = pose->AccessBoneModelSpace(this.Id.BoneIndex, hkaPose.PropagateOrNot.Propagate);
 			transform->Translation.Add(this.CurrentTransform.Translation);
 			transform->Rotation.Multiply(this.CurrentTransform.Rotation);
 			transform->Scale.Add(this.CurrentTransform.Scale);
@@ -109,7 +84,7 @@ public class BoneReference : IDisposable
 			newTransform.Rotation.Multiply(this.CurrentTransform.Rotation);
 			newTransform.Scale.Add(this.CurrentTransform.Scale);
 
-			hkQsTransformf* transform = this.Pose->AccessBoneLocalSpace(this.Id.BoneIndex);
+			hkQsTransformf* transform = pose->AccessBoneLocalSpace(this.Id.BoneIndex);
 			transform->Translation.Set(newTransform.Translation);
 			transform->Rotation.Set(newTransform.Rotation);
 			transform->Scale.Set(newTransform.Scale);

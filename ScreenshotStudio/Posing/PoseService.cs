@@ -10,9 +10,9 @@ using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.Havok.Animation.Rig;
 using FFXIVClientStructs.Havok.Common.Base.Math.Matrix;
-using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
 using FFXIVClientStructs.Havok.Common.Base.Math.Quaternion;
 using FFXIVClientStructs.Havok.Common.Base.Math.Vector;
+using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Structs;
 using ScreenshotStudio.Structs.Extensions;
 using ScreenshotStudio.Utilities;
@@ -26,7 +26,7 @@ public class PoseService : ServiceBase
 {
 	private readonly Dictionary<BoneId, BoneReference> boneReferences = new();
 
-	private SelectionBase? selectedBone;
+	private SelectionBase? selection;
 
 	private Hook<UpdateBonePhysicsDelegate>? updateBonePhysicsHook;
 
@@ -38,10 +38,17 @@ public class PoseService : ServiceBase
 
 	public SelectionBase? Selection
 	{
-		get => this.selectedBone;
+		get => this.selection;
 		set
 		{
-			this.selectedBone = value;
+			if (this.selection != null)
+				this.selection.Deactivate();
+
+			this.selection = value;
+
+			if (this.selection != null)
+				this.selection.Activate();
+
 			this.SelectionChanged?.Invoke(value);
 			this.RaisePropertyChanged();
 		}
@@ -78,6 +85,9 @@ public class PoseService : ServiceBase
 
 		reference = new(name, id);
 		this.boneReferences.Add(id, reference);
+
+		this.Log.Information($"Creating bone reference {id}");
+
 		return reference;
 	}
 
@@ -89,7 +99,8 @@ public class PoseService : ServiceBase
 		if (characterBase == null)
 			return null;
 
-		List<BoneReference> bones = new();
+		List<BoneId> bones = new();
+		List<BoneId> parents = new();
 		ushort partialCount = characterBase->Skeleton->PartialSkeletonCount;
 		for (int partialIdx = 0; partialIdx < partialCount; partialIdx++)
 		{
@@ -110,20 +121,13 @@ public class PoseService : ServiceBase
 
 					if (boneName == name)
 					{
-						BoneId id = new(character->ObjectIndex, partialIdx, poseIdx, boneIdx);
-
-						BoneReference boneReference = this.GetOrCreateBoneReference(id, name);
-						bones.Add(boneReference);
+						bones.Add(new(character->ObjectIndex, partialIdx, poseIdx, boneIdx));
 
 						short parentIndex = pose->Skeleton->ParentIndices[boneIdx];
-
-						if (parentIndex == -1)
-							continue;
-
-						hkaBone parentBone = pose->Skeleton->Bones[parentIndex];
-
-						BoneId parentId = new(character->ObjectIndex, partialIdx, poseIdx, parentIndex);
-						boneReference.Parent = this.GetOrCreateBoneReference(parentId, parentBone.Name.String);
+						if (parentIndex != -1)
+						{
+							parents.Add(new(character->ObjectIndex, partialIdx, poseIdx, parentIndex));
+						}
 					}
 				}
 			}
@@ -132,7 +136,7 @@ public class PoseService : ServiceBase
 		if (bones.Count <= 0)
 			return null;
 
-		return new BoneSelection(bones, name);
+		return new BoneSelection(bones, parents, name);
 	}
 
 	public void FlushBoneReferences()
@@ -204,43 +208,5 @@ public class PoseService : ServiceBase
 	private void OnGroupPoseStateChange(bool newState)
 	{
 		this.FlushBoneReferences();
-	}
-}
-
-public abstract class SelectionBase
-{
-	public abstract string Name { get; }
-
-	public abstract ref hkQsTransformf Transform { get; }
-	public abstract bool LockTransform { get; set; }
-}
-
-public class BoneSelection : SelectionBase
-{
-	public BoneSelection(List<BoneReference> bones, string name)
-	{
-		this.BoneName = name;
-		this.Bones = bones;
-		this.Bone = bones[0];
-	}
-
-	public override string Name => Resources.Find($"LOC_Bone_{this.BoneName}", this.BoneName);
-	public string BoneName { get; init; }
-
-	public BoneReference Bone { get; init; }
-	public List<BoneReference> Bones { get; init; }
-
-	public override ref hkQsTransformf Transform
-	{
-		get
-		{
-			return ref this.Bone.CurrentTransform;
-		}
-	}
-
-	public override bool LockTransform
-	{
-		get => this.Bone.LockTransform;
-		set => this.Bone.LockTransform = value;
 	}
 }

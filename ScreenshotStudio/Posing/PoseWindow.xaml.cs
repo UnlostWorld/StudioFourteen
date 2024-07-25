@@ -8,6 +8,7 @@ using ScreenshotStudio.Structs.Extensions;
 using ScreenshotStudio.Studio.Pose;
 using ScreenshotStudio.Windows;
 using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
 
 public partial class PoseWindow : CharacterWindow
@@ -174,5 +175,10 @@ public partial class PoseWindow : CharacterWindow
 		}
 
 		this.GuiTabs.SelectedIndex = 0;
+	}
+
+	private void OnRevertClicked(object sender, RoutedEventArgs e)
+	{
+		this.Services.Pose.FlushBoneReferences(this.TargetObjectIndex);
 	}
 }

@@ -73,6 +73,22 @@ public class SkeletonView : Canvas
 		}
 	}
 
+	public BoneButton? GetButton(BoneId boneId)
+	{
+		foreach(BoneButton button in this.boneButtons)
+		{
+			foreach(BoneId buttonBoneId in button.Selection.BoneIds)
+			{
+				if (buttonBoneId == boneId)
+				{
+					return button;
+				}
+			}
+		}
+
+		return null;
+	}
+
 	protected unsafe void Load()
 	{
 		this.boneButtons.Clear();
@@ -152,19 +168,29 @@ public class SkeletonView : Canvas
 					else
 					{
 						this.Visibility = Visibility.Visible;
+						Dictionary<BoneId, BoneButton> buttonLookup = new();
 						foreach (BoneSelection selection in selections)
 						{
 							BoneButton button = new(selection, this);
 							this.boneButtons.Add(button);
 
-							foreach (BoneReference bone in selection.Bones)
+							foreach (BoneId boneId in selection.BoneIds)
 							{
-								if (bone.Name != null && bone.Parent != null && bone.Parent.Name != null)
+								if (!buttonLookup.ContainsKey(boneId))
 								{
-									if (!this.HasBone(bone.Parent.Name))
-										continue;
+									buttonLookup.Add(boneId, button);
+								}
+							}
+						}
 
-									BoneConnection connection = new(bone.Name, bone.Parent.Name, this);
+						foreach(BoneButton button in this.boneButtons)
+						{
+							foreach (BoneId parentBoneId in button.Selection.ParentBoneIds)
+							{
+								BoneButton? parentButton;
+								if (buttonLookup.TryGetValue(parentBoneId, out parentButton))
+								{
+									BoneConnection connection = new(button, parentButton, this);
 									this.boneConnections.Add(connection);
 								}
 							}
@@ -206,8 +232,8 @@ public class SkeletonView : Canvas
 
 		foreach(BoneConnection connection in this.boneConnections)
 		{
-			connection.From = this.GetPosition(connection.FromBone);
-			connection.To = this.GetPosition(connection.ToBone);
+			connection.From = connection.FromBone.Position;
+			connection.To = connection.ToBone.Position;
 		}
 	}
 
@@ -401,12 +427,12 @@ public class SkeletonView : Canvas
 
 	public class BoneConnection
 	{
-		public readonly string FromBone;
-		public readonly string ToBone;
+		public readonly BoneButton FromBone;
+		public readonly BoneButton ToBone;
 
 		private readonly Line line;
 
-		public BoneConnection(string fromBone, string toBone, Canvas parent)
+		public BoneConnection(BoneButton fromBone, BoneButton toBone, Canvas parent)
 		{
 			this.FromBone = fromBone;
 			this.ToBone = toBone;

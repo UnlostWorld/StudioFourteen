@@ -41,6 +41,8 @@ public abstract class CharacterWindow : PanelWindow
 	/// </summary>
 	public unsafe Character* Target { get; private set; }
 
+	public ushort TargetObjectIndex { get; private set; }
+
 	// should put this somewhere...
 	public static unsafe Character* GetTarget()
 	{
@@ -87,5 +89,14 @@ public abstract class CharacterWindow : PanelWindow
 	{
 		base.OnFrameworkUpdate(framework);
 		this.Target = GetTarget();
+
+		if (this.HasValidTarget)
+		{
+			this.TargetObjectIndex = this.Target->ObjectIndex;
+		}
+		else
+		{
+			this.TargetObjectIndex = 0;
+		}
 	}
 }
