@@ -26,6 +26,46 @@
 					Content="{TemplateBinding Content}"
 					ContentTemplate="{TemplateBinding ContentTemplate}" />
 			</AdornerDecorator>
+
+			<ControlTemplate.Triggers>
+				<MultiDataTrigger>
+					<MultiDataTrigger.Conditions>
+						<Condition Binding="{Binding IsShown}" Value="True" />
+						<Condition Binding="{Binding IsUiVisible}" Value="True" />
+					</MultiDataTrigger.Conditions>
+
+					<MultiDataTrigger.EnterActions>
+						<BeginStoryboard>
+							<Storyboard>
+								<DoubleAnimation
+									Storyboard.TargetProperty="Opacity"
+									To="1"
+									Duration="0:00:00.100">
+									<DoubleAnimation.EasingFunction>
+										<SineEase EasingMode="EaseIn" />
+									</DoubleAnimation.EasingFunction>
+								</DoubleAnimation>
+							</Storyboard>
+						</BeginStoryboard>
+					</MultiDataTrigger.EnterActions>
+
+					<MultiDataTrigger.ExitActions>
+						<BeginStoryboard>
+							<Storyboard>
+								<DoubleAnimation
+									Storyboard.TargetProperty="Opacity"
+									To="0"
+									Duration="0:00:00.200">
+									<DoubleAnimation.EasingFunction>
+										<SineEase EasingMode="EaseOut" />
+									</DoubleAnimation.EasingFunction>
+								</DoubleAnimation>
+							</Storyboard>
+						</BeginStoryboard>
+					</MultiDataTrigger.ExitActions>
+				</MultiDataTrigger>
+
+			</ControlTemplate.Triggers>
 		</ControlTemplate>
 	</windows:PersistentPanel.Template>
 
