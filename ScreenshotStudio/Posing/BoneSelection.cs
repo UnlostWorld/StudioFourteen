@@ -1,8 +1,11 @@
 ﻿namespace ScreenshotStudio.Posing;
 
 using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
+using ScreenshotStudio.Structs;
+using ScreenshotStudio.Structs.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 
 public class BoneSelection : SelectionBase
 {
@@ -37,7 +40,7 @@ public class BoneSelection : SelectionBase
 	public bool UseModValues { get; set; } = false;
 
 	// TODO: support multiple bone transforms
-	public override hkQsTransformf Transform
+	public hkQsTransformf Transform
 	{
 		get
 		{
@@ -71,6 +74,39 @@ public class BoneSelection : SelectionBase
 	{
 		get => this.Bone.LockTransform;
 		set => this.Bone.LockTransform = value;
+	}
+
+	public override Vector3 Translation
+	{
+		get => this.Transform.Translation.ToVector3();
+		set
+		{
+			hkQsTransformf transform = this.Transform;
+			transform.Translation.FromVector3(value);
+			this.Transform = transform;
+		}
+	}
+
+	public override Quaternion Rotation
+	{
+		get => this.Transform.Rotation.ToQuaternion();
+		set
+		{
+			hkQsTransformf transform = this.Transform;
+			transform.Rotation.FromQuaternion(value);
+			this.Transform = transform;
+		}
+	}
+
+	public override Vector3 Scale
+	{
+		get => this.Transform.Scale.ToVector3();
+		set
+		{
+			hkQsTransformf transform = this.Transform;
+			transform.Scale.FromVector3(value);
+			this.Transform = transform;
+		}
 	}
 
 	public override void Activate()

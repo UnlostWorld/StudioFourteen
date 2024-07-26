@@ -1,6 +1,7 @@
 ﻿namespace ScreenshotStudio.Structs;
 
 using FFXIVClientStructs.Havok.Common.Base.Math.Vector;
+using System.Numerics;
 
 public static class HkVectorExtensions
 {
@@ -42,5 +43,18 @@ public static class HkVectorExtensions
 		self.Y = other.Y;
 		self.Z = other.Z;
 		self.W = other.W;
+	}
+
+	public static Vector3 ToVector3(this hkVector4f self)
+	{
+		return new Vector3(self.X, self.Y, self.Z);
+	}
+
+	public static void FromVector3(ref this hkVector4f self, Vector3 vec)
+	{
+		self.X = vec.X;
+		self.Y = vec.Y;
+		self.Z = vec.Z;
+		self.W = 0;
 	}
 }

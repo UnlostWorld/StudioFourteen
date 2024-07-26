@@ -6,6 +6,7 @@ namespace ScreenshotStudio.Structs.Extensions;
 using FFXIVClientStructs.Havok.Common.Base.Math.Vector;
 using FFXIVClientStructs.Havok.Common.Base.Math.Quaternion;
 using System;
+using System.Numerics;
 
 public static class HkQuaternionExtensions
 {
@@ -19,6 +20,19 @@ public static class HkQuaternionExtensions
 
 	public static readonly float Deg2Rad = ((float)Math.PI * 2) / 360;
 	public static readonly float Rad2Deg = 360 / ((float)Math.PI * 2);
+
+	public static Quaternion ToQuaternion(this hkQuaternionf self)
+	{
+		return new(self.X, self.Y, self.Z, self.W);
+	}
+
+	public static void FromQuaternion(ref this hkQuaternionf self, Quaternion q)
+	{
+		self.X = q.X;
+		self.Y = q.Y;
+		self.Z = q.Z;
+		self.W = q.W;
+	}
 
 	public static hkVector4f ToVector(ref this hkQuaternionf q)
 	{
@@ -114,49 +128,5 @@ public static class HkQuaternionExtensions
 		self.Y = other.Y;
 		self.Z = other.Z;
 		self.W = other.W;
-	}
-
-	public static hkQuaternionf FromEuler(hkVector4f euler)
-	{
-		hkQuaternionf q = default;
-		q.FromEuler(euler);
-		return q;
-	}
-
-	public static void FromEuler(ref this hkQuaternionf self, hkVector4f euler)
-	{
-		// Roll first, about axis the object is facing, then
-		// pitch upward, then yaw to face into the new heading
-		float sr, cr, sp, cp, sy, cy;
-
-		float halfRoll = (euler.Z * Deg2Rad) * 0.5f;
-		sr = (float)Math.Sin(halfRoll);
-		cr = (float)Math.Cos(halfRoll);
-
-		float halfPitch = (euler.Y * Deg2Rad) * 0.5f;
-		sp = (float)Math.Sin(halfPitch);
-		cp = (float)Math.Cos(halfPitch);
-
-		float halfYaw = (euler.X * Deg2Rad) * 0.5f;
-		sy = (float)Math.Sin(halfYaw);
-		cy = (float)Math.Cos(halfYaw);
-
-		self.X = (cy * sp * cr) + (sy * cp * sr);
-		self.Y = (sy * cp * cr) - (cy * sp * sr);
-		self.Z = (cy * cp * sr) - (sy * sp * cr);
-		self.W = (cy * cp * cr) + (sy * sp * sr);
-	}
-
-	public static hkVector4f ToEuler(this hkQuaternionf self)
-	{
-		float yaw = MathF.Atan2(2.0f * ((self.Y * self.W) + (self.X * self.Z)), 1.0f - (2.0f * ((self.X * self.X) + (self.Y * self.Y))));
-		float pitch = MathF.Asin(2.0f * ((self.X * self.W) - (self.Y * self.Z)));
-		float roll = MathF.Atan2(2.0f * ((self.X * self.Y) + (self.Z * self.W)), 1.0f - (2.0f * ((self.X * self.X) + (self.Z * self.Z))));
-
-		hkVector4f res = default;
-		res.X = yaw * Rad2Deg;
-		res.Y = pitch * Rad2Deg;
-		res.Z = roll * Rad2Deg;
-		return res;
 	}
 }

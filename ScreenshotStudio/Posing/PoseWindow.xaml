@@ -99,7 +99,7 @@
 						<Grid
 							Grid.Row="0"
 							Height="{Binding ActualWidth, RelativeSource={RelativeSource Mode=Self}}">
-							<pose:RotationGizmo />
+							<pose:RotationGizmo Rotation="{Binding Rotation, Mode=TwoWay}" />
 						</Grid>
 
 						<ListBox

@@ -8,13 +8,14 @@ using ScreenshotStudio.Structs.Extensions;
 using ScreenshotStudio.Windows;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
 public partial class PoseWindow : CharacterWindow
 {
-	private hkVector4f? trackingEuler;
+	private Vector3? trackingEuler;
 
 	public PoseEditModes[] EditModes => Enum.GetValues<PoseEditModes>();
 
@@ -44,36 +45,36 @@ public partial class PoseWindow : CharacterWindow
 	[AutoNotify]
 	public double TranslationX
 	{
-		get => this.Transform.Translation.X;
+		get => this.Translation.X;
 		set
 		{
-			var transform = this.Transform;
-			transform.Translation.X = (float)value;
-			this.Transform = transform;
+			Vector3 translation = this.Translation;
+			translation.X = (float)value;
+			this.Translation = translation;
 		}
 	}
 
 	[AutoNotify]
 	public double TranslationY
 	{
-		get => this.Transform.Translation.Y;
+		get => this.Translation.Y;
 		set
 		{
-			var transform = this.Transform;
-			transform.Translation.Y = (float)value;
-			this.Transform = transform;
+			Vector3 translation = this.Translation;
+			translation.Y = (float)value;
+			this.Translation = translation;
 		}
 	}
 
 	[AutoNotify]
 	public double TranslationZ
 	{
-		get => this.Transform.Translation.Z;
+		get => this.Translation.Z;
 		set
 		{
-			var transform = this.Transform;
-			transform.Translation.Z = (float)value;
-			this.Transform = transform;
+			Vector3 translation = this.Translation;
+			translation.Z = (float)value;
+			this.Translation = translation;
 		}
 	}
 
@@ -83,7 +84,7 @@ public partial class PoseWindow : CharacterWindow
 		get => this.EulerRotation.X;
 		set
 		{
-			hkVector4f euler = this.EulerRotation;
+			Vector3 euler = this.EulerRotation;
 			euler.X = (float)value;
 			this.EulerRotation = euler;
 		}
@@ -95,7 +96,7 @@ public partial class PoseWindow : CharacterWindow
 		get => this.EulerRotation.Y;
 		set
 		{
-			hkVector4f euler = this.EulerRotation;
+			Vector3 euler = this.EulerRotation;
 			euler.Y = (float)value;
 			this.EulerRotation = euler;
 		}
@@ -107,65 +108,65 @@ public partial class PoseWindow : CharacterWindow
 		get => this.EulerRotation.Z;
 		set
 		{
-			hkVector4f euler = this.EulerRotation;
+			Vector3 euler = this.EulerRotation;
 			euler.Z = (float)value;
 			this.EulerRotation = euler;
 		}
 	}
 
-	public hkVector4f EulerRotation
+	public Vector3 EulerRotation
 	{
 		get
 		{
 			if (this.trackingEuler != null)
-				return (hkVector4f)this.trackingEuler;
+				return (Vector3)this.trackingEuler;
 
-			return this.Transform.Rotation.ToEuler();
+			return this.Rotation.ToEuler();
 		}
 
 		set
 		{
 			this.trackingEuler = value;
 
-			var transform = this.Transform;
-			transform.Rotation.FromEuler(value);
-			this.Transform = transform;
+			Quaternion rotation = this.Rotation;
+			rotation.FromEuler(value);
+			this.Rotation = rotation;
 		}
 	}
 
 	[AutoNotify]
 	public double ScaleX
 	{
-		get => this.Transform.Scale.X;
+		get => this.Scale.X;
 		set
 		{
-			var transform = this.Transform;
-			transform.Scale.X = (float)value;
-			this.Transform = transform;
+			Vector3 scale = this.Scale;
+			scale.X = (float)value;
+			this.Scale = scale;
 		}
 	}
 
 	[AutoNotify]
 	public double ScaleY
 	{
-		get => this.Transform.Scale.Y;
+		get => this.Scale.Y;
 		set
 		{
-			var transform = this.Transform;
-			transform.Scale.Y = (float)value;
-			this.Transform = transform;
+			Vector3 scale = this.Scale;
+			scale.Y = (float)value;
+			this.Scale = scale;
 		}
 	}
 
 	[AutoNotify]
 	public double ScaleZ
 	{
-		get => this.Transform.Scale.Z;
+		get => this.Scale.Z;
 		set
 		{
-			var transform = this.Transform;
-			transform.Scale.Z = (float)value;
-			this.Transform = transform;
+			Vector3 scale = this.Scale;
+			scale.Z = (float)value;
+			this.Scale = scale;
 		}
 	}
 
@@ -182,22 +183,42 @@ public partial class PoseWindow : CharacterWindow
 		}
 	}
 
-	private hkQsTransformf Transform
+	[AutoNotify]
+	public Vector3 Translation
 	{
-		get
-		{
-			if (this.Selection == null)
-				return default;
-
-			return this.Selection.Transform;
-		}
-
+		get => this.Selection?.Translation ?? default;
 		set
 		{
 			if (this.Selection == null)
 				return;
 
-			this.Selection.Transform = value;
+			this.Selection.Translation = value;
+		}
+	}
+
+	[AutoNotify]
+	public Quaternion Rotation
+	{
+		get => this.Selection?.Rotation ?? default;
+		set
+		{
+			if (this.Selection == null)
+				return;
+
+			this.Selection.Rotation = value;
+		}
+	}
+
+	[AutoNotify]
+	public Vector3 Scale
+	{
+		get => this.Selection?.Scale ?? default;
+		set
+		{
+			if (this.Selection == null)
+				return;
+
+			this.Selection.Scale = value;
 		}
 	}
 
@@ -245,7 +266,7 @@ public partial class PoseWindow : CharacterWindow
 
 	private void OnEulerDown(object sender, MouseButtonEventArgs e)
 	{
-		this.trackingEuler = this.Selection?.Transform.Rotation.ToEuler();
+		this.trackingEuler = this.Rotation.ToEuler();
 	}
 
 	private void OnEulerUp(object sender, MouseButtonEventArgs e)

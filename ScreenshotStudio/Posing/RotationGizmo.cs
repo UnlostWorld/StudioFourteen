@@ -6,19 +6,24 @@ namespace ScreenshotStudio.Posing;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
-using ImGuiNET;
 using System;
 using System.Numerics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+
 using Vector = System.Windows.Vector;
 
 public class RotationGizmo : View
 {
+	public static readonly DependencyProperty RotationProperty = DependencyProperty.Register(
+		nameof(RotationGizmo.Rotation),
+		typeof(Quaternion),
+		typeof(RotationGizmo),
+		new(Quaternion.Identity));
+
 	private const int NumPoints = 144;
 	private const int AxisHoverMouseDistance = 20;
 
@@ -81,7 +86,12 @@ public class RotationGizmo : View
 		Z,
 	}
 
-	public Quaternion Rotation { get; set; } = Quaternion.Identity;
+	public Quaternion Rotation
+	{
+		get => (Quaternion)this.GetValue(RotationProperty);
+		set => this.SetValue(RotationProperty, value);
+	}
+
 	public float Radius { get; set; } = 70;
 
 	protected unsafe override void OnFrameworkUpdate(IFramework framework)
@@ -99,11 +109,11 @@ public class RotationGizmo : View
 		Matrix4x4 mat = Matrix4x4.CreateScale(-1, 1, 1);
 		viewMatrix = viewMatrix * mat;
 
-		Matrix4x4 transformMatrix = Matrix4x4.CreateFromQuaternion(this.Rotation);
-		transformMatrix.Translation = new Vector3(0, 0, 0);
-
 		this.Dispatcher.Invoke(() =>
 		{
+			Matrix4x4 transformMatrix = Matrix4x4.CreateFromQuaternion(this.Rotation);
+			transformMatrix.Translation = new Vector3(0, 0, 0);
+
 			Vector2 center = default;
 			center.X = (float)(this.ActualWidth / 2);
 			center.Y = (float)(this.ActualHeight / 2);
