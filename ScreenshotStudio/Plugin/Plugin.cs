@@ -2,6 +2,7 @@
 
 using Dalamud.Plugin;
 using Serilog;
+using System;
 using System.Threading.Tasks;
 
 public sealed class DalamudPlugin : IDalamudPlugin
@@ -19,6 +20,6 @@ public sealed class DalamudPlugin : IDalamudPlugin
 
 	public void Dispose()
 	{
-		Task.Run(this.services.Stop);
+		this.services.Stop().Wait();
 	}
 }

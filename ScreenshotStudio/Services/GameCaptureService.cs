@@ -56,7 +56,7 @@ public class GameCaptureService : ServiceBase
 		}
 	}
 
-	public override Task Initialize()
+	public override Task Start()
 	{
 		if (SwapChainHelper.IsReshade)
 		{
@@ -66,10 +66,10 @@ public class GameCaptureService : ServiceBase
 			InterfaceManager.DisableReshadePresent();
 		}
 
-		return base.Initialize();
+		return base.Start();
 	}
 
-	public override Task Shutdown()
+	public override Task Stop()
 	{
 		if (SwapChainHelper.IsReshade)
 		{
@@ -81,7 +81,7 @@ public class GameCaptureService : ServiceBase
 
 		this.bufferTexture.Dispose();
 
-		return base.Shutdown();
+		return base.Stop();
 	}
 
 	public Image? ToImage()

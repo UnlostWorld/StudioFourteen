@@ -113,9 +113,9 @@ public class ServiceManagerBase
 
 		this.state = States.Started;
 
-		this.Log.Information("Screenshot Studio has started");
-
 		_ = Task.Run(async () => await this.Tick());
+
+		this.Log.Information("Screenshot Studio has started");
 	}
 
 	/// <summary>
@@ -168,6 +168,8 @@ public class ServiceManagerBase
 				this.Log.Error(ex, $"Error shutting down service: {service}");
 			}
 		}
+
+		this.services.Clear();
 
 		this.Log.Information("Screenshot Studio has shut down");
 		instance = null;

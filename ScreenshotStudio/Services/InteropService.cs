@@ -3,6 +3,7 @@
 using Dalamud.Game;
 using Dalamud.Hooking;
 using FFXIVClientStructs;
+using Lumina.Text.ReadOnly;
 using ScreenshotStudio.Plugin;
 using System;
 using System.Collections.Generic;
@@ -10,7 +11,7 @@ using System.Threading.Tasks;
 
 public class InteropService : ServiceBase
 {
-	private static readonly List<IDalamudHook> Hooks = new();
+	private static readonly List<HookReference> Hooks = new();
 
 	public static Hook<TDelegate>? HookFromAddress<TDelegate>(nint address, TDelegate detour)
 			where TDelegate : System.Delegate
@@ -20,8 +21,10 @@ public class InteropService : ServiceBase
 
 		try
 		{
+			string name = typeof(TDelegate).Name;
+
 			Hook<TDelegate> hook = DalamudServices.InteropProvider.HookFromAddress<TDelegate>(address, detour);
-			Hooks.Add(hook);
+			Hooks.Add(new(hook, name));
 			return hook;
 		}
 		catch (Exception ex)
@@ -56,21 +59,23 @@ public class InteropService : ServiceBase
 
 	public override Task Shutdown()
 	{
-		int leaks = 0;
-		foreach (IDalamudHook hook in Hooks)
+		foreach (HookReference reference in Hooks)
 		{
-			if (!hook.IsDisposed)
+			if (!reference.Hook.IsDisposed)
 			{
-				this.Log.Warning($"Hook {hook.Address} was not disposed!");
-				leaks++;
+				this.Log.Warning($"Hook {reference.Name} was not disposed!");
+				reference.Hook.Dispose();
 			}
 		}
 
-		if (leaks <= 0)
-		{
-			this.Log.Information($"No hooks leaked during shutdown");
-		}
+		Hooks.Clear();
 
 		return base.Shutdown();
+	}
+
+	private class HookReference(IDalamudHook hook, string name)
+	{
+		public readonly IDalamudHook Hook = hook;
+		public readonly string Name = name;
 	}
 }
