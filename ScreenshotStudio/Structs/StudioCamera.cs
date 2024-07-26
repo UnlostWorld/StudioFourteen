@@ -4,7 +4,6 @@ using FFXIVClientStructs.Havok.Common.Base.Math.Vector;
 using FFXIVClientStructs.Havok.Common.Base.Math.Quaternion;
 using ScreenshotStudio.Structs.Extensions;
 using System.Runtime.InteropServices;
-using WpfUtils.Meida3D;
 
 [StructLayout(LayoutKind.Explicit, Size = 688)]
 public struct StudioCamera // : FFXIVClientStructs.FFXIV.Client.Game.Camera
@@ -29,9 +28,9 @@ public struct StudioCamera // : FFXIVClientStructs.FFXIV.Client.Game.Camera
 		get
 		{
 			hkVector4f v = default;
-			v.Y = (float)MathUtils.RadiansToDegrees((double)this.AngleX) - 180;
-			v.Z = (float)-MathUtils.RadiansToDegrees((double)this.AngleY);
-			v.X = (float)MathUtils.RadiansToDegrees((double)this.Roll);
+			v.Y = (this.AngleX * HkQuaternionExtensions.Rad2Deg) - 180;
+			v.Z = -(this.AngleY * HkQuaternionExtensions.Rad2Deg);
+			v.X = this.Roll * HkQuaternionExtensions.Rad2Deg;
 			return v;
 		}
 	}

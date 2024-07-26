@@ -6,7 +6,6 @@ namespace ScreenshotStudio.Structs.Extensions;
 using FFXIVClientStructs.Havok.Common.Base.Math.Vector;
 using FFXIVClientStructs.Havok.Common.Base.Math.Quaternion;
 using System;
-using FFXIVClientStructs.FFXIV.Common.Lua;
 
 public static class HkQuaternionExtensions
 {
@@ -18,8 +17,8 @@ public static class HkQuaternionExtensions
 		W = 1,
 	};
 
-	private static readonly float Deg2Rad = ((float)Math.PI * 2) / 360;
-	private static readonly float Rad2Deg = 360 / ((float)Math.PI * 2);
+	public static readonly float Deg2Rad = ((float)Math.PI * 2) / 360;
+	public static readonly float Rad2Deg = 360 / ((float)Math.PI * 2);
 
 	public static hkVector4f ToVector(ref this hkQuaternionf q)
 	{
