@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio.Services;
+﻿namespace ScreenshotStudio.Posing;
 
 using System;
 

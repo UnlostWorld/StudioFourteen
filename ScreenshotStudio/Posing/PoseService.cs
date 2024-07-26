@@ -1,26 +1,25 @@
 ﻿// Brio
 // https://github.com/Etheirys/Brio/tree/main/Brio/Game/Posing/SkeletonService.cs
 
-namespace ScreenshotStudio.Services;
+namespace ScreenshotStudio.Posing;
 
 using Dalamud.Hooking;
-using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.Havok.Animation.Rig;
-using FFXIVClientStructs.Havok.Common.Base.Math.Matrix;
-using FFXIVClientStructs.Havok.Common.Base.Math.Quaternion;
-using FFXIVClientStructs.Havok.Common.Base.Math.Vector;
-using ScreenshotStudio.Plugin;
-using ScreenshotStudio.Structs;
-using ScreenshotStudio.Structs.Extensions;
+using ScreenshotStudio.Services;
 using ScreenshotStudio.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+
+public enum PoseEditModes
+{
+	Translation,
+	Rotation,
+	Scale,
+}
 
 public class PoseService : ServiceBase
 {
@@ -29,6 +28,7 @@ public class PoseService : ServiceBase
 	private SelectionBase? selection;
 
 	private Hook<UpdateBonePhysicsDelegate>? updateBonePhysicsHook;
+	private PoseEditModes editMode = PoseEditModes.Rotation;
 
 	public delegate void SelectionChangedDelegate(SelectionBase? newSelection);
 	private delegate nint UpdateBonePhysicsDelegate(nint a1);
@@ -54,6 +54,16 @@ public class PoseService : ServiceBase
 		}
 	}
 
+	public PoseEditModes EditMode
+	{
+		get => this.editMode;
+		set
+		{
+			this.editMode = value;
+			this.RaisePropertyChanged();
+		}
+	}
+
 	public override Task Start()
 	{
 		this.updateBonePhysicsHook = InteropService.HookFromSignature<UpdateBonePhysicsDelegate>("48 89 5C 24 ?? 48 89 6C 24 ?? 48 89 74 24 ?? 57 41 56 41 57 48 83 EC ?? 48 8B 79 ?? 45 33 FF", this.UpdateBonePhysicsDetour);
@@ -65,7 +75,7 @@ public class PoseService : ServiceBase
 		return base.Start();
 	}
 
-	public override Task Shutdown()
+	public override Task Stop()
 	{
 		this.updateBonePhysicsHook?.Dispose();
 
@@ -74,7 +84,7 @@ public class PoseService : ServiceBase
 
 		this.FlushBoneReferences();
 
-		return base.Shutdown();
+		return base.Stop();
 	}
 
 	public BoneReference GetOrCreateBoneReference(BoneId id, string? name = null)

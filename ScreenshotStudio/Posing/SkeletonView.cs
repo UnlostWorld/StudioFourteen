@@ -1,27 +1,17 @@
-﻿namespace ScreenshotStudio.Studio.Pose;
+﻿namespace ScreenshotStudio.Posing;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
-using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
-using FFXIVClientStructs.FFXIV.Common.Lua;
-using ScreenshotStudio.Services;
 using ScreenshotStudio.Utilities;
 using ScreenshotStudio.Windows;
 using Serilog;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Security.Policy;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using System.Xml.Linq;
-using TerraFX.Interop.DirectX;
-using static System.Windows.Forms.LinkLabel;
 
 public class SkeletonView : Canvas
 {

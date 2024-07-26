@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio.Studio.Pose;
+﻿namespace ScreenshotStudio.Posing;
 
 using System.Collections.Generic;
 

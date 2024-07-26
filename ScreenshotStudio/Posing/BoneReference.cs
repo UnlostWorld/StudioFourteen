@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio.Services;
+﻿namespace ScreenshotStudio.Posing;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;

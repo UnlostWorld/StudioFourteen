@@ -5,7 +5,7 @@ namespace ScreenshotStudio.Data;
 
 using ScreenshotStudio.Serialization;
 using ScreenshotStudio.Services;
-using ScreenshotStudio.Studio.Pose;
+using ScreenshotStudio.Posing;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;

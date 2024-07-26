@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio.Services;
+﻿namespace ScreenshotStudio.Posing;
 
 using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
 using System;

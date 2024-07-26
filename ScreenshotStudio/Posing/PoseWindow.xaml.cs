@@ -1,12 +1,12 @@
-﻿namespace ScreenshotStudio.Studio;
+﻿namespace ScreenshotStudio.Posing;
 
 using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
 using FFXIVClientStructs.Havok.Common.Base.Math.Vector;
 using ScreenshotStudio.Data;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Structs.Extensions;
-using ScreenshotStudio.Studio.Pose;
 using ScreenshotStudio.Windows;
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -15,6 +15,8 @@ using System.Windows.Input;
 public partial class PoseWindow : CharacterWindow
 {
 	private hkVector4f? trackingEuler;
+
+	public PoseEditModes[] EditModes => Enum.GetValues<PoseEditModes>();
 
 	[AutoNotify]
 	public bool ExpandTranslationSliders
