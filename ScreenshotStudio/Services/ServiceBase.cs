@@ -21,6 +21,8 @@ public abstract class ServiceBase : INotifyPropertyChanged
 	protected ILogger Log { get; private set; }
 	protected ServiceManager Services => ServiceManager.Instance;
 
+	protected SettingsService.Configuration Settings => this.Services.Settings.Current;
+
 	public virtual Task Initialize()
 	{
 		this.IsAlive = true;

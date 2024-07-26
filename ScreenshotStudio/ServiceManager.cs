@@ -5,6 +5,7 @@ using ScreenshotStudio.GameData;
 using ScreenshotStudio.Input;
 using ScreenshotStudio.Library;
 using ScreenshotStudio.Services;
+using ScreenshotStudio.Posing;
 using ScreenshotStudio.Utilities;
 using System.Diagnostics;
 

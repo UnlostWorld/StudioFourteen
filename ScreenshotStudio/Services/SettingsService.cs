@@ -20,6 +20,12 @@ public class SettingsService : ServiceBase
 		return base.Initialize();
 	}
 
+	public override Task Shutdown()
+	{
+		this.Save();
+		return base.Shutdown();
+	}
+
 	public void Save()
 	{
 		DalamudServices.PluginInterface?.SavePluginConfig(this.Current);
@@ -28,6 +34,8 @@ public class SettingsService : ServiceBase
 	public class Configuration : IPluginConfiguration
 	{
 		public int Version { get; set; } = 0;
+		public List<string> OpenPanels { get; set; } = new();
+		public bool IsOpen { get; set; } = false;
 		public Dictionary<string, string> PanelPersistence { get; set; } = new();
 	}
 }

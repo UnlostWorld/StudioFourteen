@@ -1,5 +1,6 @@
 ﻿namespace ScreenshotStudio.Services;
 
+using ScreenshotStudio.Studio;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -12,6 +13,8 @@ public class PanelService : ServiceBase
 {
 	private readonly List<Panel> openPanels = new List<Panel>();
 	private readonly Dictionary<Type, Panel> lastOpenPanels = new();
+
+	private BackgroundWindow? backgroundWindow;
 
 	public override Task Initialize()
 	{
@@ -75,15 +78,44 @@ public class PanelService : ServiceBase
 		}
 	}
 
+	public override async Task Start()
+	{
+		await base.Start();
+
+		this.backgroundWindow = await Panel.ShowAsync<BackgroundWindow>();
+
+		foreach (string panelTypeName in this.Settings.OpenPanels)
+		{
+			Type? panelType = Type.GetType(panelTypeName);
+			if (panelType != null)
+			{
+				Panel.Show(panelType);
+			}
+			else
+			{
+				this.Log.Information($"Failed to find panel type {panelTypeName}");
+			}
+		}
+	}
+
 	public override async Task Stop()
 	{
 		await base.Stop();
 
+		this.Settings.OpenPanels.Clear();
+
 		List<Panel> openPanels = new(this.openPanels);
 		foreach (Panel? panel in openPanels)
 		{
-			if (panel == null)
+			if (panel == null || panel is BackgroundWindow)
 				continue;
+
+			string? panelTypeName = panel.GetType().FullName;
+
+			if (panelTypeName != null)
+			{
+				this.Settings.OpenPanels.Add(panelTypeName);
+			}
 
 			await panel.CloseAsync();
 		}

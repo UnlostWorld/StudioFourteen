@@ -1,14 +1,10 @@
 ﻿namespace ScreenshotStudio.Services;
 
-using ScreenshotStudio.Studio;
-using ScreenshotStudio.Windows;
 using System.Threading.Tasks;
 using System;
 
 public class StudioService : ServiceBase
 {
-	private BackgroundWindow? backgroundWindow;
-
 	public bool IsOpen { get; private set; }
 	public bool IsOpenAndInGPose => this.Services.Studio.IsOpen && this.Services.GroupPose.IsGroupPosing;
 
@@ -16,7 +12,10 @@ public class StudioService : ServiceBase
 	{
 		await base.Start();
 
-		this.backgroundWindow = await Panel.ShowAsync<BackgroundWindow>();
+		if (this.Services.Settings.Current.IsOpen)
+		{
+			this.OpenStudio();
+		}
 	}
 
 	public void OpenStudio() => Task.Run(async () => await this.OpenStudioAsync());
@@ -26,6 +25,7 @@ public class StudioService : ServiceBase
 	{
 		try
 		{
+			this.Services.Settings.Current.IsOpen = true;
 			this.IsOpen = true;
 			this.RaisePropertyChanged(nameof(StudioService.IsOpen));
 			this.RaisePropertyChanged(nameof(StudioService.IsOpenAndInGPose));
@@ -42,6 +42,7 @@ public class StudioService : ServiceBase
 	{
 		try
 		{
+			this.Services.Settings.Current.IsOpen = false;
 			this.IsOpen = false;
 			this.RaisePropertyChanged(nameof(StudioService.IsOpen));
 			this.RaisePropertyChanged(nameof(StudioService.IsOpenAndInGPose));

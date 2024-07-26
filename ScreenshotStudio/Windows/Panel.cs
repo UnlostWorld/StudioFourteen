@@ -83,10 +83,25 @@ public abstract partial class Panel : Window, IAutoNotify
 		Task.Run(async () => await ShowAsync<T>());
 	}
 
+	public static void Show(Type panelType)
+	{
+		Task.Run(async () => await ShowAsync(panelType));
+	}
+
 	public static async Task<T?> ShowAsync<T>()
 		where T : Panel
 	{
 		T? wnd = await CreateInstance<T>();
+
+		if (wnd != null)
+			await wnd.ShowAsync();
+
+		return wnd;
+	}
+
+	public static async Task<Panel?> ShowAsync(Type panelType)
+	{
+		Panel? wnd = await CreateInstance(panelType);
 
 		if (wnd != null)
 			await wnd.ShowAsync();
