@@ -13,7 +13,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Vector = System.Windows.Vector;
 
 public class RotationGizmo : View
 {
@@ -27,6 +29,15 @@ public class RotationGizmo : View
 	private readonly RotationGizmoAxis zAxis;
 	private readonly Ellipse mousePrompt;
 
+	private Point? closestAxisMousePos = null;
+	private Point? closestAxisMouseFromPos = null;
+	private RotationGizmoAxis? closestMouseAxis = null;
+
+	private Point? dragStartToPos;
+	private Point? dragStartFromPos;
+	private RotationGizmoAxis? dragAxis;
+	private double dragDistance;
+
 	public RotationGizmo()
 	{
 		this.Background = new SolidColorBrush(Colors.Transparent);
@@ -35,24 +46,22 @@ public class RotationGizmo : View
 		this.canvas.IsHitTestVisible = false;
 		this.Content = this.canvas;
 
-		int radius = 70;
-
 		this.sphere = new();
-		this.sphere.Width = radius * 2;
-		this.sphere.Height = radius * 2;
+		this.sphere.Width = this.Radius * 2;
+		this.sphere.Height = this.Radius * 2;
 		this.sphere.Fill = new SolidColorBrush(Color.FromArgb(0x50, 0, 0, 0));
 		this.canvas.Children.Add(this.sphere);
 		Canvas.SetZIndex(this.sphere, 0);
 
-		this.xAxis = new(Axis.X, radius, this.canvas);
+		this.xAxis = new(Axis.X, this.Radius, this.canvas);
 		this.xAxis.ForegroundBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x33, 0x33, 0xFF));
 		this.xAxis.BackgroundBrush = new SolidColorBrush(Color.FromArgb(0x10, 0x33, 0x33, 0xFF));
 
-		this.yAxis = new(Axis.Y, radius, this.canvas);
+		this.yAxis = new(Axis.Y, this.Radius, this.canvas);
 		this.yAxis.ForegroundBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x33, 0xFF, 0x33));
 		this.yAxis.BackgroundBrush = new SolidColorBrush(Color.FromArgb(0x10, 0x33, 0xFF, 0x33));
 
-		this.zAxis = new(Axis.Z, radius, this.canvas);
+		this.zAxis = new(Axis.Z, this.Radius, this.canvas);
 		this.zAxis.ForegroundBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0x33, 0x33));
 		this.zAxis.BackgroundBrush = new SolidColorBrush(Color.FromArgb(0x10, 0xFF, 0x33, 0x33));
 
@@ -72,6 +81,9 @@ public class RotationGizmo : View
 		Z,
 	}
 
+	public Quaternion Rotation { get; set; } = Quaternion.Identity;
+	public float Radius { get; set; } = 70;
+
 	protected unsafe override void OnFrameworkUpdate(IFramework framework)
 	{
 		base.OnFrameworkUpdate(framework);
@@ -87,7 +99,7 @@ public class RotationGizmo : View
 		Matrix4x4 mat = Matrix4x4.CreateScale(-1, 1, 1);
 		viewMatrix = viewMatrix * mat;
 
-		Matrix4x4 transformMatrix = Matrix4x4.Identity; ////Matrix4x4.CreateFromQuaternion(rotation);
+		Matrix4x4 transformMatrix = Matrix4x4.CreateFromQuaternion(this.Rotation);
 		transformMatrix.Translation = new Vector3(0, 0, 0);
 
 		this.Dispatcher.Invoke(() =>
@@ -105,6 +117,62 @@ public class RotationGizmo : View
 		});
 	}
 
+	protected override void OnMouseWheel(MouseWheelEventArgs e)
+	{
+		base.OnMouseWheel(e);
+
+		if (this.closestAxisMousePos != null && this.closestMouseAxis != null)
+		{
+			float mouseWheel = e.Delta / 1000.0f;
+
+			if (Keyboard.Modifiers == ModifierKeys.Shift)
+				mouseWheel *= 10;
+
+			if (Keyboard.Modifiers == ModifierKeys.Control)
+				mouseWheel /= 10;
+
+			Quaternion rot = Quaternion.Identity;
+			if (this.closestMouseAxis.Axis == Axis.X)
+			{
+				rot = Quaternion.CreateFromAxisAngle(Vector3.UnitX, mouseWheel);
+			}
+			else if (this.closestMouseAxis.Axis == Axis.Y)
+			{
+				rot = Quaternion.CreateFromAxisAngle(Vector3.UnitY, -mouseWheel);
+			}
+			else if (this.closestMouseAxis.Axis == Axis.Z)
+			{
+				rot = Quaternion.CreateFromAxisAngle(Vector3.UnitZ, mouseWheel);
+			}
+
+			this.Rotation = this.Rotation * rot;
+		}
+	}
+
+	protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+	{
+		base.OnMouseLeftButtonDown(e);
+		this.CaptureMouse();
+
+		this.OnMouseMove(e);
+
+		this.dragStartToPos = this.closestAxisMousePos;
+		this.dragStartFromPos = this.closestAxisMouseFromPos;
+		this.dragAxis = this.closestMouseAxis;
+		this.dragDistance = 0;
+	}
+
+	protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
+	{
+		base.OnMouseLeftButtonUp(e);
+		this.ReleaseMouseCapture();
+
+		this.dragStartToPos = null;
+		this.dragStartFromPos = null;
+		this.dragAxis = null;
+		this.dragDistance = 0;
+	}
+
 	protected override void OnMouseMove(MouseEventArgs e)
 	{
 		base.OnMouseMove(e);
@@ -112,41 +180,74 @@ public class RotationGizmo : View
 		Point mousePos = e.GetPosition(this);
 
 		double closestAxisPointToMouseDistance = double.MaxValue;
-		Point? closestAxisMousePos = null;
-		Point? closestAxisMouseFromPos = null;
-		RotationGizmoAxis? closestMouseAxis = null;
 
 		this.xAxis.CheckAxisForMouseHover(
 			mousePos,
 			ref closestAxisPointToMouseDistance,
-			ref closestAxisMousePos,
-			ref closestAxisMouseFromPos,
-			ref closestMouseAxis);
+			ref this.closestAxisMousePos,
+			ref this.closestAxisMouseFromPos,
+			ref this.closestMouseAxis);
 
 		this.yAxis.CheckAxisForMouseHover(
 			mousePos,
 			ref closestAxisPointToMouseDistance,
-			ref closestAxisMousePos,
-			ref closestAxisMouseFromPos,
-			ref closestMouseAxis);
+			ref this.closestAxisMousePos,
+			ref this.closestAxisMouseFromPos,
+			ref this.closestMouseAxis);
 
 		this.zAxis.CheckAxisForMouseHover(
 			mousePos,
 			ref closestAxisPointToMouseDistance,
-			ref closestAxisMousePos,
-			ref closestAxisMouseFromPos,
-			ref closestMouseAxis);
+			ref this.closestAxisMousePos,
+			ref this.closestAxisMouseFromPos,
+			ref this.closestMouseAxis);
 
-		if (closestAxisMousePos != null && closestMouseAxis != null && closestAxisPointToMouseDistance < AxisHoverMouseDistance)
+		if (this.dragStartFromPos != null && this.dragStartToPos != null && this.dragAxis != null)
+		{
+			Vector normal = (Point)this.dragStartToPos - (Point)this.dragStartFromPos;
+			normal.Normalize();
+
+			Vector lhs = mousePos - (Point)this.dragStartToPos;
+			double newDragDistance = (lhs.X * normal.X) + (lhs.Y * normal.Y);
+			double dragDelta = newDragDistance - this.dragDistance;
+			this.dragDistance = newDragDistance;
+
+			double angleChange = dragDelta / 70;
+
+			if (Keyboard.Modifiers == ModifierKeys.Shift)
+				angleChange *= 10;
+
+			if (Keyboard.Modifiers == ModifierKeys.Control)
+				angleChange /= 10;
+
+			Quaternion rot = Quaternion.Identity;
+			if (this.dragAxis.Axis == Axis.X)
+			{
+				rot = Quaternion.CreateFromAxisAngle(Vector3.UnitX, (float)angleChange);
+			}
+			else if (this.dragAxis.Axis == Axis.Y)
+			{
+				rot = Quaternion.CreateFromAxisAngle(Vector3.UnitY, (float)-angleChange);
+			}
+			else if (this.dragAxis.Axis == Axis.Z)
+			{
+				rot = Quaternion.CreateFromAxisAngle(Vector3.UnitZ, (float)angleChange);
+			}
+
+			this.Rotation = this.Rotation * rot;
+		}
+		else if (this.closestAxisMousePos != null && this.closestMouseAxis != null && closestAxisPointToMouseDistance < AxisHoverMouseDistance)
 		{
 			this.mousePrompt.Visibility = Visibility.Visible;
-			this.mousePrompt.Fill = closestMouseAxis.ForegroundBrush;
-			Canvas.SetLeft(this.mousePrompt, closestAxisMousePos.Value.X - (this.mousePrompt.Width / 2));
-			Canvas.SetTop(this.mousePrompt, closestAxisMousePos.Value.Y - (this.mousePrompt.Height / 2));
+			this.mousePrompt.Fill = this.closestMouseAxis.ForegroundBrush;
+			Canvas.SetLeft(this.mousePrompt, this.closestAxisMousePos.Value.X - (this.mousePrompt.Width / 2));
+			Canvas.SetTop(this.mousePrompt, this.closestAxisMousePos.Value.Y - (this.mousePrompt.Height / 2));
 		}
 		else
 		{
 			this.mousePrompt.Visibility = Visibility.Collapsed;
+			this.closestAxisMousePos = null;
+			this.closestMouseAxis = null;
 		}
 	}
 
@@ -163,12 +264,16 @@ public class RotationGizmo : View
 
 	private class RotationGizmoAxis
 	{
+		public readonly Axis Axis;
+
 		private readonly Line[] segments = new Line[NumPoints];
 		private readonly Vector3[] points3d = new Vector3[NumPoints];
 		private int strokeThickness = 3;
 
 		public RotationGizmoAxis(Axis axis, float radius, Canvas canvas)
 		{
+			this.Axis = axis;
+
 			for (int i = 0; i < this.points3d.Length; i++)
 			{
 				float p = i / (float)(this.points3d.Length - 1);
