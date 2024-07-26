@@ -107,14 +107,16 @@ public class PanelService : ServiceBase
 		List<Panel> openPanels = new(this.openPanels);
 		foreach (Panel? panel in openPanels)
 		{
-			if (panel == null || panel is BackgroundWindow)
+			if (panel == null)
 				continue;
 
-			string? panelTypeName = panel.GetType().FullName;
-
-			if (panelTypeName != null)
+			if (panel is not BackgroundWindow)
 			{
-				this.Settings.OpenPanels.Add(panelTypeName);
+				string? panelTypeName = panel.GetType().FullName;
+				if (panelTypeName != null)
+				{
+					this.Settings.OpenPanels.Add(panelTypeName);
+				}
 			}
 
 			await panel.CloseAsync();

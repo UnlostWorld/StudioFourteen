@@ -3,6 +3,7 @@ using ScreenshotStudio.Services;
 using ScreenshotStudio.Utilities;
 using ScreenshotStudio.Windows;
 using System;
+using System.Threading.Tasks;
 using System.Windows;
 
 public partial class BackgroundWindow : PersistentPanel
@@ -53,5 +54,10 @@ public partial class BackgroundWindow : PersistentPanel
 		{
 			this.Services.Studio.OpenStudio();
 		}
+	}
+
+	private void OnShutdownClicked(object sender, RoutedEventArgs e)
+	{
+		Task.Run(this.Services.Stop);
 	}
 }
