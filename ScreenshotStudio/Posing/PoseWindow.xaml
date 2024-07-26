@@ -41,6 +41,11 @@
 		<Grid
 			Grid.RowSpan="2"
 			Grid.Column="0">
+
+			<Rectangle
+				Fill="Transparent"
+				MouseDown="OnBackgroundMouseDown" />
+
 			<TabControl x:Name="GuiTabs">
 				<TabItem Header="Matrix" />
 				<TabItem Header="Tree" />

@@ -222,7 +222,7 @@ public class RotationGizmo : View
 			double dragDelta = newDragDistance - this.dragDistance;
 			this.dragDistance = newDragDistance;
 
-			double angleChange = dragDelta / 70;
+			double angleChange = dragDelta / 20;
 
 			if (Keyboard.Modifiers == ModifierKeys.Shift)
 				angleChange *= 10;

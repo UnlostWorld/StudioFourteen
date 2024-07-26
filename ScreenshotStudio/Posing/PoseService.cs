@@ -4,6 +4,7 @@
 namespace ScreenshotStudio.Posing;
 
 using Dalamud.Hooking;
+using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
@@ -187,6 +188,12 @@ public class PoseService : ServiceBase
 				}
 			}
 		}
+	}
+
+	protected override void OnFrameworkUpdate(IFramework framework)
+	{
+		base.OnFrameworkUpdate(framework);
+		this.Selection?.OnFrameworkUpdate(framework);
 	}
 
 	private unsafe nint UpdateBonePhysicsDetour(nint a1)

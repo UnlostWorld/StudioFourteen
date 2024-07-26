@@ -226,6 +226,9 @@ public partial class PoseWindow : CharacterWindow
 	{
 		base.OnOpened();
 
+		if (this.Services.Pose.Selection == null)
+			this.Services.Pose.Selection = new GameObjectSelection(this.TargetObjectIndex);
+
 		if (DataService.SkeletonViews == null)
 			return;
 
@@ -272,5 +275,10 @@ public partial class PoseWindow : CharacterWindow
 	private void OnEulerUp(object sender, MouseButtonEventArgs e)
 	{
 		this.trackingEuler = null;
+	}
+
+	private void OnBackgroundMouseDown(object sender, MouseButtonEventArgs e)
+	{
+		this.Services.Pose.Selection = new GameObjectSelection(this.TargetObjectIndex);
 	}
 }

@@ -1,5 +1,6 @@
 ﻿namespace ScreenshotStudio.Posing;
 
+using Dalamud.Plugin.Services;
 using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
 using System.Numerics;
 
@@ -18,6 +19,10 @@ public abstract class SelectionBase
 	}
 
 	public virtual void Deactivate()
+	{
+	}
+
+	public virtual void OnFrameworkUpdate(IFramework framework)
 	{
 	}
 }
