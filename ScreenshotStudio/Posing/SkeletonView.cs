@@ -207,6 +207,30 @@ public class SkeletonView : Canvas
 		this.Height = this.backgroundHeight;
 	}
 
+	protected override HitTestResult? HitTestCore(PointHitTestParameters hitTestParameters)
+	{
+		double closestDist = double.MaxValue;
+		BoneButton? closestLink = null;
+		foreach (BoneButton link in this.boneButtons)
+		{
+			double distance = Point.Subtract(hitTestParameters.HitPoint, link.Position).Length;
+			if (distance < closestDist)
+			{
+				closestDist = distance;
+				closestLink = link;
+			}
+		}
+
+		if (closestLink != null && closestDist < MouseOverDistance)
+		{
+			return base.HitTestCore(hitTestParameters);
+		}
+		else
+		{
+			return null;
+		}
+	}
+
 	protected override void OnRenderSizeChanged(SizeChangedInfo? sizeInfo)
 	{
 		if (sizeInfo != null)
@@ -224,6 +248,51 @@ public class SkeletonView : Canvas
 		{
 			connection.From = connection.FromBone.Position;
 			connection.To = connection.ToBone.Position;
+		}
+	}
+
+	protected override void OnMouseMove(MouseEventArgs e)
+	{
+		base.OnMouseMove(e);
+
+		Point mousePos = Mouse.GetPosition(this);
+
+		double closestDist = double.MaxValue;
+		BoneButton? closestLink = null;
+		foreach (BoneButton link in this.boneButtons)
+		{
+			double distance = Point.Subtract(mousePos, link.Position).Length;
+			if (distance < closestDist)
+			{
+				closestDist = distance;
+				closestLink = link;
+			}
+		}
+
+		if (closestLink != null && closestDist < MouseOverDistance)
+		{
+			this.MouseOver = closestLink;
+		}
+		else
+		{
+			this.MouseOver = null;
+		}
+	}
+
+	protected override void OnMouseLeave(MouseEventArgs e)
+	{
+		base.OnMouseLeave(e);
+		this.MouseOver = null;
+	}
+
+	protected override void OnMouseDown(MouseButtonEventArgs e)
+	{
+		base.OnMouseDown(e);
+
+		if (this.MouseOver != null)
+		{
+			ServiceManager.Instance.Pose.Selection = this.MouseOver.Selection;
+			e.Handled = true;
 		}
 	}
 
@@ -281,13 +350,6 @@ public class SkeletonView : Canvas
 	private void OnLoaded()
 	{
 		ServiceManager.Instance.Pose.SelectionChanged += this.OnSelectionChanged;
-
-		Window? wnd = this.FindParent<Window>();
-		if (wnd != null)
-		{
-			wnd.MouseMove += (s, e) => this.OnWindowMouseMove();
-			wnd.MouseDown += (s, e) => this.OnWindowMouseDown(e);
-		}
 	}
 
 	private void OnUnloaded()
@@ -306,41 +368,6 @@ public class SkeletonView : Canvas
 					link.IsSelected = link.Selection == selection;
 				}
 			});
-		}
-	}
-
-	private void OnWindowMouseMove()
-	{
-		Point mousePos = Mouse.GetPosition(this);
-
-		double closestDist = double.MaxValue;
-		BoneButton? closestLink = null;
-		foreach (BoneButton link in this.boneButtons)
-		{
-			double distance = Point.Subtract(mousePos, link.Position).Length;
-			if (distance < closestDist)
-			{
-				closestDist = distance;
-				closestLink = link;
-			}
-		}
-
-		if (closestLink != null && closestDist < MouseOverDistance)
-		{
-			this.MouseOver = closestLink;
-		}
-		else
-		{
-			this.MouseOver = null;
-		}
-	}
-
-	private void OnWindowMouseDown(MouseButtonEventArgs e)
-	{
-		if (this.MouseOver != null)
-		{
-			ServiceManager.Instance.Pose.Selection = this.MouseOver.Selection;
-			e.Handled = true;
 		}
 	}
 
