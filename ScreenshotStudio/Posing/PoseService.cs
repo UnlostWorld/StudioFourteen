@@ -164,6 +164,19 @@ public class PoseService : ServiceBase
 		{
 			this.boneReferences.Remove(id);
 		}
+
+		// if we are flushing a bone we have selected, clear the selection
+		if (this.selection is BoneSelection boneSelection)
+		{
+			foreach(BoneId usedId in boneSelection.BoneIds)
+			{
+				if (toRemove.Contains(usedId))
+				{
+					this.Selection = null;
+					break;
+				}
+			}
+		}
 	}
 
 	private unsafe nint UpdateBonePhysicsDetour(nint a1)

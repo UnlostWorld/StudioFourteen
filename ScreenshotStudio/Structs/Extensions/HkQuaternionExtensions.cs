@@ -6,6 +6,7 @@ namespace ScreenshotStudio.Structs.Extensions;
 using FFXIVClientStructs.Havok.Common.Base.Math.Vector;
 using FFXIVClientStructs.Havok.Common.Base.Math.Quaternion;
 using System;
+using FFXIVClientStructs.FFXIV.Common.Lua;
 
 public static class HkQuaternionExtensions
 {
@@ -40,6 +41,18 @@ public static class HkQuaternionExtensions
 		return v;
 	}
 
+	public static void Normalize(this ref hkQuaternionf self)
+	{
+		float ls = (self.X * self.X) + (self.Y * self.Y) + (self.Z * self.Z) + (self.W * self.W);
+
+		float invNorm = 1.0f / MathF.Sqrt(ls);
+
+		self.X = self.X * invNorm;
+		self.Y = self.Y * invNorm;
+		self.Z = self.Z * invNorm;
+		self.W = self.W * invNorm;
+	}
+
 	public static void Multiply(ref this hkQuaternionf self, hkQuaternionf other)
 	{
 		float q1x = self.X;
@@ -65,6 +78,37 @@ public static class HkQuaternionExtensions
 		self.W = (q1w * q2w) - dot;
 	}
 
+	public static hkQuaternionf Inverse(this hkQuaternionf value)
+	{
+		hkQuaternionf ans = value.Conjugate();
+
+		float num = (value.X * value.X) + (value.Y * value.Y) + (value.Z * value.Z) + (value.W * value.W);
+		ans.X /= num;
+		ans.Y /= num;
+		ans.Z /= num;
+		ans.W /= num;
+		return ans;
+	}
+
+	public static hkQuaternionf Conjugate(this hkQuaternionf value)
+	{
+		hkQuaternionf ans;
+
+		ans.X = -value.X;
+		ans.Y = -value.Y;
+		ans.Z = -value.Z;
+		ans.W = value.W;
+
+		return ans;
+	}
+
+	public static void Divide(ref this hkQuaternionf self, hkQuaternionf other)
+	{
+		self = self.Conjugate();
+		self.Multiply(other);
+		self = self.Conjugate();
+	}
+
 	public static void Set(ref this hkQuaternionf self, hkQuaternionf other)
 	{
 		self.X = other.X;
@@ -82,70 +126,38 @@ public static class HkQuaternionExtensions
 
 	public static void FromEuler(ref this hkQuaternionf self, hkVector4f euler)
 	{
-		float yaw = euler.Y * Deg2Rad;
-		float pitch = euler.X * Deg2Rad;
-		float roll = euler.Z * Deg2Rad;
+		// Roll first, about axis the object is facing, then
+		// pitch upward, then yaw to face into the new heading
+		float sr, cr, sp, cp, sy, cy;
 
-		float c1 = MathF.Cos(yaw / 2);
-		float s1 = MathF.Sin(yaw / 2);
-		float c2 = MathF.Cos(pitch / 2);
-		float s2 = MathF.Sin(pitch / 2);
-		float c3 = MathF.Cos(roll / 2);
-		float s3 = MathF.Sin(roll / 2);
+		float halfRoll = (euler.Z * Deg2Rad) * 0.5f;
+		sr = (float)Math.Sin(halfRoll);
+		cr = (float)Math.Cos(halfRoll);
 
-		float c1c2 = c1 * c2;
-		float s1s2 = s1 * s2;
+		float halfPitch = (euler.Y * Deg2Rad) * 0.5f;
+		sp = (float)Math.Sin(halfPitch);
+		cp = (float)Math.Cos(halfPitch);
 
-		self.X = (c1c2 * s3) + (s1s2 * c3);
-		self.Y = (s1 * c2 * c3) + (c1 * s2 * s3);
-		self.Z = (c1 * s2 * c3) - (s1 * c2 * s3);
-		self.W = (c1c2 * c3) - (s1s2 * s3);
+		float halfYaw = (euler.X * Deg2Rad) * 0.5f;
+		sy = (float)Math.Sin(halfYaw);
+		cy = (float)Math.Cos(halfYaw);
+
+		self.X = (cy * sp * cr) + (sy * cp * sr);
+		self.Y = (sy * cp * cr) - (cy * sp * sr);
+		self.Z = (cy * cp * sr) - (sy * sp * cr);
+		self.W = (cy * cp * cr) + (sy * sp * sr);
 	}
 
-	public static hkVector4f ToEuler(ref this hkQuaternionf self)
+	public static hkVector4f ToEuler(this hkQuaternionf self)
 	{
-		hkVector4f v = default;
+		float yaw = MathF.Atan2(2.0f * ((self.Y * self.W) + (self.X * self.Z)), 1.0f - (2.0f * ((self.X * self.X) + (self.Y * self.Y))));
+		float pitch = MathF.Asin(2.0f * ((self.X * self.W) - (self.Y * self.Z)));
+		float roll = MathF.Atan2(2.0f * ((self.X * self.Y) + (self.Z * self.W)), 1.0f - (2.0f * ((self.X * self.X) + (self.Z * self.Z))));
 
-		double test = (self.X * self.Y) + (self.Z * self.W);
-
-		if (test > 0.4995f)
-		{
-			v.Y = 2f * (float)Math.Atan2(self.X, self.Y);
-			v.X = (float)Math.PI / 2;
-			v.Z = 0;
-		}
-		else if (test < -0.4995f)
-		{
-			v.Y = -2f * (float)Math.Atan2(self.X, self.W);
-			v.X = -(float)Math.PI / 2;
-			v.Z = 0;
-		}
-		else
-		{
-			double sqx = self.X * self.X;
-			double sqy = self.Y * self.Y;
-			double sqz = self.Z * self.Z;
-
-			v.Y = (float)Math.Atan2((2 * self.Y * self.W) - (2 * self.X * self.Z), 1 - (2 * sqy) - (2 * sqz));
-			v.X = (float)Math.Asin(2 * test);
-			v.Z = (float)Math.Atan2((2 * self.X * self.W) - (2 * self.Y * self.Z), 1 - (2 * sqx) - (2 * sqz));
-		}
-
-		v.X = NormalizeAngle(v.X * Rad2Deg);
-		v.Y = NormalizeAngle(v.Y * Rad2Deg);
-		v.Z = NormalizeAngle(v.Z * Rad2Deg);
-
-		return v;
-	}
-
-	private static float NormalizeAngle(float angle)
-	{
-		while (angle > 360)
-			angle -= 360;
-
-		while (angle < 0)
-			angle += 360;
-
-		return angle;
+		hkVector4f res = default;
+		res.X = yaw * Rad2Deg;
+		res.Y = pitch * Rad2Deg;
+		res.Z = roll * Rad2Deg;
+		return res;
 	}
 }

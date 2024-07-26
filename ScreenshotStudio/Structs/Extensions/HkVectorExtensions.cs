@@ -28,6 +28,14 @@ public static class HkVectorExtensions
 		self.W += other.W;
 	}
 
+	public static void Subtract(ref this hkVector4f self, hkVector4f other)
+	{
+		self.X -= other.X;
+		self.Y -= other.Y;
+		self.Z -= other.Z;
+		self.W -= other.W;
+	}
+
 	public static void Set(ref this hkVector4f self, hkVector4f other)
 	{
 		self.X = other.X;

@@ -10,10 +10,11 @@ using ScreenshotStudio.Windows;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 public partial class PoseWindow : CharacterWindow
 {
-	private hkQsTransformf fallback = default;
+	private hkVector4f? trackingEuler;
 
 	[AutoNotify]
 	public bool ExpandTranslationSliders
@@ -42,56 +43,91 @@ public partial class PoseWindow : CharacterWindow
 	public double TranslationX
 	{
 		get => this.Transform.Translation.X;
-		set => this.Transform.Translation.X = (float)value;
+		set
+		{
+			var transform = this.Transform;
+			transform.Translation.X = (float)value;
+			this.Transform = transform;
+		}
 	}
 
 	[AutoNotify]
 	public double TranslationY
 	{
 		get => this.Transform.Translation.Y;
-		set => this.Transform.Translation.Y = (float)value;
+		set
+		{
+			var transform = this.Transform;
+			transform.Translation.Y = (float)value;
+			this.Transform = transform;
+		}
 	}
 
 	[AutoNotify]
 	public double TranslationZ
 	{
 		get => this.Transform.Translation.Z;
-		set => this.Transform.Translation.Z = (float)value;
+		set
+		{
+			var transform = this.Transform;
+			transform.Translation.Z = (float)value;
+			this.Transform = transform;
+		}
 	}
 
 	[AutoNotify]
 	public double EulerRotationX
 	{
-		get => this.Transform.Rotation.ToEuler().X;
+		get => this.EulerRotation.X;
 		set
 		{
-			hkVector4f euler = this.Transform.Rotation.ToEuler();
+			hkVector4f euler = this.EulerRotation;
 			euler.X = (float)value;
-			this.Transform.Rotation.FromEuler(euler);
+			this.EulerRotation = euler;
 		}
 	}
 
 	[AutoNotify]
 	public double EulerRotationY
 	{
-		get => this.Transform.Rotation.ToEuler().Y;
+		get => this.EulerRotation.Y;
 		set
 		{
-			hkVector4f euler = this.Transform.Rotation.ToEuler();
+			hkVector4f euler = this.EulerRotation;
 			euler.Y = (float)value;
-			this.Transform.Rotation.FromEuler(euler);
+			this.EulerRotation = euler;
 		}
 	}
 
 	[AutoNotify]
 	public double EulerRotationZ
 	{
-		get => this.Transform.Rotation.ToEuler().Z;
+		get => this.EulerRotation.Z;
 		set
 		{
-			hkVector4f euler = this.Transform.Rotation.ToEuler();
+			hkVector4f euler = this.EulerRotation;
 			euler.Z = (float)value;
-			this.Transform.Rotation.FromEuler(euler);
+			this.EulerRotation = euler;
+		}
+	}
+
+	public hkVector4f EulerRotation
+	{
+		get
+		{
+			if (this.trackingEuler != null)
+				return (hkVector4f)this.trackingEuler;
+
+			return this.Transform.Rotation.ToEuler();
+		}
+
+		set
+		{
+			this.trackingEuler = value;
+
+			var transform = this.Transform;
+			transform.Rotation.FromEuler(value);
+			this.Transform = transform;
 		}
 	}
 
@@ -99,21 +135,36 @@ public partial class PoseWindow : CharacterWindow
 	public double ScaleX
 	{
 		get => this.Transform.Scale.X;
-		set => this.Transform.Scale.X = (float)value;
+		set
+		{
+			var transform = this.Transform;
+			transform.Scale.X = (float)value;
+			this.Transform = transform;
+		}
 	}
 
 	[AutoNotify]
 	public double ScaleY
 	{
 		get => this.Transform.Scale.Y;
-		set => this.Transform.Scale.Y = (float)value;
+		set
+		{
+			var transform = this.Transform;
+			transform.Scale.Y = (float)value;
+			this.Transform = transform;
+		}
 	}
 
 	[AutoNotify]
 	public double ScaleZ
 	{
 		get => this.Transform.Scale.Z;
-		set => this.Transform.Scale.Z = (float)value;
+		set
+		{
+			var transform = this.Transform;
+			transform.Scale.Z = (float)value;
+			this.Transform = transform;
+		}
 	}
 
 	[AutoNotify]
@@ -129,14 +180,22 @@ public partial class PoseWindow : CharacterWindow
 		}
 	}
 
-	private ref hkQsTransformf Transform
+	private hkQsTransformf Transform
 	{
 		get
 		{
 			if (this.Selection == null)
-				return ref this.fallback;
+				return default;
 
-			return ref this.Selection.Transform;
+			return this.Selection.Transform;
+		}
+
+		set
+		{
+			if (this.Selection == null)
+				return;
+
+			this.Selection.Transform = value;
 		}
 	}
 
@@ -180,5 +239,15 @@ public partial class PoseWindow : CharacterWindow
 	private void OnRevertClicked(object sender, RoutedEventArgs e)
 	{
 		this.Services.Pose.FlushBoneReferences(this.TargetObjectIndex);
+	}
+
+	private void OnEulerDown(object sender, MouseButtonEventArgs e)
+	{
+		this.trackingEuler = this.Selection?.Transform.Rotation.ToEuler();
+	}
+
+	private void OnEulerUp(object sender, MouseButtonEventArgs e)
+	{
+		this.trackingEuler = null;
 	}
 }

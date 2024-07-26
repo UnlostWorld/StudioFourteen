@@ -34,8 +34,38 @@ public class BoneSelection : SelectionBase
 		}
 	}
 
+	public bool UseModValues { get; set; } = false;
+
 	// TODO: support multiple bone transforms
-	public override ref hkQsTransformf Transform => ref this.Bone.CurrentTransform;
+	public override hkQsTransformf Transform
+	{
+		get
+		{
+			if (this.UseModValues)
+			{
+				return this.Bone.CurrentTransform;
+			}
+			else
+			{
+				hkQsTransformf combine = this.Bone.LastTransform;
+				combine.Add(this.Bone.CurrentTransform);
+				return combine;
+			}
+		}
+		set
+		{
+			if (this.UseModValues)
+			{
+				this.Bone.CurrentTransform = value;
+			}
+			else
+			{
+				hkQsTransformf separate = value;
+				separate.Subtract(this.Bone.LastTransform);
+				this.Bone.CurrentTransform = separate;
+			}
+		}
+	}
 
 	public override bool LockTransform
 	{

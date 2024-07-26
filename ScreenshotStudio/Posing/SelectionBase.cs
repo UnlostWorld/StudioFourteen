@@ -6,7 +6,7 @@ public abstract class SelectionBase
 {
 	public abstract string Name { get; }
 
-	public abstract ref hkQsTransformf Transform { get; }
+	public abstract hkQsTransformf Transform { get; set; }
 	public abstract bool LockTransform { get; set; }
 
 	public virtual void Activate()
