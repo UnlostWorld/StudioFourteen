@@ -6,42 +6,18 @@ using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
-using ScreenshotStudio.Structs;
 using ScreenshotStudio.Utilities;
-using System;
 
 public abstract class CharacterWindow : PanelWindow
 {
-	[AlwaysNotify] public unsafe string? CharacterName => this.HasValidTarget ? this.Target->GetNameAsString() : "Nobody";
-
-	[AlwaysNotify]
-	public unsafe bool HasValidTarget
-	{
-		get
-		{
-			try
-			{
-				if (this.Target == null)
-					return false;
-
-				if (this.Target->RenderFlags != (int)RenderMode.Draw)
-					return false;
-
-				return true;
-			}
-			catch (Exception)
-			{
-				return false;
-			}
-		}
-	}
+	[AlwaysNotify] public string? CharacterName { get; private set; }
+	[AlwaysNotify] public bool HasValidTarget { get; private set; }
+	[AlwaysNotify] public int TargetObjectIndex { get; private set; }
 
 	/// <summary>
 	///  Gets a pointer to the player, the players target, or the group pose target.
 	/// </summary>
 	public unsafe Character* Target { get; private set; }
-
-	public ushort TargetObjectIndex { get; private set; }
 
 	// should put this somewhere...
 	public static unsafe Character* GetTarget()
@@ -88,15 +64,10 @@ public abstract class CharacterWindow : PanelWindow
 	protected unsafe override void OnFrameworkUpdate(IFramework framework)
 	{
 		base.OnFrameworkUpdate(framework);
-		this.Target = GetTarget();
 
-		if (this.HasValidTarget)
-		{
-			this.TargetObjectIndex = this.Target->ObjectIndex;
-		}
-		else
-		{
-			this.TargetObjectIndex = 0;
-		}
+		this.Target = GetTarget();
+		this.HasValidTarget = this.Target != null && this.Target->CanDraw();
+		this.TargetObjectIndex = this.HasValidTarget ? this.Target->ObjectIndex : -1;
+		this.CharacterName = this.HasValidTarget ? this.Target->GetNameAsString() : "Nobody";
 	}
 }

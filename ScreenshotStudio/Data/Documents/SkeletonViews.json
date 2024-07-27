@@ -1,6 +1,5 @@
-[
-	{
-		"Category": "Body",
+{
+	"Body": {
 		"Background": "/Assets/PoseCharacterBodyBackground.png",
 		"Padding": "-40,0,-40,0",
 		"Bones": {
@@ -29,8 +28,9 @@
 			"j_asi_e_l": "83, 490"
 		}
 	},
-	{
-		"Category": "Body",
+
+
+	"Clothes": {
 		"Background": "/Assets/PoseCharacterClothesBackground.png",
 		"Padding": "-40,0,0,0",
 		"Bones": {
@@ -57,8 +57,9 @@
 			"n_buki_tate_l": "55, 220"
 		}
 	},
-	{
-		"Category": "Body",
+
+
+	"Tail": {
 		"Background": "/Assets/PoseCharacterTailBackground.png",
 		"Padding": "0,20,0,0",
 		"Bones": {
@@ -69,8 +70,9 @@
 			"n_sippo_e": "28, 112"
 		}
 	},
-	{
-		"Category": "Body",
+
+
+	"Penis": {
 		"Background": "/Assets/PoseCharacterPenisBackground.png",
 		"Padding": "0,20,0,0",
 		"Bones": {
@@ -83,27 +85,14 @@
 			"iv_kougan_l": "24, 106"
 		}
 	},
-	{
-		"Category": "Body",
+
+
+	"Vagina": {
 		"Size": "64,64",
 		"Bones": {
 			"iv_kuritto": "32, 20",
 			"iv_omanko": "32, 42",
 			"iv_inshin_l": "16, 42"
 		}
-	},
-
-
-	{
-		"Category": "Face",
-		"Bones": {
-		}
-	},
-
-
-	{
-		"Category": "Hands",
-		"Bones": {
-		}
 	}
-]
+}

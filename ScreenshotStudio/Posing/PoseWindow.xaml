@@ -47,6 +47,51 @@
 				MouseDown="OnBackgroundMouseDown" />
 
 			<TabControl x:Name="GuiTabs">
+				<TabItem Header="Body">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition />
+							<ColumnDefinition />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition />
+							<RowDefinition />
+							<RowDefinition />
+						</Grid.RowDefinitions>
+
+						<pose:SkeletonView
+							Grid.RowSpan="3"
+							Grid.Column="0"
+							ObjectTableIndex="{Binding TargetObjectIndex}"
+							ViewDefinition="{Binding Services.Data.SkeletonViews[Body]}" />
+
+						<pose:SkeletonView
+							Grid.RowSpan="3"
+							Grid.Column="1"
+							ObjectTableIndex="{Binding TargetObjectIndex}"
+							ViewDefinition="{Binding Services.Data.SkeletonViews[Clothes]}" />
+
+						<pose:SkeletonView
+							Grid.Row="0"
+							Grid.Column="2"
+							ObjectTableIndex="{Binding TargetObjectIndex}"
+							ViewDefinition="{Binding Services.Data.SkeletonViews[Tail]}" />
+
+						<pose:SkeletonView
+							Grid.Row="1"
+							Grid.Column="2"
+							ObjectTableIndex="{Binding TargetObjectIndex}"
+							ViewDefinition="{Binding Services.Data.SkeletonViews[Panis]}" />
+
+						<pose:SkeletonView
+							Grid.Row="2"
+							Grid.Column="2"
+							ObjectTableIndex="{Binding TargetObjectIndex}"
+							ViewDefinition="{Binding Services.Data.SkeletonViews[Vagina]}" />
+
+					</Grid>
+				</TabItem>
 				<TabItem Header="Matrix" />
 				<TabItem Header="Tree" />
 			</TabControl>

@@ -265,45 +265,18 @@ public partial class PoseWindow : CharacterWindow
 	{
 		base.OnOpened();
 
-		if (this.Services.Pose.Selection == null)
-			this.Services.Pose.Selection = new GameObjectSelection(this.TargetObjectIndex);
-
-		if (DataService.SkeletonViews == null)
-			return;
-
-		Dictionary<string, WrapPanel> panels = new();
-		int categoryIndex = 0;
-		foreach(PoseViewDefinition def in DataService.SkeletonViews)
+		if (this.Services.Pose.Selection == null && this.TargetObjectIndex >= 0)
 		{
-			if (def.Category == null)
-				continue;
-
-			if (!panels.ContainsKey(def.Category))
-			{
-				WrapPanel panel = new();
-				panel.Orientation = Orientation.Vertical;
-				panel.Height = 512;
-
-				TabItem item = new();
-				item.Header = def.Category; // localize me!
-				item.Content = panel;
-				this.GuiTabs.Items.Insert(categoryIndex, item);
-
-				panels.Add(def.Category, panel);
-				categoryIndex++;
-			}
-
-			SkeletonView view = new();
-			view.ViewDefinition = def;
-			panels[def.Category].Children.Add(view);
+			this.Services.Pose.Selection = new GameObjectSelection((ushort)this.TargetObjectIndex);
 		}
-
-		this.GuiTabs.SelectedIndex = 0;
 	}
 
 	private void OnRevertClicked(object sender, RoutedEventArgs e)
 	{
-		this.Services.Pose.FlushBoneReferences(this.TargetObjectIndex);
+		if (this.TargetObjectIndex < 0)
+			return;
+
+		this.Services.Pose.FlushBoneReferences((ushort)this.TargetObjectIndex);
 	}
 
 	private void OnEulerDown(object sender, MouseButtonEventArgs e)
@@ -318,6 +291,9 @@ public partial class PoseWindow : CharacterWindow
 
 	private void OnBackgroundMouseDown(object sender, MouseButtonEventArgs e)
 	{
-		this.Services.Pose.Selection = new GameObjectSelection(this.TargetObjectIndex);
+		if (this.TargetObjectIndex < 0)
+			return;
+
+		this.Services.Pose.Selection = new GameObjectSelection((ushort)this.TargetObjectIndex);
 	}
 }

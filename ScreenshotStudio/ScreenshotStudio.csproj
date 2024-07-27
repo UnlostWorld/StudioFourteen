@@ -48,7 +48,7 @@
 
 	<ItemGroup>
 	  <None Remove="Assets\LegacyTattoo.png" />
-	  <None Remove="data\documents\Bones.json" />
+	  <None Remove="Data\Documents\SkeletonViews.json" />
 	</ItemGroup>
 
 	<ItemGroup>

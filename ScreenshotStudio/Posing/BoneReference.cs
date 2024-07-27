@@ -49,6 +49,9 @@ public class BoneReference : IDisposable
 		if (character == null)
 			return null;
 
+		if (!character->CanDraw())
+			return null;
+
 		this.LastCharacterTranslation = character->DrawObject->Position;
 		this.LastCharacterRotation = character->DrawObject->Rotation;
 		this.LastCharacterScale = character->DrawObject->Scale;
@@ -67,6 +70,16 @@ public class BoneReference : IDisposable
 			return null;
 
 		hkaPose* pose = partialSkeleton->GetHavokPose(this.Id.PoseIndex);
+
+		// Sanity check bone name, useful if the skeleton has changed during posing.
+		if (this.Id.BoneName != null)
+		{
+			hkaBone bone = pose->Skeleton->Bones[this.Id.BoneIndex];
+			if (bone.Name.String != this.Id.BoneName)
+			{
+				return null;
+			}
+		}
 
 		if (!this.LockTransform)
 		{

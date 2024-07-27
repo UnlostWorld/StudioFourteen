@@ -135,7 +135,7 @@ public class PoseService : ServiceBase
 
 					if (boneName == name)
 					{
-						bones.Add(new(character->ObjectIndex, partialIdx, poseIdx, boneIdx));
+						bones.Add(new(character->ObjectIndex, partialIdx, poseIdx, boneIdx, boneName));
 
 						short parentIndex = pose->Skeleton->ParentIndices[boneIdx];
 						if (parentIndex != -1)
@@ -234,6 +234,9 @@ public class PoseService : ServiceBase
 					continue;
 
 				Skeleton* skeleton = reference.ApplyTransform();
+				if (skeleton == null)
+					continue;
+
 				modifiedSkeletonPointers.Add((nint)skeleton);
 			}
 

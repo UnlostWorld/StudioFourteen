@@ -36,6 +36,14 @@ public static class CharacterExtensions
 		Restore,
 	}
 
+	public static bool CanDraw(ref this Character self)
+	{
+		if (!self.IsReadyToDraw())
+			return false;
+
+		return self.RenderFlags == (int)RenderMode.Draw;
+	}
+
 	public static unsafe string? GetNameAsString(ref this Character self)
 	{
 		fixed (byte* ptr = self.Name)

@@ -1,11 +1,12 @@
 ﻿namespace ScreenshotStudio.Posing;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Utilities;
-using ScreenshotStudio.Windows;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -17,9 +18,15 @@ public class SkeletonView : Canvas
 {
 	public static readonly DependencyProperty ViewDefinitionProperty = DependencyProperty.Register(
 		nameof(SkeletonView.ViewDefinition),
-		typeof(PoseViewDefinition),
+		typeof(SkeletonViewDefinition),
 		typeof(SkeletonView),
 		new(null, OnViewDefinitionChanged));
+
+	public static readonly DependencyProperty ObjectTableIndexProperty = DependencyProperty.Register(
+		nameof(SkeletonView.ObjectTableIndex),
+		typeof(int),
+		typeof(SkeletonView),
+		new(-1, OnObjetTableIndexChanged));
 
 	protected readonly ILogger Log = Logging.ForContext<SkeletonView>();
 
@@ -34,15 +41,24 @@ public class SkeletonView : Canvas
 
 	public SkeletonView()
 	{
+		if (DesignerProperties.GetIsInDesignMode(this))
+			return;
+
 		this.Loaded += (s, e) => this.OnLoaded();
 		this.Unloaded += (s, e) => this.OnUnloaded();
 		this.Dispatcher.ShutdownStarted += (s, e) => this.OnUnloaded();
 	}
 
-	public PoseViewDefinition? ViewDefinition
+	public SkeletonViewDefinition? ViewDefinition
 	{
-		get => (PoseViewDefinition?)this.GetValue(ViewDefinitionProperty);
+		get => (SkeletonViewDefinition?)this.GetValue(ViewDefinitionProperty);
 		set => this.SetValue(ViewDefinitionProperty, value);
+	}
+
+	public int ObjectTableIndex
+	{
+		get => (int)this.GetValue(ObjectTableIndexProperty);
+		set => this.SetValue(ObjectTableIndexProperty, value);
 	}
 
 	public BoneButton? MouseOver
@@ -111,14 +127,24 @@ public class SkeletonView : Canvas
 			this.Background = brush;
 		}
 
-		PoseViewDefinition definition = this.ViewDefinition;
+		if (DesignerProperties.GetIsInDesignMode(this))
+			return;
+
+		int objectTableIndex = this.ObjectTableIndex;
+		if (objectTableIndex < 0)
+			return;
+
+		SkeletonViewDefinition definition = this.ViewDefinition;
 		Threads.RunOnFrameworkThread(() =>
 		{
 			List<BoneSelection> selections = new();
 
 			try
 			{
-				Character* character = CharacterWindow.GetTarget();
+				if (DalamudServices.ObjectTable == null)
+					return;
+
+				Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
 				if (character == null)
 					return;
 
@@ -297,6 +323,14 @@ public class SkeletonView : Canvas
 	}
 
 	private static void OnViewDefinitionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+	{
+		if (d is SkeletonView view)
+		{
+			view.Load();
+		}
+	}
+
+	private static void OnObjetTableIndexChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
 	{
 		if (d is SkeletonView view)
 		{
@@ -486,7 +520,7 @@ public class SkeletonView : Canvas
 	}
 }
 
-public class PoseViewDefinition
+public class SkeletonViewDefinition
 {
 	public string? Category { get; set; }
 	public string? Background { get; set; }
