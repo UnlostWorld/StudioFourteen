@@ -9,6 +9,8 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.Havok.Animation.Rig;
+using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
+using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Utilities;
 using System;
@@ -220,16 +222,52 @@ public class PoseService : ServiceBase
 
 	// This is a very hot path, be careful how much you do here.
 	// All the main skeleton stuff like positions, IK and physics is done at this point.
-	private void UpdateSkeletons()
+	private unsafe void UpdateSkeletons()
 	{
 		lock (this.boneReferences)
 		{
+			HashSet<nint> modifiedSkeletonPointers = new();
+
 			foreach ((BoneId id, BoneReference reference) in this.boneReferences)
 			{
 				if (!reference.IsValid)
 					continue;
 
-				reference.ApplyTransform();
+				Skeleton* skeleton = reference.ApplyTransform();
+				modifiedSkeletonPointers.Add((nint)skeleton);
+			}
+
+			// Update sub partials
+			foreach (nint skeletonPtr in modifiedSkeletonPointers)
+			{
+				Skeleton* skeleton = (Skeleton*)skeletonPtr;
+				if (skeleton == null)
+					continue;
+
+				ushort partialCount = skeleton->PartialSkeletonCount;
+				if (partialCount <= 1)
+					continue;
+
+				for (int partialIdx = 1; partialIdx < partialCount; partialIdx++)
+				{
+					PartialSkeleton* partialSkeleton = &skeleton->PartialSkeletons[partialIdx];
+
+					if (partialSkeleton->ConnectedBoneIndex >= 0 && partialSkeleton->ConnectedParentBoneIndex >= 0)
+					{
+						PartialSkeleton* parentPartial = &skeleton->PartialSkeletons[0];
+
+						// assume pose 0
+						hkaPose* pose = partialSkeleton->GetHavokPose(0);
+						hkaPose* parentPose = parentPartial->GetHavokPose(0);
+
+						hkQsTransformf* transform = pose->AccessBoneModelSpace(partialSkeleton->ConnectedBoneIndex, hkaPose.PropagateOrNot.Propagate);
+						hkQsTransformf* parentTransform = parentPose->AccessBoneModelSpace(partialSkeleton->ConnectedParentBoneIndex, hkaPose.PropagateOrNot.DontPropagate);
+
+						transform->Translation = parentTransform->Translation;
+						transform->Rotation = parentTransform->Rotation;
+						transform->Scale = parentTransform->Scale;
+					}
+				}
 			}
 		}
 	}

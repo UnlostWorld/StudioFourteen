@@ -33,7 +33,7 @@ public class BoneReference : IDisposable
 		this.CurrentTransform.Rotation = HkQuaternionExtensions.Identity;
 	}
 
-	public unsafe hkaPose* GetPose()
+	public unsafe Skeleton* GetSkeleton()
 	{
 		if (DalamudServices.ObjectTable == null)
 			return null;
@@ -46,8 +46,15 @@ public class BoneReference : IDisposable
 		if (characterBase == null)
 			return null;
 
-		Skeleton* skeleton = characterBase->Skeleton;
-		if (skeleton == null)
+		return characterBase->Skeleton;
+	}
+
+	public unsafe Skeleton* ApplyTransform()
+	{
+		Threads.VerifyFrameworkThread();
+
+		Skeleton* skeleton = this.GetSkeleton();
+		if(skeleton == null)
 			return null;
 
 		PartialSkeleton* partialSkeleton = &skeleton->PartialSkeletons[this.Id.PartialSkeletonIndex];
@@ -55,14 +62,7 @@ public class BoneReference : IDisposable
 		if (partialSkeleton == null)
 			return null;
 
-		return partialSkeleton->GetHavokPose(this.Id.PoseIndex);
-	}
-
-	public unsafe void ApplyTransform()
-	{
-		Threads.VerifyFrameworkThread();
-
-		hkaPose* pose = this.GetPose();
+		hkaPose* pose = partialSkeleton->GetHavokPose(this.Id.PoseIndex);
 
 		if (!this.LockTransform)
 		{
@@ -89,6 +89,8 @@ public class BoneReference : IDisposable
 			transform->Rotation.Set(newTransform.Rotation);
 			transform->Scale.Set(newTransform.Scale);
 		}
+
+		return skeleton;
 	}
 
 	public void Dispose()
