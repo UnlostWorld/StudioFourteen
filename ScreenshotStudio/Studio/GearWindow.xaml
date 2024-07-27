@@ -12,10 +12,11 @@
 	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="{DynamicResource LOC_Gear}"
+	Width="450"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	ResizeMode="NoResize"
-	SizeToContent="WidthAndHeight"
+	SizeToContent="Height"
 	Subtitle="{Binding CharacterName}"
 	TitleIcon="HelmetBattle"
 	mc:Ignorable="d">
@@ -23,114 +24,119 @@
 	<Grid IsEnabled="{Binding HasValidTarget}">
 		<Grid.Resources>
 
-			<ControlTemplate
+
+			<Style
 				x:Key="IconButton"
+				BasedOn="{StaticResource WpfUtilsButton}"
 				TargetType="{x:Type Button}">
 
-				<Grid
-					Cursor="Hand"
-					TextBlock.Foreground="{DynamicResource ForegroundLightBrush}">
+				<Setter Property="Width" Value="54" />
+				<Setter Property="Height" Value="54" />
+				<Setter Property="Template">
+					<Setter.Value>
+						<ControlTemplate TargetType="{x:Type Button}">
+							<Grid
+								Cursor="Hand"
+								TextBlock.Foreground="{DynamicResource ForegroundLightBrush}">
 
-					<Border
-						Background="{TemplateBinding Background}"
-						Style="{DynamicResource WpfUtilsControlBorder}" />
+								<Grid Margin="2">
 
-					<Grid Margin="2">
+									<Border
+										x:Name="HoverBackground"
+										CornerRadius="4"
+										Opacity="0"
+										Style="{DynamicResource WpfUtilsControlHoverBorder}"
+										Visibility="Collapsed" />
 
-						<Border
-							x:Name="HoverBackground"
-							CornerRadius="4"
-							Opacity="0"
-							Style="{DynamicResource WpfUtilsControlHoverBorder}"
-							Visibility="Collapsed" />
+									<Grid x:Name="IconHost">
+										<Image
+											Margin="4,3,4,5"
+											SnapsToDevicePixels="True"
+											Source="{TemplateBinding Content}" />
 
-						<Grid x:Name="IconHost">
-							<Image
-								Margin="4,3,4,5"
-								SnapsToDevicePixels="True"
-								Source="{TemplateBinding Content}" />
+										<controls:XivTexImage
+											x:Name="IconShine"
+											Path="ui/uld/icona_frame_hr1.tex"
+											Rect="0, 0, 96, 96"
+											SnapsToDevicePixels="True" />
+									</Grid>
 
-							<controls:XivTexImage
-								x:Name="IconShine"
-								Path="ui/uld/icona_frame_hr1.tex"
-								Rect="0, 0, 96, 96"
-								SnapsToDevicePixels="True" />
-						</Grid>
+									<controls:XivTexImage
+										x:Name="HoverBorder"
+										Margin="-10"
+										Opacity="0"
+										Path="ui/uld/icona_frame_hr1.tex"
+										Rect="480, 0, 145, 145"
+										SnapsToDevicePixels="True" />
+								</Grid>
 
-						<controls:XivTexImage
-							x:Name="HoverBorder"
-							Margin="-10"
-							Opacity="0"
-							Path="ui/uld/icona_frame_hr1.tex"
-							Rect="480, 0, 145, 145"
-							SnapsToDevicePixels="True" />
-					</Grid>
+							</Grid>
 
-				</Grid>
-
-				<ControlTemplate.Triggers>
-					<Trigger Property="IsMouseOver" Value="true">
-						<Trigger.EnterActions>
-							<BeginStoryboard>
-								<Storyboard>
-									<DoubleAnimation
-										Storyboard.TargetName="HoverBackground"
-										Storyboard.TargetProperty="Opacity"
-										To="1"
-										Duration="0:0:0.150">
-										<DoubleAnimation.EasingFunction>
-											<SineEase EasingMode="EaseOut" />
-										</DoubleAnimation.EasingFunction>
-									</DoubleAnimation>
-									<DoubleAnimation
-										Storyboard.TargetName="HoverBorder"
-										Storyboard.TargetProperty="Opacity"
-										To="1"
-										Duration="0:0:0.150">
-										<DoubleAnimation.EasingFunction>
-											<SineEase EasingMode="EaseOut" />
-										</DoubleAnimation.EasingFunction>
-									</DoubleAnimation>
-								</Storyboard>
-							</BeginStoryboard>
-						</Trigger.EnterActions>
-						<Trigger.ExitActions>
-							<BeginStoryboard>
-								<Storyboard>
-									<DoubleAnimation
-										Storyboard.TargetName="HoverBackground"
-										Storyboard.TargetProperty="Opacity"
-										To="0"
-										Duration="0:0:0.250">
-										<DoubleAnimation.EasingFunction>
-											<SineEase EasingMode="EaseIn" />
-										</DoubleAnimation.EasingFunction>
-									</DoubleAnimation>
-									<DoubleAnimation
-										Storyboard.TargetName="HoverBorder"
-										Storyboard.TargetProperty="Opacity"
-										To="0"
-										Duration="0:0:0.250">
-										<DoubleAnimation.EasingFunction>
-											<SineEase EasingMode="EaseIn" />
-										</DoubleAnimation.EasingFunction>
-									</DoubleAnimation>
-								</Storyboard>
-							</BeginStoryboard>
-						</Trigger.ExitActions>
-					</Trigger>
-					<Trigger Property="Content" Value="{x:Null}">
-						<Setter TargetName="IconHost" Property="Visibility" Value="Collapsed" />
-						<Setter TargetName="HoverBorder" Property="Visibility" Value="Collapsed" />
-						<Setter TargetName="HoverBackground" Property="Visibility" Value="Visible" />
-					</Trigger>
-				</ControlTemplate.Triggers>
-			</ControlTemplate>
+							<ControlTemplate.Triggers>
+								<Trigger Property="IsMouseOver" Value="true">
+									<Trigger.EnterActions>
+										<BeginStoryboard>
+											<Storyboard>
+												<DoubleAnimation
+													Storyboard.TargetName="HoverBackground"
+													Storyboard.TargetProperty="Opacity"
+													To="1"
+													Duration="0:0:0.150">
+													<DoubleAnimation.EasingFunction>
+														<SineEase EasingMode="EaseOut" />
+													</DoubleAnimation.EasingFunction>
+												</DoubleAnimation>
+												<DoubleAnimation
+													Storyboard.TargetName="HoverBorder"
+													Storyboard.TargetProperty="Opacity"
+													To="1"
+													Duration="0:0:0.150">
+													<DoubleAnimation.EasingFunction>
+														<SineEase EasingMode="EaseOut" />
+													</DoubleAnimation.EasingFunction>
+												</DoubleAnimation>
+											</Storyboard>
+										</BeginStoryboard>
+									</Trigger.EnterActions>
+									<Trigger.ExitActions>
+										<BeginStoryboard>
+											<Storyboard>
+												<DoubleAnimation
+													Storyboard.TargetName="HoverBackground"
+													Storyboard.TargetProperty="Opacity"
+													To="0"
+													Duration="0:0:0.250">
+													<DoubleAnimation.EasingFunction>
+														<SineEase EasingMode="EaseIn" />
+													</DoubleAnimation.EasingFunction>
+												</DoubleAnimation>
+												<DoubleAnimation
+													Storyboard.TargetName="HoverBorder"
+													Storyboard.TargetProperty="Opacity"
+													To="0"
+													Duration="0:0:0.250">
+													<DoubleAnimation.EasingFunction>
+														<SineEase EasingMode="EaseIn" />
+													</DoubleAnimation.EasingFunction>
+												</DoubleAnimation>
+											</Storyboard>
+										</BeginStoryboard>
+									</Trigger.ExitActions>
+								</Trigger>
+								<Trigger Property="Content" Value="{x:Null}">
+									<Setter TargetName="IconHost" Property="Visibility" Value="Collapsed" />
+									<Setter TargetName="HoverBorder" Property="Visibility" Value="Collapsed" />
+									<Setter TargetName="HoverBackground" Property="Visibility" Value="Visible" />
+								</Trigger>
+							</ControlTemplate.Triggers>
+						</ControlTemplate>
+					</Setter.Value>
+				</Setter>
+			</Style>
 
 
 			<DataTemplate x:Key="ItemView">
 				<Grid
-					Width="200"
 					Height="56"
 					Margin="0,2,0,2">
 					<Grid.ColumnDefinitions>
@@ -144,15 +150,28 @@
 						<RowDefinition />
 					</Grid.RowDefinitions>
 
+					<Border
+						Grid.RowSpan="2"
+						Grid.Column="0"
+						Margin="1"
+						Style="{DynamicResource WpfUtilsControlBorder}" />
+
+					<controls:XivTexImage
+						x:Name="BackgroundIcon"
+						Grid.RowSpan="2"
+						Grid.Column="0"
+						Margin="6"
+						Opacity="0.75"
+						Path="ui/uld/character_hr1.tex"
+						Rect="0, 144, 64, 64" />
+
 					<Button
 						Grid.RowSpan="2"
 						Grid.Column="0"
-						Width="54"
-						Height="54"
 						Click="OnChangeClicked"
 						Content="{Binding Item.Icon.Source}"
 						MouseUp="OnMouseUp"
-						Template="{StaticResource IconButton}"
+						Style="{DynamicResource IconButton}"
 						ToolTip="{Binding Item}" />
 
 					<Button
@@ -242,13 +261,71 @@
 						</Button>
 					</Grid>
 				</Grid>
+
+				<DataTemplate.Triggers>
+					<DataTrigger
+						Binding="{Binding Slot}"
+						Value="OffHand">
+						<Setter TargetName="BackgroundIcon" Property="Rect" Value="64, 144, 64, 64" />
+					</DataTrigger>
+					<DataTrigger
+						Binding="{Binding Slot}"
+						Value="Head">
+						<Setter TargetName="BackgroundIcon" Property="Rect" Value="128, 144, 64, 64" />
+					</DataTrigger>
+					<DataTrigger
+						Binding="{Binding Slot}"
+						Value="Body">
+						<Setter TargetName="BackgroundIcon" Property="Rect" Value="192, 144, 64, 64" />
+					</DataTrigger>
+					<DataTrigger
+						Binding="{Binding Slot}"
+						Value="Hands">
+						<Setter TargetName="BackgroundIcon" Property="Rect" Value="256, 144, 64, 64" />
+					</DataTrigger>
+					<DataTrigger
+						Binding="{Binding Slot}"
+						Value="Legs">
+						<Setter TargetName="BackgroundIcon" Property="Rect" Value="384, 144, 64, 64" />
+					</DataTrigger>
+					<DataTrigger
+						Binding="{Binding Slot}"
+						Value="Feet">
+						<Setter TargetName="BackgroundIcon" Property="Rect" Value="0, 208, 64, 64" />
+					</DataTrigger>
+					<DataTrigger
+						Binding="{Binding Slot}"
+						Value="Ears">
+						<Setter TargetName="BackgroundIcon" Property="Rect" Value="64, 208, 64, 64" />
+					</DataTrigger>
+					<DataTrigger
+						Binding="{Binding Slot}"
+						Value="Neck">
+						<Setter TargetName="BackgroundIcon" Property="Rect" Value="128, 208, 64, 64" />
+					</DataTrigger>
+					<DataTrigger
+						Binding="{Binding Slot}"
+						Value="Wrists">
+						<Setter TargetName="BackgroundIcon" Property="Rect" Value="192, 208, 64, 64" />
+					</DataTrigger>
+					<DataTrigger
+						Binding="{Binding Slot}"
+						Value="RFinger">
+						<Setter TargetName="BackgroundIcon" Property="Rect" Value="256, 208, 64, 64" />
+					</DataTrigger>
+					<DataTrigger
+						Binding="{Binding Slot}"
+						Value="LFinger">
+						<Setter TargetName="BackgroundIcon" Property="Rect" Value="256, 208, 64, 64" />
+					</DataTrigger>
+				</DataTemplate.Triggers>
+
 			</DataTemplate>
 
 			<DataTemplate
 				x:Key="AccessoryView"
 				DataType="{x:Type studio:AccessoryViewModel}">
 				<Grid
-					Width="200"
 					Height="56"
 					Margin="0,2,0,2">
 					<Grid.ColumnDefinitions>
@@ -262,15 +339,27 @@
 						<RowDefinition />
 					</Grid.RowDefinitions>
 
+					<Border
+						Grid.RowSpan="2"
+						Grid.Column="0"
+						Margin="1"
+						Style="{DynamicResource WpfUtilsControlBorder}" />
+
+					<controls:XivTexImage
+						Grid.RowSpan="2"
+						Grid.Column="0"
+						Margin="6"
+						Opacity="0.75"
+						Path="ui/uld/character_hr1.tex"
+						Rect="0, 376, 64, 64" />
+
 					<Button
 						Grid.RowSpan="2"
 						Grid.Column="0"
-						Width="54"
-						Height="54"
 						Click="OnChangeClicked"
 						Content="{Binding Glasses.Icon.Source}"
 						MouseUp="OnMouseUp"
-						Template="{StaticResource IconButton}"
+						Style="{DynamicResource IconButton}"
 						ToolTip="{Binding Glasses}" />
 
 					<Button

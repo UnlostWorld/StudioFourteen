@@ -279,13 +279,13 @@ public abstract class GearViewModelBase : ViewModel
 
 public class WeaponViewModel : GearViewModelBase
 {
-	public readonly WeaponSlot Slot;
-
 	public WeaponViewModel(WeaponSlot slot, GearWindow window)
 		: base(window)
 	{
 		this.Slot = slot;
 	}
+
+	public WeaponSlot Slot { get; private set; }
 
 	public override ushort Set
 	{
@@ -385,13 +385,13 @@ public class WeaponViewModel : GearViewModelBase
 
 public class ItemEquipViewModel : GearViewModelBase
 {
-	public readonly EquipmentSlot Slot;
-
 	public ItemEquipViewModel(EquipmentSlot slot, GearWindow window)
 		: base(window)
 	{
 		this.Slot = slot;
 	}
+
+	public EquipmentSlot Slot { get; private set; }
 
 	public override ushort Set
 	{
