@@ -51,6 +51,7 @@
 					Style="{DynamicResource LeftLabel}"
 					Text="Tribe" />
 				<ListBox
+					x:Name="TribeSelector"
 					ItemsSource="{Binding Race.Tribes}"
 					SelectedItem="{Binding Tribe}"
 					Style="{DynamicResource WpfUtilsSwitchSelector}">

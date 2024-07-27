@@ -9,6 +9,7 @@ using ScreenshotStudio.Structs;
 using ScreenshotStudio.Utilities;
 using ScreenshotStudio.Windows;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
 
 public partial class CustomizeWindow : CharacterWindow
@@ -23,7 +24,7 @@ public partial class CustomizeWindow : CharacterWindow
 	[AutoNotify] public unsafe bool CanRevert => this.Services.CharacterAppearanceBackup.CanRestore(this.Target);
 
 	[AutoNotify]
-	public unsafe CharaMakeType? MakeType
+	public CharaMakeType? MakeType
 	{
 		get
 		{
@@ -52,7 +53,7 @@ public partial class CustomizeWindow : CharacterWindow
 	}
 
 	[AutoNotify]
-	public unsafe Race? Race
+	public Race? Race
 	{
 		get => this.Races?.GetRow((int)this.GetCustomizeValue(CustomizeIndex.Race));
 		set
@@ -60,25 +61,34 @@ public partial class CustomizeWindow : CharacterWindow
 			if (value == null || value.Tribes.Count <= 0)
 				return;
 
-			Tribe? tribe = value.Tribes[0];
+			int tribeIndex = 0;
+			Tribe? tribe = value.Tribes[tribeIndex];
 			if (tribe == null)
 				return;
 
-			this.SetCustomizeValue(CustomizeIndex.Race, (byte)value.RowId, false);
-			this.SetCustomizeValue(CustomizeIndex.Tribe, (byte)tribe.RowId, false);
+			Threads.RunOnFrameworkThread(() =>
+			{
+				this.SetCustomizeValue(CustomizeIndex.Race, (byte)value.RowId, false);
+				this.SetCustomizeValue(CustomizeIndex.Tribe, (byte)tribe.RowId, false);
 
-			if (!value.Genders.Contains(this.Gender))
-				this.SetCustomizeValue(CustomizeIndex.Gender, (byte)value.Genders[0], false);
+				if (!value.Genders.Contains(this.Gender))
+					this.SetCustomizeValue(CustomizeIndex.Gender, (byte)value.Genders[0], false);
 
-			if (this.Tribe?.Ages.Contains(this.Age) == false)
-				this.SetCustomizeValue(CustomizeIndex.ModelType, (byte)Ages.Normal, false);
+				if (this.Tribe?.Ages.Contains(this.Age) == false)
+					this.SetCustomizeValue(CustomizeIndex.ModelType, (byte)Ages.Normal, false);
 
-			this.UpdateCustomize(true);
+				this.UpdateCustomize(true);
+
+				this.Dispatcher.Invoke(() =>
+				{
+					this.TribeSelector.SelectedIndex = tribeIndex;
+				});
+			});
 		}
 	}
 
 	[AutoNotify]
-	public unsafe Tribe? Tribe
+	public Tribe? Tribe
 	{
 		get => this.Tribes?.GetRow((int)this.GetCustomizeValue(CustomizeIndex.Tribe));
 		set
@@ -86,87 +96,90 @@ public partial class CustomizeWindow : CharacterWindow
 			if (value == null)
 				return;
 
-			this.SetCustomizeValue(CustomizeIndex.Tribe, (byte)value.RowId, false);
+			Threads.RunOnFrameworkThread(() =>
+			{
+				this.SetCustomizeValue(CustomizeIndex.Tribe, (byte)value.RowId, false);
 
-			if (!value.Ages.Contains(this.Age))
-				this.SetCustomizeValue(CustomizeIndex.ModelType, (byte)Ages.Normal, false);
+				if (!value.Ages.Contains(this.Age))
+					this.SetCustomizeValue(CustomizeIndex.ModelType, (byte)Ages.Normal, false);
 
-			this.UpdateCustomize(true);
+				this.UpdateCustomize(true);
+			});
 		}
 	}
 
 	[AutoNotify]
-	public unsafe Genders Gender
+	public Genders Gender
 	{
 		get => (Genders)this.GetCustomizeValue(CustomizeIndex.Gender);
 		set => this.SetCustomizeValue(CustomizeIndex.Gender, (byte)value);
 	}
 
 	[AutoNotify]
-	public unsafe Ages Age
+	public Ages Age
 	{
 		get => (Ages)this.GetCustomizeValue(CustomizeIndex.ModelType);
 		set => this.SetCustomizeValue(CustomizeIndex.ModelType, (byte)value);
 	}
 
 	[AutoNotify]
-	public unsafe byte CharacterHeight
+	public byte CharacterHeight
 	{
 		get => this.GetCustomizeValue(CustomizeIndex.Height);
 		set => this.SetCustomizeValue(CustomizeIndex.Height, value);
 	}
 
 	[AutoNotify]
-	public unsafe byte Face
+	public byte Face
 	{
 		get => this.GetCustomizeValue(CustomizeIndex.FaceType);
 		set => this.SetCustomizeValue(CustomizeIndex.FaceType, value);
 	}
 
 	[AutoNotify]
-	public unsafe byte Hair
+	public byte Hair
 	{
 		get => this.GetCustomizeValue(CustomizeIndex.HairStyle);
 		set => this.SetCustomizeValue(CustomizeIndex.HairStyle, value);
 	}
 
 	[AutoNotify]
-	public unsafe bool EnableHighlights
+	public bool EnableHighlights
 	{
 		get => this.GetCustomizeValue(CustomizeIndex.HairColor2) != 0;
 		set => this.SetCustomizeValue(CustomizeIndex.HairColor2, value ? (byte)128 : (byte)0);
 	}
 
 	[AutoNotify]
-	public unsafe byte SkinTone
+	public byte SkinTone
 	{
 		get => this.GetCustomizeValue(CustomizeIndex.SkinColor);
 		set => this.SetCustomizeValue(CustomizeIndex.SkinColor, value);
 	}
 
 	[AutoNotify]
-	public unsafe byte RightEyeColor
+	public byte RightEyeColor
 	{
 		get => this.GetCustomizeValue(CustomizeIndex.EyeColor);
 		set => this.SetCustomizeValue(CustomizeIndex.EyeColor, value);
 	}
 
 	[AutoNotify]
-	public unsafe byte HairTone
+	public byte HairTone
 	{
 		get => this.GetCustomizeValue(CustomizeIndex.HairColor);
 		set => this.SetCustomizeValue(CustomizeIndex.HairColor, value);
 	}
 
 	[AutoNotify]
-	public unsafe byte Highlights
+	public byte Highlights
 	{
 		get => this.GetCustomizeValue(CustomizeIndex.HairColor2);
 		set => this.SetCustomizeValue(CustomizeIndex.HairColor2, value);
 	}
 
 	[AutoNotify]
-	public unsafe CustomizeDataExtensions.FacialFeatures FacialFeature
+	public CustomizeDataExtensions.FacialFeatures FacialFeature
 	{
 		get => (CustomizeDataExtensions.FacialFeatures)this.GetCustomizeValue(CustomizeIndex.FaceFeatures);
 		set => this.SetCustomizeValue(CustomizeIndex.FaceFeatures, (byte)value);
@@ -176,21 +189,21 @@ public partial class CustomizeWindow : CharacterWindow
 	public CharaMakeType.FacialFeatureOptions? FacialFeatureOptions => this.MakeType?.GetFacialFeatures(this.Face);
 
 	[AutoNotify]
-	public unsafe byte FacialFeatureColor
+	public byte FacialFeatureColor
 	{
 		get => this.GetCustomizeValue(CustomizeIndex.FaceFeaturesColor);
 		set => this.SetCustomizeValue(CustomizeIndex.FaceFeaturesColor, value);
 	}
 
 	[AutoNotify]
-	public unsafe byte Eyebrows
+	public byte Eyebrows
 	{
 		get => this.GetCustomizeValue(CustomizeIndex.Eyebrows);
 		set => this.SetCustomizeValue(CustomizeIndex.Eyebrows, value);
 	}
 
 	[AutoNotify]
-	public unsafe byte LeftEyeColor
+	public byte LeftEyeColor
 	{
 		get => this.GetCustomizeValue(CustomizeIndex.EyeColor2);
 		set => this.SetCustomizeValue(CustomizeIndex.EyeColor2, value);
@@ -224,7 +237,7 @@ public partial class CustomizeWindow : CharacterWindow
 	}
 
 	[AutoNotify]
-	public unsafe byte Eyes
+	public byte Eyes
 	{
 		get => this.GetCustomizeValue(CustomizeIndex.EyeShape);
 		set => this.SetCustomizeValue(CustomizeIndex.EyeShape, value);
@@ -245,21 +258,21 @@ public partial class CustomizeWindow : CharacterWindow
 	}
 
 	[AutoNotify]
-	public unsafe byte Nose
+	public byte Nose
 	{
 		get => this.GetCustomizeValue(CustomizeIndex.NoseShape);
 		set => this.SetCustomizeValue(CustomizeIndex.NoseShape, value);
 	}
 
 	[AutoNotify]
-	public unsafe byte Jaw
+	public byte Jaw
 	{
 		get => this.GetCustomizeValue(CustomizeIndex.JawShape);
 		set => this.SetCustomizeValue(CustomizeIndex.JawShape, value);
 	}
 
 	[AutoNotify]
-	public unsafe byte MouthId
+	public byte MouthId
 	{
 		get => this.GetCustomizeValue(CustomizeIndex.LipStyle);
 		set => this.SetCustomizeValue(CustomizeIndex.LipStyle, value);
@@ -280,35 +293,35 @@ public partial class CustomizeWindow : CharacterWindow
 	}
 
 	[AutoNotify]
-	public unsafe byte LipsToneFurPattern
+	public byte LipsToneFurPattern
 	{
 		get => this.GetCustomizeValue(CustomizeIndex.LipColor);
 		set => this.SetCustomizeValue(CustomizeIndex.LipColor, value);
 	}
 
 	[AutoNotify]
-	public unsafe byte EarMuscleTailSize
+	public byte EarMuscleTailSize
 	{
 		get => this.GetCustomizeValue(CustomizeIndex.RaceFeatureSize);
 		set => this.SetCustomizeValue(CustomizeIndex.RaceFeatureSize, value);
 	}
 
 	[AutoNotify]
-	public unsafe byte TailEarsType
+	public byte TailEarsType
 	{
 		get => this.GetCustomizeValue(CustomizeIndex.RaceFeatureType);
 		set => this.SetCustomizeValue(CustomizeIndex.RaceFeatureType, value);
 	}
 
 	[AutoNotify]
-	public unsafe byte Bust
+	public byte Bust
 	{
 		get => this.GetCustomizeValue(CustomizeIndex.BustSize);
 		set => this.SetCustomizeValue(CustomizeIndex.BustSize, value);
 	}
 
 	[AutoNotify]
-	public unsafe byte FacePaintId
+	public byte FacePaintId
 	{
 		get => this.GetCustomizeValue(CustomizeIndex.Facepaint);
 		set => this.SetCustomizeValue(CustomizeIndex.Facepaint, value);
@@ -329,7 +342,7 @@ public partial class CustomizeWindow : CharacterWindow
 	}
 
 	[AutoNotify]
-	public unsafe byte FacePaintColor
+	public byte FacePaintColor
 	{
 		get => this.GetCustomizeValue(CustomizeIndex.FacepaintColor);
 		set
@@ -338,18 +351,16 @@ public partial class CustomizeWindow : CharacterWindow
 		}
 	}
 
-	public override bool ShouldTickAutoProperties()
+	public unsafe byte GetCustomizeValue(CustomizeIndex option)
 	{
-		if (!this.HasValidTarget)
-			return false;
-
-		return base.ShouldTickAutoProperties();
+		return this.Target->GetCustomizeValue(option);
 	}
-
-	public unsafe byte GetCustomizeValue(CustomizeIndex option) => this.Target->GetCustomizeValue(option);
 
 	public unsafe void SetCustomizeValue(CustomizeIndex option, byte value, bool apply = true)
 	{
+		if (!this.HasValidTarget)
+			return;
+
 		Threads.RunOnFrameworkThread(() =>
 		{
 			this.Target->SetCustomizeValue(option, value, CharacterExtensions.UpdateSource.Interface, apply);
@@ -358,6 +369,9 @@ public partial class CustomizeWindow : CharacterWindow
 
 	public unsafe void UpdateCustomize(bool redraw)
 	{
+		if (!this.HasValidTarget)
+			return;
+
 		Threads.RunOnFrameworkThread(() =>
 		{
 			CharacterWindow.GetTarget()->UpdateCustomize(redraw, CharacterExtensions.UpdateSource.Interface);
@@ -366,6 +380,9 @@ public partial class CustomizeWindow : CharacterWindow
 
 	private unsafe void OnRevertClicked(object sender, RoutedEventArgs e)
 	{
+		if (!this.HasValidTarget)
+			return;
+
 		this.Services.CharacterAppearanceBackup.Restore(this.Target);
 	}
 }
