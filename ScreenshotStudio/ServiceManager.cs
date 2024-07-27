@@ -22,7 +22,7 @@ public class ServiceManager : ServiceManagerBase
 	public GameDataService GameData { get; init; } = new();
 	public CharacterLifecycleService CharacterLifecycle { get; init; } = new();
 	public GroupPoseService GroupPose { get; init; } = new();
-	public CharacterAppearanceBackupService CharacterAppearanceBackup { get; init; } = new();
+	public CharacterAppearanceService CharacterAppearance { get; init; } = new();
 	public LibraryService Library { get; init; } = new();
 	public InputService Input { get; init; } = new();
 	public GameCaptureService GameCapture { get; init; } = new();

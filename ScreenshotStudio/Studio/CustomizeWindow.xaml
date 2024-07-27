@@ -71,13 +71,13 @@
 					SelectedItem="{Binding Gender}"
 					Style="{DynamicResource WpfUtilsSwitchSelector}" />
 
-				<!--  Age  -->
+				<!--  ModelType  -->
 				<TextBlock
 					Style="{DynamicResource LeftLabel}"
-					Text="Age" />
+					Text="Model Type" />
 				<ListBox
-					ItemsSource="{Binding Tribe.Ages}"
-					SelectedItem="{Binding Age}"
+					ItemsSource="{Binding Tribe.ModelTypes}"
+					SelectedItem="{Binding ModelType}"
 					Style="{DynamicResource WpfUtilsSwitchSelector}" />
 
 				<!--  Height  -->

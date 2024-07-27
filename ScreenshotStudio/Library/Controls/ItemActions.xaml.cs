@@ -25,7 +25,7 @@ public partial class ItemActions : View
 	public unsafe Character* Character { get; private set; }
 	[AutoNotify] public unsafe string? CharacterName => this.HasValidTarget ? this.Character->GetNameAsString() : "Nobody";
 	[AutoNotify] public bool CanApply => this.Item != null && this.HasValidTarget && this.Item.EquipSlot != null;
-	[AutoNotify] public unsafe bool CanRevert => this.Services.CharacterAppearanceBackup.CanRestore(this.Character);
+	[AutoNotify] public unsafe bool CanRevert => this.Services.CharacterAppearance.CanRestore(this.Character);
 	[AutoNotify] public bool IsLive { get; set; }
 
 	[AutoNotify]
@@ -82,7 +82,7 @@ public partial class ItemActions : View
 
 	private unsafe void OnRevertClicked(object sender, RoutedEventArgs e)
 	{
-		this.Services.CharacterAppearanceBackup.Restore(this.Character);
+		this.Services.CharacterAppearance.Restore(this.Character);
 		this.IsLive = false;
 	}
 

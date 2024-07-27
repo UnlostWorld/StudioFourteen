@@ -34,7 +34,7 @@ public class Tribe : StudioExcelRow
 	public string Feminine { get; private set; } = string.Empty;
 	public string Masculine { get; private set; } = string.Empty;
 
-	public List<Ages> Ages { get; private set; } = new();
+	public List<ModelTypes> ModelTypes { get; private set; } = new();
 
 	public override void PopulateData(RowParser parser, Lumina.GameData gameData, Language language)
 	{
@@ -53,9 +53,9 @@ public class Tribe : StudioExcelRow
 			case TribeRows.Raen:
 			case TribeRows.Xaela:
 			{
-				this.Ages.Add(Excel.Ages.Young);
-				this.Ages.Add(Excel.Ages.Normal);
-				this.Ages.Add(Excel.Ages.Old);
+				this.ModelTypes.Add(Excel.ModelTypes.Young);
+				this.ModelTypes.Add(Excel.ModelTypes.Normal);
+				this.ModelTypes.Add(Excel.ModelTypes.Old);
 				break;
 			}
 
@@ -69,7 +69,7 @@ public class Tribe : StudioExcelRow
 			case TribeRows.Rava:
 			case TribeRows.Veena:
 			{
-				this.Ages.Add(Excel.Ages.Normal);
+				this.ModelTypes.Add(Excel.ModelTypes.Normal);
 				break;
 			}
 		}

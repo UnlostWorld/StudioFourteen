@@ -50,7 +50,7 @@ public partial class GearWindow : CharacterWindow
 	public ItemEquipViewModel RingRight { get; init; }
 	public ItemEquipViewModel RingLeft { get; init; }
 
-	[AutoNotify] public unsafe bool CanRevert => this.Services.CharacterAppearanceBackup.CanRestore(this.Target);
+	[AutoNotify] public unsafe bool CanRevert => this.Services.CharacterAppearance.CanRestore(this.Target);
 
 	private unsafe void OnChangeClicked(object sender, RoutedEventArgs e)
 	{
@@ -160,7 +160,7 @@ public partial class GearWindow : CharacterWindow
 
 	private unsafe void OnRevertClicked(object sender, RoutedEventArgs e)
 	{
-		this.Services.CharacterAppearanceBackup.Restore(this.Target);
+		this.Services.CharacterAppearance.Restore(this.Target);
 	}
 }
 
@@ -241,7 +241,7 @@ public abstract class GearViewModelBase : ViewModel
 
 	public unsafe void BackupCharacter()
 	{
-		this.Services.CharacterAppearanceBackup.Backup(this.window.Target);
+		this.Services.CharacterAppearance.Backup(this.window.Target);
 	}
 }
 

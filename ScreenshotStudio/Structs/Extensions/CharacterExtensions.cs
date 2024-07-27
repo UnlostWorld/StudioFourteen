@@ -65,7 +65,7 @@ public static class CharacterExtensions
 	public static void UpdateModel(ref this Character self, int modelCharaId, UpdateSource source, bool apply = true)
 	{
 		if (source != UpdateSource.Restore)
-			ServiceManager.Instance.CharacterAppearanceBackup.Backup(self);
+			ServiceManager.Instance.CharacterAppearance.Backup(self);
 
 		self.ModelCharaId = modelCharaId;
 
@@ -83,7 +83,7 @@ public static class CharacterExtensions
 	public static bool SetCustomizeValue(ref this Character self, CustomizeIndex option, byte value, UpdateSource source, bool apply = true)
 	{
 		if (source != UpdateSource.Restore)
-			ServiceManager.Instance.CharacterAppearanceBackup.Backup(self);
+			ServiceManager.Instance.CharacterAppearance.Backup(self);
 
 		self.DrawData.CustomizeData.SetValue(option, value);
 
@@ -105,7 +105,7 @@ public static class CharacterExtensions
 		Threads.VerifyFrameworkThread();
 
 		if (source != UpdateSource.Restore)
-			ServiceManager.Instance.CharacterAppearanceBackup.Backup(self);
+			ServiceManager.Instance.CharacterAppearance.Backup(self);
 
 		fixed (DrawDataContainer* drawData = &self.DrawData)
 		{
@@ -118,7 +118,7 @@ public static class CharacterExtensions
 		Threads.VerifyFrameworkThread();
 
 		if (source != UpdateSource.Restore)
-			ServiceManager.Instance.CharacterAppearanceBackup.Backup(self);
+			ServiceManager.Instance.CharacterAppearance.Backup(self);
 
 		for (int i = 0; i < equipment.Length; i++)
 		{
@@ -132,7 +132,7 @@ public static class CharacterExtensions
 		Threads.VerifyFrameworkThread();
 
 		if (source != UpdateSource.Restore)
-			ServiceManager.Instance.CharacterAppearanceBackup.Backup(self);
+			ServiceManager.Instance.CharacterAppearance.Backup(self);
 
 		fixed (DrawDataContainer* drawData = &self.DrawData)
 		{
@@ -151,7 +151,7 @@ public static class CharacterExtensions
 		Threads.VerifyFrameworkThread();
 
 		if (source != UpdateSource.Restore)
-			ServiceManager.Instance.CharacterAppearanceBackup.Backup(self);
+			ServiceManager.Instance.CharacterAppearance.Backup(self);
 
 		self.DrawData.CustomizeData.Import(customize);
 		self.UpdateCustomizeInternal(redraw, source);

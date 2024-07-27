@@ -21,7 +21,7 @@ public partial class CustomizeWindow : CharacterWindow
 	public DataSheet<Tribe>? Tribes => this.Services.GameData.GetSheet<Tribe>();
 
 	public IEnumerable<Race?>? AvailableRaces => this.Services.GameData.GetSheet<Race>()?.GetFrom(1);
-	[AutoNotify] public unsafe bool CanRevert => this.Services.CharacterAppearanceBackup.CanRestore(this.Target);
+	[AutoNotify] public unsafe bool CanRevert => this.Services.CharacterAppearance.CanRestore(this.Target);
 
 	[AutoNotify]
 	public CharaMakeType? MakeType
@@ -74,8 +74,8 @@ public partial class CustomizeWindow : CharacterWindow
 				if (!value.Genders.Contains(this.Gender))
 					this.SetCustomizeValue(CustomizeIndex.Gender, (byte)value.Genders[0], false);
 
-				if (this.Tribe?.Ages.Contains(this.Age) == false)
-					this.SetCustomizeValue(CustomizeIndex.ModelType, (byte)Ages.Normal, false);
+				if (this.Tribe?.ModelTypes.Contains(this.ModelType) == false)
+					this.SetCustomizeValue(CustomizeIndex.ModelType, (byte)ModelTypes.Normal, false);
 
 				this.UpdateCustomize(true);
 
@@ -100,8 +100,8 @@ public partial class CustomizeWindow : CharacterWindow
 			{
 				this.SetCustomizeValue(CustomizeIndex.Tribe, (byte)value.RowId, false);
 
-				if (!value.Ages.Contains(this.Age))
-					this.SetCustomizeValue(CustomizeIndex.ModelType, (byte)Ages.Normal, false);
+				if (!value.ModelTypes.Contains(this.ModelType))
+					this.SetCustomizeValue(CustomizeIndex.ModelType, (byte)ModelTypes.Normal, false);
 
 				this.UpdateCustomize(true);
 			});
@@ -116,9 +116,9 @@ public partial class CustomizeWindow : CharacterWindow
 	}
 
 	[AutoNotify]
-	public Ages Age
+	public ModelTypes ModelType
 	{
-		get => (Ages)this.GetCustomizeValue(CustomizeIndex.ModelType);
+		get => (ModelTypes)this.GetCustomizeValue(CustomizeIndex.ModelType);
 		set => this.SetCustomizeValue(CustomizeIndex.ModelType, (byte)value);
 	}
 
@@ -383,6 +383,6 @@ public partial class CustomizeWindow : CharacterWindow
 		if (!this.HasValidTarget)
 			return;
 
-		this.Services.CharacterAppearanceBackup.Restore(this.Target);
+		this.Services.CharacterAppearance.Restore(this.Target);
 	}
 }

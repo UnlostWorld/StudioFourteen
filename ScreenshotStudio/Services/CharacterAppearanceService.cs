@@ -1,5 +1,10 @@
-﻿namespace ScreenshotStudio.Services;
+﻿// Brio
+// https://github.com/Etheirys/Brio/tree/main/Brio/Game/Actor/ActorAppearanceService.cs
 
+namespace ScreenshotStudio.Services;
+
+using Dalamud.Game;
+using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using ScreenshotStudio.Library;
 using ScreenshotStudio.Library.Sources;
@@ -10,10 +15,14 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-public class CharacterAppearanceBackupService : ServiceBase
+public class CharacterAppearanceService : ServiceBase
 {
 	private readonly GroupPoseCharactersLibrarySource provider = new();
 	private readonly Dictionary<ushort, CharacterBackupAppearance> backup = new();
+
+	private Hook<EnforceKindRestrictionsDelegate>? enforceKindRestrictionsHook;
+
+	private delegate byte EnforceKindRestrictionsDelegate(nint a1, nint a2);
 
 	public override Task Start()
 	{
@@ -25,12 +34,16 @@ public class CharacterAppearanceBackupService : ServiceBase
 			this.provider.OnEnterGroupPose();
 		}
 
+		this.enforceKindRestrictionsHook = InteropService.HookFromSignature<EnforceKindRestrictionsDelegate>("E8 ?? ?? ?? ?? 41 B0 ?? 48 8B D6", this.EnforceKindRestrictionsDetour);
+		this.enforceKindRestrictionsHook?.Enable();
+
 		return base.Start();
 	}
 
 	public override Task Stop()
 	{
 		this.Services.GroupPose.StateChange -= this.OnGroupPoseStateChange;
+		this.enforceKindRestrictionsHook?.Dispose();
 		return base.Stop();
 	}
 
@@ -85,6 +98,13 @@ public class CharacterAppearanceBackupService : ServiceBase
 		{
 			this.provider.OnEnterGroupPose();
 		}
+	}
+
+	private byte EnforceKindRestrictionsDetour(nint a1, nint a2)
+	{
+		// always allow npc values.
+		////return this.enforceKindRestrictionsHook.Original(a1, a2);
+		return 0;
 	}
 }
 

@@ -1,6 +1,6 @@
 ﻿namespace ScreenshotStudio.GameData.Excel;
 
-public enum Ages : byte
+public enum ModelTypes : byte
 {
 	Normal = 1,
 	Old = 3,
