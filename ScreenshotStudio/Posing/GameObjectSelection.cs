@@ -29,22 +29,42 @@ public class GameObjectSelection : SelectionBase
 	public override string Name => this.name ?? "Unknown";
 	public override bool LockTransform { get; set; }
 
-	public override Vector3 Translation
+	public override Vector3 LocalTranslation
 	{
 		get => this.lastTranslation;
 		set => this.nextTranslation = value;
 	}
 
-	public override Quaternion Rotation
+	public override Quaternion LocalRotation
 	{
 		get => this.lastRotation;
 		set => this.nextRotation = value;
 	}
 
-	public override Vector3 Scale
+	public override Vector3 LocalScale
 	{
 		get => this.lastScale;
 		set => this.nextScale = value;
+	}
+
+	// GameObjects are in world space already,
+	// just pass through the local values.
+	public override Vector3 WorldTranslation
+	{
+		get => this.LocalTranslation;
+		set => this.LocalTranslation = value;
+	}
+
+	public override Quaternion WorldRotation
+	{
+		get => this.LocalRotation;
+		set => this.LocalRotation = value;
+	}
+
+	public override Vector3 WorldScale
+	{
+		get => this.LocalScale;
+		set => this.LocalScale = value;
 	}
 
 	public unsafe override void OnFrameworkUpdate(IFramework framework)

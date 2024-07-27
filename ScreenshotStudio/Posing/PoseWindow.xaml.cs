@@ -45,36 +45,36 @@ public partial class PoseWindow : CharacterWindow
 	[AutoNotify]
 	public double TranslationX
 	{
-		get => this.Translation.X;
+		get => this.LocalTranslation.X;
 		set
 		{
-			Vector3 translation = this.Translation;
+			Vector3 translation = this.LocalTranslation;
 			translation.X = (float)value;
-			this.Translation = translation;
+			this.LocalTranslation = translation;
 		}
 	}
 
 	[AutoNotify]
 	public double TranslationY
 	{
-		get => this.Translation.Y;
+		get => this.LocalTranslation.Y;
 		set
 		{
-			Vector3 translation = this.Translation;
+			Vector3 translation = this.LocalTranslation;
 			translation.Y = (float)value;
-			this.Translation = translation;
+			this.LocalTranslation = translation;
 		}
 	}
 
 	[AutoNotify]
 	public double TranslationZ
 	{
-		get => this.Translation.Z;
+		get => this.LocalTranslation.Z;
 		set
 		{
-			Vector3 translation = this.Translation;
+			Vector3 translation = this.LocalTranslation;
 			translation.Z = (float)value;
-			this.Translation = translation;
+			this.LocalTranslation = translation;
 		}
 	}
 
@@ -121,52 +121,52 @@ public partial class PoseWindow : CharacterWindow
 			if (this.trackingEuler != null)
 				return (Vector3)this.trackingEuler;
 
-			return this.Rotation.ToEuler();
+			return this.LocalRotation.ToEuler();
 		}
 
 		set
 		{
 			this.trackingEuler = value;
 
-			Quaternion rotation = this.Rotation;
+			Quaternion rotation = this.LocalRotation;
 			rotation.FromEuler(value);
-			this.Rotation = rotation;
+			this.LocalRotation = rotation;
 		}
 	}
 
 	[AutoNotify]
 	public double ScaleX
 	{
-		get => this.Scale.X;
+		get => this.LocalScale.X;
 		set
 		{
-			Vector3 scale = this.Scale;
+			Vector3 scale = this.LocalScale;
 			scale.X = (float)value;
-			this.Scale = scale;
+			this.LocalScale = scale;
 		}
 	}
 
 	[AutoNotify]
 	public double ScaleY
 	{
-		get => this.Scale.Y;
+		get => this.LocalScale.Y;
 		set
 		{
-			Vector3 scale = this.Scale;
+			Vector3 scale = this.LocalScale;
 			scale.Y = (float)value;
-			this.Scale = scale;
+			this.LocalScale = scale;
 		}
 	}
 
 	[AutoNotify]
 	public double ScaleZ
 	{
-		get => this.Scale.Z;
+		get => this.LocalScale.Z;
 		set
 		{
-			Vector3 scale = this.Scale;
+			Vector3 scale = this.LocalScale;
 			scale.Z = (float)value;
-			this.Scale = scale;
+			this.LocalScale = scale;
 		}
 	}
 
@@ -184,41 +184,80 @@ public partial class PoseWindow : CharacterWindow
 	}
 
 	[AutoNotify]
-	public Vector3 Translation
+	public Vector3 LocalTranslation
 	{
-		get => this.Selection?.Translation ?? default;
+		get => this.Selection?.LocalTranslation ?? default;
 		set
 		{
 			if (this.Selection == null)
 				return;
 
-			this.Selection.Translation = value;
+			this.Selection.LocalTranslation = value;
 		}
 	}
 
 	[AutoNotify]
-	public Quaternion Rotation
+	public Quaternion LocalRotation
 	{
-		get => this.Selection?.Rotation ?? default;
+		get => this.Selection?.LocalRotation ?? default;
 		set
 		{
 			if (this.Selection == null)
 				return;
 
-			this.Selection.Rotation = value;
+			this.Selection.LocalRotation = value;
 		}
 	}
 
 	[AutoNotify]
-	public Vector3 Scale
+	public Vector3 LocalScale
 	{
-		get => this.Selection?.Scale ?? default;
+		get => this.Selection?.LocalScale ?? default;
 		set
 		{
 			if (this.Selection == null)
 				return;
 
-			this.Selection.Scale = value;
+			this.Selection.LocalScale = value;
+		}
+	}
+
+	[AutoNotify]
+	public Vector3 WorldTranslation
+	{
+		get => this.Selection?.WorldTranslation ?? default;
+		set
+		{
+			if (this.Selection == null)
+				return;
+
+			this.Selection.WorldTranslation = value;
+		}
+	}
+
+	[AutoNotify]
+	public Quaternion WorldRotation
+	{
+		get => this.Selection?.WorldRotation ?? default;
+		set
+		{
+			if (this.Selection == null)
+				return;
+
+			this.Selection.WorldRotation = value;
+		}
+	}
+
+	[AutoNotify]
+	public Vector3 WorldScale
+	{
+		get => this.Selection?.WorldScale ?? default;
+		set
+		{
+			if (this.Selection == null)
+				return;
+
+			this.Selection.WorldScale = value;
 		}
 	}
 
@@ -269,7 +308,7 @@ public partial class PoseWindow : CharacterWindow
 
 	private void OnEulerDown(object sender, MouseButtonEventArgs e)
 	{
-		this.trackingEuler = this.Rotation.ToEuler();
+		this.trackingEuler = this.LocalRotation.ToEuler();
 	}
 
 	private void OnEulerUp(object sender, MouseButtonEventArgs e)

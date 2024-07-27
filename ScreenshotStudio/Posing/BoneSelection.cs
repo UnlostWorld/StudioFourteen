@@ -37,46 +37,13 @@ public class BoneSelection : SelectionBase
 		}
 	}
 
-	public bool UseModValues { get; set; } = false;
-
-	// TODO: support multiple bone transforms
-	public hkQsTransformf Transform
-	{
-		get
-		{
-			if (this.UseModValues)
-			{
-				return this.Bone.CurrentTransform;
-			}
-			else
-			{
-				hkQsTransformf combine = this.Bone.LastTransform;
-				combine.Add(this.Bone.CurrentTransform);
-				return combine;
-			}
-		}
-		set
-		{
-			if (this.UseModValues)
-			{
-				this.Bone.CurrentTransform = value;
-			}
-			else
-			{
-				hkQsTransformf separate = value;
-				separate.Subtract(this.Bone.LastTransform);
-				this.Bone.CurrentTransform = separate;
-			}
-		}
-	}
-
 	public override bool LockTransform
 	{
 		get => this.Bone.LockTransform;
 		set => this.Bone.LockTransform = value;
 	}
 
-	public override Vector3 Translation
+	public override Vector3 LocalTranslation
 	{
 		get => this.Transform.Translation.ToVector3();
 		set
@@ -87,7 +54,7 @@ public class BoneSelection : SelectionBase
 		}
 	}
 
-	public override Quaternion Rotation
+	public override Quaternion LocalRotation
 	{
 		get => this.Transform.Rotation.ToQuaternion();
 		set
@@ -98,7 +65,7 @@ public class BoneSelection : SelectionBase
 		}
 	}
 
-	public override Vector3 Scale
+	public override Vector3 LocalScale
 	{
 		get => this.Transform.Scale.ToVector3();
 		set
@@ -106,6 +73,48 @@ public class BoneSelection : SelectionBase
 			hkQsTransformf transform = this.Transform;
 			transform.Scale.FromVector3(value);
 			this.Transform = transform;
+		}
+	}
+
+	public override Vector3 WorldTranslation
+	{
+		get => this.LocalTranslation + this.Bone.LastCharacterTranslation;
+		set => this.LocalTranslation = value - this.Bone.LastCharacterTranslation;
+	}
+
+	public override Quaternion WorldRotation
+	{
+		get => this.Bone.LastCharacterRotation * this.LocalRotation;
+		set
+		{
+			value = Quaternion.Conjugate(value);
+			value *= this.Bone.LastCharacterRotation;
+			value = Quaternion.Conjugate(value);
+
+			this.LocalRotation = value;
+		}
+	}
+
+	public override Vector3 WorldScale
+	{
+		get => this.LocalScale + this.Bone.LastCharacterScale;
+		set => this.LocalScale = value - this.Bone.LastCharacterScale;
+	}
+
+	// TODO: support multiple bone transforms
+	private hkQsTransformf Transform
+	{
+		get
+		{
+			hkQsTransformf combine = this.Bone.LastTransform;
+			combine.Add(this.Bone.CurrentTransform);
+			return combine;
+		}
+		set
+		{
+			hkQsTransformf separate = value;
+			separate.Subtract(this.Bone.LastTransform);
+			this.Bone.CurrentTransform = separate;
 		}
 	}
 

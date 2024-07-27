@@ -10,11 +10,16 @@ using ScreenshotStudio.Structs;
 using ScreenshotStudio.Structs.Extensions;
 using ScreenshotStudio.Utilities;
 using System;
+using System.Numerics;
 
 public class BoneReference : IDisposable
 {
 	public readonly string? Name;
 	public readonly BoneId Id;
+
+	public Vector3 LastCharacterTranslation;
+	public Quaternion LastCharacterRotation;
+	public Vector3 LastCharacterScale;
 
 	public hkQsTransformf LastTransform;
 	public hkQsTransformf CurrentTransform;
@@ -33,8 +38,10 @@ public class BoneReference : IDisposable
 		this.CurrentTransform.Rotation = HkQuaternionExtensions.Identity;
 	}
 
-	public unsafe Skeleton* GetSkeleton()
+	public unsafe Skeleton* ApplyTransform()
 	{
+		Threads.VerifyFrameworkThread();
+
 		if (DalamudServices.ObjectTable == null)
 			return null;
 
@@ -42,19 +49,16 @@ public class BoneReference : IDisposable
 		if (character == null)
 			return null;
 
+		this.LastCharacterTranslation = character->DrawObject->Position;
+		this.LastCharacterRotation = character->DrawObject->Rotation;
+		this.LastCharacterScale = character->DrawObject->Scale;
+
 		CharacterBase* characterBase = character->GetCharacterBase();
 		if (characterBase == null)
 			return null;
 
-		return characterBase->Skeleton;
-	}
-
-	public unsafe Skeleton* ApplyTransform()
-	{
-		Threads.VerifyFrameworkThread();
-
-		Skeleton* skeleton = this.GetSkeleton();
-		if(skeleton == null)
+		Skeleton* skeleton = characterBase->Skeleton;
+		if (skeleton == null)
 			return null;
 
 		PartialSkeleton* partialSkeleton = &skeleton->PartialSkeletons[this.Id.PartialSkeletonIndex];
