@@ -38,10 +38,13 @@ public class RotationGizmo : View
 	private Point? closestAxisMouseFromPos = null;
 	private RotationGizmoAxis? closestMouseAxis = null;
 
+	private bool isDragging = false;
 	private Point? dragStartToPos;
 	private Point? dragStartFromPos;
 	private RotationGizmoAxis? dragAxis;
 	private double dragDistance;
+
+	private Quaternion dragRotation;
 
 	public RotationGizmo()
 	{
@@ -111,7 +114,11 @@ public class RotationGizmo : View
 
 		this.Dispatcher.Invoke(() =>
 		{
-			Matrix4x4 transformMatrix = Matrix4x4.CreateFromQuaternion(this.Rotation);
+			Quaternion rot = this.Rotation;
+			if (this.isDragging)
+				rot = this.dragRotation;
+
+			Matrix4x4 transformMatrix = Matrix4x4.CreateFromQuaternion(rot);
 			transformMatrix.Translation = new Vector3(0, 0, 0);
 
 			Vector2 center = default;
@@ -166,10 +173,12 @@ public class RotationGizmo : View
 
 		this.OnMouseMove(e);
 
+		this.isDragging = true;
 		this.dragStartToPos = this.closestAxisMousePos;
 		this.dragStartFromPos = this.closestAxisMouseFromPos;
 		this.dragAxis = this.closestMouseAxis;
 		this.dragDistance = 0;
+		this.dragRotation = this.Rotation;
 	}
 
 	protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
@@ -177,6 +186,7 @@ public class RotationGizmo : View
 		base.OnMouseLeftButtonUp(e);
 		this.ReleaseMouseCapture();
 
+		this.isDragging = false;
 		this.dragStartToPos = null;
 		this.dragStartFromPos = null;
 		this.dragAxis = null;
@@ -212,7 +222,7 @@ public class RotationGizmo : View
 			ref this.closestAxisMouseFromPos,
 			ref this.closestMouseAxis);
 
-		if (this.dragStartFromPos != null && this.dragStartToPos != null && this.dragAxis != null)
+		if (this.isDragging && this.dragStartFromPos != null && this.dragStartToPos != null && this.dragAxis != null)
 		{
 			Vector normal = (Point)this.dragStartToPos - (Point)this.dragStartFromPos;
 			normal.Normalize();
@@ -222,7 +232,7 @@ public class RotationGizmo : View
 			double dragDelta = newDragDistance - this.dragDistance;
 			this.dragDistance = newDragDistance;
 
-			double angleChange = dragDelta / 20;
+			double angleChange = dragDelta / 50;
 
 			if (Keyboard.Modifiers == ModifierKeys.Shift)
 				angleChange *= 10;
@@ -244,7 +254,8 @@ public class RotationGizmo : View
 				rot = Quaternion.CreateFromAxisAngle(Vector3.UnitZ, (float)angleChange);
 			}
 
-			this.Rotation = this.Rotation * rot;
+			this.dragRotation = this.dragRotation * rot;
+			this.Rotation = this.dragRotation;
 		}
 		else if (this.closestAxisMousePos != null && this.closestMouseAxis != null && closestAxisPointToMouseDistance < AxisHoverMouseDistance)
 		{
