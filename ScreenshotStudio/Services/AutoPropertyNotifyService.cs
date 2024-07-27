@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
@@ -149,7 +150,7 @@ public class AutoPropertyNotifyService : ServiceBase
 
 				try
 				{
-					dispatcherObj.Dispatcher.Invoke(() => this.TickProperties(notify));
+					dispatcherObj.Dispatcher.BeginInvoke(() => this.TickProperties(notify));
 				}
 				catch (TaskCanceledException)
 				{

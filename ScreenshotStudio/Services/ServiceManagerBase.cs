@@ -2,9 +2,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;
 using Serilog;
+using TerraFX.Interop.Windows;
 
 public class ServiceManagerBase
 {
@@ -189,13 +191,13 @@ public class ServiceManagerBase
 	{
 		while (this.state == States.Started)
 		{
+			await Task.Delay(10);
+
 			this.isTicking = true;
 			foreach (ServiceBase service in this.services)
 			{
 				if (ShutdownRequested)
 					break;
-
-				await Task.Delay(10);
 
 				try
 				{
