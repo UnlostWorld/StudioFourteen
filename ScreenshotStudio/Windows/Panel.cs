@@ -1,23 +1,20 @@
 ﻿namespace ScreenshotStudio.Windows;
 
 using Dalamud.Plugin.Services;
+using FFXIVClientStructs.FFXIV.Common.Lua;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
-using ScreenshotStudio.Structs;
 using ScreenshotStudio.Utilities;
 using Serilog;
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using WpfUtils;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 public abstract partial class Panel : Window, IAutoNotify
 {
@@ -32,6 +29,12 @@ public abstract partial class Panel : Window, IAutoNotify
 		typeof(bool),
 		typeof(Panel),
 		new(true));
+
+	public static readonly DependencyProperty IsEmbeddedProperty = DependencyProperty.Register(
+		nameof(Panel.IsEmbedded),
+		typeof(bool),
+		typeof(Panel),
+		new(true, IsEmbeddedChanged));
 
 	protected readonly ILogger Log;
 
@@ -67,6 +70,12 @@ public abstract partial class Panel : Window, IAutoNotify
 	{
 		get => (bool)this.GetValue(IsShownProperty);
 		set => this.SetValue(IsShownProperty, value);
+	}
+
+	public bool IsEmbedded
+	{
+		get => (bool)this.GetValue(IsEmbeddedProperty);
+		set => this.SetValue(IsEmbeddedProperty, value);
 	}
 
 	public bool IsUiVisible => !DalamudServices.GameGui?.GameUiHidden ?? true;
@@ -242,6 +251,27 @@ public abstract partial class Panel : Window, IAutoNotify
 
 	protected virtual void OnFrameworkUpdate(IFramework framework)
 	{
+	}
+
+	private static void IsEmbeddedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+	{
+		if (d is Panel panel)
+		{
+			if (panel.IsEmbedded)
+			{
+				XivWindow.Embed(panel);
+			}
+			else
+			{
+				XivWindow.Unembed(panel);
+			}
+
+			// wiggle wiggle
+			panel.OnResizeDelta(new DragDeltaEventArgs(1, 1));
+			panel.OnResizeDelta(new DragDeltaEventArgs(-1, -1));
+
+			panel.Activate();
+		}
 	}
 
 	private void OnPreviewMouseDown(object sender, MouseButtonEventArgs e)

@@ -2,9 +2,119 @@
 	x:Class="ScreenshotStudio.Windows.PanelWindowResources"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:ScreenshotStudio.Controls"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
 	xmlns:local="clr-namespace:ScreenshotStudio.Windows"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
+
+	<converters:BoolInversionConverter x:Key="!B" />
+
+	<Style
+		x:Key="TitlebarToggleButton"
+		TargetType="{x:Type ToggleButton}">
+		<Setter Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
+		<Setter Property="Width" Value="32" />
+		<Setter Property="Height" Value="Auto" />
+		<Setter Property="VerticalAlignment" Value="Stretch" />
+
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type ToggleButton}">
+
+					<Grid Cursor="Hand">
+
+						<Border
+							x:Name="HoverBorder"
+							Margin="1"
+							Opacity="0"
+							SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+							Style="{DynamicResource WpfUtilsControlHoverBorder}" />
+
+						<ContentControl
+							x:Name="Content"
+							Margin="0"
+							Padding="{TemplateBinding Padding}"
+							HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+							VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+							Content="{TemplateBinding Content}"
+							ContentStringFormat="{TemplateBinding ContentStringFormat}"
+							ContentTemplate="{TemplateBinding ContentTemplate}"
+							Focusable="False"
+							Foreground="{TemplateBinding Foreground}"
+							SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+					</Grid>
+
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="true">
+
+							<Trigger.EnterActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation
+											Storyboard.TargetName="HoverBorder"
+											Storyboard.TargetProperty="Opacity"
+											From="0"
+											To="1"
+											Duration="00:00:00.1" />
+									</Storyboard>
+								</BeginStoryboard>
+							</Trigger.EnterActions>
+
+							<Trigger.ExitActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation
+											Storyboard.TargetName="HoverBorder"
+											Storyboard.TargetProperty="Opacity"
+											From="1"
+											To="0"
+											Duration="00:00:00.2" />
+									</Storyboard>
+								</BeginStoryboard>
+							</Trigger.ExitActions>
+						</Trigger>
+
+						<Trigger Property="IsEnabled" Value="false">
+							<Trigger.EnterActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation
+											Storyboard.TargetName="Content"
+											Storyboard.TargetProperty="Opacity"
+											From="1"
+											To="0.5"
+											Duration="00:00:00.1" />
+									</Storyboard>
+								</BeginStoryboard>
+							</Trigger.EnterActions>
+
+							<Trigger.ExitActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation
+											Storyboard.TargetName="Content"
+											Storyboard.TargetProperty="Opacity"
+											From="0.5"
+											To="1"
+											Duration="00:00:00.2" />
+									</Storyboard>
+								</BeginStoryboard>
+							</Trigger.ExitActions>
+						</Trigger>
+
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+
+		<Style.Triggers>
+			<Trigger Property="IsChecked" Value="True">
+				<Setter Property="Foreground" Value="{DynamicResource TrimBrush}" />
+			</Trigger>
+		</Style.Triggers>
+	</Style>
+
+
 
 	<ControlTemplate
 		x:Key="PanelWindowTemplate"
@@ -84,22 +194,31 @@
 
 					<StackPanel
 						Grid.Row="0"
-						Margin="1"
+						Margin="2,2,2,1"
 						HorizontalAlignment="Right"
 						Orientation="Horizontal">
 
+						<!--  Pop out button  -->
+						<ToggleButton
+							Width="32"
+							IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, Path=IsEmbedded, Converter={StaticResource !B}}"
+							Style="{StaticResource TitlebarToggleButton}">
+
+							<wpfUtils:IconBlock
+								FontSize="10"
+								Icon="WindowRestore" />
+						</ToggleButton>
+
 						<!--  Close Button  -->
 						<Button
-							Width="26"
+							Width="48"
 							Height="Auto"
-							Margin="-3,2,2,0"
+							Margin="0"
 							Background="Transparent"
 							Click="OnCloseClicked"
 							IsEnabled="{TemplateBinding CanClose}"
 							ToolTip="{DynamicResource ClosePanelTooltip}">
-							<wpfUtils:IconBlock
-								Foreground="{DynamicResource ForegroundLightBrush}"
-								Icon="Times" />
+							<wpfUtils:IconBlock Icon="Times" />
 						</Button>
 
 					</StackPanel>

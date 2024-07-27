@@ -69,10 +69,31 @@ public static class XivWindow
 		SetPosition(wnd, new Point(0.5, 0.5));
 	}
 
+	public static void Unembed(Window wnd)
+	{
+		if (Process == null)
+			return;
+
+		WindowInteropHelper wndInterop = new(wnd);
+
+		SetParent(wndInterop.Handle, 0);
+
+		const uint WS_POPUP = 0x80000000;
+		const uint WS_CHILD = 0x40000000;
+		const int GWL_STYLE = -16;
+
+		int style = GetWindowLong(wndInterop.Handle, GWL_STYLE);
+		style = (int)((style & ~WS_CHILD) | WS_POPUP);
+		SetWindowLong(wndInterop.Handle, GWL_STYLE, style);
+	}
+
 	public static void SetPosition(Window wnd, Point position)
 	{
 		if (Process == null)
 			return;
+
+		position.X = Math.Clamp(position.X, 0, 1);
+		position.Y = Math.Clamp(position.X, 0, 1);
 
 		WindowInteropHelper wndInterop = new(wnd);
 
