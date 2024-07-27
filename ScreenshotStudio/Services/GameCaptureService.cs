@@ -16,12 +16,18 @@ using SixLabors.ImageSharp.PixelFormats;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using TerraFX.Interop.DirectX;
 using TerraFX.Interop.Windows;
+
+using Color = System.Windows.Media.Color;
+using Image = SixLabors.ImageSharp.Image;
+using Point = System.Windows.Point;
 
 public interface ICaptureListener
 {
@@ -35,10 +41,14 @@ public class GameCaptureService : ServiceBase
 	private readonly HashSet<ICaptureListener> listeners = new();
 
 	private Hook<InterfaceManager.ReshadeOnPresentDelegate>? reshadeOnPresentHook;
-	private byte[] bufferData = Array.Empty<byte>();
+	private byte[] bufferBgraData = Array.Empty<byte>();
 	private int bufferWidth = 0;
 	private int bufferHeight = 0;
 	private ComPtr<ID3D11Texture2D> bufferTexture = default;
+	private int captureId = 0;
+
+	private IntPtr pBuffer;
+	private int bufferLength;
 
 	public void AddListener(ICaptureListener listener)
 	{
@@ -66,6 +76,9 @@ public class GameCaptureService : ServiceBase
 			InterfaceManager.DisableReshadePresent();
 		}
 
+		Thread conversionThread = new(new ThreadStart(this.ConversionThread));
+		conversionThread.Start();
+
 		return base.Start();
 	}
 
@@ -91,7 +104,27 @@ public class GameCaptureService : ServiceBase
 			if (this.bufferWidth == 0 || this.bufferHeight == 0)
 				return null;
 
-			return Image.LoadPixelData<Rgba32>(this.bufferData, this.bufferWidth, this.bufferHeight);
+			return Image.LoadPixelData<Bgra32>(this.bufferBgraData, this.bufferWidth, this.bufferHeight);
+		}
+	}
+
+	public Color GetColor(Point point)
+	{
+		lock (this.lockObj)
+		{
+			int x = (int)point.X;
+			int y = (int)point.Y;
+
+			int index = (y * (this.bufferWidth * 4)) + (x * 4);
+
+			if (index + 4 > this.bufferLength)
+				return Colors.Transparent;
+
+			byte b = this.bufferBgraData[index];
+			byte g = this.bufferBgraData[index + 1];
+			byte r = this.bufferBgraData[index + 2];
+
+			return Color.FromArgb(255, r, g, b);
 		}
 	}
 
@@ -116,30 +149,7 @@ public class GameCaptureService : ServiceBase
 					null);
 			}
 
-			destination.Lock();
-
-			// https://stackoverflow.com/questions/21428272/show-rgba-image-from-memory
-			int numPixels = this.bufferHeight * this.bufferWidth;
-			fixed (byte* pSrcData = &this.bufferData[0])
-			{
-				uint* pCurrent = (uint*)pSrcData;
-				uint* pBitmapData = (uint*)destination.BackBuffer;
-
-				for (int n = 0; n < numPixels; n++)
-				{
-					uint x = *(pCurrent++);
-
-					// Swap R and B
-					*(pBitmapData + n) =
-							 0xFF000000 | // force alpha to 255
-						(x & 0x00FF0000) >> 16 |
-						(x & 0x0000FF00) |
-						(x & 0x000000FF) << 16;
-				}
-			}
-
-			destination.AddDirtyRect(new Int32Rect(0, 0, this.bufferWidth, this.bufferHeight));
-			destination.Unlock();
+			destination.WritePixels(new Int32Rect(0, 0, this.bufferWidth, this.bufferHeight), this.bufferBgraData, this.bufferWidth * 4, 0);
 		}
 	}
 
@@ -178,8 +188,7 @@ public class GameCaptureService : ServiceBase
 		{
 			lock (this.lockObj)
 			{
-				// Don't capture if nothing is using the capture data.
-				if (this.listeners.Count <= 0)
+				if (!this.Services.Studio.IsOpen)
 					return;
 
 				var kernelDev = Device.Instance();
@@ -245,20 +254,79 @@ public class GameCaptureService : ServiceBase
 					throw new Exception($"Failed to map texture resource");
 
 				int len = this.bufferWidth * this.bufferHeight * 4;
-				Span<byte> bufferPixels = new(mapped.pData, len);
-				this.bufferData = bufferPixels.ToArray();
+				this.pBuffer = (IntPtr)mapped.pData;
+				this.bufferLength = len;
 
 				context.Get()->Unmap((ID3D11Resource*)buffer, 0u);
+				this.captureId++;
 
-				foreach (ICaptureListener listener in this.listeners)
+				// how long you plan on keeping this open for?
+				if (this.captureId >= int.MaxValue)
 				{
-					listener.OnCapture();
+					this.captureId = 0;
 				}
 			}
 		}
 		catch (Exception ex)
 		{
 			this.Log.Error(ex, "Error in graphics capture");
+		}
+	}
+
+	// A thread responsible for converting captures from rgba32 to bgra32 for use in WPF.
+	private void ConversionThread()
+	{
+		int lastCaptureId = 0;
+
+		while (this.IsAlive)
+		{
+			Thread.Sleep(10);
+
+			try
+			{
+				if (this.captureId == lastCaptureId)
+					continue;
+
+				lock (this.lockObj)
+				{
+					// https://stackoverflow.com/questions/21428272/show-rgba-image-from-memory
+					int numPixels = this.bufferHeight * this.bufferWidth;
+					unsafe
+					{
+						if (this.bufferBgraData.Length != this.bufferLength)
+							this.bufferBgraData = new byte[this.bufferLength];
+
+						fixed (byte* pDestData = &this.bufferBgraData[0])
+						{
+							uint* pCurrent = (uint*)this.pBuffer;
+							uint* pBitmapData = (uint*)pDestData;
+
+							for (int n = 0; n < numPixels; n++)
+							{
+								uint x = *(pCurrent++);
+
+								// Swap R and B
+								*(pBitmapData + n) =
+									0xFF000000 | // force alpha to 255
+									(x & 0x00FF0000) >> 16 |
+									(x & 0x0000FF00) |
+									(x & 0x000000FF) << 16;
+							}
+						}
+					}
+
+					lastCaptureId = this.captureId;
+				}
+
+				foreach (ICaptureListener listener in this.listeners)
+				{
+					listener.OnCapture();
+				}
+			}
+			catch(Exception ex)
+			{
+				this.Log.Error(ex, "Error processing game capture");
+			}
 		}
 	}
 }
