@@ -24,7 +24,7 @@ public class XivTexImage : Image
 		nameof(XivTexImage.Rect),
 		typeof(Rect),
 		typeof(XivTexImage),
-		new(new Rect(0, 0, int.MaxValue, int.MaxValue), OnRectChanged));
+		new(Rect.Empty, OnRectChanged));
 
 	protected readonly ILogger Log = Logging.ForContext<XivTexImage>();
 	private static readonly Dictionary<string, CroppedBitmap> Cache = new();
