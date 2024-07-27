@@ -95,6 +95,7 @@
 	</DataTemplate>
 
 
+
 	<DataTemplate DataType="{x:Type excel:Stain}">
 		<StackPanel>
 			<TextBlock
@@ -108,6 +109,23 @@
 				Style="{DynamicResource Body}"
 				Text="{Binding Item.Description}"
 				TextTrimming="CharacterEllipsis"
+				TextWrapping="NoWrap" />
+		</StackPanel>
+	</DataTemplate>
+
+
+
+	<DataTemplate DataType="{x:Type excel:Glasses}">
+		<StackPanel>
+			<TextBlock
+				Grid.Row="0"
+				Text="{Binding Name}"
+				TextWrapping="Wrap" />
+
+			<TextBlock
+				Grid.Row="2"
+				Style="{DynamicResource Subscript}"
+				Text="{Binding Description}"
 				TextWrapping="NoWrap" />
 		</StackPanel>
 	</DataTemplate>

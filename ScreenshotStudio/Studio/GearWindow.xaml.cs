@@ -17,6 +17,11 @@ using System.Windows.Input;
 
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 
+public enum AccessorySlots
+{
+	Glasses,
+}
+
 public partial class GearWindow : CharacterWindow
 {
 	public GearWindow()
@@ -34,6 +39,8 @@ public partial class GearWindow : CharacterWindow
 		this.Bracelet = new(EquipmentSlot.Wrists, this);
 		this.RingRight = new(EquipmentSlot.RFinger, this);
 		this.RingLeft = new(EquipmentSlot.LFinger, this);
+
+		this.Glasses = new(AccessorySlots.Glasses, this);
 	}
 
 	public WeaponViewModel MainHand { get; init; }
@@ -51,6 +58,8 @@ public partial class GearWindow : CharacterWindow
 	public ItemEquipViewModel RingLeft { get; init; }
 
 	[AutoNotify] public unsafe bool CanRevert => this.Services.CharacterAppearance.CanRestore(this.Target);
+
+	public AccessoryViewModel Glasses { get; init; }
 
 	private unsafe void OnChangeClicked(object sender, RoutedEventArgs e)
 	{
@@ -100,17 +109,40 @@ public partial class GearWindow : CharacterWindow
 						weapon.Item = item;
 					});
 			}
+			else if (btn.DataContext is AccessoryViewModel accessory)
+			{
+				TagCollection defaultTags = new();
+				////defaultTags.Add(accessory.Slot.ToTag());
+
+				string searchTitle = ScreenshotStudio.Resources.Find("LOC_Glasses", "Glasses");
+
+				LibraryModal.Show<Glasses>(
+					btn,
+					searchTitle,
+					defaultTags,
+					accessory.Glasses,
+					(glasses, isFinal) =>
+					{
+						accessory.Glasses = glasses;
+					});
+			}
 		}
 	}
 
 	private void OnMouseUp(object sender, MouseButtonEventArgs e)
 	{
-		if (sender is Button btn
-			&& btn.DataContext is ItemEquipViewModel equip)
+		if (e.ChangedButton != MouseButton.Middle && e.ChangedButton != MouseButton.Right)
+			return;
+
+		if (sender is Button btn)
 		{
-			if (e.ChangedButton == MouseButton.Middle || e.ChangedButton == MouseButton.Right)
+			if (btn.DataContext is ItemEquipViewModel equip)
 			{
 				equip.Item = ItemsSheet.None;
+			}
+			else if (btn.DataContext is AccessoryViewModel accessory)
+			{
+				accessory.Glasses = null;
 			}
 		}
 	}
@@ -448,5 +480,75 @@ public class ItemEquipViewModel : GearViewModelBase
 		{
 			CharacterWindow.GetTarget()->UpdateEquipment(this.Slot, this.ItemEquip, CharacterExtensions.UpdateSource.Interface);
 		});
+	}
+}
+
+public class AccessoryViewModel : ViewModel
+{
+	private readonly GearWindow window;
+	private readonly AccessorySlots slot;
+
+	private Glasses? glasses;
+
+	public AccessoryViewModel(AccessorySlots slot, GearWindow window)
+	{
+		this.slot = slot;
+		this.window = window;
+	}
+
+	[AutoNotify] public bool HasValidTarget => this.window.HasValidTarget;
+
+	[AutoNotify]
+	public Glasses? Glasses
+	{
+		get
+		{
+			if (!this.HasValidTarget)
+				return null;
+
+			if (this.Value == 0)
+				return null;
+
+			if (this.glasses == null)
+				this.glasses = GameDataService.GetRow<Glasses>(this.Value);
+
+			return this.glasses;
+		}
+
+		set
+		{
+			if (value == null)
+			{
+				this.Value = 0;
+			}
+			else
+			{
+				this.Value = (ushort)value.RowId;
+			}
+		}
+	}
+
+	[AutoNotify]
+	public unsafe ushort Value
+	{
+		get
+		{
+			if (!this.window.HasValidTarget)
+				return 0;
+
+			return this.window.Target->DrawData.GlassesIds[(int)this.slot];
+		}
+		set
+		{
+			this.glasses = GameDataService.GetRow<Glasses>(value);
+			if (this.glasses == null)
+			{
+				this.window.Target->DrawData.SetGlasses((int)this.slot, 0);
+			}
+			else
+			{
+				this.window.Target->DrawData.SetGlasses((int)this.slot, value);
+			}
+		}
 	}
 }

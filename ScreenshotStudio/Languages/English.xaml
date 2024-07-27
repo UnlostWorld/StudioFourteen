@@ -88,6 +88,8 @@
 
 	<sys:String x:Key="LOC_Equipment">Equipment</sys:String>
 	<sys:String x:Key="LOC_Weapon">Weapon</sys:String>
+	<sys:String x:Key="LOC_Glasses">Facewear</sys:String>
+
 
 
 	<!--  Bones  -->

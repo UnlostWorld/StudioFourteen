@@ -114,6 +114,7 @@ public class GameDataService : ServiceBase
 		this.AddSheet<WeatherRate>();
 		this.AddSheet<ClassJob>();
 		this.AddSheet<ItemUICategory>();
+		this.AddSheet<Glasses>();
 
 		this.AddSheet<Lumina.Excel.GeneratedSheets.PlaceName>();
 
