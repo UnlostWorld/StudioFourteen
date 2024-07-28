@@ -7,12 +7,14 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using WpfUtils;
 
 public class SkeletonView : Canvas
 {
@@ -102,15 +104,16 @@ public class SkeletonView : Canvas
 
 		this.Children.Clear();
 
-		if (this.ViewDefinition == null)
+		SkeletonViewDefinition? definition = this.ViewDefinition;
+		if (definition == null)
 			return;
 
 		// set background
-		if (this.ViewDefinition.Background != null)
+		if (definition.Background != null)
 		{
 			BitmapImage bmp = new();
 			bmp.BeginInit();
-			bmp.UriSource = new($"pack://application:,,,/ScreenshotStudio;component/{this.ViewDefinition.Background}");
+			bmp.UriSource = new($"pack://application:,,,/ScreenshotStudio;component/{definition.Background}");
 			bmp.EndInit();
 
 			this.backgroundWidth = bmp.PixelWidth;
@@ -128,23 +131,69 @@ public class SkeletonView : Canvas
 		if (DesignerProperties.GetIsInDesignMode(this))
 			return;
 
+		if (definition.Size.Width > 0 && definition.Size.Height > 0)
+		{
+			this.backgroundWidth = (int)definition.Size.Width;
+			this.backgroundHeight = (int)definition.Size.Height;
+		}
+
+		this.Width = this.backgroundWidth;
+		this.Height = this.backgroundHeight;
+
 		int objectTableIndex = this.ObjectTableIndex;
-		if (objectTableIndex < 0)
+		if (this.ObjectTableIndex < 0)
 			return;
 
-		SkeletonViewDefinition definition = this.ViewDefinition;
-		Threads.RunOnFrameworkThread(() =>
+		Task.Run(() => this.LoadFromTableOrChildren(objectTableIndex, definition));
+	}
+
+	protected async Task LoadFromTableOrChildren(int objectTableIndex, SkeletonViewDefinition definition)
+	{
+		if (DalamudServices.ObjectTable == null)
+			return;
+
+		await Threads.FrameworkThread();
+
+		// Check our object table index
+		bool result = await this.LoadFromTable(objectTableIndex, definition);
+
+		// check for ornaments
+		if (!result)
 		{
-			List<BoneSelection> selections = new();
-
-			try
+			int ornamentTableIndex = -1;
+			unsafe
 			{
-				if (DalamudServices.ObjectTable == null)
-					return;
+				Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
+				Ornament* ornament = character->OrnamentData.OrnamentObject;
 
+				if (ornament != null)
+				{
+					ornamentTableIndex = ornament->ObjectIndex;
+				}
+			}
+
+			result = await this.LoadFromTable(ornamentTableIndex, definition);
+		}
+
+		// TODO: check for mounts
+	}
+
+	protected async Task<bool> LoadFromTable(int objectTableIndex, SkeletonViewDefinition definition)
+	{
+		await Threads.FrameworkThread();
+
+		List<BoneSelection> selections = new();
+
+		try
+		{
+			if (DalamudServices.ObjectTable == null)
+				return false;
+
+			unsafe
+			{
 				Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
 				if (character == null)
-					return;
+					return false;
 
 				// populate bones
 				foreach ((string name, Point pos) in definition.Bones)
@@ -165,70 +214,61 @@ public class SkeletonView : Canvas
 					}
 				}
 			}
-			catch(Exception ex)
-			{
-				this.Log.Error(ex, "Error getting bone selections");
-				return;
-			}
-
-			this.Dispatcher.Invoke(() =>
-			{
-				try
-				{
-					if (selections.Count <= 0)
-					{
-						this.Visibility = Visibility.Collapsed;
-					}
-					else
-					{
-						this.Visibility = Visibility.Visible;
-						Dictionary<BoneId, BoneButton> buttonLookup = new();
-						foreach (BoneSelection selection in selections)
-						{
-							BoneButton button = new(selection, this);
-							this.boneButtons.Add(button);
-
-							foreach (BoneId boneId in selection.BoneIds)
-							{
-								if (!buttonLookup.ContainsKey(boneId))
-								{
-									buttonLookup.Add(boneId, button);
-								}
-							}
-						}
-
-						foreach(BoneButton button in this.boneButtons)
-						{
-							foreach (BoneId parentBoneId in button.Selection.ParentBoneIds)
-							{
-								BoneButton? parentButton;
-								if (buttonLookup.TryGetValue(parentBoneId, out parentButton))
-								{
-									BoneConnection connection = new(button, parentButton, this);
-									this.boneConnections.Add(connection);
-								}
-							}
-						}
-
-						this.OnRenderSizeChanged(null);
-						this.OnSelectionChanged(ServiceManager.Instance.Pose.Selection);
-					}
-				}
-				catch (Exception ex)
-				{
-					this.Log.Error(ex, "Error applying bone selections");
-				}
-			});
-		});
-
-		if (this.ViewDefinition.Size.Width > 0 && this.ViewDefinition.Size.Height > 0)
+		}
+		catch(Exception ex)
 		{
-			this.backgroundWidth = (int)this.ViewDefinition.Size.Width;
-			this.backgroundHeight = (int)this.ViewDefinition.Size.Height;
+			this.Log.Error(ex, "Error getting bone selections");
+			return false;
 		}
 
-		this.Width = this.backgroundWidth;
-		this.Height = this.backgroundHeight;
+		await this.Dispatcher.MainThread();
+
+		try
+		{
+			if (selections.Count <= 0)
+			{
+				return false;
+			}
+			else
+			{
+				Dictionary<BoneId, BoneButton> buttonLookup = new();
+				foreach (BoneSelection selection in selections)
+				{
+					BoneButton button = new(selection, this);
+					this.boneButtons.Add(button);
+
+					foreach (BoneId boneId in selection.BoneIds)
+					{
+						if (!buttonLookup.ContainsKey(boneId))
+						{
+							buttonLookup.Add(boneId, button);
+						}
+					}
+				}
+
+				foreach(BoneButton button in this.boneButtons)
+				{
+					foreach (BoneId parentBoneId in button.Selection.ParentBoneIds)
+					{
+						BoneButton? parentButton;
+						if (buttonLookup.TryGetValue(parentBoneId, out parentButton))
+						{
+							BoneConnection connection = new(button, parentButton, this);
+							this.boneConnections.Add(connection);
+						}
+					}
+				}
+
+				this.OnRenderSizeChanged(null);
+				this.OnSelectionChanged(ServiceManager.Instance.Pose.Selection);
+			}
+		}
+		catch (Exception ex)
+		{
+			this.Log.Error(ex, "Error applying bone selections");
+		}
+
+		return true;
 	}
 
 	protected override HitTestResult? HitTestCore(PointHitTestParameters hitTestParameters)
