@@ -82,7 +82,7 @@
 							Grid.Row="1"
 							Grid.Column="2"
 							ObjectTableIndex="{Binding TargetObjectIndex}"
-							ViewDefinition="{Binding Services.Data.SkeletonViews[Panis]}" />
+							ViewDefinition="{Binding Services.Data.SkeletonViews[Penis]}" />
 
 						<pose:SkeletonView
 							Grid.Row="2"
@@ -104,6 +104,27 @@
 							Grid.Row="0"
 							ObjectTableIndex="{Binding TargetObjectIndex}"
 							ViewDefinition="{Binding Services.Data.SkeletonViews[Hands]}" />
+					</Grid>
+				</TabItem>
+
+				<TabItem Header="Face">
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+
+						<pose:SkeletonView
+							Grid.Row="0"
+							ObjectTableIndex="{Binding TargetObjectIndex}"
+							ViewDefinition="{Binding Services.Data.SkeletonViews[Face]}" />
+
+						<pose:SkeletonView
+							Grid.Row="1"
+							Margin="0,-100,0,0"
+							HorizontalAlignment="Right"
+							ObjectTableIndex="{Binding TargetObjectIndex}"
+							ViewDefinition="{Binding Services.Data.SkeletonViews[Tongue]}" />
 					</Grid>
 				</TabItem>
 
@@ -251,7 +272,8 @@
 						Grid.Row="0"
 						Grid.Column="1"
 						RelativeRange="5"
-						RelativeValue="{Binding TranslationX}" />
+						RelativeValue="{Binding TranslationX}"
+						SmallChange="0.01" />
 
 					<TextBlock
 						Grid.Row="1"
@@ -263,7 +285,8 @@
 						Grid.Row="1"
 						Grid.Column="1"
 						RelativeRange="5"
-						RelativeValue="{Binding TranslationY}" />
+						RelativeValue="{Binding TranslationY}"
+						SmallChange="0.01" />
 
 					<TextBlock
 						Grid.Row="2"
@@ -275,7 +298,8 @@
 						Grid.Row="2"
 						Grid.Column="1"
 						RelativeRange="5"
-						RelativeValue="{Binding TranslationZ}" />
+						RelativeValue="{Binding TranslationZ}"
+						SmallChange="0.01" />
 				</Grid>
 			</Expander>
 
@@ -397,7 +421,8 @@
 						Grid.Row="0"
 						Grid.Column="1"
 						RelativeRange="1"
-						RelativeValue="{Binding ScaleX}" />
+						RelativeValue="{Binding ScaleX}"
+						SmallChange="0.01" />
 
 					<TextBlock
 						Grid.Row="1"
@@ -409,7 +434,8 @@
 						Grid.Row="1"
 						Grid.Column="1"
 						RelativeRange="1"
-						RelativeValue="{Binding ScaleY}" />
+						RelativeValue="{Binding ScaleY}"
+						SmallChange="0.01" />
 
 					<TextBlock
 						Grid.Row="2"
@@ -421,7 +447,8 @@
 						Grid.Row="2"
 						Grid.Column="1"
 						RelativeRange="1"
-						RelativeValue="{Binding ScaleZ}" />
+						RelativeValue="{Binding ScaleZ}"
+						SmallChange="0.01" />
 				</Grid>
 			</Expander>
 		</StackPanel>

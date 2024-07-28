@@ -1,7 +1,6 @@
 {
 	"Body": {
 		"Background": "/Assets/PoseCharacterBodyBackground.png",
-		"Padding": "-40,0,-40,0",
 		"Bones": {
 			"j_kao": "128, 60",
 			"j_kubi": "128, 85",
@@ -32,7 +31,6 @@
 
 	"Clothes": {
 		"Background": "/Assets/PoseCharacterClothesBackground.png",
-		"Padding": "-40,0,0,0",
 		"Bones": {
 			"j_kosi": "130, 212",
 			"n_kataarmor_l": "80, 120",
@@ -61,7 +59,6 @@
 
 	"Tail": {
 		"Background": "/Assets/PoseCharacterTailBackground.png",
-		"Padding": "0,20,0,0",
 		"Bones": {
 			"n_sippo_a": "16, 8",
 			"n_sippo_b": "33, 23",
@@ -74,7 +71,6 @@
 
 	"Penis": {
 		"Background": "/Assets/PoseCharacterPenisBackground.png",
-		"Padding": "0,20,0,0",
 		"Bones": {
 			"iv_ochinko_f": "32, 18",
 			"iv_ochinko_e": "32, 33",
@@ -118,10 +114,49 @@
 			"iv_kusu_c_l": "104 38",
 			"iv_ko_c_l": "131, 57"
 		}
-	}
+	},
 
 
 	"Face": {
-		"Background": "/Assets/PoseCharacterFaceBackground.png"
+		"Background": "/Assets/PoseCharacterFaceBackground.png",
+		"Bones": {
+			"j_mimi_l": "62, 141",
+			"n_ear_a_l": "73, 200",
+			"n_ear_b_l": "73, 230",
+			"j_f_mayu_l": "128, 55",
+			"j_f_mmayu_l": "166, 70",
+			"j_f_miken_01_l": "190, 90",
+			"j_f_miken_02_l": "203, 100",
+			"j_f_mabup_01_l": "136, 100",
+			"j_f_eye_l": "145, 124",
+			"j_f_mabdn_01_l": "148, 141",
+			"j_f_dmemoto_l": "170, 218",
+			"j_f_hoho_l": "135, 190",
+			"j_f_dhoho_l": "105, 211",
+			"j_f_shoho_l": "135, 232",
+			"j_f_uhana": "229, 147",
+			"j_f_hana_l": "210, 210",
+			"j_f_umlip_01_l": "195, 245",
+			"j_f_umlip_02_l": "195, 260",
+			"j_f_ulip_01_l": "219, 245",
+			"j_f_ulip_02_l": "219, 260",
+			"j_f_dlip_01_l": "217.5, 305",
+			"j_f_dlip_02_l": "217.5, 290",
+			"j_f_dmlip_01_l": "195, 305",
+			"j_f_dmlip_02_l": "195, 290",
+			"j_f_dslip_l": "180, 290",
+			"j_f_uslip_l": "180, 270",
+			"j_f_ago": "229, 350"
+		}
+	},
+
+
+	"Tongue": {
+		"Background": "/Assets/PoseCharacterTongueBackground.png",
+		"Bones": {
+			"j_f_bero_01": "64, 111",
+			"j_f_bero_02": "64, 72",
+			"j_f_bero_03": "64, 32"
+		}
 	}
 }

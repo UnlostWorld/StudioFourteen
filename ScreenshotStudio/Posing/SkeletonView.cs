@@ -105,8 +105,6 @@ public class SkeletonView : Canvas
 		if (this.ViewDefinition == null)
 			return;
 
-		this.Margin = this.ViewDefinition.Padding;
-
 		// set background
 		if (this.ViewDefinition.Background != null)
 		{
@@ -522,9 +520,7 @@ public class SkeletonView : Canvas
 
 public class SkeletonViewDefinition
 {
-	public string? Category { get; set; }
 	public string? Background { get; set; }
 	public Dictionary<string, Point> Bones { get; set; } = new();
-	public Thickness Padding { get; set; }
 	public Size Size { get; set; }
 }
