@@ -4,11 +4,15 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using ScreenshotStudio.Plugin;
 using System;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
 public static class Threads
 {
 	public static bool IsFrameworkThread => DalamudServices.Framework?.IsInFrameworkUpdateThread == true;
+
+	public static SwitchToFrameworkThreadAwaitable FrameworkThread() => new();
+
 	public static Task RunOnFrameworkThread(Action action)
 	{
 		if (!IsFrameworkThread)
@@ -48,6 +52,25 @@ public static class Threads
 		if (!IsFrameworkThread)
 		{
 			throw new InvalidThreadException();
+		}
+	}
+
+	public struct SwitchToFrameworkThreadAwaitable : INotifyCompletion
+	{
+		public SwitchToFrameworkThreadAwaitable()
+		{
+		}
+
+		public bool IsCompleted => Threads.IsFrameworkThread;
+
+		public SwitchToFrameworkThreadAwaitable GetAwaiter() => this;
+		public void GetResult()
+		{
+		}
+
+		public void OnCompleted(Action continuation)
+		{
+			Threads.RunOnFrameworkThread(continuation);
 		}
 	}
 }
