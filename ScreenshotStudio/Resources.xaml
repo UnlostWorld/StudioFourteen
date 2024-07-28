@@ -58,6 +58,7 @@
 	<converters:MultiBoolOrToVisibilityConverter x:Key="MultiBoolOrToVisibility" />
 	<converters:MultiBoolAndToVisibilityConverter x:Key="MultiBoolAndToVisibility" />
 	<converters:AnyBoolIsFalseToBoolMultiConverter x:Key="AnyBoolIsFalseToBool" />
+	<converters:MultiOrVisibilityConverter x:Key="MultiOrVisibility" />
 
 	<!--
 	<ImageBrush

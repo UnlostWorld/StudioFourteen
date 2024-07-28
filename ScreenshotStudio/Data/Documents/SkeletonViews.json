@@ -158,5 +158,29 @@
 			"j_f_bero_02": "64, 72",
 			"j_f_bero_03": "64, 32"
 		}
+	},
+
+
+	"DiabolosWings": {
+		"Background": "/Assets/PoseCharacterDiabolosWingsBackground.png",
+		"Bones": {
+			"j_wing_a_l": "208, 94",
+			"j_wing_b_l": "188, 86",
+			"j_hane_a_l": "102, 64",
+			"j_hane_aa_l": "49, 103",
+			"j_hane_b_l": "117, 73",
+			"j_hane_bb_l": "84, 108",
+			"j_hane_c_l": "130, 89",
+			"j_hane_cc_l": "112, 120",
+			"j_hane_d_l": "150, 100",
+			"j_hane_dd_l": "142, 126",
+			"j_hane_e_l": "180, 109",
+			"j_hane_ee_l": "180, 124",
+			"j_haneop_a_l": "131, 110",
+			"j_haneop_b_l": "163, 110",
+			"j_haneop_c_l": "153, 39",
+			"j_wingop_a_l": "205, 111",
+			"j_wingop_b_l": "190, 102"
+		}
 	}
 }
