@@ -8,6 +8,7 @@ using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using System;
 using System.Numerics;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -112,26 +113,32 @@ public class RotationGizmo : View
 		Matrix4x4 mat = Matrix4x4.CreateScale(-1, 1, 1);
 		viewMatrix = viewMatrix * mat;
 
-		this.Dispatcher.Invoke(() =>
+		try
 		{
-			Quaternion rot = this.Rotation;
-			if (this.isDragging)
-				rot = this.dragRotation;
+			this.Dispatcher.Invoke(() =>
+			{
+				Quaternion rot = this.Rotation;
+				if (this.isDragging)
+					rot = this.dragRotation;
 
-			Matrix4x4 transformMatrix = Matrix4x4.CreateFromQuaternion(rot);
-			transformMatrix.Translation = new Vector3(0, 0, 0);
+				Matrix4x4 transformMatrix = Matrix4x4.CreateFromQuaternion(rot);
+				transformMatrix.Translation = new Vector3(0, 0, 0);
 
-			Vector2 center = default;
-			center.X = (float)(this.ActualWidth / 2);
-			center.Y = (float)(this.ActualHeight / 2);
+				Vector2 center = default;
+				center.X = (float)(this.ActualWidth / 2);
+				center.Y = (float)(this.ActualHeight / 2);
 
-			Canvas.SetLeft(this.sphere, center.X - (this.sphere.Width / 2));
-			Canvas.SetTop(this.sphere, center.Y - (this.sphere.Height / 2));
+				Canvas.SetLeft(this.sphere, center.X - (this.sphere.Width / 2));
+				Canvas.SetTop(this.sphere, center.Y - (this.sphere.Height / 2));
 
-			this.xAxis.Transform(transformMatrix, viewMatrix, center);
-			this.yAxis.Transform(transformMatrix, viewMatrix, center);
-			this.zAxis.Transform(transformMatrix, viewMatrix, center);
-		});
+				this.xAxis.Transform(transformMatrix, viewMatrix, center);
+				this.yAxis.Transform(transformMatrix, viewMatrix, center);
+				this.zAxis.Transform(transformMatrix, viewMatrix, center);
+			});
+		}
+		catch (TaskCanceledException)
+		{
+		}
 	}
 
 	protected override void OnMouseWheel(MouseWheelEventArgs e)
