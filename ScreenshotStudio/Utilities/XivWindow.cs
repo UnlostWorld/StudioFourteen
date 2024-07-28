@@ -65,8 +65,6 @@ public static class XivWindow
 		int style = GetWindowLong(wndInterop.Handle, GWL_STYLE);
 		style = (int)((style & ~WS_POPUP) | WS_CHILD);
 		SetWindowLong(wndInterop.Handle, GWL_STYLE, style);
-
-		SetPosition(wnd, new Point(0.5, 0.5));
 	}
 
 	public static void Unembed(Window wnd)

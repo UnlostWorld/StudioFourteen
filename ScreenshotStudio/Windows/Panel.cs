@@ -28,7 +28,7 @@ public abstract partial class Panel : Window, IAutoNotify
 		nameof(Panel.IsShown),
 		typeof(bool),
 		typeof(Panel),
-		new(true));
+		new(false));
 
 	public static readonly DependencyProperty IsEmbeddedProperty = DependencyProperty.Register(
 		nameof(Panel.IsEmbedded),
@@ -79,12 +79,6 @@ public abstract partial class Panel : Window, IAutoNotify
 	}
 
 	public bool IsUiVisible => !DalamudServices.GameGui?.GameUiHidden ?? true;
-
-	public bool IsOpen
-	{
-		get;
-		private set;
-	}
 
 	public static void Show<T>()
 		where T : Panel
@@ -233,7 +227,7 @@ public abstract partial class Panel : Window, IAutoNotify
 			DalamudServices.Framework.Update += this.OnFrameworkUpdate;
 
 		AutoPropertyNotifyService.Register(this);
-		this.IsOpen = true;
+		this.IsShown = true;
 	}
 
 	protected virtual void OnClosed()
@@ -246,7 +240,7 @@ public abstract partial class Panel : Window, IAutoNotify
 
 		AutoPropertyNotifyService.Remove(this);
 		this.Services.Panels.OnPanelClosed(this);
-		this.IsOpen = false;
+		this.IsShown = false;
 	}
 
 	protected virtual void OnFrameworkUpdate(IFramework framework)

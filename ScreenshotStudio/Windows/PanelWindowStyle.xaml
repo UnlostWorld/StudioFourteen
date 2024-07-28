@@ -122,7 +122,13 @@
 
 		<AdornerDecorator>
 
-			<Grid Margin="12">
+			<Grid
+				Margin="12"
+				RenderTransformOrigin="0.5,0.5">
+
+				<Grid.RenderTransform>
+					<ScaleTransform x:Name="WindowScale" ScaleX="1" ScaleY="{Binding ScaleX, RelativeSource={RelativeSource Self}}" />
+				</Grid.RenderTransform>
 
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
@@ -251,9 +257,79 @@
 				<Setter TargetName="WindowBorder" Property="BorderBrush" Value="{DynamicResource TrimBrush}" />
 				<Setter TargetName="WindowShadow" Property="Opacity" Value="1" />
 			</Trigger>
+
 			<Trigger Property="Subtitle" Value="{x:Null}">
 				<Setter TargetName="SubtitleSeperator" Property="Visibility" Value="Collapsed" />
 			</Trigger>
+
+			<Trigger Property="IsEmbedded" Value="False">
+				<Trigger.ExitActions>
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimationUsingKeyFrames
+								Storyboard.TargetName="WindowScale"
+								Storyboard.TargetProperty="ScaleX">
+								<EasingDoubleKeyFrame
+									KeyTime="0:00:00.200"
+									Value="0.98">
+									<EasingDoubleKeyFrame.EasingFunction>
+										<SineEase EasingMode="EaseOut" />
+									</EasingDoubleKeyFrame.EasingFunction>
+								</EasingDoubleKeyFrame>
+
+								<EasingDoubleKeyFrame
+									KeyTime="0:00:00.300"
+									Value="1">
+									<EasingDoubleKeyFrame.EasingFunction>
+										<SineEase EasingMode="EaseIn" />
+									</EasingDoubleKeyFrame.EasingFunction>
+								</EasingDoubleKeyFrame>
+							</DoubleAnimationUsingKeyFrames>
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.ExitActions>
+				<Trigger.EnterActions>
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimationUsingKeyFrames
+								Storyboard.TargetName="WindowScale"
+								Storyboard.TargetProperty="ScaleX">
+								<EasingDoubleKeyFrame
+									KeyTime="0:00:00.200"
+									Value="1.02">
+									<EasingDoubleKeyFrame.EasingFunction>
+										<SineEase EasingMode="EaseOut" />
+									</EasingDoubleKeyFrame.EasingFunction>
+								</EasingDoubleKeyFrame>
+
+								<EasingDoubleKeyFrame
+									KeyTime="0:00:00.300"
+									Value="1">
+									<EasingDoubleKeyFrame.EasingFunction>
+										<SineEase EasingMode="EaseIn" />
+									</EasingDoubleKeyFrame.EasingFunction>
+								</EasingDoubleKeyFrame>
+							</DoubleAnimationUsingKeyFrames>
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.EnterActions>
+			</Trigger>
+
+			<EventTrigger RoutedEvent="UserControl.Loaded">
+				<BeginStoryboard>
+					<Storyboard>
+						<DoubleAnimation
+							Storyboard.TargetProperty="Opacity"
+							From="0"
+							To="1"
+							Duration="0:00:00.250">
+							<DoubleAnimation.EasingFunction>
+								<SineEase EasingMode="EaseIn" />
+							</DoubleAnimation.EasingFunction>
+						</DoubleAnimation>
+					</Storyboard>
+				</BeginStoryboard>
+			</EventTrigger>
 
 			<MultiDataTrigger>
 				<MultiDataTrigger.Conditions>
