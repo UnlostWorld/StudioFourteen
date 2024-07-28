@@ -1,12 +1,12 @@
 ﻿namespace ScreenshotStudio.Posing;
 
 using Dalamud.Plugin.Services;
-using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
 using System.Numerics;
 
 public abstract class SelectionBase
 {
 	public abstract string Name { get; }
+	public abstract string? Subtitle { get; }
 
 	public abstract Vector3 WorldTranslation { get; set; }
 	public abstract Quaternion WorldRotation { get; set; }

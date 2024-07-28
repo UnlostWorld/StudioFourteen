@@ -94,5 +94,34 @@
 			"iv_omanko": "32, 42",
 			"iv_inshin_l": "16, 42"
 		}
+	},
+
+
+	"Hands": {
+		"Background": "/Assets/PoseCharacterHandBackground.png",
+		"Bones": {
+			"n_hte_l": "75,218",
+			"j_te_l": "80, 183",
+			"j_oya_a_l": "37, 145",
+			"j_oya_b_l": "28, 108",
+			"j_hito_a_l": "58, 94",
+			"j_hito_b_l": "55, 56",
+			"j_naka_a_l": "81, 95",
+			"j_naka_b_l": "78, 63",
+			"j_kusu_a_l": "106, 100",
+			"j_kusu_b_l": "104, 65",
+			"j_ko_a_l": "128, 106",
+			"j_ko_b_l": "130, 80",
+			"n_buki_l": "85, 141",
+			"iv_hito_c_l": "53, 33",
+			"iv_naka_c_l": "76, 35",
+			"iv_kusu_c_l": "104 38",
+			"iv_ko_c_l": "131, 57"
+		}
+	}
+
+
+	"Face": {
+		"Background": "/Assets/PoseCharacterFaceBackground.png"
 	}
 }

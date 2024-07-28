@@ -92,6 +92,21 @@
 
 					</Grid>
 				</TabItem>
+
+				<TabItem Header="Hands">
+					<Grid VerticalAlignment="Center">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+
+						<pose:SkeletonView
+							Grid.Row="0"
+							ObjectTableIndex="{Binding TargetObjectIndex}"
+							ViewDefinition="{Binding Services.Data.SkeletonViews[Hands]}" />
+					</Grid>
+				</TabItem>
+
 				<TabItem Header="Matrix" />
 				<TabItem Header="Tree" />
 			</TabControl>
@@ -108,6 +123,11 @@
 				HorizontalAlignment="Center"
 				Style="{DynamicResource Header}"
 				Text="{Binding Selection.Name}" />
+
+			<TextBlock
+				HorizontalAlignment="Center"
+				Style="{DynamicResource Subscript}"
+				Text="{Binding Selection.Subtitle}" />
 
 			<StackPanel>
 				<Border

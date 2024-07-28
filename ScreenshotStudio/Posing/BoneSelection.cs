@@ -22,6 +22,7 @@ public class BoneSelection : SelectionBase
 	}
 
 	public override string Name => Resources.Find($"LOC_Bone_{this.BoneName}", this.BoneName);
+	public override string? Subtitle => this.BoneName;
 	public string BoneName { get; init; }
 	public IReadOnlyCollection<BoneId> BoneIds => this.boneIds.AsReadOnly();
 	public IReadOnlyCollection<BoneId> ParentBoneIds => this.parentBoneIds.AsReadOnly();

@@ -1,16 +1,10 @@
 ﻿namespace ScreenshotStudio.Posing;
-
-using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
-using FFXIVClientStructs.Havok.Common.Base.Math.Vector;
-using ScreenshotStudio.Data;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Structs.Extensions;
 using ScreenshotStudio.Windows;
 using System;
-using System.Collections.Generic;
 using System.Numerics;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 public partial class PoseWindow : CharacterWindow
