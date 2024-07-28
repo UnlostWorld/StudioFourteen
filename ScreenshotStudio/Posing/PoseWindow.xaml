@@ -40,7 +40,8 @@
 
 		<Grid
 			Grid.RowSpan="2"
-			Grid.Column="0">
+			Grid.Column="0"
+			Margin="0,0,2,0">
 
 			<Rectangle
 				Fill="Transparent"
@@ -129,7 +130,51 @@
 				</TabItem>
 
 				<TabItem Header="Matrix" />
-				<TabItem Header="Tree" />
+				<TabItem Header="Tree">
+					<TreeView
+						BorderThickness="0"
+						ItemsSource="{Binding Partials}">
+
+						<TreeView.Template>
+							<ControlTemplate>
+								<Border Style="{DynamicResource WpfUtilsControlBorder}">
+									<ScrollViewer
+										Padding="4"
+										CanContentScroll="False"
+										Focusable="False">
+										<ItemsPresenter />
+									</ScrollViewer>
+								</Border>
+							</ControlTemplate>
+						</TreeView.Template>
+
+
+						<TreeView.ItemTemplate>
+							<HierarchicalDataTemplate
+								DataType="{x:Type pose:BoneTreeNode}"
+								ItemsSource="{Binding Children}">
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="Auto" />
+										<ColumnDefinition />
+									</Grid.ColumnDefinitions>
+
+									<Button
+										Grid.Column="0"
+										Margin="0"
+										Background="Transparent"
+										Click="OnTreeClicked"
+										IsEnabled="{Binding Selection, Converter={StaticResource NotNullToBoolConverter}}">
+										<TextBlock
+											Grid.Column="1"
+											Foreground="{DynamicResource ForegroundBrush}"
+											Text="{Binding Name}" />
+									</Button>
+								</Grid>
+							</HierarchicalDataTemplate>
+						</TreeView.ItemTemplate>
+					</TreeView>
+				</TabItem>
 			</TabControl>
 		</Grid>
 

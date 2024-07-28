@@ -1,17 +1,27 @@
 ﻿namespace ScreenshotStudio.Posing;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
+using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
+using FFXIVClientStructs.Havok.Animation.Rig;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Structs.Extensions;
 using ScreenshotStudio.Windows;
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Numerics;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Xml.Linq;
 
 public partial class PoseWindow : CharacterWindow
 {
 	private Vector3? trackingEuler;
 
 	public PoseEditModes[] EditModes => Enum.GetValues<PoseEditModes>();
+
+	public ObservableCollection<BoneTreeNode> Partials { get; init; } = new();
 
 	[AutoNotify]
 	public bool ExpandTranslationSliders
@@ -263,6 +273,15 @@ public partial class PoseWindow : CharacterWindow
 		{
 			this.Services.Pose.Selection = new GameObjectSelection((ushort)this.TargetObjectIndex);
 		}
+
+		this.PopulateTree();
+	}
+
+	protected override void OnTargetChanged()
+	{
+		base.OnTargetChanged();
+
+		this.PopulateTree();
 	}
 
 	private void OnRevertClicked(object sender, RoutedEventArgs e)
@@ -290,4 +309,95 @@ public partial class PoseWindow : CharacterWindow
 
 		this.Services.Pose.Selection = new GameObjectSelection((ushort)this.TargetObjectIndex);
 	}
+
+	private unsafe void PopulateTree()
+	{
+		this.Partials.Clear();
+
+		if (!this.HasValidTarget)
+			return;
+
+		CharacterBase* characterBase = this.Target->GetCharacterBase();
+		if (characterBase == null)
+			return;
+
+		ushort partialCount = characterBase->Skeleton->PartialSkeletonCount;
+		for (int partialIdx = 0; partialIdx < partialCount; partialIdx++)
+		{
+			PartialSkeleton* partialSkeleton = &characterBase->Skeleton->PartialSkeletons[partialIdx];
+
+			BoneTreeNode treePartial = new($"Partial Skeleton {partialIdx}");
+			this.Partials.Add(treePartial);
+
+			byte poseCount = partialSkeleton->GetMaxPoses();
+			for (byte poseIdx = 0; poseIdx < poseCount; poseIdx++)
+			{
+				hkaPose* pose = partialSkeleton->GetHavokPose(poseIdx);
+				if (pose == null)
+					continue;
+
+				BoneTreeNode treePose = new($"Pose {poseIdx}");
+				treePartial.Children.Add(treePose);
+
+				Dictionary<BoneId, BoneTreeNode> nodes = new();
+
+				int boneCount = pose->Skeleton->Bones.Length;
+
+				// Create bone nodes
+				for (short boneIdx = 0; boneIdx < boneCount; boneIdx++)
+				{
+					hkaBone bone = pose->Skeleton->Bones[boneIdx];
+					string boneName = bone.Name.String ?? "Bone";
+
+					BoneId id = new(this.TargetObjectIndex, partialIdx, poseIdx, boneIdx, boneName);
+
+					BoneTreeNode node = new(null);
+					node.Selection = new BoneSelection(id, boneName);
+					nodes.Add(id, node);
+				}
+
+				// parent nodes
+				for (short boneIdx = 0; boneIdx < boneCount; boneIdx++)
+				{
+					hkaBone bone = pose->Skeleton->Bones[boneIdx];
+					string boneName = bone.Name.String ?? "Bone";
+
+					BoneId id = new(this.TargetObjectIndex, partialIdx, poseIdx, boneIdx, boneName);
+					if (!nodes.ContainsKey(id))
+						throw new Exception($"Missing bone: {id}");
+
+					short parentIndex = pose->Skeleton->ParentIndices[boneIdx];
+					if (parentIndex == -1)
+					{
+						treePose.Children.Add(nodes[id]);
+						continue;
+					}
+
+					BoneId parentId = new(this.TargetObjectIndex, partialIdx, poseIdx, parentIndex);
+					if (!nodes.ContainsKey(parentId))
+						throw new Exception($"Missing parent bone: {parentId}");
+
+					nodes[parentId].Children.Add(nodes[id]);
+				}
+			}
+		}
+	}
+
+	private void OnTreeClicked(object sender, RoutedEventArgs e)
+	{
+		if (sender is Button btn && btn.DataContext is BoneTreeNode node)
+		{
+			this.Services.Pose.Selection = node.Selection;
+		}
+	}
+}
+
+public class BoneTreeNode(string? name)
+{
+	private readonly string? name = name;
+
+	public string? Name => this.Selection?.Name ?? this.name;
+
+	public BoneSelection? Selection { get; set; }
+	public ObservableCollection<BoneTreeNode> Children { get; init; } = new();
 }

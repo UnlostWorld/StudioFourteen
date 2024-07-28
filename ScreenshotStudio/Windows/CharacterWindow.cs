@@ -11,13 +11,13 @@ using ScreenshotStudio.Utilities;
 public abstract class CharacterWindow : PanelWindow
 {
 	[AlwaysNotify] public string? CharacterName { get; private set; }
-	[AlwaysNotify] public bool HasValidTarget { get; private set; }
-	[AlwaysNotify] public int TargetObjectIndex { get; private set; }
+	[AlwaysNotify] public bool HasValidTarget { get; private set; } = false;
+	[AlwaysNotify] public int TargetObjectIndex { get; private set; } = -1;
 
 	/// <summary>
 	///  Gets a pointer to the player, the players target, or the group pose target.
 	/// </summary>
-	public unsafe Character* Target { get; private set; }
+	public unsafe Character* Target { get; private set; } = null;
 
 	// should put this somewhere...
 	public static unsafe Character* GetTarget()
@@ -65,9 +65,20 @@ public abstract class CharacterWindow : PanelWindow
 	{
 		base.OnFrameworkUpdate(framework);
 
+		int startIndex = this.TargetObjectIndex;
+
 		this.Target = GetTarget();
 		this.HasValidTarget = this.Target != null && this.Target->CanDraw();
 		this.TargetObjectIndex = this.HasValidTarget ? this.Target->ObjectIndex : -1;
 		this.CharacterName = this.HasValidTarget ? this.Target->GetNameAsString() : "Nobody";
+
+		if (startIndex != this.TargetObjectIndex)
+		{
+			this.Dispatcher.Invoke(this.OnTargetChanged);
+		}
+	}
+
+	protected virtual void OnTargetChanged()
+	{
 	}
 }

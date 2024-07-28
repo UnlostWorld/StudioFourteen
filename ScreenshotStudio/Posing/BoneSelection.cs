@@ -21,6 +21,20 @@ public class BoneSelection : SelectionBase
 		this.parentBoneIds = parents;
 	}
 
+	public BoneSelection(BoneId bone, BoneId parent, string name)
+	{
+		this.BoneName = name;
+		this.boneIds = [bone];
+		this.parentBoneIds = [parent];
+	}
+
+	public BoneSelection(BoneId bone, string name)
+	{
+		this.BoneName = name;
+		this.boneIds = [bone];
+		this.parentBoneIds = [];
+	}
+
 	public override string Name => Resources.Find($"LOC_Bone_{this.BoneName}", this.BoneName);
 	public override string? Subtitle => this.BoneName;
 	public string BoneName { get; init; }
