@@ -191,6 +191,9 @@ public class GameCaptureService : ServiceBase
 				if (!this.Services.Studio.IsOpen)
 					return;
 
+				if (this.listeners.Count <= 0)
+					return;
+
 				var kernelDev = Device.Instance();
 				if (kernelDev == null)
 					return;
