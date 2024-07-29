@@ -1,61 +1,53 @@
 ﻿namespace ScreenshotStudio.Controls;
 
+using DependencyPropertyGenerator;
 using FontAwesome.Sharp.Pro;
 using System.Windows.Controls;
 using System.Windows.Input;
 using WpfUtils.Controls;
-using WpfUtils.DependencyProperties;
 
 using IconBlock = WpfUtils.Controls.IconBlock;
 
+[DependencyProperty<Key>("Key", DefaultValue = Key.LeftShift)]
 public partial class KeyPrompt : UserControl
 {
-	public static readonly IBind<Key> KeyDp = Binder.Register<Key, KeyPrompt>(nameof(Key), OnKeyChanged);
-
 	public KeyPrompt()
 	{
 		this.InitializeComponent();
-		this.Key = Key.LeftShift;
 	}
 
-	public Key Key
+	partial void OnKeyChanged(Key newValue)
 	{
-		get => KeyDp.Get(this);
-		set => KeyDp.Set(this, value);
-	}
+		this.Label.Text = null;
+		this.IconDisplay.Icon = ProIcons.Question;
+		this.IconDisplay.IconStyle = IconBlock.IconStyles.Solid;
+		this.IconRotation.Angle = 0;
 
-	private static void OnKeyChanged(KeyPrompt sender, Key key)
-	{
-		sender.Label.Text = null;
-		sender.IconDisplay.Icon = ProIcons.Question;
-		sender.IconDisplay.IconStyle = IconBlock.IconStyles.Solid;
-		sender.IconRotation.Angle = 0;
-
-		if (key == Key.Return)
+		if (newValue == Key.Return)
 		{
-			sender.IconDisplay.Icon = ProIcons.LevelDown;
-			sender.IconRotation.Angle = 90;
+			this.IconDisplay.Icon = ProIcons.LevelDown;
+			this.IconRotation.Angle = 90;
 		}
-		else if (key == Key.Tab)
+		else if (newValue == Key.Tab)
 		{
-			sender.IconDisplay.Icon = ProIcons.Exchange;
+			this.IconDisplay.Icon = ProIcons.Exchange;
 		}
-		else if (key == Key.LeftShift)
+		else if (newValue == Key.LeftShift)
 		{
-			sender.IconDisplay.Icon = ProIcons.ArrowAltUp;
-			sender.IconDisplay.IconStyle = IconBlock.IconStyles.OutlineThin;
-			sender.Label.Text = "L";
+			this.IconDisplay.Icon = ProIcons.ArrowAltUp;
+			this.IconDisplay.IconStyle = IconBlock.IconStyles.OutlineThin;
+			this.Label.Text = "L";
 		}
-		else if (key == Key.RightShift)
+		else if (newValue == Key.RightShift)
 		{
-			sender.IconDisplay.Icon = ProIcons.ArrowAltUp;
-			sender.IconDisplay.IconStyle = IconBlock.IconStyles.OutlineThin;
-			sender.Label.Text = "R";
+			this.IconDisplay.Icon = ProIcons.ArrowAltUp;
+			this.IconDisplay.IconStyle = IconBlock.IconStyles.OutlineThin;
+			this.Label.Text = "R";
 		}
 		else
 		{
-			sender.IconDisplay.Visibility = System.Windows.Visibility.Collapsed;
-			sender.Label.Text = key.ToString().ToUpper();
+			this.IconDisplay.Visibility = System.Windows.Visibility.Collapsed;
+			this.Label.Text = newValue.ToString().ToUpper();
 		}
 	}
 }

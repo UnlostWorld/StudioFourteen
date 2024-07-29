@@ -7,14 +7,13 @@ using ScreenshotStudio.GameData.Excel;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Controls;
-using WpfUtils.DependencyProperties;
+using DependencyPropertyGenerator;
 
+[DependencyProperty<byte>("Value", DefaultValue = 0, DefaultBindingMode = DefaultBindingMode.TwoWay)]
+[DependencyProperty<CharaMakeType.Menu>("Menu")]
+[DependencyProperty<bool>("Flipped")]
 public partial class CustomizeIconOption : UserControl, INotifyPropertyChanged
 {
-	public static IBind<byte> ValueDp = Binder.Register<byte, CustomizeIconOption>(nameof(Value), OnValueChanged);
-	public static IBind<CharaMakeType.Menu?> MenuDp = Binder.Register<CharaMakeType.Menu?, CustomizeIconOption>(nameof(Menu), OnMenuChanged);
-	public static IBind<bool> FlippedDp = Binder.Register<bool, CustomizeIconOption>(nameof(Flipped));
-
 	public CustomizeIconOption()
 	{
 		this.InitializeComponent();
@@ -22,24 +21,6 @@ public partial class CustomizeIconOption : UserControl, INotifyPropertyChanged
 	}
 
 	public event PropertyChangedEventHandler? PropertyChanged;
-
-	public byte Value
-	{
-		get => ValueDp.Get(this);
-		set => ValueDp.Set(this, value);
-	}
-
-	public CharaMakeType.Menu? Menu
-	{
-		get => MenuDp.Get(this);
-		set => MenuDp.Set(this, value);
-	}
-
-	public bool Flipped
-	{
-		get => FlippedDp.Get(this);
-		set => FlippedDp.Set(this, value);
-	}
 
 	public List<IconOption> Options { get; init; } = new();
 
@@ -61,16 +42,16 @@ public partial class CustomizeIconOption : UserControl, INotifyPropertyChanged
 		set => this.Value = value?.FeatureId ?? 0;
 	}
 
-	public static void OnValueChanged(CustomizeIconOption sender, byte newValue)
+	partial void OnValueChanged(byte newValue)
 	{
-		sender.PropertyChanged?.Invoke(sender, new(nameof(CustomizeColorOption.SelectedOption)));
+		this.PropertyChanged?.Invoke(this, new(nameof(CustomizeColorOption.SelectedOption)));
 	}
 
-	public static void OnMenuChanged(CustomizeIconOption sender, CharaMakeType.Menu? newValue)
+	partial void OnMenuChanged(CharaMakeType.Menu? newValue)
 	{
-		sender.PopulateOptions();
-		sender.PropertyChanged?.Invoke(sender, new(nameof(CustomizeColorOption.SelectedOption)));
-		sender.PropertyChanged?.Invoke(sender, new(nameof(CustomizeColorOption.Value)));
+		this.PopulateOptions();
+		this.PropertyChanged?.Invoke(this, new(nameof(CustomizeColorOption.SelectedOption)));
+		this.PropertyChanged?.Invoke(this, new(nameof(CustomizeColorOption.Value)));
 	}
 
 	private void PopulateOptions()
