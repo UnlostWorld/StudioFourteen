@@ -80,8 +80,7 @@
 							<wpfUtils:IconBlock
 								Margin="0,0,6,0"
 								FontSize="10"
-								Icon="Github"
-								IconStyle="Brand" />
+								Icon="Github" />
 							<TextBlock Text="{DynamicResource LOC_GitHub}" />
 						</StackPanel>
 					</Button>
@@ -95,8 +94,7 @@
 							<wpfUtils:IconBlock
 								Margin="0,0,6,0"
 								FontSize="10"
-								Icon="Discord"
-								IconStyle="Brand" />
+								Icon="Discord" />
 							<TextBlock Text="{DynamicResource LOC_Discord}" />
 						</StackPanel>
 					</Button>

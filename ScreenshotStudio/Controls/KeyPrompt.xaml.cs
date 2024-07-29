@@ -1,7 +1,7 @@
 ﻿namespace ScreenshotStudio.Controls;
 
 using DependencyPropertyGenerator;
-using FontAwesome.Sharp.Pro;
+using FontAwesome.Sharp;
 using System.Windows.Controls;
 using System.Windows.Input;
 using WpfUtils.Controls;
@@ -19,29 +19,26 @@ public partial class KeyPrompt : UserControl
 	partial void OnKeyChanged(Key newValue)
 	{
 		this.Label.Text = null;
-		this.IconDisplay.Icon = ProIcons.Question;
-		this.IconDisplay.IconStyle = IconBlock.IconStyles.Solid;
+		this.IconDisplay.Icon = IconChar.Question;
 		this.IconRotation.Angle = 0;
 
 		if (newValue == Key.Return)
 		{
-			this.IconDisplay.Icon = ProIcons.LevelDown;
+			this.IconDisplay.Icon = IconChar.LevelDown;
 			this.IconRotation.Angle = 90;
 		}
 		else if (newValue == Key.Tab)
 		{
-			this.IconDisplay.Icon = ProIcons.Exchange;
+			this.IconDisplay.Icon = IconChar.Exchange;
 		}
 		else if (newValue == Key.LeftShift)
 		{
-			this.IconDisplay.Icon = ProIcons.ArrowAltUp;
-			this.IconDisplay.IconStyle = IconBlock.IconStyles.OutlineThin;
+			this.IconDisplay.Icon = IconChar.ArrowUp;
 			this.Label.Text = "L";
 		}
 		else if (newValue == Key.RightShift)
 		{
-			this.IconDisplay.Icon = ProIcons.ArrowAltUp;
-			this.IconDisplay.IconStyle = IconBlock.IconStyles.OutlineThin;
+			this.IconDisplay.Icon = IconChar.ArrowUp;
 			this.Label.Text = "R";
 		}
 		else

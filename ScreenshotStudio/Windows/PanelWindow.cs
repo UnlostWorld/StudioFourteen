@@ -1,6 +1,6 @@
 ﻿namespace ScreenshotStudio.Windows;
 
-using FontAwesome.Sharp.Pro;
+using FontAwesome.Sharp;
 using ScreenshotStudio.Utilities;
 using System;
 using System.Windows;
@@ -11,7 +11,7 @@ public class PanelWindow : PersistentPanel
 {
 	public static readonly DependencyProperty TitleIconProperty = DependencyProperty.Register(
 		nameof(PanelWindow.TitleIcon),
-		typeof(ProIcons),
+		typeof(IconChar),
 		typeof(PanelWindow));
 
 	public static readonly DependencyProperty CanCloseProperty = DependencyProperty.Register(
@@ -31,9 +31,9 @@ public class PanelWindow : PersistentPanel
 		typeof(string),
 		typeof(PanelWindow));
 
-	public ProIcons TitleIcon
+	public IconChar TitleIcon
 	{
-		get => (ProIcons)this.GetValue(TitleIconProperty);
+		get => (IconChar)this.GetValue(TitleIconProperty);
 		set => this.SetValue(TitleIconProperty, value);
 	}
 
@@ -82,22 +82,4 @@ public class PanelWindow : PersistentPanel
 		base.OnClosed();
 		this.SavedPosition = this.Position;
 	}
-}
-
-public class PanelWindowAction
-{
-	public PanelWindowAction()
-	{
-	}
-
-	public PanelWindowAction(ProIcons icon, string? tooltip, Action callback)
-	{
-		this.Icon = icon;
-		this.ToolTip = tooltip;
-		this.Command = new SimpleCommand(callback);
-	}
-
-	public string? ToolTip { get; set; }
-	public ProIcons Icon { get; set; } = ProIcons.None;
-	public ICommand? Command { get; set; }
 }

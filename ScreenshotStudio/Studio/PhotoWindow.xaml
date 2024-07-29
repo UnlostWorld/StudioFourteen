@@ -12,7 +12,7 @@
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	CanClose="True"
-	TitleIcon="ImagePolaroid"
+	TitleIcon="Image"
 	mc:Ignorable="d">
 
 	<Grid>

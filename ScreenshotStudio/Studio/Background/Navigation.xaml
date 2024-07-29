@@ -149,7 +149,7 @@
 					<ToggleButton
 						IsChecked="{Binding IsLibraryOpen}"
 						ToolTip="{DynamicResource LOC_Library}">
-						<wpfUtils:IconBlock Icon="Books" />
+						<wpfUtils:IconBlock Icon="Book" />
 					</ToggleButton>
 
 					<ToggleButton
@@ -163,7 +163,7 @@
 						IsChecked="{Binding IsCameraOpen}"
 						IsEnabled="False"
 						ToolTip="{DynamicResource LOC_Camera}">
-						<wpfUtils:IconBlock Icon="CameraMovie" />
+						<wpfUtils:IconBlock Icon="Camera" />
 					</ToggleButton>
 
 					<Line />
@@ -177,7 +177,7 @@
 					<ToggleButton
 						IsChecked="{Binding IsGearOpen}"
 						ToolTip="{DynamicResource LOC_Gear}">
-						<wpfUtils:IconBlock Icon="HelmetBattle" />
+						<wpfUtils:IconBlock Icon="ShieldHalved" />
 					</ToggleButton>
 
 					<ToggleButton
@@ -211,7 +211,7 @@
 					<ToggleButton
 						IsChecked="{Binding IsPhotoOpen}"
 						ToolTip="{DynamicResource LOC_Photo}">
-						<wpfUtils:IconBlock Icon="ImagePolaroid" />
+						<wpfUtils:IconBlock Icon="Image" />
 					</ToggleButton>
 
 					<Line />

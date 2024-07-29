@@ -102,8 +102,7 @@
 								<wpfUtils:IconBlock
 									Margin="6"
 									Foreground="{DynamicResource ForegroundLightBrush}"
-									Icon="Heart"
-									IconStyle="OutlineThin" />
+									Icon="Heart" />
 							</Grid>
 
 						</ToggleButton>

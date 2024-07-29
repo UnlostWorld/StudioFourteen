@@ -18,7 +18,7 @@
 	Height="650"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
-	TitleIcon="Books"
+	TitleIcon="Book"
 	mc:Ignorable="d">
 
 	<Grid>
@@ -55,7 +55,8 @@
 								<wpfUtils:IconBlock
 									Grid.Column="0"
 									Margin="0,0,6,0"
-									Icon="{Binding Icon}" />
+									Icon="{Binding Icon}"
+									IconFont="Solid" />
 								<TextBlock
 									Grid.Column="1"
 									Text="{Binding Name}" />
@@ -154,7 +155,7 @@
 					IsEnabled="{Binding CurrentGroup.IsRoot, Converter={StaticResource !B}}"
 					ToolTip="{DynamicResource LOC_Library_GoUpTooltip}">
 
-					<wpfUtils:IconBlock Icon="Up" />
+					<wpfUtils:IconBlock Icon="TurnUp" />
 
 				</Button>
 
@@ -189,7 +190,7 @@
 									<wpfUtils:IconBlock
 										x:Name="Icon"
 										Margin="0,4,6,2"
-										Icon="Books"
+										Icon="Book"
 										Visibility="Collapsed" />
 
 									<TextBlock Text="{Binding Name}" />
@@ -271,7 +272,9 @@
 							Background="Transparent"
 							IsChecked="{Binding Flatten, Converter={StaticResource !B}}"
 							ToolTip="{DynamicResource LOC_Library_DirectoryViewTooltip}">
-							<wpfUtils:IconBlock Icon="Folder" />
+							<wpfUtils:IconBlock
+								Icon="Folder"
+								IconFont="Solid" />
 						</RadioButton>
 
 						<RadioButton
@@ -281,7 +284,9 @@
 							Background="Transparent"
 							IsChecked="{Binding Flatten}"
 							ToolTip="{DynamicResource LOC_Library_FlattenViewTooltip}">
-							<wpfUtils:IconBlock Icon="FileAlt" />
+							<wpfUtils:IconBlock
+								Icon="FileAlt"
+								IconFont="Solid" />
 						</RadioButton>
 					</Grid>
 				</Border>

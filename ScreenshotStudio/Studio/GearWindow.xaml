@@ -18,7 +18,7 @@
 	ResizeMode="NoResize"
 	SizeToContent="Height"
 	Subtitle="{Binding CharacterName}"
-	TitleIcon="HelmetBattle"
+	TitleIcon="ShieldHalved"
 	mc:Ignorable="d">
 
 	<Grid IsEnabled="{Binding HasValidTarget}">

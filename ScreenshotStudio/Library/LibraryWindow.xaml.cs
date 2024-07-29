@@ -1,7 +1,6 @@
 ﻿namespace ScreenshotStudio.Library;
 
 using FontAwesome.Sharp;
-using FontAwesome.Sharp.Pro;
 using ScreenshotStudio.Library.Filters;
 using ScreenshotStudio.Library.Results;
 using ScreenshotStudio.Services;
@@ -40,10 +39,10 @@ public partial class LibraryWindow : PanelWindow
 	[AutoNotify]
 	public FastObservableCollection<LibraryTab> Tabs { get; init; } = new()
 	{
-		new("LOC_Library_Favorites", ProIcons.Heart, new LibraryFavoritesFilter()),
-		new("LOC_Library_Poses", ProIcons.Running, new TagFilter()),
-		new("LOC_Library_Characters", ProIcons.User, new TypeFilter(typeof(ICharacterAppearance))),
-		new("LOC_Library_Scenes", ProIcons.Users,  new TagFilter()),
+		new("LOC_Library_Favorites", IconChar.Heart, new LibraryFavoritesFilter()),
+		new("LOC_Library_Poses", IconChar.Running, new TagFilter()),
+		new("LOC_Library_Characters", IconChar.User, new TypeFilter(typeof(ICharacterAppearance))),
+		new("LOC_Library_Scenes", IconChar.Users,  new TagFilter()),
 	};
 
 	public LibraryTab CurrentTab
@@ -185,10 +184,10 @@ public partial class LibraryWindow : PanelWindow
 	}
 }
 
-public class LibraryTab(string name, ProIcons icon, params FilterBase[] filters)
+public class LibraryTab(string name, IconChar icon, params FilterBase[] filters)
 	: ViewModel
 {
 	public string Name { get; init; } = Resources.Find(name, string.Empty);
-	public ProIcons Icon { get; init; } = icon;
+	public IconChar Icon { get; init; } = icon;
 	public FilterBase[] Filters { get; init; } = filters;
 }
