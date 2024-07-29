@@ -8,6 +8,8 @@
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
 	<converters:BoolInversionConverter x:Key="!B" />
+	<BooleanToVisibilityConverter x:Key="B2V" />
+	<converters:MultiOrVisibilityConverter x:Key="MultiOrVisibility" />
 
 	<Style
 		x:Key="TitlebarToggleButton"
@@ -114,6 +116,108 @@
 		</Style.Triggers>
 	</Style>
 
+	<Style
+		x:Key="TitlebarButton"
+		TargetType="{x:Type Button}">
+		<Setter Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
+		<Setter Property="Width" Value="32" />
+		<Setter Property="Height" Value="Auto" />
+		<Setter Property="VerticalAlignment" Value="Stretch" />
+		<Setter Property="Background" Value="{DynamicResource ControlHighlightBrush}" />
+
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="{x:Type Button}">
+
+					<Grid Cursor="Hand">
+
+						<Border
+							x:Name="HoverBorder"
+							Margin="1"
+							Background="{TemplateBinding Background}"
+							Opacity="0"
+							SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+							Style="{DynamicResource WpfUtilsControlHoverBorder}" />
+
+						<ContentControl
+							x:Name="Content"
+							Margin="0"
+							Padding="{TemplateBinding Padding}"
+							HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+							VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+							Content="{TemplateBinding Content}"
+							ContentStringFormat="{TemplateBinding ContentStringFormat}"
+							ContentTemplate="{TemplateBinding ContentTemplate}"
+							Focusable="False"
+							Foreground="{TemplateBinding Foreground}"
+							SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+					</Grid>
+
+					<ControlTemplate.Triggers>
+						<Trigger Property="IsMouseOver" Value="true">
+
+							<Trigger.EnterActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation
+											Storyboard.TargetName="HoverBorder"
+											Storyboard.TargetProperty="Opacity"
+											From="0"
+											To="1"
+											Duration="00:00:00.1" />
+									</Storyboard>
+								</BeginStoryboard>
+							</Trigger.EnterActions>
+
+							<Trigger.ExitActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation
+											Storyboard.TargetName="HoverBorder"
+											Storyboard.TargetProperty="Opacity"
+											From="1"
+											To="0"
+											Duration="00:00:00.2" />
+									</Storyboard>
+								</BeginStoryboard>
+							</Trigger.ExitActions>
+						</Trigger>
+
+						<Trigger Property="IsEnabled" Value="false">
+							<Trigger.EnterActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation
+											Storyboard.TargetName="Content"
+											Storyboard.TargetProperty="Opacity"
+											From="1"
+											To="0.5"
+											Duration="00:00:00.1" />
+									</Storyboard>
+								</BeginStoryboard>
+							</Trigger.EnterActions>
+
+							<Trigger.ExitActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation
+											Storyboard.TargetName="Content"
+											Storyboard.TargetProperty="Opacity"
+											From="0.5"
+											To="1"
+											Duration="00:00:00.2" />
+									</Storyboard>
+								</BeginStoryboard>
+							</Trigger.ExitActions>
+						</Trigger>
+
+					</ControlTemplate.Triggers>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+
 
 
 	<ControlTemplate
@@ -158,17 +262,16 @@
 
 				<Grid
 					Grid.Row="0"
-					Height="22"
-					Margin="0,0,0,3">
+					Height="28"
+					Margin="0,0,0,1">
 
-					<Border
-						Margin="1,1,1,-1"
-						Background="{DynamicResource ControlBackgroundBrush}"
-						CornerRadius="6,6,0,0"
+					<Grid
+						Background="Transparent"
 						MouseDown="OnTitleMouseDown" />
 
 					<StackPanel
-						Margin="6,0"
+						Margin="8,1"
+						VerticalAlignment="Center"
 						IsHitTestVisible="False"
 						Orientation="Horizontal">
 
@@ -198,42 +301,65 @@
 							Text="{TemplateBinding Subtitle}" />
 					</StackPanel>
 
-					<StackPanel
-						Grid.Row="0"
-						Margin="2,2,2,1"
+					<Border
+						Margin="0,3,3,0"
 						HorizontalAlignment="Right"
-						Orientation="Horizontal">
+						Background="{DynamicResource ControlBackgroundBrush}"
+						Style="{DynamicResource WpfUtilsControlBorder}">
 
-						<!--  Pop out button  -->
-						<ToggleButton
-							Width="32"
-							IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, Path=IsEmbedded, Converter={StaticResource !B}}"
-							Style="{StaticResource TitlebarToggleButton}">
+						<Border.Visibility>
+							<MultiBinding Converter="{StaticResource MultiOrVisibility}">
+								<Binding
+									ElementName="EmbedButton"
+									Path="Visibility" />
+								<Binding
+									ElementName="CloseButton"
+									Path="Visibility" />
+							</MultiBinding>
+						</Border.Visibility>
 
-							<wpfUtils:IconBlock
-								FontSize="10"
-								Icon="WindowRestore" />
-						</ToggleButton>
+						<StackPanel
+							Grid.Row="0"
+							Margin="1"
+							HorizontalAlignment="Right"
+							Orientation="Horizontal">
 
-						<!--  Close Button  -->
-						<Button
-							Width="48"
-							Height="Auto"
-							Margin="0"
-							Background="Transparent"
-							Click="OnCloseClicked"
-							IsEnabled="{TemplateBinding CanClose}"
-							ToolTip="{DynamicResource ClosePanelTooltip}">
-							<wpfUtils:IconBlock Icon="Times" />
-						</Button>
+							<!--  Pop out button  -->
+							<ToggleButton
+								x:Name="EmbedButton"
+								Width="32"
+								IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, Path=IsEmbedded, Converter={StaticResource !B}}"
+								Style="{StaticResource TitlebarToggleButton}"
+								ToolTip="{DynamicResource LOC_EmbedPanelTooltip}"
+								Visibility="{TemplateBinding CanChangeEmbed,
+															 Converter={StaticResource B2V}}">
 
-					</StackPanel>
+								<wpfUtils:IconBlock
+									FontSize="10"
+									Icon="WindowRestore" />
+							</ToggleButton>
+
+							<!--  Close Button  -->
+							<Button
+								x:Name="CloseButton"
+								Width="48"
+								Background="#883434"
+								Click="OnCloseClicked"
+								Style="{StaticResource TitlebarButton}"
+								ToolTip="{DynamicResource LOC_ClosePanelTooltip}"
+								Visibility="{TemplateBinding CanClose,
+															 Converter={StaticResource B2V}}">
+								<wpfUtils:IconBlock Icon="Times" />
+							</Button>
+
+						</StackPanel>
+					</Border>
 
 				</Grid>
 
 				<ContentPresenter
 					Grid.Row="1"
-					Margin="3,0,3,3"
+					Margin="2,0,2,2"
 					Content="{TemplateBinding Content}"
 					ContentTemplate="{TemplateBinding ContentTemplate}" />
 

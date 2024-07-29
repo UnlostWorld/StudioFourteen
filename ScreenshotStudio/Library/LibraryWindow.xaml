@@ -23,9 +23,7 @@
 
 	<Grid>
 
-		<Grid
-			x:Name="ContentArea"
-			Margin="3,0,3,3">
+		<Grid x:Name="ContentArea">
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition />
 				<ColumnDefinition Width="256" />
@@ -118,6 +116,7 @@
 				<ContentPresenter
 					Grid.Row="2"
 					Grid.ColumnSpan="2"
+					Margin="1"
 					Content="{Binding SelectedResult.Entry}"
 					TextBlock.Foreground="{DynamicResource ForegroundBrush}">
 					<ContentPresenter.Resources>
@@ -143,7 +142,7 @@
 
 				<Border
 					Grid.ColumnSpan="2"
-					Margin="0,0,1,0"
+					Margin="1,0,1,0"
 					Style="{DynamicResource WpfUtilsControlBorder}" />
 
 				<Button
@@ -233,6 +232,7 @@
 						<RadioButton
 							Grid.Column="0"
 							Height="Auto"
+							Margin="0"
 							Background="Transparent"
 							IsChecked="{Binding ViewList, Converter={StaticResource !B}}"
 							ToolTip="{DynamicResource LOC_Library_IconViewTooltip}">
@@ -242,6 +242,7 @@
 						<RadioButton
 							Grid.Column="1"
 							Height="Auto"
+							Margin="0"
 							Background="Transparent"
 							IsChecked="{Binding ViewList}"
 							ToolTip="{DynamicResource LOC_Library_ListViewTooltip}">
@@ -253,7 +254,7 @@
 				<Border
 					Grid.Column="4"
 					Width="64"
-					Margin="1,0,0,0"
+					Margin="1,0"
 					IsEnabled="{Binding CanChangeFlatten}"
 					Style="{DynamicResource WpfUtilsControlBorder}">
 
@@ -266,6 +267,7 @@
 						<RadioButton
 							Grid.Column="0"
 							Height="Auto"
+							Margin="0"
 							Background="Transparent"
 							IsChecked="{Binding Flatten, Converter={StaticResource !B}}"
 							ToolTip="{DynamicResource LOC_Library_DirectoryViewTooltip}">
@@ -275,6 +277,7 @@
 						<RadioButton
 							Grid.Column="1"
 							Height="Auto"
+							Margin="0"
 							Background="Transparent"
 							IsChecked="{Binding Flatten}"
 							ToolTip="{DynamicResource LOC_Library_FlattenViewTooltip}">
@@ -287,13 +290,13 @@
 			<Border
 				Grid.Row="3"
 				Grid.Column="0"
+				Margin="1"
 				Style="{DynamicResource WpfUtilsControlBorder}" />
 
 			<!--  Icon Grid  -->
 			<ListBox
 				Grid.Row="3"
 				Grid.Column="0"
-				Margin="0,1,1,1"
 				Background="Transparent"
 				ItemsSource="{Binding Results, IsAsync=True}"
 				MouseDoubleClick="OnItemDoubleClicked"

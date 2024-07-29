@@ -3,17 +3,18 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
-	<sys:String x:Key="Confirm">Confirm</sys:String>
+	<sys:String x:Key="LOC_Confirm">Confirm</sys:String>
 
-	<sys:String x:Key="Error">Error</sys:String>
-	<sys:String x:Key="ErrorBodyMessage">An error has occurred. You can attempt to continue using Screenshot Studio, but we recommend restarting your game.</sys:String>
-	<sys:String x:Key="ErrorBodyLog">Check the Dalamud Console Log for more information</sys:String>
-	<sys:String x:Key="ErrorBodyCheck">If this problem persists, contact us at Discord or open an issue on GitHub.</sys:String>
-	<sys:String x:Key="Discord">Discord</sys:String>
-	<sys:String x:Key="GitHub">GitHub</sys:String>
-	<sys:String x:Key="Console">Console</sys:String>
+	<sys:String x:Key="LOC_Error">Error</sys:String>
+	<sys:String x:Key="LOC_ErrorBodyMessage">An error has occurred. You can attempt to continue using Screenshot Studio, but we recommend restarting your game.</sys:String>
+	<sys:String x:Key="LOC_ErrorBodyLog">Check the Dalamud Console Log for more information</sys:String>
+	<sys:String x:Key="LOC_ErrorBodyCheck">If this problem persists, contact us at Discord or open an issue on GitHub.</sys:String>
+	<sys:String x:Key="LOC_Discord">Discord</sys:String>
+	<sys:String x:Key="LOC_GitHub">GitHub</sys:String>
+	<sys:String x:Key="LOC_Console">Console</sys:String>
 
-	<sys:String x:Key="ClosePanelTooltip">Close Panel</sys:String>
+	<sys:String x:Key="LOC_ClosePanelTooltip">Close Panel</sys:String>
+	<sys:String x:Key="LOC_EmbedPanelTooltip">Pop this panel out of the FFXIV window</sys:String>
 	<sys:String x:Key="CloseScreenshotStudio">Close the Studio interface</sys:String>
 
 	<sys:String x:Key="LOC_ToggleGPose">Toggle GPose</sys:String>

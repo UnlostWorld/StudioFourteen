@@ -7,66 +7,56 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
-	Title="{DynamicResource Error}"
+	Title="{DynamicResource LOC_Error}"
 	Width="400"
 	MaxHeight="800"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
+	CanChangeEmbed="False"
+	CanClose="False"
+	ResizeMode="NoResize"
 	SizeToContent="Height"
 	TitleIcon="ExclamationCircle"
 	mc:Ignorable="d">
-	<Grid>
 
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
-
-		<Line
-			Grid.Row="0"
-			Margin="-2"
-			VerticalAlignment="Top"
-			Stretch="Fill"
-			Stroke="DarkRed"
-			StrokeThickness="1"
-			X1="0"
-			X2="1" />
+	<StackPanel>
+		<TextBlock
+			Grid.Row="1"
+			Margin="6"
+			Foreground="Red"
+			Style="{DynamicResource Body}"
+			Text="{DynamicResource LOC_ErrorBodyMessage}"
+			TextAlignment="Center" />
 
 		<TextBlock
 			Grid.Row="1"
-			Margin="3,0,3,3"
+			Margin="12"
 			Style="{DynamicResource Body}"
-			Text="{DynamicResource ErrorBodyMessage}" />
+			Text="{Binding ErrorMessage, FallbackValue=ErrorMessage}"
+			TextAlignment="Center" />
 
-		<TextBlock
+		<StackPanel
 			Grid.Row="2"
-			Margin="15"
-			HorizontalAlignment="Center"
-			VerticalAlignment="Center"
-			Style="{DynamicResource Body}"
-			Text="{Binding ErrorMessage}" />
-
-		<StackPanel Grid.Row="3">
+			Margin="0,3,0,3">
 			<TextBlock
 				Margin="3,3,3,0"
-				HorizontalAlignment="Center"
 				Opacity="0.5"
 				Style="{DynamicResource Subscript}"
-				Text="{DynamicResource ErrorBodyLog}" />
+				Text="{DynamicResource LOC_ErrorBodyLog}"
+				TextAlignment="Center" />
 
 			<TextBlock
 				Margin="3,3,3,6"
-				HorizontalAlignment="Center"
 				Opacity="0.5"
 				Style="{DynamicResource Subscript}"
-				Text="{DynamicResource ErrorBodyCheck}" />
+				Text="{DynamicResource LOC_ErrorBodyCheck}"
+				TextAlignment="Center" />
 		</StackPanel>
 
 		<Border
-			Grid.Row="4"
+			Grid.Row="3"
+			Grid.ColumnSpan="2"
+			Margin="1"
 			Style="{DynamicResource WpfUtilsControlBorder}">
 			<Grid>
 				<StackPanel
@@ -78,7 +68,7 @@
 						Click="OnConsoleClicked">
 						<TextBlock
 							Margin="3,0"
-							Text="{DynamicResource Console}" />
+							Text="{DynamicResource LOC_Console}" />
 					</Button>
 
 					<Button
@@ -92,7 +82,7 @@
 								FontSize="10"
 								Icon="Github"
 								IconStyle="Brand" />
-							<TextBlock Text="{DynamicResource GitHub}" />
+							<TextBlock Text="{DynamicResource LOC_GitHub}" />
 						</StackPanel>
 					</Button>
 
@@ -107,7 +97,7 @@
 								FontSize="10"
 								Icon="Discord"
 								IconStyle="Brand" />
-							<TextBlock Text="{DynamicResource Discord}" />
+							<TextBlock Text="{DynamicResource LOC_Discord}" />
 						</StackPanel>
 					</Button>
 
@@ -118,11 +108,11 @@
 					HorizontalAlignment="Right"
 					Background="Transparent"
 					Click="OnConfirmClicked">
-					<TextBlock Text="{DynamicResource Confirm}" />
+					<TextBlock Text="{DynamicResource LOC_Confirm}" />
 				</Button>
 			</Grid>
 		</Border>
 
 
-	</Grid>
+	</StackPanel>
 </windows:PanelWindow>

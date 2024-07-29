@@ -6,7 +6,6 @@ using System;
 using System.Windows;
 using System.Windows.Input;
 using WpfUtils.Commands;
-using WpfUtils.Extensions;
 
 public class PanelWindow : PersistentPanel
 {
@@ -17,6 +16,12 @@ public class PanelWindow : PersistentPanel
 
 	public static readonly DependencyProperty CanCloseProperty = DependencyProperty.Register(
 		nameof(PanelWindow.CanClose),
+		typeof(bool),
+		typeof(PanelWindow),
+		new(true));
+
+	public static readonly DependencyProperty CanChangeEmbedProperty = DependencyProperty.Register(
+		nameof(PanelWindow.CanChangeEmbed),
 		typeof(bool),
 		typeof(PanelWindow),
 		new(true));
@@ -36,6 +41,12 @@ public class PanelWindow : PersistentPanel
 	{
 		get => (bool)this.GetValue(CanCloseProperty);
 		set => this.SetValue(CanCloseProperty, value);
+	}
+
+	public bool CanChangeEmbed
+	{
+		get => (bool)this.GetValue(CanChangeEmbedProperty);
+		set => this.SetValue(CanChangeEmbedProperty, value);
 	}
 
 	public string Subtitle
