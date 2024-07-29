@@ -175,7 +175,9 @@ public class SkeletonView : Canvas
 			result = await this.LoadFromTable(ornamentTableIndex, definition);
 		}
 
-		// TODO: check for mounts
+		// TODO: check for mounts?
+		await this.Dispatcher.MainThread();
+		this.Visibility = result ? Visibility.Visible : Visibility.Collapsed;
 	}
 
 	protected async Task<bool> LoadFromTable(int objectTableIndex, SkeletonViewDefinition definition)

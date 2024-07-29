@@ -327,7 +327,8 @@
 				DataType="{x:Type studio:AccessoryViewModel}">
 				<Grid
 					Height="56"
-					Margin="0,2,0,2">
+					Margin="0,2,0,2"
+					IsEnabled="{Binding HasValidTarget, FallbackValue=false}">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition />
@@ -346,6 +347,7 @@
 						Style="{DynamicResource WpfUtilsControlBorder}" />
 
 					<controls:XivTexImage
+						x:Name="BackgroundIcon"
 						Grid.RowSpan="2"
 						Grid.Column="0"
 						Margin="6"
@@ -357,10 +359,10 @@
 						Grid.RowSpan="2"
 						Grid.Column="0"
 						Click="OnChangeClicked"
-						Content="{Binding Glasses.Icon.Source}"
+						Content="{Binding Item.Icon.Source}"
 						MouseUp="OnMouseUp"
 						Style="{DynamicResource IconButton}"
-						ToolTip="{Binding Glasses}" />
+						ToolTip="{Binding Item}" />
 
 					<Button
 						Grid.Row="0"
@@ -374,7 +376,7 @@
 							Grid.Column="0"
 							Margin="0,0,3,0"
 							Style="{DynamicResource Body}"
-							Text="{Binding Glasses.Name}"
+							Text="{Binding Item.Name}"
 							TextWrapping="NoWrap" />
 
 					</Button>
@@ -385,6 +387,84 @@
 						Value="{Binding Value}" />
 
 				</Grid>
+			</DataTemplate>
+
+			<DataTemplate
+				x:Key="OrnamentView"
+				DataType="{x:Type studio:OrnamentViewModel}">
+				<Grid
+					Height="56"
+					Margin="0,2,0,2"
+					IsEnabled="{Binding HasValidTarget, FallbackValue=false}">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition />
+					</Grid.RowDefinitions>
+
+					<Border
+						Grid.RowSpan="2"
+						Grid.Column="0"
+						Margin="1"
+						Style="{DynamicResource WpfUtilsControlBorder}" />
+
+
+					<Image
+						x:Name="BackgroundIcon"
+						Grid.RowSpan="2"
+						Grid.Column="0"
+						Margin="6"
+						HorizontalAlignment="Center"
+						VerticalAlignment="Center"
+						Opacity="0.25"
+						Source="pack://application:,,,/ScreenshotStudio;component/Assets/icon-fashion-accessories.png" />
+
+					<Button
+						Grid.RowSpan="2"
+						Grid.Column="0"
+						Click="OnChangeClicked"
+						Content="{Binding Item.Icon.Source}"
+						MouseUp="OnMouseUp"
+						Style="{DynamicResource IconButton}"
+						ToolTip="{Binding Item}" />
+
+					<Button
+						Grid.Row="0"
+						Grid.Column="1"
+						Grid.ColumnSpan="3"
+						HorizontalContentAlignment="Stretch"
+						Click="OnChangeClicked"
+						MouseUp="OnMouseUp">
+
+						<TextBlock
+							Grid.Column="0"
+							Margin="0,0,3,0"
+							Style="{DynamicResource Body}"
+							Text="{Binding Item.Name}"
+							TextWrapping="NoWrap" />
+
+					</Button>
+
+					<wpfUtils:NumberBox
+						Grid.Row="1"
+						Grid.Column="1"
+						Value="{Binding Value}" />
+
+				</Grid>
+
+				<DataTemplate.Triggers>
+					<DataTrigger
+						Binding="{Binding HasValidTarget}"
+						Value="False">
+						<Setter Property="Opacity" Value="0.5" />
+					</DataTrigger>
+				</DataTemplate.Triggers>
+
 			</DataTemplate>
 		</Grid.Resources>
 
@@ -443,6 +523,10 @@
 			<ContentPresenter
 				Content="{Binding Glasses}"
 				ContentTemplate="{StaticResource AccessoryView}" />
+
+			<ContentPresenter
+				Content="{Binding Ornament}"
+				ContentTemplate="{StaticResource OrnamentView}" />
 		</UniformGrid>
 
 		<Border

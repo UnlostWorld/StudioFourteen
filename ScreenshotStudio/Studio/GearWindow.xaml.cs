@@ -15,7 +15,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
+using Ornament = ScreenshotStudio.GameData.Excel.Ornament;
 
 public enum AccessorySlots
 {
@@ -26,21 +26,22 @@ public partial class GearWindow : CharacterWindow
 {
 	public GearWindow()
 	{
-		this.MainHand = new(WeaponSlot.MainHand, this);
-		this.OffHand = new(WeaponSlot.OffHand, this);
+		this.MainHand = new(DrawDataContainer.WeaponSlot.MainHand, this);
+		this.OffHand = new(DrawDataContainer.WeaponSlot.OffHand, this);
 
-		this.Head = new(EquipmentSlot.Head, this);
-		this.Chest = new(EquipmentSlot.Body, this);
-		this.Hands = new(EquipmentSlot.Hands, this);
-		this.Legs = new(EquipmentSlot.Legs, this);
-		this.Feet = new(EquipmentSlot.Feet, this);
-		this.Earring = new(EquipmentSlot.Ears, this);
-		this.Necklace = new(EquipmentSlot.Neck, this);
-		this.Bracelet = new(EquipmentSlot.Wrists, this);
-		this.RingRight = new(EquipmentSlot.RFinger, this);
-		this.RingLeft = new(EquipmentSlot.LFinger, this);
+		this.Head = new(DrawDataContainer.EquipmentSlot.Head, this);
+		this.Chest = new(DrawDataContainer.EquipmentSlot.Body, this);
+		this.Hands = new(DrawDataContainer.EquipmentSlot.Hands, this);
+		this.Legs = new(DrawDataContainer.EquipmentSlot.Legs, this);
+		this.Feet = new(DrawDataContainer.EquipmentSlot.Feet, this);
+		this.Earring = new(DrawDataContainer.EquipmentSlot.Ears, this);
+		this.Necklace = new(DrawDataContainer.EquipmentSlot.Neck, this);
+		this.Bracelet = new(DrawDataContainer.EquipmentSlot.Wrists, this);
+		this.RingRight = new(DrawDataContainer.EquipmentSlot.RFinger, this);
+		this.RingLeft = new(DrawDataContainer.EquipmentSlot.LFinger, this);
 
 		this.Glasses = new(AccessorySlots.Glasses, this);
+		this.Ornament = new(this);
 	}
 
 	public WeaponViewModel MainHand { get; init; }
@@ -60,6 +61,7 @@ public partial class GearWindow : CharacterWindow
 	[AutoNotify] public unsafe bool CanRevert => this.Services.CharacterAppearance.CanRestore(this.Target);
 
 	public AccessoryViewModel Glasses { get; init; }
+	public OrnamentViewModel Ornament { get; init; }
 
 	private unsafe void OnChangeClicked(object sender, RoutedEventArgs e)
 	{
@@ -120,10 +122,10 @@ public partial class GearWindow : CharacterWindow
 					btn,
 					searchTitle,
 					defaultTags,
-					accessory.Glasses,
+					accessory.Item,
 					(glasses, isFinal) =>
 					{
-						accessory.Glasses = glasses;
+						accessory.Item = glasses;
 					});
 			}
 		}
@@ -142,7 +144,7 @@ public partial class GearWindow : CharacterWindow
 			}
 			else if (btn.DataContext is AccessoryViewModel accessory)
 			{
-				accessory.Glasses = null;
+				accessory.Item = null;
 			}
 		}
 	}
@@ -279,13 +281,13 @@ public abstract class GearViewModelBase : ViewModel
 
 public class WeaponViewModel : GearViewModelBase
 {
-	public WeaponViewModel(WeaponSlot slot, GearWindow window)
+	public WeaponViewModel(DrawDataContainer.WeaponSlot slot, GearWindow window)
 		: base(window)
 	{
 		this.Slot = slot;
 	}
 
-	public WeaponSlot Slot { get; private set; }
+	public DrawDataContainer.WeaponSlot Slot { get; private set; }
 
 	public override ushort Set
 	{
@@ -385,13 +387,13 @@ public class WeaponViewModel : GearViewModelBase
 
 public class ItemEquipViewModel : GearViewModelBase
 {
-	public ItemEquipViewModel(EquipmentSlot slot, GearWindow window)
+	public ItemEquipViewModel(DrawDataContainer.EquipmentSlot slot, GearWindow window)
 		: base(window)
 	{
 		this.Slot = slot;
 	}
 
-	public EquipmentSlot Slot { get; private set; }
+	public DrawDataContainer.EquipmentSlot Slot { get; private set; }
 
 	public override ushort Set
 	{
@@ -486,20 +488,21 @@ public class ItemEquipViewModel : GearViewModelBase
 public class AccessoryViewModel : ViewModel
 {
 	private readonly GearWindow window;
-	private readonly AccessorySlots slot;
 
 	private Glasses? glasses;
 
 	public AccessoryViewModel(AccessorySlots slot, GearWindow window)
 	{
-		this.slot = slot;
+		this.Slot = slot;
 		this.window = window;
 	}
+
+	public AccessorySlots Slot { get; init; }
 
 	[AutoNotify] public bool HasValidTarget => this.window.HasValidTarget;
 
 	[AutoNotify]
-	public Glasses? Glasses
+	public Glasses? Item
 	{
 		get
 		{
@@ -536,18 +539,96 @@ public class AccessoryViewModel : ViewModel
 			if (!this.window.HasValidTarget)
 				return 0;
 
-			return this.window.Target->DrawData.GlassesIds[(int)this.slot];
+			return this.window.Target->DrawData.GlassesIds[(int)this.Slot];
 		}
 		set
 		{
 			this.glasses = GameDataService.GetRow<Glasses>(value);
 			if (this.glasses == null)
 			{
-				this.window.Target->DrawData.SetGlasses((int)this.slot, 0);
+				this.window.Target->DrawData.SetGlasses((int)this.Slot, 0);
 			}
 			else
 			{
-				this.window.Target->DrawData.SetGlasses((int)this.slot, value);
+				this.window.Target->DrawData.SetGlasses((int)this.Slot, value);
+			}
+		}
+	}
+}
+
+public class OrnamentViewModel : ViewModel
+{
+	private readonly GearWindow window;
+
+	private Ornament? ornament;
+
+	public OrnamentViewModel(GearWindow window)
+	{
+		this.window = window;
+	}
+
+	[AutoNotify] public unsafe bool HasValidTarget
+	{
+		get
+		{
+			if (!this.window.HasValidTarget)
+				return false;
+
+			return this.window.Target->OrnamentData.OrnamentObject != null;
+		}
+	}
+
+	[AutoNotify]
+	public Ornament? Item
+	{
+		get
+		{
+			if (!this.HasValidTarget)
+				return null;
+
+			if (this.Value == 0)
+				return null;
+
+			if (this.ornament == null)
+				this.ornament = GameDataService.GetRow<Ornament>(this.Value);
+
+			return this.ornament;
+		}
+
+		set
+		{
+			if (value == null)
+			{
+				this.Value = 0;
+			}
+			else
+			{
+				this.Value = (ushort)value.RowId;
+			}
+		}
+	}
+
+	[AutoNotify]
+	public unsafe ushort Value
+	{
+		get
+		{
+			if (!this.window.HasValidTarget)
+				return 0;
+
+			return this.window.Target->OrnamentData.OrnamentId;
+		}
+		set
+		{
+			this.ornament = GameDataService.GetRow<Ornament>(value);
+
+			if (this.ornament == null)
+			{
+				this.window.Target->OrnamentData.OrnamentId = 0;
+			}
+			else
+			{
+				this.window.Target->OrnamentData.OrnamentId = (ushort)this.ornament.RowId;
 			}
 		}
 	}
