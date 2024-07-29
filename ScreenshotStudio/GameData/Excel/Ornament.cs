@@ -10,6 +10,8 @@ public class Ornament : LibraryExcelRow
 	public byte AttachPoint { get; protected set; }
 	public ImageReference? Icon { get; private set; }
 
+	public override bool IsValid => base.IsValid && this.RowId > 0 && this.ModelChara?.IsValid == true;
+
 	public override void PopulateData(RowParser parser, Lumina.GameData gameData, Language language)
 	{
 		base.PopulateData(parser, gameData, language);

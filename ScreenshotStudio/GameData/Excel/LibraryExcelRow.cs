@@ -16,8 +16,6 @@ public abstract class LibraryExcelRow : StudioExcelRow, IEntryBase
 	public string? SourceInfo { get; set; }
 	public string Identifier => $"{this.GetType().Name} #{this.RowId}";
 
-	public virtual bool IsValid => true;
-
 	public void Dispose()
 	{
 	}

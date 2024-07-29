@@ -12,6 +12,8 @@ public partial class ModelChara : StudioExcelRow
 	public byte Base { get; protected set; }
 	public byte Variant { get; protected set; }
 
+	public override bool IsValid => base.IsValid && this.RowId > 0;
+
 	public override void PopulateData(RowParser parser, Lumina.GameData gameData, Language language)
 	{
 		base.PopulateData(parser, gameData, language);

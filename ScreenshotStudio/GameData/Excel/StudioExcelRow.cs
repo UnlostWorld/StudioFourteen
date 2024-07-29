@@ -12,6 +12,7 @@ public class StudioExcelRow : ExcelRow
 		this.Log = Logging.ForContext(this.GetType());
 	}
 
+	public virtual bool IsValid => true;
 	public string RowName => $"{this.GetType().Name} #{this.RowId}";
 
 	public override string ToString()

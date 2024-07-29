@@ -60,74 +60,40 @@
 
 
 
-	<DataTemplate DataType="{x:Type excel:ResidentNpc}">
+
+	<DataTemplate x:Key="SimpleInfoTemplate">
 		<StackPanel>
 			<TextBlock
-				Margin="3,0,0,0"
+				Grid.Row="0"
 				Text="{Binding Name}"
 				TextWrapping="Wrap" />
 
 			<TextBlock
-				x:Name="DescriptionBlock"
-				Foreground="{DynamicResource ForegroundLightBrush}"
-				Style="{DynamicResource Body}"
+				Grid.Row="2"
+				Style="{DynamicResource Subscript}"
 				Text="{Binding Description}"
-				TextTrimming="CharacterEllipsis"
 				TextWrapping="NoWrap" />
 		</StackPanel>
 	</DataTemplate>
 
-
+	<DataTemplate DataType="{x:Type excel:ResidentNpc}">
+		<ContentPresenter ContentTemplate="{StaticResource SimpleInfoTemplate}" />
+	</DataTemplate>
 
 	<DataTemplate DataType="{x:Type excel:Item}">
-		<StackPanel>
-			<TextBlock
-				Grid.Row="0"
-				Text="{Binding Name}"
-				TextWrapping="Wrap" />
-
-			<TextBlock
-				Grid.Row="2"
-				Style="{DynamicResource Subscript}"
-				Text="{Binding ClassJobs.Name}"
-				TextWrapping="NoWrap" />
-		</StackPanel>
+		<ContentPresenter ContentTemplate="{StaticResource SimpleInfoTemplate}" />
 	</DataTemplate>
-
-
 
 	<DataTemplate DataType="{x:Type excel:Stain}">
-		<StackPanel>
-			<TextBlock
-				Grid.Row="0"
-				Text="{Binding Name}"
-				TextWrapping="Wrap" />
-
-			<TextBlock
-				Grid.Row="1"
-				Foreground="{DynamicResource ForegroundLightBrush}"
-				Style="{DynamicResource Body}"
-				Text="{Binding Item.Description}"
-				TextTrimming="CharacterEllipsis"
-				TextWrapping="NoWrap" />
-		</StackPanel>
+		<ContentPresenter ContentTemplate="{StaticResource SimpleInfoTemplate}" />
 	</DataTemplate>
 
-
-
 	<DataTemplate DataType="{x:Type excel:Glasses}">
-		<StackPanel>
-			<TextBlock
-				Grid.Row="0"
-				Text="{Binding Name}"
-				TextWrapping="Wrap" />
+		<ContentPresenter ContentTemplate="{StaticResource SimpleInfoTemplate}" />
+	</DataTemplate>
 
-			<TextBlock
-				Grid.Row="2"
-				Style="{DynamicResource Subscript}"
-				Text="{Binding Description}"
-				TextWrapping="NoWrap" />
-		</StackPanel>
+	<DataTemplate DataType="{x:Type excel:Ornament}">
+		<ContentPresenter ContentTemplate="{StaticResource SimpleInfoTemplate}" />
 	</DataTemplate>
 
 

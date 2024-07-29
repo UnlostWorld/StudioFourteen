@@ -67,66 +67,9 @@ public partial class GearWindow : CharacterWindow
 	{
 		if (sender is Button btn)
 		{
-			if (btn.DataContext is ItemEquipViewModel equip)
+			if (btn.DataContext is GearViewModelBase gear)
 			{
-				TagCollection defaultTags = new();
-				defaultTags.Add(equip.Slot.ToTag());
-
-				// Filter by the current race.
-				Race? race = this.Target->DrawData.CustomizeData.GetRace();
-				if (race != null && race.Name != null)
-					defaultTags.Add(race.Name);
-
-				string searchTitle = $"{equip.Slot.GetDisplayName()} {ScreenshotStudio.Resources.Find("LOC_Equipment", "Equipment")}";
-
-				LibraryModal.Show<Item>(
-					btn,
-					searchTitle,
-					defaultTags,
-					equip.Item,
-					(item, isFinal) =>
-				{
-					equip.Item = item;
-				});
-			}
-			else if (btn.DataContext is WeaponViewModel weapon)
-			{
-				TagCollection defaultTags = new();
-				defaultTags.Add(weapon.Slot.ToTag());
-
-				// Filter by the current race.
-				Race? race = this.Target->DrawData.CustomizeData.GetRace();
-				if (race != null && race.Name != null)
-					defaultTags.Add(race.Name);
-
-				string searchTitle = $"{weapon.Slot.GetDisplayName()} {ScreenshotStudio.Resources.Find("LOC_Weapon", "Weapon")}";
-
-				LibraryModal.Show<Item>(
-					btn,
-					searchTitle,
-					defaultTags,
-					weapon.Item,
-					(item, isFinal) =>
-					{
-						weapon.Item = item;
-					});
-			}
-			else if (btn.DataContext is AccessoryViewModel accessory)
-			{
-				TagCollection defaultTags = new();
-				////defaultTags.Add(accessory.Slot.ToTag());
-
-				string searchTitle = ScreenshotStudio.Resources.Find("LOC_Glasses", "Glasses");
-
-				LibraryModal.Show<Glasses>(
-					btn,
-					searchTitle,
-					defaultTags,
-					accessory.Item,
-					(glasses, isFinal) =>
-					{
-						accessory.Item = glasses;
-					});
+				gear.Change(btn);
 			}
 		}
 	}
@@ -138,13 +81,9 @@ public partial class GearWindow : CharacterWindow
 
 		if (sender is Button btn)
 		{
-			if (btn.DataContext is ItemEquipViewModel equip)
+			if (btn.DataContext is GearViewModelBase gear)
 			{
-				equip.Item = ItemsSheet.None;
-			}
-			else if (btn.DataContext is AccessoryViewModel accessory)
-			{
-				accessory.Item = null;
+				gear.Clear();
 			}
 		}
 	}
@@ -200,24 +139,76 @@ public partial class GearWindow : CharacterWindow
 
 public abstract class GearViewModelBase : ViewModel
 {
-	protected Item? item;
+	public abstract void Clear();
+	public abstract void Change(object placementTarget);
+}
+
+public abstract class GearViewModelBase<T> : GearViewModelBase
+	where T : IEntryBase
+{
 	private readonly GearWindow window;
-	private Stain? stain0;
-	private Stain? stain1;
 
 	public GearViewModelBase(GearWindow window)
 	{
 		this.window = window;
 	}
 
-	[AutoNotify] public bool HasValidTarget => this.window.HasValidTarget;
+	[AutoNotify] public virtual bool HasValidTarget => this.window.HasValidTarget;
+	[AutoNotify] public abstract T? Item { get; set; }
+
+	protected unsafe Character* Target => this.window.Target;
+
+	public override bool ShouldTickAutoProperties() => this.window.ShouldTickAutoProperties() && this.HasValidTarget;
+
+	public override void Clear()
+	{
+		this.Item = default;
+	}
+
+	public sealed override void Change(object placementTarget)
+	{
+		TagCollection defaultTags = new();
+		this.GetDefaultTags(defaultTags);
+
+		string searchTitle = this.GetSearchTitle();
+
+		LibraryModal.Show<T>(
+			placementTarget,
+			searchTitle,
+			defaultTags,
+			this.Item,
+			(item, isFinal) =>
+			{
+				this.Item = item;
+			});
+	}
+
+	protected virtual string GetSearchTitle()
+	{
+		return string.Empty;
+	}
+
+	protected virtual void GetDefaultTags(TagCollection tags)
+	{
+	}
+}
+
+public abstract class ItemViewModelBase : GearViewModelBase<Item>
+{
+	protected Item? item;
+	private Stain? stain0;
+	private Stain? stain1;
+
+	public ItemViewModelBase(GearWindow window)
+		: base(window)
+	{
+	}
+
 	[AutoNotify] public abstract ushort Set { get; set; }
 	[AutoNotify] public abstract ushort Base { get; set; }
 	[AutoNotify] public abstract ushort Variant { get; set; }
 	[AutoNotify] public abstract byte Stain0Id { get; set; }
 	[AutoNotify] public abstract byte Stain1Id { get; set; }
-
-	[AutoNotify] public abstract Item? Item { get; set; }
 
 	[AutoNotify]
 	public Stain? Stain0
@@ -269,17 +260,13 @@ public abstract class GearViewModelBase : ViewModel
 		}
 	}
 
-	protected unsafe ref DrawDataContainer DrawData => ref this.window.Target->DrawData;
-
-	public override bool ShouldTickAutoProperties() => this.window.ShouldTickAutoProperties();
-
 	public unsafe void BackupCharacter()
 	{
-		this.Services.CharacterAppearance.Backup(this.window.Target);
+		this.Services.CharacterAppearance.Backup(this.Target);
 	}
 }
 
-public class WeaponViewModel : GearViewModelBase
+public class WeaponViewModel : ItemViewModelBase
 {
 	public WeaponViewModel(DrawDataContainer.WeaponSlot slot, GearWindow window)
 		: base(window)
@@ -374,7 +361,7 @@ public class WeaponViewModel : GearViewModelBase
 		}
 	}
 
-	protected ref DrawObjectData Weapon => ref this.DrawData.Weapon(this.Slot);
+	protected unsafe ref DrawObjectData Weapon => ref this.Target->DrawData.Weapon(this.Slot);
 
 	public unsafe void ApplyChangeItem()
 	{
@@ -383,9 +370,25 @@ public class WeaponViewModel : GearViewModelBase
 			CharacterWindow.GetTarget()->UpdateWeapon(this.Slot, this.Weapon.ModelId, CharacterExtensions.UpdateSource.Interface);
 		});
 	}
+
+	protected override string GetSearchTitle() => $"{this.Slot.GetDisplayName()} {Resources.Find("LOC_Weapon", "Weapon")}";
+
+	protected unsafe override void GetDefaultTags(TagCollection tags)
+	{
+		base.GetDefaultTags(tags);
+
+		tags.Add(this.Slot.ToTag());
+
+		// Filter by the current race.
+		Race? race = this.Target->DrawData.CustomizeData.GetRace();
+		if (race != null && race.Name != null)
+		{
+			tags.Add(race.Name);
+		}
+	}
 }
 
-public class ItemEquipViewModel : GearViewModelBase
+public class ItemEquipViewModel : ItemViewModelBase
 {
 	public ItemEquipViewModel(DrawDataContainer.EquipmentSlot slot, GearWindow window)
 		: base(window)
@@ -474,7 +477,7 @@ public class ItemEquipViewModel : GearViewModelBase
 		}
 	}
 
-	protected ref EquipmentModelId ItemEquip => ref this.DrawData.Equipment(this.Slot);
+	protected unsafe ref EquipmentModelId ItemEquip => ref this.Target->DrawData.Equipment(this.Slot);
 
 	public unsafe void ApplyChangeItem()
 	{
@@ -483,153 +486,154 @@ public class ItemEquipViewModel : GearViewModelBase
 			CharacterWindow.GetTarget()->UpdateEquipment(this.Slot, this.ItemEquip, CharacterExtensions.UpdateSource.Interface);
 		});
 	}
+
+	protected override string GetSearchTitle() => $"{this.Slot.GetDisplayName()} {Resources.Find("LOC_Equipment", "Equipment")}";
+
+	protected unsafe override void GetDefaultTags(TagCollection tags)
+	{
+		base.GetDefaultTags(tags);
+
+		tags.Add(this.Slot.ToTag());
+
+		// Filter by the current race.
+		Race? race = this.Target->DrawData.CustomizeData.GetRace();
+		if (race != null && race.Name != null)
+		{
+			tags.Add(race.Name);
+		}
+	}
 }
 
-public class AccessoryViewModel : ViewModel
+public abstract class TableRowItemViewModel<T> : GearViewModelBase<T>
+	where T : LibraryExcelRow
 {
-	private readonly GearWindow window;
+	private T? item;
 
-	private Glasses? glasses;
+	public TableRowItemViewModel(GearWindow window)
+		: base(window)
+	{
+	}
 
+	[AutoNotify]
+	public sealed override T? Item
+	{
+		get
+		{
+			if (!this.HasValidTarget)
+				return null;
+
+			if (this.Value == 0)
+				return null;
+
+			if (this.item == null)
+				this.item = GameDataService.GetRow<T>(this.Value);
+
+			return this.item;
+		}
+
+		set
+		{
+			if (value == null || !value.IsValid)
+			{
+				this.Value = 0;
+			}
+			else
+			{
+				this.Value = (ushort)value.RowId;
+			}
+		}
+	}
+
+	[AutoNotify]
+	public ushort Value
+	{
+		get
+		{
+			if (!this.HasValidTarget)
+				return 0;
+
+			return this.LiveValue;
+		}
+		set
+		{
+			this.item = GameDataService.GetRow<T>(value);
+			if (this.item == null || !this.item.IsValid)
+			{
+				this.LiveValue = 0;
+			}
+			else
+			{
+				Threads.RunOnFrameworkThread(() =>
+				{
+					this.LiveValue = value;
+				});
+			}
+		}
+	}
+
+	protected unsafe abstract ushort LiveValue
+	{
+		get;
+		set;
+	}
+}
+
+/// <summary>
+/// Accessory view model for glasses.
+/// </summary>
+public class AccessoryViewModel : TableRowItemViewModel<Glasses>
+{
 	public AccessoryViewModel(AccessorySlots slot, GearWindow window)
+		: base(window)
 	{
 		this.Slot = slot;
-		this.window = window;
 	}
 
 	public AccessorySlots Slot { get; init; }
 
-	[AutoNotify] public bool HasValidTarget => this.window.HasValidTarget;
-
-	[AutoNotify]
-	public Glasses? Item
+	protected unsafe override ushort LiveValue
 	{
-		get
-		{
-			if (!this.HasValidTarget)
-				return null;
-
-			if (this.Value == 0)
-				return null;
-
-			if (this.glasses == null)
-				this.glasses = GameDataService.GetRow<Glasses>(this.Value);
-
-			return this.glasses;
-		}
-
-		set
-		{
-			if (value == null)
-			{
-				this.Value = 0;
-			}
-			else
-			{
-				this.Value = (ushort)value.RowId;
-			}
-		}
+		get => this.Target->DrawData.GlassesIds[(int)this.Slot];
+		set => this.Target->DrawData.SetGlasses((int)this.Slot, value);
 	}
 
-	[AutoNotify]
-	public unsafe ushort Value
-	{
-		get
-		{
-			if (!this.window.HasValidTarget)
-				return 0;
-
-			return this.window.Target->DrawData.GlassesIds[(int)this.Slot];
-		}
-		set
-		{
-			this.glasses = GameDataService.GetRow<Glasses>(value);
-			if (this.glasses == null)
-			{
-				this.window.Target->DrawData.SetGlasses((int)this.Slot, 0);
-			}
-			else
-			{
-				this.window.Target->DrawData.SetGlasses((int)this.Slot, value);
-			}
-		}
-	}
+	protected override string GetSearchTitle() => Resources.Find("LOC_Glasses", "Glasses");
 }
 
-public class OrnamentViewModel : ViewModel
+/// <summary>
+/// Ornament view model for wings and umbrellas.
+/// </summary>
+public class OrnamentViewModel : TableRowItemViewModel<Ornament>
 {
-	private readonly GearWindow window;
-
-	private Ornament? ornament;
-
 	public OrnamentViewModel(GearWindow window)
+		: base(window)
 	{
-		this.window = window;
 	}
 
-	[AutoNotify] public unsafe bool HasValidTarget
+	[AutoNotify]
+	public override unsafe bool HasValidTarget
 	{
 		get
 		{
-			if (!this.window.HasValidTarget)
+			if (!base.HasValidTarget)
 				return false;
 
-			return this.window.Target->OrnamentData.OrnamentObject != null;
+			return this.Target->OrnamentData.OrnamentObject != null;
 		}
 	}
 
-	[AutoNotify]
-	public Ornament? Item
+	protected unsafe override ushort LiveValue
 	{
-		get
-		{
-			if (!this.HasValidTarget)
-				return null;
-
-			if (this.Value == 0)
-				return null;
-
-			if (this.ornament == null)
-				this.ornament = GameDataService.GetRow<Ornament>(this.Value);
-
-			return this.ornament;
-		}
-
+		get => this.Target->OrnamentData.OrnamentId;
 		set
 		{
-			if (value == null)
-			{
-				this.Value = 0;
-			}
-			else
-			{
-				this.Value = (ushort)value.RowId;
-			}
+			// Can only set 0 (no ornament) while in gpose
+			if (value == 0 && !this.Services.GroupPose.IsGroupPosing)
+				return;
+
+			this.Target->OrnamentData.SetupOrnament((short)value, 0);
 		}
 	}
 
-	[AutoNotify]
-	public unsafe ushort Value
-	{
-		get
-		{
-			if (!this.window.HasValidTarget)
-				return 0;
-
-			return this.window.Target->OrnamentData.OrnamentId;
-		}
-		set
-		{
-			this.ornament = GameDataService.GetRow<Ornament>(value);
-
-			if (this.ornament == null)
-			{
-				this.window.Target->OrnamentData.OrnamentId = 0;
-			}
-			else
-			{
-				this.window.Target->OrnamentData.OrnamentId = (ushort)this.ornament.RowId;
-			}
-		}
-	}
+	protected override string GetSearchTitle() => Resources.Find("LOC_Ornament", "Fashion Accessories");
 }

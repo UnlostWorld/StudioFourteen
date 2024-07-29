@@ -384,6 +384,7 @@
 					<wpfUtils:NumberBox
 						Grid.Row="1"
 						Grid.Column="1"
+						Minimum="0"
 						Value="{Binding Value}" />
 
 				</Grid>
@@ -453,6 +454,7 @@
 					<wpfUtils:NumberBox
 						Grid.Row="1"
 						Grid.Column="1"
+						Minimum="0"
 						Value="{Binding Value}" />
 
 				</Grid>

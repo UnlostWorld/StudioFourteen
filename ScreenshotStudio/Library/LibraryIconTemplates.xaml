@@ -66,7 +66,7 @@
 
 
 
-	<DataTemplate DataType="{x:Type excel:Item}">
+	<DataTemplate x:Key="SimpleIconTemplate">
 		<Viewbox>
 			<Grid
 				Width="48"
@@ -105,84 +105,20 @@
 	</DataTemplate>
 
 
+	<DataTemplate DataType="{x:Type excel:Item}">
+		<ContentPresenter ContentTemplate="{StaticResource SimpleIconTemplate}" />
+	</DataTemplate>
 
 	<DataTemplate DataType="{x:Type excel:Stain}">
-		<Grid
-			Grid.RowSpan="3"
-			Grid.Column="0"
-			Width="48"
-			Height="48"
-			Margin="0,0,6,0">
-
-			<controls:XivTexImage
-				x:Name="IconBack"
-				Margin="0,-1,0,1"
-				Path="ui/uld/icona_frame_hr1.tex"
-				Rect="0, 192, 96, 96"
-				SnapsToDevicePixels="True"
-				Visibility="Collapsed" />
-
-			<Image
-				Margin="4,3,4,5"
-				SnapsToDevicePixels="True"
-				Source="{Binding Item.Icon.Source}" />
-
-			<controls:XivTexImage
-				x:Name="IconShine"
-				Path="ui/uld/icona_frame_hr1.tex"
-				Rect="0, 0, 96, 96"
-				SnapsToDevicePixels="True" />
-		</Grid>
-
-		<DataTemplate.Triggers>
-			<DataTrigger
-				Binding="{Binding Item.Icon}"
-				Value="{x:Null}">
-				<Setter TargetName="IconShine" Property="Visibility" Value="Collapsed" />
-				<Setter TargetName="IconBack" Property="Visibility" Value="Visible" />
-			</DataTrigger>
-		</DataTemplate.Triggers>
-
+		<ContentPresenter ContentTemplate="{StaticResource SimpleIconTemplate}" />
 	</DataTemplate>
 
-
-
 	<DataTemplate DataType="{x:Type excel:Glasses}">
-		<Viewbox>
-			<Grid
-				Width="48"
-				Height="48"
-				Margin="0,0,6,0">
+		<ContentPresenter ContentTemplate="{StaticResource SimpleIconTemplate}" />
+	</DataTemplate>
 
-				<controls:XivTexImage
-					x:Name="IconBack"
-					Margin="0,-1,0,1"
-					Path="ui/uld/icona_frame_hr1.tex"
-					Rect="0, 192, 96, 96"
-					SnapsToDevicePixels="True"
-					Visibility="Collapsed" />
-
-				<Image
-					Margin="4,3,4,3"
-					SnapsToDevicePixels="True"
-					Source="{Binding Icon.Source}" />
-
-				<controls:XivTexImage
-					x:Name="IconShine"
-					Path="ui/uld/icona_frame_hr1.tex"
-					Rect="0, 0, 96, 96"
-					SnapsToDevicePixels="True" />
-			</Grid>
-		</Viewbox>
-
-		<DataTemplate.Triggers>
-			<DataTrigger
-				Binding="{Binding Icon}"
-				Value="{x:Null}">
-				<Setter TargetName="IconShine" Property="Visibility" Value="Collapsed" />
-				<Setter TargetName="IconBack" Property="Visibility" Value="Visible" />
-			</DataTrigger>
-		</DataTemplate.Triggers>
+	<DataTemplate DataType="{x:Type excel:Ornament}">
+		<ContentPresenter ContentTemplate="{StaticResource SimpleIconTemplate}" />
 	</DataTemplate>
 
 
