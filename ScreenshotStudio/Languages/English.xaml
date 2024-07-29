@@ -13,9 +13,8 @@
 	<sys:String x:Key="LOC_GitHub">GitHub</sys:String>
 	<sys:String x:Key="LOC_Console">Console</sys:String>
 
-	<sys:String x:Key="LOC_ClosePanelTooltip">Close Panel</sys:String>
-	<sys:String x:Key="LOC_EmbedPanelTooltip">Pop this panel out of the FFXIV window</sys:String>
-	<sys:String x:Key="CloseScreenshotStudio">Close the Studio interface</sys:String>
+	<sys:String x:Key="LOC_ClosePanelTooltip">Close</sys:String>
+	<sys:String x:Key="LOC_EmbedPanelTooltip">Pop this window in or out of the FFXIV window</sys:String>
 
 	<sys:String x:Key="LOC_ToggleGPose">Toggle GPose</sys:String>
 	<sys:String x:Key="LOC_Library">Library</sys:String>
@@ -31,21 +30,9 @@
 	<sys:String x:Key="LOC_SaveCharacter">Save Character</sys:String>
 	<sys:String x:Key="LOC_SavePose">Save Pose</sys:String>
 
-	<sys:String x:Key="ChangeZoneWarning">You may only change zones in the title screen on a fresh launch of FFXIV. Restart your game and do not enter character select.</sys:String>
-
-	<sys:String x:Key="TransformT">Translate</sys:String>
-	<sys:String x:Key="TransformR">Rotate</sys:String>
-	<sys:String x:Key="TransformS">Scale</sys:String>
-	<sys:String x:Key="BonesGuiOption">Bones Window</sys:String>
-	<sys:String x:Key="BonesGui">Bones</sys:String>
-
-	<sys:String x:Key="PoseGui">GUI</sys:String>
-	<sys:String x:Key="PoseMatrix">Matrix</sys:String>
-	<sys:String x:Key="PoseList">List</sys:String>
-
-	<sys:String x:Key="PoseGuiFlipSides">Flip Sides</sys:String>
-	<sys:String x:Key="PoseGuiFlipSidesFlipped">Facing Towards</sys:String>
-	<sys:String x:Key="PoseGuiFlipSidesNotflipped">Facing Away</sys:String>
+	<sys:String x:Key="LOC_Translate">Translate</sys:String>
+	<sys:String x:Key="LOC_Rotation">Rotate</sys:String>
+	<sys:String x:Key="LOC_Scale">Scale</sys:String>
 
 	<sys:String x:Key="LOC_Target_CreateCharacter">Add a new character</sys:String>
 	<sys:String x:Key="LOC_Target_DeleteCharacter">Remove character</sys:String>

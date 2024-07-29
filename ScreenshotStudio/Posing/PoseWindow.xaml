@@ -311,23 +311,26 @@
 										x:Name="Icon"
 										Foreground="{DynamicResource ForegroundLightBrush}"
 										Icon="Arrows"
-										ToolTip="{DynamicResource TransformT}" />
+										ToolTip="{DynamicResource LOC_Translate}" />
 
 									<DataTemplate.Triggers>
 										<DataTrigger
 											Binding="{Binding Path=.}"
 											Value="Translation">
 											<Setter TargetName="Icon" Property="Icon" Value="Arrows" />
+											<Setter TargetName="Icon" Property="ToolTip" Value="{DynamicResource LOC_Translate}" />
 										</DataTrigger>
 										<DataTrigger
 											Binding="{Binding Path=.}"
 											Value="Rotation">
 											<Setter TargetName="Icon" Property="Icon" Value="Rotate" />
+											<Setter TargetName="Icon" Property="ToolTip" Value="{DynamicResource LOC_Rotate}" />
 										</DataTrigger>
 										<DataTrigger
 											Binding="{Binding Path=.}"
 											Value="Scale">
 											<Setter TargetName="Icon" Property="Icon" Value="ArrowsMaximize" />
+											<Setter TargetName="Icon" Property="ToolTip" Value="{DynamicResource LOC_Scale}" />
 										</DataTrigger>
 									</DataTemplate.Triggers>
 								</DataTemplate>
@@ -351,7 +354,7 @@
 								Margin="6,1,2,0"
 								Foreground="{DynamicResource BackgroundLightBrush}"
 								Icon="Arrows"
-								ToolTip="{DynamicResource TransformT}" />
+								ToolTip="{DynamicResource LOC_Translate}" />
 						</wpfUtils:MultiNumberBox.Prefix>
 					</wpfUtils:MultiNumberBox>
 
@@ -423,7 +426,7 @@
 								Margin="6,1,2,0"
 								Foreground="{DynamicResource BackgroundLightBrush}"
 								Icon="Rotate"
-								ToolTip="{DynamicResource TransformR}" />
+								ToolTip="{DynamicResource LOC_Rotation}" />
 						</wpfUtils:MultiNumberBox.Prefix>
 					</wpfUtils:MultiNumberBox>
 
@@ -500,7 +503,7 @@
 								Margin="6,1,2,0"
 								Foreground="{DynamicResource BackgroundLightBrush}"
 								Icon="ArrowsMaximize"
-								ToolTip="{DynamicResource TransformS}" />
+								ToolTip="{DynamicResource LOC_Scale}" />
 						</wpfUtils:MultiNumberBox.Prefix>
 					</wpfUtils:MultiNumberBox>
 
