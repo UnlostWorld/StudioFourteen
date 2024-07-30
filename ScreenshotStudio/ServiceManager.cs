@@ -4,10 +4,8 @@ using ScreenshotStudio.Data;
 using ScreenshotStudio.GameData;
 using ScreenshotStudio.Input;
 using ScreenshotStudio.Library;
-using ScreenshotStudio.Services;
 using ScreenshotStudio.Posing;
-using ScreenshotStudio.Utilities;
-using System.Diagnostics;
+using ScreenshotStudio.Services;
 
 public class ServiceManager : ServiceManagerBase
 {
@@ -27,26 +25,4 @@ public class ServiceManager : ServiceManagerBase
 	public InputService Input { get; init; } = new();
 	public GameCaptureService GameCapture { get; init; } = new();
 	public PoseService Pose { get; init; } = new();
-
-	protected override void OnStart()
-	{
-		Logging.Init();
-
-		// Hard reference our required satellite assemblies to make sure dalamuds plugin loader picks them up.
-		this.Log.Information($"Ensure assembly XivToolWpf {typeof(WpfUtils.Dispatch).Assembly}");
-		this.Log.Information($"Ensure assembly FontAwesome {typeof(FontAwesome.Sharp.Icon).Assembly}");
-		this.Log.Information($"Ensure assembly VirtualizingWrapPanel Pro {typeof(WpfToolkit.Controls.VirtualizingWrapPanel).Assembly}");
-
-		// Get the Xiv process for window manipulation.
-		// NOTE: if we _don't_ log out the value here, then things break. I don't know why.
-		XivWindow.Process = Process.GetCurrentProcess();
-		this.Log.Information($"Ensure XivProcess {XivWindow.Process} - {XivWindow.Process.MainWindowHandle} - {XivWindow.Process.MainWindowTitle}");
-
-		Alloc.Init();
-	}
-
-	protected override void OnStop()
-	{
-		Alloc.Dispose();
-	}
 }
