@@ -65,7 +65,7 @@ public partial class LibraryWindow : PanelWindow
 	[AutoNotify] public Result? SelectedResult { get; set; } = null;
 	[AutoNotify] public bool ViewList { get; set; } = false;
 	[AutoNotify] public ObservableCollection<GroupEntryBase> Path { get; init; } = new();
-	[AutoNotify] public GroupEntryBase CurrentGroup => this.Path[this.Path.Count - 1];
+	[AutoNotify] public GroupEntryBase? CurrentGroup => this.Path.Count > 0 ? this.Path[this.Path.Count - 1] : null;
 	[AutoNotify] public TagCollection AvailableTags { get; init; } = new();
 	[AutoNotify] public TagFilter TagFilter { get; init; } = new();
 	[AutoNotify] public SearchQueryFilter SearchQueryFilter { get; init; } = new();
@@ -111,6 +111,9 @@ public partial class LibraryWindow : PanelWindow
 		flattenResults |= !this.SearchQueryFilter.IsEmpty;
 
 		await Dispatch.NonUiThread();
+
+		if (this.CurrentGroup == null)
+			return;
 
 		List<FilterBase> filters = new List<FilterBase>();
 		filters.AddRange(this.CurrentTab.Filters);

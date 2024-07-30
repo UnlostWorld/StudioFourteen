@@ -353,6 +353,9 @@ public partial class CustomizeWindow : CharacterWindow
 
 	public unsafe byte GetCustomizeValue(CustomizeIndex option)
 	{
+		if (!this.HasValidTarget)
+			return 0;
+
 		return this.Target->GetCustomizeValue(option);
 	}
 

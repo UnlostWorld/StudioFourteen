@@ -40,6 +40,9 @@ public class GroupPoseService : ServiceBase
 
 	private unsafe void Attach()
 	{
+		if (!DalamudServices.IsAlive)
+			return;
+
 		UIModule* uiModule = Framework.Instance()->UIModule;
 		var enterAddress = (nint)uiModule->VirtualTable->EnterGPose;
 		var exitAddress = (nint)uiModule->VirtualTable->ExitGPose;

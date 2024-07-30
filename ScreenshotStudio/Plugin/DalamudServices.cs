@@ -1,16 +1,16 @@
 ﻿namespace ScreenshotStudio.Plugin;
 
 using Dalamud.Game;
-using Dalamud.Hooking;
 using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
-using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using System;
 using System.Runtime.InteropServices;
 
 public class DalamudServices
 {
+	public static bool IsAlive => Log != null;
+
 	[PluginService] public static IPluginLog? Log { get; private set; }
 	[PluginService] public static IDalamudPluginInterface? PluginInterface { get; private set; }
 	[PluginService] public static ICommandManager? CommandManager { get; private set; }
@@ -24,8 +24,6 @@ public class DalamudServices
 	[PluginService] public static ITextureSubstitutionProvider? TextureSubstitutionProvider { get; private set; }
 	[PluginService] public static IGameInteropProvider? InteropProvider { get; private set; }
 	[PluginService] public static ITextureProvider? TextureProvider { get; private set; }
-
-	internal static unsafe CameraManager* Camera { get; private set; } = CameraManager.Instance();
 
 	public static TDelegate? DelegateFromSignature<TDelegate>(string sig)
 		where TDelegate : System.Delegate
