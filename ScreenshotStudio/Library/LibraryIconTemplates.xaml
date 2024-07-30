@@ -29,7 +29,8 @@
 		<Viewbox>
 			<wpfUtils:IconBlock
 				FontSize="72"
-				Icon="User" />
+				Icon="User"
+				IconFont="Solid" />
 		</Viewbox>
 	</DataTemplate>
 
@@ -39,7 +40,8 @@
 		<Viewbox>
 			<wpfUtils:IconBlock
 				FontSize="72"
-				Icon="UserTie" />
+				Icon="UserTie"
+				IconFont="Solid" />
 		</Viewbox>
 	</DataTemplate>
 
@@ -50,7 +52,8 @@
 			<wpfUtils:IconBlock
 				Margin="10,0"
 				FontSize="72"
-				Icon="UserShield" />
+				Icon="UserShield"
+				IconFont="Solid" />
 		</Viewbox>
 	</DataTemplate>
 
@@ -60,7 +63,8 @@
 		<Viewbox>
 			<wpfUtils:IconBlock
 				FontSize="72"
-				Icon="User" />
+				Icon="User"
+				IconFont="Solid" />
 		</Viewbox>
 	</DataTemplate>
 
