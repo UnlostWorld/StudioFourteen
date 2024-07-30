@@ -9,7 +9,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 
-[Sheet("NpcEquip", 0xe91c87ba)]
+[Sheet("NpcEquip", 0x4004f596)]
 public class NpcEquip : StudioExcelRow
 {
 	public NpcEquipment Equipment { get; init; } = new();

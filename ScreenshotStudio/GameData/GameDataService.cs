@@ -1,21 +1,23 @@
 ﻿namespace ScreenshotStudio.GameData;
 
+using Lumina.Data;
 using Lumina.Excel;
+using Lumina.Excel.Exceptions;
+using ScreenshotStudio.GameData.Excel;
+using ScreenshotStudio.GameData.Sheets;
+using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
+using Serilog;
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using ScreenshotStudio.GameData.Excel;
-using ScreenshotStudio.Plugin;
-using Lumina.Data;
-using ScreenshotStudio.GameData.Sheets;
-using System.IO;
 using System.Diagnostics;
-using System.Drawing.Drawing2D;
-using Serilog;
+using System.IO;
+using System.Threading.Tasks;
 
 public class GameDataService : ServiceBase
 {
+	public static Lumina.GameData? DataProvider;
+
 	private readonly Dictionary<Type, DataSheet> sheets = new();
 
 	public static ItemsSheet? Items => Get<Item>() as ItemsSheet;
@@ -77,6 +79,23 @@ public class GameDataService : ServiceBase
 		}
 
 		return this.sheets[type] as DataSheet<T>;
+	}
+
+	public ExcelSheet<T>? GetLuminaExcelSheet<T>()
+		where T : ExcelRow
+	{
+		ExcelSheet<T>? sheet;
+		sheet = DalamudServices.DataManager?.GetExcelSheet<T>();
+
+		if (DataProvider != null)
+			sheet = DataProvider.GetExcelSheet<T>();
+
+		if (sheet == null)
+		{
+			this.Log.Error($"Failed to get excel sheet for type: {typeof(T)}");
+		}
+
+		return sheet;
 	}
 
 	public override async Task Initialize()
@@ -144,7 +163,17 @@ public class GameDataService : ServiceBase
 	private void AddSheet<T>()
 		where T : ExcelRow
 	{
-		this.AddSheet(new DataSheet<T>());
+		try
+		{
+			this.AddSheet(new DataSheet<T>());
+		}
+		catch (ExcelSheetColumnChecksumMismatchException ex)
+		{
+			this.Log.Error(ex, $"Excel Column checksum mismatch for sheet type {typeof(T)}");
+		}
+		catch(Exception)
+		{
+		}
 	}
 
 	private void AddSheet(DataSheet sheet)

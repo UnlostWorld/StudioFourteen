@@ -84,12 +84,7 @@ public class DataSheet<T> : DataSheet
 	public DataSheet()
 		: base()
 	{
-		this.Sheet = DalamudServices.DataManager?.GetExcelSheet<T>();
-
-		if (this.Sheet == null)
-		{
-			this.Log.Error($"Failed to get excel sheet for type: {typeof(T)}");
-		}
+		this.Sheet = ServiceManager.Instance.GameData.GetLuminaExcelSheet<T>();
 	}
 
 	public override uint Count => this.Sheet?.RowCount ?? 0;

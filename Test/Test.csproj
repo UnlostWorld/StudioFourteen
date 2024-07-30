@@ -16,6 +16,9 @@
 		<DalamudLibPath>$(DALAMUD_HOME)/</DalamudLibPath>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	</PropertyGroup>
+	<ItemGroup>
+	  <PackageReference Include="Lumina" Version="4.1.0" />
+	</ItemGroup>
 
   <ItemGroup>
 	<ProjectReference Include="..\ScreenshotStudio\ScreenshotStudio.csproj" />

@@ -4,7 +4,7 @@ using Lumina.Data;
 using Lumina.Excel;
 using ScreenshotStudio.Tags;
 
-[Sheet("ModelChara", 0x8d35f5ed)]
+[Sheet("ModelChara", 0x25b9b3e2)]
 public partial class ModelChara : StudioExcelRow
 {
 	public byte Type { get; protected set; }
