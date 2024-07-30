@@ -3,37 +3,43 @@
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Studio;
 using Serilog;
+using Serilog.Core;
 using Serilog.Events;
+using Serilog.Formatting;
 using System;
 using System.Diagnostics;
+using System.IO;
 
 public static class Logging
 {
-	private static ILogger? shared;
+	public static readonly LoggerConfiguration Configuration;
+	private static readonly ILogger Logger;
 
-	public static ILogger Shared
+	static Logging()
 	{
-		get
-		{
-			if (shared == null)
-				shared = ForContext(string.Empty);
+		Formatter formatter = new();
 
-			return shared;
-		}
+		Configuration = new LoggerConfiguration();
+		Configuration.Enrich.With<StackEnricher>();
+		Configuration.WriteTo.Debug(formatter);
+
+		if (DalamudServices.Log != null)
+			Configuration.WriteTo.Sink(new DalamudSink(formatter));
+
+		Logger = Configuration.CreateLogger();
+
+		WpfUtils.Logging.Log.HandleMessage = WpfLog;
+		WpfUtils.Logging.Log.HandleError = WpfError;
 	}
+
+	public static ILogger Shared => Logger;
 
 	public static ILogger ForContext<T>() => ForContext(typeof(T));
 	public static ILogger ForContext(Type type) => ForContext(type.Name);
 
 	public static ILogger ForContext(string context)
 	{
-		return new Logger(context);
-	}
-
-	public static void Init()
-	{
-		WpfUtils.Logging.Log.HandleMessage = WpfLog;
-		WpfUtils.Logging.Log.HandleError = WpfError;
+		return Logger.ForContext("Context", context);
 	}
 
 	public static void WpfLog(string message) => Shared.Information(message);
@@ -42,28 +48,72 @@ public static class Logging
 	public static void Information(string message) => Shared.Information(message);
 }
 
-public class Logger : ILogger
+public class Formatter : ITextFormatter
 {
-	private readonly string context;
-
-	public Logger(string context)
+	public void Format(LogEvent logEvent, TextWriter output)
 	{
-		this.context = context;
+		output.Write("[");
+		output.Write(logEvent.Level);
+		output.Write("] ");
+
+		if (logEvent.Properties.TryGetValue("Context", out var contextValue))
+		{
+			output.Write("[");
+			if (contextValue is ScalarValue sv)
+			{
+				output.Write(sv.Value);
+			}
+
+			output.Write("] ");
+		}
+
+		output.Write(logEvent.MessageTemplate);
+
+		if (logEvent.Properties.TryGetValue("StackTrace", out var stackTrace))
+		{
+			output.WriteLine();
+			if (stackTrace is ScalarValue sv)
+			{
+				output.Write(sv.Value);
+			}
+		}
+
+		if (logEvent.Exception != null)
+		{
+			output.WriteLine();
+			output.WriteLine(logEvent.Exception.Message);
+			output.WriteLine(logEvent.Exception.StackTrace);
+		}
+
+		output.WriteLine();
+	}
+}
+
+public class StackEnricher : ILogEventEnricher
+{
+	public void Enrich(LogEvent logEvent, ILogEventPropertyFactory propertyFactory)
+	{
+		if (logEvent.Level >= LogEventLevel.Error && logEvent.Exception == null)
+		{
+			logEvent.AddOrUpdateProperty(propertyFactory.CreateProperty("StackTrace", new StackTrace(7, true)));
+		}
+	}
+}
+
+public class DalamudSink : ILogEventSink
+{
+	private readonly ITextFormatter formatter;
+
+	public DalamudSink(ITextFormatter formatter)
+	{
+		this.formatter = formatter;
 	}
 
-	public void Write(LogEvent logEvent)
+	public void Emit(LogEvent logEvent)
 	{
-		string message;
-		if (logEvent.Level > LogEventLevel.Warning || logEvent.Exception != null)
-		{
-			// Include a stack trace for warnings or above or events with an exception from where the log originated.
-			StackTrace stack = new(3, true);
-			message = $"[{this.context}] {logEvent.MessageTemplate.Text} \n\nfrom:\n{stack}";
-		}
-		else
-		{
-			message = $"[{this.context}] {logEvent.MessageTemplate.Text}";
-		}
+		StringWriter writer = new();
+		this.formatter.Format(logEvent, writer);
+		string message = writer.ToString();
 
 		// Unsure why PluginLog.LogRaw doesn't work. possibly due to the Serilog.LogEventLevel not matching up?
 		switch (logEvent.Level)
