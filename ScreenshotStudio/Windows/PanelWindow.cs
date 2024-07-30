@@ -74,6 +74,9 @@ public class PanelWindow : PersistentPanel
 		if (this.SavedPosition != null)
 			this.Position = (Point)this.SavedPosition;
 
+		if (XivWindow.Process == null)
+			this.CanChangeEmbed = false;
+
 		base.OnOpened();
 	}
 

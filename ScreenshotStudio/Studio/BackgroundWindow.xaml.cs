@@ -38,6 +38,9 @@ public partial class BackgroundWindow : PersistentPanel
 
 	private void UpdatePosition()
 	{
+		if (XivWindow.Process == null)
+			return;
+
 		this.Width = XivWindow.Size.Width;
 		this.Height = XivWindow.Size.Height - XivWindow.TitleBarHeight;
 
