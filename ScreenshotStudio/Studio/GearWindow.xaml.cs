@@ -278,7 +278,7 @@ public class WeaponViewModel : ItemViewModelBase
 
 	public override ushort Set
 	{
-		get => this.Weapon.ModelId.Id;
+		get => this.HasValidTarget ? this.Weapon.ModelId.Id : (ushort)0;
 		set
 		{
 			this.BackupCharacter();
@@ -289,7 +289,7 @@ public class WeaponViewModel : ItemViewModelBase
 
 	public override ushort Base
 	{
-		get => this.Weapon.ModelId.Type;
+		get => this.HasValidTarget ? this.Weapon.ModelId.Type : (ushort)0;
 		set
 		{
 			this.BackupCharacter();
@@ -300,7 +300,7 @@ public class WeaponViewModel : ItemViewModelBase
 
 	public override ushort Variant
 	{
-		get => this.Weapon.ModelId.Variant;
+		get => this.HasValidTarget ? this.Weapon.ModelId.Variant : (ushort)0;
 		set
 		{
 			this.BackupCharacter();
@@ -311,7 +311,7 @@ public class WeaponViewModel : ItemViewModelBase
 
 	public override byte Stain0Id
 	{
-		get => this.Weapon.ModelId.Stain0;
+		get => this.HasValidTarget ? this.Weapon.ModelId.Stain0 : (byte)0;
 		set
 		{
 			this.BackupCharacter();
@@ -322,7 +322,7 @@ public class WeaponViewModel : ItemViewModelBase
 
 	public override byte Stain1Id
 	{
-		get => this.Weapon.ModelId.Stain1;
+		get => this.HasValidTarget ? this.Weapon.ModelId.Stain1 : (byte)0;
 		set
 		{
 			this.BackupCharacter();
@@ -406,7 +406,7 @@ public class ItemEquipViewModel : ItemViewModelBase
 
 	public override ushort Base
 	{
-		get => this.ItemEquip.Id;
+		get => this.HasValidTarget ? this.ItemEquip.Id : (ushort)0;
 		set
 		{
 			this.BackupCharacter();
@@ -417,7 +417,7 @@ public class ItemEquipViewModel : ItemViewModelBase
 
 	public override ushort Variant
 	{
-		get => this.ItemEquip.Variant;
+		get => this.HasValidTarget ? this.ItemEquip.Variant : (ushort)0;
 		set
 		{
 			this.BackupCharacter();
@@ -428,7 +428,7 @@ public class ItemEquipViewModel : ItemViewModelBase
 
 	public override byte Stain0Id
 	{
-		get => this.ItemEquip.Stain0;
+		get => this.HasValidTarget ? this.ItemEquip.Stain0 : (byte)0;
 		set
 		{
 			this.BackupCharacter();
@@ -439,7 +439,7 @@ public class ItemEquipViewModel : ItemViewModelBase
 
 	public override byte Stain1Id
 	{
-		get => this.ItemEquip.Stain1;
+		get => this.HasValidTarget ? this.ItemEquip.Stain1 : (byte)0;
 		set
 		{
 			this.BackupCharacter();
@@ -557,6 +557,10 @@ public abstract class TableRowItemViewModel<T> : GearViewModelBase<T>
 		set
 		{
 			this.item = GameDataService.GetRow<T>(value);
+
+			if (!this.HasValidTarget)
+				return;
+
 			if (this.item == null || !this.item.IsValid)
 			{
 				this.LiveValue = 0;
