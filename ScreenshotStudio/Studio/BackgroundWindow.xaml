@@ -78,6 +78,7 @@
 
 		<!--  Navigation  -->
 		<background:Navigation
+			x:Name="NavigationArea"
 			Grid.Column="0"
 			Margin="10,0,0,0"
 			VerticalAlignment="Center" />
