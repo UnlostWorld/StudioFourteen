@@ -329,7 +329,7 @@
 										<DataTrigger
 											Binding="{Binding Path=.}"
 											Value="Scale">
-											<Setter TargetName="Icon" Property="Icon" Value="ArrowsMaximize" />
+											<Setter TargetName="Icon" Property="Icon" Value="Maximize" />
 											<Setter TargetName="Icon" Property="ToolTip" Value="{DynamicResource LOC_Scale}" />
 										</DataTrigger>
 									</DataTemplate.Triggers>
@@ -502,7 +502,7 @@
 							<wpfUtils:IconBlock
 								Margin="6,1,2,0"
 								Foreground="{DynamicResource BackgroundLightBrush}"
-								Icon="ArrowsMaximize"
+								Icon="Maximize"
 								ToolTip="{DynamicResource LOC_Scale}" />
 						</wpfUtils:MultiNumberBox.Prefix>
 					</wpfUtils:MultiNumberBox>
