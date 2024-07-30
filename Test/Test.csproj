@@ -16,12 +16,6 @@
 		<DalamudLibPath>$(DALAMUD_HOME)/</DalamudLibPath>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	</PropertyGroup>
-	<ItemGroup>
-	  <None Remove="AssemblyInfo2.cs2" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Compile Include="AssemblyInfo2.cs2" />
-	</ItemGroup>
 
   <ItemGroup>
 	<ProjectReference Include="..\ScreenshotStudio\ScreenshotStudio.csproj" />
