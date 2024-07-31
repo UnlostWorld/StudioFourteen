@@ -329,13 +329,13 @@
 							ToolTip="{Binding .}">
 
 							<Grid.RowDefinitions>
-								<RowDefinition Height="96" />
+								<RowDefinition Height="Auto" />
 								<RowDefinition Height="32" />
 							</Grid.RowDefinitions>
 
 							<ContentPresenter
-								Width="96"
-								Height="96"
+								Height="{Binding ActualWidth, RelativeSource={RelativeSource Mode=Self}}"
+								Margin="3"
 								Content="{Binding Entry}">
 								<ContentPresenter.Resources>
 									<ResourceDictionary Source="LibraryIconTemplates.xaml" />

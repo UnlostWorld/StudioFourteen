@@ -128,7 +128,21 @@
 
 
 	<DataTemplate DataType="{x:Type sources:FileEntry}">
-		<Image Source="{Binding Image}" />
+		<Grid
+			HorizontalAlignment="Center"
+			VerticalAlignment="Center">
+
+			<Border
+				Name="Mask"
+				Background="Black"
+				CornerRadius="4" />
+
+			<Image Source="{Binding Icon}">
+				<Image.OpacityMask>
+					<VisualBrush Visual="{Binding ElementName=Mask}" />
+				</Image.OpacityMask>
+			</Image>
+		</Grid>
 	</DataTemplate>
 
 </ResourceDictionary>

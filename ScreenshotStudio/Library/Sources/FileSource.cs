@@ -3,6 +3,7 @@
 using ScreenshotStudio.Files;
 using System;
 using System.IO;
+using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
 using static System.Environment;
@@ -73,7 +74,6 @@ public class FileSource : SourceBase
 public class FileEntry : EntryBase
 {
 	private readonly FileInfo fileInfo;
-	private FileBase? file;
 
 	public FileEntry(FileSource source, FileInfo file, FileTypeInfoBase typeInfo)
 		: base(source)
@@ -101,21 +101,13 @@ public class FileEntry : EntryBase
 
 	public override string Name => this.fileInfo.Name;
 
-	public FileBase? File
-	{
-		get
-		{
-			if (this.file == null)
-				this.file = this.TypeInfo.Load(this.fileInfo);
-
-			return this.file;
-		}
-	}
+	public FileBase? File => this.TypeInfo.Load(this.fileInfo);
 
 	public string? Author => this.File?.Author;
 	public string? Description => this.File?.Description;
 	public string? Version => this.File?.Version;
-	public BitmapImage? Image => this.File?.GetImage();
+	public ImageSource? Icon => this.File?.GetImage();
+	public ImageSource? Image => this.File?.GetImage();
 
 	protected override string GetInternalId() => this.fileInfo.FullName;
 }
