@@ -22,9 +22,8 @@ public static class Logging
 		Configuration = new LoggerConfiguration();
 		Configuration.Enrich.With<StackEnricher>();
 		Configuration.WriteTo.Debug(formatter);
-
-		if (DalamudServices.Log != null)
-			Configuration.WriteTo.Sink(new DalamudSink(formatter));
+		Configuration.WriteTo.Sink(new ErrorWindowSink());
+		Configuration.WriteTo.Sink(new DalamudSink(formatter));
 
 		Logger = Configuration.CreateLogger();
 
@@ -100,6 +99,17 @@ public class StackEnricher : ILogEventEnricher
 	}
 }
 
+public class ErrorWindowSink : ILogEventSink
+{
+	public void Emit(LogEvent logEvent)
+	{
+		if (logEvent.Level >= LogEventLevel.Error)
+		{
+			ErrorWindow.Show(logEvent.MessageTemplate.Text);
+		}
+	}
+}
+
 public class DalamudSink : ILogEventSink
 {
 	private readonly ITextFormatter formatter;
@@ -114,6 +124,7 @@ public class DalamudSink : ILogEventSink
 		StringWriter writer = new();
 		this.formatter.Format(logEvent, writer);
 		string message = writer.ToString();
+		message = message.TrimEnd('\r', '\n');
 
 		// Unsure why PluginLog.LogRaw doesn't work. possibly due to the Serilog.LogEventLevel not matching up?
 		switch (logEvent.Level)
@@ -146,7 +157,6 @@ public class DalamudSink : ILogEventSink
 			case LogEventLevel.Fatal:
 			{
 				DalamudServices.Log?.Error(logEvent.Exception, message);
-				ErrorWindow.Show(logEvent.MessageTemplate.Text);
 				break;
 			}
 		}
