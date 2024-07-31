@@ -1,8 +1,8 @@
 ﻿namespace ScreenshotStudio.Serialization;
 
 using Newtonsoft.Json;
+using ScreenshotStudio.Serialization.Converters;
 using System.Globalization;
-using System.IO;
 
 public static class Serializer
 {
@@ -12,6 +12,12 @@ public static class Serializer
 	{
 		Settings.Culture = CultureInfo.InvariantCulture;
 		Settings.Formatting = Formatting.Indented;
+
+		Settings.Converters.Add(new TagConverter());
+		Settings.Converters.Add(new Vector3Converter());
+		Settings.Converters.Add(new Vector3NullableConverter());
+		Settings.Converters.Add(new Vector4Converter());
+		Settings.Converters.Add(new Vector4NullableConverter());
 	}
 
 	public static string Serialize(object obj)

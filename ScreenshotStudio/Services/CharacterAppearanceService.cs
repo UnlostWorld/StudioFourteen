@@ -155,7 +155,6 @@ public class CharacterBackupAppearance : EntryBase, ICharacterAppearance
 
 public class GroupPoseCharactersLibrarySource : SourceBase
 {
-	public ILogger Log { get; init; } = Logging.ForContext<GroupPoseCharactersLibrarySource>();
 	public override string Name => Resources.Find("LOC_Library_GroupPoseCharactersLibrarySource", "GPose Characters");
 
 	public void OnEnterGroupPose()

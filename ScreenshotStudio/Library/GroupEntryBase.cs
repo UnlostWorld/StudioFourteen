@@ -23,13 +23,19 @@ public abstract class GroupEntryBase : EntryBase
 
 	public void Add(IEntryBase entry)
 	{
-		this.allEntries.Add(entry);
+		lock (this)
+		{
+			this.allEntries.Add(entry);
+		}
 	}
 
 	public void Clear()
 	{
-		this.allEntries.Clear();
-		this.NotifyPropertyChanged(nameof(GroupEntryBase.AllEntries));
+		lock (this)
+		{
+			this.allEntries.Clear();
+			this.NotifyPropertyChanged(nameof(GroupEntryBase.AllEntries));
+		}
 	}
 
 	public void GetAllTags(ref TagCollection tags)

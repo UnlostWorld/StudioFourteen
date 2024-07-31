@@ -175,7 +175,7 @@
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
 							<Button
-								Margin="-3,0,0,0"
+								Margin="0"
 								Background="Transparent"
 								Click="OnDirectorySelected">
 

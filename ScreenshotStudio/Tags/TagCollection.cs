@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Text;
 
-public class TagCollection : IEnumerable<Tag>, INotifyCollectionChanged
+public class TagCollection : ICollection<Tag>, INotifyCollectionChanged
 {
 	public static readonly TagCollection Empty = new();
 
@@ -26,6 +26,8 @@ public class TagCollection : IEnumerable<Tag>, INotifyCollectionChanged
 	public event NotifyCollectionChangedEventHandler? CollectionChanged;
 
 	public int Count => this.tags.Count;
+
+	public bool IsReadOnly => true;
 
 	public Tag Add(string name)
 	{
@@ -63,14 +65,16 @@ public class TagCollection : IEnumerable<Tag>, INotifyCollectionChanged
 		}
 	}
 
-	public void Remove(Tag tag)
+	public bool Remove(Tag tag)
 	{
-		this.tags.Remove(tag);
+		bool result = this.tags.Remove(tag);
 
 		if (!this.supressChangedEvents)
 		{
 			this.CollectionChanged?.Invoke(this, new(NotifyCollectionChangedAction.Remove, tag));
 		}
+
+		return result;
 	}
 
 	public void AddRange(IEnumerable<string> names)
@@ -145,5 +149,10 @@ public class TagCollection : IEnumerable<Tag>, INotifyCollectionChanged
 		}
 
 		return builder.ToString();
+	}
+
+	public void CopyTo(Tag[] array, int arrayIndex)
+	{
+		throw new System.NotImplementedException();
 	}
 }

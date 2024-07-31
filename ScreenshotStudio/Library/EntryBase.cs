@@ -2,6 +2,7 @@
 
 using ScreenshotStudio.Library.Sources;
 using ScreenshotStudio.Tags;
+using Serilog;
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -28,11 +29,14 @@ public interface IEntryBase : IDisposable
 /// </summary>
 public abstract class EntryBase : ITagged, IEntryBase, INotifyPropertyChanged
 {
+	protected readonly ILogger Log;
+
 	private readonly SourceBase? source;
 
 	public EntryBase(SourceBase? source)
 	{
 		this.source = source;
+		this.Log = Logging.ForContext(this.GetType());
 	}
 
 	public event PropertyChangedEventHandler? PropertyChanged;

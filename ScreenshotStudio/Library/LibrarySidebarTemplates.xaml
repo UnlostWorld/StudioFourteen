@@ -6,6 +6,7 @@
 	xmlns:gameData="clr-namespace:ScreenshotStudio.GameData"
 	xmlns:library="clr-namespace:ScreenshotStudio.Library"
 	xmlns:libraryControls="clr-namespace:ScreenshotStudio.Library.Controls"
+	xmlns:sources="clr-namespace:ScreenshotStudio.Library.Sources"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
 	<DataTemplate DataType="{x:Type library:EntryBase}" />
@@ -85,4 +86,37 @@
 				Item="{Binding .}" />
 		</Grid>
 	</DataTemplate>
+
+
+
+	<DataTemplate DataType="{x:Type sources:FileEntry}">
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition />
+			</Grid.RowDefinitions>
+
+			<StackPanel Grid.Row="0">
+				<TextBlock
+					Foreground="{DynamicResource ForegroundLightBrush}"
+					Text="{Binding Description}"
+					TextWrapping="Wrap" />
+
+				<TextBlock
+					Foreground="{DynamicResource ForegroundLightBrush}"
+					Text="{Binding Author}" />
+
+				<TextBlock Foreground="{DynamicResource ForegroundLightBrush}">
+					<Run Text="Ver: " />
+					<Run Text="{Binding Version, Mode=OneWay}" />
+				</TextBlock>
+			</StackPanel>
+
+			<Image
+				Grid.Row="1"
+				Margin="6"
+				Source="{Binding Image}" />
+		</Grid>
+	</DataTemplate>
+
 </ResourceDictionary>

@@ -4,7 +4,7 @@ using ScreenshotStudio.Library.Filters;
 using ScreenshotStudio.Tags;
 using System;
 using System.Collections.Generic;
-using static FFXIVClientStructs.FFXIV.Client.LayoutEngine.LayoutManager;
+using System.Collections.Immutable;
 
 public class Result(IEntryBase entry)
 {
@@ -61,51 +61,54 @@ public class GroupResult : Result
 	{
 		this.Clear();
 
-		if (this.Group.AllCount <= 0)
-			return false;
-
-		IEnumerable<IEntryBase>? allEntries = this.Group.AllEntries;
-		if (allEntries == null)
-			return false;
-
-		try
+		lock (this.Group)
 		{
-			foreach (IEntryBase entry in allEntries)
+			if (this.Group.AllCount <= 0)
+				return false;
+
+			IEnumerable<IEntryBase>? allEntries = this.Group.AllEntries;
+			if (allEntries == null)
+				return false;
+
+			try
 			{
-				if (entry == null)
-					continue;
-
-				if (entry is GroupEntryBase childGroup)
+				foreach (IEntryBase entry in allEntries)
 				{
-					GroupResult childGroupResults = new(childGroup);
-					childGroupResults.FilterMatch = 1;
-					if (childGroupResults.FilterEntries(filters))
+					if (entry == null)
+						continue;
+
+					if (entry is GroupEntryBase childGroup)
 					{
-						this.results.Add(childGroupResults);
+						GroupResult childGroupResults = new(childGroup);
+						childGroupResults.FilterMatch = 1;
+						if (childGroupResults.FilterEntries(filters))
+						{
+							this.results.Add(childGroupResults);
+						}
+					}
+					else
+					{
+						bool passesFilters = true;
+						foreach (FilterBase filter in filters)
+						{
+							passesFilters &= filter.Filter(entry);
+						}
+
+						if (passesFilters)
+						{
+							Result result = new(entry);
+							result.FilterMatch = 1;
+							this.results.Add(result);
+						}
 					}
 				}
-				else
-				{
-					bool passesFilters = true;
-					foreach (FilterBase filter in filters)
-					{
-						passesFilters &= filter.Filter(entry);
-					}
 
-					if (passesFilters)
-					{
-						Result result = new(entry);
-						result.FilterMatch = 1;
-						this.results.Add(result);
-					}
-				}
+				return this.results.Count > 0;
 			}
-
-			return this.results.Count > 0;
-		}
-		catch (Exception ex)
-		{
-			Logging.Shared.Error(ex, "Exception while filtering entries");
+			catch (Exception ex)
+			{
+				Logging.Shared.Error(ex, "Exception while filtering entries");
+			}
 		}
 
 		return false;

@@ -6,6 +6,7 @@
 	xmlns:gameData="clr-namespace:ScreenshotStudio.GameData"
 	xmlns:library="clr-namespace:ScreenshotStudio.Library"
 	xmlns:services="clr-namespace:ScreenshotStudio.Services"
+	xmlns:sources="clr-namespace:ScreenshotStudio.Library.Sources"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
 
@@ -125,5 +126,9 @@
 		<ContentPresenter ContentTemplate="{StaticResource SimpleIconTemplate}" />
 	</DataTemplate>
 
+
+	<DataTemplate DataType="{x:Type sources:FileEntry}">
+		<Image Source="{Binding Image}" />
+	</DataTemplate>
 
 </ResourceDictionary>
