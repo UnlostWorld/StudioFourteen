@@ -5,7 +5,6 @@ using System;
 using System.IO;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-
 using static System.Environment;
 
 public class FileSource : SourceBase
@@ -74,6 +73,8 @@ public class FileSource : SourceBase
 public class FileEntry : EntryBase
 {
 	private readonly FileInfo fileInfo;
+	private string? iconPath;
+	private bool hasGeneratedIcon;
 
 	public FileEntry(FileSource source, FileInfo file, FileTypeInfoBase typeInfo)
 		: base(source)
@@ -106,10 +107,29 @@ public class FileEntry : EntryBase
 	public string? Author => this.File?.Author;
 	public string? Description => this.File?.Description;
 	public string? Version => this.File?.Version;
-	public ImageSource? Icon => this.File?.GetImage();
 	public ImageSource? Image => this.File?.GetImage();
 
+	public string? IconPath
+	{
+		get
+		{
+			if (!this.hasGeneratedIcon)
+			{
+				this.hasGeneratedIcon = true;
+				ServiceManager.Instance.Thumbnails.GetThumbnail(this.fileInfo, this.OnThumbnailGenerated);
+			}
+
+			return this.iconPath;
+		}
+	}
+
 	protected override string GetInternalId() => this.fileInfo.FullName;
+
+	private void OnThumbnailGenerated(string path)
+	{
+		this.iconPath = path;
+		this.NotifyPropertyChanged(nameof(FileEntry.IconPath));
+	}
 }
 
 public class DirectoryEntry : GroupEntryBase

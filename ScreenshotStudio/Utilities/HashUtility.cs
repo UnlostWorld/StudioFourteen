@@ -1,4 +1,4 @@
-﻿namespace Anamnesis.Utils;
+﻿namespace ScreenshotStudio.Utils;
 
 using System;
 using System.Security.Cryptography;
@@ -6,7 +6,7 @@ using System.Text;
 
 public static class HashUtility
 {
-	// A salt is generated randomly each time we start, will amek all hashes unique to that instance.
+	// A salt is generated randomly each time we start, will make all hashes unique to that instance.
 	public static readonly string Salt = GenerateRandomString(10);
 
 	public static byte[] GetHash(string inputString, bool salt = false)

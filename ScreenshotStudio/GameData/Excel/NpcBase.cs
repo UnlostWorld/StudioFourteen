@@ -1,11 +1,11 @@
 ﻿namespace ScreenshotStudio.GameData.Excel;
 
-using Anamnesis.Utils;
 using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Lumina.Excel;
 using ScreenshotStudio.Data;
 using ScreenshotStudio.Library;
+using ScreenshotStudio.Utils;
 using System.Text;
 using WpfUtils;
 

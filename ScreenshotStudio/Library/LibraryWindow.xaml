@@ -336,7 +336,8 @@
 							<ContentPresenter
 								Height="{Binding ActualWidth, RelativeSource={RelativeSource Mode=Self}}"
 								Margin="3"
-								Content="{Binding Entry}">
+								Content="{Binding Entry}"
+								TextBlock.Foreground="{DynamicResource ForegroundBrush}">
 								<ContentPresenter.Resources>
 									<ResourceDictionary Source="LibraryIconTemplates.xaml" />
 								</ContentPresenter.Resources>

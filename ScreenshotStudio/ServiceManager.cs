@@ -1,6 +1,7 @@
 ﻿namespace ScreenshotStudio;
 
 using ScreenshotStudio.Data;
+using ScreenshotStudio.Files;
 using ScreenshotStudio.GameData;
 using ScreenshotStudio.Input;
 using ScreenshotStudio.Library;
@@ -25,4 +26,5 @@ public class ServiceManager : ServiceManagerBase
 	public InputService Input { get; init; } = new();
 	public GameCaptureService GameCapture { get; init; } = new();
 	public PoseService Pose { get; init; } = new();
+	public FileThumbnailService Thumbnails { get; init; } = new();
 }
