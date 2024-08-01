@@ -48,6 +48,9 @@ public class LibraryService : ServiceBase
 			source.Dispose();
 		}
 
+		this.rootItem.Clear();
+		this.sources.Clear();
+
 		return base.Stop();
 	}
 
