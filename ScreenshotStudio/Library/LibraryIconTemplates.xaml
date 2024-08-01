@@ -15,7 +15,25 @@
 
 
 	<DataTemplate DataType="{x:Type gameData:DataSheetLibrarySource}">
-		<controls:XivIconImage Id="065012" />
+
+		<Viewbox CacheMode="BitmapCache">
+			<Grid>
+				<wpfUtils:IconBlock
+					FontSize="72"
+					Icon="Folder"
+					IconFont="Solid" />
+
+				<controls:XivIconImage
+					Width="42"
+					Height="42"
+					Margin="0,0,0,8"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Bottom"
+					Id="076351" />
+
+			</Grid>
+		</Viewbox>
+
 	</DataTemplate>
 
 
@@ -27,41 +45,70 @@
 
 
 	<DataTemplate DataType="{x:Type excel:ResidentNpc}">
-		<Viewbox>
-			<wpfUtils:IconBlock
-				FontSize="72"
-				Icon="User"
-				IconFont="Solid" />
+		<Viewbox CacheMode="BitmapCache">
+			<Grid>
+				<wpfUtils:IconBlock
+					FontSize="72"
+					Icon="File"
+					IconFont="Solid" />
+				<wpfUtils:IconBlock
+					Margin="5,0,0,-25"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Bottom"
+					FontSize="32"
+					Foreground="{DynamicResource BackgroundBrush}"
+					Icon="User"
+					IconFont="Solid" />
+			</Grid>
 		</Viewbox>
 	</DataTemplate>
 
 
 
 	<DataTemplate DataType="{x:Type excel:EventNpc}">
-		<Viewbox>
-			<wpfUtils:IconBlock
-				FontSize="72"
-				Icon="UserTie"
-				IconFont="Solid" />
+		<Viewbox CacheMode="BitmapCache">
+			<Grid>
+				<wpfUtils:IconBlock
+					FontSize="72"
+					Icon="File"
+					IconFont="Solid" />
+				<wpfUtils:IconBlock
+					Margin="5,0,0,-25"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Bottom"
+					FontSize="32"
+					Foreground="{DynamicResource BackgroundBrush}"
+					Icon="UserTie"
+					IconFont="Solid" />
+			</Grid>
 		</Viewbox>
 	</DataTemplate>
 
 
 
 	<DataTemplate DataType="{x:Type excel:BattleNpc}">
-		<Viewbox>
-			<wpfUtils:IconBlock
-				Margin="10,0"
-				FontSize="72"
-				Icon="UserShield"
-				IconFont="Solid" />
+		<Viewbox CacheMode="BitmapCache">
+			<Grid>
+				<wpfUtils:IconBlock
+					FontSize="72"
+					Icon="File"
+					IconFont="Solid" />
+				<wpfUtils:IconBlock
+					Margin="5,0,0,-25"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Bottom"
+					FontSize="32"
+					Foreground="{DynamicResource BackgroundBrush}"
+					Icon="UserShield"
+					IconFont="Solid" />
+			</Grid>
 		</Viewbox>
 	</DataTemplate>
 
 
 
 	<DataTemplate DataType="{x:Type services:CharacterBackupAppearance}">
-		<Viewbox>
+		<Viewbox CacheMode="BitmapCache">
 			<wpfUtils:IconBlock
 				FontSize="72"
 				Icon="User"
@@ -128,21 +175,78 @@
 
 
 	<DataTemplate DataType="{x:Type sources:FileEntry}">
-		<Grid
-			HorizontalAlignment="Center"
-			VerticalAlignment="Center">
 
-			<Border
-				Name="Mask"
-				Background="Black"
-				CornerRadius="4" />
+		<Grid>
 
-			<Image Source="{Binding Icon}">
-				<Image.OpacityMask>
-					<VisualBrush Visual="{Binding ElementName=Mask}" />
-				</Image.OpacityMask>
-			</Image>
+			<Viewbox
+				x:Name="FallbackIcon"
+				CacheMode="BitmapCache"
+				Visibility="Collapsed">
+				<Grid>
+					<wpfUtils:IconBlock
+						FontSize="72"
+						Icon="File"
+						IconFont="Solid" />
+					<wpfUtils:IconBlock
+						Margin="5,0,0,-25"
+						HorizontalAlignment="Left"
+						VerticalAlignment="Bottom"
+						FontSize="40"
+						Foreground="{DynamicResource BackgroundBrush}"
+						Icon="Running"
+						IconFont="Solid" />
+				</Grid>
+
+			</Viewbox>
+
+			<Grid
+				x:Name="Thumbnail"
+				HorizontalAlignment="Center"
+				VerticalAlignment="Center">
+
+				<Border
+					Name="Mask"
+					Background="Black"
+					CornerRadius="4" />
+
+				<Image Source="{Binding IconPath}">
+					<Image.OpacityMask>
+						<VisualBrush Visual="{Binding ElementName=Mask}" />
+					</Image.OpacityMask>
+				</Image>
+			</Grid>
 		</Grid>
+
+		<DataTemplate.Triggers>
+			<DataTrigger
+				Binding="{Binding IconPath}"
+				Value="{x:Null}">
+				<Setter TargetName="Thumbnail" Property="Visibility" Value="Collapsed" />
+				<Setter TargetName="FallbackIcon" Property="Visibility" Value="Visible" />
+			</DataTrigger>
+		</DataTemplate.Triggers>
+	</DataTemplate>
+
+
+
+	<DataTemplate DataType="{x:Type sources:DirectoryEntry}">
+		<Viewbox CacheMode="BitmapCache">
+
+			<wpfUtils:IconBlock
+				FontSize="72"
+				Icon="Folder"
+				IconFont="Solid" />
+		</Viewbox>
+	</DataTemplate>
+
+	<DataTemplate DataType="{x:Type sources:FileSource}">
+		<Viewbox CacheMode="BitmapCache">
+
+			<wpfUtils:IconBlock
+				FontSize="72"
+				Icon="Folder"
+				IconFont="Solid" />
+		</Viewbox>
 	</DataTemplate>
 
 </ResourceDictionary>
