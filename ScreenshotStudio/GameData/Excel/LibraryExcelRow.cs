@@ -1,11 +1,12 @@
 ﻿namespace ScreenshotStudio.GameData.Excel;
 
 using ScreenshotStudio.Library;
+using ScreenshotStudio.Library.Executors;
 using ScreenshotStudio.Library.Sources;
 using ScreenshotStudio.Tags;
 using WpfUtils;
 
-public abstract class LibraryExcelRow : StudioExcelRow, IEntryBase
+public abstract class LibraryExcelRow : StudioExcelRow, ILibraryEntry
 {
 	public event EntryEvent? ExecuteRequested;
 
@@ -31,5 +32,10 @@ public abstract class LibraryExcelRow : StudioExcelRow, IEntryBase
 		result |= SearchUtility.Matches(this.RowId, query);
 		result |= SearchUtility.Matches(this.Name, query);
 		return result;
+	}
+
+	public virtual EntryExecutor? GetExecutor()
+	{
+		return null;
 	}
 }

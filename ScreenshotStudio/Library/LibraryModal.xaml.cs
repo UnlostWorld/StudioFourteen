@@ -23,7 +23,7 @@ public partial class LibraryModal : PanelWindow
 	private readonly FuncQueue searchQueue;
 
 	private Type? targetType;
-	private IEntryBase? currentEntry;
+	private ILibraryEntry? currentEntry;
 	private Result? selectedResult;
 	private Action<object, bool>? selectionChanged;
 	private bool isLoading = false;
@@ -70,7 +70,7 @@ public partial class LibraryModal : PanelWindow
 	}
 
 	public static void Show<T>(object placementTarget, string title, TagCollection defaultTags, T? current, Action<T, bool> selectionChanged)
-			where T : IEntryBase
+			where T : ILibraryEntry
 	{
 		if (placementTarget is UIElement el)
 		{
@@ -79,7 +79,7 @@ public partial class LibraryModal : PanelWindow
 	}
 
 	public static void Show<T>(UIElement placementTarget, string title, TagCollection defaultTags, T? current, Action<T, bool> selectionChanged)
-		where T : IEntryBase
+		where T : ILibraryEntry
 	{
 		if (instance == null)
 		{
@@ -96,7 +96,7 @@ public partial class LibraryModal : PanelWindow
 	}
 
 	public void OnShow<T>(UIElement placementTarget, string title, TagCollection defaultTags, T? current, Action<T, bool> selectionChanged)
-		where T : IEntryBase
+		where T : ILibraryEntry
 	{
 		this.isLoading = true;
 		this.targetType = typeof(T);

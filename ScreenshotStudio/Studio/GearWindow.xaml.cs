@@ -144,7 +144,7 @@ public abstract class GearViewModelBase : ViewModel
 }
 
 public abstract class GearViewModelBase<T> : GearViewModelBase
-	where T : IEntryBase
+	where T : ILibraryEntry
 {
 	private readonly GearWindow window;
 

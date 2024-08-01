@@ -12,27 +12,13 @@
 
 	<converters:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter" />
 
-	<DataTemplate DataType="{x:Type library:EntryBase}" />
+	<DataTemplate DataType="{x:Type library:LibraryEntryBase}" />
 	<DataTemplate DataType="{x:Type excel:LibraryExcelRow}" />
 
 
 
 	<DataTemplate x:Key="CharacterAppearance">
-		<Grid>
-			<Grid.RowDefinitions>
-				<RowDefinition Height="Auto" />
-				<RowDefinition Height="Auto" />
-				<RowDefinition />
-				<RowDefinition Height="Auto" />
-			</Grid.RowDefinitions>
-
-			<!--  a big old picture would look soooo nice right here...  -->
-
-			<!--  actions  -->
-			<libraryControls:CharacterAppearanceActions
-				Grid.Row="3"
-				Appearance="{Binding .}" />
-		</Grid>
+		<Grid />
 	</DataTemplate>
 
 
@@ -82,11 +68,6 @@
 					Foreground="{DynamicResource ForegroundLightBrush}"
 					Text="{Binding UICategory.Name}" />
 			</StackPanel>
-
-			<!--  actions  -->
-			<libraryControls:ItemActions
-				VerticalAlignment="Bottom"
-				Item="{Binding .}" />
 		</Grid>
 	</DataTemplate>
 

@@ -24,7 +24,7 @@ public class TypeFilter : FilterBase
 		this.types.Clear();
 	}
 
-	public override bool Filter(IEntryBase entry)
+	public override bool Filter(ILibraryEntry entry)
 	{
 		foreach (Type type in this.types)
 		{

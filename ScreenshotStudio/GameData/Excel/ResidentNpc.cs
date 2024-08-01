@@ -4,6 +4,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Lumina.Data;
 using Lumina.Excel;
 using ScreenshotStudio.Library;
+using ScreenshotStudio.Library.Executors;
 using ScreenshotStudio.Structs;
 using WpfUtils;
 
@@ -63,5 +64,10 @@ public class ResidentNpc : LibraryExcelRow, ICharacterAppearance
 	public unsafe void Apply(Character* character)
 	{
 		this.EventNpc?.Apply(character);
+	}
+
+	public override EntryExecutor? GetExecutor()
+	{
+		return new AppearanceExecutor(this, this);
 	}
 }

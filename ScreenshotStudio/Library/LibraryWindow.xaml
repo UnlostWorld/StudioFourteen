@@ -81,6 +81,7 @@
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 					<RowDefinition />
+					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
 
 				<ContentPresenter
@@ -124,6 +125,46 @@
 						<ResourceDictionary Source="./LibrarySidebarTemplates.xaml" />
 					</ContentPresenter.Resources>
 				</ContentPresenter>
+
+
+				<Grid
+					Grid.Row="3"
+					Grid.ColumnSpan="2"
+					Visibility="{Binding SelectedExecutor, Converter={StaticResource NotNullToVisibilityConverter}}">
+					<Border Style="{DynamicResource WpfUtilsControlBorder}">
+						<Grid>
+
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition />
+							</Grid.ColumnDefinitions>
+
+							<Button
+								Grid.Column="0"
+								Click="OnRevertClicked"
+								IsEnabled="{Binding SelectedExecutor.CanRevert}"
+								ToolTip="{DynamicResource LOC_Revert}">
+								<wpfUtils:IconBlock Icon="Undo" />
+							</Button>
+
+							<ToggleButton
+								Grid.Column="1"
+								MinWidth="28"
+								IsChecked="{Binding IsLiveExecute}"
+								ToolTip="{DynamicResource LOC_Library_LivePreview}">
+								<wpfUtils:IconBlock Icon="Bolt" />
+							</ToggleButton>
+
+							<Button
+								Grid.Column="2"
+								Click="OnExecuteClicked"
+								Content="{Binding SelectedExecutor.Label}"
+								IsEnabled="{Binding SelectedExecutor.CanApply}" />
+
+						</Grid>
+					</Border>
+				</Grid>
 
 			</Grid>
 

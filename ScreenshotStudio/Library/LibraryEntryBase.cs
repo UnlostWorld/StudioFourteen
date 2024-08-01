@@ -1,5 +1,6 @@
 ﻿namespace ScreenshotStudio.Library;
 
+using ScreenshotStudio.Library.Executors;
 using ScreenshotStudio.Library.Sources;
 using ScreenshotStudio.Tags;
 using Serilog;
@@ -10,10 +11,8 @@ using WpfUtils;
 
 public delegate void EntryEvent();
 
-public interface IEntryBase : IDisposable
+public interface ILibraryEntry : IDisposable
 {
-	event EntryEvent ExecuteRequested;
-
 	string? Name { get; }
 	TagCollection Tags { get; }
 	SourceBase? Source { get; }
@@ -21,19 +20,20 @@ public interface IEntryBase : IDisposable
 	bool IsValid { get; }
 
 	bool Search(string[] query);
-	void Execute();
+
+	EntryExecutor? GetExecutor();
 }
 
 /// <summary>
 /// An entry is a library object.
 /// </summary>
-public abstract class EntryBase : ITagged, IEntryBase, INotifyPropertyChanged
+public abstract class LibraryEntryBase : ITagged, ILibraryEntry, INotifyPropertyChanged
 {
 	protected readonly ILogger Log;
 
 	private readonly SourceBase? source;
 
-	public EntryBase(SourceBase? source)
+	public LibraryEntryBase(SourceBase? source)
 	{
 		this.source = source;
 		this.Log = Logging.ForContext(this.GetType());
@@ -51,6 +51,8 @@ public abstract class EntryBase : ITagged, IEntryBase, INotifyPropertyChanged
 
 	public string Identifier => $"{this.Source?.GetInternalId()}||{this.GetInternalId()}";
 
+	public abstract EntryExecutor? GetExecutor();
+
 	public virtual bool Search(string[] query)
 	{
 		return SearchUtility.Matches(this.Name, query);
@@ -65,10 +67,19 @@ public abstract class EntryBase : ITagged, IEntryBase, INotifyPropertyChanged
 		this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 	}
 
-	public virtual void Execute()
+	protected abstract string GetInternalId();
+}
+
+public abstract class LibraryEntryBase<T> : LibraryEntryBase
+	where T : EntryExecutor
+{
+	protected LibraryEntryBase(SourceBase? source)
+		: base(source)
 	{
-		this.ExecuteRequested?.Invoke();
 	}
 
-	protected abstract string GetInternalId();
+	public sealed override EntryExecutor? GetExecutor()
+	{
+		return Activator.CreateInstance(typeof(T), [this]) as EntryExecutor;
+	}
 }

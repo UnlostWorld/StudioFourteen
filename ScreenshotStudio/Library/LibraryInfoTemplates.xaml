@@ -10,7 +10,7 @@
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
 
-	<DataTemplate DataType="{x:Type library:EntryBase}">
+	<DataTemplate DataType="{x:Type library:LibraryEntryBase}">
 		<TextBlock
 			Margin="3,0,0,0"
 			Text="{Binding Name}"

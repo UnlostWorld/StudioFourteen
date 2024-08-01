@@ -100,8 +100,9 @@ public partial class QuickSearch : DockPanel
 
 		if (e.Key == Key.Return)
 		{
-			this.SelectedResult?.Entry?.Execute();
 			e.Handled = true;
+			throw new NotImplementedException();
+			////this.SelectedResult?.Entry?.Execute();
 		}
 
 		if (e.Key == Key.Escape)
@@ -170,13 +171,15 @@ public partial class QuickSearch : DockPanel
 	{
 		if (e.Key == Key.Return)
 		{
-			this.SelectedResult?.Entry?.Execute();
+			throw new NotImplementedException();
+			////this.SelectedResult?.Entry?.Execute();
 		}
 	}
 
 	private void ResultsListDoubleClicked(object sender, MouseButtonEventArgs e)
 	{
-		this.SelectedResult?.Entry?.Execute();
+		throw new NotImplementedException();
+		////this.SelectedResult?.Entry?.Execute();
 	}
 
 	private void OnSearchDone(object sender, RoutedEventArgs e)

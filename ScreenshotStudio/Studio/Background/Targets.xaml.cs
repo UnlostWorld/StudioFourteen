@@ -63,7 +63,7 @@ public partial class Targets : View
 		TagCollection defaultTags = new();
 		defaultTags.Add("Named");
 
-		LibraryModal.Show<ICharacterAppearance>(
+		LibraryModal.Show<ICharacterEntry>(
 			sender,
 			"Create Character",
 			defaultTags,

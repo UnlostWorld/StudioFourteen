@@ -1,6 +1,8 @@
 ﻿namespace ScreenshotStudio.Library;
 
+using Dalamud.Plugin.Services;
 using FontAwesome.Sharp;
+using ScreenshotStudio.Library.Executors;
 using ScreenshotStudio.Library.Filters;
 using ScreenshotStudio.Library.Results;
 using ScreenshotStudio.Services;
@@ -25,6 +27,7 @@ public partial class LibraryWindow : PanelWindow
 	private readonly FuncQueue searchQueue;
 	private LibraryTab currentTab;
 	private bool flatten = false;
+	private Result? selectedResult = null;
 
 	public LibraryWindow()
 	{
@@ -62,7 +65,6 @@ public partial class LibraryWindow : PanelWindow
 	}
 
 	[AutoNotify] public FastObservableCollection<Result> Results { get; init; } = new();
-	[AutoNotify] public Result? SelectedResult { get; set; } = null;
 	[AutoNotify] public bool ViewList { get; set; } = false;
 	[AutoNotify] public ObservableCollection<GroupEntryBase> Path { get; init; } = new();
 	[AutoNotify] public GroupEntryBase? CurrentGroup => this.Path.Count > 0 ? this.Path[this.Path.Count - 1] : null;
@@ -70,7 +72,30 @@ public partial class LibraryWindow : PanelWindow
 	[AutoNotify] public TagFilter TagFilter { get; init; } = new();
 	[AutoNotify] public SearchQueryFilter SearchQueryFilter { get; init; } = new();
 	[AutoNotify] public bool CanChangeFlatten => this.SearchQueryFilter.IsEmpty;
+	[AutoNotify] public EntryExecutor? SelectedExecutor { get; private set; }
+	[AutoNotify] public bool IsLiveExecute { get; set; }
 
+	[AutoNotify] public Result? SelectedResult
+	{
+		get => this.selectedResult;
+		set
+		{
+			this.SelectedExecutor = null;
+			this.selectedResult = value;
+
+			if (value != null && value.Entry != null)
+			{
+				this.SelectedExecutor = value.Entry.GetExecutor();
+
+				if (this.SelectedExecutor != null && this.IsLiveExecute && this.SelectedExecutor.CanExecute)
+				{
+					this.SelectedExecutor.Execute();
+				}
+			}
+		}
+	}
+
+	[AutoNotify]
 	public bool Flatten
 	{
 		get => this.flatten;
@@ -101,6 +126,16 @@ public partial class LibraryWindow : PanelWindow
 		this.Path.Add(this.Services.Library.Root);
 
 		this.searchQueue.Invoke();
+	}
+
+	protected override void OnFrameworkUpdate(IFramework framework)
+	{
+		base.OnFrameworkUpdate(framework);
+
+		if (this.SelectedExecutor != null)
+		{
+			this.SelectedExecutor.OnFrameworkUpdate();
+		}
 	}
 
 	private async Task SearchAsync()
@@ -151,7 +186,7 @@ public partial class LibraryWindow : PanelWindow
 		}
 		else if (this.SelectedResult is Result result)
 		{
-			result.Entry?.Execute();
+			this.SelectedExecutor?.Execute();
 		}
 	}
 
@@ -184,6 +219,16 @@ public partial class LibraryWindow : PanelWindow
 	private void OnInfoTagSelected(Tag tag)
 	{
 		this.TagFilter.Tags.Add(tag);
+	}
+
+	private void OnRevertClicked(object sender, RoutedEventArgs e)
+	{
+		this.SelectedExecutor?.Revert();
+	}
+
+	private void OnExecuteClicked(object sender, RoutedEventArgs e)
+	{
+		this.SelectedExecutor?.Execute();
 	}
 }
 

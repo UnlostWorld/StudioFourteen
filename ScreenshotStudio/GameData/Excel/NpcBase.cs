@@ -5,6 +5,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Lumina.Excel;
 using ScreenshotStudio.Data;
 using ScreenshotStudio.Library;
+using ScreenshotStudio.Library.Executors;
 using ScreenshotStudio.Utils;
 using System.Text;
 using WpfUtils;
@@ -100,6 +101,11 @@ public abstract class NpcBase : LibraryExcelRow, ICharacterAppearance
 			result |= SearchUtility.Matches(this.ModelChara.RowId, query);
 
 		return result;
+	}
+
+	public override EntryExecutor? GetExecutor()
+	{
+		return new AppearanceExecutor(this, this);
 	}
 
 	protected void GenerateAppearanceHash()

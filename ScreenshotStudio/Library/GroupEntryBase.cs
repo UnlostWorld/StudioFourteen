@@ -1,27 +1,27 @@
 ﻿namespace ScreenshotStudio.Library;
 
+using ScreenshotStudio.Library.Executors;
 using ScreenshotStudio.Library.Sources;
 using ScreenshotStudio.Tags;
 using System.Collections.Generic;
-using System.ComponentModel;
 
 /// <summary>
 /// An group entry is an entry in the library that contains other entries, such as a directory or folder.
 /// </summary>
-public abstract class GroupEntryBase : EntryBase
+public abstract class GroupEntryBase : LibraryEntryBase
 {
-	private readonly List<IEntryBase> allEntries = new();
+	private readonly List<ILibraryEntry> allEntries = new();
 
 	protected GroupEntryBase(SourceBase? source)
 		: base(source)
 	{
 	}
 
-	public IEnumerable<IEntryBase>? AllEntries => this.allEntries;
+	public IEnumerable<ILibraryEntry>? AllEntries => this.allEntries;
 
 	public int AllCount => this.allEntries.Count;
 
-	public void Add(IEntryBase entry)
+	public void Add(ILibraryEntry entry)
 	{
 		lock (this)
 		{
@@ -43,7 +43,7 @@ public abstract class GroupEntryBase : EntryBase
 		if (this.allEntries == null)
 			return;
 
-		foreach (IEntryBase entry in this.allEntries)
+		foreach (ILibraryEntry entry in this.allEntries)
 		{
 			if (entry.Tags != null)
 			{
@@ -61,12 +61,17 @@ public abstract class GroupEntryBase : EntryBase
 	{
 		base.Dispose();
 
-		foreach (IEntryBase entry in this.allEntries)
+		foreach (ILibraryEntry entry in this.allEntries)
 		{
 			if (entry == null)
 				continue;
 
 			entry.Dispose();
 		}
+	}
+
+	public sealed override EntryExecutor? GetExecutor()
+	{
+		return null;
 	}
 }

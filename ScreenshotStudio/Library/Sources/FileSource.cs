@@ -1,10 +1,11 @@
 ﻿namespace ScreenshotStudio.Library.Sources;
 
 using ScreenshotStudio.Files;
+using ScreenshotStudio.Library.Executors;
 using System;
 using System.IO;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
+
 using static System.Environment;
 
 public class FileSource : SourceBase
@@ -70,7 +71,7 @@ public class FileSource : SourceBase
 	}
 }
 
-public class FileEntry : EntryBase
+public class FileEntry : LibraryEntryBase<FileEntryExecutor>
 {
 	private readonly FileInfo fileInfo;
 	private string? iconPath;

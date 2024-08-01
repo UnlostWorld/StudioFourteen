@@ -10,7 +10,7 @@ internal class LibraryFavoritesFilter : FilterBase
 	{
 	}
 
-	public override bool Filter(IEntryBase entry)
+	public override bool Filter(ILibraryEntry entry)
 	{
 		// TODO
 		////if(Favorites.Contains(entry.Identifier))

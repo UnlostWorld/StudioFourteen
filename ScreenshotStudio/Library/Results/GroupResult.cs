@@ -6,9 +6,9 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 
-public class Result(IEntryBase entry)
+public class Result(ILibraryEntry entry)
 {
-	public IEntryBase Entry { get; set; } = entry;
+	public ILibraryEntry Entry { get; set; } = entry;
 	public double FilterMatch { get; set; }
 }
 
@@ -31,7 +31,7 @@ public class GroupResult : Result
 		this.results.Clear();
 	}
 
-	public Result? Find(IEntryBase? entry)
+	public Result? Find(ILibraryEntry? entry)
 	{
 		if (entry == null)
 			return null;
@@ -66,13 +66,13 @@ public class GroupResult : Result
 			if (this.Group.AllCount <= 0)
 				return false;
 
-			IEnumerable<IEntryBase>? allEntries = this.Group.AllEntries;
+			IEnumerable<ILibraryEntry>? allEntries = this.Group.AllEntries;
 			if (allEntries == null)
 				return false;
 
 			try
 			{
-				foreach (IEntryBase entry in allEntries)
+				foreach (ILibraryEntry entry in allEntries)
 				{
 					if (entry == null)
 						continue;

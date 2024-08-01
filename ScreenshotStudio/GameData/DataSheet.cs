@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 public class DataSheetLibrarySource : SourceBase
 {
 	private readonly DataSheet sheet;
-	private readonly List<IEntryBase> allEntries = new();
+	private readonly List<ILibraryEntry> allEntries = new();
 
 	public DataSheetLibrarySource(DataSheet sheet)
 	{
@@ -33,7 +33,7 @@ public class DataSheetLibrarySource : SourceBase
 				excelRow.Source = this;
 			}
 
-			if (row is IEntryBase entry)
+			if (row is ILibraryEntry entry)
 			{
 				if (!entry.IsValid)
 					continue;
