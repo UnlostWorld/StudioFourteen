@@ -1,11 +1,13 @@
 ﻿namespace ScreenshotStudio.Files;
 
+using System;
 using System.IO;
 
 public abstract class FileTypeInfoBase
 {
 	public abstract string Extension { get; }
 	public abstract string TypeName { get; }
+	public abstract Type LoadsType { get; }
 
 	public abstract FileBase? Load(FileInfo fileInfo);
 }
@@ -13,6 +15,8 @@ public abstract class FileTypeInfoBase
 public abstract class JsonFileTypeInfoBase<T> : FileTypeInfoBase
 	where T : FileBase, new()
 {
+	public override Type LoadsType => typeof(T);
+
 	public override FileBase? Load(FileInfo fileInfo)
 	{
 		if (!fileInfo.Exists)

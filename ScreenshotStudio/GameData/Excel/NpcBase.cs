@@ -3,8 +3,8 @@
 using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Lumina.Excel;
+using ScreenshotStudio;
 using ScreenshotStudio.Data;
-using ScreenshotStudio.Library;
 using ScreenshotStudio.Library.Executors;
 using ScreenshotStudio.Utils;
 using System.Text;

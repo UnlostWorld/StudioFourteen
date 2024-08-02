@@ -28,7 +28,7 @@ public class TypeFilter : FilterBase
 	{
 		foreach (Type type in this.types)
 		{
-			if (entry.GetType().IsAssignableTo(type))
+			if (entry.IsType(type))
 			{
 				return true;
 			}

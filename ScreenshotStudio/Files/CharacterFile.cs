@@ -4,6 +4,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using ScreenshotStudio.GameData;
 using ScreenshotStudio.GameData.Excel;
 using ScreenshotStudio.Tags;
+using ScreenshotStudio.Utilities;
 using System;
 using System.Numerics;
 
@@ -16,7 +17,7 @@ public class CharacterFileTypeInfo : JsonFileTypeInfoBase<CharacterFile>
 }
 
 [Serializable]
-public class CharacterFile : FileBase
+public class CharacterFile : FileBase, ICharacterAppearance
 {
 	public enum Races : byte
 	{
@@ -113,6 +114,7 @@ public class CharacterFile : FileBase
 	public float? HeightMultiplier { get; set; }
 
 	public byte Glasses { get; set; }
+	public string? Name { get; }
 
 	public override void GetAutoTags(TagCollection tags)
 	{
@@ -124,6 +126,12 @@ public class CharacterFile : FileBase
 		tags.Add(race?.ToTags());
 		tags.Add(this.Gender?.ToTags());
 		tags.Add(tribe?.ToTags());
+	}
+
+	public unsafe void Apply(Character* character)
+	{
+		Threads.VerifyFrameworkThread();
+		throw new NotImplementedException();
 	}
 
 	public struct ItemSave

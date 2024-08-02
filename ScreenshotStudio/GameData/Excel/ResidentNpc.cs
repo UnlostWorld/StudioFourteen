@@ -3,7 +3,7 @@
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Lumina.Data;
 using Lumina.Excel;
-using ScreenshotStudio.Library;
+using ScreenshotStudio;
 using ScreenshotStudio.Library.Executors;
 using ScreenshotStudio.Structs;
 using WpfUtils;

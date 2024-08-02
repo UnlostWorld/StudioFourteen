@@ -1,5 +1,6 @@
 ﻿namespace ScreenshotStudio.Library.Executors;
 
+using ScreenshotStudio;
 using ScreenshotStudio.Library;
 using ScreenshotStudio.Utilities;
 

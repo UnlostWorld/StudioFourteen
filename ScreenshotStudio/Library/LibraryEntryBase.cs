@@ -19,6 +19,7 @@ public interface ILibraryEntry : IDisposable
 	string Identifier { get; }
 	bool IsValid { get; }
 
+	bool IsType(Type type);
 	bool Search(string[] query);
 
 	EntryExecutor? GetExecutor();
@@ -51,10 +52,8 @@ public abstract class LibraryEntryBase : ITagged, ILibraryEntry, INotifyProperty
 
 	public string Identifier => $"{this.Source?.GetInternalId()}||{this.GetInternalId()}";
 
-	public virtual bool Search(string[] query)
-	{
-		return SearchUtility.Matches(this.Name, query);
-	}
+	public virtual bool IsType(Type type) => this.GetType().IsAssignableTo(type);
+	public virtual bool Search(string[] query) => SearchUtility.Matches(this.Name, query);
 
 	public virtual void Dispose()
 	{

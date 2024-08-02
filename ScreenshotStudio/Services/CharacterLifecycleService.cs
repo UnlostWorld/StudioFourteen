@@ -9,7 +9,7 @@ using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Event;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
-using ScreenshotStudio.Library;
+using ScreenshotStudio;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Utilities;
 using System;
@@ -25,7 +25,7 @@ public class CharacterLifecycleService : ServiceBase
 	private Hook<CharacterEventDelegate>? characterInitializeHook;
 	private Hook<CharacterEventDelegate>? characterFinalizeHook;
 
-	public delegate void CharacterDelegate(uint objectTableIndex);
+	public delegate void CharacterDelegate(int objectTableIndex);
 	private unsafe delegate nint CharacterEventDelegate(Character* character);
 
 	public event CharacterDelegate? CharacterCreated;

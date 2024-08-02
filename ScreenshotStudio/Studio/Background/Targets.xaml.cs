@@ -3,6 +3,7 @@
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
+using ScreenshotStudio;
 using ScreenshotStudio.Library;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
@@ -63,7 +64,9 @@ public partial class Targets : View
 		TagCollection defaultTags = new();
 		defaultTags.Add("Named");
 
-		LibraryModal.Show<ICharacterEntry>(
+		// uuuh
+		throw new NotImplementedException();
+		/*LibraryModal.Show<ICharacterEntry>(
 			sender,
 			"Create Character",
 			defaultTags,
@@ -74,7 +77,7 @@ public partial class Targets : View
 					return;
 
 				this.CreateCharacter(appearance);
-			});
+			});*/
 	}
 
 	private unsafe void CreateCharacter(ICharacterAppearance appearance)

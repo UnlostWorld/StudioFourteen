@@ -18,6 +18,8 @@ public static class Serializer
 		Settings.Converters.Add(new Vector3NullableConverter());
 		Settings.Converters.Add(new Vector4Converter());
 		Settings.Converters.Add(new Vector4NullableConverter());
+		Settings.Converters.Add(new QuaternionConverter());
+		Settings.Converters.Add(new QuaternionNullableConverter());
 	}
 
 	public static string Serialize(object obj)

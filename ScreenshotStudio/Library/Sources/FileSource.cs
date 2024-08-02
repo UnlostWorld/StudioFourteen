@@ -124,6 +124,14 @@ public class FileEntry : LibraryEntryBase<FileEntryExecutor>
 		}
 	}
 
+	public override bool IsType(Type type)
+	{
+		if (base.IsType(type))
+			return true;
+
+		return this.TypeInfo.LoadsType.IsAssignableTo(type);
+	}
+
 	protected override string GetInternalId() => this.fileInfo.FullName;
 
 	private void OnThumbnailGenerated(string path)

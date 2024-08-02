@@ -54,8 +54,8 @@ public class BoneSelection : SelectionBase
 
 	public override bool LockTransform
 	{
-		get => this.Bone.LockTransform;
-		set => this.Bone.LockTransform = value;
+		get => this.Bone.Mode == BoneReference.Modes.Locked_Relative;
+		set => this.Bone.Mode = value ? BoneReference.Modes.Locked_Relative : BoneReference.Modes.Relative;
 	}
 
 	public override Vector3 LocalTranslation

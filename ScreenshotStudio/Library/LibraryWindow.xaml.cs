@@ -2,13 +2,14 @@
 
 using Dalamud.Plugin.Services;
 using FontAwesome.Sharp;
+using ScreenshotStudio;
 using ScreenshotStudio.Library.Executors;
 using ScreenshotStudio.Library.Filters;
 using ScreenshotStudio.Library.Results;
+using ScreenshotStudio.Posing;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Tags;
 using ScreenshotStudio.Windows;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -17,10 +18,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using WpfUtils;
-using WpfUtils.Commands;
 using WpfUtils.Extensions;
 using WpfUtils.Utils;
-using static FFXIVClientStructs.FFXIV.Client.LayoutEngine.LayoutManager;
 
 public partial class LibraryWindow : PanelWindow
 {
@@ -43,7 +42,7 @@ public partial class LibraryWindow : PanelWindow
 	public FastObservableCollection<LibraryTab> Tabs { get; init; } = new()
 	{
 		new("LOC_Library_Favorites", IconChar.Heart, new LibraryFavoritesFilter()),
-		new("LOC_Library_Poses", IconChar.Running, new TagFilter()),
+		new("LOC_Library_Poses", IconChar.Running, new TypeFilter(typeof(IPose))),
 		new("LOC_Library_Characters", IconChar.User, new TypeFilter(typeof(ICharacterAppearance))),
 		new("LOC_Library_Scenes", IconChar.Users,  new TagFilter()),
 	};

@@ -200,7 +200,7 @@ public class SkeletonView : Canvas
 				// populate bones
 				foreach ((string name, Point pos) in definition.Bones)
 				{
-					BoneSelection? selection = ServiceManager.Instance.Pose.FindBone(ref character, name);
+					BoneSelection? selection = ServiceManager.Instance.Pose.FindBone(character, name);
 					if (selection != null)
 						selections.Add(selection);
 
@@ -208,7 +208,7 @@ public class SkeletonView : Canvas
 					{
 						string rName = name.Substring(0, name.Length - 2) + "_r";
 
-						selection = ServiceManager.Instance.Pose.FindBone(ref character, rName);
+						selection = ServiceManager.Instance.Pose.FindBone(character, rName);
 						if (selection != null)
 						{
 							selections.Add(selection);

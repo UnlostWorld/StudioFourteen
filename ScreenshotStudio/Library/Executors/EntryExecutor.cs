@@ -43,6 +43,8 @@ public abstract class EntryCharacterExecutor(ILibraryEntry entry)
 	[AlwaysNotify] public bool HasValidTarget => this.Services.Target.HasValidTarget;
 	[AlwaysNotify] public int TargetObjectIndex => this.Services.Target.TargetObjectIndex;
 
+	public override bool CanExecute => this.HasValidTarget;
+
 	public override string? Label => $"Apply to {this.CharacterName}";
 
 	public override void OnSelect()

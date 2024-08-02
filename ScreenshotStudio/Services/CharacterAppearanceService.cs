@@ -6,6 +6,7 @@ namespace ScreenshotStudio.Services;
 using Dalamud.Game;
 using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using ScreenshotStudio;
 using ScreenshotStudio.Library;
 using ScreenshotStudio.Library.Executors;
 using ScreenshotStudio.Library.Sources;

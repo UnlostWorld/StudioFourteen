@@ -4,12 +4,11 @@ using ScreenshotStudio.Library;
 using ScreenshotStudio.Library.Executors;
 using ScreenshotStudio.Library.Sources;
 using ScreenshotStudio.Tags;
+using System;
 using WpfUtils;
 
 public abstract class LibraryExcelRow : StudioExcelRow, ILibraryEntry
 {
-	public event EntryEvent? ExecuteRequested;
-
 	public TagCollection Tags { get; init; } = new();
 	public string? Name { get; set; }
 	public bool IsVisible { get; set; }
@@ -17,13 +16,10 @@ public abstract class LibraryExcelRow : StudioExcelRow, ILibraryEntry
 	public string? SourceInfo { get; set; }
 	public string Identifier => $"{this.GetType().Name} #{this.RowId}";
 
+	public bool IsType(Type type) => this.GetType().IsAssignableTo(type);
+
 	public void Dispose()
 	{
-	}
-
-	public void Execute()
-	{
-		this.ExecuteRequested?.Invoke();
 	}
 
 	public virtual bool Search(string[]? query)

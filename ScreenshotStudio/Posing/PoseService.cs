@@ -26,6 +26,7 @@ public enum PoseEditModes
 
 public class PoseService : ServiceBase
 {
+	private readonly List<BoneId> boneIds = new();
 	private readonly Dictionary<BoneId, BoneReference> boneReferences = new();
 
 	private SelectionBase? selection;
@@ -96,16 +97,21 @@ public class PoseService : ServiceBase
 		{
 			BoneReference? reference = null;
 			if (this.boneReferences.TryGetValue(id, out reference))
+			{
 				return reference;
+			}
 
 			reference = new(name, id);
+
+			this.boneIds.Add(id);
+			this.boneIds.Sort();
 			this.boneReferences.Add(id, reference);
 
 			return reference;
 		}
 	}
 
-	public unsafe BoneSelection? FindBone(ref Character* character, string name)
+	public unsafe BoneSelection? FindBone(Character* character, string name)
 	{
 		Threads.VerifyFrameworkThread();
 
@@ -155,27 +161,41 @@ public class PoseService : ServiceBase
 
 	public void FlushBoneReferences()
 	{
-		foreach ((BoneId id, BoneReference reference) in this.boneReferences)
-			reference.Dispose();
+		lock (this.boneReferences)
+		{
+			foreach ((BoneId id, BoneReference reference) in this.boneReferences)
+				reference.Dispose();
 
-		this.boneReferences.Clear();
+			this.boneReferences.Clear();
+			this.boneIds.Clear();
+		}
 	}
 
-	public void FlushBoneReferences(uint objectTableIndex)
+	public unsafe void FlushBoneReferences(Character* character)
+	{
+		this.FlushBoneReferences(character->ObjectIndex);
+	}
+
+	public void FlushBoneReferences(int objectTableIndex)
 	{
 		HashSet<BoneId> toRemove = new();
-		foreach((BoneId id, BoneReference reference) in this.boneReferences)
-		{
-			if (id.ObjectTableIndex == objectTableIndex)
-			{
-				toRemove.Add(id);
-				reference.Dispose();
-			}
-		}
 
-		foreach (BoneId id in toRemove)
+		lock (this.boneReferences)
 		{
-			this.boneReferences.Remove(id);
+			foreach ((BoneId id, BoneReference reference) in this.boneReferences)
+			{
+				if (id.ObjectTableIndex == objectTableIndex)
+				{
+					toRemove.Add(id);
+					reference.Dispose();
+				}
+			}
+
+			foreach (BoneId id in toRemove)
+			{
+				this.boneReferences.Remove(id);
+				this.boneIds.Remove(id);
+			}
 		}
 
 		// if we are flushing a bone we have selected, clear the selection
@@ -228,8 +248,9 @@ public class PoseService : ServiceBase
 		{
 			HashSet<nint> modifiedSkeletonPointers = new();
 
-			foreach ((BoneId id, BoneReference reference) in this.boneReferences)
+			foreach(BoneId boneId in this.boneIds)
 			{
+				BoneReference reference = this.boneReferences[boneId];
 				if (!reference.IsValid)
 					continue;
 
@@ -275,7 +296,7 @@ public class PoseService : ServiceBase
 		}
 	}
 
-	private void OnCharacterDestroyed(uint objectTableIndex)
+	private void OnCharacterDestroyed(int objectTableIndex)
 	{
 		this.FlushBoneReferences(objectTableIndex);
 	}

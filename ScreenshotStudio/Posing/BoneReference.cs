@@ -11,6 +11,7 @@ using ScreenshotStudio.Structs.Extensions;
 using ScreenshotStudio.Utilities;
 using System;
 using System.Numerics;
+using System.Xml.Linq;
 
 public class BoneReference : IDisposable
 {
@@ -23,7 +24,7 @@ public class BoneReference : IDisposable
 
 	public hkQsTransformf LastTransform;
 	public hkQsTransformf CurrentTransform;
-	public bool LockTransform;
+	public Modes Mode;
 	public hkQsTransformf LastLocalTransform;
 
 	public BoneReference? Parent;
@@ -38,9 +39,30 @@ public class BoneReference : IDisposable
 		this.CurrentTransform.Rotation = HkQuaternionExtensions.Identity;
 	}
 
+	public enum Modes
+	{
+		/// <summary>
+		/// modifies the bone by adding the CurrentTransform to the games live transform.
+		/// </summary>
+		Relative,
+
+		/// <summary>
+		/// Modifies the bone by adding the CurrentTransform to the last game transform read before locking.
+		/// </summary>
+		Locked_Relative,
+
+		/// <summary>
+		/// Modifies the bone by setting the live transform to CurrentTransform.
+		/// </summary>
+		Absolute,
+	}
+
 	public unsafe Skeleton* ApplyTransform()
 	{
 		Threads.VerifyFrameworkThread();
+
+		if (!this.IsValid)
+			return null;
 
 		if (DalamudServices.ObjectTable == null)
 			return null;
@@ -81,7 +103,7 @@ public class BoneReference : IDisposable
 			}
 		}
 
-		if (!this.LockTransform)
+		if (this.Mode == Modes.Relative)
 		{
 			// Get a new copy of the live transforms
 			this.LastTransform = *pose->AccessBoneModelSpace(this.Id.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
@@ -93,7 +115,7 @@ public class BoneReference : IDisposable
 			transform->Rotation.Multiply(this.CurrentTransform.Rotation);
 			transform->Scale.Add(this.CurrentTransform.Scale);
 		}
-		else
+		else if (this.Mode == Modes.Locked_Relative)
 		{
 			hkQsTransformf newTransform = this.LastLocalTransform;
 
@@ -105,6 +127,13 @@ public class BoneReference : IDisposable
 			transform->Translation.Set(newTransform.Translation);
 			transform->Rotation.Set(newTransform.Rotation);
 			transform->Scale.Set(newTransform.Scale);
+		}
+		else if (this.Mode == Modes.Absolute)
+		{
+			hkQsTransformf* transform = pose->AccessBoneModelSpace(this.Id.BoneIndex, hkaPose.PropagateOrNot.Propagate);
+			transform->Translation.Set(this.CurrentTransform.Translation);
+			transform->Rotation.Set(this.CurrentTransform.Rotation);
+			transform->Scale.Set(this.CurrentTransform.Scale);
 		}
 
 		return skeleton;
