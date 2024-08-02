@@ -377,7 +377,7 @@ public partial class CustomizeWindow : CharacterWindow
 
 		Threads.RunOnFrameworkThread(() =>
 		{
-			CharacterWindow.GetTarget()->UpdateCustomize(redraw, CharacterExtensions.UpdateSource.Interface);
+			this.Target->UpdateCustomize(redraw, CharacterExtensions.UpdateSource.Interface);
 		});
 	}
 

@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 public class CharacterAppearanceService : ServiceBase
 {
 	private readonly GroupPoseCharactersLibrarySource provider = new();
-	private readonly Dictionary<ushort, CharacterBackupAppearance> backup = new();
+	private readonly Dictionary<int, CharacterBackupAppearance> backup = new();
 
 	private Hook<EnforceKindRestrictionsDelegate>? enforceKindRestrictionsHook;
 
@@ -54,7 +54,12 @@ public class CharacterAppearanceService : ServiceBase
 			return false;
 
 		ushort index = character->GameObject.ObjectIndex;
-		return this.backup.ContainsKey(index);
+		return this.CanRestore(index);
+	}
+
+	public unsafe bool CanRestore(int objectTableIndex)
+	{
+		return this.backup.ContainsKey(objectTableIndex);
 	}
 
 	public unsafe void Backup(Character character)
@@ -80,14 +85,22 @@ public class CharacterAppearanceService : ServiceBase
 	public unsafe void Restore(Character* character)
 	{
 		ushort index = character->GameObject.ObjectIndex;
+		this.Restore(index);
+	}
 
-		if (!this.backup.ContainsKey(index))
+	public unsafe void Restore(int objectTableIndex)
+	{
+		if (!this.backup.ContainsKey(objectTableIndex))
 			return;
 
 		Threads.RunOnFrameworkThread(() =>
 		{
-			this.backup[index].Apply(character, CharacterExtensions.UpdateSource.Restore);
-			this.backup.Remove(index);
+			if (DalamudServices.ObjectTable == null)
+				return;
+
+			Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
+			this.backup[objectTableIndex].Apply(character, CharacterExtensions.UpdateSource.Restore);
+			this.backup.Remove(objectTableIndex);
 		});
 	}
 
@@ -144,11 +157,11 @@ public class CharacterBackupAppearance : LibraryEntryBase, ICharacterAppearance
 
 	public unsafe void Apply(Character* character, CharacterExtensions.UpdateSource source)
 	{
-		bool redraw = this.ModelId != character->ModelCharaId;
+		bool redraw = true; //// this.ModelId != character->ModelCharaId;
 
 		character->UpdateModel(this.ModelId, source, false);
-		character->UpdateCustomize(this.DrawData.CustomizeData, redraw, source);
 		character->UpdateEquipment(this.DrawData.EquipmentModelIds, source);
+		character->UpdateCustomize(this.DrawData.CustomizeData, redraw, source);
 	}
 
 	public override EntryExecutor? GetExecutor()

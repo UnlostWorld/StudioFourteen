@@ -5,7 +5,7 @@ using ScreenshotStudio.Library.Executors;
 using System;
 using System.IO;
 using System.Windows.Media;
-
+using System.Windows.Media.Imaging;
 using static System.Environment;
 
 public class FileSource : SourceBase

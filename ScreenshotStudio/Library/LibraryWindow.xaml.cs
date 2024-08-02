@@ -80,12 +80,15 @@ public partial class LibraryWindow : PanelWindow
 		get => this.selectedResult;
 		set
 		{
+			this.SelectedExecutor?.OnDeselect();
+
 			this.SelectedExecutor = null;
 			this.selectedResult = value;
 
 			if (value != null && value.Entry != null)
 			{
 				this.SelectedExecutor = value.Entry.GetExecutor();
+				this.SelectedExecutor?.OnSelect();
 
 				if (this.SelectedExecutor != null && this.IsLiveExecute && this.SelectedExecutor.CanExecute)
 				{
@@ -131,11 +134,7 @@ public partial class LibraryWindow : PanelWindow
 	protected override void OnFrameworkUpdate(IFramework framework)
 	{
 		base.OnFrameworkUpdate(framework);
-
-		if (this.SelectedExecutor != null)
-		{
-			this.SelectedExecutor.OnFrameworkUpdate();
-		}
+		this.SelectedExecutor?.OnFrameworkUpdate();
 	}
 
 	private async Task SearchAsync()

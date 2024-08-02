@@ -27,4 +27,5 @@ public class ServiceManager : ServiceManagerBase
 	public GameCaptureService GameCapture { get; init; } = new();
 	public PoseService Pose { get; init; } = new();
 	public FileThumbnailService Thumbnails { get; init; } = new();
+	public TargetService Target { get; init; } = new();
 }

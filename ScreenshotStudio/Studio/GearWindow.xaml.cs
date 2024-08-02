@@ -367,7 +367,7 @@ public class WeaponViewModel : ItemViewModelBase
 	{
 		Threads.RunOnFrameworkThread(() =>
 		{
-			CharacterWindow.GetTarget()->UpdateWeapon(this.Slot, this.Weapon.ModelId, CharacterExtensions.UpdateSource.Interface);
+			this.Target->UpdateWeapon(this.Slot, this.Weapon.ModelId, CharacterExtensions.UpdateSource.Interface);
 		});
 	}
 
@@ -483,7 +483,7 @@ public class ItemEquipViewModel : ItemViewModelBase
 	{
 		Threads.RunOnFrameworkThread(() =>
 		{
-			CharacterWindow.GetTarget()->UpdateEquipment(this.Slot, this.ItemEquip, CharacterExtensions.UpdateSource.Interface);
+			this.Target->UpdateEquipment(this.Slot, this.ItemEquip, CharacterExtensions.UpdateSource.Interface);
 		});
 	}
 

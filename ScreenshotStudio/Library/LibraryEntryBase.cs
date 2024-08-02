@@ -51,8 +51,6 @@ public abstract class LibraryEntryBase : ITagged, ILibraryEntry, INotifyProperty
 
 	public string Identifier => $"{this.Source?.GetInternalId()}||{this.GetInternalId()}";
 
-	public abstract EntryExecutor? GetExecutor();
-
 	public virtual bool Search(string[] query)
 	{
 		return SearchUtility.Matches(this.Name, query);
@@ -66,6 +64,8 @@ public abstract class LibraryEntryBase : ITagged, ILibraryEntry, INotifyProperty
 	{
 		this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 	}
+
+	public abstract EntryExecutor? GetExecutor();
 
 	protected abstract string GetInternalId();
 }

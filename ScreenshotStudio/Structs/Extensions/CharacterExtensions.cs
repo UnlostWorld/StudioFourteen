@@ -169,6 +169,8 @@ public static class CharacterExtensions
 			}
 		}
 
+		Logging.Shared.Information($"REdraw? {redraw}");
+
 		if (redraw)
 		{
 			self.DisableDraw();

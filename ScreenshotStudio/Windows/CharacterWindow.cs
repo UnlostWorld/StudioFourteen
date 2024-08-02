@@ -1,57 +1,14 @@
 ﻿namespace ScreenshotStudio.Windows;
 
-using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using FFXIVClientStructs.FFXIV.Client.Game.Control;
-using FFXIVClientStructs.FFXIV.Client.Game.Object;
-using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
-using ScreenshotStudio.Utilities;
 
 public abstract class CharacterWindow : PanelWindow
 {
-	[AlwaysNotify] public string? CharacterName { get; private set; }
-	[AlwaysNotify] public bool HasValidTarget { get; private set; } = false;
-	[AlwaysNotify] public int TargetObjectIndex { get; private set; } = -1;
-
-	/// <summary>
-	///  Gets a pointer to the player, the players target, or the group pose target.
-	/// </summary>
-	public unsafe Character* Target { get; private set; } = null;
-
-	// should put this somewhere...
-	public static unsafe Character* GetTarget()
-	{
-		Threads.VerifyFrameworkThread();
-
-		if (DalamudServices.ObjectTable == null)
-			return null;
-
-		if (ServiceManager.Instance.GroupPose.IsGroupPosing)
-		{
-			// GPose target
-			return (Character*)TargetSystem.Instance()->GPoseTarget;
-		}
-		else
-		{
-			// Focus Target
-			GameObject* pTargetObject = TargetSystem.Instance()->FocusTarget;
-			if (pTargetObject != null && pTargetObject->IsCharacter())
-			{
-				return (Character*)pTargetObject;
-			}
-
-			// Target
-			pTargetObject = TargetSystem.Instance()->Target;
-			if (pTargetObject != null && pTargetObject->IsCharacter())
-			{
-				return (Character*)pTargetObject;
-			}
-
-			// Player
-			return (Character*)DalamudServices.ObjectTable.GetObjectAddress(0);
-		}
-	}
+	public unsafe Character* Target => this.Services.Target.Target;
+	[AlwaysNotify] public string? CharacterName => this.Services.Target.CharacterName;
+	[AlwaysNotify] public bool HasValidTarget => this.Services.Target.HasValidTarget;
+	[AlwaysNotify] public int TargetObjectIndex => this.Services.Target.TargetObjectIndex;
 
 	public override bool ShouldTickAutoProperties()
 	{
@@ -61,21 +18,16 @@ public abstract class CharacterWindow : PanelWindow
 		return base.ShouldTickAutoProperties();
 	}
 
-	protected unsafe override void OnFrameworkUpdate(IFramework framework)
+	protected override void OnOpened()
 	{
-		base.OnFrameworkUpdate(framework);
+		this.Services.Target.TargetChanged += this.OnTargetChanged;
+		base.OnOpened();
+	}
 
-		int startIndex = this.TargetObjectIndex;
-
-		this.Target = GetTarget();
-		this.HasValidTarget = this.Target != null && this.Target->CanDraw();
-		this.TargetObjectIndex = this.HasValidTarget ? this.Target->ObjectIndex : -1;
-		this.CharacterName = this.HasValidTarget ? this.Target->GetNameAsString() : "Nobody";
-
-		if (startIndex != this.TargetObjectIndex)
-		{
-			this.Dispatcher.Invoke(this.OnTargetChanged);
-		}
+	protected override void OnClosed()
+	{
+		this.Services.Target.TargetChanged -= this.OnTargetChanged;
+		base.OnClosed();
 	}
 
 	protected virtual void OnTargetChanged()

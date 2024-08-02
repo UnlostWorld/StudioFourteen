@@ -1,10 +1,9 @@
 ﻿namespace ScreenshotStudio.Library.Executors;
 
-public class FileEntryExecutor : EntryExecutor
+public class FileEntryExecutor(ILibraryEntry entry)
+	: EntryExecutor(entry)
 {
-	public FileEntryExecutor(ILibraryEntry entry)
-		: base(entry)
-	{
-		this.Label = "Open the File!";
-	}
+	public override string? Label => "Open Me!";
+	public override bool CanRevert => false;
+	public override bool CanExecute => false;
 }
