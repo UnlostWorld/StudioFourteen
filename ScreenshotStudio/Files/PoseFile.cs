@@ -40,6 +40,9 @@ public class PoseFile : FileBase, IPose
 			if (characterBase == null)
 				return;
 
+			// TODO: check if all races have these bones or its just Hyur!
+			bool includeFace = this.Bones.ContainsKey("j_f_ulip_02_l");
+
 			ushort partialCount = characterBase->Skeleton->PartialSkeletonCount;
 			for (int partialIdx = 0; partialIdx < partialCount; partialIdx++)
 			{
@@ -63,6 +66,13 @@ public class PoseFile : FileBase, IPose
 
 						if (boneName == "n_root")
 							continue;
+
+						if (!includeFace
+							&& boneName.StartsWith("j_f_")
+							&& !boneName.StartsWith("j_f_eye_"))
+						{
+							continue;
+						}
 
 						if (this.Bones.TryGetValue(boneName, out BoneTransform? val))
 						{
