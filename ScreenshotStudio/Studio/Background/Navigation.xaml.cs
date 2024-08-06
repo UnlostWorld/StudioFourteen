@@ -97,4 +97,11 @@ public partial class Navigation : View
 		get => this.Services.Panels.GetIsOpen<PhotoWindow>();
 		set => this.Services.Panels.SetIsOpen<PhotoWindow>(value);
 	}
+
+	[AutoNotify]
+	public bool IsSaveOpen
+	{
+		get => this.Services.Panels.GetIsOpen<SaveWindow>();
+		set => this.Services.Panels.SetIsOpen<SaveWindow>(value);
+	}
 }
