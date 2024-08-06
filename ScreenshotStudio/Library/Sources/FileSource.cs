@@ -101,7 +101,7 @@ public class FileEntry : LibraryEntryBase<FileEntryExecutor>
 
 	public FileTypeInfoBase TypeInfo { get; init; }
 
-	public override string Name => this.fileInfo.Name;
+	public override string Name => Path.GetFileNameWithoutExtension(this.fileInfo.Name);
 
 	public FileBase? File => this.TypeInfo.Load(this.fileInfo);
 
