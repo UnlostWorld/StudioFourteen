@@ -3,12 +3,18 @@
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Utils;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
 using System;
 using System.Collections.Concurrent;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using SixLabors.ImageSharp.Drawing;
+using SixLabors.ImageSharp.Drawing.Processing;
+using ScreenshotStudio.Images;
+using SixLabors.ImageSharp.Formats.Png;
 
 public class FileThumbnailService : ServiceBase
 {
@@ -83,14 +89,23 @@ public class FileThumbnailService : ServiceBase
 
 		byte[] binaryData = Convert.FromBase64String(file.Base64Image);
 
-		using (Image image = Image.Load(binaryData))
+		PngEncoder encoder = new()
+		{
+			ColorType = PngColorType.RgbWithAlpha,
+			TransparentColorMode = PngTransparentColorMode.Preserve,
+			CompressionLevel = PngCompressionLevel.BestSpeed,
+		};
+
+		using (Image image = Image.Load<Rgba32>(binaryData))
 		{
 			ResizeOptions op = new();
 			op.Mode = ResizeMode.Max;
 			op.Size = new(128, 128);
+			op.PremultiplyAlpha = false;
 			image.Mutate(x => x.Resize(op));
+			image.Mutate(x => x.ApplyRoundedCorners(8));
 
-			image.SaveAsPng(request.ThumbnailPath);
+			image.SaveAsPng(request.ThumbnailPath, encoder);
 		}
 
 		request.Callback.Invoke(request.ThumbnailPath);

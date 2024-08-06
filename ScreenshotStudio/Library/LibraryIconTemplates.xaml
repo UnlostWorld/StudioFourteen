@@ -209,11 +209,8 @@
 					Background="Black"
 					CornerRadius="4" />
 
-				<Image Source="{Binding IconPath}">
-					<Image.OpacityMask>
-						<VisualBrush Visual="{Binding ElementName=Mask}" />
-					</Image.OpacityMask>
-				</Image>
+				<Image Source="{Binding IconPath}" />
+
 			</Grid>
 		</Grid>
 
