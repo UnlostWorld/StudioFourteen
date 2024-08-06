@@ -3,6 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:ScreenshotStudio.Controls"
 	xmlns:excel="clr-namespace:ScreenshotStudio.GameData.Excel"
+	xmlns:files="clr-namespace:ScreenshotStudio.Files"
 	xmlns:gameData="clr-namespace:ScreenshotStudio.GameData"
 	xmlns:library="clr-namespace:ScreenshotStudio.Library"
 	xmlns:services="clr-namespace:ScreenshotStudio.Services"
@@ -19,17 +20,19 @@
 		<Viewbox CacheMode="BitmapCache">
 			<Grid>
 				<wpfUtils:IconBlock
+					Margin="10"
 					FontSize="72"
 					Icon="Folder"
 					IconFont="Solid" />
 
-				<controls:XivIconImage
-					Width="42"
-					Height="42"
-					Margin="0,0,0,8"
+				<Image
+					Width="32"
+					Height="32"
+					Margin="16,0,0,22"
 					HorizontalAlignment="Left"
 					VerticalAlignment="Bottom"
-					Id="076351" />
+					Opacity="0.5"
+					Source="pack://application:,,,/ScreenshotStudio;component/Assets/ffxiv-logo-dark.png" />
 
 			</Grid>
 		</Viewbox>
@@ -174,43 +177,40 @@
 	</DataTemplate>
 
 
+	<DataTemplate DataType="{x:Type files:PoseFileTypeInfo}">
+		<Viewbox CacheMode="BitmapCache">
+			<Grid>
+				<wpfUtils:IconBlock
+					FontSize="72"
+					Icon="File"
+					IconFont="Solid" />
+				<wpfUtils:IconBlock
+					Margin="5,0,0,-25"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Bottom"
+					FontSize="40"
+					Foreground="{DynamicResource BackgroundBrush}"
+					Icon="Running"
+					IconFont="Solid" />
+			</Grid>
+
+		</Viewbox>
+	</DataTemplate>
+
 	<DataTemplate DataType="{x:Type sources:FileEntry}">
 
 		<Grid>
-
-			<Viewbox
+			<ContentPresenter
 				x:Name="FallbackIcon"
-				CacheMode="BitmapCache"
-				Visibility="Collapsed">
-				<Grid>
-					<wpfUtils:IconBlock
-						FontSize="72"
-						Icon="File"
-						IconFont="Solid" />
-					<wpfUtils:IconBlock
-						Margin="5,0,0,-25"
-						HorizontalAlignment="Left"
-						VerticalAlignment="Bottom"
-						FontSize="40"
-						Foreground="{DynamicResource BackgroundBrush}"
-						Icon="Running"
-						IconFont="Solid" />
-				</Grid>
-
-			</Viewbox>
+				Content="{Binding TypeInfo}"
+				Visibility="Collapsed" />
 
 			<Grid
 				x:Name="Thumbnail"
 				HorizontalAlignment="Center"
 				VerticalAlignment="Center">
 
-				<Border
-					Name="Mask"
-					Background="Black"
-					CornerRadius="4" />
-
 				<Image Source="{Binding IconPath}" />
-
 			</Grid>
 		</Grid>
 
@@ -230,6 +230,7 @@
 		<Viewbox CacheMode="BitmapCache">
 
 			<wpfUtils:IconBlock
+				Margin="10"
 				FontSize="72"
 				Icon="Folder"
 				IconFont="Solid" />
@@ -240,6 +241,7 @@
 		<Viewbox CacheMode="BitmapCache">
 
 			<wpfUtils:IconBlock
+				Margin="10"
 				FontSize="72"
 				Icon="Folder"
 				IconFont="Solid" />
