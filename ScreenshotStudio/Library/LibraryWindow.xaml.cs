@@ -47,6 +47,8 @@ public partial class LibraryWindow : PanelWindow
 		None,
 		OpenDir,
 		Back,
+		TabLeft,
+		TabRight,
 	}
 
 	public enum NavigationAnimations
@@ -56,6 +58,11 @@ public partial class LibraryWindow : PanelWindow
 		OpenDir_In,
 		Back_In,
 		Back_Out,
+
+		TabLeft_Out,
+		TabLeft_In,
+		TabRight_Out,
+		TabRight_In,
 	}
 
 	[AutoNotify]
@@ -72,6 +79,15 @@ public partial class LibraryWindow : PanelWindow
 		get => this.currentTab;
 		set
 		{
+			if (this.Tabs.IndexOf(value) > this.Tabs.IndexOf(this.currentTab))
+			{
+				this.navigation = Navigation.TabRight;
+			}
+			else
+			{
+				this.navigation = Navigation.TabLeft;
+			}
+
 			this.currentTab = value;
 			this.NotifyPropertyChanged();
 
@@ -169,6 +185,8 @@ public partial class LibraryWindow : PanelWindow
 		{
 			Navigation.OpenDir => NavigationAnimations.OpenDir_Out,
 			Navigation.Back => NavigationAnimations.Back_Out,
+			Navigation.TabLeft => NavigationAnimations.TabLeft_Out,
+			Navigation.TabRight => NavigationAnimations.TabRight_Out,
 			_ => NavigationAnimations.None,
 		};
 
@@ -216,6 +234,8 @@ public partial class LibraryWindow : PanelWindow
 		{
 			Navigation.OpenDir => NavigationAnimations.OpenDir_In,
 			Navigation.Back => NavigationAnimations.Back_In,
+			Navigation.TabLeft => NavigationAnimations.TabLeft_In,
+			Navigation.TabRight => NavigationAnimations.TabRight_In,
 			_ => NavigationAnimations.None,
 		};
 

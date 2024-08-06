@@ -10,6 +10,7 @@
 	xmlns:results="clr-namespace:ScreenshotStudio.Library.Results"
 	xmlns:structs="clr-namespace:ScreenshotStudio.Structs"
 	xmlns:tags="clr-namespace:ScreenshotStudio.Tags"
+	xmlns:triggers="clr-namespace:WpfUtils.Triggers;assembly=WpfUtils"
 	xmlns:vwp="clr-namespace:WpfToolkit.Controls;assembly=VirtualizingWrapPanel"
 	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
@@ -344,6 +345,7 @@
 				Grid.Row="3"
 				Grid.Column="0"
 				Background="Transparent"
+				ClipToBounds="True"
 				ItemsSource="{Binding Results, IsAsync=True}"
 				MouseDoubleClick="OnItemDoubleClicked"
 				SelectedItem="{Binding SelectedResult}"
@@ -359,24 +361,21 @@
 							RenderTransformOrigin="0.5, 0.5">
 
 							<ScrollViewer.RenderTransform>
-								<ScaleTransform x:Name="Scale" ScaleX="1" ScaleY="{Binding ScaleX, RelativeSource={RelativeSource Mode=Self}}" />
+								<TransformGroup>
+									<ScaleTransform x:Name="Scale" ScaleX="1" ScaleY="{Binding ScaleX, RelativeSource={RelativeSource Mode=Self}}" />
+									<TranslateTransform x:Name="Translate" X="0" Y="0" />
+								</TransformGroup>
 							</ScrollViewer.RenderTransform>
 
 							<ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-						</ScrollViewer>
 
-						<ControlTemplate.Triggers>
+							<ScrollViewer.Triggers>
+								<triggers:StoryboardEnumTrigger
+									Binding="{Binding NavigationAnimation}"
+									Target="{Binding RelativeSource={RelativeSource AncestorType={x:Type ScrollViewer}}}">
+									<triggers:StoryboardEnumTrigger.Storyboards>
 
-							<!--  OpenDir  -->
-							<DataTrigger
-								Binding="{Binding NavigationAnimation}"
-								Value="OpenDir_Out">
-								<DataTrigger.EnterActions>
-									<StopStoryboard BeginStoryboardName="OpenDirIn" />
-									<StopStoryboard BeginStoryboardName="BackOut" />
-									<StopStoryboard BeginStoryboardName="BackIn" />
-									<BeginStoryboard Name="OpenDirOut">
-										<Storyboard>
+										<Storyboard x:Name="OpenDir_Out">
 											<DoubleAnimation
 												Storyboard.TargetName="Scale"
 												Storyboard.TargetProperty="ScaleX"
@@ -397,19 +396,9 @@
 												</DoubleAnimation.EasingFunction>
 											</DoubleAnimation>
 										</Storyboard>
-									</BeginStoryboard>
-								</DataTrigger.EnterActions>
-							</DataTrigger>
 
-							<DataTrigger
-								Binding="{Binding NavigationAnimation}"
-								Value="OpenDir_In">
-								<DataTrigger.EnterActions>
-									<StopStoryboard BeginStoryboardName="OpenDirOut" />
-									<StopStoryboard BeginStoryboardName="BackOut" />
-									<StopStoryboard BeginStoryboardName="BackIn" />
-									<BeginStoryboard x:Name="OpenDirIn">
-										<Storyboard>
+
+										<Storyboard x:Name="OpenDir_In">
 											<DoubleAnimation
 												Storyboard.TargetName="Scale"
 												Storyboard.TargetProperty="ScaleX"
@@ -430,20 +419,9 @@
 												</DoubleAnimation.EasingFunction>
 											</DoubleAnimation>
 										</Storyboard>
-									</BeginStoryboard>
-								</DataTrigger.EnterActions>
-							</DataTrigger>
 
-							<!--  Back  -->
-							<DataTrigger
-								Binding="{Binding NavigationAnimation}"
-								Value="Back_Out">
-								<DataTrigger.EnterActions>
-									<StopStoryboard BeginStoryboardName="BackIn" />
-									<StopStoryboard BeginStoryboardName="OpenDirOut" />
-									<StopStoryboard BeginStoryboardName="OpenDirIn" />
-									<BeginStoryboard Name="BackOut">
-										<Storyboard>
+
+										<Storyboard x:Name="Back_Out">
 											<DoubleAnimation
 												Storyboard.TargetName="Scale"
 												Storyboard.TargetProperty="ScaleX"
@@ -464,19 +442,9 @@
 												</DoubleAnimation.EasingFunction>
 											</DoubleAnimation>
 										</Storyboard>
-									</BeginStoryboard>
-								</DataTrigger.EnterActions>
-							</DataTrigger>
 
-							<DataTrigger
-								Binding="{Binding NavigationAnimation}"
-								Value="Back_In">
-								<DataTrigger.EnterActions>
-									<StopStoryboard BeginStoryboardName="BackOut" />
-									<StopStoryboard BeginStoryboardName="OpenDirOut" />
-									<StopStoryboard BeginStoryboardName="OpenDirIn" />
-									<BeginStoryboard x:Name="BackIn">
-										<Storyboard>
+
+										<Storyboard x:Name="Back_In">
 											<DoubleAnimation
 												Storyboard.TargetName="Scale"
 												Storyboard.TargetProperty="ScaleX"
@@ -497,12 +465,106 @@
 												</DoubleAnimation.EasingFunction>
 											</DoubleAnimation>
 										</Storyboard>
-									</BeginStoryboard>
-								</DataTrigger.EnterActions>
-							</DataTrigger>
 
 
-						</ControlTemplate.Triggers>
+										<Storyboard x:Name="TabLeft_Out">
+											<DoubleAnimation
+												Storyboard.TargetName="Translate"
+												Storyboard.TargetProperty="X"
+												From="0"
+												To="100"
+												Duration="0:00:00.150">
+												<DoubleAnimation.EasingFunction>
+													<SineEase EasingMode="EaseIn" />
+												</DoubleAnimation.EasingFunction>
+											</DoubleAnimation>
+											<DoubleAnimation
+												Storyboard.TargetProperty="Opacity"
+												From="1"
+												To="0"
+												Duration="0:00:00.150">
+												<DoubleAnimation.EasingFunction>
+													<SineEase EasingMode="EaseIn" />
+												</DoubleAnimation.EasingFunction>
+											</DoubleAnimation>
+										</Storyboard>
+
+										<Storyboard x:Name="TabLeft_In">
+											<DoubleAnimation
+												Storyboard.TargetName="Translate"
+												Storyboard.TargetProperty="X"
+												From="-100"
+												To="0"
+												Duration="0:00:00.150">
+												<DoubleAnimation.EasingFunction>
+													<SineEase EasingMode="EaseOut" />
+												</DoubleAnimation.EasingFunction>
+											</DoubleAnimation>
+											<DoubleAnimation
+												Storyboard.TargetProperty="Opacity"
+												From="0"
+												To="1"
+												Duration="0:00:00.150">
+												<DoubleAnimation.EasingFunction>
+													<SineEase EasingMode="EaseOut" />
+												</DoubleAnimation.EasingFunction>
+											</DoubleAnimation>
+										</Storyboard>
+
+
+										<Storyboard x:Name="TabRight_Out">
+											<DoubleAnimation
+												Storyboard.TargetName="Translate"
+												Storyboard.TargetProperty="X"
+												From="0"
+												To="-100"
+												Duration="0:00:00.150">
+												<DoubleAnimation.EasingFunction>
+													<SineEase EasingMode="EaseIn" />
+												</DoubleAnimation.EasingFunction>
+											</DoubleAnimation>
+											<DoubleAnimation
+												Storyboard.TargetProperty="Opacity"
+												From="1"
+												To="0"
+												Duration="0:00:00.150">
+												<DoubleAnimation.EasingFunction>
+													<SineEase EasingMode="EaseIn" />
+												</DoubleAnimation.EasingFunction>
+											</DoubleAnimation>
+										</Storyboard>
+
+										<Storyboard x:Name="TabRight_In">
+											<DoubleAnimation
+												Storyboard.TargetName="Translate"
+												Storyboard.TargetProperty="X"
+												From="100"
+												To="0"
+												Duration="0:00:00.150">
+												<DoubleAnimation.EasingFunction>
+													<SineEase EasingMode="EaseOut" />
+												</DoubleAnimation.EasingFunction>
+											</DoubleAnimation>
+											<DoubleAnimation
+												Storyboard.TargetProperty="Opacity"
+												From="0"
+												To="1"
+												Duration="0:00:00.150">
+												<DoubleAnimation.EasingFunction>
+													<SineEase EasingMode="EaseOut" />
+												</DoubleAnimation.EasingFunction>
+											</DoubleAnimation>
+										</Storyboard>
+
+
+									</triggers:StoryboardEnumTrigger.Storyboards>
+
+								</triggers:StoryboardEnumTrigger>
+
+							</ScrollViewer.Triggers>
+						</ScrollViewer>
+
+
 					</ControlTemplate>
 				</ListBox.Template>
 
@@ -550,52 +612,6 @@
 
 					</DataTemplate>
 				</ListBox.ItemTemplate>
-
-				<!--<ListBox.Style>
-					<Style
-						BasedOn="{StaticResource WpfUtilsListBox}"
-						TargetType="{x:Type ListBox}">
-
-						<Setter Property="Opacity" Value="1" />
-
-						<Style.Triggers>
-							<DataTrigger
-								Binding="{Binding IsLoading}"
-								Value="True">
-								<DataTrigger.EnterActions>
-									<BeginStoryboard>
-										<Storyboard>
-											<DoubleAnimation
-												Storyboard.TargetProperty="Opacity"
-												From="1"
-												To="0"
-												Duration="0:00:00.100">
-												<DoubleAnimation.EasingFunction>
-													<SineEase EasingMode="EaseIn" />
-												</DoubleAnimation.EasingFunction>
-											</DoubleAnimation>
-										</Storyboard>
-									</BeginStoryboard>
-								</DataTrigger.EnterActions>
-								<DataTrigger.ExitActions>
-									<BeginStoryboard>
-										<Storyboard>
-											<DoubleAnimation
-												Storyboard.TargetProperty="Opacity"
-												From="1"
-												To="0"
-												Duration="0:00:00.150">
-												<DoubleAnimation.EasingFunction>
-													<SineEase EasingMode="EaseOut" />
-												</DoubleAnimation.EasingFunction>
-											</DoubleAnimation>
-										</Storyboard>
-									</BeginStoryboard>
-								</DataTrigger.ExitActions>
-							</DataTrigger>
-						</Style.Triggers>
-					</Style>
-				</ListBox.Style>-->
 
 			</ListBox>
 
