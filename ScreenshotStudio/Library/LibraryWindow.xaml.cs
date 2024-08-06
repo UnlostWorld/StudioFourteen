@@ -10,9 +10,11 @@ using ScreenshotStudio.Posing;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Tags;
 using ScreenshotStudio.Windows;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,9 +26,11 @@ using WpfUtils.Utils;
 public partial class LibraryWindow : PanelWindow
 {
 	private readonly FuncQueue searchQueue;
+	private readonly Stopwatch searchStopwatch = new();
 	private LibraryTab currentTab;
 	private bool flatten = false;
 	private Result? selectedResult = null;
+	private Navigation navigation = Navigation.None;
 
 	public LibraryWindow()
 	{
@@ -36,6 +40,22 @@ public partial class LibraryWindow : PanelWindow
 
 		// Remember?
 		this.currentTab = this.Tabs[0];
+	}
+
+	public enum Navigation
+	{
+		None,
+		OpenDir,
+		Back,
+	}
+
+	public enum NavigationAnimations
+	{
+		None,
+		OpenDir_Out,
+		OpenDir_In,
+		Back_In,
+		Back_Out,
 	}
 
 	[AutoNotify]
@@ -63,6 +83,7 @@ public partial class LibraryWindow : PanelWindow
 		}
 	}
 
+	[AutoNotify] public NavigationAnimations NavigationAnimation { get; private set; } = NavigationAnimations.None;
 	[AutoNotify] public FastObservableCollection<Result> Results { get; init; } = new();
 	[AutoNotify] public bool ViewList { get; set; } = false;
 	[AutoNotify] public ObservableCollection<GroupEntryBase> Path { get; init; } = new();
@@ -138,15 +159,23 @@ public partial class LibraryWindow : PanelWindow
 
 	private async Task SearchAsync()
 	{
+		if (this.CurrentGroup == null)
+			return;
+
+		this.searchStopwatch.Restart();
 		await this.Dispatcher.MainThread();
+
+		this.NavigationAnimation = this.navigation switch
+		{
+			Navigation.OpenDir => NavigationAnimations.OpenDir_Out,
+			Navigation.Back => NavigationAnimations.Back_Out,
+			_ => NavigationAnimations.None,
+		};
 
 		bool flattenResults = this.flatten;
 		flattenResults |= !this.SearchQueryFilter.IsEmpty;
 
 		await Dispatch.NonUiThread();
-
-		if (this.CurrentGroup == null)
-			return;
 
 		List<FilterBase> filters = new List<FilterBase>();
 		filters.AddRange(this.CurrentTab.Filters);
@@ -158,6 +187,15 @@ public partial class LibraryWindow : PanelWindow
 		IEnumerable<Result>? results = result.Get(flattenResults);
 
 		await this.Dispatcher.MainThread();
+
+		// Ensure that the search doesn't complete before the animation has completed
+		// before updating the results list.
+		this.searchStopwatch.Stop();
+		if (this.searchStopwatch.ElapsedMilliseconds < 150)
+		{
+			await Task.Delay((int)(150 - this.searchStopwatch.ElapsedMilliseconds));
+			await this.Dispatcher.MainThread();
+		}
 
 		if (results == null)
 		{
@@ -172,6 +210,17 @@ public partial class LibraryWindow : PanelWindow
 		result.GetTags(ref tags);
 		this.AvailableTags.Replace(tags);
 
+		await Task.Delay(33);
+
+		this.NavigationAnimation = this.navigation switch
+		{
+			Navigation.OpenDir => NavigationAnimations.OpenDir_In,
+			Navigation.Back => NavigationAnimations.Back_In,
+			_ => NavigationAnimations.None,
+		};
+
+		this.navigation = Navigation.None;
+
 		////this.ResultsList.ScrollIntoView(this.SelectedItem);
 	}
 
@@ -180,6 +229,7 @@ public partial class LibraryWindow : PanelWindow
 		if (this.SelectedResult is GroupResult groupResult)
 		{
 			this.Path.Add(groupResult.Group);
+			this.navigation = Navigation.OpenDir;
 			this.searchQueue.InvokeImmediate();
 		}
 		else if (this.SelectedResult is Result result)
@@ -199,12 +249,14 @@ public partial class LibraryWindow : PanelWindow
 				this.Path.RemoveAt(index + 1);
 			}
 
+			this.navigation = Navigation.Back;
 			this.searchQueue.InvokeImmediate();
 		}
 	}
 
 	private void OnBackClicked(object sender, RoutedEventArgs e)
 	{
+		this.navigation = Navigation.Back;
 		this.Path.RemoveAt(this.Path.Count - 1);
 		this.searchQueue.InvokeImmediate();
 	}
