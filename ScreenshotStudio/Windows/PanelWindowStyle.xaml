@@ -280,7 +280,8 @@
 							Margin="0,1,6,0"
 							VerticalAlignment="Center"
 							Foreground="{DynamicResource ForegroundLightBrush}"
-							Icon="{TemplateBinding TitleIcon}" />
+							Icon="{TemplateBinding TitleIcon}"
+							IconFont="Solid" />
 
 						<TextBlock
 							VerticalAlignment="Center"
