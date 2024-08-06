@@ -190,11 +190,11 @@ public class AutoPropertyNotifyService : ServiceBase
 
 			if (currentVal is null && lastValue is not null)
 			{
+				////Logging.Shared.Information($"Changed {property.Name} from {lastValue} to {currentVal}");
 				this.lastValues[property] = currentVal;
 				notify.NotifyPropertyChanged(property.Name);
 			}
-
-			if (currentVal is not null && !currentVal.Equals(lastValue))
+			else if (currentVal is not null && !currentVal.Equals(lastValue))
 			{
 				////Logging.Shared.Information($"Changed {property.Name} from {lastValue} to {currentVal}");
 				this.lastValues[property] = currentVal;
