@@ -17,6 +17,7 @@ public partial class CustomizeColorOption : UserControl, INotifyPropertyChanged
 	{
 		this.InitializeComponent();
 		this.ContentArea.DataContext = this;
+		this.CornerRadius = new CornerRadius(6);
 	}
 
 	public event PropertyChangedEventHandler? PropertyChanged;
@@ -41,9 +42,6 @@ public partial class CustomizeColorOption : UserControl, INotifyPropertyChanged
 		set => this.Value = value?.Value ?? 0;
 	}
 
-	public CornerRadius LeftElementCornerRadius => new(this.CornerRadius.TopLeft, 0, 0, this.CornerRadius.BottomLeft);
-	public CornerRadius RightElementCornerRadius => new(0, this.CornerRadius.TopRight, this.CornerRadius.BottomRight, 0);
-
 	partial void OnValueChanged(byte newValue)
 	{
 		this.PropertyChanged?.Invoke(this, new(nameof(CustomizeColorOption.SelectedOption)));
@@ -54,12 +52,6 @@ public partial class CustomizeColorOption : UserControl, INotifyPropertyChanged
 		this.PopulateColors();
 		this.PropertyChanged?.Invoke(this, new(nameof(CustomizeColorOption.SelectedOption)));
 		this.PropertyChanged?.Invoke(this, new(nameof(CustomizeColorOption.Value)));
-	}
-
-	partial void OnCornerRadiusChanged()
-	{
-		this.PropertyChanged?.Invoke(this, new(nameof(CustomizeColorOption.LeftElementCornerRadius)));
-		this.PropertyChanged?.Invoke(this, new(nameof(CustomizeColorOption.RightElementCornerRadius)));
 	}
 
 	private void PopulateColors()

@@ -15,7 +15,7 @@
 	<UserControl.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
-				<ResourceDictionary Source="pack://application:,,,/wpfUtils;component/Styles/ComboBoxStyles.xaml" />
+				<ResourceDictionary Source="pack://application:,,,/wpfUtils;component/Styles.xaml" />
 			</ResourceDictionary.MergedDictionaries>
 
 			<BooleanToVisibilityConverter x:Key="B2V" />
@@ -32,12 +32,9 @@
 		</Grid.ColumnDefinitions>
 
 		<Border
-			Grid.Column="1"
-			Margin="0"
-			CornerRadius="{Binding RightElementCornerRadius}"
+			Grid.ColumnSpan="2"
+			CornerRadius="{Binding CornerRadius}"
 			Style="{DynamicResource WpfUtilsControlBorder}" />
-
-
 
 		<ComboBox
 			Grid.Column="0"
@@ -52,39 +49,33 @@
 				<ControlTemplate TargetType="{x:Type ComboBox}">
 
 					<Grid>
+						<ToggleButton
+							Name="toggleButton"
+							Margin="0"
+							Padding="{TemplateBinding Padding}"
+							HorizontalContentAlignment="Stretch"
+							VerticalContentAlignment="Stretch"
+							Background="Transparent"
+							Foreground="Black"
+							IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
 
-						<Border
-							Background="{DynamicResource ControlBackgroundBrush}"
-							CornerRadius="{Binding LeftElementCornerRadius}">
+							<Border
+								Margin="4"
+								CornerRadius="3">
+								<Border.Background>
+									<SolidColorBrush Color="{Binding SelectedOption.Entry.Color}" />
+								</Border.Background>
 
-							<ToggleButton
-								Name="toggleButton"
-								Margin="0"
-								Padding="{TemplateBinding Padding}"
-								HorizontalContentAlignment="Stretch"
-								VerticalContentAlignment="Stretch"
-								Background="Transparent"
-								Foreground="Black"
-								IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
-
-								<Border
-									Margin="4"
-									CornerRadius="3">
-									<Border.Background>
-										<SolidColorBrush Color="{Binding SelectedOption.Entry.Color}" />
-									</Border.Background>
-
-									<Path
-										x:Name="Chevron"
-										Margin="3"
-										HorizontalAlignment="Right"
-										VerticalAlignment="Center"
-										Data="M 0,0 5,3 10,0"
-										Stroke="{TemplateBinding Foreground}"
-										StrokeThickness="1" />
-								</Border>
-							</ToggleButton>
-						</Border>
+								<Path
+									x:Name="Chevron"
+									Margin="3"
+									HorizontalAlignment="Right"
+									VerticalAlignment="Center"
+									Data="M 0,0 5,3 10,0"
+									Stroke="{TemplateBinding Foreground}"
+									StrokeThickness="1" />
+							</Border>
+						</ToggleButton>
 
 						<Popup
 							Name="PART_Popup"
