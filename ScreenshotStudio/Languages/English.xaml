@@ -43,9 +43,16 @@
 	<sys:String x:Key="LOC_FileMeta_Author">Author</sys:String>
 	<sys:String x:Key="LOC_FileMeta_Version">Version</sys:String>
 
-	<sys:String x:Key="LOC_Save_IncludeCharacter">Include {0} in the scene</sys:String>
-	<sys:String x:Key="LOC_Save_IncludeAppearance">Include {0}'s appearance in the scene</sys:String>
-	<sys:String x:Key="LOC_Save_IncludePose">Include {0}'s pose in the scene</sys:String>
+	<sys:String x:Key="LOC_Save_IncludeEnvironment">Environment</sys:String>
+	<sys:String x:Key="LOC_Save_IncludeLocation">Location</sys:String>
+	<sys:String x:Key="LOC_Save_IncludeWeather">Weather</sys:String>
+	<sys:String x:Key="LOC_Save_IncludeTimeOfDay">Time Of Day</sys:String>
+	<sys:String x:Key="LOC_Save_CharactersText">Characters ({0}/{1})</sys:String>
+	<sys:String x:Key="LOC_Save_IncludeAppearance">Appearance</sys:String>
+	<sys:String x:Key="LOC_Save_IncludePose">Pose</sys:String>
+	<sys:String x:Key="LOC_Save_IncludeCharacterTooltip">Include {0} in the scene</sys:String>
+	<sys:String x:Key="LOC_Save_IncludeAppearanceTooltip">Include {0}'s appearance in the scene</sys:String>
+	<sys:String x:Key="LOC_Save_IncludePoseTooltip">Include {0}'s pose in the scene</sys:String>
 	<sys:String x:Key="LOC_Save_ExportPoseTooltip">Export {0}'s pose as a single file (*.pose)</sys:String>
 	<sys:String x:Key="LOC_Save_ExportAppearanceTooltip">Export {0}'s appearance as a single file (*.chara)</sys:String>
 
