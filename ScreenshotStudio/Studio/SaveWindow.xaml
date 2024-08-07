@@ -8,7 +8,7 @@
 	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="{DynamicResource LOC_Save}"
-	Width="450"
+	Width="500"
 	Height="600"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
@@ -19,7 +19,7 @@
 
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition />
-			<ColumnDefinition Width="200" />
+			<ColumnDefinition Width="250" />
 		</Grid.ColumnDefinitions>
 
 		<Grid.RowDefinitions>
@@ -109,58 +109,48 @@
 			<StackPanel
 				Grid.Row="0"
 				Margin="2">
+
 				<TextBlock
+					Margin="2,2,0,0"
+					Foreground="{DynamicResource ForegroundLightBrush}"
+					Text="Environment" />
+				<CheckBox
+					Margin="1"
+					Content="{DynamicResource LOC_Save_IncludeLocation}"
+					IsChecked="{Binding IncludeLocation}" />
+
+				<CheckBox
+					Margin="1"
+					Content="{DynamicResource LOC_Save_IncludeWeather}"
+					IsChecked="{Binding IncludeWeather}" />
+
+				<CheckBox
+					Margin="1"
+					Content="{DynamicResource LOC_Save_IncludeTimeOfDay}"
+					IsChecked="{Binding IncludeTimeOfDay}" />
+
+
+
+
+				<TextBlock
+					Margin="2,8,0,0"
 					Foreground="{DynamicResource ForegroundLightBrush}"
 					Text="Components" />
 				<CheckBox
 					Margin="1,1,1,1"
-					Content="All Appearances" />
+					Content="{DynamicResource LOC_Save_IncludeAppearances}"
+					IsChecked="{Binding IncludeAppearances}"
+					ToolTip="{DynamicResource LOC_Save_IncludeAppearancesToolTip}" />
 
 				<CheckBox
 					Margin="1,1,1,1"
-					Content="All Poses" />
+					Content="{DynamicResource LOC_Save_IncludePoses}"
+					IsChecked="{Binding IncludePoses}"
+					ToolTip="{DynamicResource LOC_Save_IncludePosesToolTip}" />
 
 
 				<TextBlock
-					Margin="1,20,1,1"
-					Foreground="{DynamicResource ForegroundLightBrush}"
-					Text="Global" />
-
-				<Expander
-					Padding="20,0,0,0"
-					IsExpanded="{Binding IncludeEnvironment}"
-					Style="{DynamicResource WpfUtilsInvisibleExpander}">
-					<Expander.Header>
-						<CheckBox
-							Margin="1"
-							Content="{DynamicResource LOC_Save_IncludeEnvironment}"
-							IsChecked="{Binding IncludeEnvironment}" />
-					</Expander.Header>
-
-					<StackPanel>
-						<CheckBox
-							Margin="1"
-							Content="{DynamicResource LOC_Save_IncludeLocation}"
-							IsChecked="{Binding IncludeLocation}" />
-
-						<CheckBox
-							Margin="1"
-							Content="{DynamicResource LOC_Save_IncludeWeather}"
-							IsChecked="{Binding IncludeWeather}" />
-
-						<CheckBox
-							Margin="1"
-							Content="{DynamicResource LOC_Save_IncludeTimeOfDay}"
-							IsChecked="{Binding IncludeTimeOfDay}" />
-
-
-					</StackPanel>
-
-				</Expander>
-
-
-				<TextBlock
-					Margin="1,20,1,1"
+					Margin="2,8,0,0"
 					Foreground="{DynamicResource ForegroundLightBrush}"
 					Text="{Binding CharactersText}" />
 
@@ -168,66 +158,47 @@
 					<ItemsControl.ItemTemplate>
 						<DataTemplate DataType="{x:Type local:CharacterSave}">
 
-							<Expander
-								Padding="20,0,0,0"
-								IsExpanded="{Binding IncludeCharacter}"
-								Style="{DynamicResource WpfUtilsInvisibleExpander}">
+							<Border
+								Margin="1"
+								Style="{DynamicResource WpfUtilsControlBorder}">
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition />
+										<ColumnDefinition Width="Auto" />
+										<ColumnDefinition Width="Auto" />
+									</Grid.ColumnDefinitions>
 
-								<Expander.Header>
 									<CheckBox
-										Grid.Row="0"
+										Grid.Column="0"
+										Margin="0"
+										Background="Transparent"
+										Checked="OnChanged"
 										Content="{Binding Name}"
 										IsChecked="{Binding IncludeCharacter}"
-										ToolTip="{Binding TooltipText}" />
-								</Expander.Header>
-
-								<Grid>
-
-									<Grid.RowDefinitions>
-										<RowDefinition />
-										<RowDefinition />
-									</Grid.RowDefinitions>
-
-									<CheckBox
-										Grid.Row="0"
-										Margin="1"
-										Padding="0,0,25,0"
-										Content="{DynamicResource LOC_Save_IncludeAppearance}"
-										ToolTip="{Binding AppearanceTooltipText}" />
+										ToolTip="{Binding ToolTipText}"
+										Unchecked="OnChanged" />
 
 									<Button
-										Grid.Row="0"
+										Grid.Column="1"
 										Width="28"
 										Height="24"
-										Margin="2"
-										HorizontalAlignment="Right"
+										Margin="0,0,1,0"
 										Background="Transparent"
 										ToolTip="{Binding ExportAppearanceToolTipText}">
-										<wpfUtils:IconBlock Icon="FileArrowDown" />
+										<wpfUtils:IconBlock Icon="UserShield" />
 									</Button>
-
-									<CheckBox
-										Grid.Row="1"
-										Margin="1"
-										Padding="0,0,25,0"
-										Content="{DynamicResource LOC_Save_IncludePose}"
-										ToolTip="{Binding PoseTooltipText}" />
 
 									<Button
-										Grid.Row="1"
+										Grid.Column="2"
 										Width="28"
 										Height="24"
-										Margin="2"
-										HorizontalAlignment="Right"
+										Margin="0,0,1,0"
 										Background="Transparent"
 										ToolTip="{Binding ExportPoseToolTipText}">
-										<wpfUtils:IconBlock Icon="FileArrowDown" />
+										<wpfUtils:IconBlock Icon="Running" />
 									</Button>
-
-
 								</Grid>
-							</Expander>
-
+							</Border>
 
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
@@ -244,7 +215,8 @@
 				MinWidth="100"
 				HorizontalAlignment="Right"
 				Click="OnSaveClicked"
-				Content="{Binding SaveLabel}" />
+				Content="{Binding SaveLabel}"
+				IsEnabled="{Binding CanSave}" />
 		</Border>
 
 	</Grid>

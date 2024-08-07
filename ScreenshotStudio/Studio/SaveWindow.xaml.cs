@@ -15,24 +15,59 @@ using WpfUtils.Extensions;
 
 public partial class SaveWindow : PanelWindow
 {
-	[AutoNotify] public string SaveLabel { get; private set; } = "Save Scene";
+	[AutoNotify] public bool CanSave { get; private set; } = true;
+	[AutoNotify] public string SaveLabel { get; private set; } = string.Empty;
 	[AutoNotify] public FastObservableCollection<CharacterSave> Characters { get; init; } = new();
 
-	[AutoNotify] public string CharactersText => string.Format(ScreenshotStudio.Resources.Find("LOC_Save_CharactersText", string.Empty), 0, this.Characters.Count);
+	[AutoNotify] public string CharactersText { get; set; } = string.Empty;
 
-	[AutoNotify] public bool IncludeLocation { get; set; }
-	[AutoNotify] public bool IncludeWeather { get; set; }
-	[AutoNotify] public bool IncludeTimeOfDay { get; set; }
-
-	[AutoNotify]
-	public bool IncludeEnvironment
+	[AutoNotify] public bool IncludeLocation
 	{
-		get => this.IncludeLocation || this.IncludeWeather || this.IncludeTimeOfDay;
+		get => this.GetPersistence<bool>();
 		set
 		{
-			this.IncludeLocation = value;
-			this.IncludeWeather = value;
-			this.IncludeTimeOfDay = value;
+			this.SetPersistence(value);
+			this.UpdateLabels();
+		}
+	}
+
+	[AutoNotify] public bool IncludeWeather
+	{
+		get => this.GetPersistence<bool>();
+		set
+		{
+			this.SetPersistence(value);
+			this.UpdateLabels();
+		}
+	}
+
+	[AutoNotify] public bool IncludeTimeOfDay
+	{
+		get => this.GetPersistence<bool>();
+		set
+		{
+			this.SetPersistence(value);
+			this.UpdateLabels();
+		}
+	}
+
+	[AutoNotify] public bool IncludePoses
+	{
+		get => this.GetPersistence<bool>();
+		set
+		{
+			this.SetPersistence(value);
+			this.UpdateLabels();
+		}
+	}
+
+	[AutoNotify] public bool IncludeAppearances
+	{
+		get => this.GetPersistence<bool>();
+		set
+		{
+			this.SetPersistence(value);
+			this.UpdateLabels();
 		}
 	}
 
@@ -77,14 +112,61 @@ public partial class SaveWindow : PanelWindow
 					continue;
 
 				string name = character->GetNameAsString() ?? "Unknown";
-
-				characters.Add(new(name));
+				CharacterSave vm = new(name);
+				vm.IncludeCharacter = i == fromIndex;
+				characters.Add(vm);
 			}
 		}
 
 		await this.Dispatcher.MainThread();
 
 		this.Characters.Replace(characters);
+
+		this.UpdateLabels();
+	}
+
+	private void OnChanged(object sender, RoutedEventArgs e)
+	{
+		this.UpdateLabels();
+	}
+
+	private void UpdateLabels()
+	{
+		int selectedCount = 0;
+		foreach(CharacterSave vm in this.Characters)
+		{
+			if (vm.IncludeCharacter)
+			{
+				selectedCount++;
+			}
+		}
+
+		this.CharactersText = string.Format(ScreenshotStudio.Resources.Find("LOC_Save_CharactersText", string.Empty), selectedCount, this.Characters.Count);
+
+		this.SaveLabel = ScreenshotStudio.Resources.Find("LOC_Save_SaveScene", "Save");
+		this.CanSave = true;
+
+		if (!this.IncludeLocation
+			&& !this.IncludeWeather
+			&& !this.IncludeTimeOfDay)
+		{
+			if (selectedCount == 1)
+			{
+				if (this.IncludePoses && !this.IncludeAppearances)
+				{
+					this.SaveLabel = ScreenshotStudio.Resources.Find("LOC_Save_SavePose", "Save");
+				}
+				else if (this.IncludeAppearances && !this.IncludePoses)
+				{
+					this.SaveLabel = ScreenshotStudio.Resources.Find("LOC_Save_SaveAppearance", "Save");
+				}
+			}
+
+			if (selectedCount == 0 || (!this.IncludePoses && !this.IncludeAppearances))
+			{
+				this.CanSave = false;
+			}
+		}
 	}
 }
 
@@ -94,12 +176,8 @@ public class CharacterSave(string name)
 	public string Name { get; init; } = name;
 
 	public string ToolTipText => string.Format(Resources.Find("LOC_Save_IncludeCharacterToolTip", string.Empty), this.Name);
-	public string AppearanceToolTipText => string.Format(Resources.Find("LOC_Save_IncludeAppearanceToolTip", string.Empty), this.Name);
-	public string PoseToolTipText => string.Format(Resources.Find("LOC_Save_IncludePoseToolTip", string.Empty), this.Name);
-	public string ExportPoseToolTipText => string.Format(Resources.Find("LOC_Save_ExportPoseTooltip", string.Empty), this.Name);
-	public string ExportAppearanceToolTipText => string.Format(Resources.Find("LOC_Save_ExportAppearanceTooltip", string.Empty), this.Name);
+	public string ExportPoseToolTipText => string.Format(Resources.Find("LOC_Save_ExportPoseToolTip", string.Empty), this.Name);
+	public string ExportAppearanceToolTipText => string.Format(Resources.Find("LOC_Save_ExportAppearanceToolTip", string.Empty), this.Name);
 
 	[AutoNotify] public bool IncludeCharacter { get; set; }
-	[AutoNotify] public bool IncludeAppearance { get; set; }
-	[AutoNotify] public bool IncludePose { get; set; }
 }
