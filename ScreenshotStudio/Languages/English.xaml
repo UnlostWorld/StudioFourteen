@@ -43,6 +43,12 @@
 	<sys:String x:Key="LOC_FileMeta_Author">Author</sys:String>
 	<sys:String x:Key="LOC_FileMeta_Version">Version</sys:String>
 
+	<sys:String x:Key="LOC_Save_IncludeCharacter">Include {0} in the scene</sys:String>
+	<sys:String x:Key="LOC_Save_IncludeAppearance">Include {0}'s appearance in the scene</sys:String>
+	<sys:String x:Key="LOC_Save_IncludePose">Include {0}'s pose in the scene</sys:String>
+	<sys:String x:Key="LOC_Save_ExportPoseTooltip">Export {0}'s pose as a single file (*.pose)</sys:String>
+	<sys:String x:Key="LOC_Save_ExportAppearanceTooltip">Export {0}'s appearance as a single file (*.chara)</sys:String>
+
 	<sys:String x:Key="LOC_Library_LivePreviewTooltip">Live Preview</sys:String>
 	<sys:String x:Key="LOC_Library_GoUpTooltip">Go Up</sys:String>
 	<sys:String x:Key="LOC_Library_IconViewTooltip">Icon View</sys:String>
