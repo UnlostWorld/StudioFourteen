@@ -110,7 +110,7 @@ public class PanelService : ServiceBase
 			if (panel == null)
 				continue;
 
-			if (panel is not BackgroundWindow)
+			if (panel is not BackgroundWindow && panel is not ErrorWindow)
 			{
 				string? panelTypeName = panel.GetType().FullName;
 				if (panelTypeName != null)
