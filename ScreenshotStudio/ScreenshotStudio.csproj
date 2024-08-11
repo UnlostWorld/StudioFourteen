@@ -21,6 +21,8 @@
 
 	<PropertyGroup>
 		<DalamudLibPath>$(appdata)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
+		<ApplicationIcon>Assets\icon.ico</ApplicationIcon>
+		<PackageIcon>light-pride-textless.png</PackageIcon>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(CI)' == 'true' OR '$(IsCI)' == 'true'">
 		<DalamudLibPath>$(DALAMUD_HOME)/</DalamudLibPath>
@@ -52,9 +54,17 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Content Include="Assets\icon.ico" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<None Include="$(DalamudLibPath)\..\..\..\dalamud.boot.log" Link="dalamud.boot.log" />
 		<None Include="$(DalamudLibPath)\..\..\..\dalamud.log" Link="dalamud.log" />
 		<None Include="$(DalamudLibPath)\..\..\..\pluginConfigs\ScreenshotStudio.json" Link="config.json" />
+		<None Include="..\Assets\Icon\light-pride-textless.png">
+		  <Pack>True</Pack>
+		  <PackagePath>\</PackagePath>
+		</None>
 	</ItemGroup>
 
 	<ItemGroup>

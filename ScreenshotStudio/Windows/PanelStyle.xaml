@@ -105,6 +105,7 @@
 		<Setter Property="WindowStyle" Value="None" />
 		<Setter Property="Template" Value="{StaticResource PanelTemplate}" />
 		<Setter Property="UseLayoutRounding" Value="True" />
+		<Setter Property="Icon" Value="../Assets/icon.ico" />
 	</Style>
 
 </ResourceDictionary>

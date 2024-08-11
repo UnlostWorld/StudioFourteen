@@ -231,8 +231,7 @@
 				HorizontalContentAlignment="Stretch"
 				Background="{TemplateBinding Background}"
 				Foreground="{DynamicResource ForegroundLightBrush}"
-				IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-				Style="{StaticResource WpfUtilsToggleButton}">
+				IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
 
 				<Grid Margin="2,0">
 					<Grid.ColumnDefinitions>
@@ -445,7 +444,6 @@
 									ToolTip="{DynamicResource LOC_EmbedPanelTooltip}"
 									Visibility="{TemplateBinding CanChangeEmbed,
 																 Converter={StaticResource B2V}}">
-
 									<Grid>
 										<wpfUtils:IconBlock
 											FontSize="10"
@@ -459,9 +457,29 @@
 											Visibility="{TemplateBinding IsEmbedded,
 																		 Converter={StaticResource !B2V}}" />
 									</Grid>
+								</ToggleButton>
 
+								<!--  Maximize button  -->
+								<ToggleButton
+									x:Name="MaximizeButton"
+									Width="32"
+									IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, Path=IsMaximized}"
+									Style="{StaticResource TitlebarToggleButton}"
+									ToolTip="{DynamicResource LOC_EmbedPanelTooltip}"
+									Visibility="Collapsed">
+									<Grid>
+										<wpfUtils:IconBlock
+											FontSize="10"
+											Icon="WindowRestore"
+											Visibility="{TemplateBinding IsMaximized,
+																		 Converter={StaticResource B2V}}" />
 
-
+										<wpfUtils:IconBlock
+											FontSize="10"
+											Icon="WindowMaximize"
+											Visibility="{TemplateBinding IsMaximized,
+																		 Converter={StaticResource !B2V}}" />
+									</Grid>
 								</ToggleButton>
 
 								<!--  Close Button  -->
@@ -504,6 +522,7 @@
 		<ControlTemplate.Triggers>
 			<Trigger Property="ResizeMode" Value="CanResizeWithGrip">
 				<Setter TargetName="ResizeGrip" Property="Visibility" Value="Visible" />
+				<Setter TargetName="MaximizeButton" Property="Visibility" Value="Visible" />
 			</Trigger>
 
 			<Trigger Property="IsActive" Value="True">
@@ -621,6 +640,13 @@
 					</BeginStoryboard>
 				</MultiDataTrigger.ExitActions>
 			</MultiDataTrigger>
+
+			<Trigger Property="IsMaximized" Value="True">
+				<Setter TargetName="WindowShadow" Property="Visibility" Value="Collapsed" />
+				<Setter TargetName="WindowBorder" Property="CornerRadius" Value="0" />
+				<Setter TargetName="MainGrid" Property="Margin" Value="2" />
+			</Trigger>
+
 		</ControlTemplate.Triggers>
 
 	</ControlTemplate>
@@ -636,6 +662,7 @@
 		<Setter Property="WindowStyle" Value="None" />
 		<Setter Property="Template" Value="{StaticResource PanelWindowTemplate}" />
 		<Setter Property="UseLayoutRounding" Value="True" />
+		<Setter Property="Icon" Value="../Assets/icon.ico" />
 	</Style>
 
 </ResourceDictionary>

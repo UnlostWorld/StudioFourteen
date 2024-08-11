@@ -224,6 +224,8 @@ public abstract partial class Panel : Window, IAutoNotify
 
 	partial void OnIsEmbeddedChanged(bool newValue)
 	{
+		this.WindowState = WindowState.Normal;
+
 		double t = this.Top;
 
 		if (newValue)
@@ -327,6 +329,17 @@ public abstract partial class Panel : Window, IAutoNotify
 		{
 			if (this.panelType == null)
 				throw new Exception("No panel type in panel thread");
+
+			AppDomain.CurrentDomain.UnhandledException += (s, e) =>
+			{
+				Exception? ex = e.ExceptionObject as Exception;
+				this.Log.Error(ex, $"Unhandled Exception in panel: {this.panelType}");
+			};
+
+			System.Windows.Threading.Dispatcher.CurrentDispatcher.UnhandledException += (s, e) =>
+			{
+				this.Log.Error(e.Exception, $"Unhandled Exception in panel: {this.panelType}");
+			};
 
 			try
 			{
