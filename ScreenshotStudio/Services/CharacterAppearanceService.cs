@@ -188,7 +188,7 @@ public class GroupPoseCharactersLibrarySource : SourceBase
 		});
 	}
 
-	public override void Scan()
+	protected override void Scan()
 	{
 	}
 

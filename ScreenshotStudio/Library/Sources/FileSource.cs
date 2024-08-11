@@ -5,13 +5,17 @@ using ScreenshotStudio.Library.Executors;
 using System;
 using System.IO;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
+using WpfUtils.Utils;
+
 using static System.Environment;
 
 public class FileSource : SourceBase
 {
 	private readonly string name;
 	private readonly DirectoryInfo? directory;
+
+	private FuncQueue? scanQueue;
+	private FileSystemWatcher? watcher;
 
 	public FileSource(string name, string directory)
 	{
@@ -35,10 +39,25 @@ public class FileSource : SourceBase
 
 	public override string Name => this.name;
 
-	public override void Scan()
+	protected override void Scan()
 	{
 		if (this.directory == null)
 			return;
+
+		if (this.scanQueue == null)
+		{
+			this.scanQueue = new(this.ScanSource, 200);
+		}
+
+		if (this.watcher == null && this.directory.Exists)
+		{
+			this.watcher = new(this.directory.FullName);
+			this.watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.Attributes;
+			this.watcher.Filter = "*.*";
+			this.watcher.Changed += (s, e) => this.scanQueue.Invoke();
+			this.watcher.Deleted += (s, e) => this.scanQueue.Invoke();
+			this.watcher.EnableRaisingEvents = true;
+		}
 
 		this.ScanDirectory(this.directory, this);
 	}

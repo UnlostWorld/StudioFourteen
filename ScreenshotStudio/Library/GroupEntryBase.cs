@@ -22,7 +22,7 @@ public abstract class GroupEntryBase : LibraryEntryBase
 
 	public int AllCount => this.allEntries.Count;
 
-	public void Add(ILibraryEntry entry)
+	public virtual void Add(ILibraryEntry entry)
 	{
 		lock (this)
 		{
@@ -30,7 +30,7 @@ public abstract class GroupEntryBase : LibraryEntryBase
 		}
 	}
 
-	public void Clear()
+	public virtual void Clear()
 	{
 		lock (this)
 		{

@@ -12,12 +12,27 @@ public class LibraryService : ServiceBase
 	private readonly LibraryRoot rootItem = new();
 	private readonly List<SourceBase> sources = new();
 
-	public delegate void OnScanFinishedDelegate();
-	public event OnScanFinishedDelegate? OnScanFinished;
+	public delegate void OnScanCompleteDelegate();
+	public event OnScanCompleteDelegate? ScanComplete;
 
-	public bool IsScanning { get; private set; }
 	public bool IsLoadingSources { get; private set; }
 	public GroupEntryBase Root => this.rootItem;
+
+	public bool IsScanning
+	{
+		get
+		{
+			foreach (SourceBase source in this.sources)
+			{
+				if (source.IsScanning)
+				{
+					return true;
+				}
+			}
+
+			return false;
+		}
+	}
 
 	public void AddSource(SourceBase source)
 	{
@@ -79,10 +94,10 @@ public class LibraryService : ServiceBase
 	{
 		lock (this)
 		{
-			if(this.IsScanning)
+			if (this.IsScanning)
+			{
 				return;
-
-			this.IsScanning = true;
+			}
 		}
 
 		try
@@ -100,8 +115,15 @@ public class LibraryService : ServiceBase
 			this.Log.Error(ex, "Error during library scan");
 		}
 
-		this.IsScanning = false;
-		this.OnScanFinished?.Invoke();
+		this.NotifyScanComplete();
+	}
+
+	public void NotifyScanComplete()
+	{
+		if (this.IsScanning)
+			return;
+
+		this.ScanComplete?.Invoke();
 	}
 
 	private void OnConfigurationChanged()
@@ -117,8 +139,7 @@ public class LibraryService : ServiceBase
 	{
 		try
 		{
-			source.Clear();
-			source.Scan();
+			source.ScanSource();
 		}
 		catch(Exception ex)
 		{

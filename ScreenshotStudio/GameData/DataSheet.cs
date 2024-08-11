@@ -23,8 +23,9 @@ public class DataSheetLibrarySource : SourceBase
 	}
 
 	public override string Name => Resources.Find($"LOC_Sheet{this.sheet.RowType.Name}", this.sheet.RowType.Name);
+	public override string ToString() => this.GetInternalId();
 
-	public override void Scan()
+	protected override void Scan()
 	{
 		foreach(ExcelRow row in this.sheet)
 		{
@@ -43,7 +44,6 @@ public class DataSheetLibrarySource : SourceBase
 		}
 	}
 
-	public override string ToString() => this.GetInternalId();
 	protected override string GetInternalId() => $"DataSheet_{this.sheet.RowType.Name}";
 }
 

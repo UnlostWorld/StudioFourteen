@@ -43,6 +43,8 @@ public abstract class LibraryEntryBase : ITagged, ILibraryEntry, INotifyProperty
 	public event PropertyChangedEventHandler? PropertyChanged;
 	public event EntryEvent? ExecuteRequested;
 
+	public ServiceManager Services => ServiceManager.Instance;
+
 	public abstract string Name { get; }
 	public virtual bool IsVisible { get; set; }
 	public TagCollection Tags { get; init; } = new();

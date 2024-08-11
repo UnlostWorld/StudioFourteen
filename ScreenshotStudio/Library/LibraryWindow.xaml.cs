@@ -37,6 +37,7 @@ public partial class LibraryWindow : PanelWindow
 		this.searchQueue = new(this.SearchAsync, 250);
 
 		this.TagFilter.Tags.CollectionChanged += this.OnTagsFilterChanged;
+		this.Services.Library.ScanComplete += this.OnLibraryScanComplete;
 
 		// Remember?
 		this.currentTab = this.Tabs[0];
@@ -171,6 +172,11 @@ public partial class LibraryWindow : PanelWindow
 	{
 		base.OnFrameworkUpdate(framework);
 		this.SelectedExecutor?.OnFrameworkUpdate();
+	}
+
+	private void OnLibraryScanComplete()
+	{
+		this.searchQueue.InvokeImmediate();
 	}
 
 	private async Task SearchAsync()

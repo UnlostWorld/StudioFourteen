@@ -157,8 +157,6 @@ public partial class QuickSearch : DockPanel
 
 			if (results != null)
 			{
-				results.Sort((a, b) => a.FilterMatch.CompareTo(b.FilterMatch));
-
 				await this.Dispatcher.MainThread();
 
 				this.Results.Replace(results);
