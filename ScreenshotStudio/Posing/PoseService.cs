@@ -91,6 +91,33 @@ public class PoseService : ServiceBase
 		return base.Stop();
 	}
 
+	public bool AreAllBoneReferencesLocked(int objectTableId)
+	{
+		foreach((BoneId id, BoneReference reference) in this.boneReferences)
+		{
+			if (id.ObjectTableIndex != objectTableId)
+				continue;
+
+			if (reference.Mode != BoneReference.Modes.Locked_Relative)
+				return false;
+		}
+
+		return true;
+	}
+
+	public bool SetAllBoneReferencesLocked(int objectTableId, bool locked)
+	{
+		foreach ((BoneId id, BoneReference reference) in this.boneReferences)
+		{
+			if (id.ObjectTableIndex != objectTableId)
+				continue;
+
+			reference.Mode = locked ? BoneReference.Modes.Locked_Relative : BoneReference.Modes.Relative;
+		}
+
+		return true;
+	}
+
 	public BoneReference GetOrCreateBoneReference(BoneId id, string? name = null)
 	{
 		lock (this.boneReferences)

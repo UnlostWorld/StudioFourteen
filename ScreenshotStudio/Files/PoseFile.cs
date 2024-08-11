@@ -1,9 +1,11 @@
 ﻿namespace ScreenshotStudio.Files;
 
+using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.Havok.Animation.Rig;
+using ScreenshotStudio.GameData.Excel;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Posing;
 using ScreenshotStudio.Structs;
@@ -25,6 +27,10 @@ public class PoseFileTypeInfo : JsonFileTypeInfoBase<PoseFile>
 public class PoseFile : FileBase, IPose
 {
 	public BoneTransform? ModelDifference { get; set; }
+
+	public Race.RaceRows? Race { get; set; }
+	public Tribe.TribeRows? Tribe { get; set; }
+	public Genders? Gender { get; set; }
 
 	public Dictionary<string, BoneTransform>? Bones { get; set; } = [];
 	public Dictionary<string, BoneTransform>? MainHand { get; set; } = [];
@@ -49,12 +55,28 @@ public class PoseFile : FileBase, IPose
 				if (character == null)
 					return;
 
+				// Only load translations if this pose was saved for the targets exact race, tribe, and gender,
+				// otherwise the racial skeletal differences will warp the result too much.
+				bool fullLoad = true;
+				if (this.Race != null && this.Tribe != null && this.Gender != null)
+				{
+					fullLoad &= character->GetCustomizeValue(CustomizeIndex.Race) == (byte)this.Race;
+					fullLoad &= character->GetCustomizeValue(CustomizeIndex.Tribe) == (byte)this.Tribe;
+					fullLoad &= character->GetCustomizeValue(CustomizeIndex.Gender) == (byte)this.Gender;
+				}
+				else
+				{
+					fullLoad = false;
+				}
+
 				CharacterBase* characterBase = character->GetCharacterBase();
 				if (characterBase == null)
 					return;
 
 				// TODO: check if all races have these bones or its just Hyur!
 				bool includeFace = this.Bones.ContainsKey("j_f_ulip_02_l");
+
+				Dictionary<string, BoneId> boneIds = new();
 
 				ushort partialCount = characterBase->Skeleton->PartialSkeletonCount;
 				for (int partialIdx = 0; partialIdx < partialCount; partialIdx++)
@@ -87,15 +109,32 @@ public class PoseFile : FileBase, IPose
 								continue;
 							}
 
-							if (this.Bones.TryGetValue(boneName, out BoneTransform? val))
+							BoneTransform? val;
+							if (!this.Bones.TryGetValue(boneName, out val))
 							{
-								BoneId boneId = new(character->ObjectIndex, partialIdx, poseIdx, boneIdx, boneName);
-								BoneReference reference = service.GetOrCreateBoneReference(boneId, boneName);
-								reference.Mode = BoneReference.Modes.Absolute;
-								reference.CurrentTransform.Translation.FromVector3(val.Position);
-								reference.CurrentTransform.Rotation.FromQuaternion(val.Rotation);
-								reference.CurrentTransform.Scale.FromVector3(val.Scale);
+								string? legacyName = LegacyBoneNameConverter.GetLegacyName(boneName);
+								if (legacyName == null || !this.Bones.TryGetValue(legacyName, out val))
+								{
+									continue;
+								}
 							}
+
+							if (val == null)
+								continue;
+
+							BoneId boneId = new(character->ObjectIndex, partialIdx, poseIdx, boneIdx, boneName);
+							boneIds.Add(boneName, boneId);
+
+							BoneReference reference = service.GetOrCreateBoneReference(boneId, boneName);
+							reference.Mode = BoneReference.Modes.Absolute;
+
+							if (fullLoad)
+							{
+								reference.NextAbsoluteTranslation = val.Position.ToHkVector();
+								reference.NextAbsoluteScale = val.Scale.ToHkVector();
+							}
+
+							reference.NextAbsoluteRotation = val.Rotation.ToHkQuaternion();
 						}
 					}
 				}

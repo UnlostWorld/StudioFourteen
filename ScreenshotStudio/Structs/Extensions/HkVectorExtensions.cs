@@ -37,12 +37,35 @@ public static class HkVectorExtensions
 		self.W -= other.W;
 	}
 
+	public static void Subtract(ref this hkVector4f self, Vector4 other)
+	{
+		self.X -= other.X;
+		self.Y -= other.Y;
+		self.Z -= other.Z;
+		self.W -= other.W;
+	}
+
+	public static void Subtract(ref this hkVector4f self, Vector3 other)
+	{
+		self.X -= other.X;
+		self.Y -= other.Y;
+		self.Z -= other.Z;
+	}
+
 	public static void Set(ref this hkVector4f self, hkVector4f other)
 	{
 		self.X = other.X;
 		self.Y = other.Y;
 		self.Z = other.Z;
 		self.W = other.W;
+	}
+
+	public static void Set(ref this hkVector4f self, Vector3 other)
+	{
+		self.X = other.X;
+		self.Y = other.Y;
+		self.Z = other.Z;
+		self.W = 0;
 	}
 
 	public static Vector3 ToVector3(this hkVector4f self)
@@ -56,5 +79,14 @@ public static class HkVectorExtensions
 		self.Y = vec.Y;
 		self.Z = vec.Z;
 		self.W = 0;
+	}
+
+	public static hkVector4f ToHkVector(this Vector3 self)
+	{
+		hkVector4f val = default;
+		val.X = self.X;
+		val.Y = self.Y;
+		val.Z = self.Z;
+		return val;
 	}
 }

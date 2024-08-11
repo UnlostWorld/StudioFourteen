@@ -26,6 +26,16 @@ public static class HkQuaternionExtensions
 		return new(self.X, self.Y, self.Z, self.W);
 	}
 
+	public static hkQuaternionf FromQuaternion(Quaternion q)
+	{
+		hkQuaternionf self = default;
+		self.X = q.X;
+		self.Y = q.Y;
+		self.Z = q.Z;
+		self.W = q.W;
+		return self;
+	}
+
 	public static void FromQuaternion(ref this hkQuaternionf self, Quaternion q)
 	{
 		self.X = q.X;
@@ -122,11 +132,34 @@ public static class HkQuaternionExtensions
 		self = self.Conjugate();
 	}
 
+	public static void Divide(ref this hkQuaternionf self, Quaternion other)
+	{
+		Divide(ref self, HkQuaternionExtensions.FromQuaternion(other));
+	}
+
 	public static void Set(ref this hkQuaternionf self, hkQuaternionf other)
 	{
 		self.X = other.X;
 		self.Y = other.Y;
 		self.Z = other.Z;
 		self.W = other.W;
+	}
+
+	public static void Set(ref this hkQuaternionf self, Quaternion other)
+	{
+		self.X = other.X;
+		self.Y = other.Y;
+		self.Z = other.Z;
+		self.W = other.W;
+	}
+
+	public static hkQuaternionf ToHkQuaternion(this Quaternion self)
+	{
+		hkQuaternionf val = default;
+		val.X = self.X;
+		val.Y = self.Y;
+		val.Z = self.Z;
+		val.W = self.W;
+		return val;
 	}
 }
