@@ -93,6 +93,7 @@ public class PoseService : ServiceBase
 
 	public bool AreAllBoneReferencesLocked(int objectTableId)
 	{
+		int count = 0;
 		foreach((BoneId id, BoneReference reference) in this.boneReferences)
 		{
 			if (id.ObjectTableIndex != objectTableId)
@@ -100,9 +101,11 @@ public class PoseService : ServiceBase
 
 			if (reference.Mode != BoneReference.Modes.Locked_Relative)
 				return false;
+
+			count++;
 		}
 
-		return true;
+		return count > 0;
 	}
 
 	public bool SetAllBoneReferencesLocked(int objectTableId, bool locked)
