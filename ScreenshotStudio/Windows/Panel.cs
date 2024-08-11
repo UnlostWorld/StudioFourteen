@@ -1,7 +1,7 @@
 ﻿namespace ScreenshotStudio.Windows;
 
+using DependencyPropertyGenerator;
 using Dalamud.Plugin.Services;
-using FFXIVClientStructs.FFXIV.Common.Lua;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Utilities;
@@ -16,26 +16,11 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using WpfUtils;
 
+[DependencyProperty<bool>("ShowBackground", DefaultValue = true)]
+[DependencyProperty<bool>("IsShown", DefaultValue = false)]
+[DependencyProperty<bool>("IsEmbedded", DefaultValue = true)]
 public abstract partial class Panel : Window, IAutoNotify
 {
-	public static readonly DependencyProperty ShowBackgroundProperty = DependencyProperty.Register(
-		nameof(Panel.ShowBackground),
-		typeof(bool),
-		typeof(Panel),
-		new(true));
-
-	public static readonly DependencyProperty IsShownProperty = DependencyProperty.Register(
-		nameof(Panel.IsShown),
-		typeof(bool),
-		typeof(Panel),
-		new(false));
-
-	public static readonly DependencyProperty IsEmbeddedProperty = DependencyProperty.Register(
-		nameof(Panel.IsEmbedded),
-		typeof(bool),
-		typeof(Panel),
-		new(true, IsEmbeddedChanged));
-
 	protected readonly ILogger Log;
 
 	public Panel()
@@ -59,24 +44,6 @@ public abstract partial class Panel : Window, IAutoNotify
 	public event PropertyChangedEventHandler? PropertyChanged;
 
 	public ServiceManager Services => ServiceManager.Instance;
-
-	public bool ShowBackground
-	{
-		get => (bool)this.GetValue(ShowBackgroundProperty);
-		set => this.SetValue(ShowBackgroundProperty, value);
-	}
-
-	public bool IsShown
-	{
-		get => (bool)this.GetValue(IsShownProperty);
-		set => this.SetValue(IsShownProperty, value);
-	}
-
-	public bool IsEmbedded
-	{
-		get => (bool)this.GetValue(IsEmbeddedProperty);
-		set => this.SetValue(IsEmbeddedProperty, value);
-	}
 
 	public bool IsUiVisible => !DalamudServices.GameGui?.GameUiHidden ?? true;
 
@@ -137,7 +104,15 @@ public abstract partial class Panel : Window, IAutoNotify
 	{
 		this.Services.Panels.OnPanelOpened(this);
 		await this.Dispatcher.MainThread();
-		base.Show();
+
+		try
+		{
+			base.Show();
+		}
+		catch (Exception ex)
+		{
+			this.Log.Error(ex, "Error showing window");
+		}
 	}
 
 	public new void Close()
@@ -247,25 +222,26 @@ public abstract partial class Panel : Window, IAutoNotify
 	{
 	}
 
-	private static void IsEmbeddedChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+	partial void OnIsEmbeddedChanged(bool newValue)
 	{
-		if (d is Panel panel)
+		double t = this.Top;
+
+		if (newValue)
 		{
-			if (panel.IsEmbedded)
-			{
-				XivWindow.Embed(panel);
-			}
-			else
-			{
-				XivWindow.Unembed(panel);
-			}
-
-			// wiggle wiggle
-			panel.OnResizeDelta(new DragDeltaEventArgs(1, 1));
-			panel.OnResizeDelta(new DragDeltaEventArgs(-1, -1));
-
-			panel.Activate();
+			XivWindow.Embed(this);
+			this.Top = t - (XivWindow.TitleBarHeight + 10);
 		}
+		else
+		{
+			XivWindow.Unembed(this);
+			this.Top = t;
+		}
+
+		// wiggle wiggle
+		this.OnResizeDelta(new DragDeltaEventArgs(1, 1));
+		this.OnResizeDelta(new DragDeltaEventArgs(-1, -1));
+
+		this.Activate();
 	}
 
 	private void OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
