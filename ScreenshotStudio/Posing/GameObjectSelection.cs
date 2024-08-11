@@ -28,6 +28,7 @@ public class GameObjectSelection : SelectionBase
 
 	public override string Name => this.name ?? "Unknown";
 	public override bool LockTransform { get; set; }
+	public override bool CanLockTransform => false;
 	public override string? Subtitle => null;
 
 	public override Vector3 LocalTranslation

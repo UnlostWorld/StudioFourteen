@@ -1,5 +1,6 @@
 ﻿namespace ScreenshotStudio.Posing;
 
+using DependencyPropertyGenerator;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Utilities;
@@ -16,20 +17,11 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using WpfUtils;
 
-public class SkeletonView : Canvas
+[DependencyProperty<SkeletonViewDefinition>("ViewDefinition")]
+[DependencyProperty<int>("ObjectTableIndex", DefaultValue = 1)]
+[DependencyProperty<bool>("FlipSides", DefaultValue = false)]
+public partial class SkeletonView : Canvas
 {
-	public static readonly DependencyProperty ViewDefinitionProperty = DependencyProperty.Register(
-		nameof(SkeletonView.ViewDefinition),
-		typeof(SkeletonViewDefinition),
-		typeof(SkeletonView),
-		new(null, OnViewDefinitionChanged));
-
-	public static readonly DependencyProperty ObjectTableIndexProperty = DependencyProperty.Register(
-		nameof(SkeletonView.ObjectTableIndex),
-		typeof(int),
-		typeof(SkeletonView),
-		new(-1, OnObjetTableIndexChanged));
-
 	protected readonly ILogger Log = Logging.ForContext<SkeletonView>();
 
 	private const double BackgroundOpacity = 0.25;
@@ -49,18 +41,6 @@ public class SkeletonView : Canvas
 		this.Loaded += (s, e) => this.OnLoaded();
 		this.Unloaded += (s, e) => this.OnUnloaded();
 		this.Dispatcher.ShutdownStarted += (s, e) => this.OnUnloaded();
-	}
-
-	public SkeletonViewDefinition? ViewDefinition
-	{
-		get => (SkeletonViewDefinition?)this.GetValue(ViewDefinitionProperty);
-		set => this.SetValue(ViewDefinitionProperty, value);
-	}
-
-	public int ObjectTableIndex
-	{
-		get => (int)this.GetValue(ObjectTableIndexProperty);
-		set => this.SetValue(ObjectTableIndexProperty, value);
 	}
 
 	public BoneButton? MouseOver
@@ -99,6 +79,9 @@ public class SkeletonView : Canvas
 
 	protected unsafe void Load()
 	{
+		if (DesignerProperties.GetIsInDesignMode(this))
+			return;
+
 		this.boneButtons.Clear();
 		this.boneConnections.Clear();
 
@@ -108,28 +91,7 @@ public class SkeletonView : Canvas
 		if (definition == null)
 			return;
 
-		// set background
-		if (definition.Background != null)
-		{
-			BitmapImage bmp = new();
-			bmp.BeginInit();
-			bmp.UriSource = new($"pack://application:,,,/ScreenshotStudio;component/{definition.Background}");
-			bmp.EndInit();
-
-			this.backgroundWidth = bmp.PixelWidth;
-			this.backgroundHeight = bmp.PixelHeight;
-
-			ImageBrush brush = new();
-			brush.ImageSource = bmp;
-			brush.Stretch = Stretch.Uniform;
-			brush.Opacity = BackgroundOpacity;
-			brush.AlignmentX = AlignmentX.Left;
-			brush.AlignmentY = AlignmentY.Top;
-			this.Background = brush;
-		}
-
-		if (DesignerProperties.GetIsInDesignMode(this))
-			return;
+		this.UpdateBackground();
 
 		if (definition.Size.Width > 0 && definition.Size.Height > 0)
 		{
@@ -145,6 +107,36 @@ public class SkeletonView : Canvas
 			return;
 
 		Task.Run(() => this.LoadFromTableOrChildren(objectTableIndex, definition));
+	}
+
+	protected void UpdateBackground()
+	{
+		SkeletonViewDefinition? definition = this.ViewDefinition;
+		if (definition == null)
+			return;
+
+		if (definition.Background != null)
+		{
+			BitmapImage bmp = new();
+			bmp.BeginInit();
+			bmp.UriSource = new($"pack://application:,,,/ScreenshotStudio;component/{definition.Background}");
+
+			if (definition.BackgroundFlipped != null && this.FlipSides)
+				bmp.UriSource = new($"pack://application:,,,/ScreenshotStudio;component/{definition.BackgroundFlipped}");
+
+			bmp.EndInit();
+
+			this.backgroundWidth = bmp.PixelWidth;
+			this.backgroundHeight = bmp.PixelHeight;
+
+			ImageBrush brush = new();
+			brush.ImageSource = bmp;
+			brush.Stretch = Stretch.Uniform;
+			brush.Opacity = BackgroundOpacity;
+			brush.AlignmentX = AlignmentX.Left;
+			brush.AlignmentY = AlignmentY.Top;
+			this.Background = brush;
+		}
 	}
 
 	protected async Task LoadFromTableOrChildren(int objectTableIndex, SkeletonViewDefinition definition)
@@ -362,20 +354,14 @@ public class SkeletonView : Canvas
 		}
 	}
 
-	private static void OnViewDefinitionChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+	partial void OnViewDefinitionChanged()
 	{
-		if (d is SkeletonView view)
-		{
-			view.Load();
-		}
+		this.Load();
 	}
 
-	private static void OnObjetTableIndexChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+	partial void OnObjectTableIndexChanged()
 	{
-		if (d is SkeletonView view)
-		{
-			view.Load();
-		}
+		this.Load();
 	}
 
 	private bool HasBone(string boneName)
@@ -393,10 +379,16 @@ public class SkeletonView : Canvas
 	{
 		string lookupName = boneName;
 		bool isFlip = false;
+		bool canFlip = false;
 		if (lookupName.EndsWith("_r"))
 		{
 			isFlip = true;
 			lookupName = lookupName.Substring(0, lookupName.Length - 2) + "_l";
+			canFlip = true;
+		}
+		else if (lookupName.EndsWith("_l"))
+		{
+			canFlip = true;
 		}
 
 		Point pos;
@@ -406,6 +398,11 @@ public class SkeletonView : Canvas
 		double scaleY = this.ActualHeight / (double)this.backgroundHeight;
 		double scaleX = this.ActualWidth / (double)this.backgroundWidth;
 		double scale = Math.Min(scaleX, scaleY);
+
+		if (this.FlipSides && canFlip)
+		{
+			isFlip = !isFlip;
+		}
 
 		Point finalPos = default;
 		if (isFlip)
@@ -419,6 +416,12 @@ public class SkeletonView : Canvas
 
 		finalPos.Y = pos.Y * scale;
 		return finalPos;
+	}
+
+	partial void OnFlipSidesChanged()
+	{
+		this.OnRenderSizeChanged(null);
+		this.UpdateBackground();
 	}
 
 	private void OnLoaded()
@@ -467,6 +470,7 @@ public class SkeletonView : Canvas
 			this.outer.Width = Radius * 2;
 			this.outer.Height = Radius * 2;
 			this.outer.SetResourceReference(Ellipse.FillProperty, "ControlBackgroundBrush");
+			this.outer.ToolTip = selection.Name;
 			parent.Children.Add(this.outer);
 
 			Canvas.SetZIndex(this.outer, 0);
@@ -563,6 +567,7 @@ public class SkeletonView : Canvas
 public class SkeletonViewDefinition
 {
 	public string? Background { get; set; }
+	public string? BackgroundFlipped { get; set; }
 	public Dictionary<string, Point> Bones { get; set; } = new();
 	public Size Size { get; set; }
 }

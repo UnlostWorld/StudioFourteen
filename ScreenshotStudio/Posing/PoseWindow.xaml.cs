@@ -1,4 +1,6 @@
 ﻿namespace ScreenshotStudio.Posing;
+
+using Dalamud.Utility;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
@@ -13,7 +15,6 @@ using System.Numerics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Xml.Linq;
 
 public partial class PoseWindow : CharacterWindow
 {
@@ -22,6 +23,8 @@ public partial class PoseWindow : CharacterWindow
 	public PoseEditModes[] EditModes => Enum.GetValues<PoseEditModes>();
 
 	public ObservableCollection<BoneTreeNode> Partials { get; init; } = new();
+
+	[AutoNotify] public string RevertTooltip => ScreenshotStudio.Resources.Format("LOC_Pose_RevertPose", this.CharacterName);
 
 	[AutoNotify]
 	public bool ExpandTranslationSliders
@@ -39,6 +42,13 @@ public partial class PoseWindow : CharacterWindow
 
 	[AutoNotify]
 	public bool ExpandScaleSliders
+	{
+		get => this.GetPersistence<bool>();
+		set => this.SetPersistence(value);
+	}
+
+	[AutoNotify]
+	public bool FlipSides
 	{
 		get => this.GetPersistence<bool>();
 		set => this.SetPersistence(value);
@@ -171,19 +181,6 @@ public partial class PoseWindow : CharacterWindow
 			Vector3 scale = this.LocalScale;
 			scale.Z = (float)value;
 			this.LocalScale = scale;
-		}
-	}
-
-	[AutoNotify]
-	public bool LockTransform
-	{
-		get => this.Selection?.LockTransform ?? false;
-		set
-		{
-			if (this.Selection != null)
-			{
-				this.Selection.LockTransform = value;
-			}
 		}
 	}
 
@@ -389,6 +386,11 @@ public partial class PoseWindow : CharacterWindow
 		{
 			this.Services.Pose.Selection = node.Selection;
 		}
+	}
+
+	private void OnClearClicked(object sender, RoutedEventArgs e)
+	{
+		this.Services.Pose.Selection = new GameObjectSelection((ushort)this.TargetObjectIndex);
 	}
 }
 

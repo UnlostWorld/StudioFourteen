@@ -1,6 +1,7 @@
 {
 	"Body": {
 		"Background": "/Assets/PoseCharacterBodyBackground.png",
+		"BackgroundFlipped": "/Assets/PoseCharacterBodyBackground_Flipped.png",
 		"Bones": {
 			"j_kao": "128, 60",
 			"j_kubi": "128, 85",
@@ -31,6 +32,7 @@
 
 	"Clothes": {
 		"Background": "/Assets/PoseCharacterClothesBackground.png",
+		"BackgroundFlipped": "/Assets/PoseCharacterClothesBackground_Flipped.png",
 		"Bones": {
 			"j_kosi": "130, 212",
 			"n_kataarmor_l": "80, 120",

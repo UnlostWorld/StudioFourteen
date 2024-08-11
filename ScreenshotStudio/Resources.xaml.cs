@@ -56,4 +56,9 @@ public partial class Resources : ResourceDictionary
 
 		return fallback;
 	}
+
+	public static string Format(object key, params object?[] args)
+	{
+		return string.Format(Find(key, string.Empty), args);
+	}
 }
