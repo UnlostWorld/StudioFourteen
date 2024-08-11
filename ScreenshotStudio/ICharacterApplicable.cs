@@ -1,13 +1,13 @@
 ﻿namespace ScreenshotStudio;
 
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using System.Threading.Tasks;
 
 public interface ICharacterApplicable
 {
-	public unsafe void Apply(Character* character);
+	public Task Apply(int objectTableIndex);
 }
 
 public interface ICharacterRevertible
 {
-	public unsafe void Revert(Character* character);
+	public Task Revert(int objectTableIndex);
 }

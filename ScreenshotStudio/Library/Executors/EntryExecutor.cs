@@ -2,6 +2,7 @@
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using ScreenshotStudio.Services;
+using System.Threading.Tasks;
 
 public abstract class EntryExecutor(ILibraryEntry entry)
 	: ViewModel
@@ -26,12 +27,14 @@ public abstract class EntryExecutor(ILibraryEntry entry)
 	{
 	}
 
-	public virtual void Execute()
+	public virtual Task Execute()
 	{
+		return Task.CompletedTask;
 	}
 
-	public virtual void Revert()
+	public virtual Task Revert()
 	{
+		return Task.CompletedTask;
 	}
 }
 

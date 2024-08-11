@@ -386,6 +386,6 @@ public partial class CustomizeWindow : CharacterWindow
 		if (!this.HasValidTarget)
 			return;
 
-		this.Services.CharacterAppearance.Restore(this.Target);
+		Task.Run(() => this.Services.CharacterAppearance.Restore(this.TargetObjectIndex));
 	}
 }

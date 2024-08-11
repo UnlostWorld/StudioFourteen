@@ -6,6 +6,7 @@ using Lumina.Excel;
 using ScreenshotStudio;
 using ScreenshotStudio.Library.Executors;
 using ScreenshotStudio.Structs;
+using System.Threading.Tasks;
 using WpfUtils;
 
 [Sheet("ENpcResident", 0xf74fa88c)]
@@ -61,9 +62,12 @@ public class ResidentNpc : LibraryExcelRow, ICharacterAppearance
 		return matches;
 	}
 
-	public unsafe void Apply(Character* character)
+	public unsafe Task Apply(int objectTableIndex)
 	{
-		this.EventNpc?.Apply(character);
+		if (this.EventNpc == null)
+			return Task.CompletedTask;
+
+		return this.EventNpc.Apply(objectTableIndex);
 	}
 
 	public override EntryExecutor? GetExecutor()

@@ -80,14 +80,10 @@ public partial class Targets : View
 			});*/
 	}
 
-	private unsafe void CreateCharacter(ICharacterAppearance appearance)
+	private async Task CreateCharacter(ICharacterAppearance appearance)
 	{
-		Threads.RunOnFrameworkThread(() =>
-		{
-			Character* character = this.Services.CharacterLifecycle.Create(appearance);
-			int index = character->GameObject.ObjectIndex;
-			this.SelectObject(index);
-		});
+		int index = await this.Services.CharacterLifecycle.Create(appearance);
+		this.SelectObject(index);
 	}
 
 	private unsafe void OnRemoveCharacterClicked(object sender, RoutedEventArgs e)

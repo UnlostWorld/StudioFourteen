@@ -74,25 +74,26 @@ public class CharacterLifecycleService : ServiceBase
 		return base.Tick();
 	}
 
-	public unsafe Character* Create(ICharacterAppearance? appearance = null)
+	public async Task<int> Create(ICharacterAppearance? appearance = null)
 	{
 		Threads.VerifyFrameworkThread();
 
 		if (!this.CanSpawn)
-			return null;
+			return -1;
 
 		string name = "Character";
 		if (appearance != null && !string.IsNullOrEmpty(appearance.Name))
 			name = appearance.Name;
 
-		Character* character = this.Spawn(name);
+		await Threads.FrameworkThread();
+		int index = this.Spawn(name);
 
-		if (character != null && appearance != null)
+		if (index != -1 && appearance != null)
 		{
-			appearance?.Apply(character);
+			await appearance.Apply(index);
 		}
 
-		return character;
+		return index;
 	}
 
 	public unsafe bool Destroy(Character* character)
@@ -183,28 +184,28 @@ public class CharacterLifecycleService : ServiceBase
 		return result;
 	}
 
-	private unsafe Character* Spawn(string name)
+	private unsafe int Spawn(string name)
 	{
 		if (DalamudServices.ClientState?.LocalPlayer == null)
-			return null;
+			return -1;
 
 		Threads.VerifyFrameworkThread();
 
 		Character* player = (Character*)DalamudServices.ClientState.LocalPlayer.Address;
 
 		if (player == null)
-			return null;
+			return -1;
 
 		ClientObjectManager* com = ClientObjectManager.Instance();
 		uint idCheck = com->CreateBattleCharacter();
 		if (idCheck == 0xffffffff)
-			return null;
+			return -1;
 
 		ushort spawnedCharacterId = (ushort)idCheck;
 
 		Character* pSpawned = (Character*)com->GetObjectByIndex(spawnedCharacterId);
 		if (pSpawned == null)
-			return null;
+			return -1;
 
 		EventGPoseController* gposeController = &EventFramework.Instance()->EventSceneModule.EventGPoseController;
 		gposeController->AddCharacterToGPose(pSpawned); // This is safe even if the list is full. The game will also cleanup for us.
@@ -234,6 +235,6 @@ public class CharacterLifecycleService : ServiceBase
 
 		this.Log.Information($"Spawning character {name} with id {spawnedCharacterId}");
 
-		return pSpawned;
+		return pSpawned->ObjectIndex;
 	}
 }

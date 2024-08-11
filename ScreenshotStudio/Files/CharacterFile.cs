@@ -7,7 +7,7 @@ using ScreenshotStudio.Tags;
 using ScreenshotStudio.Utilities;
 using System;
 using System.Numerics;
-
+using System.Threading.Tasks;
 using CustomizeFacialFeatures = FFXIVClientStructs.FFXIV.Client.Game.Character.CustomizeDataExtensions.FacialFeatures;
 
 public class CharacterFileTypeInfo : JsonFileTypeInfoBase<CharacterFile>
@@ -128,9 +128,8 @@ public class CharacterFile : FileBase, ICharacterAppearance
 		tags.Add(tribe?.ToTags());
 	}
 
-	public unsafe void Apply(Character* character)
+	public Task Apply(int objectTableIndex)
 	{
-		Threads.VerifyFrameworkThread();
 		throw new NotImplementedException();
 	}
 

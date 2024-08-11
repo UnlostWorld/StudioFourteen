@@ -83,26 +83,19 @@ public class CharacterAppearanceService : ServiceBase
 		this.backup.Add(index, new(character));
 	}
 
-	public unsafe void Restore(Character* character)
+	/*public async Task Restore(Character* character)
 	{
 		ushort index = character->GameObject.ObjectIndex;
 		this.Restore(index);
-	}
+	}*/
 
-	public unsafe void Restore(int objectTableIndex)
+	public async Task Restore(int objectTableIndex)
 	{
 		if (!this.backup.ContainsKey(objectTableIndex))
 			return;
 
-		Threads.RunOnFrameworkThread(() =>
-		{
-			if (DalamudServices.ObjectTable == null)
-				return;
-
-			Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
-			this.backup[objectTableIndex].Apply(character, CharacterExtensions.UpdateSource.Restore);
-			this.backup.Remove(objectTableIndex);
-		});
+		await this.backup[objectTableIndex].Apply(objectTableIndex, CharacterExtensions.UpdateSource.Restore);
+		this.backup.Remove(objectTableIndex);
 	}
 
 	private void OnGroupPoseStateChange(bool newState)
@@ -151,18 +144,28 @@ public class CharacterBackupAppearance : LibraryEntryBase, ICharacterAppearance
 	public int ModelId { get; private set; }
 	public override string Name => this.name ?? string.Empty;
 
-	public unsafe void Apply(Character* character)
+	public Task Apply(int objectTableIndex)
 	{
-		this.Apply(character, CharacterExtensions.UpdateSource.Library);
+		return this.Apply(objectTableIndex, CharacterExtensions.UpdateSource.Library);
 	}
 
-	public unsafe void Apply(Character* character, CharacterExtensions.UpdateSource source)
+	public async Task Apply(int objectTableIndex, CharacterExtensions.UpdateSource source)
 	{
-		bool redraw = true; //// this.ModelId != character->ModelCharaId;
+		await Threads.FrameworkThread();
 
-		character->UpdateModel(this.ModelId, source, false);
-		character->UpdateEquipment(this.DrawData.EquipmentModelIds, source);
-		character->UpdateCustomize(this.DrawData.CustomizeData, redraw, source);
+		if (DalamudServices.ObjectTable == null)
+			return;
+
+		unsafe
+		{
+			Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
+
+			bool redraw = true; //// this.ModelId != character->ModelCharaId;
+
+			character->UpdateModel(this.ModelId, source, false);
+			character->UpdateEquipment(this.DrawData.EquipmentModelIds, source);
+			character->UpdateCustomize(this.DrawData.CustomizeData, redraw, source);
+		}
 	}
 
 	public override EntryExecutor? GetExecutor()

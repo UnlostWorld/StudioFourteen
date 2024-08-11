@@ -6,8 +6,11 @@ using Lumina.Excel;
 using ScreenshotStudio;
 using ScreenshotStudio.Data;
 using ScreenshotStudio.Library.Executors;
+using ScreenshotStudio.Plugin;
+using ScreenshotStudio.Utilities;
 using ScreenshotStudio.Utils;
 using System.Text;
+using System.Threading.Tasks;
 using WpfUtils;
 
 public abstract class NpcBase : LibraryExcelRow, ICharacterAppearance
@@ -77,17 +80,27 @@ public abstract class NpcBase : LibraryExcelRow, ICharacterAppearance
 		}
 	}
 
-	public unsafe void Apply(Character* character)
+	public async Task Apply(int objectTableIndex)
 	{
-		bool redraw = false;
-		if (this.ModelChara != null)
-		{
-			redraw = true;
-			character->UpdateModel(this.ModelChara, CharacterExtensions.UpdateSource.Library, false);
-		}
+		await Threads.FrameworkThread();
 
-		character->UpdateCustomize(this.Customize, redraw, CharacterExtensions.UpdateSource.Library);
-		this.Equipment.ApplyTo(character, this.BackupEquipment);
+		if (DalamudServices.ObjectTable == null)
+			return;
+
+		unsafe
+		{
+			Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
+
+			bool redraw = false;
+			if (this.ModelChara != null)
+			{
+				redraw = true;
+				character->UpdateModel(this.ModelChara, CharacterExtensions.UpdateSource.Library, false);
+			}
+
+			character->UpdateCustomize(this.Customize, redraw, CharacterExtensions.UpdateSource.Library);
+			this.Equipment.ApplyTo(character, this.BackupEquipment);
+		}
 	}
 
 	public override bool Search(string[]? query)

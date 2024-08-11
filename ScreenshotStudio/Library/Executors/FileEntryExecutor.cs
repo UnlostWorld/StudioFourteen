@@ -4,6 +4,7 @@ using ScreenshotStudio;
 using ScreenshotStudio.Files;
 using ScreenshotStudio.Library.Sources;
 using ScreenshotStudio.Utilities;
+using System.Threading.Tasks;
 
 public class FileEntryExecutor(ILibraryEntry entry)
 	: EntryExecutor(entry)
@@ -60,37 +61,38 @@ public class FileEntryExecutor(ILibraryEntry entry)
 		this.typeInfo = this.fileEntry?.TypeInfo;
 	}
 
-	public unsafe override void Execute()
+	public override async Task Execute()
 	{
-		base.Execute();
+		await base.Execute();
 
 		if (this.typeInfo == null)
 			return;
 
 		if (this.typeInfo.LoadsType.IsAssignableTo(typeof(ICharacterApplicable)))
 		{
-			Threads.RunOnFrameworkThread(() =>
-			{
-				ICharacterApplicable? file = this.fileEntry?.File as ICharacterApplicable;
-				file?.Apply(this.Services.Target.Target);
-			});
+			ICharacterApplicable? file = this.fileEntry?.File as ICharacterApplicable;
+			if (file == null)
+				return;
+
+			await file.Apply(this.Services.Target.TargetObjectIndex);
 		}
 	}
 
-	public unsafe override void Revert()
+	public override async Task Revert()
 	{
-		base.Revert();
+		await base.Revert();
 
 		if (this.typeInfo == null)
 			return;
 
 		if (this.typeInfo.LoadsType.IsAssignableTo(typeof(ICharacterRevertible)))
 		{
-			Threads.RunOnFrameworkThread(() =>
-			{
-				ICharacterRevertible? file = this.fileEntry?.File as ICharacterRevertible;
-				file?.Revert(this.Services.Target.Target);
-			});
+			ICharacterRevertible? file = this.fileEntry?.File as ICharacterRevertible;
+
+			if (file == null)
+				return;
+
+			await file.Revert(this.Services.Target.TargetObjectIndex);
 		}
 	}
 }

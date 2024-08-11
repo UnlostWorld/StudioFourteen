@@ -129,7 +129,7 @@ public partial class LibraryWindow : PanelWindow
 
 				if (this.SelectedExecutor != null && this.IsLiveExecute && this.SelectedExecutor.CanExecute)
 				{
-					this.SelectedExecutor.Execute();
+					Task.Run(this.SelectedExecutor.Execute);
 				}
 			}
 		}
@@ -258,9 +258,9 @@ public partial class LibraryWindow : PanelWindow
 			this.navigation = Navigation.OpenDir;
 			this.searchQueue.InvokeImmediate();
 		}
-		else if (this.SelectedResult is Result result)
+		else if (this.SelectedResult is Result result && this.SelectedExecutor != null)
 		{
-			this.SelectedExecutor?.Execute();
+			Task.Run(this.SelectedExecutor.Execute);
 		}
 	}
 
@@ -299,12 +299,18 @@ public partial class LibraryWindow : PanelWindow
 
 	private void OnRevertClicked(object sender, RoutedEventArgs e)
 	{
-		this.SelectedExecutor?.Revert();
+		if (this.SelectedExecutor == null)
+			return;
+
+		Task.Run(this.SelectedExecutor.Revert);
 	}
 
 	private void OnExecuteClicked(object sender, RoutedEventArgs e)
 	{
-		this.SelectedExecutor?.Execute();
+		if (this.SelectedExecutor == null)
+			return;
+
+		Task.Run(this.SelectedExecutor.Execute);
 	}
 }
 

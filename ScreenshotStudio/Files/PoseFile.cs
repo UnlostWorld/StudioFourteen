@@ -4,6 +4,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.Havok.Animation.Rig;
+using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Posing;
 using ScreenshotStudio.Structs;
 using ScreenshotStudio.Structs.Extensions;
@@ -11,6 +12,7 @@ using ScreenshotStudio.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Threading.Tasks;
 using System.Xml.Linq;
 
 public class PoseFileTypeInfo : JsonFileTypeInfoBase<PoseFile>
@@ -28,60 +30,72 @@ public class PoseFile : FileBase, IPose
 	public Dictionary<string, BoneTransform>? MainHand { get; set; } = [];
 	public Dictionary<string, BoneTransform>? OffHand { get; set; } = [];
 
-	public unsafe void Apply(Character* character)
+	public async Task Apply(int objectTableIndex)
 	{
+		await Threads.FrameworkThread();
+
 		Threads.VerifyFrameworkThread();
+
+		if (DalamudServices.ObjectTable == null)
+			return;
 
 		if (this.Bones != null)
 		{
 			PoseService service = ServiceManager.Instance.Pose;
 
-			CharacterBase* characterBase = character->GetCharacterBase();
-			if (characterBase == null)
-				return;
-
-			// TODO: check if all races have these bones or its just Hyur!
-			bool includeFace = this.Bones.ContainsKey("j_f_ulip_02_l");
-
-			ushort partialCount = characterBase->Skeleton->PartialSkeletonCount;
-			for (int partialIdx = 0; partialIdx < partialCount; partialIdx++)
+			unsafe
 			{
-				PartialSkeleton* partialSkeleton = &characterBase->Skeleton->PartialSkeletons[partialIdx];
+				Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
+				if (character == null)
+					return;
 
-				byte poseCount = partialSkeleton->GetMaxPoses();
-				for (byte poseIdx = 0; poseIdx < poseCount; poseIdx++)
+				CharacterBase* characterBase = character->GetCharacterBase();
+				if (characterBase == null)
+					return;
+
+				// TODO: check if all races have these bones or its just Hyur!
+				bool includeFace = this.Bones.ContainsKey("j_f_ulip_02_l");
+
+				ushort partialCount = characterBase->Skeleton->PartialSkeletonCount;
+				for (int partialIdx = 0; partialIdx < partialCount; partialIdx++)
 				{
-					hkaPose* pose = partialSkeleton->GetHavokPose(poseIdx);
-					if (pose == null)
-						continue;
+					PartialSkeleton* partialSkeleton = &characterBase->Skeleton->PartialSkeletons[partialIdx];
 
-					int boneCount = pose->Skeleton->Bones.Length;
-					for (short boneIdx = 0; boneIdx < boneCount; boneIdx++)
+					byte poseCount = partialSkeleton->GetMaxPoses();
+					for (byte poseIdx = 0; poseIdx < poseCount; poseIdx++)
 					{
-						hkaBone bone = pose->Skeleton->Bones[boneIdx];
-						string? boneName = bone.Name.String;
-
-						if (boneName == null)
+						hkaPose* pose = partialSkeleton->GetHavokPose(poseIdx);
+						if (pose == null)
 							continue;
 
-						if (boneName == "n_root")
-							continue;
-
-						if (!includeFace
-							&& boneName.StartsWith("j_f_")
-							&& !boneName.StartsWith("j_f_eye_"))
+						int boneCount = pose->Skeleton->Bones.Length;
+						for (short boneIdx = 0; boneIdx < boneCount; boneIdx++)
 						{
-							continue;
-						}
+							hkaBone bone = pose->Skeleton->Bones[boneIdx];
+							string? boneName = bone.Name.String;
 
-						if (this.Bones.TryGetValue(boneName, out BoneTransform? val))
-						{
-							BoneId boneId = new(character->ObjectIndex, partialIdx, poseIdx, boneIdx, boneName);
-							BoneReference reference = service.GetOrCreateBoneReference(boneId, boneName);
-							reference.Mode = BoneReference.Modes.Absolute;
-							reference.CurrentTransform.Translation.FromVector3(val.Position);
-							reference.CurrentTransform.Rotation.FromQuaternion(val.Rotation);
-							reference.CurrentTransform.Scale.FromVector3(val.Scale);
+							if (boneName == null)
+								continue;
+
+							if (boneName == "n_root")
+								continue;
+
+							if (!includeFace
+								&& boneName.StartsWith("j_f_")
+								&& !boneName.StartsWith("j_f_eye_"))
+							{
+								continue;
+							}
+
+							if (this.Bones.TryGetValue(boneName, out BoneTransform? val))
+							{
+								BoneId boneId = new(character->ObjectIndex, partialIdx, poseIdx, boneIdx, boneName);
+								BoneReference reference = service.GetOrCreateBoneReference(boneId, boneName);
+								reference.Mode = BoneReference.Modes.Absolute;
+								reference.CurrentTransform.Translation.FromVector3(val.Position);
+								reference.CurrentTransform.Rotation.FromQuaternion(val.Rotation);
+								reference.CurrentTransform.Scale.FromVector3(val.Scale);
+							}
 						}
 					}
 				}
@@ -89,9 +103,10 @@ public class PoseFile : FileBase, IPose
 		}
 	}
 
-	public unsafe void Revert(Character* character)
+	public Task Revert(int objectTableIndex)
 	{
-		ServiceManager.Instance.Pose.FlushBoneReferences(character);
+		ServiceManager.Instance.Pose.FlushBoneReferences(objectTableIndex);
+		return Task.CompletedTask;
 	}
 
 	public class BoneTransform
