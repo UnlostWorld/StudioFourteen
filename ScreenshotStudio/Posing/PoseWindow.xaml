@@ -64,59 +64,61 @@
 						</MultiBinding>
 					</TabItem.Visibility>
 
-					<Grid>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition />
-							<ColumnDefinition />
-							<ColumnDefinition Width="Auto" />
-						</Grid.ColumnDefinitions>
-						<Grid.RowDefinitions>
-							<RowDefinition />
-							<RowDefinition />
-							<RowDefinition />
-						</Grid.RowDefinitions>
+					<ScrollViewer>
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition />
+								<ColumnDefinition />
+								<ColumnDefinition Width="Auto" />
+							</Grid.ColumnDefinitions>
+							<Grid.RowDefinitions>
+								<RowDefinition />
+								<RowDefinition />
+								<RowDefinition />
+							</Grid.RowDefinitions>
 
-						<pose:SkeletonView
-							x:Name="BodyView"
-							Grid.RowSpan="3"
-							Grid.Column="0"
-							FlipSides="{Binding FlipSides}"
-							ObjectTableIndex="{Binding TargetObjectIndex}"
-							ViewDefinition="{Binding Services.Data.SkeletonViews[Body]}" />
+							<pose:SkeletonView
+								x:Name="BodyView"
+								Grid.RowSpan="3"
+								Grid.Column="0"
+								FlipSides="{Binding FlipSides}"
+								ObjectTableIndex="{Binding TargetObjectIndex}"
+								ViewDefinition="{Binding Services.Data.SkeletonViews[Body]}" />
 
-						<pose:SkeletonView
-							x:Name="ClothesView"
-							Grid.RowSpan="3"
-							Grid.Column="1"
-							FlipSides="{Binding FlipSides}"
-							ObjectTableIndex="{Binding TargetObjectIndex}"
-							ViewDefinition="{Binding Services.Data.SkeletonViews[Clothes]}" />
+							<pose:SkeletonView
+								x:Name="ClothesView"
+								Grid.RowSpan="3"
+								Grid.Column="1"
+								FlipSides="{Binding FlipSides}"
+								ObjectTableIndex="{Binding TargetObjectIndex}"
+								ViewDefinition="{Binding Services.Data.SkeletonViews[Clothes]}" />
 
-						<pose:SkeletonView
-							x:Name="TailView"
-							Grid.Row="0"
-							Grid.Column="2"
-							FlipSides="{Binding FlipSides}"
-							ObjectTableIndex="{Binding TargetObjectIndex}"
-							ViewDefinition="{Binding Services.Data.SkeletonViews[Tail]}" />
+							<pose:SkeletonView
+								x:Name="TailView"
+								Grid.Row="0"
+								Grid.Column="2"
+								FlipSides="{Binding FlipSides}"
+								ObjectTableIndex="{Binding TargetObjectIndex}"
+								ViewDefinition="{Binding Services.Data.SkeletonViews[Tail]}" />
 
-						<pose:SkeletonView
-							x:Name="PenisView"
-							Grid.Row="1"
-							Grid.Column="2"
-							FlipSides="{Binding FlipSides}"
-							ObjectTableIndex="{Binding TargetObjectIndex}"
-							ViewDefinition="{Binding Services.Data.SkeletonViews[Penis]}" />
+							<pose:SkeletonView
+								x:Name="PenisView"
+								Grid.Row="1"
+								Grid.Column="2"
+								FlipSides="{Binding FlipSides}"
+								ObjectTableIndex="{Binding TargetObjectIndex}"
+								ViewDefinition="{Binding Services.Data.SkeletonViews[Penis]}" />
 
-						<pose:SkeletonView
-							x:Name="VaginaView"
-							Grid.Row="2"
-							Grid.Column="2"
-							FlipSides="{Binding FlipSides}"
-							ObjectTableIndex="{Binding TargetObjectIndex}"
-							ViewDefinition="{Binding Services.Data.SkeletonViews[Vagina]}" />
+							<pose:SkeletonView
+								x:Name="VaginaView"
+								Grid.Row="2"
+								Grid.Column="2"
+								FlipSides="{Binding FlipSides}"
+								ObjectTableIndex="{Binding TargetObjectIndex}"
+								ViewDefinition="{Binding Services.Data.SkeletonViews[Vagina]}" />
 
-					</Grid>
+						</Grid>
+					</ScrollViewer>
 				</TabItem>
 
 				<TabItem Header="Hands">
