@@ -7,6 +7,7 @@ using ScreenshotStudio.Input;
 using ScreenshotStudio.Library;
 using ScreenshotStudio.Posing;
 using ScreenshotStudio.Services;
+using ScreenshotStudio.Tablet;
 
 public class ServiceManager : ServiceManagerBase
 {
@@ -28,4 +29,5 @@ public class ServiceManager : ServiceManagerBase
 	public PoseService Pose { get; init; } = new();
 	public FileThumbnailService Thumbnails { get; init; } = new();
 	public TargetService Target { get; init; } = new();
+	public TabletService Tablet { get; init; } = new();
 }

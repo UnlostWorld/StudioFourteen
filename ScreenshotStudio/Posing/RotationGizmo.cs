@@ -170,6 +170,7 @@ public class RotationGizmo : View
 			}
 
 			this.Rotation = this.Rotation * rot;
+			e.Handled = true;
 		}
 	}
 
@@ -247,6 +248,11 @@ public class RotationGizmo : View
 			if (Keyboard.Modifiers == ModifierKeys.Control)
 				angleChange /= 10;
 
+			if (this.Services.Tablet.PenPressure > 0)
+			{
+				angleChange *= this.Services.Tablet.PenPressure;
+			}
+
 			Quaternion rot = Quaternion.Identity;
 			if (this.dragAxis.Axis == Axis.X)
 			{
@@ -263,11 +269,13 @@ public class RotationGizmo : View
 
 			this.dragRotation = this.dragRotation * rot;
 			this.Rotation = this.dragRotation;
+			e.Handled = true;
 		}
 		else if (this.closestAxisMousePos != null && this.closestMouseAxis != null && closestAxisPointToMouseDistance < AxisHoverMouseDistance)
 		{
 			this.mousePrompt.Visibility = Visibility.Visible;
 			this.mousePrompt.Fill = this.closestMouseAxis.ForegroundBrush;
+
 			Canvas.SetLeft(this.mousePrompt, this.closestAxisMousePos.Value.X - (this.mousePrompt.Width / 2));
 			Canvas.SetTop(this.mousePrompt, this.closestAxisMousePos.Value.Y - (this.mousePrompt.Height / 2));
 		}

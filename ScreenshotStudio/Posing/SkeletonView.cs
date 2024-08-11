@@ -343,9 +343,9 @@ public partial class SkeletonView : Canvas
 		this.MouseOver = null;
 	}
 
-	protected override void OnMouseDown(MouseButtonEventArgs e)
+	protected override void OnMouseUp(MouseButtonEventArgs e)
 	{
-		base.OnMouseDown(e);
+		base.OnMouseUp(e);
 
 		if (this.MouseOver != null)
 		{
