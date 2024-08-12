@@ -23,6 +23,22 @@ public class TargetService : ServiceBase
 	/// </summary>
 	public unsafe Character* Target { get; private set; } = null;
 
+	public unsafe void SetTarget(int objectTableIndex)
+	{
+		Threads.RunOnFrameworkThread(() =>
+		{
+			if (DalamudServices.ObjectTable == null)
+				return;
+
+			GameObject* target = (GameObject*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
+
+			if (target == null)
+				return;
+
+			TargetSystem.Instance()->GPoseTarget = target;
+		});
+	}
+
 	protected unsafe override void OnFrameworkUpdate(IFramework framework)
 	{
 		base.OnFrameworkUpdate(framework);

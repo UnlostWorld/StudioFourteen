@@ -18,11 +18,17 @@
 
 	<studio:View.Resources>
 		<converters:NotNullToBoolConverter x:Key="NotNullToBoolConverter" />
-		<converters:NotNullToVisibilityConverter x:Key="!B2V" />
+		<converters:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter" />
 		<BooleanToVisibilityConverter x:Key="B2V" />
 	</studio:View.Resources>
 
 	<Grid>
+
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+
 		<Grid.Resources>
 			<Storyboard x:Key="Expand">
 				<DoubleAnimation
@@ -65,113 +71,201 @@
 			BorderThickness="1"
 			CornerRadius="6">
 
-
-			<StackPanel
+			<Border
 				Margin="1"
-				HorizontalAlignment="Center"
-				VerticalAlignment="Top"
-				Orientation="Horizontal">
+				Style="{DynamicResource WpfUtilsControlBorder}">
 
-				<StackPanel.Resources>
-					<sys:Double x:Key="ButtonWidth">100</sys:Double>
-				</StackPanel.Resources>
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
 
-				<Button
-					Width="32"
-					Click="OnAddCharacterClicked"
-					ToolTip="{DynamicResource LOC_Target_CreateCharacter}">
-					<wpfUtils:IconBlock Icon="UserPlus" />
-				</Button>
 
-				<Border
-					Margin="1"
-					Style="{DynamicResource WpfUtilsControlBorder}">
+					<StackPanel
+						Grid.Column="0"
+						Margin="1"
+						Orientation="Horizontal">
 
-					<ItemsControl ItemsSource="{Binding Characters}">
-						<ItemsControl.ItemsPanel>
-							<ItemsPanelTemplate>
-								<StackPanel Orientation="Horizontal" />
-							</ItemsPanelTemplate>
-						</ItemsControl.ItemsPanel>
+						<StackPanel.Resources>
+							<sys:Double x:Key="ButtonWidth">128</sys:Double>
+						</StackPanel.Resources>
 
-						<ItemsControl.ItemTemplate>
-							<DataTemplate DataType="{x:Type local:CharacterViewModel}">
 
-								<Grid
-									x:Name="ContentArea"
-									Width="0">
+						<ItemsControl ItemsSource="{Binding Characters}">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<StackPanel Orientation="Horizontal" />
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
 
-									<ToggleButton
-										Width="{StaticResource ButtonWidth}"
-										HorizontalAlignment="Center"
-										Background="Transparent"
-										IsChecked="{Binding IsCurrent}">
-										<TextBlock
-											Margin="6,3"
+							<ItemsControl.ItemTemplate>
+								<DataTemplate DataType="{x:Type local:CharacterViewModel}">
+
+									<Grid
+										x:Name="ContentArea"
+										Width="0">
+
+										<ToggleButton
+											Width="{StaticResource ButtonWidth}"
+											Height="36"
 											HorizontalAlignment="Center"
-											Text="{Binding Name}"
-											TextTrimming="CharacterEllipsis"
-											TextWrapping="NoWrap" />
-									</ToggleButton>
-								</Grid>
+											Background="Transparent"
+											IsChecked="{Binding IsCurrent}">
+											<Grid Margin="6,3">
 
-								<DataTemplate.Triggers>
-									<DataTrigger
-										Binding="{Binding IsValid}"
-										Value="True">
-										<DataTrigger.EnterActions>
-											<BeginStoryboard>
-												<Storyboard>
-													<DoubleAnimation
-														Storyboard.TargetName="ContentArea"
-														Storyboard.TargetProperty="Width"
-														To="{StaticResource ButtonWidth}"
-														Duration="0:00:00.150">
-														<DoubleAnimation.EasingFunction>
-															<SineEase EasingMode="EaseOut" />
-														</DoubleAnimation.EasingFunction>
-													</DoubleAnimation>
-												</Storyboard>
-											</BeginStoryboard>
-										</DataTrigger.EnterActions>
-										<DataTrigger.ExitActions>
-											<BeginStoryboard>
-												<Storyboard>
-													<DoubleAnimation
-														Storyboard.TargetName="ContentArea"
-														Storyboard.TargetProperty="Width"
-														To="0"
-														Duration="0:00:00.250">
-														<DoubleAnimation.EasingFunction>
-															<SineEase EasingMode="EaseIn" />
-														</DoubleAnimation.EasingFunction>
-													</DoubleAnimation>
-												</Storyboard>
-											</BeginStoryboard>
-										</DataTrigger.ExitActions>
-									</DataTrigger>
-								</DataTemplate.Triggers>
+												<Grid.RowDefinitions>
+													<RowDefinition />
+													<RowDefinition Height="Auto" />
+												</Grid.RowDefinitions>
 
-							</DataTemplate>
-						</ItemsControl.ItemTemplate>
-					</ItemsControl>
-				</Border>
+												<TextBlock
+													Grid.Row="0"
+													Margin="0"
+													HorizontalAlignment="Center"
+													Style="{DynamicResource Body}"
+													Text="{Binding Nickname}"
+													TextTrimming="CharacterEllipsis"
+													TextWrapping="NoWrap" />
 
-				<Button
-					Width="32"
-					Click="OnRemoveCharacterClicked"
-					IsEnabled="{Binding Target, Converter={StaticResource NotNullToBoolConverter}}">
-					<Button.ToolTip>
-						<TextBlock>
-							<Run Text="{DynamicResource LOC_Target_DeleteCharacter}" />
-							<Run Text=" - " />
-							<Run Text="{Binding Target.Name, Mode=OneWay}" />
-						</TextBlock>
-					</Button.ToolTip>
-					<wpfUtils:IconBlock Icon="TrashAlt" />
-				</Button>
+												<TextBlock
+													Grid.Row="1"
+													Margin="0"
+													HorizontalAlignment="Center"
+													Style="{DynamicResource Subscript}"
+													Text="{Binding Name}"
+													TextTrimming="CharacterEllipsis"
+													TextWrapping="NoWrap" />
+											</Grid>
 
-			</StackPanel>
+										</ToggleButton>
+									</Grid>
+
+									<DataTemplate.Triggers>
+										<DataTrigger
+											Binding="{Binding IsValid}"
+											Value="True">
+											<DataTrigger.EnterActions>
+												<BeginStoryboard>
+													<Storyboard>
+														<DoubleAnimation
+															Storyboard.TargetName="ContentArea"
+															Storyboard.TargetProperty="Width"
+															To="{StaticResource ButtonWidth}"
+															Duration="0:00:00.150">
+															<DoubleAnimation.EasingFunction>
+																<SineEase EasingMode="EaseOut" />
+															</DoubleAnimation.EasingFunction>
+														</DoubleAnimation>
+													</Storyboard>
+												</BeginStoryboard>
+											</DataTrigger.EnterActions>
+											<DataTrigger.ExitActions>
+												<BeginStoryboard>
+													<Storyboard>
+														<DoubleAnimation
+															Storyboard.TargetName="ContentArea"
+															Storyboard.TargetProperty="Width"
+															To="0"
+															Duration="0:00:00.250">
+															<DoubleAnimation.EasingFunction>
+																<SineEase EasingMode="EaseIn" />
+															</DoubleAnimation.EasingFunction>
+														</DoubleAnimation>
+													</Storyboard>
+												</BeginStoryboard>
+											</DataTrigger.ExitActions>
+										</DataTrigger>
+									</DataTemplate.Triggers>
+
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</StackPanel>
+
+					<Button
+						Grid.Column="1"
+						Width="38"
+						Height="Auto"
+						VerticalAlignment="Stretch"
+						Click="OnAddCharacterClicked"
+						ToolTip="{DynamicResource LOC_Target_CreateCharacter}">
+						<wpfUtils:IconBlock Icon="UserPlus" />
+					</Button>
+				</Grid>
+			</Border>
+		</Border>
+
+		<Border
+			Grid.Row="1"
+			MinWidth="280"
+			Margin="20,0"
+			HorizontalAlignment="Center"
+			Background="{DynamicResource BackgroundBrush}"
+			BorderBrush="{DynamicResource BackgroundBrush}"
+			BorderThickness="1"
+			CornerRadius="0,0,6,6"
+			Visibility="{Binding Target.IsValid, Converter={StaticResource NotNullToVisibilityConverter}, FallbackValue=Collapsed}">
+
+			<Border
+				Margin="2,0,2,2"
+				Style="{DynamicResource WpfUtilsControlBorder}">
+
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+
+					<Grid Grid.Column="0">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition />
+						</Grid.ColumnDefinitions>
+
+						<Button
+							Grid.Column="0"
+							Width="32"
+							Margin="2,1,1,1"
+							Background="Transparent"
+							Click="OnResetNicknameClicked"
+							ToolTip="Reset nickname to default">
+							<wpfUtils:IconBlock
+								Foreground="{DynamicResource ForegroundLightBrush}"
+								Icon="IdCard"
+								IconFont="Solid" />
+						</Button>
+
+						<TextBox
+							Grid.Column="1"
+							Background="Transparent"
+							Text="{Binding Target.Nickname, UpdateSourceTrigger=PropertyChanged}"
+							ToolTip="Nicknames are saved in scene files, be careful with identifying information!" />
+					</Grid>
+
+
+
+					<Button
+						Grid.Column="2"
+						Width="32"
+						Margin="2,1,1,1"
+						Background="Transparent"
+						Click="OnRemoveCharacterClicked"
+						IsEnabled="{Binding Target, Converter={StaticResource NotNullToBoolConverter}}">
+						<Button.ToolTip>
+							<TextBlock>
+								<Run Text="{DynamicResource LOC_Target_DeleteCharacter}" />
+								<Run Text=" - " />
+								<Run Text="{Binding Target.Name, Mode=OneWay}" />
+							</TextBlock>
+						</Button.ToolTip>
+						<wpfUtils:IconBlock
+							Icon="TrashAlt"
+							IconFont="Solid" />
+					</Button>
+				</Grid>
+			</Border>
+
 		</Border>
 	</Grid>
 
