@@ -1,7 +1,6 @@
 ﻿namespace FFXIVClientStructs.FFXIV.Client.Game.Character;
 
 using Dalamud.Game.ClientState.Objects.Enums;
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using global::System;
 using global::System.Runtime.InteropServices;
@@ -42,6 +41,29 @@ public static class CharacterExtensions
 			return false;
 
 		return self.RenderFlags == (int)RenderMode.Draw;
+	}
+
+	public static unsafe string? GetDisplayName(ref this Character self)
+	{
+		string? nickname = ServiceManager.Instance.Nickname.GetNickname(self.ObjectIndex);
+		if (nickname != null)
+			return nickname;
+
+		if (self.GetKind() == ObjectKind.Companion || self.GetKind() == ObjectKind.BattleNpc)
+		{
+			Character* pOwner = self.GetParentCharacter();
+			if (pOwner != null)
+			{
+				string? ownersName = pOwner->GetNameAsString();
+				if (ownersName != null)
+				{
+					ownersName = ownersName.Split(' ')[0];
+					return $"{ownersName}'s {self.GetNameAsString()}";
+				}
+			}
+		}
+
+		return self.GetNameAsString();
 	}
 
 	public static unsafe string? GetNameAsString(ref this Character self)

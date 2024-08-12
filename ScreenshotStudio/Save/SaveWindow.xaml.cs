@@ -1,5 +1,6 @@
 ﻿namespace ScreenshotStudio.Save;
 
+using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
@@ -66,8 +67,15 @@ public partial class SaveWindow : PanelWindow
 				if (character == null)
 					continue;
 
-				string name = character->GetNameAsString() ?? "Unknown";
-				CharacterViewModel vm = new(name);
+				string name = character->GetDisplayName() ?? "Unknown";
+
+				string? nickname = this.Services.Nickname.GetNickname(i);
+				if (nickname == null)
+				{
+					nickname = this.Services.Nickname.GetDefaultNickname(i);
+				}
+
+				CharacterViewModel vm = new(nickname, name);
 				vm.IncludeCharacter = i == fromIndex;
 				characters.Add(vm);
 			}
@@ -131,12 +139,13 @@ public partial class SaveWindow : PanelWindow
 	}
 }
 
-public class CharacterViewModel(string name)
+public class CharacterViewModel(string? nickname, string name)
 	: ViewModel
 {
+	public string? Nickname { get; init; } = nickname;
 	public string Name { get; init; } = name;
 
-	public string ToolTipText => string.Format(Resources.Find("LOC_Save_IncludeCharacterToolTip", string.Empty), this.Name);
+	public string ToolTipText => string.Format(Resources.Find("LOC_Save_IncludeCharacterToolTip", string.Empty), this.Name, this.Nickname ?? this.Name);
 	public string ExportPoseToolTipText => string.Format(Resources.Find("LOC_Save_ExportPoseToolTip", string.Empty), this.Name);
 	public string ExportAppearanceToolTipText => string.Format(Resources.Find("LOC_Save_ExportAppearanceToolTip", string.Empty), this.Name);
 

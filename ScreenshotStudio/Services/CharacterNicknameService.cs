@@ -19,10 +19,6 @@ public class CharacterNicknameService : ServiceBase
 	{
 		string? name;
 		this.nicknames.TryGetValue(objectTableId, out name);
-
-		if (name == null)
-			this.defaultNicknames.TryGetValue(objectTableId, out name);
-
 		return name;
 	}
 
@@ -38,6 +34,13 @@ public class CharacterNicknameService : ServiceBase
 			this.nicknames.Add(objectTableId, name);
 
 		this.nicknames[objectTableId] = name;
+	}
+
+	public string? GetDefaultNickname(int objectTableId)
+	{
+		string? name;
+		this.defaultNicknames.TryGetValue(objectTableId, out name);
+		return name;
 	}
 
 	public override Task Start()
@@ -67,14 +70,6 @@ public class CharacterNicknameService : ServiceBase
 					this.defaultNicknames.Add(i, raceName);
 
 				this.defaultNicknames[i] = raceName;
-			}
-			else if (kind == ObjectKind.Companion)
-			{
-				this.defaultNicknames[i] = pCharacter->GetNameAsString() ?? kind.ToString();
-			}
-			else
-			{
-				this.defaultNicknames[i] = kind.ToString();
 			}
 		}
 	}

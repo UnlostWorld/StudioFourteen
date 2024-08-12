@@ -170,19 +170,49 @@
 
 									<CheckBox
 										Grid.Column="0"
+										Height="38"
 										Margin="0"
 										Background="Transparent"
 										Checked="OnChanged"
-										Content="{Binding Name}"
 										IsChecked="{Binding IncludeCharacter}"
 										ToolTip="{Binding ToolTipText}"
-										Unchecked="OnChanged" />
+										Unchecked="OnChanged">
+										<Grid>
+
+											<Grid
+												x:Name="NicknameStack"
+												VerticalAlignment="Center">
+												<Grid.RowDefinitions>
+													<RowDefinition Height="Auto" />
+													<RowDefinition Height="Auto" />
+												</Grid.RowDefinitions>
+
+												<TextBlock
+													Grid.Row="0"
+													Margin="2,2,2,0"
+													Text="{Binding Nickname}" />
+												<TextBlock
+													Grid.Row="1"
+													Margin="2,0,2,4"
+													Style="{DynamicResource Subscript}"
+													Text="{Binding Name}" />
+											</Grid>
+
+											<TextBlock
+												x:Name="NameText"
+												Grid.Row="0"
+												VerticalAlignment="Center"
+												Text="{Binding Name}"
+												Visibility="Collapsed" />
+										</Grid>
+									</CheckBox>
 
 									<Button
 										Grid.Column="1"
 										Width="28"
-										Height="24"
-										Margin="0,0,1,0"
+										Height="Auto"
+										Margin="0,1,1,1"
+										VerticalAlignment="Stretch"
 										Background="Transparent"
 										ToolTip="{Binding ExportAppearanceToolTipText}">
 										<wpfUtils:IconBlock Icon="UserShield" />
@@ -191,14 +221,24 @@
 									<Button
 										Grid.Column="2"
 										Width="28"
-										Height="24"
-										Margin="0,0,1,0"
+										Height="Auto"
+										Margin="0,1,1,1"
+										VerticalAlignment="Stretch"
 										Background="Transparent"
 										ToolTip="{Binding ExportPoseToolTipText}">
 										<wpfUtils:IconBlock Icon="Running" />
 									</Button>
 								</Grid>
 							</Border>
+
+							<DataTemplate.Triggers>
+								<DataTrigger
+									Binding="{Binding Nickname}"
+									Value="{x:Null}">
+									<Setter TargetName="NicknameStack" Property="Visibility" Value="Collapsed" />
+									<Setter TargetName="NameText" Property="Visibility" Value="Visible" />
+								</DataTrigger>
+							</DataTemplate.Triggers>
 
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>

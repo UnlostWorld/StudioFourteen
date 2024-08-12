@@ -1,12 +1,13 @@
 ﻿namespace ScreenshotStudio.Services;
 
 using ScreenshotStudio.Studio;
+using ScreenshotStudio.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-
+using WpfUtils.Extensions;
 using Panel = ScreenshotStudio.Windows.Panel;
 
 public class PanelService : ServiceBase
@@ -83,19 +84,7 @@ public class PanelService : ServiceBase
 		await base.Start();
 
 		this.backgroundWindow = await Panel.ShowAsync<BackgroundWindow>();
-
-		foreach (string panelTypeName in this.Settings.OpenPanels)
-		{
-			Type? panelType = Type.GetType(panelTypeName);
-			if (panelType != null)
-			{
-				Panel.Show(panelType);
-			}
-			else
-			{
-				this.Log.Information($"Failed to find panel type {panelTypeName}");
-			}
-		}
+		this.RestorePanels().Run();
 	}
 
 	public override async Task Stop()
@@ -120,6 +109,28 @@ public class PanelService : ServiceBase
 			}
 
 			await panel.CloseAsync();
+		}
+	}
+
+	private async Task RestorePanels()
+	{
+		// make sure at least one game frame as passed
+		await Threads.FrameworkThread();
+
+		// plus a short delay
+		await Task.Delay(100);
+
+		foreach (string panelTypeName in this.Settings.OpenPanels)
+		{
+			Type? panelType = Type.GetType(panelTypeName);
+			if (panelType != null)
+			{
+				Panel.Show(panelType);
+			}
+			else
+			{
+				this.Log.Information($"Failed to find panel type {panelTypeName}");
+			}
 		}
 	}
 

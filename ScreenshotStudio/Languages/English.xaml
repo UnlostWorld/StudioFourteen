@@ -34,7 +34,7 @@
 	<sys:String x:Key="LOC_Scale">Scale</sys:String>
 
 	<sys:String x:Key="LOC_Target_CreateCharacter">Add a new character</sys:String>
-	<sys:String x:Key="LOC_Target_DeleteCharacter">Remove character</sys:String>
+	<sys:String x:Key="LOC_Target_DeleteCharacter">Remove {0}</sys:String>
 
 	<sys:String x:Key="LOC_Revert">Revert</sys:String>
 	<sys:String x:Key="LOC_Apply">Apply</sys:String>
@@ -51,7 +51,7 @@
 	<sys:String x:Key="LOC_Save_IncludePoses">Poses</sys:String>
 	<sys:String x:Key="LOC_Save_IncludeAppearancesToolTip">Include appearances for the selected characters in the scene file</sys:String>
 	<sys:String x:Key="LOC_Save_IncludePosesToolTip">Include poses for the selected characters in the scene file</sys:String>
-	<sys:String x:Key="LOC_Save_IncludeCharacterToolTip">Include {0} in the scene file</sys:String>
+	<sys:String x:Key="LOC_Save_IncludeCharacterToolTip">Include {0} (saved as {1}) in the scene file</sys:String>
 	<sys:String x:Key="LOC_Save_ExportPoseToolTip">Export {0}'s pose as a single file (*.pose)</sys:String>
 	<sys:String x:Key="LOC_Save_ExportAppearanceToolTip">Export {0}'s appearance as a single file (*.chara)</sys:String>
 	<sys:String x:Key="LOC_Save_SaveScene">Save Scene</sys:String>

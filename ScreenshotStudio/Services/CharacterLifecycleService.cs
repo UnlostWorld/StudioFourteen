@@ -82,12 +82,8 @@ public class CharacterLifecycleService : ServiceBase
 		if (!this.CanSpawn)
 			return -1;
 
-		string name = "Character";
-		if (appearance != null && !string.IsNullOrEmpty(appearance.Name))
-			name = appearance.Name;
-
 		await Threads.FrameworkThread();
-		int index = this.Spawn(name);
+		int index = this.Spawn("Studio Character");
 
 		if (index != -1 && appearance != null)
 		{
