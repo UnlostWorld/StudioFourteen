@@ -26,6 +26,7 @@ public partial class Targets : View
 	public List<CharacterViewModel> Characters { get; init; } = new();
 
 	[AutoNotify] public bool IsInGPose => this.Services.Studio.IsOpenAndInGPose;
+	[AutoNotify] public string RemoveCharacterTooltip => ScreenshotStudio.Resources.Format("LOC_Target_DeleteCharacter", this.Target?.Name);
 
 	[AutoNotify]
 	public CharacterViewModel? Target
@@ -176,20 +177,14 @@ public unsafe class CharacterViewModel : ViewModel
 
 		if (this.IsValid)
 		{
+			// Hide ornaments and mounts
 			this.IsValid &= pCharacter->ObjectKind != ObjectKind.Ornament;
 			this.IsValid &= pCharacter->ObjectKind != ObjectKind.Mount;
 		}
 
 		if (this.IsValid)
 		{
-			this.Name = pCharacter->GetNameAsString();
-
-			if (pCharacter->ObjectKind == ObjectKind.Companion)
-			{
-				Character* pOwner = pCharacter->GetParentCharacter();
-				this.Name = $"{pOwner->GetNameAsString()}'s {this.Name}";
-			}
-
+			this.Name = pCharacter->GetDisplayName();
 			this.isCurrent = TargetSystem.Instance()->GPoseTarget == pCharacter;
 		}
 		else

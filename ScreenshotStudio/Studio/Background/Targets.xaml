@@ -24,11 +24,6 @@
 
 	<Grid>
 
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
-
 		<Grid.Resources>
 			<Storyboard x:Key="Expand">
 				<DoubleAnimation
@@ -79,6 +74,7 @@
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition />
 						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 
 
@@ -88,7 +84,7 @@
 						Orientation="Horizontal">
 
 						<StackPanel.Resources>
-							<sys:Double x:Key="ButtonWidth">128</sys:Double>
+							<sys:Double x:Key="ButtonWidth">100</sys:Double>
 						</StackPanel.Resources>
 
 
@@ -108,7 +104,6 @@
 
 										<ToggleButton
 											Width="{StaticResource ButtonWidth}"
-											Height="36"
 											HorizontalAlignment="Center"
 											Background="Transparent"
 											IsChecked="{Binding IsCurrent}">
@@ -124,15 +119,6 @@
 													Margin="0"
 													HorizontalAlignment="Center"
 													Style="{DynamicResource Body}"
-													Text="{Binding Nickname}"
-													TextTrimming="CharacterEllipsis"
-													TextWrapping="NoWrap" />
-
-												<TextBlock
-													Grid.Row="1"
-													Margin="0"
-													HorizontalAlignment="Center"
-													Style="{DynamicResource Subscript}"
 													Text="{Binding Name}"
 													TextTrimming="CharacterEllipsis"
 													TextWrapping="NoWrap" />
@@ -186,86 +172,27 @@
 					<Button
 						Grid.Column="1"
 						Width="38"
-						Height="Auto"
 						VerticalAlignment="Stretch"
+						Background="Transparent"
 						Click="OnAddCharacterClicked"
 						ToolTip="{DynamicResource LOC_Target_CreateCharacter}">
 						<wpfUtils:IconBlock Icon="UserPlus" />
 					</Button>
-				</Grid>
-			</Border>
-		</Border>
-
-		<Border
-			Grid.Row="1"
-			MinWidth="280"
-			Margin="20,0"
-			HorizontalAlignment="Center"
-			Background="{DynamicResource BackgroundBrush}"
-			BorderBrush="{DynamicResource BackgroundBrush}"
-			BorderThickness="1"
-			CornerRadius="0,0,6,6"
-			Visibility="{Binding Target.IsValid, Converter={StaticResource NotNullToVisibilityConverter}, FallbackValue=Collapsed}">
-
-			<Border
-				Margin="2,0,2,2"
-				Style="{DynamicResource WpfUtilsControlBorder}">
-
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition />
-						<ColumnDefinition Width="Auto" />
-					</Grid.ColumnDefinitions>
-
-					<Grid Grid.Column="0">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition />
-						</Grid.ColumnDefinitions>
-
-						<Button
-							Grid.Column="0"
-							Width="32"
-							Margin="2,1,1,1"
-							Background="Transparent"
-							Click="OnResetNicknameClicked"
-							ToolTip="Reset nickname to default">
-							<wpfUtils:IconBlock
-								Foreground="{DynamicResource ForegroundLightBrush}"
-								Icon="IdCard"
-								IconFont="Solid" />
-						</Button>
-
-						<TextBox
-							Grid.Column="1"
-							Background="Transparent"
-							Text="{Binding Target.Nickname, UpdateSourceTrigger=PropertyChanged}"
-							ToolTip="Nicknames are saved in scene files, be careful with identifying information!" />
-					</Grid>
-
-
 
 					<Button
 						Grid.Column="2"
 						Width="32"
-						Margin="2,1,1,1"
 						Background="Transparent"
 						Click="OnRemoveCharacterClicked"
-						IsEnabled="{Binding Target, Converter={StaticResource NotNullToBoolConverter}}">
-						<Button.ToolTip>
-							<TextBlock>
-								<Run Text="{DynamicResource LOC_Target_DeleteCharacter}" />
-								<Run Text=" - " />
-								<Run Text="{Binding Target.Name, Mode=OneWay}" />
-							</TextBlock>
-						</Button.ToolTip>
+						IsEnabled="{Binding Target, Converter={StaticResource NotNullToBoolConverter}}"
+						ToolTip="{Binding RemoveCharacterTooltip}">
+
 						<wpfUtils:IconBlock
 							Icon="TrashAlt"
 							IconFont="Solid" />
 					</Button>
 				</Grid>
 			</Border>
-
 		</Border>
 	</Grid>
 
