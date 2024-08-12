@@ -2,5 +2,7 @@
 
 public enum KeyBindEvents
 {
-	Interface_InvokeQuickSearch,
+	Save,
+	SaveAs,
+	InvokeQuickSearch,
 }

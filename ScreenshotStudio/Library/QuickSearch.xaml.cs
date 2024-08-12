@@ -27,7 +27,7 @@ public partial class QuickSearch : DockPanel
 		this.TagFilter.Tags.CollectionChanged += this.OnTagsChanged;
 		this.searchQueue = new(this.SearchAsync, 250);
 
-		this.Services.Input.AddListener(Input.KeyBindEvents.Interface_InvokeQuickSearch, this.OnOpenQuickSearch);
+		this.Services.Input.AddListener(Input.KeyBindEvents.InvokeQuickSearch, this.OnOpenQuickSearch);
 
 		this.Deactivated += this.OnDeactivated;
 	}

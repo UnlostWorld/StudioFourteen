@@ -5,16 +5,13 @@ namespace ScreenshotStudio.Input;
 
 using Dalamud.Game.ClientState.Keys;
 using Dalamud.Plugin.Services;
-using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Reflection.Metadata.Ecma335;
 using System.Windows.Input;
-using Task = System.Threading.Tasks.Task;
 
 public class InputService : ServiceBase
 {
@@ -30,7 +27,9 @@ public class InputService : ServiceBase
 	public Dictionary<KeyBindEvents, KeyBind> Bindings { get; set; } = new()
 	{
 		// Default bindings
-		{ KeyBindEvents.Interface_InvokeQuickSearch, new(VirtualKey.Q, false, false, true) },
+		{ KeyBindEvents.InvokeQuickSearch, new(VirtualKey.Q, false, false, true) },
+		{ KeyBindEvents.Save, new(VirtualKey.S, true, false, false) },
+		{ KeyBindEvents.SaveAs, new(VirtualKey.S, true, false, true) },
 	};
 
 	public static IEnumerable<VirtualKey> GetValidKeys()
