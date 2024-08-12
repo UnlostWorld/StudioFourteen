@@ -32,4 +32,5 @@ public class ServiceManager : ServiceManagerBase
 	public TargetService Target { get; init; } = new();
 	public TabletService Tablet { get; init; } = new();
 	public SaveService Save { get; init; } = new();
+	public CharacterNicknameService Nickname { get; init; } = new();
 }
