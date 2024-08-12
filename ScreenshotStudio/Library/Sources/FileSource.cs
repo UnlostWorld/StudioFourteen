@@ -11,8 +11,9 @@ using static System.Environment;
 
 public class FileSource : SourceBase
 {
+	public readonly DirectoryInfo? Directory;
+
 	private readonly string name;
-	private readonly DirectoryInfo? directory;
 
 	private FuncQueue? scanQueue;
 	private FileSystemWatcher? watcher;
@@ -20,13 +21,13 @@ public class FileSource : SourceBase
 	public FileSource(string name, string directory)
 	{
 		this.name = name;
-		this.directory = new(directory);
+		this.Directory = new(directory);
 	}
 
 	public FileSource(string name, DirectoryInfo? directory)
 	{
 		this.name = name;
-		this.directory = directory;
+		this.Directory = directory;
 	}
 
 	public FileSource(string name, SpecialFolder folder, string path)
@@ -34,14 +35,14 @@ public class FileSource : SourceBase
 		this.name = name;
 
 		path = $"{Environment.GetFolderPath(folder)}/{path}";
-		this.directory = new(path);
+		this.Directory = new(path);
 	}
 
 	public override string Name => this.name;
 
 	protected override void Scan()
 	{
-		if (this.directory == null)
+		if (this.Directory == null)
 			return;
 
 		if (this.scanQueue == null)
@@ -49,9 +50,9 @@ public class FileSource : SourceBase
 			this.scanQueue = new(this.ScanSource, 200);
 		}
 
-		if (this.watcher == null && this.directory.Exists)
+		if (this.watcher == null && this.Directory.Exists)
 		{
-			this.watcher = new(this.directory.FullName);
+			this.watcher = new(this.Directory.FullName);
 			this.watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.FileName | NotifyFilters.DirectoryName | NotifyFilters.Attributes;
 			this.watcher.Filter = "*.*";
 			this.watcher.Changed += (s, e) => this.scanQueue.Invoke();
@@ -59,7 +60,7 @@ public class FileSource : SourceBase
 			this.watcher.EnableRaisingEvents = true;
 		}
 
-		this.ScanDirectory(this.directory, this);
+		this.ScanDirectory(this.Directory, this);
 	}
 
 	protected override string GetInternalId() => $"File_{this.name}";
