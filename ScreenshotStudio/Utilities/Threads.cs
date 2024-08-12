@@ -6,12 +6,16 @@ using ScreenshotStudio.Plugin;
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using System.Windows.Threading;
+using WpfUtils;
 
 public static class Threads
 {
 	public static bool IsFrameworkThread => DalamudServices.Framework?.IsInFrameworkUpdateThread == true;
 
 	public static SwitchToFrameworkThreadAwaitable FrameworkThread() => new();
+	public static Dispatch.SwitchFromUiAwaitable NonUiThread() => Dispatch.NonUiThread();
+	public static Dispatch.SwitchToMainThreadAwaitable UiThread(DispatcherObject obj) => Dispatch.MainThread(obj);
 
 	public static Task RunOnFrameworkThread(Action action)
 	{
