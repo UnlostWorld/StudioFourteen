@@ -3,6 +3,7 @@
 using Dalamud.Plugin.Services;
 using FontAwesome.Sharp;
 using ScreenshotStudio;
+using ScreenshotStudio.Files;
 using ScreenshotStudio.Library.Executors;
 using ScreenshotStudio.Library.Filters;
 using ScreenshotStudio.Library.Results;
@@ -72,7 +73,7 @@ public partial class LibraryWindow : PanelWindow
 		new("LOC_Library_Favorites", IconChar.Heart, new LibraryFavoritesFilter()),
 		new("LOC_Library_Poses", IconChar.Running, new TypeFilter(typeof(IPose))),
 		new("LOC_Library_Characters", IconChar.User, new TypeFilter(typeof(ICharacterAppearance))),
-		new("LOC_Library_Scenes", IconChar.Users,  new TagFilter()),
+		new("LOC_Library_Scenes", IconChar.Users,  new TypeFilter(typeof(SceneFile))),
 	};
 
 	public LibraryTab CurrentTab
