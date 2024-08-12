@@ -29,13 +29,6 @@ public partial class BackgroundWindow : PersistentPanel
 		XivWindow.Activate();
 	}
 
-	protected override void OnActivated(EventArgs e)
-	{
-		base.OnActivated(e);
-		this.UpdatePosition();
-		XivWindow.Activate();
-	}
-
 	private void UpdatePosition()
 	{
 		if (XivWindow.Process == null)
