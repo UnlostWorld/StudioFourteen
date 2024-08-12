@@ -17,6 +17,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TerraFX.Interop.Windows;
+using WpfUtils.Extensions;
 
 public class CharacterLifecycleService : ServiceBase
 {
@@ -74,7 +75,7 @@ public class CharacterLifecycleService : ServiceBase
 		return base.Tick();
 	}
 
-	public async Task<int> Create(ICharacterAppearance? appearance = null)
+	public async Task<int> CreateAsync(ICharacterAppearance? appearance = null)
 	{
 		Threads.VerifyFrameworkThread();
 
@@ -96,21 +97,30 @@ public class CharacterLifecycleService : ServiceBase
 		return index;
 	}
 
-	public unsafe bool Destroy(Character* character)
+	public void Destroy(int objectTableIndex)
 	{
-		ClientObjectManager* com = ClientObjectManager.Instance();
-		uint idx = com->GetIndexByObject((GameObject*)character);
-		if (idx != 0xFFFFFFFF)
-		{
-			Threads.RunOnFrameworkThread(() =>
-			{
-				com->DeleteObjectByIndex((ushort)idx, 0);
-			});
+		this.DestroyAsync(objectTableIndex).Run();
+	}
 
+	public async Task<bool> DestroyAsync(int objectTableIndex)
+	{
+		await Threads.FrameworkThread();
+
+		if (DalamudServices.ObjectTable == null)
+			return false;
+
+		unsafe
+		{
+			GameObject* character = (GameObject*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
+
+			ClientObjectManager* com = ClientObjectManager.Instance();
+			uint idx = com->GetIndexByObject((GameObject*)character);
+			if (idx == 0xFFFFFFFF)
+				return false;
+
+			com->DeleteObjectByIndex((ushort)idx, 0);
 			return true;
 		}
-
-		return false;
 	}
 
 	public unsafe void DestroyAllCreated()
