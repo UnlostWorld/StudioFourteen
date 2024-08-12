@@ -175,4 +175,9 @@ public static class CharacterExtensions
 			self.EnableDraw();
 		}
 	}
+
+	public static ObjectKind GetKind(ref this Character self)
+	{
+		return (ObjectKind)self.ObjectKind;
+	}
 }
