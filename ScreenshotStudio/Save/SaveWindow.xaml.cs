@@ -1,6 +1,5 @@
-﻿namespace ScreenshotStudio.Studio;
+﻿namespace ScreenshotStudio.Save;
 
-using Dalamud.Utility;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
@@ -17,68 +16,24 @@ public partial class SaveWindow : PanelWindow
 {
 	[AutoNotify] public bool CanSave { get; private set; } = true;
 	[AutoNotify] public string SaveLabel { get; private set; } = string.Empty;
-	[AutoNotify] public FastObservableCollection<CharacterSave> Characters { get; init; } = new();
+	[AutoNotify] public FastObservableCollection<CharacterViewModel> Characters { get; init; } = new();
 
 	[AutoNotify] public string CharactersText { get; set; } = string.Empty;
 
-	[AutoNotify] public bool IncludeLocation
-	{
-		get => this.GetPersistence<bool>();
-		set
-		{
-			this.SetPersistence(value);
-			this.UpdateLabels();
-		}
-	}
-
-	[AutoNotify] public bool IncludeWeather
-	{
-		get => this.GetPersistence<bool>();
-		set
-		{
-			this.SetPersistence(value);
-			this.UpdateLabels();
-		}
-	}
-
-	[AutoNotify] public bool IncludeTimeOfDay
-	{
-		get => this.GetPersistence<bool>();
-		set
-		{
-			this.SetPersistence(value);
-			this.UpdateLabels();
-		}
-	}
-
-	[AutoNotify] public bool IncludePoses
-	{
-		get => this.GetPersistence<bool>();
-		set
-		{
-			this.SetPersistence(value);
-			this.UpdateLabels();
-		}
-	}
-
-	[AutoNotify] public bool IncludeAppearances
-	{
-		get => this.GetPersistence<bool>();
-		set
-		{
-			this.SetPersistence(value);
-			this.UpdateLabels();
-		}
-	}
+	public SaveService.SaveConfiguration? Configuration { get; private set; }
 
 	protected override void OnOpened()
 	{
 		base.OnOpened();
+
+		this.Configuration = this.Services.Save.Current.Copy();
+
 		Task.Run(this.Populate);
 	}
 
 	private void OnSaveClicked(object sender, RoutedEventArgs e)
 	{
+		this.Services.Save.Save(this.Configuration);
 	}
 
 	private async Task Populate()
@@ -97,7 +52,7 @@ public partial class SaveWindow : PanelWindow
 			toIndex = Math.Min(DalamudServices.ObjectTable.Length, GroupPoseService.GPoseFirstCharacter);
 		}
 
-		List<CharacterSave> characters = new();
+		List<CharacterViewModel> characters = new();
 
 		unsafe
 		{
@@ -112,7 +67,7 @@ public partial class SaveWindow : PanelWindow
 					continue;
 
 				string name = character->GetNameAsString() ?? "Unknown";
-				CharacterSave vm = new(name);
+				CharacterViewModel vm = new(name);
 				vm.IncludeCharacter = i == fromIndex;
 				characters.Add(vm);
 			}
@@ -133,7 +88,7 @@ public partial class SaveWindow : PanelWindow
 	private void UpdateLabels()
 	{
 		int selectedCount = 0;
-		foreach(CharacterSave vm in this.Characters)
+		foreach(CharacterViewModel vm in this.Characters)
 		{
 			if (vm.IncludeCharacter)
 			{
@@ -146,23 +101,29 @@ public partial class SaveWindow : PanelWindow
 		this.SaveLabel = ScreenshotStudio.Resources.Find("LOC_Save_SaveScene", "Save");
 		this.CanSave = true;
 
-		if (!this.IncludeLocation
-			&& !this.IncludeWeather
-			&& !this.IncludeTimeOfDay)
+		if (this.Configuration == null)
+		{
+			this.CanSave = false;
+			return;
+		}
+
+		if (!this.Configuration.IncludeLocation
+			&& !this.Configuration.IncludeWeather
+			&& !this.Configuration.IncludeTimeOfDay)
 		{
 			if (selectedCount == 1)
 			{
-				if (this.IncludePoses && !this.IncludeAppearances)
+				if (this.Configuration.IncludePoses && !this.Configuration.IncludeAppearances)
 				{
 					this.SaveLabel = ScreenshotStudio.Resources.Find("LOC_Save_SavePose", "Save");
 				}
-				else if (this.IncludeAppearances && !this.IncludePoses)
+				else if (this.Configuration.IncludeAppearances && !this.Configuration.IncludePoses)
 				{
 					this.SaveLabel = ScreenshotStudio.Resources.Find("LOC_Save_SaveAppearance", "Save");
 				}
 			}
 
-			if (selectedCount == 0 || (!this.IncludePoses && !this.IncludeAppearances))
+			if (selectedCount == 0 || (!this.Configuration.IncludePoses && !this.Configuration.IncludeAppearances))
 			{
 				this.CanSave = false;
 			}
@@ -170,7 +131,7 @@ public partial class SaveWindow : PanelWindow
 	}
 }
 
-public class CharacterSave(string name)
+public class CharacterViewModel(string name)
 	: ViewModel
 {
 	public string Name { get; init; } = name;

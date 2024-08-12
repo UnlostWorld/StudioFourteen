@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dalamud.Configuration;
 using ScreenshotStudio.Plugin;
+using ScreenshotStudio.Save;
 
 public class SettingsService : ServiceBase
 {
@@ -37,5 +38,8 @@ public class SettingsService : ServiceBase
 		public List<string> OpenPanels { get; set; } = new();
 		public bool IsOpen { get; set; } = false;
 		public Dictionary<string, string> PanelPersistence { get; set; } = new();
+
+		public string? LastSaveDirectory { get; set; }
+		public SaveService.SaveConfiguration SaveConfig { get; set; } = new();
 	}
 }

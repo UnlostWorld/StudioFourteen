@@ -4,6 +4,7 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 using ScreenshotStudio.Library;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Posing;
+using ScreenshotStudio.Save;
 using ScreenshotStudio.Services;
 
 public partial class Navigation : View
