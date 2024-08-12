@@ -93,8 +93,6 @@ public class TabletService : ServiceBase
 	{
 		while(this.data != null && this.IsAlive)
 		{
-			Thread.Sleep(10);
-
 			try
 			{
 				uint packetCount = 0;
@@ -109,6 +107,8 @@ public class TabletService : ServiceBase
 			{
 				this.Log.Error(ex, "Error processing wintab packet");
 			}
+
+			Thread.Sleep(10);
 		}
 	}
 }
