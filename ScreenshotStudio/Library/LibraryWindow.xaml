@@ -41,7 +41,13 @@
 				Grid.Row="0"
 				Grid.ColumnSpan="2">
 
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+
 				<ListBox
+					Grid.Column="0"
 					ItemsSource="{Binding Tabs}"
 					SelectedItem="{Binding CurrentTab}"
 					Style="{DynamicResource WpfUtilsSwitchSelector}">
@@ -65,6 +71,22 @@
 						</DataTemplate>
 					</ListBox.ItemTemplate>
 				</ListBox>
+
+				<Button
+					Grid.Column="1"
+					MinWidth="130">
+					<Button.Content>
+						<StackPanel Orientation="Horizontal">
+
+							<wpfUtils:IconBlock
+								Margin="0,0,3,0"
+								Icon="FolderOpen"
+								IconFont="Solid" />
+							<TextBlock Text="Open File..." />
+						</StackPanel>
+					</Button.Content>
+				</Button>
+
 			</Grid>
 
 			<!--  Sidebar  -->
@@ -119,7 +141,7 @@
 				<ContentPresenter
 					Grid.Row="2"
 					Grid.ColumnSpan="2"
-					Margin="1"
+					Margin="1,1,1,6"
 					Content="{Binding SelectedResult.Entry}"
 					TextBlock.Foreground="{DynamicResource ForegroundBrush}">
 					<ContentPresenter.Resources>
@@ -344,6 +366,7 @@
 			<ListBox
 				Grid.Row="3"
 				Grid.Column="0"
+				Margin="3"
 				Background="Transparent"
 				ClipToBounds="True"
 				ItemsSource="{Binding Results, IsAsync=True}"
@@ -619,6 +642,7 @@
 			<ListBox
 				Grid.Row="3"
 				Grid.Column="0"
+				Margin="6"
 				Background="Transparent"
 				ItemsSource="{Binding Results, IsAsync=True}"
 				MouseDoubleClick="OnItemDoubleClicked"
