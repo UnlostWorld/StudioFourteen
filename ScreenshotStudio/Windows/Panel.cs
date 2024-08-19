@@ -158,7 +158,7 @@ public abstract partial class Panel : Window, IAutoNotify
 
 	public virtual bool ShouldTickAutoProperties()
 	{
-		return this.IsVisible;
+		return this.IsVisible && this.IsLoaded;
 	}
 
 	public virtual void OnResizeDelta(DragDeltaEventArgs e)

@@ -30,6 +30,12 @@ public partial class PanelWindow : PersistentPanel
 		set => this.SetPersistence(value);
 	}
 
+	public Point? SavedSize
+	{
+		get => this.GetPersistence<Point?>();
+		set => this.SetPersistence(value);
+	}
+
 	public Point Position
 	{
 		get => XivWindow.GetPosition(this);
@@ -56,8 +62,31 @@ public partial class PanelWindow : PersistentPanel
 
 		this.Scale = this.SavedScale;
 
+		this.Opacity = 0;
+
 		if (this.SavedPosition != null)
 			this.Position = (Point)this.SavedPosition;
+
+		if (this.SavedSize != null)
+		{
+			bool canResize = this.ResizeMode > ResizeMode.CanMinimize;
+			if (canResize)
+			{
+				if (this.SizeToContent == SizeToContent.Width)
+				{
+					this.Height = this.SavedSize.Value.Y;
+				}
+				else if (this.SizeToContent == SizeToContent.Height)
+				{
+					this.Width = this.SavedSize.Value.X;
+				}
+				else if (this.SizeToContent == SizeToContent.Manual)
+				{
+					this.Width = this.SavedSize.Value.X;
+					this.Height = this.SavedSize.Value.Y;
+				}
+			}
+		}
 
 		if (XivWindow.Process == null)
 			this.CanChangeEmbed = false;
@@ -69,6 +98,7 @@ public partial class PanelWindow : PersistentPanel
 	{
 		base.OnClosed();
 		this.SavedPosition = this.Position;
+		this.SavedSize = new Point(this.Width, this.Height);
 	}
 
 	protected override void OnStateChanged(EventArgs e)
