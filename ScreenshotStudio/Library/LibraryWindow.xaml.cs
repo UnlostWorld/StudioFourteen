@@ -202,6 +202,9 @@ public partial class LibraryWindow : PanelWindow
 
 		await Dispatch.NonUiThread();
 
+		if (this.currentTab == null)
+			return;
+
 		List<FilterBase> filters = new List<FilterBase>();
 		filters.AddRange(this.CurrentTab.Filters);
 		filters.Add(this.TagFilter);
