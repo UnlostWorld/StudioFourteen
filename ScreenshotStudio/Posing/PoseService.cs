@@ -74,7 +74,7 @@ public class PoseService : ServiceBase
 		this.updateBonePhysicsHook?.Enable();
 
 		this.Services.CharacterLifecycle.CharacterDestroyed += this.OnCharacterDestroyed;
-		this.Services.GroupPose.StateChange += this.OnGroupPoseStateChange;
+		this.Services.GroupPose.StateChanged += this.OnGroupPoseStateChange;
 
 		return base.Start();
 	}
@@ -84,7 +84,7 @@ public class PoseService : ServiceBase
 		this.updateBonePhysicsHook?.Dispose();
 
 		this.Services.CharacterLifecycle.CharacterDestroyed -= this.OnCharacterDestroyed;
-		this.Services.GroupPose.StateChange -= this.OnGroupPoseStateChange;
+		this.Services.GroupPose.StateChanged -= this.OnGroupPoseStateChange;
 
 		this.FlushBoneReferences();
 

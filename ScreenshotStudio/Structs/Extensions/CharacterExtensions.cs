@@ -43,12 +43,17 @@ public static class CharacterExtensions
 		return self.RenderFlags == (int)RenderMode.Draw;
 	}
 
-	public static unsafe string? GetDisplayName(ref this Character self)
+	public static unsafe string? GetDisplayOrNickname(ref this Character self)
 	{
 		string? nickname = ServiceManager.Instance.Nickname.GetNickname(self.ObjectIndex);
 		if (nickname != null)
 			return nickname;
 
+		return self.GetDisplayName();
+	}
+
+	public static unsafe string? GetDisplayName(ref this Character self)
+	{
 		if (self.GetKind() == ObjectKind.Companion || self.GetKind() == ObjectKind.BattleNpc)
 		{
 			Character* pOwner = self.GetParentCharacter();

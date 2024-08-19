@@ -28,7 +28,7 @@ public class CharacterAppearanceService : ServiceBase
 
 	public override Task Start()
 	{
-		this.Services.GroupPose.StateChange += this.OnGroupPoseStateChange;
+		this.Services.GroupPose.StateChanged += this.OnGroupPoseStateChange;
 		this.Services.Library.AddSource(this.provider);
 
 		if (this.Services.GroupPose.IsGroupPosing)
@@ -44,7 +44,7 @@ public class CharacterAppearanceService : ServiceBase
 
 	public override Task Stop()
 	{
-		this.Services.GroupPose.StateChange -= this.OnGroupPoseStateChange;
+		this.Services.GroupPose.StateChanged -= this.OnGroupPoseStateChange;
 		this.enforceKindRestrictionsHook?.Dispose();
 		return base.Stop();
 	}

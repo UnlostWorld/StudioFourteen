@@ -184,7 +184,7 @@ public unsafe class CharacterViewModel : ViewModel
 
 		if (this.IsValid)
 		{
-			this.Name = pCharacter->GetDisplayName();
+			this.Name = pCharacter->GetDisplayOrNickname();
 			this.isCurrent = TargetSystem.Instance()->GPoseTarget == pCharacter;
 		}
 		else

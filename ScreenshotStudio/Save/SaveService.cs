@@ -1,22 +1,47 @@
 ﻿namespace ScreenshotStudio.Save;
 
+using Dalamud.Plugin.Services;
 using Microsoft.Win32;
 using ScreenshotStudio.Input;
 using ScreenshotStudio.Library.Sources;
+using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Studio;
 using ScreenshotStudio.Utilities;
 using System;
-using System.Configuration;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using WpfUtils.Extensions;
 
 public class SaveService : ServiceBase
 {
+	private readonly Dictionary<int, bool> includeCharacters = new();
 	private string? defaultDirectoryPath;
 
 	public SaveConfiguration Current => this.Services.Settings.Current.SaveConfig;
+
+	public void SetIncludeCharacter(int objectTableIndex, bool include)
+	{
+		if (!this.includeCharacters.ContainsKey(objectTableIndex))
+			this.includeCharacters.Add(objectTableIndex, include);
+
+		this.includeCharacters[objectTableIndex] = include;
+	}
+
+	public bool GetIncludeCharacter(int objectTableIndex)
+	{
+		bool include = false;
+		if (!this.includeCharacters.TryGetValue(objectTableIndex, out include))
+			return false;
+
+		return include;
+	}
+
+	public bool CanIncludeCharacter(int objectTableIndex)
+	{
+		return this.includeCharacters.ContainsKey(objectTableIndex);
+	}
 
 	public override Task Start()
 	{
@@ -25,6 +50,9 @@ public class SaveService : ServiceBase
 		this.Services.Input.AddListener(KeyBindEvents.Save, this.Save);
 		this.Services.Input.AddListener(KeyBindEvents.SaveAs, this.SaveAs);
 
+		this.Services.GroupPose.StateChanged += this.OnGroupPoseStateChanged;
+		this.OnGroupPoseStateChanged(this.Services.GroupPose.IsGroupPosing);
+
 		return base.Start();
 	}
 
@@ -32,6 +60,8 @@ public class SaveService : ServiceBase
 	{
 		this.Services.Input.RemoveListener(KeyBindEvents.Save, this.Save);
 		this.Services.Input.RemoveListener(KeyBindEvents.SaveAs, this.SaveAs);
+
+		this.Services.GroupPose.StateChanged -= this.OnGroupPoseStateChanged;
 
 		return base.Stop();
 	}
@@ -100,6 +130,31 @@ public class SaveService : ServiceBase
 
 		this.Services.Settings.Current.SaveConfig = configuration;
 		this.Services.Settings.Current.LastSaveDirectory = Path.GetDirectoryName(fileName);
+	}
+
+	private void OnGroupPoseStateChanged(bool newState)
+	{
+		this.includeCharacters.Clear();
+
+		if (DalamudServices.ObjectTable == null)
+			return;
+
+		int fromIndex = GroupPoseService.GPoseFirstCharacter;
+		int toIndex = GroupPoseService.GPoseFirstCharacter + GroupPoseService.GPoseCharacterCount;
+
+		if (!this.Services.GroupPose.IsGroupPosing)
+		{
+			fromIndex = 0;
+			toIndex = Math.Min(DalamudServices.ObjectTable.Length, GroupPoseService.GPoseFirstCharacter);
+		}
+
+		for (int i = fromIndex; i < toIndex; ++i)
+		{
+			if (!this.includeCharacters.ContainsKey(i))
+			{
+				this.includeCharacters.Add(i, i == fromIndex);
+			}
+		}
 	}
 
 	private void EnsureDefaultDirectory()

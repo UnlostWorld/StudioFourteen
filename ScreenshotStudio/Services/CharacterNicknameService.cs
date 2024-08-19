@@ -15,31 +15,40 @@ public class CharacterNicknameService : ServiceBase
 	private readonly Dictionary<int, string> nicknames = new();
 	private readonly Dictionary<int, string> defaultNicknames = new();
 
-	public string? GetNickname(int objectTableId)
+	public string? GetNicknameOrDefault(int objectTableIndex)
+	{
+		string? nickname = this.GetNickname(objectTableIndex);
+		if (nickname == null)
+			return this.GetDefaultNickname(objectTableIndex);
+
+		return nickname;
+	}
+
+	public string? GetNickname(int objectTableIndex)
 	{
 		string? name;
-		this.nicknames.TryGetValue(objectTableId, out name);
+		this.nicknames.TryGetValue(objectTableIndex, out name);
 		return name;
 	}
 
-	public void SetNickname(int objectTableId, string? name)
+	public void SetNickname(int objectTableIndex, string? name)
 	{
 		if (string.IsNullOrEmpty(name))
 		{
-			this.nicknames.Remove(objectTableId);
+			this.nicknames.Remove(objectTableIndex);
 			return;
 		}
 
-		if (!this.nicknames.ContainsKey(objectTableId))
-			this.nicknames.Add(objectTableId, name);
+		if (!this.nicknames.ContainsKey(objectTableIndex))
+			this.nicknames.Add(objectTableIndex, name);
 
-		this.nicknames[objectTableId] = name;
+		this.nicknames[objectTableIndex] = name;
 	}
 
-	public string? GetDefaultNickname(int objectTableId)
+	public string? GetDefaultNickname(int objectTableIndex)
 	{
 		string? name;
-		this.defaultNicknames.TryGetValue(objectTableId, out name);
+		this.defaultNicknames.TryGetValue(objectTableIndex, out name);
 		return name;
 	}
 
@@ -60,7 +69,15 @@ public class CharacterNicknameService : ServiceBase
 		{
 			Character* pCharacter = (Character*)DalamudServices.ObjectTable.GetObjectAddress(i);
 			if (pCharacter == null)
+			{
+				if (this.nicknames.ContainsKey(i))
+					this.nicknames.Remove(i);
+
+				if (this.defaultNicknames.ContainsKey(i))
+					this.defaultNicknames.Remove(i);
+
 				continue;
+			}
 
 			ObjectKind kind = pCharacter->GetKind();
 			if (kind == ObjectKind.Player)

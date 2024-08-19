@@ -1,153 +1,106 @@
 ﻿namespace ScreenshotStudio.Save;
 
-using Dalamud.Game.ClientState.Objects.Enums;
+using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
-using ScreenshotStudio.Utilities;
 using ScreenshotStudio.Windows;
-using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Windows;
-using WpfUtils;
 using WpfUtils.Extensions;
 
 public partial class SaveWindow : PanelWindow
 {
+	private readonly Dictionary<int, CharacterViewModel> characterLookup = new();
+
 	[AutoNotify] public bool CanSave { get; private set; } = true;
 	[AutoNotify] public string SaveLabel { get; private set; } = string.Empty;
 	[AutoNotify] public FastObservableCollection<CharacterViewModel> Characters { get; init; } = new();
 
-	[AutoNotify] public string CharactersText { get; set; } = string.Empty;
+	[AutoNotify] public string CharactersText
+	{
+		get
+		{
+			int selectedCount = 0;
+			foreach (CharacterViewModel vm in this.Characters)
+			{
+				if (vm.IncludeCharacter)
+				{
+					selectedCount++;
+				}
+			}
+
+			return string.Format(ScreenshotStudio.Resources.Find("LOC_Save_CharactersText", string.Empty), selectedCount, this.Characters.Count);
+		}
+	}
 
 	public SaveService.SaveConfiguration? Configuration { get; private set; }
 
 	protected override void OnOpened()
 	{
 		base.OnOpened();
-
 		this.Configuration = this.Services.Save.Current.Copy();
+	}
 
-		Task.Run(this.Populate);
+	protected override unsafe void OnFrameworkUpdate(IFramework framework)
+	{
+		base.OnFrameworkUpdate(framework);
+
+		if (DalamudServices.ObjectTable == null)
+			return;
+
+		for (int i = 0; i < DalamudServices.ObjectTable.Length; ++i)
+		{
+			bool isValid = this.Services.Save.CanIncludeCharacter(i);
+
+			Character* pCharacter = (Character*)DalamudServices.ObjectTable.GetObjectAddress(i);
+			if (pCharacter == null)
+			{
+				isValid = false;
+			}
+
+			if (!isValid && this.characterLookup.ContainsKey(i))
+			{
+				CharacterViewModel vm = this.characterLookup[i];
+				this.Dispatcher.Invoke(() => this.Characters.Remove(vm));
+
+				this.characterLookup.Remove(i);
+				continue;
+			}
+			else if (isValid && !this.characterLookup.ContainsKey(i))
+			{
+				CharacterViewModel vm = new(i);
+				this.characterLookup.Add(i, vm);
+				this.Dispatcher.Invoke(() => this.Characters.Add(vm));
+			}
+			else if (isValid && this.characterLookup.ContainsKey(i))
+			{
+				this.characterLookup[i].Name = pCharacter->GetDisplayName();
+			}
+		}
 	}
 
 	private void OnSaveClicked(object sender, RoutedEventArgs e)
 	{
 		this.Services.Save.Save(this.Configuration);
 	}
-
-	private async Task Populate()
-	{
-		await Threads.FrameworkThread();
-
-		if (DalamudServices.ObjectTable == null)
-			return;
-
-		int fromIndex = GroupPoseService.GPoseFirstCharacter;
-		int toIndex = GroupPoseService.GPoseFirstCharacter + GroupPoseService.GPoseCharacterCount;
-
-		if (!this.Services.GroupPose.IsGroupPosing)
-		{
-			fromIndex = 0;
-			toIndex = Math.Min(DalamudServices.ObjectTable.Length, GroupPoseService.GPoseFirstCharacter);
-		}
-
-		List<CharacterViewModel> characters = new();
-
-		unsafe
-		{
-			for (int i = fromIndex; i < toIndex; ++i)
-			{
-				nint? address = DalamudServices.ObjectTable.GetObjectAddress(i);
-				if (address == null)
-					continue;
-
-				Character* character = (Character*)address;
-				if (character == null)
-					continue;
-
-				string name = character->GetDisplayName() ?? "Unknown";
-
-				string? nickname = this.Services.Nickname.GetNickname(i);
-				if (nickname == null)
-				{
-					nickname = this.Services.Nickname.GetDefaultNickname(i);
-				}
-
-				CharacterViewModel vm = new(nickname, name);
-				vm.IncludeCharacter = i == fromIndex;
-				characters.Add(vm);
-			}
-		}
-
-		await this.Dispatcher.MainThread();
-
-		this.Characters.Replace(characters);
-
-		this.UpdateLabels();
-	}
-
-	private void OnChanged(object sender, RoutedEventArgs e)
-	{
-		this.UpdateLabels();
-	}
-
-	private void UpdateLabels()
-	{
-		int selectedCount = 0;
-		foreach(CharacterViewModel vm in this.Characters)
-		{
-			if (vm.IncludeCharacter)
-			{
-				selectedCount++;
-			}
-		}
-
-		this.CharactersText = string.Format(ScreenshotStudio.Resources.Find("LOC_Save_CharactersText", string.Empty), selectedCount, this.Characters.Count);
-
-		this.SaveLabel = ScreenshotStudio.Resources.Find("LOC_Save_SaveScene", "Save");
-		this.CanSave = true;
-
-		if (this.Configuration == null)
-		{
-			this.CanSave = false;
-			return;
-		}
-
-		if (!this.Configuration.IncludeLocation
-			&& !this.Configuration.IncludeWeather
-			&& !this.Configuration.IncludeTimeOfDay)
-		{
-			if (selectedCount == 1)
-			{
-				if (this.Configuration.IncludePoses && !this.Configuration.IncludeAppearances)
-				{
-					this.SaveLabel = ScreenshotStudio.Resources.Find("LOC_Save_SavePose", "Save");
-				}
-				else if (this.Configuration.IncludeAppearances && !this.Configuration.IncludePoses)
-				{
-					this.SaveLabel = ScreenshotStudio.Resources.Find("LOC_Save_SaveAppearance", "Save");
-				}
-			}
-
-			if (selectedCount == 0 || (!this.Configuration.IncludePoses && !this.Configuration.IncludeAppearances))
-			{
-				this.CanSave = false;
-			}
-		}
-	}
 }
 
-public class CharacterViewModel(string? nickname, string name)
+public class CharacterViewModel(int objectTableIndex)
 	: ViewModel
 {
-	public string? Nickname { get; init; } = nickname;
-	public string Name { get; init; } = name;
+	public int ObjectTableIndex { get; init; } = objectTableIndex;
 
-	public string ToolTipText => string.Format(Resources.Find("LOC_Save_IncludeCharacterToolTip", string.Empty), this.Name, this.Nickname ?? this.Name);
-	public string ExportPoseToolTipText => string.Format(Resources.Find("LOC_Save_ExportPoseToolTip", string.Empty), this.Name);
-	public string ExportAppearanceToolTipText => string.Format(Resources.Find("LOC_Save_ExportAppearanceToolTip", string.Empty), this.Name);
+	[AutoNotify] public string? Nickname => this.Services.Nickname.GetNicknameOrDefault(this.ObjectTableIndex);
+	[AutoNotify] public string? Name { get; set; }
 
-	[AutoNotify] public bool IncludeCharacter { get; set; }
+	[AutoNotify] public string ToolTipText => string.Format(Resources.Find("LOC_Save_IncludeCharacterToolTip", string.Empty), this.Name, this.Nickname ?? this.Name);
+	[AutoNotify] public string ExportPoseToolTipText => string.Format(Resources.Find("LOC_Save_ExportPoseToolTip", string.Empty), this.Name);
+	[AutoNotify] public string ExportAppearanceToolTipText => string.Format(Resources.Find("LOC_Save_ExportAppearanceToolTip", string.Empty), this.Name);
+
+	[AutoNotify] public bool IncludeCharacter
+	{
+		get => this.Services.Save.GetIncludeCharacter(this.ObjectTableIndex);
+		set => this.Services.Save.SetIncludeCharacter(this.ObjectTableIndex, value);
+	}
 }
