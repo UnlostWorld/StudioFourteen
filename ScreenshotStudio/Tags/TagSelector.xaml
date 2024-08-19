@@ -152,8 +152,9 @@
 			<TextBox
 				x:Name="SearchTextBox"
 				Grid.Row="0"
-				Height="30"
+				Margin="0"
 				Padding="{Binding ActualWidth, ElementName=FilterTagsControl, Converter={StaticResource ThicknessLeft}, ConverterParameter='30,0,23,0'}"
+				VerticalAlignment="Stretch"
 				VerticalContentAlignment="Center"
 				GotKeyboardFocus="OnTagSearchGotKeyboardFocus"
 				LostKeyboardFocus="OnTagSearchLostKeyboardFocus"
@@ -185,6 +186,7 @@
 				Height="Auto"
 				Margin="3"
 				HorizontalAlignment="Left"
+				VerticalAlignment="Stretch"
 				Click="OnClearClicked"
 				IsEnabled="{Binding CanClear}">
 				<Grid>
@@ -202,8 +204,10 @@
 
 
 			<ToggleButton
-				Margin="2,0"
+				Height="Auto"
+				Margin="2,2"
 				HorizontalAlignment="Right"
+				VerticalAlignment="Stretch"
 				Background="Transparent"
 				Click="OnShowTagsClicked"
 				Focusable="False"
