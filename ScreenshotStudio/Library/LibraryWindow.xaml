@@ -363,7 +363,7 @@
 				Style="{DynamicResource WpfUtilsControlBorder}" />
 
 			<!--  Icon Grid  -->
-			<ListBox
+			<wpfUtils:ListBoxEx
 				Grid.Row="3"
 				Grid.Column="0"
 				Margin="3"
@@ -636,7 +636,7 @@
 					</DataTemplate>
 				</ListBox.ItemTemplate>
 
-			</ListBox>
+			</wpfUtils:ListBoxEx>
 
 			<!--  List  -->
 			<ListBox
