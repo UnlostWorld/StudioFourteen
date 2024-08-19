@@ -107,6 +107,7 @@
 
 				<Border
 					Name="Mask"
+					Margin="1"
 					Background="Black"
 					CornerRadius="4" />
 
