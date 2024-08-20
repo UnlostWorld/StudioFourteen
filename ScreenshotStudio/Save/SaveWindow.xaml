@@ -2,6 +2,7 @@
 	x:Class="ScreenshotStudio.Save.SaveWindow"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:ScreenshotStudio.Controls"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="clr-namespace:ScreenshotStudio.Save"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -23,12 +24,23 @@
 		</Grid.ColumnDefinitions>
 
 		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
 			<RowDefinition />
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
+		<Grid
+			Grid.Row="0"
+			Grid.ColumnSpan="2">
 
-		<Border Style="{DynamicResource WpfUtilsControlBorder}">
+			<controls:PathControl File="{Binding Services.Save.SaveFileInfo}" />
+
+		</Grid>
+
+		<Border
+			Grid.Row="1"
+			Margin="1"
+			Style="{DynamicResource WpfUtilsControlBorder}">
 			<Grid Margin="3">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="75" />
@@ -42,7 +54,6 @@
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
-
 
 
 				<TextBlock
@@ -104,7 +115,7 @@
 
 
 		<ScrollViewer
-			Grid.Row="0"
+			Grid.Row="1"
 			Grid.Column="1">
 			<StackPanel
 				Grid.Row="0"
@@ -224,16 +235,25 @@
 		</ScrollViewer>
 
 		<Border
-			Grid.Row="1"
+			Grid.Row="2"
 			Grid.ColumnSpan="2"
-			Margin="0,2,0,0"
+			Margin="1"
 			Style="{DynamicResource WpfUtilsControlBorder}">
-			<Button
-				MinWidth="100"
+			<StackPanel
 				HorizontalAlignment="Right"
-				Click="OnSaveClicked"
-				Content="{DynamicResource LOC_Save_SaveScene}"
-				IsEnabled="{Binding CanSave}" />
+				Orientation="Horizontal">
+				<Button
+					MinWidth="100"
+					Click="OnSaveClicked"
+					Content="{DynamicResource LOC_Save_SaveSceneAs}"
+					IsEnabled="{Binding CanSave}" />
+
+				<Button
+					MinWidth="100"
+					Click="OnSaveClicked"
+					Content="{DynamicResource LOC_Save_SaveScene}"
+					IsEnabled="{Binding CanSave}" />
+			</StackPanel>
 		</Border>
 
 	</Grid>

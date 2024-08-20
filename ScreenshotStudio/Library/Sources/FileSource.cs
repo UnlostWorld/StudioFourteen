@@ -82,7 +82,7 @@ public class FileSource : SourceBase
 		FileInfo[] files = directory.GetFiles();
 		foreach (FileInfo file in files)
 		{
-			FileTypeInfoBase? typeInfo = FileTypes.GetTypeInfo(file);
+			FileTypeInfoBase? typeInfo = this.Services.Files.GetTypeInfo(file);
 			if (typeInfo == null)
 				continue;
 

@@ -76,7 +76,7 @@ public class FileThumbnailService : ServiceBase
 
 	private void ProcessRequest(ThumbnailRequest request)
 	{
-		FileTypeInfoBase? typeInfo = FileTypes.GetTypeInfo(request.FileInfo);
+		FileTypeInfoBase? typeInfo = this.Services.Files.GetTypeInfo(request.FileInfo);
 		if (typeInfo == null)
 			throw new Exception($"No File Type Info for file: {request.FileInfo}");
 

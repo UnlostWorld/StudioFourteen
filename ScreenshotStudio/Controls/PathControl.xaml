@@ -1,0 +1,106 @@
+﻿<Control
+	x:Class="ScreenshotStudio.Controls.PathControl"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=WpfUtils"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="clr-namespace:ScreenshotStudio.Controls"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	Margin="1"
+	d:DesignWidth="400"
+	Background="{DynamicResource ControlBackgroundBrush}"
+	mc:Ignorable="d">
+
+	<Control.Resources>
+		<converters:InvertedBoolToVisibilityConverter x:Key="!B2V" />
+	</Control.Resources>
+
+	<Control.Template>
+		<ControlTemplate TargetType="{x:Type Control}">
+			<Border
+				Height="28"
+				Background="{TemplateBinding Background}"
+				Style="{DynamicResource WpfUtilsControlBorder}">
+				<Grid>
+
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+
+					<TextBox
+						x:Name="PART_TextInput"
+						Background="Transparent"
+						GotFocus="OnTextInputGotFocus"
+						LostFocus="OnTextInputLostFocus" />
+
+					<ItemsControl
+						x:Name="PART_PathDisplay"
+						Margin="9,1"
+						VerticalAlignment="Center"
+						IsHitTestVisible="False"
+						TextBlock.Foreground="{DynamicResource ForegroundLightBrush}"
+						Visibility="{Binding ElementName=PART_TextInput, Path=IsFocused, Converter={StaticResource !B2V}}">
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<WrapPanel />
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+
+						<ItemsControl.ItemTemplate>
+							<DataTemplate DataType="{x:Type local:PathSegment}">
+								<StackPanel Orientation="Horizontal">
+									<wpfUtils:IconBlock
+										x:Name="Icon"
+										Margin="0,4,4,2"
+										Icon="{Binding Icon}"
+										IconFont="Solid" />
+
+									<wpfUtils:IconBlock
+										x:Name="Caret"
+										Margin="6,4,6,2"
+										FontSize="10"
+										Icon="CaretRight"
+										Visibility="Collapsed" />
+
+									<TextBlock
+										Margin="0,2,0,0"
+										Text="{Binding Name}" />
+								</StackPanel>
+
+								<DataTemplate.Triggers>
+									<DataTrigger
+										Binding="{Binding Icon}"
+										Value="{x:Null}">
+										<Setter TargetName="Icon" Property="Visibility" Value="Collapsed" />
+										<Setter TargetName="Caret" Property="Visibility" Value="Visible" />
+									</DataTrigger>
+								</DataTemplate.Triggers>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+
+					<Button
+						Grid.Column="1"
+						MinWidth="28"
+						Click="OnBrowseClicked">
+						<wpfUtils:IconBlock
+							Icon="FolderOpen"
+							IconFont="Solid" />
+					</Button>
+
+				</Grid>
+			</Border>
+
+			<ControlTemplate.Triggers>
+				<DataTrigger
+					Binding="{Binding ElementName=TextInput, Path=IsKeyboardFocused}"
+					Value="True">
+					<Setter TargetName="PART_PathDisplay" Property="Visibility" Value="Hidden" />
+				</DataTrigger>
+			</ControlTemplate.Triggers>
+
+		</ControlTemplate>
+	</Control.Template>
+</Control>

@@ -74,7 +74,8 @@
 
 				<Button
 					Grid.Column="1"
-					MinWidth="130">
+					MinWidth="130"
+					Click="OnBrowseClicked">
 					<Button.Content>
 						<StackPanel Orientation="Horizontal">
 

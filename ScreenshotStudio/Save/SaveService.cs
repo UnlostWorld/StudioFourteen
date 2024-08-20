@@ -1,12 +1,9 @@
 ﻿namespace ScreenshotStudio.Save;
 
-using Dalamud.Plugin.Services;
-using Microsoft.Win32;
+using ScreenshotStudio.Files;
 using ScreenshotStudio.Input;
-using ScreenshotStudio.Library.Sources;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
-using ScreenshotStudio.Studio;
 using ScreenshotStudio.Utilities;
 using System;
 using System.Collections.Generic;
@@ -17,7 +14,9 @@ using WpfUtils.Extensions;
 public class SaveService : ServiceBase
 {
 	private readonly Dictionary<int, bool> includeCharacters = new();
-	private string? defaultDirectoryPath;
+	private DirectoryInfo? defaultDirectory;
+
+	[AutoNotify] public FileInfo? SaveFileInfo { get; set; }
 
 	public SaveConfiguration Current => this.Services.Settings.Current.SaveConfig;
 
@@ -86,42 +85,15 @@ public class SaveService : ServiceBase
 		if (configuration == null)
 			configuration = this.Current;
 
-		BackgroundWindow? bgWindow = this.Services.Panels.Get<BackgroundWindow>();
-		if (bgWindow == null)
-		{
-			this.Log.Error("No background window found");
-			return;
-		}
+		////if (this.Services.Settings.Current.LastSaveDirectory != null)
+		////	dialog.DefaultDirectory = this.Services.Settings.Current.LastSaveDirectory;
 
-		await Threads.UiThread(bgWindow);
-
-		SaveFileDialog dialog = new();
-		dialog.FileName = "Hello World";
-		dialog.DefaultExt = ".studio";
-		dialog.Filter = "Studio Scene (.studio)|*.studio";
-		dialog.DefaultDirectory = this.defaultDirectoryPath?.TrimEnd('/', '\\');
-
-		if (this.Services.Settings.Current.LastSaveDirectory != null)
-			dialog.DefaultDirectory = this.Services.Settings.Current.LastSaveDirectory;
-
-		foreach (SourceBase src in this.Services.Library.Sources)
-		{
-			if (src is FileSource fileSource)
-			{
-				if (fileSource.Directory?.Exists == true)
-				{
-					FileDialogCustomPlace place = new(fileSource.Directory.FullName);
-					dialog.CustomPlaces.Add(place);
-				}
-			}
-		}
-
-		bool? result = dialog.ShowDialog(bgWindow);
-
-		if (result != true)
+		FileInfo? destination = await this.Services.Files.ShowSaveDialog<SceneFile>(this.SaveFileInfo);
+		if (destination == null)
 			return;
 
-		string fileName = dialog.FileName;
+		this.SaveFileInfo = destination;
+
 		await Threads.NonUiThread();
 
 		// do save!
@@ -129,7 +101,7 @@ public class SaveService : ServiceBase
 		}
 
 		this.Services.Settings.Current.SaveConfig = configuration;
-		this.Services.Settings.Current.LastSaveDirectory = Path.GetDirectoryName(fileName);
+		this.Services.Settings.Current.LastSaveDirectory = destination.Directory?.FullName;
 	}
 
 	private void OnGroupPoseStateChanged(bool newState)
@@ -159,11 +131,13 @@ public class SaveService : ServiceBase
 
 	private void EnsureDefaultDirectory()
 	{
-		this.defaultDirectoryPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\\ScreenshotStudio\\";
-		if (!Directory.Exists(this.defaultDirectoryPath))
+		this.defaultDirectory = new($"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\\ScreenshotStudio\\");
+		if (!this.defaultDirectory.Exists)
 		{
-			Directory.CreateDirectory(this.defaultDirectoryPath);
+			this.defaultDirectory.Create();
 		}
+
+		this.SaveFileInfo = new FileInfo($"{this.defaultDirectory.FullName}\\New Scene.studio");
 	}
 
 	public class SaveConfiguration

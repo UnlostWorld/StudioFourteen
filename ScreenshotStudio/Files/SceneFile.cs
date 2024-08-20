@@ -3,10 +3,10 @@
 using System;
 using System.Collections.Generic;
 
-public class SceneFileTypeInfo : JsonFileTypeInfoBase<PoseFile>
+public class SceneFileTypeInfo : JsonFileTypeInfoBase<SceneFile>
 {
 	public override string Extension => ".studio";
-	public override string TypeName => "Scene";
+	public override string TypeName => "Studio Scene";
 }
 
 [Serializable]

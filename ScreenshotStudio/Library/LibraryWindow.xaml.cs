@@ -316,6 +316,11 @@ public partial class LibraryWindow : PanelWindow
 
 		Task.Run(this.SelectedExecutor.Execute);
 	}
+
+	private void OnBrowseClicked(object sender, RoutedEventArgs e)
+	{
+		this.Services.Files.ShowOpenDialog(null, typeof(SceneFile), typeof(PoseFile), typeof(CharacterFile));
+	}
 }
 
 public class LibraryTab(string name, IconChar icon, params FilterBase[] filters)
