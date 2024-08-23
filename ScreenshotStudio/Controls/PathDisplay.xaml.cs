@@ -30,7 +30,7 @@ public partial class PathDisplay : ItemsControl
 
 		if (newValue is DirectoryInfo dirInfo && dirInfo.Parent == null)
 		{
-			this.pathSegments.Add(new(newValue.Name, IconChar.HardDrive));
+			this.pathSegments.Add(new(newValue.Name.Trim('\\'), IconChar.HardDrive));
 		}
 		else
 		{
@@ -50,15 +50,22 @@ public partial class PathDisplay : ItemsControl
 			{
 				DirectoryInfo root = dir.Root;
 
-				while (dir != null && !dir.IsSpecialFolder() && dir != root)
+				while (dir != null && !dir.IsSpecialFolder() && !dir.IsDirectory(root))
 				{
 					this.pathSegments.Insert(0, new(dir.Name));
 					dir = dir.Parent;
 				}
 
-				if (dir != null && dir.IsSpecialFolder())
+				if (dir != null)
 				{
-					this.pathSegments.Insert(0, new(dir.Name, dir.GetSpecialFolder()?.ToIcon()));
+					if (dir.IsSpecialFolder())
+					{
+						this.pathSegments.Insert(0, new(dir.Name, dir.GetSpecialFolder()?.ToIcon()));
+					}
+					else
+					{
+						this.pathSegments.Insert(0, new(dir.Name.Trim('\\'), IconChar.HardDrive));
+					}
 				}
 			}
 		}
