@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using TerraFX.Interop.Windows;
 using WpfUtils.Extensions;
 
 public class SaveService : ServiceBase
@@ -16,9 +17,14 @@ public class SaveService : ServiceBase
 	private readonly Dictionary<int, bool> includeCharacters = new();
 	private DirectoryInfo? defaultDirectory;
 
+	public delegate void SaveEventDelegate();
+
+	public event SaveEventDelegate? Saving;
+	public event SaveEventDelegate? Saved;
+
 	[AutoNotify] public FileInfo? SaveFileInfo { get; set; }
 
-	public SaveConfiguration Current => this.Services.Settings.Current.SaveConfig;
+	[AutoNotify] public SaveConfiguration Current => this.Services.Settings.Current.SaveConfig;
 
 	public void SetIncludeCharacter(int objectTableIndex, bool include)
 	{
@@ -46,8 +52,10 @@ public class SaveService : ServiceBase
 	{
 		this.EnsureDefaultDirectory();
 
+		if (this.Services.Settings.Current.LastSaveDirectory != null)
+			this.SetSaveFileInfo(new(this.Services.Settings.Current.LastSaveDirectory), null);
+
 		this.Services.Input.AddListener(KeyBindEvents.Save, this.Save);
-		this.Services.Input.AddListener(KeyBindEvents.SaveAs, this.SaveAs);
 
 		this.Services.GroupPose.StateChanged += this.OnGroupPoseStateChanged;
 		this.OnGroupPoseStateChanged(this.Services.GroupPose.IsGroupPosing);
@@ -58,7 +66,6 @@ public class SaveService : ServiceBase
 	public override Task Stop()
 	{
 		this.Services.Input.RemoveListener(KeyBindEvents.Save, this.Save);
-		this.Services.Input.RemoveListener(KeyBindEvents.SaveAs, this.SaveAs);
 
 		this.Services.GroupPose.StateChanged -= this.OnGroupPoseStateChanged;
 
@@ -74,33 +81,18 @@ public class SaveService : ServiceBase
 	}
 
 	public void Save() => this.Save(null);
-	public void SaveAs() => this.SaveAs(null);
 
 	public void Save(SaveConfiguration? configuration)
 	{
-		this.SaveAsAsync(configuration).Run();
+		this.SaveAsync(configuration).Run();
 	}
 
-	public void SaveAs(SaveConfiguration? configuration)
+	public async Task SaveAsync(SaveConfiguration? configuration = null)
 	{
-		this.SaveAsAsync(configuration).Run();
-	}
-
-	public async Task SaveAsAsync(SaveConfiguration? configuration = null)
-	{
-		await Task.Yield();
-
 		if (configuration == null)
 			configuration = this.Current;
 
-		////if (this.Services.Settings.Current.LastSaveDirectory != null)
-		////	dialog.DefaultDirectory = this.Services.Settings.Current.LastSaveDirectory;
-
-		FileInfo? destination = await this.Services.Files.ShowSaveDialog<SceneFile>(this.SaveFileInfo);
-		if (destination == null)
-			return;
-
-		this.SaveFileInfo = destination;
+		this.Saving?.Invoke();
 
 		await Threads.NonUiThread();
 
@@ -109,7 +101,9 @@ public class SaveService : ServiceBase
 		}
 
 		this.Services.Settings.Current.SaveConfig = configuration;
-		this.Services.Settings.Current.LastSaveDirectory = destination.Directory?.FullName;
+		this.Services.Settings.Current.LastSaveDirectory = this.SaveFileInfo?.FullName;
+
+		this.Saved?.Invoke();
 	}
 
 	private void OnGroupPoseStateChanged(bool newState)

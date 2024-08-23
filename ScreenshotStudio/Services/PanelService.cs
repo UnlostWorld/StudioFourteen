@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using WpfUtils.Extensions;
+
 using Panel = ScreenshotStudio.Windows.Panel;
 
 public class PanelService : ServiceBase
@@ -16,6 +17,10 @@ public class PanelService : ServiceBase
 	private readonly Dictionary<Type, Panel> lastOpenPanels = new();
 
 	private BackgroundWindow? backgroundWindow;
+
+	public IEnumerable<Panel> OpenPanels => this.openPanels;
+
+	public Panel? ActivePanel { get; set; }
 
 	public override Task Initialize()
 	{

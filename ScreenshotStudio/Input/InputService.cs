@@ -11,17 +11,17 @@ using ScreenshotStudio.Services;
 using ScreenshotStudio.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using TerraFX.Interop.Windows;
 
 public class InputService : ServiceBase
 {
 	private readonly HashSet<KeyBindEvents> eventsDown = new();
 	private readonly Dictionary<KeyBindEvents, List<Action>> listeners = new();
-	private readonly HashSet<VirtualKey> windowsKeys = new();
 
 	public bool EnableKeyBinds => true;
-
-	public bool XivWindowIsActive { get; private set; }
 	public bool IsTextInputActive { get; private set; }
 
 	public Dictionary<KeyBindEvents, KeyBind> Bindings { get; set; } = new()
@@ -79,30 +79,6 @@ public class InputService : ServiceBase
 		return bind;
 	}
 
-	public void SetKeyDown(Key key, bool isDown)
-	{
-		VirtualKey virtualKey = (VirtualKey)KeyInterop.VirtualKeyFromKey(key);
-
-		// FFXIV doesn't support L/R modifiers, so neither do we. =(
-		if (virtualKey == VirtualKey.LSHIFT || virtualKey == VirtualKey.RSHIFT)
-			virtualKey = VirtualKey.SHIFT;
-
-		if (virtualKey == VirtualKey.LCONTROL || virtualKey == VirtualKey.RCONTROL)
-			virtualKey = VirtualKey.CONTROL;
-
-		if (virtualKey == VirtualKey.LMENU || virtualKey == VirtualKey.RMENU)
-			virtualKey = VirtualKey.MENU;
-
-		if (isDown)
-		{
-			this.windowsKeys.Add(virtualKey);
-		}
-		else
-		{
-			this.windowsKeys.Remove(virtualKey);
-		}
-	}
-
 	protected override unsafe void OnFrameworkUpdate(IFramework framework)
 	{
 		base.OnFrameworkUpdate(framework);
@@ -110,10 +86,12 @@ public class InputService : ServiceBase
 		if (!this.Services.Studio.IsOpen)
 			return;
 
-		this.XivWindowIsActive = XivWindow.IsActive();
 		this.IsTextInputActive = RaptureAtkModule.Instance()->AtkModule.IsTextInputActive();
 
 		if (!this.EnableKeyBinds)
+			return;
+
+		if (this.Services.Panels.ActivePanel == null && !XivWindow.IsActive())
 			return;
 
 		foreach (var evt in Enum.GetValues<KeyBindEvents>())
@@ -190,17 +168,7 @@ public class InputService : ServiceBase
 		if (key == VirtualKey.NO_KEY)
 			return false;
 
-		if (!this.XivWindowIsActive)
-		{
-			return this.windowsKeys.Contains(key);
-		}
-		else
-		{
-			if (DalamudServices.KeyState == null)
-				return false;
-
-			return DalamudServices.KeyState[key];
-		}
+		return Keyboard.IsKeyDown(KeyInterop.KeyFromVirtualKey((int)key));
 	}
 
 	private void ResetBindKeys(KeyBind bind)

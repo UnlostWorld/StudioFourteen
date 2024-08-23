@@ -38,7 +38,6 @@ public abstract partial class Panel : Window, IAutoNotify
 
 		this.PreviewMouseDown += this.OnPreviewMouseDown;
 		this.PreviewKeyDown += this.OnPreviewKeyDown;
-		this.PreviewKeyUp += this.OnPreviewKeyUp;
 	}
 
 	public event PropertyChangedEventHandler? PropertyChanged;
@@ -218,6 +217,20 @@ public abstract partial class Panel : Window, IAutoNotify
 		this.IsShown = false;
 	}
 
+	protected override void OnActivated(EventArgs e)
+	{
+		this.Services.Panels.ActivePanel = this;
+		base.OnActivated(e);
+	}
+
+	protected override void OnDeactivated(EventArgs e)
+	{
+		if (this.Services.Panels.ActivePanel == this)
+			this.Services.Panels.ActivePanel = null;
+
+		base.OnDeactivated(e);
+	}
+
 	protected virtual void OnFrameworkUpdate(IFramework framework)
 	{
 	}
@@ -268,16 +281,6 @@ public abstract partial class Panel : Window, IAutoNotify
 				return;
 			}
 		}
-
-		this.Services.Input.SetKeyDown(e.Key, true);
-	}
-
-	private void OnPreviewKeyUp(object sender, KeyEventArgs e)
-	{
-		if (!this.IsActive)
-			return;
-
-		this.Services.Input.SetKeyDown(e.Key, false);
 	}
 
 	private void OnGameUiToggled(object? sender, bool e)

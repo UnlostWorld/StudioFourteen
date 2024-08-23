@@ -105,4 +105,22 @@ public partial class Navigation : View
 		get => this.Services.Panels.GetIsOpen<SaveWindow>();
 		set => this.Services.Panels.SetIsOpen<SaveWindow>(value);
 	}
+
+	protected override void OnLoaded()
+	{
+		base.OnLoaded();
+
+		this.Services.Input.AddListener(Input.KeyBindEvents.SaveAs, this.OnToggleSave);
+	}
+
+	protected override void OnUnloaded()
+	{
+		base.OnUnloaded();
+		this.Services.Input.AddListener(Input.KeyBindEvents.SaveAs, this.OnToggleSave);
+	}
+
+	private void OnToggleSave()
+	{
+		this.IsSaveOpen = !this.IsSaveOpen;
+	}
 }
