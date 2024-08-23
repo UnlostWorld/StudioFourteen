@@ -17,7 +17,6 @@ public class ServiceManager : ServiceManagerBase
 	public InteropService Interop { get; init; } = new();
 	public AutoPropertyNotifyService AutoNotify { get; init; } = new();
 	public SettingsService Settings { get; init; } = new();
-	public PanelService Panels { get; init; } = new();
 	public StudioService Studio { get; init; } = new();
 	public DataService Data { get; init; } = new();
 	public GameDataService GameData { get; init; } = new();
@@ -34,4 +33,5 @@ public class ServiceManager : ServiceManagerBase
 	public SaveService Save { get; init; } = new();
 	public CharacterNicknameService Nickname { get; init; } = new();
 	public FileService Files { get; init; } = new();
+	public PanelService Panels { get; init; } = new();
 }
