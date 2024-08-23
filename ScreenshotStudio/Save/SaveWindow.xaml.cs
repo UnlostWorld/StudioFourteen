@@ -107,13 +107,10 @@ public partial class SaveWindow : PanelWindow
 
 		for (int i = 0; i < DalamudServices.ObjectTable.Length; ++i)
 		{
-			bool isValid = this.Services.Save.CanIncludeCharacter(i);
+			bool isValid = true;
 
 			Character* pCharacter = (Character*)DalamudServices.ObjectTable.GetObjectAddress(i);
-			if (pCharacter == null)
-			{
-				isValid = false;
-			}
+			isValid = this.Services.Save.CanInclude(pCharacter);
 
 			if (!isValid && this.characterLookup.ContainsKey(i))
 			{

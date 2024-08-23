@@ -1,5 +1,8 @@
 ﻿namespace ScreenshotStudio.Save;
 
+using Dalamud.Game.ClientState.Objects.Enums;
+using Dalamud.Plugin.Services;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using ScreenshotStudio.Files;
 using ScreenshotStudio.Input;
 using ScreenshotStudio.Plugin;
@@ -43,17 +46,14 @@ public class SaveService : ServiceBase
 		return include;
 	}
 
-	public bool CanIncludeCharacter(int objectTableIndex)
-	{
-		return this.includeCharacters.ContainsKey(objectTableIndex);
-	}
-
 	public override Task Start()
 	{
 		this.EnsureDefaultDirectory();
 
 		if (this.Services.Settings.Current.LastSaveDirectory != null)
+		{
 			this.SetSaveFileInfo(new(this.Services.Settings.Current.LastSaveDirectory), null);
+		}
 
 		this.Services.Input.AddListener(KeyBindEvents.Save, this.Save);
 
@@ -101,9 +101,28 @@ public class SaveService : ServiceBase
 		}
 
 		this.Services.Settings.Current.SaveConfig = configuration;
-		this.Services.Settings.Current.LastSaveDirectory = this.SaveFileInfo?.FullName;
+		this.Services.Settings.Current.LastSaveDirectory = this.SaveFileInfo?.Directory?.FullName;
 
 		this.Saved?.Invoke();
+	}
+
+	public unsafe bool CanInclude(Character* pCharacter)
+	{
+		Threads.VerifyFrameworkThread();
+
+		if (pCharacter == null)
+			return false;
+
+		if (pCharacter->GetKind() != ObjectKind.Player
+			&& pCharacter->GetKind() != ObjectKind.BattleNpc
+			&& pCharacter->GetKind() != ObjectKind.Companion)
+			return false;
+
+		if (pCharacter->GetKind() == ObjectKind.BattleNpc
+			&& pCharacter->GetNameAsString() != "Carbuncle")
+			return false;
+
+		return this.includeCharacters.ContainsKey(pCharacter->ObjectIndex);
 	}
 
 	private void OnGroupPoseStateChanged(bool newState)
@@ -116,7 +135,7 @@ public class SaveService : ServiceBase
 		int fromIndex = GroupPoseService.GPoseFirstCharacter;
 		int toIndex = GroupPoseService.GPoseFirstCharacter + GroupPoseService.GPoseCharacterCount;
 
-		if (!this.Services.GroupPose.IsGroupPosing)
+		if (!newState)
 		{
 			fromIndex = 0;
 			toIndex = Math.Min(DalamudServices.ObjectTable.Length, GroupPoseService.GPoseFirstCharacter);
@@ -124,10 +143,7 @@ public class SaveService : ServiceBase
 
 		for (int i = fromIndex; i < toIndex; ++i)
 		{
-			if (!this.includeCharacters.ContainsKey(i))
-			{
-				this.includeCharacters.Add(i, i == fromIndex);
-			}
+			this.includeCharacters.Add(i, i == fromIndex);
 		}
 	}
 
