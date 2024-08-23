@@ -65,6 +65,14 @@ public class SaveService : ServiceBase
 		return base.Stop();
 	}
 
+	public void SetSaveFileInfo(DirectoryInfo? directory = null, string? name = null)
+	{
+		directory = directory ?? this.SaveFileInfo?.Directory ?? this.defaultDirectory;
+		name = name ?? Path.GetFileNameWithoutExtension(this.SaveFileInfo?.Name) ?? "New Scene";
+
+		this.SaveFileInfo = new FileInfo($"{directory?.FullName}\\{name}.studio");
+	}
+
 	public void Save() => this.Save(null);
 	public void SaveAs() => this.SaveAs(null);
 

@@ -2,7 +2,6 @@
 
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using Lumina.Data;
 using ScreenshotStudio.Library.Sources;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
@@ -22,6 +21,12 @@ public partial class SaveWindow : PanelWindow
 	[AutoNotify] public FastObservableCollection<CharacterViewModel> Characters { get; init; } = new();
 	[AutoNotify] public FastObservableCollection<RecentEntryViewModel> RecentDirectories { get; init; } = new();
 
+	[AutoNotify] public string FileName
+	{
+		get => Path.GetFileNameWithoutExtension(this.Services.Save.SaveFileInfo?.Name) ?? string.Empty;
+		set => this.Services.Save.SetSaveFileInfo(null, value);
+	}
+
 	[AutoNotify] public RecentEntryViewModel? SelectedDirectory
 	{
 		get => this.selectedDirectory;
@@ -34,6 +39,8 @@ public partial class SaveWindow : PanelWindow
 			else if (value is RecentDirectoryViewModel viewModel)
 			{
 				this.selectedDirectory = viewModel;
+
+				this.Services.Save.SetSaveFileInfo(this.selectedDirectory.Directory, null);
 			}
 		}
 	}
@@ -73,7 +80,7 @@ public partial class SaveWindow : PanelWindow
 				RecentDirectoryViewModel viewModel = new RecentDirectoryViewModel(fileSource.Directory);
 				this.RecentDirectories.Add(viewModel);
 
-				if (fileSource.Directory == this.Services.Save.SaveFileInfo?.Directory)
+				if (fileSource.Directory.IsDirectory(this.Services.Save.SaveFileInfo?.Directory))
 				{
 					this.selectedDirectory = viewModel;
 				}
@@ -142,7 +149,7 @@ public partial class SaveWindow : PanelWindow
 			bool exists = false;
 			foreach(RecentEntryViewModel vm in this.RecentDirectories)
 			{
-				if (vm is RecentDirectoryViewModel directoryViewModel && directoryViewModel.Directory.IsSame(dir))
+				if (vm is RecentDirectoryViewModel directoryViewModel && directoryViewModel.Directory.IsDirectory(dir))
 				{
 					exists = true;
 					break;

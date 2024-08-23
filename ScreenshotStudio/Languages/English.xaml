@@ -56,7 +56,6 @@
 	<sys:String x:Key="LOC_Save_ExportPoseToolTip">Export {0}'s pose as a single file (*.pose)</sys:String>
 	<sys:String x:Key="LOC_Save_ExportAppearanceToolTip">Export {0}'s appearance as a single file (*.chara)</sys:String>
 	<sys:String x:Key="LOC_Save_SaveScene">Save</sys:String>
-	<sys:String x:Key="LOC_Save_SaveSceneAs">Save As...</sys:String>
 	<sys:String x:Key="LOC_Save_SavePose">Save Pose</sys:String>
 	<sys:String x:Key="LOC_Save_SaveAppearance">Save Appearance</sys:String>
 

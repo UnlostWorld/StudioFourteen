@@ -63,7 +63,7 @@
 				x:Name="FileNameText"
 				Grid.Row="1"
 				Grid.ColumnSpan="2"
-				Text="New Scene"
+				Text="{Binding FileName}"
 				TextWrapping="Wrap">
 				<wpfUtils:TextBoxEx.Suffix>
 					<TextBlock
@@ -280,12 +280,6 @@
 			<StackPanel
 				HorizontalAlignment="Right"
 				Orientation="Horizontal">
-				<Button
-					MinWidth="100"
-					Click="OnSaveClicked"
-					Content="{DynamicResource LOC_Save_SaveSceneAs}"
-					IsEnabled="{Binding CanSave}" />
-
 				<Button
 					MinWidth="100"
 					Click="OnSaveClicked"
