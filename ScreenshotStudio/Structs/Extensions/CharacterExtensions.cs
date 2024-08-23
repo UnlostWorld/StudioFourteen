@@ -6,6 +6,7 @@ using global::System;
 using global::System.Runtime.InteropServices;
 using ScreenshotStudio;
 using ScreenshotStudio.GameData.Excel;
+using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Utilities;
 
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
@@ -54,9 +55,9 @@ public static class CharacterExtensions
 
 	public static unsafe string? GetDisplayName(ref this Character self)
 	{
-		if (self.GetKind() == ObjectKind.Companion || self.GetKind() == ObjectKind.BattleNpc)
+		if (self.CompanionOwnerId > 0)
 		{
-			Character* pOwner = self.GetParentCharacter();
+			Character* pOwner = (Character*)CharacterManager.Instance()->LookupBattleCharaByEntityId(self.CompanionOwnerId);
 			if (pOwner != null)
 			{
 				string? ownersName = pOwner->GetNameAsString();
