@@ -17,13 +17,13 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<PublishTrimmed>false</PublishTrimmed>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-	</PropertyGroup>
-
-	<PropertyGroup>
+		<Deterministic>false</Deterministic>
+		<AssemblyVersion>1.0.0.*</AssemblyVersion>
 		<DalamudLibPath>$(appdata)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
 		<ApplicationIcon>Assets\icon.ico</ApplicationIcon>
 		<PackageIcon>light-pride-textless.png</PackageIcon>
 	</PropertyGroup>
+
 	<PropertyGroup Condition="'$(CI)' == 'true' OR '$(IsCI)' == 'true'">
 		<DalamudLibPath>$(DALAMUD_HOME)/</DalamudLibPath>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>

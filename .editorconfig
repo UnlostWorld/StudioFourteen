@@ -5,6 +5,7 @@ indent_style = tab
 csharp_style_namespace_declarations = file_scoped:warning
 dotnet_style_collection_initializer = false:suggestion
 
+
 dotnet_diagnostic.SA1000.severity = none
 dotnet_diagnostic.SA1027.severity = none
 dotnet_diagnostic.SA1600.severity = none
@@ -59,6 +60,7 @@ dotnet_diagnostic.UNT0020.severity = warning
 
 dotnet_diagnostic.CS1591.severity = none
 dotnet_diagnostic.CS0067.severity = none
+dotnet_diagnostic.CS7035.severity = none
 
 dotnet_diagnostic.CA1416.severity = none
 dotnet_diagnostic.CA2201.severity = none
