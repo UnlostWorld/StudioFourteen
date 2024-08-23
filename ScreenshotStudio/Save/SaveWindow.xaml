@@ -2,6 +2,7 @@
 	x:Class="ScreenshotStudio.Save.SaveWindow"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:ap="WpfUtils.AttachedProperties"
 	xmlns:controls="clr-namespace:ScreenshotStudio.Controls"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="clr-namespace:ScreenshotStudio.Save"
@@ -33,7 +34,44 @@
 			Grid.Row="0"
 			Grid.ColumnSpan="2">
 
-			<controls:PathControl File="{Binding Services.Save.SaveFileInfo}" />
+			<Grid.RowDefinitions>
+				<RowDefinition />
+				<RowDefinition />
+			</Grid.RowDefinitions>
+
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition />
+				<ColumnDefinition Width="Auto" />
+			</Grid.ColumnDefinitions>
+
+			<ComboBox
+				Grid.Row="0"
+				ItemsSource="{Binding RecentDirectories}"
+				SelectedItem="{Binding SelectedDirectory}">
+				<ComboBox.Resources>
+					<DataTemplate DataType="{x:Type local:RecentDirectoryViewModel}">
+						<controls:PathDisplay File="{Binding Directory}" />
+					</DataTemplate>
+
+					<DataTemplate DataType="{x:Type local:AddDirectoryViewModel}">
+						<TextBlock Text="{DynamicResource LOC_Save_BrowseDirectory}" />
+					</DataTemplate>
+				</ComboBox.Resources>
+			</ComboBox>
+
+			<wpfUtils:TextBoxEx
+				x:Name="FileNameText"
+				Grid.Row="1"
+				Grid.ColumnSpan="2"
+				Text="New Scene"
+				TextWrapping="Wrap">
+				<wpfUtils:TextBoxEx.Suffix>
+					<TextBlock
+						Margin="0"
+						Foreground="{DynamicResource ForegroundLightBrush}"
+						Text=".studio" />
+				</wpfUtils:TextBoxEx.Suffix>
+			</wpfUtils:TextBoxEx>
 
 		</Grid>
 

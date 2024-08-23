@@ -2,20 +2,41 @@
 
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using Lumina.Data;
+using ScreenshotStudio.Library.Sources;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Windows;
 using System.Collections.Generic;
+using System.IO;
 using System.Windows;
 using WpfUtils.Extensions;
 
 public partial class SaveWindow : PanelWindow
 {
 	private readonly Dictionary<int, CharacterViewModel> characterLookup = new();
+	private RecentDirectoryViewModel? selectedDirectory;
 
 	[AutoNotify] public bool CanSave { get; private set; } = true;
 	[AutoNotify] public string SaveLabel { get; private set; } = string.Empty;
 	[AutoNotify] public FastObservableCollection<CharacterViewModel> Characters { get; init; } = new();
+	[AutoNotify] public FastObservableCollection<RecentEntryViewModel> RecentDirectories { get; init; } = new();
+
+	[AutoNotify] public RecentEntryViewModel? SelectedDirectory
+	{
+		get => this.selectedDirectory;
+		set
+		{
+			if (value is AddDirectoryViewModel addViewModel)
+			{
+				this.OnBrowseDirectoryClicked(addViewModel);
+			}
+			else if (value is RecentDirectoryViewModel viewModel)
+			{
+				this.selectedDirectory = viewModel;
+			}
+		}
+	}
 
 	[AutoNotify] public string CharactersText
 	{
@@ -40,6 +61,26 @@ public partial class SaveWindow : PanelWindow
 	{
 		base.OnOpened();
 		this.Configuration = this.Services.Save.Current.Copy();
+
+		this.RecentDirectories.Clear();
+		foreach(SourceBase source in this.Services.Library.Sources)
+		{
+			if (source is FileSource fileSource)
+			{
+				if (fileSource.Directory == null)
+					continue;
+
+				RecentDirectoryViewModel viewModel = new RecentDirectoryViewModel(fileSource.Directory);
+				this.RecentDirectories.Add(viewModel);
+
+				if (fileSource.Directory == this.Services.Save.SaveFileInfo?.Directory)
+				{
+					this.selectedDirectory = viewModel;
+				}
+			}
+		}
+
+		this.RecentDirectories.Add(new AddDirectoryViewModel());
 	}
 
 	protected override unsafe void OnFrameworkUpdate(IFramework framework)
@@ -84,6 +125,57 @@ public partial class SaveWindow : PanelWindow
 	{
 		this.Services.Save.Save(this.Configuration);
 	}
+
+	private async void OnBrowseDirectoryClicked(AddDirectoryViewModel viewModel)
+	{
+		if (viewModel.IsAdding)
+			return;
+
+		viewModel.IsAdding = true;
+
+		RecentDirectoryViewModel? currentViewModel = this.selectedDirectory;
+		this.selectedDirectory = null;
+
+		DirectoryInfo? dir = await this.Services.Files.ShowDirectoryDialog(currentViewModel?.Directory);
+		if (dir != null)
+		{
+			bool exists = false;
+			foreach(RecentEntryViewModel vm in this.RecentDirectories)
+			{
+				if (vm is RecentDirectoryViewModel directoryViewModel && directoryViewModel.Directory.IsSame(dir))
+				{
+					exists = true;
+					break;
+				}
+			}
+
+			if (!exists)
+			{
+				RecentDirectoryViewModel newDirectoryViewModel = new(dir);
+				this.RecentDirectories.Insert(this.RecentDirectories.Count - 1, newDirectoryViewModel);
+				currentViewModel = newDirectoryViewModel;
+			}
+		}
+
+		viewModel.IsAdding = false;
+		this.selectedDirectory = currentViewModel;
+	}
+}
+
+public class RecentEntryViewModel
+{
+}
+
+public class RecentDirectoryViewModel(DirectoryInfo directory)
+	: RecentEntryViewModel
+{
+	public DirectoryInfo Directory => directory;
+}
+
+public class AddDirectoryViewModel
+	: RecentEntryViewModel
+{
+	public bool IsAdding { get; set; }
 }
 
 public class CharacterViewModel(int objectTableIndex)

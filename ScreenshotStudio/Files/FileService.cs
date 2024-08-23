@@ -1,5 +1,6 @@
 ﻿namespace ScreenshotStudio.Files;
 
+using FFXIVClientStructs;
 using Microsoft.Win32;
 using ScreenshotStudio.Library.Sources;
 using ScreenshotStudio.Services;
@@ -52,6 +53,29 @@ public class FileService : ServiceBase
 		return null;
 	}
 
+	public async Task<DirectoryInfo?> ShowDirectoryDialog(DirectoryInfo? defaultInfo = null)
+	{
+		BackgroundWindow? bgWindow = this.Services.Panels.Get<BackgroundWindow>();
+		if (bgWindow == null)
+		{
+			this.Log.Error("No background window found");
+			return null;
+		}
+
+		await Threads.UiThread(bgWindow);
+
+		OpenFolderDialog dialog = new OpenFolderDialog();
+		dialog.DefaultDirectory = defaultInfo?.FullName.TrimEnd('/', '\\');
+		this.PopulatecustomPlaces(dialog);
+
+		bool? result = dialog.ShowDialog(bgWindow);
+
+		if (result != true)
+			return null;
+
+		return new DirectoryInfo(dialog.FolderName);
+	}
+
 	public Task<FileInfo?> ShowSaveDialog<TFile>(FileSystemInfo? defaultInfo = null)
 		where TFile : FileBase, new()
 	{
@@ -72,6 +96,21 @@ public class FileService : ServiceBase
 	public Task<FileInfo?> ShowOpenDialog(FileSystemInfo? defaultInfo, params Type[] fileType)
 	{
 		return this.ShowDialog<OpenFileDialog>(defaultInfo, fileType);
+	}
+
+	private void PopulatecustomPlaces(CommonItemDialog self)
+	{
+		foreach (SourceBase src in ServiceManager.Instance.Library.Sources)
+		{
+			if (src is FileSource fileSource)
+			{
+				if (fileSource.Directory?.Exists == true)
+				{
+					FileDialogCustomPlace place = new(fileSource.Directory.FullName);
+					self.CustomPlaces.Add(place);
+				}
+			}
+		}
 	}
 
 	private Task<FileInfo?> ShowDialog<TDialogType, TFile>(FileSystemInfo? defaultInfo = null)
@@ -150,18 +189,7 @@ public class FileService : ServiceBase
 		}
 
 		dialog.Filter = filterBuilder.ToString();
-
-		foreach (SourceBase src in this.Services.Library.Sources)
-		{
-			if (src is FileSource fileSource)
-			{
-				if (fileSource.Directory?.Exists == true)
-				{
-					FileDialogCustomPlace place = new(fileSource.Directory.FullName);
-					dialog.CustomPlaces.Add(place);
-				}
-			}
-		}
+		this.PopulatecustomPlaces(dialog);
 
 		bool? result = dialog.ShowDialog(bgWindow);
 

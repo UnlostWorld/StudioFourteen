@@ -43,6 +43,7 @@
 	<sys:String x:Key="LOC_FileMeta_Author">Author</sys:String>
 	<sys:String x:Key="LOC_FileMeta_Version">Version</sys:String>
 
+	<sys:String x:Key="LOC_Save_BrowseDirectory">Browse...</sys:String>
 	<sys:String x:Key="LOC_Save_IncludeLocation">Location</sys:String>
 	<sys:String x:Key="LOC_Save_IncludeWeather">Weather</sys:String>
 	<sys:String x:Key="LOC_Save_IncludeTimeOfDay">Time Of Day</sys:String>
