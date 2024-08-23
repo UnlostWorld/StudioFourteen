@@ -42,7 +42,7 @@
 		</Grid>
 
 		<ControlTemplate.Triggers>
-			<EventTrigger RoutedEvent="{ex:RoutedEvent local:SaveIconControl.Saving}">
+			<EventTrigger RoutedEvent="{ex:RoutedEvent local:SaveIconControl.Saved}">
 				<BeginStoryboard>
 					<Storyboard>
 						<DoubleAnimationUsingKeyFrames
