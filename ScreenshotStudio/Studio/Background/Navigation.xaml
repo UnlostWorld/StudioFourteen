@@ -5,6 +5,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="clr-namespace:ScreenshotStudio.Studio.Background"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:save="clr-namespace:ScreenshotStudio.Save"
 	xmlns:studio="clr-namespace:ScreenshotStudio"
 	xmlns:triggers="clr-namespace:WpfUtils.Triggers;assembly=WpfUtils"
 	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
@@ -218,15 +219,9 @@
 					<ToggleButton
 						IsChecked="{Binding IsSaveOpen}"
 						ToolTip="{DynamicResource LOC_Save}">
-						<wpfUtils:IconBlock
-							Icon="FloppyDisk"
-							IconFont="Solid" />
+						<save:SaveIconControl />
 
 					</ToggleButton>
-
-
-
-
 				</StackPanel>
 			</Border>
 		</Border>

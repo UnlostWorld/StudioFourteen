@@ -17,6 +17,7 @@
 		<ResourceDictionary Source="./Windows/PanelStyle.xaml" />
 		<ResourceDictionary Source="./Windows/PanelWindowStyle.xaml" />
 		<ResourceDictionary Source="./Windows/DockPanelStyle.xaml" />
+		<ResourceDictionary Source="./Save/SaveIconControl.xaml" />
 
 		<!--  Default Language  -->
 		<ResourceDictionary Source="./Languages/English.xaml" />
