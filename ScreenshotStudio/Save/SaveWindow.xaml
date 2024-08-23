@@ -208,66 +208,66 @@
 				<ItemsControl ItemsSource="{Binding Characters}">
 					<ItemsControl.ItemTemplate>
 						<DataTemplate DataType="{x:Type local:CharacterViewModel}">
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition Height="Auto" />
+									<RowDefinition />
+								</Grid.RowDefinitions>
 
-							<Border
-								Margin="1"
-								Style="{DynamicResource WpfUtilsControlBorder}">
-								<Grid>
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition />
-										<ColumnDefinition Width="Auto" />
-										<ColumnDefinition Width="Auto" />
-									</Grid.ColumnDefinitions>
+								<TextBlock
+									Grid.Row="0"
+									Margin="2,4,2,1"
+									Style="{DynamicResource Subscript}"
+									Text="{Binding Name}" />
 
-									<CheckBox
-										Grid.Column="0"
-										Height="38"
-										Margin="0"
-										Background="Transparent"
-										IsChecked="{Binding IncludeCharacter}"
-										ToolTip="{Binding ToolTipText}">
-										<Grid VerticalAlignment="Center">
-											<Grid.RowDefinitions>
-												<RowDefinition Height="Auto" />
-												<RowDefinition Height="Auto" />
-											</Grid.RowDefinitions>
+								<Border
+									Grid.Row="1"
+									Margin="1"
+									Style="{DynamicResource WpfUtilsControlBorder}">
+									<Grid>
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="Auto" />
+											<ColumnDefinition />
+											<ColumnDefinition Width="Auto" />
+											<ColumnDefinition Width="Auto" />
+										</Grid.ColumnDefinitions>
 
-											<TextBlock
-												Grid.Row="0"
-												Margin="2,2,2,0"
-												Text="{Binding Nickname}" />
-											<TextBlock
-												Grid.Row="1"
-												Margin="2,0,2,4"
-												Style="{DynamicResource Subscript}"
-												Text="{Binding Name}" />
+										<CheckBox
+											Grid.Column="0"
+											Margin="0"
+											Background="Transparent"
+											IsChecked="{Binding IncludeCharacter}"
+											ToolTip="{Binding ToolTipText}" />
 
-										</Grid>
-									</CheckBox>
+										<TextBox
+											Grid.Column="1"
+											Margin="0"
+											Text="{Binding Nickname}" />
 
-									<Button
-										Grid.Column="1"
-										Width="28"
-										Height="Auto"
-										Margin="0,1,1,1"
-										VerticalAlignment="Stretch"
-										Background="Transparent"
-										ToolTip="{Binding ExportAppearanceToolTipText}">
-										<wpfUtils:IconBlock Icon="UserShield" />
-									</Button>
+										<Button
+											Grid.Column="2"
+											Width="28"
+											Height="Auto"
+											Margin="0,1,1,1"
+											VerticalAlignment="Stretch"
+											Background="Transparent"
+											ToolTip="{Binding ExportAppearanceToolTipText}">
+											<wpfUtils:IconBlock Icon="UserShield" />
+										</Button>
 
-									<Button
-										Grid.Column="2"
-										Width="28"
-										Height="Auto"
-										Margin="0,1,1,1"
-										VerticalAlignment="Stretch"
-										Background="Transparent"
-										ToolTip="{Binding ExportPoseToolTipText}">
-										<wpfUtils:IconBlock Icon="Running" />
-									</Button>
-								</Grid>
-							</Border>
+										<Button
+											Grid.Column="3"
+											Width="28"
+											Height="Auto"
+											Margin="0,1,1,1"
+											VerticalAlignment="Stretch"
+											Background="Transparent"
+											ToolTip="{Binding ExportPoseToolTipText}">
+											<wpfUtils:IconBlock Icon="Running" />
+										</Button>
+									</Grid>
+								</Border>
+							</Grid>
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
 				</ItemsControl>

@@ -195,7 +195,6 @@ public class CharacterViewModel(int objectTableIndex)
 {
 	public int ObjectTableIndex { get; init; } = objectTableIndex;
 
-	[AutoNotify] public string? Nickname => this.Services.Nickname.GetNicknameOrDefault(this.ObjectTableIndex);
 	[AutoNotify] public string? Name { get; set; }
 
 	[AutoNotify] public string ToolTipText => string.Format(Resources.Find("LOC_Save_IncludeCharacterToolTip", string.Empty), this.Name, this.Nickname ?? this.Name);
@@ -206,5 +205,11 @@ public class CharacterViewModel(int objectTableIndex)
 	{
 		get => this.Services.Save.GetIncludeCharacter(this.ObjectTableIndex);
 		set => this.Services.Save.SetIncludeCharacter(this.ObjectTableIndex, value);
+	}
+
+	[AutoNotify] public string? Nickname
+	{
+		get => this.Services.Nickname.GetNicknameOrDefault(this.ObjectTableIndex);
+		set => this.Services.Nickname.SetNickname(this.ObjectTableIndex, value);
 	}
 }
