@@ -28,32 +28,39 @@ public partial class PathDisplay : ItemsControl
 		if (newValue == null)
 			return;
 
-		this.pathSegments.Add(new(newValue.Name));
-
-		DirectoryInfo? dir = null;
-		if (newValue is DirectoryInfo directoryInfo)
+		if (newValue is DirectoryInfo dirInfo && dirInfo.Parent == null)
 		{
-			dir = directoryInfo.Parent;
+			this.pathSegments.Add(new(newValue.Name, IconChar.HardDrive));
 		}
-		else if (newValue is FileInfo fileInfo)
+		else
 		{
-			dir = fileInfo.Directory;
-		}
+			this.pathSegments.Add(new(newValue.Name));
 
-		if (dir == null)
-			return;
+			DirectoryInfo? dir = null;
+			if (newValue is DirectoryInfo directoryInfo)
+			{
+				dir = directoryInfo.Parent;
+			}
+			else if (newValue is FileInfo fileInfo)
+			{
+				dir = fileInfo.Directory;
+			}
 
-		DirectoryInfo root = dir.Root;
+			if (dir != null)
+			{
+				DirectoryInfo root = dir.Root;
 
-		while (dir != null && !dir.IsSpecialFolder() && dir != root)
-		{
-			this.pathSegments.Insert(0, new(dir.Name));
-			dir = dir.Parent;
-		}
+				while (dir != null && !dir.IsSpecialFolder() && dir != root)
+				{
+					this.pathSegments.Insert(0, new(dir.Name));
+					dir = dir.Parent;
+				}
 
-		if (dir != null && dir.IsSpecialFolder())
-		{
-			this.pathSegments.Insert(0, new(dir.Name, dir.GetSpecialFolder()?.ToIcon()));
+				if (dir != null && dir.IsSpecialFolder())
+				{
+					this.pathSegments.Insert(0, new(dir.Name, dir.GetSpecialFolder()?.ToIcon()));
+				}
+			}
 		}
 
 		this.ItemsSource = this.pathSegments;

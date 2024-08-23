@@ -22,9 +22,11 @@
 			<StackPanel Orientation="Horizontal">
 				<wpfUtils:IconBlock
 					x:Name="Icon"
+					Width="22"
 					Margin="0,4,6,2"
 					Icon="{Binding Icon}"
-					IconFont="Solid" />
+					IconFont="Solid"
+					TextAlignment="Center" />
 
 				<wpfUtils:IconBlock
 					x:Name="Caret"
