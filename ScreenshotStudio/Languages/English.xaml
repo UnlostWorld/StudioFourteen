@@ -50,6 +50,7 @@
 	<sys:String x:Key="LOC_Save_CharactersText">Characters ({0}/{1})</sys:String>
 	<sys:String x:Key="LOC_Save_IncludeAppearances">Appearances</sys:String>
 	<sys:String x:Key="LOC_Save_IncludePoses">Poses</sys:String>
+	<sys:String x:Key="LOC_Save_Environment">Environment</sys:String>
 	<sys:String x:Key="LOC_Save_IncludeAppearancesToolTip">Include appearances for the selected characters in the scene file</sys:String>
 	<sys:String x:Key="LOC_Save_IncludePosesToolTip">Include poses for the selected characters in the scene file</sys:String>
 	<sys:String x:Key="LOC_Save_IncludeCharacterToolTip">Include {0} (saved as {1}) in the scene file</sys:String>

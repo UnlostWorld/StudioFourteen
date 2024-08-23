@@ -2,6 +2,7 @@
 
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using Lumina.Data;
 using ScreenshotStudio.Library.Sources;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
@@ -85,6 +86,13 @@ public partial class SaveWindow : PanelWindow
 					this.selectedDirectory = viewModel;
 				}
 			}
+		}
+
+		if (this.Services.Save.SaveFileInfo?.Directory != null && this.selectedDirectory == null)
+		{
+			RecentDirectoryViewModel viewModel = new RecentDirectoryViewModel(this.Services.Save.SaveFileInfo.Directory);
+			this.RecentDirectories.Add(viewModel);
+			this.selectedDirectory = viewModel;
 		}
 
 		this.RecentDirectories.Add(new AddDirectoryViewModel());
