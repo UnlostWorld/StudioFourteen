@@ -64,6 +64,7 @@
 				x:Name="FileNameText"
 				Grid.Row="1"
 				Grid.ColumnSpan="2"
+				Padding="22,0,0,0"
 				Text="{Binding FileName}"
 				TextWrapping="Wrap">
 				<wpfUtils:TextBoxEx.Suffix>
