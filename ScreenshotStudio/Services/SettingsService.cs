@@ -41,5 +41,8 @@ public class SettingsService : ServiceBase
 
 		public string? LastSaveDirectory { get; set; }
 		public SaveService.SaveConfiguration SaveConfig { get; set; } = new();
+
+		public string? DefaultAuthor { get; set; }
+		public string? DefaultVersion { get; set; } = "1.0";
 	}
 }

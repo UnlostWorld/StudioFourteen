@@ -88,8 +88,8 @@ public partial class Navigation : View
 	[AutoNotify]
 	public bool IsSettingsOpen
 	{
-		get => this.Services.Panels.GetIsOpen<HelloWorldWindow>();
-		set => this.Services.Panels.SetIsOpen<HelloWorldWindow>(value);
+		get => this.Services.Panels.GetIsOpen<SettingsWindow>();
+		set => this.Services.Panels.SetIsOpen<SettingsWindow>(value);
 	}
 
 	[AutoNotify]

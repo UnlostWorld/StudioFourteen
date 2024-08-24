@@ -6,6 +6,7 @@ using Lumina.Data;
 using ScreenshotStudio.Library.Sources;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
+using ScreenshotStudio.Tags;
 using ScreenshotStudio.Windows;
 using System.Collections.Generic;
 using System.IO;

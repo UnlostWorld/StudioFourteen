@@ -155,7 +155,6 @@
 
 					<ToggleButton
 						IsChecked="{Binding IsSettingsOpen}"
-						IsEnabled="False"
 						ToolTip="{DynamicResource LOC_Settings}">
 						<wpfUtils:IconBlock Icon="cogs" />
 					</ToggleButton>

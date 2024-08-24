@@ -1,18 +1,16 @@
 ﻿namespace ScreenshotStudio.Save;
 
 using Dalamud.Game.ClientState.Objects.Enums;
-using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using ScreenshotStudio.Files;
 using ScreenshotStudio.Input;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
+using ScreenshotStudio.Tags;
 using ScreenshotStudio.Utilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
-using TerraFX.Interop.Windows;
 using WpfUtils.Extensions;
 
 public class SaveService : ServiceBase
@@ -26,6 +24,7 @@ public class SaveService : ServiceBase
 	public event SaveEventDelegate? Saved;
 
 	[AutoNotify] public FileInfo? SaveFileInfo { get; set; }
+	[AutoNotify] public SaveMetaData MetaData { get; init; } = new();
 
 	[AutoNotify] public SaveConfiguration Current => this.Services.Settings.Current.SaveConfig;
 
@@ -59,6 +58,8 @@ public class SaveService : ServiceBase
 
 		this.Services.GroupPose.StateChanged += this.OnGroupPoseStateChanged;
 		this.OnGroupPoseStateChanged(this.Services.GroupPose.IsGroupPosing);
+
+		this.MetaData.LoadDefaults();
 
 		return base.Start();
 	}
@@ -175,6 +176,20 @@ public class SaveService : ServiceBase
 			other.IncludePoses = this.IncludePoses;
 			other.IncludeAppearances = this.IncludeAppearances;
 			return other;
+		}
+	}
+
+	public class SaveMetaData : ViewModel
+	{
+		[AutoNotify] public string? Author { get; set; }
+		[AutoNotify] public string? Version { get; set; }
+		[AutoNotify] public string? Description { get; set; }
+		[AutoNotify] public TagCollection Tags { get; init; } = new();
+
+		public void LoadDefaults()
+		{
+			this.Author = this.Services.Settings.Current.DefaultAuthor;
+			this.Version = this.Services.Settings.Current.DefaultVersion;
 		}
 	}
 }
