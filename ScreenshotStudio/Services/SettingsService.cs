@@ -3,6 +3,8 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Dalamud.Configuration;
+using Dalamud.Game.ClientState.Keys;
+using ScreenshotStudio.Input;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Save;
 
@@ -48,5 +50,11 @@ public class SettingsService : ServiceBase
 
 		// Input
 		public bool EnableKeyBinds { get; set; } = true;
+		public Dictionary<KeyBindEvents, KeyBind> KeyBinds { get; set; } = new()
+		{
+			{ KeyBindEvents.InvokeQuickSearch, new(VirtualKey.Q, false, false, true) },
+			{ KeyBindEvents.Save, new(VirtualKey.S, true, false, false) },
+			{ KeyBindEvents.SaveAs, new(VirtualKey.S, true, false, true) },
+		};
 	}
 }

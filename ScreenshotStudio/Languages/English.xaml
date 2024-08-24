@@ -100,6 +100,9 @@
 	<sys:String x:Key="LOC_Settings_Files_DefaultVersion">Version:</sys:String>
 	<sys:String x:Key="LOC_Settings_Input">Input</sys:String>
 	<sys:String x:Key="LOC_Settings_Input_EnableKeyBinds">Enable Keyboard Shortcuts</sys:String>
+	<sys:String x:Key="LOC_Settings_Input_Save">Save Scene</sys:String>
+	<sys:String x:Key="LOC_Settings_Input_SaveAs">Toggle Save Window</sys:String>
+	<sys:String x:Key="LOC_Settings_Input_InvokeQuickSearch">Invoke Quick Search</sys:String>
 
 	<sys:String x:Key="LOC_Pose_FlipSides">Flip Sides</sys:String>
 	<sys:String x:Key="LOC_Pose_SelectCharacter">Select the targeted actor</sys:String>

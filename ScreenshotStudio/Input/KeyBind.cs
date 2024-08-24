@@ -37,15 +37,15 @@ public class KeyBind
 		string str = string.Empty;
 
 		if (this.Control)
-			str += "Ctrl ";
+			str += "Ctrl, ";
 
 		if (this.Alt)
-			str += "Alt ";
+			str += "Alt, ";
 
 		if (this.Shift)
-			str += "Shift ";
+			str += "Shift, ";
 
-		str += $"+ {this.Key.GetFancyName()}";
+		str += this.Key.GetFancyName();
 		return str;
 	}
 }

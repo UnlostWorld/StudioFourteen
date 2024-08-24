@@ -20,14 +20,6 @@ public class InputService : ServiceBase
 
 	public bool IsTextInputActive { get; private set; }
 
-	public Dictionary<KeyBindEvents, KeyBind> Bindings { get; set; } = new()
-	{
-		// Default bindings
-		{ KeyBindEvents.InvokeQuickSearch, new(VirtualKey.Q, false, false, true) },
-		{ KeyBindEvents.Save, new(VirtualKey.S, true, false, false) },
-		{ KeyBindEvents.SaveAs, new(VirtualKey.S, true, false, true) },
-	};
-
 	public static IEnumerable<VirtualKey> GetValidKeys()
 	{
 		if (DalamudServices.KeyState == null)
@@ -71,7 +63,7 @@ public class InputService : ServiceBase
 	public KeyBind? GetKeyBind(KeyBindEvents evt)
 	{
 		KeyBind? bind = null;
-		this.Bindings.TryGetValue(evt, out bind);
+		this.Settings.KeyBinds.TryGetValue(evt, out bind);
 		return bind;
 	}
 
@@ -99,7 +91,7 @@ public class InputService : ServiceBase
 	private void CheckEvent(KeyBindEvents evt)
 	{
 		KeyBind? bind;
-		if (!this.Bindings.TryGetValue(evt, out bind) || bind == null)
+		if (!this.Settings.KeyBinds.TryGetValue(evt, out bind) || bind == null)
 			return;
 
 		this.listeners.TryGetValue(evt, out List<Action>? listeners);
