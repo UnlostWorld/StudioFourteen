@@ -11,17 +11,13 @@ using ScreenshotStudio.Services;
 using ScreenshotStudio.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Windows;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using TerraFX.Interop.Windows;
 
 public class InputService : ServiceBase
 {
 	private readonly HashSet<KeyBindEvents> eventsDown = new();
 	private readonly Dictionary<KeyBindEvents, List<Action>> listeners = new();
 
-	public bool EnableKeyBinds => true;
 	public bool IsTextInputActive { get; private set; }
 
 	public Dictionary<KeyBindEvents, KeyBind> Bindings { get; set; } = new()
@@ -42,7 +38,7 @@ public class InputService : ServiceBase
 
 	public static bool IsKeyBindDown(KeyBindEvents evt)
 	{
-		if (!ServiceManager.Instance.Input.EnableKeyBinds)
+		if (!ServiceManager.Instance.Settings.Current.EnableKeyBinds)
 			return false;
 
 		return ServiceManager.Instance.Input.eventsDown.Contains(evt);
@@ -88,7 +84,7 @@ public class InputService : ServiceBase
 
 		this.IsTextInputActive = RaptureAtkModule.Instance()->AtkModule.IsTextInputActive();
 
-		if (!this.EnableKeyBinds)
+		if (!this.Settings.EnableKeyBinds)
 			return;
 
 		if (this.Services.Panels.ActivePanel == null && !XivWindow.IsActive())
