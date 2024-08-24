@@ -39,10 +39,14 @@ public class SettingsService : ServiceBase
 		public bool IsOpen { get; set; } = false;
 		public Dictionary<string, string> PanelPersistence { get; set; } = new();
 
+		// Files
 		public string? LastSaveDirectory { get; set; }
 		public SaveService.SaveConfiguration SaveConfig { get; set; } = new();
 
 		public string? DefaultAuthor { get; set; }
 		public string? DefaultVersion { get; set; } = "1.0";
+
+		// Input
+		public bool EnableKeyBinds { get; set; } = true;
 	}
 }

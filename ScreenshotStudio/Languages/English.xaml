@@ -70,9 +70,7 @@
 	<sys:String x:Key="LOC_Library_Poses">Poses</sys:String>
 	<sys:String x:Key="LOC_Library_Characters">Characters</sys:String>
 	<sys:String x:Key="LOC_Library_Scenes">Scenes</sys:String>
-
 	<sys:String x:Key="LOC_Library_LivePreview">Automatically apply selected item to target</sys:String>
-
 	<sys:String x:Key="LOC_Library_DataSheetLibrarySourceDesc">Files from the local game installation.</sys:String>
 	<sys:String x:Key="LOC_Library_GroupPoseCharactersLibrarySource">GPose Characters</sys:String>
 	<sys:String x:Key="LOC_Library_GroupPoseCharactersLibrarySourceDesc">Characters that were present when GPose loaded</sys:String>
@@ -95,6 +93,13 @@
 	<sys:String x:Key="LOC_Glasses">Facewear</sys:String>
 	<sys:String x:Key="LOC_Ornament">Fashion Accessories</sys:String>
 
+	<sys:String x:Key="LOC_Settings_Interface">Interface</sys:String>
+	<sys:String x:Key="LOC_Settings_Files">Files</sys:String>
+	<sys:String x:Key="LOC_Settings_Files_DefaultMetadata">Default Metadata</sys:String>
+	<sys:String x:Key="LOC_Settings_Files_DefaultAuthor">Author:</sys:String>
+	<sys:String x:Key="LOC_Settings_Files_DefaultVersion">Version:</sys:String>
+	<sys:String x:Key="LOC_Settings_Input">Input</sys:String>
+	<sys:String x:Key="LOC_Settings_Input_EnableKeyBinds">Enable Keyboard Shortcuts</sys:String>
 
 	<sys:String x:Key="LOC_Pose_FlipSides">Flip Sides</sys:String>
 	<sys:String x:Key="LOC_Pose_SelectCharacter">Select the targeted actor</sys:String>

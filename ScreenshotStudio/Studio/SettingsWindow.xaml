@@ -16,11 +16,11 @@
 	mc:Ignorable="d">
 	<TabControl>
 
-		<TabItem Header="Interface" />
+		<TabItem Header="{DynamicResource LOC_Settings_Interface}" />
 
-		<TabItem Header="Files">
+		<TabItem Header="{DynamicResource LOC_Settings_Files}">
 			<StackPanel>
-				<GroupBox Header="Default Metadata">
+				<GroupBox Header="{DynamicResource LOC_Settings_Files_DefaultMetadata}">
 					<Grid>
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="Auto" />
@@ -36,28 +36,34 @@
 							Grid.Row="0"
 							Grid.Column="0"
 							Style="{DynamicResource RightLabel}"
-							Text="Author:" />
+							Text="{DynamicResource LOC_Settings_Files_DefaultAuthor}" />
 						<TextBox
 							Grid.Row="0"
 							Grid.Column="1"
-							Text="{Binding Config.DefaultAuthor}" />
+							Text="{Binding Settings.DefaultAuthor}" />
 
 						<TextBlock
 							Grid.Row="1"
 							Grid.Column="0"
 							Style="{DynamicResource RightLabel}"
-							Text="Version:" />
+							Text="{DynamicResource LOC_Settings_Files_DefaultVersion}" />
 						<TextBox
 							Grid.Row="1"
 							Grid.Column="1"
-							Text="{Binding Config.DefaultVersion}" />
+							Text="{Binding Settings.DefaultVersion}" />
 					</Grid>
 				</GroupBox>
 
 			</StackPanel>
 		</TabItem>
 
-		<TabItem Header="Input" />
+		<TabItem Header="{DynamicResource LOC_Settings_Input}">
+			<StackPanel>
+				<CheckBox
+					Content="{DynamicResource LOC_Settings_Input_EnableKeyBinds}"
+					IsChecked="{Binding Settings.EnableKeyBinds}" />
+			</StackPanel>
+		</TabItem>
 
 	</TabControl>
 </windows:PanelWindow>
