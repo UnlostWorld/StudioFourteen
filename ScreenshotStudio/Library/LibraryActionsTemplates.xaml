@@ -134,6 +134,37 @@
 
 
 
+	<DataTemplate DataType="{x:Type files:SceneFile}">
+		<Border Style="{DynamicResource WpfUtilsControlBorder}">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition />
+				</Grid.ColumnDefinitions>
+
+				<Button
+					Grid.Column="0"
+					Command="{Binding RevertCommand}">
+					<Button.Content>
+						<wpfUtils:IconBlock Icon="Undo" />
+					</Button.Content>
+				</Button>
+
+				<Button
+					Grid.Column="1"
+					Command="{Binding ApplyCommand}">
+					<Button.Content>
+						<TextBlock>
+							<Run Text="Apply" />
+						</TextBlock>
+					</Button.Content>
+				</Button>
+			</Grid>
+		</Border>
+	</DataTemplate>
+
+
+
 	<DataTemplate DataType="{x:Type sources:FileEntry}">
 		<ContentPresenter Content="{Binding File}" />
 	</DataTemplate>

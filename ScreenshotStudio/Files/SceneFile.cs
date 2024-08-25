@@ -1,7 +1,11 @@
 ﻿namespace ScreenshotStudio.Files;
 
+using ScreenshotStudio.Commands;
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
+using System.Threading.Tasks;
+using System.Windows.Input;
 
 public class SceneFileTypeInfo : JsonFileTypeInfoBase<SceneFile>
 {
@@ -12,6 +16,15 @@ public class SceneFileTypeInfo : JsonFileTypeInfoBase<SceneFile>
 [Serializable]
 public class SceneFile : FileBase
 {
+	public SceneFile()
+	{
+		this.ApplyCommand = new AutoCommand(this.Apply);
+		this.RevertCommand = new AutoCommand(this.Revert);
+	}
+
+	[JsonIgnore] public ICommand ApplyCommand { get; init; }
+	[JsonIgnore] public ICommand RevertCommand { get; init; }
+
 	public string Guid { get; set; } = System.Guid.NewGuid().ToString();
 
 	// TODO
@@ -19,6 +32,9 @@ public class SceneFile : FileBase
 	////public string TimeOfDay { get; set; }
 	////public string Weather { get; set; }
 	public List<Actor> Actors { get; set; } = new();
+
+	public Task Apply() => ServiceManager.Instance.Save.Open(this);
+	public Task Revert() => ServiceManager.Instance.Save.Revert(this);
 
 	public class Actor
 	{

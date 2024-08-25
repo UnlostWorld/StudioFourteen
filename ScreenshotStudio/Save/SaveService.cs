@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using WpfUtils.Extensions;
+using static ScreenshotStudio.Files.SceneFile;
 
 public class SaveService : ServiceBase
 {
@@ -141,6 +142,23 @@ public class SaveService : ServiceBase
 
 		this.IsSaving = false;
 		this.Saved?.Invoke();
+	}
+
+	public Task Open(SceneFile file)
+	{
+		// step one, collect all the available characters
+		// step two, identify the characters to be used for each scene actor
+		// step two point five, spawn new characters for the missing actors if the user wants.
+		// step three, apply character appearances (if included)
+		// step four, apply character poses (if included)
+		// step five, position actors in teh world, either relative to each other, or in absolute terms.
+		// step six, apply environment settings (time, weather, day, etc)
+		return Task.CompletedTask;
+	}
+
+	public Task Revert(SceneFile file)
+	{
+		return Task.CompletedTask;
 	}
 
 	public unsafe bool CanInclude(Character* pCharacter)

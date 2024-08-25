@@ -1,7 +1,9 @@
 ﻿namespace ScreenshotStudio.Commands;
 
 using ScreenshotStudio.Services;
+using System;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using WpfUtils.Commands;
 
 public class AutoCommand : SimpleCommand, IAutoNotify
@@ -9,6 +11,18 @@ public class AutoCommand : SimpleCommand, IAutoNotify
 	public AutoCommand()
 	{
 		AutoPropertyNotifyService.Register(this);
+	}
+
+	public AutoCommand(Action action)
+		: this()
+	{
+		this.action = action;
+	}
+
+	public AutoCommand(Func<Task> func)
+		: this()
+	{
+		this.asyncFunc = func;
 	}
 
 	public event PropertyChangedEventHandler? PropertyChanged;
