@@ -98,7 +98,7 @@ public partial class LibraryWindow : PanelWindow
 		}
 	}
 
-	[AutoNotify] public NavigationAnimations NavigationAnimation { get; private set; } = NavigationAnimations.None;
+	[AutoNotify] public NavigationAnimations NavigationAnimation { get; set; } = NavigationAnimations.None;
 	[AutoNotify] public FastObservableCollection<Result> Results { get; init; } = new();
 	[AutoNotify] public bool ViewList { get; set; } = false;
 	[AutoNotify] public ObservableCollection<GroupEntryBase> Path { get; init; } = new();
@@ -189,14 +189,10 @@ public partial class LibraryWindow : PanelWindow
 
 		await this.Dispatcher.MainThread();
 
-		// Ensure that the search doesn't complete before the animation has completed
-		// before updating the results list.
-		this.searchStopwatch.Stop();
-		if (this.searchStopwatch.ElapsedMilliseconds < 150)
-		{
-			await Task.Delay((int)(150 - this.searchStopwatch.ElapsedMilliseconds));
-			await this.Dispatcher.MainThread();
-		}
+		while (this.NavigationAnimation != NavigationAnimations.None)
+			await Task.Delay(10);
+
+		await this.Dispatcher.MainThread();
 
 		if (results == null)
 		{

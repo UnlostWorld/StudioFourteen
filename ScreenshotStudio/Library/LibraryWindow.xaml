@@ -353,6 +353,7 @@
 						<ScrollViewer
 							Padding="{TemplateBinding Padding}"
 							Focusable="false"
+							Opacity="1"
 							RenderTransformOrigin="0.5, 0.5">
 
 							<ScrollViewer.RenderTransform>
@@ -366,7 +367,7 @@
 
 							<ScrollViewer.Triggers>
 								<triggers:StoryboardEnumTrigger
-									Binding="{Binding NavigationAnimation}"
+									Binding="{Binding NavigationAnimation, Mode=TwoWay}"
 									Target="{Binding RelativeSource={RelativeSource AncestorType={x:Type ScrollViewer}}}">
 									<triggers:StoryboardEnumTrigger.Storyboards>
 
@@ -376,7 +377,7 @@
 												Storyboard.TargetProperty="ScaleX"
 												From="1"
 												To="1.05"
-												Duration="0:00:00.100">
+												Duration="0:00:00.050">
 												<DoubleAnimation.EasingFunction>
 													<SineEase EasingMode="EaseIn" />
 												</DoubleAnimation.EasingFunction>
@@ -385,7 +386,7 @@
 												Storyboard.TargetProperty="Opacity"
 												From="1"
 												To="0"
-												Duration="0:00:00.100">
+												Duration="0:00:00.050">
 												<DoubleAnimation.EasingFunction>
 													<SineEase EasingMode="EaseIn" />
 												</DoubleAnimation.EasingFunction>
@@ -399,7 +400,7 @@
 												Storyboard.TargetProperty="ScaleX"
 												From="0.95"
 												To="1"
-												Duration="0:00:00.150">
+												Duration="0:00:00.050">
 												<DoubleAnimation.EasingFunction>
 													<SineEase EasingMode="EaseOut" />
 												</DoubleAnimation.EasingFunction>
@@ -408,7 +409,7 @@
 												Storyboard.TargetProperty="Opacity"
 												From="0"
 												To="1"
-												Duration="0:00:00.150">
+												Duration="0:00:00.050">
 												<DoubleAnimation.EasingFunction>
 													<SineEase EasingMode="EaseOut" />
 												</DoubleAnimation.EasingFunction>
@@ -422,7 +423,7 @@
 												Storyboard.TargetProperty="ScaleX"
 												From="1"
 												To="0.95"
-												Duration="0:00:00.100">
+												Duration="0:00:00.050">
 												<DoubleAnimation.EasingFunction>
 													<SineEase EasingMode="EaseIn" />
 												</DoubleAnimation.EasingFunction>
@@ -431,7 +432,7 @@
 												Storyboard.TargetProperty="Opacity"
 												From="1"
 												To="0"
-												Duration="0:00:00.100">
+												Duration="0:00:00.050">
 												<DoubleAnimation.EasingFunction>
 													<SineEase EasingMode="EaseIn" />
 												</DoubleAnimation.EasingFunction>
@@ -445,7 +446,7 @@
 												Storyboard.TargetProperty="ScaleX"
 												From="1.05"
 												To="1"
-												Duration="0:00:00.150">
+												Duration="0:00:00.050">
 												<DoubleAnimation.EasingFunction>
 													<SineEase EasingMode="EaseOut" />
 												</DoubleAnimation.EasingFunction>
@@ -454,7 +455,7 @@
 												Storyboard.TargetProperty="Opacity"
 												From="0"
 												To="1"
-												Duration="0:00:00.150">
+												Duration="0:00:00.050">
 												<DoubleAnimation.EasingFunction>
 													<SineEase EasingMode="EaseOut" />
 												</DoubleAnimation.EasingFunction>
@@ -468,7 +469,7 @@
 												Storyboard.TargetProperty="X"
 												From="0"
 												To="100"
-												Duration="0:00:00.150">
+												Duration="0:00:00.100">
 												<DoubleAnimation.EasingFunction>
 													<SineEase EasingMode="EaseIn" />
 												</DoubleAnimation.EasingFunction>
@@ -477,7 +478,7 @@
 												Storyboard.TargetProperty="Opacity"
 												From="1"
 												To="0"
-												Duration="0:00:00.150">
+												Duration="0:00:00.100">
 												<DoubleAnimation.EasingFunction>
 													<SineEase EasingMode="EaseIn" />
 												</DoubleAnimation.EasingFunction>
@@ -490,7 +491,7 @@
 												Storyboard.TargetProperty="X"
 												From="-100"
 												To="0"
-												Duration="0:00:00.150">
+												Duration="0:00:00.100">
 												<DoubleAnimation.EasingFunction>
 													<SineEase EasingMode="EaseOut" />
 												</DoubleAnimation.EasingFunction>
@@ -499,7 +500,7 @@
 												Storyboard.TargetProperty="Opacity"
 												From="0"
 												To="1"
-												Duration="0:00:00.150">
+												Duration="0:00:00.100">
 												<DoubleAnimation.EasingFunction>
 													<SineEase EasingMode="EaseOut" />
 												</DoubleAnimation.EasingFunction>
@@ -513,7 +514,7 @@
 												Storyboard.TargetProperty="X"
 												From="0"
 												To="-100"
-												Duration="0:00:00.150">
+												Duration="0:00:00.100">
 												<DoubleAnimation.EasingFunction>
 													<SineEase EasingMode="EaseIn" />
 												</DoubleAnimation.EasingFunction>
@@ -535,7 +536,7 @@
 												Storyboard.TargetProperty="X"
 												From="100"
 												To="0"
-												Duration="0:00:00.150">
+												Duration="0:00:00.100">
 												<DoubleAnimation.EasingFunction>
 													<SineEase EasingMode="EaseOut" />
 												</DoubleAnimation.EasingFunction>
@@ -544,7 +545,7 @@
 												Storyboard.TargetProperty="Opacity"
 												From="0"
 												To="1"
-												Duration="0:00:00.150">
+												Duration="0:00:00.100">
 												<DoubleAnimation.EasingFunction>
 													<SineEase EasingMode="EaseOut" />
 												</DoubleAnimation.EasingFunction>
