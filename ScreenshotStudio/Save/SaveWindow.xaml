@@ -17,7 +17,7 @@
 	TitleIcon="FloppyDisk"
 	mc:Ignorable="d">
 
-	<Grid>
+	<Grid IsEnabled="{Binding Services.Save.IsSaving, Converter={StaticResource !B}}">
 
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition />

@@ -12,6 +12,8 @@ public class SceneFileTypeInfo : JsonFileTypeInfoBase<SceneFile>
 [Serializable]
 public class SceneFile : FileBase
 {
+	public string Guid { get; set; } = System.Guid.NewGuid().ToString();
+
 	// TODO
 	////public string Location { get; set; }
 	////public string TimeOfDay { get; set; }

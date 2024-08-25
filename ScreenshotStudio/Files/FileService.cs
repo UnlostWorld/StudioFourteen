@@ -53,6 +53,13 @@ public class FileService : ServiceBase
 		return null;
 	}
 
+	public Task Save(FileBase file, FileInfo fileInfo)
+	{
+		string json = Serialization.Serializer.Serialize(file);
+		File.WriteAllText(fileInfo.FullName, json);
+		return Task.CompletedTask;
+	}
+
 	public async Task<DirectoryInfo?> ShowDirectoryDialog(DirectoryInfo? defaultInfo = null)
 	{
 		BackgroundWindow? bgWindow = this.Services.Panels.Get<BackgroundWindow>();

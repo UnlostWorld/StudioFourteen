@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using TerraFX.Interop.Windows;
 
 public class PoseFileTypeInfo : JsonFileTypeInfoBase<PoseFile>
 {
@@ -32,15 +33,90 @@ public class PoseFile : FileBase, IPose
 	public Tribe.TribeRows? Tribe { get; set; }
 	public Genders? Gender { get; set; }
 
-	public Dictionary<string, BoneTransform>? Bones { get; set; } = [];
-	public Dictionary<string, BoneTransform>? MainHand { get; set; } = [];
-	public Dictionary<string, BoneTransform>? OffHand { get; set; } = [];
+	public Dictionary<string, BoneTransform>? Bones { get; set; } = new();
+	public Dictionary<string, BoneTransform>? MainHand { get; set; } = new();
+	public Dictionary<string, BoneTransform>? OffHand { get; set; } = new();
+
+	public async Task Save(int objectTableIndex)
+	{
+		await Threads.FrameworkThread();
+
+		if (DalamudServices.ObjectTable == null)
+			return;
+
+		this.Bones = new();
+		this.MainHand = null;
+		this.OffHand = null;
+
+		List<BoneReference> references = new();
+
+		unsafe
+		{
+			Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
+			if (character == null)
+				return;
+
+			this.Race = (Race.RaceRows)character->GetCustomizeValue(CustomizeIndex.Race);
+			this.Tribe = (Tribe.TribeRows)character->GetCustomizeValue(CustomizeIndex.Tribe);
+			this.Gender = (Genders)character->GetCustomizeValue(CustomizeIndex.Gender);
+
+			CharacterBase* characterBase = character->GetCharacterBase();
+			if (characterBase == null)
+				return;
+
+			ushort partialCount = characterBase->Skeleton->PartialSkeletonCount;
+			for (int partialIdx = 0; partialIdx < partialCount; partialIdx++)
+			{
+				PartialSkeleton* partialSkeleton = &characterBase->Skeleton->PartialSkeletons[partialIdx];
+
+				byte poseCount = partialSkeleton->GetMaxPoses();
+				for (byte poseIdx = 0; poseIdx < poseCount; poseIdx++)
+				{
+					hkaPose* pose = partialSkeleton->GetHavokPose(poseIdx);
+					if (pose == null)
+						continue;
+
+					int boneCount = pose->Skeleton->Bones.Length;
+					for (short boneIdx = 0; boneIdx < boneCount; boneIdx++)
+					{
+						hkaBone bone = pose->Skeleton->Bones[boneIdx];
+						string? boneName = bone.Name.String;
+
+						if (boneName == null)
+							continue;
+
+						BoneId boneId = new(character->ObjectIndex, partialIdx, poseIdx, boneIdx, boneName);
+						BoneReference reference = ServiceManager.Instance.Pose.GetOrCreateBoneReference(boneId, boneName);
+						references.Add(reference);
+					}
+				}
+			}
+		}
+
+		await Threads.NextFrame();
+
+		foreach(BoneReference reference in references)
+		{
+			if (reference.Name == null)
+				continue;
+
+			// We'll have duplicate bone names, since we support indexing all the duplicate
+			// HkPose and PartialSkeleton bones, but we can fairly safely assume the first
+			// bone will be the one we want (from the lowest HkPose and PartialSkeleton)
+			if (this.Bones.ContainsKey(reference.Name))
+				continue;
+
+			BoneTransform transform = new();
+			transform.Position = reference.LastTransform.Translation.ToVector3();
+			transform.Rotation = reference.LastTransform.Rotation.ToQuaternion();
+			transform.Scale = reference.LastTransform.Scale.ToVector3();
+			this.Bones.Add(reference.Name, transform);
+		}
+	}
 
 	public async Task Apply(int objectTableIndex)
 	{
 		await Threads.FrameworkThread();
-
-		Threads.VerifyFrameworkThread();
 
 		if (DalamudServices.ObjectTable == null)
 			return;

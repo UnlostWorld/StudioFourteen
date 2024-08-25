@@ -12,6 +12,7 @@ public static class Serializer
 	{
 		Settings.Culture = CultureInfo.InvariantCulture;
 		Settings.Formatting = Formatting.Indented;
+		Settings.NullValueHandling = NullValueHandling.Ignore;
 
 		Settings.Converters.Add(new TagConverter());
 		Settings.Converters.Add(new Vector3Converter());

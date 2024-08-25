@@ -2,6 +2,7 @@
 
 using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using ScreenshotStudio.Files;
 using ScreenshotStudio.Input;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
@@ -27,6 +28,7 @@ public class SaveService : ServiceBase
 	[AutoNotify] public SaveMetaData MetaData { get; init; } = new();
 
 	[AutoNotify] public SaveConfiguration Current => this.Services.Settings.Current.SaveConfig;
+	[AutoNotify] public bool IsSaving { get; set; } = false;
 
 	public void SetIncludeCharacter(int objectTableIndex, bool include)
 	{
@@ -93,17 +95,51 @@ public class SaveService : ServiceBase
 		if (configuration == null)
 			configuration = this.Current;
 
+		if (this.SaveFileInfo == null)
+		{
+			this.Log.Error("No save file info in SaveService");
+			return;
+		}
+
+		this.IsSaving = true;
 		this.Saving?.Invoke();
 
-		await Threads.NonUiThread();
+		await Threads.FrameworkThread();
 
 		// do save!
 		{
+			SceneFile file = new();
+			file.Author = this.MetaData.Author;
+			file.Description = this.MetaData.Description;
+			file.Version = this.MetaData.Version;
+			file.Tags = this.MetaData.Tags;
+
+			foreach((int objectTableIndex, bool include) in this.includeCharacters)
+			{
+				if (!include)
+					continue;
+
+				SceneFile.Actor actor = new();
+				actor.Name = this.Services.Nickname.GetNicknameOrDefault(objectTableIndex);
+
+				if (configuration.IncludePoses)
+				{
+					actor.Pose = new PoseFile();
+					await actor.Pose.Save(objectTableIndex);
+				}
+
+				file.Actors.Add(actor);
+			}
+
+			await this.Services.Files.Save(file, this.SaveFileInfo);
 		}
 
-		this.Services.Settings.Current.SaveConfig = configuration;
-		this.Services.Settings.Current.LastSaveDirectory = this.SaveFileInfo?.Directory?.FullName;
+		await Threads.NonUiThread();
 
+		this.Services.Settings.Current.SaveConfig = configuration;
+		this.Services.Settings.Current.LastSaveDirectory = this.SaveFileInfo.Directory?.FullName;
+
+		this.IsSaving = false;
 		this.Saved?.Invoke();
 	}
 

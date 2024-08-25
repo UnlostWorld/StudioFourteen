@@ -64,12 +64,11 @@ public partial class SaveWindow : PanelWindow
 		}
 	}
 
-	public SaveService.SaveConfiguration? Configuration { get; private set; }
+	public SaveService.SaveConfiguration? Configuration => this.Services.Save.Current;
 
 	protected override void OnOpened()
 	{
 		base.OnOpened();
-		this.Configuration = this.Services.Save.Current.Copy();
 
 		this.RecentDirectories.Clear();
 		foreach(SourceBase source in this.Services.Library.Sources)

@@ -59,6 +59,12 @@ public static class Threads
 		}
 	}
 
+	public static async Task NextFrame()
+	{
+		await Task.Delay(5);
+		await FrameworkThread();
+	}
+
 	public struct SwitchToFrameworkThreadAwaitable : INotifyCompletion
 	{
 		public SwitchToFrameworkThreadAwaitable()
