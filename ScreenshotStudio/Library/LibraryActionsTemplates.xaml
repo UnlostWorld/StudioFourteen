@@ -5,6 +5,7 @@
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=WpfUtils"
 	xmlns:ex="clr-namespace:ScreenshotStudio.MarkupExtensions"
 	xmlns:excel="clr-namespace:ScreenshotStudio.GameData.Excel"
+	xmlns:files="clr-namespace:ScreenshotStudio.Files"
 	xmlns:gameData="clr-namespace:ScreenshotStudio.GameData"
 	xmlns:library="clr-namespace:ScreenshotStudio.Library"
 	xmlns:sources="clr-namespace:ScreenshotStudio.Library.Sources"
@@ -97,6 +98,44 @@
 		<ContentPresenter
 			Content="{Binding .}"
 			ContentTemplate="{StaticResource CharacterAppearance}" />
+	</DataTemplate>
+
+
+
+	<DataTemplate DataType="{x:Type files:PoseFile}">
+		<Border Style="{DynamicResource WpfUtilsControlBorder}">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition />
+				</Grid.ColumnDefinitions>
+
+				<Button
+					Grid.Column="0"
+					Command="{Binding RevertCommand}">
+					<Button.Content>
+						<wpfUtils:IconBlock Icon="Undo" />
+					</Button.Content>
+				</Button>
+
+				<Button
+					Grid.Column="1"
+					Command="{Binding ApplyCommand}">
+					<Button.Content>
+						<TextBlock>
+							<Run Text="Apply to " />
+							<Run Text="{Binding Source={ex:Services}, Path=Target.CharacterName, Mode=OneWay}" />
+						</TextBlock>
+					</Button.Content>
+				</Button>
+			</Grid>
+		</Border>
+	</DataTemplate>
+
+
+
+	<DataTemplate DataType="{x:Type sources:FileEntry}">
+		<ContentPresenter Content="{Binding File}" />
 	</DataTemplate>
 
 </ResourceDictionary>

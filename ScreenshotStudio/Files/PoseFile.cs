@@ -5,6 +5,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.Havok.Animation.Rig;
+using ScreenshotStudio.Commands;
 using ScreenshotStudio.GameData.Excel;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Posing;
@@ -15,8 +16,7 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
-using System.Xml.Linq;
-using TerraFX.Interop.Windows;
+using System.Windows.Input;
 
 public class PoseFileTypeInfo : JsonFileTypeInfoBase<PoseFile>
 {
@@ -27,6 +27,15 @@ public class PoseFileTypeInfo : JsonFileTypeInfoBase<PoseFile>
 [Serializable]
 public class PoseFile : FileBase
 {
+	public PoseFile()
+	{
+		this.ApplyCommand = new TargetCommand(this.Apply);
+		this.RevertCommand = new TargetCommand(this.Revert);
+	}
+
+	public ICommand ApplyCommand { get; init; }
+	public ICommand RevertCommand { get; init; }
+
 	public BoneTransform? ModelDifference { get; set; }
 
 	public Race.RaceRows? Race { get; set; }
