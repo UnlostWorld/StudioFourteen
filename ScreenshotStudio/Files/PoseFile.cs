@@ -25,7 +25,7 @@ public class PoseFileTypeInfo : JsonFileTypeInfoBase<PoseFile>
 }
 
 [Serializable]
-public class PoseFile : FileBase, IPose
+public class PoseFile : FileBase
 {
 	public BoneTransform? ModelDifference { get; set; }
 

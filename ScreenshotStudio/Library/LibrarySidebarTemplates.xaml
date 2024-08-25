@@ -6,7 +6,6 @@
 	xmlns:excel="clr-namespace:ScreenshotStudio.GameData.Excel"
 	xmlns:gameData="clr-namespace:ScreenshotStudio.GameData"
 	xmlns:library="clr-namespace:ScreenshotStudio.Library"
-	xmlns:libraryControls="clr-namespace:ScreenshotStudio.Library.Controls"
 	xmlns:sources="clr-namespace:ScreenshotStudio.Library.Sources"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 

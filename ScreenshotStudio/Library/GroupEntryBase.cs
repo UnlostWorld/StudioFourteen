@@ -1,10 +1,8 @@
 ﻿namespace ScreenshotStudio.Library;
 
-using ScreenshotStudio.Library.Executors;
 using ScreenshotStudio.Library.Sources;
 using ScreenshotStudio.Tags;
 using System.Collections.Generic;
-using System.ComponentModel;
 
 /// <summary>
 /// An group entry is an entry in the library that contains other entries, such as a directory or folder.
@@ -69,10 +67,5 @@ public abstract class GroupEntryBase : LibraryEntryBase
 
 			entry.Dispose();
 		}
-	}
-
-	public sealed override EntryExecutor? GetExecutor()
-	{
-		return null;
 	}
 }

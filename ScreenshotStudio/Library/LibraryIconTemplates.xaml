@@ -207,6 +207,36 @@
 		</Viewbox>
 	</DataTemplate>
 
+	<DataTemplate DataType="{x:Type files:SceneFileTypeInfo}">
+		<Viewbox CacheMode="BitmapCache">
+			<Grid>
+				<wpfUtils:IconBlock
+					Margin="1,2,-1,-2"
+					FontSize="72"
+					Foreground="#ADADAD"
+					Icon="File"
+					IconFont="Solid"
+					Opacity="0.25" />
+
+				<wpfUtils:IconBlock
+					FontSize="72"
+					Foreground="#FDFDFD"
+					Icon="File"
+					IconFont="Solid" />
+
+				<wpfUtils:IconBlock
+					Margin="5,0,0,-25"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Bottom"
+					FontSize="32"
+					Foreground="#ADADAD"
+					Icon="UsersViewfinder"
+					IconFont="Solid" />
+			</Grid>
+
+		</Viewbox>
+	</DataTemplate>
+
 	<DataTemplate DataType="{x:Type sources:FileEntry}">
 
 		<Grid>

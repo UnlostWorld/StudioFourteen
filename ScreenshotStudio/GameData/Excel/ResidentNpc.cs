@@ -1,17 +1,26 @@
 ﻿namespace ScreenshotStudio.GameData.Excel;
 
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Lumina.Data;
 using Lumina.Excel;
 using ScreenshotStudio;
-using ScreenshotStudio.Library.Executors;
-using ScreenshotStudio.Structs;
+using ScreenshotStudio.Commands;
+using ScreenshotStudio.Library;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using WpfUtils;
 
 [Sheet("ENpcResident", 0xf74fa88c)]
-public class ResidentNpc : LibraryExcelRow, ICharacterAppearance
+public class ResidentNpc : LibraryExcelRow, ICharacterAppearance, ILibraryActions
 {
+	public ResidentNpc()
+	{
+		this.ApplyCommand = new TargetCommand(this.Apply);
+		this.RevertCommand = new RevertTargetAppearanceCommand();
+	}
+
+	public ICommand ApplyCommand { get; init; }
+	public ICommand RevertCommand { get; init; }
+
 	public string? Description { get; protected set; }
 	public EventNpc? EventNpc { get; protected set; }
 
@@ -68,10 +77,5 @@ public class ResidentNpc : LibraryExcelRow, ICharacterAppearance
 			return Task.CompletedTask;
 
 		return this.EventNpc.Apply(objectTableIndex);
-	}
-
-	public override EntryExecutor? GetExecutor()
-	{
-		return new AppearanceExecutor(this, this);
 	}
 }

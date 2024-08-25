@@ -1,6 +1,5 @@
 ﻿namespace ScreenshotStudio.Library;
 
-using ScreenshotStudio.Library.Executors;
 using ScreenshotStudio.Library.Sources;
 using ScreenshotStudio.Tags;
 using Serilog;
@@ -21,8 +20,6 @@ public interface ILibraryEntry : IDisposable
 
 	bool IsType(Type type);
 	bool Search(string[] query);
-
-	EntryExecutor? GetExecutor();
 }
 
 /// <summary>
@@ -66,21 +63,5 @@ public abstract class LibraryEntryBase : ITagged, ILibraryEntry, INotifyProperty
 		this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 	}
 
-	public abstract EntryExecutor? GetExecutor();
-
 	protected abstract string GetInternalId();
-}
-
-public abstract class LibraryEntryBase<T> : LibraryEntryBase
-	where T : EntryExecutor
-{
-	protected LibraryEntryBase(SourceBase? source)
-		: base(source)
-	{
-	}
-
-	public sealed override EntryExecutor? GetExecutor()
-	{
-		return Activator.CreateInstance(typeof(T), [this]) as EntryExecutor;
-	}
 }

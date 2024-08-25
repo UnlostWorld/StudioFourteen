@@ -1,7 +1,6 @@
 ﻿namespace ScreenshotStudio.GameData.Excel;
 
 using ScreenshotStudio.Library;
-using ScreenshotStudio.Library.Executors;
 using ScreenshotStudio.Library.Sources;
 using ScreenshotStudio.Tags;
 using System;
@@ -28,10 +27,5 @@ public abstract class LibraryExcelRow : StudioExcelRow, ILibraryEntry
 		result |= SearchUtility.Matches(this.RowId, query);
 		result |= SearchUtility.Matches(this.Name, query);
 		return result;
-	}
-
-	public virtual EntryExecutor? GetExecutor()
-	{
-		return null;
 	}
 }

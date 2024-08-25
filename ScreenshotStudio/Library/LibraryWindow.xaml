@@ -135,7 +135,7 @@
 				<tags:TagDisplay
 					Grid.Row="1"
 					Grid.ColumnSpan="2"
-					Margin="0,0,0,4"
+					Margin="1,0,0,4"
 					TagSelected="OnInfoTagSelected"
 					Tags="{Binding SelectedResult.Entry.Tags}" />
 
@@ -150,45 +150,16 @@
 					</ContentPresenter.Resources>
 				</ContentPresenter>
 
-
-				<Grid
+				<ContentPresenter
 					Grid.Row="3"
 					Grid.ColumnSpan="2"
-					Visibility="{Binding SelectedExecutor, Converter={StaticResource NotNullToVisibilityConverter}}">
-					<Border Style="{DynamicResource WpfUtilsControlBorder}">
-						<Grid>
-
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition />
-							</Grid.ColumnDefinitions>
-
-							<Button
-								Grid.Column="0"
-								Click="OnRevertClicked"
-								IsEnabled="{Binding SelectedExecutor.CanRevert}"
-								ToolTip="{DynamicResource LOC_Revert}">
-								<wpfUtils:IconBlock Icon="Undo" />
-							</Button>
-
-							<ToggleButton
-								Grid.Column="1"
-								MinWidth="28"
-								IsChecked="{Binding IsLiveExecute}"
-								ToolTip="{DynamicResource LOC_Library_LivePreview}">
-								<wpfUtils:IconBlock Icon="Bolt" />
-							</ToggleButton>
-
-							<Button
-								Grid.Column="2"
-								Click="OnExecuteClicked"
-								Content="{Binding SelectedExecutor.Label}"
-								IsEnabled="{Binding SelectedExecutor.CanApply}" />
-
-						</Grid>
-					</Border>
-				</Grid>
+					Margin="1"
+					Content="{Binding SelectedResult.Entry}"
+					TextBlock.Foreground="{DynamicResource ForegroundBrush}">
+					<ContentPresenter.Resources>
+						<ResourceDictionary Source="./LibraryActionsTemplates.xaml" />
+					</ContentPresenter.Resources>
+				</ContentPresenter>
 
 			</Grid>
 

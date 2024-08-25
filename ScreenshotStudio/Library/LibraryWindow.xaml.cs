@@ -1,13 +1,10 @@
 ﻿namespace ScreenshotStudio.Library;
 
-using Dalamud.Plugin.Services;
 using FontAwesome.Sharp;
 using ScreenshotStudio;
 using ScreenshotStudio.Files;
-using ScreenshotStudio.Library.Executors;
 using ScreenshotStudio.Library.Filters;
 using ScreenshotStudio.Library.Results;
-using ScreenshotStudio.Posing;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Tags;
 using ScreenshotStudio.Windows;
@@ -71,7 +68,7 @@ public partial class LibraryWindow : PanelWindow
 	public FastObservableCollection<LibraryTab> Tabs { get; init; } = new()
 	{
 		new("LOC_Library_Favorites", IconChar.Heart, new LibraryFavoritesFilter()),
-		new("LOC_Library_Poses", IconChar.Running, new TypeFilter(typeof(IPose))),
+		new("LOC_Library_Poses", IconChar.Running, new TypeFilter(typeof(PoseFile))),
 		new("LOC_Library_Characters", IconChar.User, new TypeFilter(typeof(ICharacterAppearance))),
 		new("LOC_Library_Scenes", IconChar.Users,  new TypeFilter(typeof(SceneFile))),
 	};
@@ -110,30 +107,12 @@ public partial class LibraryWindow : PanelWindow
 	[AutoNotify] public TagFilter TagFilter { get; init; } = new();
 	[AutoNotify] public SearchQueryFilter SearchQueryFilter { get; init; } = new();
 	[AutoNotify] public bool CanChangeFlatten => this.SearchQueryFilter.IsEmpty;
-	[AutoNotify] public EntryExecutor? SelectedExecutor { get; private set; }
 	[AutoNotify] public bool IsLiveExecute { get; set; }
 
 	[AutoNotify] public Result? SelectedResult
 	{
 		get => this.selectedResult;
-		set
-		{
-			this.SelectedExecutor?.OnDeselect();
-
-			this.SelectedExecutor = null;
-			this.selectedResult = value;
-
-			if (value != null && value.Entry != null)
-			{
-				this.SelectedExecutor = value.Entry.GetExecutor();
-				this.SelectedExecutor?.OnSelect();
-
-				if (this.SelectedExecutor != null && this.IsLiveExecute && this.SelectedExecutor.CanExecute)
-				{
-					Task.Run(this.SelectedExecutor.Execute);
-				}
-			}
-		}
+		set => this.selectedResult = value;
 	}
 
 	[AutoNotify]
@@ -167,12 +146,6 @@ public partial class LibraryWindow : PanelWindow
 		this.Path.Add(this.Services.Library.Root);
 
 		this.searchQueue.Invoke();
-	}
-
-	protected override void OnFrameworkUpdate(IFramework framework)
-	{
-		base.OnFrameworkUpdate(framework);
-		this.SelectedExecutor?.OnFrameworkUpdate();
 	}
 
 	private void OnLibraryScanComplete()
@@ -262,9 +235,9 @@ public partial class LibraryWindow : PanelWindow
 			this.navigation = Navigation.OpenDir;
 			this.searchQueue.InvokeImmediate();
 		}
-		else if (this.SelectedResult is Result result && this.SelectedExecutor != null)
+		else if (this.SelectedResult is Result result && result.Entry is ILibraryActions actions)
 		{
-			Task.Run(this.SelectedExecutor.Execute);
+			actions.Apply(this.Services.Target.TargetObjectIndex).Run();
 		}
 	}
 
@@ -299,22 +272,6 @@ public partial class LibraryWindow : PanelWindow
 	private void OnInfoTagSelected(Tag tag)
 	{
 		this.TagFilter.Tags.Add(tag);
-	}
-
-	private void OnRevertClicked(object sender, RoutedEventArgs e)
-	{
-		if (this.SelectedExecutor == null)
-			return;
-
-		Task.Run(this.SelectedExecutor.Revert);
-	}
-
-	private void OnExecuteClicked(object sender, RoutedEventArgs e)
-	{
-		if (this.SelectedExecutor == null)
-			return;
-
-		Task.Run(this.SelectedExecutor.Execute);
 	}
 
 	private void OnBrowseClicked(object sender, RoutedEventArgs e)

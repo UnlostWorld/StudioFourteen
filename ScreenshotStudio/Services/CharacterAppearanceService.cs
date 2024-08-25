@@ -3,12 +3,10 @@
 
 namespace ScreenshotStudio.Services;
 
-using Dalamud.Game;
 using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using ScreenshotStudio;
 using ScreenshotStudio.Library;
-using ScreenshotStudio.Library.Executors;
 using ScreenshotStudio.Library.Sources;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Utilities;
@@ -116,7 +114,8 @@ public class CharacterAppearanceService : ServiceBase
 	}
 }
 
-public class CharacterBackupAppearance : LibraryEntryBase, ICharacterAppearance
+public class CharacterBackupAppearance
+	: LibraryEntryBase, ICharacterAppearance, ILibraryActions
 {
 	private readonly string? name;
 
@@ -166,11 +165,6 @@ public class CharacterBackupAppearance : LibraryEntryBase, ICharacterAppearance
 			character->UpdateEquipment(this.DrawData.EquipmentModelIds, source);
 			character->UpdateCustomize(this.DrawData.CustomizeData, redraw, source);
 		}
-	}
-
-	public override EntryExecutor? GetExecutor()
-	{
-		return new AppearanceExecutor(this, this);
 	}
 
 	protected override string GetInternalId() => this.Name;
