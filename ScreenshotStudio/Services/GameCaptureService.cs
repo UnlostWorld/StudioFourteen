@@ -8,6 +8,7 @@ namespace ScreenshotStudio.Services;
 using Dalamud.Hooking;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
+using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Utilities;
 using SixLabors.ImageSharp;

@@ -38,8 +38,7 @@ public class SceneFile : FileBase
 
 	public class Actor
 	{
-		public string? Name { get; set; }
-
+		public string? Role { get; set; }
 		public PoseFile? Pose { get; set; }
 		public CharacterFile? Character { get; set; }
 	}

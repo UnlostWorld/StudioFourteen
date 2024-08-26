@@ -157,8 +157,8 @@ public unsafe class CharacterViewModel : ViewModel
 	[AutoNotify]
 	public string? Nickname
 	{
-		get => this.Services.Nickname.GetNickname(this.ObjectTableIndex);
-		set => this.Services.Nickname.SetNickname(this.ObjectTableIndex, value);
+		get => this.Services.Roles.GetRole(this.ObjectTableIndex);
+		set => this.Services.Roles.SetRole(this.ObjectTableIndex, value);
 	}
 
 	[AutoNotify]

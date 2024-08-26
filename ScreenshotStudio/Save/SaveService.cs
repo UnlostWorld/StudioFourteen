@@ -121,7 +121,7 @@ public class SaveService : ServiceBase
 					continue;
 
 				SceneFile.Actor actor = new();
-				actor.Name = this.Services.Nickname.GetNicknameOrDefault(objectTableIndex);
+				actor.Role = this.Services.Roles.GetRoleOrDefault(objectTableIndex);
 
 				if (configuration.IncludePoses)
 				{
@@ -144,16 +144,25 @@ public class SaveService : ServiceBase
 		this.Saved?.Invoke();
 	}
 
-	public Task Open(SceneFile file)
+	public async Task Open(SceneFile file)
 	{
-		// step one, collect all the available characters
-		// step two, identify the characters to be used for each scene actor
-		// step two point five, spawn new characters for the missing actors if the user wants.
-		// step three, apply character appearances (if included)
-		// step four, apply character poses (if included)
-		// step five, position actors in teh world, either relative to each other, or in absolute terms.
-		// step six, apply environment settings (time, weather, day, etc)
-		return Task.CompletedTask;
+		List<string> roles = new();
+		foreach(Actor actor in file.Actors)
+		{
+			if (actor.Role == null)
+				continue;
+
+			roles.Add(actor.Role);
+		}
+
+		try
+		{
+			await ActorAssignmentWindow.GetAssignments(roles);
+		}
+		catch (Exception ex)
+		{
+			this.Log.Error(ex, "Error assigning roles");
+		}
 	}
 
 	public Task Revert(SceneFile file)

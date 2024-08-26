@@ -242,7 +242,7 @@
 										<TextBox
 											Grid.Column="1"
 											Margin="0"
-											Text="{Binding Nickname}" />
+											Text="{Binding Role}" />
 
 										<Button
 											Grid.Column="2"

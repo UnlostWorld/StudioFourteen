@@ -60,6 +60,8 @@
 	<sys:String x:Key="LOC_Save_SavePose">Save Pose</sys:String>
 	<sys:String x:Key="LOC_Save_SaveAppearance">Save Appearance</sys:String>
 
+	<sys:String x:Key="LOC_ActorAssignment">Assign Actors</sys:String>
+
 	<sys:String x:Key="LOC_Library_LivePreviewTooltip">Live Preview</sys:String>
 	<sys:String x:Key="LOC_Library_GoUpTooltip">Go Up</sys:String>
 	<sys:String x:Key="LOC_Library_IconViewTooltip">Icon View</sys:String>

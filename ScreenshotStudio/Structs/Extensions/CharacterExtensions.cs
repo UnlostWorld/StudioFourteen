@@ -46,7 +46,7 @@ public static class CharacterExtensions
 
 	public static unsafe string? GetDisplayOrNickname(ref this Character self)
 	{
-		string? nickname = ServiceManager.Instance.Nickname.GetNickname(self.ObjectIndex);
+		string? nickname = ServiceManager.Instance.Roles.GetRole(self.ObjectIndex);
 		if (nickname != null)
 			return nickname;
 

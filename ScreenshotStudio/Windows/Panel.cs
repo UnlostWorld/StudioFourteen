@@ -93,6 +93,25 @@ public abstract partial class Panel : Window, IAutoNotify
 		return await new PanelThread().Start(panelWindowType);
 	}
 
+	public static async Task WhileShown(Panel panel)
+	{
+		bool isShown = true;
+		panel.Dispatcher.ShutdownStarted += (s, e) =>
+		{
+			isShown = false;
+		};
+
+		panel.Closing += (s, e) =>
+		{
+			isShown = false;
+		};
+
+		while (isShown)
+		{
+			await Task.Delay(100);
+		}
+	}
+
 	public new void Show()
 	{
 		this.Services.Panels.OnPanelOpened(this);

@@ -207,9 +207,9 @@ public class CharacterViewModel(int objectTableIndex)
 		set => this.Services.Save.SetIncludeCharacter(this.ObjectTableIndex, value);
 	}
 
-	[AutoNotify] public string? Nickname
+	[AutoNotify] public string? Role
 	{
-		get => this.Services.Nickname.GetNicknameOrDefault(this.ObjectTableIndex);
-		set => this.Services.Nickname.SetNickname(this.ObjectTableIndex, value);
+		get => this.Services.Roles.GetRoleOrDefault(this.ObjectTableIndex);
+		set => this.Services.Roles.SetRole(this.ObjectTableIndex, value);
 	}
 }
