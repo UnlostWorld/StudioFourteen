@@ -197,7 +197,7 @@ public class CharacterViewModel(int objectTableIndex)
 
 	[AutoNotify] public string? Name { get; set; }
 
-	[AutoNotify] public string ToolTipText => string.Format(Resources.Find("LOC_Save_IncludeCharacterToolTip", string.Empty), this.Name, this.Nickname ?? this.Name);
+	[AutoNotify] public string ToolTipText => string.Format(Resources.Find("LOC_Save_IncludeCharacterToolTip", string.Empty), this.Name, this.Role ?? this.Name);
 	[AutoNotify] public string ExportPoseToolTipText => string.Format(Resources.Find("LOC_Save_ExportPoseToolTip", string.Empty), this.Name);
 	[AutoNotify] public string ExportAppearanceToolTipText => string.Format(Resources.Find("LOC_Save_ExportAppearanceToolTip", string.Empty), this.Name);
 
