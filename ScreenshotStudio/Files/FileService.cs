@@ -1,6 +1,5 @@
 ﻿namespace ScreenshotStudio.Files;
 
-using FFXIVClientStructs;
 using Microsoft.Win32;
 using ScreenshotStudio.Library.Sources;
 using ScreenshotStudio.Services;
@@ -21,8 +20,11 @@ public class FileService : ServiceBase
 		new SceneFileTypeInfo(),
 	};
 
-	public FileTypeInfoBase? GetTypeInfo(FileInfo file)
+	public FileTypeInfoBase? GetTypeInfo(FileInfo? file)
 	{
+		if (file == null)
+			return null;
+
 		foreach (FileTypeInfoBase info in FileTypeInfos)
 		{
 			if (info.Extension == file.Extension)
@@ -38,6 +40,14 @@ public class FileService : ServiceBase
 		where TFile : FileBase
 	{
 		return this.GetTypeInfo(typeof(TFile));
+	}
+
+	public FileTypeInfoBase? GetTypeInfo(FileBase? file)
+	{
+		if (file == null)
+			return null;
+
+		return this.GetTypeInfo(file.GetType());
 	}
 
 	public FileTypeInfoBase? GetTypeInfo(Type fileType)

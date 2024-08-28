@@ -9,6 +9,7 @@ using System.Windows.Media.Imaging;
 [Serializable]
 public abstract class FileBase
 {
+	public string? Title { get; set; }
 	public string? Author { get; set; }
 	public string? Description { get; set; }
 	public string? Version { get; set; }
