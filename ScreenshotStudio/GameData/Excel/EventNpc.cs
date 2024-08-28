@@ -35,6 +35,7 @@ public class EventNpc : NpcBase
 
 		this.Equipment.Parse(parser, 65);
 		this.NpcEquip = parser.ReadRowReference<ushort, NpcEquip>(63);
+		this.Icon = this.Customize.GetIcon();
 
 		this.GenerateTags();
 		this.GenerateAppearanceHash();

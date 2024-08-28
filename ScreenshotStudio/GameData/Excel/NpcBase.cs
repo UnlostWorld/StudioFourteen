@@ -41,6 +41,8 @@ public abstract class NpcBase : LibraryExcelRow, ICharacterAppearance, ILibraryA
 	public NpcEquipment Equipment { get; protected set; } = new();
 	public virtual NpcEquipment? BackupEquipment => null;
 
+	public ImageReference? Icon { get; protected set; }
+
 	public abstract string Key { get; }
 
 	// don't show duplicates in the library

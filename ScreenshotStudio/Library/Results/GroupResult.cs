@@ -9,6 +9,8 @@ using System.Collections.Immutable;
 public class Result(ILibraryEntry entry)
 {
 	public ILibraryEntry Entry { get; set; } = entry;
+
+	public string? EntryId => this.Entry?.ToString();
 }
 
 public class GroupResult : Result

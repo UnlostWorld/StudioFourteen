@@ -27,6 +27,8 @@ public class ResidentNpc : LibraryExcelRow, ICharacterAppearance, ILibraryAction
 	// don't show duplicates in the library
 	public override bool IsValid => base.IsValid && this.EventNpc?.DuplicateRow == null;
 
+	public ImageReference? Icon => this.EventNpc?.Icon;
+
 	public override void PopulateData(RowParser parser, Lumina.GameData gameData, Language language)
 	{
 		base.PopulateData(parser, gameData, language);

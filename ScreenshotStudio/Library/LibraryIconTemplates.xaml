@@ -8,6 +8,7 @@
 	xmlns:library="clr-namespace:ScreenshotStudio.Library"
 	xmlns:services="clr-namespace:ScreenshotStudio.Services"
 	xmlns:sources="clr-namespace:ScreenshotStudio.Library.Sources"
+	xmlns:ss="clr-namespace:ScreenshotStudio"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
 
@@ -46,77 +47,53 @@
 	</DataTemplate>
 
 
+	<DataTemplate
+		x:Key="AppearanceIcon"
+		DataType="{x:Type ss:ICharacterAppearance}">
+		<Viewbox>
+			<Grid>
+				<Image
+					x:Name="Icon"
+					Source="{Binding Icon.Source}" />
+
+				<Grid
+					x:Name="FallbackIcon"
+					Visibility="Collapsed">
+					<wpfUtils:IconBlock
+						HorizontalAlignment="Left"
+						VerticalAlignment="Bottom"
+						FontSize="72"
+						Foreground="{DynamicResource ForegroundLightBrush}"
+						Icon="User"
+						IconFont="Solid" />
+				</Grid>
+			</Grid>
+		</Viewbox>
+
+		<DataTemplate.Triggers>
+			<DataTrigger
+				Binding="{Binding Icon}"
+				Value="{x:Null}">
+				<Setter TargetName="Icon" Property="Visibility" Value="Collapsed" />
+				<Setter TargetName="FallbackIcon" Property="Visibility" Value="Visible" />
+			</DataTrigger>
+		</DataTemplate.Triggers>
+	</DataTemplate>
 
 	<DataTemplate DataType="{x:Type excel:ResidentNpc}">
-		<Viewbox CacheMode="BitmapCache">
-			<Grid>
-				<wpfUtils:IconBlock
-					FontSize="72"
-					Icon="File"
-					IconFont="Solid" />
-				<wpfUtils:IconBlock
-					Margin="5,0,0,-25"
-					HorizontalAlignment="Left"
-					VerticalAlignment="Bottom"
-					FontSize="32"
-					Foreground="{DynamicResource BackgroundBrush}"
-					Icon="User"
-					IconFont="Solid" />
-			</Grid>
-		</Viewbox>
+		<ContentPresenter ContentTemplate="{StaticResource AppearanceIcon}" />
 	</DataTemplate>
-
-
 
 	<DataTemplate DataType="{x:Type excel:EventNpc}">
-		<Viewbox CacheMode="BitmapCache">
-			<Grid>
-				<wpfUtils:IconBlock
-					FontSize="72"
-					Icon="File"
-					IconFont="Solid" />
-				<wpfUtils:IconBlock
-					Margin="5,0,0,-25"
-					HorizontalAlignment="Left"
-					VerticalAlignment="Bottom"
-					FontSize="32"
-					Foreground="{DynamicResource BackgroundBrush}"
-					Icon="UserTie"
-					IconFont="Solid" />
-			</Grid>
-		</Viewbox>
+		<ContentPresenter ContentTemplate="{StaticResource AppearanceIcon}" />
 	</DataTemplate>
-
-
 
 	<DataTemplate DataType="{x:Type excel:BattleNpc}">
-		<Viewbox CacheMode="BitmapCache">
-			<Grid>
-				<wpfUtils:IconBlock
-					FontSize="72"
-					Icon="File"
-					IconFont="Solid" />
-				<wpfUtils:IconBlock
-					Margin="5,0,0,-25"
-					HorizontalAlignment="Left"
-					VerticalAlignment="Bottom"
-					FontSize="32"
-					Foreground="{DynamicResource BackgroundBrush}"
-					Icon="UserShield"
-					IconFont="Solid" />
-			</Grid>
-		</Viewbox>
+		<ContentPresenter ContentTemplate="{StaticResource AppearanceIcon}" />
 	</DataTemplate>
 
-
-
 	<DataTemplate DataType="{x:Type services:CharacterBackupAppearance}">
-		<Viewbox CacheMode="BitmapCache">
-			<wpfUtils:IconBlock
-				FontSize="72"
-				Icon="User"
-				IconFont="Solid" />
-		</Viewbox>
+		<ContentPresenter ContentTemplate="{StaticResource AppearanceIcon}" />
 	</DataTemplate>
 
 

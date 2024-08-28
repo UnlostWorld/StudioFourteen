@@ -1,5 +1,6 @@
 ﻿namespace ScreenshotStudio.GameData.Excel;
 
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Lumina.Data;
 using Lumina.Excel;
 using ScreenshotStudio.Data;
@@ -32,6 +33,8 @@ public class BattleNpc : NpcBase
 		NpcEquip? npcEquip = parser.ReadRowReference<ushort, NpcEquip>(7);
 		if (npcEquip != null)
 			this.Equipment = npcEquip.Equipment;
+
+		this.Icon = this.Customize.GetIcon();
 
 		this.GenerateTags();
 		this.GenerateAppearanceHash();

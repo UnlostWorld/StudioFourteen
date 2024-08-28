@@ -109,20 +109,20 @@ public class GameDataService : ServiceBase
 
 		this.AddSheet<Race>();
 		this.AddSheet<Tribe>();
+		this.AddSheet<CharaMakeCustomize>();
+		this.AddSheet<HairMakeType>();
+		this.AddSheet<CharaMakeType>();
+		this.AddSheet<ClassJobCategory>();
+		this.AddSheet<ModelChara>();
 		this.AddSheet<EventNpc>();
 		this.AddSheet<ResidentNpc>();
 		this.AddSheet<BattleNpc>();
 		this.AddSheet<BattleNpcCustomize>();
 		this.AddSheet<BattleNpcName>();
-		this.AddSheet<CharaMakeCustomize>();
-		this.AddSheet<HairMakeType>();
-		this.AddSheet<CharaMakeType>();
-		this.AddSheet<ClassJobCategory>();
 		this.AddSheet<Companion>();
 		this.AddSheet<EquipRaceCategory>();
 		this.AddSheet<EquipSlotCategory>();
 		this.AddSheet<Lobby>();
-		this.AddSheet<ModelChara>();
 		this.AddSheet<Mount>();
 		this.AddSheet<MountCustomize>();
 		this.AddSheet<NpcEquip>();

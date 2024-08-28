@@ -598,6 +598,7 @@
 							</ContentPresenter>
 
 							<TextBlock
+								x:Name="NameBlock"
 								Grid.Row="1"
 								VerticalAlignment="Top"
 								Text="{Binding Entry.Name}"
@@ -605,6 +606,15 @@
 								TextWrapping="Wrap" />
 						</Grid>
 
+
+						<DataTemplate.Triggers>
+							<DataTrigger
+								Binding="{Binding Entry.Name}"
+								Value="{x:Null}">
+								<Setter TargetName="NameBlock" Property="Text" Value="{Binding EntryId}" />
+								<Setter TargetName="NameBlock" Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
+							</DataTrigger>
+						</DataTemplate.Triggers>
 
 					</DataTemplate>
 				</ListBox.ItemTemplate>

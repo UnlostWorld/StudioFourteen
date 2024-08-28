@@ -1,6 +1,7 @@
 ﻿namespace ScreenshotStudio.Library.Sources;
 
 using ScreenshotStudio.Files;
+using ScreenshotStudio.Library.Filters;
 using System;
 using System.IO;
 using System.Windows.Media;
@@ -122,7 +123,22 @@ public class FileEntry : LibraryEntryBase
 
 	public override string Name => Path.GetFileNameWithoutExtension(this.fileInfo.Name);
 
-	public FileBase? File => this.TypeInfo.Load(this.fileInfo);
+	public FileBase? File
+	{
+		get
+		{
+			FileBase? file = this.TypeInfo.Load(this.fileInfo);
+			if (file == null)
+				return null;
+
+			if (string.IsNullOrEmpty(file.Title))
+			{
+				file.Title = Path.GetFileNameWithoutExtension(this.fileInfo.Name);
+			}
+
+			return file;
+		}
+	}
 
 	public string? Author => this.File?.Author;
 	public string? Description => this.File?.Description;

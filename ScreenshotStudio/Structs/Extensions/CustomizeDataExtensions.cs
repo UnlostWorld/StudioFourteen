@@ -2,6 +2,7 @@
 
 using Dalamud.Game.ClientState.Objects.Enums;
 using global::System;
+using ScreenshotStudio;
 using ScreenshotStudio.GameData;
 using ScreenshotStudio.GameData.Excel;
 
@@ -44,5 +45,64 @@ public static class CustomizeDataExtensions
 			CustomizeIndex index = (CustomizeIndex)i;
 			self.SetValue(index, other.GetValue(index));
 		}
+	}
+
+	public static CharaMakeType? GetCharaMakeType(ref this CustomizeData self)
+	{
+		Tribe? tribe = self.GetTribe();
+		Genders gender = self.GetGender();
+
+		DataSheet<CharaMakeType>? charaMakeTypeSheet = ServiceManager.Instance.GameData.GetSheet<CharaMakeType>();
+		if (charaMakeTypeSheet == null)
+			return null;
+
+		foreach (CharaMakeType set in charaMakeTypeSheet)
+		{
+			if (set.Tribe != tribe || set.Gender != gender)
+				continue;
+
+			return set;
+		}
+
+		return null;
+	}
+
+	public static ImageReference? GetIcon(ref this CustomizeData self)
+	{
+		DataSheet<HairMakeType>? hairMakeTypeSheet = GameDataService.Get<HairMakeType>();
+		if (hairMakeTypeSheet == null)
+			return null;
+
+		Race? race = self.GetRace();
+		Tribe? tribe = self.GetTribe();
+		Genders gender = self.GetGender();
+
+		byte hair = self.GetValue(CustomizeIndex.HairStyle);
+
+		foreach (HairMakeType? hairMakeType in hairMakeTypeSheet)
+		{
+			if (hairMakeType == null)
+				continue;
+
+			if (hairMakeType.Race != race || hairMakeType.Tribe != tribe || hairMakeType.Gender != gender)
+				continue;
+
+			CharaMakeCustomize?[] makeCustomizeOptions = hairMakeType.HairStyles;
+
+			int length = (byte)makeCustomizeOptions.Length;
+			for (byte j = 0; j < length; ++j)
+			{
+				CharaMakeCustomize? makeCustomize = makeCustomizeOptions[j];
+				if (makeCustomize == null || makeCustomize.Icon == null || makeCustomize.Icon.ImageId == 0)
+					continue;
+
+				if (makeCustomize.FeatureId == hair)
+				{
+					return makeCustomize.Icon;
+				}
+			}
+		}
+
+		return null;
 	}
 }
