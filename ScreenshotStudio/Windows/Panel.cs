@@ -23,6 +23,8 @@ public abstract partial class Panel : Window, IAutoNotify
 {
 	protected readonly ILogger Log;
 
+	private Exception? frameworkException;
+
 	public Panel()
 	{
 		this.Log = Logging.ForContext(this.GetType());
@@ -217,7 +219,7 @@ public abstract partial class Panel : Window, IAutoNotify
 			DalamudServices.GameGui.UiHideToggled += this.OnGameUiToggled;
 
 		if (DalamudServices.Framework != null)
-			DalamudServices.Framework.Update += this.OnFrameworkUpdate;
+			DalamudServices.Framework.Update += this.OnFrameworkUpdateSafe;
 
 		AutoPropertyNotifyService.Register(this);
 		this.IsShown = true;
@@ -229,7 +231,7 @@ public abstract partial class Panel : Window, IAutoNotify
 			DalamudServices.GameGui.UiHideToggled -= this.OnGameUiToggled;
 
 		if (DalamudServices.Framework != null)
-			DalamudServices.Framework.Update -= this.OnFrameworkUpdate;
+			DalamudServices.Framework.Update -= this.OnFrameworkUpdateSafe;
 
 		AutoPropertyNotifyService.Remove(this);
 		this.Services.Panels.OnPanelClosed(this);
@@ -276,6 +278,22 @@ public abstract partial class Panel : Window, IAutoNotify
 		this.OnResizeDelta(new DragDeltaEventArgs(-1, -1));
 
 		this.Activate();
+	}
+
+	private void OnFrameworkUpdateSafe(IFramework framework)
+	{
+		if (this.frameworkException != null)
+			return;
+
+		try
+		{
+			this.OnFrameworkUpdate(framework);
+		}
+		catch (Exception ex)
+		{
+			this.frameworkException = ex;
+			this.Log.Error(ex, "Error in framework update");
+		}
 	}
 
 	private void OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
