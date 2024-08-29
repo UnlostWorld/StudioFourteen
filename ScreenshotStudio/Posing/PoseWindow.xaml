@@ -64,7 +64,7 @@
 						</MultiBinding>
 					</TabItem.Visibility>
 
-					<ScrollViewer>
+					<ScrollViewer PanningMode="Both">
 						<Grid>
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition />
@@ -321,7 +321,8 @@
 
 			<ScrollViewer
 				Grid.Row="2"
-				HorizontalScrollBarVisibility="Disabled">
+				HorizontalScrollBarVisibility="Disabled"
+				PanningMode="VerticalOnly">
 				<StackPanel>
 					<Grid Margin="1,3,1,1">
 						<Border Style="{DynamicResource WpfUtilsControlBorder}">

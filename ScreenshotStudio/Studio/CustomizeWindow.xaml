@@ -28,7 +28,8 @@
 
 		<ScrollViewer
 			Grid.Row="0"
-			behaviours:SmoothScrollBehaviour.SmoothScroll="True">
+			behaviours:SmoothScrollBehaviour.SmoothScroll="True"
+			PanningMode="VerticalOnly">
 			<StackPanel IsEnabled="{Binding HasValidTarget}">
 
 				<!--  Race  -->
