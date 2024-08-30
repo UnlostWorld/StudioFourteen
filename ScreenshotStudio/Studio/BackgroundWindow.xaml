@@ -1,4 +1,4 @@
-﻿<windows:PersistentPanel
+﻿<windows:PanelWindow
 	x:Class="ScreenshotStudio.Studio.BackgroundWindow"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -19,8 +19,8 @@
 	WindowStyle="None"
 	mc:Ignorable="d">
 
-	<windows:PersistentPanel.Template>
-		<ControlTemplate TargetType="{x:Type windows:PersistentPanel}">
+	<windows:PanelWindow.Template>
+		<ControlTemplate TargetType="{x:Type windows:PanelWindow}">
 			<AdornerDecorator>
 				<ContentPresenter
 					Content="{TemplateBinding Content}"
@@ -30,7 +30,6 @@
 			<ControlTemplate.Triggers>
 				<MultiDataTrigger>
 					<MultiDataTrigger.Conditions>
-						<Condition Binding="{Binding IsShown}" Value="True" />
 						<Condition Binding="{Binding IsUiVisible}" Value="True" />
 					</MultiDataTrigger.Conditions>
 
@@ -67,7 +66,7 @@
 
 			</ControlTemplate.Triggers>
 		</ControlTemplate>
-	</windows:PersistentPanel.Template>
+	</windows:PanelWindow.Template>
 
 	<Grid x:Name="ContentArea">
 		<Grid.ColumnDefinitions>
@@ -112,4 +111,4 @@
 		-->
 
 	</Grid>
-</windows:PersistentPanel>
+</windows:PanelWindow>

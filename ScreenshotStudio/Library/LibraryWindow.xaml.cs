@@ -21,7 +21,9 @@ using WpfUtils;
 using WpfUtils.Extensions;
 using WpfUtils.Utils;
 
-public partial class LibraryWindow : PanelWindow
+using Panel = ScreenshotStudio.Windows.Panel;
+
+public partial class LibraryWindow : Panel
 {
 	private readonly FuncQueue searchQueue;
 	private readonly Stopwatch searchStopwatch = new();

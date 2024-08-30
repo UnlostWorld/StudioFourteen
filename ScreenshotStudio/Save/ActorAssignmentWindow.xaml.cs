@@ -1,46 +1,66 @@
 ﻿namespace ScreenshotStudio.Save;
-
-using Dalamud.Plugin.Services;
+using ScreenshotStudio.Files;
+using ScreenshotStudio.Library;
+using ScreenshotStudio.Services;
+using ScreenshotStudio.Tags;
 using ScreenshotStudio.Utilities;
 using ScreenshotStudio.Windows;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 using WpfUtils;
 using WpfUtils.Extensions;
 
-public partial class ActorAssignmentWindow : PanelWindow
+using Panel = ScreenshotStudio.Windows.Panel;
+
+public partial class ActorAssignmentWindow : Panel
 {
-	public FastObservableCollection<Assignment> Assignments { get; init; } = new();
+	[AutoNotify] public FileTypeInfoBase? SceneType => this.Services.Files.GetTypeInfo(this.Scene);
+	[AutoNotify] public SceneFile? Scene { get; set; }
+	[AutoNotify] public FastObservableCollection<Assignment> Assignments { get; init; } = new();
+
 	public bool Result { get; set; }
 
-	public static async Task<Dictionary<string, int>?> GetAssignments(List<string> roles)
+	public static async Task<Dictionary<string, ICharacterAppearance?>?> GetAssignments(SceneFile scene)
 	{
-		ActorAssignmentWindow? panel = await Panel.ShowAsync<ActorAssignmentWindow>();
+		ActorAssignmentWindow? panel = await ServiceManager.Instance.Panels.Open<ActorAssignmentWindow>();
 
 		if (panel == null)
 			throw new Exception("No Actor Assignment Window");
 
 		await panel.Dispatcher.MainThread();
-		panel.SetRoles(roles);
+		panel.SetScene(scene);
 
 		await Threads.NonUiThread();
-		await Panel.WhileShown(panel);
+		await PanelService.WhileShown(panel);
 
 		if (panel.Result == false)
 			return null;
 
-		Dictionary<string, int> result = new();
+		Dictionary<string, ICharacterAppearance?> result = new();
 		foreach (Assignment assignment in panel.Assignments)
 		{
-			result.Add(assignment.Role, assignment.ObjectTableIndex);
+			result.Add(assignment.Role, assignment.Appearance);
 		}
 
 		return result;
 	}
 
-	protected void SetRoles(List<string> roles)
+	protected void SetScene(SceneFile scene)
 	{
+		this.Scene = scene;
+
+		List<string> roles = new();
+		foreach (SceneFile.Actor actor in scene.Actors)
+		{
+			if (actor.Role == null)
+				continue;
+
+			roles.Add(actor.Role);
+		}
+
 		this.Assignments.Clear();
 		foreach (string role in roles)
 		{
@@ -48,26 +68,45 @@ public partial class ActorAssignmentWindow : PanelWindow
 		}
 	}
 
-	protected override void OnFrameworkUpdate(IFramework framework)
-	{
-		base.OnFrameworkUpdate(framework);
-	}
-
-	private void OnConfirmClicked(object sender, System.Windows.RoutedEventArgs e)
+	private void OnConfirmClicked(object sender, RoutedEventArgs e)
 	{
 		this.Result = true;
 		this.Close();
 	}
 
-	private void OnCancelClicked(object sender, System.Windows.RoutedEventArgs e)
+	private void OnCancelClicked(object sender, RoutedEventArgs e)
 	{
 		this.Result = false;
 		this.Close();
 	}
+
+	private void OnChooseAppearanceClicked(object sender, RoutedEventArgs e)
+	{
+		TagCollection defaultTags = new();
+		defaultTags.Add("Named");
+
+		Assignment? assignment = (sender as Button)?.DataContext as Assignment;
+		if (assignment == null)
+			return;
+
+		LibraryModal.Show<ICharacterAppearance>(
+			sender,
+			"Create Character",
+			defaultTags,
+			null,
+			(appearance, isFinal) =>
+			{
+				if (!isFinal)
+					return;
+
+				assignment.Appearance = appearance;
+			});
+	}
 }
 
 public class Assignment(string role)
+	: ViewModel
 {
-	public string Role { get; init; } = role;
-	public int ObjectTableIndex { get; set; } = -1;
+	[AutoNotify] public string Role { get; init; } = role;
+	[AutoNotify] public ICharacterAppearance? Appearance { get; set; }
 }

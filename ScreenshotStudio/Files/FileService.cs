@@ -72,7 +72,7 @@ public class FileService : ServiceBase
 
 	public async Task<DirectoryInfo?> ShowDirectoryDialog(DirectoryInfo? defaultInfo = null)
 	{
-		BackgroundWindow? bgWindow = this.Services.Panels.Get<BackgroundWindow>();
+		BackgroundWindow? bgWindow = BackgroundWindow.Instance;
 		if (bgWindow == null)
 		{
 			this.Log.Error("No background window found");
@@ -156,7 +156,7 @@ public class FileService : ServiceBase
 	private async Task<FileInfo?> ShowDialog<TDialogType>(FileSystemInfo? defaultInfo, params FileTypeInfoBase[] fileTypeInfos)
 		where TDialogType : FileDialog, new()
 	{
-		BackgroundWindow? bgWindow = this.Services.Panels.Get<BackgroundWindow>();
+		BackgroundWindow? bgWindow = BackgroundWindow.Instance;
 		if (bgWindow == null)
 		{
 			this.Log.Error("No background window found");

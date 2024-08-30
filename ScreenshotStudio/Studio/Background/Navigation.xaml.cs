@@ -46,8 +46,8 @@ public partial class Navigation : View
 	[AutoNotify]
 	public bool IsZoneOpen
 	{
-		get => this.Services.Panels.GetIsOpen<ZoneWindow>();
-		set => this.Services.Panels.SetIsOpen<ZoneWindow>(value);
+		get => this.Services.Panels.GetIsOpen<HelloWorldWindow>();
+		set => this.Services.Panels.SetIsOpen<HelloWorldWindow>(value);
 	}
 
 	[AutoNotify]

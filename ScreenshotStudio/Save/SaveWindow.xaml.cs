@@ -13,7 +13,7 @@ using System.IO;
 using System.Windows;
 using WpfUtils.Extensions;
 
-public partial class SaveWindow : PanelWindow
+public partial class SaveWindow : Panel
 {
 	private readonly Dictionary<int, CharacterViewModel> characterLookup = new();
 	private RecentDirectoryViewModel? selectedDirectory;

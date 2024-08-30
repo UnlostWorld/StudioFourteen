@@ -190,13 +190,13 @@
 								Margin="0,1,6,0"
 								VerticalAlignment="Center"
 								Foreground="{DynamicResource ForegroundLightBrush}"
-								Icon="{TemplateBinding TitleIcon}"
+								Icon="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Panel.TitleIcon}"
 								IconFont="Solid" />
 
 							<TextBlock
 								VerticalAlignment="Center"
 								Foreground="{DynamicResource ForegroundLightBrush}"
-								Text="{TemplateBinding Title}" />
+								Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Title}" />
 
 							<Ellipse
 								x:Name="SubtitleSeperator"
@@ -209,7 +209,7 @@
 							<TextBlock
 								VerticalAlignment="Center"
 								Foreground="{DynamicResource ForegroundLightBrush}"
-								Text="{TemplateBinding Subtitle}" />
+								Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Subtitle}" />
 						</StackPanel>
 
 						<Border
@@ -354,9 +354,11 @@
 				<Setter TargetName="WindowShadow" Property="Opacity" Value="1" />
 			</Trigger>
 
-			<Trigger Property="Subtitle" Value="{x:Null}">
+			<DataTrigger
+				Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Panel.Subtitle}"
+				Value="{x:Null}">
 				<Setter TargetName="SubtitleSeperator" Property="Visibility" Value="Collapsed" />
-			</Trigger>
+			</DataTrigger>
 
 			<Trigger Property="IsEmbedded" Value="False">
 				<Trigger.ExitActions>
@@ -365,17 +367,13 @@
 							<DoubleAnimationUsingKeyFrames
 								Storyboard.TargetName="WindowScale"
 								Storyboard.TargetProperty="ScaleX">
-								<EasingDoubleKeyFrame
-									KeyTime="0:00:00.200"
-									Value="0.98">
+								<EasingDoubleKeyFrame KeyTime="0:00:00.200" Value="0.98">
 									<EasingDoubleKeyFrame.EasingFunction>
 										<SineEase EasingMode="EaseOut" />
 									</EasingDoubleKeyFrame.EasingFunction>
 								</EasingDoubleKeyFrame>
 
-								<EasingDoubleKeyFrame
-									KeyTime="0:00:00.300"
-									Value="1">
+								<EasingDoubleKeyFrame KeyTime="0:00:00.300" Value="1">
 									<EasingDoubleKeyFrame.EasingFunction>
 										<SineEase EasingMode="EaseIn" />
 									</EasingDoubleKeyFrame.EasingFunction>
@@ -390,17 +388,13 @@
 							<DoubleAnimationUsingKeyFrames
 								Storyboard.TargetName="WindowScale"
 								Storyboard.TargetProperty="ScaleX">
-								<EasingDoubleKeyFrame
-									KeyTime="0:00:00.200"
-									Value="1.02">
+								<EasingDoubleKeyFrame KeyTime="0:00:00.200" Value="1.02">
 									<EasingDoubleKeyFrame.EasingFunction>
 										<SineEase EasingMode="EaseOut" />
 									</EasingDoubleKeyFrame.EasingFunction>
 								</EasingDoubleKeyFrame>
 
-								<EasingDoubleKeyFrame
-									KeyTime="0:00:00.300"
-									Value="1">
+								<EasingDoubleKeyFrame KeyTime="0:00:00.300" Value="1">
 									<EasingDoubleKeyFrame.EasingFunction>
 										<SineEase EasingMode="EaseIn" />
 									</EasingDoubleKeyFrame.EasingFunction>
@@ -429,7 +423,7 @@
 
 			<MultiDataTrigger>
 				<MultiDataTrigger.Conditions>
-					<Condition Binding="{Binding IsShown}" Value="True" />
+					<Condition Binding="{Binding Panel.IsShown, FallbackValue=True}" Value="True" />
 					<Condition Binding="{Binding IsUiVisible}" Value="True" />
 					<Condition Binding="{Binding Services.Studio.IsOpen}" Value="True" />
 				</MultiDataTrigger.Conditions>

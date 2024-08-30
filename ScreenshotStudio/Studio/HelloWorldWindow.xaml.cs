@@ -2,6 +2,6 @@
 
 using ScreenshotStudio.Windows;
 
-public partial class HelloWorldWindow : PanelWindow
+public partial class HelloWorldWindow : Panel
 {
 }

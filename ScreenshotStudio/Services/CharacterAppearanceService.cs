@@ -6,6 +6,7 @@ namespace ScreenshotStudio.Services;
 using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using ScreenshotStudio;
+using ScreenshotStudio.GameData;
 using ScreenshotStudio.Library;
 using ScreenshotStudio.Library.Sources;
 using ScreenshotStudio.Plugin;
@@ -127,6 +128,9 @@ public class CharacterBackupAppearance
 		this.ModelId = character->ModelCharaId;
 
 		this.Tags.Add("Named");
+
+		CustomizeData customize = this.DrawData.CustomizeData;
+		this.Icon = customize.GetIcon();
 	}
 
 	public CharacterBackupAppearance(Character character)
@@ -137,11 +141,15 @@ public class CharacterBackupAppearance
 		this.ModelId = character.ModelCharaId;
 
 		this.Tags.Add("Named");
+
+		CustomizeData customize = this.DrawData.CustomizeData;
+		this.Icon = customize.GetIcon();
 	}
 
 	public DrawDataContainer DrawData { get; private set; }
 	public int ModelId { get; private set; }
 	public override string Name => this.name ?? string.Empty;
+	public ImageReference? Icon { get; private set; }
 
 	public Task Apply(int objectTableIndex)
 	{

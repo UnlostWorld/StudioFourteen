@@ -10,7 +10,7 @@ using SixLabors.ImageSharp.Metadata.Profiles.Exif;
 using System;
 using System.Windows;
 
-public partial class PhotoWindow : PanelWindow
+public partial class PhotoWindow : Panel
 {
 	[AutoNotify] public ImageMetadata MetaData { get; set; } = new();
 	[AutoNotify] public string SaveDirectory { get; set; } = string.Empty;

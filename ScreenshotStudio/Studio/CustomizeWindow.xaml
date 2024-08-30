@@ -1,4 +1,4 @@
-﻿<windows:CharacterWindow
+﻿<windows:CharacterPanelBase
 	x:Class="ScreenshotStudio.Studio.CustomizeWindow"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -564,4 +564,4 @@
 
 	</Grid>
 
-</windows:CharacterWindow>
+</windows:CharacterPanelBase>

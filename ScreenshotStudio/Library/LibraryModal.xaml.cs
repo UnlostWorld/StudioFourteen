@@ -1,5 +1,7 @@
 ﻿namespace ScreenshotStudio.Library;
 
+using FFXIVClientStructs;
+using ScreenshotStudio.GameData.Excel;
 using ScreenshotStudio.Library.Filters;
 using ScreenshotStudio.Library.Results;
 using ScreenshotStudio.Services;
@@ -17,13 +19,13 @@ using WpfUtils.Utils;
 
 using Panel = ScreenshotStudio.Windows.Panel;
 
-public partial class LibraryModal : PanelWindow
+public partial class LibraryModal : Panel
 {
 	private static LibraryModal? instance;
 	private readonly FuncQueue searchQueue;
 
 	private Type? targetType;
-	private ILibraryEntry? currentEntry;
+	private object? currentEntry;
 	private Result? selectedResult;
 	private Action<object, bool>? selectionChanged;
 	private bool isLoading = false;
@@ -70,7 +72,7 @@ public partial class LibraryModal : PanelWindow
 	}
 
 	public static void Show<T>(object placementTarget, string title, TagCollection defaultTags, T? current, Action<T, bool> selectionChanged)
-			where T : ILibraryEntry
+		where T : notnull
 	{
 		if (placementTarget is UIElement el)
 		{
@@ -79,13 +81,13 @@ public partial class LibraryModal : PanelWindow
 	}
 
 	public static void Show<T>(UIElement placementTarget, string title, TagCollection defaultTags, T? current, Action<T, bool> selectionChanged)
-		where T : ILibraryEntry
+		where T : notnull
 	{
 		if (instance == null)
 		{
 			Task.Run(async () =>
 			{
-				await Panel.ShowAsync<LibraryModal>();
+				instance = await ServiceManager.Instance.Panels.Open<LibraryModal>();
 				instance?.OnShow<T>(placementTarget, title, defaultTags, current, selectionChanged);
 			});
 		}
@@ -96,7 +98,7 @@ public partial class LibraryModal : PanelWindow
 	}
 
 	public void OnShow<T>(UIElement placementTarget, string title, TagCollection defaultTags, T? current, Action<T, bool> selectionChanged)
-		where T : ILibraryEntry
+		where T : notnull
 	{
 		this.isLoading = true;
 		this.targetType = typeof(T);
@@ -162,9 +164,29 @@ public partial class LibraryModal : PanelWindow
 
 		GroupResult result = new(this.Services.Library.Root);
 		result.FilterEntries(filters.ToArray());
-		IEnumerable<Result>? results = result.Get(true);
+		List<Result>? results = result.Get(true);
 
-		Result? selectedResult = result.Find(this.currentEntry);
+		results?.Sort((a, b) =>
+		{
+			// TODO: a generic sorting system...
+			// TODO: Favorites
+			if (a.Entry is CharacterBackupAppearance && b.Entry is not CharacterBackupAppearance)
+			{
+				return 1;
+			}
+			else if (a.Entry is not CharacterBackupAppearance && b.Entry is CharacterAppearanceService)
+			{
+				return -1;
+			}
+			else if (a.Entry is LibraryExcelRow aRow && b.Entry is LibraryExcelRow bRow)
+			{
+				return aRow.RowId.CompareTo(bRow.RowId);
+			}
+
+			return a.Entry.Name?.CompareTo(b.Entry.Name) ?? 0;
+		});
+
+		Result? selectedResult = result.Find(this.currentEntry as ILibraryEntry);
 
 		await this.Dispatcher.MainThread();
 

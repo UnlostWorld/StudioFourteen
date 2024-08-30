@@ -6,10 +6,13 @@ using System;
 using System.Threading.Tasks;
 using System.Windows;
 
-public partial class BackgroundWindow : PersistentPanel
+public partial class BackgroundWindow : PanelWindow
 {
+	public static BackgroundWindow? Instance;
+
 	public BackgroundWindow()
 	{
+		Instance = this;
 		this.ContentArea.DataContext = this;
 	}
 

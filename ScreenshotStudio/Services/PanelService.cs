@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using WpfUtils.Extensions;
 
 using Panel = ScreenshotStudio.Windows.Panel;
+using PanelWindow = ScreenshotStudio.Windows.PanelWindow;
 
 public class PanelService : ServiceBase
 {
@@ -21,6 +22,25 @@ public class PanelService : ServiceBase
 	public IEnumerable<Panel> OpenPanels => this.openPanels;
 
 	public Panel? ActivePanel { get; set; }
+
+	public static async Task WhileShown(Panel panel)
+	{
+		bool isShown = true;
+		panel.Dispatcher.ShutdownStarted += (s, e) =>
+		{
+			isShown = false;
+		};
+
+		/*panel.Closing += (s, e) =>
+		{
+			isShown = false;
+		};*/
+
+		while (isShown)
+		{
+			await Task.Delay(100);
+		}
+	}
 
 	public override Task Initialize()
 	{
@@ -64,6 +84,32 @@ public class PanelService : ServiceBase
 		return this.Get<T>() != null;
 	}
 
+	public async Task<T?> Open<T>()
+		where T : Panel, new()
+	{
+		PanelWindow? wnd = await PanelWindow.CreateInstanceAsync<PanelWindow>();
+		if (wnd != null)
+		{
+			await wnd.Dispatcher.InvokeAsync(() =>
+			{
+				wnd.Panel = new T();
+				wnd.Panel.SetHost(wnd);
+				wnd.ShowActivated = true; // ??
+				wnd.Show();
+			});
+
+			return wnd.Panel as T;
+		}
+
+		return null;
+	}
+
+	public void Close<T>()
+		where T : Panel, new()
+	{
+		this.Get<T>()?.Close();
+	}
+
 	public void SetIsOpen<T>(bool value)
 		where T : Panel, new()
 	{
@@ -72,15 +118,11 @@ public class PanelService : ServiceBase
 			if (this.GetIsOpen<T>())
 				return;
 
-			Panel.Show<T>();
+			this.Open<T>().Run();
 		}
 		else
 		{
-			T? panel = this.Get<T>();
-			if (panel == null)
-				return;
-
-			panel.Close();
+			this.Get<T>()?.Close();
 		}
 	}
 
@@ -88,7 +130,9 @@ public class PanelService : ServiceBase
 	{
 		await base.Start();
 
-		this.backgroundWindow = await Panel.ShowAsync<BackgroundWindow>();
+		this.backgroundWindow = await PanelWindow.CreateInstanceAsync<BackgroundWindow>();
+		this.backgroundWindow?.Dispatcher.InvokeAsync(() => this.backgroundWindow.Show());
+
 		this.RestorePanels().Run();
 	}
 
@@ -104,16 +148,13 @@ public class PanelService : ServiceBase
 			if (panel == null)
 				continue;
 
-			if (panel is not BackgroundWindow && panel is not ErrorWindow)
+			string? panelTypeName = panel.GetType().FullName;
+			if (panelTypeName != null)
 			{
-				string? panelTypeName = panel.GetType().FullName;
-				if (panelTypeName != null)
-				{
-					this.Settings.OpenPanels.Add(panelTypeName);
-				}
+				this.Settings.OpenPanels.Add(panelTypeName);
 			}
 
-			await panel.CloseAsync();
+			panel.Close();
 		}
 	}
 
@@ -130,7 +171,7 @@ public class PanelService : ServiceBase
 			Type? panelType = Type.GetType(panelTypeName);
 			if (panelType != null)
 			{
-				Panel.Show(panelType);
+				////PanelWindow.Show(panelType);
 			}
 			else
 			{

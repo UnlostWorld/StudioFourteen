@@ -7,12 +7,12 @@ using System.Windows.Input;
 
 public partial class PanelWindowResources
 {
-	private static Panel GetWindow(object sender)
+	private static PanelWindow GetWindow(object sender)
 	{
-		Panel? window = null;
+		PanelWindow? window = null;
 		if (sender is FrameworkElement el)
 		{
-			window = el.FindParent<Panel>();
+			window = el.FindParent<PanelWindow>();
 		}
 
 		if (window == null)

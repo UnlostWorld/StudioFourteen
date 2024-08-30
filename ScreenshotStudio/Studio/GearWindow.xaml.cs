@@ -23,7 +23,7 @@ public enum AccessorySlots
 	Glasses,
 }
 
-public partial class GearWindow : CharacterWindow
+public partial class GearWindow : CharacterPanelBase
 {
 	public GearWindow()
 	{

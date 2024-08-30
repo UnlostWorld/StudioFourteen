@@ -16,7 +16,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-public partial class PoseWindow : CharacterWindow
+public partial class PoseWindow : CharacterPanelBase
 {
 	private Vector3? trackingEuler;
 

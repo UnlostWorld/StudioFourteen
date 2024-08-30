@@ -1,175 +1,49 @@
 ﻿namespace ScreenshotStudio.Windows;
 
-using DependencyPropertyGenerator;
 using Dalamud.Plugin.Services;
+using DependencyPropertyGenerator;
+using FontAwesome.Sharp;
 using ScreenshotStudio.Plugin;
+using ScreenshotStudio.Serialization;
 using ScreenshotStudio.Services;
-using ScreenshotStudio.Utilities;
 using Serilog;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls.Primitives;
-using System.Windows.Input;
-using WpfUtils;
+using System.Windows.Controls;
 
-[DependencyProperty<bool>("ShowBackground", DefaultValue = true)]
 [DependencyProperty<bool>("IsShown", DefaultValue = false)]
-[DependencyProperty<bool>("IsEmbedded", DefaultValue = true)]
-public abstract partial class Panel : Window, IAutoNotify
+[DependencyProperty<IconChar>("TitleIcon")]
+[DependencyProperty<string>("Title")]
+[DependencyProperty<string>("Subtitle")]
+[DependencyProperty<SizeToContent>("SizeToContent", DefaultValue =SizeToContent.Manual)]
+[DependencyProperty<ResizeMode>("ResizeMode", DefaultValue =ResizeMode.CanResizeWithGrip)]
+public partial class Panel : ContentControl, IAutoNotify
 {
 	protected readonly ILogger Log;
 
+	private readonly string panelId;
+	private readonly Dictionary<string, object?> persistenceCache = new();
 	private Exception? frameworkException;
+	private PanelWindow? windowHost;
 
 	public Panel()
 	{
+		this.panelId = this.GetType().Name;
 		this.Log = Logging.ForContext(this.GetType());
-
-		this.Loaded += this.OnLoaded;
 
 		// Load a new copy of the resources. Each panel needs its own instance for threading reasons.
 		this.Resources = ScreenshotStudio.Resources.Load();
-		this.Style = this.GetDefaultStyle();
 
 		this.GetType().GetMethod("InitializeComponent")?.Invoke(this, null);
 		this.DataContext = this;
-
-		this.PreviewMouseDown += this.OnPreviewMouseDown;
-		this.PreviewKeyDown += this.OnPreviewKeyDown;
 	}
 
 	public event PropertyChangedEventHandler? PropertyChanged;
 
 	public ServiceManager Services => ServiceManager.Instance;
-
-	public bool IsUiVisible => !DalamudServices.GameGui?.GameUiHidden ?? true;
-
-	public static void Show<T>()
-		where T : Panel
-	{
-		Task.Run(async () => await ShowAsync<T>());
-	}
-
-	public static void Show(Type panelType)
-	{
-		Task.Run(async () => await ShowAsync(panelType));
-	}
-
-	public static async Task<T?> ShowAsync<T>()
-		where T : Panel
-	{
-		T? wnd = await CreateInstance<T>();
-
-		if (wnd != null)
-			await wnd.ShowAsync();
-
-		return wnd;
-	}
-
-	public static async Task<Panel?> ShowAsync(Type panelType)
-	{
-		Panel? wnd = await CreateInstance(panelType);
-
-		if (wnd != null)
-			await wnd.ShowAsync();
-
-		return wnd;
-	}
-
-	public static async Task<T?> CreateInstance<T>()
-		where T : Panel
-	{
-		Panel? pwb = await Panel.CreateInstance(typeof(T));
-		return pwb as T;
-	}
-
-	public static async Task<Panel?> CreateInstance(Type panelWindowType)
-	{
-		if (ServiceManager.Instance.CurrentState > ServiceManagerBase.States.Started)
-			return null;
-
-		return await new PanelThread().Start(panelWindowType);
-	}
-
-	public static async Task WhileShown(Panel panel)
-	{
-		bool isShown = true;
-		panel.Dispatcher.ShutdownStarted += (s, e) =>
-		{
-			isShown = false;
-		};
-
-		panel.Closing += (s, e) =>
-		{
-			isShown = false;
-		};
-
-		while (isShown)
-		{
-			await Task.Delay(100);
-		}
-	}
-
-	public new void Show()
-	{
-		this.Services.Panels.OnPanelOpened(this);
-		this.Dispatcher.BeginInvoke(() => base.Show());
-	}
-
-	public async Task ShowAsync()
-	{
-		this.Services.Panels.OnPanelOpened(this);
-		await this.Dispatcher.MainThread();
-
-		try
-		{
-			base.Show();
-		}
-		catch (Exception ex)
-		{
-			this.Log.Error(ex, "Error showing window");
-		}
-	}
-
-	public new void Close()
-	{
-		this.Dispatcher.BeginInvoke(() =>
-		{
-			try
-			{
-				this.OnClosed();
-			}
-			catch (Exception ex)
-			{
-				this.Log.Error(ex, "Error closing window");
-			}
-
-			base.Close();
-
-			this.Dispatcher.InvokeShutdown();
-		});
-	}
-
-	public async Task CloseAsync()
-	{
-		await this.Dispatcher.MainThread();
-
-		try
-		{
-			this.OnClosed();
-		}
-		catch (Exception ex)
-		{
-			this.Log.Error(ex, "Error closing window");
-		}
-
-		base.Close();
-		this.Dispatcher.InvokeShutdown();
-	}
 
 	public virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
 	{
@@ -181,42 +55,110 @@ public abstract partial class Panel : Window, IAutoNotify
 		return this.IsVisible && this.IsLoaded;
 	}
 
-	public virtual void OnResizeDelta(DragDeltaEventArgs e)
+	public void SetHost(PanelWindow wnd)
 	{
-		double newWidth = this.ActualWidth + e.HorizontalChange;
-		double newHeight = this.ActualHeight + e.VerticalChange;
-
-		if (newWidth >= this.MinWidth && newWidth <= this.MaxWidth)
-		{
-			this.Width = newWidth;
-		}
-
-		if (newHeight >= this.MinHeight && newHeight <= this.MaxHeight)
-		{
-			this.Height = newHeight;
-		}
+		this.windowHost = wnd;
 	}
 
-	protected virtual Style GetDefaultStyle() => (Style)this.FindResource("PanelStyle");
+	public void Close()
+	{
+		this.windowHost?.Dispatcher.Invoke(this.windowHost.Close);
+	}
 
-	protected void OnLoaded(object sender, RoutedEventArgs e)
+	public T? GetPersistence<T>([CallerMemberName] string id = "")
 	{
 		try
 		{
-			XivWindow.Embed(this);
+			lock (this.persistenceCache)
+			{
+				if (this.persistenceCache.ContainsKey(id))
+				{
+					return (T?)this.persistenceCache[id];
+				}
+			}
 
-			this.OnOpened();
+			string persistenceId = this.panelId + "_" + id;
+
+			if (!this.Services.Settings.Current.PanelPersistence.TryGetValue(persistenceId, out string? json) || json == null)
+				return default;
+
+			if (!json.StartsWith('"') || !json.EndsWith('"'))
+				json = '"' + json + '"';
+
+			T? value = Serializer.Deserialize<T>(json);
+			this.persistenceCache.Add(id, value);
+			return value;
 		}
 		catch (Exception ex)
 		{
-			this.Log.Error(ex, "Error opening panel");
+			this.Log.Error(ex, "Error in panel persistence");
+			return default;
+		}
+	}
+
+	public void SetPersistence(object? value, [CallerMemberName] string id = "")
+	{
+		this.SetPersistence(id, value);
+	}
+
+	public void SetPersistence(string id, object? value)
+	{
+		try
+		{
+			lock (this.persistenceCache)
+			{
+				if (!this.persistenceCache.ContainsKey(id))
+					this.persistenceCache.Add(id, value);
+
+				this.persistenceCache[id] = value;
+			}
+
+			this.Dispatcher.Invoke(() =>
+			{
+				string persistenceId = this.panelId + "_" + id;
+
+				if (value != null)
+				{
+					if (!this.Services.Settings.Current.PanelPersistence.ContainsKey(persistenceId))
+						this.Services.Settings.Current.PanelPersistence.Add(persistenceId, string.Empty);
+
+					this.Services.Settings.Current.PanelPersistence[persistenceId] = Serializer.Serialize(value);
+				}
+				else
+				{
+					if (this.Services.Settings.Current.PanelPersistence.ContainsKey(persistenceId))
+					{
+						this.Services.Settings.Current.PanelPersistence.Remove(persistenceId);
+					}
+				}
+			});
+
+			this.Services.Settings.Save();
+		}
+		catch (Exception ex)
+		{
+			this.Log.Error(ex, "Error in panel persistence");
+		}
+	}
+
+	public void SetIsOpen(PanelWindow sender, bool isOpen)
+	{
+		if (this.windowHost != sender)
+			throw new InvalidOperationException();
+
+		if (isOpen)
+		{
+			this.OnOpened();
+		}
+		else
+		{
+			this.OnClosed();
 		}
 	}
 
 	protected virtual void OnOpened()
 	{
-		if (DalamudServices.GameGui != null)
-			DalamudServices.GameGui.UiHideToggled += this.OnGameUiToggled;
+		this.Services.Panels.OnPanelOpened(this);
 
 		if (DalamudServices.Framework != null)
 			DalamudServices.Framework.Update += this.OnFrameworkUpdateSafe;
@@ -227,57 +169,17 @@ public abstract partial class Panel : Window, IAutoNotify
 
 	protected virtual void OnClosed()
 	{
-		if (DalamudServices.GameGui != null)
-			DalamudServices.GameGui.UiHideToggled -= this.OnGameUiToggled;
+		this.Services.Panels.OnPanelClosed(this);
 
 		if (DalamudServices.Framework != null)
 			DalamudServices.Framework.Update -= this.OnFrameworkUpdateSafe;
 
 		AutoPropertyNotifyService.Remove(this);
-		this.Services.Panels.OnPanelClosed(this);
 		this.IsShown = false;
-	}
-
-	protected override void OnActivated(EventArgs e)
-	{
-		this.Services.Panels.ActivePanel = this;
-		base.OnActivated(e);
-	}
-
-	protected override void OnDeactivated(EventArgs e)
-	{
-		if (this.Services.Panels.ActivePanel == this)
-			this.Services.Panels.ActivePanel = null;
-
-		base.OnDeactivated(e);
 	}
 
 	protected virtual void OnFrameworkUpdate(IFramework framework)
 	{
-	}
-
-	partial void OnIsEmbeddedChanged(bool newValue)
-	{
-		this.WindowState = WindowState.Normal;
-
-		double t = this.Top;
-
-		if (newValue)
-		{
-			XivWindow.Embed(this);
-			this.Top = t - (XivWindow.TitleBarHeight + 10);
-		}
-		else
-		{
-			XivWindow.Unembed(this);
-			this.Top = t;
-		}
-
-		// wiggle wiggle
-		this.OnResizeDelta(new DragDeltaEventArgs(1, 1));
-		this.OnResizeDelta(new DragDeltaEventArgs(-1, -1));
-
-		this.Activate();
 	}
 
 	private void OnFrameworkUpdateSafe(IFramework framework)
@@ -293,126 +195,6 @@ public abstract partial class Panel : Window, IAutoNotify
 		{
 			this.frameworkException = ex;
 			this.Log.Error(ex, "Error in framework update");
-		}
-	}
-
-	private void OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
-	{
-		this.Activate();
-	}
-
-	private void OnPreviewKeyDown(object sender, KeyEventArgs e)
-	{
-		if (!this.IsActive)
-			return;
-
-		if (Keyboard.FocusedElement is TextBoxBase tb)
-		{
-			if (tb.IsFocused && (tb.IsKeyboardFocused || tb.IsKeyboardFocusWithin))
-			{
-				if (e.Key == Key.Escape)
-				{
-					tb.SetFocusToWindow();
-				}
-
-				return;
-			}
-		}
-	}
-
-	private void OnGameUiToggled(object? sender, bool e)
-	{
-		this.NotifyPropertyChanged(nameof(Panel.IsUiVisible));
-	}
-
-	private class PanelThread
-	{
-		private static readonly object CreateInstanceLock = new();
-
-		private Panel? panel;
-		private Type? panelType;
-
-		protected ILogger Log => Logging.ForContext<PanelThread>();
-
-		public async Task<Panel?> Start(Type panelType)
-		{
-			try
-			{
-				this.panelType = panelType;
-
-				Thread panelMainThread = new Thread(this.PanelMainThread);
-				panelMainThread.SetApartmentState(ApartmentState.STA);
-				panelMainThread.Start(this);
-
-				// Wait for the panel to load for up to 5 seconds.
-				int timeOut = 5000;
-				while (this.panel == null && timeOut > 0)
-				{
-					await Task.Delay(10);
-					timeOut -= 10;
-				}
-
-				if (this.panel == null)
-					this.Log.Error($"Failed to create panel window {this.panelType}");
-
-				return this.panel;
-			}
-			catch (Exception ex)
-			{
-				this.Log.Error(ex, $"Failed to create panel window {this.panelType}");
-			}
-
-			return null;
-		}
-
-		private void PanelMainThread(object? param)
-		{
-			if (this.panelType == null)
-				throw new Exception("No panel type in panel thread");
-
-			AppDomain.CurrentDomain.UnhandledException += (s, e) =>
-			{
-				Exception? ex = e.ExceptionObject as Exception;
-				this.Log.Error(ex, $"Unhandled Exception in panel: {this.panelType}");
-			};
-
-			System.Windows.Threading.Dispatcher.CurrentDispatcher.UnhandledException += (s, e) =>
-			{
-				this.Log.Error(e.Exception, $"Unhandled Exception in panel: {this.panelType}");
-			};
-
-			try
-			{
-				// Even though we're doing this on another thread, we can still only do one panel
-				// at a time since WPF's LoadComponent system isn't thread safe.
-				lock (PanelThread.CreateInstanceLock)
-				{
-					this.panel = Activator.CreateInstance(this.panelType) as Panel;
-				}
-			}
-			catch (Exception ex)
-			{
-				this.Log.Error(ex, $"Exception during panel construction: {this.panelType}");
-				return;
-			}
-
-			this.Log.Information($"Panel: {this.panelType} has started");
-
-			bool run = true;
-			while (run)
-			{
-				try
-				{
-					System.Windows.Threading.Dispatcher.Run();
-					run = false;
-				}
-				catch (Exception ex)
-				{
-					this.Log.Error(ex, $"Error in {this.panelType} thread");
-				}
-			}
-
-			this.Log.Information($"Panel: {this.panelType} has shutdown");
 		}
 	}
 }

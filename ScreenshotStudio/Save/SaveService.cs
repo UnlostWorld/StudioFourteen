@@ -146,18 +146,9 @@ public class SaveService : ServiceBase
 
 	public async Task Open(SceneFile file)
 	{
-		List<string> roles = new();
-		foreach(Actor actor in file.Actors)
-		{
-			if (actor.Role == null)
-				continue;
-
-			roles.Add(actor.Role);
-		}
-
 		try
 		{
-			await ActorAssignmentWindow.GetAssignments(roles);
+			await ActorAssignmentWindow.GetAssignments(file);
 		}
 		catch (Exception ex)
 		{

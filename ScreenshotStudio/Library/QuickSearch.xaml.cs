@@ -15,7 +15,7 @@ using WpfUtils;
 using WpfUtils.Extensions;
 using WpfUtils.Utils;
 
-public partial class QuickSearch : DockPanel
+public partial class QuickSearch : Panel
 {
 	private static QuickSearch? instance;
 	private readonly FuncQueue searchQueue;
@@ -29,7 +29,7 @@ public partial class QuickSearch : DockPanel
 
 		this.Services.Input.AddListener(Input.KeyBindEvents.InvokeQuickSearch, this.OnOpenQuickSearch);
 
-		this.Deactivated += this.OnDeactivated;
+		////this.Deactivated += this.OnDeactivated;
 	}
 
 	[AutoNotify] public FastObservableCollection<Result> Results { get; init; } = new();
@@ -55,7 +55,7 @@ public partial class QuickSearch : DockPanel
 	{
 		this.Dispatcher.Invoke(() =>
 		{
-			this.Activate();
+			////this.Activate();
 
 			this.SearchQueryFilter.Clear();
 			this.TagFilter.Clear();

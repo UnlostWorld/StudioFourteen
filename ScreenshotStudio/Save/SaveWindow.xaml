@@ -1,4 +1,4 @@
-﻿<windows:PanelWindow
+﻿<windows:Panel
 	x:Class="ScreenshotStudio.Save.SaveWindow"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -291,4 +291,4 @@
 		</Border>
 
 	</Grid>
-</windows:PanelWindow>
+</windows:Panel>

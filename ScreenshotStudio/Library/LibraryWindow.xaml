@@ -1,4 +1,4 @@
-﻿<windows:PanelWindow
+﻿<windows:Panel
 	x:Class="ScreenshotStudio.Library.LibraryWindow"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -660,4 +660,4 @@
 			</ListBox>
 		</Grid>
 	</Grid>
-</windows:PanelWindow>
+</windows:Panel>

@@ -5,6 +5,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using ScreenshotStudio;
+using ScreenshotStudio.Library;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Tags;
@@ -12,6 +13,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
+using WpfUtils.Extensions;
 
 public partial class Targets : View
 {
@@ -60,9 +62,7 @@ public partial class Targets : View
 		TagCollection defaultTags = new();
 		defaultTags.Add("Named");
 
-		// uuuh
-		throw new NotImplementedException();
-		/*LibraryModal.Show<ICharacterEntry>(
+		LibraryModal.Show<ICharacterAppearance>(
 			sender,
 			"Create Character",
 			defaultTags,
@@ -72,8 +72,8 @@ public partial class Targets : View
 				if (!isFinal)
 					return;
 
-				this.CreateCharacter(appearance);
-			});*/
+				this.CreateCharacter(appearance).Run();
+			});
 	}
 
 	private async Task CreateCharacter(ICharacterAppearance appearance)

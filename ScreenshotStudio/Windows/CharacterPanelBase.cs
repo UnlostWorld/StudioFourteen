@@ -3,7 +3,7 @@
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using ScreenshotStudio.Services;
 
-public abstract class CharacterWindow : PanelWindow
+public abstract class CharacterPanelBase : Panel
 {
 	public unsafe Character* Target => this.Services.Target.Target;
 	[AlwaysNotify] public string? CharacterName => this.Services.Target.CharacterName;

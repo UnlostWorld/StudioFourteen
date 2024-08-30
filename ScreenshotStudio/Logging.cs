@@ -9,6 +9,7 @@ using Serilog.Formatting;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 
 public static class Logging
 {
@@ -105,7 +106,11 @@ public class ErrorWindowSink : ILogEventSink
 	{
 		if (logEvent.Level >= LogEventLevel.Error)
 		{
-			ErrorWindow.Show(logEvent.MessageTemplate.Text);
+			Task.Run(async () =>
+			{
+				ErrorWindow? wnd = await ServiceManager.Instance.Panels.Open<ErrorWindow>();
+				wnd?.Init(logEvent.MessageTemplate.Text);
+			});
 		}
 	}
 }

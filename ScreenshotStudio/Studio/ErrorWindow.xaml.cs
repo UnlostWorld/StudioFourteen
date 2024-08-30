@@ -7,9 +7,9 @@ using System.Windows;
 using ScreenshotStudio.Plugin;
 using System.ComponentModel;
 
-public partial class ErrorWindow : PanelWindow
+public partial class ErrorWindow : Panel
 {
-	private static int windowCount = 0;
+	////private static int windowCount = 0;
 
 	private string? errorMessage = "An Unknown error has occurred";
 
@@ -23,13 +23,12 @@ public partial class ErrorWindow : PanelWindow
 		}
 	}
 
-	public override Point? SavedPosition
+	public void Init(string message)
 	{
-		get => null;
-		set { }
+		this.ErrorMessage = message;
 	}
 
-	public static void Show(string message)
+	/*public static void Show(string message)
 	{
 		Task.Run(async () => await ShowAsync(message));
 	}
@@ -41,7 +40,7 @@ public partial class ErrorWindow : PanelWindow
 
 		windowCount++;
 
-		ErrorWindow? wnd = await Panel.ShowAsync<ErrorWindow>();
+		ErrorWindow? wnd = ServiceManager.Instance.Panels.Open<ErrorWindow>();
 		if (wnd != null)
 		{
 			wnd.ErrorMessage = message;
@@ -52,7 +51,7 @@ public partial class ErrorWindow : PanelWindow
 	{
 		windowCount--;
 		base.OnClosing(e);
-	}
+	}*/
 
 	private void OnConsoleClicked(object sender, RoutedEventArgs e)
 	{
