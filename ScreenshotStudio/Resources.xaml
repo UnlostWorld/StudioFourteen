@@ -87,4 +87,26 @@
 	</Style>
 
 
+	<Polygon
+		x:Key="GroupPoseIcon"
+		Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}, Path=Foreground}">
+		<Polygon.Points>
+			0,0
+			0,8
+			1,8
+			5,4
+			5,7
+			6,8
+			15,8
+			16,7
+			16,1
+			15,0
+			6,0
+			5,1
+			5,4
+			1,0
+		</Polygon.Points>
+	</Polygon>
+
+
 </local:Resources>

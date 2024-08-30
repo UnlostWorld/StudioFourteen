@@ -8,11 +8,6 @@ public partial class SpaWindow : PanelWindow
 {
 	private static SpaWindow? instance;
 
-	public SpaWindow()
-	{
-		this.InitializeComponent();
-	}
-
 	public static void OpenSpa()
 	{
 		Task.Run(async () =>

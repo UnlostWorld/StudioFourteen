@@ -19,6 +19,12 @@ public class StudioService : ServiceBase
 		}
 	}
 
+	public override Task Stop()
+	{
+		SpaWindow.CloseSpa();
+		return base.Stop();
+	}
+
 	public void OpenStudio() => Task.Run(async () => await this.OpenStudioAsync());
 	public void CloseStudio() => Task.Run(async () => await this.CloseStudioAsync());
 

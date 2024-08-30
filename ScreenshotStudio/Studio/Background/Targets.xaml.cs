@@ -1,5 +1,6 @@
 ﻿namespace ScreenshotStudio.Studio.Background;
 
+using DependencyPropertyGenerator;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
@@ -15,6 +16,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using WpfUtils.Extensions;
 
+[DependencyProperty<bool>("ShowBackground", DefaultValue = true)]
 public partial class Targets : View
 {
 	public Targets()

@@ -58,6 +58,6 @@ public class SettingsService : ServiceBase
 		};
 
 		// SPA
-		public bool IsSpa { get; set; } = false;
+		public bool IsSpa { get; set; } = true;
 	}
 }
