@@ -4,9 +4,12 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:background="clr-namespace:ScreenshotStudio.Studio.Background"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:library="clr-namespace:ScreenshotStudio.Library"
 	xmlns:local="clr-namespace:ScreenshotStudio.SPA"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:pose="clr-namespace:ScreenshotStudio.Posing"
 	xmlns:save="clr-namespace:ScreenshotStudio.Save"
+	xmlns:studio="clr-namespace:ScreenshotStudio.Studio"
 	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="{DynamicResource LOC_Spa_Title}"
@@ -17,118 +20,16 @@
 	IsEmbedded="False"
 	mc:Ignorable="d">
 
-	<Grid>
+	<Grid Margin="1">
 
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition />
 		</Grid.RowDefinitions>
 
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition />
-		</Grid.ColumnDefinitions>
-
 		<Border
-			Grid.RowSpan="2"
-			Grid.Column="0"
+			CornerRadius="6,6,6,0"
 			Style="{DynamicResource WpfUtilsControlBorder}" />
-
-		<Border
-			Grid.Row="0"
-			Grid.ColumnSpan="2"
-			Style="{DynamicResource WpfUtilsControlBorder}" />
-
-		<StackPanel
-			x:Name="Navigation"
-			Grid.Row="1"
-			Grid.Column="0">
-
-			<StackPanel.OpacityMask>
-				<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-					<GradientStop Offset="0" Color="White" />
-					<GradientStop x:Name="WipeA" Offset="1" Color="White" />
-					<GradientStop x:Name="WipeB" Offset="1.1" Color="Transparent" />
-				</LinearGradientBrush>
-			</StackPanel.OpacityMask>
-
-			<StackPanel.Resources>
-				<Style
-					BasedOn="{StaticResource WpfUtilsToggleButton}"
-					TargetType="{x:Type ToggleButton}">
-					<Setter Property="Width" Value="32" />
-					<Setter Property="Height" Value="32" />
-					<Setter Property="Margin" Value="0" />
-				</Style>
-
-				<Style TargetType="{x:Type Line}">
-					<Setter Property="Width" Value="24" />
-					<Setter Property="Margin" Value="0,3" />
-					<Setter Property="Stroke" Value="{DynamicResource BackgroundLightBrush}" />
-					<Setter Property="X1" Value="0" />
-					<Setter Property="X2" Value="1" />
-					<Setter Property="StrokeThickness" Value="1" />
-					<Setter Property="Stretch" Value="Fill" />
-				</Style>
-			</StackPanel.Resources>
-
-			<ToggleButton
-				Width="32"
-				Height="32"
-				Content="{DynamicResource GroupPoseIcon}"
-				IsChecked="{Binding IsInGPose}"
-				ToolTip="{DynamicResource LOC_ToggleGPose}" />
-
-			<Line />
-
-			<ToggleButton
-				IsChecked="{Binding IsLibraryOpen}"
-				ToolTip="{DynamicResource LOC_Library}">
-				<wpfUtils:IconBlock Icon="Book" />
-			</ToggleButton>
-
-			<ToggleButton
-				IsChecked="{Binding IsSettingsOpen}"
-				ToolTip="{DynamicResource LOC_Settings}">
-				<wpfUtils:IconBlock Icon="cogs" />
-			</ToggleButton>
-
-			<Line />
-
-			<ToggleButton
-				IsChecked="{Binding IsHomeOpen}"
-				ToolTip="{DynamicResource LOC_Spa_Home}">
-				<wpfUtils:IconBlock Icon="House" />
-			</ToggleButton>
-
-			<ToggleButton
-				IsChecked="{Binding IsCharacterOpen}"
-				ToolTip="{DynamicResource LOC_Spa_Character}">
-				<wpfUtils:IconBlock Icon="UserEdit" />
-			</ToggleButton>
-
-			<ToggleButton
-				IsChecked="{Binding IsPoseOpen}"
-				ToolTip="{DynamicResource LOC_Pose}">
-				<wpfUtils:IconBlock Icon="Running" />
-			</ToggleButton>
-
-
-			<ToggleButton
-				IsChecked="{Binding IsPhotoOpen}"
-				ToolTip="{DynamicResource LOC_Photo}">
-				<wpfUtils:IconBlock Icon="Image" />
-			</ToggleButton>
-
-			<Line />
-
-			<ToggleButton
-				IsChecked="{Binding IsSaveOpen}"
-				ToolTip="{DynamicResource LOC_Save}">
-				<save:SaveIconControl />
-
-			</ToggleButton>
-		</StackPanel>
 
 		<background:Targets
 			Grid.Row="0"
@@ -139,12 +40,130 @@
 		<Grid
 			Grid.Row="1"
 			Grid.Column="1"
+			Margin="0,0,2,20"
 			Background="{DynamicResource ControlBackgroundBrush}">
 
 			<Border
+				Margin="41,0,0,0"
 				Background="{DynamicResource BackgroundBrush}"
 				CornerRadius="3,0,0,0" />
 		</Grid>
+
+		<TabControl
+			Grid.Row="1"
+			Grid.ColumnSpan="2"
+			Margin="0"
+			Padding="0"
+			VerticalContentAlignment="Top"
+			Style="{DynamicResource WpfUtilsSideTabs}">
+
+			<!--  Library  -->
+			<TabItem>
+				<TabItem.Header>
+					<wpfUtils:IconBlock
+						Margin="12"
+						Icon="Book" />
+				</TabItem.Header>
+
+				<windows:PanelHost
+					Margin="1,1,0,0"
+					PanelType="{x:Type library:LibraryWindow}" />
+
+			</TabItem>
+
+			<!--  Environment  -->
+			<TabItem>
+				<TabItem.Header>
+					<wpfUtils:IconBlock
+						Margin="12"
+						Icon="Home" />
+				</TabItem.Header>
+			</TabItem>
+
+			<!--  Character  -->
+			<TabItem>
+				<TabItem.Header>
+					<wpfUtils:IconBlock
+						Margin="12"
+						Icon="UserEdit" />
+				</TabItem.Header>
+
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition />
+					</Grid.ColumnDefinitions>
+
+					<windows:PanelHost
+						Grid.Column="0"
+						Margin="1,1,0,0"
+						PanelType="{x:Type studio:CustomizeWindow}" />
+
+					<windows:PanelHost
+						Grid.Column="1"
+						Margin="2,1,0,0"
+						PanelType="{x:Type studio:GearWindow}" />
+
+				</Grid>
+			</TabItem>
+
+			<!--  Pose  -->
+			<TabItem>
+				<TabItem.Header>
+					<wpfUtils:IconBlock
+						Margin="12"
+						Icon="Running" />
+				</TabItem.Header>
+
+				<windows:PanelHost
+					Grid.Column="1"
+					Margin="2,1,0,0"
+					PanelType="{x:Type pose:PoseWindow}" />
+			</TabItem>
+
+			<!--  Screenshot  -->
+			<TabItem>
+				<TabItem.Header>
+					<wpfUtils:IconBlock
+						Margin="12"
+						Icon="Image" />
+				</TabItem.Header>
+
+				<windows:PanelHost
+					Grid.Column="1"
+					Margin="2,1,0,0"
+					PanelType="{x:Type studio:PhotoWindow}" />
+			</TabItem>
+
+			<!--  Save  -->
+			<TabItem>
+				<TabItem.Header>
+					<wpfUtils:IconBlock
+						Margin="12"
+						Icon="Save"
+						IconFont="Solid" />
+				</TabItem.Header>
+
+				<windows:PanelHost
+					Grid.Column="1"
+					Margin="2,1,0,0"
+					PanelType="{x:Type save:SaveWindow}" />
+			</TabItem>
+
+			<!--  Settings  -->
+			<TabItem>
+				<TabItem.Header>
+					<wpfUtils:IconBlock
+						Margin="12"
+						Icon="Gears" />
+				</TabItem.Header>
+
+				<windows:PanelHost
+					Grid.Column="1"
+					Margin="2,1,0,0"
+					PanelType="{x:Type studio:SettingsWindow}" />
+			</TabItem>
+		</TabControl>
 
 	</Grid>
 </windows:PanelWindow>

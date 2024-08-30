@@ -21,7 +21,7 @@ using WpfUtils.Windows;
 [DependencyProperty<bool>("CanChangeEmbed", DefaultValue = true)]
 [DependencyProperty<double>("Scale", DefaultValue = 1.0)]
 [DependencyProperty<bool>("IsMaximized", DefaultValue = false)]
-public partial class PanelWindow : MultithreadedWindow, IAutoNotify
+public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 {
 	protected readonly ILogger Log;
 
@@ -127,6 +127,11 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify
 			return null;
 
 		return await MultithreadedWindow.CreateInstanceAsync<T>();
+	}
+
+	void Panel.IHost.Close()
+	{
+		this.Dispatcher.BeginInvoke(this.Close);
 	}
 
 	public virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = "")

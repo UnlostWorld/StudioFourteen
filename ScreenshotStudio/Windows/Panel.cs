@@ -27,7 +27,7 @@ public partial class Panel : ContentControl, IAutoNotify
 	private readonly string panelId;
 	private readonly Dictionary<string, object?> persistenceCache = new();
 	private Exception? frameworkException;
-	private PanelWindow? windowHost;
+	private IHost? host;
 
 	private bool isVisible;
 
@@ -47,6 +47,11 @@ public partial class Panel : ContentControl, IAutoNotify
 
 	public event PropertyChangedEventHandler? PropertyChanged;
 
+	public interface IHost
+	{
+		void Close();
+	}
+
 	public ServiceManager Services => ServiceManager.Instance;
 
 	public virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
@@ -59,14 +64,14 @@ public partial class Panel : ContentControl, IAutoNotify
 		return this.isVisible;
 	}
 
-	public void SetHost(PanelWindow wnd)
+	public void SetHost(IHost host)
 	{
-		this.windowHost = wnd;
+		this.host = host;
 	}
 
 	public void Close()
 	{
-		this.windowHost?.Dispatcher.Invoke(this.windowHost.Close);
+		this.host?.Close();
 	}
 
 	public T? GetPersistence<T>([CallerMemberName] string id = "")
@@ -145,9 +150,9 @@ public partial class Panel : ContentControl, IAutoNotify
 		}
 	}
 
-	public void SetIsOpen(PanelWindow sender, bool isOpen)
+	public void SetIsOpen(IHost sender, bool isOpen)
 	{
-		if (this.windowHost != sender)
+		if (this.host != sender)
 			throw new InvalidOperationException();
 
 		if (isOpen)
