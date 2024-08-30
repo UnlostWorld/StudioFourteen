@@ -56,5 +56,8 @@ public class SettingsService : ServiceBase
 			{ KeyBindEvents.Save, new(VirtualKey.S, true, false, false) },
 			{ KeyBindEvents.SaveAs, new(VirtualKey.S, true, false, true) },
 		};
+
+		// SPA
+		public bool IsSpa { get; set; } = false;
 	}
 }

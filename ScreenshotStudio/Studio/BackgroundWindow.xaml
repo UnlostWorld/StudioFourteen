@@ -9,6 +9,7 @@
 	xmlns:studio="clr-namespace:ScreenshotStudio"
 	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	d:DesignHeight="1080"
 	d:DesignWidth="1920"
 	AllowsTransparency="True"
@@ -80,7 +81,8 @@
 			x:Name="NavigationArea"
 			Grid.Column="0"
 			Margin="10,0,0,0"
-			VerticalAlignment="Center" />
+			VerticalAlignment="Center"
+			Visibility="{Binding Services.Settings.Current.IsSpa, Converter={StaticResource !B2V}}" />
 
 
 		<Grid

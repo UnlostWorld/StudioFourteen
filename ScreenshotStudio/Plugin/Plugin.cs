@@ -3,7 +3,6 @@
 using Dalamud.Plugin;
 using ScreenshotStudio.Utilities;
 using Serilog;
-using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 

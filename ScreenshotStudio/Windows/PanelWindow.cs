@@ -1,22 +1,19 @@
 ﻿namespace ScreenshotStudio.Windows;
 
 using DependencyPropertyGenerator;
-using Dalamud.Plugin.Services;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Utilities;
 using Serilog;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using FontAwesome.Sharp;
 using WpfUtils.Extensions;
-using System.Collections.Generic;
 using WpfUtils.Windows;
 
 [DependencyProperty<bool>("IsEmbedded", DefaultValue = true)]
@@ -180,7 +177,8 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify
 	{
 		try
 		{
-			XivWindow.Embed(this);
+			if (this.IsEmbedded)
+				XivWindow.Embed(this);
 
 			this.OnOpened();
 		}

@@ -18,7 +18,15 @@
 	mc:Ignorable="d">
 	<TabControl>
 
-		<TabItem Header="{DynamicResource LOC_Settings_Interface}" />
+		<TabItem Header="{DynamicResource LOC_Settings_Interface}">
+			<StackPanel>
+				<CheckBox
+					Grid.Row="0"
+					Margin="1"
+					Content="{DynamicResource LOC_Settings_Interface_IsSpa}"
+					IsChecked="{Binding Settings.IsSpa}" />
+			</StackPanel>
+		</TabItem>
 
 		<TabItem Header="{DynamicResource LOC_Settings_Files}">
 			<StackPanel>

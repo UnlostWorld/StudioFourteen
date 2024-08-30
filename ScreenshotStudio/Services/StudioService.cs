@@ -2,6 +2,7 @@
 
 using System.Threading.Tasks;
 using System;
+using ScreenshotStudio.SPA;
 
 public class StudioService : ServiceBase
 {
@@ -29,6 +30,11 @@ public class StudioService : ServiceBase
 			this.IsOpen = true;
 			this.RaisePropertyChanged(nameof(StudioService.IsOpen));
 			this.RaisePropertyChanged(nameof(StudioService.IsOpenAndInGPose));
+
+			if (this.Services.Settings.Current.IsSpa)
+			{
+				SpaWindow.OpenSpa();
+			}
 		}
 		catch(Exception ex)
 		{
@@ -46,6 +52,11 @@ public class StudioService : ServiceBase
 			this.IsOpen = false;
 			this.RaisePropertyChanged(nameof(StudioService.IsOpen));
 			this.RaisePropertyChanged(nameof(StudioService.IsOpenAndInGPose));
+
+			if (this.Services.Settings.Current.IsSpa)
+			{
+				SpaWindow.CloseSpa();
+			}
 		}
 		catch(Exception ex)
 		{
