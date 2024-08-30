@@ -29,6 +29,8 @@ public partial class Panel : ContentControl, IAutoNotify
 	private Exception? frameworkException;
 	private PanelWindow? windowHost;
 
+	private bool isVisible;
+
 	public Panel()
 	{
 		this.panelId = this.GetType().Name;
@@ -39,6 +41,8 @@ public partial class Panel : ContentControl, IAutoNotify
 
 		this.GetType().GetMethod("InitializeComponent")?.Invoke(this, null);
 		this.DataContext = this;
+
+		this.IsVisibleChanged += (s, e) => this.isVisible = this.IsVisible;
 	}
 
 	public event PropertyChangedEventHandler? PropertyChanged;
@@ -52,7 +56,7 @@ public partial class Panel : ContentControl, IAutoNotify
 
 	public virtual bool ShouldTickAutoProperties()
 	{
-		return this.IsVisible && this.IsLoaded;
+		return this.isVisible;
 	}
 
 	public void SetHost(PanelWindow wnd)
