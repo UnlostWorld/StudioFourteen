@@ -140,6 +140,8 @@ public class PanelService : ServiceBase
 	{
 		await base.Stop();
 
+		this.backgroundWindow?.Dispatcher.Invoke(this.backgroundWindow.Close);
+
 		this.Settings.OpenPanels.Clear();
 
 		List<Panel> openPanels = new(this.openPanels);

@@ -1,57 +1,56 @@
 ﻿namespace ScreenshotStudio.Studio;
 
 using ScreenshotStudio.Windows;
-using System.Threading.Tasks;
-using PropertyChanged.SourceGenerator;
 using System.Windows;
 using ScreenshotStudio.Plugin;
-using System.ComponentModel;
+using WpfUtils.Extensions;
 
 public partial class ErrorWindow : Panel
 {
-	////private static int windowCount = 0;
-
-	private string? errorMessage = "An Unknown error has occurred";
+	private static ErrorWindow? instance;
+	private static bool isOpening = false;
+	private static string? message = "An Unknown error has occurred";
 
 	public string? ErrorMessage
 	{
-		get => this.errorMessage;
+		get => message;
 		set
 		{
-			this.errorMessage = value;
+			message = value;
 			this.NotifyPropertyChanged();
 		}
 	}
 
-	public void Init(string message)
+	public static void Show(string message)
 	{
-		this.ErrorMessage = message;
-	}
+		ErrorWindow.message = message;
 
-	/*public static void Show(string message)
-	{
-		Task.Run(async () => await ShowAsync(message));
-	}
-
-	public static async Task ShowAsync(string message)
-	{
-		if (windowCount > 5)
-			return;
-
-		windowCount++;
-
-		ErrorWindow? wnd = ServiceManager.Instance.Panels.Open<ErrorWindow>();
-		if (wnd != null)
+		if (instance == null)
 		{
-			wnd.ErrorMessage = message;
+			if (isOpening)
+				return;
+
+			isOpening = true;
+			ServiceManager.Instance.Panels.Open<ErrorWindow>().Run();
+		}
+		else
+		{
+			instance.NotifyPropertyChanged(nameof(ErrorMessage));
 		}
 	}
 
-	protected override void OnClosing(CancelEventArgs e)
+	protected override void OnOpened()
 	{
-		windowCount--;
-		base.OnClosing(e);
-	}*/
+		instance = this;
+		isOpening = false;
+		base.OnOpened();
+	}
+
+	protected override void OnClosed()
+	{
+		instance = null;
+		base.OnClosed();
+	}
 
 	private void OnConsoleClicked(object sender, RoutedEventArgs e)
 	{

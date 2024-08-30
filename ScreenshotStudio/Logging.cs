@@ -106,11 +106,7 @@ public class ErrorWindowSink : ILogEventSink
 	{
 		if (logEvent.Level >= LogEventLevel.Error)
 		{
-			Task.Run(async () =>
-			{
-				ErrorWindow? wnd = await ServiceManager.Instance.Panels.Open<ErrorWindow>();
-				wnd?.Init(logEvent.MessageTemplate.Text);
-			});
+			ErrorWindow.Show(logEvent.MessageTemplate.Text);
 		}
 	}
 }
