@@ -87,7 +87,7 @@ public class PanelService : ServiceBase
 	public async Task<T?> Open<T>()
 		where T : Panel, new()
 	{
-		PanelWindow? wnd = await PanelWindow.CreateInstanceAsync<PanelWindow>();
+		PanelWindow? wnd = await PanelWindow.CreatePanelWindow<PanelWindow>();
 		if (wnd != null)
 		{
 			await wnd.Dispatcher.InvokeAsync(() =>
@@ -130,7 +130,7 @@ public class PanelService : ServiceBase
 	{
 		await base.Start();
 
-		this.backgroundWindow = await PanelWindow.CreateInstanceAsync<BackgroundWindow>();
+		this.backgroundWindow = await PanelWindow.CreatePanelWindow<BackgroundWindow>();
 		this.backgroundWindow?.Dispatcher.InvokeAsync(() => this.backgroundWindow.Show());
 
 		this.RestorePanels().Run();

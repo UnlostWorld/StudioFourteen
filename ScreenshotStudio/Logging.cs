@@ -43,7 +43,7 @@ public static class Logging
 	}
 
 	public static void WpfLog(string message) => Shared.Information(message);
-	public static void WpfError(Exception ex, string message) => Shared.Error(ex, message);
+	public static void WpfError(Exception? ex, string message) => Shared.Error(ex, message);
 
 	public static void Information(string message) => Shared.Information(message);
 }

@@ -17,13 +17,14 @@ using System.Windows.Input;
 using FontAwesome.Sharp;
 using WpfUtils.Extensions;
 using System.Collections.Generic;
+using WpfUtils.Windows;
 
 [DependencyProperty<bool>("IsEmbedded", DefaultValue = true)]
 [DependencyProperty<bool>("CanClose", DefaultValue = true)]
 [DependencyProperty<bool>("CanChangeEmbed", DefaultValue = true)]
 [DependencyProperty<double>("Scale", DefaultValue = 1.0)]
 [DependencyProperty<bool>("IsMaximized", DefaultValue = false)]
-public partial class PanelWindow : Window, IAutoNotify
+public partial class PanelWindow : MultithreadedWindow, IAutoNotify
 {
 	protected readonly ILogger Log;
 
@@ -122,13 +123,13 @@ public partial class PanelWindow : Window, IAutoNotify
 		}
 	}
 
-	public static async Task<T?> CreateInstanceAsync<T>()
+	public static async Task<T?> CreatePanelWindow<T>()
 		where T : PanelWindow
 	{
 		if (ServiceManager.Instance.CurrentState > ServiceManagerBase.States.Started)
 			return null;
 
-		return await new PanelWindowThread().Start(typeof(T)) as T;
+		return await MultithreadedWindow.CreateInstanceAsync<T>();
 	}
 
 	public virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
@@ -351,96 +352,5 @@ public partial class PanelWindow : Window, IAutoNotify
 	private void OnGameUiToggled(object? sender, bool e)
 	{
 		this.NotifyPropertyChanged(nameof(PanelWindow.IsUiVisible));
-	}
-
-	private class PanelWindowThread
-	{
-		private static readonly object CreateInstanceLock = new();
-
-		private PanelWindow? window;
-		private Type? windowType;
-
-		protected ILogger Log => Logging.ForContext<PanelWindowThread>();
-
-		public async Task<PanelWindow?> Start(Type panelType)
-		{
-			try
-			{
-				this.windowType = panelType;
-
-				Thread panelMainThread = new Thread(this.PanelMainThread);
-				panelMainThread.SetApartmentState(ApartmentState.STA);
-				panelMainThread.Start(this);
-
-				// Wait for the panel to load for up to 5 seconds.
-				int timeOut = 5000;
-				while (this.window == null && timeOut > 0)
-				{
-					await Task.Delay(10);
-					timeOut -= 10;
-				}
-
-				if (this.window == null)
-					this.Log.Error($"Failed to create window {this.windowType}");
-
-				return this.window;
-			}
-			catch (Exception ex)
-			{
-				this.Log.Error(ex, $"Failed to create window {this.windowType}");
-			}
-
-			return null;
-		}
-
-		private void PanelMainThread(object? param)
-		{
-			if (this.windowType == null)
-				throw new Exception("No panel type in thread");
-
-			AppDomain.CurrentDomain.UnhandledException += (s, e) =>
-			{
-				Exception? ex = e.ExceptionObject as Exception;
-				this.Log.Error(ex, $"Unhandled Exception in window: {this.windowType}");
-			};
-
-			System.Windows.Threading.Dispatcher.CurrentDispatcher.UnhandledException += (s, e) =>
-			{
-				this.Log.Error(e.Exception, $"Unhandled Exception in window: {this.windowType}");
-			};
-
-			try
-			{
-				// Even though we're doing this on another thread, we can still only do one panel window
-				// at a time since WPF's LoadComponent system isn't thread safe.
-				lock (PanelWindowThread.CreateInstanceLock)
-				{
-					this.window = Activator.CreateInstance(this.windowType) as PanelWindow;
-				}
-			}
-			catch (Exception ex)
-			{
-				this.Log.Error(ex, $"Exception during window construction: {this.windowType}");
-				return;
-			}
-
-			this.Log.Information($"Panel: {this.windowType} has started");
-
-			bool run = true;
-			while (run)
-			{
-				try
-				{
-					System.Windows.Threading.Dispatcher.Run();
-					run = false;
-				}
-				catch (Exception ex)
-				{
-					this.Log.Error(ex, $"Error in {this.windowType} thread");
-				}
-			}
-
-			this.Log.Information($"Panel: {this.windowType} has shutdown");
-		}
 	}
 }
