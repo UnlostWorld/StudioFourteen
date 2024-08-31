@@ -148,7 +148,7 @@ public class SaveService : ServiceBase
 	{
 		try
 		{
-			await ActorAssignmentWindow.GetAssignments(file);
+			await OpenWindow.GetAssignments(file);
 		}
 		catch (Exception ex)
 		{

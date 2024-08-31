@@ -15,7 +15,7 @@ using WpfUtils.Extensions;
 
 using Panel = ScreenshotStudio.Windows.Panel;
 
-public partial class ActorAssignmentWindow : Panel
+public partial class OpenWindow : Panel
 {
 	[AutoNotify] public FileTypeInfoBase? SceneType => this.Services.Files.GetTypeInfo(this.Scene);
 	[AutoNotify] public SceneFile? Scene { get; set; }
@@ -25,10 +25,10 @@ public partial class ActorAssignmentWindow : Panel
 
 	public static async Task<Dictionary<string, ICharacterAppearance?>?> GetAssignments(SceneFile scene)
 	{
-		ActorAssignmentWindow? panel = await ServiceManager.Instance.Panels.Open<ActorAssignmentWindow>();
+		OpenWindow? panel = await ServiceManager.Instance.Panels.Open<OpenWindow>();
 
 		if (panel == null)
-			throw new Exception("No Actor Assignment Window");
+			throw new Exception("No Open Window");
 
 		await panel.Dispatcher.MainThread();
 		panel.SetScene(scene);
@@ -58,6 +58,8 @@ public partial class ActorAssignmentWindow : Panel
 			if (actor.Role == null)
 				continue;
 
+			roles.Add(actor.Role);
+			roles.Add(actor.Role);
 			roles.Add(actor.Role);
 		}
 

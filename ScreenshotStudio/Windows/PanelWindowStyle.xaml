@@ -144,7 +144,7 @@
 					x:Name="WindowShadow"
 					Background="Black"
 					CornerRadius="6"
-					Opacity="0">
+					Opacity="0.25">
 					<Border.BitmapEffect>
 						<DropShadowBitmapEffect
 							ShadowDepth="0"
@@ -157,8 +157,7 @@
 					Background="{DynamicResource BackgroundBrush}"
 					BorderBrush="{DynamicResource BackgroundBrush}"
 					BorderThickness="1"
-					CornerRadius="6"
-					Opacity="0" />
+					CornerRadius="6" />
 
 				<Grid>
 					<Grid.RowDefinitions>
@@ -205,12 +204,13 @@
 								Height="4"
 								Margin="6,1,6,0"
 								VerticalAlignment="Center"
-								Fill="{DynamicResource ForegroundLightBrush}" />
+								Fill="{DynamicResource ForegroundLightBrush}"
+								Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Panel.Subtitle, Converter={StaticResource NotEmptyToVisibilityConverter}}" />
 
 							<TextBlock
 								VerticalAlignment="Center"
 								Foreground="{DynamicResource ForegroundLightBrush}"
-								Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Subtitle}" />
+								Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Panel.Subtitle}" />
 						</StackPanel>
 
 						<Border
@@ -354,12 +354,6 @@
 				<Setter TargetName="WindowBorder" Property="BorderBrush" Value="{DynamicResource TrimBrush}" />
 				<Setter TargetName="WindowShadow" Property="Opacity" Value="1" />
 			</Trigger>
-
-			<DataTrigger
-				Binding="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Panel.Subtitle}"
-				Value="{x:Null}">
-				<Setter TargetName="SubtitleSeperator" Property="Visibility" Value="Collapsed" />
-			</DataTrigger>
 
 			<Trigger Property="IsEmbedded" Value="False">
 				<Trigger.ExitActions>

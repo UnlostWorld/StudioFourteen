@@ -14,6 +14,7 @@
 	Height="600"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
+	ResizeMode="NoResize"
 	TitleIcon="FloppyDisk"
 	mc:Ignorable="d">
 
@@ -32,8 +33,7 @@
 
 		<Grid
 			Grid.Row="0"
-			Grid.ColumnSpan="2"
-			Margin="0,0,0,12">
+			Grid.ColumnSpan="2">
 
 			<Grid.RowDefinitions>
 				<RowDefinition />
@@ -79,6 +79,8 @@
 
 		<Border
 			Grid.Row="1"
+			Grid.RowSpan="2"
+			Grid.Column="0"
 			Margin="1"
 			Style="{DynamicResource WpfUtilsControlBorder}">
 			<Grid Margin="3">
@@ -96,6 +98,14 @@
 				</Grid.RowDefinitions>
 
 
+				<Viewbox Grid.ColumnSpan="2">
+					<Rectangle
+						Width="9"
+						Height="16"
+						Fill="White"
+						Opacity="0.25" />
+				</Viewbox>
+
 				<TextBlock
 					Grid.Row="1"
 					Grid.Column="0"
@@ -107,6 +117,8 @@
 				<TextBox
 					Grid.Row="1"
 					Grid.Column="1"
+					Margin="0"
+					Background="Transparent"
 					Text="{Binding Services.Save.MetaData.Author}" />
 
 				<TextBlock
@@ -120,6 +132,8 @@
 				<TextBox
 					Grid.Row="2"
 					Grid.Column="1"
+					Margin="0"
+					Background="Transparent"
 					Text="{Binding Services.Save.MetaData.Version}" />
 
 				<TextBlock
@@ -133,6 +147,8 @@
 				<TextBox
 					Grid.Row="3"
 					Grid.Column="1"
+					Margin="0"
+					Background="Transparent"
 					Text="{Binding Services.Save.MetaData.Description}"
 					TextAlignment="Left"
 					TextWrapping="Wrap" />
@@ -148,6 +164,8 @@
 				<TextBox
 					Grid.Row="4"
 					Grid.Column="1"
+					Margin="0"
+					Background="Transparent"
 					Text="Custom, Things" />
 
 			</Grid>
@@ -156,14 +174,15 @@
 
 		<ScrollViewer
 			Grid.Row="1"
-			Grid.Column="1">
+			Grid.Column="1"
+			HorizontalScrollBarVisibility="Disabled">
 			<StackPanel
 				Grid.Row="0"
 				Margin="2">
 
 				<TextBlock
 					Margin="2,2,0,0"
-					Foreground="{DynamicResource ForegroundLightBrush}"
+					Style="{DynamicResource LeftLabel}"
 					Text="{DynamicResource LOC_Save_Environment}" />
 				<CheckBox
 					Margin="1"
@@ -185,7 +204,7 @@
 
 				<TextBlock
 					Margin="2,8,0,0"
-					Foreground="{DynamicResource ForegroundLightBrush}"
+					Style="{DynamicResource LeftLabel}"
 					Text="Components" />
 				<CheckBox
 					Margin="1,1,1,1"
@@ -202,7 +221,7 @@
 
 				<TextBlock
 					Margin="2,8,0,0"
-					Foreground="{DynamicResource ForegroundLightBrush}"
+					Style="{DynamicResource LeftLabel}"
 					Text="{Binding CharactersText}" />
 
 				<ItemsControl ItemsSource="{Binding Characters}">
@@ -276,7 +295,7 @@
 
 		<Border
 			Grid.Row="2"
-			Grid.ColumnSpan="2"
+			Grid.Column="1"
 			Margin="1"
 			Style="{DynamicResource WpfUtilsControlBorder}">
 			<StackPanel
