@@ -208,6 +208,9 @@ public class PoseFile : FileBase
 								continue;
 
 							BoneId boneId = new(character->ObjectIndex, partialIdx, poseIdx, boneIdx, boneName);
+							if (boneIds.ContainsKey(boneName))
+								continue;
+
 							boneIds.Add(boneName, boneId);
 
 							BoneReference reference = service.GetOrCreateBoneReference(boneId, boneName);

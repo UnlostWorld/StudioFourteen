@@ -77,13 +77,31 @@ public class CharacterLifecycleService : ServiceBase
 
 	public async Task<int> CreateAsync(ICharacterAppearance? appearance = null)
 	{
-		Threads.VerifyFrameworkThread();
+		await Threads.FrameworkThread();
 
 		if (!this.CanSpawn)
 			return -1;
 
 		await Threads.FrameworkThread();
-		int index = this.Spawn("Studio Character");
+		int index = this.Spawn(appearance?.Name ?? "Studio Character");
+
+		if (DalamudServices.ObjectTable != null)
+		{
+			bool canDraw = false;
+			while (!canDraw)
+			{
+				unsafe
+				{
+					Character* pCharacter = (Character*)DalamudServices.ObjectTable.GetObjectAddress(index);
+					canDraw = pCharacter->CanDraw();
+				}
+
+				if (!canDraw)
+				{
+					await Task.Delay(10);
+				}
+			}
+		}
 
 		if (index != -1 && appearance != null)
 		{

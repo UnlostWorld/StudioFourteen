@@ -1,72 +1,157 @@
 ﻿namespace ScreenshotStudio.Save;
+
+using Dalamud.Plugin.Services;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using ScreenshotStudio.Files;
-using ScreenshotStudio.Library;
+using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
-using ScreenshotStudio.Tags;
 using ScreenshotStudio.Utilities;
-using ScreenshotStudio.Windows;
+using Serilog.Parsing;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using WpfUtils;
 using WpfUtils.Extensions;
-
 using Panel = ScreenshotStudio.Windows.Panel;
 
 public partial class OpenWindow : Panel
 {
+	private readonly Dictionary<int, OpenCharacterViewModel> characterLookup = new();
+
 	[AutoNotify] public FileTypeInfoBase? SceneType => this.Services.Files.GetTypeInfo(this.Scene);
 	[AutoNotify] public SceneFile? Scene { get; set; }
-	[AutoNotify] public FastObservableCollection<Assignment> Assignments { get; init; } = new();
+	[AutoNotify] public FastObservableCollection<Assignment> Actors { get; init; } = new();
+	[AutoNotify] public FastObservableCollection<OpenCharacterViewModelBase> Characters { get; init; } = new();
 
-	public bool Result { get; set; }
+	public bool? Result { get; set; }
 
-	public static async Task<Dictionary<string, ICharacterAppearance?>?> GetAssignments(SceneFile scene)
+	public static void OpenScene(SceneFile scene)
 	{
-		OpenWindow? panel = await ServiceManager.Instance.Panels.Open<OpenWindow>();
-
-		if (panel == null)
-			throw new Exception("No Open Window");
-
-		await panel.Dispatcher.MainThread();
-		panel.SetScene(scene);
-
-		await Threads.NonUiThread();
-		await PanelService.WhileShown(panel);
-
-		if (panel.Result == false)
-			return null;
-
-		Dictionary<string, ICharacterAppearance?> result = new();
-		foreach (Assignment assignment in panel.Assignments)
-		{
-			result.Add(assignment.Role, assignment.Appearance);
-		}
-
-		return result;
+		OpenSceneAsync(scene).Run();
 	}
 
-	protected void SetScene(SceneFile scene)
+	public static async Task OpenSceneAsync(SceneFile scene)
 	{
-		this.Scene = scene;
-
-		List<string> roles = new();
-		foreach (SceneFile.Actor actor in scene.Actors)
+		try
 		{
-			if (actor.Role == null)
-				continue;
+			OpenWindow? panel = await ServiceManager.Instance.Panels.Open<OpenWindow>();
 
-			roles.Add(actor.Role);
-			roles.Add(actor.Role);
-			roles.Add(actor.Role);
+			if (panel == null)
+				throw new Exception("No Open Window");
+
+			panel.Result = null;
+
+			await panel.Dispatcher.MainThread();
+			await panel.SetScene(scene);
+
+			while (panel.Result == null)
+				await Task.Delay(100);
+
+			foreach (Assignment assignment in panel.Actors)
+			{
+				await assignment.Apply();
+			}
+		}
+		catch (Exception ex)
+		{
+			Logging.Shared.Error(ex, "Error opening scene");
+		}
+	}
+
+	protected override void OnOpened()
+	{
+		base.OnOpened();
+		this.Characters.Add(new OpenIgnoreCharacterViewModel());
+
+		if (this.Services.CharacterLifecycle.CanSpawn)
+		{
+			this.Characters.Add(new OpenCreateCharacterViewModel());
+		}
+	}
+
+	protected override void OnClosed()
+	{
+		if (this.Result == null)
+			this.Result = false;
+
+		base.OnClosed();
+	}
+
+	protected async Task SetScene(SceneFile scene)
+	{
+		await this.Dispatcher.MainThread();
+		this.Scene = scene;
+		this.Actors.Clear();
+
+		while (this.Characters.Count <= 2)
+		{
+			await Task.Delay(33);
 		}
 
-		this.Assignments.Clear();
-		foreach (string role in roles)
+		await this.Dispatcher.MainThread();
+
+		if (scene.Actors.Count == 1)
 		{
-			this.Assignments.Add(new(role));
+			Assignment assignment = new(scene.Actors[0]);
+
+			foreach(OpenCharacterViewModelBase character in this.Characters)
+			{
+				if (character is OpenIgnoreCharacterViewModel)
+					continue;
+
+				if (character is OpenCreateCharacterViewModel)
+					continue;
+
+				assignment.Character = character;
+				break;
+			}
+
+			this.Actors.Add(assignment);
+		}
+		else
+		{
+			foreach (SceneFile.Actor actor in scene.Actors)
+			{
+				Assignment assignment = new(actor);
+				assignment.Character = this.Characters[0];
+				this.Actors.Add(assignment);
+			}
+		}
+	}
+
+	protected override unsafe void OnFrameworkUpdate(IFramework framework)
+	{
+		base.OnFrameworkUpdate(framework);
+
+		if (DalamudServices.ObjectTable == null)
+			return;
+
+		for (int i = 0; i < DalamudServices.ObjectTable.Length; ++i)
+		{
+			bool isValid = true;
+
+			Character* pCharacter = (Character*)DalamudServices.ObjectTable.GetObjectAddress(i);
+			isValid = this.Services.Save.CanInclude(pCharacter);
+
+			if (!isValid && this.characterLookup.ContainsKey(i))
+			{
+				OpenCharacterViewModel vm = this.characterLookup[i];
+				this.Dispatcher.Invoke(() => this.Characters.Remove(vm));
+
+				this.characterLookup.Remove(i);
+				continue;
+			}
+			else if (isValid && !this.characterLookup.ContainsKey(i))
+			{
+				OpenCharacterViewModel vm = new(i);
+				this.characterLookup.Add(i, vm);
+				this.Dispatcher.Invoke(() => this.Characters.Add(vm));
+			}
+			else if (isValid && this.characterLookup.ContainsKey(i))
+			{
+				this.characterLookup[i].Name = pCharacter->GetDisplayName();
+			}
 		}
 	}
 
@@ -81,34 +166,150 @@ public partial class OpenWindow : Panel
 		this.Result = false;
 		this.Close();
 	}
-
-	private void OnChooseAppearanceClicked(object sender, RoutedEventArgs e)
-	{
-		TagCollection defaultTags = new();
-		defaultTags.Add("Named");
-
-		Assignment? assignment = (sender as Button)?.DataContext as Assignment;
-		if (assignment == null)
-			return;
-
-		LibraryModal.Show<ICharacterAppearance>(
-			sender,
-			"Create Character",
-			defaultTags,
-			null,
-			(appearance, isFinal) =>
-			{
-				if (!isFinal)
-					return;
-
-				assignment.Appearance = appearance;
-			});
-	}
 }
 
-public class Assignment(string role)
+public abstract class OpenCharacterViewModelBase
 	: ViewModel
 {
-	[AutoNotify] public string Role { get; init; } = role;
+}
+
+public class OpenIgnoreCharacterViewModel
+	: OpenCharacterViewModelBase
+{
+}
+
+public class OpenCreateCharacterViewModel
+	: OpenCharacterViewModelBase
+{
+}
+
+public class OpenCharacterViewModel(int objectTableIndex)
+	: OpenCharacterViewModelBase
+{
+	[AutoNotify] public int ObjectTableIndex { get; set; } = objectTableIndex;
+	[AutoNotify] public string? Name { get; set; }
+}
+
+public class Assignment(SceneFile.Actor actor)
+	: ViewModel
+{
+	private bool includePose = true;
+	private bool includeAppearance = true;
+
+	[AutoNotify] public SceneFile.Actor Actor { get; init; } = actor;
 	[AutoNotify] public ICharacterAppearance? Appearance { get; set; }
+	[AutoNotify] public OpenCharacterViewModelBase? Character { get; set; }
+
+	[AutoNotify]
+	public bool IncludePose
+	{
+		get => this.includePose && this.CanIncludePose;
+		set => this.includePose = value;
+	}
+
+	[AutoNotify]
+	public bool IncludeAppearance
+	{
+		get => this.includeAppearance && this.CanIncludeAppearance;
+		set => this.includeAppearance = value;
+	}
+
+	[AutoNotify]
+	public bool CanSelectAppearance =>
+		this.Character is OpenCreateCharacterViewModel
+		&& !this.IncludeAppearance
+		&& this.Services.CharacterLifecycle.CanSpawn;
+
+	[AutoNotify]
+	public bool CanIncludePose =>
+		this.Actor.Pose != null
+		&& this.Character is not OpenIgnoreCharacterViewModel;
+
+	[AutoNotify]
+	public bool CanIncludeAppearance =>
+		this.Actor.Character != null
+		&& this.Character is not OpenIgnoreCharacterViewModel;
+
+	[AutoNotify]
+	public string ApplyPoseTooltip
+	{
+		get
+		{
+			if (this.Character is OpenCharacterViewModel character)
+			{
+				return Resources.Format("LOC_OpenScene_ApplyPose", this.Actor.Role, character.Name);
+			}
+			else if (this.Character is OpenIgnoreCharacterViewModel)
+			{
+				return Resources.Format("LOC_OpenScene_ApplyPoseIgnore", this.Actor.Role);
+			}
+			else if (this.Character is OpenCreateCharacterViewModel)
+			{
+				return Resources.Format("LOC_OpenScene_ApplyPoseNew", this.Actor.Role);
+			}
+
+			return string.Empty;
+		}
+	}
+
+	[AutoNotify]
+	public string ApplyAppearanceTooltip
+	{
+		get
+		{
+			if (this.Character is OpenCharacterViewModel character)
+			{
+				return Resources.Format("LOC_OpenScene_ApplyAppearance", this.Actor.Role, character.Name);
+			}
+			else if (this.Character is OpenIgnoreCharacterViewModel)
+			{
+				return Resources.Format("LOC_OpenScene_ApplyAppearanceIgnore", this.Actor.Role);
+			}
+			else if (this.Character is OpenCreateCharacterViewModel)
+			{
+				return Resources.Format("LOC_OpenScene_ApplyAppearanceNew", this.Actor.Role);
+			}
+
+			return string.Empty;
+		}
+	}
+
+	public async Task Apply()
+	{
+		if (this.Actor == null)
+			return;
+
+		if (this.Character is OpenIgnoreCharacterViewModel)
+			return;
+
+		ICharacterAppearance? appearance = null;
+		if (this.Character is OpenCreateCharacterViewModel && this.Appearance != null)
+		{
+			appearance = this.Appearance;
+		}
+		else if (this.IncludeAppearance && this.CanIncludeAppearance && this.Actor.Character != null)
+		{
+			appearance = this.Actor.Character;
+		}
+
+		int objectTableIndex = -1;
+		if (this.Character is OpenCharacterViewModel character)
+		{
+			objectTableIndex = character.ObjectTableIndex;
+
+			if (appearance != null)
+			{
+				await appearance.Apply(objectTableIndex);
+			}
+		}
+		else if (this.Character is OpenCreateCharacterViewModel && this.Services.CharacterLifecycle.CanSpawn)
+		{
+			objectTableIndex = await this.Services.CharacterLifecycle.CreateAsync(appearance);
+		}
+
+		if (this.IncludePose && this.CanIncludePose && this.Actor.Pose != null)
+		{
+			await this.Actor.Pose.Apply(objectTableIndex);
+		}
+	}
 }

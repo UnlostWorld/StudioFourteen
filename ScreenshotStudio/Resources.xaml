@@ -16,6 +16,7 @@
 		<!--  Custom controls  -->
 		<ResourceDictionary Source="./Windows/PanelWindowStyle.xaml" />
 		<ResourceDictionary Source="./Save/SaveIconControl.xaml" />
+		<ResourceDictionary Source="./Library/LibrarySelectorButtonStyles.xaml" />
 
 		<!--  Default Language  -->
 		<ResourceDictionary Source="./Languages/English.xaml" />

@@ -144,16 +144,30 @@ public class SaveService : ServiceBase
 		this.Saved?.Invoke();
 	}
 
-	public async Task Open(SceneFile file)
+	public void Open(SceneFile file)
 	{
 		try
 		{
-			await OpenWindow.GetAssignments(file);
+			OpenWindow.OpenScene(file);
 		}
 		catch (Exception ex)
 		{
-			this.Log.Error(ex, "Error assigning roles");
+			this.Log.Error(ex, "Error opening scene");
 		}
+	}
+
+	public Task OpenAsync(SceneFile file)
+	{
+		try
+		{
+			return OpenWindow.OpenSceneAsync(file);
+		}
+		catch (Exception ex)
+		{
+			this.Log.Error(ex, "Error opening scene");
+		}
+
+		return Task.CompletedTask;
 	}
 
 	public Task Revert(SceneFile file)

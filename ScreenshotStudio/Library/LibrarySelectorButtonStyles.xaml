@@ -1,0 +1,54 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:ScreenshotStudio.Controls"
+	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
+	xmlns:local="clr-namespace:ScreenshotStudio.Library"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
+
+
+	<ControlTemplate
+		x:Key="LibrarySelectorButtonTemplate"
+		TargetType="{x:Type local:LibrarySelectorButton}">
+		<Button
+			Height="Auto"
+			HorizontalContentAlignment="Stretch"
+			Command="{TemplateBinding Clicked}">
+			<Button.Content>
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition />
+					</Grid.ColumnDefinitions>
+
+					<ContentPresenter
+						Width="{Binding ActualHeight, RelativeSource={RelativeSource Mode=Self}}"
+						Margin="0,0,3,0"
+						VerticalAlignment="Stretch"
+						Content="{TemplateBinding Value}">
+						<ContentPresenter.Resources>
+							<ResourceDictionary Source="./LibraryIconTemplates.xaml" />
+						</ContentPresenter.Resources>
+					</ContentPresenter>
+
+					<ContentPresenter
+						Grid.Row="0"
+						Grid.Column="1"
+						VerticalAlignment="Center"
+						Content="{TemplateBinding Value}">
+						<ContentPresenter.Resources>
+							<ResourceDictionary Source="./LibraryInfoTemplates.xaml" />
+						</ContentPresenter.Resources>
+					</ContentPresenter>
+
+				</Grid>
+			</Button.Content>
+		</Button>
+	</ControlTemplate>
+
+	<Style TargetType="{x:Type local:LibrarySelectorButton}">
+		<Setter Property="Height" Value="48" />
+		<Setter Property="Template" Value="{StaticResource LibrarySelectorButtonTemplate}" />
+	</Style>
+
+</ResourceDictionary>

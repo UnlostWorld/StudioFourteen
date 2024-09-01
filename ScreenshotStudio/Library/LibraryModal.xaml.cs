@@ -24,7 +24,6 @@ public partial class LibraryModal : Panel
 	private static LibraryModal? instance;
 	private readonly FuncQueue searchQueue;
 
-	private Type? targetType;
 	private object? currentEntry;
 	private Result? selectedResult;
 	private Action<object, bool>? selectionChanged;
@@ -76,43 +75,43 @@ public partial class LibraryModal : Panel
 	{
 		if (placementTarget is UIElement el)
 		{
-			Show<T>(el, title, defaultTags, current, selectionChanged);
+			Show(el, title, defaultTags, current, (s, f) => selectionChanged.Invoke((T)s, f));
 		}
 	}
 
-	public static void Show<T>(UIElement placementTarget, string title, TagCollection defaultTags, T? current, Action<T, bool> selectionChanged)
-		where T : notnull
+	public static void Show(UIElement placementTarget, string title, TagCollection defaultTags, Type type, object? current, Action<object, bool> selectionChanged)
 	{
 		if (instance == null)
 		{
 			Task.Run(async () =>
 			{
 				instance = await ServiceManager.Instance.Panels.Open<LibraryModal>();
-				instance?.OnShow<T>(placementTarget, title, defaultTags, current, selectionChanged);
+				instance?.OnShow(placementTarget, title, defaultTags, type, current, selectionChanged);
 			});
 		}
 		else
 		{
-			instance.OnShow<T>(placementTarget, title, defaultTags, current, selectionChanged);
+			instance.OnShow(placementTarget, title, defaultTags, type, current, selectionChanged);
 		}
 	}
 
-	public void OnShow<T>(UIElement placementTarget, string title, TagCollection defaultTags, T? current, Action<T, bool> selectionChanged)
-		where T : notnull
+	protected override void OnClosed()
+	{
+		base.OnClosed();
+		instance = null;
+	}
+
+	private void OnShow(UIElement placementTarget, string title, TagCollection defaultTags, Type type, object? current, Action<object, bool> selectionChanged)
 	{
 		this.isLoading = true;
-		this.targetType = typeof(T);
 
 		this.selectionChanged = (obj, isFinal) =>
 		{
-			if (obj is T item)
-			{
-				selectionChanged.Invoke(item, isFinal);
-			}
+			selectionChanged.Invoke(obj, isFinal);
 		};
 
 		this.TagFilter.Tags.Replace(defaultTags);
-		this.TypeFilter = new(typeof(T));
+		this.TypeFilter = new(type);
 
 		this.SearchTitle = title;
 
@@ -137,12 +136,6 @@ public partial class LibraryModal : Panel
 		});*/
 	}
 
-	protected override void OnClosed()
-	{
-		base.OnClosed();
-		instance = null;
-	}
-
 	private void OnTagsChanged(object? sender, NotifyCollectionChangedEventArgs e)
 	{
 		this.searchQueue.Invoke();
@@ -150,9 +143,6 @@ public partial class LibraryModal : Panel
 
 	private async Task SearchAsync()
 	{
-		if (this.targetType == null)
-			return;
-
 		await Dispatch.NonUiThread();
 
 		List<FilterBase> filters = new List<FilterBase>();

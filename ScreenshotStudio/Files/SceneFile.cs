@@ -33,7 +33,7 @@ public class SceneFile : FileBase
 	////public string Weather { get; set; }
 	public List<Actor> Actors { get; set; } = new();
 
-	public Task Apply() => ServiceManager.Instance.Save.Open(this);
+	public Task Apply() => ServiceManager.Instance.Save.OpenAsync(this);
 	public Task Revert() => ServiceManager.Instance.Save.Revert(this);
 
 	public class Actor

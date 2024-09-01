@@ -5,8 +5,10 @@
 	xmlns:ap="WpfUtils.AttachedProperties"
 	xmlns:controls="clr-namespace:ScreenshotStudio.Controls"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:library="clr-namespace:ScreenshotStudio.Library"
 	xmlns:local="clr-namespace:ScreenshotStudio.Save"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:ss="clr-namespace:ScreenshotStudio"
 	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="{DynamicResource LOC_OpenScene}"
@@ -149,9 +151,9 @@
 				<TextBlock
 					Margin="2,8,0,0"
 					Style="{DynamicResource LeftLabel}"
-					Text="Characters" />
+					Text="{DynamicResource LOC_OpenScene_Characters}" />
 
-				<ItemsControl ItemsSource="{Binding Assignments}">
+				<ItemsControl ItemsSource="{Binding Actors}">
 					<ItemsControl.ItemTemplate>
 						<DataTemplate DataType="{x:Type local:Assignment}">
 							<Grid>
@@ -177,144 +179,98 @@
 									Grid.Row="0"
 									Grid.ColumnSpan="4"
 									Style="{DynamicResource Body}"
-									Text="{Binding Role}" />
+									Text="{Binding Actor.Role}" />
 
 								<ToggleButton
-									x:Name="IncludeCharacter"
 									Grid.Row="1"
 									Grid.Column="2"
 									MinWidth="28"
 									Margin="1"
-									IsChecked="False">
+									IsChecked="{Binding IncludeAppearance}"
+									IsEnabled="{Binding CanIncludeAppearance}"
+									ToolTip="{Binding ApplyAppearanceTooltip}">
 									<wpfUtils:IconBlock
 										Icon="UserShield"
 										IconFont="Solid" />
 								</ToggleButton>
 
 								<ToggleButton
-									x:Name="IncludePose"
 									Grid.Row="1"
 									Grid.Column="3"
 									MinWidth="28"
 									Margin="1"
-									IsChecked="True">
+									IsChecked="{Binding IncludePose}"
+									IsEnabled="{Binding CanIncludePose}"
+									ToolTip="{Binding ApplyPoseTooltip}">
 									<wpfUtils:IconBlock Icon="Running" />
 								</ToggleButton>
 
 								<ComboBox
-									x:Name="Selector"
 									Grid.Row="1"
 									Margin="1"
-									Background="Transparent">
-									<ComboBoxItem>
-										<Grid>
-											<Grid.ColumnDefinitions>
-												<ColumnDefinition Width="22" />
-												<ColumnDefinition />
-											</Grid.ColumnDefinitions>
+									Background="Transparent"
+									ItemsSource="{Binding Characters, RelativeSource={RelativeSource AncestorType={x:Type local:OpenWindow}}}"
+									SelectedItem="{Binding Character}">
 
-											<wpfUtils:IconBlock
-												Grid.Column="0"
-												Icon="Times" />
-											<TextBlock
-												Grid.Column="1"
-												Text="Ignore" />
-										</Grid>
-									</ComboBoxItem>
+									<ComboBox.Resources>
+										<DataTemplate DataType="{x:Type local:OpenCharacterViewModel}">
+											<Grid>
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition Width="22" />
+													<ColumnDefinition />
+												</Grid.ColumnDefinitions>
 
-									<ComboBoxItem>
-										<Grid>
-											<Grid.ColumnDefinitions>
-												<ColumnDefinition Width="22" />
-												<ColumnDefinition />
-											</Grid.ColumnDefinitions>
+												<wpfUtils:IconBlock
+													Grid.Column="0"
+													Icon="User"
+													IconFont="Solid" />
+												<TextBlock
+													Grid.Column="1"
+													Text="{Binding Name}" />
+											</Grid>
+										</DataTemplate>
+										<DataTemplate DataType="{x:Type local:OpenCreateCharacterViewModel}">
+											<Grid>
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition Width="22" />
+													<ColumnDefinition />
+												</Grid.ColumnDefinitions>
 
-											<wpfUtils:IconBlock
-												Grid.Column="0"
-												Icon="User"
-												IconFont="Solid" />
-											<TextBlock
-												Grid.Column="1"
-												Text="Some Player" />
-										</Grid>
-									</ComboBoxItem>
+												<wpfUtils:IconBlock
+													Grid.Column="0"
+													Icon="UserPlus" />
+												<TextBlock
+													Grid.Column="1"
+													Text="Create Character" />
+											</Grid>
+										</DataTemplate>
+										<DataTemplate DataType="{x:Type local:OpenIgnoreCharacterViewModel}">
+											<Grid>
+												<Grid.ColumnDefinitions>
+													<ColumnDefinition Width="22" />
+													<ColumnDefinition />
+												</Grid.ColumnDefinitions>
 
-									<ComboBoxItem>
-										<Grid>
-											<Grid.ColumnDefinitions>
-												<ColumnDefinition Width="22" />
-												<ColumnDefinition />
-											</Grid.ColumnDefinitions>
-
-											<wpfUtils:IconBlock
-												Grid.Column="0"
-												Icon="UserPlus" />
-											<TextBlock
-												Grid.Column="1"
-												Text="New Character" />
-										</Grid>
-									</ComboBoxItem>
+												<wpfUtils:IconBlock
+													Grid.Column="0"
+													Icon="Times" />
+												<TextBlock
+													Grid.Column="1"
+													Text="Ignore" />
+											</Grid>
+										</DataTemplate>
+									</ComboBox.Resources>
 								</ComboBox>
 
-								<Button
-									x:Name="AppearanceSelector"
+								<library:LibrarySelectorButton
 									Grid.Row="2"
 									Grid.ColumnSpan="4"
-									Height="Auto"
 									Margin="0,2,0,0"
-									HorizontalContentAlignment="Stretch"
-									Click="OnChooseAppearanceClicked"
-									Visibility="Collapsed">
-									<Button.Content>
-										<Grid>
-											<Grid.ColumnDefinitions>
-												<ColumnDefinition Width="Auto" />
-												<ColumnDefinition />
-											</Grid.ColumnDefinitions>
-
-											<ContentPresenter
-												Grid.Column="0"
-												Height="32"
-												Margin="0,6,6,12"
-												VerticalAlignment="Top"
-												Content="{Binding Appearance}"
-												TextBlock.Foreground="{DynamicResource ForegroundBrush}">
-												<ContentPresenter.Resources>
-													<ResourceDictionary Source="../Library/LibraryIconTemplates.xaml" />
-												</ContentPresenter.Resources>
-											</ContentPresenter>
-
-											<TextBlock
-												Grid.Column="1"
-												Margin="2,0"
-												Text="{Binding Appearance.Name}" />
-
-										</Grid>
-									</Button.Content>
-								</Button>
+									Type="{x:Type ss:ICharacterAppearance}"
+									Visibility="{Binding CanSelectAppearance, Converter={StaticResource B2V}}"
+									Value="{Binding Appearance}" />
 
 							</Grid>
-
-							<DataTemplate.Triggers>
-								<DataTrigger
-									Binding="{Binding ElementName=Selector, Path=SelectedIndex}"
-									Value="0">
-									<Setter TargetName="IncludeCharacter" Property="IsEnabled" Value="False" />
-									<Setter TargetName="IncludeCharacter" Property="IsChecked" Value="False" />
-									<Setter TargetName="IncludePose" Property="IsEnabled" Value="False" />
-									<Setter TargetName="IncludePose" Property="IsChecked" Value="False" />
-								</DataTrigger>
-
-								<MultiDataTrigger>
-									<MultiDataTrigger.Conditions>
-										<Condition Binding="{Binding ElementName=Selector, Path=SelectedIndex}" Value="2" />
-										<Condition Binding="{Binding ElementName=IncludeCharacter, Path=IsChecked}" Value="false" />
-									</MultiDataTrigger.Conditions>
-									<Setter TargetName="AppearanceSelector" Property="Visibility" Value="Visible" />
-								</MultiDataTrigger>
-
-							</DataTemplate.Triggers>
-
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
 				</ItemsControl>
@@ -325,19 +281,16 @@
 			Grid.Row="1"
 			Grid.Column="1"
 			Style="{DynamicResource WpfUtilsControlBorder}">
-			<Grid>
+			<StackPanel
+				HorizontalAlignment="Right"
+				Orientation="Horizontal">
 				<Button
 					Width="100"
 					HorizontalAlignment="Right"
 					Click="OnConfirmClicked"
-					Content="Confirm" />
+					Content="{DynamicResource LOC_Apply}" />
 
-				<Button
-					Width="100"
-					HorizontalAlignment="Left"
-					Click="OnCancelClicked"
-					Content="Cancel" />
-			</Grid>
+			</StackPanel>
 		</Border>
 	</Grid>
 </windows:Panel>

@@ -23,25 +23,6 @@ public class PanelService : ServiceBase
 
 	public Panel? ActivePanel { get; set; }
 
-	public static async Task WhileShown(Panel panel)
-	{
-		bool isShown = true;
-		panel.Dispatcher.ShutdownStarted += (s, e) =>
-		{
-			isShown = false;
-		};
-
-		/*panel.Closing += (s, e) =>
-		{
-			isShown = false;
-		};*/
-
-		while (isShown)
-		{
-			await Task.Delay(100);
-		}
-	}
-
 	public override Task Initialize()
 	{
 		EventManager.RegisterClassHandler(typeof(FrameworkElement), FrameworkElement.LoadedEvent, new RoutedEventHandler((s, e) => this.OnLoaded(s, e)));
