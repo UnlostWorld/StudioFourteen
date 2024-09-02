@@ -5,6 +5,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.Havok.Animation.Rig;
+using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
 using Newtonsoft.Json;
 using ScreenshotStudio.GameData.Excel;
 using ScreenshotStudio.Mvm.Commands;
@@ -116,10 +117,13 @@ public class PoseFile : FileBase
 			if (this.Bones.ContainsKey(reference.Name))
 				continue;
 
+			hkQsTransformf hkTransform = reference.LastTransform;
+			hkTransform.Add(reference.CurrentTransform);
+
 			BoneTransform transform = new();
-			transform.Position = reference.LastTransform.Translation.ToVector3();
-			transform.Rotation = reference.LastTransform.Rotation.ToQuaternion();
-			transform.Scale = reference.LastTransform.Scale.ToVector3();
+			transform.Position = hkTransform.Translation.ToVector3();
+			transform.Rotation = hkTransform.Rotation.ToQuaternion();
+			transform.Scale = hkTransform.Scale.ToVector3();
 			this.Bones.Add(reference.Name, transform);
 		}
 	}
@@ -160,7 +164,7 @@ public class PoseFile : FileBase
 					return;
 
 				// TODO: check if all races have these bones or its just Hyur!
-				bool includeFace = this.Bones.ContainsKey("j_f_ulip_02_l");
+				bool includeFace = false; //// this.Bones.ContainsKey("j_f_ulip_02_l");
 
 				ushort partialCount = characterBase->Skeleton->PartialSkeletonCount;
 				for (int partialIdx = 0; partialIdx < partialCount; partialIdx++)
@@ -186,9 +190,7 @@ public class PoseFile : FileBase
 							if (boneName == "n_root")
 								continue;
 
-							if (!includeFace
-								&& boneName.StartsWith("j_f_")
-								&& !boneName.StartsWith("j_f_eye_"))
+							if (!includeFace && boneName.StartsWith("j_f_"))
 							{
 								continue;
 							}
