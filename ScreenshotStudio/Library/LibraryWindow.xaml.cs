@@ -7,8 +7,6 @@ using ScreenshotStudio.Library.Filters;
 using ScreenshotStudio.Library.Results;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Tags;
-using ScreenshotStudio.Windows;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -27,7 +25,6 @@ public partial class LibraryWindow : Panel
 {
 	private readonly FuncQueue searchQueue;
 	private readonly Stopwatch searchStopwatch = new();
-	private LibraryTab currentTab;
 	private bool flatten = false;
 	private Result? selectedResult = null;
 	private Navigation navigation = Navigation.None;
@@ -38,9 +35,6 @@ public partial class LibraryWindow : Panel
 
 		this.TagFilter.Tags.CollectionChanged += this.OnTagsFilterChanged;
 		this.Services.Library.ScanComplete += this.OnLibraryScanComplete;
-
-		// Remember?
-		this.currentTab = this.Tabs[0];
 	}
 
 	public enum Navigation
@@ -75,12 +69,22 @@ public partial class LibraryWindow : Panel
 		new("LOC_Library_Scenes", IconChar.Users,  new TypeFilter(typeof(SceneFile))),
 	};
 
+	public int CurrentTabIndex
+	{
+		get => this.GetPersistence<int>();
+		set => this.SetPersistence(value);
+	}
+
 	public LibraryTab CurrentTab
 	{
-		get => this.currentTab;
+		get
+		{
+			return this.Tabs[this.CurrentTabIndex];
+		}
 		set
 		{
-			if (this.Tabs.IndexOf(value) > this.Tabs.IndexOf(this.currentTab))
+			int newTabIndex = this.Tabs.IndexOf(value);
+			if (newTabIndex > this.CurrentTabIndex)
 			{
 				this.navigation = Navigation.TabRight;
 			}
@@ -89,7 +93,7 @@ public partial class LibraryWindow : Panel
 				this.navigation = Navigation.TabLeft;
 			}
 
-			this.currentTab = value;
+			this.CurrentTabIndex = newTabIndex;
 			this.NotifyPropertyChanged();
 
 			// clear the path
@@ -177,7 +181,7 @@ public partial class LibraryWindow : Panel
 
 		await Dispatch.NonUiThread();
 
-		if (this.currentTab == null)
+		if (this.CurrentTab == null)
 			return;
 
 		List<FilterBase> filters = new List<FilterBase>();
