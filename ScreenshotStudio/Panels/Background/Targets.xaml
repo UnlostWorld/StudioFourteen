@@ -59,9 +59,8 @@
 				Value="True" />
 		</Grid.Triggers>
 
-		<Grid>
+		<Grid x:Name="MainBorder">
 			<Border
-				x:Name="MainBorder"
 				Background="{DynamicResource BackgroundBrush}"
 				BorderBrush="{DynamicResource BackgroundBrush}"
 				BorderThickness="1"
