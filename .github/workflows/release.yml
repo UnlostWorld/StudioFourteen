@@ -45,7 +45,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 7.0.x
+          dotnet-version: 8.0.x
 
       - name: Restore Dependencies
         run: dotnet restore
@@ -79,13 +79,13 @@ jobs:
           contents: |
             [
               {
-                  "Author": "Xiv Tools",
+                  "Author": "Unlost World",
                   "Name": "Screenshot Studio",
                   "InternalName": "ScreenshotStudio",
                   "Description": "A plugin for enhancing GPose functionality",
                   "AssemblyVersion": "1.0.0.${{github.run_number}}",
                   "TestingAssemblyVersion": "1.0.0.${{github.run_number}}",
-                  "RepoUrl": "https://github.com/XIV-Tools/ScreenshotStudio",
+                  "RepoUrl": "https://github.com/UnlostWorld/ScreenshotStudio",
                   "ApplicableVersion": "any",
                   "DalamudApiLevel": 8,
                   "Tags": [
@@ -93,10 +93,10 @@ jobs:
                     "posing",
                     "screenshot"
                   ],
-                  "IconUrl": "https://github.com/XIV-Tools/ScreenshotStudio/blob/main/Assets/Icon/light-pride.png",
-                  "DownloadLinkInstall": "https://github.com/XIV-Tools/ScreenshotStudio/releases/download/v${{github.run_number}}/latest.zip",
-                  "DownloadLinkTesting": "https://github.com/XIV-Tools/ScreenshotStudio/releases/download/v${{github.run_number}}/latest.zip",
-                  "DownloadLinkUpdate": "https://github.com/XIV-Tools/ScreenshotStudio/releases/download/v${{github.run_number}}/latest.zip",
+                  "IconUrl": "https://github.com/UnlostWorld/ScreenshotStudio/blob/main/Assets/Icon/light-pride.png",
+                  "DownloadLinkInstall": "https://github.com/UnlostWorld/ScreenshotStudio/releases/download/v${{github.run_number}}/latest.zip",
+                  "DownloadLinkTesting": "https://github.com/UnlostWorld/ScreenshotStudio/releases/download/v${{github.run_number}}/latest.zip",
+                  "DownloadLinkUpdate": "https://github.com/UnlostWorld/ScreenshotStudio/releases/download/v${{github.run_number}}/latest.zip",
                 }
               ]
           
