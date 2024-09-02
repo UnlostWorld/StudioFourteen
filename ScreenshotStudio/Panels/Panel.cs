@@ -75,7 +75,7 @@ public partial class Panel : ContentControl, IAutoNotify
 		this.host?.Close();
 	}
 
-	public T? GetPersistence<T>([CallerMemberName] string id = "")
+	public T? GetPersistence<T>([CallerMemberName] string id = "", T? defaultValue = default)
 	{
 		try
 		{
@@ -90,7 +90,7 @@ public partial class Panel : ContentControl, IAutoNotify
 			string persistenceId = this.panelId + "_" + id;
 
 			if (!this.Services.Settings.Current.PanelPersistence.TryGetValue(persistenceId, out string? json) || json == null)
-				return default;
+				return defaultValue;
 
 			if (!json.StartsWith('"') || !json.EndsWith('"'))
 				json = '"' + json + '"';
@@ -102,7 +102,7 @@ public partial class Panel : ContentControl, IAutoNotify
 		catch (Exception ex)
 		{
 			this.Log.Error(ex, "Error in panel persistence");
-			return default;
+			return defaultValue;
 		}
 	}
 

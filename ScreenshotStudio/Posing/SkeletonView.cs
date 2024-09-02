@@ -431,6 +431,9 @@ public partial class SkeletonView : Canvas
 
 	private void OnUnloaded()
 	{
+		if (ServiceManager.ShutdownRequested)
+			return;
+
 		ServiceManager.Instance.Pose.SelectionChanged -= this.OnSelectionChanged;
 	}
 

@@ -51,7 +51,12 @@ public class PoseService : ServiceBase
 			this.selection = value;
 
 			if (this.selection != null)
+			{
 				this.selection.Activate();
+
+				// TODO: if they've changed the default?
+				this.EditMode = this.selection.DefaultEditMode;
+			}
 
 			this.SelectionChanged?.Invoke(value);
 			this.RaisePropertyChanged();

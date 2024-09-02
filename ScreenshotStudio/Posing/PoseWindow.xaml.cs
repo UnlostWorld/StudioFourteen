@@ -28,22 +28,40 @@ public partial class PoseWindow : CharacterPanelBase
 	[AutoNotify]
 	public bool ExpandTranslationSliders
 	{
-		get => this.GetPersistence<bool>();
-		set => this.SetPersistence(value);
+		get
+		{
+			return this.GetPersistence<bool>(
+				$"ExpandTranslationSliders_{this.Services.Pose.EditMode}",
+				this.Services.Pose.EditMode == PoseEditModes.Translation);
+		}
+
+		set => this.SetPersistence(value, $"ExpandTranslationSliders_{this.Services.Pose.EditMode}");
 	}
 
 	[AutoNotify]
 	public bool ExpandRotationSliders
 	{
-		get => this.GetPersistence<bool>();
-		set => this.SetPersistence(value);
+		get
+		{
+			return this.GetPersistence<bool>(
+				$"ExpandRotationSliders_{this.Services.Pose.EditMode}",
+				this.Services.Pose.EditMode == PoseEditModes.Rotation);
+		}
+
+		set => this.SetPersistence(value, $"ExpandRotationSliders_{this.Services.Pose.EditMode}");
 	}
 
 	[AutoNotify]
 	public bool ExpandScaleSliders
 	{
-		get => this.GetPersistence<bool>();
-		set => this.SetPersistence(value);
+		get
+		{
+			return this.GetPersistence<bool>(
+				$"ExpandScaleSliders_{this.Services.Pose.EditMode}",
+				this.Services.Pose.EditMode == PoseEditModes.Scale);
+		}
+
+		set => this.SetPersistence(value, $"ExpandScaleSliders_{this.Services.Pose.EditMode}");
 	}
 
 	[AutoNotify]

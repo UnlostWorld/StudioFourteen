@@ -348,27 +348,26 @@
 											<wpfUtils:IconBlock
 												x:Name="Icon"
 												Foreground="{DynamicResource ForegroundLightBrush}"
-												Icon="Arrows"
-												ToolTip="{DynamicResource LOC_Translate}" />
+												Icon="Arrows" />
 
 											<DataTemplate.Triggers>
 												<DataTrigger
 													Binding="{Binding Path=.}"
 													Value="Translation">
 													<Setter TargetName="Icon" Property="Icon" Value="Arrows" />
-													<Setter TargetName="Icon" Property="ToolTip" Value="{DynamicResource LOC_Translate}" />
+													<Setter Property="ToolTip" Value="{DynamicResource LOC_Translate}" />
 												</DataTrigger>
 												<DataTrigger
 													Binding="{Binding Path=.}"
 													Value="Rotation">
 													<Setter TargetName="Icon" Property="Icon" Value="Rotate" />
-													<Setter TargetName="Icon" Property="ToolTip" Value="{DynamicResource LOC_Rotate}" />
+													<Setter Property="ToolTip" Value="{DynamicResource LOC_Rotate}" />
 												</DataTrigger>
 												<DataTrigger
 													Binding="{Binding Path=.}"
 													Value="Scale">
 													<Setter TargetName="Icon" Property="Icon" Value="Maximize" />
-													<Setter TargetName="Icon" Property="ToolTip" Value="{DynamicResource LOC_Scale}" />
+													<Setter Property="ToolTip" Value="{DynamicResource LOC_Scale}" />
 												</DataTrigger>
 											</DataTemplate.Triggers>
 										</DataTemplate>
@@ -420,9 +419,10 @@
 							<wpfUtils:RelativeSlider
 								Grid.Row="0"
 								Grid.Column="1"
-								RelativeRange="5"
+								LargeChange="{Binding Selection.TranslationLargeChange, FallbackValue=0.1}"
+								RelativeRange="{Binding Selection.TranslationRange, FallbackValue=1}"
 								RelativeValue="{Binding TranslationX}"
-								SmallChange="0.01" />
+								SmallChange="{Binding Selection.TranslationSmallChange, FallbackValue=0.01}" />
 
 							<TextBlock
 								Grid.Row="1"
@@ -433,9 +433,10 @@
 							<wpfUtils:RelativeSlider
 								Grid.Row="1"
 								Grid.Column="1"
-								RelativeRange="5"
+								LargeChange="{Binding Selection.TranslationLargeChange, FallbackValue=0.1}"
+								RelativeRange="{Binding Selection.TranslationRange, FallbackValue=1}"
 								RelativeValue="{Binding TranslationY}"
-								SmallChange="0.01" />
+								SmallChange="{Binding Selection.TranslationSmallChange, FallbackValue=0.01}" />
 
 							<TextBlock
 								Grid.Row="2"
@@ -446,9 +447,10 @@
 							<wpfUtils:RelativeSlider
 								Grid.Row="2"
 								Grid.Column="1"
-								RelativeRange="5"
+								LargeChange="{Binding Selection.TranslationLargeChange, FallbackValue=0.1}"
+								RelativeRange="{Binding Selection.TranslationRange, FallbackValue=1}"
 								RelativeValue="{Binding TranslationZ}"
-								SmallChange="0.01" />
+								SmallChange="{Binding Selection.TranslationSmallChange, FallbackValue=0.01}" />
 						</Grid>
 					</Expander>
 

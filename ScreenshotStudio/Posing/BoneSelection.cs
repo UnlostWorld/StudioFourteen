@@ -19,6 +19,8 @@ public class BoneSelection : SelectionBase
 		this.BoneName = name;
 		this.boneIds = bones;
 		this.parentBoneIds = parents;
+
+		this.IsFaceBone = name.StartsWith("j_f_");
 	}
 
 	public BoneSelection(BoneId bone, BoneId parent, string name)
@@ -26,6 +28,8 @@ public class BoneSelection : SelectionBase
 		this.BoneName = name;
 		this.boneIds = [bone];
 		this.parentBoneIds = [parent];
+
+		this.IsFaceBone = name.StartsWith("j_f_");
 	}
 
 	public BoneSelection(BoneId bone, string name)
@@ -33,6 +37,8 @@ public class BoneSelection : SelectionBase
 		this.BoneName = name;
 		this.boneIds = [bone];
 		this.parentBoneIds = [];
+
+		this.IsFaceBone = name.StartsWith("j_f_");
 	}
 
 	public override string Name => Resources.Find($"LOC_Bone_{this.BoneName}", this.BoneName);
@@ -40,6 +46,12 @@ public class BoneSelection : SelectionBase
 	public string BoneName { get; init; }
 	public IReadOnlyCollection<BoneId> BoneIds => this.boneIds.AsReadOnly();
 	public IReadOnlyCollection<BoneId> ParentBoneIds => this.parentBoneIds.AsReadOnly();
+
+	public bool IsFaceBone { get; private set; }
+	public override double TranslationLargeChange => this.IsFaceBone ? 0.01 : 0.1;
+	public override double TranslationSmallChange => this.IsFaceBone ? 0.001 : 0.01;
+	public override double TranslationRange => this.IsFaceBone ? 0.02 : 0.1;
+	public override PoseEditModes DefaultEditMode => this.IsFaceBone ? PoseEditModes.Translation : PoseEditModes.Rotation;
 
 	public BoneReference Bone
 	{

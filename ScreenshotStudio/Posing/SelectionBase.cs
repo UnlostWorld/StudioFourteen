@@ -2,7 +2,6 @@
 
 using Dalamud.Plugin.Services;
 using ScreenshotStudio.Mvm;
-using ScreenshotStudio.Services;
 using System.Numerics;
 
 public abstract class SelectionBase : ViewModel
@@ -20,6 +19,11 @@ public abstract class SelectionBase : ViewModel
 
 	[AutoNotify] public abstract bool LockTransform { get; set; }
 	[AutoNotify] public virtual bool CanLockTransform => true;
+
+	public virtual double TranslationLargeChange => 0.1;
+	public virtual double TranslationSmallChange => 0.01;
+	public virtual double TranslationRange => 1;
+	public virtual PoseEditModes DefaultEditMode => PoseEditModes.Translation;
 
 	public virtual void Activate()
 	{
