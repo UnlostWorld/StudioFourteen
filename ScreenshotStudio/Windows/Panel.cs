@@ -53,6 +53,7 @@ public partial class Panel : ContentControl, IAutoNotify
 	}
 
 	public ServiceManager Services => ServiceManager.Instance;
+	public bool RememberWindowState { get; set; } = true;
 
 	public virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
 	{

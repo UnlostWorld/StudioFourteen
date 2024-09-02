@@ -68,18 +68,28 @@ public class PanelService : ServiceBase
 	public async Task<T?> Open<T>()
 		where T : Panel, new()
 	{
+		Panel? p = await this.Open(typeof(T));
+		return p as T;
+	}
+
+	public async Task<Panel?> Open(Type panelType)
+	{
 		PanelWindow? wnd = await PanelWindow.CreatePanelWindow<PanelWindow>();
 		if (wnd != null)
 		{
 			await wnd.Dispatcher.InvokeAsync(() =>
 			{
-				wnd.Panel = new T();
-				wnd.Panel.SetHost(wnd);
-				wnd.ShowActivated = true; // ??
-				wnd.Show();
+				wnd.Panel = Activator.CreateInstance(panelType) as Panel;
+
+				if (wnd.Panel != null)
+				{
+					wnd.Panel.SetHost(wnd);
+					wnd.ShowActivated = true; // ??
+					wnd.Show();
+				}
 			});
 
-			return wnd.Panel as T;
+			return wnd.Panel;
 		}
 
 		return null;
@@ -131,6 +141,9 @@ public class PanelService : ServiceBase
 			if (panel == null)
 				continue;
 
+			if (!panel.RememberWindowState)
+				continue;
+
 			string? panelTypeName = panel.GetType().FullName;
 			if (panelTypeName != null)
 			{
@@ -154,7 +167,7 @@ public class PanelService : ServiceBase
 			Type? panelType = Type.GetType(panelTypeName);
 			if (panelType != null)
 			{
-				////PanelWindow.Show(panelType);
+				await this.Open(panelType);
 			}
 			else
 			{

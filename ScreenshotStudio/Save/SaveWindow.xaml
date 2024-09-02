@@ -14,6 +14,7 @@
 	Height="600"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
+	RememberWindowState="False"
 	ResizeMode="NoResize"
 	TitleIcon="FloppyDisk"
 	mc:Ignorable="d">
