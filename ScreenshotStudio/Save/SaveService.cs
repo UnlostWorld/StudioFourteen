@@ -4,6 +4,7 @@ using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using ScreenshotStudio.Files;
 using ScreenshotStudio.Input;
+using ScreenshotStudio.Mvm;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Posing;
 using ScreenshotStudio.Services;

@@ -1,6 +1,7 @@
 ﻿namespace ScreenshotStudio.Save;
 
 using DependencyPropertyGenerator;
+using ScreenshotStudio.Mvm;
 using System.Windows;
 
 [RoutedEvent("Saved", RoutedEventStrategy.Direct)]

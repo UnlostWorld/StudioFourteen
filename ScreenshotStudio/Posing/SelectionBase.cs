@@ -1,6 +1,7 @@
 ﻿namespace ScreenshotStudio.Posing;
 
 using Dalamud.Plugin.Services;
+using ScreenshotStudio.Mvm;
 using ScreenshotStudio.Services;
 using System.Numerics;
 

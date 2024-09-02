@@ -1,13 +1,12 @@
 ﻿namespace ScreenshotStudio.Posing;
 
-using Dalamud.Utility;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.Havok.Animation.Rig;
-using ScreenshotStudio.Services;
+using ScreenshotStudio.Mvm;
+using ScreenshotStudio.Panels;
 using ScreenshotStudio.Structs.Extensions;
-using ScreenshotStudio.Windows;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;

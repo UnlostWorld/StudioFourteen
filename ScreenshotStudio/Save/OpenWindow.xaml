@@ -1,15 +1,16 @@
-﻿<windows:Panel
+﻿<panels:Panel
 	x:Class="ScreenshotStudio.Save.OpenWindow"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:ap="WpfUtils.AttachedProperties"
+	xmlns:appearance="clr-namespace:ScreenshotStudio.Appearance"
 	xmlns:controls="clr-namespace:ScreenshotStudio.Controls"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:library="clr-namespace:ScreenshotStudio.Library"
 	xmlns:local="clr-namespace:ScreenshotStudio.Save"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:panels="clr-namespace:ScreenshotStudio.Panels"
 	xmlns:ss="clr-namespace:ScreenshotStudio"
-	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="{DynamicResource LOC_OpenScene}"
 	Width="500"
@@ -267,7 +268,7 @@
 									Grid.Row="2"
 									Grid.ColumnSpan="4"
 									Margin="0,2,0,0"
-									Type="{x:Type ss:ICharacterAppearance}"
+									Type="{x:Type appearance:ICharacterAppearance}"
 									Visibility="{Binding CanSelectAppearance, Converter={StaticResource B2V}}"
 									Value="{Binding Appearance}" />
 
@@ -294,4 +295,4 @@
 			</StackPanel>
 		</Border>
 	</Grid>
-</windows:Panel>
+</panels:Panel>

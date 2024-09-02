@@ -2,9 +2,9 @@
 
 using ScreenshotStudio.Library.Filters;
 using ScreenshotStudio.Library.Results;
-using ScreenshotStudio.Services;
+using ScreenshotStudio.Mvm;
+using ScreenshotStudio.Panels;
 using ScreenshotStudio.Tags;
-using ScreenshotStudio.Windows;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;

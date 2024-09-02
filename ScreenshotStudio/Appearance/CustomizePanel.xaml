@@ -1,0 +1,567 @@
+﻿<windows:CharacterPanelBase
+	x:Class="ScreenshotStudio.Appearance.CustomizePanel"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:behaviours="clr-namespace:WpfUtils.Behaviours;assembly=wpfUtils"
+	xmlns:customize="clr-namespace:ScreenshotStudio.Appearance.Customize"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="clr-namespace:ScreenshotStudio.Studio"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:windows="clr-namespace:ScreenshotStudio.Panels"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	Title="{DynamicResource LOC_Customize}"
+	Height="450"
+	d:Background="{DynamicResource BackgroundBrush}"
+	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
+	d:DesignHeight="2048"
+	SizeToContent="Width"
+	Subtitle="{Binding CharacterName}"
+	TitleIcon="UserEdit"
+	mc:Ignorable="d">
+
+	<Grid Width="300">
+
+		<Grid.RowDefinitions>
+			<RowDefinition />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+
+		<ScrollViewer
+			Grid.Row="0"
+			behaviours:SmoothScrollBehaviour.SmoothScroll="True"
+			PanningMode="VerticalOnly">
+			<StackPanel IsEnabled="{Binding HasValidTarget}">
+
+				<!--  Race  -->
+				<TextBlock
+					Style="{DynamicResource LeftLabel}"
+					Text="Race" />
+				<ComboBox
+					Grid.Column="0"
+					ItemsSource="{Binding AvailableRaces}"
+					SelectedItem="{Binding Race}">
+					<ComboBox.ItemTemplate>
+						<DataTemplate>
+							<TextBlock Text="{Binding Name}" />
+						</DataTemplate>
+					</ComboBox.ItemTemplate>
+				</ComboBox>
+
+				<!--  Tribe  -->
+				<TextBlock
+					Style="{DynamicResource LeftLabel}"
+					Text="Tribe" />
+				<ListBox
+					x:Name="TribeSelector"
+					ItemsSource="{Binding Race.Tribes}"
+					SelectedItem="{Binding Tribe}"
+					Style="{DynamicResource WpfUtilsSwitchSelector}">
+					<ListBox.ItemTemplate>
+						<DataTemplate>
+							<TextBlock Text="{Binding Name}" />
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+
+				<!--  Gender  -->
+				<TextBlock
+					Style="{DynamicResource LeftLabel}"
+					Text="Gender" />
+				<ListBox
+					ItemsSource="{Binding Race.Genders}"
+					SelectedItem="{Binding Gender}"
+					Style="{DynamicResource WpfUtilsSwitchSelector}" />
+
+				<!--  ModelType  -->
+				<TextBlock
+					Style="{DynamicResource LeftLabel}"
+					Text="Model Type" />
+				<ListBox
+					ItemsSource="{Binding Tribe.ModelTypes}"
+					SelectedItem="{Binding ModelType}"
+					Style="{DynamicResource WpfUtilsSwitchSelector}" />
+
+				<!--  Height  -->
+				<TextBlock
+					Style="{DynamicResource LeftLabel}"
+					Text="Height" />
+				<wpfUtils:NumberBox
+					Maximum="100"
+					Minimum="0"
+					Slider="Absolute"
+					Value="{Binding CharacterHeight}" />
+
+				<!--  Muscle Tone  -->
+				<TextBlock
+					Style="{DynamicResource LeftLabel}"
+					Text="{Binding MakeType.EarMuscleTailSizes.Name}"
+					Visibility="{Binding Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Hyur|Roegadyn}" />
+
+				<wpfUtils:NumberBox
+					Maximum="{Binding MakeType.EarMuscleTailSizes.Max}"
+					Minimum="{Binding MakeType.EarMuscleTailSizes.Min}"
+					Slider="Absolute"
+					Visibility="{Binding Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Hyur|Roegadyn}"
+					Value="{Binding EarMuscleTailSize}" />
+
+				<!--  Bust Size  -->
+				<TextBlock
+					Style="{DynamicResource LeftLabel}"
+					Text="{Binding MakeType.Busts.Name}"
+					Visibility="{Binding Gender, Converter={StaticResource EnumToVisibility}, ConverterParameter=Feminine}" />
+				<wpfUtils:NumberBox
+					Maximum="{Binding MakeType.Busts.Max}"
+					Minimum="{Binding MakeType.Busts.Min}"
+					Slider="Absolute"
+					Visibility="{Binding Gender, Converter={StaticResource EnumToVisibility}, ConverterParameter=Feminine}"
+					Value="{Binding Bust}" />
+
+
+				<!--  Tail Shape  -->
+				<TextBlock
+					Style="{DynamicResource LeftLabel}"
+					Text="{Binding MakeType.TailEarsTypes.Name}"
+					Visibility="{Binding Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Hrothgar|Miqote|AuRa}" />
+				<Grid Visibility="{Binding Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Hrothgar|Miqote|AuRa}">
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition />
+					</Grid.ColumnDefinitions>
+
+					<customize:CustomizeIconOption
+						Grid.RowSpan="2"
+						Grid.Column="0"
+						Margin="0,0,1,0"
+						Menu="{Binding MakeType.TailEarsTypes}"
+						Value="{Binding TailEarsType}" />
+
+					<customize:CustomizeNumberOption
+						Grid.Row="0"
+						Grid.Column="1"
+						Menu="{Binding MakeType.TailEarsTypes}"
+						Value="{Binding TailEarsType}" />
+
+					<wpfUtils:NumberBox
+						Grid.Row="1"
+						Grid.Column="1"
+						Grid.ColumnSpan="2"
+						Margin="0,2,0,1"
+						Maximum="{Binding MakeType.EarMuscleTailSizes.Max}"
+						Minimum="{Binding MakeType.EarMuscleTailSizes.Min}"
+						Slider="Absolute"
+						TickFrequency="1"
+						Value="{Binding EarMuscleTailSize}" />
+				</Grid>
+
+				<!--  Face  -->
+				<TextBlock
+					Style="{DynamicResource LeftLabel}"
+					Text="{Binding MakeType.Faces.Name}" />
+				<Grid>
+
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition />
+					</Grid.ColumnDefinitions>
+
+					<customize:CustomizeIconOption
+						Grid.Column="0"
+						Margin="0,0,1,0"
+						Menu="{Binding MakeType.Faces}"
+						Value="{Binding Face}" />
+
+					<customize:CustomizeNumberOption
+						Grid.Column="1"
+						VerticalAlignment="Top"
+						Menu="{Binding MakeType.Faces}"
+						Value="{Binding Face}" />
+
+				</Grid>
+
+				<!--  Skin Color  -->
+				<TextBlock
+					Style="{DynamicResource LeftLabel}"
+					Text="{Binding MakeType.SkinTones.Name}" />
+				<customize:CustomizeColorOption
+					Menu="{Binding MakeType.SkinTones}"
+					Value="{Binding SkinTone}" />
+
+				<!--  Hairstyle  -->
+				<TextBlock
+					Style="{DynamicResource LeftLabel}"
+					Text="{Binding MakeType.Hairs.Name}" />
+
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="80" />
+						<ColumnDefinition />
+					</Grid.ColumnDefinitions>
+					<Grid.RowDefinitions>
+						<RowDefinition />
+						<RowDefinition />
+						<RowDefinition />
+					</Grid.RowDefinitions>
+
+					<customize:CustomizeIconOption
+						Grid.RowSpan="2"
+						Grid.Column="0"
+						Margin="0,0,1,0"
+						Menu="{Binding MakeType.Hairs}"
+						Value="{Binding Hair}" />
+
+					<wpfUtils:NumberBox
+						Grid.Row="0"
+						Grid.Column="1"
+						Grid.ColumnSpan="2"
+						Buttons="True"
+						Minimum="0"
+						Value="{Binding Hair}" />
+
+					<customize:CustomizeColorOption
+						Grid.Row="1"
+						Grid.Column="1"
+						Menu="{Binding MakeType.HairTones}"
+						Value="{Binding HairTone}" />
+
+					<Border
+						Grid.Row="2"
+						Margin="1,1,0,1"
+						HorizontalAlignment="Right"
+						CornerRadius="6,0,0,6"
+						Style="{DynamicResource WpfUtilsControlBorder}">
+						<CheckBox
+							Background="Transparent"
+							IsChecked="{Binding EnableHighlights}" />
+					</Border>
+
+					<customize:CustomizeColorOption
+						Grid.Row="2"
+						Grid.Column="2"
+						Margin="0,1,1,1"
+						CornerRadius="0,6,6,0"
+						IsEnabled="{Binding EnableHighlights}"
+						Menu="{Binding MakeType.HairTones}"
+						Value="{Binding Highlights}" />
+				</Grid>
+
+				<!--  Fur Pattern  -->
+				<TextBlock
+					Style="{DynamicResource LeftLabel}"
+					Text="{Binding MakeType.LipsToneFurPatterns.Name}"
+					Visibility="{Binding Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Hrothgar}" />
+				<Grid Visibility="{Binding Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Hrothgar}">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition />
+					</Grid.ColumnDefinitions>
+
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+
+					<customize:CustomizeIconOption
+						Grid.Row="0"
+						Grid.RowSpan="2"
+						Grid.Column="0"
+						Menu="{Binding MakeType.LipsToneFurPatterns}"
+						Value="{Binding LipsToneFurPattern}" />
+
+					<customize:CustomizeNumberOption
+						Grid.Row="0"
+						Grid.Column="1"
+						Menu="{Binding MakeType.LipsToneFurPatterns}"
+						Value="{Binding LipsToneFurPattern}" />
+
+				</Grid>
+
+				<!--  Jaw  -->
+				<TextBlock
+					Style="{DynamicResource LeftLabel}"
+					Text="{Binding MakeType.Jaws.Name}" />
+				<ListBox
+					ItemsSource="{Binding MakeType.Jaws.Values}"
+					SelectedItem="{Binding Jaw}"
+					Style="{StaticResource WpfUtilsSwitchSelector}" />
+
+				<!--  Eye Shape  -->
+				<TextBlock
+					Style="{DynamicResource LeftLabel}"
+					Text="{Binding MakeType.EyeShapes.Name}" />
+				<ListBox
+					ItemsSource="{Binding MakeType.EyeShapes.Values}"
+					SelectedItem="{Binding EyeShape}"
+					Style="{StaticResource WpfUtilsSwitchSelector}" />
+
+				<!--  Iris Size  -->
+				<TextBlock
+					Style="{DynamicResource LeftLabel}"
+					Text="Iris" />
+
+				<Border
+					Height="26"
+					Margin="1"
+					Style="{StaticResource WpfUtilsControlBorder}">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition />
+							<ColumnDefinition />
+						</Grid.ColumnDefinitions>
+
+						<ToggleButton
+							Grid.Column="0"
+							Margin="0"
+							Background="Transparent"
+							IsChecked="{Binding SmallIris}">
+							<TextBlock Text="Small" />
+						</ToggleButton>
+						<ToggleButton
+							Grid.Column="1"
+							Margin="0"
+							Background="Transparent"
+							IsChecked="{Binding SmallIris, Converter={StaticResource !B}}">
+							<TextBlock Text="Large" />
+						</ToggleButton>
+					</Grid>
+				</Border>
+
+				<!--  Eye Color  -->
+				<TextBlock
+					Style="{DynamicResource LeftLabel}"
+					Text="{Binding MakeType.EyeColors.Name}" />
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+
+					<Border
+						Grid.RowSpan="2"
+						Grid.Column="1"
+						Margin="1"
+						CornerRadius="0,6,6,0"
+						Style="{StaticResource WpfUtilsControlBorder}" />
+
+					<ToggleButton
+						Grid.RowSpan="2"
+						Grid.Column="1"
+						Background="Transparent"
+						IsChecked="{Binding LinkEyeColors}"
+						Style="{StaticResource WpfUtilsToggleButton}">
+
+						<wpfUtils:IconBlock Icon="Link" />
+
+					</ToggleButton>
+
+					<customize:CustomizeColorOption
+						Grid.Row="0"
+						Grid.Column="0"
+						CornerRadius="6,0,0,6"
+						Menu="{Binding MakeType.EyeColors}"
+						Value="{Binding MainEyeColor}" />
+
+					<customize:CustomizeColorOption
+						Grid.Row="1"
+						Grid.Column="0"
+						CornerRadius="6,0,0,6"
+						IsEnabled="{Binding LinkEyeColors, Converter={StaticResource !B}}"
+						Menu="{Binding MakeType.EyeColors}"
+						Value="{Binding RightEyeColor}" />
+				</Grid>
+
+
+				<!--  Limbal Ring  -->
+				<TextBlock
+					Style="{DynamicResource LeftLabel}"
+					Text="Limbal Ring"
+					Visibility="{Binding Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=AuRa}" />
+				<customize:CustomizeColorOption
+					Menu="{Binding MakeType.EyeColors}"
+					Visibility="{Binding Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=AuRa}"
+					Value="{Binding FacialFeatureColor}" />
+
+				<!--  Eyebrows  -->
+				<TextBlock
+					Style="{DynamicResource LeftLabel}"
+					Text="{Binding MakeType.Eyebrows.Name}" />
+				<ListBox
+					ItemsSource="{Binding MakeType.Eyebrows.Values}"
+					SelectedItem="{Binding Eyebrows}"
+					Style="{StaticResource WpfUtilsSwitchSelector}" />
+
+				<!--  Nose  -->
+				<TextBlock
+					Style="{DynamicResource LeftLabel}"
+					Text="{Binding MakeType.Noses.Name}" />
+				<ListBox
+					ItemsSource="{Binding MakeType.Noses.Values}"
+					SelectedItem="{Binding Nose}"
+					Style="{StaticResource WpfUtilsSwitchSelector}" />
+
+				<!--  Mouth / Fang Length  -->
+				<TextBlock
+					Style="{DynamicResource LeftLabel}"
+					Text="{Binding MakeType.Mouths.Name}" />
+				<ListBox
+					ItemsSource="{Binding MakeType.Mouths.Values}"
+					SelectedItem="{Binding Mouth}"
+					Style="{StaticResource WpfUtilsSwitchSelector}" />
+
+				<!--  Lip Color  -->
+				<TextBlock
+					Style="{DynamicResource LeftLabel}"
+					Text="{Binding MakeType.LipsToneFurPatterns.Name}"
+					Visibility="{Binding Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=!Hrothgar}" />
+				<Grid Visibility="{Binding Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=!Hrothgar}">
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition />
+					</Grid.ColumnDefinitions>
+
+					<Border
+						Margin="1,1,0,1"
+						CornerRadius="6,0,0,6"
+						Style="{StaticResource WpfUtilsControlBorder}">
+						<CheckBox
+							Background="Transparent"
+							IsChecked="{Binding EnableLipColor}" />
+					</Border>
+
+					<customize:CustomizeColorOption
+						Grid.Column="1"
+						Margin="0,1,1,1"
+						CornerRadius="0,6,6,0"
+						Menu="{Binding MakeType.LipsToneFurPatterns}"
+						Value="{Binding LipsToneFurPattern}" />
+
+				</Grid>
+
+				<!--  Ear Shape  -->
+				<TextBlock
+					Style="{DynamicResource LeftLabel}"
+					Text="{Binding MakeType.EarMuscleTailSizes.Name}"
+					Visibility="{Binding Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Viera|Lalafell|Elezen}" />
+				<ListBox
+					ItemsSource="{Binding MakeType.TailEarsTypes.Values}"
+					SelectedItem="{Binding TailEarsType}"
+					Style="{StaticResource WpfUtilsSwitchSelector}"
+					Visibility="{Binding Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Viera|Lalafell|Elezen}" />
+
+				<!--  Ear Length  -->
+				<wpfUtils:NumberBox
+					Margin="0,1,0,1"
+					Maximum="{Binding MakeType.EarMuscleTailSizes.Max}"
+					Minimum="{Binding MakeType.EarMuscleTailSizes.Min}"
+					Slider="Absolute"
+					TickFrequency="1"
+					Visibility="{Binding Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Viera|Lalafell|Elezen}"
+					Value="{Binding EarMuscleTailSize}" />
+
+				<!--  Ear Clasp Color  -->
+				<TextBlock
+					Style="{DynamicResource LeftLabel}"
+					Text="{Binding MakeType.FacialFeatureColors.Name}"
+					Visibility="{Binding Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Elezen}" />
+				<customize:CustomizeColorOption
+					Menu="{Binding MakeType.FacialFeatureColors}"
+					Visibility="{Binding Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Elezen}"
+					Value="{Binding FacialFeatureColor}" />
+
+				<!--  Facial Features  -->
+				<TextBlock
+					Style="{DynamicResource LeftLabel}"
+					Text="{Binding MakeType.FacialFeatures.Name}" />
+				<customize:CustomizeFacialFeaturesOption
+					FacialFeatures="{Binding FacialFeatureOptions}"
+					Value="{Binding FacialFeature}" />
+
+				<!--  Tattoo Color  -->
+				<TextBlock
+					Style="{DynamicResource LeftLabel}"
+					Text="{Binding MakeType.FacialFeatureColors.Name}"
+					Visibility="{Binding Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Hyur|Viera|Lalafell|Miqote|Roegadyn}" />
+				<customize:CustomizeColorOption
+					Menu="{Binding MakeType.FacialFeatureColors}"
+					Visibility="{Binding Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Hyur|Viera|Lalafell|Miqote|Roegadyn}"
+					Value="{Binding FacialFeatureColor}" />
+
+				<!--  Face Paint  -->
+				<!--  Face Paint Color  -->
+				<TextBlock
+					Style="{DynamicResource LeftLabel}"
+					Text="{Binding MakeType.FacePaints.Name}" />
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="80" />
+						<ColumnDefinition />
+						<ColumnDefinition Width="50" />
+					</Grid.ColumnDefinitions>
+
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
+
+					<customize:CustomizeIconOption
+						Grid.RowSpan="2"
+						Grid.Column="0"
+						Height="56"
+						Margin="0,-20,1,-20"
+						VerticalAlignment="Center"
+						Flipped="{Binding FlipFacePaint}"
+						Menu="{Binding MakeType.FacePaints}"
+						Value="{Binding FacePaint}" />
+
+					<wpfUtils:NumberBox
+						Grid.Row="0"
+						Grid.Column="1"
+						Buttons="True"
+						Minimum="0"
+						Value="{Binding FacePaint}" />
+
+					<ToggleButton
+						Grid.Row="0"
+						Grid.Column="2"
+						IsChecked="{Binding FlipFacePaint}">
+						<wpfUtils:IconBlock Icon="ArrowsAltH" />
+					</ToggleButton>
+
+					<customize:CustomizeColorOption
+						Grid.Row="1"
+						Grid.Column="1"
+						Grid.ColumnSpan="2"
+						Menu="{Binding MakeType.FacePaintColors}"
+						Value="{Binding FacePaintColor}" />
+				</Grid>
+
+			</StackPanel>
+		</ScrollViewer>
+
+		<Border
+			Grid.Row="1"
+			Margin="0,3,0,0"
+			Style="{DynamicResource WpfUtilsControlBorder}">
+			<StackPanel Orientation="Horizontal">
+				<Button
+					Grid.Column="0"
+					Click="OnRevertClicked"
+					IsEnabled="{Binding CanRevert}"
+					ToolTip="{DynamicResource LOC_Revert}">
+					<wpfUtils:IconBlock Icon="Undo" />
+				</Button>
+			</StackPanel>
+		</Border>
+
+	</Grid>
+
+</windows:CharacterPanelBase>

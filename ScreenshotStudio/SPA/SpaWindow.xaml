@@ -1,16 +1,18 @@
-﻿<windows:PanelWindow
+﻿<panels:PanelWindow
 	x:Class="ScreenshotStudio.SPA.SpaWindow"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:appearance="clr-namespace:ScreenshotStudio.Appearance"
 	xmlns:background="clr-namespace:ScreenshotStudio.Studio.Background"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:library="clr-namespace:ScreenshotStudio.Library"
 	xmlns:local="clr-namespace:ScreenshotStudio.SPA"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:panels="clr-namespace:ScreenshotStudio.Panels"
 	xmlns:pose="clr-namespace:ScreenshotStudio.Posing"
 	xmlns:save="clr-namespace:ScreenshotStudio.Save"
+	xmlns:settings="clr-namespace:ScreenshotStudio.Settings"
 	xmlns:studio="clr-namespace:ScreenshotStudio.Studio"
-	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="{DynamicResource LOC_Spa_Title}"
 	Width="900"
@@ -65,7 +67,7 @@
 						Icon="Book" />
 				</TabItem.Header>
 
-				<windows:PanelHost
+				<panels:PanelHost
 					Margin="1,1,0,0"
 					PanelType="{x:Type library:LibraryWindow}" />
 
@@ -94,15 +96,15 @@
 						<ColumnDefinition />
 					</Grid.ColumnDefinitions>
 
-					<windows:PanelHost
+					<panels:PanelHost
 						Grid.Column="0"
 						Margin="1,1,0,0"
-						PanelType="{x:Type studio:CustomizeWindow}" />
+						PanelType="{x:Type appearance:CustomizePanel}" />
 
-					<windows:PanelHost
+					<panels:PanelHost
 						Grid.Column="1"
 						Margin="2,1,0,0"
-						PanelType="{x:Type studio:GearWindow}" />
+						PanelType="{x:Type appearance:GearPanel}" />
 
 				</Grid>
 			</TabItem>
@@ -115,7 +117,7 @@
 						Icon="Running" />
 				</TabItem.Header>
 
-				<windows:PanelHost
+				<panels:PanelHost
 					Grid.Column="1"
 					Margin="2,1,0,0"
 					PanelType="{x:Type pose:PoseWindow}" />
@@ -129,7 +131,7 @@
 						Icon="Image" />
 				</TabItem.Header>
 
-				<windows:PanelHost
+				<panels:PanelHost
 					Grid.Column="1"
 					Margin="2,1,0,0"
 					PanelType="{x:Type studio:PhotoWindow}" />
@@ -144,7 +146,7 @@
 						IconFont="Solid" />
 				</TabItem.Header>
 
-				<windows:PanelHost
+				<panels:PanelHost
 					Grid.Column="1"
 					Margin="2,1,0,0"
 					PanelType="{x:Type save:SaveWindow}" />
@@ -158,12 +160,12 @@
 						Icon="Gears" />
 				</TabItem.Header>
 
-				<windows:PanelHost
+				<panels:PanelHost
 					Grid.Column="1"
 					Margin="2,1,0,0"
-					PanelType="{x:Type studio:SettingsWindow}" />
+					PanelType="{x:Type settings:SettingsPanel}" />
 			</TabItem>
 		</TabControl>
 
 	</Grid>
-</windows:PanelWindow>
+</panels:PanelWindow>

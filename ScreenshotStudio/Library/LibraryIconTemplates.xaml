@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:appearance="clr-namespace:ScreenshotStudio.Appearance"
 	xmlns:controls="clr-namespace:ScreenshotStudio.Controls"
 	xmlns:excel="clr-namespace:ScreenshotStudio.GameData.Excel"
 	xmlns:files="clr-namespace:ScreenshotStudio.Files"
@@ -42,14 +43,14 @@
 
 
 
-	<DataTemplate DataType="{x:Type services:GroupPoseCharactersLibrarySource}">
+	<DataTemplate DataType="{x:Type appearance:GroupPoseCharactersLibrarySource}">
 		<controls:XivIconImage Id="061546" />
 	</DataTemplate>
 
 
 	<DataTemplate
 		x:Key="AppearanceIcon"
-		DataType="{x:Type ss:ICharacterAppearance}">
+		DataType="{x:Type appearance:ICharacterAppearance}">
 		<Viewbox>
 			<Grid>
 				<Image
@@ -92,7 +93,7 @@
 		<ContentPresenter ContentTemplate="{StaticResource AppearanceIcon}" />
 	</DataTemplate>
 
-	<DataTemplate DataType="{x:Type services:CharacterBackupAppearance}">
+	<DataTemplate DataType="{x:Type appearance:CharacterBackupAppearance}">
 		<ContentPresenter ContentTemplate="{StaticResource AppearanceIcon}" />
 	</DataTemplate>
 

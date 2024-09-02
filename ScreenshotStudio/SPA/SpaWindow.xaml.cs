@@ -1,6 +1,6 @@
 ﻿namespace ScreenshotStudio.SPA;
 
-using ScreenshotStudio.Windows;
+using ScreenshotStudio.Panels;
 using System.Threading.Tasks;
 using WpfUtils.Windows;
 

@@ -2,11 +2,11 @@
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Newtonsoft.Json;
-using ScreenshotStudio.Commands;
+using ScreenshotStudio.Appearance;
 using ScreenshotStudio.GameData;
 using ScreenshotStudio.GameData.Excel;
+using ScreenshotStudio.Mvm.Commands;
 using ScreenshotStudio.Tags;
-using ScreenshotStudio.Utilities;
 using System;
 using System.Numerics;
 using System.Threading.Tasks;

@@ -9,8 +9,8 @@ using System.Windows;
 using System.Windows.Controls;
 using WpfUtils.Extensions;
 
-using Panel = ScreenshotStudio.Windows.Panel;
-using PanelWindow = ScreenshotStudio.Windows.PanelWindow;
+using Panel = ScreenshotStudio.Panels.Panel;
+using PanelWindow = ScreenshotStudio.Panels.PanelWindow;
 
 public class PanelService : ServiceBase
 {

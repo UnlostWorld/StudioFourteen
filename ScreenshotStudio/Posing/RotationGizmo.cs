@@ -6,6 +6,7 @@ namespace ScreenshotStudio.Posing;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
+using ScreenshotStudio.Mvm;
 using System;
 using System.Numerics;
 using System.Threading.Tasks;

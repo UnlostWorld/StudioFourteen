@@ -2,6 +2,7 @@
 
 using Dalamud.Plugin.Services;
 using ScreenshotStudio.Plugin;
+using ScreenshotStudio.Settings;
 using Serilog;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;

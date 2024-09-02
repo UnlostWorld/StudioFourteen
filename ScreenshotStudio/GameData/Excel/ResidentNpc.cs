@@ -2,8 +2,8 @@
 
 using Lumina.Data;
 using Lumina.Excel;
-using ScreenshotStudio;
-using ScreenshotStudio.Commands;
+using ScreenshotStudio.Appearance;
+using ScreenshotStudio.Mvm.Commands;
 using ScreenshotStudio.Library;
 using System.Threading.Tasks;
 using System.Windows.Input;

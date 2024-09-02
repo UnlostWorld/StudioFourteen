@@ -14,7 +14,7 @@
 		<ResourceDictionary Source="./Styles/StudioButtonStyle.xaml" />
 
 		<!--  Custom controls  -->
-		<ResourceDictionary Source="./Windows/PanelWindowStyle.xaml" />
+		<ResourceDictionary Source="./Panels/PanelWindowStyle.xaml" />
 		<ResourceDictionary Source="./Save/SaveIconControl.xaml" />
 		<ResourceDictionary Source="./Library/LibrarySelectorButtonStyles.xaml" />
 

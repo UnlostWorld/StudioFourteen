@@ -1,7 +1,6 @@
 ﻿namespace ScreenshotStudio.Files;
 
-using ScreenshotStudio.Commands;
-using ScreenshotStudio.Utilities;
+using ScreenshotStudio.Mvm.Commands;
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;

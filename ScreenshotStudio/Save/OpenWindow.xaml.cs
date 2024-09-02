@@ -2,7 +2,9 @@
 
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using ScreenshotStudio.Appearance;
 using ScreenshotStudio.Files;
+using ScreenshotStudio.Mvm;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Utilities;
@@ -13,7 +15,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using WpfUtils;
 using WpfUtils.Extensions;
-using Panel = ScreenshotStudio.Windows.Panel;
+using Panel = ScreenshotStudio.Panels.Panel;
 
 public partial class OpenWindow : Panel
 {

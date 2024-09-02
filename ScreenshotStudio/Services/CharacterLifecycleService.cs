@@ -9,7 +9,7 @@ using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Event;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
-using ScreenshotStudio;
+using ScreenshotStudio.Appearance;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Utilities;
 using System;

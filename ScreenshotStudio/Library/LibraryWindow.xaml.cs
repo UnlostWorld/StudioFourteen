@@ -2,9 +2,11 @@
 
 using FontAwesome.Sharp;
 using ScreenshotStudio;
+using ScreenshotStudio.Appearance;
 using ScreenshotStudio.Files;
 using ScreenshotStudio.Library.Filters;
 using ScreenshotStudio.Library.Results;
+using ScreenshotStudio.Mvm;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Tags;
 using System.Collections.Generic;
@@ -19,7 +21,7 @@ using WpfUtils;
 using WpfUtils.Extensions;
 using WpfUtils.Utils;
 
-using Panel = ScreenshotStudio.Windows.Panel;
+using Panel = ScreenshotStudio.Panels.Panel;
 
 public partial class LibraryWindow : Panel
 {

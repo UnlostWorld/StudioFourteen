@@ -7,11 +7,12 @@ using ScreenshotStudio.Library.Sources;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Tags;
-using ScreenshotStudio.Windows;
+using ScreenshotStudio.Panels;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using WpfUtils.Extensions;
+using ScreenshotStudio.Mvm;
 
 public partial class SaveWindow : Panel
 {

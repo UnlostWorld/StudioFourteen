@@ -6,7 +6,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:pose="clr-namespace:ScreenshotStudio.Posing"
-	xmlns:windows="clr-namespace:ScreenshotStudio.Windows"
+	xmlns:windows="clr-namespace:ScreenshotStudio.Panels"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="{DynamicResource LOC_Pose}"
 	Width="700"

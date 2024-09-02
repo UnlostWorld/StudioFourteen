@@ -1,13 +1,16 @@
 ﻿namespace ScreenshotStudio;
 
+using ScreenshotStudio.Appearance;
 using ScreenshotStudio.Data;
 using ScreenshotStudio.Files;
 using ScreenshotStudio.GameData;
 using ScreenshotStudio.Input;
 using ScreenshotStudio.Library;
+using ScreenshotStudio.Mvm;
 using ScreenshotStudio.Posing;
 using ScreenshotStudio.Save;
 using ScreenshotStudio.Services;
+using ScreenshotStudio.Settings;
 using ScreenshotStudio.Tablet;
 
 public class ServiceManager : ServiceManagerBase
