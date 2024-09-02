@@ -15,7 +15,7 @@ public class FileService : ServiceBase
 {
 	private static readonly List<FileTypeInfoBase> FileTypeInfos = new()
 	{
-		new CharacterFileTypeInfo(),
+		new AppearanceFileTypeInfo(),
 		new PoseFileTypeInfo(),
 		new SceneFileTypeInfo(),
 	};

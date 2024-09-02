@@ -1,6 +1,7 @@
 ﻿namespace ScreenshotStudio.Files;
 
 using ScreenshotStudio.Commands;
+using ScreenshotStudio.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
@@ -38,8 +39,30 @@ public class SceneFile : FileBase
 
 	public class Actor
 	{
+		public Actor()
+		{
+			this.ApplyCommand = new TargetCommand(this.Apply);
+		}
+
 		public string? Role { get; set; }
 		public PoseFile? Pose { get; set; }
-		public CharacterFile? Character { get; set; }
+		public AppearanceFile? Appearance { get; set; }
+
+		[JsonIgnore] public ICommand? ApplyCommand { get; init; }
+		[JsonIgnore] public ICommand? ApplyPoseCommand => this.Pose?.ApplyCommand;
+		[JsonIgnore] public ICommand? ApplyAppearanceCommand => this.Appearance?.ApplyCommand;
+
+		public async Task Apply(int objectTableIndex)
+		{
+			if (this.Pose != null)
+			{
+				await this.Pose.Apply(objectTableIndex);
+			}
+
+			if (this.Appearance != null)
+			{
+				await this.Appearance.Apply(objectTableIndex);
+			}
+		}
 	}
 }

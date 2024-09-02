@@ -5,6 +5,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using ScreenshotStudio.Files;
 using ScreenshotStudio.Input;
 using ScreenshotStudio.Plugin;
+using ScreenshotStudio.Posing;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Tags;
 using ScreenshotStudio.Utilities;
@@ -170,9 +171,18 @@ public class SaveService : ServiceBase
 		return Task.CompletedTask;
 	}
 
-	public Task Revert(SceneFile file)
+	public async Task Revert(SceneFile file)
 	{
-		return Task.CompletedTask;
+		// TODO: record which indexes were used by this scene file
+		this.Services.Pose.FlushBoneReferences();
+
+		for (int i = 0; i < 300; i++)
+		{
+			if (this.Services.CharacterAppearance.CanRestore(i))
+			{
+				await this.Services.CharacterAppearance.Restore(i);
+			}
+		}
 	}
 
 	public unsafe bool CanInclude(Character* pCharacter)

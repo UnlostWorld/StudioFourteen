@@ -5,6 +5,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.Havok.Animation.Rig;
+using Newtonsoft.Json;
 using ScreenshotStudio.Commands;
 using ScreenshotStudio.GameData.Excel;
 using ScreenshotStudio.Plugin;
@@ -33,8 +34,8 @@ public class PoseFile : FileBase
 		this.RevertCommand = new TargetCommand(this.Revert);
 	}
 
-	public ICommand ApplyCommand { get; init; }
-	public ICommand RevertCommand { get; init; }
+	[JsonIgnore] public ICommand ApplyCommand { get; init; }
+	[JsonIgnore] public ICommand RevertCommand { get; init; }
 
 	public BoneTransform? ModelDifference { get; set; }
 
@@ -161,8 +162,6 @@ public class PoseFile : FileBase
 				// TODO: check if all races have these bones or its just Hyur!
 				bool includeFace = this.Bones.ContainsKey("j_f_ulip_02_l");
 
-				Dictionary<string, BoneId> boneIds = new();
-
 				ushort partialCount = characterBase->Skeleton->PartialSkeletonCount;
 				for (int partialIdx = 0; partialIdx < partialCount; partialIdx++)
 				{
@@ -208,11 +207,6 @@ public class PoseFile : FileBase
 								continue;
 
 							BoneId boneId = new(character->ObjectIndex, partialIdx, poseIdx, boneIdx, boneName);
-							if (boneIds.ContainsKey(boneName))
-								continue;
-
-							boneIds.Add(boneName, boneId);
-
 							BoneReference reference = service.GetOrCreateBoneReference(boneId, boneName);
 							reference.Mode = BoneReference.Modes.Absolute;
 

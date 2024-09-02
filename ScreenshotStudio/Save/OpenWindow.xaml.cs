@@ -227,7 +227,7 @@ public class Assignment(SceneFile.Actor actor)
 
 	[AutoNotify]
 	public bool CanIncludeAppearance =>
-		this.Actor.Character != null
+		this.Actor.Appearance != null
 		&& this.Character is not OpenIgnoreCharacterViewModel;
 
 	[AutoNotify]
@@ -287,9 +287,9 @@ public class Assignment(SceneFile.Actor actor)
 		{
 			appearance = this.Appearance;
 		}
-		else if (this.IncludeAppearance && this.CanIncludeAppearance && this.Actor.Character != null)
+		else if (this.IncludeAppearance && this.CanIncludeAppearance && this.Actor.Appearance != null)
 		{
-			appearance = this.Actor.Character;
+			appearance = this.Actor.Appearance;
 		}
 
 		int objectTableIndex = -1;

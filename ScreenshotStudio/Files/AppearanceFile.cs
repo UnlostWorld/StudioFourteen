@@ -1,6 +1,8 @@
 ﻿namespace ScreenshotStudio.Files;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using Newtonsoft.Json;
+using ScreenshotStudio.Commands;
 using ScreenshotStudio.GameData;
 using ScreenshotStudio.GameData.Excel;
 using ScreenshotStudio.Tags;
@@ -8,17 +10,24 @@ using ScreenshotStudio.Utilities;
 using System;
 using System.Numerics;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using CustomizeFacialFeatures = FFXIVClientStructs.FFXIV.Client.Game.Character.CustomizeDataExtensions.FacialFeatures;
 
-public class CharacterFileTypeInfo : JsonFileTypeInfoBase<CharacterFile>
+public class AppearanceFileTypeInfo : JsonFileTypeInfoBase<AppearanceFile>
 {
 	public override string Extension => ".chara";
-	public override string TypeName => "Character File";
+	public override string TypeName => "Appearance File";
 }
 
 [Serializable]
-public class CharacterFile : FileBase, ICharacterAppearance
+public class AppearanceFile : FileBase, ICharacterAppearance
 {
+	public AppearanceFile()
+	{
+		this.ApplyCommand = new TargetCommand(this.Apply);
+		this.RevertCommand = new RevertTargetAppearanceCommand();
+	}
+
 	public enum Races : byte
 	{
 		Hyur = 1,
@@ -57,6 +66,9 @@ public class CharacterFile : FileBase, ICharacterAppearance
 		Old = 3,
 		Young = 4,
 	}
+
+	[JsonIgnore] public ICommand ApplyCommand { get; init; }
+	[JsonIgnore] public ICommand RevertCommand { get; init; }
 
 	public uint? ModelType { get; set; } = 0;
 	public Races? Race { get; set; }

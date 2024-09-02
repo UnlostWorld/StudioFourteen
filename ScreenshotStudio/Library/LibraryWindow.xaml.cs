@@ -274,7 +274,7 @@ public partial class LibraryWindow : Panel
 
 	private void OnBrowseClicked(object sender, RoutedEventArgs e)
 	{
-		this.Services.Files.ShowOpenDialog(null, typeof(SceneFile), typeof(PoseFile), typeof(CharacterFile));
+		this.Services.Files.ShowOpenDialog(null, typeof(SceneFile), typeof(PoseFile), typeof(AppearanceFile));
 	}
 }
 
