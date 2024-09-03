@@ -120,6 +120,7 @@
 	<sys:String x:Key="LOC_Pose_SelectCharacter">Select the targeted actor</sys:String>
 	<sys:String x:Key="LOC_Pose_LockTransform">Lock the selected transform to prevent it from moving</sys:String>
 	<sys:String x:Key="LOC_Pose_RevertPose">Revert all changes to {0}'s pose</sys:String>
+	<sys:String x:Key="LOC_Pose_Reference">Set the targeted actor to its reference pose</sys:String>
 
 	<!--  Bones  -->
 	<sys:String x:Key="LOC_Bone_n_root">Root</sys:String>

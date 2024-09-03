@@ -117,8 +117,11 @@ public class PoseFile : FileBase
 			if (this.Bones.ContainsKey(reference.Name))
 				continue;
 
+			if (reference.CurrentTransform == null)
+				continue;
+
 			hkQsTransformf hkTransform = reference.LastTransform;
-			hkTransform.Add(reference.CurrentTransform);
+			hkTransform.Add(reference.CurrentTransform.Value);
 
 			BoneTransform transform = new();
 			transform.Position = hkTransform.Translation.ToVector3();

@@ -7,6 +7,7 @@ using FFXIVClientStructs.Havok.Animation.Rig;
 using ScreenshotStudio.Mvm;
 using ScreenshotStudio.Panels;
 using ScreenshotStudio.Structs.Extensions;
+using ScreenshotStudio.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -408,6 +409,11 @@ public partial class PoseWindow : CharacterPanelBase
 	private void OnClearClicked(object sender, RoutedEventArgs e)
 	{
 		this.Services.Pose.Selection = new GameObjectSelection((ushort)this.TargetObjectIndex);
+	}
+
+	private async void OnReferenceClicked(object sender, RoutedEventArgs e)
+	{
+		await this.Services.Pose.SetToReferencePose(this.TargetObjectIndex);
 	}
 }
 

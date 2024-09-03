@@ -134,7 +134,10 @@ public class BoneSelection : SelectionBase
 		get
 		{
 			hkQsTransformf combine = this.Bone.LastTransform;
-			combine.Add(this.Bone.CurrentTransform);
+
+			if (this.Bone.CurrentTransform != null)
+				combine.Add(this.Bone.CurrentTransform.Value);
+
 			return combine;
 		}
 		set

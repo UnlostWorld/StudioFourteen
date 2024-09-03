@@ -254,20 +254,15 @@
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
 
-			<StackPanel
-				Grid.Row="0"
-				IsEnabled="{Binding Selection, Converter={StaticResource NotNullToBoolConverter}}">
+			<StackPanel Grid.Row="0">
 				<Border
 					Margin="1"
 					Style="{DynamicResource WpfUtilsControlBorder}">
 
 					<Grid>
-						<StackPanel
-							HorizontalAlignment="Left"
-							Orientation="Horizontal">
+						<UniformGrid Rows="1">
 
 							<ToggleButton
-								Width="26"
 								Background="Transparent"
 								IsChecked="{Binding FlipSides}"
 								ToolTip="{DynamicResource LOC_Pose_FlipSides}">
@@ -275,7 +270,13 @@
 							</ToggleButton>
 
 							<Button
-								Width="26"
+								Background="Transparent"
+								Click="OnRevertClicked"
+								ToolTip="{Binding RevertTooltip}">
+								<wpfUtils:IconBlock Icon="Undo" />
+							</Button>
+
+							<Button
 								Background="Transparent"
 								Click="OnClearClicked"
 								ToolTip="{DynamicResource LOC_Pose_SelectCharacter}">
@@ -284,24 +285,26 @@
 									IconFont="Solid" />
 							</Button>
 
+							<Button
+								Background="Transparent"
+								Click="OnReferenceClicked"
+								ToolTip="{DynamicResource LOC_Pose_Reference}">
+								<wpfUtils:IconBlock
+									Icon="Person"
+									IconFont="Solid" />
+							</Button>
+
+
 							<ToggleButton
-								Width="26"
 								Background="Transparent"
 								IsChecked="{Binding Selection.LockTransform, FallbackValue=false}"
 								IsEnabled="{Binding Selection.CanLockTransform, FallbackValue=false}"
 								ToolTip="{DynamicResource LOC_Pose_LockTransform}">
 								<wpfUtils:IconBlock Icon="Lock" />
 							</ToggleButton>
-						</StackPanel>
+						</UniformGrid>
 
-						<Button
-							Width="26"
-							HorizontalAlignment="Right"
-							Background="Transparent"
-							Click="OnRevertClicked"
-							ToolTip="{Binding RevertTooltip}">
-							<wpfUtils:IconBlock Icon="Undo" />
-						</Button>
+
 					</Grid>
 				</Border>
 			</StackPanel>

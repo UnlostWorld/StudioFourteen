@@ -16,6 +16,7 @@ using ScreenshotStudio.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows;
 
 public enum PoseEditModes
 {
@@ -113,17 +114,82 @@ public class PoseService : ServiceBase
 		return count > 0;
 	}
 
-	public bool SetAllBoneReferencesLocked(int objectTableId, bool locked)
+	public async void SetAllBoneReferencesLocked(int objectTableIndex, bool locked)
 	{
-		foreach ((BoneId id, BoneReference reference) in this.boneReferences)
-		{
-			if (id.ObjectTableIndex != objectTableId)
-				continue;
+		await Threads.FrameworkThread();
 
-			reference.Mode = locked ? BoneReference.Modes.Locked_Relative : BoneReference.Modes.Relative;
+		List<BoneReference> references = this.GetOrCreateBoneReferences(objectTableIndex);
+		foreach (BoneReference reference in references)
+		{
+			if (!locked && reference.Mode == BoneReference.Modes.Locked_Relative)
+			{
+				reference.Mode = BoneReference.Modes.Relative;
+			}
+			else if (locked && reference.Mode == BoneReference.Modes.Relative)
+			{
+				reference.Mode = BoneReference.Modes.Locked_Relative;
+			}
+		}
+	}
+
+	public async Task SetToReferencePose(int objectTableIndex)
+	{
+		await Threads.FrameworkThread();
+
+		List<BoneReference> references = this.GetOrCreateBoneReferences(objectTableIndex);
+		foreach(BoneReference reference in references)
+		{
+			reference.Mode = BoneReference.Modes.Reference;
+		}
+	}
+
+	public List<BoneReference> GetOrCreateBoneReferences(int objectTableIndex)
+	{
+		List<BoneReference> results = new();
+
+		Threads.VerifyFrameworkThread();
+
+		if (DalamudServices.ObjectTable == null)
+			return results;
+
+		unsafe
+		{
+			Character* pCharacter = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
+			if (pCharacter == null)
+				return results;
+
+			CharacterBase* pCharacterBase = pCharacter->GetCharacterBase();
+			if (pCharacterBase == null)
+				return results;
+
+			ushort partialCount = pCharacterBase->Skeleton->PartialSkeletonCount;
+			for (int partialIdx = 0; partialIdx < partialCount; partialIdx++)
+			{
+				PartialSkeleton* pPartialSkeleton = &pCharacterBase->Skeleton->PartialSkeletons[partialIdx];
+
+				byte poseCount = pPartialSkeleton->GetMaxPoses();
+				for (byte poseIdx = 0; poseIdx < poseCount; poseIdx++)
+				{
+					hkaPose* pPose = pPartialSkeleton->GetHavokPose(poseIdx);
+					if (pPose == null)
+						continue;
+
+					int boneCount = pPose->Skeleton->Bones.Length;
+
+					// Create bone nodes
+					for (short boneIdx = 0; boneIdx < boneCount; boneIdx++)
+					{
+						hkaBone bone = pPose->Skeleton->Bones[boneIdx];
+						string boneName = bone.Name.String ?? "Bone";
+						BoneId id = new(objectTableIndex, partialIdx, poseIdx, boneIdx, boneName);
+
+						results.Add(this.GetOrCreateBoneReference(id));
+					}
+				}
+			}
 		}
 
-		return true;
+		return results;
 	}
 
 	public BoneReference GetOrCreateBoneReference(BoneId id, string? name = null)
