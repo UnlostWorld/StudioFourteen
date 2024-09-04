@@ -1,12 +1,14 @@
 ﻿namespace ScreenshotStudio.Settings;
 
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
 using Dalamud.Configuration;
 using Dalamud.Game.ClientState.Keys;
 using ScreenshotStudio.Input;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Save;
+using ScreenshotStudio.Serialization;
 using ScreenshotStudio.Services;
 
 public class SettingsService : ServiceBase
@@ -15,7 +17,20 @@ public class SettingsService : ServiceBase
 
 	public override Task Initialize()
 	{
-		Configuration? current = DalamudServices.PluginInterface?.GetPluginConfig() as Configuration;
+		Configuration? current = null;
+
+		if (DalamudServices.PluginInterface != null)
+		{
+			current = DalamudServices.PluginInterface?.GetPluginConfig() as Configuration;
+		}
+		else
+		{
+			if (File.Exists("config.json"))
+			{
+				current = Serializer.Deserialize<Configuration>(File.ReadAllText("config.json"));
+			}
+		}
+
 		if (current != null)
 		{
 			this.Current = current;
@@ -32,7 +47,15 @@ public class SettingsService : ServiceBase
 
 	public void Save()
 	{
-		DalamudServices.PluginInterface?.SavePluginConfig(this.Current);
+		if (DalamudServices.PluginInterface != null)
+		{
+			DalamudServices.PluginInterface?.SavePluginConfig(this.Current);
+		}
+		else
+		{
+			string json = Serializer.Serialize(this.Current);
+			File.WriteAllText("config.json", json);
+		}
 	}
 
 	public class Configuration : IPluginConfiguration
