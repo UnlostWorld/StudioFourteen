@@ -22,6 +22,7 @@
 		<DalamudLibPath>$(appdata)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
 		<ApplicationIcon>Assets\icon.ico</ApplicationIcon>
 		<PackageIcon>light-pride-textless.png</PackageIcon>
+		<Platforms>x64</Platforms>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(CI)' == 'true' OR '$(IsCI)' == 'true'">
