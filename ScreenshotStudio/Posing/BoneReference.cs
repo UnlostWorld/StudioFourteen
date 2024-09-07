@@ -3,78 +3,57 @@
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
-using FFXIVClientStructs.FFXIV.Common.Lua;
 using FFXIVClientStructs.Havok.Animation.Rig;
 using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
-using FFXIVClientStructs.Havok.Common.Base.Math.Quaternion;
-using FFXIVClientStructs.Havok.Common.Base.Math.Vector;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Structs;
 using ScreenshotStudio.Structs.Extensions;
 using ScreenshotStudio.Utilities;
 using System;
 using System.Numerics;
-using System.Runtime.InteropServices;
-using System.Xml.Linq;
 
-public class BoneReference : IDisposable
+public class BoneReference(string? name, BoneId id)
 {
-	public readonly string? Name;
-	public readonly BoneId Id;
+	public readonly string? Name = name;
+	public readonly BoneId Id = id;
 
 	public Vector3 LastCharacterTranslation;
 	public Quaternion LastCharacterRotation;
 	public Vector3 LastCharacterScale;
 
-	public hkQsTransformf LastTransform;
-	public hkQsTransformf? CurrentTransform = null;
-	public Modes Mode;
-	public hkQsTransformf? LastLocalTransform = null;
-
-	public hkVector4f? NextAbsoluteTranslation;
-	public hkQuaternionf? NextAbsoluteRotation;
-	public hkVector4f? NextAbsoluteScale;
+	public hkQsTransformf LiveTransform;
+	public hkQsTransformf? Transform = null;
+	public hkQsTransformf? NextModelSpaceTransform;
+	public hkQsTransformf? LocalSpaceTransform = null;
 
 	public hkQsTransformf ReferenceTransform;
+	public hkQsTransformf NextReferenceRelativeTransform;
 
 	public BoneReference? Parent;
 	public bool IsValid = true;
 
-	public BoneReference(string? name, BoneId id)
+	public bool Locked { get; set; } = false;
+	public bool ForceRef { get; set; } = false;
+
+	public void SetToReference()
 	{
-		this.Name = name;
-		this.Id = id;
+		this.Locked = true;
+
+		if (this.LocalSpaceTransform == null)
+			throw new Exception("Cannot set bone to reference before it has been ticked");
+
+		var newTransform = this.ReferenceTransform;
+		newTransform.Subtract(this.LocalSpaceTransform.Value);
+		this.Transform = newTransform;
 	}
 
-	public enum Modes
+	public void Clear()
 	{
-		/// <summary>
-		/// modifies the bone by adding the CurrentTransform to the games live transform.
-		/// </summary>
-		Relative,
-
-		/// <summary>
-		/// Modifies the bone by adding the CurrentTransform to the last game transform read before locking.
-		/// </summary>
-		Locked_Relative,
-
-		/// <summary>
-		/// Modifies the bone by setting the live transform to CurrentTransform, calculating the relative value, and swapping to relative_locked.
-		/// </summary>
-		Absolute,
-
-		/// <summary>
-		/// Sets the pose to reference mode.
-		/// </summary>
-		Reference,
-
-		/// <summary>
-		/// An absolute transform, but relative to the skeletons bind or reference pose, allows for transfers between races without distortion.
-		/// </summary>
-		Reference_Relative,
+		this.Parent = null;
+		this.IsValid = false;
 	}
 
-	public unsafe Skeleton* ApplyTransform()
+	public unsafe Skeleton* Tick()
 	{
 		Threads.VerifyFrameworkThread();
 
@@ -122,90 +101,47 @@ public class BoneReference : IDisposable
 
 		this.ReferenceTransform = pose->Skeleton->ReferencePose[this.Id.BoneIndex];
 
-		if (this.Mode == Modes.Absolute)
+		// Get a new copy of the live transforms
+		this.LiveTransform = *pose->AccessBoneModelSpace(this.Id.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
+
+		if (this.LocalSpaceTransform == null || !this.Locked)
+			this.LocalSpaceTransform = *pose->AccessBoneLocalSpace(this.Id.BoneIndex);
+
+		if (this.NextModelSpaceTransform != null)
 		{
-			// Get a new copy of the live transforms
-			this.LastTransform = *pose->AccessBoneModelSpace(this.Id.BoneIndex, hkaPose.PropagateOrNot.Propagate);
-			this.LastLocalTransform = *pose->AccessBoneLocalSpace(this.Id.BoneIndex);
+			hkQsTransformf newTransform = this.NextModelSpaceTransform.Value;
+			////newTransform.Translation.Subtract(this.LiveTransform.Translation);
+			newTransform.Rotation.Divide(this.LiveTransform.Rotation);
+			////newTransform.Scale.Subtract(this.LiveTransform.Scale);
 
-			hkQsTransformf newTransform = default;
-			newTransform = default;
-			newTransform.Rotation = HkQuaternionExtensions.Identity;
-
-			if (this.NextAbsoluteTranslation != null)
-			{
-				newTransform.Translation = this.NextAbsoluteTranslation.Value;
-				newTransform.Translation.Subtract(this.LastTransform.Translation);
-			}
-
-			if (this.NextAbsoluteRotation != null)
-			{
-				newTransform.Rotation = this.NextAbsoluteRotation.Value;
-				newTransform.Rotation.Divide(this.LastTransform.Rotation);
-			}
-
-			if (this.NextAbsoluteScale != null)
-			{
-				newTransform.Scale = this.NextAbsoluteScale.Value;
-				newTransform.Scale.Subtract(this.LastTransform.Scale);
-			}
-
-			this.CurrentTransform = newTransform;
-
-			this.Mode = Modes.Locked_Relative;
-			this.NextAbsoluteTranslation = null;
-			this.NextAbsoluteRotation = null;
-			this.NextAbsoluteScale = null;
+			this.Transform = newTransform;
+			this.NextModelSpaceTransform = null;
 		}
 
-		if (this.Mode == Modes.Relative)
+		if (this.Transform != null)
 		{
-			// Get a new copy of the live transforms
-			this.LastTransform = *pose->AccessBoneModelSpace(this.Id.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
-			this.LastLocalTransform = *pose->AccessBoneLocalSpace(this.Id.BoneIndex);
-
-			// Modify the live transform
-			if (this.CurrentTransform != null)
+			if (this.Locked)
 			{
+				hkQsTransformf newTransform = (hkQsTransformf)this.LocalSpaceTransform;
+				newTransform.Translation.Add(this.Transform.Value.Translation);
+				newTransform.Rotation.Multiply(this.Transform.Value.Rotation);
+				newTransform.Scale.Add(this.Transform.Value.Scale);
+
+				hkQsTransformf* transform = pose->AccessBoneLocalSpace(this.Id.BoneIndex);
+				transform->Translation.Set(newTransform.Translation);
+				transform->Rotation.Set(newTransform.Rotation);
+				transform->Scale.Set(newTransform.Scale);
+			}
+			else
+			{
+				// Modify the live transform
 				hkQsTransformf* transform = pose->AccessBoneModelSpace(this.Id.BoneIndex, hkaPose.PropagateOrNot.Propagate);
-				transform->Translation.Add(this.CurrentTransform.Value.Translation);
-				transform->Rotation.Multiply(this.CurrentTransform.Value.Rotation);
-				transform->Scale.Add(this.CurrentTransform.Value.Scale);
+				transform->Translation.Add(this.Transform.Value.Translation);
+				transform->Rotation.Multiply(this.Transform.Value.Rotation);
+				transform->Scale.Add(this.Transform.Value.Scale);
 			}
-		}
-		else if (this.Mode == Modes.Locked_Relative)
-		{
-			if (this.LastLocalTransform == null)
-				this.LastLocalTransform = *pose->AccessBoneLocalSpace(this.Id.BoneIndex);
-
-			hkQsTransformf newTransform = (hkQsTransformf)this.LastLocalTransform;
-
-			if (this.CurrentTransform != null)
-			{
-				newTransform.Translation.Add(this.CurrentTransform.Value.Translation);
-				newTransform.Rotation.Multiply(this.CurrentTransform.Value.Rotation);
-				newTransform.Scale.Add(this.CurrentTransform.Value.Scale);
-			}
-
-			hkQsTransformf* transform = pose->AccessBoneLocalSpace(this.Id.BoneIndex);
-			transform->Translation.Set(newTransform.Translation);
-			transform->Rotation.Set(newTransform.Rotation);
-			transform->Scale.Set(newTransform.Scale);
-		}
-		else if (this.Mode == Modes.Reference)
-		{
-			hkQsTransformf* transform = pose->AccessBoneLocalSpace(this.Id.BoneIndex);
-			transform->Translation = this.ReferenceTransform.Translation;
-			transform->Rotation = this.ReferenceTransform.Rotation;
-			transform->Scale = this.ReferenceTransform.Scale;
 		}
 
 		return skeleton;
-	}
-
-	public void Dispose()
-	{
-		this.Parent = null;
-		this.IsValid = false;
 	}
 }

@@ -66,8 +66,8 @@ public class BoneSelection : SelectionBase
 
 	public override bool LockTransform
 	{
-		get => this.bone?.Mode == BoneReference.Modes.Locked_Relative;
-		set => this.Bone.Mode = value ? BoneReference.Modes.Locked_Relative : BoneReference.Modes.Relative;
+		get => this.bone?.Locked == true;
+		set => this.Bone.Locked = value;
 	}
 
 	public override Vector3 LocalTranslation
@@ -133,18 +133,18 @@ public class BoneSelection : SelectionBase
 	{
 		get
 		{
-			hkQsTransformf combine = this.Bone.LastTransform;
+			hkQsTransformf combine = this.Bone.LiveTransform;
 
-			if (this.Bone.CurrentTransform != null)
-				combine.Add(this.Bone.CurrentTransform.Value);
+			if (this.Bone.Transform != null)
+				combine.Add(this.Bone.Transform.Value);
 
 			return combine;
 		}
 		set
 		{
 			hkQsTransformf separate = value;
-			separate.Subtract(this.Bone.LastTransform);
-			this.Bone.CurrentTransform = separate;
+			separate.Subtract(this.Bone.LiveTransform);
+			this.Bone.Transform = separate;
 		}
 	}
 

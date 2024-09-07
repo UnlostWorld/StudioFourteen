@@ -46,8 +46,7 @@ public class PoseService : ServiceBase
 		get => this.selection;
 		set
 		{
-			if (this.selection != null)
-				this.selection.Deactivate();
+			this.selection?.Deactivate();
 
 			this.selection = value;
 
@@ -105,7 +104,7 @@ public class PoseService : ServiceBase
 			if (id.ObjectTableIndex != objectTableId)
 				continue;
 
-			if (reference.Mode != BoneReference.Modes.Locked_Relative)
+			if (!reference.Locked)
 				return false;
 
 			count++;
@@ -121,14 +120,7 @@ public class PoseService : ServiceBase
 		List<BoneReference> references = this.GetOrCreateBoneReferences(objectTableIndex);
 		foreach (BoneReference reference in references)
 		{
-			if (!locked && reference.Mode == BoneReference.Modes.Locked_Relative)
-			{
-				reference.Mode = BoneReference.Modes.Relative;
-			}
-			else if (locked && reference.Mode == BoneReference.Modes.Relative)
-			{
-				reference.Mode = BoneReference.Modes.Locked_Relative;
-			}
+			reference.Locked = locked;
 		}
 	}
 
@@ -137,9 +129,10 @@ public class PoseService : ServiceBase
 		await Threads.FrameworkThread();
 
 		List<BoneReference> references = this.GetOrCreateBoneReferences(objectTableIndex);
+		await Threads.NextFrame();
 		foreach(BoneReference reference in references)
 		{
-			reference.Mode = BoneReference.Modes.Reference;
+			reference.SetToReference();
 		}
 	}
 
@@ -196,8 +189,7 @@ public class PoseService : ServiceBase
 	{
 		lock (this.boneReferences)
 		{
-			BoneReference? reference = null;
-			if (this.boneReferences.TryGetValue(id, out reference))
+			if (this.boneReferences.TryGetValue(id, out BoneReference? reference))
 			{
 				return reference;
 			}
@@ -265,7 +257,7 @@ public class PoseService : ServiceBase
 		lock (this.boneReferences)
 		{
 			foreach ((BoneId id, BoneReference reference) in this.boneReferences)
-				reference.Dispose();
+				reference.Clear();
 
 			this.boneReferences.Clear();
 			this.boneIds.Clear();
@@ -288,7 +280,7 @@ public class PoseService : ServiceBase
 				if (id.ObjectTableIndex == objectTableIndex)
 				{
 					toRemove.Add(id);
-					reference.Dispose();
+					reference.Clear();
 				}
 			}
 
@@ -355,7 +347,7 @@ public class PoseService : ServiceBase
 				if (!reference.IsValid)
 					continue;
 
-				Skeleton* skeleton = reference.ApplyTransform();
+				Skeleton* skeleton = reference.Tick();
 				if (skeleton == null)
 					continue;
 
