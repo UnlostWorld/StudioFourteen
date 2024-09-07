@@ -25,7 +25,7 @@ public partial class Panel : ContentControl, IAutoNotify
 	protected readonly ILogger Log;
 
 	private readonly string panelId;
-	private readonly Dictionary<string, object?> persistenceCache = new();
+	private readonly Dictionary<string, object?> persistenceCache = [];
 	private Exception? frameworkException;
 	private IHost? host;
 
@@ -81,9 +81,9 @@ public partial class Panel : ContentControl, IAutoNotify
 		{
 			lock (this.persistenceCache)
 			{
-				if (this.persistenceCache.ContainsKey(id))
+				if (this.persistenceCache.TryGetValue(id, out object? value))
 				{
-					return (T?)this.persistenceCache[id];
+					return (T?)value;
 				}
 			}
 
@@ -95,9 +95,12 @@ public partial class Panel : ContentControl, IAutoNotify
 			if (!json.StartsWith('"') || !json.EndsWith('"'))
 				json = '"' + json + '"';
 
-			T? value = Serializer.Deserialize<T>(json);
-			this.persistenceCache.Add(id, value);
-			return value;
+			lock (this.persistenceCache)
+			{
+				T? value = Serializer.Deserialize<T>(json);
+				this.persistenceCache.Add(id, value);
+				return value;
+			}
 		}
 		catch (Exception ex)
 		{
@@ -117,31 +120,19 @@ public partial class Panel : ContentControl, IAutoNotify
 		{
 			lock (this.persistenceCache)
 			{
-				if (!this.persistenceCache.ContainsKey(id))
-					this.persistenceCache.Add(id, value);
-
 				this.persistenceCache[id] = value;
 			}
 
-			this.Dispatcher.Invoke(() =>
+			string persistenceId = this.panelId + "_" + id;
+
+			if (value != null)
 			{
-				string persistenceId = this.panelId + "_" + id;
-
-				if (value != null)
-				{
-					if (!this.Services.Settings.Current.PanelPersistence.ContainsKey(persistenceId))
-						this.Services.Settings.Current.PanelPersistence.Add(persistenceId, string.Empty);
-
-					this.Services.Settings.Current.PanelPersistence[persistenceId] = Serializer.Serialize(value);
-				}
-				else
-				{
-					if (this.Services.Settings.Current.PanelPersistence.ContainsKey(persistenceId))
-					{
-						this.Services.Settings.Current.PanelPersistence.Remove(persistenceId);
-					}
-				}
-			});
+				this.Services.Settings.Current.PanelPersistence[persistenceId] = Serializer.Serialize(value);
+			}
+			else
+			{
+				this.Services.Settings.Current.PanelPersistence.Remove(persistenceId);
+			}
 
 			this.Services.Settings.Save();
 		}
