@@ -198,6 +198,9 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	{
 		base.OnClosing(e);
 
+		if (ServiceManager.ShutdownRequested)
+			return;
+
 		this.OnClosed();
 	}
 
@@ -251,6 +254,9 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 	protected virtual void OnClosed()
 	{
+		if (ServiceManager.ShutdownRequested)
+			return;
+
 		this.isOpen = false;
 
 		if (DalamudServices.GameGui != null)
@@ -265,12 +271,18 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 	protected override void OnActivated(EventArgs e)
 	{
+		if (ServiceManager.ShutdownRequested)
+			return;
+
 		this.Services.Panels.ActivePanel = this.Panel;
 		base.OnActivated(e);
 	}
 
 	protected override void OnDeactivated(EventArgs e)
 	{
+		if (ServiceManager.ShutdownRequested)
+			return;
+
 		if (this.Services.Panels.ActivePanel == this.Panel)
 			this.Services.Panels.ActivePanel = null;
 
@@ -279,6 +291,9 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 	protected override void OnStateChanged(EventArgs e)
 	{
+		if (ServiceManager.ShutdownRequested)
+			return;
+
 		base.OnStateChanged(e);
 		this.IsMaximized = this.WindowState == WindowState.Maximized;
 	}

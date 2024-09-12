@@ -12,9 +12,8 @@ using ScreenshotStudio.Utilities;
 using System;
 using System.Numerics;
 
-public class BoneReference(string? name, BoneId id)
+public class BoneReference(BoneId id, string? name = null)
 {
-	public readonly string? Name = name;
 	public readonly BoneId Id = id;
 
 	public Vector3 LastCharacterTranslation;
@@ -32,8 +31,16 @@ public class BoneReference(string? name, BoneId id)
 	public BoneReference? Parent;
 	public bool IsValid = true;
 
+	private string? boneName = name;
+
 	public bool Locked { get; set; } = false;
 	public bool ForceRef { get; set; } = false;
+
+	public string? Name
+	{
+		get => this.boneName;
+		set => this.boneName = value;
+	}
 
 	public void SetToReference()
 	{
@@ -89,11 +96,15 @@ public class BoneReference(string? name, BoneId id)
 
 		hkaPose* pose = partialSkeleton->GetHavokPose(this.Id.PoseIndex);
 
-		// Sanity check bone name, useful if the skeleton has changed during posing.
-		if (this.Id.BoneName != null)
+		// Update or sanity check bone name, useful if the skeleton has changed during posing.
+		hkaBone bone = pose->Skeleton->Bones[this.Id.BoneIndex];
+		if (this.boneName == null)
 		{
-			hkaBone bone = pose->Skeleton->Bones[this.Id.BoneIndex];
-			if (bone.Name.String != this.Id.BoneName)
+			this.boneName = bone.Name.String;
+		}
+		else
+		{
+			if (bone.Name.String != this.Name)
 			{
 				return null;
 			}

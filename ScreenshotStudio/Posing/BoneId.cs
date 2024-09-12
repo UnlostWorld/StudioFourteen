@@ -2,14 +2,13 @@
 
 using System;
 
-public readonly struct BoneId(int objectTableIndex, int partialSkeletonIndex, byte poseIndex, short boneIndex, string? name = null)
+public readonly struct BoneId(int objectTableIndex, int partialSkeletonIndex, byte poseIndex, short boneIndex)
 	: IEquatable<BoneId>, IComparable<BoneId>
 {
 	public readonly int ObjectTableIndex = objectTableIndex;
 	public readonly int PartialSkeletonIndex = partialSkeletonIndex;
 	public readonly byte PoseIndex = poseIndex;
 	public readonly short BoneIndex = boneIndex;
-	public readonly string? BoneName = name;
 
 	public static bool operator ==(BoneId left, BoneId right)
 	{

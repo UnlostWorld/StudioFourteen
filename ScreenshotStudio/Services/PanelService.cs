@@ -141,13 +141,13 @@ public class PanelService : ServiceBase
 			if (panel == null)
 				continue;
 
-			if (!panel.RememberWindowState)
-				continue;
-
-			string? panelTypeName = panel.GetType().FullName;
-			if (panelTypeName != null)
+			if (panel.RememberWindowState)
 			{
-				this.Settings.OpenPanels.Add(panelTypeName);
+				string? panelTypeName = panel.GetType().FullName;
+				if (panelTypeName != null)
+				{
+					this.Settings.OpenPanels.Add(panelTypeName);
+				}
 			}
 
 			panel.Close();

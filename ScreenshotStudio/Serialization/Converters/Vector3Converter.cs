@@ -26,7 +26,12 @@ public class Vector3Converter : JsonConverter<Vector3>
 
 	public override void WriteJson(JsonWriter writer, Vector3 value, JsonSerializer serializer)
 	{
-		var newString = value.X.ToString(serializer.Culture) + ", " + value.Y.ToString(serializer.Culture) + ", " + value.Z.ToString(serializer.Culture);
+		var newString =
+			value.X.ToString(Formats.FloatFormat, serializer.Culture)
+			+ ", "
+			+ value.Y.ToString(Formats.FloatFormat, serializer.Culture)
+			+ ", "
+			+ value.Z.ToString(Formats.FloatFormat, serializer.Culture);
 		writer.WriteValue(newString);
 	}
 }
@@ -56,7 +61,12 @@ public class Vector3NullableConverter : JsonConverter<Vector3?>
 		if (value == null)
 			return;
 
-		var newString = value.Value.X.ToString(serializer.Culture) + ", " + value.Value.Y.ToString(serializer.Culture) + ", " + value.Value.Z.ToString(serializer.Culture);
+		var newString =
+			value.Value.X.ToString(Formats.FloatFormat, serializer.Culture)
+			+ ", "
+			+ value.Value.Y.ToString(Formats.FloatFormat, serializer.Culture)
+			+ ", "
+			+ value.Value.Z.ToString(Formats.FloatFormat, serializer.Culture);
 		writer.WriteValue(newString);
 	}
 }

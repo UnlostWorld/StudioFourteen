@@ -174,9 +174,9 @@ public class PoseService : ServiceBase
 					{
 						hkaBone bone = pPose->Skeleton->Bones[boneIdx];
 						string boneName = bone.Name.String ?? "Bone";
-						BoneId id = new(objectTableIndex, partialIdx, poseIdx, boneIdx, boneName);
+						BoneId id = new(objectTableIndex, partialIdx, poseIdx, boneIdx);
 
-						results.Add(this.GetOrCreateBoneReference(id));
+						results.Add(this.GetOrCreateBoneReference(id, boneName));
 					}
 				}
 			}
@@ -191,10 +191,13 @@ public class PoseService : ServiceBase
 		{
 			if (this.boneReferences.TryGetValue(id, out BoneReference? reference))
 			{
+				if (reference.Name == null && name != null)
+					reference.Name = name;
+
 				return reference;
 			}
 
-			reference = new(name, id);
+			reference = new(id, name);
 
 			this.boneIds.Add(id);
 			this.boneIds.Sort();
@@ -234,7 +237,7 @@ public class PoseService : ServiceBase
 
 					if (boneName == name)
 					{
-						bones.Add(new(character->ObjectIndex, partialIdx, poseIdx, boneIdx, boneName));
+						bones.Add(new(character->ObjectIndex, partialIdx, poseIdx, boneIdx));
 
 						short parentIndex = pose->Skeleton->ParentIndices[boneIdx];
 						if (parentIndex != -1)

@@ -1,6 +1,5 @@
 ﻿namespace FFXIVClientStructs.FFXIV.Client.Game;
 
-using FFXIVClientStructs.FFXIV.Client.Game;
 using global::System.Numerics;
 
 public static class CameraExtensions

@@ -54,4 +54,12 @@ public static class QuaternionExtensions
 		res.Z = roll * Rad2Deg;
 		return res;
 	}
+
+	public static bool IsApproximately(this Quaternion a, Quaternion b, float delta = float.Epsilon)
+	{
+		return a.X.IsApproximately(b.X, delta)
+			&& a.Y.IsApproximately(b.Y, delta)
+			&& a.Z.IsApproximately(b.Z, delta)
+			&& a.W.IsApproximately(b.W, delta);
+	}
 }

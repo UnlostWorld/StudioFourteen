@@ -40,13 +40,13 @@ public class PoseFile : FileBase
 
 	public BoneTransform? ModelDifference { get; set; }
 
-	public Race.RaceRows? Race { get; set; }
-	public Tribe.TribeRows? Tribe { get; set; }
-	public Genders? Gender { get; set; }
-
-	public Dictionary<string, BoneTransform>? Bones { get; set; } = new();
+	public Dictionary<string, BoneTransform>? Bones { get; set; }
 	public Dictionary<string, BoneTransform>? MainHand { get; set; } = new();
 	public Dictionary<string, BoneTransform>? OffHand { get; set; } = new();
+
+	// New Screenshot Studio format: Bones as relative transforms from reference pose values.
+	// supports loading poses across races with full positions and scale support.
+	public Dictionary<string, BoneTransform>? ReferenceRelativeBones { get; set; }
 
 	public async Task Save(int objectTableIndex)
 	{
@@ -56,6 +56,7 @@ public class PoseFile : FileBase
 			return;
 
 		this.Bones = new();
+		this.ReferenceRelativeBones = new();
 		this.MainHand = null;
 		this.OffHand = null;
 
@@ -66,10 +67,6 @@ public class PoseFile : FileBase
 			Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
 			if (character == null)
 				return;
-
-			this.Race = (Race.RaceRows)character->GetCustomizeValue(CustomizeIndex.Race);
-			this.Tribe = (Tribe.TribeRows)character->GetCustomizeValue(CustomizeIndex.Tribe);
-			this.Gender = (Genders)character->GetCustomizeValue(CustomizeIndex.Gender);
 
 			CharacterBase* characterBase = character->GetCharacterBase();
 			if (characterBase == null)
@@ -96,7 +93,7 @@ public class PoseFile : FileBase
 						if (boneName == null)
 							continue;
 
-						BoneId boneId = new(character->ObjectIndex, partialIdx, poseIdx, boneIdx, boneName);
+						BoneId boneId = new(character->ObjectIndex, partialIdx, poseIdx, boneIdx);
 						BoneReference reference = ServiceManager.Instance.Pose.GetOrCreateBoneReference(boneId, boneName);
 						references.Add(reference);
 					}
@@ -104,6 +101,7 @@ public class PoseFile : FileBase
 			}
 		}
 
+		// Wait one frame for all the bone references to populate with real transform data.
 		await Threads.NextFrame();
 
 		foreach(BoneReference reference in references)
@@ -117,17 +115,58 @@ public class PoseFile : FileBase
 			if (this.Bones.ContainsKey(reference.Name))
 				continue;
 
-			if (reference.CurrentTransform == null)
+			if (this.ReferenceRelativeBones.ContainsKey(reference.Name))
 				continue;
 
-			hkQsTransformf hkTransform = reference.LastTransform;
-			hkTransform.Add(reference.CurrentTransform.Value);
+			hkQsTransformf hkModelSpaceTransform = reference.LiveTransform;
+			if (reference.Transform != null)
+				hkModelSpaceTransform.Add(reference.Transform.Value);
 
-			BoneTransform transform = new();
-			transform.Position = hkTransform.Translation.ToVector3();
-			transform.Rotation = hkTransform.Rotation.ToQuaternion();
-			transform.Scale = hkTransform.Scale.ToVector3();
-			this.Bones.Add(reference.Name, transform);
+			// Legacy bone format for backwards compatibility
+			{
+				BoneTransform modelSpaceTransform = new();
+				modelSpaceTransform.Position = hkModelSpaceTransform.Translation.ToVector3();
+				modelSpaceTransform.Rotation = hkModelSpaceTransform.Rotation.ToQuaternion();
+				modelSpaceTransform.Scale = hkModelSpaceTransform.Scale.ToVector3();
+				this.Bones.Add(reference.Name, modelSpaceTransform);
+			}
+
+			// New format bones
+			if (reference.LocalSpaceTransform != null)
+			{
+				hkQsTransformf hkReferenceRelativeTransform = reference.LocalSpaceTransform.Value;
+				if (reference.Transform != null)
+					hkReferenceRelativeTransform.Add(reference.Transform.Value);
+
+				hkReferenceRelativeTransform.Subtract(reference.ReferenceTransform);
+
+				BoneTransform referenceRelative = new();
+				referenceRelative.Position = hkReferenceRelativeTransform.Translation.ToVector3();
+				referenceRelative.Rotation = hkReferenceRelativeTransform.Rotation.ToQuaternion();
+				referenceRelative.Scale = hkReferenceRelativeTransform.Scale.ToVector3();
+
+				if (referenceRelative.Position.Value.IsApproximately(Vector3.Zero, 0.001f))
+					referenceRelative.Position = null;
+
+				// If the rotation quat has no x,y, or z component, then ignore it, as 0,0,0,1 is identity, and
+				// a W component without X,Y,Z components doesn't do anything afaik.
+				if (referenceRelative.Rotation.Value.X.IsApproximately(0, 0.001f)
+					&& referenceRelative.Rotation.Value.Y.IsApproximately(0, 0.001f)
+					&& referenceRelative.Rotation.Value.Z.IsApproximately(0, 0.001f))
+					referenceRelative.Rotation = null;
+
+				if (referenceRelative.Scale.Value.IsApproximately(Vector3.Zero, 0.001f))
+					referenceRelative.Scale = null;
+
+				if (referenceRelative.Position == null
+					&& referenceRelative.Rotation == null
+					&& referenceRelative.Scale == null)
+				{
+					continue;
+				}
+
+				this.ReferenceRelativeBones.Add(reference.Name, referenceRelative);
+			}
 		}
 	}
 
@@ -138,94 +177,111 @@ public class PoseFile : FileBase
 		if (DalamudServices.ObjectTable == null)
 			return;
 
-		if (this.Bones != null)
+		PoseService service = ServiceManager.Instance.Pose;
+
+		bool useReferenceRelativeBones = this.ReferenceRelativeBones != null;
+
+		// TODO: check if all races have these bones or its just Hyur!
+		bool includeFace = false;
+		if (useReferenceRelativeBones)
 		{
-			PoseService service = ServiceManager.Instance.Pose;
+			includeFace = true;
+		}
+		else
+		{
+			includeFace = false; //// this.Bones?.ContainsKey("j_f_ulip_02_l") == true;
+		}
 
-			unsafe
+		List<(BoneReference, BoneTransform)> values = new();
+
+		unsafe
+		{
+			Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
+			if (character == null)
+				return;
+
+			CharacterBase* characterBase = character->GetCharacterBase();
+			if (characterBase == null)
+				return;
+
+			ushort partialCount = characterBase->Skeleton->PartialSkeletonCount;
+			for (int partialIdx = 0; partialIdx < partialCount; partialIdx++)
 			{
-				Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
-				if (character == null)
-					return;
+				PartialSkeleton* partialSkeleton = &characterBase->Skeleton->PartialSkeletons[partialIdx];
 
-				// Only load translations if this pose was saved for the targets exact race, tribe, and gender,
-				// otherwise the racial skeletal differences will warp the result too much.
-				bool fullLoad = true;
-				if (this.Race != null && this.Tribe != null && this.Gender != null)
+				byte poseCount = partialSkeleton->GetMaxPoses();
+				for (byte poseIdx = 0; poseIdx < poseCount; poseIdx++)
 				{
-					fullLoad &= character->GetCustomizeValue(CustomizeIndex.Race) == (byte)this.Race;
-					fullLoad &= character->GetCustomizeValue(CustomizeIndex.Tribe) == (byte)this.Tribe;
-					fullLoad &= character->GetCustomizeValue(CustomizeIndex.Gender) == (byte)this.Gender;
-				}
-				else
-				{
-					fullLoad = false;
-				}
+					hkaPose* pose = partialSkeleton->GetHavokPose(poseIdx);
+					if (pose == null)
+						continue;
 
-				CharacterBase* characterBase = character->GetCharacterBase();
-				if (characterBase == null)
-					return;
-
-				// TODO: check if all races have these bones or its just Hyur!
-				bool includeFace = false; //// this.Bones.ContainsKey("j_f_ulip_02_l");
-
-				ushort partialCount = characterBase->Skeleton->PartialSkeletonCount;
-				for (int partialIdx = 0; partialIdx < partialCount; partialIdx++)
-				{
-					PartialSkeleton* partialSkeleton = &characterBase->Skeleton->PartialSkeletons[partialIdx];
-
-					byte poseCount = partialSkeleton->GetMaxPoses();
-					for (byte poseIdx = 0; poseIdx < poseCount; poseIdx++)
+					int boneCount = pose->Skeleton->Bones.Length;
+					for (short boneIdx = 0; boneIdx < boneCount; boneIdx++)
 					{
-						hkaPose* pose = partialSkeleton->GetHavokPose(poseIdx);
-						if (pose == null)
+						hkaBone bone = pose->Skeleton->Bones[boneIdx];
+						string? boneName = bone.Name.String;
+
+						if (boneName == null)
 							continue;
 
-						int boneCount = pose->Skeleton->Bones.Length;
-						for (short boneIdx = 0; boneIdx < boneCount; boneIdx++)
+						if (boneName == "n_root")
+							continue;
+
+						if (!includeFace && boneName.StartsWith("j_f_"))
 						{
-							hkaBone bone = pose->Skeleton->Bones[boneIdx];
-							string? boneName = bone.Name.String;
+							continue;
+						}
 
-							if (boneName == null)
-								continue;
-
-							if (boneName == "n_root")
-								continue;
-
-							if (!includeFace && boneName.StartsWith("j_f_"))
-							{
-								continue;
-							}
-
-							BoneTransform? val;
-							if (!this.Bones.TryGetValue(boneName, out val))
+						BoneTransform? val = null;
+						if (useReferenceRelativeBones)
+						{
+							this.ReferenceRelativeBones?.TryGetValue(boneName, out val);
+						}
+						else
+						{
+							if (this.Bones?.TryGetValue(boneName, out val) != true)
 							{
 								string? legacyName = LegacyBoneNameConverter.GetLegacyName(boneName);
-								if (legacyName == null || !this.Bones.TryGetValue(legacyName, out val))
+								if (legacyName != null)
 								{
-									continue;
+									this.Bones?.TryGetValue(legacyName, out val);
 								}
 							}
+						}
 
-							if (val == null)
-								continue;
-
-							BoneId boneId = new(character->ObjectIndex, partialIdx, poseIdx, boneIdx, boneName);
+						if (val != null)
+						{
+							BoneId boneId = new(character->ObjectIndex, partialIdx, poseIdx, boneIdx);
 							BoneReference reference = service.GetOrCreateBoneReference(boneId, boneName);
-							reference.Mode = BoneReference.Modes.Absolute;
-
-							if (fullLoad)
-							{
-								reference.NextAbsoluteTranslation = val.Position.ToHkVector();
-								reference.NextAbsoluteScale = val.Scale.ToHkVector();
-							}
-
-							reference.NextAbsoluteRotation = val.Rotation.ToHkQuaternion();
+							values.Add((reference, val));
 						}
 					}
 				}
 			}
+		}
+
+		await Threads.NextFrame();
+
+		foreach ((BoneReference reference, BoneTransform value) in values)
+		{
+			if (useReferenceRelativeBones)
+			{
+				// TODO
+			}
+			else
+			{
+				hkQsTransformf newTransform = default;
+				////newTransform.Translation = value.Position.ToHkVector();
+
+				if (value.Rotation != null)
+					newTransform.Rotation = value.Rotation.Value.ToHkQuaternion();
+
+				////newTransform.Scale = value.Scale.ToHkVector();
+				reference.NextModelSpaceTransform = newTransform;
+			}
+
+			reference.Locked = true;
 		}
 	}
 
@@ -237,8 +293,8 @@ public class PoseFile : FileBase
 
 	public class BoneTransform
 	{
-		public Vector3 Position { get; set; }
-		public Quaternion Rotation { get; set; }
-		public Vector3 Scale { get; set; }
+		public Vector3? Position { get; set; }
+		public Quaternion? Rotation { get; set; }
+		public Vector3? Scale { get; set; }
 	}
 }
