@@ -27,51 +27,40 @@ public partial class GearView : View
 {
 	public GearView()
 	{
-		this.MainHand = new(DrawDataContainer.WeaponSlot.MainHand, this);
-		this.OffHand = new(DrawDataContainer.WeaponSlot.OffHand, this);
+		this.MainHand = new(DrawDataContainer.WeaponSlot.MainHand);
+		this.OffHand = new(DrawDataContainer.WeaponSlot.OffHand);
 
-		this.Head = new(DrawDataContainer.EquipmentSlot.Head, this);
-		this.Chest = new(DrawDataContainer.EquipmentSlot.Body, this);
-		this.Hands = new(DrawDataContainer.EquipmentSlot.Hands, this);
-		this.Legs = new(DrawDataContainer.EquipmentSlot.Legs, this);
-		this.Feet = new(DrawDataContainer.EquipmentSlot.Feet, this);
-		this.Earring = new(DrawDataContainer.EquipmentSlot.Ears, this);
-		this.Necklace = new(DrawDataContainer.EquipmentSlot.Neck, this);
-		this.Bracelet = new(DrawDataContainer.EquipmentSlot.Wrists, this);
-		this.RingRight = new(DrawDataContainer.EquipmentSlot.RFinger, this);
-		this.RingLeft = new(DrawDataContainer.EquipmentSlot.LFinger, this);
+		this.Head = new(DrawDataContainer.EquipmentSlot.Head);
+		this.Chest = new(DrawDataContainer.EquipmentSlot.Body);
+		this.Hands = new(DrawDataContainer.EquipmentSlot.Hands);
+		this.Legs = new(DrawDataContainer.EquipmentSlot.Legs);
+		this.Feet = new(DrawDataContainer.EquipmentSlot.Feet);
+		this.Earring = new(DrawDataContainer.EquipmentSlot.Ears);
+		this.Necklace = new(DrawDataContainer.EquipmentSlot.Neck);
+		this.Bracelet = new(DrawDataContainer.EquipmentSlot.Wrists);
+		this.RingRight = new(DrawDataContainer.EquipmentSlot.RFinger);
+		this.RingLeft = new(DrawDataContainer.EquipmentSlot.LFinger);
 
-		this.Glasses = new(AccessorySlots.Glasses, this);
-		this.Ornament = new(this);
+		this.Glasses = new(AccessorySlots.Glasses);
+		this.Ornament = new();
 	}
 
-	public unsafe Character* Target
-	{
-		get
-		{
-			if (this.Panel == null)
-				return null;
+	public unsafe Character* Target => this.Services.Target.Target;
+	[AlwaysNotify] public int TargetObjectIndex => this.Services.Target.TargetObjectIndex;
 
-			return this.Panel.Target;
-		}
-	}
+	[AutoNotify] public WeaponViewModel MainHand { get; init; }
+	[AutoNotify] public WeaponViewModel OffHand { get; init; }
 
-	public bool HasValidTarget => this.Panel?.HasValidTarget == true;
-	public int TargetObjectIndex => this.Panel?.TargetObjectIndex ?? -1;
-
-	public WeaponViewModel MainHand { get; init; }
-	public WeaponViewModel OffHand { get; init; }
-
-	public ItemEquipViewModel Head { get; init; }
-	public ItemEquipViewModel Chest { get; init; }
-	public ItemEquipViewModel Hands { get; init; }
-	public ItemEquipViewModel Legs { get; init; }
-	public ItemEquipViewModel Feet { get; init; }
-	public ItemEquipViewModel Earring { get; init; }
-	public ItemEquipViewModel Necklace { get; init; }
-	public ItemEquipViewModel Bracelet { get; init; }
-	public ItemEquipViewModel RingRight { get; init; }
-	public ItemEquipViewModel RingLeft { get; init; }
+	[AutoNotify] public ItemEquipViewModel Head { get; init; }
+	[AutoNotify] public ItemEquipViewModel Chest { get; init; }
+	[AutoNotify] public ItemEquipViewModel Hands { get; init; }
+	[AutoNotify] public ItemEquipViewModel Legs { get; init; }
+	[AutoNotify] public ItemEquipViewModel Feet { get; init; }
+	[AutoNotify] public ItemEquipViewModel Earring { get; init; }
+	[AutoNotify] public ItemEquipViewModel Necklace { get; init; }
+	[AutoNotify] public ItemEquipViewModel Bracelet { get; init; }
+	[AutoNotify] public ItemEquipViewModel RingRight { get; init; }
+	[AutoNotify] public ItemEquipViewModel RingLeft { get; init; }
 
 	[AutoNotify] public unsafe bool CanRevert => this.Services.CharacterAppearance.CanRestore(this.Target);
 
@@ -154,26 +143,21 @@ public partial class GearView : View
 
 public abstract class GearViewModelBase : ViewModel
 {
+	public unsafe Character* Target => this.Services.Target.Target;
+	[AlwaysNotify] public string? CharacterName => this.Services.Target.CharacterName;
+	[AlwaysNotify] public virtual bool HasValidTarget => this.Services.Target.HasValidTarget;
+	[AlwaysNotify] public int TargetObjectIndex => this.Services.Target.TargetObjectIndex;
+
 	public abstract void Clear();
 	public abstract void Change(object placementTarget);
+
+	public override bool ShouldTickAutoProperties() => this.HasValidTarget;
 }
 
 public abstract class GearViewModelBase<T> : GearViewModelBase
 	where T : ILibraryEntry
 {
-	private readonly GearView view;
-
-	public GearViewModelBase(GearView view)
-	{
-		this.view = view;
-	}
-
-	[AutoNotify] public virtual bool HasValidTarget => this.view.HasValidTarget;
 	[AutoNotify] public abstract T? Item { get; set; }
-
-	protected unsafe Character* Target => this.view.Target;
-
-	public override bool ShouldTickAutoProperties() => this.view.ShouldTickAutoProperties() && this.HasValidTarget;
 
 	public override void Clear()
 	{
@@ -213,11 +197,6 @@ public abstract class ItemViewModelBase : GearViewModelBase<Item>
 	protected Item? item;
 	private Stain? stain0;
 	private Stain? stain1;
-
-	public ItemViewModelBase(GearView view)
-		: base(view)
-	{
-	}
 
 	[AutoNotify] public abstract ushort Set { get; set; }
 	[AutoNotify] public abstract ushort Base { get; set; }
@@ -283,8 +262,7 @@ public abstract class ItemViewModelBase : GearViewModelBase<Item>
 
 public class WeaponViewModel : ItemViewModelBase
 {
-	public WeaponViewModel(DrawDataContainer.WeaponSlot slot, GearView view)
-		: base(view)
+	public WeaponViewModel(DrawDataContainer.WeaponSlot slot)
 	{
 		this.Slot = slot;
 	}
@@ -405,8 +383,7 @@ public class WeaponViewModel : ItemViewModelBase
 
 public class ItemEquipViewModel : ItemViewModelBase
 {
-	public ItemEquipViewModel(DrawDataContainer.EquipmentSlot slot, GearView view)
-		: base(view)
+	public ItemEquipViewModel(DrawDataContainer.EquipmentSlot slot)
 	{
 		this.Slot = slot;
 	}
@@ -524,8 +501,7 @@ public abstract class TableRowItemViewModel<T> : GearViewModelBase<T>
 {
 	private T? item;
 
-	public TableRowItemViewModel(GearView view)
-		: base(view)
+	public TableRowItemViewModel()
 	{
 	}
 
@@ -602,8 +578,7 @@ public abstract class TableRowItemViewModel<T> : GearViewModelBase<T>
 /// </summary>
 public class AccessoryViewModel : TableRowItemViewModel<Glasses>
 {
-	public AccessoryViewModel(AccessorySlots slot, GearView view)
-		: base(view)
+	public AccessoryViewModel(AccessorySlots slot)
 	{
 		this.Slot = slot;
 	}
@@ -624,8 +599,7 @@ public class AccessoryViewModel : TableRowItemViewModel<Glasses>
 /// </summary>
 public class OrnamentViewModel : TableRowItemViewModel<Ornament>
 {
-	public OrnamentViewModel(GearView view)
-		: base(view)
+	public OrnamentViewModel()
 	{
 	}
 
