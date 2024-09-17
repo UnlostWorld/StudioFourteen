@@ -5,6 +5,7 @@ using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.Havok.Animation.Rig;
 using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
+using ScreenshotStudio.Files;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Structs;
 using ScreenshotStudio.Structs.Extensions;
@@ -22,11 +23,13 @@ public class BoneReference(BoneId id, string? name = null)
 
 	public hkQsTransformf LiveTransform;
 	public hkQsTransformf? Transform = null;
-	public hkQsTransformf? NextModelSpaceTransform;
 	public hkQsTransformf? LocalSpaceTransform = null;
 
 	public hkQsTransformf ReferenceTransform;
 	public hkQsTransformf NextReferenceRelativeTransform;
+
+	public PoseFile.LegacyBoneTransform? LoadModelSpaceTransform;
+	public PoseFile.BoneTransform? LoadRelativeTransform;
 
 	public BoneReference? Parent;
 	public bool IsValid = true;
@@ -118,15 +121,60 @@ public class BoneReference(BoneId id, string? name = null)
 		if (this.LocalSpaceTransform == null || !this.Locked)
 			this.LocalSpaceTransform = *pose->AccessBoneLocalSpace(this.Id.BoneIndex);
 
-		if (this.NextModelSpaceTransform != null)
+		if (this.LoadModelSpaceTransform != null)
 		{
-			hkQsTransformf newTransform = this.NextModelSpaceTransform.Value;
-			////newTransform.Translation.Subtract(this.LiveTransform.Translation);
-			newTransform.Rotation.Divide(this.LiveTransform.Rotation);
-			////newTransform.Scale.Subtract(this.LiveTransform.Scale);
+			hkQsTransformf newTransform = default;
+			newTransform.Rotation = HkQuaternionExtensions.Identity;
+			if (this.LoadModelSpaceTransform.Position != null)
+			{
+				newTransform.Translation = this.LoadModelSpaceTransform.Position.Value.ToHkVector();
+				newTransform.Translation.Subtract(this.LiveTransform.Translation);
+			}
+
+			if (this.LoadModelSpaceTransform.Rotation != null)
+			{
+				newTransform.Rotation = this.LoadModelSpaceTransform.Rotation.Value.ToHkQuaternion();
+				newTransform.Rotation.Divide(this.LiveTransform.Rotation);
+			}
+
+			if (this.LoadModelSpaceTransform.Scale != null)
+			{
+				newTransform.Scale = this.LoadModelSpaceTransform.Scale.Value.ToHkVector();
+				newTransform.Scale.Subtract(this.LiveTransform.Scale);
+			}
 
 			this.Transform = newTransform;
-			this.NextModelSpaceTransform = null;
+			this.LoadModelSpaceTransform = null;
+		}
+
+		if (this.LoadRelativeTransform != null)
+		{
+			hkQsTransformf newTransform = default;
+			newTransform.Rotation = HkQuaternionExtensions.Identity;
+
+			if (this.LoadRelativeTransform.Translation != null)
+			{
+				newTransform.Translation = this.ReferenceTransform.Translation;
+				newTransform.Translation.Add(this.LoadRelativeTransform.Translation.Value.ToHkVector());
+				newTransform.Translation.Subtract(this.LocalSpaceTransform.Value.Translation);
+			}
+
+			if (this.LoadRelativeTransform.Rotation != null)
+			{
+				newTransform.Rotation = this.ReferenceTransform.Rotation;
+				newTransform.Rotation.Multiply(this.LoadRelativeTransform.Rotation.Value.ToHkQuaternion());
+				newTransform.Rotation.Divide(this.LocalSpaceTransform.Value.Rotation);
+			}
+
+			if (this.LoadRelativeTransform.Scale != null)
+			{
+				newTransform.Scale = this.ReferenceTransform.Scale;
+				newTransform.Scale.Add(this.LoadRelativeTransform.Scale.Value.ToHkVector());
+				newTransform.Scale.Subtract(this.LocalSpaceTransform.Value.Scale);
+			}
+
+			this.Transform = newTransform;
+			this.LoadRelativeTransform = null;
 		}
 
 		if (this.Transform != null)

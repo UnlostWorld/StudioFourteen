@@ -38,11 +38,11 @@ public class PoseFile : FileBase
 	[JsonIgnore] public ICommand ApplyCommand { get; init; }
 	[JsonIgnore] public ICommand RevertCommand { get; init; }
 
-	public BoneTransform? ModelDifference { get; set; }
+	public LegacyBoneTransform? ModelDifference { get; set; }
 
-	public Dictionary<string, BoneTransform>? Bones { get; set; }
-	public Dictionary<string, BoneTransform>? MainHand { get; set; } = new();
-	public Dictionary<string, BoneTransform>? OffHand { get; set; } = new();
+	public Dictionary<string, LegacyBoneTransform>? Bones { get; set; }
+	public Dictionary<string, LegacyBoneTransform>? MainHand { get; set; } = new();
+	public Dictionary<string, LegacyBoneTransform>? OffHand { get; set; } = new();
 
 	// New Screenshot Studio format: Bones as relative transforms from reference pose values.
 	// supports loading poses across races with full positions and scale support.
@@ -124,7 +124,7 @@ public class PoseFile : FileBase
 
 			// Legacy bone format for backwards compatibility
 			{
-				BoneTransform modelSpaceTransform = new();
+				LegacyBoneTransform modelSpaceTransform = new();
 				modelSpaceTransform.Position = hkModelSpaceTransform.Translation.ToVector3();
 				modelSpaceTransform.Rotation = hkModelSpaceTransform.Rotation.ToQuaternion();
 				modelSpaceTransform.Scale = hkModelSpaceTransform.Scale.ToVector3();
@@ -141,12 +141,12 @@ public class PoseFile : FileBase
 				hkReferenceRelativeTransform.Subtract(reference.ReferenceTransform);
 
 				BoneTransform referenceRelative = new();
-				referenceRelative.Position = hkReferenceRelativeTransform.Translation.ToVector3();
+				referenceRelative.Translation = hkReferenceRelativeTransform.Translation.ToVector3();
 				referenceRelative.Rotation = hkReferenceRelativeTransform.Rotation.ToQuaternion();
 				referenceRelative.Scale = hkReferenceRelativeTransform.Scale.ToVector3();
 
-				if (referenceRelative.Position.Value.IsApproximately(Vector3.Zero, 0.001f))
-					referenceRelative.Position = null;
+				if (referenceRelative.Translation.Value.IsApproximately(Vector3.Zero, 0.001f))
+					referenceRelative.Translation = null;
 
 				// If the rotation quat has no x,y, or z component, then ignore it, as 0,0,0,1 is identity, and
 				// a W component without X,Y,Z components doesn't do anything afaik.
@@ -158,7 +158,7 @@ public class PoseFile : FileBase
 				if (referenceRelative.Scale.Value.IsApproximately(Vector3.Zero, 0.001f))
 					referenceRelative.Scale = null;
 
-				if (referenceRelative.Position == null
+				if (referenceRelative.Translation == null
 					&& referenceRelative.Rotation == null
 					&& referenceRelative.Scale == null)
 				{
@@ -192,6 +192,7 @@ public class PoseFile : FileBase
 			includeFace = false; //// this.Bones?.ContainsKey("j_f_ulip_02_l") == true;
 		}
 
+		List<(BoneReference, LegacyBoneTransform)> legacyValues = new();
 		List<(BoneReference, BoneTransform)> values = new();
 
 		unsafe
@@ -233,13 +234,22 @@ public class PoseFile : FileBase
 							continue;
 						}
 
-						BoneTransform? val = null;
+						BoneId boneId = new(character->ObjectIndex, partialIdx, poseIdx, boneIdx);
+
 						if (useReferenceRelativeBones)
 						{
+							BoneTransform? val = null;
 							this.ReferenceRelativeBones?.TryGetValue(boneName, out val);
+
+							if (val != null)
+							{
+								BoneReference reference = service.GetOrCreateBoneReference(boneId, boneName);
+								values.Add((reference, val));
+							}
 						}
 						else
 						{
+							LegacyBoneTransform? val = null;
 							if (this.Bones?.TryGetValue(boneName, out val) != true)
 							{
 								string? legacyName = LegacyBoneNameConverter.GetLegacyName(boneName);
@@ -248,13 +258,12 @@ public class PoseFile : FileBase
 									this.Bones?.TryGetValue(legacyName, out val);
 								}
 							}
-						}
 
-						if (val != null)
-						{
-							BoneId boneId = new(character->ObjectIndex, partialIdx, poseIdx, boneIdx);
-							BoneReference reference = service.GetOrCreateBoneReference(boneId, boneName);
-							values.Add((reference, val));
+							if (val != null)
+							{
+								BoneReference reference = service.GetOrCreateBoneReference(boneId, boneName);
+								legacyValues.Add((reference, val));
+							}
 						}
 					}
 				}
@@ -263,25 +272,26 @@ public class PoseFile : FileBase
 
 		await Threads.NextFrame();
 
-		foreach ((BoneReference reference, BoneTransform value) in values)
+		if (useReferenceRelativeBones)
 		{
-			if (useReferenceRelativeBones)
+			foreach ((BoneReference reference, BoneTransform value) in values)
 			{
-				// TODO
+				reference.LoadRelativeTransform = value;
+				reference.Locked = true;
 			}
-			else
+		}
+		else
+		{
+			foreach ((BoneReference reference, LegacyBoneTransform value) in legacyValues)
 			{
-				hkQsTransformf newTransform = default;
-				////newTransform.Translation = value.Position.ToHkVector();
+				// TODO: Allow a way for the user to explicitly include translation & scale
+				// but disable them by default (Anamnesis style)
+				value.Position = null;
+				value.Scale = null;
 
-				if (value.Rotation != null)
-					newTransform.Rotation = value.Rotation.Value.ToHkQuaternion();
-
-				////newTransform.Scale = value.Scale.ToHkVector();
-				reference.NextModelSpaceTransform = newTransform;
+				reference.LoadModelSpaceTransform = value;
+				reference.Locked = true;
 			}
-
-			reference.Locked = true;
 		}
 	}
 
@@ -291,10 +301,22 @@ public class PoseFile : FileBase
 		return Task.CompletedTask;
 	}
 
-	public class BoneTransform
+	public class LegacyBoneTransform
 	{
 		public Vector3? Position { get; set; }
 		public Quaternion? Rotation { get; set; }
+		public Vector3? Scale { get; set; }
+	}
+
+	public class BoneTransform
+	{
+		[JsonProperty("T")]
+		public Vector3? Translation { get; set; }
+
+		[JsonProperty("R")]
+		public Quaternion? Rotation { get; set; }
+
+		[JsonProperty("S")]
 		public Vector3? Scale { get; set; }
 	}
 }
