@@ -401,7 +401,7 @@
 			</Trigger>
 
 			<EventTrigger RoutedEvent="UserControl.Loaded">
-				<BeginStoryboard>
+				<BeginStoryboard x:Name="LoadIn">
 					<Storyboard>
 						<DoubleAnimation
 							Storyboard.TargetProperty="Opacity"
@@ -424,7 +424,9 @@
 				</MultiDataTrigger.Conditions>
 
 				<MultiDataTrigger.EnterActions>
-					<BeginStoryboard>
+					<StopStoryboard BeginStoryboardName="LoadIn" />
+					<StopStoryboard BeginStoryboardName="VisibleOut" />
+					<BeginStoryboard x:Name="VisibileIn">
 						<Storyboard>
 							<DoubleAnimation
 								Storyboard.TargetProperty="Opacity"
@@ -439,7 +441,9 @@
 				</MultiDataTrigger.EnterActions>
 
 				<MultiDataTrigger.ExitActions>
-					<BeginStoryboard>
+					<StopStoryboard BeginStoryboardName="LoadIn" />
+					<StopStoryboard BeginStoryboardName="VisibileIn" />
+					<BeginStoryboard x:Name="VisibleOut">
 						<Storyboard>
 							<DoubleAnimation
 								Storyboard.TargetProperty="Opacity"
