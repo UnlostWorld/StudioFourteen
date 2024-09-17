@@ -4,7 +4,6 @@ using ScreenshotStudio.Files;
 using ScreenshotStudio.Library;
 using ScreenshotStudio.Mvm;
 using ScreenshotStudio.Panels;
-using System.IO;
 using System.Windows;
 using WpfUtils.Extensions;
 
@@ -21,7 +20,7 @@ public partial class CharacterPanel : CharacterPanelBase
 
 	private void OnImportClicked(object sender, RoutedEventArgs e)
 	{
-		this.Services.Panels.SetIsOpen<LibraryWindow>(true);
+		LibraryWindow.Open(LibraryWindow.LibraryTabs.Characters);
 	}
 
 	private void OnExportClicked(object sender, RoutedEventArgs e)

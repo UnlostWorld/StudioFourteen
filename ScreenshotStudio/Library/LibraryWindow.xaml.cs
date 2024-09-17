@@ -62,6 +62,14 @@ public partial class LibraryWindow : Panel
 		TabRight_In,
 	}
 
+	public enum LibraryTabs
+	{
+		Favorites,
+		Poses,
+		Characters,
+		Scenes,
+	}
+
 	[AutoNotify]
 	public FastObservableCollection<LibraryTab> Tabs { get; init; } = new()
 	{
@@ -144,6 +152,23 @@ public partial class LibraryWindow : Panel
 			this.NotifyPropertyChanged();
 			this.searchQueue.Invoke();
 		}
+	}
+
+	public static void Open(LibraryTabs tab)
+	{
+		OpenAsync(tab).Run();
+	}
+
+	public static async Task OpenAsync(LibraryTabs tab)
+	{
+		LibraryWindow? panel = ServiceManager.Instance.Panels.Get<LibraryWindow>();
+		if (panel == null)
+			panel = await ServiceManager.Instance.Panels.Open<LibraryWindow>();
+
+		if (panel == null)
+			return;
+
+		await panel.Dispatcher.InvokeAsync(() => panel.CurrentTab = panel.Tabs[(int)tab]);
 	}
 
 	protected override void OnOpened()
