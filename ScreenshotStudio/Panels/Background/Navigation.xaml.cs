@@ -61,17 +61,10 @@ public partial class Navigation : View
 	}
 
 	[AutoNotify]
-	public bool IsCustomizeOpen
+	public bool IsCharacterOpen
 	{
-		get => this.Services.Panels.GetIsOpen<CustomizePanel>();
-		set => this.Services.Panels.SetIsOpen<CustomizePanel>(value);
-	}
-
-	[AutoNotify]
-	public bool IsGearOpen
-	{
-		get => this.Services.Panels.GetIsOpen<GearPanel>();
-		set => this.Services.Panels.SetIsOpen<GearPanel>(value);
+		get => this.Services.Panels.GetIsOpen<CharacterPanel>();
+		set => this.Services.Panels.SetIsOpen<CharacterPanel>(value);
 	}
 
 	[AutoNotify]

@@ -16,12 +16,6 @@
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	mc:Ignorable="d">
 
-	<mvm:View.Resources>
-		<converters:NotNullToBoolConverter x:Key="NotNullToBoolConverter" />
-		<converters:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter" />
-		<BooleanToVisibilityConverter x:Key="B2V" />
-	</mvm:View.Resources>
-
 	<Grid>
 
 		<Grid.Resources>

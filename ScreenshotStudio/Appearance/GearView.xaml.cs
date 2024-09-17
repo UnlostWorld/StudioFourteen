@@ -1,5 +1,6 @@
 ﻿namespace ScreenshotStudio.Appearance;
 
+using DependencyPropertyGenerator;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using ScreenshotStudio.GameData;
 using ScreenshotStudio.GameData.Excel;
@@ -21,9 +22,10 @@ public enum AccessorySlots
 	Glasses,
 }
 
-public partial class GearPanel : CharacterPanelBase
+[DependencyProperty<CharacterPanelBase>("Panel")]
+public partial class GearView : View
 {
-	public GearPanel()
+	public GearView()
 	{
 		this.MainHand = new(DrawDataContainer.WeaponSlot.MainHand, this);
 		this.OffHand = new(DrawDataContainer.WeaponSlot.OffHand, this);
@@ -42,6 +44,20 @@ public partial class GearPanel : CharacterPanelBase
 		this.Glasses = new(AccessorySlots.Glasses, this);
 		this.Ornament = new(this);
 	}
+
+	public unsafe Character* Target
+	{
+		get
+		{
+			if (this.Panel == null)
+				return null;
+
+			return this.Panel.Target;
+		}
+	}
+
+	public bool HasValidTarget => this.Panel?.HasValidTarget == true;
+	public int TargetObjectIndex => this.Panel?.TargetObjectIndex ?? -1;
 
 	public WeaponViewModel MainHand { get; init; }
 	public WeaponViewModel OffHand { get; init; }
@@ -145,19 +161,19 @@ public abstract class GearViewModelBase : ViewModel
 public abstract class GearViewModelBase<T> : GearViewModelBase
 	where T : ILibraryEntry
 {
-	private readonly GearPanel window;
+	private readonly GearView view;
 
-	public GearViewModelBase(GearPanel window)
+	public GearViewModelBase(GearView view)
 	{
-		this.window = window;
+		this.view = view;
 	}
 
-	[AutoNotify] public virtual bool HasValidTarget => this.window.HasValidTarget;
+	[AutoNotify] public virtual bool HasValidTarget => this.view.HasValidTarget;
 	[AutoNotify] public abstract T? Item { get; set; }
 
-	protected unsafe Character* Target => this.window.Target;
+	protected unsafe Character* Target => this.view.Target;
 
-	public override bool ShouldTickAutoProperties() => this.window.ShouldTickAutoProperties() && this.HasValidTarget;
+	public override bool ShouldTickAutoProperties() => this.view.ShouldTickAutoProperties() && this.HasValidTarget;
 
 	public override void Clear()
 	{
@@ -198,8 +214,8 @@ public abstract class ItemViewModelBase : GearViewModelBase<Item>
 	private Stain? stain0;
 	private Stain? stain1;
 
-	public ItemViewModelBase(GearPanel window)
-		: base(window)
+	public ItemViewModelBase(GearView view)
+		: base(view)
 	{
 	}
 
@@ -267,8 +283,8 @@ public abstract class ItemViewModelBase : GearViewModelBase<Item>
 
 public class WeaponViewModel : ItemViewModelBase
 {
-	public WeaponViewModel(DrawDataContainer.WeaponSlot slot, GearPanel window)
-		: base(window)
+	public WeaponViewModel(DrawDataContainer.WeaponSlot slot, GearView view)
+		: base(view)
 	{
 		this.Slot = slot;
 	}
@@ -389,8 +405,8 @@ public class WeaponViewModel : ItemViewModelBase
 
 public class ItemEquipViewModel : ItemViewModelBase
 {
-	public ItemEquipViewModel(DrawDataContainer.EquipmentSlot slot, GearPanel window)
-		: base(window)
+	public ItemEquipViewModel(DrawDataContainer.EquipmentSlot slot, GearView view)
+		: base(view)
 	{
 		this.Slot = slot;
 	}
@@ -508,8 +524,8 @@ public abstract class TableRowItemViewModel<T> : GearViewModelBase<T>
 {
 	private T? item;
 
-	public TableRowItemViewModel(GearPanel window)
-		: base(window)
+	public TableRowItemViewModel(GearView view)
+		: base(view)
 	{
 	}
 
@@ -586,8 +602,8 @@ public abstract class TableRowItemViewModel<T> : GearViewModelBase<T>
 /// </summary>
 public class AccessoryViewModel : TableRowItemViewModel<Glasses>
 {
-	public AccessoryViewModel(AccessorySlots slot, GearPanel window)
-		: base(window)
+	public AccessoryViewModel(AccessorySlots slot, GearView view)
+		: base(view)
 	{
 		this.Slot = slot;
 	}
@@ -608,8 +624,8 @@ public class AccessoryViewModel : TableRowItemViewModel<Glasses>
 /// </summary>
 public class OrnamentViewModel : TableRowItemViewModel<Ornament>
 {
-	public OrnamentViewModel(GearPanel window)
-		: base(window)
+	public OrnamentViewModel(GearView view)
+		: base(view)
 	{
 	}
 

@@ -20,14 +20,16 @@
 	<sys:String x:Key="LOC_Library">Library</sys:String>
 	<sys:String x:Key="LOC_Zone">Zone</sys:String>
 	<sys:String x:Key="LOC_Camera">Camera</sys:String>
-	<sys:String x:Key="LOC_Customize">Customize</sys:String>
-	<sys:String x:Key="LOC_Gear">Gear</sys:String>
 	<sys:String x:Key="LOC_ShaderParameters">Shader Parameters</sys:String>
 	<sys:String x:Key="LOC_Expression">Expression</sys:String>
 	<sys:String x:Key="LOC_Pose">Pose</sys:String>
 	<sys:String x:Key="LOC_Settings">Settings</sys:String>
 	<sys:String x:Key="LOC_Photo">Photo</sys:String>
 	<sys:String x:Key="LOC_Save">Save</sys:String>
+	<sys:String x:Key="LOC_Character">Character</sys:String>
+
+	<sys:String x:Key="LOC_Character_Customize">Customize</sys:String>
+	<sys:String x:Key="LOC_Character_Gear">Gear</sys:String>
 
 	<sys:String x:Key="LOC_Translate">Translate</sys:String>
 	<sys:String x:Key="LOC_Rotation">Rotate</sys:String>

@@ -42,9 +42,26 @@
 								Source="{Binding Icon.Source}"
 								Visibility="{Binding IsLegacy, Converter={StaticResource !B2V}}" />
 
+							<Border
+								x:Name="Selected"
+								Margin="0"
+								BorderBrush="{DynamicResource TrimBrush}"
+								BorderThickness="2"
+								CornerRadius="4"
+								Visibility="Collapsed" />
+
 						</Grid>
 
 					</ToggleButton>
+
+					<DataTemplate.Triggers>
+						<DataTrigger
+							Binding="{Binding IsEnabled}"
+							Value="True">
+							<Setter TargetName="Selected" Property="Visibility" Value="Visible" />
+						</DataTrigger>
+					</DataTemplate.Triggers>
+
 				</DataTemplate>
 			</ItemsControl.ItemTemplate>
 		</ItemsControl>

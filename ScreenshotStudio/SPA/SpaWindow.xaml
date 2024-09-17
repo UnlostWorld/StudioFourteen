@@ -90,23 +90,9 @@
 						Icon="UserEdit" />
 				</TabItem.Header>
 
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition />
-					</Grid.ColumnDefinitions>
-
-					<panels:PanelHost
-						Grid.Column="0"
-						Margin="1,1,0,0"
-						PanelType="{x:Type appearance:CustomizePanel}" />
-
-					<panels:PanelHost
-						Grid.Column="1"
-						Margin="2,1,0,0"
-						PanelType="{x:Type appearance:GearPanel}" />
-
-				</Grid>
+				<panels:PanelHost
+					Margin="2,1,0,0"
+					PanelType="{x:Type appearance:CharacterPanel}" />
 			</TabItem>
 
 			<!--  Pose  -->
@@ -118,7 +104,6 @@
 				</TabItem.Header>
 
 				<panels:PanelHost
-					Grid.Column="1"
 					Margin="2,1,0,0"
 					PanelType="{x:Type pose:PoseWindow}" />
 			</TabItem>

@@ -1,21 +1,30 @@
 ﻿namespace ScreenshotStudio.Appearance;
 
+using DependencyPropertyGenerator;
 using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using ScreenshotStudio.GameData;
 using ScreenshotStudio.GameData.Excel;
 using ScreenshotStudio.Mvm;
-using ScreenshotStudio.Panels;
-using ScreenshotStudio.Services;
 using ScreenshotStudio.Utilities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
+using ScreenshotStudio.Panels;
 
-public partial class CustomizePanel : CharacterPanelBase
+[DependencyProperty<CharacterPanelBase>("Panel")]
+public partial class CustomizeView : View
 {
 	private CharaMakeType? makeType;
 	private bool linkEyeColors = false;
+
+	public unsafe Character* Target => this.Services.Target.Target;
+
+	[AutoNotify]
+	public bool HasValidTarget => this.Panel?.HasValidTarget == true;
+
+	[AutoNotify]
+	public int TargetObjectIndex => this.Panel?.TargetObjectIndex ?? -1;
 
 	public DataSheet<Race>? Races => this.Services.GameData.GetSheet<Race>();
 	public DataSheet<Tribe>? Tribes => this.Services.GameData.GetSheet<Tribe>();
@@ -364,9 +373,11 @@ public partial class CustomizePanel : CharacterPanelBase
 		if (!this.HasValidTarget)
 			return;
 
+		this.Log.Error("Attempt to change customize value");
+
 		Threads.RunOnFrameworkThread(() =>
 		{
-			this.Target->SetCustomizeValue(option, value, CharacterExtensions.UpdateSource.Interface, apply);
+			////this.Target->SetCustomizeValue(option, value, CharacterExtensions.UpdateSource.Interface, apply);
 		});
 	}
 

@@ -1,0 +1,26 @@
+﻿<panels:CharacterPanelBase
+	x:Class="ScreenshotStudio.Appearance.CharacterPanel"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="clr-namespace:ScreenshotStudio.Appearance"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:panels="clr-namespace:ScreenshotStudio.Panels"
+	Title="{DynamicResource LOC_Character}"
+	Width="600"
+	Height="450"
+	Subtitle="{Binding CharacterName}"
+	TitleIcon="UserShield"
+	mc:Ignorable="d">
+	<Grid>
+		<TabControl>
+			<TabItem Header="{DynamicResource LOC_Character_Customize}">
+				<local:CustomizeView Panel="{Binding RelativeSource={RelativeSource AncestorType=panels:CharacterPanelBase}}" />
+			</TabItem>
+
+			<TabItem Header="{DynamicResource LOC_Character_Gear}">
+				<local:GearView Panel="{Binding RelativeSource={RelativeSource AncestorType=panels:CharacterPanelBase}}" />
+			</TabItem>
+		</TabControl>
+	</Grid>
+</panels:CharacterPanelBase>

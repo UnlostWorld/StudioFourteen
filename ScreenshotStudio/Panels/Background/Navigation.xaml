@@ -155,15 +155,9 @@
 					</ToggleButton>
 
 					<ToggleButton
-						IsChecked="{Binding IsCustomizeOpen}"
-						ToolTip="{DynamicResource LOC_Customize}">
-						<wpfUtils:IconBlock Icon="UserEdit" />
-					</ToggleButton>
-
-					<ToggleButton
-						IsChecked="{Binding IsGearOpen}"
-						ToolTip="{DynamicResource LOC_Gear}">
-						<wpfUtils:IconBlock Icon="ShieldHalved" />
+						IsChecked="{Binding IsCharacterOpen}"
+						ToolTip="{DynamicResource LOC_Character}">
+						<wpfUtils:IconBlock Icon="UserShield" />
 					</ToggleButton>
 
 					<ToggleButton

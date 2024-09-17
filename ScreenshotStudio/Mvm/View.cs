@@ -16,6 +16,8 @@ public class View : UserControl, IAutoNotify
 
 	public View()
 	{
+		this.Resources = ScreenshotStudio.Resources.Load();
+
 		this.GetType().GetMethod("InitializeComponent")?.Invoke(this, null);
 
 		if (this.Content is FrameworkElement el)
