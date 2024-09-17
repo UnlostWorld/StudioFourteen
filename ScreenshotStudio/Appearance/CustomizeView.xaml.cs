@@ -373,11 +373,9 @@ public partial class CustomizeView : View
 		if (!this.HasValidTarget)
 			return;
 
-		this.Log.Error("Attempt to change customize value");
-
 		Threads.RunOnFrameworkThread(() =>
 		{
-			////this.Target->SetCustomizeValue(option, value, CharacterExtensions.UpdateSource.Interface, apply);
+			this.Target->SetCustomizeValue(option, value, CharacterExtensions.UpdateSource.Interface, apply);
 		});
 	}
 
