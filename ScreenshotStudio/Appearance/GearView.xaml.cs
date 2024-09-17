@@ -46,7 +46,6 @@ public partial class GearView : View
 	}
 
 	public unsafe Character* Target => this.Services.Target.Target;
-	[AlwaysNotify] public int TargetObjectIndex => this.Services.Target.TargetObjectIndex;
 
 	[AutoNotify] public WeaponViewModel MainHand { get; init; }
 	[AutoNotify] public WeaponViewModel OffHand { get; init; }
@@ -61,8 +60,6 @@ public partial class GearView : View
 	[AutoNotify] public ItemEquipViewModel Bracelet { get; init; }
 	[AutoNotify] public ItemEquipViewModel RingRight { get; init; }
 	[AutoNotify] public ItemEquipViewModel RingLeft { get; init; }
-
-	[AutoNotify] public unsafe bool CanRevert => this.Services.CharacterAppearance.CanRestore(this.Target);
 
 	public AccessoryViewModel Glasses { get; init; }
 	public OrnamentViewModel Ornament { get; init; }
@@ -117,11 +114,15 @@ public partial class GearView : View
 
 		string searchTitle = $"{equip.Slot} {ScreenshotStudio.Resources.Find("Dye", "Dye")}";
 
+		Stain? currentStain = equip.Stain0;
+		if (dyeChanel == 1)
+			currentStain = equip.Stain1;
+
 		LibraryModal.Show<Stain>(
 			sender,
 			searchTitle,
 			defaultTags,
-			equip.Stain1,
+			currentStain,
 			(stain, isFinal) =>
 			{
 				if (dyeChanel == 0)
@@ -133,11 +134,6 @@ public partial class GearView : View
 					equip.Stain1 = stain;
 				}
 			});
-	}
-
-	private unsafe void OnRevertClicked(object sender, RoutedEventArgs e)
-	{
-		Task.Run(() => this.Services.CharacterAppearance.Restore(this.TargetObjectIndex));
 	}
 }
 

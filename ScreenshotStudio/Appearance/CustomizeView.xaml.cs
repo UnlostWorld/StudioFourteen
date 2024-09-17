@@ -30,7 +30,6 @@ public partial class CustomizeView : View
 	public DataSheet<Tribe>? Tribes => this.Services.GameData.GetSheet<Tribe>();
 
 	public IEnumerable<Race?>? AvailableRaces => this.Services.GameData.GetSheet<Race>()?.GetFrom(1);
-	[AutoNotify] public unsafe bool CanRevert => this.Services.CharacterAppearance.CanRestore(this.Target);
 
 	[AutoNotify]
 	public CharaMakeType? MakeType
@@ -388,13 +387,5 @@ public partial class CustomizeView : View
 		{
 			this.Target->UpdateCustomize(redraw, CharacterExtensions.UpdateSource.Interface);
 		});
-	}
-
-	private unsafe void OnRevertClicked(object sender, RoutedEventArgs e)
-	{
-		if (!this.HasValidTarget)
-			return;
-
-		Task.Run(() => this.Services.CharacterAppearance.Restore(this.TargetObjectIndex));
 	}
 }

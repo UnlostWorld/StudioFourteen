@@ -6,6 +6,7 @@
 	xmlns:local="clr-namespace:ScreenshotStudio.Appearance"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:panels="clr-namespace:ScreenshotStudio.Panels"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="{DynamicResource LOC_Character}"
 	Width="600"
 	Height="450"
@@ -13,7 +14,13 @@
 	TitleIcon="UserShield"
 	mc:Ignorable="d">
 	<Grid>
-		<TabControl>
+
+		<Grid.RowDefinitions>
+			<RowDefinition />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+
+		<TabControl Grid.Row="0">
 			<TabItem Header="{DynamicResource LOC_Character_Customize}">
 				<local:CustomizeView Panel="{Binding RelativeSource={RelativeSource AncestorType=panels:CharacterPanelBase}}" />
 			</TabItem>
@@ -22,5 +29,37 @@
 				<local:GearView Panel="{Binding RelativeSource={RelativeSource AncestorType=panels:CharacterPanelBase}}" />
 			</TabItem>
 		</TabControl>
+
+		<Border
+			Grid.Row="1"
+			Style="{DynamicResource WpfUtilsControlBorder}">
+			<StackPanel
+				HorizontalAlignment="Right"
+				Orientation="Horizontal">
+				<Button
+					Background="Transparent"
+					Click="OnRevertClicked"
+					IsEnabled="{Binding CanRevert}"
+					ToolTip="{DynamicResource LOC_Revert}">
+					<wpfUtils:IconBlock Icon="Undo" />
+				</Button>
+
+				<Button
+					Width="75"
+					Background="Transparent"
+					Click="OnImportClicked">
+					<TextBlock Text="Import" />
+				</Button>
+
+				<Button
+					Width="75"
+					Background="Transparent"
+					Click="OnExportClicked"
+					ToolTip="{Binding ExportAppearanceToolTipText}">
+					<TextBlock Text="Export" />
+				</Button>
+
+			</StackPanel>
+		</Border>
 	</Grid>
 </panels:CharacterPanelBase>

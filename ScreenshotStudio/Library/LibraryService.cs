@@ -43,9 +43,10 @@ public class LibraryService : ServiceBase
 
 	public override Task Start()
 	{
-		this.AddSource(new FileSource("Screenshot Studio", Environment.SpecialFolder.MyDocuments, "/ScreenshotStudio/"));
-		this.AddSource(new FileSource("Brio", Environment.SpecialFolder.MyDocuments, "/Brio/"));
-		this.AddSource(new FileSource("Anamnesis", Environment.SpecialFolder.MyDocuments, "/Anamnesis/"));
+		this.AddSource(new FileSource("Screenshot Studio", this.Services.Files.ScreenshotStudioDir));
+		this.AddSource(new FileSource("Brio", this.Services.Files.BrioDir));
+		this.AddSource(new FileSource("Anamnesis", this.Services.Files.AnamnesisDir));
+		this.AddSource(new FileSource("Ktisis", this.Services.Files.KtisisDir));
 
 		this.LoadSources();
 		return base.Start();

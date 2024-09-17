@@ -465,11 +465,6 @@
 			</DataTemplate>
 		</Grid.Resources>
 
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
-
 		<UniformGrid Columns="2">
 			<ContentPresenter
 				Grid.Column="0"
@@ -524,20 +519,5 @@
 				Content="{Binding Ornament}"
 				ContentTemplate="{StaticResource OrnamentView}" />
 		</UniformGrid>
-
-		<Border
-			Grid.Row="1"
-			Style="{DynamicResource WpfUtilsControlBorder}">
-			<StackPanel Orientation="Horizontal">
-				<Button
-					Grid.Column="0"
-					Click="OnRevertClicked"
-					IsEnabled="{Binding CanRevert}"
-					ToolTip="{DynamicResource LOC_Revert}">
-					<wpfUtils:IconBlock Icon="Undo" />
-				</Button>
-			</StackPanel>
-		</Border>
-
 	</Grid>
 </mvm:View>

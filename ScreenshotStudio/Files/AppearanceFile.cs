@@ -142,7 +142,14 @@ public class AppearanceFile : FileBase, ICharacterAppearance
 
 	public Task Apply(int objectTableIndex)
 	{
-		throw new NotImplementedException();
+		////throw new NotImplementedException();
+		return Task.CompletedTask;
+	}
+
+	public Task Read(int objectTableIndex)
+	{
+		////throw new NotImplementedException();
+		return Task.CompletedTask;
 	}
 
 	public struct ItemSave

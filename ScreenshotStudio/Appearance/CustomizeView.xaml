@@ -28,11 +28,6 @@
 			</Style>
 		</Grid.Resources>
 
-		<Grid.RowDefinitions>
-			<RowDefinition />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
-
 		<ScrollViewer
 			Grid.Row="0"
 			behaviours:SmoothScrollBehaviour.SmoothScroll="True"
@@ -729,22 +724,6 @@
 				</Grid>
 			</Grid>
 		</ScrollViewer>
-
-		<Border
-			Grid.Row="1"
-			Margin="0,3,0,0"
-			Style="{DynamicResource WpfUtilsControlBorder}">
-			<StackPanel Orientation="Horizontal">
-				<Button
-					Grid.Column="0"
-					Click="OnRevertClicked"
-					IsEnabled="{Binding CanRevert}"
-					ToolTip="{DynamicResource LOC_Revert}">
-					<wpfUtils:IconBlock Icon="Undo" />
-				</Button>
-			</StackPanel>
-		</Border>
-
 	</Grid>
 
 </mvm:View>

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using WpfUtils.Extensions;
 
 public class FileService : ServiceBase
 {
@@ -19,6 +20,11 @@ public class FileService : ServiceBase
 		new PoseFileTypeInfo(),
 		new SceneFileTypeInfo(),
 	};
+
+	public DirectoryInfo ScreenshotStudioDir { get; init; } = new DirectoryInfo($"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/ScreenshotStudio/");
+	public DirectoryInfo BrioDir { get; init; } = new DirectoryInfo($"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/Brio/");
+	public DirectoryInfo AnamnesisDir { get; init; } = new DirectoryInfo($"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/Anamnesis/");
+	public DirectoryInfo KtisisDir { get; init; } = new DirectoryInfo($"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/Ktisis/");
 
 	public FileTypeInfoBase? GetTypeInfo(FileInfo? file)
 	{
@@ -83,7 +89,7 @@ public class FileService : ServiceBase
 
 		OpenFolderDialog dialog = new OpenFolderDialog();
 		dialog.DefaultDirectory = defaultInfo?.FullName.TrimEnd('/', '\\');
-		this.PopulatecustomPlaces(dialog);
+		this.PopulateCustomPlaces(dialog);
 
 		bool? result = dialog.ShowDialog(bgWindow);
 
@@ -91,6 +97,57 @@ public class FileService : ServiceBase
 			return null;
 
 		return new DirectoryInfo(dialog.FolderName);
+	}
+
+	public void SaveFile(FileBase file)
+	{
+		this.SaveFileAsync(file).Run();
+	}
+
+	public void SaveFile(FileBase file, FileSystemInfo defaultFileInfo)
+	{
+		this.SaveFileAsync(file, defaultFileInfo).Run();
+	}
+
+	public void SaveFile(FileBase file, string defaultFileName)
+	{
+		this.SaveFileAsync(file, defaultFileName).Run();
+	}
+
+	public async Task SaveFileAsync(FileBase file)
+	{
+		FileTypeInfoBase? fileTypeInfo = this.GetTypeInfo(file);
+		string fileName = $"New {fileTypeInfo?.TypeName}";
+		await this.SaveFileAsync(file, fileName);
+	}
+
+	public async Task SaveFileAsync(FileBase file, string defaultFileName)
+	{
+		// TODO: lookup last used file for this file type...
+		FileTypeInfoBase? fileTypeInfo = this.GetTypeInfo(file);
+		FileSystemInfo? defaultFileInfo = new FileInfo($"{this.ScreenshotStudioDir.FullName}/{defaultFileName}{fileTypeInfo?.Extension}");
+
+		await this.SaveFileAsync(file, defaultFileInfo);
+	}
+
+	public async Task SaveFileAsync(FileBase file, FileSystemInfo defaultFileInfo)
+	{
+		// if the file exists, append (2) after the name.
+		int count = 2;
+		string fileName = Path.GetFileNameWithoutExtension(defaultFileInfo.Name);
+		string extension = Path.GetExtension(defaultFileInfo.Extension);
+		while (defaultFileInfo.Exists)
+		{
+			defaultFileInfo = new FileInfo($"{this.ScreenshotStudioDir.FullName}/{fileName} ({count}){extension}");
+			count++;
+		}
+
+		FileInfo? fileInfo = await this.ShowSaveDialog(defaultFileInfo, file.GetType());
+
+		if (fileInfo == null)
+			return;
+
+		await this.Save(file, fileInfo);
 	}
 
 	public Task<FileInfo?> ShowSaveDialog<TFile>(FileSystemInfo? defaultInfo = null)
@@ -115,7 +172,7 @@ public class FileService : ServiceBase
 		return this.ShowDialog<OpenFileDialog>(defaultInfo, fileType);
 	}
 
-	private void PopulatecustomPlaces(CommonItemDialog self)
+	private void PopulateCustomPlaces(CommonItemDialog self)
 	{
 		foreach (SourceBase src in ServiceManager.Instance.Library.Sources)
 		{
@@ -206,7 +263,7 @@ public class FileService : ServiceBase
 		}
 
 		dialog.Filter = filterBuilder.ToString();
-		this.PopulatecustomPlaces(dialog);
+		this.PopulateCustomPlaces(dialog);
 
 		bool? result = dialog.ShowDialog(bgWindow);
 
