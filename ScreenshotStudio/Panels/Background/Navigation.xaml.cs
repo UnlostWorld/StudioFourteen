@@ -47,14 +47,7 @@ public partial class Navigation : View
 	}
 
 	[AutoNotify]
-	public bool IsZoneOpen
-	{
-		get => this.Services.Panels.GetIsOpen<HelloWorldWindow>();
-		set => this.Services.Panels.SetIsOpen<HelloWorldWindow>(value);
-	}
-
-	[AutoNotify]
-	public bool IsCameraOpen
+	public bool IsEnvironmentOpen
 	{
 		get => this.Services.Panels.GetIsOpen<HelloWorldWindow>();
 		set => this.Services.Panels.SetIsOpen<HelloWorldWindow>(value);
@@ -65,13 +58,6 @@ public partial class Navigation : View
 	{
 		get => this.Services.Panels.GetIsOpen<CharacterPanel>();
 		set => this.Services.Panels.SetIsOpen<CharacterPanel>(value);
-	}
-
-	[AutoNotify]
-	public bool IsShadersOpen
-	{
-		get => this.Services.Panels.GetIsOpen<HelloWorldWindow>();
-		set => this.Services.Panels.SetIsOpen<HelloWorldWindow>(value);
 	}
 
 	[AutoNotify]

@@ -132,26 +132,13 @@
 						<wpfUtils:IconBlock Icon="Book" />
 					</ToggleButton>
 
-					<ToggleButton
-						IsChecked="{Binding IsSettingsOpen}"
-						ToolTip="{DynamicResource LOC_Settings}">
-						<wpfUtils:IconBlock Icon="cogs" />
-					</ToggleButton>
-
 					<Line />
 
 					<ToggleButton
-						IsChecked="{Binding IsZoneOpen}"
+						IsChecked="{Binding IsEnvironmentOpen}"
 						IsEnabled="False"
-						ToolTip="{DynamicResource LOC_Zone}">
+						ToolTip="{DynamicResource LOC_Environment}">
 						<wpfUtils:IconBlock Icon="CloudMoonRain" />
-					</ToggleButton>
-
-					<ToggleButton
-						IsChecked="{Binding IsCameraOpen}"
-						IsEnabled="False"
-						ToolTip="{DynamicResource LOC_Camera}">
-						<wpfUtils:IconBlock Icon="Camera" />
 					</ToggleButton>
 
 					<ToggleButton
@@ -161,24 +148,12 @@
 					</ToggleButton>
 
 					<ToggleButton
-						IsChecked="{Binding IsShadersOpen}"
-						IsEnabled="False"
-						ToolTip="{DynamicResource LOC_ShaderParameters}">
-						<wpfUtils:IconBlock Icon="Shapes" />
-					</ToggleButton>
-
-					<ToggleButton
-						IsEnabled="False"
-						ToolTip="{DynamicResource LOC_Expression}">
-						<wpfUtils:IconBlock Icon="FaceGrinHearts" />
-					</ToggleButton>
-
-					<ToggleButton
 						IsChecked="{Binding IsPoseOpen}"
 						ToolTip="{DynamicResource LOC_Pose}">
 						<wpfUtils:IconBlock Icon="Running" />
 					</ToggleButton>
 
+					<Line />
 
 					<ToggleButton
 						IsChecked="{Binding IsPhotoOpen}"
@@ -186,14 +161,21 @@
 						<wpfUtils:IconBlock Icon="Image" />
 					</ToggleButton>
 
-					<Line />
-
 					<ToggleButton
 						IsChecked="{Binding IsSaveOpen}"
 						ToolTip="{DynamicResource LOC_Save}">
 						<save:SaveIconControl />
 
 					</ToggleButton>
+
+					<Line />
+
+					<ToggleButton
+						IsChecked="{Binding IsSettingsOpen}"
+						ToolTip="{DynamicResource LOC_Settings}">
+						<wpfUtils:IconBlock Icon="cogs" />
+					</ToggleButton>
+
 				</StackPanel>
 			</Border>
 		</Border>
