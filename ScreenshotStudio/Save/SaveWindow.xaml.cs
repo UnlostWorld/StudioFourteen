@@ -137,6 +137,7 @@ public partial class SaveWindow : Panel
 	private void OnSaveClicked(object sender, RoutedEventArgs e)
 	{
 		this.Services.Save.Save(this.Configuration);
+		this.Close();
 	}
 
 	private async void OnBrowseDirectoryClicked(AddDirectoryViewModel viewModel)

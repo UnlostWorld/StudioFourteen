@@ -19,7 +19,8 @@
 			<Button
 				Margin="0"
 				Click="OnTagClicked"
-				Content="{Binding Name}">
+				Content="{Binding DisplayName}"
+				ToolTip="{Binding ToolTip}">
 				<Button.Template>
 					<ControlTemplate TargetType="{x:Type Button}">
 						<Grid

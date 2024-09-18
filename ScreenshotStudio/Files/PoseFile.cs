@@ -1,18 +1,17 @@
 ﻿namespace ScreenshotStudio.Files;
 
-using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.Havok.Animation.Rig;
 using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
 using Newtonsoft.Json;
-using ScreenshotStudio.GameData.Excel;
 using ScreenshotStudio.Mvm.Commands;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Posing;
 using ScreenshotStudio.Structs;
 using ScreenshotStudio.Structs.Extensions;
+using ScreenshotStudio.Tags;
 using ScreenshotStudio.Utilities;
 using System;
 using System.Collections.Generic;
@@ -47,6 +46,16 @@ public class PoseFile : FileBase
 	// New Screenshot Studio format: Bones as relative transforms from reference pose values.
 	// supports loading poses across races with full positions and scale support.
 	public Dictionary<string, BoneTransform>? ReferenceRelativeBones { get; set; }
+
+	public override void GetAutoTags(TagCollection tags)
+	{
+		base.GetAutoTags(tags);
+
+		if (this.ReferenceRelativeBones == null)
+		{
+			tags.Add("LegacyPose");
+		}
+	}
 
 	public async Task Save(int objectTableIndex)
 	{

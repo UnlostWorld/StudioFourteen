@@ -121,6 +121,10 @@
 	<sys:String x:Key="LOC_Pose_RevertPose">Revert all changes to {0}'s pose</sys:String>
 	<sys:String x:Key="LOC_Pose_Reference">Set the targeted actor to its reference pose</sys:String>
 
+	<!--  Tags  -->
+	<sys:String x:Key="LOC_Tag_LegacyPose">Legacy Pose</sys:String>
+	<sys:String x:Key="LOC_Tag_LegacyPose_ToolTip">A pose file created outside of Screenshot Studio. This file does not support all posing features, and expressions will not load.</sys:String>
+
 	<!--  Bones  -->
 	<sys:String x:Key="LOC_Bone_n_root">Root</sys:String>
 	<sys:String x:Key="LOC_Bone_n_hara">Abdomen</sys:String>

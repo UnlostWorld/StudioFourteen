@@ -11,6 +11,9 @@ public class Tag : IEquatable<Tag?>
 	private readonly string name;
 	private readonly HashSet<string> aliases = new();
 
+	private string? displayName;
+	private string? toolTip;
+
 	private Tag(string name)
 	{
 		this.name = name;
@@ -19,8 +22,27 @@ public class Tag : IEquatable<Tag?>
 	public string Name => this.name;
 	public IReadOnlyCollection<string> Aliases => this.aliases;
 
-	// TODO: a lookup in resources for tag name
-	public string DisplayName => this.name;
+	public string DisplayName
+	{
+		get
+		{
+			if (this.displayName == null)
+				this.displayName = ScreenshotStudio.Resources.Find($"LOC_Tag_{this.name}", this.name);
+
+			return this.displayName;
+		}
+	}
+
+	public string ToolTip
+	{
+		get
+		{
+			if (this.toolTip == null)
+				this.toolTip = ScreenshotStudio.Resources.Find($"LOC_Tag_{this.name}_ToolTip", this.name);
+
+			return this.toolTip;
+		}
+	}
 
 	public static implicit operator Tag(string name)
 	{

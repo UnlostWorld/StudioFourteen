@@ -1,9 +1,9 @@
 ﻿namespace ScreenshotStudio.Files;
 
+using Newtonsoft.Json;
 using ScreenshotStudio.Mvm.Commands;
 using System;
 using System.Collections.Generic;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
