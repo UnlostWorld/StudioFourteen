@@ -55,7 +55,10 @@ public class PoseService : ServiceBase
 				this.selection.Activate();
 
 				// TODO: if they've changed the default?
-				this.EditMode = this.selection.DefaultEditMode;
+				if (this.selection is TransformSelectionBase transformSelection)
+				{
+					this.EditMode = transformSelection.DefaultEditMode;
+				}
 			}
 
 			this.SelectionChanged?.Invoke(value);

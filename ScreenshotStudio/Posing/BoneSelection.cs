@@ -7,7 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 
-public class BoneSelection : SelectionBase
+public class BoneSelection : TransformSelectionBase
 {
 	private readonly List<BoneId> boneIds;
 	private readonly List<BoneId> parentBoneIds;
@@ -53,21 +53,16 @@ public class BoneSelection : SelectionBase
 	public override double TranslationRange => this.IsFaceBone ? 0.02 : 0.1;
 	public override PoseEditModes DefaultEditMode => this.IsFaceBone ? PoseEditModes.Translation : PoseEditModes.Rotation;
 
-	public BoneReference Bone
-	{
-		get
-		{
-			if (this.bone == null)
-				throw new Exception("Attempt to access bone selection transform before a bone has been assigned");
-
-			return this.bone;
-		}
-	}
-
 	public override bool LockTransform
 	{
 		get => this.bone?.Locked == true;
-		set => this.Bone.Locked = value;
+		set
+		{
+			if (this.bone == null)
+				return;
+
+			this.bone.Locked = value;
+		}
 	}
 
 	public override Vector3 LocalTranslation
@@ -105,17 +100,20 @@ public class BoneSelection : SelectionBase
 
 	public override Vector3 WorldTranslation
 	{
-		get => this.LocalTranslation + this.Bone.LastCharacterTranslation;
-		set => this.LocalTranslation = value - this.Bone.LastCharacterTranslation;
+		get => this.LocalTranslation + (this.bone?.LastCharacterTranslation ?? Vector3.Zero);
+		set => this.LocalTranslation = value - (this.bone?.LastCharacterTranslation ?? Vector3.Zero);
 	}
 
 	public override Quaternion WorldRotation
 	{
-		get => this.Bone.LastCharacterRotation * this.LocalRotation;
+		get => (this.bone?.LastCharacterRotation ?? Quaternion.Identity) * this.LocalRotation;
 		set
 		{
+			if (this.bone == null)
+				return;
+
 			value = Quaternion.Conjugate(value);
-			value *= this.Bone.LastCharacterRotation;
+			value *= this.bone.LastCharacterRotation;
 			value = Quaternion.Conjugate(value);
 
 			this.LocalRotation = value;
@@ -124,8 +122,8 @@ public class BoneSelection : SelectionBase
 
 	public override Vector3 WorldScale
 	{
-		get => this.LocalScale + this.Bone.LastCharacterScale;
-		set => this.LocalScale = value - this.Bone.LastCharacterScale;
+		get => this.LocalScale + (this.bone?.LastCharacterScale ?? Vector3.One);
+		set => this.LocalScale = value - (this.bone?.LastCharacterScale ?? Vector3.One);
 	}
 
 	// TODO: support multiple bone transforms
@@ -133,18 +131,24 @@ public class BoneSelection : SelectionBase
 	{
 		get
 		{
-			hkQsTransformf combine = this.Bone.LiveTransform;
+			if (this.bone == null)
+				return default;
 
-			if (this.Bone.Transform != null)
-				combine.Add(this.Bone.Transform.Value);
+			hkQsTransformf combine = this.bone.LiveTransform;
+
+			if (this.bone.Transform != null)
+				combine.Add(this.bone.Transform.Value);
 
 			return combine;
 		}
 		set
 		{
+			if (this.bone == null)
+				return;
+
 			hkQsTransformf separate = value;
-			separate.Subtract(this.Bone.LiveTransform);
-			this.Bone.Transform = separate;
+			separate.Subtract(this.bone.LiveTransform);
+			this.bone.Transform = separate;
 		}
 	}
 

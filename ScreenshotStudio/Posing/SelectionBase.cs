@@ -9,6 +9,21 @@ public abstract class SelectionBase : ViewModel
 	[AutoNotify] public abstract string Name { get; }
 	[AutoNotify] public abstract string? Subtitle { get; }
 
+	public virtual void Activate()
+	{
+	}
+
+	public virtual void Deactivate()
+	{
+	}
+
+	public virtual void OnFrameworkUpdate(IFramework framework)
+	{
+	}
+}
+
+public abstract class TransformSelectionBase : SelectionBase
+{
 	public abstract Vector3 WorldTranslation { get; set; }
 	public abstract Quaternion WorldRotation { get; set; }
 	public abstract Vector3 WorldScale { get; set; }
@@ -24,16 +39,4 @@ public abstract class SelectionBase : ViewModel
 	public virtual double TranslationSmallChange => 0.01;
 	public virtual double TranslationRange => 1;
 	public virtual PoseEditModes DefaultEditMode => PoseEditModes.Translation;
-
-	public virtual void Activate()
-	{
-	}
-
-	public virtual void Deactivate()
-	{
-	}
-
-	public virtual void OnFrameworkUpdate(IFramework framework)
-	{
-	}
 }

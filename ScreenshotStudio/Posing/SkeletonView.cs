@@ -22,10 +22,10 @@ using WpfUtils;
 [DependencyProperty<bool>("FlipSides", DefaultValue = false)]
 public partial class SkeletonView : Canvas
 {
-	protected readonly ILogger Log = Logging.ForContext<SkeletonView>();
+	public const double BackgroundOpacity = 0.25;
+	public const double MouseOverDistance = 20;
 
-	private const double BackgroundOpacity = 0.25;
-	private const double MouseOverDistance = 20;
+	protected readonly ILogger Log = Logging.ForContext<SkeletonView>();
 
 	private readonly List<BoneButton> boneButtons = new();
 	private readonly List<BoneConnection> boneConnections = new();

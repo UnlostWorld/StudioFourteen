@@ -7,7 +7,7 @@ using ScreenshotStudio.Plugin;
 using System;
 using System.Numerics;
 
-public class GameObjectSelection : SelectionBase
+public class GameObjectSelection : TransformSelectionBase
 {
 	private readonly ushort objectTableId;
 	private string? name;
