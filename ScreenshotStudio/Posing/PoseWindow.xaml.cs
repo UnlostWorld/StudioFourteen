@@ -1,19 +1,10 @@
 ﻿namespace ScreenshotStudio.Posing;
-
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
-using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
-using FFXIVClientStructs.Havok.Animation.Rig;
 using ScreenshotStudio.Mvm;
 using ScreenshotStudio.Panels;
 using ScreenshotStudio.Structs.Extensions;
-using ScreenshotStudio.Utilities;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Numerics;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 
 public partial class PoseWindow : CharacterPanelBase
@@ -21,8 +12,6 @@ public partial class PoseWindow : CharacterPanelBase
 	private Vector3? trackingEuler;
 
 	public PoseEditModes[] EditModes => Enum.GetValues<PoseEditModes>();
-
-	public ObservableCollection<BoneTreeNode> Partials { get; init; } = new();
 
 	[AutoNotify] public string RevertTooltip => ScreenshotStudio.Resources.Format("LOC_Pose_RevertPose", this.CharacterName);
 
@@ -331,14 +320,12 @@ public partial class PoseWindow : CharacterPanelBase
 	{
 		await this.Services.Pose.SetToReferencePose(this.TargetObjectIndex);
 	}
-}
 
-public class BoneTreeNode(string? name)
-{
-	private readonly string? name = name;
+	private void OnImportClicked(object sender, RoutedEventArgs e)
+	{
+	}
 
-	public string? Name => this.Selection?.Name ?? this.name;
-
-	public BoneSelection? Selection { get; set; }
-	public ObservableCollection<BoneTreeNode> Children { get; init; } = new();
+	private void OnExportClicked(object sender, RoutedEventArgs e)
+	{
+	}
 }

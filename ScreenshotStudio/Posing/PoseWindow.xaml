@@ -10,13 +10,12 @@
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="{DynamicResource LOC_Pose}"
 	Width="700"
-	Height="600"
-	MinWidth="700"
-	MinHeight="600"
+	Height="550"
 	VerticalAlignment="Top"
 	VerticalContentAlignment="Top"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
+	ResizeMode="NoResize"
 	Subtitle="{Binding CharacterName}"
 	TitleIcon="Running"
 	mc:Ignorable="d">
@@ -33,8 +32,12 @@
 			<ColumnDefinition Width="180" />
 		</Grid.ColumnDefinitions>
 
+		<Grid.RowDefinitions>
+			<RowDefinition />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
+
 		<Grid
-			Grid.RowSpan="2"
 			Grid.Column="0"
 			Margin="0,0,2,0">
 
@@ -42,8 +45,17 @@
 				Fill="Transparent"
 				MouseDown="OnBackgroundMouseDown" />
 
-			<TabControl x:Name="GuiTabs">
-				<TabItem Header="Body">
+			<TabControl
+				x:Name="GuiTabs"
+				Padding="2"
+				Style="{DynamicResource WpfUtilsSideTabs}">
+				<TabItem>
+					<TabItem.Header>
+						<wpfUtils:IconBlock
+							Margin="12"
+							Icon="Person" />
+					</TabItem.Header>
+
 					<TabItem.Visibility>
 						<MultiBinding Converter="{StaticResource MultiOrVisibility}">
 							<Binding
@@ -64,64 +76,72 @@
 						</MultiBinding>
 					</TabItem.Visibility>
 
-					<ScrollViewer PanningMode="Both">
-						<Grid>
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition />
-								<ColumnDefinition />
-								<ColumnDefinition Width="Auto" />
-							</Grid.ColumnDefinitions>
-							<Grid.RowDefinitions>
-								<RowDefinition />
-								<RowDefinition />
-								<RowDefinition />
-							</Grid.RowDefinitions>
 
-							<pose:SkeletonView
-								x:Name="BodyView"
-								Grid.RowSpan="3"
-								Grid.Column="0"
-								FlipSides="{Binding FlipSides}"
-								ObjectTableIndex="{Binding TargetObjectIndex}"
-								ViewDefinition="{Binding Services.Data.SkeletonViews[Body]}" />
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition />
+							<ColumnDefinition />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition />
+							<RowDefinition />
+							<RowDefinition />
+						</Grid.RowDefinitions>
 
-							<pose:SkeletonView
-								x:Name="ClothesView"
-								Grid.RowSpan="3"
-								Grid.Column="1"
-								FlipSides="{Binding FlipSides}"
-								ObjectTableIndex="{Binding TargetObjectIndex}"
-								ViewDefinition="{Binding Services.Data.SkeletonViews[Clothes]}" />
+						<pose:SkeletonView
+							x:Name="BodyView"
+							Grid.RowSpan="3"
+							Grid.Column="0"
+							Margin="-40,-45,-40,0"
+							FlipSides="{Binding FlipSides}"
+							ObjectTableIndex="{Binding TargetObjectIndex}"
+							ViewDefinition="{Binding Services.Data.SkeletonViews[Body]}" />
 
-							<pose:SkeletonView
-								x:Name="TailView"
-								Grid.Row="0"
-								Grid.Column="2"
-								FlipSides="{Binding FlipSides}"
-								ObjectTableIndex="{Binding TargetObjectIndex}"
-								ViewDefinition="{Binding Services.Data.SkeletonViews[Tail]}" />
+						<pose:SkeletonView
+							x:Name="ClothesView"
+							Grid.RowSpan="3"
+							Grid.Column="1"
+							Margin="-40,-45,-40,0"
+							FlipSides="{Binding FlipSides}"
+							ObjectTableIndex="{Binding TargetObjectIndex}"
+							ViewDefinition="{Binding Services.Data.SkeletonViews[Clothes]}" />
 
-							<pose:SkeletonView
-								x:Name="PenisView"
-								Grid.Row="1"
-								Grid.Column="2"
-								FlipSides="{Binding FlipSides}"
-								ObjectTableIndex="{Binding TargetObjectIndex}"
-								ViewDefinition="{Binding Services.Data.SkeletonViews[Penis]}" />
+						<pose:SkeletonView
+							x:Name="TailView"
+							Grid.Row="0"
+							Grid.Column="2"
+							FlipSides="{Binding FlipSides}"
+							ObjectTableIndex="{Binding TargetObjectIndex}"
+							ViewDefinition="{Binding Services.Data.SkeletonViews[Tail]}" />
 
-							<pose:SkeletonView
-								x:Name="VaginaView"
-								Grid.Row="2"
-								Grid.Column="2"
-								FlipSides="{Binding FlipSides}"
-								ObjectTableIndex="{Binding TargetObjectIndex}"
-								ViewDefinition="{Binding Services.Data.SkeletonViews[Vagina]}" />
+						<pose:SkeletonView
+							x:Name="PenisView"
+							Grid.Row="1"
+							Grid.Column="2"
+							FlipSides="{Binding FlipSides}"
+							ObjectTableIndex="{Binding TargetObjectIndex}"
+							ViewDefinition="{Binding Services.Data.SkeletonViews[Penis]}" />
 
-						</Grid>
-					</ScrollViewer>
+						<pose:SkeletonView
+							x:Name="VaginaView"
+							Grid.Row="2"
+							Grid.Column="2"
+							FlipSides="{Binding FlipSides}"
+							ObjectTableIndex="{Binding TargetObjectIndex}"
+							ViewDefinition="{Binding Services.Data.SkeletonViews[Vagina]}" />
+
+					</Grid>
 				</TabItem>
 
-				<TabItem Header="Hands">
+				<TabItem>
+					<TabItem.Header>
+						<wpfUtils:IconBlock
+							Margin="12"
+							Icon="Hand"
+							IconFont="Solid" />
+					</TabItem.Header>
+
 					<TabItem.Visibility>
 						<MultiBinding Converter="{StaticResource MultiOrVisibility}">
 							<Binding
@@ -145,7 +165,14 @@
 					</Grid>
 				</TabItem>
 
-				<TabItem Header="Face">
+				<TabItem>
+					<TabItem.Header>
+						<wpfUtils:IconBlock
+							Margin="12"
+							Icon="FaceGrin"
+							IconFont="Solid" />
+					</TabItem.Header>
+
 					<TabItem.Visibility>
 						<MultiBinding Converter="{StaticResource MultiOrVisibility}">
 							<Binding
@@ -156,31 +183,39 @@
 								Path="Visibility" />
 						</MultiBinding>
 					</TabItem.Visibility>
-					<Grid>
-						<Grid.RowDefinitions>
-							<RowDefinition />
-							<RowDefinition Height="Auto" />
-						</Grid.RowDefinitions>
 
-						<pose:SkeletonView
-							x:Name="FaceView"
-							Grid.Row="0"
-							FlipSides="{Binding FlipSides}"
-							ObjectTableIndex="{Binding TargetObjectIndex}"
-							ViewDefinition="{Binding Services.Data.SkeletonViews[Face]}" />
+					<TabControl>
+						<TabItem Header="Expression" />
 
-						<pose:SkeletonView
-							x:Name="TongueView"
-							Grid.Row="1"
-							Margin="0,-100,0,0"
-							HorizontalAlignment="Right"
-							FlipSides="{Binding FlipSides}"
-							ObjectTableIndex="{Binding TargetObjectIndex}"
-							ViewDefinition="{Binding Services.Data.SkeletonViews[Tongue]}" />
-					</Grid>
+						<TabItem Header="Bones">
+							<Grid>
+								<pose:SkeletonView
+									x:Name="FaceView"
+									FlipSides="{Binding FlipSides}"
+									ObjectTableIndex="{Binding TargetObjectIndex}"
+									ViewDefinition="{Binding Services.Data.SkeletonViews[Face]}" />
+
+								<pose:SkeletonView
+									x:Name="TongueView"
+									HorizontalAlignment="Right"
+									VerticalAlignment="Bottom"
+									FlipSides="{Binding FlipSides}"
+									ObjectTableIndex="{Binding TargetObjectIndex}"
+									ViewDefinition="{Binding Services.Data.SkeletonViews[Tongue]}" />
+							</Grid>
+						</TabItem>
+					</TabControl>
 				</TabItem>
 
-				<TabItem Header="Wings">
+				<TabItem>
+					<TabItem.Header>
+						<!--  TODO: wing Icon  -->
+						<wpfUtils:IconBlock
+							Margin="12"
+							Icon="Dove"
+							IconFont="Solid" />
+					</TabItem.Header>
+
 					<TabItem.Visibility>
 						<MultiBinding Converter="{StaticResource MultiOrVisibility}">
 							<Binding
@@ -208,7 +243,7 @@
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
 
-			<StackPanel Grid.Row="0">
+			<!--<StackPanel Grid.Row="0">
 				<Border
 					Margin="1"
 					Style="{DynamicResource WpfUtilsControlBorder}">
@@ -223,30 +258,7 @@
 								<wpfUtils:IconBlock Icon="ArrowRightArrowLeft" />
 							</ToggleButton>
 
-							<Button
-								Background="Transparent"
-								Click="OnRevertClicked"
-								ToolTip="{Binding RevertTooltip}">
-								<wpfUtils:IconBlock Icon="Undo" />
-							</Button>
 
-							<Button
-								Background="Transparent"
-								Click="OnClearClicked"
-								ToolTip="{DynamicResource LOC_Pose_SelectCharacter}">
-								<wpfUtils:IconBlock
-									Icon="User"
-									IconFont="Solid" />
-							</Button>
-
-							<Button
-								Background="Transparent"
-								Click="OnReferenceClicked"
-								ToolTip="{DynamicResource LOC_Pose_Reference}">
-								<wpfUtils:IconBlock
-									Icon="Person"
-									IconFont="Solid" />
-							</Button>
 
 
 							<ToggleButton
@@ -261,7 +273,7 @@
 
 					</Grid>
 				</Border>
-			</StackPanel>
+			</StackPanel>-->
 
 			<StackPanel Grid.Row="1">
 				<TextBlock
@@ -563,16 +575,56 @@
 					</Expander>
 				</StackPanel>
 			</ScrollViewer>
-
-
-			<!--<Border
-				Grid.Row="3"
-				Style="{DynamicResource WpfUtilsControlBorder}">
-				<StackPanel Orientation="Horizontal">
-					
-				</StackPanel>
-			</Border>-->
 		</Grid>
 
+		<Border
+			Grid.Row="1"
+			Grid.ColumnSpan="2"
+			Margin="2"
+			Style="{DynamicResource WpfUtilsControlBorder}">
+			<StackPanel
+				HorizontalAlignment="Right"
+				Orientation="Horizontal">
+				<Button
+					Background="Transparent"
+					Click="OnRevertClicked"
+					ToolTip="{DynamicResource LOC_Revert}">
+					<wpfUtils:IconBlock Icon="Undo" />
+				</Button>
+
+				<Button
+					Background="Transparent"
+					Click="OnClearClicked"
+					ToolTip="{DynamicResource LOC_Pose_SelectCharacter}">
+					<wpfUtils:IconBlock
+						Icon="User"
+						IconFont="Solid" />
+				</Button>
+
+				<Button
+					Background="Transparent"
+					Click="OnReferenceClicked"
+					ToolTip="{DynamicResource LOC_Pose_Reference}">
+					<wpfUtils:IconBlock
+						Icon="Person"
+						IconFont="Solid" />
+				</Button>
+
+				<Button
+					Width="75"
+					Background="Transparent"
+					Click="OnImportClicked">
+					<TextBlock Text="Import" />
+				</Button>
+
+				<Button
+					Width="75"
+					Background="Transparent"
+					Click="OnExportClicked">
+					<TextBlock Text="Export" />
+				</Button>
+
+			</StackPanel>
+		</Border>
 	</Grid>
 </windows:CharacterPanelBase>

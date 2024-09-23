@@ -56,7 +56,6 @@
 			Grid.ColumnSpan="2"
 			Margin="0"
 			Padding="0"
-			VerticalContentAlignment="Top"
 			Style="{DynamicResource WpfUtilsSideTabs}">
 
 			<!--  Library  -->
