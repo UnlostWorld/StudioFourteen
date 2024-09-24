@@ -118,6 +118,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<None Update="Assets\ExpressionBlends\*.pose">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 		<None Update="ScreenshotStudio.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>

@@ -301,6 +301,11 @@
 					<pose:TransformInspector
 						Selection="{Binding Selection}"
 						Visibility="{Binding IsSelectionTransform, Converter={StaticResource B2V}}" />
+
+					<pose:BlendInspector
+						Selection="{Binding Selection}"
+						Visibility="{Binding IsSelectionBlend, Converter={StaticResource B2V}}" />
+
 				</Grid>
 			</ScrollViewer>
 		</Grid>

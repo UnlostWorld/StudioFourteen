@@ -34,7 +34,7 @@ public partial class PoseWindow : CharacterPanelBase
 
 	[AutoNotify] public SelectionBase? Selection => this.Services.Pose.Selection;
 	[AutoNotify] public bool IsSelectionTransform => this.Selection is TransformSelectionBase;
-	[AutoNotify] public bool IsSelectionExpression => this.Selection is ExpressionComponentSelection;
+	[AutoNotify] public bool IsSelectionBlend => this.Selection is BlendSelection;
 
 	protected override void OnOpened()
 	{

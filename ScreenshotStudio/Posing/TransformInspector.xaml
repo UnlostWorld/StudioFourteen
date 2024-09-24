@@ -10,6 +10,8 @@
 	xmlns:pose="clr-namespace:ScreenshotStudio.Posing"
 	xmlns:windows="clr-namespace:ScreenshotStudio.Panels"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	d:Background="{DynamicResource BackgroundBrush}"
+	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	d:DesignWidth="200"
 	mc:Ignorable="d">
 	<Grid>

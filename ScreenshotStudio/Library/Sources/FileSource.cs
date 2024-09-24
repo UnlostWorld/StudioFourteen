@@ -97,7 +97,7 @@ public class FileEntry : LibraryEntryBase
 	private string? iconPath;
 	private bool hasGeneratedIcon;
 
-	public FileEntry(FileSource source, FileInfo file, FileTypeInfoBase typeInfo)
+	public FileEntry(SourceBase source, FileInfo file, FileTypeInfoBase typeInfo)
 		: base(source)
 	{
 		this.fileInfo = file;

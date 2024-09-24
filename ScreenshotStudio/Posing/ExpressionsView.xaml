@@ -9,7 +9,7 @@
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	d:DesignHeight="450"
-	d:DesignWidth="800"
+	d:DesignWidth="500"
 	mc:Ignorable="d">
 	<Canvas>
 		<Image
