@@ -3,6 +3,7 @@
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
+using FFXIVClientStructs.FFXIV.Common.Lua;
 using FFXIVClientStructs.Havok.Animation.Rig;
 using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
 using Newtonsoft.Json;
@@ -18,6 +19,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using TerraFX.Interop.Windows;
 
 public class PoseFileTypeInfo : JsonFileTypeInfoBase<PoseFile>
 {
@@ -149,24 +151,28 @@ public class PoseFile : FileBase
 
 				hkReferenceRelativeTransform.Subtract(reference.ReferenceTransform);
 
-				BoneTransform referenceRelative = new();
-				referenceRelative.Translation = hkReferenceRelativeTransform.Translation.ToVector3();
-				referenceRelative.Rotation = hkReferenceRelativeTransform.Rotation.ToQuaternion();
-				referenceRelative.Scale = hkReferenceRelativeTransform.Scale.ToVector3();
+				BoneTransform? referenceRelative = reference.GetLiveReferenceRelativeTransform();
+				if (referenceRelative == null)
+					continue;
 
-				if (referenceRelative.Translation.Value.IsApproximately(Vector3.Zero, 0.001f))
+				// Null out components that are irrelevantly small
+				if (referenceRelative.Translation != null
+					&& referenceRelative.Translation.Value.IsApproximately(Vector3.Zero, 0.001f))
 					referenceRelative.Translation = null;
 
 				// If the rotation quat has no x,y, or z component, then ignore it, as 0,0,0,1 is identity, and
 				// a W component without X,Y,Z components doesn't do anything afaik.
-				if (referenceRelative.Rotation.Value.X.IsApproximately(0, 0.001f)
+				if (referenceRelative.Rotation != null
+					&& referenceRelative.Rotation.Value.X.IsApproximately(0, 0.001f)
 					&& referenceRelative.Rotation.Value.Y.IsApproximately(0, 0.001f)
 					&& referenceRelative.Rotation.Value.Z.IsApproximately(0, 0.001f))
 					referenceRelative.Rotation = null;
 
-				if (referenceRelative.Scale.Value.IsApproximately(Vector3.Zero, 0.001f))
+				if (referenceRelative.Scale != null
+					&& referenceRelative.Scale.Value.IsApproximately(Vector3.Zero, 0.001f))
 					referenceRelative.Scale = null;
 
+				// If all the components were irrelevantly small, then return null
 				if (referenceRelative.Translation == null
 					&& referenceRelative.Rotation == null
 					&& referenceRelative.Scale == null)
@@ -179,40 +185,25 @@ public class PoseFile : FileBase
 		}
 	}
 
-	public async Task Apply(int objectTableIndex)
+	public List<BoneReference>? GetBoneReferences(int objectTableIndex, bool includeFace)
 	{
-		await Threads.FrameworkThread();
+		Threads.VerifyFrameworkThread();
 
 		if (DalamudServices.ObjectTable == null)
-			return;
-
-		PoseService service = ServiceManager.Instance.Pose;
+			return null;
 
 		bool useReferenceRelativeBones = this.ReferenceRelativeBones != null;
-
-		// TODO: check if all races have these bones or its just Hyur!
-		bool includeFace = false;
-		if (useReferenceRelativeBones)
-		{
-			includeFace = true;
-		}
-		else
-		{
-			includeFace = false; //// this.Bones?.ContainsKey("j_f_ulip_02_l") == true;
-		}
-
-		List<(BoneReference, LegacyBoneTransform)> legacyValues = new();
-		List<(BoneReference, BoneTransform)> values = new();
+		List<BoneReference> boneReferences = new();
 
 		unsafe
 		{
 			Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
 			if (character == null)
-				return;
+				return null;
 
 			CharacterBase* characterBase = character->GetCharacterBase();
 			if (characterBase == null)
-				return;
+				return null;
 
 			ushort partialCount = characterBase->Skeleton->PartialSkeletonCount;
 			for (int partialIdx = 0; partialIdx < partialCount; partialIdx++)
@@ -252,8 +243,8 @@ public class PoseFile : FileBase
 
 							if (val != null)
 							{
-								BoneReference reference = service.GetOrCreateBoneReference(boneId, boneName);
-								values.Add((reference, val));
+								BoneReference reference = ServiceManager.Instance.Pose.GetOrCreateBoneReference(boneId, boneName);
+								boneReferences.Add(reference);
 							}
 						}
 						else
@@ -270,8 +261,8 @@ public class PoseFile : FileBase
 
 							if (val != null)
 							{
-								BoneReference reference = service.GetOrCreateBoneReference(boneId, boneName);
-								legacyValues.Add((reference, val));
+								BoneReference reference = ServiceManager.Instance.Pose.GetOrCreateBoneReference(boneId, boneName);
+								boneReferences.Add(reference);
 							}
 						}
 					}
@@ -279,27 +270,72 @@ public class PoseFile : FileBase
 			}
 		}
 
-		await Threads.NextFrame();
+		return boneReferences;
+	}
 
+	public async Task Apply(int objectTableIndex)
+	{
+		await Threads.FrameworkThread();
+
+		bool useReferenceRelativeBones = this.ReferenceRelativeBones != null;
+
+		bool includeFace = false;
 		if (useReferenceRelativeBones)
 		{
-			foreach ((BoneReference reference, BoneTransform value) in values)
-			{
-				reference.LoadRelativeTransform = value;
-				reference.Locked = true;
-			}
+			includeFace = true;
 		}
 		else
 		{
-			foreach ((BoneReference reference, LegacyBoneTransform value) in legacyValues)
-			{
-				// TODO: Allow a way for the user to explicitly include translation & scale
-				// but disable them by default (Anamnesis style)
-				value.Position = null;
-				value.Scale = null;
+			// TODO: check if all races have these bones or its just Hyur!
+			includeFace = false; //// this.Bones?.ContainsKey("j_f_ulip_02_l") == true;
+		}
 
-				reference.LoadModelSpaceTransform = value;
-				reference.Locked = true;
+		// Get bone references
+		List<BoneReference>? boneReferences = this.GetBoneReferences(objectTableIndex, includeFace);
+		if (boneReferences == null)
+			return;
+
+		// Wait for a tick to update all bone references
+		await Threads.NextFrame();
+
+		// Apply values
+		foreach (BoneReference boneReference in boneReferences)
+		{
+			if (boneReference.Name == null)
+				continue;
+			if (useReferenceRelativeBones)
+			{
+				BoneTransform? val = null;
+				this.ReferenceRelativeBones?.TryGetValue(boneReference.Name, out val);
+
+				if (val != null)
+				{
+					boneReference.LoadRelativeTransform = val;
+					boneReference.Locked = true;
+				}
+			}
+			else
+			{
+				LegacyBoneTransform? val = null;
+				if (this.Bones?.TryGetValue(boneReference.Name, out val) != true)
+				{
+					string? legacyName = LegacyBoneNameConverter.GetLegacyName(boneReference.Name);
+					if (legacyName != null)
+					{
+						this.Bones?.TryGetValue(legacyName, out val);
+					}
+				}
+
+				if (val != null)
+				{
+					// TODO: Allow a way for the user to explicitly include translation & scale
+					// but disable them by default (Anamnesis style)
+					val.Position = null;
+					val.Scale = null;
+
+					boneReference.LoadModelSpaceTransform = val;
+					boneReference.Locked = true;
+				}
 			}
 		}
 	}

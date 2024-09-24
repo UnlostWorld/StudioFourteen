@@ -73,9 +73,9 @@
 				</Border>
 
 				<wpfUtils:Slider
-					Maximum="100"
+					Maximum="1"
 					Minimum="0"
-					Value="0" />
+					Value="{Binding BlendValue}" />
 
 
 			</Grid>

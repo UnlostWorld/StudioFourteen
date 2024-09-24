@@ -12,6 +12,7 @@ using ScreenshotStudio.Structs.Extensions;
 using ScreenshotStudio.Utilities;
 using System;
 using System.Numerics;
+using static ScreenshotStudio.Files.PoseFile;
 
 public class BoneReference(BoneId id, string? name = null)
 {
@@ -61,6 +62,25 @@ public class BoneReference(BoneId id, string? name = null)
 	{
 		this.Parent = null;
 		this.IsValid = false;
+	}
+
+	public PoseFile.BoneTransform? GetLiveReferenceRelativeTransform()
+	{
+		if (this.LocalSpaceTransform == null)
+			return null;
+
+		hkQsTransformf hkReferenceRelativeTransform = this.LocalSpaceTransform.Value;
+		if (this.Transform != null)
+			hkReferenceRelativeTransform.Add(this.Transform.Value);
+
+		hkReferenceRelativeTransform.Subtract(this.ReferenceTransform);
+
+		BoneTransform referenceRelative = new();
+		referenceRelative.Translation = hkReferenceRelativeTransform.Translation.ToVector3();
+		referenceRelative.Rotation = hkReferenceRelativeTransform.Rotation.ToQuaternion();
+		referenceRelative.Scale = hkReferenceRelativeTransform.Scale.ToVector3();
+
+		return referenceRelative;
 	}
 
 	public unsafe Skeleton* Tick()
