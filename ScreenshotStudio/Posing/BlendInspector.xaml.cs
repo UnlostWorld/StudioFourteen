@@ -23,7 +23,7 @@ public partial class BlendInspector : View
 			if (this.activeBlend == null)
 				return;
 
-			this.activeBlend = null;
+			this.activeBlend = value ? this.activeBlend : null;
 		}
 	}
 
@@ -36,6 +36,8 @@ public partial class BlendInspector : View
 
 	private async void OnTargetClicked(object sender, RoutedEventArgs e)
 	{
+		this.activeBlend = null;
+
 		this.BlendTargetElement = sender as FrameworkElement;
 
 		FileEntry? fileEntry = this.BlendTargetElement?.DataContext as FileEntry;

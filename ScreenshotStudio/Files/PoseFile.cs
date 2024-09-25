@@ -159,29 +159,32 @@ public class PoseFile : FileBase
 				if (referenceRelative == null)
 					continue;
 
-				// Null out components that are irrelevantly small
-				if (referenceRelative.Translation != null
-					&& referenceRelative.Translation.Value.IsApproximately(Vector3.Zero, 0.001f))
-					referenceRelative.Translation = null;
-
-				// If the rotation quat has no x,y, or z component, then ignore it, as 0,0,0,1 is identity, and
-				// a W component without X,Y,Z components doesn't do anything afaik.
-				if (referenceRelative.Rotation != null
-					&& referenceRelative.Rotation.Value.X.IsApproximately(0, 0.001f)
-					&& referenceRelative.Rotation.Value.Y.IsApproximately(0, 0.001f)
-					&& referenceRelative.Rotation.Value.Z.IsApproximately(0, 0.001f))
-					referenceRelative.Rotation = null;
-
-				if (referenceRelative.Scale != null
-					&& referenceRelative.Scale.Value.IsApproximately(Vector3.Zero, 0.001f))
-					referenceRelative.Scale = null;
-
-				// If all the components were irrelevantly small, then return null
-				if (referenceRelative.Translation == null
-					&& referenceRelative.Rotation == null
-					&& referenceRelative.Scale == null)
+				if (includeBones == null)
 				{
-					continue;
+					// Null out components that are irrelevantly small
+					if (referenceRelative.Translation != null
+						&& referenceRelative.Translation.Value.IsApproximately(Vector3.Zero, 0.001f))
+						referenceRelative.Translation = null;
+
+					// If the rotation quat has no x,y, or z component, then ignore it, as 0,0,0,1 is identity, and
+					// a W component without X,Y,Z components doesn't do anything afaik.
+					if (referenceRelative.Rotation != null
+						&& referenceRelative.Rotation.Value.X.IsApproximately(0, 0.001f)
+						&& referenceRelative.Rotation.Value.Y.IsApproximately(0, 0.001f)
+						&& referenceRelative.Rotation.Value.Z.IsApproximately(0, 0.001f))
+						referenceRelative.Rotation = null;
+
+					if (referenceRelative.Scale != null
+						&& referenceRelative.Scale.Value.IsApproximately(Vector3.Zero, 0.001f))
+						referenceRelative.Scale = null;
+
+					// If all the components were irrelevantly small, then return null
+					if (referenceRelative.Translation == null
+						&& referenceRelative.Rotation == null
+						&& referenceRelative.Scale == null)
+					{
+						continue;
+					}
 				}
 
 				this.ReferenceRelativeBones.Add(reference.Name, referenceRelative);

@@ -115,6 +115,7 @@ public class BlendFileSource : SourceBase
 
 	public BlendFileSource(string dirName)
 	{
+		this.DisplayName = dirName;
 		this.fileTypeInfo = this.Services.Files.GetTypeInfo<PoseFile>();
 
 		DirectoryInfo? dir = DalamudServices.PluginInterface?.AssemblyLocation.Directory;
@@ -124,6 +125,7 @@ public class BlendFileSource : SourceBase
 		this.directoryInfo = new DirectoryInfo($"{dir.FullName}/Assets/ExpressionBlends/{dirName}/");
 	}
 
+	public string DisplayName { get; init; }
 	public override string Name => "Blend Targets File Source";
 	protected override string GetInternalId() => "BlendTargets";
 
@@ -144,7 +146,7 @@ public class BlendFileSource : SourceBase
 public class BlendSelection(BlendFileSource fileSource)
 	: SelectionBase
 {
-	public override string Name => fileSource.Name;
+	public override string Name => fileSource.DisplayName;
 	public override string? Subtitle => null;
 
 	public List<FileEntry> BlendTargets

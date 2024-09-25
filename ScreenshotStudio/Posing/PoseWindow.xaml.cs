@@ -86,7 +86,7 @@ public partial class PoseWindow : CharacterPanelBase
 	private async void OnExportClicked(object sender, RoutedEventArgs e)
 	{
 		// Mouth
-		/*HashSet<string> mouthBones = new()
+		HashSet<string> mouthBones = new()
 		{
 			"j_f_umlip_01_l",
 			"j_f_umlip_02_l",
@@ -119,10 +119,10 @@ public partial class PoseWindow : CharacterPanelBase
 			"j_f_bero_01",
 			"j_f_bero_02",
 			"j_f_bero_03",
-		};*/
+		};
 
 		PoseFile file = new();
-		await file.Save(this.TargetObjectIndex);
+		await file.Save(this.TargetObjectIndex, false, mouthBones);
 		this.Services.Files.SaveFile(file, $"{this.CharacterName}'s Pose");
 	}
 }
