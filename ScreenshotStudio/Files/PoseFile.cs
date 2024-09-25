@@ -132,13 +132,13 @@ public class PoseFile : FileBase
 			if (this.ReferenceRelativeBones.ContainsKey(reference.Name))
 				continue;
 
-			hkQsTransformf hkModelSpaceTransform = reference.LiveTransform;
-			if (reference.Transform != null)
-				hkModelSpaceTransform.Add(reference.Transform.Value);
-
 			// Legacy bone format for backwards compatibility
-			if (includeLegacyBones)
+			if (includeLegacyBones && reference.ModelSpaceTransform != null)
 			{
+				hkQsTransformf hkModelSpaceTransform = reference.ModelSpaceTransform.Value;
+				if (reference.Transform != null)
+					hkModelSpaceTransform.Add(reference.Transform.Value);
+
 				LegacyBoneTransform modelSpaceTransform = new();
 				modelSpaceTransform.Position = hkModelSpaceTransform.Translation.ToVector3();
 				modelSpaceTransform.Rotation = hkModelSpaceTransform.Rotation.ToQuaternion();

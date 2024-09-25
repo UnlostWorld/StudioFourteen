@@ -3,6 +3,7 @@
 
 namespace ScreenshotStudio.Structs.Extensions;
 
+using FFXIVClientStructs.Havok.Common.Base.Math.Quaternion;
 using System;
 using System.Numerics;
 
@@ -61,5 +62,10 @@ public static class QuaternionExtensions
 			&& a.Y.IsApproximately(b.Y, delta)
 			&& a.Z.IsApproximately(b.Z, delta)
 			&& a.W.IsApproximately(b.W, delta);
+	}
+
+	public static Quaternion Conjugate(this Quaternion value)
+	{
+		return Quaternion.Conjugate(value);
 	}
 }

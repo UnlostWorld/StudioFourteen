@@ -1,6 +1,7 @@
 ﻿namespace ScreenshotStudio.Posing;
 
 using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
+using FFXIVClientStructs.Havok.Common.Base.Math.Quaternion;
 using ScreenshotStudio.Structs;
 using ScreenshotStudio.Structs.Extensions;
 using System;
@@ -68,34 +69,34 @@ public class BoneSelection : TransformSelectionBase
 
 	public override Vector3 LocalTranslation
 	{
-		get => this.Transform.Translation.ToVector3();
+		get => this.LocalTransform.Translation.ToVector3();
 		set
 		{
-			hkQsTransformf transform = this.Transform;
+			hkQsTransformf transform = this.LocalTransform;
 			transform.Translation.FromVector3(value);
-			this.Transform = transform;
+			this.LocalTransform = transform;
 		}
 	}
 
 	public override Quaternion LocalRotation
 	{
-		get => this.Transform.Rotation.ToQuaternion();
+		get => this.LocalTransform.Rotation.ToQuaternion();
 		set
 		{
-			hkQsTransformf transform = this.Transform;
+			hkQsTransformf transform = this.LocalTransform;
 			transform.Rotation.FromQuaternion(value);
-			this.Transform = transform;
+			this.LocalTransform = transform;
 		}
 	}
 
 	public override Vector3 LocalScale
 	{
-		get => this.Transform.Scale.ToVector3();
+		get => this.LocalTransform.Scale.ToVector3();
 		set
 		{
-			hkQsTransformf transform = this.Transform;
+			hkQsTransformf transform = this.LocalTransform;
 			transform.Scale.FromVector3(value);
-			this.Transform = transform;
+			this.LocalTransform = transform;
 		}
 	}
 
@@ -107,17 +108,35 @@ public class BoneSelection : TransformSelectionBase
 
 	public override Quaternion WorldRotation
 	{
-		get => (this.bone?.LastCharacterRotation ?? Quaternion.Identity) * this.LocalRotation;
+		get
+		{
+			if (this.bone == null || this.bone.ModelSpaceTransform == null)
+				return Quaternion.Identity;
+
+			hkQuaternionf rot = this.bone.LastCharacterRotation.ToHkQuaternion();
+			rot.Multiply(this.bone.ModelSpaceTransform.Value.Rotation);
+
+			if (this.bone.Transform != null)
+				rot.Multiply(this.bone.Transform.Value.Rotation);
+
+			return rot.ToQuaternion();
+		}
 		set
 		{
-			if (this.bone == null)
+			if (this.bone == null || this.bone.ModelSpaceTransform == null || this.bone.LocalSpaceTransform == null)
 				return;
 
-			value = Quaternion.Conjugate(value);
-			value *= this.bone.LastCharacterRotation;
-			value = Quaternion.Conjugate(value);
+			Quaternion modelSpaceRotation = value;
 
-			this.LocalRotation = value;
+			modelSpaceRotation = modelSpaceRotation.Conjugate();
+			modelSpaceRotation *= this.bone.LastCharacterRotation;
+			modelSpaceRotation = modelSpaceRotation.Conjugate();
+
+			hkQsTransformf newTransform = default;
+			newTransform.Rotation = HkQuaternionExtensions.Identity;
+			newTransform.Rotation = modelSpaceRotation.ToHkQuaternion();
+			newTransform.Rotation.Divide(this.bone.ModelSpaceTransform.Value.Rotation);
+			this.bone.Transform = newTransform;
 		}
 	}
 
@@ -128,7 +147,7 @@ public class BoneSelection : TransformSelectionBase
 	}
 
 	// TODO: support multiple bone transforms
-	private hkQsTransformf Transform
+	private hkQsTransformf LocalTransform
 	{
 		get
 		{
