@@ -272,6 +272,7 @@
 					</Grid.Resources>
 
 					<pose:TransformInspector
+						Persistence="{Binding Persistence}"
 						Selection="{Binding Selection}"
 						Visibility="{Binding IsSelectionTransform, Converter={StaticResource B2V}}" />
 

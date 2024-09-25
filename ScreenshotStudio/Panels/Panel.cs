@@ -5,10 +5,9 @@ using DependencyPropertyGenerator;
 using FontAwesome.Sharp;
 using ScreenshotStudio.Mvm;
 using ScreenshotStudio.Plugin;
-using ScreenshotStudio.Serialization;
+using ScreenshotStudio.Settings;
 using Serilog;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
@@ -25,7 +24,7 @@ public partial class Panel : ContentControl, IAutoNotify
 	protected readonly ILogger Log;
 
 	private readonly string panelId;
-	private readonly Dictionary<string, object?> persistenceCache = [];
+
 	private Exception? frameworkException;
 	private IHost? host;
 
@@ -35,6 +34,7 @@ public partial class Panel : ContentControl, IAutoNotify
 	{
 		this.panelId = this.GetType().Name;
 		this.Log = Logging.ForContext(this.GetType());
+		this.Persistence = new(this.panelId);
 
 		// Load a new copy of the resources. Each panel needs its own instance for threading reasons.
 		this.Resources = ScreenshotStudio.Resources.Load();
@@ -54,6 +54,11 @@ public partial class Panel : ContentControl, IAutoNotify
 
 	public ServiceManager Services => ServiceManager.Instance;
 	public bool RememberWindowState { get; set; } = true;
+	public Persistence Persistence { get; init; }
+
+	public T? GetPersistence<T>([CallerMemberName] string id = "", T? defaultValue = default) => this.Persistence.GetPersistence<T>(id, defaultValue);
+	public void SetPersistence(object? value, [CallerMemberName] string id = "") => this.Persistence.SetPersistence(value, id);
+	public void SetPersistence(string id, object? value) => this.Persistence.SetPersistence(id, value);
 
 	public virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
 	{
@@ -73,73 +78,6 @@ public partial class Panel : ContentControl, IAutoNotify
 	public void Close()
 	{
 		this.host?.Close();
-	}
-
-	public T? GetPersistence<T>([CallerMemberName] string id = "", T? defaultValue = default)
-	{
-		try
-		{
-			lock (this.persistenceCache)
-			{
-				if (this.persistenceCache.TryGetValue(id, out object? value))
-				{
-					return (T?)value;
-				}
-			}
-
-			string persistenceId = this.panelId + "_" + id;
-
-			if (!this.Services.Settings.Current.PanelPersistence.TryGetValue(persistenceId, out string? json) || json == null)
-				return defaultValue;
-
-			if (!json.StartsWith('"') || !json.EndsWith('"'))
-				json = '"' + json + '"';
-
-			lock (this.persistenceCache)
-			{
-				T? value = Serializer.Deserialize<T>(json);
-				this.persistenceCache.Add(id, value);
-				return value;
-			}
-		}
-		catch (Exception ex)
-		{
-			this.Log.Error(ex, "Error in panel persistence");
-			return defaultValue;
-		}
-	}
-
-	public void SetPersistence(object? value, [CallerMemberName] string id = "")
-	{
-		this.SetPersistence(id, value);
-	}
-
-	public void SetPersistence(string id, object? value)
-	{
-		try
-		{
-			lock (this.persistenceCache)
-			{
-				this.persistenceCache[id] = value;
-			}
-
-			string persistenceId = this.panelId + "_" + id;
-
-			if (value != null)
-			{
-				this.Services.Settings.Current.PanelPersistence[persistenceId] = Serializer.Serialize(value);
-			}
-			else
-			{
-				this.Services.Settings.Current.PanelPersistence.Remove(persistenceId);
-			}
-
-			this.Services.Settings.Save();
-		}
-		catch (Exception ex)
-		{
-			this.Log.Error(ex, "Error in panel persistence");
-		}
 	}
 
 	public void SetIsOpen(IHost sender, bool isOpen)

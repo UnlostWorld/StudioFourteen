@@ -1,0 +1,78 @@
+﻿namespace ScreenshotStudio.Settings;
+using ScreenshotStudio.Serialization;
+using System;
+using System.Collections.Generic;
+using System.Runtime.CompilerServices;
+
+public class Persistence(string persistenceId)
+{
+	private readonly string persistenceId = persistenceId;
+	private readonly Dictionary<string, object?> persistenceCache = [];
+
+	public T? GetPersistence<T>([CallerMemberName] string id = "", T? defaultValue = default)
+	{
+		try
+		{
+			lock (this.persistenceCache)
+			{
+				if (this.persistenceCache.TryGetValue(id, out object? value))
+				{
+					return (T?)value;
+				}
+			}
+
+			string persistenceId = this.persistenceId + "_" + id;
+
+			if (!ServiceManager.Instance.Settings.Current.PanelPersistence.TryGetValue(persistenceId, out string? json) || json == null)
+				return defaultValue;
+
+			if (!json.StartsWith('"') || !json.EndsWith('"'))
+				json = '"' + json + '"';
+
+			lock (this.persistenceCache)
+			{
+				T? value = Serializer.Deserialize<T>(json);
+				this.persistenceCache.Add(id, value);
+				return value;
+			}
+		}
+		catch (Exception ex)
+		{
+			Logging.Shared.Error(ex, "Error in persistence");
+			return defaultValue;
+		}
+	}
+
+	public void SetPersistence(object? value, [CallerMemberName] string id = "")
+	{
+		this.SetPersistence(id, value);
+	}
+
+	public void SetPersistence(string id, object? value)
+	{
+		try
+		{
+			lock (this.persistenceCache)
+			{
+				this.persistenceCache[id] = value;
+			}
+
+			string persistenceId = this.persistenceId + "_" + id;
+
+			if (value != null)
+			{
+				ServiceManager.Instance.Settings.Current.PanelPersistence[persistenceId] = Serializer.Serialize(value);
+			}
+			else
+			{
+				ServiceManager.Instance.Settings.Current.PanelPersistence.Remove(persistenceId);
+			}
+
+			ServiceManager.Instance.Settings.Save();
+		}
+		catch (Exception ex)
+		{
+			Logging.Shared.Error(ex, "Error in persistence");
+		}
+	}
+}

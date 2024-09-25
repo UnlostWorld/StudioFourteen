@@ -2,6 +2,7 @@
 
 using DependencyPropertyGenerator;
 using ScreenshotStudio.Mvm;
+using ScreenshotStudio.Settings;
 using ScreenshotStudio.Structs.Extensions;
 using System;
 using System.Numerics;
@@ -10,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 
 [DependencyProperty<TransformSelectionBase>("Selection")]
+[DependencyProperty<Persistence>("Persistence")]
 public partial class TransformInspector : View
 {
 	private Vector3? trackingEuler;
@@ -21,43 +23,43 @@ public partial class TransformInspector : View
 	public int DecimalPlacesDisplay => this.Selection?.DecimalPlacesToDisplay ?? 2;
 
 	[AutoNotify]
-	public bool ExpandTranslationSliders { get; set; }
-	/*{
+	public bool ExpandTranslationSliders
+	{
 		get
 		{
-			return this.Panel?.GetPersistence<bool>(
+			return this.Persistence?.GetPersistence<bool>(
 				$"ExpandTranslationSliders_{this.Services.Pose.EditMode}",
 				this.Services.Pose.EditMode == PoseEditModes.Translation) ?? false;
 		}
 
-		set => this.Panel?.SetPersistence(value, $"ExpandTranslationSliders_{this.Services.Pose.EditMode}");
-	}*/
+		set => this.Persistence?.SetPersistence(value, $"ExpandTranslationSliders_{this.Services.Pose.EditMode}");
+	}
 
 	[AutoNotify]
-	public bool ExpandRotationSliders { get; set; }
-	/*{
+	public bool ExpandRotationSliders
+	{
 		get
 		{
-			return this.Panel?.GetPersistence<bool>(
+			return this.Persistence?.GetPersistence<bool>(
 				$"ExpandRotationSliders_{this.Services.Pose.EditMode}",
 				this.Services.Pose.EditMode == PoseEditModes.Rotation) ?? false;
 		}
 
-		set => this.Panel?.SetPersistence(value, $"ExpandRotationSliders_{this.Services.Pose.EditMode}");
-	}*/
+		set => this.Persistence?.SetPersistence(value, $"ExpandRotationSliders_{this.Services.Pose.EditMode}");
+	}
 
 	[AutoNotify]
-	public bool ExpandScaleSliders { get; set; }
-	/*{
+	public bool ExpandScaleSliders
+	{
 		get
 		{
-			return this.Panel?.GetPersistence<bool>(
+			return this.Persistence?.GetPersistence<bool>(
 				$"ExpandScaleSliders_{this.Services.Pose.EditMode}",
 				this.Services.Pose.EditMode == PoseEditModes.Scale) ?? false;
 		}
 
-		set => this.Panel?.SetPersistence(value, $"ExpandScaleSliders_{this.Services.Pose.EditMode}");
-	}*/
+		set => this.Persistence?.SetPersistence(value, $"ExpandScaleSliders_{this.Services.Pose.EditMode}");
+	}
 
 	[AutoNotify]
 	public double TranslationX
