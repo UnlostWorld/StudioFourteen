@@ -38,5 +38,6 @@ public abstract class TransformSelectionBase : SelectionBase
 	public virtual double TranslationLargeChange => 0.1;
 	public virtual double TranslationSmallChange => 0.01;
 	public virtual double TranslationRange => 1;
+	public virtual int DecimalPlacesToDisplay => 2;
 	public virtual PoseEditModes DefaultEditMode => PoseEditModes.Translation;
 }

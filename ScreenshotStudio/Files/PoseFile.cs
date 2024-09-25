@@ -59,7 +59,7 @@ public class PoseFile : FileBase
 		}
 	}
 
-	public async Task Save(int objectTableIndex)
+	public async Task Save(int objectTableIndex, bool includeLegacyBones = true, HashSet<string>? includeBones = null)
 	{
 		await Threads.FrameworkThread();
 
@@ -104,6 +104,9 @@ public class PoseFile : FileBase
 						if (boneName == null)
 							continue;
 
+						if (includeBones != null && !includeBones.Contains(boneName))
+							continue;
+
 						BoneId boneId = new(character->ObjectIndex, partialIdx, poseIdx, boneIdx);
 						BoneReference reference = ServiceManager.Instance.Pose.GetOrCreateBoneReference(boneId, boneName);
 						references.Add(reference);
@@ -134,6 +137,7 @@ public class PoseFile : FileBase
 				hkModelSpaceTransform.Add(reference.Transform.Value);
 
 			// Legacy bone format for backwards compatibility
+			if (includeLegacyBones)
 			{
 				LegacyBoneTransform modelSpaceTransform = new();
 				modelSpaceTransform.Position = hkModelSpaceTransform.Translation.ToVector3();

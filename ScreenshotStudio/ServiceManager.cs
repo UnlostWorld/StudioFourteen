@@ -37,4 +37,5 @@ public class ServiceManager : ServiceManagerBase
 	public ActorRoleService Roles { get; init; } = new();
 	public FileService Files { get; init; } = new();
 	public PanelService Panels { get; init; } = new();
+	public BlendService Blend { get; init; } = new();
 }

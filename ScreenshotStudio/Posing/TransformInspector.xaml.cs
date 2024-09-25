@@ -15,6 +15,9 @@ public partial class TransformInspector : View
 	public PoseWindow? Panel => this.FindParent<PoseWindow>();
 
 	[AutoNotify]
+	public int DecimalPlacesDisplay => this.Selection?.DecimalPlacesToDisplay ?? 2;
+
+	[AutoNotify]
 	public bool ExpandTranslationSliders
 	{
 		get

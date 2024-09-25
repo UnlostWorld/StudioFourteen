@@ -75,7 +75,7 @@
 				<Expander.Header>
 					<wpfUtils:MultiNumberBox
 						Margin="0"
-						DecimalPlaces="2"
+						DecimalPlaces="{Binding DecimalPlacesDisplay}"
 						X="{Binding TranslationX}"
 						Y="{Binding TranslationY}"
 						Z="{Binding TranslationZ}">
@@ -151,7 +151,7 @@
 				<Expander.Header>
 					<wpfUtils:MultiNumberBox
 						Margin="0"
-						DecimalPlaces="2"
+						DecimalPlaces="{Binding DecimalPlacesDisplay}"
 						X="{Binding EulerRotationX}"
 						Y="{Binding EulerRotationY}"
 						Z="{Binding EulerRotationZ}">
@@ -229,7 +229,7 @@
 				<Expander.Header>
 					<wpfUtils:MultiNumberBox
 						Margin="0"
-						DecimalPlaces="2"
+						DecimalPlaces="{Binding DecimalPlacesDisplay}"
 						X="{Binding ScaleX}"
 						Y="{Binding ScaleY}"
 						Z="{Binding ScaleZ}">

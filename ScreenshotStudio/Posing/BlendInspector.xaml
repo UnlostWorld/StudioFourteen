@@ -25,10 +25,14 @@
 							Padding="0"
 							Click="OnTargetClicked">
 							<Grid>
-								<wpfUtils:IconBlock
-									x:Name="FallbackIcon"
-									Icon="PersonRunning"
-									Visibility="Collapsed" />
+								<Grid x:Name="FallbackIcon">
+									<TextBlock
+										HorizontalAlignment="Center"
+										VerticalAlignment="Center"
+										Style="{DynamicResource WpfUtilsTextBlock}"
+										Text="{Binding Name}" />
+								</Grid>
+
 
 								<Image
 									x:Name="Thumbnail"

@@ -51,6 +51,7 @@ public class BoneSelection : TransformSelectionBase
 	public override double TranslationLargeChange => this.IsFaceBone ? 0.01 : 0.1;
 	public override double TranslationSmallChange => this.IsFaceBone ? 0.001 : 0.01;
 	public override double TranslationRange => this.IsFaceBone ? 0.02 : 0.1;
+	public override int DecimalPlacesToDisplay => this.IsFaceBone ? 4 : 2;
 	public override PoseEditModes DefaultEditMode => this.IsFaceBone ? PoseEditModes.Translation : PoseEditModes.Rotation;
 
 	public override bool LockTransform
@@ -131,10 +132,10 @@ public class BoneSelection : TransformSelectionBase
 	{
 		get
 		{
-			if (this.bone == null)
+			if (this.bone == null || this.bone.LocalSpaceTransform == null)
 				return default;
 
-			hkQsTransformf combine = this.bone.LiveTransform;
+			hkQsTransformf combine = this.bone.LocalSpaceTransform.Value;
 
 			if (this.bone.Transform != null)
 				combine.Add(this.bone.Transform.Value);
@@ -143,11 +144,11 @@ public class BoneSelection : TransformSelectionBase
 		}
 		set
 		{
-			if (this.bone == null)
+			if (this.bone == null || this.bone.LocalSpaceTransform == null)
 				return;
 
 			hkQsTransformf separate = value;
-			separate.Subtract(this.bone.LiveTransform);
+			separate.Subtract(this.bone.LocalSpaceTransform.Value);
 			this.bone.Transform = separate;
 		}
 	}

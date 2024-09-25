@@ -248,38 +248,6 @@
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
 
-			<!--<StackPanel Grid.Row="0">
-				<Border
-					Margin="1"
-					Style="{DynamicResource WpfUtilsControlBorder}">
-
-					<Grid>
-						<UniformGrid Rows="1">
-
-							<ToggleButton
-								Background="Transparent"
-								IsChecked="{Binding FlipSides}"
-								ToolTip="{DynamicResource LOC_Pose_FlipSides}">
-								<wpfUtils:IconBlock Icon="ArrowRightArrowLeft" />
-							</ToggleButton>
-
-
-
-
-							<ToggleButton
-								Background="Transparent"
-								IsChecked="{Binding Selection.LockTransform, FallbackValue=false}"
-								IsEnabled="{Binding Selection.CanLockTransform, FallbackValue=false}"
-								ToolTip="{DynamicResource LOC_Pose_LockTransform}">
-								<wpfUtils:IconBlock Icon="Lock" />
-							</ToggleButton>
-						</UniformGrid>
-
-
-					</Grid>
-				</Border>
-			</StackPanel>-->
-
 			<StackPanel Grid.Row="1">
 				<TextBlock
 					HorizontalAlignment="Center"
@@ -318,7 +286,27 @@
 			<StackPanel
 				HorizontalAlignment="Right"
 				Orientation="Horizontal">
+
+				<ToggleButton
+					Width="28"
+					Background="Transparent"
+					IsChecked="{Binding FlipSides}"
+					ToolTip="{DynamicResource LOC_Pose_FlipSides}">
+					<wpfUtils:IconBlock Icon="ArrowRightArrowLeft" />
+				</ToggleButton>
+
+
+				<ToggleButton
+					Width="28"
+					Background="Transparent"
+					IsChecked="{Binding Selection.LockTransform, FallbackValue=false}"
+					IsEnabled="{Binding Selection.CanLockTransform, FallbackValue=false}"
+					ToolTip="{DynamicResource LOC_Pose_LockTransform}">
+					<wpfUtils:IconBlock Icon="Lock" />
+				</ToggleButton>
+
 				<Button
+					Width="28"
 					Background="Transparent"
 					Click="OnRevertClicked"
 					ToolTip="{DynamicResource LOC_Revert}">
@@ -326,6 +314,7 @@
 				</Button>
 
 				<Button
+					Width="28"
 					Background="Transparent"
 					Click="OnClearClicked"
 					ToolTip="{DynamicResource LOC_Pose_SelectCharacter}">
@@ -335,6 +324,7 @@
 				</Button>
 
 				<Button
+					Width="28"
 					Background="Transparent"
 					Click="OnReferenceClicked"
 					ToolTip="{DynamicResource LOC_Pose_Reference}">
