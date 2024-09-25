@@ -55,6 +55,8 @@ public class BoneSelection : TransformSelectionBase
 	public override int DecimalPlacesToDisplay => this.IsFaceBone ? 4 : 2;
 	public override PoseEditModes DefaultEditMode => this.IsFaceBone ? PoseEditModes.Translation : PoseEditModes.Rotation;
 
+	public override bool IsReady => this.bone != null && this.bone.LocalSpaceTransform != null;
+
 	public override bool LockTransform
 	{
 		get => this.bone?.Locked == true;

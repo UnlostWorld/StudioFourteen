@@ -40,4 +40,6 @@ public abstract class TransformSelectionBase : SelectionBase
 	public virtual double TranslationRange => 1;
 	public virtual int DecimalPlacesToDisplay => 2;
 	public virtual PoseEditModes DefaultEditMode => PoseEditModes.Translation;
+
+	[AutoNotify] public virtual bool IsReady => true;
 }

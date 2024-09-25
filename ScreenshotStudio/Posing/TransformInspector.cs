@@ -3,23 +3,26 @@
 using DependencyPropertyGenerator;
 using ScreenshotStudio.Mvm;
 using ScreenshotStudio.Structs.Extensions;
+using System;
 using System.Numerics;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 [DependencyProperty<TransformSelectionBase>("Selection")]
 public partial class TransformInspector : View
 {
 	private Vector3? trackingEuler;
+	private Quaternion lastWorldRotation = Quaternion.Identity;
 
-	public PoseWindow? Panel => this.FindParent<PoseWindow>();
+	public PoseEditModes[] EditModes => Enum.GetValues<PoseEditModes>();
 
 	[AutoNotify]
 	public int DecimalPlacesDisplay => this.Selection?.DecimalPlacesToDisplay ?? 2;
 
 	[AutoNotify]
-	public bool ExpandTranslationSliders
-	{
+	public bool ExpandTranslationSliders { get; set; }
+	/*{
 		get
 		{
 			return this.Panel?.GetPersistence<bool>(
@@ -28,11 +31,11 @@ public partial class TransformInspector : View
 		}
 
 		set => this.Panel?.SetPersistence(value, $"ExpandTranslationSliders_{this.Services.Pose.EditMode}");
-	}
+	}*/
 
 	[AutoNotify]
-	public bool ExpandRotationSliders
-	{
+	public bool ExpandRotationSliders { get; set; }
+	/*{
 		get
 		{
 			return this.Panel?.GetPersistence<bool>(
@@ -41,11 +44,11 @@ public partial class TransformInspector : View
 		}
 
 		set => this.Panel?.SetPersistence(value, $"ExpandRotationSliders_{this.Services.Pose.EditMode}");
-	}
+	}*/
 
 	[AutoNotify]
-	public bool ExpandScaleSliders
-	{
+	public bool ExpandScaleSliders { get; set; }
+	/*{
 		get
 		{
 			return this.Panel?.GetPersistence<bool>(
@@ -54,7 +57,7 @@ public partial class TransformInspector : View
 		}
 
 		set => this.Panel?.SetPersistence(value, $"ExpandScaleSliders_{this.Services.Pose.EditMode}");
-	}
+	}*/
 
 	[AutoNotify]
 	public double TranslationX
@@ -239,7 +242,13 @@ public partial class TransformInspector : View
 	[AutoNotify]
 	public Quaternion WorldRotation
 	{
-		get => this.Selection?.WorldRotation ?? default;
+		get
+		{
+			if (this.Selection != null && this.Selection.IsReady)
+				this.lastWorldRotation = this.Selection.WorldRotation;
+
+			return this.lastWorldRotation;
+		}
 		set
 		{
 			if (this.Selection == null)

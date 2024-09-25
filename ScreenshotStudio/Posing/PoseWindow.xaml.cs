@@ -10,8 +10,6 @@ using System.Windows.Input;
 
 public partial class PoseWindow : CharacterPanelBase
 {
-	public PoseEditModes[] EditModes => Enum.GetValues<PoseEditModes>();
-
 	[AutoNotify] public string RevertTooltip => ScreenshotStudio.Resources.Format("LOC_Pose_RevertPose", this.CharacterName);
 
 	[AutoNotify]

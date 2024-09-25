@@ -266,6 +266,11 @@
 				HorizontalScrollBarVisibility="Disabled"
 				PanningMode="VerticalOnly">
 				<Grid>
+
+					<Grid.Resources>
+						<ResourceDictionary Source=".\TransformInspector.xaml" />
+					</Grid.Resources>
+
 					<pose:TransformInspector
 						Selection="{Binding Selection}"
 						Visibility="{Binding IsSelectionTransform, Converter={StaticResource B2V}}" />

@@ -11,6 +11,7 @@ public class GameObjectSelection : TransformSelectionBase
 {
 	private readonly ushort objectTableId;
 	private string? name;
+	private bool isReady = false;
 
 	private Vector3 lastTranslation;
 	private Vector3 nextTranslation;
@@ -25,6 +26,8 @@ public class GameObjectSelection : TransformSelectionBase
 	{
 		this.objectTableId = objectTableId;
 	}
+
+	public override bool IsReady => this.isReady;
 
 	public override string Name => this.name ?? "Unknown";
 	public override string? Subtitle => null;
@@ -105,5 +108,6 @@ public class GameObjectSelection : TransformSelectionBase
 		this.lastTranslation = gameObject->DrawObject->Position;
 		this.lastRotation = gameObject->DrawObject->Rotation;
 		this.lastScale = gameObject->DrawObject->Scale;
+		this.isReady = true;
 	}
 }
