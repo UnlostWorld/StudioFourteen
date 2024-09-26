@@ -51,6 +51,7 @@
 
 	<ItemGroup>
 	  <None Remove="Assets\LegacyTattoo.png" />
+	  <None Remove="data\documents\ExpressionBlends.json" />
 	  <None Remove="Data\Documents\SkeletonViews.json" />
 	</ItemGroup>
 
@@ -118,9 +119,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Update="Assets\ExpressionBlends\**">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
 		<None Update="ScreenshotStudio.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>

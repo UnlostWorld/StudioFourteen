@@ -27,10 +27,17 @@ public partial class ExpressionsView : View
 
 	partial void OnObjectTableIndexChanged(int newValue)
 	{
-		if (this.Services.Blend.MouthSource != null)
-			this.mouthSelection = new(this.Services.Blend.MouthSource);
+		if (this.Services.Data.ExpressionBlends == null)
+			return;
 
-		////this.leftEyeSelection = new(this.Services.Blend.MouthSource);
-		////this.rightEyeSelection = new(this.Services.Blend.MouthSource);
+		this.mouthSelection = new("Mouth", new()
+		{
+			this.Services.Data.ExpressionBlends["MouthFrown"],
+			this.Services.Data.ExpressionBlends["MouthGrin"],
+			this.Services.Data.ExpressionBlends["MouthPucker"],
+			this.Services.Data.ExpressionBlends["MouthScared"],
+			this.Services.Data.ExpressionBlends["MouthSmile"],
+			this.Services.Data.ExpressionBlends["TongueOut"]
+		});
 	}
 }

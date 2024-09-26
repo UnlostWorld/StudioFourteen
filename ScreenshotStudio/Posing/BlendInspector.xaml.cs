@@ -40,11 +40,7 @@ public partial class BlendInspector : View
 
 		this.BlendTargetElement = sender as FrameworkElement;
 
-		FileEntry? fileEntry = this.BlendTargetElement?.DataContext as FileEntry;
-		if (fileEntry == null)
-			return;
-
-		PoseFile? target = fileEntry.File as PoseFile;
+		BlendTarget? target = this.BlendTargetElement?.DataContext as BlendTarget;
 		if (target == null)
 			return;
 
