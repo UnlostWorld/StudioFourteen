@@ -1,7 +1,7 @@
 {
 	"MouthFrown": {
-		"IconPath": "/Assets/ExpresisonBlend_Mouth_Frown.png",
-		"Bones": {
+		"IconPath": "/Assets/ExpressionBlend_Mouth_Frown.png",
+		"RightBones": {
 			"j_f_ago": {
 				"T": "0.000002, -0.000007, -0",
 				"R": "-0, 0, 0, 1",
@@ -131,8 +131,8 @@
 	},
 
 	"MouthGrin": {
-		"IconPath": "/Assets/ExpresisonBlend_Mouth_Grin.png",
-		"Bones": {
+		"IconPath": "/Assets/ExpressionBlend_Mouth_Grin.png",
+		"RightBones": {
 			"j_f_ago": {
 				"T": "0.000002, -0.000007, -0",
 				"R": "-0, -0, -0, 1.000001",
@@ -262,8 +262,8 @@
 	},
 
 	"MouthPucker": {
-		"IconPath": "/Assets/ExpresisonBlend_Mouth_Pucker.png",
-		"Bones": {
+		"IconPath": "/Assets/ExpressionBlend_Mouth_Pucker.png",
+		"RightBones": {
 			"j_f_ago": {
 				"T": "0.000002, -0.000007, -0",
 				"R": "0, -0, -0, 1",
@@ -393,8 +393,8 @@
 	},
 
 	"MouthScared": {
-		"IconPath": "/Assets/ExpresisonBlend_Mouth_Scared.png",
-		"Bones": {
+		"IconPath": "/Assets/ExpressionBlend_Mouth_Scared.png",
+		"RightBones": {
 			"j_f_ago": {
 				"T": "0.000366, -0.000099, -0",
 				"R": "0, -0, -0.032818, 0.999462",
@@ -524,8 +524,8 @@
 	},
 
 	"MouthSmile": {
-		"IconPath": "/Assets/ExpresisonBlend_Mouth_Smile.png",
-		"Bones": {
+		"IconPath": "/Assets/ExpressionBlend_Mouth_Smile.png",
+		"RightBones": {
 			"j_f_ago": {
 				"T": "-0, 0, -0",
 				"R": "-0, 0, 0, 1",
@@ -654,9 +654,9 @@
 		}
 	},
 
-	"TongueOut": {
-		"IconPath": "/Assets/ExpresisonBlend_Tongue.png",
-		"Bones": {
+	"Tongue": {
+		"IconPath": "/Assets/ExpressionBlend_Tongue.png",
+		"RightBones": {
 			"j_f_ago": {
 				"T": "0, 0, -0",
 				"R": "-0, 0, -0.112644, 0.993637",
@@ -677,6 +677,29 @@
 				"R": "-0, 0, -0.119484, 0.995741",
 				"S": "-0, 0, -0"
 			}
+		},
+		"LeftBones": {
+			"j_f_ago": {
+				"T": "0, -0, -0",
+				"R": "0, 0, 0, 1",
+				"S": "0, 0, -0"
+			},
+			"j_f_bero_01": {
+				"T": "0, -0, -0",
+				"R": "-0, -0, 0, 0.999998",
+				"S": "0, -0, -0"
+			},
+			"j_f_bero_02": {
+				"T": "-0, -0.000001, 0",
+				"R": "-0, -0, 0, 0.999988",
+				"S": "0, -0, -0"
+			},
+			"j_f_bero_03": {
+				"T": "-0.000001, 0, 0",
+				"R": "0, 0, -0, 0.999933",
+				"S": "-0, 0, -0"
+			}
+
 		}
 	}
 }

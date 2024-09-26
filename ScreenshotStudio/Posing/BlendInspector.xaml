@@ -11,82 +11,55 @@
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
-	d:DesignHeight="400"
 	d:DesignWidth="200"
 	mc:Ignorable="d">
 
-	<Grid>
-		<Border Style="{DynamicResource WpfUtilsControlBorder}">
-			<ItemsControl ItemsSource="{Binding Selection.Targets}">
-				<ItemsControl.ItemTemplate>
-					<DataTemplate DataType="{x:Type pose:BlendTarget}">
+	<Grid Margin="1">
+		<Grid.RowDefinitions>
+			<RowDefinition />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+		</Grid.RowDefinitions>
 
-						<Button
-							Height="64"
-							Padding="0"
-							Click="OnTargetClicked">
-							<Grid>
-								<Grid
-									x:Name="FallbackIcon"
-									Visibility="Collapsed">
-									<TextBlock
-										HorizontalAlignment="Center"
-										VerticalAlignment="Center"
-										Style="{DynamicResource WpfUtilsTextBlock}"
-										Text="{Binding Name}" />
-								</Grid>
+		<Image
+			Grid.Row="0"
+			Height="70"
+			HorizontalAlignment="Center"
+			VerticalAlignment="Center"
+			Opacity="0.25"
+			Source="{Binding Selection.Target.Icon}"
+			Stretch="Uniform" />
 
 
-								<Image
-									x:Name="Thumbnail"
-									VerticalAlignment="Center"
-									Opacity="0.25"
-									Source="{Binding Icon}"
-									Stretch="Uniform" />
-							</Grid>
-						</Button>
+		<StackPanel Grid.Row="1">
+			<CheckBox
+				Margin="1"
+				Content="Flip" />
+			<CheckBox
+				Margin="1"
+				Content="Mirror" />
 
-						<DataTemplate.Triggers>
-							<DataTrigger
-								Binding="{Binding Icon}"
-								Value="{x:Null}">
-								<Setter TargetName="Thumbnail" Property="Visibility" Value="Collapsed" />
-								<Setter TargetName="FallbackIcon" Property="Visibility" Value="Visible" />
-							</DataTrigger>
-						</DataTemplate.Triggers>
-					</DataTemplate>
-				</ItemsControl.ItemTemplate>
-			</ItemsControl>
-		</Border>
-
-		<Popup
-			Width="175"
-			Height="Auto"
-			AllowsTransparency="True"
-			IsOpen="{Binding IsBlendOpen}"
-			Placement="Center"
-			PlacementTarget="{Binding BlendTargetElement}"
-			StaysOpen="False">
-
-			<Grid Margin="16">
-				<Border
-					Background="Black"
-					CornerRadius="6">
-					<Border.Effect>
-						<DropShadowEffect
-							Direction="270"
-							ShadowDepth="0" />
-					</Border.Effect>
-				</Border>
-
-				<wpfUtils:Slider
-					Maximum="1"
-					Minimum="0"
-					Value="{Binding BlendValue}" />
+			<Button>
+				<wpfUtils:IconBlock Icon="RotateLeft" />
+			</Button>
+		</StackPanel>
 
 
-			</Grid>
-		</Popup>
-
+		<wpfUtils:NumberBox
+			Grid.Row="2"
+			Maximum="{Binding BlendMaximum}"
+			Minimum="{Binding BlendMinimum}"
+			Slider="Absolute"
+			UncapTextInput="True"
+			Value="{Binding BlendValue}">
+			<wpfUtils:NumberBox.Suffix>
+				<TextBlock
+					HorizontalAlignment="Left"
+					VerticalAlignment="Center"
+					Foreground="{DynamicResource BackgroundLightBrush}"
+					Style="{DynamicResource WpfUtilsTextBlock}"
+					Text="%" />
+			</wpfUtils:NumberBox.Suffix>
+		</wpfUtils:NumberBox>
 	</Grid>
 </mvm:View>

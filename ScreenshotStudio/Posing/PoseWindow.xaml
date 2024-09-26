@@ -277,6 +277,7 @@
 						Visibility="{Binding IsSelectionTransform, Converter={StaticResource B2V}}" />
 
 					<pose:BlendInspector
+						VerticalAlignment="Top"
 						Selection="{Binding Selection}"
 						Visibility="{Binding IsSelectionBlend, Converter={StaticResource B2V}}" />
 

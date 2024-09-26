@@ -12,33 +12,61 @@
 	d:DesignWidth="500"
 	mc:Ignorable="d">
 	<Canvas>
+
 		<Image
 			Opacity="{Binding BackgroundOpacity}"
 			Source="/ScreenshotStudio;component/Assets/PoseCharacterFaceBackground.png" />
 
-		<Button
+		<ToggleButton
+			x:Name="MouthToggle"
 			Canvas.Left="155"
 			Canvas.Top="250"
 			Width="150"
 			Height="60"
-			Click="OnMouthClicked"
-			Opacity="0.5" />
+			Background="Transparent" />
 
-		<Button
-			Canvas.Left="90"
-			Canvas.Top="100"
-			Width="100"
-			Height="50"
-			Click="OnRightEyeClicked"
-			Opacity="0.5" />
+		<Popup
+			IsOpen="{Binding ElementName=MouthToggle, Path=IsChecked}"
+			Placement="Center"
+			PlacementTarget="{Binding ElementName=MouthToggle}"
+			StaysOpen="False"
+			Style="{DynamicResource WpfUtilsPopup}"
+			VerticalOffset="50">
 
-		<Button
-			Canvas.Left="260"
-			Canvas.Top="100"
-			Width="100"
-			Height="50"
-			Click="OnLeftEyeClicked"
-			Opacity="0.5" />
+			<ContentControl Style="{DynamicResource WpfUtilsPopupContent}">
+				<Border
+					Margin="3"
+					Style="{DynamicResource WpfUtilsControlBorder}">
+					<ItemsControl>
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<UniformGrid Rows="1" />
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+
+						<ItemsControl.Resources>
+							<Style
+								BasedOn="{StaticResource WpfUtilsButton}"
+								TargetType="{x:Type Button}">
+								<Setter Property="Height" Value="40" />
+								<Setter Property="Background" Value="Transparent" />
+							</Style>
+
+							<Style TargetType="{x:Type Image}">
+								<Setter Property="Opacity" Value="0.25" />
+							</Style>
+						</ItemsControl.Resources>
+
+						<local:BlendTargetView TargetName="MouthFrown" />
+						<local:BlendTargetView TargetName="MouthGrin" />
+						<local:BlendTargetView TargetName="MouthPucker" />
+						<local:BlendTargetView TargetName="MouthScared" />
+						<local:BlendTargetView TargetName="MouthSmile" />
+
+					</ItemsControl>
+				</Border>
+			</ContentControl>
+		</Popup>
 
 	</Canvas>
 </mvm:View>

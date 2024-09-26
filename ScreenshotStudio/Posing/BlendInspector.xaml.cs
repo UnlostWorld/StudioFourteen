@@ -1,49 +1,37 @@
 ﻿namespace ScreenshotStudio.Posing;
 
 using DependencyPropertyGenerator;
-using ScreenshotStudio.Files;
-using ScreenshotStudio.Library.Sources;
 using ScreenshotStudio.Mvm;
-using ScreenshotStudio.Utilities;
+using System.Threading.Tasks;
 using System.Windows;
+using WpfUtils.Extensions;
 
 [DependencyProperty<BlendSelection>("Selection")]
 public partial class BlendInspector : View
 {
-	private BlendService.Blend? activeBlend;
-
 	public PoseWindow? Panel => this.FindParent<PoseWindow>();
 
-	[AutoNotify] public FrameworkElement? BlendTargetElement { get; set; }
-	[AutoNotify] public bool IsBlendOpen
-	{
-		get => this.activeBlend != null;
-		set
-		{
-			if (this.activeBlend == null)
-				return;
-
-			this.activeBlend = value ? this.activeBlend : null;
-		}
-	}
+	[AutoNotify] public double BlendMaximum => (this.ActiveBlend?.Maximum * 100) ?? 100;
+	[AutoNotify] public double BlendMinimum => (this.ActiveBlend?.Minimum * 100) ?? 0;
+	[AutoNotify] public BlendService.Blend? ActiveBlend { get; private set; }
 
 	[AutoNotify]
 	public double BlendValue
 	{
-		get => this.activeBlend?.Value ?? 0;
-		set => this.activeBlend?.SetValue(value);
+		get => (this.ActiveBlend?.Value * 100) ?? 0;
+		set => this.ActiveBlend?.SetValue(value / 100);
 	}
 
-	private async void OnTargetClicked(object sender, RoutedEventArgs e)
+	partial void OnSelectionChanged()
 	{
-		this.activeBlend = null;
+		this.Begin().Run();
+	}
 
-		this.BlendTargetElement = sender as FrameworkElement;
-
-		BlendTarget? target = this.BlendTargetElement?.DataContext as BlendTarget;
-		if (target == null)
+	private async Task Begin()
+	{
+		if (this.Selection == null)
 			return;
 
-		this.activeBlend = await this.Services.Blend.BeginBlend(this.Services.Target.TargetObjectIndex, target);
+		this.ActiveBlend = await this.Services.Blend.BeginBlend(this.Services.Target.TargetObjectIndex, this.Selection.Target);
 	}
 }

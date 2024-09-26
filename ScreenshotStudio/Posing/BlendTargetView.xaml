@@ -1,0 +1,19 @@
+﻿<mvm:View
+	x:Class="ScreenshotStudio.Posing.BlendTargetView"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="clr-namespace:ScreenshotStudio.Posing"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:mvm="clr-namespace:ScreenshotStudio.Mvm"
+	d:Background="{DynamicResource BackgroundBrush}"
+	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
+	mc:Ignorable="d">
+
+	<Button
+		Height="50"
+		Click="OnClick">
+		<Image Source="{Binding Target.Icon}" />
+	</Button>
+
+</mvm:View>
