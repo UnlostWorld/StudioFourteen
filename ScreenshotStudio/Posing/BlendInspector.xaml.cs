@@ -33,5 +33,10 @@ public partial class BlendInspector : View
 			return;
 
 		this.ActiveBlend = await this.Services.Blend.BeginBlend(this.Services.Target.TargetObjectIndex, this.Selection.Target);
+
+		if (this.ActiveBlend == null)
+			return;
+
+		this.ActiveBlend.FlipSides = this.Selection.IsFlipped;
 	}
 }

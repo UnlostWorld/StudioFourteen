@@ -13,17 +13,80 @@
 	mc:Ignorable="d">
 	<Canvas>
 
+		<Canvas.Resources>
+			<ControlTemplate
+				x:Key="PartToggle"
+				TargetType="{x:Type ToggleButton}">
+				<Grid
+					x:Name="Grid"
+					Background="{DynamicResource ForegroundLightBrush}"
+					Cursor="Hand" />
+
+				<ControlTemplate.Triggers>
+					<Trigger Property="IsMouseOver" Value="True">
+						<Setter TargetName="Grid" Property="Background" Value="{DynamicResource ForegroundBrush}" />
+					</Trigger>
+					<Trigger Property="IsChecked" Value="True">
+						<Setter TargetName="Grid" Property="Background" Value="{DynamicResource TrimBrush}" />
+					</Trigger>
+				</ControlTemplate.Triggers>
+			</ControlTemplate>
+		</Canvas.Resources>
+
 		<Image
 			Opacity="{Binding BackgroundOpacity}"
-			Source="/ScreenshotStudio;component/Assets/PoseCharacterFaceBackground.png" />
+			Source="/ScreenshotStudio;component/Assets/ExpressionBlend_Background.png" />
 
 		<ToggleButton
 			x:Name="MouthToggle"
-			Canvas.Left="155"
+			Canvas.Left="130"
 			Canvas.Top="250"
-			Width="150"
-			Height="60"
-			Background="Transparent" />
+			Width="200"
+			Height="70"
+			Background="Transparent"
+			Template="{StaticResource PartToggle}">
+			<ToggleButton.OpacityMask>
+				<ImageBrush
+					ImageSource="/ScreenshotStudio;component/Assets/ExpressionBlend_Mouth.png"
+					Stretch="UniformToFill" />
+			</ToggleButton.OpacityMask>
+		</ToggleButton>
+
+
+		<ToggleButton
+			x:Name="LeftEyeToggle"
+			Canvas.Left="240"
+			Canvas.Top="60"
+			Width="120"
+			Height="110"
+			Background="Transparent"
+			Template="{StaticResource PartToggle}">
+			<ToggleButton.OpacityMask>
+				<ImageBrush
+					ImageSource="/ScreenshotStudio;component/Assets/ExpressionBlend_Eye_Neutral.png"
+					Stretch="UniformToFill" />
+			</ToggleButton.OpacityMask>
+		</ToggleButton>
+
+		<ToggleButton
+			x:Name="RightEyeToggle"
+			Canvas.Left="95"
+			Canvas.Top="60"
+			Width="120"
+			Height="110"
+			Background="Transparent"
+			Tag="/ScreenshotStudio;component/Assets/ExpressionBlend_Eye_Neutral.png"
+			Template="{StaticResource PartToggle}">
+			<ToggleButton.LayoutTransform>
+				<ScaleTransform ScaleX="-1" />
+			</ToggleButton.LayoutTransform>
+			<ToggleButton.OpacityMask>
+				<ImageBrush
+					ImageSource="/ScreenshotStudio;component/Assets/ExpressionBlend_Eye_Neutral.png"
+					Stretch="UniformToFill" />
+			</ToggleButton.OpacityMask>
+		</ToggleButton>
+
 
 		<Popup
 			IsOpen="{Binding ElementName=MouthToggle, Path=IsChecked}"
@@ -40,29 +103,88 @@
 					<ItemsControl>
 						<ItemsControl.ItemsPanel>
 							<ItemsPanelTemplate>
-								<UniformGrid Rows="1" />
+								<UniformGrid Columns="3" />
 							</ItemsPanelTemplate>
 						</ItemsControl.ItemsPanel>
-
-						<ItemsControl.Resources>
-							<Style
-								BasedOn="{StaticResource WpfUtilsButton}"
-								TargetType="{x:Type Button}">
-								<Setter Property="Height" Value="40" />
-								<Setter Property="Background" Value="Transparent" />
-							</Style>
-
-							<Style TargetType="{x:Type Image}">
-								<Setter Property="Opacity" Value="0.25" />
-							</Style>
-						</ItemsControl.Resources>
 
 						<local:BlendTargetView TargetName="MouthFrown" />
 						<local:BlendTargetView TargetName="MouthGrin" />
 						<local:BlendTargetView TargetName="MouthPucker" />
 						<local:BlendTargetView TargetName="MouthScared" />
 						<local:BlendTargetView TargetName="MouthSmile" />
+						<local:BlendTargetView TargetName="Tongue" />
+					</ItemsControl>
+				</Border>
+			</ContentControl>
+		</Popup>
 
+		<Popup
+			IsOpen="{Binding ElementName=LeftEyeToggle, Path=IsChecked}"
+			Placement="Center"
+			PlacementTarget="{Binding ElementName=LeftEyeToggle}"
+			StaysOpen="False"
+			Style="{DynamicResource WpfUtilsPopup}"
+			VerticalOffset="50">
+
+			<ContentControl Style="{DynamicResource WpfUtilsPopupContent}">
+				<Border
+					Margin="3"
+					Style="{DynamicResource WpfUtilsControlBorder}">
+					<ItemsControl>
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<UniformGrid Columns="3" />
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+
+						<local:BlendTargetView TargetName="EyeAmazed" />
+						<local:BlendTargetView TargetName="EyeAnnoyed" />
+						<local:BlendTargetView TargetName="EyeGrin" />
+						<local:BlendTargetView TargetName="EyeConfused" />
+						<local:BlendTargetView TargetName="EyeNeutral" />
+						<local:BlendTargetView TargetName="EyeLids" />
+					</ItemsControl>
+				</Border>
+			</ContentControl>
+		</Popup>
+
+		<Popup
+			IsOpen="{Binding ElementName=RightEyeToggle, Path=IsChecked}"
+			Placement="Center"
+			PlacementTarget="{Binding ElementName=RightEyeToggle}"
+			StaysOpen="False"
+			Style="{DynamicResource WpfUtilsPopup}"
+			VerticalOffset="50">
+
+			<ContentControl Style="{DynamicResource WpfUtilsPopupContent}">
+				<Border
+					Margin="3"
+					Style="{DynamicResource WpfUtilsControlBorder}">
+					<ItemsControl>
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<UniformGrid Columns="3" />
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+
+						<local:BlendTargetView
+							Flip="True"
+							TargetName="EyeAmazed" />
+						<local:BlendTargetView
+							Flip="True"
+							TargetName="EyeAnnoyed" />
+						<local:BlendTargetView
+							Flip="True"
+							TargetName="EyeGrin" />
+						<local:BlendTargetView
+							Flip="True"
+							TargetName="EyeConfused" />
+						<local:BlendTargetView
+							Flip="True"
+							TargetName="EyeNeutral" />
+						<local:BlendTargetView
+							Flip="True"
+							TargetName="EyeLids" />
 					</ItemsControl>
 				</Border>
 			</ContentControl>

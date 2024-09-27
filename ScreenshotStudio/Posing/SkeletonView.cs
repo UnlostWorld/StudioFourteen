@@ -196,11 +196,10 @@ public partial class SkeletonView : Canvas
 					if (selection != null)
 						selections.Add(selection);
 
-					if (name.EndsWith("_l"))
+					string? mirrorName = PoseService.GetMirrorBoneName(name);
+					if (mirrorName != null)
 					{
-						string rName = name.Substring(0, name.Length - 2) + "_r";
-
-						selection = ServiceManager.Instance.Pose.FindBone(character, rName);
+						selection = ServiceManager.Instance.Pose.FindBone(character, mirrorName);
 						if (selection != null)
 						{
 							selections.Add(selection);

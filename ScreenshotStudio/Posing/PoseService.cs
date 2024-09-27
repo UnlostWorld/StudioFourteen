@@ -29,6 +29,7 @@ public class PoseService : ServiceBase
 {
 	private readonly List<BoneId> boneIds = new();
 	private readonly Dictionary<BoneId, BoneReference> boneReferences = new();
+	private readonly Queue<BoneId> bonesWaitingFrameworkTick = new();
 
 	private SelectionBase? selection;
 
@@ -74,6 +75,20 @@ public class PoseService : ServiceBase
 			this.editMode = value;
 			this.RaisePropertyChanged();
 		}
+	}
+
+	public static string? GetMirrorBoneName(string name)
+	{
+		if (name.EndsWith("_l"))
+		{
+			return name.Substring(0, name.Length - 2) + "_r";
+		}
+		else if (name.EndsWith("_r"))
+		{
+			return name.Substring(0, name.Length - 2) + "_l";
+		}
+
+		return null;
 	}
 
 	public override Task Start()
@@ -206,6 +221,8 @@ public class PoseService : ServiceBase
 			this.boneIds.Sort();
 			this.boneReferences.Add(id, reference);
 
+			this.bonesWaitingFrameworkTick.Enqueue(id);
+
 			return reference;
 		}
 	}
@@ -315,6 +332,14 @@ public class PoseService : ServiceBase
 	{
 		base.OnFrameworkUpdate(framework);
 		this.Selection?.OnFrameworkUpdate(framework);
+
+		while (this.bonesWaitingFrameworkTick.Count > 0)
+		{
+			BoneId bone = this.bonesWaitingFrameworkTick.Dequeue();
+			BoneReference reference = this.boneReferences[bone];
+
+			reference.OnFrameworkUpdateOnce();
+		}
 	}
 
 	private unsafe nint UpdateBonePhysicsDetour(nint a1)

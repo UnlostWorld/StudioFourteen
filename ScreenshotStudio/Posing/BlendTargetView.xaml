@@ -13,7 +13,17 @@
 	<Button
 		Height="50"
 		Click="OnClick">
-		<Image Source="{Binding Target.Icon}" />
+
+		<Grid
+			Width="100"
+			Height="50"
+			VerticalAlignment="Center"
+			Background="{DynamicResource ForegroundLightBrush}">
+			<Grid.OpacityMask>
+				<ImageBrush ImageSource="{Binding Target.Icon}" />
+			</Grid.OpacityMask>
+		</Grid>
+
 	</Button>
 
 </mvm:View>

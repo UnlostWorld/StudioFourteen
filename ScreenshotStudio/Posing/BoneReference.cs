@@ -33,9 +33,12 @@ public class BoneReference(BoneId id, string? name = null)
 	public PoseFile.BoneTransform? LoadRelativeTransform;
 
 	public BoneReference? Parent;
+	public BoneReference? Mirror;
 	public bool IsValid = true;
 
 	private string? boneName = name;
+	private string? mirrorBoneName;
+	private bool hasCheckedMirror = false;
 
 	public bool Locked { get; set; } = false;
 	public bool ForceRef { get; set; } = false;
@@ -61,6 +64,7 @@ public class BoneReference(BoneId id, string? name = null)
 	public void Clear()
 	{
 		this.Parent = null;
+		this.Mirror = null;
 		this.IsValid = false;
 	}
 
@@ -81,6 +85,58 @@ public class BoneReference(BoneId id, string? name = null)
 		referenceRelative.Scale = hkReferenceRelativeTransform.Scale.ToVector3();
 
 		return referenceRelative;
+	}
+
+	public unsafe void OnFrameworkUpdateOnce()
+	{
+		if (DalamudServices.ObjectTable == null)
+			return;
+
+		Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(this.Id.ObjectTableIndex);
+		if (character == null)
+			return;
+
+		if (!character->CanDraw())
+			return;
+
+		CharacterBase* characterBase = character->GetCharacterBase();
+		if (characterBase == null)
+			return;
+
+		Skeleton* skeleton = characterBase->Skeleton;
+		if (skeleton == null)
+			return;
+
+		PartialSkeleton* partialSkeleton = &skeleton->PartialSkeletons[this.Id.PartialSkeletonIndex];
+
+		if (partialSkeleton == null)
+			return;
+
+		hkaPose* pose = partialSkeleton->GetHavokPose(this.Id.PoseIndex);
+
+		// Get our Mirror bone
+		if (!this.hasCheckedMirror)
+		{
+			if (this.boneName != null && this.mirrorBoneName == null)
+				this.mirrorBoneName = PoseService.GetMirrorBoneName(this.boneName);
+
+			if (this.Mirror == null && this.mirrorBoneName != null)
+			{
+				int boneCount = pose->Skeleton->Bones.Length;
+				for (short boneIdx = 0; boneIdx < boneCount; boneIdx++)
+				{
+					hkaBone testBone = pose->Skeleton->Bones[boneIdx];
+					string? boneName = testBone.Name.String;
+					if (boneName == this.mirrorBoneName)
+					{
+						BoneId mirrorBoneId = new(this.Id.ObjectTableIndex, this.Id.PartialSkeletonIndex, this.Id.PoseIndex, boneIdx);
+						this.Mirror = ServiceManager.Instance.Pose.GetOrCreateBoneReference(mirrorBoneId);
+					}
+				}
+			}
+
+			this.hasCheckedMirror = true;
+		}
 	}
 
 	public unsafe Skeleton* Tick()
@@ -124,6 +180,7 @@ public class BoneReference(BoneId id, string? name = null)
 		if (this.boneName == null)
 		{
 			this.boneName = bone.Name.String;
+			this.hasCheckedMirror = false;
 		}
 		else
 		{
@@ -133,6 +190,7 @@ public class BoneReference(BoneId id, string? name = null)
 			}
 		}
 
+		// Begin updating transforms
 		this.ReferenceTransform = pose->Skeleton->ReferencePose[this.Id.BoneIndex];
 
 		// Get a new copy of the live transforms

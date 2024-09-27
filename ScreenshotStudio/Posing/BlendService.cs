@@ -26,6 +26,7 @@ public class BlendService : ServiceBase
 		List<BoneReference>? boneReferences = toPose.GetBoneReferences(objectTableIndex);
 		if (boneReferences == null)
 			return null;
+
 		await Threads.NextFrame();
 
 		List<BoneBlend> bones = new();
@@ -65,7 +66,7 @@ public class BlendService : ServiceBase
 		public BoneTransform Right = right;
 		public BoneTransform? Left = left;
 
-		public void Blend(float value)
+		public void Blend(float value, bool flip)
 		{
 			if (value > 0)
 			{
@@ -101,7 +102,15 @@ public class BlendService : ServiceBase
 					this.Value.Scale = this.Initial.Scale.Value;
 			}
 
-			this.Reference.LoadRelativeTransform = this.Value;
+			if (flip && this.Reference.Mirror != null)
+			{
+				// TODO: Flip the transform and apply it to the mirror bone reference!
+				////this.Reference.Mirror.LoadRelativeTransform = this.Value;
+			}
+			else
+			{
+				this.Reference.LoadRelativeTransform = this.Value;
+			}
 		}
 	}
 
@@ -112,6 +121,8 @@ public class BlendService : ServiceBase
 
 		public double Maximum => 1.0;
 		public double Minimum => this.HasLeft ? -1.0 : 0.0;
+
+		public bool FlipSides { get; set; }
 
 		public double Value
 		{
@@ -127,7 +138,7 @@ public class BlendService : ServiceBase
 
 			foreach (BoneBlend bone in this.bones)
 			{
-				bone.Blend((float)value);
+				bone.Blend((float)value, this.FlipSides);
 			}
 		}
 	}
@@ -138,6 +149,8 @@ public class BlendSelection(string name, BlendTarget target)
 {
 	public override string Name => name;
 	public override string? Subtitle => null;
+
+	public bool IsFlipped { get; set; }
 
 	public BlendTarget Target => target;
 }
@@ -153,6 +166,9 @@ public class BlendTarget
 	{
 		get
 		{
+			if (string.IsNullOrEmpty(this.IconPath))
+				return null;
+
 			try
 			{
 				BitmapImage bmp = new();

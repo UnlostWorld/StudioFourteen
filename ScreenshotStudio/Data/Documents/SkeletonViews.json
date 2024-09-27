@@ -129,9 +129,18 @@
 			"j_f_mmayu_l": "166, 70",
 			"j_f_miken_01_l": "190, 90",
 			"j_f_miken_02_l": "203, 100",
-			"j_f_mabup_01_l": "136, 100",
+
+			"j_f_dmiken_l": "220, 100",
+
 			"j_f_eye_l": "145, 124",
+			"j_f_mab_l": "165, 124",
 			"j_f_mabdn_01_l": "148, 141",
+			"j_f_mabdn_02out_l": "128, 138",
+			"j_f_mabdn_03in_l": "168, 138",
+			"j_f_mabup_01_l": "148, 105",
+			"j_f_mabup_02out_l": "128, 110",
+			"j_f_mabup_03in_l": "168, 110",
+
 			"j_f_dmemoto_l": "170, 218",
 			"j_f_hoho_l": "135, 190",
 			"j_f_dhoho_l": "105, 211",
