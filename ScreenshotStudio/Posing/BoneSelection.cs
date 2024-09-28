@@ -69,7 +69,8 @@ public class BoneSelection : TransformSelectionBase
 		}
 	}
 
-	public MirrorModes MirrorMode
+	public override bool CanMirror => true;
+	public override MirrorModes MirrorMode
 	{
 		get => this.bone?.MirrorMode ?? MirrorModes.None;
 		set

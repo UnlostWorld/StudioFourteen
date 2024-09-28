@@ -31,20 +31,6 @@
 			Stretch="Uniform" />
 
 
-		<StackPanel Grid.Row="1">
-			<CheckBox
-				Margin="1"
-				Content="Flip" />
-			<CheckBox
-				Margin="1"
-				Content="Mirror" />
-
-			<Button>
-				<wpfUtils:IconBlock Icon="RotateLeft" />
-			</Button>
-		</StackPanel>
-
-
 		<wpfUtils:NumberBox
 			Grid.Row="2"
 			Maximum="{Binding BlendMaximum}"

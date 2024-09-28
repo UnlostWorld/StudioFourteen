@@ -9,6 +9,9 @@ public abstract class SelectionBase : ViewModel
 	[AutoNotify] public abstract string Name { get; }
 	[AutoNotify] public abstract string? Subtitle { get; }
 
+	public virtual bool CanMirror => false;
+	public virtual MirrorModes MirrorMode { get; set; }
+
 	public virtual void Activate()
 	{
 	}

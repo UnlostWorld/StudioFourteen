@@ -704,6 +704,7 @@
 	},
 
 	"EyeAmazed": {
+		"MirrorMode": "MirrorTRCopyS",
 		"IconPath": "/Assets/ExpressionBlend_Eye_Amazed.png",
 		"RightBones": {
 			"j_f_dhoho_l": {
@@ -780,6 +781,7 @@
 	},
 
 	"EyeAnnoyed": {
+		"MirrorMode": "MirrorTRCopyS",
 		"IconPath": "/Assets/ExpressionBlend_Eye_Annoyed.png",
 		"RightBones": {
 			"j_f_dhoho_l": {
@@ -856,6 +858,7 @@
 	},
 
 	"EyeGrin": {
+		"MirrorMode": "MirrorTRCopyS",
 		"IconPath": "/Assets/ExpressionBlend_Eye_Grin.png",
 		"RightBones": {
 			"j_f_dhoho_l": {
@@ -932,6 +935,7 @@
 	},
 
 	"EyeConfused": {
+		"MirrorMode": "MirrorTRCopyS",
 		"IconPath": "/Assets/ExpressionBlend_Eye_Confused.png",
 		"RightBones": {
 			"j_f_dhoho_l": {
@@ -1008,6 +1012,7 @@
 	},
 
 	"EyeNeutral": {
+		"MirrorMode": "MirrorTRCopyS",
 		"IconPath": "/Assets/ExpressionBlend_Eye_Neutral.png",
 		"RightBones": {
 			"j_f_dhoho_l": {
@@ -1084,6 +1089,7 @@
 	},
 
 	"EyeLids": {
+		"MirrorMode": "MirrorTRCopyS",
 		"IconPath": "/Assets/ExpressionBlend_Eye_Eyelid.png",
 		"RightBones": {
 			"j_f_mab_l": {

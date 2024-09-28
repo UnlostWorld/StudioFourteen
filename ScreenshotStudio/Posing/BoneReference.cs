@@ -3,6 +3,7 @@
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
+using FFXIVClientStructs.FFXIV.Common.Lua;
 using FFXIVClientStructs.Havok.Animation.Rig;
 using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
 using FFXIVClientStructs.Havok.Common.Base.Math.Quaternion;
@@ -159,7 +160,14 @@ public class BoneReference(BoneId id, string? name = null)
 						BoneId mirrorBoneId = new(this.Id.ObjectTableIndex, this.Id.PartialSkeletonIndex, this.Id.PoseIndex, boneIdx);
 						this.Mirror = ServiceManager.Instance.Pose.GetOrCreateBoneReference(mirrorBoneId);
 
-						this.Mirror.MirrorMode = this.MirrorMode;
+						if (this.Mirror.MirrorMode != MirrorModes.None && this.MirrorMode == MirrorModes.None)
+						{
+							this.MirrorMode = this.Mirror.MirrorMode;
+						}
+						else if (this.MirrorMode != MirrorModes.None && this.Mirror.MirrorMode == MirrorModes.None)
+						{
+							this.Mirror.MirrorMode = this.MirrorMode;
+						}
 					}
 				}
 			}
@@ -245,6 +253,7 @@ public class BoneReference(BoneId id, string? name = null)
 			transform->Scale.Set(newTransform.Scale);
 		}
 
+		Logging.Shared.Information($"{this.boneName} >> {this.MirrorMode} ?? {this.Mirror}");
 		if (this.MirrorMode != MirrorModes.None && this.Mirror != null)
 		{
 			hkQsTransformf boneTransform = *pose->AccessBoneModelSpace(this.Id.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);

@@ -13,7 +13,7 @@ public partial class BlendInspector : View
 
 	[AutoNotify] public double BlendMaximum => (this.ActiveBlend?.Maximum * 100) ?? 100;
 	[AutoNotify] public double BlendMinimum => (this.ActiveBlend?.Minimum * 100) ?? 0;
-	[AutoNotify] public BlendService.Blend? ActiveBlend { get; private set; }
+	[AutoNotify] public BlendService.Blend? ActiveBlend => this.Selection?.Blend;
 
 	[AutoNotify]
 	public double BlendValue
@@ -32,11 +32,6 @@ public partial class BlendInspector : View
 		if (this.Selection == null)
 			return;
 
-		this.ActiveBlend = await this.Services.Blend.BeginBlend(this.Services.Target.TargetObjectIndex, this.Selection.Target);
-
-		if (this.ActiveBlend == null)
-			return;
-
-		this.ActiveBlend.FlipSides = this.Selection.IsFlipped;
+		this.Selection.Blend = await this.Services.Blend.BeginBlend(this.Services.Target.TargetObjectIndex, this.Selection.Target, this.Selection.MirrorMode);
 	}
 }

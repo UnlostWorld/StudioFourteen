@@ -167,24 +167,12 @@
 							</ItemsPanelTemplate>
 						</ItemsControl.ItemsPanel>
 
-						<local:BlendTargetView
-							Flip="True"
-							TargetName="EyeAmazed" />
-						<local:BlendTargetView
-							Flip="True"
-							TargetName="EyeAnnoyed" />
-						<local:BlendTargetView
-							Flip="True"
-							TargetName="EyeGrin" />
-						<local:BlendTargetView
-							Flip="True"
-							TargetName="EyeConfused" />
-						<local:BlendTargetView
-							Flip="True"
-							TargetName="EyeNeutral" />
-						<local:BlendTargetView
-							Flip="True"
-							TargetName="EyeLids" />
+						<local:BlendTargetView TargetName="EyeAmazed" />
+						<local:BlendTargetView TargetName="EyeAnnoyed" />
+						<local:BlendTargetView TargetName="EyeGrin" />
+						<local:BlendTargetView TargetName="EyeConfused" />
+						<local:BlendTargetView TargetName="EyeNeutral" />
+						<local:BlendTargetView TargetName="EyeLids" />
 					</ItemsControl>
 				</Border>
 			</ContentControl>

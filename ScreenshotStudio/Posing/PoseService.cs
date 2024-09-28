@@ -33,12 +33,12 @@ public enum MirrorModes
 	None,
 
 	/// <summary>
-	/// Mirror the Translation and Rotation, and copy the scale.
+	/// (Mirror) Mirror the Translation and Rotation, and copy the scale.
 	/// </summary>
 	MirrorTRCopyS,
 
 	/// <summary>
-	/// Mirror the bone Translation and copy the Rotation and Scale.
+	/// (Copy) Mirror the bone Translation and copy the Rotation and Scale.
 	/// </summary>
 	MirrorTCopyRS,
 }

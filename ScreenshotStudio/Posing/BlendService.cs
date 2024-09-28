@@ -21,7 +21,7 @@ using static ScreenshotStudio.Files.PoseFile;
 
 public class BlendService : ServiceBase
 {
-	public async Task<Blend?> BeginBlend(int objectTableIndex, BlendTarget toPose)
+	public async Task<Blend?> BeginBlend(int objectTableIndex, BlendTarget toPose, MirrorModes mirrorMode)
 	{
 		await Threads.FrameworkThread();
 
@@ -54,6 +54,7 @@ public class BlendService : ServiceBase
 		}
 
 		Blend blend = new(bones);
+		blend.MirrorMode = mirrorMode;
 		blend.Value = 0;
 
 		return blend;
@@ -68,7 +69,7 @@ public class BlendService : ServiceBase
 		public BoneTransform Right = right;
 		public BoneTransform? Left = left;
 
-		public void Blend(float value, bool flip)
+		public void Blend(float value)
 		{
 			if (value > 0)
 			{
@@ -104,13 +105,7 @@ public class BlendService : ServiceBase
 					this.Value.Scale = this.Initial.Scale.Value;
 			}
 
-			if (flip && this.Reference.Mirror != null)
-			{
-			}
-			else
-			{
-				this.Reference.LoadRelativeTransform = this.Value;
-			}
+			this.Reference.LoadRelativeTransform = this.Value;
 		}
 	}
 
@@ -132,13 +127,26 @@ public class BlendService : ServiceBase
 
 		public bool HasLeft => this.bones[0].Left != null;
 
+		public MirrorModes MirrorMode
+		{
+			get => this.bones[0].Reference.MirrorMode;
+			set
+			{
+				foreach(BoneBlend bone in this.bones)
+				{
+					bone.Reference.MirrorMode = value;
+					Logging.Shared.Information($"{bone.Reference.Name} >> {bone.Reference.MirrorMode}");
+				}
+			}
+		}
+
 		public void SetValue(double value)
 		{
 			this.value = value;
 
 			foreach (BoneBlend bone in this.bones)
 			{
-				bone.Blend((float)value, this.FlipSides);
+				bone.Blend((float)value);
 			}
 		}
 	}
@@ -147,18 +155,36 @@ public class BlendService : ServiceBase
 public class BlendSelection(string name, BlendTarget target)
 	: SelectionBase
 {
+	private MirrorModes mirrorMode = target.MirrorMode;
+
 	public override string Name => name;
 	public override string? Subtitle => null;
 
-	public bool IsFlipped { get; set; }
-
 	public BlendTarget Target => target;
+
+	public override bool CanMirror => true;
+	public override MirrorModes MirrorMode
+	{
+		get => this.Blend?.MirrorMode ?? this.mirrorMode;
+		set
+		{
+			this.mirrorMode = value;
+
+			if (this.Blend == null)
+				return;
+
+			this.Blend.MirrorMode = value;
+		}
+	}
+
+	public BlendService.Blend? Blend { get; set; }
 }
 
 [System.Serializable]
 public class BlendTarget
 {
 	public string? IconPath { get; set; }
+	public MirrorModes MirrorMode { get; set; }
 	public Dictionary<string, PoseFile.BoneTransform>? RightBones { get; set; }
 	public Dictionary<string, PoseFile.BoneTransform>? LeftBones { get; set; }
 
