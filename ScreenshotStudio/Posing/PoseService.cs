@@ -25,11 +25,28 @@ public enum PoseEditModes
 	Scale,
 }
 
+public enum MirrorModes
+{
+	/// <summary>
+	/// Do not perform any mirroring action.
+	/// </summary>
+	None,
+
+	/// <summary>
+	/// Mirror the Translation and Rotation, and copy the scale.
+	/// </summary>
+	MirrorTRCopyS,
+
+	/// <summary>
+	/// Mirror the bone Translation and copy the Rotation and Scale.
+	/// </summary>
+	MirrorTCopyRS,
+}
+
 public class PoseService : ServiceBase
 {
 	private readonly List<BoneId> boneIds = new();
 	private readonly Dictionary<BoneId, BoneReference> boneReferences = new();
-	private readonly Queue<BoneId> bonesWaitingFrameworkTick = new();
 
 	private SelectionBase? selection;
 
@@ -221,8 +238,6 @@ public class PoseService : ServiceBase
 			this.boneIds.Sort();
 			this.boneReferences.Add(id, reference);
 
-			this.bonesWaitingFrameworkTick.Enqueue(id);
-
 			return reference;
 		}
 	}
@@ -332,14 +347,6 @@ public class PoseService : ServiceBase
 	{
 		base.OnFrameworkUpdate(framework);
 		this.Selection?.OnFrameworkUpdate(framework);
-
-		while (this.bonesWaitingFrameworkTick.Count > 0)
-		{
-			BoneId bone = this.bonesWaitingFrameworkTick.Dequeue();
-			BoneReference reference = this.boneReferences[bone];
-
-			reference.OnFrameworkUpdateOnce();
-		}
 	}
 
 	private unsafe nint UpdateBonePhysicsDetour(nint a1)
@@ -368,11 +375,17 @@ public class PoseService : ServiceBase
 	// All the main skeleton stuff like positions, IK and physics is done at this point.
 	private unsafe void UpdateSkeletons()
 	{
+		List<BoneId> boneIds;
+		lock(this.boneIds)
+		{
+			boneIds = new(this.boneIds);
+		}
+
 		lock (this.boneReferences)
 		{
 			HashSet<nint> modifiedSkeletonPointers = new();
 
-			foreach(BoneId boneId in this.boneIds)
+			foreach(BoneId boneId in boneIds)
 			{
 				BoneReference reference = this.boneReferences[boneId];
 				if (!reference.IsValid)

@@ -8,6 +8,8 @@ using FFXIVClientStructs.Havok.Animation.Rig;
 using ScreenshotStudio.Files;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
+using ScreenshotStudio.Structs;
+using ScreenshotStudio.Structs.Extensions;
 using ScreenshotStudio.Utilities;
 using System;
 using System.Collections.Generic;
@@ -104,8 +106,6 @@ public class BlendService : ServiceBase
 
 			if (flip && this.Reference.Mirror != null)
 			{
-				// TODO: Flip the transform and apply it to the mirror bone reference!
-				////this.Reference.Mirror.LoadRelativeTransform = this.Value;
 			}
 			else
 			{

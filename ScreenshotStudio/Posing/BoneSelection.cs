@@ -69,6 +69,23 @@ public class BoneSelection : TransformSelectionBase
 		}
 	}
 
+	public MirrorModes MirrorMode
+	{
+		get => this.bone?.MirrorMode ?? MirrorModes.None;
+		set
+		{
+			if (this.bone == null)
+				return;
+
+			this.bone.MirrorMode = value;
+
+			if (this.bone.Mirror != null)
+			{
+				this.bone.Mirror.MirrorMode = this.MirrorMode;
+			}
+		}
+	}
+
 	public override Vector3 LocalTranslation
 	{
 		get => this.LocalTransform.Translation.ToVector3();

@@ -248,7 +248,7 @@
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
 
-			<StackPanel Grid.Row="1">
+			<StackPanel Grid.Row="0">
 				<TextBlock
 					HorizontalAlignment="Center"
 					Style="{DynamicResource Header}"
@@ -256,9 +256,90 @@
 
 				<TextBlock
 					HorizontalAlignment="Center"
+					FontSize="10"
+					Foreground="{DynamicResource ForegroundLightBrush}"
 					Style="{DynamicResource Subscript}"
 					Text="{Binding Selection.Subtitle}" />
 			</StackPanel>
+
+			<Border
+				Grid.Row="1"
+				Margin="1"
+				Style="{DynamicResource WpfUtilsControlBorder}">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+
+					<ComboBox
+						Grid.Column="0"
+						IsEnabled="{Binding IsSelectionBone}"
+						SelectedValue="{Binding Selection.MirrorMode}"
+						SelectedValuePath="Tag">
+
+						<ComboBoxItem Tag="{x:Static pose:MirrorModes.None}">
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="22" />
+									<ColumnDefinition />
+								</Grid.ColumnDefinitions>
+
+								<wpfUtils:IconBlock
+									Grid.Column="0"
+									Icon="Minus" />
+								<TextBlock
+									Grid.Column="1"
+									Text="No Mirror" />
+							</Grid>
+						</ComboBoxItem>
+
+						<ComboBoxItem Tag="{x:Static pose:MirrorModes.MirrorTCopyRS}">
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="22" />
+									<ColumnDefinition />
+								</Grid.ColumnDefinitions>
+
+								<wpfUtils:IconBlock
+									Grid.Column="0"
+									Icon="LeftLong" />
+								<TextBlock
+									Grid.Column="1"
+									Text="Copy" />
+							</Grid>
+						</ComboBoxItem>
+
+						<ComboBoxItem Tag="{x:Static pose:MirrorModes.MirrorTRCopyS}">
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="22" />
+									<ColumnDefinition />
+								</Grid.ColumnDefinitions>
+
+								<wpfUtils:IconBlock
+									Grid.Column="0"
+									Icon="LeftRight" />
+								<TextBlock
+									Grid.Column="1"
+									Text="Mirror" />
+							</Grid>
+						</ComboBoxItem>
+					</ComboBox>
+
+					<ToggleButton
+						Grid.Column="1"
+						Width="28"
+						Background="Transparent"
+						IsChecked="{Binding Selection.LockTransform, FallbackValue=false}"
+						IsEnabled="{Binding Selection.CanLockTransform, FallbackValue=false}"
+						ToolTip="{DynamicResource LOC_Pose_LockTransform}">
+						<wpfUtils:IconBlock
+							Icon="CirclePause"
+							IconFont="Solid" />
+					</ToggleButton>
+				</Grid>
+			</Border>
 
 
 			<ScrollViewer
@@ -300,16 +381,6 @@
 					IsChecked="{Binding FlipSides}"
 					ToolTip="{DynamicResource LOC_Pose_FlipSides}">
 					<wpfUtils:IconBlock Icon="ArrowRightArrowLeft" />
-				</ToggleButton>
-
-
-				<ToggleButton
-					Width="28"
-					Background="Transparent"
-					IsChecked="{Binding Selection.LockTransform, FallbackValue=false}"
-					IsEnabled="{Binding Selection.CanLockTransform, FallbackValue=false}"
-					ToolTip="{DynamicResource LOC_Pose_LockTransform}">
-					<wpfUtils:IconBlock Icon="Lock" />
 				</ToggleButton>
 
 				<Button

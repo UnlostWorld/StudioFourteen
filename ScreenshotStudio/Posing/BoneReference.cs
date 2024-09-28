@@ -5,6 +5,8 @@ using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.Havok.Animation.Rig;
 using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
+using FFXIVClientStructs.Havok.Common.Base.Math.Quaternion;
+using FFXIVClientStructs.Havok.Common.Base.Math.Vector;
 using ScreenshotStudio.Files;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Structs;
@@ -29,12 +31,13 @@ public class BoneReference(BoneId id, string? name = null)
 	public hkQsTransformf ReferenceTransform;
 	public hkQsTransformf NextReferenceRelativeTransform;
 
-	public PoseFile.LegacyBoneTransform? LoadModelSpaceTransform;
+	public PoseFile.BoneTransform? LoadModelSpaceTransform;
 	public PoseFile.BoneTransform? LoadRelativeTransform;
 
 	public BoneReference? Parent;
 	public BoneReference? Mirror;
 	public bool IsValid = true;
+	public MirrorModes MirrorMode = MirrorModes.None;
 
 	private string? boneName = name;
 	private string? mirrorBoneName;
@@ -85,58 +88,6 @@ public class BoneReference(BoneId id, string? name = null)
 		referenceRelative.Scale = hkReferenceRelativeTransform.Scale.ToVector3();
 
 		return referenceRelative;
-	}
-
-	public unsafe void OnFrameworkUpdateOnce()
-	{
-		if (DalamudServices.ObjectTable == null)
-			return;
-
-		Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(this.Id.ObjectTableIndex);
-		if (character == null)
-			return;
-
-		if (!character->CanDraw())
-			return;
-
-		CharacterBase* characterBase = character->GetCharacterBase();
-		if (characterBase == null)
-			return;
-
-		Skeleton* skeleton = characterBase->Skeleton;
-		if (skeleton == null)
-			return;
-
-		PartialSkeleton* partialSkeleton = &skeleton->PartialSkeletons[this.Id.PartialSkeletonIndex];
-
-		if (partialSkeleton == null)
-			return;
-
-		hkaPose* pose = partialSkeleton->GetHavokPose(this.Id.PoseIndex);
-
-		// Get our Mirror bone
-		if (!this.hasCheckedMirror)
-		{
-			if (this.boneName != null && this.mirrorBoneName == null)
-				this.mirrorBoneName = PoseService.GetMirrorBoneName(this.boneName);
-
-			if (this.Mirror == null && this.mirrorBoneName != null)
-			{
-				int boneCount = pose->Skeleton->Bones.Length;
-				for (short boneIdx = 0; boneIdx < boneCount; boneIdx++)
-				{
-					hkaBone testBone = pose->Skeleton->Bones[boneIdx];
-					string? boneName = testBone.Name.String;
-					if (boneName == this.mirrorBoneName)
-					{
-						BoneId mirrorBoneId = new(this.Id.ObjectTableIndex, this.Id.PartialSkeletonIndex, this.Id.PoseIndex, boneIdx);
-						this.Mirror = ServiceManager.Instance.Pose.GetOrCreateBoneReference(mirrorBoneId);
-					}
-				}
-			}
-
-			this.hasCheckedMirror = true;
-		}
 	}
 
 	public unsafe Skeleton* Tick()
@@ -190,6 +141,32 @@ public class BoneReference(BoneId id, string? name = null)
 			}
 		}
 
+		// Get our Mirror bone
+		if (!this.hasCheckedMirror)
+		{
+			if (this.boneName != null && this.mirrorBoneName == null)
+				this.mirrorBoneName = PoseService.GetMirrorBoneName(this.boneName);
+
+			if (this.Mirror == null && this.mirrorBoneName != null)
+			{
+				int boneCount = pose->Skeleton->Bones.Length;
+				for (short boneIdx = 0; boneIdx < boneCount; boneIdx++)
+				{
+					hkaBone testBone = pose->Skeleton->Bones[boneIdx];
+					string? boneName = testBone.Name.String;
+					if (boneName == this.mirrorBoneName)
+					{
+						BoneId mirrorBoneId = new(this.Id.ObjectTableIndex, this.Id.PartialSkeletonIndex, this.Id.PoseIndex, boneIdx);
+						this.Mirror = ServiceManager.Instance.Pose.GetOrCreateBoneReference(mirrorBoneId);
+
+						this.Mirror.MirrorMode = this.MirrorMode;
+					}
+				}
+			}
+
+			this.hasCheckedMirror = true;
+		}
+
 		// Begin updating transforms
 		this.ReferenceTransform = pose->Skeleton->ReferencePose[this.Id.BoneIndex];
 
@@ -203,9 +180,9 @@ public class BoneReference(BoneId id, string? name = null)
 		{
 			hkQsTransformf newTransform = default;
 			newTransform.Rotation = HkQuaternionExtensions.Identity;
-			if (this.LoadModelSpaceTransform.Position != null)
+			if (this.LoadModelSpaceTransform.Translation != null)
 			{
-				newTransform.Translation = this.LoadModelSpaceTransform.Position.Value.ToHkVector();
+				newTransform.Translation = this.LoadModelSpaceTransform.Translation.Value.ToHkVector();
 				newTransform.Translation.Subtract(this.ModelSpaceTransform.Value.Translation);
 			}
 
@@ -266,6 +243,38 @@ public class BoneReference(BoneId id, string? name = null)
 			transform->Translation.Set(newTransform.Translation);
 			transform->Rotation.Set(newTransform.Rotation);
 			transform->Scale.Set(newTransform.Scale);
+		}
+
+		if (this.MirrorMode != MirrorModes.None && this.Mirror != null)
+		{
+			hkQsTransformf boneTransform = *pose->AccessBoneModelSpace(this.Id.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
+
+			hkQuaternionf mirrorRot = boneTransform.Rotation;
+
+			if (this.MirrorMode == MirrorModes.MirrorTRCopyS)
+			{
+				mirrorRot.X = boneTransform.Rotation.Z;
+				mirrorRot.Y = boneTransform.Rotation.W;
+				mirrorRot.Z = boneTransform.Rotation.X;
+				mirrorRot.W = boneTransform.Rotation.Y;
+			}
+
+			hkQsTransformf* mirrorBoneTransform = pose->AccessBoneModelSpace(this.Mirror.Id.BoneIndex, hkaPose.PropagateOrNot.Propagate);
+			mirrorBoneTransform->Rotation.Set(mirrorRot);
+
+			// local space translation and scale
+			boneTransform = *pose->AccessBoneLocalSpace(this.Id.BoneIndex);
+
+			hkVector4f mirrorTranslation = boneTransform.Translation;
+			mirrorTranslation.Z = -boneTransform.Translation.Z;
+
+			// do we need to transform the scale in some way? I don't think so?
+			hkVector4f mirrorScale = boneTransform.Scale;
+			////mirrorScale.Z = -boneTransform.Scale.Z;
+
+			mirrorBoneTransform = pose->AccessBoneLocalSpace(this.Mirror.Id.BoneIndex);
+			mirrorBoneTransform->Translation.Set(mirrorTranslation);
+			mirrorBoneTransform->Scale.Set(mirrorScale);
 		}
 
 		return skeleton;

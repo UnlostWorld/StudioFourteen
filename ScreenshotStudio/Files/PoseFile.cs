@@ -340,7 +340,7 @@ public class PoseFile : FileBase
 					val.Position = null;
 					val.Scale = null;
 
-					boneReference.LoadModelSpaceTransform = val;
+					boneReference.LoadModelSpaceTransform = val.ToBoneTransform();
 					boneReference.Locked = true;
 				}
 			}
@@ -353,15 +353,36 @@ public class PoseFile : FileBase
 		return Task.CompletedTask;
 	}
 
+	// This is really just here so it serializes the same
 	public class LegacyBoneTransform
 	{
 		public Vector3? Position { get; set; }
 		public Quaternion? Rotation { get; set; }
 		public Vector3? Scale { get; set; }
+
+		public BoneTransform ToBoneTransform()
+		{
+			BoneTransform transform = new();
+			transform.Translation = this.Position;
+			transform.Scale = this.Scale;
+			transform.Rotation = this.Rotation;
+			return transform;
+		}
 	}
 
 	public class BoneTransform
 	{
+		public BoneTransform()
+		{
+		}
+
+		public BoneTransform(BoneTransform other)
+		{
+			this.Translation = other.Translation;
+			this.Rotation = other.Rotation;
+			this.Scale = other.Scale;
+		}
+
 		[JsonProperty("T")]
 		public Vector3? Translation { get; set; }
 
