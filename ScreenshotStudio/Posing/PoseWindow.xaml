@@ -362,6 +362,7 @@
 							<ResourceDictionary Source=".\TransformInspector.xaml" />
 						</Grid.Resources>
 
+						<!--  TODO: Dynamic inspectors?  -->
 						<pose:TransformInspector
 							Persistence="{Binding Persistence}"
 							Selection="{Binding Selection}"
@@ -371,6 +372,10 @@
 							VerticalAlignment="Top"
 							Selection="{Binding Selection}"
 							Visibility="{Binding IsSelectionBlend, Converter={StaticResource B2V}}" />
+
+						<pose:EyeInspector
+							Selection="{Binding Selection}"
+							Visibility="{Binding IsSelectionEye, Converter={StaticResource B2V}}" />
 
 					</Grid>
 				</ScrollViewer>

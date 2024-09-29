@@ -369,10 +369,13 @@ public class WeaponViewModel : ItemViewModelBase
 		tags.Add(this.Slot.ToTag());
 
 		// Filter by the current race.
-		Race? race = this.Target->DrawData.CustomizeData.GetRace();
-		if (race != null && race.Name != null)
+		if (this.Target != null)
 		{
-			tags.Add(race.Name);
+			Race? race = this.Target->DrawData.CustomizeData.GetRace();
+			if (race != null && race.Name != null)
+			{
+				tags.Add(race.Name);
+			}
 		}
 	}
 }
@@ -484,10 +487,13 @@ public class ItemEquipViewModel : ItemViewModelBase
 		tags.Add(this.Slot.ToTag());
 
 		// Filter by the current race.
-		Race? race = this.Target->DrawData.CustomizeData.GetRace();
-		if (race != null && race.Name != null)
+		if (this.Target != null)
 		{
-			tags.Add(race.Name);
+			Race? race = this.Target->DrawData.CustomizeData.GetRace();
+			if (race != null && race.Name != null)
+			{
+				tags.Add(race.Name);
+			}
 		}
 	}
 }

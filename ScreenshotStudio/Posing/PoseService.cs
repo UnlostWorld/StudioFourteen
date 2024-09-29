@@ -242,6 +242,17 @@ public class PoseService : ServiceBase
 		}
 	}
 
+	public unsafe BoneSelection? FindBone(int objectTableIndex, string name)
+	{
+		Threads.VerifyFrameworkThread();
+
+		if (DalamudServices.ObjectTable == null)
+			return null;
+
+		Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
+		return this.FindBone(character, name);
+	}
+
 	public unsafe BoneSelection? FindBone(Character* character, string name)
 	{
 		Threads.VerifyFrameworkThread();

@@ -37,6 +37,13 @@
 			Opacity="{Binding BackgroundOpacity}"
 			Source="/ScreenshotStudio;component/Assets/ExpressionBlend_Background.png" />
 
+		<Button
+			Canvas.Left="20"
+			Canvas.Top="330"
+			Width="100"
+			Height="100"
+			Click="OnEyeClicked" />
+
 		<ToggleButton
 			x:Name="MouthToggle"
 			Canvas.Left="130"

@@ -2,6 +2,7 @@
 
 using DependencyPropertyGenerator;
 using ScreenshotStudio.Mvm;
+using System.Windows;
 
 [DependencyProperty<int>("ObjectTableIndex", DefaultValue = 1)]
 [DependencyProperty<bool>("FlipSides", DefaultValue = false)]
@@ -26,5 +27,10 @@ public partial class ExpressionsView : View
 
 	partial void OnObjectTableIndexChanged(int newValue)
 	{
+	}
+
+	private void OnEyeClicked(object sender, RoutedEventArgs e)
+	{
+		this.Services.Pose.Selection = new EyeSelection(this.ObjectTableIndex);
 	}
 }

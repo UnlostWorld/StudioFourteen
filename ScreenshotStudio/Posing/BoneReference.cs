@@ -253,7 +253,6 @@ public class BoneReference(BoneId id, string? name = null)
 			transform->Scale.Set(newTransform.Scale);
 		}
 
-		Logging.Shared.Information($"{this.boneName} >> {this.MirrorMode} ?? {this.Mirror}");
 		if (this.MirrorMode != MirrorModes.None && this.Mirror != null)
 		{
 			hkQsTransformf boneTransform = *pose->AccessBoneModelSpace(this.Id.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);

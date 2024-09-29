@@ -74,7 +74,7 @@ public partial class LibraryModal : Panel
 	{
 		if (placementTarget is UIElement el)
 		{
-			Show(el, title, defaultTags, current, (s, f) => selectionChanged.Invoke((T)s, f));
+			Show(el, title, defaultTags, typeof(T), current, (s, f) => selectionChanged.Invoke((T)s, f));
 		}
 	}
 
