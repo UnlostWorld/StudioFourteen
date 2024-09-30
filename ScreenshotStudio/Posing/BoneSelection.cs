@@ -193,6 +193,22 @@ public class BoneSelection : TransformSelectionBase
 					}
 
 					mirrorTransform.Rotation = mirrorRotation;
+
+					if (referenceTransform.Scale != null)
+					{
+						mirrorTransform.Scale = new(
+							referenceTransform.Scale.Value.X,
+							referenceTransform.Scale.Value.Y,
+							-referenceTransform.Scale.Value.Z);
+					}
+
+					if (referenceTransform.Translation != null)
+					{
+						mirrorTransform.Translation = new(
+							referenceTransform.Translation.Value.X,
+							referenceTransform.Translation.Value.Y,
+							-referenceTransform.Translation.Value.Z);
+					}
 				}
 
 				boneReference.Mirror.LoadRelativeTransform = mirrorTransform;

@@ -60,8 +60,6 @@ public class BlendSelection(string name, BlendTarget target, int objectTableInde
 	{
 		this.value = value;
 
-		Logging.Shared.Information($"blend {this.bones.Count} bones to {value}");
-
 		foreach (BoneBlend bone in this.bones)
 		{
 			bone.Blend((float)value);

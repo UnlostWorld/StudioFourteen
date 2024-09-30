@@ -335,6 +335,22 @@
 										Text="Mirror" />
 								</Grid>
 							</ComboBoxItem>
+
+							<!--<ComboBoxItem Tag="{x:Static pose:MirrorModes.Flip}">
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="22" />
+										<ColumnDefinition />
+									</Grid.ColumnDefinitions>
+
+									<wpfUtils:IconBlock
+										Grid.Column="0"
+										Icon="RightLong" />
+									<TextBlock
+										Grid.Column="1"
+										Text="Flip" />
+								</Grid>
+							</ComboBoxItem>-->
 						</ComboBox>
 
 						<ToggleButton
