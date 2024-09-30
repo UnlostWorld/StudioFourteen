@@ -5,6 +5,7 @@ using ScreenshotStudio.Mvm;
 using System.Windows;
 
 [DependencyProperty<string>("TargetName")]
+[DependencyProperty<int>("ObjectTableIndex")]
 public partial class BlendTargetView : View
 {
 	[AutoNotify] public BlendTarget? Target { get; private set; }
@@ -28,7 +29,7 @@ public partial class BlendTargetView : View
 		if (this.TargetName == null || this.Target == null)
 			return;
 
-		BlendSelection selection = new(this.TargetName, this.Target);
+		BlendSelection selection = new(this.TargetName, this.Target, this.ObjectTableIndex);
 		this.Services.Pose.Selection = selection;
 	}
 }

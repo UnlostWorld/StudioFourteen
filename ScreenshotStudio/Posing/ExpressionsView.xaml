@@ -114,12 +114,24 @@
 							</ItemsPanelTemplate>
 						</ItemsControl.ItemsPanel>
 
-						<local:BlendTargetView TargetName="MouthFrown" />
-						<local:BlendTargetView TargetName="MouthGrin" />
-						<local:BlendTargetView TargetName="MouthPucker" />
-						<local:BlendTargetView TargetName="MouthScared" />
-						<local:BlendTargetView TargetName="MouthSmile" />
-						<local:BlendTargetView TargetName="Tongue" />
+						<local:BlendTargetView
+							ObjectTableIndex="{Binding ObjectTableIndex}"
+							TargetName="MouthFrown" />
+						<local:BlendTargetView
+							ObjectTableIndex="{Binding ObjectTableIndex}"
+							TargetName="MouthGrin" />
+						<local:BlendTargetView
+							ObjectTableIndex="{Binding ObjectTableIndex}"
+							TargetName="MouthPucker" />
+						<local:BlendTargetView
+							ObjectTableIndex="{Binding ObjectTableIndex}"
+							TargetName="MouthScared" />
+						<local:BlendTargetView
+							ObjectTableIndex="{Binding ObjectTableIndex}"
+							TargetName="MouthSmile" />
+						<local:BlendTargetView
+							ObjectTableIndex="{Binding ObjectTableIndex}"
+							TargetName="Tongue" />
 					</ItemsControl>
 				</Border>
 			</ContentControl>
@@ -144,12 +156,24 @@
 							</ItemsPanelTemplate>
 						</ItemsControl.ItemsPanel>
 
-						<local:BlendTargetView TargetName="EyeAmazed" />
-						<local:BlendTargetView TargetName="EyeAnnoyed" />
-						<local:BlendTargetView TargetName="EyeGrin" />
-						<local:BlendTargetView TargetName="EyeConfused" />
-						<local:BlendTargetView TargetName="EyeNeutral" />
-						<local:BlendTargetView TargetName="EyeLids" />
+						<local:BlendTargetView
+							ObjectTableIndex="{Binding ObjectTableIndex}"
+							TargetName="EyeAmazed" />
+						<local:BlendTargetView
+							ObjectTableIndex="{Binding ObjectTableIndex}"
+							TargetName="EyeAnnoyed" />
+						<local:BlendTargetView
+							ObjectTableIndex="{Binding ObjectTableIndex}"
+							TargetName="EyeGrin" />
+						<local:BlendTargetView
+							ObjectTableIndex="{Binding ObjectTableIndex}"
+							TargetName="EyeConfused" />
+						<local:BlendTargetView
+							ObjectTableIndex="{Binding ObjectTableIndex}"
+							TargetName="EyeNeutral" />
+						<local:BlendTargetView
+							ObjectTableIndex="{Binding ObjectTableIndex}"
+							TargetName="EyeLids" />
 					</ItemsControl>
 				</Border>
 			</ContentControl>
@@ -174,12 +198,24 @@
 							</ItemsPanelTemplate>
 						</ItemsControl.ItemsPanel>
 
-						<local:BlendTargetView TargetName="EyeAmazed" />
-						<local:BlendTargetView TargetName="EyeAnnoyed" />
-						<local:BlendTargetView TargetName="EyeGrin" />
-						<local:BlendTargetView TargetName="EyeConfused" />
-						<local:BlendTargetView TargetName="EyeNeutral" />
-						<local:BlendTargetView TargetName="EyeLids" />
+						<local:BlendTargetView
+							ObjectTableIndex="{Binding ObjectTableIndex}"
+							TargetName="EyeAmazed" />
+						<local:BlendTargetView
+							ObjectTableIndex="{Binding ObjectTableIndex}"
+							TargetName="EyeAnnoyed" />
+						<local:BlendTargetView
+							ObjectTableIndex="{Binding ObjectTableIndex}"
+							TargetName="EyeGrin" />
+						<local:BlendTargetView
+							ObjectTableIndex="{Binding ObjectTableIndex}"
+							TargetName="EyeConfused" />
+						<local:BlendTargetView
+							ObjectTableIndex="{Binding ObjectTableIndex}"
+							TargetName="EyeNeutral" />
+						<local:BlendTargetView
+							ObjectTableIndex="{Binding ObjectTableIndex}"
+							TargetName="EyeLids" />
 					</ItemsControl>
 				</Border>
 			</ContentControl>

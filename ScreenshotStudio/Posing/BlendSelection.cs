@@ -1,63 +1,121 @@
 ﻿namespace ScreenshotStudio.Posing;
-
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
-using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
-using FFXIVClientStructs.FFXIV.Common.Lua;
-using FFXIVClientStructs.Havok.Animation.Rig;
 using ScreenshotStudio.Files;
 using ScreenshotStudio.Plugin;
-using ScreenshotStudio.Services;
-using ScreenshotStudio.Structs;
-using ScreenshotStudio.Structs.Extensions;
 using ScreenshotStudio.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
-using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
+using WpfUtils.Extensions;
 using static ScreenshotStudio.Files.PoseFile;
 
-public class BlendService : ServiceBase
+public class BlendSelection(string name, BlendTarget target, int objectTableIndex)
+	: SelectionBase
 {
-	public async Task<Blend?> BeginBlend(int objectTableIndex, BlendTarget toPose, MirrorModes mirrorMode)
+	private readonly int objectTableIndex = objectTableIndex;
+	private readonly List<BoneBlend> bones = new();
+	private double value;
+	private MirrorModes mirrorMode = target.MirrorMode;
+
+	public override string Name => name;
+	public override string? Subtitle => null;
+	public BlendTarget Target => target;
+	public override bool CanMirror => true;
+	public double Maximum => 1.0;
+	public double Minimum => this.HasLeft ? -1.0 : 0.0;
+
+	public double Value
+	{
+		get => this.value;
+		set => this.SetValue(value);
+	}
+
+	public bool HasLeft
+	{
+		get
+		{
+			if (this.bones.Count <= 0)
+				return false;
+
+			return this.bones[0].Left != null;
+		}
+	}
+
+	public override MirrorModes MirrorMode
+	{
+		get => this.mirrorMode;
+		set
+		{
+			this.mirrorMode = value;
+
+			foreach (BoneBlend bone in this.bones)
+			{
+				bone.Selection.MirrorMode = value;
+			}
+		}
+	}
+
+	public void SetValue(double value)
+	{
+		this.value = value;
+
+		Logging.Shared.Information($"blend {this.bones.Count} bones to {value}");
+
+		foreach (BoneBlend bone in this.bones)
+		{
+			bone.Blend((float)value);
+		}
+	}
+
+	public override void Activate()
+	{
+		base.Activate();
+		this.Initialize().Run();
+	}
+
+	public override void Deactivate()
+	{
+		base.Deactivate();
+	}
+
+	public async Task Initialize()
 	{
 		await Threads.FrameworkThread();
 
-		List<BoneSelection>? boneSelections = toPose.GetBones(objectTableIndex);
+		List<BoneSelection>? boneSelections = this.Target.GetBones(this.objectTableIndex);
 		if (boneSelections == null)
-			return null;
+			return;
+
+		foreach(BoneSelection selection in boneSelections)
+		{
+			selection.Activate();
+		}
 
 		await Threads.NextFrame();
 
-		List<BoneBlend> bones = new();
 		foreach (BoneSelection boneSelection in boneSelections)
 		{
-			if (boneSelection.Name == null)
+			if (boneSelection.BoneName == null)
 				continue;
+
+			boneSelection.MirrorMode = this.mirrorMode;
 
 			BoneTransform? fromTransform = boneSelection.GetLiveReferenceRelativeTransform();
 			if (fromTransform == null)
 				continue;
 
 			BoneTransform? rightTransform = null;
-			toPose.RightBones?.TryGetValue(boneSelection.Name, out rightTransform);
+			this.Target.RightBones?.TryGetValue(boneSelection.BoneName, out rightTransform);
 
 			if (rightTransform == null)
 				continue;
 
 			BoneTransform? leftTransform = null;
-			toPose.LeftBones?.TryGetValue(boneSelection.Name, out leftTransform);
+			this.Target.LeftBones?.TryGetValue(boneSelection.BoneName, out leftTransform);
 
-			bones.Add(new(boneSelection, fromTransform, rightTransform, leftTransform));
+			this.bones.Add(new(boneSelection, fromTransform, rightTransform, leftTransform));
 		}
-
-		Blend blend = new(bones);
-		blend.MirrorMode = mirrorMode;
-		blend.Value = 0;
-
-		return blend;
 	}
 
 	public struct BoneBlend(BoneSelection selection, BoneTransform initial, BoneTransform right, BoneTransform? left = null)
@@ -108,91 +166,6 @@ public class BlendService : ServiceBase
 			this.Selection.ApplyReferenceTransform(this.Value);
 		}
 	}
-
-	public class Blend(List<BoneBlend> bones)
-	{
-		private readonly List<BoneBlend> bones = bones;
-		private double value;
-
-		public double Maximum => 1.0;
-		public double Minimum => this.HasLeft ? -1.0 : 0.0;
-
-		public bool FlipSides { get; set; }
-
-		public double Value
-		{
-			get => this.value;
-			set => this.SetValue(value);
-		}
-
-		public bool HasLeft
-		{
-			get
-			{
-				if (this.bones.Count <= 0)
-					return false;
-
-				return this.bones[0].Left != null;
-			}
-		}
-
-		public MirrorModes MirrorMode
-		{
-			get
-			{
-				if (this.bones.Count <= 0)
-					return MirrorModes.None;
-
-				return this.bones[0].Selection.MirrorMode;
-			}
-
-			set
-			{
-				foreach(BoneBlend bone in this.bones)
-				{
-					bone.Selection.MirrorMode = value;
-				}
-			}
-		}
-
-		public void SetValue(double value)
-		{
-			this.value = value;
-
-			foreach (BoneBlend bone in this.bones)
-			{
-				bone.Blend((float)value);
-			}
-		}
-	}
-}
-
-public class BlendSelection(string name, BlendTarget target)
-	: SelectionBase
-{
-	private MirrorModes mirrorMode = target.MirrorMode;
-
-	public override string Name => name;
-	public override string? Subtitle => null;
-
-	public BlendTarget Target => target;
-
-	public override bool CanMirror => true;
-	public override MirrorModes MirrorMode
-	{
-		get => this.Blend?.MirrorMode ?? this.mirrorMode;
-		set
-		{
-			this.mirrorMode = value;
-
-			if (this.Blend == null)
-				return;
-
-			this.Blend.MirrorMode = value;
-		}
-	}
-
-	public BlendService.Blend? Blend { get; set; }
 }
 
 [System.Serializable]
