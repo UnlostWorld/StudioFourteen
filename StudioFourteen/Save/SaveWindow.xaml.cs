@@ -1,18 +1,18 @@
-﻿namespace ScreenshotStudio.Save;
+﻿namespace StudioFourteen.Save;
 
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Lumina.Data;
-using ScreenshotStudio.Library.Sources;
-using ScreenshotStudio.Plugin;
-using ScreenshotStudio.Services;
-using ScreenshotStudio.Tags;
-using ScreenshotStudio.Panels;
+using StudioFourteen.Library.Sources;
+using StudioFourteen.Plugin;
+using StudioFourteen.Services;
+using StudioFourteen.Tags;
+using StudioFourteen.Panels;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using WpfUtils.Extensions;
-using ScreenshotStudio.Mvm;
+using StudioFourteen.Mvm;
 
 public partial class SaveWindow : Panel
 {
@@ -61,7 +61,7 @@ public partial class SaveWindow : Panel
 				}
 			}
 
-			return string.Format(ScreenshotStudio.Resources.Find("LOC_Save_CharactersText", string.Empty), selectedCount, this.Characters.Count);
+			return string.Format(StudioFourteen.Resources.Find("LOC_Save_CharactersText", string.Empty), selectedCount, this.Characters.Count);
 		}
 	}
 

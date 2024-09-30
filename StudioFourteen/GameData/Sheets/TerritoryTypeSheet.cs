@@ -1,6 +1,6 @@
-﻿namespace ScreenshotStudio.GameData.Sheets;
+﻿namespace StudioFourteen.GameData.Sheets;
 
-using ScreenshotStudio.GameData.Excel;
+using StudioFourteen.GameData.Excel;
 using System.Collections;
 
 public class TerritoryTypeSheet : DataSheet<Territory>

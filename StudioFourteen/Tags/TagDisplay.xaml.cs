@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio.Tags;
+﻿namespace StudioFourteen.Tags;
 
 using System.Windows;
 using System.Windows.Controls;

@@ -1,7 +1,7 @@
 ﻿//// Brio
 //// https://github.com/Etheirys/Brio/blob/main/Brio/Resources/Sheets/BrioCharaMakeType.cs
 
-namespace ScreenshotStudio.GameData.Excel;
+namespace StudioFourteen.GameData.Excel;
 
 using Lumina.Data;
 using Lumina.Excel;

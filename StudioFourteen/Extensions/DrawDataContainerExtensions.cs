@@ -1,7 +1,7 @@
 ﻿namespace FFXIVClientStructs.FFXIV.Client.Game.Character;
 
 using global::System;
-using ScreenshotStudio.Tags;
+using StudioFourteen.Tags;
 
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 

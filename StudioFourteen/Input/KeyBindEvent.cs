@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio.Input;
+﻿namespace StudioFourteen.Input;
 
 public enum KeyBindEvents
 {

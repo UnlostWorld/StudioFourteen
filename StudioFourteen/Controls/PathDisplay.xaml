@@ -1,10 +1,10 @@
 ﻿<ItemsControl
-	x:Class="ScreenshotStudio.Controls.PathDisplay"
+	x:Class="StudioFourteen.Controls.PathDisplay"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=WpfUtils"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:local="clr-namespace:ScreenshotStudio.Controls"
+	xmlns:local="clr-namespace:StudioFourteen.Controls"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Margin="1"

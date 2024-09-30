@@ -1,11 +1,11 @@
-﻿namespace ScreenshotStudio.Library;
+﻿namespace StudioFourteen.Library;
 
-using ScreenshotStudio.Appearance;
-using ScreenshotStudio.GameData.Excel;
-using ScreenshotStudio.Library.Filters;
-using ScreenshotStudio.Library.Results;
-using ScreenshotStudio.Mvm;
-using ScreenshotStudio.Tags;
+using StudioFourteen.Appearance;
+using StudioFourteen.GameData.Excel;
+using StudioFourteen.Library.Filters;
+using StudioFourteen.Library.Results;
+using StudioFourteen.Mvm;
+using StudioFourteen.Tags;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -16,7 +16,7 @@ using WpfUtils;
 using WpfUtils.Extensions;
 using WpfUtils.Utils;
 
-using Panel = ScreenshotStudio.Panels.Panel;
+using Panel = StudioFourteen.Panels.Panel;
 
 public partial class LibraryModal : Panel
 {

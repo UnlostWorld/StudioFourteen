@@ -1,9 +1,9 @@
-﻿namespace ScreenshotStudio.GameData.Excel;
+﻿namespace StudioFourteen.GameData.Excel;
 
 using Lumina.Data;
 using Lumina.Excel;
 using Lumina.Text;
-using ScreenshotStudio.Tags;
+using StudioFourteen.Tags;
 using System.Collections.Generic;
 
 [Sheet("Tribe", 0xe74759fb)]

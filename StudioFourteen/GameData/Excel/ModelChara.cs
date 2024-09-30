@@ -1,8 +1,8 @@
-﻿namespace ScreenshotStudio.GameData.Excel;
+﻿namespace StudioFourteen.GameData.Excel;
 
 using Lumina.Data;
 using Lumina.Excel;
-using ScreenshotStudio.Tags;
+using StudioFourteen.Tags;
 
 [Sheet("ModelChara", 0x25b9b3e2)]
 public partial class ModelChara : StudioExcelRow

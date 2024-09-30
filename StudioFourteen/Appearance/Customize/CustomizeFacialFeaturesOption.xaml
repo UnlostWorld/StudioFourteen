@@ -1,11 +1,11 @@
 ﻿<UserControl
-	x:Class="ScreenshotStudio.Appearance.Customize.CustomizeFacialFeaturesOption"
+	x:Class="StudioFourteen.Appearance.Customize.CustomizeFacialFeaturesOption"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:controls="clr-namespace:ScreenshotStudio.Controls"
+	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:local="clr-namespace:ScreenshotStudio.Appearance.Customize"
+	xmlns:local="clr-namespace:StudioFourteen.Appearance.Customize"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d">
 
@@ -33,7 +33,7 @@
 							<Image
 								Width="48"
 								Height="48"
-								Source="pack://application:,,,/ScreenshotStudio;component/Assets/LegacyTattoo.png"
+								Source="pack://application:,,,/StudioFourteen;component/Assets/LegacyTattoo.png"
 								Visibility="{Binding IsLegacy, Converter={StaticResource B2V}}" />
 
 							<Image

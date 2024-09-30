@@ -1,7 +1,7 @@
-﻿namespace ScreenshotStudio.GameData;
+﻿namespace StudioFourteen.GameData;
 
 using Lumina.Data.Files;
-using ScreenshotStudio.Plugin;
+using StudioFourteen.Plugin;
 using Serilog;
 using System;
 using System.Windows.Media;

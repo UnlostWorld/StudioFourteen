@@ -1,7 +1,7 @@
-﻿namespace ScreenshotStudio.Posing;
+﻿namespace StudioFourteen.Posing;
 
 using DependencyPropertyGenerator;
-using ScreenshotStudio.Mvm;
+using StudioFourteen.Mvm;
 using System.Windows;
 
 [DependencyProperty<string>("TargetName")]

@@ -1,7 +1,7 @@
-﻿namespace ScreenshotStudio.Serialization.Converters;
+﻿namespace StudioFourteen.Serialization.Converters;
 
 using Newtonsoft.Json;
-using ScreenshotStudio.Tags;
+using StudioFourteen.Tags;
 using System;
 
 public class TagConverter : JsonConverter<Tag>

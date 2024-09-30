@@ -1,7 +1,7 @@
-﻿namespace ScreenshotStudio.Mvm;
+﻿namespace StudioFourteen.Mvm;
 
 using Newtonsoft.Json;
-using ScreenshotStudio.Mvm;
+using StudioFourteen.Mvm;
 using Serilog;
 
 public abstract class ViewModel : AutoNotify

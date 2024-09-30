@@ -1,8 +1,8 @@
-﻿namespace ScreenshotStudio.Mvm;
+﻿namespace StudioFourteen.Mvm;
 
 using Dalamud.Plugin.Services;
-using ScreenshotStudio.Mvm;
-using ScreenshotStudio.Plugin;
+using StudioFourteen.Mvm;
+using StudioFourteen.Plugin;
 using Serilog;
 using System;
 using System.ComponentModel;
@@ -16,7 +16,7 @@ public class View : UserControl, IAutoNotify
 
 	public View()
 	{
-		this.Resources = ScreenshotStudio.Resources.Load();
+		this.Resources = StudioFourteen.Resources.Load();
 
 		this.GetType().GetMethod("InitializeComponent")?.Invoke(this, null);
 

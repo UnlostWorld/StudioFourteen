@@ -1,6 +1,6 @@
-﻿namespace ScreenshotStudio.Appearance.Customize;
+﻿namespace StudioFourteen.Appearance.Customize;
 
-using ScreenshotStudio.GameData.Excel;
+using StudioFourteen.GameData.Excel;
 using System.ComponentModel;
 using System.Windows.Controls;
 using DependencyPropertyGenerator;

@@ -2,9 +2,9 @@
 
 using Dalamud.Game.ClientState.Objects.Enums;
 using global::System;
-using ScreenshotStudio;
-using ScreenshotStudio.GameData;
-using ScreenshotStudio.GameData.Excel;
+using StudioFourteen;
+using StudioFourteen.GameData;
+using StudioFourteen.GameData.Excel;
 
 public static class CustomizeDataExtensions
 {

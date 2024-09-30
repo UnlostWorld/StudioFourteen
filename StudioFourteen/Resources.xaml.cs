@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio;
+﻿namespace StudioFourteen;
 
 using System;
 using System.Windows;
@@ -12,7 +12,7 @@ public partial class Resources : ResourceDictionary
 		LoadShared();
 
 		Resources resources = new();
-		resources.Source = new("pack://application:,,,/ScreenshotStudio;component/Resources.xaml");
+		resources.Source = new("pack://application:,,,/StudioFourteen;component/Resources.xaml");
 		return resources;
 	}
 
@@ -24,7 +24,7 @@ public partial class Resources : ResourceDictionary
 		try
 		{
 			Resources resources = new();
-			resources.Source = new("pack://application:,,,/ScreenshotStudio;component/Resources.xaml");
+			resources.Source = new("pack://application:,,,/StudioFourteen;component/Resources.xaml");
 			Shared = resources;
 		}
 		catch (Exception ex)

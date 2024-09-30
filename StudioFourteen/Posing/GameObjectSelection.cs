@@ -1,9 +1,9 @@
-﻿namespace ScreenshotStudio.Posing;
+﻿namespace StudioFourteen.Posing;
 
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
-using ScreenshotStudio.Plugin;
+using StudioFourteen.Plugin;
 using System;
 using System.Numerics;
 

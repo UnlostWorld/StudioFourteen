@@ -1,7 +1,7 @@
-﻿namespace ScreenshotStudio.Files;
+﻿namespace StudioFourteen.Files;
 
 using Newtonsoft.Json;
-using ScreenshotStudio.Mvm.Commands;
+using StudioFourteen.Mvm.Commands;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

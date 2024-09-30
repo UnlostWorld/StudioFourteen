@@ -1,17 +1,17 @@
 ﻿// Brio
 // https://github.com/Etheirys/Brio/tree/main/Brio/Game/Actor/ActorAppearanceService.cs
 
-namespace ScreenshotStudio.Appearance;
+namespace StudioFourteen.Appearance;
 
 using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using ScreenshotStudio;
-using ScreenshotStudio.GameData;
-using ScreenshotStudio.Library;
-using ScreenshotStudio.Library.Sources;
-using ScreenshotStudio.Plugin;
-using ScreenshotStudio.Services;
-using ScreenshotStudio.Utilities;
+using StudioFourteen;
+using StudioFourteen.GameData;
+using StudioFourteen.Library;
+using StudioFourteen.Library.Sources;
+using StudioFourteen.Plugin;
+using StudioFourteen.Services;
+using StudioFourteen.Utilities;
 using Serilog;
 using System;
 using System.Collections.Generic;

@@ -1,12 +1,12 @@
-﻿namespace ScreenshotStudio.Files;
+﻿namespace StudioFourteen.Files;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Newtonsoft.Json;
-using ScreenshotStudio.Appearance;
-using ScreenshotStudio.GameData;
-using ScreenshotStudio.GameData.Excel;
-using ScreenshotStudio.Mvm.Commands;
-using ScreenshotStudio.Tags;
+using StudioFourteen.Appearance;
+using StudioFourteen.GameData;
+using StudioFourteen.GameData.Excel;
+using StudioFourteen.Mvm.Commands;
+using StudioFourteen.Tags;
 using System;
 using System.Numerics;
 using System.Threading.Tasks;

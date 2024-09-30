@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio.Controls;
+﻿namespace StudioFourteen.Controls;
 
 using System;
 using System.Collections.Generic;
@@ -8,8 +8,8 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using Lumina.Data.Files;
-using ScreenshotStudio.GameData;
-using ScreenshotStudio.Plugin;
+using StudioFourteen.GameData;
+using StudioFourteen.Plugin;
 using Serilog;
 
 public class XivTexImage : Image

@@ -1,7 +1,7 @@
-﻿namespace ScreenshotStudio.Library;
+﻿namespace StudioFourteen.Library;
 
-using ScreenshotStudio.Library.Sources;
-using ScreenshotStudio.Tags;
+using StudioFourteen.Library.Sources;
+using StudioFourteen.Tags;
 using System.Collections.Generic;
 
 /// <summary>

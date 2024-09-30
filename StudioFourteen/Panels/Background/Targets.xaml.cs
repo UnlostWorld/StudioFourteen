@@ -1,22 +1,22 @@
-﻿namespace ScreenshotStudio.Studio.Background;
+﻿namespace StudioFourteen.Studio.Background;
 
 using DependencyPropertyGenerator;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
-using ScreenshotStudio;
-using ScreenshotStudio.Library;
-using ScreenshotStudio.Plugin;
-using ScreenshotStudio.Services;
-using ScreenshotStudio.Tags;
+using StudioFourteen;
+using StudioFourteen.Library;
+using StudioFourteen.Plugin;
+using StudioFourteen.Services;
+using StudioFourteen.Tags;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using WpfUtils.Extensions;
-using ScreenshotStudio.Appearance;
-using ScreenshotStudio.Mvm;
+using StudioFourteen.Appearance;
+using StudioFourteen.Mvm;
 
 [DependencyProperty<bool>("ShowBackground", DefaultValue = true)]
 public partial class Targets : View
@@ -32,7 +32,7 @@ public partial class Targets : View
 	public List<CharacterViewModel> Characters { get; init; } = new();
 
 	[AutoNotify] public bool IsInGPose => this.Services.Studio.IsOpenAndInGPose;
-	[AutoNotify] public string RemoveCharacterTooltip => ScreenshotStudio.Resources.Format("LOC_Target_DeleteCharacter", this.Target?.Name);
+	[AutoNotify] public string RemoveCharacterTooltip => StudioFourteen.Resources.Format("LOC_Target_DeleteCharacter", this.Target?.Name);
 
 	[AutoNotify]
 	public CharacterViewModel? Target

@@ -1,7 +1,7 @@
-﻿namespace ScreenshotStudio.Library.Results;
+﻿namespace StudioFourteen.Library.Results;
 
-using ScreenshotStudio.Library.Filters;
-using ScreenshotStudio.Tags;
+using StudioFourteen.Library.Filters;
+using StudioFourteen.Tags;
 using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;

@@ -1,7 +1,7 @@
 ﻿// Brio
 // https://github.com/Etheirys/Brio/tree/main/Brio/Game/Posing/SkeletonService.cs
 
-namespace ScreenshotStudio.Posing;
+namespace StudioFourteen.Posing;
 
 using Dalamud.Hooking;
 using Dalamud.Plugin.Services;
@@ -11,9 +11,9 @@ using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.Havok.Animation.Rig;
 using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
 using Newtonsoft.Json;
-using ScreenshotStudio.Plugin;
-using ScreenshotStudio.Services;
-using ScreenshotStudio.Utilities;
+using StudioFourteen.Plugin;
+using StudioFourteen.Services;
+using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Numerics;

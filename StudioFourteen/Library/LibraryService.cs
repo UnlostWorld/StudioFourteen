@@ -1,8 +1,8 @@
-﻿namespace ScreenshotStudio.Library;
+﻿namespace StudioFourteen.Library;
 
-using ScreenshotStudio.Library.Sources;
-using ScreenshotStudio.Services;
-using ScreenshotStudio.Tags;
+using StudioFourteen.Library.Sources;
+using StudioFourteen.Services;
+using StudioFourteen.Tags;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -43,7 +43,7 @@ public class LibraryService : ServiceBase
 
 	public override Task Start()
 	{
-		this.AddSource(new FileSource("Screenshot Studio", this.Services.Files.ScreenshotStudioDir));
+		this.AddSource(new FileSource("Studio Fourteen", this.Services.Files.StudioFourteenDir));
 		this.AddSource(new FileSource("Brio", this.Services.Files.BrioDir));
 		this.AddSource(new FileSource("Anamnesis", this.Services.Files.AnamnesisDir));
 		this.AddSource(new FileSource("Ktisis", this.Services.Files.KtisisDir));

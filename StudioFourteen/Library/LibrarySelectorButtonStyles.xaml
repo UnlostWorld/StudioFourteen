@@ -1,9 +1,9 @@
 ﻿<ResourceDictionary
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:controls="clr-namespace:ScreenshotStudio.Controls"
+	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
-	xmlns:local="clr-namespace:ScreenshotStudio.Library"
+	xmlns:local="clr-namespace:StudioFourteen.Library"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
 

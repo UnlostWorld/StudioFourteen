@@ -1,8 +1,8 @@
-﻿namespace ScreenshotStudio.Studio;
-using ScreenshotStudio.Mvm;
-using ScreenshotStudio.Panels;
-using ScreenshotStudio.Services;
-using ScreenshotStudio.Utilities;
+﻿namespace StudioFourteen.Studio;
+using StudioFourteen.Mvm;
+using StudioFourteen.Panels;
+using StudioFourteen.Services;
+using StudioFourteen.Utilities;
 using System.Threading.Tasks;
 using System.Windows;
 

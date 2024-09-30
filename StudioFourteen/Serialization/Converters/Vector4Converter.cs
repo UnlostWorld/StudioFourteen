@@ -1,7 +1,7 @@
 ﻿// Brio
 // https://github.com/Etheirys/Brio/tree/main/Brio/Files/Converters/VectorConverters.cs
 
-namespace ScreenshotStudio.Serialization.Converters;
+namespace StudioFourteen.Serialization.Converters;
 
 using Newtonsoft.Json;
 using System;

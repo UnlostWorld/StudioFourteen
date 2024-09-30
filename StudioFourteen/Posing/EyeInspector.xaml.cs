@@ -1,10 +1,10 @@
-﻿namespace ScreenshotStudio.Posing;
+﻿namespace StudioFourteen.Posing;
 
 using DependencyPropertyGenerator;
 using FFXIVClientStructs.FFXIV.Common.Lua;
-using ScreenshotStudio.Mvm;
-using ScreenshotStudio.Structs.Extensions;
-using ScreenshotStudio.Utilities;
+using StudioFourteen.Mvm;
+using StudioFourteen.Structs.Extensions;
+using StudioFourteen.Utilities;
 using System.Numerics;
 using System.Threading.Tasks;
 using WpfUtils.Extensions;

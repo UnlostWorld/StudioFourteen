@@ -1,9 +1,9 @@
-﻿namespace ScreenshotStudio.Posing;
+﻿namespace StudioFourteen.Posing;
 
 using DependencyPropertyGenerator;
-using ScreenshotStudio.Mvm;
-using ScreenshotStudio.Settings;
-using ScreenshotStudio.Structs.Extensions;
+using StudioFourteen.Mvm;
+using StudioFourteen.Settings;
+using StudioFourteen.Structs.Extensions;
 using System;
 using System.Numerics;
 using System.Windows;

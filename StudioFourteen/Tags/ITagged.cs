@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio.Tags;
+﻿namespace StudioFourteen.Tags;
 
 public interface ITagged
 {

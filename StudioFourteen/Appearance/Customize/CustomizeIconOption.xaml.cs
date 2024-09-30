@@ -1,9 +1,9 @@
-﻿namespace ScreenshotStudio.Appearance.Customize;
+﻿namespace StudioFourteen.Appearance.Customize;
 
 using Dalamud.Game.ClientState.Objects.Enums;
 using Lumina.Excel;
-using ScreenshotStudio.GameData;
-using ScreenshotStudio.GameData.Excel;
+using StudioFourteen.GameData;
+using StudioFourteen.GameData.Excel;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Controls;

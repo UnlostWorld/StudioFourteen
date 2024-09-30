@@ -1,9 +1,9 @@
 {
-  "Author": "XIV tools",
-  "Name": "Screenshot Studio",
+  "Author": "Unlost World",
+  "Name": "Studio Fourteen",
   "Punchline": "A short one-liner that shows up in /xlplugins.",
   "Description": "A description that shows up in /xlplugins. List any major slash-command(s).",
-  "InternalName": "ScreenshotStudio",
+  "InternalName": "StudioFourteen",
   "Disabled": false,
   "Testing": false,
   "ScheduledForDeletion": false,
@@ -14,7 +14,8 @@
   "EffectiveApiLevel": 10,
   "Changelog": null,
   "Tags": [
-    "Anamnesis"
+    "Studio14",
+    "S14"
   ],
   "CategoryTags": null,
   "IsHide": false,

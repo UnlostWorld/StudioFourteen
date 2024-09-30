@@ -1,8 +1,8 @@
-﻿namespace ScreenshotStudio.Studio;
+﻿namespace StudioFourteen.Studio;
 
-using ScreenshotStudio.Panels;
+using StudioFourteen.Panels;
 using System.Windows;
-using ScreenshotStudio.Plugin;
+using StudioFourteen.Plugin;
 using WpfUtils.Extensions;
 
 public partial class ErrorWindow : Panel
@@ -59,7 +59,7 @@ public partial class ErrorWindow : Panel
 
 	private void OnGitHubClicked(object sender, RoutedEventArgs e)
 	{
-		UrlUtility.Open("https://github.com/XIV-Tools/ScreenshotStudio");
+		UrlUtility.Open("https://github.com/XIV-Tools/StudioFourteen");
 	}
 
 	private void OnDiscordClicked(object sender, RoutedEventArgs e)

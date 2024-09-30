@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio.GameData.Excel;
+﻿namespace StudioFourteen.GameData.Excel;
 
 using Lumina.Excel;
 using Serilog;

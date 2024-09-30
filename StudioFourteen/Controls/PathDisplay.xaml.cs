@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio.Controls;
+﻿namespace StudioFourteen.Controls;
 
 using DependencyPropertyGenerator;
 using System;
@@ -7,7 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using ScreenshotStudio.Files;
+using StudioFourteen.Files;
 
 [DependencyProperty<FileSystemInfo>("File")]
 public partial class PathDisplay : ItemsControl

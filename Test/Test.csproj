@@ -11,7 +11,7 @@
 
 	<PropertyGroup>
 		<DalamudLibPath>$(appdata)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
-		<RootNamespace>ScreenshotStudio.Test</RootNamespace>
+		<RootNamespace>StudioFourteen.Test</RootNamespace>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(CI)' == 'true' OR '$(IsCI)' == 'true'">
 		<DalamudLibPath>$(DALAMUD_HOME)/</DalamudLibPath>
@@ -20,10 +20,9 @@
 	<ItemGroup>
 	  <PackageReference Include="Lumina" Version="4.1.0" />
 	</ItemGroup>
-
-  <ItemGroup>
-	<ProjectReference Include="..\ScreenshotStudio\ScreenshotStudio.csproj" />
-  </ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\StudioFourteen\StudioFourteen.csproj" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<Reference Include="FFXIVClientStructs">

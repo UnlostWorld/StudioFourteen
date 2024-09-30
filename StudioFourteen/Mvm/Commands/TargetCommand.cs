@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio.Mvm.Commands;
+﻿namespace StudioFourteen.Mvm.Commands;
 
 using System;
 using System.Threading.Tasks;

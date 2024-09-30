@@ -5,11 +5,11 @@
 //// Anamnesis
 //// https://github.com/imchillin/Anamnesis/blob/master/Anamnesis/Actor/Utilities/ItemUtility.cs
 
-namespace ScreenshotStudio.GameData.Sheets;
+namespace StudioFourteen.GameData.Sheets;
 
-using ScreenshotStudio.Services;
-using ScreenshotStudio.Structs;
-using ScreenshotStudio.GameData.Excel;
+using StudioFourteen.Services;
+using StudioFourteen.Structs;
+using StudioFourteen.GameData.Excel;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;

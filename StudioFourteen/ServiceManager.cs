@@ -1,17 +1,17 @@
-﻿namespace ScreenshotStudio;
+﻿namespace StudioFourteen;
 
-using ScreenshotStudio.Appearance;
-using ScreenshotStudio.Data;
-using ScreenshotStudio.Files;
-using ScreenshotStudio.GameData;
-using ScreenshotStudio.Input;
-using ScreenshotStudio.Library;
-using ScreenshotStudio.Mvm;
-using ScreenshotStudio.Posing;
-using ScreenshotStudio.Save;
-using ScreenshotStudio.Services;
-using ScreenshotStudio.Settings;
-using ScreenshotStudio.Tablet;
+using StudioFourteen.Appearance;
+using StudioFourteen.Data;
+using StudioFourteen.Files;
+using StudioFourteen.GameData;
+using StudioFourteen.Input;
+using StudioFourteen.Library;
+using StudioFourteen.Mvm;
+using StudioFourteen.Posing;
+using StudioFourteen.Save;
+using StudioFourteen.Services;
+using StudioFourteen.Settings;
+using StudioFourteen.Tablet;
 
 public class ServiceManager : ServiceManagerBase
 {

@@ -1,9 +1,9 @@
-﻿namespace ScreenshotStudio.Posing;
+﻿namespace StudioFourteen.Posing;
 
 using DependencyPropertyGenerator;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using ScreenshotStudio.Plugin;
-using ScreenshotStudio.Utilities;
+using StudioFourteen.Plugin;
+using StudioFourteen.Utilities;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -119,10 +119,10 @@ public partial class SkeletonView : Canvas
 		{
 			BitmapImage bmp = new();
 			bmp.BeginInit();
-			bmp.UriSource = new($"pack://application:,,,/ScreenshotStudio;component/{definition.Background}");
+			bmp.UriSource = new($"pack://application:,,,/StudioFourteen;component/{definition.Background}");
 
 			if (definition.BackgroundFlipped != null && this.FlipSides)
-				bmp.UriSource = new($"pack://application:,,,/ScreenshotStudio;component/{definition.BackgroundFlipped}");
+				bmp.UriSource = new($"pack://application:,,,/StudioFourteen;component/{definition.BackgroundFlipped}");
 
 			bmp.EndInit();
 

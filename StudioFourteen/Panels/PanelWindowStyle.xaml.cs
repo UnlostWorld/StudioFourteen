@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio.Panels;
+﻿namespace StudioFourteen.Panels;
 
 using System;
 using System.Windows;

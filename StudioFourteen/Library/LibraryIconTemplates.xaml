@@ -1,15 +1,15 @@
 ﻿<ResourceDictionary
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:appearance="clr-namespace:ScreenshotStudio.Appearance"
-	xmlns:controls="clr-namespace:ScreenshotStudio.Controls"
-	xmlns:excel="clr-namespace:ScreenshotStudio.GameData.Excel"
-	xmlns:files="clr-namespace:ScreenshotStudio.Files"
-	xmlns:gameData="clr-namespace:ScreenshotStudio.GameData"
-	xmlns:library="clr-namespace:ScreenshotStudio.Library"
-	xmlns:services="clr-namespace:ScreenshotStudio.Services"
-	xmlns:sources="clr-namespace:ScreenshotStudio.Library.Sources"
-	xmlns:ss="clr-namespace:ScreenshotStudio"
+	xmlns:appearance="clr-namespace:StudioFourteen.Appearance"
+	xmlns:controls="clr-namespace:StudioFourteen.Controls"
+	xmlns:excel="clr-namespace:StudioFourteen.GameData.Excel"
+	xmlns:files="clr-namespace:StudioFourteen.Files"
+	xmlns:gameData="clr-namespace:StudioFourteen.GameData"
+	xmlns:library="clr-namespace:StudioFourteen.Library"
+	xmlns:services="clr-namespace:StudioFourteen.Services"
+	xmlns:sources="clr-namespace:StudioFourteen.Library.Sources"
+	xmlns:ss="clr-namespace:StudioFourteen"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
 
@@ -34,7 +34,7 @@
 					HorizontalAlignment="Left"
 					VerticalAlignment="Bottom"
 					Opacity="0.5"
-					Source="pack://application:,,,/ScreenshotStudio;component/Assets/ffxiv-logo-dark.png" />
+					Source="pack://application:,,,/StudioFourteen;component/Assets/ffxiv-logo-dark.png" />
 
 			</Grid>
 		</Viewbox>

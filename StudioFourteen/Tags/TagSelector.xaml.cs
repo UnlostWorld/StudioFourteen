@@ -1,6 +1,6 @@
-﻿namespace ScreenshotStudio.Tags;
+﻿namespace StudioFourteen.Tags;
 
-using ScreenshotStudio.Services;
+using StudioFourteen.Services;
 using Serilog;
 using System;
 using System.Collections.Generic;

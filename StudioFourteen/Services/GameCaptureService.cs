@@ -3,14 +3,14 @@
 // https://github.com/goatcorp/Dalamud/blob/master/Dalamud/Utility/TerraFxCom/TerraFxD3D11Extensions.cs
 // https://github.com/goatcorp/Dalamud/blob/master/Dalamud/Interface/Internal/InterfaceManager.cs
 
-namespace ScreenshotStudio.Services;
+namespace StudioFourteen.Services;
 
 using Dalamud.Hooking;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
-using ScreenshotStudio.Plugin;
-using ScreenshotStudio.Utilities;
+using StudioFourteen.Plugin;
+using StudioFourteen.Utilities;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats;
 using SixLabors.ImageSharp.PixelFormats;

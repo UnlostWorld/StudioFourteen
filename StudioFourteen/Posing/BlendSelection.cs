@@ -1,7 +1,7 @@
-﻿namespace ScreenshotStudio.Posing;
-using ScreenshotStudio.Files;
-using ScreenshotStudio.Plugin;
-using ScreenshotStudio.Utilities;
+﻿namespace StudioFourteen.Posing;
+using StudioFourteen.Files;
+using StudioFourteen.Plugin;
+using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -205,7 +205,7 @@ public class BlendTarget
 			{
 				BitmapImage bmp = new();
 				bmp.BeginInit();
-				bmp.UriSource = new($"pack://application:,,,/ScreenshotStudio;component/{this.IconPath}");
+				bmp.UriSource = new($"pack://application:,,,/StudioFourteen;component/{this.IconPath}");
 				bmp.EndInit();
 				return bmp;
 			}

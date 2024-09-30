@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio.Library.Filters;
+﻿namespace StudioFourteen.Library.Filters;
 
 public abstract class FilterBase
 {

@@ -1,7 +1,7 @@
-﻿namespace ScreenshotStudio.Plugin;
+﻿namespace StudioFourteen.Plugin;
 
 using Dalamud.Plugin;
-using ScreenshotStudio.Utilities;
+using StudioFourteen.Utilities;
 using Serilog;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -13,7 +13,7 @@ public sealed class DalamudPlugin : IDalamudPlugin
 	public DalamudPlugin(IDalamudPluginInterface pluginInterface)
 	{
 		// Hard reference our required satellite assemblies to make sure dalamuds plugin loader picks them up.
-		this.Log.Information($"Ensure assembly XivToolWpf {typeof(WpfUtils.Dispatch).Assembly}");
+		this.Log.Information($"Ensure assembly WpfUtils {typeof(WpfUtils.Dispatch).Assembly}");
 		this.Log.Information($"Ensure assembly FontAwesome {typeof(FontAwesome.Sharp.Icon).Assembly}");
 		this.Log.Information($"Ensure assembly VirtualizingWrapPanel Pro {typeof(WpfToolkit.Controls.VirtualizingWrapPanel).Assembly}");
 
@@ -26,7 +26,7 @@ public sealed class DalamudPlugin : IDalamudPlugin
 		Task.Run(this.services.Start);
 	}
 
-	public string Name => "Screenshot Studio";
+	public string Name => "Studio Fourteen";
 	public ILogger Log => Logging.ForContext<DalamudPlugin>();
 
 	public void Dispose()

@@ -1,9 +1,9 @@
-﻿namespace ScreenshotStudio.GameData.Excel;
+﻿namespace StudioFourteen.GameData.Excel;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Lumina.Data;
 using Lumina.Excel;
-using ScreenshotStudio.Data;
+using StudioFourteen.Data;
 
 [Sheet("BNpcBase", 0x86278126)]
 public class BattleNpc : NpcBase

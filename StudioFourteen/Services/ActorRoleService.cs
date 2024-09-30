@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio.Services;
+﻿namespace StudioFourteen.Services;
 
 using System.Collections.Generic;
 using System.Threading.Tasks;

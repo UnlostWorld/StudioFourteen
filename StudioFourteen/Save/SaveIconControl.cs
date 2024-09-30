@@ -1,7 +1,7 @@
-﻿namespace ScreenshotStudio.Save;
+﻿namespace StudioFourteen.Save;
 
 using DependencyPropertyGenerator;
-using ScreenshotStudio.Mvm;
+using StudioFourteen.Mvm;
 using System.Windows;
 
 [RoutedEvent("Saved", RoutedEventStrategy.Direct)]

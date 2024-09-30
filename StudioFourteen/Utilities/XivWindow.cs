@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio.Utilities;
+﻿namespace StudioFourteen.Utilities;
 
 using System;
 using System.Diagnostics;

@@ -1,11 +1,11 @@
 ﻿//// Lumina
 //// https://github.com/NotAdam/Lumina.Excel/blob/master/src/Lumina.Excel/GeneratedSheets2/ClassJob.cs
 
-namespace ScreenshotStudio.GameData.Excel;
+namespace StudioFourteen.GameData.Excel;
 
 using Lumina.Data;
 using Lumina.Excel;
-using ScreenshotStudio.Tags;
+using StudioFourteen.Tags;
 using System.Xml.Linq;
 
 [Sheet("ClassJob", 0xe62cb7ae)]

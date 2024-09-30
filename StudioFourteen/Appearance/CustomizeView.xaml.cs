@@ -1,16 +1,16 @@
-﻿namespace ScreenshotStudio.Appearance;
+﻿namespace StudioFourteen.Appearance;
 
 using DependencyPropertyGenerator;
 using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using ScreenshotStudio.GameData;
-using ScreenshotStudio.GameData.Excel;
-using ScreenshotStudio.Mvm;
-using ScreenshotStudio.Utilities;
+using StudioFourteen.GameData;
+using StudioFourteen.GameData.Excel;
+using StudioFourteen.Mvm;
+using StudioFourteen.Utilities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
-using ScreenshotStudio.Panels;
+using StudioFourteen.Panels;
 
 [DependencyProperty<CharacterPanelBase>("Panel")]
 public partial class CustomizeView : View

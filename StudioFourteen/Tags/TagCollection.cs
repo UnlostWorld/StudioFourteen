@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio.Tags;
+﻿namespace StudioFourteen.Tags;
 
 using System.Collections;
 using System.Collections.Generic;

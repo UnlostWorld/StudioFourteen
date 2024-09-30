@@ -1,8 +1,8 @@
 ﻿namespace FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
 
 using FFXIVClientStructs.Havok.Common.Base.Math.Quaternion;
-using ScreenshotStudio.Structs;
-using ScreenshotStudio.Structs.Extensions;
+using StudioFourteen.Structs;
+using StudioFourteen.Structs.Extensions;
 
 public static class HkTransformExtensions
 {

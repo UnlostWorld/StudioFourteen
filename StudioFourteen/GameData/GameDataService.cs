@@ -1,12 +1,12 @@
-﻿namespace ScreenshotStudio.GameData;
+﻿namespace StudioFourteen.GameData;
 
 using Lumina.Data;
 using Lumina.Excel;
 using Lumina.Excel.Exceptions;
-using ScreenshotStudio.GameData.Excel;
-using ScreenshotStudio.GameData.Sheets;
-using ScreenshotStudio.Plugin;
-using ScreenshotStudio.Services;
+using StudioFourteen.GameData.Excel;
+using StudioFourteen.GameData.Sheets;
+using StudioFourteen.Plugin;
+using StudioFourteen.Services;
 using Serilog;
 using System;
 using System.Collections.Generic;

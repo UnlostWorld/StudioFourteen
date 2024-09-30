@@ -1,6 +1,6 @@
-﻿namespace ScreenshotStudio.GameData.Sheets;
+﻿namespace StudioFourteen.GameData.Sheets;
 
-using ScreenshotStudio.GameData.Excel;
+using StudioFourteen.GameData.Excel;
 using System.Windows.Media;
 
 public class StainsSheet : DataSheet<Stain>

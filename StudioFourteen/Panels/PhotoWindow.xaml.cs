@@ -1,14 +1,14 @@
-﻿namespace ScreenshotStudio.Studio;
+﻿namespace StudioFourteen.Studio;
 
-using ScreenshotStudio.Plugin;
-using ScreenshotStudio.Serialization;
-using ScreenshotStudio.Panels;
+using StudioFourteen.Plugin;
+using StudioFourteen.Serialization;
+using StudioFourteen.Panels;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Jpeg;
 using SixLabors.ImageSharp.Metadata.Profiles.Exif;
 using System;
 using System.Windows;
-using ScreenshotStudio.Mvm;
+using StudioFourteen.Mvm;
 
 public partial class PhotoWindow : Panel
 {

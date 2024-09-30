@@ -1,6 +1,6 @@
-﻿namespace ScreenshotStudio.Files;
+﻿namespace StudioFourteen.Files;
 
-using ScreenshotStudio.Tags;
+using StudioFourteen.Tags;
 using System;
 using System.IO;
 using System.Windows.Media;

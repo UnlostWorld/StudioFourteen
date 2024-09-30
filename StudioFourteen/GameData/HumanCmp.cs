@@ -1,10 +1,10 @@
-﻿namespace ScreenshotStudio.GameData;
+﻿namespace StudioFourteen.GameData;
 
 using System;
 using System.Collections.Generic;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Lumina.Data;
-using ScreenshotStudio.GameData.Excel;
+using StudioFourteen.GameData.Excel;
 using Serilog;
 using System.Windows.Media;
 

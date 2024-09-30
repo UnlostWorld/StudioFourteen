@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio.Structs;
+﻿namespace StudioFourteen.Structs;
 
 using FFXIVClientStructs.Havok.Common.Base.Math.Vector;
 using System.Numerics;

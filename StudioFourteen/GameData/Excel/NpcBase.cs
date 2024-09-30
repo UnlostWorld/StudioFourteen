@@ -1,15 +1,15 @@
-﻿namespace ScreenshotStudio.GameData.Excel;
+﻿namespace StudioFourteen.GameData.Excel;
 
 using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Lumina.Excel;
-using ScreenshotStudio.Appearance;
-using ScreenshotStudio.Mvm.Commands;
-using ScreenshotStudio.Data;
-using ScreenshotStudio.Library;
-using ScreenshotStudio.Plugin;
-using ScreenshotStudio.Utilities;
-using ScreenshotStudio.Utils;
+using StudioFourteen.Appearance;
+using StudioFourteen.Mvm.Commands;
+using StudioFourteen.Data;
+using StudioFourteen.Library;
+using StudioFourteen.Plugin;
+using StudioFourteen.Utilities;
+using StudioFourteen.Utils;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;

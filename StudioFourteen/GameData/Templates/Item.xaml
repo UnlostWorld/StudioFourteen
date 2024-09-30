@@ -1,8 +1,8 @@
 ﻿<ResourceDictionary
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:controls="clr-namespace:ScreenshotStudio.Controls"
-	xmlns:excel="clr-namespace:ScreenshotStudio.GameData.Excel">
+	xmlns:controls="clr-namespace:StudioFourteen.Controls"
+	xmlns:excel="clr-namespace:StudioFourteen.GameData.Excel">
 
 	<DataTemplate DataType="{x:Type excel:Item}">
 		<Grid Margin="0,-3,0,3">

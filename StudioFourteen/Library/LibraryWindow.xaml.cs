@@ -1,14 +1,14 @@
-﻿namespace ScreenshotStudio.Library;
+﻿namespace StudioFourteen.Library;
 
 using FontAwesome.Sharp;
-using ScreenshotStudio;
-using ScreenshotStudio.Appearance;
-using ScreenshotStudio.Files;
-using ScreenshotStudio.Library.Filters;
-using ScreenshotStudio.Library.Results;
-using ScreenshotStudio.Mvm;
-using ScreenshotStudio.Services;
-using ScreenshotStudio.Tags;
+using StudioFourteen;
+using StudioFourteen.Appearance;
+using StudioFourteen.Files;
+using StudioFourteen.Library.Filters;
+using StudioFourteen.Library.Results;
+using StudioFourteen.Mvm;
+using StudioFourteen.Services;
+using StudioFourteen.Tags;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -21,7 +21,7 @@ using WpfUtils;
 using WpfUtils.Extensions;
 using WpfUtils.Utils;
 
-using Panel = ScreenshotStudio.Panels.Panel;
+using Panel = StudioFourteen.Panels.Panel;
 
 public partial class LibraryWindow : Panel
 {

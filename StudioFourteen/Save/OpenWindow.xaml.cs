@@ -1,13 +1,13 @@
-﻿namespace ScreenshotStudio.Save;
+﻿namespace StudioFourteen.Save;
 
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using ScreenshotStudio.Appearance;
-using ScreenshotStudio.Files;
-using ScreenshotStudio.Mvm;
-using ScreenshotStudio.Plugin;
-using ScreenshotStudio.Services;
-using ScreenshotStudio.Utilities;
+using StudioFourteen.Appearance;
+using StudioFourteen.Files;
+using StudioFourteen.Mvm;
+using StudioFourteen.Plugin;
+using StudioFourteen.Services;
+using StudioFourteen.Utilities;
 using Serilog.Parsing;
 using System;
 using System.Collections.Generic;
@@ -15,7 +15,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using WpfUtils;
 using WpfUtils.Extensions;
-using Panel = ScreenshotStudio.Panels.Panel;
+using Panel = StudioFourteen.Panels.Panel;
 
 public partial class OpenWindow : Panel
 {

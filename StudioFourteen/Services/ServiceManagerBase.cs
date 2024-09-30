@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio.Services;
+﻿namespace StudioFourteen.Services;
 
 using System;
 using System.Collections.Generic;
@@ -67,7 +67,7 @@ public class ServiceManagerBase
 
 		ShutdownRequested = false;
 
-		Logging.Shared.Information($"Screenshot Studio is initializing {this.services.Count} services");
+		Logging.Shared.Information($"Studio Fourteen is initializing {this.services.Count} services");
 
 		try
 		{
@@ -95,7 +95,7 @@ public class ServiceManagerBase
 
 		this.state = States.Initialized;
 
-		this.Log.Information($"Screenshot Studio is starting {this.services.Count} services");
+		this.Log.Information($"Studio Fourteen is starting {this.services.Count} services");
 		this.state = States.Starting;
 
 		foreach (ServiceBase service in this.services)
@@ -117,7 +117,7 @@ public class ServiceManagerBase
 
 		_ = Task.Run(async () => await this.Tick());
 
-		this.Log.Information("Screenshot Studio has started");
+		this.Log.Information("Studio Fourteen has started");
 	}
 
 	/// <summary>
@@ -125,7 +125,7 @@ public class ServiceManagerBase
 	/// </summary>
 	public async Task Stop()
 	{
-		this.Log.Information("Screenshot Studio shut down requested");
+		this.Log.Information("Studio Fourteen shut down requested");
 
 		ShutdownRequested = true;
 
@@ -173,7 +173,7 @@ public class ServiceManagerBase
 
 		this.services.Clear();
 
-		this.Log.Information("Screenshot Studio has shut down");
+		this.Log.Information("Studio Fourteen has shut down");
 		instance = null;
 
 		this.state = States.ShutDown;

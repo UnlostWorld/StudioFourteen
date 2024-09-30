@@ -1,7 +1,7 @@
 ﻿// System.Numerics
 // https://github.com/microsoft/referencesource/tree/master/System.Numerics/System/Numerics/Quaternion.cs
 
-namespace ScreenshotStudio.Structs.Extensions;
+namespace StudioFourteen.Structs.Extensions;
 
 using FFXIVClientStructs.Havok.Common.Base.Math.Vector;
 using FFXIVClientStructs.Havok.Common.Base.Math.Quaternion;

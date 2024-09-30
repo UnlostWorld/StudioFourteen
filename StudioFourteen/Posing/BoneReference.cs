@@ -1,15 +1,15 @@
-﻿namespace ScreenshotStudio.Posing;
+﻿namespace StudioFourteen.Posing;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.Havok.Animation.Rig;
 using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
-using ScreenshotStudio.Files;
-using ScreenshotStudio.Plugin;
-using ScreenshotStudio.Structs;
-using ScreenshotStudio.Structs.Extensions;
-using ScreenshotStudio.Utilities;
+using StudioFourteen.Files;
+using StudioFourteen.Plugin;
+using StudioFourteen.Structs;
+using StudioFourteen.Structs.Extensions;
+using StudioFourteen.Utilities;
 using System;
 using System.Numerics;
 

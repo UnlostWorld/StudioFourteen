@@ -1,8 +1,8 @@
-﻿namespace ScreenshotStudio.Test;
+﻿namespace StudioFourteen.Test;
 
-using ScreenshotStudio;
-using ScreenshotStudio.GameData;
-using ScreenshotStudio.Utilities;
+using StudioFourteen;
+using StudioFourteen.GameData;
+using StudioFourteen.Utilities;
 using System.Diagnostics;
 using System.Windows;
 

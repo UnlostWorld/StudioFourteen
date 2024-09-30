@@ -1,12 +1,12 @@
 ﻿//// Brio
 //// https://github.com/Etheirys/Brio/blob/main/Brio/Game/GPose/GPoseService.cs
 
-namespace ScreenshotStudio.Services;
+namespace StudioFourteen.Services;
 
 using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.UI;
-using ScreenshotStudio.Plugin;
+using StudioFourteen.Plugin;
 
 using Task = System.Threading.Tasks.Task;
 

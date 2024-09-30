@@ -1,8 +1,8 @@
-﻿namespace ScreenshotStudio.Services;
+﻿namespace StudioFourteen.Services;
 
 using System.Threading.Tasks;
 using System;
-using ScreenshotStudio.SPA;
+using StudioFourteen.SPA;
 
 public class StudioService : ServiceBase
 {
@@ -44,7 +44,7 @@ public class StudioService : ServiceBase
 		}
 		catch(Exception ex)
 		{
-			this.Log.Error(ex, "Error opening Screenshot Studio");
+			this.Log.Error(ex, "Error opening Studio Fourteen");
 		}
 
 		return Task.CompletedTask;
@@ -66,7 +66,7 @@ public class StudioService : ServiceBase
 		}
 		catch(Exception ex)
 		{
-			this.Log.Error(ex, "Error closing Screenshot Studio");
+			this.Log.Error(ex, "Error closing Studio Fourteen");
 		}
 
 		return Task.CompletedTask;

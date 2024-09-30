@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio.Appearance;
+﻿namespace StudioFourteen.Appearance;
 
 using System.Threading.Tasks;
 using System.Windows.Input;

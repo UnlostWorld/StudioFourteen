@@ -1,21 +1,21 @@
-﻿namespace ScreenshotStudio.Appearance;
+﻿namespace StudioFourteen.Appearance;
 
 using DependencyPropertyGenerator;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using ScreenshotStudio.GameData;
-using ScreenshotStudio.GameData.Excel;
-using ScreenshotStudio.Library;
-using ScreenshotStudio.Mvm;
-using ScreenshotStudio.Panels;
-using ScreenshotStudio.Services;
-using ScreenshotStudio.Tags;
-using ScreenshotStudio.Utilities;
+using StudioFourteen.GameData;
+using StudioFourteen.GameData.Excel;
+using StudioFourteen.Library;
+using StudioFourteen.Mvm;
+using StudioFourteen.Panels;
+using StudioFourteen.Services;
+using StudioFourteen.Tags;
+using StudioFourteen.Utilities;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-using Ornament = ScreenshotStudio.GameData.Excel.Ornament;
+using Ornament = StudioFourteen.GameData.Excel.Ornament;
 
 public enum AccessorySlots
 {
@@ -112,7 +112,7 @@ public partial class GearView : View
 		TagCollection defaultTags = new();
 		defaultTags.Add("Named");
 
-		string searchTitle = $"{equip.Slot} {ScreenshotStudio.Resources.Find("Dye", "Dye")}";
+		string searchTitle = $"{equip.Slot} {StudioFourteen.Resources.Find("Dye", "Dye")}";
 
 		Stain? currentStain = equip.Stain0;
 		if (dyeChanel == 1)

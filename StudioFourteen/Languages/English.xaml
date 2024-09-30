@@ -6,7 +6,7 @@
 	<sys:String x:Key="LOC_Confirm">Confirm</sys:String>
 
 	<sys:String x:Key="LOC_Error">Error</sys:String>
-	<sys:String x:Key="LOC_ErrorBodyMessage">An error has occurred. You can attempt to continue using Screenshot Studio, but we recommend restarting your game.</sys:String>
+	<sys:String x:Key="LOC_ErrorBodyMessage">An error has occurred. You can attempt to continue using Studio Fourteen, but we recommend restarting your game.</sys:String>
 	<sys:String x:Key="LOC_ErrorBodyLog">Check the Dalamud Console Log for more information</sys:String>
 	<sys:String x:Key="LOC_ErrorBodyCheck">If this problem persists, contact us at Discord or open an issue on GitHub.</sys:String>
 	<sys:String x:Key="LOC_Discord">Discord</sys:String>
@@ -113,7 +113,7 @@
 	<sys:String x:Key="LOC_Settings_Input_SaveAs">Toggle Save Window</sys:String>
 	<sys:String x:Key="LOC_Settings_Input_InvokeQuickSearch">Invoke Quick Search</sys:String>
 
-	<sys:String x:Key="LOC_Spa_Title">Screenshot Studio</sys:String>
+	<sys:String x:Key="LOC_Spa_Title">Studio Fourteen</sys:String>
 
 	<sys:String x:Key="LOC_Pose_FlipSides">Flip Sides</sys:String>
 	<sys:String x:Key="LOC_Pose_SelectCharacter">Select the targeted actor</sys:String>
@@ -123,7 +123,7 @@
 
 	<!--  Tags  -->
 	<sys:String x:Key="LOC_Tag_LegacyPose">Legacy Pose</sys:String>
-	<sys:String x:Key="LOC_Tag_LegacyPose_ToolTip">A pose file created outside of Screenshot Studio. This file does not support all posing features, and expressions will not load.</sys:String>
+	<sys:String x:Key="LOC_Tag_LegacyPose_ToolTip">A pose file created outside of Studio Fourteen. This file does not support all posing features, and expressions will not load.</sys:String>
 
 	<!--  Bones  -->
 	<sys:String x:Key="LOC_Bone_n_root">Root</sys:String>

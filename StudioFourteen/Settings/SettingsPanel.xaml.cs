@@ -1,7 +1,7 @@
-﻿namespace ScreenshotStudio.Settings;
+﻿namespace StudioFourteen.Settings;
 
-using ScreenshotStudio.Mvm;
-using ScreenshotStudio.Panels;
+using StudioFourteen.Mvm;
+using StudioFourteen.Panels;
 
 public partial class SettingsPanel : Panel
 {

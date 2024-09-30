@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio.Files;
+﻿namespace StudioFourteen.Files;
 
 using System;
 using System.IO;

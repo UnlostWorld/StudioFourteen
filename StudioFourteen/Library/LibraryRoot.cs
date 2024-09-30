@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio.Library;
+﻿namespace StudioFourteen.Library;
 
 internal class LibraryRoot : GroupEntryBase
 {

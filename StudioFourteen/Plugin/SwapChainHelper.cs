@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio.Plugin;
+﻿namespace StudioFourteen.Plugin;
 
 using Dalamud.Plugin;
 using System;

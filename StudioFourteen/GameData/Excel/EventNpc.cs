@@ -1,10 +1,10 @@
-﻿namespace ScreenshotStudio.GameData.Excel;
+﻿namespace StudioFourteen.GameData.Excel;
 
 using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Lumina.Data;
 using Lumina.Excel;
-using ScreenshotStudio.Data;
+using StudioFourteen.Data;
 using System;
 
 [Sheet("ENpcBase", 0x464052cd)]

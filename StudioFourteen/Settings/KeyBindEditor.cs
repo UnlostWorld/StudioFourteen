@@ -1,8 +1,8 @@
-﻿namespace ScreenshotStudio.Settings;
+﻿namespace StudioFourteen.Settings;
 
 using Dalamud.Game.ClientState.Keys;
 using DependencyPropertyGenerator;
-using ScreenshotStudio.Input;
+using StudioFourteen.Input;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;

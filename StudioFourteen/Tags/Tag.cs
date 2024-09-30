@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio.Tags;
+﻿namespace StudioFourteen.Tags;
 
 using System;
 using System.Collections.Generic;
@@ -27,7 +27,7 @@ public class Tag : IEquatable<Tag?>
 		get
 		{
 			if (this.displayName == null)
-				this.displayName = ScreenshotStudio.Resources.Find($"LOC_Tag_{this.name}", this.name);
+				this.displayName = StudioFourteen.Resources.Find($"LOC_Tag_{this.name}", this.name);
 
 			return this.displayName;
 		}
@@ -38,7 +38,7 @@ public class Tag : IEquatable<Tag?>
 		get
 		{
 			if (this.toolTip == null)
-				this.toolTip = ScreenshotStudio.Resources.Find($"LOC_Tag_{this.name}_ToolTip", this.name);
+				this.toolTip = StudioFourteen.Resources.Find($"LOC_Tag_{this.name}_ToolTip", this.name);
 
 			return this.toolTip;
 		}

@@ -8,7 +8,7 @@
 		<AppendTargetFramework>False</AppendTargetFramework>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<OutputPath>.\bin\</OutputPath>
-		<DocumentationFile>.\obj\ScreenshotStudio.xml</DocumentationFile>
+		<DocumentationFile>.\obj\StudioFourteen.xml</DocumentationFile>
 		<NoWarn>1701;1702;SA1503;CS1591;SA1401;SA1516;CS0067;IDE0027;IDE0025;SA1011;SA1134;</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<Nullable>enable</Nullable>
@@ -62,7 +62,7 @@
 	<ItemGroup>
 		<None Include="$(DalamudLibPath)\..\..\..\dalamud.boot.log" Link="dalamud.boot.log" />
 		<None Include="$(DalamudLibPath)\..\..\..\dalamud.log" Link="dalamud.log" />
-		<None Include="$(DalamudLibPath)\..\..\..\pluginConfigs\ScreenshotStudio.json" Link="config.json" />
+		<None Include="$(DalamudLibPath)\..\..\..\pluginConfigs\StudioFourteen.json" Link="config.json" />
 		<None Include="..\Assets\Icon\light-pride-textless.png">
 		  <Pack>True</Pack>
 		  <PackagePath>\</PackagePath>
@@ -119,7 +119,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Update="ScreenshotStudio.json">
+		<None Update="StudioFourteen.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>

@@ -1,11 +1,11 @@
 ﻿// Brio
 // https://github.com/Etheirys/Brio/blob/main/Brio/Resources/ResourceProvider.cs
 
-namespace ScreenshotStudio.Data;
+namespace StudioFourteen.Data;
 
-using ScreenshotStudio.Serialization;
-using ScreenshotStudio.Services;
-using ScreenshotStudio.Posing;
+using StudioFourteen.Serialization;
+using StudioFourteen.Services;
+using StudioFourteen.Posing;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -30,7 +30,7 @@ public class DataService : ServiceBase
 	private Stream? GetRawResourceStream(string name)
 	{
 		Assembly assembly = Assembly.GetExecutingAssembly();
-		string resourceName = $"ScreenshotStudio.Data.Documents.{name}.json";
+		string resourceName = $"StudioFourteen.Data.Documents.{name}.json";
 		Stream? stream = assembly.GetManifestResourceStream(resourceName);
 
 		if (stream == null)

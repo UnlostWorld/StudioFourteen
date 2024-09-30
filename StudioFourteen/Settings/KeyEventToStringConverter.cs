@@ -1,6 +1,6 @@
-﻿namespace ScreenshotStudio.Settings;
+﻿namespace StudioFourteen.Settings;
 
-using ScreenshotStudio.Input;
+using StudioFourteen.Input;
 
 using System;
 using WpfUtils.Converters;

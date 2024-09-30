@@ -1,6 +1,6 @@
-﻿namespace ScreenshotStudio.Controls;
+﻿namespace StudioFourteen.Controls;
 
-using ScreenshotStudio.GameData;
+using StudioFourteen.GameData;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;

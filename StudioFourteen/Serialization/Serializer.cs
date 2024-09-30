@@ -1,7 +1,7 @@
-﻿namespace ScreenshotStudio.Serialization;
+﻿namespace StudioFourteen.Serialization;
 
 using Newtonsoft.Json;
-using ScreenshotStudio.Serialization.Converters;
+using StudioFourteen.Serialization.Converters;
 using System.Globalization;
 
 public static class Serializer

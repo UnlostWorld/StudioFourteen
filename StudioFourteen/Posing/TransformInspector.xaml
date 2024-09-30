@@ -3,11 +3,11 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:local="clr-namespace:ScreenshotStudio.Posing"
+	xmlns:local="clr-namespace:StudioFourteen.Posing"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:mvm="clr-namespace:ScreenshotStudio.Mvm"
-	xmlns:pose="clr-namespace:ScreenshotStudio.Posing"
-	xmlns:windows="clr-namespace:ScreenshotStudio.Panels"
+	xmlns:mvm="clr-namespace:StudioFourteen.Mvm"
+	xmlns:pose="clr-namespace:StudioFourteen.Posing"
+	xmlns:windows="clr-namespace:StudioFourteen.Panels"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	mc:Ignorable="d">
 

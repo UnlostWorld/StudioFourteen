@@ -4,10 +4,10 @@ using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using global::System;
 using global::System.Runtime.InteropServices;
-using ScreenshotStudio;
-using ScreenshotStudio.GameData.Excel;
-using ScreenshotStudio.Plugin;
-using ScreenshotStudio.Utilities;
+using StudioFourteen;
+using StudioFourteen.GameData.Excel;
+using StudioFourteen.Plugin;
+using StudioFourteen.Utilities;
 
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 

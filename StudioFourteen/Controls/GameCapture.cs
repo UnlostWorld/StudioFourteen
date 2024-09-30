@@ -1,7 +1,7 @@
-﻿namespace ScreenshotStudio.Controls;
+﻿namespace StudioFourteen.Controls;
 
-using ScreenshotStudio;
-using ScreenshotStudio.Services;
+using StudioFourteen;
+using StudioFourteen.Services;
 using Serilog;
 using SixLabors.ImageSharp;
 using System;

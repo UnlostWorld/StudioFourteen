@@ -1,8 +1,8 @@
-﻿namespace ScreenshotStudio.GameData.Excel;
+﻿namespace StudioFourteen.GameData.Excel;
 
 using Lumina.Data;
 using Lumina.Excel;
-using ScreenshotStudio.Tags;
+using StudioFourteen.Tags;
 using System.Collections.Generic;
 
 [Sheet("ClassJobCategory", 0x65bbdb12)]

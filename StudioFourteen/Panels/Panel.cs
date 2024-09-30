@@ -1,11 +1,11 @@
-﻿namespace ScreenshotStudio.Panels;
+﻿namespace StudioFourteen.Panels;
 
 using Dalamud.Plugin.Services;
 using DependencyPropertyGenerator;
 using FontAwesome.Sharp;
-using ScreenshotStudio.Mvm;
-using ScreenshotStudio.Plugin;
-using ScreenshotStudio.Settings;
+using StudioFourteen.Mvm;
+using StudioFourteen.Plugin;
+using StudioFourteen.Settings;
 using Serilog;
 using System;
 using System.ComponentModel;
@@ -37,7 +37,7 @@ public partial class Panel : ContentControl, IAutoNotify
 		this.Persistence = new(this.panelId);
 
 		// Load a new copy of the resources. Each panel needs its own instance for threading reasons.
-		this.Resources = ScreenshotStudio.Resources.Load();
+		this.Resources = StudioFourteen.Resources.Load();
 
 		this.GetType().GetMethod("InitializeComponent")?.Invoke(this, null);
 		this.DataContext = this;

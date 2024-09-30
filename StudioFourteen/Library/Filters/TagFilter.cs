@@ -1,6 +1,6 @@
-﻿namespace ScreenshotStudio.Library.Filters;
+﻿namespace StudioFourteen.Library.Filters;
 
-using ScreenshotStudio.Tags;
+using StudioFourteen.Tags;
 
 public class TagFilter : FilterBase
 {

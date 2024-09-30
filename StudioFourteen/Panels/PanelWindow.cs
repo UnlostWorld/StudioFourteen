@@ -1,10 +1,10 @@
-﻿namespace ScreenshotStudio.Panels;
+﻿namespace StudioFourteen.Panels;
 
 using DependencyPropertyGenerator;
-using ScreenshotStudio.Mvm;
-using ScreenshotStudio.Plugin;
-using ScreenshotStudio.Services;
-using ScreenshotStudio.Utilities;
+using StudioFourteen.Mvm;
+using StudioFourteen.Plugin;
+using StudioFourteen.Services;
+using StudioFourteen.Utilities;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -41,7 +41,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		this.Loaded += this.OnLoaded;
 
 		// Load a new copy of the resources. Each panel needs its own instance for threading reasons.
-		this.Resources = ScreenshotStudio.Resources.Load();
+		this.Resources = StudioFourteen.Resources.Load();
 		this.Style = (Style)this.FindResource("PanelWindowStyle");
 
 		this.GetType().GetMethod("InitializeComponent")?.Invoke(this, null);

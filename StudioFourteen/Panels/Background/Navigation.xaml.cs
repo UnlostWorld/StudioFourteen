@@ -1,14 +1,14 @@
-﻿namespace ScreenshotStudio.Studio.Background;
+﻿namespace StudioFourteen.Studio.Background;
 
 using FFXIVClientStructs.FFXIV.Client.UI;
-using ScreenshotStudio.Appearance;
-using ScreenshotStudio.Library;
-using ScreenshotStudio.Mvm;
-using ScreenshotStudio.Plugin;
-using ScreenshotStudio.Posing;
-using ScreenshotStudio.Save;
-using ScreenshotStudio.Services;
-using ScreenshotStudio.Settings;
+using StudioFourteen.Appearance;
+using StudioFourteen.Library;
+using StudioFourteen.Mvm;
+using StudioFourteen.Plugin;
+using StudioFourteen.Posing;
+using StudioFourteen.Save;
+using StudioFourteen.Services;
+using StudioFourteen.Settings;
 
 public partial class Navigation : View
 {

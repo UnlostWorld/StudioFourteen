@@ -3,9 +3,9 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:WpfUtils.Controls;assembly=wpfUtils"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:local="clr-namespace:ScreenshotStudio.Studio"
+	xmlns:local="clr-namespace:StudioFourteen.Studio"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:panels="clr-namespace:ScreenshotStudio.Panels"
+	xmlns:panels="clr-namespace:StudioFourteen.Panels"
 	mc:Ignorable="d">
 
 
@@ -23,18 +23,18 @@
 					ShadowDepth="0" />
 			</Grid.Effect>
 
-			<Image Source="pack://application:,,,/ScreenshotStudio;component/Assets/icon-back-shadow.png" />
+			<Image Source="pack://application:,,,/StudioFourteen;component/Assets/icon-back-shadow.png" />
 
 			<Rectangle Fill="{DynamicResource ForegroundLightBrush}">
 				<Rectangle.OpacityMask>
-					<ImageBrush ImageSource="pack://application:,,,/ScreenshotStudio;component/Assets/icon-back-mask.png" />
+					<ImageBrush ImageSource="pack://application:,,,/StudioFourteen;component/Assets/icon-back-mask.png" />
 				</Rectangle.OpacityMask>
 			</Rectangle>
 
 			<Grid RenderTransformOrigin="0.5,0.5">
 
 				<Grid.Background>
-					<ImageBrush ImageSource="pack://application:,,,/ScreenshotStudio;component/Assets/icon-front-background.png" />
+					<ImageBrush ImageSource="pack://application:,,,/StudioFourteen;component/Assets/icon-front-background.png" />
 				</Grid.Background>
 
 				<Grid.RenderTransform>
@@ -46,7 +46,7 @@
 					Background="{DynamicResource TrimBrush}">
 
 					<Grid.OpacityMask>
-						<ImageBrush ImageSource="pack://application:,,,/ScreenshotStudio;component/Assets/icon-front-mask.png" />
+						<ImageBrush ImageSource="pack://application:,,,/StudioFourteen;component/Assets/icon-front-mask.png" />
 					</Grid.OpacityMask>
 
 					<Ellipse
@@ -57,7 +57,7 @@
 						VerticalAlignment="Center">
 						<Ellipse.Fill>
 							<ImageBrush
-								ImageSource="pack://application:,,,/ScreenshotStudio;component/Assets/rainbow-wheel.png"
+								ImageSource="pack://application:,,,/StudioFourteen;component/Assets/rainbow-wheel.png"
 								Stretch="None">
 
 								<ImageBrush.RelativeTransform>

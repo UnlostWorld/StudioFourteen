@@ -1,7 +1,7 @@
-﻿namespace ScreenshotStudio.Panels;
+﻿namespace StudioFourteen.Panels;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using ScreenshotStudio.Mvm;
+using StudioFourteen.Mvm;
 
 public abstract class CharacterPanelBase : Panel
 {

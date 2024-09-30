@@ -1,7 +1,7 @@
-﻿namespace ScreenshotStudio.Library;
+﻿namespace StudioFourteen.Library;
 
 using DependencyPropertyGenerator;
-using ScreenshotStudio.Tags;
+using StudioFourteen.Tags;
 using System;
 using System.Windows.Controls;
 using System.Windows.Input;

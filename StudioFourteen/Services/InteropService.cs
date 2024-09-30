@@ -1,10 +1,10 @@
-﻿namespace ScreenshotStudio.Services;
+﻿namespace StudioFourteen.Services;
 
 using Dalamud.Game;
 using Dalamud.Hooking;
 using FFXIVClientStructs;
 using Lumina.Text.ReadOnly;
-using ScreenshotStudio.Plugin;
+using StudioFourteen.Plugin;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;

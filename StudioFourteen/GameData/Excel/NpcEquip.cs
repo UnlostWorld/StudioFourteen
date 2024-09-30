@@ -1,9 +1,9 @@
-﻿namespace ScreenshotStudio.GameData.Excel;
+﻿namespace StudioFourteen.GameData.Excel;
 
 using Lumina;
 using Lumina.Data;
 using Lumina.Excel;
-using ScreenshotStudio.Structs;
+using StudioFourteen.Structs;
 using System.Text;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 

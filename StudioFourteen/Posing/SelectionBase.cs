@@ -1,7 +1,7 @@
-﻿namespace ScreenshotStudio.Posing;
+﻿namespace StudioFourteen.Posing;
 
 using Dalamud.Plugin.Services;
-using ScreenshotStudio.Mvm;
+using StudioFourteen.Mvm;
 using System.Numerics;
 
 public abstract class SelectionBase : ViewModel

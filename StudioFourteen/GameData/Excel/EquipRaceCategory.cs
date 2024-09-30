@@ -1,8 +1,8 @@
-﻿namespace ScreenshotStudio.GameData.Excel;
+﻿namespace StudioFourteen.GameData.Excel;
 
 using Lumina.Data;
 using Lumina.Excel;
-using ScreenshotStudio.Tags;
+using StudioFourteen.Tags;
 
 [Sheet("EquipRaceCategory", 0xf914b198)]
 public class EquipRaceCategory : StudioExcelRow

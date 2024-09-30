@@ -1,6 +1,6 @@
-﻿namespace ScreenshotStudio.GameData.Sheets;
+﻿namespace StudioFourteen.GameData.Sheets;
 
-using ScreenshotStudio.GameData.Excel;
+using StudioFourteen.GameData.Excel;
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 
 public class BuddyEquipsSheet : DataSheet<BuddyEquip>

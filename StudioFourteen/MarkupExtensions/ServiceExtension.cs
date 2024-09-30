@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio.MarkupExtensions;
+﻿namespace StudioFourteen.MarkupExtensions;
 
 using System;
 using System.Windows.Markup;

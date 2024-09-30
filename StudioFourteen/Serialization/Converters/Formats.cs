@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio.Serialization.Converters;
+﻿namespace StudioFourteen.Serialization.Converters;
 
 public static class Formats
 {

@@ -1,10 +1,10 @@
-﻿namespace ScreenshotStudio.GameData.Excel;
+﻿namespace StudioFourteen.GameData.Excel;
 
 using Lumina;
 using Lumina.Data;
 using Lumina.Excel;
 using Lumina.Text;
-using ScreenshotStudio.GameData.Sheets;
+using StudioFourteen.GameData.Sheets;
 
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 

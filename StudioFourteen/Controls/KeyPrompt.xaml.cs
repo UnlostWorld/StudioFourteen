@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio.Controls;
+﻿namespace StudioFourteen.Controls;
 
 using DependencyPropertyGenerator;
 using FontAwesome.Sharp;

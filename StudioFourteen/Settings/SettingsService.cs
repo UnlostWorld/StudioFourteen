@@ -1,15 +1,15 @@
-﻿namespace ScreenshotStudio.Settings;
+﻿namespace StudioFourteen.Settings;
 
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using Dalamud.Configuration;
 using Dalamud.Game.ClientState.Keys;
-using ScreenshotStudio.Input;
-using ScreenshotStudio.Plugin;
-using ScreenshotStudio.Save;
-using ScreenshotStudio.Serialization;
-using ScreenshotStudio.Services;
+using StudioFourteen.Input;
+using StudioFourteen.Plugin;
+using StudioFourteen.Save;
+using StudioFourteen.Serialization;
+using StudioFourteen.Services;
 
 public class SettingsService : ServiceBase
 {

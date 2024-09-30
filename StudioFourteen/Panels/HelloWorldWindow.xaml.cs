@@ -1,6 +1,6 @@
-﻿namespace ScreenshotStudio.Studio;
+﻿namespace StudioFourteen.Studio;
 
-using ScreenshotStudio.Panels;
+using StudioFourteen.Panels;
 
 public partial class HelloWorldWindow : Panel
 {

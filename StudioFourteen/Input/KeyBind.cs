@@ -1,7 +1,7 @@
 ﻿// Brio
 // https://github.com/Etheirys/Brio/tree/main/Brio/Input/KeyBind.cs
 
-namespace ScreenshotStudio.Input;
+namespace StudioFourteen.Input;
 
 using Dalamud.Game.ClientState.Keys;
 

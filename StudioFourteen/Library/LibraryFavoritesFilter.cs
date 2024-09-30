@@ -1,6 +1,6 @@
-﻿namespace ScreenshotStudio.Library;
+﻿namespace StudioFourteen.Library;
 
-using ScreenshotStudio.Library.Filters;
+using StudioFourteen.Library.Filters;
 
 internal class LibraryFavoritesFilter : FilterBase
 {

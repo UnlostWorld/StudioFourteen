@@ -1,12 +1,12 @@
-﻿namespace ScreenshotStudio.Services;
+﻿namespace StudioFourteen.Services;
 
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
-using ScreenshotStudio.Mvm;
-using ScreenshotStudio.Plugin;
-using ScreenshotStudio.Utilities;
+using StudioFourteen.Mvm;
+using StudioFourteen.Plugin;
+using StudioFourteen.Utilities;
 
 public class TargetService : ServiceBase
 {

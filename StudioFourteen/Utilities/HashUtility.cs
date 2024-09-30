@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio.Utils;
+﻿namespace StudioFourteen.Utils;
 
 using System;
 using System.Security.Cryptography;

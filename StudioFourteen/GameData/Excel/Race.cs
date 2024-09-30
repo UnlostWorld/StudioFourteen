@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio.GameData.Excel;
+﻿namespace StudioFourteen.GameData.Excel;
 
 using System;
 using Lumina.Data;
@@ -6,7 +6,7 @@ using Lumina.Excel;
 using Lumina.Text;
 using System.Collections.Generic;
 
-using ScreenshotStudio.Tags;
+using StudioFourteen.Tags;
 
 [Sheet("Race", 0x3403807a)]
 public class Race : LibraryExcelRow

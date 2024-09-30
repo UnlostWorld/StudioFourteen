@@ -1,12 +1,12 @@
 ﻿<ResourceDictionary
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:controls="clr-namespace:ScreenshotStudio.Controls"
+	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=WpfUtils"
-	xmlns:excel="clr-namespace:ScreenshotStudio.GameData.Excel"
-	xmlns:gameData="clr-namespace:ScreenshotStudio.GameData"
-	xmlns:library="clr-namespace:ScreenshotStudio.Library"
-	xmlns:sources="clr-namespace:ScreenshotStudio.Library.Sources"
+	xmlns:excel="clr-namespace:StudioFourteen.GameData.Excel"
+	xmlns:gameData="clr-namespace:StudioFourteen.GameData"
+	xmlns:library="clr-namespace:StudioFourteen.Library"
+	xmlns:sources="clr-namespace:StudioFourteen.Library.Sources"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
 	<converters:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter" />

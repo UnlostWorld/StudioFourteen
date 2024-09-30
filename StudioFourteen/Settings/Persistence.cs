@@ -1,5 +1,5 @@
-﻿namespace ScreenshotStudio.Settings;
-using ScreenshotStudio.Serialization;
+﻿namespace StudioFourteen.Settings;
+using StudioFourteen.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;

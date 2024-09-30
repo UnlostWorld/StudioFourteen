@@ -1,8 +1,8 @@
-﻿namespace ScreenshotStudio.Utilities;
+﻿namespace StudioFourteen.Utilities;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
-using ScreenshotStudio.Plugin;
+using StudioFourteen.Plugin;
 using System;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;

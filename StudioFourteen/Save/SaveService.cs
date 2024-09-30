@@ -1,21 +1,21 @@
-﻿namespace ScreenshotStudio.Save;
+﻿namespace StudioFourteen.Save;
 
 using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using ScreenshotStudio.Files;
-using ScreenshotStudio.Input;
-using ScreenshotStudio.Mvm;
-using ScreenshotStudio.Plugin;
-using ScreenshotStudio.Posing;
-using ScreenshotStudio.Services;
-using ScreenshotStudio.Tags;
-using ScreenshotStudio.Utilities;
+using StudioFourteen.Files;
+using StudioFourteen.Input;
+using StudioFourteen.Mvm;
+using StudioFourteen.Plugin;
+using StudioFourteen.Posing;
+using StudioFourteen.Services;
+using StudioFourteen.Tags;
+using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using WpfUtils.Extensions;
-using static ScreenshotStudio.Files.SceneFile;
+using static StudioFourteen.Files.SceneFile;
 
 public class SaveService : ServiceBase
 {
@@ -229,7 +229,7 @@ public class SaveService : ServiceBase
 
 	private void EnsureDefaultDirectory()
 	{
-		this.defaultDirectory = new($"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\\ScreenshotStudio\\");
+		this.defaultDirectory = new($"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}\\StudioFourteen\\");
 		if (!this.defaultDirectory.Exists)
 		{
 			this.defaultDirectory.Create();

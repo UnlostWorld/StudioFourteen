@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio.Library.Sources;
+﻿namespace StudioFourteen.Library.Sources;
 
 using System;
 

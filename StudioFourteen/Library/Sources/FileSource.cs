@@ -1,7 +1,7 @@
-﻿namespace ScreenshotStudio.Library.Sources;
+﻿namespace StudioFourteen.Library.Sources;
 
-using ScreenshotStudio.Files;
-using ScreenshotStudio.Library.Filters;
+using StudioFourteen.Files;
+using StudioFourteen.Library.Filters;
 using System;
 using System.IO;
 using System.Windows.Media;

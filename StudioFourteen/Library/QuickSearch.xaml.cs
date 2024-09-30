@@ -1,10 +1,10 @@
-﻿namespace ScreenshotStudio.Library;
+﻿namespace StudioFourteen.Library;
 
-using ScreenshotStudio.Library.Filters;
-using ScreenshotStudio.Library.Results;
-using ScreenshotStudio.Mvm;
-using ScreenshotStudio.Panels;
-using ScreenshotStudio.Tags;
+using StudioFourteen.Library.Filters;
+using StudioFourteen.Library.Results;
+using StudioFourteen.Mvm;
+using StudioFourteen.Panels;
+using StudioFourteen.Tags;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;

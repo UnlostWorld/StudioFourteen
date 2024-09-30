@@ -1,9 +1,9 @@
-﻿namespace ScreenshotStudio.Appearance;
+﻿namespace StudioFourteen.Appearance;
 
-using ScreenshotStudio.Files;
-using ScreenshotStudio.Library;
-using ScreenshotStudio.Mvm;
-using ScreenshotStudio.Panels;
+using StudioFourteen.Files;
+using StudioFourteen.Library;
+using StudioFourteen.Mvm;
+using StudioFourteen.Panels;
 using System.Windows;
 using WpfUtils.Extensions;
 
@@ -11,7 +11,7 @@ public partial class CharacterPanel : CharacterPanelBase
 {
 	[AutoNotify] public unsafe bool CanRevert => this.Services.CharacterAppearance.CanRestore(this.Target);
 
-	[AutoNotify] public string ExportAppearanceToolTipText => string.Format(ScreenshotStudio.Resources.Find("LOC_Save_ExportAppearanceToolTip", string.Empty), this.CharacterName);
+	[AutoNotify] public string ExportAppearanceToolTipText => string.Format(StudioFourteen.Resources.Find("LOC_Save_ExportAppearanceToolTip", string.Empty), this.CharacterName);
 
 	private unsafe void OnRevertClicked(object sender, RoutedEventArgs e)
 	{

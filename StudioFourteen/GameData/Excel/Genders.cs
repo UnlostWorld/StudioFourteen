@@ -1,6 +1,6 @@
-﻿namespace ScreenshotStudio.GameData.Excel;
+﻿namespace StudioFourteen.GameData.Excel;
 
-using ScreenshotStudio.Tags;
+using StudioFourteen.Tags;
 
 public enum Genders : byte
 {

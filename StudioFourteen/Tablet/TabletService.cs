@@ -1,11 +1,11 @@
 ﻿// WinTabControl
 // https://github.com/DennisWacom/WintabControl/blob/master/WintabControl/MainWindow.xaml.cs
 
-namespace ScreenshotStudio.Tablet;
+namespace StudioFourteen.Tablet;
 
 using Apos.WintabDN;
-using ScreenshotStudio.Services;
-using ScreenshotStudio.Utilities;
+using StudioFourteen.Services;
+using StudioFourteen.Utilities;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

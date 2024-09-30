@@ -1,14 +1,14 @@
 ﻿// Brio
 // https://github.com/Etheirys/Brio/tree/main/Brio/Input/InputService.cs
 
-namespace ScreenshotStudio.Input;
+namespace StudioFourteen.Input;
 
 using Dalamud.Game.ClientState.Keys;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.UI;
-using ScreenshotStudio.Plugin;
-using ScreenshotStudio.Services;
-using ScreenshotStudio.Utilities;
+using StudioFourteen.Plugin;
+using StudioFourteen.Services;
+using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Windows.Input;

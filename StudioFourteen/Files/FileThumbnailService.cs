@@ -1,7 +1,7 @@
-﻿namespace ScreenshotStudio.Files;
+﻿namespace StudioFourteen.Files;
 
-using ScreenshotStudio.Services;
-using ScreenshotStudio.Utils;
+using StudioFourteen.Services;
+using StudioFourteen.Utils;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
@@ -13,7 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using SixLabors.ImageSharp.Drawing;
 using SixLabors.ImageSharp.Drawing.Processing;
-using ScreenshotStudio.Images;
+using StudioFourteen.Images;
 using SixLabors.ImageSharp.Formats.Png;
 
 public class FileThumbnailService : ServiceBase
@@ -31,7 +31,7 @@ public class FileThumbnailService : ServiceBase
 	public void GetThumbnail(FileInfo fileInfo, Action<string> callback)
 	{
 		string name = this.HashName(fileInfo);
-		string dir = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}/ScreenshotStudio/Thumbnails/";
+		string dir = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}/StudioFourteen/Thumbnails/";
 
 		if (!Directory.Exists(dir))
 			Directory.CreateDirectory(dir);

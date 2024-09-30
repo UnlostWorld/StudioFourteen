@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio.Mvm;
+﻿namespace StudioFourteen.Mvm;
 
 using System;
 using System.Collections.Generic;
@@ -8,8 +8,8 @@ using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows.Threading;
-using ScreenshotStudio;
-using ScreenshotStudio.Services;
+using StudioFourteen;
+using StudioFourteen.Services;
 
 public interface IAutoNotify : INotifyPropertyChanged
 {

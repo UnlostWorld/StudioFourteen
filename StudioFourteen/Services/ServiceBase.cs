@@ -1,8 +1,8 @@
-﻿namespace ScreenshotStudio.Services;
+﻿namespace StudioFourteen.Services;
 
 using Dalamud.Plugin.Services;
-using ScreenshotStudio.Plugin;
-using ScreenshotStudio.Settings;
+using StudioFourteen.Plugin;
+using StudioFourteen.Settings;
 using Serilog;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;

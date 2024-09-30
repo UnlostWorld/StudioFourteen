@@ -1,10 +1,10 @@
-﻿namespace ScreenshotStudio.Files;
+﻿namespace StudioFourteen.Files;
 
 using Microsoft.Win32;
-using ScreenshotStudio.Library.Sources;
-using ScreenshotStudio.Services;
-using ScreenshotStudio.Studio;
-using ScreenshotStudio.Utilities;
+using StudioFourteen.Library.Sources;
+using StudioFourteen.Services;
+using StudioFourteen.Studio;
+using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -21,7 +21,7 @@ public class FileService : ServiceBase
 		new SceneFileTypeInfo(),
 	};
 
-	public DirectoryInfo ScreenshotStudioDir { get; init; } = new DirectoryInfo($"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/ScreenshotStudio/");
+	public DirectoryInfo StudioFourteenDir { get; init; } = new DirectoryInfo($"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/StudioFourteen/");
 	public DirectoryInfo BrioDir { get; init; } = new DirectoryInfo($"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/Brio/");
 	public DirectoryInfo AnamnesisDir { get; init; } = new DirectoryInfo($"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/Anamnesis/");
 	public DirectoryInfo KtisisDir { get; init; } = new DirectoryInfo($"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/Ktisis/");
@@ -125,7 +125,7 @@ public class FileService : ServiceBase
 	{
 		// TODO: lookup last used file for this file type...
 		FileTypeInfoBase? fileTypeInfo = this.GetTypeInfo(file);
-		FileSystemInfo? defaultFileInfo = new FileInfo($"{this.ScreenshotStudioDir.FullName}/{defaultFileName}{fileTypeInfo?.Extension}");
+		FileSystemInfo? defaultFileInfo = new FileInfo($"{this.StudioFourteenDir.FullName}/{defaultFileName}{fileTypeInfo?.Extension}");
 
 		await this.SaveFileAsync(file, defaultFileInfo);
 	}
@@ -138,7 +138,7 @@ public class FileService : ServiceBase
 		string extension = Path.GetExtension(defaultFileInfo.Extension);
 		while (defaultFileInfo.Exists)
 		{
-			defaultFileInfo = new FileInfo($"{this.ScreenshotStudioDir.FullName}/{fileName} ({count}){extension}");
+			defaultFileInfo = new FileInfo($"{this.StudioFourteenDir.FullName}/{fileName} ({count}){extension}");
 			count++;
 		}
 

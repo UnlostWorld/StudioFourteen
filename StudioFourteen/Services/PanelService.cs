@@ -1,7 +1,7 @@
-﻿namespace ScreenshotStudio.Services;
+﻿namespace StudioFourteen.Services;
 
-using ScreenshotStudio.Studio;
-using ScreenshotStudio.Utilities;
+using StudioFourteen.Studio;
+using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -9,8 +9,8 @@ using System.Windows;
 using System.Windows.Controls;
 using WpfUtils.Extensions;
 
-using Panel = ScreenshotStudio.Panels.Panel;
-using PanelWindow = ScreenshotStudio.Panels.PanelWindow;
+using Panel = StudioFourteen.Panels.Panel;
+using PanelWindow = StudioFourteen.Panels.PanelWindow;
 
 public class PanelService : ServiceBase
 {

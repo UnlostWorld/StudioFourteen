@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio.Controls;
+﻿namespace StudioFourteen.Controls;
 using System;
 using System.Threading.Tasks;
 using WpfToolkit.Controls;

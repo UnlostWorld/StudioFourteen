@@ -1,8 +1,8 @@
-﻿namespace ScreenshotStudio.Posing;
+﻿namespace StudioFourteen.Posing;
 
-using ScreenshotStudio.Files;
-using ScreenshotStudio.Mvm;
-using ScreenshotStudio.Panels;
+using StudioFourteen.Files;
+using StudioFourteen.Mvm;
+using StudioFourteen.Panels;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -10,7 +10,7 @@ using System.Windows.Input;
 
 public partial class PoseWindow : CharacterPanelBase
 {
-	[AutoNotify] public string RevertTooltip => ScreenshotStudio.Resources.Format("LOC_Pose_RevertPose", this.CharacterName);
+	[AutoNotify] public string RevertTooltip => StudioFourteen.Resources.Format("LOC_Pose_RevertPose", this.CharacterName);
 
 	[AutoNotify]
 	public int SelectedTab

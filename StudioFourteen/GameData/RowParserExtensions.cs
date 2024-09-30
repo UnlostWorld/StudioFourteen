@@ -1,4 +1,4 @@
-﻿namespace ScreenshotStudio.GameData;
+﻿namespace StudioFourteen.GameData;
 
 using System;
 using Lumina.Excel;

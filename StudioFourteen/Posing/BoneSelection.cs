@@ -1,17 +1,17 @@
-﻿namespace ScreenshotStudio.Posing;
+﻿namespace StudioFourteen.Posing;
 
 using FFXIVClientStructs.FFXIV.Common.Lua;
 using FFXIVClientStructs.Havok.Animation.Rig;
 using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
 using FFXIVClientStructs.Havok.Common.Base.Math.Quaternion;
 using FFXIVClientStructs.Havok.Common.Base.Math.Vector;
-using ScreenshotStudio.Files;
-using ScreenshotStudio.Structs;
-using ScreenshotStudio.Structs.Extensions;
+using StudioFourteen.Files;
+using StudioFourteen.Structs;
+using StudioFourteen.Structs.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using static ScreenshotStudio.Files.PoseFile;
+using static StudioFourteen.Files.PoseFile;
 
 public class BoneSelection : TransformSelectionBase
 {

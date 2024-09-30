@@ -3,15 +3,15 @@
 //// https://github.com/AsgardXIV/Brio/blob/main/Brio/Game/Character/CharacterSpawnService.cs
 //// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Core/ObjectMonitorService.cs
 
-namespace ScreenshotStudio.Services;
+namespace StudioFourteen.Services;
 
 using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Event;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
-using ScreenshotStudio.Appearance;
-using ScreenshotStudio.Plugin;
-using ScreenshotStudio.Utilities;
+using StudioFourteen.Appearance;
+using StudioFourteen.Plugin;
+using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;

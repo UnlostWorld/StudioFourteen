@@ -1,7 +1,7 @@
-﻿namespace ScreenshotStudio;
+﻿namespace StudioFourteen;
 
-using ScreenshotStudio.Plugin;
-using ScreenshotStudio.Studio;
+using StudioFourteen.Plugin;
+using StudioFourteen.Studio;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;

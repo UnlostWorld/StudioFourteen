@@ -1,7 +1,7 @@
 ﻿// ImageSharp
 // https://github.com/SixLabors/Samples/tree/main/ImageSharp/AvatarWithRoundedCorner/Program.cs
 
-namespace ScreenshotStudio.Images;
+namespace StudioFourteen.Images;
 
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Drawing;

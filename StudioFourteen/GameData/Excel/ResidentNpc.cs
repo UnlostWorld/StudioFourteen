@@ -1,10 +1,10 @@
-﻿namespace ScreenshotStudio.GameData.Excel;
+﻿namespace StudioFourteen.GameData.Excel;
 
 using Lumina.Data;
 using Lumina.Excel;
-using ScreenshotStudio.Appearance;
-using ScreenshotStudio.Mvm.Commands;
-using ScreenshotStudio.Library;
+using StudioFourteen.Appearance;
+using StudioFourteen.Mvm.Commands;
+using StudioFourteen.Library;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using WpfUtils;

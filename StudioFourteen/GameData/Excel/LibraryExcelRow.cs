@@ -1,8 +1,8 @@
-﻿namespace ScreenshotStudio.GameData.Excel;
+﻿namespace StudioFourteen.GameData.Excel;
 
-using ScreenshotStudio.Library;
-using ScreenshotStudio.Library.Sources;
-using ScreenshotStudio.Tags;
+using StudioFourteen.Library;
+using StudioFourteen.Library.Sources;
+using StudioFourteen.Tags;
 using System;
 using WpfUtils;
 
