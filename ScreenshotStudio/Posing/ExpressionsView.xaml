@@ -42,7 +42,11 @@
 			Canvas.Top="330"
 			Width="100"
 			Height="100"
-			Click="OnEyeClicked" />
+			Click="OnEyeClicked">
+			<Image
+				Opacity="0.25"
+				Source="/ScreenshotStudio;component/Assets/Expression_Iris.png" />
+		</Button>
 
 		<ToggleButton
 			x:Name="MouthToggle"
