@@ -25,32 +25,32 @@ public class BlendService : ServiceBase
 	{
 		await Threads.FrameworkThread();
 
-		List<BoneReference>? boneReferences = toPose.GetBoneReferences(objectTableIndex);
-		if (boneReferences == null)
+		List<BoneSelection>? boneSelections = toPose.GetBones(objectTableIndex);
+		if (boneSelections == null)
 			return null;
 
 		await Threads.NextFrame();
 
 		List<BoneBlend> bones = new();
-		foreach (BoneReference boneReference in boneReferences)
+		foreach (BoneSelection boneSelection in boneSelections)
 		{
-			if (boneReference.Name == null)
+			if (boneSelection.Name == null)
 				continue;
 
-			BoneTransform? fromTransform = boneReference.GetLiveReferenceRelativeTransform();
+			BoneTransform? fromTransform = boneSelection.GetLiveReferenceRelativeTransform();
 			if (fromTransform == null)
 				continue;
 
 			BoneTransform? rightTransform = null;
-			toPose.RightBones?.TryGetValue(boneReference.Name, out rightTransform);
+			toPose.RightBones?.TryGetValue(boneSelection.Name, out rightTransform);
 
 			if (rightTransform == null)
 				continue;
 
 			BoneTransform? leftTransform = null;
-			toPose.LeftBones?.TryGetValue(boneReference.Name, out leftTransform);
+			toPose.LeftBones?.TryGetValue(boneSelection.Name, out leftTransform);
 
-			bones.Add(new(boneReference, fromTransform, rightTransform, leftTransform));
+			bones.Add(new(boneSelection, fromTransform, rightTransform, leftTransform));
 		}
 
 		Blend blend = new(bones);
@@ -60,11 +60,11 @@ public class BlendService : ServiceBase
 		return blend;
 	}
 
-	public struct BoneBlend(BoneReference reference, BoneTransform initial, BoneTransform right, BoneTransform? left = null)
+	public struct BoneBlend(BoneSelection selection, BoneTransform initial, BoneTransform right, BoneTransform? left = null)
 	{
 		public BoneTransform Value = new();
 
-		public BoneReference Reference = reference;
+		public BoneSelection Selection = selection;
 		public BoneTransform Initial = initial;
 		public BoneTransform Right = right;
 		public BoneTransform? Left = left;
@@ -105,7 +105,7 @@ public class BlendService : ServiceBase
 					this.Value.Scale = this.Initial.Scale.Value;
 			}
 
-			this.Reference.LoadRelativeTransform = this.Value;
+			this.Selection.ApplyReferenceTransform(this.Value);
 		}
 	}
 
@@ -125,17 +125,32 @@ public class BlendService : ServiceBase
 			set => this.SetValue(value);
 		}
 
-		public bool HasLeft => this.bones[0].Left != null;
+		public bool HasLeft
+		{
+			get
+			{
+				if (this.bones.Count <= 0)
+					return false;
+
+				return this.bones[0].Left != null;
+			}
+		}
 
 		public MirrorModes MirrorMode
 		{
-			get => this.bones[0].Reference.MirrorMode;
+			get
+			{
+				if (this.bones.Count <= 0)
+					return MirrorModes.None;
+
+				return this.bones[0].Selection.MirrorMode;
+			}
+
 			set
 			{
 				foreach(BoneBlend bone in this.bones)
 				{
-					bone.Reference.MirrorMode = value;
-					Logging.Shared.Information($"{bone.Reference.Name} >> {bone.Reference.MirrorMode}");
+					bone.Selection.MirrorMode = value;
 				}
 			}
 		}
@@ -212,65 +227,28 @@ public class BlendTarget
 		}
 	}
 
-	public List<BoneReference>? GetBoneReferences(int objectTableIndex)
+	public List<BoneSelection>? GetBones(int objectTableIndex)
 	{
 		Threads.VerifyFrameworkThread();
 
 		if (DalamudServices.ObjectTable == null)
 			return null;
 
-		List<BoneReference> boneReferences = new();
+		List<BoneSelection> selections = new();
 
-		unsafe
+		if (this.RightBones == null)
+			return null;
+
+		foreach ((string boneName, BoneTransform transform) in this.RightBones)
 		{
-			Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
-			if (character == null)
-				return null;
+			BoneSelection? selection = ServiceManager.Instance.Pose.FindBone(objectTableIndex, boneName);
 
-			CharacterBase* characterBase = character->GetCharacterBase();
-			if (characterBase == null)
-				return null;
+			if (selection == null)
+				continue;
 
-			ushort partialCount = characterBase->Skeleton->PartialSkeletonCount;
-			for (int partialIdx = 0; partialIdx < partialCount; partialIdx++)
-			{
-				PartialSkeleton* partialSkeleton = &characterBase->Skeleton->PartialSkeletons[partialIdx];
-
-				byte poseCount = partialSkeleton->GetMaxPoses();
-				for (byte poseIdx = 0; poseIdx < poseCount; poseIdx++)
-				{
-					hkaPose* pose = partialSkeleton->GetHavokPose(poseIdx);
-					if (pose == null)
-						continue;
-
-					int boneCount = pose->Skeleton->Bones.Length;
-					for (short boneIdx = 0; boneIdx < boneCount; boneIdx++)
-					{
-						hkaBone bone = pose->Skeleton->Bones[boneIdx];
-						string? boneName = bone.Name.String;
-
-						if (boneName == null)
-							continue;
-
-						bool include = false;
-
-						if (this.RightBones != null)
-							include |= this.RightBones.ContainsKey(boneName);
-
-						if (this.LeftBones != null)
-							include |= this.LeftBones.ContainsKey(boneName);
-
-						if (include)
-						{
-							BoneId boneId = new(character->ObjectIndex, partialIdx, poseIdx, boneIdx);
-							BoneReference reference = ServiceManager.Instance.Pose.GetOrCreateBoneReference(boneId, boneName);
-							boneReferences.Add(reference);
-						}
-					}
-				}
-			}
+			selections.Add(selection);
 		}
 
-		return boneReferences;
+		return selections;
 	}
 }

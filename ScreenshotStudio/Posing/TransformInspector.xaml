@@ -110,6 +110,7 @@
 							Style="{DynamicResource RightLabel}"
 							Text="X:" />
 						<wpfUtils:RelativeSlider
+							x:Name="PART_TranslationSliderX"
 							Grid.Row="0"
 							Grid.Column="1"
 							LargeChange="{Binding Selection.TranslationLargeChange, RelativeSource={RelativeSource Mode=TemplatedParent}}"
@@ -124,6 +125,7 @@
 							Style="{DynamicResource RightLabel}"
 							Text="Y:" />
 						<wpfUtils:RelativeSlider
+							x:Name="PART_TranslationSliderY"
 							Grid.Row="1"
 							Grid.Column="1"
 							LargeChange="{Binding Selection.TranslationLargeChange, RelativeSource={RelativeSource Mode=TemplatedParent}}"
@@ -138,6 +140,7 @@
 							Style="{DynamicResource RightLabel}"
 							Text="Z:" />
 						<wpfUtils:RelativeSlider
+							x:Name="PART_TranslationSliderZ"
 							Grid.Row="2"
 							Grid.Column="1"
 							LargeChange="{Binding Selection.TranslationLargeChange, RelativeSource={RelativeSource Mode=TemplatedParent}}"
@@ -186,7 +189,7 @@
 							Style="{DynamicResource RightLabel}"
 							Text="X:" />
 						<wpfUtils:Slider
-							x:Name="PART_EulerSliderX"
+							x:Name="PART_RotationSliderX"
 							Grid.Row="0"
 							Grid.Column="1"
 							Maximum="179.9"
@@ -201,7 +204,7 @@
 							Style="{DynamicResource RightLabel}"
 							Text="Y:" />
 						<wpfUtils:Slider
-							x:Name="PART_EulerSliderY"
+							x:Name="PART_RotationSliderY"
 							Grid.Row="1"
 							Grid.Column="1"
 							Maximum="179.9"
@@ -216,7 +219,7 @@
 							Style="{DynamicResource RightLabel}"
 							Text="Z:" />
 						<wpfUtils:Slider
-							x:Name="PART_EulerSliderZ"
+							x:Name="PART_RotationSliderZ"
 							Grid.Row="2"
 							Grid.Column="1"
 							Maximum="179.9"
@@ -265,6 +268,7 @@
 							Style="{DynamicResource RightLabel}"
 							Text="X:" />
 						<wpfUtils:RelativeSlider
+							x:Name="PART_ScaleSliderX"
 							Grid.Row="0"
 							Grid.Column="1"
 							RelativeRange="1"
@@ -278,6 +282,7 @@
 							Style="{DynamicResource RightLabel}"
 							Text="Y:" />
 						<wpfUtils:RelativeSlider
+							x:Name="PART_ScaleSliderY"
 							Grid.Row="1"
 							Grid.Column="1"
 							RelativeRange="1"
@@ -291,6 +296,7 @@
 							Style="{DynamicResource RightLabel}"
 							Text="Z:" />
 						<wpfUtils:RelativeSlider
+							x:Name="PART_ScaleSliderZ"
 							Grid.Row="2"
 							Grid.Column="1"
 							RelativeRange="1"

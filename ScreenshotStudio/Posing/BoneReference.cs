@@ -38,7 +38,6 @@ public class BoneReference(BoneId id, string? name = null)
 	public BoneReference? Parent;
 	public BoneReference? Mirror;
 	public bool IsValid = true;
-	public MirrorModes MirrorMode = MirrorModes.None;
 
 	private string? boneName = name;
 	private string? mirrorBoneName;
@@ -160,14 +159,14 @@ public class BoneReference(BoneId id, string? name = null)
 						BoneId mirrorBoneId = new(this.Id.ObjectTableIndex, this.Id.PartialSkeletonIndex, this.Id.PoseIndex, boneIdx);
 						this.Mirror = ServiceManager.Instance.Pose.GetOrCreateBoneReference(mirrorBoneId);
 
-						if (this.Mirror.MirrorMode != MirrorModes.None && this.MirrorMode == MirrorModes.None)
+						/*if (this.Mirror.MirrorMode != MirrorModes.None && this.MirrorMode == MirrorModes.None)
 						{
 							this.MirrorMode = this.Mirror.MirrorMode;
 						}
 						else if (this.MirrorMode != MirrorModes.None && this.Mirror.MirrorMode == MirrorModes.None)
 						{
 							this.Mirror.MirrorMode = this.MirrorMode;
-						}
+						}*/
 					}
 				}
 			}
@@ -179,7 +178,8 @@ public class BoneReference(BoneId id, string? name = null)
 		this.ReferenceTransform = pose->Skeleton->ReferencePose[this.Id.BoneIndex];
 
 		// Get a new copy of the live transforms
-		this.ModelSpaceTransform = *pose->AccessBoneModelSpace(this.Id.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
+		if (this.ModelSpaceTransform == null || !this.Locked)
+			this.ModelSpaceTransform = *pose->AccessBoneModelSpace(this.Id.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
 
 		if (this.LocalSpaceTransform == null || !this.Locked)
 			this.LocalSpaceTransform = *pose->AccessBoneLocalSpace(this.Id.BoneIndex);
@@ -251,38 +251,6 @@ public class BoneReference(BoneId id, string? name = null)
 			transform->Translation.Set(newTransform.Translation);
 			transform->Rotation.Set(newTransform.Rotation);
 			transform->Scale.Set(newTransform.Scale);
-		}
-
-		if (this.MirrorMode != MirrorModes.None && this.Mirror != null)
-		{
-			hkQsTransformf boneTransform = *pose->AccessBoneModelSpace(this.Id.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
-
-			hkQuaternionf mirrorRot = boneTransform.Rotation;
-
-			if (this.MirrorMode == MirrorModes.MirrorTRCopyS)
-			{
-				mirrorRot.X = boneTransform.Rotation.Z;
-				mirrorRot.Y = boneTransform.Rotation.W;
-				mirrorRot.Z = boneTransform.Rotation.X;
-				mirrorRot.W = boneTransform.Rotation.Y;
-			}
-
-			hkQsTransformf* mirrorBoneTransform = pose->AccessBoneModelSpace(this.Mirror.Id.BoneIndex, hkaPose.PropagateOrNot.Propagate);
-			mirrorBoneTransform->Rotation.Set(mirrorRot);
-
-			// local space translation and scale
-			boneTransform = *pose->AccessBoneLocalSpace(this.Id.BoneIndex);
-
-			hkVector4f mirrorTranslation = boneTransform.Translation;
-			mirrorTranslation.Z = -boneTransform.Translation.Z;
-
-			// do we need to transform the scale in some way? I don't think so?
-			hkVector4f mirrorScale = boneTransform.Scale;
-			////mirrorScale.Z = -boneTransform.Scale.Z;
-
-			mirrorBoneTransform = pose->AccessBoneLocalSpace(this.Mirror.Id.BoneIndex);
-			mirrorBoneTransform->Translation.Set(mirrorTranslation);
-			mirrorBoneTransform->Scale.Set(mirrorScale);
 		}
 
 		return skeleton;

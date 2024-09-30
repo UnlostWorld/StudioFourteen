@@ -1,12 +1,17 @@
 ﻿namespace ScreenshotStudio.Posing;
 
+using FFXIVClientStructs.FFXIV.Common.Lua;
+using FFXIVClientStructs.Havok.Animation.Rig;
 using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
 using FFXIVClientStructs.Havok.Common.Base.Math.Quaternion;
+using FFXIVClientStructs.Havok.Common.Base.Math.Vector;
+using ScreenshotStudio.Files;
 using ScreenshotStudio.Structs;
 using ScreenshotStudio.Structs.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using static ScreenshotStudio.Files.PoseFile;
 
 public class BoneSelection : TransformSelectionBase
 {
@@ -70,22 +75,7 @@ public class BoneSelection : TransformSelectionBase
 	}
 
 	public override bool CanMirror => true;
-	public override MirrorModes MirrorMode
-	{
-		get => this.bone?.MirrorMode ?? MirrorModes.None;
-		set
-		{
-			if (this.bone == null)
-				return;
-
-			this.bone.MirrorMode = value;
-
-			if (this.bone.Mirror != null)
-			{
-				this.bone.Mirror.MirrorMode = this.MirrorMode;
-			}
-		}
-	}
+	public override MirrorModes MirrorMode { get; set; }
 
 	public override Vector3 LocalTranslation
 	{
@@ -128,36 +118,8 @@ public class BoneSelection : TransformSelectionBase
 
 	public override Quaternion WorldRotation
 	{
-		get
-		{
-			if (this.bone == null || this.bone.ModelSpaceTransform == null)
-				return Quaternion.Identity;
-
-			hkQuaternionf rot = this.bone.LastCharacterRotation.ToHkQuaternion();
-			rot.Multiply(this.bone.ModelSpaceTransform.Value.Rotation);
-
-			if (this.bone.Transform != null)
-				rot.Multiply(this.bone.Transform.Value.Rotation);
-
-			return rot.ToQuaternion();
-		}
-		set
-		{
-			if (this.bone == null || this.bone.ModelSpaceTransform == null || this.bone.LocalSpaceTransform == null)
-				return;
-
-			Quaternion modelSpaceRotation = value;
-
-			modelSpaceRotation = modelSpaceRotation.Conjugate();
-			modelSpaceRotation *= this.bone.LastCharacterRotation;
-			modelSpaceRotation = modelSpaceRotation.Conjugate();
-
-			hkQsTransformf newTransform = default;
-			newTransform.Rotation = HkQuaternionExtensions.Identity;
-			newTransform.Rotation = modelSpaceRotation.ToHkQuaternion();
-			newTransform.Rotation.Divide(this.bone.ModelSpaceTransform.Value.Rotation);
-			this.bone.Transform = newTransform;
-		}
+		get => this.GetWorldRotation();
+		set => this.ApplyWorldRotation(value);
 	}
 
 	public override Vector3 WorldScale
@@ -166,7 +128,6 @@ public class BoneSelection : TransformSelectionBase
 		set => this.LocalScale = value - (this.bone?.LastCharacterScale ?? Vector3.One);
 	}
 
-	// TODO: support multiple bone transforms
 	private hkQsTransformf LocalTransform
 	{
 		get
@@ -181,15 +142,16 @@ public class BoneSelection : TransformSelectionBase
 
 			return combine;
 		}
-		set
-		{
-			if (this.bone == null || this.bone.LocalSpaceTransform == null)
-				return;
 
-			hkQsTransformf separate = value;
-			separate.Subtract(this.bone.LocalSpaceTransform.Value);
-			this.bone.Transform = separate;
-		}
+		set => this.ApplyLocalTransform(value);
+	}
+
+	public PoseFile.BoneTransform? GetLiveReferenceRelativeTransform()
+	{
+		if (this.bone == null)
+			return null;
+
+		return this.bone.GetLiveReferenceRelativeTransform();
 	}
 
 	public override void Activate()
@@ -207,5 +169,88 @@ public class BoneSelection : TransformSelectionBase
 	{
 		this.bones.Clear();
 		this.bone = null;
+	}
+
+	public void ApplyReferenceTransform(BoneTransform referenceTransform)
+	{
+		foreach (BoneReference boneReference in this.bones)
+		{
+			boneReference.LoadRelativeTransform = referenceTransform;
+
+			if (this.MirrorMode != MirrorModes.None && boneReference.Mirror != null)
+			{
+				BoneTransform mirrorTransform = new();
+
+				if (referenceTransform.Rotation != null)
+				{
+					Quaternion mirrorRotation = referenceTransform.Rotation.Value;
+					if (this.MirrorMode == MirrorModes.MirrorTRCopyS)
+					{
+						mirrorRotation.W = referenceTransform.Rotation.Value.W;
+						mirrorRotation.X = -referenceTransform.Rotation.Value.X;
+						mirrorRotation.Y = -referenceTransform.Rotation.Value.Y;
+						mirrorRotation.Z = referenceTransform.Rotation.Value.Z;
+					}
+
+					mirrorTransform.Rotation = mirrorRotation;
+				}
+
+				boneReference.Mirror.LoadRelativeTransform = mirrorTransform;
+			}
+		}
+	}
+
+	public void ApplyReferenceTransform(hkQsTransformf referenceTransform)
+	{
+		BoneTransform transform = new BoneTransform();
+		transform.Translation = referenceTransform.Translation.ToVector3();
+		transform.Rotation = referenceTransform.Rotation.ToQuaternion();
+		transform.Scale = referenceTransform.Scale.ToVector3();
+		this.ApplyReferenceTransform(transform);
+	}
+
+	public void ApplyLocalTransform(hkQsTransformf localTransform)
+	{
+		if (this.bone == null || this.bone.LocalSpaceTransform == null)
+			return;
+
+		hkQsTransformf transform = localTransform;
+		transform.Subtract(this.bone.ReferenceTransform);
+		this.ApplyReferenceTransform(transform);
+	}
+
+	private void ApplyWorldRotation(Quaternion worldSpaceRotation)
+	{
+		if (this.bone == null || this.bone.ModelSpaceTransform == null || this.bone.LocalSpaceTransform == null)
+			return;
+
+		Quaternion modelSpaceRotation = worldSpaceRotation;
+
+		modelSpaceRotation = modelSpaceRotation.Conjugate();
+		modelSpaceRotation *= this.bone.LastCharacterRotation;
+		modelSpaceRotation = modelSpaceRotation.Conjugate();
+
+		hkQsTransformf newTransform = default;
+		newTransform.Rotation = HkQuaternionExtensions.Identity;
+		newTransform.Rotation = modelSpaceRotation.ToHkQuaternion();
+		newTransform.Rotation.Divide(this.bone.ModelSpaceTransform.Value.Rotation);
+
+		hkQsTransformf localTransform = this.bone.LocalSpaceTransform.Value;
+		localTransform.Add(newTransform);
+		this.ApplyLocalTransform(localTransform);
+	}
+
+	private Quaternion GetWorldRotation()
+	{
+		if (this.bone == null || this.bone.ModelSpaceTransform == null)
+			return Quaternion.Identity;
+
+		hkQuaternionf rot = this.bone.LastCharacterRotation.ToHkQuaternion();
+		rot.Multiply(this.bone.ModelSpaceTransform.Value.Rotation);
+
+		if (this.bone.Transform != null)
+			rot.Multiply(this.bone.Transform.Value.Rotation);
+
+		return rot.ToQuaternion();
 	}
 }

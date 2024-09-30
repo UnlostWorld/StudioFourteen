@@ -17,7 +17,9 @@ public partial class TransformInspector : View
 	private Vector3? trackingEuler;
 	private Quaternion lastWorldRotation = Quaternion.Identity;
 
-	public PoseEditModes[] EditModes => Enum.GetValues<PoseEditModes>();
+	private Slider? rotationSliderX;
+	private Slider? rotationSliderY;
+	private Slider? rotationSliderZ;
 
 	[AutoNotify]
 	public int DecimalPlacesDisplay => this.Selection?.DecimalPlacesToDisplay ?? 2;
@@ -145,7 +147,8 @@ public partial class TransformInspector : View
 
 		set
 		{
-			this.trackingEuler = value;
+			if (this.trackingEuler != null)
+				this.trackingEuler = value;
 
 			Quaternion rotation = this.LocalRotation;
 			rotation.FromEuler(value);
@@ -271,6 +274,38 @@ public partial class TransformInspector : View
 
 			this.Selection.WorldScale = value;
 		}
+	}
+
+	public override void OnApplyTemplate()
+	{
+		base.OnApplyTemplate();
+
+		this.rotationSliderX = this.GetTemplateChild("PART_RotationSliderX") as Slider;
+		this.rotationSliderY = this.GetTemplateChild("PART_RotationSliderY") as Slider;
+		this.rotationSliderZ = this.GetTemplateChild("PART_RotationSliderZ") as Slider;
+
+		if (this.rotationSliderX != null)
+		{
+			this.rotationSliderX.PreviewMouseDown += this.OnEulerDown;
+			this.rotationSliderX.PreviewMouseUp += this.OnEulerUp;
+		}
+
+		if (this.rotationSliderY != null)
+		{
+			this.rotationSliderY.PreviewMouseDown += this.OnEulerDown;
+			this.rotationSliderY.PreviewMouseUp += this.OnEulerUp;
+		}
+
+		if (this.rotationSliderZ != null)
+		{
+			this.rotationSliderZ.PreviewMouseDown += this.OnEulerDown;
+			this.rotationSliderZ.PreviewMouseUp += this.OnEulerUp;
+		}
+	}
+
+	partial void OnSelectionChanged()
+	{
+		this.trackingEuler = null;
 	}
 
 	private void OnEulerDown(object sender, MouseButtonEventArgs e)
