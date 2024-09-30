@@ -199,21 +199,27 @@
 						</ItemsControl.ItemsPanel>
 
 						<local:BlendTargetView
+							FlipBones="True"
 							ObjectTableIndex="{Binding ObjectTableIndex}"
 							TargetName="EyeAmazed" />
 						<local:BlendTargetView
+							FlipBones="True"
 							ObjectTableIndex="{Binding ObjectTableIndex}"
 							TargetName="EyeAnnoyed" />
 						<local:BlendTargetView
+							FlipBones="True"
 							ObjectTableIndex="{Binding ObjectTableIndex}"
 							TargetName="EyeGrin" />
 						<local:BlendTargetView
+							FlipBones="True"
 							ObjectTableIndex="{Binding ObjectTableIndex}"
 							TargetName="EyeConfused" />
 						<local:BlendTargetView
+							FlipBones="True"
 							ObjectTableIndex="{Binding ObjectTableIndex}"
 							TargetName="EyeNeutral" />
 						<local:BlendTargetView
+							FlipBones="True"
 							ObjectTableIndex="{Binding ObjectTableIndex}"
 							TargetName="EyeLids" />
 					</ItemsControl>

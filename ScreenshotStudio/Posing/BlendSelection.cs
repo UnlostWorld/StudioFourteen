@@ -8,7 +8,6 @@ using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using WpfUtils.Extensions;
-using static ScreenshotStudio.Files.PoseFile;
 
 public class BlendSelection(string name, BlendTarget target, int objectTableIndex)
 	: SelectionBase
@@ -24,6 +23,8 @@ public class BlendSelection(string name, BlendTarget target, int objectTableInde
 	public override bool CanMirror => true;
 	public double Maximum => 1.0;
 	public double Minimum => this.HasLeft ? -1.0 : 0.0;
+
+	public bool Flip { get; set; }
 
 	public double Value
 	{
@@ -69,7 +70,7 @@ public class BlendSelection(string name, BlendTarget target, int objectTableInde
 	public override void Activate()
 	{
 		base.Activate();
-		this.Initialize().Run();
+		this.Initialize(this.Flip).Run();
 	}
 
 	public override void Deactivate()
@@ -77,11 +78,11 @@ public class BlendSelection(string name, BlendTarget target, int objectTableInde
 		base.Deactivate();
 	}
 
-	public async Task Initialize()
+	public async Task Initialize(bool flipSides)
 	{
 		await Threads.FrameworkThread();
 
-		List<BoneSelection>? boneSelections = this.Target.GetBones(this.objectTableIndex);
+		List<BoneSelection>? boneSelections = this.Target.GetBones(this.objectTableIndex, flipSides);
 		if (boneSelections == null)
 			return;
 
@@ -97,6 +98,10 @@ public class BlendSelection(string name, BlendTarget target, int objectTableInde
 			if (boneSelection.BoneName == null)
 				continue;
 
+			string boneName = boneSelection.BoneName;
+			if (flipSides)
+				boneName = PoseService.GetMirrorBoneName(boneName) ?? boneName;
+
 			boneSelection.MirrorMode = this.mirrorMode;
 
 			BoneTransform? fromTransform = boneSelection.GetLiveReferenceRelativeTransform();
@@ -104,13 +109,17 @@ public class BlendSelection(string name, BlendTarget target, int objectTableInde
 				continue;
 
 			BoneTransform? rightTransform = null;
-			this.Target.RightBones?.TryGetValue(boneSelection.BoneName, out rightTransform);
-
+			this.Target.RightBones?.TryGetValue(boneName, out rightTransform);
 			if (rightTransform == null)
 				continue;
 
+			if (flipSides)
+				rightTransform = rightTransform.Flip();
+
 			BoneTransform? leftTransform = null;
-			this.Target.LeftBones?.TryGetValue(boneSelection.BoneName, out leftTransform);
+			this.Target.LeftBones?.TryGetValue(boneName, out leftTransform);
+			if (flipSides && leftTransform != null)
+				leftTransform = leftTransform.Flip();
 
 			this.bones.Add(new(boneSelection, fromTransform, rightTransform, leftTransform));
 		}
@@ -166,13 +175,13 @@ public class BlendSelection(string name, BlendTarget target, int objectTableInde
 	}
 }
 
-[System.Serializable]
+[Serializable]
 public class BlendTarget
 {
 	public string? IconPath { get; set; }
 	public MirrorModes MirrorMode { get; set; }
-	public Dictionary<string, PoseFile.BoneTransform>? RightBones { get; set; }
-	public Dictionary<string, PoseFile.BoneTransform>? LeftBones { get; set; }
+	public Dictionary<string, BoneTransform>? RightBones { get; set; }
+	public Dictionary<string, BoneTransform>? LeftBones { get; set; }
 
 	public BitmapSource? Icon
 	{
@@ -198,7 +207,7 @@ public class BlendTarget
 		}
 	}
 
-	public List<BoneSelection>? GetBones(int objectTableIndex)
+	public List<BoneSelection>? GetBones(int objectTableIndex, bool flipBones)
 	{
 		Threads.VerifyFrameworkThread();
 
@@ -212,7 +221,11 @@ public class BlendTarget
 
 		foreach ((string boneName, BoneTransform transform) in this.RightBones)
 		{
-			BoneSelection? selection = ServiceManager.Instance.Pose.FindBone(objectTableIndex, boneName);
+			string getBoneName = boneName;
+			if (flipBones)
+				getBoneName = PoseService.GetMirrorBoneName(boneName) ?? boneName;
+
+			BoneSelection? selection = ServiceManager.Instance.Pose.FindBone(objectTableIndex, getBoneName);
 
 			if (selection == null)
 				continue;

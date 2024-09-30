@@ -146,7 +146,7 @@ public class BoneSelection : TransformSelectionBase
 		set => this.ApplyLocalTransform(value);
 	}
 
-	public PoseFile.BoneTransform? GetLiveReferenceRelativeTransform()
+	public BoneTransform? GetLiveReferenceRelativeTransform()
 	{
 		if (this.bone == null)
 			return null;
@@ -173,45 +173,15 @@ public class BoneSelection : TransformSelectionBase
 
 	public void ApplyReferenceTransform(BoneTransform referenceTransform)
 	{
+		BoneTransform mirrorReferenceTransform = referenceTransform.Flip(this.MirrorMode);
+
 		foreach (BoneReference boneReference in this.bones)
 		{
 			boneReference.LoadRelativeTransform = referenceTransform;
 
 			if (this.MirrorMode != MirrorModes.None && boneReference.Mirror != null)
 			{
-				BoneTransform mirrorTransform = new();
-
-				if (referenceTransform.Rotation != null)
-				{
-					Quaternion mirrorRotation = referenceTransform.Rotation.Value;
-					if (this.MirrorMode == MirrorModes.MirrorTRCopyS)
-					{
-						mirrorRotation.W = referenceTransform.Rotation.Value.W;
-						mirrorRotation.X = -referenceTransform.Rotation.Value.X;
-						mirrorRotation.Y = -referenceTransform.Rotation.Value.Y;
-						mirrorRotation.Z = referenceTransform.Rotation.Value.Z;
-					}
-
-					mirrorTransform.Rotation = mirrorRotation;
-
-					if (referenceTransform.Scale != null)
-					{
-						mirrorTransform.Scale = new(
-							referenceTransform.Scale.Value.X,
-							referenceTransform.Scale.Value.Y,
-							-referenceTransform.Scale.Value.Z);
-					}
-
-					if (referenceTransform.Translation != null)
-					{
-						mirrorTransform.Translation = new(
-							referenceTransform.Translation.Value.X,
-							referenceTransform.Translation.Value.Y,
-							-referenceTransform.Translation.Value.Z);
-					}
-				}
-
-				boneReference.Mirror.LoadRelativeTransform = mirrorTransform;
+				boneReference.Mirror.LoadRelativeTransform = mirrorReferenceTransform;
 			}
 		}
 	}

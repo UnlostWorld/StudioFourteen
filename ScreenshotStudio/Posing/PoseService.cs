@@ -10,11 +10,13 @@ using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.Havok.Animation.Rig;
 using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
+using Newtonsoft.Json;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Services;
 using ScreenshotStudio.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -452,5 +454,65 @@ public class PoseService : ServiceBase
 	private void OnGroupPoseStateChange(bool newState)
 	{
 		this.FlushBoneReferences();
+	}
+}
+
+public class BoneTransform
+{
+	public BoneTransform()
+	{
+	}
+
+	public BoneTransform(BoneTransform other)
+	{
+		this.Translation = other.Translation;
+		this.Rotation = other.Rotation;
+		this.Scale = other.Scale;
+	}
+
+	[JsonProperty("T")]
+	public Vector3? Translation { get; set; }
+
+	[JsonProperty("R")]
+	public Quaternion? Rotation { get; set; }
+
+	[JsonProperty("S")]
+	public Vector3? Scale { get; set; }
+
+	public BoneTransform Flip(MirrorModes mode = MirrorModes.MirrorTRCopyS)
+	{
+		BoneTransform mirrorTransform = new();
+
+		if (this.Rotation != null)
+		{
+			Quaternion mirrorRotation = this.Rotation.Value;
+			if (mode == MirrorModes.MirrorTRCopyS)
+			{
+				mirrorRotation.W = this.Rotation.Value.W;
+				mirrorRotation.X = -this.Rotation.Value.X;
+				mirrorRotation.Y = -this.Rotation.Value.Y;
+				mirrorRotation.Z = this.Rotation.Value.Z;
+			}
+
+			mirrorTransform.Rotation = mirrorRotation;
+
+			if (this.Scale != null)
+			{
+				mirrorTransform.Scale = new(
+					this.Scale.Value.X,
+					this.Scale.Value.Y,
+					-this.Scale.Value.Z);
+			}
+
+			if (this.Translation != null)
+			{
+				mirrorTransform.Translation = new(
+					this.Translation.Value.X,
+					this.Translation.Value.Y,
+					-this.Translation.Value.Z);
+			}
+		}
+
+		return mirrorTransform;
 	}
 }

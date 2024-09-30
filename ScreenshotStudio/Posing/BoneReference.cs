@@ -3,11 +3,8 @@
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
-using FFXIVClientStructs.FFXIV.Common.Lua;
 using FFXIVClientStructs.Havok.Animation.Rig;
 using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
-using FFXIVClientStructs.Havok.Common.Base.Math.Quaternion;
-using FFXIVClientStructs.Havok.Common.Base.Math.Vector;
 using ScreenshotStudio.Files;
 using ScreenshotStudio.Plugin;
 using ScreenshotStudio.Structs;
@@ -15,7 +12,6 @@ using ScreenshotStudio.Structs.Extensions;
 using ScreenshotStudio.Utilities;
 using System;
 using System.Numerics;
-using static ScreenshotStudio.Files.PoseFile;
 
 public class BoneReference(BoneId id, string? name = null)
 {
@@ -32,8 +28,8 @@ public class BoneReference(BoneId id, string? name = null)
 	public hkQsTransformf ReferenceTransform;
 	public hkQsTransformf NextReferenceRelativeTransform;
 
-	public PoseFile.BoneTransform? LoadModelSpaceTransform;
-	public PoseFile.BoneTransform? LoadRelativeTransform;
+	public BoneTransform? LoadModelSpaceTransform;
+	public BoneTransform? LoadRelativeTransform;
 
 	public BoneReference? Parent;
 	public BoneReference? Mirror;
@@ -71,7 +67,7 @@ public class BoneReference(BoneId id, string? name = null)
 		this.IsValid = false;
 	}
 
-	public PoseFile.BoneTransform? GetLiveReferenceRelativeTransform()
+	public BoneTransform? GetLiveReferenceRelativeTransform()
 	{
 		if (this.LocalSpaceTransform == null)
 			return null;

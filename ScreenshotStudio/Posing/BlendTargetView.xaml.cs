@@ -6,6 +6,7 @@ using System.Windows;
 
 [DependencyProperty<string>("TargetName")]
 [DependencyProperty<int>("ObjectTableIndex")]
+[DependencyProperty<bool>("FlipBones")]
 public partial class BlendTargetView : View
 {
 	[AutoNotify] public BlendTarget? Target { get; private set; }
@@ -30,6 +31,7 @@ public partial class BlendTargetView : View
 			return;
 
 		BlendSelection selection = new(this.TargetName, this.Target, this.ObjectTableIndex);
+		selection.Flip = this.FlipBones;
 		this.Services.Pose.Selection = selection;
 	}
 }
