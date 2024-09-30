@@ -5,7 +5,7 @@ VisualStudioVersion = 17.7.34003.232
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Lib", "Lib", "{8DB40DF5-7E4D-4ACF-81BC-6D8B3290C3BE}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ScreenshotStudio", "ScreenshotStudio\ScreenshotStudio.csproj", "{E1CB7F41-E129-4A9C-A321-0CF6A17DB857}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudioFourteen", "StudioFourteen\StudioFourteen.csproj", "{E1CB7F41-E129-4A9C-A321-0CF6A17DB857}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{086F6223-CD9E-4F5F-8266-4388C208D63E}"
 	ProjectSection(SolutionItems) = preProject
