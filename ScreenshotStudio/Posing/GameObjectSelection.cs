@@ -31,6 +31,7 @@ public class GameObjectSelection : TransformSelectionBase
 
 	public override string Name => this.name ?? "Unknown";
 	public override string? Subtitle => null;
+	public override bool CanReset => true;
 
 	public override bool LockTransform
 	{
@@ -109,5 +110,11 @@ public class GameObjectSelection : TransformSelectionBase
 		this.lastRotation = gameObject->DrawObject->Rotation;
 		this.lastScale = gameObject->DrawObject->Scale;
 		this.isReady = true;
+	}
+
+	public override void Reset()
+	{
+		// hmm...
+		throw new NotImplementedException();
 	}
 }

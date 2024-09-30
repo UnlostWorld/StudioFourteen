@@ -280,6 +280,7 @@
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition />
 							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
 						</Grid.ColumnDefinitions>
 
 						<ComboBox
@@ -353,8 +354,18 @@
 							</ComboBoxItem>-->
 						</ComboBox>
 
-						<ToggleButton
+						<Button
 							Grid.Column="1"
+							Width="28"
+							Background="Transparent"
+							Click="OnResetSelectionClicked">
+							<wpfUtils:IconBlock
+								Icon="RotateBack"
+								IconFont="Solid" />
+						</Button>
+
+						<ToggleButton
+							Grid.Column="2"
 							Width="28"
 							Background="Transparent"
 							IsChecked="{Binding Selection.LockTransform, FallbackValue=false}"

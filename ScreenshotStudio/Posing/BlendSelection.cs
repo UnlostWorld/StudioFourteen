@@ -23,6 +23,7 @@ public class BlendSelection(string name, BlendTarget target, int objectTableInde
 	public override bool CanMirror => true;
 	public double Maximum => 1.0;
 	public double Minimum => this.HasLeft ? -1.0 : 0.0;
+	public override bool CanReset => true;
 
 	public bool Flip { get; set; }
 
@@ -122,6 +123,16 @@ public class BlendSelection(string name, BlendTarget target, int objectTableInde
 				leftTransform = leftTransform.Flip();
 
 			this.bones.Add(new(boneSelection, fromTransform, rightTransform, leftTransform));
+		}
+	}
+
+	public override void Reset()
+	{
+		base.Reset();
+
+		foreach(BoneBlend bone in this.bones)
+		{
+			bone.Selection.Reset();
 		}
 	}
 

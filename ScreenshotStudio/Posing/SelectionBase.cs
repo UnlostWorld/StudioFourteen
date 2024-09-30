@@ -12,6 +12,11 @@ public abstract class SelectionBase : ViewModel
 	public virtual bool CanMirror => false;
 	public virtual MirrorModes MirrorMode { get; set; }
 
+	public abstract bool CanReset { get; }
+	public virtual void Reset()
+	{
+	}
+
 	public virtual void Activate()
 	{
 	}

@@ -59,6 +59,7 @@ public class BoneSelection : TransformSelectionBase
 	public override double TranslationRange => this.IsFaceBone ? 0.02 : 0.1;
 	public override int DecimalPlacesToDisplay => this.IsFaceBone ? 4 : 2;
 	public override PoseEditModes DefaultEditMode => this.IsFaceBone ? PoseEditModes.Translation : PoseEditModes.Rotation;
+	public override bool CanReset => true;
 
 	public override bool IsReady => this.bone != null && this.bone.LocalSpaceTransform != null;
 
@@ -203,6 +204,19 @@ public class BoneSelection : TransformSelectionBase
 		hkQsTransformf transform = localTransform;
 		transform.Subtract(this.bone.ReferenceTransform);
 		this.ApplyReferenceTransform(transform);
+	}
+
+	public override void Reset()
+	{
+		foreach(BoneReference bone in this.bones)
+		{
+			bone.Transform = null;
+
+			if (this.MirrorMode != MirrorModes.None && bone.Mirror != null)
+			{
+				bone.Mirror.Transform = null;
+			}
+		}
 	}
 
 	private void ApplyWorldRotation(Quaternion worldSpaceRotation)

@@ -80,6 +80,14 @@ public partial class PoseWindow : CharacterPanelBase
 		await this.Services.Pose.SetToReferencePose(this.TargetObjectIndex);
 	}
 
+	private void OnResetSelectionClicked(object sender, RoutedEventArgs e)
+	{
+		if (this.Selection == null)
+			return;
+
+		this.Selection.Reset();
+	}
+
 	private void OnImportClicked(object sender, RoutedEventArgs e)
 	{
 	}

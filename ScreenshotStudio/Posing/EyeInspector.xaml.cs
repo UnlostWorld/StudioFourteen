@@ -85,6 +85,13 @@ public class EyeSelection(int objectTableIndex)
 		}
 	}
 
+	public override bool CanReset => true;
+
+	public override void Reset()
+	{
+		this.eyeBone?.Reset();
+	}
+
 	public override void Activate()
 	{
 		base.Activate();
