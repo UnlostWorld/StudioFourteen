@@ -18,6 +18,7 @@
 				Style="{DynamicResource LeftLabel}"
 				Text="Look"
 				ToolTip="Look with your special eyes" />
+
 			<controls:AreaSlider
 				Height="{Binding ActualWidth, RelativeSource={RelativeSource Mode=Self}}"
 				Margin="3"
@@ -26,8 +27,10 @@
 				MaximumY="20"
 				MinimumX="-28"
 				MinimumY="-20"
-				ValueX="{Binding Selection.LookX, Mode=TwoWay}"
-				ValueY="{Binding Selection.LookY, Mode=TwoWay}" />
+				PreviewMouseDown="OnLookPreviewMouseDown"
+				PreviewMouseUp="OnLookPreviewMouseUp"
+				ValueX="{Binding LookX, Mode=TwoWay}"
+				ValueY="{Binding LookY, Mode=TwoWay}" />
 
 
 			<TextBlock

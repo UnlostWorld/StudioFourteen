@@ -7,38 +7,13 @@ using StudioFourteen.Structs.Extensions;
 using StudioFourteen.Utilities;
 using System.Numerics;
 using System.Threading.Tasks;
+using System.Windows.Input;
 using WpfUtils.Extensions;
 
 [DependencyProperty<EyeSelection>("Selection")]
 public partial class EyeInspector : View
 {
-}
-
-public class EyeSelection(int objectTableIndex)
-	: SelectionBase
-{
-	private BoneSelection? eyeBone;
-	private MirrorModes mirrorMode = MirrorModes.MirrorTCopyRS;
-
-	public override string Name => "Eye";
-	public override string? Subtitle => null;
-
-	public override bool CanMirror => true;
-	public override MirrorModes MirrorMode
-	{
-		get => this.mirrorMode;
-		set
-		{
-			this.mirrorMode = value;
-
-			if (this.eyeBone != null)
-			{
-				this.eyeBone.MirrorMode = value;
-			}
-		}
-	}
-
-	public int ObjectTableIndex { get; init; } = objectTableIndex;
+	private Vector3? trackingEuler;
 
 	[AutoNotify]
 	public double LookX
@@ -68,33 +43,84 @@ public class EyeSelection(int objectTableIndex)
 	{
 		get
 		{
-			if (this.eyeBone == null)
+			if (this.trackingEuler != null)
+				return this.trackingEuler.Value;
+
+			if (this.Selection?.EyeBone == null)
 				return Vector3.Zero;
 
-			return this.eyeBone.LocalRotation.ToEuler();
+			return this.Selection.EyeBone.LocalRotation.ToEuler();
 		}
 
 		set
 		{
-			if (this.eyeBone == null)
+			this.trackingEuler = value;
+
+			if (this.Selection?.EyeBone == null)
 				return;
 
-			Quaternion rotation = this.eyeBone.LocalRotation;
+			Quaternion rotation = this.Selection.EyeBone.LocalRotation;
 			rotation.FromEuler(value);
-			this.eyeBone.LocalRotation = rotation;
+			this.Selection.EyeBone.LocalRotation = rotation;
 		}
 	}
+
+	private void OnLookPreviewMouseDown(object sender, MouseButtonEventArgs e)
+	{
+		this.trackingEuler = this.EyeEulerRotation;
+	}
+
+	private void OnLookPreviewMouseUp(object sender, MouseButtonEventArgs e)
+	{
+		this.trackingEuler = null;
+	}
+
+	partial void OnSelectionChanged()
+	{
+		this.trackingEuler = null;
+	}
+}
+
+public class EyeSelection(int objectTableIndex)
+	: SelectionBase
+{
+	private MirrorModes mirrorMode = MirrorModes.MirrorTCopyRS;
+
+	public override string Name => "Eye";
+	public override string? Subtitle => null;
+
+	public override bool CanMirror => true;
+	public override MirrorModes MirrorMode
+	{
+		get => this.mirrorMode;
+		set
+		{
+			this.mirrorMode = value;
+
+			if (this.EyeBone != null)
+			{
+				this.EyeBone.MirrorMode = value;
+			}
+		}
+	}
+
+	public int ObjectTableIndex { get; init; } = objectTableIndex;
+
+	public BoneSelection? EyeBone { get; private set; }
 
 	public override bool CanReset => true;
 
 	public override void Reset()
 	{
-		this.eyeBone?.Reset();
+		this.EyeBone?.Reset();
 	}
 
 	public override void Activate()
 	{
 		base.Activate();
+
+		this.EyeBone?.Activate();
+
 		this.Init().Run();
 	}
 
@@ -107,12 +133,12 @@ public class EyeSelection(int objectTableIndex)
 	{
 		await Threads.FrameworkThread();
 
-		this.eyeBone = this.Services.Pose.FindBone(this.ObjectTableIndex, "j_f_eye_r");
+		this.EyeBone = this.Services.Pose.FindBone(this.ObjectTableIndex, "j_f_eye_r");
 
-		if (this.eyeBone != null)
+		if (this.EyeBone != null)
 		{
-			this.eyeBone.Activate();
-			this.eyeBone.MirrorMode = this.mirrorMode;
+			this.EyeBone.Activate();
+			this.EyeBone.MirrorMode = this.mirrorMode;
 		}
 	}
 }
