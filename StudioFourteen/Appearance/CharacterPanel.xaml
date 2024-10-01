@@ -8,8 +8,9 @@
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="{DynamicResource LOC_Character}"
-	Width="600"
-	Height="450"
+	Width="650"
+	Height="600"
+	ResizeMode="NoResize"
 	Subtitle="{Binding CharacterName}"
 	TitleIcon="UserShield"
 	mc:Ignorable="d">
