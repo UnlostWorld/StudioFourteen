@@ -13,8 +13,6 @@
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
-	d:DesignHeight="450"
-	d:DesignWidth="600"
 	mc:Ignorable="d">
 
 	<Grid>
@@ -393,6 +391,18 @@
 							Menu="{Binding MakeType.FacePaintColors}"
 							Value="{Binding FacePaintColor}" />
 					</Grid>
+
+					<!--  Facial Features  -->
+					<TextBlock
+						Grid.Row="14"
+						Grid.Column="0"
+						Style="{DynamicResource RightLabel}"
+						Text="{Binding MakeType.FacialFeatures.Name}" />
+					<customize:CustomizeFacialFeaturesOption
+						Grid.Row="144"
+						Grid.Column="1"
+						FacialFeatures="{Binding FacialFeatureOptions}"
+						Value="{Binding FacialFeature}" />
 				</Grid>
 
 
@@ -682,44 +692,18 @@
 						Visibility="{Binding Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Viera|Lalafell|Elezen}"
 						Value="{Binding EarMuscleTailSize}" />
 
-					<!--  Ear Clasp Color  -->
+					<!--  Feature Color  -->
 					<TextBlock
 						Grid.Row="12"
 						Grid.Column="0"
 						Style="{DynamicResource RightLabel}"
 						Text="{Binding MakeType.FacialFeatureColors.Name}"
-						Visibility="{Binding Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Elezen}" />
+						Visibility="{Binding Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Hyur|Viera|Lalafell|Miqote|Roegadyn|Elezen}" />
 					<customize:CustomizeColorOption
 						Grid.Row="12"
 						Grid.Column="1"
 						Menu="{Binding MakeType.FacialFeatureColors}"
-						Visibility="{Binding Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Elezen}"
-						Value="{Binding FacialFeatureColor}" />
-
-					<!--  Facial Features  -->
-					<TextBlock
-						Grid.Row="13"
-						Grid.Column="0"
-						Style="{DynamicResource RightLabel}"
-						Text="{Binding MakeType.FacialFeatures.Name}" />
-					<customize:CustomizeFacialFeaturesOption
-						Grid.Row="13"
-						Grid.Column="1"
-						FacialFeatures="{Binding FacialFeatureOptions}"
-						Value="{Binding FacialFeature}" />
-
-					<!--  Tattoo Color  -->
-					<TextBlock
-						Grid.Row="14"
-						Grid.Column="0"
-						Style="{DynamicResource RightLabel}"
-						Text="{Binding MakeType.FacialFeatureColors.Name}"
-						Visibility="{Binding Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Hyur|Viera|Lalafell|Miqote|Roegadyn}" />
-					<customize:CustomizeColorOption
-						Grid.Row="14"
-						Grid.Column="1"
-						Menu="{Binding MakeType.FacialFeatureColors}"
-						Visibility="{Binding Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Hyur|Viera|Lalafell|Miqote|Roegadyn}"
+						Visibility="{Binding Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Hyur|Viera|Lalafell|Miqote|Roegadyn|Elezen}"
 						Value="{Binding FacialFeatureColor}" />
 				</Grid>
 			</Grid>

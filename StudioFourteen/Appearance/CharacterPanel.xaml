@@ -8,7 +8,7 @@
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="{DynamicResource LOC_Character}"
-	Width="650"
+	Width="680"
 	Height="600"
 	ResizeMode="NoResize"
 	Subtitle="{Binding CharacterName}"
@@ -23,11 +23,11 @@
 
 		<TabControl Grid.Row="0">
 			<TabItem Header="{DynamicResource LOC_Character_Customize}">
-				<local:CustomizeView Panel="{Binding RelativeSource={RelativeSource AncestorType=panels:CharacterPanelBase}}" />
+				<local:CustomizeView />
 			</TabItem>
 
 			<TabItem Header="{DynamicResource LOC_Character_Gear}">
-				<local:GearView Panel="{Binding RelativeSource={RelativeSource AncestorType=panels:CharacterPanelBase}}" />
+				<local:GearView />
 			</TabItem>
 		</TabControl>
 

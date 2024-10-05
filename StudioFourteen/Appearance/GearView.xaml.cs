@@ -22,7 +22,6 @@ public enum AccessorySlots
 	Glasses,
 }
 
-[DependencyProperty<CharacterPanelBase>("Panel")]
 public partial class GearView : View
 {
 	public GearView()

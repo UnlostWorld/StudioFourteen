@@ -1,6 +1,5 @@
 ﻿namespace StudioFourteen.Appearance;
 
-using DependencyPropertyGenerator;
 using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using StudioFourteen.GameData;
@@ -8,11 +7,7 @@ using StudioFourteen.GameData.Excel;
 using StudioFourteen.Mvm;
 using StudioFourteen.Utilities;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using System.Windows;
-using StudioFourteen.Panels;
 
-[DependencyProperty<CharacterPanelBase>("Panel")]
 public partial class CustomizeView : View
 {
 	private CharaMakeType? makeType;
@@ -20,11 +15,8 @@ public partial class CustomizeView : View
 
 	public unsafe Character* Target => this.Services.Target.Target;
 
-	[AutoNotify]
-	public bool HasValidTarget => this.Panel?.HasValidTarget == true;
-
-	[AutoNotify]
-	public int TargetObjectIndex => this.Panel?.TargetObjectIndex ?? -1;
+	[AutoNotify] public bool HasValidTarget => this.Services.Target.HasValidTarget;
+	[AutoNotify] public int TargetObjectIndex => this.Services.Target.TargetObjectIndex;
 
 	public DataSheet<Race>? Races => this.Services.GameData.GetSheet<Race>();
 	public DataSheet<Tribe>? Tribes => this.Services.GameData.GetSheet<Tribe>();
