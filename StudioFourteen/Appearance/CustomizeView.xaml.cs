@@ -186,7 +186,19 @@ public partial class CustomizeView : View
 	}
 
 	[AutoNotify]
-	public CharaMakeType.FacialFeatureOptions? FacialFeatureOptions => this.MakeType?.GetFacialFeatures(this.Face);
+	public CharaMakeType.FacialFeatureOptions? FacialFeatureOptions
+	{
+		get
+		{
+			uint faceId = this.Face;
+
+			// I'm not sure why Hrothgar's face Id's are off by 4. =/
+			if (this.Race?.RowEnum == Race.RaceRows.Hrothgar)
+				faceId -= 4;
+
+			return this.MakeType?.GetFacialFeatures(faceId);
+		}
+	}
 
 	[AutoNotify]
 	public byte FacialFeatureColor
