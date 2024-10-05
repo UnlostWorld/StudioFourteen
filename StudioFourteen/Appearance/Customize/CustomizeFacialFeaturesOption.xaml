@@ -19,7 +19,7 @@
 		<ItemsControl ItemsSource="{Binding Options}">
 			<ItemsControl.ItemsPanel>
 				<ItemsPanelTemplate>
-					<UniformGrid Columns="4" />
+					<UniformGrid Rows="1" />
 				</ItemsPanelTemplate>
 			</ItemsControl.ItemsPanel>
 			<ItemsControl.ItemTemplate>

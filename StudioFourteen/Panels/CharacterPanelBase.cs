@@ -6,6 +6,7 @@ using StudioFourteen.Mvm;
 public abstract class CharacterPanelBase : Panel
 {
 	public unsafe Character* Target => this.Services.Target.Target;
+	[AlwaysNotify] public bool IsTargetLoading => this.Services.Target.IsTargetLoading;
 	[AlwaysNotify] public string? CharacterName => this.Services.Target.CharacterName;
 	[AlwaysNotify] public bool HasValidTarget => this.Services.Target.HasValidTarget;
 	[AlwaysNotify] public int TargetObjectIndex => this.Services.Target.TargetObjectIndex;

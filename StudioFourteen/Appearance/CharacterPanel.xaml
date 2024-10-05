@@ -10,12 +10,13 @@
 	Title="{DynamicResource LOC_Character}"
 	Width="680"
 	Height="600"
+	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	ResizeMode="NoResize"
 	Subtitle="{Binding CharacterName}"
 	TitleIcon="UserShield"
 	mc:Ignorable="d">
-	<Grid>
 
+	<Grid IsEnabled="{Binding IsTargetLoading, Converter={StaticResource !B}}">
 		<Grid.RowDefinitions>
 			<RowDefinition />
 			<RowDefinition Height="Auto" />
@@ -37,6 +38,9 @@
 			<StackPanel
 				HorizontalAlignment="Right"
 				Orientation="Horizontal">
+
+				<TextBlock Text="{Binding IsTargetLoading}" />
+
 				<Button
 					Background="Transparent"
 					Click="OnRevertClicked"
@@ -62,5 +66,48 @@
 
 			</StackPanel>
 		</Border>
+
+		<ProgressBar
+			Grid.RowSpan="2"
+			Opacity="0.5">
+
+			<ProgressBar.Style>
+				<Style
+					BasedOn="{StaticResource Spinner}"
+					TargetType="{x:Type ProgressBar}">
+					<Style.Triggers>
+						<DataTrigger
+							Binding="{Binding IsTargetLoading}"
+							Value="True">
+
+							<DataTrigger.EnterActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation
+											Storyboard.TargetProperty="Opacity"
+											From="0"
+											To="1"
+											Duration="0:00:00.250" />
+									</Storyboard>
+								</BeginStoryboard>
+							</DataTrigger.EnterActions>
+
+							<DataTrigger.ExitActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation
+											Storyboard.TargetProperty="Opacity"
+											To="0"
+											Duration="0:00:00.500" />
+									</Storyboard>
+								</BeginStoryboard>
+							</DataTrigger.ExitActions>
+
+						</DataTrigger>
+					</Style.Triggers>
+				</Style>
+			</ProgressBar.Style>
+		</ProgressBar>
+
 	</Grid>
 </panels:CharacterPanelBase>

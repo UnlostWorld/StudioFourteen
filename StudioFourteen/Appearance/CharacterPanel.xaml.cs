@@ -10,7 +10,6 @@ using WpfUtils.Extensions;
 public partial class CharacterPanel : CharacterPanelBase
 {
 	[AutoNotify] public unsafe bool CanRevert => this.Services.CharacterAppearance.CanRestore(this.Target);
-
 	[AutoNotify] public string ExportAppearanceToolTipText => string.Format(StudioFourteen.Resources.Find("LOC_Save_ExportAppearanceToolTip", string.Empty), this.CharacterName);
 
 	private unsafe void OnRevertClicked(object sender, RoutedEventArgs e)

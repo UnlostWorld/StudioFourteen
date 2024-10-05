@@ -16,6 +16,7 @@ public class TargetService : ServiceBase
 
 	[AlwaysNotify] public string? CharacterName { get; private set; }
 	[AlwaysNotify] public bool HasValidTarget { get; private set; } = false;
+	[AlwaysNotify] public bool IsTargetLoading { get; private set; } = false;
 	[AlwaysNotify] public int TargetObjectIndex { get; private set; } = -1;
 
 	/// <summary>
@@ -50,6 +51,7 @@ public class TargetService : ServiceBase
 		this.HasValidTarget = this.Target != null && this.Target->CanDraw();
 		this.TargetObjectIndex = this.HasValidTarget ? this.Target->ObjectIndex : -1;
 		this.CharacterName = this.HasValidTarget ? this.Target->GetNameAsString() : "Nobody";
+		this.IsTargetLoading = this.Target != null && !this.Target->CanDraw();
 
 		if (startIndex != this.TargetObjectIndex)
 		{

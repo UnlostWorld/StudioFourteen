@@ -380,4 +380,12 @@ public partial class CustomizeView : View
 			this.Target->UpdateCustomize(redraw, CharacterExtensions.UpdateSource.Interface);
 		});
 	}
+
+	public override bool ShouldTickAutoProperties()
+	{
+		if (!this.HasValidTarget)
+			return false;
+
+		return base.ShouldTickAutoProperties();
+	}
 }

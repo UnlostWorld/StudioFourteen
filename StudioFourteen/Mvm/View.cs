@@ -79,7 +79,7 @@ public class View : UserControl, IAutoNotify
 		this.PropertyChanged?.Invoke(this, new(propertyName));
 	}
 
-	public bool ShouldTickAutoProperties()
+	public virtual bool ShouldTickAutoProperties()
 	{
 		return this.IsVisible;
 	}
