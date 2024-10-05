@@ -39,8 +39,6 @@
 				HorizontalAlignment="Right"
 				Orientation="Horizontal">
 
-				<TextBlock Text="{Binding IsTargetLoading}" />
-
 				<Button
 					Background="Transparent"
 					Click="OnRevertClicked"
