@@ -24,6 +24,14 @@
 	<Grid VerticalAlignment="Top">
 		<Grid.Resources>
 			<Storyboard x:Key="Expand">
+
+				<DoubleAnimation
+					Storyboard.TargetName="DragThumb"
+					Storyboard.TargetProperty="Opacity"
+					From="0"
+					To="1"
+					Duration="0:00:00.100" />
+
 				<DoubleAnimation
 					Storyboard.TargetName="WipeA"
 					Storyboard.TargetProperty="Offset"
@@ -59,6 +67,12 @@
 
 			<Storyboard x:Key="Collapse">
 				<DoubleAnimation
+					Storyboard.TargetName="DragThumb"
+					Storyboard.TargetProperty="Opacity"
+					To="0"
+					Duration="0:00:00.100" />
+
+				<DoubleAnimation
 					Storyboard.TargetName="MainBorder"
 					Storyboard.TargetProperty="Opacity"
 					To="0"
@@ -81,11 +95,12 @@
 
 		<Border
 			x:Name="MainBorder"
+			HorizontalAlignment="Center"
 			Background="{DynamicResource BackgroundBrush}"
 			CornerRadius="6">
 
 			<Border
-				Margin="3"
+				Margin="3,52,3,3"
 				Style="{DynamicResource WpfUtilsControlBorder}">
 				<StackPanel x:Name="Stack">
 
@@ -179,6 +194,57 @@
 				</StackPanel>
 			</Border>
 		</Border>
+
+		<Thumb
+			x:Name="DragThumb"
+			Height="15"
+			VerticalAlignment="Top"
+			Cursor="Hand"
+			DragDelta="OnDragDelta">
+			<Thumb.Template>
+				<ControlTemplate TargetType="{x:Type Thumb}">
+					<Grid Background="Transparent">
+						<Line
+							Height="3"
+							Margin="10,0"
+							Stretch="Fill"
+							Stroke="{DynamicResource ForegroundLightBrush}"
+							StrokeDashArray="1,2"
+							StrokeThickness="1"
+							X1="0"
+							X2="1" />
+
+						<Line
+							Height="3"
+							Margin="10,3,10,0"
+							Stretch="Fill"
+							Stroke="{DynamicResource ForegroundLightBrush}"
+							StrokeDashArray="1,2"
+							StrokeDashOffset="1"
+							StrokeThickness="1"
+							X1="0"
+							X2="1" />
+						<Line
+							Height="3"
+							Margin="10,-3,10,0"
+							Stretch="Fill"
+							Stroke="{DynamicResource ForegroundLightBrush}"
+							StrokeDashArray="1,2"
+							StrokeDashOffset="1"
+							StrokeThickness="1"
+							X1="0"
+							X2="1" />
+					</Grid>
+				</ControlTemplate>
+			</Thumb.Template>
+		</Thumb>
+
+		<Button
+			Margin="0,10,0,0"
+			VerticalAlignment="Top"
+			Click="OnStudioClicked"
+			IsEnabled="{Binding IsFullyLoaded}"
+			Style="{StaticResource StudioButton}" />
 
 	</Grid>
 </mvm:View>

@@ -7,11 +7,14 @@ using StudioFourteen.Mvm;
 using StudioFourteen.Plugin;
 using StudioFourteen.Posing;
 using StudioFourteen.Save;
-using StudioFourteen.Services;
 using StudioFourteen.Settings;
+using System.Windows;
+using System.Windows.Controls.Primitives;
 
 public partial class Navigation : View
 {
+	public event DragDeltaEventHandler? DragDelta;
+
 	[AutoNotify]
 	public unsafe bool IsInGPose
 	{
@@ -101,8 +104,25 @@ public partial class Navigation : View
 		this.Services.Input.AddListener(Input.KeyBindEvents.SaveAs, this.OnToggleSave);
 	}
 
+	private void OnStudioClicked(object sender, RoutedEventArgs e)
+	{
+		if (this.Services.Studio.IsOpen)
+		{
+			this.Services.Studio.CloseStudio();
+		}
+		else
+		{
+			this.Services.Studio.OpenStudio();
+		}
+	}
+
 	private void OnToggleSave()
 	{
 		this.IsSaveOpen = !this.IsSaveOpen;
+	}
+
+	private void OnDragDelta(object sender, DragDeltaEventArgs e)
+	{
+		this.DragDelta?.Invoke(this, e);
 	}
 }

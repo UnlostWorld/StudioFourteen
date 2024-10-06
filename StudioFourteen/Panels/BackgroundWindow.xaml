@@ -76,14 +76,6 @@
 			<ColumnDefinition Width="Auto" />
 		</Grid.ColumnDefinitions>
 
-		<!--  Navigation  -->
-		<background:Navigation
-			x:Name="NavigationArea"
-			Grid.Column="0"
-			Margin="10,0,0,0"
-			VerticalAlignment="Center"
-			Visibility="{Binding Services.Settings.Current.IsSpa, Converter={StaticResource !B2V}}" />
-
 
 		<Grid
 			Grid.Column="2"
@@ -95,22 +87,14 @@
 			HorizontalAlignment="Center"
 			VerticalAlignment="Top" />
 
-		<Button
-			Name="StudioButton"
-			Grid.ColumnSpan="2"
-			HorizontalAlignment="Left"
+		<background:Navigation
+			x:Name="StudioButton"
+			Grid.Column="0"
+			Margin="10,10,0,0"
+			HorizontalAlignment="Center"
 			VerticalAlignment="Top"
-			Click="OnStudioClicked"
-			IsEnabled="{Binding IsFullyLoaded}"
-			Style="{StaticResource StudioButton}" />
+			DragDelta="OnDragDelta" />
 
-		<!--
-		<Button
-			Margin="0,60,0,0"
-			VerticalAlignment="Top"
-			Click="OnShutdownClicked"
-			Content="X" />
-		-->
 
 	</Grid>
 </panels:PanelWindow>
