@@ -22,8 +22,16 @@ public class TabletService : ServiceBase
 	{
 		await base.Start();
 
-		if (!CWintabInfo.IsWintabAvailable())
+		try
+		{
+
+			if (!CWintabInfo.IsWintabAvailable())
+				return;
+		}
+		catch (Exception)
+		{
 			return;
+		}
 
 		this.Log.Information("WinTab is available");
 		this.Log.Information("Stylus name (pen):" + CWintabInfo.GetStylusName(EWTICursorNameIndex.CSR_NAME_PRESSURE_STYLUS));
