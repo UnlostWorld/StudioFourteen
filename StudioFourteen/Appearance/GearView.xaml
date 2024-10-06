@@ -19,13 +19,11 @@
 	<Grid IsEnabled="{Binding HasValidTarget}">
 		<Grid.Resources>
 
-
 			<Style
 				x:Key="IconButton"
 				BasedOn="{StaticResource WpfUtilsButton}"
 				TargetType="{x:Type Button}">
 
-				<Setter Property="Width" Value="54" />
 				<Setter Property="Height" Value="54" />
 				<Setter Property="Template">
 					<Setter.Value>
@@ -34,16 +32,17 @@
 								Cursor="Hand"
 								TextBlock.Foreground="{DynamicResource ForegroundLightBrush}">
 
-								<Grid Margin="2">
+								<Grid>
 
 									<Border
 										x:Name="HoverBackground"
 										CornerRadius="4"
 										Opacity="0"
-										Style="{DynamicResource WpfUtilsControlHoverBorder}"
-										Visibility="Collapsed" />
+										Style="{DynamicResource WpfUtilsControlHoverBorder}" />
 
-									<Grid x:Name="IconHost">
+									<Grid
+										x:Name="IconHost"
+										Margin="2,3,2,1">
 										<Image
 											Margin="4,3,4,5"
 											SnapsToDevicePixels="True"
@@ -55,14 +54,6 @@
 											Rect="0, 0, 96, 96"
 											SnapsToDevicePixels="True" />
 									</Grid>
-
-									<controls:XivTexImage
-										x:Name="HoverBorder"
-										Margin="-10"
-										Opacity="0"
-										Path="ui/uld/icona_frame_hr1.tex"
-										Rect="480, 0, 145, 145"
-										SnapsToDevicePixels="True" />
 								</Grid>
 
 							</Grid>
@@ -74,15 +65,6 @@
 											<Storyboard>
 												<DoubleAnimation
 													Storyboard.TargetName="HoverBackground"
-													Storyboard.TargetProperty="Opacity"
-													To="1"
-													Duration="0:0:0.150">
-													<DoubleAnimation.EasingFunction>
-														<SineEase EasingMode="EaseOut" />
-													</DoubleAnimation.EasingFunction>
-												</DoubleAnimation>
-												<DoubleAnimation
-													Storyboard.TargetName="HoverBorder"
 													Storyboard.TargetProperty="Opacity"
 													To="1"
 													Duration="0:0:0.150">
@@ -105,22 +87,12 @@
 														<SineEase EasingMode="EaseIn" />
 													</DoubleAnimation.EasingFunction>
 												</DoubleAnimation>
-												<DoubleAnimation
-													Storyboard.TargetName="HoverBorder"
-													Storyboard.TargetProperty="Opacity"
-													To="0"
-													Duration="0:0:0.250">
-													<DoubleAnimation.EasingFunction>
-														<SineEase EasingMode="EaseIn" />
-													</DoubleAnimation.EasingFunction>
-												</DoubleAnimation>
 											</Storyboard>
 										</BeginStoryboard>
 									</Trigger.ExitActions>
 								</Trigger>
 								<Trigger Property="Content" Value="{x:Null}">
 									<Setter TargetName="IconHost" Property="Visibility" Value="Collapsed" />
-									<Setter TargetName="HoverBorder" Property="Visibility" Value="Collapsed" />
 									<Setter TargetName="HoverBackground" Property="Visibility" Value="Visible" />
 								</Trigger>
 							</ControlTemplate.Triggers>
@@ -131,97 +103,97 @@
 
 
 			<DataTemplate x:Key="ItemView">
-				<Grid
-					Height="56"
-					Margin="0,2,0,2">
+				<Grid>
 					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="75" />
 						<ColumnDefinition />
-						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto" />
-						<RowDefinition />
+						<RowDefinition Height="Auto" />
+						<RowDefinition Height="Auto" />
 					</Grid.RowDefinitions>
 
 					<Border
-						Grid.RowSpan="2"
-						Grid.Column="0"
+						Grid.RowSpan="3"
+						Margin="1"
+						Style="{DynamicResource WpfUtilsControlBorder}" />
+
+					<Border
+						Grid.RowSpan="3"
+						Grid.Column="1"
 						Margin="1"
 						Style="{DynamicResource WpfUtilsControlBorder}" />
 
 					<controls:XivTexImage
 						x:Name="BackgroundIcon"
+						Grid.Row="1"
 						Grid.RowSpan="2"
 						Grid.Column="0"
-						Margin="6"
+						Width="48"
+						Height="48"
+						HorizontalAlignment="Center"
+						VerticalAlignment="Center"
 						Opacity="0.75"
 						Path="ui/uld/character_hr1.tex"
 						Rect="0, 144, 64, 64" />
 
 					<Button
+						Grid.Row="1"
 						Grid.RowSpan="2"
 						Grid.Column="0"
+						Margin="1,-2,0,1"
+						HorizontalAlignment="Stretch"
+						Background="Transparent"
 						Click="OnChangeClicked"
 						Content="{Binding Item.Icon.Source}"
 						MouseUp="OnMouseUp"
 						Style="{DynamicResource IconButton}"
 						ToolTip="{Binding Item}" />
 
-					<Button
-						Grid.Row="0"
-						Grid.Column="1"
-						Grid.ColumnSpan="3"
-						HorizontalContentAlignment="Stretch"
-						Click="OnChangeClicked"
-						MouseUp="OnMouseUp">
-
-						<TextBlock
-							Grid.Column="0"
-							Margin="0,0,3,0"
-							Style="{DynamicResource Body}"
-							Text="{Binding Item.Name}"
-							TextWrapping="NoWrap" />
-
-					</Button>
-
 
 					<wpfUtils:MultiNumberBox
-						Grid.Row="1"
-						Grid.Column="1"
+						Grid.Row="0"
+						Grid.Column="0"
+						Margin="0"
+						HorizontalContentAlignment="Center"
+						Background="Transparent"
 						X="{Binding Set}"
 						Y="{Binding Base}"
 						Z="{Binding Variant}" />
 
-					<Grid
+					<TextBlock
+						Grid.Row="0"
+						Grid.Column="1"
+						Margin="8,2,2,2"
+						VerticalAlignment="Center"
+						Foreground="{DynamicResource ForegroundLightBrush}"
+						Style="{DynamicResource Body}"
+						Text="{Binding Item.Name, FallbackValue=An Item Name}"
+						TextTrimming="CharacterEllipsis"
+						TextWrapping="NoWrap" />
+
+					<Button
 						Grid.Row="1"
-						Grid.Column="2"
-						Margin="1">
+						Grid.Column="1"
+						Grid.ColumnSpan="2"
+						Margin="0"
+						Padding="6,0,0,0"
+						HorizontalContentAlignment="Stretch"
+						Background="Transparent"
+						Click="OnChangeDye1Clicked"
+						ToolTip="{Binding Stain0}">
 
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="Auto" />
-						</Grid.ColumnDefinitions>
-
-						<Border
-							Grid.ColumnSpan="2"
-							Height="26"
-							Style="{DynamicResource WpfUtilsControlBorder}" />
-
-						<Button
-							Grid.Column="0"
-							Width="26"
-							Margin="0,0,-3,0"
-							Padding="0"
-							HorizontalContentAlignment="Stretch"
-							VerticalContentAlignment="Stretch"
-							Background="Transparent"
-							Click="OnChangeDye1Clicked"
-							ToolTip="{Binding Stain0}">
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition />
+							</Grid.ColumnDefinitions>
 
 							<Border
-								Margin="4"
+								Grid.Column="0"
+								Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ActualHeight}"
 								BorderBrush="{DynamicResource BackgroundBrush}"
 								BorderThickness="1"
 								CornerRadius="3">
@@ -230,21 +202,38 @@
 									<ImageBrush ImageSource="{Binding Stain0.Item.Icon.Source}" />
 								</Border.Background>
 							</Border>
-						</Button>
 
-						<Button
-							Grid.Column="1"
-							Width="26"
-							Margin="1,0,0,0"
-							Padding="0"
-							HorizontalContentAlignment="Stretch"
-							VerticalContentAlignment="Stretch"
-							Background="Transparent"
-							Click="OnChangeDye2Clicked"
-							ToolTip="{Binding Stain1}">
+							<TextBlock
+								Grid.Column="1"
+								VerticalAlignment="Center"
+								Foreground="{DynamicResource ForegroundLightBrush}"
+								Style="{DynamicResource Body}"
+								Text="{Binding Stain0.Item.Name}" />
+
+						</Grid>
+					</Button>
+
+					<Button
+						Grid.Row="2"
+						Grid.Column="1"
+						Grid.ColumnSpan="2"
+						Margin="0,0,0,2"
+						Padding="6,0,0,0"
+						VerticalAlignment="Top"
+						HorizontalContentAlignment="Stretch"
+						Background="Transparent"
+						Click="OnChangeDye2Clicked"
+						ToolTip="{Binding Stain1}">
+
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition />
+							</Grid.ColumnDefinitions>
 
 							<Border
-								Margin="4"
+								Grid.Column="0"
+								Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ActualHeight}"
 								BorderBrush="{DynamicResource BackgroundBrush}"
 								BorderThickness="1"
 								CornerRadius="3">
@@ -253,9 +242,18 @@
 									<ImageBrush ImageSource="{Binding Stain1.Item.Icon.Source}" />
 								</Border.Background>
 							</Border>
-						</Button>
-					</Grid>
+
+							<TextBlock
+								Grid.Column="1"
+								VerticalAlignment="Center"
+								Foreground="{DynamicResource ForegroundLightBrush}"
+								Style="{DynamicResource Body}"
+								Text="{Binding Stain1.Item.Name}" />
+
+						</Grid>
+					</Button>
 				</Grid>
+
 
 				<DataTemplate.Triggers>
 					<DataTrigger
@@ -465,59 +463,71 @@
 			</DataTemplate>
 		</Grid.Resources>
 
-		<UniformGrid Columns="2">
-			<ContentPresenter
-				Grid.Column="0"
-				Margin="0,2,6,2"
-				Content="{Binding MainHand}"
-				ContentTemplate="{StaticResource ItemView}" />
-			<ContentPresenter
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="500" />
+				<ColumnDefinition />
+			</Grid.ColumnDefinitions>
+
+
+			<UniformGrid
+				VerticalAlignment="Top"
+				Columns="2">
+				<ContentPresenter
+					Grid.Column="0"
+					Content="{Binding MainHand}"
+					ContentTemplate="{StaticResource ItemView}" />
+				<ContentPresenter
+					Grid.Column="1"
+					Content="{Binding OffHand}"
+					ContentTemplate="{StaticResource ItemView}" />
+				<ContentPresenter
+					Content="{Binding Head}"
+					ContentTemplate="{StaticResource ItemView}" />
+				<ContentPresenter
+					Content="{Binding Earring}"
+					ContentTemplate="{StaticResource ItemView}" />
+				<ContentPresenter
+					Content="{Binding Chest}"
+					ContentTemplate="{StaticResource ItemView}" />
+				<ContentPresenter
+					Content="{Binding Necklace}"
+					ContentTemplate="{StaticResource ItemView}" />
+				<ContentPresenter
+					Content="{Binding Hands}"
+					ContentTemplate="{StaticResource ItemView}" />
+				<ContentPresenter
+					Content="{Binding Bracelet}"
+					ContentTemplate="{StaticResource ItemView}" />
+				<ContentPresenter
+					Content="{Binding Legs}"
+					ContentTemplate="{StaticResource ItemView}" />
+				<ContentPresenter
+					Content="{Binding RingRight}"
+					ContentTemplate="{StaticResource ItemView}" />
+				<ContentPresenter
+					Content="{Binding Feet}"
+					ContentTemplate="{StaticResource ItemView}" />
+				<ContentPresenter
+					Content="{Binding RingLeft}"
+					ContentTemplate="{StaticResource ItemView}" />
+
+
+			</UniformGrid>
+
+			<UniformGrid
 				Grid.Column="1"
-				Content="{Binding OffHand}"
-				ContentTemplate="{StaticResource ItemView}" />
-			<ContentPresenter
-				Margin="0,2,6,2"
-				Content="{Binding Head}"
-				ContentTemplate="{StaticResource ItemView}" />
-			<ContentPresenter
-				Content="{Binding Earring}"
-				ContentTemplate="{StaticResource ItemView}" />
-			<ContentPresenter
-				Margin="0,2,6,2"
-				Content="{Binding Chest}"
-				ContentTemplate="{StaticResource ItemView}" />
-			<ContentPresenter
-				Content="{Binding Necklace}"
-				ContentTemplate="{StaticResource ItemView}" />
-			<ContentPresenter
-				Margin="0,2,6,2"
-				Content="{Binding Hands}"
-				ContentTemplate="{StaticResource ItemView}" />
-			<ContentPresenter
-				Content="{Binding Bracelet}"
-				ContentTemplate="{StaticResource ItemView}" />
-			<ContentPresenter
-				Margin="0,2,6,2"
-				Content="{Binding Legs}"
-				ContentTemplate="{StaticResource ItemView}" />
-			<ContentPresenter
-				Content="{Binding RingRight}"
-				ContentTemplate="{StaticResource ItemView}" />
-			<ContentPresenter
-				Margin="0,2,6,2"
-				Content="{Binding Feet}"
-				ContentTemplate="{StaticResource ItemView}" />
-			<ContentPresenter
-				Content="{Binding RingLeft}"
-				ContentTemplate="{StaticResource ItemView}" />
+				VerticalAlignment="Top"
+				Columns="1">
+				<ContentPresenter
+					Content="{Binding Glasses}"
+					ContentTemplate="{StaticResource AccessoryView}" />
 
-			<ContentPresenter
-				Content="{Binding Glasses}"
-				ContentTemplate="{StaticResource AccessoryView}" />
+				<ContentPresenter
+					Content="{Binding Ornament}"
+					ContentTemplate="{StaticResource OrnamentView}" />
+			</UniformGrid>
 
-			<ContentPresenter
-				Content="{Binding Ornament}"
-				ContentTemplate="{StaticResource OrnamentView}" />
-		</UniformGrid>
+		</Grid>
 	</Grid>
 </mvm:View>
