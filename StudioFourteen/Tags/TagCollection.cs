@@ -1,5 +1,6 @@
 ﻿namespace StudioFourteen.Tags;
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -153,6 +154,11 @@ public class TagCollection : ICollection<Tag>, INotifyCollectionChanged
 
 	public void CopyTo(Tag[] array, int arrayIndex)
 	{
-		throw new System.NotImplementedException();
+		int index = arrayIndex;
+		foreach (Tag tag in this)
+		{
+			array[index] = tag;
+			index++;
+		}
 	}
 }

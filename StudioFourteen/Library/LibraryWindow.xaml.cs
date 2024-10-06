@@ -55,63 +55,6 @@ public partial class LibraryWindow : Panel
 		OpenDir_In,
 		Back_In,
 		Back_Out,
-
-		TabLeft_Out,
-		TabLeft_In,
-		TabRight_Out,
-		TabRight_In,
-	}
-
-	public enum LibraryTabs
-	{
-		Favorites,
-		Poses,
-		Characters,
-		Scenes,
-	}
-
-	[AutoNotify]
-	public FastObservableCollection<LibraryTab> Tabs { get; init; } = new()
-	{
-		new("LOC_Library_Favorites", IconChar.Heart, new LibraryFavoritesFilter()),
-		new("LOC_Library_Poses", IconChar.Running, new TypeFilter(typeof(PoseFile))),
-		new("LOC_Library_Characters", IconChar.User, new TypeFilter(typeof(ICharacterAppearance))),
-		new("LOC_Library_Scenes", IconChar.Users,  new TypeFilter(typeof(SceneFile))),
-	};
-
-	public int CurrentTabIndex
-	{
-		get => this.GetPersistence<int>();
-		set => this.SetPersistence(value);
-	}
-
-	public LibraryTab CurrentTab
-	{
-		get
-		{
-			return this.Tabs[this.CurrentTabIndex];
-		}
-		set
-		{
-			int newTabIndex = this.Tabs.IndexOf(value);
-			if (newTabIndex > this.CurrentTabIndex)
-			{
-				this.navigation = Navigation.TabRight;
-			}
-			else
-			{
-				this.navigation = Navigation.TabLeft;
-			}
-
-			this.CurrentTabIndex = newTabIndex;
-			this.NotifyPropertyChanged();
-
-			// clear the path
-			this.Path.Clear();
-			this.Path.Add(this.Services.Library.Root);
-
-			this.searchQueue.InvokeImmediate();
-		}
 	}
 
 	[AutoNotify] public NavigationAnimations NavigationAnimation { get; set; } = NavigationAnimations.None;
@@ -154,12 +97,27 @@ public partial class LibraryWindow : Panel
 		}
 	}
 
-	public static void Open(LibraryTabs tab)
+	[AutoNotify]
+	public bool Favorites
 	{
-		OpenAsync(tab).Run();
+		get => this.GetPersistence<bool>();
+		set
+		{
+			this.SetPersistence(value);
+
+			// clear the path
+			this.Path.Clear();
+			this.Path.Add(this.Services.Library.Root);
+			this.searchQueue.InvokeImmediate();
+		}
 	}
 
-	public static async Task OpenAsync(LibraryTabs tab)
+	public static void Open()
+	{
+		OpenAsync().Run();
+	}
+
+	public static async Task OpenAsync()
 	{
 		LibraryWindow? panel = ServiceManager.Instance.Panels.Get<LibraryWindow>();
 		if (panel == null)
@@ -168,7 +126,7 @@ public partial class LibraryWindow : Panel
 		if (panel == null)
 			return;
 
-		await panel.Dispatcher.InvokeAsync(() => panel.CurrentTab = panel.Tabs[(int)tab]);
+		////await panel.Dispatcher.InvokeAsync(() => panel.CurrentTab = panel.Tabs[(int)tab]);
 	}
 
 	protected override void OnOpened()
@@ -198,8 +156,6 @@ public partial class LibraryWindow : Panel
 		{
 			Navigation.OpenDir => NavigationAnimations.OpenDir_Out,
 			Navigation.Back => NavigationAnimations.Back_Out,
-			Navigation.TabLeft => NavigationAnimations.TabLeft_Out,
-			Navigation.TabRight => NavigationAnimations.TabRight_Out,
 			_ => NavigationAnimations.None,
 		};
 
@@ -208,11 +164,11 @@ public partial class LibraryWindow : Panel
 
 		await Dispatch.NonUiThread();
 
-		if (this.CurrentTab == null)
-			return;
-
 		List<FilterBase> filters = new List<FilterBase>();
-		filters.AddRange(this.CurrentTab.Filters);
+
+		if (this.Favorites)
+			filters.Add(new LibraryFavoritesFilter());
+
 		filters.Add(this.TagFilter);
 		filters.Add(this.SearchQueryFilter);
 
@@ -246,8 +202,6 @@ public partial class LibraryWindow : Panel
 		{
 			Navigation.OpenDir => NavigationAnimations.OpenDir_In,
 			Navigation.Back => NavigationAnimations.Back_In,
-			Navigation.TabLeft => NavigationAnimations.TabLeft_In,
-			Navigation.TabRight => NavigationAnimations.TabRight_In,
 			_ => NavigationAnimations.None,
 		};
 

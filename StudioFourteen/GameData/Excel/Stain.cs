@@ -16,6 +16,8 @@ public class Stain : LibraryExcelRow
 	public MediaColor? Color { get; protected set; }
 	public Item? Item { get; protected set; } = null;
 
+	public ImageReference? Icon => this.Item?.Icon;
+
 	public override void PopulateData(RowParser parser, Lumina.GameData gameData, Language language)
 	{
 		base.PopulateData(parser, gameData, language);

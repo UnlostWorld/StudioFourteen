@@ -163,7 +163,7 @@
 
 			<ListBox
 				x:Name="FilterTagsControl"
-				Margin="24,1,4,1"
+				Margin="28,1,4,1"
 				HorizontalAlignment="Left"
 				Background="Transparent"
 				ItemsSource="{Binding SelectedTags}">
@@ -183,10 +183,12 @@
 
 
 			<Button
+				Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ActualHeight}"
 				Height="Auto"
-				Margin="3"
+				Margin="1"
 				HorizontalAlignment="Left"
 				VerticalAlignment="Stretch"
+				Background="Transparent"
 				Click="OnClearClicked"
 				IsEnabled="{Binding CanClear}">
 				<Grid>
@@ -204,8 +206,9 @@
 
 
 			<ToggleButton
+				Width="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ActualHeight}"
 				Height="Auto"
-				Margin="2,2"
+				Margin="1"
 				HorizontalAlignment="Right"
 				VerticalAlignment="Stretch"
 				Background="Transparent"
@@ -218,55 +221,33 @@
 		<Popup
 			Width="{Binding ActualWidth, ElementName=ContentArea}"
 			MaxHeight="250"
-			AllowsTransparency="True"
-			HorizontalOffset="-6"
 			IsOpen="{Binding DataContext.IsSuggestTags, ElementName=ContentArea}"
 			PlacementTarget="{Binding ElementName=ContentArea}"
-			StaysOpen="False">
+			StaysOpen="False"
+			Style="{DynamicResource WpfUtilsPopup}">
 
-			<Grid
-				Margin="6"
-				DataContext="{Binding DataContext, ElementName=ContentArea, Mode=OneWay}">
+			<ContentControl Style="{DynamicResource WpfUtilsPopupContent}">
+				<Grid DataContext="{Binding DataContext, ElementName=ContentArea, Mode=OneWay}">
+					<ListBox
+						Focusable="False"
+						ItemsSource="{Binding SuggestTags}"
+						ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+						SelectedValue="{Binding SelectedSuggestTag}">
 
-				<Border
-					x:Name="PanelShadow"
-					Background="Black"
-					CornerRadius="6"
-					Opacity="0.25">
-					<Border.BitmapEffect>
-						<DropShadowBitmapEffect
-							ShadowDepth="0"
-							Softness="0.75" />
-					</Border.BitmapEffect>
-				</Border>
+						<ListBox.ItemsPanel>
+							<ItemsPanelTemplate>
+								<WrapPanel IsItemsHost="True" />
+							</ItemsPanelTemplate>
+						</ListBox.ItemsPanel>
 
-				<Border
-					x:Name="PanelBackground"
-					Background="{DynamicResource BackgroundBrush}"
-					BorderBrush="{DynamicResource BackgroundBrush}"
-					BorderThickness="1"
-					CornerRadius="6" />
-
-				<ListBox
-					Margin="3"
-					Focusable="False"
-					ItemsSource="{Binding SuggestTags}"
-					ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-					SelectedValue="{Binding SelectedSuggestTag}">
-
-					<ListBox.ItemsPanel>
-						<ItemsPanelTemplate>
-							<WrapPanel IsItemsHost="True" />
-						</ItemsPanelTemplate>
-					</ListBox.ItemsPanel>
-
-					<ListBox.ItemContainerStyle>
-						<Style TargetType="{x:Type ListBoxItem}">
-							<Setter Property="Template" Value="{StaticResource TagItem}" />
-						</Style>
-					</ListBox.ItemContainerStyle>
-				</ListBox>
-			</Grid>
+						<ListBox.ItemContainerStyle>
+							<Style TargetType="{x:Type ListBoxItem}">
+								<Setter Property="Template" Value="{StaticResource TagItem}" />
+							</Style>
+						</ListBox.ItemContainerStyle>
+					</ListBox>
+				</Grid>
+			</ContentControl>
 		</Popup>
 	</Grid>
 

@@ -21,11 +21,23 @@
 
 		<Viewbox CacheMode="BitmapCache">
 			<Grid>
-				<wpfUtils:IconBlock
-					Margin="10"
-					FontSize="72"
-					Icon="Folder"
-					IconFont="Solid" />
+				<Grid>
+					<wpfUtils:IconBlock
+						Margin="11,12,9,8"
+						FontSize="72"
+						Foreground="#E3A626"
+						Icon="Folder"
+						IconFont="Solid"
+						Opacity="0.5" />
+
+					<wpfUtils:IconBlock
+						Margin="10"
+						FontSize="72"
+						Foreground="#FFD45E"
+						Icon="Folder"
+						IconFont="Solid" />
+
+				</Grid>
 
 				<Image
 					Width="32"
@@ -152,6 +164,55 @@
 
 	<DataTemplate DataType="{x:Type excel:Ornament}">
 		<ContentPresenter ContentTemplate="{StaticResource SimpleIconTemplate}" />
+	</DataTemplate>
+
+	<DataTemplate DataType="{x:Type excel:Weather}">
+		<Image
+			SnapsToDevicePixels="True"
+			Source="{Binding Icon.Source}" />
+	</DataTemplate>
+
+	<DataTemplate DataType="{x:Type excel:Companion}">
+		<ContentPresenter ContentTemplate="{StaticResource SimpleIconTemplate}" />
+	</DataTemplate>
+
+	<DataTemplate DataType="{x:Type excel:Mount}">
+		<ContentPresenter ContentTemplate="{StaticResource SimpleIconTemplate}" />
+	</DataTemplate>
+
+	<DataTemplate DataType="{x:Type excel:Perform}">
+		<ContentPresenter ContentTemplate="{StaticResource SimpleIconTemplate}" />
+	</DataTemplate>
+
+
+	<DataTemplate DataType="{x:Type files:AppearanceFileTypeInfo}">
+		<Viewbox CacheMode="BitmapCache">
+			<Grid>
+				<wpfUtils:IconBlock
+					Margin="1,2,-1,-2"
+					FontSize="72"
+					Foreground="#ADADAD"
+					Icon="File"
+					IconFont="Solid"
+					Opacity="0.25" />
+
+				<wpfUtils:IconBlock
+					FontSize="72"
+					Foreground="#FDFDFD"
+					Icon="File"
+					IconFont="Solid" />
+
+				<wpfUtils:IconBlock
+					Margin="5,0,0,-25"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Bottom"
+					FontSize="32"
+					Foreground="#ADADAD"
+					Icon="UserShield"
+					IconFont="Solid" />
+			</Grid>
+
+		</Viewbox>
 	</DataTemplate>
 
 
