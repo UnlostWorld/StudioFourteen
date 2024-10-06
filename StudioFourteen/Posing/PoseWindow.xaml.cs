@@ -128,7 +128,7 @@ public partial class PoseWindow : CharacterPanelBase
 			"j_f_bero_01",
 			"j_f_bero_02",
 			"j_f_bero_03",
-		};*/
+		};
 
 		HashSet<string> eyeBones = new()
 		{
@@ -146,10 +146,15 @@ public partial class PoseWindow : CharacterPanelBase
 			"j_f_miken_02_l",
 			"j_f_dmiken_l",
 			"j_f_mab_l",
-		};
+		};*/
 
 		PoseFile file = new();
-		await file.Save(this.TargetObjectIndex, false, eyeBones);
+		await file.Save(this.TargetObjectIndex);
 		this.Services.Files.SaveFile(file, $"{this.CharacterName}'s Pose");
+	}
+
+	private void OnFlipPoseClicked(object sender, RoutedEventArgs e)
+	{
+		this.Services.Pose.Flip(this.TargetObjectIndex);
 	}
 }

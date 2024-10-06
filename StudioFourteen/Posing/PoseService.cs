@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows;
+using WpfUtils.Extensions;
 
 public enum PoseEditModes
 {
@@ -352,6 +353,83 @@ public class PoseService : ServiceBase
 					this.Selection = null;
 					break;
 				}
+			}
+		}
+	}
+
+	public void Flip(int objectTableIndex)
+	{
+		this.FlipAsync(objectTableIndex).Run();
+	}
+
+	public async Task FlipAsync(int objectTableIndex)
+	{
+		await Threads.FrameworkThread();
+
+		if (DalamudServices.ObjectTable == null)
+			return;
+
+		List<BoneReference> boneReferences = new();
+
+		unsafe
+		{
+			Character* pCharacter = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
+			if (pCharacter == null)
+				return;
+
+			CharacterBase* pCharacterBase = pCharacter->GetCharacterBase();
+			if (pCharacterBase == null)
+				return;
+
+			ushort partialCount = pCharacterBase->Skeleton->PartialSkeletonCount;
+			for (int partialIdx = 0; partialIdx < partialCount; partialIdx++)
+			{
+				PartialSkeleton* pPartialSkeleton = &pCharacterBase->Skeleton->PartialSkeletons[partialIdx];
+
+				byte poseCount = pPartialSkeleton->GetMaxPoses();
+				for (byte poseIdx = 0; poseIdx < poseCount; poseIdx++)
+				{
+					hkaPose* pPose = pPartialSkeleton->GetHavokPose(poseIdx);
+					if (pPose == null)
+						continue;
+
+					int boneCount = pPose->Skeleton->Bones.Length;
+
+					// Create bone nodes
+					for (short boneIdx = 0; boneIdx < boneCount; boneIdx++)
+					{
+						hkaBone bone = pPose->Skeleton->Bones[boneIdx];
+						string boneName = bone.Name.String ?? "Bone";
+						BoneId id = new(objectTableIndex, partialIdx, poseIdx, boneIdx);
+
+						if (boneName == "n_root")
+							continue;
+
+						boneReferences.Add(this.GetOrCreateBoneReference(id, boneName));
+					}
+				}
+			}
+		}
+
+		await Threads.NextFrame();
+
+		foreach(BoneReference bone in boneReferences)
+		{
+			bone.Locked = true;
+
+			BoneTransform? transform = bone.GetLiveReferenceRelativeTransform();
+			if (transform == null)
+				continue;
+
+			BoneTransform flipped = transform.Flip();
+
+			if (bone.Mirror != null)
+			{
+				bone.Mirror.LoadRelativeTransform = flipped;
+			}
+			else
+			{
+				bone.LoadRelativeTransform = flipped;
 			}
 		}
 	}

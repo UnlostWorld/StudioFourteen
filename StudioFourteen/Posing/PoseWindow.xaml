@@ -398,61 +398,75 @@
 			Grid.ColumnSpan="2"
 			Margin="1"
 			Style="{DynamicResource WpfUtilsControlBorder}">
-			<StackPanel
-				HorizontalAlignment="Right"
-				Orientation="Horizontal">
 
-				<ToggleButton
-					Width="28"
-					Background="Transparent"
-					IsChecked="{Binding FlipSides}"
-					ToolTip="{DynamicResource LOC_Pose_FlipSides}">
-					<wpfUtils:IconBlock Icon="ArrowRightArrowLeft" />
-				</ToggleButton>
+			<Grid>
 
-				<Button
-					Width="28"
-					Background="Transparent"
-					Click="OnRevertClicked"
-					ToolTip="{DynamicResource LOC_Revert}">
-					<wpfUtils:IconBlock Icon="Undo" />
-				</Button>
+				<StackPanel
+					HorizontalAlignment="Left"
+					Orientation="Horizontal">
+					<ToggleButton
+						Width="100"
+						Background="Transparent"
+						IsChecked="{Binding FlipSides}"
+						ToolTip="{DynamicResource LOC_Pose_FlipSides}">
+						<TextBlock Text="Flip UI" />
+					</ToggleButton>
 
-				<Button
-					Width="28"
-					Background="Transparent"
-					Click="OnClearClicked"
-					ToolTip="{DynamicResource LOC_Pose_SelectCharacter}">
-					<wpfUtils:IconBlock
-						Icon="User"
-						IconFont="Solid" />
-				</Button>
+					<Button
+						Width="100"
+						Click="OnFlipPoseClicked">
+						<TextBlock Text="Flip Pose" />
+					</Button>
+				</StackPanel>
 
-				<Button
-					Width="28"
-					Background="Transparent"
-					Click="OnReferenceClicked"
-					ToolTip="{DynamicResource LOC_Pose_Reference}">
-					<wpfUtils:IconBlock
-						Icon="Person"
-						IconFont="Solid" />
-				</Button>
+				<StackPanel
+					HorizontalAlignment="Right"
+					Orientation="Horizontal">
 
-				<Button
-					Width="75"
-					Background="Transparent"
-					Click="OnImportClicked">
-					<TextBlock Text="Import" />
-				</Button>
+					<Button
+						Width="28"
+						Background="Transparent"
+						Click="OnRevertClicked"
+						ToolTip="{DynamicResource LOC_Revert}">
+						<wpfUtils:IconBlock Icon="Undo" />
+					</Button>
 
-				<Button
-					Width="75"
-					Background="Transparent"
-					Click="OnExportClicked">
-					<TextBlock Text="Export" />
-				</Button>
+					<Button
+						Width="28"
+						Background="Transparent"
+						Click="OnClearClicked"
+						ToolTip="{DynamicResource LOC_Pose_SelectCharacter}">
+						<wpfUtils:IconBlock
+							Icon="User"
+							IconFont="Solid" />
+					</Button>
 
-			</StackPanel>
+					<Button
+						Width="28"
+						Background="Transparent"
+						Click="OnReferenceClicked"
+						ToolTip="{DynamicResource LOC_Pose_Reference}">
+						<wpfUtils:IconBlock
+							Icon="Person"
+							IconFont="Solid" />
+					</Button>
+
+					<Button
+						Width="75"
+						Background="Transparent"
+						Click="OnImportClicked">
+						<TextBlock Text="Import" />
+					</Button>
+
+					<Button
+						Width="75"
+						Background="Transparent"
+						Click="OnExportClicked">
+						<TextBlock Text="Export" />
+					</Button>
+
+				</StackPanel>
+			</Grid>
 		</Border>
 	</Grid>
 </windows:CharacterPanelBase>
