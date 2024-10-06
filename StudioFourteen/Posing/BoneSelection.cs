@@ -231,7 +231,6 @@ public class BoneSelection : TransformSelectionBase
 		modelSpaceRotation = modelSpaceRotation.Conjugate();
 
 		hkQsTransformf newTransform = default;
-		newTransform.Rotation = HkQuaternionExtensions.Identity;
 		newTransform.Rotation = modelSpaceRotation.ToHkQuaternion();
 		newTransform.Rotation.Divide(this.bone.ModelSpaceTransform.Value.Rotation);
 
