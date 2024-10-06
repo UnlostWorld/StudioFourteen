@@ -337,15 +337,23 @@ public class WeaponViewModel : ItemViewModelBase
 		{
 			this.item = value;
 
+			this.BackupCharacter();
+
 			if (this.item != null)
 			{
 				// Submodels?
-				this.BackupCharacter();
 				this.Set = this.item.ModelSet;
 				this.Base = this.item.ModelBase;
 				this.Variant = (byte)this.item.ModelVariant;
-				this.ApplyChangeItem();
 			}
+			else
+			{
+				this.Set = 0;
+				this.Base = 0;
+				this.Variant = 0;
+			}
+
+			this.ApplyChangeItem();
 		}
 	}
 
@@ -456,14 +464,21 @@ public class ItemEquipViewModel : ItemViewModelBase
 		{
 			this.item = value;
 
+			this.BackupCharacter();
+
 			if (this.item != null)
 			{
 				// Submodels?
-				this.BackupCharacter();
 				this.ItemEquip.Id = this.item.ModelBase;
 				this.ItemEquip.Variant = (byte)this.item.ModelVariant;
-				this.ApplyChangeItem();
 			}
+			else
+			{
+				this.ItemEquip.Id = 0;
+				this.ItemEquip.Variant = 0;
+			}
+
+			this.ApplyChangeItem();
 		}
 	}
 
