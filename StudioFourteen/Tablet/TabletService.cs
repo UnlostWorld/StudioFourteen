@@ -12,12 +12,11 @@ using System.Threading.Tasks;
 
 public class TabletService : ServiceBase
 {
-	private readonly double maxPressure = CWintabInfo.GetMaxPressure();
-
 	private CWintabContext? context = null;
 	private CWintabData? data = null;
 
 	public double PenPressure { get; private set; }
+	private double MaxPressure { get; set; }
 
 	public override async Task Start()
 	{
@@ -28,6 +27,8 @@ public class TabletService : ServiceBase
 
 		this.Log.Information("WinTab is available");
 		this.Log.Information("Stylus name (pen):" + CWintabInfo.GetStylusName(EWTICursorNameIndex.CSR_NAME_PRESSURE_STYLUS));
+
+		this.MaxPressure = CWintabInfo.GetMaxPressure();
 
 		this.OpenSystemContext();
 	}
@@ -100,7 +101,7 @@ public class TabletService : ServiceBase
 
 				for (int i = 0; i < packetCount; i++)
 				{
-					this.PenPressure = packets[i].pkNormalPressure / this.maxPressure;
+					this.PenPressure = packets[i].pkNormalPressure / this.MaxPressure;
 				}
 			}
 			catch (Exception ex)
