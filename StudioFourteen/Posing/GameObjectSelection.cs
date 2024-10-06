@@ -85,6 +85,8 @@ public class GameObjectSelection : TransformSelectionBase
 			throw new Exception("No Object Table");
 
 		GameObject* gameObject = (GameObject*)DalamudServices.ObjectTable.GetObjectAddress(this.objectTableId);
+		if (gameObject == null || gameObject->DrawObject == null)
+			return;
 
 		this.name = gameObject->GetNameAsString();
 
