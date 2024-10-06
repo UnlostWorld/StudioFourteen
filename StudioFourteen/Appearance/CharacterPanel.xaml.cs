@@ -5,12 +5,20 @@ using StudioFourteen.Library;
 using StudioFourteen.Mvm;
 using StudioFourteen.Panels;
 using System.Windows;
+using System.Windows.Controls;
 using WpfUtils.Extensions;
 
 public partial class CharacterPanel : CharacterPanelBase
 {
 	[AutoNotify] public unsafe bool CanRevert => this.Services.CharacterAppearance.CanRestore(this.Target);
 	[AutoNotify] public string ExportAppearanceToolTipText => string.Format(StudioFourteen.Resources.Find("LOC_Save_ExportAppearanceToolTip", string.Empty), this.CharacterName);
+
+	[AutoNotify]
+	public int SelectedTab
+	{
+		get => this.GetPersistence<int>();
+		set => this.SetPersistence(value);
+	}
 
 	private unsafe void OnRevertClicked(object sender, RoutedEventArgs e)
 	{

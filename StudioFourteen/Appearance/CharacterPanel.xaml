@@ -22,7 +22,9 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
-		<TabControl Grid.Row="0">
+		<TabControl
+			Grid.Row="0"
+			SelectedIndex="{Binding SelectedTab}">
 			<TabItem Header="{DynamicResource LOC_Character_Customize}">
 				<local:CustomizeView />
 			</TabItem>
