@@ -24,7 +24,6 @@ public class TabletService : ServiceBase
 
 		try
 		{
-
 			if (!CWintabInfo.IsWintabAvailable())
 				return;
 		}
