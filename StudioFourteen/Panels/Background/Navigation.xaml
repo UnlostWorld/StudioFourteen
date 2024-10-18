@@ -150,6 +150,12 @@
 					<Line />
 
 					<ToggleButton
+						IsChecked="{Binding IsCameraOpen}"
+						ToolTip="{DynamicResource LOC_Camera}">
+						<wpfUtils:IconBlock Icon="VideoCamera" />
+					</ToggleButton>
+
+					<ToggleButton
 						IsChecked="{Binding IsEnvironmentOpen}"
 						IsEnabled="False"
 						ToolTip="{DynamicResource LOC_Environment}">

@@ -4,6 +4,7 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 using StudioFourteen.Appearance;
 using StudioFourteen.Library;
 using StudioFourteen.Mvm;
+using StudioFourteen.Panels;
 using StudioFourteen.Plugin;
 using StudioFourteen.Posing;
 using StudioFourteen.Save;
@@ -47,6 +48,13 @@ public partial class Navigation : View
 	{
 		get => this.Services.Panels.GetIsOpen<LibraryWindow>();
 		set => this.Services.Panels.SetIsOpen<LibraryWindow>(value);
+	}
+
+	[AutoNotify]
+	public bool IsCameraOpen
+	{
+		get => this.Services.Panels.GetIsOpen<CameraPanel>();
+		set => this.Services.Panels.SetIsOpen<CameraPanel>(value);
 	}
 
 	[AutoNotify]

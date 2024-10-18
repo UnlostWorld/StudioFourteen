@@ -24,6 +24,7 @@
 	<sys:String x:Key="LOC_Save">Save</sys:String>
 	<sys:String x:Key="LOC_Character">Character</sys:String>
 	<sys:String x:Key="LOC_Environment">Environment</sys:String>
+	<sys:String x:Key="LOC_Camera">Camera</sys:String>
 
 	<sys:String x:Key="LOC_Character_Customize">Customize</sys:String>
 	<sys:String x:Key="LOC_Character_Gear">Gear</sys:String>
