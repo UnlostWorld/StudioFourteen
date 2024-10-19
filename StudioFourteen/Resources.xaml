@@ -1,6 +1,7 @@
 ﻿<local:Resources
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=WpfUtils"
 	xmlns:local="clr-namespace:StudioFourteen"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
@@ -109,6 +110,10 @@
 			1,0
 		</Polygon.Points>
 	</Polygon>
+
+	<Style
+		BasedOn="{StaticResource WpfUtilsMultiNumberBox}"
+		TargetType="{x:Type controls:Vector3Box}" />
 
 
 </local:Resources>

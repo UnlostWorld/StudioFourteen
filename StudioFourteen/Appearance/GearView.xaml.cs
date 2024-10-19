@@ -136,7 +136,7 @@ public partial class GearView : View
 	}
 }
 
-public abstract class GearViewModelBase : ViewModel
+public abstract class GearViewModelBase : AutoViewModel
 {
 	public unsafe Character* Target => this.Services.Target.Target;
 	[AlwaysNotify] public string? CharacterName => this.Services.Target.CharacterName;

@@ -1,6 +1,7 @@
 ﻿namespace StudioFourteen;
 
 using StudioFourteen.Appearance;
+using StudioFourteen.Cameras;
 using StudioFourteen.Data;
 using StudioFourteen.Files;
 using StudioFourteen.GameData;

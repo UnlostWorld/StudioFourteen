@@ -50,7 +50,7 @@ public partial class PhotoWindow : Panel
 		image.SaveAsJpeg($"{this.SaveDirectory}/test.jpg", encoder);
 	}
 
-	public class ImageMetadata : ViewModel
+	public class ImageMetadata : AutoViewModel
 	{
 		[AutoNotify] public uint MapId { get; set; } = 0;
 	}

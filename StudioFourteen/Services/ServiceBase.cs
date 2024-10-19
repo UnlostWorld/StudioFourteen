@@ -1,26 +1,14 @@
 ﻿namespace StudioFourteen.Services;
 
 using Dalamud.Plugin.Services;
+using StudioFourteen.Mvm;
 using StudioFourteen.Plugin;
 using StudioFourteen.Settings;
-using Serilog;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 
-public abstract class ServiceBase : INotifyPropertyChanged
+public abstract class ServiceBase : ViewModel
 {
-	public ServiceBase()
-	{
-		this.Log = Logging.ForContext(this.GetType());
-	}
-
-	public event PropertyChangedEventHandler? PropertyChanged;
-
 	public bool IsAlive { get; private set; }
-
-	protected ILogger Log { get; private set; }
-	protected ServiceManager Services => ServiceManager.Instance;
 
 	protected SettingsService.Configuration Settings => this.Services.Settings.Current;
 
@@ -58,11 +46,6 @@ public abstract class ServiceBase : INotifyPropertyChanged
 	public virtual Task Tick()
 	{
 		return Task.CompletedTask;
-	}
-
-	protected virtual void RaisePropertyChanged([CallerMemberName]string propertyName = "")
-	{
-		this.PropertyChanged?.Invoke(this, new(propertyName));
 	}
 
 	protected virtual void OnFrameworkUpdate(IFramework framework)

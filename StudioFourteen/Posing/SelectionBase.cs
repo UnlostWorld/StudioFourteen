@@ -4,7 +4,7 @@ using Dalamud.Plugin.Services;
 using StudioFourteen.Mvm;
 using System.Numerics;
 
-public abstract class SelectionBase : ViewModel
+public abstract class SelectionBase : AutoViewModel
 {
 	[AutoNotify] public abstract string Name { get; }
 	[AutoNotify] public abstract string? Subtitle { get; }

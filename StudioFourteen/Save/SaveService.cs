@@ -258,7 +258,7 @@ public class SaveService : ServiceBase
 		}
 	}
 
-	public class SaveMetaData : ViewModel
+	public class SaveMetaData : AutoViewModel
 	{
 		[AutoNotify] public string? Author { get; set; }
 		[AutoNotify] public string? Version { get; set; }

@@ -171,7 +171,7 @@ public partial class OpenWindow : Panel
 }
 
 public abstract class OpenCharacterViewModelBase
-	: ViewModel
+	: AutoViewModel
 {
 }
 
@@ -193,7 +193,7 @@ public class OpenCharacterViewModel(int objectTableIndex)
 }
 
 public class Assignment(SceneFile.Actor actor)
-	: ViewModel
+	: AutoViewModel
 {
 	private bool includePose = true;
 	private bool includeAppearance = true;

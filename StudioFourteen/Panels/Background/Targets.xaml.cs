@@ -144,7 +144,7 @@ public partial class Targets : View
 	}
 }
 
-public unsafe class CharacterViewModel : ViewModel
+public unsafe class CharacterViewModel : AutoViewModel
 {
 	public readonly int ObjectTableIndex;
 

@@ -193,7 +193,7 @@ public class AddDirectoryViewModel
 }
 
 public class CharacterViewModel(int objectTableIndex)
-	: ViewModel
+	: AutoViewModel
 {
 	public int ObjectTableIndex { get; init; } = objectTableIndex;
 

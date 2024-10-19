@@ -264,7 +264,7 @@ public partial class LibraryWindow : Panel
 }
 
 public class LibraryTab(string name, IconChar icon, params FilterBase[] filters)
-	: ViewModel
+	: AutoViewModel
 {
 	public string Name { get; init; } = Resources.Find(name, string.Empty);
 	public IconChar Icon { get; init; } = icon;

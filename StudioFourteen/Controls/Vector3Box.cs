@@ -4,7 +4,7 @@ using DependencyPropertyGenerator;
 using System.Numerics;
 using WpfUtils.Controls;
 
-[DependencyProperty<Vector3>("Value")]
+[DependencyProperty<Vector3>("Value", DefaultBindingMode = DefaultBindingMode.TwoWay)]
 public partial class Vector3Box : MultiNumberBox
 {
 	private bool isValueUpdating = false;
