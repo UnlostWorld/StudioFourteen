@@ -62,10 +62,10 @@ public partial class OrbitCamera : StudioCameraBase
 			this.angle.Y * QuaternionExtensions.Deg2Rad);
 	}
 
-	public override void ImportGroupPoseSettings(float fovAdjust, float roll)
+	public unsafe override void ImportGroupPoseSettings(GroupPoseCamera* camera)
 	{
-		base.ImportGroupPoseSettings(fovAdjust, roll);
-		this.GroupPoseRollAdjust = roll * QuaternionExtensions.Rad2Deg;
+		base.ImportGroupPoseSettings(camera);
+		this.GroupPoseRollAdjust = camera->Rotation * QuaternionExtensions.Rad2Deg;
 	}
 
 	public override void Initialize(CameraState currentState)
@@ -76,5 +76,15 @@ public partial class OrbitCamera : StudioCameraBase
 		this.target = targetPos;
 
 		// TODO: Determine a good starting angle
+	}
+
+	protected override void Drag(Vector2 delta)
+	{
+		base.Drag(delta);
+
+		Vector3 angle = this.Angle;
+		angle.X += delta.X;
+		angle.Y += delta.Y;
+		this.Angle = angle;
 	}
 }

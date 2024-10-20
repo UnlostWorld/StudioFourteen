@@ -26,7 +26,7 @@ public struct CameraState
 }
 
 [StructLayout(LayoutKind.Explicit, Size = 0x2B0)]
-internal struct GroupPoseCamera
+public struct GroupPoseCamera
 {
 	[FieldOffset(0x0)]
 	public GameCamera Camera;
@@ -108,12 +108,7 @@ public class CameraService : ServiceBase
 		if (this.gPoseCameraUpdateHook == null)
 			return 0;
 
-		// Special case to get the group pose window editor to edit our orbit camera.
-		// ignored for all other camera types.
-		if (this.current is OrbitCamera currentOrbit)
-		{
-			currentOrbit.ImportGroupPoseSettings(camera->FoV, camera->Rotation);
-		}
+		this.current?.ImportGroupPoseSettings(camera);
 
 		return this.gPoseCameraUpdateHook.Original(camera);
 	}

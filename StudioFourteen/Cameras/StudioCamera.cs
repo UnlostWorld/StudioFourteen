@@ -2,9 +2,15 @@
 
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Mvm;
+using StudioFourteen.Structs.Extensions;
+using StudioFourteen.Utilities;
+using System;
+using System.Numerics;
 
 public abstract partial class StudioCameraBase : ViewModel
 {
+	private Vector2 lastGroupPoseCameraAngle;
+
 	[Notify] private string name = "Default";
 	[Notify] private float fieldOfView = 75.0f;
 
@@ -26,13 +32,42 @@ public abstract partial class StudioCameraBase : ViewModel
 		}
 	}
 
-	public virtual void ImportGroupPoseSettings(float fovAdjust, float roll)
+	public unsafe virtual void ImportGroupPoseSettings(GroupPoseCamera* camera)
 	{
-		this.GroupPoseFovAdjust = fovAdjust * 100;
+		this.GroupPoseFovAdjust = camera->FoV * 100;
+
+		// a huge hack, but to get dragging the game window to move the cameras
+		// we can use the camera angle values as a cheap input delta, since we don't
+		// use them for the camera itself.
+		// NOTE: Setting the camera angle back to 0 fails if the user has _just_ released
+		// their mouse, causing the drag delta to keep going forever, however...
+		// Using the delta from the last known angle will get stuck when the angle _would_ have
+		// rotated the camera over the players head, and we want the drag to keep working after that point.
+		// so... do both?
+		Vector2 angleDelta = camera->Angle - this.lastGroupPoseCameraAngle;
+
+		// Ensure the angle value has actually changed, and isn't just stuck
+		// at some tiny value because the user released their mouse.
+		if (Math.Abs(angleDelta.X) > 0.001 || Math.Abs(angleDelta.Y) > 0.001)
+		{
+			Vector2 dragDelta = camera->Angle;
+			dragDelta *= QuaternionExtensions.Rad2Deg;
+			this.Drag(dragDelta);
+
+			this.lastGroupPoseCameraAngle = camera->Angle;
+		}
+
+		// Set the angle back to zero so next frame we have clean uncapped rotation data.
+		// but only if the user is still dragging.
+		camera->Angle = Vector2.Zero;
 	}
 
 	public virtual void Initialize(CameraState currentState)
 	{
 		this.IsInitialized = true;
+	}
+
+	protected virtual void Drag(Vector2 delta)
+	{
 	}
 }
