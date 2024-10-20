@@ -11,6 +11,15 @@ public static class XivWindow
 {
 	private static Rect size = default;
 
+	public enum MouseKeys
+	{
+		Left = 0x01,
+		Right = 0x02,
+		Middle = 0x04,
+		Four = 0x05,
+		Five = 0x06,
+	}
+
 	public static Process? Process { get; set; }
 
 	public static nint? Hwnd => Process?.MainWindowHandle;
@@ -162,6 +171,38 @@ public static class XivWindow
 		}
 	}
 
+	public static Point? GetCursorPos()
+	{
+		if (XivWindow.Hwnd == null)
+			return null;
+
+		Win32Point p = default;
+		GetCursorPos(ref p);
+
+		// don't process mouse if its not over the xiv window
+		IntPtr windowUnderCursor = WindowFromPoint(p);
+		if (windowUnderCursor != XivWindow.Hwnd.Value)
+			return null;
+
+		ScreenToClient(XivWindow.Hwnd.Value, ref p);
+
+		// don't process mouse if its outside the xiv window.
+		Rect xivSize = XivWindow.Size;
+
+		if (p.X < 0 || p.X > xivSize.Width)
+			return null;
+
+		if (p.Y < 0 || p.Y > xivSize.Height)
+			return null;
+
+		return new(p.X, p.Y);
+	}
+
+	public static bool GetMouseKey(MouseKeys key)
+	{
+		return (GetKeyState((int)key) & 0x8000) != 0;
+	}
+
 	[DllImport("user32.dll", SetLastError = true)]
 	private static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
 
@@ -186,6 +227,18 @@ public static class XivWindow
 	[DllImport("user32.dll")]
 	private static extern IntPtr PostMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
 
+	[DllImport("user32.dll", SetLastError = true)]
+	private static extern bool GetCursorPos(ref Win32Point lpPoint);
+
+	[DllImport("user32.dll", SetLastError = true)]
+	private static extern bool ScreenToClient(IntPtr hWnd, ref Win32Point lpPoint);
+
+	[DllImport("user32.dll")]
+	private static extern IntPtr WindowFromPoint(Win32Point lpPoint);
+
+	[DllImport("user32.dll", SetLastError = true)]
+	private static extern int GetKeyState(int key);
+
 	[StructLayout(LayoutKind.Sequential)]
 	public struct Win32Rect
 	{
@@ -193,5 +246,12 @@ public static class XivWindow
 		public int Top;         // y position of upper-left corner
 		public int Right;       // x position of lower-right corner
 		public int Bottom;      // y position of lower-right corner
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	public struct Win32Point
+	{
+		public uint X;
+		public uint Y;
 	}
 }
