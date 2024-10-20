@@ -122,6 +122,13 @@
 	<sys:String x:Key="LOC_Pose_RevertPose">Revert all changes to {0}'s pose</sys:String>
 	<sys:String x:Key="LOC_Pose_Reference">Set the targeted actor to its reference pose</sys:String>
 
+	<!--  Camera  -->
+	<sys:String x:Key="LOC_Camera_Fov">Field of View</sys:String>
+	<sys:String x:Key="LOC_OrbitCamera_Distance">Distance</sys:String>
+	<sys:String x:Key="LOC_OrbitCamera_Angle">Angle</sys:String>
+	<sys:String x:Key="LOC_OrbitCamera_GroupPoseFov_Tooltip">The additional field of view from the 'Angle of View' Settings in the Group Pose Settings window.</sys:String>
+	<sys:String x:Key="LOC_OrbitCamera_GroupPoseRoll_Tooltip">The additional Z angle from the 'Roll Angle Setttings' in the Group Pose Settings window.</sys:String>
+
 	<!--  Tags  -->
 	<sys:String x:Key="LOC_Tag_LegacyPose">Legacy Pose</sys:String>
 	<sys:String x:Key="LOC_Tag_LegacyPose_ToolTip">A pose file created outside of Studio Fourteen. This file does not support all posing features, and expressions will not load.</sys:String>

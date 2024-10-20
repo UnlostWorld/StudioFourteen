@@ -12,20 +12,37 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using WpfUtils.Animation;
+
+using GameCamera = FFXIVClientStructs.FFXIV.Client.Game.Camera;
 using RenderCamera = FFXIVClientStructs.FFXIV.Client.Graphics.Render.Camera;
 using SceneCamera = FFXIVClientStructs.FFXIV.Client.Graphics.Scene.Camera;
+
+[StructLayout(LayoutKind.Explicit, Size = 0x2B0)]
+internal struct GroupPoseCamera
+{
+	[FieldOffset(0x0)]
+	public GameCamera Camera;
+
+	[FieldOffset(0x12C)] public float FoV;
+	[FieldOffset(0x130)] public Vector2 Angle;
+	[FieldOffset(0x150)] public Vector2 Pan;
+	[FieldOffset(0x160)] public float Rotation;
+	[FieldOffset(0x208)] public Vector2 Collide;
+}
 
 public class CameraService : ServiceBase
 {
 	private const float CameraBlendTimeMs = 1000;
 	private readonly Stopwatch blendWatch = new();
 
-	private Hook<SceneCameraUpdateDelegate>? cameraUpdateHook;
+	private Hook<GPoseCameraUpdateDelegate>? gPoseCameraUpdateHook;
+	private Hook<SceneCameraUpdateDelegate>? sceneCameraUpdateHook;
 	private Hook<CameraMatrixLoadDelegate>? cameraMatrixLoadHook;
 
 	private StudioCameraBase? current;
 	private StudioCameraBase? last;
 
+	private unsafe delegate nint GPoseCameraUpdateDelegate(GroupPoseCamera* camera);
 	private unsafe delegate nint SceneCameraUpdateDelegate(SceneCamera* sceneCamera);
 	private unsafe delegate void CameraMatrixLoadDelegate(RenderCamera* camera, nint a1);
 
@@ -55,11 +72,14 @@ public class CameraService : ServiceBase
 
 		unsafe
 		{
-			this.cameraUpdateHook = InteropService.HookFromSignature<SceneCameraUpdateDelegate>("48 ?? ?? ?? ?? ?? 48 81 EC ?? ?? ?? ?? F6 81 EC ?? ?? ?? ?? 48 8B ?? 48 ?? ?? ??", this.CameraUpdateDetour);
-			this.cameraUpdateHook?.Enable();
+			this.sceneCameraUpdateHook = InteropService.HookFromSignature<SceneCameraUpdateDelegate>("48 ?? ?? ?? ?? ?? 48 81 EC ?? ?? ?? ?? F6 81 EC ?? ?? ?? ?? 48 8B ?? 48 ?? ?? ??", this.SceneCameraUpdateDetour);
+			this.sceneCameraUpdateHook?.Enable();
 
 			this.cameraMatrixLoadHook = InteropService.HookFromSignature<CameraMatrixLoadDelegate>("E8 ?? ?? ?? ?? 48 8B 93 90 02 ?? ?? 48 8D 4C 24 40", this.CameraMatrixLoad);
 			this.cameraMatrixLoadHook?.Enable();
+
+			this.gPoseCameraUpdateHook = InteropService.HookFromSignature<GPoseCameraUpdateDelegate>("40 55 53 57 48 8D 6C 24 A0 48 81 EC ?? ?? ?? ?? 48 8B 1D", this.GroupPoseCameraUpdateDetour);
+			this.gPoseCameraUpdateHook?.Enable();
 		}
 
 		return base.Start();
@@ -67,18 +87,33 @@ public class CameraService : ServiceBase
 
 	public override Task Stop()
 	{
-		this.cameraUpdateHook?.Disable();
+		this.sceneCameraUpdateHook?.Disable();
 		this.cameraMatrixLoadHook?.Disable();
 
 		return base.Stop();
 	}
 
-	private unsafe nint CameraUpdateDetour(SceneCamera* camera)
+	private unsafe nint GroupPoseCameraUpdateDetour(GroupPoseCamera* camera)
 	{
-		if (this.cameraUpdateHook == null)
+		if (this.gPoseCameraUpdateHook == null)
 			return 0;
 
-		nint result = this.cameraUpdateHook.Original(camera);
+		// Special case to get the group pose window editor to edit our orbit camera.
+		// ignored for all other camera types.
+		if (this.current is OrbitCamera currentOrbit)
+		{
+			currentOrbit.ImportGroupPoseSettings(camera->FoV, camera->Rotation);
+		}
+
+		return this.gPoseCameraUpdateHook.Original(camera);
+	}
+
+	private unsafe nint SceneCameraUpdateDetour(SceneCamera* camera)
+	{
+		if (this.sceneCameraUpdateHook == null)
+			return 0;
+
+		nint result = this.sceneCameraUpdateHook.Original(camera);
 
 		if (this.Services.GroupPose.IsGroupPosing && this.current != null)
 		{
@@ -96,8 +131,13 @@ public class CameraService : ServiceBase
 				}
 			}
 
-			camera->ViewMatrix = this.current.Calculate(this.last, 1 - blendValue);
+			CameraState state = default;
+			this.current.Calculate(ref state, this.last, 1 - blendValue);
+
+			camera->ViewMatrix = state.ViewMatrix;
 			this.CameraMatrixLoad(camera->RenderCamera, (nint)(&camera->ViewMatrix));
+
+			camera->RenderCamera->FoV = state.FieldOfView;
 		}
 
 		return result;
