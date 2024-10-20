@@ -11,6 +11,7 @@ public abstract partial class StudioCameraBase : ViewModel
 	[Notify(Setter.Private)] private float groupPoseFovAdjust;
 
 	public abstract string TypeName { get; }
+	public bool IsInitialized { get; private set; } = false;
 
 	public unsafe virtual void Calculate(ref CameraState state, StudioCameraBase? blend = null, float blendWeight = 0)
 	{
@@ -28,5 +29,10 @@ public abstract partial class StudioCameraBase : ViewModel
 	public virtual void ImportGroupPoseSettings(float fovAdjust, float roll)
 	{
 		this.GroupPoseFovAdjust = fovAdjust * 100;
+	}
+
+	public virtual void Initialize(CameraState currentState)
+	{
+		this.IsInitialized = true;
 	}
 }

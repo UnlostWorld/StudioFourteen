@@ -8,6 +8,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="clr-namespace:StudioFourteen.Panels"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:pose="clr-namespace:StudioFourteen.Posing"
 	Title="{DynamicResource LOC_Camera}"
 	Width="350"
 	Height="450"
@@ -235,6 +236,28 @@
 								Wrap="True"
 								Value="{Binding Angle}" />
 						</Grid>
+					</StackPanel>
+				</DataTemplate>
+
+
+				<!--  Free Target Camera  -->
+				<DataTemplate DataType="{x:Type cameras:FreeCamera}">
+					<StackPanel>
+						<TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+
+						<TextBlock
+							Style="{DynamicResource LeftLabel}"
+							Text="{DynamicResource LOC_FreeCamera_Position}" />
+						<controls1:Vector3Box
+							TickFrequency="0.01"
+							Value="{Binding Position}" />
+
+						<Grid
+							Grid.Row="0"
+							Height="168">
+							<pose:RotationGizmo Rotation="{Binding Rotation, Mode=TwoWay}" />
+						</Grid>
+
 					</StackPanel>
 				</DataTemplate>
 

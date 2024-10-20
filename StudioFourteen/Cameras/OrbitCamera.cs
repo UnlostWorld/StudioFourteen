@@ -67,4 +67,14 @@ public partial class OrbitCamera : StudioCameraBase
 		base.ImportGroupPoseSettings(fovAdjust, roll);
 		this.GroupPoseRollAdjust = roll * QuaternionExtensions.Rad2Deg;
 	}
+
+	public override void Initialize(CameraState currentState)
+	{
+		base.Initialize(currentState);
+
+		Vector3 targetPos = currentState.Position + Vector3.Transform(new Vector3(this.distance, 0, 0), currentState.Rotation);
+		this.target = targetPos;
+
+		// TODO: Determine a good starting angle
+	}
 }

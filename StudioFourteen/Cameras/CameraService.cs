@@ -4,6 +4,7 @@
 namespace StudioFourteen.Cameras;
 
 using Dalamud.Hooking;
+using Dalamud.Plugin.Services;
 using StudioFourteen.Services;
 using System;
 using System.Collections.Generic;
@@ -48,6 +49,7 @@ public class CameraService : ServiceBase
 
 	private StudioCameraBase? current;
 	private StudioCameraBase? last;
+	private CameraState state = default;
 
 	private unsafe delegate nint GPoseCameraUpdateDelegate(GroupPoseCamera* camera);
 	private unsafe delegate nint SceneCameraUpdateDelegate(SceneCamera* sceneCamera);
@@ -123,6 +125,11 @@ public class CameraService : ServiceBase
 
 		nint result = this.sceneCameraUpdateHook.Original(camera);
 
+		if (this.current != null && !this.current.IsInitialized)
+		{
+			this.current.Initialize(this.state);
+		}
+
 		if (this.Services.GroupPose.IsGroupPosing && this.current != null)
 		{
 			float blendValue = 0;
@@ -139,18 +146,17 @@ public class CameraService : ServiceBase
 				}
 			}
 
-			CameraState state = default;
-			state.FieldOfView = camera->RenderCamera->FoV;
+			this.state.FieldOfView = camera->RenderCamera->FoV;
 
-			this.current.Calculate(ref state, this.last, 1 - blendValue);
+			this.current.Calculate(ref this.state, this.last, 1 - blendValue);
 
-			Vector3 forward = Vector3.Transform(new(1, 0, 0), state.Rotation);
-			Vector3 up = Vector3.Transform(new(0, 1, 0), state.Rotation);
-			camera->ViewMatrix = Matrix4x4.CreateLookTo(state.Position, forward, up);
+			Vector3 forward = Vector3.Transform(new(1, 0, 0), this.state.Rotation);
+			Vector3 up = Vector3.Transform(new(0, 1, 0), this.state.Rotation);
+			camera->ViewMatrix = Matrix4x4.CreateLookTo(this.state.Position, forward, up);
 
 			this.CameraMatrixLoad(camera->RenderCamera, (nint)(&camera->ViewMatrix));
 
-			camera->RenderCamera->FoV = state.FieldOfView;
+			camera->RenderCamera->FoV = this.state.FieldOfView;
 		}
 
 		return result;

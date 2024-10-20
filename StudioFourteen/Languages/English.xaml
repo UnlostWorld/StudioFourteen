@@ -133,6 +133,7 @@
 	<sys:String x:Key="LOC_OrbitTargetCamera">Orbit Target</sys:String>
 	<sys:String x:Key="LOC_OrbitTargetCamera_Offset">Target Offset</sys:String>
 	<sys:String x:Key="LOC_FreeCamera">Free</sys:String>
+	<sys:String x:Key="LOC_FreeCamera_Position">Camera Position</sys:String>
 
 	<!--  Tags  -->
 	<sys:String x:Key="LOC_Tag_LegacyPose">Legacy Pose</sys:String>

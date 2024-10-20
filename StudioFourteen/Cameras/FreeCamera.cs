@@ -28,4 +28,12 @@ public partial class FreeCamera : StudioCameraBase
 			state.Rotation = Quaternion.Lerp(state.Rotation, blendOrbit.GetCameraRotation(), blendWeight);
 		}
 	}
+
+	public override void Initialize(CameraState currentState)
+	{
+		base.Initialize(currentState);
+
+		this.Position = currentState.Position;
+		this.Rotation = currentState.Rotation;
+	}
 }
