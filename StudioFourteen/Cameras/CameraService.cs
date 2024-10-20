@@ -17,6 +17,13 @@ using GameCamera = FFXIVClientStructs.FFXIV.Client.Game.Camera;
 using RenderCamera = FFXIVClientStructs.FFXIV.Client.Graphics.Render.Camera;
 using SceneCamera = FFXIVClientStructs.FFXIV.Client.Graphics.Scene.Camera;
 
+public struct CameraState
+{
+	public Vector3 Position;
+	public Quaternion Rotation;
+	public float FieldOfView;
+}
+
 [StructLayout(LayoutKind.Explicit, Size = 0x2B0)]
 internal struct GroupPoseCamera
 {
@@ -68,7 +75,8 @@ public class CameraService : ServiceBase
 		this.current = new OrbitTargetCamera();
 		this.Cameras.Add(this.current);
 
-		this.Cameras.Add(new OrbitTargetCamera());
+		this.Cameras.Add(new OrbitCamera());
+		this.Cameras.Add(new FreeCamera());
 
 		unsafe
 		{
@@ -132,9 +140,14 @@ public class CameraService : ServiceBase
 			}
 
 			CameraState state = default;
+			state.FieldOfView = camera->RenderCamera->FoV;
+
 			this.current.Calculate(ref state, this.last, 1 - blendValue);
 
-			camera->ViewMatrix = state.ViewMatrix;
+			Vector3 forward = Vector3.Transform(new(1, 0, 0), state.Rotation);
+			Vector3 up = Vector3.Transform(new(0, 1, 0), state.Rotation);
+			camera->ViewMatrix = Matrix4x4.CreateLookTo(state.Position, forward, up);
+
 			this.CameraMatrixLoad(camera->RenderCamera, (nint)(&camera->ViewMatrix));
 
 			camera->RenderCamera->FoV = state.FieldOfView;

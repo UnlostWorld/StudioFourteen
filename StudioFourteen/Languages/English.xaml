@@ -124,10 +124,15 @@
 
 	<!--  Camera  -->
 	<sys:String x:Key="LOC_Camera_Fov">Field of View</sys:String>
+	<sys:String x:Key="LOC_OrbitCamera">Orbit</sys:String>
+	<sys:String x:Key="LOC_OrbitCamera_Target">Target Position</sys:String>
 	<sys:String x:Key="LOC_OrbitCamera_Distance">Distance</sys:String>
 	<sys:String x:Key="LOC_OrbitCamera_Angle">Angle</sys:String>
 	<sys:String x:Key="LOC_OrbitCamera_GroupPoseFov_Tooltip">The additional field of view from the 'Angle of View' Settings in the Group Pose Settings window.</sys:String>
 	<sys:String x:Key="LOC_OrbitCamera_GroupPoseRoll_Tooltip">The additional Z angle from the 'Roll Angle Setttings' in the Group Pose Settings window.</sys:String>
+	<sys:String x:Key="LOC_OrbitTargetCamera">Orbit Target</sys:String>
+	<sys:String x:Key="LOC_OrbitTargetCamera_Offset">Target Offset</sys:String>
+	<sys:String x:Key="LOC_FreeCamera">Free</sys:String>
 
 	<!--  Tags  -->
 	<sys:String x:Key="LOC_Tag_LegacyPose">Legacy Pose</sys:String>
