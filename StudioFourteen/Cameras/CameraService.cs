@@ -11,21 +11,9 @@ using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-
+using WpfUtils.Animation;
 using RenderCamera = FFXIVClientStructs.FFXIV.Client.Graphics.Render.Camera;
 using SceneCamera = FFXIVClientStructs.FFXIV.Client.Graphics.Scene.Camera;
-
-[StructLayout(LayoutKind.Explicit, Size = 0x2B0)]
-internal struct Camera
-{
-	[FieldOffset(0x12C)] public float FoV;
-	[FieldOffset(0x130)] public Vector2 Angle;
-	[FieldOffset(0x150)] public Vector2 Pan;
-	[FieldOffset(0x160)] public float Rotation;
-	[FieldOffset(0x208)] public Vector2 Collide;
-
-	[FieldOffset(16)] public SceneCamera SceneCamera;
-}
 
 public class CameraService : ServiceBase
 {
@@ -54,12 +42,16 @@ public class CameraService : ServiceBase
 		}
 	}
 
+	public EasingFunctionBase BlendEase { get; set; } = new SineEase();
+
 	public List<StudioCameraBase> Cameras { get; init; } = new();
 
 	public override Task Start()
 	{
 		this.current = new OrbitTargetCamera();
 		this.Cameras.Add(this.current);
+
+		this.Cameras.Add(new OrbitTargetCamera());
 
 		unsafe
 		{
@@ -88,9 +80,24 @@ public class CameraService : ServiceBase
 
 		nint result = this.cameraUpdateHook.Original(camera);
 
-		if (this.Services.GroupPose.IsGroupPosing)
+		if (this.Services.GroupPose.IsGroupPosing && this.current != null)
 		{
-			this.Write(camera);
+			float blendValue = 0;
+			if (this.last != null)
+			{
+				blendValue = this.blendWatch.ElapsedMilliseconds / CameraBlendTimeMs;
+
+				blendValue = this.BlendEase.Ease(blendValue, EasingFunctionBase.EasingModes.EaseInOut);
+
+				if (this.blendWatch.ElapsedMilliseconds > CameraBlendTimeMs)
+				{
+					blendValue = 0;
+					this.last = null;
+				}
+			}
+
+			camera->ViewMatrix = this.current.Calculate(this.last, 1 - blendValue);
+			this.CameraMatrixLoad(camera->RenderCamera, (nint)(&camera->ViewMatrix));
 		}
 
 		return result;
@@ -102,28 +109,5 @@ public class CameraService : ServiceBase
 			return;
 
 		this.cameraMatrixLoadHook.Original(camera, a1);
-	}
-
-	private unsafe void Write(SceneCamera* camera)
-	{
-		if (this.current == null)
-			return;
-
-		/*if (this.last != null)
-		{
-			float value = this.blendWatch.ElapsedMilliseconds / CameraBlendTimeMs;
-
-			if (value > 1.0)
-			{
-				this.last = null;
-			}
-		}
-		else
-		{
-			this.live.Import(this.current);
-		}*/
-
-		camera->ViewMatrix = this.current.Calculate();
-		this.CameraMatrixLoad(camera->RenderCamera, (nint)(&camera->ViewMatrix));
 	}
 }
