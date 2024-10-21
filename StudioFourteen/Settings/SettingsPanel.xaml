@@ -16,11 +16,12 @@
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	TitleIcon="Gears"
 	mc:Ignorable="d">
+
 	<TabControl>
 
 		<TabItem Header="{DynamicResource LOC_Settings_Interface}">
 			<StackPanel>
-				<CheckBox
+				<ToggleButton
 					Grid.Row="0"
 					Margin="1"
 					Content="{DynamicResource LOC_Settings_Interface_IsSpa}"
@@ -66,7 +67,7 @@
 					<RowDefinition />
 				</Grid.RowDefinitions>
 
-				<CheckBox
+				<ToggleButton
 					Grid.Row="0"
 					Margin="1"
 					Content="{DynamicResource LOC_Settings_Input_EnableKeyBinds}"
@@ -83,23 +84,23 @@
 								</Grid.Resources>
 
 								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="150" />
+									<ColumnDefinition Width="100" />
 									<ColumnDefinition />
 								</Grid.ColumnDefinitions>
 
-								<TextBlock
-									Grid.Column="0"
-									Margin="0,0,6,0"
-									HorizontalAlignment="Right"
-									VerticalAlignment="Center"
-									Foreground="{DynamicResource ForegroundLightBrush}"
-									Text="{Binding Key, Converter={StaticResource EventToString}}" />
-
 								<settings:KeyBindEditor
-									Grid.Column="1"
+									Grid.Column="0"
 									HorizontalContentAlignment="Center"
 									KeyBind="{Binding Value}"
 									Style="{DynamicResource WpfUtilsTextBox}" />
+
+								<TextBlock
+									Grid.Column="1"
+									Margin="6,0,0,0"
+									HorizontalAlignment="Left"
+									VerticalAlignment="Center"
+									Foreground="{DynamicResource ForegroundLightBrush}"
+									Text="{Binding Key, Converter={StaticResource EventToString}}" />
 
 							</Grid>
 						</DataTemplate>
