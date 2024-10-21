@@ -531,7 +531,7 @@
 							Grid.Column="1"
 							Background="Transparent"
 							IsChecked="{Binding LinkEyeColors}"
-							Style="{StaticResource WpfUtilsToggleButton}">
+							Style="{StaticResource WpfUtilsIconToggleButton}">
 
 							<wpfUtils:IconBlock Icon="Link" />
 

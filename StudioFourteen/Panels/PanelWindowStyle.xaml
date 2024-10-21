@@ -18,7 +18,7 @@
 
 	<Style
 		x:Key="TitlebarToggleButton"
-		BasedOn="{StaticResource WpfUtilsToggleButton}"
+		BasedOn="{StaticResource WpfUtilsIconToggleButton}"
 		TargetType="{x:Type ToggleButton}">
 		<Setter Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
 		<Setter Property="Background" Value="Transparent" />
@@ -218,9 +218,9 @@
 						</StackPanel>
 
 						<Border
-							Margin="0,3,3,0"
+							Margin="0,1,1,0"
 							HorizontalAlignment="Right"
-							Background="{DynamicResource ControlBackgroundBrush}"
+							Background="Transparent"
 							Style="{DynamicResource WpfUtilsControlBorder}">
 
 							<Border.Visibility>
