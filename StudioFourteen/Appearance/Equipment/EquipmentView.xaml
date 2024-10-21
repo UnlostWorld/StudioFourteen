@@ -23,9 +23,7 @@
 				<Setter Property="Template">
 					<Setter.Value>
 						<ControlTemplate TargetType="{x:Type Button}">
-							<Grid
-								Cursor="Hand"
-								TextBlock.Foreground="{DynamicResource ForegroundLightBrush}">
+							<Grid TextBlock.Foreground="{DynamicResource ForegroundLightBrush}">
 
 								<Grid>
 

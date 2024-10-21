@@ -205,7 +205,6 @@
 			x:Name="DragThumb"
 			Height="15"
 			VerticalAlignment="Top"
-			Cursor="Hand"
 			DragDelta="OnDragDelta">
 			<Thumb.Template>
 				<ControlTemplate TargetType="{x:Type Thumb}">

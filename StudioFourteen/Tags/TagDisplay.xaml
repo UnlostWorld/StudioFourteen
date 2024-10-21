@@ -25,8 +25,7 @@
 					<ControlTemplate TargetType="{x:Type Button}">
 						<Grid
 							Height="20"
-							Margin="2,2"
-							Cursor="Hand">
+							Margin="2,2">
 
 							<Border
 								Background="{DynamicResource BackgroundLightBrush}"

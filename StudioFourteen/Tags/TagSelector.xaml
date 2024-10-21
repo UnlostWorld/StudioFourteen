@@ -38,7 +38,6 @@
 			<Grid
 				Height="20"
 				Margin="2,3"
-				Cursor="Hand"
 				MouseDown="OnTagMouseDown"
 				MouseUp="OnTagMouseUp">
 
