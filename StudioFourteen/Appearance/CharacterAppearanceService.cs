@@ -16,11 +16,12 @@ using Serilog;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Collections.Concurrent;
 
 public class CharacterAppearanceService : ServiceBase
 {
 	private readonly GroupPoseCharactersLibrarySource provider = new();
-	private readonly Dictionary<int, CharacterBackupAppearance> backup = new();
+	private readonly ConcurrentDictionary<int, CharacterBackupAppearance> backup = new();
 
 	private Hook<EnforceKindRestrictionsDelegate>? enforceKindRestrictionsHook;
 
@@ -70,7 +71,7 @@ public class CharacterAppearanceService : ServiceBase
 		if (this.backup.ContainsKey(index))
 			return;
 
-		this.backup.Add(index, new(character));
+		this.backup.TryAdd(index, new(character));
 	}
 
 	public unsafe void Backup(Character* character)
@@ -80,7 +81,7 @@ public class CharacterAppearanceService : ServiceBase
 		if (this.backup.ContainsKey(index))
 			return;
 
-		this.backup.Add(index, new(character));
+		this.backup.TryAdd(index, new(character));
 	}
 
 	/*public async Task Restore(Character* character)
@@ -95,7 +96,7 @@ public class CharacterAppearanceService : ServiceBase
 			return;
 
 		await this.backup[objectTableIndex].Apply(objectTableIndex, CharacterExtensions.UpdateSource.Restore);
-		this.backup.Remove(objectTableIndex);
+		this.backup.TryRemove(objectTableIndex, out var _);
 	}
 
 	private void OnGroupPoseStateChange(bool newState)

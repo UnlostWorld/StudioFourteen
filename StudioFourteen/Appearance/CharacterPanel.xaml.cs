@@ -1,15 +1,17 @@
 ﻿namespace StudioFourteen.Appearance;
 
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using StudioFourteen.Files;
 using StudioFourteen.Library;
 using StudioFourteen.Mvm;
 using StudioFourteen.Panels;
 using System.Windows;
-using System.Windows.Controls;
 using WpfUtils.Extensions;
 
 public partial class CharacterPanel : CharacterPanelBase
 {
+	public CustomizeViewModel Customize { get; init; } = new();
+
 	[AutoNotify] public unsafe bool CanRevert => this.Services.CharacterAppearance.CanRestore(this.Target);
 	[AutoNotify] public string ExportAppearanceToolTipText => string.Format(StudioFourteen.Resources.Find("LOC_Save_ExportAppearanceToolTip", string.Empty), this.CharacterName);
 
@@ -19,6 +21,23 @@ public partial class CharacterPanel : CharacterPanelBase
 		get => this.GetPersistence<int>();
 		set => this.SetPersistence(value);
 	}
+
+	[AutoNotify] public WeaponViewModel MainHand { get; init; } = new(DrawDataContainer.WeaponSlot.MainHand);
+	[AutoNotify] public WeaponViewModel OffHand { get; init; } = new(DrawDataContainer.WeaponSlot.OffHand);
+
+	[AutoNotify] public ItemEquipViewModel Head { get; init; } = new(DrawDataContainer.EquipmentSlot.Head);
+	[AutoNotify] public ItemEquipViewModel Chest { get; init; } = new(DrawDataContainer.EquipmentSlot.Body);
+	[AutoNotify] public ItemEquipViewModel Hands { get; init; } = new(DrawDataContainer.EquipmentSlot.Hands);
+	[AutoNotify] public ItemEquipViewModel Legs { get; init; } = new(DrawDataContainer.EquipmentSlot.Legs);
+	[AutoNotify] public ItemEquipViewModel Feet { get; init; } = new(DrawDataContainer.EquipmentSlot.Feet);
+	[AutoNotify] public ItemEquipViewModel Earring { get; init; } = new(DrawDataContainer.EquipmentSlot.Ears);
+	[AutoNotify] public ItemEquipViewModel Necklace { get; init; } = new(DrawDataContainer.EquipmentSlot.Neck);
+	[AutoNotify] public ItemEquipViewModel Bracelet { get; init; } = new(DrawDataContainer.EquipmentSlot.Wrists);
+	[AutoNotify] public ItemEquipViewModel RingRight { get; init; } = new(DrawDataContainer.EquipmentSlot.RFinger);
+	[AutoNotify] public ItemEquipViewModel RingLeft { get; init; } = new(DrawDataContainer.EquipmentSlot.LFinger);
+
+	public AccessoryViewModel Glasses { get; init; } = new(AccessorySlots.Glasses);
+	public OrnamentViewModel Ornament { get; init; } = new();
 
 	private unsafe void OnRevertClicked(object sender, RoutedEventArgs e)
 	{

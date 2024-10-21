@@ -8,7 +8,7 @@ using StudioFourteen.Mvm;
 using StudioFourteen.Utilities;
 using System.Collections.Generic;
 
-public partial class CustomizeView : View
+public partial class CustomizeViewModel : AutoViewModel
 {
 	private CharaMakeType? makeType;
 	private bool linkEyeColors = false;
@@ -78,11 +78,6 @@ public partial class CustomizeView : View
 					this.SetCustomizeValue(CustomizeIndex.ModelType, (byte)ModelTypes.Normal, false);
 
 				this.UpdateCustomize(true);
-
-				this.Dispatcher.Invoke(() =>
-				{
-					this.TribeSelector.SelectedIndex = tribeIndex;
-				});
 			});
 		}
 	}

@@ -19,7 +19,7 @@
 		<ItemsControl ItemsSource="{Binding Options}">
 			<ItemsControl.ItemsPanel>
 				<ItemsPanelTemplate>
-					<UniformGrid Rows="1" />
+					<UniformGrid Rows="2" />
 				</ItemsPanelTemplate>
 			</ItemsControl.ItemsPanel>
 			<ItemsControl.ItemTemplate>
@@ -27,7 +27,8 @@
 					<ToggleButton
 						Height="64"
 						Background="Transparent"
-						IsChecked="{Binding IsEnabled}">
+						IsChecked="{Binding IsEnabled}"
+						Style="{DynamicResource WpfUtilsIconToggleButton}">
 
 						<Grid>
 							<Image

@@ -57,7 +57,8 @@
 							VerticalContentAlignment="Stretch"
 							Background="Transparent"
 							Foreground="Black"
-							IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}">
+							IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
+							Style="{DynamicResource WpfUtilsIconToggleButton}">
 
 							<Border
 								Margin="4"

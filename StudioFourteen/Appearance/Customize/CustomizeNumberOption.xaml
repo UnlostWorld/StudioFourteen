@@ -35,7 +35,8 @@
 				Width="28"
 				Margin="0"
 				Background="Transparent"
-				IsChecked="{Binding ManualEntry}">
+				IsChecked="{Binding ManualEntry}"
+				Style="{DynamicResource WpfUtilsIconToggleButton}">
 				<wpfUtils:IconBlock
 					FontSize="10"
 					Icon="Pen" />
