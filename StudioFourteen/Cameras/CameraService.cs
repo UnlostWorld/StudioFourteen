@@ -108,7 +108,10 @@ public class CameraService : ServiceBase
 		if (this.gPoseCameraUpdateHook == null)
 			return 0;
 
-		this.current?.ImportGroupPoseSettings(camera);
+		if (this.Services.GroupPose.IsGroupPosing && this.current != null)
+		{
+			this.current?.ImportGroupPoseSettings(camera);
+		}
 
 		return this.gPoseCameraUpdateHook.Original(camera);
 	}
@@ -120,13 +123,13 @@ public class CameraService : ServiceBase
 
 		nint result = this.sceneCameraUpdateHook.Original(camera);
 
-		if (this.current != null && !this.current.IsInitialized)
-		{
-			this.current.Initialize(this.state);
-		}
-
 		if (this.Services.GroupPose.IsGroupPosing && this.current != null)
 		{
+			if (!this.current.IsInitialized)
+			{
+				this.current.Initialize(this.state);
+			}
+
 			float blendValue = 0;
 			if (this.last != null)
 			{
