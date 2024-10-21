@@ -16,15 +16,16 @@
 	ResizeMode="NoResize"
 	TitleIcon="VideoCamera"
 	mc:Ignorable="d">
-	<Grid>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="100" />
-			<ColumnDefinition />
-		</Grid.ColumnDefinitions>
+	<Border
+		Grid.Column="0"
+		Style="{DynamicResource WpfUtilsControlBorder}">
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="100" />
+				<ColumnDefinition />
+			</Grid.ColumnDefinitions>
 
-		<Border
-			Grid.Column="0"
-			Style="{DynamicResource WpfUtilsControlBorder}">
+
 			<Grid>
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
@@ -34,6 +35,7 @@
 
 				<ListBox
 					Grid.Row="0"
+					Margin="0,0,-10,0"
 					Background="Transparent"
 					ItemsSource="{Binding Services.Camera.Cameras}"
 					SelectedValue="{Binding Services.Camera.Current}"
@@ -41,7 +43,7 @@
 
 					<ListBox.ItemTemplate>
 						<DataTemplate>
-							<Grid Margin="6,0,0,0">
+							<Grid Margin="6,0,10,0">
 								<Grid.RowDefinitions>
 									<RowDefinition Height="Auto" />
 									<RowDefinition Height="Auto" />
@@ -65,205 +67,213 @@
 
 				<ToggleButton
 					Grid.Row="1"
-					Margin="6"
+					Height="32"
+					Margin="0,6,0,0"
 					Background="Transparent"
-					Content="+ New" />
+					Content="+ New"
+					Style="{DynamicResource WpfUtilsIconToggleButton}" />
 			</Grid>
-		</Border>
 
-		<ContentPresenter
-			Grid.Column="1"
-			Content="{Binding Services.Camera.Current}">
-			<ContentPresenter.Resources>
+			<Border
+				Grid.Column="1"
+				Margin="2"
+				Background="{DynamicResource BackgroundBrush}"
+				CornerRadius="6">
 
-				<!--  Orbit Camera  -->
-				<DataTemplate DataType="{x:Type cameras:OrbitCamera}">
-					<StackPanel>
-						<TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+				<ContentPresenter
+					Margin="3"
+					Content="{Binding Services.Camera.Current}">
+					<ContentPresenter.Resources>
 
-						<TextBlock
-							Style="{DynamicResource LeftLabel}"
-							Text="{DynamicResource LOC_OrbitCamera_Target}" />
-						<controls1:Vector3Box
-							TickFrequency="0.01"
-							Value="{Binding Target}" />
+						<!--  Orbit Camera  -->
+						<DataTemplate DataType="{x:Type cameras:OrbitCamera}">
+							<StackPanel>
+								<TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
 
-						<Grid>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-							</Grid.RowDefinitions>
+								<TextBlock
+									Style="{DynamicResource LeftLabel}"
+									Text="{DynamicResource LOC_OrbitCamera_Target}" />
+								<controls1:Vector3Box
+									TickFrequency="0.01"
+									Value="{Binding Target}" />
 
-							<TextBlock
-								Grid.Row="0"
-								Style="{DynamicResource LeftLabel}"
-								Text="{DynamicResource LOC_Camera_Fov}" />
+								<Grid>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="Auto" />
+									</Grid.RowDefinitions>
 
-							<TextBlock
-								Grid.Row="0"
-								Margin="0,0,3,0"
-								Style="{DynamicResource RightLabel}"
-								Text="{Binding GroupPoseFovAdjust, Mode=OneWay, StringFormat='{}{0:+#°;-#°;}'}"
-								ToolTip="{DynamicResource LOC_OrbitCamera_GroupPoseFov_Tooltip}"
-								Visibility="{Binding GroupPoseFovAdjust, Converter={StaticResource NotZeroToVisibility}}" />
+									<TextBlock
+										Grid.Row="0"
+										Style="{DynamicResource LeftLabel}"
+										Text="{DynamicResource LOC_Camera_Fov}" />
 
-							<controls:NumberBox
-								Grid.Row="1"
-								Maximum="220"
-								Minimum="0"
-								Slider="Absolute"
-								TickFrequency="0.01"
-								Value="{Binding FieldOfView}" />
-						</Grid>
+									<TextBlock
+										Grid.Row="0"
+										Margin="0,0,3,0"
+										Style="{DynamicResource RightLabel}"
+										Text="{Binding GroupPoseFovAdjust, Mode=OneWay, StringFormat='{}{0:+#°;-#°;}'}"
+										ToolTip="{DynamicResource LOC_OrbitCamera_GroupPoseFov_Tooltip}"
+										Visibility="{Binding GroupPoseFovAdjust, Converter={StaticResource NotZeroToVisibility}}" />
 
-
-						<TextBlock
-							Style="{DynamicResource LeftLabel}"
-							Text="{DynamicResource LOC_OrbitCamera_Distance}" />
-						<controls:NumberBox
-							Maximum="300"
-							Minimum="0.1"
-							Slider="Absolute"
-							TickFrequency="1"
-							Value="{Binding Distance}" />
-
-						<Grid>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-							</Grid.RowDefinitions>
-
-							<TextBlock
-								Grid.Row="0"
-								Style="{DynamicResource LeftLabel}"
-								Text="{DynamicResource LOC_OrbitCamera_Angle}" />
-
-							<TextBlock
-								Grid.Row="0"
-								Margin="0,0,3,0"
-								Style="{DynamicResource RightLabel}"
-								Text="{Binding GroupPoseRollAdjust, Mode=OneWay, StringFormat='{}{0:+#°;-#°;}'}"
-								ToolTip="{DynamicResource LOC_OrbitCamera_GroupPoseRoll_Tooltip}"
-								Visibility="{Binding GroupPoseRollAdjust, Converter={StaticResource NotZeroToVisibility}}" />
-
-							<controls1:Vector3Box
-								Grid.Row="1"
-								Maximum="360"
-								Minimum="0"
-								TickFrequency="1"
-								Wrap="True"
-								Value="{Binding Angle}" />
-						</Grid>
-
-					</StackPanel>
-				</DataTemplate>
-
-				<!--  Orbit Target Camera  -->
-				<DataTemplate DataType="{x:Type cameras:OrbitTargetCamera}">
-					<StackPanel>
-						<TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
-
-						<TextBlock
-							Style="{DynamicResource LeftLabel}"
-							Text="{DynamicResource LOC_OrbitTargetCamera_Offset}" />
-						<controls1:Vector3Box
-							TickFrequency="0.01"
-							Value="{Binding TargetOffset}" />
-
-						<Grid>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-							</Grid.RowDefinitions>
-
-							<TextBlock
-								Grid.Row="0"
-								Style="{DynamicResource LeftLabel}"
-								Text="{DynamicResource LOC_Camera_Fov}" />
-
-							<TextBlock
-								Grid.Row="0"
-								Margin="0,0,3,0"
-								Style="{DynamicResource RightLabel}"
-								Text="{Binding GroupPoseFovAdjust, Mode=OneWay, StringFormat='{}{0:+#°;-#°;}'}"
-								ToolTip="{DynamicResource LOC_OrbitCamera_GroupPoseFov_Tooltip}"
-								Visibility="{Binding GroupPoseFovAdjust, Converter={StaticResource NotZeroToVisibility}}" />
-
-							<controls:NumberBox
-								Grid.Row="1"
-								Maximum="220"
-								Minimum="0"
-								Slider="Absolute"
-								TickFrequency="0.01"
-								Value="{Binding FieldOfView}" />
-						</Grid>
+									<controls:NumberBox
+										Grid.Row="1"
+										Maximum="220"
+										Minimum="0"
+										Slider="Absolute"
+										TickFrequency="0.01"
+										Value="{Binding FieldOfView}" />
+								</Grid>
 
 
-						<TextBlock
-							Style="{DynamicResource LeftLabel}"
-							Text="{DynamicResource LOC_OrbitCamera_Distance}" />
-						<controls:NumberBox
-							Maximum="300"
-							Minimum="0.1"
-							Slider="Absolute"
-							TickFrequency="1"
-							Value="{Binding Distance}" />
+								<TextBlock
+									Style="{DynamicResource LeftLabel}"
+									Text="{DynamicResource LOC_OrbitCamera_Distance}" />
+								<controls:NumberBox
+									Maximum="300"
+									Minimum="0.1"
+									Slider="Absolute"
+									TickFrequency="1"
+									Value="{Binding Distance}" />
 
-						<Grid>
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="Auto" />
-							</Grid.RowDefinitions>
+								<Grid>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="Auto" />
+									</Grid.RowDefinitions>
 
-							<TextBlock
-								Grid.Row="0"
-								Style="{DynamicResource LeftLabel}"
-								Text="{DynamicResource LOC_OrbitCamera_Angle}" />
+									<TextBlock
+										Grid.Row="0"
+										Style="{DynamicResource LeftLabel}"
+										Text="{DynamicResource LOC_OrbitCamera_Angle}" />
 
-							<TextBlock
-								Grid.Row="0"
-								Margin="0,0,3,0"
-								Style="{DynamicResource RightLabel}"
-								Text="{Binding GroupPoseRollAdjust, Mode=OneWay, StringFormat='{}{0:+#°;-#°;}'}"
-								ToolTip="{DynamicResource LOC_OrbitCamera_GroupPoseRoll_Tooltip}"
-								Visibility="{Binding GroupPoseRollAdjust, Converter={StaticResource NotZeroToVisibility}}" />
+									<TextBlock
+										Grid.Row="0"
+										Margin="0,0,3,0"
+										Style="{DynamicResource RightLabel}"
+										Text="{Binding GroupPoseRollAdjust, Mode=OneWay, StringFormat='{}{0:+#°;-#°;}'}"
+										ToolTip="{DynamicResource LOC_OrbitCamera_GroupPoseRoll_Tooltip}"
+										Visibility="{Binding GroupPoseRollAdjust, Converter={StaticResource NotZeroToVisibility}}" />
 
-							<controls1:Vector3Box
-								Grid.Row="1"
-								Maximum="360"
-								Minimum="0"
-								TickFrequency="1"
-								Wrap="True"
-								Value="{Binding Angle}" />
-						</Grid>
-					</StackPanel>
-				</DataTemplate>
+									<controls1:Vector3Box
+										Grid.Row="1"
+										Maximum="360"
+										Minimum="0"
+										TickFrequency="1"
+										Wrap="True"
+										Value="{Binding Angle}" />
+								</Grid>
+
+							</StackPanel>
+						</DataTemplate>
+
+						<!--  Orbit Target Camera  -->
+						<DataTemplate DataType="{x:Type cameras:OrbitTargetCamera}">
+							<StackPanel>
+								<TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+
+								<TextBlock
+									Style="{DynamicResource LeftLabel}"
+									Text="{DynamicResource LOC_OrbitTargetCamera_Offset}" />
+								<controls1:Vector3Box
+									TickFrequency="0.01"
+									Value="{Binding TargetOffset}" />
+
+								<Grid>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="Auto" />
+									</Grid.RowDefinitions>
+
+									<TextBlock
+										Grid.Row="0"
+										Style="{DynamicResource LeftLabel}"
+										Text="{DynamicResource LOC_Camera_Fov}" />
+
+									<TextBlock
+										Grid.Row="0"
+										Margin="0,0,3,0"
+										Style="{DynamicResource RightLabel}"
+										Text="{Binding GroupPoseFovAdjust, Mode=OneWay, StringFormat='{}{0:+#°;-#°;}'}"
+										ToolTip="{DynamicResource LOC_OrbitCamera_GroupPoseFov_Tooltip}"
+										Visibility="{Binding GroupPoseFovAdjust, Converter={StaticResource NotZeroToVisibility}}" />
+
+									<controls:NumberBox
+										Grid.Row="1"
+										Maximum="220"
+										Minimum="0"
+										Slider="Absolute"
+										TickFrequency="0.01"
+										Value="{Binding FieldOfView}" />
+								</Grid>
 
 
-				<!--  Free Target Camera  -->
-				<DataTemplate DataType="{x:Type cameras:FreeCamera}">
-					<StackPanel>
-						<TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+								<TextBlock
+									Style="{DynamicResource LeftLabel}"
+									Text="{DynamicResource LOC_OrbitCamera_Distance}" />
+								<controls:NumberBox
+									Maximum="300"
+									Minimum="0.1"
+									Slider="Absolute"
+									TickFrequency="1"
+									Value="{Binding Distance}" />
 
-						<TextBlock
-							Style="{DynamicResource LeftLabel}"
-							Text="{DynamicResource LOC_FreeCamera_Position}" />
-						<controls1:Vector3Box
-							TickFrequency="0.01"
-							Value="{Binding Position}" />
+								<Grid>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="Auto" />
+									</Grid.RowDefinitions>
 
-						<Grid
-							Grid.Row="0"
-							Height="168">
-							<pose:RotationGizmo Rotation="{Binding Rotation, Mode=TwoWay}" />
-						</Grid>
+									<TextBlock
+										Grid.Row="0"
+										Style="{DynamicResource LeftLabel}"
+										Text="{DynamicResource LOC_OrbitCamera_Angle}" />
 
-					</StackPanel>
-				</DataTemplate>
+									<TextBlock
+										Grid.Row="0"
+										Margin="0,0,3,0"
+										Style="{DynamicResource RightLabel}"
+										Text="{Binding GroupPoseRollAdjust, Mode=OneWay, StringFormat='{}{0:+#°;-#°;}'}"
+										ToolTip="{DynamicResource LOC_OrbitCamera_GroupPoseRoll_Tooltip}"
+										Visibility="{Binding GroupPoseRollAdjust, Converter={StaticResource NotZeroToVisibility}}" />
+
+									<controls1:Vector3Box
+										Grid.Row="1"
+										Maximum="360"
+										Minimum="0"
+										TickFrequency="1"
+										Wrap="True"
+										Value="{Binding Angle}" />
+								</Grid>
+							</StackPanel>
+						</DataTemplate>
 
 
-			</ContentPresenter.Resources>
-		</ContentPresenter>
+						<!--  Free Target Camera  -->
+						<DataTemplate DataType="{x:Type cameras:FreeCamera}">
+							<StackPanel>
+								<TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
 
-	</Grid>
+								<TextBlock
+									Style="{DynamicResource LeftLabel}"
+									Text="{DynamicResource LOC_FreeCamera_Position}" />
+								<controls1:Vector3Box
+									TickFrequency="0.01"
+									Value="{Binding Position}" />
+
+								<Grid
+									Grid.Row="0"
+									Height="168">
+									<pose:RotationGizmo Rotation="{Binding Rotation, Mode=TwoWay}" />
+								</Grid>
+
+							</StackPanel>
+						</DataTemplate>
+
+
+					</ContentPresenter.Resources>
+				</ContentPresenter>
+			</Border>
+		</Grid>
+	</Border>
 </local:Panel>
