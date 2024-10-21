@@ -127,7 +127,8 @@
 				<ToggleButton
 					Width="28"
 					Margin="1,0"
-					IsChecked="{Binding Favorites}">
+					IsChecked="{Binding Favorites}"
+					Style="{DynamicResource WpfUtilsIconToggleButton}">
 					<wpfUtils:IconBlock
 						Icon="Heart"
 						IconFont="Solid" />

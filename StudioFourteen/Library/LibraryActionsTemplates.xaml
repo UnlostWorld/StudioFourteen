@@ -28,6 +28,7 @@
 					HorizontalAlignment="Left"
 					IsChecked="{Binding IsLiveExecute}"
 					IsEnabled="False"
+					Style="{DynamicResource WpfUtilsIconToggleButton}"
 					ToolTip="{DynamicResource LOC_Library_LivePreview}">
 					<Grid>
 						<wpfUtils:IconBlock
