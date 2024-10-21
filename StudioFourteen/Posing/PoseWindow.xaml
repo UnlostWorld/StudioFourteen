@@ -414,6 +414,7 @@
 
 					<Button
 						Width="100"
+						Background="Transparent"
 						Click="OnFlipPoseClicked">
 						<TextBlock Text="Flip Pose" />
 					</Button>
