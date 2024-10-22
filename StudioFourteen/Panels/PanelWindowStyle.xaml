@@ -94,7 +94,7 @@
 					Margin="16">
 					<Border
 						Background="Black"
-						CornerRadius="6">
+						CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}">
 						<Border.Effect>
 							<DropShadowEffect
 								Direction="270"
@@ -104,7 +104,7 @@
 
 					<Border
 						Background="{DynamicResource BackgroundBrush}"
-						CornerRadius="6">
+						CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}">
 						<Border
 							Margin="2"
 							Style="{DynamicResource WpfUtilsControlBorder}">
@@ -154,7 +154,7 @@
 
 				<Border
 					Background="{DynamicResource BackgroundBrush}"
-					CornerRadius="6" />
+					CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
 
 
 				<Grid ClipToBounds="True">
