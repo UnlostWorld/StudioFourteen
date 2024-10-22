@@ -50,6 +50,13 @@
 				Grid.Row="0"
 				ItemsSource="{Binding RecentDirectories}"
 				SelectedItem="{Binding SelectedDirectory}">
+
+				<wpfUtils:PopOut.Header>
+					<TextBlock
+						Margin="10"
+						Text="Select a Directory" />
+				</wpfUtils:PopOut.Header>
+
 				<ComboBox.Resources>
 					<DataTemplate DataType="{x:Type local:RecentDirectoryViewModel}">
 						<controls:PathDisplay File="{Binding Directory}" />
