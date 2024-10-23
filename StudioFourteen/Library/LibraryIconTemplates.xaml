@@ -7,58 +7,11 @@
 	xmlns:files="clr-namespace:StudioFourteen.Files"
 	xmlns:gameData="clr-namespace:StudioFourteen.GameData"
 	xmlns:library="clr-namespace:StudioFourteen.Library"
+	xmlns:markup="clr-namespace:WpfUtils.Markup;assembly=WpfUtils"
 	xmlns:services="clr-namespace:StudioFourteen.Services"
 	xmlns:sources="clr-namespace:StudioFourteen.Library.Sources"
 	xmlns:ss="clr-namespace:StudioFourteen"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
-
-
-	<DataTemplate DataType="{x:Type library:LibraryEntryBase}" />
-
-
-
-	<DataTemplate DataType="{x:Type gameData:DataSheetLibrarySource}">
-
-		<Viewbox CacheMode="BitmapCache">
-			<Grid>
-				<Grid>
-					<wpfUtils:IconBlock
-						Margin="11,12,9,8"
-						FontSize="72"
-						Foreground="#E3A626"
-						Icon="Folder"
-						IconFont="Solid"
-						Opacity="0.5" />
-
-					<wpfUtils:IconBlock
-						Margin="10"
-						FontSize="72"
-						Foreground="#FFD45E"
-						Icon="Folder"
-						IconFont="Solid" />
-
-				</Grid>
-
-				<Image
-					Width="32"
-					Height="32"
-					Margin="16,0,0,22"
-					HorizontalAlignment="Left"
-					VerticalAlignment="Bottom"
-					Opacity="0.5"
-					Source="pack://application:,,,/StudioFourteen;component/Assets/ffxiv-logo-dark.png" />
-
-			</Grid>
-		</Viewbox>
-
-	</DataTemplate>
-
-
-
-	<DataTemplate DataType="{x:Type appearance:GroupPoseCharactersLibrarySource}">
-		<controls:XivIconImage Id="061546" />
-	</DataTemplate>
-
 
 	<DataTemplate
 		x:Key="AppearanceIcon"
@@ -93,30 +46,11 @@
 		</DataTemplate.Triggers>
 	</DataTemplate>
 
-	<DataTemplate DataType="{x:Type excel:ResidentNpc}">
-		<ContentPresenter ContentTemplate="{StaticResource AppearanceIcon}" />
-	</DataTemplate>
-
-	<DataTemplate DataType="{x:Type excel:EventNpc}">
-		<ContentPresenter ContentTemplate="{StaticResource AppearanceIcon}" />
-	</DataTemplate>
-
-	<DataTemplate DataType="{x:Type excel:BattleNpc}">
-		<ContentPresenter ContentTemplate="{StaticResource AppearanceIcon}" />
-	</DataTemplate>
-
-	<DataTemplate DataType="{x:Type appearance:CharacterBackupAppearance}">
-		<ContentPresenter ContentTemplate="{StaticResource AppearanceIcon}" />
-	</DataTemplate>
-
-
-
 	<DataTemplate x:Key="SimpleIconTemplate">
 		<Viewbox>
 			<Grid
 				Width="48"
-				Height="48"
-				Margin="0,0,8,0">
+				Height="48">
 
 				<controls:XivTexImage
 					x:Name="IconBack"
@@ -149,43 +83,67 @@
 		</DataTemplate.Triggers>
 	</DataTemplate>
 
+	<DataTemplate
+		x:Key="LibraryIcon_DataSheetLibrarySource"
+		DataType="{x:Type gameData:DataSheetLibrarySource}">
 
-	<DataTemplate DataType="{x:Type excel:Item}">
-		<ContentPresenter ContentTemplate="{StaticResource SimpleIconTemplate}" />
+		<Viewbox CacheMode="BitmapCache">
+			<Grid>
+				<Grid>
+					<wpfUtils:IconBlock
+						Margin="11,12,9,8"
+						FontSize="72"
+						Foreground="#E3A626"
+						Icon="Folder"
+						IconFont="Solid"
+						Opacity="0.5" />
+
+					<wpfUtils:IconBlock
+						Margin="10"
+						FontSize="72"
+						Foreground="#FFD45E"
+						Icon="Folder"
+						IconFont="Solid" />
+
+				</Grid>
+
+				<Image
+					Width="32"
+					Height="32"
+					Margin="16,0,0,22"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Bottom"
+					Opacity="0.5"
+					Source="pack://application:,,,/StudioFourteen;component/Assets/ffxiv-logo-dark.png" />
+
+			</Grid>
+		</Viewbox>
 	</DataTemplate>
 
-	<DataTemplate DataType="{x:Type excel:Stain}">
-		<ContentPresenter ContentTemplate="{StaticResource SimpleIconTemplate}" />
+	<DataTemplate
+		x:Key="LibraryIcon_GroupPoseCharactersLibrarySource"
+		DataType="{x:Type appearance:GroupPoseCharactersLibrarySource}">
+		<controls:XivIconImage Id="061546" />
 	</DataTemplate>
 
-	<DataTemplate DataType="{x:Type excel:Glasses}">
-		<ContentPresenter ContentTemplate="{StaticResource SimpleIconTemplate}" />
+	<DataTemplate
+		x:Key="LibraryIcon_Territory"
+		DataType="{x:Type excel:Territory}">
+		<controls:XivIconImage Id="060430" />
 	</DataTemplate>
 
-	<DataTemplate DataType="{x:Type excel:Ornament}">
-		<ContentPresenter ContentTemplate="{StaticResource SimpleIconTemplate}" />
-	</DataTemplate>
-
-	<DataTemplate DataType="{x:Type excel:Weather}">
+	<DataTemplate
+		x:Key="LibraryIcon_Weather"
+		DataType="{x:Type excel:Weather}">
 		<Image
 			SnapsToDevicePixels="True"
 			Source="{Binding Icon.Source}" />
 	</DataTemplate>
 
-	<DataTemplate DataType="{x:Type excel:Companion}">
-		<ContentPresenter ContentTemplate="{StaticResource SimpleIconTemplate}" />
-	</DataTemplate>
 
-	<DataTemplate DataType="{x:Type excel:Mount}">
-		<ContentPresenter ContentTemplate="{StaticResource SimpleIconTemplate}" />
-	</DataTemplate>
-
-	<DataTemplate DataType="{x:Type excel:Perform}">
-		<ContentPresenter ContentTemplate="{StaticResource SimpleIconTemplate}" />
-	</DataTemplate>
-
-
-	<DataTemplate DataType="{x:Type files:AppearanceFileTypeInfo}">
+	<DataTemplate
+		x:Key="LibraryIcon_AppearanceFileTypeInfo"
+		DataType="{x:Type files:AppearanceFileTypeInfo}">
 		<Viewbox CacheMode="BitmapCache">
 			<Grid>
 				<wpfUtils:IconBlock
@@ -216,7 +174,9 @@
 	</DataTemplate>
 
 
-	<DataTemplate DataType="{x:Type files:PoseFileTypeInfo}">
+	<DataTemplate
+		x:Key="LibraryIcon_PoseFileTypeInfo"
+		DataType="{x:Type files:PoseFileTypeInfo}">
 		<Viewbox CacheMode="BitmapCache">
 			<Grid>
 				<wpfUtils:IconBlock
@@ -246,7 +206,9 @@
 		</Viewbox>
 	</DataTemplate>
 
-	<DataTemplate DataType="{x:Type files:SceneFileTypeInfo}">
+	<DataTemplate
+		x:Key="LibraryIcon_SceneFileTypeInfo"
+		DataType="{x:Type files:SceneFileTypeInfo}">
 		<Viewbox CacheMode="BitmapCache">
 			<Grid>
 				<wpfUtils:IconBlock
@@ -276,7 +238,9 @@
 		</Viewbox>
 	</DataTemplate>
 
-	<DataTemplate DataType="{x:Type sources:FileEntry}">
+	<DataTemplate
+		x:Key="LibraryIcon_FileEntry"
+		DataType="{x:Type sources:FileEntry}">
 
 		<Grid>
 			<ContentPresenter
@@ -311,7 +275,9 @@
 
 
 
-	<DataTemplate DataType="{x:Type sources:DirectoryEntry}">
+	<DataTemplate
+		x:Key="LibraryIcon_DirectoryEntry"
+		DataType="{x:Type sources:DirectoryEntry}">
 		<Viewbox CacheMode="BitmapCache">
 			<Grid>
 				<wpfUtils:IconBlock
@@ -332,7 +298,9 @@
 		</Viewbox>
 	</DataTemplate>
 
-	<DataTemplate DataType="{x:Type sources:FileSource}">
+	<DataTemplate
+		x:Key="LibraryIcon_FileSource"
+		DataType="{x:Type sources:FileSource}">
 		<Viewbox CacheMode="BitmapCache">
 			<Grid>
 				<wpfUtils:IconBlock
@@ -353,5 +321,103 @@
 			</Grid>
 		</Viewbox>
 	</DataTemplate>
+
+
+	<markup:TemplateSelector x:Key="LibraryIconTemplateSelector">
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type gameData:DataSheetLibrarySource}"
+			Template="{StaticResource LibraryIcon_DataSheetLibrarySource}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type appearance:GroupPoseCharactersLibrarySource}"
+			Template="{StaticResource LibraryIcon_GroupPoseCharactersLibrarySource}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type excel:ResidentNpc}"
+			Template="{StaticResource AppearanceIcon}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type excel:EventNpc}"
+			Template="{StaticResource AppearanceIcon}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type excel:BattleNpc}"
+			Template="{StaticResource AppearanceIcon}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type appearance:CharacterBackupAppearance}"
+			Template="{StaticResource AppearanceIcon}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type excel:Item}"
+			Template="{StaticResource SimpleIconTemplate}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type excel:Stain}"
+			Template="{StaticResource SimpleIconTemplate}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type excel:Glasses}"
+			Template="{StaticResource SimpleIconTemplate}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type excel:Ornament}"
+			Template="{StaticResource SimpleIconTemplate}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type excel:Weather}"
+			Template="{StaticResource LibraryIcon_Weather}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type excel:Companion}"
+			Template="{StaticResource SimpleIconTemplate}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type excel:Mount}"
+			Template="{StaticResource SimpleIconTemplate}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type excel:Perform}"
+			Template="{StaticResource SimpleIconTemplate}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type files:AppearanceFileTypeInfo}"
+			Template="{StaticResource LibraryIcon_AppearanceFileTypeInfo}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type files:PoseFileTypeInfo}"
+			Template="{StaticResource LibraryIcon_PoseFileTypeInfo}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type files:SceneFileTypeInfo}"
+			Template="{StaticResource LibraryIcon_SceneFileTypeInfo}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type sources:FileEntry}"
+			Template="{StaticResource LibraryIcon_FileEntry}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type sources:DirectoryEntry}"
+			Template="{StaticResource LibraryIcon_DirectoryEntry}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type sources:FileSource}"
+			Template="{StaticResource LibraryIcon_FileSource}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type excel:Territory}"
+			Template="{StaticResource LibraryIcon_Territory}" />
+
+	</markup:TemplateSelector>
+
+	<Style
+		x:Key="LibraryIcon"
+		TargetType="{x:Type ContentPresenter}">
+		<Setter Property="ContentTemplateSelector" Value="{StaticResource LibraryIconTemplateSelector}" />
+		<Setter Property="TextBlock.Foreground" Value="{DynamicResource ForegroundBrush}" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+		<Setter Property="HorizontalAlignment" Value="Stretch" />
+	</Style>
 
 </ResourceDictionary>

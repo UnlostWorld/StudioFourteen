@@ -9,6 +9,7 @@
 	xmlns:files="clr-namespace:StudioFourteen.Files"
 	xmlns:gameData="clr-namespace:StudioFourteen.GameData"
 	xmlns:library="clr-namespace:StudioFourteen.Library"
+	xmlns:markup="clr-namespace:WpfUtils.Markup;assembly=WpfUtils"
 	xmlns:sources="clr-namespace:StudioFourteen.Library.Sources"
 	xmlns:ss="clr-namespace:StudioFourteen"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
@@ -18,7 +19,9 @@
 	<converters:InvertedBoolToVisibilityConverter x:Key="!B2V" />
 	<converters:NotNullToBoolConverter x:Key="NotNullToBoolConverter" />
 
-	<DataTemplate DataType="{x:Type library:LibraryEntryBase}">
+	<DataTemplate
+		x:Key="LibraryActions_LibraryEntryBase"
+		DataType="{x:Type library:LibraryEntryBase}">
 		<Border Style="{DynamicResource WpfUtilsControlBorder}">
 			<Grid>
 				<!--  TODO: custom toggle button template for better heart animations  -->
@@ -48,7 +51,7 @@
 
 
 	<DataTemplate
-		x:Key="CharacterAppearance"
+		x:Key="LibraryActions_CharacterAppearance"
 		DataType="{x:Type appearance:ICharacterAppearance}">
 		<Border Style="{DynamicResource WpfUtilsControlBorder}">
 			<Grid>
@@ -81,31 +84,9 @@
 
 
 
-	<DataTemplate DataType="{x:Type excel:ResidentNpc}">
-		<ContentPresenter
-			Content="{Binding .}"
-			ContentTemplate="{StaticResource CharacterAppearance}" />
-	</DataTemplate>
-
-
-
-	<DataTemplate DataType="{x:Type excel:BattleNpc}">
-		<ContentPresenter
-			Content="{Binding .}"
-			ContentTemplate="{StaticResource CharacterAppearance}" />
-	</DataTemplate>
-
-
-
-	<DataTemplate DataType="{x:Type excel:EventNpc}">
-		<ContentPresenter
-			Content="{Binding .}"
-			ContentTemplate="{StaticResource CharacterAppearance}" />
-	</DataTemplate>
-
-
-
-	<DataTemplate DataType="{x:Type files:PoseFile}">
+	<DataTemplate
+		x:Key="LibraryActions_PoseFile"
+		DataType="{x:Type files:PoseFile}">
 		<Border Style="{DynamicResource WpfUtilsControlBorder}">
 			<Grid>
 				<Grid.ColumnDefinitions>
@@ -137,7 +118,9 @@
 
 
 
-	<DataTemplate DataType="{x:Type files:SceneFile}">
+	<DataTemplate
+		x:Key="LibraryActions_SceneFile"
+		DataType="{x:Type files:SceneFile}">
 		<StackPanel>
 
 			<TextBlock Style="{DynamicResource LeftLabel}">
@@ -223,9 +206,50 @@
 	</DataTemplate>
 
 
-
-	<DataTemplate DataType="{x:Type sources:FileEntry}">
+	<DataTemplate
+		x:Key="LibraryActions_FileEntry"
+		DataType="{x:Type sources:FileEntry}">
 		<ContentPresenter Content="{Binding File}" />
 	</DataTemplate>
+
+	<markup:TemplateSelector x:Key="LibraryActionsTemplateSelector">
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type library:LibraryEntryBase}"
+			Template="{StaticResource LibraryActions_LibraryEntryBase}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type excel:ResidentNpc}"
+			Template="{StaticResource LibraryActions_CharacterAppearance}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type excel:BattleNpc}"
+			Template="{StaticResource LibraryActions_CharacterAppearance}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type excel:EventNpc}"
+			Template="{StaticResource LibraryActions_CharacterAppearance}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type files:PoseFile}"
+			Template="{StaticResource LibraryActions_PoseFile}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type files:SceneFile}"
+			Template="{StaticResource LibraryActions_SceneFile}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type sources:FileEntry}"
+			Template="{StaticResource LibraryActions_FileEntry}" />
+
+	</markup:TemplateSelector>
+
+	<Style
+		x:Key="LibraryActions"
+		TargetType="{x:Type ContentPresenter}">
+		<Setter Property="ContentTemplateSelector" Value="{StaticResource LibraryActionsTemplateSelector}" />
+		<Setter Property="TextBlock.Foreground" Value="{DynamicResource ForegroundBrush}" />
+		<Setter Property="VerticalAlignment" Value="Bottom" />
+	</Style>
 
 </ResourceDictionary>

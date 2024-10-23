@@ -6,11 +6,14 @@
 	xmlns:excel="clr-namespace:StudioFourteen.GameData.Excel"
 	xmlns:gameData="clr-namespace:StudioFourteen.GameData"
 	xmlns:library="clr-namespace:StudioFourteen.Library"
+	xmlns:markup="clr-namespace:WpfUtils.Markup;assembly=WpfUtils"
 	xmlns:services="clr-namespace:StudioFourteen.Services"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
 
-	<DataTemplate DataType="{x:Type library:LibraryEntryBase}">
+	<DataTemplate
+		x:Key="LibraryInfo_Simple"
+		DataType="{x:Type library:LibraryEntryBase}">
 		<TextBlock
 			Margin="3,0,0,0"
 			Text="{Binding Name}"
@@ -18,17 +21,9 @@
 	</DataTemplate>
 
 
-
-	<DataTemplate DataType="{x:Type excel:LibraryExcelRow}">
-		<TextBlock
-			Margin="3,0,0,0"
-			Text="{Binding Name}"
-			TextWrapping="Wrap" />
-	</DataTemplate>
-
-
-
-	<DataTemplate DataType="{x:Type gameData:DataSheetLibrarySource}">
+	<DataTemplate
+		x:Key="LibraryInfo_DataSheetLibrarySource"
+		DataType="{x:Type gameData:DataSheetLibrarySource}">
 		<StackPanel>
 			<TextBlock
 				Margin="3,0,0,0"
@@ -43,8 +38,9 @@
 	</DataTemplate>
 
 
-
-	<DataTemplate DataType="{x:Type appearance:GroupPoseCharactersLibrarySource}">
+	<DataTemplate
+		x:Key="LibraryInfo_GroupPoseCharactersLibrarySource"
+		DataType="{x:Type appearance:GroupPoseCharactersLibrarySource}">
 		<StackPanel>
 			<TextBlock
 				Margin="3,0,0,0"
@@ -60,41 +56,33 @@
 
 
 
+	<markup:TemplateSelector x:Key="LibraryInfoTemplateSelector">
 
-	<DataTemplate x:Key="SimpleInfoTemplate">
-		<StackPanel>
-			<TextBlock
-				Grid.Row="0"
-				Text="{Binding Name}"
-				TextWrapping="Wrap" />
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type gameData:DataSheetLibrarySource}"
+			Template="{StaticResource LibraryInfo_DataSheetLibrarySource}" />
 
-			<!--<TextBlock
-				Grid.Row="2"
-				Style="{DynamicResource Subscript}"
-				Text="{Binding Description}"
-				TextWrapping="NoWrap" />-->
-		</StackPanel>
-	</DataTemplate>
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type appearance:GroupPoseCharactersLibrarySource}"
+			Template="{StaticResource LibraryInfo_GroupPoseCharactersLibrarySource}" />
 
-	<DataTemplate DataType="{x:Type excel:ResidentNpc}">
-		<ContentPresenter ContentTemplate="{StaticResource SimpleInfoTemplate}" />
-	</DataTemplate>
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type library:LibraryEntryBase}"
+			Template="{StaticResource LibraryInfo_Simple}" />
 
-	<DataTemplate DataType="{x:Type excel:Item}">
-		<ContentPresenter ContentTemplate="{StaticResource SimpleInfoTemplate}" />
-	</DataTemplate>
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type excel:LibraryExcelRow}"
+			Template="{StaticResource LibraryInfo_Simple}" />
 
-	<DataTemplate DataType="{x:Type excel:Stain}">
-		<ContentPresenter ContentTemplate="{StaticResource SimpleInfoTemplate}" />
-	</DataTemplate>
+	</markup:TemplateSelector>
 
-	<DataTemplate DataType="{x:Type excel:Glasses}">
-		<ContentPresenter ContentTemplate="{StaticResource SimpleInfoTemplate}" />
-	</DataTemplate>
-
-	<DataTemplate DataType="{x:Type excel:Ornament}">
-		<ContentPresenter ContentTemplate="{StaticResource SimpleInfoTemplate}" />
-	</DataTemplate>
+	<Style
+		x:Key="LibraryInfo"
+		TargetType="{x:Type ContentPresenter}">
+		<Setter Property="ContentTemplateSelector" Value="{StaticResource LibraryInfoTemplateSelector}" />
+		<Setter Property="TextBlock.Foreground" Value="{DynamicResource ForegroundBrush}" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+	</Style>
 
 
 </ResourceDictionary>

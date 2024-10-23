@@ -7,11 +7,20 @@
 	xmlns:gameData="clr-namespace:StudioFourteen.GameData"
 	xmlns:library="clr-namespace:StudioFourteen.Library"
 	xmlns:services="clr-namespace:StudioFourteen.Services"
+	xmlns:tags="clr-namespace:StudioFourteen.Tags"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
+
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="./LibraryIconTemplates.xaml" />
+		<ResourceDictionary Source="./LibraryInfoTemplates.xaml" />
+		<ResourceDictionary Source="./LibrarySidebarTemplates.xaml" />
+	</ResourceDictionary.MergedDictionaries>
+
 
 	<DataTemplate x:Key="LibraryTooltipTemplate">
 		<Grid>
 			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />
 				<RowDefinition />
 			</Grid.RowDefinitions>
@@ -33,41 +42,37 @@
 					Width="48"
 					Height="48"
 					Margin="-3,-6,0,0"
-					VerticalAlignment="Center"
 					Content="{Binding .}"
-					TextBlock.Foreground="{DynamicResource ForegroundBrush}">
-					<ContentPresenter.Resources>
-						<ResourceDictionary Source="./LibraryIconTemplates.xaml" />
-					</ContentPresenter.Resources>
-				</ContentPresenter>
+					Style="{StaticResource LibraryIcon}" />
 
 				<ContentPresenter
 					Grid.Column="1"
 					Margin="0,-6,6,0"
-					VerticalAlignment="Center"
 					Content="{Binding .}"
-					TextBlock.Foreground="{DynamicResource ForegroundBrush}">
-					<ContentPresenter.Resources>
-						<ResourceDictionary Source="./LibraryInfoTemplates.xaml" />
-					</ContentPresenter.Resources>
-				</ContentPresenter>
+					Style="{StaticResource LibraryInfo}" />
+
 			</Grid>
 
 
 			<ContentPresenter
-				Grid.Row="1"
+				Grid.Row="2"
 				Margin="3"
 				Content="{Binding .}"
-				TextBlock.Foreground="{DynamicResource ForegroundBrush}">
-				<ContentPresenter.Resources>
-					<ResourceDictionary Source="./LibrarySidebarTemplates.xaml" />
-				</ContentPresenter.Resources>
-			</ContentPresenter>
+				Style="{StaticResource LibrarySidebar}" />
+
 		</Grid>
 	</DataTemplate>
 
 
 	<DataTemplate DataType="{x:Type excel:ResidentNpc}">
+		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
+	</DataTemplate>
+
+	<DataTemplate DataType="{x:Type excel:BattleNpc}">
+		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
+	</DataTemplate>
+
+	<DataTemplate DataType="{x:Type excel:EventNpc}">
 		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
 	</DataTemplate>
 
@@ -84,6 +89,18 @@
 	</DataTemplate>
 
 	<DataTemplate DataType="{x:Type excel:Ornament}">
+		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
+	</DataTemplate>
+
+	<DataTemplate DataType="{x:Type excel:Mount}">
+		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
+	</DataTemplate>
+
+	<DataTemplate DataType="{x:Type excel:Territory}">
+		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
+	</DataTemplate>
+
+	<DataTemplate DataType="{x:Type excel:Companion}">
 		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
 	</DataTemplate>
 

@@ -6,47 +6,21 @@
 	xmlns:excel="clr-namespace:StudioFourteen.GameData.Excel"
 	xmlns:gameData="clr-namespace:StudioFourteen.GameData"
 	xmlns:library="clr-namespace:StudioFourteen.Library"
+	xmlns:markup="clr-namespace:WpfUtils.Markup;assembly=WpfUtils"
 	xmlns:sources="clr-namespace:StudioFourteen.Library.Sources"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
 	<converters:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter" />
 
-	<DataTemplate DataType="{x:Type library:LibraryEntryBase}" />
-	<DataTemplate DataType="{x:Type excel:LibraryExcelRow}" />
 
-
-
-	<DataTemplate x:Key="CharacterAppearance">
+	<DataTemplate x:Key="LibrarySidebar_CharacterAppearance">
 		<Grid />
 	</DataTemplate>
 
 
-
-	<DataTemplate DataType="{x:Type excel:ResidentNpc}">
-		<ContentPresenter
-			Content="{Binding .}"
-			ContentTemplate="{StaticResource CharacterAppearance}" />
-	</DataTemplate>
-
-
-
-	<DataTemplate DataType="{x:Type excel:BattleNpc}">
-		<ContentPresenter
-			Content="{Binding .}"
-			ContentTemplate="{StaticResource CharacterAppearance}" />
-	</DataTemplate>
-
-
-
-	<DataTemplate DataType="{x:Type excel:EventNpc}">
-		<ContentPresenter
-			Content="{Binding .}"
-			ContentTemplate="{StaticResource CharacterAppearance}" />
-	</DataTemplate>
-
-
-
-	<DataTemplate DataType="{x:Type excel:Item}">
+	<DataTemplate
+		x:Key="LibrarySidebar_Item"
+		DataType="{x:Type excel:Item}">
 		<Grid>
 			<StackPanel>
 				<TextBlock
@@ -72,7 +46,9 @@
 
 
 
-	<DataTemplate DataType="{x:Type sources:FileEntry}">
+	<DataTemplate
+		x:Key="LibrarySidebar_FileEntry"
+		DataType="{x:Type sources:FileEntry}">
 		<Grid>
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
@@ -118,5 +94,37 @@
 			</Grid>
 		</Grid>
 	</DataTemplate>
+
+	<markup:TemplateSelector x:Key="LibrarySidebarTemplateSelector">
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type excel:ResidentNpc}"
+			Template="{StaticResource LibrarySidebar_CharacterAppearance}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type excel:BattleNpc}"
+			Template="{StaticResource LibrarySidebar_CharacterAppearance}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type excel:EventNpc}"
+			Template="{StaticResource LibrarySidebar_CharacterAppearance}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type excel:Item}"
+			Template="{StaticResource LibrarySidebar_Item}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type sources:FileEntry}"
+			Template="{StaticResource LibrarySidebar_FileEntry}" />
+
+	</markup:TemplateSelector>
+
+	<Style
+		x:Key="LibrarySidebar"
+		TargetType="{x:Type ContentPresenter}">
+		<Setter Property="ContentTemplateSelector" Value="{StaticResource LibrarySidebarTemplateSelector}" />
+		<Setter Property="TextBlock.Foreground" Value="{DynamicResource ForegroundBrush}" />
+		<Setter Property="VerticalAlignment" Value="Top" />
+	</Style>
 
 </ResourceDictionary>

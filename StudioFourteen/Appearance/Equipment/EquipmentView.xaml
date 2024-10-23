@@ -139,6 +139,7 @@
 				Style="{DynamicResource IconButton}"
 				ToolTip="{Binding Item.Item}" />
 
+
 			<TextBlock
 				Grid.Row="0"
 				Grid.Column="0"

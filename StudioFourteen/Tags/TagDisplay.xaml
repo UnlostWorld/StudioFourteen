@@ -28,7 +28,7 @@
 							Margin="2,2">
 
 							<Border
-								Background="{DynamicResource BackgroundLightBrush}"
+								Background="{DynamicResource ForegroundLightBrush}"
 								CornerRadius="10,4,4,10"
 								Opacity="0.5" />
 
@@ -43,12 +43,13 @@
 								Height="10"
 								Margin="4"
 								HorizontalAlignment="Left"
-								Fill="{DynamicResource ControlBackgroundBrush}" />
+								Fill="{DynamicResource BackgroundBrush}" />
 
 							<ContentPresenter
 								Margin="18,2,6,2"
 								Content="{TemplateBinding Content}"
-								ContentTemplate="{TemplateBinding ContentTemplate}" />
+								ContentTemplate="{TemplateBinding ContentTemplate}"
+								TextBlock.Foreground="{DynamicResource ControlBackgroundBrush}" />
 						</Grid>
 
 						<ControlTemplate.Triggers>
@@ -97,22 +98,20 @@
 
 	</UserControl.Resources>
 
-	<Grid x:Name="ContentArea">
-		<Border
-			Style="{DynamicResource WpfUtilsControlBorder}"
-			Visibility="{Binding Tags.Count, Converter={StaticResource NotZeroToVisibility}}">
-			<ItemsControl
-				Margin="3"
-				ItemTemplate="{StaticResource TagItem}"
-				ItemsSource="{Binding Tags}"
-				ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+	<Grid
+		x:Name="ContentArea"
+		Visibility="{Binding Tags.Count, Converter={StaticResource NotZeroToVisibility}}">
+		<ItemsControl
+			Margin="3"
+			ItemTemplate="{StaticResource TagItem}"
+			ItemsSource="{Binding Tags}"
+			ScrollViewer.HorizontalScrollBarVisibility="Disabled">
 
-				<ItemsControl.ItemsPanel>
-					<ItemsPanelTemplate>
-						<WrapPanel IsItemsHost="True" />
-					</ItemsPanelTemplate>
-				</ItemsControl.ItemsPanel>
-			</ItemsControl>
-		</Border>
+			<ItemsControl.ItemsPanel>
+				<ItemsPanelTemplate>
+					<WrapPanel IsItemsHost="True" />
+				</ItemsPanelTemplate>
+			</ItemsControl.ItemsPanel>
+		</ItemsControl>
 	</Grid>
 </UserControl>
