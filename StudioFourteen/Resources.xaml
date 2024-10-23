@@ -24,7 +24,7 @@
 		<ResourceDictionary Source="./Languages/English.xaml" />
 
 		<!--  Templates  -->
-		<ResourceDictionary Source="./GameData/Templates/Item.xaml" />
+		<ResourceDictionary Source="./Library/LibraryTooltipTemplates.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 
 	<!--  Custom converters  -->

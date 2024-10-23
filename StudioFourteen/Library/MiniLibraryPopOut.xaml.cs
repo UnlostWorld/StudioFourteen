@@ -22,7 +22,6 @@ using WpfUtils.Utils;
 public partial class MiniLibraryPopOut : View
 {
 	private static MiniLibraryPopOut? instance;
-	private static bool isInstanceOpen = false;
 	private readonly FuncQueue searchQueue;
 
 	private object? currentEntry;
@@ -78,7 +77,7 @@ public partial class MiniLibraryPopOut : View
 
 	public static async Task<bool> CloseAsync()
 	{
-		if (instance != null && instance.host != null && instance.host.IsOpen)
+		if (instance != null && instance.host != null)
 		{
 			bool wasOpen = await instance.host.Dispatcher.InvokeAsync<bool>(() =>
 			{
@@ -124,42 +123,37 @@ public partial class MiniLibraryPopOut : View
 	{
 		await CloseAsync();
 
-		if (instance == null || instance.host == null)
-		{
-			instance = new MiniLibraryPopOut();
-			instance.host = PopOut.Show(placementTarget, instance);
-			instance.host.Background = StudioFourteen.Resources.Find("ControlBackgroundBrush") as Brush;
-			instance.host.StaysOpen = true;
+		await placementTarget.MainThread();
 
-			instance.host.Closed += (s, e) =>
-			{
-				isInstanceOpen = false;
-			};
-
-			isInstanceOpen = true;
-		}
-		else
-		{
-			instance.host.PlacementTarget = placementTarget;
-			instance.host.IsOpen = true;
-			isInstanceOpen = true;
-		}
+		instance = new MiniLibraryPopOut();
+		instance.host = PopOut.Show(placementTarget, instance);
+		instance.host.StaysOpen = true;
+		instance.host.PlacementTarget = placementTarget;
+		instance.host.IsOpen = true;
 
 		Window? targetWindow = placementTarget.FindParent<Window>();
 		if (targetWindow != null)
+			targetWindow.PreviewMouseDown += OnTargetWindowPreviewMouseDown;
+
+		instance.host.Closed += (s, e) =>
 		{
-			targetWindow.PreviewMouseDown += (s, e) =>
-			{
-				if (isInstanceOpen)
-				{
-					e.Handled = true;
-					Close();
-				}
-			};
-		}
+			if (targetWindow != null)
+				targetWindow.PreviewMouseDown += OnTargetWindowPreviewMouseDown;
+
+			instance = null;
+		};
 
 		instance.OnShow(title, defaultTags, type, current, selectionChanged);
 		return instance;
+	}
+
+	private static void OnTargetWindowPreviewMouseDown(object sender, MouseButtonEventArgs e)
+	{
+		if (instance != null)
+		{
+			e.Handled = true;
+			Close();
+		}
 	}
 
 	private void OnShow(string title, TagCollection defaultTags, Type type, object? current, Action<object, bool> selectionChanged)

@@ -116,7 +116,7 @@
 			<Grid
 				Width="48"
 				Height="48"
-				Margin="0,0,6,0">
+				Margin="0,0,8,0">
 
 				<controls:XivTexImage
 					x:Name="IconBack"
@@ -127,7 +127,7 @@
 					Visibility="Collapsed" />
 
 				<Image
-					Margin="4,3,4,3"
+					Margin="4,3,3.5,3"
 					SnapsToDevicePixels="True"
 					Source="{Binding Icon.Source}" />
 

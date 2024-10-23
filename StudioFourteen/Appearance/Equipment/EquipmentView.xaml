@@ -137,7 +137,7 @@
 				Content="{Binding Item.Item.Icon.Source}"
 				MouseUp="OnMouseUp"
 				Style="{DynamicResource IconButton}"
-				ToolTip="{Binding Item}" />
+				ToolTip="{Binding Item.Item}" />
 
 			<TextBlock
 				Grid.Row="0"

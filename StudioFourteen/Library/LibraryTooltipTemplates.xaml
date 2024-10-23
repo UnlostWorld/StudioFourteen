@@ -1,0 +1,90 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:appearance="clr-namespace:StudioFourteen.Appearance"
+	xmlns:controls="clr-namespace:StudioFourteen.Controls"
+	xmlns:excel="clr-namespace:StudioFourteen.GameData.Excel"
+	xmlns:gameData="clr-namespace:StudioFourteen.GameData"
+	xmlns:library="clr-namespace:StudioFourteen.Library"
+	xmlns:services="clr-namespace:StudioFourteen.Services"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
+
+	<DataTemplate x:Key="LibraryTooltipTemplate">
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition />
+			</Grid.RowDefinitions>
+
+			<Border
+				Grid.Row="0"
+				Margin="-6,-6,-6,0"
+				Background="{DynamicResource BackgroundLightBrush}"
+				CornerRadius="6,6,0,0" />
+
+			<Grid Grid.Row="0">
+
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition />
+				</Grid.ColumnDefinitions>
+
+				<ContentPresenter
+					Width="48"
+					Height="48"
+					Margin="-3,-6,0,0"
+					VerticalAlignment="Center"
+					Content="{Binding .}"
+					TextBlock.Foreground="{DynamicResource ForegroundBrush}">
+					<ContentPresenter.Resources>
+						<ResourceDictionary Source="./LibraryIconTemplates.xaml" />
+					</ContentPresenter.Resources>
+				</ContentPresenter>
+
+				<ContentPresenter
+					Grid.Column="1"
+					Margin="0,-6,6,0"
+					VerticalAlignment="Center"
+					Content="{Binding .}"
+					TextBlock.Foreground="{DynamicResource ForegroundBrush}">
+					<ContentPresenter.Resources>
+						<ResourceDictionary Source="./LibraryInfoTemplates.xaml" />
+					</ContentPresenter.Resources>
+				</ContentPresenter>
+			</Grid>
+
+
+			<ContentPresenter
+				Grid.Row="1"
+				Margin="3"
+				Content="{Binding .}"
+				TextBlock.Foreground="{DynamicResource ForegroundBrush}">
+				<ContentPresenter.Resources>
+					<ResourceDictionary Source="./LibrarySidebarTemplates.xaml" />
+				</ContentPresenter.Resources>
+			</ContentPresenter>
+		</Grid>
+	</DataTemplate>
+
+
+	<DataTemplate DataType="{x:Type excel:ResidentNpc}">
+		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
+	</DataTemplate>
+
+	<DataTemplate DataType="{x:Type excel:Item}">
+		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
+	</DataTemplate>
+
+	<DataTemplate DataType="{x:Type excel:Stain}">
+		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
+	</DataTemplate>
+
+	<DataTemplate DataType="{x:Type excel:Glasses}">
+		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
+	</DataTemplate>
+
+	<DataTemplate DataType="{x:Type excel:Ornament}">
+		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
+	</DataTemplate>
+
+</ResourceDictionary>

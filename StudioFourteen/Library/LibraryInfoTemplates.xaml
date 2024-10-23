@@ -68,11 +68,11 @@
 				Text="{Binding Name}"
 				TextWrapping="Wrap" />
 
-			<TextBlock
+			<!--<TextBlock
 				Grid.Row="2"
 				Style="{DynamicResource Subscript}"
 				Text="{Binding Description}"
-				TextWrapping="NoWrap" />
+				TextWrapping="NoWrap" />-->
 		</StackPanel>
 	</DataTemplate>
 

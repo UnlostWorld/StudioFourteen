@@ -13,7 +13,7 @@
 	xmlns:tags="clr-namespace:StudioFourteen.Tags"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Height="450"
-	d:Background="{DynamicResource ControlBackgroundBrush}"
+	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	d:DesignWidth="300"
 	mc:Ignorable="d">
@@ -33,6 +33,7 @@
 					BorderThickness="{TemplateBinding BorderThickness}"
 					ClipToBounds="{TemplateBinding ClipToBounds}"
 					ToolTip="{Binding Entry}">
+
 					<Grid Background="Transparent">
 
 						<Grid.ColumnDefinitions>
@@ -87,8 +88,6 @@
 									<ResourceDictionary Source="./LibraryInfoTemplates.xaml" />
 								</ContentPresenter.Resources>
 							</ContentPresenter>
-
-
 						</Grid>
 
 						<ToggleButton
@@ -180,10 +179,11 @@
 			<RowDefinition />
 		</Grid.RowDefinitions>
 
-		<Rectangle
-			Grid.RowSpan="2"
-			Margin="-4,-4,-4,0"
-			Fill="{DynamicResource BackgroundBrush}" />
+		<Border
+			Grid.Row="2"
+			Margin="-4,0,-4,-4"
+			Background="{DynamicResource ControlBackgroundBrush}"
+			CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadiusBottom}" />
 
 		<TextBlock
 			Grid.Row="0"
@@ -215,7 +215,7 @@
 		<ListBox
 			x:Name="ResultsList"
 			Grid.Row="2"
-			Margin="0"
+			Margin="-2,0,-2,-2"
 			Padding="0"
 			Background="Transparent"
 			ItemsSource="{Binding Results}"
