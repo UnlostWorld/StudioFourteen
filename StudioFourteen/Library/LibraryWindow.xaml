@@ -464,7 +464,7 @@
 							Width="92"
 							Height="128"
 							Background="Transparent"
-							ToolTip="{Binding .}">
+							ToolTip="{Binding Entry}">
 
 							<Grid.RowDefinitions>
 								<RowDefinition Height="Auto" />
