@@ -108,7 +108,7 @@ public class ItemEquipViewModel(DrawDataContainer.EquipmentSlot slot)
 		});
 	}
 
-	protected override string GetSearchTitle() => $"{this.Slot.GetDisplayName()} {Resources.Find("LOC_Equipment", "Equipment")}";
+	protected override string GetSearchTitle() => Resources.Format("LOC_SearchEquipmentSlot", this.CharacterName, this.Slot.GetDisplayName());
 
 	protected unsafe override void GetDefaultTags(TagCollection tags)
 	{

@@ -26,8 +26,21 @@
 	<sys:String x:Key="LOC_Environment">Environment</sys:String>
 	<sys:String x:Key="LOC_Camera">Camera</sys:String>
 
-	<sys:String x:Key="LOC_Character_Customize">Customize</sys:String>
-	<sys:String x:Key="LOC_Character_Gear">Gear</sys:String>
+	<sys:String x:Key="LOC_EquipmentSlot_Head">Head</sys:String>
+	<sys:String x:Key="LOC_EquipmentSlot_Body">Body</sys:String>
+	<sys:String x:Key="LOC_EquipmentSlot_Hands">Hands</sys:String>
+	<sys:String x:Key="LOC_EquipmentSlot_Legs">Legs</sys:String>
+	<sys:String x:Key="LOC_EquipmentSlot_Feet">Feet</sys:String>
+	<sys:String x:Key="LOC_EquipmentSlot_Ears">Ears</sys:String>
+	<sys:String x:Key="LOC_EquipmentSlot_Neck">Neck</sys:String>
+	<sys:String x:Key="LOC_EquipmentSlot_Wrists">Wrists</sys:String>
+	<sys:String x:Key="LOC_EquipmentSlot_RFinger">Right Finger</sys:String>
+	<sys:String x:Key="LOC_EquipmentSlot_LFinger">Left Finger</sys:String>
+	<sys:String x:Key="LOC_WeaponSlot_MainHand">Main Hand</sys:String>
+	<sys:String x:Key="LOC_WeaponSlot_OffHand">Off Hand</sys:String>
+
+	<sys:String x:Key="LOC_SearchEquipmentSlot">Select an item to equip to {0}'s {1}:</sys:String>
+	<sys:String x:Key="LOC_SearchWeaponSlot">Select a weapon to equip to {0}'s {1}:</sys:String>
 
 	<sys:String x:Key="LOC_Translate">Translate</sys:String>
 	<sys:String x:Key="LOC_Rotation">Rotate</sys:String>
@@ -138,6 +151,25 @@
 	<!--  Tags  -->
 	<sys:String x:Key="LOC_Tag_LegacyPose">Legacy Pose</sys:String>
 	<sys:String x:Key="LOC_Tag_LegacyPose_ToolTip">A pose file created outside of Studio Fourteen. This file does not support all posing features, and expressions will not load.</sys:String>
+	<sys:String x:Key="LOC_Tag_Head">Head</sys:String>
+	<sys:String x:Key="LOC_Tag_Body">Body</sys:String>
+	<sys:String x:Key="LOC_Tag_Chest">Chest</sys:String>
+	<sys:String x:Key="LOC_Tag_Hands">Hands</sys:String>
+	<sys:String x:Key="LOC_Tag_Legs">Legs</sys:String>
+	<sys:String x:Key="LOC_Tag_Feet">Feet</sys:String>
+	<sys:String x:Key="LOC_Tag_Ears">Ears</sys:String>
+	<sys:String x:Key="LOC_Tag_Earring">Earring</sys:String>
+	<sys:String x:Key="LOC_Tag_Neck">Neck</sys:String>
+	<sys:String x:Key="LOC_Tag_Necklace">Necklace</sys:String>
+	<sys:String x:Key="LOC_Tag_Wrists">Wrists</sys:String>
+	<sys:String x:Key="LOC_Tag_Bracelets">Bracelets</sys:String>
+	<sys:String x:Key="LOC_Tag_RFinger">Right Finger</sys:String>
+	<sys:String x:Key="LOC_Tag_RRing">Right Ring</sys:String>
+	<sys:String x:Key="LOC_Tag_LFinger">Left Finger</sys:String>
+	<sys:String x:Key="LOC_Tag_LRing">Left Ring</sys:String>
+	<sys:String x:Key="LOC_Tag_MainHand">Main Hand</sys:String>
+	<sys:String x:Key="LOC_Tag_OffHand">Off Hand</sys:String>
+	<sys:String x:Key="LOC_Tag_Prop">Prop</sys:String>
 
 	<!--  Bones  -->
 	<sys:String x:Key="LOC_Bone_n_root">Root</sys:String>

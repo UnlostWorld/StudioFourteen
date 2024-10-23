@@ -63,21 +63,24 @@ public partial class Targets : View
 
 	private void OnAddCharacterClicked(object sender, RoutedEventArgs e)
 	{
-		TagCollection defaultTags = new();
-		defaultTags.Add("Named");
+		if (sender is UIElement target)
+		{
+			TagCollection defaultTags = new();
+			defaultTags.Add("Named");
 
-		LibraryModal.Show<ICharacterAppearance>(
-			sender,
-			"Create Character",
-			defaultTags,
-			null,
-			(appearance, isFinal) =>
-			{
-				if (!isFinal)
-					return;
+			MiniLibraryPopOut.Show<ICharacterAppearance>(
+				target,
+				"Create Character",
+				defaultTags,
+				null,
+				(appearance, isFinal) =>
+				{
+					if (!isFinal)
+						return;
 
-				this.CreateCharacter(appearance).Run();
-			});
+					this.CreateCharacter(appearance).Run();
+				});
+		}
 	}
 
 	private async Task CreateCharacter(ICharacterAppearance appearance)

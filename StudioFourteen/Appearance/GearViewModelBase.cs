@@ -4,6 +4,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using StudioFourteen.Library;
 using StudioFourteen.Mvm;
 using StudioFourteen.Tags;
+using System.Windows;
 
 public abstract class GearViewModelBase : AutoViewModel
 {
@@ -13,7 +14,7 @@ public abstract class GearViewModelBase : AutoViewModel
 	[AlwaysNotify] public int TargetObjectIndex => this.Services.Target.TargetObjectIndex;
 
 	public abstract void Clear();
-	public abstract void Change(object placementTarget);
+	public abstract void Change(UIElement placementTarget);
 
 	public override bool ShouldTickAutoProperties() => this.HasValidTarget;
 }
@@ -28,14 +29,14 @@ public abstract class GearViewModelBase<T> : GearViewModelBase
 		this.Item = default;
 	}
 
-	public sealed override void Change(object placementTarget)
+	public sealed override void Change(UIElement placementTarget)
 	{
 		TagCollection defaultTags = new();
 		this.GetDefaultTags(defaultTags);
 
 		string searchTitle = this.GetSearchTitle();
 
-		LibraryModal.Show<T>(
+		MiniLibraryPopOut.Show<T>(
 			placementTarget,
 			searchTitle,
 			defaultTags,

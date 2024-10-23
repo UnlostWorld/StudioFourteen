@@ -1,6 +1,7 @@
 ﻿namespace FFXIVClientStructs.FFXIV.Client.Game.Character;
 
 using global::System;
+using StudioFourteen;
 using StudioFourteen.Tags;
 
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
@@ -10,8 +11,7 @@ public static class DrawDataContainerExtensions
 	// Equipment Slots
 	public static string GetDisplayName(this DrawDataContainer.EquipmentSlot self)
 	{
-		// TODO
-		return self.ToString();
+		return Resources.Find($"LOC_EquipmentSlot_{self.ToString()}", self.ToString());
 	}
 
 	public static Tag ToTag(this DrawDataContainer.EquipmentSlot self)
@@ -26,8 +26,8 @@ public static class DrawDataContainerExtensions
 			case EquipmentSlot.Ears: return Tag.Get("Ears").WithAlias("Earring");
 			case EquipmentSlot.Neck: return Tag.Get("Neck").WithAlias("Necklace");
 			case EquipmentSlot.Wrists: return Tag.Get("Wrists").WithAlias("Bracelets");
-			case EquipmentSlot.RFinger: return Tag.Get("Right Finger").WithAlias("Right Ring");
-			case EquipmentSlot.LFinger: return Tag.Get("Left Finger").WithAlias("Left Ring");
+			case EquipmentSlot.RFinger: return Tag.Get("RFinger").WithAlias("RRing");
+			case EquipmentSlot.LFinger: return Tag.Get("LFinger").WithAlias("LRing");
 		}
 
 		throw new Exception($"Invalid Equipment Slot: {self}");
@@ -36,16 +36,15 @@ public static class DrawDataContainerExtensions
 	// Weapon Slots
 	public static string GetDisplayName(this DrawDataContainer.WeaponSlot self)
 	{
-		// TODO
-		return self.ToString();
+		return Resources.Find($"LOC_WeaponSlot_{self.ToString()}", self.ToString());
 	}
 
 	public static Tag ToTag(this DrawDataContainer.WeaponSlot self)
 	{
 		switch (self)
 		{
-			case WeaponSlot.MainHand: return Tag.Get("Main Hand");
-			case WeaponSlot.OffHand: return Tag.Get("Off Hand");
+			case WeaponSlot.MainHand: return Tag.Get("MainHand");
+			case WeaponSlot.OffHand: return Tag.Get("OffHand");
 			case WeaponSlot.Unk: return Tag.Get("Prop");
 		}
 

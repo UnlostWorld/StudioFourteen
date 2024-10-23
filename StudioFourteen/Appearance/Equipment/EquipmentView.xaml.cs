@@ -68,21 +68,21 @@ public partial class EquipmentView : View
 
 	private void OnChangeDye1Clicked(object sender, RoutedEventArgs e)
 	{
-		if (this.Item is ItemEquipViewModel equip)
+		if (this.Item is ItemEquipViewModel equip && sender is UIElement el)
 		{
-			this.OnChangeDye(sender, equip, 0);
+			this.OnChangeDye(el, equip, 0);
 		}
 	}
 
 	private void OnChangeDye2Clicked(object sender, RoutedEventArgs e)
 	{
-		if (this.Item is ItemEquipViewModel equip)
+		if (this.Item is ItemEquipViewModel equip && sender is UIElement el)
 		{
-			this.OnChangeDye(sender, equip, 1);
+			this.OnChangeDye(el, equip, 1);
 		}
 	}
 
-	private void OnChangeDye(object sender, ItemEquipViewModel equip, int dyeChanel)
+	private void OnChangeDye(UIElement sender, ItemEquipViewModel equip, int dyeChanel)
 	{
 		TagCollection defaultTags = new();
 		defaultTags.Add("Named");
@@ -93,7 +93,7 @@ public partial class EquipmentView : View
 		if (dyeChanel == 1)
 			currentStain = equip.Stain1;
 
-		LibraryModal.Show<Stain>(
+		MiniLibraryPopOut.Show<Stain>(
 			sender,
 			searchTitle,
 			defaultTags,

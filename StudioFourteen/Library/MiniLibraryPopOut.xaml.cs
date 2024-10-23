@@ -1,5 +1,6 @@
 ﻿namespace StudioFourteen.Library;
 
+using FFXIVClientStructs;
 using StudioFourteen.Appearance;
 using StudioFourteen.GameData.Excel;
 using StudioFourteen.Library.Filters;
@@ -12,25 +13,26 @@ using System.Collections.Specialized;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 using WpfUtils;
+using WpfUtils.Controls;
 using WpfUtils.Extensions;
 using WpfUtils.Utils;
 
-using Panel = StudioFourteen.Panels.Panel;
-
-public partial class LibraryModal : Panel
+public partial class MiniLibraryPopOut : View
 {
-	private static LibraryModal? instance;
+	private static MiniLibraryPopOut? instance;
+	private static bool isInstanceOpen = false;
 	private readonly FuncQueue searchQueue;
 
 	private object? currentEntry;
 	private Result? selectedResult;
 	private Action<object, bool>? selectionChanged;
 	private bool isLoading = false;
+	private PopOut? host;
 
-	public LibraryModal()
+	public MiniLibraryPopOut()
 	{
-		instance = this;
 		this.InitializeComponent();
 		this.TagFilter.Tags.CollectionChanged += this.OnTagsChanged;
 		this.searchQueue = new(this.SearchAsync, 250);
@@ -69,38 +71,98 @@ public partial class LibraryModal : Panel
 		}
 	}
 
-	public static void Show<T>(object placementTarget, string title, TagCollection defaultTags, T? current, Action<T, bool> selectionChanged)
+	public static void Close()
+	{
+		CloseAsync().Run();
+	}
+
+	public static async Task<bool> CloseAsync()
+	{
+		if (instance != null && instance.host != null && instance.host.IsOpen)
+		{
+			bool wasOpen = await instance.host.Dispatcher.InvokeAsync<bool>(() =>
+			{
+				if (instance.host.IsOpen)
+				{
+					instance.host.IsOpen = false;
+					return true;
+				}
+
+				return false;
+			});
+
+			if (wasOpen)
+			{
+				// wait for the panel to close.
+				await Task.Delay(250);
+			}
+
+			return wasOpen;
+		}
+
+		return false;
+	}
+
+	public static void Show<T>(UIElement placementTarget, string title, TagCollection defaultTags, T? current, Action<T, bool> selectionChanged)
 		where T : notnull
 	{
-		if (placementTarget is UIElement el)
-		{
-			Show(el, title, defaultTags, typeof(T), current, (s, f) => selectionChanged.Invoke((T)s, f));
-		}
+		ShowAsync<T>(placementTarget, title, defaultTags, current, selectionChanged).Run();
 	}
 
 	public static void Show(UIElement placementTarget, string title, TagCollection defaultTags, Type type, object? current, Action<object, bool> selectionChanged)
 	{
-		if (instance == null)
+		ShowAsync(placementTarget, title, defaultTags, type, current, selectionChanged).Run();
+	}
+
+	public static async Task<MiniLibraryPopOut> ShowAsync<T>(UIElement placementTarget, string title, TagCollection defaultTags, T? current, Action<T, bool> selectionChanged)
+		where T : notnull
+	{
+		return await ShowAsync(placementTarget, title, defaultTags, typeof(T), current, (s, f) => selectionChanged.Invoke((T)s, f));
+	}
+
+	public static async Task<MiniLibraryPopOut> ShowAsync(UIElement placementTarget, string title, TagCollection defaultTags, Type type, object? current, Action<object, bool> selectionChanged)
+	{
+		await CloseAsync();
+
+		if (instance == null || instance.host == null)
 		{
-			Task.Run(async () =>
+			instance = new MiniLibraryPopOut();
+			instance.host = PopOut.Show(placementTarget, instance);
+			instance.host.Background = StudioFourteen.Resources.Find("ControlBackgroundBrush") as Brush;
+			instance.host.StaysOpen = true;
+
+			instance.host.Closed += (s, e) =>
 			{
-				instance = await ServiceManager.Instance.Panels.Open<LibraryModal>();
-				instance?.OnShow(placementTarget, title, defaultTags, type, current, selectionChanged);
-			});
+				isInstanceOpen = false;
+			};
+
+			isInstanceOpen = true;
 		}
 		else
 		{
-			instance.OnShow(placementTarget, title, defaultTags, type, current, selectionChanged);
+			instance.host.PlacementTarget = placementTarget;
+			instance.host.IsOpen = true;
+			isInstanceOpen = true;
 		}
+
+		Window? targetWindow = placementTarget.FindParent<Window>();
+		if (targetWindow != null)
+		{
+			targetWindow.PreviewMouseDown += (s, e) =>
+			{
+				if (isInstanceOpen)
+				{
+					e.Handled = true;
+					Close();
+				}
+			};
+		}
+
+		instance.OnShow(title, defaultTags, type, current, selectionChanged);
+		return instance;
 	}
 
-	protected override void OnClosed()
-	{
-		base.OnClosed();
-		instance = null;
-	}
-
-	private void OnShow(UIElement placementTarget, string title, TagCollection defaultTags, Type type, object? current, Action<object, bool> selectionChanged)
+	private void OnShow(string title, TagCollection defaultTags, Type type, object? current, Action<object, bool> selectionChanged)
 	{
 		this.isLoading = true;
 
@@ -111,28 +173,14 @@ public partial class LibraryModal : Panel
 
 		this.TagFilter.Tags.Replace(defaultTags);
 		this.TypeFilter = new(type);
-
 		this.SearchTitle = title;
+
+		this.searchQueue.InvokeImmediate();
 
 		this.currentEntry = current;
 		this.isLoading = false;
 
-		/*Point pos;
-		placementTarget.Dispatcher.Invoke(() =>
-		{
-			PanelWindow? targetPanel = placementTarget.FindParent<PanelWindow>();
-
-			if (targetPanel != null)
-			{
-				////Point targetOffset = placementTarget.TransformToAncestor(targetPanel).Transform(new());
-				pos = new Point(targetPanel.Position.X, targetPanel.Position.Y);
-			}
-		});
-
-		this.Dispatcher.Invoke(() =>
-		{
-			this.Position = pos;
-		});*/
+		this.TagSelector.SetFocus();
 	}
 
 	private void OnTagsChanged(object? sender, NotifyCollectionChangedEventArgs e)
@@ -197,7 +245,8 @@ public partial class LibraryModal : Panel
 
 	private void OnConfirmClicked(object sender, RoutedEventArgs? e)
 	{
-		this.Close();
+		if (this.host != null)
+			this.host.IsOpen = false;
 
 		if (this.selectedResult == null)
 			return;
@@ -215,6 +264,14 @@ public partial class LibraryModal : Panel
 
 	private void ResultsListDoubleClicked(object sender, MouseButtonEventArgs e)
 	{
-		this.OnConfirmClicked(sender, null);
+		Task.Run(async () =>
+		{
+			await Task.Delay(100);
+
+			this.Dispatcher.Invoke(() =>
+			{
+				this.OnConfirmClicked(sender, null);
+			});
+		});
 	}
 }

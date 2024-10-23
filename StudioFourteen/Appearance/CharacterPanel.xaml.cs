@@ -6,6 +6,7 @@ using StudioFourteen.Library;
 using StudioFourteen.Mvm;
 using StudioFourteen.Panels;
 using System.Windows;
+using System.Windows.Input;
 using WpfUtils.Extensions;
 
 public partial class CharacterPanel : CharacterPanelBase
@@ -38,6 +39,13 @@ public partial class CharacterPanel : CharacterPanelBase
 
 	public AccessoryViewModel Glasses { get; init; } = new(AccessorySlots.Glasses);
 	public OrnamentViewModel Ornament { get; init; } = new();
+
+	protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
+	{
+		////MiniLibraryPopOut.Close();
+
+		base.OnPreviewMouseDown(e);
+	}
 
 	private unsafe void OnRevertClicked(object sender, RoutedEventArgs e)
 	{

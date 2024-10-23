@@ -115,7 +115,7 @@ public class WeaponViewModel(DrawDataContainer.WeaponSlot slot)
 		});
 	}
 
-	protected override string GetSearchTitle() => $"{this.Slot.GetDisplayName()} {Resources.Find("LOC_Weapon", "Weapon")}";
+	protected override string GetSearchTitle() => Resources.Format("LOC_SearchWeaponSlot", this.CharacterName, this.Slot.GetDisplayName());
 
 	protected unsafe override void GetDefaultTags(TagCollection tags)
 	{

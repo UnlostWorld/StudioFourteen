@@ -25,7 +25,7 @@ public partial class LibrarySelectorButton : Control
 		TagCollection defaultTags = new();
 		defaultTags.Add("Named");
 
-		LibraryModal.Show(
+		MiniLibraryPopOut.Show(
 			this,
 			"Create Character",
 			defaultTags,
