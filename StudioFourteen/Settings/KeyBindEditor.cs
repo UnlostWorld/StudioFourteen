@@ -30,9 +30,8 @@ public partial class KeyBindEditor : TextBox
 			return;
 
 		this.KeyBind.Key = (VirtualKey)KeyInterop.VirtualKeyFromKey(e.Key);
-		this.KeyBind.Shift = e.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Shift);
-		this.KeyBind.Control = e.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Control);
-		this.KeyBind.Alt = e.KeyboardDevice.Modifiers.HasFlag(ModifierKeys.Alt);
+		this.KeyBind.Modifiers = e.KeyboardDevice.Modifiers;
+
 		this.OnKeyBindChanged(this.KeyBind);
 	}
 

@@ -66,12 +66,78 @@
 				</ListBox>
 
 				<ToggleButton
+					x:Name="AddCameraButton"
 					Grid.Row="1"
 					Height="32"
 					Margin="0,6,0,0"
 					Background="Transparent"
 					Content="+ New"
 					Style="{DynamicResource WpfUtilsIconToggleButton}" />
+
+				<controls:PopOut
+					Background="{DynamicResource ControlBackgroundBrush}"
+					IsOpen="{Binding ElementName=AddCameraButton, Path=IsChecked}"
+					PlacementTarget="{Binding ElementName=AddCameraButton}"
+					StaysOpen="False">
+
+					<controls:PopOut.Header>
+						<TextBlock
+							Margin="6"
+							Foreground="{DynamicResource ForegroundLightBrush}"
+							Text="Select the type of camera to create:" />
+					</controls:PopOut.Header>
+
+					<StackPanel>
+						<Button
+							Height="64"
+							HorizontalContentAlignment="Stretch"
+							Background="Transparent"
+							Click="OnCreateOrbitTargetCameraClicked">
+							<StackPanel>
+								<TextBlock
+									Foreground="{DynamicResource ForegroundBrush}"
+									Text="{DynamicResource LOC_OrbitTargetCamera}" />
+								<TextBlock
+									Foreground="{DynamicResource ForegroundLightBrush}"
+									Style="{DynamicResource Subscript}"
+									Text="{DynamicResource LOC_OrbitTargetCamera_ToolTip}" />
+							</StackPanel>
+						</Button>
+
+						<Button
+							Height="64"
+							HorizontalContentAlignment="Stretch"
+							Background="Transparent"
+							Click="OnCreateOrbitCameraClicked">
+							<StackPanel>
+								<TextBlock
+									Foreground="{DynamicResource ForegroundBrush}"
+									Text="{DynamicResource LOC_OrbitCamera}" />
+								<TextBlock
+									Foreground="{DynamicResource ForegroundLightBrush}"
+									Style="{DynamicResource Subscript}"
+									Text="{DynamicResource LOC_OrbitCamera_ToolTip}" />
+							</StackPanel>
+						</Button>
+
+						<Button
+							Height="64"
+							HorizontalContentAlignment="Stretch"
+							Background="Transparent"
+							Click="OnCreateFreeCameraClicked">
+							<StackPanel>
+								<TextBlock
+									Foreground="{DynamicResource ForegroundBrush}"
+									Text="{DynamicResource LOC_FreeCamera}" />
+								<TextBlock
+									Foreground="{DynamicResource ForegroundLightBrush}"
+									Style="{DynamicResource Subscript}"
+									Text="{DynamicResource LOC_FreeCamera_ToolTip}" />
+							</StackPanel>
+						</Button>
+					</StackPanel>
+
+				</controls:PopOut>
 			</Grid>
 
 			<Border

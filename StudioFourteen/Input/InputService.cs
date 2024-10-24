@@ -63,8 +63,29 @@ public class InputService : ServiceBase
 	public KeyBind? GetKeyBind(KeyBindEvents evt)
 	{
 		KeyBind? bind = null;
-		this.Settings.KeyBinds.TryGetValue(evt, out bind);
+		this.Settings.Keys.TryGetValue(evt, out bind);
 		return bind;
+	}
+
+	public bool IsDown(KeyBindEvents evt)
+	{
+		if (!this.Settings.EnableKeyBinds)
+			return false;
+
+		if (this.Services.Panels.ActivePanel == null && !XivWindow.IsActive())
+			return false;
+
+		KeyBind? bind;
+		if (!this.Settings.Keys.TryGetValue(evt, out bind) || bind == null)
+			return false;
+
+		if (this.IsDown(bind))
+		{
+			this.ResetBindKeys(bind);
+			return true;
+		}
+
+		return false;
 	}
 
 	protected override unsafe void OnFrameworkUpdate(IFramework framework)
@@ -91,7 +112,7 @@ public class InputService : ServiceBase
 	private void CheckEvent(KeyBindEvents evt)
 	{
 		KeyBind? bind;
-		if (!this.Settings.KeyBinds.TryGetValue(evt, out bind) || bind == null)
+		if (!this.Settings.Keys.TryGetValue(evt, out bind) || bind == null)
 			return;
 
 		this.listeners.TryGetValue(evt, out List<Action>? listeners);

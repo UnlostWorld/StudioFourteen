@@ -62,9 +62,9 @@ public partial class OrbitCamera : StudioCameraBase
 			this.angle.Y * QuaternionExtensions.Deg2Rad);
 	}
 
-	public unsafe override void ImportGroupPoseSettings(GroupPoseCamera* camera)
+	public unsafe override void UpdateGroupPoseCamera(GroupPoseCamera* camera)
 	{
-		base.ImportGroupPoseSettings(camera);
+		base.UpdateGroupPoseCamera(camera);
 		this.GroupPoseRollAdjust = camera->Rotation * QuaternionExtensions.Rad2Deg;
 	}
 

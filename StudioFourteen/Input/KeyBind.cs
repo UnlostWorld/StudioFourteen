@@ -4,6 +4,7 @@
 namespace StudioFourteen.Input;
 
 using Dalamud.Game.ClientState.Keys;
+using System.Windows.Input;
 
 public class KeyBind
 {
@@ -11,18 +12,18 @@ public class KeyBind
 	{
 	}
 
-	public KeyBind(VirtualKey key, bool control = false, bool alt = false, bool shift = false)
+	public KeyBind(VirtualKey key, ModifierKeys modifiers = ModifierKeys.None)
 	{
 		this.Key = key;
-		this.Control = control;
-		this.Alt = alt;
-		this.Shift = shift;
+		this.Modifiers = modifiers;
 	}
 
 	public VirtualKey Key { get; set; }
-	public bool Control { get; set; }
-	public bool Alt { get; set; }
-	public bool Shift { get; set; }
+	public ModifierKeys Modifiers { get; set; }
+
+	public bool Control => this.Modifiers.HasFlag(ModifierKeys.Control);
+	public bool Alt => this.Modifiers.HasFlag(ModifierKeys.Alt);
+	public bool Shift => this.Modifiers.HasFlag(ModifierKeys.Shift);
 
 	public bool GetIsEmpty()
 	{

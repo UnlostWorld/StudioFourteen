@@ -75,7 +75,7 @@
 
 				<ItemsControl
 					Grid.Row="1"
-					ItemsSource="{Binding Settings.KeyBinds}">
+					ItemsSource="{Binding Settings.Keys}">
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
 							<Grid Margin="1">

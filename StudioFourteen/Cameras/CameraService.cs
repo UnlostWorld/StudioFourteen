@@ -8,6 +8,7 @@ using Dalamud.Plugin.Services;
 using StudioFourteen.Services;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -61,7 +62,9 @@ public class CameraService : ServiceBase
 		set
 		{
 			this.last = this.current;
+			this.current?.Deactivate();
 			this.current = value;
+			this.current?.Activate();
 			this.blendWatch.Restart();
 
 			this.RaisePropertyChanged();
@@ -70,15 +73,12 @@ public class CameraService : ServiceBase
 
 	public EasingFunctionBase BlendEase { get; set; } = new SineEase();
 
-	public List<StudioCameraBase> Cameras { get; init; } = new();
+	public ObservableCollection<StudioCameraBase> Cameras { get; init; } = new();
 
 	public override Task Start()
 	{
 		this.current = new OrbitTargetCamera();
 		this.Cameras.Add(this.current);
-
-		this.Cameras.Add(new OrbitCamera());
-		this.Cameras.Add(new FreeCamera());
 
 		unsafe
 		{
@@ -103,6 +103,29 @@ public class CameraService : ServiceBase
 		return base.Stop();
 	}
 
+	public void CreateCamera<T>(bool activate = true)
+		where T : StudioCameraBase
+	{
+		StudioCameraBase? cam = Activator.CreateInstance<T>();
+		this.Cameras.Add(cam);
+		this.Current = cam;
+	}
+
+	protected override void OnFrameworkUpdate(IFramework framework)
+	{
+		base.OnFrameworkUpdate(framework);
+
+		if (this.Services.GroupPose.IsGroupPosing && this.current != null)
+		{
+			float deltaTime = (float)framework.UpdateDelta.TotalMilliseconds / 1000.0f;
+
+			// Update delta seems to be quite unstable. unsure why.
+			deltaTime = 0.02f;
+
+			this.current.Update(deltaTime);
+		}
+	}
+
 	private unsafe nint GroupPoseCameraUpdateDetour(GroupPoseCamera* camera)
 	{
 		if (this.gPoseCameraUpdateHook == null)
@@ -110,7 +133,7 @@ public class CameraService : ServiceBase
 
 		if (this.Services.GroupPose.IsGroupPosing && this.current != null)
 		{
-			this.current?.ImportGroupPoseSettings(camera);
+			this.current?.UpdateGroupPoseCamera(camera);
 		}
 
 		return this.gPoseCameraUpdateHook.Original(camera);

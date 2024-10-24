@@ -1,5 +1,6 @@
 ﻿namespace StudioFourteen.Cameras;
 
+using Dalamud.Plugin.Services;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Mvm;
 using StudioFourteen.Structs.Extensions;
@@ -32,7 +33,7 @@ public abstract partial class StudioCameraBase : ViewModel
 		}
 	}
 
-	public unsafe virtual void ImportGroupPoseSettings(GroupPoseCamera* camera)
+	public unsafe virtual void UpdateGroupPoseCamera(GroupPoseCamera* camera)
 	{
 		this.GroupPoseFovAdjust = camera->FoV * 100;
 
@@ -60,6 +61,18 @@ public abstract partial class StudioCameraBase : ViewModel
 		// Set the angle back to zero so next frame we have clean uncapped rotation data.
 		// but only if the user is still dragging.
 		camera->Angle = Vector2.Zero;
+	}
+
+	public virtual void Activate()
+	{
+	}
+
+	public virtual void Update(float deltaTime)
+	{
+	}
+
+	public virtual void Deactivate()
+	{
 	}
 
 	public virtual void Initialize(CameraState currentState)
