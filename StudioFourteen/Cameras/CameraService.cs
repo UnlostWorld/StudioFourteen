@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using TerraFX.Interop.Windows;
 using WpfUtils.Animation;
 
 using GameCamera = FFXIVClientStructs.FFXIV.Client.Game.Camera;
@@ -117,12 +118,7 @@ public class CameraService : ServiceBase
 
 		if (this.Services.GroupPose.IsGroupPosing && this.current != null)
 		{
-			float deltaTime = (float)framework.UpdateDelta.TotalMilliseconds / 1000.0f;
-
-			// Update delta seems to be quite unstable. unsure why.
-			deltaTime = 0.02f;
-
-			this.current.Update(deltaTime);
+			this.current.OnFrameworkUpdate(framework);
 		}
 	}
 
@@ -157,7 +153,6 @@ public class CameraService : ServiceBase
 			if (this.last != null)
 			{
 				blendValue = this.blendWatch.ElapsedMilliseconds / CameraBlendTimeMs;
-
 				blendValue = this.BlendEase.Ease(blendValue, EasingFunctionBase.EasingModes.EaseInOut);
 
 				if (this.blendWatch.ElapsedMilliseconds > CameraBlendTimeMs)
@@ -169,6 +164,7 @@ public class CameraService : ServiceBase
 
 			this.state.FieldOfView = camera->RenderCamera->FoV;
 
+			this.current.Tick(FramerateService.AverageDeltaTime);
 			this.current.Calculate(ref this.state, this.last, 1 - blendValue);
 
 			Vector3 forward = Vector3.Transform(new(1, 0, 0), this.state.Rotation);

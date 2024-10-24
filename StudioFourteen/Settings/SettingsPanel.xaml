@@ -73,39 +73,41 @@
 					Content="{DynamicResource LOC_Settings_Input_EnableKeyBinds}"
 					IsChecked="{Binding Settings.EnableKeyBinds}" />
 
-				<ItemsControl
+				<ScrollViewer
 					Grid.Row="1"
-					ItemsSource="{Binding Settings.Keys}">
-					<ItemsControl.ItemTemplate>
-						<DataTemplate>
-							<Grid Margin="1">
-								<Grid.Resources>
-									<settings:KeyBindEventsToStringConverter x:Key="EventToString" />
-								</Grid.Resources>
+					Margin="0,2,0,0">
+					<ItemsControl ItemsSource="{Binding Settings.Keys}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<Grid Margin="0,1">
+									<Grid.Resources>
+										<settings:KeyBindEventsToStringConverter x:Key="EventToString" />
+									</Grid.Resources>
 
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="100" />
-									<ColumnDefinition />
-								</Grid.ColumnDefinitions>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="100" />
+										<ColumnDefinition />
+									</Grid.ColumnDefinitions>
 
-								<settings:KeyBindEditor
-									Grid.Column="0"
-									HorizontalContentAlignment="Center"
-									KeyBind="{Binding Value}"
-									Style="{DynamicResource WpfUtilsTextBox}" />
+									<settings:KeyBindEditor
+										Grid.Column="0"
+										HorizontalContentAlignment="Center"
+										KeyBind="{Binding Value}"
+										Style="{DynamicResource WpfUtilsTextBox}" />
 
-								<TextBlock
-									Grid.Column="1"
-									Margin="6,0,0,0"
-									HorizontalAlignment="Left"
-									VerticalAlignment="Center"
-									Foreground="{DynamicResource ForegroundLightBrush}"
-									Text="{Binding Key, Converter={StaticResource EventToString}}" />
+									<TextBlock
+										Grid.Column="1"
+										Margin="6,0,0,0"
+										HorizontalAlignment="Left"
+										VerticalAlignment="Center"
+										Foreground="{DynamicResource ForegroundLightBrush}"
+										Text="{Binding Key, Converter={StaticResource EventToString}}" />
 
-							</Grid>
-						</DataTemplate>
-					</ItemsControl.ItemTemplate>
-				</ItemsControl>
+								</Grid>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</ScrollViewer>
 
 			</Grid>
 		</TabItem>

@@ -16,28 +16,11 @@ public partial class FreeCamera : StudioCameraBase
 	[Notify] private Vector3 position;
 	[Notify] private Quaternion rotation;
 
+	private Vector3 desiredMove = Vector3.Zero;
+	private Vector3 desiredRot = Vector3.Zero;
 	private float moveSpeed = 2.0f;
 
 	public override string TypeName => Resources.Find("LOC_FreeCamera", "Free Target");
-
-	public override void Calculate(ref CameraState state, StudioCameraBase? blend = null, float blendWeight = 0)
-	{
-		base.Calculate(ref state, blend, blendWeight);
-
-		state.Position = this.Position;
-		state.Rotation = this.Rotation;
-
-		if (blend is FreeCamera blendFree)
-		{
-			state.Position = Vector3.Lerp(state.Position, blendFree.Position, blendWeight);
-			state.Rotation = Quaternion.Lerp(state.Rotation, blendFree.Rotation, blendWeight);
-		}
-		else if (blend is OrbitCamera blendOrbit)
-		{
-			state.Position = Vector3.Lerp(state.Position, blendOrbit.GetCameraPosition(), blendWeight);
-			state.Rotation = Quaternion.Lerp(state.Rotation, blendOrbit.GetCameraRotation(), blendWeight);
-		}
-	}
 
 	public override void Initialize(CameraState currentState)
 	{
@@ -47,9 +30,9 @@ public partial class FreeCamera : StudioCameraBase
 		this.Rotation = currentState.Rotation;
 	}
 
-	public override void Update(float deltaTime)
+	public override void OnFrameworkUpdate(IFramework framework)
 	{
-		base.Update(deltaTime);
+		base.OnFrameworkUpdate(framework);
 
 		Vector3 moveDir = Vector3.Zero;
 
@@ -71,9 +54,40 @@ public partial class FreeCamera : StudioCameraBase
 		if (this.Services.Input.IsDown(KeyBindEvents.FreeCamera_MoveDown))
 			moveDir.Y -= 1;
 
-		if (moveDir.X != 0 || moveDir.Y != 0 || moveDir.Z != 0)
+		this.desiredMove = moveDir;
+
+		Vector3 rot = Vector3.Zero;
+
+		if (this.Services.Input.IsDown(KeyBindEvents.FreeCamera_YawLeft))
+			rot.X += 1;
+
+		if (this.Services.Input.IsDown(KeyBindEvents.FreeCamera_YawRight))
+			rot.X -= 1;
+
+		if (this.Services.Input.IsDown(KeyBindEvents.FreeCamera_PitchUp))
+			rot.Y += 1;
+
+		if (this.Services.Input.IsDown(KeyBindEvents.FreeCamera_PitchDown))
+			rot.Y -= 1;
+
+		if (this.Services.Input.IsDown(KeyBindEvents.FreeCamera_RollLeft))
+			rot.Z -= 1;
+
+		if (this.Services.Input.IsDown(KeyBindEvents.FreeCamera_RollRight))
+			rot.Z += 1;
+
+		this.desiredRot = rot;
+	}
+
+	public override void Tick(float deltaTime)
+	{
+		base.Tick(deltaTime);
+
+		if (this.desiredMove.X != 0 || this.desiredMove.Y != 0 || this.desiredMove.Z != 0)
 		{
-			this.moveSpeed *= MoveSpeedMultiplier;
+			float newSpeed = this.moveSpeed * MoveSpeedMultiplier;
+			newSpeed *= deltaTime;
+			this.moveSpeed += newSpeed;
 			this.moveSpeed = MathF.Min(MoveSpeedMaximum, this.moveSpeed);
 		}
 		else
@@ -81,11 +95,38 @@ public partial class FreeCamera : StudioCameraBase
 			this.moveSpeed = MoveSpeed;
 		}
 
-		moveDir *= deltaTime;
-		moveDir *= this.moveSpeed;
+		this.desiredMove *= deltaTime;
+		this.desiredMove *= this.moveSpeed;
+		this.desiredMove = Vector3.Transform(this.desiredMove, this.Rotation);
+		this.Position += this.desiredMove;
+		this.desiredMove = Vector3.Zero;
 
-		moveDir = Vector3.Transform(moveDir, this.Rotation);
-		this.position += moveDir;
+		this.desiredRot *= deltaTime;
+		////Quaternion rot = Quaternion.CreateFromYawPitchRoll(this.desiredRot.X, this.desiredRot.Y, this.desiredRot.Z);
+
+		Quaternion x = Quaternion.CreateFromYawPitchRoll(this.desiredRot.X, 0, 0);
+		Quaternion y = Quaternion.CreateFromYawPitchRoll(0, this.desiredRot.Z, this.desiredRot.Y);
+		this.Rotation = Quaternion.Multiply(x, this.Rotation);
+		this.Rotation = Quaternion.Multiply(this.Rotation, y);
+	}
+
+	public override void Calculate(ref CameraState state, StudioCameraBase? blend = null, float blendWeight = 0)
+	{
+		base.Calculate(ref state, blend, blendWeight);
+
+		state.Position = this.Position;
+		state.Rotation = this.Rotation;
+
+		if (blend is FreeCamera blendFree)
+		{
+			state.Position = Vector3.Lerp(state.Position, blendFree.Position, blendWeight);
+			state.Rotation = Quaternion.Lerp(state.Rotation, blendFree.Rotation, blendWeight);
+		}
+		else if (blend is OrbitCamera blendOrbit)
+		{
+			state.Position = Vector3.Lerp(state.Position, blendOrbit.GetCameraPosition(), blendWeight);
+			state.Rotation = Quaternion.Lerp(state.Rotation, blendOrbit.GetCameraRotation(), blendWeight);
+		}
 	}
 
 	protected override void Drag(Vector2 delta)

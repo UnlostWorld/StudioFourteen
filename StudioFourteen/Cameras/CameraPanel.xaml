@@ -327,11 +327,7 @@
 									TickFrequency="0.01"
 									Value="{Binding Position}" />
 
-								<Grid
-									Grid.Row="0"
-									Height="168">
-									<pose:RotationGizmo Rotation="{Binding Rotation, Mode=TwoWay}" />
-								</Grid>
+
 
 							</StackPanel>
 						</DataTemplate>

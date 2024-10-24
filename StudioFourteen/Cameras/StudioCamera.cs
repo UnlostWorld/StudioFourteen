@@ -20,6 +20,10 @@ public abstract partial class StudioCameraBase : ViewModel
 	public abstract string TypeName { get; }
 	public bool IsInitialized { get; private set; } = false;
 
+	public virtual void Tick(float deltaTime)
+	{
+	}
+
 	public unsafe virtual void Calculate(ref CameraState state, StudioCameraBase? blend = null, float blendWeight = 0)
 	{
 		state.FieldOfView = (this.FieldOfView + this.GroupPoseFovAdjust) / 100.0f;
@@ -67,7 +71,7 @@ public abstract partial class StudioCameraBase : ViewModel
 	{
 	}
 
-	public virtual void Update(float deltaTime)
+	public virtual void OnFrameworkUpdate(IFramework framework)
 	{
 	}
 

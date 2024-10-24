@@ -21,6 +21,7 @@ public class ServiceManager : ServiceManagerBase
 	public InteropService Interop { get; init; } = new();
 	public AutoPropertyNotifyService AutoNotify { get; init; } = new();
 	public SettingsService Settings { get; init; } = new();
+	public FramerateService Framerate { get; init; } = new();
 	public StudioService Studio { get; init; } = new();
 	public DataService Data { get; init; } = new();
 	public GameDataService GameData { get; init; } = new();

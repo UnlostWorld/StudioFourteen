@@ -86,14 +86,14 @@ public class SettingsService : ServiceBase
 			{ KeyBindEvents.FreeCamera_MoveBack, new(VirtualKey.S) },
 			{ KeyBindEvents.FreeCamera_MoveLeft, new(VirtualKey.A) },
 			{ KeyBindEvents.FreeCamera_MoveRight, new(VirtualKey.D) },
-			{ KeyBindEvents.FreeCamera_MoveUp, new(VirtualKey.R) },
-			{ KeyBindEvents.FreeCamera_MoveDown, new(VirtualKey.F) },
+			{ KeyBindEvents.FreeCamera_MoveUp, new(VirtualKey.Q) },
+			{ KeyBindEvents.FreeCamera_MoveDown, new(VirtualKey.E) },
 			{ KeyBindEvents.FreeCamera_YawLeft, new(VirtualKey.A, ModifierKeys.Shift) },
 			{ KeyBindEvents.FreeCamera_YawRight, new(VirtualKey.D, ModifierKeys.Shift) },
 			{ KeyBindEvents.FreeCamera_PitchUp, new(VirtualKey.W, ModifierKeys.Shift) },
 			{ KeyBindEvents.FreeCamera_PitchDown, new(VirtualKey.S, ModifierKeys.Shift) },
-			{ KeyBindEvents.FreeCamera_RollLeft, new(VirtualKey.Q) },
-			{ KeyBindEvents.FreeCamera_RollRight, new(VirtualKey.E) },
+			{ KeyBindEvents.FreeCamera_RollLeft, new(VirtualKey.Q, ModifierKeys.Shift) },
+			{ KeyBindEvents.FreeCamera_RollRight, new(VirtualKey.E, ModifierKeys.Shift) },
 		};
 
 		// SPA
