@@ -262,6 +262,9 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		if (DalamudServices.GameGui != null)
 			DalamudServices.GameGui.UiHideToggled -= this.OnGameUiToggled;
 
+		if (this.Services.Panels.ActivePanel == this.Panel)
+			this.Services.Panels.ActivePanel = null;
+
 		this.SavedPosition = this.Position;
 		this.SavedSize = new Point(this.Width, this.Height);
 
