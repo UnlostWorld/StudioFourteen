@@ -5,6 +5,7 @@ namespace StudioFourteen.Cameras;
 
 using Dalamud.Hooking;
 using Dalamud.Plugin.Services;
+using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using StudioFourteen.Services;
 using System;
 using System.Collections.Generic;
@@ -44,6 +45,7 @@ public class CameraService : ServiceBase
 {
 	private const float CameraBlendTimeMs = 1000;
 	private readonly Stopwatch blendWatch = new();
+	private GroupPoseCamera? initialCamera;
 
 	private Hook<GPoseCameraUpdateDelegate>? gPoseCameraUpdateHook;
 	private Hook<SceneCameraUpdateDelegate>? sceneCameraUpdateHook;
@@ -98,9 +100,21 @@ public class CameraService : ServiceBase
 		this.gPoseCameraUpdateHook?.Enable();
 	}
 
-	public override void Detach()
+	public unsafe override void Detach()
 	{
 		base.Detach();
+
+		GroupPoseCamera* camera = (GroupPoseCamera*)CameraManager.Instance()->Camera;
+
+		// Restore camera settings
+		if (camera != null && this.initialCamera != null)
+		{
+			camera->Angle = this.initialCamera.Value.Angle;
+			camera->FoV = this.initialCamera.Value.FoV;
+			camera->Pan = this.initialCamera.Value.Pan;
+			camera->Rotation = this.initialCamera.Value.Rotation;
+			camera->Camera.Distance = this.initialCamera.Value.Camera.Distance;
+		}
 
 		this.sceneCameraUpdateHook?.Dispose();
 		this.cameraMatrixLoadHook?.Dispose();
@@ -130,9 +144,22 @@ public class CameraService : ServiceBase
 		if (this.gPoseCameraUpdateHook == null)
 			return 0;
 
-		if (this.Services.GroupPose.IsGroupPosing && this.current != null)
+		if (this.Services.GroupPose.IsGroupPosing)
 		{
-			this.current?.UpdateGroupPoseCamera(camera);
+			if (this.initialCamera == null)
+			{
+				this.initialCamera = *camera;
+
+				if (this.current != null)
+				{
+					this.current?.ClearGroupPoseCamera(camera);
+				}
+			}
+
+			if (this.current != null)
+			{
+				this.current?.UpdateGroupPoseCamera(camera);
+			}
 		}
 
 		return this.gPoseCameraUpdateHook.Original(camera);

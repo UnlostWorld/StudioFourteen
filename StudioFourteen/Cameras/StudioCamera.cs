@@ -1,9 +1,7 @@
 ﻿namespace StudioFourteen.Cameras;
 
 using Dalamud.Plugin.Services;
-using FFXIVClientStructs.FFXIV.Common.Lua;
 using PropertyChanged.SourceGenerator;
-using StudioFourteen.Input;
 using StudioFourteen.Mvm;
 using StudioFourteen.Structs.Extensions;
 using System;
@@ -24,6 +22,11 @@ public abstract partial class StudioCameraBase : ViewModel
 	public abstract string TypeName { get; }
 	public bool IsInitialized { get; private set; } = false;
 
+	public virtual void Initialize(CameraState currentState)
+	{
+		this.IsInitialized = true;
+	}
+
 	public virtual void Tick(float deltaTime)
 	{
 	}
@@ -39,6 +42,12 @@ public abstract partial class StudioCameraBase : ViewModel
 				blendOrbit.FieldOfView + blendOrbit.GroupPoseFovAdjust,
 				blendWeight) / 100.0f;
 		}
+	}
+
+	public unsafe virtual void ClearGroupPoseCamera(GroupPoseCamera* camera)
+	{
+		camera->Angle = Vector2.Zero;
+		camera->Camera.Distance = DefaultCameraDistance;
 	}
 
 	public unsafe virtual void UpdateGroupPoseCamera(GroupPoseCamera* camera)
@@ -102,11 +111,6 @@ public abstract partial class StudioCameraBase : ViewModel
 
 	public virtual void Deactivate()
 	{
-	}
-
-	public virtual void Initialize(CameraState currentState)
-	{
-		this.IsInitialized = true;
 	}
 
 	protected virtual void OnMouseDrag(Vector2 delta)
