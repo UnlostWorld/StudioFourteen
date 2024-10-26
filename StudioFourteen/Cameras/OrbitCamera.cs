@@ -45,6 +45,12 @@ public partial class OrbitCamera : StudioCameraBase
 		if (this.Services.Input.IsDown(KeyBindEvents.OrbitCamera_MoveDown))
 			moveDir.Y -= 1;
 
+		if (this.Services.Input.IsDown(KeyBindEvents.OrbitCamera_MoveLeft))
+			moveDir.X -= 1;
+
+		if (this.Services.Input.IsDown(KeyBindEvents.OrbitCamera_MoveRight))
+			moveDir.X += 1;
+
 		this.desiredMove = moveDir;
 
 		Vector3 rot = Vector3.Zero;

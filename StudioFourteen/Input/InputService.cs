@@ -50,6 +50,8 @@ public class InputService : ServiceBase
 		{ KeyBindEvents.OrbitCamera_RollRight, new(VirtualKey.E) },
 		{ KeyBindEvents.OrbitCamera_MoveUp, new(VirtualKey.W, ModifierKeys.Shift) },
 		{ KeyBindEvents.OrbitCamera_MoveDown, new(VirtualKey.S, ModifierKeys.Shift) },
+		{ KeyBindEvents.OrbitCamera_MoveLeft, new(VirtualKey.A, ModifierKeys.Shift) },
+		{ KeyBindEvents.OrbitCamera_MoveRight, new(VirtualKey.D, ModifierKeys.Shift) },
 	};
 
 	public static IEnumerable<VirtualKey> GetValidKeys()

@@ -28,4 +28,6 @@ public enum KeyBindEvents
 	OrbitCamera_RollRight,
 	OrbitCamera_MoveUp,
 	OrbitCamera_MoveDown,
+	OrbitCamera_MoveLeft,
+	OrbitCamera_MoveRight,
 }

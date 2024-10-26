@@ -12,7 +12,15 @@ public partial class OrbitTargetCamera : OrbitCamera
 	public unsafe override void Tick(float deltaTime)
 	{
 		this.desiredMove *= deltaTime;
-		this.TargetOffset += this.desiredMove;
+
+		Vector3 targetOffset = this.TargetOffset;
+		targetOffset.Y += this.desiredMove.Y;
+
+		Vector3 xMove = new(this.desiredMove.Z, 0, this.desiredMove.X);
+		xMove = Vector3.Transform(xMove, this.GetCameraRotation());
+		targetOffset += xMove;
+
+		this.TargetOffset = targetOffset;
 		this.desiredMove = Vector3.Zero;
 
 		if (this.Services.Target.HasValidTarget)
