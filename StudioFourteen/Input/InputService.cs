@@ -5,6 +5,7 @@ namespace StudioFourteen.Input;
 
 using Dalamud.Game.ClientState.Keys;
 using Dalamud.Plugin.Services;
+using FFXIVClientStructs;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using StudioFourteen.Plugin;
 using StudioFourteen.Services;
@@ -41,10 +42,12 @@ public class InputService : ServiceBase
 		{ KeyBindEvents.FreeCamera_RollRight, new(VirtualKey.E, ModifierKeys.Shift) },
 
 		// Orbit Camera
-		{ KeyBindEvents.OrbitCamera_PanUp, new(VirtualKey.W, ModifierKeys.Shift) },
-		{ KeyBindEvents.OrbitCamera_PanDown, new(VirtualKey.S, ModifierKeys.Shift) },
-		{ KeyBindEvents.OrbitCamera_PanLeft, new(VirtualKey.A, ModifierKeys.Shift) },
-		{ KeyBindEvents.OrbitCamera_PanRight, new(VirtualKey.D, ModifierKeys.Shift) },
+		{ KeyBindEvents.OrbitCamera_PanUp, new(VirtualKey.W) },
+		{ KeyBindEvents.OrbitCamera_PanDown, new(VirtualKey.S) },
+		{ KeyBindEvents.OrbitCamera_PanLeft, new(VirtualKey.A) },
+		{ KeyBindEvents.OrbitCamera_PanRight, new(VirtualKey.D) },
+		{ KeyBindEvents.OrbitCamera_RollLeft, new(VirtualKey.Q) },
+		{ KeyBindEvents.OrbitCamera_RollRight, new(VirtualKey.E) },
 	};
 
 	public static IEnumerable<VirtualKey> GetValidKeys()
@@ -90,7 +93,11 @@ public class InputService : ServiceBase
 	public KeyBind? GetKeyBind(KeyBindEvents evt)
 	{
 		KeyBind? bind = null;
-		this.Settings.KeyBinds.TryGetValue(evt, out bind);
+		if (!this.Settings.KeyBinds.TryGetValue(evt, out bind))
+		{
+			this.DefaultKeys.TryGetValue(evt, out bind);
+		}
+
 		return bind;
 	}
 
@@ -102,8 +109,8 @@ public class InputService : ServiceBase
 		if (this.Services.Panels.ActivePanel == null && !XivWindow.IsActive())
 			return false;
 
-		KeyBind? bind;
-		if (!this.Settings.KeyBinds.TryGetValue(evt, out bind) || bind == null)
+		KeyBind? bind = this.GetKeyBind(evt);
+		if (bind == null)
 			return false;
 
 		if (this.IsDown(bind))
@@ -138,8 +145,8 @@ public class InputService : ServiceBase
 
 	private void CheckEvent(KeyBindEvents evt)
 	{
-		KeyBind? bind;
-		if (!this.Settings.KeyBinds.TryGetValue(evt, out bind) || bind == null)
+		KeyBind? bind = this.GetKeyBind(evt);
+		if (bind == null)
 			return;
 
 		this.listeners.TryGetValue(evt, out List<Action>? listeners);

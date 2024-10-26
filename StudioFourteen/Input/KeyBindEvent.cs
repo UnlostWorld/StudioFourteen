@@ -19,4 +19,11 @@ public enum KeyBindEvents
 	FreeCamera_PitchDown,
 	FreeCamera_RollLeft,
 	FreeCamera_RollRight,
+
+	OrbitCamera_PanLeft,
+	OrbitCamera_PanRight,
+	OrbitCamera_PanUp,
+	OrbitCamera_PanDown,
+	OrbitCamera_RollLeft,
+	OrbitCamera_RollRight,
 }

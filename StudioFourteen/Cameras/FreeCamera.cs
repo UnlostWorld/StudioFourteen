@@ -102,12 +102,11 @@ public partial class FreeCamera : StudioCameraBase
 		this.desiredMove = Vector3.Zero;
 
 		this.desiredRot *= deltaTime;
-		////Quaternion rot = Quaternion.CreateFromYawPitchRoll(this.desiredRot.X, this.desiredRot.Y, this.desiredRot.Z);
-
 		Quaternion x = Quaternion.CreateFromYawPitchRoll(this.desiredRot.X, 0, 0);
 		Quaternion y = Quaternion.CreateFromYawPitchRoll(0, this.desiredRot.Z, this.desiredRot.Y);
 		this.Rotation = Quaternion.Multiply(x, this.Rotation);
 		this.Rotation = Quaternion.Multiply(this.Rotation, y);
+		this.desiredRot = Vector3.Zero;
 	}
 
 	public override void Calculate(ref CameraState state, StudioCameraBase? blend = null, float blendWeight = 0)
