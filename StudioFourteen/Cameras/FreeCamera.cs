@@ -128,9 +128,9 @@ public partial class FreeCamera : StudioCameraBase
 		}
 	}
 
-	protected override void Drag(Vector2 delta)
+	protected override void OnMouseDrag(Vector2 delta)
 	{
-		base.Drag(delta);
+		base.OnMouseDrag(delta);
 
 		Quaternion x = Quaternion.CreateFromYawPitchRoll(delta.X * QuaternionExtensions.Deg2Rad, 0, 0);
 		Quaternion y = Quaternion.CreateFromYawPitchRoll(0, 0, delta.Y * QuaternionExtensions.Deg2Rad);

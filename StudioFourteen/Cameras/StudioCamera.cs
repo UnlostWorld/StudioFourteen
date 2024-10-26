@@ -1,15 +1,19 @@
 ﻿namespace StudioFourteen.Cameras;
 
 using Dalamud.Plugin.Services;
+using FFXIVClientStructs.FFXIV.Common.Lua;
 using PropertyChanged.SourceGenerator;
+using StudioFourteen.Input;
 using StudioFourteen.Mvm;
 using StudioFourteen.Structs.Extensions;
-using StudioFourteen.Utilities;
 using System;
 using System.Numerics;
+using System.Windows.Input;
 
 public abstract partial class StudioCameraBase : ViewModel
 {
+	// a distance of 0 hides the character, so a default of 3 seems good.
+	private const float DefaultCameraDistance = 3;
 	private Vector2 lastGroupPoseCameraAngle;
 
 	[Notify] private string name = "Default";
@@ -57,7 +61,15 @@ public abstract partial class StudioCameraBase : ViewModel
 		{
 			Vector2 dragDelta = camera->Angle;
 			dragDelta *= QuaternionExtensions.Rad2Deg;
-			this.Drag(dragDelta);
+
+			// NOTE: should this be input service bindings? :think:
+			if (Keyboard.IsKeyDown(Key.LeftShift))
+				dragDelta *= 10;
+
+			if (Keyboard.IsKeyDown(Key.LeftCtrl))
+				dragDelta /= 10;
+
+			this.OnMouseDrag(dragDelta);
 
 			this.lastGroupPoseCameraAngle = camera->Angle;
 		}
@@ -65,6 +77,19 @@ public abstract partial class StudioCameraBase : ViewModel
 		// Set the angle back to zero so next frame we have clean uncapped rotation data.
 		// but only if the user is still dragging.
 		camera->Angle = Vector2.Zero;
+
+		// Same for scroll wheel
+		float scrollDelta = camera->Camera.Distance - DefaultCameraDistance;
+
+		// NOTE: should this be input service bindings? :think:
+		if (Keyboard.IsKeyDown(Key.LeftShift))
+			scrollDelta *= 10;
+
+		if (Keyboard.IsKeyDown(Key.LeftCtrl))
+			scrollDelta /= 10;
+
+		this.OnMouseScroll(scrollDelta);
+		camera->Camera.Distance = DefaultCameraDistance;
 	}
 
 	public virtual void Activate()
@@ -84,7 +109,11 @@ public abstract partial class StudioCameraBase : ViewModel
 		this.IsInitialized = true;
 	}
 
-	protected virtual void Drag(Vector2 delta)
+	protected virtual void OnMouseDrag(Vector2 delta)
+	{
+	}
+
+	protected virtual void OnMouseScroll(float delta)
 	{
 	}
 }

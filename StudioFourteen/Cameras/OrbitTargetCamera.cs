@@ -9,8 +9,12 @@ public partial class OrbitTargetCamera : OrbitCamera
 
 	public override string TypeName => Resources.Find("LOC_OrbitTargetCamera", "Orbit Target");
 
-	public unsafe override void Calculate(ref CameraState state, StudioCameraBase? blend, float blendWeight)
+	public unsafe override void Tick(float deltaTime)
 	{
+		this.desiredMove *= deltaTime;
+		this.TargetOffset += this.desiredMove;
+		this.desiredMove = Vector3.Zero;
+
 		if (this.Services.Target.HasValidTarget)
 		{
 			Vector3 targetPos = this.Services.Target.Target->Position;
@@ -18,6 +22,6 @@ public partial class OrbitTargetCamera : OrbitCamera
 			this.Target = targetPos;
 		}
 
-		base.Calculate(ref state, blend, blendWeight);
+		base.Tick(deltaTime);
 	}
 }
