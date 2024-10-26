@@ -110,7 +110,13 @@ public class InputService : ServiceBase
 		if (!this.Settings.EnableKeyBinds)
 			return false;
 
+		if (!this.Services.Studio.IsOpen)
+			return false;
+
 		if (this.Services.Panels.ActivePanel == null && !XivWindow.IsActive())
+			return false;
+
+		if (this.IsTextInputActive)
 			return false;
 
 		KeyBind? bind = this.GetKeyBind(evt);
