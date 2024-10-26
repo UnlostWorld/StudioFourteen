@@ -26,22 +26,9 @@ public class GroupPoseService : ServiceBase
 
 	public bool IsGroupPosing => DalamudServices.ClientState?.IsGPosing ?? false;
 
-	public override Task Start()
+	public override unsafe void Attach()
 	{
-		this.Attach();
-		return base.Start();
-	}
-
-	public override Task Stop()
-	{
-		this.Detach();
-		return base.Stop();
-	}
-
-	private unsafe void Attach()
-	{
-		if (!DalamudServices.IsAlive)
-			return;
+		base.Attach();
 
 		UIModule* uiModule = Framework.Instance()->UIModule;
 		var enterAddress = (nint)uiModule->VirtualTable->EnterGPose;
@@ -54,8 +41,10 @@ public class GroupPoseService : ServiceBase
 		this.exitHook?.Enable();
 	}
 
-	private void Detach()
+	public override void Detach()
 	{
+		base.Detach();
+
 		this.enterHook?.Dispose();
 		this.exitHook?.Dispose();
 	}

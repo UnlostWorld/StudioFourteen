@@ -20,32 +20,35 @@ public abstract class ServiceBase : ViewModel
 
 	public virtual Task Start()
 	{
-		if (DalamudServices.Framework != null)
-			DalamudServices.Framework.Update += this.OnFrameworkUpdate;
-
 		return Task.CompletedTask;
 	}
 
 	public virtual Task Stop()
 	{
-		if (DalamudServices.Framework != null)
-			DalamudServices.Framework.Update -= this.OnFrameworkUpdate;
-
 		this.IsAlive = false;
 		return Task.CompletedTask;
 	}
 
 	public virtual Task Shutdown()
 	{
-		if (DalamudServices.Framework != null)
-			DalamudServices.Framework.Update -= this.OnFrameworkUpdate;
-
 		return Task.CompletedTask;
 	}
 
 	public virtual Task Tick()
 	{
 		return Task.CompletedTask;
+	}
+
+	public virtual void Attach()
+	{
+		if (DalamudServices.Framework != null)
+			DalamudServices.Framework.Update += this.OnFrameworkUpdate;
+	}
+
+	public virtual void Detach()
+	{
+		if (DalamudServices.Framework != null)
+			DalamudServices.Framework.Update -= this.OnFrameworkUpdate;
 	}
 
 	protected virtual void OnFrameworkUpdate(IFramework framework)

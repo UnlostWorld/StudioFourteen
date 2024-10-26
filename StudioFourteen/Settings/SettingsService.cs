@@ -63,7 +63,6 @@ public class SettingsService : ServiceBase
 	{
 		public int Version { get; set; } = 0;
 		public List<string> OpenPanels { get; set; } = new();
-		public bool IsOpen { get; set; } = false;
 		public Dictionary<string, string> PanelPersistence { get; set; } = new();
 
 		// Files

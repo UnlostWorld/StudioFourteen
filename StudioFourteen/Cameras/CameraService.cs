@@ -81,27 +81,30 @@ public class CameraService : ServiceBase
 		this.current = new OrbitTargetCamera();
 		this.Cameras.Add(this.current);
 
-		unsafe
-		{
-			this.sceneCameraUpdateHook = InteropService.HookFromSignature<SceneCameraUpdateDelegate>("48 ?? ?? ?? ?? ?? 48 81 EC ?? ?? ?? ?? F6 81 EC ?? ?? ?? ?? 48 8B ?? 48 ?? ?? ??", this.SceneCameraUpdateDetour);
-			this.sceneCameraUpdateHook?.Enable();
-
-			this.cameraMatrixLoadHook = InteropService.HookFromSignature<CameraMatrixLoadDelegate>("E8 ?? ?? ?? ?? 48 8B 93 90 02 ?? ?? 48 8D 4C 24 40", this.CameraMatrixLoad);
-			this.cameraMatrixLoadHook?.Enable();
-
-			this.gPoseCameraUpdateHook = InteropService.HookFromSignature<GPoseCameraUpdateDelegate>("40 55 53 57 48 8D 6C 24 A0 48 81 EC ?? ?? ?? ?? 48 8B 1D", this.GroupPoseCameraUpdateDetour);
-			this.gPoseCameraUpdateHook?.Enable();
-		}
-
 		return base.Start();
 	}
 
-	public override Task Stop()
+	public unsafe override void Attach()
 	{
-		this.sceneCameraUpdateHook?.Disable();
-		this.cameraMatrixLoadHook?.Disable();
+		base.Attach();
 
-		return base.Stop();
+		this.sceneCameraUpdateHook = InteropService.HookFromSignature<SceneCameraUpdateDelegate>("48 ?? ?? ?? ?? ?? 48 81 EC ?? ?? ?? ?? F6 81 EC ?? ?? ?? ?? 48 8B ?? 48 ?? ?? ??", this.SceneCameraUpdateDetour);
+		this.sceneCameraUpdateHook?.Enable();
+
+		this.cameraMatrixLoadHook = InteropService.HookFromSignature<CameraMatrixLoadDelegate>("E8 ?? ?? ?? ?? 48 8B 93 90 02 ?? ?? 48 8D 4C 24 40", this.CameraMatrixLoad);
+		this.cameraMatrixLoadHook?.Enable();
+
+		this.gPoseCameraUpdateHook = InteropService.HookFromSignature<GPoseCameraUpdateDelegate>("40 55 53 57 48 8D 6C 24 A0 48 81 EC ?? ?? ?? ?? 48 8B 1D", this.GroupPoseCameraUpdateDetour);
+		this.gPoseCameraUpdateHook?.Enable();
+	}
+
+	public override void Detach()
+	{
+		base.Detach();
+
+		this.sceneCameraUpdateHook?.Dispose();
+		this.cameraMatrixLoadHook?.Dispose();
+		this.gPoseCameraUpdateHook?.Dispose();
 	}
 
 	public void CreateCamera<T>(bool activate = true)

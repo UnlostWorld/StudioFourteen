@@ -144,6 +144,8 @@ public class ServiceManagerBase
 		while (this.isTicking)
 			await Task.Delay(100);
 
+		this.Detach();
+
 		foreach (ServiceBase service in this.services)
 		{
 			try
@@ -177,6 +179,38 @@ public class ServiceManagerBase
 		instance = null;
 
 		this.state = States.ShutDown;
+	}
+
+	public void Attach()
+	{
+		foreach(ServiceBase service in this.services)
+		{
+			try
+			{
+				service.Attach();
+			}
+			catch(Exception ex)
+			{
+				this.Log.Error(ex, $"Error attaching service: {service}");
+			}
+		}
+	}
+
+	public void Detach()
+	{
+		foreach (ServiceBase service in this.services)
+		{
+			try
+			{
+				service.Detach();
+			}
+			catch (Exception ex)
+			{
+				this.Log.Error(ex, $"Error detaching service: {service}");
+			}
+		}
+
+		InteropService.CheckHooks();
 	}
 
 	protected virtual void OnStart()

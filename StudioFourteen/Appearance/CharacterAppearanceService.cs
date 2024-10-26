@@ -37,17 +37,28 @@ public class CharacterAppearanceService : ServiceBase
 			this.provider.OnEnterGroupPose();
 		}
 
-		this.enforceKindRestrictionsHook = InteropService.HookFromSignature<EnforceKindRestrictionsDelegate>("E8 ?? ?? ?? ?? 41 B0 ?? 48 8B D6", this.EnforceKindRestrictionsDetour);
-		this.enforceKindRestrictionsHook?.Enable();
-
 		return base.Start();
 	}
 
 	public override Task Stop()
 	{
 		this.Services.GroupPose.StateChanged -= this.OnGroupPoseStateChange;
-		this.enforceKindRestrictionsHook?.Dispose();
 		return base.Stop();
+	}
+
+	public override void Attach()
+	{
+		base.Attach();
+
+		this.enforceKindRestrictionsHook = InteropService.HookFromSignature<EnforceKindRestrictionsDelegate>("E8 ?? ?? ?? ?? 41 B0 ?? 48 8B D6", this.EnforceKindRestrictionsDetour);
+		this.enforceKindRestrictionsHook?.Enable();
+	}
+
+	public override void Detach()
+	{
+		base.Detach();
+
+		this.enforceKindRestrictionsHook?.Dispose();
 	}
 
 	public unsafe bool CanRestore(Character* character)

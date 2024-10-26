@@ -67,8 +67,10 @@ public class GameCaptureService : ServiceBase
 		}
 	}
 
-	public override Task Start()
+	public override void Attach()
 	{
+		base.Attach();
+
 		if (SwapChainHelper.IsReshade)
 		{
 			this.reshadeOnPresentHook = InteropService.HookFromAddress<InterfaceManager.ReshadeOnPresentDelegate>(SwapChainHelper.ReshadeOnPresent, this.ReshadeOnPresentDetour);
@@ -79,12 +81,12 @@ public class GameCaptureService : ServiceBase
 
 		Thread conversionThread = new(new ThreadStart(this.ConversionThread));
 		conversionThread.Start();
-
-		return base.Start();
 	}
 
-	public override Task Stop()
+	public override void Detach()
 	{
+		base.Detach();
+
 		if (SwapChainHelper.IsReshade)
 		{
 			InterfaceManager.EnableReshadePresent();
@@ -94,8 +96,6 @@ public class GameCaptureService : ServiceBase
 			this.reshadeOnPresentHook.Dispose();
 
 		this.bufferTexture.Dispose();
-
-		return base.Stop();
 	}
 
 	public Image? ToImage()

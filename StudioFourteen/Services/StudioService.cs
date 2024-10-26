@@ -9,16 +9,6 @@ public class StudioService : ServiceBase
 	public bool IsOpen { get; private set; }
 	public bool IsOpenAndInGPose => this.Services.Studio.IsOpen && this.Services.GroupPose.IsGroupPosing;
 
-	public override async Task Start()
-	{
-		await base.Start();
-
-		if (this.Services.Settings.Current.IsOpen)
-		{
-			this.OpenStudio();
-		}
-	}
-
 	public override Task Stop()
 	{
 		SpaWindow.CloseSpa();
@@ -32,7 +22,8 @@ public class StudioService : ServiceBase
 	{
 		try
 		{
-			this.Services.Settings.Current.IsOpen = true;
+			this.Services.Attach();
+
 			this.IsOpen = true;
 			this.RaisePropertyChanged(nameof(StudioService.IsOpen));
 			this.RaisePropertyChanged(nameof(StudioService.IsOpenAndInGPose));
@@ -54,7 +45,8 @@ public class StudioService : ServiceBase
 	{
 		try
 		{
-			this.Services.Settings.Current.IsOpen = false;
+			this.Services.Detach();
+
 			this.IsOpen = false;
 			this.RaisePropertyChanged(nameof(StudioService.IsOpen));
 			this.RaisePropertyChanged(nameof(StudioService.IsOpenAndInGPose));

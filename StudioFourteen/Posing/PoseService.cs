@@ -113,9 +113,6 @@ public class PoseService : ServiceBase
 
 	public override Task Start()
 	{
-		this.updateBonePhysicsHook = InteropService.HookFromSignature<UpdateBonePhysicsDelegate>("48 89 5C 24 ?? 48 89 6C 24 ?? 48 89 74 24 ?? 57 41 56 41 57 48 83 EC ?? 48 8B 79 ?? 45 33 FF", this.UpdateBonePhysicsDetour);
-		this.updateBonePhysicsHook?.Enable();
-
 		this.Services.CharacterLifecycle.CharacterDestroyed += this.OnCharacterDestroyed;
 		this.Services.GroupPose.StateChanged += this.OnGroupPoseStateChange;
 
@@ -124,14 +121,27 @@ public class PoseService : ServiceBase
 
 	public override Task Stop()
 	{
-		this.updateBonePhysicsHook?.Dispose();
-
 		this.Services.CharacterLifecycle.CharacterDestroyed -= this.OnCharacterDestroyed;
 		this.Services.GroupPose.StateChanged -= this.OnGroupPoseStateChange;
 
 		this.FlushBoneReferences();
 
 		return base.Stop();
+	}
+
+	public override void Attach()
+	{
+		base.Attach();
+
+		this.updateBonePhysicsHook = InteropService.HookFromSignature<UpdateBonePhysicsDelegate>("48 89 5C 24 ?? 48 89 6C 24 ?? 48 89 74 24 ?? 57 41 56 41 57 48 83 EC ?? 48 8B 79 ?? 45 33 FF", this.UpdateBonePhysicsDetour);
+		this.updateBonePhysicsHook?.Enable();
+	}
+
+	public override void Detach()
+	{
+		base.Detach();
+
+		this.updateBonePhysicsHook?.Dispose();
 	}
 
 	public bool AreAllBoneReferencesLocked(int objectTableId)

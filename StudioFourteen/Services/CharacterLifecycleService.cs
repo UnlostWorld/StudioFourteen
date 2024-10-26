@@ -44,16 +44,9 @@ public class CharacterLifecycleService : ServiceBase
 		}
 	}
 
-	public override async Task Start()
-	{
-		await base.Start();
-		this.Attach();
-	}
-
 	public override async Task Stop()
 	{
 		await base.Stop();
-		this.Detach();
 		this.DestroyAllCreated();
 	}
 
@@ -160,8 +153,10 @@ public class CharacterLifecycleService : ServiceBase
 		CreatedIndexes.Clear();
 	}
 
-	private unsafe void Attach()
+	public override unsafe void Attach()
 	{
+		base.Attach();
+
 		this.characterInitializeHook = InteropService.HookFromSignature<CharacterEventDelegate>("E8 ?? ?? ?? ?? 8D 57 ?? C6 83", this.CharacterInitializeDetour);
 		this.characterInitializeHook?.Enable();
 
@@ -169,8 +164,10 @@ public class CharacterLifecycleService : ServiceBase
 		this.characterFinalizeHook?.Enable();
 	}
 
-	private void Detach()
+	public override void Detach()
 	{
+		base.Detach();
+
 		this.characterInitializeHook?.Dispose();
 		this.characterFinalizeHook?.Dispose();
 	}
