@@ -119,5 +119,14 @@
 		BasedOn="{StaticResource WpfUtilsMultiNumberBox}"
 		TargetType="{x:Type controls:Vector3Box}" />
 
+	<Style
+		BasedOn="{StaticResource WpfUtilsMultiNumberBox}"
+		TargetType="{x:Type controls:Vector2Box}" />
+
+
+	<Style
+		BasedOn="{StaticResource WpfUtilsMultiNumberBox}"
+		TargetType="{x:Type controls:QuaternionBox}" />
+
 
 </local:Resources>

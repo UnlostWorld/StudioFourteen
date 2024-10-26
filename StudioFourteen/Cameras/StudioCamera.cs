@@ -13,6 +13,7 @@ public abstract partial class StudioCameraBase : ViewModel
 	// a distance of 0 hides the character, so a default of 3 seems good.
 	private const float DefaultCameraDistance = 3;
 	private Vector2 lastGroupPoseCameraAngle;
+	private int updateDelay = -1;
 
 	[Notify] private string name = "Default";
 	[Notify] private float fieldOfView = 75.0f;
@@ -44,14 +45,15 @@ public abstract partial class StudioCameraBase : ViewModel
 		}
 	}
 
-	public unsafe virtual void ClearGroupPoseCamera(GroupPoseCamera* camera)
-	{
-		camera->Angle = Vector2.Zero;
-		camera->Camera.Distance = DefaultCameraDistance;
-	}
-
 	public unsafe virtual void UpdateGroupPoseCamera(GroupPoseCamera* camera)
 	{
+		// a small wait for the angle and distance deltas to stabilize
+		// after entering gpose or activating studio.
+		bool isReady = this.updateDelay == 0;
+
+		if (!isReady)
+			this.updateDelay--;
+
 		this.GroupPoseFovAdjust = camera->FoV * 100;
 
 		// a huge hack, but to get dragging the game window to move the cameras
@@ -78,7 +80,8 @@ public abstract partial class StudioCameraBase : ViewModel
 			if (Keyboard.IsKeyDown(Key.LeftCtrl))
 				dragDelta /= 10;
 
-			this.OnMouseDrag(dragDelta);
+			if (isReady)
+				this.OnMouseDrag(dragDelta);
 
 			this.lastGroupPoseCameraAngle = camera->Angle;
 		}
@@ -97,12 +100,15 @@ public abstract partial class StudioCameraBase : ViewModel
 		if (Keyboard.IsKeyDown(Key.LeftCtrl))
 			scrollDelta /= 10;
 
-		this.OnMouseScroll(scrollDelta);
+		if (isReady)
+			this.OnMouseScroll(scrollDelta);
+
 		camera->Camera.Distance = DefaultCameraDistance;
 	}
 
 	public virtual void Activate()
 	{
+		this.updateDelay = 10;
 	}
 
 	public virtual void OnFrameworkUpdate(IFramework framework)
@@ -111,6 +117,7 @@ public abstract partial class StudioCameraBase : ViewModel
 
 	public virtual void Deactivate()
 	{
+		this.updateDelay = -1;
 	}
 
 	protected virtual void OnMouseDrag(Vector2 delta)

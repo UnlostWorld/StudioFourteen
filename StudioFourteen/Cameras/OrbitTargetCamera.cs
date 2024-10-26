@@ -5,9 +5,21 @@ using System.Numerics;
 
 public partial class OrbitTargetCamera : OrbitCamera
 {
-	[Notify] private Vector3 targetOffset = new(0, 1.5f, 0);
+	[Notify] private Vector3 targetOffset = new(0, 0, 0);
 
 	public override string TypeName => Resources.Find("LOC_OrbitTargetCamera", "Orbit Target");
+
+	public unsafe override void Initialize(CameraState currentState)
+	{
+		base.Initialize(currentState);
+
+		if (this.Services.Target.HasValidTarget)
+		{
+			Vector3 offset = this.TargetOffset;
+			offset.Y = this.Services.Target.Target->Height;
+			this.TargetOffset = offset;
+		}
+	}
 
 	public unsafe override void Tick(float deltaTime)
 	{

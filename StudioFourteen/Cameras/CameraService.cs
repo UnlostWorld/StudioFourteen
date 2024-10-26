@@ -7,6 +7,7 @@ using Dalamud.Hooking;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using StudioFourteen.Services;
+using StudioFourteen.Structs.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -45,7 +46,6 @@ public class CameraService : ServiceBase
 {
 	private const float CameraBlendTimeMs = 1000;
 	private readonly Stopwatch blendWatch = new();
-	private GroupPoseCamera? initialCamera;
 
 	private Hook<GPoseCameraUpdateDelegate>? gPoseCameraUpdateHook;
 	private Hook<SceneCameraUpdateDelegate>? sceneCameraUpdateHook;
@@ -58,6 +58,8 @@ public class CameraService : ServiceBase
 	private unsafe delegate nint GPoseCameraUpdateDelegate(GroupPoseCamera* camera);
 	private unsafe delegate nint SceneCameraUpdateDelegate(SceneCamera* sceneCamera);
 	private unsafe delegate void CameraMatrixLoadDelegate(RenderCamera* camera, nint a1);
+
+	public GroupPoseCamera? InitialCamera { get; private set; }
 
 	public StudioCameraBase? Current
 	{
@@ -80,8 +82,7 @@ public class CameraService : ServiceBase
 
 	public override Task Start()
 	{
-		this.current = new OrbitTargetCamera();
-		this.Cameras.Add(this.current);
+		this.Cameras.Add(new OrbitTargetCamera());
 
 		return base.Start();
 	}
@@ -89,6 +90,8 @@ public class CameraService : ServiceBase
 	public unsafe override void Attach()
 	{
 		base.Attach();
+
+		this.InitialCamera = *(GroupPoseCamera*)CameraManager.Instance()->Camera;
 
 		this.sceneCameraUpdateHook = InteropService.HookFromSignature<SceneCameraUpdateDelegate>("48 ?? ?? ?? ?? ?? 48 81 EC ?? ?? ?? ?? F6 81 EC ?? ?? ?? ?? 48 8B ?? 48 ?? ?? ??", this.SceneCameraUpdateDetour);
 		this.sceneCameraUpdateHook?.Enable();
@@ -98,6 +101,8 @@ public class CameraService : ServiceBase
 
 		this.gPoseCameraUpdateHook = InteropService.HookFromSignature<GPoseCameraUpdateDelegate>("40 55 53 57 48 8D 6C 24 A0 48 81 EC ?? ?? ?? ?? 48 8B 1D", this.GroupPoseCameraUpdateDetour);
 		this.gPoseCameraUpdateHook?.Enable();
+
+		this.Current = this.Cameras[0];
 	}
 
 	public unsafe override void Detach()
@@ -107,13 +112,13 @@ public class CameraService : ServiceBase
 		GroupPoseCamera* camera = (GroupPoseCamera*)CameraManager.Instance()->Camera;
 
 		// Restore camera settings
-		if (camera != null && this.initialCamera != null)
+		if (camera != null && this.InitialCamera != null)
 		{
-			camera->Angle = this.initialCamera.Value.Angle;
-			camera->FoV = this.initialCamera.Value.FoV;
-			camera->Pan = this.initialCamera.Value.Pan;
-			camera->Rotation = this.initialCamera.Value.Rotation;
-			camera->Camera.Distance = this.initialCamera.Value.Camera.Distance;
+			camera->Angle = this.InitialCamera.Value.Angle;
+			camera->FoV = this.InitialCamera.Value.FoV;
+			camera->Pan = this.InitialCamera.Value.Pan;
+			camera->Rotation = this.InitialCamera.Value.Rotation;
+			camera->Camera.Distance = this.InitialCamera.Value.Camera.Distance;
 		}
 
 		this.sceneCameraUpdateHook?.Dispose();
@@ -146,16 +151,6 @@ public class CameraService : ServiceBase
 
 		if (this.Services.GroupPose.IsGroupPosing)
 		{
-			if (this.initialCamera == null)
-			{
-				this.initialCamera = *camera;
-
-				if (this.current != null)
-				{
-					this.current?.ClearGroupPoseCamera(camera);
-				}
-			}
-
 			if (this.current != null)
 			{
 				this.current?.UpdateGroupPoseCamera(camera);

@@ -137,6 +137,8 @@
 
 	<!--  Camera  -->
 	<sys:String x:Key="LOC_Camera_Fov">Field of View</sys:String>
+	<sys:String x:Key="LOC_Camera_Rotation">Camera Rotation</sys:String>
+
 	<sys:String x:Key="LOC_OrbitCamera">Orbit</sys:String>
 	<sys:String x:Key="LOC_OrbitCamera_ToolTip">A Camera that rotates around a specified point in the world</sys:String>
 	<sys:String x:Key="LOC_OrbitCamera_Target">Target Position</sys:String>

@@ -14,7 +14,7 @@ public partial class OrbitCamera : StudioCameraBase
 
 	[Notify] private Vector3 target;
 	[Notify] private float distance = 3;
-	[Notify] private Vector3 angle;
+	[Notify] private Vector2 angle;
 	[Notify] private Quaternion rotation;
 
 	[Notify(Setter.Private)] private float groupPoseRollAdjust;
@@ -30,7 +30,7 @@ public partial class OrbitCamera : StudioCameraBase
 
 		this.Rotation = Quaternion.Identity;
 
-		// TODO: Determine a good starting angle
+		this.Log.Information($"{currentState.Rotation.ToEuler()}");
 	}
 
 	public override void OnFrameworkUpdate(IFramework framework)
@@ -141,7 +141,7 @@ public partial class OrbitCamera : StudioCameraBase
 	{
 		return Quaternion.CreateFromYawPitchRoll(
 			this.angle.X * QuaternionExtensions.Deg2Rad,
-			(this.angle.Z + this.GroupPoseRollAdjust) * QuaternionExtensions.Deg2Rad,
+			this.GroupPoseRollAdjust * QuaternionExtensions.Deg2Rad,
 			this.angle.Y * QuaternionExtensions.Deg2Rad);
 	}
 
@@ -155,7 +155,9 @@ public partial class OrbitCamera : StudioCameraBase
 	{
 		base.OnMouseDrag(delta);
 
-		Vector3 angle = this.Angle;
+		this.Log.Information($"DRAG {delta}");
+
+		Vector2 angle = this.Angle;
 		angle.X += delta.X;
 		angle.Y += delta.Y;
 		this.Angle = angle;
