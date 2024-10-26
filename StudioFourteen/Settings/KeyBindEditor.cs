@@ -3,7 +3,6 @@
 using Dalamud.Game.ClientState.Keys;
 using DependencyPropertyGenerator;
 using StudioFourteen.Input;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -14,6 +13,10 @@ public partial class KeyBindEditor : TextBox
 	{
 		this.IsReadOnly = true;
 	}
+
+	public delegate void KeyBindChangedDelegate(KeyBindEditor sender, KeyBind? bind);
+
+	public event KeyBindChangedDelegate? KeyBindChanged;
 
 	protected override void OnPreviewKeyDown(KeyEventArgs e)
 	{
@@ -58,5 +61,6 @@ public partial class KeyBindEditor : TextBox
 	partial void OnKeyBindChanged(KeyBind? newValue)
 	{
 		this.Text = newValue?.ToString();
+		this.KeyBindChanged?.Invoke(this, newValue);
 	}
 }

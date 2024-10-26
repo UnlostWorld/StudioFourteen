@@ -75,26 +75,7 @@ public class SettingsService : ServiceBase
 
 		// Input
 		public bool EnableKeyBinds { get; set; } = true;
-		public Dictionary<KeyBindEvents, KeyBind> Keys { get; set; } = new()
-		{
-			{ KeyBindEvents.InvokeQuickSearch, new(VirtualKey.Q, ModifierKeys.Shift) },
-			{ KeyBindEvents.Save, new(VirtualKey.S, ModifierKeys.Control) },
-			{ KeyBindEvents.SaveAs, new(VirtualKey.S, ModifierKeys.Control | ModifierKeys.Shift) },
-
-			// Free Camera
-			{ KeyBindEvents.FreeCamera_MoveForwards, new(VirtualKey.W) },
-			{ KeyBindEvents.FreeCamera_MoveBack, new(VirtualKey.S) },
-			{ KeyBindEvents.FreeCamera_MoveLeft, new(VirtualKey.A) },
-			{ KeyBindEvents.FreeCamera_MoveRight, new(VirtualKey.D) },
-			{ KeyBindEvents.FreeCamera_MoveUp, new(VirtualKey.Q) },
-			{ KeyBindEvents.FreeCamera_MoveDown, new(VirtualKey.E) },
-			{ KeyBindEvents.FreeCamera_YawLeft, new(VirtualKey.A, ModifierKeys.Shift) },
-			{ KeyBindEvents.FreeCamera_YawRight, new(VirtualKey.D, ModifierKeys.Shift) },
-			{ KeyBindEvents.FreeCamera_PitchUp, new(VirtualKey.W, ModifierKeys.Shift) },
-			{ KeyBindEvents.FreeCamera_PitchDown, new(VirtualKey.S, ModifierKeys.Shift) },
-			{ KeyBindEvents.FreeCamera_RollLeft, new(VirtualKey.Q, ModifierKeys.Shift) },
-			{ KeyBindEvents.FreeCamera_RollRight, new(VirtualKey.E, ModifierKeys.Shift) },
-		};
+		public Dictionary<KeyBindEvents, KeyBind> KeyBinds { get; set; } = new();
 
 		// SPA
 		public bool IsSpa { get; set; } = false;

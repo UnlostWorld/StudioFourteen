@@ -20,6 +20,33 @@ public class InputService : ServiceBase
 
 	public bool IsTextInputActive { get; private set; }
 
+	public Dictionary<KeyBindEvents, KeyBind> DefaultKeys { get; init; } = new()
+	{
+		{ KeyBindEvents.InvokeQuickSearch, new(VirtualKey.Q, ModifierKeys.Shift) },
+		{ KeyBindEvents.Save, new(VirtualKey.S, ModifierKeys.Control) },
+		{ KeyBindEvents.SaveAs, new(VirtualKey.S, ModifierKeys.Control | ModifierKeys.Shift) },
+
+		// Free Camera
+		{ KeyBindEvents.FreeCamera_MoveForwards, new(VirtualKey.W) },
+		{ KeyBindEvents.FreeCamera_MoveBack, new(VirtualKey.S) },
+		{ KeyBindEvents.FreeCamera_MoveLeft, new(VirtualKey.A) },
+		{ KeyBindEvents.FreeCamera_MoveRight, new(VirtualKey.D) },
+		{ KeyBindEvents.FreeCamera_MoveUp, new(VirtualKey.Q) },
+		{ KeyBindEvents.FreeCamera_MoveDown, new(VirtualKey.E) },
+		{ KeyBindEvents.FreeCamera_YawLeft, new(VirtualKey.A, ModifierKeys.Shift) },
+		{ KeyBindEvents.FreeCamera_YawRight, new(VirtualKey.D, ModifierKeys.Shift) },
+		{ KeyBindEvents.FreeCamera_PitchUp, new(VirtualKey.W, ModifierKeys.Shift) },
+		{ KeyBindEvents.FreeCamera_PitchDown, new(VirtualKey.S, ModifierKeys.Shift) },
+		{ KeyBindEvents.FreeCamera_RollLeft, new(VirtualKey.Q, ModifierKeys.Shift) },
+		{ KeyBindEvents.FreeCamera_RollRight, new(VirtualKey.E, ModifierKeys.Shift) },
+
+		// Orbit Camera
+		{ KeyBindEvents.OrbitCamera_PanUp, new(VirtualKey.W, ModifierKeys.Shift) },
+		{ KeyBindEvents.OrbitCamera_PanDown, new(VirtualKey.S, ModifierKeys.Shift) },
+		{ KeyBindEvents.OrbitCamera_PanLeft, new(VirtualKey.A, ModifierKeys.Shift) },
+		{ KeyBindEvents.OrbitCamera_PanRight, new(VirtualKey.D, ModifierKeys.Shift) },
+	};
+
 	public static IEnumerable<VirtualKey> GetValidKeys()
 	{
 		if (DalamudServices.KeyState == null)
@@ -63,7 +90,7 @@ public class InputService : ServiceBase
 	public KeyBind? GetKeyBind(KeyBindEvents evt)
 	{
 		KeyBind? bind = null;
-		this.Settings.Keys.TryGetValue(evt, out bind);
+		this.Settings.KeyBinds.TryGetValue(evt, out bind);
 		return bind;
 	}
 
@@ -76,7 +103,7 @@ public class InputService : ServiceBase
 			return false;
 
 		KeyBind? bind;
-		if (!this.Settings.Keys.TryGetValue(evt, out bind) || bind == null)
+		if (!this.Settings.KeyBinds.TryGetValue(evt, out bind) || bind == null)
 			return false;
 
 		if (this.IsDown(bind))
@@ -112,7 +139,7 @@ public class InputService : ServiceBase
 	private void CheckEvent(KeyBindEvents evt)
 	{
 		KeyBind? bind;
-		if (!this.Settings.Keys.TryGetValue(evt, out bind) || bind == null)
+		if (!this.Settings.KeyBinds.TryGetValue(evt, out bind) || bind == null)
 			return;
 
 		this.listeners.TryGetValue(evt, out List<Action>? listeners);

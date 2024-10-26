@@ -76,7 +76,7 @@
 				<ScrollViewer
 					Grid.Row="1"
 					Margin="0,2,0,0">
-					<ItemsControl ItemsSource="{Binding Settings.Keys}">
+					<ItemsControl ItemsSource="{Binding Keys}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
 								<Grid Margin="0,1">
@@ -93,7 +93,9 @@
 										Grid.Column="0"
 										HorizontalContentAlignment="Center"
 										KeyBind="{Binding Value}"
-										Style="{DynamicResource WpfUtilsTextBox}" />
+										KeyBindChanged="OnKeyBindChanged"
+										Style="{DynamicResource WpfUtilsTextBox}"
+										Tag="{Binding Key}" />
 
 									<TextBlock
 										Grid.Column="1"
