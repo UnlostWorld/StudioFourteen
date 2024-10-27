@@ -112,7 +112,7 @@ public class CameraService : ServiceBase
 		GroupPoseCamera* camera = (GroupPoseCamera*)CameraManager.Instance()->Camera;
 
 		// Restore camera settings
-		if (camera != null && this.InitialCamera != null)
+		if (camera != null && this.InitialCamera != null && this.Services.GroupPose.IsGroupPosing)
 		{
 			camera->Angle = this.InitialCamera.Value.Angle;
 			camera->FoV = this.InitialCamera.Value.FoV;
