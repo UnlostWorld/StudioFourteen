@@ -13,6 +13,8 @@ public partial class CharacterPanel : CharacterPanelBase
 {
 	public CustomizeViewModel Customize { get; init; } = new();
 
+	[AutoNotify] public bool UseTwoColumns => this.ActualWidth > 650;
+
 	[AutoNotify] public unsafe bool CanRevert => this.Services.CharacterAppearance.CanRestore(this.Target);
 	[AutoNotify] public string ExportAppearanceToolTipText => string.Format(StudioFourteen.Resources.Find("LOC_Save_ExportAppearanceToolTip", string.Empty), this.CharacterName);
 
