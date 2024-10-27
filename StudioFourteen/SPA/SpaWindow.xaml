@@ -16,7 +16,9 @@
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="{DynamicResource LOC_Spa_Title}"
 	Width="900"
-	Height="536"
+	Height="650"
+	MinWidth="900"
+	MinHeight="650"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	IsEmbedded="False"
@@ -67,7 +69,7 @@
 				</TabItem.Header>
 
 				<panels:PanelHost
-					Margin="1,1,0,0"
+					Margin="2"
 					PanelType="{x:Type library:LibraryWindow}" />
 
 			</TabItem>
@@ -79,6 +81,13 @@
 						Margin="12"
 						Icon="Home" />
 				</TabItem.Header>
+
+				<panels:PanelHost
+					Width="400"
+					Margin="2"
+					HorizontalAlignment="Left"
+					PanelType="{x:Type panels:CameraPanel}" />
+
 			</TabItem>
 
 			<!--  Character  -->
@@ -86,7 +95,7 @@
 				<TabItem.Header>
 					<wpfUtils:IconBlock
 						Margin="12"
-						Icon="UserEdit" />
+						Icon="UserShield" />
 				</TabItem.Header>
 
 				<panels:PanelHost
