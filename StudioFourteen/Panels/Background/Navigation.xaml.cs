@@ -17,6 +17,9 @@ public partial class Navigation : View
 	public event DragDeltaEventHandler? DragDelta;
 
 	[AutoNotify]
+	public bool ShowNavigation => this.Services.Studio.IsOpen && !this.Services.Settings.Current.IsSpa;
+
+	[AutoNotify]
 	public unsafe bool IsInGPose
 	{
 		get => this.Services.GroupPose.IsGroupPosing;

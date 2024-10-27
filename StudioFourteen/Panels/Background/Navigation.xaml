@@ -86,7 +86,7 @@
 
 		<Grid.Triggers>
 			<triggers:StoryboardBindingTrigger
-				Binding="{Binding Services.Studio.IsOpen}"
+				Binding="{Binding ShowNavigation}"
 				EnterStoryboard="{StaticResource Expand}"
 				ExitStoryboard="{StaticResource Collapse}"
 				Target="{Binding RelativeSource={RelativeSource AncestorType={x:Type Grid}}}"
