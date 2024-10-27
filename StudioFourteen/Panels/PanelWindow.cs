@@ -16,6 +16,7 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using WpfUtils.Extensions;
 using WpfUtils.Windows;
+using FontAwesome.Sharp;
 
 [DependencyProperty<bool>("IsEmbedded", DefaultValue = true)]
 [DependencyProperty<bool>("CanClose", DefaultValue = true)]
@@ -56,6 +57,9 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	public ServiceManager Services => ServiceManager.Instance;
 
 	public bool IsUiVisible => !DalamudServices.GameGui?.GameUiHidden ?? true;
+
+	public bool HasIcon => this.Panel != null && this.Panel.TitleIcon != IconChar.None;
+	public bool HasSubtitle => this.Panel != null && this.Panel.TitleIcon != IconChar.None;
 
 	public virtual Point? SavedPosition
 	{
