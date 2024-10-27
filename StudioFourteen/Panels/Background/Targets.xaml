@@ -115,7 +115,6 @@
 												Grid.Row="0"
 												Margin="0"
 												HorizontalAlignment="Center"
-												Style="{DynamicResource Body}"
 												Text="{Binding Name}"
 												TextTrimming="CharacterEllipsis"
 												TextWrapping="NoWrap" />
