@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using TerraFX.Interop.Windows;
 using WpfUtils.Extensions;
 
 using Panel = StudioFourteen.Panels.Panel;
@@ -17,6 +18,7 @@ public class PanelService : ServiceBase
 	private readonly List<Panel> openPanels = new List<Panel>();
 	private readonly Dictionary<Type, Panel> lastOpenPanels = new();
 
+	private bool hasRestoredPanels = false;
 	private BackgroundWindow? backgroundWindow;
 
 	public IEnumerable<Panel> OpenPanels => this.openPanels;
@@ -26,8 +28,15 @@ public class PanelService : ServiceBase
 	public override Task Initialize()
 	{
 		EventManager.RegisterClassHandler(typeof(FrameworkElement), FrameworkElement.LoadedEvent, new RoutedEventHandler((s, e) => this.OnLoaded(s, e)));
+		this.Services.Studio.Opening += this.OnOpening;
 
 		return base.Initialize();
+	}
+
+	public override Task Shutdown()
+	{
+		this.Services.Studio.Opening -= this.OnOpening;
+		return base.Shutdown();
 	}
 
 	public void OnPanelOpened(Panel panel)
@@ -124,7 +133,10 @@ public class PanelService : ServiceBase
 		this.backgroundWindow = await PanelWindow.CreatePanelWindow<BackgroundWindow>();
 		this.backgroundWindow?.Dispatcher.InvokeAsync(() => this.backgroundWindow.Show());
 
-		this.RestorePanels().Run();
+		if (!this.hasRestoredPanels && this.Services.Studio.IsOpen)
+		{
+			this.RestorePanels().Run();
+		}
 	}
 
 	public override async Task Stop()
@@ -156,6 +168,8 @@ public class PanelService : ServiceBase
 
 	private async Task RestorePanels()
 	{
+		this.hasRestoredPanels = true;
+
 		// make sure at least one game frame as passed
 		await Threads.FrameworkThread();
 
@@ -179,5 +193,13 @@ public class PanelService : ServiceBase
 	private void OnLoaded(object s, RoutedEventArgs e)
 	{
 		ToolTipService.SetShowOnDisabled((DependencyObject)e.OriginalSource, true);
+	}
+
+	private void OnOpening()
+	{
+		if (!this.hasRestoredPanels && this.Services.Studio.IsOpen)
+		{
+			this.RestorePanels().Run();
+		}
 	}
 }

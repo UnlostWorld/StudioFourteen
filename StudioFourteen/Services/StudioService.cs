@@ -6,6 +6,11 @@ using StudioFourteen.SPA;
 
 public class StudioService : ServiceBase
 {
+	public delegate void OnStateChangedDelegate();
+
+	public event OnStateChangedDelegate? Opening;
+	public event OnStateChangedDelegate? Closing;
+
 	public bool IsOpen { get; private set; }
 	public bool IsOpenAndInGPose => this.Services.Studio.IsOpen && this.Services.GroupPose.IsGroupPosing;
 
@@ -32,6 +37,8 @@ public class StudioService : ServiceBase
 			{
 				SpaWindow.OpenSpa();
 			}
+
+			this.Opening?.Invoke();
 		}
 		catch(Exception ex)
 		{
@@ -55,6 +62,8 @@ public class StudioService : ServiceBase
 			{
 				SpaWindow.CloseSpa();
 			}
+
+			this.Closing?.Invoke();
 		}
 		catch(Exception ex)
 		{
