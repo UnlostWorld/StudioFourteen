@@ -54,6 +54,7 @@ public class CameraService : ServiceBase
 	private StudioCameraBase? current;
 	private StudioCameraBase? last;
 	private CameraState state = default;
+	private bool doAttachBlend = false;
 
 	private unsafe delegate nint GPoseCameraUpdateDelegate(GroupPoseCamera* camera);
 	private unsafe delegate nint SceneCameraUpdateDelegate(SceneCamera* sceneCamera);
@@ -90,6 +91,8 @@ public class CameraService : ServiceBase
 	public unsafe override void Attach()
 	{
 		base.Attach();
+
+		this.doAttachBlend = true;
 
 		this.InitialCamera = *(GroupPoseCamera*)CameraManager.Instance()->Camera;
 
@@ -149,12 +152,11 @@ public class CameraService : ServiceBase
 		if (this.gPoseCameraUpdateHook == null)
 			return 0;
 
-		if (this.Services.GroupPose.IsGroupPosing)
+		if (this.Services.GroupPose.IsGroupPosing
+			&& !this.doAttachBlend
+			&& this.current != null)
 		{
-			if (this.current != null)
-			{
-				this.current?.UpdateGroupPoseCamera(camera);
-			}
+			this.current?.UpdateGroupPoseCamera(camera);
 		}
 
 		return this.gPoseCameraUpdateHook.Original(camera);
@@ -175,7 +177,7 @@ public class CameraService : ServiceBase
 			}
 
 			float blendValue = 0;
-			if (this.last != null)
+			if (this.last != null || this.doAttachBlend)
 			{
 				blendValue = this.blendWatch.ElapsedMilliseconds / CameraBlendTimeMs;
 				blendValue = this.BlendEase.Ease(blendValue, EasingFunctionBase.EasingModes.EaseInOut);
@@ -184,6 +186,7 @@ public class CameraService : ServiceBase
 				{
 					blendValue = 0;
 					this.last = null;
+					this.doAttachBlend = false;
 				}
 			}
 
@@ -194,7 +197,18 @@ public class CameraService : ServiceBase
 
 			Vector3 forward = Vector3.Transform(new(1, 0, 0), this.state.Rotation);
 			Vector3 up = Vector3.Transform(new(0, 1, 0), this.state.Rotation);
-			camera->ViewMatrix = Matrix4x4.CreateLookTo(this.state.Position, forward, up);
+
+			Matrix4x4 newMatrix = Matrix4x4.CreateLookTo(this.state.Position, forward, up);
+
+			if (this.doAttachBlend && this.InitialCamera != null)
+			{
+				Matrix4x4 initialMatrix = this.InitialCamera.Value.Camera.SceneCamera.ViewMatrix;
+				camera->ViewMatrix = Matrix4x4.Lerp(camera->ViewMatrix, newMatrix, blendValue);
+			}
+			else
+			{
+				camera->ViewMatrix = newMatrix;
+			}
 
 			this.CameraMatrixLoad(camera->RenderCamera, (nint)(&camera->ViewMatrix));
 
