@@ -168,6 +168,9 @@ public class PanelService : ServiceBase
 
 	private async Task RestorePanels()
 	{
+		if (this.hasRestoredPanels)
+			return;
+
 		this.hasRestoredPanels = true;
 
 		// make sure at least one game frame as passed
