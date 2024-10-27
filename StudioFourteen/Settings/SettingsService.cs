@@ -74,7 +74,7 @@ public class SettingsService : ServiceBase
 
 		// Input
 		public bool EnableKeyBinds { get; set; } = true;
-		public Dictionary<KeyBindEvents, KeyBind> KeyBinds { get; set; } = new();
+		public Dictionary<KeyBindEvents, KeyBind> CustomKeyBinds { get; set; } = new();
 
 		// SPA
 		public bool IsSpa { get; set; } = false;

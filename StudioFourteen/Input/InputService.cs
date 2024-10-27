@@ -97,7 +97,7 @@ public class InputService : ServiceBase
 	public KeyBind? GetKeyBind(KeyBindEvents evt)
 	{
 		KeyBind? bind = null;
-		if (!this.Settings.KeyBinds.TryGetValue(evt, out bind))
+		if (!this.Settings.CustomKeyBinds.TryGetValue(evt, out bind))
 		{
 			this.DefaultKeys.TryGetValue(evt, out bind);
 		}

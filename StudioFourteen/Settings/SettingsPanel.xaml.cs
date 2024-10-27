@@ -14,7 +14,7 @@ public partial class SettingsPanel : Panel
 		get
 		{
 			Dictionary<KeyBindEvents, KeyBind> value = new(this.Services.Input.DefaultKeys);
-			foreach((KeyBindEvents evt, KeyBind key) in this.Settings.KeyBinds)
+			foreach((KeyBindEvents evt, KeyBind key) in this.Settings.CustomKeyBinds)
 			{
 				if (!value.ContainsKey(evt))
 					continue;
@@ -30,7 +30,7 @@ public partial class SettingsPanel : Panel
 	{
 		if (sender.Tag is KeyBindEvents evt)
 		{
-			this.Settings.KeyBinds[evt] = bind;
+			this.Settings.CustomKeyBinds[evt] = bind;
 		}
 	}
 }
