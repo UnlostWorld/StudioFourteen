@@ -7,6 +7,7 @@ using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WpfUtils;
+using Newtonsoft.Json;
 
 public delegate void EntryEvent();
 
@@ -17,6 +18,8 @@ public interface ILibraryEntry : IDisposable
 	SourceBase? Source { get; }
 	string Identifier { get; }
 	bool IsValid { get; }
+
+	bool IsFavorite { get; set; }
 
 	bool IsType(Type type);
 	bool Search(string[] query);
@@ -50,6 +53,12 @@ public abstract class LibraryEntryBase : ITagged, ILibraryEntry, INotifyProperty
 	public virtual bool IsValid => true;
 
 	public string Identifier => $"{this.Source?.GetInternalId()}||{this.GetInternalId()}";
+
+	public bool IsFavorite
+	{
+		get => LibraryFavoritesFilter.GetIsFavorite(this);
+		set => LibraryFavoritesFilter.SetIsFavorite(this, value);
+	}
 
 	public virtual bool IsType(Type type) => this.GetType().IsAssignableTo(type);
 	public virtual bool Search(string[] query) => SearchUtility.Matches(this.Name, query);

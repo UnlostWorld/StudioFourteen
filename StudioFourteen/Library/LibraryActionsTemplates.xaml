@@ -29,18 +29,19 @@
 					Grid.Column="1"
 					Width="28"
 					HorizontalAlignment="Left"
-					IsChecked="{Binding IsLiveExecute}"
-					IsEnabled="False"
+					IsChecked="{Binding IsFavorite}"
 					Style="{DynamicResource WpfUtilsIconToggleButton}"
-					ToolTip="{DynamicResource LOC_Library_LivePreview}">
+					ToolTip="{DynamicResource LOC_Library_AddToFavorites}">
 					<Grid>
 						<wpfUtils:IconBlock
 							Icon="Heart"
 							IconFont="Auto"
+							ToolTip="{DynamicResource LOC_Library_AddToFavorites}"
 							Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}, Path=IsChecked, Converter={StaticResource !B2V}}" />
 						<wpfUtils:IconBlock
 							Icon="Heart"
 							IconFont="Solid"
+							ToolTip="{DynamicResource LOC_Library_RemoveFromFavorites}"
 							Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}, Path=IsChecked, Converter={StaticResource B2V}}" />
 					</Grid>
 				</ToggleButton>
@@ -209,13 +210,24 @@
 	<DataTemplate
 		x:Key="LibraryActions_FileEntry"
 		DataType="{x:Type sources:FileEntry}">
-		<ContentPresenter Content="{Binding File}" />
+		<ContentPresenter
+			Content="{Binding File}"
+			Style="{DynamicResource LibraryActions}" />
 	</DataTemplate>
+
+	<DataTemplate
+		x:Key="LibraryActions_DirectoryEntry"
+		DataType="{x:Type sources:DirectoryEntry}" />
+
 
 	<markup:TemplateSelector x:Key="LibraryActionsTemplateSelector">
 
 		<markup:TemplateSelectorEntry
 			TargetType="{x:Type library:LibraryEntryBase}"
+			Template="{StaticResource LibraryActions_LibraryEntryBase}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type excel:LibraryExcelRow}"
 			Template="{StaticResource LibraryActions_LibraryEntryBase}" />
 
 		<markup:TemplateSelectorEntry
@@ -239,8 +251,16 @@
 			Template="{StaticResource LibraryActions_SceneFile}" />
 
 		<markup:TemplateSelectorEntry
+			TargetType="{x:Type files:AppearanceFile}"
+			Template="{StaticResource LibraryActions_CharacterAppearance}" />
+
+		<markup:TemplateSelectorEntry
 			TargetType="{x:Type sources:FileEntry}"
 			Template="{StaticResource LibraryActions_FileEntry}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type sources:DirectoryEntry}"
+			Template="{StaticResource LibraryActions_DirectoryEntry}" />
 
 	</markup:TemplateSelector>
 

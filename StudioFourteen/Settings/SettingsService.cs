@@ -78,5 +78,8 @@ public class SettingsService : ServiceBase
 
 		// SPA
 		public bool IsSpa { get; set; } = false;
+
+		// Library
+		public HashSet<string> Favorites { get; set; } = new();
 	}
 }

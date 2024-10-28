@@ -15,6 +15,12 @@ public abstract class LibraryExcelRow : StudioExcelRow, ILibraryEntry
 	public string? SourceInfo { get; set; }
 	public string Identifier => $"{this.GetType().Name} #{this.RowId}";
 
+	public bool IsFavorite
+	{
+		get => LibraryFavoritesFilter.GetIsFavorite(this);
+		set => LibraryFavoritesFilter.SetIsFavorite(this, value);
+	}
+
 	public bool IsType(Type type) => this.GetType().IsAssignableTo(type);
 
 	public void Dispose()
