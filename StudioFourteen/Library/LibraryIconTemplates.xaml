@@ -246,6 +246,7 @@
 			<ContentPresenter
 				x:Name="FallbackIcon"
 				Content="{Binding TypeInfo}"
+				Style="{DynamicResource LibraryIcon}"
 				Visibility="Collapsed" />
 
 			<Grid
