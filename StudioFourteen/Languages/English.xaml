@@ -98,6 +98,7 @@
 	<sys:String x:Key="LOC_Library_GroupPoseCharactersLibrarySourceDesc">Characters that were present when GPose loaded</sys:String>
 	<sys:String x:Key="LOC_Library_AddToFavorites">Add To Favorites</sys:String>
 	<sys:String x:Key="LOC_Library_RemoveFromFavorites">Remove From Favorites</sys:String>
+	<sys:String x:Key="LOC_Library_ExportIcon">Export Icon Graphic</sys:String>
 
 	<sys:String x:Key="LOC_SheetItem">Items</sys:String>
 	<sys:String x:Key="LOC_SheetEventNpc">Event NPCs</sys:String>

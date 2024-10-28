@@ -6,6 +6,15 @@ using Serilog;
 using System;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Input;
+using WpfUtils.Commands;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Formats.Png;
+using StudioFourteen.Files;
+using Microsoft.Win32;
+using SixLabors.ImageSharp.Formats;
+using SixLabors.ImageSharp.Formats.Bmp;
 
 public class ImageReference
 {
@@ -17,16 +26,18 @@ public class ImageReference
 	public ImageReference(uint imageId)
 	{
 		this.ImageId = imageId;
+
+		this.ExportCommand = new SimpleCommand(this.Export);
 	}
 
 	public ImageReference(ushort imageId)
+		: this((uint)imageId)
 	{
-		this.ImageId = imageId;
 	}
 
 	public ImageReference(int imageId)
+		: this((uint)imageId)
 	{
-		this.ImageId = (uint)imageId;
 	}
 
 	public uint ImageId
@@ -80,5 +91,34 @@ public class ImageReference
 
 			return null;
 		}
+	}
+
+	public bool CanExport => true;
+	public ICommand ExportCommand { get; init; }
+
+	private void Export()
+	{
+		string path = $"ui/icon/{this.ImageId / 1000u * 1000:000000}/{this.ImageId:000000}_hr1.tex";
+		TexFile? tex = DalamudServices.DataManager?.GetFile<TexFile>(path);
+
+		if (tex == null)
+			return;
+
+		PngEncoder encoder = new()
+		{
+			ColorType = PngColorType.RgbWithAlpha,
+			TransparentColorMode = PngTransparentColorMode.Preserve,
+			CompressionLevel = PngCompressionLevel.NoCompression,
+		};
+
+		using Image image = Image.LoadPixelData<Bgra32>(tex.ImageData, tex.Header.Width, tex.Header.Height);
+
+		SaveFileDialog dlg = new();
+		dlg.Filter = "Image|*.png";
+		dlg.FileName = $"{this.ImageId:000000}_hr1";
+		if (dlg.ShowDialog() == false)
+			return;
+
+		image.SaveAsPng(dlg.FileName, encoder);
 	}
 }

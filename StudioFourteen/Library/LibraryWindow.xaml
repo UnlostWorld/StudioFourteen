@@ -110,6 +110,16 @@
 								</Style>
 							</ToggleButton.Style>
 						</ToggleButton>
+
+						<Button
+							Command="{Binding SelectedResult.Entry.Icon.ExportCommand}"
+							IsEnabled="{Binding SelectedResult.Entry.Icon.CanExport, FallbackValue=False}"
+							ToolTip="{DynamicResource LOC_Library_ExportIcon}">
+							<wpfUtils:IconBlock
+								Icon="FileImage"
+								IconFont="Solid" />
+						</Button>
+
 					</UniformGrid>
 				</Border>
 
