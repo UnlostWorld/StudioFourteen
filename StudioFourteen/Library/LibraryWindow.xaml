@@ -197,81 +197,59 @@
 					Search="{Binding Search, Mode=TwoWay}"
 					Tags="{Binding TagFilter.Tags}" />
 
-				<Border
+
+				<ListBox
 					Grid.Column="4"
 					Width="64"
+					Height="28"
 					Margin="1,0"
-					Style="{DynamicResource WpfUtilsControlBorder}">
+					Style="{DynamicResource WpfUtilsSwitchSelector}">
+					<ListBoxItem
+						IsSelected="{Binding ViewList, Converter={StaticResource !B}}"
+						Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
+						ToolTip="{DynamicResource LOC_Library_IconViewTooltip}">
+						<wpfUtils:IconBlock
+							Icon="BorderAll"
+							IconFont="Solid" />
+					</ListBoxItem>
+					<ListBoxItem
+						IsSelected="{Binding ViewList}"
+						Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
+						ToolTip="{DynamicResource LOC_Library_ListViewTooltip}">
+						<wpfUtils:IconBlock
+							Icon="List"
+							IconFont="Solid" />
+					</ListBoxItem>
+				</ListBox>
 
-					<Grid>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition />
-							<ColumnDefinition />
-						</Grid.ColumnDefinitions>
 
-						<RadioButton
-							Grid.Column="0"
-							Height="Auto"
-							Margin="0"
-							Background="Transparent"
-							IsChecked="{Binding ViewList, Converter={StaticResource !B}}"
-							ToolTip="{DynamicResource LOC_Library_IconViewTooltip}">
-							<wpfUtils:IconBlock Icon="BorderAll" />
-						</RadioButton>
-
-						<RadioButton
-							Grid.Column="1"
-							Height="Auto"
-							Margin="0"
-							Background="Transparent"
-							IsChecked="{Binding ViewList}"
-							ToolTip="{DynamicResource LOC_Library_ListViewTooltip}">
-							<wpfUtils:IconBlock Icon="List" />
-						</RadioButton>
-					</Grid>
-				</Border>
-
-				<Border
+				<ListBox
 					Grid.Column="5"
 					Width="64"
+					Height="28"
 					Margin="1,0"
-					IsEnabled="{Binding CanChangeFlatten}"
-					Style="{DynamicResource WpfUtilsControlBorder}">
-
-					<Grid>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition />
-							<ColumnDefinition />
-						</Grid.ColumnDefinitions>
-
-						<RadioButton
-							Grid.Column="0"
-							Height="Auto"
-							Margin="0"
-							Background="Transparent"
-							IsChecked="{Binding Flatten, Converter={StaticResource !B}}"
-							ToolTip="{DynamicResource LOC_Library_DirectoryViewTooltip}">
-							<wpfUtils:IconBlock
-								Icon="Folder"
-								IconFont="Solid" />
-						</RadioButton>
-
-						<RadioButton
-							Grid.Column="1"
-							Height="Auto"
-							Margin="0"
-							Background="Transparent"
-							IsChecked="{Binding Flatten}"
-							ToolTip="{DynamicResource LOC_Library_FlattenViewTooltip}">
-							<wpfUtils:IconBlock
-								Icon="FileAlt"
-								IconFont="Solid" />
-						</RadioButton>
-					</Grid>
-				</Border>
+					Style="{DynamicResource WpfUtilsSwitchSelector}">
+					<ListBoxItem
+						IsSelected="{Binding Flatten, Converter={StaticResource !B}}"
+						Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
+						ToolTip="{DynamicResource LOC_Library_DirectoryViewTooltip}">
+						<wpfUtils:IconBlock
+							Icon="Folder"
+							IconFont="Solid" />
+					</ListBoxItem>
+					<ListBoxItem
+						IsSelected="{Binding Flatten}"
+						Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
+						ToolTip="{DynamicResource LOC_Library_FlattenViewTooltip}">
+						<wpfUtils:IconBlock
+							Icon="FileAlt"
+							IconFont="Solid" />
+					</ListBoxItem>
+				</ListBox>
 
 				<Button
 					Grid.Column="6"
+					Height="28"
 					Margin="1,0"
 					Click="OnBrowseClicked">
 					<Button.Content>
