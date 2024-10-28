@@ -8,18 +8,12 @@ namespace StudioFourteen.Services;
 using Dalamud.Hooking;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
-using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
+using SixLabors.ImageSharp.PixelFormats;
 using StudioFourteen.Plugin;
 using StudioFourteen.Utilities;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats;
-using SixLabors.ImageSharp.PixelFormats;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Drawing;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -282,7 +276,7 @@ public class GameCaptureService : ServiceBase
 	{
 		int lastCaptureId = 0;
 
-		while (this.IsAlive)
+		while (this.IsAlive && this.IsAttached)
 		{
 			Thread.Sleep(10);
 

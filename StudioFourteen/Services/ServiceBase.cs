@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 public abstract class ServiceBase : ViewModel
 {
 	public bool IsAlive { get; private set; }
+	public bool IsAttached { get; private set; }
 
 	protected SettingsService.Configuration Settings => this.Services.Settings.Current;
 
@@ -43,12 +44,16 @@ public abstract class ServiceBase : ViewModel
 	{
 		if (DalamudServices.Framework != null)
 			DalamudServices.Framework.Update += this.OnFrameworkUpdate;
+
+		this.IsAttached = true;
 	}
 
 	public virtual void Detach()
 	{
 		if (DalamudServices.Framework != null)
 			DalamudServices.Framework.Update -= this.OnFrameworkUpdate;
+
+		this.IsAttached = false;
 	}
 
 	protected virtual void OnFrameworkUpdate(IFramework framework)
