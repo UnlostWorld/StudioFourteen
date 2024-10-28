@@ -39,7 +39,8 @@
 			<Grid
 				Grid.Row="1"
 				Grid.Column="1"
-				Margin="3,0,0,0">
+				Margin="3,0,0,0"
+				Visibility="{Binding SelectedResult, Converter={StaticResource NotNullToVisibilityConverter}}">
 
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto" />
@@ -49,11 +50,13 @@
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
 					<RowDefinition />
 					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
 
 				<ContentPresenter
+					Grid.Row="0"
 					Width="48"
 					Height="48"
 					Margin="3,6,3,3"
@@ -68,16 +71,62 @@
 					Content="{Binding SelectedResult.Entry}"
 					Style="{StaticResource LibraryInfo}" />
 
-
-				<tags:TagDisplay
+				<Border
 					Grid.Row="1"
 					Grid.ColumnSpan="2"
+					Style="{DynamicResource WpfUtilsControlBorder}">
+					<UniformGrid Rows="1">
+						<ToggleButton
+							Background="Transparent"
+							IsChecked="{Binding SelectedResult.Entry.IsFavorite}">
+
+							<wpfUtils:IconBlock Icon="Heart">
+								<wpfUtils:IconBlock.Style>
+									<Style TargetType="{x:Type wpfUtils:IconBlock}">
+										<Setter Property="IconFont" Value="Auto" />
+
+										<Style.Triggers>
+											<DataTrigger
+												Binding="{Binding SelectedResult.Entry.IsFavorite}"
+												Value="True">
+												<Setter Property="IconFont" Value="Solid" />
+											</DataTrigger>
+										</Style.Triggers>
+									</Style>
+								</wpfUtils:IconBlock.Style>
+							</wpfUtils:IconBlock>
+
+							<ToggleButton.Style>
+								<Style
+									BasedOn="{StaticResource WpfUtilsIconToggleButton}"
+									TargetType="{x:Type ToggleButton}">
+									<Setter Property="ToolTip" Value="{DynamicResource LOC_Library_AddToFavorites}" />
+
+									<Style.Triggers>
+										<Trigger Property="IsChecked" Value="True">
+											<Setter Property="ToolTip" Value="{DynamicResource LOC_Library_RemoveFromFavorites}" />
+										</Trigger>
+									</Style.Triggers>
+								</Style>
+							</ToggleButton.Style>
+						</ToggleButton>
+					</UniformGrid>
+				</Border>
+
+				<ScrollViewer
+					Grid.Row="2"
+					Grid.ColumnSpan="2"
+					MaxHeight="200"
 					Margin="1,0,0,4"
-					TagSelected="OnInfoTagSelected"
-					Tags="{Binding SelectedResult.Entry.Tags}" />
+					HorizontalScrollBarVisibility="Disabled">
+
+					<tags:TagDisplay
+						TagSelected="OnInfoTagSelected"
+						Tags="{Binding SelectedResult.Entry.Tags}" />
+				</ScrollViewer>
 
 				<ContentPresenter
-					Grid.Row="2"
+					Grid.Row="3"
 					Grid.ColumnSpan="2"
 					Margin="1,1,1,6"
 					Content="{Binding SelectedResult.Entry}"
@@ -85,7 +134,7 @@
 
 
 				<ContentPresenter
-					Grid.Row="3"
+					Grid.Row="4"
 					Grid.ColumnSpan="2"
 					Margin="1"
 					Content="{Binding SelectedResult.Entry}"
