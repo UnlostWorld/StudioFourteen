@@ -57,7 +57,11 @@ public abstract class LibraryEntryBase : ITagged, ILibraryEntry, INotifyProperty
 	public bool IsFavorite
 	{
 		get => LibraryFavoritesFilter.GetIsFavorite(this);
-		set => LibraryFavoritesFilter.SetIsFavorite(this, value);
+		set
+		{
+			LibraryFavoritesFilter.SetIsFavorite(this, value);
+			this.NotifyPropertyChanged();
+		}
 	}
 
 	public virtual bool IsType(Type type) => this.GetType().IsAssignableTo(type);

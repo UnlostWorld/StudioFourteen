@@ -14,42 +14,60 @@
 	xmlns:ss="clr-namespace:StudioFourteen"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="pack://application:,,,/WpfUtils;component/Styles.xaml" />
+	</ResourceDictionary.MergedDictionaries>
+
 	<converters:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter" />
 	<BooleanToVisibilityConverter x:Key="B2V" />
 	<converters:InvertedBoolToVisibilityConverter x:Key="!B2V" />
 	<converters:NotNullToBoolConverter x:Key="NotNullToBoolConverter" />
+
+	<Style
+		x:Key="FavoritesToggleButton"
+		BasedOn="{StaticResource WpfUtilsIconToggleButton}"
+		TargetType="{x:Type ToggleButton}">
+		<Setter Property="Width" Value="28" />
+		<Setter Property="Content">
+			<Setter.Value>
+				<wpfUtils:IconBlock Icon="Heart">
+					<wpfUtils:IconBlock.Style>
+						<Style TargetType="{x:Type wpfUtils:IconBlock}">
+							<Setter Property="IconFont" Value="Auto" />
+
+							<Style.Triggers>
+								<DataTrigger
+									Binding="{Binding IsFavorite}"
+									Value="True">
+									<Setter Property="IconFont" Value="Solid" />
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</wpfUtils:IconBlock.Style>
+				</wpfUtils:IconBlock>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="ToolTip" Value="{DynamicResource LOC_Library_AddToFavorites}" />
+
+		<Style.Triggers>
+			<Trigger Property="IsChecked" Value="True">
+				<Setter Property="ToolTip" Value="{DynamicResource LOC_Library_RemoveFromFavorites}" />
+			</Trigger>
+		</Style.Triggers>
+	</Style>
 
 	<DataTemplate
 		x:Key="LibraryActions_LibraryEntryBase"
 		DataType="{x:Type library:LibraryEntryBase}">
 		<Border Style="{DynamicResource WpfUtilsControlBorder}">
 			<Grid>
-				<!--  TODO: custom toggle button template for better heart animations  -->
 				<ToggleButton
-					Grid.Column="1"
-					Width="28"
 					HorizontalAlignment="Left"
 					IsChecked="{Binding IsFavorite}"
-					Style="{DynamicResource WpfUtilsIconToggleButton}"
-					ToolTip="{DynamicResource LOC_Library_AddToFavorites}">
-					<Grid>
-						<wpfUtils:IconBlock
-							Icon="Heart"
-							IconFont="Auto"
-							ToolTip="{DynamicResource LOC_Library_AddToFavorites}"
-							Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}, Path=IsChecked, Converter={StaticResource !B2V}}" />
-						<wpfUtils:IconBlock
-							Icon="Heart"
-							IconFont="Solid"
-							ToolTip="{DynamicResource LOC_Library_RemoveFromFavorites}"
-							Visibility="{Binding RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}, Path=IsChecked, Converter={StaticResource B2V}}" />
-					</Grid>
-				</ToggleButton>
+					Style="{DynamicResource FavoritesToggleButton}" />
 			</Grid>
 		</Border>
 	</DataTemplate>
-
-
 
 	<DataTemplate
 		x:Key="LibraryActions_CharacterAppearance"
@@ -58,11 +76,18 @@
 			<Grid>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition />
 				</Grid.ColumnDefinitions>
 
-				<Button
+				<ToggleButton
 					Grid.Column="0"
+					HorizontalAlignment="Left"
+					IsChecked="{Binding IsFavorite}"
+					Style="{DynamicResource FavoritesToggleButton}" />
+
+				<Button
+					Grid.Column="1"
 					Command="{Binding RevertCommand}">
 					<Button.Content>
 						<wpfUtils:IconBlock Icon="Undo" />
@@ -70,7 +95,7 @@
 				</Button>
 
 				<Button
-					Grid.Column="1"
+					Grid.Column="2"
 					Command="{Binding ApplyCommand}">
 					<Button.Content>
 						<TextBlock>
@@ -92,11 +117,18 @@
 			<Grid>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition />
 				</Grid.ColumnDefinitions>
 
-				<Button
+				<ToggleButton
 					Grid.Column="0"
+					HorizontalAlignment="Left"
+					IsChecked="{Binding IsFavorite}"
+					Style="{DynamicResource FavoritesToggleButton}" />
+
+				<Button
+					Grid.Column="1"
 					Command="{Binding RevertCommand}">
 					<Button.Content>
 						<wpfUtils:IconBlock Icon="Undo" />
@@ -104,7 +136,7 @@
 				</Button>
 
 				<Button
-					Grid.Column="1"
+					Grid.Column="2"
 					Command="{Binding ApplyCommand}">
 					<Button.Content>
 						<TextBlock>
@@ -181,11 +213,18 @@
 				<Grid>
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition />
 					</Grid.ColumnDefinitions>
 
-					<Button
+					<ToggleButton
 						Grid.Column="0"
+						HorizontalAlignment="Left"
+						IsChecked="{Binding IsFavorite}"
+						Style="{DynamicResource FavoritesToggleButton}" />
+
+					<Button
+						Grid.Column="1"
 						Command="{Binding RevertCommand}">
 						<Button.Content>
 							<wpfUtils:IconBlock Icon="Undo" />
@@ -193,7 +232,7 @@
 					</Button>
 
 					<Button
-						Grid.Column="1"
+						Grid.Column="2"
 						Command="{Binding ApplyCommand}">
 						<Button.Content>
 							<TextBlock>

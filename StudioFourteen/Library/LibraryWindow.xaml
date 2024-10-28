@@ -462,6 +462,26 @@
 								Content="{Binding Entry}"
 								Style="{DynamicResource LibraryIcon}" />
 
+							<Grid
+								Margin="0,5,5,0"
+								HorizontalAlignment="Right"
+								VerticalAlignment="Top"
+								Visibility="{Binding Entry.IsFavorite, Converter={StaticResource B2V}}">
+								<wpfUtils:IconBlock
+									Margin="-2,2,2,-2"
+									FontSize="28"
+									Foreground="{DynamicResource BackgroundBrush}"
+									Icon="Heart"
+									IconFont="Solid" />
+								<wpfUtils:IconBlock
+									FontSize="28"
+									Foreground="{DynamicResource TrimBrush}"
+									Icon="Heart"
+									IconFont="Solid" />
+
+							</Grid>
+
+
 							<TextBlock
 								x:Name="NameBlock"
 								Grid.Row="1"

@@ -18,7 +18,11 @@ public abstract class LibraryExcelRow : StudioExcelRow, ILibraryEntry
 	public bool IsFavorite
 	{
 		get => LibraryFavoritesFilter.GetIsFavorite(this);
-		set => LibraryFavoritesFilter.SetIsFavorite(this, value);
+		set
+		{
+			LibraryFavoritesFilter.SetIsFavorite(this, value);
+			this.NotifyPropertyChanged();
+		}
 	}
 
 	public bool IsType(Type type) => this.GetType().IsAssignableTo(type);
