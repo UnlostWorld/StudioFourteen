@@ -10,6 +10,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:mvm="clr-namespace:StudioFourteen.Mvm"
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
+	xmlns:results="clr-namespace:StudioFourteen.Library.Results"
 	xmlns:tags="clr-namespace:StudioFourteen.Tags"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Height="450"
@@ -73,21 +74,16 @@
 								Margin="3"
 								VerticalAlignment="Center"
 								Content="{Binding Entry}"
-								TextBlock.Foreground="{DynamicResource ForegroundBrush}">
-								<ContentPresenter.Resources>
-									<ResourceDictionary Source="./LibraryIconTemplates.xaml" />
-								</ContentPresenter.Resources>
-							</ContentPresenter>
+								Style="{StaticResource LibraryIcon}"
+								TextBlock.Foreground="{DynamicResource ForegroundBrush}" />
 
 							<ContentPresenter
 								Grid.Column="1"
 								VerticalAlignment="Center"
 								Content="{Binding Entry}"
-								TextBlock.Foreground="{DynamicResource ForegroundBrush}">
-								<ContentPresenter.Resources>
-									<ResourceDictionary Source="./LibraryInfoTemplates.xaml" />
-								</ContentPresenter.Resources>
-							</ContentPresenter>
+								Style="{StaticResource LibraryInfo}"
+								TextBlock.Foreground="{DynamicResource ForegroundBrush}" />
+
 						</Grid>
 
 						<ToggleButton
