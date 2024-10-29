@@ -8,6 +8,7 @@ using StudioFourteen.GameData;
 using StudioFourteen.Input;
 using StudioFourteen.Library;
 using StudioFourteen.Mvm;
+using StudioFourteen.Overlays;
 using StudioFourteen.Posing;
 using StudioFourteen.Save;
 using StudioFourteen.Services;
@@ -40,4 +41,5 @@ public class ServiceManager : ServiceManagerBase
 	public FileService Files { get; init; } = new();
 	public PanelService Panels { get; init; } = new();
 	public CameraService Camera { get; init; } = new();
+	public OverlayService Overlays { get; init; } = new();
 }

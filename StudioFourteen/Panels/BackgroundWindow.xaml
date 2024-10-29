@@ -6,6 +6,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="clr-namespace:StudioFourteen.Studio"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:overlays="clr-namespace:StudioFourteen.Overlays"
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
 	xmlns:studio="clr-namespace:StudioFourteen"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
@@ -76,6 +77,9 @@
 			<ColumnDefinition Width="Auto" />
 		</Grid.ColumnDefinitions>
 
+		<overlays:OverlayRenderer
+			Grid.ColumnSpan="3"
+			Visibility="{Binding ShowOverlays, Converter={StaticResource B2V}}" />
 
 		<Grid
 			Grid.Column="2"

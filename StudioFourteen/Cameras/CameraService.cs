@@ -6,6 +6,7 @@ namespace StudioFourteen.Cameras;
 using Dalamud.Hooking;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
+using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
 using StudioFourteen.Services;
 using System;
 using System.Collections.Generic;
@@ -52,6 +53,8 @@ public class CameraService : ServiceBase
 	private StudioCameraBase? last;
 	private CameraState state = default;
 	private bool doAttachBlend = false;
+	private Matrix4x4 lastViewMatrix;
+	private Matrix4x4 lastProjectionMatrix;
 
 	public delegate void CamerasChangedDelegate();
 	public delegate void CameraChangedDelegate(StudioCameraBase? oldCamera, StudioCameraBase? newCamera);
@@ -165,6 +168,33 @@ public class CameraService : ServiceBase
 		}
 	}
 
+	public unsafe bool WorldToCamera(Vector3 worldPos, out Vector3 screenPos)
+	{
+		screenPos = Vector3.Zero;
+
+		Vector4 vector = Vector4.Transform(new Vector4(worldPos, 1f), this.lastViewMatrix * this.lastProjectionMatrix);
+		if (vector.W < float.Epsilon)
+			return false;
+
+		float d = vector.Z;
+
+		vector *= MathF.Abs(1f / vector.W);
+		screenPos = new Vector3
+		{
+			X = (vector.X + 1f) * 0.5f,
+			Y = (1f - vector.Y) * 0.5f,
+			Z = d,
+		};
+
+		if (screenPos.X < 0 || screenPos.X > 1)
+			return false;
+
+		if (screenPos.Y < 0 || screenPos.Y > 1)
+			return false;
+
+		return true;
+	}
+
 	protected override void OnFrameworkUpdate(IFramework framework)
 	{
 		base.OnFrameworkUpdate(framework);
@@ -237,6 +267,9 @@ public class CameraService : ServiceBase
 			{
 				camera->ViewMatrix = newMatrix;
 			}
+
+			this.lastViewMatrix = camera->ViewMatrix;
+			this.lastProjectionMatrix = camera->RenderCamera->ProjectionMatrix;
 
 			this.CameraMatrixLoad(camera->RenderCamera, (nint)(&camera->ViewMatrix));
 

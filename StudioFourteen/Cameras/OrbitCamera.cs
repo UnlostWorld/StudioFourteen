@@ -157,8 +157,6 @@ public partial class OrbitCamera : StudioCameraBase
 	{
 		base.OnMouseDrag(delta);
 
-		this.Log.Information($"DRAG {delta}");
-
 		Vector2 angle = this.Angle;
 		angle.X += delta.X;
 		angle.Y += delta.Y;
