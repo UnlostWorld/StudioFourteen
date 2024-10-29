@@ -15,7 +15,7 @@ public partial class OrbitTargetCamera : OrbitCamera
 	private Vector3 currentTargetPosition;
 	private float targetBlend = -1;
 
-	[Notify] private Vector3 targetOffset = new(0, 0, 0);
+	[Notify] private Vector3 targetOffset = new(0, 1.5f, 0);
 
 	public override string TypeName => Resources.Find("LOC_OrbitTargetCamera", "Orbit Target");
 

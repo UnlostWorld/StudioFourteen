@@ -13,7 +13,7 @@ public partial class OrbitCamera : StudioCameraBase
 	protected Vector3 desiredMove = Vector3.Zero;
 
 	[Notify] private Vector3 target;
-	[Notify] private float distance = 3;
+	[Notify] private float distance;
 	[Notify] private Vector2 angle;
 	[Notify] private Quaternion rotation;
 
@@ -29,8 +29,10 @@ public partial class OrbitCamera : StudioCameraBase
 		this.target = targetPos;
 
 		this.Rotation = Quaternion.Identity;
+		this.Distance = 3;
 
-		this.Log.Information($"{currentState.Rotation.ToEuler()}");
+		// TODO: a better initial angle
+		this.Angle = Vector2.Zero;
 	}
 
 	public override void OnFrameworkUpdate(IFramework framework)

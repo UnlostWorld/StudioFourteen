@@ -1,5 +1,6 @@
 ﻿namespace StudioFourteen.Panels;
 
+using PropertyChanged.SourceGenerator;
 using StudioFourteen.Cameras;
 using System.Collections.ObjectModel;
 using System.Windows;
@@ -7,13 +8,15 @@ using WpfUtils.Extensions;
 
 public partial class CameraPanel : Panel
 {
-	public FastObservableCollection<StudioCameraBase> Cameras { get; init; } = new();
+	[Notify] private StudioCameraBase? current;
+	[Notify] private FastObservableCollection<StudioCameraBase> cameras = new();
 
 	protected override void OnOpened()
 	{
 		base.OnOpened();
 
 		this.Services.Camera.CamerasChanged += this.OnCamerasChanged;
+		this.Services.Camera.CurrentCameraChanged += this.OnCurrentCameraChanged;
 		this.OnCamerasChanged();
 	}
 
@@ -35,11 +38,43 @@ public partial class CameraPanel : Panel
 		this.AddCameraButton.IsChecked = false;
 	}
 
+	private void OnDeleteCameraClicked(object sender, RoutedEventArgs e)
+	{
+		if (this.Services.Camera.Current == null)
+			return;
+
+		this.Services.Camera.DeleteCamera(this.Services.Camera.Current);
+	}
+
+	private void OnResetCameraClicked(object sender, RoutedEventArgs e)
+	{
+		if (this.Services.Camera.Current == null)
+			return;
+
+		this.Services.Camera.Current.Reset();
+	}
+
 	private void OnCamerasChanged()
 	{
 		this.Dispatcher.Invoke(() =>
 		{
 			this.Cameras.Replace(this.Services.Camera.Cameras);
 		});
+	}
+
+	private void OnCurrentCameraChanged(StudioCameraBase? oldCamera, StudioCameraBase? newCamera)
+	{
+		this.Dispatcher.Invoke(() =>
+		{
+			this.Current = this.Services.Camera.Current;
+		});
+	}
+
+	private void OnCurrentChanged()
+	{
+		if (this.current == null)
+			return;
+
+		this.Services.Camera.Current = this.current;
 	}
 }

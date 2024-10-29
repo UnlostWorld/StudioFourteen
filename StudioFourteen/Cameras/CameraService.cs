@@ -7,15 +7,12 @@ using Dalamud.Hooking;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using StudioFourteen.Services;
-using StudioFourteen.Structs.Extensions;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
-using TerraFX.Interop.Windows;
 using WpfUtils.Animation;
 
 using GameCamera = FFXIVClientStructs.FFXIV.Client.Game.Camera;
@@ -72,6 +69,12 @@ public class CameraService : ServiceBase
 		get => this.current;
 		set
 		{
+			if (value == null)
+				return;
+
+			if (value == this.current)
+				return;
+
 			this.last = this.current;
 			this.current?.Deactivate();
 			this.current = value;
@@ -143,6 +146,23 @@ public class CameraService : ServiceBase
 		this.CamerasChanged?.Invoke();
 
 		this.Current = cam;
+	}
+
+	public void DeleteCamera(StudioCameraBase camera)
+	{
+		bool wasCurrent = this.current == camera;
+
+		this.Cameras.Remove(camera);
+
+		if (this.Cameras.Count <= 0)
+			this.Cameras.Add(new OrbitTargetCamera());
+
+		this.CamerasChanged?.Invoke();
+
+		if (wasCurrent)
+		{
+			this.Current = this.Cameras[0];
+		}
 	}
 
 	protected override void OnFrameworkUpdate(IFramework framework)

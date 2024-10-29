@@ -16,16 +16,23 @@ public abstract partial class StudioCameraBase : ViewModel
 	private int updateDelay = -1;
 
 	[Notify] private string name = "Default";
-	[Notify] private float fieldOfView = 75.0f;
+	[Notify] private float fieldOfView;
 
 	[Notify(Setter.Private)] private float groupPoseFovAdjust;
 
 	public abstract string TypeName { get; }
 	public bool IsInitialized { get; private set; } = false;
 
+	public void Reset()
+	{
+		this.IsInitialized = false;
+	}
+
 	public virtual void Initialize(CameraState currentState)
 	{
 		this.IsInitialized = true;
+
+		this.FieldOfView = 75.0f;
 	}
 
 	public virtual void Tick(float deltaTime)
