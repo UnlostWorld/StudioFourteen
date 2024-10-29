@@ -2,6 +2,7 @@
 
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using Serilog;
+using StudioFourteen.Plugin;
 using StudioFourteen.Utilities;
 using System;
 using System.ComponentModel;
@@ -9,6 +10,8 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using WpfUtils;
 using WpfUtils.Extensions;
+using System.Windows;
+using FFXIVClientStructs.FFXIV.Component.GUI;
 
 public class OverlayRenderer : Canvas
 {
@@ -38,6 +41,16 @@ public class OverlayRenderer : Canvas
 				await Task.Delay(1000 / 60);
 				await this.MainThread();
 
+				if (DalamudServices.DalamudHasFocus || AtkManager.HasActiveWindow())
+				{
+					this.Visibility = Visibility.Collapsed;
+					continue;
+				}
+				else
+				{
+					this.Visibility = Visibility.Visible;
+				}
+
 				foreach (OverlayBase overlay in this.Services.Overlays.Overlays)
 				{
 					try
@@ -50,6 +63,8 @@ public class OverlayRenderer : Canvas
 					}
 				}
 			}
+
+			this.Visibility = Visibility.Collapsed;
 		}
 		catch (Exception ex)
 		{

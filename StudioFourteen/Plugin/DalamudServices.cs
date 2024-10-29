@@ -1,6 +1,7 @@
 ﻿namespace StudioFourteen.Plugin;
 
 using Dalamud.Game;
+using Dalamud.Interface.Windowing;
 using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
@@ -24,6 +25,8 @@ public class DalamudServices
 	[PluginService] public static ITextureSubstitutionProvider? TextureSubstitutionProvider { get; private set; }
 	[PluginService] public static IGameInteropProvider? InteropProvider { get; private set; }
 	[PluginService] public static ITextureProvider? TextureProvider { get; private set; }
+
+	public static bool DalamudHasFocus => WindowSystem.HasAnyWindowSystemFocus;
 
 	public static TDelegate? DelegateFromSignature<TDelegate>(string sig)
 		where TDelegate : System.Delegate

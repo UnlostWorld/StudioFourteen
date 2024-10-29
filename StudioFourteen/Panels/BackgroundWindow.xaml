@@ -77,9 +77,7 @@
 			<ColumnDefinition Width="Auto" />
 		</Grid.ColumnDefinitions>
 
-		<overlays:OverlayRenderer
-			Grid.ColumnSpan="3"
-			Visibility="{Binding ShowOverlays, Converter={StaticResource B2V}}" />
+		<overlays:OverlayRenderer Grid.ColumnSpan="3" />
 
 		<Grid
 			Grid.Column="2"

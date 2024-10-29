@@ -30,18 +30,6 @@ public partial class BackgroundWindow : PanelWindow
 		}
 	}
 
-	[AutoNotify]
-	public bool ShowOverlays
-	{
-		get
-		{
-			if (!this.Services.Studio.IsOpen)
-				return false;
-
-			return true;
-		}
-	}
-
 	public Point StudioButtonPosition
 	{
 		get => this.Persistence.GetPersistence<Point>();

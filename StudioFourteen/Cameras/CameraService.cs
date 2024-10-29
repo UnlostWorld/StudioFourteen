@@ -268,13 +268,13 @@ public class CameraService : ServiceBase
 				camera->ViewMatrix = newMatrix;
 			}
 
-			this.lastViewMatrix = camera->ViewMatrix;
-			this.lastProjectionMatrix = camera->RenderCamera->ProjectionMatrix;
-
 			this.CameraMatrixLoad(camera->RenderCamera, (nint)(&camera->ViewMatrix));
 
 			camera->RenderCamera->FoV = this.state.FieldOfView;
 		}
+
+		this.lastViewMatrix = camera->ViewMatrix;
+		this.lastProjectionMatrix = camera->RenderCamera->ProjectionMatrix;
 
 		return result;
 	}
