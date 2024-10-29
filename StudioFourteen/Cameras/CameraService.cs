@@ -56,9 +56,14 @@ public class CameraService : ServiceBase
 	private CameraState state = default;
 	private bool doAttachBlend = false;
 
+	public delegate void CamerasChangedDelegate();
+	public delegate void CameraChangedDelegate(StudioCameraBase? oldCamera, StudioCameraBase? newCamera);
 	private unsafe delegate nint GPoseCameraUpdateDelegate(GroupPoseCamera* camera);
 	private unsafe delegate nint SceneCameraUpdateDelegate(SceneCamera* sceneCamera);
 	private unsafe delegate void CameraMatrixLoadDelegate(RenderCamera* camera, nint a1);
+
+	public event CamerasChangedDelegate? CamerasChanged;
+	public event CameraChangedDelegate? CurrentCameraChanged;
 
 	public GroupPoseCamera? InitialCamera { get; private set; }
 
@@ -74,12 +79,13 @@ public class CameraService : ServiceBase
 			this.blendWatch.Restart();
 
 			this.RaisePropertyChanged();
+			this.CurrentCameraChanged?.Invoke(this.last, this.current);
 		}
 	}
 
 	public EasingFunctionBase BlendEase { get; set; } = new SineEase();
 
-	public ObservableCollection<StudioCameraBase> Cameras { get; init; } = new();
+	public List<StudioCameraBase> Cameras { get; init; } = new();
 
 	public override Task Start()
 	{
@@ -134,6 +140,8 @@ public class CameraService : ServiceBase
 	{
 		StudioCameraBase? cam = Activator.CreateInstance<T>();
 		this.Cameras.Add(cam);
+		this.CamerasChanged?.Invoke();
+
 		this.Current = cam;
 	}
 

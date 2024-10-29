@@ -37,7 +37,7 @@
 					Grid.Row="0"
 					Margin="0,0,-10,0"
 					Background="Transparent"
-					ItemsSource="{Binding Services.Camera.Cameras}"
+					ItemsSource="{Binding Cameras}"
 					SelectedValue="{Binding Services.Camera.Current}"
 					Style="{DynamicResource WpfUtilsSwitchSelectorVertical}">
 
