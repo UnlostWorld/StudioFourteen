@@ -25,6 +25,7 @@ public abstract class WireframeOverlayBase
 			Line line = new();
 			line.StrokeThickness = 1;
 			line.Stroke = new SolidColorBrush(Colors.White);
+			line.IsHitTestVisible = false;
 			this.lines.Add(line);
 			canvas.Children.Add(line);
 		}

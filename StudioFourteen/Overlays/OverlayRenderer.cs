@@ -1,5 +1,6 @@
 ﻿namespace StudioFourteen.Overlays;
 
+using DependencyPropertyGenerator;
 using Serilog;
 using StudioFourteen.Plugin;
 using System;
@@ -10,7 +11,8 @@ using System.Windows.Controls;
 using WpfUtils;
 using WpfUtils.Extensions;
 
-public class OverlayRenderer : Canvas
+[DependencyProperty<bool>("ShowOverlays")]
+public partial class OverlayRenderer : Canvas
 {
 	protected readonly ILogger Log = Logging.ForContext<OverlayRenderer>();
 
@@ -45,18 +47,18 @@ public class OverlayRenderer : Canvas
 				if (DalamudServices.DalamudHasFocus || AtkManager.HasActiveWindow())
 				{
 					this.focusCount = 0;
-					this.Visibility = Visibility.Collapsed;
+					this.ShowOverlays = false;
 					continue;
 				}
 				else if (this.focusCount <= RequiredFocusCount)
 				{
 					this.focusCount++;
-					this.Visibility = Visibility.Collapsed;
+					this.ShowOverlays = false;
 					continue;
 				}
 				else
 				{
-					this.Visibility = Visibility.Visible;
+					this.ShowOverlays = true;
 				}
 
 				for (int i = this.Services.Overlays.Overlays.Count - 1; i > 0; i--)

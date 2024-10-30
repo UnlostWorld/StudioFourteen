@@ -77,7 +77,41 @@
 			<ColumnDefinition Width="Auto" />
 		</Grid.ColumnDefinitions>
 
-		<overlays:OverlayRenderer Grid.ColumnSpan="3" />
+		<overlays:OverlayRenderer Grid.ColumnSpan="3">
+			<overlays:OverlayRenderer.Style>
+				<Style TargetType="{x:Type overlays:OverlayRenderer}">
+					<Setter Property="Opacity" Value="0" />
+
+					<Style.Triggers>
+						<Trigger Property="ShowOverlays" Value="True">
+							<Trigger.EnterActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation
+											Storyboard.TargetProperty="Opacity"
+											To="1"
+											Duration="0:00:00.250" />
+									</Storyboard>
+								</BeginStoryboard>
+							</Trigger.EnterActions>
+
+							<Trigger.ExitActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation
+											Storyboard.TargetProperty="Opacity"
+											To="0"
+											Duration="0:00:00.250" />
+									</Storyboard>
+								</BeginStoryboard>
+							</Trigger.ExitActions>
+
+						</Trigger>
+					</Style.Triggers>
+
+				</Style>
+			</overlays:OverlayRenderer.Style>
+		</overlays:OverlayRenderer>
 
 		<Grid
 			Grid.Column="2"
