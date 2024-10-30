@@ -13,11 +13,4 @@ public class OverlayService
 	: ServiceBase
 {
 	public List<OverlayBase> Overlays { get; init; } = new();
-
-	public override Task Initialize()
-	{
-		////this.Overlays.Add(new PointOverlay());
-
-		return base.Initialize();
-	}
 }

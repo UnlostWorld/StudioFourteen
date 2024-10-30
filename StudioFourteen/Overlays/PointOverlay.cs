@@ -14,19 +14,29 @@ public class PointOverlay
 
 	public Vector3 WorldPosition { get; set; } = Vector3.Zero;
 
+	public Color Fill { get; set; } = Colors.White;
+	public Color Stroke { get; set; } = Colors.Gray;
+
+	public override void Initialize(Canvas canvas)
+	{
+		base.Initialize(canvas);
+
+		this.ellipse = new();
+		this.ellipse.Width = 8;
+		this.ellipse.Height = 8;
+		this.ellipse.Fill = new SolidColorBrush(this.Fill);
+		this.ellipse.Stroke = new SolidColorBrush(this.Stroke);
+		this.ellipse.IsHitTestVisible = false;
+		canvas.Children.Add(this.ellipse);
+	}
+
 	public override void Update(Canvas canvas)
 	{
+		if (this.ellipse == null)
+			return;
+
 		this.IsVisible = this.Services.Camera.WorldToCamera(this.WorldPosition, out Vector3 screenPos);
 		this.screenPosition = screenPos;
-
-		if (this.ellipse == null)
-		{
-			this.ellipse = new();
-			this.ellipse.Width = 32;
-			this.ellipse.Height = 32;
-			this.ellipse.Fill = new SolidColorBrush(Colors.Red);
-			canvas.Children.Add(this.ellipse);
-		}
 
 		if (this.IsVisible)
 		{
@@ -38,5 +48,13 @@ public class PointOverlay
 		{
 			this.ellipse.Visibility = Visibility.Collapsed;
 		}
+	}
+
+	public override void Shutdown(Canvas canvas)
+	{
+		base.Shutdown(canvas);
+
+		canvas.Children.Remove(this.ellipse);
+		this.ellipse = null;
 	}
 }

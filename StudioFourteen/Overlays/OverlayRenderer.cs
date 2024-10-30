@@ -1,21 +1,22 @@
 ﻿namespace StudioFourteen.Overlays;
 
-using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using Serilog;
 using StudioFourteen.Plugin;
-using StudioFourteen.Utilities;
 using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using WpfUtils;
 using WpfUtils.Extensions;
-using System.Windows;
-using FFXIVClientStructs.FFXIV.Component.GUI;
 
 public class OverlayRenderer : Canvas
 {
 	protected readonly ILogger Log = Logging.ForContext<OverlayRenderer>();
+
+	// How many frames of focus do we wait before showing overlays again
+	private const int RequiredFocusCount = 10;
+	private int focusCount = 0;
 
 	public OverlayRenderer()
 	{
@@ -43,6 +44,13 @@ public class OverlayRenderer : Canvas
 
 				if (DalamudServices.DalamudHasFocus || AtkManager.HasActiveWindow())
 				{
+					this.focusCount = 0;
+					this.Visibility = Visibility.Collapsed;
+					continue;
+				}
+				else if (this.focusCount <= RequiredFocusCount)
+				{
+					this.focusCount++;
 					this.Visibility = Visibility.Collapsed;
 					continue;
 				}
@@ -51,11 +59,22 @@ public class OverlayRenderer : Canvas
 					this.Visibility = Visibility.Visible;
 				}
 
-				foreach (OverlayBase overlay in this.Services.Overlays.Overlays)
+				for (int i = this.Services.Overlays.Overlays.Count - 1; i > 0; i--)
 				{
+					OverlayBase overlay = this.Services.Overlays.Overlays[i];
 					try
 					{
+						if (!overlay.IsInitialized)
+						{
+							overlay.Initialize(this);
+						}
+
 						overlay.Update(this);
+
+						if (overlay.IsShuttingDown)
+						{
+							overlay.Shutdown(this);
+						}
 					}
 					catch (Exception ex)
 					{

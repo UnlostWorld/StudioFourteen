@@ -3,6 +3,7 @@
 using Dalamud.Plugin.Services;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Input;
+using StudioFourteen.Overlays;
 using StudioFourteen.Structs.Extensions;
 using System;
 using System.Numerics;
@@ -11,6 +12,8 @@ public partial class OrbitCamera : StudioCameraBase
 {
 	protected Vector3 desiredRot = Vector3.Zero;
 	protected Vector3 desiredMove = Vector3.Zero;
+
+	private readonly PointOverlay targetPointOverlay = new();
 
 	[Notify] private Vector3 target;
 	[Notify] private float distance;
@@ -33,6 +36,20 @@ public partial class OrbitCamera : StudioCameraBase
 
 		// TODO: a better initial angle
 		this.Angle = Vector2.Zero;
+	}
+
+	public override void Activate()
+	{
+		base.Activate();
+
+		this.targetPointOverlay.Enable();
+	}
+
+	public override void Deactivate()
+	{
+		base.Deactivate();
+
+		this.targetPointOverlay.Disable();
 	}
 
 	public override void OnFrameworkUpdate(IFramework framework)
@@ -90,6 +107,8 @@ public partial class OrbitCamera : StudioCameraBase
 		this.Rotation = Quaternion.Multiply(x, this.Rotation);
 		this.Rotation = Quaternion.Multiply(this.Rotation, y);
 		this.desiredRot = Vector3.Zero;
+
+		this.targetPointOverlay.WorldPosition = this.Target;
 	}
 
 	public unsafe override void UpdateGroupPoseCamera(GroupPoseCamera* camera)

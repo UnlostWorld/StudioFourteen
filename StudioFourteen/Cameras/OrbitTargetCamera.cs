@@ -1,6 +1,7 @@
 ﻿namespace StudioFourteen.Cameras;
 
 using PropertyChanged.SourceGenerator;
+using StudioFourteen.Overlays;
 using System;
 using System.Numerics;
 using WpfUtils.Animation;
@@ -9,6 +10,7 @@ public partial class OrbitTargetCamera : OrbitCamera
 {
 	public const float TargetBlendDuration = 0.250f;
 
+	private readonly BoundingBoxOverlay targetBoundsOverlay = new();
 	private readonly EasingFunctionBase targetEase = new SineEase();
 	private int currentTargetIndex = -1;
 	private Vector3 oldTargetPosition;
@@ -29,6 +31,18 @@ public partial class OrbitTargetCamera : OrbitCamera
 			offset.Y = this.Services.Target.Target->Height;
 			this.TargetOffset = offset;
 		}
+	}
+
+	public override void Activate()
+	{
+		base.Activate();
+		this.targetBoundsOverlay.Enable();
+	}
+
+	public override void Deactivate()
+	{
+		base.Deactivate();
+		this.targetBoundsOverlay.Disable();
 	}
 
 	public unsafe override void Tick(float deltaTime)
@@ -69,6 +83,8 @@ public partial class OrbitTargetCamera : OrbitCamera
 
 			targetPos += this.TargetOffset;
 			this.Target = targetPos;
+
+			this.targetBoundsOverlay.Update(this.Services.Target.Target);
 		}
 
 		base.Tick(deltaTime);
