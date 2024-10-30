@@ -4,10 +4,12 @@ using DependencyPropertyGenerator;
 using Serilog;
 using StudioFourteen.Plugin;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using TerraFX.Interop.Windows;
 using WpfUtils;
 using WpfUtils.Extensions;
 
@@ -18,6 +20,8 @@ public partial class OverlayRenderer : Canvas
 
 	// How many frames of focus do we wait before showing overlays again
 	private const int RequiredFocusCount = 10;
+
+	private readonly List<OverlayBase> overlays = new();
 	private int focusCount = 0;
 
 	public OverlayRenderer()
@@ -26,6 +30,10 @@ public partial class OverlayRenderer : Canvas
 			return;
 
 		this.Services.Studio.Opening += this.OnStudioOpening;
+		this.Services.Overlays.OverlayAdded += this.OnOverlayAdded;
+		this.Services.Overlays.OverlayRemoved += this.OnOverlayRemoved;
+
+		this.overlays.AddRange(this.Services.Overlays.GetOverlays());
 	}
 
 	protected ServiceManager Services => ServiceManager.Instance;
@@ -33,6 +41,28 @@ public partial class OverlayRenderer : Canvas
 	private void OnStudioOpening()
 	{
 		this.RenderTask().Run();
+	}
+
+	private void OnOverlayAdded(OverlayBase overlay)
+	{
+		this.Log.Information($"GET {overlay}");
+
+		this.overlays.Add(overlay);
+
+		this.Dispatcher.Invoke(() =>
+		{
+			overlay.Initialize(this);
+		});
+	}
+
+	private void OnOverlayRemoved(OverlayBase overlay)
+	{
+		this.overlays.Remove(overlay);
+
+		this.Dispatcher.Invoke(() =>
+		{
+			overlay.Shutdown(this);
+		});
 	}
 
 	private async Task RenderTask()
@@ -58,24 +88,26 @@ public partial class OverlayRenderer : Canvas
 				}
 				else
 				{
-					this.ShowOverlays = true;
+					this.ShowOverlays = this.overlays.Count > 0;
 				}
 
-				for (int i = this.Services.Overlays.Overlays.Count - 1; i > 0; i--)
+				for (int i = this.overlays.Count - 1; i >= 0; i--)
 				{
-					OverlayBase overlay = this.Services.Overlays.Overlays[i];
+					OverlayBase overlay = this.overlays[i];
+
 					try
 					{
-						if (!overlay.IsInitialized)
+						if (overlay.IsHidden && overlay.IsInitialized)
+						{
+							overlay.Shutdown(this);
+						}
+						else if (!overlay.IsHidden && !overlay.IsInitialized)
 						{
 							overlay.Initialize(this);
 						}
-
-						overlay.Update(this);
-
-						if (overlay.IsShuttingDown)
+						else
 						{
-							overlay.Shutdown(this);
+							overlay.Update(this);
 						}
 					}
 					catch (Exception ex)

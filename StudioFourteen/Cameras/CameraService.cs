@@ -166,6 +166,8 @@ public class CameraService : ServiceBase
 		{
 			this.Current = this.Cameras[0];
 		}
+
+		camera.Dispose();
 	}
 
 	public unsafe bool WorldToCamera(Vector3 worldPos, out Vector3 screenPos)
@@ -252,6 +254,7 @@ public class CameraService : ServiceBase
 
 			this.current.Tick(FramerateService.AverageDeltaTime);
 			this.current.Calculate(ref this.state, this.last, 1 - blendValue);
+			this.current.OnRender(ref this.state);
 
 			Vector3 forward = Vector3.Transform(new(1, 0, 0), this.state.Rotation);
 			Vector3 up = Vector3.Transform(new(0, 1, 0), this.state.Rotation);

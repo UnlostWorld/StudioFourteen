@@ -3,13 +3,14 @@
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using System.Numerics;
 
-public class BoundingBoxOverlay : BoxOverlay
+public class BoundingBoxOverlay(string group, string name)
+	: BoxOverlay(group, name)
 {
 	public unsafe void Update(Character* pCharacter)
 	{
 		Vector3 position = pCharacter->DrawObject->Position;
 		position.Y += pCharacter->Height;
-		this.Translation = position;
+		this.Position = position;
 
 		this.Rotation = pCharacter->DrawObject->Rotation;
 

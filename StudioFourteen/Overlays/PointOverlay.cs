@@ -6,8 +6,8 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-public class PointOverlay
-	: OverlayBase
+public class PointOverlay(string group, string name)
+	: OverlayBase(group, name)
 {
 	private Vector3 screenPosition;
 	private Ellipse? ellipse;

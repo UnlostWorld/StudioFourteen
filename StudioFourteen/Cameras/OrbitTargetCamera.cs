@@ -10,7 +10,7 @@ public partial class OrbitTargetCamera : OrbitCamera
 {
 	public const float TargetBlendDuration = 0.250f;
 
-	private readonly BoundingBoxOverlay targetBoundsOverlay = new();
+	private readonly BoundingBoxOverlay targetBoundsOverlay = new("Cameras", "OrbitCameraTargetBounds");
 	private readonly EasingFunctionBase targetEase = new SineEase();
 	private int currentTargetIndex = -1;
 	private Vector3 oldTargetPosition;

@@ -3,15 +3,18 @@
 using Dalamud.Plugin.Services;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Mvm;
+using StudioFourteen.Overlays;
 using StudioFourteen.Structs.Extensions;
 using System;
 using System.Numerics;
 using System.Windows.Input;
 
-public abstract partial class StudioCameraBase : ViewModel
+public abstract partial class StudioCameraBase : ViewModel, IDisposable
 {
 	// a distance of 0 hides the character, so a default of 3 seems good.
 	private const float DefaultCameraDistance = 3;
+
+	private readonly CameraWireframeOverlay cameraOverlay = new("Cameras", "Camera");
 	private Vector2 lastGroupPoseCameraAngle;
 	private int updateDelay = -1;
 
@@ -116,15 +119,28 @@ public abstract partial class StudioCameraBase : ViewModel
 	public virtual void Activate()
 	{
 		this.updateDelay = 10;
+		this.cameraOverlay.Disable();
 	}
 
 	public virtual void OnFrameworkUpdate(IFramework framework)
 	{
 	}
 
+	public virtual void OnRender(ref CameraState state)
+	{
+		this.cameraOverlay.Position = state.Position;
+		this.cameraOverlay.Rotation = state.Rotation;
+	}
+
 	public virtual void Deactivate()
 	{
 		this.updateDelay = -1;
+		this.cameraOverlay.Enable();
+	}
+
+	public void Dispose()
+	{
+		this.cameraOverlay.Disable();
 	}
 
 	protected virtual void OnMouseDrag(Vector2 delta)

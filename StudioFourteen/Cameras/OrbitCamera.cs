@@ -13,7 +13,7 @@ public partial class OrbitCamera : StudioCameraBase
 	protected Vector3 desiredRot = Vector3.Zero;
 	protected Vector3 desiredMove = Vector3.Zero;
 
-	private readonly PointOverlay targetPointOverlay = new();
+	private readonly PointOverlay targetPointOverlay = new("Cameras", "OrbitCameraTarget");
 
 	[Notify] private Vector3 target;
 	[Notify] private float distance;

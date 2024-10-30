@@ -2,26 +2,32 @@
 
 using Serilog;
 using System.Windows.Controls;
+using TerraFX.Interop.Windows;
 
-public abstract class OverlayBase
+public abstract class OverlayBase(string group, string name)
 {
+	public readonly string Group = group;
+	public readonly string Name = name;
+
 	public ILogger Log => Logging.ForContext(this.GetType());
 	public ServiceManager Services => ServiceManager.Instance;
 
 	public bool IsVisible { get; protected set; } = true;
 	public bool IsInitialized { get; private set; } = false;
-	public bool IsShuttingDown { get; private set; } = false;
+
+	public bool IsHidden { get; set; } = false;
 
 	public void Enable()
 	{
+		this.Log.Information($"ENABLE {this}");
+
 		this.IsInitialized = false;
-		this.IsShuttingDown = false;
-		this.Services.Overlays.Overlays.Add(this);
+		this.Services.Overlays.AddOverlay(this);
 	}
 
 	public void Disable()
 	{
-		this.IsShuttingDown = true;
+		this.Services.Overlays.RemoveOverlay(this);
 	}
 
 	public virtual void Initialize(Canvas canvas)
@@ -33,6 +39,6 @@ public abstract class OverlayBase
 
 	public virtual void Shutdown(Canvas canvas)
 	{
-		this.Services.Overlays.Overlays.Remove(this);
+		this.IsInitialized = false;
 	}
 }

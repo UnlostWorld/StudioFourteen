@@ -71,12 +71,6 @@
 	</panels:PanelWindow.Template>
 
 	<Grid x:Name="ContentArea">
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition />
-			<ColumnDefinition Width="Auto" />
-		</Grid.ColumnDefinitions>
-
 		<overlays:OverlayRenderer Grid.ColumnSpan="3">
 			<overlays:OverlayRenderer.Style>
 				<Style TargetType="{x:Type overlays:OverlayRenderer}">
@@ -113,21 +107,22 @@
 			</overlays:OverlayRenderer.Style>
 		</overlays:OverlayRenderer>
 
-		<Grid
-			Grid.Column="2"
-			Width="{Binding ActualWidth, ElementName=NavigationArea}" />
-
 		<background:Targets
 			Grid.Column="1"
 			Margin="0,10,0,0"
 			HorizontalAlignment="Center"
 			VerticalAlignment="Top" />
 
+		<overlays:OverlayBar
+			Margin="10"
+			HorizontalAlignment="Right"
+			VerticalAlignment="Top" />
+
 		<background:Navigation
 			x:Name="StudioButton"
-			Grid.Column="0"
+			Width="60"
 			Margin="10,10,0,0"
-			HorizontalAlignment="Center"
+			HorizontalAlignment="Left"
 			VerticalAlignment="Top"
 			DragDelta="OnDragDelta" />
 

@@ -2,7 +2,6 @@
 
 using StudioFourteen.Services;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 
 public interface IOverlayOwner
 {
@@ -12,5 +11,25 @@ public interface IOverlayOwner
 public class OverlayService
 	: ServiceBase
 {
-	public List<OverlayBase> Overlays { get; init; } = new();
+	private readonly List<OverlayBase> overlays = new();
+
+	public delegate void OverlayEvent(OverlayBase overlay);
+
+	public event OverlayEvent? OverlayAdded;
+	public event OverlayEvent? OverlayRemoved;
+
+	public void AddOverlay(OverlayBase overlay)
+	{
+		this.OverlayAdded?.Invoke(overlay);
+	}
+
+	public void RemoveOverlay(OverlayBase overlay)
+	{
+		this.OverlayRemoved?.Invoke(overlay);
+	}
+
+	public List<OverlayBase> GetOverlays()
+	{
+		return this.overlays;
+	}
 }

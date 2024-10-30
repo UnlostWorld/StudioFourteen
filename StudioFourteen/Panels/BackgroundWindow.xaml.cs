@@ -54,7 +54,7 @@ public partial class BackgroundWindow : PanelWindow
 		if (XivWindow.Process == null)
 			return;
 
-		this.Width = XivWindow.Size.Width;
+		this.Width = XivWindow.Size.Width - 16; // chrome margin
 		this.Height = XivWindow.Size.Height - XivWindow.TitleBarHeight;
 
 		XivWindow.SetPosition(this, new(0, 0));

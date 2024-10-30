@@ -2,45 +2,71 @@
 
 using System.Collections.Generic;
 using System.Numerics;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-public abstract class WireframeOverlayBase
-	: OverlayBase
+public abstract class WireframeOverlayBase(string group, string name)
+	: OverlayBase(group, name)
 {
-	private readonly List<(Vector3 From, Vector3 To)> segments = new();
-	private readonly List<Line> lines = new();
+	private readonly List<(Vector3 From, Vector3 To)> lines = new();
+	private readonly List<Vector3[]> polyLines = new();
 
-	public Vector3 Translation { get; set; } = Vector3.Zero;
+	private readonly List<Line> lineVisuals = new();
+	private readonly List<Polyline> polyLineVisuals = new();
+
+	public Vector3 Position { get; set; } = Vector3.Zero;
 	public Quaternion Rotation { get; set; } = Quaternion.Identity;
 	public Vector3 Scale { get; set; } = Vector3.One;
 
 	public override void Initialize(Canvas canvas)
 	{
-		base.Initialize(canvas);
-
-		for (int i = 0; i < this.segments.Count; i++)
+		for (int i = 0; i < this.lines.Count; i++)
 		{
 			Line line = new();
 			line.StrokeThickness = 1;
 			line.Stroke = new SolidColorBrush(Colors.White);
 			line.IsHitTestVisible = false;
-			this.lines.Add(line);
+			this.lineVisuals.Add(line);
 			canvas.Children.Add(line);
 		}
+
+		for (int i = 0; i < this.polyLines.Count; i++)
+		{
+			Polyline line = new();
+			line.StrokeThickness = 1;
+			line.Stroke = new SolidColorBrush(Colors.White);
+			line.IsHitTestVisible = false;
+
+			foreach (Vector3 worldPos in this.polyLines[i])
+			{
+				line.Points.Add(new Point(0, 0));
+			}
+
+			this.polyLineVisuals.Add(line);
+			canvas.Children.Add(line);
+		}
+
+		base.Initialize(canvas);
 	}
 
 	public override void Update(Canvas canvas)
 	{
-		for (int i = 0; i < this.segments.Count; i++)
-		{
-			Vector3 from = Vector3.Transform(this.segments[i].From * this.Scale, this.Rotation);
-			Vector3 to = Vector3.Transform(this.segments[i].To * this.Scale, this.Rotation);
-			this.Services.Camera.WorldToCamera(from + this.Translation, out Vector3 fromScreenPos);
-			this.Services.Camera.WorldToCamera(to + this.Translation, out Vector3 toScreenPos);
+		if (this.lines.Count != this.lineVisuals.Count)
+			return;
 
-			Line line = this.lines[i];
+		if (this.polyLines.Count != this.polyLineVisuals.Count)
+			return;
+
+		for (int i = 0; i < this.lines.Count; i++)
+		{
+			Vector3 from = Vector3.Transform(this.lines[i].From * this.Scale, this.Rotation);
+			Vector3 to = Vector3.Transform(this.lines[i].To * this.Scale, this.Rotation);
+			this.Services.Camera.WorldToCamera(from + this.Position, out Vector3 fromScreenPos);
+			this.Services.Camera.WorldToCamera(to + this.Position, out Vector3 toScreenPos);
+
+			Line line = this.lineVisuals[i];
 
 			Canvas.SetLeft(line, 0);
 			Canvas.SetTop(line, 0);
@@ -50,22 +76,51 @@ public abstract class WireframeOverlayBase
 			line.X2 = toScreenPos.X * canvas.ActualWidth;
 			line.Y2 = toScreenPos.Y * canvas.ActualHeight;
 		}
+
+		for (int i = 0; i < this.polyLines.Count; i++)
+		{
+			Polyline line = this.polyLineVisuals[i];
+			Canvas.SetLeft(line, 0);
+			Canvas.SetTop(line, 0);
+
+			for (int j = 0; j < this.polyLines[i].Length; j++)
+			{
+				Vector3 worldPos = Vector3.Transform(this.polyLines[i][j] * this.Scale, this.Rotation);
+				this.Services.Camera.WorldToCamera(worldPos + this.Position, out Vector3 screenPos);
+
+				Point p = line.Points[j];
+				p.X = screenPos.X * canvas.ActualWidth;
+				p.Y = screenPos.Y * canvas.ActualHeight;
+				line.Points[j] = p;
+			}
+		}
 	}
 
 	public override void Shutdown(Canvas canvas)
 	{
 		base.Shutdown(canvas);
 
-		foreach(Line line in this.lines)
+		foreach(Line line in this.lineVisuals)
 		{
 			canvas.Children.Remove(line);
 		}
 
-		this.lines.Clear();
+		foreach (Polyline line in this.polyLineVisuals)
+		{
+			canvas.Children.Remove(line);
+		}
+
+		this.lineVisuals.Clear();
+		this.polyLineVisuals.Clear();
 	}
 
 	protected void AddLine(Vector3 from, Vector3 to)
 	{
-		this.segments.Add((from, to));
+		this.lines.Add((from, to));
+	}
+
+	protected void AddLine(params Vector3[] points)
+	{
+		this.polyLines.Add(points);
 	}
 }

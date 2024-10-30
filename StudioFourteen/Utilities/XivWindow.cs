@@ -24,7 +24,7 @@ public static class XivWindow
 
 	public static nint? Hwnd => Process?.MainWindowHandle;
 
-	public static double TitleBarHeight => 22;
+	public static double TitleBarHeight => 18;
 
 	public static Rect Size
 	{
@@ -100,7 +100,7 @@ public static class XivWindow
 			return;
 
 		position.X = Math.Clamp(position.X, 0, 1);
-		position.Y = Math.Clamp(position.X, 0, 1);
+		position.Y = Math.Clamp(position.Y, 0, 1);
 
 		WindowInteropHelper wndInterop = new(wnd);
 
