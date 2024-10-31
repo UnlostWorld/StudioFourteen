@@ -6,6 +6,7 @@ namespace StudioFourteen.Services;
 using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.UI;
+using FFXIVClientStructs.FFXIV.Common.Lua;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Plugin;
 using System.Threading.Tasks;
@@ -20,13 +21,35 @@ public partial class GroupPoseService : ServiceBase
 	private Hook<EnterDelegate>? enterHook;
 	private Hook<ExitDelegate>? exitHook;
 
-	[Notify] private bool isGroupPosing;
+	[Notify(Setter.Private)] private bool isGroupPosing;
 
 	public delegate void OnStateChangedDelegate(bool newState);
 	private unsafe delegate bool EnterDelegate(UIModule* uiModule);
 	private unsafe delegate void ExitDelegate(UIModule* uiModule);
 
 	public event OnStateChangedDelegate? StateChanged;
+
+	public unsafe void SetGroupPose(bool state)
+	{
+		if (DalamudServices.GameGui == null)
+			return;
+
+		DalamudServices.Framework?.RunOnFrameworkThread(() =>
+		{
+			UIModule* pModule = (UIModule*)DalamudServices.GameGui.GetUIModule();
+			if (pModule != null)
+			{
+				if (state)
+				{
+					pModule->EnterGPose();
+				}
+				else
+				{
+					pModule->ExitGPose();
+				}
+			}
+		});
+	}
 
 	public override Task Initialize()
 	{

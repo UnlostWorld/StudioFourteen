@@ -55,6 +55,11 @@ public partial class StudioService : ServiceBase
 
 			this.IsOpen = true;
 			this.IsOpenAndInGPose = this.Services.GroupPose.IsGroupPosing;
+
+			if (this.Services.Settings.Current.OpenGroupPose)
+			{
+				this.Services.GroupPose.SetGroupPose(true);
+			}
 		}
 		catch(Exception ex)
 		{
@@ -84,6 +89,11 @@ public partial class StudioService : ServiceBase
 
 			this.IsOpen = false;
 			this.IsOpenAndInGPose = false;
+
+			if (this.Services.Settings.Current.OpenGroupPose)
+			{
+				this.Services.GroupPose.SetGroupPose(false);
+			}
 		}
 		catch(Exception ex)
 		{
@@ -94,5 +104,10 @@ public partial class StudioService : ServiceBase
 	private void OnGroupPoseStateChanged(bool newState)
 	{
 		this.IsOpenAndInGPose = this.isOpen && newState;
+
+		if (!this.IsOpen && this.Services.Settings.Current.OpenGroupPose)
+		{
+			this.OpenStudio();
+		}
 	}
 }

@@ -1,11 +1,9 @@
 ﻿namespace StudioFourteen.Studio.Background;
 
-using FFXIVClientStructs.FFXIV.Client.UI;
 using StudioFourteen.Appearance;
 using StudioFourteen.Library;
 using StudioFourteen.Mvm;
 using StudioFourteen.Panels;
-using StudioFourteen.Plugin;
 using StudioFourteen.Posing;
 using StudioFourteen.Save;
 using StudioFourteen.Services;
@@ -36,27 +34,7 @@ public partial class Navigation : View
 	public unsafe bool IsInGPose
 	{
 		get => this.Services.GroupPose.IsGroupPosing;
-		set
-		{
-			if (DalamudServices.GameGui == null)
-				return;
-
-			DalamudServices.Framework?.RunOnFrameworkThread(() =>
-			{
-				UIModule* pModule = (UIModule*)DalamudServices.GameGui.GetUIModule();
-				if (pModule != null)
-				{
-					if (value)
-					{
-						pModule->EnterGPose();
-					}
-					else
-					{
-						pModule->ExitGPose();
-					}
-				}
-			});
-		}
+		set => this.Services.GroupPose.SetGroupPose(value);
 	}
 
 	[AutoNotify]

@@ -69,6 +69,7 @@ public class SettingsService : ServiceBase
 		// Interface
 		public bool IsSpa { get; set; } = false;
 		public bool HideStudioButton { get; set; } = false;
+		public bool OpenGroupPose { get; set; } = false;
 
 		// Files
 		public string? LastSaveDirectory { get; set; }
