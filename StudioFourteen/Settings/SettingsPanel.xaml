@@ -26,6 +26,13 @@
 					Margin="1"
 					Content="{DynamicResource LOC_Settings_Interface_IsSpa}"
 					IsChecked="{Binding Settings.IsSpa}" />
+
+				<ToggleButton
+					Grid.Row="0"
+					Margin="1"
+					Content="{DynamicResource LOC_Settings_Interface_HideStudioButton}"
+					IsChecked="{Binding Settings.HideStudioButton}"
+					ToolTip="{DynamicResource LOC_Settings_Interface_HideStudioButton_ToolTip}" />
 			</StackPanel>
 		</TabItem>
 

@@ -5,10 +5,12 @@ using StudioFourteen.Utilities;
 using Serilog;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using StudioFourteen.Settings;
+using Dalamud.Game.Command;
 
 public sealed class DalamudPlugin : IDalamudPlugin
 {
-	private readonly ServiceManager services = new();
+	public readonly ServiceManager Services = new();
 
 	public DalamudPlugin(IDalamudPluginInterface pluginInterface)
 	{
@@ -23,7 +25,23 @@ public sealed class DalamudPlugin : IDalamudPlugin
 		this.Log.Information($"Ensure XivProcess {XivWindow.Process} - {XivWindow.Process.MainWindowHandle} - {XivWindow.Process.MainWindowTitle}");
 
 		pluginInterface.Create<DalamudServices>();
-		Task.Run(this.services.Start);
+
+		if (DalamudServices.CommandManager != null)
+		{
+			CommandInfo command = new(this.OnS14Command);
+			command.HelpMessage = "Toggle Studio Fourteen";
+			command.ShowInHelp = true;
+
+			DalamudServices.CommandManager.AddHandler("/s14", command);
+		}
+
+		if (DalamudServices.PluginInterface != null)
+		{
+			DalamudServices.PluginInterface.UiBuilder.OpenMainUi += this.OnDalamudOpenMainUi;
+			DalamudServices.PluginInterface.UiBuilder.OpenConfigUi += this.OnDalamudOpenConfigUi;
+		}
+
+		Task.Run(this.Services.Start);
 	}
 
 	public string Name => "Studio Fourteen";
@@ -31,6 +49,28 @@ public sealed class DalamudPlugin : IDalamudPlugin
 
 	public void Dispose()
 	{
-		this.services.Stop().Wait();
+		this.Services.Stop().Wait();
+	}
+
+	private void OnDalamudOpenMainUi()
+	{
+		this.Services.Studio.OpenStudio();
+	}
+
+	private void OnDalamudOpenConfigUi()
+	{
+		this.Services.Panels.SetIsOpen<SettingsPanel>(true);
+	}
+
+	private void OnS14Command(string command, string arguments)
+	{
+		if (this.Services.Studio.IsOpen)
+		{
+			this.Services.Studio.CloseStudio();
+		}
+		else
+		{
+			this.Services.Studio.OpenStudio();
+		}
 	}
 }

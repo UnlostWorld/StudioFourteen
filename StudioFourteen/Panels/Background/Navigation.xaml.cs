@@ -21,6 +21,9 @@ public partial class Navigation : View
 	public bool ShowNavigation => this.Services.Studio.IsOpen && !this.Services.Settings.Current.IsSpa;
 
 	[AutoNotify]
+	public bool ShowStudioButton => this.ShowNavigation || !this.Services.Settings.Current.HideStudioButton;
+
+	[AutoNotify]
 	public bool IsFullyLoaded
 	{
 		get

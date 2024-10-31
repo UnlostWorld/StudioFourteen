@@ -249,7 +249,8 @@
 			VerticalAlignment="Top"
 			Click="OnStudioClicked"
 			IsEnabled="{Binding IsFullyLoaded}"
-			Style="{StaticResource StudioButton}" />
+			Style="{StaticResource StudioButton}"
+			Visibility="{Binding ShowStudioButton, Converter={StaticResource B2V}}" />
 
 	</Grid>
 </mvm:View>

@@ -1,9 +1,9 @@
 ﻿namespace StudioFourteen.Services;
 
-using System.Threading.Tasks;
-using System;
-using StudioFourteen.SPA;
 using PropertyChanged.SourceGenerator;
+using StudioFourteen.SPA;
+using System;
+using System.Threading.Tasks;
 
 public partial class StudioService : ServiceBase
 {
@@ -15,10 +15,10 @@ public partial class StudioService : ServiceBase
 	public event OnStateChangedDelegate? Opening;
 	public event OnStateChangedDelegate? Closing;
 
-	public override Task Initialize()
+	public override async Task Initialize()
 	{
+		await base.Initialize();
 		this.Services.GroupPose.StateChanged += this.OnGroupPoseStateChanged;
-		return base.Initialize();
 	}
 
 	public override Task Shutdown()
@@ -33,11 +33,11 @@ public partial class StudioService : ServiceBase
 		return base.Stop();
 	}
 
-	public void OpenStudio() => Task.Run(async () => await this.OpenStudioAsync());
-	public void CloseStudio() => Task.Run(async () => await this.CloseStudioAsync());
-
-	public Task OpenStudioAsync()
+	public void OpenStudio()
 	{
+		if (this.IsOpen)
+			return;
+
 		try
 		{
 			this.Services.Attach();
@@ -60,17 +60,18 @@ public partial class StudioService : ServiceBase
 		{
 			this.Log.Error(ex, "Error opening Studio Fourteen");
 		}
-
-		return Task.CompletedTask;
 	}
 
-	public Task CloseStudioAsync()
+	public void CloseStudio()
 	{
+		if (!this.IsOpen)
+			return;
+
 		try
 		{
-			this.Services.Detach();
-
 			this.IsOpen = false;
+
+			this.Services.Detach();
 			this.RaisePropertyChanged(nameof(StudioService.IsOpen));
 			this.RaisePropertyChanged(nameof(StudioService.IsOpenAndInGPose));
 
@@ -88,8 +89,6 @@ public partial class StudioService : ServiceBase
 		{
 			this.Log.Error(ex, "Error closing Studio Fourteen");
 		}
-
-		return Task.CompletedTask;
 	}
 
 	private void OnGroupPoseStateChanged(bool newState)

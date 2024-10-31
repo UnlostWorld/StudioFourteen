@@ -66,6 +66,10 @@ public class SettingsService : ServiceBase
 		public Dictionary<string, string> Persistence { get; set; } = new();
 		public Dictionary<string, int> Overlays { get; set; } = new();
 
+		// Interface
+		public bool IsSpa { get; set; } = false;
+		public bool HideStudioButton { get; set; } = false;
+
 		// Files
 		public string? LastSaveDirectory { get; set; }
 		public SaveService.SaveConfiguration SaveConfig { get; set; } = new();
@@ -76,9 +80,6 @@ public class SettingsService : ServiceBase
 		// Input
 		public bool EnableKeyBinds { get; set; } = true;
 		public Dictionary<KeyBindEvents, KeyBind> CustomKeyBinds { get; set; } = new();
-
-		// SPA
-		public bool IsSpa { get; set; } = false;
 
 		// Library
 		public HashSet<string> Favorites { get; set; } = new();
