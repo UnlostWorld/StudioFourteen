@@ -226,6 +226,10 @@
 			TargetType="{x:Type sources:DirectoryEntry}"
 			Template="{StaticResource LibraryActions_DirectoryEntry}" />
 
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type sources:GlamourerEntry}"
+			Template="{StaticResource LibraryActions_CharacterAppearance}" />
+
 	</markup:TemplateSelector>
 
 	<Style

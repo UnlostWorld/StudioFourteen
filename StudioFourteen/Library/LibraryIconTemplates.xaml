@@ -120,6 +120,7 @@
 		</Viewbox>
 	</DataTemplate>
 
+
 	<DataTemplate
 		x:Key="LibraryIcon_GroupPoseCharactersLibrarySource"
 		DataType="{x:Type appearance:GroupPoseCharactersLibrarySource}">
@@ -335,6 +336,10 @@
 			Template="{StaticResource LibraryIcon_GroupPoseCharactersLibrarySource}" />
 
 		<markup:TemplateSelectorEntry
+			TargetType="{x:Type sources:GlamourerSource}"
+			Template="{StaticResource LibraryIcon_FileSource}" />
+
+		<markup:TemplateSelectorEntry
 			TargetType="{x:Type excel:ResidentNpc}"
 			Template="{StaticResource AppearanceIcon}" />
 
@@ -381,6 +386,10 @@
 		<markup:TemplateSelectorEntry
 			TargetType="{x:Type excel:Perform}"
 			Template="{StaticResource SimpleIconTemplate}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type sources:GlamourerEntry}"
+			Template="{StaticResource LibraryIcon_AppearanceFileTypeInfo}" />
 
 		<markup:TemplateSelectorEntry
 			TargetType="{x:Type files:AppearanceFileTypeInfo}"

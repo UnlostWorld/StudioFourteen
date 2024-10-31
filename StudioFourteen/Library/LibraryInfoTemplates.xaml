@@ -8,6 +8,7 @@
 	xmlns:library="clr-namespace:StudioFourteen.Library"
 	xmlns:markup="clr-namespace:WpfUtils.Markup;assembly=WpfUtils"
 	xmlns:services="clr-namespace:StudioFourteen.Services"
+	xmlns:sources="clr-namespace:StudioFourteen.Library.Sources"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
 
@@ -55,6 +56,23 @@
 	</DataTemplate>
 
 
+	<DataTemplate
+		x:Key="LibraryInfo_GlamourerLibrarySource"
+		DataType="{x:Type sources:GlamourerSource}">
+		<StackPanel>
+			<TextBlock
+				Margin="3,0,0,0"
+				Text="{Binding Name}"
+				TextWrapping="Wrap" />
+
+			<TextBlock
+				Foreground="{DynamicResource ForegroundLightBrush}"
+				Style="{DynamicResource Body}"
+				Text="{DynamicResource LOC_Library_GlamourerLibrarySourceDesc}" />
+		</StackPanel>
+	</DataTemplate>
+
+
 
 	<markup:TemplateSelector x:Key="LibraryInfoTemplateSelector">
 
@@ -73,6 +91,10 @@
 		<markup:TemplateSelectorEntry
 			TargetType="{x:Type excel:LibraryExcelRow}"
 			Template="{StaticResource LibraryInfo_Simple}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type sources:GlamourerSource}"
+			Template="{StaticResource LibraryInfo_GlamourerLibrarySource}" />
 
 	</markup:TemplateSelector>
 

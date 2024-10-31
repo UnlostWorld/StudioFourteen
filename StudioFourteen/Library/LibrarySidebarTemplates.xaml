@@ -40,6 +40,7 @@
 				<TextBlock
 					Foreground="{DynamicResource ForegroundLightBrush}"
 					Text="{Binding UICategory.Name}" />
+
 			</StackPanel>
 		</Grid>
 	</DataTemplate>
