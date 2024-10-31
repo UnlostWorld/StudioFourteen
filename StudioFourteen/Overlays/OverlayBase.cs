@@ -1,13 +1,15 @@
 ﻿namespace StudioFourteen.Overlays;
 
 using Serilog;
+using StudioFourteen.Settings;
 using System.Windows.Controls;
-using TerraFX.Interop.Windows;
 
 public abstract class OverlayBase(string group, string name)
 {
 	public readonly string Group = group;
 	public readonly string Name = name;
+
+	protected readonly Persistence persistence = new($"Overlay_{group}_{name}");
 
 	public ILogger Log => Logging.ForContext(this.GetType());
 	public ServiceManager Services => ServiceManager.Instance;
@@ -15,12 +17,17 @@ public abstract class OverlayBase(string group, string name)
 	public bool IsVisible { get; protected set; } = true;
 	public bool IsInitialized { get; private set; } = false;
 
-	public bool IsHidden { get; set; } = false;
+	public string DisplayGroup => Resources.Find($"LOC_OverlayGroup_{this.Group}", this.Group);
+	public string DisplayName => Resources.Find($"LOC_Overlay_{this.Name}", this.Name);
+
+	public bool IsHidden
+	{
+		get => this.persistence.GetPersistence<bool>();
+		set => this.persistence.SetPersistence(value);
+	}
 
 	public void Enable()
 	{
-		this.Log.Information($"ENABLE {this}");
-
 		this.IsInitialized = false;
 		this.Services.Overlays.AddOverlay(this);
 	}

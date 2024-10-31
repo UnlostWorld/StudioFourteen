@@ -8,6 +8,7 @@ using StudioFourteen.Panels;
 using StudioFourteen.Plugin;
 using StudioFourteen.Posing;
 using StudioFourteen.Save;
+using StudioFourteen.Services;
 using StudioFourteen.Settings;
 using System.Windows;
 using System.Windows.Controls.Primitives;
@@ -18,6 +19,15 @@ public partial class Navigation : View
 
 	[AutoNotify]
 	public bool ShowNavigation => this.Services.Studio.IsOpen && !this.Services.Settings.Current.IsSpa;
+
+	[AutoNotify]
+	public bool IsFullyLoaded
+	{
+		get
+		{
+			return this.Services.CurrentState == ServiceManagerBase.States.Started;
+		}
+	}
 
 	[AutoNotify]
 	public unsafe bool IsInGPose

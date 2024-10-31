@@ -116,7 +116,8 @@
 		<overlays:OverlayBar
 			Margin="10"
 			HorizontalAlignment="Right"
-			VerticalAlignment="Top" />
+			VerticalAlignment="Top"
+			Visibility="{Binding Services.Studio.IsOpenAndInGPose, Converter={StaticResource B2V}}" />
 
 		<background:Navigation
 			x:Name="StudioButton"

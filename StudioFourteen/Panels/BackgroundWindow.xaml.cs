@@ -14,21 +14,12 @@ public partial class BackgroundWindow : PanelWindow
 {
 	public static BackgroundWindow? Instance;
 
-	public Persistence Persistence = new("BackgroundWindow");
+	public Persistence Persistence = new("Panel_BackgroundWindow");
 
 	public BackgroundWindow()
 	{
 		Instance = this;
 		this.ContentArea.DataContext = this;
-	}
-
-	[AutoNotify]
-	public bool IsFullyLoaded
-	{
-		get
-		{
-			return this.Services.CurrentState == ServiceManagerBase.States.Started;
-		}
 	}
 
 	public Point StudioButtonPosition

@@ -3,16 +3,29 @@
 using System.Threading.Tasks;
 using System;
 using StudioFourteen.SPA;
+using PropertyChanged.SourceGenerator;
 
-public class StudioService : ServiceBase
+public partial class StudioService : ServiceBase
 {
+	[Notify] private bool isOpen;
+	[Notify] private bool isOpenAndInGPose;
+
 	public delegate void OnStateChangedDelegate();
 
 	public event OnStateChangedDelegate? Opening;
 	public event OnStateChangedDelegate? Closing;
 
-	public bool IsOpen { get; private set; }
-	public bool IsOpenAndInGPose => this.Services.Studio.IsOpen && this.Services.GroupPose.IsGroupPosing;
+	public override Task Initialize()
+	{
+		this.Services.GroupPose.StateChanged += this.OnGroupPoseStateChanged;
+		return base.Initialize();
+	}
+
+	public override Task Shutdown()
+	{
+		this.Services.GroupPose.StateChanged -= this.OnGroupPoseStateChanged;
+		return base.Shutdown();
+	}
 
 	public override Task Stop()
 	{
@@ -39,6 +52,9 @@ public class StudioService : ServiceBase
 			}
 
 			this.Opening?.Invoke();
+
+			this.IsOpen = true;
+			this.IsOpenAndInGPose = this.Services.GroupPose.IsGroupPosing;
 		}
 		catch(Exception ex)
 		{
@@ -64,6 +80,9 @@ public class StudioService : ServiceBase
 			}
 
 			this.Closing?.Invoke();
+
+			this.IsOpen = false;
+			this.IsOpenAndInGPose = false;
 		}
 		catch(Exception ex)
 		{
@@ -71,5 +90,10 @@ public class StudioService : ServiceBase
 		}
 
 		return Task.CompletedTask;
+	}
+
+	private void OnGroupPoseStateChanged(bool newState)
+	{
+		this.IsOpenAndInGPose = this.isOpen && newState;
 	}
 }

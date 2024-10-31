@@ -23,7 +23,7 @@ public class Persistence(string persistenceId)
 
 			string persistenceId = this.persistenceId + "_" + id;
 
-			if (!ServiceManager.Instance.Settings.Current.PanelPersistence.TryGetValue(persistenceId, out string? json) || json == null)
+			if (!ServiceManager.Instance.Settings.Current.Persistence.TryGetValue(persistenceId, out string? json) || json == null)
 				return defaultValue;
 
 			if (!json.StartsWith('"') || !json.EndsWith('"'))
@@ -61,11 +61,11 @@ public class Persistence(string persistenceId)
 
 			if (value != null)
 			{
-				ServiceManager.Instance.Settings.Current.PanelPersistence[persistenceId] = Serializer.Serialize(value);
+				ServiceManager.Instance.Settings.Current.Persistence[persistenceId] = Serializer.Serialize(value);
 			}
 			else
 			{
-				ServiceManager.Instance.Settings.Current.PanelPersistence.Remove(persistenceId);
+				ServiceManager.Instance.Settings.Current.Persistence.Remove(persistenceId);
 			}
 
 			ServiceManager.Instance.Settings.Save();

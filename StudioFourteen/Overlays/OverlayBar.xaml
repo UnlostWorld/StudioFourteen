@@ -46,53 +46,31 @@
 
 					<controls:PopOut.Header>
 						<TextBlock
-							Margin="10"
+							Margin="10,10,10,0"
 							Foreground="{DynamicResource ForegroundLightBrush}"
-							Text="Configure Overlays" />
+							Text="{DynamicResource LOC_OverlayBarDescription}" />
 					</controls:PopOut.Header>
-
-					<!--<StackPanel>
-						<ToggleButton Content="Cameras" />
-						
-						<ToggleButton Content="Skeleton" />
-						
-						<ListBox Style="{DynamicResource WpfUtilsSwitchSelector}">
-							<ListBoxItem Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}">
-								<TextBlock Text="Transform" />
-							</ListBoxItem>
-							<ListBoxItem Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}">
-								<TextBlock Text="Joint" />
-							</ListBoxItem>
-							<ListBoxItem Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}">
-								<TextBlock Text="Heirarchy" />
-							</ListBoxItem>
-							<ListBoxItem Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}">
-								<TextBlock Text="Full" />
-							</ListBoxItem>
-						</ListBox>
-					</StackPanel>-->
 
 
 					<Grid>
 						<Grid.Resources>
 							<CollectionViewSource
 								x:Key="SettingsViewSource"
-								Source="{Binding Settings}">
+								Source="{Binding Overlays}">
 								<CollectionViewSource.GroupDescriptions>
 									<PropertyGroupDescription PropertyName="Group" />
 								</CollectionViewSource.GroupDescriptions>
 							</CollectionViewSource>
+
+							<DataTemplate DataType="{x:Type local:OverlayBase}">
+								<ToggleButton
+									Content="{Binding DisplayName}"
+									IsChecked="{Binding IsHidden, Converter={StaticResource !B}}" />
+							</DataTemplate>
+
 						</Grid.Resources>
 
 						<ItemsControl ItemsSource="{Binding Source={StaticResource SettingsViewSource}}">
-							<ItemsControl.ItemTemplate>
-								<DataTemplate DataType="{x:Type local:OverlayBarSettings}">
-									<ToggleButton
-										Content="{Binding DisplayName}"
-										IsChecked="{Binding IsEnabled}" />
-								</DataTemplate>
-							</ItemsControl.ItemTemplate>
-
 							<ItemsControl.GroupStyle>
 								<GroupStyle>
 									<GroupStyle.ContainerStyle>

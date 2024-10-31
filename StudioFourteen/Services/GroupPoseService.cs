@@ -6,11 +6,13 @@ namespace StudioFourteen.Services;
 using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.UI;
+using PropertyChanged.SourceGenerator;
 using StudioFourteen.Plugin;
+using System.Threading.Tasks;
 
 using Task = System.Threading.Tasks.Task;
 
-public class GroupPoseService : ServiceBase
+public partial class GroupPoseService : ServiceBase
 {
 	public const int GPoseCharacterCount = 39;
 	public const int GPoseFirstCharacter = 201;
@@ -18,13 +20,19 @@ public class GroupPoseService : ServiceBase
 	private Hook<EnterDelegate>? enterHook;
 	private Hook<ExitDelegate>? exitHook;
 
+	[Notify] private bool isGroupPosing;
+
 	public delegate void OnStateChangedDelegate(bool newState);
 	private unsafe delegate bool EnterDelegate(UIModule* uiModule);
 	private unsafe delegate void ExitDelegate(UIModule* uiModule);
 
 	public event OnStateChangedDelegate? StateChanged;
 
-	public bool IsGroupPosing => DalamudServices.ClientState?.IsGPosing ?? false;
+	public override Task Initialize()
+	{
+		this.IsGroupPosing = DalamudServices.ClientState?.IsGPosing == true;
+		return base.Initialize();
+	}
 
 	public override unsafe void Attach()
 	{
@@ -56,6 +64,7 @@ public class GroupPoseService : ServiceBase
 		if (didEnter)
 		{
 			this.StateChanged?.Invoke(true);
+			this.IsGroupPosing = true;
 		}
 
 		this.RaisePropertyChanged(nameof(GroupPoseService.IsGroupPosing));
@@ -68,6 +77,7 @@ public class GroupPoseService : ServiceBase
 		this.exitHook?.Original.Invoke(uiModule);
 
 		this.StateChanged?.Invoke(false);
+		this.IsGroupPosing = false;
 		this.RaisePropertyChanged(nameof(GroupPoseService.IsGroupPosing));
 	}
 }

@@ -45,8 +45,6 @@ public partial class OverlayRenderer : Canvas
 
 	private void OnOverlayAdded(OverlayBase overlay)
 	{
-		this.Log.Information($"GET {overlay}");
-
 		this.overlays.Add(overlay);
 
 		this.Dispatcher.Invoke(() =>

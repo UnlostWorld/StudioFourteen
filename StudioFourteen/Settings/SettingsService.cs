@@ -63,7 +63,8 @@ public class SettingsService : ServiceBase
 	{
 		public int Version { get; set; } = 0;
 		public List<string> OpenPanels { get; set; } = new();
-		public Dictionary<string, string> PanelPersistence { get; set; } = new();
+		public Dictionary<string, string> Persistence { get; set; } = new();
+		public Dictionary<string, int> Overlays { get; set; } = new();
 
 		// Files
 		public string? LastSaveDirectory { get; set; }
