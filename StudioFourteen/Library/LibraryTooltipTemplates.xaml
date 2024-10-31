@@ -7,6 +7,7 @@
 	xmlns:gameData="clr-namespace:StudioFourteen.GameData"
 	xmlns:library="clr-namespace:StudioFourteen.Library"
 	xmlns:services="clr-namespace:StudioFourteen.Services"
+	xmlns:sources="clr-namespace:StudioFourteen.Library.Sources"
 	xmlns:tags="clr-namespace:StudioFourteen.Tags"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
@@ -41,7 +42,7 @@
 				<ContentPresenter
 					Width="48"
 					Height="48"
-					Margin="-3,-6,0,0"
+					Margin="-3,-3,0,0"
 					Content="{Binding .}"
 					Style="{StaticResource LibraryIcon}" />
 
@@ -101,6 +102,18 @@
 	</DataTemplate>
 
 	<DataTemplate DataType="{x:Type excel:Companion}">
+		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
+	</DataTemplate>
+
+	<DataTemplate DataType="{x:Type gameData:DataSheetLibrarySource}">
+		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
+	</DataTemplate>
+
+	<DataTemplate DataType="{x:Type sources:FileSource}">
+		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
+	</DataTemplate>
+
+	<DataTemplate DataType="{x:Type sources:GlamourerSource}">
 		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
 	</DataTemplate>
 
