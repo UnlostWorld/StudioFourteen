@@ -107,14 +107,14 @@
 
 				</Grid>
 
-				<Image
-					Width="32"
-					Height="32"
-					Margin="16,0,0,22"
+				<controls:XivIconImage
+					Width="48"
+					Height="48"
+					Margin="-5,0,0,2"
 					HorizontalAlignment="Left"
 					VerticalAlignment="Bottom"
-					Opacity="0.5"
-					Source="pack://application:,,,/StudioFourteen;component/Assets/ffxiv-logo-dark.png" />
+					Id="061396"
+					SnapsToDevicePixels="True" />
 
 			</Grid>
 		</Viewbox>
