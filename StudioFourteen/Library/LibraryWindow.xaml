@@ -17,6 +17,8 @@
 	Title="{DynamicResource LOC_Library}"
 	Width="1000"
 	Height="650"
+	MinWidth="680"
+	MinHeight="300"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	TitleIcon="Book"
@@ -156,17 +158,47 @@
 			<!--  Tabbar  -->
 			<Grid
 				Grid.Row="0"
-				Margin="128,0,0,0">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition />
-				</Grid.ColumnDefinitions>
+				Grid.ColumnSpan="2"
+				Margin="178,0,300,0">
+
+				<ListBox
+					HorizontalContentAlignment="Stretch"
+					ItemsSource="{Binding Tabs}"
+					Style="{DynamicResource WpfUtilsSwitchSelector}"
+					SelectedItem="{Binding CurrentTab}">
+					<ListBox.ItemContainerStyle>
+						<Style
+							BasedOn="{StaticResource WpfUtilsSwitchSelectorItemStyle}"
+							TargetType="{x:Type ListBoxItem}">
+							<Setter Property="HorizontalContentAlignment" Value="stretch" />
+						</Style>
+					</ListBox.ItemContainerStyle>
+
+					<ListBox.ItemTemplate>
+						<DataTemplate DataType="{x:Type local:LibraryTab}">
+							<Grid
+								x:Name="MainGrid"
+								HorizontalAlignment="Stretch">
+								<TextBlock
+									HorizontalAlignment="Center"
+									Text="{Binding Name}"
+									Visibility="{Binding ElementName=MainGrid, Path=ActualWidth, Converter={StaticResource GreaterThanToVisibility}, ConverterParameter=74}" />
+								<wpfUtils:IconBlock
+									HorizontalAlignment="Center"
+									Icon="{Binding Icon}"
+									IconFont="Solid"
+									Visibility="{Binding ElementName=MainGrid, Path=ActualWidth, Converter={StaticResource LessThanToVisibility}, ConverterParameter=75}" />
+							</Grid>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
 
 				<ToggleButton
 					Width="28"
 					Margin="1,0"
 					IsChecked="{Binding Favorites}"
-					Style="{DynamicResource WpfUtilsIconToggleButton}">
+					Style="{DynamicResource WpfUtilsIconToggleButton}"
+					Visibility="Collapsed">
 					<wpfUtils:IconBlock
 						Icon="Heart"
 						IconFont="Solid" />

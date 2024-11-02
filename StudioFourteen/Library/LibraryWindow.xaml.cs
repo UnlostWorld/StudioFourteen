@@ -1,6 +1,7 @@
 ﻿namespace StudioFourteen.Library;
 
 using FontAwesome.Sharp;
+using PropertyChanged.SourceGenerator;
 using StudioFourteen;
 using StudioFourteen.Appearance;
 using StudioFourteen.Files;
@@ -29,8 +30,10 @@ public partial class LibraryWindow : Panel
 	private readonly FuncQueue searchQueue;
 	private readonly Stopwatch searchStopwatch = new();
 	private bool flatten = false;
-	private Result? selectedResult = null;
+	[Notify] private Result? selectedResult = null;
 	private Navigation navigation = Navigation.None;
+	[Notify] private NavigationAnimations navigationAnimation = NavigationAnimations.None;
+	[Notify] private bool viewList;
 
 	public LibraryWindow()
 	{
@@ -45,8 +48,6 @@ public partial class LibraryWindow : Panel
 		None,
 		OpenDir,
 		Back,
-		TabLeft,
-		TabRight,
 	}
 
 	public enum NavigationAnimations
@@ -58,24 +59,24 @@ public partial class LibraryWindow : Panel
 		Back_Out,
 	}
 
-	[AutoNotify] public NavigationAnimations NavigationAnimation { get; set; } = NavigationAnimations.None;
-	[AutoNotify] public FastObservableCollection<Result> Results { get; init; } = new();
-	[AutoNotify] public bool ViewList { get; set; } = false;
-	[AutoNotify] public FastObservableCollection<GroupEntryBase> Path { get; init; } = new();
-	[AutoNotify] public GroupEntryBase? CurrentGroup => this.Path.Count > 0 ? this.Path[this.Path.Count - 1] : null;
-	[AutoNotify] public TagCollection AvailableTags { get; init; } = new();
-	[AutoNotify] public TagFilter TagFilter { get; init; } = new();
-	[AutoNotify] public SearchQueryFilter SearchQueryFilter { get; init; } = new();
-	[AutoNotify] public bool CanChangeFlatten => this.SearchQueryFilter.IsEmpty;
-	[AutoNotify] public bool IsLiveExecute { get; set; }
-
-	[AutoNotify] public Result? SelectedResult
+	public List<LibraryTab> Tabs { get; init; } = new()
 	{
-		get => this.selectedResult;
-		set => this.selectedResult = value;
-	}
+		new LibraryTab("All", IconChar.List),
+		new LibraryTab("Favorites", IconChar.Heart, new LibraryFavoritesFilter()),
+		new LibraryTab("Appearances", IconChar.UserShield),
+		new LibraryTab("Poses", IconChar.PersonRunning),
+		new LibraryTab("scenes", IconChar.Users),
+	};
 
-	[AutoNotify]
+	public FastObservableCollection<Result> Results { get; init; } = new();
+	public FastObservableCollection<GroupEntryBase> Path { get; init; } = new();
+	public TagCollection AvailableTags { get; init; } = new();
+	public TagFilter TagFilter { get; init; } = new();
+	public SearchQueryFilter SearchQueryFilter { get; init; } = new();
+
+	[AutoNotify] public GroupEntryBase? CurrentGroup => this.Path.Count > 0 ? this.Path[this.Path.Count - 1] : null;
+	[AutoNotify] public bool CanChangeFlatten => this.SearchQueryFilter.IsEmpty;
+
 	public bool Flatten
 	{
 		get => this.flatten;
@@ -98,17 +99,29 @@ public partial class LibraryWindow : Panel
 		}
 	}
 
-	[AutoNotify]
-	public bool Favorites
+	public LibraryTab CurrentTab
 	{
-		get => this.GetPersistence<bool>();
+		get
+		{
+			int index = this.GetPersistence<int>();
+
+			if (index < 0 | index >= this.Tabs.Count)
+				index = 0;
+
+			return this.Tabs[index];
+		}
 		set
 		{
-			this.SetPersistence(value);
+			int oldIndex = this.GetPersistence<int>();
+			int index = this.Tabs.IndexOf(value);
+			this.SetPersistence(index);
+			this.NotifyPropertyChanged();
 
 			// clear the path
 			this.Path.Clear();
 			this.Path.Add(this.Services.Library.Root);
+
+			this.navigation = Navigation.OpenDir;
 			this.searchQueue.InvokeImmediate();
 		}
 	}
@@ -167,8 +180,7 @@ public partial class LibraryWindow : Panel
 
 		List<FilterBase> filters = new List<FilterBase>();
 
-		if (this.Favorites)
-			filters.Add(new LibraryFavoritesFilter());
+		filters.AddRange(this.CurrentTab.Filters);
 
 		filters.Add(this.TagFilter);
 		filters.Add(this.SearchQueryFilter);
@@ -296,9 +308,9 @@ public partial class LibraryWindow : Panel
 }
 
 public class LibraryTab(string name, IconChar icon, params FilterBase[] filters)
-	: AutoViewModel
+	: ViewModel
 {
-	public string Name { get; init; } = Resources.Find(name, string.Empty);
+	public string Name { get; init; } = Resources.Find($"LOC_Library_{name}", name);
 	public IconChar Icon { get; init; } = icon;
 	public FilterBase[] Filters { get; init; } = filters;
 }

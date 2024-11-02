@@ -89,6 +89,7 @@
 	<sys:String x:Key="LOC_Library_ListViewTooltip">List View</sys:String>
 	<sys:String x:Key="LOC_Library_DirectoryViewTooltip">Directory View</sys:String>
 	<sys:String x:Key="LOC_Library_FlattenViewTooltip">Flatten View</sys:String>
+	<sys:String x:Key="LOC_Library_All">All</sys:String>
 	<sys:String x:Key="LOC_Library_Favorites">Favorites</sys:String>
 	<sys:String x:Key="LOC_Library_Poses">Poses</sys:String>
 	<sys:String x:Key="LOC_Library_Characters">Characters</sys:String>
