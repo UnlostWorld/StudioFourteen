@@ -11,8 +11,7 @@ public class SmoothScrollingVirtualizingWrapPanel : VirtualizingWrapPanel
 	private double? targetVerticalOffset;
 	private double? targetHorizontalOffset;
 
-	// https://github.com/sbaeumlisberger/VirtualizingWrapPanel/pull/62
-	/*public override void LineUp() => this.VerticalScroll(-ScrollInfoAdapter.ScrollLineDelta);
+	public override void LineUp() => this.VerticalScroll(-ScrollInfoAdapter.ScrollLineDelta);
 	public override void LineDown() => this.VerticalScroll(+ScrollInfoAdapter.ScrollLineDelta);
 	public override void LineLeft() => this.HorizontalScroll(-ScrollInfoAdapter.ScrollLineDelta);
 	public override void LineRight() => this.HorizontalScroll(+ScrollInfoAdapter.ScrollLineDelta);
@@ -23,7 +22,7 @@ public class SmoothScrollingVirtualizingWrapPanel : VirtualizingWrapPanel
 	public override void PageUp() => this.VerticalScroll(-this.ViewportHeight);
 	public override void PageDown() => this.VerticalScroll(+this.ViewportHeight);
 	public override void PageLeft() => this.HorizontalScroll(-this.ViewportWidth);
-	public override void PageRight() => this.HorizontalScroll(+this.ViewportWidth);*/
+	public override void PageRight() => this.HorizontalScroll(+this.ViewportWidth);
 
 	private void VerticalScroll(double val)
 	{
