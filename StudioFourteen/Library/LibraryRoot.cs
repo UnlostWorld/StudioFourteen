@@ -1,17 +1,11 @@
 ﻿namespace StudioFourteen.Library;
 
-internal class LibraryRoot : GroupEntryBase
+using FontAwesome.Sharp;
+
+internal class LibraryRoot()
+	: GroupEntryBase(null)
 {
-	public LibraryRoot()
-		: base(null)
-	{
-	}
-
+	public override IconChar Icon => IconChar.Book;
 	public override string Name => "Library";
-	public bool IsRoot => true;
-
-	protected override string GetInternalId()
-	{
-		return "Root";
-	}
+	protected override string GetInternalId() => "Root";
 }

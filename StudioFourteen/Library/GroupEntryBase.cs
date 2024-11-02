@@ -1,5 +1,6 @@
 ﻿namespace StudioFourteen.Library;
 
+using FontAwesome.Sharp;
 using StudioFourteen.Library.Sources;
 using StudioFourteen.Tags;
 using System.Collections.Generic;
@@ -10,21 +11,36 @@ using System.Collections.Generic;
 public abstract class GroupEntryBase : LibraryEntryBase
 {
 	private readonly List<ILibraryEntry> allEntries = new();
+	private readonly List<GroupEntryBase> groupEntries = new();
 
 	protected GroupEntryBase(SourceBase? source)
 		: base(source)
 	{
 	}
 
-	public IEnumerable<ILibraryEntry>? AllEntries => this.allEntries;
+	public virtual IconChar Icon => IconChar.None;
 
+	public IEnumerable<ILibraryEntry>? AllEntries => this.allEntries;
 	public int AllCount => this.allEntries.Count;
+
+	public IEnumerable<GroupEntryBase>? GroupEntries => this.groupEntries;
+	public int GroupCount => this.groupEntries.Count;
+
+	public GroupEntryBase? Parent { get; private set; }
+
+	public bool HasSubGroups => this.GroupCount > 0;
 
 	public virtual void Add(ILibraryEntry entry)
 	{
 		lock (this)
 		{
 			this.allEntries.Add(entry);
+
+			if (entry is GroupEntryBase group)
+			{
+				group.Parent = this;
+				this.groupEntries.Add(group);
+			}
 		}
 	}
 
@@ -32,7 +48,10 @@ public abstract class GroupEntryBase : LibraryEntryBase
 	{
 		lock (this)
 		{
+			this.groupEntries.Clear();
 			this.allEntries.Clear();
+
+			this.NotifyPropertyChanged(nameof(GroupEntryBase.GroupEntries));
 			this.NotifyPropertyChanged(nameof(GroupEntryBase.AllEntries));
 		}
 	}

@@ -18,6 +18,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using WpfUtils;
+using WpfUtils.Controls;
 using WpfUtils.Extensions;
 using WpfUtils.Utils;
 
@@ -60,7 +61,7 @@ public partial class LibraryWindow : Panel
 	[AutoNotify] public NavigationAnimations NavigationAnimation { get; set; } = NavigationAnimations.None;
 	[AutoNotify] public FastObservableCollection<Result> Results { get; init; } = new();
 	[AutoNotify] public bool ViewList { get; set; } = false;
-	[AutoNotify] public ObservableCollection<GroupEntryBase> Path { get; init; } = new();
+	[AutoNotify] public FastObservableCollection<GroupEntryBase> Path { get; init; } = new();
 	[AutoNotify] public GroupEntryBase? CurrentGroup => this.Path.Count > 0 ? this.Path[this.Path.Count - 1] : null;
 	[AutoNotify] public TagCollection AvailableTags { get; init; } = new();
 	[AutoNotify] public TagFilter TagFilter { get; init; } = new();
@@ -260,6 +261,37 @@ public partial class LibraryWindow : Panel
 	private void OnBrowseClicked(object sender, RoutedEventArgs e)
 	{
 		this.Services.Files.ShowOpenDialog(null, typeof(SceneFile), typeof(PoseFile), typeof(AppearanceFile));
+	}
+
+	private void OnDirectorySwapClicked(object sender, RoutedEventArgs e)
+	{
+		if (sender is Button button)
+		{
+			GroupEntryBase? subGroup = button.DataContext as GroupEntryBase;
+			if (subGroup == null)
+				return;
+
+			GroupEntryBase? baseGroup = subGroup.Parent;
+			if (baseGroup == null)
+				return;
+
+			List<GroupEntryBase> newPath = new();
+			foreach(GroupEntryBase entry in this.Path)
+			{
+				newPath.Add(entry);
+
+				if (entry == baseGroup)
+				{
+					break;
+				}
+			}
+
+			newPath.Add(subGroup);
+
+			this.navigation = Navigation.Back;
+			this.Path.Replace(newPath);
+			this.searchQueue.InvokeImmediate();
+		}
 	}
 }
 
