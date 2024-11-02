@@ -217,37 +217,36 @@
 				Style="{DynamicResource WpfUtilsComboBoxButton}" />
 		</Grid>
 
-		<Popup
-			Width="{Binding ActualWidth, ElementName=ContentArea}"
+		<wpfUtils:PopOut
 			MaxHeight="250"
+			Background="{DynamicResource ControlBackgroundBrush}"
 			IsOpen="{Binding DataContext.IsSuggestTags, ElementName=ContentArea}"
 			PlacementTarget="{Binding ElementName=ContentArea}"
-			StaysOpen="False"
-			Style="{DynamicResource WpfUtilsPopup}">
+			StaysOpen="False">
 
-			<ContentControl Style="{DynamicResource WpfUtilsPopupContent}">
-				<Grid DataContext="{Binding DataContext, ElementName=ContentArea, Mode=OneWay}">
-					<ListBox
-						Focusable="False"
-						ItemsSource="{Binding SuggestTags}"
-						ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-						SelectedValue="{Binding SelectedSuggestTag}">
+			<ListBox
+				Margin="0"
+				DataContext="{Binding DataContext, ElementName=ContentArea, Mode=OneWay}"
+				Focusable="False"
+				ItemsSource="{Binding SuggestTags}"
+				ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+				SelectedValue="{Binding SelectedSuggestTag}">
 
-						<ListBox.ItemsPanel>
-							<ItemsPanelTemplate>
-								<WrapPanel IsItemsHost="True" />
-							</ItemsPanelTemplate>
-						</ListBox.ItemsPanel>
+				<ListBox.ItemsPanel>
+					<ItemsPanelTemplate>
+						<WrapPanel IsItemsHost="True" />
+					</ItemsPanelTemplate>
+				</ListBox.ItemsPanel>
 
-						<ListBox.ItemContainerStyle>
-							<Style TargetType="{x:Type ListBoxItem}">
-								<Setter Property="Template" Value="{StaticResource TagItem}" />
-							</Style>
-						</ListBox.ItemContainerStyle>
-					</ListBox>
-				</Grid>
-			</ContentControl>
-		</Popup>
+				<ListBox.ItemContainerStyle>
+					<Style TargetType="{x:Type ListBoxItem}">
+						<Setter Property="Template" Value="{StaticResource TagItem}" />
+					</Style>
+				</ListBox.ItemContainerStyle>
+			</ListBox>
+
+
+		</wpfUtils:PopOut>
 	</Grid>
 
 </UserControl>
