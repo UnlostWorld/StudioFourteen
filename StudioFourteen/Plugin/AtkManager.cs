@@ -1,7 +1,7 @@
 ﻿namespace StudioFourteen.Plugin;
 
-using FFXIVClientStructs.FFXIV.Component.GUI;
 using FFXIVClientStructs.FFXIV.Client.UI;
+using FFXIVClientStructs.FFXIV.Component.GUI;
 
 public static class AtkManager
 {
@@ -30,5 +30,24 @@ public static class AtkManager
 			return null;
 
 		return unitManager->AllLoadedUnitsList;
+	}
+
+	public static unsafe void SetUnitVisibility(string name, bool visible)
+	{
+		if (DalamudServices.GameGui == null)
+			return;
+
+		AtkUnitBase* addon = (AtkUnitBase*)DalamudServices.GameGui.GetAddonByName(name);
+		if (addon == null)
+			return;
+
+		if (visible)
+		{
+			addon->Show(true, 0);
+		}
+		else
+		{
+			addon->Hide(true, true, 0);
+		}
 	}
 }

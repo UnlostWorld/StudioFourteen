@@ -54,8 +54,8 @@ public partial class Navigation : View
 	[AutoNotify]
 	public bool IsEnvironmentOpen
 	{
-		get => this.Services.Panels.GetIsOpen<HelloWorldWindow>();
-		set => this.Services.Panels.SetIsOpen<HelloWorldWindow>(value);
+		get => this.Services.Panels.GetIsOpen<EnvironmentPanel>();
+		set => this.Services.Panels.SetIsOpen<EnvironmentPanel>(value);
 	}
 
 	[AutoNotify]

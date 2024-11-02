@@ -53,7 +53,7 @@ public partial class GroupPoseService : ServiceBase
 
 	public override Task Initialize()
 	{
-		this.IsGroupPosing = DalamudServices.ClientState?.IsGPosing == true;
+		this.IsGroupPosing = DalamudServices.ClientState?.IsGPosing == true || this.Services.Environment.IsInTitleScreen;
 		return base.Initialize();
 	}
 
@@ -70,6 +70,8 @@ public partial class GroupPoseService : ServiceBase
 
 		this.exitHook = InteropService.HookFromAddress<ExitDelegate>(exitAddress, this.ExitDetour);
 		this.exitHook?.Enable();
+
+		this.IsGroupPosing = DalamudServices.ClientState?.IsGPosing == true || this.Services.Environment.IsInTitleScreen;
 	}
 
 	public override void Detach()

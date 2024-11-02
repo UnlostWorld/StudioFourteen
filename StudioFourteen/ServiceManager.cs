@@ -42,4 +42,5 @@ public class ServiceManager : ServiceManagerBase
 	public PanelService Panels { get; init; } = new();
 	public CameraService Camera { get; init; } = new();
 	public OverlayService Overlays { get; init; } = new();
+	public EnvironmentService Environment { get; init; } = new();
 }

@@ -1,6 +1,10 @@
 ﻿namespace StudioFourteen.Services;
 
+using Dalamud.Plugin.Services;
+using FFXIVClientStructs.FFXIV.Client.UI;
+using FFXIVClientStructs.FFXIV.Component.GUI;
 using PropertyChanged.SourceGenerator;
+using StudioFourteen.Plugin;
 using StudioFourteen.SPA;
 using System;
 using System.Threading.Tasks;
@@ -99,6 +103,29 @@ public partial class StudioService : ServiceBase
 		{
 			this.Log.Error(ex, "Error closing Studio Fourteen");
 		}
+	}
+
+	public unsafe override void Attach()
+	{
+		base.Attach();
+
+		if (DalamudServices.GameGui == null)
+			return;
+
+		AtkManager.SetUnitVisibility("_TitleMenu", false);
+		AtkManager.SetUnitVisibility("_TitleLogo", false);
+		AtkManager.SetUnitVisibility("_TitleRevision", false);
+		AtkManager.SetUnitVisibility("_TitleRights", false);
+	}
+
+	public unsafe override void Detach()
+	{
+		base.Detach();
+
+		AtkManager.SetUnitVisibility("_TitleMenu", true);
+		AtkManager.SetUnitVisibility("_TitleLogo", true);
+		AtkManager.SetUnitVisibility("_TitleRevision", true);
+		AtkManager.SetUnitVisibility("_TitleRights", true);
 	}
 
 	private void OnGroupPoseStateChanged(bool newState)

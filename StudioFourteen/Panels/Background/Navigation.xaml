@@ -157,7 +157,6 @@
 
 					<ToggleButton
 						IsChecked="{Binding IsEnvironmentOpen}"
-						IsEnabled="False"
 						ToolTip="{DynamicResource LOC_Environment}">
 						<wpfUtils:IconBlock Icon="CloudMoonRain" />
 					</ToggleButton>
