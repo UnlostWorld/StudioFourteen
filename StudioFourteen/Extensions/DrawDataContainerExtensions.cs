@@ -1,6 +1,7 @@
 ﻿namespace FFXIVClientStructs.FFXIV.Client.Game.Character;
 
 using global::System;
+using global::System.Collections.Generic;
 using StudioFourteen;
 using StudioFourteen.Tags;
 
@@ -8,10 +9,21 @@ using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 
 public static class DrawDataContainerExtensions
 {
+	private static readonly Dictionary<DrawDataContainer.EquipmentSlot, string> EquipmentSlotDisplayNameCache = new();
+	private static readonly Dictionary<DrawDataContainer.WeaponSlot, string> WeaponSlotDisplayNameCache = new();
+
 	// Equipment Slots
 	public static string GetDisplayName(this DrawDataContainer.EquipmentSlot self)
 	{
-		return Resources.Find($"LOC_EquipmentSlot_{self.ToString()}", self.ToString());
+		string? name;
+		if (!EquipmentSlotDisplayNameCache.TryGetValue(self, out name))
+		{
+			string id = $"LOC_EquipmentSlot_{self.ToString()}";
+			name = Resources.Find(id, self.ToString());
+			EquipmentSlotDisplayNameCache.Add(self, name);
+		}
+
+		return name ?? self.ToString();
 	}
 
 	public static Tag ToTag(this DrawDataContainer.EquipmentSlot self)
@@ -36,7 +48,15 @@ public static class DrawDataContainerExtensions
 	// Weapon Slots
 	public static string GetDisplayName(this DrawDataContainer.WeaponSlot self)
 	{
-		return Resources.Find($"LOC_WeaponSlot_{self.ToString()}", self.ToString());
+		string? name;
+		if (!WeaponSlotDisplayNameCache.TryGetValue(self, out name))
+		{
+			string id = $"LOC_WeaponSlot_{self.ToString()}";
+			name = Resources.Find(id, self.ToString());
+			WeaponSlotDisplayNameCache.Add(self, name);
+		}
+
+		return name ?? self.ToString();
 	}
 
 	public static Tag ToTag(this DrawDataContainer.WeaponSlot self)
