@@ -27,17 +27,12 @@ public class GlamourerSource : SourceBase
 		configsDir = configsDir?.Parent;
 
 		DirectoryInfo dir = new($"{configsDir?.FullName}/Glamourer/designs/");
-
-		this.Log.Information($">> {dir.FullName}");
-
 		if (!dir.Exists)
 			return;
 
 		FileInfo[] files = dir.GetFiles("*.json");
 		foreach (FileInfo file in files)
 		{
-			this.Log.Information($">> {file.FullName}");
-
 			try
 			{
 				string json = File.ReadAllText(file.FullName);

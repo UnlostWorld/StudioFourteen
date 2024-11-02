@@ -59,7 +59,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	public bool IsUiVisible => !DalamudServices.GameGui?.GameUiHidden ?? true;
 
 	public bool HasIcon => this.Panel != null && this.Panel.TitleIcon != IconChar.None;
-	public bool HasSubtitle => this.Panel != null && this.Panel.TitleIcon != IconChar.None;
+	public bool HasSubtitle => this.Panel != null && !string.IsNullOrEmpty(this.Panel.Subtitle);
 
 	public virtual Point? SavedPosition
 	{

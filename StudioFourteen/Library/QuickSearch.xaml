@@ -162,7 +162,6 @@
 									Height="200">
 									<ListBox
 										Margin="3"
-										behaviours:SelectionVisibleBehaviour.SelectionVisible="True"
 										ItemsSource="{Binding Results}"
 										KeyDown="OnResultsListKeyDown"
 										MouseDoubleClick="ResultsListDoubleClicked"
