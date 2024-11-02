@@ -164,8 +164,8 @@
 				<ListBox
 					HorizontalContentAlignment="Stretch"
 					ItemsSource="{Binding Tabs}"
-					Style="{DynamicResource WpfUtilsSwitchSelector}"
-					SelectedItem="{Binding CurrentTab}">
+					SelectedItem="{Binding CurrentTab}"
+					Style="{DynamicResource WpfUtilsSwitchSelector}">
 					<ListBox.ItemContainerStyle>
 						<Style
 							BasedOn="{StaticResource WpfUtilsSwitchSelectorItemStyle}"

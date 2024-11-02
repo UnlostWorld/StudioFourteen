@@ -1,5 +1,6 @@
 ﻿namespace StudioFourteen.Library.Results;
 
+using StudioFourteen.GameData.Excel;
 using StudioFourteen.Library.Filters;
 using StudioFourteen.Tags;
 using System;
@@ -101,6 +102,29 @@ public class GroupResult : Result
 						}
 					}
 				}
+
+				this.results.Sort((a, b) =>
+				{
+					if (a.Entry is GroupEntryBase && b.Entry is not GroupEntryBase)
+						return -1;
+
+					if (a.Entry is not GroupEntryBase && b.Entry is GroupEntryBase)
+						return 1;
+
+					if (a.Entry is GroupEntryBase && b.Entry is GroupEntryBase)
+					{
+						if (a.Entry.Name == null || b.Entry.Name == null)
+							return a.Entry.Identifier.CompareTo(b.Entry.Identifier);
+
+						return a.Entry.Name.CompareTo(b.Entry.Name);
+					}
+
+					if (a.Entry is LibraryExcelRow rowA && b.Entry is LibraryExcelRow rowB)
+						return rowA.RowId.CompareTo(rowB.RowId);
+
+					// row?
+					return 0;
+				});
 
 				return this.results.Count > 0;
 			}
