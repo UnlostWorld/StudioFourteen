@@ -105,6 +105,10 @@
 		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
 	</DataTemplate>
 
+	<DataTemplate DataType="{x:Type excel:Weather}">
+		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
+	</DataTemplate>
+
 	<DataTemplate DataType="{x:Type gameData:DataSheetLibrarySource}">
 		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
 	</DataTemplate>

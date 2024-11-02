@@ -96,6 +96,26 @@
 		</Grid>
 	</DataTemplate>
 
+	<DataTemplate
+		x:Key="LibrarySidebar_Territory"
+		DataType="{x:Type excel:Territory}">
+		<Grid>
+			<StackPanel>
+				<TextBlock
+					Foreground="{DynamicResource ForegroundLightBrush}"
+					Text="{Binding Zone}" />
+
+				<TextBlock
+					Foreground="{DynamicResource ForegroundLightBrush}"
+					Text="{Binding Region}" />
+
+				<TextBlock
+					Foreground="{DynamicResource ForegroundLightBrush}"
+					Text="{Binding Place}" />
+			</StackPanel>
+		</Grid>
+	</DataTemplate>
+
 	<markup:TemplateSelector x:Key="LibrarySidebarTemplateSelector">
 
 		<markup:TemplateSelectorEntry
@@ -113,6 +133,14 @@
 		<markup:TemplateSelectorEntry
 			TargetType="{x:Type excel:Item}"
 			Template="{StaticResource LibrarySidebar_Item}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type excel:Territory}"
+			Template="{StaticResource LibrarySidebar_Territory}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type sources:FileEntry}"
+			Template="{StaticResource LibrarySidebar_FileEntry}" />
 
 		<markup:TemplateSelectorEntry
 			TargetType="{x:Type sources:FileEntry}"

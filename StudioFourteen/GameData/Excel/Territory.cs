@@ -32,10 +32,11 @@ public class Territory : LibraryExcelRow
 		652,
 	};
 
+	public string? Id { get; protected set; }
 	public string? Background { get; protected set; }
-	public PlaceName? Place { get; protected set; }
-	public PlaceName? Region { get; protected set; }
-	public PlaceName? Zone { get; protected set; }
+	public string? Place { get; protected set; }
+	public string? Region { get; protected set; }
+	public string? Zone { get; protected set; }
 	public List<Weather?> Weathers { get; init; } = new();
 
 	public bool IsHouse => HousingTerritories.Contains(this.RowId);
@@ -44,17 +45,19 @@ public class Territory : LibraryExcelRow
 	{
 		base.PopulateData(parser, gameData, language);
 
-		this.Name = parser.ReadString(0);
+		this.Id = parser.ReadString(0);
 		this.Background = parser.ReadString(1);
-		this.Region = parser.ReadRowReference<ushort, PlaceName>(3);
-		this.Zone = parser.ReadRowReference<ushort, PlaceName>(4);
-		this.Place = parser.ReadRowReference<ushort, PlaceName>(5);
+		this.Region = parser.ReadRowReference<ushort, PlaceName>(3)?.Name.RawString;
+		this.Zone = parser.ReadRowReference<ushort, PlaceName>(4)?.Name.RawString;
+		this.Place = parser.ReadRowReference<ushort, PlaceName>(5)?.Name.RawString;
 
-		if (this.Zone != null && !string.IsNullOrEmpty(this.Zone.Name.RawString))
-			this.Tags.Add(this.Zone.Name.RawString);
+		this.Name = this.Place ?? this.Id;
 
-		if (this.Region != null && !string.IsNullOrEmpty(this.Region.Name.RawString))
-			this.Tags.Add(this.Region.Name.RawString);
+		if (!string.IsNullOrEmpty(this.Zone))
+			this.Tags.Add(this.Zone);
+
+		if (!string.IsNullOrEmpty(this.Region))
+			this.Tags.Add(this.Region);
 
 		WeatherRate? weatherRate = parser.ReadRowReference<byte, WeatherRate>(12);
 
@@ -77,7 +80,7 @@ public class Territory : LibraryExcelRow
 		result |= SearchUtility.Matches(this.Background, query);
 
 		if (this.Place != null)
-			result |= SearchUtility.Matches(this.Place.Name.RawString, query);
+			result |= SearchUtility.Matches(this.Place, query);
 
 		return result;
 	}
