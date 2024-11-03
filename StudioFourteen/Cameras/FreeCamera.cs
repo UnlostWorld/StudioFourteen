@@ -133,8 +133,10 @@ public partial class FreeCamera : StudioCameraBase
 	{
 		base.OnMouseDrag(delta, button);
 
-		Quaternion x = Quaternion.CreateFromYawPitchRoll(delta.X * QuaternionExtensions.Deg2Rad, 0, 0);
-		Quaternion y = Quaternion.CreateFromYawPitchRoll(0, 0, delta.Y * QuaternionExtensions.Deg2Rad);
+		delta /= 8;
+
+		Quaternion x = Quaternion.CreateFromYawPitchRoll(-delta.X * QuaternionExtensions.Deg2Rad, 0, 0);
+		Quaternion y = Quaternion.CreateFromYawPitchRoll(0, 0, -delta.Y * QuaternionExtensions.Deg2Rad);
 		this.Rotation = Quaternion.Multiply(x, this.Rotation);
 		this.Rotation = Quaternion.Multiply(this.Rotation, y);
 	}

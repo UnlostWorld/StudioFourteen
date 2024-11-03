@@ -23,7 +23,7 @@ public class PanelService : ServiceBase
 
 	public IEnumerable<Panel> OpenPanels => this.openPanels;
 
-	public Panel? ActivePanel { get; set; }
+	public object? ActivePanel { get; set; }
 
 	public override Task Initialize()
 	{

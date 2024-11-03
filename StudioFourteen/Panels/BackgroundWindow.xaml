@@ -74,6 +74,7 @@
 	<Grid x:Name="ContentArea">
 		<Grid
 			Background="Transparent"
+			Focusable="False"
 			Visibility="{Binding Services.Studio.IsOpen, Converter={StaticResource B2V}}">
 			<Grid.Effect>
 				<effects:WindowMaskEffect />

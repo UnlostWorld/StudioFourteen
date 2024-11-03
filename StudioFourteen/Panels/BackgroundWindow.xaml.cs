@@ -1,16 +1,13 @@
 ﻿namespace StudioFourteen.Studio;
 
-using ImGuiNET;
-using StudioFourteen.Mvm;
 using StudioFourteen.Panels;
-using StudioFourteen.Services;
 using StudioFourteen.Settings;
 using StudioFourteen.Utilities;
+using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Windows.Media;
 
 public partial class BackgroundWindow : PanelWindow
 {
@@ -34,12 +31,28 @@ public partial class BackgroundWindow : PanelWindow
 	{
 		base.OnOpened();
 		this.UpdatePosition();
-		XivWindow.Activate();
 
 		Thickness margin = this.StudioButton.Margin;
 		margin.Left = this.StudioButtonPosition.X;
 		margin.Top = this.StudioButtonPosition.Y;
 		this.StudioButton.Margin = margin;
+	}
+
+	protected override void OnActivated(EventArgs e)
+	{
+		base.OnActivated(e);
+
+		this.Services.Panels.ActivePanel = this;
+	}
+
+	protected override void OnDeactivated(EventArgs e)
+	{
+		base.OnDeactivated(e);
+
+		if (this.Services.Panels.ActivePanel == this)
+		{
+			this.Services.Panels.ActivePanel = null;
+		}
 	}
 
 	private void UpdatePosition()
