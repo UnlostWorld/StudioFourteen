@@ -43,17 +43,13 @@
 
 	<ItemGroup>
 		<Resource Include="Assets\*.*" />
+		<Resource Include="Effects\bin\*.ps" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<EmbeddedResource Include="Data\Documents\*.*" />
 	</ItemGroup>
 
-	<ItemGroup>
-	  <None Remove="Assets\LegacyTattoo.png" />
-	  <None Remove="data\documents\ExpressionBlends.json" />
-	  <None Remove="Data\Documents\SkeletonViews.json" />
-	</ItemGroup>
 
 	<ItemGroup>
 	  <Content Include="Assets\icon.ico" />
@@ -148,6 +144,10 @@
 			<Analyzer Remove="@(Analyzer)" />
 			<Analyzer Include="@(FilteredAnalyzer)" />
 		</ItemGroup>
+	</Target>
+
+	<Target Name="EffectCompile" BeforeTargets="CoreCompile">
+		<Exec Command="&quot;$(MSBuildProgramFiles32)\Windows Kits\10\bin\10.0.26100.0\x64\fxc.exe&quot; /T ps_3_0 /Fo Effects/bin/WindowMask.ps Effects/WindowMask.fx" />
 	</Target>
 
 </Project>

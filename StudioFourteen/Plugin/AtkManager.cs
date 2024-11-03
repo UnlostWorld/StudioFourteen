@@ -19,7 +19,7 @@ public static class AtkManager
 		return focusedUnits != 0;
 	}
 
-	public static unsafe AtkUnitList? GetWindows()
+	public static unsafe AtkUnitList? GetAllLoadedUnits()
 	{
 		AtkStage* atkStage = AtkStage.Instance();
 		if (atkStage == null)
