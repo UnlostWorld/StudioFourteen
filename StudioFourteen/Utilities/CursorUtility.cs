@@ -11,8 +11,6 @@ public static class CursorUtility
 			return;
 
 		cursorVisible = visible;
-
-		Logging.Shared.Information($">> {visible}");
 		ShowCursor(visible);
 	}
 
