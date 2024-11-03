@@ -129,11 +129,9 @@ public class CameraService : ServiceBase
 		// Restore camera settings
 		if (camera != null && this.InitialCamera != null && this.Services.GroupPose.IsGroupPosing)
 		{
-			camera->Angle = this.InitialCamera.Value.Angle;
 			camera->FoV = this.InitialCamera.Value.FoV;
 			camera->Pan = this.InitialCamera.Value.Pan;
 			camera->Rotation = this.InitialCamera.Value.Rotation;
-			camera->Camera.Distance = this.InitialCamera.Value.Camera.Distance;
 		}
 
 		this.sceneCameraUpdateHook?.Dispose();

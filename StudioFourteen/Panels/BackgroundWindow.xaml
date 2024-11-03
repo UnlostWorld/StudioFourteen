@@ -79,6 +79,14 @@
 				<effects:WindowMaskEffect />
 			</Grid.Effect>
 
+			<Rectangle
+				Fill="#01000000"
+				MouseDown="OnMouseDown"
+				MouseEnter="OnMouseEnter"
+				MouseLeave="OnMouseLeave"
+				MouseMove="OnMouseMove"
+				MouseUp="OnMouseUp" />
+
 			<overlays:OverlayRenderer ClipToBounds="True" />
 		</Grid>
 

@@ -7,19 +7,29 @@ using Dalamud.Game.ClientState.Keys;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs;
 using FFXIVClientStructs.FFXIV.Client.UI;
+using ImGuiNET;
 using StudioFourteen.Plugin;
 using StudioFourteen.Services;
 using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
+using System.Runtime.InteropServices;
 using System.Windows.Input;
 
 public class InputService : ServiceBase
 {
 	private readonly HashSet<KeyBindEvents> eventsDown = new();
 	private readonly Dictionary<KeyBindEvents, List<Action>> listeners = new();
+	private readonly Dictionary<MouseButton, bool> mouseButtons = new();
+
+	public delegate void MouseDragDelegate(Vector2 delta, MouseButton button);
+
+	public event MouseDragDelegate? MouseDrag;
 
 	public bool IsTextInputActive { get; private set; }
+
+	public Vector2 MousePosition { get; private set; }
 
 	public Dictionary<KeyBindEvents, KeyBind> DefaultKeys { get; init; } = new()
 	{
@@ -130,6 +140,64 @@ public class InputService : ServiceBase
 		}
 
 		return false;
+	}
+
+	public bool IsMouseDown(MouseButton button)
+	{
+		if (this.mouseButtons.TryGetValue(button, out bool value))
+			return value;
+
+		return false;
+	}
+
+	public void HandleMouse(MouseButtonEventArgs e, bool down)
+	{
+		ImGui.GetIO().AddMouseButtonEvent((int)e.ChangedButton, down);
+
+		if (!this.mouseButtons.ContainsKey(e.ChangedButton))
+			this.mouseButtons.Add(e.ChangedButton, down);
+
+		this.mouseButtons[e.ChangedButton] = down;
+
+		if (!down)
+		{
+			CursorUtility.SetCursorVisible(true);
+		}
+	}
+
+	public void HandleMouseMove(Vector2 newPos)
+	{
+		Vector2 delta = newPos - this.MousePosition;
+
+		bool holdPosition = false;
+		foreach ((MouseButton button, bool state) in this.mouseButtons)
+		{
+			if (state)
+			{
+				holdPosition = true;
+				this.MouseDrag?.Invoke(delta, button);
+				XivWindow.SetCursorPos(new(this.MousePosition.X, this.MousePosition.Y));
+			}
+		}
+
+		if (holdPosition)
+		{
+			CursorUtility.SetCursorVisible(false);
+		}
+		else
+		{
+			this.MousePosition = newPos;
+		}
+	}
+
+	public void HandleMouseLeave()
+	{
+		foreach((MouseButton button, bool state) in this.mouseButtons)
+		{
+			this.mouseButtons[button] = false;
+		}
+
+		CursorUtility.SetCursorVisible(true);
 	}
 
 	protected override unsafe void OnFrameworkUpdate(IFramework framework)

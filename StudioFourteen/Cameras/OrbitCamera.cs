@@ -7,6 +7,7 @@ using StudioFourteen.Overlays;
 using StudioFourteen.Structs.Extensions;
 using System;
 using System.Numerics;
+using System.Windows.Input;
 
 public partial class OrbitCamera : StudioCameraBase
 {
@@ -97,6 +98,8 @@ public partial class OrbitCamera : StudioCameraBase
 
 	public override void Tick(float deltaTime)
 	{
+		base.Tick(deltaTime);
+
 		this.desiredMove *= deltaTime;
 		this.Target += this.desiredMove;
 		this.desiredMove = Vector3.Zero;
@@ -172,13 +175,13 @@ public partial class OrbitCamera : StudioCameraBase
 		return Quaternion.Multiply(lookAtRot, this.Rotation);
 	}
 
-	protected override void OnMouseDrag(Vector2 delta)
+	protected override void OnMouseDrag(Vector2 delta, MouseButton button)
 	{
-		base.OnMouseDrag(delta);
+		base.OnMouseDrag(delta, button);
 
 		Vector2 angle = this.Angle;
-		angle.X += delta.X;
-		angle.Y += delta.Y;
+		angle.X -= delta.X / 8;
+		angle.Y -= delta.Y / 8;
 		this.Angle = angle;
 	}
 

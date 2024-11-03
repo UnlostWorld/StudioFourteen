@@ -171,6 +171,19 @@ public static class XivWindow
 		}
 	}
 
+	public static void SetCursorPos(Point pos)
+	{
+		if (XivWindow.Hwnd == null)
+			return;
+
+		Win32Point p = default;
+		p.X = (uint)pos.X;
+		p.Y = (uint)pos.Y;
+		ClientToScreen(XivWindow.Hwnd.Value, ref p);
+
+		SetCursorPos((int)p.X, (int)p.Y);
+	}
+
 	public static Point? GetCursorPos()
 	{
 		if (XivWindow.Hwnd == null)
@@ -231,7 +244,13 @@ public static class XivWindow
 	private static extern bool GetCursorPos(ref Win32Point lpPoint);
 
 	[DllImport("user32.dll", SetLastError = true)]
+	private static extern bool SetCursorPos(int x, int y);
+
+	[DllImport("user32.dll", SetLastError = true)]
 	private static extern bool ScreenToClient(IntPtr hWnd, ref Win32Point lpPoint);
+
+	[DllImport("user32.dll", SetLastError = true)]
+	private static extern bool ClientToScreen(IntPtr hWnd, ref Win32Point lpPoint);
 
 	[DllImport("user32.dll")]
 	private static extern IntPtr WindowFromPoint(Win32Point lpPoint);

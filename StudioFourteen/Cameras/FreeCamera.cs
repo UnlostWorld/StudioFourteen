@@ -6,6 +6,7 @@ using StudioFourteen.Input;
 using StudioFourteen.Structs.Extensions;
 using System;
 using System.Numerics;
+using System.Windows.Input;
 
 public partial class FreeCamera : StudioCameraBase
 {
@@ -128,9 +129,9 @@ public partial class FreeCamera : StudioCameraBase
 		}
 	}
 
-	protected override void OnMouseDrag(Vector2 delta)
+	protected override void OnMouseDrag(Vector2 delta, MouseButton button)
 	{
-		base.OnMouseDrag(delta);
+		base.OnMouseDrag(delta, button);
 
 		Quaternion x = Quaternion.CreateFromYawPitchRoll(delta.X * QuaternionExtensions.Deg2Rad, 0, 0);
 		Quaternion y = Quaternion.CreateFromYawPitchRoll(0, 0, delta.Y * QuaternionExtensions.Deg2Rad);

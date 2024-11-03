@@ -4,7 +4,6 @@ using Dalamud.Plugin.Services;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Mvm;
 using StudioFourteen.Overlays;
-using StudioFourteen.Structs.Extensions;
 using System;
 using System.Numerics;
 using System.Windows.Input;
@@ -15,8 +14,6 @@ public abstract partial class StudioCameraBase : ViewModel, IDisposable
 	private const float DefaultCameraDistance = 3;
 
 	private readonly CameraWireframeOverlay cameraOverlay = new("Cameras", "Camera");
-	private Vector2 lastGroupPoseCameraAngle;
-	private int updateDelay = -1;
 
 	[Notify] private string name = "Default";
 	[Notify] private float fieldOfView;
@@ -57,69 +54,13 @@ public abstract partial class StudioCameraBase : ViewModel, IDisposable
 
 	public unsafe virtual void UpdateGroupPoseCamera(GroupPoseCamera* camera)
 	{
-		// a small wait for the angle and distance deltas to stabilize
-		// after entering gpose or activating studio.
-		bool isReady = this.updateDelay == 0;
-
-		if (!isReady)
-			this.updateDelay--;
-
 		this.GroupPoseFovAdjust = camera->FoV * 100;
-
-		// a huge hack, but to get dragging the game window to move the cameras
-		// we can use the camera angle values as a cheap input delta, since we don't
-		// use them for the camera itself.
-		// NOTE: Setting the camera angle back to 0 fails if the user has _just_ released
-		// their mouse, causing the drag delta to keep going forever, however...
-		// Using the delta from the last known angle will get stuck when the angle _would_ have
-		// rotated the camera over the players head, and we want the drag to keep working after that point.
-		// so... do both?
-		Vector2 angleDelta = camera->Angle - this.lastGroupPoseCameraAngle;
-
-		// Ensure the angle value has actually changed, and isn't just stuck
-		// at some tiny value because the user released their mouse.
-		if (Math.Abs(angleDelta.X) > 0.001 || Math.Abs(angleDelta.Y) > 0.001)
-		{
-			Vector2 dragDelta = camera->Angle;
-			dragDelta *= QuaternionExtensions.Rad2Deg;
-
-			// NOTE: should this be input service bindings? :think:
-			if (Keyboard.IsKeyDown(Key.LeftShift))
-				dragDelta *= 10;
-
-			if (Keyboard.IsKeyDown(Key.LeftCtrl))
-				dragDelta /= 10;
-
-			if (isReady)
-				this.OnMouseDrag(dragDelta);
-
-			this.lastGroupPoseCameraAngle = camera->Angle;
-		}
-
-		// Set the angle back to zero so next frame we have clean uncapped rotation data.
-		// but only if the user is still dragging.
-		camera->Angle = Vector2.Zero;
-
-		// Same for scroll wheel
-		float scrollDelta = camera->Camera.Distance - DefaultCameraDistance;
-
-		// NOTE: should this be input service bindings? :think:
-		if (Keyboard.IsKeyDown(Key.LeftShift))
-			scrollDelta *= 10;
-
-		if (Keyboard.IsKeyDown(Key.LeftCtrl))
-			scrollDelta /= 10;
-
-		if (isReady)
-			this.OnMouseScroll(scrollDelta);
-
-		camera->Camera.Distance = DefaultCameraDistance;
 	}
 
 	public virtual void Activate()
 	{
-		this.updateDelay = 10;
 		this.cameraOverlay.Disable();
+		this.Services.Input.MouseDrag += this.OnMouseDrag;
 	}
 
 	public virtual void OnFrameworkUpdate(IFramework framework)
@@ -134,8 +75,8 @@ public abstract partial class StudioCameraBase : ViewModel, IDisposable
 
 	public virtual void Deactivate()
 	{
-		this.updateDelay = -1;
 		this.cameraOverlay.Enable();
+		this.Services.Input.MouseDrag -= this.OnMouseDrag;
 	}
 
 	public void Dispose()
@@ -143,7 +84,7 @@ public abstract partial class StudioCameraBase : ViewModel, IDisposable
 		this.cameraOverlay.Disable();
 	}
 
-	protected virtual void OnMouseDrag(Vector2 delta)
+	protected virtual void OnMouseDrag(Vector2 delta, MouseButton button)
 	{
 	}
 

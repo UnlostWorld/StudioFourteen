@@ -1,5 +1,6 @@
 ﻿namespace StudioFourteen.Studio;
 
+using ImGuiNET;
 using StudioFourteen.Mvm;
 using StudioFourteen.Panels;
 using StudioFourteen.Services;
@@ -8,6 +9,7 @@ using StudioFourteen.Utilities;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Media;
 
 public partial class BackgroundWindow : PanelWindow
@@ -65,5 +67,30 @@ public partial class BackgroundWindow : PanelWindow
 
 		Point pos = new(margin.Left, margin.Top);
 		this.StudioButtonPosition = pos;
+	}
+
+	private void OnMouseDown(object sender, MouseButtonEventArgs e)
+	{
+		this.Services.Input.HandleMouse(e, true);
+	}
+
+	private void OnMouseUp(object sender, MouseButtonEventArgs e)
+	{
+		this.Services.Input.HandleMouse(e, false);
+	}
+
+	private void OnMouseMove(object sender, MouseEventArgs e)
+	{
+		Point mousePos = e.GetPosition(this);
+		this.Services.Input.HandleMouseMove(new((float)mousePos.X, (float)mousePos.Y));
+	}
+
+	private void OnMouseEnter(object sender, MouseEventArgs e)
+	{
+	}
+
+	private void OnMouseLeave(object sender, MouseEventArgs e)
+	{
+		this.Services.Input.HandleMouseLeave();
 	}
 }
