@@ -39,11 +39,7 @@
 
 		<Grid
 			Grid.Column="0"
-			Margin="0,0,2,0">
-
-			<Rectangle
-				Fill="Transparent"
-				MouseDown="OnBackgroundMouseDown" />
+			Margin="1,0,2,1">
 
 			<TabControl
 				x:Name="GuiTabs"
@@ -89,6 +85,12 @@
 							<RowDefinition />
 							<RowDefinition />
 						</Grid.RowDefinitions>
+
+						<Rectangle
+							Grid.RowSpan="3"
+							Grid.ColumnSpan="3"
+							Fill="Transparent"
+							MouseDown="OnBackgroundMouseDown" />
 
 						<pose:SkeletonView
 							x:Name="BodyView"
@@ -157,6 +159,11 @@
 							<RowDefinition Height="Auto" />
 						</Grid.RowDefinitions>
 
+						<Rectangle
+							Grid.RowSpan="3"
+							Fill="Transparent"
+							MouseDown="OnBackgroundMouseDown" />
+
 						<pose:SkeletonView
 							x:Name="HandsView"
 							Grid.Row="0"
@@ -186,6 +193,7 @@
 					</TabItem.Visibility>
 
 					<TabControl
+						Margin="-3"
 						Padding="0"
 						SelectedIndex="{Binding SelectedFaceTab}">
 
@@ -244,11 +252,7 @@
 			</TabControl>
 		</Grid>
 
-		<Border
-			Grid.Column="1"
-			Style="{DynamicResource WpfUtilsGroupBorder}">
-
-
+		<Border Grid.Column="1">
 			<Grid Grid.Column="1">
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
@@ -354,6 +358,7 @@
 							Background="Transparent"
 							IsChecked="{Binding Selection.LockTransform, FallbackValue=false}"
 							IsEnabled="{Binding Selection.CanLockTransform, FallbackValue=false}"
+							Style="{DynamicResource WpfUtilsIconToggleButton}"
 							ToolTip="{DynamicResource LOC_Pose_LockTransform}">
 							<wpfUtils:IconBlock
 								Icon="CirclePause"
@@ -408,6 +413,7 @@
 						Width="100"
 						Background="Transparent"
 						IsChecked="{Binding FlipSides}"
+						Style="{DynamicResource WpfUtilsIconToggleButton}"
 						ToolTip="{DynamicResource LOC_Pose_FlipSides}">
 						<TextBlock Text="Flip UI" />
 					</ToggleButton>

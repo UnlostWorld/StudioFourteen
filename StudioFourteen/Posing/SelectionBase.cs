@@ -2,9 +2,10 @@
 
 using Dalamud.Plugin.Services;
 using StudioFourteen.Mvm;
+using System;
 using System.Numerics;
 
-public abstract class SelectionBase : AutoViewModel
+public abstract class SelectionBase : AutoViewModel, IEquatable<SelectionBase>
 {
 	[AutoNotify] public abstract string Name { get; }
 	[AutoNotify] public abstract string? Subtitle { get; }
@@ -27,6 +28,11 @@ public abstract class SelectionBase : AutoViewModel
 
 	public virtual void OnFrameworkUpdate(IFramework framework)
 	{
+	}
+
+	public virtual bool Equals(SelectionBase? other)
+	{
+		return this == other;
 	}
 }
 

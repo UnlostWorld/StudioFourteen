@@ -65,11 +65,14 @@ public partial class SkeletonView : Canvas
 	{
 		foreach(BoneButton button in this.boneButtons)
 		{
-			foreach(BoneId buttonBoneId in button.Selection.BoneIds)
+			if (button.Selection is BoneSelection boneSelection)
 			{
-				if (buttonBoneId == boneId)
+				foreach (BoneId buttonBoneId in boneSelection.BoneIds)
 				{
-					return button;
+					if (buttonBoneId == boneId)
+					{
+						return button;
+					}
 				}
 			}
 		}
@@ -176,7 +179,7 @@ public partial class SkeletonView : Canvas
 	{
 		await Threads.FrameworkThread();
 
-		List<BoneSelection> selections = new();
+		List<SelectionBase> selections = new();
 
 		try
 		{
@@ -192,6 +195,12 @@ public partial class SkeletonView : Canvas
 				// populate bones
 				foreach ((string name, Point pos) in definition.Bones)
 				{
+					if (name == "character")
+					{
+						selections.Add(new GameObjectSelection(objectTableIndex));
+						continue;
+					}
+
 					BoneSelection? selection = ServiceManager.Instance.Pose.FindBone(character, name);
 					if (selection != null)
 						selections.Add(selection);
@@ -225,29 +234,35 @@ public partial class SkeletonView : Canvas
 			else
 			{
 				Dictionary<BoneId, BoneButton> buttonLookup = new();
-				foreach (BoneSelection selection in selections)
+				foreach (SelectionBase selection in selections)
 				{
 					BoneButton button = new(selection, this);
 					this.boneButtons.Add(button);
 
-					foreach (BoneId boneId in selection.BoneIds)
+					if (selection is BoneSelection boneSelection)
 					{
-						if (!buttonLookup.ContainsKey(boneId))
+						foreach (BoneId boneId in boneSelection.BoneIds)
 						{
-							buttonLookup.Add(boneId, button);
+							if (!buttonLookup.ContainsKey(boneId))
+							{
+								buttonLookup.Add(boneId, button);
+							}
 						}
 					}
 				}
 
 				foreach(BoneButton button in this.boneButtons)
 				{
-					foreach (BoneId parentBoneId in button.Selection.ParentBoneIds)
+					if (button.Selection is BoneSelection boneSelection)
 					{
-						BoneButton? parentButton;
-						if (buttonLookup.TryGetValue(parentBoneId, out parentButton))
+						foreach (BoneId parentBoneId in boneSelection.ParentBoneIds)
 						{
-							BoneConnection connection = new(button, parentButton, this);
-							this.boneConnections.Add(connection);
+							BoneButton? parentButton;
+							if (buttonLookup.TryGetValue(parentBoneId, out parentButton))
+							{
+								BoneConnection connection = new(button, parentButton, this);
+								this.boneConnections.Add(connection);
+							}
 						}
 					}
 				}
@@ -298,7 +313,14 @@ public partial class SkeletonView : Canvas
 
 		foreach (BoneButton link in this.boneButtons)
 		{
-			link.Position = this.GetPosition(link.Selection.BoneName);
+			if (link.Selection is BoneSelection boneSelection)
+			{
+				link.Position = this.GetPosition(boneSelection.BoneName);
+			}
+			else if (link.Selection is GameObjectSelection objectSelection)
+			{
+				link.Position = this.GetPosition("character");
+			}
 		}
 
 		foreach(BoneConnection connection in this.boneConnections)
@@ -444,7 +466,7 @@ public partial class SkeletonView : Canvas
 			{
 				foreach (var link in this.boneButtons)
 				{
-					link.IsSelected = link.Selection == selection;
+					link.IsSelected = link.Selection.Equals(selection);
 				}
 			});
 		}
@@ -455,7 +477,7 @@ public partial class SkeletonView : Canvas
 		public const double Radius = 7;
 		public const double InnerRadius = 3;
 
-		public readonly BoneSelection Selection;
+		public readonly SelectionBase Selection;
 
 		private readonly Ellipse outer;
 		private readonly Ellipse inner;
@@ -464,7 +486,7 @@ public partial class SkeletonView : Canvas
 		private bool isMouseHover = false;
 		private bool isSelected = false;
 
-		public BoneButton(BoneSelection selection, Canvas parent)
+		public BoneButton(SelectionBase selection, Canvas parent)
 		{
 			this.Selection = selection;
 

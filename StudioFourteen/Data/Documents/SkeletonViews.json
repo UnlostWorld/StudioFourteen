@@ -25,7 +25,9 @@
 			"j_asi_b_l": "100, 330",
 			"j_asi_c_l": "96, 353",
 			"j_asi_d_l": "90, 470",
-			"j_asi_e_l": "83, 490"
+			"j_asi_e_l": "83, 490",
+
+			"character": "128, 490"
 		}
 	},
 
@@ -54,7 +56,9 @@
 			"j_buki_sebo_l": "115, 120",
 			"n_hizasoubi_l": "95, 350",
 			"n_hijisoubi_l": "67, 180",
-			"n_buki_tate_l": "55, 220"
+			"n_buki_tate_l": "55, 220",
+
+			"character": "130, 490"
 		}
 	},
 

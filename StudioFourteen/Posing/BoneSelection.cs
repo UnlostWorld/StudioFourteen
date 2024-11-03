@@ -219,6 +219,25 @@ public class BoneSelection : TransformSelectionBase
 		}
 	}
 
+	public override bool Equals(SelectionBase? other)
+	{
+		if (other is not BoneSelection otherBone)
+			return false;
+
+		if (this.boneIds.Count != otherBone.boneIds.Count)
+			return false;
+
+		foreach(BoneId id in this.boneIds)
+		{
+			if (!otherBone.boneIds.Contains(id))
+			{
+				return false;
+			}
+		}
+
+		return true;
+	}
+
 	private void ApplyWorldRotation(Quaternion worldSpaceRotation)
 	{
 		if (this.bone == null || this.bone.ModelSpaceTransform == null || this.bone.LocalSpaceTransform == null)

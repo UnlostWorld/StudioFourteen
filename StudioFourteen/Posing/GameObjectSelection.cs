@@ -9,7 +9,7 @@ using System.Numerics;
 
 public class GameObjectSelection : TransformSelectionBase
 {
-	private readonly ushort objectTableId;
+	private readonly int objectTableId;
 	private string? name;
 	private bool isReady = false;
 
@@ -22,7 +22,7 @@ public class GameObjectSelection : TransformSelectionBase
 	private Vector3 lastScale;
 	private Vector3 nextScale;
 
-	public GameObjectSelection(ushort objectTableId)
+	public GameObjectSelection(int objectTableId)
 	{
 		this.objectTableId = objectTableId;
 	}
@@ -112,6 +112,14 @@ public class GameObjectSelection : TransformSelectionBase
 		this.lastRotation = gameObject->DrawObject->Rotation;
 		this.lastScale = gameObject->DrawObject->Scale;
 		this.isReady = true;
+	}
+
+	public override bool Equals(SelectionBase? other)
+	{
+		if (other is not GameObjectSelection otherGameObject)
+			return false;
+
+		return this.objectTableId == otherGameObject.objectTableId;
 	}
 
 	public override void Reset()

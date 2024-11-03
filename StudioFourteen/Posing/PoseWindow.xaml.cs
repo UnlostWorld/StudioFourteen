@@ -1,6 +1,7 @@
 ﻿namespace StudioFourteen.Posing;
 
 using StudioFourteen.Files;
+using StudioFourteen.Library;
 using StudioFourteen.Mvm;
 using StudioFourteen.Panels;
 using System;
@@ -90,6 +91,7 @@ public partial class PoseWindow : CharacterPanelBase
 
 	private void OnImportClicked(object sender, RoutedEventArgs e)
 	{
+		LibraryWindow.Open(LibraryWindow.PosesTab);
 	}
 
 	private async void OnExportClicked(object sender, RoutedEventArgs e)
