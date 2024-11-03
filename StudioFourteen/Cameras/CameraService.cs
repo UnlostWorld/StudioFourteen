@@ -95,7 +95,7 @@ public class CameraService : ServiceBase
 
 	public override Task Start()
 	{
-		this.Cameras.Add(new FreeCamera());
+		this.Cameras.Add(new OrbitTargetCamera());
 
 		return base.Start();
 	}
