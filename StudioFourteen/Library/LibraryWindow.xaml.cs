@@ -27,6 +27,12 @@ using Panel = StudioFourteen.Panels.Panel;
 
 public partial class LibraryWindow : Panel
 {
+	public static LibraryTab AllTab = new("All", IconChar.List);
+	public static LibraryTab FavoritesTab = new("Favorites", IconChar.Heart, new LibraryFavoritesFilter());
+	public static LibraryTab AppearancesTab = new("Appearances", IconChar.UserShield);
+	public static LibraryTab PosesTab = new("Poses", IconChar.PersonRunning);
+	public static LibraryTab ScenesTab = new("scenes", IconChar.Users);
+
 	private readonly FuncQueue searchQueue;
 	private readonly Stopwatch searchStopwatch = new();
 	private bool flatten = false;
@@ -61,11 +67,11 @@ public partial class LibraryWindow : Panel
 
 	public List<LibraryTab> Tabs { get; init; } = new()
 	{
-		new LibraryTab("All", IconChar.List),
-		new LibraryTab("Favorites", IconChar.Heart, new LibraryFavoritesFilter()),
-		new LibraryTab("Appearances", IconChar.UserShield),
-		new LibraryTab("Poses", IconChar.PersonRunning),
-		new LibraryTab("scenes", IconChar.Users),
+		AllTab,
+		FavoritesTab,
+		AppearancesTab,
+		PosesTab,
+		ScenesTab,
 	};
 
 	public FastObservableCollection<Result> Results { get; init; } = new();
@@ -126,12 +132,12 @@ public partial class LibraryWindow : Panel
 		}
 	}
 
-	public static void Open()
+	public static void Open(LibraryTab? tab = null)
 	{
-		OpenAsync().Run();
+		OpenAsync(tab).Run();
 	}
 
-	public static async Task OpenAsync()
+	public static async Task OpenAsync(LibraryTab? tab = null)
 	{
 		LibraryWindow? panel = ServiceManager.Instance.Panels.Get<LibraryWindow>();
 		if (panel == null)
@@ -140,7 +146,10 @@ public partial class LibraryWindow : Panel
 		if (panel == null)
 			return;
 
-		////await panel.Dispatcher.InvokeAsync(() => panel.CurrentTab = panel.Tabs[(int)tab]);
+		if (tab != null)
+		{
+			await panel.Dispatcher.InvokeAsync(() => panel.CurrentTab = tab);
+		}
 	}
 
 	protected override void OnOpened()
