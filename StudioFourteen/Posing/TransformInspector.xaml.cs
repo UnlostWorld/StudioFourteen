@@ -4,9 +4,7 @@ using DependencyPropertyGenerator;
 using StudioFourteen.Mvm;
 using StudioFourteen.Settings;
 using StudioFourteen.Structs.Extensions;
-using System;
 using System.Numerics;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -16,10 +14,6 @@ public partial class TransformInspector : View
 {
 	private Vector3? trackingEuler;
 	private Quaternion lastWorldRotation = Quaternion.Identity;
-
-	private Slider? rotationSliderX;
-	private Slider? rotationSliderY;
-	private Slider? rotationSliderZ;
 
 	[AutoNotify]
 	public int DecimalPlacesDisplay => this.Selection?.DecimalPlacesToDisplay ?? 2;
@@ -60,7 +54,11 @@ public partial class TransformInspector : View
 				this.Services.Pose.EditMode == PoseEditModes.Scale) ?? false;
 		}
 
-		set => this.Persistence?.SetPersistence(value, $"ExpandScaleSliders_{this.Services.Pose.EditMode}");
+		set
+		{
+			this.Log.Information($">> {this.Persistence}");
+			this.Persistence?.SetPersistence(value, $"ExpandScaleSliders_{this.Services.Pose.EditMode}");
+		}
 	}
 
 	[AutoNotify]
@@ -273,33 +271,6 @@ public partial class TransformInspector : View
 				return;
 
 			this.Selection.WorldScale = value;
-		}
-	}
-
-	public override void OnApplyTemplate()
-	{
-		base.OnApplyTemplate();
-
-		this.rotationSliderX = this.GetTemplateChild("PART_RotationSliderX") as Slider;
-		this.rotationSliderY = this.GetTemplateChild("PART_RotationSliderY") as Slider;
-		this.rotationSliderZ = this.GetTemplateChild("PART_RotationSliderZ") as Slider;
-
-		if (this.rotationSliderX != null)
-		{
-			this.rotationSliderX.PreviewMouseDown += this.OnEulerDown;
-			this.rotationSliderX.PreviewMouseUp += this.OnEulerUp;
-		}
-
-		if (this.rotationSliderY != null)
-		{
-			this.rotationSliderY.PreviewMouseDown += this.OnEulerDown;
-			this.rotationSliderY.PreviewMouseUp += this.OnEulerUp;
-		}
-
-		if (this.rotationSliderZ != null)
-		{
-			this.rotationSliderZ.PreviewMouseDown += this.OnEulerDown;
-			this.rotationSliderZ.PreviewMouseUp += this.OnEulerUp;
 		}
 	}
 

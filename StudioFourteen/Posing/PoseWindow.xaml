@@ -374,10 +374,6 @@
 					PanningMode="VerticalOnly">
 					<Grid>
 
-						<Grid.Resources>
-							<ResourceDictionary Source=".\TransformInspector.xaml" />
-						</Grid.Resources>
-
 						<!--  TODO: Dynamic inspectors?  -->
 						<pose:TransformInspector
 							Persistence="{Binding Persistence}"

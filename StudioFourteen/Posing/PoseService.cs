@@ -57,10 +57,12 @@ public class PoseService : ServiceBase
 	private PoseEditModes editMode = PoseEditModes.Rotation;
 
 	public delegate void SelectionChangedDelegate(SelectionBase? newSelection);
+	public delegate void EditModeChangedDelegate(PoseEditModes newMode);
 	private delegate nint UpdateBonePhysicsDelegate(nint a1);
 	private delegate void FinalizeSkeletonsDelegate(nint a1);
 
 	public event SelectionChangedDelegate? SelectionChanged;
+	public event EditModeChangedDelegate? EditModeChanged;
 
 	public SelectionBase? Selection
 	{
@@ -94,6 +96,7 @@ public class PoseService : ServiceBase
 		{
 			this.editMode = value;
 			this.RaisePropertyChanged();
+			this.EditModeChanged?.Invoke(value);
 		}
 	}
 
