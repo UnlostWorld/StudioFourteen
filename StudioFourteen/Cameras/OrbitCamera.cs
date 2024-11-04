@@ -27,6 +27,8 @@ public partial class OrbitCamera : StudioCameraBase
 	private readonly KeyBindListener rollLeftListener = new(KeyBindEvents.OrbitCamera_RollLeft);
 	private readonly KeyBindListener rollRightListener = new(KeyBindEvents.OrbitCamera_RollRight);
 
+	private float actualDistance;
+
 	[Notify] private Vector3 target;
 	[Notify] private float distance;
 	[Notify] private Vector2 angle;
@@ -145,6 +147,8 @@ public partial class OrbitCamera : StudioCameraBase
 		this.desiredRot = Vector3.Zero;
 
 		this.targetPointOverlay.WorldPosition = this.Target;
+
+		this.actualDistance = float.Lerp(this.actualDistance, this.distance, deltaTime * 8);
 	}
 
 	public unsafe override void UpdateGroupPoseCamera(GroupPoseCamera* camera)
@@ -160,7 +164,7 @@ public partial class OrbitCamera : StudioCameraBase
 		Vector3 targetPos = this.target;
 		Quaternion lookRot = this.GetLookRotation();
 		Quaternion rotation = this.Rotation;
-		float distance = this.distance;
+		float distance = this.actualDistance;
 
 		if (blend is OrbitCamera blendOrbit)
 		{
@@ -189,7 +193,7 @@ public partial class OrbitCamera : StudioCameraBase
 		Vector3 targetPos = this.target;
 		Quaternion rot = this.GetLookRotation();
 		Vector3 forward = Vector3.Transform(new(1, 0, 0), rot);
-		Vector3 position = targetPos + (forward * -this.distance);
+		Vector3 position = targetPos + (forward * -this.actualDistance);
 
 		return position;
 	}
@@ -212,18 +216,30 @@ public partial class OrbitCamera : StudioCameraBase
 	{
 		base.OnMouseDrag(delta, button);
 
+		if (Keyboard.IsKeyDown(Key.LeftShift))
+			delta *= 10;
+
+		if (Keyboard.IsKeyDown(Key.LeftCtrl))
+			delta /= 10;
+
 		Vector2 angle = this.Angle;
 		angle.X -= delta.X / 8;
 		angle.Y -= delta.Y / 8;
 		this.Angle = angle;
 	}
 
-	protected override void OnMouseScroll(float delta)
+	protected override void OnMouseWheel(float delta)
 	{
-		base.OnMouseScroll(delta);
+		base.OnMouseWheel(delta);
+
+		if (Keyboard.IsKeyDown(Key.LeftShift))
+			delta *= 10;
+
+		if (Keyboard.IsKeyDown(Key.LeftCtrl))
+			delta /= 10;
 
 		float d = this.distance;
-		d += delta;
-		this.Distance = Math.Max(d, 0);
+		d -= delta;
+		this.Distance = Math.Max(d, 0.1f);
 	}
 }

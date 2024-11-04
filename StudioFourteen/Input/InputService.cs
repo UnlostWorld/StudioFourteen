@@ -23,8 +23,10 @@ public class InputService : ServiceBase
 	private readonly KeyState xivKeyState = new();
 
 	public delegate void MouseDragDelegate(Vector2 delta, MouseButton button);
+	public delegate void MouseWheelDelegate(float delta);
 
 	public event MouseDragDelegate? MouseDrag;
+	public event MouseWheelDelegate? MouseWheel;
 
 	public enum States
 	{
@@ -123,27 +125,6 @@ public class InputService : ServiceBase
 		return bind;
 	}
 
-	/*public bool IsDown(KeyBindEvents evt)
-	{
-		if (!this.Settings.EnableKeyBinds)
-			return false;
-
-		if (!this.Services.Studio.IsOpen)
-			return false;
-
-		if (this.Services.Panels.ActivePanel == null && !XivWindow.IsActive())
-			return false;
-
-		if (this.IsTextInputActive)
-			return false;
-
-		KeyBind? bind = this.GetKeyBind(evt);
-		if (bind == null)
-			return false;
-
-		return this.GetState(bind);
-	}*/
-
 	public bool IsMouseDown(MouseButton button)
 	{
 		if (this.mouseButtons.TryGetValue(button, out States value))
@@ -197,6 +178,11 @@ public class InputService : ServiceBase
 		}
 
 		CursorUtility.SetCursorVisible(true);
+	}
+
+	public void HandleMouseWheel(float delta)
+	{
+		this.MouseWheel?.Invoke(delta);
 	}
 
 	public void HandleKey(Key key, bool down)

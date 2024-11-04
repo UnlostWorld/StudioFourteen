@@ -61,6 +61,7 @@ public abstract partial class StudioCameraBase : ViewModel, IDisposable
 	{
 		this.cameraOverlay.Disable();
 		this.Services.Input.MouseDrag += this.OnMouseDrag;
+		this.Services.Input.MouseWheel += this.OnMouseWheel;
 	}
 
 	public virtual void OnFrameworkUpdate(IFramework framework)
@@ -77,6 +78,7 @@ public abstract partial class StudioCameraBase : ViewModel, IDisposable
 	{
 		this.cameraOverlay.Enable();
 		this.Services.Input.MouseDrag -= this.OnMouseDrag;
+		this.Services.Input.MouseWheel -= this.OnMouseWheel;
 	}
 
 	public void Dispose()
@@ -88,7 +90,7 @@ public abstract partial class StudioCameraBase : ViewModel, IDisposable
 	{
 	}
 
-	protected virtual void OnMouseScroll(float delta)
+	protected virtual void OnMouseWheel(float delta)
 	{
 	}
 }

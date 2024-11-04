@@ -109,6 +109,7 @@ public partial class BackgroundWindow : PanelWindow
 
 	private void OnMouseWheel(object sender, MouseWheelEventArgs e)
 	{
+		this.Services.Input.HandleMouseWheel(e.Delta / 120.0f);
 	}
 
 	private void OnPreviewKeyDown(object sender, KeyEventArgs e)
