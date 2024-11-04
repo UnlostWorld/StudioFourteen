@@ -93,19 +93,6 @@ public partial class Navigation : View
 		set => this.Services.Panels.SetIsOpen<SaveWindow>(value);
 	}
 
-	protected override void OnLoaded()
-	{
-		base.OnLoaded();
-
-		this.Services.Input.AddListener(Input.KeyBindEvents.SaveAs, this.OnToggleSave);
-	}
-
-	protected override void OnUnloaded()
-	{
-		base.OnUnloaded();
-		this.Services.Input.AddListener(Input.KeyBindEvents.SaveAs, this.OnToggleSave);
-	}
-
 	private void OnStudioClicked(object sender, RoutedEventArgs e)
 	{
 		if (this.Services.Studio.IsOpen)
@@ -116,11 +103,6 @@ public partial class Navigation : View
 		{
 			this.Services.Studio.OpenStudio();
 		}
-	}
-
-	private void OnToggleSave()
-	{
-		this.IsSaveOpen = !this.IsSaveOpen;
 	}
 
 	private void OnDragDelta(object sender, DragDeltaEventArgs e)

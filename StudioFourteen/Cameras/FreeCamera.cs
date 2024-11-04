@@ -14,6 +14,19 @@ public partial class FreeCamera : StudioCameraBase
 	private const float MoveSpeed = 2.0f;
 	private const float MoveSpeedMaximum = 200.0f;
 
+	private readonly KeyBindListener moveForwardsListener = new(KeyBindEvents.FreeCamera_MoveForwards);
+	private readonly KeyBindListener moveBackListener = new(KeyBindEvents.FreeCamera_MoveBack);
+	private readonly KeyBindListener moveUpListener = new(KeyBindEvents.FreeCamera_MoveUp);
+	private readonly KeyBindListener moveDownListener = new(KeyBindEvents.FreeCamera_MoveDown);
+	private readonly KeyBindListener moveLeftListener = new(KeyBindEvents.FreeCamera_MoveLeft);
+	private readonly KeyBindListener moveRightListener = new(KeyBindEvents.FreeCamera_MoveRight);
+	private readonly KeyBindListener yawLeftListener = new(KeyBindEvents.FreeCamera_YawLeft);
+	private readonly KeyBindListener yawRightListener = new(KeyBindEvents.FreeCamera_YawRight);
+	private readonly KeyBindListener pitchUpListener = new(KeyBindEvents.FreeCamera_PitchUp);
+	private readonly KeyBindListener pitchDownListener = new(KeyBindEvents.FreeCamera_PitchDown);
+	private readonly KeyBindListener rollLeftListener = new(KeyBindEvents.FreeCamera_RollLeft);
+	private readonly KeyBindListener rollRightListener = new(KeyBindEvents.FreeCamera_RollRight);
+
 	[Notify] private Vector3 position;
 	[Notify] private Quaternion rotation;
 
@@ -31,50 +44,86 @@ public partial class FreeCamera : StudioCameraBase
 		this.Rotation = currentState.Rotation;
 	}
 
+	public override void Activate()
+	{
+		base.Activate();
+
+		this.moveForwardsListener.Enable();
+		this.moveBackListener.Enable();
+		this.moveUpListener.Enable();
+		this.moveDownListener.Enable();
+		this.moveLeftListener.Enable();
+		this.moveRightListener.Enable();
+		this.yawLeftListener.Enable();
+		this.yawRightListener.Enable();
+		this.pitchUpListener.Enable();
+		this.pitchDownListener.Enable();
+		this.rollLeftListener.Enable();
+		this.rollRightListener.Enable();
+	}
+
+	public override void Deactivate()
+	{
+		base.Deactivate();
+
+		this.moveForwardsListener.Disable();
+		this.moveBackListener.Disable();
+		this.moveUpListener.Disable();
+		this.moveDownListener.Disable();
+		this.moveLeftListener.Disable();
+		this.moveRightListener.Disable();
+		this.yawLeftListener.Disable();
+		this.yawRightListener.Disable();
+		this.pitchUpListener.Disable();
+		this.pitchDownListener.Disable();
+		this.rollLeftListener.Disable();
+		this.rollRightListener.Disable();
+	}
+
 	public override void OnFrameworkUpdate(IFramework framework)
 	{
 		base.OnFrameworkUpdate(framework);
 
 		Vector3 moveDir = Vector3.Zero;
 
-		if (this.Services.Input.IsDown(KeyBindEvents.FreeCamera_MoveForwards))
+		if (this.moveForwardsListener.IsDown())
 			moveDir.X += 1;
 
-		if (this.Services.Input.IsDown(KeyBindEvents.FreeCamera_MoveBack))
+		if (this.moveBackListener.IsDown())
 			moveDir.X -= 1;
 
-		if (this.Services.Input.IsDown(KeyBindEvents.FreeCamera_MoveLeft))
+		if (this.moveLeftListener.IsDown())
 			moveDir.Z -= 1;
 
-		if (this.Services.Input.IsDown(KeyBindEvents.FreeCamera_MoveRight))
+		if (this.moveRightListener.IsDown())
 			moveDir.Z += 1;
 
-		if (this.Services.Input.IsDown(KeyBindEvents.FreeCamera_MoveUp))
+		if (this.moveUpListener.IsDown())
 			moveDir.Y += 1;
 
-		if (this.Services.Input.IsDown(KeyBindEvents.FreeCamera_MoveDown))
+		if (this.moveDownListener.IsDown())
 			moveDir.Y -= 1;
 
 		this.desiredMove = moveDir;
 
 		Vector3 rot = Vector3.Zero;
 
-		if (this.Services.Input.IsDown(KeyBindEvents.FreeCamera_YawLeft))
+		if (this.yawLeftListener.IsDown())
 			rot.X += 1;
 
-		if (this.Services.Input.IsDown(KeyBindEvents.FreeCamera_YawRight))
+		if (this.yawRightListener.IsDown())
 			rot.X -= 1;
 
-		if (this.Services.Input.IsDown(KeyBindEvents.FreeCamera_PitchUp))
+		if (this.pitchUpListener.IsDown())
 			rot.Y += 1;
 
-		if (this.Services.Input.IsDown(KeyBindEvents.FreeCamera_PitchDown))
+		if (this.pitchDownListener.IsDown())
 			rot.Y -= 1;
 
-		if (this.Services.Input.IsDown(KeyBindEvents.FreeCamera_RollLeft))
+		if (this.rollLeftListener.IsDown())
 			rot.Z -= 1;
 
-		if (this.Services.Input.IsDown(KeyBindEvents.FreeCamera_RollRight))
+		if (this.rollRightListener.IsDown())
 			rot.Z += 1;
 
 		this.desiredRot = rot;

@@ -16,6 +16,8 @@
 	d:DesignWidth="1920"
 	AllowsTransparency="True"
 	Background="Transparent"
+	PreviewKeyDown="OnPreviewKeyDown"
+	PreviewKeyUp="OnPreviewKeyUp"
 	ResizeMode="NoResize"
 	SnapsToDevicePixels="True"
 	UseLayoutRounding="True"
@@ -86,7 +88,8 @@
 				MouseEnter="OnMouseEnter"
 				MouseLeave="OnMouseLeave"
 				MouseMove="OnMouseMove"
-				MouseUp="OnMouseUp" />
+				MouseUp="OnMouseUp"
+				MouseWheel="OnMouseWheel" />
 
 			<overlays:OverlayRenderer ClipToBounds="True" />
 		</Grid>

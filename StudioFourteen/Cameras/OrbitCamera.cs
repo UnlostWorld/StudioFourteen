@@ -16,6 +16,17 @@ public partial class OrbitCamera : StudioCameraBase
 
 	private readonly PointOverlay targetPointOverlay = new("Cameras", "OrbitCameraTarget");
 
+	private readonly KeyBindListener moveUpListener = new(KeyBindEvents.OrbitCamera_MoveUp);
+	private readonly KeyBindListener moveDownListener = new(KeyBindEvents.OrbitCamera_MoveDown);
+	private readonly KeyBindListener moveLeftListener = new(KeyBindEvents.OrbitCamera_MoveLeft);
+	private readonly KeyBindListener moveRightListener = new(KeyBindEvents.OrbitCamera_MoveRight);
+	private readonly KeyBindListener panUpListener = new(KeyBindEvents.OrbitCamera_PanUp);
+	private readonly KeyBindListener panDownListener = new(KeyBindEvents.OrbitCamera_PanDown);
+	private readonly KeyBindListener panLeftListener = new(KeyBindEvents.OrbitCamera_PanLeft);
+	private readonly KeyBindListener panRightListener = new(KeyBindEvents.OrbitCamera_PanRight);
+	private readonly KeyBindListener rollLeftListener = new(KeyBindEvents.OrbitCamera_RollLeft);
+	private readonly KeyBindListener rollRightListener = new(KeyBindEvents.OrbitCamera_RollRight);
+
 	[Notify] private Vector3 target;
 	[Notify] private float distance;
 	[Notify] private Vector2 angle;
@@ -43,12 +54,34 @@ public partial class OrbitCamera : StudioCameraBase
 	{
 		base.Activate();
 
+		this.moveUpListener.Enable();
+		this.moveDownListener.Enable();
+		this.moveLeftListener.Enable();
+		this.moveRightListener.Enable();
+		this.panUpListener.Enable();
+		this.panDownListener.Enable();
+		this.panLeftListener.Enable();
+		this.panRightListener.Enable();
+		this.rollLeftListener.Enable();
+		this.rollRightListener.Enable();
+
 		this.targetPointOverlay.Enable();
 	}
 
 	public override void Deactivate()
 	{
 		base.Deactivate();
+
+		this.moveUpListener.Disable();
+		this.moveDownListener.Disable();
+		this.moveLeftListener.Disable();
+		this.moveRightListener.Disable();
+		this.panUpListener.Disable();
+		this.panDownListener.Disable();
+		this.panLeftListener.Disable();
+		this.panRightListener.Disable();
+		this.rollLeftListener.Disable();
+		this.rollRightListener.Disable();
 
 		this.targetPointOverlay.Disable();
 	}
@@ -59,38 +92,38 @@ public partial class OrbitCamera : StudioCameraBase
 
 		Vector3 moveDir = Vector3.Zero;
 
-		if (this.Services.Input.IsDown(KeyBindEvents.OrbitCamera_MoveUp))
+		if (this.moveUpListener.IsDown())
 			moveDir.Y += 1;
 
-		if (this.Services.Input.IsDown(KeyBindEvents.OrbitCamera_MoveDown))
+		if (this.moveDownListener.IsDown())
 			moveDir.Y -= 1;
 
-		if (this.Services.Input.IsDown(KeyBindEvents.OrbitCamera_MoveLeft))
+		if (this.moveLeftListener.IsDown())
 			moveDir.X -= 1;
 
-		if (this.Services.Input.IsDown(KeyBindEvents.OrbitCamera_MoveRight))
+		if (this.moveRightListener.IsDown())
 			moveDir.X += 1;
 
 		this.desiredMove = moveDir;
 
 		Vector3 rot = Vector3.Zero;
 
-		if (this.Services.Input.IsDown(KeyBindEvents.OrbitCamera_PanLeft))
+		if (this.panLeftListener.IsDown())
 			rot.X += 1;
 
-		if (this.Services.Input.IsDown(KeyBindEvents.OrbitCamera_PanRight))
+		if (this.panRightListener.IsDown())
 			rot.X -= 1;
 
-		if (this.Services.Input.IsDown(KeyBindEvents.OrbitCamera_PanUp))
+		if (this.panUpListener.IsDown())
 			rot.Y += 1;
 
-		if (this.Services.Input.IsDown(KeyBindEvents.OrbitCamera_PanDown))
+		if (this.panDownListener.IsDown())
 			rot.Y -= 1;
 
-		if (this.Services.Input.IsDown(KeyBindEvents.OrbitCamera_RollLeft))
+		if (this.rollLeftListener.IsDown())
 			rot.Z -= 1;
 
-		if (this.Services.Input.IsDown(KeyBindEvents.OrbitCamera_RollRight))
+		if (this.rollRightListener.IsDown())
 			rot.Z += 1;
 
 		this.desiredRot = rot;

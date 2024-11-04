@@ -6,7 +6,6 @@ using StudioFourteen.Files;
 using StudioFourteen.Input;
 using StudioFourteen.Mvm;
 using StudioFourteen.Plugin;
-using StudioFourteen.Posing;
 using StudioFourteen.Services;
 using StudioFourteen.Tags;
 using StudioFourteen.Utilities;
@@ -15,12 +14,18 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using WpfUtils.Extensions;
-using static StudioFourteen.Files.SceneFile;
 
 public class SaveService : ServiceBase
 {
+	private readonly KeyBindListener saveListener;
 	private readonly Dictionary<int, bool> includeCharacters = new();
 	private DirectoryInfo? defaultDirectory;
+
+	public SaveService()
+	{
+		this.saveListener = new(KeyBindEvents.Save);
+		this.saveListener.Pressed = this.Save;
+	}
 
 	public delegate void SaveEventDelegate();
 
@@ -59,21 +64,19 @@ public class SaveService : ServiceBase
 			this.SetSaveFileInfo(new(this.Services.Settings.Current.LastSaveDirectory), null);
 		}
 
-		this.Services.Input.AddListener(KeyBindEvents.Save, this.Save);
-
 		this.Services.GroupPose.StateChanged += this.OnGroupPoseStateChanged;
 		this.OnGroupPoseStateChanged(this.Services.GroupPose.IsGroupPosing);
 
 		this.MetaData.LoadDefaults();
+		this.saveListener.Enable();
 
 		return base.Start();
 	}
 
 	public override Task Stop()
 	{
-		this.Services.Input.RemoveListener(KeyBindEvents.Save, this.Save);
-
 		this.Services.GroupPose.StateChanged -= this.OnGroupPoseStateChanged;
+		this.saveListener.Disable();
 
 		return base.Stop();
 	}

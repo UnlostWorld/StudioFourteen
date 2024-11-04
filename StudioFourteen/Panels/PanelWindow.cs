@@ -50,6 +50,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 		this.PreviewMouseDown += this.OnPreviewMouseDown;
 		this.PreviewKeyDown += this.OnPreviewKeyDown;
+		this.PreviewKeyUp += this.OnPreviewKeyUp;
 	}
 
 	public event PropertyChangedEventHandler? PropertyChanged;
@@ -360,21 +361,12 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 	private void OnPreviewKeyDown(object sender, KeyEventArgs e)
 	{
-		if (!this.IsActive)
-			return;
+		this.Services.Input.HandleKey(e.Key, true);
+	}
 
-		if (Keyboard.FocusedElement is TextBoxBase tb)
-		{
-			if (tb.IsFocused && (tb.IsKeyboardFocused || tb.IsKeyboardFocusWithin))
-			{
-				if (e.Key == Key.Escape)
-				{
-					tb.SetFocusToWindow();
-				}
-
-				return;
-			}
-		}
+	private void OnPreviewKeyUp(object sender, KeyEventArgs e)
+	{
+		this.Services.Input.HandleKey(e.Key, false);
 	}
 
 	private void OnGameUiToggled(object? sender, bool e)

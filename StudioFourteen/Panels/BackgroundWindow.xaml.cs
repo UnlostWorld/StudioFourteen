@@ -106,4 +106,24 @@ public partial class BackgroundWindow : PanelWindow
 	{
 		this.Services.Input.HandleMouseLeave();
 	}
+
+	private void OnMouseWheel(object sender, MouseWheelEventArgs e)
+	{
+	}
+
+	private void OnPreviewKeyDown(object sender, KeyEventArgs e)
+	{
+		if (e.IsRepeat)
+			return;
+
+		this.Services.Input.HandleKey(e.Key, true);
+	}
+
+	private void OnPreviewKeyUp(object sender, KeyEventArgs e)
+	{
+		if (e.IsRepeat)
+			return;
+
+		this.Services.Input.HandleKey(e.Key, false);
+	}
 }

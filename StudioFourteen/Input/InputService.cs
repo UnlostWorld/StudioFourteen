@@ -1,31 +1,38 @@
-﻿// Brio
-// https://github.com/Etheirys/Brio/tree/main/Brio/Input/InputService.cs
-
-namespace StudioFourteen.Input;
+﻿namespace StudioFourteen.Input;
 
 using Dalamud.Game.ClientState.Keys;
 using Dalamud.Plugin.Services;
-using FFXIVClientStructs;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using ImGuiNET;
+using Serilog;
 using StudioFourteen.Plugin;
 using StudioFourteen.Services;
 using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using System.Runtime.InteropServices;
+using System.Windows;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
 public class InputService : ServiceBase
 {
-	private readonly HashSet<KeyBindEvents> eventsDown = new();
-	private readonly Dictionary<KeyBindEvents, List<Action>> listeners = new();
-	private readonly Dictionary<MouseButton, bool> mouseButtons = new();
+	private readonly Dictionary<KeyBindEvents, List<KeyBindListener>> listeners = new();
+	private readonly Dictionary<MouseButton, States> mouseButtons = new();
+	private readonly Dictionary<VirtualKey, States> keyboardKeys = new();
+	private readonly KeyState xivKeyState = new();
 
 	public delegate void MouseDragDelegate(Vector2 delta, MouseButton button);
 
 	public event MouseDragDelegate? MouseDrag;
+
+	public enum States
+	{
+		Up,
+		Down,
+		Pressed,
+		Released,
+	}
 
 	public bool IsTextInputActive { get; private set; }
 
@@ -64,20 +71,21 @@ public class InputService : ServiceBase
 		{ KeyBindEvents.OrbitCamera_MoveRight, new(VirtualKey.D, ModifierKeys.Shift) },
 	};
 
-	public static IEnumerable<VirtualKey> GetValidKeys()
+	public override void Attach()
 	{
-		if (DalamudServices.KeyState == null)
-			return new List<VirtualKey>();
-
-		return DalamudServices.KeyState.GetValidVirtualKeys();
+		this.xivKeyState.Attach();
+		base.Attach();
 	}
 
-	public static bool IsKeyBindDown(KeyBindEvents evt)
+	public override void Detach()
 	{
-		if (!ServiceManager.Instance.Settings.Current.EnableKeyBinds)
-			return false;
+		this.xivKeyState.Detach();
+		base.Detach();
+	}
 
-		return ServiceManager.Instance.Input.eventsDown.Contains(evt);
+	public IEnumerable<VirtualKey> GetValidKeys()
+	{
+		return this.xivKeyState.GetValidVirtualKeys();
 	}
 
 	public bool HasListener(KeyBindEvents evt)
@@ -88,20 +96,20 @@ public class InputService : ServiceBase
 		return this.listeners[evt].Count > 0;
 	}
 
-	public void AddListener(KeyBindEvents evt, Action callback)
+	public void AddListener(KeyBindEvents evt, KeyBindListener listener)
 	{
 		if (!this.listeners.ContainsKey(evt))
 			this.listeners.Add(evt, new());
 
-		this.listeners[evt].Add(callback);
+		this.listeners[evt].Add(listener);
 	}
 
-	public void RemoveListener(KeyBindEvents evt, Action callback)
+	public void RemoveListener(KeyBindEvents evt, KeyBindListener listener)
 	{
 		if (!this.listeners.ContainsKey(evt))
 			return;
 
-		this.listeners[evt].Remove(callback);
+		this.listeners[evt].Remove(listener);
 	}
 
 	public KeyBind? GetKeyBind(KeyBindEvents evt)
@@ -115,7 +123,7 @@ public class InputService : ServiceBase
 		return bind;
 	}
 
-	public bool IsDown(KeyBindEvents evt)
+	/*public bool IsDown(KeyBindEvents evt)
 	{
 		if (!this.Settings.EnableKeyBinds)
 			return false;
@@ -133,19 +141,13 @@ public class InputService : ServiceBase
 		if (bind == null)
 			return false;
 
-		if (this.IsDown(bind))
-		{
-			this.ResetBindKeys(bind);
-			return true;
-		}
-
-		return false;
-	}
+		return this.GetState(bind);
+	}*/
 
 	public bool IsMouseDown(MouseButton button)
 	{
-		if (this.mouseButtons.TryGetValue(button, out bool value))
-			return value;
+		if (this.mouseButtons.TryGetValue(button, out States value))
+			return value == States.Down;
 
 		return false;
 	}
@@ -154,10 +156,7 @@ public class InputService : ServiceBase
 	{
 		ImGui.GetIO().AddMouseButtonEvent((int)e.ChangedButton, down);
 
-		if (!this.mouseButtons.ContainsKey(e.ChangedButton))
-			this.mouseButtons.Add(e.ChangedButton, down);
-
-		this.mouseButtons[e.ChangedButton] = down;
+		this.mouseButtons[e.ChangedButton] = down ? States.Pressed : States.Released;
 
 		if (!down)
 		{
@@ -170,9 +169,9 @@ public class InputService : ServiceBase
 		Vector2 delta = newPos - this.MousePosition;
 
 		bool holdPosition = false;
-		foreach ((MouseButton button, bool state) in this.mouseButtons)
+		foreach ((MouseButton button, States state) in this.mouseButtons)
 		{
-			if (state)
+			if (state == States.Down)
 			{
 				holdPosition = true;
 				this.MouseDrag?.Invoke(delta, button);
@@ -192,12 +191,53 @@ public class InputService : ServiceBase
 
 	public void HandleMouseLeave()
 	{
-		foreach((MouseButton button, bool state) in this.mouseButtons)
+		foreach((MouseButton button, States state) in this.mouseButtons)
 		{
-			this.mouseButtons[button] = false;
+			this.mouseButtons[button] = States.Up;
 		}
 
 		CursorUtility.SetCursorVisible(true);
+	}
+
+	public void HandleKey(Key key, bool down)
+	{
+		VirtualKey vKey = (VirtualKey)KeyInterop.VirtualKeyFromKey(key);
+		if (vKey == VirtualKey.NO_KEY)
+			return;
+
+		if (!this.keyboardKeys.ContainsKey(vKey))
+			this.keyboardKeys[vKey] = States.Up;
+
+		if (down)
+		{
+			if (this.keyboardKeys[vKey] == States.Up)
+			{
+				this.keyboardKeys[vKey] = States.Pressed;
+			}
+		}
+		else
+		{
+			if (this.keyboardKeys[vKey] == States.Down)
+			{
+				this.keyboardKeys[vKey] = States.Released;
+			}
+		}
+
+		if (down)
+		{
+			if (Keyboard.FocusedElement is TextBoxBase tb)
+			{
+				if (tb.IsFocused && (tb.IsKeyboardFocused || tb.IsKeyboardFocusWithin))
+				{
+					if (key == Key.Escape)
+					{
+						tb.SetFocusToWindow();
+					}
+
+					return;
+				}
+			}
+		}
 	}
 
 	protected override unsafe void OnFrameworkUpdate(IFramework framework)
@@ -209,94 +249,214 @@ public class InputService : ServiceBase
 
 		this.IsTextInputActive = RaptureAtkModule.Instance()->AtkModule.IsTextInputActive();
 
-		if (!this.Settings.EnableKeyBinds)
-			return;
-
-		if (this.Services.Panels.ActivePanel == null && !XivWindow.IsActive())
-			return;
-
+		HashSet<VirtualKey> usedKeys = new();
 		foreach (var evt in Enum.GetValues<KeyBindEvents>())
 		{
-			this.CheckEvent(evt);
+			this.CheckEvent(evt, ref usedKeys);
+		}
+
+		if (this.Services.Panels.ActivePanel == null && XivWindow.IsActive())
+		{
+			// Read xiv -> studio
+			foreach(VirtualKey key in this.xivKeyState.GetValidVirtualKeys())
+			{
+				KeyState.KeyValue state = this.xivKeyState[key];
+
+				this.keyboardKeys[key] = state switch
+				{
+					KeyState.KeyValue.Up => States.Up,
+					KeyState.KeyValue.Down => States.Down,
+					KeyState.KeyValue.Pressed => States.Pressed,
+					KeyState.KeyValue.Released => States.Released,
+					KeyState.KeyValue.Unk => States.Up,
+					_ => throw new InvalidOperationException(),
+				};
+			}
+		}
+		else
+		{
+			// Write studio -> xiv
+			foreach ((VirtualKey key, States state) in this.keyboardKeys)
+			{
+				if (usedKeys.Contains(key))
+					continue;
+
+				// Only set the pressed state into xiv as its input system will handle the rest.
+				// We only support forwarding keys as single presses, no holds, since xiv will constantly
+				// set the values back in its own update loop.
+				if (state == States.Pressed)
+					this.xivKeyState[key] = KeyState.KeyValue.Pressed;
+
+				/*this.xivKeyState[key] = state switch
+				{
+					States.Up => KeyState.KeyValue.Up,
+					States.Down => KeyState.KeyValue.Down,
+					States.Pressed => KeyState.KeyValue.Pressed,
+					States.Released => KeyState.KeyValue.Released,
+					_ => throw new InvalidOperationException(),
+				};*/
+			}
+
+			foreach ((VirtualKey key, States state) in this.keyboardKeys)
+			{
+				if (state == States.Pressed)
+					this.keyboardKeys[key] = States.Down;
+
+				if (state == States.Released)
+					this.keyboardKeys[key] = States.Up;
+			}
+
+			foreach ((MouseButton button, States state) in this.mouseButtons)
+			{
+				if (state == States.Pressed)
+					this.mouseButtons[button] = States.Down;
+
+				if (state == States.Released)
+					this.mouseButtons[button] = States.Up;
+			}
 		}
 	}
 
-	private void CheckEvent(KeyBindEvents evt)
+	private bool CheckEvent(KeyBindEvents evt, ref HashSet<VirtualKey> usedKeys)
 	{
 		KeyBind? bind = this.GetKeyBind(evt);
 		if (bind == null)
-			return;
+			return false;
 
-		this.listeners.TryGetValue(evt, out List<Action>? listeners);
+		this.listeners.TryGetValue(evt, out List<KeyBindListener>? listeners);
 		if (listeners == null || listeners.Count == 0)
-			return;
+			return false;
 
-		bool isDown = this.IsDown(bind);
-		bool wasDown = this.eventsDown.Contains(evt);
-
-		if (!isDown && wasDown)
+		States state = this.GetState(bind);
+		foreach (KeyBindListener listener in listeners)
 		{
-			this.eventsDown.Remove(evt);
-		}
-		else if (isDown && !wasDown)
-		{
-			this.eventsDown.Add(evt);
-
-			try
-			{
-				// just pressed, invoke listeners
-				foreach (Action callback in listeners)
-				{
-					if (callback == null)
-						continue;
-
-					callback.Invoke();
-				}
-			}
-			catch (Exception ex)
-			{
-				this.Log.Error(ex, $"Error in event {evt} listener");
-			}
+			listener.SetState(state);
 		}
 
-		if (isDown)
-		{
-			this.ResetBindKeys(bind);
-		}
+		usedKeys.Add(bind.Key);
+
+		return true;
 	}
 
-	private bool IsDown(KeyBind bind)
+	private States GetState(KeyBind bind)
 	{
 		if (bind.Key == VirtualKey.NO_KEY)
-			return false;
+			return States.Up;
 
-		bool down = this.IsDown(bind.Key);
+		States state = this.GetState(bind.Key);
+		bool hasModifiers = true;
 
 		if (bind.Key != VirtualKey.CONTROL)
-			down &= this.IsDown(VirtualKey.CONTROL) == bind.Control;
+			hasModifiers &= (Keyboard.IsKeyDown(Key.LeftCtrl) || Keyboard.IsKeyDown(Key.RightCtrl)) == bind.Control;
 
 		if (bind.Key != VirtualKey.MENU)
-			down &= this.IsDown(VirtualKey.MENU) == bind.Alt;
+			hasModifiers &= (Keyboard.IsKeyDown(Key.LeftAlt) || Keyboard.IsKeyDown(Key.RightAlt)) == bind.Alt;
 
 		if (bind.Key != VirtualKey.SHIFT)
-			down &= this.IsDown(VirtualKey.SHIFT) == bind.Shift;
+			hasModifiers &= (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift)) == bind.Shift;
 
-		return down;
+		if (hasModifiers)
+			return state;
+
+		return States.Up;
 	}
 
-	private bool IsDown(VirtualKey key)
+	private States GetState(VirtualKey key)
 	{
 		if (key == VirtualKey.NO_KEY)
-			return false;
+			return States.Up;
 
-		return Keyboard.IsKeyDown(KeyInterop.KeyFromVirtualKey((int)key));
+		if (this.keyboardKeys.TryGetValue(key, out States state))
+			return state;
+
+		return States.Up;
+	}
+}
+
+public class KeyBindListener
+{
+	public readonly ILogger Log = Logging.ForContext<KeyBindListener>();
+
+	private readonly KeyBindEvents keyBindEvent;
+	private InputService.States currentState = InputService.States.Up;
+	private InputService.States cacheState = InputService.States.Up;
+
+	public KeyBindListener(KeyBindEvents evt)
+	{
+		this.keyBindEvent = evt;
 	}
 
-	private void ResetBindKeys(KeyBind bind)
-	{
-		if (DalamudServices.KeyState == null)
-			return;
+	public Action? Pressed { get; set; }
+	public Action? Down { get; set; }
+	public Action? Released { get; set; }
 
-		DalamudServices.KeyState[bind.Key] = false;
+	public void Enable()
+	{
+		ServiceManager.Instance.Input.AddListener(this.keyBindEvent, this);
+	}
+
+	public void Disable()
+	{
+		ServiceManager.Instance.Input.RemoveListener(this.keyBindEvent, this);
+	}
+
+	public void SetState(InputService.States state)
+	{
+		this.currentState = state;
+
+		if (state == InputService.States.Pressed)
+		{
+			this.cacheState = InputService.States.Pressed;
+		}
+		else if (state == InputService.States.Released)
+		{
+			this.cacheState = InputService.States.Released;
+		}
+
+		try
+		{
+			if (state == InputService.States.Pressed)
+			{
+				this.Pressed?.Invoke();
+			}
+			else if (state == InputService.States.Down)
+			{
+				this.Down?.Invoke();
+			}
+			else if (state == InputService.States.Released)
+			{
+				this.Released?.Invoke();
+			}
+		}
+		catch (Exception ex)
+		{
+			this.Log.Error(ex, $"Error invoking key bind callback for event {this.keyBindEvent}");
+		}
+	}
+
+	public InputService.States GetState()
+	{
+		InputService.States state = this.cacheState;
+
+		if (state == InputService.States.Pressed)
+		{
+			state = InputService.States.Down;
+		}
+		else if (state == InputService.States.Released)
+		{
+			state = InputService.States.Up;
+		}
+
+		return state;
+	}
+
+	public InputService.States GetCurrentState()
+	{
+		return this.currentState;
+	}
+
+	public bool IsDown()
+	{
+		return this.currentState == InputService.States.Down;
 	}
 }
