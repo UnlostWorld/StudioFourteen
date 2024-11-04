@@ -1,6 +1,6 @@
 name: Release
 
-#stlen blatently from Ktisis: https://github.com/ktisis-tools/Ktisis/blob/main/.github/workflows/release.yml
+#stolen blatently from Ktisis: https://github.com/ktisis-tools/Ktisis/blob/main/.github/workflows/release.yml
 
 # Add a concurrency group incase a tag is created, deleted, and then recreated while a release is in progress.
 concurrency:
@@ -57,7 +57,7 @@ jobs:
         uses: TheDoctor0/zip-release@0.6.0
         with:
           filename: '${{ github.workspace }}/latest.zip'
-          directory: './ScreenshotStudio/bin/'
+          directory: './StudioFourteen/bin/'
           exclusions: '*.pdb* *.xml*'
 
       - name: Create GitHub Release
@@ -80,12 +80,12 @@ jobs:
             [
               {
                   "Author": "Unlost World",
-                  "Name": "Screenshot Studio",
-                  "InternalName": "ScreenshotStudio",
+                  "Name": "Studio Fourteen",
+                  "InternalName": "StudioFourteen",
                   "Description": "A plugin for enhancing GPose functionality",
                   "AssemblyVersion": "1.0.0.${{github.run_number}}",
                   "TestingAssemblyVersion": "1.0.0.${{github.run_number}}",
-                  "RepoUrl": "https://github.com/UnlostWorld/ScreenshotStudio",
+                  "RepoUrl": "https://github.com/UnlostWorld/StudioFourteen",
                   "ApplicableVersion": "any",
                   "DalamudApiLevel": 8,
                   "Tags": [
@@ -93,10 +93,10 @@ jobs:
                     "posing",
                     "screenshot"
                   ],
-                  "IconUrl": "https://github.com/UnlostWorld/ScreenshotStudio/blob/main/Assets/Icon/light-pride.png",
-                  "DownloadLinkInstall": "https://github.com/UnlostWorld/ScreenshotStudio/releases/download/v${{github.run_number}}/latest.zip",
-                  "DownloadLinkTesting": "https://github.com/UnlostWorld/ScreenshotStudio/releases/download/v${{github.run_number}}/latest.zip",
-                  "DownloadLinkUpdate": "https://github.com/UnlostWorld/ScreenshotStudio/releases/download/v${{github.run_number}}/latest.zip",
+                  "IconUrl": "https://github.com/UnlostWorld/StudioFourteen/blob/main/Assets/Icon/light-pride.png",
+                  "DownloadLinkInstall": "https://github.com/UnlostWorld/StudioFourteen/releases/download/v${{github.run_number}}/latest.zip",
+                  "DownloadLinkTesting": "https://github.com/UnlostWorld/StudioFourteen/releases/download/v${{github.run_number}}/latest.zip",
+                  "DownloadLinkUpdate": "https://github.com/UnlostWorld/StudioFourteen/releases/download/v${{github.run_number}}/latest.zip",
                 }
               ]
           
