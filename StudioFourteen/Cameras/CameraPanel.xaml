@@ -18,6 +18,7 @@
 	mc:Ignorable="d">
 	<Border
 		Grid.Column="0"
+		IsEnabled="{Binding Services.Studio.IsOpenAndInGPose}"
 		Style="{DynamicResource WpfUtilsControlBorder}">
 		<Grid>
 			<Grid.ColumnDefinitions>
