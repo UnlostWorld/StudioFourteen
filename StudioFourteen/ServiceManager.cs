@@ -43,4 +43,5 @@ public class ServiceManager : ServiceManagerBase
 	public CameraService Camera { get; init; } = new();
 	public OverlayService Overlays { get; init; } = new();
 	public EnvironmentService Environment { get; init; } = new();
+	public GameConfigService GameConfiguration { get; init; } = new();
 }

@@ -25,6 +25,7 @@ public class DalamudServices
 	[PluginService] public static ITextureSubstitutionProvider? TextureSubstitutionProvider { get; private set; }
 	[PluginService] public static IGameInteropProvider? InteropProvider { get; private set; }
 	[PluginService] public static ITextureProvider? TextureProvider { get; private set; }
+	[PluginService] public static IGameConfig? GameConfig { get; private set; }
 
 	public static bool DalamudHasFocus => WindowSystem.HasAnyWindowSystemFocus;
 
