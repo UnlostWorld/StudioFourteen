@@ -146,8 +146,12 @@
 		</ItemGroup>
 	</Target>
 
-	<Target Name="EffectCompile" BeforeTargets="CoreCompile">
-		<Exec Command="&quot;$(MSBuildProgramFiles32)\Windows Kits\10\bin\10.0.26100.0\x64\fxc.exe&quot; /T ps_3_0 /Fo Effects/bin/WindowMask.ps Effects/WindowMask.fx" />
+	<PropertyGroup>
+		<FXCPath>$(MSBuildProgramFiles32)\Windows Kits\10\bin\10.0.26100.0\x64\fxc.exe</FXCPath>
+	</PropertyGroup>
+
+	<Target Name="EffectCompile" BeforeTargets="CoreCompile" Condition="Exists($(FXCPath))">
+		<Exec Command="&quot;$(FXCPath)&quot; /T ps_3_0 /Fo Effects/bin/WindowMask.ps Effects/WindowMask.fx" />
 	</Target>
 
 </Project>
