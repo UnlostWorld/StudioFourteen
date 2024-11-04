@@ -43,7 +43,7 @@
 
 	<ItemGroup>
 		<Resource Include="Assets\*.*" />
-		<Resource Include="Effects\bin\*.ps" />
+		<Resource Include="Effects\Compiled\*.ps" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -151,7 +151,7 @@
 	</PropertyGroup>
 
 	<Target Name="EffectCompile" BeforeTargets="CoreCompile" Condition="Exists($(FXCPath))">
-		<Exec Command="&quot;$(FXCPath)&quot; /T ps_3_0 /Fo Effects/bin/WindowMask.ps Effects/WindowMask.fx" />
+		<Exec Command="&quot;$(FXCPath)&quot; /T ps_3_0 /Fo Effects/Compiled/WindowMask.ps Effects/Source/WindowMask.fx" />
 	</Target>
 
 </Project>

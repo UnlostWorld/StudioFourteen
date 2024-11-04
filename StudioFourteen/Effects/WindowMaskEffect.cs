@@ -45,7 +45,7 @@ public class WindowMaskEffect
 	}
 
 	public WindowMaskEffect()
-		: base("pack://application:,,,/StudioFourteen;component/Effects/bin/WindowMask.ps")
+		: base("pack://application:,,,/StudioFourteen;component/Effects/Compiled/WindowMask.ps")
 	{
 		this.UpdateShaderValue(OpacityProperty);
 		this.UpdateShaderValue(RegionProperty);
