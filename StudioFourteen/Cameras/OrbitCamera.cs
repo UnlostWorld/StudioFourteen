@@ -48,8 +48,10 @@ public partial class OrbitCamera : StudioCameraBase
 		this.Rotation = Quaternion.Identity;
 		this.Distance = 3;
 
-		// TODO: a better initial angle
-		this.Angle = Vector2.Zero;
+		if (this.Services.Camera.InitialCamera != null)
+		{
+			this.Angle = this.Services.Camera.InitialCamera.Value.Angle;
+		}
 	}
 
 	public override void Activate()
@@ -155,6 +157,8 @@ public partial class OrbitCamera : StudioCameraBase
 	{
 		base.UpdateGroupPoseCamera(camera);
 		this.GroupPoseRollAdjust = camera->Rotation * QuaternionExtensions.Rad2Deg;
+
+		camera->Camera.Distance = this.distance;
 	}
 
 	public override void Calculate(ref CameraState state, StudioCameraBase? blend, float blendWeight)

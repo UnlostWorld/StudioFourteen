@@ -80,6 +80,13 @@ public partial class FreeCamera : StudioCameraBase
 		this.rollRightListener.Disable();
 	}
 
+	public override unsafe void UpdateGroupPoseCamera(GroupPoseCamera* camera)
+	{
+		base.UpdateGroupPoseCamera(camera);
+
+		camera->Camera.Distance = float.MaxValue;
+	}
+
 	public override void OnFrameworkUpdate(IFramework framework)
 	{
 		base.OnFrameworkUpdate(framework);
