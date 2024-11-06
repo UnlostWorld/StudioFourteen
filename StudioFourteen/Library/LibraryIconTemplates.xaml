@@ -392,6 +392,10 @@
 			Template="{StaticResource LibraryIcon_AppearanceFileTypeInfo}" />
 
 		<markup:TemplateSelectorEntry
+			TargetType="{x:Type files:MareFileTypeInfo}"
+			Template="{StaticResource LibraryIcon_AppearanceFileTypeInfo}" />
+
+		<markup:TemplateSelectorEntry
 			TargetType="{x:Type files:AppearanceFileTypeInfo}"
 			Template="{StaticResource LibraryIcon_AppearanceFileTypeInfo}" />
 

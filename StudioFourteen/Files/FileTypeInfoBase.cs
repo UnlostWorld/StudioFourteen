@@ -1,10 +1,13 @@
 ﻿namespace StudioFourteen.Files;
 
+using Serilog;
 using System;
 using System.IO;
 
 public abstract class FileTypeInfoBase
 {
+	public ILogger Log => Logging.ForContext(this.GetType());
+
 	public abstract string Extension { get; }
 	public abstract string TypeName { get; }
 	public abstract Type LoadsType { get; }

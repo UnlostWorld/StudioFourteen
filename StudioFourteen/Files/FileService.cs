@@ -19,12 +19,14 @@ public class FileService : ServiceBase
 		new AppearanceFileTypeInfo(),
 		new PoseFileTypeInfo(),
 		new SceneFileTypeInfo(),
+		new MareFileTypeInfo(),
 	};
 
 	public DirectoryInfo StudioFourteenDir { get; init; } = new DirectoryInfo($"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/StudioFourteen/");
 	public DirectoryInfo BrioDir { get; init; } = new DirectoryInfo($"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/Brio/");
 	public DirectoryInfo AnamnesisDir { get; init; } = new DirectoryInfo($"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/Anamnesis/");
 	public DirectoryInfo KtisisDir { get; init; } = new DirectoryInfo($"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/Ktisis/");
+	public DirectoryInfo MareDir { get; init; } = new DirectoryInfo($"{Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)}/Mare/");
 
 	public FileTypeInfoBase? GetTypeInfo(FileInfo? file)
 	{

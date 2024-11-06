@@ -7,6 +7,7 @@ using StudioFourteen.GameData;
 using StudioFourteen.GameData.Excel;
 using StudioFourteen.Mvm.Commands;
 using StudioFourteen.Plugin;
+using StudioFourteen.Tags;
 using StudioFourteen.Utilities;
 using System;
 using System.IO;
@@ -62,6 +63,8 @@ public class GlamourerEntry
 		this.design = design;
 		this.ApplyCommand = new TargetCommand(this.Apply);
 		this.RevertCommand = new RevertTargetAppearanceCommand();
+
+		this.design.GetAutoTags(this.Tags);
 	}
 
 	public override string Name => this.design.Name ?? "Unknown";
@@ -129,6 +132,20 @@ public class GlamourerDesign
 	public GlamourerEquipment? Equipment { get; set; }
 	public GlamourerCustomize? Customize { get; set; }
 	public GlamourerParameters? Parameters { get; set; }
+
+	public void GetAutoTags(TagCollection tags)
+	{
+		Race.RaceRows? raceRow = (Race.RaceRows?)this.Customize?.Race?.Value;
+		Race? race = raceRow != null ? GameDataService.GetRow<Race>((byte)raceRow) : null;
+		tags.Add(race?.ToTags());
+
+		Tribe.TribeRows? tribeRow = (Tribe.TribeRows?)this.Customize?.Clan?.Value;
+		Tribe? tribe = tribeRow != null ? GameDataService.GetRow<Tribe>((byte)tribeRow) : null;
+		tags.Add(tribe?.ToTags());
+
+		Genders? gender = (Genders?)this.Customize?.Gender?.Value;
+		tags.Add(gender?.ToTags());
+	}
 
 	public class GlamourerEquipment
 	{

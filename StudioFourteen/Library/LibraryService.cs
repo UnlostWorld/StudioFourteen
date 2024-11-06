@@ -47,6 +47,7 @@ public class LibraryService : ServiceBase
 		this.AddSource(new FileSource("Brio", this.Services.Files.BrioDir));
 		this.AddSource(new FileSource("Anamnesis", this.Services.Files.AnamnesisDir));
 		this.AddSource(new FileSource("Ktisis", this.Services.Files.KtisisDir));
+		this.AddSource(new FileSource("Mare", this.Services.Files.MareDir));
 		this.AddSource(new GlamourerSource());
 
 		this.LoadSources();

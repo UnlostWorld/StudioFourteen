@@ -230,6 +230,10 @@
 			TargetType="{x:Type sources:GlamourerEntry}"
 			Template="{StaticResource LibraryActions_CharacterAppearance}" />
 
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type files:MareFile}"
+			Template="{StaticResource LibraryActions_PoseFile}" />
+
 	</markup:TemplateSelector>
 
 	<Style

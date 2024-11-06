@@ -267,6 +267,9 @@ public class InputService : ServiceBase
 				if (usedKeys.Contains(key))
 					continue;
 
+				if (!this.xivKeyState.IsVirtualKeyValid(key))
+					continue;
+
 				// Only set the pressed state into xiv as its input system will handle the rest.
 				// We only support forwarding keys as single presses, no holds, since xiv will constantly
 				// set the values back in its own update loop.

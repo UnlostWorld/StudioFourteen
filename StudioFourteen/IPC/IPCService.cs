@@ -1,0 +1,56 @@
+﻿namespace StudioFourteen.IPC;
+
+using Dalamud.Game.ClientState.Objects.Types;
+using Dalamud.Plugin;
+using Dalamud.Plugin.Ipc;
+using StudioFourteen.Plugin;
+using StudioFourteen.Services;
+
+public class IPCService
+	: ServiceBase
+{
+	public bool MareSynchronosLoadMcdf(string fileName, IGameObject target) => this.Invoke<bool, string, IGameObject>("MareSynchronos.LoadMcdf", fileName, target);
+
+	private TReturn? Invoke<TReturn>(string name)
+	{
+		if (DalamudServices.PluginInterface == null)
+			return default;
+
+		ICallGateSubscriber<TReturn> subscriber = DalamudServices.PluginInterface.GetIpcSubscriber<TReturn>(name);
+		return subscriber.InvokeFunc();
+	}
+
+	private TReturn? Invoke<TReturn, TArg1>(string name, TArg1 arg1)
+	{
+		if (DalamudServices.PluginInterface == null)
+			return default;
+
+		ICallGateSubscriber<TArg1, TReturn> subscriber = DalamudServices.PluginInterface.GetIpcSubscriber<TArg1, TReturn>(name);
+		return subscriber.InvokeFunc(arg1);
+	}
+
+	private TReturn? Invoke<TReturn, TArg1, TArg2>(string name, TArg1 arg1, TArg2 arg2)
+	{
+		if (DalamudServices.PluginInterface == null)
+			return default;
+
+		ICallGateSubscriber<TArg1, TArg2, TReturn> subscriber = DalamudServices.PluginInterface.GetIpcSubscriber<TArg1, TArg2, TReturn>(name);
+		return subscriber.InvokeFunc(arg1, arg2);
+	}
+
+	private bool IsPluginInstalled(string pluginName)
+	{
+		if (DalamudServices.PluginInterface == null)
+			return false;
+
+		foreach (IExposedPlugin plugin in DalamudServices.PluginInterface.InstalledPlugins)
+		{
+			if (plugin.Name == pluginName && plugin.IsLoaded)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
+}

@@ -73,6 +73,23 @@
 	</DataTemplate>
 
 
+	<DataTemplate
+		x:Key="LibraryInfo_FileEntry"
+		DataType="{x:Type sources:FileEntry}">
+		<StackPanel>
+			<TextBlock
+				Margin="3,0,0,0"
+				Text="{Binding Name}"
+				TextWrapping="Wrap" />
+			<TextBlock
+				Margin="3,0,0,0"
+				Foreground="{DynamicResource ForegroundLightBrush}"
+				Text="{Binding TypeInfo.TypeName}"
+				TextWrapping="Wrap" />
+		</StackPanel>
+
+	</DataTemplate>
+
 
 	<markup:TemplateSelector x:Key="LibraryInfoTemplateSelector">
 
@@ -95,6 +112,10 @@
 		<markup:TemplateSelectorEntry
 			TargetType="{x:Type sources:GlamourerSource}"
 			Template="{StaticResource LibraryInfo_GlamourerLibrarySource}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type sources:FileEntry}"
+			Template="{StaticResource LibraryInfo_FileEntry}" />
 
 	</markup:TemplateSelector>
 
