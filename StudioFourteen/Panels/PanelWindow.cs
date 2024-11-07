@@ -4,7 +4,6 @@ using DependencyPropertyGenerator;
 using StudioFourteen.Mvm;
 using StudioFourteen.Plugin;
 using StudioFourteen.Services;
-using StudioFourteen.Utilities;
 using Serilog;
 using System;
 using System.Collections.Generic;
@@ -58,9 +57,9 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	public ServiceManager Services => ServiceManager.Instance;
 
 	public bool IsUiVisible => !DalamudServices.GameGui?.GameUiHidden ?? true;
-
 	public bool HasIcon => this.Panel != null && this.Panel.TitleIcon != IconChar.None;
 	public bool HasSubtitle => this.Panel != null && !string.IsNullOrEmpty(this.Panel.Subtitle);
+	public virtual bool CanActivate => true;
 
 	public virtual Point? SavedPosition
 	{
@@ -190,6 +189,8 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	{
 		try
 		{
+			this.Services.Windows.OnWindowOpening(this);
+
 			if (this.IsEmbedded)
 				this.Services.Windows.Embed(this);
 
@@ -207,6 +208,8 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 		if (ServiceManager.ShutdownRequested)
 			return;
+
+		this.Services.Windows.OnWindowClosing(this);
 
 		this.OnClosed();
 	}
@@ -328,8 +331,6 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		// wiggle wiggle
 		this.OnResizeDelta(new DragDeltaEventArgs(1, 1));
 		this.OnResizeDelta(new DragDeltaEventArgs(-1, -1));
-
-		this.Activate();
 	}
 
 	partial void OnIsMaximizedChanged(bool newValue)
@@ -356,6 +357,13 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 	private void OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
 	{
+		if (!this.CanActivate)
+			return;
+
+		if (this.IsActive)
+			return;
+
+		this.Services.Windows.BringToTop(this);
 		this.Activate();
 	}
 

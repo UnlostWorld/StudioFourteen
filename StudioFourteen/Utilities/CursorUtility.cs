@@ -1,5 +1,6 @@
 ﻿namespace StudioFourteen.Utilities;
 
+using FFXIVClientStructs;
 using System;
 using System.Runtime.InteropServices;
 using System.Windows;
@@ -41,6 +42,11 @@ public static class CursorUtility
 		return WindowFromPoint(winPoint);
 	}
 
+	public static Win32Point ToWin32Point(this Point point)
+	{
+		return new((uint)point.X, (uint)point.Y);
+	}
+
 	[DllImport("user32.dll")]
 	private static extern int ShowCursor(bool bShow);
 
@@ -63,6 +69,11 @@ public static class CursorUtility
 		{
 			this.X = x;
 			this.Y = y;
+		}
+
+		public Point ToPoint()
+		{
+			return new(this.X, this.Y);
 		}
 	}
 }

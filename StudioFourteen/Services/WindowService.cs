@@ -16,15 +16,23 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 
+using Setter = PropertyChanged.SourceGenerator.Setter;
+
 public partial class WindowService : ServiceBase
 {
+	private readonly HashSet<IntPtr> studioWindowHwnds = new();
 	private readonly HashSet<string> atkUnitBlacklist = new()
 	{
 		"GroupPoseStampImage",
+		"CursorAddon",
 	};
 
-	[Notify] private bool isCursorOverAtkUnit;
-	[Notify] private bool isCursorOverImGui;
+	[Notify(Setter.Private)] private bool isCursorOverAtkUnit;
+	[Notify(Setter.Private)] private bool isCursorOverImGui;
+	[Notify(Setter.Private)] private bool isCursorOverXiv;
+	[Notify(Setter.Private)] private bool isCursorOverStudio;
+
+	[Notify(Setter.Private)] private bool enableXivWindowOverlay;
 
 	private unsafe AtkUnitBase* atkUnitUnderCursor;
 
@@ -34,8 +42,6 @@ public partial class WindowService : ServiceBase
 
 	public override Task Initialize()
 	{
-		// Get the Xiv process for window manipulation.
-		// NOTE: if we _don't_ log out the value here, then things break. I don't know why.
 		this.XivProcess = Process.GetCurrentProcess();
 
 		if (!this.XivProcess.ProcessName.Contains("ffxiv"))
@@ -62,6 +68,11 @@ public partial class WindowService : ServiceBase
 		return size;
 	}
 
+	public bool IsAnyStudioWindowActive()
+	{
+		return this.studioWindowHwnds.Contains(GetForegroundWindow());
+	}
+
 	public void ActivateXivWindow()
 	{
 		if (this.XivWindowHwnd == null)
@@ -76,6 +87,22 @@ public partial class WindowService : ServiceBase
 			return false;
 
 		return GetForegroundWindow() == this.XivWindowHwnd;
+	}
+
+	public void BringToTop(Window window)
+	{
+		this.BringXivWindowToTop();
+
+		WindowInteropHelper wndInterop = new(window);
+		BringWindowToTop(wndInterop.Handle);
+	}
+
+	public void BringXivWindowToTop()
+	{
+		if (this.XivWindowHwnd == null)
+			return;
+
+		BringWindowToTop((IntPtr)this.XivWindowHwnd);
 	}
 
 	public void Embed(Window wnd)
@@ -228,6 +255,18 @@ public partial class WindowService : ServiceBase
 		return new(p.X, p.Y);
 	}
 
+	public void OnWindowOpening(Window window)
+	{
+		WindowInteropHelper windowInteropHelper = new(window);
+		this.studioWindowHwnds.Add(windowInteropHelper.Handle);
+	}
+
+	public void OnWindowClosing(Window window)
+	{
+		WindowInteropHelper windowInteropHelper = new(window);
+		this.studioWindowHwnds.Remove(windowInteropHelper.Handle);
+	}
+
 	protected unsafe override void OnFrameworkUpdate(IFramework framework)
 	{
 		base.OnFrameworkUpdate(framework);
@@ -236,6 +275,10 @@ public partial class WindowService : ServiceBase
 		this.atkUnitUnderCursor = pAtkUnit;
 		this.IsCursorOverAtkUnit = pAtkUnit != null;
 		this.IsCursorOverImGui = this.GetIsCursorOverImGui();
+		this.IsCursorOverXiv = this.GetIsCursorOverXiv();
+		this.IsCursorOverStudio = this.GetIsCursorOverStudio();
+
+		this.EnableXivWindowOverlay = (!this.IsCursorOverXiv && !this.IsCursorOverStudio) || (!this.IsCursorOverAtkUnit && !this.IsCursorOverImGui);
 	}
 
 	[DllImport("user32.dll", SetLastError = true)]
@@ -267,6 +310,20 @@ public partial class WindowService : ServiceBase
 
 	[DllImport("user32.dll", SetLastError = true)]
 	private static extern bool ClientToScreen(IntPtr hWnd, ref CursorUtility.Win32Point lpPoint);
+
+	[DllImport("user32.dll", SetLastError = true)]
+	private static extern bool BringWindowToTop(IntPtr hWnd);
+
+	private bool GetIsCursorOverXiv()
+	{
+		return CursorUtility.GetWindowUnderCursor() == this.XivWindowHwnd;
+	}
+
+	private bool GetIsCursorOverStudio()
+	{
+		IntPtr hwnd = CursorUtility.GetWindowUnderCursor();
+		return this.studioWindowHwnds.Contains(hwnd);
+	}
 
 	private bool GetIsCursorOverImGui()
 	{
