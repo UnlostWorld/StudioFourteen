@@ -73,18 +73,43 @@
 	</panels:PanelWindow.Template>
 
 	<Grid x:Name="ContentArea">
-		<Grid Background="Transparent">
-			<Grid.Visibility>
-				<MultiBinding Converter="{StaticResource MultiBoolAndToVisibility}">
-					<Binding Path="Services.Studio.IsOpenAndInGPose" />
-					<Binding
-						Converter="{StaticResource !B}"
-						Path="Services.Windows.IsCursorOverAtkUnit" />
-					<Binding
-						Converter="{StaticResource !B}"
-						Path="Services.Windows.IsCursorOverImGui" />
-				</MultiBinding>
-			</Grid.Visibility>
+		<Grid
+			Background="Transparent"
+			Visibility="{Binding Services.Studio.IsOpenAndInGPose, Converter={StaticResource B2V}}">
+
+			<Grid.Style>
+				<Style TargetType="{x:Type Grid}">
+					<Style.Triggers>
+						<DataTrigger
+							Binding="{Binding Services.Windows.EnableXivWindowOverlay}"
+							Value="True">
+
+							<DataTrigger.EnterActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation
+											Storyboard.TargetProperty="Opacity"
+											To="1"
+											Duration="0:00:00.150" />
+									</Storyboard>
+								</BeginStoryboard>
+							</DataTrigger.EnterActions>
+
+							<DataTrigger.ExitActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation
+											Storyboard.TargetProperty="Opacity"
+											To="0"
+											Duration="0:00:00.050" />
+									</Storyboard>
+								</BeginStoryboard>
+							</DataTrigger.ExitActions>
+
+						</DataTrigger>
+					</Style.Triggers>
+				</Style>
+			</Grid.Style>
 
 			<Rectangle
 				Fill="#01000000"
