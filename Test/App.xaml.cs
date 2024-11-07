@@ -2,10 +2,7 @@
 
 using StudioFourteen;
 using StudioFourteen.GameData;
-using StudioFourteen.Utilities;
-using System.Diagnostics;
 using System.Windows;
-
 
 public partial class App : Application
 {
@@ -14,8 +11,6 @@ public partial class App : Application
 	protected override void OnStartup(StartupEventArgs e)
 	{
 		base.OnStartup(e);
-
-		XivWindow.Process = Process.GetProcessesByName("ffxiv_dx11").FirstOrDefault();
 
 		try
 		{

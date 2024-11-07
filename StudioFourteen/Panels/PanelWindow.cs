@@ -82,8 +82,8 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 	public Point Position
 	{
-		get => XivWindow.GetPosition(this);
-		set => XivWindow.SetPosition(this, value);
+		get => this.Services.Windows.GetPosition(this);
+		set => this.Services.Windows.SetPosition(this, value);
 	}
 
 	public FastObservableCollection<double> ZoomOptions { get; init; } = new()
@@ -191,7 +191,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		try
 		{
 			if (this.IsEmbedded)
-				XivWindow.Embed(this);
+				this.Services.Windows.Embed(this);
 
 			this.OnOpened();
 		}
@@ -251,7 +251,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 			}
 		}
 
-		if (XivWindow.Process == null)
+		if (this.Services.Windows.XivProcess == null)
 		{
 			this.CanChangeEmbed = false;
 		}
@@ -316,12 +316,12 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 		if (newValue)
 		{
-			XivWindow.Embed(this);
-			this.Top = t - (XivWindow.TitleBarHeight + 10);
+			this.Services.Windows.Embed(this);
+			this.Top = t - (this.Services.Windows.TitleBarHeight + 10);
 		}
 		else
 		{
-			XivWindow.Unembed(this);
+			this.Services.Windows.Unembed(this);
 			this.Top = t;
 		}
 

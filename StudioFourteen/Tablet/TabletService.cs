@@ -57,10 +57,10 @@ public class TabletService : ServiceBase
 
 			this.context.Name = "System Context";
 
-			if (XivWindow.Hwnd == null)
+			if (this.Services.Windows.XivWindowHwnd == null)
 				return;
 
-			HWND hwnd = new HWND((nint)XivWindow.Hwnd);
+			HWND hwnd = new HWND((nint)this.Services.Windows.XivWindowHwnd);
 			HCTX result = this.context.Open(hwnd, true);
 
 			if (result == IntPtr.Zero)

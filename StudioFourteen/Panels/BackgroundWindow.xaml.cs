@@ -57,13 +57,15 @@ public partial class BackgroundWindow : PanelWindow
 
 	private void UpdatePosition()
 	{
-		if (XivWindow.Process == null)
+		if (this.Services.Windows.XivProcess == null)
 			return;
 
-		this.Width = XivWindow.Size.Width - 16; // chrome margin
-		this.Height = XivWindow.Size.Height - XivWindow.TitleBarHeight;
+		Rect xivWindowSize = this.Services.Windows.GetXivWindowSize();
 
-		XivWindow.SetPosition(this, new(0, 0));
+		this.Width = xivWindowSize.Width - 16; // chrome margin
+		this.Height = xivWindowSize.Height - this.Services.Windows.TitleBarHeight;
+
+		this.Services.Windows.SetPosition(this, new(0, 0));
 	}
 
 	private void OnShutdownClicked(object sender, RoutedEventArgs e)

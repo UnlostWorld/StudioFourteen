@@ -1,12 +1,9 @@
 ﻿namespace StudioFourteen.Plugin;
 
 using Dalamud.Game;
-using Dalamud.Interface.Windowing;
 using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
-using System;
-using System.Runtime.InteropServices;
 
 public class DalamudServices
 {
@@ -26,24 +23,4 @@ public class DalamudServices
 	[PluginService] public static IGameInteropProvider? InteropProvider { get; private set; }
 	[PluginService] public static ITextureProvider? TextureProvider { get; private set; }
 	[PluginService] public static IGameConfig? GameConfig { get; private set; }
-
-	public static bool DalamudHasFocus => WindowSystem.HasAnyWindowSystemFocus;
-
-	public static TDelegate? DelegateFromSignature<TDelegate>(string sig)
-		where TDelegate : System.Delegate
-	{
-		if (SigScanner == null)
-			return null;
-
-		try
-		{
-			nint address = SigScanner.ScanText(sig);
-			return Marshal.GetDelegateForFunctionPointer<TDelegate>(address);
-		}
-		catch (Exception ex)
-		{
-			Logging.ForContext<DalamudServices>().Error(ex, "Error creating delegate from signature");
-			return null;
-		}
-	}
 }

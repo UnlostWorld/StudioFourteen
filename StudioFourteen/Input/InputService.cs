@@ -3,7 +3,6 @@
 using Dalamud.Game.ClientState.Keys;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.UI;
-using ImGuiNET;
 using Serilog;
 using StudioFourteen.Plugin;
 using StudioFourteen.Services;
@@ -135,8 +134,6 @@ public class InputService : ServiceBase
 
 	public void HandleMouse(MouseButtonEventArgs e, bool down)
 	{
-		ImGui.GetIO().AddMouseButtonEvent((int)e.ChangedButton, down);
-
 		this.mouseButtons[e.ChangedButton] = down ? States.Pressed : States.Released;
 
 		if (!down)
@@ -156,7 +153,7 @@ public class InputService : ServiceBase
 			{
 				holdPosition = true;
 				this.MouseDrag?.Invoke(delta, button);
-				XivWindow.SetCursorPos(new(this.MousePosition.X, this.MousePosition.Y));
+				this.Services.Windows.SetCursorPosition(new(this.MousePosition.X, this.MousePosition.Y));
 			}
 		}
 
@@ -241,7 +238,7 @@ public class InputService : ServiceBase
 			this.CheckEvent(evt, ref usedKeys);
 		}
 
-		if (this.Services.Panels.ActivePanel == null && XivWindow.IsActive())
+		if (this.Services.Panels.ActivePanel == null && this.Services.Windows.IsXivWindowActive())
 		{
 			// Read xiv -> studio
 			foreach(VirtualKey key in this.xivKeyState.GetValidVirtualKeys())

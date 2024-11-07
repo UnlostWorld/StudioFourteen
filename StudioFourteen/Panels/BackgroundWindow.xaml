@@ -4,7 +4,6 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:background="clr-namespace:StudioFourteen.Studio.Background"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:effects="clr-namespace:StudioFourteen.Effects"
 	xmlns:local="clr-namespace:StudioFourteen.Studio"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:overlays="clr-namespace:StudioFourteen.Overlays"
@@ -74,13 +73,18 @@
 	</panels:PanelWindow.Template>
 
 	<Grid x:Name="ContentArea">
-		<Grid
-			Background="Transparent"
-			Focusable="False"
-			Visibility="{Binding Services.Studio.IsOpenAndInGPose, Converter={StaticResource B2V}}">
-			<Grid.Effect>
-				<effects:WindowMaskEffect />
-			</Grid.Effect>
+		<Grid Background="Transparent">
+			<Grid.Visibility>
+				<MultiBinding Converter="{StaticResource MultiBoolAndToVisibility}">
+					<Binding Path="Services.Studio.IsOpenAndInGPose" />
+					<Binding
+						Converter="{StaticResource !B}"
+						Path="Services.Windows.IsCursorOverAtkUnit" />
+					<Binding
+						Converter="{StaticResource !B}"
+						Path="Services.Windows.IsCursorOverImGui" />
+				</MultiBinding>
+			</Grid.Visibility>
 
 			<Rectangle
 				Fill="#01000000"
@@ -92,6 +96,7 @@
 				MouseWheel="OnMouseWheel" />
 
 			<overlays:OverlayRenderer ClipToBounds="True" />
+
 		</Grid>
 
 

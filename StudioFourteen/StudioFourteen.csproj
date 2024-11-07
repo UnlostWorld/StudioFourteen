@@ -43,7 +43,6 @@
 
 	<ItemGroup>
 		<Resource Include="Assets\*.*" />
-		<Resource Include="Effects\Compiled\*.ps" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -150,9 +149,5 @@
 	<PropertyGroup>
 		<FXCPath>$(MSBuildProgramFiles32)\Windows Kits\10\bin\10.0.26100.0\x64\fxc.exe</FXCPath>
 	</PropertyGroup>
-
-	<Target Name="EffectCompile" BeforeTargets="CoreCompile" Condition="Exists($(FXCPath))">
-		<Exec Command="&quot;$(FXCPath)&quot; /T ps_3_0 /Fo Effects/Compiled/WindowMask.ps Effects/Source/WindowMask.fx" />
-	</Target>
 
 </Project>

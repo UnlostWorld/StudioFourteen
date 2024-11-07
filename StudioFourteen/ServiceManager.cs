@@ -46,4 +46,5 @@ public class ServiceManager : ServiceManagerBase
 	public EnvironmentService Environment { get; init; } = new();
 	public GameConfigService GameConfiguration { get; init; } = new();
 	public IPCService IPC { get; init; } = new();
+	public WindowService Windows { get; init; } = new();
 }
