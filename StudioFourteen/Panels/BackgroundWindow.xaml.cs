@@ -115,6 +115,7 @@ public partial class BackgroundWindow : PanelWindow
 	private void OnMouseWheel(object sender, MouseWheelEventArgs e)
 	{
 		this.Services.Input.HandleMouseWheel(e.Delta / 120.0f);
+		e.Handled = true;
 	}
 
 	private void OnPreviewKeyDown(object sender, KeyEventArgs e)
@@ -123,6 +124,7 @@ public partial class BackgroundWindow : PanelWindow
 			return;
 
 		this.Services.Input.HandleKey(e.Key, true);
+		e.Handled = true;
 	}
 
 	private void OnPreviewKeyUp(object sender, KeyEventArgs e)
@@ -131,5 +133,6 @@ public partial class BackgroundWindow : PanelWindow
 			return;
 
 		this.Services.Input.HandleKey(e.Key, false);
+		e.Handled = true;
 	}
 }

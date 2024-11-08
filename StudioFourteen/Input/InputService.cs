@@ -35,7 +35,19 @@ public class InputService : ServiceBase
 		Released,
 	}
 
-	public bool IsTextInputActive { get; private set; }
+	public bool IsXivTextInputActive { get; private set; }
+	public bool IsStudioTextInputActive
+	{
+		get
+		{
+			if (Keyboard.FocusedElement is TextBoxBase tb)
+			{
+				return tb.IsFocused && (tb.IsKeyboardFocused || tb.IsKeyboardFocusWithin);
+			}
+
+			return false;
+		}
+	}
 
 	public Vector2 MousePosition { get; private set; }
 
@@ -230,7 +242,7 @@ public class InputService : ServiceBase
 		if (!this.Services.Studio.IsOpen)
 			return;
 
-		this.IsTextInputActive = RaptureAtkModule.Instance()->AtkModule.IsTextInputActive();
+		this.IsXivTextInputActive = RaptureAtkModule.Instance()->AtkModule.IsTextInputActive();
 
 		HashSet<VirtualKey> usedKeys = new();
 		foreach (var evt in Enum.GetValues<KeyBindEvents>())
@@ -271,7 +283,10 @@ public class InputService : ServiceBase
 				// We only support forwarding keys as single presses, no holds, since xiv will constantly
 				// set the values back in its own update loop.
 				if (state == States.Pressed)
+				{
+					this.Services.Windows.ActivateXivWindow();
 					this.xivKeyState[key] = KeyState.KeyValue.Pressed;
+				}
 
 				/*this.xivKeyState[key] = state switch
 				{

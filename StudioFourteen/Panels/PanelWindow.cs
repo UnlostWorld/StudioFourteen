@@ -369,12 +369,20 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 	private void OnPreviewKeyDown(object sender, KeyEventArgs e)
 	{
+		if (this.Services.Input.IsStudioTextInputActive)
+			return;
+
 		this.Services.Input.HandleKey(e.Key, true);
+		e.Handled = true;
 	}
 
 	private void OnPreviewKeyUp(object sender, KeyEventArgs e)
 	{
+		if (this.Services.Input.IsStudioTextInputActive)
+			return;
+
 		this.Services.Input.HandleKey(e.Key, false);
+		e.Handled = true;
 	}
 
 	private void OnGameUiToggled(object? sender, bool e)
