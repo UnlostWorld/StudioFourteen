@@ -10,6 +10,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Event;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using StudioFourteen.Appearance;
+using StudioFourteen.Mvm;
 using StudioFourteen.Plugin;
 using StudioFourteen.Utilities;
 using System;
@@ -32,6 +33,7 @@ public class CharacterLifecycleService : ServiceBase
 	public event CharacterDelegate? CharacterCreated;
 	public event CharacterDelegate? CharacterDestroyed;
 
+	[AutoNotify]
 	public bool CanSpawn => this.Services.GroupPose.IsGroupPosing;
 
 	public override async Task Initialize()

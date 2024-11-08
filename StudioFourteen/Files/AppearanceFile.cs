@@ -26,6 +26,7 @@ public class AppearanceFile : FileBase, ICharacterAppearance
 	{
 		this.ApplyCommand = new TargetCommand(this.Apply);
 		this.RevertCommand = new RevertTargetAppearanceCommand();
+		this.SpawnCommand = new TargetCommand(this.Spawn, true);
 	}
 
 	public enum Races : byte
@@ -69,6 +70,7 @@ public class AppearanceFile : FileBase, ICharacterAppearance
 
 	[JsonIgnore] public ICommand ApplyCommand { get; init; }
 	[JsonIgnore] public ICommand RevertCommand { get; init; }
+	[JsonIgnore] public ICommand SpawnCommand { get; init; }
 
 	public uint? ModelType { get; set; } = 0;
 	public Races? Race { get; set; }
@@ -138,6 +140,11 @@ public class AppearanceFile : FileBase, ICharacterAppearance
 		tags.Add(race?.ToTags());
 		tags.Add(this.Gender?.ToTags());
 		tags.Add(tribe?.ToTags());
+	}
+
+	public Task Spawn(int objectTableIndex)
+	{
+		return ServiceManager.Instance.CharacterLifecycle.CreateAsync(this);
 	}
 
 	public Task Apply(int objectTableIndex)

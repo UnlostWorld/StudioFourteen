@@ -99,6 +99,7 @@ public class MareFile
 	{
 		this.ApplyCommand = new TargetCommand(this.Apply);
 		this.RevertCommand = new RevertTargetAppearanceCommand();
+		this.SpawnCommand = new TargetCommand(this.Spawn, true);
 	}
 
 	[JsonIgnore] public string? FilePath { get; set; }
@@ -106,9 +107,15 @@ public class MareFile
 
 	[JsonIgnore] public ICommand ApplyCommand { get; init; }
 	[JsonIgnore] public ICommand RevertCommand { get; init; }
+	[JsonIgnore] public ICommand SpawnCommand { get; init; }
 
 	public string GlamourerData { get; set; } = string.Empty;
 	public string? Name { get; set; }
+
+	public Task Spawn(int objectTableIndex)
+	{
+		return ServiceManager.Instance.CharacterLifecycle.CreateAsync(this);
+	}
 
 	public async Task Apply(int objectTableIndex)
 	{

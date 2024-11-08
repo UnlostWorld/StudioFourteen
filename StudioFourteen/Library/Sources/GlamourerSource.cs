@@ -63,6 +63,7 @@ public class GlamourerEntry
 		this.design = design;
 		this.ApplyCommand = new TargetCommand(this.Apply);
 		this.RevertCommand = new RevertTargetAppearanceCommand();
+		this.SpawnCommand = new TargetCommand(this.Spawn, true);
 
 		this.design.GetAutoTags(this.Tags);
 	}
@@ -70,6 +71,12 @@ public class GlamourerEntry
 	public override string Name => this.design.Name ?? "Unknown";
 	public ICommand ApplyCommand { get; init; }
 	public ICommand RevertCommand { get; init; }
+	public ICommand SpawnCommand { get; init; }
+
+	public Task Spawn(int objectTableIndex)
+	{
+		return ServiceManager.Instance.CharacterLifecycle.CreateAsync(this);
+	}
 
 	public async Task Apply(int objectTableIndex)
 	{

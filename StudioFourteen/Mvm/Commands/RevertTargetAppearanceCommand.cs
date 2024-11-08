@@ -1,8 +1,9 @@
 ﻿namespace StudioFourteen.Mvm.Commands;
 
 using System.Threading.Tasks;
+using WpfUtils.Commands;
 
-public class RevertTargetAppearanceCommand : AutoCommand
+public class RevertTargetAppearanceCommand : TargetCommand
 {
 	protected override bool CanExecute()
 	{

@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using WpfUtils.Commands;
 
 public class SceneFileTypeInfo : JsonFileTypeInfoBase<SceneFile>
 {
@@ -18,8 +19,8 @@ public class SceneFile : FileBase
 {
 	public SceneFile()
 	{
-		this.ApplyCommand = new AutoCommand(this.Apply);
-		this.RevertCommand = new AutoCommand(this.Revert);
+		this.ApplyCommand = new SimpleCommand(this.Apply);
+		this.RevertCommand = new SimpleCommand(this.Revert);
 	}
 
 	[JsonIgnore] public ICommand ApplyCommand { get; init; }

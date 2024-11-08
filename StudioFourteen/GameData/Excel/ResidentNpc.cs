@@ -16,10 +16,12 @@ public class ResidentNpc : LibraryExcelRow, ICharacterAppearance, ILibraryAction
 	{
 		this.ApplyCommand = new TargetCommand(this.Apply);
 		this.RevertCommand = new RevertTargetAppearanceCommand();
+		this.SpawnCommand = new TargetCommand(this.Spawn, true);
 	}
 
 	public ICommand ApplyCommand { get; init; }
 	public ICommand RevertCommand { get; init; }
+	public ICommand SpawnCommand { get; init; }
 
 	public string? Description { get; protected set; }
 	public EventNpc? EventNpc { get; protected set; }
@@ -71,6 +73,11 @@ public class ResidentNpc : LibraryExcelRow, ICharacterAppearance, ILibraryAction
 			matches |= this.EventNpc.Search(query);
 
 		return matches;
+	}
+
+	public Task Spawn(int objectTableIndex)
+	{
+		return ServiceManager.Instance.CharacterLifecycle.CreateAsync(this);
 	}
 
 	public unsafe Task Apply(int objectTableIndex)
