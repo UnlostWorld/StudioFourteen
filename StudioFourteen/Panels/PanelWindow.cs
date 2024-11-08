@@ -101,6 +101,11 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		get => this.panel;
 		set
 		{
+			if (this.panel != null)
+			{
+				this.panel.PropertyChanged -= this.OnPanelPropertyChanged;
+			}
+
 			this.Content = value;
 			this.panel = value;
 
@@ -123,6 +128,8 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 				this.panel.HorizontalAlignment = HorizontalAlignment.Stretch;
 				this.panel.Height = double.NaN;
 				this.panel.VerticalAlignment = VerticalAlignment.Stretch;
+
+				this.panel.PropertyChanged += this.OnPanelPropertyChanged;
 			}
 		}
 	}
@@ -388,5 +395,11 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	private void OnGameUiToggled(object? sender, bool e)
 	{
 		this.NotifyPropertyChanged(nameof(PanelWindow.IsUiVisible));
+	}
+
+	private void OnPanelPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		this.NotifyPropertyChanged(nameof(PanelWindow.HasIcon));
+		this.NotifyPropertyChanged(nameof(PanelWindow.HasSubtitle));
 	}
 }
