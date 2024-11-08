@@ -1,10 +1,12 @@
 ﻿namespace StudioFourteen.Library;
 
 using FFXIVClientStructs;
+using FFXIVClientStructs.FFXIV.Common.Lua;
 using StudioFourteen.Appearance;
 using StudioFourteen.GameData.Excel;
 using StudioFourteen.Library.Filters;
 using StudioFourteen.Library.Results;
+using StudioFourteen.Library.Sources;
 using StudioFourteen.Mvm;
 using StudioFourteen.Tags;
 using System;
@@ -14,6 +16,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using TerraFX.Interop.Windows;
 using WpfUtils;
 using WpfUtils.Controls;
 using WpfUtils.Extensions;
@@ -64,7 +67,9 @@ public partial class MiniLibraryPopOut : View
 			this.currentEntry = value?.Entry;
 
 			if (value != null && !this.isLoading)
+			{
 				this.selectionChanged?.Invoke(value.Entry, false);
+			}
 
 			this.NotifyPropertyChanged();
 		}
@@ -162,7 +167,17 @@ public partial class MiniLibraryPopOut : View
 
 		this.selectionChanged = (obj, isFinal) =>
 		{
-			selectionChanged.Invoke(obj, isFinal);
+			if (obj is FileEntry fileEntry)
+			{
+				if (fileEntry.File != null)
+				{
+					selectionChanged.Invoke(fileEntry.File, isFinal);
+				}
+			}
+			else
+			{
+				selectionChanged.Invoke(obj, isFinal);
+			}
 		};
 
 		this.TagFilter.Tags.Replace(defaultTags);
