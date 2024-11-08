@@ -117,6 +117,9 @@ public abstract class NpcBase : LibraryExcelRow, ICharacterAppearance, ILibraryA
 		{
 			Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
 
+			if (this.Name != null)
+				character->SetDisplayName(this.Name);
+
 			bool redraw = false;
 			if (this.ModelChara != null)
 			{

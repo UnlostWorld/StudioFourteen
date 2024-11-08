@@ -90,7 +90,7 @@
 										<DoubleAnimation
 											Storyboard.TargetProperty="Opacity"
 											To="1"
-											Duration="0:00:00.150" />
+											Duration="0:00:00.050" />
 									</Storyboard>
 								</BeginStoryboard>
 							</DataTrigger.EnterActions>

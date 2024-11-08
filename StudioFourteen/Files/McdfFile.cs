@@ -7,6 +7,7 @@
 namespace StudioFourteen.Files;
 
 using Dalamud.Game.ClientState.Objects.Types;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using LZ4;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -56,7 +57,7 @@ public class MareFileTypeInfo : FileTypeInfoBase
 			return null;
 
 		file.FilePath = fileInfo.FullName;
-		file.Name = fileInfo.Name;
+		file.Name = Path.GetFileNameWithoutExtension(fileInfo.Name);
 
 		try
 		{
@@ -119,6 +120,15 @@ public class MareFile
 		IGameObject? target = DalamudServices.ObjectTable[objectTableIndex];
 		if (target == null)
 			return;
+
+		if (this.Name != null)
+		{
+			unsafe
+			{
+				Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
+				character->SetDisplayName(this.Name);
+			}
+		}
 
 		ServiceManager.Instance.IPC.MareSynchronosLoadMcdf(this.FilePath, target);
 	}

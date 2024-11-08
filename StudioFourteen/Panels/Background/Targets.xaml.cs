@@ -191,7 +191,7 @@ public unsafe class CharacterViewModel : AutoViewModel
 
 		if (this.IsValid)
 		{
-			this.Name = pCharacter->GetDisplayOrNickname();
+			this.Name = pCharacter->GetRoleOrDisplayName();
 			this.isCurrent = TargetSystem.Instance()->GPoseTarget == pCharacter;
 		}
 		else

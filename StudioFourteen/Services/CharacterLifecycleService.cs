@@ -76,7 +76,7 @@ public class CharacterLifecycleService : ServiceBase
 			return -1;
 
 		await Threads.FrameworkThread();
-		int index = this.Spawn(appearance?.Name ?? "Studio Character");
+		int index = this.Spawn();
 
 		if (DalamudServices.ObjectTable != null)
 		{
@@ -145,7 +145,7 @@ public class CharacterLifecycleService : ServiceBase
 
 			Threads.RunOnFrameworkThread(() =>
 			{
-				this.Log.Information($"Deleting object: {idx} - {deletingCharacter->GetNameAsString()}");
+				this.Log.Information($"Deleting object: {idx} - {deletingCharacter->GetDisplayName()}");
 				com->DeleteObjectByIndex(idx, 0);
 			});
 		}
@@ -205,7 +205,7 @@ public class CharacterLifecycleService : ServiceBase
 		return result;
 	}
 
-	private unsafe int Spawn(string name)
+	private unsafe int Spawn()
 	{
 		if (DalamudServices.ClientState?.LocalPlayer == null)
 			return -1;
@@ -231,7 +231,8 @@ public class CharacterLifecycleService : ServiceBase
 		EventGPoseController* gposeController = &EventFramework.Instance()->EventSceneModule.EventGPoseController;
 		gposeController->AddCharacterToGPose(pSpawned); // This is safe even if the list is full. The game will also cleanup for us.
 
-		pSpawned->CharacterSetup.CopyFromCharacter(player, CharacterSetupContainer.CopyFlags.None); // We copy the Player as the created character is just blank
+		CharacterSetupContainer.CopyFlags flags = CharacterSetupContainer.CopyFlags.WeaponHiding | CharacterSetupContainer.CopyFlags.Position;
+		pSpawned->CharacterSetup.CopyFromCharacter(player, flags);
 
 		*((sbyte*)pSpawned + 0x95) &= ~2; // Disable selection just incase this somehow leaks out of GPose
 
@@ -240,7 +241,17 @@ public class CharacterLifecycleService : ServiceBase
 		pSpawned->GameObject.Rotation = player->GameObject.Rotation;
 		pSpawned->GameObject.DefaultRotation = player->GameObject.Rotation;
 
-		// Set name
+		// Generate a unique name.
+		// This name must pass penumbra's naming validation to allow mcdf loading to wor.
+		// Generate the name "Studio S" + the object table index as letters a = 0, b = 1, etc.
+		char[] str = pSpawned->ObjectIndex.ToString("D3").ToArray();
+		for (int j = 0; j < str.Length; j++)
+		{
+			str[j] = (char)(str[j] + ('a' - '0'));
+		}
+
+		string name = $"Studio S{new string(str)}";
+
 		for (int x = 0; x < name.Length; x++)
 		{
 			pSpawned->GameObject.Name[x] = (byte)name[x];
@@ -249,12 +260,12 @@ public class CharacterLifecycleService : ServiceBase
 		pSpawned->GameObject.Name[name.Length] = 0;
 
 		pSpawned->GameObject.DisableDraw();
-		pSpawned->CharacterSetup.CopyFromCharacter(pSpawned, CharacterSetupContainer.CopyFlags.None); // Some tools get confused (Like Penumbra) unless we copy onto ourselves after name change
+		pSpawned->CharacterSetup.CopyFromCharacter(pSpawned, CharacterSetupContainer.CopyFlags.None);
 		pSpawned->GameObject.EnableDraw();
 
 		CreatedIndexes.Add(spawnedCharacterId);
 
-		this.Log.Information($"Spawning character {name} with id {spawnedCharacterId}");
+		this.Log.Information($"Spawning character {pSpawned->NameString} with id {spawnedCharacterId} and index {pSpawned->ObjectIndex}");
 
 		return pSpawned->ObjectIndex;
 	}

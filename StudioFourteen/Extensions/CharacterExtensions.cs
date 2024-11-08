@@ -1,6 +1,7 @@
 ﻿namespace FFXIVClientStructs.FFXIV.Client.Game.Character;
 
 using Dalamud.Game.ClientState.Objects.Enums;
+using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using global::System;
 using global::System.Runtime.InteropServices;
@@ -10,6 +11,7 @@ using StudioFourteen.Plugin;
 using StudioFourteen.Utilities;
 
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
+using ObjectKind = Dalamud.Game.ClientState.Objects.Enums.ObjectKind;
 
 public enum RenderMode : uint
 {
@@ -44,7 +46,7 @@ public static class CharacterExtensions
 		return self.RenderFlags == (int)RenderMode.Draw;
 	}
 
-	public static unsafe string? GetDisplayOrNickname(ref this Character self)
+	public static unsafe string? GetRoleOrDisplayName(ref this Character self)
 	{
 		string? nickname = ServiceManager.Instance.Roles.GetRole(self.ObjectIndex);
 		if (nickname != null)
@@ -53,31 +55,30 @@ public static class CharacterExtensions
 		return self.GetDisplayName();
 	}
 
-	public static unsafe string? GetDisplayName(ref this Character self)
+	public static unsafe void SetDisplayName(ref this Character self, string displayName)
 	{
+		self.GameObject.SetDisplayName(displayName);
+	}
+
+	public static unsafe string GetDisplayName(ref this Character self)
+	{
+		string selfName = self.GameObject.GetDisplayName();
+
 		if (self.CompanionOwnerId > 0)
 		{
 			Character* pOwner = (Character*)CharacterManager.Instance()->LookupBattleCharaByEntityId(self.CompanionOwnerId);
 			if (pOwner != null)
 			{
-				string? ownersName = pOwner->GetNameAsString();
+				string? ownersName = pOwner->GetDisplayName();
 				if (ownersName != null)
 				{
 					ownersName = ownersName.Split(' ')[0];
-					return $"{ownersName}'s {self.GetNameAsString()}";
+					return $"{ownersName}'s {selfName}";
 				}
 			}
 		}
 
-		return self.GetNameAsString();
-	}
-
-	public static unsafe string? GetNameAsString(ref this Character self)
-	{
-		fixed (byte* ptr = self.Name)
-		{
-			return ptr == null ? null : Marshal.PtrToStringUTF8((IntPtr)ptr);
-		}
+		return selfName;
 	}
 
 	public static unsafe CharacterBase* GetCharacterBase(ref this Character self)

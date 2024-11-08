@@ -136,7 +136,7 @@ public class CharacterBackupAppearance
 	public unsafe CharacterBackupAppearance(Character* character)
 		: base(null)
 	{
-		this.name = character->GetNameAsString();
+		this.name = character->GetDisplayName();
 		this.DrawData = character->DrawData;
 		this.ModelId = character->ModelCharaId;
 
@@ -149,7 +149,7 @@ public class CharacterBackupAppearance
 	public CharacterBackupAppearance(Character character)
 		: base(null)
 	{
-		this.name = character.GetNameAsString();
+		this.name = character.GetDisplayName();
 		this.DrawData = character.DrawData;
 		this.ModelId = character.ModelCharaId;
 

@@ -202,7 +202,7 @@ public class SaveService : ServiceBase
 			return false;
 
 		if (pCharacter->GetKind() == ObjectKind.BattleNpc
-			&& pCharacter->GetNameAsString() != "Carbuncle")
+			&& pCharacter->NameString != "Carbuncle")
 			return false;
 
 		return this.includeCharacters.ContainsKey(pCharacter->ObjectIndex);

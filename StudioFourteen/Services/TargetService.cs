@@ -50,7 +50,7 @@ public class TargetService : ServiceBase
 		this.Target = this.GetTarget();
 		this.HasValidTarget = this.Target != null && this.Target->CanDraw();
 		this.TargetObjectIndex = this.HasValidTarget ? this.Target->ObjectIndex : -1;
-		this.CharacterName = this.HasValidTarget ? this.Target->GetNameAsString() : "Nobody";
+		this.CharacterName = this.HasValidTarget ? this.Target->GetDisplayName() : "Nobody";
 		this.IsTargetLoading = this.Target != null && !this.Target->CanDraw();
 
 		if (startIndex != this.TargetObjectIndex)

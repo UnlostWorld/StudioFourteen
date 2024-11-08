@@ -118,6 +118,8 @@ public class GlamourerEntry
 					character->UpdateWeapon(index, (WeaponModelId)id, CharacterExtensions.UpdateSource.Library);
 				}
 			}
+
+			character->SetDisplayName(this.Name);
 		}
 	}
 
