@@ -1,0 +1,53 @@
+﻿<mvm:View
+	x:Class="StudioFourteen.Controls.TransformControl"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="clr-namespace:StudioFourteen.Controls"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:mvm="clr-namespace:StudioFourteen.Mvm"
+	x:Name="View"
+	d:DesignWidth="200"
+	mc:Ignorable="d">
+	<StackPanel>
+		<local:Vector3Box
+			DecimalPlaces="{Binding TranslationDecimalPlaces, ElementName=View}"
+			Expand="{Binding Path=TranslationExpand, ElementName=View}"
+			Icon="Arrows"
+			IsRelative="True"
+			LargeChange="{Binding TranslationLargeChange, ElementName=View}"
+			Maximum="{Binding TranslationMaximum, ElementName=View}"
+			Minimum="{Binding TranslationMinimum, ElementName=View}"
+			Range="{Binding TranslationRange, ElementName=View}"
+			SmallChange="{Binding TranslationSmallChange, ElementName=View}"
+			TickFrequency="{Binding TranslationTickFrequency, ElementName=View}"
+			Value="{Binding Translation, ElementName=View}" />
+
+		<local:Vector3Box
+			DecimalPlaces="{Binding RotationDecimalPlaces, ElementName=View}"
+			Expand="{Binding Path=RotationExpand, ElementName=View}"
+			Icon="Rotate"
+			IsRelative="False"
+			LargeChange="{Binding RotationLargeChange, ElementName=View}"
+			Maximum="{Binding RotationMaximum, ElementName=View}"
+			Minimum="{Binding RotationMinimum, ElementName=View}"
+			Range="{Binding RotationRange, ElementName=View}"
+			SmallChange="{Binding RotationSmallChange, ElementName=View}"
+			TickFrequency="{Binding RotationTickFrequency, ElementName=View}"
+			Wrap="True"
+			Value="{Binding RotationEuler, ElementName=View}" />
+
+		<local:Vector3Box
+			DecimalPlaces="{Binding ScaleDecimalPlaces, ElementName=View}"
+			Expand="{Binding Path=ScaleExpand, ElementName=View}"
+			Icon="ExpandArrowsAlt"
+			IsRelative="True"
+			LargeChange="{Binding ScaleLargeChange, ElementName=View}"
+			Maximum="{Binding ScaleMaximum, ElementName=View}"
+			Minimum="{Binding ScaleMinimum, ElementName=View}"
+			Range="{Binding ScaleRange, ElementName=View}"
+			SmallChange="{Binding ScaleSmallChange, ElementName=View}"
+			TickFrequency="{Binding ScaleTickFrequency, ElementName=View}"
+			Value="{Binding Scale, ElementName=View}" />
+	</StackPanel>
+</mvm:View>

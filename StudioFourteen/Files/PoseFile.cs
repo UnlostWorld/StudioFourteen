@@ -135,25 +135,25 @@ public class PoseFile : FileBase
 			// Legacy bone format for backwards compatibility
 			if (includeLegacyBones && reference.ModelSpaceTransform != null)
 			{
-				hkQsTransformf hkModelSpaceTransform = reference.ModelSpaceTransform.Value;
+				Transform hkModelSpaceTransform = reference.ModelSpaceTransform.Value;
 				if (reference.Transform != null)
-					hkModelSpaceTransform.Add(reference.Transform.Value);
+					hkModelSpaceTransform += (Transform)reference.Transform;
 
 				LegacyBoneTransform modelSpaceTransform = new();
-				modelSpaceTransform.Position = hkModelSpaceTransform.Translation.ToVector3();
-				modelSpaceTransform.Rotation = hkModelSpaceTransform.Rotation.ToQuaternion();
-				modelSpaceTransform.Scale = hkModelSpaceTransform.Scale.ToVector3();
+				modelSpaceTransform.Position = hkModelSpaceTransform.Translation;
+				modelSpaceTransform.Rotation = hkModelSpaceTransform.Rotation;
+				modelSpaceTransform.Scale = hkModelSpaceTransform.Scale;
 				this.Bones.Add(reference.Name, modelSpaceTransform);
 			}
 
 			// New format bones
 			if (reference.LocalSpaceTransform != null)
 			{
-				hkQsTransformf hkReferenceRelativeTransform = reference.LocalSpaceTransform.Value;
+				Transform hkReferenceRelativeTransform = reference.LocalSpaceTransform.Value;
 				if (reference.Transform != null)
-					hkReferenceRelativeTransform.Add(reference.Transform.Value);
+					hkReferenceRelativeTransform += (Transform)reference.Transform;
 
-				hkReferenceRelativeTransform.Subtract(reference.ReferenceTransform);
+				hkReferenceRelativeTransform -= reference.ReferenceTransform;
 
 				BoneTransform? referenceRelative = reference.GetLiveReferenceRelativeTransform();
 				if (referenceRelative == null)

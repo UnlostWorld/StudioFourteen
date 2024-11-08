@@ -1,5 +1,6 @@
 ﻿namespace StudioFourteen.Posing;
 
+using FFXIVClientStructs;
 using FFXIVClientStructs.FFXIV.Common.Lua;
 using FFXIVClientStructs.Havok.Animation.Rig;
 using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
@@ -78,73 +79,52 @@ public class BoneSelection : TransformSelectionBase
 	public override bool CanMirror => true;
 	public override MirrorModes MirrorMode { get; set; }
 
-	public override Vector3 LocalTranslation
+	public override Transform WorldTransform
 	{
-		get => this.LocalTransform.Translation.ToVector3();
+		get
+		{
+			if (this.bone == null || this.bone.ModelSpaceTransform == null || this.bone.LastCharacterTransform == null || this.bone.LocalSpaceTransform == null)
+				return default;
+
+			Transform localToModel = (Transform)this.bone.ModelSpaceTransform - (Transform)this.bone.LocalSpaceTransform;
+			return (Transform)this.bone.LastCharacterTransform + localToModel + this.LocalTransform;
+		}
+
 		set
 		{
-			hkQsTransformf transform = this.LocalTransform;
-			transform.Translation.FromVector3(value);
-			this.LocalTransform = transform;
+			if (this.bone == null || this.bone.ModelSpaceTransform == null || this.bone.LastCharacterTransform == null || this.bone.LocalSpaceTransform == null)
+				return;
+
+			// this is so close. I think value-world gives us the correct delta, but the rotation is still in world space, not local space
+			// which is what we need for bone transforms...
+			Transform localToModel = (Transform)this.bone.ModelSpaceTransform - (Transform)this.bone.LocalSpaceTransform;
+			Transform world = (Transform)this.bone.LastCharacterTransform + localToModel + (Transform)this.bone.LocalSpaceTransform;
+
+			Transform delta = value - world;
+			this.bone.Transform = delta;
 		}
 	}
 
-	public override Quaternion LocalRotation
-	{
-		get => this.LocalTransform.Rotation.ToQuaternion();
-		set
-		{
-			hkQsTransformf transform = this.LocalTransform;
-			transform.Rotation.FromQuaternion(value);
-			this.LocalTransform = transform;
-		}
-	}
-
-	public override Vector3 LocalScale
-	{
-		get => this.LocalTransform.Scale.ToVector3();
-		set
-		{
-			hkQsTransformf transform = this.LocalTransform;
-			transform.Scale.FromVector3(value);
-			this.LocalTransform = transform;
-		}
-	}
-
-	public override Vector3 WorldTranslation
-	{
-		get => this.LocalTranslation + (this.bone?.LastCharacterTranslation ?? Vector3.Zero);
-		set => this.LocalTranslation = value - (this.bone?.LastCharacterTranslation ?? Vector3.Zero);
-	}
-
-	public override Quaternion WorldRotation
-	{
-		get => this.GetWorldRotation();
-		set => this.ApplyWorldRotation(value);
-	}
-
-	public override Vector3 WorldScale
-	{
-		get => this.LocalScale + (this.bone?.LastCharacterScale ?? Vector3.One);
-		set => this.LocalScale = value - (this.bone?.LastCharacterScale ?? Vector3.One);
-	}
-
-	private hkQsTransformf LocalTransform
+	public override Transform LocalTransform
 	{
 		get
 		{
 			if (this.bone == null || this.bone.LocalSpaceTransform == null)
 				return default;
 
-			hkQsTransformf combine = this.bone.LocalSpaceTransform.Value;
-
 			if (this.bone.Transform != null)
-				combine.Add(this.bone.Transform.Value);
+				return (Transform)this.bone.Transform + (Transform)this.bone.LocalSpaceTransform;
 
-			return combine;
+			return (Transform)this.bone.LocalSpaceTransform;
 		}
 
-		set => this.ApplyLocalTransform(value);
+		set
+		{
+			if (this.bone == null || this.bone.LocalSpaceTransform == null)
+				return;
+
+			this.bone.Transform = value - (Transform)this.bone.LocalSpaceTransform;
+		}
 	}
 
 	public BoneTransform? GetLiveReferenceRelativeTransform()
@@ -174,7 +154,7 @@ public class BoneSelection : TransformSelectionBase
 
 	public void ApplyReferenceTransform(BoneTransform referenceTransform)
 	{
-		BoneTransform mirrorReferenceTransform = referenceTransform.Flip(this.MirrorMode);
+		/*BoneTransform mirrorReferenceTransform = referenceTransform.Flip(this.MirrorMode);
 
 		foreach (BoneReference boneReference in this.bones)
 		{
@@ -184,25 +164,24 @@ public class BoneSelection : TransformSelectionBase
 			{
 				boneReference.Mirror.LoadRelativeTransform = mirrorReferenceTransform;
 			}
-		}
+		}*/
 	}
 
-	public void ApplyReferenceTransform(hkQsTransformf referenceTransform)
+	public void ApplyReferenceTransform(Transform referenceTransform)
 	{
 		BoneTransform transform = new BoneTransform();
-		transform.Translation = referenceTransform.Translation.ToVector3();
-		transform.Rotation = referenceTransform.Rotation.ToQuaternion();
-		transform.Scale = referenceTransform.Scale.ToVector3();
+		transform.Translation = referenceTransform.Translation;
+		transform.Rotation = Quaternion.Normalize(referenceTransform.Rotation);
+		transform.Scale = referenceTransform.Scale;
 		this.ApplyReferenceTransform(transform);
 	}
 
-	public void ApplyLocalTransform(hkQsTransformf localTransform)
+	public void ApplyLocalTransform(Transform localTransform)
 	{
 		if (this.bone == null || this.bone.LocalSpaceTransform == null)
 			return;
 
-		hkQsTransformf transform = localTransform;
-		transform.Subtract(this.bone.ReferenceTransform);
+		Transform transform = localTransform - this.bone.ReferenceTransform;
 		this.ApplyReferenceTransform(transform);
 	}
 
@@ -236,39 +215,5 @@ public class BoneSelection : TransformSelectionBase
 		}
 
 		return true;
-	}
-
-	private void ApplyWorldRotation(Quaternion worldSpaceRotation)
-	{
-		if (this.bone == null || this.bone.ModelSpaceTransform == null || this.bone.LocalSpaceTransform == null)
-			return;
-
-		Quaternion modelSpaceRotation = worldSpaceRotation;
-
-		modelSpaceRotation = modelSpaceRotation.Conjugate();
-		modelSpaceRotation *= this.bone.LastCharacterRotation;
-		modelSpaceRotation = modelSpaceRotation.Conjugate();
-
-		hkQsTransformf newTransform = default;
-		newTransform.Rotation = modelSpaceRotation.ToHkQuaternion();
-		newTransform.Rotation.Divide(this.bone.ModelSpaceTransform.Value.Rotation);
-
-		hkQsTransformf localTransform = this.bone.LocalSpaceTransform.Value;
-		localTransform.Add(newTransform);
-		this.ApplyLocalTransform(localTransform);
-	}
-
-	private Quaternion GetWorldRotation()
-	{
-		if (this.bone == null || this.bone.ModelSpaceTransform == null)
-			return Quaternion.Identity;
-
-		hkQuaternionf rot = this.bone.LastCharacterRotation.ToHkQuaternion();
-		rot.Multiply(this.bone.ModelSpaceTransform.Value.Rotation);
-
-		if (this.bone.Transform != null)
-			rot.Multiply(this.bone.Transform.Value.Rotation);
-
-		return rot.ToQuaternion();
 	}
 }

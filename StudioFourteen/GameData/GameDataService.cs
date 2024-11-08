@@ -139,10 +139,10 @@ public class GameDataService : ServiceBase
 
 		// Initialize all sheets
 		// TODO: possibly do this in parallel
-		foreach (DataSheet sheet in this.sheets.Values)
+		/*foreach (DataSheet sheet in this.sheets.Values)
 		{
 			await sheet.Initialize();
-		}
+		}*/
 
 		NameMergeUtil.MergeNpcNames();
 		AppearanceDeduplicationUtil.Deduplicate();

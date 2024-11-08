@@ -54,6 +54,7 @@ public class PoseService : ServiceBase
 	private SelectionBase? selection;
 
 	private Hook<UpdateBonePhysicsDelegate>? updateBonePhysicsHook;
+	private Hook<FinalizeSkeletonsDelegate>? finalizeSkeletonsHook;
 	private PoseEditModes editMode = PoseEditModes.Rotation;
 
 	public delegate void SelectionChangedDelegate(SelectionBase? newSelection);
@@ -138,6 +139,10 @@ public class PoseService : ServiceBase
 
 		this.updateBonePhysicsHook = InteropService.HookFromSignature<UpdateBonePhysicsDelegate>("48 89 5C 24 ?? 48 89 6C 24 ?? 48 89 74 24 ?? 57 41 56 41 57 48 83 EC ?? 48 8B 79 ?? 45 33 FF", this.UpdateBonePhysicsDetour);
 		this.updateBonePhysicsHook?.Enable();
+
+		// JMP in Framework.TaskRenderGraphicsRender
+		this.finalizeSkeletonsHook = InteropService.HookFromSignature<FinalizeSkeletonsDelegate>("40 53 55 57 48 83 EC ?? 65 48 8B 04 25", this.FinalizeSkeletonDetour);
+		this.finalizeSkeletonsHook?.Enable();
 	}
 
 	public override void Detach()
@@ -145,6 +150,7 @@ public class PoseService : ServiceBase
 		base.Detach();
 
 		this.updateBonePhysicsHook?.Dispose();
+		this.finalizeSkeletonsHook?.Dispose();
 	}
 
 	public bool AreAllBoneReferencesLocked(int objectTableId)
@@ -475,6 +481,26 @@ public class PoseService : ServiceBase
 		return result;
 	}
 
+	private void FinalizeSkeletonDetour(nint a1)
+	{
+		if (this.finalizeSkeletonsHook == null)
+			return;
+
+		this.finalizeSkeletonsHook.Original(a1);
+
+		try
+		{
+			if (this.Services.Studio.IsOpen)
+			{
+				this.FinalizeSkeletons();
+			}
+		}
+		catch (Exception ex)
+		{
+			this.Log.Error(ex, "Error during skeleton update");
+		}
+	}
+
 	// This is a very hot path, be careful how much you do here.
 	// All the main skeleton stuff like positions, IK and physics is done at this point.
 	private unsafe void UpdateSkeletons()
@@ -533,6 +559,27 @@ public class PoseService : ServiceBase
 						transform->Scale = parentTransform->Scale;
 					}
 				}
+			}
+		}
+	}
+
+	private unsafe void FinalizeSkeletons()
+	{
+		List<BoneId> boneIds;
+		lock (this.boneIds)
+		{
+			boneIds = new(this.boneIds);
+		}
+
+		lock (this.boneReferences)
+		{
+			foreach (BoneId boneId in boneIds)
+			{
+				BoneReference reference = this.boneReferences[boneId];
+				if (!reference.IsValid)
+					continue;
+
+				reference.FinalizeBones();
 			}
 		}
 	}

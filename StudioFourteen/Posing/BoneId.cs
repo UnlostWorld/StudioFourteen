@@ -1,5 +1,11 @@
 ﻿namespace StudioFourteen.Posing;
 
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
+using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
+using FFXIVClientStructs.Havok.Animation.Rig;
+using StudioFourteen.Plugin;
+using StudioFourteen.Utilities;
 using System;
 
 public readonly struct BoneId(int objectTableIndex, int partialSkeletonIndex, byte poseIndex, short boneIndex)
@@ -56,5 +62,41 @@ public readonly struct BoneId(int objectTableIndex, int partialSkeletonIndex, by
 			val = this.BoneIndex.CompareTo(other.BoneIndex);
 
 		return val;
+	}
+
+	public unsafe bool Resolve(out Character* character, out Skeleton* skeleton, out PartialSkeleton* partialSkeleton, out hkaPose* pose)
+	{
+		character = null;
+		skeleton = null;
+		partialSkeleton = null;
+		pose = null;
+
+		if (DalamudServices.ObjectTable == null)
+			return false;
+
+		Threads.VerifyFrameworkThread();
+
+		character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(this.ObjectTableIndex);
+		if (character == null)
+			return false;
+
+		if (!character->CanDraw())
+			return false;
+
+		CharacterBase* characterBase = character->GetCharacterBase();
+		if (characterBase == null)
+			return false;
+
+		skeleton = characterBase->Skeleton;
+		if (skeleton == null)
+			return false;
+
+		partialSkeleton = &skeleton->PartialSkeletons[this.PartialSkeletonIndex];
+
+		if (partialSkeleton == null)
+			return false;
+
+		pose = partialSkeleton->GetHavokPose(this.PoseIndex);
+		return true;
 	}
 }

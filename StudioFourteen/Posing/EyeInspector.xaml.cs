@@ -49,7 +49,7 @@ public partial class EyeInspector : View
 			if (this.Selection?.EyeBone == null)
 				return Vector3.Zero;
 
-			return this.Selection.EyeBone.LocalRotation.ToEuler();
+			return this.Selection.EyeBone.LocalTransform.Rotation.ToEuler();
 		}
 
 		set
@@ -59,9 +59,9 @@ public partial class EyeInspector : View
 			if (this.Selection?.EyeBone == null)
 				return;
 
-			Quaternion rotation = this.Selection.EyeBone.LocalRotation;
-			rotation.FromEuler(value);
-			this.Selection.EyeBone.LocalRotation = rotation;
+			Transform transform = this.Selection.EyeBone.LocalTransform;
+			transform.Rotation.FromEuler(value);
+			this.Selection.EyeBone.LocalTransform = transform;
 		}
 	}
 

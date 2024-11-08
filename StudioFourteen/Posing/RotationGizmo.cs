@@ -40,6 +40,7 @@ public class RotationGizmo : View
 	private Point? closestAxisMouseFromPos = null;
 	private RotationGizmoAxis? closestMouseAxis = null;
 
+	private bool isError = false;
 	private bool isDragging = false;
 	private Point? dragStartToPos;
 	private Point? dragStartFromPos;
@@ -103,6 +104,12 @@ public class RotationGizmo : View
 	{
 		base.OnFrameworkUpdate(framework);
 
+		if (!this.Services.Studio.IsOpen)
+			return;
+
+		if (this.isError)
+			return;
+
 		Camera* pCamera = CameraManager.Instance()->GetActiveCamera();
 		Matrix4x4 viewMatrix = pCamera->GetViewMatrix();
 
@@ -137,8 +144,13 @@ public class RotationGizmo : View
 				this.zAxis.Transform(transformMatrix, viewMatrix, center);
 			});
 		}
-		catch (TaskCanceledException)
+		catch(TaskCanceledException)
 		{
+		}
+		catch(Exception ex)
+		{
+			this.isError = true;
+			this.Log.Error(ex, "Error drawing gizmo");
 		}
 	}
 

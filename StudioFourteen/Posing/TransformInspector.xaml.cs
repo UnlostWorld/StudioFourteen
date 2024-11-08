@@ -12,9 +12,6 @@ using System.Windows.Input;
 [DependencyProperty<Persistence>("Persistence")]
 public partial class TransformInspector : View
 {
-	private Vector3? trackingEuler;
-	private Quaternion lastWorldRotation = Quaternion.Identity;
-
 	[AutoNotify]
 	public int DecimalPlacesDisplay => this.Selection?.DecimalPlacesToDisplay ?? 2;
 
@@ -54,238 +51,45 @@ public partial class TransformInspector : View
 				this.Services.Pose.EditMode == PoseEditModes.Scale) ?? false;
 		}
 
-		set
-		{
-			this.Log.Information($">> {this.Persistence}");
-			this.Persistence?.SetPersistence(value, $"ExpandScaleSliders_{this.Services.Pose.EditMode}");
-		}
+		set => this.Persistence?.SetPersistence(value, $"ExpandScaleSliders_{this.Services.Pose.EditMode}");
 	}
 
 	[AutoNotify]
-	public double TranslationX
+	public Transform WorldTransform
 	{
-		get => this.LocalTranslation.X;
-		set
-		{
-			Vector3 translation = this.LocalTranslation;
-			translation.X = (float)value;
-			this.LocalTranslation = translation;
-		}
-	}
-
-	[AutoNotify]
-	public double TranslationY
-	{
-		get => this.LocalTranslation.Y;
-		set
-		{
-			Vector3 translation = this.LocalTranslation;
-			translation.Y = (float)value;
-			this.LocalTranslation = translation;
-		}
-	}
-
-	[AutoNotify]
-	public double TranslationZ
-	{
-		get => this.LocalTranslation.Z;
-		set
-		{
-			Vector3 translation = this.LocalTranslation;
-			translation.Z = (float)value;
-			this.LocalTranslation = translation;
-		}
-	}
-
-	[AutoNotify]
-	public double EulerRotationX
-	{
-		get => this.EulerRotation.X;
-		set
-		{
-			Vector3 euler = this.EulerRotation;
-			euler.X = (float)value;
-			this.EulerRotation = euler;
-		}
-	}
-
-	[AutoNotify]
-	public double EulerRotationY
-	{
-		get => this.EulerRotation.Y;
-		set
-		{
-			Vector3 euler = this.EulerRotation;
-			euler.Y = (float)value;
-			this.EulerRotation = euler;
-		}
-	}
-
-	[AutoNotify]
-	public double EulerRotationZ
-	{
-		get => this.EulerRotation.Z;
-		set
-		{
-			Vector3 euler = this.EulerRotation;
-			euler.Z = (float)value;
-			this.EulerRotation = euler;
-		}
-	}
-
-	public Vector3 EulerRotation
-	{
-		get
-		{
-			if (this.trackingEuler != null)
-				return (Vector3)this.trackingEuler;
-
-			return this.LocalRotation.ToEuler();
-		}
-
-		set
-		{
-			if (this.trackingEuler != null)
-				this.trackingEuler = value;
-
-			Quaternion rotation = this.LocalRotation;
-			rotation.FromEuler(value);
-			this.LocalRotation = rotation;
-		}
-	}
-
-	[AutoNotify]
-	public double ScaleX
-	{
-		get => this.LocalScale.X;
-		set
-		{
-			Vector3 scale = this.LocalScale;
-			scale.X = (float)value;
-			this.LocalScale = scale;
-		}
-	}
-
-	[AutoNotify]
-	public double ScaleY
-	{
-		get => this.LocalScale.Y;
-		set
-		{
-			Vector3 scale = this.LocalScale;
-			scale.Y = (float)value;
-			this.LocalScale = scale;
-		}
-	}
-
-	[AutoNotify]
-	public double ScaleZ
-	{
-		get => this.LocalScale.Z;
-		set
-		{
-			Vector3 scale = this.LocalScale;
-			scale.Z = (float)value;
-			this.LocalScale = scale;
-		}
-	}
-
-	[AutoNotify]
-	public Vector3 LocalTranslation
-	{
-		get => this.Selection?.LocalTranslation ?? default;
+		get => this.Selection?.WorldTransform ?? default;
 		set
 		{
 			if (this.Selection == null)
 				return;
 
-			this.Selection.LocalTranslation = value;
+			this.Selection.WorldTransform = value;
 		}
 	}
 
 	[AutoNotify]
-	public Quaternion LocalRotation
+	public Transform LocalTransform
 	{
-		get => this.Selection?.LocalRotation ?? default;
+		get => this.Selection?.LocalTransform ?? default;
 		set
 		{
 			if (this.Selection == null)
 				return;
 
-			this.Selection.LocalRotation = value;
+			this.Selection.LocalTransform = value;
 		}
 	}
 
-	[AutoNotify]
-	public Vector3 LocalScale
-	{
-		get => this.Selection?.LocalScale ?? default;
-		set
-		{
-			if (this.Selection == null)
-				return;
-
-			this.Selection.LocalScale = value;
-		}
-	}
-
-	[AutoNotify]
-	public Vector3 WorldTranslation
-	{
-		get => this.Selection?.WorldTranslation ?? default;
-		set
-		{
-			if (this.Selection == null)
-				return;
-
-			this.Selection.WorldTranslation = value;
-		}
-	}
-
+	// TODO: Move this to a custom control (Like TransformControl) for the gizmos.
 	[AutoNotify]
 	public Quaternion WorldRotation
 	{
-		get
-		{
-			if (this.Selection != null && this.Selection.IsReady)
-				this.lastWorldRotation = this.Selection.WorldRotation;
-
-			return this.lastWorldRotation;
-		}
+		get => this.WorldTransform.Rotation;
 		set
 		{
-			if (this.Selection == null)
-				return;
-
-			this.Selection.WorldRotation = value;
+			Transform t = this.WorldTransform;
+			t.Rotation = value;
+			this.WorldTransform = t;
 		}
-	}
-
-	[AutoNotify]
-	public Vector3 WorldScale
-	{
-		get => this.Selection?.WorldScale ?? default;
-		set
-		{
-			if (this.Selection == null)
-				return;
-
-			this.Selection.WorldScale = value;
-		}
-	}
-
-	partial void OnSelectionChanged()
-	{
-		this.trackingEuler = null;
-	}
-
-	private void OnEulerDown(object sender, MouseButtonEventArgs e)
-	{
-		this.trackingEuler = this.LocalRotation.ToEuler();
-	}
-
-	private void OnEulerUp(object sender, MouseButtonEventArgs e)
-	{
-		this.trackingEuler = null;
 	}
 }

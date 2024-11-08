@@ -4,6 +4,7 @@ using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using StudioFourteen.Plugin;
+using StudioFourteen.Structs.Extensions;
 using System;
 using System.Numerics;
 
@@ -13,14 +14,8 @@ public class GameObjectSelection : TransformSelectionBase
 	private string? name;
 	private bool isReady = false;
 
-	private Vector3 lastTranslation;
-	private Vector3 nextTranslation;
-
-	private Quaternion lastRotation = Quaternion.Identity;
-	private Quaternion nextRotation = Quaternion.Identity;
-
-	private Vector3 lastScale;
-	private Vector3 nextScale;
+	private Transform lastTransform = default;
+	private Transform nextTransform = default;
 
 	public GameObjectSelection(int objectTableId)
 	{
@@ -39,42 +34,16 @@ public class GameObjectSelection : TransformSelectionBase
 		set => this.Services.Pose.SetAllBoneReferencesLocked(this.objectTableId, value);
 	}
 
-	public override Vector3 LocalTranslation
+	public override Transform WorldTransform
 	{
-		get => this.lastTranslation;
-		set => this.nextTranslation = value;
+		get => this.LocalTransform;
+		set => this.LocalTransform = value;
 	}
 
-	public override Quaternion LocalRotation
+	public override Transform LocalTransform
 	{
-		get => this.lastRotation;
-		set => this.nextRotation = value;
-	}
-
-	public override Vector3 LocalScale
-	{
-		get => this.lastScale;
-		set => this.nextScale = value;
-	}
-
-	// GameObjects are in world space already,
-	// just pass through the local values.
-	public override Vector3 WorldTranslation
-	{
-		get => this.LocalTranslation;
-		set => this.LocalTranslation = value;
-	}
-
-	public override Quaternion WorldRotation
-	{
-		get => this.LocalRotation;
-		set => this.LocalRotation = value;
-	}
-
-	public override Vector3 WorldScale
-	{
-		get => this.LocalScale;
-		set => this.LocalScale = value;
+		get => this.lastTransform;
+		set => this.nextTransform = value;
 	}
 
 	public unsafe override void OnFrameworkUpdate(IFramework framework)
@@ -90,27 +59,28 @@ public class GameObjectSelection : TransformSelectionBase
 
 		this.name = gameObject->GetNameAsString();
 
-		if (this.nextTranslation != Vector3.Zero)
+		if (this.nextTransform.Translation != Vector3.Zero)
 		{
-			gameObject->DrawObject->Position = this.nextTranslation;
-			this.nextTranslation = Vector3.Zero;
+			gameObject->DrawObject->Position = this.nextTransform.Translation;
+			this.nextTransform.Translation = Vector3.Zero;
 		}
 
-		if (this.nextRotation != Quaternion.Identity)
+		if (this.nextTransform.Rotation != Quaternion.Identity && this.nextTransform.Rotation != Quaternion.Zero)
 		{
-			gameObject->DrawObject->Rotation = this.nextRotation;
-			this.nextRotation = Quaternion.Identity;
+			gameObject->DrawObject->Rotation = this.nextTransform.Rotation;
+			this.nextTransform.Rotation = Quaternion.Identity;
 		}
 
-		if (this.nextScale != Vector3.Zero)
+		if (this.nextTransform.Scale != Vector3.Zero)
 		{
-			gameObject->DrawObject->Scale = this.nextScale;
-			this.nextScale = Vector3.Zero;
+			gameObject->DrawObject->Scale = this.nextTransform.Scale;
+			this.nextTransform.Scale = Vector3.Zero;
 		}
 
-		this.lastTranslation = gameObject->DrawObject->Position;
-		this.lastRotation = gameObject->DrawObject->Rotation;
-		this.lastScale = gameObject->DrawObject->Scale;
+		this.lastTransform = default;
+		this.lastTransform.Translation = gameObject->DrawObject->Position;
+		this.lastTransform.Rotation = gameObject->DrawObject->Rotation;
+		this.lastTransform.Scale = gameObject->DrawObject->Scale;
 		this.isReady = true;
 	}
 

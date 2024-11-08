@@ -38,13 +38,8 @@ public abstract class SelectionBase : AutoViewModel, IEquatable<SelectionBase>
 
 public abstract class TransformSelectionBase : SelectionBase
 {
-	public abstract Vector3 WorldTranslation { get; set; }
-	public abstract Quaternion WorldRotation { get; set; }
-	public abstract Vector3 WorldScale { get; set; }
-
-	public abstract Vector3 LocalTranslation { get; set; }
-	public abstract Quaternion LocalRotation { get; set; }
-	public abstract Vector3 LocalScale { get; set; }
+	public abstract Transform WorldTransform { get; set; }
+	public abstract Transform LocalTransform { get; set; }
 
 	[AutoNotify] public abstract bool LockTransform { get; set; }
 	[AutoNotify] public virtual bool CanLockTransform => true;
