@@ -135,6 +135,7 @@ public class MareFile
 
 	public override void GetAutoTags(TagCollection tags)
 	{
+		tags.Add("Named");
 		this.Design?.GetAutoTags(tags);
 	}
 }

@@ -18,6 +18,8 @@ public abstract class FileBase
 
 	public virtual void GetAutoTags(TagCollection tags)
 	{
+		tags.Add("Named");
+
 		if (this.Author != null)
 		{
 			tags.Add(this.Author);
