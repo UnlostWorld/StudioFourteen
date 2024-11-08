@@ -43,6 +43,7 @@ public partial class BackgroundWindow : PanelWindow
 		base.OnActivated(e);
 
 		this.Services.Panels.ActivePanel = this;
+		this.Services.Windows.SendToBack(this);
 	}
 
 	protected override void OnDeactivated(EventArgs e)
@@ -53,6 +54,8 @@ public partial class BackgroundWindow : PanelWindow
 		{
 			this.Services.Panels.ActivePanel = null;
 		}
+
+		this.Services.Windows.SendToBack(this);
 	}
 
 	private void UpdatePosition()

@@ -97,6 +97,12 @@ public partial class WindowService : ServiceBase
 		BringWindowToTop(wndInterop.Handle);
 	}
 
+	public void SendToBack(Window window)
+	{
+		WindowInteropHelper wndInterop = new(window);
+		SetWindowPos(wndInterop.Handle, new IntPtr(1), 0, 0, 0, 0, 0x0001 | 0x0002 | 0x0010);
+	}
+
 	public void BringXivWindowToTop()
 	{
 		if (this.XivWindowHwnd == null)
