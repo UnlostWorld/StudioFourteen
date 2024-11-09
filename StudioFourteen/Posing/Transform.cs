@@ -34,7 +34,7 @@ public struct Transform : IEquatable<Transform>
 		return t;
 	}
 
-	public static Transform operator +(Transform left, Transform right)
+	public static Transform operator *(Transform left, Transform right)
 	{
 		Transform t = default;
 		t.Translation = left.Translation + right.Translation;
@@ -43,11 +43,20 @@ public struct Transform : IEquatable<Transform>
 		return t;
 	}
 
-	public static Transform operator -(Transform left, Transform right)
+	public static Transform operator /(Transform left, Transform right)
 	{
 		Transform t = default;
 		t.Translation = left.Translation - right.Translation;
 		t.Rotation = Quaternion.Normalize(left.Rotation / right.Rotation);
+		t.Scale = left.Scale / right.Scale;
+		return t;
+	}
+
+	public static Transform operator -(Transform left, Transform right)
+	{
+		Transform t = default;
+		t.Translation = left.Translation - right.Translation;
+		t.Rotation = Quaternion.Normalize(Quaternion.Inverse(left.Rotation) * right.Rotation);
 		t.Scale = left.Scale / right.Scale;
 		return t;
 	}

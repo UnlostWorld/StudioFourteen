@@ -38,7 +38,7 @@ public abstract class SelectionBase : AutoViewModel, IEquatable<SelectionBase>
 
 public abstract class TransformSelectionBase : SelectionBase
 {
-	public abstract Transform WorldTransform { get; set; }
+	public abstract Transform WorldTransform { get; }
 	public abstract Transform LocalTransform { get; set; }
 
 	[AutoNotify] public abstract bool LockTransform { get; set; }
@@ -51,4 +51,6 @@ public abstract class TransformSelectionBase : SelectionBase
 	public virtual PoseEditModes DefaultEditMode => PoseEditModes.Translation;
 
 	[AutoNotify] public virtual bool IsReady => true;
+
+	public abstract void SetWorldTransform(BoneTransform transform);
 }

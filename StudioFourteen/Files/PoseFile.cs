@@ -137,7 +137,7 @@ public class PoseFile : FileBase
 			{
 				Transform hkModelSpaceTransform = reference.ModelSpaceTransform.Value;
 				if (reference.Transform != null)
-					hkModelSpaceTransform += (Transform)reference.Transform;
+					hkModelSpaceTransform *= (Transform)reference.Transform;
 
 				LegacyBoneTransform modelSpaceTransform = new();
 				modelSpaceTransform.Position = hkModelSpaceTransform.Translation;
@@ -151,9 +151,9 @@ public class PoseFile : FileBase
 			{
 				Transform hkReferenceRelativeTransform = reference.LocalSpaceTransform.Value;
 				if (reference.Transform != null)
-					hkReferenceRelativeTransform += (Transform)reference.Transform;
+					hkReferenceRelativeTransform *= (Transform)reference.Transform;
 
-				hkReferenceRelativeTransform -= (Transform)reference.ReferenceTransform;
+				hkReferenceRelativeTransform /= (Transform)reference.ReferenceTransform;
 
 				Transform? referenceRelative = reference.ReferenceRelativeTransform;
 				if (referenceRelative == null)

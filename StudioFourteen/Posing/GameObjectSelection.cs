@@ -1,10 +1,8 @@
 ﻿namespace StudioFourteen.Posing;
 
 using Dalamud.Plugin.Services;
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using StudioFourteen.Plugin;
-using StudioFourteen.Structs.Extensions;
 using System;
 using System.Numerics;
 
@@ -15,7 +13,7 @@ public class GameObjectSelection : TransformSelectionBase
 	private bool isReady = false;
 
 	private Transform lastTransform = default;
-	private Transform nextTransform = default;
+	private BoneTransform? nextTransform;
 
 	public GameObjectSelection(int objectTableId)
 	{
@@ -34,16 +32,18 @@ public class GameObjectSelection : TransformSelectionBase
 		set => this.Services.Pose.SetAllBoneReferencesLocked(this.objectTableId, value);
 	}
 
-	public override Transform WorldTransform
-	{
-		get => this.LocalTransform;
-		set => this.LocalTransform = value;
-	}
+	public override Transform WorldTransform => this.LocalTransform;
 
 	public override Transform LocalTransform
 	{
 		get => this.lastTransform;
-		set => this.nextTransform = value;
+		set
+		{
+			this.nextTransform = new();
+			this.nextTransform.Translation = value.Translation;
+			this.nextTransform.Rotation = value.Rotation;
+			this.nextTransform.Scale = value.Scale;
+		}
 	}
 
 	public unsafe override void OnFrameworkUpdate(IFramework framework)
@@ -59,22 +59,19 @@ public class GameObjectSelection : TransformSelectionBase
 
 		this.name = gameObject->GetNameAsString();
 
-		if (this.nextTransform.Translation != Vector3.Zero)
+		if (this.nextTransform != null)
 		{
-			gameObject->DrawObject->Position = this.nextTransform.Translation;
-			this.nextTransform.Translation = Vector3.Zero;
-		}
+			if (this.nextTransform?.Translation != null)
+				gameObject->DrawObject->Position = (Vector3)this.nextTransform.Translation;
 
-		if (this.nextTransform.Rotation != Quaternion.Identity && this.nextTransform.Rotation != Quaternion.Zero)
-		{
-			gameObject->DrawObject->Rotation = this.nextTransform.Rotation;
-			this.nextTransform.Rotation = Quaternion.Identity;
-		}
+			if (this.nextTransform?.Rotation != null)
+				gameObject->DrawObject->Rotation = (Quaternion)this.nextTransform.Rotation;
 
-		if (this.nextTransform.Scale != Vector3.Zero)
-		{
-			gameObject->DrawObject->Scale = this.nextTransform.Scale;
-			this.nextTransform.Scale = Vector3.Zero;
+			// do not allow objects to scale below 0, it will break the game.
+			if (this.nextTransform?.Scale != null)
+				gameObject->DrawObject->Scale = Vector3.Max((Vector3)this.nextTransform.Scale, new Vector3(0.1f, 0.1f, 0.1f));
+
+			this.nextTransform = null;
 		}
 
 		this.lastTransform = default;
@@ -96,5 +93,10 @@ public class GameObjectSelection : TransformSelectionBase
 	{
 		// hmm...
 		throw new NotImplementedException();
+	}
+
+	public override void SetWorldTransform(BoneTransform transform)
+	{
+		this.nextTransform = transform;
 	}
 }

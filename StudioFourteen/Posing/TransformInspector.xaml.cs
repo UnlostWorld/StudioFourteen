@@ -58,13 +58,6 @@ public partial class TransformInspector : View
 	public Transform WorldTransform
 	{
 		get => this.Selection?.WorldTransform ?? default;
-		set
-		{
-			if (this.Selection == null)
-				return;
-
-			this.Selection.WorldTransform = value;
-		}
 	}
 
 	[AutoNotify]
@@ -87,9 +80,12 @@ public partial class TransformInspector : View
 		get => this.WorldTransform.Rotation;
 		set
 		{
-			Transform t = this.WorldTransform;
-			t.Rotation = value;
-			this.WorldTransform = t;
+			if (this.Selection == null)
+				return;
+
+			BoneTransform transform = new();
+			transform.Rotation = value;
+			this.Selection.SetWorldTransform(transform);
 		}
 	}
 }

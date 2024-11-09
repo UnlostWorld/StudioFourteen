@@ -22,7 +22,6 @@ public class BoneReference(BoneId id, string? name = null)
 	private Transform? loadLocalSpaceTransform;
 	private BoneTransform? loadModelSpaceBoneTransform;
 	private Transform? loadModelSpaceTransform;
-	private Transform? loadWorldSpaceTransform;
 	private Transform? loadReferenceRelativeTransform;
 	private string? boneName = name;
 	private string? mirrorBoneName;
@@ -32,7 +31,6 @@ public class BoneReference(BoneId id, string? name = null)
 	public Transform? LocalSpaceTransform { get; private set; }
 	public Transform? ModelSpaceTransform { get; private set; }
 	public Transform? ModelTransform { get; private set; }
-	public Transform? WorldSpaceTransform { get; private set; }
 	public Transform? ReferenceRelativeTransform { get; private set; }
 	public Transform? ReferenceTransform { get; private set; }
 
@@ -53,7 +51,7 @@ public class BoneReference(BoneId id, string? name = null)
 			throw new Exception("Cannot set bone to reference before it has been ticked");
 
 		var newTransform = this.ReferenceTransform;
-		newTransform -= (Transform)this.LocalSpaceTransform;
+		newTransform /= (Transform)this.LocalSpaceTransform;
 		this.Transform = newTransform;
 	}
 
@@ -77,11 +75,6 @@ public class BoneReference(BoneId id, string? name = null)
 	public void SetModelSpaceTransform(BoneTransform modelSpaceTransform)
 	{
 		this.loadModelSpaceBoneTransform = modelSpaceTransform;
-	}
-
-	public void SetWorldSpaceTransform(Transform worldSpaceTransform)
-	{
-		this.loadWorldSpaceTransform = worldSpaceTransform;
 	}
 
 	public void SetReferenceRelativeTransform(Transform referenceRelativeTransform)
@@ -122,8 +115,7 @@ public class BoneReference(BoneId id, string? name = null)
 		characterTransform.Rotation = pCharacter->DrawObject->Rotation;
 		characterTransform.Scale = pCharacter->DrawObject->Scale;
 		this.ModelTransform = characterTransform;
-		this.WorldSpaceTransform = characterTransform + this.ModelSpaceTransform;
-		this.ReferenceRelativeTransform = (Transform)this.LocalSpaceTransform - (Transform)this.ReferenceTransform;
+		this.ReferenceRelativeTransform = (Transform)this.LocalSpaceTransform / (Transform)this.ReferenceTransform;
 	}
 
 	public unsafe Skeleton* Tick()
@@ -188,13 +180,6 @@ public class BoneReference(BoneId id, string? name = null)
 		if (this.baseLocalTransform == null || !this.Locked)
 			this.baseLocalTransform = *pPose->AccessBoneLocalSpace(this.Id.BoneIndex);
 
-		// apply world space changes
-		if (this.loadWorldSpaceTransform != null && this.ModelTransform != null)
-		{
-			this.loadModelSpaceTransform = (Transform)this.loadWorldSpaceTransform - (Transform)this.ModelTransform;
-			this.loadWorldSpaceTransform = null;
-		}
-
 		// apply model space changes
 		if (this.loadModelSpaceTransform != null)
 		{
@@ -228,21 +213,24 @@ public class BoneReference(BoneId id, string? name = null)
 		// Apply reference relative changes
 		if (this.loadReferenceRelativeTransform != null && this.ReferenceTransform != null)
 		{
-			this.loadLocalSpaceTransform = (Transform)this.ReferenceTransform + (Transform)this.loadReferenceRelativeTransform;
+			this.loadLocalSpaceTransform = (Transform)this.ReferenceTransform * (Transform)this.loadReferenceRelativeTransform;
 			this.loadReferenceRelativeTransform = null;
 		}
 
 		// apply local space changes
 		if (this.loadLocalSpaceTransform != null)
 		{
-			this.Transform = this.loadLocalSpaceTransform - this.baseLocalTransform;
+			this.Transform = this.loadLocalSpaceTransform / this.baseLocalTransform;
 			this.loadLocalSpaceTransform = null;
 		}
 
 		// Apply transform to live.
 		if (this.Transform != null)
 		{
-			Transform newTransform = (Transform)this.Transform + (Transform)this.baseLocalTransform;
+			Transform newTransform = (Transform)this.Transform * (Transform)this.baseLocalTransform;
+
+			// do not allow bones to scale to 0. bad things happen.
+			newTransform.Scale = Vector3.Max(newTransform.Scale, new Vector3(0.1f, 0.1f, 0.1f));
 
 			hkQsTransformf* pTransform = pPose->AccessBoneLocalSpace(this.Id.BoneIndex);
 			pTransform->Translation.Set(newTransform.Translation);

@@ -12,6 +12,7 @@ using StudioFourteen.Structs.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using TerraFX.Interop.Windows;
 using static StudioFourteen.Files.PoseFile;
 
 public class BoneSelection : TransformSelectionBase
@@ -81,8 +82,13 @@ public class BoneSelection : TransformSelectionBase
 
 	public override Transform WorldTransform
 	{
-		get => this.bone?.WorldSpaceTransform ?? default;
-		set => this.bone?.SetWorldSpaceTransform(value);
+		get
+		{
+			if (this.bone == null || this.bone.ModelTransform == null || this.bone.ModelSpaceTransform == null)
+				return default;
+
+			return this.bone.ModelTransform.Value * this.bone.ModelSpaceTransform.Value;
+		}
 	}
 
 	public override Transform LocalTransform
@@ -168,5 +174,24 @@ public class BoneSelection : TransformSelectionBase
 		}
 
 		return true;
+	}
+
+	public override void SetWorldTransform(BoneTransform transform)
+	{
+		if (this.bone == null || this.bone.ModelTransform == null)
+			return;
+
+		// TODO: Support for translation and scale
+		if (transform.Translation != null)
+			throw new NotImplementedException();
+
+		// This works great for everything except EYES. WHY.
+		if (transform.Rotation != null)
+			transform.Rotation = Quaternion.Normalize(Quaternion.Inverse(this.bone.ModelTransform.Value.Rotation) * transform.Rotation.Value);
+
+		if (transform.Scale != null)
+			throw new NotImplementedException();
+
+		this.bone.SetModelSpaceTransform(transform);
 	}
 }
