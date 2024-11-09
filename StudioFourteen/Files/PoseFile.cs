@@ -147,47 +147,45 @@ public class PoseFile : FileBase
 			}
 
 			// New format bones
-			if (reference.LocalSpaceTransform != null)
+			if (reference.LocalSpaceTransform != null && reference.ReferenceTransform != null)
 			{
 				Transform hkReferenceRelativeTransform = reference.LocalSpaceTransform.Value;
 				if (reference.Transform != null)
 					hkReferenceRelativeTransform += (Transform)reference.Transform;
 
-				hkReferenceRelativeTransform -= reference.ReferenceTransform;
+				hkReferenceRelativeTransform -= (Transform)reference.ReferenceTransform;
 
-				BoneTransform? referenceRelative = reference.GetLiveReferenceRelativeTransform();
+				Transform? referenceRelative = reference.ReferenceRelativeTransform;
 				if (referenceRelative == null)
 					continue;
 
+				BoneTransform boneTransform = new();
 				if (includeBones == null)
 				{
 					// Null out components that are irrelevantly small
-					if (referenceRelative.Translation != null
-						&& referenceRelative.Translation.Value.IsApproximately(Vector3.Zero, 0.001f))
-						referenceRelative.Translation = null;
+					if (!referenceRelative.Value.Translation.IsApproximately(Vector3.Zero, 0.001f))
+						boneTransform.Translation = referenceRelative.Value.Translation;
 
 					// If the rotation quat has no x,y, or z component, then ignore it, as 0,0,0,1 is identity, and
 					// a W component without X,Y,Z components doesn't do anything afaik.
-					if (referenceRelative.Rotation != null
-						&& referenceRelative.Rotation.Value.X.IsApproximately(0, 0.001f)
-						&& referenceRelative.Rotation.Value.Y.IsApproximately(0, 0.001f)
-						&& referenceRelative.Rotation.Value.Z.IsApproximately(0, 0.001f))
-						referenceRelative.Rotation = null;
+					if (referenceRelative.Value.Rotation.X.IsApproximately(0, 0.001f)
+						&& referenceRelative.Value.Rotation.Y.IsApproximately(0, 0.001f)
+						&& referenceRelative.Value.Rotation.Z.IsApproximately(0, 0.001f))
+						boneTransform.Rotation = null;
 
-					if (referenceRelative.Scale != null
-						&& referenceRelative.Scale.Value.IsApproximately(Vector3.Zero, 0.001f))
-						referenceRelative.Scale = null;
+					if (referenceRelative.Value.Scale.IsApproximately(Vector3.Zero, 0.001f))
+						boneTransform.Scale = null;
 
 					// If all the components were irrelevantly small, then return null
-					if (referenceRelative.Translation == null
-						&& referenceRelative.Rotation == null
-						&& referenceRelative.Scale == null)
+					if (boneTransform.Translation == null
+						&& boneTransform.Rotation == null
+						&& boneTransform.Scale == null)
 					{
 						continue;
 					}
 				}
 
-				this.ReferenceRelativeBones.Add(reference.Name, referenceRelative);
+				this.ReferenceRelativeBones.Add(reference.Name, boneTransform);
 			}
 		}
 	}
@@ -310,6 +308,7 @@ public class PoseFile : FileBase
 		{
 			if (boneReference.Name == null)
 				continue;
+
 			if (useReferenceRelativeBones)
 			{
 				BoneTransform? val = null;
@@ -317,7 +316,7 @@ public class PoseFile : FileBase
 
 				if (val != null)
 				{
-					boneReference.LoadRelativeTransform = val;
+					boneReference.SetReferenceRelativeTransform(val);
 					boneReference.Locked = true;
 				}
 			}
@@ -340,7 +339,7 @@ public class PoseFile : FileBase
 					val.Position = null;
 					val.Scale = null;
 
-					boneReference.LoadModelSpaceTransform = val.ToBoneTransform();
+					boneReference.SetModelSpaceTransform(val.ToBoneTransform());
 					boneReference.Locked = true;
 				}
 			}

@@ -65,7 +65,7 @@
 				TranslationLargeChange="{Binding Selection.TranslationLargeChange}"
 				TranslationRange="{Binding Selection.TranslationRange}"
 				TranslationSmallChange="{Binding Selection.TranslationSmallChange}"
-				Value="{Binding WorldTransform}" />
+				Value="{Binding LocalTransform}" />
 
 		</StackPanel>
 	</Grid>

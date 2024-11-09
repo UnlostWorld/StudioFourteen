@@ -81,58 +81,20 @@ public class BoneSelection : TransformSelectionBase
 
 	public override Transform WorldTransform
 	{
-		get
-		{
-			if (this.bone == null || this.bone.ModelSpaceTransform == null || this.bone.LastCharacterTransform == null || this.bone.LocalSpaceTransform == null)
-				return default;
-
-			Transform localToModel = (Transform)this.bone.ModelSpaceTransform - (Transform)this.bone.LocalSpaceTransform;
-			return (Transform)this.bone.LastCharacterTransform + localToModel + this.LocalTransform;
-		}
-
-		set
-		{
-			if (this.bone == null || this.bone.ModelSpaceTransform == null || this.bone.LastCharacterTransform == null || this.bone.LocalSpaceTransform == null)
-				return;
-
-			// this is so close. I think value-world gives us the correct delta, but the rotation is still in world space, not local space
-			// which is what we need for bone transforms...
-			Transform localToModel = (Transform)this.bone.ModelSpaceTransform - (Transform)this.bone.LocalSpaceTransform;
-			Transform world = (Transform)this.bone.LastCharacterTransform + localToModel + (Transform)this.bone.LocalSpaceTransform;
-
-			Transform delta = value - world;
-			this.bone.Transform = delta;
-		}
+		get => this.bone?.WorldSpaceTransform ?? default;
+		set => this.bone?.SetWorldSpaceTransform(value);
 	}
 
 	public override Transform LocalTransform
 	{
-		get
-		{
-			if (this.bone == null || this.bone.LocalSpaceTransform == null)
-				return default;
-
-			if (this.bone.Transform != null)
-				return (Transform)this.bone.Transform + (Transform)this.bone.LocalSpaceTransform;
-
-			return (Transform)this.bone.LocalSpaceTransform;
-		}
-
-		set
-		{
-			if (this.bone == null || this.bone.LocalSpaceTransform == null)
-				return;
-
-			this.bone.Transform = value - (Transform)this.bone.LocalSpaceTransform;
-		}
+		get => this.bone?.LocalSpaceTransform ?? default;
+		set => this.bone?.SetLocalSpaceTransform(value);
 	}
 
-	public BoneTransform? GetLiveReferenceRelativeTransform()
+	public Transform ReferenceRelativeTransform
 	{
-		if (this.bone == null)
-			return null;
-
-		return this.bone.GetLiveReferenceRelativeTransform();
+		get => this.bone?.ReferenceRelativeTransform ?? default;
+		set => this.bone?.SetReferenceRelativeTransform(value);
 	}
 
 	public override void Activate()
@@ -152,48 +114,39 @@ public class BoneSelection : TransformSelectionBase
 		this.bone = null;
 	}
 
-	public void ApplyReferenceTransform(BoneTransform referenceTransform)
-	{
-		/*BoneTransform mirrorReferenceTransform = referenceTransform.Flip(this.MirrorMode);
-
-		foreach (BoneReference boneReference in this.bones)
-		{
-			boneReference.LoadRelativeTransform = referenceTransform;
-
-			if (this.MirrorMode != MirrorModes.None && boneReference.Mirror != null)
-			{
-				boneReference.Mirror.LoadRelativeTransform = mirrorReferenceTransform;
-			}
-		}*/
-	}
-
-	public void ApplyReferenceTransform(Transform referenceTransform)
+	public void SetReferenceTransform(Transform referenceTransform)
 	{
 		BoneTransform transform = new BoneTransform();
 		transform.Translation = referenceTransform.Translation;
 		transform.Rotation = Quaternion.Normalize(referenceTransform.Rotation);
 		transform.Scale = referenceTransform.Scale;
-		this.ApplyReferenceTransform(transform);
+		this.SetReferenceTransform(transform);
 	}
 
-	public void ApplyLocalTransform(Transform localTransform)
+	public void SetReferenceTransform(BoneTransform referenceTransform)
 	{
-		if (this.bone == null || this.bone.LocalSpaceTransform == null)
-			return;
+		BoneTransform mirrorReferenceTransform = referenceTransform.Flip(this.MirrorMode);
 
-		Transform transform = localTransform - this.bone.ReferenceTransform;
-		this.ApplyReferenceTransform(transform);
+		foreach (BoneReference boneReference in this.bones)
+		{
+			boneReference.SetReferenceRelativeTransform(referenceTransform);
+
+			if (this.MirrorMode != MirrorModes.None && boneReference.Mirror != null)
+			{
+				boneReference.Mirror.SetReferenceRelativeTransform(mirrorReferenceTransform);
+			}
+		}
 	}
 
 	public override void Reset()
 	{
 		foreach(BoneReference bone in this.bones)
 		{
-			bone.Transform = null;
+			bone.Reset();
 
 			if (this.MirrorMode != MirrorModes.None && bone.Mirror != null)
 			{
-				bone.Mirror.Transform = null;
+				bone.Mirror.Reset();
 			}
 		}
 	}

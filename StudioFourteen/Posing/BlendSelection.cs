@@ -105,7 +105,7 @@ public class BlendSelection(string name, BlendTarget target, int objectTableInde
 
 			boneSelection.MirrorMode = this.mirrorMode;
 
-			BoneTransform? fromTransform = boneSelection.GetLiveReferenceRelativeTransform();
+			Transform? fromTransform = boneSelection.ReferenceRelativeTransform;
 			if (fromTransform == null)
 				continue;
 
@@ -122,7 +122,7 @@ public class BlendSelection(string name, BlendTarget target, int objectTableInde
 			if (flipSides && leftTransform != null)
 				leftTransform = leftTransform.Flip();
 
-			this.bones.Add(new(boneSelection, fromTransform, rightTransform, leftTransform));
+			this.bones.Add(new(boneSelection, (Transform)fromTransform, rightTransform, leftTransform));
 		}
 	}
 
@@ -136,12 +136,12 @@ public class BlendSelection(string name, BlendTarget target, int objectTableInde
 		}
 	}
 
-	public struct BoneBlend(BoneSelection selection, BoneTransform initial, BoneTransform right, BoneTransform? left = null)
+	public struct BoneBlend(BoneSelection selection, Transform initial, BoneTransform right, BoneTransform? left = null)
 	{
 		public BoneTransform Value = new();
 
 		public BoneSelection Selection = selection;
-		public BoneTransform Initial = initial;
+		public Transform Initial = initial;
 		public BoneTransform Right = right;
 		public BoneTransform? Left = left;
 
@@ -149,39 +149,34 @@ public class BlendSelection(string name, BlendTarget target, int objectTableInde
 		{
 			if (value > 0)
 			{
-				if (this.Initial.Rotation != null && this.Right.Rotation != null)
-					this.Value.Rotation = Quaternion.Lerp(this.Initial.Rotation.Value, this.Right.Rotation.Value, value);
+				if (this.Right.Rotation != null)
+					this.Value.Rotation = Quaternion.Lerp(this.Initial.Rotation, this.Right.Rotation.Value, value);
 
-				if (this.Initial.Translation != null && this.Right.Translation != null)
-					this.Value.Translation = Vector3.Lerp(this.Initial.Translation.Value, this.Right.Translation.Value, value);
+				if (this.Right.Translation != null)
+					this.Value.Translation = Vector3.Lerp(this.Initial.Translation, this.Right.Translation.Value, value);
 
-				if (this.Initial.Scale != null && this.Right.Scale != null)
-					this.Value.Scale = Vector3.Lerp(this.Initial.Scale.Value, this.Right.Scale.Value, value);
+				if (this.Right.Scale != null)
+					this.Value.Scale = Vector3.Lerp(this.Initial.Scale, this.Right.Scale.Value, value);
 			}
 			else if (value < 0 && this.Left != null)
 			{
-				if (this.Initial.Rotation != null && this.Left.Rotation != null)
-					this.Value.Rotation = Quaternion.Lerp(this.Initial.Rotation.Value, this.Left.Rotation.Value, -value);
+				if (this.Left.Rotation != null)
+					this.Value.Rotation = Quaternion.Lerp(this.Initial.Rotation, this.Left.Rotation.Value, -value);
 
-				if (this.Initial.Translation != null && this.Left.Translation != null)
-					this.Value.Translation = Vector3.Lerp(this.Initial.Translation.Value, this.Left.Translation.Value, -value);
+				if (this.Left.Translation != null)
+					this.Value.Translation = Vector3.Lerp(this.Initial.Translation, this.Left.Translation.Value, -value);
 
-				if (this.Initial.Scale != null && this.Left.Scale != null)
-					this.Value.Scale = Vector3.Lerp(this.Initial.Scale.Value, this.Left.Scale.Value, -value);
+				if (this.Left.Scale != null)
+					this.Value.Scale = Vector3.Lerp(this.Initial.Scale, this.Left.Scale.Value, -value);
 			}
 			else
 			{
-				if (this.Initial.Rotation != null)
-					this.Value.Rotation = this.Initial.Rotation.Value;
-
-				if (this.Initial.Translation != null)
-					this.Value.Translation = this.Initial.Translation.Value;
-
-				if (this.Initial.Scale != null)
-					this.Value.Scale = this.Initial.Scale.Value;
+				this.Value.Rotation = this.Initial.Rotation;
+				this.Value.Translation = this.Initial.Translation;
+				this.Value.Scale = this.Initial.Scale;
 			}
 
-			this.Selection.ApplyReferenceTransform(this.Value);
+			this.Selection.SetReferenceTransform(this.Value);
 		}
 	}
 }

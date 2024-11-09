@@ -436,19 +436,19 @@ public class PoseService : ServiceBase
 		{
 			bone.Locked = true;
 
-			BoneTransform? transform = bone.GetLiveReferenceRelativeTransform();
+			Transform? transform = bone.ReferenceRelativeTransform;
 			if (transform == null)
 				continue;
 
-			BoneTransform flipped = transform.Flip();
+			Transform flipped = transform.Value.Flip();
 
 			if (bone.Mirror != null)
 			{
-				bone.Mirror.LoadRelativeTransform = flipped;
+				bone.Mirror.SetReferenceRelativeTransform(flipped);
 			}
 			else
 			{
-				bone.LoadRelativeTransform = flipped;
+				bone.SetReferenceRelativeTransform(flipped);
 			}
 		}
 	}
