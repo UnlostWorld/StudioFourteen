@@ -173,7 +173,7 @@ public class PoseFile : FileBase
 						&& referenceRelative.Value.Rotation.Z.IsApproximately(0, 0.001f))
 						boneTransform.Rotation = null;
 
-					if (referenceRelative.Value.Scale.IsApproximately(Vector3.Zero, 0.001f))
+					if (referenceRelative.Value.Scale.IsApproximately(Vector3.One, 0.001f))
 						boneTransform.Scale = null;
 
 					// If all the components were irrelevantly small, then return null

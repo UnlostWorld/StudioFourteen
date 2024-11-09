@@ -171,8 +171,8 @@ public class BlendSelection(string name, BlendTarget target, int objectTableInde
 			}
 			else
 			{
-				this.Value.Rotation = this.Initial.Rotation;
 				this.Value.Translation = this.Initial.Translation;
+				this.Value.Rotation = this.Initial.Rotation;
 				this.Value.Scale = this.Initial.Scale;
 			}
 

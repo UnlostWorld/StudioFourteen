@@ -94,7 +94,7 @@ public class BoneReference(BoneId id, string? name = null)
 		Transform relativeTransform = default;
 		relativeTransform.Translation = referenceRelativeTransform.Translation ?? Vector3.Zero;
 		relativeTransform.Rotation = referenceRelativeTransform.Rotation ?? Quaternion.Identity;
-		relativeTransform.Scale = referenceRelativeTransform.Scale ?? Vector3.Zero;
+		relativeTransform.Scale = referenceRelativeTransform.Scale ?? Vector3.One;
 		this.loadReferenceRelativeTransform = relativeTransform;
 	}
 
