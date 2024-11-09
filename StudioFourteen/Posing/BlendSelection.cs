@@ -115,12 +115,12 @@ public class BlendSelection(string name, BlendTarget target, int objectTableInde
 				continue;
 
 			if (flipSides)
-				rightTransform = rightTransform.Flip();
+				rightTransform = FlipUtility.BoneTransform(rightTransform);
 
 			BoneTransform? leftTransform = null;
 			this.Target.LeftBones?.TryGetValue(boneName, out leftTransform);
 			if (flipSides && leftTransform != null)
-				leftTransform = leftTransform.Flip();
+				leftTransform = FlipUtility.BoneTransform(leftTransform);
 
 			this.bones.Add(new(boneSelection, (Transform)fromTransform, rightTransform, leftTransform));
 		}

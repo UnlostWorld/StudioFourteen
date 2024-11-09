@@ -125,7 +125,7 @@ public class BoneSelection : TransformSelectionBase
 
 	public void SetReferenceTransform(BoneTransform referenceTransform)
 	{
-		BoneTransform mirrorReferenceTransform = referenceTransform.Flip(this.MirrorMode);
+		BoneTransform mirrorReferenceTransform = FlipUtility.BoneTransform(referenceTransform, this.MirrorMode);
 
 		foreach (BoneReference boneReference in this.bones)
 		{
