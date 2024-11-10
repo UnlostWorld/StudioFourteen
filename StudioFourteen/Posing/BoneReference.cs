@@ -36,6 +36,7 @@ public class BoneReference(BoneId id, string? name = null)
 
 	public bool Locked { get; set; } = false;
 	public bool ForceRef { get; set; } = false;
+	public MirrorModes MirrorMode { get; set; }
 
 	public string? Name
 	{
@@ -64,26 +65,31 @@ public class BoneReference(BoneId id, string? name = null)
 
 	public void SetLocalSpaceTransform(Transform localSpaceTransform)
 	{
+		this.ReverseMirror();
 		this.loadLocalSpaceTransform = localSpaceTransform;
 	}
 
 	public void SetModelSpaceTransform(Transform modelSpaceTransform)
 	{
+		this.ReverseMirror();
 		this.loadModelSpaceTransform = modelSpaceTransform;
 	}
 
 	public void SetModelSpaceTransform(BoneTransform modelSpaceTransform)
 	{
+		this.ReverseMirror();
 		this.loadModelSpaceBoneTransform = modelSpaceTransform;
 	}
 
 	public void SetReferenceRelativeTransform(Transform referenceRelativeTransform)
 	{
+		this.ReverseMirror();
 		this.loadReferenceRelativeTransform = referenceRelativeTransform;
 	}
 
 	public void SetReferenceRelativeTransform(BoneTransform referenceRelativeTransform)
 	{
+		this.ReverseMirror();
 		Transform relativeTransform = default;
 		relativeTransform.Translation = referenceRelativeTransform.Translation ?? Vector3.Zero;
 		relativeTransform.Rotation = referenceRelativeTransform.Rotation ?? Quaternion.Identity;
@@ -94,6 +100,7 @@ public class BoneReference(BoneId id, string? name = null)
 	public void Reset()
 	{
 		this.Transform = null;
+		this.MirrorMode = MirrorModes.None;
 	}
 
 	public unsafe void FinalizeBones()
@@ -236,10 +243,31 @@ public class BoneReference(BoneId id, string? name = null)
 			pTransform->Translation.Set(newTransform.Translation);
 			pTransform->Rotation.Set(newTransform.Rotation);
 			pTransform->Scale.Set(newTransform.Scale);
+		}
 
-			pPose->EnforceSkeletonConstraintsLocalSpace();
+		// Apply mirroring
+		if (this.Mirror != null && (this.MirrorMode != MirrorModes.None && this.MirrorMode != MirrorModes.Receiving))
+		{
+			Transform localTransform = *pPose->AccessBoneLocalSpace(this.Id.BoneIndex);
+			Transform mirrorTransform = FlipUtility.Flip(localTransform, this.MirrorMode);
+			this.Mirror.loadLocalSpaceTransform = mirrorTransform;
+			this.Mirror.MirrorMode = MirrorModes.Receiving;
 		}
 
 		return pSkeleton;
+	}
+
+	private void ReverseMirror()
+	{
+		if (this.MirrorMode != MirrorModes.Receiving)
+			return;
+
+		if (this.Mirror == null)
+			return;
+
+		MirrorModes sourceMode = this.Mirror.MirrorMode;
+
+		this.MirrorMode = sourceMode;
+		this.Mirror.MirrorMode = MirrorModes.Receiving;
 	}
 }

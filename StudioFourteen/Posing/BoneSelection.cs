@@ -78,7 +78,28 @@ public class BoneSelection : TransformSelectionBase
 	}
 
 	public override bool CanMirror => true;
-	public override MirrorModes MirrorMode { get; set; }
+	public override MirrorModes MirrorMode
+	{
+		get
+		{
+			if (this.bone == null)
+				return MirrorModes.None;
+
+			MirrorModes mode = this.bone.MirrorMode;
+
+			if (mode == MirrorModes.Receiving && this.bone.Mirror != null)
+				mode = this.bone.Mirror.MirrorMode;
+
+			return mode;
+		}
+		set
+		{
+			foreach(BoneReference bone in this.bones)
+			{
+				bone.MirrorMode = value;
+			}
+		}
+	}
 
 	public override Transform WorldTransform
 	{
@@ -94,13 +115,13 @@ public class BoneSelection : TransformSelectionBase
 	public override Transform LocalTransform
 	{
 		get => this.bone?.LocalSpaceTransform ?? default;
-		set => this.bone?.SetLocalSpaceTransform(value);
+		set => this.SetLocalTransform(value);
 	}
 
 	public Transform ReferenceRelativeTransform
 	{
 		get => this.bone?.ReferenceRelativeTransform ?? default;
-		set => this.bone?.SetReferenceRelativeTransform(value);
+		set => this.SetReferenceTransform(value);
 	}
 
 	public override void Activate()
@@ -118,30 +139,6 @@ public class BoneSelection : TransformSelectionBase
 	{
 		this.bones.Clear();
 		this.bone = null;
-	}
-
-	public void SetReferenceTransform(Transform referenceTransform)
-	{
-		BoneTransform transform = new BoneTransform();
-		transform.Translation = referenceTransform.Translation;
-		transform.Rotation = Quaternion.Normalize(referenceTransform.Rotation);
-		transform.Scale = referenceTransform.Scale;
-		this.SetReferenceTransform(transform);
-	}
-
-	public void SetReferenceTransform(BoneTransform referenceTransform)
-	{
-		BoneTransform mirrorReferenceTransform = FlipUtility.BoneTransform(referenceTransform, this.MirrorMode);
-
-		foreach (BoneReference boneReference in this.bones)
-		{
-			boneReference.SetReferenceRelativeTransform(referenceTransform);
-
-			if (this.MirrorMode != MirrorModes.None && boneReference.Mirror != null)
-			{
-				boneReference.Mirror.SetReferenceRelativeTransform(mirrorReferenceTransform);
-			}
-		}
 	}
 
 	public override void Reset()
@@ -185,13 +182,40 @@ public class BoneSelection : TransformSelectionBase
 		if (transform.Translation != null)
 			throw new NotImplementedException();
 
-		// This works great for everything except EYES. WHY.
 		if (transform.Rotation != null)
 			transform.Rotation = Quaternion.Normalize(Quaternion.Inverse(this.bone.ModelTransform.Value.Rotation) * transform.Rotation.Value);
 
 		if (transform.Scale != null)
 			throw new NotImplementedException();
 
-		this.bone.SetModelSpaceTransform(transform);
+		foreach (BoneReference bone in this.bones)
+		{
+			bone.SetModelSpaceTransform(transform);
+		}
+	}
+
+	public void SetLocalTransform(Transform localTransform)
+	{
+		foreach (BoneReference bone in this.bones)
+		{
+			bone.SetLocalSpaceTransform(localTransform);
+		}
+	}
+
+	public void SetReferenceTransform(Transform referenceTransform)
+	{
+		BoneTransform transform = new BoneTransform();
+		transform.Translation = referenceTransform.Translation;
+		transform.Rotation = Quaternion.Normalize(referenceTransform.Rotation);
+		transform.Scale = referenceTransform.Scale;
+		this.SetReferenceTransform(transform);
+	}
+
+	public void SetReferenceTransform(BoneTransform referenceTransform)
+	{
+		foreach (BoneReference bone in this.bones)
+		{
+			bone.SetReferenceRelativeTransform(referenceTransform);
+		}
 	}
 }

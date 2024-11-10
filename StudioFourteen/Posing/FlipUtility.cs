@@ -4,7 +4,7 @@ using System.Numerics;
 
 public static class FlipUtility
 {
-	public static Transform Transform(Transform transform, MirrorModes mirrorMode = MirrorModes.MirrorTRCopyS)
+	public static Transform Flip(Transform transform, MirrorModes mirrorMode = MirrorModes.MirrorTRCopyS)
 	{
 		Transform mirrorTransform = new();
 
@@ -28,7 +28,7 @@ public static class FlipUtility
 		return mirrorTransform;
 	}
 
-	public static BoneTransform BoneTransform(BoneTransform boneTransform, MirrorModes mirrorMode = MirrorModes.MirrorTRCopyS)
+	public static BoneTransform Flip(BoneTransform boneTransform, MirrorModes mirrorMode = MirrorModes.MirrorTRCopyS)
 	{
 		BoneTransform mirrorTransform = new();
 

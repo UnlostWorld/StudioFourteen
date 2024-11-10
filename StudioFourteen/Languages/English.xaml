@@ -145,6 +145,11 @@
 	<sys:String x:Key="LOC_Pose_RevertPose">Revert all changes to {0}'s pose</sys:String>
 	<sys:String x:Key="LOC_Pose_Reference">Set the targeted actor to its reference pose</sys:String>
 
+	<sys:String x:Key="LOC_Pose_Mirror_Header">Transfer values</sys:String>
+	<sys:String x:Key="LOC_Pose_Mirror_None">None</sys:String>
+	<sys:String x:Key="LOC_Pose_Mirror_Copy">Copy</sys:String>
+	<sys:String x:Key="LOC_Pose_Mirror_Flip">Mirror</sys:String>
+
 	<!--  Camera  -->
 	<sys:String x:Key="LOC_Camera_Fov">Field of View</sys:String>
 	<sys:String x:Key="LOC_Camera_Rotation">Camera Rotation</sys:String>

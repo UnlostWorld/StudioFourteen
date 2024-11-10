@@ -293,6 +293,12 @@
 							SelectedValuePath="Tag"
 							Visibility="{Binding Selection.CanMirror, Converter={StaticResource B2V}}">
 
+							<wpfUtils:PopOut.Header>
+								<TextBlock
+									Margin="10"
+									Text="{DynamicResource LOC_Pose_Mirror_Header}" />
+							</wpfUtils:PopOut.Header>
+
 							<ComboBoxItem Tag="{x:Static pose:MirrorModes.None}">
 								<Grid>
 									<Grid.ColumnDefinitions>
@@ -305,7 +311,7 @@
 										Icon="Minus" />
 									<TextBlock
 										Grid.Column="1"
-										Text="No Mirror" />
+										Text="{DynamicResource LOC_Pose_Mirror_None}" />
 								</Grid>
 							</ComboBoxItem>
 
@@ -321,7 +327,7 @@
 										Icon="LeftLong" />
 									<TextBlock
 										Grid.Column="1"
-										Text="Copy" />
+										Text="{DynamicResource LOC_Pose_Mirror_Copy}" />
 								</Grid>
 							</ComboBoxItem>
 
@@ -337,7 +343,7 @@
 										Icon="LeftRight" />
 									<TextBlock
 										Grid.Column="1"
-										Text="Mirror" />
+										Text="{DynamicResource LOC_Pose_Mirror_Flip}" />
 								</Grid>
 							</ComboBoxItem>
 						</ComboBox>

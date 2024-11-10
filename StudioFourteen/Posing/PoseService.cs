@@ -42,6 +42,11 @@ public enum MirrorModes
 	/// (Copy) Mirror the bone Translation and copy the Rotation and Scale.
 	/// </summary>
 	MirrorTCopyRS,
+
+	/// <summary>
+	/// This object is receiving mirrors from its opposite.
+	/// </summary>
+	Receiving,
 }
 
 public class PoseService : ServiceBase
@@ -438,7 +443,7 @@ public class PoseService : ServiceBase
 			if (transform == null)
 				continue;
 
-			Transform flipped = FlipUtility.Transform(transform.Value);
+			Transform flipped = FlipUtility.Flip(transform.Value);
 
 			if (bone.Mirror != null)
 			{
