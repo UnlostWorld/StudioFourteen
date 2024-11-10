@@ -133,7 +133,6 @@ public partial class MiniLibraryPopOut : View
 		instance = new MiniLibraryPopOut();
 		instance.host = PopOut.Show(placementTarget, instance);
 		instance.host.StaysOpen = true;
-		instance.host.PlacementTarget = placementTarget;
 		instance.host.IsOpen = true;
 
 		Window? targetWindow = placementTarget.FindParent<Window>();

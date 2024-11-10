@@ -49,9 +49,9 @@ public partial class EquipmentView : View
 
 	private unsafe void OnChangeClicked(object sender, RoutedEventArgs e)
 	{
-		if (this.Item is GearViewModelBase gear)
+		if (this.Item is GearViewModelBase gear && sender is UIElement el)
 		{
-			gear.Change(this);
+			gear.Change(el);
 		}
 	}
 

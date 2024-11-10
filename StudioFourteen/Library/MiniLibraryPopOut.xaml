@@ -13,10 +13,10 @@
 	xmlns:results="clr-namespace:StudioFourteen.Library.Results"
 	xmlns:tags="clr-namespace:StudioFourteen.Tags"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	Width="250"
 	Height="450"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
-	d:DesignWidth="300"
 	mc:Ignorable="d">
 
 	<Grid>
