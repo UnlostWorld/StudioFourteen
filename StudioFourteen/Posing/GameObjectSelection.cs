@@ -1,6 +1,7 @@
 ﻿namespace StudioFourteen.Posing;
 
 using Dalamud.Plugin.Services;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using StudioFourteen.Plugin;
 using System;
@@ -53,11 +54,11 @@ public class GameObjectSelection : TransformSelectionBase
 		if (DalamudServices.ObjectTable == null)
 			throw new Exception("No Object Table");
 
-		GameObject* gameObject = (GameObject*)DalamudServices.ObjectTable.GetObjectAddress(this.objectTableId);
+		Character* gameObject = (Character*)DalamudServices.ObjectTable.GetObjectAddress(this.objectTableId);
 		if (gameObject == null || gameObject->DrawObject == null)
 			return;
 
-		this.name = gameObject->GetNameAsString();
+		this.name = gameObject->GetDisplayName();
 
 		if (this.nextTransform != null)
 		{
