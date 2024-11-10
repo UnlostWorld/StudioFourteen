@@ -214,8 +214,15 @@ public partial class MiniLibraryPopOut : View
 		results?.Sort((a, b) =>
 		{
 			// TODO: a generic sorting system...
-			// TODO: Favorites
-			if (a.Entry is CharacterBackupAppearance && b.Entry is not CharacterBackupAppearance)
+			if (a.Entry.IsFavorite && !b.Entry.IsFavorite)
+			{
+				return -1;
+			}
+			else if (!a.Entry.IsFavorite && b.Entry.IsFavorite)
+			{
+				return 1;
+			}
+			else if (a.Entry is CharacterBackupAppearance && b.Entry is not CharacterBackupAppearance)
 			{
 				return 1;
 			}
@@ -281,5 +288,14 @@ public partial class MiniLibraryPopOut : View
 				this.OnConfirmClicked(sender, null);
 			});
 		});
+	}
+
+	private void OnResultsListPreviewMouseDown(object sender, MouseButtonEventArgs e)
+	{
+		// disable right click to select
+		if (e.ChangedButton == MouseButton.Right)
+		{
+			e.Handled = true;
+		}
 	}
 }
