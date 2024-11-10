@@ -218,6 +218,7 @@
 		</Grid>
 
 		<wpfUtils:PopOut
+			MaxWidth="350"
 			MaxHeight="250"
 			Background="{DynamicResource ControlBackgroundBrush}"
 			IsOpen="{Binding DataContext.IsSuggestTags, ElementName=ContentArea}"
