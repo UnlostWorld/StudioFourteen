@@ -39,7 +39,7 @@ public partial class EquipmentView : View
 				switch (weaponViewModel.Slot)
 				{
 					case WeaponSlot.MainHand:
-					case WeaponSlot.OffHand: return new(64, 144, 64, 64);
+					case WeaponSlot.OffHand: return new(0, 144, 64, 64);
 				}
 			}
 
@@ -109,5 +109,10 @@ public partial class EquipmentView : View
 					equip.Stain1 = stain;
 				}
 			});
+	}
+
+	partial void OnItemChanged()
+	{
+		this.NotifyPropertyChanged(nameof(IconRect));
 	}
 }

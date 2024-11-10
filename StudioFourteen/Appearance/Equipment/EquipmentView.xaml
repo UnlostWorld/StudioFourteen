@@ -97,7 +97,7 @@
 
 		<Grid>
 			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition Width="52" />
 				<ColumnDefinition />
 			</Grid.ColumnDefinitions>
 
@@ -124,7 +124,7 @@
 				VerticalAlignment="Center"
 				Opacity="0.75"
 				Path="ui/uld/character_hr1.tex"
-				Rect="0, 144, 64, 64" />
+				Rect="{Binding IconRect}" />
 
 			<Button
 				Grid.Row="1"
