@@ -282,7 +282,7 @@ public class CameraService : ServiceBase
 
 	private unsafe void CameraMatrixLoad(RenderCamera* camera, nint a1)
 	{
-		if (this.cameraMatrixLoadHook == null)
+		if (this.cameraMatrixLoadHook == null || this.cameraMatrixLoadHook.IsDisposed)
 			return;
 
 		this.cameraMatrixLoadHook.Original(camera, a1);

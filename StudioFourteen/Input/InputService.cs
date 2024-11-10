@@ -200,6 +200,15 @@ public class InputService : ServiceBase
 		if (vKey == VirtualKey.NO_KEY)
 			return;
 
+		if (vKey == VirtualKey.LSHIFT || vKey == VirtualKey.RSHIFT)
+			vKey = VirtualKey.SHIFT;
+
+		if (vKey == VirtualKey.LMENU || vKey == VirtualKey.RMENU)
+			vKey = VirtualKey.MENU;
+
+		if (vKey == VirtualKey.LCONTROL || vKey == VirtualKey.RCONTROL)
+			vKey = VirtualKey.CONTROL;
+
 		if (!this.keyboardKeys.ContainsKey(vKey))
 			this.keyboardKeys[vKey] = States.Up;
 
@@ -279,6 +288,9 @@ public class InputService : ServiceBase
 				if (!this.xivKeyState.IsVirtualKeyValid(key))
 					continue;
 
+				if (key == VirtualKey.CONTROL || key == VirtualKey.SHIFT || key == VirtualKey.MENU)
+					continue;
+
 				// Only set the pressed state into xiv as its input system will handle the rest.
 				// We only support forwarding keys as single presses, no holds, since xiv will constantly
 				// set the values back in its own update loop.
@@ -287,15 +299,6 @@ public class InputService : ServiceBase
 					this.Services.Windows.ActivateXivWindow();
 					this.xivKeyState[key] = KeyState.KeyValue.Pressed;
 				}
-
-				/*this.xivKeyState[key] = state switch
-				{
-					States.Up => KeyState.KeyValue.Up,
-					States.Down => KeyState.KeyValue.Down,
-					States.Pressed => KeyState.KeyValue.Pressed,
-					States.Released => KeyState.KeyValue.Released,
-					_ => throw new InvalidOperationException(),
-				};*/
 			}
 
 			foreach ((VirtualKey key, States state) in this.keyboardKeys)
