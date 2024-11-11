@@ -13,13 +13,10 @@ public class EventNpc : NpcBase
 	public NpcEquip? NpcEquip { get; protected set; }
 
 	public override NpcEquipment? BackupEquipment => this.NpcEquip?.Equipment;
-	public override string Key => $"E:{this.RowId.ToString(DataService.NpcNamesIdFormat)}";
 
 	public override void PopulateData(RowParser parser, Lumina.GameData gameData, Language language)
 	{
 		base.PopulateData(parser, gameData, language);
-
-		this.SetName();
 
 		// Customize
 		this.Scale = parser.ReadColumn<float>(34);

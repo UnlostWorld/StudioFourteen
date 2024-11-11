@@ -45,38 +45,8 @@ public abstract class NpcBase : LibraryExcelRow, ICharacterAppearance, ILibraryA
 
 	public ImageReference? Icon { get; protected set; }
 
-	public abstract string Key { get; }
-
 	// don't show duplicates in the library
 	public override bool IsValid => base.IsValid && this.DuplicateRow == null;
-
-	public void SetName()
-	{
-		// lookup name
-		string? name = null;
-		if (DataService.NpcNames?.TryGetValue(this.Key, out string? npcNameKey) ?? false)
-		{
-			if (npcNameKey.StartsWith("N:"))
-			{
-				uint nameId = uint.Parse(npcNameKey.Substring(2));
-				BattleNpcName? npcName = GameDataService.GetRow<BattleNpcName>(nameId);
-				if (npcName != null)
-				{
-					name = npcName.Name;
-				}
-			}
-			else
-			{
-				name = npcNameKey;
-			}
-		}
-
-		if (name != null)
-		{
-			this.Tags.Add("Named");
-			this.Name = name;
-		}
-	}
 
 	public void GenerateTags()
 	{

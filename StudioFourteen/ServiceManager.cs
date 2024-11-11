@@ -9,6 +9,7 @@ using StudioFourteen.Input;
 using StudioFourteen.IPC;
 using StudioFourteen.Library;
 using StudioFourteen.Mvm;
+using StudioFourteen.Online;
 using StudioFourteen.Overlays;
 using StudioFourteen.Posing;
 using StudioFourteen.Save;
@@ -20,6 +21,7 @@ public class ServiceManager : ServiceManagerBase
 {
 	public static new ServiceManager Instance => (ServiceManager)ServiceManagerBase.Instance;
 
+	public OnlineService Online { get; init; } = new();
 	public InteropService Interop { get; init; } = new();
 	public AutoPropertyNotifyService AutoNotify { get; init; } = new();
 	public SettingsService Settings { get; init; } = new();

@@ -13,10 +13,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
+using StudioFourteen.Online;
 
 public class GameDataService : ServiceBase
 {
 	public static Lumina.GameData? DataProvider;
+	public static Dictionary<string, int> BattleNpcNameIndex = new();
 
 	private readonly Dictionary<Type, DataSheet> sheets = new();
 
@@ -101,6 +103,9 @@ public class GameDataService : ServiceBase
 	public override async Task Initialize()
 	{
 		await base.Initialize();
+
+		OnlineJsonFile<Dictionary<string, int>> bNpcNameIndexFile = new("https://raw.githubusercontent.com/ffxiv-teamcraft/ffxiv-teamcraft/refs/heads/staging/libs/data/src/lib/json/gubal-bnpcs-index.json", 1);
+		BattleNpcNameIndex = await bNpcNameIndexFile.GetAsync();
 
 		// Add sheets here
 		this.AddSheet(new ItemsSheet());

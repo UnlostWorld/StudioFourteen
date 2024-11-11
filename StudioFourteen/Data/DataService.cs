@@ -13,14 +13,11 @@ using System.Threading.Tasks;
 
 public class DataService : ServiceBase
 {
-	public const string NpcNamesIdFormat = "D7";
-	public static Dictionary<string, string>? NpcNames { get; private set; }
 	public Dictionary<string, SkeletonViewDefinition>? SkeletonViews { get; private set; }
 	public Dictionary<string, BlendTarget>? ExpressionBlends { get; private set; }
 
 	public override Task Initialize()
 	{
-		NpcNames = this.GetResourceDocument<Dictionary<string, string>>("NpcNames");
 		this.SkeletonViews = this.GetResourceDocument<Dictionary<string, SkeletonViewDefinition>>("SkeletonViews");
 		this.ExpressionBlends = this.GetResourceDocument<Dictionary<string, BlendTarget>>("ExpressionBlends");
 
