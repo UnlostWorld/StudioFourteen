@@ -77,6 +77,9 @@ public class GameDataService : ServiceBase
 		OnlineJsonFile<Dictionary<string, int>> bNpcNameIndexFile = new("https://raw.githubusercontent.com/ffxiv-teamcraft/ffxiv-teamcraft/refs/heads/staging/libs/data/src/lib/json/gubal-bnpcs-index.json", 1);
 		BattleNpcNameIndex = await bNpcNameIndexFile.GetAsync();
 
+#if DEBUG
+		this.Log.Warning("To facilitate fast reload, Studio will not load game data for the library.");
+#else
 		_ = Task.Run(() => NameMergeUtil.MergeNpcNames());
 		_ = Task.Run(() => AppearanceDeduplicationUtil.Deduplicate());
 
@@ -85,6 +88,7 @@ public class GameDataService : ServiceBase
 		this.Services.Library.AddSource(new ExcelSheetLibrarySource<ResidentNpc>());
 		this.Services.Library.AddSource(new ExcelSheetLibrarySource<Territory>());
 		this.Services.Library.AddSource(new ExcelSheetLibrarySource<Weather>());
+#endif
 	}
 
 	// updates the name of any unnamed npc that has a matching appearance that is named.
