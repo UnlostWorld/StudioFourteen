@@ -61,7 +61,9 @@ public partial class OverlayRenderer : Canvas
 	{
 		try
 		{
-			while (this.Services.Overlays.IsAlive && this.Services.Overlays.IsAttached)
+			while (!ServiceManager.ShutdownRequested
+				&& this.Services.Overlays.IsAlive
+				&& this.Services.Overlays.IsAttached)
 			{
 				await Task.Delay(1000 / 60);
 				await this.MainThread();
