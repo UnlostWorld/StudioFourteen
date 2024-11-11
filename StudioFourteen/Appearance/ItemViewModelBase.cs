@@ -24,7 +24,7 @@ public abstract class ItemViewModelBase : GearViewModelBase<Item>
 				return null;
 
 			if (this.stain0 == null || this.stain0.RowId != this.Stain0Id)
-				this.stain0 = GameDataService.GetRow<Stain>(this.Stain0Id);
+				this.stain0 = this.Services.GameData.GetRow<Stain>(this.Stain0Id);
 
 			return this.stain0;
 		}
@@ -49,7 +49,7 @@ public abstract class ItemViewModelBase : GearViewModelBase<Item>
 				return null;
 
 			if (this.stain1 == null || this.stain1.RowId != this.Stain1Id)
-				this.stain1 = GameDataService.GetRow<Stain>(this.Stain1Id);
+				this.stain1 = this.Services.GameData.GetRow<Stain>(this.Stain1Id);
 
 			return this.stain1;
 		}

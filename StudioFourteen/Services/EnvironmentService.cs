@@ -110,7 +110,7 @@ public partial class EnvironmentService
 			return;
 
 		byte weatherId = environmentManager->ActiveWeather;
-		this.CurrentWeather = GameDataService.GetRow<Weather>(weatherId);
+		this.CurrentWeather = this.Services.GameData.GetRow<Weather>(weatherId);
 
 		if (!this.IsInTitleScreen)
 		{
@@ -118,7 +118,7 @@ public partial class EnvironmentService
 				return;
 
 			ushort territoryId = DalamudServices.ClientState.TerritoryType;
-			this.CurrentTerritory = GameDataService.GetRow<Territory>(territoryId);
+			this.CurrentTerritory = this.Services.GameData.GetRow<Territory>(territoryId);
 		}
 	}
 
@@ -129,7 +129,7 @@ public partial class EnvironmentService
 		if (this.createSceneHook == null)
 			return 0;
 
-		this.CurrentTerritory = GameDataService.GetRow<Territory>(territoryId);
+		this.CurrentTerritory = this.Services.GameData.GetRow<Territory>(territoryId);
 
 		return this.createSceneHook.Original(backgroundPath, territoryId, p3, layerFilterKey, p5, p6, contentFinderConditionId);
 	}

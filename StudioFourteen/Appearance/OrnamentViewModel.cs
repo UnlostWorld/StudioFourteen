@@ -3,7 +3,7 @@
 using StudioFourteen.GameData.Excel;
 using StudioFourteen.Mvm;
 
-public class OrnamentViewModel : TableRowItemViewModel<Ornament>
+public class OrnamentViewModel : ExcelRowItemViewModel<Ornament>
 {
 	public OrnamentViewModel()
 	{

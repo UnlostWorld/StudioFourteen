@@ -24,7 +24,7 @@
 
 	<DataTemplate
 		x:Key="LibraryInfo_DataSheetLibrarySource"
-		DataType="{x:Type gameData:DataSheetLibrarySource}">
+		DataType="{x:Type gameData:ExcelSheetLibrarySource}">
 		<StackPanel>
 			<TextBlock
 				Margin="3,0,0,0"
@@ -94,7 +94,7 @@
 	<markup:TemplateSelector x:Key="LibraryInfoTemplateSelector">
 
 		<markup:TemplateSelectorEntry
-			TargetType="{x:Type gameData:DataSheetLibrarySource}"
+			TargetType="{x:Type gameData:ExcelSheetLibrarySource}"
 			Template="{StaticResource LibraryInfo_DataSheetLibrarySource}" />
 
 		<markup:TemplateSelectorEntry

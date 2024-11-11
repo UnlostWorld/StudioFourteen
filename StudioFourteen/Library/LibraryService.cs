@@ -5,6 +5,7 @@ using StudioFourteen.Services;
 using StudioFourteen.Tags;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 public class LibraryService : ServiceBase
@@ -102,6 +103,9 @@ public class LibraryService : ServiceBase
 
 		try
 		{
+			Stopwatch sw = new();
+			sw.Start();
+
 			List<Task> scanTasks = new();
 			foreach(SourceBase source in this.sources)
 			{
@@ -109,6 +113,9 @@ public class LibraryService : ServiceBase
 			}
 
 			await Task.WhenAll(scanTasks.ToArray());
+
+			sw.Stop();
+			this.Log.Information($"Scanned {this.sources.Count} library sources in {sw.ElapsedMilliseconds}ms");
 		}
 		catch(Exception ex)
 		{

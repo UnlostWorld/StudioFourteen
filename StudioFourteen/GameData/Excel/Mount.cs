@@ -24,10 +24,10 @@ public class Mount : LibraryExcelRow
 		this.ModelChara = parser.ReadRowReference<int, ModelChara>(8);
 		this.MountCustomize = parser.ReadRowReference<byte, MountCustomize>(16);
 
-		this.Head = GameDataService.BuddyEquips?.Find(EquipmentSlot.Head, parser.ReadColumn<int>(25));
+		/*this.Head = GameDataService.BuddyEquips?.Find(EquipmentSlot.Head, parser.ReadColumn<int>(25));
 		this.Body = GameDataService.BuddyEquips?.Find(EquipmentSlot.Head, parser.ReadColumn<int>(26));
 		this.Legs = GameDataService.BuddyEquips?.Find(EquipmentSlot.Head, parser.ReadColumn<int>(27));
 		this.Feet = GameDataService.BuddyEquips?.Find(EquipmentSlot.Head, parser.ReadColumn<int>(28));
-		this.Icon = parser.ReadImageReference<ushort>(30);
+		this.Icon = parser.ReadImageReference<ushort>(30);*/
 	}
 }

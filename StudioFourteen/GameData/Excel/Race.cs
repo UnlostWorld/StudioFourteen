@@ -30,29 +30,14 @@ public class Race : LibraryExcelRow
 	public string Feminine { get; private set; } = string.Empty;
 	public string Masculine { get; private set; } = string.Empty;
 
-	public int RacialGearMasculineBodyId { get; private set; }
-	public Item? RacialGearMasculineBody => GameDataService.GetRow<Item>(this.RacialGearMasculineBodyId);
-
-	public int RacialGearMasculineHandsId { get; private set; }
-	public Item? RacialGearMasculineHands => GameDataService.GetRow<Item>(this.RacialGearMasculineHandsId);
-
-	public int RacialGearMasculineLegsId { get; private set; }
-	public Item? RacialGearMasculineLegs => GameDataService.GetRow<Item>(this.RacialGearMasculineLegsId);
-
-	public int RacialGearMasculineFeetId { get; private set; }
-	public Item? RacialGearMasculineFeet => GameDataService.GetRow<Item>(this.RacialGearMasculineFeetId);
-
-	public int RacialGearFeminineBodyId { get; private set; }
-	public Item? RacialGearFeminineBody => GameDataService.GetRow<Item>(this.RacialGearFeminineBodyId);
-
-	public int RacialGearFeminineHandsId { get; private set; }
-	public Item? RacialGearFeminineHands => GameDataService.GetRow<Item>(this.RacialGearFeminineHandsId);
-
-	public int RacialGearFeminineLegsId { get; private set; }
-	public Item? RacialGearFeminineLegs => GameDataService.GetRow<Item>(this.RacialGearFeminineLegsId);
-
-	public int RacialGearFeminineFeetId { get; private set; }
-	public Item? RacialGearFeminineFeet => GameDataService.GetRow<Item>(this.RacialGearFeminineFeetId);
+	public Item? RacialGearMasculineBody { get; private set; }
+	public Item? RacialGearMasculineHands { get; private set; }
+	public Item? RacialGearMasculineLegs { get; private set; }
+	public Item? RacialGearMasculineFeet { get; private set; }
+	public Item? RacialGearFeminineBody { get; private set; }
+	public Item? RacialGearFeminineHands { get; private set; }
+	public Item? RacialGearFeminineLegs { get; private set; }
+	public Item? RacialGearFeminineFeet { get; private set; }
 
 	// Customize options
 	public List<Tribe?> Tribes { get; private set; } = new();
@@ -67,63 +52,63 @@ public class Race : LibraryExcelRow
 
 		this.Name = this.Masculine;
 
-		this.RacialGearMasculineBodyId = parser.ReadColumn<int>(2);
-		this.RacialGearMasculineHandsId = parser.ReadColumn<int>(3);
-		this.RacialGearMasculineLegsId = parser.ReadColumn<int>(4);
-		this.RacialGearMasculineFeetId = parser.ReadColumn<int>(5);
-		this.RacialGearFeminineBodyId = parser.ReadColumn<int>(6);
-		this.RacialGearFeminineHandsId = parser.ReadColumn<int>(7);
-		this.RacialGearFeminineLegsId = parser.ReadColumn<int>(8);
-		this.RacialGearFeminineFeetId = parser.ReadColumn<int>(9);
+		this.RacialGearMasculineBody = parser.ReadRowReference<int, Item>(2);
+		this.RacialGearMasculineHands = parser.ReadRowReference<int, Item>(3);
+		this.RacialGearMasculineLegs = parser.ReadRowReference<int, Item>(4);
+		this.RacialGearMasculineFeet = parser.ReadRowReference<int, Item>(5);
+		this.RacialGearFeminineBody = parser.ReadRowReference<int, Item>(6);
+		this.RacialGearFeminineHands = parser.ReadRowReference<int, Item>(7);
+		this.RacialGearFeminineLegs = parser.ReadRowReference<int, Item>(8);
+		this.RacialGearFeminineFeet = parser.ReadRowReference<int, Item>(9);
 
 		this.Tribes = (RaceRows)this.RowId switch
 		{
 			RaceRows.Hyur => new()
 			{
-				GameDataService.GetRow<Tribe>((byte)Tribe.TribeRows.Midlander),
-				GameDataService.GetRow<Tribe>((byte)Tribe.TribeRows.Highlander),
+				gameData.GetRow<Tribe>((byte)Tribe.TribeRows.Midlander),
+				gameData.GetRow<Tribe>((byte)Tribe.TribeRows.Highlander),
 			},
 
 			RaceRows.Elezen => new()
 			{
-				GameDataService.GetRow<Tribe>((byte)Tribe.TribeRows.Wildwood),
-				GameDataService.GetRow<Tribe>((byte)Tribe.TribeRows.Duskwight),
+				gameData.GetRow<Tribe>((byte)Tribe.TribeRows.Wildwood),
+				gameData.GetRow<Tribe>((byte)Tribe.TribeRows.Duskwight),
 			},
 
 			RaceRows.Lalafell => new()
 			{
-				GameDataService.GetRow<Tribe>((byte)Tribe.TribeRows.Plainsfolk),
-				GameDataService.GetRow<Tribe>((byte)Tribe.TribeRows.Dunesfolk),
+				gameData.GetRow<Tribe>((byte)Tribe.TribeRows.Plainsfolk),
+				gameData.GetRow<Tribe>((byte)Tribe.TribeRows.Dunesfolk),
 			},
 
 			RaceRows.Miqote => new()
 			{
-				GameDataService.GetRow<Tribe>((byte)Tribe.TribeRows.SeekerOfTheSun),
-				GameDataService.GetRow<Tribe>((byte)Tribe.TribeRows.KeeperOfTheMoon),
+				gameData.GetRow<Tribe>((byte)Tribe.TribeRows.SeekerOfTheSun),
+				gameData.GetRow<Tribe>((byte)Tribe.TribeRows.KeeperOfTheMoon),
 			},
 
 			RaceRows.Roegadyn => new()
 			{
-				GameDataService.GetRow<Tribe>((byte)Tribe.TribeRows.SeaWolf),
-				GameDataService.GetRow<Tribe>((byte)Tribe.TribeRows.Hellsguard),
+				gameData.GetRow<Tribe>((byte)Tribe.TribeRows.SeaWolf),
+				gameData.GetRow<Tribe>((byte)Tribe.TribeRows.Hellsguard),
 			},
 
 			RaceRows.AuRa => new()
 			{
-				GameDataService.GetRow<Tribe>((byte)Tribe.TribeRows.Raen),
-				GameDataService.GetRow<Tribe>((byte)Tribe.TribeRows.Xaela),
+				gameData.GetRow<Tribe>((byte)Tribe.TribeRows.Raen),
+				gameData.GetRow<Tribe>((byte)Tribe.TribeRows.Xaela),
 			},
 
 			RaceRows.Hrothgar => new()
 			{
-				GameDataService.GetRow<Tribe>((byte)Tribe.TribeRows.Helions),
-				GameDataService.GetRow<Tribe>((byte)Tribe.TribeRows.TheLost),
+				gameData.GetRow<Tribe>((byte)Tribe.TribeRows.Helions),
+				gameData.GetRow<Tribe>((byte)Tribe.TribeRows.TheLost),
 			},
 
 			RaceRows.Viera => new()
 			{
-				GameDataService.GetRow<Tribe>((byte)Tribe.TribeRows.Rava),
-				GameDataService.GetRow<Tribe>((byte)Tribe.TribeRows.Veena),
+				gameData.GetRow<Tribe>((byte)Tribe.TribeRows.Rava),
+				gameData.GetRow<Tribe>((byte)Tribe.TribeRows.Veena),
 			},
 
 			_ => new(),

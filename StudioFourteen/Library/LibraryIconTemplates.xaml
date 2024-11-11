@@ -85,7 +85,7 @@
 
 	<DataTemplate
 		x:Key="LibraryIcon_DataSheetLibrarySource"
-		DataType="{x:Type gameData:DataSheetLibrarySource}">
+		DataType="{x:Type gameData:ExcelSheetLibrarySource}">
 
 		<Viewbox CacheMode="BitmapCache">
 			<Grid>
@@ -328,7 +328,7 @@
 	<markup:TemplateSelector x:Key="LibraryIconTemplateSelector">
 
 		<markup:TemplateSelectorEntry
-			TargetType="{x:Type gameData:DataSheetLibrarySource}"
+			TargetType="{x:Type gameData:ExcelSheetLibrarySource}"
 			Template="{StaticResource LibraryIcon_DataSheetLibrarySource}" />
 
 		<markup:TemplateSelectorEntry

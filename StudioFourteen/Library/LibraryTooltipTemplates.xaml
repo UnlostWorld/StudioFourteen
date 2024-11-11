@@ -109,7 +109,7 @@
 		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
 	</DataTemplate>
 
-	<DataTemplate DataType="{x:Type gameData:DataSheetLibrarySource}">
+	<DataTemplate DataType="{x:Type gameData:ExcelSheetLibrarySource}">
 		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
 	</DataTemplate>
 

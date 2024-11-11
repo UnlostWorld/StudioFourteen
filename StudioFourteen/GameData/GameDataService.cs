@@ -2,28 +2,22 @@
 
 using Lumina.Data;
 using Lumina.Excel;
-using Lumina.Excel.Exceptions;
+using Serilog;
 using StudioFourteen.GameData.Excel;
 using StudioFourteen.GameData.Sheets;
+using StudioFourteen.Online;
 using StudioFourteen.Plugin;
 using StudioFourteen.Services;
-using Serilog;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
-using StudioFourteen.Online;
 
 public class GameDataService : ServiceBase
 {
-	public static Lumina.GameData? DataProvider;
 	public static Dictionary<string, int> BattleNpcNameIndex = new();
 
-	private readonly Dictionary<Type, DataSheet> sheets = new();
-
-	public static ItemsSheet? Items => Get<Item>() as ItemsSheet;
-	public static BuddyEquipsSheet? BuddyEquips => Get<BuddyEquip>() as BuddyEquipsSheet;
+	public readonly ItemUtility Items = new();
 
 	public static T? GetFile<T>(string path)
 		where T : FileResource
@@ -46,58 +40,34 @@ public class GameDataService : ServiceBase
 		}
 	}
 
-	public static DataSheet<T>? Get<T>()
-		where T : ExcelRow
-	{
-		return ServiceManager.Instance.GameData.GetSheet<T>();
-	}
-
-	public static T? GetRow<T>(uint row)
-		where T : ExcelRow
-	{
-		return Get<T>()?.GetRow(row);
-	}
-
-	public static T? GetRow<T>(byte row)
-		where T : ExcelRow
-	{
-		return Get<T>()?.GetRow(row);
-	}
-
-	public static T? GetRow<T>(int row)
-		where T : ExcelRow
-	{
-		return Get<T>()?.GetRow(row);
-	}
-
-	public DataSheet<T>? GetSheet<T>()
-		where T : ExcelRow
-	{
-		Type type = typeof(T);
-		if (!this.sheets.ContainsKey(type))
-		{
-			this.Log.Error($"No sheet for row type: {type}");
-			return null;
-		}
-
-		return this.sheets[type] as DataSheet<T>;
-	}
-
-	public ExcelSheet<T>? GetLuminaExcelSheet<T>()
+	public ExcelSheet<T>? GetSheet<T>()
 		where T : ExcelRow
 	{
 		ExcelSheet<T>? sheet;
 		sheet = DalamudServices.DataManager?.GetExcelSheet<T>();
 
-		if (DataProvider != null)
-			sheet = DataProvider.GetExcelSheet<T>();
-
 		if (sheet == null)
-		{
 			this.Log.Error($"Failed to get excel sheet for type: {typeof(T)}");
-		}
 
 		return sheet;
+	}
+
+	public T? GetRow<T>(int rowIndex)
+		where T : ExcelRow
+	{
+		return this.GetRow<T>((uint)rowIndex);
+	}
+
+	public T? GetRow<T>(uint rowIndex)
+		where T : ExcelRow
+	{
+		ExcelSheet<T>? sheet;
+		sheet = this.GetSheet<T>();
+
+		if (sheet == null)
+			return null;
+
+		return sheet.GetRow(rowIndex);
 	}
 
 	public override async Task Initialize()
@@ -107,89 +77,14 @@ public class GameDataService : ServiceBase
 		OnlineJsonFile<Dictionary<string, int>> bNpcNameIndexFile = new("https://raw.githubusercontent.com/ffxiv-teamcraft/ffxiv-teamcraft/refs/heads/staging/libs/data/src/lib/json/gubal-bnpcs-index.json", 1);
 		BattleNpcNameIndex = await bNpcNameIndexFile.GetAsync();
 
-		// Add sheets here
-		this.AddSheet(new ItemsSheet());
-		this.AddSheet(new BuddyEquipsSheet());
-		this.AddSheet(new TerritoryTypeSheet());
+		_ = Task.Run(() => NameMergeUtil.MergeNpcNames());
+		_ = Task.Run(() => AppearanceDeduplicationUtil.Deduplicate());
 
-		this.AddSheet<Race>();
-		this.AddSheet<Tribe>();
-		this.AddSheet<CharaMakeCustomize>();
-		this.AddSheet<HairMakeType>();
-		this.AddSheet<CharaMakeType>();
-		this.AddSheet<ClassJobCategory>();
-		this.AddSheet<ModelChara>();
-		this.AddSheet<EventNpc>();
-		this.AddSheet<ResidentNpc>();
-		this.AddSheet<BattleNpc>();
-		this.AddSheet<BattleNpcCustomize>();
-		this.AddSheet<BattleNpcName>();
-		this.AddSheet<Companion>();
-		this.AddSheet<EquipRaceCategory>();
-		this.AddSheet<EquipSlotCategory>();
-		this.AddSheet<Lobby>();
-		this.AddSheet<Mount>();
-		this.AddSheet<MountCustomize>();
-		this.AddSheet<NpcEquip>();
-		this.AddSheet<Ornament>();
-		this.AddSheet<Perform>();
-		this.AddSheet<Stain>();
-		this.AddSheet<Weather>();
-		this.AddSheet<WeatherRate>();
-		this.AddSheet<ClassJob>();
-		this.AddSheet<ItemUICategory>();
-		this.AddSheet<Glasses>();
-
-		this.AddSheet<Lumina.Excel.GeneratedSheets.PlaceName>();
-
-		// Initialize all sheets
-		// TODO: possibly do this in parallel
-		foreach (DataSheet sheet in this.sheets.Values)
-		{
-			await sheet.Initialize();
-		}
-
-		NameMergeUtil.MergeNpcNames();
-		AppearanceDeduplicationUtil.Deduplicate();
-	}
-
-	public override async Task Shutdown()
-	{
-		await base.Shutdown();
-
-		foreach (DataSheet sheet in this.sheets.Values)
-		{
-			await sheet.Shutdown();
-		}
-
-		this.sheets.Clear();
-	}
-
-	private void AddSheet<T>()
-		where T : ExcelRow
-	{
-		try
-		{
-			this.AddSheet(new DataSheet<T>());
-		}
-		catch (ExcelSheetColumnChecksumMismatchException ex)
-		{
-			this.Log.Error(ex, $"Excel Column checksum mismatch for sheet type {typeof(T)}");
-		}
-		catch(Exception)
-		{
-		}
-	}
-
-	private void AddSheet(DataSheet sheet)
-	{
-		if (this.sheets.ContainsKey(sheet.RowType))
-		{
-			this.Log.Error($"Duplicate data sheet: {sheet.RowType}");
-			return;
-		}
-
-		this.sheets.Add(sheet.RowType, sheet);
+		this.Services.Library.AddSource(new ExcelSheetLibrarySource<Item>());
+		this.Services.Library.AddSource(new ExcelSheetLibrarySource<BattleNpc>());
+		this.Services.Library.AddSource(new ExcelSheetLibrarySource<ResidentNpc>());
+		this.Services.Library.AddSource(new ExcelSheetLibrarySource<Territory>());
+		this.Services.Library.AddSource(new ExcelSheetLibrarySource<Weather>());
 	}
 
 	// updates the name of any unnamed npc that has a matching appearance that is named.
@@ -204,8 +99,8 @@ public class GameDataService : ServiceBase
 
 			Dictionary<string, string> hashToName = new();
 
-			DataSheet? eventNpcSheet = GameDataService.Get<EventNpc>();
-			DataSheet? battleNpcSheet = GameDataService.Get<BattleNpc>();
+			ExcelSheet<EventNpc>? eventNpcSheet = ServiceManager.Instance.GameData.GetSheet<EventNpc>();
+			ExcelSheet<BattleNpc>? battleNpcSheet = ServiceManager.Instance.GameData.GetSheet<BattleNpc>();
 
 			int count = 0;
 
@@ -222,7 +117,7 @@ public class GameDataService : ServiceBase
 			Log.Information($"Merged {count} NPC names in {sw.ElapsedMilliseconds}ms");
 		}
 
-		private static void StoreNames(DataSheet sheet, ref Dictionary<string, string> hashToName)
+		private static void StoreNames(ExcelSheet<EventNpc> sheet, ref Dictionary<string, string> hashToName)
 		{
 			foreach (NpcBase npc in sheet)
 			{
@@ -233,7 +128,33 @@ public class GameDataService : ServiceBase
 			}
 		}
 
-		private static void UpdateNames(DataSheet sheet, ref Dictionary<string, string> hashToName, ref int count)
+		private static void StoreNames(ExcelSheet<BattleNpc> sheet, ref Dictionary<string, string> hashToName)
+		{
+			foreach (NpcBase npc in sheet)
+			{
+				if (npc.AppearanceHash != null && npc.Name != null)
+				{
+					hashToName.TryAdd(npc.AppearanceHash, npc.Name);
+				}
+			}
+		}
+
+		private static void UpdateNames(ExcelSheet<EventNpc> sheet, ref Dictionary<string, string> hashToName, ref int count)
+		{
+			foreach (NpcBase npc in sheet)
+			{
+				if (npc.AppearanceHash != null)
+				{
+					if (hashToName.TryGetValue(npc.AppearanceHash, out string? newName) && newName != npc.Name)
+					{
+						npc.Name = hashToName[npc.AppearanceHash];
+						count++;
+					}
+				}
+			}
+		}
+
+		private static void UpdateNames(ExcelSheet<BattleNpc> sheet, ref Dictionary<string, string> hashToName, ref int count)
 		{
 			foreach (NpcBase npc in sheet)
 			{
@@ -259,11 +180,11 @@ public class GameDataService : ServiceBase
 			sw.Start();
 			int count = 0;
 
-			DataSheet? eventNpcSheet = GameDataService.Get<EventNpc>();
+			ExcelSheet<EventNpc>? eventNpcSheet = ServiceManager.Instance.GameData.GetSheet<EventNpc>();
 			if (eventNpcSheet != null)
 				Deduplicate(eventNpcSheet, ref count);
 
-			DataSheet? battleNpcSheet = GameDataService.Get<BattleNpc>();
+			ExcelSheet<BattleNpc>? battleNpcSheet = ServiceManager.Instance.GameData.GetSheet<BattleNpc>();
 			if (battleNpcSheet != null)
 				Deduplicate(battleNpcSheet, ref count);
 
@@ -271,7 +192,31 @@ public class GameDataService : ServiceBase
 			Log.Information($"Found {count} duplicate appearances in {sw.ElapsedMilliseconds}ms");
 		}
 
-		private static void Deduplicate(DataSheet sheet, ref int count)
+		private static void Deduplicate(ExcelSheet<EventNpc> sheet, ref int count)
+		{
+			Dictionary<string, uint> hashes = new();
+			foreach (NpcBase npc in sheet)
+			{
+				if (npc.AppearanceHash == null)
+				{
+					Log.Warning($"{npc.RowName} has no appearance hash");
+					continue;
+				}
+
+				if (hashes.TryGetValue(npc.AppearanceHash, out uint orignalRowId))
+				{
+					npc.DuplicateRow = orignalRowId;
+					count++;
+				}
+				else
+				{
+					hashes.Add(npc.AppearanceHash, npc.RowId);
+					npc.DuplicateRow = null;
+				}
+			}
+		}
+
+		private static void Deduplicate(ExcelSheet<BattleNpc> sheet, ref int count)
 		{
 			Dictionary<string, uint> hashes = new();
 			foreach (NpcBase npc in sheet)

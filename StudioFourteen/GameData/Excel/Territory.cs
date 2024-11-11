@@ -69,7 +69,7 @@ public class Territory : LibraryExcelRow
 				if (wr.Weather == 0)
 					continue;
 
-				this.Weathers.Add(GameDataService.GetRow<Weather>(wr.Weather));
+				this.Weathers.Add(gameData.GetRow<Weather>(wr.Weather));
 			}
 		}
 	}

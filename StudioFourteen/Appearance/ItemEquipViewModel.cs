@@ -71,7 +71,7 @@ public class ItemEquipViewModel(DrawDataContainer.EquipmentSlot slot)
 				return null;
 
 			if (this.item == null)
-				this.item = GameDataService.Items?.Find(this.Slot, this.Set, this.Base, this.Variant);
+				this.item = this.Services.GameData.Items.Find(this.Slot, this.Set, this.Base, this.Variant);
 
 			return this.item;
 		}

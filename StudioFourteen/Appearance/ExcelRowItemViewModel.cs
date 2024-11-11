@@ -5,12 +5,12 @@ using StudioFourteen.GameData.Excel;
 using StudioFourteen.Mvm;
 using StudioFourteen.Utilities;
 
-public abstract class TableRowItemViewModel<T> : GearViewModelBase<T>
+public abstract class ExcelRowItemViewModel<T> : GearViewModelBase<T>
 	where T : LibraryExcelRow
 {
 	private T? item;
 
-	public TableRowItemViewModel()
+	public ExcelRowItemViewModel()
 	{
 	}
 
@@ -26,7 +26,7 @@ public abstract class TableRowItemViewModel<T> : GearViewModelBase<T>
 				return null;
 
 			if (this.item == null)
-				this.item = GameDataService.GetRow<T>(this.Value);
+				this.item = this.Services.GameData.GetRow<T>(this.Value);
 
 			return this.item;
 		}
@@ -56,7 +56,7 @@ public abstract class TableRowItemViewModel<T> : GearViewModelBase<T>
 		}
 		set
 		{
-			this.item = GameDataService.GetRow<T>(value);
+			this.item = this.Services.GameData.GetRow<T>(value);
 
 			if (!this.HasValidTarget)
 				return;

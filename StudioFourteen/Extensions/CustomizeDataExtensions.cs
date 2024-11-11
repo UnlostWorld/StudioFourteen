@@ -2,6 +2,7 @@
 
 using Dalamud.Game.ClientState.Objects.Enums;
 using global::System;
+using Lumina.Excel;
 using StudioFourteen;
 using StudioFourteen.GameData;
 using StudioFourteen.GameData.Excel;
@@ -24,8 +25,8 @@ public static class CustomizeDataExtensions
 		LegacyTattoo = 0x80,
 	}
 
-	public static Race? GetRace(ref this CustomizeData self) => GameDataService.GetRow<Race>(self.GetValue(CustomizeIndex.Race));
-	public static Tribe? GetTribe(ref this CustomizeData self) => GameDataService.GetRow<Tribe>(self.GetValue(CustomizeIndex.Tribe));
+	public static Race? GetRace(ref this CustomizeData self) => ServiceManager.Instance.GameData.GetRow<Race>(self.GetValue(CustomizeIndex.Race));
+	public static Tribe? GetTribe(ref this CustomizeData self) => ServiceManager.Instance.GameData.GetRow<Tribe>(self.GetValue(CustomizeIndex.Tribe));
 	public static Genders GetGender(ref this CustomizeData self) => (Genders)self.GetValue(CustomizeIndex.Gender);
 
 	public static byte GetValue(ref this CustomizeData self, CustomizeIndex option)
@@ -52,7 +53,7 @@ public static class CustomizeDataExtensions
 		Tribe? tribe = self.GetTribe();
 		Genders gender = self.GetGender();
 
-		DataSheet<CharaMakeType>? charaMakeTypeSheet = ServiceManager.Instance.GameData.GetSheet<CharaMakeType>();
+		ExcelSheet<CharaMakeType>? charaMakeTypeSheet = ServiceManager.Instance.GameData.GetSheet<CharaMakeType>();
 		if (charaMakeTypeSheet == null)
 			return null;
 
@@ -69,7 +70,7 @@ public static class CustomizeDataExtensions
 
 	public static ImageReference? GetIcon(ref this CustomizeData self)
 	{
-		DataSheet<HairMakeType>? hairMakeTypeSheet = GameDataService.Get<HairMakeType>();
+		ExcelSheet<HairMakeType>? hairMakeTypeSheet = ServiceManager.Instance.GameData.GetSheet<HairMakeType>();
 		if (hairMakeTypeSheet == null)
 			return null;
 

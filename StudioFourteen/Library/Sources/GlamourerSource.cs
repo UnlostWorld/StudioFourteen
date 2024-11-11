@@ -2,6 +2,7 @@
 
 using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using Lumina.Excel;
 using StudioFourteen.Appearance;
 using StudioFourteen.GameData;
 using StudioFourteen.GameData.Excel;
@@ -145,11 +146,11 @@ public class GlamourerDesign
 	public void GetAutoTags(TagCollection tags)
 	{
 		Race.RaceRows? raceRow = (Race.RaceRows?)this.Customize?.Race?.Value;
-		Race? race = raceRow != null ? GameDataService.GetRow<Race>((byte)raceRow) : null;
+		Race? race = raceRow != null ? ServiceManager.Instance.GameData.GetRow<Race>((byte)raceRow) : null;
 		tags.Add(race?.ToTags());
 
 		Tribe.TribeRows? tribeRow = (Tribe.TribeRows?)this.Customize?.Clan?.Value;
-		Tribe? tribe = tribeRow != null ? GameDataService.GetRow<Tribe>((byte)tribeRow) : null;
+		Tribe? tribe = tribeRow != null ? ServiceManager.Instance.GameData.GetRow<Tribe>((byte)tribeRow) : null;
 		tags.Add(tribe?.ToTags());
 
 		Genders? gender = (Genders?)this.Customize?.Gender?.Value;
@@ -219,7 +220,7 @@ public class GlamourerDesign
 				if (!this.Apply)
 					return null;
 
-				DataSheet<Item>? sheet = ServiceManager.Instance.GameData.GetSheet<Item>();
+				ExcelSheet<Item>? sheet = ServiceManager.Instance.GameData.GetSheet<Item>();
 				if (sheet == null)
 					return null;
 
@@ -240,7 +241,7 @@ public class GlamourerDesign
 				if (!this.Apply)
 					return null;
 
-				DataSheet<Item>? sheet = ServiceManager.Instance.GameData.GetSheet<Item>();
+				ExcelSheet<Item>? sheet = ServiceManager.Instance.GameData.GetSheet<Item>();
 				if (sheet == null)
 					return null;
 

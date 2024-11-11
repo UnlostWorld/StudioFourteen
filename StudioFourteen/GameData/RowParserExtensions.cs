@@ -89,7 +89,7 @@ public static class RowParserExtensions
 	private static TRow? ReadRowReference<TColumn, TRow>(this RowParser self, TColumn id, int minValue = int.MinValue)
 		where TRow : Lumina.Excel.ExcelRow
 	{
-		DataSheet<TRow>? sheet = GameDataService.Get<TRow>();
+		ExcelSheet<TRow>? sheet = ServiceManager.Instance.GameData.GetSheet<TRow>();
 		if (sheet == null)
 			return null;
 

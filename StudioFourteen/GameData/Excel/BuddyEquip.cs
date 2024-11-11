@@ -4,14 +4,11 @@ using Lumina;
 using Lumina.Data;
 using Lumina.Excel;
 using Lumina.Text;
-using StudioFourteen.GameData.Sheets;
-
-using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 
 [Sheet("BuddyEquip", 0xb429792a)]
 public class BuddyEquip : StudioExcelRow
 {
-	public BuddyItem? Head { get; protected set; }
+	/*public BuddyItem? Head { get; protected set; }
 	public BuddyItem? Body { get; protected set; }
 	public BuddyItem? Feet { get; protected set; }
 
@@ -43,5 +40,5 @@ public class BuddyEquip : StudioExcelRow
 		{
 			this.Feet = new(name, EquipmentSlot.Feet, legsBase, legsVariant, legsIcon);
 		}
-	}
+	}*/
 }

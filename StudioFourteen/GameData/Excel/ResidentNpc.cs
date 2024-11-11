@@ -38,7 +38,7 @@ public class ResidentNpc : LibraryExcelRow, ICharacterAppearance, ILibraryAction
 		this.Name = parser.ReadString(0);
 		this.Description = parser.ReadString(8);
 
-		this.EventNpc = GameDataService.GetRow<EventNpc>(this.RowId);
+		this.EventNpc = gameData.GetRow<EventNpc>(this.RowId);
 
 		this.Tags.Add("NPC");
 

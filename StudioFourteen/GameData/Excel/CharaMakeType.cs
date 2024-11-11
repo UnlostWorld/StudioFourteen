@@ -64,8 +64,8 @@ public class CharaMakeType : StudioExcelRow
 	{
 		base.PopulateData(parser, gameData, language);
 
-		this.Race = GameDataService.GetRow<Race>(parser.ReadColumn<int>(0));
-		this.Tribe = GameDataService.GetRow<Tribe>(parser.ReadColumn<int>(1));
+		this.Race = gameData.GetRow<Race>(parser.ReadColumn<int>(0));
+		this.Tribe = gameData.GetRow<Tribe>(parser.ReadColumn<int>(1));
 		this.Gender = (Genders)parser.ReadColumn<sbyte>(2);
 
 		if (this.Race == null || this.Tribe == null)
@@ -80,6 +80,7 @@ public class CharaMakeType : StudioExcelRow
 			menu.Tribe = this.Tribe;
 			menu.Gender = this.Gender;
 			menu.Id = parser.ReadColumn<uint>(3 + (0 * NumMenus) + i);
+			menu.Name = gameData.GetRow<Lobby>(menu.Id)?.Text;
 			menu.InitVal = parser.ReadColumn<byte>(3 + (1 * NumMenus) + i);
 			menu.Type = (Menu.Types)parser.ReadColumn<byte>(3 + (2 * NumMenus) + i);
 			menu.NumOptions = parser.ReadColumn<byte>(3 + (3 * NumMenus) + i);
@@ -196,7 +197,7 @@ public class CharaMakeType : StudioExcelRow
 			Percentage = 5,
 		}
 
-		public string? Name => GameDataService.GetRow<Lobby>(this.Id)?.Text;
+		public string? Name { get; set; }
 		public Race? Race { get; set; }
 		public Tribe? Tribe { get; set; }
 		public Genders Gender { get; set; }

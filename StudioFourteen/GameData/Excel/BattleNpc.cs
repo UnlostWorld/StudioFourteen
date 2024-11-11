@@ -24,7 +24,7 @@ public class BattleNpc : NpcBase
 		string key = this.RowId.ToString();
 		if (GameDataService.BattleNpcNameIndex.TryGetValue(key, out int nameIndex))
 		{
-			BattleNpcName? npcName = GameDataService.GetRow<BattleNpcName>(nameIndex);
+			BattleNpcName? npcName = this.Services.GameData.GetRow<BattleNpcName>(nameIndex);
 			if (npcName != null)
 			{
 				this.Name = npcName.Name;

@@ -61,7 +61,7 @@ public partial class CustomizeIconOption : UserControl, INotifyPropertyChanged
 
 		if (this.Menu?.CustomizationIndex == CustomizeIndex.HairStyle || this.Menu?.CustomizationIndex == CustomizeIndex.Facepaint)
 		{
-			DataSheet<HairMakeType>? hairMakeTypeSheet = GameDataService.Get<HairMakeType>();
+			ExcelSheet<HairMakeType>? hairMakeTypeSheet = ServiceManager.Instance.GameData.GetSheet<HairMakeType>();
 
 			if (hairMakeTypeSheet == null)
 				return;

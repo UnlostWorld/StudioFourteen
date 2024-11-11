@@ -2,6 +2,7 @@
 
 using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using Lumina.Excel;
 using StudioFourteen.GameData;
 using StudioFourteen.GameData.Excel;
 using StudioFourteen.Mvm;
@@ -18,10 +19,10 @@ public partial class CustomizeViewModel : AutoViewModel
 	[AutoNotify] public bool HasValidTarget => this.Services.Target.HasValidTarget;
 	[AutoNotify] public int TargetObjectIndex => this.Services.Target.TargetObjectIndex;
 
-	public DataSheet<Race>? Races => this.Services.GameData.GetSheet<Race>();
-	public DataSheet<Tribe>? Tribes => this.Services.GameData.GetSheet<Tribe>();
+	public ExcelSheet<Race>? Races => this.Services.GameData.GetSheet<Race>();
+	public ExcelSheet<Tribe>? Tribes => this.Services.GameData.GetSheet<Tribe>();
 
-	public IEnumerable<Race?>? AvailableRaces => this.Services.GameData.GetSheet<Race>()?.GetFrom(1);
+	public IEnumerable<Race?>? AvailableRaces => this.Services.GameData.GetSheet<Race>();
 
 	[AutoNotify]
 	public CharaMakeType? MakeType
@@ -34,7 +35,7 @@ public partial class CustomizeViewModel : AutoViewModel
 			{
 				this.makeType = null;
 
-				DataSheet<CharaMakeType>? charaMakeTypeSheet = this.Services.GameData.GetSheet<CharaMakeType>();
+				ExcelSheet<CharaMakeType>? charaMakeTypeSheet = this.Services.GameData.GetSheet<CharaMakeType>();
 				if (charaMakeTypeSheet == null)
 					return null;
 
@@ -55,7 +56,7 @@ public partial class CustomizeViewModel : AutoViewModel
 	[AutoNotify]
 	public Race? Race
 	{
-		get => this.Races?.GetRow((int)this.GetCustomizeValue(CustomizeIndex.Race));
+		get => this.Races?.GetRow(this.GetCustomizeValue(CustomizeIndex.Race));
 		set
 		{
 			if (value == null || value.Tribes.Count <= 0)
@@ -85,7 +86,7 @@ public partial class CustomizeViewModel : AutoViewModel
 	[AutoNotify]
 	public Tribe? Tribe
 	{
-		get => this.Tribes?.GetRow((int)this.GetCustomizeValue(CustomizeIndex.Tribe));
+		get => this.Tribes?.GetRow(this.GetCustomizeValue(CustomizeIndex.Tribe));
 		set
 		{
 			if (value == null)

@@ -46,17 +46,17 @@ public class EquipRaceCategory : StudioExcelRow
 		if (this.Female)
 			tags.Add("Feminine");
 
-		for (int i = 0; i < this.races.Length; i++)
+		/*for (int i = 0; i < this.races.Length; i++)
 		{
 			if (this.races[i] == true)
 			{
-				Race? race = GameDataService.GetRow<Race>(i + 1);
+				Race? race = this.Services.GameData.GetRow<Race>(i + 1);
 				if (race != null && race.Name != null)
 				{
 					tags.Add(race.Name);
 				}
 			}
-		}
+		}*/
 
 		return tags;
 	}

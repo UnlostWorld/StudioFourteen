@@ -7,7 +7,7 @@ public enum AccessorySlots
 	Glasses,
 }
 
-public class AccessoryViewModel : TableRowItemViewModel<Glasses>
+public class AccessoryViewModel : ExcelRowItemViewModel<Glasses>
 {
 	public AccessoryViewModel(AccessorySlots slot)
 	{

@@ -134,8 +134,8 @@ public class AppearanceFile : FileBase, ICharacterAppearance
 	{
 		base.GetAutoTags(tags);
 
-		Race? race = this.Race != null ? GameDataService.GetRow<Race>((byte)this.Race) : null;
-		Tribe? tribe = this.Tribe != null ? GameDataService.GetRow<Tribe>((byte)this.Tribe) : null;
+		Race? race = this.Race != null ? ServiceManager.Instance.GameData.GetRow<Race>((byte)this.Race) : null;
+		Tribe? tribe = this.Tribe != null ? ServiceManager.Instance.GameData.GetRow<Tribe>((byte)this.Tribe) : null;
 
 		tags.Add(race?.ToTags());
 		tags.Add(this.Gender?.ToTags());

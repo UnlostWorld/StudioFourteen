@@ -6,7 +6,7 @@ using StudioFourteen.Tags;
 using System.Collections.Generic;
 
 [Sheet("ClassJobCategory", 0x65bbdb12)]
-public class ClassJobCategory : ExcelRow
+public class ClassJobCategory : StudioExcelRow
 {
 	private readonly bool[] classJobs = new bool[(int)ClassJob.ClassJobRows.Count];
 
@@ -65,7 +65,7 @@ public class ClassJobCategory : ExcelRow
 		{
 			if (this.classJobs[i - 1])
 			{
-				ClassJob? classJob = GameDataService.GetRow<ClassJob>(i);
+				ClassJob? classJob = this.Services.GameData.GetRow<ClassJob>(i);
 
 				if (classJob == null)
 				{
@@ -120,6 +120,6 @@ public class ClassJobCategory : ExcelRow
 		public ClassJob.ClassJobRows ClassJobRow { get; private set; } = classJob;
 		public bool Enabled { get; private set; } = enabled;
 
-		public ClassJob? ClassJob => GameDataService.GetRow<ClassJob>((int)this.ClassJobRow);
+		public ClassJob? ClassJob => ServiceManager.Instance.GameData.GetRow<ClassJob>((int)this.ClassJobRow);
 	}
 }
