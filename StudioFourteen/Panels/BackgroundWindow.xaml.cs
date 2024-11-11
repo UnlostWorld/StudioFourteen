@@ -1,6 +1,7 @@
 ﻿namespace StudioFourteen.Studio;
 
 using StudioFourteen.Panels;
+using StudioFourteen.Plugin;
 using StudioFourteen.Settings;
 using StudioFourteen.Utilities;
 using System;
@@ -116,6 +117,11 @@ public partial class BackgroundWindow : PanelWindow
 	{
 		this.Services.Input.HandleMouseWheel(e.Delta / 120.0f);
 		e.Handled = true;
+	}
+
+	private void OnMouseEnterSelf(object sender, MouseEventArgs e)
+	{
+		this.UpdatePosition();
 	}
 
 	private void OnPreviewKeyDown(object sender, KeyEventArgs e)
