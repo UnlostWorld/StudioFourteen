@@ -1,6 +1,6 @@
 ﻿namespace StudioFourteen.Appearance;
 
-using StudioFourteen.GameData.Excel;
+using Lumina.Excel.Sheets;
 using StudioFourteen.Mvm;
 
 public class OrnamentViewModel : ExcelRowItemViewModel<Ornament>

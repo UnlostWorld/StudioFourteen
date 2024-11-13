@@ -1,15 +1,16 @@
 ﻿namespace StudioFourteen.Appearance.Customize;
 
 using DependencyPropertyGenerator;
+using Lumina.Excel.Sheets;
 using StudioFourteen.GameData;
-using StudioFourteen.GameData.Excel;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 
 [DependencyProperty<byte>("Value", DefaultBindingMode = DefaultBindingMode.TwoWay)]
-[DependencyProperty<CharaMakeType.Menu>("Menu")]
+[DependencyProperty<CharaMakeType>("MakeType")]
+[DependencyProperty<CharaMakeType.CharaMakeStructStruct>("MakeStruct")]
 [DependencyProperty<CornerRadius>("CornerRadius")]
 public partial class CustomizeColorOption : UserControl, INotifyPropertyChanged
 {
@@ -47,7 +48,14 @@ public partial class CustomizeColorOption : UserControl, INotifyPropertyChanged
 		this.PropertyChanged?.Invoke(this, new(nameof(CustomizeColorOption.SelectedOption)));
 	}
 
-	partial void OnMenuChanged(CharaMakeType.Menu? newValue)
+	partial void OnMakeStructChanged()
+	{
+		this.PopulateColors();
+		this.PropertyChanged?.Invoke(this, new(nameof(CustomizeColorOption.SelectedOption)));
+		this.PropertyChanged?.Invoke(this, new(nameof(CustomizeColorOption.Value)));
+	}
+
+	partial void OnMakeTypeChanged()
 	{
 		this.PopulateColors();
 		this.PropertyChanged?.Invoke(this, new(nameof(CustomizeColorOption.SelectedOption)));
@@ -58,20 +66,17 @@ public partial class CustomizeColorOption : UserControl, INotifyPropertyChanged
 	{
 		this.Options.Clear();
 
-		if (this.Menu != null)
+		/*HumanCmp.Entry[]? entries = HumanCmp.Get(this.MakeType, this.MakeStruct);
+		if (entries != null)
 		{
-			HumanCmp.Entry[]? entries = HumanCmp.Get(this.Menu);
-			if (entries != null)
+			for (byte j = 0; j < this.MakeStruct.SubMenuNum; ++j)
 			{
-				for (byte j = 0; j < this.Menu.NumOptions; ++j)
+				if (entries != null && j < entries.Length)
 				{
-					if (entries != null && j < entries.Length)
-					{
-						this.Options.Add(new((byte)(this.Menu.Min + j), entries[j]));
-					}
+					this.Options.Add(new((byte)(this.Menu.Min + j), entries[j]));
 				}
 			}
-		}
+		}*/
 
 		this.PropertyChanged?.Invoke(this, new(nameof(CustomizeColorOption.Options)));
 	}

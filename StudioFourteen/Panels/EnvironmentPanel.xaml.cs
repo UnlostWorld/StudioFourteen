@@ -1,8 +1,7 @@
 ﻿namespace StudioFourteen.Panels;
 
-using StudioFourteen.GameData.Excel;
+using Lumina.Excel.Sheets;
 using StudioFourteen.Library;
-using StudioFourteen.Plugin;
 using StudioFourteen.Tags;
 using System.Windows;
 
@@ -11,14 +10,14 @@ public partial class EnvironmentPanel : Panel
 	private void OnChangeTerritoryClicked(object sender, RoutedEventArgs e)
 	{
 		TagCollection defaultTags = new();
-		MiniLibraryPopOut.Show<Territory>(
+		MiniLibraryPopOut.Show<TerritoryType>(
 			this,
 			"Change Zone",
 			defaultTags,
 			null,
 			(territory, isFinal) =>
 			{
-				if (!isFinal || territory == null || territory.Background == null)
+				if (!isFinal)
 					return;
 
 				this.Services.Environment.ChangeTerritory(territory);

@@ -3,7 +3,6 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:appearance="clr-namespace:StudioFourteen.Appearance"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
-	xmlns:excel="clr-namespace:StudioFourteen.GameData.Excel"
 	xmlns:gameData="clr-namespace:StudioFourteen.GameData"
 	xmlns:library="clr-namespace:StudioFourteen.Library"
 	xmlns:markup="clr-namespace:WpfUtils.Markup;assembly=WpfUtils"
@@ -103,10 +102,6 @@
 
 		<markup:TemplateSelectorEntry
 			TargetType="{x:Type library:LibraryEntryBase}"
-			Template="{StaticResource LibraryInfo_Simple}" />
-
-		<markup:TemplateSelectorEntry
-			TargetType="{x:Type excel:LibraryExcelRow}"
 			Template="{StaticResource LibraryInfo_Simple}" />
 
 		<markup:TemplateSelectorEntry

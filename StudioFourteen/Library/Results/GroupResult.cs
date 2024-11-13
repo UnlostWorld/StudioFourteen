@@ -1,11 +1,10 @@
 ﻿namespace StudioFourteen.Library.Results;
 
-using StudioFourteen.GameData.Excel;
+using StudioFourteen.GameData.Library;
 using StudioFourteen.Library.Filters;
 using StudioFourteen.Tags;
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 
 public class Result(ILibraryEntry entry)
 {
@@ -119,10 +118,9 @@ public class GroupResult : Result
 						return a.Entry.Name.CompareTo(b.Entry.Name);
 					}
 
-					if (a.Entry is LibraryExcelRow rowA && b.Entry is LibraryExcelRow rowB)
+					if (a.Entry is ExcelLibraryEntry rowA && b.Entry is ExcelLibraryEntry rowB)
 						return rowA.RowId.CompareTo(rowB.RowId);
 
-					// row?
 					return 0;
 				});
 

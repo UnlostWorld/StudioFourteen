@@ -14,7 +14,6 @@
 	Height="600"
 	MinWidth="350"
 	MinHeight="600"
-	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	ResizeMode="CanResizeWithGrip"
 	Subtitle="{Binding CharacterName}"
 	TitleIcon="UserShield"
@@ -150,13 +149,15 @@
 							Grid.RowSpan="2"
 							Grid.Column="0"
 							Margin="0,0,1,0"
-							Menu="{Binding Customize.MakeType.TailEarsTypes}"
+							MakeStruct="{Binding Customize.MakeType.TailEarsTypes}"
+							MakeType="{Binding Customize.MakeType}"
 							Value="{Binding Customize.TailEarsType}" />
 
 						<customize:CustomizeNumberOption
 							Grid.Row="0"
 							Grid.Column="1"
-							Menu="{Binding Customize.MakeType.TailEarsTypes}"
+							MakeStruct="{Binding Customize.MakeType.TailEarsTypes}"
+							MakeType="{Binding Customize.MakeType}"
 							Value="{Binding Customize.TailEarsType}" />
 
 						<wpfUtils:NumberBox
@@ -177,7 +178,7 @@
 						Style="{DynamicResource LeftLabel}"
 						Text="{Binding Customize.MakeType.SkinTones.Name}" />
 					<customize:CustomizeColorOption
-						Menu="{Binding Customize.MakeType.SkinTones}"
+						MakeStruct="{Binding Customize.MakeType.SkinTones}"
 						Value="{Binding Customize.SkinTone}" />
 
 
@@ -201,13 +202,13 @@
 							Grid.Row="0"
 							Grid.RowSpan="2"
 							Grid.Column="0"
-							Menu="{Binding Customize.MakeType.LipsToneFurPatterns}"
+							MakeStruct="{Binding Customize.MakeType.LipsToneFurPatterns}"
 							Value="{Binding Customize.LipsToneFurPattern}" />
 
 						<customize:CustomizeNumberOption
 							Grid.Row="0"
 							Grid.Column="1"
-							Menu="{Binding Customize.MakeType.LipsToneFurPatterns}"
+							MakeStruct="{Binding Customize.MakeType.LipsToneFurPatterns}"
 							Value="{Binding Customize.LipsToneFurPattern}" />
 
 					</Grid>
@@ -239,13 +240,13 @@
 						<customize:CustomizeIconOption
 							Grid.Column="0"
 							Margin="0,0,1,0"
-							Menu="{Binding Customize.MakeType.Faces}"
+							MakeStruct="{Binding Customize.MakeType.Faces}"
 							Value="{Binding Customize.Face}" />
 
 						<customize:CustomizeNumberOption
 							Grid.Column="1"
 							VerticalAlignment="Top"
-							Menu="{Binding Customize.MakeType.Faces}"
+							MakeStruct="{Binding Customize.MakeType.Faces}"
 							Value="{Binding Customize.Face}" />
 
 					</Grid>
@@ -338,7 +339,7 @@
 							Grid.Row="0"
 							Grid.Column="0"
 							CornerRadius="6,0,0,6"
-							Menu="{Binding Customize.MakeType.EyeColors}"
+							MakeStruct="{Binding Customize.MakeType.EyeColors}"
 							Value="{Binding Customize.MainEyeColor}" />
 
 						<customize:CustomizeColorOption
@@ -346,7 +347,7 @@
 							Grid.Column="0"
 							CornerRadius="6,0,0,6"
 							IsEnabled="{Binding LinkEyeColors, Converter={StaticResource !B}}"
-							Menu="{Binding Customize.MakeType.EyeColors}"
+							MakeStruct="{Binding Customize.MakeType.EyeColors}"
 							Value="{Binding Customize.RightEyeColor}" />
 					</Grid>
 
@@ -357,7 +358,7 @@
 						Text="Limbal Ring"
 						Visibility="{Binding Customize.Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=AuRa}" />
 					<customize:CustomizeColorOption
-						Menu="{Binding Customize.MakeType.EyeColors}"
+						MakeStruct="{Binding Customize.MakeType.EyeColors}"
 						Visibility="{Binding Customize.Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=AuRa}"
 						Value="{Binding Customize.FacialFeatureColor}" />
 
@@ -427,7 +428,7 @@
 							Grid.Column="1"
 							Margin="0,1,1,1"
 							CornerRadius="0,6,6,0"
-							Menu="{Binding Customize.MakeType.LipsToneFurPatterns}"
+							MakeStruct="{Binding Customize.MakeType.LipsToneFurPatterns}"
 							Value="{Binding Customize.LipsToneFurPattern}" />
 
 					</Grid>
@@ -458,7 +459,7 @@
 							Margin="0,-20,1,-20"
 							VerticalAlignment="Center"
 							Flipped="{Binding Customize.FlipFacePaint}"
-							Menu="{Binding Customize.MakeType.FacePaints}"
+							MakeStruct="{Binding Customize.MakeType.FacePaints}"
 							Value="{Binding Customize.FacePaint}" />
 
 						<wpfUtils:NumberBox
@@ -480,7 +481,7 @@
 							Grid.Row="1"
 							Grid.Column="1"
 							Grid.ColumnSpan="2"
-							Menu="{Binding Customize.MakeType.FacePaintColors}"
+							MakeStruct="{Binding Customize.MakeType.FacePaintColors}"
 							Value="{Binding Customize.FacePaintColor}" />
 					</Grid>
 
@@ -501,7 +502,7 @@
 						Text="{Binding Customize.MakeType.FacialFeatureColors.Name}"
 						Visibility="{Binding Customize.Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Hyur|Viera|Lalafell|Miqote|Roegadyn|Elezen}" />
 					<customize:CustomizeColorOption
-						Menu="{Binding Customize.MakeType.FacialFeatureColors}"
+						MakeStruct="{Binding Customize.MakeType.FacialFeatureColors}"
 						Visibility="{Binding Customize.Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Hyur|Viera|Lalafell|Miqote|Roegadyn|Elezen}"
 						Value="{Binding Customize.FacialFeatureColor}" />
 
@@ -525,7 +526,7 @@
 							Grid.RowSpan="2"
 							Grid.Column="0"
 							Margin="0,0,1,0"
-							Menu="{Binding Customize.MakeType.Hairs}"
+							MakeStruct="{Binding Customize.MakeType.Hairs}"
 							Value="{Binding Customize.Hair}" />
 
 						<wpfUtils:NumberBox
@@ -539,7 +540,7 @@
 						<customize:CustomizeColorOption
 							Grid.Row="1"
 							Grid.Column="1"
-							Menu="{Binding Customize.MakeType.HairTones}"
+							MakeStruct="{Binding Customize.MakeType.HairTones}"
 							Value="{Binding Customize.HairTone}" />
 
 						<Border
@@ -559,7 +560,7 @@
 							Margin="0,1,1,1"
 							CornerRadius="0,6,6,0"
 							IsEnabled="{Binding Customize.EnableHighlights}"
-							Menu="{Binding Customize.MakeType.HairTones}"
+							MakeStruct="{Binding Customize.MakeType.HairTones}"
 							Value="{Binding Customize.Highlights}" />
 					</Grid>
 

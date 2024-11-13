@@ -6,19 +6,18 @@ namespace StudioFourteen.Services;
 using PropertyChanged.SourceGenerator;
 using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
-using StudioFourteen.GameData.Excel;
 using StudioFourteen.Plugin;
 using System;
 using Dalamud.Plugin.Services;
-using StudioFourteen.GameData;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Environment;
 using StudioFourteen.Mvm;
+using Lumina.Excel.Sheets;
 
 public partial class EnvironmentService
 	: ServiceBase
 {
 	private Hook<OnCreateScene>? createSceneHook;
-	[Notify] private Territory? currentTerritory;
+	[Notify] private TerritoryType? currentTerritory;
 	[Notify] private Weather? currentWeather;
 
 	private delegate int OnCreateScene(string p1, uint p2, IntPtr p3, uint p4, IntPtr p5, int p6, uint p7);
@@ -74,17 +73,18 @@ public partial class EnvironmentService
 		base.Detach();
 	}
 
-	public void ChangeTerritory(Territory territory)
+	public void ChangeTerritory(TerritoryType territory)
 	{
 		if (!this.CanChangeTerritory)
 			return;
 
 		DalamudServices.Framework?.RunOnFrameworkThread(() =>
 		{
-			if (territory.Background == null)
+			string background = territory.Bg.ExtractText();
+			if (string.IsNullOrEmpty(background))
 				return;
 
-			this.createSceneHook?.Original(territory.Background, territory.RowId, 0, 0, 0, -1, 0);
+			this.createSceneHook?.Original(background, territory.RowId, 0, 0, 0, -1, 0);
 			this.CurrentTerritory = territory;
 		});
 	}
@@ -118,7 +118,7 @@ public partial class EnvironmentService
 				return;
 
 			ushort territoryId = DalamudServices.ClientState.TerritoryType;
-			this.CurrentTerritory = this.Services.GameData.GetRow<Territory>(territoryId);
+			this.CurrentTerritory = this.Services.GameData.GetRow<TerritoryType>(territoryId);
 		}
 	}
 
@@ -129,7 +129,7 @@ public partial class EnvironmentService
 		if (this.createSceneHook == null)
 			return 0;
 
-		this.CurrentTerritory = this.Services.GameData.GetRow<Territory>(territoryId);
+		this.CurrentTerritory = this.Services.GameData.GetRow<TerritoryType>(territoryId);
 
 		return this.createSceneHook.Original(backgroundPath, territoryId, p3, layerFilterKey, p5, p6, contentFinderConditionId);
 	}

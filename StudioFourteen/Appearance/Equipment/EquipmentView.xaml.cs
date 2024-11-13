@@ -1,7 +1,7 @@
 ﻿namespace StudioFourteen.Appearance.Equipment;
 
 using DependencyPropertyGenerator;
-using StudioFourteen.GameData.Excel;
+using Lumina.Excel.Sheets;
 using StudioFourteen.Library;
 using StudioFourteen.Mvm;
 using StudioFourteen.Tags;

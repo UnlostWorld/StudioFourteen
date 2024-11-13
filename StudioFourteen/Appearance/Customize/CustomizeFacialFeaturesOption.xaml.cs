@@ -1,8 +1,8 @@
 ﻿namespace StudioFourteen.Appearance.Customize;
 
 using DependencyPropertyGenerator;
+using Lumina.Excel.Sheets;
 using StudioFourteen.GameData;
-using StudioFourteen.GameData.Excel;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Controls;
@@ -10,7 +10,7 @@ using System.Windows.Controls;
 using CustomizeFacialFeatures = FFXIVClientStructs.FFXIV.Client.Game.Character.CustomizeDataExtensions.FacialFeatures;
 
 [DependencyProperty<CustomizeFacialFeatures>("Value", DefaultValue = CustomizeFacialFeatures.None, DefaultBindingMode = DefaultBindingMode.TwoWay)]
-[DependencyProperty<CharaMakeType.FacialFeatureOptions>("FacialFeatures")]
+[DependencyProperty<CharaMakeType.FacialFeatureOptionStruct>("FacialFeatures")]
 public partial class CustomizeFacialFeaturesOption : UserControl
 {
 	public CustomizeFacialFeaturesOption()
@@ -29,21 +29,21 @@ public partial class CustomizeFacialFeaturesOption : UserControl
 		}
 	}
 
-	partial void OnFacialFeaturesChanged(CharaMakeType.FacialFeatureOptions? newValue)
+	/*partial void OnFacialFeaturesChanged(CharaMakeType.FacialFeatureOptionStruct? newValue)
 	{
 		this.Options.Clear();
 
 		if (newValue == null)
 			return;
 
-		foreach (CharaMakeType.FacialFeatureOptions.Option option in newValue.Options)
+		foreach (CharaMakeType.FacialFeatureOptionStruct option in newValue.Value.)
 		{
 			Option op = new Option(this);
 			op.Value = option.Value;
 			op.Icon = option.Icon;
 			this.Options.Add(op);
 		}
-	}
+	}*/
 
 	public class Option : INotifyPropertyChanged
 	{

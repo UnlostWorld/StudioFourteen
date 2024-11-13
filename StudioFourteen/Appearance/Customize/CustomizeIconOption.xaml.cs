@@ -3,14 +3,15 @@
 using Dalamud.Game.ClientState.Objects.Enums;
 using Lumina.Excel;
 using StudioFourteen.GameData;
-using StudioFourteen.GameData.Excel;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows.Controls;
 using DependencyPropertyGenerator;
+using Lumina.Excel.Sheets;
 
 [DependencyProperty<byte>("Value", DefaultValue = 0, DefaultBindingMode = DefaultBindingMode.TwoWay)]
-[DependencyProperty<CharaMakeType.Menu>("Menu")]
+[DependencyProperty<CharaMakeType>("MakeType")]
+[DependencyProperty<CharaMakeType.CharaMakeStructStruct>("MakeStruct")]
 [DependencyProperty<bool>("Flipped")]
 public partial class CustomizeIconOption : UserControl, INotifyPropertyChanged
 {
@@ -47,7 +48,7 @@ public partial class CustomizeIconOption : UserControl, INotifyPropertyChanged
 		this.PropertyChanged?.Invoke(this, new(nameof(CustomizeColorOption.SelectedOption)));
 	}
 
-	partial void OnMenuChanged(CharaMakeType.Menu? newValue)
+	/*partial void OnMenuChanged(CharaMakeType.Menu? newValue)
 	{
 		this.PopulateOptions();
 		this.PropertyChanged?.Invoke(this, new(nameof(CustomizeColorOption.SelectedOption)));
@@ -100,11 +101,11 @@ public partial class CustomizeIconOption : UserControl, INotifyPropertyChanged
 		}
 
 		this.PropertyChanged?.Invoke(this, new(nameof(CustomizeColorOption.Options)));
-	}
+	}*/
 
 	public class IconOption
 	{
-		public IconOption(byte featureId, ImageReference icon)
+		/*public IconOption(byte featureId, ImageReference icon)
 		{
 			this.FeatureId = featureId;
 			this.Icon = icon;
@@ -115,7 +116,7 @@ public partial class CustomizeIconOption : UserControl, INotifyPropertyChanged
 			this.Icon = customize.Icon;
 			this.Item = customize.Item;
 			this.FeatureId = customize.FeatureId;
-		}
+		}*/
 
 		public ImageReference? Icon { get; private set; }
 		public Item? Item { get; private set; }

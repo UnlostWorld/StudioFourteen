@@ -3,9 +3,11 @@
 using Dalamud.Game.ClientState.Objects.Enums;
 using global::System;
 using Lumina.Excel;
+using Lumina.Excel.Sheets;
 using StudioFourteen;
 using StudioFourteen.GameData;
-using StudioFourteen.GameData.Excel;
+
+using HairMakeType = StudioFourteen.GameData.Sheets.HairMakeType;
 
 public static class CustomizeDataExtensions
 {
@@ -25,11 +27,11 @@ public static class CustomizeDataExtensions
 		LegacyTattoo = 0x80,
 	}
 
-	public static Race? GetRace(ref this CustomizeData self) => ServiceManager.Instance.GameData.GetRow<Race>(self.GetValue(CustomizeIndex.Race));
-	public static Tribe? GetTribe(ref this CustomizeData self) => ServiceManager.Instance.GameData.GetRow<Tribe>(self.GetValue(CustomizeIndex.Tribe));
-	public static Genders GetGender(ref this CustomizeData self) => (Genders)self.GetValue(CustomizeIndex.Gender);
+	public static Race? GetRace(ref readonly this CustomizeData self) => ServiceManager.Instance.GameData.GetRow<Race>(self.GetValue(CustomizeIndex.Race));
+	public static Tribe? GetTribe(ref readonly this CustomizeData self) => ServiceManager.Instance.GameData.GetRow<Tribe>(self.GetValue(CustomizeIndex.Tribe));
+	public static Genders GetGender(ref readonly this CustomizeData self) => (Genders)self.GetValue(CustomizeIndex.Gender);
 
-	public static byte GetValue(ref this CustomizeData self, CustomizeIndex option)
+	public static byte GetValue(ref readonly this CustomizeData self, CustomizeIndex option)
 	{
 		return self.Data[(int)option];
 	}
@@ -48,7 +50,7 @@ public static class CustomizeDataExtensions
 		}
 	}
 
-	public static CharaMakeType? GetCharaMakeType(ref this CustomizeData self)
+	public static CharaMakeType? GetCharaMakeType(ref readonly this CustomizeData self)
 	{
 		Tribe? tribe = self.GetTribe();
 		Genders gender = self.GetGender();
@@ -59,7 +61,7 @@ public static class CustomizeDataExtensions
 
 		foreach (CharaMakeType set in charaMakeTypeSheet)
 		{
-			if (set.Tribe != tribe || set.Gender != gender)
+			if (!set.Tribe.IsRow(tribe) || set.Gender != (sbyte)gender)
 				continue;
 
 			return set;
@@ -68,7 +70,7 @@ public static class CustomizeDataExtensions
 		return null;
 	}
 
-	public static ImageReference? GetIcon(ref this CustomizeData self)
+	public static ImageReference? GetIcon(ref readonly this CustomizeData self)
 	{
 		ExcelSheet<HairMakeType>? hairMakeTypeSheet = ServiceManager.Instance.GameData.GetSheet<HairMakeType>();
 		if (hairMakeTypeSheet == null)
@@ -80,26 +82,26 @@ public static class CustomizeDataExtensions
 
 		byte hair = self.GetValue(CustomizeIndex.HairStyle);
 
-		foreach (HairMakeType? hairMakeType in hairMakeTypeSheet)
+		foreach (HairMakeType hairMakeType in hairMakeTypeSheet)
 		{
-			if (hairMakeType == null)
+			if (!hairMakeType.Race.IsRow(race) || !hairMakeType.Tribe.IsRow(tribe) || hairMakeType.Gender != (sbyte)gender)
 				continue;
 
-			if (hairMakeType.Race != race || hairMakeType.Tribe != tribe || hairMakeType.Gender != gender)
-				continue;
-
-			CharaMakeCustomize?[] makeCustomizeOptions = hairMakeType.HairStyles;
+			RowRef<CharaMakeCustomize>[] makeCustomizeOptions = hairMakeType.HairStyles;
 
 			int length = (byte)makeCustomizeOptions.Length;
 			for (byte j = 0; j < length; ++j)
 			{
-				CharaMakeCustomize? makeCustomize = makeCustomizeOptions[j];
-				if (makeCustomize == null || makeCustomize.Icon == null || makeCustomize.Icon.ImageId == 0)
+				if (!makeCustomizeOptions[j].IsValid)
 					continue;
 
-				if (makeCustomize.FeatureId == hair)
+				CharaMakeCustomize makeCustomize = makeCustomizeOptions[j].Value;
+				if (makeCustomize.Icon == 0)
+					continue;
+
+				if (makeCustomize.FeatureID == hair)
 				{
-					return makeCustomize.Icon;
+					return new ImageReference(makeCustomize.Icon);
 				}
 			}
 		}

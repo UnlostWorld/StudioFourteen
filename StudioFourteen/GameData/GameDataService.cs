@@ -2,14 +2,13 @@
 
 using Lumina.Data;
 using Lumina.Excel;
-using Serilog;
-using StudioFourteen.GameData.Excel;
+using Lumina.Excel.Sheets;
+using StudioFourteen.GameData.Library;
 using StudioFourteen.GameData.Sheets;
 using StudioFourteen.Online;
 using StudioFourteen.Plugin;
 using StudioFourteen.Services;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
@@ -40,7 +39,7 @@ public class GameDataService : ServiceBase
 	}
 
 	public ExcelSheet<T>? GetSheet<T>()
-		where T : ExcelRow
+		where T : struct, IExcelRow<T>
 	{
 		if (this.lumina == null)
 			return null;
@@ -55,13 +54,13 @@ public class GameDataService : ServiceBase
 	}
 
 	public T? GetRow<T>(int rowIndex)
-		where T : ExcelRow
+		where T : struct, IExcelRow<T>
 	{
 		return this.GetRow<T>((uint)rowIndex);
 	}
 
 	public T? GetRow<T>(uint rowIndex)
-		where T : ExcelRow
+		where T : struct, IExcelRow<T>
 	{
 		ExcelSheet<T>? sheet;
 		sheet = this.GetSheet<T>();
@@ -69,16 +68,17 @@ public class GameDataService : ServiceBase
 		if (sheet == null)
 			return null;
 
-		return sheet.GetRow(rowIndex);
+		return sheet.GetRowOrDefault(rowIndex);
 	}
 
 	public override async Task Initialize()
 	{
 		await base.Initialize();
 
-		this.lumina = DalamudServices.DataManager?.GameData;
+		this.lumina = null; ///// DalamudServices.DataManager?.GameData;
 		if (this.lumina == null)
 		{
+			this.Log.Warning("Dalamud lumina not found, creating lumina instance.");
 			string? dir = Path.GetDirectoryName(this.Services.Windows.XivProcess?.MainModule?.FileName);
 			dir = $"{dir}/sqpack/";
 			this.lumina = new Lumina.GameData(dir);
@@ -87,22 +87,22 @@ public class GameDataService : ServiceBase
 		OnlineJsonFile<Dictionary<string, int>> bNpcNameIndexFile = new("https://raw.githubusercontent.com/ffxiv-teamcraft/ffxiv-teamcraft/refs/heads/staging/libs/data/src/lib/json/gubal-bnpcs-index.json", 1);
 		BattleNpcNameIndex = await bNpcNameIndexFile.GetAsync();
 
-#if DEBUG
+/*#if DEBUG
 		this.Log.Warning("To facilitate fast reload, Studio will not load game data for the library.");
-#else
-		_ = Task.Run(() => NameMergeUtil.MergeNpcNames());
-		_ = Task.Run(() => AppearanceDeduplicationUtil.Deduplicate());
+#else*/
+		////_ = Task.Run(() => NameMergeUtil.MergeNpcNames());
+		////_ = Task.Run(() => AppearanceDeduplicationUtil.Deduplicate());
 
-		this.Services.Library.AddSource(new ExcelSheetLibrarySource<Item>());
-		this.Services.Library.AddSource(new ExcelSheetLibrarySource<BattleNpc>());
-		this.Services.Library.AddSource(new ExcelSheetLibrarySource<ResidentNpc>());
-		this.Services.Library.AddSource(new ExcelSheetLibrarySource<Territory>());
-		this.Services.Library.AddSource(new ExcelSheetLibrarySource<Weather>());
-#endif
+		this.Services.Library.AddSource(new ExcelSheetLibrarySource<Item, ItemLibraryEntry>());
+		this.Services.Library.AddSource(new ExcelSheetLibrarySource<BNpcBase, BNpcBaseLibraryEntry>());
+		this.Services.Library.AddSource(new ExcelSheetLibrarySource<ENpcResident, ENpcResidentLibraryEntry>());
+		////this.Services.Library.AddSource(new ExcelSheetLibrarySource<TerritoryType>());
+		////this.Services.Library.AddSource(new ExcelSheetLibrarySource<Weather>());
+////#endif
 	}
 
 	// updates the name of any unnamed npc that has a matching appearance that is named.
-	public static class NameMergeUtil
+	/*public static class NameMergeUtil
 	{
 		public static ILogger Log => Logging.ForContext("NameMergeUtil");
 
@@ -253,5 +253,5 @@ public class GameDataService : ServiceBase
 				}
 			}
 		}
-	}
+	}*/
 }

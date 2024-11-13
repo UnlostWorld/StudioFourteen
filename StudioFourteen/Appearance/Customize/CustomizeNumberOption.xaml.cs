@@ -1,12 +1,13 @@
 ﻿namespace StudioFourteen.Appearance.Customize;
 
-using StudioFourteen.GameData.Excel;
 using System.ComponentModel;
 using System.Windows.Controls;
 using DependencyPropertyGenerator;
+using Lumina.Excel.Sheets;
 
 [DependencyProperty<byte>("Value", DefaultValue = 0, DefaultBindingMode = DefaultBindingMode.TwoWay)]
-[DependencyProperty<CharaMakeType.Menu>("Menu")]
+[DependencyProperty<CharaMakeType>("MakeType")]
+[DependencyProperty<CharaMakeType.CharaMakeStructStruct>("MakeStruct")]
 public partial class CustomizeNumberOption : UserControl, INotifyPropertyChanged
 {
 	private bool manualEntry;

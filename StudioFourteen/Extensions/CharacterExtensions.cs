@@ -4,10 +4,8 @@ using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using global::System;
-using global::System.Runtime.InteropServices;
+using Lumina.Excel.Sheets;
 using StudioFourteen;
-using StudioFourteen.GameData.Excel;
-using StudioFourteen.Plugin;
 using StudioFourteen.Utilities;
 
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;

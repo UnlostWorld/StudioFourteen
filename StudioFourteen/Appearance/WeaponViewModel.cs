@@ -1,8 +1,7 @@
 ﻿namespace StudioFourteen.Appearance;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using StudioFourteen.GameData;
-using StudioFourteen.GameData.Excel;
+using Lumina.Excel.Sheets;
 using StudioFourteen.Mvm;
 using StudioFourteen.Tags;
 using StudioFourteen.Utilities;
@@ -12,7 +11,7 @@ public class WeaponViewModel(DrawDataContainer.WeaponSlot slot)
 {
 	public DrawDataContainer.WeaponSlot Slot { get; private set; } = slot;
 
-	public override ushort Set
+	public ushort Set
 	{
 		get => this.HasValidTarget ? this.Weapon.ModelId.Id : (ushort)0;
 		set
@@ -23,7 +22,7 @@ public class WeaponViewModel(DrawDataContainer.WeaponSlot slot)
 		}
 	}
 
-	public override ushort Base
+	public ushort Base
 	{
 		get => this.HasValidTarget ? this.Weapon.ModelId.Type : (ushort)0;
 		set
@@ -34,7 +33,7 @@ public class WeaponViewModel(DrawDataContainer.WeaponSlot slot)
 		}
 	}
 
-	public override ushort Variant
+	public ushort Variant
 	{
 		get => this.HasValidTarget ? this.Weapon.ModelId.Variant : (ushort)0;
 		set
@@ -89,10 +88,10 @@ public class WeaponViewModel(DrawDataContainer.WeaponSlot slot)
 
 			if (this.item != null)
 			{
-				// Submodels?
-				this.Set = this.item.ModelSet;
-				this.Base = this.item.ModelBase;
-				this.Variant = (byte)this.item.ModelVariant;
+				this.BackupCharacter();
+				this.Weapon.ModelId.Value = this.item.Value.ModelMain;
+				////this.Weapon.ModelId.Value = this.item.Value.ModelSub;
+				this.ApplyChangeItem();
 			}
 			else
 			{
@@ -127,10 +126,7 @@ public class WeaponViewModel(DrawDataContainer.WeaponSlot slot)
 		if (this.Target != null)
 		{
 			Race? race = this.Target->DrawData.CustomizeData.GetRace();
-			if (race != null && race.Name != null)
-			{
-				tags.Add(race.Name);
-			}
+			tags.Add(race?.GetTag());
 		}
 	}
 }

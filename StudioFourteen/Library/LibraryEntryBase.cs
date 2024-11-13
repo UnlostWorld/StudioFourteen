@@ -1,13 +1,12 @@
 ﻿namespace StudioFourteen.Library;
 
+using Serilog;
 using StudioFourteen.Library.Sources;
 using StudioFourteen.Tags;
-using Serilog;
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using WpfUtils;
-using Newtonsoft.Json;
 
 public delegate void EntryEvent();
 
@@ -45,7 +44,7 @@ public abstract class LibraryEntryBase : ITagged, ILibraryEntry, INotifyProperty
 
 	public ServiceManager Services => ServiceManager.Instance;
 
-	public abstract string Name { get; }
+	public abstract string? Name { get; }
 	public virtual bool IsVisible { get; set; }
 	public TagCollection Tags { get; init; } = new();
 	public SourceBase? Source => this.source;

@@ -18,7 +18,7 @@
 	</DataTemplate>
 
 
-	<DataTemplate
+	<!--<DataTemplate
 		x:Key="LibrarySidebar_Item"
 		DataType="{x:Type excel:Item}">
 		<Grid>
@@ -43,7 +43,7 @@
 
 			</StackPanel>
 		</Grid>
-	</DataTemplate>
+	</DataTemplate>-->
 
 
 
@@ -96,7 +96,7 @@
 		</Grid>
 	</DataTemplate>
 
-	<DataTemplate
+	<!--<DataTemplate
 		x:Key="LibrarySidebar_Territory"
 		DataType="{x:Type excel:Territory}">
 		<Grid>
@@ -114,11 +114,11 @@
 					Text="{Binding Place}" />
 			</StackPanel>
 		</Grid>
-	</DataTemplate>
+	</DataTemplate>-->
 
 	<markup:TemplateSelector x:Key="LibrarySidebarTemplateSelector">
 
-		<markup:TemplateSelectorEntry
+		<!--<markup:TemplateSelectorEntry
 			TargetType="{x:Type excel:ResidentNpc}"
 			Template="{StaticResource LibrarySidebar_CharacterAppearance}" />
 
@@ -136,7 +136,7 @@
 
 		<markup:TemplateSelectorEntry
 			TargetType="{x:Type excel:Territory}"
-			Template="{StaticResource LibrarySidebar_Territory}" />
+			Template="{StaticResource LibrarySidebar_Territory}" />-->
 
 		<markup:TemplateSelectorEntry
 			TargetType="{x:Type sources:FileEntry}"

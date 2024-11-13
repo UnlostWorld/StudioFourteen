@@ -3,7 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:appearance="clr-namespace:StudioFourteen.Appearance"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
-	xmlns:excel="clr-namespace:StudioFourteen.GameData.Excel"
+	xmlns:excel="clr-namespace:StudioFourteen.GameData.Library"
 	xmlns:files="clr-namespace:StudioFourteen.Files"
 	xmlns:gameData="clr-namespace:StudioFourteen.GameData"
 	xmlns:library="clr-namespace:StudioFourteen.Library"
@@ -127,7 +127,7 @@
 		<controls:XivIconImage Id="061546" />
 	</DataTemplate>
 
-	<DataTemplate
+	<!--<DataTemplate
 		x:Key="LibraryIcon_Territory"
 		DataType="{x:Type excel:Territory}">
 		<controls:XivIconImage Id="060430" />
@@ -139,7 +139,7 @@
 		<Image
 			SnapsToDevicePixels="True"
 			Source="{Binding Icon.Source}" />
-	</DataTemplate>
+	</DataTemplate>-->
 
 
 	<DataTemplate
@@ -340,24 +340,21 @@
 			Template="{StaticResource LibraryIcon_FileSource}" />
 
 		<markup:TemplateSelectorEntry
-			TargetType="{x:Type excel:ResidentNpc}"
+			TargetType="{x:Type excel:ItemLibraryEntry}"
+			Template="{StaticResource SimpleIconTemplate}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type excel:BNpcBaseLibraryEntry}"
 			Template="{StaticResource AppearanceIcon}" />
 
 		<markup:TemplateSelectorEntry
-			TargetType="{x:Type excel:EventNpc}"
+			TargetType="{x:Type excel:ENpcResidentLibraryEntry}"
 			Template="{StaticResource AppearanceIcon}" />
 
-		<markup:TemplateSelectorEntry
-			TargetType="{x:Type excel:BattleNpc}"
-			Template="{StaticResource AppearanceIcon}" />
-
+		<!--
 		<markup:TemplateSelectorEntry
 			TargetType="{x:Type appearance:CharacterBackupAppearance}"
 			Template="{StaticResource AppearanceIcon}" />
-
-		<markup:TemplateSelectorEntry
-			TargetType="{x:Type excel:Item}"
-			Template="{StaticResource SimpleIconTemplate}" />
 
 		<markup:TemplateSelectorEntry
 			TargetType="{x:Type excel:Stain}"
@@ -382,10 +379,14 @@
 		<markup:TemplateSelectorEntry
 			TargetType="{x:Type excel:Mount}"
 			Template="{StaticResource SimpleIconTemplate}" />
+		
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type excel:Territory}"
+			Template="{StaticResource LibraryIcon_Territory}" />
 
 		<markup:TemplateSelectorEntry
 			TargetType="{x:Type excel:Perform}"
-			Template="{StaticResource SimpleIconTemplate}" />
+			Template="{StaticResource SimpleIconTemplate}" />-->
 
 		<markup:TemplateSelectorEntry
 			TargetType="{x:Type sources:GlamourerEntry}"
@@ -419,9 +420,7 @@
 			TargetType="{x:Type sources:FileSource}"
 			Template="{StaticResource LibraryIcon_FileSource}" />
 
-		<markup:TemplateSelectorEntry
-			TargetType="{x:Type excel:Territory}"
-			Template="{StaticResource LibraryIcon_Territory}" />
+
 
 	</markup:TemplateSelector>
 

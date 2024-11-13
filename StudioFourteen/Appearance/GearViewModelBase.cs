@@ -1,9 +1,11 @@
 ﻿namespace StudioFourteen.Appearance;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using Lumina.Excel;
 using StudioFourteen.Library;
 using StudioFourteen.Mvm;
 using StudioFourteen.Tags;
+using System;
 using System.Windows;
 
 public abstract class GearViewModelBase : AutoViewModel
@@ -20,7 +22,7 @@ public abstract class GearViewModelBase : AutoViewModel
 }
 
 public abstract class GearViewModelBase<T> : GearViewModelBase
-	where T : ILibraryEntry
+	where T : struct, IExcelRow<T>
 {
 	[AutoNotify] public abstract T? Item { get; set; }
 

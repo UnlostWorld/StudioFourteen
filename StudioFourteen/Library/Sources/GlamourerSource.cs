@@ -3,9 +3,9 @@
 using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Lumina.Excel;
+using Lumina.Excel.Sheets;
 using StudioFourteen.Appearance;
 using StudioFourteen.GameData;
-using StudioFourteen.GameData.Excel;
 using StudioFourteen.Mvm.Commands;
 using StudioFourteen.Plugin;
 using StudioFourteen.Tags;
@@ -145,11 +145,11 @@ public class GlamourerDesign
 
 	public void GetAutoTags(TagCollection tags)
 	{
-		Race.RaceRows? raceRow = (Race.RaceRows?)this.Customize?.Race?.Value;
+		RaceRows? raceRow = (RaceRows?)this.Customize?.Race?.Value;
 		Race? race = raceRow != null ? ServiceManager.Instance.GameData.GetRow<Race>((byte)raceRow) : null;
 		tags.Add(race?.ToTags());
 
-		Tribe.TribeRows? tribeRow = (Tribe.TribeRows?)this.Customize?.Clan?.Value;
+		TribeRows? tribeRow = (TribeRows?)this.Customize?.Clan?.Value;
 		Tribe? tribe = tribeRow != null ? ServiceManager.Instance.GameData.GetRow<Tribe>((byte)tribeRow) : null;
 		tags.Add(tribe?.ToTags());
 
@@ -229,8 +229,7 @@ public class GlamourerDesign
 					return null;
 
 				EquipmentModelId id = default;
-				id.Id = item.ModelBase;
-				id.Variant = (byte)item.ModelVariant;
+				id.Value = item.Value.ModelMain;
 				id.Stain0 = this.ApplyStain ? this.Stain : (byte)0;
 				id.Stain1 = this.ApplyStain ? this.Stain2 : (byte)0;
 				return id;
@@ -250,9 +249,7 @@ public class GlamourerDesign
 					return null;
 
 				WeaponModelId id = default;
-				id.Id = item.ModelSet;
-				id.Type = item.ModelBase;
-				id.Variant = item.ModelVariant;
+				id.Value = item.Value.ModelMain;
 				id.Stain0 = this.ApplyStain ? this.Stain : (byte)0;
 				id.Stain1 = this.ApplyStain ? this.Stain2 : (byte)0;
 				return id;

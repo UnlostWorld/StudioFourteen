@@ -5,7 +5,7 @@
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=WpfUtils"
 	xmlns:ex="clr-namespace:StudioFourteen.MarkupExtensions"
-	xmlns:excel="clr-namespace:StudioFourteen.GameData.Excel"
+	xmlns:excel="clr-namespace:Lumina.Excel.Sheets"
 	xmlns:files="clr-namespace:StudioFourteen.Files"
 	xmlns:gameData="clr-namespace:StudioFourteen.GameData"
 	xmlns:library="clr-namespace:StudioFourteen.Library"
@@ -205,8 +205,8 @@
 
 	<markup:TemplateSelector x:Key="LibraryActionsTemplateSelector">
 
-		<markup:TemplateSelectorEntry
-			TargetType="{x:Type excel:ResidentNpc}"
+		<!--<markup:TemplateSelectorEntry
+			TargetType="{x:Type excel:ENpcResident}"
 			Template="{StaticResource LibraryActions_CharacterAppearance}" />
 
 		<markup:TemplateSelectorEntry
@@ -215,7 +215,7 @@
 
 		<markup:TemplateSelectorEntry
 			TargetType="{x:Type excel:EventNpc}"
-			Template="{StaticResource LibraryActions_CharacterAppearance}" />
+			Template="{StaticResource LibraryActions_CharacterAppearance}" />-->
 
 		<markup:TemplateSelectorEntry
 			TargetType="{x:Type files:PoseFile}"

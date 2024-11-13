@@ -1,7 +1,7 @@
 ﻿namespace StudioFourteen.GameData;
 
 using Lumina.Excel;
-using StudioFourteen.GameData.Excel;
+using StudioFourteen.GameData.Library;
 using StudioFourteen.Library.Sources;
 using System;
 
@@ -9,15 +9,16 @@ public abstract class ExcelSheetLibrarySource : SourceBase
 {
 }
 
-public class ExcelSheetLibrarySource<T> : ExcelSheetLibrarySource
-	where T : LibraryExcelRow
+public class ExcelSheetLibrarySource<TExcelType, TEntryType> : ExcelSheetLibrarySource
+	where TExcelType : struct, IExcelRow<TExcelType>
+	where TEntryType : ExcelLibraryEntry
 {
-	public readonly ExcelSheet<T>? Sheet;
-	public readonly Type RowType = typeof(T);
+	public readonly ExcelSheet<TExcelType>? Sheet;
+	public readonly Type RowType = typeof(TExcelType);
 
 	public ExcelSheetLibrarySource()
 	{
-		this.Sheet = this.Services.GameData.GetSheet<T>();
+		this.Sheet = this.Services.GameData.GetSheet<TExcelType>();
 	}
 
 	public override string Name => Resources.Find($"LOC_Sheet{this.RowType.Name}", this.RowType.Name);
@@ -29,8 +30,12 @@ public class ExcelSheetLibrarySource<T> : ExcelSheetLibrarySource
 		if (this.Sheet == null)
 			return;
 
-		foreach(T entry in this.Sheet)
+		foreach(TExcelType row in this.Sheet)
 		{
+			TEntryType? entry = (TEntryType?)Activator.CreateInstance(typeof(TEntryType), [this, row]);
+			if (entry == null)
+				continue;
+
 			this.Add(entry);
 		}
 	}

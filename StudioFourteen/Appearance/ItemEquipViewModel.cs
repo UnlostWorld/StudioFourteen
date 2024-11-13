@@ -1,8 +1,7 @@
 ﻿namespace StudioFourteen.Appearance;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using StudioFourteen.GameData;
-using StudioFourteen.GameData.Excel;
+using Lumina.Excel.Sheets;
 using StudioFourteen.Mvm;
 using StudioFourteen.Tags;
 using StudioFourteen.Utilities;
@@ -12,13 +11,7 @@ public class ItemEquipViewModel(DrawDataContainer.EquipmentSlot slot)
 {
 	public DrawDataContainer.EquipmentSlot Slot { get; private set; } = slot;
 
-	public override ushort Set
-	{
-		get => 0;
-		set { }
-	}
-
-	public override ushort Base
+	public ushort Base
 	{
 		get => this.HasValidTarget ? this.ItemEquip.Id : (ushort)0;
 		set
@@ -29,7 +22,7 @@ public class ItemEquipViewModel(DrawDataContainer.EquipmentSlot slot)
 		}
 	}
 
-	public override ushort Variant
+	public ushort Variant
 	{
 		get => this.HasValidTarget ? this.ItemEquip.Variant : (ushort)0;
 		set
@@ -71,7 +64,7 @@ public class ItemEquipViewModel(DrawDataContainer.EquipmentSlot slot)
 				return null;
 
 			if (this.item == null)
-				this.item = this.Services.GameData.Items.Find(this.Slot, this.Set, this.Base, this.Variant);
+				this.item = this.Services.GameData.Items.Find(this.Slot, this.Base, this.Variant);
 
 			return this.item;
 		}
@@ -85,8 +78,8 @@ public class ItemEquipViewModel(DrawDataContainer.EquipmentSlot slot)
 			if (this.item != null)
 			{
 				// Submodels?
-				this.ItemEquip.Id = this.item.ModelBase;
-				this.ItemEquip.Variant = (byte)this.item.ModelVariant;
+				this.ItemEquip.Value = this.item.Value.ModelMain;
+				////this.ItemEquip.Value = this.item.Value.ModelSub;
 			}
 			else
 			{
@@ -120,10 +113,7 @@ public class ItemEquipViewModel(DrawDataContainer.EquipmentSlot slot)
 		if (this.Target != null)
 		{
 			Race? race = this.Target->DrawData.CustomizeData.GetRace();
-			if (race != null && race.Name != null)
-			{
-				tags.Add(race.Name);
-			}
+			tags.Add(race?.GetTag());
 		}
 	}
 }

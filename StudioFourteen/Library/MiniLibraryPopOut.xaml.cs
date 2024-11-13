@@ -1,9 +1,7 @@
 ﻿namespace StudioFourteen.Library;
-
-using FFXIVClientStructs;
-using FFXIVClientStructs.FFXIV.Common.Lua;
+using Lumina.Excel;
 using StudioFourteen.Appearance;
-using StudioFourteen.GameData.Excel;
+using StudioFourteen.GameData.Library;
 using StudioFourteen.Library.Filters;
 using StudioFourteen.Library.Results;
 using StudioFourteen.Library.Sources;
@@ -15,8 +13,6 @@ using System.Collections.Specialized;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Media;
-using TerraFX.Interop.Windows;
 using WpfUtils;
 using WpfUtils.Controls;
 using WpfUtils.Extensions;
@@ -105,6 +101,12 @@ public partial class MiniLibraryPopOut : View
 		}
 
 		return false;
+	}
+
+	public static void Show<T>(UIElement placementTarget, string title, TagCollection defaultTags, T? current, Action<T, bool> selectionChanged)
+		where T : struct, IExcelRow<T>
+	{
+		throw new NotImplementedException();
 	}
 
 	public static void Show<T>(UIElement placementTarget, string title, TagCollection defaultTags, T? current, Action<T, bool> selectionChanged)
@@ -230,7 +232,7 @@ public partial class MiniLibraryPopOut : View
 			{
 				return -1;
 			}
-			else if (a.Entry is LibraryExcelRow aRow && b.Entry is LibraryExcelRow bRow)
+			else if (a.Entry is ExcelLibraryEntry aRow && b.Entry is ExcelLibraryEntry bRow)
 			{
 				return aRow.RowId.CompareTo(bRow.RowId);
 			}

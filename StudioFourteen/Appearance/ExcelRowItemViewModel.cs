@@ -1,12 +1,11 @@
 ﻿namespace StudioFourteen.Appearance;
 
-using StudioFourteen.GameData;
-using StudioFourteen.GameData.Excel;
+using Lumina.Excel;
 using StudioFourteen.Mvm;
 using StudioFourteen.Utilities;
 
 public abstract class ExcelRowItemViewModel<T> : GearViewModelBase<T>
-	where T : LibraryExcelRow
+	where T : struct, IExcelRow<T>
 {
 	private T? item;
 
@@ -33,13 +32,13 @@ public abstract class ExcelRowItemViewModel<T> : GearViewModelBase<T>
 
 		set
 		{
-			if (value == null || !value.IsValid)
+			if (value == null)
 			{
 				this.Value = 0;
 			}
 			else
 			{
-				this.Value = (ushort)value.RowId;
+				this.Value = (ushort)value.Value.RowId;
 			}
 		}
 	}
@@ -61,7 +60,7 @@ public abstract class ExcelRowItemViewModel<T> : GearViewModelBase<T>
 			if (!this.HasValidTarget)
 				return;
 
-			if (this.item == null || !this.item.IsValid)
+			if (this.item == null)
 			{
 				this.LiveValue = 0;
 			}

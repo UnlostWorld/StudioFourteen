@@ -4,9 +4,9 @@ using System;
 using System.Collections.Generic;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Lumina.Data;
-using StudioFourteen.GameData.Excel;
 using Serilog;
 using System.Windows.Media;
+using Lumina.Excel.Sheets;
 
 public static class HumanCmp
 {
@@ -58,12 +58,13 @@ public static class HumanCmp
 		Colors = colors.ToArray();
 	}
 
-	public static Entry[]? Get(CharaMakeType.Menu menu)
+	public static Entry[]? Get(CharaMakeType.CharaMakeStructStruct menu)
 	{
-		if (menu.Race == null || menu.Tribe == null)
+		/*if (menu.Race == null || menu.Tribe == null)
 			return null;
 
-		return Get(menu.CustomizationIndex, menu.Tribe, menu.Gender);
+		return Get(menu.CustomizationIndex, menu.Tribe, menu.Gender);*/
+		throw new NotImplementedException();
 	}
 
 	public static Entry[] Get(CustomizeIndex index, Tribe tribe, Genders gender)

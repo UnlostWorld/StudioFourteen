@@ -3,11 +3,15 @@
 using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Lumina.Excel;
+using Lumina.Excel.Sheets;
 using StudioFourteen.GameData;
-using StudioFourteen.GameData.Excel;
 using StudioFourteen.Mvm;
 using StudioFourteen.Utilities;
+using System;
 using System.Collections.Generic;
+using System.Linq;
+
+using static Lumina.Excel.Sheets.CharaMakeType;
 
 public partial class CustomizeViewModel : AutoViewModel
 {
@@ -22,7 +26,7 @@ public partial class CustomizeViewModel : AutoViewModel
 	public ExcelSheet<Race>? Races => this.Services.GameData.GetSheet<Race>();
 	public ExcelSheet<Tribe>? Tribes => this.Services.GameData.GetSheet<Tribe>();
 
-	public IEnumerable<Race?>? AvailableRaces => this.Services.GameData.GetSheet<Race>();
+	public IEnumerable<Race>? AvailableRaces => this.Services.GameData.GetSheet<Race>();
 
 	[AutoNotify]
 	public CharaMakeType? MakeType
@@ -30,8 +34,8 @@ public partial class CustomizeViewModel : AutoViewModel
 		get
 		{
 			if (this.makeType == null
-				|| this.makeType.Tribe != this.Tribe
-				|| this.makeType.Gender != this.Gender)
+				|| !this.makeType.Value.Tribe.IsRow(this.Tribe)
+				|| this.makeType.Value.Gender != (sbyte)this.Gender)
 			{
 				this.makeType = null;
 
@@ -41,7 +45,7 @@ public partial class CustomizeViewModel : AutoViewModel
 
 				foreach (CharaMakeType set in charaMakeTypeSheet)
 				{
-					if (set.Tribe != this.Tribe || set.Gender != this.Gender)
+					if (!set.Tribe.IsRow(this.Tribe) || set.Gender != (sbyte)this.Gender)
 						continue;
 
 					this.makeType = set;
@@ -59,25 +63,47 @@ public partial class CustomizeViewModel : AutoViewModel
 		get => this.Races?.GetRow(this.GetCustomizeValue(CustomizeIndex.Race));
 		set
 		{
-			if (value == null || value.Tribes.Count <= 0)
+			if (value == null)
 				return;
 
-			int tribeIndex = 0;
-			Tribe? tribe = value.Tribes[tribeIndex];
-			if (tribe == null)
-				return;
+			// Get new tribe for the new race
+			Tribe newTribe;
+			{
+				int tribeIndex = 0;
+				Race? oldRace = this.Race;
+				Tribe? oldTribe = this.Tribe;
+				if (oldRace != null && oldTribe != null)
+				{
+					tribeIndex = oldRace.Value.GetTribeIndex(oldTribe.Value);
+					if (tribeIndex == -1)
+					{
+						tribeIndex = 0;
+					}
+				}
+
+				Tribe[] tribes = value.Value.GetTribes();
+				if (tribes.Length == 0)
+					return;
+
+				newTribe = tribes[tribeIndex];
+			}
+
+			// Get new model type for the new race
+			ModelTypes newModelType = this.ModelType;
+			{
+				ModelTypes[] modelTypes = newTribe.GetModelTypes();
+
+				if (!modelTypes.Contains(newModelType))
+				{
+					newModelType = ModelTypes.Normal;
+				}
+			}
 
 			Threads.RunOnFrameworkThread(() =>
 			{
-				this.SetCustomizeValue(CustomizeIndex.Race, (byte)value.RowId, false);
-				this.SetCustomizeValue(CustomizeIndex.Tribe, (byte)tribe.RowId, false);
-
-				if (!value.Genders.Contains(this.Gender))
-					this.SetCustomizeValue(CustomizeIndex.Gender, (byte)value.Genders[0], false);
-
-				if (this.Tribe?.ModelTypes.Contains(this.ModelType) == false)
-					this.SetCustomizeValue(CustomizeIndex.ModelType, (byte)ModelTypes.Normal, false);
-
+				this.SetCustomizeValue(CustomizeIndex.Race, (byte)value.Value.RowId, false);
+				this.SetCustomizeValue(CustomizeIndex.Tribe, (byte)newTribe.RowId, false);
+				this.SetCustomizeValue(CustomizeIndex.ModelType, (byte)newModelType, false);
 				this.UpdateCustomize(true);
 			});
 		}
@@ -92,13 +118,21 @@ public partial class CustomizeViewModel : AutoViewModel
 			if (value == null)
 				return;
 
+			// Get new model type for the new tribe
+			ModelTypes newModelType = this.ModelType;
+			{
+				ModelTypes[] modelTypes = value.Value.GetModelTypes();
+
+				if (!modelTypes.Contains(newModelType))
+				{
+					newModelType = ModelTypes.Normal;
+				}
+			}
+
 			Threads.RunOnFrameworkThread(() =>
 			{
-				this.SetCustomizeValue(CustomizeIndex.Tribe, (byte)value.RowId, false);
-
-				if (!value.ModelTypes.Contains(this.ModelType))
-					this.SetCustomizeValue(CustomizeIndex.ModelType, (byte)ModelTypes.Normal, false);
-
+				this.SetCustomizeValue(CustomizeIndex.Tribe, (byte)value.Value.RowId, false);
+				this.SetCustomizeValue(CustomizeIndex.ModelType, (byte)newModelType, false);
 				this.UpdateCustomize(true);
 			});
 		}
@@ -182,17 +216,18 @@ public partial class CustomizeViewModel : AutoViewModel
 	}
 
 	[AutoNotify]
-	public CharaMakeType.FacialFeatureOptions? FacialFeatureOptions
+	public FacialFeatureOptionStruct FacialFeatureOptions
 	{
 		get
 		{
 			uint faceId = this.Face;
 
 			// I'm not sure why Hrothgar's face Id's are off by 4. =/
-			if (this.Race?.RowEnum == Race.RaceRows.Hrothgar)
+			if (this.Race?.RowId == (uint)RaceRows.Hrothgar)
 				faceId -= 4;
 
-			return this.MakeType?.GetFacialFeatures(faceId);
+			throw new NotImplementedException();
+			////return this.MakeType?.GetFacialFeatures(faceId);
 		}
 	}
 

@@ -65,7 +65,7 @@
 	</DataTemplate>
 
 
-	<DataTemplate DataType="{x:Type excel:ResidentNpc}">
+	<!--<DataTemplate DataType="{x:Type excel:ResidentNpc}">
 		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
 	</DataTemplate>
 
@@ -107,7 +107,7 @@
 
 	<DataTemplate DataType="{x:Type excel:Weather}">
 		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
-	</DataTemplate>
+	</DataTemplate>-->
 
 	<DataTemplate DataType="{x:Type gameData:ExcelSheetLibrarySource}">
 		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />

@@ -1,10 +1,10 @@
 ﻿namespace StudioFourteen.Files;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using Lumina.Excel.Sheets;
 using Newtonsoft.Json;
 using StudioFourteen.Appearance;
 using StudioFourteen.GameData;
-using StudioFourteen.GameData.Excel;
 using StudioFourteen.Mvm.Commands;
 using StudioFourteen.Tags;
 using System;
