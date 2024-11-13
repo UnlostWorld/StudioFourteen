@@ -18,9 +18,6 @@
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	</PropertyGroup>
 	<ItemGroup>
-	  <PackageReference Include="Lumina" Version="4.1.0" />
-	</ItemGroup>
-	<ItemGroup>
 	  <ProjectReference Include="..\StudioFourteen\StudioFourteen.csproj" />
 	</ItemGroup>
 

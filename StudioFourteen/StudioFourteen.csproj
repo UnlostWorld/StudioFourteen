@@ -58,10 +58,6 @@
 		<None Include="$(DalamudLibPath)\..\..\..\dalamud.boot.log" Link="dalamud.boot.log" />
 		<None Include="$(DalamudLibPath)\..\..\..\dalamud.log" Link="dalamud.log" />
 		<None Include="$(DalamudLibPath)\..\..\..\pluginConfigs\StudioFourteen.json" Link="config.json" />
-		<None Include="..\Assets\Icon\light-pride-textless.png">
-		  <Pack>True</Pack>
-		  <PackagePath>\</PackagePath>
-		</None>
 	</ItemGroup>
 
 	<ItemGroup>

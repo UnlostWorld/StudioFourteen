@@ -69,7 +69,7 @@ public class ImageReference
 
 				////string path = $"ui/icon/{this.ImageId / 1000u * 1000:000000}/{this.ImageId:000000}.tex";
 				string path = $"ui/icon/{this.ImageId / 1000u * 1000:000000}/{this.ImageId:000000}_hr1.tex";
-				TexFile? tex = DalamudServices.DataManager?.GetFile<TexFile>(path);
+				TexFile? tex = ServiceManager.Instance.GameData.GetFile<TexFile>(path);
 
 				if (tex == null)
 					return null;
@@ -99,7 +99,7 @@ public class ImageReference
 	private void Export()
 	{
 		string path = $"ui/icon/{this.ImageId / 1000u * 1000:000000}/{this.ImageId:000000}_hr1.tex";
-		TexFile? tex = DalamudServices.DataManager?.GetFile<TexFile>(path);
+		TexFile? tex = ServiceManager.Instance.GameData.GetFile<TexFile>(path);
 
 		if (tex == null)
 			return;

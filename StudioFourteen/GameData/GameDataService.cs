@@ -16,35 +16,37 @@ using System.Threading.Tasks;
 public class GameDataService : ServiceBase
 {
 	public static Dictionary<string, int> BattleNpcNameIndex = new();
-
 	public readonly ItemUtility Items = new();
+	private Lumina.GameData? lumina;
 
-	public static T? GetFile<T>(string path)
+	public T? GetFile<T>(string path)
 		where T : FileResource
 	{
 		if (ServiceManager.ShutdownRequested)
 			return null;
 
-		string? newPath = DalamudServices.TextureSubstitutionProvider?.GetSubstitutedPath(path);
+		if (this.lumina == null)
+			return null;
 
-		if (newPath == null)
-			newPath = path;
-
+		string? newPath = DalamudServices.TextureSubstitutionProvider?.GetSubstitutedPath(path) ?? path;
 		if (Path.IsPathRooted(newPath))
 		{
-			return DalamudServices.DataManager?.GameData.GetFileFromDisk<T>(newPath);
+			return this.lumina.GetFileFromDisk<T>(newPath);
 		}
 		else
 		{
-			return DalamudServices.DataManager?.GetFile<T>(newPath);
+			return this.lumina.GetFile<T>(newPath);
 		}
 	}
 
 	public ExcelSheet<T>? GetSheet<T>()
 		where T : ExcelRow
 	{
+		if (this.lumina == null)
+			return null;
+
 		ExcelSheet<T>? sheet;
-		sheet = DalamudServices.DataManager?.GetExcelSheet<T>();
+		sheet = this.lumina.GetExcelSheet<T>();
 
 		if (sheet == null)
 			this.Log.Error($"Failed to get excel sheet for type: {typeof(T)}");
@@ -73,6 +75,13 @@ public class GameDataService : ServiceBase
 	public override async Task Initialize()
 	{
 		await base.Initialize();
+
+		this.lumina = DalamudServices.DataManager?.GameData;
+		if (this.lumina == null)
+		{
+			string? dir = Path.GetDirectoryName(this.Services.Windows.XivProcess?.MainModule?.FileName);
+			this.lumina = new Lumina.GameData($"{dir}/game/sqpack/");
+		}
 
 		OnlineJsonFile<Dictionary<string, int>> bNpcNameIndexFile = new("https://raw.githubusercontent.com/ffxiv-teamcraft/ffxiv-teamcraft/refs/heads/staging/libs/data/src/lib/json/gubal-bnpcs-index.json", 1);
 		BattleNpcNameIndex = await bNpcNameIndexFile.GetAsync();

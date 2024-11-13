@@ -18,7 +18,7 @@ public static class HumanCmp
 
 		try
 		{
-			byte[]? buffer = GameDataService.GetFile<FileResource>("chara/xls/charamake/human.cmp")?.Data;
+			byte[]? buffer = ServiceManager.Instance.GameData.GetFile<FileResource>("chara/xls/charamake/human.cmp")?.Data;
 
 			if (buffer == null)
 				throw new Exception("Failed to load human.cmp");

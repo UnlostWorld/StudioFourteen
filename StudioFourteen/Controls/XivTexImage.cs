@@ -1,5 +1,7 @@
 ﻿namespace StudioFourteen.Controls;
 
+using Lumina.Data.Files;
+using Serilog;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,10 +9,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using Lumina.Data.Files;
-using StudioFourteen.GameData;
-using StudioFourteen.Plugin;
-using Serilog;
 
 public class XivTexImage : Image
 {
@@ -84,7 +82,7 @@ public class XivTexImage : Image
 			}
 
 			this.Log.Information($"Load xiv texture {cacheKey}");
-			TexFile? tex = GameDataService.GetFile<TexFile>(this.Path);
+			TexFile? tex = ServiceManager.Instance.GameData.GetFile<TexFile>(this.Path);
 
 			if (tex == null)
 				return;
