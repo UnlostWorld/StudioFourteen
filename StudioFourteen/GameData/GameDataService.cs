@@ -80,7 +80,8 @@ public class GameDataService : ServiceBase
 		if (this.lumina == null)
 		{
 			string? dir = Path.GetDirectoryName(this.Services.Windows.XivProcess?.MainModule?.FileName);
-			this.lumina = new Lumina.GameData($"{dir}/game/sqpack/");
+			dir = $"{dir}/sqpack/";
+			this.lumina = new Lumina.GameData(dir);
 		}
 
 		OnlineJsonFile<Dictionary<string, int>> bNpcNameIndexFile = new("https://raw.githubusercontent.com/ffxiv-teamcraft/ffxiv-teamcraft/refs/heads/staging/libs/data/src/lib/json/gubal-bnpcs-index.json", 1);
