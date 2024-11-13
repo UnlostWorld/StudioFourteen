@@ -24,6 +24,7 @@ public class ServiceManager : ServiceManagerBase
 	public OnlineService Online { get; init; } = new();
 	public InteropService Interop { get; init; } = new();
 	public AutoPropertyNotifyService AutoNotify { get; init; } = new();
+	public WindowService Windows { get; init; } = new();
 	public SettingsService Settings { get; init; } = new();
 	public FramerateService Framerate { get; init; } = new();
 	public StudioService Studio { get; init; } = new();
@@ -48,5 +49,4 @@ public class ServiceManager : ServiceManagerBase
 	public EnvironmentService Environment { get; init; } = new();
 	public GameConfigService GameConfiguration { get; init; } = new();
 	public IPCService IPC { get; init; } = new();
-	public WindowService Windows { get; init; } = new();
 }

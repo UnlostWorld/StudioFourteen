@@ -61,6 +61,9 @@ public partial class GroupPoseService : ServiceBase
 	{
 		base.Attach();
 
+		if (DalamudServices.Framework == null)
+			return;
+
 		UIModule* uiModule = Framework.Instance()->UIModule;
 		var enterAddress = (nint)uiModule->VirtualTable->EnterGPose;
 		var exitAddress = (nint)uiModule->VirtualTable->ExitGPose;
