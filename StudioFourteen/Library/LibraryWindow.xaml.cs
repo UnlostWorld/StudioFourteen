@@ -44,7 +44,6 @@ public partial class LibraryWindow : Panel
 	public LibraryWindow()
 	{
 		this.searchQueue = new(this.SearchAsync, 250);
-
 		this.TagFilter.Tags.CollectionChanged += this.OnTagsFilterChanged;
 		this.Services.Library.ScanComplete += this.OnLibraryScanComplete;
 	}
@@ -313,6 +312,33 @@ public partial class LibraryWindow : Panel
 			this.Path.Replace(newPath);
 			this.searchQueue.InvokeImmediate();
 		}
+	}
+
+	private void OnResultMouseEnter(object sender, MouseEventArgs e)
+	{
+		if (sender is not FrameworkElement senderElement)
+			return;
+
+		if (senderElement.DataContext is not Result result)
+			return;
+
+		this.LibraryContextMenu.Enter(result, senderElement);
+	}
+
+	private void OnResultMouseLeave(object sender, MouseEventArgs e)
+	{
+		if (sender is not FrameworkElement senderElement)
+			return;
+
+		if (senderElement.DataContext is not Result result)
+			return;
+
+		this.LibraryContextMenu.Leave(result);
+	}
+
+	private void OnResultMouseRight(object sender, MouseButtonEventArgs e)
+	{
+		this.LibraryContextMenu.Expand();
 	}
 }
 

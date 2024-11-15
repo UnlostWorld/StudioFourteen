@@ -30,7 +30,7 @@ public class ItemLibraryEntry : ExcelLibraryEntry
 	}
 
 	public override string? Name => this.Item.Name.GetString();
-	public string? Description => this.Item.Description.ToString();
+	public string? Description => this.Item.Description.GetString();
 	public ImageReference? Icon => new ImageReference(this.Item.Icon);
 
 	public int EquipLevel => this.Item.LevelEquip;
@@ -38,6 +38,9 @@ public class ItemLibraryEntry : ExcelLibraryEntry
 	public ItemUICategory UICategory => this.Item.ItemUICategory.Value;
 	public ClassJobCategory? ClassJobs => this.Services.GameData.GetRow<ClassJobCategory>(this.Item.ClassJobCategory.RowId);
 	public EquipRaceCategory? EquipRestriction => this.Services.GameData.GetRow<EquipRaceCategory>(this.Item.EquipRestriction);
+
+	public string? ClassJobsName => this.ClassJobs?.Name.GetString();
+	public string? UICategoryName => this.UICategory.Name.GetString();
 
 	public EquipmentModelId GetModelId(EquipmentSlot slot)
 	{

@@ -17,36 +17,36 @@
 		<DataTemplate x:Key="TagItem">
 
 			<Button
-				Margin="0"
+				Height="Auto"
+				Margin="2,1"
+				Padding="0"
 				Click="OnTagClicked"
 				Content="{Binding DisplayName}"
 				ToolTip="{Binding ToolTip}">
 				<Button.Template>
 					<ControlTemplate TargetType="{x:Type Button}">
-						<Grid
-							Height="20"
-							Margin="2,2">
+						<Grid Height="18">
 
 							<Border
 								Background="{DynamicResource ForegroundLightBrush}"
-								CornerRadius="10,4,4,10"
+								CornerRadius="8,4,4,8"
 								Opacity="0.5" />
 
 							<Border
 								x:Name="HoverBorder"
 								Background="{DynamicResource ControlHighlightBrush}"
-								CornerRadius="10,4,4,10"
+								CornerRadius="8,4,4,8"
 								Opacity="0" />
 
 							<Ellipse
-								Width="10"
-								Height="10"
+								Width="6"
+								Height="6"
 								Margin="4"
 								HorizontalAlignment="Left"
 								Fill="{DynamicResource BackgroundBrush}" />
 
 							<ContentPresenter
-								Margin="18,2,6,2"
+								Margin="12,0,4,0"
 								Content="{TemplateBinding Content}"
 								ContentTemplate="{TemplateBinding ContentTemplate}"
 								TextBlock.Foreground="{DynamicResource ControlBackgroundBrush}" />
@@ -102,7 +102,6 @@
 		x:Name="ContentArea"
 		Visibility="{Binding Tags.Count, Converter={StaticResource NotZeroToVisibility}}">
 		<ItemsControl
-			Margin="3"
 			ItemTemplate="{StaticResource TagItem}"
 			ItemsSource="{Binding Tags}"
 			ScrollViewer.HorizontalScrollBarVisibility="Disabled">

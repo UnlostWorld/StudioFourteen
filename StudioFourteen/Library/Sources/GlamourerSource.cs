@@ -71,6 +71,7 @@ public class GlamourerEntry
 	}
 
 	public override string Name => this.design.Name ?? "Unknown";
+	public override string? SubTitle => this.design.Identifier;
 	public ICommand ApplyCommand { get; init; }
 	public ICommand RevertCommand { get; init; }
 	public ICommand SpawnCommand { get; init; }

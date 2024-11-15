@@ -26,6 +26,8 @@ public abstract class GroupEntryBase : LibraryEntryBase
 	public IEnumerable<GroupEntryBase>? GroupEntries => this.groupEntries;
 	public int GroupCount => this.groupEntries.Count;
 
+	public override string? SubTitle => $"{this.AllCount} items";
+
 	public GroupEntryBase? Parent { get; private set; }
 
 	public bool HasSubGroups => this.GroupCount > 0;

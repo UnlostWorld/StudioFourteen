@@ -13,6 +13,8 @@ public delegate void EntryEvent();
 public interface ILibraryEntry : IDisposable
 {
 	string? Name { get; }
+	string? SubTitle { get; }
+
 	TagCollection Tags { get; }
 	SourceBase? Source { get; }
 	string Identifier { get; }
@@ -45,6 +47,8 @@ public abstract class LibraryEntryBase : ITagged, ILibraryEntry, INotifyProperty
 	public ServiceManager Services => ServiceManager.Instance;
 
 	public abstract string? Name { get; }
+	public abstract string? SubTitle { get; }
+
 	public virtual bool IsVisible { get; set; }
 	public TagCollection Tags { get; init; } = new();
 	public SourceBase? Source => this.source;

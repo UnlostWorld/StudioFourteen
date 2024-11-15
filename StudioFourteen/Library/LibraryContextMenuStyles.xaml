@@ -1,0 +1,195 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:library="clr-namespace:StudioFourteen.Library"
+	xmlns:tags="clr-namespace:StudioFourteen.Tags"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
+
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="pack://application:,,,/WpfUtils;component/Controls/PopOutStyles.xaml" />
+	</ResourceDictionary.MergedDictionaries>
+
+	<BooleanToVisibilityConverter x:Key="B2V" />
+
+	<ControlTemplate
+		x:Key="LibraryContextMenuTemplate"
+		TargetType="{x:Type ContentControl}">
+
+		<Grid Margin="12">
+			<Grid>
+				<Grid.Effect>
+					<DropShadowEffect
+						Direction="270"
+						ShadowDepth="0" />
+				</Grid.Effect>
+
+				<Border
+					Background="{TemplateBinding Background}"
+					BorderBrush="{DynamicResource BackgroundBrush}"
+					BorderThickness="1"
+					CornerRadius="6" />
+
+				<Polygon
+					Margin="-11"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Top"
+					Fill="{DynamicResource BackgroundBrush}"
+					Points="0,12 16,0, 32,12" />
+			</Grid>
+
+			<Grid DataContext="{Binding Entry, RelativeSource={RelativeSource AncestorType={x:Type library:LibraryContextMenu}}}">
+				<StackPanel Margin="3">
+
+					<Grid
+						x:Name="ResultMenuHeader"
+						Grid.Row="0">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition />
+						</Grid.ColumnDefinitions>
+
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+
+						<ContentPresenter
+							Grid.RowSpan="2"
+							Width="48"
+							Height="48"
+							Margin="-2,-1,0,0"
+							Content="{Binding .}"
+							Style="{DynamicResource LibraryIcon}" />
+
+						<TextBlock
+							Grid.Row="0"
+							Grid.Column="1"
+							Margin="3,0,0,0"
+							Foreground="{DynamicResource ForegroundBrush}"
+							Text="{Binding Name}"
+							TextWrapping="Wrap" />
+
+						<TextBlock
+							Grid.Row="1"
+							Grid.Column="1"
+							Margin="3,0,0,0"
+							Foreground="{DynamicResource ForegroundLightBrush}"
+							Text="{Binding SubTitle}"
+							TextWrapping="Wrap" />
+
+					</Grid>
+
+					<ScrollViewer
+						MaxHeight="20"
+						Margin="1,0,0,4"
+						HorizontalScrollBarVisibility="Disabled"
+						VerticalScrollBarVisibility="Hidden">
+
+						<tags:TagDisplay Tags="{Binding Tags}" />
+					</ScrollViewer>
+
+					<ContentPresenter
+						Margin="1,1,1,6"
+						Content="{Binding .}"
+						Style="{DynamicResource LibrarySidebar}" />
+
+					<Border
+						x:Name="MenuArea"
+						Style="{DynamicResource WpfUtilsControlBorder}">
+
+						<Border.LayoutTransform>
+							<ScaleTransform x:Name="MenuAreaScale" ScaleY="0" />
+						</Border.LayoutTransform>
+
+						<StackPanel>
+
+							<UniformGrid Rows="1">
+								<ToggleButton
+									Background="Transparent"
+									IsChecked="{Binding IsFavorite}"
+									Style="{DynamicResource WpfUtilsIconToggleButton}">
+
+									<wpfUtils:IconBlock Icon="Heart">
+										<wpfUtils:IconBlock.Style>
+											<Style TargetType="{x:Type wpfUtils:IconBlock}">
+												<Setter Property="IconFont" Value="Auto" />
+
+												<Style.Triggers>
+													<DataTrigger
+														Binding="{Binding IsFavorite}"
+														Value="True">
+														<Setter Property="IconFont" Value="Solid" />
+													</DataTrigger>
+												</Style.Triggers>
+											</Style>
+										</wpfUtils:IconBlock.Style>
+									</wpfUtils:IconBlock>
+								</ToggleButton>
+
+								<Button
+									Command="{Binding Icon.ExportCommand}"
+									IsEnabled="{Binding Icon.CanExport, FallbackValue=False}"
+									ToolTip="{DynamicResource LOC_Library_ExportIcon}">
+									<wpfUtils:IconBlock
+										Icon="FileImage"
+										IconFont="Solid" />
+								</Button>
+
+							</UniformGrid>
+
+							<Button Content="Hello" />
+							<Button Content="World" />
+							<Button Content="I am a Menu" />
+							<Button Content="Supposedly." />
+
+						</StackPanel>
+					</Border>
+				</StackPanel>
+			</Grid>
+		</Grid>
+
+		<ControlTemplate.Triggers>
+			<DataTrigger
+				Binding="{Binding IsExpanded, RelativeSource={RelativeSource AncestorType={x:Type library:LibraryContextMenu}}}"
+				Value="True">
+				<DataTrigger.EnterActions>
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="MenuAreaScale"
+								Storyboard.TargetProperty="ScaleY"
+								From="0"
+								To="1"
+								Duration="0:00:00.150">
+								<DoubleAnimation.EasingFunction>
+									<SineEase EasingMode="EaseOut" />
+								</DoubleAnimation.EasingFunction>
+							</DoubleAnimation>
+						</Storyboard>
+					</BeginStoryboard>
+				</DataTrigger.EnterActions>
+
+				<DataTrigger.ExitActions>
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="MenuAreaScale"
+								Storyboard.TargetProperty="ScaleY"
+								To="0"
+								Duration="0:00:00.050" />
+						</Storyboard>
+					</BeginStoryboard>
+				</DataTrigger.ExitActions>
+			</DataTrigger>
+		</ControlTemplate.Triggers>
+
+	</ControlTemplate>
+
+	<Style
+		BasedOn="{StaticResource WpfUtilsPopOut}"
+		TargetType="{x:Type library:LibraryContextMenu}">
+		<Setter Property="Template" Value="{StaticResource LibraryContextMenuTemplate}" />
+		<Setter Property="Width" Value="250" />
+	</Style>
+
+</ResourceDictionary>

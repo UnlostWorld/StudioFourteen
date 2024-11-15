@@ -19,6 +19,7 @@
 		<ResourceDictionary Source="./Panels/PanelWindowStyle.xaml" />
 		<ResourceDictionary Source="./Save/SaveIconControl.xaml" />
 		<ResourceDictionary Source="./Library/LibrarySelectorButtonStyles.xaml" />
+		<ResourceDictionary Source="./Library/LibraryContextMenuStyles.xaml" />
 
 		<!--  Default Language  -->
 		<ResourceDictionary Source="./Languages/English.xaml" />

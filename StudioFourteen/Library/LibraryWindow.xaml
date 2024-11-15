@@ -27,10 +27,6 @@
 	<Grid Margin="0,-24,0,0">
 
 		<Grid x:Name="ContentArea">
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition />
-				<ColumnDefinition Width="256" />
-			</Grid.ColumnDefinitions>
 
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
@@ -38,127 +34,9 @@
 				<RowDefinition />
 			</Grid.RowDefinitions>
 
-			<!--  Sidebar  -->
-			<Grid
-				Grid.Row="2"
-				Grid.Column="1"
-				Margin="3,0,0,0"
-				Visibility="{Binding SelectedResult, Converter={StaticResource NotNullToVisibilityConverter}}">
-
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition />
-				</Grid.ColumnDefinitions>
-
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-					<RowDefinition />
-					<RowDefinition Height="Auto" />
-				</Grid.RowDefinitions>
-
-				<ContentPresenter
-					Grid.Row="0"
-					Width="48"
-					Height="48"
-					Margin="3,6,3,3"
-					VerticalAlignment="Center"
-					Content="{Binding SelectedResult.Entry}"
-					Style="{StaticResource LibraryIcon}" />
-
-				<ContentPresenter
-					Grid.Row="0"
-					Grid.Column="1"
-					VerticalAlignment="Center"
-					Content="{Binding SelectedResult.Entry}"
-					Style="{StaticResource LibraryInfo}" />
-
-				<Border
-					Grid.Row="1"
-					Grid.ColumnSpan="2"
-					Style="{DynamicResource WpfUtilsControlBorder}">
-					<UniformGrid Rows="1">
-						<ToggleButton
-							Background="Transparent"
-							IsChecked="{Binding SelectedResult.Entry.IsFavorite}">
-
-							<wpfUtils:IconBlock Icon="Heart">
-								<wpfUtils:IconBlock.Style>
-									<Style TargetType="{x:Type wpfUtils:IconBlock}">
-										<Setter Property="IconFont" Value="Auto" />
-
-										<Style.Triggers>
-											<DataTrigger
-												Binding="{Binding SelectedResult.Entry.IsFavorite}"
-												Value="True">
-												<Setter Property="IconFont" Value="Solid" />
-											</DataTrigger>
-										</Style.Triggers>
-									</Style>
-								</wpfUtils:IconBlock.Style>
-							</wpfUtils:IconBlock>
-
-							<ToggleButton.Style>
-								<Style
-									BasedOn="{StaticResource WpfUtilsIconToggleButton}"
-									TargetType="{x:Type ToggleButton}">
-									<Setter Property="ToolTip" Value="{DynamicResource LOC_Library_AddToFavorites}" />
-
-									<Style.Triggers>
-										<Trigger Property="IsChecked" Value="True">
-											<Setter Property="ToolTip" Value="{DynamicResource LOC_Library_RemoveFromFavorites}" />
-										</Trigger>
-									</Style.Triggers>
-								</Style>
-							</ToggleButton.Style>
-						</ToggleButton>
-
-						<Button
-							Command="{Binding SelectedResult.Entry.Icon.ExportCommand}"
-							IsEnabled="{Binding SelectedResult.Entry.Icon.CanExport, FallbackValue=False}"
-							ToolTip="{DynamicResource LOC_Library_ExportIcon}">
-							<wpfUtils:IconBlock
-								Icon="FileImage"
-								IconFont="Solid" />
-						</Button>
-
-					</UniformGrid>
-				</Border>
-
-				<ScrollViewer
-					Grid.Row="2"
-					Grid.ColumnSpan="2"
-					MaxHeight="200"
-					Margin="1,0,0,4"
-					HorizontalScrollBarVisibility="Disabled">
-
-					<tags:TagDisplay
-						TagSelected="OnInfoTagSelected"
-						Tags="{Binding SelectedResult.Entry.Tags}" />
-				</ScrollViewer>
-
-				<ContentPresenter
-					Grid.Row="3"
-					Grid.ColumnSpan="2"
-					Margin="1,1,1,6"
-					Content="{Binding SelectedResult.Entry}"
-					Style="{StaticResource LibrarySidebar}" />
-
-
-				<ContentPresenter
-					Grid.Row="4"
-					Grid.ColumnSpan="2"
-					Margin="1"
-					Content="{Binding SelectedResult.Entry}"
-					Style="{StaticResource LibraryActions}" />
-
-			</Grid>
-
 			<!--  Tabbar  -->
 			<Grid
 				Grid.Row="0"
-				Grid.ColumnSpan="2"
 				Margin="178,0,300,0">
 
 				<ListBox
@@ -208,7 +86,6 @@
 			<!--  Toolbar  -->
 			<Grid
 				Grid.Row="1"
-				Grid.ColumnSpan="2"
 				Margin="0,3,0,3">
 
 				<Grid.ColumnDefinitions>
@@ -450,14 +327,12 @@
 
 			<Border
 				Grid.Row="2"
-				Grid.Column="0"
 				Margin="1"
 				Style="{DynamicResource WpfUtilsControlBorder}" />
 
 			<!--  Icon Grid  -->
 			<wpfUtils:ListBoxEx
 				Grid.Row="2"
-				Grid.Column="0"
 				Margin="3"
 				Background="Transparent"
 				ClipToBounds="True"
@@ -609,7 +484,9 @@
 							Width="92"
 							Height="128"
 							Background="Transparent"
-							ToolTip="{Binding Entry}">
+							MouseEnter="OnResultMouseEnter"
+							MouseLeave="OnResultMouseLeave"
+							MouseRightButtonUp="OnResultMouseRight">
 
 							<Grid.RowDefinitions>
 								<RowDefinition Height="Auto" />
@@ -669,7 +546,6 @@
 			<!--  List  -->
 			<ListBox
 				Grid.Row="2"
-				Grid.Column="0"
 				Margin="6"
 				Background="Transparent"
 				ItemsSource="{Binding Results, IsAsync=True}"
@@ -704,5 +580,8 @@
 				</ListBox.ItemTemplate>
 			</ListBox>
 		</Grid>
+
+		<local:LibraryContextMenu x:Name="LibraryContextMenu" />
+
 	</Grid>
 </panels:Panel>

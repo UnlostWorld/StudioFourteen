@@ -176,6 +176,7 @@ public class CharacterBackupAppearance
 	public DrawDataContainer DrawData { get; private set; }
 	public int ModelId { get; private set; }
 	public override string Name => this.name ?? string.Empty;
+	public override string? SubTitle => null;
 	public ImageReference? Icon { get; private set; }
 
 	public Task Spawn(int objectTableIndex)

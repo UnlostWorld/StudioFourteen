@@ -8,6 +8,8 @@ public abstract class ExcelLibraryEntry(SourceBase source, uint rowId)
 {
 	public uint RowId => rowId;
 
+	public override string? SubTitle => $"#{rowId}";
+
 	public override string ToString() => $"#{rowId}";
 	protected override string GetInternalId() => $"{this.GetType().Name}_{rowId}";
 }

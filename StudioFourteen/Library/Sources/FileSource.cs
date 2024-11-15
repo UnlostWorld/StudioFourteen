@@ -122,6 +122,7 @@ public class FileEntry : LibraryEntryBase
 	public FileTypeInfoBase TypeInfo { get; init; }
 
 	public override string Name => Path.GetFileNameWithoutExtension(this.fileInfo.Name);
+	public override string? SubTitle => this.fileInfo.DirectoryName;
 
 	public FileBase? File
 	{

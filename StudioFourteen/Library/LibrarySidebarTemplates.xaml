@@ -10,7 +10,7 @@
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
 	<converters:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter" />
-
+	<converters:GreaterThanToVisibilityConverter x:Key="GreaterThanToVisibility" />
 
 	<DataTemplate x:Key="LibrarySidebar_CharacterAppearance">
 		<Grid />
@@ -25,20 +25,23 @@
 				<TextBlock
 					Foreground="{DynamicResource ForegroundLightBrush}"
 					Text="{Binding Description}"
-					TextWrapping="Wrap" />
+					TextWrapping="Wrap"
+					Visibility="{Binding Description, Converter={StaticResource NotNullToVisibilityConverter}}" />
 
 				<TextBlock
 					Foreground="{DynamicResource ForegroundLightBrush}"
-					Text="{Binding ClassJobs.Name}" />
+					Text="{Binding ClassJobsName}" />
 
-				<TextBlock Foreground="{DynamicResource ForegroundLightBrush}">
+				<TextBlock
+					Foreground="{DynamicResource ForegroundLightBrush}"
+					Visibility="{Binding EquipLevel, Converter={StaticResource GreaterThanToVisibility}, ConverterParameter=1}">
 					<Run Text="Lv." />
 					<Run Text="{Binding EquipLevel, Mode=OneWay}" />
 				</TextBlock>
 
 				<TextBlock
 					Foreground="{DynamicResource ForegroundLightBrush}"
-					Text="{Binding UICategory.Name}" />
+					Text="{Binding UICategoryName}" />
 
 			</StackPanel>
 		</Grid>

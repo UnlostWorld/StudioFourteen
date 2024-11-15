@@ -23,8 +23,6 @@ public class TribeLibraryEntry : ExcelLibraryEntry
 				this.ModelTypes.Add(modelType);
 			}
 		}
-
-		this.Log.Information($">> {this.Name} {this.ModelTypes.Count}");
 	}
 
 	public override string? Name => this.Tribe.Feminine.GetString() ?? this.Tribe.Masculine.GetString();
