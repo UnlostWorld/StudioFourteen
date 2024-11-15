@@ -11,6 +11,7 @@
 
 	<converters:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter" />
 	<converters:GreaterThanToVisibilityConverter x:Key="GreaterThanToVisibility" />
+	<converters:StringHasContentToVisibilityConverter x:Key="StringHasContentToVisibility" />
 
 	<DataTemplate x:Key="LibrarySidebar_CharacterAppearance">
 		<Grid />
@@ -58,21 +59,21 @@
 				<RowDefinition />
 			</Grid.RowDefinitions>
 
-			<StackPanel
-				Grid.Row="0"
-				Margin="3,0,3,6">
+			<StackPanel Grid.Row="0">
 				<TextBlock
 					Foreground="{DynamicResource ForegroundLightBrush}"
 					Text="{Binding Description}"
-					TextWrapping="Wrap" />
+					TextWrapping="Wrap"
+					Visibility="{Binding Description, Converter={StaticResource StringHasContentToVisibility}}" />
 
 				<TextBlock
 					Foreground="{DynamicResource ForegroundLightBrush}"
-					Text="{Binding Author}" />
+					Text="{Binding Author}"
+					Visibility="{Binding Author, Converter={StaticResource StringHasContentToVisibility}}" />
 
 				<TextBlock
 					Foreground="{DynamicResource ForegroundLightBrush}"
-					Visibility="{Binding Version, Converter={StaticResource NotNullToVisibilityConverter}}">
+					Visibility="{Binding Version, Converter={StaticResource StringHasContentToVisibility}}">
 					<Run Text="Ver: " />
 					<Run Text="{Binding Version, Mode=OneWay}" />
 				</TextBlock>
@@ -80,8 +81,10 @@
 
 			<Grid
 				Grid.Row="1"
+				MaxHeight="200"
 				HorizontalAlignment="Center"
-				VerticalAlignment="Top">
+				VerticalAlignment="Top"
+				Visibility="{Binding Image, Converter={StaticResource NotNullToVisibilityConverter}}">
 
 				<Border
 					Name="Mask"
@@ -135,10 +138,6 @@
 		<markup:TemplateSelectorEntry
 			TargetType="{x:Type gameData:TerritoryTypeLibraryEntry}"
 			Template="{StaticResource LibrarySidebar_Territory}" />
-
-		<markup:TemplateSelectorEntry
-			TargetType="{x:Type sources:FileEntry}"
-			Template="{StaticResource LibrarySidebar_FileEntry}" />
 
 		<markup:TemplateSelectorEntry
 			TargetType="{x:Type sources:FileEntry}"

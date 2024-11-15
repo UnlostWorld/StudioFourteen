@@ -20,15 +20,15 @@ public class LibraryMenuTargetAttribute : LibraryMenuAttributeBase
 	public LibraryMenuTargetAttribute(IconChar icon, string label)
 	{
 		this.Icon = icon;
-		this.Label = label;
+		this.Label = StudioFourteen.Resources.Find(label, label);
 	}
 
 	public LibraryMenuTargetAttribute(string label)
 	{
-		this.Label = label;
+		this.Label = StudioFourteen.Resources.Find(label, label);
 	}
 
-	public override async Task<List<MenuEntry>> GetMenu(LibraryEntryBase entry, MethodInfo method)
+	public override async Task<List<MenuEntry>> GetMenu(object methodTarget, MethodInfo method)
 	{
 		TargetService targetService = ServiceManager.Instance.Target;
 		List<MenuEntry> results = new();
@@ -38,7 +38,7 @@ public class LibraryMenuTargetAttribute : LibraryMenuAttributeBase
 
 		// "Apply to Player Name"
 		string label = $"{this.Label}: {targetService.CharacterName}";
-		Action invoke = () => method.Invoke(entry, [targetService.TargetObjectIndex]);
+		Action invoke = () => method.Invoke(methodTarget, [targetService.TargetObjectIndex]);
 		results.Add(new(this.Icon, label, invoke));
 
 		// "Apply to..."
@@ -75,7 +75,7 @@ public class LibraryMenuTargetAttribute : LibraryMenuAttributeBase
 				if (string.IsNullOrEmpty(name))
 					continue;
 
-				Action invoke2 = () => method.Invoke(entry, [i]);
+				Action invoke2 = () => method.Invoke(methodTarget, [i]);
 				applyToEntry.Children.Add(new(IconChar.None, name, invoke2));
 			}
 		}

@@ -43,16 +43,12 @@
 
 					<Grid
 						x:Name="ResultMenuHeader"
-						Grid.Row="0">
+						Grid.Row="0"
+						Margin="0,0,0,6">
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition />
 						</Grid.ColumnDefinitions>
-
-						<Grid.RowDefinitions>
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-						</Grid.RowDefinitions>
 
 						<ContentPresenter
 							Grid.RowSpan="2"
@@ -62,21 +58,28 @@
 							Content="{Binding .}"
 							Style="{DynamicResource LibraryIcon}" />
 
-						<TextBlock
-							Grid.Row="0"
+						<Grid
 							Grid.Column="1"
-							Margin="3,0,0,0"
-							Foreground="{DynamicResource ForegroundBrush}"
-							Text="{Binding Name}"
-							TextWrapping="Wrap" />
+							VerticalAlignment="Center">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+							</Grid.RowDefinitions>
 
-						<TextBlock
-							Grid.Row="1"
-							Grid.Column="1"
-							Margin="3,0,0,0"
-							Foreground="{DynamicResource ForegroundLightBrush}"
-							Text="{Binding SubTitle}"
-							TextWrapping="Wrap" />
+							<TextBlock
+								Grid.Row="0"
+								Margin="3,0,0,0"
+								Foreground="{DynamicResource ForegroundBrush}"
+								Text="{Binding Name}"
+								TextWrapping="Wrap" />
+
+							<TextBlock
+								Grid.Row="1"
+								Margin="3,0,0,0"
+								Foreground="{DynamicResource ForegroundLightBrush}"
+								Text="{Binding SubTitle}"
+								TextWrapping="Wrap" />
+						</Grid>
 
 					</Grid>
 
@@ -90,10 +93,11 @@
 						<tags:TagDisplay Tags="{Binding Tags}" />
 					</ScrollViewer>
 
-					<ContentPresenter
-						Margin="1,1,1,6"
-						Content="{Binding .}"
-						Style="{DynamicResource LibrarySidebar}" />
+					<Border>
+						<ContentPresenter
+							Content="{Binding .}"
+							Style="{DynamicResource LibrarySidebar}" />
+					</Border>
 
 					<Border
 						x:Name="MenuArea"
@@ -169,7 +173,7 @@
 				Binding="{Binding IsExpanded, RelativeSource={RelativeSource AncestorType={x:Type menu:LibraryContextMenu}}}"
 				Value="True">
 
-				<Setter TargetName="TagsArea" Property="VerticalScrollBarVisibility" Value="Visible" />
+				<Setter TargetName="TagsArea" Property="VerticalScrollBarVisibility" Value="Auto" />
 
 				<DataTrigger.EnterActions>
 					<BeginStoryboard>

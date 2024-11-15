@@ -4,6 +4,7 @@ using DependencyPropertyGenerator;
 using FontAwesome.Sharp;
 using Serilog;
 using StudioFourteen.Library.Results;
+using StudioFourteen.Library.Sources;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -102,19 +103,7 @@ public partial class LibraryContextMenu : PopOut
 		if (this.Entry == null)
 			return;
 
-		Type type = this.Entry.GetType();
-		MethodInfo[] methods = type.GetMethods();
-		List<MenuEntry> menus = new();
-
-		foreach (MethodInfo method in methods)
-		{
-			LibraryMenuAttributeBase? attribute = method.GetCustomAttribute<LibraryMenuAttributeBase>();
-			if (attribute == null)
-				continue;
-
-			menus.AddRange(await attribute.GetMenu(this.Entry, method));
-		}
-
+		List<MenuEntry> menus = await this.Entry.GetLibraryMenus();
 		foreach(MenuEntry entry in menus)
 		{
 			entry.SetContextMenu(this);
@@ -132,17 +121,7 @@ public class MenuEntry(IconChar? icon, string? label, Action? invoke = null)
 	public ICommand? OnClicked => new SimpleCommand(this.Invoke);
 	public FastObservableCollection<MenuEntry> Children { get; init; } = new();
 	public LibraryContextMenu? ContextMenu { get; private set; }
-
-	public string? Label
-	{
-		get
-		{
-			if (label == null)
-				return null;
-
-			return StudioFourteen.Resources.Find(label, label);
-		}
-	}
+	public string? Label => label;
 
 	public void SetContextMenu(LibraryContextMenu? contextMenu)
 	{

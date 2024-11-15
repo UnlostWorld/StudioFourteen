@@ -26,10 +26,8 @@
 
 		<!--  Templates  -->
 		<ResourceDictionary Source="./Library/LibraryIconTemplates.xaml" />
-		<ResourceDictionary Source="./Library/LibraryInfoTemplates.xaml" />
-		<ResourceDictionary Source="./Library/LibrarySidebarTemplates.xaml" />
+		<ResourceDictionary Source="./Library/LibraryBodyTemplates.xaml" />
 		<ResourceDictionary Source="./Library/LibraryActionsTemplates.xaml" />
-		<ResourceDictionary Source="./Library/LibraryTooltipTemplates.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 
 	<!--  Custom converters  -->

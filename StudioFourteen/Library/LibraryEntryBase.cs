@@ -1,11 +1,15 @@
 ﻿namespace StudioFourteen.Library;
 
 using Serilog;
+using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Sources;
 using StudioFourteen.Tags;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Reflection;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using WpfUtils;
 
 public delegate void EntryEvent();
@@ -61,6 +65,24 @@ public abstract class LibraryEntryBase : ITagged, INotifyPropertyChanged
 	public virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
 	{
 		this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+	}
+
+	public virtual async Task<List<MenuEntry>> GetLibraryMenus()
+	{
+		List<MenuEntry> menus = new();
+
+		Type type = this.GetType();
+		MethodInfo[] methods = type.GetMethods();
+		foreach (MethodInfo method in methods)
+		{
+			LibraryMenuAttributeBase? attribute = method.GetCustomAttribute<LibraryMenuAttributeBase>();
+			if (attribute == null)
+				continue;
+
+			menus.AddRange(await attribute.GetMenu(this, method));
+		}
+
+		return menus;
 	}
 
 	protected abstract string GetInternalId();

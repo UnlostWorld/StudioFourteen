@@ -2,8 +2,12 @@
 
 using StudioFourteen.Files;
 using StudioFourteen.Library.Filters;
+using StudioFourteen.Library.LibraryMenu;
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
+using System.Threading.Tasks;
 using System.Windows.Media;
 using WpfUtils.Utils;
 
@@ -166,6 +170,28 @@ public class FileEntry : LibraryEntryBase
 			return true;
 
 		return this.TypeInfo.LoadsType.IsAssignableTo(type);
+	}
+
+	public override async Task<List<MenuEntry>> GetLibraryMenus()
+	{
+		List<MenuEntry> entries = await base.GetLibraryMenus();
+
+		FileBase? file = this.File;
+		if (file != null)
+		{
+			Type type = file.GetType();
+			MethodInfo[] methods = type.GetMethods();
+			foreach (MethodInfo method in methods)
+			{
+				LibraryMenuAttributeBase? attribute = method.GetCustomAttribute<LibraryMenuAttributeBase>();
+				if (attribute == null)
+					continue;
+
+				entries.AddRange(await attribute.GetMenu(file, method));
+			}
+		}
+
+		return entries;
 	}
 
 	protected override string GetInternalId() => this.fileInfo.FullName;
