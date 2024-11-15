@@ -9,8 +9,6 @@ using StudioFourteen.GameData.Library;
 using StudioFourteen.Mvm;
 using StudioFourteen.Utilities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 
 using static Lumina.Excel.Sheets.CharaMakeType;
 
@@ -95,9 +93,7 @@ public partial class CustomizeViewModel : AutoViewModel
 			// Get new model type for the new race
 			ModelTypes newModelType = this.ModelType;
 			{
-				ModelTypes[] modelTypes = newTribe.Tribe.GetModelTypes();
-
-				if (!modelTypes.Contains(newModelType))
+				if (!newTribe.ModelTypes.Contains(newModelType))
 				{
 					newModelType = ModelTypes.Normal;
 				}
@@ -125,9 +121,7 @@ public partial class CustomizeViewModel : AutoViewModel
 			// Get new model type for the new tribe
 			ModelTypes newModelType = this.ModelType;
 			{
-				ModelTypes[] modelTypes = value.Tribe.GetModelTypes();
-
-				if (!modelTypes.Contains(newModelType))
+				if (!value.ModelTypes.Contains(newModelType))
 				{
 					newModelType = ModelTypes.Normal;
 				}
