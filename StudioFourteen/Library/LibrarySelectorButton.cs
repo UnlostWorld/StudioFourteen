@@ -4,20 +4,32 @@ using DependencyPropertyGenerator;
 using StudioFourteen.Tags;
 using System;
 using System.Windows.Controls;
-using System.Windows.Input;
-using WpfUtils.Commands;
 
 [DependencyProperty<Type>("Type")]
-[DependencyProperty<object>("Value")]
-[DependencyProperty<ICommand>("Clicked")]
+[DependencyProperty<object>("Value", DefaultBindingMode = DefaultBindingMode.TwoWay)]
+[DependencyProperty<string>("Title")]
 public partial class LibrarySelectorButton : Control
 {
-	public LibrarySelectorButton()
+	private Button? button;
+
+	public override void OnApplyTemplate()
 	{
-		this.Clicked = new SimpleCommand(this.OnClicked);
+		base.OnApplyTemplate();
+
+		if (this.button != null)
+		{
+			this.button.Click -= this.OnClicked;
+		}
+
+		this.button = this.GetTemplateChild("PART_Button") as Button;
+
+		if (this.button != null)
+		{
+			this.button.Click += this.OnClicked;
+		}
 	}
 
-	private void OnClicked()
+	private void OnClicked(object sender, System.Windows.RoutedEventArgs e)
 	{
 		if (this.Type == null)
 			return;
@@ -27,7 +39,7 @@ public partial class LibrarySelectorButton : Control
 
 		MiniLibraryPopOut.Show(
 			this,
-			"Create Character",
+			this.Title ?? string.Empty,
 			defaultTags,
 			this.Type,
 			this.Value,

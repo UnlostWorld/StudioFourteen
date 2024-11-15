@@ -11,9 +11,9 @@
 		x:Key="LibrarySelectorButtonTemplate"
 		TargetType="{x:Type local:LibrarySelectorButton}">
 		<Button
+			x:Name="PART_Button"
 			Height="Auto"
-			HorizontalContentAlignment="Stretch"
-			Command="{TemplateBinding Clicked}">
+			HorizontalContentAlignment="Stretch">
 			<Button.Content>
 				<Grid>
 					<Grid.ColumnDefinitions>
@@ -25,21 +25,15 @@
 						Width="{Binding ActualHeight, RelativeSource={RelativeSource Mode=Self}}"
 						Margin="0,0,3,0"
 						VerticalAlignment="Stretch"
-						Content="{TemplateBinding Value}">
-						<ContentPresenter.Resources>
-							<ResourceDictionary Source="./LibraryIconTemplates.xaml" />
-						</ContentPresenter.Resources>
-					</ContentPresenter>
+						Content="{TemplateBinding Value}"
+						Style="{DynamicResource LibraryIcon}" />
 
 					<ContentPresenter
 						Grid.Row="0"
 						Grid.Column="1"
 						VerticalAlignment="Center"
-						Content="{TemplateBinding Value}">
-						<ContentPresenter.Resources>
-							<ResourceDictionary Source="./LibraryInfoTemplates.xaml" />
-						</ContentPresenter.Resources>
-					</ContentPresenter>
+						Content="{TemplateBinding Value}"
+						Style="{DynamicResource LibraryInfo}" />
 
 				</Grid>
 			</Button.Content>

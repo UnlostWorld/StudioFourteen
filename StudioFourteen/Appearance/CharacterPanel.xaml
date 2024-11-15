@@ -5,6 +5,8 @@
 	xmlns:customize="clr-namespace:StudioFourteen.Appearance.Customize"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:equipment="clr-namespace:StudioFourteen.Appearance.Equipment"
+	xmlns:gameData="clr-namespace:StudioFourteen.GameData.Library"
+	xmlns:library="clr-namespace:StudioFourteen.Library"
 	xmlns:local="clr-namespace:StudioFourteen.Appearance"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
@@ -14,6 +16,7 @@
 	Height="600"
 	MinWidth="350"
 	MinHeight="600"
+	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	ResizeMode="CanResizeWithGrip"
 	Subtitle="{Binding CharacterName}"
 	TitleIcon="UserShield"
@@ -49,15 +52,10 @@
 					<TextBlock
 						Style="{DynamicResource LeftLabel}"
 						Text="Race" />
-					<ComboBox
-						ItemsSource="{Binding Customize.AvailableRaces}"
-						SelectedItem="{Binding Customize.Race}">
-						<ComboBox.ItemTemplate>
-							<DataTemplate>
-								<TextBlock Text="{Binding Name}" />
-							</DataTemplate>
-						</ComboBox.ItemTemplate>
-					</ComboBox>
+					<library:LibrarySelectorButton
+						Title="Select a Race"
+						Type="{x:Type gameData:RaceLibraryEntry}"
+						Value="{Binding Customize.Race}" />
 
 					<!--  Tribe  -->
 					<TextBlock

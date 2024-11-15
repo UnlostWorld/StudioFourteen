@@ -5,6 +5,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Lumina.Excel;
 using Lumina.Excel.Sheets;
 using StudioFourteen.GameData;
+using StudioFourteen.GameData.Library;
 using StudioFourteen.Mvm;
 using StudioFourteen.Utilities;
 using System;
@@ -23,10 +24,8 @@ public partial class CustomizeViewModel : AutoViewModel
 	[AutoNotify] public bool HasValidTarget => this.Services.Target.HasValidTarget;
 	[AutoNotify] public int TargetObjectIndex => this.Services.Target.TargetObjectIndex;
 
-	public ExcelSheet<Race>? Races => this.Services.GameData.GetSheet<Race>();
+	public ExcelSheetLibrarySource<RaceLibraryEntry>? RaceSource => this.Services.GameData.GetLibrarySource<RaceLibraryEntry>();
 	public ExcelSheet<Tribe>? Tribes => this.Services.GameData.GetSheet<Tribe>();
-
-	public IEnumerable<Race>? AvailableRaces => this.Services.GameData.GetSheet<Race>();
 
 	[AutoNotify]
 	public CharaMakeType? MakeType
@@ -58,11 +57,13 @@ public partial class CustomizeViewModel : AutoViewModel
 	}
 
 	[AutoNotify]
-	public Race? Race
+	public RaceLibraryEntry? Race
 	{
-		get => this.Races?.GetRow(this.GetCustomizeValue(CustomizeIndex.Race));
+		get => this.RaceSource?.GetRow(this.GetCustomizeValue(CustomizeIndex.Race));
 		set
 		{
+			this.Log.Information($"Change Race {value}");
+
 			if (value == null)
 				return;
 
@@ -70,18 +71,18 @@ public partial class CustomizeViewModel : AutoViewModel
 			Tribe newTribe;
 			{
 				int tribeIndex = 0;
-				Race? oldRace = this.Race;
+				RaceLibraryEntry? oldRace = this.Race;
 				Tribe? oldTribe = this.Tribe;
 				if (oldRace != null && oldTribe != null)
 				{
-					tribeIndex = oldRace.Value.GetTribeIndex(oldTribe.Value);
+					tribeIndex = oldRace.Race.GetTribeIndex(oldTribe.Value);
 					if (tribeIndex == -1)
 					{
 						tribeIndex = 0;
 					}
 				}
 
-				Tribe[] tribes = value.Value.GetTribes();
+				Tribe[] tribes = value.Race.GetTribes();
 				if (tribes.Length == 0)
 					return;
 
@@ -101,7 +102,7 @@ public partial class CustomizeViewModel : AutoViewModel
 
 			Threads.RunOnFrameworkThread(() =>
 			{
-				this.SetCustomizeValue(CustomizeIndex.Race, (byte)value.Value.RowId, false);
+				this.SetCustomizeValue(CustomizeIndex.Race, (byte)value.RowId, false);
 				this.SetCustomizeValue(CustomizeIndex.Tribe, (byte)newTribe.RowId, false);
 				this.SetCustomizeValue(CustomizeIndex.ModelType, (byte)newModelType, false);
 				this.UpdateCustomize(true);

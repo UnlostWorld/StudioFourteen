@@ -10,7 +10,13 @@ public abstract class ExcelSheetLibrarySource : SourceBase
 	public abstract object? GetRowObject(uint rowId);
 }
 
-public class ExcelSheetLibrarySource<TExcel, TEntry> : ExcelSheetLibrarySource
+public abstract class ExcelSheetLibrarySource<TEntry> : ExcelSheetLibrarySource
+{
+	public abstract TEntry? GetRow(uint rowId);
+	public sealed override object? GetRowObject(uint rowId) => this.GetRow(rowId);
+}
+
+public class ExcelSheetLibrarySource<TExcel, TEntry> : ExcelSheetLibrarySource<TEntry>
 	where TExcel : struct, IExcelRow<TExcel>
 	where TEntry : ExcelLibraryEntry
 {
@@ -25,7 +31,7 @@ public class ExcelSheetLibrarySource<TExcel, TEntry> : ExcelSheetLibrarySource
 
 	public override string Name => Resources.Find($"LOC_Sheet{this.RowType.Name}", this.RowType.Name);
 
-	public TEntry? GetRow(uint rowId)
+	public override TEntry? GetRow(uint rowId)
 	{
 		TEntry? entry;
 		if (this.entryCache.TryGetValue(rowId, out entry))
@@ -52,7 +58,6 @@ public class ExcelSheetLibrarySource<TExcel, TEntry> : ExcelSheetLibrarySource
 		return entry;
 	}
 
-	public sealed override object? GetRowObject(uint rowId) => this.GetRow(rowId);
 	public override string ToString() => this.GetInternalId();
 	protected override string GetInternalId() => $"ExcelSheet_{this.RowType.Name}";
 

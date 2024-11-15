@@ -73,6 +73,24 @@ public class GameDataService : ServiceBase
 		return sheet.GetRowOrDefault(rowIndex);
 	}
 
+	public ExcelSheetLibrarySource<TEntry>? GetLibrarySource<TEntry>()
+		where TEntry : ExcelLibraryEntry
+	{
+		Type entryType = typeof(TEntry);
+		ExcelSheetLibrarySource? source;
+		if (!this.librarySourceLookup.TryGetValue(entryType, out source))
+			return null;
+
+		return source as ExcelSheetLibrarySource<TEntry>;
+	}
+
+	public TEntry? GetLibraryEntry<TEntry>(uint rowId)
+		where TEntry : ExcelLibraryEntry
+	{
+		ExcelSheetLibrarySource? source = this.GetLibrarySource<TEntry>();
+		return source?.GetRowObject(rowId) as TEntry;
+	}
+
 	public override async Task Initialize()
 	{
 		await base.Initialize();
@@ -92,6 +110,7 @@ public class GameDataService : ServiceBase
 		this.Items = new();
 		this.AddLibraryExcelSheet<ItemLibraryEntry>(this.Items);
 
+		this.AddLibraryExcelSheet<Race, RaceLibraryEntry>();
 		this.AddLibraryExcelSheet<BNpcBase, BNpcBaseLibraryEntry>();
 		this.AddLibraryExcelSheet<ENpcResident, ENpcResidentLibraryEntry>();
 		this.AddLibraryExcelSheet<Glasses, GlassesLibraryEntry>();
@@ -101,23 +120,13 @@ public class GameDataService : ServiceBase
 		this.AddLibraryExcelSheet<Weather, WeatherLibraryEntry>();
 	}
 
-	public TEntry? GetLibraryEntry<TEntry>(uint rowId)
-		where TEntry : ExcelLibraryEntry
-	{
-		Type entryType = typeof(TEntry);
-		ExcelSheetLibrarySource? source;
-		if (!this.librarySourceLookup.TryGetValue(entryType, out source))
-			return null;
-
-		return source.GetRowObject(rowId) as TEntry;
-	}
-
-	private void AddLibraryExcelSheet<TExcel, TEntry>()
+	private ExcelSheetLibrarySource AddLibraryExcelSheet<TExcel, TEntry>()
 		where TExcel : struct, IExcelRow<TExcel>
 		where TEntry : ExcelLibraryEntry
 	{
 		ExcelSheetLibrarySource<TExcel, TEntry> source = new();
 		this.AddLibraryExcelSheet<TEntry>(source);
+		return source;
 	}
 
 	private void AddLibraryExcelSheet<TEntry>(ExcelSheetLibrarySource source)

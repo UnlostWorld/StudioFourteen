@@ -132,18 +132,4 @@
 	  <ProjectReference Include="..\Lib\WpfUtils\WpfUtils.csproj" />
 	</ItemGroup>
 
-	<Target Name="RemoveDuplicateAnalyzers" BeforeTargets="CoreCompile">
-		<!-- Work around https://github.com/dotnet/wpf/issues/6792 -->
-
-		<ItemGroup>
-			<FilteredAnalyzer Include="@(Analyzer-&gt;Distinct())" />
-			<Analyzer Remove="@(Analyzer)" />
-			<Analyzer Include="@(FilteredAnalyzer)" />
-		</ItemGroup>
-	</Target>
-
-	<PropertyGroup>
-		<FXCPath>$(MSBuildProgramFiles32)\Windows Kits\10\bin\10.0.26100.0\x64\fxc.exe</FXCPath>
-	</PropertyGroup>
-
 </Project>

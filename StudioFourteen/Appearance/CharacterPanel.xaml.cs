@@ -2,6 +2,7 @@
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using StudioFourteen.Files;
+using StudioFourteen.GameData.Library;
 using StudioFourteen.Library;
 using StudioFourteen.Mvm;
 using StudioFourteen.Panels;
