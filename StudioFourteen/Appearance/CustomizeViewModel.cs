@@ -25,15 +25,18 @@ public partial class CustomizeViewModel : AutoViewModel
 	[AutoNotify] public int TargetObjectIndex => this.Services.Target.TargetObjectIndex;
 
 	public ExcelSheetLibrarySource<RaceLibraryEntry>? RaceSource => this.Services.GameData.GetLibrarySource<RaceLibraryEntry>();
-	public ExcelSheet<Tribe>? Tribes => this.Services.GameData.GetSheet<Tribe>();
+	public ExcelSheetLibrarySource<TribeLibraryEntry>? Tribes => this.Services.GameData.GetLibrarySource<TribeLibraryEntry>();
 
 	[AutoNotify]
 	public CharaMakeType? MakeType
 	{
 		get
 		{
+			if (this.Tribe == null)
+				return null;
+
 			if (this.makeType == null
-				|| !this.makeType.Value.Tribe.IsRow(this.Tribe)
+				|| !this.makeType.Value.Tribe.IsRow(this.Tribe.RowId)
 				|| this.makeType.Value.Gender != (sbyte)this.Gender)
 			{
 				this.makeType = null;
@@ -44,7 +47,7 @@ public partial class CustomizeViewModel : AutoViewModel
 
 				foreach (CharaMakeType set in charaMakeTypeSheet)
 				{
-					if (!set.Tribe.IsRow(this.Tribe) || set.Gender != (sbyte)this.Gender)
+					if (!set.Tribe.IsRow(this.Tribe.RowId) || set.Gender != (sbyte)this.Gender)
 						continue;
 
 					this.makeType = set;
@@ -67,32 +70,32 @@ public partial class CustomizeViewModel : AutoViewModel
 			if (value == null)
 				return;
 
+			RaceLibraryEntry? oldRace = this.Race;
+
+			if (value.RowId == oldRace?.RowId)
+				return;
+
 			// Get new tribe for the new race
-			Tribe newTribe;
+			TribeLibraryEntry newTribe;
 			{
 				int tribeIndex = 0;
-				RaceLibraryEntry? oldRace = this.Race;
-				Tribe? oldTribe = this.Tribe;
+				TribeLibraryEntry? oldTribe = this.Tribe;
 				if (oldRace != null && oldTribe != null)
 				{
-					tribeIndex = oldRace.Race.GetTribeIndex(oldTribe.Value);
+					tribeIndex = oldRace.GetTribeIndex(oldTribe);
 					if (tribeIndex == -1)
 					{
 						tribeIndex = 0;
 					}
 				}
 
-				Tribe[] tribes = value.Race.GetTribes();
-				if (tribes.Length == 0)
-					return;
-
-				newTribe = tribes[tribeIndex];
+				newTribe = value.Tribes[tribeIndex];
 			}
 
 			// Get new model type for the new race
 			ModelTypes newModelType = this.ModelType;
 			{
-				ModelTypes[] modelTypes = newTribe.GetModelTypes();
+				ModelTypes[] modelTypes = newTribe.Tribe.GetModelTypes();
 
 				if (!modelTypes.Contains(newModelType))
 				{
@@ -111,7 +114,7 @@ public partial class CustomizeViewModel : AutoViewModel
 	}
 
 	[AutoNotify]
-	public Tribe? Tribe
+	public TribeLibraryEntry? Tribe
 	{
 		get => this.Tribes?.GetRow(this.GetCustomizeValue(CustomizeIndex.Tribe));
 		set
@@ -122,7 +125,7 @@ public partial class CustomizeViewModel : AutoViewModel
 			// Get new model type for the new tribe
 			ModelTypes newModelType = this.ModelType;
 			{
-				ModelTypes[] modelTypes = value.Value.GetModelTypes();
+				ModelTypes[] modelTypes = value.Tribe.GetModelTypes();
 
 				if (!modelTypes.Contains(newModelType))
 				{
@@ -132,7 +135,7 @@ public partial class CustomizeViewModel : AutoViewModel
 
 			Threads.RunOnFrameworkThread(() =>
 			{
-				this.SetCustomizeValue(CustomizeIndex.Tribe, (byte)value.Value.RowId, false);
+				this.SetCustomizeValue(CustomizeIndex.Tribe, (byte)value.RowId, false);
 				this.SetCustomizeValue(CustomizeIndex.ModelType, (byte)newModelType, false);
 				this.UpdateCustomize(true);
 			});

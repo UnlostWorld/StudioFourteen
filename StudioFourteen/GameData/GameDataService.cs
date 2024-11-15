@@ -111,6 +111,7 @@ public class GameDataService : ServiceBase
 		this.AddLibraryExcelSheet<ItemLibraryEntry>(this.Items);
 
 		this.AddLibraryExcelSheet<Race, RaceLibraryEntry>();
+		this.AddLibraryExcelSheet<Tribe, TribeLibraryEntry>();
 		this.AddLibraryExcelSheet<BNpcBase, BNpcBaseLibraryEntry>();
 		this.AddLibraryExcelSheet<ENpcResident, ENpcResidentLibraryEntry>();
 		this.AddLibraryExcelSheet<Glasses, GlassesLibraryEntry>();
