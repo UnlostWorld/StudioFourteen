@@ -1,11 +1,37 @@
 ﻿namespace StudioFourteen.GameData.Extensions;
 
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Lumina.Excel.Sheets;
+using StudioFourteen.Tags;
+using System;
 
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 
 public static class EquipSlotCategoryExtensions
 {
+	public static TagCollection ToTags(this EquipSlotCategory self)
+	{
+		TagCollection tags = new();
+
+		foreach (EquipmentSlot slot in Enum.GetValues<EquipmentSlot>())
+		{
+			if (self.Contains(slot))
+			{
+				tags.Add(slot.ToTag());
+			}
+		}
+
+		foreach (WeaponSlot slot in Enum.GetValues<WeaponSlot>())
+		{
+			if (self.Contains(slot))
+			{
+				tags.Add(slot.ToTag());
+			}
+		}
+
+		return tags;
+	}
+
 	public static bool Contains(this EquipSlotCategory self, WeaponSlot slot)
 	{
 		switch (slot)

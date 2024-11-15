@@ -7,22 +7,39 @@ using StudioFourteen.GameData.Extensions;
 using StudioFourteen.Library.Sources;
 
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
+using ClassJobCategory = StudioFourteen.GameData.Sheets.ClassJobCategory;
 
-public class ItemLibraryEntry(SourceBase source, Item item)
-	: ExcelLibraryEntry(source, item.RowId)
+public class ItemLibraryEntry : ExcelLibraryEntry
 {
-	public Item Item => item;
+	public readonly Item Item;
 
-	public override string? Name => item.Name.GetString();
-	public string? Description => item.Description.ToString();
-	public ImageReference? Icon => new ImageReference(item.Icon);
+	public ItemLibraryEntry(SourceBase source, Item item)
+		: base(source, item.RowId)
+	{
+		this.Item = item;
 
-	public int EquipLevel => item.LevelEquip;
-	public ulong ModelMain => item.ModelMain;
-	public ulong ModelSub => item.ModelSub;
+		this.Tags.Add(this.Item.EquipSlotCategory.Value.ToTags());
+		this.Tags.Add(this.EquipRestriction?.ToTags());
+		this.Tags.Add(this.ClassJobs?.ToTags());
 
-	public ItemUICategory UICategory => item.ItemUICategory.Value;
-	public ClassJobCategory ClassJobs => item.ClassJobCategory.Value;
+		if (this.Name == null)
+			this.Tags.Add("Unnamed");
+
+		if (this.EquipLevel <= 1)
+			this.Tags.Add("No Level");
+	}
+
+	public override string? Name => this.Item.Name.GetString();
+	public string? Description => this.Item.Description.ToString();
+	public ImageReference? Icon => new ImageReference(this.Item.Icon);
+
+	public int EquipLevel => this.Item.LevelEquip;
+	public ulong ModelMain => this.Item.ModelMain;
+	public ulong ModelSub => this.Item.ModelSub;
+
+	public ItemUICategory UICategory => this.Item.ItemUICategory.Value;
+	public ClassJobCategory? ClassJobs => this.Services.GameData.GetRow<ClassJobCategory>(this.Item.ClassJobCategory.RowId);
+	public EquipRaceCategory? EquipRestriction => this.Services.GameData.GetRow<EquipRaceCategory>(this.Item.EquipRestriction);
 }
 
 public class ItemLibrarySource : ExcelSheetLibrarySource<Item, ItemLibraryEntry>

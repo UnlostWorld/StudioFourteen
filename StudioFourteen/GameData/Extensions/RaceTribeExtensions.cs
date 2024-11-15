@@ -1,6 +1,7 @@
 ﻿namespace Lumina.Excel.Sheets;
 
 using Lumina.Excel;
+using Lumina.Text.ReadOnly;
 using StudioFourteen;
 using StudioFourteen.GameData;
 using StudioFourteen.Tags;
@@ -8,6 +9,11 @@ using System;
 
 public static class RaceTribeExtensions
 {
+	public static string? GetName(this Race race)
+	{
+		return race.Feminine.GetString() ?? race.Masculine.GetString();
+	}
+
 	public static Tribe[] GetTribes(this Race race)
 	{
 		ExcelSheet<Tribe>? tribeSheet = ServiceManager.Instance.GameData.GetSheet<Tribe>();
