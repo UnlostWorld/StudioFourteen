@@ -126,19 +126,19 @@
 		<controls:XivIconImage Id="061546" />
 	</DataTemplate>
 
-	<!--<DataTemplate
+	<DataTemplate
 		x:Key="LibraryIcon_Territory"
-		DataType="{x:Type excel:Territory}">
+		DataType="{x:Type gameData:TerritoryTypeLibraryEntry}">
 		<controls:XivIconImage Id="060430" />
 	</DataTemplate>
 
 	<DataTemplate
 		x:Key="LibraryIcon_Weather"
-		DataType="{x:Type excel:Weather}">
+		DataType="{x:Type gameData:WeatherLibraryEntry}">
 		<Image
 			SnapsToDevicePixels="True"
 			Source="{Binding Icon.Source}" />
-	</DataTemplate>-->
+	</DataTemplate>
 
 
 	<DataTemplate
@@ -350,42 +350,44 @@
 			TargetType="{x:Type gameData:ENpcResidentLibraryEntry}"
 			Template="{StaticResource AppearanceIcon}" />
 
-		<!--
+
 		<markup:TemplateSelectorEntry
 			TargetType="{x:Type appearance:CharacterBackupAppearance}"
 			Template="{StaticResource AppearanceIcon}" />
 
 		<markup:TemplateSelectorEntry
-			TargetType="{x:Type excel:Stain}"
+			TargetType="{x:Type gameData:StainLibraryEntry}"
 			Template="{StaticResource SimpleIconTemplate}" />
 
 		<markup:TemplateSelectorEntry
-			TargetType="{x:Type excel:Glasses}"
+			TargetType="{x:Type gameData:GlassesLibraryEntry}"
 			Template="{StaticResource SimpleIconTemplate}" />
 
 		<markup:TemplateSelectorEntry
-			TargetType="{x:Type excel:Ornament}"
+			TargetType="{x:Type gameData:OrnamentLibraryEntry}"
 			Template="{StaticResource SimpleIconTemplate}" />
 
 		<markup:TemplateSelectorEntry
-			TargetType="{x:Type excel:Weather}"
+			TargetType="{x:Type gameData:WeatherLibraryEntry}"
 			Template="{StaticResource LibraryIcon_Weather}" />
 
 		<markup:TemplateSelectorEntry
-			TargetType="{x:Type excel:Companion}"
-			Template="{StaticResource SimpleIconTemplate}" />
-
-		<markup:TemplateSelectorEntry
-			TargetType="{x:Type excel:Mount}"
-			Template="{StaticResource SimpleIconTemplate}" />
-		
-		<markup:TemplateSelectorEntry
-			TargetType="{x:Type excel:Territory}"
+			TargetType="{x:Type gameData:TerritoryTypeLibraryEntry}"
 			Template="{StaticResource LibraryIcon_Territory}" />
 
+		<!--
 		<markup:TemplateSelectorEntry
-			TargetType="{x:Type excel:Perform}"
-			Template="{StaticResource SimpleIconTemplate}" />-->
+			TargetType="{x:Type gameData:Companion}"
+			Template="{StaticResource SimpleIconTemplate}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type gameData:Mount}"
+			Template="{StaticResource SimpleIconTemplate}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type gameData:Perform}"
+			Template="{StaticResource SimpleIconTemplate}" />
+		-->
 
 		<markup:TemplateSelectorEntry
 			TargetType="{x:Type sources:GlamourerEntry}"

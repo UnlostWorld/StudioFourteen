@@ -3,14 +3,46 @@
 using Lumina.Excel.Sheets;
 using Lumina.Text.ReadOnly;
 using StudioFourteen.Library.Sources;
+using System;
+using WpfUtils;
+using MediaColor = System.Windows.Media.Color;
 
-public class StainLibraryEntry(SourceBase source, Stain stain)
-	: ExcelLibraryEntry(source, stain.RowId)
+public class StainLibraryEntry : ExcelLibraryEntry
 {
-	public override string? Name => stain.Name.GetString();
-	public string? Description => stain.Name2.GetString();
+	public readonly Stain Stain;
+
+	public StainLibraryEntry(SourceBase source, Stain stain)
+		: base(source, stain.RowId)
+	{
+		this.Stain = stain;
+
+		if (this.Name != null)
+		{
+			this.Tags.Add("Named");
+		}
+	}
+
+	public override string? Name => this.Stain.Name.GetString();
+	public string? Description => this.Stain.Name2.GetString();
 	public ImageReference? Icon => this.Item?.Icon;
 	public ItemLibraryEntry? Item => this.Services.GameData.GetLibraryEntry<ItemLibraryEntry>(StainToItemRow(this.RowId));
+
+	public MediaColor? Color
+	{
+		get
+		{
+			byte[] colorBytes = BitConverter.GetBytes(this.Stain.Color);
+			return MediaColor.FromRgb(colorBytes[2], colorBytes[1], colorBytes[0]);
+		}
+	}
+
+	public override bool Search(string[] query)
+	{
+		bool result = base.Search(query);
+		result |= SearchUtility.Matches(this.Name, query);
+		result |= SearchUtility.Matches(this.Stain.Shade, query);
+		return result;
+	}
 
 	private static uint StainToItemRow(uint stainRow)
 	{
