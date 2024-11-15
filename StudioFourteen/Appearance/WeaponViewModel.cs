@@ -84,15 +84,14 @@ public class WeaponViewModel(DrawDataContainer.WeaponSlot slot)
 		set
 		{
 			this.item = value;
-
 			this.BackupCharacter();
 
 			if (this.item != null)
 			{
-				this.BackupCharacter();
-				this.Weapon.ModelId.Value = this.item.ModelMain;
-				////this.Weapon.ModelId.Value = this.item.Value.ModelSub;
-				this.ApplyChangeItem();
+				WeaponModelId modelId = this.item.GetModelId(this.Slot);
+				this.Id = modelId.Id;
+				this.Type = modelId.Type;
+				this.Variant = modelId.Variant;
 			}
 			else
 			{

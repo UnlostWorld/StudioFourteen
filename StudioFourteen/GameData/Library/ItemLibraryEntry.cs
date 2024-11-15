@@ -34,12 +34,38 @@ public class ItemLibraryEntry : ExcelLibraryEntry
 	public ImageReference? Icon => new ImageReference(this.Item.Icon);
 
 	public int EquipLevel => this.Item.LevelEquip;
-	public ulong ModelMain => this.Item.ModelMain;
-	public ulong ModelSub => this.Item.ModelSub;
 
 	public ItemUICategory UICategory => this.Item.ItemUICategory.Value;
 	public ClassJobCategory? ClassJobs => this.Services.GameData.GetRow<ClassJobCategory>(this.Item.ClassJobCategory.RowId);
 	public EquipRaceCategory? EquipRestriction => this.Services.GameData.GetRow<EquipRaceCategory>(this.Item.EquipRestriction);
+
+	public EquipmentModelId GetModelId(EquipmentSlot slot)
+	{
+		EquipmentModelId id = default;
+		id.Id = (ushort)this.Item.ModelMain;
+		id.Variant = (byte)(this.Item.ModelMain >> 16);
+		return id;
+	}
+
+	public WeaponModelId GetModelId(WeaponSlot slot)
+	{
+		WeaponModelId id = default;
+
+		if (slot == WeaponSlot.MainHand)
+		{
+			id.Id = (ushort)this.Item.ModelMain;
+			id.Type = (ushort)(this.Item.ModelMain >> 16);
+			id.Variant = (ushort)(this.Item.ModelMain >> 32);
+		}
+		else if (slot == WeaponSlot.OffHand)
+		{
+			id.Id = (ushort)this.Item.ModelSub;
+			id.Type = (ushort)(this.Item.ModelSub >> 16);
+			id.Variant = (ushort)(this.Item.ModelSub >> 32);
+		}
+
+		return id;
+	}
 }
 
 public class ItemLibrarySource : ExcelSheetLibrarySource<Item, ItemLibraryEntry>

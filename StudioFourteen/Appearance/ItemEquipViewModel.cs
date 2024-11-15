@@ -73,19 +73,18 @@ public class ItemEquipViewModel(DrawDataContainer.EquipmentSlot slot)
 		set
 		{
 			this.item = value;
-
 			this.BackupCharacter();
 
 			if (this.item != null)
 			{
-				// Submodels?
-				this.ItemEquip.Value = this.item.ModelMain;
-				////this.ItemEquip.Value = this.item.Value.ModelSub;
+				EquipmentModelId modelId = this.item.GetModelId(this.Slot);
+				this.Id = modelId.Id;
+				this.Variant = modelId.Variant;
 			}
 			else
 			{
-				this.ItemEquip.Id = 0;
-				this.ItemEquip.Variant = 0;
+				this.Id = 0;
+				this.Variant = 0;
 			}
 
 			this.ApplyChangeItem();
