@@ -47,14 +47,19 @@ public class ExcelSheetLibrarySource<TExcel, TEntry> : ExcelSheetLibrarySource<T
 	public TEntry? GetRow(TExcel row)
 	{
 		TEntry? entry;
-		if (this.entryCache.TryGetValue(row.RowId, out entry))
-			return entry;
 
-		entry = (TEntry?)Activator.CreateInstance(typeof(TEntry), [this, row]);
-		if (entry == null)
-			return null;
+		lock (this.entryCache)
+		{
+			if (this.entryCache.TryGetValue(row.RowId, out entry))
+				return entry;
 
-		this.entryCache.Add(row.RowId, entry);
+			entry = (TEntry?)Activator.CreateInstance(typeof(TEntry), [this, row]);
+			if (entry == null)
+				return null;
+
+			this.entryCache.Add(row.RowId, entry);
+		}
+
 		return entry;
 	}
 
