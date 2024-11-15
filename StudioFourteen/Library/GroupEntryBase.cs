@@ -10,7 +10,7 @@ using System.Collections.Generic;
 /// </summary>
 public abstract class GroupEntryBase : LibraryEntryBase
 {
-	private readonly List<ILibraryEntry> allEntries = new();
+	private readonly List<LibraryEntryBase> allEntries = new();
 	private readonly List<GroupEntryBase> groupEntries = new();
 
 	protected GroupEntryBase(SourceBase? source)
@@ -20,7 +20,7 @@ public abstract class GroupEntryBase : LibraryEntryBase
 
 	public virtual IconChar Icon => IconChar.None;
 
-	public IEnumerable<ILibraryEntry>? AllEntries => this.allEntries;
+	public IEnumerable<LibraryEntryBase>? AllEntries => this.allEntries;
 	public int AllCount => this.allEntries.Count;
 
 	public IEnumerable<GroupEntryBase>? GroupEntries => this.groupEntries;
@@ -32,7 +32,7 @@ public abstract class GroupEntryBase : LibraryEntryBase
 
 	public bool HasSubGroups => this.GroupCount > 0;
 
-	public virtual void Add(ILibraryEntry entry)
+	public virtual void Add(LibraryEntryBase entry)
 	{
 		lock (this)
 		{
@@ -63,7 +63,7 @@ public abstract class GroupEntryBase : LibraryEntryBase
 		if (this.allEntries == null)
 			return;
 
-		foreach (ILibraryEntry entry in this.allEntries)
+		foreach (LibraryEntryBase entry in this.allEntries)
 		{
 			if (entry.Tags != null)
 			{
@@ -81,7 +81,7 @@ public abstract class GroupEntryBase : LibraryEntryBase
 	{
 		base.Dispose();
 
-		foreach (ILibraryEntry entry in this.allEntries)
+		foreach (LibraryEntryBase entry in this.allEntries)
 		{
 			if (entry == null)
 				continue;

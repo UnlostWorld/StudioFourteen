@@ -1,12 +1,8 @@
 ﻿namespace StudioFourteen.Files;
 
-using Newtonsoft.Json;
-using StudioFourteen.Mvm.Commands;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Windows.Input;
-using WpfUtils.Commands;
 
 public class SceneFileTypeInfo : JsonFileTypeInfoBase<SceneFile>
 {
@@ -17,15 +13,6 @@ public class SceneFileTypeInfo : JsonFileTypeInfoBase<SceneFile>
 [Serializable]
 public class SceneFile : FileBase
 {
-	public SceneFile()
-	{
-		this.ApplyCommand = new SimpleCommand(this.Apply);
-		this.RevertCommand = new SimpleCommand(this.Revert);
-	}
-
-	[JsonIgnore] public ICommand ApplyCommand { get; init; }
-	[JsonIgnore] public ICommand RevertCommand { get; init; }
-
 	public string Guid { get; set; } = System.Guid.NewGuid().ToString();
 
 	// TODO
@@ -39,18 +26,9 @@ public class SceneFile : FileBase
 
 	public class Actor
 	{
-		public Actor()
-		{
-			this.ApplyCommand = new TargetCommand(this.Apply);
-		}
-
 		public string? Role { get; set; }
 		public PoseFile? Pose { get; set; }
 		public AppearanceFile? Appearance { get; set; }
-
-		[JsonIgnore] public ICommand? ApplyCommand { get; init; }
-		[JsonIgnore] public ICommand? ApplyPoseCommand => this.Pose?.ApplyCommand;
-		[JsonIgnore] public ICommand? ApplyAppearanceCommand => this.Appearance?.ApplyCommand;
 
 		public async Task Apply(int objectTableIndex)
 		{

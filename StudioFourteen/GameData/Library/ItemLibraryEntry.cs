@@ -1,9 +1,12 @@
 ﻿namespace StudioFourteen.GameData.Library;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using FontAwesome.Sharp;
 using Lumina.Excel.Sheets;
 using Lumina.Text.ReadOnly;
 using StudioFourteen.GameData.Extensions;
+using StudioFourteen.Library;
+using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Sources;
 
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
@@ -68,6 +71,13 @@ public class ItemLibraryEntry : ExcelLibraryEntry
 		}
 
 		return id;
+	}
+
+	[LibraryMenu(IconChar.Globe, "LOC_SheetItem_EorzeaDatabase")]
+	public void Test()
+	{
+		string search = $"https://na.finalfantasyxiv.com/lodestone/playguide/db/search/?patch=&db_search_category=&q={this.Name}";
+		UrlUtility.Open(search);
 	}
 }
 

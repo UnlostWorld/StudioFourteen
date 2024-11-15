@@ -6,9 +6,9 @@ using StudioFourteen.Tags;
 using System;
 using System.Collections.Generic;
 
-public class Result(ILibraryEntry entry)
+public class Result(LibraryEntryBase entry)
 {
-	public ILibraryEntry Entry { get; set; } = entry;
+	public LibraryEntryBase Entry { get; set; } = entry;
 
 	public string? EntryId => this.Entry?.ToString();
 }
@@ -32,7 +32,7 @@ public class GroupResult : Result
 		this.results.Clear();
 	}
 
-	public Result? Find(ILibraryEntry? entry)
+	public Result? Find(LibraryEntryBase? entry)
 	{
 		if (entry == null)
 			return null;
@@ -67,13 +67,13 @@ public class GroupResult : Result
 			if (this.Group.AllCount <= 0)
 				return false;
 
-			IEnumerable<ILibraryEntry>? allEntries = this.Group.AllEntries;
+			IEnumerable<LibraryEntryBase>? allEntries = this.Group.AllEntries;
 			if (allEntries == null)
 				return false;
 
 			try
 			{
-				foreach (ILibraryEntry entry in allEntries)
+				foreach (LibraryEntryBase entry in allEntries)
 				{
 					if (entry == null)
 						continue;

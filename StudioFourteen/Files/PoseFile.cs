@@ -3,14 +3,12 @@
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
-using FFXIVClientStructs.FFXIV.Common.Lua;
 using FFXIVClientStructs.Havok.Animation.Rig;
-using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
+using FontAwesome.Sharp;
 using Newtonsoft.Json;
-using StudioFourteen.Mvm.Commands;
+using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Plugin;
 using StudioFourteen.Posing;
-using StudioFourteen.Structs;
 using StudioFourteen.Structs.Extensions;
 using StudioFourteen.Tags;
 using StudioFourteen.Utilities;
@@ -19,7 +17,6 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using TerraFX.Interop.Windows;
 
 public class PoseFileTypeInfo : JsonFileTypeInfoBase<PoseFile>
 {
@@ -30,15 +27,6 @@ public class PoseFileTypeInfo : JsonFileTypeInfoBase<PoseFile>
 [Serializable]
 public class PoseFile : FileBase
 {
-	public PoseFile()
-	{
-		this.ApplyCommand = new TargetCommand(this.Apply);
-		this.RevertCommand = new TargetCommand(this.Revert);
-	}
-
-	[JsonIgnore] public ICommand ApplyCommand { get; init; }
-	[JsonIgnore] public ICommand RevertCommand { get; init; }
-
 	public LegacyBoneTransform? ModelDifference { get; set; }
 
 	public Dictionary<string, LegacyBoneTransform>? Bones { get; set; }
@@ -278,6 +266,7 @@ public class PoseFile : FileBase
 		return boneReferences;
 	}
 
+	[LibraryMenuTarget(IconChar.Running, "LOC_AppearanceApplyTo")]
 	public async Task Apply(int objectTableIndex)
 	{
 		await Threads.FrameworkThread();

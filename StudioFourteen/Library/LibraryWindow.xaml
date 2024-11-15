@@ -7,6 +7,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="clr-namespace:StudioFourteen.Library"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:menu="clr-namespace:StudioFourteen.Library.LibraryMenu"
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
 	xmlns:results="clr-namespace:StudioFourteen.Library.Results"
 	xmlns:structs="clr-namespace:StudioFourteen.Structs"
@@ -581,7 +582,7 @@
 			</ListBox>
 		</Grid>
 
-		<local:LibraryContextMenu x:Name="LibraryContextMenu" />
+		<menu:LibraryContextMenu x:Name="LibraryContextMenu" />
 
 	</Grid>
 </panels:Panel>

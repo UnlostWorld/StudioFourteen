@@ -34,7 +34,7 @@ public class SearchQueryFilter : FilterBase
 		this.search = null;
 	}
 
-	public override bool Filter(ILibraryEntry entry)
+	public override bool Filter(LibraryEntryBase entry)
 	{
 		if(this.Query == null)
 			return true;

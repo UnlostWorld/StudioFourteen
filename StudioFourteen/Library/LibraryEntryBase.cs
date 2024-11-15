@@ -10,26 +10,10 @@ using WpfUtils;
 
 public delegate void EntryEvent();
 
-public interface ILibraryEntry : IDisposable
-{
-	string? Name { get; }
-	string? SubTitle { get; }
-
-	TagCollection Tags { get; }
-	SourceBase? Source { get; }
-	string Identifier { get; }
-	bool IsValid { get; }
-
-	bool IsFavorite { get; set; }
-
-	bool IsType(Type type);
-	bool Search(string[] query);
-}
-
 /// <summary>
 /// An entry is a library object.
 /// </summary>
-public abstract class LibraryEntryBase : ITagged, ILibraryEntry, INotifyPropertyChanged
+public abstract class LibraryEntryBase : ITagged, INotifyPropertyChanged
 {
 	protected readonly ILogger Log;
 

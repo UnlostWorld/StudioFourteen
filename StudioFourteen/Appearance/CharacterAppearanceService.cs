@@ -5,20 +5,18 @@ namespace StudioFourteen.Appearance;
 
 using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using FontAwesome.Sharp;
 using StudioFourteen;
 using StudioFourteen.GameData;
 using StudioFourteen.Library;
+using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Sources;
 using StudioFourteen.Plugin;
 using StudioFourteen.Services;
 using StudioFourteen.Utilities;
-using Serilog;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Collections.Concurrent;
+using System.Threading.Tasks;
 using System.Windows.Input;
-using StudioFourteen.Mvm.Commands;
 
 public class CharacterAppearanceService : ServiceBase
 {
@@ -146,10 +144,6 @@ public class CharacterBackupAppearance
 
 		CustomizeData customize = this.DrawData.CustomizeData;
 		this.Icon = customize.GetIcon();
-
-		this.ApplyCommand = new TargetCommand(this.Apply);
-		this.RevertCommand = new RevertTargetAppearanceCommand();
-		this.SpawnCommand = new TargetCommand(this.Spawn, true);
 	}
 
 	public CharacterBackupAppearance(Character character)
@@ -163,15 +157,7 @@ public class CharacterBackupAppearance
 
 		CustomizeData customize = this.DrawData.CustomizeData;
 		this.Icon = customize.GetIcon();
-
-		this.ApplyCommand = new TargetCommand(this.Apply);
-		this.RevertCommand = new RevertTargetAppearanceCommand();
-		this.SpawnCommand = new TargetCommand(this.Spawn, true);
 	}
-
-	public ICommand ApplyCommand { get; init; }
-	public ICommand RevertCommand { get; init; }
-	public ICommand SpawnCommand { get; init; }
 
 	public DrawDataContainer DrawData { get; private set; }
 	public int ModelId { get; private set; }
@@ -179,11 +165,13 @@ public class CharacterBackupAppearance
 	public override string? SubTitle => null;
 	public ImageReference? Icon { get; private set; }
 
-	public Task Spawn(int objectTableIndex)
+	[LibraryMenu(IconChar.Plus, "LOC_AppearanceCreateCharacter")]
+	public Task Spawn()
 	{
 		return ServiceManager.Instance.CharacterLifecycle.CreateAsync(this);
 	}
 
+	[LibraryMenuTarget(IconChar.UserShield, "LOC_AppearanceApplyTo")]
 	public Task Apply(int objectTableIndex)
 	{
 		return this.Apply(objectTableIndex, CharacterExtensions.UpdateSource.Library);

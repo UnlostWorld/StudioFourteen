@@ -2,11 +2,12 @@
 
 using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using FontAwesome.Sharp;
 using Lumina.Excel;
 using Lumina.Excel.Sheets;
 using StudioFourteen.Appearance;
 using StudioFourteen.GameData;
-using StudioFourteen.Mvm.Commands;
+using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Plugin;
 using StudioFourteen.Tags;
 using StudioFourteen.Utilities;
@@ -63,24 +64,19 @@ public class GlamourerEntry
 		: base(source)
 	{
 		this.design = design;
-		this.ApplyCommand = new TargetCommand(this.Apply);
-		this.RevertCommand = new RevertTargetAppearanceCommand();
-		this.SpawnCommand = new TargetCommand(this.Spawn, true);
-
 		this.design.GetAutoTags(this.Tags);
 	}
 
 	public override string Name => this.design.Name ?? "Unknown";
 	public override string? SubTitle => this.design.Identifier;
-	public ICommand ApplyCommand { get; init; }
-	public ICommand RevertCommand { get; init; }
-	public ICommand SpawnCommand { get; init; }
 
-	public Task Spawn(int objectTableIndex)
+	[LibraryMenu(IconChar.Plus, "LOC_AppearanceCreateCharacter")]
+	public Task Spawn()
 	{
 		return ServiceManager.Instance.CharacterLifecycle.CreateAsync(this);
 	}
 
+	[LibraryMenuTarget(IconChar.UserShield, "LOC_AppearanceApplyTo")]
 	public async Task Apply(int objectTableIndex)
 	{
 		await Threads.FrameworkThread();

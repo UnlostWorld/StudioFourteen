@@ -222,7 +222,7 @@ public partial class MiniLibraryPopOut : View
 			{
 				return 1;
 			}
-			else if (a.Entry is not CharacterBackupAppearance && b.Entry is CharacterAppearanceService)
+			else if (a.Entry is not CharacterBackupAppearance && b.Entry is CharacterBackupAppearance)
 			{
 				return -1;
 			}
@@ -234,7 +234,7 @@ public partial class MiniLibraryPopOut : View
 			return a.Entry.Name?.CompareTo(b.Entry.Name) ?? 0;
 		});
 
-		Result? selectedResult = result.Find(this.currentEntry as ILibraryEntry);
+		Result? selectedResult = result.Find(this.currentEntry as LibraryEntryBase);
 
 		await this.Dispatcher.MainThread();
 

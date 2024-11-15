@@ -18,7 +18,7 @@ public class TagFilter : FilterBase
 		this.Tags.Add(tag);
 	}
 
-	public override bool Filter(ILibraryEntry entry)
+	public override bool Filter(LibraryEntryBase entry)
 	{
 		if(entry.Tags == null)
 			return false;

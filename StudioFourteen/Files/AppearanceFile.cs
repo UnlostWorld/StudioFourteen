@@ -1,11 +1,12 @@
 ﻿namespace StudioFourteen.Files;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using FontAwesome.Sharp;
 using Lumina.Excel.Sheets;
 using Newtonsoft.Json;
 using StudioFourteen.Appearance;
 using StudioFourteen.GameData;
-using StudioFourteen.Mvm.Commands;
+using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Tags;
 using System;
 using System.Numerics;
@@ -22,13 +23,6 @@ public class AppearanceFileTypeInfo : JsonFileTypeInfoBase<AppearanceFile>
 [Serializable]
 public class AppearanceFile : FileBase, ICharacterAppearance
 {
-	public AppearanceFile()
-	{
-		this.ApplyCommand = new TargetCommand(this.Apply);
-		this.RevertCommand = new RevertTargetAppearanceCommand();
-		this.SpawnCommand = new TargetCommand(this.Spawn, true);
-	}
-
 	public enum Races : byte
 	{
 		Hyur = 1,
@@ -67,10 +61,6 @@ public class AppearanceFile : FileBase, ICharacterAppearance
 		Old = 3,
 		Young = 4,
 	}
-
-	[JsonIgnore] public ICommand ApplyCommand { get; init; }
-	[JsonIgnore] public ICommand RevertCommand { get; init; }
-	[JsonIgnore] public ICommand SpawnCommand { get; init; }
 
 	public uint? ModelType { get; set; } = 0;
 	public Races? Race { get; set; }
@@ -142,11 +132,13 @@ public class AppearanceFile : FileBase, ICharacterAppearance
 		tags.Add(tribe?.ToTags());
 	}
 
-	public Task Spawn(int objectTableIndex)
+	[LibraryMenu(IconChar.Plus, "LOC_AppearanceCreateCharacter")]
+	public Task Spawn()
 	{
 		return ServiceManager.Instance.CharacterLifecycle.CreateAsync(this);
 	}
 
+	[LibraryMenuTarget(IconChar.UserShield, "LOC_AppearanceApplyTo")]
 	public Task Apply(int objectTableIndex)
 	{
 		////throw new NotImplementedException();

@@ -104,6 +104,11 @@
 	<sys:String x:Key="LOC_Library_ExportIcon">Export Icon Graphic</sys:String>
 
 	<sys:String x:Key="LOC_SheetItem">Items</sys:String>
+	<sys:String x:Key="LOC_SheetItem_EorzeaDatabase">Eorzea Database</sys:String>
+
+	<sys:String x:Key="LOC_AppearanceCreateCharacter">Create Character</sys:String>
+	<sys:String x:Key="LOC_AppearanceApplyTo">Apply to</sys:String>
+
 	<sys:String x:Key="LOC_SheetEventNpc">Event NPCs</sys:String>
 	<sys:String x:Key="LOC_SheetResidentNpc">Resident NPCs</sys:String>
 	<sys:String x:Key="LOC_SheetTerritory">Territory</sys:String>

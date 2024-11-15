@@ -6,12 +6,12 @@ internal class LibraryFavoritesFilter : FilterBase
 {
 	public override bool IsEmpty => false;
 
-	public static bool GetIsFavorite(ILibraryEntry entry)
+	public static bool GetIsFavorite(LibraryEntryBase entry)
 	{
 		return ServiceManager.Instance.Settings.Current.Favorites.Contains(entry.Identifier);
 	}
 
-	public static void SetIsFavorite(ILibraryEntry entry, bool favorite)
+	public static void SetIsFavorite(LibraryEntryBase entry, bool favorite)
 	{
 		if (favorite)
 		{
@@ -27,7 +27,7 @@ internal class LibraryFavoritesFilter : FilterBase
 	{
 	}
 
-	public override bool Filter(ILibraryEntry entry)
+	public override bool Filter(LibraryEntryBase entry)
 	{
 		return entry.IsFavorite;
 	}

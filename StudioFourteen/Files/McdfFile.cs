@@ -8,19 +8,17 @@ namespace StudioFourteen.Files;
 
 using Dalamud.Game.ClientState.Objects.Types;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using FontAwesome.Sharp;
 using LZ4;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using StudioFourteen.Appearance;
+using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Sources;
-using StudioFourteen.Mvm.Commands;
 using StudioFourteen.Plugin;
 using StudioFourteen.Serialization;
 using StudioFourteen.Tags;
 using StudioFourteen.Utilities;
 using System;
-using System.Buffers.Text;
-using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
@@ -95,28 +93,19 @@ public class MareFileTypeInfo : FileTypeInfoBase
 public class MareFile
 	: FileBase, ICharacterAppearance
 {
-	public MareFile()
-	{
-		this.ApplyCommand = new TargetCommand(this.Apply);
-		this.RevertCommand = new RevertTargetAppearanceCommand();
-		this.SpawnCommand = new TargetCommand(this.Spawn, true);
-	}
-
 	[JsonIgnore] public string? FilePath { get; set; }
 	[JsonIgnore] public GlamourerDesign? Design { get; set; }
-
-	[JsonIgnore] public ICommand ApplyCommand { get; init; }
-	[JsonIgnore] public ICommand RevertCommand { get; init; }
-	[JsonIgnore] public ICommand SpawnCommand { get; init; }
 
 	public string GlamourerData { get; set; } = string.Empty;
 	public string? Name { get; set; }
 
-	public Task Spawn(int objectTableIndex)
+	[LibraryMenu(IconChar.Plus, "LOC_AppearanceCreateCharacter")]
+	public Task Spawn()
 	{
 		return ServiceManager.Instance.CharacterLifecycle.CreateAsync(this);
 	}
 
+	[LibraryMenuTarget(IconChar.UserShield, "LOC_AppearanceApplyTo")]
 	public async Task Apply(int objectTableIndex)
 	{
 		await Threads.FrameworkThread();
