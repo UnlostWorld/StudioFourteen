@@ -15,6 +15,7 @@ public class RaceLibraryEntry : ExcelLibraryEntry
 		this.Race = race;
 
 		this.Tribes = new();
+		this.Genders = new();
 
 		if (this.RowId > 0)
 		{
@@ -31,6 +32,10 @@ public class RaceLibraryEntry : ExcelLibraryEntry
 				}
 			}
 
+			// Every race gets every gender! wild.
+			this.Genders.Add(StudioFourteen.GameData.Genders.Masculine);
+			this.Genders.Add(StudioFourteen.GameData.Genders.Feminine);
+
 			if (this.Name != null)
 			{
 				this.Tags.Add("Named");
@@ -41,6 +46,7 @@ public class RaceLibraryEntry : ExcelLibraryEntry
 	public override string? Name => this.Race.Feminine.GetString() ?? this.Race.Masculine.GetString();
 
 	public List<TribeLibraryEntry> Tribes { get; init; }
+	public List<Genders> Genders { get; init; }
 
 	public int GetTribeIndex(TribeLibraryEntry entry)
 	{
