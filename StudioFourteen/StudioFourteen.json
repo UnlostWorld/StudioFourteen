@@ -11,7 +11,7 @@
   "WorkingPluginId": "75c5a733-6b52-4547-84e2-08c53c2966a3",
   "IsThirdParty": false,
   "EffectiveVersion": "0.0.0.1",
-  "EffectiveApiLevel": 10,
+  "EffectiveApiLevel": 11,
   "Changelog": null,
   "Tags": [
     "Studio14",
@@ -24,7 +24,7 @@
   "IsTestingExclusive": false,
   "RepoUrl": null,
   "ApplicableVersion": "any",
-  "DalamudApiLevel": 10,
+  "DalamudApiLevel": 11,
   "TestingDalamudApiLevel": null,
   "DownloadCount": 0,
   "LastUpdate": 0,

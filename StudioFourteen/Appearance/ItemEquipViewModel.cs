@@ -2,6 +2,7 @@
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Lumina.Excel.Sheets;
+using StudioFourteen.GameData.Library;
 using StudioFourteen.Mvm;
 using StudioFourteen.Tags;
 using StudioFourteen.Utilities;
@@ -11,7 +12,7 @@ public class ItemEquipViewModel(DrawDataContainer.EquipmentSlot slot)
 {
 	public DrawDataContainer.EquipmentSlot Slot { get; private set; } = slot;
 
-	public ushort Base
+	public ushort Id
 	{
 		get => this.HasValidTarget ? this.ItemEquip.Id : (ushort)0;
 		set
@@ -56,7 +57,7 @@ public class ItemEquipViewModel(DrawDataContainer.EquipmentSlot slot)
 	}
 
 	[AutoNotify]
-	public override Item? Item
+	public override ItemLibraryEntry? Item
 	{
 		get
 		{
@@ -64,7 +65,7 @@ public class ItemEquipViewModel(DrawDataContainer.EquipmentSlot slot)
 				return null;
 
 			if (this.item == null)
-				this.item = this.Services.GameData.Items.Find(this.Slot, this.Base, this.Variant);
+				this.item = this.Services.GameData.Items?.Find(this.Slot, this.ItemEquip);
 
 			return this.item;
 		}
@@ -78,7 +79,7 @@ public class ItemEquipViewModel(DrawDataContainer.EquipmentSlot slot)
 			if (this.item != null)
 			{
 				// Submodels?
-				this.ItemEquip.Value = this.item.Value.ModelMain;
+				this.ItemEquip.Value = this.item.ModelMain;
 				////this.ItemEquip.Value = this.item.Value.ModelSub;
 			}
 			else

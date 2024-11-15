@@ -10,8 +10,6 @@ using BNpcCustomize = StudioFourteen.GameData.Sheets.BNpcCustomize;
 public class BNpcBaseLibraryEntry(SourceBase source, BNpcBase npc)
 	: ExcelLibraryEntry(source, npc.RowId)
 {
-	public string? Description => null;
-
 	public override string Name
 	{
 		get
@@ -50,6 +48,4 @@ public class BNpcBaseLibraryEntry(SourceBase source, BNpcBase npc)
 			return customize?.Data;
 		}
 	}
-
-	protected override string GetInternalId() => $"BNpcBase_{npc.RowId}";
 }

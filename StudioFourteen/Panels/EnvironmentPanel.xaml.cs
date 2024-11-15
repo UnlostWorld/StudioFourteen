@@ -1,6 +1,6 @@
 ﻿namespace StudioFourteen.Panels;
 
-using Lumina.Excel.Sheets;
+using StudioFourteen.GameData.Library;
 using StudioFourteen.Library;
 using StudioFourteen.Tags;
 using System.Windows;
@@ -10,7 +10,7 @@ public partial class EnvironmentPanel : Panel
 	private void OnChangeTerritoryClicked(object sender, RoutedEventArgs e)
 	{
 		TagCollection defaultTags = new();
-		MiniLibraryPopOut.Show<TerritoryType>(
+		MiniLibraryPopOut.Show<TerritoryTypeLibraryEntry>(
 			this,
 			"Change Zone",
 			defaultTags,
@@ -20,21 +20,21 @@ public partial class EnvironmentPanel : Panel
 				if (!isFinal)
 					return;
 
-				this.Services.Environment.ChangeTerritory(territory);
+				this.Services.Environment.ChangeTerritory(territory.Excel);
 			});
 	}
 
 	private void OnChangeWeatherClicked(object sender, RoutedEventArgs e)
 	{
 		TagCollection defaultTags = new();
-		MiniLibraryPopOut.Show<Weather>(
+		MiniLibraryPopOut.Show<WeatherLibraryEntry>(
 			this,
 			"Change Weather",
 			defaultTags,
 			null,
 			(weather, isFinal) =>
 			{
-				this.Services.Environment.ChangeWeather(weather);
+				this.Services.Environment.ChangeWeather(weather.Excel);
 			});
 	}
 }

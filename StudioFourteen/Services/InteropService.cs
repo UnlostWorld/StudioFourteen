@@ -17,6 +17,8 @@ public class InteropService : ServiceBase
 		if (DalamudServices.SigScanner == null)
 			return null;
 
+		string name = typeof(TDelegate).Name;
+
 		try
 		{
 			nint address = DalamudServices.SigScanner.ScanText(sig);
@@ -24,7 +26,7 @@ public class InteropService : ServiceBase
 		}
 		catch (Exception ex)
 		{
-			Logging.ForContext<DalamudServices>().Error(ex, "Error creating hook from signature");
+			Logging.ForContext<DalamudServices>().Error(ex, $"Error creating hook {name} from signature");
 			return null;
 		}
 	}
@@ -35,10 +37,10 @@ public class InteropService : ServiceBase
 		if (DalamudServices.InteropProvider == null)
 			return null;
 
+		string name = typeof(TDelegate).Name;
+
 		try
 		{
-			string name = typeof(TDelegate).Name;
-
 			Logging.Shared.Information($"Created Hook {name} for address {address}");
 
 			Hook<TDelegate> hook = DalamudServices.InteropProvider.HookFromAddress<TDelegate>(address, detour);
@@ -47,7 +49,7 @@ public class InteropService : ServiceBase
 		}
 		catch (Exception ex)
 		{
-			Logging.ForContext<DalamudServices>().Error(ex, "Error creating hook from address");
+			Logging.ForContext<DalamudServices>().Error(ex, $"Error creating hook {name} from address");
 			return null;
 		}
 	}

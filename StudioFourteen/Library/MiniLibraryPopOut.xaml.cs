@@ -104,12 +104,6 @@ public partial class MiniLibraryPopOut : View
 	}
 
 	public static void Show<T>(UIElement placementTarget, string title, TagCollection defaultTags, T? current, Action<T, bool> selectionChanged)
-		where T : struct, IExcelRow<T>
-	{
-		throw new NotImplementedException();
-	}
-
-	public static void Show<T>(UIElement placementTarget, string title, TagCollection defaultTags, T? current, Action<T, bool> selectionChanged)
 		where T : notnull
 	{
 		ShowAsync<T>(placementTarget, title, defaultTags, current, selectionChanged).Run();

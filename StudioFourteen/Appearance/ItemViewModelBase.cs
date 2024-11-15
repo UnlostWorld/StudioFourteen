@@ -1,27 +1,28 @@
 ﻿namespace StudioFourteen.Appearance;
 
 using Lumina.Excel.Sheets;
+using StudioFourteen.GameData.Library;
 using StudioFourteen.Mvm;
 
-public abstract class ItemViewModelBase : GearViewModelBase<Item>
+public abstract class ItemViewModelBase : GearViewModelBase<ItemLibraryEntry>
 {
-	protected Item? item;
-	private Stain? stain0;
-	private Stain? stain1;
+	protected ItemLibraryEntry? item;
+	private StainLibraryEntry? stain0;
+	private StainLibraryEntry? stain1;
 
 	[AutoNotify] public abstract byte Stain0Id { get; set; }
 	[AutoNotify] public abstract byte Stain1Id { get; set; }
 
 	[AutoNotify]
-	public Stain? Stain0
+	public StainLibraryEntry? Stain0
 	{
 		get
 		{
 			if (!this.HasValidTarget)
 				return null;
 
-			if (this.stain0 == null || this.stain0.Value.RowId != this.Stain0Id)
-				this.stain0 = this.Services.GameData.GetRow<Stain>(this.Stain0Id);
+			if (this.stain0 == null || this.stain0.RowId != this.Stain0Id)
+				this.stain0 = this.Services.GameData.GetLibraryEntry<StainLibraryEntry>(this.Stain0Id);
 
 			return this.stain0;
 		}
@@ -32,21 +33,21 @@ public abstract class ItemViewModelBase : GearViewModelBase<Item>
 
 			if (this.stain0 != null)
 			{
-				this.Stain0Id = (byte)this.stain0.Value.RowId;
+				this.Stain0Id = (byte)this.stain0.RowId;
 			}
 		}
 	}
 
 	[AutoNotify]
-	public Stain? Stain1
+	public StainLibraryEntry? Stain1
 	{
 		get
 		{
 			if (!this.HasValidTarget)
 				return null;
 
-			if (this.stain1 == null || this.stain1.Value.RowId != this.Stain1Id)
-				this.stain1 = this.Services.GameData.GetRow<Stain>(this.Stain1Id);
+			if (this.stain1 == null || this.stain1.RowId != this.Stain1Id)
+				this.stain1 = this.Services.GameData.GetLibraryEntry<StainLibraryEntry>(this.Stain1Id);
 
 			return this.stain1;
 		}
@@ -57,7 +58,7 @@ public abstract class ItemViewModelBase : GearViewModelBase<Item>
 
 			if (this.stain1 != null)
 			{
-				this.Stain1Id = (byte)this.stain1.Value.RowId;
+				this.Stain1Id = (byte)this.stain1.RowId;
 			}
 		}
 	}

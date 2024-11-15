@@ -226,8 +226,8 @@ public partial class CustomizeViewModel : AutoViewModel
 			if (this.Race?.RowId == (uint)RaceRows.Hrothgar)
 				faceId -= 4;
 
-			throw new NotImplementedException();
 			////return this.MakeType?.GetFacialFeatures(faceId);
+			return default;
 		}
 	}
 

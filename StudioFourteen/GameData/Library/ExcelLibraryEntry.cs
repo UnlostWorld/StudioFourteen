@@ -7,4 +7,7 @@ public abstract class ExcelLibraryEntry(SourceBase source, uint rowId)
 	: LibraryEntryBase(source)
 {
 	public uint RowId => rowId;
+
+	public override string ToString() => $"#{rowId}";
+	protected override string GetInternalId() => $"{this.GetType().Name}_{rowId}";
 }

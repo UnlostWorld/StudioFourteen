@@ -3,8 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:appearance="clr-namespace:StudioFourteen.Appearance"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
-	xmlns:excel="clr-namespace:StudioFourteen.GameData.Excel"
-	xmlns:gameData="clr-namespace:StudioFourteen.GameData"
+	xmlns:gameData="clr-namespace:StudioFourteen.GameData.Library"
 	xmlns:library="clr-namespace:StudioFourteen.Library"
 	xmlns:services="clr-namespace:StudioFourteen.Services"
 	xmlns:sources="clr-namespace:StudioFourteen.Library.Sources"
@@ -65,49 +64,37 @@
 	</DataTemplate>
 
 
-	<!--<DataTemplate DataType="{x:Type excel:ResidentNpc}">
+	<DataTemplate DataType="{x:Type gameData:ENpcResidentLibraryEntry}">
 		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
 	</DataTemplate>
 
-	<DataTemplate DataType="{x:Type excel:BattleNpc}">
+	<DataTemplate DataType="{x:Type gameData:BNpcBaseLibraryEntry}">
 		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
 	</DataTemplate>
 
-	<DataTemplate DataType="{x:Type excel:EventNpc}">
+	<DataTemplate DataType="{x:Type gameData:ItemLibraryEntry}">
 		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
 	</DataTemplate>
 
-	<DataTemplate DataType="{x:Type excel:Item}">
+	<DataTemplate DataType="{x:Type gameData:StainLibraryEntry}">
 		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
 	</DataTemplate>
 
-	<DataTemplate DataType="{x:Type excel:Stain}">
+	<DataTemplate DataType="{x:Type gameData:GlassesLibraryEntry}">
 		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
 	</DataTemplate>
 
-	<DataTemplate DataType="{x:Type excel:Glasses}">
+	<DataTemplate DataType="{x:Type gameData:OrnamentLibraryEntry}">
 		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
 	</DataTemplate>
 
-	<DataTemplate DataType="{x:Type excel:Ornament}">
+	<DataTemplate DataType="{x:Type gameData:TerritoryTypeLibraryEntry}">
 		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
 	</DataTemplate>
 
-	<DataTemplate DataType="{x:Type excel:Mount}">
+	<DataTemplate DataType="{x:Type gameData:WeatherLibraryEntry}">
 		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
 	</DataTemplate>
-
-	<DataTemplate DataType="{x:Type excel:Territory}">
-		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
-	</DataTemplate>
-
-	<DataTemplate DataType="{x:Type excel:Companion}">
-		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
-	</DataTemplate>
-
-	<DataTemplate DataType="{x:Type excel:Weather}">
-		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />
-	</DataTemplate>-->
 
 	<DataTemplate DataType="{x:Type gameData:ExcelSheetLibrarySource}">
 		<ContentPresenter ContentTemplate="{StaticResource LibraryTooltipTemplate}" />

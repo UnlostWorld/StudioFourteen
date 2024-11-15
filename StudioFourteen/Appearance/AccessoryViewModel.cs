@@ -1,13 +1,13 @@
 ﻿namespace StudioFourteen.Appearance;
 
-using Lumina.Excel.Sheets;
+using StudioFourteen.GameData.Library;
 
 public enum AccessorySlots
 {
 	Glasses,
 }
 
-public class AccessoryViewModel : ExcelRowItemViewModel<Glasses>
+public class AccessoryViewModel : ExcelRowItemViewModel<GlassesLibraryEntry>
 {
 	public AccessoryViewModel(AccessorySlots slot)
 	{

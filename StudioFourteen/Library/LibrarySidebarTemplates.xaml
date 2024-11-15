@@ -3,8 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=WpfUtils"
-	xmlns:excel="clr-namespace:StudioFourteen.GameData.Excel"
-	xmlns:gameData="clr-namespace:StudioFourteen.GameData"
+	xmlns:gameData="clr-namespace:StudioFourteen.GameData.Library"
 	xmlns:library="clr-namespace:StudioFourteen.Library"
 	xmlns:markup="clr-namespace:WpfUtils.Markup;assembly=WpfUtils"
 	xmlns:sources="clr-namespace:StudioFourteen.Library.Sources"
@@ -18,9 +17,9 @@
 	</DataTemplate>
 
 
-	<!--<DataTemplate
+	<DataTemplate
 		x:Key="LibrarySidebar_Item"
-		DataType="{x:Type excel:Item}">
+		DataType="{x:Type gameData:ItemLibraryEntry}">
 		<Grid>
 			<StackPanel>
 				<TextBlock
@@ -43,7 +42,7 @@
 
 			</StackPanel>
 		</Grid>
-	</DataTemplate>-->
+	</DataTemplate>
 
 
 
@@ -96,9 +95,9 @@
 		</Grid>
 	</DataTemplate>
 
-	<!--<DataTemplate
+	<DataTemplate
 		x:Key="LibrarySidebar_Territory"
-		DataType="{x:Type excel:Territory}">
+		DataType="{x:Type gameData:TerritoryTypeLibraryEntry}">
 		<Grid>
 			<StackPanel>
 				<TextBlock
@@ -114,29 +113,25 @@
 					Text="{Binding Place}" />
 			</StackPanel>
 		</Grid>
-	</DataTemplate>-->
+	</DataTemplate>
 
 	<markup:TemplateSelector x:Key="LibrarySidebarTemplateSelector">
 
-		<!--<markup:TemplateSelectorEntry
-			TargetType="{x:Type excel:ResidentNpc}"
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type gameData:ENpcResidentLibraryEntry}"
 			Template="{StaticResource LibrarySidebar_CharacterAppearance}" />
 
 		<markup:TemplateSelectorEntry
-			TargetType="{x:Type excel:BattleNpc}"
+			TargetType="{x:Type gameData:BNpcBaseLibraryEntry}"
 			Template="{StaticResource LibrarySidebar_CharacterAppearance}" />
 
 		<markup:TemplateSelectorEntry
-			TargetType="{x:Type excel:EventNpc}"
-			Template="{StaticResource LibrarySidebar_CharacterAppearance}" />
-
-		<markup:TemplateSelectorEntry
-			TargetType="{x:Type excel:Item}"
+			TargetType="{x:Type gameData:ItemLibraryEntry}"
 			Template="{StaticResource LibrarySidebar_Item}" />
 
 		<markup:TemplateSelectorEntry
-			TargetType="{x:Type excel:Territory}"
-			Template="{StaticResource LibrarySidebar_Territory}" />-->
+			TargetType="{x:Type gameData:TerritoryTypeLibraryEntry}"
+			Template="{StaticResource LibrarySidebar_Territory}" />
 
 		<markup:TemplateSelectorEntry
 			TargetType="{x:Type sources:FileEntry}"

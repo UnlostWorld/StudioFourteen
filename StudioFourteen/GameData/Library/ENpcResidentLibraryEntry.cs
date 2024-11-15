@@ -9,8 +9,6 @@ using ENpcBase = StudioFourteen.GameData.Sheets.ENpcBase;
 public class ENpcResidentLibraryEntry(SourceBase source, ENpcResident npc)
 	: ExcelLibraryEntry(source, npc.RowId)
 {
-	public string? Description => null;
-
 	public override string Name => npc.Singular.ExtractText();
 
 	public ImageReference? Icon
@@ -27,6 +25,4 @@ public class ENpcResidentLibraryEntry(SourceBase source, ENpcResident npc)
 	}
 
 	public ENpcBase? ENpcBase => ServiceManager.Instance.GameData.GetRow<ENpcBase>(npc.RowId);
-
-	protected override string GetInternalId() => $"BNpcBase_{npc.RowId}";
 }

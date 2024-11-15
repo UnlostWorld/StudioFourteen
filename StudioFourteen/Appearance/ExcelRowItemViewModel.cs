@@ -1,20 +1,20 @@
 ﻿namespace StudioFourteen.Appearance;
 
-using Lumina.Excel;
+using StudioFourteen.GameData.Library;
 using StudioFourteen.Mvm;
 using StudioFourteen.Utilities;
 
-public abstract class ExcelRowItemViewModel<T> : GearViewModelBase<T>
-	where T : struct, IExcelRow<T>
+public abstract class ExcelRowItemViewModel<TLibraryType> : GearViewModelBase<TLibraryType>
+	where TLibraryType : ExcelLibraryEntry
 {
-	private T? item;
+	private TLibraryType? item;
 
 	public ExcelRowItemViewModel()
 	{
 	}
 
 	[AutoNotify]
-	public sealed override T? Item
+	public sealed override TLibraryType? Item
 	{
 		get
 		{
@@ -25,7 +25,7 @@ public abstract class ExcelRowItemViewModel<T> : GearViewModelBase<T>
 				return null;
 
 			if (this.item == null)
-				this.item = this.Services.GameData.GetRow<T>(this.Value);
+				this.item = this.Services.GameData.GetLibraryEntry<TLibraryType>(this.Value);
 
 			return this.item;
 		}
@@ -38,7 +38,7 @@ public abstract class ExcelRowItemViewModel<T> : GearViewModelBase<T>
 			}
 			else
 			{
-				this.Value = (ushort)value.Value.RowId;
+				this.Value = (ushort)value.RowId;
 			}
 		}
 	}
@@ -55,7 +55,7 @@ public abstract class ExcelRowItemViewModel<T> : GearViewModelBase<T>
 		}
 		set
 		{
-			this.item = this.Services.GameData.GetRow<T>(value);
+			this.item = this.Services.GameData.GetLibraryEntry<TLibraryType>(value);
 
 			if (!this.HasValidTarget)
 				return;

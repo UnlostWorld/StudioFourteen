@@ -3,9 +3,8 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:appearance="clr-namespace:StudioFourteen.Appearance"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
-	xmlns:excel="clr-namespace:StudioFourteen.GameData.Library"
 	xmlns:files="clr-namespace:StudioFourteen.Files"
-	xmlns:gameData="clr-namespace:StudioFourteen.GameData"
+	xmlns:gameData="clr-namespace:StudioFourteen.GameData.Library"
 	xmlns:library="clr-namespace:StudioFourteen.Library"
 	xmlns:markup="clr-namespace:WpfUtils.Markup;assembly=WpfUtils"
 	xmlns:services="clr-namespace:StudioFourteen.Services"
@@ -340,15 +339,15 @@
 			Template="{StaticResource LibraryIcon_FileSource}" />
 
 		<markup:TemplateSelectorEntry
-			TargetType="{x:Type excel:ItemLibraryEntry}"
+			TargetType="{x:Type gameData:ItemLibraryEntry}"
 			Template="{StaticResource SimpleIconTemplate}" />
 
 		<markup:TemplateSelectorEntry
-			TargetType="{x:Type excel:BNpcBaseLibraryEntry}"
+			TargetType="{x:Type gameData:BNpcBaseLibraryEntry}"
 			Template="{StaticResource AppearanceIcon}" />
 
 		<markup:TemplateSelectorEntry
-			TargetType="{x:Type excel:ENpcResidentLibraryEntry}"
+			TargetType="{x:Type gameData:ENpcResidentLibraryEntry}"
 			Template="{StaticResource AppearanceIcon}" />
 
 		<!--

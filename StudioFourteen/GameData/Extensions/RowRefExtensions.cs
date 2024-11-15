@@ -1,8 +1,6 @@
 ﻿namespace Lumina.Excel;
 
-using System;
-
-public static class LuminaExtensions
+public static class RowRefExtensions
 {
 	public static bool IsRow<T>(this RowRef<T> self, IExcelRow<T>? row)
 		where T : struct, IExcelRow<T>
@@ -20,11 +18,5 @@ public static class LuminaExtensions
 		where T : struct, IExcelRow<T>
 	{
 		return self.RowId == row;
-	}
-
-	public static T GetRow<T>(this ExcelSheet<T> self, Enum v)
-		where T : struct, IExcelRow<T>
-	{
-		return self.GetRow(Convert.ToUInt32(v));
 	}
 }

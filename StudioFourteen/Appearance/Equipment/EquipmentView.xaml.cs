@@ -2,6 +2,7 @@
 
 using DependencyPropertyGenerator;
 using Lumina.Excel.Sheets;
+using StudioFourteen.GameData.Library;
 using StudioFourteen.Library;
 using StudioFourteen.Mvm;
 using StudioFourteen.Tags;
@@ -47,6 +48,8 @@ public partial class EquipmentView : View
 		}
 	}
 
+	public bool IsWeapon => this.Item is WeaponViewModel;
+
 	private unsafe void OnChangeClicked(object sender, RoutedEventArgs e)
 	{
 		if (this.Item is GearViewModelBase gear && sender is UIElement el)
@@ -89,11 +92,11 @@ public partial class EquipmentView : View
 
 		string searchTitle = $"{equip.Slot} {StudioFourteen.Resources.Find("Dye", "Dye")}";
 
-		Stain? currentStain = equip.Stain0;
+		StainLibraryEntry? currentStain = equip.Stain0;
 		if (dyeChanel == 1)
 			currentStain = equip.Stain1;
 
-		MiniLibraryPopOut.Show<Stain>(
+		MiniLibraryPopOut.Show<StainLibraryEntry>(
 			sender,
 			searchTitle,
 			defaultTags,

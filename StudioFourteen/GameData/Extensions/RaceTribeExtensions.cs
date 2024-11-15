@@ -1,5 +1,6 @@
 ﻿namespace Lumina.Excel.Sheets;
 
+using Lumina.Excel;
 using StudioFourteen;
 using StudioFourteen.GameData;
 using StudioFourteen.Tags;

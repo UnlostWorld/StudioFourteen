@@ -2,6 +2,7 @@
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Lumina.Excel;
+using StudioFourteen.GameData.Library;
 using StudioFourteen.Library;
 using StudioFourteen.Mvm;
 using StudioFourteen.Tags;
@@ -21,10 +22,10 @@ public abstract class GearViewModelBase : AutoViewModel
 	public override bool ShouldTickAutoProperties() => this.HasValidTarget;
 }
 
-public abstract class GearViewModelBase<T> : GearViewModelBase
-	where T : struct, IExcelRow<T>
+public abstract class GearViewModelBase<TLibraryType> : GearViewModelBase
+	where TLibraryType : ExcelLibraryEntry
 {
-	[AutoNotify] public abstract T? Item { get; set; }
+	[AutoNotify] public abstract TLibraryType? Item { get; set; }
 
 	public override void Clear()
 	{
@@ -38,7 +39,7 @@ public abstract class GearViewModelBase<T> : GearViewModelBase
 
 		string searchTitle = this.GetSearchTitle();
 
-		MiniLibraryPopOut.Show<T>(
+		MiniLibraryPopOut.Show<TLibraryType>(
 			placementTarget,
 			searchTitle,
 			defaultTags,

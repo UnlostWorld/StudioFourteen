@@ -144,7 +144,7 @@ public class PoseService : ServiceBase
 		this.updateBonePhysicsHook?.Enable();
 
 		// JMP in Framework.TaskRenderGraphicsRender
-		this.finalizeSkeletonsHook = InteropService.HookFromSignature<FinalizeSkeletonsDelegate>("40 53 55 57 48 83 EC ?? 65 48 8B 04 25", this.FinalizeSkeletonDetour);
+		this.finalizeSkeletonsHook = InteropService.HookFromSignature<FinalizeSkeletonsDelegate>("40 53 57 41 55 48 83 EC ?? 65 48 8B 04 25 58", this.FinalizeSkeletonDetour);
 		this.finalizeSkeletonsHook?.Enable();
 	}
 

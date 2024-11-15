@@ -2,6 +2,7 @@
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Lumina.Excel.Sheets;
+using StudioFourteen.GameData.Library;
 using StudioFourteen.Mvm;
 using StudioFourteen.Tags;
 using StudioFourteen.Utilities;
@@ -11,7 +12,7 @@ public class WeaponViewModel(DrawDataContainer.WeaponSlot slot)
 {
 	public DrawDataContainer.WeaponSlot Slot { get; private set; } = slot;
 
-	public ushort Set
+	public ushort Id
 	{
 		get => this.HasValidTarget ? this.Weapon.ModelId.Id : (ushort)0;
 		set
@@ -22,7 +23,7 @@ public class WeaponViewModel(DrawDataContainer.WeaponSlot slot)
 		}
 	}
 
-	public ushort Base
+	public ushort Type
 	{
 		get => this.HasValidTarget ? this.Weapon.ModelId.Type : (ushort)0;
 		set
@@ -67,7 +68,7 @@ public class WeaponViewModel(DrawDataContainer.WeaponSlot slot)
 	}
 
 	[AutoNotify]
-	public override Item? Item
+	public override ItemLibraryEntry? Item
 	{
 		get
 		{
@@ -75,7 +76,7 @@ public class WeaponViewModel(DrawDataContainer.WeaponSlot slot)
 				return null;
 
 			if (this.item == null)
-				this.item = this.Services.GameData.Items.Find(this.Slot, this.Set, this.Base, this.Variant);
+				this.item = this.Services.GameData.Items?.Find(this.Slot, this.Weapon.ModelId);
 
 			return this.item;
 		}
@@ -89,14 +90,14 @@ public class WeaponViewModel(DrawDataContainer.WeaponSlot slot)
 			if (this.item != null)
 			{
 				this.BackupCharacter();
-				this.Weapon.ModelId.Value = this.item.Value.ModelMain;
+				this.Weapon.ModelId.Value = this.item.ModelMain;
 				////this.Weapon.ModelId.Value = this.item.Value.ModelSub;
 				this.ApplyChangeItem();
 			}
 			else
 			{
-				this.Set = 0;
-				this.Base = 0;
+				this.Id = 0;
+				this.Type = 0;
 				this.Variant = 0;
 			}
 

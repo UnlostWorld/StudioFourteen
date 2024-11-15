@@ -15,6 +15,7 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
+
 using CustomizeFacialFeatures = FFXIVClientStructs.FFXIV.Client.Game.Character.CustomizeDataExtensions.FacialFeatures;
 
 public class GlamourerSource : SourceBase

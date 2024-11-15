@@ -155,9 +155,19 @@
 				Grid.Column="1"
 				HorizontalContentAlignment="Center"
 				Background="Transparent"
-				X="{Binding Item.Set}"
-				Y="{Binding Item.Base}"
+				Visibility="{Binding IsWeapon, Converter={StaticResource B2V}}"
+				X="{Binding Item.Id}"
+				Y="{Binding Item.Type}"
 				Z="{Binding Item.Variant}" />
+
+			<wpfUtils:MultiNumberBox
+				Grid.Row="1"
+				Grid.Column="1"
+				HorizontalContentAlignment="Center"
+				Background="Transparent"
+				Visibility="{Binding IsWeapon, Converter={StaticResource !B2V}}"
+				X="{Binding Item.Id}"
+				Y="{Binding Item.Variant}" />
 
 			<StackPanel
 				Grid.Row="2"
