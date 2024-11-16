@@ -105,7 +105,6 @@ public partial class CustomizeViewModel : ViewModel
 		if (race == RaceRows.AuRa)
 			headMenus.Add(this.GetMenu(makeType, CustomizeIndex.FaceFeaturesColor));
 
-		headMenus.Add(this.GetMenu(makeType, CustomizeIndex.JawShape));
 		headMenus.Add(this.GetMenu(makeType, CustomizeIndex.Eyebrows));
 		headMenus.Add(this.GetMenu(makeType, CustomizeIndex.NoseShape));
 		headMenus.Add(this.GetMenu(makeType, CustomizeIndex.LipStyle)); // lips or fang length
