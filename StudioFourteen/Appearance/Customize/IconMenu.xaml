@@ -10,8 +10,34 @@
 				Style="{DynamicResource LeftLabel}"
 				Text="{Binding Name}" />
 
-			<!--  TODO  -->
-			<TextBlock Text="Icon" />
+			<ListBox
+				Height="Auto"
+				HorizontalContentAlignment="Center"
+				ItemsSource="{Binding Options}"
+				SelectedItem="{Binding Selected}"
+				Style="{DynamicResource WpfUtilsSwitchSelector}">
+				<ListBox.ItemsPanel>
+					<ItemsPanelTemplate>
+						<WrapPanel />
+					</ItemsPanelTemplate>
+				</ListBox.ItemsPanel>
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<Image
+							Width="48"
+							Height="48"
+							Margin="3,6"
+							Source="{Binding Image.Source}" />
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+
+			<controls:NumberBox
+				Buttons="True"
+				Maximum="{Binding Maximum}"
+				Minimum="{Binding Minimum}"
+				Value="{Binding Value}" />
+
 		</StackPanel>
 	</DataTemplate>
 </ResourceDictionary>

@@ -54,8 +54,6 @@ public class ColorMenu : MakeMenuViewModel
 	{
 		base.OnValueChanged(oldValue, newValue);
 
-		this.Log.Information($">> {newValue}");
-
 		foreach (Option op in this.Options)
 		{
 			if (op.Value == newValue)
