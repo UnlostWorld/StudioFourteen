@@ -14,7 +14,6 @@ using static Lumina.Excel.Sheets.CharaMakeType;
 
 public partial class CustomizeViewModel : AutoViewModel
 {
-	private CharaMakeType? makeType;
 	private bool linkEyeColors = false;
 
 	public unsafe Character* Target => this.Services.Target.Target;
@@ -24,38 +23,6 @@ public partial class CustomizeViewModel : AutoViewModel
 
 	public ExcelSheetLibrarySource<RaceLibraryEntry>? RaceSource => this.Services.GameData.GetLibrarySource<RaceLibraryEntry>();
 	public ExcelSheetLibrarySource<TribeLibraryEntry>? Tribes => this.Services.GameData.GetLibrarySource<TribeLibraryEntry>();
-
-	[AutoNotify]
-	public CharaMakeType? MakeType
-	{
-		get
-		{
-			if (this.Tribe == null)
-				return null;
-
-			if (this.makeType == null
-				|| !this.makeType.Value.Tribe.IsRow(this.Tribe.RowId)
-				|| this.makeType.Value.Gender != (sbyte)this.Gender)
-			{
-				this.makeType = null;
-
-				ExcelSheet<CharaMakeType>? charaMakeTypeSheet = this.Services.GameData.GetSheet<CharaMakeType>();
-				if (charaMakeTypeSheet == null)
-					return null;
-
-				foreach (CharaMakeType set in charaMakeTypeSheet)
-				{
-					if (!set.Tribe.IsRow(this.Tribe.RowId) || set.Gender != (sbyte)this.Gender)
-						continue;
-
-					this.makeType = set;
-					break;
-				}
-			}
-
-			return this.makeType;
-		}
-	}
 
 	[AutoNotify]
 	public RaceLibraryEntry? Race
@@ -428,5 +395,43 @@ public partial class CustomizeViewModel : AutoViewModel
 			return false;
 
 		return base.ShouldTickAutoProperties();
+	}
+
+	private CharaMakeStructStruct? GetMakeTypeEntry(CustomizeIndex customizeIndex)
+	{
+		CharaMakeType? makeType = this.GetMakeType();
+
+		if (makeType == null)
+			return null;
+
+		foreach(CharaMakeStructStruct makeTypeEntry in makeType.Value.CharaMakeStruct)
+		{
+			if (makeTypeEntry.Customize == (uint)customizeIndex)
+			{
+				return makeTypeEntry;
+			}
+		}
+
+		return null;
+	}
+
+	private CharaMakeType? GetMakeType()
+	{
+		if (this.Tribe == null)
+			return null;
+
+		ExcelSheet<CharaMakeType>? charaMakeTypeSheet = this.Services.GameData.GetSheet<CharaMakeType>();
+		if (charaMakeTypeSheet == null)
+			return null;
+
+		foreach (CharaMakeType makeType in charaMakeTypeSheet)
+		{
+			if (!makeType.Tribe.IsRow(this.Tribe.RowId) || makeType.Gender != (sbyte)this.Gender)
+				continue;
+
+			return makeType;
+		}
+
+		return null;
 	}
 }

@@ -113,7 +113,7 @@ public class ItemEquipViewModel(DrawDataContainer.EquipmentSlot slot)
 		if (this.Target != null)
 		{
 			Race? race = this.Target->DrawData.CustomizeData.GetRace();
-			tags.Add(race?.GetTag());
+			tags.Add(race?.ToTags());
 		}
 	}
 }

@@ -331,6 +331,10 @@
 			Template="{StaticResource LibraryIcon_DataSheetLibrarySource}" />
 
 		<markup:TemplateSelectorEntry
+			TargetType="{x:Type gameData:HairLibrarySource}"
+			Template="{StaticResource LibraryIcon_DataSheetLibrarySource}" />
+
+		<markup:TemplateSelectorEntry
 			TargetType="{x:Type appearance:GroupPoseCharactersLibrarySource}"
 			Template="{StaticResource LibraryIcon_GroupPoseCharactersLibrarySource}" />
 
@@ -340,6 +344,10 @@
 
 		<markup:TemplateSelectorEntry
 			TargetType="{x:Type gameData:ItemLibraryEntry}"
+			Template="{StaticResource SimpleIconTemplate}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type gameData:HairLibraryEntry}"
 			Template="{StaticResource SimpleIconTemplate}" />
 
 		<markup:TemplateSelectorEntry

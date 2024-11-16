@@ -1,4 +1,7 @@
-﻿namespace StudioFourteen.GameData.Sheets;
+﻿// Simple Tweaks
+// https://github.com/Caraxi/SimpleTweaksPlugin/blob/main/Sheets/ExtendedHairMakeType.cs
+
+namespace StudioFourteen.GameData.Sheets;
 
 using Lumina.Excel;
 using Lumina.Excel.Sheets;
@@ -22,14 +25,18 @@ public readonly struct HairMakeType(ExcelPage page, uint offset, uint row)
 			RowRef<CharaMakeCustomize>[] results = new RowRef<CharaMakeCustomize>[EntryCount];
 			for (int i = 0; i < EntryCount; i++)
 			{
-				results[i] = new(page.Module, (uint)page.ReadUInt32((nuint)(offset + ((66 + (i * 9)) * 4))), page.Language);
+				uint id = page.ReadUInt32((nuint)(offset + 0xC + (4 * i)));
+				if (id == 0)
+					break;
+
+				results[i] = new RowRef<CharaMakeCustomize>(page.Module, id, page.Language);
 			}
 
 			return results;
 		}
 	}
 
-	public RowRef<CharaMakeCustomize>[] FacePaints
+	/*public RowRef<CharaMakeCustomize>[] FacePaints
 	{
 		get
 		{
@@ -41,7 +48,7 @@ public readonly struct HairMakeType(ExcelPage page, uint offset, uint row)
 
 			return results;
 		}
-	}
+	}*/
 
 	static HairMakeType IExcelRow<HairMakeType>.Create(ExcelPage page, uint offset, uint row) =>
 		new(page, offset, row);

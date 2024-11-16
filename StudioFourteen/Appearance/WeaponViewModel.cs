@@ -126,7 +126,7 @@ public class WeaponViewModel(DrawDataContainer.WeaponSlot slot)
 		if (this.Target != null)
 		{
 			Race? race = this.Target->DrawData.CustomizeData.GetRace();
-			tags.Add(race?.GetTag());
+			tags.Add(race?.ToTags());
 		}
 	}
 }

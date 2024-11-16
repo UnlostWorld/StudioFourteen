@@ -74,29 +74,19 @@ public static class RaceTribeExtensions
 		};
 	}
 
-	public static Tag? GetTag(this Race race)
-	{
-		string tagName = race.Feminine.ExtractText();
-
-		if (string.IsNullOrEmpty(tagName))
-			return null;
-
-		return Tag.Get(tagName);
-	}
-
 	public static TagCollection? ToTags(this Race race)
 	{
 		TagCollection tags = new();
-		tags.Add(race.Feminine.ExtractText());
-		tags.Add(race.Masculine.ExtractText());
+		tags.AddSafe(race.Feminine.GetString());
+		tags.AddSafe(race.Masculine.GetString());
 		return tags;
 	}
 
-	public static TagCollection ToTags(this Tribe race)
+	public static TagCollection ToTags(this Tribe tribe)
 	{
 		TagCollection tags = new();
-		tags.Add(race.Feminine.ExtractText());
-		tags.Add(race.Masculine.ExtractText());
+		tags.AddSafe(tribe.Feminine.GetString());
+		tags.AddSafe(tribe.Masculine.GetString());
 		return tags;
 	}
 

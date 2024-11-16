@@ -30,6 +30,14 @@ public class TagCollection : ICollection<Tag>, INotifyCollectionChanged
 
 	public bool IsReadOnly => true;
 
+	public void AddSafe(string? name)
+	{
+		if (name == null)
+			return;
+
+		this.Add(name);
+	}
+
 	public Tag Add(string name)
 	{
 		Tag tag = Tag.Get(name);
