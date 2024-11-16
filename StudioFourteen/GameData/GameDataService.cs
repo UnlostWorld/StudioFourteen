@@ -3,6 +3,7 @@
 using Lumina.Data;
 using Lumina.Excel;
 using Lumina.Excel.Sheets;
+using Lumina.Text.ReadOnly;
 using StudioFourteen.GameData.Library;
 using StudioFourteen.GameData.Sheets;
 using StudioFourteen.Online;
@@ -124,18 +125,6 @@ public class GameDataService : ServiceBase
 		this.AddLibraryExcelSheet<Weather, WeatherLibraryEntry>();
 
 		this.Services.Library.AddSource(new HairLibrarySource());
-
-		ExcelSheet<CharaMakeType>? sheet = this.GetSheet<CharaMakeType>();
-		if (sheet != null)
-		{
-			int index = 0;
-			foreach (CharaMakeType thing in sheet)
-			{
-				index++;
-			}
-
-			this.Log.Information($"{index}");
-		}
 	}
 
 	private ExcelSheetLibrarySource AddLibraryExcelSheet<TExcel, TEntry>()

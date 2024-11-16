@@ -29,7 +29,7 @@
 				<ResourceDictionary.MergedDictionaries>
 					<ResourceDictionary Source="Customize/ColorMenu.xaml" />
 					<ResourceDictionary Source="Customize/SelectorMenu.xaml" />
-					<ResourceDictionary Source="Customize/RaceMenu.xaml" />
+					<ResourceDictionary Source="Customize/LibraryEntryMenu.xaml" />
 					<ResourceDictionary Source="Customize/IconMenu.xaml" />
 					<ResourceDictionary Source="Customize/DoubleColorMenu.xaml" />
 					<ResourceDictionary Source="Customize/MultiColorMenu.xaml" />

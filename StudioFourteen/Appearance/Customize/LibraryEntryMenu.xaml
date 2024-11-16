@@ -10,14 +10,14 @@
 		<ResourceDictionary Source="pack://application:,,,/WpfUtils;component/Styles.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 
-	<DataTemplate DataType="{x:Type local:RaceMenu}">
+	<DataTemplate DataType="{x:Type local:LibraryEntryMenu}">
 		<StackPanel>
 			<TextBlock
 				Style="{DynamicResource LeftLabel}"
 				Text="{Binding Name}" />
 			<library:LibrarySelectorButton
-				Type="{x:Type gameData:RaceLibraryEntry}"
-				Value="{Binding Race}" />
+				Type="{Binding EntryType}"
+				Value="{Binding Entry}" />
 		</StackPanel>
 	</DataTemplate>
 </ResourceDictionary>

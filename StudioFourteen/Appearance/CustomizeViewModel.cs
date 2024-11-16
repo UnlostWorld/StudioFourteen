@@ -4,6 +4,7 @@ using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using StudioFourteen.GameData;
+using StudioFourteen.GameData.Library;
 using StudioFourteen.GameData.Sheets;
 using StudioFourteen.Mvm;
 using StudioFourteen.Plugin;
@@ -168,13 +169,19 @@ public partial class CustomizeViewModel : ViewModel
 	private MenuViewModel? GetMenu(CharaMakeType makeType, CustomizeIndex index)
 	{
 		if (index == CustomizeIndex.Race)
-			return new RaceMenu();
+			return new LibraryEntryMenu<RaceLibraryEntry>(index, "Race");
 
 		if (index == CustomizeIndex.Tribe)
 			return new TribeMenu(makeType.Race.Value);
 
 		if (index == CustomizeIndex.ModelType)
 			return new ModelTypeMenu(makeType.Tribe.Value);
+
+		if (index == CustomizeIndex.Facepaint)
+			return null;
+
+		if (index == CustomizeIndex.HairStyle)
+			return null;
 
 		CharaMakeType.CharaMakeMenu? makeMenu = makeType.GetMenu(index);
 		if (makeMenu == null)

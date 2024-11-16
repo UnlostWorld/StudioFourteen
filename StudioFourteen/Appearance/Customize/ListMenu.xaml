@@ -10,8 +10,16 @@
 				Style="{DynamicResource LeftLabel}"
 				Text="{Binding Name}" />
 
-			<!--  TODO  -->
-			<TextBlock Text="List" />
+			<ListBox
+				ItemsSource="{Binding Options}"
+				SelectedItem="{Binding Selected}"
+				Style="{DynamicResource WpfUtilsSwitchSelector}">
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<TextBlock Text="{Binding Label}" />
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
 		</StackPanel>
 	</DataTemplate>
 </ResourceDictionary>

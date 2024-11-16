@@ -1,8 +1,11 @@
 ﻿namespace StudioFourteen.Appearance.Customize;
 
 using Dalamud.Game.ClientState.Objects.Enums;
+using Lumina.Excel;
 using StudioFourteen.GameData;
+using StudioFourteen.GameData.Sheets;
 using System.Collections.Generic;
+
 using CharaMakeType = StudioFourteen.GameData.Sheets.CharaMakeType;
 
 public class IconMenu : MakeMenuViewModel
@@ -16,7 +19,8 @@ public class IconMenu : MakeMenuViewModel
 
 		for (byte i = 1; i <= makeMenu.SubMenuNum; i++)
 		{
-			this.Options.Add(new(new ImageReference(makeMenu.SubMenuParam[i - 1]), i));
+			uint param = makeMenu.SubMenuParam[i - 1];
+			this.Options.Add(new(new ImageReference(param), i));
 		}
 
 		this.Minimum = 1;

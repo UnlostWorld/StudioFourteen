@@ -25,7 +25,7 @@ public readonly struct HairMakeType(ExcelPage page, uint offset, uint row)
 			RowRef<CharaMakeCustomize>[] results = new RowRef<CharaMakeCustomize>[EntryCount];
 			for (int i = 0; i < EntryCount; i++)
 			{
-				uint id = page.ReadUInt32((nuint)(offset + 0xC + (4 * i)));
+				uint id = page.ReadUInt32((nuint)(offset + 12 + (4 * i)));
 				if (id == 0)
 					break;
 
@@ -36,19 +36,23 @@ public readonly struct HairMakeType(ExcelPage page, uint offset, uint row)
 		}
 	}
 
-	/*public RowRef<CharaMakeCustomize>[] FacePaints
+	public RowRef<CharaMakeCustomize>[] FacePaints
 	{
 		get
 		{
 			RowRef<CharaMakeCustomize>[] results = new RowRef<CharaMakeCustomize>[EntryCount];
 			for (int i = 0; i < EntryCount; i++)
 			{
-				results[i] = new(page.Module, (uint)page.ReadUInt32((nuint)(offset + ((73 + (i * 9)) * 4))), page.Language);
+				uint id = page.ReadUInt32((nuint)(offset + (12 + (EntryCount * 4)) + (4 * i)));
+				if (id == 0)
+					break;
+
+				results[i] = new RowRef<CharaMakeCustomize>(page.Module, id, page.Language);
 			}
 
 			return results;
 		}
-	}*/
+	}
 
 	static HairMakeType IExcelRow<HairMakeType>.Create(ExcelPage page, uint offset, uint row) =>
 		new(page, offset, row);
