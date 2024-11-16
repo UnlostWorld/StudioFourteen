@@ -1,437 +1,139 @@
-﻿namespace StudioFourteen.Appearance;
+﻿namespace StudioFourteen.Appearance.Customize;
 
 using Dalamud.Game.ClientState.Objects.Enums;
+using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using Lumina.Excel;
-using Lumina.Excel.Sheets;
-using StudioFourteen.GameData;
-using StudioFourteen.GameData.Library;
+using StudioFourteen.GameData.Sheets;
 using StudioFourteen.Mvm;
+using StudioFourteen.Plugin;
 using StudioFourteen.Utilities;
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Windows.Threading;
+using WpfUtils;
+using WpfUtils.Extensions;
 
-using static Lumina.Excel.Sheets.CharaMakeType;
+using CharaMakeType = StudioFourteen.GameData.Sheets.CharaMakeType;
 
-public partial class CustomizeViewModel : AutoViewModel
+public partial class CustomizeViewModel : ViewModel
 {
-	private bool linkEyeColors = false;
+	private readonly DispatcherObject dispatcher;
 
-	public unsafe Character* Target => this.Services.Target.Target;
-
-	[AutoNotify] public bool HasValidTarget => this.Services.Target.HasValidTarget;
-	[AutoNotify] public int TargetObjectIndex => this.Services.Target.TargetObjectIndex;
-
-	public ExcelSheetLibrarySource<RaceLibraryEntry>? RaceSource => this.Services.GameData.GetLibrarySource<RaceLibraryEntry>();
-	public ExcelSheetLibrarySource<TribeLibraryEntry>? Tribes => this.Services.GameData.GetLibrarySource<TribeLibraryEntry>();
-
-	[AutoNotify]
-	public RaceLibraryEntry? Race
+	public CustomizeViewModel(DispatcherObject dispatcher)
 	{
-		get => this.RaceSource?.GetRow(this.GetCustomizeValue(CustomizeIndex.Race));
-		set
-		{
-			this.Log.Information($"Change Race {value}");
+		this.dispatcher = dispatcher;
+		this.Services.Target.TargetChanged += this.OnTargetChanged;
+		this.OnTargetChanged();
 
-			if (value == null)
-				return;
-
-			RaceLibraryEntry? oldRace = this.Race;
-
-			if (value.RowId == oldRace?.RowId)
-				return;
-
-			// Get new tribe for the new race
-			TribeLibraryEntry newTribe;
-			{
-				int tribeIndex = 0;
-				TribeLibraryEntry? oldTribe = this.Tribe;
-				if (oldRace != null && oldTribe != null)
-				{
-					tribeIndex = oldRace.GetTribeIndex(oldTribe);
-					if (tribeIndex == -1)
-					{
-						tribeIndex = 0;
-					}
-				}
-
-				newTribe = value.Tribes[tribeIndex];
-			}
-
-			// Get new model type for the new race
-			ModelTypes newModelType = this.ModelType;
-			{
-				if (!newTribe.ModelTypes.Contains(newModelType))
-				{
-					newModelType = ModelTypes.Normal;
-				}
-			}
-
-			Threads.RunOnFrameworkThread(() =>
-			{
-				this.SetCustomizeValue(CustomizeIndex.Race, (byte)value.RowId, false);
-				this.SetCustomizeValue(CustomizeIndex.Tribe, (byte)newTribe.RowId, false);
-				this.SetCustomizeValue(CustomizeIndex.ModelType, (byte)newModelType, false);
-				this.UpdateCustomize(true);
-			});
-		}
-	}
-
-	[AutoNotify]
-	public TribeLibraryEntry? Tribe
-	{
-		get => this.Tribes?.GetRow(this.GetCustomizeValue(CustomizeIndex.Tribe));
-		set
-		{
-			if (value == null)
-				return;
-
-			// Get new model type for the new tribe
-			ModelTypes newModelType = this.ModelType;
-			{
-				if (!value.ModelTypes.Contains(newModelType))
-				{
-					newModelType = ModelTypes.Normal;
-				}
-			}
-
-			Threads.RunOnFrameworkThread(() =>
-			{
-				this.SetCustomizeValue(CustomizeIndex.Tribe, (byte)value.RowId, false);
-				this.SetCustomizeValue(CustomizeIndex.ModelType, (byte)newModelType, false);
-				this.UpdateCustomize(true);
-			});
-		}
-	}
-
-	[AutoNotify]
-	public Genders Gender
-	{
-		get => (Genders)this.GetCustomizeValue(CustomizeIndex.Gender);
-		set => this.SetCustomizeValue(CustomizeIndex.Gender, (byte)value);
-	}
-
-	[AutoNotify]
-	public ModelTypes ModelType
-	{
-		get => (ModelTypes)this.GetCustomizeValue(CustomizeIndex.ModelType);
-		set => this.SetCustomizeValue(CustomizeIndex.ModelType, (byte)value);
-	}
-
-	[AutoNotify]
-	public byte CharacterHeight
-	{
-		get => this.GetCustomizeValue(CustomizeIndex.Height);
-		set => this.SetCustomizeValue(CustomizeIndex.Height, value);
-	}
-
-	[AutoNotify]
-	public byte Face
-	{
-		get => this.GetCustomizeValue(CustomizeIndex.FaceType);
-		set => this.SetCustomizeValue(CustomizeIndex.FaceType, value);
-	}
-
-	[AutoNotify]
-	public byte Hair
-	{
-		get => this.GetCustomizeValue(CustomizeIndex.HairStyle);
-		set => this.SetCustomizeValue(CustomizeIndex.HairStyle, value);
-	}
-
-	[AutoNotify]
-	public bool EnableHighlights
-	{
-		get => this.GetCustomizeValue(CustomizeIndex.HairColor2) != 0;
-		set => this.SetCustomizeValue(CustomizeIndex.HairColor2, value ? (byte)128 : (byte)0);
-	}
-
-	[AutoNotify]
-	public byte SkinTone
-	{
-		get => this.GetCustomizeValue(CustomizeIndex.SkinColor);
-		set => this.SetCustomizeValue(CustomizeIndex.SkinColor, value);
-	}
-
-	[AutoNotify]
-	public byte RightEyeColor
-	{
-		get => this.GetCustomizeValue(CustomizeIndex.EyeColor);
-		set => this.SetCustomizeValue(CustomizeIndex.EyeColor, value);
-	}
-
-	[AutoNotify]
-	public byte HairTone
-	{
-		get => this.GetCustomizeValue(CustomizeIndex.HairColor);
-		set => this.SetCustomizeValue(CustomizeIndex.HairColor, value);
-	}
-
-	[AutoNotify]
-	public byte Highlights
-	{
-		get => this.GetCustomizeValue(CustomizeIndex.HairColor2);
-		set => this.SetCustomizeValue(CustomizeIndex.HairColor2, value);
-	}
-
-	[AutoNotify]
-	public CustomizeDataExtensions.FacialFeatures FacialFeature
-	{
-		get => (CustomizeDataExtensions.FacialFeatures)this.GetCustomizeValue(CustomizeIndex.FaceFeatures);
-		set => this.SetCustomizeValue(CustomizeIndex.FaceFeatures, (byte)value);
-	}
-
-	[AutoNotify]
-	public FacialFeatureOptionStruct FacialFeatureOptions
-	{
-		get
-		{
-			uint faceId = this.Face;
-
-			// I'm not sure why Hrothgar's face Id's are off by 4. =/
-			if (this.Race?.RowId == (uint)RaceRows.Hrothgar)
-				faceId -= 4;
-
-			////return this.MakeType?.GetFacialFeatures(faceId);
-			return default;
-		}
-	}
-
-	[AutoNotify]
-	public byte FacialFeatureColor
-	{
-		get => this.GetCustomizeValue(CustomizeIndex.FaceFeaturesColor);
-		set => this.SetCustomizeValue(CustomizeIndex.FaceFeaturesColor, value);
-	}
-
-	[AutoNotify]
-	public byte Eyebrows
-	{
-		get => this.GetCustomizeValue(CustomizeIndex.Eyebrows);
-		set => this.SetCustomizeValue(CustomizeIndex.Eyebrows, value);
-	}
-
-	[AutoNotify]
-	public byte LeftEyeColor
-	{
-		get => this.GetCustomizeValue(CustomizeIndex.EyeColor2);
-		set => this.SetCustomizeValue(CustomizeIndex.EyeColor2, value);
-	}
-
-	[AutoNotify]
-	public byte MainEyeColor
-	{
-		get => this.LeftEyeColor;
-		set
-		{
-			if (this.LinkEyeColors)
-				this.RightEyeColor = value;
-
-			this.LeftEyeColor = value;
-		}
-	}
-
-	[AutoNotify]
-	public bool LinkEyeColors
-	{
-		get => this.linkEyeColors;
-		set
-		{
-			this.linkEyeColors = value;
-			if (value)
-			{
-				this.RightEyeColor = this.LeftEyeColor;
-			}
-		}
-	}
-
-	[AutoNotify]
-	public byte Eyes
-	{
-		get => this.GetCustomizeValue(CustomizeIndex.EyeShape);
-		set => this.SetCustomizeValue(CustomizeIndex.EyeShape, value);
-	}
-
-	[AutoNotify]
-	public bool SmallIris
-	{
-		get => this.Eyes >= 128;
-		set => this.Eyes = (byte)(this.EyeShape + (value ? 128 : 0));
-	}
-
-	[AutoNotify]
-	public byte EyeShape
-	{
-		get => (byte)(this.Eyes - (this.SmallIris ? 128 : 0));
-		set => this.Eyes = (byte)(value + (this.SmallIris ? 128 : 0));
-	}
-
-	[AutoNotify]
-	public byte Nose
-	{
-		get => this.GetCustomizeValue(CustomizeIndex.NoseShape);
-		set => this.SetCustomizeValue(CustomizeIndex.NoseShape, value);
-	}
-
-	[AutoNotify]
-	public byte Jaw
-	{
-		get => this.GetCustomizeValue(CustomizeIndex.JawShape);
-		set => this.SetCustomizeValue(CustomizeIndex.JawShape, value);
-	}
-
-	[AutoNotify]
-	public byte MouthId
-	{
-		get => this.GetCustomizeValue(CustomizeIndex.LipStyle);
-		set => this.SetCustomizeValue(CustomizeIndex.LipStyle, value);
-	}
-
-	[AutoNotify]
-	public byte Mouth
-	{
-		get => (byte)(this.EnableLipColor ? this.MouthId - 128 : this.MouthId);
-		set => this.MouthId = (byte)(this.EnableLipColor ? value - 128 : value);
-	}
-
-	[AutoNotify]
-	public bool EnableLipColor
-	{
-		get => this.MouthId >= 128;
-		set => this.MouthId = (byte)(this.Mouth + (value ? 128 : 0));
-	}
-
-	[AutoNotify]
-	public byte LipsToneFurPattern
-	{
-		get => this.GetCustomizeValue(CustomizeIndex.LipColor);
-		set => this.SetCustomizeValue(CustomizeIndex.LipColor, value);
-	}
-
-	[AutoNotify]
-	public byte EarMuscleTailSize
-	{
-		get => this.GetCustomizeValue(CustomizeIndex.RaceFeatureSize);
-		set => this.SetCustomizeValue(CustomizeIndex.RaceFeatureSize, value);
-	}
-
-	[AutoNotify]
-	public byte TailEarsType
-	{
-		get => this.GetCustomizeValue(CustomizeIndex.RaceFeatureType);
-		set => this.SetCustomizeValue(CustomizeIndex.RaceFeatureType, value);
-	}
-
-	[AutoNotify]
-	public byte Bust
-	{
-		get => this.GetCustomizeValue(CustomizeIndex.BustSize);
-		set => this.SetCustomizeValue(CustomizeIndex.BustSize, value);
-	}
-
-	[AutoNotify]
-	public byte FacePaintId
-	{
-		get => this.GetCustomizeValue(CustomizeIndex.Facepaint);
-		set => this.SetCustomizeValue(CustomizeIndex.Facepaint, value);
-	}
-
-	[AutoNotify]
-	public bool FlipFacePaint
-	{
-		get => this.FacePaintId > 128;
-		set => this.FacePaintId = (byte)(this.FacePaint + (value ? 128 : 0));
-	}
-
-	[AutoNotify]
-	public byte FacePaint
-	{
-		get => (byte)(this.FacePaintId - (this.FlipFacePaint ? 128 : 0));
-		set => this.FacePaintId = (byte)(value + (this.FlipFacePaint ? 128 : 0));
-	}
-
-	[AutoNotify]
-	public byte FacePaintColor
-	{
-		get => this.GetCustomizeValue(CustomizeIndex.FacepaintColor);
-		set
-		{
-			this.SetCustomizeValue(CustomizeIndex.FacepaintColor, value);
-		}
-	}
-
-	public unsafe byte GetCustomizeValue(CustomizeIndex option)
-	{
-		if (!this.HasValidTarget)
-			return 0;
-
-		return this.Target->GetCustomizeValue(option);
-	}
-
-	public unsafe void SetCustomizeValue(CustomizeIndex option, byte value, bool apply = true)
-	{
-		if (!this.HasValidTarget)
+		if (DalamudServices.Framework == null)
 			return;
 
-		Threads.RunOnFrameworkThread(() =>
-		{
-			this.Target->SetCustomizeValue(option, value, CharacterExtensions.UpdateSource.Interface, apply);
-		});
+		DalamudServices.Framework.Update += this.OnFrameworkUpdate;
 	}
 
-	public unsafe void UpdateCustomize(bool redraw)
+	public bool HasValidTarget => this.Services.Target.HasValidTarget;
+
+	public FastObservableCollection<MenuViewModel?> BodyMenus { get; init; } = new();
+
+	private void OnTargetChanged()
 	{
-		if (!this.HasValidTarget)
+		this.UpdateMenus().Run();
+
+		this.BodyMenus.Clear();
+	}
+
+	private async Task UpdateMenus()
+	{
+		await Threads.FrameworkThread();
+		List<MenuViewModel?> menus = new();
+
+		if (DalamudServices.ObjectTable == null)
 			return;
 
-		Threads.RunOnFrameworkThread(() =>
+		CharaMakeType makeType;
+		unsafe
 		{
-			this.Target->UpdateCustomize(redraw, CharacterExtensions.UpdateSource.Interface);
-		});
-	}
+			Character* pCharacter = (Character*)DalamudServices.ObjectTable.GetObjectAddress(this.Services.Target.TargetObjectIndex);
+			if (pCharacter == null)
+				return;
 
-	public override bool ShouldTickAutoProperties()
-	{
-		if (!this.HasValidTarget)
-			return false;
+			CharaMakeType? characterMakeType = pCharacter->GetCharaMakeType();
+			if (characterMakeType == null)
+				return;
 
-		return base.ShouldTickAutoProperties();
-	}
-
-	private CharaMakeStructStruct? GetMakeTypeEntry(CustomizeIndex customizeIndex)
-	{
-		CharaMakeType? makeType = this.GetMakeType();
-
-		if (makeType == null)
-			return null;
-
-		foreach(CharaMakeStructStruct makeTypeEntry in makeType.Value.CharaMakeStruct)
-		{
-			if (makeTypeEntry.Customize == (uint)customizeIndex)
-			{
-				return makeTypeEntry;
-			}
+			makeType = characterMakeType.Value;
 		}
 
-		return null;
+		menus.Add(this.GetMenu(makeType, CustomizeIndex.Race));
+		menus.Add(this.GetMenu(makeType, CustomizeIndex.Tribe));
+		menus.Add(this.GetMenu(makeType, CustomizeIndex.Gender));
+		menus.Add(this.GetMenu(makeType, CustomizeIndex.ModelType));
+		menus.Add(this.GetMenu(makeType, CustomizeIndex.Height));
+		menus.Add(this.GetMenu(makeType, CustomizeIndex.RaceFeatureSize));
+		menus.Add(this.GetMenu(makeType, CustomizeIndex.BustSize));
+		menus.Add(this.GetMenu(makeType, CustomizeIndex.RaceFeatureType));
+		menus.Add(this.GetMenu(makeType, CustomizeIndex.SkinColor));
+		menus.Add(this.GetMenu(makeType, CustomizeIndex.LipColor)); // Hroth fur pattern
+
+		await this.dispatcher.MainThread();
+
+		this.BodyMenus.Replace(menus);
 	}
 
-	private CharaMakeType? GetMakeType()
+	private unsafe void OnFrameworkUpdate(IFramework framework)
 	{
-		if (this.Tribe == null)
-			return null;
+		// TODO: Ensure race, tribe, and gender have not changed.
+		Character* pTarget = this.Services.Target.GetTarget();
+		if (pTarget == null)
+			return;
 
-		ExcelSheet<CharaMakeType>? charaMakeTypeSheet = this.Services.GameData.GetSheet<CharaMakeType>();
-		if (charaMakeTypeSheet == null)
-			return null;
-
-		foreach (CharaMakeType makeType in charaMakeTypeSheet)
+		foreach(MenuViewModel? menu in this.BodyMenus)
 		{
-			if (!makeType.Tribe.IsRow(this.Tribe.RowId) || makeType.Gender != (sbyte)this.Gender)
+			if (menu == null)
 				continue;
 
-			return makeType;
+			menu.OnFrameworkUpdate(pTarget);
 		}
-
-		return null;
 	}
+
+	private MenuViewModel? GetMenu(CharaMakeType makeType, CustomizeIndex index)
+	{
+		if (index == CustomizeIndex.Race)
+			return new RaceMenu();
+
+		if (index == CustomizeIndex.Tribe)
+			return new TribeMenu(makeType.Race.Value);
+
+		if (index == CustomizeIndex.ModelType)
+			return new ModelTypeMenu(makeType.Tribe.Value);
+
+		CharaMakeType.CharaMakeMenu? makeMenu = makeType.GetMenu(index);
+		if (makeMenu == null)
+			return null;
+
+		MenuViewModel menu = (MenuTypes)makeMenu.Value.SubMenuType switch
+		{
+			MenuTypes.ListSelector => new ListMenu(makeMenu.Value, index),
+			MenuTypes.IconSelector => new IconMenu(makeMenu.Value, index),
+			MenuTypes.ColorPicker => new ColorMenu(makeType, makeMenu.Value, index),
+			MenuTypes.DoubleColorPicker => new DoubleColorMenu(makeMenu.Value, index),
+			MenuTypes.MultiIconSelector => new MultiColorMenu(makeMenu.Value, index),
+			MenuTypes.Percentage => new PercentageMenu(makeMenu.Value, index),
+			_ => throw new NotSupportedException(),
+		};
+
+		return menu;
+	}
+}
+
+#pragma warning disable
+public enum MenuTypes
+{
+	ListSelector = 0,
+	IconSelector = 1,
+	ColorPicker = 2,
+	DoubleColorPicker = 3,
+	MultiIconSelector = 4,
+	Percentage = 5,
 }

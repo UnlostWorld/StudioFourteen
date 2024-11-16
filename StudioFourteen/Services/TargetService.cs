@@ -41,25 +41,7 @@ public class TargetService : ServiceBase
 		});
 	}
 
-	protected unsafe override void OnFrameworkUpdate(IFramework framework)
-	{
-		base.OnFrameworkUpdate(framework);
-
-		int startIndex = this.TargetObjectIndex;
-
-		this.Target = this.GetTarget();
-		this.HasValidTarget = this.Target != null && this.Target->CanDraw();
-		this.TargetObjectIndex = this.HasValidTarget ? this.Target->ObjectIndex : -1;
-		this.CharacterName = this.HasValidTarget ? this.Target->GetDisplayName() : "Nobody";
-		this.IsTargetLoading = this.Target != null && !this.Target->CanDraw();
-
-		if (startIndex != this.TargetObjectIndex)
-		{
-			this.TargetChanged?.Invoke();
-		}
-	}
-
-	private unsafe Character* GetTarget()
+	public unsafe Character* GetTarget()
 	{
 		Threads.VerifyFrameworkThread();
 
@@ -89,6 +71,26 @@ public class TargetService : ServiceBase
 
 			// Player
 			return (Character*)DalamudServices.ObjectTable.GetObjectAddress(0);
+		}
+	}
+
+	protected unsafe override void OnFrameworkUpdate(IFramework framework)
+	{
+		base.OnFrameworkUpdate(framework);
+
+		int startIndex = this.TargetObjectIndex;
+
+		Character* pTarget = this.GetTarget();
+		this.HasValidTarget = pTarget != null && pTarget->CanDraw();
+		this.TargetObjectIndex = this.HasValidTarget ? pTarget->ObjectIndex : -1;
+		this.CharacterName = this.HasValidTarget ? pTarget->GetDisplayName() : "Nobody";
+		this.IsTargetLoading = pTarget != null && !pTarget->CanDraw();
+
+		this.Target = pTarget;
+
+		if (startIndex != this.TargetObjectIndex)
+		{
+			this.TargetChanged?.Invoke();
 		}
 	}
 }

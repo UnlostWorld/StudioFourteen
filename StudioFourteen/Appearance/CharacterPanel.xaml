@@ -23,6 +23,21 @@
 	mc:Ignorable="d">
 
 	<Grid IsEnabled="{Binding HasValidTarget}">
+
+		<Grid.Resources>
+			<ResourceDictionary>
+				<ResourceDictionary.MergedDictionaries>
+					<ResourceDictionary Source="Customize/ColorMenu.xaml" />
+					<ResourceDictionary Source="Customize/SelectorMenu.xaml" />
+					<ResourceDictionary Source="Customize/RaceMenu.xaml" />
+					<ResourceDictionary Source="Customize/IconMenu.xaml" />
+					<ResourceDictionary Source="Customize/DoubleColorMenu.xaml" />
+					<ResourceDictionary Source="Customize/MultiColorMenu.xaml" />
+					<ResourceDictionary Source="Customize/PercentageMenu.xaml" />
+				</ResourceDictionary.MergedDictionaries>
+			</ResourceDictionary>
+		</Grid.Resources>
+
 		<Grid.RowDefinitions>
 			<RowDefinition />
 			<RowDefinition Height="Auto" />
@@ -47,92 +62,15 @@
 						Icon="Person" />
 				</TabItem.Header>
 
-				<StackPanel>
-					<!--  Race  -->
-					<TextBlock
-						Style="{DynamicResource LeftLabel}"
-						Text="Race" />
-					<library:LibrarySelectorButton
-						Title="Select a Race"
-						Type="{x:Type gameData:RaceLibraryEntry}"
-						Value="{Binding Customize.Race}" />
+				<ItemsControl ItemsSource="{Binding Customize.BodyMenus}" />
 
-					<!--  Tribe  -->
-					<TextBlock
-						Style="{DynamicResource LeftLabel}"
-						Text="Tribe" />
-					<ListBox
-						x:Name="TribeSelector"
-						ItemsSource="{Binding Customize.Race.Tribes}"
-						SelectedItem="{Binding Customize.Tribe}"
-						Style="{DynamicResource WpfUtilsSwitchSelector}">
-						<ListBox.ItemTemplate>
-							<DataTemplate>
-								<TextBlock Text="{Binding Name}" />
-							</DataTemplate>
-						</ListBox.ItemTemplate>
-					</ListBox>
-
-					<!--  Gender  -->
-					<TextBlock
-						Style="{DynamicResource LeftLabel}"
-						Text="Gender" />
-					<ListBox
-						ItemsSource="{Binding Customize.Race.Genders}"
-						SelectedItem="{Binding Customize.Gender}"
-						Style="{DynamicResource WpfUtilsSwitchSelector}" />
-
-					<!--  ModelType  -->
-					<TextBlock
-						Style="{DynamicResource LeftLabel}"
-						Text="Model Type" />
-					<ListBox
-						ItemsSource="{Binding Customize.Tribe.ModelTypes}"
-						SelectedItem="{Binding Customize.ModelType}"
-						Style="{DynamicResource WpfUtilsSwitchSelector}" />
-
-					<!--  Height  -->
-					<TextBlock
-						Style="{DynamicResource LeftLabel}"
-						Text="Height" />
-					<wpfUtils:NumberBox
-						Maximum="100"
-						Minimum="0"
-						Slider="Absolute"
-						Value="{Binding Customize.CharacterHeight}" />
-
-					<!--  Muscle Tone  -->
-					<TextBlock
-						Style="{DynamicResource LeftLabel}"
-						Text="{Binding Customize.MakeType.EarMuscleTailSizes.Name}"
-						Visibility="{Binding Customize.Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Hyur|Roegadyn}" />
-
-					<wpfUtils:NumberBox
-						Maximum="{Binding Customize.MakeType.EarMuscleTailSizes.Max}"
-						Minimum="{Binding Customize.MakeType.EarMuscleTailSizes.Min}"
-						Slider="Absolute"
-						Visibility="{Binding Customize.Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Hyur|Roegadyn}"
-						Value="{Binding EarMuscleTailSize}" />
-
-					<!--  Bust Size  -->
-					<TextBlock
-						Style="{DynamicResource LeftLabel}"
-						Text="{Binding Customize.MakeType.Busts.Name}"
-						Visibility="{Binding Customize.Gender, Converter={StaticResource EnumToVisibility}, ConverterParameter=Feminine}" />
-					<wpfUtils:NumberBox
-						Maximum="{Binding Customize.MakeType.Busts.Max}"
-						Minimum="{Binding Customize.MakeType.Busts.Min}"
-						Slider="Absolute"
-						Visibility="{Binding Customize.Gender, Converter={StaticResource EnumToVisibility}, ConverterParameter=Feminine}"
-						Value="{Binding Customize.Bust}" />
-
-
-					<!--  Tail Shape  -->
+				<!--
+					-  Tail Shape  -
 					<TextBlock
 						Style="{DynamicResource LeftLabel}"
 						Text="{Binding Customize.MakeType.TailEarsTypes.Name}"
-						Visibility="{Binding Customize.Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Hrothgar|Miqote|AuRa}" />
-					<Grid Visibility="{Binding Customize.Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Hrothgar|Miqote|AuRa}">
+						Visibility="{Binding Customize.RaceRow, Converter={StaticResource EnumToVisibility}, ConverterParameter=Hrothgar|Miqote|AuRa}" />
+					<Grid Visibility="{Binding Customize.RaceRow, Converter={StaticResource EnumToVisibility}, ConverterParameter=Hrothgar|Miqote|AuRa}">
 						<Grid.RowDefinitions>
 							<RowDefinition Height="Auto" />
 							<RowDefinition Height="Auto" />
@@ -169,48 +107,7 @@
 							TickFrequency="1"
 							Value="{Binding Customize.EarMuscleTailSize}" />
 					</Grid>
-
-
-					<!--  Skin Color  -->
-					<TextBlock
-						Style="{DynamicResource LeftLabel}"
-						Text="{Binding Customize.MakeType.SkinTones.Name}" />
-					<customize:CustomizeColorOption
-						MakeStruct="{Binding Customize.MakeType.SkinTones}"
-						Value="{Binding Customize.SkinTone}" />
-
-
-					<!--  Fur Pattern  -->
-					<TextBlock
-						Style="{DynamicResource LeftLabel}"
-						Text="{Binding Customize.MakeType.LipsToneFurPatterns.Name}"
-						Visibility="{Binding Customize.Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Hrothgar}" />
-					<Grid Visibility="{Binding Customize.Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Hrothgar}">
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition />
-						</Grid.ColumnDefinitions>
-
-						<Grid.RowDefinitions>
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-						</Grid.RowDefinitions>
-
-						<customize:CustomizeIconOption
-							Grid.Row="0"
-							Grid.RowSpan="2"
-							Grid.Column="0"
-							MakeStruct="{Binding Customize.MakeType.LipsToneFurPatterns}"
-							Value="{Binding Customize.LipsToneFurPattern}" />
-
-						<customize:CustomizeNumberOption
-							Grid.Row="0"
-							Grid.Column="1"
-							MakeStruct="{Binding Customize.MakeType.LipsToneFurPatterns}"
-							Value="{Binding Customize.LipsToneFurPattern}" />
-
-					</Grid>
-				</StackPanel>
+				-->
 			</TabItem>
 
 			<!--  Face  -->
@@ -354,10 +251,10 @@
 					<TextBlock
 						Style="{DynamicResource LeftLabel}"
 						Text="Limbal Ring"
-						Visibility="{Binding Customize.Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=AuRa}" />
+						Visibility="{Binding Customize.RaceRow, Converter={StaticResource EnumToVisibility}, ConverterParameter=AuRa}" />
 					<customize:CustomizeColorOption
 						MakeStruct="{Binding Customize.MakeType.EyeColors}"
-						Visibility="{Binding Customize.Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=AuRa}"
+						Visibility="{Binding Customize.RaceRow, Converter={StaticResource EnumToVisibility}, ConverterParameter=AuRa}"
 						Value="{Binding Customize.FacialFeatureColor}" />
 
 					<!--  Eyebrows  -->
@@ -406,8 +303,8 @@
 					<TextBlock
 						Style="{DynamicResource LeftLabel}"
 						Text="{Binding Customize.MakeType.LipsToneFurPatterns.Name}"
-						Visibility="{Binding Customize.Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=!Hrothgar}" />
-					<Grid Visibility="{Binding Customize.Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=!Hrothgar}">
+						Visibility="{Binding Customize.RaceRow, Converter={StaticResource EnumToVisibility}, ConverterParameter=!Hrothgar}" />
+					<Grid Visibility="{Binding Customize.RaceRow, Converter={StaticResource EnumToVisibility}, ConverterParameter=!Hrothgar}">
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition />
@@ -498,10 +395,10 @@
 					<TextBlock
 						Style="{DynamicResource LeftLabel}"
 						Text="{Binding Customize.MakeType.FacialFeatureColors.Name}"
-						Visibility="{Binding Customize.Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Hyur|Viera|Lalafell|Miqote|Roegadyn|Elezen}" />
+						Visibility="{Binding Customize.RaceRow, Converter={StaticResource EnumToVisibility}, ConverterParameter=Hyur|Viera|Lalafell|Miqote|Roegadyn|Elezen}" />
 					<customize:CustomizeColorOption
 						MakeStruct="{Binding Customize.MakeType.FacialFeatureColors}"
-						Visibility="{Binding Customize.Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Hyur|Viera|Lalafell|Miqote|Roegadyn|Elezen}"
+						Visibility="{Binding Customize.RaceRow, Converter={StaticResource EnumToVisibility}, ConverterParameter=Hyur|Viera|Lalafell|Miqote|Roegadyn|Elezen}"
 						Value="{Binding Customize.FacialFeatureColor}" />
 
 					<!--  Hairstyle  -->
@@ -566,25 +463,25 @@
 					<TextBlock
 						Style="{DynamicResource LeftLabel}"
 						Text="{Binding Customize.MakeType.TailEarsTypes.Name}"
-						Visibility="{Binding Customize.Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Viera|Lalafell|Elezen}" />
+						Visibility="{Binding Customize.RaceRow, Converter={StaticResource EnumToVisibility}, ConverterParameter=Viera|Lalafell|Elezen}" />
 					<ListBox
 						ItemsSource="{Binding Customize.MakeType.TailEarsTypes.Values}"
 						SelectedItem="{Binding Customize.TailEarsType}"
 						Style="{StaticResource WpfUtilsSwitchSelector}"
-						Visibility="{Binding Customize.Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Viera|Lalafell|Elezen}" />
+						Visibility="{Binding Customize.RaceRow, Converter={StaticResource EnumToVisibility}, ConverterParameter=Viera|Lalafell|Elezen}" />
 
 					<!--  Ear Length  -->
 					<TextBlock
 						Style="{DynamicResource LeftLabel}"
 						Text="{Binding Customize.MakeType.EarMuscleTailSizes.Name}"
-						Visibility="{Binding Customize.Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Viera|Lalafell|Elezen}" />
+						Visibility="{Binding Customize.RaceRow, Converter={StaticResource EnumToVisibility}, ConverterParameter=Viera|Lalafell|Elezen}" />
 					<wpfUtils:NumberBox
 						Margin="0,1,0,1"
 						Maximum="{Binding Customize.MakeType.EarMuscleTailSizes.Max}"
 						Minimum="{Binding MCustomize.akeType.EarMuscleTailSizes.Min}"
 						Slider="Absolute"
 						TickFrequency="1"
-						Visibility="{Binding Customize.Race.RowEnum, Converter={StaticResource EnumToVisibility}, ConverterParameter=Viera|Lalafell|Elezen}"
+						Visibility="{Binding Customize.RaceRow, Converter={StaticResource EnumToVisibility}, ConverterParameter=Viera|Lalafell|Elezen}"
 						Value="{Binding EarMuscleTailSize}" />
 				</StackPanel>
 			</TabItem>

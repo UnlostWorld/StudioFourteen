@@ -82,6 +82,11 @@ public static class RaceTribeExtensions
 		return tags;
 	}
 
+	public static string? GetName(this Tribe tribe)
+	{
+		return tribe.Feminine.GetString() ?? tribe.Masculine.GetString();
+	}
+
 	public static TagCollection ToTags(this Tribe tribe)
 	{
 		TagCollection tags = new();
@@ -96,6 +101,20 @@ public static class RaceTribeExtensions
 		for (int i = 0; i < tribes.Length; i++)
 		{
 			if (tribes[i].RowId == tribe.RowId)
+			{
+				return i;
+			}
+		}
+
+		return -1;
+	}
+
+	public static int GetTribeIndex(this Race race, byte tribeId)
+	{
+		Tribe[] tribes = race.GetTribes();
+		for (int i = 0; i < tribes.Length; i++)
+		{
+			if (tribes[i].RowId == tribeId)
 			{
 				return i;
 			}

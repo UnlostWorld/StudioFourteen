@@ -1,0 +1,21 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	xmlns:local="clr-namespace:StudioFourteen.Appearance.Customize"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
+
+	<DataTemplate DataType="{x:Type local:PercentageMenu}">
+		<StackPanel>
+			<TextBlock
+				Style="{DynamicResource LeftLabel}"
+				Text="{Binding Name}" />
+
+			<wpfUtils:NumberBox
+				Maximum="{Binding Maximum}"
+				Minimum="{Binding Minimum}"
+				Slider="Absolute"
+				Value="{Binding Value}" />
+		</StackPanel>
+	</DataTemplate>
+</ResourceDictionary>

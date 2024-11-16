@@ -1,6 +1,7 @@
 ﻿namespace StudioFourteen.Appearance;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using StudioFourteen.Appearance.Customize;
 using StudioFourteen.Files;
 using StudioFourteen.GameData.Library;
 using StudioFourteen.Library;
@@ -12,7 +13,12 @@ using WpfUtils.Extensions;
 
 public partial class CharacterPanel : CharacterPanelBase
 {
-	public CustomizeViewModel Customize { get; init; } = new();
+	public CharacterPanel()
+	{
+		this.Customize = new(this);
+	}
+
+	public CustomizeViewModel Customize { get; init; }
 
 	[AutoNotify] public bool UseTwoColumns => this.ActualWidth > 650;
 

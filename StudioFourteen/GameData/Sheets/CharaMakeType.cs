@@ -1,0 +1,65 @@
+﻿namespace StudioFourteen.GameData.Sheets;
+
+using Dalamud.Game.ClientState.Objects.Enums;
+using Lumina.Excel;
+using Lumina.Excel.Sheets;
+using static Lumina.Excel.Sheets.CharaMakeType;
+
+[Sheet("CharaMakeType", 0x80D7DB6D)]
+public readonly unsafe struct CharaMakeType(ExcelPage page, uint offset, uint row) : IExcelRow<CharaMakeType>
+{
+	public uint RowId => row;
+
+	public readonly Collection<CharaMakeMenu> CharaMakeStruct => new(page, offset, offset, &CharaMakeStructCtor, 28);
+	public readonly Collection<byte> VoiceStruct => new(page, offset, offset, &VoiceStructCtor, 12);
+	public readonly Collection<FacialFeatureOptionStruct> FacialFeatureOption => new(page, offset, offset, &FacialFeatureOptionCtor, 8);
+	public readonly Collection<EquipmentStruct> Equipment => new(page, offset, offset, &EquipmentCtor, 3);
+	public readonly RowRef<Race> Race => new(page.Module, (uint)page.ReadInt32(offset + 12392), page.Language);
+	public readonly RowRef<Tribe> Tribe => new(page.Module, (uint)page.ReadInt32(offset + 12396), page.Language);
+	public readonly sbyte Gender => page.ReadInt8(offset + 12400);
+
+	static CharaMakeType IExcelRow<CharaMakeType>.Create(ExcelPage page, uint offset, uint row) => new(page, offset, row);
+
+	private static CharaMakeMenu CharaMakeStructCtor(ExcelPage page, uint parentOffset, uint offset, uint i) => new(page, parentOffset, offset + (i * 428));
+	private static byte VoiceStructCtor(ExcelPage page, uint parentOffset, uint offset, uint i) => page.ReadUInt8(offset + 11988 + i);
+	private static FacialFeatureOptionStruct FacialFeatureOptionCtor(ExcelPage page, uint parentOffset, uint offset, uint i) => new(page, offset + 12000 + (i * 28));
+	private static EquipmentStruct EquipmentCtor(ExcelPage page, uint parentOffset, uint offset, uint i) => new(page, offset + 12224 + (i * 56));
+
+	public readonly struct CharaMakeMenu(ExcelPage page, uint parentOffset, uint offset)
+	{
+		public readonly RowRef<Lobby> Menu => new(page.Module, page.ReadUInt32(offset), page.Language);
+		public readonly uint SubMenuMask => page.ReadUInt32(offset + 4);
+		public readonly uint Customize => page.ReadUInt32(offset + 8);
+		public readonly Collection<uint> SubMenuParam => new(page, parentOffset, offset, &SubMenuParamCtor, 100);
+		public readonly byte InitVal => page.ReadUInt8(offset + 412);
+		public readonly byte SubMenuType => page.ReadUInt8(offset + 413);
+		public readonly byte SubMenuNum => page.ReadUInt8(offset + 414);
+		public readonly byte LookAt => page.ReadUInt8(offset + 415);
+		public readonly Collection<byte> SubMenuGraphic => new(page, parentOffset, offset, &SubMenuGraphicCtor, 10);
+
+		private static uint SubMenuParamCtor(ExcelPage page, uint parentOffset, uint offset, uint i) => page.ReadUInt32(offset + 12 + (i * 4));
+		private static byte SubMenuGraphicCtor(ExcelPage page, uint parentOffset, uint offset, uint i) => page.ReadUInt8(offset + 416 + i);
+	}
+
+	public readonly struct FacialFeatureOptionStruct(ExcelPage page, uint offset)
+	{
+		public readonly int Option1 => page.ReadInt32(offset);
+		public readonly int Option2 => page.ReadInt32(offset + 4);
+		public readonly int Option3 => page.ReadInt32(offset + 8);
+		public readonly int Option4 => page.ReadInt32(offset + 12);
+		public readonly int Option5 => page.ReadInt32(offset + 16);
+		public readonly int Option6 => page.ReadInt32(offset + 20);
+		public readonly int Option7 => page.ReadInt32(offset + 24);
+	}
+
+	public readonly struct EquipmentStruct(ExcelPage page, uint offset)
+	{
+		public readonly ulong Helmet => page.ReadUInt64(offset);
+		public readonly ulong Top => page.ReadUInt64(offset + 8);
+		public readonly ulong Gloves => page.ReadUInt64(offset + 16);
+		public readonly ulong Legs => page.ReadUInt64(offset + 24);
+		public readonly ulong Shoes => page.ReadUInt64(offset + 32);
+		public readonly ulong Weapon => page.ReadUInt64(offset + 40);
+		public readonly ulong SubWeapon => page.ReadUInt64(offset + 48);
+	}
+}

@@ -6,9 +6,11 @@ using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using global::System;
 using Lumina.Excel.Sheets;
 using StudioFourteen;
+using StudioFourteen.GameData.Sheets;
 using StudioFourteen.Utilities;
 
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
+using CharaMakeType = StudioFourteen.GameData.Sheets.CharaMakeType;
 using ObjectKind = Dalamud.Game.ClientState.Objects.Enums.ObjectKind;
 
 public enum RenderMode : uint
@@ -102,7 +104,12 @@ public static class CharacterExtensions
 		}
 	}
 
-	public static byte GetCustomizeValue(ref this Character self, CustomizeIndex option)
+	public static CharaMakeType? GetCharaMakeType(ref readonly this Character self)
+	{
+		return self.DrawData.CustomizeData.GetMakeType();
+	}
+
+	public static byte GetCustomizeValue(ref readonly this Character self, CustomizeIndex option)
 	{
 		return self.DrawData.CustomizeData.GetValue(option);
 	}

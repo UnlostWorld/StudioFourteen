@@ -8,6 +8,8 @@ using Serilog;
 using System.Windows.Media;
 using Lumina.Excel.Sheets;
 
+using CharaMakeType = StudioFourteen.GameData.Sheets.CharaMakeType;
+
 public static class HumanCmp
 {
 	private static readonly Entry[] Colors;
@@ -58,16 +60,12 @@ public static class HumanCmp
 		Colors = colors.ToArray();
 	}
 
-	public static Entry[]? Get(CharaMakeType.CharaMakeStructStruct menu)
+	public static Entry[]? Get(CharaMakeType makeType, CharaMakeType.CharaMakeMenu menu)
 	{
-		/*if (menu.Race == null || menu.Tribe == null)
-			return null;
-
-		return Get(menu.CustomizationIndex, menu.Tribe, menu.Gender);*/
-		throw new NotImplementedException();
+		return Get((CustomizeIndex)menu.Customize, (byte)makeType.Tribe.RowId, (Genders)makeType.Gender);
 	}
 
-	public static Entry[] Get(CustomizeIndex index, Tribe tribe, Genders gender)
+	public static Entry[] Get(CustomizeIndex index, byte tribe, Genders gender)
 	{
 		switch (index)
 		{
@@ -111,21 +109,21 @@ public static class HumanCmp
 		return entries;
 	}
 
-	private static int GetTribeSkinStartIndex(Tribe tribe, Genders gender)
+	private static int GetTribeSkinStartIndex(byte tribe, Genders gender)
 	{
 		bool isMasculine = gender == Genders.Masculine;
 
 		int genderValue = isMasculine ? 0 : 1;
-		int listIndex = ((((int)tribe.RowId * 2) + genderValue) * 5) + 3;
+		int listIndex = ((((int)tribe * 2) + genderValue) * 5) + 3;
 		return listIndex * 256;
 	}
 
-	private static int GetTribeHairStartIndex(Tribe tribe, Genders gender)
+	private static int GetTribeHairStartIndex(byte tribe, Genders gender)
 	{
 		bool isMasculine = gender == Genders.Masculine;
 
 		int genderValue = isMasculine ? 0 : 1;
-		int listIndex = ((((int)tribe.RowId * 2) + genderValue) * 5) + 4;
+		int listIndex = ((((int)tribe * 2) + genderValue) * 5) + 4;
 		return listIndex * 256;
 	}
 

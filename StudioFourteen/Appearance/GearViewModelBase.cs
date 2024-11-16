@@ -13,7 +13,7 @@ public abstract class GearViewModelBase : AutoViewModel
 {
 	public unsafe Character* Target => this.Services.Target.Target;
 	[AlwaysNotify] public string? CharacterName => this.Services.Target.CharacterName;
-	[AlwaysNotify] public virtual bool HasValidTarget => this.Services.Target.HasValidTarget;
+	[AlwaysNotify] public unsafe virtual bool HasValidTarget => this.Target != null && this.Services.Target.HasValidTarget;
 	[AlwaysNotify] public int TargetObjectIndex => this.Services.Target.TargetObjectIndex;
 
 	public abstract void Clear();

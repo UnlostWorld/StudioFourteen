@@ -1,0 +1,17 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	xmlns:local="clr-namespace:StudioFourteen.Appearance.Customize">
+
+	<DataTemplate DataType="{x:Type local:DoubleColorMenu}">
+		<StackPanel>
+			<TextBlock
+				Style="{DynamicResource LeftLabel}"
+				Text="{Binding Name}" />
+
+			<!--  TODO  -->
+			<TextBlock Text="Double Color" />
+		</StackPanel>
+	</DataTemplate>
+</ResourceDictionary>

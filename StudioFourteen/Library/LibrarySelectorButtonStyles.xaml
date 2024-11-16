@@ -28,12 +28,11 @@
 						Content="{TemplateBinding Value}"
 						Style="{DynamicResource LibraryIcon}" />
 
-					<ContentPresenter
+					<TextBlock
 						Grid.Row="0"
 						Grid.Column="1"
 						VerticalAlignment="Center"
-						Content="{TemplateBinding Value}"
-						Style="{DynamicResource LibraryInfo}" />
+						Text="{Binding Value.Name, RelativeSource={RelativeSource AncestorType={x:Type local:LibrarySelectorButton}}}" />
 
 				</Grid>
 			</Button.Content>

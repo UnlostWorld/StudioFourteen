@@ -93,11 +93,10 @@
 							Style="{StaticResource LibraryIcon}"
 							TextBlock.Foreground="{DynamicResource ForegroundBrush}" />
 
-						<ContentPresenter
+						<TextBlock
 							Grid.Column="1"
 							VerticalAlignment="Center"
-							Content="{Binding Entry}"
-							Style="{StaticResource LibraryInfo}"
+							Text="{Binding Entry.Name}"
 							TextBlock.Foreground="{DynamicResource ForegroundBrush}" />
 
 						<Grid
