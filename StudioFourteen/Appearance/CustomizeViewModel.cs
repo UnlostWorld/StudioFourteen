@@ -147,6 +147,22 @@ public partial class CustomizeViewModel : ViewModel
 
 			menu.OnFrameworkUpdate(pTarget);
 		}
+
+		foreach (MenuViewModel? menu in this.HeadMenus)
+		{
+			if (menu == null)
+				continue;
+
+			menu.OnFrameworkUpdate(pTarget);
+		}
+
+		foreach (MenuViewModel? menu in this.MakeupMenus)
+		{
+			if (menu == null)
+				continue;
+
+			menu.OnFrameworkUpdate(pTarget);
+		}
 	}
 
 	private MenuViewModel? GetMenu(CharaMakeType makeType, CustomizeIndex index)
