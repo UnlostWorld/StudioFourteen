@@ -53,22 +53,19 @@
 
 				<controls:XivTexImage
 					x:Name="IconBack"
-					Margin="0,-1,0,1"
+					Margin="0,0,0,0"
 					Path="ui/uld/icona_frame_hr1.tex"
 					Rect="0, 192, 96, 96"
-					SnapsToDevicePixels="True"
 					Visibility="Collapsed" />
 
 				<Image
-					Margin="4,3,3.5,3"
-					SnapsToDevicePixels="True"
+					Margin="4,3,3,5"
 					Source="{Binding Icon.Source}" />
 
 				<controls:XivTexImage
 					x:Name="IconShine"
 					Path="ui/uld/icona_frame_hr1.tex"
-					Rect="0, 0, 96, 96"
-					SnapsToDevicePixels="True" />
+					Rect="0, 0, 96, 96" />
 			</Grid>
 		</Viewbox>
 
@@ -331,7 +328,7 @@
 			Template="{StaticResource LibraryIcon_DataSheetLibrarySource}" />
 
 		<markup:TemplateSelectorEntry
-			TargetType="{x:Type gameData:HairLibrarySource}"
+			TargetType="{x:Type gameData:CharaMakeCustomizeLibrarySource}"
 			Template="{StaticResource LibraryIcon_DataSheetLibrarySource}" />
 
 		<markup:TemplateSelectorEntry
@@ -357,7 +354,6 @@
 		<markup:TemplateSelectorEntry
 			TargetType="{x:Type gameData:ENpcResidentLibraryEntry}"
 			Template="{StaticResource AppearanceIcon}" />
-
 
 		<markup:TemplateSelectorEntry
 			TargetType="{x:Type appearance:CharacterBackupAppearance}"

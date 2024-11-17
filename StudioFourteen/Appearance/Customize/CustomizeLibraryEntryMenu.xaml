@@ -20,6 +20,11 @@
 				SearchTags="{Binding SearchTags}"
 				Type="{x:Type gameData:CharaMakeCustomizeLibraryEntry}"
 				Value="{Binding Entry}" />
+			<controls:NumberBox
+				Buttons="True"
+				Maximum="255"
+				Minimum="0"
+				Value="{Binding Value}" />
 		</StackPanel>
 	</DataTemplate>
 </ResourceDictionary>
