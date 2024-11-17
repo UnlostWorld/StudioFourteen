@@ -35,7 +35,7 @@ public class MultiIconMenu : MakeMenuViewModel
 		LegacyTattoo = 128,
 	}
 
-	public List<Option> Options { get; }
+	public List<Option>? Options { get; set; }
 
 	public override unsafe void OnFrameworkUpdate(Character* pCharacter)
 	{
@@ -48,25 +48,28 @@ public class MultiIconMenu : MakeMenuViewModel
 			this.OnFaceChanged(faceType);
 		}
 
-		FacialFeatureIndex currentUiValue = FacialFeatureIndex.None;
-		foreach (Option option in this.Options)
+		if (this.Options != null)
 		{
-			if (option.IsChecked)
+			FacialFeatureIndex currentUiValue = FacialFeatureIndex.None;
+			foreach (Option option in this.Options)
 			{
-				currentUiValue |= option.Index;
+				if (option.IsChecked)
+				{
+					currentUiValue |= option.Index;
+				}
 			}
-		}
 
-		if (currentUiValue != this.lastUiValue)
-		{
-			this.lastUiValue = currentUiValue;
-			this.Value = (byte)currentUiValue;
-		}
+			if (currentUiValue != this.lastUiValue)
+			{
+				this.lastUiValue = currentUiValue;
+				this.Value = (byte)currentUiValue;
+			}
 
-		FacialFeatureIndex value = (FacialFeatureIndex)this.RealValue;
-		foreach (Option option in this.Options)
-		{
-			option.IsChecked = value.HasFlag(option.Index);
+			FacialFeatureIndex value = (FacialFeatureIndex)this.RealValue;
+			foreach (Option option in this.Options)
+			{
+				option.IsChecked = value.HasFlag(option.Index);
+			}
 		}
 	}
 
@@ -77,7 +80,10 @@ public class MultiIconMenu : MakeMenuViewModel
 
 	private void OnFaceChanged(byte faceType)
 	{
-		this.Options.Clear();
+		this.Options = null;
+		this.RaisePropertyChanged(nameof(this.Options));
+
+		this.Options = new();
 
 		if (faceType < 0 || faceType > this.makeType.FacialFeatureOption.Count)
 			return;
