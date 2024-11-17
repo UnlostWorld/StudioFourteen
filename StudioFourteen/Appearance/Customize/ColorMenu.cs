@@ -9,11 +9,13 @@ using CharaMakeType = StudioFourteen.GameData.Sheets.CharaMakeType;
 
 public class ColorMenu : MakeMenuViewModel
 {
+	private readonly bool hideName = false;
 	private Option? selected;
 
-	public ColorMenu(CharaMakeType makeType, CharaMakeType.CharaMakeMenu makeMenu, CustomizeIndex customizeIndex)
-		: base(makeMenu, customizeIndex)
+	public ColorMenu(CharaMakeType makeType, CharaMakeType.CharaMakeMenu makeMenu, CustomizeIndex customizeIndex, ToggleModes toggleMode, bool hideName = false)
+		: base(makeMenu, customizeIndex, toggleMode)
 	{
+		this.hideName = hideName;
 		this.Options = new();
 
 		HumanCmp.Entry[]? entries = HumanCmp.Get(makeType, makeMenu);
@@ -28,6 +30,8 @@ public class ColorMenu : MakeMenuViewModel
 			this.Options.Add(new(entries[i].Color, i, entries[i].Hex));
 		}
 	}
+
+	public override string? Name => this.hideName ? null : base.Name;
 
 	public Option? Selected
 	{

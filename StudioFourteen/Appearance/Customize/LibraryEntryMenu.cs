@@ -6,7 +6,7 @@ using StudioFourteen.GameData.Library;
 using System;
 
 public abstract class LibraryEntryMenu(CustomizeIndex index)
-	: MenuViewModel(index)
+	: MenuViewModel(index, ToggleModes.None)
 {
 }
 

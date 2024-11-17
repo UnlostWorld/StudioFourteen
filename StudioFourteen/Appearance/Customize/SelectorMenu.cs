@@ -7,8 +7,8 @@ public abstract class SelectorMenu : MenuViewModel
 {
 	private Option? selected;
 
-	public SelectorMenu(CustomizeIndex customizeIndex)
-		: base(customizeIndex)
+	public SelectorMenu(CustomizeIndex customizeIndex, ToggleModes toggleMode)
+		: base(customizeIndex, toggleMode)
 	{
 		this.OnValueChanged(0, this.Value);
 	}

@@ -10,6 +10,8 @@
 				Style="{DynamicResource LeftLabel}"
 				Text="{Binding Name}" />
 
+			<!--<TextBlock Text="{Binding Value}" />-->
+
 			<ListBox
 				ItemsSource="{Binding Options}"
 				SelectedItem="{Binding Selected}"

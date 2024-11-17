@@ -11,8 +11,8 @@ public class ListMenu : MakeMenuViewModel
 {
 	private Option? selected;
 
-	public ListMenu(CharaMakeType.CharaMakeMenu makeMenu, CustomizeIndex customizeIndex)
-		: base(makeMenu, customizeIndex)
+	public ListMenu(CharaMakeType.CharaMakeMenu makeMenu, CustomizeIndex customizeIndex, ToggleModes toggleMode)
+		: base(makeMenu, customizeIndex, toggleMode)
 	{
 		ExcelSheet<Lobby>? sheet = this.Services.GameData.GetSheet<Lobby>();
 		if (sheet == null)

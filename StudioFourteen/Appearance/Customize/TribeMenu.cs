@@ -6,7 +6,7 @@ using Lumina.Excel.Sheets;
 public class TribeMenu : SelectorMenu
 {
 	public TribeMenu(Race race)
-		: base(CustomizeIndex.Tribe)
+		: base(CustomizeIndex.Tribe, ToggleModes.None)
 	{
 		Tribe[] tribes = race.GetTribes();
 		foreach (Tribe tribe in tribes)

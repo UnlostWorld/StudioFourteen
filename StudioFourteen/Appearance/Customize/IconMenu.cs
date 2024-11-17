@@ -12,8 +12,8 @@ public class IconMenu : MakeMenuViewModel
 {
 	private Option? selected;
 
-	public IconMenu(CharaMakeType.CharaMakeMenu makeMenu, CustomizeIndex customizeIndex)
-		: base(makeMenu, customizeIndex)
+	public IconMenu(CharaMakeType.CharaMakeMenu makeMenu, CustomizeIndex customizeIndex, ToggleModes toggleMode)
+		: base(makeMenu, customizeIndex, toggleMode)
 	{
 		this.Options = new();
 

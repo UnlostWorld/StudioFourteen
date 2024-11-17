@@ -13,7 +13,8 @@
 		<StackPanel>
 			<TextBlock
 				Style="{DynamicResource LeftLabel}"
-				Text="{Binding Name}" />
+				Text="{Binding Name}"
+				Visibility="{Binding Name, Converter={StaticResource NotNullToVisibilityConverter}}" />
 
 			<Grid x:Name="ContentArea">
 

@@ -7,7 +7,7 @@ using StudioFourteen.GameData;
 public class ModelTypeMenu : SelectorMenu
 {
 	public ModelTypeMenu(Tribe tribe)
-		: base(CustomizeIndex.ModelType)
+		: base(CustomizeIndex.ModelType, ToggleModes.None)
 	{
 		ModelTypes[] modelTypes = tribe.GetModelTypes();
 		foreach (ModelTypes modelType in modelTypes)

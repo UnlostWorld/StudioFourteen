@@ -6,8 +6,8 @@ using System.Text;
 
 using CharaMakeType = StudioFourteen.GameData.Sheets.CharaMakeType;
 
-public abstract class MakeMenuViewModel(CharaMakeType.CharaMakeMenu makeMenu, CustomizeIndex customizeIndex)
-	: MenuViewModel(customizeIndex)
+public abstract class MakeMenuViewModel(CharaMakeType.CharaMakeMenu makeMenu, CustomizeIndex customizeIndex, MenuViewModel.ToggleModes toggleMode)
+	: MenuViewModel(customizeIndex, toggleMode)
 {
 	public override string? Name => makeMenu.Menu.Value.Text.GetString();
 }

@@ -10,8 +10,16 @@
 				Style="{DynamicResource LeftLabel}"
 				Text="{Binding Name}" />
 
-			<!--  TODO  -->
-			<TextBlock Text="Double Color" />
+			<ContentPresenter
+				Grid.Column="0"
+				Margin="1"
+				Content="{Binding Left}" />
+
+			<ContentPresenter
+				Grid.Column="1"
+				Margin="1"
+				Content="{Binding Right}" />
+
 		</StackPanel>
 	</DataTemplate>
 </ResourceDictionary>

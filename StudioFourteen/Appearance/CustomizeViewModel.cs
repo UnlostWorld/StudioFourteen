@@ -116,7 +116,10 @@ public partial class CustomizeViewModel : ViewModel
 		}
 
 		if (race != RaceRows.Hrothgar)
+		{
 			makeupMenus.Add(this.GetMenu(makeType, CustomizeIndex.LipColor));
+			makeupMenus.Add(new ToggleMenu(CustomizeIndex.LipStyle));
+		}
 
 		makeupMenus.Add(this.GetMenu(makeType, CustomizeIndex.Facepaint));
 		makeupMenus.Add(this.GetMenu(makeType, CustomizeIndex.FacepaintColor));
@@ -186,14 +189,28 @@ public partial class CustomizeViewModel : ViewModel
 		if (makeMenu == null)
 			return null;
 
+		// Weird usage by SQEX to pack iris size into eye shape, but list it under eye color 2, which
+		// is actually controlled by EyeColor's 'double color picker'.
+		// thanks guys.
+		MenuViewModel.ToggleModes toggleMode = MenuViewModel.ToggleModes.None;
+		if (index == CustomizeIndex.EyeColor2)
+		{
+			toggleMode = MenuViewModel.ToggleModes.IsToggle;
+			index = CustomizeIndex.EyeShape;
+		}
+		else if (index == CustomizeIndex.EyeShape || index == CustomizeIndex.LipStyle)
+		{
+			toggleMode = MenuViewModel.ToggleModes.IsValue;
+		}
+
 		MenuViewModel menu = (MenuTypes)makeMenu.Value.SubMenuType switch
 		{
-			MenuTypes.ListSelector => new ListMenu(makeMenu.Value, index),
-			MenuTypes.IconSelector => new IconMenu(makeMenu.Value, index),
-			MenuTypes.ColorPicker => new ColorMenu(makeType, makeMenu.Value, index),
-			MenuTypes.DoubleColorPicker => new DoubleColorMenu(makeMenu.Value, index),
-			MenuTypes.MultiIconSelector => new MultiColorMenu(makeMenu.Value, index),
-			MenuTypes.Percentage => new PercentageMenu(makeMenu.Value, index),
+			MenuTypes.ListSelector => new ListMenu(makeMenu.Value, index, toggleMode),
+			MenuTypes.IconSelector => new IconMenu(makeMenu.Value, index, toggleMode),
+			MenuTypes.ColorPicker => new ColorMenu(makeType, makeMenu.Value, index, toggleMode),
+			MenuTypes.DoubleColorPicker => new DoubleColorMenu(makeType, makeMenu.Value, index, toggleMode),
+			MenuTypes.MultiIconSelector => new MultiColorMenu(makeMenu.Value, index, toggleMode),
+			MenuTypes.Percentage => new PercentageMenu(makeMenu.Value, index, toggleMode),
 			_ => throw new NotSupportedException(),
 		};
 
