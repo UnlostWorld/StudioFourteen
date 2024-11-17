@@ -20,7 +20,7 @@ public abstract class GroupEntryBase : LibraryEntryBase
 
 	public virtual IconChar Icon => IconChar.None;
 
-	public IEnumerable<LibraryEntryBase>? AllEntries => this.allEntries;
+	public IEnumerable<LibraryEntryBase> AllEntries => this.allEntries;
 	public int AllCount => this.allEntries.Count;
 
 	public IEnumerable<GroupEntryBase>? GroupEntries => this.groupEntries;

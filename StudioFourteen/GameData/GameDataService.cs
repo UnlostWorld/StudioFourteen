@@ -125,6 +125,7 @@ public class GameDataService : ServiceBase
 		this.AddLibraryExcelSheet<Weather, WeatherLibraryEntry>();
 
 		this.Services.Library.AddSource(new HairLibrarySource());
+		this.Services.Library.AddSource(new FacePaintLibrarySource());
 	}
 
 	private ExcelSheetLibrarySource AddLibraryExcelSheet<TExcel, TEntry>()

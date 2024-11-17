@@ -93,11 +93,27 @@
 							Style="{StaticResource LibraryIcon}"
 							TextBlock.Foreground="{DynamicResource ForegroundBrush}" />
 
-						<TextBlock
+						<Grid
 							Grid.Column="1"
-							VerticalAlignment="Center"
-							Text="{Binding Entry.Name}"
-							TextBlock.Foreground="{DynamicResource ForegroundBrush}" />
+							VerticalAlignment="Center">
+							<Grid.RowDefinitions>
+								<RowDefinition />
+								<RowDefinition Height="Auto" />
+							</Grid.RowDefinitions>
+
+							<TextBlock
+								Grid.Row="0"
+								VerticalAlignment="Center"
+								Text="{Binding Entry.Name}"
+								Visibility="{Binding Entry.Name, Converter={StaticResource StringHasContentToVisibility}}" />
+
+							<TextBlock
+								Grid.Row="1"
+								VerticalAlignment="Center"
+								Foreground="{DynamicResource ForegroundLightBrush}"
+								Text="{Binding Entry.SubTitle}"
+								Visibility="{Binding Entry.SubTitle, Converter={StaticResource StringHasContentToVisibility}}" />
+						</Grid>
 
 						<Grid
 							Margin="0,5,5,0"

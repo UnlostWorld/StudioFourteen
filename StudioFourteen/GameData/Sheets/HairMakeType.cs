@@ -43,7 +43,7 @@ public readonly struct HairMakeType(ExcelPage page, uint offset, uint row)
 			RowRef<CharaMakeCustomize>[] results = new RowRef<CharaMakeCustomize>[EntryCount];
 			for (int i = 0; i < EntryCount; i++)
 			{
-				uint id = page.ReadUInt32((nuint)(offset + (12 + (EntryCount * 4)) + (4 * i)));
+				uint id = page.ReadUInt32((nuint)(offset + 3008 + (4 * i)));
 				if (id == 0)
 					break;
 

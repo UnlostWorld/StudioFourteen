@@ -207,33 +207,6 @@ public partial class MiniLibraryPopOut : View
 		result.FilterEntries(filters.ToArray());
 		List<Result>? results = result.Get(true);
 
-		results?.Sort((a, b) =>
-		{
-			// TODO: a generic sorting system...
-			if (a.Entry.IsFavorite && !b.Entry.IsFavorite)
-			{
-				return -1;
-			}
-			else if (!a.Entry.IsFavorite && b.Entry.IsFavorite)
-			{
-				return 1;
-			}
-			else if (a.Entry is CharacterBackupAppearance && b.Entry is not CharacterBackupAppearance)
-			{
-				return 1;
-			}
-			else if (a.Entry is not CharacterBackupAppearance && b.Entry is CharacterBackupAppearance)
-			{
-				return -1;
-			}
-			else if (a.Entry is ExcelLibraryEntry aRow && b.Entry is ExcelLibraryEntry bRow)
-			{
-				return aRow.RowId.CompareTo(bRow.RowId);
-			}
-
-			return a.Entry.Name?.CompareTo(b.Entry.Name) ?? 0;
-		});
-
 		Result? selectedResult = result.Find(this.currentEntry as LibraryEntryBase);
 
 		await this.Dispatcher.MainThread();

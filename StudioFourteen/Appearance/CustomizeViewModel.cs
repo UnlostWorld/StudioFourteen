@@ -171,7 +171,7 @@ public partial class CustomizeViewModel : ViewModel
 	private MenuViewModel? GetMenu(CharaMakeType makeType, CustomizeIndex index)
 	{
 		if (index == CustomizeIndex.Race)
-			return new LibraryEntryMenu<RaceLibraryEntry>(index, "Race");
+			return new ExcelLibraryEntryMenu<RaceLibraryEntry>(index, "Race");
 
 		if (index == CustomizeIndex.Tribe)
 			return new TribeMenu(makeType.Race.Value);
@@ -179,15 +179,12 @@ public partial class CustomizeViewModel : ViewModel
 		if (index == CustomizeIndex.ModelType)
 			return new ModelTypeMenu(makeType.Tribe.Value);
 
-		if (index == CustomizeIndex.Facepaint)
-			return null;
-
-		if (index == CustomizeIndex.HairStyle)
-			return null;
-
 		CharaMakeType.CharaMakeMenu? makeMenu = makeType.GetMenu(index);
 		if (makeMenu == null)
 			return null;
+
+		if (index == CustomizeIndex.Facepaint || index == CustomizeIndex.HairStyle)
+			return new CustomizeLibraryEntryMenu(makeType, makeMenu.Value, index);
 
 		// Weird usage by SQEX to pack iris size into eye shape, but list it under eye color 2, which
 		// is actually controlled by EyeColor's 'double color picker'.

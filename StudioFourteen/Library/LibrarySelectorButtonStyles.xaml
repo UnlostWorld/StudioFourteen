@@ -6,6 +6,7 @@
 	xmlns:local="clr-namespace:StudioFourteen.Library"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
+	<converters:StringHasContentToVisibilityConverter x:Key="StringHasContentToVisibility" />
 
 	<ControlTemplate
 		x:Key="LibrarySelectorButtonTemplate"
@@ -22,17 +23,35 @@
 					</Grid.ColumnDefinitions>
 
 					<ContentPresenter
-						Width="{Binding ActualHeight, RelativeSource={RelativeSource Mode=Self}}"
+						Grid.RowSpan="2"
+						Width="44"
+						Height="44"
 						Margin="0,0,3,0"
 						VerticalAlignment="Stretch"
 						Content="{TemplateBinding Value}"
 						Style="{DynamicResource LibraryIcon}" />
 
-					<TextBlock
-						Grid.Row="0"
+					<Grid
 						Grid.Column="1"
-						VerticalAlignment="Center"
-						Text="{Binding Value.Name, RelativeSource={RelativeSource AncestorType={x:Type local:LibrarySelectorButton}}}" />
+						VerticalAlignment="Center">
+						<Grid.RowDefinitions>
+							<RowDefinition />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+
+						<TextBlock
+							Grid.Row="0"
+							VerticalAlignment="Center"
+							Text="{Binding Value.Name, RelativeSource={RelativeSource AncestorType={x:Type local:LibrarySelectorButton}}}"
+							Visibility="{Binding Value.Name, RelativeSource={RelativeSource AncestorType={x:Type local:LibrarySelectorButton}}, Converter={StaticResource StringHasContentToVisibility}}" />
+
+						<TextBlock
+							Grid.Row="1"
+							VerticalAlignment="Center"
+							Foreground="{DynamicResource ForegroundLightBrush}"
+							Text="{Binding Value.SubTitle, RelativeSource={RelativeSource AncestorType={x:Type local:LibrarySelectorButton}}}"
+							Visibility="{Binding Value.SubTitle, RelativeSource={RelativeSource AncestorType={x:Type local:LibrarySelectorButton}}, Converter={StaticResource StringHasContentToVisibility}}" />
+					</Grid>
 
 				</Grid>
 			</Button.Content>

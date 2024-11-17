@@ -1,0 +1,25 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	xmlns:gameData="clr-namespace:StudioFourteen.GameData.Library"
+	xmlns:library="clr-namespace:StudioFourteen.Library"
+	xmlns:local="clr-namespace:StudioFourteen.Appearance.Customize">
+
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="pack://application:,,,/WpfUtils;component/Styles.xaml" />
+	</ResourceDictionary.MergedDictionaries>
+
+	<DataTemplate DataType="{x:Type local:CustomizeLibraryEntryMenu}">
+		<StackPanel>
+			<TextBlock
+				Style="{DynamicResource LeftLabel}"
+				Text="{Binding Name}" />
+			<library:LibrarySelectorButton
+				Title="{Binding Name}"
+				SearchTags="{Binding SearchTags}"
+				Type="{x:Type gameData:CharaMakeCustomizeLibraryEntry}"
+				Value="{Binding Entry}" />
+		</StackPanel>
+	</DataTemplate>
+</ResourceDictionary>

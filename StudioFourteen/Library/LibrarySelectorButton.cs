@@ -8,6 +8,7 @@ using System.Windows.Controls;
 [DependencyProperty<Type>("Type")]
 [DependencyProperty<object>("Value", DefaultBindingMode = DefaultBindingMode.TwoWay)]
 [DependencyProperty<string>("Title")]
+[DependencyProperty<TagCollection>("SearchTags")]
 public partial class LibrarySelectorButton : Control
 {
 	private Button? button;
@@ -34,8 +35,10 @@ public partial class LibrarySelectorButton : Control
 		if (this.Type == null)
 			return;
 
-		TagCollection defaultTags = new();
-		defaultTags.Add("Named");
+		TagCollection defaultTags = this.SearchTags ?? new();
+
+		if (defaultTags.Count <= 0)
+			defaultTags.Add("Named");
 
 		MiniLibraryPopOut.Show(
 			this,

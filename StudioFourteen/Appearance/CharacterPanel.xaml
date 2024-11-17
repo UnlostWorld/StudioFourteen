@@ -27,14 +27,15 @@
 		<Grid.Resources>
 			<ResourceDictionary>
 				<ResourceDictionary.MergedDictionaries>
+					<ResourceDictionary Source="Customize/ExcelLibraryEntryMenu.xaml" />
 					<ResourceDictionary Source="Customize/ColorMenu.xaml" />
 					<ResourceDictionary Source="Customize/SelectorMenu.xaml" />
-					<ResourceDictionary Source="Customize/LibraryEntryMenu.xaml" />
 					<ResourceDictionary Source="Customize/IconMenu.xaml" />
 					<ResourceDictionary Source="Customize/DoubleColorMenu.xaml" />
 					<ResourceDictionary Source="Customize/MultiColorMenu.xaml" />
 					<ResourceDictionary Source="Customize/PercentageMenu.xaml" />
 					<ResourceDictionary Source="Customize/ListMenu.xaml" />
+					<ResourceDictionary Source="Customize/CustomizeLibraryEntryMenu.xaml" />
 				</ResourceDictionary.MergedDictionaries>
 			</ResourceDictionary>
 		</Grid.Resources>

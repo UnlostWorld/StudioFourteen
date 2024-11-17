@@ -121,6 +121,9 @@ public class GroupResult : Result
 					if (a.Entry is ExcelLibraryEntry rowA && b.Entry is ExcelLibraryEntry rowB)
 						return rowA.RowId.CompareTo(rowB.RowId);
 
+					if (a.Entry is CharaMakeCustomizeLibraryEntry cA && b.Entry is CharaMakeCustomizeLibraryEntry cB)
+						return cA.MakeCustomize.Value.FeatureID.CompareTo(cB.MakeCustomize.Value.FeatureID);
+
 					return 0;
 				});
 

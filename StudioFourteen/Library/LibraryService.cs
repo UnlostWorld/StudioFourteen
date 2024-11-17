@@ -133,6 +133,22 @@ public class LibraryService : ServiceBase
 		this.ScanComplete?.Invoke();
 	}
 
+	public List<T> GetSources<T>()
+		where T : SourceBase
+	{
+		List<T> results = new();
+
+		foreach (SourceBase source in this.sources)
+		{
+			if (source is T tSource)
+			{
+				results.Add(tSource);
+			}
+		}
+
+		return results;
+	}
+
 	private void OnConfigurationChanged()
 	{
 		if (this.IsLoadingSources || this.IsScanning)

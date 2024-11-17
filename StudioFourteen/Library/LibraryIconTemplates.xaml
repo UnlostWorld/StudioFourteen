@@ -347,7 +347,7 @@
 			Template="{StaticResource SimpleIconTemplate}" />
 
 		<markup:TemplateSelectorEntry
-			TargetType="{x:Type gameData:HairLibraryEntry}"
+			TargetType="{x:Type gameData:CharaMakeCustomizeLibraryEntry}"
 			Template="{StaticResource SimpleIconTemplate}" />
 
 		<markup:TemplateSelectorEntry

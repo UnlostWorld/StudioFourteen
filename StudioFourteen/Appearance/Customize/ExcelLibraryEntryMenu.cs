@@ -5,12 +5,12 @@ using StudioFourteen.GameData;
 using StudioFourteen.GameData.Library;
 using System;
 
-public abstract class LibraryEntryMenu(CustomizeIndex index)
+public abstract class ExcelLibraryEntryMenu(CustomizeIndex index)
 	: MenuViewModel(index, ToggleModes.None)
 {
 }
 
-public class LibraryEntryMenu<T>(CustomizeIndex index, string name) : LibraryEntryMenu(index)
+public class ExcelLibraryEntryMenu<T>(CustomizeIndex index, string name) : ExcelLibraryEntryMenu(index)
 	where T : ExcelLibraryEntry
 {
 	private T? entry;
