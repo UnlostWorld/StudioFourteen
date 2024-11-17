@@ -5,13 +5,9 @@ using Lumina.Excel.Sheets;
 
 public class GenderMenu : MenuViewModel
 {
-	private readonly string name;
-
 	public GenderMenu(string name)
 		: base(CustomizeIndex.Gender, ToggleModes.None)
 	{
-		this.name = name;
+		this.Name = name;
 	}
-
-	public override string? Name => this.name;
 }

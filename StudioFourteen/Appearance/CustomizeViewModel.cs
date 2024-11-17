@@ -118,19 +118,17 @@ public partial class CustomizeViewModel : ViewModel
 
 		if (race != RaceRows.Hrothgar)
 		{
-			makeupMenus.Add(this.GetMenu(makeType, CustomizeIndex.LipColor));
-			makeupMenus.Add(new ToggleMenu(CustomizeIndex.LipStyle, Resources.Find("LOC_Character_LipToggle", "Enable lip color")));
+			makeupMenus.Add(new ToggleMenu(CustomizeIndex.LipStyle, this.GetMenu(makeType, CustomizeIndex.LipColor)));
 		}
 
 		makeupMenus.Add(this.GetMenu(makeType, CustomizeIndex.Facepaint));
-		makeupMenus.Add(new ToggleMenu(CustomizeIndex.Facepaint, Resources.Find("LOC_Character_FacePaintToggle", "Flip face paint")));
+		////makeupMenus.Add(new ToggleMenu(CustomizeIndex.Facepaint, Resources.Find("LOC_Character_FacePaintToggle", "Flip face paint")));
 		makeupMenus.Add(this.GetMenu(makeType, CustomizeIndex.FacepaintColor));
 		makeupMenus.Add(this.GetMenu(makeType, CustomizeIndex.FaceFeatures));
 		makeupMenus.Add(this.GetMenu(makeType, CustomizeIndex.FaceFeaturesColor));
 		makeupMenus.Add(this.GetMenu(makeType, CustomizeIndex.HairStyle));
 		makeupMenus.Add(this.GetMenu(makeType, CustomizeIndex.HairColor));
-		makeupMenus.Add(this.GetMenu(makeType, CustomizeIndex.HairColor2));
-		makeupMenus.Add(this.GetMenu(makeType, CustomizeIndex.HasHighlights));
+		makeupMenus.Add(new ToggleMenu(CustomizeIndex.HasHighlights, this.GetMenu(makeType, CustomizeIndex.HairColor2)));
 
 		await this.dispatcher.MainThread();
 
@@ -188,20 +186,15 @@ public partial class CustomizeViewModel : ViewModel
 			return new ColorMenu(makeType, hairMakeMenu.Value, index, MenuViewModel.ToggleModes.None, true);
 		}
 
-		if (index == CustomizeIndex.HasHighlights)
-		{
-			return new ToggleMenu(index, Resources.Find("LOC_Character_HairToggle", "Hair highlights"));
-		}
-
 		CharaMakeType.CharaMakeMenu? makeMenu = makeType.GetMenu(index);
 		if (makeMenu == null)
 			return null;
 
 		if (index == CustomizeIndex.Facepaint)
-			return new CustomizeLibraryEntryMenu(makeType, makeMenu.Value, index, MenuViewModel.ToggleModes.IsValue);
+			return new CustomizeLibraryEntryMenu(makeType, makeMenu.Value, index, true);
 
 		if (index == CustomizeIndex.HairStyle)
-			return new CustomizeLibraryEntryMenu(makeType, makeMenu.Value, index, MenuViewModel.ToggleModes.None);
+			return new CustomizeLibraryEntryMenu(makeType, makeMenu.Value, index, false);
 
 		// Weird usage by SQEX to pack iris size into eye shape, but list it under eye color 2, which
 		// is actually controlled by EyeColor's 'double color picker'.

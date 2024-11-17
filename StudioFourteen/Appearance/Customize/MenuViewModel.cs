@@ -27,7 +27,7 @@ public abstract class MenuViewModel
 		IsToggle,
 	}
 
-	public abstract string? Name { get; }
+	public string? Name { get; set; }
 
 	public byte RealValue
 	{

@@ -6,12 +6,10 @@ using StudioFourteen.GameData;
 
 public class ModelTypeMenu : SelectorMenu
 {
-	private readonly string name;
-
 	public ModelTypeMenu(Tribe tribe, string name)
 		: base(CustomizeIndex.ModelType, ToggleModes.None)
 	{
-		this.name = name;
+		this.Name = name;
 
 		ModelTypes[] modelTypes = tribe.GetModelTypes();
 		foreach (ModelTypes modelType in modelTypes)
@@ -19,6 +17,4 @@ public class ModelTypeMenu : SelectorMenu
 			this.Options.Add(new Option(modelType.ToString(), (byte)modelType));
 		}
 	}
-
-	public override string? Name => this.name;
 }

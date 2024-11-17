@@ -10,12 +10,16 @@ public abstract class ExcelLibraryEntryMenu(CustomizeIndex index)
 {
 }
 
-public class ExcelLibraryEntryMenu<T>(CustomizeIndex index, string name) : ExcelLibraryEntryMenu(index)
+public class ExcelLibraryEntryMenu<T> : ExcelLibraryEntryMenu
 	where T : ExcelLibraryEntry
 {
 	private T? entry;
 
-	public override string? Name => name;
+	public ExcelLibraryEntryMenu(CustomizeIndex index, string name)
+		: base(index)
+	{
+		this.Name = name;
+	}
 
 	public Type EntryType => typeof(T);
 

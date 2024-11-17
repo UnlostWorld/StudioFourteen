@@ -1,6 +1,7 @@
 ﻿namespace StudioFourteen.Appearance.Customize;
 
 using Dalamud.Game.ClientState.Objects.Enums;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Lumina.Excel;
 using Lumina.Excel.Sheets;
 using Lumina.Text.ReadOnly;
@@ -19,19 +20,24 @@ public class CustomizeLibraryEntryMenu : MenuViewModel
 
 	private CharaMakeCustomizeLibraryEntry? entry;
 
-	public CustomizeLibraryEntryMenu(CharaMakeType makeType, CharaMakeType.CharaMakeMenu makeMenu, CustomizeIndex index, ToggleModes toggleMode)
-		: base(index, toggleMode)
+	public CustomizeLibraryEntryMenu(CharaMakeType makeType, CharaMakeType.CharaMakeMenu makeMenu, CustomizeIndex index, bool canToggle)
+		: base(index, canToggle ? ToggleModes.IsValue : ToggleModes.None)
 	{
 		this.MakeType = makeType;
 		this.MakeMenu = makeMenu;
+
+		this.Name = this.MakeMenu.Menu.Value.Text.GetString();
 
 		this.SearchTags.Add(makeType.Race.Value.ToTags());
 		this.SearchTags.Add(makeType.Tribe.Value.ToTags());
 		this.SearchTags.Add(((Genders)makeType.Gender).ToTags());
 		this.SearchTags.Add(index.ToTag());
-	}
 
-	public override string? Name => this.MakeMenu.Menu.Value.Text.GetString();
+		if (canToggle)
+		{
+			this.ToggleMenu = new ToggleMenu(index, null);
+		}
+	}
 
 	public TagCollection SearchTags { get; init; } = new();
 
@@ -52,6 +58,14 @@ public class CustomizeLibraryEntryMenu : MenuViewModel
 				this.RaisePropertyChanged(nameof(this.Entry));
 			}
 		}
+	}
+
+	public ToggleMenu? ToggleMenu { get; init; }
+
+	public override unsafe void OnFrameworkUpdate(Character* pCharacter)
+	{
+		base.OnFrameworkUpdate(pCharacter);
+		this.ToggleMenu?.OnFrameworkUpdate(pCharacter);
 	}
 
 	protected override void OnValueChanged(byte oldValue, byte newValue)

@@ -9,10 +9,34 @@
 	</ResourceDictionary.MergedDictionaries>
 
 	<DataTemplate DataType="{x:Type local:ToggleMenu}">
-		<StackPanel>
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition />
+			</Grid.RowDefinitions>
+
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition />
+			</Grid.ColumnDefinitions>
+
+			<TextBlock
+				Grid.Row="0"
+				Grid.ColumnSpan="2"
+				Style="{DynamicResource LeftLabel}"
+				Text="{Binding Name}"
+				Visibility="{Binding Name, Converter={StaticResource NotNullToVisibilityConverter}}" />
+
 			<ToggleButton
-				Content="{Binding Name}"
+				Grid.Row="1"
+				Grid.Column="0"
 				IsChecked="{Binding IsChecked}" />
-		</StackPanel>
+
+			<ContentPresenter
+				Grid.Row="1"
+				Grid.Column="1"
+				Content="{Binding InnerMenu}" />
+
+		</Grid>
 	</DataTemplate>
 </ResourceDictionary>

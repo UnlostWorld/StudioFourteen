@@ -2,6 +2,7 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=WpfUtils"
 	xmlns:gameData="clr-namespace:StudioFourteen.GameData.Library"
 	xmlns:library="clr-namespace:StudioFourteen.Library"
 	xmlns:local="clr-namespace:StudioFourteen.Appearance.Customize">
@@ -10,21 +11,54 @@
 		<ResourceDictionary Source="pack://application:,,,/WpfUtils;component/Styles.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 
+	<converters:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter" />
+
 	<DataTemplate DataType="{x:Type local:CustomizeLibraryEntryMenu}">
-		<StackPanel>
+		<Grid>
+
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition />
+			</Grid.ColumnDefinitions>
+
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+			</Grid.RowDefinitions>
+
+
 			<TextBlock
+				Grid.Row="0"
+				Grid.ColumnSpan="2"
 				Style="{DynamicResource LeftLabel}"
 				Text="{Binding Name}" />
+
 			<library:LibrarySelectorButton
 				Title="{Binding Name}"
+				Grid.Row="1"
+				Grid.ColumnSpan="2"
 				SearchTags="{Binding SearchTags}"
 				Type="{x:Type gameData:CharaMakeCustomizeLibraryEntry}"
 				Value="{Binding Entry}" />
+
+			<ToggleButton
+				Grid.Row="2"
+				Grid.Column="0"
+				Width="42"
+				IsChecked="{Binding ToggleMenu.IsChecked}"
+				Style="{DynamicResource WpfUtilsIconToggleButton}"
+				Visibility="{Binding ToggleMenu, Converter={StaticResource NotNullToVisibilityConverter}}">
+				<controls:IconBlock Icon="ArrowsLeftRight" />
+			</ToggleButton>
+
 			<controls:NumberBox
+				Grid.Row="2"
+				Grid.Column="1"
 				Buttons="True"
 				Maximum="255"
 				Minimum="0"
 				Value="{Binding Value}" />
-		</StackPanel>
+		</Grid>
 	</DataTemplate>
 </ResourceDictionary>
