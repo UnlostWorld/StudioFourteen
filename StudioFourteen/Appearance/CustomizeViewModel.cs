@@ -196,6 +196,9 @@ public partial class CustomizeViewModel : ViewModel
 		if (index == CustomizeIndex.HairStyle)
 			return new CustomizeLibraryEntryMenu(makeType, makeMenu.Value, index, false);
 
+		if (index == CustomizeIndex.FaceFeatures)
+			return new MultiIconMenu(makeType, makeMenu.Value, index);
+
 		// Weird usage by SQEX to pack iris size into eye shape, but list it under eye color 2, which
 		// is actually controlled by EyeColor's 'double color picker'.
 		// thanks guys.
@@ -216,7 +219,6 @@ public partial class CustomizeViewModel : ViewModel
 			MenuTypes.IconSelector => new IconMenu(makeMenu.Value, index, toggleMode),
 			MenuTypes.ColorPicker => new ColorMenu(makeType, makeMenu.Value, index, toggleMode),
 			MenuTypes.DoubleColorPicker => new DoubleColorMenu(makeType, makeMenu.Value, index, toggleMode),
-			MenuTypes.MultiIconSelector => new MultiColorMenu(makeMenu.Value, index, toggleMode),
 			MenuTypes.Percentage => new PercentageMenu(makeMenu.Value, index, toggleMode),
 			_ => throw new NotSupportedException(),
 		};
@@ -232,6 +234,6 @@ public enum MenuTypes
 	IconSelector = 1,
 	ColorPicker = 2,
 	DoubleColorPicker = 3,
-	MultiIconSelector = 4,
+	MultiIconSelector = 4, // Just face features
 	Percentage = 5,
 }

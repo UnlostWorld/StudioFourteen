@@ -12,7 +12,7 @@ public readonly unsafe struct CharaMakeType(ExcelPage page, uint offset, uint ro
 
 	public readonly Collection<CharaMakeMenu> CharaMakeStruct => new(page, offset, offset, &CharaMakeStructCtor, 28);
 	public readonly Collection<byte> VoiceStruct => new(page, offset, offset, &VoiceStructCtor, 12);
-	public readonly Collection<FacialFeatureOptionStruct> FacialFeatureOption => new(page, offset, offset, &FacialFeatureOptionCtor, 8);
+	public readonly Collection<FaceTypeOptions> FacialFeatureOption => new(page, offset, offset, &FacialFeatureOptionCtor, 8);
 	public readonly Collection<EquipmentStruct> Equipment => new(page, offset, offset, &EquipmentCtor, 3);
 	public readonly RowRef<Race> Race => new(page.Module, (uint)page.ReadInt32(offset + 12392), page.Language);
 	public readonly RowRef<Tribe> Tribe => new(page.Module, (uint)page.ReadInt32(offset + 12396), page.Language);
@@ -21,8 +21,8 @@ public readonly unsafe struct CharaMakeType(ExcelPage page, uint offset, uint ro
 	static CharaMakeType IExcelRow<CharaMakeType>.Create(ExcelPage page, uint offset, uint row) => new(page, offset, row);
 
 	private static CharaMakeMenu CharaMakeStructCtor(ExcelPage page, uint parentOffset, uint offset, uint i) => new(page, parentOffset, offset + (i * 428));
-	private static byte VoiceStructCtor(ExcelPage page, uint parentOffset, uint offset, uint i) => page.ReadUInt8(offset + 11988 + i);
-	private static FacialFeatureOptionStruct FacialFeatureOptionCtor(ExcelPage page, uint parentOffset, uint offset, uint i) => new(page, offset + 12000 + (i * 28));
+	private static byte VoiceStructCtor(ExcelPage page, uint parentOffset, uint offset, uint i) => page.ReadUInt8(offset + 11956 + i);
+	private static FaceTypeOptions FacialFeatureOptionCtor(ExcelPage page, uint parentOffset, uint offset, uint i) => new(page, offset + 11968 + (i * 28));
 	private static EquipmentStruct EquipmentCtor(ExcelPage page, uint parentOffset, uint offset, uint i) => new(page, offset + 12224 + (i * 56));
 
 	public readonly struct CharaMakeMenu(ExcelPage page, uint parentOffset, uint offset)
@@ -41,7 +41,7 @@ public readonly unsafe struct CharaMakeType(ExcelPage page, uint offset, uint ro
 		private static byte SubMenuGraphicCtor(ExcelPage page, uint parentOffset, uint offset, uint i) => page.ReadUInt8(offset + 416 + i);
 	}
 
-	public readonly struct FacialFeatureOptionStruct(ExcelPage page, uint offset)
+	public readonly struct FaceTypeOptions(ExcelPage page, uint offset)
 	{
 		public readonly int Option1 => page.ReadInt32(offset);
 		public readonly int Option2 => page.ReadInt32(offset + 4);
@@ -50,6 +50,10 @@ public readonly unsafe struct CharaMakeType(ExcelPage page, uint offset, uint ro
 		public readonly int Option5 => page.ReadInt32(offset + 16);
 		public readonly int Option6 => page.ReadInt32(offset + 20);
 		public readonly int Option7 => page.ReadInt32(offset + 24);
+
+		public readonly Collection<int> Options => new(page, offset, offset, &FacialFeatureOptionCtor, 7);
+
+		private static int FacialFeatureOptionCtor(ExcelPage page, uint parentOffset, uint offset, uint i) => page.ReadInt32(offset + (i * 4));
 	}
 
 	public readonly struct EquipmentStruct(ExcelPage page, uint offset)

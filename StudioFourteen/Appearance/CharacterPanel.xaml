@@ -32,7 +32,7 @@
 					<ResourceDictionary Source="Customize/SelectorMenu.xaml" />
 					<ResourceDictionary Source="Customize/IconMenu.xaml" />
 					<ResourceDictionary Source="Customize/DoubleColorMenu.xaml" />
-					<ResourceDictionary Source="Customize/MultiColorMenu.xaml" />
+					<ResourceDictionary Source="Customize/MultiIconMenu.xaml" />
 					<ResourceDictionary Source="Customize/PercentageMenu.xaml" />
 					<ResourceDictionary Source="Customize/ListMenu.xaml" />
 					<ResourceDictionary Source="Customize/CustomizeLibraryEntryMenu.xaml" />
