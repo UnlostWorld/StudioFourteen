@@ -36,6 +36,8 @@
 					<ResourceDictionary Source="Customize/PercentageMenu.xaml" />
 					<ResourceDictionary Source="Customize/ListMenu.xaml" />
 					<ResourceDictionary Source="Customize/CustomizeLibraryEntryMenu.xaml" />
+					<ResourceDictionary Source="Customize/ToggleMenu.xaml" />
+					<ResourceDictionary Source="Customize/GenderMenu.xaml" />
 				</ResourceDictionary.MergedDictionaries>
 			</ResourceDictionary>
 		</Grid.Resources>

@@ -26,6 +26,14 @@
 	<sys:String x:Key="LOC_Environment">Environment</sys:String>
 	<sys:String x:Key="LOC_Camera">Camera</sys:String>
 
+	<sys:String x:Key="LOC_Character_Race">Race</sys:String>
+	<sys:String x:Key="LOC_Character_Tribe">Tribe</sys:String>
+	<sys:String x:Key="LOC_Character_ModelType">Model Type</sys:String>
+	<sys:String x:Key="LOC_Character_BodyShape">Body Shape</sys:String>
+	<sys:String x:Key="LOC_Character_LipToggle">Enable lip color</sys:String>
+	<sys:String x:Key="LOC_Character_FacePaintToggle">Flip face paint</sys:String>
+	<sys:String x:Key="LOC_Character_HairToggle">Hair highlights</sys:String>
+
 	<sys:String x:Key="LOC_EquipmentSlot_Head">Head</sys:String>
 	<sys:String x:Key="LOC_EquipmentSlot_Body">Body</sys:String>
 	<sys:String x:Key="LOC_EquipmentSlot_Hands">Hands</sys:String>

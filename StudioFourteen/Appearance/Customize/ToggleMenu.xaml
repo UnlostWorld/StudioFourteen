@@ -4,16 +4,15 @@
 	xmlns:controls="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	xmlns:local="clr-namespace:StudioFourteen.Appearance.Customize">
 
-	<DataTemplate DataType="{x:Type local:DoubleColorMenu}">
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="pack://application:,,,/WpfUtils;component/Styles.xaml" />
+	</ResourceDictionary.MergedDictionaries>
+
+	<DataTemplate DataType="{x:Type local:ToggleMenu}">
 		<StackPanel>
-			<TextBlock
-				Style="{DynamicResource LeftLabel}"
-				Text="{Binding Name}" />
-
-			<ContentPresenter Content="{Binding Left}" />
-
-			<ContentPresenter Content="{Binding Right}" />
-
+			<ToggleButton
+				Content="{Binding Name}"
+				IsChecked="{Binding IsChecked}" />
 		</StackPanel>
 	</DataTemplate>
 </ResourceDictionary>

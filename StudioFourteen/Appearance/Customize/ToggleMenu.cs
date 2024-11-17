@@ -10,9 +10,12 @@ public class ToggleMenu : SelectorMenu
 		: base(index, ToggleModes.IsToggle)
 	{
 		this.name = name;
+	}
 
-		this.Options.Add(new("Disabled", 0));
-		this.Options.Add(new("Enabled", 1));
+	public bool IsChecked
+	{
+		get => this.Value == 1;
+		set => this.Value = (byte)(value ? 1 : 0);
 	}
 
 	public override string? Name => this.name;

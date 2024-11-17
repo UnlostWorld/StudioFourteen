@@ -38,8 +38,9 @@ public abstract class MenuViewModel
 				return;
 
 			this.nextWriteValue = value;
+			this.RaisePropertyChanged(nameof(this.RealValue));
 			this.RaisePropertyChanged(nameof(this.Value));
-			this.OnValueChanged(this.lastReadValue, value);
+			this.OnValueChanged(this.lastReadValue, this.Value);
 		}
 	}
 

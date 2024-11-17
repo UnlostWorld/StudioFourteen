@@ -4,16 +4,19 @@
 	xmlns:controls="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	xmlns:local="clr-namespace:StudioFourteen.Appearance.Customize">
 
-	<DataTemplate DataType="{x:Type local:DoubleColorMenu}">
+	<DataTemplate DataType="{x:Type local:GenderMenu}">
+
 		<StackPanel>
 			<TextBlock
 				Style="{DynamicResource LeftLabel}"
 				Text="{Binding Name}" />
 
-			<ContentPresenter Content="{Binding Left}" />
-
-			<ContentPresenter Content="{Binding Right}" />
-
+			<ListBox
+				SelectedIndex="{Binding Value}"
+				Style="{DynamicResource WpfUtilsSwitchSelector}">
+				<ListBoxItem>Masculine</ListBoxItem>
+				<ListBoxItem>Feminine</ListBoxItem>
+			</ListBox>
 		</StackPanel>
 	</DataTemplate>
 </ResourceDictionary>

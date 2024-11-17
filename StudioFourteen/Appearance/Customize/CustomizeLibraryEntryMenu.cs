@@ -19,8 +19,8 @@ public class CustomizeLibraryEntryMenu : MenuViewModel
 
 	private CharaMakeCustomizeLibraryEntry? entry;
 
-	public CustomizeLibraryEntryMenu(CharaMakeType makeType, CharaMakeType.CharaMakeMenu makeMenu, CustomizeIndex index)
-		: base(index, ToggleModes.None)
+	public CustomizeLibraryEntryMenu(CharaMakeType makeType, CharaMakeType.CharaMakeMenu makeMenu, CustomizeIndex index, ToggleModes toggleMode)
+		: base(index, toggleMode)
 	{
 		this.MakeType = makeType;
 		this.MakeMenu = makeMenu;

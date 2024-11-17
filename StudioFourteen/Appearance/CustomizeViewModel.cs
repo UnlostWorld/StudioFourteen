@@ -96,6 +96,13 @@ public partial class CustomizeViewModel : ViewModel
 		if (race == RaceRows.Hrothgar)
 			bodyMenus.Add(this.GetMenu(makeType, CustomizeIndex.LipColor));
 
+		// Viera & Lalafell & Elezen - Ear shape & length
+		if (race == RaceRows.Viera || race == RaceRows.Lalafell || race == RaceRows.Elezen)
+		{
+			bodyMenus.Add(this.GetMenu(makeType, CustomizeIndex.RaceFeatureType));
+			bodyMenus.Add(this.GetMenu(makeType, CustomizeIndex.RaceFeatureSize));
+		}
+
 		headMenus.Add(this.GetMenu(makeType, CustomizeIndex.FaceType));
 		headMenus.Add(this.GetMenu(makeType, CustomizeIndex.JawShape));
 		headMenus.Add(this.GetMenu(makeType, CustomizeIndex.EyeShape));
@@ -109,25 +116,21 @@ public partial class CustomizeViewModel : ViewModel
 		headMenus.Add(this.GetMenu(makeType, CustomizeIndex.NoseShape));
 		headMenus.Add(this.GetMenu(makeType, CustomizeIndex.LipStyle)); // lips or fang length
 
-		if (race == RaceRows.Viera || race == RaceRows.Lalafell || race == RaceRows.Elezen)
-		{
-			headMenus.Add(this.GetMenu(makeType, CustomizeIndex.RaceFeatureType));
-			headMenus.Add(this.GetMenu(makeType, CustomizeIndex.RaceFeatureSize));
-		}
-
 		if (race != RaceRows.Hrothgar)
 		{
 			makeupMenus.Add(this.GetMenu(makeType, CustomizeIndex.LipColor));
-			makeupMenus.Add(new ToggleMenu(CustomizeIndex.LipStyle));
+			makeupMenus.Add(new ToggleMenu(CustomizeIndex.LipStyle, Resources.Find("LOC_Character_LipToggle", "Enable lip color")));
 		}
 
 		makeupMenus.Add(this.GetMenu(makeType, CustomizeIndex.Facepaint));
+		makeupMenus.Add(new ToggleMenu(CustomizeIndex.Facepaint, Resources.Find("LOC_Character_FacePaintToggle", "Flip face paint")));
 		makeupMenus.Add(this.GetMenu(makeType, CustomizeIndex.FacepaintColor));
 		makeupMenus.Add(this.GetMenu(makeType, CustomizeIndex.FaceFeatures));
 		makeupMenus.Add(this.GetMenu(makeType, CustomizeIndex.FaceFeaturesColor));
 		makeupMenus.Add(this.GetMenu(makeType, CustomizeIndex.HairStyle));
 		makeupMenus.Add(this.GetMenu(makeType, CustomizeIndex.HairColor));
 		makeupMenus.Add(this.GetMenu(makeType, CustomizeIndex.HairColor2));
+		makeupMenus.Add(this.GetMenu(makeType, CustomizeIndex.HasHighlights));
 
 		await this.dispatcher.MainThread();
 
@@ -138,6 +141,9 @@ public partial class CustomizeViewModel : ViewModel
 
 	private unsafe void OnFrameworkUpdate(IFramework framework)
 	{
+		if (!this.Services.Studio.IsOpen)
+			return;
+
 		// TODO: Ensure race, tribe, and gender have not changed.
 		Character* pTarget = this.Services.Target.GetTarget();
 		if (pTarget == null)
@@ -145,46 +151,57 @@ public partial class CustomizeViewModel : ViewModel
 
 		foreach(MenuViewModel? menu in this.BodyMenus)
 		{
-			if (menu == null)
-				continue;
-
-			menu.OnFrameworkUpdate(pTarget);
+			menu?.OnFrameworkUpdate(pTarget);
 		}
 
 		foreach (MenuViewModel? menu in this.HeadMenus)
 		{
-			if (menu == null)
-				continue;
-
-			menu.OnFrameworkUpdate(pTarget);
+			menu?.OnFrameworkUpdate(pTarget);
 		}
 
 		foreach (MenuViewModel? menu in this.MakeupMenus)
 		{
-			if (menu == null)
-				continue;
-
-			menu.OnFrameworkUpdate(pTarget);
+			menu?.OnFrameworkUpdate(pTarget);
 		}
 	}
 
 	private MenuViewModel? GetMenu(CharaMakeType makeType, CustomizeIndex index)
 	{
 		if (index == CustomizeIndex.Race)
-			return new ExcelLibraryEntryMenu<RaceLibraryEntry>(index, "Race");
+			return new ExcelLibraryEntryMenu<RaceLibraryEntry>(index, Resources.Find("LOC_Character_Race", "Race"));
 
 		if (index == CustomizeIndex.Tribe)
-			return new TribeMenu(makeType.Race.Value);
+			return new TribeMenu(makeType.Race.Value, Resources.Find("LOC_Character_Tribe", "Tribe"));
 
 		if (index == CustomizeIndex.ModelType)
-			return new ModelTypeMenu(makeType.Tribe.Value);
+			return new ModelTypeMenu(makeType.Tribe.Value, Resources.Find("LOC_Character_ModelType", "Model Type"));
+
+		if (index == CustomizeIndex.Gender)
+			return new GenderMenu(Resources.Find("LOC_Character_BodyShape", "Body Shape"));
+
+		if (index == CustomizeIndex.HairColor2)
+		{
+			CharaMakeType.CharaMakeMenu? hairMakeMenu = makeType.GetMenu(CustomizeIndex.HairColor);
+			if (hairMakeMenu == null)
+				throw new Exception("No hair make menu");
+
+			return new ColorMenu(makeType, hairMakeMenu.Value, index, MenuViewModel.ToggleModes.None, true);
+		}
+
+		if (index == CustomizeIndex.HasHighlights)
+		{
+			return new ToggleMenu(index, Resources.Find("LOC_Character_HairToggle", "Hair highlights"));
+		}
 
 		CharaMakeType.CharaMakeMenu? makeMenu = makeType.GetMenu(index);
 		if (makeMenu == null)
 			return null;
 
-		if (index == CustomizeIndex.Facepaint || index == CustomizeIndex.HairStyle)
-			return new CustomizeLibraryEntryMenu(makeType, makeMenu.Value, index);
+		if (index == CustomizeIndex.Facepaint)
+			return new CustomizeLibraryEntryMenu(makeType, makeMenu.Value, index, MenuViewModel.ToggleModes.IsValue);
+
+		if (index == CustomizeIndex.HairStyle)
+			return new CustomizeLibraryEntryMenu(makeType, makeMenu.Value, index, MenuViewModel.ToggleModes.None);
 
 		// Weird usage by SQEX to pack iris size into eye shape, but list it under eye color 2, which
 		// is actually controlled by EyeColor's 'double color picker'.
