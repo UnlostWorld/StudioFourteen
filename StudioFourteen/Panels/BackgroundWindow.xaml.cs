@@ -1,14 +1,18 @@
 ﻿namespace StudioFourteen.Studio;
 
+using StudioFourteen.Context;
 using StudioFourteen.Panels;
 using StudioFourteen.Plugin;
 using StudioFourteen.Settings;
 using StudioFourteen.Utilities;
 using System;
+using System.Collections.Generic;
+using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using WpfUtils.Extensions;
 
 public partial class BackgroundWindow : PanelWindow
 {
@@ -20,7 +24,11 @@ public partial class BackgroundWindow : PanelWindow
 	{
 		Instance = this;
 		this.ContentArea.DataContext = this;
+
+		this.Services.Context.ShowMenu += this.OnShowContextMenu;
 	}
+
+	public FastObservableCollection<MenuEntry> Menus { get; init; } = new();
 
 	public Point StudioButtonPosition
 	{
@@ -140,5 +148,15 @@ public partial class BackgroundWindow : PanelWindow
 
 		this.Services.Input.HandleKey(e.Key, false);
 		e.Handled = true;
+	}
+
+	private void OnShowContextMenu(Vector2 position, List<MenuEntry> entries)
+	{
+		this.Dispatcher.Invoke(() =>
+		{
+			this.StudioContextMenu.PlacementRectangle = new Rect(position.X, position.Y, 1, 1);
+			this.Menus.Replace(entries);
+			this.StudioContextMenu.IsOpen = true;
+		});
 	}
 }

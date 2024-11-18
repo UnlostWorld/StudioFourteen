@@ -22,10 +22,12 @@ public class InputService : ServiceBase
 	private readonly KeyState xivKeyState = new();
 
 	public delegate void MouseDragDelegate(Vector2 delta, MouseButton button);
+	public delegate void MouseButtonDelegate(MouseButton button, States state, Vector2 position);
 	public delegate void MouseWheelDelegate(float delta);
 
 	public event MouseDragDelegate? MouseDrag;
 	public event MouseWheelDelegate? MouseWheel;
+	public event MouseButtonDelegate? MouseButton;
 
 	public enum States
 	{
@@ -147,6 +149,8 @@ public class InputService : ServiceBase
 	public void HandleMouse(MouseButtonEventArgs e, bool down)
 	{
 		this.mouseButtons[e.ChangedButton] = down ? States.Pressed : States.Released;
+
+		this.MouseButton?.Invoke(e.ChangedButton, this.mouseButtons[e.ChangedButton], this.MousePosition);
 
 		if (!down)
 		{

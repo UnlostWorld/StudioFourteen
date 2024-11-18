@@ -2,6 +2,7 @@
 
 using StudioFourteen.Appearance;
 using StudioFourteen.Cameras;
+using StudioFourteen.Context;
 using StudioFourteen.Data;
 using StudioFourteen.Files;
 using StudioFourteen.GameData;
@@ -49,4 +50,5 @@ public class ServiceManager : ServiceManagerBase
 	public EnvironmentService Environment { get; init; } = new();
 	public GameConfigService GameConfiguration { get; init; } = new();
 	public IPCService IPC { get; init; } = new();
+	public ContextService Context { get; init; } = new();
 }

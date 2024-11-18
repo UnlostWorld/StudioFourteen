@@ -7,6 +7,7 @@ using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FontAwesome.Sharp;
 using StudioFourteen;
+using StudioFourteen.Context;
 using StudioFourteen.GameData;
 using StudioFourteen.Library;
 using StudioFourteen.Library.LibraryMenu;
@@ -15,10 +16,11 @@ using StudioFourteen.Plugin;
 using StudioFourteen.Services;
 using StudioFourteen.Utilities;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
-using System.Windows.Input;
 
-public class CharacterAppearanceService : ServiceBase
+public class CharacterAppearanceService : ServiceBase, IContextProvider
 {
 	private readonly GroupPoseCharactersLibrarySource provider = new();
 	private readonly ConcurrentDictionary<int, CharacterBackupAppearance> backup = new();
@@ -37,11 +39,14 @@ public class CharacterAppearanceService : ServiceBase
 			this.provider.OnEnterGroupPose();
 		}
 
+		this.Services.Context.AddProvider(this);
+
 		return base.Start();
 	}
 
 	public override Task Stop()
 	{
+		this.Services.Context.RemoveProvider(this);
 		this.Services.GroupPose.StateChanged -= this.OnGroupPoseStateChange;
 		return base.Stop();
 	}
@@ -108,6 +113,17 @@ public class CharacterAppearanceService : ServiceBase
 
 		await this.backup[objectTableIndex].Apply(objectTableIndex, CharacterExtensions.UpdateSource.Restore);
 		this.backup.TryRemove(objectTableIndex, out var _);
+	}
+
+	Task IContextProvider.GetMenu(ref List<Context.MenuEntry> menus, int objectTableIndex)
+	{
+		if (objectTableIndex != -1)
+		{
+			bool hasBackup = this.backup.ContainsKey(objectTableIndex);
+			menus.Add(new(IconChar.RotateLeft, "Restore Appearance", hasBackup, (h) => this.Restore(h.ObjectTableIndex)));
+		}
+
+		return Task.CompletedTask;
 	}
 
 	private void OnGroupPoseStateChange(bool newState)
