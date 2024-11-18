@@ -52,6 +52,7 @@ public class InputService : ServiceBase
 	}
 
 	public Vector2 MousePosition { get; private set; }
+	public bool IsMouseDragging { get; private set; }
 
 	public Dictionary<KeyBindEvents, KeyBind> DefaultKeys { get; init; } = new()
 	{
@@ -150,7 +151,13 @@ public class InputService : ServiceBase
 	{
 		this.mouseButtons[e.ChangedButton] = down ? States.Pressed : States.Released;
 
-		this.MouseButton?.Invoke(e.ChangedButton, this.mouseButtons[e.ChangedButton], this.MousePosition);
+		if (down || !this.IsMouseDragging)
+			this.MouseButton?.Invoke(e.ChangedButton, this.mouseButtons[e.ChangedButton], this.MousePosition);
+
+		if (this.IsMouseDragging)
+		{
+			this.IsMouseDragging = false;
+		}
 
 		if (!down)
 		{
@@ -170,6 +177,7 @@ public class InputService : ServiceBase
 				holdPosition = true;
 				this.MouseDrag?.Invoke(delta, button);
 				this.Services.Windows.SetCursorPosition(new(this.MousePosition.X, this.MousePosition.Y));
+				this.IsMouseDragging = true;
 			}
 		}
 
