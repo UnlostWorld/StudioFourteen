@@ -24,8 +24,6 @@ public partial class BackgroundWindow : PanelWindow
 	{
 		Instance = this;
 		this.ContentArea.DataContext = this;
-
-		this.Services.Context.ShowMenu += this.OnShowContextMenu;
 	}
 
 	public FastObservableCollection<MenuEntry> Menus { get; init; } = new();
@@ -148,15 +146,5 @@ public partial class BackgroundWindow : PanelWindow
 
 		this.Services.Input.HandleKey(e.Key, false);
 		e.Handled = true;
-	}
-
-	private void OnShowContextMenu(Vector2 position, List<MenuEntry> entries)
-	{
-		this.Dispatcher.Invoke(() =>
-		{
-			this.StudioContextMenu.PlacementRectangle = new Rect(position.X, position.Y, 1, 1);
-			this.Menus.Replace(entries);
-			this.StudioContextMenu.IsOpen = true;
-		});
 	}
 }

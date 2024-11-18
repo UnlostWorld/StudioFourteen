@@ -1,0 +1,103 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:context="clr-namespace:StudioFourteen.Context"
+	xmlns:local="clr-namespace:StudioFourteen.Context"
+	xmlns:tags="clr-namespace:StudioFourteen.Tags"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
+
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="pack://application:,,,/WpfUtils;component/Controls/PopOutStyles.xaml" />
+		<ResourceDictionary Source="pack://application:,,,/WpfUtils;component/Styles/MenuStyles.xaml" />
+	</ResourceDictionary.MergedDictionaries>
+
+	<BooleanToVisibilityConverter x:Key="B2V" />
+
+	<ControlTemplate
+		x:Key="WorldContextMenuTemplate"
+		TargetType="{x:Type ContentControl}">
+
+		<Grid Margin="12">
+			<Grid>
+				<Grid.Effect>
+					<DropShadowEffect
+						Direction="270"
+						ShadowDepth="0" />
+				</Grid.Effect>
+
+				<Border
+					Background="{TemplateBinding Background}"
+					BorderBrush="{DynamicResource BackgroundBrush}"
+					BorderThickness="1"
+					CornerRadius="6" />
+
+				<Polygon
+					Margin="-11"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Top"
+					Fill="{DynamicResource BackgroundBrush}"
+					Points="0,12 16,0, 32,12" />
+			</Grid>
+
+			<Grid>
+				<StackPanel Margin="3">
+
+					<Grid
+						x:Name="ResultMenuHeader"
+						Grid.Row="0"
+						Margin="0,0,0,6">
+
+						<Grid
+							Grid.Column="1"
+							VerticalAlignment="Center">
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto" />
+								<RowDefinition Height="Auto" />
+							</Grid.RowDefinitions>
+
+							<TextBlock
+								Grid.Row="0"
+								Margin="3,0,0,0"
+								Foreground="{DynamicResource ForegroundBrush}"
+								Text="{Binding ObjectName, RelativeSource={RelativeSource AncestorType={x:Type local:WorldContextMenu}}}"
+								TextWrapping="Wrap" />
+						</Grid>
+
+					</Grid>
+
+					<Border Style="{DynamicResource WpfUtilsControlBorder}">
+						<Menu ItemsSource="{Binding Menus, RelativeSource={RelativeSource AncestorType={x:Type local:WorldContextMenu}}}">
+
+							<Menu.ItemTemplate>
+								<HierarchicalDataTemplate
+									DataType="{x:Type context:MenuEntry}"
+									ItemsSource="{Binding Path=Children}" />
+							</Menu.ItemTemplate>
+
+							<Menu.ItemContainerStyle>
+								<Style
+									BasedOn="{StaticResource WpfUtilsMenuItem}"
+									TargetType="{x:Type MenuItem}">
+									<Setter Property="MenuItem.Header" Value="{Binding Label}" />
+									<Setter Property="MenuItem.Icon" Value="{Binding Icon}" />
+									<Setter Property="MenuItem.ItemsSource" Value="{Binding Children}" />
+									<Setter Property="MenuItem.Command" Value="{Binding OnClicked}" />
+								</Style>
+							</Menu.ItemContainerStyle>
+						</Menu>
+					</Border>
+				</StackPanel>
+			</Grid>
+		</Grid>
+
+	</ControlTemplate>
+
+	<Style
+		BasedOn="{StaticResource WpfUtilsPopOut}"
+		TargetType="{x:Type local:WorldContextMenu}">
+		<Setter Property="Template" Value="{StaticResource WorldContextMenuTemplate}" />
+		<Setter Property="Width" Value="250" />
+		<Setter Property="StaysOpen" Value="False" />
+	</Style>
+
+</ResourceDictionary>

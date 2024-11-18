@@ -147,40 +147,7 @@
 			VerticalAlignment="Top"
 			DragDelta="OnDragDelta" />
 
-		<wpfUtils:PopOut
-			x:Name="StudioContextMenu"
-			Width="175"
-			IsOpen="False"
-			StaysOpen="False">
-
-			<StackPanel>
-
-				<TextBlock Text="Hello world" />
-				<TextBlock Text="{Binding Menus.Count}" />
-
-				<Menu ItemsSource="{Binding Menus}">
-
-					<Menu.ItemTemplate>
-						<HierarchicalDataTemplate
-							DataType="{x:Type context:MenuEntry}"
-							ItemsSource="{Binding Path=Children}" />
-					</Menu.ItemTemplate>
-
-					<Menu.ItemContainerStyle>
-						<Style
-							BasedOn="{StaticResource WpfUtilsMenuItem}"
-							TargetType="{x:Type MenuItem}">
-							<Setter Property="MenuItem.IsEnabled" Value="{Binding IsEnabled}" />
-							<Setter Property="MenuItem.Header" Value="{Binding Label}" />
-							<Setter Property="MenuItem.Icon" Value="{Binding Icon}" />
-							<Setter Property="MenuItem.ItemsSource" Value="{Binding Children}" />
-							<Setter Property="MenuItem.Command" Value="{Binding OnClicked}" />
-						</Style>
-					</Menu.ItemContainerStyle>
-				</Menu>
-			</StackPanel>
-		</wpfUtils:PopOut>
-
+		<context:WorldContextMenu />
 
 	</Grid>
 </panels:PanelWindow>
