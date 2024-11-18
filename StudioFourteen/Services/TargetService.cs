@@ -4,9 +4,14 @@ using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
+using StudioFourteen.Input;
 using StudioFourteen.Mvm;
 using StudioFourteen.Plugin;
 using StudioFourteen.Utilities;
+using System.Numerics;
+using System.Threading.Tasks;
+using System.Windows.Input;
+using WpfUtils.Extensions;
 
 public class TargetService : ServiceBase
 {
@@ -24,6 +29,18 @@ public class TargetService : ServiceBase
 	///  Use with caution, as this pointer may not be safe after FrameworkUpdates.
 	/// </summary>
 	public unsafe Character* Target { get; private set; } = null;
+
+	public override Task Start()
+	{
+		this.Services.Input.MouseButton += this.OnMouseButton;
+		return base.Start();
+	}
+
+	public override Task Stop()
+	{
+		this.Services.Input.MouseButton -= this.OnMouseButton;
+		return base.Stop();
+	}
 
 	public unsafe void SetTarget(int objectTableIndex)
 	{
@@ -91,6 +108,29 @@ public class TargetService : ServiceBase
 		if (startIndex != this.TargetObjectIndex)
 		{
 			this.TargetChanged?.Invoke();
+		}
+	}
+
+	private void OnMouseButton(MouseButton button, InputService.States state, Vector2 position)
+	{
+		if (button == MouseButton.Left && state == InputService.States.Released)
+		{
+			this.TargetPosition(position).Run();
+		}
+	}
+
+	private async Task TargetPosition(Vector2 screenPosition)
+	{
+		await Threads.FrameworkThread();
+
+		unsafe
+		{
+			HitInfo hitInfo = RayCast.Cast(screenPosition);
+
+			if (hitInfo.ObjectTableIndex == -1)
+				return;
+
+			this.SetTarget(hitInfo.ObjectTableIndex);
 		}
 	}
 }
