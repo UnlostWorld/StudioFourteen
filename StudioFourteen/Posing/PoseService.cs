@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows;
+using WpfUtils.Animation;
 using WpfUtils.Extensions;
 
 public enum PoseEditModes
@@ -519,14 +520,42 @@ public class PoseService : ServiceBase, WorldContextMenu.IProvider
 		this.Selection?.OnFrameworkUpdate(framework);
 	}
 
-	private async Task MoveTarget(Vector3 position)
+	private async Task MoveTarget(Vector3 toPosition)
 	{
 		await Threads.FrameworkThread();
 
+		if (DalamudServices.ObjectTable == null)
+			return;
+
+		int objectTargetIndex = this.Services.Target.TargetObjectIndex;
+		EasingFunctionBase ease = new SineEase();
+
+		Vector3 fromPosition;
 		unsafe
 		{
-			Character* pCharacter = this.Services.Target.GetTarget();
-			pCharacter->DrawObject->Position = position;
+			Character* pCharacter = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTargetIndex);
+			fromPosition = pCharacter->DrawObject->Position;
+		}
+
+		// Extremely simple and wonky lerp.
+		float duration = 500;
+		float time = 0;
+		while(time < duration)
+		{
+			await Task.Delay(33);
+			time += 33;
+			float p = Math.Clamp(time / duration, 0, 1);
+			p = ease.Ease(p, EasingFunctionBase.EasingModes.EaseInOut);
+
+			Vector3 newPosition = Vector3.Lerp(fromPosition, toPosition, p);
+
+			await Threads.FrameworkThread();
+
+			unsafe
+			{
+				Character* pCharacter = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTargetIndex);
+				pCharacter->DrawObject->Position = newPosition;
+			}
 		}
 	}
 
