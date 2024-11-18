@@ -68,13 +68,8 @@ public partial class WorldContextMenu : PopOut
 	{
 		if (button == MouseButton.Right && state == InputService.States.Released)
 		{
-			this.ShowContext(position).Run();
+			this.Show(position).Run();
 		}
-	}
-
-	private async Task ShowContext(Vector2 screenPosition)
-	{
-		await this.Show(screenPosition);
 	}
 
 	private async Task Show(Vector2 screenPosition)
