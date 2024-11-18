@@ -138,7 +138,7 @@ public class CharacterBackupAppearance
 	{
 		this.name = character->GetDisplayName();
 		this.DrawData = character->DrawData;
-		this.ModelId = character->ModelCharaId;
+		this.ModelId = character->ModelContainer.ModelCharaId;
 
 		this.Tags.Add("Named");
 
@@ -151,7 +151,7 @@ public class CharacterBackupAppearance
 	{
 		this.name = character.GetDisplayName();
 		this.DrawData = character.DrawData;
-		this.ModelId = character.ModelCharaId;
+		this.ModelId = character.ModelContainer.ModelCharaId;
 
 		this.Tags.Add("Named");
 

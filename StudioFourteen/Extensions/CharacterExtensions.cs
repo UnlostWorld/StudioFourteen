@@ -96,7 +96,7 @@ public static class CharacterExtensions
 		if (source != UpdateSource.Restore)
 			ServiceManager.Instance.CharacterAppearance.Backup(self);
 
-		self.ModelCharaId = modelCharaId;
+		self.ModelContainer.ModelCharaId = modelCharaId;
 
 		if (apply)
 		{
