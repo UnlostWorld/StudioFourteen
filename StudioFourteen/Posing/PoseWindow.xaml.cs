@@ -150,9 +150,7 @@ public partial class PoseWindow : CharacterPanelBase
 			"j_f_mab_l",
 		};*/
 
-		PoseFile file = new();
-		await file.Save(this.TargetObjectIndex);
-		this.Services.Files.SaveFile(file, $"{this.CharacterName}'s Pose");
+		await this.Services.Pose.ExportPose(this.TargetObjectIndex);
 	}
 
 	private void OnFlipPoseClicked(object sender, RoutedEventArgs e)

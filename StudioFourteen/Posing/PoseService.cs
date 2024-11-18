@@ -10,11 +10,15 @@ using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.Havok.Animation.Rig;
 using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
+using FontAwesome.Sharp;
+using StudioFourteen.Context;
+using StudioFourteen.Files;
 using StudioFourteen.Plugin;
 using StudioFourteen.Services;
 using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows;
 using WpfUtils.Extensions;
@@ -49,7 +53,7 @@ public enum MirrorModes
 	Receiving,
 }
 
-public class PoseService : ServiceBase
+public class PoseService : ServiceBase, WorldContextMenu.IProvider
 {
 	private readonly List<BoneId> boneIds = new();
 	private readonly Dictionary<BoneId, BoneReference> boneReferences = new();
@@ -122,7 +126,7 @@ public class PoseService : ServiceBase
 	{
 		this.Services.CharacterLifecycle.CharacterDestroyed += this.OnCharacterDestroyed;
 		this.Services.GroupPose.StateChanged += this.OnGroupPoseStateChange;
-
+		WorldContextMenu.AddProvider(this);
 		return base.Start();
 	}
 
@@ -130,9 +134,8 @@ public class PoseService : ServiceBase
 	{
 		this.Services.CharacterLifecycle.CharacterDestroyed -= this.OnCharacterDestroyed;
 		this.Services.GroupPose.StateChanged -= this.OnGroupPoseStateChange;
-
 		this.FlushBoneReferences();
-
+		WorldContextMenu.RemoveProvider(this);
 		return base.Stop();
 	}
 
@@ -343,6 +346,22 @@ public class PoseService : ServiceBase
 		this.FlushBoneReferences(character->ObjectIndex);
 	}
 
+	public bool HasBoneReferences(int objectTableIndex)
+	{
+		lock (this.boneReferences)
+		{
+			foreach ((BoneId id, BoneReference reference) in this.boneReferences)
+			{
+				if (id.ObjectTableIndex == objectTableIndex)
+				{
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
 	public void FlushBoneReferences(int objectTableIndex)
 	{
 		HashSet<BoneId> toRemove = new();
@@ -456,10 +475,59 @@ public class PoseService : ServiceBase
 		}
 	}
 
+	public async Task ExportPose(int objectTableIndex)
+	{
+		if (DalamudServices.ObjectTable == null)
+			return;
+
+		string name = $"#{objectTableIndex}";
+		unsafe
+		{
+			Character* pCharacter = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
+			name = pCharacter->GetDisplayName();
+		}
+
+		PoseFile file = new();
+		await file.Save(objectTableIndex);
+		this.Services.Files.SaveFile(file, $"{name}'s Pose");
+	}
+
+	public Task GetMenu(WorldContextMenu menu)
+	{
+		if (menu.IsObject)
+		{
+			bool hasReference = this.HasBoneReferences(menu.ObjectTableIndex);
+			menu.Add(IconChar.RotateLeft, "Restore Pose", hasReference, (h) =>
+			{
+				this.FlushBoneReferences(h.ObjectTableIndex);
+				return Task.CompletedTask;
+			});
+
+			menu.Add(IconChar.Save, "Export Pose", true, (h) => this.ExportPose(h.ObjectTableIndex));
+		}
+		else
+		{
+			menu.Add(IconChar.ArrowLeft, $"Move {this.Services.Target.CharacterName} Here", true, (h) => this.MoveTarget(h.Position));
+		}
+
+		return Task.CompletedTask;
+	}
+
 	protected override void OnFrameworkUpdate(IFramework framework)
 	{
 		base.OnFrameworkUpdate(framework);
 		this.Selection?.OnFrameworkUpdate(framework);
+	}
+
+	private async Task MoveTarget(Vector3 position)
+	{
+		await Threads.FrameworkThread();
+
+		unsafe
+		{
+			Character* pCharacter = this.Services.Target.GetTarget();
+			pCharacter->DrawObject->Position = position;
+		}
 	}
 
 	private unsafe nint UpdateBonePhysicsDetour(nint a1)

@@ -8,6 +8,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FontAwesome.Sharp;
 using StudioFourteen;
 using StudioFourteen.Context;
+using StudioFourteen.Files;
 using StudioFourteen.GameData;
 using StudioFourteen.Library;
 using StudioFourteen.Library.LibraryMenu;
@@ -113,12 +114,32 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 		this.backup.TryRemove(objectTableIndex, out var _);
 	}
 
-	Task WorldContextMenu.IProvider.GetMenu(WorldContextMenu menu, int objectTableIndex)
+	public async Task Save(int objectTableIndex)
 	{
-		if (objectTableIndex != -1)
+		await Threads.FrameworkThread();
+
+		if (DalamudServices.ObjectTable == null)
+			return;
+
+		string name = $"#{objectTableIndex}";
+		unsafe
 		{
-			bool hasBackup = this.backup.ContainsKey(objectTableIndex);
+			Character* pCharacter = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
+			name = pCharacter->GetDisplayName();
+		}
+
+		AppearanceFile file = new();
+		await file.Read(objectTableIndex);
+		this.Services.Files.SaveFile(file, $"{name}'s Appearance");
+	}
+
+	Task WorldContextMenu.IProvider.GetMenu(WorldContextMenu menu)
+	{
+		if (menu.IsObject)
+		{
+			bool hasBackup = this.backup.ContainsKey(menu.ObjectTableIndex);
 			menu.Add(IconChar.RotateLeft, "Restore Appearance", hasBackup, (h) => this.Restore(h.ObjectTableIndex));
+			menu.Add(IconChar.Save, "Export Appearance", true, (h) => this.Save(h.ObjectTableIndex));
 		}
 
 		return Task.CompletedTask;

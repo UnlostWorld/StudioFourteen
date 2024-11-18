@@ -9,18 +9,21 @@ using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Event;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
+using FontAwesome.Sharp;
 using StudioFourteen.Appearance;
+using StudioFourteen.Context;
 using StudioFourteen.Mvm;
 using StudioFourteen.Plugin;
 using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Threading.Tasks;
 using TerraFX.Interop.Windows;
 using WpfUtils.Extensions;
 
-public class CharacterLifecycleService : ServiceBase
+public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 {
 	private static readonly List<ushort> CreatedIndexes = new();
 
@@ -46,8 +49,15 @@ public class CharacterLifecycleService : ServiceBase
 		}
 	}
 
+	public override Task Start()
+	{
+		WorldContextMenu.AddProvider(this);
+		return base.Start();
+	}
+
 	public override async Task Stop()
 	{
+		WorldContextMenu.RemoveProvider(this);
 		await base.Stop();
 		this.DestroyAllCreated();
 	}
@@ -72,13 +82,18 @@ public class CharacterLifecycleService : ServiceBase
 
 	public async Task<int> CreateAsync(ICharacterAppearance? appearance = null)
 	{
+		return await this.CreateAsync(Vector3.Zero, appearance);
+	}
+
+	public async Task<int> CreateAsync(Vector3 position, ICharacterAppearance? appearance = null)
+	{
 		await Threads.FrameworkThread();
 
 		if (!this.CanSpawn)
 			return -1;
 
 		await Threads.FrameworkThread();
-		int index = this.Spawn();
+		int index = this.Spawn(position);
 
 		if (DalamudServices.ObjectTable != null)
 		{
@@ -174,6 +189,20 @@ public class CharacterLifecycleService : ServiceBase
 		this.characterFinalizeHook?.Dispose();
 	}
 
+	public Task GetMenu(WorldContextMenu menu)
+	{
+		if (menu.IsObject)
+		{
+			menu.Add(IconChar.TrashCan, "Destroy Character", true, (h) => this.DestroyAsync(h.ObjectTableIndex));
+		}
+		else
+		{
+			menu.Add(IconChar.Plus, "Create Character", true, (h) => this.CreateAsync(h.Position));
+		}
+
+		return Task.CompletedTask;
+	}
+
 	private unsafe nint CharacterInitializeDetour(Character* character)
 	{
 		if (this.characterInitializeHook == null)
@@ -207,7 +236,7 @@ public class CharacterLifecycleService : ServiceBase
 		return result;
 	}
 
-	private unsafe int Spawn()
+	private unsafe int Spawn(Vector3 position)
 	{
 		if (DalamudServices.ClientState?.LocalPlayer == null)
 			return -1;
@@ -238,8 +267,11 @@ public class CharacterLifecycleService : ServiceBase
 
 		*((sbyte*)pSpawned + 0x95) &= ~2; // Disable selection just incase this somehow leaks out of GPose
 
-		pSpawned->GameObject.Position = player->GameObject.Position;
-		pSpawned->GameObject.DefaultPosition = player->GameObject.Position;
+		if (position == Vector3.Zero)
+			position = player->GameObject.Position;
+
+		pSpawned->GameObject.Position = position;
+		pSpawned->GameObject.DefaultPosition = position;
 		pSpawned->GameObject.Rotation = player->GameObject.Rotation;
 		pSpawned->GameObject.DefaultRotation = player->GameObject.Rotation;
 

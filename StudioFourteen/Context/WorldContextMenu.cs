@@ -33,11 +33,15 @@ public partial class WorldContextMenu : PopOut
 
 	public interface IProvider
 	{
-		Task GetMenu(WorldContextMenu menu, int objectTableIndex);
+		Task GetMenu(WorldContextMenu menu);
 	}
 
 	public ServiceManager Services => ServiceManager.Instance;
 	public FastObservableCollection<MenuEntry> Menus { get; init; } = new();
+
+	public bool IsObject => this.ObjectTableIndex != -1;
+	public int ObjectTableIndex => this.currentHitInfo?.ObjectTableIndex ?? -1;
+	public Vector3 Position => this.currentHitInfo?.Position ?? Vector3.Zero;
 
 	public static void AddProvider(IProvider provider)
 	{
@@ -49,7 +53,7 @@ public partial class WorldContextMenu : PopOut
 		ContextProviders.Remove(provider);
 	}
 
-	public void Add(IconChar? icon, string? label, bool isEnabled = true, Func<HitInfo, Task>? callback = null)
+	public void Add(IconChar? icon, string? label, bool isEnabled = true, Func<WorldContextMenu, Task>? callback = null)
 	{
 		MenuEntry entry = new(icon, label, isEnabled, callback);
 		entry.SetCallback(this.OnContextMenuClicked);
@@ -97,12 +101,12 @@ public partial class WorldContextMenu : PopOut
 
 		foreach (IProvider provider in ContextProviders)
 		{
-			await provider.GetMenu(this, this.currentHitInfo.ObjectTableIndex);
+			await provider.GetMenu(this);
 		}
 
 		await this.MainThread();
 
-		this.PlacementRectangle = new Rect(screenPosition.X, screenPosition.Y, 1, 1);
+		this.PlacementRectangle = new Rect(screenPosition.X, screenPosition.Y + 50, 1, 1);
 		this.IsOpen = true;
 
 		this.ObjectName = name;
@@ -113,15 +117,16 @@ public partial class WorldContextMenu : PopOut
 		if (this.currentHitInfo == null)
 			return;
 
-		entry.Callback?.Invoke(this.currentHitInfo);
+		this.IsOpen = false;
+		entry.Callback?.Invoke(this);
 	}
 }
 
-public class MenuEntry(IconChar? icon, string? label, bool isEnabled = true, Func<HitInfo, Task>? callback = null)
+public class MenuEntry(IconChar? icon, string? label, bool isEnabled = true, Func<WorldContextMenu, Task>? callback = null)
 {
 	private Action<MenuEntry>? invokeCallback;
 
-	public Func<HitInfo, Task>? Callback => callback;
+	public Func<WorldContextMenu, Task>? Callback => callback;
 	public IconChar? Icon => icon;
 	public bool IsEnabled => isEnabled;
 	public ICommand? OnClicked => new SimpleCommand(this.Invoke);
