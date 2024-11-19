@@ -66,10 +66,6 @@ public class CharaMakeCustomizeLibraryEntry : LibraryEntryBase
 	public async Task Apply(int objectTableIndex)
 	{
 		await Threads.FrameworkThread();
-
-		if (DalamudServices.ObjectTable == null)
-			return;
-
 		this.Services.CharacterAppearance.SetCustomizeValue(objectTableIndex, this.CustomizeIndex, this.MakeCustomize.Value.FeatureID, CharacterExtensions.UpdateSource.Library);
 	}
 

@@ -51,9 +51,6 @@ public class PoseFile : FileBase
 	{
 		await Threads.FrameworkThread();
 
-		if (DalamudServices.ObjectTable == null)
-			return;
-
 		this.Bones = new();
 		this.ReferenceRelativeBones = new();
 		this.MainHand = null;
@@ -63,7 +60,7 @@ public class PoseFile : FileBase
 
 		unsafe
 		{
-			Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
+			Character* character = ServiceManager.Instance.Target.GetCharacter(objectTableIndex);
 			if (character == null)
 				return;
 
@@ -182,15 +179,12 @@ public class PoseFile : FileBase
 	{
 		Threads.VerifyFrameworkThread();
 
-		if (DalamudServices.ObjectTable == null)
-			return null;
-
 		bool useReferenceRelativeBones = this.ReferenceRelativeBones != null;
 		List<BoneReference> boneReferences = new();
 
 		unsafe
 		{
-			Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
+			Character* character = ServiceManager.Instance.Target.GetCharacter(objectTableIndex);
 			if (character == null)
 				return null;
 

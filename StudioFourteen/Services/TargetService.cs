@@ -19,16 +19,12 @@ public class TargetService : ServiceBase
 
 	public event TargetChangedDelegate? TargetChanged;
 
+	public int ObjectTableCount => DalamudServices.ObjectTable?.Length ?? 0;
+
 	[AlwaysNotify] public string? CharacterName { get; private set; }
 	[AlwaysNotify] public bool HasValidTarget { get; private set; } = false;
 	[AlwaysNotify] public bool IsTargetLoading { get; private set; } = false;
 	[AlwaysNotify] public int TargetObjectIndex { get; private set; } = -1;
-
-	/// <summary>
-	///  Gets a pointer to the player, the players target, or the group pose target.
-	///  Use with caution, as this pointer may not be safe after FrameworkUpdates.
-	/// </summary>
-	public unsafe Character* Target { get; private set; } = null;
 
 	public override Task Start()
 	{
@@ -97,7 +93,7 @@ public class TargetService : ServiceBase
 			}
 
 			// Player
-			return (Character*)DalamudServices.ObjectTable.GetObjectAddress(0);
+			return this.GetCharacter(0);
 		}
 	}
 
@@ -112,8 +108,6 @@ public class TargetService : ServiceBase
 		this.TargetObjectIndex = this.HasValidTarget ? pTarget->ObjectIndex : -1;
 		this.CharacterName = this.HasValidTarget ? pTarget->GetDisplayName() : "Nobody";
 		this.IsTargetLoading = pTarget != null && !pTarget->CanDraw();
-
-		this.Target = pTarget;
 
 		if (startIndex != this.TargetObjectIndex)
 		{

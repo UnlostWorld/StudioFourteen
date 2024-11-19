@@ -22,7 +22,7 @@ public partial class CharacterPanel : CharacterPanelBase
 
 	[AutoNotify] public bool UseTwoColumns => this.ActualWidth > 650;
 
-	[AutoNotify] public unsafe bool CanRevert => this.Services.CharacterAppearance.CanRestore(this.Target);
+	[AutoNotify] public unsafe bool CanRevert => this.Services.CharacterAppearance.CanRestore(this.TargetObjectIndex);
 	[AutoNotify] public string ExportAppearanceToolTipText => string.Format(StudioFourteen.Resources.Find("LOC_Save_ExportAppearanceToolTip", string.Empty), this.CharacterName);
 
 	[AutoNotify]

@@ -33,9 +33,6 @@ public class LibraryMenuTargetAttribute : LibraryMenuAttributeBase
 		TargetService targetService = ServiceManager.Instance.Target;
 		List<MenuEntry> results = new();
 
-		if (DalamudServices.ObjectTable == null)
-			return results;
-
 		// "Apply to Player Name"
 		string label = $"{this.Label}: {targetService.CharacterName}";
 		Action invoke = () => method.Invoke(methodTarget, [targetService.TargetObjectIndex]);
@@ -54,7 +51,7 @@ public class LibraryMenuTargetAttribute : LibraryMenuAttributeBase
 		if (!isGroupPose)
 		{
 			fromIndex = 0;
-			toIndex = Math.Min(DalamudServices.ObjectTable.Length, GroupPoseService.GPoseFirstCharacter);
+			toIndex = Math.Min(targetService.ObjectTableCount, GroupPoseService.GPoseFirstCharacter);
 		}
 
 		unsafe
@@ -64,7 +61,7 @@ public class LibraryMenuTargetAttribute : LibraryMenuAttributeBase
 				if (i == targetService.TargetObjectIndex)
 					continue;
 
-				Character* pCharacter = (Character*)DalamudServices.ObjectTable.GetObjectAddress(i);
+				Character* pCharacter = ServiceManager.Instance.Target.GetCharacter(i);
 				if (pCharacter == null)
 					continue;
 
