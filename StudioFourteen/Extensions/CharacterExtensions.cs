@@ -93,6 +93,9 @@ public static class CharacterExtensions
 
 	public static void UpdateModel(ref this Character self, int modelCharaId, UpdateSource source, bool apply = true)
 	{
+		if (self.ModelContainer.ModelCharaId == modelCharaId)
+			return;
+
 		if (source != UpdateSource.Restore)
 			ServiceManager.Instance.CharacterAppearance.Backup(self);
 
@@ -114,24 +117,26 @@ public static class CharacterExtensions
 		return self.DrawData.CustomizeData.GetValue(option);
 	}
 
-	public static bool SetCustomizeValue(ref this Character self, CustomizeIndex option, byte value, UpdateSource source, bool apply = true)
+	public static void SetCustomizeValue(ref this Character self, CustomizeIndex index, byte value, UpdateSource source, bool apply = true)
 	{
+		byte oldValue = self.DrawData.CustomizeData.GetValue(index);
+		if (oldValue == value)
+			return;
+
 		if (source != UpdateSource.Restore)
 			ServiceManager.Instance.CharacterAppearance.Backup(self);
 
-		self.DrawData.CustomizeData.SetValue(option, value);
+		self.DrawData.CustomizeData.SetValue(index, value);
 
-		bool needsRedraw = option == CustomizeIndex.Race;
-		needsRedraw |= option == CustomizeIndex.Tribe;
-		needsRedraw |= option == CustomizeIndex.ModelType;
-		needsRedraw |= option == CustomizeIndex.Gender;
+		bool needsRedraw = index == CustomizeIndex.Race;
+		needsRedraw |= index == CustomizeIndex.Tribe;
+		needsRedraw |= index == CustomizeIndex.ModelType;
+		needsRedraw |= index == CustomizeIndex.Gender;
 
 		if (apply)
 		{
 			self.UpdateCustomizeInternal(needsRedraw, source);
 		}
-
-		return needsRedraw;
 	}
 
 	public static unsafe void UpdateWeapon(ref this Character self, WeaponSlot slot, WeaponModelId item, UpdateSource source)

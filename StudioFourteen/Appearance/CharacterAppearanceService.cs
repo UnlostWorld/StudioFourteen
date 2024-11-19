@@ -3,6 +3,7 @@
 
 namespace StudioFourteen.Appearance;
 
+using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FontAwesome.Sharp;
@@ -223,7 +224,10 @@ public class CharacterBackupAppearance
 		{
 			Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
 
-			bool redraw = true; //// this.ModelId != character->ModelCharaId;
+			bool redraw = this.ModelId != character->ModelContainer.ModelCharaId
+				|| this.DrawData.CustomizeData[(int)CustomizeIndex.Race] != character->GetCustomizeValue(CustomizeIndex.Race)
+				|| this.DrawData.CustomizeData[(int)CustomizeIndex.Tribe] != character->GetCustomizeValue(CustomizeIndex.Tribe)
+				|| this.DrawData.CustomizeData[(int)CustomizeIndex.ModelType] != character->GetCustomizeValue(CustomizeIndex.ModelType);
 
 			character->UpdateModel(this.ModelId, source, false);
 			character->UpdateEquipment(this.DrawData.EquipmentModelIds, source);
