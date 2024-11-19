@@ -7,11 +7,10 @@ using StudioFourteen.Mvm;
 using System.Numerics;
 using System.Windows.Input;
 
-[DependencyProperty<Vector3>("Value", DefaultBindingMode = DefaultBindingMode.TwoWay)]
+[DependencyProperty<Vector2>("Value", DefaultBindingMode = DefaultBindingMode.TwoWay)]
 [DependencyProperty<bool>("Expand", DefaultBindingMode = DefaultBindingMode.TwoWay)]
 [DependencyProperty<float>("ValueX")]
 [DependencyProperty<float>("ValueY")]
-[DependencyProperty<float>("ValueZ")]
 [DependencyProperty<IconChar>("Icon")]
 [DependencyProperty<double>("LargeChange")]
 [DependencyProperty<double>("SmallChange")]
@@ -22,17 +21,17 @@ using System.Windows.Input;
 [DependencyProperty<double>("Maximum")]
 [DependencyProperty<int>("DecimalPlaces")]
 [DependencyProperty<bool>("IsRelative")]
-public partial class Vector3Box : View
+public partial class Vector2Box : View
 {
-	private Vector3? trackingValue;
+	private Vector2? trackingValue;
 	private bool isUpdatingValue = false;
 
-	public Vector3 TrackingOrLiveValue
+	public Vector2 TrackingOrLiveValue
 	{
 		get
 		{
 			if (this.trackingValue != null)
-				return (Vector3)this.trackingValue;
+				return (Vector2)this.trackingValue;
 
 			return this.Value;
 		}
@@ -45,7 +44,7 @@ public partial class Vector3Box : View
 		this.OnValueChanged();
 	}
 
-	protected virtual void OnInternalValueChanged(Vector3 newValue)
+	protected virtual void OnInternalValueChanged(Vector2 newValue)
 	{
 	}
 
@@ -55,7 +54,6 @@ public partial class Vector3Box : View
 
 		this.ValueX = this.TrackingOrLiveValue.X;
 		this.ValueY = this.TrackingOrLiveValue.Y;
-		this.ValueZ = this.TrackingOrLiveValue.Z;
 
 		this.isUpdatingValue = false;
 
@@ -67,7 +65,7 @@ public partial class Vector3Box : View
 		if (this.isUpdatingValue)
 			return;
 
-		Vector3 t = this.TrackingOrLiveValue;
+		Vector2 t = this.TrackingOrLiveValue;
 		t.X = newValue;
 		this.Value = t;
 
@@ -82,23 +80,8 @@ public partial class Vector3Box : View
 		if (this.isUpdatingValue)
 			return;
 
-		Vector3 t = this.TrackingOrLiveValue;
+		Vector2 t = this.TrackingOrLiveValue;
 		t.Y = newValue;
-		this.Value = t;
-
-		if (this.trackingValue != null)
-		{
-			this.trackingValue = t;
-		}
-	}
-
-	partial void OnValueZChanged(float oldValue, float newValue)
-	{
-		if (this.isUpdatingValue)
-			return;
-
-		Vector3 t = this.TrackingOrLiveValue;
-		t.Z = newValue;
 		this.Value = t;
 
 		if (this.trackingValue != null)

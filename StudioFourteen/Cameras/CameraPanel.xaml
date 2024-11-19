@@ -232,8 +232,8 @@
 
 										<controls1:Vector3Box
 											Grid.Row="1"
-											Maximum="360"
-											Minimum="0"
+											Maximum="180"
+											Minimum="-180"
 											TickFrequency="1"
 											Wrap="True"
 											Value="{Binding Angle}" />
@@ -242,8 +242,8 @@
 											Style="{DynamicResource LeftLabel}"
 											Text="{DynamicResource LOC_Camera_Rotation}" />
 										<controls1:QuaternionBox
-											TickFrequency="1"
-											Value="{Binding Rotation}" />
+											Quaternion="{Binding Rotation}"
+											TickFrequency="1" />
 									</Grid>
 
 								</StackPanel>
@@ -321,8 +321,8 @@
 
 										<controls1:Vector2Box
 											Grid.Row="1"
-											Maximum="360"
-											Minimum="0"
+											Maximum="180"
+											Minimum="-180"
 											TickFrequency="1"
 											Wrap="True"
 											Value="{Binding Angle}" />
@@ -332,8 +332,8 @@
 										Style="{DynamicResource LeftLabel}"
 										Text="{DynamicResource LOC_Camera_Rotation}" />
 									<controls1:QuaternionBox
-										TickFrequency="1"
-										Value="{Binding Rotation}" />
+										Quaternion="{Binding Rotation}"
+										TickFrequency="1" />
 								</StackPanel>
 							</DataTemplate>
 
@@ -354,8 +354,8 @@
 										Style="{DynamicResource LeftLabel}"
 										Text="{DynamicResource LOC_Camera_Rotation}" />
 									<controls1:QuaternionBox
-										TickFrequency="1"
-										Value="{Binding Rotation}" />
+										Quaternion="{Binding Rotation}"
+										TickFrequency="1" />
 
 
 								</StackPanel>

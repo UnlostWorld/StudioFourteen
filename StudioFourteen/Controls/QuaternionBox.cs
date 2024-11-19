@@ -3,36 +3,45 @@
 using DependencyPropertyGenerator;
 using StudioFourteen.Structs.Extensions;
 using System.Numerics;
-using WpfUtils.Controls;
 
-[DependencyProperty<Quaternion>("Value", DefaultBindingMode = DefaultBindingMode.TwoWay)]
-public partial class QuaternionBox : MultiNumberBox
+[DependencyProperty<Quaternion>("Quaternion", DefaultBindingMode = DefaultBindingMode.TwoWay)]
+public partial class QuaternionBox : Vector3Box
 {
 	private bool isValueUpdating = false;
 	private bool isComponentUpdating = false;
 
-	protected override void OnComponentValueChanged()
+	public QuaternionBox()
 	{
-		base.OnComponentValueChanged();
+		this.Minimum = -180;
+		this.Maximum = 180;
+		this.Wrap = true;
+		this.SmallChange = 1;
+		this.LargeChange = 45;
+		this.DecimalPlaces = 2;
+	}
+
+	protected override void OnInternalValueChanged(Vector3 internalValue)
+	{
+		base.OnInternalValueChanged(internalValue);
 
 		if (this.isValueUpdating)
 			return;
 
 		this.isComponentUpdating = true;
 
-		Vector3 euler = this.Value.ToEuler();
-		euler.X = (float)this.X;
-		euler.Y = (float)this.Y;
-		euler.Z = (float)this.Z;
+		Vector3 euler = this.Quaternion.ToEuler();
+		euler.X = (float)this.ValueX;
+		euler.Y = (float)this.ValueY;
+		euler.Z = (float)this.ValueZ;
 
-		Quaternion val = this.Value;
+		Quaternion val = this.Quaternion;
 		val.FromEuler(euler);
-		this.Value = val;
+		this.Quaternion = val;
 
 		this.isComponentUpdating = false;
 	}
 
-	partial void OnValueChanged(Quaternion newValue)
+	partial void OnQuaternionChanged(Quaternion newValue)
 	{
 		if (this.isComponentUpdating)
 			return;
@@ -40,9 +49,9 @@ public partial class QuaternionBox : MultiNumberBox
 		this.isValueUpdating = true;
 
 		Vector3 euler = newValue.ToEuler();
-		this.X = euler.X;
-		this.Y = euler.Y;
-		this.Z = euler.Z;
+		this.Value = euler;
+
+		this.Log.Information($"ROT: {euler}");
 
 		this.isValueUpdating = false;
 	}

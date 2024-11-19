@@ -102,6 +102,8 @@ public class CameraService : ServiceBase
 	{
 		this.Cameras.Add(new OrbitTargetCamera());
 
+		this.Current = this.Cameras[0];
+
 		return base.Start();
 	}
 
@@ -110,6 +112,7 @@ public class CameraService : ServiceBase
 		base.Attach();
 
 		this.doAttachBlend = true;
+		this.blendWatch.Restart();
 
 		this.InitialCamera = *(GroupPoseCamera*)CameraManager.Instance()->Camera;
 
@@ -122,7 +125,13 @@ public class CameraService : ServiceBase
 		this.gPoseCameraUpdateHook = InteropService.HookFromSignature<GPoseCameraUpdateDelegate>("40 55 53 57 48 8D 6C 24 A0 48 81 EC ?? ?? ?? ?? 48 8B 1D", this.GroupPoseCameraUpdateDetour);
 		this.gPoseCameraUpdateHook?.Enable();
 
-		this.Current = this.Cameras[0];
+		// Special case to reinitialize the orbit target camera each time
+		// the camera service attaches so that any changes to the group pose camera
+		// outside of studio gets kept.
+		if (this.current is OrbitTargetCamera)
+		{
+			this.current.IsInitialized = false;
+		}
 	}
 
 	public unsafe override void Detach()
@@ -142,6 +151,8 @@ public class CameraService : ServiceBase
 		this.sceneCameraUpdateHook?.Dispose();
 		this.cameraMatrixLoadHook?.Dispose();
 		this.gPoseCameraUpdateHook?.Dispose();
+
+		this.blendWatch.Stop();
 	}
 
 	public void CreateCamera<T>(bool activate = true)
@@ -250,6 +261,7 @@ public class CameraService : ServiceBase
 					blendValue = 0;
 					this.last = null;
 					this.doAttachBlend = false;
+					this.blendWatch.Stop();
 				}
 			}
 

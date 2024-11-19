@@ -5,6 +5,7 @@ using PropertyChanged.SourceGenerator;
 using StudioFourteen.Input;
 using StudioFourteen.Overlays;
 using StudioFourteen.Structs.Extensions;
+using StudioFourteen.Utilities;
 using System;
 using System.Numerics;
 using System.Windows.Input;
@@ -50,7 +51,7 @@ public partial class OrbitCamera : StudioCameraBase
 
 		if (this.Services.Camera.InitialCamera != null)
 		{
-			this.Angle = this.Services.Camera.InitialCamera.Value.Angle;
+			this.Angle = this.Services.Camera.InitialCamera.Value.Angle * QuaternionExtensions.Rad2Deg;
 		}
 	}
 
@@ -158,6 +159,7 @@ public partial class OrbitCamera : StudioCameraBase
 		base.UpdateGroupPoseCamera(camera);
 		this.GroupPoseRollAdjust = camera->Rotation * QuaternionExtensions.Rad2Deg;
 
+		camera->Angle = this.Angle * QuaternionExtensions.Deg2Rad;
 		camera->Camera.Distance = this.distance;
 	}
 
@@ -205,7 +207,7 @@ public partial class OrbitCamera : StudioCameraBase
 	public Quaternion GetLookRotation()
 	{
 		return Quaternion.CreateFromYawPitchRoll(
-			this.angle.X * QuaternionExtensions.Deg2Rad,
+			(this.angle.X + 90) * QuaternionExtensions.Deg2Rad,
 			this.GroupPoseRollAdjust * QuaternionExtensions.Deg2Rad,
 			this.angle.Y * QuaternionExtensions.Deg2Rad);
 	}
@@ -229,6 +231,7 @@ public partial class OrbitCamera : StudioCameraBase
 		Vector2 angle = this.Angle;
 		angle.X -= delta.X / 8;
 		angle.Y -= delta.Y / 8;
+		angle = MathUtility.Wrap(angle);
 		this.Angle = angle;
 	}
 

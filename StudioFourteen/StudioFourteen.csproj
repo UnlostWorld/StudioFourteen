@@ -132,4 +132,10 @@
 	  <ProjectReference Include="..\Lib\WpfUtils\WpfUtils.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Compile Update="Controls\Vector2Box.xaml.cs">
+	    <SubType>Code</SubType>
+	  </Compile>
+	</ItemGroup>
+
 </Project>

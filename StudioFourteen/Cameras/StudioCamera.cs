@@ -21,7 +21,7 @@ public abstract partial class StudioCameraBase : ViewModel, IDisposable
 	[Notify(Setter.Private)] private float groupPoseFovAdjust;
 
 	public abstract string TypeName { get; }
-	public bool IsInitialized { get; private set; } = false;
+	public bool IsInitialized { get; set; } = false;
 
 	public void Reset()
 	{
