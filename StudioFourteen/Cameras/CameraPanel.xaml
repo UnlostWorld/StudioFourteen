@@ -76,6 +76,7 @@
 					Style="{DynamicResource WpfUtilsIconToggleButton}" />
 
 				<controls:PopOut
+					Width="300"
 					Background="{DynamicResource ControlBackgroundBrush}"
 					IsOpen="{Binding ElementName=AddCameraButton, Path=IsChecked}"
 					PlacementTarget="{Binding ElementName=AddCameraButton}"
@@ -90,11 +91,11 @@
 
 					<StackPanel>
 						<Button
-							Height="64"
+							Height="Auto"
 							HorizontalContentAlignment="Stretch"
 							Background="Transparent"
 							Click="OnCreateOrbitTargetCameraClicked">
-							<StackPanel>
+							<StackPanel Margin="0,6">
 								<TextBlock
 									Foreground="{DynamicResource ForegroundBrush}"
 									Text="{DynamicResource LOC_OrbitTargetCamera}" />
@@ -106,11 +107,11 @@
 						</Button>
 
 						<Button
-							Height="64"
+							Height="Auto"
 							HorizontalContentAlignment="Stretch"
 							Background="Transparent"
 							Click="OnCreateOrbitCameraClicked">
-							<StackPanel>
+							<StackPanel Margin="0,6">
 								<TextBlock
 									Foreground="{DynamicResource ForegroundBrush}"
 									Text="{DynamicResource LOC_OrbitCamera}" />
@@ -122,11 +123,11 @@
 						</Button>
 
 						<Button
-							Height="64"
+							Height="Auto"
 							HorizontalContentAlignment="Stretch"
 							Background="Transparent"
 							Click="OnCreateFreeCameraClicked">
-							<StackPanel>
+							<StackPanel Margin="0,6">
 								<TextBlock
 									Foreground="{DynamicResource ForegroundBrush}"
 									Text="{DynamicResource LOC_FreeCamera}" />

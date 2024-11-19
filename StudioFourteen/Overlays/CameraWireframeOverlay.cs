@@ -65,6 +65,6 @@ public class CameraWireframeOverlay : WireframeOverlayBase
 			new(-0.86f, 0.32f, -0.00f),
 			new(-0.89f, 0.25f, -0.00f));
 
-		this.Scale = new(0.5f, 0.5f, 0.5f);
+		this.Scale = new(0.3f, 0.3f, 0.3f);
 	}
 }

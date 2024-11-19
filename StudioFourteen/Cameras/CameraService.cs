@@ -289,6 +289,20 @@ public class CameraService : ServiceBase
 			this.CameraMatrixLoad(camera->RenderCamera, (nint)(&camera->ViewMatrix));
 
 			camera->RenderCamera->FoV = this.state.FieldOfView;
+
+			// Update all cameras in the background.
+			// TODO: we could move this to another thread to ensure
+			// the camera detour is fast.
+			CameraState temp = default;
+			foreach (StudioCameraBase otherCamera in this.Cameras)
+			{
+				if (otherCamera == this.current)
+					continue;
+
+				otherCamera.Tick(FramerateService.AverageDeltaTime);
+				otherCamera.Calculate(ref temp);
+				otherCamera.OnRender(ref temp);
+			}
 		}
 
 		this.lastViewMatrix = camera->ViewMatrix;
