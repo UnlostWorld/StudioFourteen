@@ -110,7 +110,7 @@ public class WeaponViewModel(DrawDataContainer.WeaponSlot slot)
 	{
 		Threads.RunOnFrameworkThread(() =>
 		{
-			this.Target->UpdateWeapon(this.Slot, this.Weapon.ModelId, CharacterExtensions.UpdateSource.Interface);
+			this.Services.CharacterAppearance.SetWeapon(this.TargetObjectIndex, this.Slot, this.Weapon.ModelId, CharacterExtensions.UpdateSource.Interface);
 		});
 	}
 

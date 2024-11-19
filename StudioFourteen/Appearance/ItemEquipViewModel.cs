@@ -97,7 +97,7 @@ public class ItemEquipViewModel(DrawDataContainer.EquipmentSlot slot)
 	{
 		Threads.RunOnFrameworkThread(() =>
 		{
-			this.Target->UpdateEquipment(this.Slot, this.ItemEquip, CharacterExtensions.UpdateSource.Interface);
+			this.Services.CharacterAppearance.SetEquipment(this.TargetObjectIndex, this.Slot, this.ItemEquip, CharacterExtensions.UpdateSource.Interface);
 		});
 	}
 

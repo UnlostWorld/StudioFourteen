@@ -104,7 +104,7 @@ public abstract class MenuViewModel
 		if (this.nextWriteValue != null)
 		{
 			if (this.nextWriteValue.Value != this.lastReadValue)
-				pCharacter->SetCustomizeValue(this.CustomizeIndex, this.nextWriteValue.Value, CharacterExtensions.UpdateSource.Interface, true);
+				this.Services.CharacterAppearance.SetCustomizeValue(pCharacter->ObjectIndex, this.CustomizeIndex, this.nextWriteValue.Value, CharacterExtensions.UpdateSource.Interface);
 
 			this.lastReadValue = this.nextWriteValue.Value;
 			this.nextWriteValue = null;

@@ -42,6 +42,16 @@ public class TargetService : ServiceBase
 		return base.Stop();
 	}
 
+	public unsafe Character* GetCharacter(int objectTableIndex)
+	{
+		Threads.VerifyFrameworkThread();
+
+		if (DalamudServices.ObjectTable == null)
+			return null;
+
+		return (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
+	}
+
 	public unsafe void SetTarget(int objectTableIndex)
 	{
 		Threads.RunOnFrameworkThread(() =>

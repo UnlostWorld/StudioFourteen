@@ -5,6 +5,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FontAwesome.Sharp;
 using Lumina.Excel;
 using Lumina.Excel.Sheets;
+using Serilog;
 using StudioFourteen.Appearance;
 using StudioFourteen.GameData;
 using StudioFourteen.Library.LibraryMenu;
@@ -81,52 +82,46 @@ public class GlamourerEntry
 	{
 		await Threads.FrameworkThread();
 
-		if (DalamudServices.ObjectTable == null)
-			return;
-
-		unsafe
+		if (this.design.Customize != null)
 		{
-			Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
-
-			bool redraw = false;
-
-			if (this.design.Customize != null)
+			foreach (CustomizeIndex index in Enum.GetValues<CustomizeIndex>())
 			{
-				foreach (CustomizeIndex index in Enum.GetValues<CustomizeIndex>())
-				{
-					byte? value = this.design.Customize.GetValue(index);
-					if (value == null)
-						continue;
+				byte? value = this.design.Customize.GetValue(index);
+				if (value == null)
+					continue;
 
-					character->SetCustomizeValue(CustomizeIndex.Race, (byte)value, CharacterExtensions.UpdateSource.Library, false);
-				}
-
-				character->UpdateCustomize(redraw, CharacterExtensions.UpdateSource.Library);
+				this.Services.CharacterAppearance.SetCustomizeValue(objectTableIndex, index, (byte)value, CharacterExtensions.UpdateSource.Library);
 			}
-
-			if (this.design.Equipment != null)
-			{
-				foreach (EquipmentSlot index in Enum.GetValues<EquipmentSlot>())
-				{
-					EquipmentModelId? id = this.design.Equipment.GetValue(index);
-					if (id == null)
-						continue;
-
-					character->UpdateEquipment(index, (EquipmentModelId)id, CharacterExtensions.UpdateSource.Library);
-				}
-
-				foreach (WeaponSlot index in Enum.GetValues<WeaponSlot>())
-				{
-					WeaponModelId? id = this.design.Equipment.GetValue(index);
-					if (id == null)
-						continue;
-
-					character->UpdateWeapon(index, (WeaponModelId)id, CharacterExtensions.UpdateSource.Library);
-				}
-			}
-
-			character->SetDisplayName(this.Name);
 		}
+
+		if (this.design.Equipment != null)
+		{
+			foreach (EquipmentSlot index in Enum.GetValues<EquipmentSlot>())
+			{
+				EquipmentModelId? id = this.design.Equipment.GetValue(index);
+				if (id == null)
+					continue;
+
+				this.Services.CharacterAppearance.SetEquipment(objectTableIndex, index, (EquipmentModelId)id, CharacterExtensions.UpdateSource.Library);
+			}
+
+			foreach (WeaponSlot index in Enum.GetValues<WeaponSlot>())
+			{
+				WeaponModelId? id = this.design.Equipment.GetValue(index);
+				if (id == null)
+					continue;
+
+				this.Services.CharacterAppearance.SetWeapon(objectTableIndex, index, (WeaponModelId)id, CharacterExtensions.UpdateSource.Library);
+			}
+		}
+
+		// Don't set name from glamourer designs, since they're often not complete 'people' but outfits
+		// and naming a person after their outfit gets confusing real fast.
+		/*unsafe
+		{
+			Character* pCharacter = this.Services.Target.GetCharacter(objectTableIndex);
+			pCharacter->SetDisplayName(this.Name);
+		}*/
 	}
 
 	protected override string GetInternalId() => this.design.Identifier ?? "Unknown";
@@ -222,14 +217,20 @@ public class GlamourerDesign
 				if (sheet == null)
 					return null;
 
-				Item? item = sheet.GetRow(this.ItemId);
-				if (item == null)
-					return null;
-
 				EquipmentModelId id = default;
-				id.Value = item.Value.ModelMain;
 				id.Stain0 = this.ApplyStain ? this.Stain : (byte)0;
 				id.Stain1 = this.ApplyStain ? this.Stain2 : (byte)0;
+
+				if (sheet.HasRow(this.ItemId))
+				{
+					Item item = sheet.GetRow(this.ItemId);
+					id.Value = item.ModelMain;
+				}
+				else
+				{
+					id.Value = 0;
+				}
+
 				return id;
 			}
 

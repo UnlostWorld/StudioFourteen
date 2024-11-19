@@ -70,13 +70,7 @@ public class CharaMakeCustomizeLibraryEntry : LibraryEntryBase
 		if (DalamudServices.ObjectTable == null)
 			return;
 
-		unsafe
-		{
-			Character* pCharacter = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
-			if (pCharacter == null)
-				return;
-			pCharacter->SetCustomizeValue(this.CustomizeIndex, this.MakeCustomize.Value.FeatureID, CharacterExtensions.UpdateSource.Library);
-		}
+		this.Services.CharacterAppearance.SetCustomizeValue(objectTableIndex, this.CustomizeIndex, this.MakeCustomize.Value.FeatureID, CharacterExtensions.UpdateSource.Library);
 	}
 
 	protected override string GetInternalId() => $"{this.MakeCustomize.RowId}";

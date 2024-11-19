@@ -86,27 +86,6 @@ public static class CharacterExtensions
 		return (CharacterBase*)self.DrawObject;
 	}
 
-	public static void UpdateModel(ref this Character self, ModelChara modelChara, UpdateSource source, bool apply = true)
-	{
-		self.UpdateModel((int)modelChara.RowId, source, apply);
-	}
-
-	public static void UpdateModel(ref this Character self, int modelCharaId, UpdateSource source, bool apply = true)
-	{
-		if (self.ModelContainer.ModelCharaId == modelCharaId)
-			return;
-
-		if (source != UpdateSource.Restore)
-			ServiceManager.Instance.CharacterAppearance.Backup(self);
-
-		self.ModelContainer.ModelCharaId = modelCharaId;
-
-		if (apply)
-		{
-			self.UpdateCustomizeInternal(true, source);
-		}
-	}
-
 	public static CharaMakeType? GetCharaMakeType(ref readonly this Character self)
 	{
 		return self.DrawData.CustomizeData.GetMakeType();
@@ -117,102 +96,10 @@ public static class CharacterExtensions
 		return self.DrawData.CustomizeData.GetValue(option);
 	}
 
-	public static void SetCustomizeValue(ref this Character self, CustomizeIndex index, byte value, UpdateSource source, bool apply = true)
+	public static void Redraw(ref this Character self)
 	{
-		byte oldValue = self.DrawData.CustomizeData.GetValue(index);
-		if (oldValue == value)
-			return;
-
-		if (source != UpdateSource.Restore)
-			ServiceManager.Instance.CharacterAppearance.Backup(self);
-
-		self.DrawData.CustomizeData.SetValue(index, value);
-
-		bool needsRedraw = index == CustomizeIndex.Race;
-		needsRedraw |= index == CustomizeIndex.Tribe;
-		needsRedraw |= index == CustomizeIndex.ModelType;
-		needsRedraw |= index == CustomizeIndex.Gender;
-
-		if (apply)
-		{
-			self.UpdateCustomizeInternal(needsRedraw, source);
-		}
-	}
-
-	public static unsafe void UpdateWeapon(ref this Character self, WeaponSlot slot, WeaponModelId item, UpdateSource source)
-	{
-		Threads.VerifyFrameworkThread();
-
-		if (source != UpdateSource.Restore)
-			ServiceManager.Instance.CharacterAppearance.Backup(self);
-
-		fixed (DrawDataContainer* drawData = &self.DrawData)
-		{
-			drawData->LoadWeapon(slot, item, 1, 1, 0, 0);
-		}
-	}
-
-	public static unsafe void UpdateEquipment(ref this Character self, Span<EquipmentModelId> equipment, UpdateSource source)
-	{
-		Threads.VerifyFrameworkThread();
-
-		if (source != UpdateSource.Restore)
-			ServiceManager.Instance.CharacterAppearance.Backup(self);
-
-		for (int i = 0; i < equipment.Length; i++)
-		{
-			EquipmentSlot slot = (EquipmentSlot)i;
-			self.UpdateEquipment(slot, equipment[i], source);
-		}
-	}
-
-	public static unsafe void UpdateEquipment(ref this Character self, EquipmentSlot slot, EquipmentModelId item, UpdateSource source)
-	{
-		Threads.VerifyFrameworkThread();
-
-		if (source != UpdateSource.Restore)
-			ServiceManager.Instance.CharacterAppearance.Backup(self);
-
-		fixed (DrawDataContainer* drawData = &self.DrawData)
-		{
-			drawData->LoadEquipment(slot, &item, true);
-		}
-	}
-
-	public static unsafe void UpdateCustomize(ref this Character self, bool redraw, UpdateSource source)
-	{
-		Threads.VerifyFrameworkThread();
-		self.UpdateCustomize(self.DrawData.CustomizeData, redraw, source);
-	}
-
-	public static unsafe void UpdateCustomize(ref this Character self, CustomizeData customize, bool redraw, UpdateSource source)
-	{
-		Threads.VerifyFrameworkThread();
-
-		if (source != UpdateSource.Restore)
-			ServiceManager.Instance.CharacterAppearance.Backup(self);
-
-		self.DrawData.CustomizeData.Import(customize);
-		self.UpdateCustomizeInternal(redraw, source);
-	}
-
-	public static unsafe void UpdateCustomizeInternal(ref this Character self, bool redraw, UpdateSource source)
-	{
-		Threads.VerifyFrameworkThread();
-
-		if (!redraw)
-		{
-			fixed (CustomizeData* custom = &self.DrawData.CustomizeData)
-			{
-				redraw |= ((Human*)self.DrawObject)->UpdateDrawData((byte*)custom, true) == false;
-			}
-		}
-
-		if (redraw)
-		{
-			self.DisableDraw();
-			self.EnableDraw();
-		}
+		self.DisableDraw();
+		self.EnableDraw();
 	}
 
 	public static ObjectKind GetKind(ref this Character self)

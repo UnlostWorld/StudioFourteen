@@ -5,25 +5,30 @@ namespace StudioFourteen.Appearance;
 
 using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Hooking;
+using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FontAwesome.Sharp;
-using StudioFourteen;
+using Lumina.Excel.Sheets;
 using StudioFourteen.Context;
 using StudioFourteen.Files;
-using StudioFourteen.GameData;
-using StudioFourteen.Library;
-using StudioFourteen.Library.LibraryMenu;
-using StudioFourteen.Library.Sources;
 using StudioFourteen.Plugin;
 using StudioFourteen.Services;
 using StudioFourteen.Utilities;
+using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows.Media.TextFormatting;
+
+using static FFXIVClientStructs.FFXIV.Client.Game.Character.CharacterExtensions;
+using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 
 public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvider
 {
 	private readonly GroupPoseCharactersLibrarySource provider = new();
 	private readonly ConcurrentDictionary<int, CharacterBackupAppearance> backup = new();
+	private readonly HashSet<int> pendingRedraws = new();
 
 	private Hook<EnforceKindRestrictionsDelegate>? enforceKindRestrictionsHook;
 
@@ -146,6 +151,133 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 		return Task.CompletedTask;
 	}
 
+	public unsafe void SetModelCharaId(int objectTableIndex, ModelChara modelChara, UpdateSource source)
+	{
+		this.SetModelCharaId(objectTableIndex, (int)modelChara.RowId, source);
+	}
+
+	public unsafe void SetModelCharaId(int objectTableIndex, int modelCharaId, UpdateSource source)
+	{
+		Threads.VerifyFrameworkThread();
+
+		Character* pCharacter = this.Services.Target.GetCharacter(objectTableIndex);
+
+		if (pCharacter->ModelContainer.ModelCharaId == modelCharaId)
+			return;
+
+		if (source != UpdateSource.Restore)
+			this.Backup(pCharacter);
+
+		pCharacter->ModelContainer.ModelCharaId = modelCharaId;
+
+		this.pendingRedraws.Add(pCharacter->ObjectIndex);
+	}
+
+	public unsafe void SetCustomizeValue(int objectTableIndex, CustomizeIndex index, byte value, UpdateSource source)
+	{
+		Threads.VerifyFrameworkThread();
+
+		Character* pCharacter = this.Services.Target.GetCharacter(objectTableIndex);
+
+		byte oldValue = pCharacter->DrawData.CustomizeData.GetValue(index);
+		if (oldValue == value)
+			return;
+
+		if (source != UpdateSource.Restore)
+			this.Backup(pCharacter);
+
+		pCharacter->DrawData.CustomizeData.SetValue(index, value);
+
+		if (index == CustomizeIndex.Race
+			|| index == CustomizeIndex.Tribe
+			|| index == CustomizeIndex.ModelType
+			|| index == CustomizeIndex.Gender)
+		{
+			this.pendingRedraws.Add(pCharacter->ObjectIndex);
+		}
+
+		this.UpdateCustomize(objectTableIndex, null, source);
+	}
+
+	public unsafe void SetWeapon(int objectTableIndex, WeaponSlot slot, WeaponModelId item, UpdateSource source)
+	{
+		Threads.VerifyFrameworkThread();
+
+		Character* pCharacter = this.Services.Target.GetCharacter(objectTableIndex);
+
+		if (source != UpdateSource.Restore)
+			this.Backup(pCharacter);
+
+		pCharacter->DrawData.LoadWeapon(slot, item, 1, 1, 0, 0);
+	}
+
+	public unsafe void SetEquipment(int objectTableIndex, Span<EquipmentModelId> equipment, UpdateSource source)
+	{
+		for (int i = 0; i < equipment.Length; i++)
+		{
+			EquipmentSlot slot = (EquipmentSlot)i;
+			this.SetEquipment(objectTableIndex, slot, equipment[i], source);
+		}
+	}
+
+	public unsafe void SetEquipment(int objectTableIndex, EquipmentSlot slot, EquipmentModelId item, UpdateSource source)
+	{
+		Threads.VerifyFrameworkThread();
+
+		Character* pCharacter = this.Services.Target.GetCharacter(objectTableIndex);
+
+		if (source != UpdateSource.Restore)
+			this.Backup(pCharacter);
+
+		pCharacter->DrawData.LoadEquipment(slot, &item, true);
+	}
+
+	public unsafe void SetCustomize(int objectTableIndex, CustomizeData customize, UpdateSource source)
+	{
+		Character* pCharacter = this.Services.Target.GetCharacter(objectTableIndex);
+
+		if (pCharacter->DrawData.CustomizeData[(int)CustomizeIndex.Race] != customize[(int)CustomizeIndex.Race]
+			|| pCharacter->DrawData.CustomizeData[(int)CustomizeIndex.Tribe] != customize[(int)CustomizeIndex.Tribe]
+			|| pCharacter->DrawData.CustomizeData[(int)CustomizeIndex.ModelType] != customize[(int)CustomizeIndex.ModelType])
+		{
+			this.pendingRedraws.Add(pCharacter->ObjectIndex);
+		}
+
+		this.UpdateCustomize(objectTableIndex, customize, source);
+	}
+
+	protected unsafe override void OnFrameworkUpdate(IFramework framework)
+	{
+		base.OnFrameworkUpdate(framework);
+
+		foreach (int objectTargetId in this.pendingRedraws)
+		{
+			Character* pCharacter = this.Services.Target.GetCharacter(objectTargetId);
+			pCharacter->Redraw();
+		}
+
+		this.pendingRedraws.Clear();
+	}
+
+	private unsafe void UpdateCustomize(int objectTableIndex, CustomizeData? customize, UpdateSource source)
+	{
+		Threads.VerifyFrameworkThread();
+
+		Character* pCharacter = this.Services.Target.GetCharacter(objectTableIndex);
+
+		CustomizeData* custom = &pCharacter->DrawData.CustomizeData;
+
+		if (customize != null)
+			custom->Import(customize.Value);
+
+		bool didLoad = ((Human*)pCharacter->DrawObject)->UpdateDrawData((byte*)custom, true);
+
+		if (!didLoad)
+		{
+			this.pendingRedraws.Add(pCharacter->ObjectIndex);
+		}
+	}
+
 	private void OnGroupPoseStateChange(bool newState)
 	{
 		this.Log.Information($"GPose {newState}");
@@ -161,117 +293,5 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 		// always allow npc values.
 		////return this.enforceKindRestrictionsHook.Original(a1, a2);
 		return 0;
-	}
-}
-
-public class CharacterBackupAppearance
-	: LibraryEntryBase, ICharacterAppearance, ILibraryActions
-{
-	private readonly string? name;
-
-	public unsafe CharacterBackupAppearance(Character* character)
-		: base(null)
-	{
-		this.name = character->GetDisplayName();
-		this.DrawData = character->DrawData;
-		this.ModelId = character->ModelContainer.ModelCharaId;
-
-		this.Tags.Add("Named");
-
-		CustomizeData customize = this.DrawData.CustomizeData;
-		this.Icon = customize.GetIcon();
-	}
-
-	public CharacterBackupAppearance(Character character)
-		: base(null)
-	{
-		this.name = character.GetDisplayName();
-		this.DrawData = character.DrawData;
-		this.ModelId = character.ModelContainer.ModelCharaId;
-
-		this.Tags.Add("Named");
-
-		CustomizeData customize = this.DrawData.CustomizeData;
-		this.Icon = customize.GetIcon();
-	}
-
-	public DrawDataContainer DrawData { get; private set; }
-	public int ModelId { get; private set; }
-	public override string Name => this.name ?? string.Empty;
-	public override string? SubTitle => null;
-	public ImageReference? Icon { get; private set; }
-
-	[LibraryMenu(IconChar.Plus, "LOC_AppearanceCreateCharacter")]
-	public Task Spawn()
-	{
-		return ServiceManager.Instance.CharacterLifecycle.CreateAsync(this);
-	}
-
-	[LibraryMenuTarget(IconChar.UserShield, "LOC_AppearanceApplyTo")]
-	public Task Apply(int objectTableIndex)
-	{
-		return this.Apply(objectTableIndex, CharacterExtensions.UpdateSource.Library);
-	}
-
-	public async Task Apply(int objectTableIndex, CharacterExtensions.UpdateSource source)
-	{
-		await Threads.FrameworkThread();
-
-		if (DalamudServices.ObjectTable == null)
-			return;
-
-		unsafe
-		{
-			Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
-
-			bool redraw = this.ModelId != character->ModelContainer.ModelCharaId
-				|| this.DrawData.CustomizeData[(int)CustomizeIndex.Race] != character->GetCustomizeValue(CustomizeIndex.Race)
-				|| this.DrawData.CustomizeData[(int)CustomizeIndex.Tribe] != character->GetCustomizeValue(CustomizeIndex.Tribe)
-				|| this.DrawData.CustomizeData[(int)CustomizeIndex.ModelType] != character->GetCustomizeValue(CustomizeIndex.ModelType);
-
-			character->UpdateModel(this.ModelId, source, false);
-			character->UpdateEquipment(this.DrawData.EquipmentModelIds, source);
-			character->UpdateCustomize(this.DrawData.CustomizeData, redraw, source);
-		}
-	}
-
-	protected override string GetInternalId() => this.Name;
-}
-
-public class GroupPoseCharactersLibrarySource : SourceBase
-{
-	public override string Name => Resources.Find("LOC_Library_GroupPoseCharactersLibrarySource", "GPose Characters");
-
-	public void OnEnterGroupPose()
-	{
-		this.Clear();
-
-		Task.Run(async () =>
-		{
-			await Task.Delay(1500);
-			await Threads.RunOnFrameworkThread(() => this.BackupAll());
-		});
-	}
-
-	protected override void Scan()
-	{
-	}
-
-	protected override string GetInternalId() => "CurrentCharactersLibraryProvider";
-
-	private unsafe void BackupAll()
-	{
-		// back up the appearance of every character in gpose
-		for (int i = GroupPoseService.GPoseFirstCharacter; i < GroupPoseService.GPoseFirstCharacter + GroupPoseService.GPoseCharacterCount; ++i)
-		{
-			nint? address = DalamudServices.ObjectTable?.GetObjectAddress(i);
-			if (address == null || address == nint.Zero)
-				continue;
-
-			Character* character = (Character*)address;
-
-			CharacterBackupAppearance appearance = new(character);
-			this.Add(appearance);
-		}
 	}
 }

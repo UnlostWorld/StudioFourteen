@@ -1,14 +1,20 @@
 ﻿namespace StudioFourteen.GameData.Library;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using FontAwesome.Sharp;
 using Lumina.Excel.Sheets;
+using StudioFourteen.Appearance;
 using StudioFourteen.Library;
+using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Sources;
-
+using StudioFourteen.Plugin;
+using StudioFourteen.Utilities;
+using System.Threading.Tasks;
+using static FFXIVClientStructs.FFXIV.Client.Game.Character.CharacterExtensions;
 using BNpcCustomize = StudioFourteen.GameData.Sheets.BNpcCustomize;
 
 public class BNpcBaseLibraryEntry(SourceBase source, BNpcBase npc)
-	: ExcelLibraryEntry(source, npc.RowId)
+	: ExcelLibraryEntry(source, npc.RowId), ICharacterAppearance
 {
 	public override string Name
 	{
@@ -47,5 +53,22 @@ public class BNpcBaseLibraryEntry(SourceBase source, BNpcBase npc)
 			BNpcCustomize? customize = ServiceManager.Instance.GameData.GetRow<BNpcCustomize>(npc.BNpcCustomize.RowId);
 			return customize?.Data;
 		}
+	}
+
+	[LibraryMenu(IconChar.Plus, "LOC_AppearanceCreateCharacter")]
+	public Task Spawn()
+	{
+		return ServiceManager.Instance.CharacterLifecycle.CreateAsync(this);
+	}
+
+	[LibraryMenuTarget(IconChar.UserShield, "LOC_AppearanceApplyTo")]
+	public async Task Apply(int objectTableIndex)
+	{
+		await Threads.FrameworkThread();
+
+		this.Services.CharacterAppearance.SetModelCharaId(objectTableIndex, npc.ModelChara.Value, UpdateSource.Library);
+
+		if (this.Customize != null)
+			this.Services.CharacterAppearance.SetCustomize(objectTableIndex, this.Customize.Value, UpdateSource.Library);
 	}
 }

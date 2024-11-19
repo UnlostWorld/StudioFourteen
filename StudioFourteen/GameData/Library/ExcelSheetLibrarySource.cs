@@ -40,6 +40,9 @@ public class ExcelSheetLibrarySource<TExcel, TEntry> : ExcelSheetLibrarySource<T
 		if (this.Sheet == null)
 			return null;
 
+		if (!this.Sheet.HasRow(rowId))
+			return null;
+
 		TExcel row = this.Sheet.GetRow(rowId);
 		return this.GetRow(row);
 	}
