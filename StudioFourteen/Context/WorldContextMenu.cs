@@ -38,6 +38,7 @@ public partial class WorldContextMenu : PopOut
 
 	public ServiceManager Services => ServiceManager.Instance;
 	public FastObservableCollection<MenuEntry> Menus { get; init; } = new();
+	public FastObservableCollection<MenuEntry> IconMenus { get; init; } = new();
 
 	public bool IsObject => this.ObjectTableIndex != -1;
 	public int ObjectTableIndex => this.currentHitInfo?.ObjectTableIndex ?? -1;
@@ -51,6 +52,17 @@ public partial class WorldContextMenu : PopOut
 	public static void RemoveProvider(IProvider provider)
 	{
 		ContextProviders.Remove(provider);
+	}
+
+	public void AddIcon(IconChar? icon, string? label, bool isEnabled = true, Func<WorldContextMenu, Task>? callback = null)
+	{
+		MenuEntry entry = new(icon, label, isEnabled, callback);
+		entry.SetCallback(this.OnContextMenuClicked);
+
+		this.Dispatcher.Invoke(() =>
+		{
+			this.IconMenus.Add(entry);
+		});
 	}
 
 	public void Add(IconChar? icon, string? label, bool isEnabled = true, Func<WorldContextMenu, Task>? callback = null)
@@ -76,6 +88,7 @@ public partial class WorldContextMenu : PopOut
 	{
 		await this.MainThread();
 		this.Menus.Clear();
+		this.IconMenus.Clear();
 
 		string? name = null;
 		await Threads.FrameworkThread();
@@ -90,7 +103,7 @@ public partial class WorldContextMenu : PopOut
 			}
 			else
 			{
-				name = this.currentHitInfo.Position.ToString();
+				name = this.currentHitInfo.Position.ToString("N0").Replace("<", string.Empty).Replace(">", string.Empty);
 			}
 		}
 
@@ -101,7 +114,7 @@ public partial class WorldContextMenu : PopOut
 
 		await this.MainThread();
 
-		this.PlacementRectangle = new Rect(screenPosition.X, screenPosition.Y + 50, 1, 1);
+		this.PlacementRectangle = new Rect(screenPosition.X, screenPosition.Y + 25, 1, 1);
 		this.IsOpen = true;
 
 		this.ObjectName = name;

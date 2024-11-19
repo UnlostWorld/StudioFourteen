@@ -49,26 +49,53 @@
 						TextWrapping="Wrap" />
 
 					<Border Style="{DynamicResource WpfUtilsControlBorder}">
-						<Menu ItemsSource="{Binding Menus, RelativeSource={RelativeSource AncestorType={x:Type local:WorldContextMenu}}}">
+						<StackPanel>
 
-							<Menu.ItemTemplate>
-								<HierarchicalDataTemplate
-									DataType="{x:Type context:MenuEntry}"
-									ItemsSource="{Binding Path=Children}" />
-							</Menu.ItemTemplate>
+							<ItemsControl ItemsSource="{Binding IconMenus, RelativeSource={RelativeSource AncestorType={x:Type local:WorldContextMenu}}}">
+								<ItemsControl.ItemsPanel>
+									<ItemsPanelTemplate>
+										<WrapPanel />
+									</ItemsPanelTemplate>
+								</ItemsControl.ItemsPanel>
 
-							<Menu.ItemContainerStyle>
-								<Style
-									BasedOn="{StaticResource WpfUtilsMenuItem}"
-									TargetType="{x:Type MenuItem}">
-									<Setter Property="MenuItem.IsEnabled" Value="{Binding IsEnabled}" />
-									<Setter Property="MenuItem.Header" Value="{Binding Label}" />
-									<Setter Property="MenuItem.Icon" Value="{Binding Icon}" />
-									<Setter Property="MenuItem.ItemsSource" Value="{Binding Children}" />
-									<Setter Property="MenuItem.Command" Value="{Binding OnClicked}" />
-								</Style>
-							</Menu.ItemContainerStyle>
-						</Menu>
+								<ItemsControl.ItemTemplate>
+									<DataTemplate DataType="{x:Type context:MenuEntry}">
+										<Button
+											Width="32"
+											Height="32"
+											Command="{Binding OnClicked}"
+											IsEnabled="{Binding IsEnabled}"
+											ToolTip="{Binding Label}">
+											<wpfUtils:IconBlock
+												FontSize="14"
+												Icon="{Binding Icon}"
+												IconFont="Solid" />
+										</Button>
+									</DataTemplate>
+								</ItemsControl.ItemTemplate>
+							</ItemsControl>
+
+							<Menu ItemsSource="{Binding Menus, RelativeSource={RelativeSource AncestorType={x:Type local:WorldContextMenu}}}">
+
+								<Menu.ItemTemplate>
+									<HierarchicalDataTemplate
+										DataType="{x:Type context:MenuEntry}"
+										ItemsSource="{Binding Path=Children}" />
+								</Menu.ItemTemplate>
+
+								<Menu.ItemContainerStyle>
+									<Style
+										BasedOn="{StaticResource WpfUtilsMenuItem}"
+										TargetType="{x:Type MenuItem}">
+										<Setter Property="MenuItem.IsEnabled" Value="{Binding IsEnabled}" />
+										<Setter Property="MenuItem.Header" Value="{Binding Label}" />
+										<Setter Property="MenuItem.Icon" Value="{Binding Icon}" />
+										<Setter Property="MenuItem.ItemsSource" Value="{Binding Children}" />
+										<Setter Property="MenuItem.Command" Value="{Binding OnClicked}" />
+									</Style>
+								</Menu.ItemContainerStyle>
+							</Menu>
+						</StackPanel>
 					</Border>
 				</StackPanel>
 			</Grid>

@@ -193,11 +193,11 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 	{
 		if (menu.IsObject)
 		{
-			menu.Add(IconChar.TrashCan, "Destroy Character", true, (h) => this.DestroyAsync(h.ObjectTableIndex));
+			menu.AddIcon(IconChar.TrashCan, "Destroy Character", true, (h) => this.DestroyAsync(h.ObjectTableIndex));
 		}
 		else
 		{
-			menu.Add(IconChar.Plus, "Create Character", true, (h) => this.CreateAsync(h.Position));
+			menu.AddIcon(IconChar.UserPlus, "Create Character", true, (h) => this.CreateAsync(h.Position));
 		}
 
 		return Task.CompletedTask;
