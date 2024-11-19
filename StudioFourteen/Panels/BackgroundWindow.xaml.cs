@@ -108,6 +108,7 @@ public partial class BackgroundWindow : PanelWindow
 	{
 		Point mousePos = e.GetPosition(this);
 		this.Services.Input.HandleMouseMove(new((float)mousePos.X, (float)mousePos.Y));
+		this.Services.Windows.SendToBack(this);
 	}
 
 	private void OnMouseEnter(object sender, MouseEventArgs e)
