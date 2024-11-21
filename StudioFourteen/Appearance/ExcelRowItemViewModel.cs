@@ -1,4 +1,19 @@
-﻿namespace StudioFourteen.Appearance;
+﻿// .                      @@             _____ _______ _    _ _____ _____ ____
+//            @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
+//           @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
+//           @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
+//          @@@@       @@@@@@@          ____) |  | |  | |__| | |__| || || |__| |
+//      @@@@@             @@@          |_____/   |_|   \____/|_____/_____\____/
+//       @@@      @@@      @@        ___     _    _   _  __   _____  ___  ___  _  _
+//        @@    @@@@@@@    @@       |  _|  / _ \ | | | || _ \|_   _|| __|| __|| \| |
+//        @@    @@@@@@@    @   @    | __| | (_) || |_| ||   /  | |  | _| | _| | .` |
+//      @@@@      @@@      @@@@     |_|    \___/  \___/ |_|_\  |_|  |___||___||_|\_|
+//       @@@@             @@@
+//         @@@@@      @@@@@               This software is licensed under the
+//          @@@@@@@@@@@@@@                 GNU AFFERO GENERAL PUBLIC LICENSE
+//              @@@@  @                       Version 3, 19 November 2007
+
+namespace StudioFourteen.Appearance;
 
 using StudioFourteen.GameData.Library;
 using StudioFourteen.Mvm;
@@ -43,10 +58,14 @@ public abstract class ExcelRowItemViewModel<TLibraryType> : GearViewModelBase<TL
 		}
 	}
 
+	// TODO: the same as the customize options, we should maintain a ui-side value, and push/read
+	// from the game only during frameworkupdates. look at MenuViewModel for reference.
 	[AutoNotify]
 	public ushort Value
 	{
-		get
+		get;
+		set;
+		/*get
 		{
 			if (!this.HasValidTarget)
 				return 0;
@@ -71,7 +90,7 @@ public abstract class ExcelRowItemViewModel<TLibraryType> : GearViewModelBase<TL
 					this.LiveValue = value;
 				});
 			}
-		}
+		}*/
 	}
 
 	protected unsafe abstract ushort LiveValue
