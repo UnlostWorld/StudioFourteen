@@ -1,0 +1,15 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:library="clr-namespace:StudioFourteen.Library"
+	xmlns:local="clr-namespace:StudioFourteen.Appearance.Equipment">
+
+	<DataTemplate DataType="{x:Type local:EquipmentSlotViewModel}">
+		<Grid>
+			<library:LibrarySelectorButton
+				Type="{Binding LibraryType}"
+				Value="{Binding Item}" />
+		</Grid>
+	</DataTemplate>
+
+</ResourceDictionary>

@@ -40,13 +40,6 @@ public partial class CustomizeViewModel : ViewModel
 	public CustomizeViewModel(DispatcherObject dispatcher)
 	{
 		this.dispatcher = dispatcher;
-		this.Services.Target.TargetChanged += this.OnTargetChanged;
-		this.OnTargetChanged();
-
-		if (DalamudServices.Framework == null)
-			return;
-
-		DalamudServices.Framework.Update += this.OnFrameworkUpdate;
 	}
 
 	public bool HasValidTarget => this.Services.Target.HasValidTarget;
@@ -55,7 +48,26 @@ public partial class CustomizeViewModel : ViewModel
 	public FastObservableCollection<MenuViewModel?> HeadMenus { get; init; } = new();
 	public FastObservableCollection<MenuViewModel?> MakeupMenus { get; init; } = new();
 
-	private void OnTargetChanged()
+	public unsafe void OnFrameworkUpdate(Character* pCharacter)
+	{
+		// TODO: Ensure race, tribe, and gender have not changed.
+		foreach (MenuViewModel? menu in this.BodyMenus)
+		{
+			menu?.OnFrameworkUpdate(pCharacter);
+		}
+
+		foreach (MenuViewModel? menu in this.HeadMenus)
+		{
+			menu?.OnFrameworkUpdate(pCharacter);
+		}
+
+		foreach (MenuViewModel? menu in this.MakeupMenus)
+		{
+			menu?.OnFrameworkUpdate(pCharacter);
+		}
+	}
+
+	public void OnTargetChanged()
 	{
 		this.UpdateMenus().Run();
 	}
@@ -150,32 +162,6 @@ public partial class CustomizeViewModel : ViewModel
 		this.BodyMenus.Replace(bodyMenus);
 		this.HeadMenus.Replace(headMenus);
 		this.MakeupMenus.Replace(makeupMenus);
-	}
-
-	private unsafe void OnFrameworkUpdate(IFramework framework)
-	{
-		if (!this.Services.Studio.IsOpen)
-			return;
-
-		// TODO: Ensure race, tribe, and gender have not changed.
-		Character* pTarget = this.Services.Target.GetTarget();
-		if (pTarget == null)
-			return;
-
-		foreach(MenuViewModel? menu in this.BodyMenus)
-		{
-			menu?.OnFrameworkUpdate(pTarget);
-		}
-
-		foreach (MenuViewModel? menu in this.HeadMenus)
-		{
-			menu?.OnFrameworkUpdate(pTarget);
-		}
-
-		foreach (MenuViewModel? menu in this.MakeupMenus)
-		{
-			menu?.OnFrameworkUpdate(pTarget);
-		}
 	}
 
 	private MenuViewModel? GetMenu(CharaMakeType makeType, CustomizeIndex index)

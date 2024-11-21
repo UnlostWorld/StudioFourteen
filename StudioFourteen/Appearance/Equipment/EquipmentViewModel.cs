@@ -13,41 +13,41 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Panels;
+namespace StudioFourteen.Appearance.Equipment;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using StudioFourteen.Mvm;
+using WpfUtils.Extensions;
 
-public abstract class CharacterPanelBase : Panel
+using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
+
+public class EquipmentViewModel : ViewModel
 {
-	[AlwaysNotify] public bool IsTargetLoading => this.Services.Target.IsTargetLoading;
-	[AlwaysNotify] public string? CharacterName => this.Services.Target.CharacterName;
-	[AlwaysNotify] public bool HasValidTarget => this.Services.Target.HasValidTarget;
-	[AlwaysNotify] public int TargetObjectIndex => this.Services.Target.TargetObjectIndex;
-
-	public override bool ShouldTickAutoProperties()
+	public EquipmentViewModel()
 	{
-		if (!this.HasValidTarget)
-			return false;
+		this.Gear.Add(new EquipmentSlotViewModel(EquipmentSlot.Head));
+		this.Gear.Add(new EquipmentSlotViewModel(EquipmentSlot.Body));
+		this.Gear.Add(new EquipmentSlotViewModel(EquipmentSlot.Legs));
+		this.Gear.Add(new EquipmentSlotViewModel(EquipmentSlot.Feet));
 
-		return base.ShouldTickAutoProperties();
+		this.Gear.Add(new EquipmentSlotViewModel(EquipmentSlot.Ears));
+		this.Gear.Add(new EquipmentSlotViewModel(EquipmentSlot.Neck));
+		this.Gear.Add(new EquipmentSlotViewModel(EquipmentSlot.Wrists));
+		this.Gear.Add(new EquipmentSlotViewModel(EquipmentSlot.RFinger));
+		this.Gear.Add(new EquipmentSlotViewModel(EquipmentSlot.LFinger));
 	}
 
-	protected override void OnOpened()
-	{
-		this.Services.Target.TargetChanged += this.OnTargetChanged;
-		base.OnOpened();
+	public FastObservableCollection<GearViewModelBase> Gear { get; init; } = new();
 
-		this.OnTargetChanged();
+	public void OnTargetChanged()
+	{
 	}
 
-	protected override void OnClosed()
+	public unsafe void OnFrameworkUpdate(Character* pCharacter)
 	{
-		this.Services.Target.TargetChanged -= this.OnTargetChanged;
-		base.OnClosed();
-	}
-
-	protected virtual void OnTargetChanged()
-	{
+		foreach(GearViewModelBase gearViewModel in this.Gear)
+		{
+			gearViewModel.OnFrameworkUpdate(pCharacter);
+		}
 	}
 }

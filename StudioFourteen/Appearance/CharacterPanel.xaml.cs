@@ -15,15 +15,15 @@
 
 namespace StudioFourteen.Appearance;
 
+using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using StudioFourteen.Appearance.Customize;
+using StudioFourteen.Appearance.Equipment;
 using StudioFourteen.Files;
-using StudioFourteen.GameData.Library;
 using StudioFourteen.Library;
 using StudioFourteen.Mvm;
 using StudioFourteen.Panels;
 using System.Windows;
-using System.Windows.Input;
 using WpfUtils.Extensions;
 
 public partial class CharacterPanel : CharacterPanelBase
@@ -31,9 +31,11 @@ public partial class CharacterPanel : CharacterPanelBase
 	public CharacterPanel()
 	{
 		this.Customize = new(this);
+		this.Equipment = new();
 	}
 
 	public CustomizeViewModel Customize { get; init; }
+	public EquipmentViewModel Equipment { get; init; }
 
 	[AutoNotify] public bool UseTwoColumns => this.ActualWidth > 650;
 
@@ -47,7 +49,7 @@ public partial class CharacterPanel : CharacterPanelBase
 		set => this.SetPersistence(value);
 	}
 
-	[AutoNotify] public WeaponViewModel MainHand { get; init; } = new(DrawDataContainer.WeaponSlot.MainHand);
+	/*[AutoNotify] public WeaponViewModel MainHand { get; init; } = new(DrawDataContainer.WeaponSlot.MainHand);
 	[AutoNotify] public WeaponViewModel OffHand { get; init; } = new(DrawDataContainer.WeaponSlot.OffHand);
 
 	[AutoNotify] public ItemEquipViewModel Head { get; init; } = new(DrawDataContainer.EquipmentSlot.Head);
@@ -62,13 +64,60 @@ public partial class CharacterPanel : CharacterPanelBase
 	[AutoNotify] public ItemEquipViewModel RingLeft { get; init; } = new(DrawDataContainer.EquipmentSlot.LFinger);
 
 	public AccessoryViewModel Glasses { get; init; } = new(AccessorySlots.Glasses);
-	public OrnamentViewModel Ornament { get; init; } = new();
+	public OrnamentViewModel Ornament { get; init; } = new();*/
 
-	protected override void OnPreviewMouseDown(MouseButtonEventArgs e)
+	/*
+	public Rect IconRect
 	{
-		////MiniLibraryPopOut.Close();
+		get
+		{
+			if (this.Item is ItemEquipViewModel equipViewModel)
+			{
+				switch (equipViewModel.Slot)
+				{
+					case EquipmentSlot.Head: return new(64, 144, 64, 64);
+					case EquipmentSlot.Body: return new(192, 144, 64, 64);
+					case EquipmentSlot.Hands: return new(256, 144, 64, 64);
+					case EquipmentSlot.Legs: return new(384, 144, 64, 64);
+					case EquipmentSlot.Feet: return new(0, 208, 64, 64);
+					case EquipmentSlot.Ears: return new(64, 208, 64, 64);
+					case EquipmentSlot.Neck: return new(128, 208, 64, 64);
+					case EquipmentSlot.Wrists: return new(192, 208, 64, 64);
+					case EquipmentSlot.RFinger: return new(256, 208, 64, 64);
+					case EquipmentSlot.LFinger: return new(256, 208, 64, 64);
+				}
+			}
+			else if (this.Item is WeaponViewModel weaponViewModel)
+			{
+				switch (weaponViewModel.Slot)
+				{
+					case WeaponSlot.MainHand:
+					case WeaponSlot.OffHand: return new(0, 144, 64, 64);
+				}
+			}
 
-		base.OnPreviewMouseDown(e);
+			return new(0, 0, 1, 1);
+		}
+	}*/
+
+	protected unsafe override void OnFrameworkUpdate(IFramework framework)
+	{
+		base.OnFrameworkUpdate(framework);
+
+		Character* pTarget = this.Services.Target.GetTarget();
+		if (pTarget == null)
+			return;
+
+		this.Customize.OnFrameworkUpdate(pTarget);
+		this.Equipment.OnFrameworkUpdate(pTarget);
+	}
+
+	protected override void OnTargetChanged()
+	{
+		base.OnTargetChanged();
+
+		this.Customize.OnTargetChanged();
+		this.Equipment.OnTargetChanged();
 	}
 
 	private unsafe void OnRevertClicked(object sender, RoutedEventArgs e)

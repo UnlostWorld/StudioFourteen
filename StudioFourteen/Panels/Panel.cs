@@ -27,6 +27,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using StudioFourteen.Services;
 
 [DependencyProperty<bool>("IsShown", DefaultValue = false)]
 [DependencyProperty<IconChar>("TitleIcon")]
@@ -138,6 +139,9 @@ public partial class Panel : ContentControl, IAutoNotify
 
 	private void OnFrameworkUpdateSafe(IFramework framework)
 	{
+		if (!this.Services.Studio.IsOpen)
+			return;
+
 		if (this.frameworkException != null)
 			return;
 

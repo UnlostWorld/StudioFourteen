@@ -38,6 +38,8 @@
 					<ResourceDictionary Source="Customize/CustomizeLibraryEntryMenu.xaml" />
 					<ResourceDictionary Source="Customize/ToggleMenu.xaml" />
 					<ResourceDictionary Source="Customize/GenderMenu.xaml" />
+
+					<ResourceDictionary Source="Equipment/EquipmentSlot.xaml" />
 				</ResourceDictionary.MergedDictionaries>
 			</ResourceDictionary>
 		</Grid.Resources>
@@ -102,23 +104,8 @@
 						IconFont="Solid" />
 				</TabItem.Header>
 
-				<UniformGrid
-					VerticalAlignment="Top"
-					Columns="2">
-					<equipment:EquipmentView Item="{Binding MainHand}" />
-					<equipment:EquipmentView Item="{Binding OffHand}" />
-					<equipment:EquipmentView Item="{Binding Head}" />
-					<equipment:EquipmentView Item="{Binding Earring}" />
-					<equipment:EquipmentView Item="{Binding Chest}" />
-					<equipment:EquipmentView Item="{Binding Necklace}" />
-					<equipment:EquipmentView Item="{Binding Hands}" />
-					<equipment:EquipmentView Item="{Binding Bracelet}" />
-					<equipment:EquipmentView Item="{Binding Legs}" />
-					<equipment:EquipmentView Item="{Binding RingRight}" />
-					<equipment:EquipmentView Item="{Binding Feet}" />
-					<equipment:EquipmentView Item="{Binding RingLeft}" />
 
-				</UniformGrid>
+				<ItemsControl ItemsSource="{Binding Equipment.Gear}" />
 
 			</TabItem>
 
@@ -137,23 +124,7 @@
 						IconFont="Solid" />
 				</TabItem.Header>
 
-				<UniformGrid
-					VerticalAlignment="Top"
-					Columns="2">
-					<equipment:EquipmentView Item="{Binding MainHand}" />
-					<equipment:EquipmentView Item="{Binding OffHand}" />
-					<equipment:EquipmentView Item="{Binding Head}" />
-					<equipment:EquipmentView Item="{Binding Earring}" />
-					<equipment:EquipmentView Item="{Binding Chest}" />
-					<equipment:EquipmentView Item="{Binding Necklace}" />
-					<equipment:EquipmentView Item="{Binding Hands}" />
-					<equipment:EquipmentView Item="{Binding Bracelet}" />
-					<equipment:EquipmentView Item="{Binding Legs}" />
-					<equipment:EquipmentView Item="{Binding RingRight}" />
-					<equipment:EquipmentView Item="{Binding Feet}" />
-					<equipment:EquipmentView Item="{Binding RingLeft}" />
-
-				</UniformGrid>
+				<ItemsControl ItemsSource="{Binding Equipment.Gear}" />
 
 			</TabItem>
 		</TabControl>
