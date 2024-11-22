@@ -18,7 +18,7 @@ using System;
 using System.Threading.Tasks;
 using WpfToolkit.Controls;
 using WpfUtils;
-using WpfUtils.Behaviours;
+using WpfUtils.Behaviors;
 
 public class SmoothScrollingVirtualizingWrapPanel : VirtualizingWrapPanel
 {

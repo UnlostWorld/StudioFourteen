@@ -2,7 +2,6 @@
 	x:Class="StudioFourteen.Library.MiniLibraryPopOut"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:behaviours="clr-namespace:WpfUtils.Behaviours;assembly=wpfUtils"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
