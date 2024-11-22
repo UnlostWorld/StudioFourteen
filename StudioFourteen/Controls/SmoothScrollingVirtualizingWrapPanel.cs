@@ -14,17 +14,53 @@
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
 namespace StudioFourteen.Controls;
+
+using DependencyPropertyGenerator;
 using System;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls.Primitives;
+using System.Windows.Media.Animation;
 using WpfToolkit.Controls;
-using WpfUtils;
 using WpfUtils.Behaviors;
 
-public class SmoothScrollingVirtualizingWrapPanel : VirtualizingWrapPanel
+[DependencyProperty<double>("VerticalScrollActual")]
+[DependencyProperty<double>("HorizontalScrollActual")]
+public partial class SmoothScrollingVirtualizingWrapPanel : VirtualizingWrapPanel, ISmoothScroll
 {
-	private Task? animationTask;
-	private double? targetVerticalOffset;
-	private double? targetHorizontalOffset;
+	private readonly Storyboard storyboard;
+	private readonly DoubleAnimation verticalAnimation;
+	private readonly DoubleAnimation horizontalAnimation;
+
+	public SmoothScrollingVirtualizingWrapPanel()
+	{
+		this.verticalAnimation = new();
+		this.verticalAnimation.Duration = new Duration(TimeSpan.FromMilliseconds(ScrollInfoAdapter.AnimationDurationMs));
+		this.verticalAnimation.EasingFunction = new PowerEase()
+		{
+			EasingMode = EasingMode.EaseOut,
+		};
+
+		Storyboard.SetTarget(this.verticalAnimation, this);
+		Storyboard.SetTargetProperty(this.verticalAnimation, new PropertyPath(VerticalScrollActualProperty));
+
+		this.horizontalAnimation = new();
+		this.horizontalAnimation.Duration = new Duration(TimeSpan.FromMilliseconds(ScrollInfoAdapter.AnimationDurationMs));
+		this.horizontalAnimation.EasingFunction = new PowerEase()
+		{
+			EasingMode = EasingMode.EaseOut,
+		};
+
+		Storyboard.SetTarget(this.horizontalAnimation, this);
+		Storyboard.SetTargetProperty(this.horizontalAnimation, new PropertyPath(HorizontalScrollActualProperty));
+
+		this.storyboard = new();
+		this.storyboard.Children.Add(this.verticalAnimation);
+		this.storyboard.Children.Add(this.horizontalAnimation);
+		this.storyboard.Begin();
+	}
+
+	public IScrollInfo Original => this;
 
 	public override void LineUp() => this.VerticalScroll(-ScrollInfoAdapter.ScrollLineDelta);
 	public override void LineDown() => this.VerticalScroll(+ScrollInfoAdapter.ScrollLineDelta);
@@ -41,52 +77,39 @@ public class SmoothScrollingVirtualizingWrapPanel : VirtualizingWrapPanel
 
 	private void VerticalScroll(double val)
 	{
-		if (this.targetVerticalOffset == null)
-			this.targetVerticalOffset = this.VerticalOffset;
+		double? to = this.verticalAnimation.To;
+		if (to == null || this.storyboard.GetCurrentTime() >= this.verticalAnimation.Duration)
+			to = this.Original.VerticalOffset;
 
-		this.targetVerticalOffset = this.targetVerticalOffset + val;
-		this.targetVerticalOffset = Math.Clamp((double)this.targetVerticalOffset, 0, this.ScrollOwner?.ScrollableHeight ?? 0);
-		this.Animate();
+		to += val;
+		to = Math.Clamp((double)to, 0, this.Original.ScrollOwner.ScrollableHeight);
+
+		this.verticalAnimation.From = this.Original.VerticalOffset;
+		this.verticalAnimation.To = to;
+		this.storyboard.Begin();
 	}
 
 	private void HorizontalScroll(double val)
 	{
-		if (this.targetHorizontalOffset == null)
-			this.targetHorizontalOffset = this.HorizontalOffset;
+		double? to = this.horizontalAnimation.To;
+		if (to == null || this.storyboard.GetCurrentTime() >= this.horizontalAnimation.Duration)
+			to = this.Original.HorizontalOffset;
 
-		this.targetHorizontalOffset = this.targetHorizontalOffset + val;
-		this.targetHorizontalOffset = Math.Clamp((double)this.targetHorizontalOffset, 0, this.ScrollOwner?.ScrollableWidth ?? 0);
+		to += val;
+		to = Math.Clamp((double)to, 0, this.Original.ScrollOwner.ScrollableWidth);
 
-		this.Animate();
+		this.horizontalAnimation.From = this.Original.HorizontalOffset;
+		this.horizontalAnimation.To = to;
+		this.storyboard.Begin();
 	}
 
-	private void Animate()
+	partial void OnVerticalScrollActualChanged(double newValue)
 	{
-		if (this.animationTask == null || this.animationTask.IsCompleted)
-		{
-			this.animationTask = this.AnimateToTarget();
-		}
+		this.Original.SetVerticalOffset(newValue);
 	}
 
-	private async Task AnimateToTarget()
+	partial void OnHorizontalScrollActualChanged(double newValue)
 	{
-		if (this.targetHorizontalOffset == null)
-			this.targetHorizontalOffset = this.HorizontalOffset;
-
-		if (this.targetVerticalOffset == null)
-			this.targetVerticalOffset = this.VerticalOffset;
-
-		do
-		{
-			this.SetVerticalOffset(ScrollInfoAdapter.Lerp(this.VerticalOffset, (double)this.targetVerticalOffset));
-			this.SetHorizontalOffset(ScrollInfoAdapter.Lerp(this.HorizontalOffset, (double)this.targetHorizontalOffset));
-			await Task.Delay(1);
-			await this.Dispatcher.MainThread();
-		}
-		while (this.VerticalOffset != this.targetVerticalOffset ||
-			this.HorizontalOffset != this.targetHorizontalOffset);
-
-		this.targetVerticalOffset = null;
-		this.targetHorizontalOffset = null;
+		this.Original.SetVerticalOffset(newValue);
 	}
 }
