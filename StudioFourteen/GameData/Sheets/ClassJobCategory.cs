@@ -65,7 +65,11 @@ public readonly struct ClassJobCategory(ExcelPage page, uint offset, uint row)
 
 		if (numJobs == 1 && exclusiveJob != null)
 		{
-			tags.Add(exclusiveJob?.ToExclusiveTag());
+			Tag? tag = exclusiveJob.Value.ToExclusiveTag();
+			if (tag != null)
+			{
+				tags.Add(tag);
+			}
 		}
 
 		// Special tags

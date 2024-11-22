@@ -199,7 +199,7 @@ public partial class MiniLibraryPopOut : View
 		this.currentEntry = current;
 		this.isLoading = false;
 
-		this.TagSelector.SetFocus();
+		this.SearchBox.Focus();
 	}
 
 	private void OnTagsChanged(object? sender, NotifyCollectionChangedEventArgs e)

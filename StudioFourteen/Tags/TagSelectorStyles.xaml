@@ -1,0 +1,72 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:tags="clr-namespace:StudioFourteen.Tags"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
+
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="pack://application:,,,/WpfUtils;component/Controls/PopOutStyles.xaml" />
+	</ResourceDictionary.MergedDictionaries>
+
+	<ControlTemplate
+		x:Key="TagSelectorTemplate"
+		TargetType="{x:Type tags:TagSelector2}">
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition />
+				<ColumnDefinition Width="Auto" />
+			</Grid.ColumnDefinitions>
+
+			<tags:TagDisplay
+				x:Name="PART_TagDisplay"
+				Margin="0,6,0,0"
+				Tags="{TemplateBinding SelectedTags}" />
+
+			<ToggleButton
+				x:Name="TagSearchToggle"
+				Grid.Column="1"
+				Width="28"
+				VerticalAlignment="Bottom"
+				IsChecked="{Binding PopOutOpen, RelativeSource={RelativeSource AncestorType={x:Type tags:TagSelector2}}}"
+				Style="{DynamicResource WpfUtilsIconToggleButton}">
+				<wpfUtils:IconBlock Icon="Tags" />
+			</ToggleButton>
+
+			<wpfUtils:PopOut
+				Width="350"
+				Height="350"
+				IsOpen="{Binding PopOutOpen, RelativeSource={RelativeSource AncestorType={x:Type tags:TagSelector2}}}"
+				PlacementTarget="{Binding ElementName=TagSearchToggle}"
+				StaysOpen="False"
+				Style="{StaticResource WpfUtilsPopOut}">
+
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition />
+					</Grid.RowDefinitions>
+
+					<TextBox
+						x:Name="PART_SearchBox"
+						Grid.Row="0"
+						Text="{Binding SearchString, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource AncestorType={x:Type tags:TagSelector2}}}" />
+
+					<ScrollViewer
+						Grid.Row="1"
+						HorizontalScrollBarVisibility="Disabled">
+						<tags:TagDisplay
+							x:Name="PART_PopOutTagDisplay"
+							Tags="{TemplateBinding SearchTags}" />
+					</ScrollViewer>
+				</Grid>
+			</wpfUtils:PopOut>
+
+		</Grid>
+	</ControlTemplate>
+
+	<Style TargetType="{x:Type tags:TagSelector2}">
+		<Setter Property="Template" Value="{StaticResource TagSelectorTemplate}" />
+		<Setter Property="HorizontalAlignment" Value="Stretch" />
+	</Style>
+
+</ResourceDictionary>

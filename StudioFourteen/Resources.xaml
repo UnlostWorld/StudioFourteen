@@ -21,6 +21,7 @@
 		<ResourceDictionary Source="./Library/LibrarySelectorButtonStyles.xaml" />
 		<ResourceDictionary Source="./Library/LibraryMenu/LibraryContextMenuStyles.xaml" />
 		<ResourceDictionary Source="./Context/WorldContextMenuStyles.xaml" />
+		<ResourceDictionary Source="./Tags/TagSelectorStyles.xaml" />
 
 		<!--  Default Language  -->
 		<ResourceDictionary Source="./Languages/English.xaml" />
