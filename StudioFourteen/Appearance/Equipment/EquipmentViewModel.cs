@@ -25,19 +25,26 @@ public class EquipmentViewModel : ViewModel
 {
 	public EquipmentViewModel()
 	{
-		this.Gear.Add(new EquipmentSlotViewModel(EquipmentSlot.Head));
-		this.Gear.Add(new EquipmentSlotViewModel(EquipmentSlot.Body));
-		this.Gear.Add(new EquipmentSlotViewModel(EquipmentSlot.Legs));
-		this.Gear.Add(new EquipmentSlotViewModel(EquipmentSlot.Feet));
+		this.Weapons.Add(new WeaponSlotViewModel(WeaponSlot.MainHand));
+		this.Weapons.Add(new WeaponSlotViewModel(WeaponSlot.OffHand));
 
-		this.Gear.Add(new EquipmentSlotViewModel(EquipmentSlot.Ears));
-		this.Gear.Add(new EquipmentSlotViewModel(EquipmentSlot.Neck));
-		this.Gear.Add(new EquipmentSlotViewModel(EquipmentSlot.Wrists));
-		this.Gear.Add(new EquipmentSlotViewModel(EquipmentSlot.RFinger));
-		this.Gear.Add(new EquipmentSlotViewModel(EquipmentSlot.LFinger));
+		this.Equipment.Add(new EquipmentSlotViewModel(EquipmentSlot.Head));
+		this.Equipment.Add(new EquipmentSlotViewModel(EquipmentSlot.Body));
+		this.Equipment.Add(new EquipmentSlotViewModel(EquipmentSlot.Hands));
+		this.Equipment.Add(new EquipmentSlotViewModel(EquipmentSlot.Legs));
+		this.Equipment.Add(new EquipmentSlotViewModel(EquipmentSlot.Feet));
+
+		this.Accessories.Add(new EquipmentSlotViewModel(EquipmentSlot.Ears));
+		this.Accessories.Add(new EquipmentSlotViewModel(EquipmentSlot.Neck));
+		this.Accessories.Add(new EquipmentSlotViewModel(EquipmentSlot.Wrists));
+		this.Accessories.Add(new EquipmentSlotViewModel(EquipmentSlot.RFinger));
+		this.Accessories.Add(new EquipmentSlotViewModel(EquipmentSlot.LFinger));
 	}
 
-	public FastObservableCollection<GearViewModelBase> Gear { get; init; } = new();
+	public FastObservableCollection<GearViewModelBase> Weapons { get; init; } = new();
+	public FastObservableCollection<GearViewModelBase> Equipment { get; init; } = new();
+	public FastObservableCollection<GearViewModelBase> Accessories { get; init; } = new();
+	public FastObservableCollection<GearViewModelBase> Fashion { get; init; } = new();
 
 	public void OnTargetChanged()
 	{
@@ -45,7 +52,22 @@ public class EquipmentViewModel : ViewModel
 
 	public unsafe void OnFrameworkUpdate(Character* pCharacter)
 	{
-		foreach(GearViewModelBase gearViewModel in this.Gear)
+		foreach (GearViewModelBase gearViewModel in this.Weapons)
+		{
+			gearViewModel.OnFrameworkUpdate(pCharacter);
+		}
+
+		foreach (GearViewModelBase gearViewModel in this.Equipment)
+		{
+			gearViewModel.OnFrameworkUpdate(pCharacter);
+		}
+
+		foreach (GearViewModelBase gearViewModel in this.Accessories)
+		{
+			gearViewModel.OnFrameworkUpdate(pCharacter);
+		}
+
+		foreach (GearViewModelBase gearViewModel in this.Fashion)
 		{
 			gearViewModel.OnFrameworkUpdate(pCharacter);
 		}

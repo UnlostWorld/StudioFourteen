@@ -15,20 +15,58 @@
 
 namespace StudioFourteen.Appearance.Equipment;
 
+using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using Lumina.Excel.Sheets;
+using PropertyChanged.SourceGenerator;
 using StudioFourteen.GameData.Library;
-using StudioFourteen.Library;
 using StudioFourteen.Mvm;
 using StudioFourteen.Tags;
 using System;
 using System.Windows;
+using Setter = PropertyChanged.SourceGenerator.Setter;
 
-using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
-
-public abstract class GearViewModelBase : ViewModel
+public abstract partial class GearViewModelBase : ViewModel
 {
+	[Notify(Setter.Private)] private string? characterName;
+
+	private byte lastRace = 255;
+
+	public abstract Rect SlotBackgroundRect { get; }
+	public abstract string SearchTitle { get; }
+	public abstract string DyeSearchTitle { get; }
+	public TagCollection SearchTags { get; init; } = new();
+
 	public virtual unsafe void OnFrameworkUpdate(Character* pCharacter)
 	{
+		this.CharacterName = pCharacter->GetDisplayName();
+		this.RaisePropertyChanged(nameof(this.SearchTitle));
+		this.RaisePropertyChanged(nameof(this.DyeSearchTitle));
+
+		bool generateTags = false;
+		byte currentRace = pCharacter->GetCustomizeValue(CustomizeIndex.Race);
+		if (currentRace != this.lastRace)
+		{
+			this.lastRace = currentRace;
+			generateTags = true;
+		}
+
+		if (generateTags)
+		{
+			this.SearchTags.Clear();
+			TagCollection tags = new();
+			this.GetSearchTags(ref tags, pCharacter);
+			this.SearchTags.Add(tags);
+		}
+	}
+
+	protected unsafe virtual void GetSearchTags(ref TagCollection tags, Character* pCharacter)
+	{
+		Race? race = pCharacter->DrawData.CustomizeData.GetRace();
+		if (race != null)
+		{
+			this.SearchTags.Add(race.Value.ToTags());
+		}
 	}
 }
 
@@ -36,9 +74,9 @@ public abstract class GearViewModelBase<TLibraryType> : GearViewModelBase
 	where TLibraryType : ExcelLibraryEntry
 {
 	protected byte? nextWriteStain0;
-	protected byte lastReadStain0;
+	protected byte lastReadStain0 = 255;
 	protected byte? nextWriteStain1;
-	protected byte lastReadStain1;
+	protected byte lastReadStain1 = 255;
 
 	protected StainLibraryEntry? stain0;
 	protected StainLibraryEntry? stain1;
@@ -62,6 +100,9 @@ public abstract class GearViewModelBase<TLibraryType> : GearViewModelBase
 		get => this.stain0;
 		set
 		{
+			if (this.Stain0Id == value?.RowId)
+				return;
+
 			this.stain0 = value;
 
 			if (value == null)
@@ -72,6 +113,8 @@ public abstract class GearViewModelBase<TLibraryType> : GearViewModelBase
 			{
 				this.nextWriteStain0 = (byte)value.RowId;
 			}
+
+			this.RaisePropertyChanged(nameof(this.Stain0));
 		}
 	}
 
@@ -80,6 +123,9 @@ public abstract class GearViewModelBase<TLibraryType> : GearViewModelBase
 		get => this.stain1;
 		set
 		{
+			if (this.Stain1Id == value?.RowId)
+				return;
+
 			this.stain1 = value;
 
 			if (value == null)
@@ -90,6 +136,8 @@ public abstract class GearViewModelBase<TLibraryType> : GearViewModelBase
 			{
 				this.nextWriteStain1 = (byte)value.RowId;
 			}
+
+			this.RaisePropertyChanged(nameof(this.Stain1));
 		}
 	}
 
@@ -133,113 +181,4 @@ public abstract class GearViewModelBase<TLibraryType> : GearViewModelBase
 	}
 
 	protected abstract void OnItemChanged(TLibraryType? item);
-}
-
-public class EquipmentSlotViewModel(EquipmentSlot equipmentSlot)
-	: GearViewModelBase<ItemLibraryEntry>
-{
-	private ushort? nextWriteId;
-	private ushort lastReadId;
-	private byte? nextWriteVariant;
-	private byte lastReadVariant;
-
-	public ushort Id
-	{
-		get => this.nextWriteId ?? this.lastReadId;
-		set
-		{
-			if (value == this.Id)
-				return;
-
-			this.nextWriteId = value;
-			this.RaisePropertyChanged(nameof(this.Id));
-		}
-	}
-
-	public byte Variant
-	{
-		get => this.nextWriteVariant ?? this.lastReadVariant;
-		set
-		{
-			if (value == this.Variant)
-				return;
-
-			this.nextWriteVariant = value;
-			this.RaisePropertyChanged(nameof(this.Variant));
-		}
-	}
-
-	public override unsafe void OnFrameworkUpdate(Character* pCharacter)
-	{
-		base.OnFrameworkUpdate(pCharacter);
-
-		EquipmentModelId modelId = pCharacter->DrawData.Equipment(equipmentSlot);
-		bool changed = false;
-		if (this.nextWriteId != null && modelId.Id != this.nextWriteId.Value)
-		{
-			modelId.Id = this.nextWriteId.Value;
-			changed = true;
-		}
-
-		if (this.nextWriteVariant != null && modelId.Variant != this.nextWriteVariant.Value)
-		{
-			modelId.Variant = this.nextWriteVariant.Value;
-			changed = true;
-		}
-
-		if (this.nextWriteStain0 != null && modelId.Variant != this.nextWriteStain0.Value)
-		{
-			modelId.Stain0 = this.nextWriteStain0.Value;
-			changed = true;
-		}
-
-		if (this.nextWriteStain1 != null && modelId.Variant != this.nextWriteStain1.Value)
-		{
-			modelId.Stain1 = this.nextWriteStain1.Value;
-			changed = true;
-		}
-
-		if (changed)
-			this.Services.CharacterAppearance.SetEquipment(pCharacter->ObjectIndex, equipmentSlot, modelId, CharacterExtensions.UpdateSource.Interface);
-
-		if (this.lastReadId != modelId.Id || this.lastReadId != modelId.Id)
-		{
-			this.Item = this.Services.GameData.Items?.Find(equipmentSlot, modelId);
-			this.RaisePropertyChanged(nameof(this.Item));
-		}
-
-		this.lastReadId = modelId.Id;
-		this.lastReadVariant = modelId.Variant;
-
-		if (this.lastReadStain0 != modelId.Stain0)
-		{
-			this.lastReadStain0 = modelId.Stain0;
-			this.stain0 = this.Services.GameData.GetLibraryEntry<StainLibraryEntry>(this.Stain0Id);
-		}
-
-		if (this.lastReadStain1 != modelId.Stain1)
-		{
-			this.lastReadStain1 = modelId.Stain1;
-			this.stain1 = this.Services.GameData.GetLibraryEntry<StainLibraryEntry>(this.Stain1Id);
-		}
-
-		this.nextWriteId = null;
-		this.nextWriteVariant = null;
-		this.nextWriteStain0 = null;
-		this.nextWriteStain1 = null;
-	}
-
-	protected override void OnItemChanged(ItemLibraryEntry? item)
-	{
-		if (item == null)
-		{
-			this.Id = 0;
-			this.Variant = 0;
-			return;
-		}
-
-		EquipmentModelId modelId = item.GetModelId(equipmentSlot);
-		this.Id = modelId.Id;
-		this.Variant = modelId.Variant;
-	}
 }

@@ -6,7 +6,7 @@
 	xmlns:libraryData="clr-namespace:StudioFourteen.GameData.Library"
 	xmlns:local="clr-namespace:StudioFourteen.Appearance.Equipment">
 
-	<DataTemplate DataType="{x:Type local:EquipmentSlotViewModel}">
+	<DataTemplate DataType="{x:Type local:WeaponSlotViewModel}">
 		<Border
 			Margin="0,1"
 			Style="{DynamicResource WpfUtilsControlBorder}">

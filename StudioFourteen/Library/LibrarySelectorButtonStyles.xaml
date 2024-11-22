@@ -7,6 +7,7 @@
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
 	<converters:StringHasContentToVisibilityConverter x:Key="StringHasContentToVisibility" />
+	<converters:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter" />
 
 	<ControlTemplate
 		x:Key="LibrarySelectorButtonTemplate"
@@ -14,7 +15,8 @@
 		<Button
 			x:Name="PART_Button"
 			Height="Auto"
-			HorizontalContentAlignment="Stretch">
+			HorizontalContentAlignment="Stretch"
+			Background="{TemplateBinding Background}">
 			<Button.Content>
 				<Grid>
 					<Grid.ColumnDefinitions>
@@ -22,12 +24,19 @@
 						<ColumnDefinition />
 					</Grid.ColumnDefinitions>
 
-					<ContentPresenter
+					<Grid
 						Grid.RowSpan="2"
-						Margin="-3,3,3,2"
-						VerticalAlignment="Stretch"
-						Content="{TemplateBinding Value}"
-						Style="{DynamicResource LibraryIcon}" />
+						Margin="-3,3,3,2">
+
+						<ContentPresenter
+							Content="{TemplateBinding IconBackground}"
+							Visibility="{TemplateBinding IconBackground,
+														 Converter={StaticResource NotNullToVisibilityConverter}}" />
+
+						<ContentPresenter
+							Content="{TemplateBinding Value}"
+							Style="{DynamicResource LibraryIcon}" />
+					</Grid>
 
 					<Grid
 						Grid.Column="1"
@@ -59,6 +68,44 @@
 	<Style TargetType="{x:Type local:LibrarySelectorButton}">
 		<Setter Property="Height" Value="48" />
 		<Setter Property="Template" Value="{StaticResource LibrarySelectorButtonTemplate}" />
+		<Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
+	</Style>
+
+	<ControlTemplate
+		x:Key="LibrarySelectorButtonIconOnlyTemplate"
+		TargetType="{x:Type local:LibrarySelectorButton}">
+		<Button
+			x:Name="PART_Button"
+			Height="Auto"
+			HorizontalContentAlignment="Stretch"
+			Background="{TemplateBinding Background}">
+			<Button.Content>
+
+				<Grid Margin="-2">
+
+					<ContentPresenter
+						Content="{TemplateBinding IconBackground}"
+						Visibility="{TemplateBinding IconBackground,
+													 Converter={StaticResource NotNullToVisibilityConverter}}" />
+
+					<ContentPresenter
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Stretch"
+						Content="{TemplateBinding Value}"
+						Style="{DynamicResource LibraryIcon}" />
+				</Grid>
+
+			</Button.Content>
+		</Button>
+	</ControlTemplate>
+
+	<Style
+		x:Key="LibrarySelectorIconOnly"
+		TargetType="{x:Type local:LibrarySelectorButton}">
+		<Setter Property="Height" Value="48" />
+		<Setter Property="Width" Value="48" />
+		<Setter Property="Template" Value="{StaticResource LibrarySelectorButtonIconOnlyTemplate}" />
+		<Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
 	</Style>
 
 </ResourceDictionary>

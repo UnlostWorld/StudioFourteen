@@ -3,6 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:appearance="clr-namespace:StudioFourteen.Appearance"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
+	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
 	xmlns:files="clr-namespace:StudioFourteen.Files"
 	xmlns:gameData="clr-namespace:StudioFourteen.GameData.Library"
 	xmlns:library="clr-namespace:StudioFourteen.Library"
@@ -11,6 +12,8 @@
 	xmlns:sources="clr-namespace:StudioFourteen.Library.Sources"
 	xmlns:ss="clr-namespace:StudioFourteen"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
+
+	<converters:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter" />
 
 	<DataTemplate
 		x:Key="AppearanceIcon"
@@ -65,7 +68,8 @@
 				<controls:XivTexImage
 					x:Name="IconShine"
 					Path="ui/uld/icona_frame_hr1.tex"
-					Rect="0, 0, 96, 96" />
+					Rect="0, 0, 96, 96"
+					Visibility="{Binding Icon.Source, Converter={StaticResource NotNullToVisibilityConverter}}" />
 			</Grid>
 		</Viewbox>
 

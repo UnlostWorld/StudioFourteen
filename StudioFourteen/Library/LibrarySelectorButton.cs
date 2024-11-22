@@ -23,6 +23,7 @@ using System.Windows.Controls;
 [DependencyProperty<Type>("Type")]
 [DependencyProperty<object>("Value", DefaultBindingMode = DefaultBindingMode.TwoWay)]
 [DependencyProperty<string>("Title")]
+[DependencyProperty<object>("IconBackground")]
 [DependencyProperty<TagCollection>("SearchTags")]
 public partial class LibrarySelectorButton : Control
 {

@@ -49,57 +49,6 @@ public partial class CharacterPanel : CharacterPanelBase
 		set => this.SetPersistence(value);
 	}
 
-	/*[AutoNotify] public WeaponViewModel MainHand { get; init; } = new(DrawDataContainer.WeaponSlot.MainHand);
-	[AutoNotify] public WeaponViewModel OffHand { get; init; } = new(DrawDataContainer.WeaponSlot.OffHand);
-
-	[AutoNotify] public ItemEquipViewModel Head { get; init; } = new(DrawDataContainer.EquipmentSlot.Head);
-	[AutoNotify] public ItemEquipViewModel Chest { get; init; } = new(DrawDataContainer.EquipmentSlot.Body);
-	[AutoNotify] public ItemEquipViewModel Hands { get; init; } = new(DrawDataContainer.EquipmentSlot.Hands);
-	[AutoNotify] public ItemEquipViewModel Legs { get; init; } = new(DrawDataContainer.EquipmentSlot.Legs);
-	[AutoNotify] public ItemEquipViewModel Feet { get; init; } = new(DrawDataContainer.EquipmentSlot.Feet);
-	[AutoNotify] public ItemEquipViewModel Earring { get; init; } = new(DrawDataContainer.EquipmentSlot.Ears);
-	[AutoNotify] public ItemEquipViewModel Necklace { get; init; } = new(DrawDataContainer.EquipmentSlot.Neck);
-	[AutoNotify] public ItemEquipViewModel Bracelet { get; init; } = new(DrawDataContainer.EquipmentSlot.Wrists);
-	[AutoNotify] public ItemEquipViewModel RingRight { get; init; } = new(DrawDataContainer.EquipmentSlot.RFinger);
-	[AutoNotify] public ItemEquipViewModel RingLeft { get; init; } = new(DrawDataContainer.EquipmentSlot.LFinger);
-
-	public AccessoryViewModel Glasses { get; init; } = new(AccessorySlots.Glasses);
-	public OrnamentViewModel Ornament { get; init; } = new();*/
-
-	/*
-	public Rect IconRect
-	{
-		get
-		{
-			if (this.Item is ItemEquipViewModel equipViewModel)
-			{
-				switch (equipViewModel.Slot)
-				{
-					case EquipmentSlot.Head: return new(64, 144, 64, 64);
-					case EquipmentSlot.Body: return new(192, 144, 64, 64);
-					case EquipmentSlot.Hands: return new(256, 144, 64, 64);
-					case EquipmentSlot.Legs: return new(384, 144, 64, 64);
-					case EquipmentSlot.Feet: return new(0, 208, 64, 64);
-					case EquipmentSlot.Ears: return new(64, 208, 64, 64);
-					case EquipmentSlot.Neck: return new(128, 208, 64, 64);
-					case EquipmentSlot.Wrists: return new(192, 208, 64, 64);
-					case EquipmentSlot.RFinger: return new(256, 208, 64, 64);
-					case EquipmentSlot.LFinger: return new(256, 208, 64, 64);
-				}
-			}
-			else if (this.Item is WeaponViewModel weaponViewModel)
-			{
-				switch (weaponViewModel.Slot)
-				{
-					case WeaponSlot.MainHand:
-					case WeaponSlot.OffHand: return new(0, 144, 64, 64);
-				}
-			}
-
-			return new(0, 0, 1, 1);
-		}
-	}*/
-
 	protected unsafe override void OnFrameworkUpdate(IFramework framework)
 	{
 		base.OnFrameworkUpdate(framework);

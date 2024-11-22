@@ -39,6 +39,7 @@
 					<ResourceDictionary Source="Customize/ToggleMenu.xaml" />
 					<ResourceDictionary Source="Customize/GenderMenu.xaml" />
 
+					<ResourceDictionary Source="Equipment/WeaponSlot.xaml" />
 					<ResourceDictionary Source="Equipment/EquipmentSlot.xaml" />
 				</ResourceDictionary.MergedDictionaries>
 			</ResourceDictionary>
@@ -104,9 +105,24 @@
 						IconFont="Solid" />
 				</TabItem.Header>
 
+				<ScrollViewer HorizontalScrollBarVisibility="Disabled">
+					<StackPanel>
+						<TextBlock
+							Style="{DynamicResource LeftLabel}"
+							Text="Weapons" />
+						<ItemsControl ItemsSource="{Binding Equipment.Weapons}" />
 
-				<ItemsControl ItemsSource="{Binding Equipment.Gear}" />
+						<TextBlock
+							Style="{DynamicResource LeftLabel}"
+							Text="Equipment" />
+						<ItemsControl ItemsSource="{Binding Equipment.Equipment}" />
 
+						<TextBlock
+							Style="{DynamicResource LeftLabel}"
+							Text="Accessories" />
+						<ItemsControl ItemsSource="{Binding Equipment.Accessories}" />
+					</StackPanel>
+				</ScrollViewer>
 			</TabItem>
 
 		</TabControl>
