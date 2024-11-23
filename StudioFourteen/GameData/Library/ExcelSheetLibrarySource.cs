@@ -92,11 +92,15 @@ public class ExcelSheetLibrarySource<TExcel, TEntry> : ExcelSheetLibrarySource<T
 		foreach (TExcel row in this.Sheet)
 		{
 			TEntry? entry = this.GetRow(row.RowId);
-
 			if (entry == null)
+				continue;
+
+			if (!this.IncludeEntry(row))
 				continue;
 
 			this.Add(entry);
 		}
 	}
+
+	protected virtual bool IncludeEntry(TExcel row) => true;
 }

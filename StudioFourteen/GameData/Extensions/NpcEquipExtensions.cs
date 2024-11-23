@@ -16,6 +16,8 @@
 namespace Lumina.Excel.Sheets;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using System;
+using System.Text;
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 
 public static class NpcEquipExtensions
@@ -108,5 +110,16 @@ public static class NpcEquipExtensions
 		}
 
 		return modelId;
+	}
+
+	public static void GetHash(this NpcEquip npcEquip, ref StringBuilder stringBuilder)
+	{
+		foreach (EquipmentSlot slot in Enum.GetValues<EquipmentSlot>())
+		{
+			EquipmentModelId modelId = npcEquip.GetModelId(slot);
+			stringBuilder.Append(modelId.Id.ToString("X2"));
+			stringBuilder.Append(modelId.Stain0.ToString("X2"));
+			stringBuilder.Append(modelId.Stain1.ToString("X2"));
+		}
 	}
 }

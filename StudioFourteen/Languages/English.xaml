@@ -116,11 +116,10 @@
 	<sys:String x:Key="LOC_AppearanceCreateCharacter">Create Character</sys:String>
 	<sys:String x:Key="LOC_AppearanceApplyTo">Apply to</sys:String>
 
-	<sys:String x:Key="LOC_SheetEventNpc">Event NPCs</sys:String>
-	<sys:String x:Key="LOC_SheetResidentNpc">Resident NPCs</sys:String>
+	<sys:String x:Key="LOC_SheetENpcResident">NPCs</sys:String>
 	<sys:String x:Key="LOC_SheetTerritory">Territory</sys:String>
 	<sys:String x:Key="LOC_SheetRace">Race</sys:String>
-	<sys:String x:Key="LOC_SheetBattleNpc">Battle NPCs</sys:String>
+	<sys:String x:Key="LOC_SheetBNpcBase">Battle NPCs</sys:String>
 	<sys:String x:Key="LOC_SheetCompanion">Companions</sys:String>
 	<sys:String x:Key="LOC_SheetMount">Mounts</sys:String>
 	<sys:String x:Key="LOC_SheetOrnament">Ornaments</sys:String>

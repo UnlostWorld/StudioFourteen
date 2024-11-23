@@ -17,13 +17,18 @@ namespace StudioFourteen.GameData.Library;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FontAwesome.Sharp;
+using Lumina.Excel;
 using Lumina.Excel.Sheets;
 using StudioFourteen.Appearance;
+using StudioFourteen.GameData.Extensions;
 using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Sources;
 using StudioFourteen.Tags;
 using StudioFourteen.Utilities;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Text;
 using System.Threading.Tasks;
 
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.CharacterExtensions;
@@ -119,6 +124,75 @@ public class BNpcBaseLibraryEntry
 			{
 				EquipmentModelId modelId = this.bNpcBase.NpcEquip.Value.GetModelId(slot);
 				this.Services.CharacterAppearance.SetEquipment(objectTableIndex, slot, modelId, UpdateSource.Library);
+			}
+		}
+	}
+}
+
+public class BNpcBaseLibrarySource : ExcelSheetLibrarySource<BNpcBase, BNpcBaseLibraryEntry>
+{
+	private readonly Dictionary<uint, uint> duplicateRowMap = new();
+
+	public bool IsDuplicate(BNpcBase bNpc)
+	{
+		return this.duplicateRowMap.ContainsKey(bNpc.RowId);
+	}
+
+	protected override void Scan()
+	{
+		this.Deduplicate();
+		base.Scan();
+	}
+
+	protected override bool IncludeEntry(BNpcBase row)
+	{
+		if (this.duplicateRowMap.ContainsKey(row.RowId))
+			return false;
+
+		return base.IncludeEntry(row);
+	}
+
+	private void Deduplicate()
+	{
+		this.duplicateRowMap.Clear();
+
+		Stopwatch sw = new();
+		sw.Start();
+		int count = 0;
+
+		ExcelSheet<BNpcBase>? battleNpcSheet = ServiceManager.Instance.GameData.GetSheet<BNpcBase>();
+		if (battleNpcSheet != null)
+			this.Deduplicate(battleNpcSheet, ref count);
+
+		sw.Stop();
+		this.Log.Information($"Found {count} duplicate appearances in {sw.ElapsedMilliseconds}ms");
+	}
+
+	private void Deduplicate(ExcelSheet<BNpcBase> sheet, ref int count)
+	{
+		Dictionary<string, uint> hashToRowMap = new();
+		foreach (BNpcBase npc in sheet)
+		{
+			string? name = null;
+			if (GameDataService.BattleNpcNameIndex.TryGetValue($"{npc.RowId}", out int nameRowId))
+			{
+				BNpcName? bNpcName = ServiceManager.Instance.GameData.GetRow<BNpcName>(nameRowId);
+				if (bNpcName != null)
+				{
+					name = bNpcName.Value.Singular.ExtractText();
+				}
+			}
+
+			string hash = name + npc.GetAppearanceHash();
+
+			if (hashToRowMap.TryGetValue(hash, out uint originalRowId))
+			{
+				this.duplicateRowMap.Add(npc.RowId, originalRowId);
+				count++;
+			}
+			else
+			{
+				hashToRowMap.Add(hash, npc.RowId);
 			}
 		}
 	}
