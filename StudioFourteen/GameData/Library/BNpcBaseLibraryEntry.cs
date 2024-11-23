@@ -19,34 +19,61 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FontAwesome.Sharp;
 using Lumina.Excel.Sheets;
 using StudioFourteen.Appearance;
-using StudioFourteen.Library;
 using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Sources;
-using StudioFourteen.Plugin;
+using StudioFourteen.Tags;
 using StudioFourteen.Utilities;
+using System;
 using System.Threading.Tasks;
+
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.CharacterExtensions;
+using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 using BNpcCustomize = StudioFourteen.GameData.Sheets.BNpcCustomize;
 
-public class BNpcBaseLibraryEntry(SourceBase source, BNpcBase npc)
-	: ExcelLibraryEntry(source, npc.RowId), ICharacterAppearance
+public class BNpcBaseLibraryEntry
+	: ExcelLibraryEntry, ICharacterAppearance
 {
-	public override string Name
-	{
-		get
-		{
-			if (GameDataService.BattleNpcNameIndex.TryGetValue($"{npc.RowId}", out int nameRowId))
-			{
-				BNpcName? name = ServiceManager.Instance.GameData.GetRow<BNpcName>(nameRowId);
-				if (name != null)
-				{
-					return name.Value.Singular.ExtractText();
-				}
-			}
+	private readonly BNpcBase bNpcBase;
+	private readonly string? name;
 
-			return $"#{npc.RowId}";
+	public BNpcBaseLibraryEntry(SourceBase source, BNpcBase npc)
+		: base(source, npc.RowId)
+	{
+		this.bNpcBase = npc;
+
+		CustomizeData? customize = this.Customize;
+		if (customize == null)
+			return;
+
+		TagCollection? tags = this.bNpcBase.ModelChara.Value.ToTags();
+		if (tags != null)
+			this.Tags.Add(tags);
+
+		tags = customize.Value.GetRace()?.ToTags();
+		if (tags != null)
+			this.Tags.Add(tags);
+
+		tags = customize.Value.GetTribe()?.ToTags();
+		if (tags != null)
+			this.Tags.Add(tags);
+
+		if (GameDataService.BattleNpcNameIndex.TryGetValue($"{this.bNpcBase.RowId}", out int nameRowId))
+		{
+			BNpcName? name = ServiceManager.Instance.GameData.GetRow<BNpcName>(nameRowId);
+			if (name != null)
+			{
+				this.name = name.Value.Singular.ExtractText();
+			}
+		}
+
+		if (this.name != null)
+		{
+			this.Tags.Add("Named");
 		}
 	}
+
+	public override string? Name => string.IsNullOrEmpty(this.name) ? null : this.name;
+	public override string? SubTitle => $"#{this.bNpcBase.RowId}";
 
 	public ImageReference? Icon
 	{
@@ -65,7 +92,7 @@ public class BNpcBaseLibraryEntry(SourceBase source, BNpcBase npc)
 	{
 		get
 		{
-			BNpcCustomize? customize = ServiceManager.Instance.GameData.GetRow<BNpcCustomize>(npc.BNpcCustomize.RowId);
+			BNpcCustomize? customize = ServiceManager.Instance.GameData.GetRow<BNpcCustomize>(this.bNpcBase.BNpcCustomize.RowId);
 			return customize?.Data;
 		}
 	}
@@ -81,14 +108,18 @@ public class BNpcBaseLibraryEntry(SourceBase source, BNpcBase npc)
 	{
 		await Threads.FrameworkThread();
 
-		this.Services.CharacterAppearance.SetModelCharaId(objectTableIndex, npc.ModelChara.Value, UpdateSource.Library);
+		this.Services.CharacterAppearance.SetModelCharaId(objectTableIndex, this.bNpcBase.ModelChara.Value, UpdateSource.Library);
 
 		if (this.Customize != null)
 			this.Services.CharacterAppearance.SetCustomize(objectTableIndex, this.Customize.Value, UpdateSource.Library);
 
-		if (npc.NpcEquip.IsValid)
+		if (this.bNpcBase.NpcEquip.IsValid)
 		{
-			// TODO: apply equip.
+			foreach(EquipmentSlot slot in Enum.GetValues<EquipmentSlot>())
+			{
+				EquipmentModelId modelId = this.bNpcBase.NpcEquip.Value.GetModelId(slot);
+				this.Services.CharacterAppearance.SetEquipment(objectTableIndex, slot, modelId, UpdateSource.Library);
+			}
 		}
 	}
 }

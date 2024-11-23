@@ -277,6 +277,9 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 
 		Character* pCharacter = this.Services.Target.GetCharacter(objectTableIndex);
 
+		if (source != UpdateSource.Restore)
+			this.Backup(pCharacter);
+
 		CustomizeData* custom = &pCharacter->DrawData.CustomizeData;
 
 		if (customize != null)
@@ -292,8 +295,6 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 
 	private void OnGroupPoseStateChange(bool newState)
 	{
-		this.Log.Information($"GPose {newState}");
-
 		if (newState)
 		{
 			this.provider.OnEnterGroupPose();

@@ -24,6 +24,7 @@ using StudioFourteen.GameData;
 using StudioFourteen.GameData.Sheets;
 
 using CharaMakeType = StudioFourteen.GameData.Sheets.CharaMakeType;
+using HairMakeType = StudioFourteen.GameData.Sheets.HairMakeType;
 
 public static class CustomizeDataExtensions
 {
@@ -43,9 +44,9 @@ public static class CustomizeDataExtensions
 		LegacyTattoo = 0x80,
 	}
 
-	public static Race? GetRace(ref readonly this CustomizeData self) => ServiceManager.Instance.GameData.GetRow<Race>(self.GetValue(CustomizeIndex.Race));
-	public static Tribe? GetTribe(ref readonly this CustomizeData self) => ServiceManager.Instance.GameData.GetRow<Tribe>(self.GetValue(CustomizeIndex.Tribe));
-	public static Genders GetGender(ref readonly this CustomizeData self) => (Genders)self.GetValue(CustomizeIndex.Gender);
+	public static Race? GetRace(this CustomizeData self) => ServiceManager.Instance.GameData.GetRow<Race>(self.GetValue(CustomizeIndex.Race));
+	public static Tribe? GetTribe(this CustomizeData self) => ServiceManager.Instance.GameData.GetRow<Tribe>(self.GetValue(CustomizeIndex.Tribe));
+	public static Genders GetGender(this CustomizeData self) => (Genders)self.GetValue(CustomizeIndex.Gender);
 
 	public static byte GetValue(ref readonly this CustomizeData self, CustomizeIndex option)
 	{
@@ -66,7 +67,7 @@ public static class CustomizeDataExtensions
 				tribeIndex = 0;
 
 			Race? newRace = ServiceManager.Instance.GameData.GetRow<Race>(value);
-			if (newRace != null)
+			if (newRace != null && value != 0)
 			{
 				Tribe[] validTribes = newRace.Value.GetTribes();
 
@@ -103,6 +104,35 @@ public static class CustomizeDataExtensions
 
 	public static ImageReference? GetIcon(ref readonly this CustomizeData self)
 	{
+		ExcelSheet<HairMakeType>? hairMakeTypeSheet = ServiceManager.Instance.GameData.GetSheet<HairMakeType>();
+		if (hairMakeTypeSheet == null)
+			return null;
+
+		Race? race = self.GetRace();
+		Tribe? tribe = self.GetTribe();
+		Genders gender = self.GetGender();
+		byte hair = self.GetValue(CustomizeIndex.HairStyle);
+
+		foreach (HairMakeType hairMakeType in hairMakeTypeSheet)
+		{
+			if (!hairMakeType.Race.IsRow(race) || !hairMakeType.Tribe.IsRow(tribe) || hairMakeType.Gender != (sbyte)gender)
+				continue;
+
+			RowRef<CharaMakeCustomize>[] makeCustomizeOptions = hairMakeType.HairStyles;
+			int length = (byte)makeCustomizeOptions.Length;
+			for (byte j = 0; j < length; ++j)
+			{
+				CharaMakeCustomize makeCustomize = makeCustomizeOptions[j].Value;
+				if (makeCustomize.Icon == 0)
+					continue;
+
+				if (makeCustomize.FeatureID == hair)
+				{
+					return new ImageReference(makeCustomize.Icon);
+				}
+			}
+		}
+
 		return null;
 	}
 }

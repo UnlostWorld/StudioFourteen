@@ -54,7 +54,6 @@ public class ENpcResidentLibraryEntry(SourceBase source, ENpcResident npc)
 	[LibraryMenuTarget(IconChar.UserShield, "LOC_AppearanceApplyTo")]
 	public Task Apply(int objectTableIndex)
 	{
-		////throw new NotImplementedException();
 		return Task.CompletedTask;
 	}
 }
