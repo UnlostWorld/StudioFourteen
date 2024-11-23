@@ -51,7 +51,7 @@
 				Icon="Times" />
 		</Button>
 
-		<tags:TagSelector2
+		<tags:TagSelector
 			Grid.Row="1"
 			SelectedTags="{Binding TagFilter.Tags}"
 			Tags="{Binding AvailableTags}" />

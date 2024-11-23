@@ -46,7 +46,7 @@ public partial class LibraryWindow : Panel
 	public static LibraryTab FavoritesTab = new("Favorites", IconChar.Heart, new LibraryFavoritesFilter());
 	public static LibraryTab AppearancesTab = new("Appearances", IconChar.UserShield);
 	public static LibraryTab PosesTab = new("Poses", IconChar.PersonRunning);
-	public static LibraryTab ScenesTab = new("scenes", IconChar.Users);
+	public static LibraryTab ScenesTab = new("Scenes", IconChar.Users);
 
 	private readonly FuncQueue searchQueue;
 	private readonly Stopwatch searchStopwatch = new();
@@ -56,11 +56,15 @@ public partial class LibraryWindow : Panel
 	[Notify] private NavigationAnimations navigationAnimation = NavigationAnimations.None;
 	[Notify] private bool viewList;
 
+	[Notify] private bool narrowMode;
+
 	public LibraryWindow()
 	{
 		this.searchQueue = new(this.SearchAsync, 250);
 		this.TagFilter.Tags.CollectionChanged += this.OnTagsFilterChanged;
 		this.Services.Library.ScanComplete += this.OnLibraryScanComplete;
+
+		this.SizeChanged += this.OnSizeChanged;
 	}
 
 	public enum Navigation
@@ -354,6 +358,11 @@ public partial class LibraryWindow : Panel
 	private void OnResultMouseRight(object sender, MouseButtonEventArgs e)
 	{
 		this.LibraryContextMenu.Expand();
+	}
+
+	private void OnSizeChanged(object sender, SizeChangedEventArgs e)
+	{
+		this.NarrowMode = e.NewSize.Width < 450;
 	}
 }
 

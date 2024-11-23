@@ -15,27 +15,26 @@
 
 namespace StudioFourteen.Tags;
 
+using Dalamud.Utility;
 using DependencyPropertyGenerator;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
 using WpfUtils;
 using WpfUtils.Utils;
 
 [DependencyProperty<TagCollection>("Tags")]
 [DependencyProperty<TagCollection>("SelectedTags")]
-[DependencyProperty<string>("SearchString", DefaultBindingMode = DefaultBindingMode.TwoWay)]
 [DependencyProperty<TagCollection>("SearchTags")]
 [DependencyProperty<bool>("PopOutOpen", DefaultBindingMode = DefaultBindingMode.TwoWay)]
-public partial class TagSelector2 : Control
+public partial class TagSelector : Control
 {
 	private readonly FuncQueue searchQueue;
 	private TagDisplay? newTagDisplay;
 	private TagDisplay? tagDisplay;
 	private TextBox? searchBox;
 
-	public TagSelector2()
+	public TagSelector()
 	{
 		this.searchQueue = new(this.Search, 250);
 	}
@@ -58,6 +57,9 @@ public partial class TagSelector2 : Control
 
 		if (this.tagDisplay != null)
 			this.tagDisplay.TagSelected += this.OnTagSelected;
+
+		if (this.searchBox != null)
+			this.searchBox.TextChanged += this.OnSearchTextChanged;
 	}
 
 	private void OnNewTagSelected(Tag tag)
@@ -70,28 +72,26 @@ public partial class TagSelector2 : Control
 		this.SelectedTags?.Remove(tag);
 	}
 
-	partial void OnSearchStringChanged(string? newValue)
-	{
-		this.searchQueue.Invoke();
-	}
-
 	partial void OnPopOutOpenChanged(bool newValue)
 	{
+		if (this.searchBox == null)
+			return;
+
 		if (!newValue)
 			return;
 
-		this.SearchString = string.Empty;
+		this.searchBox.Text = string.Empty;
 		this.searchQueue.InvokeImmediate();
 
 		this.Dispatcher.InvokeAsync(async () =>
 		{
 			await Task.Delay(100);
 			await this.MainThread();
-			this.searchBox?.Focus();
+			this.searchBox.Focus();
 		});
 	}
 
-	partial void OnSearchStringChanged()
+	private void OnSearchTextChanged(object sender, TextChangedEventArgs e)
 	{
 		this.searchQueue.Invoke();
 	}
@@ -106,13 +106,13 @@ public partial class TagSelector2 : Control
 		if (this.SearchTags == null)
 			this.SearchTags = new();
 
-		if (string.IsNullOrEmpty(this.SearchString))
+		if (string.IsNullOrEmpty(this.searchBox?.Text))
 		{
 			this.SearchTags.Replace(this.Tags);
 		}
 		else
 		{
-			string[] query = SearchUtility.ToQuery(this.SearchString ?? string.Empty);
+			string[] query = SearchUtility.ToQuery(this.searchBox.Text ?? string.Empty);
 
 			List<Tag> results = new();
 			foreach (Tag tag in this.Tags)

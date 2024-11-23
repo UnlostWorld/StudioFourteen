@@ -16,17 +16,17 @@
 	xmlns:vwp="clr-namespace:WpfToolkit.Controls;assembly=VirtualizingWrapPanel"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="{DynamicResource LOC_Library}"
-	Width="1000"
-	Height="650"
-	MinWidth="680"
+	Width="800"
+	Height="600"
+	MinWidth="280"
 	MinHeight="300"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
+	Subtitle="{Binding CurrentTab.Name}"
 	TitleIcon="Book"
 	mc:Ignorable="d">
 
-	<Grid Margin="0,-24,0,0">
-
+	<Grid>
 		<Grid x:Name="ContentArea">
 
 			<Grid.RowDefinitions>
@@ -35,76 +35,25 @@
 				<RowDefinition />
 			</Grid.RowDefinitions>
 
-			<!--  Tabbar  -->
-			<Grid
-				Grid.Row="0"
-				Margin="178,0,300,0">
-
-				<ListBox
-					HorizontalContentAlignment="Stretch"
-					ItemsSource="{Binding Tabs}"
-					SelectedItem="{Binding CurrentTab}"
-					Style="{DynamicResource WpfUtilsSwitchSelector}">
-					<ListBox.ItemContainerStyle>
-						<Style
-							BasedOn="{StaticResource WpfUtilsSwitchSelectorItemStyle}"
-							TargetType="{x:Type ListBoxItem}">
-							<Setter Property="HorizontalContentAlignment" Value="stretch" />
-						</Style>
-					</ListBox.ItemContainerStyle>
-
-					<ListBox.ItemTemplate>
-						<DataTemplate DataType="{x:Type local:LibraryTab}">
-							<Grid
-								x:Name="MainGrid"
-								HorizontalAlignment="Stretch">
-								<TextBlock
-									HorizontalAlignment="Center"
-									Text="{Binding Name}"
-									Visibility="{Binding ElementName=MainGrid, Path=ActualWidth, Converter={StaticResource GreaterThanToVisibility}, ConverterParameter=74}" />
-								<wpfUtils:IconBlock
-									HorizontalAlignment="Center"
-									Icon="{Binding Icon}"
-									IconFont="Solid"
-									Visibility="{Binding ElementName=MainGrid, Path=ActualWidth, Converter={StaticResource LessThanToVisibility}, ConverterParameter=75}" />
-							</Grid>
-						</DataTemplate>
-					</ListBox.ItemTemplate>
-				</ListBox>
-
-				<ToggleButton
-					Width="28"
-					Margin="1,0"
-					IsChecked="{Binding Favorites}"
-					Style="{DynamicResource WpfUtilsIconToggleButton}"
-					Visibility="Collapsed">
-					<wpfUtils:IconBlock
-						Icon="Heart"
-						IconFont="Solid" />
-				</ToggleButton>
-			</Grid>
-
 			<!--  Toolbar  -->
-			<Grid
-				Grid.Row="1"
-				Margin="0,3,0,3">
+			<Grid Grid.Row="0">
 
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="2*" />
-					<ColumnDefinition MinWidth="170" />
+					<ColumnDefinition />
 					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition Width="Auto" />
 				</Grid.ColumnDefinitions>
 
-
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
 
 				<Border
-					Grid.Column="1"
-					Margin="1,0,1,0"
-					Style="{DynamicResource WpfUtilsControlBorder}">
+					Grid.Column="0"
+					Margin="1">
 					<StackPanel Orientation="Horizontal">
 						<Button
 							Width="28"
@@ -126,12 +75,41 @@
 							<wpfUtils:IconBlock Icon="ArrowRight" />
 						</Button>
 					</StackPanel>
+
+					<Border.Style>
+						<Style
+							BasedOn="{StaticResource WpfUtilsControlBorder}"
+							TargetType="{x:Type Border}">
+
+							<Style.Triggers>
+								<DataTrigger
+									Binding="{Binding NarrowMode}"
+									Value="True">
+									<Setter Property="Grid.Row" Value="1" />
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</Border.Style>
+
 				</Border>
 
-				<Border
-					Grid.Column="2"
-					Margin="1,0,1,0"
-					Style="{DynamicResource WpfUtilsControlBorder}">
+				<Border Margin="1">
+					<Border.Style>
+						<Style
+							BasedOn="{StaticResource WpfUtilsControlBorder}"
+							TargetType="{x:Type Border}">
+
+							<Setter Property="Grid.Column" Value="1" />
+							<Style.Triggers>
+								<DataTrigger
+									Binding="{Binding NarrowMode}"
+									Value="True">
+									<Setter Property="Grid.Column" Value="0" />
+									<Setter Property="Grid.ColumnSpan" Value="5" />
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</Border.Style>
 
 					<ItemsControl
 						Margin="1"
@@ -250,20 +228,12 @@
 					</ItemsControl>
 				</Border>
 
-				<tags:TagSelector
-					Grid.Column="3"
-					Margin="1,0"
-					AllTags="{Binding AvailableTags}"
-					Search="{Binding Search, Mode=TwoWay}"
-					Tags="{Binding TagFilter.Tags}" />
-
 
 				<ListBox
-					Grid.Column="4"
+					x:Name="ViewModeArea"
 					Width="64"
 					Height="28"
-					Margin="1,0"
-					Style="{DynamicResource WpfUtilsSwitchSelector}">
+					Margin="1">
 					<ListBoxItem
 						IsSelected="{Binding ViewList, Converter={StaticResource !B}}"
 						Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
@@ -280,15 +250,31 @@
 							Icon="List"
 							IconFont="Solid" />
 					</ListBoxItem>
+
+					<ListBox.Style>
+						<Style
+							BasedOn="{StaticResource WpfUtilsSwitchSelector}"
+							TargetType="{x:Type ListBox}">
+
+							<Setter Property="Grid.Column" Value="2" />
+							<Style.Triggers>
+								<DataTrigger
+									Binding="{Binding NarrowMode}"
+									Value="True">
+									<Setter Property="Grid.Column" Value="2" />
+									<Setter Property="Grid.Row" Value="1" />
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</ListBox.Style>
 				</ListBox>
 
 
 				<ListBox
-					Grid.Column="5"
+					x:Name="FlattenModeArea"
 					Width="64"
 					Height="28"
-					Margin="1,0"
-					Style="{DynamicResource WpfUtilsSwitchSelector}">
+					Margin="1">
 					<ListBoxItem
 						IsSelected="{Binding Flatten, Converter={StaticResource !B}}"
 						Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
@@ -305,26 +291,218 @@
 							Icon="FileAlt"
 							IconFont="Solid" />
 					</ListBoxItem>
+
+					<ListBox.Style>
+						<Style
+							BasedOn="{StaticResource WpfUtilsSwitchSelector}"
+							TargetType="{x:Type ListBox}">
+
+							<Setter Property="Grid.Column" Value="3" />
+
+							<Style.Triggers>
+								<DataTrigger
+									Binding="{Binding NarrowMode}"
+									Value="True">
+									<Setter Property="Grid.Column" Value="3" />
+									<Setter Property="Grid.Row" Value="1" />
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</ListBox.Style>
 				</ListBox>
 
 				<Button
-					Grid.Column="6"
+					x:Name="BrowseArea"
 					Height="28"
-					Margin="1,0"
+					Margin="1"
 					Click="OnBrowseClicked">
-					<Button.Content>
-						<StackPanel Orientation="Horizontal">
 
-							<wpfUtils:IconBlock
-								Margin="0,0,3,0"
-								Icon="FolderOpen"
-								IconFont="Solid" />
-							<TextBlock Text="Open File..." />
-						</StackPanel>
-					</Button.Content>
+					<Button.Style>
+						<Style
+							BasedOn="{StaticResource WpfUtilsButton}"
+							TargetType="{x:Type Button}">
+
+							<Setter Property="Grid.Column" Value="4" />
+							<Setter Property="Content">
+								<Setter.Value>
+									<StackPanel Orientation="Horizontal">
+										<wpfUtils:IconBlock
+											Margin="0,0,3,0"
+											Icon="FolderOpen"
+											IconFont="Solid" />
+										<TextBlock Text="Open File..." />
+									</StackPanel>
+								</Setter.Value>
+							</Setter>
+
+							<Style.Triggers>
+								<DataTrigger
+									Binding="{Binding NarrowMode}"
+									Value="True">
+									<Setter Property="Grid.Column" Value="4" />
+									<Setter Property="Grid.Row" Value="1" />
+									<Setter Property="Content" Value="..." />
+									<Setter Property="Width" Value="28" />
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</Button.Style>
 				</Button>
 
+				<ComboBox
+					Grid.Row="1"
+					Grid.Column="1"
+					MinWidth="50"
+					ItemsSource="{Binding Tabs}"
+					SelectedItem="{Binding CurrentTab}"
+					Visibility="{Binding NarrowMode, Converter={StaticResource B2V}}">
+
+					<wpfUtils:PopOut.Header>
+						<TextBlock
+							Margin="10"
+							Text="Select a file type to filter by:" />
+					</wpfUtils:PopOut.Header>
+
+					<ComboBox.ItemTemplate>
+						<DataTemplate DataType="{x:Type local:LibraryTab}">
+							<Grid
+								x:Name="MainGrid"
+								Background="Transparent"
+								ToolTip="{Binding Name}">
+
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="22" />
+									<ColumnDefinition />
+								</Grid.ColumnDefinitions>
+
+								<wpfUtils:IconBlock
+									Grid.Column="0"
+									HorizontalAlignment="Center"
+									Icon="{Binding Icon}"
+									IconFont="Solid" />
+
+								<TextBlock
+									x:Name="LabelTextBlock"
+									Grid.Column="1"
+									Margin="6,-1,0,0"
+									Text="{Binding Name}" />
+							</Grid>
+
+							<DataTemplate.Triggers>
+								<DataTrigger
+									Binding="{Binding ElementName=MainGrid, Path=ActualWidth, Converter={StaticResource LessThanToBool}, ConverterParameter=75}"
+									Value="True">
+									<Setter TargetName="LabelTextBlock" Property="Visibility" Value="Collapsed" />
+								</DataTrigger>
+							</DataTemplate.Triggers>
+
+						</DataTemplate>
+					</ComboBox.ItemTemplate>
+
+				</ComboBox>
+
 			</Grid>
+
+			<!--  Filter Bar  -->
+			<Grid Grid.Row="1">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition />
+					<ColumnDefinition
+						Width="0.5*"
+						MinWidth="50" />
+				</Grid.ColumnDefinitions>
+
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+
+				<Grid.Resources />
+
+				<ListBox
+					Grid.Column="0"
+					HorizontalContentAlignment="Stretch"
+					ItemsSource="{Binding Tabs}"
+					SelectedItem="{Binding CurrentTab}"
+					Style="{DynamicResource WpfUtilsSwitchSelector}"
+					Visibility="{Binding NarrowMode, Converter={StaticResource !B2V}}">
+					<ListBox.ItemContainerStyle>
+						<Style
+							BasedOn="{StaticResource WpfUtilsSwitchSelectorItemStyle}"
+							TargetType="{x:Type ListBoxItem}">
+							<Setter Property="HorizontalContentAlignment" Value="stretch" />
+						</Style>
+					</ListBox.ItemContainerStyle>
+
+					<ListBox.ItemTemplate>
+						<DataTemplate DataType="{x:Type local:LibraryTab}">
+							<Grid
+								Width="25"
+								Background="Transparent"
+								ToolTip="{Binding Name}">
+								<wpfUtils:IconBlock
+									HorizontalAlignment="Center"
+									Icon="{Binding Icon}"
+									IconFont="Solid" />
+							</Grid>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+
+				<tags:TagSelector
+					HorizontalAlignment="Right"
+					SelectedTags="{Binding TagFilter.Tags}"
+					Tags="{Binding AvailableTags}">
+					<tags:TagSelector.Style>
+						<Style
+							BasedOn="{StaticResource TagSelectorStyle}"
+							TargetType="{x:Type tags:TagSelector}">
+							<Setter Property="Grid.Column" Value="1" />
+
+							<Style.Triggers>
+								<DataTrigger
+									Binding="{Binding NarrowMode}"
+									Value="True">
+									<Setter Property="Grid.Column" Value="0" />
+									<Setter Property="Grid.ColumnSpan" Value="3" />
+									<Setter Property="Grid.Row" Value="1" />
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</tags:TagSelector.Style>
+				</tags:TagSelector>
+
+				<Grid>
+					<TextBox
+						Padding="25,0,3,0"
+						Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" />
+
+					<wpfUtils:IconBlock
+						Margin="8,0,0,0"
+						HorizontalAlignment="Left"
+						Foreground="{DynamicResource ForegroundLightBrush}"
+						Icon="Search" />
+
+					<Grid.Style>
+						<Style TargetType="{x:Type Grid}">
+							<Setter Property="Grid.Column" Value="2" />
+
+							<Style.Triggers>
+								<DataTrigger
+									Binding="{Binding NarrowMode}"
+									Value="True">
+									<Setter Property="Grid.Column" Value="0" />
+									<Setter Property="Grid.ColumnSpan" Value="3" />
+									<Setter Property="Grid.Row" Value="2" />
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</Grid.Style>
+				</Grid>
+			</Grid>
+
 
 			<Border
 				Grid.Row="2"

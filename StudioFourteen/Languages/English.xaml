@@ -108,6 +108,8 @@
 	<sys:String x:Key="LOC_Library_RemoveFromFavorites">Remove From Favorites</sys:String>
 	<sys:String x:Key="LOC_Library_ExportIcon">Export Icon Graphic</sys:String>
 
+	<sys:String x:Key="LOC_Tags_Title">Select Tags to filter by:</sys:String>
+
 	<sys:String x:Key="LOC_SheetItem">Items</sys:String>
 	<sys:String x:Key="LOC_SheetItem_EorzeaDatabase">Eorzea Database</sys:String>
 
