@@ -29,7 +29,6 @@
 		<!--  Templates  -->
 		<ResourceDictionary Source="./Library/LibraryIconTemplates.xaml" />
 		<ResourceDictionary Source="./Library/LibraryBodyTemplates.xaml" />
-		<ResourceDictionary Source="./Library/LibraryActionsTemplates.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 
 	<!--  Custom converters  -->

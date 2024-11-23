@@ -18,15 +18,13 @@ namespace StudioFourteen.Library;
 using FontAwesome.Sharp;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen;
-using StudioFourteen.Appearance;
 using StudioFourteen.Files;
 using StudioFourteen.Library.Filters;
+using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Results;
 using StudioFourteen.Mvm;
-using StudioFourteen.Services;
 using StudioFourteen.Tags;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -34,7 +32,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using WpfUtils;
-using WpfUtils.Controls;
 using WpfUtils.Extensions;
 using WpfUtils.Utils;
 
@@ -250,7 +247,7 @@ public partial class LibraryWindow : Panel
 		////this.ResultsList.ScrollIntoView(this.SelectedItem);
 	}
 
-	private void OnItemDoubleClicked(object sender, MouseButtonEventArgs e)
+	private async void OnItemDoubleClicked(object sender, MouseButtonEventArgs e)
 	{
 		if (this.SelectedResult is GroupResult groupResult)
 		{
@@ -258,9 +255,14 @@ public partial class LibraryWindow : Panel
 			this.navigation = Navigation.OpenDir;
 			this.searchQueue.InvokeImmediate();
 		}
-		else if (this.SelectedResult is Result result && result.Entry is ILibraryActions actions)
+		else if (this.SelectedResult is Result result)
 		{
-			actions.Apply(this.Services.Target.TargetObjectIndex).Run();
+			List<MenuEntry> menus = await result.Entry.GetLibraryMenus();
+			foreach(MenuEntry menu in menus)
+			{
+				menu.Invoke();
+				break;
+			}
 		}
 	}
 

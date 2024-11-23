@@ -148,7 +148,7 @@ public class MenuEntry(IconChar? icon, string? label, Action? invoke = null)
 		}
 	}
 
-	private void Invoke()
+	public void Invoke()
 	{
 		invoke?.Invoke();
 		this.ContextMenu?.OnMenuInvoked(this);

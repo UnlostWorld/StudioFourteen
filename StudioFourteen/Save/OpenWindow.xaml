@@ -190,6 +190,7 @@
 									Margin="1"
 									IsChecked="{Binding IncludeAppearance}"
 									IsEnabled="{Binding CanIncludeAppearance}"
+									Style="{DynamicResource WpfUtilsIconToggleButton}"
 									ToolTip="{Binding ApplyAppearanceTooltip}">
 									<wpfUtils:IconBlock
 										Icon="UserShield"
@@ -203,6 +204,7 @@
 									Margin="1"
 									IsChecked="{Binding IncludePose}"
 									IsEnabled="{Binding CanIncludePose}"
+									Style="{DynamicResource WpfUtilsIconToggleButton}"
 									ToolTip="{Binding ApplyPoseTooltip}">
 									<wpfUtils:IconBlock Icon="Running" />
 								</ToggleButton>

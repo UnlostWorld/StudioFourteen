@@ -25,7 +25,7 @@ using StudioFourteen.Utilities;
 using System.Threading.Tasks;
 
 public class CharacterBackupAppearance
-	: LibraryEntryBase, ICharacterAppearance, ILibraryActions
+	: LibraryEntryBase, ICharacterAppearance
 {
 	private readonly string? name;
 
