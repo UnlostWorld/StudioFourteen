@@ -188,6 +188,8 @@ public partial class SkeletonView : Canvas
 		// TODO: check for mounts?
 		await this.Dispatcher.MainThread();
 		this.Visibility = result ? Visibility.Visible : Visibility.Collapsed;
+
+		this.OnRenderSizeChanged(null);
 	}
 
 	protected async Task<bool> LoadFromTable(int objectTableIndex, SkeletonViewDefinition definition)
