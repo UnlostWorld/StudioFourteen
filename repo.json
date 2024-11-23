@@ -4,8 +4,8 @@
       "Name": "Studio Fourteen",
       "InternalName": "StudioFourteen",
       "Description": "A plugin for enhancing GPose functionality",
-      "AssemblyVersion": "1.0.0.57",
-      "TestingAssemblyVersion": "1.0.0.57",
+      "AssemblyVersion": "1.0.0.58",
+      "TestingAssemblyVersion": "1.0.0.58",
       "RepoUrl": "https://github.com/UnlostWorld/StudioFourteen",
       "ApplicableVersion": "any",
       "DalamudApiLevel": 8,
@@ -15,8 +15,8 @@
         "screenshot"
       ],
       "IconUrl": "https://github.com/UnlostWorld/StudioFourteen/blob/main/Assets/Icon/light-pride.png",
-      "DownloadLinkInstall": "https://github.com/UnlostWorld/StudioFourteen/releases/download/v57/latest.zip",
-      "DownloadLinkTesting": "https://github.com/UnlostWorld/StudioFourteen/releases/download/v57/latest.zip",
-      "DownloadLinkUpdate": "https://github.com/UnlostWorld/StudioFourteen/releases/download/v57/latest.zip",
+      "DownloadLinkInstall": "https://github.com/UnlostWorld/StudioFourteen/releases/download/v58/latest.zip",
+      "DownloadLinkTesting": "https://github.com/UnlostWorld/StudioFourteen/releases/download/v58/latest.zip",
+      "DownloadLinkUpdate": "https://github.com/UnlostWorld/StudioFourteen/releases/download/v58/latest.zip",
     }
   ]
