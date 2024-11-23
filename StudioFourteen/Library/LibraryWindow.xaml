@@ -507,257 +507,268 @@
 			<Border
 				Grid.Row="2"
 				Margin="1"
-				Style="{DynamicResource WpfUtilsControlBorder}" />
+				Style="{DynamicResource WpfUtilsControlBorder}">
 
-			<!--  Icon Grid  -->
-			<wpfUtils:ListBoxEx
-				Grid.Row="2"
-				Margin="3"
-				Background="Transparent"
-				ClipToBounds="True"
-				ItemsSource="{Binding Results, IsAsync=True}"
-				MouseDoubleClick="OnItemDoubleClicked"
-				SelectedItem="{Binding SelectedResult}"
-				VirtualizingPanel.ScrollUnit="Pixel"
-				VirtualizingPanel.VirtualizationMode="Recycling"
-				Visibility="{Binding ViewList, Converter={StaticResource !B2V}}">
+				<Grid>
 
-				<ListBox.Template>
-					<ControlTemplate TargetType="{x:Type ListBox}">
-						<ScrollViewer
-							Padding="{TemplateBinding Padding}"
-							Background="{DynamicResource BackgroundBrush}"
-							Focusable="false"
-							Opacity="1"
-							RenderTransformOrigin="0.5, 0.5">
+					<Grid.Resources>
+						<ControlTemplate
+							x:Key="ListTemplate"
+							TargetType="{x:Type ListBox}">
+							<ScrollViewer
+								Padding="{TemplateBinding Padding}"
+								Background="{DynamicResource BackgroundBrush}"
+								Focusable="false"
+								Opacity="1"
+								RenderTransformOrigin="0.5, 0.5">
 
-							<ScrollViewer.RenderTransform>
-								<TransformGroup>
-									<ScaleTransform x:Name="Scale" ScaleX="1" ScaleY="{Binding ScaleX, RelativeSource={RelativeSource Mode=Self}}" />
-									<TranslateTransform x:Name="Translate" X="0" Y="0" />
-								</TransformGroup>
-							</ScrollViewer.RenderTransform>
+								<ScrollViewer.RenderTransform>
+									<TransformGroup>
+										<ScaleTransform x:Name="Scale" ScaleX="1" ScaleY="{Binding ScaleX, RelativeSource={RelativeSource Mode=Self}}" />
+										<TranslateTransform x:Name="Translate" X="0" Y="0" />
+									</TransformGroup>
+								</ScrollViewer.RenderTransform>
 
-							<ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+								<ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
 
-							<ScrollViewer.Triggers>
-								<triggers:StoryboardEnumTrigger
-									Binding="{Binding NavigationAnimation, Mode=TwoWay}"
-									Target="{Binding RelativeSource={RelativeSource AncestorType={x:Type ScrollViewer}}}">
-									<triggers:StoryboardEnumTrigger.Storyboards>
+								<ScrollViewer.Triggers>
+									<triggers:StoryboardEnumTrigger
+										Binding="{Binding NavigationAnimation, Mode=TwoWay}"
+										Target="{Binding RelativeSource={RelativeSource AncestorType={x:Type ScrollViewer}}}">
+										<triggers:StoryboardEnumTrigger.Storyboards>
 
-										<Storyboard x:Name="OpenDir_Out">
-											<DoubleAnimation
-												Storyboard.TargetName="Scale"
-												Storyboard.TargetProperty="ScaleX"
-												From="1"
-												To="1.05"
-												Duration="0:00:00.050">
-												<DoubleAnimation.EasingFunction>
-													<SineEase EasingMode="EaseIn" />
-												</DoubleAnimation.EasingFunction>
-											</DoubleAnimation>
-											<DoubleAnimation
-												Storyboard.TargetProperty="Opacity"
-												From="1"
-												To="0"
-												Duration="0:00:00.050">
-												<DoubleAnimation.EasingFunction>
-													<SineEase EasingMode="EaseIn" />
-												</DoubleAnimation.EasingFunction>
-											</DoubleAnimation>
-										</Storyboard>
+											<Storyboard x:Name="OpenDir_Out">
+												<DoubleAnimation
+													Storyboard.TargetName="Scale"
+													Storyboard.TargetProperty="ScaleX"
+													From="1"
+													To="1.05"
+													Duration="0:00:00.050">
+													<DoubleAnimation.EasingFunction>
+														<SineEase EasingMode="EaseIn" />
+													</DoubleAnimation.EasingFunction>
+												</DoubleAnimation>
+												<DoubleAnimation
+													Storyboard.TargetProperty="Opacity"
+													From="1"
+													To="0"
+													Duration="0:00:00.050">
+													<DoubleAnimation.EasingFunction>
+														<SineEase EasingMode="EaseIn" />
+													</DoubleAnimation.EasingFunction>
+												</DoubleAnimation>
+											</Storyboard>
 
 
-										<Storyboard x:Name="OpenDir_In">
-											<DoubleAnimation
-												Storyboard.TargetName="Scale"
-												Storyboard.TargetProperty="ScaleX"
-												From="0.95"
-												To="1"
-												Duration="0:00:00.050">
-												<DoubleAnimation.EasingFunction>
-													<SineEase EasingMode="EaseOut" />
-												</DoubleAnimation.EasingFunction>
-											</DoubleAnimation>
-											<DoubleAnimation
-												Storyboard.TargetProperty="Opacity"
-												From="0"
-												To="1"
-												Duration="0:00:00.050">
-												<DoubleAnimation.EasingFunction>
-													<SineEase EasingMode="EaseOut" />
-												</DoubleAnimation.EasingFunction>
-											</DoubleAnimation>
-										</Storyboard>
+											<Storyboard x:Name="OpenDir_In">
+												<DoubleAnimation
+													Storyboard.TargetName="Scale"
+													Storyboard.TargetProperty="ScaleX"
+													From="0.95"
+													To="1"
+													Duration="0:00:00.050">
+													<DoubleAnimation.EasingFunction>
+														<SineEase EasingMode="EaseOut" />
+													</DoubleAnimation.EasingFunction>
+												</DoubleAnimation>
+												<DoubleAnimation
+													Storyboard.TargetProperty="Opacity"
+													From="0"
+													To="1"
+													Duration="0:00:00.050">
+													<DoubleAnimation.EasingFunction>
+														<SineEase EasingMode="EaseOut" />
+													</DoubleAnimation.EasingFunction>
+												</DoubleAnimation>
+											</Storyboard>
 
 
-										<Storyboard x:Name="Back_Out">
-											<DoubleAnimation
-												Storyboard.TargetName="Scale"
-												Storyboard.TargetProperty="ScaleX"
-												From="1"
-												To="0.95"
-												Duration="0:00:00.050">
-												<DoubleAnimation.EasingFunction>
-													<SineEase EasingMode="EaseIn" />
-												</DoubleAnimation.EasingFunction>
-											</DoubleAnimation>
-											<DoubleAnimation
-												Storyboard.TargetProperty="Opacity"
-												From="1"
-												To="0"
-												Duration="0:00:00.050">
-												<DoubleAnimation.EasingFunction>
-													<SineEase EasingMode="EaseIn" />
-												</DoubleAnimation.EasingFunction>
-											</DoubleAnimation>
-										</Storyboard>
+											<Storyboard x:Name="Back_Out">
+												<DoubleAnimation
+													Storyboard.TargetName="Scale"
+													Storyboard.TargetProperty="ScaleX"
+													From="1"
+													To="0.95"
+													Duration="0:00:00.050">
+													<DoubleAnimation.EasingFunction>
+														<SineEase EasingMode="EaseIn" />
+													</DoubleAnimation.EasingFunction>
+												</DoubleAnimation>
+												<DoubleAnimation
+													Storyboard.TargetProperty="Opacity"
+													From="1"
+													To="0"
+													Duration="0:00:00.050">
+													<DoubleAnimation.EasingFunction>
+														<SineEase EasingMode="EaseIn" />
+													</DoubleAnimation.EasingFunction>
+												</DoubleAnimation>
+											</Storyboard>
 
 
-										<Storyboard x:Name="Back_In">
-											<DoubleAnimation
-												Storyboard.TargetName="Scale"
-												Storyboard.TargetProperty="ScaleX"
-												From="1.05"
-												To="1"
-												Duration="0:00:00.050">
-												<DoubleAnimation.EasingFunction>
-													<SineEase EasingMode="EaseOut" />
-												</DoubleAnimation.EasingFunction>
-											</DoubleAnimation>
-											<DoubleAnimation
-												Storyboard.TargetProperty="Opacity"
-												From="0"
-												To="1"
-												Duration="0:00:00.050">
-												<DoubleAnimation.EasingFunction>
-													<SineEase EasingMode="EaseOut" />
-												</DoubleAnimation.EasingFunction>
-											</DoubleAnimation>
-										</Storyboard>
-									</triggers:StoryboardEnumTrigger.Storyboards>
+											<Storyboard x:Name="Back_In">
+												<DoubleAnimation
+													Storyboard.TargetName="Scale"
+													Storyboard.TargetProperty="ScaleX"
+													From="1.05"
+													To="1"
+													Duration="0:00:00.050">
+													<DoubleAnimation.EasingFunction>
+														<SineEase EasingMode="EaseOut" />
+													</DoubleAnimation.EasingFunction>
+												</DoubleAnimation>
+												<DoubleAnimation
+													Storyboard.TargetProperty="Opacity"
+													From="0"
+													To="1"
+													Duration="0:00:00.050">
+													<DoubleAnimation.EasingFunction>
+														<SineEase EasingMode="EaseOut" />
+													</DoubleAnimation.EasingFunction>
+												</DoubleAnimation>
+											</Storyboard>
+										</triggers:StoryboardEnumTrigger.Storyboards>
 
-								</triggers:StoryboardEnumTrigger>
+									</triggers:StoryboardEnumTrigger>
 
-							</ScrollViewer.Triggers>
-						</ScrollViewer>
-
-
-					</ControlTemplate>
-				</ListBox.Template>
-
-				<ListBox.ItemsPanel>
-					<ItemsPanelTemplate>
-						<controls:SmoothScrollingVirtualizingWrapPanel
-							IsItemsHost="True"
-							VirtualizingPanel.ScrollUnit="Item"
-							VirtualizingPanel.VirtualizationMode="Recycling" />
-					</ItemsPanelTemplate>
-				</ListBox.ItemsPanel>
-
-				<ListBox.ItemTemplate>
-					<DataTemplate DataType="{x:Type results:Result}">
-
-						<Grid
-							Width="92"
-							Height="128"
-							Background="Transparent"
-							MouseEnter="OnResultMouseEnter"
-							MouseLeave="OnResultMouseLeave"
-							MouseRightButtonUp="OnResultMouseRight">
-
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto" />
-								<RowDefinition Height="32" />
-							</Grid.RowDefinitions>
-
-							<ContentPresenter
-								Height="{Binding ActualWidth, RelativeSource={RelativeSource Mode=Self}}"
-								Margin="3"
-								Content="{Binding Entry}"
-								Style="{DynamicResource LibraryIcon}" />
-
-							<Grid
-								Margin="0,5,5,0"
-								HorizontalAlignment="Right"
-								VerticalAlignment="Top"
-								Visibility="{Binding Entry.IsFavorite, Converter={StaticResource B2V}}">
-								<wpfUtils:IconBlock
-									Margin="-2,2,2,-2"
-									FontSize="28"
-									Foreground="{DynamicResource BackgroundBrush}"
-									Icon="Heart"
-									IconFont="Solid" />
-								<wpfUtils:IconBlock
-									FontSize="28"
-									Foreground="{DynamicResource TrimBrush}"
-									Icon="Heart"
-									IconFont="Solid" />
-
-							</Grid>
+								</ScrollViewer.Triggers>
+							</ScrollViewer>
 
 
-							<TextBlock
-								x:Name="NameBlock"
-								Grid.Row="1"
-								VerticalAlignment="Top"
-								Text="{Binding Entry.Name}"
-								TextAlignment="Center"
-								TextWrapping="Wrap" />
-						</Grid>
+						</ControlTemplate>
+					</Grid.Resources>
 
 
-						<DataTemplate.Triggers>
-							<DataTrigger
-								Binding="{Binding Entry.Name}"
-								Value="{x:Null}">
-								<Setter TargetName="NameBlock" Property="Text" Value="{Binding EntryId}" />
-								<Setter TargetName="NameBlock" Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
-							</DataTrigger>
-						</DataTemplate.Triggers>
+					<!--  Icon Grid  -->
+					<wpfUtils:ListBoxEx
+						Grid.Row="2"
+						Margin="3"
+						Background="Transparent"
+						ClipToBounds="True"
+						ItemsSource="{Binding Results, IsAsync=True}"
+						MouseDoubleClick="OnItemDoubleClicked"
+						SelectedItem="{Binding SelectedResult}"
+						Template="{StaticResource ListTemplate}"
+						VirtualizingPanel.ScrollUnit="Pixel"
+						VirtualizingPanel.VirtualizationMode="Recycling"
+						Visibility="{Binding ViewList, Converter={StaticResource !B2V}}">
 
-					</DataTemplate>
-				</ListBox.ItemTemplate>
+						<ListBox.ItemsPanel>
+							<ItemsPanelTemplate>
+								<controls:SmoothScrollingVirtualizingWrapPanel
+									IsItemsHost="True"
+									VirtualizingPanel.ScrollUnit="Item"
+									VirtualizingPanel.VirtualizationMode="Recycling" />
+							</ItemsPanelTemplate>
+						</ListBox.ItemsPanel>
 
-			</wpfUtils:ListBoxEx>
+						<ListBox.ItemTemplate>
+							<DataTemplate DataType="{x:Type results:Result}">
 
-			<!--  List  -->
-			<ListBox
-				Grid.Row="2"
-				Margin="6"
-				Background="Transparent"
-				ItemsSource="{Binding Results, IsAsync=True}"
-				MouseDoubleClick="OnItemDoubleClicked"
-				SelectedItem="{Binding SelectedResult}"
-				VirtualizingPanel.ScrollUnit="Pixel"
-				VirtualizingPanel.VirtualizationMode="Recycling"
-				Visibility="{Binding ViewList, Converter={StaticResource B2V}}">
+								<Grid
+									Width="92"
+									Height="128"
+									Background="Transparent"
+									MouseEnter="OnResultMouseEnter"
+									MouseLeave="OnResultMouseLeave"
+									MouseRightButtonUp="OnResultMouseRight">
 
-				<ListBox.ItemTemplate>
-					<DataTemplate DataType="{x:Type results:Result}">
-						<Grid>
+									<Grid.RowDefinitions>
+										<RowDefinition Height="Auto" />
+										<RowDefinition Height="32" />
+									</Grid.RowDefinitions>
 
-							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto" />
-								<ColumnDefinition />
-							</Grid.ColumnDefinitions>
+									<ContentPresenter
+										Height="{Binding ActualWidth, RelativeSource={RelativeSource Mode=Self}}"
+										Margin="3"
+										Content="{Binding Entry}"
+										Style="{DynamicResource LibraryIcon}" />
 
-							<!--TODO <controls1:EntryIcon
-							Width="48"
-							Height="48"
-							Margin="0,-6,0,-4" />-->
+									<Grid
+										Margin="0,5,5,0"
+										HorizontalAlignment="Right"
+										VerticalAlignment="Top"
+										Visibility="{Binding Entry.IsFavorite, Converter={StaticResource B2V}}">
+										<wpfUtils:IconBlock
+											Margin="-2,2,2,-2"
+											FontSize="28"
+											Foreground="{DynamicResource BackgroundBrush}"
+											Icon="Heart"
+											IconFont="Solid" />
+										<wpfUtils:IconBlock
+											FontSize="28"
+											Foreground="{DynamicResource TrimBrush}"
+											Icon="Heart"
+											IconFont="Solid" />
 
-							<TextBlock
-								Grid.Column="1"
-								Margin="12,0,0,0"
-								VerticalAlignment="Center"
-								Text="{Binding Entry.Name}"
-								TextTrimming="CharacterEllipsis" />
-						</Grid>
-					</DataTemplate>
-				</ListBox.ItemTemplate>
-			</ListBox>
+									</Grid>
+
+
+									<TextBlock
+										x:Name="NameBlock"
+										Grid.Row="1"
+										VerticalAlignment="Top"
+										Text="{Binding Entry.Name}"
+										TextAlignment="Center"
+										TextWrapping="Wrap" />
+								</Grid>
+
+
+								<DataTemplate.Triggers>
+									<DataTrigger
+										Binding="{Binding Entry.Name}"
+										Value="{x:Null}">
+										<Setter TargetName="NameBlock" Property="Text" Value="{Binding EntryId}" />
+										<Setter TargetName="NameBlock" Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
+									</DataTrigger>
+								</DataTemplate.Triggers>
+
+							</DataTemplate>
+						</ListBox.ItemTemplate>
+
+					</wpfUtils:ListBoxEx>
+
+					<!--  List  -->
+					<ListBox
+						Grid.Row="2"
+						Margin="6"
+						Background="Transparent"
+						ItemsSource="{Binding Results, IsAsync=True}"
+						MouseDoubleClick="OnItemDoubleClicked"
+						SelectedItem="{Binding SelectedResult}"
+						Template="{StaticResource ListTemplate}"
+						VirtualizingPanel.ScrollUnit="Pixel"
+						VirtualizingPanel.VirtualizationMode="Recycling"
+						Visibility="{Binding ViewList, Converter={StaticResource B2V}}">
+
+						<ListBox.ItemTemplate>
+							<DataTemplate DataType="{x:Type results:Result}">
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="Auto" />
+										<ColumnDefinition />
+									</Grid.ColumnDefinitions>
+
+									<ContentPresenter
+										Grid.Column="0"
+										Width="32"
+										Height="32"
+										Margin="3"
+										Content="{Binding Entry}"
+										Style="{DynamicResource LibraryIcon}" />
+
+									<TextBlock
+										Grid.Column="1"
+										Margin="6,0,0,0"
+										VerticalAlignment="Center"
+										Text="{Binding Entry.Name}"
+										TextTrimming="CharacterEllipsis" />
+								</Grid>
+							</DataTemplate>
+						</ListBox.ItemTemplate>
+					</ListBox>
+				</Grid>
+			</Border>
 		</Grid>
 
 		<menu:LibraryContextMenu x:Name="LibraryContextMenu" />
