@@ -35,10 +35,11 @@ public class BoneReference(BoneId id, string? name = null)
 	public BoneReference? Mirror;
 	public bool IsValid = true;
 
-	private const float PoseBlendTimeMs = 500;
+	private const float PoseBlendTimeMs = 250;
 	private readonly Stopwatch blendTime = new();
 	private readonly EasingFunctionBase blendEase = new SineEase();
 	private bool blendOnLoad = false;
+	private bool blendOnUnload = false;
 	private Transform? fromTransform;
 	private Transform? toTransform;
 
@@ -67,6 +68,9 @@ public class BoneReference(BoneId id, string? name = null)
 		get => this.boneName;
 		set => this.boneName = value;
 	}
+
+	public bool IsBlending => this.blendOnLoad || this.blendOnUnload;
+	public bool IsBlendingOut => this.blendOnUnload;
 
 	public void SetToReference()
 	{
@@ -123,16 +127,12 @@ public class BoneReference(BoneId id, string? name = null)
 
 	public void Reset()
 	{
-		this.Transform = null;
 		this.MirrorMode = MirrorModes.None;
-		this.loadLocalSpaceTransform = null;
-		this.loadModelSpaceBoneTransform = null;
-		this.loadModelSpaceTransform = null;
-		this.loadReferenceRelativeTransform = null;
 
-		this.fromTransform = null;
-		this.toTransform = null;
-		this.blendOnLoad = false;
+		this.fromTransform = this.Transform;
+		this.toTransform = new Posing.Transform();
+		this.blendOnUnload = true;
+		this.blendTime.Restart();
 	}
 
 	public unsafe void FinalizeBones()
@@ -251,21 +251,24 @@ public class BoneReference(BoneId id, string? name = null)
 			this.blendOnLoad = false;
 		}
 
-		// Apply reference relative changes
+		// Apply reference relative changes.
 		if (this.loadReferenceRelativeTransform != null && this.ReferenceTransform != null)
 		{
-			this.blendOnLoad = false;
+			this.blendOnLoad = true;
 
 			this.loadLocalSpaceTransform = (Transform)this.loadReferenceRelativeTransform * (Transform)this.ReferenceTransform;
-
 			this.loadReferenceRelativeTransform = null;
 		}
 
-		// apply local space changes
+		// apply local space changes.
+		// and set up blend if desired.
 		if (this.loadLocalSpaceTransform != null)
 		{
 			if (this.blendOnLoad)
 			{
+				if (this.Transform == null)
+					this.Transform = new Posing.Transform();
+
 				this.fromTransform = this.Transform;
 				this.blendTime.Restart();
 			}
@@ -278,26 +281,41 @@ public class BoneReference(BoneId id, string? name = null)
 			this.loadLocalSpaceTransform = null;
 		}
 
-		if (this.toTransform != null)
+		// Apply blend to the Transform.
+		if (this.toTransform != null && (this.blendOnLoad || this.blendOnUnload))
 		{
 			if (this.fromTransform != null)
 			{
 				float p = this.blendTime.ElapsedMilliseconds / PoseBlendTimeMs;
 				p = Math.Clamp(p, 0, 1);
-				p = this.blendEase.Ease(p, EasingFunctionBase.EasingModes.EaseOut);
+				p = this.blendEase.Ease(p, EasingFunctionBase.EasingModes.EaseInOut);
 				this.Transform = Posing.Transform.Lerp(this.fromTransform.Value, this.toTransform.Value, p);
 
 				if (p >= 1)
 				{
-					this.Transform = this.toTransform;
+					if (this.blendOnUnload)
+					{
+						this.Transform = null;
+						this.Locked = false;
+					}
+					else
+					{
+						this.Transform = this.toTransform;
+					}
+
 					this.toTransform = null;
 					this.fromTransform = null;
 					this.blendTime.Stop();
+					this.blendOnLoad = false;
+					this.blendOnUnload = false;
 				}
 			}
 			else
 			{
 				this.Transform = this.toTransform;
+				this.toTransform = null;
+				this.blendOnLoad = false;
+				this.blendOnUnload = false;
 			}
 		}
 

@@ -77,44 +77,47 @@ public class PoseFile : FileBase
 		// Wait one frame for all the bone references to populate with real transform data.
 		await Threads.NextFrame();
 
-		foreach(BoneReference reference in references)
+		foreach(BoneReference boneReference in references)
 		{
-			if (reference.Name == null)
+			while (boneReference.IsBlending)
+				await Task.Delay(33);
+
+			if (boneReference.Name == null)
 				continue;
 
-			if (reference.Name == "n_root")
+			if (boneReference.Name == "n_root")
 				continue;
 
 			// We'll have duplicate bone names, since we support indexing all the duplicate
 			// HkPose and PartialSkeleton bones, but we can fairly safely assume the first
 			// bone will be the one we want (from the lowest HkPose and PartialSkeleton)
-			if (this.Bones.ContainsKey(reference.Name))
+			if (this.Bones.ContainsKey(boneReference.Name))
 				continue;
 
-			if (this.ReferenceRelativeBones.ContainsKey(reference.Name))
+			if (this.ReferenceRelativeBones.ContainsKey(boneReference.Name))
 				continue;
 
-			if (onlyEdits && reference.Transform == null)
+			if (onlyEdits && (boneReference.Transform == null || boneReference.IsBlendingOut))
 				continue;
 
 			// Legacy bone format for backwards compatibility
-			if (includeLegacyBones && reference.ModelSpaceTransform != null)
+			if (includeLegacyBones && boneReference.ModelSpaceTransform != null)
 			{
-				Transform hkModelSpaceTransform = reference.ModelSpaceTransform.Value;
-				if (reference.Transform != null)
-					hkModelSpaceTransform *= (Transform)reference.Transform;
+				Transform hkModelSpaceTransform = boneReference.ModelSpaceTransform.Value;
+				if (boneReference.Transform != null)
+					hkModelSpaceTransform *= (Transform)boneReference.Transform;
 
 				LegacyBoneTransform modelSpaceTransform = new();
 				modelSpaceTransform.Position = hkModelSpaceTransform.Translation;
 				modelSpaceTransform.Rotation = hkModelSpaceTransform.Rotation;
 				modelSpaceTransform.Scale = hkModelSpaceTransform.Scale;
-				this.Bones.Add(reference.Name, modelSpaceTransform);
+				this.Bones.Add(boneReference.Name, modelSpaceTransform);
 			}
 
 			// New format bones
-			if (reference.LocalSpaceTransform != null && reference.ReferenceTransform != null)
+			if (boneReference.LocalSpaceTransform != null && boneReference.ReferenceTransform != null)
 			{
-				Transform? referenceRelative = reference.ReferenceRelativeTransform;
+				Transform? referenceRelative = boneReference.ReferenceRelativeTransform;
 				if (referenceRelative == null)
 					continue;
 
@@ -146,7 +149,7 @@ public class PoseFile : FileBase
 					}
 				}
 
-				this.ReferenceRelativeBones.Add(reference.Name, boneTransform);
+				this.ReferenceRelativeBones.Add(boneReference.Name, boneTransform);
 			}
 		}
 	}
@@ -162,6 +165,9 @@ public class PoseFile : FileBase
 		List<BoneReference> boneReferences = ServiceManager.Instance.Pose.GetOrCreateBoneReferences(objectTableIndex);
 		foreach (BoneReference boneReference in boneReferences)
 		{
+			while (boneReference.IsBlending)
+				await Task.Delay(33);
+
 			if (boneReference.Name == null)
 				continue;
 
@@ -235,13 +241,14 @@ public class PoseFile : FileBase
 		}
 	}
 
+#pragma warning disable
 	public class PosePreview(PoseFile file) : LibraryPreviewBase
 	{
 		private PoseFile? backupPose;
 
 		protected override async Task Start(LibraryPreviewBase? other)
 		{
-			if (other is PosePreview otherPosePreview)
+			if (other is PosePreview otherPosePreview && otherPosePreview.backupPose != null)
 			{
 				this.backupPose = otherPosePreview.backupPose;
 			}
@@ -249,6 +256,7 @@ public class PoseFile : FileBase
 			{
 				this.backupPose = new();
 				await this.backupPose.Save(this.Services.Target.TargetObjectIndex, false, null, true);
+				await Task.Delay(33);
 			}
 
 			await file.Apply(this.Services.Target.TargetObjectIndex);

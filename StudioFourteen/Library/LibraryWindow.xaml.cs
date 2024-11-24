@@ -47,6 +47,7 @@ public partial class LibraryWindow : Panel
 	public static LibraryTab ScenesTab = new("Scenes", IconChar.Users);
 
 	private readonly FuncQueue searchQueue;
+	private readonly FuncQueue startPreviewQueue;
 	private readonly FuncQueue stopPreviewQueue;
 	private readonly Stopwatch searchStopwatch = new();
 	private LibraryPreviewBase? currentPreview;
@@ -62,6 +63,7 @@ public partial class LibraryWindow : Panel
 	{
 		this.searchQueue = new(this.SearchAsync, 250);
 		this.stopPreviewQueue = new(this.StopPreview, 250);
+		this.startPreviewQueue = new(this.StartPreview, 100);
 		this.TagFilter.Tags.CollectionChanged += this.OnTagsFilterChanged;
 		this.Services.Library.ScanComplete += this.OnLibraryScanComplete;
 
@@ -350,18 +352,8 @@ public partial class LibraryWindow : Panel
 		this.currentHover = senderElement;
 		this.LibraryContextMenu.Enter(result, senderElement);
 
-		LibraryPreviewBase? nextPreview = result.Entry.GetPreview();
-		if (nextPreview != null)
-		{
-			this.stopPreviewQueue.Cancel();
-
-			LibraryPreviewBase? lastPreview = this.currentPreview;
-			if (lastPreview?.HasStopped == true)
-				lastPreview = null;
-
-			this.currentPreview = nextPreview;
-			this.currentPreview?.StartPreview(lastPreview);
-		}
+		// TODO: this is still broken. =(
+		////this.startPreviewQueue.Invoke();
 	}
 
 	private void OnResultMouseRight(object sender, MouseButtonEventArgs e)
@@ -379,6 +371,27 @@ public partial class LibraryWindow : Panel
 		this.currentPreview?.StopPreview();
 	}
 
+	private async Task StartPreview()
+	{
+		await this.MainThread();
+
+		if (this.currentHover == null || this.currentHover.DataContext is not Result result)
+			return;
+
+		LibraryPreviewBase? nextPreview = result.Entry.GetPreview();
+		if (nextPreview != null)
+		{
+			this.stopPreviewQueue.Cancel();
+
+			LibraryPreviewBase? lastPreview = this.currentPreview;
+			if (lastPreview?.HasStopped == true)
+				lastPreview = null;
+
+			this.currentPreview = nextPreview;
+			this.currentPreview?.StartPreview(lastPreview);
+		}
+	}
+
 	private void OnMouseMove(object sender, MouseEventArgs e)
 	{
 		if (this.currentHover != null)
@@ -392,6 +405,8 @@ public partial class LibraryWindow : Panel
 			{
 				return;
 			}
+
+			this.startPreviewQueue.Cancel();
 
 			if (this.currentHover.DataContext is Result result)
 			{
