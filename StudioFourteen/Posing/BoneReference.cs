@@ -125,14 +125,24 @@ public class BoneReference(BoneId id, string? name = null)
 		this.loadReferenceRelativeTransform = relativeTransform;
 	}
 
-	public void Reset()
+	public void Reset(bool immediate)
 	{
 		this.MirrorMode = MirrorModes.None;
 
-		this.fromTransform = this.Transform;
-		this.toTransform = new Posing.Transform();
-		this.blendOnUnload = true;
-		this.blendTime.Restart();
+		if (immediate || this.Transform == null)
+		{
+			this.fromTransform = null;
+			this.toTransform = null;
+			this.Transform = null;
+			this.blendTime.Stop();
+		}
+		else
+		{
+			this.fromTransform = this.Transform;
+			this.toTransform = new Posing.Transform();
+			this.blendOnUnload = true;
+			this.blendTime.Restart();
+		}
 	}
 
 	public unsafe void FinalizeBones()
@@ -282,9 +292,9 @@ public class BoneReference(BoneId id, string? name = null)
 		}
 
 		// Apply blend to the Transform.
-		if (this.toTransform != null && (this.blendOnLoad || this.blendOnUnload))
+		if (this.toTransform != null)
 		{
-			if (this.fromTransform != null)
+			if (this.fromTransform != null && (this.blendOnLoad || this.blendOnUnload))
 			{
 				float p = this.blendTime.ElapsedMilliseconds / PoseBlendTimeMs;
 				p = Math.Clamp(p, 0, 1);

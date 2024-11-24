@@ -160,11 +160,11 @@ public class BoneSelection : TransformSelectionBase
 	{
 		foreach(BoneReference bone in this.bones)
 		{
-			bone.Reset();
+			bone.Reset(false);
 
 			if (this.MirrorMode != MirrorModes.None && bone.Mirror != null)
 			{
-				bone.Mirror.Reset();
+				bone.Mirror.Reset(false);
 			}
 		}
 	}

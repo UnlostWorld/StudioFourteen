@@ -79,9 +79,6 @@ public class PoseFile : FileBase
 
 		foreach(BoneReference boneReference in references)
 		{
-			while (boneReference.IsBlending)
-				await Task.Delay(33);
-
 			if (boneReference.Name == null)
 				continue;
 
@@ -99,6 +96,11 @@ public class PoseFile : FileBase
 
 			if (onlyEdits && (boneReference.Transform == null || boneReference.IsBlendingOut))
 				continue;
+
+			while (boneReference.IsBlending)
+				await Task.Delay(33);
+
+			Logging.Shared.Information($"!!!! {onlyEdits} {boneReference.Name} {boneReference.Transform} {boneReference.IsBlendingOut}");
 
 			// Legacy bone format for backwards compatibility
 			if (includeLegacyBones && boneReference.ModelSpaceTransform != null)
@@ -124,9 +126,10 @@ public class PoseFile : FileBase
 				BoneTransform boneTransform = new();
 				if (includeBones == null)
 				{
+					// TODO: there is a slight drift in bone positions we need to fix before this ships.
 					// Null out components that are irrelevantly small
-					if (!referenceRelative.Value.Translation.IsApproximately(Vector3.Zero, 0.001f))
-						boneTransform.Translation = referenceRelative.Value.Translation;
+					////if (!referenceRelative.Value.Translation.IsApproximately(Vector3.Zero, 0.001f))
+					////	boneTransform.Translation = referenceRelative.Value.Translation;
 
 					// If the rotation quat has no x,y, or z component, then ignore it, as 0,0,0,1 is identity, and
 					// a W component without X,Y,Z components doesn't do anything afaik.
@@ -165,9 +168,6 @@ public class PoseFile : FileBase
 		List<BoneReference> boneReferences = ServiceManager.Instance.Pose.GetOrCreateBoneReferences(objectTableIndex);
 		foreach (BoneReference boneReference in boneReferences)
 		{
-			while (boneReference.IsBlending)
-				await Task.Delay(33);
-
 			if (boneReference.Name == null)
 				continue;
 
@@ -215,7 +215,7 @@ public class PoseFile : FileBase
 				}
 			}
 
-			boneReference.Reset();
+			boneReference.Reset(false);
 		}
 	}
 
@@ -241,7 +241,6 @@ public class PoseFile : FileBase
 		}
 	}
 
-#pragma warning disable
 	public class PosePreview(PoseFile file) : LibraryPreviewBase
 	{
 		private PoseFile? backupPose;

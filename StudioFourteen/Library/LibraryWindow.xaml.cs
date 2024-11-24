@@ -352,8 +352,7 @@ public partial class LibraryWindow : Panel
 		this.currentHover = senderElement;
 		this.LibraryContextMenu.Enter(result, senderElement);
 
-		// TODO: this is still broken. =(
-		////this.startPreviewQueue.Invoke();
+		this.startPreviewQueue.Invoke();
 	}
 
 	private void OnResultMouseRight(object sender, MouseButtonEventArgs e)
