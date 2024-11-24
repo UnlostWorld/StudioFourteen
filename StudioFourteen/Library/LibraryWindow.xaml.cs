@@ -17,6 +17,7 @@ namespace StudioFourteen.Library;
 
 using FontAwesome.Sharp;
 using PropertyChanged.SourceGenerator;
+using Serilog;
 using StudioFourteen;
 using StudioFourteen.Files;
 using StudioFourteen.Library.Filters;
@@ -34,7 +35,6 @@ using System.Windows.Input;
 using WpfUtils;
 using WpfUtils.Extensions;
 using WpfUtils.Utils;
-
 using Panel = StudioFourteen.Panels.Panel;
 
 public partial class LibraryWindow : Panel
@@ -46,18 +46,20 @@ public partial class LibraryWindow : Panel
 	public static LibraryTab ScenesTab = new("Scenes", IconChar.Users);
 
 	private readonly FuncQueue searchQueue;
+	private readonly FuncQueue stopPreviewQueue;
 	private readonly Stopwatch searchStopwatch = new();
+	private LibraryPreviewBase? currentPreview;
 	private bool flatten = false;
 	[Notify] private Result? selectedResult = null;
 	private Navigation navigation = Navigation.None;
 	[Notify] private NavigationAnimations navigationAnimation = NavigationAnimations.None;
 	[Notify] private bool viewList;
-
 	[Notify] private bool narrowMode;
 
 	public LibraryWindow()
 	{
 		this.searchQueue = new(this.SearchAsync, 250);
+		this.stopPreviewQueue = new(this.StopPreview, 250);
 		this.TagFilter.Tags.CollectionChanged += this.OnTagsFilterChanged;
 		this.Services.Library.ScanComplete += this.OnLibraryScanComplete;
 
@@ -344,6 +346,15 @@ public partial class LibraryWindow : Panel
 			return;
 
 		this.LibraryContextMenu.Enter(result, senderElement);
+
+		this.stopPreviewQueue.Cancel();
+
+		LibraryPreviewBase? lastPreview = this.currentPreview;
+		if (lastPreview?.HasStopped == true)
+			lastPreview = null;
+
+		this.currentPreview = result.Entry.GetPreview();
+		this.currentPreview?.StartPreview(lastPreview);
 	}
 
 	private void OnResultMouseLeave(object sender, MouseEventArgs e)
@@ -355,6 +366,7 @@ public partial class LibraryWindow : Panel
 			return;
 
 		this.LibraryContextMenu.Leave(result);
+		this.stopPreviewQueue.Invoke();
 	}
 
 	private void OnResultMouseRight(object sender, MouseButtonEventArgs e)
@@ -366,6 +378,11 @@ public partial class LibraryWindow : Panel
 	{
 		this.NarrowMode = e.NewSize.Width < 450;
 	}
+
+	private void StopPreview()
+	{
+		this.currentPreview?.StopPreview();
+	}
 }
 
 public class LibraryTab(string name, IconChar icon, params FilterBase[] filters)
@@ -374,4 +391,66 @@ public class LibraryTab(string name, IconChar icon, params FilterBase[] filters)
 	public string Name { get; init; } = Resources.Find($"LOC_Library_{name}", name);
 	public IconChar Icon { get; init; } = icon;
 	public FilterBase[] Filters { get; init; } = filters;
+}
+
+public abstract class LibraryPreviewBase
+{
+	private bool isStarting = false;
+	private bool isStopping = false;
+
+	public bool HasStopped { get; private set; }
+	public bool HasStarted { get; private set; }
+
+	protected ILogger Log => Logging.ForContext(this.GetType());
+	protected ServiceManager Services => ServiceManager.Instance;
+
+	public void StartPreview(LibraryPreviewBase? other)
+	{
+		if (this.HasStarted)
+			return;
+
+		Task.Run(async () =>
+		{
+			while (this.isStopping)
+				await Task.Delay(33);
+
+			if (other != null)
+			{
+				if (other.GetType() != this.GetType())
+				{
+					await other.StopPreviewAsync();
+				}
+
+				while (other.isStopping)
+				{
+					await Task.Delay(33);
+				}
+			}
+
+			this.isStarting = true;
+			await this.Start(other);
+			this.isStarting = false;
+			this.HasStarted = true;
+		});
+	}
+
+	public void StopPreview()
+	{
+		this.StopPreviewAsync().Run();
+	}
+
+	public async Task StopPreviewAsync()
+	{
+		while (this.isStarting)
+			await Task.Delay(33);
+
+		this.isStopping = true;
+		await this.Stop();
+		this.isStopping = false;
+		this.HasStopped = true;
+		this.HasStarted = false;
+	}
+
+	protected abstract Task Start(LibraryPreviewBase? other);
+	protected abstract Task Stop();
 }

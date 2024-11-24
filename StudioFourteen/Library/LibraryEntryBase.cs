@@ -100,5 +100,10 @@ public abstract class LibraryEntryBase : ITagged, INotifyPropertyChanged
 		return menus;
 	}
 
+	public virtual LibraryPreviewBase? GetPreview()
+	{
+		return null;
+	}
+
 	protected abstract string GetInternalId();
 }

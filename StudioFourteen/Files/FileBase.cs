@@ -15,9 +15,11 @@
 
 namespace StudioFourteen.Files;
 
+using StudioFourteen.Library;
 using StudioFourteen.Tags;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -62,5 +64,10 @@ public abstract class FileBase
 	public void SetImage(byte[] binaryData)
 	{
 		this.Base64Image = Convert.ToBase64String(binaryData);
+	}
+
+	public virtual LibraryPreviewBase? GetPreview()
+	{
+		return null;
 	}
 }
