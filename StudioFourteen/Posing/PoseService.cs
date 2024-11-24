@@ -677,21 +677,22 @@ public class PoseService : ServiceBase, WorldContextMenu.IProvider
 
 	private unsafe void FinalizeSkeletons()
 	{
-		List<BoneId> boneIds;
 		lock (this.boneIds)
 		{
-			boneIds = new(this.boneIds);
-		}
+			List<BoneId> boneIds = new(this.boneIds);
 
-		lock (this.boneReferences)
-		{
-			foreach (BoneId boneId in boneIds)
+			lock (this.boneReferences)
 			{
-				BoneReference reference = this.boneReferences[boneId];
-				if (!reference.IsValid)
-					continue;
+				foreach (BoneId boneId in boneIds)
+				{
+					if (!this.boneReferences.TryGetValue(boneId, out BoneReference? reference))
+						continue;
 
-				reference.FinalizeBones();
+					if (reference == null || !reference.IsValid)
+						continue;
+
+					reference.FinalizeBones();
+				}
 			}
 		}
 	}
