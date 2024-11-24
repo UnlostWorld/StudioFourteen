@@ -157,14 +157,17 @@ public class BoneReference(BoneId id, string? name = null)
 
 		this.ReferenceTransform = pPose->Skeleton->ReferencePose[this.Id.BoneIndex];
 		this.ModelSpaceTransform = *pPose->AccessBoneModelSpace(this.Id.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
-		this.LocalSpaceTransform = *pPose->AccessBoneLocalSpace(this.Id.BoneIndex);
 
 		Transform characterTransform = default;
 		characterTransform.Translation = pCharacter->DrawObject->Position;
 		characterTransform.Rotation = pCharacter->DrawObject->Rotation;
 		characterTransform.Scale = pCharacter->DrawObject->Scale;
 		this.ModelTransform = characterTransform;
-		this.ReferenceRelativeTransform = (Transform)this.LocalSpaceTransform / (Transform)this.ReferenceTransform;
+
+		if (this.LocalSpaceTransform != null)
+		{
+			this.ReferenceRelativeTransform = (Transform)this.LocalSpaceTransform / (Transform)this.ReferenceTransform;
+		}
 	}
 
 	public unsafe Skeleton* Tick()
@@ -330,6 +333,7 @@ public class BoneReference(BoneId id, string? name = null)
 		}
 
 		// Apply transform to live.
+		this.LocalSpaceTransform = this.baseLocalTransform;
 		if (this.Transform != null)
 		{
 			Transform newTransform = (Transform)this.Transform * (Transform)this.baseLocalTransform;
@@ -341,6 +345,17 @@ public class BoneReference(BoneId id, string? name = null)
 			pTransform->Translation.Set(newTransform.Translation);
 			pTransform->Rotation.Set(newTransform.Rotation);
 			pTransform->Scale.Set(newTransform.Scale);
+
+			this.LocalSpaceTransform = *pTransform;
+		}
+		else if (this.Locked)
+		{
+			hkQsTransformf* pTransform = pPose->AccessBoneLocalSpace(this.Id.BoneIndex);
+			pTransform->Translation.Set(this.baseLocalTransform.Value.Translation);
+			pTransform->Rotation.Set(this.baseLocalTransform.Value.Rotation);
+			pTransform->Scale.Set(this.baseLocalTransform.Value.Scale);
+
+			this.LocalSpaceTransform = *pTransform;
 		}
 
 		// Apply mirroring

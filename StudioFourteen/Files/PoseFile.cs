@@ -14,16 +14,9 @@
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
 namespace StudioFourteen.Files;
-
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
-using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
-using FFXIVClientStructs.Havok.Animation.Rig;
 using FontAwesome.Sharp;
-using Newtonsoft.Json;
 using StudioFourteen.Library;
 using StudioFourteen.Library.LibraryMenu;
-using StudioFourteen.Plugin;
 using StudioFourteen.Posing;
 using StudioFourteen.Structs.Extensions;
 using StudioFourteen.Tags;
@@ -32,7 +25,6 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
-using System.Windows.Input;
 
 public class PoseFileTypeInfo : JsonFileTypeInfoBase<PoseFile>
 {
@@ -100,19 +92,13 @@ public class PoseFile : FileBase
 			while (boneReference.IsBlending)
 				await Task.Delay(33);
 
-			Logging.Shared.Information($"!!!! {onlyEdits} {boneReference.Name} {boneReference.Transform} {boneReference.IsBlendingOut}");
-
 			// Legacy bone format for backwards compatibility
 			if (includeLegacyBones && boneReference.ModelSpaceTransform != null)
 			{
-				Transform hkModelSpaceTransform = boneReference.ModelSpaceTransform.Value;
-				if (boneReference.Transform != null)
-					hkModelSpaceTransform *= (Transform)boneReference.Transform;
-
 				LegacyBoneTransform modelSpaceTransform = new();
-				modelSpaceTransform.Position = hkModelSpaceTransform.Translation;
-				modelSpaceTransform.Rotation = hkModelSpaceTransform.Rotation;
-				modelSpaceTransform.Scale = hkModelSpaceTransform.Scale;
+				modelSpaceTransform.Position = boneReference.ModelSpaceTransform.Value.Translation;
+				modelSpaceTransform.Rotation = boneReference.ModelSpaceTransform.Value.Rotation;
+				modelSpaceTransform.Scale = boneReference.ModelSpaceTransform.Value.Scale;
 				this.Bones.Add(boneReference.Name, modelSpaceTransform);
 			}
 
@@ -126,10 +112,9 @@ public class PoseFile : FileBase
 				BoneTransform boneTransform = new();
 				if (includeBones == null)
 				{
-					// TODO: there is a slight drift in bone positions we need to fix before this ships.
 					// Null out components that are irrelevantly small
-					////if (!referenceRelative.Value.Translation.IsApproximately(Vector3.Zero, 0.001f))
-					////	boneTransform.Translation = referenceRelative.Value.Translation;
+					if (!referenceRelative.Value.Translation.IsApproximately(Vector3.Zero, 0.001f))
+						boneTransform.Translation = referenceRelative.Value.Translation;
 
 					// If the rotation quat has no x,y, or z component, then ignore it, as 0,0,0,1 is identity, and
 					// a W component without X,Y,Z components doesn't do anything afaik.
