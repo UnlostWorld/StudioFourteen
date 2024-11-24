@@ -21,6 +21,7 @@ using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.Havok.Animation.Rig;
 using FontAwesome.Sharp;
 using Newtonsoft.Json;
+using StudioFourteen.Library;
 using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Plugin;
 using StudioFourteen.Posing;
@@ -62,7 +63,7 @@ public class PoseFile : FileBase
 		}
 	}
 
-	public async Task Save(int objectTableIndex, bool includeLegacyBones = true, HashSet<string>? includeBones = null)
+	public async Task Save(int objectTableIndex, bool includeLegacyBones = true, HashSet<string>? includeBones = null, bool onlyEdits = false)
 	{
 		await Threads.FrameworkThread();
 
@@ -71,49 +72,7 @@ public class PoseFile : FileBase
 		this.MainHand = null;
 		this.OffHand = null;
 
-		List<BoneReference> references = new();
-
-		unsafe
-		{
-			Character* character = ServiceManager.Instance.Target.GetCharacter(objectTableIndex);
-			if (character == null)
-				return;
-
-			CharacterBase* characterBase = character->GetCharacterBase();
-			if (characterBase == null)
-				return;
-
-			ushort partialCount = characterBase->Skeleton->PartialSkeletonCount;
-			for (int partialIdx = 0; partialIdx < partialCount; partialIdx++)
-			{
-				PartialSkeleton* partialSkeleton = &characterBase->Skeleton->PartialSkeletons[partialIdx];
-
-				byte poseCount = partialSkeleton->GetMaxPoses();
-				for (byte poseIdx = 0; poseIdx < poseCount; poseIdx++)
-				{
-					hkaPose* pose = partialSkeleton->GetHavokPose(poseIdx);
-					if (pose == null)
-						continue;
-
-					int boneCount = pose->Skeleton->Bones.Length;
-					for (short boneIdx = 0; boneIdx < boneCount; boneIdx++)
-					{
-						hkaBone bone = pose->Skeleton->Bones[boneIdx];
-						string? boneName = bone.Name.String;
-
-						if (boneName == null)
-							continue;
-
-						if (includeBones != null && !includeBones.Contains(boneName))
-							continue;
-
-						BoneId boneId = new(character->ObjectIndex, partialIdx, poseIdx, boneIdx);
-						BoneReference reference = ServiceManager.Instance.Pose.GetOrCreateBoneReference(boneId, boneName);
-						references.Add(reference);
-					}
-				}
-			}
-		}
+		List<BoneReference> references = ServiceManager.Instance.Pose.GetOrCreateBoneReferences(objectTableIndex);
 
 		// Wait one frame for all the bone references to populate with real transform data.
 		await Threads.NextFrame();
@@ -123,6 +82,9 @@ public class PoseFile : FileBase
 			if (reference.Name == null)
 				continue;
 
+			if (reference.Name == "n_root")
+				continue;
+
 			// We'll have duplicate bone names, since we support indexing all the duplicate
 			// HkPose and PartialSkeleton bones, but we can fairly safely assume the first
 			// bone will be the one we want (from the lowest HkPose and PartialSkeleton)
@@ -130,6 +92,9 @@ public class PoseFile : FileBase
 				continue;
 
 			if (this.ReferenceRelativeBones.ContainsKey(reference.Name))
+				continue;
+
+			if (onlyEdits && reference.Transform == null)
 				continue;
 
 			// Legacy bone format for backwards compatibility
@@ -149,12 +114,6 @@ public class PoseFile : FileBase
 			// New format bones
 			if (reference.LocalSpaceTransform != null && reference.ReferenceTransform != null)
 			{
-				Transform hkReferenceRelativeTransform = reference.LocalSpaceTransform.Value;
-				if (reference.Transform != null)
-					hkReferenceRelativeTransform *= (Transform)reference.Transform;
-
-				hkReferenceRelativeTransform /= (Transform)reference.ReferenceTransform;
-
 				Transform? referenceRelative = reference.ReferenceRelativeTransform;
 				if (referenceRelative == null)
 					continue;
@@ -168,15 +127,17 @@ public class PoseFile : FileBase
 
 					// If the rotation quat has no x,y, or z component, then ignore it, as 0,0,0,1 is identity, and
 					// a W component without X,Y,Z components doesn't do anything afaik.
-					if (referenceRelative.Value.Rotation.X.IsApproximately(0, 0.001f)
-						&& referenceRelative.Value.Rotation.Y.IsApproximately(0, 0.001f)
-						&& referenceRelative.Value.Rotation.Z.IsApproximately(0, 0.001f))
-						boneTransform.Rotation = null;
+					if (!referenceRelative.Value.Rotation.X.IsApproximately(0, 0.001f)
+						|| !referenceRelative.Value.Rotation.Y.IsApproximately(0, 0.001f)
+						|| !referenceRelative.Value.Rotation.Z.IsApproximately(0, 0.001f))
+					{
+						boneTransform.Rotation = referenceRelative.Value.Rotation;
+					}
 
-					if (referenceRelative.Value.Scale.IsApproximately(Vector3.One, 0.001f))
-						boneTransform.Scale = null;
+					if (!referenceRelative.Value.Scale.IsApproximately(Vector3.One, 0.001f))
+						boneTransform.Scale = referenceRelative.Value.Scale;
 
-					// If all the components were irrelevantly small, then return null
+					// If all the components were irrelevantly small, then skip this bone
 					if (boneTransform.Translation == null
 						&& boneTransform.Rotation == null
 						&& boneTransform.Scale == null)
@@ -190,91 +151,6 @@ public class PoseFile : FileBase
 		}
 	}
 
-	public List<BoneReference>? GetBoneReferences(int objectTableIndex, bool includeFace)
-	{
-		Threads.VerifyFrameworkThread();
-
-		bool useReferenceRelativeBones = this.ReferenceRelativeBones != null;
-		List<BoneReference> boneReferences = new();
-
-		unsafe
-		{
-			Character* character = ServiceManager.Instance.Target.GetCharacter(objectTableIndex);
-			if (character == null)
-				return null;
-
-			CharacterBase* characterBase = character->GetCharacterBase();
-			if (characterBase == null)
-				return null;
-
-			ushort partialCount = characterBase->Skeleton->PartialSkeletonCount;
-			for (int partialIdx = 0; partialIdx < partialCount; partialIdx++)
-			{
-				PartialSkeleton* partialSkeleton = &characterBase->Skeleton->PartialSkeletons[partialIdx];
-
-				byte poseCount = partialSkeleton->GetMaxPoses();
-				for (byte poseIdx = 0; poseIdx < poseCount; poseIdx++)
-				{
-					hkaPose* pose = partialSkeleton->GetHavokPose(poseIdx);
-					if (pose == null)
-						continue;
-
-					int boneCount = pose->Skeleton->Bones.Length;
-					for (short boneIdx = 0; boneIdx < boneCount; boneIdx++)
-					{
-						hkaBone bone = pose->Skeleton->Bones[boneIdx];
-						string? boneName = bone.Name.String;
-
-						if (boneName == null)
-							continue;
-
-						if (boneName == "n_root")
-							continue;
-
-						if (!includeFace && boneName.StartsWith("j_f_"))
-						{
-							continue;
-						}
-
-						BoneId boneId = new(character->ObjectIndex, partialIdx, poseIdx, boneIdx);
-
-						if (useReferenceRelativeBones)
-						{
-							BoneTransform? val = null;
-							this.ReferenceRelativeBones?.TryGetValue(boneName, out val);
-
-							if (val != null)
-							{
-								BoneReference reference = ServiceManager.Instance.Pose.GetOrCreateBoneReference(boneId, boneName);
-								boneReferences.Add(reference);
-							}
-						}
-						else
-						{
-							LegacyBoneTransform? val = null;
-							if (this.Bones?.TryGetValue(boneName, out val) != true)
-							{
-								string? legacyName = LegacyBoneNameConverter.GetLegacyName(boneName);
-								if (legacyName != null)
-								{
-									this.Bones?.TryGetValue(legacyName, out val);
-								}
-							}
-
-							if (val != null)
-							{
-								BoneReference reference = ServiceManager.Instance.Pose.GetOrCreateBoneReference(boneId, boneName);
-								boneReferences.Add(reference);
-							}
-						}
-					}
-				}
-			}
-		}
-
-		return boneReferences;
-	}
-
 	[LibraryMenuTarget(IconChar.Running, "LOC_AppearanceApplyTo")]
 	public async Task Apply(int objectTableIndex)
 	{
@@ -282,29 +158,14 @@ public class PoseFile : FileBase
 
 		bool useReferenceRelativeBones = this.ReferenceRelativeBones != null;
 
-		bool includeFace = false;
-		if (useReferenceRelativeBones)
-		{
-			includeFace = true;
-		}
-		else
-		{
-			// TODO: check if all races have these bones or its just Hyur!
-			includeFace = false; //// this.Bones?.ContainsKey("j_f_ulip_02_l") == true;
-		}
-
 		// Get bone references
-		List<BoneReference>? boneReferences = this.GetBoneReferences(objectTableIndex, includeFace);
-		if (boneReferences == null)
-			return;
-
-		// Wait for a tick to update all bone references
-		await Threads.NextFrame();
-
-		// Apply values
+		List<BoneReference> boneReferences = ServiceManager.Instance.Pose.GetOrCreateBoneReferences(objectTableIndex);
 		foreach (BoneReference boneReference in boneReferences)
 		{
 			if (boneReference.Name == null)
+				continue;
+
+			if (boneReference.Name == "n_root")
 				continue;
 
 			if (useReferenceRelativeBones)
@@ -316,10 +177,15 @@ public class PoseFile : FileBase
 				{
 					boneReference.SetReferenceRelativeTransform(val);
 					boneReference.Locked = true;
+					continue;
 				}
 			}
 			else
 			{
+				// no face bones for legacy poses
+				if (boneReference.Name.StartsWith("j_f_"))
+					continue;
+
 				LegacyBoneTransform? val = null;
 				if (this.Bones?.TryGetValue(boneReference.Name, out val) != true)
 				{
@@ -339,15 +205,17 @@ public class PoseFile : FileBase
 
 					boneReference.SetModelSpaceTransform(val.ToBoneTransform());
 					boneReference.Locked = true;
+					continue;
 				}
 			}
+
+			boneReference.Reset();
 		}
 	}
 
-	public Task Revert(int objectTableIndex)
+	public override LibraryPreviewBase GetPreview()
 	{
-		ServiceManager.Instance.Pose.FlushBoneReferences(objectTableIndex);
-		return Task.CompletedTask;
+		return new PosePreview(this);
 	}
 
 	// This is really just here so it serializes the same
@@ -364,6 +232,34 @@ public class PoseFile : FileBase
 			transform.Scale = this.Scale;
 			transform.Rotation = this.Rotation;
 			return transform;
+		}
+	}
+
+	public class PosePreview(PoseFile file) : LibraryPreviewBase
+	{
+		private PoseFile? backupPose;
+
+		protected override async Task Start(LibraryPreviewBase? other)
+		{
+			if (other is PosePreview otherPosePreview)
+			{
+				this.backupPose = otherPosePreview.backupPose;
+			}
+			else
+			{
+				this.backupPose = new();
+				await this.backupPose.Save(this.Services.Target.TargetObjectIndex, false, null, true);
+			}
+
+			await file.Apply(this.Services.Target.TargetObjectIndex);
+		}
+
+		protected override async Task Stop()
+		{
+			if (this.backupPose == null)
+				throw new Exception("No backup pose in pose preview");
+
+			await this.backupPose.Apply(this.Services.Target.TargetObjectIndex);
 		}
 	}
 }
