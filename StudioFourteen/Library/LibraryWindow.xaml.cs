@@ -349,14 +349,19 @@ public partial class LibraryWindow : Panel
 
 		this.currentHover = senderElement;
 		this.LibraryContextMenu.Enter(result, senderElement);
-		this.stopPreviewQueue.Cancel();
 
-		LibraryPreviewBase? lastPreview = this.currentPreview;
-		if (lastPreview?.HasStopped == true)
-			lastPreview = null;
+		LibraryPreviewBase? nextPreview = result.Entry.GetPreview();
+		if (nextPreview != null)
+		{
+			this.stopPreviewQueue.Cancel();
 
-		this.currentPreview = result.Entry.GetPreview();
-		this.currentPreview?.StartPreview(lastPreview);
+			LibraryPreviewBase? lastPreview = this.currentPreview;
+			if (lastPreview?.HasStopped == true)
+				lastPreview = null;
+
+			this.currentPreview = nextPreview;
+			this.currentPreview?.StartPreview(lastPreview);
+		}
 	}
 
 	private void OnResultMouseRight(object sender, MouseButtonEventArgs e)
@@ -423,29 +428,32 @@ public abstract class LibraryPreviewBase
 		if (this.HasStarted)
 			return;
 
-		Task.Run(async () =>
+		this.StartPreviewAsync(other).Run();
+	}
+
+	public async Task StartPreviewAsync(LibraryPreviewBase? other)
+	{
+		while (this.isStopping)
+			await Task.Delay(33);
+
+		if (other != null)
 		{
-			while (this.isStopping)
-				await Task.Delay(33);
-
-			if (other != null)
+			if (!other.HasStopped && other.GetType() != this.GetType())
 			{
-				if (other.GetType() != this.GetType())
-				{
-					await other.StopPreviewAsync();
-				}
-
-				while (other.isStopping)
-				{
-					await Task.Delay(33);
-				}
+				await other.StopPreviewAsync();
 			}
 
-			this.isStarting = true;
-			await this.Start(other);
-			this.isStarting = false;
-			this.HasStarted = true;
-		});
+			while (other.isStopping)
+			{
+				await Task.Delay(33);
+			}
+		}
+
+		this.isStarting = true;
+
+		await this.Start(other);
+		this.isStarting = false;
+		this.HasStarted = true;
 	}
 
 	public void StopPreview()
@@ -455,10 +463,11 @@ public abstract class LibraryPreviewBase
 
 	public async Task StopPreviewAsync()
 	{
+		this.isStopping = true;
+
 		while (this.isStarting)
 			await Task.Delay(33);
 
-		this.isStopping = true;
 		await this.Stop();
 		this.isStopping = false;
 		this.HasStopped = true;
