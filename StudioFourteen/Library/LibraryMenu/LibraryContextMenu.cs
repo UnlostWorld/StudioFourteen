@@ -56,6 +56,9 @@ public partial class LibraryContextMenu : PopOut
 		if (this.IsOpen && this.IsExpanded)
 			return;
 
+		if (this.IsOpen && this.currentResult != result)
+			this.IsOpen = false;
+
 		this.IsHitTestVisible = false;
 		this.placementTarget = placementTarget;
 		this.currentResult = result;
@@ -64,7 +67,7 @@ public partial class LibraryContextMenu : PopOut
 		this.openQueue.Invoke();
 	}
 
-	public void Leave(Result result)
+	public void Leave(Result? result)
 	{
 		if (this.currentResult == result)
 		{

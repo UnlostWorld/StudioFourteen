@@ -27,6 +27,7 @@ using StudioFourteen.Mvm;
 using StudioFourteen.Tags;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
@@ -55,6 +56,7 @@ public partial class LibraryWindow : Panel
 	[Notify] private NavigationAnimations navigationAnimation = NavigationAnimations.None;
 	[Notify] private bool viewList;
 	[Notify] private bool narrowMode;
+	private FrameworkElement? currentHover;
 
 	public LibraryWindow()
 	{
@@ -345,8 +347,8 @@ public partial class LibraryWindow : Panel
 		if (senderElement.DataContext is not Result result)
 			return;
 
+		this.currentHover = senderElement;
 		this.LibraryContextMenu.Enter(result, senderElement);
-
 		this.stopPreviewQueue.Cancel();
 
 		LibraryPreviewBase? lastPreview = this.currentPreview;
@@ -355,18 +357,6 @@ public partial class LibraryWindow : Panel
 
 		this.currentPreview = result.Entry.GetPreview();
 		this.currentPreview?.StartPreview(lastPreview);
-	}
-
-	private void OnResultMouseLeave(object sender, MouseEventArgs e)
-	{
-		if (sender is not FrameworkElement senderElement)
-			return;
-
-		if (senderElement.DataContext is not Result result)
-			return;
-
-		this.LibraryContextMenu.Leave(result);
-		this.stopPreviewQueue.Invoke();
 	}
 
 	private void OnResultMouseRight(object sender, MouseButtonEventArgs e)
@@ -382,6 +372,30 @@ public partial class LibraryWindow : Panel
 	private void StopPreview()
 	{
 		this.currentPreview?.StopPreview();
+	}
+
+	private void OnMouseMove(object sender, MouseEventArgs e)
+	{
+		if (this.currentHover != null)
+		{
+			Point p = Mouse.GetPosition(this.currentHover);
+
+			if (p.X >= -5
+				&& p.Y >= -5
+				&& p.X <= this.currentHover.ActualWidth + 5
+				&& p.Y <= this.currentHover.ActualHeight + 5)
+			{
+				return;
+			}
+
+			if (this.currentHover.DataContext is Result result)
+			{
+				this.LibraryContextMenu.Leave(result);
+				this.stopPreviewQueue.Invoke();
+			}
+
+			this.currentHover = null;
+		}
 	}
 }
 
