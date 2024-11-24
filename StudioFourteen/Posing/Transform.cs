@@ -88,6 +88,15 @@ public struct Transform : IEquatable<Transform>
 			&& left.Scale == right.Scale;
 	}
 
+	public static Transform Lerp(Transform from, Transform to, float amount)
+	{
+		Transform t = default;
+		t.Translation = Vector3.Lerp(from.Translation, to.Translation, amount);
+		t.Rotation = Quaternion.Lerp(from.Rotation, to.Rotation, amount);
+		t.Scale = Vector3.Lerp(from.Scale, to.Scale, amount);
+		return t;
+	}
+
 	public override readonly bool Equals(object? obj)
 	{
 		return obj is Transform transform && this.Equals(transform);
@@ -100,7 +109,7 @@ public struct Transform : IEquatable<Transform>
 			   this.Scale.Equals(other.Scale);
 	}
 
-	public override int GetHashCode()
+	public override readonly int GetHashCode()
 	{
 		return HashCode.Combine(this.Translation, this.Rotation, this.Scale);
 	}

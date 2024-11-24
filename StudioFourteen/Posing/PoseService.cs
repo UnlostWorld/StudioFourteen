@@ -347,7 +347,7 @@ public class PoseService : ServiceBase, WorldContextMenu.IProvider
 		lock (this.boneReferences)
 		{
 			foreach ((BoneId id, BoneReference reference) in this.boneReferences)
-				reference.Clear();
+				reference.Dispose();
 
 			this.boneReferences.Clear();
 			this.boneIds.Clear();
@@ -386,7 +386,7 @@ public class PoseService : ServiceBase, WorldContextMenu.IProvider
 				if (id.ObjectTableIndex == objectTableIndex)
 				{
 					toRemove.Add(id);
-					reference.Clear();
+					reference.Dispose();
 				}
 			}
 

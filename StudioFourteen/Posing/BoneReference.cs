@@ -23,7 +23,9 @@ using StudioFourteen.Structs;
 using StudioFourteen.Structs.Extensions;
 using StudioFourteen.Utilities;
 using System;
+using System.Diagnostics;
 using System.Numerics;
+using WpfUtils.Animation;
 
 public class BoneReference(BoneId id, string? name = null)
 {
@@ -32,6 +34,13 @@ public class BoneReference(BoneId id, string? name = null)
 	public BoneReference? Parent;
 	public BoneReference? Mirror;
 	public bool IsValid = true;
+
+	private const float PoseBlendTimeMs = 500;
+	private readonly Stopwatch blendTime = new();
+	private readonly EasingFunctionBase blendEase = new SineEase();
+	private bool blendOnLoad = false;
+	private Transform? fromTransform;
+	private Transform? toTransform;
 
 	private Transform? baseLocalTransform;
 	private Transform? loadLocalSpaceTransform;
@@ -71,7 +80,7 @@ public class BoneReference(BoneId id, string? name = null)
 		this.Transform = newTransform;
 	}
 
-	public void Clear()
+	public void Dispose()
 	{
 		this.Parent = null;
 		this.Mirror = null;
@@ -116,6 +125,14 @@ public class BoneReference(BoneId id, string? name = null)
 	{
 		this.Transform = null;
 		this.MirrorMode = MirrorModes.None;
+		this.loadLocalSpaceTransform = null;
+		this.loadModelSpaceBoneTransform = null;
+		this.loadModelSpaceTransform = null;
+		this.loadReferenceRelativeTransform = null;
+
+		this.fromTransform = null;
+		this.toTransform = null;
+		this.blendOnLoad = false;
 	}
 
 	public unsafe void FinalizeBones()
@@ -212,6 +229,7 @@ public class BoneReference(BoneId id, string? name = null)
 
 			this.loadLocalSpaceTransform = *pPose->AccessBoneLocalSpace(this.Id.BoneIndex);
 			this.loadModelSpaceTransform = null;
+			this.blendOnLoad = false;
 		}
 
 		// apply model space bone changes (legacy pose file format)
@@ -230,20 +248,57 @@ public class BoneReference(BoneId id, string? name = null)
 
 			this.loadLocalSpaceTransform = *pPose->AccessBoneLocalSpace(this.Id.BoneIndex);
 			this.loadModelSpaceBoneTransform = null;
+			this.blendOnLoad = false;
 		}
 
 		// Apply reference relative changes
 		if (this.loadReferenceRelativeTransform != null && this.ReferenceTransform != null)
 		{
-			this.loadLocalSpaceTransform = (Transform)this.ReferenceTransform * (Transform)this.loadReferenceRelativeTransform;
+			this.blendOnLoad = false;
+
+			this.loadLocalSpaceTransform = (Transform)this.loadReferenceRelativeTransform * (Transform)this.ReferenceTransform;
+
 			this.loadReferenceRelativeTransform = null;
 		}
 
 		// apply local space changes
 		if (this.loadLocalSpaceTransform != null)
 		{
-			this.Transform = this.loadLocalSpaceTransform / this.baseLocalTransform;
+			if (this.blendOnLoad)
+			{
+				this.fromTransform = this.Transform;
+				this.blendTime.Restart();
+			}
+			else
+			{
+				this.fromTransform = null;
+			}
+
+			this.toTransform = this.loadLocalSpaceTransform / this.baseLocalTransform;
 			this.loadLocalSpaceTransform = null;
+		}
+
+		if (this.toTransform != null)
+		{
+			if (this.fromTransform != null)
+			{
+				float p = this.blendTime.ElapsedMilliseconds / PoseBlendTimeMs;
+				p = Math.Clamp(p, 0, 1);
+				p = this.blendEase.Ease(p, EasingFunctionBase.EasingModes.EaseOut);
+				this.Transform = Posing.Transform.Lerp(this.fromTransform.Value, this.toTransform.Value, p);
+
+				if (p >= 1)
+				{
+					this.Transform = this.toTransform;
+					this.toTransform = null;
+					this.fromTransform = null;
+					this.blendTime.Stop();
+				}
+			}
+			else
+			{
+				this.Transform = this.toTransform;
+			}
 		}
 
 		// Apply transform to live.

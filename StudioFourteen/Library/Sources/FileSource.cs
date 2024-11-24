@@ -59,6 +59,13 @@ public class FileSource : SourceBase
 
 	public override string Name => this.name;
 
+	public override void Dispose()
+	{
+		base.Dispose();
+
+		this.watcher?.Dispose();
+	}
+
 	protected override void Scan()
 	{
 		if (this.Directory == null)
@@ -207,6 +214,15 @@ public class FileEntry : LibraryEntryBase
 		}
 
 		return entries;
+	}
+
+	public override LibraryPreviewBase? GetPreview()
+	{
+		FileBase? file = this.File;
+		if (file != null)
+			return file.GetPreview();
+
+		return base.GetPreview();
 	}
 
 	protected override string GetInternalId() => this.fileInfo.FullName;
