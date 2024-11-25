@@ -124,6 +124,9 @@ public static class CustomizeDataExtensions
 			int length = (byte)makeCustomizeOptions.Length;
 			for (byte j = 0; j < length; ++j)
 			{
+				if (!makeCustomizeOptions[j].IsValid)
+					continue;
+
 				CharaMakeCustomize makeCustomize = makeCustomizeOptions[j].Value;
 				if (makeCustomize.Icon == 0)
 					continue;

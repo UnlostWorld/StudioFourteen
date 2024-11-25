@@ -39,7 +39,7 @@ public class IconMenu : MakeMenuViewModel
 		}
 
 		this.Minimum = 1;
-		this.Maximum = this.Options[makeMenu.SubMenuNum - 1].Value;
+		this.Maximum = 255; //// this.Options[makeMenu.SubMenuNum - 1].Value;
 	}
 
 	public Option? Selected

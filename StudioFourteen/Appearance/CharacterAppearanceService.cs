@@ -72,7 +72,7 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 	{
 		base.Attach();
 
-		this.enforceKindRestrictionsHook = InteropService.HookFromSignature<EnforceKindRestrictionsDelegate>("E8 ?? ?? ?? ?? 41 B0 ?? 48 8B D6", this.EnforceKindRestrictionsDetour);
+		this.enforceKindRestrictionsHook = InteropService.HookFromSignature<EnforceKindRestrictionsDelegate>("E8 ?? ?? ?? ?? 41 B0 ?? 48 8B D6 48 8B", this.EnforceKindRestrictionsDetour);
 		this.enforceKindRestrictionsHook?.Enable();
 	}
 
@@ -303,6 +303,8 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 
 	private byte EnforceKindRestrictionsDetour(nint a1, nint a2)
 	{
+		this.Log.Information($">> {a1} {a2}");
+
 		// always allow npc values.
 		////return this.enforceKindRestrictionsHook.Original(a1, a2);
 		return 0;
