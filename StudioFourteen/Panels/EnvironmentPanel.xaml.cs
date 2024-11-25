@@ -15,41 +15,83 @@
 
 namespace StudioFourteen.Panels;
 
+using Lumina.Excel.Sheets;
 using StudioFourteen.GameData.Library;
-using StudioFourteen.Library;
+using StudioFourteen.Services;
 using StudioFourteen.Tags;
-using System.Windows;
+using System.ComponentModel;
 
 public partial class EnvironmentPanel : Panel
 {
-	private void OnChangeTerritoryClicked(object sender, RoutedEventArgs e)
+	public EnvironmentPanel()
 	{
-		TagCollection defaultTags = new();
-		MiniLibraryPopOut.Show<TerritoryTypeLibraryEntry>(
-			this,
-			"Change Zone",
-			defaultTags,
-			null,
-			(territory, isFinal) =>
-			{
-				if (!isFinal)
-					return;
-
-				this.Services.Environment.ChangeTerritory(territory.Excel);
-			});
+		this.Services.Environment.PropertyChanged += this.OnEnvironmentServicePropertyChanged;
+		this.OnTerritoryChanged();
 	}
 
-	private void OnChangeWeatherClicked(object sender, RoutedEventArgs e)
+	public TerritoryTypeLibraryEntry? Territory
 	{
-		TagCollection defaultTags = new();
-		MiniLibraryPopOut.Show<WeatherLibraryEntry>(
-			this,
-			"Change Weather",
-			defaultTags,
-			null,
-			(weather, isFinal) =>
-			{
-				this.Services.Environment.ChangeWeather(weather.Excel);
-			});
+		get
+		{
+			TerritoryType? current = this.Services.Environment.CurrentTerritory;
+
+			if (current == null)
+				return null;
+
+			return this.Services.GameData.GetLibraryEntry<TerritoryTypeLibraryEntry>(current.Value.RowId);
+		}
+
+		set
+		{
+			if (value == null)
+				return;
+
+			this.Services.Environment.ChangeTerritory(value.Territory);
+		}
+	}
+
+	public WeatherLibraryEntry? Weather
+	{
+		get
+		{
+			Weather? current = this.Services.Environment.CurrentWeather;
+
+			if (current == null)
+				return null;
+
+			return this.Services.GameData.GetLibraryEntry<WeatherLibraryEntry>(current.Value.RowId);
+		}
+
+		set
+		{
+			if (value == null)
+				return;
+
+			this.Services.Environment.ChangeWeather(value.Excel);
+		}
+	}
+
+	public TagCollection WeatherTags { get; init; } = new();
+
+	private void OnEnvironmentServicePropertyChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName == nameof(EnvironmentService.CurrentTerritory))
+		{
+			this.NotifyPropertyChanged(nameof(this.Territory));
+			this.OnTerritoryChanged();
+		}
+
+		if (e.PropertyName == nameof(EnvironmentService.CurrentWeather))
+			this.NotifyPropertyChanged(nameof(this.Weather));
+	}
+
+	private void OnTerritoryChanged()
+	{
+		this.WeatherTags.Clear();
+
+		if (this.Territory != null)
+		{
+			this.WeatherTags.Add(this.Territory.Tag);
+		}
 	}
 }

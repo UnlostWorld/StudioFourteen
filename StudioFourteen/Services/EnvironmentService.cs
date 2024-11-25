@@ -110,6 +110,7 @@ public partial class EnvironmentService
 				return;
 
 			environmentManager->ActiveWeather = (byte)weather.RowId;
+			environmentManager->TransitionTime = 0;
 		});
 	}
 

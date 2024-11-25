@@ -15,14 +15,81 @@
 
 namespace StudioFourteen.GameData.Library;
 
+using Lumina.Excel;
 using Lumina.Excel.Sheets;
 using Lumina.Text.ReadOnly;
 using StudioFourteen.Library.Sources;
+using StudioFourteen.Tags;
+using System.Text;
 
-public class TerritoryTypeLibraryEntry(SourceBase source, TerritoryType territory)
-	: ExcelLibraryEntry(source, territory.RowId)
+public class TerritoryTypeLibraryEntry : ExcelLibraryEntry
 {
-	public TerritoryType Excel => territory;
+	public readonly TerritoryType Territory;
 
-	public override string? Name => territory.Name.GetString();
+	public TerritoryTypeLibraryEntry(SourceBase source, TerritoryType territory)
+		: base(source, territory.RowId)
+	{
+		this.Territory = territory;
+
+		// Find all weathers that can naturally spawn here and tag them.
+		WeatherRate? rate = this.Services.GameData.GetRow<WeatherRate>(this.Territory.WeatherRate);
+		if (rate != null)
+		{
+			foreach(RowRef<Weather> weather in rate.Value.Weather)
+			{
+				if (!weather.IsValid)
+					continue;
+
+				WeatherLibraryEntry? weatherLibraryEntry = this.Services.GameData.GetLibraryEntry<WeatherLibraryEntry>(weather.RowId);
+				if (weatherLibraryEntry == null)
+					continue;
+
+				weatherLibraryEntry.Tags.Add(this.Tag);
+			}
+		}
+	}
+
+	public Tag Tag
+	{
+		get
+		{
+			string? name = this.Territory.Name.GetString();
+			if (name == null)
+				return Tag.Get("Unknown");
+
+			return Tag.Get(name);
+		}
+	}
+
+	public override string? Name
+	{
+		get
+		{
+			if (this.Territory.PlaceName.IsValid)
+			{
+				string? placeName = this.Territory.PlaceName.Value.Name.GetString();
+				string? regionName = this.Territory.PlaceNameRegion.Value.Name.GetString();
+				string? zoneName = this.Territory.PlaceNameZone.Value.Name.GetString();
+
+				StringBuilder builder = new();
+				builder.Append(placeName);
+
+				if (regionName != null)
+				{
+					builder.Append(", ");
+					builder.Append(regionName);
+				}
+
+				if (regionName != zoneName && zoneName != null)
+				{
+					builder.Append(", ");
+					builder.Append(zoneName);
+				}
+
+				return builder.ToString();
+			}
+
+			return this.Territory.Name.GetString();
+		}
+	}
 }
