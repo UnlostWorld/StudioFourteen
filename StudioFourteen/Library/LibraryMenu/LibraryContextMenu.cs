@@ -33,11 +33,17 @@ using WpfUtils.Controls;
 using WpfUtils.Extensions;
 using WpfUtils.Utils;
 
+public interface ILibraryContextMenu
+{
+	MenuEntry AddMenu(IconChar? icon, string? label, Action? invoke = null);
+}
+
 [DependencyProperty<LibraryEntryBase>("Entry")]
 [DependencyProperty<bool>("IsExpanded")]
-public partial class LibraryContextMenu : PopOut
+public partial class LibraryContextMenu : PopOut, ILibraryContextMenu
 {
 	protected readonly ILogger Log = Logging.ForContext<LibraryContextMenu>();
+	private readonly List<MenuEntry> pendingChildren = new();
 
 	private readonly FuncQueue openQueue;
 	private UIElement? placementTarget;
@@ -101,6 +107,13 @@ public partial class LibraryContextMenu : PopOut
 		this.IsOpen = false;
 	}
 
+	public MenuEntry AddMenu(IconChar? icon, string? label, Action? invoke = null)
+	{
+		MenuEntry entry = new(icon, label, invoke);
+		this.pendingChildren.Add(entry);
+		return entry;
+	}
+
 	private async Task ShowResultMenu()
 	{
 		await this.MainThread();
@@ -121,21 +134,25 @@ public partial class LibraryContextMenu : PopOut
 		if (this.Entry == null)
 			return;
 
-		List<MenuEntry> menus = await this.Entry.GetLibraryMenus();
-		foreach(MenuEntry entry in menus)
-		{
-			entry.SetContextMenu(this);
-		}
+		await this.Entry.GetLibraryMenus(this);
 
 		await this.MainThread();
-		this.Menus.Replace(menus);
+		foreach(var entry in this.pendingChildren)
+		{
+			entry.SetContextMenu(this);
+			this.Menus.Add(entry);
+		}
+
+		this.pendingChildren.Clear();
 	}
 }
 
 public class MenuEntry(IconChar? icon, string? label, Action? invoke = null)
 {
+	private readonly List<MenuEntry> pendingChildren = new();
+
 	public IconChar? Icon => icon;
-	public bool IsEnabled => true;
+	public bool IsEnabled { get; set; } = true;
 	public ICommand? OnClicked => new SimpleCommand(this.Invoke);
 	public FastObservableCollection<MenuEntry> Children { get; init; } = new();
 	public LibraryContextMenu? ContextMenu { get; private set; }
@@ -144,6 +161,13 @@ public class MenuEntry(IconChar? icon, string? label, Action? invoke = null)
 	public void SetContextMenu(LibraryContextMenu? contextMenu)
 	{
 		this.ContextMenu = contextMenu;
+
+		foreach (MenuEntry entry in this.pendingChildren)
+		{
+			this.Children.Add(entry);
+		}
+
+		this.pendingChildren.Clear();
 
 		foreach (MenuEntry entry in this.Children)
 		{
@@ -155,5 +179,12 @@ public class MenuEntry(IconChar? icon, string? label, Action? invoke = null)
 	{
 		invoke?.Invoke();
 		this.ContextMenu?.OnMenuInvoked(this);
+	}
+
+	public MenuEntry AddChild(IconChar? icon, string? label, Action? invoke = null)
+	{
+		MenuEntry child = new(icon, label, invoke);
+		this.pendingChildren.Add(child);
+		return child;
 	}
 }

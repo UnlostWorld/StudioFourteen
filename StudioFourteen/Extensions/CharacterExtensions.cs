@@ -51,6 +51,7 @@ public static class CharacterExtensions
 		Interface,
 		Library,
 		Restore,
+		Preview,
 	}
 
 	public static bool CanDraw(ref this Character self)

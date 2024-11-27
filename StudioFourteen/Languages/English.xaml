@@ -111,7 +111,14 @@
 	<sys:String x:Key="LOC_Tags_Title">Select Tags to filter by:</sys:String>
 
 	<sys:String x:Key="LOC_SheetItem">Items</sys:String>
-	<sys:String x:Key="LOC_SheetItem_EorzeaDatabase">Eorzea Database</sys:String>
+	<sys:String x:Key="LOC_SheetItem_WebSearch">Search on</sys:String>
+	<sys:String x:Key="LOC_SheetItem_EorzeaDatabase">The Lodestone</sys:String>
+	<sys:String x:Key="LOC_SheetItem_GarlandData">Garland Data</sys:String>
+	<sys:String x:Key="LOC_SheetItem_GamerEscape">Gamer Escape</sys:String>
+	<sys:String x:Key="LOC_SheetItemEquipTo">Equip To</sys:String>
+
+
+
 
 	<sys:String x:Key="LOC_AppearanceCreateCharacter">Create Character</sys:String>
 	<sys:String x:Key="LOC_AppearanceApplyTo">Apply to</sys:String>

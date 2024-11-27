@@ -38,11 +38,10 @@ public class LibraryMenuAttribute : LibraryMenuAttributeBase
 		this.Label = StudioFourteen.Resources.Find(label, label);
 	}
 
-	public override Task<List<MenuEntry>> GetMenu(object methodTarget, MethodInfo method)
+	public override Task GetMenu(object methodTarget, MethodInfo method, ILibraryContextMenu menu)
 	{
-		List<MenuEntry> results = new();
 		Action invoke = () => method.Invoke(methodTarget, null);
-		results.Add(new(this.Icon, this.Label, invoke));
-		return Task.FromResult(results);
+		menu.AddMenu(this.Icon, this.Label, invoke);
+		return Task.CompletedTask;
 	}
 }

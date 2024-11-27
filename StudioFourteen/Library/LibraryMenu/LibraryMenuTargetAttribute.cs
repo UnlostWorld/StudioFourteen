@@ -43,21 +43,41 @@ public class LibraryMenuTargetAttribute : LibraryMenuAttributeBase
 		this.Label = StudioFourteen.Resources.Find(label, label);
 	}
 
-	public override async Task<List<MenuEntry>> GetMenu(object methodTarget, MethodInfo method)
+	public LibraryMenuTargetAttribute(IconChar icon, string label, Func<object, int, bool> enabledCallback)
+	{
+		this.Icon = icon;
+		this.Label = StudioFourteen.Resources.Find(label, label);
+	}
+
+	public override async Task GetMenu(object methodTarget, MethodInfo method, ILibraryContextMenu menu)
 	{
 		TargetService targetService = ServiceManager.Instance.Target;
 		List<MenuEntry> results = new();
 
+		string canMethodName = $"Can{method.Name}";
+		MethodInfo? canMethod = methodTarget.GetType().GetMethod(canMethodName, BindingFlags.Public | BindingFlags.Instance);
+
+		Logging.Shared.Information($">> {methodTarget.GetType()} {canMethodName} {canMethod}");
+
 		// "Apply to Player Name"
 		string label = $"{this.Label}: {targetService.CharacterName}";
 		Action invoke = () => method.Invoke(methodTarget, [targetService.TargetObjectIndex]);
-		results.Add(new(this.Icon, label, invoke));
+
+		MenuEntry newMenu = menu.AddMenu(this.Icon, label, invoke);
+
+		if (canMethod != null)
+		{
+			object? can = canMethod.Invoke(methodTarget, [targetService.TargetObjectIndex]);
+			if (can is Task<bool> taskCan)
+			{
+				newMenu.IsEnabled = await taskCan;
+			}
+		}
 
 		// "Apply to..."
 		await Threads.FrameworkThread();
 
-		MenuEntry applyToEntry = new(this.Icon, this.Label);
-		results.Add(applyToEntry);
+		MenuEntry applyToEntry = menu.AddMenu(this.Icon, this.Label);
 
 		bool isGroupPose = ServiceManager.Instance.Studio.IsOpenAndInGPose;
 		int fromIndex = GroupPoseService.GPoseFirstCharacter;
@@ -69,6 +89,7 @@ public class LibraryMenuTargetAttribute : LibraryMenuAttributeBase
 			toIndex = Math.Min(targetService.ObjectTableCount, GroupPoseService.GPoseFirstCharacter);
 		}
 
+		List<(MenuEntry, int)> targets = new();
 		unsafe
 		{
 			for (int i = fromIndex; i < toIndex; ++i)
@@ -88,10 +109,32 @@ public class LibraryMenuTargetAttribute : LibraryMenuAttributeBase
 					continue;
 
 				Action invoke2 = () => method.Invoke(methodTarget, [i]);
-				applyToEntry.Children.Add(new(IconChar.None, name, invoke2));
+				targets.Add((applyToEntry.AddChild(IconChar.None, name, invoke2), i));
 			}
 		}
 
-		return results;
+		int count = 0;
+		foreach((MenuEntry target, int objectTableIndex) in targets)
+		{
+			if (canMethod != null)
+			{
+				object? can = canMethod.Invoke(methodTarget, [objectTableIndex]);
+				if (can is Task<bool> taskCan)
+				{
+					newMenu.IsEnabled = await taskCan;
+
+					if (newMenu.IsEnabled)
+					{
+						count++;
+					}
+				}
+			}
+			else
+			{
+				count++;
+			}
+		}
+
+		applyToEntry.IsEnabled = count > 0;
 	}
 }

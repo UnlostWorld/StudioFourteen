@@ -23,7 +23,11 @@ using StudioFourteen.GameData.Extensions;
 using StudioFourteen.Library;
 using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Sources;
-
+using StudioFourteen.Utilities;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using TerraFX.Interop.Windows;
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 using ClassJobCategory = StudioFourteen.GameData.Sheets.ClassJobCategory;
 
@@ -45,6 +49,9 @@ public class ItemLibraryEntry : ExcelLibraryEntry
 
 		if (this.EquipLevel <= 1)
 			this.Tags.Add("No Level");
+
+		if (this.EquipSlot != null)
+			this.Tags.Add(this.EquipSlot.Value.ToTags());
 	}
 
 	public override string? Name => this.Item.Name.GetString();
@@ -56,6 +63,7 @@ public class ItemLibraryEntry : ExcelLibraryEntry
 	public ItemUICategory UICategory => this.Item.ItemUICategory.Value;
 	public ClassJobCategory? ClassJobs => this.Services.GameData.GetRow<ClassJobCategory>(this.Item.ClassJobCategory.RowId);
 	public EquipRaceCategory? EquipRestriction => this.Services.GameData.GetRow<EquipRaceCategory>(this.Item.EquipRestriction);
+	public EquipSlotCategory? EquipSlot => this.Item.EquipSlotCategory.ValueNullable;
 
 	public string? ClassJobsName => this.ClassJobs?.Name.GetString();
 	public string? UICategoryName => this.UICategory.Name.GetString();
@@ -88,11 +96,144 @@ public class ItemLibraryEntry : ExcelLibraryEntry
 		return id;
 	}
 
-	[LibraryMenu(IconChar.Globe, "LOC_SheetItem_EorzeaDatabase")]
-	public void Test()
+	[LibraryMenuTarget(IconChar.UserShield, "LOC_SheetItemEquipTo")]
+	public async Task EquipTo(int objectTableId)
 	{
-		string search = $"https://na.finalfantasyxiv.com/lodestone/playguide/db/search/?patch=&db_search_category=&q={this.Name}";
-		UrlUtility.Open(search);
+		if (this.EquipSlot == null)
+			return;
+
+		EquipSlotCategory equipSlot = this.EquipSlot.Value;
+
+		foreach (EquipmentSlot slot in Enum.GetValues<EquipmentSlot>())
+		{
+			if (equipSlot.Contains(slot))
+			{
+				await this.EquipTo(objectTableId, slot);
+				return;
+			}
+		}
+	}
+
+	public async Task EquipTo(int objectTableId, EquipmentSlot slot)
+	{
+		await Threads.FrameworkThread();
+
+		this.Services.CharacterAppearance.SetEquipment(
+			this.Services.Target.TargetObjectIndex,
+			slot,
+			this.GetModelId(slot),
+			CharacterExtensions.UpdateSource.Library);
+	}
+
+	public Task<bool> CanEquipTo(int objectTableId)
+	{
+		if (!this.Item.EquipSlotCategory.IsValid || this.Item.EquipSlotCategory.RowId == 0)
+			return Task.FromResult(false);
+
+		return Task.FromResult(true);
+	}
+
+	public override Task GetLibraryMenus(ILibraryContextMenu menu)
+	{
+		MenuEntry webSearchMenu = menu.AddMenu(
+			IconChar.Search,
+			Resources.Find("LOC_SheetItem_WebSearch", "Search"));
+
+		webSearchMenu.AddChild(
+			IconChar.Globe,
+			Resources.Find("LOC_SheetItem_EorzeaDatabase", "Lodestone"),
+			() =>
+			{
+				UrlUtility.Open($"https://na.finalfantasyxiv.com/lodestone/playguide/db/search/?patch=&db_search_category=&q={this.Name}");
+			});
+
+		webSearchMenu.AddChild(
+			IconChar.Globe,
+			Resources.Find("LOC_SheetItem_GarlandData", "Garland Data"),
+			() =>
+			{
+				UrlUtility.Open($"https://garlandtools.org/db/#item/{this.RowId}");
+			});
+
+		webSearchMenu.AddChild(
+			IconChar.Globe,
+			Resources.Find("LOC_SheetItem_GamerEscape", "Gamer Escape"),
+			() =>
+			{
+				UrlUtility.Open($"https://ffxiv.gamerescape.com/?search={this.Name}");
+			});
+
+		return base.GetLibraryMenus(menu);
+	}
+
+	public override LibraryPreviewBase? GetPreview()
+	{
+		return new ItemLibraryPreview(this);
+	}
+}
+
+public class ItemLibraryPreview(ItemLibraryEntry item)
+	: LibraryPreviewBase
+{
+	private EquipmentSlot backupSlot;
+	private EquipmentModelId? backupEquipment;
+
+	protected override async Task Start(LibraryPreviewBase? other)
+	{
+		if (other != null)
+		{
+			await other.StopPreviewAsync();
+		}
+
+		if (this.Services.Target.TargetObjectIndex == -1)
+			return;
+
+		if (item.EquipSlot == null)
+			return;
+
+		EquipSlotCategory equipSlot = item.EquipSlot.Value;
+
+		foreach(EquipmentSlot slot in Enum.GetValues<EquipmentSlot>())
+		{
+			if (equipSlot.Contains(slot))
+			{
+				await this.Start(slot);
+				return;
+			}
+		}
+	}
+
+	protected virtual async Task Start(EquipmentSlot slot)
+	{
+		await Threads.FrameworkThread();
+
+		this.backupSlot = slot;
+
+		unsafe
+		{
+			Character* pCharacter = this.Services.Target.GetTarget();
+			this.backupEquipment = pCharacter->DrawData.Equipment(slot);
+		}
+
+		this.Services.CharacterAppearance.SetEquipment(
+			this.Services.Target.TargetObjectIndex,
+			slot,
+			item.GetModelId(slot),
+			CharacterExtensions.UpdateSource.Preview);
+	}
+
+	protected override async Task Stop()
+	{
+		if (this.backupEquipment == null)
+			return;
+
+		await Threads.FrameworkThread();
+
+		this.Services.CharacterAppearance.SetEquipment(
+			this.Services.Target.TargetObjectIndex,
+			this.backupSlot,
+			this.backupEquipment.Value,
+			CharacterExtensions.UpdateSource.Preview);
 	}
 }
 

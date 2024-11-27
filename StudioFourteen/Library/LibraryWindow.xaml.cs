@@ -25,6 +25,7 @@ using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Results;
 using StudioFourteen.Mvm;
 using StudioFourteen.Tags;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -50,6 +51,7 @@ public partial class LibraryWindow : Panel
 	private readonly FuncQueue startPreviewQueue;
 	private readonly FuncQueue stopPreviewQueue;
 	private readonly Stopwatch searchStopwatch = new();
+	private readonly LibraryDoubleClickContext doubleClickContext = new();
 	private LibraryPreviewBase? currentPreview;
 	private bool flatten = false;
 	[Notify] private Result? selectedResult = null;
@@ -263,12 +265,7 @@ public partial class LibraryWindow : Panel
 		}
 		else if (this.SelectedResult is Result result)
 		{
-			List<MenuEntry> menus = await result.Entry.GetLibraryMenus();
-			foreach(MenuEntry menu in menus)
-			{
-				menu.Invoke();
-				break;
-			}
+			await this.doubleClickContext.Execute(result.Entry);
 		}
 	}
 
@@ -415,6 +412,29 @@ public partial class LibraryWindow : Panel
 
 			this.currentHover = null;
 		}
+	}
+}
+
+public class LibraryDoubleClickContext : ILibraryContextMenu
+{
+	private readonly List<MenuEntry> menus = new();
+
+	public async Task Execute(LibraryEntryBase entry)
+	{
+		this.menus.Clear();
+		await entry.GetLibraryMenus(this);
+		foreach (MenuEntry menu in this.menus)
+		{
+			menu.Invoke();
+			break;
+		}
+	}
+
+	public MenuEntry AddMenu(IconChar? icon, string? label, Action? invoke = null)
+	{
+		MenuEntry entry = new(icon, label, invoke);
+		this.menus.Add(entry);
+		return entry;
 	}
 }
 

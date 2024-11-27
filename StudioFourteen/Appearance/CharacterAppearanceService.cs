@@ -176,7 +176,7 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 		if (pCharacter->ModelContainer.ModelCharaId == modelCharaId)
 			return;
 
-		if (source != UpdateSource.Restore)
+		if (source != UpdateSource.Restore && source != UpdateSource.Preview)
 			this.Backup(pCharacter);
 
 		pCharacter->ModelContainer.ModelCharaId = modelCharaId;
@@ -194,7 +194,7 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 		if (oldValue == value)
 			return;
 
-		if (source != UpdateSource.Restore)
+		if (source != UpdateSource.Restore && source != UpdateSource.Preview)
 			this.Backup(pCharacter);
 
 		pCharacter->DrawData.CustomizeData.SetValue(index, value);
@@ -216,7 +216,7 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 
 		Character* pCharacter = this.Services.Target.GetCharacter(objectTableIndex);
 
-		if (source != UpdateSource.Restore)
+		if (source != UpdateSource.Restore && source != UpdateSource.Preview)
 			this.Backup(pCharacter);
 
 		pCharacter->DrawData.LoadWeapon(slot, item, 1, 1, 0, 0);
@@ -237,7 +237,7 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 
 		Character* pCharacter = this.Services.Target.GetCharacter(objectTableIndex);
 
-		if (source != UpdateSource.Restore)
+		if (source != UpdateSource.Restore && source != UpdateSource.Preview)
 			this.Backup(pCharacter);
 
 		pCharacter->DrawData.LoadEquipment(slot, &item, true);

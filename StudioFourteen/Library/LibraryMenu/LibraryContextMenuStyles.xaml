@@ -157,6 +157,7 @@
 										TargetType="{x:Type MenuItem}">
 										<Setter Property="MenuItem.Header" Value="{Binding Label}" />
 										<Setter Property="MenuItem.Icon" Value="{Binding Icon}" />
+										<Setter Property="MenuItem.IsEnabled" Value="{Binding IsEnabled}" />
 										<Setter Property="MenuItem.ItemsSource" Value="{Binding Children}" />
 										<Setter Property="MenuItem.Command" Value="{Binding OnClicked}" />
 									</Style>
