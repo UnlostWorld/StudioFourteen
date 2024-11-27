@@ -50,9 +50,11 @@ public partial class OrbitCamera : StudioCameraBase
 	[Notify] private Vector2 angle;
 	[Notify] private Quaternion rotation;
 
-	[Notify(Setter.Private)] private float groupPoseRollAdjust;
+	[PropertyAttribute("[Newtonsoft.Json.JsonIgnore]")]
+	[Notify(Setter.Private)]
+	private float groupPoseRollAdjust;
 
-	public override string TypeName => Resources.Find("LOC_OrbitCamera", "Orbit");
+	public override string TypeDisplayName => Resources.Find("LOC_OrbitCamera", "Orbit");
 
 	public override void Initialize(CameraState currentState)
 	{

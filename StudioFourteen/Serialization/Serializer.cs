@@ -30,6 +30,8 @@ public static class Serializer
 		Settings.NullValueHandling = NullValueHandling.Ignore;
 
 		Settings.Converters.Add(new TagConverter());
+		Settings.Converters.Add(new Vector2Converter());
+		Settings.Converters.Add(new Vector2NullableConverter());
 		Settings.Converters.Add(new Vector3Converter());
 		Settings.Converters.Add(new Vector3NullableConverter());
 		Settings.Converters.Add(new Vector4Converter());

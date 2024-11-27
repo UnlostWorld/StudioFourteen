@@ -60,7 +60,7 @@
 									Margin="0,-4,0,0"
 									FontSize="10"
 									Style="{DynamicResource LeftLabel}"
-									Text="{Binding TypeName}" />
+									Text="{Binding TypeDisplayName}" />
 							</Grid>
 						</DataTemplate>
 					</ListBox.ItemTemplate>

@@ -31,7 +31,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Windows.Media.TextFormatting;
 
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.CharacterExtensions;
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
@@ -286,7 +285,6 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 			custom->Import(customize.Value);
 
 		bool didLoad = ((Human*)pCharacter->DrawObject)->UpdateDrawData((byte*)custom, true);
-
 		if (!didLoad)
 		{
 			this.pendingRedraws.Add(pCharacter->ObjectIndex);
@@ -303,8 +301,6 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 
 	private byte EnforceKindRestrictionsDetour(nint a1, nint a2)
 	{
-		this.Log.Information($">> {a1} {a2}");
-
 		// always allow npc values.
 		////return this.enforceKindRestrictionsHook.Original(a1, a2);
 		return 0;

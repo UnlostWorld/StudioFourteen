@@ -67,6 +67,7 @@
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="FontAwesome.Sharp" Version="6.6.0" />
+		<PackageReference Include="JsonSubTypes" Version="2.0.1" />
 		<PackageReference Include="lz4net" Version="1.0.15.93" />
 		<PackageReference Include="PropertyChanged.SourceGenerator" Version="1.0.8">
 		  <PrivateAssets>all</PrivateAssets>

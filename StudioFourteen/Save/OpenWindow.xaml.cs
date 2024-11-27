@@ -21,9 +21,6 @@ using StudioFourteen.Appearance;
 using StudioFourteen.Files;
 using StudioFourteen.Mvm;
 using StudioFourteen.Plugin;
-using StudioFourteen.Services;
-using StudioFourteen.Utilities;
-using Serilog.Parsing;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -69,6 +66,9 @@ public partial class OpenWindow : Panel
 			{
 				await assignment.Apply();
 			}
+
+			// TODO option to not load cameras.
+			ServiceManager.Instance.Camera.LoadCameras(scene.Cameras);
 		}
 		catch (Exception ex)
 		{

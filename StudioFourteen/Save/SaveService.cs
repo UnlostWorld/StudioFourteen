@@ -135,6 +135,7 @@ public class SaveService : ServiceBase
 			file.Version = this.MetaData.Version;
 			file.Tags = this.MetaData.Tags;
 
+			// Actors
 			foreach((int objectTableIndex, bool include) in this.includeCharacters)
 			{
 				if (!include)
@@ -146,11 +147,15 @@ public class SaveService : ServiceBase
 				if (configuration.IncludePoses)
 				{
 					actor.Pose = new PoseFile();
-					await actor.Pose.Save(objectTableIndex);
+					await actor.Pose.Save(objectTableIndex, false);
 				}
 
 				file.Actors.Add(actor);
 			}
+
+			// Cameras
+			file.Cameras.Clear();
+			file.Cameras.AddRange(this.Services.Camera.Cameras);
 
 			await this.Services.Files.Save(file, this.SaveFileInfo);
 		}

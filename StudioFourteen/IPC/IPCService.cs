@@ -53,6 +53,15 @@ public class IPCService
 		return subscriber.InvokeFunc(arg1, arg2);
 	}
 
+	private TReturn? Invoke<TReturn, TArg1, TArg2, TArg3>(string name, TArg1 arg1, TArg2 arg2, TArg3 arg3)
+	{
+		if (DalamudServices.PluginInterface == null)
+			return default;
+
+		ICallGateSubscriber<TArg1, TArg2, TArg3, TReturn> subscriber = DalamudServices.PluginInterface.GetIpcSubscriber<TArg1, TArg2, TArg3, TReturn>(name);
+		return subscriber.InvokeFunc(arg1, arg2, arg3);
+	}
+
 	private bool IsPluginInstalled(string pluginName)
 	{
 		if (DalamudServices.PluginInterface == null)

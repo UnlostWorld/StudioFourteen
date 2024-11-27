@@ -196,6 +196,26 @@ public class CameraService : ServiceBase
 		camera.Dispose();
 	}
 
+	public void LoadCameras(IEnumerable<StudioCameraBase> cameras)
+	{
+		List<StudioCameraBase> oldCameras = new(this.Cameras);
+
+		this.Cameras.Clear();
+		foreach (StudioCameraBase newCamera in cameras)
+		{
+			newCamera.IsInitialized = true;
+			this.Cameras.Add(newCamera);
+		}
+
+		this.CamerasChanged?.Invoke();
+		this.Current = this.Cameras[0];
+
+		foreach (StudioCameraBase camera in oldCameras)
+		{
+			camera.Dispose();
+		}
+	}
+
 	public unsafe bool WorldToCamera(Vector3 worldPos, out Vector3 screenPos)
 	{
 		screenPos = Vector3.Zero;

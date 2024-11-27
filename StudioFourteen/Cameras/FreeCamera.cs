@@ -49,7 +49,7 @@ public partial class FreeCamera : StudioCameraBase
 	private Vector3 desiredRot = Vector3.Zero;
 	private float moveSpeed = 2.0f;
 
-	public override string TypeName => Resources.Find("LOC_FreeCamera", "Free Target");
+	public override string TypeDisplayName => Resources.Find("LOC_FreeCamera", "Free Target");
 
 	public override void Initialize(CameraState currentState)
 	{

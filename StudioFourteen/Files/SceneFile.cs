@@ -16,6 +16,7 @@
 namespace StudioFourteen.Files;
 
 using FontAwesome.Sharp;
+using StudioFourteen.Cameras;
 using StudioFourteen.Library.LibraryMenu;
 using System;
 using System.Collections.Generic;
@@ -37,6 +38,7 @@ public class SceneFile : FileBase
 	////public string TimeOfDay { get; set; }
 	////public string Weather { get; set; }
 	public List<Actor> Actors { get; set; } = new();
+	public List<StudioCameraBase> Cameras { get; set; } = new();
 
 	[LibraryMenu(IconChar.UsersBetweenLines, "LOC_OpenScene")]
 	public Task Apply() => ServiceManager.Instance.Save.OpenAsync(this);

@@ -33,7 +33,7 @@ public partial class OrbitTargetCamera : OrbitCamera
 
 	[Notify] private Vector3 targetOffset = new(0, 0, 0);
 
-	public override string TypeName => Resources.Find("LOC_OrbitTargetCamera", "Orbit Target");
+	public override string TypeDisplayName => Resources.Find("LOC_OrbitTargetCamera", "Orbit Target");
 
 	public unsafe override void Tick(float deltaTime)
 	{
