@@ -18,18 +18,18 @@ namespace StudioFourteen.Panels;
 using Dalamud.Plugin.Services;
 using DependencyPropertyGenerator;
 using FontAwesome.Sharp;
+using Serilog;
 using StudioFourteen.Mvm;
 using StudioFourteen.Plugin;
 using StudioFourteen.Settings;
-using Serilog;
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using StudioFourteen.Services;
+using WpfUtils.Extensions;
 
-[DependencyProperty<bool>("IsShown", DefaultValue = false)]
 [DependencyProperty<IconChar>("TitleIcon")]
 [DependencyProperty<string>("Title")]
 [DependencyProperty<string>("Subtitle")]
@@ -65,7 +65,7 @@ public partial class Panel : ContentControl, IAutoNotify
 
 	public interface IHost
 	{
-		void Close();
+		Task CloseAsync();
 	}
 
 	public ServiceManager Services => ServiceManager.Instance;
@@ -93,7 +93,15 @@ public partial class Panel : ContentControl, IAutoNotify
 
 	public void Close()
 	{
-		this.host?.Close();
+		this.CloseAsync().Run();
+	}
+
+	public Task CloseAsync()
+	{
+		if (this.host == null)
+			return Task.CompletedTask;
+
+		return this.host.CloseAsync();
 	}
 
 	public void SetIsOpen(IHost sender, bool isOpen)
@@ -119,7 +127,6 @@ public partial class Panel : ContentControl, IAutoNotify
 			DalamudServices.Framework.Update += this.OnFrameworkUpdateSafe;
 
 		AutoPropertyNotifyService.Register(this);
-		this.IsShown = true;
 	}
 
 	protected virtual void OnClosed()
@@ -130,7 +137,6 @@ public partial class Panel : ContentControl, IAutoNotify
 			DalamudServices.Framework.Update -= this.OnFrameworkUpdateSafe;
 
 		AutoPropertyNotifyService.Remove(this);
-		this.IsShown = false;
 	}
 
 	protected virtual void OnFrameworkUpdate(IFramework framework)

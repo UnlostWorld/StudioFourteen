@@ -31,6 +31,7 @@ using System.Windows.Input;
 using WpfUtils.Extensions;
 using WpfUtils.Windows;
 using FontAwesome.Sharp;
+using PropertyChanged.SourceGenerator;
 
 [DependencyProperty<bool>("IsEmbedded", DefaultValue = true)]
 [DependencyProperty<bool>("CanClose", DefaultValue = true)]
@@ -46,7 +47,6 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	private double preScaleHeight;
 	private double preScaleWidth;
 	private Panel? panel;
-	private bool isOpen = false;
 
 	public PanelWindow()
 	{
@@ -55,7 +55,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 		this.Loaded += this.OnLoaded;
 
-		// Load a new copy of the resources. Each panel needs its own instance for threading reasons.
+		// Load a new copy of the resources. Each window needs its own instance for threading reasons.
 		this.Resources = StudioFourteen.Resources.Load();
 		this.Style = (Style)this.FindResource("PanelWindowStyle");
 
@@ -65,16 +65,19 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		this.PreviewMouseDown += this.OnPreviewMouseDown;
 		this.PreviewKeyDown += this.OnPreviewKeyDown;
 		this.PreviewKeyUp += this.OnPreviewKeyUp;
+
+		this.Services.Studio.PropertyChanged += this.OnStudioPropertyChanged;
 	}
 
 	public event PropertyChangedEventHandler? PropertyChanged;
 
 	public ServiceManager Services => ServiceManager.Instance;
 
-	public bool IsUiVisible => !DalamudServices.GameGui?.GameUiHidden ?? true;
+	public bool IsUiVisible => (!DalamudServices.GameGui?.GameUiHidden ?? true) && this.Services.Studio.IsOpen;
 	public bool HasIcon => this.Panel != null && this.Panel.TitleIcon != IconChar.None;
 	public bool HasSubtitle => this.Panel != null && !string.IsNullOrEmpty(this.Panel.Subtitle);
 	public virtual bool CanActivate => true;
+	public bool IsOpen { get; private set; }
 
 	public virtual Point? SavedPosition
 	{
@@ -124,7 +127,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 			this.Content = value;
 			this.panel = value;
 
-			if (this.isOpen)
+			if (this.IsOpen)
 			{
 				this.panel?.SetIsOpen(this, true);
 			}
@@ -156,11 +159,6 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 			return null;
 
 		return await MultithreadedWindow.CreateInstanceAsync<T>();
-	}
-
-	void Panel.IHost.Close()
-	{
-		this.Dispatcher.BeginInvoke(this.Close);
 	}
 
 	public virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
@@ -207,6 +205,15 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		}
 	}
 
+	public virtual async Task CloseAsync()
+	{
+		this.IsOpen = false;
+		this.NotifyPropertyChanged(nameof(this.IsOpen));
+
+		await Task.Delay(250);
+		this.Dispatcher.Invoke(this.Close);
+	}
+
 	protected void OnLoaded(object sender, RoutedEventArgs e)
 	{
 		try
@@ -238,7 +245,8 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 	protected virtual void OnOpened()
 	{
-		this.isOpen = true;
+		this.IsOpen = true;
+		this.NotifyPropertyChanged(nameof(this.IsOpen));
 
 		if (DalamudServices.GameGui != null)
 			DalamudServices.GameGui.UiHideToggled += this.OnGameUiToggled;
@@ -249,8 +257,6 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		this.preScaleWidth = this.Width;
 
 		this.Scale = this.SavedScale;
-
-		this.Opacity = 0;
 
 		if (this.SavedPosition != null)
 			this.Position = (Point)this.SavedPosition;
@@ -289,7 +295,8 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		if (ServiceManager.ShutdownRequested)
 			return;
 
-		this.isOpen = false;
+		this.IsOpen = false;
+		this.NotifyPropertyChanged(nameof(this.IsOpen));
 
 		if (DalamudServices.GameGui != null)
 			DalamudServices.GameGui.UiHideToggled -= this.OnGameUiToggled;
@@ -408,6 +415,11 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	}
 
 	private void OnGameUiToggled(object? sender, bool e)
+	{
+		this.NotifyPropertyChanged(nameof(PanelWindow.IsUiVisible));
+	}
+
+	private void OnStudioPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
 		this.NotifyPropertyChanged(nameof(PanelWindow.IsUiVisible));
 	}

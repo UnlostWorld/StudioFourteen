@@ -19,6 +19,7 @@ using System;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using WpfUtils.Extensions;
 
 public partial class PanelWindowResources
 {
@@ -46,7 +47,7 @@ public partial class PanelWindowResources
 
 	private void OnCloseClicked(object sender, RoutedEventArgs e)
 	{
-		GetWindow(sender).Close();
+		GetWindow(sender).CloseAsync().Run();
 	}
 
 	private void OnResizeThumbDragDelta(object sender, DragDeltaEventArgs e)

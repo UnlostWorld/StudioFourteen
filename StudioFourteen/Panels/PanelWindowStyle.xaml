@@ -15,6 +15,7 @@
 	<BooleanToVisibilityConverter x:Key="B2V" />
 	<converters:InvertedBoolToVisibilityConverter x:Key="!B2V" />
 	<converters:MultiOrVisibilityConverter x:Key="MultiOrVisibility" />
+	<converters:MultiBoolOrConverter x:Key="MultiBoolOr" />
 
 	<Style
 		x:Key="TitlebarToggleButton"
@@ -129,15 +130,14 @@
 		x:Key="PanelWindowTemplate"
 		TargetType="{x:Type local:PanelWindow}">
 
-		<AdornerDecorator>
+		<AdornerDecorator x:Name="MainGrid">
 
 			<Grid
-				x:Name="MainGrid"
 				Margin="12"
 				RenderTransformOrigin="0.5,0.5">
 
 				<Grid.RenderTransform>
-					<ScaleTransform x:Name="WindowScale" ScaleX="1.0" ScaleY="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ScaleX}" />
+					<ScaleTransform x:Name="WindowScale" ScaleX="0.01" ScaleY="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ScaleX}" />
 				</Grid.RenderTransform>
 
 				<Border
@@ -406,37 +406,79 @@
 				</Trigger.EnterActions>
 			</Trigger>
 
-			<EventTrigger RoutedEvent="UserControl.Loaded">
-				<BeginStoryboard x:Name="LoadIn">
-					<Storyboard>
-						<DoubleAnimation
-							Storyboard.TargetProperty="Opacity"
-							From="0"
-							To="1"
-							Duration="0:00:00.250">
-							<DoubleAnimation.EasingFunction>
-								<SineEase EasingMode="EaseIn" />
-							</DoubleAnimation.EasingFunction>
-						</DoubleAnimation>
-					</Storyboard>
-				</BeginStoryboard>
-			</EventTrigger>
+			<DataTrigger
+				Binding="{Binding IsOpen}"
+				Value="True">
 
-			<MultiDataTrigger>
-				<MultiDataTrigger.Conditions>
-					<Condition Binding="{Binding Panel.IsShown, FallbackValue=True}" Value="True" />
-					<Condition Binding="{Binding IsUiVisible}" Value="True" />
-					<Condition Binding="{Binding Services.Studio.IsOpen}" Value="True" />
-				</MultiDataTrigger.Conditions>
+				<Setter Property="Opacity" Value="1" />
 
-				<MultiDataTrigger.EnterActions>
-					<StopStoryboard BeginStoryboardName="LoadIn" />
-					<StopStoryboard BeginStoryboardName="VisibleOut" />
-					<BeginStoryboard x:Name="VisibileIn">
-						<Storyboard>
+				<DataTrigger.EnterActions>
+					<BeginStoryboard x:Name="LoadIn">
+						<Storyboard FillBehavior="HoldEnd">
 							<DoubleAnimation
+								Storyboard.TargetName="MainGrid"
 								Storyboard.TargetProperty="Opacity"
+								From="0"
 								To="1"
+								Duration="0:00:00.150">
+								<DoubleAnimation.EasingFunction>
+									<SineEase EasingMode="EaseIn" />
+								</DoubleAnimation.EasingFunction>
+							</DoubleAnimation>
+
+							<DoubleAnimation
+								Storyboard.TargetName="WindowScale"
+								Storyboard.TargetProperty="ScaleX"
+								From="0.75"
+								To="1"
+								Duration="0:00:00.250">
+								<DoubleAnimation.EasingFunction>
+									<QuadraticEase EasingMode="EaseOut" />
+								</DoubleAnimation.EasingFunction>
+							</DoubleAnimation>
+						</Storyboard>
+					</BeginStoryboard>
+				</DataTrigger.EnterActions>
+				<DataTrigger.ExitActions>
+					<BeginStoryboard x:Name="LoadOut">
+						<Storyboard FillBehavior="Stop">
+							<DoubleAnimation
+								Storyboard.TargetName="MainGrid"
+								Storyboard.TargetProperty="Opacity"
+								From="1"
+								To="0"
+								Duration="0:00:00.150">
+								<DoubleAnimation.EasingFunction>
+									<SineEase EasingMode="EaseOut" />
+								</DoubleAnimation.EasingFunction>
+							</DoubleAnimation>
+
+							<DoubleAnimation
+								Storyboard.TargetName="WindowScale"
+								Storyboard.TargetProperty="ScaleX"
+								To="0.75"
+								Duration="0:00:00.250">
+								<DoubleAnimation.EasingFunction>
+									<QuadraticEase EasingMode="EaseIn" />
+								</DoubleAnimation.EasingFunction>
+							</DoubleAnimation>
+						</Storyboard>
+					</BeginStoryboard>
+				</DataTrigger.ExitActions>
+			</DataTrigger>
+
+
+			<DataTrigger
+				Binding="{Binding IsUiVisible}"
+				Value="False">
+				<DataTrigger.EnterActions>
+					<StopStoryboard BeginStoryboardName="FadeIn" />
+					<BeginStoryboard x:Name="FadeOut">
+						<Storyboard FillBehavior="HoldEnd">
+							<DoubleAnimation
+								Storyboard.TargetName="MainGrid"
+								Storyboard.TargetProperty="Opacity"
+								To="0"
 								Duration="0:00:00.100">
 								<DoubleAnimation.EasingFunction>
 									<SineEase EasingMode="EaseIn" />
@@ -444,16 +486,16 @@
 							</DoubleAnimation>
 						</Storyboard>
 					</BeginStoryboard>
-				</MultiDataTrigger.EnterActions>
+				</DataTrigger.EnterActions>
 
-				<MultiDataTrigger.ExitActions>
-					<StopStoryboard BeginStoryboardName="LoadIn" />
-					<StopStoryboard BeginStoryboardName="VisibileIn" />
-					<BeginStoryboard x:Name="VisibleOut">
-						<Storyboard>
+				<DataTrigger.ExitActions>
+					<StopStoryboard BeginStoryboardName="FadeOut" />
+					<BeginStoryboard x:Name="FadeIn">
+						<Storyboard FillBehavior="Stop">
 							<DoubleAnimation
+								Storyboard.TargetName="MainGrid"
 								Storyboard.TargetProperty="Opacity"
-								To="0"
+								To="1"
 								Duration="0:00:00.200">
 								<DoubleAnimation.EasingFunction>
 									<SineEase EasingMode="EaseOut" />
@@ -461,8 +503,8 @@
 							</DoubleAnimation>
 						</Storyboard>
 					</BeginStoryboard>
-				</MultiDataTrigger.ExitActions>
-			</MultiDataTrigger>
+				</DataTrigger.ExitActions>
+			</DataTrigger>
 
 			<Trigger Property="IsMaximized" Value="True">
 				<Setter TargetName="WindowShadow" Property="Visibility" Value="Collapsed" />

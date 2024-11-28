@@ -122,7 +122,7 @@ public class PanelService : ServiceBase
 	public void Close<T>()
 		where T : Panel, new()
 	{
-		this.Get<T>()?.Close();
+		this.Get<T>()?.CloseAsync().Run();
 	}
 
 	public void SetIsOpen<T>(bool value)
@@ -137,7 +137,7 @@ public class PanelService : ServiceBase
 		}
 		else
 		{
-			this.Get<T>()?.Close();
+			this.Get<T>()?.CloseAsync().Run();
 		}
 	}
 

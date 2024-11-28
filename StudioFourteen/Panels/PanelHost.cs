@@ -21,6 +21,7 @@ using System;
 using System.ComponentModel;
 using System.Windows.Controls;
 using System.Windows;
+using System.Threading.Tasks;
 
 [DependencyProperty<Type>("PanelType")]
 public partial class PanelHost : ContentControl, Panel.IHost
@@ -34,9 +35,10 @@ public partial class PanelHost : ContentControl, Panel.IHost
 		this.IsVisibleChanged += this.OnIsVisibleChanged;
 	}
 
-	void Panel.IHost.Close()
+	Task Panel.IHost.CloseAsync()
 	{
 		this.panel?.SetIsOpen(this, false);
+		return Task.CompletedTask;
 	}
 
 	partial void OnPanelTypeChanged(Type? newValue)
