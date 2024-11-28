@@ -84,31 +84,65 @@
 				MouseWheel="OnMouseWheel" />
 
 			<overlays:OverlayRenderer ClipToBounds="True" />
-
 		</Grid>
 
+		<Grid>
+			<Grid.Style>
+				<Style TargetType="{x:Type Grid}">
+					<Style.Triggers>
+						<DataTrigger
+							Binding="{Binding IsUiVisible}"
+							Value="False">
 
-		<background:Targets
-			Grid.Column="1"
-			Margin="0,10,0,0"
-			HorizontalAlignment="Center"
-			VerticalAlignment="Top" />
+							<Setter Property="IsHitTestVisible" Value="False" />
 
-		<overlays:OverlayBar
-			Margin="10"
-			HorizontalAlignment="Right"
-			VerticalAlignment="Top"
-			Visibility="{Binding Services.Studio.IsOpenAndInGPose, Converter={StaticResource B2V}}" />
+							<DataTrigger.EnterActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation
+											Storyboard.TargetProperty="Opacity"
+											To="0"
+											Duration="0:00:00.050" />
+									</Storyboard>
+								</BeginStoryboard>
+							</DataTrigger.EnterActions>
 
-		<background:Navigation
-			x:Name="StudioButton"
-			Width="60"
-			Margin="10,10,0,0"
-			HorizontalAlignment="Left"
-			VerticalAlignment="Top"
-			DragDelta="OnDragDelta" />
+							<DataTrigger.ExitActions>
+								<BeginStoryboard>
+									<Storyboard>
+										<DoubleAnimation
+											Storyboard.TargetProperty="Opacity"
+											To="1"
+											Duration="0:00:00.050" />
+									</Storyboard>
+								</BeginStoryboard>
+							</DataTrigger.ExitActions>
+						</DataTrigger>
+					</Style.Triggers>
+				</Style>
+			</Grid.Style>
 
-		<context:WorldContextMenu />
+			<background:Targets
+				Grid.Column="1"
+				Margin="0,10,0,0"
+				HorizontalAlignment="Center"
+				VerticalAlignment="Top" />
 
+			<overlays:OverlayBar
+				Margin="10"
+				HorizontalAlignment="Right"
+				VerticalAlignment="Top"
+				Visibility="{Binding Services.Studio.IsOpenAndInGPose, Converter={StaticResource B2V}}" />
+
+			<background:Navigation
+				x:Name="StudioButton"
+				Width="60"
+				Margin="10,10,0,0"
+				HorizontalAlignment="Left"
+				VerticalAlignment="Top"
+				DragDelta="OnDragDelta" />
+
+			<context:WorldContextMenu />
+		</Grid>
 	</Grid>
 </panels:PanelWindow>

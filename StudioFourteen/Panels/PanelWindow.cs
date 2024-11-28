@@ -73,7 +73,9 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 	public ServiceManager Services => ServiceManager.Instance;
 
-	public bool IsUiVisible => (!DalamudServices.GameGui?.GameUiHidden ?? true) && this.Services.Studio.IsOpen;
+	public bool IsUiVisibleAndOpen => this.IsUiVisible && this.Services.Studio.IsOpen;
+	public bool IsUiVisible => !DalamudServices.GameGui?.GameUiHidden ?? true;
+
 	public bool HasIcon => this.Panel != null && this.Panel.TitleIcon != IconChar.None;
 	public bool HasSubtitle => this.Panel != null && !string.IsNullOrEmpty(this.Panel.Subtitle);
 	public virtual bool CanActivate => true;
@@ -417,11 +419,12 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	private void OnGameUiToggled(object? sender, bool e)
 	{
 		this.NotifyPropertyChanged(nameof(PanelWindow.IsUiVisible));
+		this.NotifyPropertyChanged(nameof(PanelWindow.IsUiVisibleAndOpen));
 	}
 
 	private void OnStudioPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
-		this.NotifyPropertyChanged(nameof(PanelWindow.IsUiVisible));
+		this.NotifyPropertyChanged(nameof(PanelWindow.IsUiVisibleAndOpen));
 	}
 
 	private void OnPanelPropertyChanged(object? sender, PropertyChangedEventArgs e)

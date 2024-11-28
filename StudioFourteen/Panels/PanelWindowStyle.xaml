@@ -469,7 +469,7 @@
 
 
 			<DataTrigger
-				Binding="{Binding IsUiVisible}"
+				Binding="{Binding IsUiVisibleAndOpen}"
 				Value="False">
 				<DataTrigger.EnterActions>
 					<StopStoryboard BeginStoryboardName="FadeIn" />
