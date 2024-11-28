@@ -104,7 +104,10 @@
 	<DataTemplate
 		x:Key="LibrarySidebar_Territory"
 		DataType="{x:Type gameData:TerritoryTypeLibraryEntry}">
-		<Grid>
+		<StackPanel>
+
+			<Image Source="{Binding ThumbnailPath}" />
+
 			<StackPanel>
 				<TextBlock
 					Foreground="{DynamicResource ForegroundLightBrush}"
@@ -118,7 +121,7 @@
 					Foreground="{DynamicResource ForegroundLightBrush}"
 					Text="{Binding Place}" />
 			</StackPanel>
-		</Grid>
+		</StackPanel>
 	</DataTemplate>
 
 	<markup:TemplateSelector x:Key="LibrarySidebarTemplateSelector">

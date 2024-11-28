@@ -130,7 +130,42 @@
 	<DataTemplate
 		x:Key="LibraryIcon_Territory"
 		DataType="{x:Type gameData:TerritoryTypeLibraryEntry}">
-		<controls:XivIconImage Id="060430" />
+
+
+		<Viewbox>
+			<Grid
+				Width="48"
+				Height="48">
+
+				<Ellipse
+					x:Name="Icon"
+					Margin="6">
+					<Ellipse.Fill>
+						<ImageBrush
+							ImageSource="{Binding ThumbnailPath}"
+							Stretch="UniformToFill">
+							<ImageBrush.RelativeTransform>
+								<ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="1.5" ScaleY="1.5" />
+							</ImageBrush.RelativeTransform>
+						</ImageBrush>
+					</Ellipse.Fill>
+				</Ellipse>
+
+				<controls:XivIconImage
+					x:Name="FallbackIcon"
+					Id="060430"
+					Visibility="Collapsed" />
+			</Grid>
+		</Viewbox>
+
+		<DataTemplate.Triggers>
+			<DataTrigger
+				Binding="{Binding ThumbnailPath}"
+				Value="{x:Null}">
+				<Setter TargetName="Icon" Property="Visibility" Value="Collapsed" />
+				<Setter TargetName="FallbackIcon" Property="Visibility" Value="Visible" />
+			</DataTrigger>
+		</DataTemplate.Triggers>
 	</DataTemplate>
 
 	<DataTemplate

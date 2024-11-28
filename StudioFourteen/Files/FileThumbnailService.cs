@@ -15,21 +15,21 @@
 
 namespace StudioFourteen.Files;
 
-using StudioFourteen.Services;
-using StudioFourteen.Utils;
+using Lumina.Data.Files;
 using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.PixelFormats;
 using SixLabors.ImageSharp.Processing;
+using StudioFourteen.Images;
+using StudioFourteen.Services;
+using StudioFourteen.Utils;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.IO;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using SixLabors.ImageSharp.Drawing;
-using SixLabors.ImageSharp.Drawing.Processing;
-using StudioFourteen.Images;
-using SixLabors.ImageSharp.Formats.Png;
+using static StudioFourteen.Files.FileThumbnailService.ThumbnailRequest;
 
 public class FileThumbnailService : ServiceBase
 {
@@ -45,6 +45,15 @@ public class FileThumbnailService : ServiceBase
 
 	public void GetThumbnail(FileInfo fileInfo, Action<string> callback)
 	{
+		foreach (ThumbnailRequest otherRequest in this.requests)
+		{
+			if (otherRequest.FileInfo == fileInfo)
+			{
+				otherRequest.Callbacks.Add(callback);
+				return;
+			}
+		}
+
 		string name = this.HashName(fileInfo);
 		string dir = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}/StudioFourteen/Thumbnails/";
 
@@ -59,7 +68,46 @@ public class FileThumbnailService : ServiceBase
 		}
 		else
 		{
-			this.requests.Enqueue(new(fileInfo, callback, path));
+			ThumbnailRequest request = default;
+			request.Type = RequestTypes.FileEmbeddedImage;
+			request.FileInfo = fileInfo;
+			request.AddCallback(callback);
+			request.ThumbnailPath = path;
+			this.requests.Enqueue(request);
+		}
+	}
+
+	public void GetThumbnailFromTexture(string texturePath, Action<string> callback)
+	{
+		foreach (ThumbnailRequest otherRequest in this.requests)
+		{
+			if (otherRequest.SourcePath == texturePath)
+			{
+				otherRequest.Callbacks.Add(callback);
+				return;
+			}
+		}
+
+		string name = HashUtility.GetHashString($"Tex:{texturePath}");
+		string dir = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}/StudioFourteen/Thumbnails/";
+
+		if (!Directory.Exists(dir))
+			Directory.CreateDirectory(dir);
+
+		string path = $"{dir}{name}.png";
+
+		if (File.Exists(path))
+		{
+			callback.Invoke(path);
+		}
+		else
+		{
+			ThumbnailRequest request = default;
+			request.Type = RequestTypes.GameTexture;
+			request.SourcePath = texturePath;
+			request.AddCallback(callback);
+			request.ThumbnailPath = path;
+			this.requests.Enqueue(request);
 		}
 	}
 
@@ -91,18 +139,43 @@ public class FileThumbnailService : ServiceBase
 
 	private void ProcessRequest(ThumbnailRequest request)
 	{
-		FileTypeInfoBase? typeInfo = this.Services.Files.GetTypeInfo(request.FileInfo);
-		if (typeInfo == null)
-			throw new Exception($"No File Type Info for file: {request.FileInfo}");
+		if (request.ThumbnailPath == null)
+			throw new Exception("No thumbnail path in request");
 
-		FileBase? file = typeInfo.Load(request.FileInfo);
-		if (file == null)
-			throw new Exception($"Failed to load file: {request.FileInfo}");
+		Image? image = null;
+		if (request.Type == RequestTypes.FileEmbeddedImage)
+		{
+			if (request.FileInfo == null)
+				throw new Exception("No file info in thumbnail request");
 
-		if (file.Base64Image == null)
-			return;
+			FileTypeInfoBase? typeInfo = this.Services.Files.GetTypeInfo(request.FileInfo);
+			if (typeInfo == null)
+				throw new Exception($"No File Type Info for file: {request.FileInfo}");
 
-		byte[] binaryData = Convert.FromBase64String(file.Base64Image);
+			FileBase? file = typeInfo.Load(request.FileInfo);
+			if (file == null)
+				throw new Exception($"Failed to load file: {request.FileInfo}");
+
+			if (file.Base64Image == null)
+				return;
+
+			byte[] binaryData = Convert.FromBase64String(file.Base64Image);
+			image = Image.Load<Rgba32>(binaryData);
+		}
+		else if (request.Type == RequestTypes.GameTexture)
+		{
+			if (request.SourcePath == null)
+				throw new Exception("No source file in thumbnail request");
+
+			TexFile? tex = this.Services.GameData.GetFile<TexFile>(request.SourcePath);
+			if (tex == null)
+				throw new Exception("Failed to get source texture");
+
+			image = Image.LoadPixelData<Bgra32>(tex.ImageData, tex.Header.Width, tex.Header.Height);
+		}
+
+		if (image == null)
+			throw new Exception("failed to get source image");
 
 		PngEncoder encoder = new()
 		{
@@ -111,25 +184,39 @@ public class FileThumbnailService : ServiceBase
 			CompressionLevel = PngCompressionLevel.BestSpeed,
 		};
 
-		using (Image image = Image.Load<Rgba32>(binaryData))
+		ResizeOptions op = new();
+		op.Mode = ResizeMode.Max;
+		op.Size = new(128, 128);
+		op.PremultiplyAlpha = false;
+		image.Mutate(x => x.Resize(op));
+		image.Mutate(x => x.ApplyRoundedCorners(8));
+		image.SaveAsPng(request.ThumbnailPath, encoder);
+
+		image.Dispose();
+
+		foreach(Action<string> callback in request.Callbacks)
 		{
-			ResizeOptions op = new();
-			op.Mode = ResizeMode.Max;
-			op.Size = new(128, 128);
-			op.PremultiplyAlpha = false;
-			image.Mutate(x => x.Resize(op));
-			image.Mutate(x => x.ApplyRoundedCorners(8));
-
-			image.SaveAsPng(request.ThumbnailPath, encoder);
+			callback.Invoke(request.ThumbnailPath);
 		}
-
-		request.Callback.Invoke(request.ThumbnailPath);
 	}
 
-	public struct ThumbnailRequest(FileInfo fileInfo, Action<string> callback, string path)
+	public struct ThumbnailRequest()
 	{
-		public readonly FileInfo FileInfo = fileInfo;
-		public readonly Action<string> Callback = callback;
-		public readonly string ThumbnailPath = path;
+		public readonly List<Action<string>> Callbacks = new();
+		public FileInfo? FileInfo;
+		public string? SourcePath;
+		public string? ThumbnailPath;
+		public RequestTypes Type;
+
+		public enum RequestTypes
+		{
+			FileEmbeddedImage,
+			GameTexture,
+		}
+
+		public void AddCallback(Action<string> callback)
+		{
+			this.Callbacks.Add(callback);
+		}
 	}
 }

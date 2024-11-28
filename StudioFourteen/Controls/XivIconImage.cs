@@ -28,7 +28,7 @@ public class XivIconImage : Image
 		typeof(XivIconImage),
 		new(0U, OnIdChanged));
 
-	private readonly ImageReference imageReference = new(0);
+	private ImageReference? imageReference;
 
 	public uint Id
 	{
@@ -49,7 +49,7 @@ public class XivIconImage : Image
 		if (DesignerProperties.GetIsInDesignMode(this))
 			return;
 
-		this.imageReference.ImageId = this.Id;
+		this.imageReference = new(this.Id);
 		this.Source = this.imageReference.Source;
 	}
 }

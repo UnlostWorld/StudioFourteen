@@ -16,33 +16,34 @@
 namespace StudioFourteen.GameData;
 
 using Lumina.Data.Files;
-using StudioFourteen.Plugin;
+using Microsoft.Win32;
 using Serilog;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Formats.Png;
+using SixLabors.ImageSharp.PixelFormats;
 using System;
+using System.IO;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Input;
 using WpfUtils.Commands;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
-using SixLabors.ImageSharp.Formats.Png;
-using StudioFourteen.Files;
-using Microsoft.Win32;
-using SixLabors.ImageSharp.Formats;
-using SixLabors.ImageSharp.Formats.Bmp;
 
 public class ImageReference
 {
 	protected readonly ILogger Log = Logging.ForContext<ImageReference>();
 
+	private readonly string path;
 	private WeakReference<ImageSource>? cachedImage;
-	private uint imageId;
+
+	public ImageReference(string path)
+	{
+		this.ExportCommand = new SimpleCommand(this.Export);
+		this.path = path;
+	}
 
 	public ImageReference(uint imageId)
+		: this($"ui/icon/{imageId / 1000u * 1000:000000}/{imageId:000000}_hr1.tex")
 	{
-		this.ImageId = imageId;
-
-		this.ExportCommand = new SimpleCommand(this.Export);
 	}
 
 	public ImageReference(ushort imageId)
@@ -55,23 +56,10 @@ public class ImageReference
 	{
 	}
 
-	public uint ImageId
-	{
-		get => this.imageId;
-		set
-		{
-			this.cachedImage = null;
-			this.imageId = value;
-		}
-	}
-
 	public ImageSource? Source
 	{
 		get
 		{
-			if (this.ImageId == 0)
-				return null;
-
 			ImageSource? img;
 			if (this.cachedImage != null && this.cachedImage.TryGetTarget(out img))
 			{
@@ -80,11 +68,8 @@ public class ImageReference
 
 			try
 			{
-				this.Log.Verbose($"Loading image {this.ImageId}");
-
-				////string path = $"ui/icon/{this.ImageId / 1000u * 1000:000000}/{this.ImageId:000000}.tex";
-				string path = $"ui/icon/{this.ImageId / 1000u * 1000:000000}/{this.ImageId:000000}_hr1.tex";
-				TexFile? tex = ServiceManager.Instance.GameData.GetFile<TexFile>(path);
+				this.Log.Verbose($"Loading image {this.path}");
+				TexFile? tex = ServiceManager.Instance.GameData.GetFile<TexFile>(this.path);
 
 				if (tex == null)
 					return null;
@@ -101,7 +86,7 @@ public class ImageReference
 			}
 			catch (Exception ex)
 			{
-				this.Log.Warning(ex, $"Failed to load Image: {this.ImageId} ");
+				this.Log.Warning(ex, $"Failed to load Image: {this.path} ");
 			}
 
 			return null;
@@ -113,9 +98,7 @@ public class ImageReference
 
 	private void Export()
 	{
-		string path = $"ui/icon/{this.ImageId / 1000u * 1000:000000}/{this.ImageId:000000}_hr1.tex";
-		TexFile? tex = ServiceManager.Instance.GameData.GetFile<TexFile>(path);
-
+		TexFile? tex = ServiceManager.Instance.GameData.GetFile<TexFile>(this.path);
 		if (tex == null)
 			return;
 
@@ -130,7 +113,7 @@ public class ImageReference
 
 		SaveFileDialog dlg = new();
 		dlg.Filter = "Image|*.png";
-		dlg.FileName = $"{this.ImageId:000000}_hr1";
+		dlg.FileName = Path.GetFileNameWithoutExtension(this.path);
 		if (dlg.ShowDialog() == false)
 			return;
 

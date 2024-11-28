@@ -26,6 +26,9 @@ public class TerritoryTypeLibraryEntry : ExcelLibraryEntry
 {
 	public readonly TerritoryType Territory;
 
+	private string? thumbnailPath;
+	private bool hasGeneratedThumbnail;
+
 	public TerritoryTypeLibraryEntry(SourceBase source, TerritoryType territory)
 		: base(source, territory.RowId)
 	{
@@ -48,6 +51,12 @@ public class TerritoryTypeLibraryEntry : ExcelLibraryEntry
 			}
 		}
 	}
+
+	public override string? SubTitle => this.Territory.Name.GetString();
+
+	public string? Place => this.Territory.PlaceName.Value.Name.GetString();
+	public string? Region => this.Territory.PlaceNameRegion.Value.Name.GetString();
+	public string? Zone => this.Territory.PlaceNameZone.Value.Name.GetString();
 
 	public Tag Tag
 	{
@@ -86,10 +95,46 @@ public class TerritoryTypeLibraryEntry : ExcelLibraryEntry
 					builder.Append(zoneName);
 				}
 
-				return builder.ToString();
+				string name = builder.ToString();
+
+				if (string.IsNullOrEmpty(name))
+					return null;
+
+				return name;
 			}
 
-			return this.Territory.Name.GetString();
+			return null;
 		}
+	}
+
+	public string? ThumbnailPath
+	{
+		get
+		{
+			if (!this.hasGeneratedThumbnail)
+			{
+				this.hasGeneratedThumbnail = true;
+
+				if (!this.Territory.LoadingImage.IsValid)
+					return null;
+
+				LoadingImage loadingImage = this.Territory.LoadingImage.Value;
+
+				string? fileName = loadingImage.Unknown0.GetString();
+				if (fileName == null)
+					return null;
+
+				string texturePath = $"ui/loadingimage/{fileName}_hr1.tex";
+				ServiceManager.Instance.Thumbnails.GetThumbnailFromTexture(texturePath, this.OnThumbnailGenerated);
+			}
+
+			return this.thumbnailPath;
+		}
+	}
+
+	private void OnThumbnailGenerated(string path)
+	{
+		this.thumbnailPath = path;
+		this.NotifyPropertyChanged(nameof(this.ThumbnailPath));
 	}
 }
