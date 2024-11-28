@@ -15,13 +15,11 @@
 
 namespace StudioFourteen.Plugin;
 
-using Dalamud.Plugin;
-using StudioFourteen.Utilities;
-using Serilog;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using StudioFourteen.Settings;
 using Dalamud.Game.Command;
+using Dalamud.Plugin;
+using Serilog;
+using StudioFourteen.Settings;
+using System.Threading.Tasks;
 
 public sealed class DalamudPlugin : IDalamudPlugin
 {
@@ -33,6 +31,7 @@ public sealed class DalamudPlugin : IDalamudPlugin
 		this.Log.Information($"Ensure assembly WpfUtils {typeof(WpfUtils.Dispatch).Assembly}");
 		this.Log.Information($"Ensure assembly FontAwesome {typeof(FontAwesome.Sharp.Icon).Assembly}");
 		this.Log.Information($"Ensure assembly VirtualizingWrapPanel Pro {typeof(WpfToolkit.Controls.VirtualizingWrapPanel).Assembly}");
+		this.Log.Information($"Ensure assembly SharpVectors {typeof(SharpVectors.Converters.SvgIcon).Assembly}");
 
 		pluginInterface.Create<DalamudServices>();
 

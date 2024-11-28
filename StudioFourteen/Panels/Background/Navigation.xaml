@@ -8,6 +8,7 @@
 	xmlns:mvm="clr-namespace:StudioFourteen.Mvm"
 	xmlns:save="clr-namespace:StudioFourteen.Save"
 	xmlns:triggers="clr-namespace:WpfUtils.Triggers;assembly=WpfUtils"
+	xmlns:vectors="http://sharpvectors.codeplex.com/svgc/"
 	xmlns:windows="clr-namespace:StudioFourteen.Panels"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
@@ -135,9 +136,13 @@
 					<ToggleButton
 						Width="32"
 						Height="32"
-						Content="{DynamicResource GroupPoseIcon}"
 						IsChecked="{Binding IsInGPose}"
-						ToolTip="{DynamicResource LOC_ToggleGPose}" />
+						ToolTip="{DynamicResource LOC_ToggleGPose}">
+						<vectors:SvgIcon
+							Margin="8"
+							Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"
+							UriSource="pack://application:,,,/StudioFourteen;component/Assets/icon-grouppose.svg" />
+					</ToggleButton>
 
 					<Line />
 
@@ -152,7 +157,10 @@
 					<ToggleButton
 						IsChecked="{Binding IsCameraOpen}"
 						ToolTip="{DynamicResource LOC_Camera}">
-						<wpfUtils:IconBlock Icon="VideoCamera" />
+						<vectors:SvgIcon
+							Margin="8"
+							Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"
+							UriSource="pack://application:,,,/StudioFourteen;component/Assets/icon-camera.svg" />
 					</ToggleButton>
 
 					<ToggleButton

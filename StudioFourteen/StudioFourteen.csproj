@@ -74,6 +74,7 @@
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Serilog.Sinks.Debug" Version="3.0.0" />
+		<PackageReference Include="SharpVectors.Wpf" Version="1.8.4.2" />
 		<PackageReference Include="SixLabors.ImageSharp" Version="3.1.5" />
 		<PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.4" />
 		<PackageReference Include="StyleCop.Analyzers.Unstable" Version="1.2.0.556">
@@ -131,12 +132,6 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Lib\WpfUtils\WpfUtils.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Compile Update="Controls\Vector2Box.xaml.cs">
-	    <SubType>Code</SubType>
-	  </Compile>
 	</ItemGroup>
 
 </Project>
