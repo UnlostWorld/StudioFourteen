@@ -120,7 +120,13 @@ public class BNpcBaseLibraryEntry
 
 		if (this.bNpcBase.NpcEquip.IsValid)
 		{
-			foreach(EquipmentSlot slot in Enum.GetValues<EquipmentSlot>())
+			foreach (WeaponSlot slot in Enum.GetValues<WeaponSlot>())
+			{
+				WeaponModelId modelId = this.bNpcBase.NpcEquip.Value.GetModelId(slot);
+				this.Services.CharacterAppearance.SetWeapon(objectTableIndex, slot, modelId, UpdateSource.Library);
+			}
+
+			foreach (EquipmentSlot slot in Enum.GetValues<EquipmentSlot>())
 			{
 				EquipmentModelId modelId = this.bNpcBase.NpcEquip.Value.GetModelId(slot);
 				this.Services.CharacterAppearance.SetEquipment(objectTableIndex, slot, modelId, UpdateSource.Library);

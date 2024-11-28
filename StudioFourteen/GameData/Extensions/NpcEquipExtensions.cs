@@ -22,6 +22,32 @@ using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 
 public static class NpcEquipExtensions
 {
+	public static WeaponModelId GetModelId(this NpcEquip npcEquip, WeaponSlot slot)
+	{
+		WeaponModelId modelId = default;
+
+		switch (slot)
+		{
+			case WeaponSlot.MainHand:
+			{
+				modelId.Value = npcEquip.ModelMainHand;
+				modelId.Stain0 = (byte)npcEquip.DyeMainHand.RowId;
+				modelId.Stain1 = (byte)npcEquip.Dye2MainHand.RowId;
+				break;
+			}
+
+			case WeaponSlot.OffHand:
+			{
+				modelId.Value = npcEquip.ModelOffHand;
+				modelId.Stain0 = (byte)npcEquip.DyeOffHand.RowId;
+				modelId.Stain1 = (byte)npcEquip.Dye2OffHand.RowId;
+				break;
+			}
+		}
+
+		return modelId;
+	}
+
 	public static EquipmentModelId GetModelId(this NpcEquip npcEquip, EquipmentSlot slot)
 	{
 		EquipmentModelId modelId = default;
@@ -114,6 +140,14 @@ public static class NpcEquipExtensions
 
 	public static void GetHash(this NpcEquip npcEquip, ref StringBuilder stringBuilder)
 	{
+		foreach(WeaponSlot slot in Enum.GetValues<WeaponSlot>())
+		{
+			WeaponModelId modelId = npcEquip.GetModelId(slot);
+			stringBuilder.Append(modelId.Id.ToString("X2"));
+			stringBuilder.Append(modelId.Stain0.ToString("X2"));
+			stringBuilder.Append(modelId.Stain1.ToString("X2"));
+		}
+
 		foreach (EquipmentSlot slot in Enum.GetValues<EquipmentSlot>())
 		{
 			EquipmentModelId modelId = npcEquip.GetModelId(slot);

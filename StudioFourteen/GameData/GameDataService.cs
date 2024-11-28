@@ -35,6 +35,7 @@ public class GameDataService : ServiceBase
 
 	public ItemLibrarySource? Items { get; private set; }
 	public BNpcBaseLibrarySource? BNpcBase { get; private set; }
+	public ENpcResidentLibrarySource? ENpcResidents { get; private set; }
 
 	public T? GetFile<T>(string path)
 		where T : FileResource
@@ -129,9 +130,11 @@ public class GameDataService : ServiceBase
 		this.BNpcBase = new();
 		this.AddLibraryExcelSheet<BNpcBaseLibraryEntry>(this.BNpcBase);
 
+		this.ENpcResidents = new();
+		this.AddLibraryExcelSheet<ENpcResidentLibraryEntry>(this.ENpcResidents);
+
 		this.AddLibraryExcelSheet<Race, RaceLibraryEntry>();
 		this.AddLibraryExcelSheet<Tribe, TribeLibraryEntry>();
-		this.AddLibraryExcelSheet<ENpcResident, ENpcResidentLibraryEntry>();
 		this.AddLibraryExcelSheet<Glasses, GlassesLibraryEntry>();
 		this.AddLibraryExcelSheet<Ornament, OrnamentLibraryEntry>();
 		this.AddLibraryExcelSheet<Stain, StainLibraryEntry>();
