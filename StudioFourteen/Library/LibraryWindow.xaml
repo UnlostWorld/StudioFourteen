@@ -567,7 +567,7 @@
 													Storyboard.TargetProperty="ScaleX"
 													From="0.95"
 													To="1"
-													Duration="0:00:00.050">
+													Duration="0:00:00.100">
 													<DoubleAnimation.EasingFunction>
 														<SineEase EasingMode="EaseOut" />
 													</DoubleAnimation.EasingFunction>
@@ -576,7 +576,7 @@
 													Storyboard.TargetProperty="Opacity"
 													From="0"
 													To="1"
-													Duration="0:00:00.050">
+													Duration="0:00:00.100">
 													<DoubleAnimation.EasingFunction>
 														<SineEase EasingMode="EaseOut" />
 													</DoubleAnimation.EasingFunction>
@@ -613,7 +613,7 @@
 													Storyboard.TargetProperty="ScaleX"
 													From="1.05"
 													To="1"
-													Duration="0:00:00.050">
+													Duration="0:00:00.100">
 													<DoubleAnimation.EasingFunction>
 														<SineEase EasingMode="EaseOut" />
 													</DoubleAnimation.EasingFunction>
@@ -622,7 +622,7 @@
 													Storyboard.TargetProperty="Opacity"
 													From="0"
 													To="1"
-													Duration="0:00:00.050">
+													Duration="0:00:00.100">
 													<DoubleAnimation.EasingFunction>
 														<SineEase EasingMode="EaseOut" />
 													</DoubleAnimation.EasingFunction>
@@ -647,7 +647,6 @@
 						Background="Transparent"
 						ClipToBounds="True"
 						ItemsSource="{Binding Results, IsAsync=True}"
-						MouseDoubleClick="OnItemDoubleClicked"
 						SelectedItem="{Binding SelectedResult}"
 						Template="{StaticResource ListTemplate}"
 						VirtualizingPanel.ScrollUnit="Pixel"
@@ -670,8 +669,10 @@
 									Width="92"
 									Height="128"
 									Background="Transparent"
-									MouseEnter="OnResultMouseEnter"
-									MouseRightButtonUp="OnResultMouseRight">
+									MouseLeftButtonUp="OnResultMouseLeft"
+									MouseRightButtonUp="OnResultMouseRight"
+									ToolTip="!"
+									ToolTipOpening="OnResultToolTipOpening">
 
 									<Grid.RowDefinitions>
 										<RowDefinition Height="Auto" />
@@ -734,7 +735,6 @@
 						Margin="6"
 						Background="Transparent"
 						ItemsSource="{Binding Results, IsAsync=True}"
-						MouseDoubleClick="OnItemDoubleClicked"
 						SelectedItem="{Binding SelectedResult}"
 						Template="{StaticResource ListTemplate}"
 						VirtualizingPanel.ScrollUnit="Pixel"
@@ -743,7 +743,11 @@
 
 						<ListBox.ItemTemplate>
 							<DataTemplate DataType="{x:Type results:Result}">
-								<Grid>
+								<Grid
+									MouseLeftButtonUp="OnResultMouseLeft"
+									MouseRightButtonUp="OnResultMouseRight"
+									ToolTip="!"
+									ToolTipOpening="OnResultToolTipOpening">
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition Width="Auto" />
 										<ColumnDefinition />

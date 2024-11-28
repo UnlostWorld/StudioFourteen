@@ -57,8 +57,6 @@ public class LibraryMenuTargetAttribute : LibraryMenuAttributeBase
 		string canMethodName = $"Can{method.Name}";
 		MethodInfo? canMethod = methodTarget.GetType().GetMethod(canMethodName, BindingFlags.Public | BindingFlags.Instance);
 
-		Logging.Shared.Information($">> {methodTarget.GetType()} {canMethodName} {canMethod}");
-
 		// "Apply to Player Name"
 		string label = $"{this.Label}: {targetService.CharacterName}";
 		Action invoke = () => method.Invoke(methodTarget, [targetService.TargetObjectIndex]);

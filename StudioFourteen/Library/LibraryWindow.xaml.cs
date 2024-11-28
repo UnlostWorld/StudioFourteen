@@ -48,7 +48,6 @@ public partial class LibraryWindow : Panel
 	public static LibraryTab ScenesTab = new("Scenes", IconChar.Users);
 
 	private readonly FuncQueue searchQueue;
-	private readonly FuncQueue startPreviewQueue;
 	private readonly FuncQueue stopPreviewQueue;
 	private readonly Stopwatch searchStopwatch = new();
 	private readonly LibraryDoubleClickContext doubleClickContext = new();
@@ -60,12 +59,12 @@ public partial class LibraryWindow : Panel
 	[Notify] private bool viewList;
 	[Notify] private bool narrowMode;
 	private FrameworkElement? currentHover;
+	private int lastEntryClick = 0;
 
 	public LibraryWindow()
 	{
 		this.searchQueue = new(this.SearchAsync, 250);
 		this.stopPreviewQueue = new(this.StopPreview, 250);
-		this.startPreviewQueue = new(this.StartPreview, 100);
 		this.TagFilter.Tags.CollectionChanged += this.OnTagsFilterChanged;
 		this.Services.Library.ScanComplete += this.OnLibraryScanComplete;
 
@@ -182,7 +181,8 @@ public partial class LibraryWindow : Panel
 		this.Path.Clear();
 		this.Path.Add(this.Services.Library.Root);
 
-		this.searchQueue.Invoke();
+		this.navigation = Navigation.OpenDir;
+		this.searchQueue.InvokeImmediate();
 	}
 
 	private void OnLibraryScanComplete()
@@ -255,20 +255,6 @@ public partial class LibraryWindow : Panel
 		////this.ResultsList.ScrollIntoView(this.SelectedItem);
 	}
 
-	private async void OnItemDoubleClicked(object sender, MouseButtonEventArgs e)
-	{
-		if (this.SelectedResult is GroupResult groupResult)
-		{
-			this.Path.Add(groupResult.Group);
-			this.navigation = Navigation.OpenDir;
-			this.searchQueue.InvokeImmediate();
-		}
-		else if (this.SelectedResult is Result result)
-		{
-			await this.doubleClickContext.Execute(result.Entry);
-		}
-	}
-
 	private void OnDirectorySelected(object sender, RoutedEventArgs e)
 	{
 		if (sender is Button btn && btn.DataContext is GroupEntryBase group)
@@ -338,8 +324,12 @@ public partial class LibraryWindow : Panel
 		}
 	}
 
-	private void OnResultMouseEnter(object sender, MouseEventArgs e)
+	// Hijack the result tooltip logic.
+	private void OnResultToolTipOpening(object sender, ToolTipEventArgs? e)
 	{
+		if (e != null)
+			e.Handled = true;
+
 		if (sender is not FrameworkElement senderElement)
 			return;
 
@@ -348,12 +338,32 @@ public partial class LibraryWindow : Panel
 
 		this.currentHover = senderElement;
 		this.LibraryContextMenu.Enter(result, senderElement);
+		this.StartPreview().Run();
+	}
 
-		this.startPreviewQueue.Invoke();
+	private void OnResultMouseLeft(object sender, MouseButtonEventArgs e)
+	{
+		int clickDelta = e.Timestamp - this.lastEntryClick;
+		this.lastEntryClick = e.Timestamp;
+
+		if (clickDelta > 500)
+			return;
+
+		if (this.SelectedResult is GroupResult groupResult)
+		{
+			this.Path.Add(groupResult.Group);
+			this.navigation = Navigation.OpenDir;
+			this.searchQueue.InvokeImmediate();
+		}
+		else if (this.SelectedResult is Result result)
+		{
+			this.doubleClickContext.Execute(result.Entry).Run();
+		}
 	}
 
 	private void OnResultMouseRight(object sender, MouseButtonEventArgs e)
 	{
+		this.OnResultToolTipOpening(sender, null);
 		this.LibraryContextMenu.Expand();
 	}
 
@@ -401,8 +411,6 @@ public partial class LibraryWindow : Panel
 			{
 				return;
 			}
-
-			this.startPreviewQueue.Cancel();
 
 			if (this.currentHover.DataContext is Result result)
 			{

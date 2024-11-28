@@ -45,14 +45,8 @@ public partial class LibraryContextMenu : PopOut, ILibraryContextMenu
 	protected readonly ILogger Log = Logging.ForContext<LibraryContextMenu>();
 	private readonly List<MenuEntry> pendingChildren = new();
 
-	private readonly FuncQueue openQueue;
 	private UIElement? placementTarget;
 	private Result? currentResult;
-
-	public LibraryContextMenu()
-	{
-		this.openQueue = new(this.ShowResultMenu, 250);
-	}
 
 	public ServiceManager Services => ServiceManager.Instance;
 	public FastObservableCollection<MenuEntry> Menus { get; init; } = new();
@@ -70,16 +64,12 @@ public partial class LibraryContextMenu : PopOut, ILibraryContextMenu
 		this.currentResult = result;
 		this.IsExpanded = false;
 		this.StaysOpen = true;
-		this.openQueue.Invoke();
+
+		this.ShowResultMenu().Run();
 	}
 
 	public void Leave(Result? result)
 	{
-		if (this.currentResult == result)
-		{
-			this.openQueue.Cancel();
-		}
-
 		if (this.IsOpen && this.IsExpanded)
 			return;
 
@@ -88,8 +78,6 @@ public partial class LibraryContextMenu : PopOut, ILibraryContextMenu
 
 	public void Expand()
 	{
-		this.openQueue.InvokeImmediate();
-
 		this.IsExpanded = true;
 
 		this.CollectMenus().Run();
