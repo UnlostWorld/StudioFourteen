@@ -338,13 +338,19 @@ public partial class LibraryWindow : Panel
 		this.StartPreview().Run();
 	}
 
-	private void OnResultMouseLeft(object sender, MouseButtonEventArgs e)
+	private async void OnResultMouseLeft(object sender, MouseButtonEventArgs e)
 	{
 		int clickDelta = e.Timestamp - this.lastEntryClick;
 		this.lastEntryClick = e.Timestamp;
 
 		if (clickDelta > 500)
 			return;
+
+		if (this.currentPreview != null)
+		{
+			await this.currentPreview.StopPreviewAsync();
+			this.currentPreview = null;
+		}
 
 		if (this.SelectedResult is GroupResult groupResult)
 		{
@@ -354,7 +360,7 @@ public partial class LibraryWindow : Panel
 		}
 		else if (this.SelectedResult is Result result)
 		{
-			this.doubleClickContext.Execute(result.Entry).Run();
+			await this.doubleClickContext.Execute(result.Entry);
 		}
 	}
 
