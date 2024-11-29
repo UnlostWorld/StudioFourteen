@@ -146,6 +146,8 @@ public class MenuEntry(IconChar? icon, string? label, Action? invoke = null)
 	public LibraryContextMenu? ContextMenu { get; private set; }
 	public string? Label => label;
 
+	public bool HasChildren => this.Children.Count > 0 || this.pendingChildren.Count > 0;
+
 	public void SetContextMenu(LibraryContextMenu? contextMenu)
 	{
 		this.ContextMenu = contextMenu;

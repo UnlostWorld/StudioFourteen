@@ -17,15 +17,12 @@ namespace StudioFourteen.Library;
 
 using FontAwesome.Sharp;
 using PropertyChanged.SourceGenerator;
-using Serilog;
 using StudioFourteen;
 using StudioFourteen.Files;
 using StudioFourteen.Library.Filters;
-using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Results;
 using StudioFourteen.Mvm;
 using StudioFourteen.Tags;
-using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -423,99 +420,10 @@ public partial class LibraryWindow : Panel
 	}
 }
 
-public class LibraryDoubleClickContext : ILibraryContextMenu
-{
-	private readonly List<MenuEntry> menus = new();
-
-	public async Task Execute(LibraryEntryBase entry)
-	{
-		this.menus.Clear();
-		await entry.GetLibraryMenus(this);
-		foreach (MenuEntry menu in this.menus)
-		{
-			menu.Invoke();
-			break;
-		}
-	}
-
-	public MenuEntry AddMenu(IconChar? icon, string? label, Action? invoke = null)
-	{
-		MenuEntry entry = new(icon, label, invoke);
-		this.menus.Add(entry);
-		return entry;
-	}
-}
-
 public class LibraryTab(string name, IconChar icon, params FilterBase[] filters)
 	: ViewModel
 {
 	public string Name { get; init; } = Resources.Find($"LOC_Library_{name}", name);
 	public IconChar Icon { get; init; } = icon;
 	public FilterBase[] Filters { get; init; } = filters;
-}
-
-public abstract class LibraryPreviewBase
-{
-	private bool isStarting = false;
-	private bool isStopping = false;
-
-	public bool HasStopped { get; private set; }
-	public bool HasStarted { get; private set; }
-
-	protected ILogger Log => Logging.ForContext(this.GetType());
-	protected ServiceManager Services => ServiceManager.Instance;
-
-	public void StartPreview(LibraryPreviewBase? other)
-	{
-		if (this.HasStarted)
-			return;
-
-		this.StartPreviewAsync(other).Run();
-	}
-
-	public async Task StartPreviewAsync(LibraryPreviewBase? other)
-	{
-		while (this.isStopping)
-			await Task.Delay(33);
-
-		if (other != null)
-		{
-			if (!other.HasStopped && other.GetType() != this.GetType())
-			{
-				await other.StopPreviewAsync();
-			}
-
-			while (other.isStopping)
-			{
-				await Task.Delay(33);
-			}
-		}
-
-		this.isStarting = true;
-
-		await this.Start(other);
-		this.isStarting = false;
-		this.HasStarted = true;
-	}
-
-	public void StopPreview()
-	{
-		this.StopPreviewAsync().Run();
-	}
-
-	public async Task StopPreviewAsync()
-	{
-		this.isStopping = true;
-
-		while (this.isStarting)
-			await Task.Delay(33);
-
-		await this.Stop();
-		this.isStopping = false;
-		this.HasStopped = true;
-		this.HasStarted = false;
-	}
-
-	protected abstract Task Start(LibraryPreviewBase? other);
-	protected abstract Task Stop();
 }
