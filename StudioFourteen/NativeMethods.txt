@@ -1,0 +1,15 @@
+SetParent
+GetWindowLong
+SetWindowLong
+SetWindowPos
+GetWindowRect
+SetForegroundWindow
+GetForegroundWindow
+PostMessage
+ScreenToClient
+ClientToScreen
+BringWindowToTop
+ShowCursor
+GetCursorPos
+SetCursorPos
+WindowFromPoint

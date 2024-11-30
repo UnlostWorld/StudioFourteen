@@ -24,6 +24,7 @@ using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -31,6 +32,10 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
 
+using Windows.Win32;
+using Windows.Win32.Foundation;
+using Windows.Win32.UI.WindowsAndMessaging;
+using Point = System.Drawing.Point;
 using Setter = PropertyChanged.SourceGenerator.Setter;
 
 public partial class WindowService : ServiceBase
@@ -73,19 +78,19 @@ public partial class WindowService : ServiceBase
 		if (this.XivProcess == null)
 			return Rect.Empty;
 
-		GetWindowRect(this.XivProcess.MainWindowHandle, out Win32Rect xivWindowRect);
+		PInvoke.GetWindowRect((HWND)this.XivProcess.MainWindowHandle, out RECT xivWindowRect);
 
 		Rect size = default;
-		size.X = xivWindowRect.Left;
-		size.Y = xivWindowRect.Top + this.TitleBarHeight;
-		size.Width = xivWindowRect.Right - size.X;
-		size.Height = xivWindowRect.Bottom - size.Y;
+		size.X = xivWindowRect.left;
+		size.Y = xivWindowRect.top + this.TitleBarHeight;
+		size.Width = xivWindowRect.right - size.X;
+		size.Height = xivWindowRect.bottom - size.Y;
 		return size;
 	}
 
 	public bool IsAnyStudioWindowActive()
 	{
-		return this.studioWindowHwnds.Contains(GetForegroundWindow());
+		return this.studioWindowHwnds.Contains(PInvoke.GetForegroundWindow());
 	}
 
 	public void ActivateXivWindow()
@@ -93,7 +98,7 @@ public partial class WindowService : ServiceBase
 		if (this.XivWindowHwnd == null)
 			return;
 
-		SetForegroundWindow((IntPtr)this.XivWindowHwnd);
+		PInvoke.SetForegroundWindow((HWND)this.XivWindowHwnd);
 	}
 
 	public bool IsXivWindowActive()
@@ -101,7 +106,7 @@ public partial class WindowService : ServiceBase
 		if (this.XivWindowHwnd == null)
 			return false;
 
-		return GetForegroundWindow() == this.XivWindowHwnd;
+		return PInvoke.GetForegroundWindow() == this.XivWindowHwnd;
 	}
 
 	public void BringToTop(Window window)
@@ -109,13 +114,15 @@ public partial class WindowService : ServiceBase
 		this.BringXivWindowToTop();
 
 		WindowInteropHelper wndInterop = new(window);
-		BringWindowToTop(wndInterop.Handle);
+		PInvoke.BringWindowToTop((HWND)wndInterop.Handle);
 	}
 
 	public void SendToBack(Window window)
 	{
 		WindowInteropHelper wndInterop = new(window);
-		SetWindowPos(wndInterop.Handle, new IntPtr(1), 0, 0, 0, 0, 0x0001 | 0x0002 | 0x0010);
+
+		SET_WINDOW_POS_FLAGS flags = SET_WINDOW_POS_FLAGS.SWP_NOSIZE | SET_WINDOW_POS_FLAGS.SWP_NOMOVE | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE;
+		PInvoke.SetWindowPos((HWND)wndInterop.Handle, (HWND)new IntPtr(1), 0, 0, 0, 0, flags);
 	}
 
 	public void BringXivWindowToTop()
@@ -123,7 +130,7 @@ public partial class WindowService : ServiceBase
 		if (this.XivWindowHwnd == null)
 			return;
 
-		BringWindowToTop((IntPtr)this.XivWindowHwnd);
+		PInvoke.BringWindowToTop((HWND)this.XivWindowHwnd);
 	}
 
 	public void Embed(Window wnd)
@@ -133,15 +140,14 @@ public partial class WindowService : ServiceBase
 
 		WindowInteropHelper wndInterop = new(wnd);
 
-		SetParent(wndInterop.Handle, this.XivProcess.MainWindowHandle);
+		PInvoke.SetParent((HWND)wndInterop.Handle, (HWND)this.XivProcess.MainWindowHandle);
 
 		const uint WS_POPUP = 0x80000000;
 		const uint WS_CHILD = 0x40000000;
-		const int GWL_STYLE = -16;
 
-		int style = GetWindowLong(wndInterop.Handle, GWL_STYLE);
+		int style = PInvoke.GetWindowLong((HWND)wndInterop.Handle, WINDOW_LONG_PTR_INDEX.GWL_STYLE);
 		style = (int)((style & ~WS_POPUP) | WS_CHILD);
-		SetWindowLong(wndInterop.Handle, GWL_STYLE, style);
+		PInvoke.SetWindowLong((HWND)wndInterop.Handle, WINDOW_LONG_PTR_INDEX.GWL_STYLE, style);
 	}
 
 	public void Unembed(Window wnd)
@@ -151,18 +157,17 @@ public partial class WindowService : ServiceBase
 
 		WindowInteropHelper wndInterop = new(wnd);
 
-		SetParent(wndInterop.Handle, 0);
+		PInvoke.SetParent((HWND)wndInterop.Handle, (HWND)0);
 
 		const uint WS_POPUP = 0x80000000;
 		const uint WS_CHILD = 0x40000000;
-		const int GWL_STYLE = -16;
 
-		int style = GetWindowLong(wndInterop.Handle, GWL_STYLE);
+		int style = PInvoke.GetWindowLong((HWND)wndInterop.Handle, WINDOW_LONG_PTR_INDEX.GWL_STYLE);
 		style = (int)((style & ~WS_CHILD) | WS_POPUP);
-		SetWindowLong(wndInterop.Handle, GWL_STYLE, style);
+		PInvoke.SetWindowLong((HWND)wndInterop.Handle, WINDOW_LONG_PTR_INDEX.GWL_STYLE, style);
 	}
 
-	public void SetPosition(Window wnd, Point position)
+	public void SetPosition(Window wnd, System.Windows.Point position)
 	{
 		if (this.XivProcess == null)
 			return;
@@ -186,20 +191,16 @@ public partial class WindowService : ServiceBase
 		int w = 0;
 		int h = 0;
 
-		// SHOWWINDOW | NOSIZE
-		SetWindowPos(wndInterop.Handle, IntPtr.Zero, x, y, w, h, 0x0040 | 0x0001);
-
-		// NOSIZE
-		SetWindowPos(wndInterop.Handle, IntPtr.Zero, x, y, w, h, 0x0001);
+		PInvoke.SetWindowPos((HWND)wndInterop.Handle, (HWND)IntPtr.Zero, x, y, w, h, SET_WINDOW_POS_FLAGS.SWP_SHOWWINDOW | SET_WINDOW_POS_FLAGS.SWP_NOSIZE);
+		PInvoke.SetWindowPos((HWND)wndInterop.Handle, (HWND)IntPtr.Zero, x, y, w, h, SET_WINDOW_POS_FLAGS.SWP_NOSIZE);
 
 		if (wnd.Topmost)
 		{
-			// NOSIZE | NOMOVE
-			SetWindowPos(wndInterop.Handle, (IntPtr)(-1), x, y, w, h, 0x0001 | 0x0003);
+			PInvoke.SetWindowPos((HWND)wndInterop.Handle, (HWND)(IntPtr)(-1), x, y, w, h, SET_WINDOW_POS_FLAGS.SWP_NOSIZE | SET_WINDOW_POS_FLAGS.SWP_NOMOVE);
 		}
 	}
 
-	public Point GetPosition(Window wnd)
+	public System.Windows.Point GetPosition(Window wnd)
 	{
 		Rect xivSize = this.GetXivWindowSize();
 
@@ -212,7 +213,7 @@ public partial class WindowService : ServiceBase
 			t = (wnd.Top - xivSize.Top) / (xivSize.Height - wnd.ActualHeight);
 		}
 
-		return new Point(l, t);
+		return new System.Windows.Point(l, t);
 	}
 
 	public void SendKey(Key key, bool down)
@@ -233,11 +234,11 @@ public partial class WindowService : ServiceBase
 
 		if (down)
 		{
-			PostMessage(this.XivProcess.MainWindowHandle, 0x100, (IntPtr)virtualKey, IntPtr.Zero);
+			PInvoke.PostMessage((HWND)this.XivProcess.MainWindowHandle, 0x100, new WPARAM((nuint)virtualKey), IntPtr.Zero);
 		}
 		else
 		{
-			PostMessage(this.XivProcess.MainWindowHandle, 0x0101, (IntPtr)virtualKey, IntPtr.Zero);
+			PInvoke.PostMessage((HWND)this.XivProcess.MainWindowHandle, 0x0101, new WPARAM((nuint)virtualKey), IntPtr.Zero);
 		}
 	}
 
@@ -246,12 +247,8 @@ public partial class WindowService : ServiceBase
 		if (this.XivWindowHwnd == null)
 			return;
 
-		CursorUtility.Win32Point p = default;
-		p.X = (uint)pos.X;
-		p.Y = (uint)pos.Y;
-		ClientToScreen(this.XivWindowHwnd.Value, ref p);
-
-		CursorUtility.SetPosition(p);
+		PInvoke.ClientToScreen((HWND)this.XivWindowHwnd.Value, ref pos);
+		CursorUtility.SetPosition(pos);
 	}
 
 	public Point? GetCursorPosition()
@@ -260,20 +257,19 @@ public partial class WindowService : ServiceBase
 			return null;
 
 		Point position = CursorUtility.GetPosition();
-		CursorUtility.Win32Point p = new((uint)position.X, (uint)position.Y);
 
-		ScreenToClient(this.XivWindowHwnd.Value, ref p);
+		PInvoke.ScreenToClient((HWND)this.XivWindowHwnd.Value, ref position);
 
 		// don't process mouse if its outside the xiv window.
 		Rect xivSize = this.GetXivWindowSize();
 
-		if (p.X < 0 || p.X > xivSize.Width)
+		if (position.X < 0 || position.X > xivSize.Width)
 			return null;
 
-		if (p.Y < 0 || p.Y > xivSize.Height)
+		if (position.Y < 0 || position.Y > xivSize.Height)
 			return null;
 
-		return new(p.X, p.Y);
+		return new(position.X, position.Y);
 	}
 
 	public void OnWindowOpening(Window window)
@@ -301,39 +297,6 @@ public partial class WindowService : ServiceBase
 
 		this.EnableXivWindowOverlay = (!this.IsCursorOverXiv && !this.IsCursorOverStudio) || (!this.IsCursorOverAtkUnit && !this.IsCursorOverImGui);
 	}
-
-	[DllImport("user32.dll", SetLastError = true)]
-	private static extern IntPtr SetParent(IntPtr hWndChild, IntPtr hWndNewParent);
-
-	[DllImport("user32.dll", EntryPoint = "GetWindowLong")]
-	private static extern int GetWindowLong(IntPtr hWnd, int nIndex);
-
-	[DllImport("user32.dll")]
-	private static extern int SetWindowLong(IntPtr hWnd, int nIndex, int dwNewLong);
-
-	[DllImport("user32.dll", SetLastError = true)]
-	private static extern bool SetWindowPos(IntPtr hWnd, IntPtr hWndInsertAfter, int x, int y, int cx, int cy, uint uFlags);
-
-	[DllImport("user32.dll", SetLastError = true)]
-	private static extern bool GetWindowRect(IntPtr hwnd, out Win32Rect rect);
-
-	[DllImport("user32.dll", SetLastError = true)]
-	private static extern IntPtr SetForegroundWindow(IntPtr hWnd);
-
-	[DllImport("user32.dll", SetLastError = true)]
-	private static extern IntPtr GetForegroundWindow();
-
-	[DllImport("user32.dll")]
-	private static extern IntPtr PostMessage(IntPtr hWnd, uint msg, IntPtr wParam, IntPtr lParam);
-
-	[DllImport("user32.dll", SetLastError = true)]
-	private static extern bool ScreenToClient(IntPtr hWnd, ref CursorUtility.Win32Point lpPoint);
-
-	[DllImport("user32.dll", SetLastError = true)]
-	private static extern bool ClientToScreen(IntPtr hWnd, ref CursorUtility.Win32Point lpPoint);
-
-	[DllImport("user32.dll", SetLastError = true)]
-	private static extern bool BringWindowToTop(IntPtr hWnd);
 
 	private bool GetIsCursorOverXiv()
 	{
@@ -399,14 +362,5 @@ public partial class WindowService : ServiceBase
 		}
 
 		return null;
-	}
-
-	[StructLayout(LayoutKind.Sequential)]
-	public struct Win32Rect
-	{
-		public int Left;        // x position of upper-left corner
-		public int Top;         // y position of upper-left corner
-		public int Right;       // x position of lower-right corner
-		public int Bottom;      // y position of lower-right corner
 	}
 }

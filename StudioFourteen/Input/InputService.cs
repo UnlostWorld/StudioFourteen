@@ -191,7 +191,7 @@ public class InputService : ServiceBase
 			{
 				holdPosition = true;
 				this.MouseDrag?.Invoke(delta, button);
-				this.Services.Windows.SetCursorPosition(new(this.MousePosition.X, this.MousePosition.Y));
+				this.Services.Windows.SetCursorPosition(new((int)this.MousePosition.X, (int)this.MousePosition.Y));
 				this.IsMouseDragging = true;
 			}
 		}
