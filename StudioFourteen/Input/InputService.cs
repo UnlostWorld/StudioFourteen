@@ -91,14 +91,6 @@ public class InputService : ServiceBase
 		this.AddBind(InputAction.OrbitCamera_RotateUp, MouseDevice.MoveUp, MouseDevice.GetAxisId(System.Windows.Input.MouseButton.Left));
 	}
 
-	public enum States
-	{
-		Up,
-		Down,
-		Pressed,
-		Released,
-	}
-
 	public KeyboardDevice? Keyboard => this.GetDevice<KeyboardDevice>();
 	public GamepadDevice? Gamepad => this.GetDevice<GamepadDevice>();
 	public MouseDevice? Mouse => this.GetDevice<MouseDevice>();

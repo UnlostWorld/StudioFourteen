@@ -132,41 +132,19 @@ public partial class OrbitCamera : StudioCameraBase
 		base.OnFrameworkUpdate(framework);
 
 		Vector3 moveDir = Vector3.Zero;
-
-		if (this.moveUpListener.IsDown())
-			moveDir.Y += 1;
-
-		if (this.moveDownListener.IsDown())
-			moveDir.Y -= 1;
-
-		if (this.moveLeftListener.IsDown())
-			moveDir.X -= 1;
-
-		if (this.moveRightListener.IsDown())
-			moveDir.X += 1;
-
+		moveDir.Y += this.moveUpListener.Value;
+		moveDir.Y -= this.moveDownListener.Value;
+		moveDir.X -= this.moveLeftListener.Value;
+		moveDir.X += this.moveRightListener.Value;
 		this.desiredMove = moveDir;
 
 		Vector3 rot = Vector3.Zero;
-
-		if (this.panLeftListener.IsDown())
-			rot.X += 1;
-
-		if (this.panRightListener.IsDown())
-			rot.X -= 1;
-
-		if (this.panUpListener.IsDown())
-			rot.Y += 1;
-
-		if (this.panDownListener.IsDown())
-			rot.Y -= 1;
-
-		if (this.rollLeftListener.IsDown())
-			rot.Z -= 1;
-
-		if (this.rollRightListener.IsDown())
-			rot.Z += 1;
-
+		rot.X += this.panLeftListener.Value;
+		rot.X -= this.panRightListener.Value;
+		rot.Y += this.panUpListener.Value;
+		rot.Y -= this.panDownListener.Value;
+		rot.Z -= this.rollLeftListener.Value;
+		rot.Z += this.rollRightListener.Value;
 		this.desiredRot = rot;
 
 		float d = this.distance;

@@ -130,13 +130,13 @@ public class TargetService : ServiceBase
 		}
 	}
 
-	private void OnMouseButton(MouseButton button, InputService.States state, Vector2 position)
+	/*private void OnMouseButton(MouseButton button, InputService.States state, Vector2 position)
 	{
 		if (button == MouseButton.Left && state == InputService.States.Released)
 		{
 			this.TargetPosition(position).Run();
 		}
-	}
+	}*/
 
 	private async Task TargetPosition(Vector2 screenPosition)
 	{

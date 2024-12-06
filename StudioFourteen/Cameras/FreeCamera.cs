@@ -107,47 +107,21 @@ public partial class FreeCamera : StudioCameraBase
 		base.OnFrameworkUpdate(framework);
 
 		Vector3 moveDir = Vector3.Zero;
-
-		if (this.moveForwardsListener.IsDown())
-			moveDir.X += 1;
-
-		if (this.moveBackListener.IsDown())
-			moveDir.X -= 1;
-
-		if (this.moveLeftListener.IsDown())
-			moveDir.Z -= 1;
-
-		if (this.moveRightListener.IsDown())
-			moveDir.Z += 1;
-
-		if (this.moveUpListener.IsDown())
-			moveDir.Y += 1;
-
-		if (this.moveDownListener.IsDown())
-			moveDir.Y -= 1;
-
+		moveDir.X += this.moveForwardsListener.Value;
+		moveDir.X -= this.moveBackListener.Value;
+		moveDir.Z -= this.moveLeftListener.Value;
+		moveDir.Z += this.moveRightListener.Value;
+		moveDir.Y += this.moveUpListener.Value;
+		moveDir.Y -= this.moveDownListener.Value;
 		this.desiredMove = moveDir;
 
 		Vector3 rot = Vector3.Zero;
-
-		if (this.yawLeftListener.IsDown())
-			rot.X += 1;
-
-		if (this.yawRightListener.IsDown())
-			rot.X -= 1;
-
-		if (this.pitchUpListener.IsDown())
-			rot.Y += 1;
-
-		if (this.pitchDownListener.IsDown())
-			rot.Y -= 1;
-
-		if (this.rollLeftListener.IsDown())
-			rot.Z -= 1;
-
-		if (this.rollRightListener.IsDown())
-			rot.Z += 1;
-
+		rot.X += this.yawLeftListener.Value;
+		rot.X -= this.yawRightListener.Value;
+		rot.Y += this.pitchUpListener.Value;
+		rot.Y -= this.pitchDownListener.Value;
+		rot.Z -= this.rollLeftListener.Value;
+		rot.Z += this.rollRightListener.Value;
 		this.desiredRot = rot;
 	}
 

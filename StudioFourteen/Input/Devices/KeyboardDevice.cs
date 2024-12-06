@@ -16,18 +16,15 @@
 namespace StudioFourteen.Input.Devices;
 
 using Dalamud.Game.ClientState.Keys;
-using Dalamud.Plugin.Services;
 using StudioFourteen.Plugin;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using static StudioFourteen.Posing.RotationGizmo;
-using InputKey = System.Windows.Input.Key;
 
 public class KeyboardDevice : InputDeviceBase
 {
-	private readonly Dictionary<VirtualKey, KeyAxis> axisLookup = new();
+	private readonly Dictionary<VirtualKey, InputAxis> axisLookup = new();
 
 	public KeyboardDevice()
 	{
@@ -39,9 +36,9 @@ public class KeyboardDevice : InputDeviceBase
 			if (this.axisLookup.ContainsKey(key))
 				continue;
 
-			KeyAxis axis = new(key, KeyboardDevice.GetAxisId(key));
+			InputAxis axis = new(KeyboardDevice.GetAxisId(key));
 			this.axisLookup.Add(key, axis);
-			this.Axes.Add(axis);
+			this.AddAxis(axis);
 		}
 	}
 
@@ -57,7 +54,7 @@ public class KeyboardDevice : InputDeviceBase
 		if (this.Services.Input.IsXivTextInputActive)
 			return;
 
-		foreach (KeyAxis axis in this.Axes)
+		foreach (InputAxis axis in this.Axes)
 		{
 			axis.IsConsumed = false;
 		}
@@ -65,33 +62,10 @@ public class KeyboardDevice : InputDeviceBase
 		if (this.Services.Panels.ActivePanel == null && this.Services.Windows.IsXivWindowActive())
 		{
 			// Read XIV -> Studio
-			foreach(KeyAxis axis in this.Axes)
+			foreach((VirtualKey key, InputAxis axis) in this.axisLookup)
 			{
-				bool isDown = DalamudServices.KeyState[axis.VirtualKey];
+				bool isDown = DalamudServices.KeyState[key];
 				axis.Value = isDown ? 1.0f : 0.0f;
-			}
-		}
-		else
-		{
-			// Write Studio -> XIV
-			foreach (KeyAxis axis in this.Axes)
-			{
-				if (!DalamudServices.KeyState.IsVirtualKeyValid(axis.VirtualKey))
-					continue;
-
-				if (axis.State == InputService.States.Pressed)
-				{
-					this.Services.Windows.SendKeyToXiv(axis.VirtualKey, true);
-				}
-				else if (axis.State == InputService.States.Released)
-				{
-					this.Services.Windows.SendKeyToXiv(axis.VirtualKey, false);
-				}
-			}
-
-			foreach (KeyAxis axis in this.Axes)
-			{
-				axis.AdvanceState();
 			}
 		}
 	}
@@ -107,24 +81,40 @@ public class KeyboardDevice : InputDeviceBase
 		if (this.Services.Panels.ActivePanel == null && this.Services.Windows.IsXivWindowActive())
 		{
 			// read XIV -> Studio
-			foreach (KeyAxis axis in this.Axes)
+			foreach ((VirtualKey key, InputAxis axis) in this.axisLookup)
 			{
-				if (axis.IsConsumed && DalamudServices.KeyState[axis.VirtualKey])
+				if (axis.IsConsumed && DalamudServices.KeyState[key])
 				{
 					this.Services.Windows.ActivateStudioWindow();
-					DalamudServices.KeyState[axis.VirtualKey] = false;
+					DalamudServices.KeyState[key] = false;
 				}
 			}
 		}
 		else
 		{
 			// Write studio -> XIV
-			foreach (KeyAxis axis in this.Axes)
+			foreach ((VirtualKey key, InputAxis axis) in this.axisLookup)
 			{
-				if (axis.IsConsumed)
+				// TODO:
+				// check if the axis is Consumed!
+				// Write Studio -> XIV
+				/*foreach ((VirtualKey key, InputAxis axis) in this.axisLookup)
 				{
-					DalamudServices.KeyState[axis.VirtualKey] = false;
-				}
+					if (!DalamudServices.KeyState.IsVirtualKeyValid(key))
+						continue;
+
+					if (!axis.IsConsumed)
+						continue;
+
+					if (axis.State == InputService.States.Pressed)
+					{
+						this.Services.Windows.SendKeyToXiv(axis.VirtualKey, true);
+					}
+					else if (axis.State == InputService.States.Released)
+					{
+						this.Services.Windows.SendKeyToXiv(axis.VirtualKey, false);
+					}
+				}*/
 			}
 		}
 	}
@@ -161,20 +151,7 @@ public class KeyboardDevice : InputDeviceBase
 		if (!this.axisLookup.ContainsKey(vKey))
 			return;
 
-		if (down)
-		{
-			if (this.axisLookup[vKey].State == InputService.States.Up)
-			{
-				this.axisLookup[vKey].Value = 1.0f;
-			}
-		}
-		else
-		{
-			if (this.axisLookup[vKey].State == InputService.States.Down)
-			{
-				this.axisLookup[vKey].Value = 0.0f;
-			}
-		}
+		this.axisLookup[vKey].Value = down ? 1.0f : 0.0f;
 
 		if (down)
 		{
@@ -190,80 +167,6 @@ public class KeyboardDevice : InputDeviceBase
 					return;
 				}
 			}
-		}
-	}
-}
-
-public class KeyAxis : InputAxis
-{
-	public readonly VirtualKey VirtualKey;
-
-	public KeyAxis(VirtualKey virtualKey, string id)
-		: base(id)
-	{
-		this.VirtualKey = virtualKey;
-	}
-
-	public InputService.States State { get; private set; }
-
-	public override float Value
-	{
-		get => base.Value;
-		set
-		{
-			if (value > 0.5f)
-			{
-				switch (this.State)
-				{
-					case InputService.States.Released:
-					case InputService.States.Up:
-					{
-						this.State = InputService.States.Pressed;
-						break;
-					}
-
-					case InputService.States.Down:
-					case InputService.States.Pressed:
-					{
-						this.State = InputService.States.Down;
-						break;
-					}
-				}
-			}
-			else
-			{
-				switch (this.State)
-				{
-					case InputService.States.Down:
-					case InputService.States.Pressed:
-					{
-						this.State = InputService.States.Released;
-						break;
-					}
-
-					case InputService.States.Released:
-					case InputService.States.Up:
-					{
-						this.State = InputService.States.Up;
-						break;
-					}
-				}
-			}
-
-			base.Value = value;
-		}
-	}
-
-	public void AdvanceState()
-	{
-		if (this.State == InputService.States.Pressed)
-		{
-			this.State = InputService.States.Down;
-		}
-
-		if (this.State == InputService.States.Released)
-		{
-			this.State = InputService.States.Up;
 		}
 	}
 }

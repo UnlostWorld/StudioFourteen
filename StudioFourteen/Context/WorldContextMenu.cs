@@ -90,13 +90,13 @@ public partial class WorldContextMenu : PopOut
 		});
 	}
 
-	private void OnMouseButton(MouseButton button, InputService.States state, Vector2 position)
+	/*private void OnMouseButton(MouseButton button, InputService.States state, Vector2 position)
 	{
 		if (button == MouseButton.Right && state == InputService.States.Released)
 		{
 			this.Show(position).Run();
 		}
-	}
+	}*/
 
 	private async Task Show(Vector2 screenPosition)
 	{

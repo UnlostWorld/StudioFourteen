@@ -22,8 +22,6 @@ public class InputActionListener
 	public readonly ILogger Log = Logging.ForContext<InputActionListener>();
 
 	private readonly InputAction keyBindEvent;
-	private InputService.States currentState = InputService.States.Up;
-	private InputService.States cacheState = InputService.States.Up;
 
 	public InputActionListener(InputAction evt)
 	{
@@ -45,34 +43,22 @@ public class InputActionListener
 		ServiceManager.Instance.Input.RemoveListener(this.keyBindEvent, this);
 	}
 
-	public void SetValue(float axisValue)
+	public void SetValue(float newValue)
 	{
-		this.Value = axisValue;
-
-		InputService.States state = axisValue > 0 ? InputService.States.Down : InputService.States.Up;
-
-		this.currentState = state;
-
-		if (state == InputService.States.Pressed)
-		{
-			this.cacheState = InputService.States.Pressed;
-		}
-		else if (state == InputService.States.Released)
-		{
-			this.cacheState = InputService.States.Released;
-		}
+		float oldValue = this.Value;
+		this.Value = newValue;
 
 		try
 		{
-			if (state == InputService.States.Pressed)
+			if (oldValue < 0.001f && newValue > 0.001f)
 			{
 				this.Pressed?.Invoke();
 			}
-			else if (state == InputService.States.Down)
+			else if (oldValue > 0.001f && newValue > 0.001f)
 			{
 				this.Down?.Invoke();
 			}
-			else if (state == InputService.States.Released)
+			else if (oldValue > 0.001f && newValue < 0.001f)
 			{
 				this.Released?.Invoke();
 			}
@@ -81,31 +67,5 @@ public class InputActionListener
 		{
 			this.Log.Error(ex, $"Error invoking key bind callback for event {this.keyBindEvent}");
 		}
-	}
-
-	public InputService.States GetState()
-	{
-		InputService.States state = this.cacheState;
-
-		if (state == InputService.States.Pressed)
-		{
-			state = InputService.States.Down;
-		}
-		else if (state == InputService.States.Released)
-		{
-			state = InputService.States.Up;
-		}
-
-		return state;
-	}
-
-	public InputService.States GetCurrentState()
-	{
-		return this.currentState;
-	}
-
-	public bool IsDown()
-	{
-		return this.currentState == InputService.States.Down;
 	}
 }
