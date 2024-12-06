@@ -20,9 +20,9 @@ using StudioFourteen.Input;
 using System;
 using WpfUtils.Converters;
 
-public class KeyBindEventsToStringConverter : ConverterBase<KeyBindEvents, string>
+public class KeyBindEventsToStringConverter : ConverterBase<InputAction, string>
 {
-	protected override string Convert(KeyBindEvents value)
+	protected override string Convert(InputAction value)
 	{
 		return Resources.Find($"LOC_Settings_Input_{value.ToString()}", value.ToString());
 	}

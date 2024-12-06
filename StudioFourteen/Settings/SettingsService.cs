@@ -22,6 +22,7 @@ using System.Windows.Input;
 using Dalamud.Configuration;
 using Dalamud.Game.ClientState.Keys;
 using StudioFourteen.Input;
+using StudioFourteen.Input.Devices;
 using StudioFourteen.Plugin;
 using StudioFourteen.Save;
 using StudioFourteen.Serialization;
@@ -94,8 +95,8 @@ public class SettingsService : ServiceBase
 		public string? DefaultVersion { get; set; } = "1.0";
 
 		// Input
-		public bool EnableKeyBinds { get; set; } = true;
-		public Dictionary<KeyBindEvents, KeyBind> CustomKeyBinds { get; set; } = new();
+		public bool EnableBinds { get; set; } = true;
+		public Dictionary<InputAction, List<Bind>> CustomBinds { get; set; } = new();
 
 		// Library
 		public HashSet<string> Favorites { get; set; } = new();

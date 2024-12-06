@@ -32,13 +32,13 @@ using WpfUtils.Extensions;
 
 public class SaveService : ServiceBase
 {
-	private readonly KeyBindListener saveListener;
+	private readonly InputActionListener saveListener;
 	private readonly Dictionary<int, bool> includeCharacters = new();
 	private DirectoryInfo? defaultDirectory;
 
 	public SaveService()
 	{
-		this.saveListener = new(KeyBindEvents.Save);
+		this.saveListener = new(InputAction.Save);
 		this.saveListener.Pressed = this.Save;
 	}
 

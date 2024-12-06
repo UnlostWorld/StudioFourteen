@@ -111,18 +111,18 @@ public partial class BackgroundWindow : PanelWindow
 
 	private void OnMouseDown(object sender, MouseButtonEventArgs e)
 	{
-		this.Services.Input.HandleMouse(e, true);
+		this.Services.Input.Mouse?.HandleMouse(e, true);
 	}
 
 	private void OnMouseUp(object sender, MouseButtonEventArgs e)
 	{
-		this.Services.Input.HandleMouse(e, false);
+		this.Services.Input.Mouse?.HandleMouse(e, false);
 	}
 
 	private void OnMouseMove(object sender, MouseEventArgs e)
 	{
 		Point mousePos = e.GetPosition(this);
-		this.Services.Input.HandleMouseMove(new((float)mousePos.X, (float)mousePos.Y));
+		this.Services.Input.Mouse?.HandleMouseMove(new((float)mousePos.X, (float)mousePos.Y));
 		this.Services.Windows.SendToBack(this);
 	}
 
@@ -132,12 +132,12 @@ public partial class BackgroundWindow : PanelWindow
 
 	private void OnMouseLeave(object sender, MouseEventArgs e)
 	{
-		this.Services.Input.HandleMouseLeave();
+		this.Services.Input.Mouse?.HandleMouseLeave();
 	}
 
 	private void OnMouseWheel(object sender, MouseWheelEventArgs e)
 	{
-		this.Services.Input.HandleMouseWheel(e.Delta / 120.0f);
+		this.Services.Input.Mouse?.HandleMouseWheel(e.Delta / 120.0f);
 		e.Handled = true;
 	}
 
@@ -151,7 +151,7 @@ public partial class BackgroundWindow : PanelWindow
 		if (e.IsRepeat)
 			return;
 
-		this.Services.Input.HandleKey(e.Key, true);
+		this.Services.Input.Keyboard?.HandleKey(e.Key, true);
 		e.Handled = true;
 	}
 
@@ -160,7 +160,7 @@ public partial class BackgroundWindow : PanelWindow
 		if (e.IsRepeat)
 			return;
 
-		this.Services.Input.HandleKey(e.Key, false);
+		this.Services.Input.Keyboard?.HandleKey(e.Key, false);
 		e.Handled = true;
 	}
 }

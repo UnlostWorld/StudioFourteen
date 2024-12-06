@@ -28,7 +28,6 @@ using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Markup;
 using WpfUtils;
 using WpfUtils.Commands;
 using WpfUtils.Controls;
@@ -43,7 +42,7 @@ public partial class WorldContextMenu : PopOut
 
 	public WorldContextMenu()
 	{
-		this.Services.Input.MouseButton += this.OnMouseButton;
+		////this.Services.Input.Mouse.MouseButton += this.OnMouseButton;
 	}
 
 	public interface IProvider

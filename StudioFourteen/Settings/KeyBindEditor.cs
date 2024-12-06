@@ -15,13 +15,12 @@
 
 namespace StudioFourteen.Settings;
 
-using Dalamud.Game.ClientState.Keys;
 using DependencyPropertyGenerator;
 using StudioFourteen.Input;
 using System.Windows.Controls;
 using System.Windows.Input;
 
-[DependencyProperty<KeyBind>("KeyBind")]
+[DependencyProperty<Bind>("Bind")]
 public partial class KeyBindEditor : TextBox
 {
 	public KeyBindEditor()
@@ -29,11 +28,11 @@ public partial class KeyBindEditor : TextBox
 		this.IsReadOnly = true;
 	}
 
-	public delegate void KeyBindChangedDelegate(KeyBindEditor sender, KeyBind? bind);
+	public delegate void KeyBindChangedDelegate(KeyBindEditor sender, Bind? bind);
 
 	public event KeyBindChangedDelegate? KeyBindChanged;
 
-	protected override void OnPreviewKeyDown(KeyEventArgs e)
+	/*protected override void OnPreviewKeyDown(KeyEventArgs e)
 	{
 		base.OnPreviewKeyDown(e);
 		if (e.Key == Key.Escape)
@@ -73,9 +72,9 @@ public partial class KeyBindEditor : TextBox
 		}
 	}
 
-	partial void OnKeyBindChanged(KeyBind? newValue)
+	partial void OnKeyBindChanged(KeyboardDevice.Bind? newValue)
 	{
 		this.Text = newValue?.ToString();
 		this.KeyBindChanged?.Invoke(this, newValue);
-	}
+	}*/
 }

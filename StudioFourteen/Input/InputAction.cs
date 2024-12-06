@@ -15,8 +15,15 @@
 
 namespace StudioFourteen.Input;
 
-public enum KeyBindEvents
+public enum InputAction
 {
+	Navigate_Up,
+	Navigate_Down,
+	Navigate_Left,
+	Navigate_Right,
+	Navigate_Enter,
+	Navigate_Back,
+
 	Save,
 	SaveAs,
 	InvokeQuickSearch,
@@ -45,4 +52,11 @@ public enum KeyBindEvents
 	OrbitCamera_MoveDown,
 	OrbitCamera_MoveLeft,
 	OrbitCamera_MoveRight,
+
+	OrbitCamera_ZoomIn,
+	OrbitCamera_ZoomOut,
+	OrbitCamera_RotateLeft,
+	OrbitCamera_RotateRight,
+	OrbitCamera_RotateUp,
+	OrbitCamera_RotateDown,
 }

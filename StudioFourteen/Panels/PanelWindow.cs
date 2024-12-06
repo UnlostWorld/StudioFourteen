@@ -16,22 +16,23 @@
 namespace StudioFourteen.Panels;
 
 using DependencyPropertyGenerator;
+using FontAwesome.Sharp;
+using Serilog;
+using StudioFourteen.Input;
 using StudioFourteen.Mvm;
 using StudioFourteen.Plugin;
 using StudioFourteen.Services;
-using Serilog;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using WpfUtils;
 using WpfUtils.Extensions;
 using WpfUtils.Windows;
-using FontAwesome.Sharp;
-using PropertyChanged.SourceGenerator;
 
 [DependencyProperty<bool>("IsEmbedded", DefaultValue = true)]
 [DependencyProperty<bool>("CanClose", DefaultValue = true)]
@@ -42,18 +43,14 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 {
 	protected readonly ILogger Log;
 
-	private readonly string panelId;
-	private readonly Dictionary<string, object?> persistenceCache = new();
+	private readonly Navigation navigation;
 	private double preScaleHeight;
 	private double preScaleWidth;
 	private Panel? panel;
 
 	public PanelWindow()
 	{
-		this.panelId = this.GetType().Name;
 		this.Log = Logging.ForContext(this.GetType());
-
-		this.Loaded += this.OnLoaded;
 
 		// Load a new copy of the resources. Each window needs its own instance for threading reasons.
 		this.Resources = StudioFourteen.Resources.Load();
@@ -62,11 +59,13 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		this.GetType().GetMethod("InitializeComponent")?.Invoke(this, null);
 		this.DataContext = this;
 
+		this.Loaded += this.OnLoaded;
 		this.PreviewMouseDown += this.OnPreviewMouseDown;
 		this.PreviewKeyDown += this.OnPreviewKeyDown;
 		this.PreviewKeyUp += this.OnPreviewKeyUp;
-
 		this.Services.Studio.PropertyChanged += this.OnStudioPropertyChanged;
+
+		this.navigation = new(this);
 	}
 
 	public event PropertyChangedEventHandler? PropertyChanged;
@@ -318,6 +317,8 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		if (ServiceManager.ShutdownRequested)
 			return;
 
+		this.navigation.Activate();
+
 		this.Services.Panels.ActivePanel = this.Panel;
 		base.OnActivated(e);
 	}
@@ -326,6 +327,8 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	{
 		if (ServiceManager.ShutdownRequested)
 			return;
+
+		this.navigation.Deactivate();
 
 		if (this.Services.Panels.ActivePanel == this.Panel)
 			this.Services.Panels.ActivePanel = null;
@@ -403,7 +406,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		if (this.Services.Input.IsStudioTextInputActive)
 			return;
 
-		this.Services.Input.HandleKey(e.Key, true);
+		this.Services.Input.Keyboard?.HandleKey(e.Key, true);
 		e.Handled = true;
 	}
 
@@ -412,7 +415,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		if (this.Services.Input.IsStudioTextInputActive)
 			return;
 
-		this.Services.Input.HandleKey(e.Key, false);
+		this.Services.Input.Keyboard?.HandleKey(e.Key, false);
 		e.Handled = true;
 	}
 

@@ -29,18 +29,18 @@ public partial class FreeCamera : StudioCameraBase
 	private const float MoveSpeed = 2.0f;
 	private const float MoveSpeedMaximum = 200.0f;
 
-	private readonly KeyBindListener moveForwardsListener = new(KeyBindEvents.FreeCamera_MoveForwards);
-	private readonly KeyBindListener moveBackListener = new(KeyBindEvents.FreeCamera_MoveBack);
-	private readonly KeyBindListener moveUpListener = new(KeyBindEvents.FreeCamera_MoveUp);
-	private readonly KeyBindListener moveDownListener = new(KeyBindEvents.FreeCamera_MoveDown);
-	private readonly KeyBindListener moveLeftListener = new(KeyBindEvents.FreeCamera_MoveLeft);
-	private readonly KeyBindListener moveRightListener = new(KeyBindEvents.FreeCamera_MoveRight);
-	private readonly KeyBindListener yawLeftListener = new(KeyBindEvents.FreeCamera_YawLeft);
-	private readonly KeyBindListener yawRightListener = new(KeyBindEvents.FreeCamera_YawRight);
-	private readonly KeyBindListener pitchUpListener = new(KeyBindEvents.FreeCamera_PitchUp);
-	private readonly KeyBindListener pitchDownListener = new(KeyBindEvents.FreeCamera_PitchDown);
-	private readonly KeyBindListener rollLeftListener = new(KeyBindEvents.FreeCamera_RollLeft);
-	private readonly KeyBindListener rollRightListener = new(KeyBindEvents.FreeCamera_RollRight);
+	private readonly InputActionListener moveForwardsListener = new(InputAction.FreeCamera_MoveForwards);
+	private readonly InputActionListener moveBackListener = new(InputAction.FreeCamera_MoveBack);
+	private readonly InputActionListener moveUpListener = new(InputAction.FreeCamera_MoveUp);
+	private readonly InputActionListener moveDownListener = new(InputAction.FreeCamera_MoveDown);
+	private readonly InputActionListener moveLeftListener = new(InputAction.FreeCamera_MoveLeft);
+	private readonly InputActionListener moveRightListener = new(InputAction.FreeCamera_MoveRight);
+	private readonly InputActionListener yawLeftListener = new(InputAction.FreeCamera_YawLeft);
+	private readonly InputActionListener yawRightListener = new(InputAction.FreeCamera_YawRight);
+	private readonly InputActionListener pitchUpListener = new(InputAction.FreeCamera_PitchUp);
+	private readonly InputActionListener pitchDownListener = new(InputAction.FreeCamera_PitchDown);
+	private readonly InputActionListener rollLeftListener = new(InputAction.FreeCamera_RollLeft);
+	private readonly InputActionListener rollRightListener = new(InputAction.FreeCamera_RollRight);
 
 	[Notify] private Vector3 position;
 	[Notify] private Quaternion rotation;
@@ -200,7 +200,7 @@ public partial class FreeCamera : StudioCameraBase
 		}
 	}
 
-	protected override void OnMouseDrag(Vector2 delta, MouseButton button)
+	/*protected override void OnMouseDrag(Vector2 delta, MouseButton button)
 	{
 		base.OnMouseDrag(delta, button);
 
@@ -210,5 +210,5 @@ public partial class FreeCamera : StudioCameraBase
 		Quaternion y = Quaternion.CreateFromYawPitchRoll(0, 0, -delta.Y * QuaternionExtensions.Deg2Rad);
 		this.Rotation = Quaternion.Multiply(x, this.Rotation);
 		this.Rotation = Quaternion.Multiply(this.Rotation, y);
-	}
+	}*/
 }

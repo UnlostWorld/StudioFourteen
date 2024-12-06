@@ -16,6 +16,7 @@
 namespace StudioFourteen.Cameras;
 
 using Dalamud.Plugin.Services;
+using FFXIVClientStructs.FFXIV.Common.Lua;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Input;
 using StudioFourteen.Overlays;
@@ -32,16 +33,22 @@ public partial class OrbitCamera : StudioCameraBase
 
 	private readonly PointOverlay targetPointOverlay = new("Cameras", "OrbitCameraTarget");
 
-	private readonly KeyBindListener moveUpListener = new(KeyBindEvents.OrbitCamera_MoveUp);
-	private readonly KeyBindListener moveDownListener = new(KeyBindEvents.OrbitCamera_MoveDown);
-	private readonly KeyBindListener moveLeftListener = new(KeyBindEvents.OrbitCamera_MoveLeft);
-	private readonly KeyBindListener moveRightListener = new(KeyBindEvents.OrbitCamera_MoveRight);
-	private readonly KeyBindListener panUpListener = new(KeyBindEvents.OrbitCamera_PanUp);
-	private readonly KeyBindListener panDownListener = new(KeyBindEvents.OrbitCamera_PanDown);
-	private readonly KeyBindListener panLeftListener = new(KeyBindEvents.OrbitCamera_PanLeft);
-	private readonly KeyBindListener panRightListener = new(KeyBindEvents.OrbitCamera_PanRight);
-	private readonly KeyBindListener rollLeftListener = new(KeyBindEvents.OrbitCamera_RollLeft);
-	private readonly KeyBindListener rollRightListener = new(KeyBindEvents.OrbitCamera_RollRight);
+	private readonly InputActionListener moveUpListener = new(InputAction.OrbitCamera_MoveUp);
+	private readonly InputActionListener moveDownListener = new(InputAction.OrbitCamera_MoveDown);
+	private readonly InputActionListener moveLeftListener = new(InputAction.OrbitCamera_MoveLeft);
+	private readonly InputActionListener moveRightListener = new(InputAction.OrbitCamera_MoveRight);
+	private readonly InputActionListener panUpListener = new(InputAction.OrbitCamera_PanUp);
+	private readonly InputActionListener panDownListener = new(InputAction.OrbitCamera_PanDown);
+	private readonly InputActionListener panLeftListener = new(InputAction.OrbitCamera_PanLeft);
+	private readonly InputActionListener panRightListener = new(InputAction.OrbitCamera_PanRight);
+	private readonly InputActionListener rollLeftListener = new(InputAction.OrbitCamera_RollLeft);
+	private readonly InputActionListener rollRightListener = new(InputAction.OrbitCamera_RollRight);
+	private readonly InputActionListener zoomInListener = new(InputAction.OrbitCamera_ZoomIn);
+	private readonly InputActionListener zoomOutListener = new(InputAction.OrbitCamera_ZoomOut);
+	private readonly InputActionListener rotateLeftListener = new(InputAction.OrbitCamera_RotateLeft);
+	private readonly InputActionListener rotateRightListener = new(InputAction.OrbitCamera_RotateRight);
+	private readonly InputActionListener rotateUpListener = new(InputAction.OrbitCamera_RotateUp);
+	private readonly InputActionListener rotateDownListener = new(InputAction.OrbitCamera_RotateDown);
 
 	private float actualDistance;
 
@@ -86,6 +93,12 @@ public partial class OrbitCamera : StudioCameraBase
 		this.panRightListener.Enable();
 		this.rollLeftListener.Enable();
 		this.rollRightListener.Enable();
+		this.zoomInListener.Enable();
+		this.zoomOutListener.Enable();
+		this.rotateLeftListener.Enable();
+		this.rotateRightListener.Enable();
+		this.rotateUpListener.Enable();
+		this.rotateDownListener.Enable();
 
 		this.targetPointOverlay.Enable();
 	}
@@ -104,6 +117,12 @@ public partial class OrbitCamera : StudioCameraBase
 		this.panRightListener.Disable();
 		this.rollLeftListener.Disable();
 		this.rollRightListener.Disable();
+		this.zoomInListener.Disable();
+		this.zoomOutListener.Disable();
+		this.rotateLeftListener.Disable();
+		this.rotateRightListener.Disable();
+		this.rotateUpListener.Disable();
+		this.rotateDownListener.Disable();
 
 		this.targetPointOverlay.Disable();
 	}
@@ -149,6 +168,19 @@ public partial class OrbitCamera : StudioCameraBase
 			rot.Z += 1;
 
 		this.desiredRot = rot;
+
+		float d = this.distance;
+		d -= this.zoomInListener.Value;
+		d += this.zoomOutListener.Value;
+		this.Distance = Math.Max(d, 0.1f);
+
+		Vector2 angle = this.Angle;
+		angle.X -= this.rotateLeftListener.Value / 8;
+		angle.X += this.rotateRightListener.Value / 8;
+		angle.Y -= this.rotateUpListener.Value / 8;
+		angle.Y += this.rotateDownListener.Value / 8;
+		angle = MathUtility.Wrap(angle);
+		this.Angle = angle;
 	}
 
 	public override void Tick(float deltaTime)
@@ -233,37 +265,5 @@ public partial class OrbitCamera : StudioCameraBase
 	{
 		Quaternion lookAtRot = this.GetLookRotation();
 		return Quaternion.Multiply(lookAtRot, this.Rotation);
-	}
-
-	protected override void OnMouseDrag(Vector2 delta, MouseButton button)
-	{
-		base.OnMouseDrag(delta, button);
-
-		if (Keyboard.IsKeyDown(Key.LeftShift))
-			delta *= 10;
-
-		if (Keyboard.IsKeyDown(Key.LeftCtrl))
-			delta /= 10;
-
-		Vector2 angle = this.Angle;
-		angle.X -= delta.X / 8;
-		angle.Y -= delta.Y / 8;
-		angle = MathUtility.Wrap(angle);
-		this.Angle = angle;
-	}
-
-	protected override void OnMouseWheel(float delta)
-	{
-		base.OnMouseWheel(delta);
-
-		if (Keyboard.IsKeyDown(Key.LeftShift))
-			delta *= 10;
-
-		if (Keyboard.IsKeyDown(Key.LeftCtrl))
-			delta /= 10;
-
-		float d = this.distance;
-		d -= delta;
-		this.Distance = Math.Max(d, 0.1f);
 	}
 }

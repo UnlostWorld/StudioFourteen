@@ -86,7 +86,7 @@
 					Content="{DynamicResource LOC_Settings_Input_EnableKeyBinds}"
 					IsChecked="{Binding Settings.EnableKeyBinds}" />
 
-				<ScrollViewer
+				<!--<ScrollViewer
 					Grid.Row="1"
 					Margin="0,2,0,0">
 					<ItemsControl ItemsSource="{Binding Keys}">
@@ -122,7 +122,7 @@
 							</DataTemplate>
 						</ItemsControl.ItemTemplate>
 					</ItemsControl>
-				</ScrollViewer>
+				</ScrollViewer>-->
 
 			</Grid>
 		</TabItem>

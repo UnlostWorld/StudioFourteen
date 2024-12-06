@@ -76,6 +76,7 @@
 		TargetType="{x:Type tags:TagSelector}">
 		<Setter Property="Template" Value="{StaticResource TagSelectorTemplate}" />
 		<Setter Property="HorizontalAlignment" Value="Stretch" />
+		<Setter Property="Focusable" Value="False" />
 	</Style>
 
 	<Style

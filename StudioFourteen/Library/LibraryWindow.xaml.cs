@@ -47,7 +47,7 @@ public partial class LibraryWindow : Panel
 	private readonly FuncQueue searchQueue;
 	private readonly FuncQueue stopPreviewQueue;
 	private readonly Stopwatch searchStopwatch = new();
-	private readonly LibraryDoubleClickContext doubleClickContext = new();
+	private readonly LibraryDoubleClickContext resultExecutionContext = new();
 	private LibraryPreviewBase? currentPreview;
 	private bool flatten = false;
 	[Notify] private Result? selectedResult = null;
@@ -249,7 +249,10 @@ public partial class LibraryWindow : Panel
 
 		this.navigation = Navigation.None;
 
-		////this.ResultsList.ScrollIntoView(this.SelectedItem);
+		if (this.SelectedResult == null)
+			this.SelectedResult = this.Results[0];
+
+		this.ResultsGrid.ScrollIntoView(this.SelectedResult);
 	}
 
 	private void OnDirectorySelected(object sender, RoutedEventArgs e)
@@ -338,7 +341,7 @@ public partial class LibraryWindow : Panel
 		this.StartPreview().Run();
 	}
 
-	private async void OnResultMouseLeft(object sender, MouseButtonEventArgs e)
+	private void OnResultMouseLeft(object sender, MouseButtonEventArgs e)
 	{
 		int clickDelta = e.Timestamp - this.lastEntryClick;
 		this.lastEntryClick = e.Timestamp;
@@ -346,6 +349,36 @@ public partial class LibraryWindow : Panel
 		if (clickDelta > 500)
 			return;
 
+		if (sender != this.SelectedResult)
+			return;
+
+		this.OnResultEnter(sender, e);
+	}
+
+	private void OnResultMouseRight(object sender, MouseButtonEventArgs e)
+	{
+		this.OnResultToolTipOpening(sender, null);
+		this.LibraryContextMenu.Expand();
+	}
+
+	private void OnListEnter(object sender, RoutedEventArgs e)
+	{
+		if (this.SelectedResult == null)
+			return;
+
+		this.OnResultEnter(this.SelectedResult, e);
+	}
+
+	private void OnListBack(object sender, RoutedEventArgs e)
+	{
+		if (this.SelectedResult == null)
+			return;
+
+		this.OnBackClicked(sender, e);
+	}
+
+	private async void OnResultEnter(object sender, RoutedEventArgs e)
+	{
 		if (this.currentPreview != null)
 		{
 			await this.currentPreview.StopPreviewAsync();
@@ -360,14 +393,8 @@ public partial class LibraryWindow : Panel
 		}
 		else if (this.SelectedResult is Result result)
 		{
-			await this.doubleClickContext.Execute(result.Entry);
+			await this.resultExecutionContext.Execute(result.Entry);
 		}
-	}
-
-	private void OnResultMouseRight(object sender, MouseButtonEventArgs e)
-	{
-		this.OnResultToolTipOpening(sender, null);
-		this.LibraryContextMenu.Expand();
 	}
 
 	private void OnSizeChanged(object sender, SizeChangedEventArgs e)

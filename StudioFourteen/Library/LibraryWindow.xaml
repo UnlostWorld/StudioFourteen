@@ -5,6 +5,7 @@
 	xmlns:behaviors="clr-namespace:WpfUtils.Behaviors;assembly=WpfUtils"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:input="clr-namespace:StudioFourteen.Input"
 	xmlns:local="clr-namespace:StudioFourteen.Library"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:menu="clr-namespace:StudioFourteen.Library.LibraryMenu"
@@ -642,8 +643,11 @@
 
 					<!--  Icon Grid  -->
 					<wpfUtils:ListBoxEx
+						x:Name="ResultsGrid"
 						Grid.Row="2"
 						Margin="3"
+						input:Navigation.Back="OnListBack"
+						input:Navigation.Enter="OnListEnter"
 						Background="Transparent"
 						ClipToBounds="True"
 						ItemsSource="{Binding Results, IsAsync=True}"
