@@ -34,7 +34,6 @@ public class InputService : ServiceBase
 	private readonly Dictionary<KeyBindEvents, List<KeyBindListener>> listeners = new();
 	private readonly Dictionary<MouseButton, States> mouseButtons = new();
 	private readonly Dictionary<VirtualKey, States> keyboardKeys = new();
-	private readonly KeyState xivKeyState = new();
 
 	public delegate void MouseDragDelegate(Vector2 delta, MouseButton button);
 	public delegate void MouseButtonDelegate(MouseButton button, States state, Vector2 position);
@@ -102,21 +101,12 @@ public class InputService : ServiceBase
 		{ KeyBindEvents.OrbitCamera_MoveRight, new(VirtualKey.D, ModifierKeys.Shift) },
 	};
 
-	public override void Attach()
-	{
-		this.xivKeyState.Attach();
-		base.Attach();
-	}
-
-	public override void Detach()
-	{
-		this.xivKeyState.Detach();
-		base.Detach();
-	}
-
 	public IEnumerable<VirtualKey> GetValidKeys()
 	{
-		return this.xivKeyState.GetValidVirtualKeys();
+		if (DalamudServices.KeyState == null)
+			return new List<VirtualKey>();
+
+		return DalamudServices.KeyState.GetValidVirtualKeys();
 	}
 
 	public bool HasListener(KeyBindEvents evt)
@@ -275,56 +265,119 @@ public class InputService : ServiceBase
 	{
 		base.OnFrameworkUpdate(framework);
 
+		if (DalamudServices.KeyState == null)
+			return;
+
 		if (!this.Services.Studio.IsOpen)
 			return;
 
+		bool wasActive = this.IsXivTextInputActive;
 		this.IsXivTextInputActive = RaptureAtkModule.Instance()->AtkModule.IsTextInputActive();
 
-		HashSet<VirtualKey> usedKeys = new();
-		foreach (var evt in Enum.GetValues<KeyBindEvents>())
+		// If Text Input just activated, and we have focus, set focus to xiv.
+		if (!wasActive && this.IsXivTextInputActive && this.Services.Panels.ActivePanel != null)
 		{
-			this.CheckEvent(evt, ref usedKeys);
+			this.Services.Windows.ActivateXivWindow();
 		}
+
+		// If text input is still active, but we are taking focus, send the escape key to clear
+		// the text input focus from xiv.
+		if (wasActive && this.IsXivTextInputActive && this.Services.Panels.ActivePanel != null)
+		{
+			this.Services.Windows.SendKeyToXiv(VirtualKey.ESCAPE, true);
+			this.Services.Windows.SendKeyToXiv(VirtualKey.ESCAPE, false);
+		}
+
+		if (this.IsXivTextInputActive)
+			return;
 
 		if (this.Services.Panels.ActivePanel == null && this.Services.Windows.IsXivWindowActive())
 		{
 			// Read xiv -> studio
-			foreach(VirtualKey key in this.xivKeyState.GetValidVirtualKeys())
+			foreach(VirtualKey key in DalamudServices.KeyState.GetValidVirtualKeys())
 			{
-				KeyState.KeyValue state = this.xivKeyState[key];
+				bool isDown = DalamudServices.KeyState[key];
+				this.keyboardKeys.TryAdd(key, States.Up);
 
-				this.keyboardKeys[key] = state switch
+				if (isDown)
 				{
-					KeyState.KeyValue.Up => States.Up,
-					KeyState.KeyValue.Down => States.Down,
-					KeyState.KeyValue.Pressed => States.Pressed,
-					KeyState.KeyValue.Released => States.Released,
-					KeyState.KeyValue.Unk => States.Up,
-					_ => throw new InvalidOperationException(),
-				};
+					switch (this.keyboardKeys[key])
+					{
+						case States.Released:
+						case States.Up:
+						{
+							this.keyboardKeys[key] = States.Pressed;
+							break;
+						}
+
+						case States.Down:
+						case States.Pressed:
+						{
+							this.keyboardKeys[key] = States.Down;
+							break;
+						}
+					}
+				}
+				else
+				{
+					switch (this.keyboardKeys[key])
+					{
+						case States.Down:
+						case States.Pressed:
+						{
+							this.keyboardKeys[key] = States.Released;
+							break;
+						}
+
+						case States.Released:
+						case States.Up:
+						{
+							this.keyboardKeys[key] = States.Up;
+							break;
+						}
+					}
+				}
+			}
+
+			HashSet<VirtualKey> usedKeys = new();
+			foreach (var evt in Enum.GetValues<KeyBindEvents>())
+			{
+				this.CheckEvent(evt, ref usedKeys);
+			}
+
+			foreach(VirtualKey vKey in usedKeys)
+			{
+				if (DalamudServices.KeyState[vKey])
+				{
+					this.Services.Windows.ActivateStudioWindow();
+					DalamudServices.KeyState[vKey] = false;
+				}
 			}
 		}
 		else
 		{
+			HashSet<VirtualKey> usedKeys = new();
+			foreach (var evt in Enum.GetValues<KeyBindEvents>())
+			{
+				this.CheckEvent(evt, ref usedKeys);
+			}
+
 			// Write studio -> xiv
 			foreach ((VirtualKey key, States state) in this.keyboardKeys)
 			{
 				if (usedKeys.Contains(key))
 					continue;
 
-				if (!this.xivKeyState.IsVirtualKeyValid(key))
+				if (!DalamudServices.KeyState.IsVirtualKeyValid(key))
 					continue;
 
-				if (key == VirtualKey.CONTROL || key == VirtualKey.SHIFT || key == VirtualKey.MENU)
-					continue;
-
-				// Only set the pressed state into xiv as its input system will handle the rest.
-				// We only support forwarding keys as single presses, no holds, since xiv will constantly
-				// set the values back in its own update loop.
 				if (state == States.Pressed)
 				{
-					this.Services.Windows.ActivateXivWindow();
-					this.xivKeyState[key] = KeyState.KeyValue.Pressed;
+					this.Services.Windows.SendKeyToXiv(key, true);
+				}
+				else if (state == States.Released)
+				{
+					this.Services.Windows.SendKeyToXiv(key, false);
 				}
 			}
 
@@ -336,15 +389,15 @@ public class InputService : ServiceBase
 				if (state == States.Released)
 					this.keyboardKeys[key] = States.Up;
 			}
+		}
 
-			foreach ((MouseButton button, States state) in this.mouseButtons)
-			{
-				if (state == States.Pressed)
-					this.mouseButtons[button] = States.Down;
+		foreach ((MouseButton button, States state) in this.mouseButtons)
+		{
+			if (state == States.Pressed)
+				this.mouseButtons[button] = States.Down;
 
-				if (state == States.Released)
-					this.mouseButtons[button] = States.Up;
-			}
+			if (state == States.Released)
+				this.mouseButtons[button] = States.Up;
 		}
 	}
 

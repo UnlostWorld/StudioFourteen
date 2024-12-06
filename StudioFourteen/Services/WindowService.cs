@@ -15,11 +15,14 @@
 
 namespace StudioFourteen.Services;
 
+using Dalamud.Game.ClientState.Keys;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using ImGuiNET;
 using PropertyChanged.SourceGenerator;
+using StudioFourteen.Input;
 using StudioFourteen.Plugin;
+using StudioFourteen.Studio;
 using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
@@ -35,6 +38,7 @@ using System.Windows.Interop;
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
+using static FFXIVClientStructs.FFXIV.Client.Game.InstanceContent.PublicContentBozja.Delegates;
 using Point = System.Drawing.Point;
 using Setter = PropertyChanged.SourceGenerator.Setter;
 
@@ -91,6 +95,17 @@ public partial class WindowService : ServiceBase
 	public bool IsAnyStudioWindowActive()
 	{
 		return this.studioWindowHwnds.Contains(PInvoke.GetForegroundWindow());
+	}
+
+	public void ActivateStudioWindow()
+	{
+		if (BackgroundWindow.Instance == null)
+			return;
+
+		BackgroundWindow.Instance.Dispatcher.Invoke(() =>
+		{
+			BackgroundWindow.Instance.Activate();
+		});
 	}
 
 	public void ActivateXivWindow()
@@ -216,29 +231,21 @@ public partial class WindowService : ServiceBase
 		return new System.Windows.Point(l, t);
 	}
 
-	public void SendKey(Key key, bool down)
+	public void SendKeyToXiv(VirtualKey key, bool down)
 	{
 		if (this.XivProcess == null)
 			return;
 
-		int virtualKey = KeyInterop.VirtualKeyFromKey(key);
-
-		if (key == Key.LeftShift || key == Key.RightShift)
-			virtualKey = 0x10;
-
-		if (key == Key.LeftCtrl || key == Key.RightCtrl)
-			virtualKey = 0x11;
-
-		if (key == Key.LeftAlt || key == Key.RightAlt)
-			virtualKey = 0x12;
+		uint wmKeyDown = 0x0100;
+		uint wmKeyUp = 0x0101;
 
 		if (down)
 		{
-			PInvoke.PostMessage((HWND)this.XivProcess.MainWindowHandle, 0x100, new WPARAM((nuint)virtualKey), IntPtr.Zero);
+			PInvoke.PostMessage((HWND)this.XivProcess.MainWindowHandle, wmKeyDown, new WPARAM((nuint)key), IntPtr.Zero);
 		}
 		else
 		{
-			PInvoke.PostMessage((HWND)this.XivProcess.MainWindowHandle, 0x0101, new WPARAM((nuint)virtualKey), IntPtr.Zero);
+			PInvoke.PostMessage((HWND)this.XivProcess.MainWindowHandle, wmKeyUp, new WPARAM((nuint)key), IntPtr.Zero);
 		}
 	}
 
