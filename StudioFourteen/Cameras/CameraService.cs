@@ -114,7 +114,8 @@ public class CameraService : ServiceBase
 	{
 		this.Cameras.Add(new OrbitTargetCamera());
 
-		this.Current = this.Cameras[0];
+		this.Services.GroupPose.StateChanged += this.OnGroupPoseStateChanged;
+		this.OnGroupPoseStateChanged(this.Services.GroupPose.IsGroupPosing);
 
 		return base.Start();
 	}
@@ -250,6 +251,18 @@ public class CameraService : ServiceBase
 		if (this.Services.GroupPose.IsGroupPosing && this.current != null)
 		{
 			this.current.OnFrameworkUpdate(framework);
+		}
+	}
+
+	private void OnGroupPoseStateChanged(bool newState)
+	{
+		if (newState)
+		{
+			this.Current = this.Cameras[0];
+		}
+		else
+		{
+			this.Current = null;
 		}
 	}
 

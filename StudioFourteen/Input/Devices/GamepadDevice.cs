@@ -15,36 +15,30 @@
 
 // Dalamud
 // https://github.com/goatcorp/Dalamud/blob/master/Dalamud/Game/ClientState/ClientStateAddressResolver.cs
+// https://github.com/goatcorp/Dalamud/blob/master/Dalamud/Game/ClientState/GamePad/GamepadInput.cs
+// https://github.com/goatcorp/Dalamud/blob/master/Dalamud/Game/ClientState/GamePad/GamepadState.cs
 namespace StudioFourteen.Input.Devices;
 
 using Dalamud.Game.ClientState.GamePad;
 using Dalamud.Hooking;
+using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using StudioFourteen.Services;
 using System;
+using System.Collections.Generic;
 
 public class GamepadDevice : InputDeviceBase
 {
+	private readonly Dictionary<Buttons, InputAxis> buttonAxes = new();
 	private Hook<ControllerPoll>? gamepadPoll;
-	private ushort buttons;
 
 	public GamepadDevice()
 	{
-		this.Axes.Add(new(DpadUp));
-		this.Axes.Add(new(DpadDown));
-		this.Axes.Add(new(DpadLeft));
-		this.Axes.Add(new(DpadRight));
-		this.Axes.Add(new(FaceUp));
-		this.Axes.Add(new(FaceDown));
-		this.Axes.Add(new(FaceLeft));
-		this.Axes.Add(new(FaceRight));
-		this.Axes.Add(new(LeftShoulder));
-		this.Axes.Add(new(LeftTrigger));
-		this.Axes.Add(new(LeftStick));
-		this.Axes.Add(new(RightShoulder));
-		this.Axes.Add(new(RightTrigger));
-		this.Axes.Add(new(RightStick));
-		this.Axes.Add(new(Start));
-		this.Axes.Add(new(Select));
+		foreach(Buttons button in Enum.GetValues<Buttons>())
+		{
+			InputAxis axis = new(GetAxisId(button));
+			this.buttonAxes.Add(button, axis);
+			this.Axes.Add(axis);
+		}
 	}
 
 	private delegate int ControllerPoll(IntPtr controllerInput);
@@ -70,22 +64,7 @@ public class GamepadDevice : InputDeviceBase
 		Select = 0x4000,
 	}
 
-	public static string DpadUp => "Gamepad:DpadUp";
-	public static string DpadDown => "Gamepad:DpadDown";
-	public static string DpadLeft => "Gamepad:DpadLeft";
-	public static string DpadRight => "Gamepad:DpadRight";
-	public static string FaceUp => "Gamepad:FaceUp";
-	public static string FaceDown => "Gamepad:FaceDown";
-	public static string FaceLeft => "Gamepad:FaceLeft";
-	public static string FaceRight => "Gamepad:FaceRight";
-	public static string LeftShoulder => "Gamepad:LeftShoulder";
-	public static string LeftTrigger => "Gamepad:LeftTrigger";
-	public static string LeftStick => "Gamepad:LeftStick";
-	public static string RightShoulder => "Gamepad:RightShoulder";
-	public static string RightTrigger => "Gamepad:RightTrigger";
-	public static string RightStick => "Gamepad:RightStick";
-	public static string Start => "Gamepad:Start";
-	public static string Select => "Gamepad:Select";
+	public static string GetAxisId(Buttons button) => $"Gamepad:{button}";
 
 	public override void Attach()
 	{
@@ -98,10 +77,6 @@ public class GamepadDevice : InputDeviceBase
 		this.gamepadPoll?.Dispose();
 	}
 
-	public unsafe override void PreUpdate()
-	{
-	}
-
 	private unsafe int GamepadPollDetour(IntPtr gamepadInput)
 	{
 		if (this.gamepadPoll == null)
@@ -110,12 +85,28 @@ public class GamepadDevice : InputDeviceBase
 		int ret = this.gamepadPoll.Original(gamepadInput);
 
 		GamepadInput* input = (GamepadInput*)gamepadInput;
-		this.buttons = input->ButtonsRaw;
+		ushort buttonValues = input->ButtonsRaw;
 
-		input->ButtonsRaw = 0;
-		input->ButtonsPressed = 0;
-		input->ButtonsReleased = 0;
-		input->ButtonsRepeat = 0;
+		foreach ((Buttons button, InputAxis axis) in this.buttonAxes)
+		{
+			bool value = (buttonValues & (ushort)button) > 0;
+
+			// first press, pre-consume
+			bool pressed = value && axis.Value < 0.001f;
+
+			// Was this axis consumed in the last tick, or is this a fresh
+			// input?
+			if (pressed || axis.IsConsumed)
+			{
+				input->ButtonsRaw &= (ushort)~button;
+				input->ButtonsPressed &= (ushort)~button;
+				input->ButtonsReleased &= (ushort)~button;
+				input->ButtonsRepeat &= (ushort)~button;
+			}
+
+			axis.Value = value ? 1 : 0;
+			axis.IsConsumed = false;
+		}
 
 		return ret;
 	}

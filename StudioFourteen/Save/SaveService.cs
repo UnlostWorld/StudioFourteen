@@ -39,7 +39,7 @@ public class SaveService : ServiceBase
 	public SaveService()
 	{
 		this.saveListener = new(InputAction.Save);
-		this.saveListener.Pressed = this.Save;
+		this.saveListener.Activate = this.Save;
 	}
 
 	public delegate void SaveEventDelegate();

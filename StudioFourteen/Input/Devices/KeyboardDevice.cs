@@ -25,6 +25,7 @@ using System.Windows.Input;
 public class KeyboardDevice : InputDeviceBase
 {
 	private readonly Dictionary<VirtualKey, InputAxis> axisLookup = new();
+	private HashSet<VirtualKey> keysSentToXiv = new();
 
 	public KeyboardDevice()
 	{
@@ -95,26 +96,19 @@ public class KeyboardDevice : InputDeviceBase
 			// Write studio -> XIV
 			foreach ((VirtualKey key, InputAxis axis) in this.axisLookup)
 			{
-				// TODO:
-				// check if the axis is Consumed!
-				// Write Studio -> XIV
-				/*foreach ((VirtualKey key, InputAxis axis) in this.axisLookup)
+				if (axis.IsConsumed)
+					continue;
+
+				if (axis.Value > 0.001f && !this.keysSentToXiv.Contains(key))
 				{
-					if (!DalamudServices.KeyState.IsVirtualKeyValid(key))
-						continue;
-
-					if (!axis.IsConsumed)
-						continue;
-
-					if (axis.State == InputService.States.Pressed)
-					{
-						this.Services.Windows.SendKeyToXiv(axis.VirtualKey, true);
-					}
-					else if (axis.State == InputService.States.Released)
-					{
-						this.Services.Windows.SendKeyToXiv(axis.VirtualKey, false);
-					}
-				}*/
+					this.Services.Windows.SendKeyToXiv(key, true);
+					this.keysSentToXiv.Add(key);
+				}
+				else if (axis.Value < 0.001f && this.keysSentToXiv.Contains(key))
+				{
+					this.Services.Windows.SendKeyToXiv(key, false);
+					this.keysSentToXiv.Remove(key);
+				}
 			}
 		}
 	}

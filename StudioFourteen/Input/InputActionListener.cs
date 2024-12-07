@@ -28,10 +28,9 @@ public class InputActionListener
 		this.keyBindEvent = evt;
 	}
 
-	public Action? Pressed { get; set; }
-	public Action? Down { get; set; }
-	public Action? Released { get; set; }
 	public float Value { get; set; }
+	public Action? Activate { get; set; }
+	public Action? Deactivate { get; set; }
 
 	public void Enable()
 	{
@@ -52,15 +51,11 @@ public class InputActionListener
 		{
 			if (oldValue < 0.001f && newValue > 0.001f)
 			{
-				this.Pressed?.Invoke();
-			}
-			else if (oldValue > 0.001f && newValue > 0.001f)
-			{
-				this.Down?.Invoke();
+				this.Activate?.Invoke();
 			}
 			else if (oldValue > 0.001f && newValue < 0.001f)
 			{
-				this.Released?.Invoke();
+				this.Deactivate?.Invoke();
 			}
 		}
 		catch (Exception ex)

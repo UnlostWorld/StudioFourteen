@@ -18,7 +18,6 @@ namespace StudioFourteen.Input;
 using Dalamud.Game.ClientState.Keys;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.UI;
-using Lumina.Excel.Sheets;
 using Newtonsoft.Json;
 using Serilog;
 using StudioFourteen.Input.Devices;
@@ -27,7 +26,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Controls.Primitives;
-using static StudioFourteen.Posing.RotationGizmo;
 
 public class InputService : ServiceBase
 {
@@ -46,12 +44,12 @@ public class InputService : ServiceBase
 		this.AddBind(InputAction.Navigate_Enter, KeyboardDevice.GetAxisId(VirtualKey.RETURN));
 		this.AddBind(InputAction.Navigate_Back, KeyboardDevice.GetAxisId(VirtualKey.ESCAPE));
 
-		this.AddBind(InputAction.Navigate_Up, GamepadDevice.DpadUp);
-		this.AddBind(InputAction.Navigate_Down, GamepadDevice.DpadDown);
-		this.AddBind(InputAction.Navigate_Left, GamepadDevice.DpadLeft);
-		this.AddBind(InputAction.Navigate_Right, GamepadDevice.DpadRight);
-		this.AddBind(InputAction.Navigate_Enter, GamepadDevice.FaceDown);
-		this.AddBind(InputAction.Navigate_Back, GamepadDevice.FaceRight);
+		this.AddBind(InputAction.Navigate_Up, GamepadDevice.GetAxisId(GamepadDevice.Buttons.DpadUp));
+		this.AddBind(InputAction.Navigate_Down, GamepadDevice.GetAxisId(GamepadDevice.Buttons.DpadDown));
+		this.AddBind(InputAction.Navigate_Left, GamepadDevice.GetAxisId(GamepadDevice.Buttons.DpadLeft));
+		this.AddBind(InputAction.Navigate_Right, GamepadDevice.GetAxisId(GamepadDevice.Buttons.DpadRight));
+		this.AddBind(InputAction.Navigate_Enter, GamepadDevice.GetAxisId(GamepadDevice.Buttons.FaceDown));
+		this.AddBind(InputAction.Navigate_Back, GamepadDevice.GetAxisId(GamepadDevice.Buttons.FaceRight));
 
 		// General
 		this.AddBind(InputAction.InvokeQuickSearch, KeyboardDevice.GetAxisId(VirtualKey.Q), KeyboardDevice.GetAxisId(VirtualKey.SHIFT));
@@ -113,7 +111,7 @@ public class InputService : ServiceBase
 	{
 		this.AddDevice(new KeyboardDevice());
 		this.AddDevice(new MouseDevice());
-		////this.AddDevice(new GamepadDevice());
+		this.AddDevice(new GamepadDevice());
 
 		return base.Start();
 	}
@@ -245,6 +243,8 @@ public class InputService : ServiceBase
 		if (this.IsXivTextInputActive)
 			return;
 
+		Dictionary<InputAction, float> combinedValues = new();
+
 		foreach(Bind bind in this.binds)
 		{
 			this.listeners.TryGetValue(bind.Action, out List<InputActionListener>? listeners);
@@ -253,7 +253,17 @@ public class InputService : ServiceBase
 			if (listeners == null || listeners.Count == 0)
 				continue;
 
-			float value = bind.GetValue();
+			combinedValues.TryAdd(bind.Action, 0);
+			combinedValues[bind.Action] += bind.GetValue();
+		}
+
+		foreach((InputAction action, float value) in combinedValues)
+		{
+			this.listeners.TryGetValue(action, out List<InputActionListener>? listeners);
+
+			if (listeners == null || listeners.Count == 0)
+				continue;
+
 			foreach (InputActionListener listener in listeners)
 			{
 				listener.SetValue(value);

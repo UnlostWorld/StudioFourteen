@@ -56,22 +56,22 @@ public partial class Navigation
 		this.Log = Logging.ForContext(this.GetType());
 
 		this.upListener = new(InputAction.Navigate_Up);
-		this.upListener.Pressed = () => this.OnNavigate(FocusNavigationDirection.Up).Run();
+		this.upListener.Activate = () => this.OnNavigate(FocusNavigationDirection.Up).Run();
 
 		this.downListener = new(InputAction.Navigate_Down);
-		this.downListener.Pressed = () => this.OnNavigate(FocusNavigationDirection.Down).Run();
+		this.downListener.Activate = () => this.OnNavigate(FocusNavigationDirection.Down).Run();
 
 		this.leftListener = new(InputAction.Navigate_Left);
-		this.leftListener.Pressed = () => this.OnNavigate(FocusNavigationDirection.Left).Run();
+		this.leftListener.Activate = () => this.OnNavigate(FocusNavigationDirection.Left).Run();
 
 		this.rightListener = new(InputAction.Navigate_Right);
-		this.rightListener.Pressed = () => this.OnNavigate(FocusNavigationDirection.Right).Run();
+		this.rightListener.Activate = () => this.OnNavigate(FocusNavigationDirection.Right).Run();
 
 		this.enterListener = new(InputAction.Navigate_Enter);
-		this.enterListener.Pressed = () => this.OnEnter().Run();
+		this.enterListener.Activate = () => this.OnEnter().Run();
 
 		this.backListener = new(InputAction.Navigate_Back);
-		this.backListener.Pressed = () => this.OnBack().Run();
+		this.backListener.Activate = () => this.OnBack().Run();
 	}
 
 	public static void AddEnterHandler(DependencyObject dependencyObject, RoutedEventHandler handler)
