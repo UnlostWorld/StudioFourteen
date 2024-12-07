@@ -15,6 +15,8 @@
 
 namespace StudioFourteen.Input;
 
+// NOTE: these are in priority order, with elements at the top
+// taking precidence over elements at the bottom.
 public enum InputAction
 {
 	Navigate_Up,

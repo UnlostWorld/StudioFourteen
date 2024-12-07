@@ -177,8 +177,29 @@ public class InputService : ServiceBase
 		bind.ModifierAxes.AddRange(modifierAxisIds);
 		this.binds.Add(bind);
 
-		// binds with more axes to the top
-		this.binds.Sort((a, b) => b.ModifierAxes.Count.CompareTo(a.ModifierAxes.Count));
+		// the order of binds controls the priority of execution,
+		// binds earlier in teh list will activate instead of ones lower
+		// in the list.
+		// sort the list so binds with more modifiers are on top
+		// (so 'Shift+S' activates instead of 'S' when holding both)
+		// And then sort by the action index (so navigation events will activate
+		// instead of camera events if they both have listeners)
+		this.binds.Sort((a, b) =>
+		{
+			if (a.ModifierAxes.Count < b.ModifierAxes.Count)
+				return -1;
+
+			if (a.ModifierAxes.Count > b.ModifierAxes.Count)
+				return 1;
+
+			if (a.Action < b.Action)
+				return -1;
+
+			if (a.Action > b.Action)
+				return 1;
+
+			return 0;
+		});
 	}
 
 	public bool HasListener(InputAction evt)
@@ -331,6 +352,7 @@ public class Bind
 	[JsonIgnore] public ILogger Log => Logging.ForContext(this.GetType());
 	[JsonIgnore] public ServiceManager Services => ServiceManager.Instance;
 
+	public int Priority { get; set; }
 	public InputAction Action { get; set; }
 	public string? PrimaryAxis { get; set; }
 	public List<string> ModifierAxes { get; set; } = new();
