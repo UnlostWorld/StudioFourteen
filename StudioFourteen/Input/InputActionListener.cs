@@ -39,6 +39,9 @@ public class InputActionListener
 
 	public void Disable()
 	{
+		if (ServiceManager.ShutdownRequested)
+			return;
+
 		ServiceManager.Instance.Input.RemoveListener(this.keyBindEvent, this);
 	}
 
