@@ -23,6 +23,7 @@ using FFXIVClientStructs.FFXIV.Client.Graphics;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.FFXIV.Common.Component.BGCollision;
+using StudioFourteen.Plugin;
 using StudioFourteen.Services;
 using StudioFourteen.Utilities;
 using System;
@@ -124,6 +125,9 @@ public class CameraService : ServiceBase
 	{
 		base.Attach();
 
+		if (!DalamudServices.IsAlive)
+			return;
+
 		this.doAttachBlend = true;
 		this.blendWatch.Restart();
 
@@ -150,6 +154,9 @@ public class CameraService : ServiceBase
 	public unsafe override void Detach()
 	{
 		base.Detach();
+
+		if (!DalamudServices.IsAlive)
+			return;
 
 		GroupPoseCamera* camera = (GroupPoseCamera*)CameraManager.Instance()->Camera;
 
