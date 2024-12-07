@@ -90,9 +90,6 @@ public class CameraService : ServiceBase
 		get => this.current;
 		set
 		{
-			if (value == null)
-				return;
-
 			if (value == this.current)
 				return;
 
