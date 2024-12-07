@@ -18,6 +18,7 @@
 				DecimalPlaces="{Binding DecimalPlaces, ElementName=View}"
 				Maximum="{Binding Maximum, ElementName=View}"
 				Minimum="{Binding Minimum, ElementName=View}"
+				TickFrequency="{Binding TickFrequency, ElementName=View}"
 				X="{Binding ValueX, ElementName=View}"
 				Y="{Binding ValueY, ElementName=View}"
 				Z="{Binding ValueZ, ElementName=View}">

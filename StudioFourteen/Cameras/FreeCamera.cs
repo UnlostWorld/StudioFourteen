@@ -19,6 +19,7 @@ using Dalamud.Plugin.Services;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Input;
 using StudioFourteen.Structs.Extensions;
+using StudioFourteen.Utilities;
 using System;
 using System.Numerics;
 using System.Windows.Input;
@@ -41,6 +42,10 @@ public partial class FreeCamera : StudioCameraBase
 	private readonly InputActionListener pitchDownListener = new(InputAction.FreeCamera_PitchDown);
 	private readonly InputActionListener rollLeftListener = new(InputAction.FreeCamera_RollLeft);
 	private readonly InputActionListener rollRightListener = new(InputAction.FreeCamera_RollRight);
+	private readonly InputActionListener rotateLeftListener = new(InputAction.FreeCamera_RotateLeft);
+	private readonly InputActionListener rotateRightListener = new(InputAction.FreeCamera_RotateRight);
+	private readonly InputActionListener rotateUpListener = new(InputAction.FreeCamera_RotateUp);
+	private readonly InputActionListener rotateDownListener = new(InputAction.FreeCamera_RotateDown);
 
 	[Notify] private Vector3 position;
 	[Notify] private Quaternion rotation;
@@ -51,9 +56,9 @@ public partial class FreeCamera : StudioCameraBase
 
 	public override string TypeDisplayName => Resources.Find("LOC_FreeCamera", "Free Target");
 
-	public override void Initialize(CameraState currentState)
+	public override void Initialize(CameraState currentState, StudioCameraBase? previousCamera)
 	{
-		base.Initialize(currentState);
+		base.Initialize(currentState, previousCamera);
 
 		this.Position = currentState.Position;
 		this.Rotation = currentState.Rotation;
@@ -75,6 +80,10 @@ public partial class FreeCamera : StudioCameraBase
 		this.pitchDownListener.Enable();
 		this.rollLeftListener.Enable();
 		this.rollRightListener.Enable();
+		this.rotateLeftListener.Enable();
+		this.rotateRightListener.Enable();
+		this.rotateUpListener.Enable();
+		this.rotateDownListener.Enable();
 	}
 
 	public override void Deactivate()
@@ -93,6 +102,10 @@ public partial class FreeCamera : StudioCameraBase
 		this.pitchDownListener.Disable();
 		this.rollLeftListener.Disable();
 		this.rollRightListener.Disable();
+		this.rotateLeftListener.Disable();
+		this.rotateRightListener.Disable();
+		this.rotateUpListener.Disable();
+		this.rotateDownListener.Disable();
 	}
 
 	public override unsafe void UpdateGroupPoseCamera(GroupPoseCamera* camera)
@@ -123,6 +136,13 @@ public partial class FreeCamera : StudioCameraBase
 		rot.Z -= this.rollLeftListener.Value;
 		rot.Z += this.rollRightListener.Value;
 		this.desiredRot = rot;
+
+		float x = (-this.rotateLeftListener.Value + this.rotateRightListener.Value) / 2;
+		float y = (-this.rotateUpListener.Value + this.rotateDownListener.Value) / 2;
+		Quaternion xRot = Quaternion.CreateFromYawPitchRoll(x * QuaternionExtensions.Deg2Rad, 0, 0);
+		Quaternion yRot = Quaternion.CreateFromYawPitchRoll(0, 0, y * QuaternionExtensions.Deg2Rad);
+		this.Rotation = Quaternion.Multiply(xRot, this.Rotation);
+		this.Rotation = Quaternion.Multiply(this.Rotation, yRot);
 	}
 
 	public override void Tick(float deltaTime)
@@ -173,16 +193,4 @@ public partial class FreeCamera : StudioCameraBase
 			state.Rotation = Quaternion.Lerp(state.Rotation, blendOrbit.GetCameraRotation(), blendWeight);
 		}
 	}
-
-	/*protected override void OnMouseDrag(Vector2 delta, MouseButton button)
-	{
-		base.OnMouseDrag(delta, button);
-
-		delta /= 8;
-
-		Quaternion x = Quaternion.CreateFromYawPitchRoll(-delta.X * QuaternionExtensions.Deg2Rad, 0, 0);
-		Quaternion y = Quaternion.CreateFromYawPitchRoll(0, 0, -delta.Y * QuaternionExtensions.Deg2Rad);
-		this.Rotation = Quaternion.Multiply(x, this.Rotation);
-		this.Rotation = Quaternion.Multiply(this.Rotation, y);
-	}*/
 }

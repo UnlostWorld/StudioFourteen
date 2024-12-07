@@ -170,7 +170,12 @@
 										Style="{DynamicResource LeftLabel}"
 										Text="{DynamicResource LOC_OrbitCamera_Target}" />
 									<controls1:Vector3Box
-										TickFrequency="0.01"
+										DecimalPlaces="3"
+										IsRelative="True"
+										Maximum="100000"
+										Minimum="-100000"
+										Range="10"
+										TickFrequency="0.1"
 										Value="{Binding Target}" />
 
 									<Grid>
@@ -212,40 +217,33 @@
 										TickFrequency="1"
 										Value="{Binding Distance}" />
 
-									<Grid>
-										<Grid.RowDefinitions>
-											<RowDefinition Height="Auto" />
-											<RowDefinition Height="Auto" />
-										</Grid.RowDefinitions>
+									<TextBlock
+										Grid.Row="0"
+										Style="{DynamicResource LeftLabel}"
+										Text="{DynamicResource LOC_OrbitCamera_Angle}" />
 
-										<TextBlock
-											Grid.Row="0"
-											Style="{DynamicResource LeftLabel}"
-											Text="{DynamicResource LOC_OrbitCamera_Angle}" />
+									<TextBlock
+										Grid.Row="0"
+										Margin="0,0,3,0"
+										Style="{DynamicResource RightLabel}"
+										Text="{Binding GroupPoseRollAdjust, Mode=OneWay, StringFormat='{}{0:+#°;-#°;}'}"
+										ToolTip="{DynamicResource LOC_OrbitCamera_GroupPoseRoll_Tooltip}"
+										Visibility="{Binding GroupPoseRollAdjust, Converter={StaticResource NotZeroToVisibility}}" />
 
-										<TextBlock
-											Grid.Row="0"
-											Margin="0,0,3,0"
-											Style="{DynamicResource RightLabel}"
-											Text="{Binding GroupPoseRollAdjust, Mode=OneWay, StringFormat='{}{0:+#°;-#°;}'}"
-											ToolTip="{DynamicResource LOC_OrbitCamera_GroupPoseRoll_Tooltip}"
-											Visibility="{Binding GroupPoseRollAdjust, Converter={StaticResource NotZeroToVisibility}}" />
+									<controls1:Vector3Box
+										Grid.Row="1"
+										Maximum="180"
+										Minimum="-180"
+										TickFrequency="1"
+										Wrap="True"
+										Value="{Binding Angle}" />
 
-										<controls1:Vector3Box
-											Grid.Row="1"
-											Maximum="180"
-											Minimum="-180"
-											TickFrequency="1"
-											Wrap="True"
-											Value="{Binding Angle}" />
-
-										<TextBlock
-											Style="{DynamicResource LeftLabel}"
-											Text="{DynamicResource LOC_Camera_Rotation}" />
-										<controls1:QuaternionBox
-											Quaternion="{Binding Rotation}"
-											TickFrequency="1" />
-									</Grid>
+									<TextBlock
+										Style="{DynamicResource LeftLabel}"
+										Text="{DynamicResource LOC_Camera_Rotation}" />
+									<controls1:QuaternionBox
+										Quaternion="{Binding Rotation}"
+										TickFrequency="1" />
 
 								</StackPanel>
 							</DataTemplate>
@@ -259,7 +257,12 @@
 										Style="{DynamicResource LeftLabel}"
 										Text="{DynamicResource LOC_OrbitTargetCamera_Offset}" />
 									<controls1:Vector3Box
-										TickFrequency="0.01"
+										DecimalPlaces="3"
+										IsRelative="True"
+										Maximum="100000"
+										Minimum="-100000"
+										Range="10"
+										TickFrequency="0.1"
 										Value="{Binding TargetOffset}" />
 
 									<Grid>

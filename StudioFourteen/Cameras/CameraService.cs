@@ -296,7 +296,7 @@ public class CameraService : ServiceBase
 		{
 			if (!this.current.IsInitialized)
 			{
-				this.current.Initialize(this.state);
+				this.current.Initialize(this.state, this.last);
 			}
 
 			float blendValue = 0;

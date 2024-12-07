@@ -84,6 +84,10 @@ public class InputService : ServiceBase
 		this.AddBind(InputAction.FreeCamera_PitchDown, KeyboardDevice.GetAxisId(VirtualKey.S), KeyboardDevice.GetAxisId(VirtualKey.SHIFT));
 		this.AddBind(InputAction.FreeCamera_RollLeft, KeyboardDevice.GetAxisId(VirtualKey.Q), KeyboardDevice.GetAxisId(VirtualKey.SHIFT));
 		this.AddBind(InputAction.FreeCamera_RollRight, KeyboardDevice.GetAxisId(VirtualKey.E), KeyboardDevice.GetAxisId(VirtualKey.SHIFT));
+		this.AddBind(InputAction.FreeCamera_RotateRight, MouseDevice.GetDragAxisId(MouseButtons.Left, MouseDevice.DragDirections.Right));
+		this.AddBind(InputAction.FreeCamera_RotateLeft, MouseDevice.GetDragAxisId(MouseButtons.Left, MouseDevice.DragDirections.Left));
+		this.AddBind(InputAction.FreeCamera_RotateDown, MouseDevice.GetDragAxisId(MouseButtons.Left, MouseDevice.DragDirections.Down));
+		this.AddBind(InputAction.FreeCamera_RotateUp, MouseDevice.GetDragAxisId(MouseButtons.Left, MouseDevice.DragDirections.Up));
 
 		// Orbit Camera
 		this.AddBind(InputAction.OrbitCamera_PanUp, KeyboardDevice.GetAxisId(VirtualKey.W));

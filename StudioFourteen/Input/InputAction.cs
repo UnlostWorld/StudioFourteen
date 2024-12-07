@@ -45,6 +45,10 @@ public enum InputAction
 	FreeCamera_PitchDown,
 	FreeCamera_RollLeft,
 	FreeCamera_RollRight,
+	FreeCamera_RotateLeft,
+	FreeCamera_RotateRight,
+	FreeCamera_RotateUp,
+	FreeCamera_RotateDown,
 
 	OrbitCamera_PanLeft,
 	OrbitCamera_PanRight,

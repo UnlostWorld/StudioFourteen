@@ -22,8 +22,6 @@ using PropertyChanged.SourceGenerator;
 using StudioFourteen.Mvm;
 using StudioFourteen.Overlays;
 using System;
-using System.Numerics;
-using System.Windows.Input;
 
 [JsonConverter(typeof(JsonSubtypes), "TypeName")]
 [JsonSubtypes.KnownSubType(typeof(OrbitCamera), "OrbitCamera")]
@@ -53,7 +51,7 @@ public abstract partial class StudioCameraBase : ViewModel, IDisposable
 		this.IsInitialized = false;
 	}
 
-	public virtual void Initialize(CameraState currentState)
+	public virtual void Initialize(CameraState currentState, StudioCameraBase? previousCamera)
 	{
 		this.IsInitialized = true;
 

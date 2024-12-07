@@ -63,19 +63,29 @@ public partial class OrbitCamera : StudioCameraBase
 
 	public override string TypeDisplayName => Resources.Find("LOC_OrbitCamera", "Orbit");
 
-	public override void Initialize(CameraState currentState)
+	public override void Initialize(CameraState currentState, StudioCameraBase? previousCamera)
 	{
-		base.Initialize(currentState);
+		base.Initialize(currentState, previousCamera);
 
-		Vector3 targetPos = currentState.Position + Vector3.Transform(new Vector3(this.distance, 0, 0), currentState.Rotation);
-		this.target = targetPos;
-
-		this.Rotation = Quaternion.Identity;
-		this.Distance = 3;
-
-		if (this.Services.Camera.InitialCamera != null)
+		if (previousCamera is OrbitCamera previousOrbit)
 		{
-			this.Angle = this.Services.Camera.InitialCamera.Value.Angle * QuaternionExtensions.Rad2Deg;
+			this.Target = previousOrbit.Target;
+			this.Distance = previousOrbit.Distance;
+			this.Angle = previousOrbit.Angle;
+			this.Rotation = previousOrbit.Rotation;
+		}
+		else
+		{
+			Vector3 targetPos = currentState.Position + Vector3.Transform(new Vector3(this.distance, 0, 0), currentState.Rotation);
+			this.target = targetPos;
+
+			if (this.Services.Camera.InitialCamera != null)
+			{
+				this.Angle = this.Services.Camera.InitialCamera.Value.Angle * QuaternionExtensions.Rad2Deg;
+			}
+
+			this.Rotation = Quaternion.Identity;
+			this.Distance = 3;
 		}
 	}
 
