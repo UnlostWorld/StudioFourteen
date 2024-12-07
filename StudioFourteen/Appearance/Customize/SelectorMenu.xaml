@@ -14,16 +14,15 @@
 				Style="{DynamicResource LeftLabel}"
 				Text="{Binding Name}"
 				Visibility="{Binding Name, Converter={StaticResource NotNullToVisibilityConverter}}" />
-			<ListBox
+			<controls:SwitchSelector
 				ItemsSource="{Binding Options}"
-				SelectedItem="{Binding Selected}"
-				Style="{DynamicResource WpfUtilsSwitchSelector}">
+				SelectedItem="{Binding Selected}">
 				<ListBox.ItemTemplate>
 					<DataTemplate>
 						<TextBlock Text="{Binding Label}" />
 					</DataTemplate>
 				</ListBox.ItemTemplate>
-			</ListBox>
+			</controls:SwitchSelector>
 		</StackPanel>
 	</DataTemplate>
 </ResourceDictionary>

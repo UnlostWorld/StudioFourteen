@@ -19,6 +19,7 @@ using FontAwesome.Sharp;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen;
 using StudioFourteen.Files;
+using StudioFourteen.Input;
 using StudioFourteen.Library.Filters;
 using StudioFourteen.Library.Results;
 using StudioFourteen.Mvm;
@@ -51,7 +52,7 @@ public partial class LibraryWindow : Panel
 	private LibraryPreviewBase? currentPreview;
 	private bool flatten = false;
 	[Notify] private Result? selectedResult = null;
-	private Navigation navigation = Navigation.None;
+	private Navigations navigation = Navigations.None;
 	[Notify] private NavigationAnimations navigationAnimation = NavigationAnimations.None;
 	[Notify] private bool viewList;
 	[Notify] private bool narrowMode;
@@ -68,7 +69,7 @@ public partial class LibraryWindow : Panel
 		this.SizeChanged += this.OnSizeChanged;
 	}
 
-	public enum Navigation
+	public enum Navigations
 	{
 		None,
 		OpenDir,
@@ -146,7 +147,7 @@ public partial class LibraryWindow : Panel
 			this.Path.Clear();
 			this.Path.Add(this.Services.Library.Root);
 
-			this.navigation = Navigation.OpenDir;
+			this.navigation = Navigations.OpenDir;
 			this.searchQueue.InvokeImmediate();
 		}
 	}
@@ -178,7 +179,7 @@ public partial class LibraryWindow : Panel
 		this.Path.Clear();
 		this.Path.Add(this.Services.Library.Root);
 
-		this.navigation = Navigation.OpenDir;
+		this.navigation = Navigations.OpenDir;
 		this.searchQueue.InvokeImmediate();
 	}
 
@@ -197,8 +198,8 @@ public partial class LibraryWindow : Panel
 
 		this.NavigationAnimation = this.navigation switch
 		{
-			Navigation.OpenDir => NavigationAnimations.OpenDir_Out,
-			Navigation.Back => NavigationAnimations.Back_Out,
+			Navigations.OpenDir => NavigationAnimations.OpenDir_Out,
+			Navigations.Back => NavigationAnimations.Back_Out,
 			_ => NavigationAnimations.None,
 		};
 
@@ -225,6 +226,8 @@ public partial class LibraryWindow : Panel
 
 		await this.Dispatcher.MainThread();
 
+		bool hasFocus = this.ResultsGrid.IsKeyboardFocusWithin || this.ResultsGrid.IsKeyboardFocused;
+
 		if (results == null)
 		{
 			this.Results.Clear();
@@ -242,17 +245,23 @@ public partial class LibraryWindow : Panel
 
 		this.NavigationAnimation = this.navigation switch
 		{
-			Navigation.OpenDir => NavigationAnimations.OpenDir_In,
-			Navigation.Back => NavigationAnimations.Back_In,
+			Navigations.OpenDir => NavigationAnimations.OpenDir_In,
+			Navigations.Back => NavigationAnimations.Back_In,
 			_ => NavigationAnimations.None,
 		};
 
-		this.navigation = Navigation.None;
+		this.navigation = Navigations.None;
 
 		if (this.SelectedResult == null)
 			this.SelectedResult = this.Results[0];
 
 		this.ResultsGrid.ScrollIntoView(this.SelectedResult);
+
+		DependencyObject? item = this.ResultsGrid.ItemContainerGenerator.ContainerFromItem(this.SelectedResult);
+		if (hasFocus && item is UIElement el)
+		{
+			Navigation.SetFocus(el);
+		}
 	}
 
 	private void OnDirectorySelected(object sender, RoutedEventArgs e)
@@ -266,14 +275,14 @@ public partial class LibraryWindow : Panel
 				this.Path.RemoveAt(index + 1);
 			}
 
-			this.navigation = Navigation.Back;
+			this.navigation = Navigations.Back;
 			this.searchQueue.InvokeImmediate();
 		}
 	}
 
 	private void OnBackClicked(object sender, RoutedEventArgs e)
 	{
-		this.navigation = Navigation.Back;
+		this.navigation = Navigations.Back;
 		this.Path.RemoveAt(this.Path.Count - 1);
 		this.searchQueue.InvokeImmediate();
 	}
@@ -318,7 +327,7 @@ public partial class LibraryWindow : Panel
 
 			newPath.Add(subGroup);
 
-			this.navigation = Navigation.Back;
+			this.navigation = Navigations.Back;
 			this.Path.Replace(newPath);
 			this.searchQueue.InvokeImmediate();
 		}
@@ -388,7 +397,7 @@ public partial class LibraryWindow : Panel
 		if (this.SelectedResult is GroupResult groupResult)
 		{
 			this.Path.Add(groupResult.Group);
-			this.navigation = Navigation.OpenDir;
+			this.navigation = Navigations.OpenDir;
 			this.searchQueue.InvokeImmediate();
 		}
 		else if (this.SelectedResult is Result result)

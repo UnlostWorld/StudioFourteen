@@ -10,12 +10,11 @@
 				Style="{DynamicResource LeftLabel}"
 				Text="{Binding Name}" />
 
-			<ListBox
+			<controls:SwitchSelector
 				Height="Auto"
 				HorizontalContentAlignment="Center"
 				ItemsSource="{Binding Options}"
-				SelectedItem="{Binding Selected}"
-				Style="{DynamicResource WpfUtilsSwitchSelector}">
+				SelectedItem="{Binding Selected}">
 				<ListBox.ItemsPanel>
 					<ItemsPanelTemplate>
 						<WrapPanel />
@@ -30,7 +29,7 @@
 							Source="{Binding Image.Source}" />
 					</DataTemplate>
 				</ListBox.ItemTemplate>
-			</ListBox>
+			</controls:SwitchSelector>
 
 			<controls:NumberBox
 				Buttons="True"

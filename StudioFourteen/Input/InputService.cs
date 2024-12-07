@@ -45,12 +45,22 @@ public class InputService : ServiceBase
 		this.AddBind(InputAction.Navigate_Left, KeyboardDevice.GetAxisId(VirtualKey.LEFT));
 		this.AddBind(InputAction.Navigate_Right, KeyboardDevice.GetAxisId(VirtualKey.RIGHT));
 		this.AddBind(InputAction.Navigate_Enter, KeyboardDevice.GetAxisId(VirtualKey.RETURN));
+
+		this.AddBind(InputAction.Navigate_Up, KeyboardDevice.GetAxisId(VirtualKey.W));
+		this.AddBind(InputAction.Navigate_Down, KeyboardDevice.GetAxisId(VirtualKey.S));
+		this.AddBind(InputAction.Navigate_Left, KeyboardDevice.GetAxisId(VirtualKey.A));
+		this.AddBind(InputAction.Navigate_Right, KeyboardDevice.GetAxisId(VirtualKey.D));
+		this.AddBind(InputAction.Navigate_TabLeft, KeyboardDevice.GetAxisId(VirtualKey.Q));
+		this.AddBind(InputAction.Navigate_TabRight, KeyboardDevice.GetAxisId(VirtualKey.E));
+		this.AddBind(InputAction.Navigate_Enter, KeyboardDevice.GetAxisId(VirtualKey.SPACE));
 		this.AddBind(InputAction.Navigate_Back, KeyboardDevice.GetAxisId(VirtualKey.ESCAPE));
 
 		this.AddBind(InputAction.Navigate_Up, GamepadDevice.GetAxisId(GamepadDevice.Buttons.DpadUp));
 		this.AddBind(InputAction.Navigate_Down, GamepadDevice.GetAxisId(GamepadDevice.Buttons.DpadDown));
 		this.AddBind(InputAction.Navigate_Left, GamepadDevice.GetAxisId(GamepadDevice.Buttons.DpadLeft));
 		this.AddBind(InputAction.Navigate_Right, GamepadDevice.GetAxisId(GamepadDevice.Buttons.DpadRight));
+		this.AddBind(InputAction.Navigate_TabLeft, GamepadDevice.GetAxisId(GamepadDevice.Buttons.LeftShoulder));
+		this.AddBind(InputAction.Navigate_TabRight, GamepadDevice.GetAxisId(GamepadDevice.Buttons.RightShoulder));
 		this.AddBind(InputAction.Navigate_Enter, GamepadDevice.GetAxisId(GamepadDevice.Buttons.FaceDown));
 		this.AddBind(InputAction.Navigate_Back, GamepadDevice.GetAxisId(GamepadDevice.Buttons.FaceRight));
 

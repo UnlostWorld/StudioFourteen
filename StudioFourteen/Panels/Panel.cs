@@ -57,6 +57,7 @@ public partial class Panel : ContentControl, IAutoNotify
 
 		this.GetType().GetMethod("InitializeComponent")?.Invoke(this, null);
 		this.DataContext = this;
+		this.Focusable = false;
 
 		this.IsVisibleChanged += (s, e) => this.isVisible = this.IsVisible;
 	}

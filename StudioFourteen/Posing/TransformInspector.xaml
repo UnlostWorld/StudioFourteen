@@ -30,7 +30,7 @@
 							<pose:RotationGizmo Rotation="{Binding WorldRotation, Mode=TwoWay}" />
 						</Grid>
 
-						<ListBox
+						<wpfUtils:SwitchSelector
 							Grid.Row="1"
 							SelectedIndex="{Binding Services.Pose.EditMode}"
 							Style="{DynamicResource WpfUtilsSwitchSelectorNoBorder}">
@@ -52,7 +52,7 @@
 									Icon="Maximize"
 									ToolTip="{DynamicResource LOC_Scale}" />
 							</ListBoxItem>
-						</ListBox>
+						</wpfUtils:SwitchSelector>
 					</Grid>
 				</Border>
 			</Grid>

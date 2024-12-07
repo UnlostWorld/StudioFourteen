@@ -115,14 +115,14 @@
 
 					<ItemsControl
 						Margin="1"
-						HorizontalAlignment="Left"
-						VerticalAlignment="Center"
+						Focusable="False"
 						ItemsSource="{Binding Path}">
 
 						<ItemsControl.ItemsPanel>
 							<ItemsPanelTemplate>
 								<StackPanel
-									HorizontalAlignment="Right"
+									HorizontalAlignment="Left"
+									VerticalAlignment="Center"
 									Orientation="Horizontal" />
 							</ItemsPanelTemplate>
 						</ItemsControl.ItemsPanel>
@@ -231,7 +231,7 @@
 				</Border>
 
 
-				<ListBox
+				<wpfUtils:SwitchSelector
 					x:Name="ViewModeArea"
 					Width="64"
 					Height="28"
@@ -253,10 +253,10 @@
 							IconFont="Solid" />
 					</ListBoxItem>
 
-					<ListBox.Style>
+					<wpfUtils:SwitchSelector.Style>
 						<Style
 							BasedOn="{StaticResource WpfUtilsSwitchSelector}"
-							TargetType="{x:Type ListBox}">
+							TargetType="{x:Type wpfUtils:SwitchSelector}">
 
 							<Setter Property="Grid.Column" Value="2" />
 							<Style.Triggers>
@@ -268,11 +268,11 @@
 								</DataTrigger>
 							</Style.Triggers>
 						</Style>
-					</ListBox.Style>
-				</ListBox>
+					</wpfUtils:SwitchSelector.Style>
+				</wpfUtils:SwitchSelector>
 
 
-				<ListBox
+				<wpfUtils:SwitchSelector
 					x:Name="FlattenModeArea"
 					Width="64"
 					Height="28"
@@ -294,10 +294,10 @@
 							IconFont="Solid" />
 					</ListBoxItem>
 
-					<ListBox.Style>
+					<wpfUtils:SwitchSelector.Style>
 						<Style
 							BasedOn="{StaticResource WpfUtilsSwitchSelector}"
-							TargetType="{x:Type ListBox}">
+							TargetType="{x:Type wpfUtils:SwitchSelector}">
 
 							<Setter Property="Grid.Column" Value="3" />
 
@@ -310,8 +310,8 @@
 								</DataTrigger>
 							</Style.Triggers>
 						</Style>
-					</ListBox.Style>
-				</ListBox>
+					</wpfUtils:SwitchSelector.Style>
+				</wpfUtils:SwitchSelector>
 
 				<Button
 					x:Name="BrowseArea"
@@ -423,12 +423,11 @@
 
 				<Grid.Resources />
 
-				<ListBox
+				<wpfUtils:SwitchSelector
 					Grid.Column="0"
 					HorizontalContentAlignment="Stretch"
 					ItemsSource="{Binding Tabs}"
 					SelectedItem="{Binding CurrentTab}"
-					Style="{DynamicResource WpfUtilsSwitchSelector}"
 					Visibility="{Binding NarrowMode, Converter={StaticResource !B2V}}">
 					<ListBox.ItemContainerStyle>
 						<Style
@@ -451,7 +450,7 @@
 							</Grid>
 						</DataTemplate>
 					</ListBox.ItemTemplate>
-				</ListBox>
+				</wpfUtils:SwitchSelector>
 
 				<tags:TagSelector
 					HorizontalAlignment="Right"

@@ -41,9 +41,9 @@ using WpfUtils.Windows;
 [DependencyProperty<bool>("IsMaximized", DefaultValue = false)]
 public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 {
+	public readonly Navigation Navigation;
 	protected readonly ILogger Log;
 
-	private readonly Navigation navigation;
 	private double preScaleHeight;
 	private double preScaleWidth;
 	private Panel? panel;
@@ -66,7 +66,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		this.PreviewKeyUp += this.OnPreviewKeyUp;
 		this.Services.Studio.PropertyChanged += this.OnStudioPropertyChanged;
 
-		this.navigation = new(this);
+		this.Navigation = new(this);
 	}
 
 	public event PropertyChangedEventHandler? PropertyChanged;
@@ -318,7 +318,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		if (ServiceManager.ShutdownRequested)
 			return;
 
-		this.navigation.Activate();
+		this.Navigation.Activate();
 
 		this.Services.Panels.ActivePanel = this.Panel;
 		base.OnActivated(e);
@@ -329,7 +329,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		if (ServiceManager.ShutdownRequested)
 			return;
 
-		this.navigation.Deactivate();
+		this.Navigation.Deactivate();
 
 		if (this.Services.Panels.ActivePanel == this.Panel)
 			this.Services.Panels.ActivePanel = null;

@@ -16,7 +16,9 @@
 namespace StudioFourteen.Input;
 
 using DependencyPropertyGenerator;
+using FFXIVClientStructs;
 using Serilog;
+using StudioFourteen.Panels;
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -49,6 +51,8 @@ public partial class Navigation
 	private readonly InputActionListener downListener;
 	private readonly InputActionListener leftListener;
 	private readonly InputActionListener rightListener;
+	private readonly InputActionListener tabLeftListener;
+	private readonly InputActionListener tabRightListener;
 	private readonly InputActionListener enterListener;
 	private readonly InputActionListener backListener;
 
@@ -68,6 +72,12 @@ public partial class Navigation
 
 		this.rightListener = new(InputAction.Navigate_Right);
 		this.rightListener.Activate = () => this.OnNavigate(FocusNavigationDirection.Right).Run();
+
+		this.tabLeftListener = new(InputAction.Navigate_TabLeft);
+		this.tabLeftListener.Activate = () => this.OnTab(false).Run();
+
+		this.tabRightListener = new(InputAction.Navigate_TabRight);
+		this.tabRightListener.Activate = () => this.OnTab(true).Run();
 
 		this.enterListener = new(InputAction.Navigate_Enter);
 		this.enterListener.Activate = () => this.OnEnter().Run();
@@ -108,12 +118,34 @@ public partial class Navigation
 		uiElement.RemoveHandler(BackEvent, handler);
 	}
 
+	public static void SetFocus(UIElement el)
+	{
+		Logging.Shared.Information($"Set focus: {el}");
+
+		PanelWindow? wnd = el.FindParent<PanelWindow>();
+		if (wnd != null)
+		{
+			FocusManager.SetFocusedElement(wnd.Navigation.scope, el);
+		}
+
+		if (el is TextBox tb)
+		{
+			Keyboard.Focus(null);
+		}
+
+		Type type = typeof(System.Windows.Input.KeyboardNavigation);
+		MethodInfo? showFocusVisual = type.GetMethod("ShowFocusVisual", BindingFlags.NonPublic | BindingFlags.Static);
+		showFocusVisual?.Invoke(null, null);
+	}
+
 	public void Activate()
 	{
 		this.upListener.Enable();
 		this.downListener.Enable();
 		this.leftListener.Enable();
 		this.rightListener.Enable();
+		this.tabLeftListener.Enable();
+		this.tabRightListener.Enable();
 		this.enterListener.Enable();
 		this.backListener.Enable();
 	}
@@ -124,6 +156,8 @@ public partial class Navigation
 		this.downListener.Disable();
 		this.leftListener.Disable();
 		this.rightListener.Disable();
+		this.tabLeftListener.Disable();
+		this.tabRightListener.Disable();
 		this.enterListener.Disable();
 		this.backListener.Disable();
 	}
@@ -139,18 +173,29 @@ public partial class Navigation
 		}
 
 		IInputElement newFocusedControl = FocusManager.GetFocusedElement(this.scope);
-		Keyboard.Focus(newFocusedControl);
-		if (newFocusedControl is UIElement newEl)
+		if (newFocusedControl is UIElement newElement)
 		{
-			if (newEl is ListBoxItem item)
-			{
-				item.IsSelected = true;
-			}
+			SetFocus(newElement);
 		}
+	}
 
-		Type type = typeof(System.Windows.Input.KeyboardNavigation);
-		MethodInfo? showFocusVisual = type.GetMethod("ShowFocusVisual", BindingFlags.NonPublic | BindingFlags.Static);
-		showFocusVisual?.Invoke(null, null);
+	private async Task OnTab(bool next)
+	{
+		await this.scope.MainThread();
+
+		IInputElement focusedControl = FocusManager.GetFocusedElement(this.scope);
+		if (focusedControl is Selector selector)
+		{
+			int newIndex = selector.SelectedIndex + (next ? 1 : -1);
+
+			if (newIndex < 0)
+				return;
+
+			if (newIndex > selector.Items.Count)
+				return;
+
+			selector.SelectedIndex = newIndex;
+		}
 	}
 
 	private async Task OnEnter()
@@ -163,14 +208,18 @@ public partial class Navigation
 		}
 
 		MethodInfo? method = null;
-		if (focusedControl.GetType().IsAssignableTo(typeof(ButtonBase)))
+		if (focusedControl is ButtonBase)
 		{
 			method = typeof(ButtonBase).GetMethod("OnClick", BindingFlags.NonPublic | BindingFlags.Instance);
+			if (method != null)
+			{
+				method.Invoke(focusedControl, null);
+			}
 		}
 
-		if (method != null)
+		if (focusedControl is ListBoxItem item)
 		{
-			method.Invoke(focusedControl, null);
+			item.IsSelected = true;
 		}
 	}
 

@@ -34,7 +34,7 @@
 					<RowDefinition />
 				</Grid.RowDefinitions>
 
-				<ListBox
+				<controls:SwitchSelector
 					Grid.Row="0"
 					Margin="0,0,-10,0"
 					Background="Transparent"
@@ -64,7 +64,7 @@
 							</Grid>
 						</DataTemplate>
 					</ListBox.ItemTemplate>
-				</ListBox>
+				</controls:SwitchSelector>
 
 				<ToggleButton
 					x:Name="AddCameraButton"

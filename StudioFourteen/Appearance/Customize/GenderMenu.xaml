@@ -11,12 +11,10 @@
 				Style="{DynamicResource LeftLabel}"
 				Text="{Binding Name}" />
 
-			<ListBox
-				SelectedIndex="{Binding Value}"
-				Style="{DynamicResource WpfUtilsSwitchSelector}">
+			<controls:SwitchSelector SelectedIndex="{Binding Value}">
 				<ListBoxItem>Masculine</ListBoxItem>
 				<ListBoxItem>Feminine</ListBoxItem>
-			</ListBox>
+			</controls:SwitchSelector>
 		</StackPanel>
 	</DataTemplate>
 </ResourceDictionary>

@@ -23,6 +23,8 @@ public enum InputAction
 	Navigate_Right,
 	Navigate_Enter,
 	Navigate_Back,
+	Navigate_TabRight,
+	Navigate_TabLeft,
 
 	Save,
 	SaveAs,
