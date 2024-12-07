@@ -241,6 +241,8 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	{
 		base.OnClosing(e);
 
+		this.Navigation?.Deactivate();
+
 		if (ServiceManager.ShutdownRequested)
 			return;
 
