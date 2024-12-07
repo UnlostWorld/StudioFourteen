@@ -16,13 +16,13 @@
 namespace StudioFourteen.Services;
 
 using StudioFourteen.Studio;
+using StudioFourteen.Studio.Background;
 using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using TerraFX.Interop.Windows;
 using WpfUtils.Extensions;
 
 using Panel = StudioFourteen.Panels.Panel;
@@ -35,6 +35,7 @@ public class PanelService : ServiceBase
 
 	private bool hasRestoredPanels = false;
 	private BackgroundWindow? backgroundWindow;
+	private NavigationWindow? navigationWindow;
 
 	public IEnumerable<Panel> OpenPanels => this.openPanels;
 
@@ -148,6 +149,9 @@ public class PanelService : ServiceBase
 		this.backgroundWindow = await PanelWindow.CreatePanelWindow<BackgroundWindow>();
 		this.backgroundWindow?.Dispatcher.InvokeAsync(() => this.backgroundWindow.Show());
 
+		this.navigationWindow = await PanelWindow.CreatePanelWindow<NavigationWindow>();
+		this.navigationWindow?.Dispatcher.InvokeAsync(() => this.navigationWindow.Show());
+
 		if (!this.hasRestoredPanels && this.Services.Studio.IsOpen)
 		{
 			this.RestorePanels().Run();
@@ -159,6 +163,7 @@ public class PanelService : ServiceBase
 		await base.Stop();
 
 		this.backgroundWindow?.Dispatcher.Invoke(this.backgroundWindow.Close);
+		this.navigationWindow?.Dispatcher.Invoke(this.navigationWindow.Close);
 
 		this.Settings.OpenPanels.Clear();
 

@@ -133,14 +133,6 @@
 				VerticalAlignment="Top"
 				Visibility="{Binding Services.Studio.IsOpenAndInGPose, Converter={StaticResource B2V}}" />
 
-			<background:Navigation
-				x:Name="StudioButton"
-				Width="60"
-				Margin="10,10,0,0"
-				HorizontalAlignment="Left"
-				VerticalAlignment="Top"
-				DragDelta="OnDragDelta" />
-
 			<context:WorldContextMenu x:Name="WorldContextMenu" />
 		</Grid>
 	</Grid>

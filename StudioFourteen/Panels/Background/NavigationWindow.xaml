@@ -1,0 +1,214 @@
+﻿<panels:PanelWindow
+	x:Class="StudioFourteen.Studio.Background.NavigationWindow"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="clr-namespace:StudioFourteen.Studio.Background"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:mvm="clr-namespace:StudioFourteen.Mvm"
+	xmlns:panels="clr-namespace:StudioFourteen.Panels"
+	xmlns:save="clr-namespace:StudioFourteen.Save"
+	xmlns:triggers="clr-namespace:WpfUtils.Triggers;assembly=WpfUtils"
+	xmlns:vectors="http://sharpvectors.codeplex.com/svgc/"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	MinWidth="32"
+	MinHeight="32"
+	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
+	SizeToContent="WidthAndHeight"
+	mc:Ignorable="d">
+
+	<panels:PanelWindow.Template>
+		<ControlTemplate TargetType="{x:Type panels:PanelWindow}">
+			<AdornerDecorator x:Name="MainGrid">
+				<Grid
+					Margin="12"
+					HorizontalAlignment="Center"
+					RenderTransformOrigin="0.5,0.5">
+
+					<Border
+						x:Name="WindowShadow"
+						Background="Black"
+						CornerRadius="6"
+						Opacity="0.25">
+						<Border.BitmapEffect>
+							<DropShadowBitmapEffect
+								ShadowDepth="0"
+								Softness="0.75" />
+						</Border.BitmapEffect>
+					</Border>
+
+					<Border
+						x:Name="WindowBackground"
+						Background="{DynamicResource BackgroundBrush}"
+						CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
+
+					<Border
+						x:Name="WindowBorder"
+						BorderBrush="{DynamicResource BackgroundBrush}"
+						BorderThickness="1"
+						CornerRadius="6" />
+
+					<Grid>
+
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition />
+						</Grid.RowDefinitions>
+
+						<Grid
+							Grid.Row="0"
+							Height="20"
+							Background="Transparent"
+							MouseDown="OnTitleMouseDown" />
+
+						<ToggleButton
+							x:Name="StudioToggle"
+							Grid.Row="1"
+							Margin="-12,-6"
+							VerticalAlignment="Top"
+							Click="OnStudioClicked"
+							Focusable="False"
+							Style="{StaticResource StudioButton}" />
+
+						<ContentPresenter
+							x:Name="ContentArea"
+							Grid.Row="2"
+							Margin="3"
+							ClipToBounds="False"
+							Content="{TemplateBinding Content}"
+							ContentTemplate="{TemplateBinding ContentTemplate}" />
+					</Grid>
+
+
+				</Grid>
+			</AdornerDecorator>
+
+			<ControlTemplate.Triggers>
+				<Trigger Property="IsActive" Value="True">
+					<Setter TargetName="WindowBorder" Property="BorderBrush" Value="{DynamicResource TrimBrush}" />
+					<Setter TargetName="WindowShadow" Property="Opacity" Value="1" />
+				</Trigger>
+
+				<DataTrigger
+					Binding="{Binding IsChecked, ElementName=StudioToggle}"
+					Value="False">
+					<Setter TargetName="WindowBorder" Property="Opacity" Value="0" />
+					<Setter TargetName="WindowShadow" Property="Opacity" Value="0" />
+					<Setter TargetName="WindowBackground" Property="Opacity" Value="0" />
+					<Setter TargetName="ContentArea" Property="Opacity" Value="0" />
+				</DataTrigger>
+
+			</ControlTemplate.Triggers>
+		</ControlTemplate>
+	</panels:PanelWindow.Template>
+
+	<Grid
+		HorizontalAlignment="Center"
+		VerticalAlignment="Top">
+		<Border Style="{DynamicResource WpfUtilsControlBorder}">
+			<StackPanel x:Name="Stack">
+
+				<StackPanel.OpacityMask>
+					<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+						<GradientStop Offset="0" Color="White" />
+						<GradientStop x:Name="WipeA" Offset="1" Color="White" />
+						<GradientStop x:Name="WipeB" Offset="1.1" Color="Transparent" />
+					</LinearGradientBrush>
+				</StackPanel.OpacityMask>
+
+				<StackPanel.Resources>
+					<Style
+						BasedOn="{StaticResource WpfUtilsIconToggleButton}"
+						TargetType="{x:Type ToggleButton}">
+						<Setter Property="Width" Value="32" />
+						<Setter Property="Height" Value="32" />
+						<Setter Property="Margin" Value="0" />
+					</Style>
+
+					<Style TargetType="{x:Type Line}">
+						<Setter Property="Width" Value="24" />
+						<Setter Property="Margin" Value="0,3" />
+						<Setter Property="Stroke" Value="{DynamicResource BackgroundLightBrush}" />
+						<Setter Property="X1" Value="0" />
+						<Setter Property="X2" Value="1" />
+						<Setter Property="StrokeThickness" Value="1" />
+						<Setter Property="Stretch" Value="Fill" />
+					</Style>
+				</StackPanel.Resources>
+
+				<ToggleButton
+					Width="32"
+					Height="32"
+					IsChecked="{Binding IsInGPose}"
+					ToolTip="{DynamicResource LOC_ToggleGPose}">
+					<vectors:SvgIcon
+						Margin="8"
+						Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"
+						UriSource="pack://application:,,,/StudioFourteen;component/Assets/icon-grouppose.svg" />
+				</ToggleButton>
+
+				<Line />
+
+				<ToggleButton
+					IsChecked="{Binding IsLibraryOpen}"
+					ToolTip="{DynamicResource LOC_Library}">
+					<wpfUtils:IconBlock Icon="Book" />
+				</ToggleButton>
+
+				<Line />
+
+				<ToggleButton
+					IsChecked="{Binding IsCameraOpen}"
+					ToolTip="{DynamicResource LOC_Camera}">
+					<vectors:SvgIcon
+						Margin="8"
+						Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"
+						UriSource="pack://application:,,,/StudioFourteen;component/Assets/icon-camera.svg" />
+				</ToggleButton>
+
+				<ToggleButton
+					IsChecked="{Binding IsEnvironmentOpen}"
+					ToolTip="{DynamicResource LOC_Environment}">
+					<wpfUtils:IconBlock Icon="CloudMoonRain" />
+				</ToggleButton>
+
+				<ToggleButton
+					IsChecked="{Binding IsCharacterOpen}"
+					ToolTip="{DynamicResource LOC_Character}">
+					<wpfUtils:IconBlock Icon="UserShield" />
+				</ToggleButton>
+
+				<ToggleButton
+					IsChecked="{Binding IsPoseOpen}"
+					ToolTip="{DynamicResource LOC_Pose}">
+					<wpfUtils:IconBlock Icon="Running" />
+				</ToggleButton>
+
+				<Line />
+
+				<ToggleButton
+					IsChecked="{Binding IsPhotoOpen}"
+					ToolTip="{DynamicResource LOC_Photo}">
+					<wpfUtils:IconBlock Icon="Image" />
+				</ToggleButton>
+
+				<ToggleButton
+					IsChecked="{Binding IsSaveOpen}"
+					ToolTip="{DynamicResource LOC_Save}">
+					<save:SaveIconControl />
+
+				</ToggleButton>
+
+				<Line />
+
+				<ToggleButton
+					IsChecked="{Binding IsSettingsOpen}"
+					ToolTip="{DynamicResource LOC_Settings}">
+					<wpfUtils:IconBlock Icon="cogs" />
+				</ToggleButton>
+
+			</StackPanel>
+		</Border>
+	</Grid>
+</panels:PanelWindow>

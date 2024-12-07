@@ -15,17 +15,12 @@
 
 namespace StudioFourteen.Studio;
 
-using StudioFourteen.Context;
 using StudioFourteen.Panels;
-using StudioFourteen.Plugin;
 using StudioFourteen.Settings;
-using StudioFourteen.Utilities;
 using System;
-using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using WpfUtils.Extensions;
 
@@ -41,23 +36,12 @@ public partial class BackgroundWindow : PanelWindow
 		this.ContentArea.DataContext = this;
 	}
 
-	public FastObservableCollection<MenuEntry> Menus { get; init; } = new();
-
-	public Point StudioButtonPosition
-	{
-		get => this.Persistence.GetPersistence<Point>();
-		set => this.Persistence.SetPersistence(value);
-	}
+	public override bool CanNavigate => false;
 
 	protected override void OnOpened()
 	{
 		base.OnOpened();
 		this.UpdatePosition();
-
-		Thickness margin = this.StudioButton.Margin;
-		margin.Left = this.StudioButtonPosition.X;
-		margin.Top = this.StudioButtonPosition.Y;
-		this.StudioButton.Margin = margin;
 	}
 
 	protected override void OnActivated(EventArgs e)
@@ -120,17 +104,6 @@ public partial class BackgroundWindow : PanelWindow
 	private void OnShutdownClicked(object sender, RoutedEventArgs e)
 	{
 		Task.Run(this.Services.Stop);
-	}
-
-	private void OnDragDelta(object sender, DragDeltaEventArgs e)
-	{
-		Thickness margin = this.StudioButton.Margin;
-		margin.Left += e.HorizontalChange;
-		margin.Top += e.VerticalChange;
-		this.StudioButton.Margin = margin;
-
-		Point pos = new(margin.Left, margin.Top);
-		this.StudioButtonPosition = pos;
 	}
 
 	private void OnMouseMove(object sender, MouseEventArgs e)

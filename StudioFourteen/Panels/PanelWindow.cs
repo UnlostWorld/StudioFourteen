@@ -42,7 +42,7 @@ using WpfUtils.Windows;
 [DependencyProperty<bool>("IsMaximized", DefaultValue = false)]
 public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 {
-	public readonly Navigation Navigation;
+	public readonly Navigation? Navigation;
 	protected readonly ILogger Log;
 
 	private double preScaleHeight;
@@ -67,7 +67,10 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		this.PreviewKeyUp += this.OnPreviewKeyUp;
 		this.Services.Studio.PropertyChanged += this.OnStudioPropertyChanged;
 
-		this.Navigation = new(this);
+		if (this.CanNavigate)
+		{
+			this.Navigation = new(this);
+		}
 	}
 
 	public event PropertyChangedEventHandler? PropertyChanged;
@@ -79,8 +82,8 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 	public bool HasIcon => this.Panel != null && this.Panel.TitleIcon != IconChar.None;
 	public bool HasSubtitle => this.Panel != null && !string.IsNullOrEmpty(this.Panel.Subtitle);
-	public virtual bool CanActivate => true;
 	public bool IsOpen { get; private set; }
+	public virtual bool CanNavigate => true;
 
 	public virtual Point? SavedPosition
 	{
@@ -319,7 +322,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		if (ServiceManager.ShutdownRequested)
 			return;
 
-		this.Navigation.Activate();
+		this.Navigation?.Activate();
 
 		this.Services.Panels.ActivePanel = this.Panel;
 		base.OnActivated(e);
@@ -330,7 +333,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		if (ServiceManager.ShutdownRequested)
 			return;
 
-		this.Navigation.Deactivate();
+		this.Navigation?.Deactivate();
 
 		if (this.Services.Panels.ActivePanel == this.Panel)
 			this.Services.Panels.ActivePanel = null;
@@ -350,9 +353,6 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	protected virtual void OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
 	{
 		this.Services.Input.Mouse?.HandleMouse(e.ChangedButton, true, Vector2.Zero);
-
-		if (!this.CanActivate)
-			return;
 
 		if (this.IsActive)
 			return;

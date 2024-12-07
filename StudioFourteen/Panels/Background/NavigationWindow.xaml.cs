@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Studio.Background;
 
+using DependencyPropertyGenerator;
 using StudioFourteen.Appearance;
 using StudioFourteen.Library;
 using StudioFourteen.Mvm;
@@ -25,8 +26,9 @@ using StudioFourteen.Services;
 using StudioFourteen.Settings;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 
-public partial class Navigation : View
+public partial class NavigationWindow : PanelWindow
 {
 	public event DragDeltaEventHandler? DragDelta;
 
@@ -120,8 +122,11 @@ public partial class Navigation : View
 		}
 	}
 
-	private void OnDragDelta(object sender, DragDeltaEventArgs e)
+	private void OnTitleMouseDown(object sender, MouseButtonEventArgs e)
 	{
-		this.DragDelta?.Invoke(this, e);
+		if (e.LeftButton == MouseButtonState.Pressed)
+		{
+			GetWindow((DependencyObject)sender).DragMove();
+		}
 	}
 }
