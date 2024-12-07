@@ -24,6 +24,7 @@ using StudioFourteen.Plugin;
 using StudioFourteen.Services;
 using System;
 using System.ComponentModel;
+using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
@@ -346,6 +347,25 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		this.IsMaximized = this.WindowState == WindowState.Maximized;
 	}
 
+	protected virtual void OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
+	{
+		this.Services.Input.Mouse?.HandleMouse(e.ChangedButton, true, Vector2.Zero);
+
+		if (!this.CanActivate)
+			return;
+
+		if (this.IsActive)
+			return;
+
+		this.Services.Windows.BringToTop(this);
+		this.Activate();
+	}
+
+	protected virtual void OnPreviewMouseUp(object sender, MouseButtonEventArgs e)
+	{
+		this.Services.Input.Mouse?.HandleMouse(e.ChangedButton, false, Vector2.Zero);
+	}
+
 	partial void OnIsEmbeddedChanged(bool newValue)
 	{
 		this.WindowState = WindowState.Normal;
@@ -388,25 +408,6 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 				this.Width = this.preScaleWidth * this.Scale;
 			}
 		}
-	}
-
-	private void OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
-	{
-		this.Services.Input.Mouse?.HandleMouse(e, true);
-
-		if (!this.CanActivate)
-			return;
-
-		if (this.IsActive)
-			return;
-
-		this.Services.Windows.BringToTop(this);
-		this.Activate();
-	}
-
-	private void OnPreviewMouseUp(object sender, MouseButtonEventArgs e)
-	{
-		this.Services.Input.Mouse?.HandleMouse(e, false);
 	}
 
 	private void OnPreviewKeyDown(object sender, KeyEventArgs e)

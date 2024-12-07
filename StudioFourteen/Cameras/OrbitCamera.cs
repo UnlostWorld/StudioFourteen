@@ -139,10 +139,10 @@ public partial class OrbitCamera : StudioCameraBase
 		this.desiredMove = moveDir;
 
 		Vector3 rot = Vector3.Zero;
-		rot.X += this.panLeftListener.Value;
-		rot.X -= this.panRightListener.Value;
-		rot.Y += this.panUpListener.Value;
-		rot.Y -= this.panDownListener.Value;
+		rot.X += this.panLeftListener.Value / 2;
+		rot.X -= this.panRightListener.Value / 2;
+		rot.Y += this.panUpListener.Value / 2;
+		rot.Y -= this.panDownListener.Value / 2;
 		rot.Z -= this.rollLeftListener.Value;
 		rot.Z += this.rollRightListener.Value;
 		this.desiredRot = rot;
@@ -153,10 +153,10 @@ public partial class OrbitCamera : StudioCameraBase
 		this.Distance = Math.Max(d, 0.1f);
 
 		Vector2 angle = this.Angle;
-		angle.X -= this.rotateLeftListener.Value / 8;
-		angle.X += this.rotateRightListener.Value / 8;
-		angle.Y -= this.rotateUpListener.Value / 8;
-		angle.Y += this.rotateDownListener.Value / 8;
+		angle.X -= this.rotateLeftListener.Value;
+		angle.X += this.rotateRightListener.Value;
+		angle.Y -= this.rotateUpListener.Value;
+		angle.Y += this.rotateDownListener.Value;
 		angle = MathUtility.Wrap(angle);
 		this.Angle = angle;
 	}

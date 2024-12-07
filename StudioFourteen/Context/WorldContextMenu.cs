@@ -40,11 +40,6 @@ public partial class WorldContextMenu : PopOut
 	private static readonly List<IProvider> ContextProviders = new();
 	private HitInfo? currentHitInfo;
 
-	public WorldContextMenu()
-	{
-		////this.Services.Input.Mouse.MouseButton += this.OnMouseButton;
-	}
-
 	public interface IProvider
 	{
 		Task GetMenu(WorldContextMenu menu);
@@ -98,7 +93,12 @@ public partial class WorldContextMenu : PopOut
 		}
 	}*/
 
-	private async Task Show(Vector2 screenPosition)
+	public Task Show(Point screenPosition)
+	{
+		return this.Show(new Vector2((float)screenPosition.X, (float)screenPosition.Y));
+	}
+
+	public async Task Show(Vector2 screenPosition)
 	{
 		await this.MainThread();
 		this.Menus.Clear();

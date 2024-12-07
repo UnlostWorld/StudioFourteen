@@ -358,7 +358,13 @@ public partial class LibraryWindow : Panel
 		if (clickDelta > 500)
 			return;
 
-		if (sender != this.SelectedResult)
+		if (sender is not FrameworkElement senderElement)
+			return;
+
+		if (senderElement.DataContext is not Result result)
+			return;
+
+		if (result != this.selectedResult)
 			return;
 
 		this.OnResultEnter(sender, e);

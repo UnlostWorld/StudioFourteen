@@ -28,6 +28,8 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Controls.Primitives;
 
+using MouseButtons = System.Windows.Input.MouseButton;
+
 public class InputService : ServiceBase
 {
 	private readonly Dictionary<InputAction, List<InputActionListener>> listeners = new();
@@ -88,18 +90,26 @@ public class InputService : ServiceBase
 		this.AddBind(InputAction.OrbitCamera_PanDown, KeyboardDevice.GetAxisId(VirtualKey.S));
 		this.AddBind(InputAction.OrbitCamera_PanLeft, KeyboardDevice.GetAxisId(VirtualKey.A));
 		this.AddBind(InputAction.OrbitCamera_PanRight, KeyboardDevice.GetAxisId(VirtualKey.D));
+		this.AddBind(InputAction.OrbitCamera_PanRight, MouseDevice.GetDragAxisId(MouseButtons.Middle, MouseDevice.DragDirections.Right));
+		this.AddBind(InputAction.OrbitCamera_PanLeft, MouseDevice.GetDragAxisId(MouseButtons.Middle, MouseDevice.DragDirections.Left));
+		this.AddBind(InputAction.OrbitCamera_PanDown, MouseDevice.GetDragAxisId(MouseButtons.Middle, MouseDevice.DragDirections.Down));
+		this.AddBind(InputAction.OrbitCamera_PanUp, MouseDevice.GetDragAxisId(MouseButtons.Middle, MouseDevice.DragDirections.Up));
 		this.AddBind(InputAction.OrbitCamera_RollLeft, KeyboardDevice.GetAxisId(VirtualKey.Q));
 		this.AddBind(InputAction.OrbitCamera_RollRight, KeyboardDevice.GetAxisId(VirtualKey.E));
 		this.AddBind(InputAction.OrbitCamera_MoveUp, KeyboardDevice.GetAxisId(VirtualKey.W), KeyboardDevice.GetAxisId(VirtualKey.SHIFT));
 		this.AddBind(InputAction.OrbitCamera_MoveDown, KeyboardDevice.GetAxisId(VirtualKey.S), KeyboardDevice.GetAxisId(VirtualKey.SHIFT));
 		this.AddBind(InputAction.OrbitCamera_MoveLeft, KeyboardDevice.GetAxisId(VirtualKey.A), KeyboardDevice.GetAxisId(VirtualKey.SHIFT));
 		this.AddBind(InputAction.OrbitCamera_MoveRight, KeyboardDevice.GetAxisId(VirtualKey.D), KeyboardDevice.GetAxisId(VirtualKey.SHIFT));
+		this.AddBind(InputAction.OrbitCamera_MoveUp, MouseDevice.GetDragAxisId(MouseButtons.Right, MouseDevice.DragDirections.Up));
+		this.AddBind(InputAction.OrbitCamera_MoveDown, MouseDevice.GetDragAxisId(MouseButtons.Right, MouseDevice.DragDirections.Down));
+		this.AddBind(InputAction.OrbitCamera_MoveLeft, MouseDevice.GetDragAxisId(MouseButtons.Right, MouseDevice.DragDirections.Left));
+		this.AddBind(InputAction.OrbitCamera_MoveRight, MouseDevice.GetDragAxisId(MouseButtons.Right, MouseDevice.DragDirections.Right));
 		this.AddBind(InputAction.OrbitCamera_ZoomIn, MouseDevice.WheelPos);
 		this.AddBind(InputAction.OrbitCamera_ZoomOut, MouseDevice.WheelNeg);
-		this.AddBind(InputAction.OrbitCamera_RotateRight, MouseDevice.MoveLeft, MouseDevice.GetAxisId(System.Windows.Input.MouseButton.Left));
-		this.AddBind(InputAction.OrbitCamera_RotateLeft, MouseDevice.MoveRight, MouseDevice.GetAxisId(System.Windows.Input.MouseButton.Left));
-		this.AddBind(InputAction.OrbitCamera_RotateDown, MouseDevice.MoveDown, MouseDevice.GetAxisId(System.Windows.Input.MouseButton.Left));
-		this.AddBind(InputAction.OrbitCamera_RotateUp, MouseDevice.MoveUp, MouseDevice.GetAxisId(System.Windows.Input.MouseButton.Left));
+		this.AddBind(InputAction.OrbitCamera_RotateRight, MouseDevice.GetDragAxisId(MouseButtons.Left, MouseDevice.DragDirections.Right));
+		this.AddBind(InputAction.OrbitCamera_RotateLeft, MouseDevice.GetDragAxisId(MouseButtons.Left, MouseDevice.DragDirections.Left));
+		this.AddBind(InputAction.OrbitCamera_RotateDown, MouseDevice.GetDragAxisId(MouseButtons.Left, MouseDevice.DragDirections.Down));
+		this.AddBind(InputAction.OrbitCamera_RotateUp, MouseDevice.GetDragAxisId(MouseButtons.Left, MouseDevice.DragDirections.Up));
 	}
 
 	public KeyboardDevice? Keyboard => this.GetDevice<KeyboardDevice>();

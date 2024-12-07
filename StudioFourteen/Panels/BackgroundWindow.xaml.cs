@@ -80,6 +80,28 @@ public partial class BackgroundWindow : PanelWindow
 		this.Services.Windows.SendToBack(this);
 	}
 
+	protected override void OnPreviewMouseUp(object sender, MouseButtonEventArgs e)
+	{
+		this.Log.Information($">> {this.Services.Input.Mouse?.IsAnyDragging}");
+
+		if (this.Services.Input.Mouse?.IsAnyDragging == false)
+		{
+			if (e.ChangedButton == MouseButton.Right)
+			{
+				this.WorldContextMenu.Show(e.GetPosition(this));
+			}
+		}
+
+		Point point = e.GetPosition(this);
+		this.Services.Input.Mouse?.HandleMouse(e.ChangedButton, false, new Vector2((float)point.X, (float)point.Y));
+	}
+
+	protected override void OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
+	{
+		Point point = e.GetPosition(this);
+		this.Services.Input.Mouse?.HandleMouse(e.ChangedButton, true, new Vector2((float)point.X, (float)point.Y));
+	}
+
 	private void UpdatePosition()
 	{
 		if (this.Services.Windows.XivProcess == null)
@@ -107,16 +129,6 @@ public partial class BackgroundWindow : PanelWindow
 
 		Point pos = new(margin.Left, margin.Top);
 		this.StudioButtonPosition = pos;
-	}
-
-	private void OnMouseDown(object sender, MouseButtonEventArgs e)
-	{
-		this.Services.Input.Mouse?.HandleMouse(e, true);
-	}
-
-	private void OnMouseUp(object sender, MouseButtonEventArgs e)
-	{
-		this.Services.Input.Mouse?.HandleMouse(e, false);
 	}
 
 	private void OnMouseMove(object sender, MouseEventArgs e)

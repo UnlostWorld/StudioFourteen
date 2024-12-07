@@ -75,12 +75,11 @@
 			</Grid.Style>
 
 			<Rectangle
+				x:Name="Fill"
 				Fill="#01000000"
-				MouseDown="OnMouseDown"
 				MouseEnter="OnMouseEnter"
 				MouseLeave="OnMouseLeave"
 				MouseMove="OnMouseMove"
-				MouseUp="OnMouseUp"
 				MouseWheel="OnMouseWheel" />
 
 			<overlays:OverlayRenderer ClipToBounds="True" />
@@ -142,7 +141,7 @@
 				VerticalAlignment="Top"
 				DragDelta="OnDragDelta" />
 
-			<context:WorldContextMenu />
+			<context:WorldContextMenu x:Name="WorldContextMenu" />
 		</Grid>
 	</Grid>
 </panels:PanelWindow>
