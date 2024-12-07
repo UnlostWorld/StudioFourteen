@@ -25,6 +25,7 @@ using StudioFourteen.Plugin;
 using StudioFourteen.Utilities;
 using System.Numerics;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 using WpfUtils.Extensions;
 
@@ -40,18 +41,6 @@ public class TargetService : ServiceBase
 	[AlwaysNotify] public bool HasValidTarget { get; private set; } = false;
 	[AlwaysNotify] public bool IsTargetLoading { get; private set; } = false;
 	[AlwaysNotify] public int TargetObjectIndex { get; private set; } = -1;
-
-	public override Task Start()
-	{
-		////this.Services.Input.Mouse.MouseButton += this.OnMouseButton;
-		return base.Start();
-	}
-
-	public override Task Stop()
-	{
-		////this.Services.Input.Mouse.MouseButton -= this.OnMouseButton;
-		return base.Stop();
-	}
 
 	public unsafe Character* GetCharacter(int objectTableIndex)
 	{
@@ -112,6 +101,26 @@ public class TargetService : ServiceBase
 		}
 	}
 
+	public Task TargetPosition(Point screenPosition)
+	{
+		return this.TargetPosition(new Vector2((float)screenPosition.X, (float)screenPosition.Y));
+	}
+
+	public async Task TargetPosition(Vector2 screenPosition)
+	{
+		await Threads.FrameworkThread();
+
+		unsafe
+		{
+			HitInfo hitInfo = RayCast.Cast(screenPosition);
+
+			if (hitInfo.ObjectTableIndex == -1)
+				return;
+
+			this.SetTarget(hitInfo.ObjectTableIndex);
+		}
+	}
+
 	protected unsafe override void OnFrameworkUpdate(IFramework framework)
 	{
 		base.OnFrameworkUpdate(framework);
@@ -127,29 +136,6 @@ public class TargetService : ServiceBase
 		if (startIndex != this.TargetObjectIndex)
 		{
 			this.TargetChanged?.Invoke();
-		}
-	}
-
-	/*private void OnMouseButton(MouseButton button, InputService.States state, Vector2 position)
-	{
-		if (button == MouseButton.Left && state == InputService.States.Released)
-		{
-			this.TargetPosition(position).Run();
-		}
-	}*/
-
-	private async Task TargetPosition(Vector2 screenPosition)
-	{
-		await Threads.FrameworkThread();
-
-		unsafe
-		{
-			HitInfo hitInfo = RayCast.Cast(screenPosition);
-
-			if (hitInfo.ObjectTableIndex == -1)
-				return;
-
-			this.SetTarget(hitInfo.ObjectTableIndex);
 		}
 	}
 }

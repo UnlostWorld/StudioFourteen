@@ -82,13 +82,15 @@ public partial class BackgroundWindow : PanelWindow
 
 	protected override void OnPreviewMouseUp(object sender, MouseButtonEventArgs e)
 	{
-		this.Log.Information($">> {this.Services.Input.Mouse?.IsAnyDragging}");
-
 		if (this.Services.Input.Mouse?.IsAnyDragging == false)
 		{
 			if (e.ChangedButton == MouseButton.Right)
 			{
 				this.WorldContextMenu.Show(e.GetPosition(this));
+			}
+			else if (e.ChangedButton == MouseButton.Left)
+			{
+				this.Services.Target.TargetPosition(e.GetPosition(this)).Run();
 			}
 		}
 
