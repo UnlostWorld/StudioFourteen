@@ -24,6 +24,7 @@ using StudioFourteen.Input.Devices;
 using StudioFourteen.Services;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Controls.Primitives;
 
@@ -33,6 +34,8 @@ public class InputService : ServiceBase
 	private readonly List<InputDeviceBase> inputDevices = new();
 	private readonly Dictionary<string, InputAxis> axisLookup = new();
 	private readonly List<Bind> binds = new();
+
+	private InputDeviceBase? currentDevice = null;
 
 	public InputService()
 	{
@@ -270,10 +273,36 @@ public class InputService : ServiceBase
 			}
 		}
 
+		DateTime mostRecentInput = DateTime.MinValue;
+		InputDeviceBase? mostRecentDevice = null;
 		foreach (InputDeviceBase device in this.inputDevices)
 		{
 			device.PostUpdate();
+
+			foreach(InputAxis axis in device.Axes)
+			{
+				if (!axis.CanActivateDevice)
+					continue;
+
+				if (axis.UtcLastInput > mostRecentInput)
+				{
+					mostRecentInput = axis.UtcLastInput;
+					mostRecentDevice = device;
+				}
+			}
 		}
+
+		if (mostRecentDevice != this.currentDevice)
+		{
+			this.SetCurrentDevice(mostRecentDevice);
+		}
+	}
+
+	private void SetCurrentDevice(InputDeviceBase? device)
+	{
+		this.currentDevice?.Deactivate();
+		this.currentDevice = device;
+		this.currentDevice?.Activate();
 	}
 }
 

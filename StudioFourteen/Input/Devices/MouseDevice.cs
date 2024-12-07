@@ -25,21 +25,25 @@ public class MouseDevice : InputDeviceBase
 {
 	private readonly Dictionary<MouseButton, InputAxis> buttonAxes = new();
 
-	private readonly InputAxisSigned wheel = new(MouseDevice.WheelPos, MouseDevice.WheelNeg);
-	private readonly InputAxisSigned x = new(MouseDevice.MoveRight, MouseDevice.MoveLeft);
-	private readonly InputAxisSigned y = new(MouseDevice.MoveUp, MouseDevice.MoveDown);
+	private readonly InputAxisSigned wheel;
+	private readonly InputAxisSigned x;
+	private readonly InputAxisSigned y;
 
 	private Vector2 lastMousePosition = Vector2.Zero;
 
 	public MouseDevice()
 	{
+		this.wheel = new(MouseDevice.WheelPos, MouseDevice.WheelNeg, this, true);
+		this.x = new(MouseDevice.MoveRight, MouseDevice.MoveLeft, this, false);
+		this.y = new(MouseDevice.MoveUp, MouseDevice.MoveDown, this, false);
+
 		this.AddAxis(this.wheel);
 		this.AddAxis(this.x);
 		this.AddAxis(this.y);
 
 		foreach(MouseButton button in Enum.GetValues<MouseButton>())
 		{
-			this.buttonAxes.Add(button, new(MouseDevice.GetAxisId(button)));
+			this.buttonAxes.Add(button, new(MouseDevice.GetAxisId(button), this, true));
 		}
 
 		foreach((MouseButton button, InputAxis axis) in this.buttonAxes)

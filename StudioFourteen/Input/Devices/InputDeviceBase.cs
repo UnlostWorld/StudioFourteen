@@ -16,6 +16,7 @@
 namespace StudioFourteen.Input.Devices;
 
 using Serilog;
+using System;
 using System.Collections.Generic;
 
 public abstract class InputDeviceBase
@@ -25,18 +26,35 @@ public abstract class InputDeviceBase
 	protected ILogger Log => Logging.ForContext(this.GetType());
 	protected ServiceManager Services => ServiceManager.Instance;
 
+	// Called when Studio attaches to XIV.
 	public virtual void Attach()
 	{
 	}
 
+	// Called when Studio detaches from XIV.
 	public virtual void Detach()
 	{
 	}
 
+	// Called when this device becomes primary, by being the most recent
+	// device to send inputs.
+	public virtual void Activate()
+	{
+	}
+
+	// Called when this device is no longer primary.
+	public virtual void Deactivate()
+	{
+	}
+
+	// Called at the start of Framework Update, before binds have been polled.
+	// Typically reset InputAxis.IsConsumed here.
 	public virtual void PreUpdate()
 	{
 	}
 
+	// Called after all binds have been polled.
+	// Typically check InputAxis.IsConsumed here, and forward events to XIV.
 	public virtual void PostUpdate()
 	{
 	}
@@ -53,17 +71,36 @@ public abstract class InputDeviceBase
 	}
 }
 
-public class InputAxis(string id)
+public class InputAxis(string id, InputDeviceBase device, bool canActivateDevice)
 {
+	private float value;
+
 	public string Id => id;
+	public InputDeviceBase Device => device;
 	public bool IsConsumed { get; set; }
-	public virtual float Value { get; set; }
+
+	public DateTime UtcLastInput { get; private set; }
+	public bool CanActivateDevice => canActivateDevice;
+
+	public virtual float Value
+	{
+		get => this.value;
+		set
+		{
+			this.value = value;
+
+			if (value > 0.001)
+			{
+				this.UtcLastInput = DateTime.UtcNow;
+			}
+		}
+	}
 }
 
-public class InputAxisSigned(string positiveId, string negativeId)
+public class InputAxisSigned(string positiveId, string negativeId, InputDeviceBase device, bool canActivateDevice)
 {
-	public readonly InputAxis Positive = new(positiveId);
-	public readonly InputAxis Negative = new(negativeId);
+	public readonly InputAxis Positive = new(positiveId, device, canActivateDevice);
+	public readonly InputAxis Negative = new(negativeId, device, canActivateDevice);
 
 	public bool IsConsumed
 	{

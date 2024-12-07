@@ -61,6 +61,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 		this.Loaded += this.OnLoaded;
 		this.PreviewMouseDown += this.OnPreviewMouseDown;
+		this.PreviewMouseUp += this.OnPreviewMouseUp;
 		this.PreviewKeyDown += this.OnPreviewKeyDown;
 		this.PreviewKeyUp += this.OnPreviewKeyUp;
 		this.Services.Studio.PropertyChanged += this.OnStudioPropertyChanged;
@@ -391,6 +392,8 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 	private void OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
 	{
+		this.Services.Input.Mouse?.HandleMouse(e, true);
+
 		if (!this.CanActivate)
 			return;
 
@@ -399,6 +402,11 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 		this.Services.Windows.BringToTop(this);
 		this.Activate();
+	}
+
+	private void OnPreviewMouseUp(object sender, MouseButtonEventArgs e)
+	{
+		this.Services.Input.Mouse?.HandleMouse(e, false);
 	}
 
 	private void OnPreviewKeyDown(object sender, KeyEventArgs e)

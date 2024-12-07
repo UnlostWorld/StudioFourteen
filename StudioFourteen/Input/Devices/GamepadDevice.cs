@@ -21,10 +21,10 @@ namespace StudioFourteen.Input.Devices;
 
 using Dalamud.Game.ClientState.GamePad;
 using Dalamud.Hooking;
-using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using StudioFourteen.Services;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 
 public class GamepadDevice : InputDeviceBase
 {
@@ -35,7 +35,7 @@ public class GamepadDevice : InputDeviceBase
 	{
 		foreach(Buttons button in Enum.GetValues<Buttons>())
 		{
-			InputAxis axis = new(GetAxisId(button));
+			InputAxis axis = new(GetAxisId(button), this, true);
 			this.buttonAxes.Add(button, axis);
 			this.Axes.Add(axis);
 		}
@@ -75,6 +75,24 @@ public class GamepadDevice : InputDeviceBase
 	public override void Detach()
 	{
 		this.gamepadPoll?.Dispose();
+	}
+
+	public override void Activate()
+	{
+		Type type = typeof(System.Windows.Input.KeyboardNavigation);
+		PropertyInfo? showFocusVisual = type.GetProperty("AlwaysShowFocusVisual", BindingFlags.NonPublic | BindingFlags.Static);
+		showFocusVisual?.SetValue(null, true);
+
+		base.Activate();
+	}
+
+	public override void Deactivate()
+	{
+		Type type = typeof(System.Windows.Input.KeyboardNavigation);
+		PropertyInfo? showFocusVisual = type.GetProperty("AlwaysShowFocusVisual", BindingFlags.NonPublic | BindingFlags.Static);
+		showFocusVisual?.SetValue(null, false);
+
+		base.Deactivate();
 	}
 
 	private unsafe int GamepadPollDetour(IntPtr gamepadInput)

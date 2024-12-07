@@ -17,10 +17,12 @@ namespace StudioFourteen.Input;
 
 using DependencyPropertyGenerator;
 using Serilog;
+using System;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Automation.Provider;
+using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using WpfUtils;
@@ -129,11 +131,26 @@ public partial class Navigation
 	private async Task OnNavigate(FocusNavigationDirection direction)
 	{
 		await this.scope.MainThread();
+
 		IInputElement focusedControl = FocusManager.GetFocusedElement(this.scope);
 		if (focusedControl is UIElement el)
 		{
 			el.MoveFocus(new TraversalRequest(direction));
 		}
+
+		IInputElement newFocusedControl = FocusManager.GetFocusedElement(this.scope);
+		Keyboard.Focus(newFocusedControl);
+		if (newFocusedControl is UIElement newEl)
+		{
+			if (newEl is ListBoxItem item)
+			{
+				item.IsSelected = true;
+			}
+		}
+
+		Type type = typeof(System.Windows.Input.KeyboardNavigation);
+		MethodInfo? showFocusVisual = type.GetMethod("ShowFocusVisual", BindingFlags.NonPublic | BindingFlags.Static);
+		showFocusVisual?.Invoke(null, null);
 	}
 
 	private async Task OnEnter()
@@ -145,13 +162,10 @@ public partial class Navigation
 			el.RaiseEvent(new RoutedEventArgs(Navigation.EnterEvent));
 		}
 
-		this.Log.Information($">> {focusedControl}");
-
 		MethodInfo? method = null;
 		if (focusedControl.GetType().IsAssignableTo(typeof(ButtonBase)))
 		{
 			method = typeof(ButtonBase).GetMethod("OnClick", BindingFlags.NonPublic | BindingFlags.Instance);
-			this.Log.Information($">> {method}");
 		}
 
 		if (method != null)

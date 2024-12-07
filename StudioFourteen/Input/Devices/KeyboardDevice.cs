@@ -25,7 +25,7 @@ using System.Windows.Input;
 public class KeyboardDevice : InputDeviceBase
 {
 	private readonly Dictionary<VirtualKey, InputAxis> axisLookup = new();
-	private HashSet<VirtualKey> keysSentToXiv = new();
+	private readonly HashSet<VirtualKey> keysSentToXiv = new();
 
 	public KeyboardDevice()
 	{
@@ -37,7 +37,7 @@ public class KeyboardDevice : InputDeviceBase
 			if (this.axisLookup.ContainsKey(key))
 				continue;
 
-			InputAxis axis = new(KeyboardDevice.GetAxisId(key));
+			InputAxis axis = new(KeyboardDevice.GetAxisId(key), this, true);
 			this.axisLookup.Add(key, axis);
 			this.AddAxis(axis);
 		}
