@@ -120,10 +120,10 @@ public partial class Navigation
 
 	public static void SetFocus(UIElement el)
 	{
-		Logging.Shared.Information($"Set focus: {el}");
+		////Logging.Shared.Information($"Set focus: {el}");
 
 		PanelWindow? wnd = el.FindParent<PanelWindow>();
-		if (wnd != null)
+		if (wnd != null && wnd.Navigation != null)
 		{
 			FocusManager.SetFocusedElement(wnd.Navigation.scope, el);
 		}
