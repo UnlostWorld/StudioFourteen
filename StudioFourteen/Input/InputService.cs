@@ -186,10 +186,10 @@ public class InputService : ServiceBase
 		// instead of camera events if they both have listeners)
 		this.binds.Sort((a, b) =>
 		{
-			if (a.ModifierAxes.Count < b.ModifierAxes.Count)
+			if (a.ModifierAxes.Count > b.ModifierAxes.Count)
 				return -1;
 
-			if (a.ModifierAxes.Count > b.ModifierAxes.Count)
+			if (a.ModifierAxes.Count < b.ModifierAxes.Count)
 				return 1;
 
 			if (a.Action < b.Action)
