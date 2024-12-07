@@ -288,7 +288,7 @@ public class InputService : ServiceBase
 			this.Services.Windows.SendKeyToXiv(VirtualKey.ESCAPE, false);
 		}
 
-		if (this.IsXivTextInputActive)
+		if (this.IsXivTextInputActive || this.IsStudioTextInputActive)
 			return;
 
 		Dictionary<InputAction, float> combinedValues = new();
