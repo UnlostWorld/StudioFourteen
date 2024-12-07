@@ -28,9 +28,14 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
+[DependencyProperty<bool>("IsStudioOpen")]
 public partial class NavigationWindow : PanelWindow
 {
-	public event DragDeltaEventHandler? DragDelta;
+	public NavigationWindow()
+	{
+		this.Services.Studio.Opening += this.OnStudioOpening;
+		this.Services.Studio.Closing += this.OnStudioClosing;
+	}
 
 	[AutoNotify]
 	public bool ShowNavigation => this.Services.Studio.IsOpen && !this.Services.Settings.Current.IsSpa;
@@ -128,5 +133,15 @@ public partial class NavigationWindow : PanelWindow
 		{
 			GetWindow((DependencyObject)sender).DragMove();
 		}
+	}
+
+	private void OnStudioOpening()
+	{
+		this.IsStudioOpen = true;
+	}
+
+	private void OnStudioClosing()
+	{
+		this.IsStudioOpen = false;
 	}
 }

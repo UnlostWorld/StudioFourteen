@@ -18,7 +18,7 @@
 	mc:Ignorable="d">
 
 	<panels:PanelWindow.Template>
-		<ControlTemplate TargetType="{x:Type panels:PanelWindow}">
+		<ControlTemplate TargetType="{x:Type local:NavigationWindow}">
 			<AdornerDecorator x:Name="MainGrid">
 				<Grid
 					Margin="12"
@@ -71,13 +71,22 @@
 							Focusable="False"
 							Style="{StaticResource StudioButton}" />
 
-						<ContentPresenter
-							x:Name="ContentArea"
-							Grid.Row="2"
-							Margin="3"
-							ClipToBounds="False"
-							Content="{TemplateBinding Content}"
-							ContentTemplate="{TemplateBinding ContentTemplate}" />
+						<Grid Grid.Row="2">
+							<Grid.OpacityMask>
+								<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+									<GradientStop Offset="0" Color="White" />
+									<GradientStop x:Name="WipeA" Offset="1" Color="White" />
+									<GradientStop x:Name="WipeB" Offset="1.1" Color="Transparent" />
+								</LinearGradientBrush>
+							</Grid.OpacityMask>
+
+							<ContentPresenter
+								x:Name="ContentArea"
+								Margin="3"
+								ClipToBounds="False"
+								Content="{TemplateBinding Content}"
+								ContentTemplate="{TemplateBinding ContentTemplate}" />
+						</Grid>
 					</Grid>
 
 
@@ -90,14 +99,103 @@
 					<Setter TargetName="WindowShadow" Property="Opacity" Value="1" />
 				</Trigger>
 
-				<DataTrigger
-					Binding="{Binding IsChecked, ElementName=StudioToggle}"
-					Value="False">
-					<Setter TargetName="WindowBorder" Property="Opacity" Value="0" />
-					<Setter TargetName="WindowShadow" Property="Opacity" Value="0" />
-					<Setter TargetName="WindowBackground" Property="Opacity" Value="0" />
+				<Trigger Property="IsStudioOpen" Value="False">
 					<Setter TargetName="ContentArea" Property="Opacity" Value="0" />
-				</DataTrigger>
+					<Setter TargetName="WindowBorder" Property="Opacity" Value="0" />
+					<Setter TargetName="WindowBackground" Property="Opacity" Value="0" />
+					<Setter TargetName="WindowShadow" Property="Opacity" Value="0" />
+				</Trigger>
+
+				<Trigger Property="IsStudioOpen" Value="True">
+
+					<Trigger.EnterActions>
+						<StopStoryboard BeginStoryboardName="CloseStoryboard" />
+						<BeginStoryboard Name="OpenStoryboard">
+							<Storyboard>
+								<DoubleAnimation
+									Storyboard.TargetName="ContentArea"
+									Storyboard.TargetProperty="Opacity"
+									To="1"
+									Duration="0:00:00.050" />
+
+								<DoubleAnimation
+									Storyboard.TargetName="WipeA"
+									Storyboard.TargetProperty="Offset"
+									From="0"
+									To="1"
+									Duration="0:00:00.350">
+									<DoubleAnimation.EasingFunction>
+										<SineEase EasingMode="EaseOut" />
+									</DoubleAnimation.EasingFunction>
+								</DoubleAnimation>
+
+								<DoubleAnimation
+									Storyboard.TargetName="WipeB"
+									Storyboard.TargetProperty="Offset"
+									From="0.1"
+									To="1.1"
+									Duration="0:00:00.350">
+									<DoubleAnimation.EasingFunction>
+										<SineEase EasingMode="EaseOut" />
+									</DoubleAnimation.EasingFunction>
+								</DoubleAnimation>
+
+								<DoubleAnimation
+									Storyboard.TargetName="WindowBorder"
+									Storyboard.TargetProperty="Opacity"
+									To="1"
+									Duration="0:00:00.250" />
+
+								<DoubleAnimation
+									Storyboard.TargetName="WindowBackground"
+									Storyboard.TargetProperty="Opacity"
+									To="1"
+									Duration="0:00:00.250" />
+
+								<DoubleAnimation
+									BeginTime="0:00:00.200"
+									Storyboard.TargetName="WindowShadow"
+									Storyboard.TargetProperty="Opacity"
+									To="1"
+									Duration="0:00:00.100" />
+
+
+							</Storyboard>
+						</BeginStoryboard>
+					</Trigger.EnterActions>
+
+					<Trigger.ExitActions>
+						<StopStoryboard BeginStoryboardName="OpenStoryboard" />
+						<BeginStoryboard Name="CloseStoryboard">
+							<Storyboard>
+								<DoubleAnimation
+									Storyboard.TargetName="ContentArea"
+									Storyboard.TargetProperty="Opacity"
+									To="0"
+									Duration="0:00:00.250" />
+
+								<DoubleAnimation
+									Storyboard.TargetName="WindowBorder"
+									Storyboard.TargetProperty="Opacity"
+									To="0"
+									Duration="0:00:00.250" />
+
+								<DoubleAnimation
+									Storyboard.TargetName="WindowBackground"
+									Storyboard.TargetProperty="Opacity"
+									To="0"
+									Duration="0:00:00.250" />
+
+								<DoubleAnimation
+									Storyboard.TargetName="WindowShadow"
+									Storyboard.TargetProperty="Opacity"
+									To="0"
+									Duration="0:00:00.250" />
+							</Storyboard>
+						</BeginStoryboard>
+					</Trigger.ExitActions>
+
+				</Trigger>
 
 			</ControlTemplate.Triggers>
 		</ControlTemplate>
@@ -108,15 +206,6 @@
 		VerticalAlignment="Top">
 		<Border Style="{DynamicResource WpfUtilsControlBorder}">
 			<StackPanel x:Name="Stack">
-
-				<StackPanel.OpacityMask>
-					<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-						<GradientStop Offset="0" Color="White" />
-						<GradientStop x:Name="WipeA" Offset="1" Color="White" />
-						<GradientStop x:Name="WipeB" Offset="1.1" Color="Transparent" />
-					</LinearGradientBrush>
-				</StackPanel.OpacityMask>
-
 				<StackPanel.Resources>
 					<Style
 						BasedOn="{StaticResource WpfUtilsIconToggleButton}"
