@@ -47,20 +47,12 @@ public partial class BackgroundWindow : PanelWindow
 	protected override void OnActivated(EventArgs e)
 	{
 		base.OnActivated(e);
-
-		this.Services.Panels.ActivePanel = this;
 		this.Services.Windows.SendToBack(this);
 	}
 
 	protected override void OnDeactivated(EventArgs e)
 	{
 		base.OnDeactivated(e);
-
-		if (this.Services.Panels.ActivePanel == this)
-		{
-			this.Services.Panels.ActivePanel = null;
-		}
-
 		this.Services.Windows.SendToBack(this);
 	}
 

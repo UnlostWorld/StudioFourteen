@@ -270,7 +270,7 @@ public class InputService : ServiceBase
 		this.IsXivTextInputActive = RaptureAtkModule.Instance()->AtkModule.IsTextInputActive();
 
 		// If Text Input just activated, and we have focus, set focus to xiv.
-		if (!wasActive && this.IsXivTextInputActive && this.Services.Panels.ActivePanel != null)
+		if (!wasActive && this.IsXivTextInputActive && this.Services.Windows.IsAnyStudioWindowActive())
 		{
 			this.Services.Windows.ActivateXivWindow();
 		}
@@ -278,7 +278,7 @@ public class InputService : ServiceBase
 		// If text input is still active, but we are taking focus, send the escape key to clear
 		// the text input focus from xiv.
 		// TODO: it would be nicer if we could invoke something in the AtkModule to clear the games input focus.
-		if (wasActive && this.IsXivTextInputActive && this.Services.Panels.ActivePanel != null)
+		if (wasActive && this.IsXivTextInputActive && this.Services.Windows.IsAnyStudioWindowActive())
 		{
 			this.Services.Windows.SendKeyToXiv(VirtualKey.ESCAPE, true);
 			this.Services.Windows.SendKeyToXiv(VirtualKey.ESCAPE, false);

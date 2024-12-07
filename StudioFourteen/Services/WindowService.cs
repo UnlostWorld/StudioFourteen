@@ -21,6 +21,7 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 using ImGuiNET;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Input;
+using StudioFourteen.Panels;
 using StudioFourteen.Plugin;
 using StudioFourteen.Studio;
 using StudioFourteen.Utilities;
@@ -92,6 +93,11 @@ public partial class WindowService : ServiceBase
 		return size;
 	}
 
+	public bool IsAnyWindowActive()
+	{
+		return Windows.Win32.PInvoke.GetForegroundWindow() != 0;
+	}
+
 	public bool IsAnyStudioWindowActive()
 	{
 		return this.studioWindowHwnds.Contains(PInvoke.GetForegroundWindow());
@@ -110,6 +116,8 @@ public partial class WindowService : ServiceBase
 
 	public void ActivateXivWindow()
 	{
+		this.Log.Information("ACTIVATE XIV");
+
 		if (this.XivWindowHwnd == null)
 			return;
 

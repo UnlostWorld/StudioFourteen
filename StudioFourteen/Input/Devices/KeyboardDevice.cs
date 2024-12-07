@@ -60,7 +60,7 @@ public class KeyboardDevice : InputDeviceBase
 			axis.IsConsumed = false;
 		}
 
-		if (this.Services.Panels.ActivePanel == null && this.Services.Windows.IsXivWindowActive())
+		if (!this.Services.Windows.IsAnyStudioWindowActive() && this.Services.Windows.IsXivWindowActive())
 		{
 			// Read XIV -> Studio
 			foreach((VirtualKey key, InputAxis axis) in this.axisLookup)
@@ -79,7 +79,7 @@ public class KeyboardDevice : InputDeviceBase
 		if (this.Services.Input.IsXivTextInputActive)
 			return;
 
-		if (this.Services.Panels.ActivePanel == null && this.Services.Windows.IsXivWindowActive())
+		if (!this.Services.Windows.IsAnyStudioWindowActive() && this.Services.Windows.IsXivWindowActive())
 		{
 			// read XIV -> Studio
 			foreach ((VirtualKey key, InputAxis axis) in this.axisLookup)

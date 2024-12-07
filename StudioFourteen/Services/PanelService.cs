@@ -39,8 +39,6 @@ public class PanelService : ServiceBase
 
 	public IEnumerable<Panel> OpenPanels => this.openPanels;
 
-	public object? ActivePanel { get; set; }
-
 	public override Task Initialize()
 	{
 		EventManager.RegisterClassHandler(typeof(FrameworkElement), FrameworkElement.LoadedEvent, new RoutedEventHandler((s, e) => this.OnLoaded(s, e)));

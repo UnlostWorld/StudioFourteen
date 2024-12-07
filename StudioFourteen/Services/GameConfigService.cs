@@ -69,12 +69,12 @@ public class GameConfigService : ServiceBase
 		if (!this.hasBackedUpSettings)
 			return;
 
-		if (this.Services.Panels.ActivePanel != null && !this.hasChangedSettings)
+		if (this.Services.Windows.IsAnyStudioWindowActive() && !this.hasChangedSettings)
 		{
 			// We have focus, disable settings.
 			this.DisableFocusLostSettings();
 		}
-		else if (this.hasChangedSettings && this.Services.Panels.ActivePanel == null)
+		else if (this.hasChangedSettings && !this.Services.Windows.IsAnyStudioWindowActive() && this.Services.Windows.IsAnyWindowActive())
 		{
 			// we do not have focus, restore settings.
 			this.RestoreFocusLostSettings();
