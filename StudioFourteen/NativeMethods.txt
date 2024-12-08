@@ -13,3 +13,5 @@ ShowCursor
 GetCursorPos
 SetCursorPos
 WindowFromPoint
+GetProcAddress
+GetModuleFileNameW

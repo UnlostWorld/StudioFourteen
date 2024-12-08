@@ -58,6 +58,9 @@
 		<None Include="$(DalamudLibPath)\..\..\..\dalamud.boot.log" Link="dalamud.boot.log" />
 		<None Include="$(DalamudLibPath)\..\..\..\dalamud.log" Link="dalamud.log" />
 		<None Include="$(DalamudLibPath)\..\..\..\pluginConfigs\StudioFourteen.json" Link="config.json" />
+		<None Include="..\StudioFourteen.Reshade\bin\StudioFourteen.Reshade.dll" Link="StudioFourteen.Reshade.dll">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 	</ItemGroup>
 
 	<ItemGroup>

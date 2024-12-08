@@ -19,6 +19,7 @@ using Dalamud.Hooking;
 using StudioFourteen.Plugin;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Xml.Linq;
 using TerraFX.Interop.Windows;
 
@@ -27,7 +28,7 @@ public class InteropService : ServiceBase
 	private static readonly List<HookReference> Hooks = new();
 
 	public static Hook<TDelegate>? HookFromSignature<TDelegate>(string sig, TDelegate detour)
-		where TDelegate : System.Delegate
+		where TDelegate : Delegate
 	{
 		if (DalamudServices.SigScanner == null)
 			return null;
@@ -47,7 +48,7 @@ public class InteropService : ServiceBase
 	}
 
 	public static Hook<TDelegate>? HookFromAddress<TDelegate>(nint address, TDelegate detour)
-			where TDelegate : System.Delegate
+			where TDelegate : Delegate
 	{
 		if (DalamudServices.InteropProvider == null)
 			return null;
@@ -65,6 +66,29 @@ public class InteropService : ServiceBase
 		catch (Exception ex)
 		{
 			Logging.ForContext<DalamudServices>().Error(ex, $"Error creating hook {name} from address");
+			return null;
+		}
+	}
+
+	public static Hook<TDelegate>? HookFromImport<TDelegate>(ProcessModule? module, string moduleName, string functionName, uint hintOrOrdinal, TDelegate detour)
+		where TDelegate : Delegate
+	{
+		if (DalamudServices.InteropProvider == null)
+			return null;
+
+		string name = typeof(TDelegate).Name;
+
+		try
+		{
+			Logging.Shared.Information($"Created Hook {name} for import {functionName}");
+
+			Hook<TDelegate> hook = DalamudServices.InteropProvider.HookFromImport<TDelegate>(module, moduleName, functionName, hintOrOrdinal, detour);
+			Hooks.Add(new(hook, name));
+			return hook;
+		}
+		catch (Exception ex)
+		{
+			Logging.ForContext<DalamudServices>().Error(ex, $"Error creating hook {name} from import");
 			return null;
 		}
 	}

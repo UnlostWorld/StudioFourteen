@@ -17,7 +17,6 @@ namespace StudioFourteen;
 
 using StudioFourteen.Appearance;
 using StudioFourteen.Cameras;
-using StudioFourteen.Context;
 using StudioFourteen.Data;
 using StudioFourteen.Files;
 using StudioFourteen.GameData;
@@ -28,6 +27,7 @@ using StudioFourteen.Mvm;
 using StudioFourteen.Online;
 using StudioFourteen.Overlays;
 using StudioFourteen.Posing;
+using StudioFourteen.Reshade;
 using StudioFourteen.Save;
 using StudioFourteen.Services;
 using StudioFourteen.Settings;
@@ -65,4 +65,5 @@ public class ServiceManager : ServiceManagerBase
 	public EnvironmentService Environment { get; init; } = new();
 	public GameConfigService GameConfiguration { get; init; } = new();
 	public IPCService IPC { get; init; } = new();
+	public ReshadeService REshade { get; init; } = new();
 }
