@@ -22,6 +22,7 @@ using System.Runtime.CompilerServices;
 using System;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Serilog.Events;
 
 public class ReshadeService : ServiceBase
 {
@@ -32,7 +33,7 @@ public class ReshadeService : ServiceBase
 		this.addOnLogDelegate = new LogDelegate(this.OnAddOnLog);
 	}
 
-	public delegate void LogDelegate(string message);
+	public delegate void LogDelegate(LogEventLevel logLevel, string message);
 
 	// TODO: Check the current reshade version and warn the user if
 	// the version is too old for us to communicate with.
@@ -62,8 +63,8 @@ public class ReshadeService : ServiceBase
 	[DllImport("StudioFourteen.Reshade.dll", EntryPoint = "Shutdown")]
 	private static extern void ShutdownReshadeAddon();
 
-	private void OnAddOnLog(string message)
+	private void OnAddOnLog(LogEventLevel logLevel, string message)
 	{
-		this.Log.Information(message);
+		this.Log.Write(logLevel, message);
 	}
 }
