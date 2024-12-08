@@ -22,6 +22,7 @@ using Serilog.Events;
 using System.Threading.Tasks;
 using System.IO;
 using System.Diagnostics;
+using Windows.Win32;
 
 public class ReshadeService : ServiceBase
 {
