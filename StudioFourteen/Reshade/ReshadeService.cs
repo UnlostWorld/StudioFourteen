@@ -13,27 +13,41 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-// Dalamud
-// https://github.com/goatcorp/Dalamud/blob/master/Dalamud/Interface/Internal/ReShadeHandling/
 namespace StudioFourteen.Reshade;
 
 using StudioFourteen.Services;
-using System.Runtime.CompilerServices;
 using System;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
 using Serilog.Events;
 
 public class ReshadeService : ServiceBase
 {
-	private readonly LogDelegate addOnLogDelegate;
+	private readonly LogDelegate onLog;
+	private readonly OpenOverlayDelegate onOpenOverlay;
+	private readonly SetCurrentPresetPathDelegate onSetCurrentPresetPath;
 
 	public ReshadeService()
 	{
-		this.addOnLogDelegate = new LogDelegate(this.OnAddOnLog);
+		this.onLog = new LogDelegate(this.OnLog);
+		this.onOpenOverlay = new OpenOverlayDelegate(this.OnOpenOverlay);
+		this.onSetCurrentPresetPath = new SetCurrentPresetPathDelegate(this.OnSetCurrentPresetPath);
 	}
 
-	public delegate void LogDelegate(LogEventLevel logLevel, string message);
+	public delegate void ReshadeOverlayChangedDelegate(bool open);
+
+	private delegate void LogDelegate(LogEventLevel logLevel, string message);
+	private delegate bool OpenOverlayDelegate(IntPtr pEffectRuntime, bool open, int inputSource);
+	private delegate void SetCurrentPresetPathDelegate(IntPtr pEffectRuntime, string path);
+
+	public event ReshadeOverlayChangedDelegate? ReshadeOverlayChanged;
+
+	public enum AddonEvents : uint
+	{
+		SetCurrentPresetPath = 84,
+		OpenOverlay = 86,
+	}
+
+	public bool IsReshadeOverlayOpen { get; set; }
 
 	// TODO: Check the current reshade version and warn the user if
 	// the version is too old for us to communicate with.
@@ -41,18 +55,22 @@ public class ReshadeService : ServiceBase
 	// Also, GShade users still exist, we should check against that?
 	public override void Attach()
 	{
-		IntPtr onLog = Marshal.GetFunctionPointerForDelegate(this.addOnLogDelegate);
-
-		bool result = InitializeReshadeAddon(onLog);
+		bool result = InitializeReshadeAddon(Marshal.GetFunctionPointerForDelegate(this.onLog));
 
 		if (!result)
-			this.Log.Error("Error initializing reshade addon");
+			this.Log.Error("Error initializing reshade add-on");
 
+		this.Log.Information("Initialized Reshade add-on");
+
+		RegisterEvent(AddonEvents.OpenOverlay, Marshal.GetFunctionPointerForDelegate(this.onOpenOverlay));
+		RegisterEvent(AddonEvents.SetCurrentPresetPath, Marshal.GetFunctionPointerForDelegate(this.onSetCurrentPresetPath));
 		base.Attach();
 	}
 
 	public override void Detach()
 	{
+		UnregisterEvent(AddonEvents.OpenOverlay, Marshal.GetFunctionPointerForDelegate(this.onOpenOverlay));
+		UnregisterEvent(AddonEvents.SetCurrentPresetPath, Marshal.GetFunctionPointerForDelegate(this.onSetCurrentPresetPath));
 		ShutdownReshadeAddon();
 		base.Detach();
 	}
@@ -63,8 +81,27 @@ public class ReshadeService : ServiceBase
 	[DllImport("StudioFourteen.Reshade.dll", EntryPoint = "Shutdown")]
 	private static extern void ShutdownReshadeAddon();
 
-	private void OnAddOnLog(LogEventLevel logLevel, string message)
+	[DllImport("StudioFourteen.Reshade.dll", EntryPoint = "RegisterEvent")]
+	private static extern void RegisterEvent(AddonEvents evt, IntPtr callback);
+
+	[DllImport("StudioFourteen.Reshade.dll", EntryPoint = "UnregisterEvent")]
+	private static extern void UnregisterEvent(AddonEvents evt, IntPtr callback);
+
+	private void OnLog(LogEventLevel logLevel, string message) => this.Log.Write(logLevel, message);
+
+	private bool OnOpenOverlay(IntPtr pEffectRuntime, bool open, int inputSource)
 	{
-		this.Log.Write(logLevel, message);
+		this.IsReshadeOverlayOpen = open;
+		this.RaisePropertyChanged(nameof(this.IsReshadeOverlayOpen));
+		this.ReshadeOverlayChanged?.Invoke(open);
+
+		// We can stop the overlay from opening by returning true.
+		// We may want to do this if studio will have its own reshade UI.
+		return false;
+	}
+
+	private void OnSetCurrentPresetPath(IntPtr pEffectRuntime, string path)
+	{
+		this.Log.Information($"Reshade preset changed: {path}");
 	}
 }

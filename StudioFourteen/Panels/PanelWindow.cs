@@ -66,6 +66,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		this.PreviewKeyDown += this.OnPreviewKeyDown;
 		this.PreviewKeyUp += this.OnPreviewKeyUp;
 		this.Services.Studio.PropertyChanged += this.OnStudioPropertyChanged;
+		this.Services.Reshade.ReshadeOverlayChanged += this.OnReshadeOverlayChanged;
 
 		if (this.CanNavigate)
 		{
@@ -78,7 +79,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	public ServiceManager Services => ServiceManager.Instance;
 
 	public bool IsUiVisibleAndOpen => this.IsUiVisible && this.Services.Studio.IsOpen;
-	public bool IsUiVisible => !DalamudServices.GameGui?.GameUiHidden ?? true;
+	public bool IsUiVisible => (!DalamudServices.GameGui?.GameUiHidden ?? true) && !this.Services.Reshade.IsReshadeOverlayOpen;
 
 	public bool HasIcon => this.Panel != null && this.Panel.TitleIcon != IconChar.None;
 	public bool HasSubtitle => this.Panel != null && !string.IsNullOrEmpty(this.Panel.Subtitle);
@@ -419,6 +420,12 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 		this.Services.Input.Keyboard?.HandleKey(e.Key, false);
 		e.Handled = true;
+	}
+
+	private void OnReshadeOverlayChanged(bool open)
+	{
+		this.NotifyPropertyChanged(nameof(PanelWindow.IsUiVisible));
+		this.NotifyPropertyChanged(nameof(PanelWindow.IsUiVisibleAndOpen));
 	}
 
 	private void OnGameUiToggled(object? sender, bool e)

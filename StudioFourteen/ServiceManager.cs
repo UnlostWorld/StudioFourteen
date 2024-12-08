@@ -65,5 +65,5 @@ public class ServiceManager : ServiceManagerBase
 	public EnvironmentService Environment { get; init; } = new();
 	public GameConfigService GameConfiguration { get; init; } = new();
 	public IPCService IPC { get; init; } = new();
-	public ReshadeService REshade { get; init; } = new();
+	public ReshadeService Reshade { get; init; } = new();
 }

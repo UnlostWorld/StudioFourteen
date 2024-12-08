@@ -310,7 +310,8 @@ public partial class WindowService : ServiceBase
 		this.IsCursorOverXiv = this.GetIsCursorOverXiv();
 		this.IsCursorOverStudio = this.GetIsCursorOverStudio();
 
-		this.EnableXivWindowOverlay = (!this.IsCursorOverXiv && !this.IsCursorOverStudio) || (!this.IsCursorOverAtkUnit && !this.IsCursorOverImGui);
+		this.EnableXivWindowOverlay = ((!this.IsCursorOverXiv && !this.IsCursorOverStudio) || (!this.IsCursorOverAtkUnit && !this.IsCursorOverImGui))
+			&& !this.Services.Reshade.IsReshadeOverlayOpen;
 	}
 
 	private bool GetIsCursorOverXiv()

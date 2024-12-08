@@ -1,6 +1,7 @@
 #include <reshade.hpp>
 #include "Log.h"
 
+using namespace reshade;
 using namespace reshade::api;
 
 #define RESHADE_API extern "C" __declspec(dllexport)
@@ -23,22 +24,6 @@ HMODULE GetCurrentModule()
 	return hModule;
 }
 
-static bool OnReshadeOverlayChanging(effect_runtime* pRuntime, bool open, input_source source)
-{
-	if (open)
-	{
-		Logger->Information("Open overlay");
-	}
-	else
-	{
-		Logger->Information("Close overlay");
-	}
-
-	// We can stop the overlay from opening by returning true.
-	// We may want to do this if studio will have its own reshade UI.
-	return false;
-}
-
 STUDIO_API bool Initialize(Log::LogDelegate onLog)
 {
 	Logger = new Log(onLog);
@@ -46,9 +31,7 @@ STUDIO_API bool Initialize(Log::LogDelegate onLog)
 	if (!reshade::register_addon(GetCurrentModule()))
 		return false;
 
-	Logger->Information("Hello World!");
-
-	reshade::register_event<reshade::addon_event::reshade_open_overlay>(OnReshadeOverlayChanging);
+	Logger->Information("Add-On Started");
 
 	return true;
 }
@@ -56,4 +39,26 @@ STUDIO_API bool Initialize(Log::LogDelegate onLog)
 STUDIO_API void Shutdown()
 {
 	reshade::unregister_addon(GetCurrentModule());
+}
+
+STUDIO_API bool RegisterEvent(addon_event ev, void* callback)
+{
+	// void ReShadeRegisterEventForAddon(HMODULE module, reshade::addon_event ev, void *callback);
+	static const auto func = reinterpret_cast<void(*)(HMODULE, addon_event, void*)>(GetProcAddress(internal::get_reshade_module_handle(), "ReShadeRegisterEventForAddon"));
+	if (func == nullptr)
+		return false;
+
+	func(GetCurrentModule(), ev, callback);
+	return true;
+}
+
+STUDIO_API bool UnregisterEvent(addon_event ev, void* callback)
+{
+	// void ReShadeUnregisterEventForAddon(HMODULE module, reshade::addon_event ev, void *callback);
+	static const auto func = reinterpret_cast<void(*)(HMODULE, addon_event, void*)>(GetProcAddress(internal::get_reshade_module_handle(), "ReShadeUnregisterEventForAddon"));
+	if (func == nullptr)
+		return false;
+
+	func(GetCurrentModule(), ev, callback);
+	return true;
 }
