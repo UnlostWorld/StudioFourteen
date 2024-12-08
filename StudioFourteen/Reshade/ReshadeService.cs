@@ -69,11 +69,11 @@ public class ReshadeService : ServiceBase
 		FileVersionInfo version = FileVersionInfo.GetVersionInfo(dxgiPath);
 		int versionPacked = (version.ProductMajorPart * 10000) + (version.ProductMinorPart * 100) + version.ProductBuildPart;
 
-		// 6.3.3 becomes 60303
-		if (versionPacked < 60303)
+		// 6.3.0 becomes 60300
+		if (versionPacked < 60300)
 		{
 			// TODO: Replace this with a message dialog that can be disabled.
-			this.Log.Error("Outdated Reshade install. Only version 6.3.3 or newer is supported. Please update reshade.");
+			this.Log.Error("Outdated Reshade install. Only version 6.3.0 or newer is supported. Please update reshade.");
 			return;
 		}
 
