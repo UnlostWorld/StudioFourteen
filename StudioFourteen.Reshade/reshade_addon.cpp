@@ -8,7 +8,7 @@ using namespace reshade::api;
 #define STUDIO_API extern "C" __declspec(dllexport)
 
 RESHADE_API const char* NAME = "Studio Fourteen Reshade sync";
-RESHADE_API const char* DESCRIPTION = "Enabled Studio Fourteen to communicate with Reshade";
+RESHADE_API const char* DESCRIPTION = "Enables Studio Fourteen to communicate with Reshade";
 
 static const Log* Logger;
 
