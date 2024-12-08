@@ -19,6 +19,9 @@ using StudioFourteen.Services;
 using System;
 using System.Runtime.InteropServices;
 using Serilog.Events;
+using System.Threading.Tasks;
+using System.IO;
+using System.Diagnostics;
 
 public class ReshadeService : ServiceBase
 {
@@ -47,7 +50,36 @@ public class ReshadeService : ServiceBase
 		OpenOverlay = 86,
 	}
 
+	public bool IsReshade { get; private set; }
 	public bool IsReshadeOverlayOpen { get; set; }
+
+	public override async Task Start()
+	{
+		await base.Start();
+
+		string? dxgiPath = this.Services.Windows.XivProcess?.MainModule?.FileName;
+		if (dxgiPath == null)
+			throw new Exception("Failed to get xiv process path");
+
+		dxgiPath = Path.GetDirectoryName(dxgiPath) + "/dxgi.dll";
+
+		if (!File.Exists(dxgiPath))
+			return;
+
+		FileVersionInfo version = FileVersionInfo.GetVersionInfo(dxgiPath);
+		int versionPacked = (version.ProductMajorPart * 10000) + (version.ProductMinorPart * 100) + version.ProductBuildPart;
+
+		// 6.3.3 becomes 60303
+		if (versionPacked < 60303)
+		{
+			// TODO: Replace this with a message dialog that can be disabled.
+			this.Log.Error("Outdated Reshade install. Only version 6.3.3 or newer is supported. Please update reshade.");
+			return;
+		}
+
+		this.Log.Information($"Reshade {version.ProductMajorPart}.{version.ProductMinorPart}.{version.ProductBuildPart} found and supported.");
+		this.IsReshade = true;
+	}
 
 	// TODO: Check the current reshade version and warn the user if
 	// the version is too old for us to communicate with.
@@ -55,6 +87,11 @@ public class ReshadeService : ServiceBase
 	// Also, GShade users still exist, we should check against that?
 	public override void Attach()
 	{
+		base.Attach();
+
+		if (!this.IsReshade)
+			return;
+
 		bool result = InitializeReshadeAddon(Marshal.GetFunctionPointerForDelegate(this.onLog));
 
 		if (!result)
@@ -64,15 +101,18 @@ public class ReshadeService : ServiceBase
 
 		RegisterEvent(AddonEvents.OpenOverlay, Marshal.GetFunctionPointerForDelegate(this.onOpenOverlay));
 		RegisterEvent(AddonEvents.SetCurrentPresetPath, Marshal.GetFunctionPointerForDelegate(this.onSetCurrentPresetPath));
-		base.Attach();
 	}
 
 	public override void Detach()
 	{
+		base.Detach();
+
+		if (!this.IsReshade)
+			return;
+
 		UnregisterEvent(AddonEvents.OpenOverlay, Marshal.GetFunctionPointerForDelegate(this.onOpenOverlay));
 		UnregisterEvent(AddonEvents.SetCurrentPresetPath, Marshal.GetFunctionPointerForDelegate(this.onSetCurrentPresetPath));
 		ShutdownReshadeAddon();
-		base.Detach();
 	}
 
 	[DllImport("StudioFourteen.Reshade.dll", EntryPoint = "Initialize")]
