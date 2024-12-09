@@ -15,33 +15,22 @@
 
 namespace StudioFourteen.Studio.Background;
 
-using DependencyPropertyGenerator;
 using StudioFourteen.Appearance;
 using StudioFourteen.Library;
 using StudioFourteen.Mvm;
 using StudioFourteen.Panels;
+using StudioFourteen.Plugin;
 using StudioFourteen.Posing;
 using StudioFourteen.Save;
 using StudioFourteen.Services;
 using StudioFourteen.Settings;
 using System.Windows;
-using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
-[DependencyProperty<bool>("IsStudioOpen")]
 public partial class NavigationWindow : PanelWindow
 {
-	public NavigationWindow()
-	{
-		this.Services.Studio.Opening += this.OnStudioOpening;
-		this.Services.Studio.Closing += this.OnStudioClosing;
-	}
-
 	[AutoNotify]
-	public bool ShowNavigation => this.Services.Studio.IsOpen && !this.Services.Settings.Current.IsSpa;
-
-	[AutoNotify]
-	public bool ShowStudioButton => this.ShowNavigation || !this.Services.Settings.Current.HideStudioButton;
+	public bool ShowStudioButton => !this.Services.Settings.Current.HideStudioButton && !DalamudServices.GameGui?.GameUiHidden == true;
 
 	[AutoNotify]
 	public bool IsFullyLoaded
@@ -133,15 +122,5 @@ public partial class NavigationWindow : PanelWindow
 		{
 			GetWindow((DependencyObject)sender).DragMove();
 		}
-	}
-
-	private void OnStudioOpening()
-	{
-		this.IsStudioOpen = true;
-	}
-
-	private void OnStudioClosing()
-	{
-		this.IsStudioOpen = false;
 	}
 }

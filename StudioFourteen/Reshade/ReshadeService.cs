@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using System.IO;
 using System.Diagnostics;
 using Windows.Win32;
+using StudioFourteen.Plugin;
 
 public class ReshadeService : ServiceBase
 {
@@ -57,6 +58,9 @@ public class ReshadeService : ServiceBase
 	public override async Task Start()
 	{
 		await base.Start();
+
+		if (!DalamudServices.IsAlive)
+			return;
 
 		string? dxgiPath = this.Services.Windows.XivProcess?.MainModule?.FileName;
 		if (dxgiPath == null)

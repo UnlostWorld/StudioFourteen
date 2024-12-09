@@ -78,8 +78,36 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 	public ServiceManager Services => ServiceManager.Instance;
 
-	public bool IsUiVisibleAndOpen => (this.panel?.AlwaysVisible == true) || (this.IsUiVisible && this.Services.Studio.IsOpen);
-	public bool IsUiVisible => (this.panel?.AlwaysVisible == true) || ((!DalamudServices.GameGui?.GameUiHidden ?? true) && !this.Services.Reshade.IsReshadeOverlayOpen);
+	public bool IsUiVisibleAndOpen
+	{
+		get
+		{
+			if (this.panel?.AlwaysVisible == true)
+				return true;
+
+			if (!this.IsUiVisible)
+				return false;
+
+			return this.Services.Studio.IsOpen;
+		}
+	}
+
+	public bool IsUiVisible
+	{
+		get
+		{
+			if (this.panel?.AlwaysVisible == true)
+				return true;
+
+			if (DalamudServices.GameGui?.GameUiHidden == true)
+				return false;
+
+			if (this.Services.Reshade.IsReshadeOverlayOpen)
+				return false;
+
+			return true;
+		}
+	}
 
 	public bool HasIcon => this.Panel != null && this.Panel.TitleIcon != IconChar.None;
 	public bool HasSubtitle => this.Panel != null && !string.IsNullOrEmpty(this.Panel.Subtitle);

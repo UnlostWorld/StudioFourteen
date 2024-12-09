@@ -13,7 +13,7 @@
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	MinWidth="32"
 	MinHeight="32"
-	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
+	d:DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
 	SizeToContent="WidthAndHeight"
 	mc:Ignorable="d">
 
@@ -99,16 +99,59 @@
 					<Setter TargetName="WindowShadow" Property="Opacity" Value="1" />
 				</Trigger>
 
-				<Trigger Property="IsStudioOpen" Value="False">
+				<DataTrigger
+					Binding="{Binding ShowStudioButton}"
+					Value="False">
+					<Setter TargetName="StudioToggle" Property="Opacity" Value="0" />
+
+					<DataTrigger.EnterActions>
+						<BeginStoryboard>
+							<Storyboard>
+								<DoubleAnimation
+									Storyboard.TargetName="StudioToggle"
+									Storyboard.TargetProperty="Opacity"
+									To="0"
+									Duration="0:00:00.250">
+									<DoubleAnimation.EasingFunction>
+										<SineEase EasingMode="EaseOut" />
+									</DoubleAnimation.EasingFunction>
+								</DoubleAnimation>
+							</Storyboard>
+						</BeginStoryboard>
+					</DataTrigger.EnterActions>
+
+					<DataTrigger.ExitActions>
+						<BeginStoryboard>
+							<Storyboard>
+								<DoubleAnimation
+									Storyboard.TargetName="StudioToggle"
+									Storyboard.TargetProperty="Opacity"
+									To="1"
+									Duration="0:00:00.250">
+									<DoubleAnimation.EasingFunction>
+										<SineEase EasingMode="EaseIn" />
+									</DoubleAnimation.EasingFunction>
+								</DoubleAnimation>
+							</Storyboard>
+						</BeginStoryboard>
+					</DataTrigger.ExitActions>
+
+				</DataTrigger>
+
+				<DataTrigger
+					Binding="{Binding IsUiVisibleAndOpen}"
+					Value="False">
 					<Setter TargetName="ContentArea" Property="Opacity" Value="0" />
 					<Setter TargetName="WindowBorder" Property="Opacity" Value="0" />
 					<Setter TargetName="WindowBackground" Property="Opacity" Value="0" />
 					<Setter TargetName="WindowShadow" Property="Opacity" Value="0" />
-				</Trigger>
+				</DataTrigger>
 
-				<Trigger Property="IsStudioOpen" Value="True">
+				<DataTrigger
+					Binding="{Binding IsUiVisibleAndOpen}"
+					Value="True">
 
-					<Trigger.EnterActions>
+					<DataTrigger.EnterActions>
 						<StopStoryboard BeginStoryboardName="CloseStoryboard" />
 						<BeginStoryboard Name="OpenStoryboard">
 							<Storyboard>
@@ -162,9 +205,9 @@
 
 							</Storyboard>
 						</BeginStoryboard>
-					</Trigger.EnterActions>
+					</DataTrigger.EnterActions>
 
-					<Trigger.ExitActions>
+					<DataTrigger.ExitActions>
 						<StopStoryboard BeginStoryboardName="OpenStoryboard" />
 						<BeginStoryboard Name="CloseStoryboard">
 							<Storyboard>
@@ -193,9 +236,9 @@
 									Duration="0:00:00.250" />
 							</Storyboard>
 						</BeginStoryboard>
-					</Trigger.ExitActions>
+					</DataTrigger.ExitActions>
 
-				</Trigger>
+				</DataTrigger>
 
 			</ControlTemplate.Triggers>
 		</ControlTemplate>
