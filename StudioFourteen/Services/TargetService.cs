@@ -19,29 +19,37 @@ using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
-using StudioFourteen.Input;
-using StudioFourteen.Mvm;
 using StudioFourteen.Plugin;
 using StudioFourteen.Studio.Background;
 using StudioFourteen.Utilities;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
-using WpfUtils.Extensions;
+using PropertyChanged.SourceGenerator;
+using StudioFourteen.Input;
+using System;
 
-public class TargetService : ServiceBase
+public partial class TargetService : ServiceBase
 {
+	private readonly InputActionListener nextTargetListener = new(InputAction.NextTarget);
+	private readonly InputActionListener previousTargetListener = new(InputAction.PreviousTarget);
+
+	[Notify] private string? characterName;
+	[Notify] private bool hasValidTarget = false;
+	[Notify] private bool isTargetLoading = false;
+	[Notify] private int targetObjectIndex = -1;
+
+	public TargetService()
+	{
+		this.nextTargetListener.Activate = this.OnNextTarget;
+		this.previousTargetListener.Activate = this.OnPreviousTarget;
+	}
+
 	public delegate void TargetChangedDelegate();
 
 	public event TargetChangedDelegate? TargetChanged;
 
 	public int ObjectTableCount => DalamudServices.ObjectTable?.Length ?? 0;
-
-	[AlwaysNotify] public string? CharacterName { get; private set; }
-	[AlwaysNotify] public bool HasValidTarget { get; private set; } = false;
-	[AlwaysNotify] public bool IsTargetLoading { get; private set; } = false;
-	[AlwaysNotify] public int TargetObjectIndex { get; private set; } = -1;
 
 	public override Task Start()
 	{
@@ -57,7 +65,19 @@ public class TargetService : ServiceBase
 		if (DalamudServices.ObjectTable == null)
 			return null;
 
-		return (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
+		IntPtr address = DalamudServices.ObjectTable?.GetObjectAddress(objectTableIndex) ?? IntPtr.Zero;
+		if (address == IntPtr.Zero)
+			return null;
+
+		Character* pCharacter = (Character*)address;
+		if (pCharacter == null)
+			return null;
+
+		if (pCharacter->ObjectKind == ObjectKind.Ornament
+			|| pCharacter->ObjectKind == ObjectKind.Mount)
+			return null;
+
+		return pCharacter;
 	}
 
 	public unsafe void SetTarget(int objectTableIndex)
@@ -67,12 +87,11 @@ public class TargetService : ServiceBase
 			if (DalamudServices.ObjectTable == null)
 				return;
 
-			GameObject* target = (GameObject*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
-
+			Character* target = this.GetCharacter(objectTableIndex);
 			if (target == null)
 				return;
 
-			TargetSystem.Instance()->GPoseTarget = target;
+			TargetSystem.Instance()->GPoseTarget = (GameObject*)target;
 		});
 	}
 
@@ -150,5 +169,62 @@ public class TargetService : ServiceBase
 	private void OnGroupPoseStateChanged(bool newState)
 	{
 		this.Services.Panels.SetIsOpen<TargetsPanel>(newState);
+
+		if (newState)
+		{
+			this.nextTargetListener.Enable();
+			this.previousTargetListener.Enable();
+		}
+		else
+		{
+			this.nextTargetListener.Disable();
+			this.previousTargetListener.Disable();
+		}
+	}
+
+	private unsafe void OnNextTarget()
+	{
+		Threads.RunOnFrameworkThread(() => this.AdvanceTarget(1));
+	}
+
+	private void OnPreviousTarget()
+	{
+		Threads.RunOnFrameworkThread(() => this.AdvanceTarget(-1));
+	}
+
+	private unsafe void AdvanceTarget(int count)
+	{
+		Threads.VerifyFrameworkThread();
+
+		if (DalamudServices.ObjectTable == null)
+			return;
+
+		int max = GroupPoseService.GPoseFirstCharacter + GroupPoseService.GPoseCharacterCount;
+		int newIndex = this.targetObjectIndex;
+		Character* newTarget = null;
+
+		int iterations = 200;
+		while (newTarget == null && iterations > 0)
+		{
+			iterations--;
+			newIndex += count;
+
+			if (newIndex >= max)
+			{
+				newIndex = GroupPoseService.GPoseFirstCharacter;
+			}
+
+			if (newIndex < GroupPoseService.GPoseFirstCharacter)
+			{
+				newIndex = max;
+			}
+
+			newTarget = this.GetCharacter(newIndex);
+		}
+
+		if (newTarget != null)
+		{
+			this.SetTarget(newIndex);
+		}
 	}
 }

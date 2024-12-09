@@ -32,6 +32,9 @@ public enum InputAction
 	SaveAs,
 	InvokeQuickSearch,
 
+	NextTarget,
+	PreviousTarget,
+
 	FreeCamera_MoveLeft,
 	FreeCamera_MoveRight,
 	FreeCamera_MoveUp,

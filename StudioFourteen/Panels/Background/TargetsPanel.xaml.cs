@@ -27,6 +27,7 @@ using StudioFourteen.Panels;
 using StudioFourteen.Plugin;
 using StudioFourteen.Services;
 using StudioFourteen.Tags;
+using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
