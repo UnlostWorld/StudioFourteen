@@ -55,56 +55,56 @@ public partial class NavigationWindow : PanelWindow
 	public bool IsLibraryOpen
 	{
 		get => this.Services.Panels.GetIsOpen<LibraryWindow>();
-		set => this.Services.Panels.SetIsOpen<LibraryWindow>(value);
+		set => this.Services.Panels.SetIsOpen<LibraryWindow>(true);
 	}
 
 	[AutoNotify]
 	public bool IsCameraOpen
 	{
 		get => this.Services.Panels.GetIsOpen<CameraPanel>();
-		set => this.Services.Panels.SetIsOpen<CameraPanel>(value);
+		set => this.Services.Panels.SetIsOpen<CameraPanel>(true);
 	}
 
 	[AutoNotify]
 	public bool IsEnvironmentOpen
 	{
 		get => this.Services.Panels.GetIsOpen<EnvironmentPanel>();
-		set => this.Services.Panels.SetIsOpen<EnvironmentPanel>(value);
+		set => this.Services.Panels.SetIsOpen<EnvironmentPanel>(true);
 	}
 
 	[AutoNotify]
 	public bool IsCharacterOpen
 	{
 		get => this.Services.Panels.GetIsOpen<CharacterPanel>();
-		set => this.Services.Panels.SetIsOpen<CharacterPanel>(value);
+		set => this.Services.Panels.SetIsOpen<CharacterPanel>(true);
 	}
 
 	[AutoNotify]
 	public bool IsPoseOpen
 	{
 		get => this.Services.Panels.GetIsOpen<PoseWindow>();
-		set => this.Services.Panels.SetIsOpen<PoseWindow>(value);
+		set => this.Services.Panels.SetIsOpen<PoseWindow>(true);
 	}
 
 	[AutoNotify]
 	public bool IsSettingsOpen
 	{
 		get => this.Services.Panels.GetIsOpen<SettingsPanel>();
-		set => this.Services.Panels.SetIsOpen<SettingsPanel>(value);
+		set => this.Services.Panels.SetIsOpen<SettingsPanel>(true);
 	}
 
 	[AutoNotify]
 	public bool IsPhotoOpen
 	{
 		get => this.Services.Panels.GetIsOpen<PhotoWindow>();
-		set => this.Services.Panels.SetIsOpen<PhotoWindow>(value);
+		set => this.Services.Panels.SetIsOpen<PhotoWindow>(true);
 	}
 
 	[AutoNotify]
 	public bool IsSaveOpen
 	{
 		get => this.Services.Panels.GetIsOpen<SaveWindow>();
-		set => this.Services.Panels.SetIsOpen<SaveWindow>(value);
+		set => this.Services.Panels.SetIsOpen<SaveWindow>(true);
 	}
 
 	public override T? GetPersistence<T>([CallerMemberName] string id = "")

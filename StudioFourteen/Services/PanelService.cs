@@ -129,10 +129,24 @@ public class PanelService : ServiceBase
 	{
 		if (value)
 		{
-			if (this.GetIsOpen<T>())
-				return;
+			T? panel = this.Get<T>();
 
-			this.Open<T>().Run();
+			if (panel == null)
+			{
+				this.Open<T>().Run();
+			}
+			else
+			{
+				panel.Dispatcher.Invoke(() =>
+				{
+					Window? wnd = panel.FindParent<Window>();
+					if (wnd != null)
+					{
+						this.Services.Windows.BringToTop(wnd);
+						wnd.Activate();
+					}
+				});
+			}
 		}
 		else
 		{
