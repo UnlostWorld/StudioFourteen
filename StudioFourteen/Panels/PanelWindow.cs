@@ -78,8 +78,8 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 	public ServiceManager Services => ServiceManager.Instance;
 
-	public bool IsUiVisibleAndOpen => this.IsUiVisible && this.Services.Studio.IsOpen;
-	public bool IsUiVisible => (!DalamudServices.GameGui?.GameUiHidden ?? true) && !this.Services.Reshade.IsReshadeOverlayOpen;
+	public bool IsUiVisibleAndOpen => (this.panel?.AlwaysVisible == true) || (this.IsUiVisible && this.Services.Studio.IsOpen);
+	public bool IsUiVisible => (this.panel?.AlwaysVisible == true) || ((!DalamudServices.GameGui?.GameUiHidden ?? true) && !this.Services.Reshade.IsReshadeOverlayOpen);
 
 	public bool HasIcon => this.Panel != null && this.Panel.TitleIcon != IconChar.None;
 	public bool HasSubtitle => this.Panel != null && !string.IsNullOrEmpty(this.Panel.Subtitle);
@@ -155,6 +155,11 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 				this.panel.VerticalAlignment = VerticalAlignment.Stretch;
 
 				this.panel.PropertyChanged += this.OnPanelPropertyChanged;
+
+				this.NotifyPropertyChanged(nameof(this.IsUiVisibleAndOpen));
+				this.NotifyPropertyChanged(nameof(this.IsUiVisible));
+				this.NotifyPropertyChanged(nameof(this.HasIcon));
+				this.NotifyPropertyChanged(nameof(this.HasSubtitle));
 			}
 		}
 	}

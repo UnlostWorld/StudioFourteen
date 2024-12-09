@@ -35,6 +35,7 @@ using WpfUtils.Extensions;
 [DependencyProperty<string>("Subtitle")]
 [DependencyProperty<SizeToContent>("SizeToContent", DefaultValue =SizeToContent.Manual)]
 [DependencyProperty<ResizeMode>("ResizeMode", DefaultValue =ResizeMode.CanResizeWithGrip)]
+[DependencyProperty<bool>("AlwaysVisible")]
 public partial class Panel : ContentControl, IAutoNotify
 {
 	protected readonly ILogger Log;
