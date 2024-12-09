@@ -530,4 +530,168 @@
 		<Setter Property="Icon" Value="../Assets/icon.ico" />
 	</Style>
 
+
+	<ControlTemplate
+		x:Key="PanelToolbarTemplate"
+		TargetType="{x:Type local:PanelWindow}">
+
+		<AdornerDecorator x:Name="MainGrid">
+
+			<Grid
+				Margin="12"
+				HorizontalAlignment="Center"
+				RenderTransformOrigin="0.5,0.5">
+
+				<Grid.RenderTransform>
+					<ScaleTransform x:Name="WindowScale" ScaleX="0.01" ScaleY="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ScaleX}" />
+				</Grid.RenderTransform>
+
+				<Border
+					x:Name="WindowShadow"
+					Background="Black"
+					CornerRadius="6"
+					Opacity="0.25">
+					<Border.BitmapEffect>
+						<DropShadowBitmapEffect
+							ShadowDepth="0"
+							Softness="0.75" />
+					</Border.BitmapEffect>
+				</Border>
+
+				<Border
+					Background="{DynamicResource BackgroundBrush}"
+					CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
+
+				<ContentPresenter
+					Margin="3"
+					Content="{TemplateBinding Content}"
+					ContentTemplate="{TemplateBinding ContentTemplate}" />
+
+				<Border
+					x:Name="WindowBorder"
+					BorderBrush="{DynamicResource BackgroundBrush}"
+					BorderThickness="1"
+					CornerRadius="6" />
+			</Grid>
+		</AdornerDecorator>
+
+		<ControlTemplate.Triggers>
+			<Trigger Property="IsActive" Value="True">
+				<Setter TargetName="WindowBorder" Property="BorderBrush" Value="{DynamicResource TrimBrush}" />
+				<Setter TargetName="WindowShadow" Property="Opacity" Value="1" />
+			</Trigger>
+
+			<DataTrigger
+				Binding="{Binding IsOpen}"
+				Value="True">
+
+				<Setter Property="Opacity" Value="1" />
+
+				<DataTrigger.EnterActions>
+					<BeginStoryboard x:Name="LoadIn">
+						<Storyboard FillBehavior="HoldEnd">
+							<DoubleAnimation
+								Storyboard.TargetName="MainGrid"
+								Storyboard.TargetProperty="Opacity"
+								From="0"
+								To="1"
+								Duration="0:00:00.150">
+								<DoubleAnimation.EasingFunction>
+									<SineEase EasingMode="EaseIn" />
+								</DoubleAnimation.EasingFunction>
+							</DoubleAnimation>
+
+							<DoubleAnimation
+								Storyboard.TargetName="WindowScale"
+								Storyboard.TargetProperty="ScaleX"
+								From="0.75"
+								To="1"
+								Duration="0:00:00.250">
+								<DoubleAnimation.EasingFunction>
+									<QuadraticEase EasingMode="EaseOut" />
+								</DoubleAnimation.EasingFunction>
+							</DoubleAnimation>
+						</Storyboard>
+					</BeginStoryboard>
+				</DataTrigger.EnterActions>
+				<DataTrigger.ExitActions>
+					<BeginStoryboard x:Name="LoadOut">
+						<Storyboard FillBehavior="Stop">
+							<DoubleAnimation
+								Storyboard.TargetName="MainGrid"
+								Storyboard.TargetProperty="Opacity"
+								From="1"
+								To="0"
+								Duration="0:00:00.150">
+								<DoubleAnimation.EasingFunction>
+									<SineEase EasingMode="EaseOut" />
+								</DoubleAnimation.EasingFunction>
+							</DoubleAnimation>
+
+							<DoubleAnimation
+								Storyboard.TargetName="WindowScale"
+								Storyboard.TargetProperty="ScaleX"
+								To="0.75"
+								Duration="0:00:00.250">
+								<DoubleAnimation.EasingFunction>
+									<QuadraticEase EasingMode="EaseIn" />
+								</DoubleAnimation.EasingFunction>
+							</DoubleAnimation>
+						</Storyboard>
+					</BeginStoryboard>
+				</DataTrigger.ExitActions>
+			</DataTrigger>
+
+
+			<DataTrigger
+				Binding="{Binding IsUiVisibleAndOpen}"
+				Value="False">
+				<DataTrigger.EnterActions>
+					<StopStoryboard BeginStoryboardName="FadeIn" />
+					<BeginStoryboard x:Name="FadeOut">
+						<Storyboard FillBehavior="HoldEnd">
+							<DoubleAnimation
+								Storyboard.TargetName="MainGrid"
+								Storyboard.TargetProperty="Opacity"
+								To="0"
+								Duration="0:00:00.100">
+								<DoubleAnimation.EasingFunction>
+									<SineEase EasingMode="EaseIn" />
+								</DoubleAnimation.EasingFunction>
+							</DoubleAnimation>
+						</Storyboard>
+					</BeginStoryboard>
+				</DataTrigger.EnterActions>
+
+				<DataTrigger.ExitActions>
+					<StopStoryboard BeginStoryboardName="FadeOut" />
+					<BeginStoryboard x:Name="FadeIn">
+						<Storyboard FillBehavior="Stop">
+							<DoubleAnimation
+								Storyboard.TargetName="MainGrid"
+								Storyboard.TargetProperty="Opacity"
+								To="1"
+								Duration="0:00:00.200">
+								<DoubleAnimation.EasingFunction>
+									<SineEase EasingMode="EaseOut" />
+								</DoubleAnimation.EasingFunction>
+							</DoubleAnimation>
+						</Storyboard>
+					</BeginStoryboard>
+				</DataTrigger.ExitActions>
+			</DataTrigger>
+
+		</ControlTemplate.Triggers>
+
+	</ControlTemplate>
+
+	<Style
+		x:Key="PanelToolbarStyle"
+		BasedOn="{StaticResource PanelWindowStyle}"
+		TargetType="{x:Type local:PanelWindow}">
+		<Setter Property="MinWidth" Value="32" />
+		<Setter Property="MinHeight" Value="32" />
+		<Setter Property="Template" Value="{DynamicResource PanelToolbarTemplate}" />
+	</Style>
+
 </ResourceDictionary>

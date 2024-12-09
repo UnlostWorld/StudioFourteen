@@ -35,11 +35,10 @@
 			CornerRadius="6,6,6,0"
 			Style="{DynamicResource WpfUtilsControlBorder}" />
 
-		<background:Targets
+		<panels:PanelHost
 			Grid.Row="0"
 			Grid.Column="1"
-			HorizontalAlignment="Stretch"
-			ShowBackground="False" />
+			PanelType="{x:Type background:TargetsPanel}" />
 
 		<Grid
 			Grid.Row="1"

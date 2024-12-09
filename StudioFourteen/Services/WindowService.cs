@@ -116,8 +116,6 @@ public partial class WindowService : ServiceBase
 
 	public void ActivateXivWindow()
 	{
-		this.Log.Information("ACTIVATE XIV");
-
 		if (this.XivWindowHwnd == null)
 			return;
 

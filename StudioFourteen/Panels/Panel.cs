@@ -36,6 +36,8 @@ using WpfUtils.Extensions;
 [DependencyProperty<SizeToContent>("SizeToContent", DefaultValue =SizeToContent.Manual)]
 [DependencyProperty<ResizeMode>("ResizeMode", DefaultValue =ResizeMode.CanResizeWithGrip)]
 [DependencyProperty<bool>("AlwaysVisible", DefaultValue =false)]
+[DependencyProperty<Style>("HostStyle")]
+[DependencyProperty<Point>("DefaultPosition", DefaultValueExpression= "new System.Windows.Point(0.5, 0.5)")]
 public partial class Panel : ContentControl, IAutoNotify
 {
 	protected readonly ILogger Log;

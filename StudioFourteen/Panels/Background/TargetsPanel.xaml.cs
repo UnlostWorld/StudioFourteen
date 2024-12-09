@@ -15,13 +15,15 @@
 
 namespace StudioFourteen.Studio.Background;
 
-using DependencyPropertyGenerator;
 using Dalamud.Plugin.Services;
+using DependencyPropertyGenerator;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
-using StudioFourteen;
+using StudioFourteen.Appearance;
 using StudioFourteen.Library;
+using StudioFourteen.Mvm;
+using StudioFourteen.Panels;
 using StudioFourteen.Plugin;
 using StudioFourteen.Services;
 using StudioFourteen.Tags;
@@ -30,13 +32,11 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using WpfUtils.Extensions;
-using StudioFourteen.Appearance;
-using StudioFourteen.Mvm;
 
 [DependencyProperty<bool>("ShowBackground", DefaultValue = true)]
-public partial class Targets : View
+public partial class TargetsPanel : Panel
 {
-	public Targets()
+	public TargetsPanel()
 	{
 		for (int i = GroupPoseService.GPoseFirstCharacter; i < GroupPoseService.GPoseFirstCharacter + GroupPoseService.GPoseCharacterCount; ++i)
 		{

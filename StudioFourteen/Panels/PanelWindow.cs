@@ -55,7 +55,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 		// Load a new copy of the resources. Each window needs its own instance for threading reasons.
 		this.Resources = StudioFourteen.Resources.Load();
-		this.Style = (Style)this.FindResource("PanelWindowStyle");
+		this.Style = this.DefaultStyle;
 
 		this.GetType().GetMethod("InitializeComponent")?.Invoke(this, null);
 		this.DataContext = this;
@@ -113,6 +113,8 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	public bool HasSubtitle => this.Panel != null && !string.IsNullOrEmpty(this.Panel.Subtitle);
 	public bool IsOpen { get; private set; }
 	public virtual bool CanNavigate => true;
+
+	public Style DefaultStyle => (Style)this.FindResource("PanelWindowStyle");
 
 	public virtual Point? SavedPosition
 	{
@@ -176,6 +178,9 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 				this.Height = this.panel.Height;
 				this.MinWidth = this.panel.MinWidth + 24;
 				this.MinHeight = this.panel.MinHeight + 24 + 30;
+
+				if (this.panel.HostStyle != null)
+					this.Style = this.panel.HostStyle;
 
 				this.panel.Width = double.NaN;
 				this.panel.HorizontalAlignment = HorizontalAlignment.Stretch;
@@ -301,7 +306,13 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		this.Scale = this.SavedScale;
 
 		if (this.SavedPosition != null)
+		{
 			this.Position = (Point)this.SavedPosition;
+		}
+		else if (this.panel != null)
+		{
+			this.Position = this.panel.DefaultPosition;
+		}
 
 		if (this.SavedSize != null)
 		{
@@ -344,7 +355,9 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 			DalamudServices.GameGui.UiHideToggled -= this.OnGameUiToggled;
 
 		this.SavedPosition = this.Position;
-		this.SavedSize = new Point(this.Width, this.Height);
+
+		if (this.SizeToContent != SizeToContent.WidthAndHeight)
+			this.SavedSize = new Point(this.Width, this.Height);
 
 		AutoPropertyNotifyService.Remove(this);
 		this.panel?.SetIsOpen(this, false);

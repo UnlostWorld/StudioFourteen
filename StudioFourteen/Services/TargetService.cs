@@ -22,6 +22,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using StudioFourteen.Input;
 using StudioFourteen.Mvm;
 using StudioFourteen.Plugin;
+using StudioFourteen.Studio.Background;
 using StudioFourteen.Utilities;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -41,6 +42,13 @@ public class TargetService : ServiceBase
 	[AlwaysNotify] public bool HasValidTarget { get; private set; } = false;
 	[AlwaysNotify] public bool IsTargetLoading { get; private set; } = false;
 	[AlwaysNotify] public int TargetObjectIndex { get; private set; } = -1;
+
+	public override Task Start()
+	{
+		this.Services.GroupPose.StateChanged += this.OnGroupPoseStateChanged;
+		this.OnGroupPoseStateChanged(this.Services.GroupPose.IsGroupPosing);
+		return base.Start();
+	}
 
 	public unsafe Character* GetCharacter(int objectTableIndex)
 	{
@@ -137,5 +145,10 @@ public class TargetService : ServiceBase
 		{
 			this.TargetChanged?.Invoke();
 		}
+	}
+
+	private void OnGroupPoseStateChanged(bool newState)
+	{
+		this.Services.Panels.SetIsOpen<TargetsPanel>(newState);
 	}
 }

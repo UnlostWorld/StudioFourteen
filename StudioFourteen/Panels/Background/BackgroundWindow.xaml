@@ -121,17 +121,11 @@
 				</Style>
 			</Grid.Style>
 
-			<background:Targets
-				Grid.Column="1"
-				Margin="0,10,0,0"
-				HorizontalAlignment="Center"
-				VerticalAlignment="Top" />
-
-			<overlays:OverlayBar
+			<!--<overlays:OverlayBar
 				Margin="10"
 				HorizontalAlignment="Right"
 				VerticalAlignment="Top"
-				Visibility="{Binding Services.Studio.IsOpenAndInGPose, Converter={StaticResource B2V}}" />
+				Visibility="{Binding Services.Studio.IsOpenAndInGPose, Converter={StaticResource B2V}}" />-->
 
 			<context:WorldContextMenu x:Name="WorldContextMenu" />
 		</Grid>

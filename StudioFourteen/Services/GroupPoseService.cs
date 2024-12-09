@@ -102,12 +102,7 @@ public partial class GroupPoseService : ServiceBase
 		bool didEnter = this.enterHook?.Original.Invoke(uiModule) ?? false;
 
 		if (didEnter)
-		{
-			this.StateChanged?.Invoke(true);
-			this.IsGroupPosing = true;
-		}
-
-		this.RaisePropertyChanged(nameof(GroupPoseService.IsGroupPosing));
+			this.SetState(true);
 
 		return didEnter;
 	}
@@ -115,9 +110,13 @@ public partial class GroupPoseService : ServiceBase
 	private unsafe void ExitDetour(UIModule* uiModule)
 	{
 		this.exitHook?.Original.Invoke(uiModule);
+		this.SetState(false);
+	}
 
-		this.StateChanged?.Invoke(false);
-		this.IsGroupPosing = false;
+	private void SetState(bool newState)
+	{
+		this.StateChanged?.Invoke(newState);
+		this.IsGroupPosing = newState;
 		this.RaisePropertyChanged(nameof(GroupPoseService.IsGroupPosing));
 	}
 }
