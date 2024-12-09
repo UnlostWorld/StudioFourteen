@@ -118,24 +118,24 @@ public partial class MiniLibraryPopOut : View
 		return false;
 	}
 
-	public static void Show<T>(UIElement placementTarget, string title, TagCollection defaultTags, T? current, Action<T, bool> selectionChanged)
+	public static void Show<T>(UIElement placementTarget, string title, TagCollection defaultTags, T? current, Action<T, bool> selectionChanged, bool staysOpen = true)
 		where T : notnull
 	{
-		ShowAsync<T>(placementTarget, title, defaultTags, current, selectionChanged).Run();
+		ShowAsync<T>(placementTarget, title, defaultTags, current, selectionChanged, staysOpen).Run();
 	}
 
-	public static void Show(UIElement placementTarget, string title, TagCollection defaultTags, Type type, object? current, Action<object, bool> selectionChanged)
+	public static void Show(UIElement placementTarget, string title, TagCollection defaultTags, Type type, object? current, Action<object, bool> selectionChanged, bool staysOpen = true)
 	{
-		ShowAsync(placementTarget, title, defaultTags, type, current, selectionChanged).Run();
+		ShowAsync(placementTarget, title, defaultTags, type, current, selectionChanged, staysOpen).Run();
 	}
 
-	public static async Task<MiniLibraryPopOut> ShowAsync<T>(UIElement placementTarget, string title, TagCollection defaultTags, T? current, Action<T, bool> selectionChanged)
+	public static async Task<MiniLibraryPopOut> ShowAsync<T>(UIElement placementTarget, string title, TagCollection defaultTags, T? current, Action<T, bool> selectionChanged, bool staysOpen = true)
 		where T : notnull
 	{
-		return await ShowAsync(placementTarget, title, defaultTags, typeof(T), current, (s, f) => selectionChanged.Invoke((T)s, f));
+		return await ShowAsync(placementTarget, title, defaultTags, typeof(T), current, (s, f) => selectionChanged.Invoke((T)s, f), staysOpen);
 	}
 
-	public static async Task<MiniLibraryPopOut> ShowAsync(UIElement placementTarget, string title, TagCollection defaultTags, Type type, object? current, Action<object, bool> selectionChanged)
+	public static async Task<MiniLibraryPopOut> ShowAsync(UIElement placementTarget, string title, TagCollection defaultTags, Type type, object? current, Action<object, bool> selectionChanged, bool staysOpen = true)
 	{
 		await CloseAsync();
 
@@ -143,7 +143,7 @@ public partial class MiniLibraryPopOut : View
 
 		instance = new MiniLibraryPopOut();
 		instance.host = PopOut.Show(placementTarget, instance);
-		instance.host.StaysOpen = true;
+		instance.host.StaysOpen = staysOpen;
 		instance.host.IsOpen = true;
 
 		Window? targetWindow = placementTarget.FindParent<Window>();

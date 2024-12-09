@@ -11,10 +11,13 @@
 	xmlns:triggers="clr-namespace:WpfUtils.Triggers;assembly=WpfUtils"
 	xmlns:vectors="http://sharpvectors.codeplex.com/svgc/"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	Width="64"
+	Height="512"
 	MinWidth="32"
 	MinHeight="32"
 	d:DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
-	SizeToContent="WidthAndHeight"
+	MouseLeave="OnMouseLeave"
+	SizeToContent="Manual"
 	mc:Ignorable="d">
 
 	<panels:PanelWindow.Template>
@@ -23,6 +26,7 @@
 				<Grid
 					Margin="12"
 					HorizontalAlignment="Center"
+					VerticalAlignment="Top"
 					RenderTransformOrigin="0.5,0.5">
 
 					<Border

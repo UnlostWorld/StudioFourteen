@@ -94,7 +94,8 @@ public partial class TargetsPanel : Panel
 						return;
 
 					this.CreateCharacter(appearance).Run();
-				});
+				},
+				false);
 		}
 	}
 

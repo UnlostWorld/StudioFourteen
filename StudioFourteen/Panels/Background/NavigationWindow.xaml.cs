@@ -24,11 +24,14 @@ using StudioFourteen.Posing;
 using StudioFourteen.Save;
 using StudioFourteen.Services;
 using StudioFourteen.Settings;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
 
 public partial class NavigationWindow : PanelWindow
 {
+	private readonly Persistence persistence = new("NavigationWindow");
+
 	[AutoNotify]
 	public bool ShowStudioButton => !this.Services.Settings.Current.HideStudioButton && !DalamudServices.GameGui?.GameUiHidden == true;
 
@@ -104,6 +107,22 @@ public partial class NavigationWindow : PanelWindow
 		set => this.Services.Panels.SetIsOpen<SaveWindow>(value);
 	}
 
+	public override T? GetPersistence<T>([CallerMemberName] string id = "")
+		where T : default
+	{
+		return this.persistence.GetPersistence<T>(id);
+	}
+
+	public override void SetPersistence(object? value, [CallerMemberName] string id = "")
+	{
+		this.persistence.SetPersistence(value, id);
+	}
+
+	public override void SetPersistence(string id, object? value)
+	{
+		this.persistence.SetPersistence(id, value);
+	}
+
 	private void OnStudioClicked(object sender, RoutedEventArgs e)
 	{
 		if (this.Services.Studio.IsOpen)
@@ -120,7 +139,12 @@ public partial class NavigationWindow : PanelWindow
 	{
 		if (e.LeftButton == MouseButtonState.Pressed)
 		{
-			GetWindow((DependencyObject)sender).DragMove();
+			this.DragMove();
 		}
+	}
+
+	private void OnMouseLeave(object sender, MouseEventArgs e)
+	{
+		this.SavedPosition = this.Position;
 	}
 }

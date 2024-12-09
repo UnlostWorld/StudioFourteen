@@ -216,7 +216,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		return this.IsVisible && this.IsLoaded;
 	}
 
-	public T? GetPersistence<T>([CallerMemberName] string id = "")
+	public virtual T? GetPersistence<T>([CallerMemberName] string id = "")
 	{
 		if (this.Panel == null)
 			return default;
@@ -224,12 +224,12 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		return this.Panel.GetPersistence<T>(id);
 	}
 
-	public void SetPersistence(object? value, [CallerMemberName] string id = "")
+	public virtual void SetPersistence(object? value, [CallerMemberName] string id = "")
 	{
 		this.Panel?.SetPersistence(id, value);
 	}
 
-	public void SetPersistence(string id, object? value)
+	public virtual void SetPersistence(string id, object? value)
 	{
 		this.Panel?.SetPersistence(id, value);
 	}
