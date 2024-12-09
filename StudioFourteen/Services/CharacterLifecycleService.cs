@@ -286,7 +286,7 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 		pSpawned->GameObject.DefaultRotation = player->GameObject.Rotation;
 
 		// Generate a unique name.
-		// This name must pass penumbra's naming validation to allow mcdf loading to wor.
+		// This name must pass penumbra's naming validation to allow mcdf loading to work.
 		// Generate the name "Studio S" + the object table index as letters a = 0, b = 1, etc.
 		char[] str = pSpawned->ObjectIndex.ToString("D3").ToArray();
 		for (int j = 0; j < str.Length; j++)
