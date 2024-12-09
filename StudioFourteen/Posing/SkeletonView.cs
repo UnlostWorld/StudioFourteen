@@ -187,7 +187,9 @@ public partial class SkeletonView : Canvas
 
 		// TODO: check for mounts?
 		await this.Dispatcher.MainThread();
-		this.Visibility = result ? Visibility.Visible : Visibility.Collapsed;
+
+		if (this.Visibility == Visibility.Visible)
+			this.Visibility = result ? Visibility.Visible : Visibility.Collapsed;
 
 		this.OnRenderSizeChanged(null);
 	}

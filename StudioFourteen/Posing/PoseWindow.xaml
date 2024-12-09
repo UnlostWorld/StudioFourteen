@@ -124,7 +124,8 @@
 							Grid.Column="2"
 							FlipSides="{Binding FlipSides}"
 							ObjectTableIndex="{Binding TargetObjectIndex}"
-							ViewDefinition="{Binding Services.Data.SkeletonViews[Penis]}" />
+							ViewDefinition="{Binding Services.Data.SkeletonViews[Penis]}"
+							Visibility="{Binding Services.Settings.Current.HideGenitals, Converter={StaticResource !B2V}}" />
 
 						<pose:SkeletonView
 							x:Name="VaginaView"
@@ -132,7 +133,8 @@
 							Grid.Column="2"
 							FlipSides="{Binding FlipSides}"
 							ObjectTableIndex="{Binding TargetObjectIndex}"
-							ViewDefinition="{Binding Services.Data.SkeletonViews[Vagina]}" />
+							ViewDefinition="{Binding Services.Data.SkeletonViews[Vagina]}"
+							Visibility="{Binding Services.Settings.Current.HideGenitals, Converter={StaticResource !B2V}}" />
 
 					</Grid>
 				</TabItem>

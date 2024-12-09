@@ -39,6 +39,12 @@
 					Margin="1"
 					Content="{DynamicResource LOC_Settings_Interface_OpenGroupPose}"
 					IsChecked="{Binding Settings.OpenGroupPose}" />
+
+				<ToggleButton
+					Grid.Row="0"
+					Margin="1"
+					Content="{DynamicResource LOC_Settings_Interface_HideGenitals}"
+					IsChecked="{Binding Settings.HideGenitals}" />
 			</StackPanel>
 		</TabItem>
 

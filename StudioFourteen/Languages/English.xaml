@@ -144,6 +144,7 @@
 	<sys:String x:Key="LOC_Settings_Interface_HideStudioButton">Hide the Studio button</sys:String>
 	<sys:String x:Key="LOC_Settings_Interface_HideStudioButton_ToolTip">You can still access the Studio interface by using the chat command /s14 or from the dalamud plugin installer.</sys:String>
 	<sys:String x:Key="LOC_Settings_Interface_OpenGroupPose">Open Group Pose with Studio</sys:String>
+	<sys:String x:Key="LOC_Settings_Interface_HideGenitals">Hide genital bones</sys:String>
 
 	<sys:String x:Key="LOC_Settings_Files">Files</sys:String>
 	<sys:String x:Key="LOC_Settings_Files_DefaultMetadata">Default Metadata</sys:String>
