@@ -139,6 +139,7 @@ public class PoseService : ServiceBase, WorldContextMenu.IProvider
 	{
 		this.Services.CharacterLifecycle.CharacterDestroyed += this.OnCharacterDestroyed;
 		this.Services.GroupPose.StateChanged += this.OnGroupPoseStateChange;
+		this.Services.Target.TargetChanged += this.OnTargetChanged;
 		WorldContextMenu.AddProvider(this);
 		return base.Start();
 	}
@@ -147,6 +148,7 @@ public class PoseService : ServiceBase, WorldContextMenu.IProvider
 	{
 		this.Services.CharacterLifecycle.CharacterDestroyed -= this.OnCharacterDestroyed;
 		this.Services.GroupPose.StateChanged -= this.OnGroupPoseStateChange;
+		this.Services.Target.TargetChanged -= this.OnTargetChanged;
 		this.FlushBoneReferences();
 		WorldContextMenu.RemoveProvider(this);
 		return base.Stop();
@@ -705,5 +707,11 @@ public class PoseService : ServiceBase, WorldContextMenu.IProvider
 	private void OnGroupPoseStateChange(bool newState)
 	{
 		this.FlushBoneReferences();
+	}
+
+	private void OnTargetChanged()
+	{
+		// TODO: consider caching the previous selection this target had and restoring it?
+		this.Selection = new GameObjectSelection(this.Services.Target.TargetObjectIndex);
 	}
 }
