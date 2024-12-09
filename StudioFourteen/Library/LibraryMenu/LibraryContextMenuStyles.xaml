@@ -16,7 +16,9 @@
 		x:Key="LibraryContextMenuTemplate"
 		TargetType="{x:Type ContentControl}">
 
-		<Grid Margin="12">
+		<Grid
+			Margin="12"
+			VerticalAlignment="Top">
 			<Grid>
 				<Grid.Effect>
 					<DropShadowEffect
@@ -193,7 +195,7 @@
 							<DoubleAnimation
 								Storyboard.TargetName="TagsArea"
 								Storyboard.TargetProperty="MaxHeight"
-								To="200"
+								To="128"
 								Duration="0:00:00.150">
 								<DoubleAnimation.EasingFunction>
 									<SineEase EasingMode="EaseOut" />
@@ -227,10 +229,17 @@
 	</ControlTemplate>
 
 	<Style
+		x:Key="LibraryContextMenuStyle"
 		BasedOn="{StaticResource WpfUtilsPopOut}"
 		TargetType="{x:Type menu:LibraryContextMenu}">
 		<Setter Property="Template" Value="{StaticResource LibraryContextMenuTemplate}" />
 		<Setter Property="Width" Value="250" />
+		<Setter Property="Height" Value="600" />
 	</Style>
+
+	<Style
+		BasedOn="{StaticResource LibraryContextMenuStyle}"
+		TargetType="{x:Type menu:LibraryContextMenu}" />
+
 
 </ResourceDictionary>

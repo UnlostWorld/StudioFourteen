@@ -346,7 +346,7 @@ public partial class LibraryWindow : Panel
 			return;
 
 		this.currentHover = senderElement;
-		this.LibraryContextMenu.Enter(result, senderElement);
+		this.LibraryContextMenu.Enter(result.Entry, senderElement);
 		this.StartPreview().Run();
 	}
 
@@ -459,7 +459,7 @@ public partial class LibraryWindow : Panel
 
 			if (this.currentHover.DataContext is Result result)
 			{
-				this.LibraryContextMenu.Leave(result);
+				this.LibraryContextMenu.Leave(result.Entry);
 				this.stopPreviewQueue.Invoke();
 			}
 

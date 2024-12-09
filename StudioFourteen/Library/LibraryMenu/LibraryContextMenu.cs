@@ -18,20 +18,15 @@ namespace StudioFourteen.Library.LibraryMenu;
 using DependencyPropertyGenerator;
 using FontAwesome.Sharp;
 using Serilog;
-using StudioFourteen.Library.Results;
-using StudioFourteen.Library.Sources;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using WpfUtils;
 using WpfUtils.Commands;
 using WpfUtils.Controls;
 using WpfUtils.Extensions;
-using WpfUtils.Utils;
 
 public interface ILibraryContextMenu
 {
@@ -42,33 +37,35 @@ public interface ILibraryContextMenu
 [DependencyProperty<bool>("IsExpanded")]
 public partial class LibraryContextMenu : PopOut, ILibraryContextMenu
 {
+	public Action? OnCollectingMenus;
+
 	protected readonly ILogger Log = Logging.ForContext<LibraryContextMenu>();
 	private readonly List<MenuEntry> pendingChildren = new();
 
 	private UIElement? placementTarget;
-	private Result? currentResult;
+	private LibraryEntryBase? currentEntry;
 
 	public ServiceManager Services => ServiceManager.Instance;
 	public FastObservableCollection<MenuEntry> Menus { get; init; } = new();
 
-	public void Enter(Result result, FrameworkElement placementTarget)
+	public void Enter(LibraryEntryBase entry, FrameworkElement placementTarget)
 	{
 		if (this.IsOpen && this.IsExpanded)
 			return;
 
-		if (this.IsOpen && this.currentResult != result)
+		if (this.IsOpen && this.currentEntry != entry)
 			this.IsOpen = false;
 
 		this.IsHitTestVisible = false;
 		this.placementTarget = placementTarget;
-		this.currentResult = result;
+		this.currentEntry = entry;
 		this.IsExpanded = false;
 		this.StaysOpen = true;
 
 		this.ShowResultMenu().Run();
 	}
 
-	public void Leave(Result? result)
+	public void Leave(LibraryEntryBase? result)
 	{
 		if (this.IsOpen && this.IsExpanded)
 			return;
@@ -106,23 +103,25 @@ public partial class LibraryContextMenu : PopOut, ILibraryContextMenu
 	{
 		await this.MainThread();
 
-		if (this.placementTarget == null || this.currentResult == null)
+		if (this.placementTarget == null || this.currentEntry == null)
 			return;
 
-		this.Entry = this.currentResult.Entry;
+		this.Entry = this.currentEntry;
 		this.PlacementTarget = this.placementTarget;
 		this.IsOpen = true;
-		this.DataContext = this.currentResult.Entry;
+		this.DataContext = this.currentEntry;
 	}
 
 	private async Task CollectMenus()
 	{
 		this.Menus.Clear();
 
-		if (this.Entry == null)
-			return;
+		this.OnCollectingMenus?.Invoke();
 
-		await this.Entry.GetLibraryMenus(this);
+		if (this.Entry != null)
+		{
+			await this.Entry.GetLibraryMenus(this);
+		}
 
 		await this.MainThread();
 		foreach(var entry in this.pendingChildren)

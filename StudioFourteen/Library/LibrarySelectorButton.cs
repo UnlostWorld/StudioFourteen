@@ -16,9 +16,12 @@
 namespace StudioFourteen.Library;
 
 using DependencyPropertyGenerator;
+using FontAwesome.Sharp;
+using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Tags;
 using System;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 [DependencyProperty<Type>("Type")]
 [DependencyProperty<object>("Value", DefaultBindingMode = DefaultBindingMode.TwoWay)]
@@ -28,6 +31,7 @@ using System.Windows.Controls;
 public partial class LibrarySelectorButton : Control
 {
 	private Button? button;
+	private LibraryContextMenu? menu;
 
 	public override void OnApplyTemplate()
 	{
@@ -36,13 +40,24 @@ public partial class LibrarySelectorButton : Control
 		if (this.button != null)
 		{
 			this.button.Click -= this.OnClicked;
+			this.button.MouseRightButtonUp -= this.OnMouseRightButtonUp;
+			this.button.ToolTipOpening -= this.OnToolTipOpening;
 		}
 
 		this.button = this.GetTemplateChild("PART_Button") as Button;
+		this.menu = this.GetTemplateChild("PART_Menu") as LibraryContextMenu;
 
 		if (this.button != null)
 		{
 			this.button.Click += this.OnClicked;
+			this.button.MouseRightButtonUp += this.OnMouseRightButtonUp;
+			this.button.ToolTipOpening += this.OnToolTipOpening;
+			this.button.MouseLeave += this.OnMouseLeave;
+		}
+
+		if (this.menu != null)
+		{
+			this.menu.OnCollectingMenus = this.CollectMenus;
 		}
 	}
 
@@ -62,12 +77,50 @@ public partial class LibrarySelectorButton : Control
 			defaultTags,
 			this.Type,
 			this.Value,
-			(appearance, isFinal) =>
+			(newValue, isFinal) =>
 			{
 				this.Dispatcher.Invoke(() =>
 				{
-					this.Value = appearance;
+					this.Value = newValue;
 				});
 			});
+	}
+
+	// Hijack the tooltip logic.
+	private void OnToolTipOpening(object sender, ToolTipEventArgs? e)
+	{
+		if (e != null)
+			e.Handled = true;
+
+		if (this.Value is LibraryEntryBase entry)
+		{
+			this.menu?.Enter(entry, this);
+		}
+	}
+
+	private void OnMouseLeave(object sender, MouseEventArgs e)
+	{
+		if (this.Value is LibraryEntryBase entry)
+		{
+			this.menu?.Leave(entry);
+		}
+	}
+
+	private void OnMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+	{
+		if (this.Value is LibraryEntryBase entry)
+		{
+			this.menu?.Enter(entry, this);
+			this.menu?.Expand();
+		}
+	}
+
+	private void CollectMenus()
+	{
+		if (this.menu == null)
+			return;
+
+		// TODO: a provider for these icons, such as gear slots with "Equip racial"?
+		////this.menu.AddMenu(IconChar.Eraser, "Clear", () => { this.Value = null; });
 	}
 }
