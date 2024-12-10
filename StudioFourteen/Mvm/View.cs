@@ -89,7 +89,7 @@ public class View : UserControl, IAutoNotify
 
 	public ServiceManager Services => ServiceManager.Instance;
 
-	public void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
+	public virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
 	{
 		this.PropertyChanged?.Invoke(this, new(propertyName));
 	}

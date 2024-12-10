@@ -18,7 +18,8 @@
 		<!--  Custom controls  -->
 		<ResourceDictionary Source="./Panels/PanelWindowStyle.xaml" />
 		<ResourceDictionary Source="./Save/SaveIconControl.xaml" />
-		<ResourceDictionary Source="./Library/LibrarySelectorButtonStyles.xaml" />
+		<ResourceDictionary Source="./Library/Selector/LibrarySelectorStyles.xaml" />
+		<ResourceDictionary Source="./Library/Selector/LibrarySelectorButtonStyles.xaml" />
 		<ResourceDictionary Source="./Library/LibraryMenu/LibraryContextMenuStyles.xaml" />
 		<ResourceDictionary Source="./Context/WorldContextMenuStyles.xaml" />
 		<ResourceDictionary Source="./Tags/TagSelectorStyles.xaml" />

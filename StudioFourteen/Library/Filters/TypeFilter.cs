@@ -24,10 +24,12 @@ public class TypeFilter : FilterBase
 
 	public TypeFilter(params Type[] loadTypes)
 	{
-		foreach(Type type in loadTypes)
-		{
-			this.types.Add(type);
-		}
+		this.SetTypes(loadTypes);
+	}
+
+	public TypeFilter(IEnumerable<Type> loadTypes)
+	{
+		this.SetTypes(loadTypes);
 	}
 
 	public IEnumerable<Type> Types => this.types;
@@ -41,6 +43,9 @@ public class TypeFilter : FilterBase
 
 	public override bool Filter(LibraryEntryBase entry)
 	{
+		if (this.types.Count <= 0)
+			return true;
+
 		foreach (Type type in this.types)
 		{
 			if (entry.IsType(type))
@@ -50,5 +55,15 @@ public class TypeFilter : FilterBase
 		}
 
 		return false;
+	}
+
+	public void SetTypes(IEnumerable<Type> types)
+	{
+		this.types.Clear();
+
+		foreach (Type type in types)
+		{
+			this.types.Add(type);
+		}
 	}
 }

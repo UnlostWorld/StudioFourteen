@@ -5,6 +5,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:gameData="clr-namespace:StudioFourteen.GameData.Library"
 	xmlns:library="clr-namespace:StudioFourteen.Library"
+	xmlns:librarySelector="clr-namespace:StudioFourteen.Library.Selector"
 	xmlns:local="clr-namespace:StudioFourteen.Panels"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
@@ -18,12 +19,12 @@
 	<Grid>
 		<StackPanel>
 
-			<library:LibrarySelectorButton
+			<librarySelector:LibrarySelectorButton
 				IsEnabled="{Binding Services.Environment.CanChangeTerritory}"
 				Type="{x:Type gameData:TerritoryTypeLibraryEntry}"
 				Value="{Binding Territory}" />
 
-			<library:LibrarySelectorButton
+			<librarySelector:LibrarySelectorButton
 				SearchTags="{Binding WeatherTags}"
 				Type="{x:Type gameData:WeatherLibraryEntry}"
 				Value="{Binding Weather}" />

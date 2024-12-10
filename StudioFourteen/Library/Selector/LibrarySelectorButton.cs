@@ -13,28 +13,32 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Library;
+namespace StudioFourteen.Library.Selector;
 
 using DependencyPropertyGenerator;
 using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Tags;
 using System;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 
 [DependencyProperty<Type>("Type")]
-[DependencyProperty<object>("Value", DefaultBindingMode = DefaultBindingMode.TwoWay)]
-[DependencyProperty<string>("Title")]
+[DependencyProperty<LibraryEntryBase>("Value", DefaultBindingMode = DefaultBindingMode.TwoWay)]
 [DependencyProperty<object>("IconBackground")]
 [DependencyProperty<TagCollection>("SearchTags")]
 [DependencyProperty<object>("PopOutHeader")]
 [DependencyProperty<object>("PopOutHeaderTemplate")]
+[DependencyProperty<object>("ToolTipHeader")]
+[DependencyProperty<object>("ToolTipHeaderTemplate")]
 [DependencyProperty<object>("PopOutBackgroundDetail")]
 [DependencyProperty<Action<LibraryContextMenu>>("CollectingMenus")]
+[DependencyProperty<bool>("NullIsValid", DefaultValue =false)]
 public partial class LibrarySelectorButton : Control
 {
-	private Button? button;
+	private ButtonBase? button;
 	private LibraryContextMenu? menu;
+	private LibrarySelector? selector;
 
 	public override void OnApplyTemplate()
 	{
@@ -42,46 +46,20 @@ public partial class LibrarySelectorButton : Control
 
 		if (this.button != null)
 		{
-			this.button.Click -= this.OnClicked;
 			this.button.MouseRightButtonUp -= this.OnMouseRightButtonUp;
 			this.button.ToolTipOpening -= this.OnToolTipOpening;
 		}
 
-		this.button = this.GetTemplateChild("PART_Button") as Button;
+		this.button = this.GetTemplateChild("PART_Button") as ButtonBase;
 		this.menu = this.GetTemplateChild("PART_Menu") as LibraryContextMenu;
+		this.selector = this.GetTemplateChild("PART_Selector") as LibrarySelector;
 
 		if (this.button != null)
 		{
-			this.button.Click += this.OnClicked;
 			this.button.MouseRightButtonUp += this.OnMouseRightButtonUp;
 			this.button.ToolTipOpening += this.OnToolTipOpening;
 			this.button.MouseLeave += this.OnMouseLeave;
 		}
-	}
-
-	private void OnClicked(object sender, System.Windows.RoutedEventArgs e)
-	{
-		if (this.Type == null)
-			return;
-
-		TagCollection defaultTags = this.SearchTags ?? new();
-
-		if (defaultTags.Count <= 0)
-			defaultTags.Add("Named");
-
-		MiniLibraryPopOut.Show(
-			this,
-			this.Title ?? string.Empty,
-			defaultTags,
-			this.Type,
-			this.Value,
-			(newValue, isFinal) =>
-			{
-				this.Dispatcher.Invoke(() =>
-				{
-					this.Value = newValue;
-				});
-			});
 	}
 
 	// Hijack the tooltip logic.

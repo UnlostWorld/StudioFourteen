@@ -4,7 +4,7 @@
 	xmlns:controls="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=WpfUtils"
 	xmlns:gameData="clr-namespace:StudioFourteen.GameData.Library"
-	xmlns:library="clr-namespace:StudioFourteen.Library"
+	xmlns:library="clr-namespace:StudioFourteen.Library.Selector"
 	xmlns:local="clr-namespace:StudioFourteen.Appearance.Customize">
 
 	<ResourceDictionary.MergedDictionaries>
@@ -35,9 +35,9 @@
 				Text="{Binding Name}" />
 
 			<library:LibrarySelectorButton
-				Title="{Binding Name}"
 				Grid.Row="1"
 				Grid.ColumnSpan="2"
+				PopOutHeader="{Binding Name}"
 				SearchTags="{Binding SearchTags}"
 				Type="{x:Type gameData:CharaMakeCustomizeLibraryEntry}"
 				Value="{Binding Entry}" />

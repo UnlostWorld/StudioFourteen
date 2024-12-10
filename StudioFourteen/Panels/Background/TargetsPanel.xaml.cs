@@ -79,25 +79,22 @@ public partial class TargetsPanel : Panel
 
 	private void OnAddCharacterClicked(object sender, RoutedEventArgs e)
 	{
-		if (sender is UIElement target)
+		throw new NotImplementedException();
+		/*if (sender is UIElement target)
 		{
-			TagCollection defaultTags = new();
-			defaultTags.Add("Named");
+			LibraryPopOut<ICharacterAppearance> popOut = new();
+			popOut.DefaultTags = new("Named");
+			popOut.PlacementTarget = target;
+			popOut.Title = "Create Character";
+			popOut.StaysOpen = false;
+			popOut.SelectionChanged = (appearance, isFinal) =>
+			{
+				if (appearance == null || !isFinal)
+					return;
 
-			MiniLibraryPopOut.Show<ICharacterAppearance>(
-				target,
-				"Create Character",
-				defaultTags,
-				null,
-				(appearance, isFinal) =>
-				{
-					if (!isFinal)
-						return;
-
-					this.CreateCharacter(appearance).Run();
-				},
-				false);
-		}
+				this.CreateCharacter(appearance).Run();
+			};
+		}*/
 	}
 
 	private async Task CreateCharacter(ICharacterAppearance appearance)

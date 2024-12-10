@@ -298,4 +298,13 @@ public class ItemLibrarySource : ExcelSheetLibrarySource<Item, ItemLibraryEntry>
 
 		return null;
 	}
+
+	protected override bool IncludeEntry(Item row)
+	{
+		// Only equippable items.
+		if (row.EquipRestriction == 0)
+			return false;
+
+		return base.IncludeEntry(row);
+	}
 }

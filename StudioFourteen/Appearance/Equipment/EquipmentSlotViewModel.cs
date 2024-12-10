@@ -22,8 +22,7 @@ using System.Windows;
 
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 
-public class EquipmentSlotViewModel
-	: GearViewModelBase<ItemLibraryEntry>
+public class EquipmentSlotViewModel : GearViewModelBase<ItemLibraryEntry>
 {
 	protected readonly EquipmentSlot Slot;
 

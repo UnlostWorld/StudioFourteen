@@ -3,7 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
-	xmlns:local="clr-namespace:StudioFourteen.Library"
+	xmlns:librarySelector="clr-namespace:StudioFourteen.Library.Selector"
 	xmlns:menu="clr-namespace:StudioFourteen.Library.LibraryMenu"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
@@ -12,71 +12,83 @@
 
 	<ControlTemplate
 		x:Key="LibrarySelectorButtonTemplate"
-		TargetType="{x:Type local:LibrarySelectorButton}">
+		TargetType="{x:Type librarySelector:LibrarySelectorButton}">
 		<Grid>
-			<Button
+			<ToggleButton
 				x:Name="PART_Button"
 				Height="Auto"
 				HorizontalContentAlignment="Stretch"
 				Background="{TemplateBinding Background}"
+				Style="{DynamicResource WpfUtilsIconToggleButton}"
 				ToolTip="!">
-				<Button.Content>
-					<Grid>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition />
-						</Grid.ColumnDefinitions>
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition />
+					</Grid.ColumnDefinitions>
 
-						<Grid
-							Grid.RowSpan="2"
-							Margin="-3,3,3,2">
+					<Grid
+						Grid.RowSpan="2"
+						Margin="3,3,3,2">
 
-							<ContentPresenter
-								Content="{TemplateBinding IconBackground}"
-								Visibility="{TemplateBinding IconBackground,
-															 Converter={StaticResource NotNullToVisibilityConverter}}" />
+						<ContentPresenter
+							Content="{TemplateBinding IconBackground}"
+							Visibility="{TemplateBinding IconBackground,
+														 Converter={StaticResource NotNullToVisibilityConverter}}" />
 
-							<ContentPresenter
-								Content="{TemplateBinding Value}"
-								Style="{DynamicResource LibraryIcon}" />
-						</Grid>
-
-						<Grid
-							Grid.Column="1"
-							VerticalAlignment="Center">
-							<Grid.RowDefinitions>
-								<RowDefinition />
-								<RowDefinition Height="Auto" />
-							</Grid.RowDefinitions>
-
-							<TextBlock
-								Grid.Row="0"
-								VerticalAlignment="Center"
-								Text="{Binding Value.Name, RelativeSource={RelativeSource AncestorType={x:Type local:LibrarySelectorButton}}}"
-								Visibility="{Binding Value.Name, RelativeSource={RelativeSource AncestorType={x:Type local:LibrarySelectorButton}}, Converter={StaticResource StringHasContentToVisibility}}" />
-
-							<TextBlock
-								Grid.Row="1"
-								VerticalAlignment="Center"
-								Foreground="{DynamicResource ForegroundLightBrush}"
-								Text="{Binding Value.SubTitle, RelativeSource={RelativeSource AncestorType={x:Type local:LibrarySelectorButton}}}"
-								Visibility="{Binding Value.SubTitle, RelativeSource={RelativeSource AncestorType={x:Type local:LibrarySelectorButton}}, Converter={StaticResource StringHasContentToVisibility}}" />
-						</Grid>
+						<ContentPresenter
+							Content="{TemplateBinding Value}"
+							Style="{DynamicResource LibraryIcon}" />
 					</Grid>
-				</Button.Content>
-			</Button>
+
+					<Grid
+						Grid.Column="1"
+						VerticalAlignment="Center"
+						DataContext="{TemplateBinding Value}">
+						<Grid.RowDefinitions>
+							<RowDefinition />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+
+						<TextBlock
+							Grid.Row="0"
+							VerticalAlignment="Center"
+							Text="{Binding Name}"
+							Visibility="{Binding Name, Converter={StaticResource StringHasContentToVisibility}}" />
+
+						<TextBlock
+							Grid.Row="1"
+							VerticalAlignment="Center"
+							Foreground="{DynamicResource ForegroundLightBrush}"
+							Text="{Binding SubTitle}"
+							Visibility="{Binding SubTitle, Converter={StaticResource StringHasContentToVisibility}}" />
+					</Grid>
+				</Grid>
+			</ToggleButton>
 
 			<menu:LibraryContextMenu
 				x:Name="PART_Menu"
 				BackgroundDetail="{TemplateBinding PopOutBackgroundDetail}"
 				CollectingMenus="{TemplateBinding CollectingMenus}"
-				SourceHeader="{TemplateBinding PopOutHeader}"
-				SourceHeaderTemplate="{TemplateBinding PopOutHeaderTemplate}"
+				SourceHeader="{TemplateBinding ToolTipHeader}"
+				SourceHeaderTemplate="{TemplateBinding ToolTipHeaderTemplate}"
 				Style="{DynamicResource LibraryContextMenuStyle}" />
+
+			<librarySelector:LibrarySelector
+				x:Name="PART_Selector"
+				Header="{TemplateBinding PopOutHeader}"
+				HeaderTemplate="{TemplateBinding PopOutHeaderTemplate}"
+				IsOpen="{Binding ElementName=PART_Button, Path=IsChecked}"
+				PlacementTarget="{Binding ElementName=PART_Button}"
+				SelectedItem="{Binding RelativeSource={RelativeSource AncestorType={x:Type librarySelector:LibrarySelectorButton}}, Path=Value}"
+				StaysOpen="True"
+				Style="{DynamicResource LibrarySelector}"
+				Tags="{TemplateBinding SearchTags}" />
+
 		</Grid>
 	</ControlTemplate>
 
-	<Style TargetType="{x:Type local:LibrarySelectorButton}">
+	<Style TargetType="{x:Type librarySelector:LibrarySelectorButton}">
 		<Setter Property="Height" Value="48" />
 		<Setter Property="Template" Value="{StaticResource LibrarySelectorButtonTemplate}" />
 		<Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
@@ -84,7 +96,7 @@
 
 	<ControlTemplate
 		x:Key="LibrarySelectorButtonIconOnlyTemplate"
-		TargetType="{x:Type local:LibrarySelectorButton}">
+		TargetType="{x:Type librarySelector:LibrarySelectorButton}">
 		<Grid>
 
 			<Button
@@ -120,7 +132,7 @@
 
 	<Style
 		x:Key="LibrarySelectorIconOnly"
-		TargetType="{x:Type local:LibrarySelectorButton}">
+		TargetType="{x:Type librarySelector:LibrarySelectorButton}">
 		<Setter Property="Height" Value="48" />
 		<Setter Property="Width" Value="48" />
 		<Setter Property="Template" Value="{StaticResource LibrarySelectorButtonIconOnlyTemplate}" />

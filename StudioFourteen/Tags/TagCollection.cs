@@ -26,6 +26,14 @@ public class TagCollection : FastObservableCollection<Tag>
 	{
 	}
 
+	public TagCollection(params string[] tags)
+	{
+		foreach(string tag in tags)
+		{
+			this.Add(tag);
+		}
+	}
+
 	public TagCollection(TagCollection other)
 		: this()
 	{

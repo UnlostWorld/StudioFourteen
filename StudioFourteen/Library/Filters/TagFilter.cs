@@ -19,6 +19,15 @@ using StudioFourteen.Tags;
 
 public class TagFilter : FilterBase
 {
+	public TagFilter()
+	{
+	}
+
+	public TagFilter(TagCollection tags)
+	{
+		this.Tags = tags;
+	}
+
 	public TagCollection Tags { get; init; } = new();
 
 	public override bool IsEmpty => this.Tags.Count == 0;

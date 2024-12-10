@@ -4,6 +4,7 @@
 	xmlns:controls="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	xmlns:gameData="clr-namespace:StudioFourteen.GameData.Library"
 	xmlns:library="clr-namespace:StudioFourteen.Library"
+	xmlns:librarySelector="clr-namespace:StudioFourteen.Library.Selector"
 	xmlns:local="clr-namespace:StudioFourteen.Appearance.Customize">
 
 	<DataTemplate DataType="{x:Type local:ExcelLibraryEntryMenu}">
@@ -11,7 +12,7 @@
 			<TextBlock
 				Style="{DynamicResource LeftLabel}"
 				Text="{Binding Name}" />
-			<library:LibrarySelectorButton
+			<librarySelector:LibrarySelectorButton
 				Type="{Binding EntryType}"
 				Value="{Binding Entry}" />
 		</StackPanel>

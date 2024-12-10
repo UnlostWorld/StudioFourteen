@@ -33,7 +33,23 @@ public partial class NavigationWindow : PanelWindow
 	private readonly Persistence persistence = new("NavigationWindow");
 
 	[AutoNotify]
-	public bool ShowStudioButton => !this.Services.Settings.Current.HideStudioButton && !DalamudServices.GameGui?.GameUiHidden == true;
+	public bool ShowStudioButton
+	{
+		get
+		{
+			if (!DalamudServices.IsAlive
+				|| DalamudServices.GameGui == null)
+				return true;
+
+			if (this.Services.Settings.Current.HideStudioButton)
+				return false;
+
+			if (DalamudServices.GameGui.GameUiHidden)
+				return false;
+
+			return true;
+		}
+	}
 
 	[AutoNotify]
 	public bool IsFullyLoaded

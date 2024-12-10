@@ -1,0 +1,218 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	xmlns:results="clr-namespace:StudioFourteen.Library.Results"
+	xmlns:selector="clr-namespace:StudioFourteen.Library.Selector"
+	xmlns:tags="clr-namespace:StudioFourteen.Tags"
+	xmlns:wpfUtils="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp">
+
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="pack://application:,,,/WpfUtils;component/Controls/PopOutStyles.xaml" />
+		<ResourceDictionary Source="pack://application:,,,/WpfUtils;component/Styles/TextBlockStyles.xaml" />
+		<ResourceDictionary Source="../LibraryIconTemplates.xaml" />
+		<ResourceDictionary Source="../LibraryBodyTemplates.xaml" />
+	</ResourceDictionary.MergedDictionaries>
+
+	<BooleanToVisibilityConverter x:Key="B2V" />
+
+	<DataTemplate
+		x:Key="LibrarySelectorResultTemplate"
+		DataType="{x:Type results:Result}">
+		<Grid
+			x:Name="Content"
+			Grid.Column="1"
+			Margin="-2"
+			Background="Transparent">
+
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition />
+			</Grid.ColumnDefinitions>
+
+			<ContentPresenter
+				Width="38"
+				Height="38"
+				Margin="3"
+				VerticalAlignment="Center"
+				Content="{Binding Entry}"
+				Style="{StaticResource LibraryIcon}"
+				TextBlock.Foreground="{DynamicResource ForegroundBrush}" />
+
+			<Grid
+				Grid.Column="1"
+				VerticalAlignment="Center">
+				<Grid.RowDefinitions>
+					<RowDefinition />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+
+				<TextBlock
+					Grid.Row="0"
+					VerticalAlignment="Center"
+					Text="{Binding Entry.Name}"
+					Visibility="{Binding Entry.Name, Converter={StaticResource StringHasContentToVisibility}}" />
+
+				<TextBlock
+					Grid.Row="1"
+					VerticalAlignment="Center"
+					Foreground="{DynamicResource ForegroundLightBrush}"
+					Text="{Binding Entry.SubTitle}"
+					Visibility="{Binding Entry.SubTitle, Converter={StaticResource StringHasContentToVisibility}}" />
+			</Grid>
+
+			<Grid
+				Margin="0,5,5,0"
+				HorizontalAlignment="Right"
+				VerticalAlignment="Top"
+				Visibility="{Binding Entry.IsFavorite, Converter={StaticResource B2V}}">
+				<wpfUtils:IconBlock
+					Margin="-2,2,2,-2"
+					FontSize="18"
+					Foreground="{DynamicResource BackgroundBrush}"
+					Icon="Heart"
+					IconFont="Solid" />
+				<wpfUtils:IconBlock
+					FontSize="18"
+					Foreground="{DynamicResource TrimBrush}"
+					Icon="Heart"
+					IconFont="Solid" />
+
+			</Grid>
+
+		</Grid>
+	</DataTemplate>
+
+	<ControlTemplate
+		x:Key="LibrarySelectorTemplate"
+		TargetType="{x:Type ContentControl}">
+
+		<Grid Margin="12">
+			<Grid>
+				<Grid.Effect>
+					<DropShadowEffect
+						Direction="270"
+						ShadowDepth="0" />
+				</Grid.Effect>
+
+				<Border
+					Background="{TemplateBinding Background}"
+					BorderBrush="{DynamicResource BackgroundBrush}"
+					BorderThickness="1"
+					CornerRadius="6" />
+
+				<Polygon
+					Margin="-11"
+					HorizontalAlignment="Center"
+					VerticalAlignment="Top"
+					Fill="{DynamicResource BackgroundBrush}"
+					Points="0,12 16,0, 32,12" />
+			</Grid>
+
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+
+				<Border
+					Grid.Row="0"
+					Background="{DynamicResource BackgroundBrush}"
+					CornerRadius="6,6,0,0">
+
+
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
+
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+
+						<Button
+							x:Name="PART_CloseButton"
+							Grid.Row="0"
+							Grid.Column="1"
+							Width="32"
+							Height="32"
+							HorizontalAlignment="Right"
+							VerticalAlignment="Top"
+							Background="Transparent">
+							<wpfUtils:IconBlock
+								Foreground="{DynamicResource ForegroundLightBrush}"
+								Icon="Times" />
+						</Button>
+
+						<ContentPresenter
+							Grid.Row="0"
+							Grid.Column="0"
+							Margin="{TemplateBinding Padding}"
+							Content="{Binding RelativeSource={RelativeSource AncestorType={x:Type controls:PopOut}}, Path=Header}"
+							ContentTemplate="{Binding RelativeSource={RelativeSource AncestorType={x:Type controls:PopOut}}, Path=HeaderTemplate}">
+							<ContentPresenter.Resources>
+								<Style
+									BasedOn="{StaticResource WpfUtilsTextBlock}"
+									TargetType="{x:Type TextBlock}">
+									<Setter Property="TextWrapping" Value="Wrap" />
+									<Setter Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
+								</Style>
+							</ContentPresenter.Resources>
+						</ContentPresenter>
+
+						<tags:TagSelector
+							Grid.Row="1"
+							Grid.ColumnSpan="2"
+							Margin="3,1"
+							SelectedTags="{Binding RelativeSource={RelativeSource AncestorType={x:Type selector:LibrarySelector}}, Path=Tags}"
+							Tags="{Binding RelativeSource={RelativeSource AncestorType={x:Type selector:LibrarySelector}}, Path=AvailableTags}" />
+
+						<TextBox
+							x:Name="PART_SearchBox"
+							Grid.Row="2"
+							Grid.ColumnSpan="2"
+							Margin="3,1,3,3"
+							Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type selector:LibrarySelector}}, Path=Search, UpdateSourceTrigger=PropertyChanged}" />
+					</Grid>
+				</Border>
+
+				<ListBox
+					x:Name="PART_ResultsBox"
+					Grid.Row="1"
+					Padding="3,0,0,3"
+					Background="Transparent"
+					ItemTemplate="{DynamicResource LibrarySelectorResultTemplate}"
+					ScrollViewer.VerticalScrollBarVisibility="Visible" />
+
+				<Border
+					Grid.Row="2"
+					Background="{DynamicResource BackgroundBrush}"
+					CornerRadius="0,0,6,6">
+					<ContentPresenter
+						Content="{Binding Footer}"
+						ContentTemplate="{Binding FooterTemplate}" />
+				</Border>
+			</Grid>
+		</Grid>
+	</ControlTemplate>
+
+
+	<Style
+		x:Key="LibrarySelector"
+		BasedOn="{StaticResource WpfUtilsPopOut}"
+		TargetType="{x:Type selector:LibrarySelector}">
+		<Setter Property="Template" Value="{DynamicResource LibrarySelectorTemplate}" />
+		<Setter Property="Width" Value="300" />
+		<Setter Property="Height" Value="450" />
+		<Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
+	</Style>
+
+	<Style
+		BasedOn="{StaticResource LibrarySelector}"
+		TargetType="{x:Type selector:LibrarySelector}" />
+
+</ResourceDictionary>

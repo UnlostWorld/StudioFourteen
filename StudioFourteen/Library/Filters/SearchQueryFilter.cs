@@ -23,6 +23,15 @@ public class SearchQueryFilter : FilterBase
 
 	private string? search;
 
+	public SearchQueryFilter()
+	{
+	}
+
+	public SearchQueryFilter(string search)
+	{
+		this.Search = search;
+	}
+
 	public string? Search
 	{
 		get => this.search;

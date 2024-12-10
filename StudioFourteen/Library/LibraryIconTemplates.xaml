@@ -57,6 +57,7 @@
 				<controls:XivTexImage
 					x:Name="IconBack"
 					Margin="0,0,0,0"
+					Opacity="0.5"
 					Path="ui/uld/icona_frame_hr1.tex"
 					Rect="0, 192, 96, 96"
 					Visibility="Collapsed" />
@@ -77,6 +78,12 @@
 			<DataTrigger
 				Binding="{Binding Icon}"
 				Value="{x:Null}">
+				<Setter TargetName="IconShine" Property="Visibility" Value="Collapsed" />
+				<Setter TargetName="IconBack" Property="Visibility" Value="Visible" />
+			</DataTrigger>
+			<DataTrigger
+				Binding="{Binding RowId}"
+				Value="0">
 				<Setter TargetName="IconShine" Property="Visibility" Value="Collapsed" />
 				<Setter TargetName="IconBack" Property="Visibility" Value="Visible" />
 			</DataTrigger>
