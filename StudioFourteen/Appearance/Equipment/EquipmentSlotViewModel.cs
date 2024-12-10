@@ -69,7 +69,7 @@ public class EquipmentSlotViewModel
 		{
 			switch (this.Slot)
 			{
-				case EquipmentSlot.Head: return new(64, 144, 64, 64);
+				case EquipmentSlot.Head: return new(128, 144, 64, 64);
 				case EquipmentSlot.Body: return new(192, 144, 64, 64);
 				case EquipmentSlot.Hands: return new(256, 144, 64, 64);
 				case EquipmentSlot.Legs: return new(384, 144, 64, 64);
@@ -85,6 +85,7 @@ public class EquipmentSlotViewModel
 		}
 	}
 
+	public string SlotName => this.Slot.GetDisplayName();
 	public override string SearchTitle => $"Select an item to equip to {this.CharacterName}'s {this.Slot.GetDisplayName()}:";
 	public override string DyeSearchTitle => $"Select a dye to apply to {this.CharacterName}'s {this.Slot.GetDisplayName()}:";
 

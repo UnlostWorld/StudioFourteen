@@ -35,10 +35,12 @@ public interface ILibraryContextMenu
 
 [DependencyProperty<LibraryEntryBase>("Entry")]
 [DependencyProperty<bool>("IsExpanded")]
+[DependencyProperty<object>("SourceHeader")]
+[DependencyProperty<object>("SourceHeaderTemplate")]
+[DependencyProperty<object>("BackgroundDetail")]
+[DependencyProperty<Action<LibraryContextMenu>>("CollectingMenus")]
 public partial class LibraryContextMenu : PopOut, ILibraryContextMenu
 {
-	public Action? OnCollectingMenus;
-
 	protected readonly ILogger Log = Logging.ForContext<LibraryContextMenu>();
 	private readonly List<MenuEntry> pendingChildren = new();
 
@@ -99,6 +101,11 @@ public partial class LibraryContextMenu : PopOut, ILibraryContextMenu
 		return entry;
 	}
 
+	public void AddMenu(MenuEntry entry)
+	{
+		this.pendingChildren.Add(entry);
+	}
+
 	private async Task ShowResultMenu()
 	{
 		await this.MainThread();
@@ -109,14 +116,13 @@ public partial class LibraryContextMenu : PopOut, ILibraryContextMenu
 		this.Entry = this.currentEntry;
 		this.PlacementTarget = this.placementTarget;
 		this.IsOpen = true;
-		this.DataContext = this.currentEntry;
 	}
 
 	private async Task CollectMenus()
 	{
 		this.Menus.Clear();
 
-		this.OnCollectingMenus?.Invoke();
+		this.CollectingMenus?.Invoke(this);
 
 		if (this.Entry != null)
 		{
@@ -134,16 +140,31 @@ public partial class LibraryContextMenu : PopOut, ILibraryContextMenu
 	}
 }
 
-public class MenuEntry(IconChar? icon, string? label, Action? invoke = null)
+public class MenuEntry
 {
 	private readonly List<MenuEntry> pendingChildren = new();
+	private readonly Action? invoke;
 
-	public IconChar? Icon => icon;
+	public MenuEntry()
+	{
+	}
+
+	public MenuEntry(IconChar? icon, string? label, Action? invoke = null)
+	{
+		this.Icon = icon;
+		this.Label = label;
+		this.invoke = invoke;
+		this.OnClicked = new SimpleCommand(this.Invoke);
+	}
+
+	public IconChar? Icon { get; set; }
+	public string? Label { get; set; }
+	public ICommand? OnClicked { get; set; }
+
 	public bool IsEnabled { get; set; } = true;
-	public ICommand? OnClicked => new SimpleCommand(this.Invoke);
+
 	public FastObservableCollection<MenuEntry> Children { get; init; } = new();
 	public LibraryContextMenu? ContextMenu { get; private set; }
-	public string? Label => label;
 
 	public bool HasChildren => this.Children.Count > 0 || this.pendingChildren.Count > 0;
 
@@ -166,7 +187,7 @@ public class MenuEntry(IconChar? icon, string? label, Action? invoke = null)
 
 	public void Invoke()
 	{
-		invoke?.Invoke();
+		this.invoke?.Invoke();
 		this.ContextMenu?.OnMenuInvoked(this);
 	}
 

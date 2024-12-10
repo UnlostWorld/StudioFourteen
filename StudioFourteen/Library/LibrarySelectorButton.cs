@@ -16,7 +16,6 @@
 namespace StudioFourteen.Library;
 
 using DependencyPropertyGenerator;
-using FontAwesome.Sharp;
 using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Tags;
 using System;
@@ -28,6 +27,10 @@ using System.Windows.Input;
 [DependencyProperty<string>("Title")]
 [DependencyProperty<object>("IconBackground")]
 [DependencyProperty<TagCollection>("SearchTags")]
+[DependencyProperty<object>("PopOutHeader")]
+[DependencyProperty<object>("PopOutHeaderTemplate")]
+[DependencyProperty<object>("PopOutBackgroundDetail")]
+[DependencyProperty<Action<LibraryContextMenu>>("CollectingMenus")]
 public partial class LibrarySelectorButton : Control
 {
 	private Button? button;
@@ -53,11 +56,6 @@ public partial class LibrarySelectorButton : Control
 			this.button.MouseRightButtonUp += this.OnMouseRightButtonUp;
 			this.button.ToolTipOpening += this.OnToolTipOpening;
 			this.button.MouseLeave += this.OnMouseLeave;
-		}
-
-		if (this.menu != null)
-		{
-			this.menu.OnCollectingMenus = this.CollectMenus;
 		}
 	}
 
@@ -113,14 +111,5 @@ public partial class LibrarySelectorButton : Control
 			this.menu?.Enter(entry, this);
 			this.menu?.Expand();
 		}
-	}
-
-	private void CollectMenus()
-	{
-		if (this.menu == null)
-			return;
-
-		// TODO: a provider for these icons, such as gear slots with "Equip racial"?
-		////this.menu.AddMenu(IconChar.Eraser, "Clear", () => { this.Value = null; });
 	}
 }

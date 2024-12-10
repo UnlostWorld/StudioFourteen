@@ -4,6 +4,7 @@
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:library="clr-namespace:StudioFourteen.Library"
 	xmlns:libraryData="clr-namespace:StudioFourteen.GameData.Library"
+	xmlns:librarymenu="clr-namespace:StudioFourteen.Library.LibraryMenu"
 	xmlns:local="clr-namespace:StudioFourteen.Appearance.Equipment">
 
 	<DataTemplate DataType="{x:Type local:EquipmentSlotViewModel}">
@@ -38,6 +39,27 @@
 								Rect="{Binding SlotBackgroundRect}" />
 						</Grid>
 					</library:LibrarySelectorButton.IconBackground>
+
+					<library:LibrarySelectorButton.PopOutHeader>
+						<TextBlock
+							Margin="6,3"
+							Foreground="{DynamicResource ForegroundLightBrush}"
+							Text="{Binding SlotName}" />
+					</library:LibrarySelectorButton.PopOutHeader>
+
+					<library:LibrarySelectorButton.PopOutBackgroundDetail>
+						<controls:XivTexImage
+							Width="100"
+							Height="100"
+							Margin="0,-12,-12,0"
+							Opacity="0.5"
+							Path="ui/uld/character_hr1.tex"
+							Rect="{Binding SlotBackgroundRect}">
+							<controls:XivTexImage.LayoutTransform>
+								<RotateTransform Angle="15" />
+							</controls:XivTexImage.LayoutTransform>
+						</controls:XivTexImage>
+					</library:LibrarySelectorButton.PopOutBackgroundDetail>
 				</library:LibrarySelectorButton>
 
 				<library:LibrarySelectorButton

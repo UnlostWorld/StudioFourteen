@@ -19,6 +19,7 @@
 		<Grid
 			Margin="12"
 			VerticalAlignment="Top">
+
 			<Grid>
 				<Grid.Effect>
 					<DropShadowEffect
@@ -40,8 +41,19 @@
 					Points="0,12 16,0, 32,12" />
 			</Grid>
 
-			<Grid DataContext="{Binding Entry, RelativeSource={RelativeSource AncestorType={x:Type menu:LibraryContextMenu}}}">
-				<StackPanel Margin="3">
+			<ContentPresenter
+				HorizontalAlignment="Right"
+				VerticalAlignment="Top"
+				Content="{Binding BackgroundDetail, RelativeSource={RelativeSource AncestorType={x:Type menu:LibraryContextMenu}}}" />
+
+			<StackPanel>
+				<ContentPresenter
+					Content="{Binding SourceHeader, RelativeSource={RelativeSource AncestorType={x:Type menu:LibraryContextMenu}}}"
+					ContentTemplate="{Binding SourceHeaderTemplate, RelativeSource={RelativeSource AncestorType={x:Type menu:LibraryContextMenu}}}" />
+
+				<StackPanel
+					Margin="3"
+					DataContext="{Binding Entry, RelativeSource={RelativeSource AncestorType={x:Type menu:LibraryContextMenu}}}">
 
 					<Grid
 						x:Name="ResultMenuHeader"
@@ -168,7 +180,7 @@
 						</StackPanel>
 					</Border>
 				</StackPanel>
-			</Grid>
+			</StackPanel>
 		</Grid>
 
 		<ControlTemplate.Triggers>

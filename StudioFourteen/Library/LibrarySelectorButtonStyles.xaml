@@ -62,13 +62,16 @@
 								Text="{Binding Value.SubTitle, RelativeSource={RelativeSource AncestorType={x:Type local:LibrarySelectorButton}}}"
 								Visibility="{Binding Value.SubTitle, RelativeSource={RelativeSource AncestorType={x:Type local:LibrarySelectorButton}}, Converter={StaticResource StringHasContentToVisibility}}" />
 						</Grid>
-
 					</Grid>
 				</Button.Content>
 			</Button>
 
 			<menu:LibraryContextMenu
 				x:Name="PART_Menu"
+				BackgroundDetail="{TemplateBinding PopOutBackgroundDetail}"
+				CollectingMenus="{TemplateBinding CollectingMenus}"
+				SourceHeader="{TemplateBinding PopOutHeader}"
+				SourceHeaderTemplate="{TemplateBinding PopOutHeaderTemplate}"
 				Style="{DynamicResource LibraryContextMenuStyle}" />
 		</Grid>
 	</ControlTemplate>
