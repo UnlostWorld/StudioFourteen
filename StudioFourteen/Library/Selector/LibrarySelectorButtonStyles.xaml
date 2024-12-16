@@ -76,6 +76,9 @@
 
 			<librarySelector:LibrarySelector
 				x:Name="PART_Selector"
+				BackgroundDetail="{TemplateBinding PopOutBackgroundDetail}"
+				Footer="{TemplateBinding PopOutFooter}"
+				FooterTemplate="{TemplateBinding PopOutFooterTemplate}"
 				Header="{TemplateBinding PopOutHeader}"
 				HeaderTemplate="{TemplateBinding PopOutHeaderTemplate}"
 				IsOpen="{Binding ElementName=PART_Button, Path=IsChecked}"

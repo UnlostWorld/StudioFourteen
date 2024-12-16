@@ -22,6 +22,7 @@ using StudioFourteen.Mvm;
 using StudioFourteen.Tags;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -33,11 +34,13 @@ using WpfUtils.Utils;
 [DependencyProperty<LibraryEntryBase>("SelectedItem", DefaultBindingMode = DefaultBindingMode.TwoWay)]
 [DependencyProperty<object>("Footer")]
 [DependencyProperty<object>("FooterTemplate")]
-[DependencyProperty<TagCollection>("Tags")]
-[DependencyProperty<TagCollection>("AvailableTags")]
+[DependencyProperty<object>("BackgroundDetail")]
+[DependencyProperty<TagCollection>("Tags", DefaultBindingMode = DefaultBindingMode.TwoWay)]
+[DependencyProperty<TagCollection>("AvailableTags", DefaultBindingMode = DefaultBindingMode.TwoWay, DefaultValueExpression ="new StudioFourteen.Tags.TagCollection()")]
 [DependencyProperty<string>("Search", DefaultBindingMode = DefaultBindingMode.TwoWay)]
 [DependencyProperty<List<Type>>("Types", DefaultValueExpression ="new System.Collections.Generic.List<System.Type>()")]
 [DependencyProperty<bool>("IsLoading", DefaultBindingMode =DefaultBindingMode.OneWay)]
+[DependencyProperty<bool>("Favorites")]
 public partial class LibrarySelector : PopOut
 {
 	protected readonly ILogger Log = Logging.ForContext<LibrarySelector>();
@@ -108,14 +111,17 @@ public partial class LibrarySelector : PopOut
 
 		List<FilterBase> filters = new List<FilterBase>();
 
-		if (!string.IsNullOrEmpty(this.Search))
-			filters.Add(new SearchQueryFilter(this.Search));
+		if (this.Favorites)
+			filters.Add(new LibraryFavoritesFilter());
+
+		if (this.Types != null && this.Types.Count > 0)
+			filters.Add(new TypeFilter(this.Types));
 
 		if (this.Tags != null)
 			filters.Add(new TagFilter(this.Tags));
 
-		if (this.Types != null && this.Types.Count > 0)
-			filters.Add(new TypeFilter(this.Types));
+		if (!string.IsNullOrEmpty(this.Search))
+			filters.Add(new SearchQueryFilter(this.Search));
 
 		await Dispatch.NonUiThread();
 
@@ -144,7 +150,27 @@ public partial class LibrarySelector : PopOut
 		this.searchQueue.Invoke();
 	}
 
-	partial void OnTagsChanged()
+	partial void OnFavoritesChanged()
+	{
+		this.searchQueue.Invoke();
+	}
+
+	partial void OnTagsChanged(TagCollection? oldValue, TagCollection? newValue)
+	{
+		if (oldValue != null)
+		{
+			oldValue.CollectionChanged -= this.OnTagsCollectionChanged;
+		}
+
+		if (newValue != null)
+		{
+			newValue.CollectionChanged += this.OnTagsCollectionChanged;
+		}
+
+		this.searchQueue.Invoke();
+	}
+
+	private void OnTagsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
 	{
 		this.searchQueue.Invoke();
 	}

@@ -55,6 +55,72 @@
 							</controls:XivTexImage.LayoutTransform>
 						</controls:XivTexImage>
 					</librarySelector:LibrarySelectorButton.PopOutBackgroundDetail>
+
+					<librarySelector:LibrarySelectorButton.PopOutFooter>
+						<Border
+							Margin="3"
+							Style="{DynamicResource WpfUtilsControlBorder}">
+							<StackPanel Orientation="Vertical">
+								<Button
+									Height="44"
+									HorizontalContentAlignment="Stretch"
+									Background="Transparent">
+									<Grid>
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="Auto" />
+											<ColumnDefinition />
+										</Grid.ColumnDefinitions>
+
+										<Viewbox
+											Width="38"
+											Height="38">
+											<Grid
+												Width="48"
+												Height="48">
+												<controls:XivTexImage
+													x:Name="IconBack"
+													Margin="0,0,0,0"
+													Opacity="0.5"
+													Path="ui/uld/icona_frame_hr1.tex"
+													Rect="0, 192, 96, 96"
+													Visibility="Collapsed" />
+
+												<controls:XivIconImage
+													Margin="4,3,3,5"
+													Id="042422" />
+
+												<controls:XivTexImage
+													x:Name="IconShine"
+													Path="ui/uld/icona_frame_hr1.tex"
+													Rect="0, 0, 96, 96" />
+											</Grid>
+										</Viewbox>
+
+										<Grid
+											Grid.Column="1"
+											VerticalAlignment="Center">
+											<Grid.RowDefinitions>
+												<RowDefinition />
+												<RowDefinition Height="Auto" />
+											</Grid.RowDefinitions>
+
+											<TextBlock
+												Grid.Row="0"
+												VerticalAlignment="Center"
+												Text="None" />
+
+											<TextBlock
+												Grid.Row="1"
+												VerticalAlignment="Center"
+												Foreground="{DynamicResource ForegroundLightBrush}"
+												Text="Nothing" />
+										</Grid>
+									</Grid>
+								</Button>
+							</StackPanel>
+						</Border>
+					</librarySelector:LibrarySelectorButton.PopOutFooter>
+
 				</librarySelector:LibrarySelectorButton>
 
 				<librarySelector:LibrarySelectorButton

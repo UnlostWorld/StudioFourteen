@@ -33,7 +33,8 @@ using System.Windows.Input;
 [DependencyProperty<object>("ToolTipHeaderTemplate")]
 [DependencyProperty<object>("PopOutBackgroundDetail")]
 [DependencyProperty<Action<LibraryContextMenu>>("CollectingMenus")]
-[DependencyProperty<bool>("NullIsValid", DefaultValue =false)]
+[DependencyProperty<object>("PopOutFooter")]
+[DependencyProperty<object>("PopOutFooterTemplate")]
 public partial class LibrarySelectorButton : Control
 {
 	private ButtonBase? button;
