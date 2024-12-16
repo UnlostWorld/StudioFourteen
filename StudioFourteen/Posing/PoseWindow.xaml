@@ -73,18 +73,12 @@
 						</MultiBinding>
 					</TabItem.Visibility>
 
-
 					<Grid>
 						<Grid.ColumnDefinitions>
-							<ColumnDefinition />
-							<ColumnDefinition />
-							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="2*" />
+							<ColumnDefinition Width="2*" />
+							<ColumnDefinition Width="1*" />
 						</Grid.ColumnDefinitions>
-						<Grid.RowDefinitions>
-							<RowDefinition />
-							<RowDefinition />
-							<RowDefinition />
-						</Grid.RowDefinitions>
 
 						<Rectangle
 							Grid.RowSpan="3"
@@ -110,32 +104,38 @@
 							ObjectTableIndex="{Binding TargetObjectIndex}"
 							ViewDefinition="{Binding Services.Data.SkeletonViews[Clothes]}" />
 
-						<pose:SkeletonView
-							x:Name="TailView"
-							Grid.Row="0"
+						<Grid
 							Grid.Column="2"
-							FlipSides="{Binding FlipSides}"
-							ObjectTableIndex="{Binding TargetObjectIndex}"
-							ViewDefinition="{Binding Services.Data.SkeletonViews[Tail]}" />
+							Margin="0,10">
+							<Grid.RowDefinitions>
+								<RowDefinition />
+								<RowDefinition />
+								<RowDefinition />
+							</Grid.RowDefinitions>
 
-						<pose:SkeletonView
-							x:Name="PenisView"
-							Grid.Row="1"
-							Grid.Column="2"
-							FlipSides="{Binding FlipSides}"
-							ObjectTableIndex="{Binding TargetObjectIndex}"
-							ViewDefinition="{Binding Services.Data.SkeletonViews[Penis]}"
-							Visibility="{Binding Services.Settings.Current.HideGenitals, Converter={StaticResource !B2V}}" />
+							<pose:SkeletonView
+								x:Name="TailView"
+								Grid.Row="0"
+								FlipSides="{Binding FlipSides}"
+								ObjectTableIndex="{Binding TargetObjectIndex}"
+								ViewDefinition="{Binding Services.Data.SkeletonViews[Tail]}" />
 
-						<pose:SkeletonView
-							x:Name="VaginaView"
-							Grid.Row="2"
-							Grid.Column="2"
-							FlipSides="{Binding FlipSides}"
-							ObjectTableIndex="{Binding TargetObjectIndex}"
-							ViewDefinition="{Binding Services.Data.SkeletonViews[Vagina]}"
-							Visibility="{Binding Services.Settings.Current.HideGenitals, Converter={StaticResource !B2V}}" />
+							<pose:SkeletonView
+								x:Name="PenisView"
+								Grid.Row="1"
+								FlipSides="{Binding FlipSides}"
+								Hide="{Binding Services.Settings.Current.HideGenitals}"
+								ObjectTableIndex="{Binding TargetObjectIndex}"
+								ViewDefinition="{Binding Services.Data.SkeletonViews[Penis]}" />
 
+							<pose:SkeletonView
+								x:Name="VaginaView"
+								Grid.Row="2"
+								FlipSides="{Binding FlipSides}"
+								Hide="{Binding Services.Settings.Current.HideGenitals}"
+								ObjectTableIndex="{Binding TargetObjectIndex}"
+								ViewDefinition="{Binding Services.Data.SkeletonViews[Vagina]}" />
+						</Grid>
 					</Grid>
 				</TabItem>
 
@@ -155,12 +155,7 @@
 						</MultiBinding>
 					</TabItem.Visibility>
 
-					<Grid VerticalAlignment="Center">
-						<Grid.RowDefinitions>
-							<RowDefinition Height="Auto" />
-							<RowDefinition Height="Auto" />
-						</Grid.RowDefinitions>
-
+					<Grid>
 						<Rectangle
 							Grid.RowSpan="3"
 							Fill="Transparent"
@@ -207,6 +202,11 @@
 
 						<TabItem Header="Bones">
 							<Grid>
+								<Rectangle
+									Grid.RowSpan="3"
+									Fill="Transparent"
+									MouseDown="OnBackgroundMouseDown" />
+
 								<pose:SkeletonView
 									x:Name="FaceView"
 									FlipSides="{Binding FlipSides}"
@@ -243,6 +243,11 @@
 						</MultiBinding>
 					</TabItem.Visibility>
 					<Grid>
+						<Rectangle
+							Grid.RowSpan="3"
+							Fill="Transparent"
+							MouseDown="OnBackgroundMouseDown" />
+
 						<pose:SkeletonView
 							x:Name="DiabolosView"
 							FlipSides="{Binding FlipSides}"

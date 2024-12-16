@@ -45,7 +45,16 @@ public partial class CharacterPanel : CharacterPanelBase
 	[AutoNotify]
 	public int SelectedTab
 	{
-		get => this.GetPersistence<int>();
+		get
+		{
+			int tabIndex = this.GetPersistence<int>();
+			if (tabIndex == 3 && this.UseTwoColumns)
+			{
+				tabIndex = 0;
+			}
+
+			return tabIndex;
+		}
 		set => this.SetPersistence(value);
 	}
 

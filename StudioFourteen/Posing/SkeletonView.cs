@@ -35,6 +35,7 @@ using WpfUtils;
 [DependencyProperty<SkeletonViewDefinition>("ViewDefinition")]
 [DependencyProperty<int>("ObjectTableIndex", DefaultValue = 1)]
 [DependencyProperty<bool>("FlipSides", DefaultValue = false)]
+[DependencyProperty<bool>("Hide", DefaultValue = false)]
 public partial class SkeletonView : Canvas
 {
 	public const double BackgroundOpacity = 0.25;
@@ -100,6 +101,12 @@ public partial class SkeletonView : Canvas
 		if (DesignerProperties.GetIsInDesignMode(this))
 			return;
 
+		if (this.Hide)
+		{
+			this.Visibility = Visibility.Collapsed;
+			return;
+		}
+
 		this.boneButtons.Clear();
 		this.boneConnections.Clear();
 
@@ -117,8 +124,8 @@ public partial class SkeletonView : Canvas
 			this.backgroundHeight = (int)definition.Size.Height;
 		}
 
-		this.Width = this.backgroundWidth;
-		this.Height = this.backgroundHeight;
+		////this.Width = this.backgroundWidth;
+		////this.Height = this.backgroundHeight;
 
 		int objectTableIndex = this.ObjectTableIndex;
 		if (this.ObjectTableIndex < 0)
@@ -187,9 +194,7 @@ public partial class SkeletonView : Canvas
 
 		// TODO: check for mounts?
 		await this.Dispatcher.MainThread();
-
-		if (this.Visibility == Visibility.Visible)
-			this.Visibility = result ? Visibility.Visible : Visibility.Collapsed;
+		this.Visibility = result ? Visibility.Visible : Visibility.Collapsed;
 
 		this.OnRenderSizeChanged(null);
 	}

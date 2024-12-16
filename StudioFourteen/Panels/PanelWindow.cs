@@ -78,7 +78,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 	public ServiceManager Services => ServiceManager.Instance;
 
-	public bool IsUiVisibleAndOpen
+	public virtual bool IsUiVisibleAndOpen
 	{
 		get
 		{
@@ -92,7 +92,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		}
 	}
 
-	public bool IsUiVisible
+	public virtual bool IsUiVisible
 	{
 		get
 		{

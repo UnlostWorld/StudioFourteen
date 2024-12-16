@@ -16,12 +16,13 @@
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="{DynamicResource LOC_Spa_Title}"
 	Width="900"
-	Height="650"
-	MinWidth="900"
-	MinHeight="650"
+	Height="700"
+	MinWidth="450"
+	MinHeight="500"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	IsEmbedded="False"
+	Topmost="True"
 	mc:Ignorable="d">
 
 	<Grid Margin="1">

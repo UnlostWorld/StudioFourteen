@@ -15,14 +15,16 @@
 	Width="350"
 	Height="600"
 	MinWidth="350"
-	MinHeight="600"
+	MinHeight="250"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	ResizeMode="CanResizeWithGrip"
 	Subtitle="{Binding CharacterName}"
 	TitleIcon="UserShield"
 	mc:Ignorable="d">
 
-	<Grid IsEnabled="{Binding HasValidTarget}">
+	<Grid
+		x:Name="ContentArea"
+		IsEnabled="{Binding HasValidTarget}">
 
 		<Grid.Resources>
 			<ResourceDictionary>
@@ -52,7 +54,7 @@
 
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition />
-			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="{Binding UseTwoColumns, Converter={StaticResource ColumnVisibility}, ConverterParameter=*}" />
 		</Grid.ColumnDefinitions>
 
 		<TabControl
@@ -69,7 +71,9 @@
 						Icon="Person" />
 				</TabItem.Header>
 
-				<ItemsControl ItemsSource="{Binding Customize.BodyMenus}" />
+				<ScrollViewer HorizontalScrollBarVisibility="Disabled">
+					<ItemsControl ItemsSource="{Binding Customize.BodyMenus}" />
+				</ScrollViewer>
 			</TabItem>
 
 			<!--  Face  -->
@@ -81,7 +85,9 @@
 						IconFont="Solid" />
 				</TabItem.Header>
 
-				<ItemsControl ItemsSource="{Binding Customize.HeadMenus}" />
+				<ScrollViewer HorizontalScrollBarVisibility="Disabled">
+					<ItemsControl ItemsSource="{Binding Customize.HeadMenus}" />
+				</ScrollViewer>
 			</TabItem>
 
 			<!--  Makeup  -->
@@ -93,7 +99,9 @@
 						IconFont="Solid" />
 				</TabItem.Header>
 
-				<ItemsControl ItemsSource="{Binding Customize.MakeupMenus}" />
+				<ScrollViewer HorizontalScrollBarVisibility="Disabled">
+					<ItemsControl ItemsSource="{Binding Customize.MakeupMenus}" />
+				</ScrollViewer>
 			</TabItem>
 
 			<!--  Equipment  -->
@@ -127,23 +135,31 @@
 
 		</TabControl>
 
-		<TabControl
+		<Grid
 			Grid.Column="1"
 			Margin="2,0,0,0"
 			Visibility="{Binding UseTwoColumns, Converter={StaticResource B2V}, FallbackValue=Collapsed}">
+
 			<!--  Equipment  -->
-			<TabItem>
-				<TabItem.Header>
-					<wpfUtils:IconBlock
-						Margin="12"
-						Icon="Shirt"
-						IconFont="Solid" />
-				</TabItem.Header>
+			<ScrollViewer HorizontalScrollBarVisibility="Disabled">
+				<StackPanel>
+					<TextBlock
+						Style="{DynamicResource LeftLabel}"
+						Text="Weapons" />
+					<ItemsControl ItemsSource="{Binding Equipment.Weapons}" />
 
-				<ItemsControl ItemsSource="{Binding Equipment.Gear}" />
+					<TextBlock
+						Style="{DynamicResource LeftLabel}"
+						Text="Equipment" />
+					<ItemsControl ItemsSource="{Binding Equipment.Equipment}" />
 
-			</TabItem>
-		</TabControl>
+					<TextBlock
+						Style="{DynamicResource LeftLabel}"
+						Text="Accessories" />
+					<ItemsControl ItemsSource="{Binding Equipment.Accessories}" />
+				</StackPanel>
+			</ScrollViewer>
+		</Grid>
 
 		<Border
 			Grid.Row="1"

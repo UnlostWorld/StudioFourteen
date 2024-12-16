@@ -57,11 +57,15 @@ public partial class OrbitTargetCamera : OrbitCamera
 
 		if (this.Services.Target.HasValidTarget)
 		{
+			Vector3 targetPosition = this.oldTargetPosition;
 			Character* pTarget = this.Services.Target.GetTarget();
-			Vector3 targetPosition = pTarget->DrawObject->Position;
-			targetPosition.Y = targetPosition.Y + (pTarget->Height * 1.5f);
+			if (pTarget != null)
+			{
+				targetPosition = pTarget->DrawObject->Position;
+				targetPosition.Y = targetPosition.Y + (pTarget->Height * 1.5f);
+				this.currentTargetPosition = targetPosition;
+			}
 
-			this.currentTargetPosition = targetPosition;
 			this.currentTargetIndex = this.Services.Target.TargetObjectIndex;
 
 			if (this.targetBlend > 0)

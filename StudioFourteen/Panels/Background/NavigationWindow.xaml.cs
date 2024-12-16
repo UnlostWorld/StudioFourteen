@@ -32,6 +32,20 @@ public partial class NavigationWindow : PanelWindow
 {
 	private readonly Persistence persistence = new("NavigationWindow");
 
+	public override bool IsUiVisibleAndOpen
+	{
+		get
+		{
+			if (!base.IsUiVisibleAndOpen)
+				return false;
+
+			if (this.Services.Settings.Current.IsSpa)
+				return false;
+
+			return true;
+		}
+	}
+
 	[AutoNotify]
 	public bool ShowStudioButton
 	{
