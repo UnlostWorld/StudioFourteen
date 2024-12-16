@@ -46,12 +46,12 @@ jobs:
         uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 8.0.x
-
-      - name: Add msbuild to PATH
+          
+      - name: setup-msbuild
         uses: microsoft/setup-msbuild@v2
 
       - name: Build plugin in release mode
-        run: msbuild StudioFourteen.sln -property:Configuration=Release
+        run:  C:\Program Files\Microsoft Visual Studio\2022\Enterprise\msbuild.exe StudioFourteen.sln -property:Configuration=Release
 
       - name: Zip Release
         uses: TheDoctor0/zip-release@0.6.0
