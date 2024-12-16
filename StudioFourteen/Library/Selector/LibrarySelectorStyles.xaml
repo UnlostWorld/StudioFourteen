@@ -191,7 +191,7 @@
 						Grid.Column="0"
 						Width="64"
 						Height="28"
-						Margin="1">
+						Margin="3,0,1,1">
 						<ListBoxItem
 							IsSelected="{Binding RelativeSource={RelativeSource AncestorType={x:Type selector:LibrarySelector}}, Path=Favorites, Converter={StaticResource !B}}"
 							Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
@@ -215,15 +215,27 @@
 						Grid.Row="2"
 						Grid.Column="1"
 						Grid.ColumnSpan="2"
-						Margin="1,1,3,3"
+						Height="28"
+						Margin="1,1,3,2"
+						Padding="28,0,0,0"
 						Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type selector:LibrarySelector}}, Path=Search, UpdateSourceTrigger=PropertyChanged}" />
+
+					<wpfUtils:IconBlock
+						Grid.Row="2"
+						Grid.Column="1"
+						Margin="10,2,0,2"
+						HorizontalAlignment="Left"
+						VerticalAlignment="Center"
+						Foreground="{DynamicResource ForegroundLightBrush}"
+						Icon="Search" />
+
 				</Grid>
 
 
 				<ListBox
 					x:Name="PART_ResultsBox"
 					Grid.Row="1"
-					Margin="3,0"
+					Margin="3,3,3,0"
 					ItemTemplate="{DynamicResource LibrarySelectorResultTemplate}"
 					ScrollViewer.VerticalScrollBarVisibility="Visible" />
 
