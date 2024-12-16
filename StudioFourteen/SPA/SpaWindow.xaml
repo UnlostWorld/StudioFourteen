@@ -82,11 +82,23 @@
 						Icon="Home" />
 				</TabItem.Header>
 
-				<panels:PanelHost
-					Width="400"
-					Margin="2"
-					HorizontalAlignment="Left"
-					PanelType="{x:Type panels:CameraPanel}" />
+				<Grid>
+
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition />
+						<ColumnDefinition />
+					</Grid.ColumnDefinitions>
+
+					<panels:PanelHost
+						Grid.Column="0"
+						Margin="2"
+						PanelType="{x:Type panels:CameraPanel}" />
+
+					<panels:PanelHost
+						Grid.Column="1"
+						Margin="2"
+						PanelType="{x:Type panels:EnvironmentPanel}" />
+				</Grid>
 
 			</TabItem>
 
