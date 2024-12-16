@@ -63,10 +63,15 @@ public class TerritoryTypeLibraryEntry : ExcelLibraryEntry
 		get
 		{
 			string? name = this.Territory.Name.GetString();
-			if (name == null)
-				return Tag.Get("Unknown");
+			string? placeName = this.Territory.PlaceName.Value.Name.GetString();
 
-			return Tag.Get(name);
+			if (placeName != null && name != null)
+				return Tag.Get($"{placeName} ({name})");
+
+			if (name != null)
+				return Tag.Get(name);
+
+			return Tag.Get("Unknown");
 		}
 	}
 
