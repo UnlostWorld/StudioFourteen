@@ -54,6 +54,7 @@ public partial class LibrarySelector : PopOut
 	private int lastEntryClick = 0;
 	private Result? lastSelectedResult;
 	private FrameworkElement? currentHover;
+	private GroupResult? currentResults;
 
 	public LibrarySelector()
 	{
@@ -159,16 +160,16 @@ public partial class LibrarySelector : PopOut
 
 		await Dispatch.NonUiThread();
 
-		GroupResult result = new(ServiceManager.Instance.Library.Root);
-		result.FilterEntries(filters.ToArray());
-		List<Result>? results = result.Get(true);
+		this.currentResults = new(ServiceManager.Instance.Library.Root);
+		this.currentResults.FilterEntries(filters.ToArray());
+		List<Result>? results = this.currentResults.Get(true);
 
-		Result? selectedResult = result.Find(currentSelection as LibraryEntryBase);
+		Result? selectedResult = this.currentResults.Find(currentSelection as LibraryEntryBase);
 
 		await this.Dispatcher.MainThread();
 
 		TagCollection tags = new();
-		result.GetTags(ref tags);
+		this.currentResults.GetTags(ref tags);
 		this.AvailableTags?.Replace(tags);
 
 		this.resultsBox.ItemsSource = null;
@@ -202,6 +203,15 @@ public partial class LibrarySelector : PopOut
 		}
 
 		this.searchQueue.Invoke();
+	}
+
+	partial void OnSelectedItemChanged(LibraryEntryBase? oldValue, LibraryEntryBase? newValue)
+	{
+		if (this.resultsBox == null)
+			return;
+
+		Result? selectedResult = this.currentResults?.Find(newValue as LibraryEntryBase);
+		this.resultsBox.SelectedItem = selectedResult;
 	}
 
 	private void OnTagsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)

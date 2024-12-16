@@ -61,10 +61,12 @@
 							Margin="3"
 							Style="{DynamicResource WpfUtilsControlBorder}">
 							<StackPanel Orientation="Vertical">
-								<Button
+								<ToggleButton
 									Height="44"
 									HorizontalContentAlignment="Stretch"
-									Background="Transparent">
+									Background="Transparent"
+									IsChecked="{Binding IsNone}"
+									Style="{DynamicResource WpfUtilsIconToggleButton}">
 									<Grid>
 										<Grid.ColumnDefinitions>
 											<ColumnDefinition Width="Auto" />
@@ -116,7 +118,7 @@
 												Text="Nothing" />
 										</Grid>
 									</Grid>
-								</Button>
+								</ToggleButton>
 							</StackPanel>
 						</Border>
 					</librarySelector:LibrarySelectorButton.PopOutFooter>

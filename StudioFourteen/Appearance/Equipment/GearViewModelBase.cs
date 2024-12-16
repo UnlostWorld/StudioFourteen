@@ -82,15 +82,22 @@ public abstract class GearViewModelBase<TLibraryType> : GearViewModelBase
 	protected StainLibraryEntry? stain1;
 	protected TLibraryType? item;
 
-	public TLibraryType? Item
+	public virtual TLibraryType? Item
 	{
 		get => this.item;
 		set
 		{
 			this.item = value;
 			this.RaisePropertyChanged(nameof(this.Item));
+			this.RaisePropertyChanged(nameof(this.IsNone));
 			this.OnItemChanged(value);
 		}
+	}
+
+	public bool IsNone
+	{
+		get => this.Item == null;
+		set => this.Item = null;
 	}
 
 	public Type LibraryType => typeof(TLibraryType);
