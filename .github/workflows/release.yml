@@ -47,8 +47,8 @@ jobs:
         with:
           dotnet-version: 8.0.x
 
-      - name: Restore Dependencies
-        run: dotnet restore
+      - name: Add msbuild to PATH
+        uses: microsoft/setup-msbuild@v2
 
       - name: Build plugin in release mode
         run: msbuild StudioFourteen.sln -c Release --no-restore --nologo
