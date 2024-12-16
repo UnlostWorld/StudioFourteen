@@ -17,6 +17,7 @@ namespace StudioFourteen.Library.Selector;
 using DependencyPropertyGenerator;
 using Serilog;
 using StudioFourteen.Library.Filters;
+using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Results;
 using StudioFourteen.Mvm;
 using StudioFourteen.Tags;
@@ -48,9 +49,11 @@ public partial class LibrarySelector : PopOut
 	private TextBox? searchBox;
 	private ListBox? resultsBox;
 	private Button? closeButton;
+	private LibraryContextMenu? contextMenu;
 	private Window? targetWindow;
 	private int lastEntryClick = 0;
 	private Result? lastSelectedResult;
+	private FrameworkElement? currentHover;
 
 	public LibrarySelector()
 	{
@@ -71,24 +74,55 @@ public partial class LibrarySelector : PopOut
 			this.closeButton.Click -= this.OnCloseClicked;
 
 		if (this.targetWindow != null)
+		{
 			this.targetWindow.PreviewMouseDown -= this.OnTargetWindowPreviewMouseDown;
+			this.targetWindow.MouseMove -= this.OnMouseMove;
+		}
 
 		this.searchBox = this.GetTemplateChild("PART_SearchBox") as TextBox;
 		this.resultsBox = this.GetTemplateChild("PART_ResultsBox") as ListBox;
 		this.closeButton = this.GetTemplateChild("PART_CloseButton") as Button;
+		this.contextMenu = this.GetTemplateChild("PART_ContextMenu") as LibraryContextMenu;
 		this.targetWindow = this.PlacementTarget.FindParent<Window>();
 
 		if (this.resultsBox != null)
 		{
 			this.resultsBox.SelectionChanged += this.OnSelectionChanged;
 			this.resultsBox.PreviewMouseUp += this.OnResultsPreviewMouseUp;
+			this.resultsBox.PreviewMouseDown += this.OnResultsBoxPreviewMouseDown;
+			this.resultsBox.MouseMove += this.OnMouseMove;
 		}
 
 		if (this.closeButton != null)
 			this.closeButton.Click += this.OnCloseClicked;
 
 		if (this.targetWindow != null)
+		{
 			this.targetWindow.PreviewMouseDown += this.OnTargetWindowPreviewMouseDown;
+			this.targetWindow.MouseMove += this.OnMouseMove;
+		}
+	}
+
+	// Hijack the result tooltip logic.
+	public void OnResultToolTipOpening(object sender, ToolTipEventArgs? e)
+	{
+		if (e != null)
+			e.Handled = true;
+
+		if (sender is not FrameworkElement senderElement)
+			return;
+
+		if (senderElement.DataContext is not Result result)
+			return;
+
+		this.currentHover = senderElement;
+		this.contextMenu?.Enter(result.Entry, senderElement);
+	}
+
+	public void OnResultMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+	{
+		this.OnResultToolTipOpening(sender, null);
+		this.contextMenu?.Expand();
 	}
 
 	protected override void OnOpened(EventArgs e)
@@ -201,20 +235,50 @@ public partial class LibrarySelector : PopOut
 		this.IsOpen = false;
 	}
 
+	private void OnResultsBoxPreviewMouseDown(object sender, MouseButtonEventArgs e)
+	{
+	}
+
 	private void OnResultsPreviewMouseUp(object sender, MouseButtonEventArgs e)
 	{
-		int clickDelta = e.Timestamp - this.lastEntryClick;
-		this.lastEntryClick = e.Timestamp;
-
-		Result? currentResult = this.resultsBox?.SelectedItem as Result;
-		if (this.lastSelectedResult == currentResult)
+		if (e.ChangedButton == MouseButton.Left)
 		{
-			if (clickDelta < 500)
-			{
-				this.IsOpen = false;
-			}
-		}
+			int clickDelta = e.Timestamp - this.lastEntryClick;
+			this.lastEntryClick = e.Timestamp;
 
-		this.lastSelectedResult = currentResult;
+			Result? currentResult = this.resultsBox?.SelectedItem as Result;
+			if (this.lastSelectedResult == currentResult)
+			{
+				if (clickDelta < 500)
+				{
+					this.IsOpen = false;
+				}
+			}
+
+			this.lastSelectedResult = currentResult;
+		}
+	}
+
+	private void OnMouseMove(object sender, MouseEventArgs e)
+	{
+		if (this.currentHover != null)
+		{
+			Point p = Mouse.GetPosition(this.currentHover);
+
+			if (p.X >= -5
+				&& p.Y >= -5
+				&& p.X <= this.currentHover.ActualWidth + 5
+				&& p.Y <= this.currentHover.ActualHeight + 5)
+			{
+				return;
+			}
+
+			if (this.currentHover.DataContext is Result result)
+			{
+				this.contextMenu?.Leave(result.Entry);
+			}
+
+			this.currentHover = null;
+		}
 	}
 }

@@ -1,8 +1,10 @@
 ﻿<ResourceDictionary
+	x:Class="StudioFourteen.Library.Selector.LibrarySelectorStyles"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
+	xmlns:menu="clr-namespace:StudioFourteen.Library.LibraryMenu"
 	xmlns:results="clr-namespace:StudioFourteen.Library.Results"
 	xmlns:selector="clr-namespace:StudioFourteen.Library.Selector"
 	xmlns:tags="clr-namespace:StudioFourteen.Tags"
@@ -11,6 +13,8 @@
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="pack://application:,,,/WpfUtils;component/Controls/PopOutStyles.xaml" />
 		<ResourceDictionary Source="pack://application:,,,/WpfUtils;component/Styles/TextBlockStyles.xaml" />
+		<ResourceDictionary Source="pack://application:,,,/WpfUtils;component/Styles/ListBoxStyles.xaml" />
+		<ResourceDictionary Source="../LibraryMenu/LibraryContextMenuStyles.xaml" />
 		<ResourceDictionary Source="../LibraryIconTemplates.xaml" />
 		<ResourceDictionary Source="../LibraryBodyTemplates.xaml" />
 	</ResourceDictionary.MergedDictionaries>
@@ -26,7 +30,12 @@
 			x:Name="Content"
 			Grid.Column="1"
 			Margin="-2"
-			Background="Transparent">
+			Background="Transparent"
+			PreviewMouseRightButtonDown="OnResultPreviewMouseRightButtonDown"
+			PreviewMouseRightButtonUp="OnResultPreviewMouseRightButtonUp"
+			Tag="{Binding RelativeSource={RelativeSource AncestorType={x:Type selector:LibrarySelector}}}"
+			ToolTip="!"
+			ToolTipOpening="OnResultToolTipOpening">
 
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="Auto" />
@@ -223,6 +232,11 @@
 					Content="{Binding RelativeSource={RelativeSource AncestorType={x:Type selector:LibrarySelector}}, Path=Footer}"
 					ContentTemplate="{Binding RelativeSource={RelativeSource AncestorType={x:Type selector:LibrarySelector}}, Path=FooterTemplate}" />
 			</Grid>
+
+			<menu:LibraryContextMenu
+				x:Name="PART_ContextMenu"
+				Style="{DynamicResource LibraryContextMenuStyle}" />
+
 		</Grid>
 	</ControlTemplate>
 

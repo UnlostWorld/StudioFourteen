@@ -47,6 +47,11 @@ public partial class LibraryContextMenu : PopOut, ILibraryContextMenu
 	private UIElement? placementTarget;
 	private LibraryEntryBase? currentEntry;
 
+	public LibraryContextMenu()
+	{
+		this.MouseRightButtonUp += this.OnMouseRightButtonUp;
+	}
+
 	public ServiceManager Services => ServiceManager.Instance;
 	public FastObservableCollection<MenuEntry> Menus { get; init; } = new();
 
@@ -137,6 +142,15 @@ public partial class LibraryContextMenu : PopOut, ILibraryContextMenu
 		}
 
 		this.pendingChildren.Clear();
+	}
+
+	private void OnMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+	{
+		if (!this.IsExpanded)
+		{
+			this.Expand();
+			e.Handled = true;
+		}
 	}
 }
 
