@@ -51,7 +51,7 @@ jobs:
         uses: microsoft/setup-msbuild@v2
 
       - name: Build plugin in release mode
-        run: msbuild StudioFourteen.sln -c Release --no-restore --nologo
+        run: msbuild StudioFourteen.sln -property:Configuration=Release
 
       - name: Zip Release
         uses: TheDoctor0/zip-release@0.6.0
