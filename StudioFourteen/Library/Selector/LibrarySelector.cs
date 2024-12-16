@@ -36,9 +36,11 @@ using WpfUtils.Utils;
 [DependencyProperty<object>("Footer")]
 [DependencyProperty<object>("FooterTemplate")]
 [DependencyProperty<object>("BackgroundDetail")]
-[DependencyProperty<TagCollection>("Tags", DefaultBindingMode = DefaultBindingMode.TwoWay)]
-[DependencyProperty<TagCollection>("AvailableTags", DefaultBindingMode = DefaultBindingMode.TwoWay, DefaultValueExpression ="new StudioFourteen.Tags.TagCollection()")]
+[DependencyProperty<TagCollection>("Tags")]
+[DependencyProperty<TagCollection>("CurrentTags", DefaultBindingMode = DefaultBindingMode.TwoWay, DefaultValueExpression = "new StudioFourteen.Tags.TagCollection()")]
+[DependencyProperty<TagCollection>("AvailableTags", DefaultBindingMode = DefaultBindingMode.TwoWay, DefaultValueExpression = "new StudioFourteen.Tags.TagCollection()")]
 [DependencyProperty<string>("Search", DefaultBindingMode = DefaultBindingMode.TwoWay)]
+[DependencyProperty<Type>("Type")]
 [DependencyProperty<List<Type>>("Types", DefaultValueExpression ="new System.Collections.Generic.List<System.Type>()")]
 [DependencyProperty<bool>("IsLoading", DefaultBindingMode =DefaultBindingMode.OneWay)]
 [DependencyProperty<bool>("Favorites")]
@@ -59,6 +61,8 @@ public partial class LibrarySelector : PopOut
 	public LibrarySelector()
 	{
 		this.searchQueue = new(this.SearchAsync, 250);
+
+		this.OnCurrentTagsChanged(null, this.CurrentTags);
 	}
 
 	public override void OnApplyTemplate()
@@ -130,6 +134,9 @@ public partial class LibrarySelector : PopOut
 	{
 		base.OnOpened(e);
 
+		if (this.Tags != null)
+			this.CurrentTags?.Replace(this.Tags);
+
 		this.searchBox?.Focus();
 		this.searchQueue.InvokeImmediate();
 	}
@@ -152,8 +159,11 @@ public partial class LibrarySelector : PopOut
 		if (this.Types != null && this.Types.Count > 0)
 			filters.Add(new TypeFilter(this.Types));
 
-		if (this.Tags != null)
-			filters.Add(new TagFilter(this.Tags));
+		if (this.Type != null)
+			filters.Add(new TypeFilter(this.Type));
+
+		if (this.CurrentTags != null)
+			filters.Add(new TagFilter(this.CurrentTags));
 
 		if (!string.IsNullOrEmpty(this.Search))
 			filters.Add(new SearchQueryFilter(this.Search));
@@ -190,7 +200,7 @@ public partial class LibrarySelector : PopOut
 		this.searchQueue.Invoke();
 	}
 
-	partial void OnTagsChanged(TagCollection? oldValue, TagCollection? newValue)
+	partial void OnCurrentTagsChanged(TagCollection? oldValue, TagCollection? newValue)
 	{
 		if (oldValue != null)
 		{
@@ -259,7 +269,7 @@ public partial class LibrarySelector : PopOut
 			Result? currentResult = this.resultsBox?.SelectedItem as Result;
 			if (this.lastSelectedResult == currentResult)
 			{
-				if (clickDelta < 500)
+				if (clickDelta < 300)
 				{
 					this.IsOpen = false;
 				}

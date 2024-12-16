@@ -86,7 +86,8 @@
 				SelectedItem="{Binding RelativeSource={RelativeSource AncestorType={x:Type librarySelector:LibrarySelectorButton}}, Path=Value}"
 				StaysOpen="True"
 				Style="{DynamicResource LibrarySelector}"
-				Tags="{TemplateBinding SearchTags}" />
+				Tags="{TemplateBinding SearchTags}"
+				Type="{TemplateBinding Type}" />
 
 		</Grid>
 	</ControlTemplate>

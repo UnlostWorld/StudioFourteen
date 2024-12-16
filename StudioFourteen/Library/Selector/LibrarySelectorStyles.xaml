@@ -183,7 +183,7 @@
 						Grid.Row="1"
 						Grid.ColumnSpan="3"
 						Margin="3,1"
-						SelectedTags="{Binding RelativeSource={RelativeSource AncestorType={x:Type selector:LibrarySelector}}, Path=Tags}"
+						SelectedTags="{Binding RelativeSource={RelativeSource AncestorType={x:Type selector:LibrarySelector}}, Path=CurrentTags}"
 						Tags="{Binding RelativeSource={RelativeSource AncestorType={x:Type selector:LibrarySelector}}, Path=AvailableTags}" />
 
 					<controls:SwitchSelector

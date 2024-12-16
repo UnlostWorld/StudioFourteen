@@ -25,6 +25,7 @@
 				Value="{Binding Territory}" />
 
 			<librarySelector:LibrarySelectorButton
+				PopOutHeader="{DynamicResource LOC_Environment_WeatherSelect}"
 				SearchTags="{Binding WeatherTags}"
 				Type="{x:Type gameData:WeatherLibraryEntry}"
 				Value="{Binding Weather}" />

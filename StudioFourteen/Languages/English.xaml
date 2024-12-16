@@ -190,6 +190,9 @@
 	<sys:String x:Key="LOC_FreeCamera_ToolTip">A Camera that can be freely moved and rotated through the world</sys:String>
 	<sys:String x:Key="LOC_FreeCamera_Position">Camera Position</sys:String>
 
+	<!--  Environment Panel  -->
+	<sys:String x:Key="LOC_Environment_WeatherSelect">Select a weather</sys:String>
+
 	<!--  Overlays  -->
 	<sys:String x:Key="LOC_OverlayBarDescription">Configure overlays that are visible on screen.</sys:String>
 	<sys:String x:Key="LOC_OverlayGroup_Cameras">Cameras</sys:String>
