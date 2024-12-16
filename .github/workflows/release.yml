@@ -53,7 +53,7 @@ jobs:
 
       - name: Build Solution
         run: |
-          msbuild.exe StudioFourteen.sln /nologo /nr:false /p:platform="Any CPU" /p:configuration="Release"
+          msbuild.exe StudioFourteen.sln -nologo -nr:false -p:platform="Any CPU" -p:configuration="Release"
           
       - name: Zip Release
         uses: TheDoctor0/zip-release@0.6.0
