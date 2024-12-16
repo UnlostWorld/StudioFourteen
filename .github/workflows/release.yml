@@ -1,7 +1,5 @@
 name: Release
 
-#stolen blatently from Ktisis: https://github.com/ktisis-tools/Ktisis/blob/main/.github/workflows/release.yml
-
 # Add a concurrency group incase a tag is created, deleted, and then recreated while a release is in progress.
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -42,17 +40,27 @@ jobs:
           destination: ${{ env.DALAMUD_HOME }}
           ZIPname: latest
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: 8.0.x
+      #- name: Setup .NET
+      #  uses: actions/setup-dotnet@v3
+      #  with:
+      #    dotnet-version: 8.0.x
+
+      - name: Setup MSBuild
+        uses: microsoft/setup-msbuild@v1
+        
+      - name: Setup NuGet
+        uses: NuGet/setup-nuget@v1.0.2
+        
+      - name: Navigate to Workspace
+        run: cd $GITHUB_WORKSPACE
+
+      - name: Restore Packages
+        run: nuget restore EzRep.sln
+
+      - name: Build Solution
+        run: |
+          msbuild.exe StudioFourteen.sln /nologo /nr:false /p:platform="Any CPU" /p:configuration="Release"
           
-      - name: setup-msbuild
-        uses: microsoft/setup-msbuild@v2
-
-      - name: Build plugin in release mode
-        run:  C:\Program Files\Microsoft Visual Studio\2022\Enterprise\msbuild.exe StudioFourteen.sln -property:Configuration=Release
-
       - name: Zip Release
         uses: TheDoctor0/zip-release@0.6.0
         with:
