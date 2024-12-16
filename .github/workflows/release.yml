@@ -46,16 +46,10 @@ jobs:
       #    dotnet-version: 8.0.x
 
       - name: Setup MSBuild
-        uses: microsoft/setup-msbuild@v1
-        
-      - name: Setup NuGet
-        uses: NuGet/setup-nuget@v1.0.2
+        uses: microsoft/setup-msbuild@v2
         
       - name: Navigate to Workspace
         run: cd $GITHUB_WORKSPACE
-
-      - name: Restore Packages
-        run: nuget restore EzRep.sln
 
       - name: Build Solution
         run: |
