@@ -133,6 +133,7 @@
 		<AdornerDecorator x:Name="MainGrid">
 
 			<Grid
+				x:Name="InnerMainGrid"
 				Margin="12"
 				RenderTransformOrigin="0.5,0.5">
 
@@ -509,7 +510,7 @@
 			<Trigger Property="IsMaximized" Value="True">
 				<Setter TargetName="WindowShadow" Property="Visibility" Value="Collapsed" />
 				<Setter TargetName="WindowBorder" Property="CornerRadius" Value="0" />
-				<Setter TargetName="MainGrid" Property="Margin" Value="2" />
+				<Setter TargetName="InnerMainGrid" Property="Margin" Value="2" />
 			</Trigger>
 
 		</ControlTemplate.Triggers>
