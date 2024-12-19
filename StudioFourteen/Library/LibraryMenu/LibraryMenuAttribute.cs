@@ -17,7 +17,6 @@ namespace StudioFourteen.Library.LibraryMenu;
 
 using FontAwesome.Sharp;
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 using System.Threading.Tasks;
 
@@ -38,10 +37,21 @@ public class LibraryMenuAttribute : LibraryMenuAttributeBase
 		this.Label = StudioFourteen.Resources.Find(label, label);
 	}
 
-	public override Task GetMenu(object methodTarget, MethodInfo method, ILibraryContextMenu menu)
+	public override async Task GetMenu(object methodTarget, MethodInfo method, ILibraryContextMenu menu)
 	{
 		Action invoke = () => method.Invoke(methodTarget, null);
-		menu.AddMenu(this.Icon, this.Label, invoke);
-		return Task.CompletedTask;
+		MenuEntry newMenu = menu.AddMenu(this.Icon, this.Label, invoke);
+
+		string canMethodName = $"Can{method.Name}";
+		MethodInfo? canMethod = methodTarget.GetType().GetMethod(canMethodName, BindingFlags.Public | BindingFlags.Instance);
+
+		if (canMethod != null)
+		{
+			object? can = canMethod.Invoke(methodTarget, []);
+			if (can is Task<bool> taskCan)
+			{
+				newMenu.IsEnabled = await taskCan;
+			}
+		}
 	}
 }

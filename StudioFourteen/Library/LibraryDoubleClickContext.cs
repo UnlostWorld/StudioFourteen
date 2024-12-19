@@ -34,6 +34,9 @@ public class LibraryDoubleClickContext : ILibraryContextMenu
 			if (menu.HasChildren)
 				continue;
 
+			if (!menu.IsEnabled)
+				continue;
+
 			menu.Invoke();
 			break;
 		}

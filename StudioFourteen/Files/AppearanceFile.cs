@@ -155,6 +155,8 @@ public class AppearanceFile : FileBase, ICharacterAppearance
 		return ServiceManager.Instance.CharacterLifecycle.CreateAsync(this);
 	}
 
+	public Task<bool> CanSpawn() => Task.FromResult(ServiceManager.Instance.CharacterLifecycle.CanSpawn);
+
 	[LibraryMenuTarget(IconChar.UserShield, "LOC_AppearanceApplyTo")]
 	public async Task Apply(int objectTableIndex)
 	{
@@ -246,10 +248,10 @@ public class AppearanceFile : FileBase, ICharacterAppearance
 			////this.HeightMultiplier = pCharacter->Height;
 
 			DrawObjectData mainHand = pCharacter->DrawData.Weapon(DrawDataContainer.WeaponSlot.MainHand);
-			this.MainHand = WeaponSave.FromModelId(mainHand.ModelId, null, mainHand.DrawObject->Scale);
+			this.MainHand = WeaponSave.FromDrawData(mainHand);
 
 			DrawObjectData offHand = pCharacter->DrawData.Weapon(DrawDataContainer.WeaponSlot.OffHand);
-			this.OffHand = WeaponSave.FromModelId(offHand.ModelId, null, offHand.DrawObject->Scale);
+			this.OffHand = WeaponSave.FromDrawData(offHand);
 
 			this.HeadGear = pCharacter->DrawData.Equipment(DrawDataContainer.EquipmentSlot.Head);
 			this.Body = pCharacter->DrawData.Equipment(DrawDataContainer.EquipmentSlot.Body);
@@ -313,20 +315,20 @@ public class AppearanceFile : FileBase, ICharacterAppearance
 			Stain1 = save?.DyeId2 ?? 0,
 		};
 
-		public static WeaponSave? FromModelId(WeaponModelId modelId, Vector3? color, Vector3? scale)
+		public static unsafe WeaponSave? FromDrawData(DrawObjectData drawData)
 		{
-			if (modelId.Value == 0)
+			if (drawData.ModelId.Value == 0)
 				return null;
 
 			return new()
 			{
-				ModelSet = modelId.Id,
-				ModelVariant = modelId.Variant,
-				ModelBase = modelId.Type,
-				DyeId = modelId.Stain0,
-				DyeId2 = modelId.Stain1,
-				Color = color,
-				Scale = scale,
+				ModelSet = drawData.ModelId.Id,
+				ModelVariant = drawData.ModelId.Variant,
+				ModelBase = drawData.ModelId.Type,
+				DyeId = drawData.ModelId.Stain0,
+				DyeId2 = drawData.ModelId.Stain1,
+				////Color = color,
+				Scale = drawData.DrawObject->Scale,
 			};
 		}
 	}
