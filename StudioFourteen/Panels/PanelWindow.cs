@@ -176,7 +176,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 				this.ResizeMode = this.panel.ResizeMode;
 				this.Width = this.panel.Width;
 				this.Height = this.panel.Height;
-				this.MinWidth = this.panel.MinWidth + 24;
+				this.MinWidth = this.panel.MinWidth + 24 + 6;
 				this.MinHeight = this.panel.MinHeight + 24 + 30;
 
 				if (this.panel.HostStyle != null)
