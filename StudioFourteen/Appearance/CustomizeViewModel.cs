@@ -36,6 +36,7 @@ using CharaMakeType = StudioFourteen.GameData.Sheets.CharaMakeType;
 public partial class CustomizeViewModel : ViewModel
 {
 	private readonly DispatcherObject dispatcher;
+	private bool isUpdatingMenus = false;
 
 	public CustomizeViewModel(DispatcherObject dispatcher)
 	{
@@ -50,6 +51,9 @@ public partial class CustomizeViewModel : ViewModel
 
 	public unsafe void OnFrameworkUpdate(Character* pCharacter)
 	{
+		if (this.isUpdatingMenus)
+			return;
+
 		// TODO: Ensure race, tribe, and gender have not changed.
 		foreach (MenuViewModel? menu in this.BodyMenus)
 		{
@@ -74,13 +78,18 @@ public partial class CustomizeViewModel : ViewModel
 
 	private async Task UpdateMenus()
 	{
+		this.isUpdatingMenus = true;
+
 		await Threads.FrameworkThread();
 		List<MenuViewModel?> bodyMenus = new();
 		List<MenuViewModel?> headMenus = new();
 		List<MenuViewModel?> makeupMenus = new();
 
 		if (DalamudServices.ObjectTable == null)
+		{
+			this.isUpdatingMenus = false;
 			return;
+		}
 
 		CharaMakeType makeType;
 		unsafe
@@ -162,6 +171,8 @@ public partial class CustomizeViewModel : ViewModel
 		this.BodyMenus.Replace(bodyMenus);
 		this.HeadMenus.Replace(headMenus);
 		this.MakeupMenus.Replace(makeupMenus);
+
+		this.isUpdatingMenus = false;
 	}
 
 	private MenuViewModel? GetMenu(CharaMakeType makeType, CustomizeIndex index)
