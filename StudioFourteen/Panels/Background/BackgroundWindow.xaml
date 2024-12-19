@@ -82,7 +82,7 @@
 				MouseMove="OnMouseMove"
 				MouseWheel="OnMouseWheel" />
 
-			<overlays:OverlayRenderer ClipToBounds="True" />
+			<!--<overlays:OverlayRenderer ClipToBounds="True" />-->
 		</Grid>
 
 		<Grid>
