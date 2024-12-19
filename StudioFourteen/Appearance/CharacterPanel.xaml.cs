@@ -88,10 +88,10 @@ public partial class CharacterPanel : CharacterPanelBase
 		LibraryWindow.Open();
 	}
 
-	private void OnExportClicked(object sender, RoutedEventArgs e)
+	private async void OnExportClicked(object sender, RoutedEventArgs e)
 	{
 		AppearanceFile file = new();
-		file.Read(this.TargetObjectIndex);
+		await file.Read(this.TargetObjectIndex);
 		this.Services.Files.SaveFile(file, $"{this.CharacterName}'s Appearance");
 	}
 }

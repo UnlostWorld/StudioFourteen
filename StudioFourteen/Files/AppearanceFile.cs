@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Files;
 
+using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FontAwesome.Sharp;
 using Lumina.Excel.Sheets;
@@ -23,6 +24,7 @@ using StudioFourteen.Appearance;
 using StudioFourteen.GameData;
 using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Tags;
+using StudioFourteen.Utilities;
 using System;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -132,7 +134,7 @@ public class AppearanceFile : FileBase, ICharacterAppearance
 	public float? MuscleTone { get; set; }
 	public float? HeightMultiplier { get; set; }
 
-	public byte Glasses { get; set; }
+	public GlassesSave Glasses { get; set; }
 	public string? Name { get; }
 
 	public override void GetAutoTags(TagCollection tags)
@@ -154,16 +156,112 @@ public class AppearanceFile : FileBase, ICharacterAppearance
 	}
 
 	[LibraryMenuTarget(IconChar.UserShield, "LOC_AppearanceApplyTo")]
-	public Task Apply(int objectTableIndex)
+	public async Task Apply(int objectTableIndex)
 	{
-		////throw new NotImplementedException();
-		return Task.CompletedTask;
+		await this.Apply(objectTableIndex, CharacterExtensions.UpdateSource.Library);
 	}
 
-	public Task Read(int objectTableIndex)
+	public async Task Apply(int objectTableIndex, CharacterExtensions.UpdateSource source)
 	{
-		////throw new NotImplementedException();
-		return Task.CompletedTask;
+		await Threads.FrameworkThread();
+
+		CharacterAppearanceService appearanceService = ServiceManager.Instance.CharacterAppearance;
+		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.Race, (byte)(this.Race ?? 0), source);
+		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.Gender, (byte)(this.Gender ?? 0), source);
+		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.ModelType, (byte)(this.ModelType ?? 0), source);
+		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.Tribe, (byte)(this.Tribe ?? 0), source);
+		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.Height, (byte)(this.Height ?? 0), source);
+		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.FaceType, (byte)(this.Head ?? 0), source);
+		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.HairStyle, (byte)(this.Hair ?? 0), source);
+		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.HasHighlights, (byte)(this.EnableHighlights == true ? 1 : 0), source);
+		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.SkinColor, (byte)(this.Skintone ?? 0), source);
+		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.EyeColor, (byte)(this.LEyeColor ?? 0), source);
+		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.HairColor, (byte)(this.HairTone ?? 0), source);
+		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.HairColor2, (byte)(this.Highlights ?? 0), source);
+		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.FaceFeatures, (byte)(this.FacialFeatures ?? 0), source);
+		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.FaceFeaturesColor, (byte)(this.LimbalEyes ?? 0), source);
+		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.Eyebrows, (byte)(this.Eyebrows ?? 0), source);
+		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.EyeColor2, (byte)(this.REyeColor ?? 0), source);
+		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.EyeShape, (byte)(this.Eyes ?? 0), source);
+		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.NoseShape, (byte)(this.Nose ?? 0), source);
+		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.JawShape, (byte)(this.Jaw ?? 0), source);
+		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.LipStyle, (byte)(this.Mouth ?? 0), source);
+		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.LipColor, (byte)(this.LipsToneFurPattern ?? 0), source);
+		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.RaceFeatureSize, (byte)(this.EarMuscleTailSize ?? 0), source);
+		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.RaceFeatureType, (byte)(this.TailEarsType ?? 0), source);
+		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.BustSize, (byte)(this.Bust ?? 0), source);
+		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.Facepaint, (byte)(this.FacePaint ?? 0), source);
+		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.FacepaintColor, (byte)(this.FacePaintColor ?? 0), source);
+
+		appearanceService.SetEquipment(objectTableIndex, DrawDataContainer.EquipmentSlot.Head, this.HeadGear, source);
+		appearanceService.SetEquipment(objectTableIndex, DrawDataContainer.EquipmentSlot.Body, this.Body, source);
+		appearanceService.SetEquipment(objectTableIndex, DrawDataContainer.EquipmentSlot.Hands, this.Hands, source);
+		appearanceService.SetEquipment(objectTableIndex, DrawDataContainer.EquipmentSlot.Legs, this.Legs, source);
+		appearanceService.SetEquipment(objectTableIndex, DrawDataContainer.EquipmentSlot.Feet, this.Feet, source);
+		appearanceService.SetEquipment(objectTableIndex, DrawDataContainer.EquipmentSlot.Ears, this.Ears, source);
+		appearanceService.SetEquipment(objectTableIndex, DrawDataContainer.EquipmentSlot.Neck, this.Neck, source);
+		appearanceService.SetEquipment(objectTableIndex, DrawDataContainer.EquipmentSlot.Wrists, this.Wrists, source);
+		appearanceService.SetEquipment(objectTableIndex, DrawDataContainer.EquipmentSlot.LFinger, this.LeftRing, source);
+		appearanceService.SetEquipment(objectTableIndex, DrawDataContainer.EquipmentSlot.RFinger, this.RightRing, source);
+
+		appearanceService.SetWeapon(objectTableIndex, DrawDataContainer.WeaponSlot.MainHand, this.MainHand, source);
+		appearanceService.SetWeapon(objectTableIndex, DrawDataContainer.WeaponSlot.OffHand, this.OffHand, source);
+	}
+
+	public async Task Read(int objectTableIndex)
+	{
+		await Threads.FrameworkThread();
+
+		unsafe
+		{
+			Character* pCharacter = ServiceManager.Instance.Target.GetCharacter(objectTableIndex);
+			this.ModelType = (uint)pCharacter->ModelContainer.ModelCharaId;
+			this.Race = (Races)pCharacter->GetCustomizeValue(CustomizeIndex.Race);
+			this.Gender = (Genders)pCharacter->GetCustomizeValue(CustomizeIndex.Gender);
+			this.Age = (BodyTypes)pCharacter->GetCustomizeValue(CustomizeIndex.ModelType);
+			this.Tribe = (Tribes)pCharacter->GetCustomizeValue(CustomizeIndex.Tribe);
+			this.Height = pCharacter->GetCustomizeValue(CustomizeIndex.Height);
+			this.Head = pCharacter->GetCustomizeValue(CustomizeIndex.FaceType);
+			this.Hair = pCharacter->GetCustomizeValue(CustomizeIndex.HairStyle);
+			this.EnableHighlights = pCharacter->GetCustomizeValue(CustomizeIndex.HasHighlights) != 0;
+			this.Skintone = pCharacter->GetCustomizeValue(CustomizeIndex.SkinColor);
+			this.REyeColor = pCharacter->GetCustomizeValue(CustomizeIndex.EyeColor);
+			this.HairTone = pCharacter->GetCustomizeValue(CustomizeIndex.HairColor);
+			this.Highlights = pCharacter->GetCustomizeValue(CustomizeIndex.HairColor2);
+			this.FacialFeatures = (CustomizeFacialFeatures)pCharacter->GetCustomizeValue(CustomizeIndex.FaceFeatures);
+			this.LimbalEyes = pCharacter->GetCustomizeValue(CustomizeIndex.FaceFeaturesColor);
+			this.Eyebrows = pCharacter->GetCustomizeValue(CustomizeIndex.Eyebrows);
+			this.LEyeColor = pCharacter->GetCustomizeValue(CustomizeIndex.EyeColor2);
+			this.Eyes = pCharacter->GetCustomizeValue(CustomizeIndex.EyeShape);
+			this.Nose = pCharacter->GetCustomizeValue(CustomizeIndex.NoseShape);
+			this.Jaw = pCharacter->GetCustomizeValue(CustomizeIndex.JawShape);
+			this.Mouth = pCharacter->GetCustomizeValue(CustomizeIndex.LipStyle);
+			this.LipsToneFurPattern = pCharacter->GetCustomizeValue(CustomizeIndex.LipColor);
+			this.EarMuscleTailSize = pCharacter->GetCustomizeValue(CustomizeIndex.RaceFeatureSize);
+			this.TailEarsType = pCharacter->GetCustomizeValue(CustomizeIndex.RaceFeatureType);
+			this.Bust = pCharacter->GetCustomizeValue(CustomizeIndex.BustSize);
+			this.FacePaint = pCharacter->GetCustomizeValue(CustomizeIndex.Facepaint);
+			this.FacePaintColor = pCharacter->GetCustomizeValue(CustomizeIndex.FacepaintColor);
+
+			////this.HeightMultiplier = pCharacter->Height;
+
+			DrawObjectData mainHand = pCharacter->DrawData.Weapon(DrawDataContainer.WeaponSlot.MainHand);
+			this.MainHand = WeaponSave.FromModelId(mainHand.ModelId, null, mainHand.DrawObject->Scale);
+
+			DrawObjectData offHand = pCharacter->DrawData.Weapon(DrawDataContainer.WeaponSlot.OffHand);
+			this.OffHand = WeaponSave.FromModelId(offHand.ModelId, null, offHand.DrawObject->Scale);
+
+			this.HeadGear = pCharacter->DrawData.Equipment(DrawDataContainer.EquipmentSlot.Head);
+			this.Body = pCharacter->DrawData.Equipment(DrawDataContainer.EquipmentSlot.Body);
+			this.Hands = pCharacter->DrawData.Equipment(DrawDataContainer.EquipmentSlot.Hands);
+			this.Legs = pCharacter->DrawData.Equipment(DrawDataContainer.EquipmentSlot.Legs);
+			this.Feet = pCharacter->DrawData.Equipment(DrawDataContainer.EquipmentSlot.Feet);
+			this.Ears = pCharacter->DrawData.Equipment(DrawDataContainer.EquipmentSlot.Ears);
+			this.Neck = pCharacter->DrawData.Equipment(DrawDataContainer.EquipmentSlot.Neck);
+			this.Wrists = pCharacter->DrawData.Equipment(DrawDataContainer.EquipmentSlot.Wrists);
+			this.LeftRing = pCharacter->DrawData.Equipment(DrawDataContainer.EquipmentSlot.LFinger);
+			this.RightRing = pCharacter->DrawData.Equipment(DrawDataContainer.EquipmentSlot.RFinger);
+		}
 	}
 
 	public struct ItemSave
@@ -173,49 +271,75 @@ public class AppearanceFile : FileBase, ICharacterAppearance
 		public byte DyeId { get; set; }
 		public byte DyeId2 { get; set; }
 
-		public static implicit operator EquipmentModelId(ItemSave save) => new()
+		public static implicit operator EquipmentModelId(ItemSave? save) => new()
 		{
-			Id = save.ModelBase,
-			Variant = save.ModelVariant,
-			Stain0 = save.DyeId,
-			Stain1 = save.DyeId2,
+			Id = save?.ModelBase ?? 0,
+			Variant = save?.ModelVariant ?? 0,
+			Stain0 = save?.DyeId ?? 0,
+			Stain1 = save?.DyeId2 ?? 0,
 		};
 
-		public static implicit operator ItemSave(EquipmentModelId modelId) => new()
+		public static implicit operator ItemSave?(EquipmentModelId modelId)
 		{
-			ModelBase = modelId.Id,
-			ModelVariant = modelId.Variant,
-			DyeId = modelId.Stain0,
-			DyeId2 = modelId.Stain1,
-		};
+			if (modelId.Value == 0)
+				return null;
+
+			return new()
+			{
+				ModelBase = modelId.Id,
+				ModelVariant = modelId.Variant,
+				DyeId = modelId.Stain0,
+				DyeId2 = modelId.Stain1,
+			};
+		}
 	}
 
 	public struct WeaponSave
 	{
-		public Vector3 Color { get; set; }
-		public Vector3 Scale { get; set; }
+		public Vector3? Color { get; set; }
+		public Vector3? Scale { get; set; }
 		public ushort ModelSet { get; set; }
 		public ushort ModelBase { get; set; }
 		public ushort ModelVariant { get; set; }
 		public byte DyeId { get; set; }
 		public byte DyeId2 { get; set; }
 
-		public static implicit operator WeaponModelId(WeaponSave save) => new()
+		public static implicit operator WeaponModelId(WeaponSave? save) => new()
 		{
-			Id = save.ModelSet,
-			Variant = save.ModelVariant,
-			Type = save.ModelBase,
-			Stain0 = save.DyeId,
-			Stain1 = save.DyeId2,
+			Id = save?.ModelSet ?? 0,
+			Variant = save?.ModelVariant ?? 0,
+			Type = save?.ModelBase ?? 0,
+			Stain0 = save?.DyeId ?? 0,
+			Stain1 = save?.DyeId2 ?? 0,
 		};
 
-		public static implicit operator WeaponSave(WeaponModelId modelId) => new()
+		public static WeaponSave? FromModelId(WeaponModelId modelId, Vector3? color, Vector3? scale)
 		{
-			ModelSet = modelId.Id,
-			ModelVariant = modelId.Variant,
-			ModelBase = modelId.Type,
-			DyeId = modelId.Stain0,
-			DyeId2 = modelId.Stain1,
+			if (modelId.Value == 0)
+				return null;
+
+			return new()
+			{
+				ModelSet = modelId.Id,
+				ModelVariant = modelId.Variant,
+				ModelBase = modelId.Type,
+				DyeId = modelId.Stain0,
+				DyeId2 = modelId.Stain1,
+				Color = color,
+				Scale = scale,
+			};
+		}
+	}
+
+	public struct GlassesSave
+	{
+		public ushort GlassesId { get; set; }
+
+		public static implicit operator byte(GlassesSave save) => (byte)save.GlassesId;
+
+		public static implicit operator GlassesSave(byte save) => new()
+		{
+			GlassesId = save,
 		};
 	}
 }

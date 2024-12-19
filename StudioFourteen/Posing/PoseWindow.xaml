@@ -202,12 +202,28 @@
 
 						<TabItem Header="Bones">
 							<Grid>
+
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition/>
+									<ColumnDefinition/>
+									<ColumnDefinition/>
+								</Grid.ColumnDefinitions>
+
+								<Grid.RowDefinitions>
+									<RowDefinition/>
+									<RowDefinition/>
+									<RowDefinition/>
+								</Grid.RowDefinitions>
+								
 								<Rectangle
 									Grid.RowSpan="3"
+									Grid.ColumnSpan="3"
 									Fill="Transparent"
 									MouseDown="OnBackgroundMouseDown" />
 
 								<pose:SkeletonView
+									Grid.ColumnSpan="3"
+									Grid.RowSpan="3"
 									x:Name="FaceView"
 									FlipSides="{Binding FlipSides}"
 									ObjectTableIndex="{Binding TargetObjectIndex}"
@@ -215,8 +231,8 @@
 
 								<pose:SkeletonView
 									x:Name="TongueView"
-									HorizontalAlignment="Right"
-									VerticalAlignment="Bottom"
+									Grid.Column="2"
+									Grid.Row="2"
 									FlipSides="{Binding FlipSides}"
 									ObjectTableIndex="{Binding TargetObjectIndex}"
 									ViewDefinition="{Binding Services.Data.SkeletonViews[Tongue]}" />
