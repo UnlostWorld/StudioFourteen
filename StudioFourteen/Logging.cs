@@ -121,7 +121,7 @@ public class ErrorWindowSink : ILogEventSink
 	{
 		if (logEvent.Level >= LogEventLevel.Error)
 		{
-			ErrorWindow.Show(logEvent.MessageTemplate.Text);
+			ErrorWindow.Show($"{logEvent.MessageTemplate.Text}\n{logEvent.Exception?.Message}");
 		}
 	}
 }
