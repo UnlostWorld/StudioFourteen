@@ -305,7 +305,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 		this.Scale = this.SavedScale;
 
-		if (this.SavedPosition != null)
+		if (this.SavedPosition != null && this.panel?.RememberWindowState == true)
 		{
 			this.Position = (Point)this.SavedPosition;
 		}
