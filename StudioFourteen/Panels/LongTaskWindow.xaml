@@ -9,14 +9,14 @@
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="Please Wait"
 	Width="400"
-	MaxHeight="800"
+	Height="100"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	AlwaysVisible="True"
 	DefaultPosition="0.5,0.5"
 	RememberWindowState="False"
 	ResizeMode="NoResize"
-	SizeToContent="Height"
+	SizeToContent="Manual"
 	TitleIcon="ExclamationCircle"
 	mc:Ignorable="d">
 
