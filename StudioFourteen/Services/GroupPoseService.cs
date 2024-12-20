@@ -18,12 +18,16 @@ namespace StudioFourteen.Services;
 using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.UI;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using FFXIVClientStructs.FFXIV.Common.Lua;
+using FFXIVClientStructs.FFXIV.Component.GUI;
 using PropertyChanged.SourceGenerator;
+using StudioFourteen.Input.Devices;
 using StudioFourteen.Plugin;
 using System;
+using System.Text;
 using System.Threading.Tasks;
-
+using System.Windows.Input;
 using Task = System.Threading.Tasks.Task;
 
 public partial class GroupPoseService : ServiceBase
@@ -96,6 +100,43 @@ public partial class GroupPoseService : ServiceBase
 
 		this.enterHook?.Dispose();
 		this.exitHook?.Dispose();
+	}
+
+	public unsafe bool IsGroupPoseSettingsWindowVisible()
+	{
+		if (!DalamudServices.IsAlive)
+			return false;
+
+		AtkUnitBase* addon = RaptureAtkUnitManager.Instance()->GetAddonByName("CameraSetting");
+		if (addon == null)
+			return false;
+
+		return addon->IsVisible;
+	}
+
+	public unsafe void SetGroupPoseSettingsWindowVisible(bool visible)
+	{
+		if (!DalamudServices.IsAlive)
+			return;
+
+		if (visible)
+		{
+			// Since the keybind for "auto-walk" can be changed (and often is), and
+			// I have no idea how to open the settings window from the addon system,
+			// just send the square button on the gamepad to open the addon.
+			// this isn't ideal, as the addon will open with the gamepad controls visible,
+			// but its better than having no way to open this at all.
+			this.Services.Input.Gamepad?.SendButton(GamepadDevice.Buttons.FaceLeft);
+			this.Services.Windows.ActivateXivWindow();
+		}
+		else
+		{
+			AtkUnitBase* addon = RaptureAtkUnitManager.Instance()->GetAddonByName("CameraSetting");
+			if (addon == null)
+				return;
+
+			addon->Hide2();
+		}
 	}
 
 	private unsafe bool EnterDetour(UIModule* uiModule)

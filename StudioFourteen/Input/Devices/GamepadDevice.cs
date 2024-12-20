@@ -29,6 +29,7 @@ using System.Reflection;
 public class GamepadDevice : InputDeviceBase
 {
 	private readonly Dictionary<Buttons, InputAxis> buttonAxes = new();
+	private readonly Queue<Buttons> sendButtons = new();
 	private Hook<ControllerPoll>? gamepadPoll;
 
 	public GamepadDevice()
@@ -65,6 +66,11 @@ public class GamepadDevice : InputDeviceBase
 	}
 
 	public static string GetAxisId(Buttons button) => $"Gamepad:{button}";
+
+	public void SendButton(Buttons button)
+	{
+		this.sendButtons.Enqueue(button);
+	}
 
 	public override void Attach()
 	{
@@ -124,6 +130,14 @@ public class GamepadDevice : InputDeviceBase
 
 			axis.Value = value ? 1 : 0;
 			axis.IsConsumed = false;
+		}
+
+		while(this.sendButtons.Count > 0)
+		{
+			Buttons button = this.sendButtons.Dequeue();
+
+			input->ButtonsRaw |= (ushort)button;
+			input->ButtonsPressed |= (ushort)button;
 		}
 
 		return ret;

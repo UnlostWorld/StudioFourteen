@@ -70,6 +70,13 @@ public partial class NavigationWindow : PanelWindow
 	}
 
 	[AutoNotify]
+	public unsafe bool IsGPoseSettingsOpen
+	{
+		get => this.Services.GroupPose.IsGroupPoseSettingsWindowVisible();
+		set => this.Services.GroupPose.SetGroupPoseSettingsWindowVisible(value);
+	}
+
+	[AutoNotify]
 	public bool IsLibraryOpen
 	{
 		get => this.Services.Panels.GetIsOpen<LibraryWindow>();
