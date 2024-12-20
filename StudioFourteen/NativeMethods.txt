@@ -16,3 +16,4 @@ WindowFromPoint
 GetProcAddress
 GetModuleFileNameW
 LoadLibrary
+GetClientRect

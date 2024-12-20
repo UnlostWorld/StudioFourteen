@@ -85,10 +85,10 @@ public partial class BackgroundWindow : PanelWindow
 		if (this.Services.Windows.XivProcess == null)
 			return;
 
-		Rect xivWindowSize = this.Services.Windows.GetXivWindowSize();
+		Rect xivWindowSize = this.Services.Windows.GetXivWindowClientSize();
 
-		this.Width = xivWindowSize.Width - 16; // chrome margin
-		this.Height = xivWindowSize.Height - this.Services.Windows.TitleBarHeight;
+		this.Width = xivWindowSize.Width;
+		this.Height = xivWindowSize.Height;
 
 		this.Services.Windows.SetPosition(this, new(0, 0));
 	}

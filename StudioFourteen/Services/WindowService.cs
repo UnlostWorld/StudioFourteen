@@ -63,7 +63,6 @@ public partial class WindowService : ServiceBase
 
 	public Process? XivProcess { get; set; }
 	public nint? XivWindowHwnd => this.XivProcess?.MainWindowHandle;
-	public double TitleBarHeight => 18;
 
 	public override Task Initialize()
 	{
@@ -78,16 +77,27 @@ public partial class WindowService : ServiceBase
 		return base.Initialize();
 	}
 
-	public Rect GetXivWindowSize()
+	public Rect GetXivWindowClientSize()
 	{
 		if (this.XivProcess == null)
 			return Rect.Empty;
 
-		PInvoke.GetWindowRect((HWND)this.XivProcess.MainWindowHandle, out RECT xivWindowRect);
+		PInvoke.GetClientRect((HWND)this.XivProcess.MainWindowHandle, out RECT xivWindowRect);
+
+		Point tl = new(xivWindowRect.left, xivWindowRect.top);
+		Point br = new(xivWindowRect.right, xivWindowRect.bottom);
+		PInvoke.ClientToScreen((HWND)this.XivProcess.MainWindowHandle, ref tl);
+		PInvoke.ClientToScreen((HWND)this.XivProcess.MainWindowHandle, ref br);
+		xivWindowRect.left = tl.X;
+		xivWindowRect.top = tl.Y;
+		xivWindowRect.right = br.X;
+		xivWindowRect.bottom = br.Y;
+
+		////PInvoke.GetWindowRect((HWND)this.XivProcess.MainWindowHandle, out RECT xivWindowRect);
 
 		Rect size = default;
 		size.X = xivWindowRect.left;
-		size.Y = xivWindowRect.top + this.TitleBarHeight;
+		size.Y = xivWindowRect.top;
 		size.Width = xivWindowRect.right - size.X;
 		size.Height = xivWindowRect.bottom - size.Y;
 		return size;
@@ -169,6 +179,11 @@ public partial class WindowService : ServiceBase
 		int style = PInvoke.GetWindowLong((HWND)wndInterop.Handle, WINDOW_LONG_PTR_INDEX.GWL_STYLE);
 		style = (int)((style & ~WS_POPUP) | WS_CHILD);
 		PInvoke.SetWindowLong((HWND)wndInterop.Handle, WINDOW_LONG_PTR_INDEX.GWL_STYLE, style);
+
+		// TODO: This GetPosition only works for embedded windows, we should add a function to do the ClintRect
+		// conversion to find its relative position even while not embedded.
+		System.Windows.Point p = this.GetPosition(wnd);
+		this.SetPosition(wnd, p);
 	}
 
 	public void Unembed(Window wnd)
@@ -193,7 +208,7 @@ public partial class WindowService : ServiceBase
 		if (this.XivProcess == null)
 			return;
 
-		Rect xivWindowSize = this.GetXivWindowSize();
+		Rect xivWindowSize = this.GetXivWindowClientSize();
 
 		position.X = Math.Clamp(position.X, 0, 1);
 		position.Y = Math.Clamp(position.Y, 0, 1);
@@ -209,10 +224,6 @@ public partial class WindowService : ServiceBase
 			y = (int)((xivWindowSize.Height * position.Y) - (wnd.ActualHeight * position.Y));
 		}
 
-		// windows are drifting slightly over time, I'm not sure why...
-		x -= 6;
-		y -= 10;
-
 		int w = 0;
 		int h = 0;
 
@@ -227,7 +238,7 @@ public partial class WindowService : ServiceBase
 
 	public System.Windows.Point GetPosition(Window wnd)
 	{
-		Rect xivSize = this.GetXivWindowSize();
+		Rect xivSize = this.GetXivWindowClientSize();
 
 		double l = (wnd.Left - xivSize.Left) / xivSize.Width;
 		double t = (wnd.Top - xivSize.Top) / xivSize.Height;
@@ -278,7 +289,7 @@ public partial class WindowService : ServiceBase
 		PInvoke.ScreenToClient((HWND)this.XivWindowHwnd.Value, ref position);
 
 		// don't process mouse if its outside the xiv window.
-		Rect xivSize = this.GetXivWindowSize();
+		Rect xivSize = this.GetXivWindowClientSize();
 
 		if (position.X < 0 || position.X > xivSize.Width)
 			return null;

@@ -15,21 +15,26 @@
 
 namespace StudioFourteen.Settings;
 
-using System.Collections.Generic;
-using System.IO;
-using System.Threading.Tasks;
-using System.Windows.Input;
 using Dalamud.Configuration;
-using Dalamud.Game.ClientState.Keys;
 using StudioFourteen.Input;
-using StudioFourteen.Input.Devices;
 using StudioFourteen.Plugin;
 using StudioFourteen.Save;
 using StudioFourteen.Serialization;
 using StudioFourteen.Services;
+using System.Collections.Generic;
+using System.IO;
+using System.Threading.Tasks;
+using WpfUtils.Utils;
 
 public class SettingsService : ServiceBase
 {
+	private readonly FuncQueue saveQueue;
+
+	public SettingsService()
+	{
+		this.saveQueue = new(this.SaveImmediate, 500);
+	}
+
 	public Configuration Current { get; private set; } = new Configuration();
 
 	public override Task Initialize()
@@ -58,11 +63,16 @@ public class SettingsService : ServiceBase
 
 	public override Task Shutdown()
 	{
-		this.Save();
+		this.SaveImmediate();
 		return base.Shutdown();
 	}
 
 	public void Save()
+	{
+		this.saveQueue.Invoke();
+	}
+
+	public void SaveImmediate()
 	{
 		if (DalamudServices.PluginInterface != null)
 		{

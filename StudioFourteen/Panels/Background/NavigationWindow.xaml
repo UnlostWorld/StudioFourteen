@@ -22,6 +22,7 @@
 	<panels:PanelWindow.Template>
 		<ControlTemplate TargetType="{x:Type local:NavigationWindow}">
 			<AdornerDecorator x:Name="MainGrid">
+
 				<Grid
 					Margin="12"
 					HorizontalAlignment="Center"
@@ -91,9 +92,9 @@
 								ContentTemplate="{TemplateBinding ContentTemplate}" />
 						</Grid>
 					</Grid>
-
-
 				</Grid>
+
+
 			</AdornerDecorator>
 
 			<ControlTemplate.Triggers>

@@ -434,17 +434,13 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	{
 		this.WindowState = WindowState.Normal;
 
-		double t = this.Top;
-
 		if (newValue)
 		{
 			this.Services.Windows.Embed(this);
-			this.Top = t - (this.Services.Windows.TitleBarHeight + 10);
 		}
 		else
 		{
 			this.Services.Windows.Unembed(this);
-			this.Top = t;
 		}
 
 		// wiggle wiggle
