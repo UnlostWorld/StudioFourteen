@@ -35,44 +35,21 @@ using WpfUtils.Extensions;
 [DependencyProperty<bool>("ShowBackground", DefaultValue = true)]
 public partial class TargetsPanel : Panel
 {
+	[Notify] private CharacterViewModel? target;
+	[Notify] private string removeCharacterTooltip = string.Empty;
+
 	public TargetsPanel()
 	{
 		for (int i = GroupPoseService.GPoseFirstCharacter; i < GroupPoseService.GPoseFirstCharacter + GroupPoseService.GPoseCharacterCount; ++i)
 		{
 			this.Characters.Add(new(i));
 		}
+
+		this.Services.Target.TargetChanged += this.OnTargetChanged;
 	}
 
 	public List<CharacterViewModel> Characters { get; init; } = new();
 	public FastObservableCollection<CharacterViewModel> ValidCharacters { get; init; } = new();
-
-	[AutoNotify] public bool IsInGPose => this.Services.Studio.IsOpenAndInGPose;
-	[AutoNotify] public string RemoveCharacterTooltip => StudioFourteen.Resources.Format("LOC_Target_DeleteCharacter", this.Target?.Name);
-
-	[AutoNotify]
-	public CharacterViewModel? Target
-	{
-		get
-		{
-			foreach (CharacterViewModel vm in this.Characters)
-			{
-				if (vm.IsCurrent)
-				{
-					return vm;
-				}
-			}
-
-			return null;
-		}
-
-		set
-		{
-			if (value != null)
-			{
-				value.IsCurrent = true;
-			}
-		}
-	}
 
 	protected override void OnFrameworkUpdate(IFramework framework)
 	{
@@ -97,6 +74,20 @@ public partial class TargetsPanel : Panel
 		{
 			this.Dispatcher.Invoke(() => this.ValidCharacters.Replace(validCharacters));
 		}
+	}
+
+	private void OnTargetChanged()
+	{
+		foreach(CharacterViewModel character in this.ValidCharacters)
+		{
+			if (character.ObjectTableIndex == this.Services.Target.TargetObjectIndex)
+			{
+				this.Target = character;
+				break;
+			}
+		}
+
+		this.RemoveCharacterTooltip = StudioFourteen.Resources.Format("LOC_Target_DeleteCharacter", this.Target?.Name);
 	}
 
 	private void OnAddCharacterClicked(object sender, RoutedEventArgs e)
@@ -132,6 +123,8 @@ public partial class TargetsPanel : Panel
 			return;
 
 		await this.Services.CharacterLifecycle.DestroyAsync(target.ObjectTableIndex);
+
+		this.NotifyPropertyChanged(nameof(TargetsPanel.Target));
 	}
 
 	private async Task SelectObject(int index)
@@ -146,39 +139,21 @@ public partial class TargetsPanel : Panel
 			}
 		}
 	}
-
-	private void OnResetNicknameClicked(object sender, RoutedEventArgs e)
-	{
-		CharacterViewModel? target = this.Target;
-		if (target == null)
-			return;
-
-		target.Nickname = null;
-	}
 }
 
-public unsafe class CharacterViewModel : AutoViewModel
+public unsafe partial class CharacterViewModel : ViewModel
 {
 	public readonly int ObjectTableIndex;
 
 	private bool isCurrent = false;
+	[Notify] private bool isValid = false;
+	[Notify] private string? name = null;
 
 	public CharacterViewModel(int index)
 	{
 		this.ObjectTableIndex = index;
 	}
 
-	[AutoNotify] public bool IsValid { get; private set; }
-	[AutoNotify] public string? Name { get; private set; }
-
-	[AutoNotify]
-	public string? Nickname
-	{
-		get => this.Services.Roles.GetRole(this.ObjectTableIndex);
-		set => this.Services.Roles.SetRole(this.ObjectTableIndex, value);
-	}
-
-	[AutoNotify]
 	public bool IsCurrent
 	{
 		get => this.isCurrent;
@@ -203,10 +178,12 @@ public unsafe class CharacterViewModel : AutoViewModel
 		{
 			this.Name = pCharacter->GetRoleOrDisplayName();
 			this.isCurrent = TargetSystem.Instance()->GPoseTarget == pCharacter;
+			this.RaisePropertyChanged(nameof(CharacterViewModel.IsCurrent));
 		}
 		else
 		{
 			this.isCurrent = false;
+			this.RaisePropertyChanged(nameof(CharacterViewModel.IsCurrent));
 		}
 	}
 }

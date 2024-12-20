@@ -240,7 +240,7 @@ public class AutoNotify : IAutoNotify
 
 	public event PropertyChangedEventHandler? PropertyChanged;
 
-	public void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
+	public virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
 	{
 		this.PropertyChanged?.Invoke(this, new(propertyName));
 	}
