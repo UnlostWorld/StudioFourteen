@@ -16,7 +16,6 @@
 	MinWidth="32"
 	MinHeight="32"
 	d:DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
-	MouseLeave="OnMouseLeave"
 	SizeToContent="Manual"
 	mc:Ignorable="d">
 

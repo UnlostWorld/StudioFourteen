@@ -48,10 +48,13 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	private double preScaleHeight;
 	private double preScaleWidth;
 	private Panel? panel;
+	private bool isDragMoving = false;
 
 	public PanelWindow()
 	{
 		this.Log = Logging.ForContext(this.GetType());
+
+		this.WindowStartupLocation = WindowStartupLocation.Manual;
 
 		// Load a new copy of the resources. Each window needs its own instance for threading reasons.
 		this.Resources = StudioFourteen.Resources.Load();
@@ -65,6 +68,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		this.PreviewMouseUp += this.OnPreviewMouseUp;
 		this.PreviewKeyDown += this.OnPreviewKeyDown;
 		this.PreviewKeyUp += this.OnPreviewKeyUp;
+		this.LocationChanged += this.OnLocationChanged;
 		this.Services.Studio.PropertyChanged += this.OnStudioPropertyChanged;
 		this.Services.Reshade.ReshadeOverlayChanged += this.OnReshadeOverlayChanged;
 
@@ -259,6 +263,13 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		this.Dispatcher.Invoke(this.Close);
 	}
 
+	public new void DragMove()
+	{
+		this.isDragMoving = true;
+		base.DragMove();
+		this.isDragMoving = false;
+	}
+
 	protected void OnLoaded(object sender, RoutedEventArgs e)
 	{
 		try
@@ -307,7 +318,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 		if (this.SavedPosition != null && this.panel?.RememberWindowState == true)
 		{
-			this.Position = (Point)this.SavedPosition;
+			this.Position = this.SavedPosition ?? new Point(0, 0);
 		}
 		else if (this.panel != null)
 		{
@@ -341,6 +352,19 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		}
 
 		this.panel?.SetIsOpen(this, true);
+
+		// sometimes the position doesn't 'stick' if windows decides to move the window,
+		// so set it again after a short delay to ensure its in the right spot.
+		Task.Run(async () =>
+		{
+			await Task.Delay(16);
+			await this.MainThread();
+
+			if (this.SavedPosition != null)
+			{
+				this.Position = (Point)this.SavedPosition;
+			}
+		});
 	}
 
 	protected virtual void OnClosed()
@@ -466,6 +490,14 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 		this.Services.Input.Keyboard?.HandleKey(e.Key, false);
 		e.Handled = true;
+	}
+
+	private void OnLocationChanged(object? sender, EventArgs e)
+	{
+		if (!this.isDragMoving)
+			return;
+
+		this.SavedPosition = this.Position;
 	}
 
 	private void OnReshadeOverlayChanged(bool open)

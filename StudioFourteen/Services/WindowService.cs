@@ -209,6 +209,10 @@ public partial class WindowService : ServiceBase
 			y = (int)((xivWindowSize.Height * position.Y) - (wnd.ActualHeight * position.Y));
 		}
 
+		// windows are drifting slightly over time, I'm not sure why...
+		x -= 6;
+		y -= 10;
+
 		int w = 0;
 		int h = 0;
 

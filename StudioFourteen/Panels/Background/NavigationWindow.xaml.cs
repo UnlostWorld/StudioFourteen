@@ -26,8 +26,10 @@ using StudioFourteen.Services;
 using StudioFourteen.Settings;
 using StudioFourteen.SPA;
 using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using WpfUtils;
 
 public partial class NavigationWindow : PanelWindow
 {
@@ -184,10 +186,5 @@ public partial class NavigationWindow : PanelWindow
 		{
 			this.DragMove();
 		}
-	}
-
-	private void OnMouseLeave(object sender, MouseEventArgs e)
-	{
-		this.SavedPosition = this.Position;
 	}
 }
