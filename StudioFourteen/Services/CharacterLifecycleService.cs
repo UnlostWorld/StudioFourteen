@@ -123,6 +123,8 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 			}
 		}
 
+		await Threads.NextFrame();
+
 		if (index != -1 && appearance != null)
 		{
 			await appearance.Apply(index);
