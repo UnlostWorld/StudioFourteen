@@ -24,6 +24,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Threading;
 using WpfUtils;
 using WpfUtils.Commands;
 using WpfUtils.Controls;
@@ -116,7 +117,7 @@ public partial class LibraryContextMenu : PopOut
 
 	public void OnMenuInvoked(MenuEntry entry)
 	{
-		this.IsOpen = false;
+		this.Dispatcher.Invoke(() => this.IsOpen = false);
 	}
 
 	private async Task ShowResultMenu()
