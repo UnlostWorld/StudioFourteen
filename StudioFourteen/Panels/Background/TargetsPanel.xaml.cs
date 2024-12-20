@@ -20,14 +20,12 @@ using DependencyPropertyGenerator;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
+using PropertyChanged.SourceGenerator;
 using StudioFourteen.Appearance;
-using StudioFourteen.Library;
 using StudioFourteen.Mvm;
 using StudioFourteen.Panels;
 using StudioFourteen.Plugin;
 using StudioFourteen.Services;
-using StudioFourteen.Tags;
-using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -46,6 +44,7 @@ public partial class TargetsPanel : Panel
 	}
 
 	public List<CharacterViewModel> Characters { get; init; } = new();
+	public FastObservableCollection<CharacterViewModel> ValidCharacters { get; init; } = new();
 
 	[AutoNotify] public bool IsInGPose => this.Services.Studio.IsOpenAndInGPose;
 	[AutoNotify] public string RemoveCharacterTooltip => StudioFourteen.Resources.Format("LOC_Target_DeleteCharacter", this.Target?.Name);
@@ -65,15 +64,38 @@ public partial class TargetsPanel : Panel
 
 			return null;
 		}
+
+		set
+		{
+			if (value != null)
+			{
+				value.IsCurrent = true;
+			}
+		}
 	}
 
 	protected override void OnFrameworkUpdate(IFramework framework)
 	{
 		base.OnFrameworkUpdate(framework);
 
+		List<CharacterViewModel> validCharacters = new();
+		bool changed = false;
 		foreach (CharacterViewModel character in this.Characters)
 		{
+			bool wasValid = character.IsValid;
 			character.OnFrameworkUpdate();
+
+			if (character.IsValid)
+			{
+				validCharacters.Add(character);
+			}
+
+			changed |= wasValid != character.IsValid;
+		}
+
+		if (changed)
+		{
+			this.Dispatcher.Invoke(() => this.ValidCharacters.Replace(validCharacters));
 		}
 	}
 

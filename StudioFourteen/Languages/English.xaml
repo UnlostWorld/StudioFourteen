@@ -53,6 +53,7 @@
 	<sys:String x:Key="LOC_Rotation">Rotate</sys:String>
 	<sys:String x:Key="LOC_Scale">Scale</sys:String>
 
+	<sys:String x:Key="LOC_Target_Change">Select a target:</sys:String>
 	<sys:String x:Key="LOC_Target_CreateCharacter">Add a new character</sys:String>
 	<sys:String x:Key="LOC_Target_DeleteCharacter">Remove {0}</sys:String>
 

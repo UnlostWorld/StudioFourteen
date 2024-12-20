@@ -251,120 +251,134 @@
 	<Grid
 		HorizontalAlignment="Center"
 		VerticalAlignment="Top">
-		<Border Style="{DynamicResource WpfUtilsControlBorder}">
-			<StackPanel x:Name="Stack">
-				<StackPanel.Resources>
-					<Style
-						BasedOn="{StaticResource WpfUtilsIconToggleButton}"
-						TargetType="{x:Type ToggleButton}">
-						<Setter Property="Width" Value="32" />
-						<Setter Property="Height" Value="32" />
-						<Setter Property="Margin" Value="0" />
-					</Style>
 
-					<Style TargetType="{x:Type Line}">
-						<Setter Property="Width" Value="24" />
-						<Setter Property="Margin" Value="0,3" />
-						<Setter Property="Stroke" Value="{DynamicResource BackgroundLightBrush}" />
-						<Setter Property="X1" Value="0" />
-						<Setter Property="X2" Value="1" />
-						<Setter Property="StrokeThickness" Value="1" />
-						<Setter Property="Stretch" Value="Fill" />
-					</Style>
-				</StackPanel.Resources>
+		<Grid.Resources>
+			<Style
+				BasedOn="{StaticResource WpfUtilsIconToggleButton}"
+				TargetType="{x:Type ToggleButton}">
+				<Setter Property="Width" Value="32" />
+				<Setter Property="Height" Value="32" />
+				<Setter Property="Margin" Value="0" />
+			</Style>
 
-				<ToggleButton
-					Width="32"
-					Height="32"
-					IsChecked="{Binding IsInGPose}"
-					ToolTip="{DynamicResource LOC_ToggleGPose}">
-					<vectors:SvgIcon
-						Margin="8"
-						Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"
-						UriSource="pack://application:,,,/StudioFourteen;component/Assets/icon-grouppose.svg" />
-				</ToggleButton>
+			<Style
+				BasedOn="{StaticResource WpfUtilsControlBorder}"
+				TargetType="{x:Type Border}">
+				<Setter Property="Margin" Value="0,1" />
+			</Style>
+		</Grid.Resources>
 
-				<ToggleButton
-					Width="32"
-					Height="32"
-					IsChecked="{Binding IsGPoseSettingsOpen}"
-					IsEnabled="{Binding IsInGPose}"
-					ToolTip="{DynamicResource LOC_GPoseSettings}">
-					<vectors:SvgIcon
-						Margin="8"
-						Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"
-						UriSource="pack://application:,,,/StudioFourteen;component/Assets/icon-groupposesettings.svg" />
-				</ToggleButton>
+		<StackPanel>
+			<Border>
+				<StackPanel>
+					<ToggleButton
+						Width="32"
+						Height="32"
+						IsChecked="{Binding IsInGPose}"
+						ToolTip="{DynamicResource LOC_ToggleGPose}">
+						<vectors:SvgIcon
+							Margin="8"
+							Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"
+							UriSource="pack://application:,,,/StudioFourteen;component/Assets/icon-grouppose.svg" />
+					</ToggleButton>
 
-				<Line />
+					<ToggleButton
+						Width="32"
+						Height="32"
+						IsChecked="{Binding IsGPoseSettingsOpen}"
+						IsEnabled="{Binding IsInGPose}"
+						ToolTip="{DynamicResource LOC_GPoseSettings}">
+						<vectors:SvgIcon
+							Margin="8"
+							Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"
+							UriSource="pack://application:,,,/StudioFourteen;component/Assets/icon-groupposesettings.svg" />
+					</ToggleButton>
 
-				<ToggleButton
-					IsChecked="{Binding IsLibraryOpen}"
-					ToolTip="{DynamicResource LOC_Library}">
-					<wpfUtils:IconBlock Icon="Book" />
-				</ToggleButton>
+				</StackPanel>
+			</Border>
+			<Border>
+				<StackPanel>
 
-				<Line />
+					<ToggleButton
+						IsChecked="{Binding IsLibraryOpen}"
+						ToolTip="{DynamicResource LOC_Library}">
+						<wpfUtils:IconBlock Icon="Book" />
+					</ToggleButton>
 
-				<ToggleButton
-					IsChecked="{Binding IsCameraOpen}"
-					ToolTip="{DynamicResource LOC_Camera}">
-					<vectors:SvgIcon
-						Margin="8"
-						Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"
-						UriSource="pack://application:,,,/StudioFourteen;component/Assets/icon-camera.svg" />
-				</ToggleButton>
+				</StackPanel>
+			</Border>
+			<Border>
+				<StackPanel>
 
-				<ToggleButton
-					IsChecked="{Binding IsEnvironmentOpen}"
-					ToolTip="{DynamicResource LOC_Environment}">
-					<wpfUtils:IconBlock Icon="CloudMoonRain" />
-				</ToggleButton>
+					<ToggleButton
+						IsChecked="{Binding IsCameraOpen}"
+						ToolTip="{DynamicResource LOC_Camera}">
+						<vectors:SvgIcon
+							Margin="8"
+							Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"
+							UriSource="pack://application:,,,/StudioFourteen;component/Assets/icon-camera.svg" />
+					</ToggleButton>
 
-				<ToggleButton
-					IsChecked="{Binding IsCharacterOpen}"
-					ToolTip="{DynamicResource LOC_Character}">
-					<wpfUtils:IconBlock Icon="UserShield" />
-				</ToggleButton>
+					<ToggleButton
+						IsChecked="{Binding IsEnvironmentOpen}"
+						ToolTip="{DynamicResource LOC_Environment}">
+						<wpfUtils:IconBlock Icon="CloudMoonRain" />
+					</ToggleButton>
 
-				<ToggleButton
-					IsChecked="{Binding IsPoseOpen}"
-					ToolTip="{DynamicResource LOC_Pose}">
-					<wpfUtils:IconBlock Icon="Running" />
-				</ToggleButton>
+					<ToggleButton
+						IsChecked="{Binding IsCharacterOpen}"
+						ToolTip="{DynamicResource LOC_Character}">
+						<wpfUtils:IconBlock Icon="UserShield" />
+					</ToggleButton>
 
-				<Line />
+					<ToggleButton
+						IsChecked="{Binding IsPoseOpen}"
+						ToolTip="{DynamicResource LOC_Pose}">
+						<wpfUtils:IconBlock Icon="Running" />
+					</ToggleButton>
 
-				<ToggleButton
-					IsChecked="{Binding IsPhotoOpen}"
-					ToolTip="{DynamicResource LOC_Photo}">
-					<wpfUtils:IconBlock Icon="Image" />
-				</ToggleButton>
+				</StackPanel>
+			</Border>
+			<Border>
+				<StackPanel>
 
-				<ToggleButton
-					IsChecked="{Binding IsSaveOpen}"
-					ToolTip="{DynamicResource LOC_Save}">
-					<save:SaveIconControl />
+					<ToggleButton
+						IsChecked="{Binding IsPhotoOpen}"
+						ToolTip="{DynamicResource LOC_Photo}">
+						<wpfUtils:IconBlock Icon="Image" />
+					</ToggleButton>
 
-				</ToggleButton>
+					<ToggleButton
+						IsChecked="{Binding IsSaveOpen}"
+						ToolTip="{DynamicResource LOC_Save}">
+						<save:SaveIconControl />
 
-				<Line />
+					</ToggleButton>
 
-				<ToggleButton
-					IsChecked="{Binding IsSpaOpen}"
-					ToolTip="{DynamicResource LOC_Spa}">
-					<wpfUtils:IconBlock Icon="ObjectGroup" />
-				</ToggleButton>
+				</StackPanel>
+			</Border>
+			<Border>
+				<StackPanel>
 
-				<Line />
+					<ToggleButton
+						IsChecked="{Binding IsSpaOpen}"
+						ToolTip="{DynamicResource LOC_Spa}">
+						<wpfUtils:IconBlock Icon="ObjectGroup" />
+					</ToggleButton>
 
-				<ToggleButton
-					IsChecked="{Binding IsSettingsOpen}"
-					ToolTip="{DynamicResource LOC_Settings}">
-					<wpfUtils:IconBlock Icon="cogs" />
-				</ToggleButton>
+				</StackPanel>
+			</Border>
+			<Border>
+				<StackPanel>
 
-			</StackPanel>
-		</Border>
+					<ToggleButton
+						IsChecked="{Binding IsSettingsOpen}"
+						ToolTip="{DynamicResource LOC_Settings}">
+						<wpfUtils:IconBlock Icon="cogs" />
+					</ToggleButton>
+
+				</StackPanel>
+			</Border>
+		</StackPanel>
 	</Grid>
 </panels:PanelWindow>

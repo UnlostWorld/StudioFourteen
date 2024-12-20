@@ -22,7 +22,6 @@
 	mc:Ignorable="d">
 
 	<Grid x:Name="MainBorder">
-		<Border Style="{DynamicResource WpfUtilsControlBorder}" />
 
 		<Grid>
 			<Grid.ColumnDefinitions>
@@ -31,95 +30,145 @@
 				<ColumnDefinition Width="Auto" />
 			</Grid.ColumnDefinitions>
 
-
-			<StackPanel
+			<Border
 				Grid.Column="0"
-				Orientation="Horizontal">
+				Margin="0,0,2,0"
+				Style="{DynamicResource WpfUtilsControlBorder}">
 
-				<StackPanel.Resources>
-					<sys:Double x:Key="ButtonWidth">100</sys:Double>
-				</StackPanel.Resources>
+				<Grid>
 
-				<ItemsControl ItemsSource="{Binding Characters}">
-					<ItemsControl.ItemsPanel>
-						<ItemsPanelTemplate>
-							<StackPanel Orientation="Horizontal" />
-						</ItemsPanelTemplate>
-					</ItemsControl.ItemsPanel>
+					<ComboBox
+						Width="256"
+						ItemsSource="{Binding ValidCharacters}"
+						SelectedItem="{Binding Target}"
+						Visibility="{Binding ValidCharacters.Count, Converter={StaticResource GreaterThanToVisibility}, ConverterParameter=6}">
 
-					<ItemsControl.ItemTemplate>
-						<DataTemplate DataType="{x:Type local:CharacterViewModel}">
+						<wpfUtils:PopOut.Header>
+							<TextBlock
+								Margin="10"
+								Text="{DynamicResource LOC_Target_Change}" />
+						</wpfUtils:PopOut.Header>
 
-							<Grid
-								x:Name="ContentArea"
-								Width="0">
+						<ComboBox.ItemTemplate>
+							<DataTemplate DataType="{x:Type local:CharacterViewModel}">
+								<Grid>
+									<TextBlock
+										Margin="6,3"
+										HorizontalAlignment="Center"
+										Text="{Binding Name}"
+										TextTrimming="CharacterEllipsis"
+										TextWrapping="NoWrap" />
 
-								<ToggleButton
-									Width="{StaticResource ButtonWidth}"
-									HorizontalAlignment="Center"
-									Background="Transparent"
-									IsChecked="{Binding IsCurrent}"
-									Style="{DynamicResource WpfUtilsIconToggleButton}">
-									<Grid Margin="6,3">
+								</Grid>
 
-										<Grid.RowDefinitions>
-											<RowDefinition />
-											<RowDefinition Height="Auto" />
-										</Grid.RowDefinitions>
+								<DataTemplate.Triggers>
+									<DataTrigger
+										Binding="{Binding IsValid}"
+										Value="False">
+										<Setter Property="Visibility" Value="Collapsed" />
+									</DataTrigger>
+								</DataTemplate.Triggers>
 
-										<TextBlock
-											Grid.Row="0"
-											Margin="0"
+							</DataTemplate>
+						</ComboBox.ItemTemplate>
+					</ComboBox>
+
+
+					<StackPanel
+						Orientation="Horizontal"
+						Visibility="{Binding ValidCharacters.Count, Converter={StaticResource LessThanToVisibility}, ConverterParameter=7}">
+						<StackPanel.Resources>
+							<sys:Double x:Key="ButtonWidth">100</sys:Double>
+						</StackPanel.Resources>
+
+						<ItemsControl ItemsSource="{Binding Characters}">
+							<ItemsControl.ItemsPanel>
+								<ItemsPanelTemplate>
+									<StackPanel Orientation="Horizontal" />
+								</ItemsPanelTemplate>
+							</ItemsControl.ItemsPanel>
+
+							<ItemsControl.ItemTemplate>
+								<DataTemplate DataType="{x:Type local:CharacterViewModel}">
+
+									<Grid
+										x:Name="ContentArea"
+										Width="0">
+
+										<ToggleButton
+											Width="{StaticResource ButtonWidth}"
 											HorizontalAlignment="Center"
-											Text="{Binding Name}"
-											TextTrimming="CharacterEllipsis"
-											TextWrapping="NoWrap" />
+											Background="Transparent"
+											IsChecked="{Binding IsCurrent}"
+											Style="{DynamicResource WpfUtilsIconToggleButton}">
+											<Grid Margin="6,3">
+
+												<Grid.RowDefinitions>
+													<RowDefinition />
+													<RowDefinition Height="Auto" />
+												</Grid.RowDefinitions>
+
+												<TextBlock
+													Grid.Row="0"
+													Margin="0"
+													HorizontalAlignment="Center"
+													Text="{Binding Name}"
+													TextTrimming="CharacterEllipsis"
+													TextWrapping="NoWrap" />
+											</Grid>
+
+										</ToggleButton>
 									</Grid>
 
-								</ToggleButton>
-							</Grid>
+									<DataTemplate.Triggers>
+										<DataTrigger
+											Binding="{Binding IsValid}"
+											Value="True">
+											<DataTrigger.EnterActions>
+												<BeginStoryboard>
+													<Storyboard>
+														<DoubleAnimation
+															Storyboard.TargetName="ContentArea"
+															Storyboard.TargetProperty="Width"
+															To="{StaticResource ButtonWidth}"
+															Duration="0:00:00.150">
+															<DoubleAnimation.EasingFunction>
+																<SineEase EasingMode="EaseOut" />
+															</DoubleAnimation.EasingFunction>
+														</DoubleAnimation>
+													</Storyboard>
+												</BeginStoryboard>
+											</DataTrigger.EnterActions>
+											<DataTrigger.ExitActions>
+												<BeginStoryboard>
+													<Storyboard>
+														<DoubleAnimation
+															Storyboard.TargetName="ContentArea"
+															Storyboard.TargetProperty="Width"
+															To="0"
+															Duration="0:00:00.250">
+															<DoubleAnimation.EasingFunction>
+																<SineEase EasingMode="EaseIn" />
+															</DoubleAnimation.EasingFunction>
+														</DoubleAnimation>
+													</Storyboard>
+												</BeginStoryboard>
+											</DataTrigger.ExitActions>
+										</DataTrigger>
+									</DataTemplate.Triggers>
 
-							<DataTemplate.Triggers>
-								<DataTrigger
-									Binding="{Binding IsValid}"
-									Value="True">
-									<DataTrigger.EnterActions>
-										<BeginStoryboard>
-											<Storyboard>
-												<DoubleAnimation
-													Storyboard.TargetName="ContentArea"
-													Storyboard.TargetProperty="Width"
-													To="{StaticResource ButtonWidth}"
-													Duration="0:00:00.150">
-													<DoubleAnimation.EasingFunction>
-														<SineEase EasingMode="EaseOut" />
-													</DoubleAnimation.EasingFunction>
-												</DoubleAnimation>
-											</Storyboard>
-										</BeginStoryboard>
-									</DataTrigger.EnterActions>
-									<DataTrigger.ExitActions>
-										<BeginStoryboard>
-											<Storyboard>
-												<DoubleAnimation
-													Storyboard.TargetName="ContentArea"
-													Storyboard.TargetProperty="Width"
-													To="0"
-													Duration="0:00:00.250">
-													<DoubleAnimation.EasingFunction>
-														<SineEase EasingMode="EaseIn" />
-													</DoubleAnimation.EasingFunction>
-												</DoubleAnimation>
-											</Storyboard>
-										</BeginStoryboard>
-									</DataTrigger.ExitActions>
-								</DataTrigger>
-							</DataTemplate.Triggers>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</ItemsControl>
+					</StackPanel>
+				</Grid>
+			</Border>
 
-						</DataTemplate>
-					</ItemsControl.ItemTemplate>
-				</ItemsControl>
-			</StackPanel>
+
+			<Border
+				Grid.Column="1"
+				Grid.ColumnSpan="2"
+				Style="{DynamicResource WpfUtilsControlBorder}" />
 
 			<Button
 				Grid.Column="1"
