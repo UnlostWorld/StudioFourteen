@@ -24,12 +24,6 @@
 				<ToggleButton
 					Grid.Row="0"
 					Margin="1"
-					Content="{DynamicResource LOC_Settings_Interface_IsSpa}"
-					IsChecked="{Binding Settings.IsSpa}" />
-
-				<ToggleButton
-					Grid.Row="0"
-					Margin="1"
 					Content="{DynamicResource LOC_Settings_Interface_HideStudioButton}"
 					IsChecked="{Binding Settings.HideStudioButton}"
 					ToolTip="{DynamicResource LOC_Settings_Interface_HideStudioButton_ToolTip}" />
@@ -90,7 +84,7 @@
 					Grid.Row="0"
 					Margin="1"
 					Content="{DynamicResource LOC_Settings_Input_EnableKeyBinds}"
-					IsChecked="{Binding Settings.EnableKeyBinds}" />
+					IsChecked="{Binding Settings.EnableBinds}" />
 
 				<!--<ScrollViewer
 					Grid.Row="1"

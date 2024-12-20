@@ -24,6 +24,7 @@ using StudioFourteen.Posing;
 using StudioFourteen.Save;
 using StudioFourteen.Services;
 using StudioFourteen.Settings;
+using StudioFourteen.SPA;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Input;
@@ -31,20 +32,7 @@ using System.Windows.Input;
 public partial class NavigationWindow : PanelWindow
 {
 	private readonly Persistence persistence = new("NavigationWindow");
-
-	public override bool IsUiVisibleAndOpen
-	{
-		get
-		{
-			if (!base.IsUiVisibleAndOpen)
-				return false;
-
-			if (this.Services.Settings.Current.IsSpa)
-				return false;
-
-			return true;
-		}
-	}
+	private bool spa = false;
 
 	[AutoNotify]
 	public bool ShowStudioButton
@@ -135,6 +123,24 @@ public partial class NavigationWindow : PanelWindow
 	{
 		get => this.Services.Panels.GetIsOpen<SaveWindow>();
 		set => this.Services.Panels.SetIsOpen<SaveWindow>(true);
+	}
+
+	[AutoNotify]
+	public bool IsSpaOpen
+	{
+		get => this.spa;
+		set
+		{
+			this.spa = value;
+			if (value)
+			{
+				SpaWindow.OpenSpa();
+			}
+			else
+			{
+				SpaWindow.CloseSpa();
+			}
+		}
 	}
 
 	public override T? GetPersistence<T>([CallerMemberName] string id = "")

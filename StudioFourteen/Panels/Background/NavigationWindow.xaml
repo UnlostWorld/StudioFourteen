@@ -339,6 +339,14 @@
 				<Line />
 
 				<ToggleButton
+					IsChecked="{Binding IsSpaOpen}"
+					ToolTip="{DynamicResource LOC_Spa}">
+					<wpfUtils:IconBlock Icon="ObjectGroup" />
+				</ToggleButton>
+
+				<Line />
+
+				<ToggleButton
 					IsChecked="{Binding IsSettingsOpen}"
 					ToolTip="{DynamicResource LOC_Settings}">
 					<wpfUtils:IconBlock Icon="cogs" />

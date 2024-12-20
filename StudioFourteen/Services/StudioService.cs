@@ -65,11 +65,6 @@ public partial class StudioService : ServiceBase
 			this.RaisePropertyChanged(nameof(StudioService.IsOpen));
 			this.RaisePropertyChanged(nameof(StudioService.IsOpenAndInGPose));
 
-			if (this.Services.Settings.Current.IsSpa)
-			{
-				SpaWindow.OpenSpa();
-			}
-
 			this.Opening?.Invoke();
 
 			this.IsOpen = true;
@@ -98,11 +93,6 @@ public partial class StudioService : ServiceBase
 			this.Services.Detach();
 			this.RaisePropertyChanged(nameof(StudioService.IsOpen));
 			this.RaisePropertyChanged(nameof(StudioService.IsOpenAndInGPose));
-
-			if (this.Services.Settings.Current.IsSpa)
-			{
-				SpaWindow.CloseSpa();
-			}
 
 			this.Closing?.Invoke();
 
