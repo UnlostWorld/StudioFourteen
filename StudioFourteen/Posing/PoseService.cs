@@ -481,11 +481,11 @@ public class PoseService : ServiceBase, WorldContextMenu.IProvider
 
 			if (bone.Mirror != null)
 			{
-				bone.Mirror.SetReferenceRelativeTransform(flipped);
+				bone.Mirror.SetReferenceRelativeTransform(flipped, true);
 			}
 			else
 			{
-				bone.SetReferenceRelativeTransform(flipped);
+				bone.SetReferenceRelativeTransform(flipped, true);
 			}
 		}
 	}

@@ -40,6 +40,7 @@ public class BoneReference(BoneId id, string? name = null)
 	private readonly EasingFunctionBase blendEase = new SineEase();
 	private bool blendOnLoad = false;
 	private bool blendOnUnload = false;
+	private bool shouldBlendNext = false;
 	private Transform? fromTransform;
 	private Transform? toTransform;
 
@@ -109,13 +110,14 @@ public class BoneReference(BoneId id, string? name = null)
 		this.loadModelSpaceBoneTransform = modelSpaceTransform;
 	}
 
-	public void SetReferenceRelativeTransform(Transform referenceRelativeTransform)
+	public void SetReferenceRelativeTransform(Transform referenceRelativeTransform, bool blend)
 	{
 		this.ReverseMirror();
 		this.loadReferenceRelativeTransform = referenceRelativeTransform;
+		this.shouldBlendNext = blend;
 	}
 
-	public void SetReferenceRelativeTransform(BoneTransform referenceRelativeTransform)
+	public void SetReferenceRelativeTransform(BoneTransform referenceRelativeTransform, bool blend)
 	{
 		this.ReverseMirror();
 		Transform relativeTransform = default;
@@ -123,6 +125,7 @@ public class BoneReference(BoneId id, string? name = null)
 		relativeTransform.Rotation = referenceRelativeTransform.Rotation ?? Quaternion.Identity;
 		relativeTransform.Scale = referenceRelativeTransform.Scale ?? Vector3.One;
 		this.loadReferenceRelativeTransform = relativeTransform;
+		this.shouldBlendNext = blend;
 	}
 
 	public void Reset(bool immediate)
@@ -267,7 +270,8 @@ public class BoneReference(BoneId id, string? name = null)
 		// Apply reference relative changes.
 		if (this.loadReferenceRelativeTransform != null && this.ReferenceTransform != null)
 		{
-			this.blendOnLoad = true;
+			this.blendOnLoad = this.shouldBlendNext;
+			this.shouldBlendNext = false;
 
 			this.loadLocalSpaceTransform = (Transform)this.loadReferenceRelativeTransform * (Transform)this.ReferenceTransform;
 			this.loadReferenceRelativeTransform = null;

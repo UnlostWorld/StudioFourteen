@@ -230,7 +230,7 @@ public class BoneSelection : TransformSelectionBase
 	{
 		foreach (BoneReference bone in this.bones)
 		{
-			bone.SetReferenceRelativeTransform(referenceTransform);
+			bone.SetReferenceRelativeTransform(referenceTransform, false);
 		}
 	}
 }

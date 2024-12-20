@@ -166,7 +166,7 @@ public class PoseFile : FileBase
 
 				if (val != null)
 				{
-					boneReference.SetReferenceRelativeTransform(val);
+					boneReference.SetReferenceRelativeTransform(val, true);
 					boneReference.Locked = true;
 					continue;
 				}
