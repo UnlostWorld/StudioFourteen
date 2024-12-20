@@ -20,11 +20,19 @@ using Dalamud.Plugin;
 using Dalamud.Plugin.Ipc;
 using StudioFourteen.Plugin;
 using StudioFourteen.Services;
+using System.Threading.Tasks;
 
 public class IPCService
 	: ServiceBase
 {
-	public bool MareSynchronosLoadMcdf(string fileName, IGameObject target) => this.Invoke<bool, string, IGameObject>("MareSynchronos.LoadMcdf", fileName, target);
+	public Task<bool> MareSynchronosLoadMcdfAsync(string fileName, IGameObject target)
+	{
+		Task<bool>? b = this.Invoke<Task<bool>, string, IGameObject>("MareSynchronos.LoadMcdfAsync", fileName, target);
+		if (b == null)
+			return Task.FromResult(false);
+
+		return b;
+	}
 
 	private TReturn? Invoke<TReturn>(string name)
 	{

@@ -143,6 +143,12 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 		if (DalamudServices.ObjectTable == null)
 			return false;
 
+		// change to a new target before deleting the actor as Mare assumes no target = left gpose
+		// and will crash.
+		bool success = await this.Services.Target.MoveTarget(objectTableIndex);
+		if (!success)
+			return false;
+
 		unsafe
 		{
 			GameObject* character = (GameObject*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
@@ -153,8 +159,10 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 				return false;
 
 			com->DeleteObjectByIndex((ushort)idx, 0);
-			return true;
 		}
+
+		await Threads.NextFrame();
+		return true;
 	}
 
 	public unsafe void DestroyAllCreated()

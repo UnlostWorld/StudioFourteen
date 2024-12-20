@@ -148,6 +148,53 @@ public partial class TargetService : ServiceBase
 		}
 	}
 
+	public async Task<bool> MoveTarget(int fromObjectTableIndex)
+	{
+		await Threads.FrameworkThread();
+
+		if (!this.Services.GroupPose.IsGroupPosing)
+			return false;
+
+		if (DalamudServices.ObjectTable == null)
+			return false;
+
+		int min = GroupPoseService.GPoseFirstCharacter;
+		int max = min + GroupPoseService.GPoseCharacterCount;
+
+		unsafe
+		{
+			Character* pTarget = null;
+			for (int i = fromObjectTableIndex + 1; i < max; i++)
+			{
+				pTarget = this.GetCharacter(i);
+
+				if (pTarget != null)
+				{
+					break;
+				}
+			}
+
+			if (pTarget == null)
+			{
+				for (int i = fromObjectTableIndex - 1; i >= min; i--)
+				{
+					pTarget = this.GetCharacter(i);
+
+					if (pTarget != null)
+					{
+						break;
+					}
+				}
+			}
+
+			if (pTarget == null)
+				return false;
+
+			this.SetTarget(pTarget->ObjectIndex);
+			return true;
+		}
+	}
+
 	protected unsafe override void OnFrameworkUpdate(IFramework framework)
 	{
 		base.OnFrameworkUpdate(framework);

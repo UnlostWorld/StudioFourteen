@@ -372,8 +372,34 @@ public partial class LibraryWindow : Panel
 
 	private void OnResultMouseRight(object sender, MouseButtonEventArgs e)
 	{
-		this.OnResultToolTipOpening(sender, null);
-		this.LibraryContextMenu.Expand();
+		e.Handled = true;
+
+		if (sender is not FrameworkElement senderElement)
+			return;
+
+		if (this.ResultsGrid.SelectedItems.Count == 1)
+		{
+			object? selected = this.ResultsGrid.SelectedItems[0];
+			if (selected is Result result)
+			{
+				this.LibraryContextMenu.Enter(result.Entry, senderElement);
+				this.LibraryContextMenu.Expand();
+			}
+		}
+		else if (this.ResultsGrid.SelectedItems.Count > 1)
+		{
+			List<LibraryEntryBase> entries = new();
+			foreach(object? obj in this.ResultsGrid.SelectedItems)
+			{
+				if (obj is Result result)
+				{
+					entries.Add(result.Entry);
+				}
+			}
+
+			this.LibraryContextMenu.Enter(entries, senderElement);
+			this.LibraryContextMenu.Expand();
+		}
 	}
 
 	private void OnListEnter(object sender, RoutedEventArgs e)

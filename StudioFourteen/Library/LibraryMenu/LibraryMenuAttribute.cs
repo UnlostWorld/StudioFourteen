@@ -39,8 +39,20 @@ public class LibraryMenuAttribute : LibraryMenuAttributeBase
 
 	public override async Task GetMenu(object methodTarget, MethodInfo method, ILibraryContextMenu menu)
 	{
-		Action invoke = () => method.Invoke(methodTarget, null);
-		MenuEntry newMenu = menu.AddMenu(this.Icon, this.Label, invoke);
+		MenuEntry newMenu;
+
+		Func<Task> invoke = () =>
+		{
+			object? ret = method.Invoke(methodTarget, null);
+			if (ret is Task retTask)
+			{
+				return retTask;
+			}
+
+			return Task.CompletedTask;
+		};
+
+		newMenu = menu.AddMenu(this.Icon, this.Label, invoke);
 
 		string canMethodName = $"Can{method.Name}";
 		MethodInfo? canMethod = methodTarget.GetType().GetMethod(canMethodName, BindingFlags.Public | BindingFlags.Instance);

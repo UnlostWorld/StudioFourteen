@@ -651,6 +651,7 @@
 						ClipToBounds="True"
 						ItemsSource="{Binding Results, IsAsync=True}"
 						SelectedItem="{Binding SelectedResult}"
+						SelectionMode="Extended"
 						Template="{StaticResource ListTemplate}"
 						VirtualizingPanel.ScrollUnit="Pixel"
 						VirtualizingPanel.VirtualizationMode="Recycling"

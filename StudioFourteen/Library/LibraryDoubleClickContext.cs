@@ -37,14 +37,34 @@ public class LibraryDoubleClickContext : ILibraryContextMenu
 			if (!menu.IsEnabled)
 				continue;
 
-			menu.Invoke();
+			await menu.Invoke();
 			break;
 		}
 	}
 
-	public MenuEntry AddMenu(IconChar? icon, string? label, Action? invoke = null)
+	public MenuEntry AddMenu(IconChar? icon, string? label, Func<Task>? invoke = null)
 	{
 		MenuEntry entry = new(icon, label, invoke);
+		this.menus.Add(entry);
+		return entry;
+	}
+
+	public MenuEntry AddMenu(IconChar? icon, string? label)
+	{
+		MenuEntry entry = new(icon, label);
+		this.menus.Add(entry);
+		return entry;
+	}
+
+	public MenuEntry AddMenu(IconChar? icon, string? label, Action invoke)
+	{
+		Func<Task> f = () =>
+		{
+			invoke?.Invoke();
+			return Task.CompletedTask;
+		};
+
+		MenuEntry entry = new(icon, label, f);
 		this.menus.Add(entry);
 		return entry;
 	}

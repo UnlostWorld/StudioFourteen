@@ -109,33 +109,7 @@ public partial class TargetsPanel : Panel
 		if (target == null)
 			return;
 
-		int index = this.Characters.IndexOf(target);
 		await this.Services.CharacterLifecycle.DestroyAsync(target.ObjectTableIndex);
-		this.SelectNearest(index);
-	}
-
-	private void SelectNearest(int index)
-	{
-		for (int i = index; i < this.Characters.Count; i++)
-		{
-			if (!this.Characters[i].IsValid)
-				continue;
-
-			this.Characters[i].IsCurrent = true;
-			break;
-		}
-
-		if (this.Target == null)
-		{
-			for (int i = index; i >= 0; i--)
-			{
-				if (!this.Characters[i].IsValid)
-					continue;
-
-				this.Characters[i].IsCurrent = true;
-				break;
-			}
-		}
 	}
 
 	private async Task SelectObject(int index)

@@ -21,6 +21,7 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Common.Lua;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Plugin;
+using System;
 using System.Threading.Tasks;
 
 using Task = System.Threading.Tasks.Task;

@@ -137,7 +137,7 @@ public class MareFile
 			}
 		}
 
-		ServiceManager.Instance.IPC.MareSynchronosLoadMcdf(this.FilePath, target);
+		await ServiceManager.Instance.IPC.MareSynchronosLoadMcdfAsync(this.FilePath, target);
 	}
 
 	public override void GetAutoTags(TagCollection tags)
