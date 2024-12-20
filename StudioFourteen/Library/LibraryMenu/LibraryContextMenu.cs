@@ -19,6 +19,7 @@ using DependencyPropertyGenerator;
 using FFXIVClientStructs.FFXIV.Client.Game.UI;
 using FontAwesome.Sharp;
 using Serilog;
+using StudioFourteen.Studio;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -193,10 +194,19 @@ public partial class LibraryContextMenu : PopOut
 
 				Func<Task> invoke = async () =>
 				{
+					LongTaskWindow? ltw = await LongTaskWindow.Show();
+
+					int count = entryLookup[label].Count;
+					int current = 0;
 					foreach (MenuEntry subEntry in entryLookup[label])
 					{
+						current++;
+						ltw?.SetStatus($"{current} / {count}");
+
 						await subEntry.Invoke();
 					}
+
+					ltw?.Close();
 				};
 
 				MenuEntry groupEntry = new(entryLookup[label][0].Icon, label, invoke);
