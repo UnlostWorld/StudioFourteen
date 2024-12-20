@@ -25,13 +25,9 @@ using System.Threading.Tasks;
 public class IPCService
 	: ServiceBase
 {
-	public Task<bool> MareSynchronosLoadMcdfAsync(string fileName, IGameObject target)
+	public bool MareSynchronosLoadMcdf(string fileName, IGameObject target)
 	{
-		Task<bool>? b = this.Invoke<Task<bool>, string, IGameObject>("MareSynchronos.LoadMcdfAsync", fileName, target);
-		if (b == null)
-			return Task.FromResult(false);
-
-		return b;
+		return this.Invoke<bool, string, IGameObject>("MareSynchronos.LoadMcdf", fileName, target);
 	}
 
 	private TReturn? Invoke<TReturn>(string name)
