@@ -140,7 +140,7 @@ public class MareFile
 		// The async version of LoadMcdf has some issues, but if we try to load two mcdf's
 		// too close together it doesn't work, so just delay for a while.
 		bool success = ServiceManager.Instance.IPC.MareSynchronosLoadMcdf(this.FilePath, target);
-		await Task.Delay(2500);
+		await Task.Delay(3000);
 	}
 
 	public override void GetAutoTags(TagCollection tags)
