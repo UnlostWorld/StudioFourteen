@@ -103,4 +103,19 @@ public partial class TransformInspector : View
 			this.Selection.SetWorldTransform(transform);
 		}
 	}
+
+	[AutoNotify]
+	public Vector3 WorldTranslation
+	{
+		get => this.WorldTransform.Translation;
+		set
+		{
+			if (this.Selection == null)
+				return;
+
+			BoneTransform transform = new();
+			transform.Translation = value;
+			this.Selection.SetWorldTransform(transform);
+		}
+	}
 }

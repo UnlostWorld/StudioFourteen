@@ -13,8 +13,9 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Posing;
+namespace StudioFourteen.Gizmos;
 
+using DependencyPropertyGenerator;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
@@ -27,17 +28,15 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using StudioFourteen.Utilities;
+using StudioFourteen.Extensions;
 
+using CursorPoint = System.Drawing.Point;
 using Vector = System.Windows.Vector;
 
-public class RotationGizmo : View
+[DependencyProperty("Rotation", typeof(Quaternion), DefaultValueExpression="System.Numerics.Quaternion.Identity")]
+public partial class RotationGizmo : View
 {
-	public static readonly DependencyProperty RotationProperty = DependencyProperty.Register(
-		nameof(RotationGizmo.Rotation),
-		typeof(Quaternion),
-		typeof(RotationGizmo),
-		new(Quaternion.Identity));
-
 	private const int NumPoints = 144;
 	private const int AxisHoverMouseDistance = 20;
 
@@ -56,8 +55,9 @@ public class RotationGizmo : View
 	private bool isDragging = false;
 	private Point? dragStartToPos;
 	private Point? dragStartFromPos;
+	private Point? lastDragMousePos;
 	private RotationGizmoAxis? dragAxis;
-	private double dragDistance;
+	private CursorPoint cursorKeepPosition;
 
 	private Quaternion dragRotation;
 
@@ -74,7 +74,7 @@ public class RotationGizmo : View
 		this.sphere.Height = this.Radius * 2;
 		this.sphere.Fill = new SolidColorBrush(Color.FromArgb(0x50, 0, 0, 0));
 		this.canvas.Children.Add(this.sphere);
-		Canvas.SetZIndex(this.sphere, 0);
+		Panel.SetZIndex(this.sphere, 0);
 
 		this.xAxis = new(Axis.X, this.Radius, this.canvas);
 		this.xAxis.ForegroundBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x33, 0x33, 0xFF));
@@ -92,7 +92,7 @@ public class RotationGizmo : View
 		this.mousePrompt.Width = 10;
 		this.mousePrompt.Height = 10;
 		this.canvas.Children.Add(this.mousePrompt);
-		Canvas.SetZIndex(this.mousePrompt, 10000);
+		Panel.SetZIndex(this.mousePrompt, 10000);
 
 		this.IsEnabledChanged += this.OnIsEnabledChanged;
 	}
@@ -102,12 +102,6 @@ public class RotationGizmo : View
 		X,
 		Y,
 		Z,
-	}
-
-	public Quaternion Rotation
-	{
-		get => (Quaternion)this.GetValue(RotationProperty);
-		set => this.SetValue(RotationProperty, value);
 	}
 
 	public float Radius { get; set; } = 70;
@@ -156,10 +150,10 @@ public class RotationGizmo : View
 				this.zAxis.Transform(transformMatrix, viewMatrix, center);
 			});
 		}
-		catch(TaskCanceledException)
+		catch (TaskCanceledException)
 		{
 		}
-		catch(Exception ex)
+		catch (Exception ex)
 		{
 			this.isError = true;
 			this.Log.Error(ex, "Error drawing gizmo");
@@ -206,12 +200,15 @@ public class RotationGizmo : View
 
 		this.OnMouseMove(e);
 
+		CursorUtility.SetCursorVisible(false);
+		this.cursorKeepPosition = CursorUtility.GetPosition();
+
 		this.isDragging = true;
 		this.dragStartToPos = this.closestAxisMousePos;
 		this.dragStartFromPos = this.closestAxisMouseFromPos;
 		this.dragAxis = this.closestMouseAxis;
-		this.dragDistance = 0;
 		this.dragRotation = this.Rotation;
+		this.lastDragMousePos = this.cursorKeepPosition.ToWindowsPoint();
 	}
 
 	protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
@@ -219,11 +216,14 @@ public class RotationGizmo : View
 		base.OnMouseLeftButtonUp(e);
 		this.ReleaseMouseCapture();
 
+		CursorUtility.SetCursorVisible(true);
+		CursorUtility.SetPosition(this.cursorKeepPosition);
+
 		this.isDragging = false;
 		this.dragStartToPos = null;
 		this.dragStartFromPos = null;
 		this.dragAxis = null;
-		this.dragDistance = 0;
+		this.lastDragMousePos = null;
 	}
 
 	protected override void OnMouseMove(MouseEventArgs e)
@@ -257,13 +257,32 @@ public class RotationGizmo : View
 
 		if (this.isDragging && this.dragStartFromPos != null && this.dragStartToPos != null && this.dragAxis != null)
 		{
+			if (this.lastDragMousePos == null)
+				this.lastDragMousePos = CursorUtility.GetPosition().ToWindowsPoint();
+
+			Point cursorPos = CursorUtility.GetPosition().ToWindowsPoint();
+			Vector mouseDelta = cursorPos - this.lastDragMousePos.Value;
+			this.lastDragMousePos = cursorPos;
+
 			Vector normal = (Point)this.dragStartToPos - (Point)this.dragStartFromPos;
+			normal.Normalize();
+
+			double mag = mouseDelta.Length;
+			mouseDelta.Normalize();
+
+			double dot = Vector.Multiply(mouseDelta, normal);
+			float dragDelta = (float)(mag * dot);
+
+			if (double.IsNaN(dragDelta))
+				return;
+
+			/*Vector normal = (Point)this.dragStartToPos - (Point)this.dragStartFromPos;
 			normal.Normalize();
 
 			Vector lhs = mousePos - (Point)this.dragStartToPos;
 			double newDragDistance = (lhs.X * normal.X) + (lhs.Y * normal.Y);
 			double dragDelta = newDragDistance - this.dragDistance;
-			this.dragDistance = newDragDistance;
+			this.dragDistance = newDragDistance;*/
 
 			double angleChange = dragDelta / 50;
 
@@ -295,6 +314,10 @@ public class RotationGizmo : View
 			this.dragRotation = this.dragRotation * rot;
 			this.Rotation = this.dragRotation;
 			e.Handled = true;
+
+			// Reset cursor location
+			CursorUtility.SetPosition(this.cursorKeepPosition);
+			this.lastDragMousePos = CursorUtility.GetPosition().ToWindowsPoint();
 		}
 		else if (this.closestAxisMousePos != null && this.closestMouseAxis != null && closestAxisPointToMouseDistance < AxisHoverMouseDistance)
 		{
@@ -371,7 +394,7 @@ public class RotationGizmo : View
 			set
 			{
 				this.strokeThickness = value;
-				foreach(Line line in this.segments)
+				foreach (Line line in this.segments)
 				{
 					line.StrokeThickness = value;
 				}
@@ -403,7 +426,7 @@ public class RotationGizmo : View
 				line.Y2 = toPos.Y;
 				line.IsEnabled = isVisible;
 
-				Canvas.SetZIndex(line, isVisible ? 200 : 100);
+				Panel.SetZIndex(line, isVisible ? 200 : 100);
 
 				line.StrokeThickness = this.StrokeThickness;
 				line.Stroke = isVisible ? this.ForegroundBrush : this.BackgroundBrush;

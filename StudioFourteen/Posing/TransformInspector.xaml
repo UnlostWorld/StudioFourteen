@@ -5,6 +5,7 @@
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:gizmos="clr-namespace:StudioFourteen.Gizmos"
 	xmlns:local="clr-namespace:StudioFourteen.Posing"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:mvm="clr-namespace:StudioFourteen.Mvm"
@@ -27,7 +28,12 @@
 						<Grid
 							Grid.Row="0"
 							Height="168">
-							<pose:RotationGizmo Rotation="{Binding WorldRotation, Mode=TwoWay}" />
+							<gizmos:RotationGizmo
+								Rotation="{Binding WorldRotation, Mode=TwoWay}"
+								Visibility="{Binding Services.Pose.EditMode, Converter={StaticResource EnumToVisibility}, ConverterParameter=Rotation}" />
+							<gizmos:TranslationGizmo
+								Translation="{Binding WorldTranslation, Mode=TwoWay}"
+								Visibility="{Binding Services.Pose.EditMode, Converter={StaticResource EnumToVisibility}, ConverterParameter=Translation}" />
 						</Grid>
 
 						<wpfUtils:SwitchSelector
