@@ -73,6 +73,14 @@ public partial class TransformInspector : View
 	public Transform WorldTransform
 	{
 		get => this.Selection?.WorldTransform ?? default;
+		set
+		{
+			BoneTransform transform = new();
+			transform.Translation = value.Translation;
+			transform.Rotation = value.Rotation;
+			transform.Scale = value.Scale;
+			this.Selection?.SetWorldTransform(transform);
+		}
 	}
 
 	[AutoNotify]
@@ -100,21 +108,6 @@ public partial class TransformInspector : View
 
 			BoneTransform transform = new();
 			transform.Rotation = value;
-			this.Selection.SetWorldTransform(transform);
-		}
-	}
-
-	[AutoNotify]
-	public Vector3 WorldTranslation
-	{
-		get => this.WorldTransform.Translation;
-		set
-		{
-			if (this.Selection == null)
-				return;
-
-			BoneTransform transform = new();
-			transform.Translation = value;
 			this.Selection.SetWorldTransform(transform);
 		}
 	}

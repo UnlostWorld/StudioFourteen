@@ -32,7 +32,7 @@
 								Rotation="{Binding WorldRotation, Mode=TwoWay}"
 								Visibility="{Binding Services.Pose.EditMode, Converter={StaticResource EnumToVisibility}, ConverterParameter=Rotation}" />
 							<gizmos:TranslationGizmo
-								Translation="{Binding WorldTranslation, Mode=TwoWay}"
+								Transform="{Binding WorldTransform}"
 								Visibility="{Binding Services.Pose.EditMode, Converter={StaticResource EnumToVisibility}, ConverterParameter=Translation}" />
 						</Grid>
 

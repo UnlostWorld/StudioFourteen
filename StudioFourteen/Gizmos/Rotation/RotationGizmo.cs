@@ -76,15 +76,15 @@ public partial class RotationGizmo : View
 		this.canvas.Children.Add(this.sphere);
 		Panel.SetZIndex(this.sphere, 0);
 
-		this.xAxis = new(Axis.X, this.Radius, this.canvas);
+		this.xAxis = new(GizmoAxes.X, this.Radius, this.canvas);
 		this.xAxis.ForegroundBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x33, 0x33, 0xFF));
 		this.xAxis.BackgroundBrush = new SolidColorBrush(Color.FromArgb(0x10, 0x33, 0x33, 0xFF));
 
-		this.yAxis = new(Axis.Y, this.Radius, this.canvas);
+		this.yAxis = new(GizmoAxes.Y, this.Radius, this.canvas);
 		this.yAxis.ForegroundBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x33, 0xFF, 0x33));
 		this.yAxis.BackgroundBrush = new SolidColorBrush(Color.FromArgb(0x10, 0x33, 0xFF, 0x33));
 
-		this.zAxis = new(Axis.Z, this.Radius, this.canvas);
+		this.zAxis = new(GizmoAxes.Z, this.Radius, this.canvas);
 		this.zAxis.ForegroundBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0x33, 0x33));
 		this.zAxis.BackgroundBrush = new SolidColorBrush(Color.FromArgb(0x10, 0xFF, 0x33, 0x33));
 
@@ -95,13 +95,6 @@ public partial class RotationGizmo : View
 		Panel.SetZIndex(this.mousePrompt, 10000);
 
 		this.IsEnabledChanged += this.OnIsEnabledChanged;
-	}
-
-	public enum Axis
-	{
-		X,
-		Y,
-		Z,
 	}
 
 	public float Radius { get; set; } = 70;
@@ -175,15 +168,15 @@ public partial class RotationGizmo : View
 				mouseWheel /= 10;
 
 			Quaternion rot = Quaternion.Identity;
-			if (this.closestMouseAxis.Axis == Axis.X)
+			if (this.closestMouseAxis.Axis == GizmoAxes.X)
 			{
 				rot = Quaternion.CreateFromAxisAngle(Vector3.UnitX, mouseWheel);
 			}
-			else if (this.closestMouseAxis.Axis == Axis.Y)
+			else if (this.closestMouseAxis.Axis == GizmoAxes.Y)
 			{
 				rot = Quaternion.CreateFromAxisAngle(Vector3.UnitY, -mouseWheel);
 			}
-			else if (this.closestMouseAxis.Axis == Axis.Z)
+			else if (this.closestMouseAxis.Axis == GizmoAxes.Z)
 			{
 				rot = Quaternion.CreateFromAxisAngle(Vector3.UnitZ, mouseWheel);
 			}
@@ -276,14 +269,6 @@ public partial class RotationGizmo : View
 			if (double.IsNaN(dragDelta))
 				return;
 
-			/*Vector normal = (Point)this.dragStartToPos - (Point)this.dragStartFromPos;
-			normal.Normalize();
-
-			Vector lhs = mousePos - (Point)this.dragStartToPos;
-			double newDragDistance = (lhs.X * normal.X) + (lhs.Y * normal.Y);
-			double dragDelta = newDragDistance - this.dragDistance;
-			this.dragDistance = newDragDistance;*/
-
 			double angleChange = dragDelta / 50;
 
 			if (Keyboard.Modifiers == ModifierKeys.Shift)
@@ -298,15 +283,15 @@ public partial class RotationGizmo : View
 			}
 
 			Quaternion rot = Quaternion.Identity;
-			if (this.dragAxis.Axis == Axis.X)
+			if (this.dragAxis.Axis == GizmoAxes.X)
 			{
 				rot = Quaternion.CreateFromAxisAngle(Vector3.UnitX, (float)angleChange);
 			}
-			else if (this.dragAxis.Axis == Axis.Y)
+			else if (this.dragAxis.Axis == GizmoAxes.Y)
 			{
 				rot = Quaternion.CreateFromAxisAngle(Vector3.UnitY, (float)-angleChange);
 			}
-			else if (this.dragAxis.Axis == Axis.Z)
+			else if (this.dragAxis.Axis == GizmoAxes.Z)
 			{
 				rot = Quaternion.CreateFromAxisAngle(Vector3.UnitZ, (float)angleChange);
 			}
@@ -348,13 +333,13 @@ public partial class RotationGizmo : View
 
 	private class RotationGizmoAxis
 	{
-		public readonly Axis Axis;
+		public readonly GizmoAxes Axis;
 
 		private readonly Line[] segments = new Line[NumPoints];
 		private readonly Vector3[] points3d = new Vector3[NumPoints];
 		private int strokeThickness = 3;
 
-		public RotationGizmoAxis(Axis axis, float radius, Canvas canvas)
+		public RotationGizmoAxis(GizmoAxes axis, float radius, Canvas canvas)
 		{
 			this.Axis = axis;
 
@@ -363,15 +348,15 @@ public partial class RotationGizmo : View
 				float p = i / (float)(this.points3d.Length - 1);
 				float r = p * (MathF.PI * 2);
 
-				if (axis == Axis.Z)
+				if (axis == GizmoAxes.Z)
 				{
 					this.points3d[i] = new Vector3(radius * MathF.Cos(r), radius * MathF.Sin(r), 0);
 				}
-				else if (axis == Axis.X)
+				else if (axis == GizmoAxes.X)
 				{
 					this.points3d[i] = new Vector3(0, radius * MathF.Cos(r), radius * MathF.Sin(r));
 				}
-				else if (axis == Axis.Y)
+				else if (axis == GizmoAxes.Y)
 				{
 					this.points3d[i] = new Vector3(radius * MathF.Cos(r), 0, radius * MathF.Sin(r));
 				}
