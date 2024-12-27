@@ -95,8 +95,7 @@ public abstract partial class GizmoBase : View
 				if (this.isDragging && this.dragTransform != null)
 					transform = this.dragTransform.Value;
 
-				Matrix4x4 transformMatrix = Matrix4x4.CreateFromQuaternion(transform.Rotation);
-				transformMatrix.Translation = new Vector3(0, 0, 0);
+				Matrix4x4 transformMatrix = this.GetTransformMatrix(transform);
 
 				Vector2 center = default;
 				center.X = (float)(this.ActualWidth / 2);
@@ -106,6 +105,8 @@ public abstract partial class GizmoBase : View
 				{
 					axis.Transform(transformMatrix, viewMatrix, center);
 				}
+
+				this.OnDraw(center);
 			});
 		}
 		catch (TaskCanceledException)
@@ -116,6 +117,17 @@ public abstract partial class GizmoBase : View
 			this.isError = true;
 			this.Log.Error(ex, "Error drawing gizmo");
 		}
+	}
+
+	protected virtual Matrix4x4 GetTransformMatrix(Transform transform)
+	{
+		Matrix4x4 transformMatrix = Matrix4x4.CreateFromQuaternion(transform.Rotation);
+		transformMatrix.Translation = new Vector3(0, 0, 0);
+		return transformMatrix;
+	}
+
+	protected virtual void OnDraw(Vector2 center)
+	{
 	}
 
 	protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
@@ -130,7 +142,8 @@ public abstract partial class GizmoBase : View
 
 		this.isDragging = true;
 
-		this.hoverAxis?.StartDrag();
+		Point mousePos = e.GetPosition(this);
+		this.hoverAxis?.StartDrag(mousePos);
 
 		this.dragAxis = this.hoverAxis;
 		this.dragTransform = this.Transform;
@@ -157,15 +170,7 @@ public abstract partial class GizmoBase : View
 		base.OnMouseMove(e);
 
 		Point mousePos = e.GetPosition(this);
-
-		GizmoAxisBase? newHover = null;
-		foreach (GizmoAxisBase axis in this.axes)
-		{
-			if (axis.IsMouseOver(mousePos))
-			{
-				newHover = axis;
-			}
-		}
+		GizmoAxisBase? newHover = this.GetHoverAxis(mousePos);
 
 		if (this.isDragging && this.dragAxis != null && this.dragTransform != null)
 		{
@@ -186,16 +191,33 @@ public abstract partial class GizmoBase : View
 			CursorUtility.SetPosition(this.cursorKeepPosition);
 			this.lastDragMousePos = CursorUtility.GetPosition().ToWindowsPoint();
 		}
-		else if (newHover != null && this.hoverAxis == null)
+		else if (newHover != this.hoverAxis)
 		{
+			if (this.hoverAxis != null)
+			{
+				this.hoverAxis.IsAxisHovered = false;
+			}
+
 			this.hoverAxis = newHover;
-			this.hoverAxis.IsAxisHovered = true;
+
+			if (this.hoverAxis != null)
+			{
+				this.hoverAxis.IsAxisHovered = true;
+			}
 		}
-		else if (newHover == null && this.hoverAxis != null)
+	}
+
+	protected virtual GizmoAxisBase? GetHoverAxis(Point mousePos)
+	{
+		foreach (GizmoAxisBase axis in this.axes)
 		{
-			this.hoverAxis.IsAxisHovered = false;
-			this.hoverAxis = null;
+			if (axis.IsMouseOver(mousePos))
+			{
+				return axis;
+			}
 		}
+
+		return null;
 	}
 
 	protected override void OnMouseLeave(MouseEventArgs e)

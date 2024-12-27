@@ -125,7 +125,7 @@ public class TranslationGizmoAxis : GizmoAxisBase
 
 		double distance = Point.Subtract(mousePos, toPos).Length;
 
-		return distance < 10;
+		return distance < 20;
 	}
 
 	public override void UpdateDrag(Vector mouseDelta, ref Transform deltaTransform)
@@ -171,6 +171,7 @@ public class TranslationGizmoAxis : GizmoAxisBase
 			delta = Vector3.UnitZ * dragDelta;
 		}
 
+		delta = Vector3.Transform(delta, deltaTransform.Rotation);
 		deltaTransform.Translation += delta;
 	}
 }

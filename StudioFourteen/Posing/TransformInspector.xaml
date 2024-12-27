@@ -29,7 +29,7 @@
 							Grid.Row="0"
 							Height="168">
 							<gizmos:RotationGizmo
-								Rotation="{Binding WorldRotation, Mode=TwoWay}"
+								Transform="{Binding WorldTransform}"
 								Visibility="{Binding Services.Pose.EditMode, Converter={StaticResource EnumToVisibility}, ConverterParameter=Rotation}" />
 							<gizmos:TranslationGizmo
 								Transform="{Binding WorldTransform}"

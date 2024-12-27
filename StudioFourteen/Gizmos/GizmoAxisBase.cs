@@ -47,7 +47,8 @@ public abstract class GizmoAxisBase
 	protected ServiceManager Services => ServiceManager.Instance;
 
 	public abstract bool IsMouseOver(Point mousePos);
-	public virtual void StartDrag()
+
+	public virtual void StartDrag(Point mousePos)
 	{
 	}
 
