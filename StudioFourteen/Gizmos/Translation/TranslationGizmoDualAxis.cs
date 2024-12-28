@@ -29,6 +29,10 @@ public class TranslationGizmoDualAxis : GizmoAxisBase
 {
 	private readonly Polygon square;
 	private readonly Vector3[] possibleCorners = new Vector3[4];
+	private Vector3 dragAxisOne;
+	private Vector3 dragAxisTwo;
+	private Vector3 dragAxisOnePos;
+	private Vector3 dragAxisTwoPos;
 
 	public TranslationGizmoDualAxis(GizmoAxes axis, float radius, Canvas canvas)
 	{
@@ -50,6 +54,9 @@ public class TranslationGizmoDualAxis : GizmoAxisBase
 
 		if (this.Axis == GizmoAxes.X)
 		{
+			this.dragAxisOne = Vector3.UnitY;
+			this.dragAxisTwo = Vector3.UnitZ;
+
 			this.possibleCorners[0] = new Vector3(0, radius, radius);
 			this.possibleCorners[1] = new Vector3(0, -radius, radius);
 			this.possibleCorners[2] = new Vector3(0, -radius, -radius);
@@ -57,6 +64,9 @@ public class TranslationGizmoDualAxis : GizmoAxisBase
 		}
 		else if (this.Axis == GizmoAxes.Y)
 		{
+			this.dragAxisOne = Vector3.UnitX;
+			this.dragAxisTwo = Vector3.UnitZ;
+
 			this.possibleCorners[0] = new Vector3(radius, 0, radius);
 			this.possibleCorners[1] = new Vector3(-radius, 0, radius);
 			this.possibleCorners[2] = new Vector3(-radius, 0, -radius);
@@ -64,6 +74,9 @@ public class TranslationGizmoDualAxis : GizmoAxisBase
 		}
 		else if (this.Axis == GizmoAxes.Z)
 		{
+			this.dragAxisOne = Vector3.UnitX;
+			this.dragAxisTwo = Vector3.UnitY;
+
 			this.possibleCorners[0] = new Vector3(radius, radius, 0);
 			this.possibleCorners[1] = new Vector3(-radius, radius, 0);
 			this.possibleCorners[2] = new Vector3(-radius, -radius, 0);
@@ -76,15 +89,15 @@ public class TranslationGizmoDualAxis : GizmoAxisBase
 		double mag = mouseDelta.Length;
 		mouseDelta.Normalize();
 
-		Point a = new Point(this.square.Points[1].X, this.square.Points[1].Y);
-		Point b = new Point(this.square.Points[0].X, this.square.Points[0].Y);
+		Point a = new Point(this.square.Points[0].X, this.square.Points[0].Y);
+		Point b = this.dragAxisOnePos.ToPoint();
 		Vector normal = a - b;
 		normal.Normalize();
 		double dot = Vector.Multiply(mouseDelta, normal);
 		float dragDeltaAxis1 = (float)(mag * dot);
 
-		a = new Point(this.square.Points[3].X, this.square.Points[3].Y);
-		b = new Point(this.square.Points[0].X, this.square.Points[0].Y);
+		a = new Point(this.square.Points[0].X, this.square.Points[0].Y);
+		b = this.dragAxisTwoPos.ToPoint();
 		normal = a - b;
 		normal.Normalize();
 		dot = Vector.Multiply(mouseDelta, normal);
@@ -93,8 +106,8 @@ public class TranslationGizmoDualAxis : GizmoAxisBase
 		if (double.IsNaN(dragDeltaAxis1) || double.IsNaN(dragDeltaAxis2))
 			return;
 
-		dragDeltaAxis1 /= 50;
-		dragDeltaAxis2 /= 50;
+		dragDeltaAxis1 /= 100;
+		dragDeltaAxis2 /= 100;
 
 		if (Keyboard.Modifiers == ModifierKeys.Shift)
 		{
@@ -177,6 +190,9 @@ public class TranslationGizmoDualAxis : GizmoAxisBase
 		{
 			this.square.Stroke = new SolidColorBrush(Colors.Transparent);
 		}
+
+		this.dragAxisOnePos = this.Transform(this.dragAxisOne, center, transformMatrix, viewMatrix);
+		this.dragAxisTwoPos = this.Transform(this.dragAxisTwo, center, transformMatrix, viewMatrix);
 	}
 
 	public override int GetDepthAtCursor(Point p)

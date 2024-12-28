@@ -32,8 +32,6 @@ public partial class RotationGizmo : GizmoBase
 
 	public RotationGizmo()
 	{
-		this.Background = new SolidColorBrush(Colors.Transparent);
-
 		this.sphere = new();
 		this.sphere.Width = this.Radius * 2;
 		this.sphere.Height = this.Radius * 2;
