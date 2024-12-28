@@ -18,19 +18,26 @@ namespace StudioFourteen.Gizmos.Translation;
 using System.Numerics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
+
+using Vector = System.Windows.Vector;
 
 public class TranslationGizmoDualAxis : GizmoAxisBase
 {
 	private readonly Polygon square;
 	private readonly Vector3[] corners = new Vector3[4];
+	private int depth = -1;
 
 	public TranslationGizmoDualAxis(GizmoAxes axis, float radius, Canvas canvas)
 	{
 		this.Axis = axis;
 		this.square = new();
 		this.square.Fill = this.ForegroundBrush;
+		this.square.StrokeThickness = 3;
+		this.square.Stroke = this.ForegroundBrush;
+		this.square.StrokeLineJoin = PenLineJoin.Bevel;
 		this.square.Points = new PointCollection()
 		{
 			new Point(0, 0),
@@ -64,8 +71,68 @@ public class TranslationGizmoDualAxis : GizmoAxisBase
 		}
 	}
 
-	public override void UpdateDrag(System.Windows.Vector mouseDelta, ref Posing.Transform transform)
+	public override void UpdateDrag(Vector mouseDelta, ref Posing.Transform transform)
 	{
+		double mag = mouseDelta.Length;
+		mouseDelta.Normalize();
+
+		Point a = new Point(this.square.Points[1].X, this.square.Points[1].Y);
+		Point b = new Point(this.square.Points[0].X, this.square.Points[0].Y);
+		Vector normal = a - b;
+		normal.Normalize();
+		double dot = Vector.Multiply(mouseDelta, normal);
+		float dragDeltaAxis1 = (float)(mag * dot);
+
+		a = new Point(this.square.Points[3].X, this.square.Points[3].Y);
+		b = new Point(this.square.Points[0].X, this.square.Points[0].Y);
+		normal = a - b;
+		normal.Normalize();
+		dot = Vector.Multiply(mouseDelta, normal);
+		float dragDeltaAxis2 = (float)(mag * dot);
+
+		if (double.IsNaN(dragDeltaAxis1) || double.IsNaN(dragDeltaAxis2))
+			return;
+
+		dragDeltaAxis1 /= 50;
+		dragDeltaAxis2 /= 50;
+
+		if (Keyboard.Modifiers == ModifierKeys.Shift)
+		{
+			dragDeltaAxis1 *= 10;
+			dragDeltaAxis2 *= 10;
+		}
+
+		if (Keyboard.Modifiers == ModifierKeys.Control)
+		{
+			dragDeltaAxis1 /= 10;
+			dragDeltaAxis2 /= 10;
+		}
+
+		if (this.Services.Tablet.PenPressure > 0)
+		{
+			dragDeltaAxis1 *= (float)this.Services.Tablet.PenPressure;
+			dragDeltaAxis2 *= (float)this.Services.Tablet.PenPressure;
+		}
+
+		Vector3 delta = Vector3.Zero;
+		if (this.Axis == GizmoAxes.X)
+		{
+			delta += Vector3.UnitY * dragDeltaAxis1;
+			delta += Vector3.UnitZ * dragDeltaAxis2;
+		}
+		else if (this.Axis == GizmoAxes.Y)
+		{
+			delta += Vector3.UnitX * dragDeltaAxis1;
+			delta += Vector3.UnitZ * dragDeltaAxis2;
+		}
+		else if (this.Axis == GizmoAxes.Z)
+		{
+			delta += Vector3.UnitX * dragDeltaAxis1;
+			delta += Vector3.UnitY * dragDeltaAxis2;
+		}
+
+		delta = Vector3.Transform(delta, transform.Rotation);
+		transform.Translation += delta;
 	}
 
 	public override void Transform(Matrix4x4 transformMatrix, Matrix4x4 viewMatrix, Vector2 center)
@@ -82,21 +149,26 @@ public class TranslationGizmoDualAxis : GizmoAxisBase
 		}
 
 		z /= this.corners.Length;
+		this.depth = 200 - (int)(z * 100);
+		Panel.SetZIndex(this.square, this.depth);
 
 		this.square.Fill = this.ForegroundBrush;
 
 		if (this.IsAxisHovered)
 		{
 			this.square.Stroke = this.ForegroundBrush;
-			this.square.StrokeThickness = 3;
-			this.square.Fill = new SolidColorBrush(Colors.Transparent);
 		}
-
-		Panel.SetZIndex(this.square, 200 - (int)(z * 100));
+		else
+		{
+			this.square.Stroke = new SolidColorBrush(Colors.Transparent);
+		}
 	}
 
-	public override bool IsMouseOver(Point mousePos)
+	public override int GetDepthAtCursor(Point p)
 	{
-		return this.square.IsMouseOver;
+		if (!this.square.IsPointWithin(p))
+			return int.MinValue;
+
+		return this.depth;
 	}
 }

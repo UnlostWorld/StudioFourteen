@@ -209,15 +209,24 @@ public abstract partial class GizmoBase : View
 
 	protected virtual GizmoAxisBase? GetHoverAxis(Point mousePos)
 	{
+		int highestDepthAxis = int.MinValue;
+		GizmoAxisBase? bestAxis = null;
+
 		foreach (GizmoAxisBase axis in this.axes)
 		{
-			if (axis.IsMouseOver(mousePos))
+			int depth = axis.GetDepthAtCursor(mousePos);
+
+			if (depth == int.MinValue)
+				continue;
+
+			if (depth > highestDepthAxis)
 			{
-				return axis;
+				highestDepthAxis = depth;
+				bestAxis = axis;
 			}
 		}
 
-		return null;
+		return bestAxis;
 	}
 
 	protected override void OnMouseLeave(MouseEventArgs e)

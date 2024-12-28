@@ -13,52 +13,31 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Gizmos;
+namespace System.Windows.Shapes;
 
-using System.Numerics;
 using System.Windows;
-using System.Windows.Media;
-using Serilog;
 
-using Transform = StudioFourteen.Posing.Transform;
-using Vector = System.Windows.Vector;
-
-public enum GizmoAxes
+public static class PolygonExtensions
 {
-	X,
-	Y,
-	Z,
-}
-
-public abstract class GizmoAxisBase
-{
-	protected readonly ILogger Log = Logging.ForContext<GizmoAxisBase>();
-
-	public GizmoAxisBase()
+	// https://stackoverflow.com/a/19298028/9934501
+	public static bool IsPointWithin(this Polygon self, Point p)
 	{
-		this.Log = Logging.ForContext(this.GetType());
+		int sides = self.Points.Count;
+		int j = sides - 1;
+		bool pointStatus = false;
+		for (int i = 0; i < sides; i++)
+		{
+			if ((self.Points[i].Y < p.Y && self.Points[j].Y >= p.Y) || (self.Points[j].Y < p.Y && self.Points[i].Y >= p.Y))
+			{
+				if (self.Points[i].X + ((p.Y - self.Points[i].Y) / (self.Points[j].Y - self.Points[i].Y) * (self.Points[j].X - self.Points[i].X)) < p.X)
+				{
+					pointStatus = !pointStatus;
+				}
+			}
+
+			j = i;
+		}
+
+		return pointStatus;
 	}
-
-	public GizmoAxes Axis { get; protected set; }
-	public Brush ForegroundBrush { get; set; } = new SolidColorBrush(Colors.Gray);
-	public Brush BackgroundBrush { get; set; } = new SolidColorBrush(Colors.Black);
-	public bool IsAxisHovered { get; set; } = false;
-
-	protected ServiceManager Services => ServiceManager.Instance;
-
-	public abstract int GetDepthAtCursor(Point mousePos);
-
-	public virtual void StartDrag(Point mousePos)
-	{
-	}
-
-	public virtual void UpdateDrag(Vector mouseDelta, ref Transform transform)
-	{
-	}
-
-	public virtual void EndDrag()
-	{
-	}
-
-	public abstract void Transform(Matrix4x4 transformMatrix, Matrix4x4 viewMatrix, Vector2 center);
 }

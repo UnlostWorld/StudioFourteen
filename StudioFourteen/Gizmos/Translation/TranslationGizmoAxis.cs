@@ -33,6 +33,7 @@ public class TranslationGizmoAxis : GizmoAxisBase
 	private readonly Vector3 arrowStart;
 
 	private int strokeThickness = 3;
+	private int depth = -1;
 
 	public TranslationGizmoAxis(GizmoAxes axis, float radius, Canvas canvas)
 	{
@@ -96,7 +97,6 @@ public class TranslationGizmoAxis : GizmoAxisBase
 		this.segment.Y2 = toPos.Y;
 		this.segment.StrokeThickness = this.StrokeThickness;
 		this.segment.Stroke = this.BackgroundBrush;
-		Panel.SetZIndex(this.segment, 200 - (int)(toPoint.Z * 100));
 
 		Vector3 arrowFromPoint = Vector3.Transform(this.arrowStart, transformMatrix);
 		arrowFromPoint = Vector3.Transform(arrowFromPoint, viewMatrix);
@@ -106,7 +106,10 @@ public class TranslationGizmoAxis : GizmoAxisBase
 		this.arrow.X2 = toPos.X;
 		this.arrow.Y2 = toPos.Y;
 		this.arrow.Stroke = this.ForegroundBrush;
-		Panel.SetZIndex(this.arrow, 200 - (int)(toPoint.Z * 100));
+
+		this.depth = 200 - (int)(toPoint.Z * 100);
+		Panel.SetZIndex(this.arrow, this.depth);
+		Panel.SetZIndex(this.segment, this.depth);
 
 		if (this.IsAxisHovered)
 		{
@@ -118,14 +121,17 @@ public class TranslationGizmoAxis : GizmoAxisBase
 		}
 	}
 
-	public override bool IsMouseOver(Point mousePos)
+	public override int GetDepthAtCursor(Point mousePos)
 	{
 		Point fromPos = new Point(this.arrow.X1, this.arrow.Y1);
 		Point toPos = new Point(this.arrow.X2, this.arrow.Y2);
 
 		double distance = Point.Subtract(mousePos, toPos).Length;
 
-		return distance < 20;
+		if (distance > 20)
+			return int.MinValue;
+
+		return this.depth;
 	}
 
 	public override void UpdateDrag(Vector mouseDelta, ref Transform deltaTransform)

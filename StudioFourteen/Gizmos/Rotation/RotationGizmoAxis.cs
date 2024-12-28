@@ -218,8 +218,10 @@ public class RotationGizmoAxis : GizmoAxisBase
 		}
 	}
 
-	public override bool IsMouseOver(Point mousePos)
+	public override int GetDepthAtCursor(Point mousePos)
 	{
+		// Rotation gizmo uses CheckAxisForMouseHover instead for more accurate
+		// loop grabbing.
 		throw new NotSupportedException();
 	}
 }
