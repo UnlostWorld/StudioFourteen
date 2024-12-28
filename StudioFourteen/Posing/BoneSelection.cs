@@ -194,15 +194,18 @@ public class BoneSelection : TransformSelectionBase
 		if (this.bone == null || this.bone.ModelTransform == null)
 			return;
 
-		// TODO: Support for translation and scale
 		if (transform.Translation != null)
-			throw new NotImplementedException();
+		{
+			transform.Translation = transform.Translation - this.bone.ModelTransform.Value.Translation;
+			transform.Translation = Vector3.Transform(transform.Translation.Value, Quaternion.Inverse(this.bone.ModelTransform.Value.Rotation));
+		}
 
 		if (transform.Rotation != null)
 			transform.Rotation = Quaternion.Normalize(Quaternion.Inverse(this.bone.ModelTransform.Value.Rotation) * transform.Rotation.Value);
 
+		// TODO: Support for scale
 		if (transform.Scale != null)
-			throw new NotImplementedException();
+			transform.Scale = null;
 
 		foreach (BoneReference bone in this.bones)
 		{
