@@ -119,9 +119,11 @@ public partial class TransformControl : View
 
 		this.isUpdatingComponent = true;
 
-		////Transform t = this.Value;
-		////t.Scale = newValue;
-		////this.Value = t;
+		Vector3 from = this.Value.Scale;
+		Vector3 to = newValue;
+		Vector3 delta = to / from;
+
+		this.Value = Transform.FromScale(delta) * this.Value;
 
 		this.isUpdatingComponent = false;
 	}
