@@ -17,6 +17,7 @@ namespace StudioFourteen.Structs;
 
 using FFXIVClientStructs.Havok.Common.Base.Math.Vector;
 using System.Numerics;
+using System.Windows;
 
 public static class HkVectorExtensions
 {
@@ -103,5 +104,10 @@ public static class HkVectorExtensions
 		val.Y = self.Y;
 		val.Z = self.Z;
 		return val;
+	}
+
+	public static Point ToPoint(this Vector3 self)
+	{
+		return new Point(self.X, self.Y);
 	}
 }

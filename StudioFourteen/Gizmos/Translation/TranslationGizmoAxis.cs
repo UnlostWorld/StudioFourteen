@@ -27,117 +27,143 @@ using Vector = System.Windows.Vector;
 
 public class TranslationGizmoAxis : GizmoAxisBase
 {
-	private readonly Line segment;
-	private readonly Line arrow;
-	private readonly Vector3 segmentEnd;
-	private readonly Vector3 arrowStart;
-
-	private int strokeThickness = 3;
-	private int depth = -1;
+	private readonly Line lineOne;
+	private readonly Line lineTwo;
+	private readonly Line arrowOne;
+	private readonly Line arrowTwo;
+	private readonly Vector3 segmentOneEnd;
+	private readonly Vector3 segmentTwoEnd;
+	private readonly Vector3 arrowOneStart;
+	private readonly Vector3 arrowTwoStart;
 
 	public TranslationGizmoAxis(GizmoAxes axis, float radius, Canvas canvas)
 	{
 		this.Axis = axis;
 
-		this.segment = new();
-		this.segment.StrokeThickness = this.strokeThickness;
-		this.segment.Stroke = this.ForegroundBrush;
-		this.segment.StrokeEndLineCap = PenLineCap.Triangle;
-		this.segment.StrokeStartLineCap = PenLineCap.Round;
-		canvas.Children.Add(this.segment);
+		this.lineOne = new();
+		this.lineOne.StrokeThickness = 3;
+		this.lineOne.Stroke = this.ForegroundBrush;
+		this.lineOne.StrokeEndLineCap = PenLineCap.Triangle;
+		this.lineOne.StrokeStartLineCap = PenLineCap.Round;
+		canvas.Children.Add(this.lineOne);
+
+		this.lineTwo = new();
+		this.lineTwo.StrokeThickness = 3;
+		this.lineTwo.Stroke = this.ForegroundBrush;
+		this.lineTwo.StrokeEndLineCap = PenLineCap.Triangle;
+		this.lineTwo.StrokeStartLineCap = PenLineCap.Round;
+		canvas.Children.Add(this.lineTwo);
 
 		if (this.Axis == GizmoAxes.X)
 		{
-			this.segmentEnd = -Vector3.UnitX * radius;
-			this.arrowStart = -Vector3.UnitX * (radius * 0.85f);
+			this.segmentOneEnd = -Vector3.UnitX * radius;
+			this.segmentTwoEnd = Vector3.UnitX * radius;
+			this.arrowOneStart = -Vector3.UnitX * (radius * 0.85f);
+			this.arrowTwoStart = Vector3.UnitX * (radius * 0.85f);
 		}
 		else if (this.Axis == GizmoAxes.Y)
 		{
-			this.segmentEnd = -Vector3.UnitY * radius;
-			this.arrowStart = -Vector3.UnitY * (radius * 0.85f);
+			this.segmentOneEnd = -Vector3.UnitY * radius;
+			this.segmentTwoEnd = Vector3.UnitY * radius;
+			this.arrowOneStart = -Vector3.UnitY * (radius * 0.85f);
+			this.arrowTwoStart = Vector3.UnitY * (radius * 0.85f);
 		}
 		else if (this.Axis == GizmoAxes.Z)
 		{
-			this.segmentEnd = -Vector3.UnitZ * radius;
-			this.arrowStart = -Vector3.UnitZ * (radius * 0.85f);
+			this.segmentOneEnd = -Vector3.UnitZ * radius;
+			this.segmentTwoEnd = Vector3.UnitZ * radius;
+			this.arrowOneStart = -Vector3.UnitZ * (radius * 0.85f);
+			this.arrowTwoStart = Vector3.UnitZ * (radius * 0.85f);
 		}
 
-		this.arrow = new();
-		this.arrow.StrokeThickness = 15;
-		this.arrow.Stroke = this.ForegroundBrush;
-		this.arrow.StrokeEndLineCap = PenLineCap.Triangle;
-		this.arrow.StrokeStartLineCap = PenLineCap.Round;
-		canvas.Children.Add(this.arrow);
-	}
+		this.arrowOne = new();
+		this.arrowOne.StrokeThickness = 15;
+		this.arrowOne.Stroke = this.ForegroundBrush;
+		this.arrowOne.StrokeEndLineCap = PenLineCap.Triangle;
+		this.arrowOne.StrokeStartLineCap = PenLineCap.Round;
+		canvas.Children.Add(this.arrowOne);
 
-	public int StrokeThickness
-	{
-		get => this.strokeThickness;
-		set
-		{
-			this.strokeThickness = value;
-			this.segment.StrokeThickness = value;
-		}
+		this.arrowTwo = new();
+		this.arrowTwo.StrokeThickness = 15;
+		this.arrowTwo.Stroke = this.ForegroundBrush;
+		this.arrowTwo.StrokeEndLineCap = PenLineCap.Triangle;
+		this.arrowTwo.StrokeStartLineCap = PenLineCap.Round;
+		canvas.Children.Add(this.arrowTwo);
 	}
 
 	public override void Transform(Matrix4x4 transformMatrix, Matrix4x4 viewMatrix, Vector2 center)
 	{
-		Vector3 fromPoint = Vector3.Transform(Vector3.Zero, transformMatrix);
-		fromPoint = Vector3.Transform(fromPoint, viewMatrix);
+		Vector3 originPos = this.Transform(Vector3.Zero, center, transformMatrix, viewMatrix);
 
-		Vector3 toPoint = Vector3.Transform(this.segmentEnd, transformMatrix);
-		toPoint = Vector3.Transform(toPoint, viewMatrix);
+		Vector3 toPosOne = this.Transform(this.segmentOneEnd, center, transformMatrix, viewMatrix);
+		Vector3 arrowOneFromPos = this.Transform(this.arrowOneStart, center, transformMatrix, viewMatrix);
 
-		Vector2 fromPos = center + new Vector2(fromPoint.X, fromPoint.Y);
-		Vector2 toPos = center + new Vector2(toPoint.X, toPoint.Y);
+		this.lineOne.X1 = originPos.X;
+		this.lineOne.Y1 = originPos.Y;
+		this.lineOne.X2 = arrowOneFromPos.X;
+		this.lineOne.Y2 = arrowOneFromPos.Y;
+		this.lineOne.Stroke = toPosOne.Z < 0 ? this.ForegroundBrush : this.BackgroundBrush;
+		Panel.SetZIndex(this.lineOne, 200 - (int)(toPosOne.Z * 100));
 
-		this.segment.X1 = fromPos.X;
-		this.segment.Y1 = fromPos.Y;
-		this.segment.X2 = toPos.X;
-		this.segment.Y2 = toPos.Y;
-		this.segment.StrokeThickness = this.StrokeThickness;
-		this.segment.Stroke = this.BackgroundBrush;
+		this.arrowOne.X1 = arrowOneFromPos.X;
+		this.arrowOne.Y1 = arrowOneFromPos.Y;
+		this.arrowOne.X2 = toPosOne.X;
+		this.arrowOne.Y2 = toPosOne.Y;
+		this.arrowOne.Stroke = toPosOne.Z < 0 ? this.ForegroundBrush : this.BackgroundBrush;
+		Panel.SetZIndex(this.arrowOne, 200 - (int)(toPosOne.Z * 100));
 
-		Vector3 arrowFromPoint = Vector3.Transform(this.arrowStart, transformMatrix);
-		arrowFromPoint = Vector3.Transform(arrowFromPoint, viewMatrix);
-		Vector2 arrowFromPos = center + new Vector2(arrowFromPoint.X, arrowFromPoint.Y);
-		this.arrow.X1 = arrowFromPos.X;
-		this.arrow.Y1 = arrowFromPos.Y;
-		this.arrow.X2 = toPos.X;
-		this.arrow.Y2 = toPos.Y;
-		this.arrow.Stroke = this.ForegroundBrush;
+		// Two
+		Vector3 toPosTwo = this.Transform(this.segmentTwoEnd, center, transformMatrix, viewMatrix);
+		Vector3 arrowTwoFromPos = this.Transform(this.arrowTwoStart, center, transformMatrix, viewMatrix);
+		this.lineTwo.X1 = originPos.X;
+		this.lineTwo.Y1 = originPos.Y;
+		this.lineTwo.X2 = arrowTwoFromPos.X;
+		this.lineTwo.Y2 = arrowTwoFromPos.Y;
+		this.lineTwo.Stroke = toPosTwo.Z < 0 ? this.ForegroundBrush : this.BackgroundBrush;
+		Panel.SetZIndex(this.lineTwo, 200 - (int)(toPosTwo.Z * 100));
 
-		this.depth = 200 - (int)(toPoint.Z * 100);
-		Panel.SetZIndex(this.arrow, this.depth);
-		Panel.SetZIndex(this.segment, this.depth);
+		this.arrowTwo.X1 = arrowTwoFromPos.X;
+		this.arrowTwo.Y1 = arrowTwoFromPos.Y;
+		this.arrowTwo.X2 = toPosTwo.X;
+		this.arrowTwo.Y2 = toPosTwo.Y;
+		this.arrowTwo.Stroke = toPosTwo.Z < 0 ? this.ForegroundBrush : this.BackgroundBrush;
+		Panel.SetZIndex(this.arrowTwo, 200 - (int)(toPosTwo.Z * 100));
 
 		if (this.IsAxisHovered)
 		{
-			this.arrow.StrokeThickness = 15;
+			this.arrowOne.StrokeThickness = 15;
+			this.arrowTwo.StrokeThickness = 15;
 		}
 		else
 		{
-			this.arrow.StrokeThickness = 10;
+			this.arrowOne.StrokeThickness = 10;
+			this.arrowTwo.StrokeThickness = 10;
 		}
 	}
 
 	public override int GetDepthAtCursor(Point mousePos)
 	{
-		Point fromPos = new Point(this.arrow.X1, this.arrow.Y1);
-		Point toPos = new Point(this.arrow.X2, this.arrow.Y2);
-
+		Point fromPos = new Point(this.arrowOne.X1, this.arrowOne.Y1);
+		Point toPos = new Point(this.arrowOne.X2, this.arrowOne.Y2);
 		double distance = Point.Subtract(mousePos, toPos).Length;
 
-		if (distance > 20)
-			return int.MinValue;
+		if (distance < 20)
+			return Panel.GetZIndex(this.arrowOne);
 
-		return this.depth;
+		fromPos = new Point(this.arrowTwo.X1, this.arrowTwo.Y1);
+		toPos = new Point(this.arrowTwo.X2, this.arrowTwo.Y2);
+		distance = Point.Subtract(mousePos, toPos).Length;
+
+		if (distance < 20)
+			return Panel.GetZIndex(this.arrowTwo);
+
+		return int.MinValue;
 	}
 
 	public override void UpdateDrag(Vector mouseDelta, ref Transform deltaTransform)
 	{
-		Point a = new Point(this.arrow.X2, this.arrow.Y2);
-		Point b = new Point(this.arrow.X1, this.arrow.Y1);
+		Point a = new Point(this.arrowOne.X2, this.arrowOne.Y2);
+		Point b = new Point(this.arrowOne.X1, this.arrowOne.Y1);
 		Vector normal = a - b;
 		normal.Normalize();
 

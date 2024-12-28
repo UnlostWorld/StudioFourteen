@@ -61,4 +61,11 @@ public abstract class GizmoAxisBase
 	}
 
 	public abstract void Transform(Matrix4x4 transformMatrix, Matrix4x4 viewMatrix, Vector2 center);
+
+	protected Vector3 Transform(Vector3 position, Vector2 center, Matrix4x4 transformMatrix, Matrix4x4 viewMatrix)
+	{
+		Vector3 toPoint = Vector3.Transform(position, transformMatrix);
+		toPoint = Vector3.Transform(toPoint, viewMatrix);
+		return new Vector3(center.X + toPoint.X, center.Y + toPoint.Y, toPoint.Z);
+	}
 }

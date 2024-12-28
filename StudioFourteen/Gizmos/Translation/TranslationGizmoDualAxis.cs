@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Gizmos.Translation;
 
+using StudioFourteen.Structs;
 using System.Numerics;
 using System.Windows;
 using System.Windows.Controls;
@@ -27,8 +28,7 @@ using Vector = System.Windows.Vector;
 public class TranslationGizmoDualAxis : GizmoAxisBase
 {
 	private readonly Polygon square;
-	private readonly Vector3[] corners = new Vector3[4];
-	private int depth = -1;
+	private readonly Vector3[] possibleCorners = new Vector3[4];
 
 	public TranslationGizmoDualAxis(GizmoAxes axis, float radius, Canvas canvas)
 	{
@@ -50,24 +50,24 @@ public class TranslationGizmoDualAxis : GizmoAxisBase
 
 		if (this.Axis == GizmoAxes.X)
 		{
-			this.corners[0] = Vector3.Zero;
-			this.corners[1] = new Vector3(0, -radius, 0);
-			this.corners[2] = new Vector3(0, -radius, -radius);
-			this.corners[3] = new Vector3(0, 0, -radius);
+			this.possibleCorners[0] = new Vector3(0, radius, radius);
+			this.possibleCorners[1] = new Vector3(0, -radius, radius);
+			this.possibleCorners[2] = new Vector3(0, -radius, -radius);
+			this.possibleCorners[3] = new Vector3(0, radius, -radius);
 		}
 		else if (this.Axis == GizmoAxes.Y)
 		{
-			this.corners[0] = Vector3.Zero;
-			this.corners[1] = new Vector3(-radius, 0, 0);
-			this.corners[2] = new Vector3(-radius, 0, -radius);
-			this.corners[3] = new Vector3(0, 0, -radius);
+			this.possibleCorners[0] = new Vector3(radius, 0, radius);
+			this.possibleCorners[1] = new Vector3(-radius, 0, radius);
+			this.possibleCorners[2] = new Vector3(-radius, 0, -radius);
+			this.possibleCorners[3] = new Vector3(radius, 0, -radius);
 		}
 		else if (this.Axis == GizmoAxes.Z)
 		{
-			this.corners[0] = Vector3.Zero;
-			this.corners[1] = new Vector3(-radius, 0, 0);
-			this.corners[2] = new Vector3(-radius, -radius, 0);
-			this.corners[3] = new Vector3(0, -radius, 0);
+			this.possibleCorners[0] = new Vector3(radius, radius, 0);
+			this.possibleCorners[1] = new Vector3(-radius, radius, 0);
+			this.possibleCorners[2] = new Vector3(-radius, -radius, 0);
+			this.possibleCorners[3] = new Vector3(radius, -radius, 0);
 		}
 	}
 
@@ -137,20 +137,35 @@ public class TranslationGizmoDualAxis : GizmoAxisBase
 
 	public override void Transform(Matrix4x4 transformMatrix, Matrix4x4 viewMatrix, Vector2 center)
 	{
-		double z = 0;
-		for(int i = 0; i < this.corners.Length; i++)
+		// Get the corner with the lowest depth;
+		Vector3 bestCorner = Vector3.Zero;
+		double bestCornerDepth = double.MaxValue;
+		for (int i = 0; i < this.possibleCorners.Length; i++)
 		{
-			Vector3 cornerPoint = Vector3.Transform(this.corners[i], transformMatrix);
-			cornerPoint = Vector3.Transform(cornerPoint, viewMatrix);
-			z += cornerPoint.Z;
-			Vector2 cornerPos = center + new Vector2(cornerPoint.X, cornerPoint.Y);
-
-			this.square.Points[i] = new(cornerPos.X, cornerPos.Y);
+			Vector3 possibleCornerPos = this.Transform(this.possibleCorners[i], center, transformMatrix, viewMatrix);
+			if (possibleCornerPos.Z < bestCornerDepth)
+			{
+				bestCornerDepth = possibleCornerPos.Z;
+				bestCorner = this.possibleCorners[i];
+			}
 		}
 
-		z /= this.corners.Length;
-		this.depth = 200 - (int)(z * 100);
-		Panel.SetZIndex(this.square, this.depth);
+		// Generate a full quad with the best corner
+		Vector3 originPos = Vector3.Zero;
+		Vector3 onePoint = new Vector3(bestCorner.X, originPos.Y, originPos.Z);
+		Vector3 twoPoint = bestCorner;
+		Vector3 threePoint = new Vector3(originPos.X, bestCorner.Y, bestCorner.Z);
+		if (this.Axis == GizmoAxes.X)
+		{
+			onePoint = new Vector3(bestCorner.X, bestCorner.Y, originPos.Z);
+			twoPoint = bestCorner;
+			threePoint = new Vector3(bestCorner.X, originPos.Y, bestCorner.Z);
+		}
+
+		this.square.Points[0] = this.Transform(originPos, center, transformMatrix, viewMatrix).ToPoint();
+		this.square.Points[1] = this.Transform(onePoint, center, transformMatrix, viewMatrix).ToPoint();
+		this.square.Points[2] = this.Transform(twoPoint, center, transformMatrix, viewMatrix).ToPoint();
+		this.square.Points[3] = this.Transform(threePoint, center, transformMatrix, viewMatrix).ToPoint();
 
 		this.square.Fill = this.ForegroundBrush;
 
@@ -169,6 +184,6 @@ public class TranslationGizmoDualAxis : GizmoAxisBase
 		if (!this.square.IsPointWithin(p))
 			return int.MinValue;
 
-		return this.depth;
+		return 0;
 	}
 }
