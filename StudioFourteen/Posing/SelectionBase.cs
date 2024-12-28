@@ -16,6 +16,7 @@
 namespace StudioFourteen.Posing;
 
 using Dalamud.Plugin.Services;
+using StudioFourteen.Gizmos;
 using StudioFourteen.Mvm;
 using System;
 using System.Numerics;
@@ -63,7 +64,7 @@ public abstract class TransformSelectionBase : SelectionBase
 	public virtual double TranslationSmallChange => 0.01;
 	public virtual double TranslationRange => 1;
 	public virtual int DecimalPlacesToDisplay => 2;
-	public virtual PoseEditModes DefaultEditMode => PoseEditModes.Translation;
+	public virtual GizmoTypes DefaultGizmo => GizmoTypes.Translation;
 
 	[AutoNotify] public virtual bool IsReady => true;
 

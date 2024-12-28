@@ -22,6 +22,7 @@ using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
 using FFXIVClientStructs.Havok.Common.Base.Math.Quaternion;
 using FFXIVClientStructs.Havok.Common.Base.Math.Vector;
 using StudioFourteen.Files;
+using StudioFourteen.Gizmos;
 using StudioFourteen.Structs;
 using StudioFourteen.Structs.Extensions;
 using System;
@@ -75,7 +76,7 @@ public class BoneSelection : TransformSelectionBase
 	public override double TranslationSmallChange => this.IsFaceBone ? 0.001 : 0.01;
 	public override double TranslationRange => this.IsFaceBone ? 0.02 : 0.1;
 	public override int DecimalPlacesToDisplay => this.IsFaceBone ? 4 : 2;
-	public override PoseEditModes DefaultEditMode => this.IsFaceBone ? PoseEditModes.Translation : PoseEditModes.Rotation;
+	public override GizmoTypes DefaultGizmo => this.IsFaceBone ? GizmoTypes.Translation : GizmoTypes.Rotation;
 	public override bool CanReset => true;
 
 	public override bool IsReady => this.bone != null && this.bone.LocalSpaceTransform != null;

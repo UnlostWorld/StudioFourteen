@@ -30,15 +30,15 @@
 							Height="168">
 							<gizmos:RotationGizmo
 								Transform="{Binding WorldTransform}"
-								Visibility="{Binding Services.Pose.EditMode, Converter={StaticResource EnumToVisibility}, ConverterParameter=Rotation}" />
+								Visibility="{Binding Gizmo, Converter={StaticResource EnumToVisibility}, ConverterParameter=Rotation}" />
 							<gizmos:TranslationGizmo
 								Transform="{Binding WorldTransform}"
-								Visibility="{Binding Services.Pose.EditMode, Converter={StaticResource EnumToVisibility}, ConverterParameter=Translation}" />
+								Visibility="{Binding Gizmo, Converter={StaticResource EnumToVisibility}, ConverterParameter=Translation}" />
 						</Grid>
 
 						<wpfUtils:SwitchSelector
 							Grid.Row="1"
-							SelectedIndex="{Binding Services.Pose.EditMode}"
+							SelectedIndex="{Binding GizmoIndex}"
 							Style="{DynamicResource WpfUtilsSwitchSelectorNoBorder}">
 
 							<ListBoxItem Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}">

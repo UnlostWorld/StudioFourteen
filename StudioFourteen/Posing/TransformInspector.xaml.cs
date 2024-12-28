@@ -16,17 +16,26 @@
 namespace StudioFourteen.Posing;
 
 using DependencyPropertyGenerator;
+using PropertyChanged.SourceGenerator;
+using StudioFourteen.Gizmos;
 using StudioFourteen.Mvm;
 using StudioFourteen.Settings;
-using StudioFourteen.Structs.Extensions;
 using System.Numerics;
-using System.Windows.Controls;
-using System.Windows.Input;
 
 [DependencyProperty<TransformSelectionBase>("Selection")]
 [DependencyProperty<Persistence>("Persistence")]
 public partial class TransformInspector : View
 {
+	[Notify]
+	[AlsoNotify(nameof(TransformInspector.GizmoIndex))]
+	private GizmoTypes gizmo = GizmoTypes.Rotation;
+
+	public int GizmoIndex
+	{
+		get => (int)this.Gizmo;
+		set => this.Gizmo = (GizmoTypes)value;
+	}
+
 	[AutoNotify]
 	public int DecimalPlacesDisplay => this.Selection?.DecimalPlacesToDisplay ?? 2;
 
@@ -36,11 +45,11 @@ public partial class TransformInspector : View
 		get
 		{
 			return this.Persistence?.GetPersistence<bool>(
-				$"ExpandTranslationSliders_{this.Services.Pose.EditMode}",
-				this.Services.Pose.EditMode == PoseEditModes.Translation) ?? false;
+				$"ExpandTranslationSliders_{this.Gizmo}",
+				this.Gizmo == GizmoTypes.Translation) ?? false;
 		}
 
-		set => this.Persistence?.SetPersistence(value, $"ExpandTranslationSliders_{this.Services.Pose.EditMode}");
+		set => this.Persistence?.SetPersistence(value, $"ExpandTranslationSliders_{this.Gizmo}");
 	}
 
 	[AutoNotify]
@@ -49,11 +58,11 @@ public partial class TransformInspector : View
 		get
 		{
 			return this.Persistence?.GetPersistence<bool>(
-				$"ExpandRotationSliders_{this.Services.Pose.EditMode}",
-				this.Services.Pose.EditMode == PoseEditModes.Rotation) ?? false;
+				$"ExpandRotationSliders_{this.Gizmo}",
+				this.Gizmo == GizmoTypes.Rotation) ?? false;
 		}
 
-		set => this.Persistence?.SetPersistence(value, $"ExpandRotationSliders_{this.Services.Pose.EditMode}");
+		set => this.Persistence?.SetPersistence(value, $"ExpandRotationSliders_{this.Gizmo}");
 	}
 
 	[AutoNotify]
@@ -62,11 +71,11 @@ public partial class TransformInspector : View
 		get
 		{
 			return this.Persistence?.GetPersistence<bool>(
-				$"ExpandScaleSliders_{this.Services.Pose.EditMode}",
-				this.Services.Pose.EditMode == PoseEditModes.Scale) ?? false;
+				$"ExpandScaleSliders_{this.Gizmo}",
+				this.Gizmo == GizmoTypes.Scale) ?? false;
 		}
 
-		set => this.Persistence?.SetPersistence(value, $"ExpandScaleSliders_{this.Services.Pose.EditMode}");
+		set => this.Persistence?.SetPersistence(value, $"ExpandScaleSliders_{this.Gizmo}");
 	}
 
 	[AutoNotify]
@@ -110,5 +119,14 @@ public partial class TransformInspector : View
 			transform.Rotation = value;
 			this.Selection.SetWorldTransform(transform);
 		}
+	}
+
+	partial void OnSelectionChanged(TransformSelectionBase? newValue)
+	{
+		if (newValue == null)
+			return;
+
+		// TODO: if they've changed the default?
+		this.Gizmo = newValue.DefaultGizmo;
 	}
 }

@@ -36,13 +36,6 @@ using System.Windows;
 using WpfUtils.Animation;
 using WpfUtils.Extensions;
 
-public enum PoseEditModes
-{
-	Translation,
-	Rotation,
-	Scale,
-}
-
 public enum MirrorModes
 {
 	/// <summary>
@@ -75,15 +68,12 @@ public class PoseService : ServiceBase, WorldContextMenu.IProvider
 
 	private Hook<UpdateBonePhysicsDelegate>? updateBonePhysicsHook;
 	private Hook<FinalizeSkeletonsDelegate>? finalizeSkeletonsHook;
-	private PoseEditModes editMode = PoseEditModes.Rotation;
 
 	public delegate void SelectionChangedDelegate(SelectionBase? newSelection);
-	public delegate void EditModeChangedDelegate(PoseEditModes newMode);
 	private delegate nint UpdateBonePhysicsDelegate(nint a1);
 	private delegate void FinalizeSkeletonsDelegate(nint a1);
 
 	public event SelectionChangedDelegate? SelectionChanged;
-	public event EditModeChangedDelegate? EditModeChanged;
 
 	public SelectionBase? Selection
 	{
@@ -97,27 +87,10 @@ public class PoseService : ServiceBase, WorldContextMenu.IProvider
 			if (this.selection != null)
 			{
 				this.selection.Activate();
-
-				// TODO: if they've changed the default?
-				if (this.selection is TransformSelectionBase transformSelection)
-				{
-					this.EditMode = transformSelection.DefaultEditMode;
-				}
 			}
 
 			this.SelectionChanged?.Invoke(value);
 			this.RaisePropertyChanged();
-		}
-	}
-
-	public PoseEditModes EditMode
-	{
-		get => this.editMode;
-		set
-		{
-			this.editMode = value;
-			this.RaisePropertyChanged();
-			this.EditModeChanged?.Invoke(value);
 		}
 	}
 
