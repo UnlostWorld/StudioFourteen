@@ -20,6 +20,7 @@ using PropertyChanged.SourceGenerator;
 using StudioFourteen.Gizmos;
 using StudioFourteen.Mvm;
 using StudioFourteen.Settings;
+using System;
 using System.Numerics;
 
 [DependencyProperty<TransformSelectionBase>("Selection")]
@@ -88,7 +89,15 @@ public partial class TransformInspector : View
 			transform.Translation = value.Translation;
 			transform.Rotation = value.Rotation;
 			transform.Scale = value.Scale;
-			this.Selection?.SetWorldTransform(transform);
+
+			try
+			{
+				this.Selection?.SetWorldTransform(transform);
+			}
+			catch (Exception ex)
+			{
+				this.Log.Error(ex, "Error setting transform");
+			}
 		}
 	}
 
