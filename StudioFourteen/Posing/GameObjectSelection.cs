@@ -90,10 +90,10 @@ public class GameObjectSelection : TransformSelectionBase
 			this.nextTransform = null;
 		}
 
-		this.lastTransform = default;
-		this.lastTransform.Translation = gameObject->DrawObject->Position;
-		this.lastTransform.Rotation = gameObject->DrawObject->Rotation;
-		this.lastTransform.Scale = gameObject->DrawObject->Scale;
+		this.lastTransform = Transform.FromTRS(
+			gameObject->DrawObject->Position,
+			gameObject->DrawObject->Rotation,
+			gameObject->DrawObject->Scale);
 		this.isReady = true;
 	}
 

@@ -181,10 +181,13 @@ public abstract partial class GizmoBase : View
 			Vector mouseDelta = cursorPos - this.lastDragMousePos.Value;
 			this.lastDragMousePos = cursorPos;
 
-			Transform deltaTransform = this.dragTransform.Value;
-			this.dragAxis.UpdateDrag(mouseDelta, ref deltaTransform);
-			this.dragTransform = deltaTransform;
-			this.Transform = this.dragTransform.Value;
+			if (mouseDelta.Length > 0)
+			{
+				Transform deltaTransform = this.dragAxis.UpdateDrag(mouseDelta, this.dragTransform.Value);
+				this.dragTransform = deltaTransform * this.dragTransform;
+				this.Transform = this.dragTransform.Value;
+			}
+
 			e.Handled = true;
 
 			// Reset cursor location

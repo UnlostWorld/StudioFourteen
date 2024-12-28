@@ -52,8 +52,9 @@ public abstract class GizmoAxisBase
 	{
 	}
 
-	public virtual void UpdateDrag(Vector mouseDelta, ref Transform transform)
+	public virtual Transform UpdateDrag(Vector mouseDelta, Transform currentTransform)
 	{
+		return default;
 	}
 
 	public virtual void EndDrag()

@@ -20,6 +20,7 @@ using FFXIVClientStructs.FFXIV.Common.Lua;
 using StudioFourteen.Mvm;
 using StudioFourteen.Structs.Extensions;
 using StudioFourteen.Utilities;
+using System;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -74,9 +75,10 @@ public partial class EyeInspector : View
 			if (this.Selection?.EyeBone == null)
 				return;
 
-			Transform transform = this.Selection.EyeBone.LocalTransform;
+			throw new NotImplementedException();
+			/*Transform transform = this.Selection.EyeBone.LocalTransform;
 			transform.Rotation.FromEuler(value);
-			this.Selection.EyeBone.LocalTransform = transform;
+			this.Selection.EyeBone.LocalTransform = transform;*/
 		}
 	}
 

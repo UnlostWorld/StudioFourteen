@@ -84,7 +84,7 @@ public class TranslationGizmoDualAxis : GizmoAxisBase
 		}
 	}
 
-	public override void UpdateDrag(Vector mouseDelta, ref Posing.Transform transform)
+	public override Posing.Transform UpdateDrag(Vector mouseDelta, Posing.Transform transform)
 	{
 		double mag = mouseDelta.Length;
 		mouseDelta.Normalize();
@@ -104,7 +104,7 @@ public class TranslationGizmoDualAxis : GizmoAxisBase
 		float dragDeltaAxis2 = (float)(mag * dot);
 
 		if (double.IsNaN(dragDeltaAxis1) || double.IsNaN(dragDeltaAxis2))
-			return;
+			return default;
 
 		dragDeltaAxis1 /= 100;
 		dragDeltaAxis2 /= 100;
@@ -145,7 +145,7 @@ public class TranslationGizmoDualAxis : GizmoAxisBase
 		}
 
 		delta = Vector3.Transform(delta, transform.Rotation);
-		transform.Translation += delta;
+		return Posing.Transform.FromTranslation(delta);
 	}
 
 	public override void Transform(Matrix4x4 transformMatrix, Matrix4x4 viewMatrix, Vector2 center)

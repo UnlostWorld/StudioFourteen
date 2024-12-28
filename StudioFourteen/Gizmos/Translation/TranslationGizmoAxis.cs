@@ -160,7 +160,7 @@ public class TranslationGizmoAxis : GizmoAxisBase
 		return int.MinValue;
 	}
 
-	public override void UpdateDrag(Vector mouseDelta, ref Transform deltaTransform)
+	public override Transform UpdateDrag(Vector mouseDelta, Transform transform)
 	{
 		Point a = new Point(this.arrowOne.X2, this.arrowOne.Y2);
 		Point b = new Point(this.arrowOne.X1, this.arrowOne.Y1);
@@ -172,10 +172,6 @@ public class TranslationGizmoAxis : GizmoAxisBase
 
 		double dot = Vector.Multiply(mouseDelta, normal);
 		float dragDelta = (float)(mag * dot);
-
-		if (double.IsNaN(dragDelta))
-			return;
-
 		dragDelta /= 50;
 
 		if (Keyboard.Modifiers == ModifierKeys.Shift)
@@ -203,7 +199,7 @@ public class TranslationGizmoAxis : GizmoAxisBase
 			delta = Vector3.UnitZ * dragDelta;
 		}
 
-		delta = Vector3.Transform(delta, deltaTransform.Rotation);
-		deltaTransform.Translation += delta;
+		delta = Vector3.Transform(delta, transform.Rotation);
+		return Posing.Transform.FromTranslation(delta);
 	}
 }

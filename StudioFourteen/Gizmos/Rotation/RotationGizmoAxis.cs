@@ -15,12 +15,13 @@
 
 namespace StudioFourteen.Gizmos.Rotation;
 
+using StudioFourteen.Posing;
 using System;
 using System.Numerics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
+
 using System.Windows.Shapes;
 
 using Vector = System.Windows.Vector;
@@ -64,8 +65,8 @@ public class RotationGizmoAxis : GizmoAxisBase
 			this.segments[i] = new();
 			this.segments[i].StrokeThickness = this.strokeThickness;
 			this.segments[i].Stroke = this.ForegroundBrush;
-			this.segments[i].StrokeEndLineCap = PenLineCap.Round;
-			this.segments[i].StrokeStartLineCap = PenLineCap.Round;
+			this.segments[i].StrokeEndLineCap = System.Windows.Media.PenLineCap.Round;
+			this.segments[i].StrokeStartLineCap = System.Windows.Media.PenLineCap.Round;
 			canvas.Children.Add(this.segments[i]);
 		}
 	}
@@ -110,10 +111,10 @@ public class RotationGizmoAxis : GizmoAxisBase
 		}
 	}
 
-	public override void UpdateDrag(Vector mouseDelta, ref Posing.Transform transform)
+	public override Transform UpdateDrag(Vector mouseDelta, Transform transform)
 	{
 		if (this.dragStartToPos == null || this.dragStartFromPos == null)
-			return;
+			return default;
 
 		Vector normal = (Point)this.dragStartToPos - (Point)this.dragStartFromPos;
 		normal.Normalize();
@@ -123,10 +124,6 @@ public class RotationGizmoAxis : GizmoAxisBase
 
 		double dot = Vector.Multiply(mouseDelta, normal);
 		float dragDelta = (float)(mag * dot);
-
-		if (double.IsNaN(dragDelta))
-			return;
-
 		double angleChange = dragDelta / 50;
 
 		if (Keyboard.Modifiers == ModifierKeys.Shift)
@@ -154,7 +151,7 @@ public class RotationGizmoAxis : GizmoAxisBase
 			rot = Quaternion.CreateFromAxisAngle(Vector3.UnitZ, (float)angleChange);
 		}
 
-		transform.Rotation *= rot;
+		return Posing.Transform.FromRotation(rot);
 	}
 
 	public override void EndDrag()

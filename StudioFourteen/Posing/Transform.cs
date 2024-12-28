@@ -23,24 +23,63 @@ using System.Numerics;
 
 public struct Transform : IEquatable<Transform>
 {
-	public Vector3 Translation = Vector3.Zero;
-	public Quaternion Rotation = Quaternion.Identity;
-	public Vector3 Scale = Vector3.One;
+	private Matrix4x4 matrix = Matrix4x4.Identity;
 
 	public Transform()
 	{
-		this.Translation = Vector3.Zero;
-		this.Rotation = Quaternion.Identity;
-		this.Scale = Vector3.One;
 	}
+
+	public Transform(Matrix4x4 matrix)
+	{
+		this.matrix = matrix;
+	}
+
+	public Vector3 Translation
+	{
+		get
+		{
+			/*if (!Matrix4x4.Decompose(this.matrix, out Vector3 scale, out Quaternion rotation, out Vector3 translation))
+				throw new Exception("Failed to unpack matrix4x4");
+
+			return translation;*/
+			return this.matrix.Translation;
+		}
+
+		set
+		{
+			this.matrix.Translation = value;
+		}
+	}
+
+	public Quaternion Rotation
+	{
+		get
+		{
+			if (!Matrix4x4.Decompose(this.matrix, out Vector3 scale, out Quaternion rotation, out Vector3 translation))
+				throw new Exception("Failed to unpack matrix4x4");
+			return rotation;
+		}
+	}
+
+	public Vector3 Scale
+	{
+		get
+		{
+			if (!Matrix4x4.Decompose(this.matrix, out Vector3 scale, out Quaternion rotation, out Vector3 translation))
+				throw new Exception("Failed to unpack matrix4x4");
+
+			return scale;
+		}
+	}
+
+	public static implicit operator Transform(Matrix4x4 matrix) => new Transform(matrix);
 
 	public static implicit operator Transform(hkQsTransformf transform)
 	{
-		Transform t = default;
-		t.Translation = transform.Translation.ToVector3();
-		t.Rotation = transform.Rotation.ToQuaternion();
-		t.Scale = transform.Scale.ToVector3();
-		return t;
+		return FromTRS(
+			transform.Translation.ToVector3(),
+			transform.Rotation.ToQuaternion(),
+			transform.Scale.ToVector3());
 	}
 
 	public static implicit operator hkQsTransformf(Transform transform)
@@ -52,68 +91,32 @@ public struct Transform : IEquatable<Transform>
 		return t;
 	}
 
-	public static Transform operator *(Transform left, Transform right)
+	public static Transform operator +(Transform left, Transform right) => left.matrix + right.matrix;
+	public static Transform operator *(Transform left, Transform right) => left.matrix * right.matrix;
+	public static Transform operator -(Transform left, Transform right) => left.matrix - right.matrix;
+
+	public static bool operator !=(Transform left, Transform right) => !(left == right);
+	public static bool operator ==(Transform left, Transform right) => left.matrix == right.matrix;
+
+	public static Transform FromTRS(Vector3 translation, Quaternion rotation, Vector3 scale)
 	{
-		Transform t = default;
-		t.Translation = left.Translation + right.Translation;
-		t.Rotation = Quaternion.Normalize(left.Rotation * right.Rotation);
-		t.Scale = left.Scale * right.Scale;
-		return t;
+		Matrix4x4 mat = Matrix4x4.Identity;
+		mat *= Matrix4x4.CreateScale(scale);
+		mat *= Matrix4x4.CreateFromQuaternion(rotation);
+		mat *= Matrix4x4.CreateTranslation(translation);
+		return mat;
 	}
 
-	public static Transform operator /(Transform left, Transform right)
-	{
-		Transform t = default;
-		t.Translation = left.Translation - right.Translation;
-		t.Rotation = Quaternion.Normalize(left.Rotation / right.Rotation);
-		t.Scale = left.Scale / right.Scale;
-		return t;
-	}
-
-	public static Transform operator -(Transform left, Transform right)
-	{
-		Transform t = default;
-		t.Translation = left.Translation - right.Translation;
-		t.Rotation = Quaternion.Normalize(Quaternion.Inverse(left.Rotation) * right.Rotation);
-		t.Scale = left.Scale / right.Scale;
-		return t;
-	}
-
-	public static bool operator !=(Transform left, Transform right)
-	{
-		return !(left == right);
-	}
-
-	public static bool operator ==(Transform left, Transform right)
-	{
-		return left.Translation == right.Translation
-			&& left.Rotation == right.Rotation
-			&& left.Scale == right.Scale;
-	}
+	public static Transform FromTranslation(Vector3 translation) => Matrix4x4.CreateTranslation(translation);
+	public static Transform FromRotation(Quaternion rotation) => Matrix4x4.CreateFromQuaternion(rotation);
+	public static Transform FromScale(Vector3 scale) => Matrix4x4.CreateScale(scale);
 
 	public static Transform Lerp(Transform from, Transform to, float amount)
 	{
-		Transform t = default;
-		t.Translation = Vector3.Lerp(from.Translation, to.Translation, amount);
-		t.Rotation = Quaternion.Lerp(from.Rotation, to.Rotation, amount);
-		t.Scale = Vector3.Lerp(from.Scale, to.Scale, amount);
-		return t;
+		return Matrix4x4.Lerp(from.matrix, to.matrix, amount);
 	}
 
-	public override readonly bool Equals(object? obj)
-	{
-		return obj is Transform transform && this.Equals(transform);
-	}
-
-	public readonly bool Equals(Transform other)
-	{
-		return this.Translation.Equals(other.Translation) &&
-			   this.Rotation.Equals(other.Rotation) &&
-			   this.Scale.Equals(other.Scale);
-	}
-
-	public override readonly int GetHashCode()
-	{
-		return HashCode.Combine(this.Translation, this.Rotation, this.Scale);
-	}
+	public override readonly bool Equals(object? obj) => this.matrix.Equals(obj);
+	public readonly bool Equals(Transform other) => this.matrix == other.matrix;
+	public override readonly int GetHashCode() => this.matrix.GetHashCode();
 }

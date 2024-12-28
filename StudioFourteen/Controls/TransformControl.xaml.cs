@@ -19,6 +19,7 @@ using DependencyPropertyGenerator;
 using StudioFourteen.Mvm;
 using StudioFourteen.Posing;
 using StudioFourteen.Structs.Extensions;
+using System;
 using System.Numerics;
 
 [DependencyProperty<Transform>("Value", DefaultBindingMode = DefaultBindingMode.TwoWay)]
@@ -99,11 +100,11 @@ public partial class TransformControl : View
 
 		this.isUpdatingComponent = true;
 
-		Transform t = this.Value;
-		Quaternion q = this.Value.Rotation;
-		q.FromEuler(newValue);
-		t.Rotation = q;
-		this.Value = t;
+		Quaternion from = this.Value.Rotation;
+		Quaternion to = QuaternionExtensions.FromEuler(newValue);
+		Quaternion delta = Quaternion.Normalize(Quaternion.Inverse(from) * to);
+
+		this.Value = Transform.FromRotation(delta) * this.Value;
 
 		this.RotationEuler = Vector3.Zero;
 		this.RotationEuler = this.Value.Rotation.ToEuler();
@@ -118,9 +119,9 @@ public partial class TransformControl : View
 
 		this.isUpdatingComponent = true;
 
-		Transform t = this.Value;
-		t.Scale = newValue;
-		this.Value = t;
+		////Transform t = this.Value;
+		////t.Scale = newValue;
+		////this.Value = t;
 
 		this.isUpdatingComponent = false;
 	}

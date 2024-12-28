@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Posing;
 
+using System;
 using System.Numerics;
 
 public static class FlipUtility
@@ -32,7 +33,9 @@ public static class FlipUtility
 			mirrorRotation.Z = transform.Rotation.Z;
 		}
 
-		mirrorTransform.Rotation = mirrorRotation;
+		throw new NotImplementedException();
+
+		/*mirrorTransform.Rotation = mirrorRotation;
 		mirrorTransform.Scale = transform.Scale;
 
 		mirrorTransform.Translation = new(
@@ -40,7 +43,7 @@ public static class FlipUtility
 			transform.Translation.Y,
 			-transform.Translation.Z);
 
-		return mirrorTransform;
+		return mirrorTransform;*/
 	}
 
 	public static BoneTransform Flip(BoneTransform boneTransform, MirrorModes mirrorMode = MirrorModes.MirrorTRCopyS)

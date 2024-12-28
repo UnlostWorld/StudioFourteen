@@ -81,7 +81,7 @@ public class BoneReference(BoneId id, string? name = null)
 			throw new Exception("Cannot set bone to reference before it has been ticked");
 
 		var newTransform = this.ReferenceTransform;
-		newTransform /= (Transform)this.LocalSpaceTransform;
+		newTransform -= (Transform)this.LocalSpaceTransform;
 		this.Transform = newTransform;
 	}
 
@@ -120,11 +120,12 @@ public class BoneReference(BoneId id, string? name = null)
 	public void SetReferenceRelativeTransform(BoneTransform referenceRelativeTransform, bool blend)
 	{
 		this.ReverseMirror();
-		Transform relativeTransform = default;
-		relativeTransform.Translation = referenceRelativeTransform.Translation ?? Vector3.Zero;
-		relativeTransform.Rotation = referenceRelativeTransform.Rotation ?? Quaternion.Identity;
-		relativeTransform.Scale = referenceRelativeTransform.Scale ?? Vector3.One;
-		this.loadReferenceRelativeTransform = relativeTransform;
+
+		this.loadReferenceRelativeTransform = Posing.Transform.FromTRS(
+			referenceRelativeTransform.Translation ?? Vector3.Zero,
+			referenceRelativeTransform.Rotation ?? Quaternion.Identity,
+			referenceRelativeTransform.Scale ?? Vector3.One);
+
 		this.shouldBlendNext = blend;
 	}
 
@@ -161,15 +162,14 @@ public class BoneReference(BoneId id, string? name = null)
 		this.ReferenceTransform = pPose->Skeleton->ReferencePose[this.Id.BoneIndex];
 		this.ModelSpaceTransform = *pPose->AccessBoneModelSpace(this.Id.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
 
-		Transform characterTransform = default;
-		characterTransform.Translation = pCharacter->DrawObject->Position;
-		characterTransform.Rotation = pCharacter->DrawObject->Rotation;
-		characterTransform.Scale = pCharacter->DrawObject->Scale;
-		this.ModelTransform = characterTransform;
+		this.ModelTransform = Posing.Transform.FromTRS(
+			pCharacter->DrawObject->Position,
+			pCharacter->DrawObject->Rotation,
+			pCharacter->DrawObject->Scale);
 
 		if (this.LocalSpaceTransform != null)
 		{
-			this.ReferenceRelativeTransform = (Transform)this.LocalSpaceTransform / (Transform)this.ReferenceTransform;
+			this.ReferenceRelativeTransform = (Transform)this.LocalSpaceTransform - (Transform)this.ReferenceTransform;
 		}
 	}
 
@@ -294,7 +294,7 @@ public class BoneReference(BoneId id, string? name = null)
 				this.fromTransform = null;
 			}
 
-			this.toTransform = this.loadLocalSpaceTransform / this.baseLocalTransform;
+			this.toTransform = this.loadLocalSpaceTransform - this.baseLocalTransform;
 			this.loadLocalSpaceTransform = null;
 		}
 
@@ -343,12 +343,12 @@ public class BoneReference(BoneId id, string? name = null)
 			Transform newTransform = (Transform)this.Transform * (Transform)this.baseLocalTransform;
 
 			// do not allow bones to scale to 0. bad things happen.
-			newTransform.Scale = Vector3.Max(newTransform.Scale, new Vector3(0.1f, 0.1f, 0.1f));
+			Vector3 newScale = Vector3.Max(newTransform.Scale, new Vector3(0.1f, 0.1f, 0.1f));
 
 			hkQsTransformf* pTransform = pPose->AccessBoneLocalSpace(this.Id.BoneIndex);
 			pTransform->Translation.Set(newTransform.Translation);
 			pTransform->Rotation.Set(newTransform.Rotation);
-			pTransform->Scale.Set(newTransform.Scale);
+			pTransform->Scale.Set(newScale);
 
 			this.LocalSpaceTransform = *pTransform;
 		}

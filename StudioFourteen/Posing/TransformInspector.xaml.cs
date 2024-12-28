@@ -20,6 +20,7 @@ using PropertyChanged.SourceGenerator;
 using StudioFourteen.Gizmos;
 using StudioFourteen.Mvm;
 using StudioFourteen.Settings;
+using StudioFourteen.Structs.Extensions;
 using System;
 using System.Numerics;
 
@@ -111,22 +112,6 @@ public partial class TransformInspector : View
 				return;
 
 			this.Selection.LocalTransform = value;
-		}
-	}
-
-	// TODO: Move this to a custom control (Like TransformControl) for the gizmos.
-	[AutoNotify]
-	public Quaternion WorldRotation
-	{
-		get => this.WorldTransform.Rotation;
-		set
-		{
-			if (this.Selection == null)
-				return;
-
-			BoneTransform transform = new();
-			transform.Rotation = value;
-			this.Selection.SetWorldTransform(transform);
 		}
 	}
 
