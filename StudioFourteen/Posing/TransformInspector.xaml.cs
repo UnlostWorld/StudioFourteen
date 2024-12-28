@@ -86,19 +86,10 @@ public partial class TransformInspector : View
 		get => this.Selection?.WorldTransform ?? default;
 		set
 		{
-			BoneTransform transform = new();
-			transform.Translation = value.Translation;
-			transform.Rotation = value.Rotation;
-			transform.Scale = value.Scale;
+			if (this.Selection == null)
+				return;
 
-			try
-			{
-				this.Selection?.SetWorldTransform(transform);
-			}
-			catch (Exception ex)
-			{
-				this.Log.Error(ex, "Error setting transform");
-			}
+			this.Selection.WorldTransform = value;
 		}
 	}
 

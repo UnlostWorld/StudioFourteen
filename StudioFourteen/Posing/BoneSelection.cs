@@ -14,22 +14,9 @@
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
 namespace StudioFourteen.Posing;
-
-using FFXIVClientStructs;
-using FFXIVClientStructs.FFXIV.Common.Lua;
-using FFXIVClientStructs.Havok.Animation.Rig;
-using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
-using FFXIVClientStructs.Havok.Common.Base.Math.Quaternion;
-using FFXIVClientStructs.Havok.Common.Base.Math.Vector;
-using StudioFourteen.Files;
 using StudioFourteen.Gizmos;
-using StudioFourteen.Structs;
-using StudioFourteen.Structs.Extensions;
-using System;
 using System.Collections.Generic;
 using System.Numerics;
-using TerraFX.Interop.Windows;
-using static StudioFourteen.Files.PoseFile;
 
 public class BoneSelection : TransformSelectionBase
 {
@@ -126,6 +113,7 @@ public class BoneSelection : TransformSelectionBase
 
 			return this.bone.ModelTransform.Value * this.bone.ModelSpaceTransform.Value;
 		}
+		set => this.SetWorldTransform(value);
 	}
 
 	public override Transform LocalTransform
@@ -189,28 +177,23 @@ public class BoneSelection : TransformSelectionBase
 		return true;
 	}
 
-	public override void SetWorldTransform(BoneTransform transform)
+	public void SetWorldTransform(Transform transform)
 	{
 		if (this.bone == null || this.bone.ModelTransform == null)
 			return;
 
-		if (transform.Translation != null)
-		{
-			transform.Translation = transform.Translation - this.bone.ModelTransform.Value.Translation;
-			transform.Translation = Vector3.Transform(transform.Translation.Value, Quaternion.Inverse(this.bone.ModelTransform.Value.Rotation));
-		}
+		/*transform.Translation = transform.Translation - this.bone.ModelTransform.Value.Translation;
+		transform.Translation = Vector3.Transform(transform.Translation.Value, Quaternion.Inverse(this.bone.ModelTransform.Value.Rotation));
 
-		if (transform.Rotation != null)
-			transform.Rotation = Quaternion.Normalize(Quaternion.Inverse(this.bone.ModelTransform.Value.Rotation) * transform.Rotation.Value);
+		transform.Rotation = Quaternion.Normalize(Quaternion.Inverse(this.bone.ModelTransform.Value.Rotation) * transform.Rotation.Value);
 
 		// TODO: Support for scale
-		if (transform.Scale != null)
-			transform.Scale = null;
+		transform.Scale = null;
 
 		foreach (BoneReference bone in this.bones)
 		{
 			bone.SetModelSpaceTransform(transform);
-		}
+		}*/
 	}
 
 	public void SetLocalTransform(Transform localTransform)

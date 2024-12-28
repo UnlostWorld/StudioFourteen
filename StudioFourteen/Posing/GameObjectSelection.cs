@@ -29,7 +29,7 @@ public class GameObjectSelection : TransformSelectionBase
 	private bool isReady = false;
 
 	private Transform lastTransform = default;
-	private BoneTransform? nextTransform;
+	private Transform? nextTransform;
 
 	public GameObjectSelection(int objectTableId)
 	{
@@ -48,18 +48,16 @@ public class GameObjectSelection : TransformSelectionBase
 		set => this.Services.Pose.SetAllBoneReferencesLocked(this.objectTableId, value);
 	}
 
-	public override Transform WorldTransform => this.LocalTransform;
+	public override Transform WorldTransform
+	{
+		get => this.LocalTransform;
+		set => this.LocalTransform = value;
+	}
 
 	public override Transform LocalTransform
 	{
 		get => this.lastTransform;
-		set
-		{
-			this.nextTransform = new();
-			this.nextTransform.Translation = value.Translation;
-			this.nextTransform.Rotation = value.Rotation;
-			this.nextTransform.Scale = value.Scale;
-		}
+		set => this.nextTransform = value;
 	}
 
 	public unsafe override void OnFrameworkUpdate(IFramework framework)
@@ -77,15 +75,11 @@ public class GameObjectSelection : TransformSelectionBase
 
 		if (this.nextTransform != null)
 		{
-			if (this.nextTransform?.Translation != null)
-				gameObject->DrawObject->Position = (Vector3)this.nextTransform.Translation;
-
-			if (this.nextTransform?.Rotation != null)
-				gameObject->DrawObject->Rotation = (Quaternion)this.nextTransform.Rotation;
+			gameObject->DrawObject->Position = this.nextTransform.Value.Translation;
+			gameObject->DrawObject->Rotation = this.nextTransform.Value.Rotation;
 
 			// do not allow objects to scale below 0, it will break the game.
-			if (this.nextTransform?.Scale != null)
-				gameObject->DrawObject->Scale = Vector3.Max((Vector3)this.nextTransform.Scale, new Vector3(0.1f, 0.1f, 0.1f));
+			gameObject->DrawObject->Scale = Vector3.Max(this.nextTransform.Value.Scale, new Vector3(0.1f, 0.1f, 0.1f));
 
 			this.nextTransform = null;
 		}
@@ -94,6 +88,7 @@ public class GameObjectSelection : TransformSelectionBase
 			gameObject->DrawObject->Position,
 			gameObject->DrawObject->Rotation,
 			gameObject->DrawObject->Scale);
+
 		this.isReady = true;
 	}
 
@@ -109,10 +104,5 @@ public class GameObjectSelection : TransformSelectionBase
 	{
 		// hmm...
 		throw new NotImplementedException();
-	}
-
-	public override void SetWorldTransform(BoneTransform transform)
-	{
-		this.nextTransform = transform;
 	}
 }
