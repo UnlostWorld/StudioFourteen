@@ -344,8 +344,7 @@ public partial class WindowService : ServiceBase
 
 	private bool GetIsCursorOverImGui()
 	{
-		return ImGui.IsWindowHovered(ImGuiHoveredFlags.AnyWindow | ImGuiHoveredFlags.AllowWhenOverlapped | ImGuiHoveredFlags.AllowWhenDisabled)
-			|| ImGui.IsAnyItemHovered();
+		return ImGui.IsWindowHovered(ImGuiHoveredFlags.AnyWindow) || ImGui.IsAnyItemHovered();
 	}
 
 	private unsafe AtkUnitBase* GetAtkUnitUnderCursor()
