@@ -24,26 +24,28 @@ public static class FlipUtility
 	{
 		Transform mirrorTransform = new();
 
-		Quaternion mirrorRotation = transform.Rotation;
-		if (mirrorMode == MirrorModes.MirrorTRCopyS)
+		if (transform.ToTRS(out Vector3 translation, out Quaternion rotation, out Vector3 scale))
 		{
-			mirrorRotation.W = transform.Rotation.W;
-			mirrorRotation.X = -transform.Rotation.X;
-			mirrorRotation.Y = -transform.Rotation.Y;
-			mirrorRotation.Z = transform.Rotation.Z;
+			Vector3 mirrorTranslation = new(
+				transform.Translation.X,
+				transform.Translation.Y,
+				-transform.Translation.Z);
+
+			Quaternion mirrorRotation = rotation;
+			if (mirrorMode == MirrorModes.MirrorTRCopyS)
+			{
+				mirrorRotation.W = rotation.W;
+				mirrorRotation.X = -rotation.X;
+				mirrorRotation.Y = -rotation.Y;
+				mirrorRotation.Z = rotation.Z;
+			}
+
+			Vector3 mirrorScale = scale;
+
+			return Transform.FromTRS(mirrorTranslation, mirrorRotation, mirrorScale);
 		}
 
-		throw new NotImplementedException();
-
-		/*mirrorTransform.Rotation = mirrorRotation;
-		mirrorTransform.Scale = transform.Scale;
-
-		mirrorTransform.Translation = new(
-			transform.Translation.X,
-			transform.Translation.Y,
-			-transform.Translation.Z);
-
-		return mirrorTransform;*/
+		return transform;
 	}
 
 	public static BoneTransform Flip(BoneTransform boneTransform, MirrorModes mirrorMode = MirrorModes.MirrorTRCopyS)
