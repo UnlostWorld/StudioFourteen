@@ -39,6 +39,7 @@ public abstract class GizmoAxisBase
 		this.Log = Logging.ForContext(this.GetType());
 	}
 
+	public double Sensitivity { get; set; }
 	public GizmoAxes Axis { get; protected set; }
 	public Brush ForegroundBrush { get; set; } = new SolidColorBrush(Colors.Gray);
 	public Brush BackgroundBrush { get; set; } = new SolidColorBrush(Colors.Black);

@@ -107,7 +107,9 @@ public class TranslationGizmoDualAxis : GizmoAxisBase
 			return default;
 
 		dragDeltaAxis1 /= 100;
+		dragDeltaAxis1 *= (float)this.Sensitivity;
 		dragDeltaAxis2 /= 100;
+		dragDeltaAxis2 *= (float)this.Sensitivity;
 
 		if (Keyboard.Modifiers == ModifierKeys.Shift)
 		{

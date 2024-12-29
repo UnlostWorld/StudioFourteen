@@ -35,6 +35,7 @@ using CursorPoint = System.Drawing.Point;
 using Transform = StudioFourteen.Posing.Transform;
 using Vector = System.Windows.Vector;
 
+[DependencyProperty<double>("Sensitivity", DefaultValue=1)]
 [DependencyProperty<Transform>("Transform", DefaultBindingMode=DefaultBindingMode.TwoWay)]
 public abstract partial class GizmoBase : View
 {
@@ -143,10 +144,14 @@ public abstract partial class GizmoBase : View
 
 		this.isDragging = true;
 
-		Point mousePos = e.GetPosition(this);
-		this.hoverAxis?.StartDrag(mousePos);
-
 		this.dragAxis = this.hoverAxis;
+		if (this.dragAxis != null)
+		{
+			Point mousePos = e.GetPosition(this);
+			this.dragAxis.Sensitivity = this.Sensitivity;
+			this.dragAxis.StartDrag(mousePos);
+		}
+
 		this.dragTransform = this.Transform;
 		this.lastDragMousePos = this.cursorKeepPosition.ToWindowsPoint();
 	}

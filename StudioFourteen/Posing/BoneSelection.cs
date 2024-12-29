@@ -100,6 +100,7 @@ public class BoneSelection : TransformSelectionBase
 	public override int DecimalPlacesToDisplay => this.IsFaceBone ? 4 : 2;
 	public override bool CanReset => true;
 	public override bool IsReady => this.bone != null && this.bone.LocalSpaceTransform != null;
+	public override double GizmoSensitivity => this.IsFaceBone ? 0.05 : 0.5;
 
 	public override GizmoTypes DefaultGizmo
 	{

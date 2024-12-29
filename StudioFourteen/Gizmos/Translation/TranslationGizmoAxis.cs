@@ -173,6 +173,7 @@ public class TranslationGizmoAxis : GizmoAxisBase
 		double dot = Vector.Multiply(mouseDelta, normal);
 		float dragDelta = (float)(mag * dot);
 		dragDelta /= 100;
+		dragDelta *= (float)this.Sensitivity;
 
 		if (Keyboard.Modifiers == ModifierKeys.Shift)
 			dragDelta *= 10;

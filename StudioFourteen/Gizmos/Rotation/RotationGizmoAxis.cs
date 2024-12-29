@@ -124,6 +124,7 @@ public class RotationGizmoAxis : GizmoAxisBase
 		double dot = Vector.Multiply(mouseDelta, normal);
 		float dragDelta = (float)(mag * dot);
 		double angleChange = dragDelta / 50;
+		angleChange *= this.Sensitivity;
 
 		if (Keyboard.Modifiers == ModifierKeys.Shift)
 			angleChange *= 10;

@@ -29,9 +29,11 @@
 							Grid.Row="0"
 							Height="168">
 							<gizmos:RotationGizmo
+								Sensitivity="{Binding Selection.GizmoSensitivity}"
 								Transform="{Binding WorldTransform}"
 								Visibility="{Binding Gizmo, Converter={StaticResource EnumToVisibility}, ConverterParameter=Rotation}" />
 							<gizmos:TranslationGizmo
+								Sensitivity="{Binding Selection.GizmoSensitivity}"
 								Transform="{Binding WorldTransform}"
 								Visibility="{Binding Gizmo, Converter={StaticResource EnumToVisibility}, ConverterParameter=Translation}" />
 						</Grid>
