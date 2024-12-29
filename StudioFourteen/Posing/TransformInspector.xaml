@@ -29,10 +29,10 @@
 							Grid.Row="0"
 							Height="168">
 							<gizmos:RotationGizmo
-								Transform="{Binding LocalTransform}"
+								Transform="{Binding WorldTransform}"
 								Visibility="{Binding Gizmo, Converter={StaticResource EnumToVisibility}, ConverterParameter=Rotation}" />
 							<gizmos:TranslationGizmo
-								Transform="{Binding LocalTransform}"
+								Transform="{Binding WorldTransform}"
 								Visibility="{Binding Gizmo, Converter={StaticResource EnumToVisibility}, ConverterParameter=Translation}" />
 						</Grid>
 

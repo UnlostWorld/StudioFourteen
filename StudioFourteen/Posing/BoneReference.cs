@@ -294,7 +294,7 @@ public class BoneReference(BoneId id, string? name = null)
 				this.fromTransform = null;
 			}
 
-			this.toTransform = this.loadLocalSpaceTransform - this.baseLocalTransform;
+			this.toTransform = this.loadLocalSpaceTransform / this.baseLocalTransform;
 			this.loadLocalSpaceTransform = null;
 		}
 

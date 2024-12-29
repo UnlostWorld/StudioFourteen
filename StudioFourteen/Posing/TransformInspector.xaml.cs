@@ -20,9 +20,6 @@ using PropertyChanged.SourceGenerator;
 using StudioFourteen.Gizmos;
 using StudioFourteen.Mvm;
 using StudioFourteen.Settings;
-using StudioFourteen.Structs.Extensions;
-using System;
-using System.Numerics;
 
 [DependencyProperty<TransformSelectionBase>("Selection")]
 [DependencyProperty<Persistence>("Persistence")]

@@ -38,11 +38,11 @@ public struct Transform : IEquatable<Transform>
 	{
 		get
 		{
-			/*if (!Matrix4x4.Decompose(this.matrix, out Vector3 scale, out Quaternion rotation, out Vector3 translation))
+			if (!Matrix4x4.Decompose(this.matrix, out Vector3 scale, out Quaternion rotation, out Vector3 translation))
 				throw new Exception("Failed to unpack matrix4x4");
 
-			return translation;*/
-			return this.matrix.Translation;
+			return translation;
+			////return this.matrix.Translation;
 		}
 
 		set
@@ -94,6 +94,14 @@ public struct Transform : IEquatable<Transform>
 	public static Transform operator +(Transform left, Transform right) => left.matrix + right.matrix;
 	public static Transform operator *(Transform left, Transform right) => left.matrix * right.matrix;
 	public static Transform operator -(Transform left, Transform right) => left.matrix - right.matrix;
+
+	public static Transform operator /(Transform left, Transform right)
+	{
+		Vector3 translation = Vector3.Transform(left.Translation - right.Translation, Quaternion.Inverse(right.Rotation));
+		Quaternion rotation = Quaternion.Normalize(Quaternion.Inverse(right.Rotation) * left.Rotation);
+		Vector3 scale = left.Scale / right.Scale;
+		return Transform.FromTRS(translation, rotation, scale);
+	}
 
 	public static bool operator !=(Transform left, Transform right) => !(left == right);
 	public static bool operator ==(Transform left, Transform right) => left.matrix == right.matrix;
