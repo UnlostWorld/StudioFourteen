@@ -17,6 +17,8 @@ namespace StudioFourteen.Posing;
 using StudioFourteen.Gizmos;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Xml.Linq;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 
 public class BoneSelection : TransformSelectionBase
 {
@@ -55,6 +57,11 @@ public class BoneSelection : TransformSelectionBase
 		{ "j_f_mabdn_02out_l", GizmoTypes.Translation },
 	};
 
+	private static readonly Dictionary<string, MirrorModes> DefaultMirrorModes = new()
+	{
+		{ "j_f_eye_l", MirrorModes.MirrorTCopyRS },
+	};
+
 	private readonly List<BoneId> boneIds;
 	private readonly List<BoneId> parentBoneIds;
 	private readonly List<BoneReference> bones = new();
@@ -70,21 +77,13 @@ public class BoneSelection : TransformSelectionBase
 	}
 
 	public BoneSelection(BoneId bone, BoneId parent, string name)
+		: this([bone], [parent], name)
 	{
-		this.BoneName = name;
-		this.boneIds = [bone];
-		this.parentBoneIds = [parent];
-
-		this.IsFaceBone = name.StartsWith("j_f_");
 	}
 
 	public BoneSelection(BoneId bone, string name)
+		: this([bone], [], name)
 	{
-		this.BoneName = name;
-		this.boneIds = [bone];
-		this.parentBoneIds = [];
-
-		this.IsFaceBone = name.StartsWith("j_f_");
 	}
 
 	public override string Name => Resources.Find($"LOC_Bone_{this.BoneName}", this.BoneName);
@@ -107,7 +106,6 @@ public class BoneSelection : TransformSelectionBase
 		get
 		{
 			GizmoTypes gizmo;
-
 			if (DefaultBoneGizmos.TryGetValue(this.BoneName, out gizmo))
 			{
 				return gizmo;
@@ -195,6 +193,8 @@ public class BoneSelection : TransformSelectionBase
 		}
 
 		this.bone = this.bones[0];
+
+		this.MirrorMode = this.GetDefaultMirrorMode();
 	}
 
 	public override void Deactivate()
@@ -271,5 +271,25 @@ public class BoneSelection : TransformSelectionBase
 		{
 			bone.SetReferenceRelativeTransform(referenceTransform, false);
 		}
+	}
+
+	public MirrorModes GetDefaultMirrorMode()
+	{
+		MirrorModes mirror = MirrorModes.None;
+		if (DefaultMirrorModes.TryGetValue(this.BoneName, out mirror))
+		{
+			return mirror;
+		}
+
+		string? mirrorName = PoseService.GetMirrorBoneName(this.BoneName);
+		if (mirrorName != null)
+		{
+			if (DefaultMirrorModes.TryGetValue(mirrorName, out mirror))
+			{
+				return mirror;
+			}
+		}
+
+		return mirror;
 	}
 }
