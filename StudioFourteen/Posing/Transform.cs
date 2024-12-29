@@ -127,4 +127,16 @@ public struct Transform : IEquatable<Transform>
 	public override readonly bool Equals(object? obj) => this.matrix.Equals(obj);
 	public readonly bool Equals(Transform other) => this.matrix == other.matrix;
 	public override readonly int GetHashCode() => this.matrix.GetHashCode();
+
+	public bool ToTRS(out Vector3 translation, out Quaternion rotation, out Vector3 scale)
+	{
+		bool success = Matrix4x4.Decompose(this.matrix, out scale, out rotation, out translation);
+		if (!success)
+			return false;
+
+		rotation = Quaternion.Normalize(rotation);
+		return true;
+	}
+
+	public Matrix4x4 ToMatrix() => this.matrix;
 }

@@ -75,13 +75,22 @@ public class GameObjectSelection : TransformSelectionBase
 
 		if (this.nextTransform != null)
 		{
-			gameObject->DrawObject->Position = this.nextTransform.Value.Translation;
-			gameObject->DrawObject->Rotation = this.nextTransform.Value.Rotation;
+			bool success = this.nextTransform.Value.ToTRS(out Vector3 translation, out Quaternion rotation, out Vector3 scale);
 
-			// do not allow objects to scale below 0, it will break the game.
-			gameObject->DrawObject->Scale = Vector3.Max(this.nextTransform.Value.Scale, new Vector3(0.1f, 0.1f, 0.1f));
+			if (success)
+			{
+				gameObject->DrawObject->Position = translation;
+				gameObject->DrawObject->Rotation = rotation;
 
-			this.nextTransform = null;
+				// do not allow objects to scale below 0, it will break the game.
+				gameObject->DrawObject->Scale = Vector3.Max(scale, new Vector3(0.1f, 0.1f, 0.1f));
+
+				this.nextTransform = null;
+			}
+			else
+			{
+				this.Log.Warning("Failed to decompose transform for game object");
+			}
 		}
 
 		this.lastTransform = Transform.FromTRS(

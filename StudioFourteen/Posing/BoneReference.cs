@@ -52,6 +52,7 @@ public class BoneReference(BoneId id, string? name = null)
 	private string? boneName = name;
 	private string? mirrorBoneName;
 	private bool hasCheckedMirror = false;
+	private bool isDecomposeError = false;
 
 	public Transform? Transform { get; private set; }
 	public Transform? LocalSpaceTransform { get; private set; }
@@ -340,15 +341,27 @@ public class BoneReference(BoneId id, string? name = null)
 		this.LocalSpaceTransform = this.baseLocalTransform;
 		if (this.Transform != null)
 		{
-			Transform newTransform = (Transform)this.Transform * (Transform)this.baseLocalTransform;
-
-			// do not allow bones to scale to 0. bad things happen.
-			Vector3 newScale = Vector3.Max(newTransform.Scale, new Vector3(0.1f, 0.1f, 0.1f));
-
 			hkQsTransformf* pTransform = pPose->AccessBoneLocalSpace(this.Id.BoneIndex);
-			pTransform->Translation.Set(newTransform.Translation);
-			pTransform->Rotation.Set(newTransform.Rotation);
-			pTransform->Scale.Set(newScale);
+
+			Transform newTransform = (Transform)this.Transform * (Transform)this.baseLocalTransform;
+			bool success = newTransform.ToTRS(out Vector3 translation, out Quaternion rotation, out Vector3 scale);
+			if (success)
+			{
+				this.isDecomposeError = false;
+
+				// do not allow bones to scale to 0. bad things happen.
+				scale = Vector3.Max(scale, new Vector3(0.1f, 0.1f, 0.1f));
+				pTransform->Translation.Set(translation);
+				pTransform->Rotation.Set(rotation);
+				pTransform->Scale.Set(scale);
+			}
+			else
+			{
+				if (!this.isDecomposeError)
+					Logging.Shared.Warning($"Failed to decompose transform for bone {this.boneName}");
+
+				this.isDecomposeError = true;
+			}
 
 			this.LocalSpaceTransform = *pTransform;
 		}
