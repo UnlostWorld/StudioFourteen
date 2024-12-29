@@ -104,7 +104,9 @@ public partial class TransformControl : View
 		Quaternion to = QuaternionExtensions.FromEuler(newValue);
 		Quaternion delta = Quaternion.Normalize(Quaternion.Inverse(from) * to);
 
-		this.Value = Transform.FromRotation(delta) * this.Value;
+		Transform v = this.Value;
+		v.PivotRotate(delta);
+		this.Value = v;
 
 		this.RotationEuler = Vector3.Zero;
 		this.RotationEuler = this.Value.Rotation.ToEuler();
@@ -120,7 +122,7 @@ public partial class TransformControl : View
 		this.isUpdatingComponent = true;
 
 		Vector3 from = this.Value.Scale;
-		Vector3 to = newValue;
+		Vector3 to = Vector3.Max(newValue, new Vector3(0.1f, 0.1f, 0.1f));
 		Vector3 delta = to / from;
 
 		this.Value = Transform.FromScale(delta) * this.Value;

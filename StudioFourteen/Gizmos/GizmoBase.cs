@@ -185,7 +185,13 @@ public abstract partial class GizmoBase : View
 			if (mouseDelta.Length > 0)
 			{
 				Transform deltaTransform = this.dragAxis.UpdateDrag(mouseDelta, this.dragTransform.Value);
-				this.dragTransform = deltaTransform * this.dragTransform;
+
+				Transform t = this.dragTransform.Value;
+				t.Translation = Vector3.Zero;
+				t *= deltaTransform;
+				t.Translation += this.dragTransform.Value.Translation;
+
+				this.dragTransform = t;
 				this.Transform = this.dragTransform.Value;
 			}
 

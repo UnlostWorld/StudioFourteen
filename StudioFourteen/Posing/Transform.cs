@@ -124,6 +124,7 @@ public struct Transform : IEquatable<Transform>
 		return Matrix4x4.Lerp(from.matrix, to.matrix, amount);
 	}
 
+	public Matrix4x4 ToMatrix() => this.matrix;
 	public override readonly bool Equals(object? obj) => this.matrix.Equals(obj);
 	public readonly bool Equals(Transform other) => this.matrix == other.matrix;
 	public override readonly int GetHashCode() => this.matrix.GetHashCode();
@@ -138,5 +139,16 @@ public struct Transform : IEquatable<Transform>
 		return true;
 	}
 
-	public Matrix4x4 ToMatrix() => this.matrix;
+	/// <summary>
+	/// Rotates the matrix about its translation, not its origin.
+	/// </summary>
+	/// <param name="rotation">The delta rotation to apply.</param>
+	public void PivotRotate(Quaternion rotation)
+	{
+		Matrix4x4 newMatrix = this.matrix;
+		newMatrix.Translation = Vector3.Zero;
+		newMatrix = Matrix4x4.Transform(newMatrix, rotation);
+		newMatrix.Translation = this.matrix.Translation;
+		this.matrix = newMatrix;
+	}
 }
