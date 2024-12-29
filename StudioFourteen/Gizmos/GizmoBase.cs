@@ -45,6 +45,7 @@ public abstract partial class GizmoBase : View
 
 	private bool isError = false;
 	private bool isDragging = false;
+	private bool isLoading = false;
 	private Point? lastDragMousePos;
 	private GizmoAxisBase? hoverAxis;
 	private GizmoAxisBase? dragAxis;
@@ -60,6 +61,7 @@ public abstract partial class GizmoBase : View
 		this.Content = this.Canvas;
 
 		this.IsEnabledChanged += this.OnIsEnabledChanged;
+		this.IsVisibleChanged += this.OnIsVisibleChanged;
 	}
 
 	protected void AddAxis(GizmoAxisBase axis)
@@ -108,6 +110,12 @@ public abstract partial class GizmoBase : View
 				}
 
 				this.OnDraw(center);
+
+				if (this.isLoading)
+				{
+					this.isLoading = false;
+					this.Opacity = 1.0f;
+				}
 			});
 		}
 		catch (TaskCanceledException)
@@ -243,6 +251,15 @@ public abstract partial class GizmoBase : View
 		CursorUtility.SetCursorVisible(true);
 
 		base.OnMouseLeave(e);
+	}
+
+	private void OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+	{
+		if (this.IsVisible)
+		{
+			this.Opacity = 0;
+			this.isLoading = true;
+		}
 	}
 
 	private void OnIsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
