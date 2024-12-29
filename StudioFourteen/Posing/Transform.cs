@@ -127,30 +127,4 @@ public struct Transform : IEquatable<Transform>
 		rotation = Quaternion.Normalize(rotation);
 		return true;
 	}
-
-	/// <summary>
-	/// Rotates the matrix about its translation, not its origin.
-	/// </summary>
-	/// <param name="rotation">The delta rotation to apply.</param>
-	public void PivotRotate(Quaternion rotation)
-	{
-		Matrix4x4 newMatrix = this.matrix;
-		newMatrix.Translation = Vector3.Zero;
-		newMatrix = Matrix4x4.Transform(newMatrix, rotation);
-		newMatrix.Translation = this.matrix.Translation;
-		this.matrix = newMatrix;
-	}
-
-	/// <summary>
-	/// Rotates the matrix about its translation, not its origin.
-	/// </summary>
-	/// <param name="matrix">The delta matrix to apply.</param>
-	public void PivotRotate(Matrix4x4 matrix)
-	{
-		Matrix4x4 newMatrix = this.matrix;
-		newMatrix.Translation = Vector3.Zero;
-		newMatrix *= matrix;
-		newMatrix.Translation = this.matrix.Translation;
-		this.matrix = newMatrix;
-	}
 }

@@ -100,13 +100,11 @@ public partial class TransformControl : View
 
 		this.isUpdatingComponent = true;
 
-		Quaternion from = this.Value.Rotation;
-		Quaternion to = QuaternionExtensions.FromEuler(newValue);
-		Quaternion delta = Quaternion.Normalize(Quaternion.Inverse(from) * to);
-
-		Transform v = this.Value;
-		v.PivotRotate(delta);
-		this.Value = v;
+		if (this.Value.ToTRS(out Vector3 translation, out Quaternion rotation, out Vector3 scale))
+		{
+			rotation = QuaternionExtensions.FromEuler(newValue);
+			this.Value = Transform.FromTRS(translation, rotation, scale);
+		}
 
 		this.RotationEuler = Vector3.Zero;
 		this.RotationEuler = this.Value.Rotation.ToEuler();
@@ -121,11 +119,11 @@ public partial class TransformControl : View
 
 		this.isUpdatingComponent = true;
 
-		Vector3 from = this.Value.Scale;
-		Vector3 to = Vector3.Max(newValue, new Vector3(0.1f, 0.1f, 0.1f));
-		Vector3 delta = to / from;
-
-		this.Value = Transform.FromScale(delta) * this.Value;
+		if (this.Value.ToTRS(out Vector3 translation, out Quaternion rotation, out Vector3 scale))
+		{
+			scale = Vector3.Max(newValue, new Vector3(0.1f, 0.1f, 0.1f));
+			this.Value = Transform.FromTRS(translation, rotation, scale);
+		}
 
 		this.isUpdatingComponent = false;
 	}
