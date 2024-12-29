@@ -170,7 +170,14 @@ public class BoneReference(BoneId id, string? name = null)
 
 		if (this.LocalSpaceTransform != null)
 		{
-			this.ReferenceRelativeTransform = (Transform)this.LocalSpaceTransform / (Transform)this.ReferenceTransform;
+			try
+			{
+				this.ReferenceRelativeTransform = (Transform)this.LocalSpaceTransform / (Transform)this.ReferenceTransform;
+			}
+			catch (Exception)
+			{
+				Logging.Shared.Warning($"Failed to get reference relative transform for bone: {this.boneName}");
+			}
 		}
 	}
 
@@ -295,8 +302,15 @@ public class BoneReference(BoneId id, string? name = null)
 				this.fromTransform = null;
 			}
 
-			this.toTransform = this.loadLocalSpaceTransform / this.baseLocalTransform;
-			this.loadLocalSpaceTransform = null;
+			try
+			{
+				this.toTransform = this.loadLocalSpaceTransform / this.baseLocalTransform;
+				this.loadLocalSpaceTransform = null;
+			}
+			catch (Exception)
+			{
+				Logging.Shared.Warning($"Failed to get target transform while loading local space transform for bone: {this.boneName}");
+			}
 		}
 
 		// Apply blend to the Transform.

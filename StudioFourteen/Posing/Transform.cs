@@ -86,10 +86,17 @@ public struct Transform : IEquatable<Transform>
 
 	public static Transform operator /(Transform left, Transform right)
 	{
-		Vector3 translation = Vector3.Transform(left.Translation - right.Translation, Quaternion.Inverse(right.Rotation));
-		Quaternion rotation = Quaternion.Normalize(Quaternion.Inverse(right.Rotation) * left.Rotation);
-		Vector3 scale = left.Scale / right.Scale;
-		return Transform.FromTRS(translation, rotation, scale);
+		if (left.ToTRS(out Vector3 leftTranslation, out Quaternion leftRotation, out Vector3 leftScale)
+			&& right.ToTRS(out Vector3 rightTranslation, out Quaternion rightRotation, out Vector3 rightScale))
+		{
+			Vector3 translation = Vector3.Transform(leftTranslation - rightTranslation, Quaternion.Inverse(rightRotation));
+			Quaternion rotation = Quaternion.Normalize(Quaternion.Inverse(rightRotation) * leftRotation);
+			Vector3 scale = leftScale / rightScale;
+
+			return Transform.FromTRS(translation, rotation, scale);
+		}
+
+		throw new Exception("Failed to unpack transforms for divide");
 	}
 
 	public static bool operator !=(Transform left, Transform right) => !(left == right);

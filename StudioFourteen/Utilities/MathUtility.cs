@@ -34,4 +34,9 @@ public static class MathUtility
 	{
 		return new Vector2(Wrap(value.X), Wrap(value.Y));
 	}
+
+	public static float InverseLerp(float a, float b, float v)
+	{
+		return (v - a) / (b - a);
+	}
 }

@@ -98,7 +98,7 @@ public class BoneSelection : TransformSelectionBase
 	public override double TranslationRange => this.IsFaceBone ? 0.02 : 0.1;
 	public override int DecimalPlacesToDisplay => this.IsFaceBone ? 4 : 2;
 	public override bool CanReset => true;
-	public override bool IsReady => this.bone != null && this.bone.LocalSpaceTransform != null;
+	public override bool IsReady => this.bone != null && this.bone.LocalSpaceTransform != null && this.bone.ReferenceRelativeTransform != null;
 	public override double GizmoSensitivity => this.IsFaceBone ? 0.05 : 0.5;
 
 	public override GizmoTypes DefaultGizmo
@@ -207,12 +207,12 @@ public class BoneSelection : TransformSelectionBase
 	{
 		foreach(BoneReference bone in this.bones)
 		{
-			bone.Reset(false);
-
 			if (this.MirrorMode != MirrorModes.None && bone.Mirror != null)
 			{
 				bone.Mirror.Reset(false);
 			}
+
+			bone.Reset(false);
 		}
 	}
 

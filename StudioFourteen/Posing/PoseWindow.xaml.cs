@@ -111,60 +111,6 @@ public partial class PoseWindow : CharacterPanelBase
 
 	private async void OnExportClicked(object sender, RoutedEventArgs e)
 	{
-		// Mouth
-		/*HashSet<string> mouthBones = new()
-		{
-			"j_f_umlip_01_l",
-			"j_f_umlip_02_l",
-			"j_f_ulip_01_l",
-			"j_f_ulip_02_l",
-			"j_f_uslip_l",
-			"j_f_dmlip_01_l",
-			"j_f_dmlip_02_l",
-			"j_f_dlip_01_l",
-			"j_f_dlip_02_l",
-			"j_f_dslip_l",
-			"j_f_dmemoto_l",
-			"j_f_shoho_l",
-
-			"j_f_umlip_01_r",
-			"j_f_umlip_02_r",
-			"j_f_ulip_01_r",
-			"j_f_ulip_02_r",
-			"j_f_uslip_r",
-			"j_f_dmlip_01_r",
-			"j_f_dmlip_02_r",
-			"j_f_dlip_01_r",
-			"j_f_dlip_02_r",
-			"j_f_dslip_r",
-			"j_f_dmemoto_r",
-			"j_f_shoho_r",
-
-			"j_f_ago",
-
-			"j_f_bero_01",
-			"j_f_bero_02",
-			"j_f_bero_03",
-		};
-
-		HashSet<string> eyeBones = new()
-		{
-			"j_f_mabdn_01_l",
-			"j_f_mabdn_02out_l",
-			"j_f_mabdn_03in_l",
-			"j_f_mabup_01_l",
-			"j_f_mabup_02out_l",
-			"j_f_mabup_03in_l",
-			"j_f_hoho_l",
-			"j_f_dhoho_l",
-			"j_f_mayu_l",
-			"j_f_mmayu_l",
-			"j_f_miken_01_l",
-			"j_f_miken_02_l",
-			"j_f_dmiken_l",
-			"j_f_mab_l",
-		};*/
-
 		await this.Services.Pose.ExportPose(this.TargetObjectIndex);
 	}
 

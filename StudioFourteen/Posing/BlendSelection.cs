@@ -36,8 +36,6 @@ public class BlendSelection(string name, BlendTarget target, int objectTableInde
 	public override string? Subtitle => null;
 	public BlendTarget Target => target;
 	public override bool CanMirror => true;
-	public double Maximum => 1.0;
-	public double Minimum => this.HasLeft ? -1.0 : 0.0;
 	public override bool CanReset => true;
 
 	public bool Flip { get; set; }
@@ -165,7 +163,11 @@ public class BlendSelection(string name, BlendTarget target, int objectTableInde
 			if (!this.Initial.ToTRS(out Vector3 initialTranslation, out Quaternion initialRotation, out Vector3 initialScale))
 				return;
 
-			if (value > 0)
+			if (value == 1)
+			{
+				this.Selection.SetReferenceTransform(this.Right);
+			}
+			else if (value > 0)
 			{
 				if (this.Right.Translation != null)
 					this.Value.Translation = Vector3.Lerp(initialTranslation, this.Right.Translation.Value, value);

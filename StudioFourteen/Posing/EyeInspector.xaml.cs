@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Posing;
 
+using Dalamud.Plugin.Services;
 using DependencyPropertyGenerator;
 using FFXIVClientStructs.FFXIV.Common.Lua;
 using StudioFourteen.Mvm;
@@ -24,6 +25,7 @@ using System;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows.Navigation;
 using WpfUtils.Extensions;
 
 [DependencyProperty<EyeSelection>("Selection")]
@@ -59,26 +61,56 @@ public partial class EyeInspector : View
 	{
 		get
 		{
+			if (this.Selection?.EyeBone == null
+				|| !this.Selection.EyeBone.IsReady)
+				return Vector3.Zero;
+
 			if (this.trackingEuler != null)
 				return this.trackingEuler.Value;
-
-			if (this.Selection?.EyeBone == null)
-				return Vector3.Zero;
 
 			return this.Selection.EyeBone.LocalTransform.Rotation.ToEuler();
 		}
 
 		set
 		{
-			this.trackingEuler = value;
-
-			if (this.Selection?.EyeBone == null)
+			if (this.Selection?.EyeBone == null
+				|| !this.Selection.EyeBone.IsReady)
 				return;
 
-			throw new NotImplementedException();
-			/*Transform transform = this.Selection.EyeBone.LocalTransform;
-			transform.Rotation.FromEuler(value);
-			this.Selection.EyeBone.LocalTransform = transform;*/
+			this.trackingEuler = value;
+
+			if (this.Selection.EyeBone.LocalTransform.ToTRS(out Vector3 translation, out Quaternion rotation, out Vector3 scale))
+			{
+				rotation.FromEuler(value);
+				this.Selection.EyeBone.LocalTransform = Transform.FromTRS(translation, rotation, scale);
+			}
+		}
+	}
+
+	[AutoNotify]
+	public double IrisSize
+	{
+		get
+		{
+			if (this.Selection?.IrisBone == null
+				|| !this.Selection.IrisBone.IsReady)
+				return -1;
+
+			return this.Selection.IrisBone.LocalTransform.Scale.X;
+		}
+		set
+		{
+			if (this.Selection?.IrisBone == null
+				|| !this.Selection.IrisBone.IsReady)
+				return;
+
+			if (this.Selection.IrisBone.LocalTransform.ToTRS(out Vector3 translation, out Quaternion rotation, out Vector3 scale))
+			{
+				scale.X = (float)value;
+				scale.Y = (float)value;
+				scale.Z = (float)value;
+				this.Selection.IrisBone.LocalTransform = Transform.FromTRS(translation, rotation, scale);
+			}
 		}
 	}
 
@@ -124,12 +156,14 @@ public class EyeSelection(int objectTableIndex)
 	public int ObjectTableIndex { get; init; } = objectTableIndex;
 
 	public BoneSelection? EyeBone { get; private set; }
+	public BoneSelection? IrisBone { get; private set; }
 
 	public override bool CanReset => true;
 
 	public override void Reset()
 	{
 		this.EyeBone?.Reset();
+		this.IrisBone?.Reset();
 	}
 
 	public override void Activate()
@@ -137,6 +171,7 @@ public class EyeSelection(int objectTableIndex)
 		base.Activate();
 
 		this.EyeBone?.Activate();
+		this.IrisBone?.Activate();
 
 		this.Init().Run();
 	}
@@ -144,6 +179,9 @@ public class EyeSelection(int objectTableIndex)
 	public override void Deactivate()
 	{
 		base.Deactivate();
+
+		this.EyeBone?.Deactivate();
+		this.IrisBone?.Deactivate();
 	}
 
 	private async Task Init()
@@ -151,11 +189,17 @@ public class EyeSelection(int objectTableIndex)
 		await Threads.FrameworkThread();
 
 		this.EyeBone = this.Services.Pose.FindBone(this.ObjectTableIndex, "j_f_eye_r");
-
 		if (this.EyeBone != null)
 		{
 			this.EyeBone.Activate();
 			this.EyeBone.MirrorMode = this.mirrorMode;
+		}
+
+		this.IrisBone = this.Services.Pose.FindBone(this.ObjectTableIndex, "j_f_irisprm_r");
+		if (this.IrisBone != null)
+		{
+			this.IrisBone.Activate();
+			this.IrisBone.MirrorMode = this.mirrorMode;
 		}
 	}
 }

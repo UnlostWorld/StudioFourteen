@@ -22,15 +22,62 @@ using System.Windows;
 [DependencyProperty<BlendSelection>("Selection")]
 public partial class BlendInspector : View
 {
+	private bool extendClamps = false;
+
 	public PoseWindow? Panel => this.FindParent<PoseWindow>();
 
-	[AutoNotify] public double BlendMaximum => (this.Selection?.Maximum * 100) ?? 100;
-	[AutoNotify] public double BlendMinimum => (this.Selection?.Minimum * 100) ?? 0;
+	public double BlendMinimum
+	{
+		get
+		{
+			if (this.Selection == null)
+				return 0;
 
-	[AutoNotify]
+			if (this.Selection.HasLeft)
+				return this.extendClamps ? -500 : -100;
+
+			return 0;
+		}
+	}
+
+	public double BlendMaximum
+	{
+		get
+		{
+			if (this.Selection == null)
+				return 0;
+
+			return this.extendClamps ? 500 : 100;
+		}
+	}
+
+	public bool ExtendClamps
+	{
+		get => this.extendClamps;
+		set
+		{
+			this.extendClamps = value;
+			this.NotifyPropertyChanged();
+			this.NotifyPropertyChanged(nameof(BlendInspector.BlendMinimum));
+			this.NotifyPropertyChanged(nameof(BlendInspector.BlendMaximum));
+		}
+	}
+
 	public double BlendValue
 	{
 		get => (this.Selection?.Value * 100) ?? 0;
-		set => this.Selection?.SetValue(value / 100);
+		set
+		{
+			this.Selection?.SetValue(value / 100);
+			this.NotifyPropertyChanged();
+		}
+	}
+
+	partial void OnSelectionChanged()
+	{
+		this.NotifyPropertyChanged(nameof(BlendInspector.BlendValue));
+		this.NotifyPropertyChanged(nameof(BlendInspector.BlendMinimum));
+		this.NotifyPropertyChanged(nameof(BlendInspector.BlendMaximum));
+		this.NotifyPropertyChanged(nameof(BlendInspector.ExtendClamps));
 	}
 }

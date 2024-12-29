@@ -48,5 +48,11 @@
 					Text="%" />
 			</wpfUtils:NumberBox.Suffix>
 		</wpfUtils:NumberBox>
+
+		<ToggleButton
+			Grid.Row="3"
+			Content="Delimit"
+			IsChecked="{Binding ExtendClamps}" />
+
 	</Grid>
 </mvm:View>

@@ -37,15 +37,11 @@
 				Style="{DynamicResource LeftLabel}"
 				Text="Iris Size" />
 			<controls:NumberBox
-				IsEnabled="False"
-				Slider="Absolute" />
-
-			<TextBlock
-				Style="{DynamicResource LeftLabel}"
-				Text="Pupil Size" />
-			<controls:NumberBox
-				IsEnabled="False"
-				Slider="Absolute" />
+				Maximum="2"
+				Minimum="0.75"
+				Slider="Absolute"
+				TickFrequency="0.01"
+				Value="{Binding IrisSize}" />
 
 
 		</StackPanel>

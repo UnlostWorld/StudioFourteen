@@ -109,9 +109,10 @@ public class PoseFile : FileBase
 				if (referenceRelative == null)
 					continue;
 
-				BoneTransform boneTransform = new();
-				if (includeBones == null)
+				if (includeBones == null || includeBones.Contains(boneReference.Name))
 				{
+					BoneTransform boneTransform = new();
+
 					// Null out components that are irrelevantly small
 					if (!referenceRelative.Value.Translation.IsApproximately(Vector3.Zero, 0.001f))
 						boneTransform.Translation = referenceRelative.Value.Translation;
@@ -135,9 +136,9 @@ public class PoseFile : FileBase
 					{
 						continue;
 					}
-				}
 
-				this.ReferenceRelativeBones.Add(boneReference.Name, boneTransform);
+					this.ReferenceRelativeBones.Add(boneReference.Name, boneTransform);
+				}
 			}
 		}
 	}
