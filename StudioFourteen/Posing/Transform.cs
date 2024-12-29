@@ -36,19 +36,8 @@ public struct Transform : IEquatable<Transform>
 
 	public Vector3 Translation
 	{
-		get
-		{
-			if (!Matrix4x4.Decompose(this.matrix, out Vector3 scale, out Quaternion rotation, out Vector3 translation))
-				throw new Exception("Failed to unpack matrix4x4");
-
-			return translation;
-			////return this.matrix.Translation;
-		}
-
-		set
-		{
-			this.matrix.Translation = value;
-		}
+		get => this.matrix.Translation;
+		set => this.matrix.Translation = value;
 	}
 
 	public Quaternion Rotation
@@ -148,6 +137,19 @@ public struct Transform : IEquatable<Transform>
 		Matrix4x4 newMatrix = this.matrix;
 		newMatrix.Translation = Vector3.Zero;
 		newMatrix = Matrix4x4.Transform(newMatrix, rotation);
+		newMatrix.Translation = this.matrix.Translation;
+		this.matrix = newMatrix;
+	}
+
+	/// <summary>
+	/// Rotates the matrix about its translation, not its origin.
+	/// </summary>
+	/// <param name="matrix">The delta matrix to apply.</param>
+	public void PivotRotate(Matrix4x4 matrix)
+	{
+		Matrix4x4 newMatrix = this.matrix;
+		newMatrix.Translation = Vector3.Zero;
+		newMatrix *= matrix;
 		newMatrix.Translation = this.matrix.Translation;
 		this.matrix = newMatrix;
 	}
