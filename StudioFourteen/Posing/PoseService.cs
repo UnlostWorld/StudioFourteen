@@ -354,21 +354,24 @@ public class PoseService : ServiceBase, WorldContextMenu.IProvider
 	{
 		HashSet<BoneId> toRemove = new();
 
-		lock (this.boneReferences)
+		lock (this.boneIds)
 		{
-			foreach ((BoneId id, BoneReference reference) in this.boneReferences)
+			lock (this.boneReferences)
 			{
-				if (id.ObjectTableIndex == objectTableIndex)
+				foreach ((BoneId id, BoneReference reference) in this.boneReferences)
 				{
-					toRemove.Add(id);
-					reference.Dispose();
+					if (id.ObjectTableIndex == objectTableIndex)
+					{
+						toRemove.Add(id);
+						reference.Dispose();
+					}
 				}
-			}
 
-			foreach (BoneId id in toRemove)
-			{
-				this.boneReferences.Remove(id);
-				this.boneIds.Remove(id);
+				foreach (BoneId id in toRemove)
+				{
+					this.boneReferences.Remove(id);
+					this.boneIds.Remove(id);
+				}
 			}
 		}
 
