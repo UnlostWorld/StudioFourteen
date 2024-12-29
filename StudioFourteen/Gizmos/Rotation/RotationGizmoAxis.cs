@@ -16,14 +16,13 @@
 namespace StudioFourteen.Gizmos.Rotation;
 
 using StudioFourteen.Posing;
+using StudioFourteen.Structs.Extensions;
 using System;
 using System.Numerics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-
 using System.Windows.Shapes;
-
 using Vector = System.Windows.Vector;
 
 public class RotationGizmoAxis : GizmoAxisBase
@@ -151,7 +150,13 @@ public class RotationGizmoAxis : GizmoAxisBase
 			rot = Quaternion.CreateFromAxisAngle(Vector3.UnitZ, (float)angleChange);
 		}
 
-		return Posing.Transform.FromRotation(rot);
+		if (transform.ToTRS(out Vector3 translation, out Quaternion rotation, out Vector3 scale))
+		{
+			rotation *= rot;
+			transform = Posing.Transform.FromTRS(translation, rotation, scale);
+		}
+
+		return transform;
 	}
 
 	public override void EndDrag()

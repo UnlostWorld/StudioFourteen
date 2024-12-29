@@ -111,7 +111,7 @@ public class BoneSelection : TransformSelectionBase
 			if (this.bone == null || this.bone.ModelTransform == null || this.bone.ModelSpaceTransform == null)
 				return default;
 
-			return this.bone.ModelTransform.Value * this.bone.ModelSpaceTransform.Value;
+			return this.bone.ModelSpaceTransform.Value * this.bone.ModelTransform.Value;
 		}
 		set => this.SetWorldTransform(value);
 	}
@@ -182,18 +182,12 @@ public class BoneSelection : TransformSelectionBase
 		if (this.bone == null || this.bone.ModelTransform == null)
 			return;
 
-		/*transform.Translation = transform.Translation - this.bone.ModelTransform.Value.Translation;
-		transform.Translation = Vector3.Transform(transform.Translation.Value, Quaternion.Inverse(this.bone.ModelTransform.Value.Rotation));
-
-		transform.Rotation = Quaternion.Normalize(Quaternion.Inverse(this.bone.ModelTransform.Value.Rotation) * transform.Rotation.Value);
-
-		// TODO: Support for scale
-		transform.Scale = null;
+		Transform modelSpaceTransform = transform / this.bone.ModelTransform.Value;
 
 		foreach (BoneReference bone in this.bones)
 		{
-			bone.SetModelSpaceTransform(transform);
-		}*/
+			bone.SetModelSpaceTransform(modelSpaceTransform);
+		}
 	}
 
 	public void SetLocalTransform(Transform localTransform)

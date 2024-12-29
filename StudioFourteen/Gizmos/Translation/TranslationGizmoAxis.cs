@@ -200,6 +200,7 @@ public class TranslationGizmoAxis : GizmoAxisBase
 		}
 
 		delta = Vector3.Transform(delta, transform.Rotation);
-		return Posing.Transform.FromTranslation(delta);
+		transform.Translation += delta;
+		return transform;
 	}
 }

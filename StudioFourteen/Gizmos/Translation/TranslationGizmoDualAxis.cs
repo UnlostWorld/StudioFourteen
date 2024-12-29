@@ -145,7 +145,8 @@ public class TranslationGizmoDualAxis : GizmoAxisBase
 		}
 
 		delta = Vector3.Transform(delta, transform.Rotation);
-		return Posing.Transform.FromTranslation(delta);
+		transform.Translation += delta;
+		return transform;
 	}
 
 	public override void Transform(Matrix4x4 transformMatrix, Matrix4x4 viewMatrix, Vector2 center)
