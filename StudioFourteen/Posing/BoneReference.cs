@@ -170,7 +170,7 @@ public class BoneReference(BoneId id, string? name = null)
 
 		if (this.LocalSpaceTransform != null)
 		{
-			this.ReferenceRelativeTransform = (Transform)this.LocalSpaceTransform - (Transform)this.ReferenceTransform;
+			this.ReferenceRelativeTransform = (Transform)this.LocalSpaceTransform / (Transform)this.ReferenceTransform;
 		}
 	}
 

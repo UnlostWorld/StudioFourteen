@@ -162,33 +162,36 @@ public class BlendSelection(string name, BlendTarget target, int objectTableInde
 
 		public void Blend(float value)
 		{
+			if (!this.Initial.ToTRS(out Vector3 initialTranslation, out Quaternion initialRotation, out Vector3 initialScale))
+				return;
+
 			if (value > 0)
 			{
-				if (this.Right.Rotation != null)
-					this.Value.Rotation = Quaternion.Lerp(this.Initial.Rotation, this.Right.Rotation.Value, value);
-
 				if (this.Right.Translation != null)
-					this.Value.Translation = Vector3.Lerp(this.Initial.Translation, this.Right.Translation.Value, value);
+					this.Value.Translation = Vector3.Lerp(initialTranslation, this.Right.Translation.Value, value);
+
+				if (this.Right.Rotation != null)
+					this.Value.Rotation = Quaternion.Lerp(initialRotation, this.Right.Rotation.Value, value);
 
 				if (this.Right.Scale != null)
-					this.Value.Scale = Vector3.Lerp(this.Initial.Scale, this.Right.Scale.Value, value);
+					this.Value.Scale = Vector3.Lerp(initialScale, this.Right.Scale.Value, value);
 			}
 			else if (value < 0 && this.Left != null)
 			{
-				if (this.Left.Rotation != null)
-					this.Value.Rotation = Quaternion.Lerp(this.Initial.Rotation, this.Left.Rotation.Value, -value);
-
 				if (this.Left.Translation != null)
-					this.Value.Translation = Vector3.Lerp(this.Initial.Translation, this.Left.Translation.Value, -value);
+					this.Value.Translation = Vector3.Lerp(initialTranslation, this.Left.Translation.Value, -value);
+
+				if (this.Left.Rotation != null)
+					this.Value.Rotation = Quaternion.Lerp(initialRotation, this.Left.Rotation.Value, -value);
 
 				if (this.Left.Scale != null)
-					this.Value.Scale = Vector3.Lerp(this.Initial.Scale, this.Left.Scale.Value, -value);
+					this.Value.Scale = Vector3.Lerp(initialScale, this.Left.Scale.Value, -value);
 			}
 			else
 			{
-				this.Value.Translation = this.Initial.Translation;
-				this.Value.Rotation = this.Initial.Rotation;
-				this.Value.Scale = this.Initial.Scale;
+				this.Value.Translation = initialTranslation;
+				this.Value.Rotation = initialRotation;
+				this.Value.Scale = initialScale;
 			}
 
 			this.Selection.SetReferenceTransform(this.Value);
