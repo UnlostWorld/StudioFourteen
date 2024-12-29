@@ -15,14 +15,13 @@
 
 namespace StudioFourteen.Overlays;
 
-using DependencyPropertyGenerator;
-using StudioFourteen.Mvm;
+using StudioFourteen.Panels;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
-public partial class OverlayBar : View
+public partial class OverlayControlPanel : Panel
 {
-	public OverlayBar()
+	public OverlayControlPanel()
 	{
 		if (DesignerProperties.GetIsInDesignMode(this))
 			return;

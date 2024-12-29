@@ -82,7 +82,9 @@
 				MouseMove="OnMouseMove"
 				MouseWheel="OnMouseWheel" />
 
-			<!--<overlays:OverlayRenderer ClipToBounds="True" />-->
+			<overlays:OverlayRenderer
+				ClipToBounds="True"
+				Visibility="{Binding Services.Overlays.OverlaysEnabled, Converter={StaticResource B2V}}" />
 		</Grid>
 
 		<Grid>

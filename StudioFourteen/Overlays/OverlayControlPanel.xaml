@@ -1,0 +1,119 @@
+﻿<windows:Panel
+	x:Class="StudioFourteen.Overlays.OverlayControlPanel"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="clr-namespace:StudioFourteen.Overlays"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:mvm="clr-namespace:StudioFourteen.Mvm"
+	xmlns:windows="clr-namespace:StudioFourteen.Panels"
+	Title="{DynamicResource LOC_Overlays}"
+	Width="100"
+	Height="58"
+	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
+	DefaultPosition="1,0"
+	HostStyle="{DynamicResource PanelToolbarStyle}"
+	RememberWindowState="False"
+	ResizeMode="NoResize"
+	SizeToContent="Manual"
+	mc:Ignorable="d">
+
+	<Border
+		HorizontalAlignment="Right"
+		VerticalAlignment="Top"
+		Style="{DynamicResource WpfUtilsControlBorder}">
+
+		<Grid>
+			<StackPanel Orientation="Horizontal">
+
+				<ToggleButton
+					x:Name="VisibilityButton"
+					Width="32"
+					IsChecked="{Binding Services.Overlays.OverlaysEnabled}"
+					Style="{DynamicResource WpfUtilsIconToggleButton}">
+					<Grid>
+						<controls:IconBlock
+							Icon="Eye"
+							IconFont="Solid"
+							Visibility="{Binding ElementName=VisibilityButton, Path=IsChecked, Converter={StaticResource B2V}}" />
+						<controls:IconBlock
+							Icon="EyeSlash"
+							IconFont="Solid"
+							Visibility="{Binding ElementName=VisibilityButton, Path=IsChecked, Converter={StaticResource !B2V}}" />
+					</Grid>
+				</ToggleButton>
+
+				<ToggleButton
+					x:Name="SettingsButton"
+					Width="32"
+					Style="{DynamicResource WpfUtilsIconToggleButton}">
+					<controls:IconBlock
+						Icon="LayerGroup"
+						IconFont="Solid" />
+				</ToggleButton>
+			</StackPanel>
+
+
+			<controls:PopOut
+				IsOpen="{Binding ElementName=SettingsButton, Path=IsChecked}"
+				PlacementTarget="{Binding ElementName=SettingsButton}"
+				StaysOpen="False">
+
+				<controls:PopOut.Header>
+					<TextBlock
+						Margin="10,10,10,0"
+						Foreground="{DynamicResource ForegroundLightBrush}"
+						Text="{DynamicResource LOC_OverlayBarDescription}" />
+				</controls:PopOut.Header>
+
+
+				<Grid>
+					<Grid.Resources>
+						<CollectionViewSource
+							x:Key="SettingsViewSource"
+							Source="{Binding Overlays}">
+							<CollectionViewSource.GroupDescriptions>
+								<PropertyGroupDescription PropertyName="Group" />
+							</CollectionViewSource.GroupDescriptions>
+						</CollectionViewSource>
+
+						<DataTemplate DataType="{x:Type local:OverlayBase}">
+							<ToggleButton
+								Content="{Binding DisplayName}"
+								IsChecked="{Binding IsHidden, Converter={StaticResource !B}}" />
+						</DataTemplate>
+
+					</Grid.Resources>
+
+					<ItemsControl ItemsSource="{Binding Source={StaticResource SettingsViewSource}}">
+						<ItemsControl.GroupStyle>
+							<GroupStyle>
+								<GroupStyle.ContainerStyle>
+									<Style TargetType="{x:Type GroupItem}">
+										<Setter Property="Template">
+											<Setter.Value>
+												<ControlTemplate>
+													<GroupBox>
+														<GroupBox.Header>
+															<TextBlock
+																Grid.Row="0"
+																Margin="10"
+																Text="{Binding Items[0].DisplayGroup}" />
+														</GroupBox.Header>
+														<ItemsPresenter Grid.Row="1" />
+													</GroupBox>
+												</ControlTemplate>
+											</Setter.Value>
+										</Setter>
+									</Style>
+								</GroupStyle.ContainerStyle>
+							</GroupStyle>
+						</ItemsControl.GroupStyle>
+					</ItemsControl>
+				</Grid>
+
+			</controls:PopOut>
+		</Grid>
+	</Border>
+</windows:Panel>

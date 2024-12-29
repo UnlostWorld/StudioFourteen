@@ -15,23 +15,39 @@
 
 namespace StudioFourteen.Overlays;
 
+using PropertyChanged.SourceGenerator;
 using StudioFourteen.Services;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 public interface IOverlayOwner
 {
 	string OverlayName { get; }
 }
 
-public class OverlayService
+public partial class OverlayService
 	: ServiceBase
 {
 	private readonly List<OverlayBase> overlays = new();
+	[Notify] private bool overlaysEnabled = true;
 
 	public delegate void OverlayEvent(OverlayBase overlay);
 
 	public event OverlayEvent? OverlayAdded;
 	public event OverlayEvent? OverlayRemoved;
+
+	public override async Task Start()
+	{
+		await base.Start();
+		this.Services.GroupPose.StateChanged += this.OnGroupPoseStateChanged;
+		this.OnGroupPoseStateChanged(this.Services.GroupPose.IsGroupPosing);
+	}
+
+	public override async Task Stop()
+	{
+		await base.Stop();
+		this.Services.GroupPose.StateChanged -= this.OnGroupPoseStateChanged;
+	}
 
 	public void AddOverlay(OverlayBase overlay)
 	{
@@ -46,5 +62,10 @@ public class OverlayService
 	public List<OverlayBase> GetOverlays()
 	{
 		return this.overlays;
+	}
+
+	private void OnGroupPoseStateChanged(bool newState)
+	{
+		this.Services.Panels.SetIsOpen<OverlayControlPanel>(newState);
 	}
 }
