@@ -20,6 +20,41 @@ using System.Numerics;
 
 public class BoneSelection : TransformSelectionBase
 {
+	// Bones default to rotation, so just set any translation or scale modes here.
+	private static readonly Dictionary<string, GizmoTypes> DefaultBoneGizmos = new()
+	{
+		// Face
+		{ "j_f_mmayu_l", GizmoTypes.Translation },
+		{ "j_f_mayu_l", GizmoTypes.Translation },
+		{ "j_f_miken_01_l", GizmoTypes.Translation },
+		{ "j_f_miken_02_l", GizmoTypes.Translation },
+		{ "j_f_dmiken_02_l", GizmoTypes.Translation },
+		{ "j_f_uhana", GizmoTypes.Translation },
+		{ "j_f_hana_l", GizmoTypes.Translation },
+		{ "j_f_dmemoto_l", GizmoTypes.Translation },
+		{ "j_f_hoho_l", GizmoTypes.Translation },
+		{ "j_f_dhoho_l", GizmoTypes.Translation },
+		{ "j_f_shoho_l", GizmoTypes.Translation },
+
+		// Mouth
+		{ "j_f_ulip_01_l", GizmoTypes.Translation },
+		{ "j_f_ulip_02_l", GizmoTypes.Translation },
+		{ "j_f_umlip_01_l", GizmoTypes.Translation },
+		{ "j_f_umlip_02_l", GizmoTypes.Translation },
+		{ "j_f_uslip_l", GizmoTypes.Translation },
+		{ "j_f_dlip_01_l", GizmoTypes.Translation },
+		{ "j_f_dlip_02_l", GizmoTypes.Translation },
+		{ "j_f_dmlip_01_l", GizmoTypes.Translation },
+		{ "j_f_dmlip_02_l", GizmoTypes.Translation },
+		{ "j_f_dslip_l", GizmoTypes.Translation },
+
+		// Eyes
+		{ "j_f_mabup_03in_l", GizmoTypes.Translation },
+		{ "j_f_mabup_02out_l", GizmoTypes.Translation },
+		{ "j_f_mabdn_03in_l", GizmoTypes.Translation },
+		{ "j_f_mabdn_02out_l", GizmoTypes.Translation },
+	};
+
 	private readonly List<BoneId> boneIds;
 	private readonly List<BoneId> parentBoneIds;
 	private readonly List<BoneReference> bones = new();
@@ -63,10 +98,32 @@ public class BoneSelection : TransformSelectionBase
 	public override double TranslationSmallChange => this.IsFaceBone ? 0.001 : 0.01;
 	public override double TranslationRange => this.IsFaceBone ? 0.02 : 0.1;
 	public override int DecimalPlacesToDisplay => this.IsFaceBone ? 4 : 2;
-	public override GizmoTypes DefaultGizmo => this.IsFaceBone ? GizmoTypes.Translation : GizmoTypes.Rotation;
 	public override bool CanReset => true;
-
 	public override bool IsReady => this.bone != null && this.bone.LocalSpaceTransform != null;
+
+	public override GizmoTypes DefaultGizmo
+	{
+		get
+		{
+			GizmoTypes gizmo;
+
+			if (DefaultBoneGizmos.TryGetValue(this.BoneName, out gizmo))
+			{
+				return gizmo;
+			}
+
+			string? mirrorName = PoseService.GetMirrorBoneName(this.BoneName);
+			if (mirrorName != null)
+			{
+				if (DefaultBoneGizmos.TryGetValue(mirrorName, out gizmo))
+				{
+					return gizmo;
+				}
+			}
+
+			return GizmoTypes.Rotation;
+		}
+	}
 
 	public override bool LockTransform
 	{
