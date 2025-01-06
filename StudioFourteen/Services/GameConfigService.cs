@@ -66,6 +66,9 @@ public class GameConfigService : ServiceBase
 	{
 		base.OnFrameworkUpdate(framework);
 
+		if (!this.IsAttached)
+			return;
+
 		if (!this.hasBackedUpSettings)
 			return;
 
@@ -83,6 +86,9 @@ public class GameConfigService : ServiceBase
 
 	private void DisableFocusLostSettings()
 	{
+		if (!this.IsAttached)
+			return;
+
 		if (DalamudServices.GameConfig == null)
 			return;
 
@@ -101,6 +107,9 @@ public class GameConfigService : ServiceBase
 
 	private void RestoreFocusLostSettings()
 	{
+		if (!this.IsAttached)
+			return;
+
 		if (DalamudServices.GameConfig == null)
 			return;
 
