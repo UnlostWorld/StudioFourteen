@@ -13,7 +13,7 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Gizmos.Translation;
+namespace StudioFourteen.Gizmos.Scale;
 
 using System.Numerics;
 using System.Windows;

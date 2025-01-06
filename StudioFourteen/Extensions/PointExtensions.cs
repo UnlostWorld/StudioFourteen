@@ -15,12 +15,18 @@
 
 namespace StudioFourteen.Extensions;
 
+using System.Numerics;
 using DrawingPoint = System.Drawing.Point;
 using Point = System.Windows.Point;
 
 public static class PointExtensions
 {
 	public static Point ToWindowsPoint(this DrawingPoint self)
+	{
+		return new Point(self.X, self.Y);
+	}
+
+	public static Point ToPoint(this Vector2 self)
 	{
 		return new Point(self.X, self.Y);
 	}

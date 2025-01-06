@@ -15,7 +15,7 @@
 
 namespace StudioFourteen.Gizmos;
 
-using StudioFourteen.Gizmos.Translation;
+using StudioFourteen.Gizmos.Scale;
 using System.Windows.Media;
 
 public partial class ScaleGizmo : GizmoBase
@@ -26,6 +26,7 @@ public partial class ScaleGizmo : GizmoBase
 	private readonly ScaleGizmoAxis xNegAxis;
 	private readonly ScaleGizmoAxis yNegAxis;
 	private readonly ScaleGizmoAxis zNegAxis;
+	private readonly UniformScaleGizmoAxis uniformAxis;
 
 	public ScaleGizmo()
 	{
@@ -58,7 +59,13 @@ public partial class ScaleGizmo : GizmoBase
 		this.zNegAxis.ForegroundBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0x33, 0x33));
 		this.zNegAxis.BackgroundBrush = new SolidColorBrush(Color.FromArgb(0x10, 0xFF, 0x33, 0x33));
 		this.AddAxis(this.zNegAxis);
+
+		this.uniformAxis = new(this.UniformRadius, this.Canvas);
+		this.uniformAxis.ForegroundBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x83, 0x83, 0x83));
+		this.uniformAxis.BackgroundBrush = new SolidColorBrush(Color.FromArgb(0x83, 0x83, 0x83, 0x83));
+		this.AddAxis(this.uniformAxis);
 	}
 
+	public float UniformRadius { get; set; } = 30;
 	public float Radius { get; set; } = 70;
 }

@@ -189,9 +189,9 @@ public class RotationGizmoAxis : GizmoAxisBase
 			line.Y2 = toPos.Y;
 			line.IsEnabled = isVisible;
 
-			Panel.SetZIndex(line, isVisible ? 200 : 100);
+			Panel.SetZIndex(line, (isVisible ? 200 : 100) + (this.IsAxisHovered ? 10 : 0));
 
-			line.StrokeThickness = this.IsAxisHovered ? this.StrokeThickness + 1 : this.StrokeThickness;
+			line.StrokeThickness = this.IsAxisHovered ? this.StrokeThickness + 3 : this.StrokeThickness;
 			line.Stroke = isVisible ? this.ForegroundBrush : this.BackgroundBrush;
 		}
 	}
