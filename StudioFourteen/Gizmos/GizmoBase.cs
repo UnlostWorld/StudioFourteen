@@ -130,8 +130,7 @@ public abstract partial class GizmoBase : View
 
 	protected virtual Matrix4x4 GetTransformMatrix(Transform transform)
 	{
-		Matrix4x4 transformMatrix = Matrix4x4.CreateFromQuaternion(Quaternion.Normalize(Quaternion.CreateFromRotationMatrix(transform.ToMatrix())));
-		transformMatrix.Translation = new Vector3(0, 0, 0);
+		Matrix4x4 transformMatrix = Matrix4x4.CreateFromQuaternion(Quaternion.Normalize(transform.Rotation));
 		return transformMatrix;
 		////return transform.ToMatrix();
 	}

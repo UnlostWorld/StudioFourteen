@@ -36,6 +36,10 @@
 								Sensitivity="{Binding Selection.GizmoSensitivity}"
 								Transform="{Binding WorldTransform}"
 								Visibility="{Binding Gizmo, Converter={StaticResource EnumToVisibility}, ConverterParameter=Translation}" />
+							<gizmos:ScaleGizmo
+								Sensitivity="{Binding Selection.GizmoSensitivity}"
+								Transform="{Binding WorldTransform}"
+								Visibility="{Binding Gizmo, Converter={StaticResource EnumToVisibility}, ConverterParameter=Scale}" />
 						</Grid>
 
 						<wpfUtils:SwitchSelector

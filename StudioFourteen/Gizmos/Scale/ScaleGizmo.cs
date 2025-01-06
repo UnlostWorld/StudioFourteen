@@ -18,44 +18,46 @@ namespace StudioFourteen.Gizmos;
 using StudioFourteen.Gizmos.Translation;
 using System.Windows.Media;
 
-public partial class TranslationGizmo : GizmoBase
+public partial class ScaleGizmo : GizmoBase
 {
-	private readonly TranslationGizmoAxis xAxis;
-	private readonly TranslationGizmoAxis yAxis;
-	private readonly TranslationGizmoAxis zAxis;
+	private readonly ScaleGizmoAxis xAxis;
+	private readonly ScaleGizmoAxis yAxis;
+	private readonly ScaleGizmoAxis zAxis;
+	private readonly ScaleGizmoAxis xNegAxis;
+	private readonly ScaleGizmoAxis yNegAxis;
+	private readonly ScaleGizmoAxis zNegAxis;
 
-	private readonly TranslationGizmoDualAxis xDualAxis;
-	private readonly TranslationGizmoDualAxis yDualAxis;
-	private readonly TranslationGizmoDualAxis zDualAxis;
-
-	public TranslationGizmo()
+	public ScaleGizmo()
 	{
-		this.xAxis = new(GizmoAxes.X, this.Radius, this.Canvas);
+		this.xAxis = new(GizmoAxes.X, this.Radius, this.Canvas, false);
 		this.xAxis.ForegroundBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x33, 0x33, 0xFF));
 		this.xAxis.BackgroundBrush = new SolidColorBrush(Color.FromArgb(0x10, 0x33, 0x33, 0xFF));
 		this.AddAxis(this.xAxis);
 
-		this.yAxis = new(GizmoAxes.Y, this.Radius, this.Canvas);
+		this.yAxis = new(GizmoAxes.Y, this.Radius, this.Canvas, false);
 		this.yAxis.ForegroundBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x33, 0xFF, 0x33));
 		this.yAxis.BackgroundBrush = new SolidColorBrush(Color.FromArgb(0x10, 0x33, 0xFF, 0x33));
 		this.AddAxis(this.yAxis);
 
-		this.zAxis = new(GizmoAxes.Z, this.Radius, this.Canvas);
+		this.zAxis = new(GizmoAxes.Z, this.Radius, this.Canvas, false);
 		this.zAxis.ForegroundBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0x33, 0x33));
 		this.zAxis.BackgroundBrush = new SolidColorBrush(Color.FromArgb(0x10, 0xFF, 0x33, 0x33));
 		this.AddAxis(this.zAxis);
 
-		this.xDualAxis = new(GizmoAxes.X, this.Radius * 0.4f, this.Canvas);
-		this.xDualAxis.ForegroundBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x33, 0x33, 0xFF));
-		this.AddAxis(this.xDualAxis);
+		this.xNegAxis = new(GizmoAxes.X, this.Radius, this.Canvas, true);
+		this.xNegAxis.ForegroundBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x33, 0x33, 0xFF));
+		this.xNegAxis.BackgroundBrush = new SolidColorBrush(Color.FromArgb(0x10, 0x33, 0x33, 0xFF));
+		this.AddAxis(this.xNegAxis);
 
-		this.yDualAxis = new(GizmoAxes.Y, this.Radius * 0.4f, this.Canvas);
-		this.yDualAxis.ForegroundBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x33, 0xFF, 0x33));
-		this.AddAxis(this.yDualAxis);
+		this.yNegAxis = new(GizmoAxes.Y, this.Radius, this.Canvas, true);
+		this.yNegAxis.ForegroundBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x33, 0xFF, 0x33));
+		this.yNegAxis.BackgroundBrush = new SolidColorBrush(Color.FromArgb(0x10, 0x33, 0xFF, 0x33));
+		this.AddAxis(this.yNegAxis);
 
-		this.zDualAxis = new(GizmoAxes.Z, this.Radius * 0.4f, this.Canvas);
-		this.zDualAxis.ForegroundBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0x33, 0x33));
-		this.AddAxis(this.zDualAxis);
+		this.zNegAxis = new(GizmoAxes.Z, this.Radius, this.Canvas, true);
+		this.zNegAxis.ForegroundBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0x33, 0x33));
+		this.zNegAxis.BackgroundBrush = new SolidColorBrush(Color.FromArgb(0x10, 0xFF, 0x33, 0x33));
+		this.AddAxis(this.zNegAxis);
 	}
 
 	public float Radius { get; set; } = 70;
