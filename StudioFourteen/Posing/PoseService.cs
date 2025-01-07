@@ -64,6 +64,8 @@ public class PoseService : ServiceBase, WorldContextMenu.IProvider
 {
 	private readonly List<BoneId> boneIds = new();
 	private readonly Dictionary<BoneId, BoneReference> boneReferences = new();
+	private readonly PoseGizmoOverlay poseGizmoOverlay = new();
+	private readonly PoseSkeletonOverlay poseSkeletonOverlay = new();
 
 	private SelectionBase? selection;
 
@@ -92,6 +94,9 @@ public class PoseService : ServiceBase, WorldContextMenu.IProvider
 
 			this.SelectionChanged?.Invoke(value);
 			this.RaisePropertyChanged();
+
+			this.poseGizmoOverlay.SetSelection(this.selection);
+			this.poseSkeletonOverlay.SetSelection(this.selection);
 		}
 	}
 
@@ -138,6 +143,9 @@ public class PoseService : ServiceBase, WorldContextMenu.IProvider
 		// JMP in Framework.TaskRenderGraphicsRender
 		this.finalizeSkeletonsHook = InteropService.HookFromSignature<FinalizeSkeletonsDelegate>("40 53 57 41 55 48 83 EC ?? 65 48 8B 04 25 58", this.FinalizeSkeletonDetour);
 		this.finalizeSkeletonsHook?.Enable();
+
+		this.poseGizmoOverlay.Enable();
+		this.poseSkeletonOverlay.Enable();
 	}
 
 	public override void Detach()
@@ -146,6 +154,9 @@ public class PoseService : ServiceBase, WorldContextMenu.IProvider
 
 		this.updateBonePhysicsHook?.Dispose();
 		this.finalizeSkeletonsHook?.Dispose();
+
+		this.poseGizmoOverlay.Disable();
+		this.poseSkeletonOverlay.Disable();
 	}
 
 	public bool AreAllBoneReferencesLocked(int objectTableId)
@@ -746,6 +757,9 @@ public class PoseService : ServiceBase, WorldContextMenu.IProvider
 
 	private void OnTargetChanged()
 	{
+		this.poseGizmoOverlay.SetTarget(this.Services.Target.TargetObjectIndex);
+		this.poseSkeletonOverlay.SetTarget(this.Services.Target.TargetObjectIndex);
+
 		// TODO: consider caching the previous selection this target had and restoring it?
 		this.Selection = new GameObjectSelection(this.Services.Target.TargetObjectIndex);
 	}

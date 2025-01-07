@@ -57,7 +57,6 @@ public abstract partial class GizmoBase : View
 		this.Background = new SolidColorBrush(Colors.Transparent);
 
 		this.Canvas = new();
-		this.Canvas.IsHitTestVisible = false;
 		this.Content = this.Canvas;
 
 		this.IsEnabledChanged += this.OnIsEnabledChanged;
