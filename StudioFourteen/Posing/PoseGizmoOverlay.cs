@@ -59,8 +59,13 @@ public class PoseGizmoOverlay : PoseOverlayBase
 		base.Initialize(canvas);
 
 		this.translation = new();
+		this.translation.TransformChanged += this.OnTransformChanged;
+
 		this.rotation = new();
+		this.rotation.TransformChanged += this.OnTransformChanged;
+
 		this.scale = new();
+		this.scale.TransformChanged += this.OnTransformChanged;
 
 		canvas.Children.Add(this.translation);
 		canvas.Children.Add(this.rotation);
@@ -95,18 +100,29 @@ public class PoseGizmoOverlay : PoseOverlayBase
 		this.Services.Camera.WorldToCamera(worldTransform.Translation, out Vector3 pos);
 
 		this.translation.Transform = worldTransform;
+		this.translation.Sensitivity = transformSelection.GizmoSensitivity;
 		this.translation.Visibility = this.gizmoType == GizmoTypes.Translation ? Visibility.Visible : Visibility.Collapsed;
 		Canvas.SetLeft(this.translation, pos.X * canvas.ActualWidth);
 		Canvas.SetTop(this.translation, pos.Y * canvas.ActualHeight);
 
 		this.rotation.Transform = worldTransform;
+		this.rotation.Sensitivity = transformSelection.GizmoSensitivity;
 		this.rotation.Visibility = this.gizmoType == GizmoTypes.Rotation ? Visibility.Visible : Visibility.Collapsed;
 		Canvas.SetLeft(this.rotation, pos.X * canvas.ActualWidth);
 		Canvas.SetTop(this.rotation, pos.Y * canvas.ActualHeight);
 
 		this.scale.Transform = worldTransform;
+		this.scale.Sensitivity = transformSelection.GizmoSensitivity;
 		this.scale.Visibility = this.gizmoType == GizmoTypes.Scale ? Visibility.Visible : Visibility.Collapsed;
 		Canvas.SetLeft(this.scale, pos.X * canvas.ActualWidth);
 		Canvas.SetTop(this.scale, pos.Y * canvas.ActualHeight);
+	}
+
+	private void OnTransformChanged(Transform newTransform)
+	{
+		if (this.selection is not TransformSelectionBase transformSelection)
+			return;
+
+		transformSelection.WorldTransform = newTransform;
 	}
 }

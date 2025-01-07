@@ -63,6 +63,10 @@ public abstract partial class GizmoBase : View
 		this.IsVisibleChanged += this.OnIsVisibleChanged;
 	}
 
+	public delegate void TransformChangedDelegate(Transform newTransform);
+
+	public event TransformChangedDelegate? TransformChanged;
+
 	protected void AddAxis(GizmoAxisBase axis)
 	{
 		this.axes.Add(axis);
@@ -197,7 +201,12 @@ public abstract partial class GizmoBase : View
 			{
 				Transform newTransform = this.dragAxis.UpdateDrag(mouseDelta, this.dragTransform.Value);
 				this.dragTransform = newTransform;
-				this.Transform = this.dragTransform.Value;
+
+				if (this.dragTransform.Value != this.Transform)
+				{
+					this.Transform = this.dragTransform.Value;
+					this.TransformChanged?.Invoke(this.Transform);
+				}
 			}
 
 			e.Handled = true;
@@ -247,6 +256,11 @@ public abstract partial class GizmoBase : View
 	protected override void OnMouseLeave(MouseEventArgs e)
 	{
 		CursorUtility.SetCursorVisible(true);
+
+		if (this.hoverAxis != null)
+			this.hoverAxis.IsAxisHovered = false;
+
+		this.hoverAxis = null;
 
 		base.OnMouseLeave(e);
 	}
