@@ -296,6 +296,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		if (ServiceManager.ShutdownRequested)
 			return;
 
+		this.Services.Windows.XivClientSizeChanged -= this.OnXivClientSizeChanged;
 		this.Services.Windows.OnWindowClosing(this);
 
 		this.OnClosed();
@@ -303,6 +304,8 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 	protected virtual void OnOpened()
 	{
+		this.Services.Windows.XivClientSizeChanged += this.OnXivClientSizeChanged;
+
 		this.IsOpen = true;
 		this.NotifyPropertyChanged(nameof(this.IsOpen));
 
@@ -468,6 +471,27 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 				this.Width = this.preScaleWidth * this.Scale;
 			}
 		}
+	}
+
+	private void OnXivClientSizeChanged(Rect newSize)
+	{
+		this.Dispatcher.Invoke(() =>
+		{
+			if (this.Panel == null)
+				return;
+
+			if (this.Panel.RememberWindowState == true)
+			{
+				if (this.SavedPosition != null)
+				{
+					this.Position = this.SavedPosition.Value;
+				}
+			}
+			else
+			{
+				this.Position = this.Panel.DefaultPosition;
+			}
+		});
 	}
 
 	private void OnPreviewKeyDown(object sender, KeyEventArgs e)

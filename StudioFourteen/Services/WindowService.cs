@@ -59,7 +59,13 @@ public partial class WindowService : ServiceBase
 
 	[Notify(Setter.Private)] private bool enableXivWindowOverlay;
 
+	private Rect xivClientSize;
+
 	private unsafe AtkUnitBase* atkUnitUnderCursor;
+
+	public delegate void OnXivClientSizeChanged(Rect newSize);
+
+	public event OnXivClientSizeChanged? XivClientSizeChanged;
 
 	public Process? XivProcess { get; set; }
 	public nint? XivWindowHwnd => this.XivProcess?.MainWindowHandle;
@@ -329,6 +335,13 @@ public partial class WindowService : ServiceBase
 
 		this.EnableXivWindowOverlay = ((!this.IsCursorOverXiv && !this.IsCursorOverStudio) || (!this.IsCursorOverAtkUnit && !this.IsCursorOverImGui))
 			&& !this.Services.Reshade.IsReshadeOverlayOpen;
+
+		Rect xivClientRect = this.GetXivWindowClientSize();
+		if (xivClientRect != this.xivClientSize)
+		{
+			this.xivClientSize = xivClientRect;
+			this.XivClientSizeChanged?.Invoke(this.xivClientSize);
+		}
 	}
 
 	private bool GetIsCursorOverXiv()
