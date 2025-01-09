@@ -34,6 +34,8 @@ public struct Transform : IEquatable<Transform>
 		this.matrix = matrix;
 	}
 
+	public static Transform Identity => new(Matrix4x4.Identity);
+
 	public Vector3 Translation
 	{
 		get => this.matrix.Translation;

@@ -15,13 +15,44 @@
 
 namespace StudioFourteen.Overlays;
 
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using StudioFourteen.Overlays.Primitives;
+using System.Numerics;
 
 public class TestOverlayLayer : OverlayLayerBase
 {
+	private readonly LinePrimitive line;
+	private readonly CirclePrimitive circle;
+
 	public TestOverlayLayer()
 		: base("Test", "Layer 1")
 	{
-		this.AddChild(new LinePrimitive(new(0, 0, 0), new(0, 100, 0)));
+		this.line = new LinePrimitive()
+		{
+			From = new(0, 0, 0),
+			To = new(0, 100, 0),
+		};
+
+		this.AddChild(this.line);
+
+		this.circle = new CirclePrimitive()
+		{
+			Radius = 1.0f,
+		};
+
+		this.AddChild(this.circle);
+	}
+
+	public unsafe override void OnFrameworkUpdate()
+	{
+		base.OnFrameworkUpdate();
+
+		Character* target = this.Services.Target.GetTarget();
+		this.line.Transform = target->GameObject.GetTransform();
+		this.line.To.Y = target->Height;
+
+		this.circle.Transform = target->GameObject.GetTransform();
+		this.circle.Radius = target->HitboxRadius;
 	}
 }

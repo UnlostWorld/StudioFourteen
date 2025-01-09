@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Overlays;
 
+using Dalamud.Plugin.Services;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Services;
 using System.Collections.Generic;
@@ -49,17 +50,40 @@ public partial class OverlayService
 
 	public void AddOverlay(OverlayLayerBase overlay)
 	{
+		lock (this.overlays)
+		{
+			this.overlays.Add(overlay);
+		}
+
 		this.OverlayAdded?.Invoke(overlay);
 	}
 
 	public void RemoveOverlay(OverlayLayerBase overlay)
 	{
+		lock (this.overlays)
+		{
+			this.overlays.Remove(overlay);
+		}
+
 		this.OverlayRemoved?.Invoke(overlay);
 	}
 
 	public List<OverlayLayerBase> GetOverlays()
 	{
 		return this.overlays;
+	}
+
+	protected override void OnFrameworkUpdate(IFramework framework)
+	{
+		base.OnFrameworkUpdate(framework);
+
+		lock (this.overlays)
+		{
+			foreach (OverlayLayerBase overlay in this.overlays)
+			{
+				overlay.OnFrameworkUpdate();
+			}
+		}
 	}
 
 	private void OnGroupPoseStateChanged(bool newState)

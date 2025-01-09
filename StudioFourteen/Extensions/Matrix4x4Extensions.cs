@@ -13,50 +13,22 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Overlays.Primitives;
+namespace System.Numerics;
 
-using System.Collections.Generic;
-using System.Numerics;
-using System.Windows.Controls;
+using System;
 
-public class PrimitiveGroup : IPrimitive
+public static class Matrix4x4Extensions
 {
-	public readonly List<IPrimitive> Children = new();
-
-	public void Enable(Canvas canvas)
+	public static Vector3 TransformViewProjection(this Matrix4x4 self, Vector3 worldPos)
 	{
-		foreach (IPrimitive primitive in this.Children)
+		Vector4 vector = Vector4.Transform(new Vector4(worldPos, 1f), self);
+
+		vector *= MathF.Abs(1f / vector.W);
+		return new Vector3
 		{
-			primitive.Enable(canvas);
-		}
-	}
-
-	public void Disable(Canvas canvas)
-	{
-		foreach (IPrimitive primitive in this.Children)
-		{
-			primitive.Disable(canvas);
-		}
-	}
-
-	public void Update(Matrix4x4 viewProjection)
-	{
-		foreach (IPrimitive primitive in this.Children)
-		{
-			primitive.Update(viewProjection);
-		}
-	}
-
-	protected T AddChild<T>()
-		where T : IPrimitive, new()
-	{
-		T primitive = new T();
-		this.Children.Add(primitive);
-		return primitive;
-	}
-
-	protected void AddChild(IPrimitive primitive)
-	{
-		this.Children.Add(primitive);
+			X = (vector.X + 1f) * 0.5f,
+			Y = (1f - vector.Y) * 0.5f,
+			Z = vector.Z,
+		};
 	}
 }

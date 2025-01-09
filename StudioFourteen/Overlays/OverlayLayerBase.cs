@@ -19,7 +19,8 @@ using Serilog;
 using StudioFourteen.Overlays.Primitives;
 using StudioFourteen.Settings;
 
-public abstract class OverlayLayerBase(string group, string name) : PrimitiveGroup
+public abstract class OverlayLayerBase(string group, string name)
+	: PrimitiveGroup
 {
 	public readonly string Group = group;
 	public readonly string Name = name;
@@ -48,5 +49,9 @@ public abstract class OverlayLayerBase(string group, string name) : PrimitiveGro
 	public void Disable()
 	{
 		this.Services.Overlays.RemoveOverlay(this);
+	}
+
+	public virtual void OnFrameworkUpdate()
+	{
 	}
 }

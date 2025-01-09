@@ -14,18 +14,12 @@
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
 namespace StudioFourteen.Overlays.Primitives;
-
-using FFXIVClientStructs.FFXIV.Client.Game;
-using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using Serilog;
-using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
-using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using TerraFX.Interop.Windows;
 using WpfUtils;
 using WpfUtils.Extensions;
 
@@ -88,7 +82,7 @@ public class PrimitiveRenderer : Canvas
 
 					try
 					{
-						primitive.Update();
+						primitive.Update(this.Services.Camera.CurrentViewProjection);
 					}
 					catch (Exception ex)
 					{

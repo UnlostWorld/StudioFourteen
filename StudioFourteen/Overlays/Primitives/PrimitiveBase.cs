@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Overlays.Primitives;
 
+using StudioFourteen.Posing;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Windows;
@@ -22,7 +23,7 @@ using System.Windows.Controls;
 
 public interface IPrimitive
 {
-	void Update();
+	void Update(Matrix4x4 viewProjection);
 	void Enable(Canvas canvas);
 	void Disable(Canvas canvas);
 }
@@ -34,6 +35,9 @@ public abstract class PrimitiveBase : IPrimitive
 	private Canvas? parent;
 	private float screenWidth = 0;
 	private float screenHeight = 0;
+	private Matrix4x4 currentViewProjection;
+
+	public Transform Transform { get; set; } = Transform.Identity;
 
 	public virtual void Enable(Canvas canvas)
 	{
@@ -47,13 +51,20 @@ public abstract class PrimitiveBase : IPrimitive
 		}
 	}
 
-	public virtual void Update()
+	public virtual void Update(Matrix4x4 viewProjection)
 	{
 		if (this.parent == null)
 			return;
 
 		this.screenWidth = (float)this.parent.ActualWidth;
 		this.screenHeight = (float)this.parent.ActualHeight;
+		this.currentViewProjection = viewProjection;
+
+		this.Update();
+	}
+
+	public virtual void Update()
+	{
 	}
 
 	public virtual void Disable(Canvas canvas)
@@ -79,11 +90,10 @@ public abstract class PrimitiveBase : IPrimitive
 		Canvas.SetZIndex(el, (int)(depth * 100000));
 	}
 
-	protected bool Transform(Vector3 worldPos, out Vector3 screenPos)
+	protected Vector3 LocalToScreen(Vector3 local)
 	{
-		bool isVisible = ServiceManager.Instance.Camera.WorldToCamera(worldPos, out Vector3 cameraPos);
-		screenPos = new(cameraPos.X * this.screenWidth, cameraPos.Y * this.screenHeight, cameraPos.Z);
-
-		return isVisible;
+		Vector3 world = Vector3.Transform(local, this.Transform.ToMatrix());
+		Vector3 cameraPos = this.currentViewProjection.TransformViewProjection(world);
+		return new(cameraPos.X * this.screenWidth, cameraPos.Y * this.screenHeight, cameraPos.Z);
 	}
 }

@@ -16,13 +16,17 @@
 namespace StudioFourteen.Overlays.Primitives;
 
 using System.Numerics;
-using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
 public class LinePrimitive : PrimitiveBase
 {
+	public Vector3 From;
+	public Vector3 To;
+	public Color Foreground = Colors.White;
+	public int Thickness = 1;
+
 	private Line? line;
 
 	public LinePrimitive()
@@ -36,12 +40,6 @@ public class LinePrimitive : PrimitiveBase
 		this.To = to;
 	}
 
-	public Vector3 From { get; set; }
-	public Vector3 To { get; set; }
-
-	public Color Foreground { get; set; } = Colors.White;
-	public int Thickness { get; set; } = 1;
-
 	public override void Enable(Canvas canvas)
 	{
 		if (this.line == null)
@@ -52,8 +50,6 @@ public class LinePrimitive : PrimitiveBase
 
 	public override void Update()
 	{
-		base.Update();
-
 		if (this.line == null)
 			return;
 
@@ -62,14 +58,13 @@ public class LinePrimitive : PrimitiveBase
 		if (this.line.Stroke is not SolidColorBrush scb || scb.Color != this.Foreground)
 			this.line.Stroke = new SolidColorBrush(this.Foreground);
 
-		bool visible = this.Transform(this.From, out Vector3 fromPos);
-		visible |= this.Transform(this.To, out Vector3 toPos);
+		Vector3 fromPos = this.LocalToScreen(this.From);
+		Vector3 toPos = this.LocalToScreen(this.To);
 
 		this.line.X1 = fromPos.X;
 		this.line.Y1 = fromPos.Y;
 		this.line.X2 = toPos.X;
 		this.line.Y2 = toPos.Y;
-		this.line.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
 
 		this.SetZIndex(this.line, toPos.Z);
 	}

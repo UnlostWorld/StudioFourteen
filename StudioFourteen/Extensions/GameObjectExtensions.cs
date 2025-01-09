@@ -18,6 +18,8 @@ namespace FFXIVClientStructs.FFXIV.Client.Game.Object;
 using global::System;
 using global::System.Runtime.InteropServices;
 using global::System.Collections.Generic;
+using StudioFourteen.Posing;
+using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 
 public static class GameObjectExtensions
 {
@@ -44,5 +46,10 @@ public static class GameObjectExtensions
 			return newName;
 
 		return name;
+	}
+
+	public static unsafe Transform GetTransform(ref this GameObject self)
+	{
+		return Transform.FromTRS(self.DrawObject->Position, self.DrawObject->Rotation, self.DrawObject->Scale);
 	}
 }

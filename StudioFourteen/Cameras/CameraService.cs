@@ -221,31 +221,9 @@ public class CameraService : ServiceBase
 		}
 	}
 
-	public unsafe bool WorldToCamera(Vector3 worldPos, out Vector3 screenPos)
+	public Vector3 WorldToCamera(Vector3 worldPos)
 	{
-		screenPos = Vector3.Zero;
-
-		Vector4 vector = Vector4.Transform(new Vector4(worldPos, 1f), this.CurrentViewProjection);
-		if (vector.W < float.Epsilon)
-			return false;
-
-		float d = vector.Z;
-
-		vector *= MathF.Abs(1f / vector.W);
-		screenPos = new Vector3
-		{
-			X = (vector.X + 1f) * 0.5f,
-			Y = (1f - vector.Y) * 0.5f,
-			Z = d,
-		};
-
-		if (screenPos.X < 0 || screenPos.X > 1)
-			return false;
-
-		if (screenPos.Y < 0 || screenPos.Y > 1)
-			return false;
-
-		return true;
+		return this.CurrentViewProjection.TransformViewProjection(worldPos);
 	}
 
 	protected override void OnFrameworkUpdate(IFramework framework)
