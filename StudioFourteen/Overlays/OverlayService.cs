@@ -29,8 +29,8 @@ public partial class OverlayService
 
 	public delegate void OverlayEvent(OverlayLayerBase overlay);
 
-	public event OverlayEvent? OverlayAdded;
-	public event OverlayEvent? OverlayRemoved;
+	public event OverlayEvent? LayerAdded;
+	public event OverlayEvent? LayerRemoved;
 
 	public override async Task Start()
 	{
@@ -55,7 +55,7 @@ public partial class OverlayService
 			this.overlays.Add(overlay);
 		}
 
-		this.OverlayAdded?.Invoke(overlay);
+		this.LayerAdded?.Invoke(overlay);
 	}
 
 	public void RemoveOverlay(OverlayLayerBase overlay)
@@ -65,10 +65,10 @@ public partial class OverlayService
 			this.overlays.Remove(overlay);
 		}
 
-		this.OverlayRemoved?.Invoke(overlay);
+		this.LayerRemoved?.Invoke(overlay);
 	}
 
-	public List<OverlayLayerBase> GetOverlays()
+	public List<OverlayLayerBase> GetOverlayLayers()
 	{
 		return this.overlays;
 	}

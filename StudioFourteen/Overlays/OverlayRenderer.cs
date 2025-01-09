@@ -25,21 +25,21 @@ public partial class OverlayRenderer : PrimitiveRenderer
 		if (DesignerProperties.GetIsInDesignMode(this))
 			return;
 
-		this.Services.Overlays.OverlayAdded += this.OnOverlayAdded;
-		this.Services.Overlays.OverlayRemoved += this.OnOverlayRemoved;
+		this.Services.Overlays.LayerAdded += this.OnLayerAdded;
+		this.Services.Overlays.LayerRemoved += this.OnLayerRemoved;
 
-		foreach(OverlayLayerBase overlay in this.Services.Overlays.GetOverlays())
+		foreach(OverlayLayerBase layer in this.Services.Overlays.GetOverlayLayers())
 		{
-			this.OnOverlayAdded(overlay);
+			this.OnLayerAdded(layer);
 		}
 	}
 
-	private void OnOverlayAdded(OverlayLayerBase overlay)
+	private void OnLayerAdded(OverlayLayerBase overlay)
 	{
 		this.AddPrimitive(overlay);
 	}
 
-	private void OnOverlayRemoved(OverlayLayerBase overlay)
+	private void OnLayerRemoved(OverlayLayerBase overlay)
 	{
 		this.RemovePrimitive(overlay);
 	}

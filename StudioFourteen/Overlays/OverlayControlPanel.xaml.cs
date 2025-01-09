@@ -16,8 +16,8 @@
 namespace StudioFourteen.Overlays;
 
 using StudioFourteen.Panels;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
+using WpfUtils.Extensions;
 
 public partial class OverlayControlPanel : Panel
 {
@@ -26,13 +26,15 @@ public partial class OverlayControlPanel : Panel
 		if (DesignerProperties.GetIsInDesignMode(this))
 			return;
 
-		this.Services.Overlays.OverlayAdded += this.OnOverlayAdded;
-		this.Services.Overlays.OverlayRemoved += this.OnOverlayRemoved;
+		this.Services.Overlays.LayerAdded += this.OnLayerAdded;
+		this.Services.Overlays.LayerRemoved += this.OnLayerRemoved;
+
+		this.Overlays.AddRange(this.Services.Overlays.GetOverlayLayers());
 	}
 
-	public ObservableCollection<OverlayLayerBase> Overlays { get; init; } = new();
+	public FastObservableCollection<OverlayLayerBase> Overlays { get; init; } = new();
 
-	private void OnOverlayAdded(OverlayLayerBase overlay)
+	private void OnLayerAdded(OverlayLayerBase overlay)
 	{
 		this.Dispatcher.Invoke(() =>
 		{
@@ -40,7 +42,7 @@ public partial class OverlayControlPanel : Panel
 		});
 	}
 
-	private void OnOverlayRemoved(OverlayLayerBase overlay)
+	private void OnLayerRemoved(OverlayLayerBase overlay)
 	{
 		this.Dispatcher.Invoke(() =>
 		{
