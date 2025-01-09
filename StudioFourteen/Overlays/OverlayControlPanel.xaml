@@ -78,7 +78,7 @@
 							</CollectionViewSource.GroupDescriptions>
 						</CollectionViewSource>
 
-						<DataTemplate DataType="{x:Type local:OverlayBase}">
+						<DataTemplate DataType="{x:Type local:OverlayLayerBase}">
 							<ToggleButton
 								Content="{Binding DisplayName}"
 								IsChecked="{Binding IsHidden, Converter={StaticResource !B}}" />

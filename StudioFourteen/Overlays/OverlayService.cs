@@ -20,18 +20,13 @@ using StudioFourteen.Services;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-public interface IOverlayOwner
-{
-	string OverlayName { get; }
-}
-
 public partial class OverlayService
 	: ServiceBase
 {
-	private readonly List<OverlayBase> overlays = new();
+	private readonly List<OverlayLayerBase> overlays = new();
 	[Notify] private bool overlaysEnabled = true;
 
-	public delegate void OverlayEvent(OverlayBase overlay);
+	public delegate void OverlayEvent(OverlayLayerBase overlay);
 
 	public event OverlayEvent? OverlayAdded;
 	public event OverlayEvent? OverlayRemoved;
@@ -41,6 +36,9 @@ public partial class OverlayService
 		await base.Start();
 		this.Services.GroupPose.StateChanged += this.OnGroupPoseStateChanged;
 		this.OnGroupPoseStateChanged(this.Services.GroupPose.IsGroupPosing);
+
+		TestOverlayLayer test = new();
+		test.Enable();
 	}
 
 	public override async Task Stop()
@@ -49,17 +47,17 @@ public partial class OverlayService
 		this.Services.GroupPose.StateChanged -= this.OnGroupPoseStateChanged;
 	}
 
-	public void AddOverlay(OverlayBase overlay)
+	public void AddOverlay(OverlayLayerBase overlay)
 	{
 		this.OverlayAdded?.Invoke(overlay);
 	}
 
-	public void RemoveOverlay(OverlayBase overlay)
+	public void RemoveOverlay(OverlayLayerBase overlay)
 	{
 		this.OverlayRemoved?.Invoke(overlay);
 	}
 
-	public List<OverlayBase> GetOverlays()
+	public List<OverlayLayerBase> GetOverlays()
 	{
 		return this.overlays;
 	}

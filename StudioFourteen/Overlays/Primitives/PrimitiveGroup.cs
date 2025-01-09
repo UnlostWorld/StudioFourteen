@@ -13,26 +13,50 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Overlays;
+namespace StudioFourteen.Overlays.Primitives;
 
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using System.Collections.Generic;
 using System.Numerics;
+using System.Windows.Controls;
 
-public class BoundingBoxOverlay(string group, string name)
-	: BoxOverlay(group, name)
+public class PrimitiveGroup : IPrimitive
 {
-	public unsafe void Update(Character* pCharacter)
+	public readonly List<IPrimitive> Children = new();
+
+	public void Enable(Canvas canvas)
 	{
-		Vector3 position = pCharacter->DrawObject->Position;
-		position.Y += pCharacter->Height;
-		this.Position = position;
+		foreach (IPrimitive primitive in this.Children)
+		{
+			primitive.Enable(canvas);
+		}
+	}
 
-		this.Rotation = pCharacter->DrawObject->Rotation;
+	public void Disable(Canvas canvas)
+	{
+		foreach (IPrimitive primitive in this.Children)
+		{
+			primitive.Disable(canvas);
+		}
+	}
 
-		Vector3 scale = this.Scale;
-		scale.Y = pCharacter->Height * 2;
-		scale.X = pCharacter->HitboxRadius * 2;
-		scale.Z = pCharacter->HitboxRadius * 2;
-		this.Scale = scale;
+	public void Update()
+	{
+		foreach (IPrimitive primitive in this.Children)
+		{
+			primitive.Update();
+		}
+	}
+
+	protected T AddChild<T>()
+		where T : IPrimitive, new()
+	{
+		T primitive = new T();
+		this.Children.Add(primitive);
+		return primitive;
+	}
+
+	protected void AddChild(IPrimitive primitive)
+	{
+		this.Children.Add(primitive);
 	}
 }

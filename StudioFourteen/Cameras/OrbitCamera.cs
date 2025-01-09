@@ -31,8 +31,6 @@ public partial class OrbitCamera : StudioCameraBase
 	protected Vector3 desiredRot = Vector3.Zero;
 	protected Vector3 desiredMove = Vector3.Zero;
 
-	private readonly PointOverlay targetPointOverlay = new("Cameras", "OrbitCameraTarget");
-
 	private readonly InputActionListener moveUpListener = new(InputAction.OrbitCamera_MoveUp);
 	private readonly InputActionListener moveDownListener = new(InputAction.OrbitCamera_MoveDown);
 	private readonly InputActionListener moveLeftListener = new(InputAction.OrbitCamera_MoveLeft);
@@ -109,8 +107,6 @@ public partial class OrbitCamera : StudioCameraBase
 		this.rotateRightListener.Enable();
 		this.rotateUpListener.Enable();
 		this.rotateDownListener.Enable();
-
-		this.targetPointOverlay.Enable();
 	}
 
 	public override void Deactivate()
@@ -133,8 +129,6 @@ public partial class OrbitCamera : StudioCameraBase
 		this.rotateRightListener.Disable();
 		this.rotateUpListener.Disable();
 		this.rotateDownListener.Disable();
-
-		this.targetPointOverlay.Disable();
 	}
 
 	public override void OnFrameworkUpdate(IFramework framework)
@@ -185,8 +179,6 @@ public partial class OrbitCamera : StudioCameraBase
 		this.Rotation = Quaternion.Multiply(x, this.Rotation);
 		this.Rotation = Quaternion.Multiply(this.Rotation, y);
 		this.desiredRot = Vector3.Zero;
-
-		this.targetPointOverlay.WorldPosition = this.Target;
 
 		this.actualDistance = float.Lerp(this.actualDistance, this.distance, deltaTime * 8);
 	}

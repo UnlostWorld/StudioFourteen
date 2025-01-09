@@ -13,12 +13,10 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Overlays;
-
-public class CameraWireframeOverlay : WireframeOverlayBase
+namespace StudioFourteen.Overlays.Primitives;
+public class CameraWireframe : WireframePrimitive
 {
-	public CameraWireframeOverlay(string group, string name)
-		: base(group, name)
+	public CameraWireframe()
 	{
 		// Body
 		this.AddLine(new(-1.00f, -0.25f, +0.25f), new(-1.00f, -0.25f, -0.25f));

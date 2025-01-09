@@ -25,4 +25,9 @@ public static class CameraExtensions
 		viewMatrix.M44 = 1; // hcsf
 		return viewMatrix;
 	}
+
+	public static unsafe Matrix4x4 GetProjectionMatrix(this Camera camera)
+	{
+		return camera.CameraBase.SceneCamera.RenderCamera->ProjectionMatrix;
+	}
 }

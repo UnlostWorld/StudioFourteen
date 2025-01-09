@@ -13,7 +13,7 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Overlays;
+namespace StudioFourteen.Overlays.Primitives;
 
 using System.Collections.Generic;
 using System.Numerics;
@@ -22,8 +22,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-public abstract class WireframeOverlayBase(string group, string name)
-	: OverlayBase(group, name)
+public abstract class WireframePrimitive : PrimitiveBase
 {
 	private readonly List<(Vector3 From, Vector3 To)> lines = new();
 	private readonly List<Vector3[]> polyLines = new();
@@ -35,21 +34,20 @@ public abstract class WireframeOverlayBase(string group, string name)
 	public Quaternion Rotation { get; set; } = Quaternion.Identity;
 	public Vector3 Scale { get; set; } = Vector3.One;
 
-	public override void Initialize(Canvas canvas)
+	public override void Enable(Canvas canvas)
 	{
 		for (int i = 0; i < this.lines.Count; i++)
 		{
-			Line line = new();
+			Line line = this.AddChild<Line>();
 			line.StrokeThickness = 1;
 			line.Stroke = new SolidColorBrush(Colors.White);
 			line.IsHitTestVisible = false;
 			this.lineVisuals.Add(line);
-			canvas.Children.Add(line);
 		}
 
 		for (int i = 0; i < this.polyLines.Count; i++)
 		{
-			Polyline line = new();
+			Polyline line = this.AddChild<Polyline>();
 			line.StrokeThickness = 1;
 			line.Stroke = new SolidColorBrush(Colors.White);
 			line.IsHitTestVisible = false;
@@ -60,14 +58,23 @@ public abstract class WireframeOverlayBase(string group, string name)
 			}
 
 			this.polyLineVisuals.Add(line);
-			canvas.Children.Add(line);
 		}
 
-		base.Initialize(canvas);
+		base.Enable(canvas);
 	}
 
-	public override void Update(Canvas canvas)
+	public override void Disable(Canvas canvas)
 	{
+		base.Disable(canvas);
+
+		this.lineVisuals.Clear();
+		this.polyLineVisuals.Clear();
+	}
+
+	/*public override void Transform(Matrix4x4 matrix)
+	{
+		base.Transform(matrix);
+
 		if (this.lines.Count != this.lineVisuals.Count)
 			return;
 
@@ -109,25 +116,7 @@ public abstract class WireframeOverlayBase(string group, string name)
 				line.Points[j] = p;
 			}
 		}
-	}
-
-	public override void Shutdown(Canvas canvas)
-	{
-		base.Shutdown(canvas);
-
-		foreach(Line line in this.lineVisuals)
-		{
-			canvas.Children.Remove(line);
-		}
-
-		foreach (Polyline line in this.polyLineVisuals)
-		{
-			canvas.Children.Remove(line);
-		}
-
-		this.lineVisuals.Clear();
-		this.polyLineVisuals.Clear();
-	}
+	}*/
 
 	protected void AddLine(Vector3 from, Vector3 to)
 	{

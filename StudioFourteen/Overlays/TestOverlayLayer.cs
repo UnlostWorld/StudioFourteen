@@ -15,25 +15,13 @@
 
 namespace StudioFourteen.Overlays;
 
-public class BoxOverlay
-	: WireframeOverlayBase
+using StudioFourteen.Overlays.Primitives;
+
+public class TestOverlayLayer : OverlayLayerBase
 {
-	public BoxOverlay(string group, string name)
-		: base(group, name)
+	public TestOverlayLayer()
+		: base("Test", "Layer 1")
 	{
-		this.AddLine(new(-0.5f, -0.5f, -0.5f), new(0.5f, -0.5f, -0.5f));
-		this.AddLine(new(0.5f, -0.5f, -0.5f), new(0.5f, 0.5f, -0.5f));
-		this.AddLine(new(0.5f, 0.5f, -0.5f), new(-0.5f, 0.5f, -0.5f));
-		this.AddLine(new(-0.5f, 0.5f, -0.5f), new(-0.5f, -0.5f, -0.5f));
-
-		this.AddLine(new(-0.5f, -0.5f, 0.5f), new(0.5f, -0.5f, 0.5f));
-		this.AddLine(new(0.5f, -0.5f, 0.5f), new(0.5f, 0.5f, 0.5f));
-		this.AddLine(new(0.5f, 0.5f, 0.5f), new(-0.5f, 0.5f, 0.5f));
-		this.AddLine(new(-0.5f, 0.5f, 0.5f), new(-0.5f, -0.5f, 0.5f));
-
-		this.AddLine(new(-0.5f, -0.5f, -0.5f), new(-0.5f, -0.5f, 0.5f));
-		this.AddLine(new(0.5f, -0.5f, -0.5f), new(0.5f, -0.5f, 0.5f));
-		this.AddLine(new(0.5f, 0.5f, -0.5f), new(0.5f, 0.5f, 0.5f));
-		this.AddLine(new(-0.5f, 0.5f, -0.5f), new(-0.5f, 0.5f, 0.5f));
+		this.AddChild(new LinePrimitive(new(0, 0, 0), new(0, 100, 0)));
 	}
 }

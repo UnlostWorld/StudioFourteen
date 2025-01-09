@@ -39,6 +39,8 @@ using Vector = System.Windows.Vector;
 [DependencyProperty<Transform>("Transform", DefaultBindingMode=DefaultBindingMode.TwoWay)]
 public abstract partial class GizmoBase : View
 {
+	public bool IsolateRotation = true;
+
 	protected readonly Canvas Canvas;
 
 	private readonly List<GizmoAxisBase> axes = new();
@@ -82,12 +84,7 @@ public abstract partial class GizmoBase : View
 		if (this.isError)
 			return;
 
-		Camera* pCamera = CameraManager.Instance()->GetActiveCamera();
-		Matrix4x4 viewMatrix = pCamera->GetViewMatrix();
-
-		// extract just rotation from camera view
-		Matrix4x4.Decompose(viewMatrix, out var _, out var rotation, out var _);
-		viewMatrix = Matrix4x4.CreateFromQuaternion(rotation);
+		Matrix4x4 viewMatrix = this.GetViewMatrix();
 
 		// invert camera x
 		Matrix4x4 mat = Matrix4x4.CreateScale(-1, 1, 1);
@@ -133,9 +130,28 @@ public abstract partial class GizmoBase : View
 
 	protected virtual Matrix4x4 GetTransformMatrix(Transform transform)
 	{
-		Matrix4x4 transformMatrix = Matrix4x4.CreateFromQuaternion(Quaternion.Normalize(transform.Rotation));
-		return transformMatrix;
-		////return transform.ToMatrix();
+		if (this.IsolateRotation)
+		{
+			Matrix4x4 transformMatrix = Matrix4x4.CreateFromQuaternion(Quaternion.Normalize(transform.Rotation));
+			return transformMatrix;
+		}
+
+		return transform.ToMatrix();
+	}
+
+	protected unsafe virtual Matrix4x4 GetViewMatrix()
+	{
+		Camera* pCamera = CameraManager.Instance()->GetActiveCamera();
+		Matrix4x4 viewMatrix = pCamera->GetViewMatrix();
+
+		if (this.IsolateRotation)
+		{
+			// extract just rotation from camera view
+			Matrix4x4.Decompose(viewMatrix, out var _, out var rotation, out var _);
+			viewMatrix = Matrix4x4.CreateFromQuaternion(rotation);
+		}
+
+		return viewMatrix;
 	}
 
 	protected virtual void OnDraw(Vector2 center)

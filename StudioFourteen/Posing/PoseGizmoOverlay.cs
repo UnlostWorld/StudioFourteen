@@ -22,7 +22,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 
-public abstract class PoseOverlayBase : OverlayBase
+public abstract class PoseOverlayBase : OverlayLayerBase
 {
 	protected SelectionBase? selection;
 
@@ -43,28 +43,32 @@ public abstract class PoseOverlayBase : OverlayBase
 
 public class PoseGizmoOverlay : PoseOverlayBase
 {
-	private readonly GizmoTypes gizmoType = GizmoTypes.Rotation;
+	////private readonly GizmoTypes gizmoType = GizmoTypes.Rotation;
 
-	private TranslationGizmo? translation;
-	private RotationGizmo? rotation;
-	private ScaleGizmo? scale;
+	////private TranslationGizmo? translation;
+	////private RotationGizmo? rotation;
+	////private ScaleGizmo? scale;
 
 	public PoseGizmoOverlay()
 		: base("Gizmo")
 	{
 	}
 
+	/*
 	public override void Initialize(Canvas canvas)
 	{
 		base.Initialize(canvas);
 
 		this.translation = new();
+		this.translation.IsolateRotation = false;
 		this.translation.TransformChanged += this.OnTransformChanged;
 
 		this.rotation = new();
+		this.rotation.IsolateRotation = false;
 		this.rotation.TransformChanged += this.OnTransformChanged;
 
 		this.scale = new();
+		this.scale.IsolateRotation = false;
 		this.scale.TransformChanged += this.OnTransformChanged;
 
 		canvas.Children.Add(this.translation);
@@ -124,5 +128,5 @@ public class PoseGizmoOverlay : PoseOverlayBase
 			return;
 
 		transformSelection.WorldTransform = newTransform;
-	}
+	}*/
 }

@@ -20,7 +20,7 @@ using JsonSubTypes;
 using Newtonsoft.Json;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Mvm;
-using StudioFourteen.Overlays;
+using StudioFourteen.Overlays.Primitives;
 using System;
 
 [JsonConverter(typeof(JsonSubtypes), "TypeName")]
@@ -31,8 +31,6 @@ public abstract partial class StudioCameraBase : ViewModel, IDisposable
 {
 	// a distance of 0 hides the character, so a default of 3 seems good.
 	private const float DefaultCameraDistance = 3;
-
-	private readonly CameraWireframeOverlay cameraOverlay = new("Cameras", "Camera");
 
 	[Notify] private string name = "Default";
 	[Notify] private float fieldOfView;
@@ -82,7 +80,6 @@ public abstract partial class StudioCameraBase : ViewModel, IDisposable
 
 	public virtual void Activate()
 	{
-		this.cameraOverlay.Disable();
 	}
 
 	public virtual void OnFrameworkUpdate(IFramework framework)
@@ -91,17 +88,13 @@ public abstract partial class StudioCameraBase : ViewModel, IDisposable
 
 	public virtual void OnRender(ref CameraState state)
 	{
-		this.cameraOverlay.Position = state.Position;
-		this.cameraOverlay.Rotation = state.Rotation;
 	}
 
 	public virtual void Deactivate()
 	{
-		this.cameraOverlay.Enable();
 	}
 
 	public void Dispose()
 	{
-		this.cameraOverlay.Disable();
 	}
 }

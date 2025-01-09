@@ -22,8 +22,4 @@ public class PoseSkeletonOverlay : PoseOverlayBase
 		: base("Skeleton")
 	{
 	}
-
-	public override void Update(Canvas canvas)
-	{
-	}
 }

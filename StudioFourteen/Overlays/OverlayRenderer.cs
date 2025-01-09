@@ -15,105 +15,32 @@
 
 namespace StudioFourteen.Overlays;
 
-using DependencyPropertyGenerator;
-using Serilog;
-using StudioFourteen.Plugin;
-using System;
-using System.Collections.Generic;
+using StudioFourteen.Overlays.Primitives;
 using System.ComponentModel;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using WpfUtils;
-using WpfUtils.Extensions;
 
-public partial class OverlayRenderer : Canvas
+public partial class OverlayRenderer : PrimitiveRenderer
 {
-	protected readonly ILogger Log = Logging.ForContext<OverlayRenderer>();
-
-	private readonly List<OverlayBase> overlays = new();
-
 	public OverlayRenderer()
 	{
 		if (DesignerProperties.GetIsInDesignMode(this))
 			return;
 
-		this.Services.Studio.Opening += this.OnStudioOpening;
 		this.Services.Overlays.OverlayAdded += this.OnOverlayAdded;
 		this.Services.Overlays.OverlayRemoved += this.OnOverlayRemoved;
 
-		this.overlays.AddRange(this.Services.Overlays.GetOverlays());
-	}
-
-	protected ServiceManager Services => ServiceManager.Instance;
-
-	private void OnStudioOpening()
-	{
-		this.RenderTask().Run();
-	}
-
-	private void OnOverlayAdded(OverlayBase overlay)
-	{
-		this.overlays.Add(overlay);
-
-		this.Dispatcher.Invoke(() =>
+		foreach(OverlayLayerBase overlay in this.Services.Overlays.GetOverlays())
 		{
-			overlay.Initialize(this);
-		});
-	}
-
-	private void OnOverlayRemoved(OverlayBase overlay)
-	{
-		this.overlays.Remove(overlay);
-
-		this.Dispatcher.Invoke(() =>
-		{
-			overlay.Shutdown(this);
-		});
-	}
-
-	private async Task RenderTask()
-	{
-		try
-		{
-			while (!ServiceManager.ShutdownRequested
-				&& this.Services.Overlays.IsAlive
-				&& this.Services.Overlays.IsAttached)
-			{
-				await Task.Delay(1000 / 60);
-				await this.MainThread();
-
-				for (int i = this.overlays.Count - 1; i >= 0; i--)
-				{
-					OverlayBase overlay = this.overlays[i];
-
-					try
-					{
-						if (overlay.IsHidden && overlay.IsInitialized)
-						{
-							overlay.Shutdown(this);
-						}
-						else if (!overlay.IsHidden && !overlay.IsInitialized)
-						{
-							overlay.Initialize(this);
-						}
-						else
-						{
-							overlay.Update(this);
-						}
-					}
-					catch (Exception ex)
-					{
-						this.Log.Error(ex, $"Error in overlay {overlay}");
-					}
-				}
-			}
-
-			this.Visibility = Visibility.Collapsed;
+			this.OnOverlayAdded(overlay);
 		}
-		catch (Exception ex)
-		{
-			this.Log.Error(ex, $"Error in overlay renderer");
-		}
+	}
+
+	private void OnOverlayAdded(OverlayLayerBase overlay)
+	{
+		this.AddPrimitive(overlay);
+	}
+
+	private void OnOverlayRemoved(OverlayLayerBase overlay)
+	{
+		this.RemovePrimitive(overlay);
 	}
 }

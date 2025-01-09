@@ -71,8 +71,6 @@ public class CameraService : ServiceBase
 	private StudioCameraBase? last;
 	private CameraState state = default;
 	private bool doAttachBlend = false;
-	private Matrix4x4 lastViewMatrix;
-	private Matrix4x4 lastProjectionMatrix;
 
 	public delegate void CamerasChangedDelegate();
 	public delegate void CameraChangedDelegate(StudioCameraBase? oldCamera, StudioCameraBase? newCamera);
@@ -107,6 +105,8 @@ public class CameraService : ServiceBase
 	public EasingFunctionBase BlendEase { get; set; } = new SineEase();
 
 	public List<StudioCameraBase> Cameras { get; init; } = new();
+
+	public Matrix4x4 CurrentViewProjection { get; private set; }
 
 	public override Task Start()
 	{
@@ -225,7 +225,7 @@ public class CameraService : ServiceBase
 	{
 		screenPos = Vector3.Zero;
 
-		Vector4 vector = Vector4.Transform(new Vector4(worldPos, 1f), this.lastViewMatrix * this.lastProjectionMatrix);
+		Vector4 vector = Vector4.Transform(new Vector4(worldPos, 1f), this.CurrentViewProjection);
 		if (vector.W < float.Epsilon)
 			return false;
 
@@ -354,8 +354,7 @@ public class CameraService : ServiceBase
 			}
 		}
 
-		this.lastViewMatrix = camera->ViewMatrix;
-		this.lastProjectionMatrix = camera->RenderCamera->ProjectionMatrix;
+		this.CurrentViewProjection = camera->ViewMatrix * camera->RenderCamera->ProjectionMatrix;
 
 		return result;
 	}

@@ -30,9 +30,9 @@ public partial class OverlayControlPanel : Panel
 		this.Services.Overlays.OverlayRemoved += this.OnOverlayRemoved;
 	}
 
-	public ObservableCollection<OverlayBase> Overlays { get; init; } = new();
+	public ObservableCollection<OverlayLayerBase> Overlays { get; init; } = new();
 
-	private void OnOverlayAdded(OverlayBase overlay)
+	private void OnOverlayAdded(OverlayLayerBase overlay)
 	{
 		this.Dispatcher.Invoke(() =>
 		{
@@ -40,7 +40,7 @@ public partial class OverlayControlPanel : Panel
 		});
 	}
 
-	private void OnOverlayRemoved(OverlayBase overlay)
+	private void OnOverlayRemoved(OverlayLayerBase overlay)
 	{
 		this.Dispatcher.Invoke(() =>
 		{
