@@ -26,12 +26,13 @@ public class EllipsePrimitive : PrimitiveBase
 	public Color Foreground = Colors.White;
 	public float Radius = 100;
 
-	private Ellipse? ellipse;
+	protected Ellipse? ellipse;
 
 	public override void Enable(Canvas canvas)
 	{
 		this.ellipse = new();
 		this.ellipse.Fill = new SolidColorBrush(this.Foreground);
+		this.ellipse.IsHitTestVisible = false;
 		canvas.Children.Add(this.ellipse);
 		base.Enable(canvas);
 	}

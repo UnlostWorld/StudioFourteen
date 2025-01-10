@@ -31,7 +31,7 @@ public partial class RotationGizmo : GizmoBase
 	{
 		this.sphere = new();
 		this.sphere.Foreground = Color.FromArgb(0x80, 0, 0, 0);
-		this.sphere.Radius = 80;
+		this.sphere.Radius = 83;
 		this.AddChild(this.sphere);
 
 		this.xAxis = new(GizmoAxes.X);
@@ -81,15 +81,7 @@ public partial class RotationGizmo : GizmoBase
 			this.Rotation = this.Rotation * rot;
 			e.Handled = true;
 		}
-	}
-
-	protected override void OnDraw(Vector2 center)
-	{
-		base.OnDraw(center);
-
-		Canvas.SetLeft(this.sphere, center.X - (this.sphere.Width / 2));
-		Canvas.SetTop(this.sphere, center.Y - (this.sphere.Height / 2));
-	}*/
+	}}*/
 
 	protected override GizmoAxisBase? GetHoverAxis(Point mousePos)
 	{

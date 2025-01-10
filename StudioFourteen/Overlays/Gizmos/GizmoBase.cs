@@ -30,6 +30,7 @@ using StudioFourteen.Extensions;
 using StudioFourteen.Utilities;
 using System.Windows.Input;
 using StudioFourteen.Overlays.Primitives;
+using Serilog;
 
 using CursorPoint = System.Drawing.Point;
 using Transform = StudioFourteen.Posing.Transform;
@@ -41,7 +42,10 @@ public abstract class GizmoBase : PrimitiveGroup
 {
 	public double Sensitivity = 1;
 
+	protected readonly ILogger Log = Logging.ForContext<GizmoBase>();
+
 	private readonly List<GizmoAxisBase> axes = new();
+	private GizmoMousePrimitive mouseHandler;
 
 	private bool isError = false;
 	private bool isDragging = false;
@@ -57,6 +61,10 @@ public abstract class GizmoBase : PrimitiveGroup
 
 	public GizmoBase()
 	{
+		this.mouseHandler = new(this);
+		this.mouseHandler.Radius = 100;
+
+		this.AddChild(this.mouseHandler);
 		this.KeepScreenSize = true;
 	}
 
@@ -65,97 +73,9 @@ public abstract class GizmoBase : PrimitiveGroup
 		this.axes.Add(axis);
 	}
 
-
-	/*protected unsafe override void OnFrameworkUpdate(IFramework framework)
+	public void OnMouseLeftButtonDown(Point mousePos)
 	{
-		base.OnFrameworkUpdate(framework);
-
-		if (!this.Services.Studio.IsOpen)
-			return;
-
-		if (this.isError)
-			return;
-
-		Matrix4x4 viewMatrix = this.GetViewMatrix();
-
-		// invert camera x
-		Matrix4x4 mat = Matrix4x4.CreateScale(-1, 1, 1);
-		viewMatrix = viewMatrix * mat;
-
-		try
-		{
-			this.Dispatcher.Invoke(() =>
-			{
-				Transform transform = this.Transform;
-				if (this.isDragging && this.dragTransform != null)
-					transform = this.dragTransform.Value;
-
-				Matrix4x4 transformMatrix = this.GetTransformMatrix(transform);
-
-				Vector2 center = default;
-				center.X = (float)(this.ActualWidth / 2);
-				center.Y = (float)(this.ActualHeight / 2);
-
-				foreach(var axis in this.axes)
-				{
-					axis.Transform(transformMatrix, viewMatrix, center);
-				}
-
-				this.OnDraw(center);
-
-				if (this.isLoading)
-				{
-					this.isLoading = false;
-					this.Opacity = 1.0f;
-				}
-			});
-		}
-		catch (TaskCanceledException)
-		{
-		}
-		catch (Exception ex)
-		{
-			this.isError = true;
-			this.Log.Error(ex, "Error drawing gizmo");
-		}
-	}
-
-	protected virtual Matrix4x4 GetTransformMatrix(Transform transform)
-	{
-		if (this.IsolateRotation)
-		{
-			Matrix4x4 transformMatrix = Matrix4x4.CreateFromQuaternion(Quaternion.Normalize(transform.Rotation));
-			return transformMatrix;
-		}
-
-		return transform.ToMatrix();
-	}
-
-	protected unsafe virtual Matrix4x4 GetViewMatrix()
-	{
-		Camera* pCamera = CameraManager.Instance()->GetActiveCamera();
-		Matrix4x4 viewMatrix = pCamera->GetViewMatrix();
-
-		if (this.IsolateRotation)
-		{
-			// extract just rotation from camera view
-			Matrix4x4.Decompose(viewMatrix, out var _, out var rotation, out var _);
-			viewMatrix = Matrix4x4.CreateFromQuaternion(rotation);
-		}
-
-		return viewMatrix;
-	}
-
-	protected virtual void OnDraw(Vector2 center)
-	{
-	}
-
-	protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
-	{
-		base.OnMouseLeftButtonDown(e);
-		this.CaptureMouse();
-
-		this.OnMouseMove(e);
+		this.OnMouseMove(mousePos);
 
 		CursorUtility.SetCursorVisible(false);
 		this.cursorKeepPosition = CursorUtility.GetPosition();
@@ -165,7 +85,6 @@ public abstract class GizmoBase : PrimitiveGroup
 		this.dragAxis = this.hoverAxis;
 		if (this.dragAxis != null)
 		{
-			Point mousePos = e.GetPosition(this);
 			this.dragAxis.Sensitivity = this.Sensitivity;
 			this.dragAxis.StartDrag(mousePos);
 		}
@@ -174,11 +93,8 @@ public abstract class GizmoBase : PrimitiveGroup
 		this.lastDragMousePos = this.cursorKeepPosition.ToWindowsPoint();
 	}
 
-	protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
+	public void OnMouseLeftButtonUp(Point mousePos)
 	{
-		base.OnMouseLeftButtonUp(e);
-		this.ReleaseMouseCapture();
-
 		CursorUtility.SetCursorVisible(true);
 		CursorUtility.SetPosition(this.cursorKeepPosition);
 
@@ -189,11 +105,8 @@ public abstract class GizmoBase : PrimitiveGroup
 		this.lastDragMousePos = null;
 	}
 
-	protected override void OnMouseMove(MouseEventArgs e)
+	public void OnMouseMove(Point mousePos)
 	{
-		base.OnMouseMove(e);
-
-		Point mousePos = e.GetPosition(this);
 		GizmoAxisBase? newHover = this.GetHoverAxis(mousePos);
 
 		if (this.isDragging && this.dragAxis != null && this.dragTransform != null)
@@ -217,7 +130,7 @@ public abstract class GizmoBase : PrimitiveGroup
 				}
 			}
 
-			e.Handled = true;
+			////e.Handled = true;
 
 			// Reset cursor location
 			CursorUtility.SetPosition(this.cursorKeepPosition);
@@ -239,7 +152,7 @@ public abstract class GizmoBase : PrimitiveGroup
 		}
 	}
 
-	protected override void OnMouseLeave(MouseEventArgs e)
+	public void OnMouseLeave(Point mousePos)
 	{
 		CursorUtility.SetCursorVisible(true);
 
@@ -247,9 +160,7 @@ public abstract class GizmoBase : PrimitiveGroup
 			this.hoverAxis.IsAxisHovered = false;
 
 		this.hoverAxis = null;
-
-		base.OnMouseLeave(e);
-	}*/
+	}
 
 	protected virtual GizmoAxisBase? GetHoverAxis(Point mousePos)
 	{
@@ -271,5 +182,73 @@ public abstract class GizmoBase : PrimitiveGroup
 		}
 
 		return bestAxis;
+	}
+}
+
+public class GizmoMousePrimitive : EllipsePrimitive
+{
+	private readonly GizmoBase gizmo;
+	private Canvas? canvas;
+
+	public GizmoMousePrimitive(GizmoBase gizmo)
+	{
+		this.gizmo = gizmo;
+		this.Foreground = Colors.Transparent;
+	}
+
+	public override void Enable(Canvas canvas)
+	{
+		base.Enable(canvas);
+		this.canvas = canvas;
+
+		if (this.ellipse == null)
+			return;
+
+		this.ellipse.MouseLeftButtonDown += this.OnMouseLeftButtonDown;
+		this.ellipse.MouseLeftButtonUp += this.OnMouseLeftButtonUp;
+		this.ellipse.MouseMove += this.OnMouseMove;
+		this.ellipse.MouseLeave += this.OnMouseLeave;
+		this.ellipse.IsHitTestVisible = true;
+	}
+
+	public override void Disable(Canvas canvas)
+	{
+		this.canvas = null;
+
+		if (this.ellipse != null)
+		{
+			this.ellipse.MouseLeftButtonDown -= this.OnMouseLeftButtonDown;
+			this.ellipse.MouseLeftButtonUp -= this.OnMouseLeftButtonUp;
+			this.ellipse.MouseMove -= this.OnMouseMove;
+			this.ellipse.MouseLeave -= this.OnMouseLeave;
+		}
+
+		base.Disable(canvas);
+	}
+
+	private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+	{
+		Point mousePos = e.GetPosition(this.canvas);
+		this.ellipse.CaptureMouse();
+		this.gizmo.OnMouseLeftButtonDown(mousePos);
+	}
+
+	private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+	{
+		Point mousePos = e.GetPosition(this.canvas);
+		this.ellipse.ReleaseMouseCapture();
+		this.gizmo.OnMouseLeftButtonUp(mousePos);
+	}
+
+	private void OnMouseMove(object sender, MouseEventArgs e)
+	{
+		Point mousePos = e.GetPosition(this.canvas);
+		this.gizmo.OnMouseMove(mousePos);
+	}
+
+	private void OnMouseLeave(object sender, MouseEventArgs e)
+	{
+		Point mousePos = e.GetPosition(this.canvas);
+		this.gizmo.OnMouseLeave(mousePos);
 	}
 }

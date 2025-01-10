@@ -77,6 +77,7 @@ public class RotationGizmoAxis : GizmoAxisBase
 			this.segments[i].Stroke = new SolidColorBrush(this.Foreground);
 			this.segments[i].StrokeEndLineCap = System.Windows.Media.PenLineCap.Round;
 			this.segments[i].StrokeStartLineCap = System.Windows.Media.PenLineCap.Round;
+			this.segments[i].IsHitTestVisible = false;
 			canvas.Children.Add(this.segments[i]);
 		}
 	}
