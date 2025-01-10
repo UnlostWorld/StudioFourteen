@@ -55,6 +55,16 @@ public class CirclePrimitive : PrimitiveBase
 		base.Enable(canvas);
 	}
 
+	public override void Disable(Canvas canvas)
+	{
+		base.Disable(canvas);
+
+		for (int i = 1; i < this.segments.Length; i++)
+		{
+			canvas.Children.Remove(this.segments[i]);
+		}
+	}
+
 	public override void Update()
 	{
 		for (int i = 1; i < this.points3d.Length; i++)

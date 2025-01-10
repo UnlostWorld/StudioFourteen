@@ -13,55 +13,42 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Gizmos;
+namespace StudioFourteen.Overlays.Gizmos.Rotation;
 
-using StudioFourteen.Gizmos.Rotation;
-using System.Numerics;
+using StudioFourteen.Overlays.Gizmos;
+using StudioFourteen.Overlays.Primitives;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
-using System.Windows.Shapes;
 
 public partial class RotationGizmo : GizmoBase
 {
-	private readonly Ellipse sphere;
+	private readonly EllipsePrimitive sphere;
 	private readonly RotationGizmoAxis xAxis;
 	private readonly RotationGizmoAxis yAxis;
 	private readonly RotationGizmoAxis zAxis;
-	private readonly Ellipse mousePrompt;
 
 	public RotationGizmo()
 	{
 		this.sphere = new();
-		this.sphere.Width = this.Radius * 2;
-		this.sphere.Height = this.Radius * 2;
-		this.sphere.Fill = new SolidColorBrush(Color.FromArgb(0x50, 0, 0, 0));
-		this.Canvas.Children.Add(this.sphere);
-		Panel.SetZIndex(this.sphere, 0);
+		this.sphere.Foreground = Color.FromArgb(0x80, 0, 0, 0);
+		this.sphere.Radius = 80;
+		this.AddChild(this.sphere);
 
-		this.xAxis = new(GizmoAxes.X, this.Radius, this.Canvas);
-		this.xAxis.ForegroundBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x33, 0x33, 0xFF));
-		this.xAxis.BackgroundBrush = new SolidColorBrush(Color.FromArgb(0x10, 0x33, 0x33, 0xFF));
-		this.AddAxis(this.xAxis);
+		this.xAxis = new(GizmoAxes.X);
+		this.xAxis.Foreground = Color.FromArgb(0xFF, 0x33, 0x33, 0xFF);
+		this.xAxis.Background = Color.FromArgb(0xFF, 0x33, 0x33, 0x4D);
+		this.AddChild(this.xAxis);
 
-		this.yAxis = new(GizmoAxes.Y, this.Radius, this.Canvas);
-		this.yAxis.ForegroundBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x33, 0xFF, 0x33));
-		this.yAxis.BackgroundBrush = new SolidColorBrush(Color.FromArgb(0x10, 0x33, 0xFF, 0x33));
-		this.AddAxis(this.yAxis);
+		this.yAxis = new(GizmoAxes.Y);
+		this.yAxis.Foreground = Color.FromArgb(0xFF, 0x33, 0xFF, 0x33);
+		this.yAxis.Background = Color.FromArgb(0xFF, 0x33, 0x4D, 0x33);
+		this.AddChild(this.yAxis);
 
-		this.zAxis = new(GizmoAxes.Z, this.Radius, this.Canvas);
-		this.zAxis.ForegroundBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0x33, 0x33));
-		this.zAxis.BackgroundBrush = new SolidColorBrush(Color.FromArgb(0x10, 0xFF, 0x33, 0x33));
-		this.AddAxis(this.zAxis);
-
-		this.mousePrompt = new();
-		this.mousePrompt.Width = 10;
-		this.mousePrompt.Height = 10;
-		this.Canvas.Children.Add(this.mousePrompt);
-		Panel.SetZIndex(this.mousePrompt, 10000);
+		this.zAxis = new(GizmoAxes.Z);
+		this.zAxis.Foreground = Color.FromArgb(0xFF, 0xFF, 0x33, 0x33);
+		this.zAxis.Background = Color.FromArgb(0xFF, 0x4D, 0x33, 0x33);
+		this.AddChild(this.zAxis);
 	}
-
-	public float Radius { get; set; } = 70;
 
 	/*protected override void OnMouseWheel(MouseWheelEventArgs e)
 	{
@@ -94,7 +81,7 @@ public partial class RotationGizmo : GizmoBase
 			this.Rotation = this.Rotation * rot;
 			e.Handled = true;
 		}
-	}*/
+	}
 
 	protected override void OnDraw(Vector2 center)
 	{
@@ -102,7 +89,7 @@ public partial class RotationGizmo : GizmoBase
 
 		Canvas.SetLeft(this.sphere, center.X - (this.sphere.Width / 2));
 		Canvas.SetTop(this.sphere, center.Y - (this.sphere.Height / 2));
-	}
+	}*/
 
 	protected override GizmoAxisBase? GetHoverAxis(Point mousePos)
 	{

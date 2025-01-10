@@ -82,7 +82,7 @@ public class PrimitiveRenderer : Canvas
 
 					try
 					{
-						primitive.Update(this.Services.Camera.CurrentViewProjection);
+						primitive.Update(this.Services.Camera.CurrentView, this.Services.Camera.CurrentProjection);
 					}
 					catch (Exception ex)
 					{

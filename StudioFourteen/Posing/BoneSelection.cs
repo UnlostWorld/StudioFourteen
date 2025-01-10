@@ -14,7 +14,7 @@
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
 namespace StudioFourteen.Posing;
-using StudioFourteen.Gizmos;
+using StudioFourteen.Overlays.Gizmos;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Xml.Linq;

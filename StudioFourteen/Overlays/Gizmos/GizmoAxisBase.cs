@@ -13,12 +13,14 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Gizmos;
+namespace StudioFourteen.Overlays.Gizmos;
 
-using System.Numerics;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using Serilog;
+using StudioFourteen;
+using StudioFourteen.Overlays.Primitives;
 
 using Transform = StudioFourteen.Posing.Transform;
 using Vector = System.Windows.Vector;
@@ -30,8 +32,12 @@ public enum GizmoAxes
 	Z,
 }
 
-public abstract class GizmoAxisBase
+public abstract class GizmoAxisBase : PrimitiveBase
 {
+	public double Sensitivity = 1.0;
+	public Color Foreground = Colors.Gray;
+	public Color Background = Colors.Black;
+
 	protected readonly ILogger Log = Logging.ForContext<GizmoAxisBase>();
 
 	public GizmoAxisBase()
@@ -39,11 +45,11 @@ public abstract class GizmoAxisBase
 		this.Log = Logging.ForContext(this.GetType());
 	}
 
-	public double Sensitivity { get; set; }
 	public GizmoAxes Axis { get; protected set; }
-	public Brush ForegroundBrush { get; set; } = new SolidColorBrush(Colors.Gray);
-	public Brush BackgroundBrush { get; set; } = new SolidColorBrush(Colors.Black);
-	public bool IsAxisHovered { get; set; } = false;
+	public virtual bool IsAxisHovered { get; set; } = false;
+
+	protected Brush? ForegroundBrush { get; private set; }
+	protected Brush? BackgroundBrush { get; private set; }
 
 	protected ServiceManager Services => ServiceManager.Instance;
 
@@ -62,12 +68,11 @@ public abstract class GizmoAxisBase
 	{
 	}
 
-	public abstract void Transform(Matrix4x4 transformMatrix, Matrix4x4 viewMatrix, Vector2 center);
-
-	protected Vector3 Transform(Vector3 position, Vector2 center, Matrix4x4 transformMatrix, Matrix4x4 viewMatrix)
+	public override void Enable(Canvas canvas)
 	{
-		Vector3 toPoint = Vector3.Transform(position, transformMatrix);
-		toPoint = Vector3.Transform(toPoint, viewMatrix);
-		return new Vector3(center.X + toPoint.X, center.Y + toPoint.Y, toPoint.Z);
+		base.Enable(canvas);
+
+		this.ForegroundBrush = new SolidColorBrush(this.Foreground);
+		this.BackgroundBrush = new SolidColorBrush(this.Background);
 	}
 }

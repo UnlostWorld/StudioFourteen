@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Overlays.Primitives;
 
+using StudioFourteen.Posing;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Windows.Controls;
@@ -22,16 +23,21 @@ using System.Windows.Controls;
 public class PrimitiveGroup : IPrimitive
 {
 	public readonly List<IPrimitive> Children = new();
+	public Transform Transform = Transform.Identity;
+	public bool KeepScreenSize = false;
 
-	public void Enable(Canvas canvas)
+	public PrimitiveGroup? Parent { get; set; }
+
+	public virtual void Enable(Canvas canvas)
 	{
 		foreach (IPrimitive primitive in this.Children)
 		{
+			primitive.Parent = this;
 			primitive.Enable(canvas);
 		}
 	}
 
-	public void Disable(Canvas canvas)
+	public virtual void Disable(Canvas canvas)
 	{
 		foreach (IPrimitive primitive in this.Children)
 		{
@@ -39,12 +45,28 @@ public class PrimitiveGroup : IPrimitive
 		}
 	}
 
-	public void Update(Matrix4x4 viewProjection)
+	public virtual void Update(Matrix4x4 view, Matrix4x4 projection)
 	{
 		foreach (IPrimitive primitive in this.Children)
 		{
-			primitive.Update(viewProjection);
+			primitive.Update(view, projection);
 		}
+	}
+
+	public Transform GetTransform()
+	{
+		if (this.Parent != null)
+			return this.Parent.GetTransform() * this.Transform;
+
+		return this.Transform;
+	}
+
+	public bool GetKeepScreenSize()
+	{
+		if (this.Parent != null)
+			return this.Parent.GetKeepScreenSize() || this.KeepScreenSize;
+
+		return this.KeepScreenSize;
 	}
 
 	protected T AddChild<T>()

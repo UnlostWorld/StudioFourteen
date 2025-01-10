@@ -13,8 +13,10 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Gizmos.Translation;
+/*
+namespace StudioFourteen.Overlays.Gizmos.Translation;
 
+using StudioFourteen.Overlays.Gizmos;
 using StudioFourteen.Structs;
 using System.Numerics;
 using System.Windows;
@@ -206,3 +208,4 @@ public class TranslationGizmoDualAxis : GizmoAxisBase
 		return 0;
 	}
 }
+*/

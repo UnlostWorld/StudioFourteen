@@ -13,73 +13,81 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Gizmos.Rotation;
+namespace StudioFourteen.Overlays.Gizmos.Rotation;
 
-using StudioFourteen.Posing;
-using StudioFourteen.Structs.Extensions;
+using StudioFourteen.Overlays.Gizmos;
+
 using System;
 using System.Numerics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
 using System.Windows.Shapes;
+
+using Transform = StudioFourteen.Posing.Transform;
 using Vector = System.Windows.Vector;
 
 public class RotationGizmoAxis : GizmoAxisBase
 {
-	private const int NumPoints = 144;
+	public int StrokeThickness = 3;
+
+	private const int NumPoints = 72;
 
 	private readonly Line[] segments = new Line[NumPoints];
 	private readonly Vector3[] points3d = new Vector3[NumPoints];
-	private int strokeThickness = 3;
 
 	private Point? dragStartToPos;
 	private Point? dragStartFromPos;
 
-	public RotationGizmoAxis(GizmoAxes axis, float radius, Canvas canvas)
+	public RotationGizmoAxis(GizmoAxes axis)
 	{
 		this.Axis = axis;
+	}
+
+	public override void Enable(Canvas canvas)
+	{
+		base.Enable(canvas);
 
 		for (int i = 0; i < this.points3d.Length; i++)
 		{
 			float p = i / (float)(this.points3d.Length - 1);
 			float r = p * (MathF.PI * 2);
 
-			if (axis == GizmoAxes.Z)
+			if (this.Axis == GizmoAxes.Z)
 			{
-				this.points3d[i] = new Vector3(radius * MathF.Cos(r), radius * MathF.Sin(r), 0);
+				this.points3d[i] = new Vector3(MathF.Cos(r), MathF.Sin(r), 0);
 			}
-			else if (axis == GizmoAxes.X)
+			else if (this.Axis == GizmoAxes.X)
 			{
-				this.points3d[i] = new Vector3(0, radius * MathF.Cos(r), radius * MathF.Sin(r));
+				this.points3d[i] = new Vector3(0, MathF.Cos(r), MathF.Sin(r));
 			}
-			else if (axis == GizmoAxes.Y)
+			else if (this.Axis == GizmoAxes.Y)
 			{
-				this.points3d[i] = new Vector3(radius * MathF.Cos(r), 0, radius * MathF.Sin(r));
+				this.points3d[i] = new Vector3(MathF.Cos(r), 0, MathF.Sin(r));
 			}
+
+			this.points3d[i] *= 0.3f;
 		}
 
 		for (int i = 1; i < this.segments.Length; i++)
 		{
 			this.segments[i] = new();
-			this.segments[i].StrokeThickness = this.strokeThickness;
-			this.segments[i].Stroke = this.ForegroundBrush;
+			this.segments[i].StrokeThickness = this.StrokeThickness;
+			this.segments[i].Stroke = new SolidColorBrush(this.Foreground);
 			this.segments[i].StrokeEndLineCap = System.Windows.Media.PenLineCap.Round;
 			this.segments[i].StrokeStartLineCap = System.Windows.Media.PenLineCap.Round;
 			canvas.Children.Add(this.segments[i]);
 		}
 	}
 
-	public int StrokeThickness
+	public override void Disable(Canvas canvas)
 	{
-		get => this.strokeThickness;
-		set
+		base.Disable(canvas);
+
+		for (int i = 1; i < this.segments.Length; i++)
 		{
-			this.strokeThickness = value;
-			foreach (Line line in this.segments)
-			{
-				line.StrokeThickness = value;
-			}
+			canvas.Children.Remove(this.segments[i]);
 		}
 	}
 
@@ -167,20 +175,17 @@ public class RotationGizmoAxis : GizmoAxisBase
 		this.dragStartFromPos = null;
 	}
 
-	public override void Transform(Matrix4x4 transformMatrix, Matrix4x4 viewMatrix, Vector2 center)
+	public override void Update()
 	{
-		float zClip = 0f;
+		base.Update();
+
+		float zClip = this.LocalToScreen(Vector3.Zero).Z;
 		for (int i = 1; i < this.points3d.Length; i++)
 		{
-			Vector3 fromPoint = Vector3.Transform(this.points3d[i - 1], transformMatrix);
-			fromPoint = Vector3.Transform(fromPoint, viewMatrix);
+			Vector3 fromPos = this.LocalToScreen(this.points3d[i - 1]);
+			Vector3 toPos = this.LocalToScreen(this.points3d[i]);
 
-			Vector3 toPoint = Vector3.Transform(this.points3d[i], transformMatrix);
-			toPoint = Vector3.Transform(toPoint, viewMatrix);
-
-			bool isVisible = toPoint.Z < zClip;
-			Vector2 fromPos = center + new Vector2(fromPoint.X, fromPoint.Y);
-			Vector2 toPos = center + new Vector2(toPoint.X, toPoint.Y);
+			bool isVisible = toPos.Z < zClip;
 
 			Line line = this.segments[i];
 			line.X1 = fromPos.X;

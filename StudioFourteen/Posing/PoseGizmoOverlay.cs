@@ -15,7 +15,7 @@
 
 namespace StudioFourteen.Posing;
 
-using StudioFourteen.Gizmos;
+using StudioFourteen.Overlays.Gizmos;
 using StudioFourteen.Overlays;
 using System.Numerics;
 using System.Windows;

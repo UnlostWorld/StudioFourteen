@@ -13,9 +13,10 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Gizmos;
+/*
+namespace StudioFourteen.Overlays.Gizmos.Translation;
 
-using StudioFourteen.Gizmos.Translation;
+using StudioFourteen.Overlays.Gizmos;
 using System.Windows.Media;
 
 public partial class TranslationGizmo : GizmoBase
@@ -59,4 +60,4 @@ public partial class TranslationGizmo : GizmoBase
 	}
 
 	public float Radius { get; set; } = 70;
-}
+}*/

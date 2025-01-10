@@ -13,7 +13,7 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Gizmos;
+namespace StudioFourteen.Overlays.Gizmos;
 
 using Dalamud.Plugin.Services;
 using StudioFourteen.Mvm;
@@ -29,52 +29,44 @@ using System.Numerics;
 using StudioFourteen.Extensions;
 using StudioFourteen.Utilities;
 using System.Windows.Input;
-using DependencyPropertyGenerator;
+using StudioFourteen.Overlays.Primitives;
 
 using CursorPoint = System.Drawing.Point;
 using Transform = StudioFourteen.Posing.Transform;
 using Vector = System.Windows.Vector;
 
-[DependencyProperty<double>("Sensitivity", DefaultValue=1)]
-[DependencyProperty<Transform>("Transform", DefaultBindingMode=DefaultBindingMode.TwoWay)]
-public abstract partial class GizmoBase : View
-{
-	public bool IsolateRotation = true;
+#pragma warning disable
 
-	protected readonly Canvas Canvas;
+public abstract class GizmoBase : PrimitiveGroup
+{
+	public double Sensitivity = 1;
 
 	private readonly List<GizmoAxisBase> axes = new();
 
 	private bool isError = false;
 	private bool isDragging = false;
-	private bool isLoading = false;
 	private Point? lastDragMousePos;
 	private GizmoAxisBase? hoverAxis;
 	private GizmoAxisBase? dragAxis;
 	private Transform? dragTransform;
 	private CursorPoint cursorKeepPosition;
 
-	public GizmoBase()
-	{
-		this.Background = new SolidColorBrush(Colors.Transparent);
-
-		this.Canvas = new();
-		this.Content = this.Canvas;
-
-		this.IsEnabledChanged += this.OnIsEnabledChanged;
-		this.IsVisibleChanged += this.OnIsVisibleChanged;
-	}
-
 	public delegate void TransformChangedDelegate(Transform newTransform);
 
 	public event TransformChangedDelegate? TransformChanged;
+
+	public GizmoBase()
+	{
+		this.KeepScreenSize = true;
+	}
 
 	protected void AddAxis(GizmoAxisBase axis)
 	{
 		this.axes.Add(axis);
 	}
 
-	protected unsafe override void OnFrameworkUpdate(IFramework framework)
+
+	/*protected unsafe override void OnFrameworkUpdate(IFramework framework)
 	{
 		base.OnFrameworkUpdate(framework);
 
@@ -247,6 +239,18 @@ public abstract partial class GizmoBase : View
 		}
 	}
 
+	protected override void OnMouseLeave(MouseEventArgs e)
+	{
+		CursorUtility.SetCursorVisible(true);
+
+		if (this.hoverAxis != null)
+			this.hoverAxis.IsAxisHovered = false;
+
+		this.hoverAxis = null;
+
+		base.OnMouseLeave(e);
+	}*/
+
 	protected virtual GizmoAxisBase? GetHoverAxis(Point mousePos)
 	{
 		int highestDepthAxis = int.MinValue;
@@ -267,31 +271,5 @@ public abstract partial class GizmoBase : View
 		}
 
 		return bestAxis;
-	}
-
-	protected override void OnMouseLeave(MouseEventArgs e)
-	{
-		CursorUtility.SetCursorVisible(true);
-
-		if (this.hoverAxis != null)
-			this.hoverAxis.IsAxisHovered = false;
-
-		this.hoverAxis = null;
-
-		base.OnMouseLeave(e);
-	}
-
-	private void OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-	{
-		if (this.IsVisible)
-		{
-			this.Opacity = 0;
-			this.isLoading = true;
-		}
-	}
-
-	private void OnIsEnabledChanged(object sender, DependencyPropertyChangedEventArgs e)
-	{
-		this.Opacity = this.IsEnabled ? 1 : 0.5;
 	}
 }

@@ -13,9 +13,11 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Gizmos.Scale;
+/*
+namespace StudioFourteen.Overlays.Gizmos.Scale;
 
 using StudioFourteen.Extensions;
+using StudioFourteen.Overlays.Gizmos;
 using System.Numerics;
 using System.Windows;
 using System.Windows.Controls;
@@ -116,3 +118,4 @@ public class UniformScaleGizmoAxis : GizmoAxisBase
 		return transform;
 	}
 }
+*/

@@ -16,8 +16,8 @@
 namespace StudioFourteen.Posing;
 
 using Dalamud.Plugin.Services;
-using StudioFourteen.Gizmos;
 using StudioFourteen.Mvm;
+using StudioFourteen.Overlays.Gizmos;
 using System;
 using System.Numerics;
 

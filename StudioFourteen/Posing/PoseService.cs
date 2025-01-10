@@ -25,7 +25,6 @@ using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
 using FontAwesome.Sharp;
 using StudioFourteen.Context;
 using StudioFourteen.Files;
-using StudioFourteen.Gizmos;
 using StudioFourteen.Plugin;
 using StudioFourteen.Services;
 using StudioFourteen.Utilities;

@@ -106,6 +106,8 @@ public class CameraService : ServiceBase
 
 	public List<StudioCameraBase> Cameras { get; init; } = new();
 
+	public Matrix4x4 CurrentView { get; private set; }
+	public Matrix4x4 CurrentProjection { get; private set; }
 	public Matrix4x4 CurrentViewProjection { get; private set; }
 
 	public override Task Start()
@@ -332,7 +334,9 @@ public class CameraService : ServiceBase
 			}
 		}
 
-		this.CurrentViewProjection = camera->ViewMatrix * camera->RenderCamera->ProjectionMatrix;
+		this.CurrentView = camera->ViewMatrix;
+		this.CurrentProjection = camera->RenderCamera->ProjectionMatrix;
+		this.CurrentViewProjection = this.CurrentView * this.CurrentProjection;
 
 		return result;
 	}

@@ -17,8 +17,8 @@ namespace StudioFourteen.Posing;
 
 using DependencyPropertyGenerator;
 using PropertyChanged.SourceGenerator;
-using StudioFourteen.Gizmos;
 using StudioFourteen.Mvm;
+using StudioFourteen.Overlays.Gizmos;
 using StudioFourteen.Settings;
 
 [DependencyProperty<TransformSelectionBase>("Selection")]

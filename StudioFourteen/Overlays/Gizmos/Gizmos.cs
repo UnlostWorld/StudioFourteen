@@ -13,34 +13,11 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Overlays;
+namespace StudioFourteen.Overlays.Gizmos;
 
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using FFXIVClientStructs.FFXIV.Client.Game.Object;
-using StudioFourteen.Overlays.Gizmos.Rotation;
-using StudioFourteen.Overlays.Primitives;
-using System.Numerics;
-
-public class TestOverlayLayer : OverlayLayerBase
+public enum GizmoTypes
 {
-	private readonly RotationGizmo rot;
-
-	public TestOverlayLayer()
-		: base("Test", "Layer 1")
-	{
-		this.rot = new()
-		{
-			Sensitivity = 1,
-		};
-
-		this.AddChild(this.rot);
-	}
-
-	public unsafe override void OnFrameworkUpdate()
-	{
-		base.OnFrameworkUpdate();
-
-		Character* target = this.Services.Target.GetTarget();
-		this.rot.Transform = target->GameObject.GetTransform();
-	}
+	Translation,
+	Rotation,
+	Scale,
 }

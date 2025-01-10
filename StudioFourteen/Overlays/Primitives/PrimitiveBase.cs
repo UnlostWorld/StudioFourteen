@@ -23,21 +23,30 @@ using System.Windows.Controls;
 
 public interface IPrimitive
 {
-	void Update(Matrix4x4 viewProjection);
+	PrimitiveGroup? Parent { get; set; }
+
+	void Update(Matrix4x4 view, Matrix4x4 projection);
 	void Enable(Canvas canvas);
 	void Disable(Canvas canvas);
+
+	Transform GetTransform();
+	bool GetKeepScreenSize();
 }
 
 public abstract class PrimitiveBase : IPrimitive
 {
+	public bool KeepScreenSize = false;
+
 	private readonly List<FrameworkElement> elements = new();
 
 	private Canvas? parent;
 	private float screenWidth = 0;
 	private float screenHeight = 0;
 	private Matrix4x4 currentViewProjection;
+	private Matrix4x4 currentTransform;
 
 	public Transform Transform { get; set; } = Transform.Identity;
+	public PrimitiveGroup? Parent { get; set; }
 
 	public virtual void Enable(Canvas canvas)
 	{
@@ -51,14 +60,28 @@ public abstract class PrimitiveBase : IPrimitive
 		}
 	}
 
-	public virtual void Update(Matrix4x4 viewProjection)
+	public virtual void Update(Matrix4x4 view, Matrix4x4 projection)
 	{
 		if (this.parent == null)
 			return;
 
 		this.screenWidth = (float)this.parent.ActualWidth;
 		this.screenHeight = (float)this.parent.ActualHeight;
-		this.currentViewProjection = viewProjection;
+		this.currentViewProjection = view * projection;
+		this.currentTransform = this.GetTransform().ToMatrix();
+
+		if (this.GetKeepScreenSize())
+		{
+			if (Matrix4x4.Invert(view, out Matrix4x4 invView))
+			{
+				Vector3 camPos = Vector3.Transform(Vector3.Zero, invView);
+				Vector3 pos = Vector3.Transform(Vector3.Zero, this.currentTransform);
+
+				float distance = (pos - camPos).Length();
+				float scale = distance / 5; // approximately the same size as when the camera is 5 units away
+				this.currentTransform = Matrix4x4.CreateScale(scale) * this.currentTransform;
+			}
+		}
 
 		this.Update();
 	}
@@ -77,6 +100,22 @@ public abstract class PrimitiveBase : IPrimitive
 		this.parent = null;
 	}
 
+	public Transform GetTransform()
+	{
+		if (this.Parent != null)
+			return this.Parent.GetTransform() * this.Transform;
+
+		return this.Transform;
+	}
+
+	public bool GetKeepScreenSize()
+	{
+		if (this.Parent != null)
+			return this.Parent.GetKeepScreenSize() || this.KeepScreenSize;
+
+		return this.KeepScreenSize;
+	}
+
 	protected T AddChild<T>()
 		where T : FrameworkElement, new()
 	{
@@ -92,8 +131,13 @@ public abstract class PrimitiveBase : IPrimitive
 
 	protected Vector3 LocalToScreen(Vector3 local)
 	{
-		Vector3 world = Vector3.Transform(local, this.Transform.ToMatrix());
+		Vector3 world = Vector3.Transform(local, this.currentTransform);
 		Vector3 cameraPos = this.currentViewProjection.TransformViewProjection(world);
-		return new(cameraPos.X * this.screenWidth, cameraPos.Y * this.screenHeight, cameraPos.Z);
+		Vector3 screenPos = new(cameraPos.X * this.screenWidth, cameraPos.Y * this.screenHeight, -cameraPos.Z);
+
+		if (float.IsNaN(screenPos.X) || float.IsNaN(screenPos.Y) || float.IsNaN(screenPos.Z))
+			return Vector3.Zero;
+
+		return screenPos;
 	}
 }

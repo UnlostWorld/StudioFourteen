@@ -20,7 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Windows.Input;
-using static StudioFourteen.Gizmos.RotationGizmo;
+using static StudioFourteen.Overlays.Gizmos.Rotation.RotationGizmo;
 
 public class MouseDevice : InputDeviceBase
 {

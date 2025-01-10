@@ -13,9 +13,10 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Gizmos;
+/*
+namespace StudioFourteen.Overlays.Gizmos.Scale;
 
-using StudioFourteen.Gizmos.Scale;
+using StudioFourteen.Overlays.Gizmos;
 using System.Windows.Media;
 
 public partial class ScaleGizmo : GizmoBase
@@ -69,3 +70,4 @@ public partial class ScaleGizmo : GizmoBase
 	public float UniformRadius { get; set; } = 30;
 	public float Radius { get; set; } = 70;
 }
+*/
