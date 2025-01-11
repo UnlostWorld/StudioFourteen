@@ -18,12 +18,11 @@ namespace StudioFourteen.Overlays;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using StudioFourteen.Overlays.Gizmos.Rotation;
-using StudioFourteen.Overlays.Primitives;
-using System.Numerics;
 
 public class TestOverlayLayer : OverlayLayerBase
 {
 	private readonly RotationGizmo rot;
+	private Posing.Transform? pendingTransform;
 
 	public TestOverlayLayer()
 		: base("Test", "Layer 1")
@@ -33,6 +32,8 @@ public class TestOverlayLayer : OverlayLayerBase
 			Sensitivity = 1,
 		};
 
+		this.rot.TransformChanged += this.OnTransformChanged;
+
 		this.AddChild(this.rot);
 	}
 
@@ -41,6 +42,18 @@ public class TestOverlayLayer : OverlayLayerBase
 		base.OnFrameworkUpdate();
 
 		Character* target = this.Services.Target.GetTarget();
+
+		if (this.pendingTransform != null)
+		{
+			target->GameObject.SetTransform(this.pendingTransform.Value);
+			this.pendingTransform = null;
+		}
+
 		this.rot.Transform = target->GameObject.GetTransform();
+	}
+
+	private void OnTransformChanged(Posing.Transform newTransform)
+	{
+		this.pendingTransform = newTransform;
 	}
 }

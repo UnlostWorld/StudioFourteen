@@ -15,28 +15,19 @@
 
 namespace StudioFourteen.Overlays.Gizmos;
 
-using Dalamud.Plugin.Services;
-using StudioFourteen.Mvm;
-using System;
+using Serilog;
+using StudioFourteen.Extensions;
+using StudioFourteen.Overlays.Primitives;
+using StudioFourteen.Utilities;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Media;
-using FFXIVClientStructs.FFXIV.Client.Game;
-using FFXIVClientStructs.FFXIV.Client.Game.Control;
-using System.Numerics;
-using StudioFourteen.Extensions;
-using StudioFourteen.Utilities;
 using System.Windows.Input;
-using StudioFourteen.Overlays.Primitives;
-using Serilog;
+using System.Windows.Media;
 
 using CursorPoint = System.Drawing.Point;
 using Transform = StudioFourteen.Posing.Transform;
 using Vector = System.Windows.Vector;
-
-#pragma warning disable
 
 public abstract class GizmoBase : PrimitiveGroup
 {
@@ -45,19 +36,14 @@ public abstract class GizmoBase : PrimitiveGroup
 	protected readonly ILogger Log = Logging.ForContext<GizmoBase>();
 
 	private readonly List<GizmoAxisBase> axes = new();
-	private GizmoMousePrimitive mouseHandler;
+	private readonly GizmoMousePrimitive mouseHandler;
 
-	private bool isError = false;
 	private bool isDragging = false;
 	private Point? lastDragMousePos;
 	private GizmoAxisBase? hoverAxis;
 	private GizmoAxisBase? dragAxis;
 	private Transform? dragTransform;
 	private CursorPoint cursorKeepPosition;
-
-	public delegate void TransformChangedDelegate(Transform newTransform);
-
-	public event TransformChangedDelegate? TransformChanged;
 
 	public GizmoBase()
 	{
@@ -68,10 +54,9 @@ public abstract class GizmoBase : PrimitiveGroup
 		this.KeepScreenSize = true;
 	}
 
-	protected void AddAxis(GizmoAxisBase axis)
-	{
-		this.axes.Add(axis);
-	}
+	public delegate void TransformChangedDelegate(Transform newTransform);
+
+	public event TransformChangedDelegate? TransformChanged;
 
 	public void OnMouseLeftButtonDown(Point mousePos)
 	{
@@ -130,8 +115,6 @@ public abstract class GizmoBase : PrimitiveGroup
 				}
 			}
 
-			////e.Handled = true;
-
 			// Reset cursor location
 			CursorUtility.SetPosition(this.cursorKeepPosition);
 			this.lastDragMousePos = CursorUtility.GetPosition().ToWindowsPoint();
@@ -160,6 +143,11 @@ public abstract class GizmoBase : PrimitiveGroup
 			this.hoverAxis.IsAxisHovered = false;
 
 		this.hoverAxis = null;
+	}
+
+	protected void AddAxis(GizmoAxisBase axis)
+	{
+		this.axes.Add(axis);
 	}
 
 	protected virtual GizmoAxisBase? GetHoverAxis(Point mousePos)
@@ -228,6 +216,9 @@ public class GizmoMousePrimitive : EllipsePrimitive
 
 	private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
 	{
+		if (this.ellipse == null || this.canvas == null)
+			return;
+
 		Point mousePos = e.GetPosition(this.canvas);
 		this.ellipse.CaptureMouse();
 		this.gizmo.OnMouseLeftButtonDown(mousePos);
@@ -235,6 +226,9 @@ public class GizmoMousePrimitive : EllipsePrimitive
 
 	private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
 	{
+		if (this.ellipse == null || this.canvas == null)
+			return;
+
 		Point mousePos = e.GetPosition(this.canvas);
 		this.ellipse.ReleaseMouseCapture();
 		this.gizmo.OnMouseLeftButtonUp(mousePos);
@@ -242,12 +236,18 @@ public class GizmoMousePrimitive : EllipsePrimitive
 
 	private void OnMouseMove(object sender, MouseEventArgs e)
 	{
+		if (this.ellipse == null || this.canvas == null)
+			return;
+
 		Point mousePos = e.GetPosition(this.canvas);
 		this.gizmo.OnMouseMove(mousePos);
 	}
 
 	private void OnMouseLeave(object sender, MouseEventArgs e)
 	{
+		if (this.ellipse == null || this.canvas == null)
+			return;
+
 		Point mousePos = e.GetPosition(this.canvas);
 		this.gizmo.OnMouseLeave(mousePos);
 	}

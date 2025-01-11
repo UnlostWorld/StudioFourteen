@@ -17,6 +17,7 @@ namespace StudioFourteen.Overlays.Primitives;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -56,6 +57,9 @@ public class PrimitiveRenderer : Canvas
 		this.Primitives.Remove(primitive);
 	}
 
+	protected virtual Matrix4x4 GetViewMatrix() => this.Services.Camera.CurrentView;
+	protected virtual Matrix4x4 GetProjectionMatrix() => this.Services.Camera.CurrentProjection;
+
 	private void OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
 	{
 		if (this.IsVisible)
@@ -83,7 +87,7 @@ public class PrimitiveRenderer : Canvas
 
 					try
 					{
-						primitive.Update(this.Services.Camera.CurrentView, this.Services.Camera.CurrentProjection);
+						primitive.Update(this.GetViewMatrix(), this.GetProjectionMatrix());
 					}
 					catch (Exception ex)
 					{

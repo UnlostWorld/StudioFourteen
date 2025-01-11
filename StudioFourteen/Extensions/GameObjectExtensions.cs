@@ -19,7 +19,6 @@ using global::System;
 using global::System.Runtime.InteropServices;
 using global::System.Collections.Generic;
 using StudioFourteen.Posing;
-using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 
 public static class GameObjectExtensions
 {
@@ -51,5 +50,15 @@ public static class GameObjectExtensions
 	public static unsafe Transform GetTransform(ref this GameObject self)
 	{
 		return Transform.FromTRS(self.DrawObject->Position, self.DrawObject->Rotation, self.DrawObject->Scale);
+	}
+
+	public static unsafe void SetTransform(ref this GameObject self, Transform transform)
+	{
+		if (transform.ToTRS(out var translation, out var rotation, out var scale))
+		{
+			self.DrawObject->Position = translation;
+			self.DrawObject->Rotation = rotation;
+			self.DrawObject->Scale = scale;
+		}
 	}
 }
