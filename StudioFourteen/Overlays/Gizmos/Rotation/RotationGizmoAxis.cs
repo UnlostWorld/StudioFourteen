@@ -67,7 +67,7 @@ public class RotationGizmoAxis : GizmoAxisBase
 				this.points3d[i] = new Vector3(MathF.Cos(r), 0, MathF.Sin(r));
 			}
 
-			this.points3d[i] *= 0.3f;
+			this.points3d[i] *= 0.43f;
 		}
 
 		for (int i = 1; i < this.segments.Length; i++)

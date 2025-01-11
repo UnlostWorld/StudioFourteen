@@ -31,7 +31,7 @@ public partial class RotationGizmo : GizmoBase
 	{
 		this.sphere = new();
 		this.sphere.Foreground = Color.FromArgb(0x80, 0, 0, 0);
-		this.sphere.Radius = 83;
+		this.sphere.Radius = 75;
 		this.AddChild(this.sphere);
 
 		this.xAxis = new(GizmoAxes.X);

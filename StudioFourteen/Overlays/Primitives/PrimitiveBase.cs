@@ -78,7 +78,7 @@ public abstract class PrimitiveBase : IPrimitive
 				Vector3 pos = Vector3.Transform(Vector3.Zero, this.currentTransform);
 
 				float distance = (pos - camPos).Length();
-				float scale = distance / 5; // approximately the same size as when the camera is 5 units away
+				float scale = distance / 8f;
 				this.currentTransform = Matrix4x4.CreateScale(scale) * this.currentTransform;
 			}
 		}
