@@ -17,6 +17,7 @@ namespace StudioFourteen.Overlays.Gizmos;
 
 using DependencyPropertyGenerator;
 using StudioFourteen.Overlays.Gizmos.Rotation;
+using StudioFourteen.Overlays.Gizmos.Translation;
 using StudioFourteen.Overlays.Primitives;
 using StudioFourteen.Posing;
 using System.Numerics;
@@ -25,16 +26,22 @@ using System.Numerics;
 [DependencyProperty<double>("Sensitivity")]
 public partial class GizmoControl : PrimitiveRenderer
 {
+	private readonly TranslationGizmo translation;
 	private readonly RotationGizmo rotation;
 
 	private Transform currentTransform;
 
 	public GizmoControl()
 	{
+		this.translation = new();
+		this.translation.TransformChanged += this.OnTranslationTransformChanged;
+		this.translation.KeepScreenSize = false;
+		this.AddPrimitive(this.translation);
+
 		this.rotation = new();
 		this.rotation.TransformChanged += this.OnRotationTransformChanged;
 		this.rotation.KeepScreenSize = false;
-		this.AddPrimitive(this.rotation);
+		////this.AddPrimitive(this.rotation);
 	}
 
 	protected override Matrix4x4 GetProjectionMatrix()
@@ -57,6 +64,11 @@ public partial class GizmoControl : PrimitiveRenderer
 		return Matrix4x4.Identity;
 	}
 
+	private void OnTranslationTransformChanged(Transform newTransform)
+	{
+		this.Transform = newTransform;
+	}
+
 	private void OnRotationTransformChanged(Posing.Transform newTransform)
 	{
 		this.Transform = newTransform;
@@ -66,6 +78,7 @@ public partial class GizmoControl : PrimitiveRenderer
 	{
 		this.currentTransform = newValue;
 		this.rotation.Transform = this.currentTransform;
+		this.translation.Transform = this.currentTransform;
 	}
 
 	partial void OnSensitivityChanged(double newValue)

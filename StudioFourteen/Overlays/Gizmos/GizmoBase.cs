@@ -148,6 +148,7 @@ public abstract class GizmoBase : PrimitiveGroup
 	protected void AddAxis(GizmoAxisBase axis)
 	{
 		this.axes.Add(axis);
+		this.AddChild(axis);
 	}
 
 	protected virtual GizmoAxisBase? GetHoverAxis(Point mousePos)

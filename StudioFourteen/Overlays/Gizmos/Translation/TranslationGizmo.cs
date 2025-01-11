@@ -13,7 +13,6 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-/*
 namespace StudioFourteen.Overlays.Gizmos.Translation;
 
 using StudioFourteen.Overlays.Gizmos;
@@ -21,6 +20,8 @@ using System.Windows.Media;
 
 public partial class TranslationGizmo : GizmoBase
 {
+	public float Radius = 0.35f;
+
 	private readonly TranslationGizmoAxis xAxis;
 	private readonly TranslationGizmoAxis yAxis;
 	private readonly TranslationGizmoAxis zAxis;
@@ -31,33 +32,31 @@ public partial class TranslationGizmo : GizmoBase
 
 	public TranslationGizmo()
 	{
-		this.xAxis = new(GizmoAxes.X, this.Radius, this.Canvas);
-		this.xAxis.ForegroundBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x33, 0x33, 0xFF));
-		this.xAxis.BackgroundBrush = new SolidColorBrush(Color.FromArgb(0x10, 0x33, 0x33, 0xFF));
+		this.xAxis = new(GizmoAxes.X, this.Radius);
+		this.xAxis.Foreground = Color.FromArgb(0xFF, 0x33, 0x33, 0xFF);
+		this.xAxis.Background = Color.FromArgb(0x10, 0x33, 0x33, 0xFF);
 		this.AddAxis(this.xAxis);
 
-		this.yAxis = new(GizmoAxes.Y, this.Radius, this.Canvas);
-		this.yAxis.ForegroundBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x33, 0xFF, 0x33));
-		this.yAxis.BackgroundBrush = new SolidColorBrush(Color.FromArgb(0x10, 0x33, 0xFF, 0x33));
+		this.yAxis = new(GizmoAxes.Y, this.Radius);
+		this.yAxis.Foreground = Color.FromArgb(0xFF, 0x33, 0xFF, 0x33);
+		this.yAxis.Background = Color.FromArgb(0x10, 0x33, 0xFF, 0x33);
 		this.AddAxis(this.yAxis);
 
-		this.zAxis = new(GizmoAxes.Z, this.Radius, this.Canvas);
-		this.zAxis.ForegroundBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0x33, 0x33));
-		this.zAxis.BackgroundBrush = new SolidColorBrush(Color.FromArgb(0x10, 0xFF, 0x33, 0x33));
+		this.zAxis = new(GizmoAxes.Z, this.Radius);
+		this.zAxis.Foreground = Color.FromArgb(0xFF, 0xFF, 0x33, 0x33);
+		this.zAxis.Background = Color.FromArgb(0x10, 0xFF, 0x33, 0x33);
 		this.AddAxis(this.zAxis);
 
-		this.xDualAxis = new(GizmoAxes.X, this.Radius * 0.4f, this.Canvas);
-		this.xDualAxis.ForegroundBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x33, 0x33, 0xFF));
+		this.xDualAxis = new(GizmoAxes.X, this.Radius * 0.4f);
+		this.xDualAxis.Foreground = Color.FromArgb(0xFF, 0x33, 0x33, 0xFF);
 		this.AddAxis(this.xDualAxis);
 
-		this.yDualAxis = new(GizmoAxes.Y, this.Radius * 0.4f, this.Canvas);
-		this.yDualAxis.ForegroundBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0x33, 0xFF, 0x33));
+		this.yDualAxis = new(GizmoAxes.Y, this.Radius * 0.4f);
+		this.yDualAxis.Foreground = Color.FromArgb(0xFF, 0x33, 0xFF, 0x33);
 		this.AddAxis(this.yDualAxis);
 
-		this.zDualAxis = new(GizmoAxes.Z, this.Radius * 0.4f, this.Canvas);
-		this.zDualAxis.ForegroundBrush = new SolidColorBrush(Color.FromArgb(0xFF, 0xFF, 0x33, 0x33));
+		this.zDualAxis = new(GizmoAxes.Z, this.Radius * 0.4f);
+		this.zDualAxis.Foreground = Color.FromArgb(0xFF, 0xFF, 0x33, 0x33);
 		this.AddAxis(this.zDualAxis);
 	}
-
-	public float Radius { get; set; } = 70;
-}*/
+}

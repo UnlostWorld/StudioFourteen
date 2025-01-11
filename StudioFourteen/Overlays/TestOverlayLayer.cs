@@ -18,23 +18,24 @@ namespace StudioFourteen.Overlays;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using StudioFourteen.Overlays.Gizmos.Rotation;
+using StudioFourteen.Overlays.Gizmos.Translation;
 
 public class TestOverlayLayer : OverlayLayerBase
 {
-	private readonly RotationGizmo rot;
+	private readonly TranslationGizmo gizmo;
 	private Posing.Transform? pendingTransform;
 
 	public TestOverlayLayer()
 		: base("Test", "Layer 1")
 	{
-		this.rot = new()
+		this.gizmo = new()
 		{
 			Sensitivity = 1,
 		};
 
-		this.rot.TransformChanged += this.OnTransformChanged;
+		this.gizmo.TransformChanged += this.OnTransformChanged;
 
-		this.AddChild(this.rot);
+		this.AddChild(this.gizmo);
 	}
 
 	public unsafe override void OnFrameworkUpdate()
@@ -49,7 +50,7 @@ public class TestOverlayLayer : OverlayLayerBase
 			this.pendingTransform = null;
 		}
 
-		this.rot.Transform = target->GameObject.GetTransform();
+		this.gizmo.Transform = target->GameObject.GetTransform();
 	}
 
 	private void OnTransformChanged(Posing.Transform newTransform)

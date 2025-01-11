@@ -13,7 +13,6 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-/*
 namespace StudioFourteen.Overlays.Gizmos.Translation;
 
 using StudioFourteen.Overlays.Gizmos;
@@ -29,30 +28,16 @@ using Vector = System.Windows.Vector;
 
 public class TranslationGizmoDualAxis : GizmoAxisBase
 {
-	private readonly Polygon square;
 	private readonly Vector3[] possibleCorners = new Vector3[4];
 	private Vector3 dragAxisOne;
 	private Vector3 dragAxisTwo;
 	private Vector3 dragAxisOnePos;
 	private Vector3 dragAxisTwoPos;
+	private Polygon? square;
 
-	public TranslationGizmoDualAxis(GizmoAxes axis, float radius, Canvas canvas)
+	public TranslationGizmoDualAxis(GizmoAxes axis, float radius)
 	{
 		this.Axis = axis;
-		this.square = new();
-		this.square.Fill = this.ForegroundBrush;
-		this.square.StrokeThickness = 3;
-		this.square.Stroke = this.ForegroundBrush;
-		this.square.StrokeLineJoin = PenLineJoin.Bevel;
-		this.square.Points = new PointCollection()
-		{
-			new Point(0, 0),
-			new Point(1, 0),
-			new Point(1, 1),
-			new Point(0, 1),
-		};
-
-		canvas.Children.Add(this.square);
 
 		if (this.Axis == GizmoAxes.X)
 		{
@@ -86,8 +71,33 @@ public class TranslationGizmoDualAxis : GizmoAxisBase
 		}
 	}
 
+	public override void Enable(Canvas canvas)
+	{
+		if (this.square == null)
+		{
+			this.square = this.AddChild<Polygon>();
+			this.square.IsHitTestVisible = false;
+			this.square.Fill = this.ForegroundBrush;
+			this.square.Stroke = this.ForegroundBrush;
+			this.square.StrokeThickness = 0;
+			this.square.StrokeLineJoin = PenLineJoin.Bevel;
+			this.square.Points = new PointCollection()
+			{
+				new Point(0, 0),
+				new Point(1, 0),
+				new Point(1, 1),
+				new Point(0, 1),
+			};
+		}
+
+		base.Enable(canvas);
+	}
+
 	public override Posing.Transform UpdateDrag(Vector mouseDelta, Posing.Transform transform)
 	{
+		if (this.square == null)
+			return transform;
+
 		double mag = mouseDelta.Length;
 		mouseDelta.Normalize();
 
@@ -153,14 +163,19 @@ public class TranslationGizmoDualAxis : GizmoAxisBase
 		return transform;
 	}
 
-	public override void Transform(Matrix4x4 transformMatrix, Matrix4x4 viewMatrix, Vector2 center)
+	public override void Update()
 	{
+		base.Update();
+
+		if (this.square == null)
+			return;
+
 		// Get the corner with the lowest depth;
 		Vector3 bestCorner = Vector3.Zero;
 		double bestCornerDepth = double.MaxValue;
 		for (int i = 0; i < this.possibleCorners.Length; i++)
 		{
-			Vector3 possibleCornerPos = this.Transform(this.possibleCorners[i], center, transformMatrix, viewMatrix);
+			Vector3 possibleCornerPos = this.LocalToScreen(this.possibleCorners[i]);
 			if (possibleCornerPos.Z < bestCornerDepth)
 			{
 				bestCornerDepth = possibleCornerPos.Z;
@@ -180,32 +195,35 @@ public class TranslationGizmoDualAxis : GizmoAxisBase
 			threePoint = new Vector3(bestCorner.X, originPos.Y, bestCorner.Z);
 		}
 
-		this.square.Points[0] = this.Transform(originPos, center, transformMatrix, viewMatrix).ToPoint();
-		this.square.Points[1] = this.Transform(onePoint, center, transformMatrix, viewMatrix).ToPoint();
-		this.square.Points[2] = this.Transform(twoPoint, center, transformMatrix, viewMatrix).ToPoint();
-		this.square.Points[3] = this.Transform(threePoint, center, transformMatrix, viewMatrix).ToPoint();
+		this.square.Points[0] = this.LocalToScreen(originPos).ToPoint();
+		this.square.Points[1] = this.LocalToScreen(onePoint).ToPoint();
+		this.square.Points[2] = this.LocalToScreen(twoPoint).ToPoint();
+		this.square.Points[3] = this.LocalToScreen(threePoint).ToPoint();
 
 		this.square.Fill = this.ForegroundBrush;
+		this.square.Stroke = this.ForegroundBrush;
 
 		if (this.IsAxisHovered)
 		{
-			this.square.Stroke = this.ForegroundBrush;
+			this.square.StrokeThickness = 3;
 		}
 		else
 		{
-			this.square.Stroke = new SolidColorBrush(Colors.Transparent);
+			this.square.StrokeThickness = 0;
 		}
 
-		this.dragAxisOnePos = this.Transform(this.dragAxisOne, center, transformMatrix, viewMatrix);
-		this.dragAxisTwoPos = this.Transform(this.dragAxisTwo, center, transformMatrix, viewMatrix);
+		this.dragAxisOnePos = this.LocalToScreen(this.dragAxisOne);
+		this.dragAxisTwoPos = this.LocalToScreen(this.dragAxisTwo);
 	}
 
 	public override int GetDepthAtCursor(Point p)
 	{
+		if (this.square == null)
+			return int.MinValue;
+
 		if (!this.square.IsPointWithin(p))
 			return int.MinValue;
 
 		return 0;
 	}
 }
-*/
