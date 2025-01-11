@@ -48,8 +48,8 @@ public partial class GizmoControl : PrimitiveRenderer
 		{
 			Vector3 center = Vector3.Transform(Vector3.Zero, this.currentTransform.ToMatrix());
 			Matrix4x4 translate = Matrix4x4.CreateTranslation(-center);
-			Matrix4x4 rot = Matrix4x4.CreateFromQuaternion(new Quaternion(cameraRotation.X, cameraRotation.Y, -cameraRotation.Z, -cameraRotation.W));
-			Matrix4x4 view = Matrix4x4.CreateLookAt(Vector3.UnitZ, Vector3.Zero, Vector3.UnitY);
+			Matrix4x4 rot = Matrix4x4.CreateFromQuaternion(new Quaternion(-cameraRotation.X, -cameraRotation.Y, -cameraRotation.Z, -cameraRotation.W));
+			Matrix4x4 view = Matrix4x4.CreateLookAt(Vector3.UnitZ, Vector3.Zero, -Vector3.UnitY);
 			view = translate * rot * view;
 			return view;
 		}
