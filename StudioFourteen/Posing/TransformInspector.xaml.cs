@@ -25,15 +25,7 @@ using StudioFourteen.Settings;
 [DependencyProperty<Persistence>("Persistence")]
 public partial class TransformInspector : View
 {
-	[Notify]
-	[AlsoNotify(nameof(TransformInspector.GizmoIndex))]
-	private GizmoTypes gizmo = GizmoTypes.Rotation;
-
-	public int GizmoIndex
-	{
-		get => (int)this.Gizmo;
-		set => this.Gizmo = (GizmoTypes)value;
-	}
+	public GizmoTypes Gizmo => this.Services.Pose.Gizmo;
 
 	[AutoNotify]
 	public int DecimalPlacesDisplay => this.Selection?.DecimalPlacesToDisplay ?? 2;
@@ -101,14 +93,5 @@ public partial class TransformInspector : View
 
 			this.Selection.LocalTransform = value;
 		}
-	}
-
-	partial void OnSelectionChanged(TransformSelectionBase? newValue)
-	{
-		if (newValue == null)
-			return;
-
-		// TODO: if they've changed the default?
-		this.Gizmo = newValue.DefaultGizmo;
 	}
 }

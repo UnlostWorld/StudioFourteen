@@ -30,27 +30,14 @@
 							Height="168">
 
 							<gizmos:GizmoControl
+								GizmoType="{Binding Services.Pose.Gizmo}"
 								Sensitivity="{Binding Selection.GizmoSensitivity}"
 								Transform="{Binding WorldTransform}" />
-
-							<!--<gizmos:RotationGizmo
-								Sensitivity="{Binding Selection.GizmoSensitivity}"
-								Transform="{Binding WorldTransform}"
-								Visibility="{Binding Gizmo, Converter={StaticResource EnumToVisibility}, ConverterParameter=Rotation}" />
-							<gizmos:TranslationGizmo
-								Sensitivity="{Binding Selection.GizmoSensitivity}"
-								Transform="{Binding WorldTransform}"
-								Visibility="{Binding Gizmo, Converter={StaticResource EnumToVisibility}, ConverterParameter=Translation}" />
-							<gizmos:ScaleGizmo
-								Sensitivity="{Binding Selection.GizmoSensitivity}"
-								Transform="{Binding WorldTransform}"
-								Visibility="{Binding Gizmo, Converter={StaticResource EnumToVisibility}, ConverterParameter=Scale}" />
-						-->
 						</Grid>
 
 						<wpfUtils:SwitchSelector
 							Grid.Row="1"
-							SelectedIndex="{Binding GizmoIndex}"
+							SelectedIndex="{Binding Services.Pose.GizmoIndex}"
 							Style="{DynamicResource WpfUtilsSwitchSelectorNoBorder}">
 
 							<ListBoxItem Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}">

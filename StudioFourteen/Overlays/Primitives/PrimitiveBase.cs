@@ -23,6 +23,8 @@ using System.Windows.Controls;
 
 public interface IPrimitive
 {
+	public bool IsVisible { get; set; }
+
 	PrimitiveGroup? Parent { get; set; }
 
 	void Update(Matrix4x4 view, Matrix4x4 projection);
@@ -31,6 +33,7 @@ public interface IPrimitive
 
 	Transform GetTransform();
 	bool GetKeepScreenSize();
+	bool GetIsVisible();
 }
 
 public abstract class PrimitiveBase : IPrimitive
@@ -44,9 +47,11 @@ public abstract class PrimitiveBase : IPrimitive
 	private float screenHeight = 0;
 	private Matrix4x4 currentViewProjection;
 	private Matrix4x4 currentTransform;
+	private bool currentVisibility = true;
 
 	public Transform Transform { get; set; } = Transform.Identity;
 	public PrimitiveGroup? Parent { get; set; }
+	public bool IsVisible { get; set; } = true;
 
 	public virtual void Enable(Canvas canvas)
 	{
@@ -64,6 +69,21 @@ public abstract class PrimitiveBase : IPrimitive
 	{
 		if (this.parent == null)
 			return;
+
+		bool isVisible = this.GetIsVisible();
+		if (this.currentVisibility != isVisible)
+		{
+			this.currentVisibility = isVisible;
+
+			if (!isVisible)
+			{
+				this.Disable(this.parent);
+			}
+			else
+			{
+				this.Enable(this.parent);
+			}
+		}
 
 		this.screenWidth = (float)this.parent.ActualWidth;
 		this.screenHeight = (float)this.parent.ActualHeight;
@@ -96,8 +116,6 @@ public abstract class PrimitiveBase : IPrimitive
 		{
 			canvas.Children.Remove(el);
 		}
-
-		this.parent = null;
 	}
 
 	public Transform GetTransform()
@@ -114,6 +132,14 @@ public abstract class PrimitiveBase : IPrimitive
 			return this.Parent.GetKeepScreenSize() || this.KeepScreenSize;
 
 		return this.KeepScreenSize;
+	}
+
+	public bool GetIsVisible()
+	{
+		if (this.Parent != null)
+			return this.Parent.GetIsVisible() && this.IsVisible;
+
+		return this.IsVisible;
 	}
 
 	protected T AddChild<T>()

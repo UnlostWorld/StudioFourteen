@@ -24,6 +24,7 @@ using System.Numerics;
 
 [DependencyProperty<Posing.Transform>("Transform", DefaultBindingMode=DefaultBindingMode.TwoWay)]
 [DependencyProperty<double>("Sensitivity")]
+[DependencyProperty<GizmoTypes>("GizmoType")]
 public partial class GizmoControl : PrimitiveRenderer
 {
 	private readonly TranslationGizmo translation;
@@ -41,7 +42,9 @@ public partial class GizmoControl : PrimitiveRenderer
 		this.rotation = new();
 		this.rotation.TransformChanged += this.OnRotationTransformChanged;
 		this.rotation.KeepScreenSize = false;
-		////this.AddPrimitive(this.rotation);
+		this.AddPrimitive(this.rotation);
+
+		this.OnGizmoTypeChanged(this.GizmoType);
 	}
 
 	protected override Matrix4x4 GetProjectionMatrix()
@@ -84,5 +87,11 @@ public partial class GizmoControl : PrimitiveRenderer
 	partial void OnSensitivityChanged(double newValue)
 	{
 		this.rotation.Sensitivity = newValue;
+	}
+
+	partial void OnGizmoTypeChanged(GizmoTypes newValue)
+	{
+		this.translation.IsVisible = newValue == GizmoTypes.Translation;
+		this.rotation.IsVisible = newValue == GizmoTypes.Rotation;
 	}
 }

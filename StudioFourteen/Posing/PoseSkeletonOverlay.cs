@@ -16,7 +16,7 @@
 namespace StudioFourteen.Posing;
 using System.Windows.Controls;
 
-public class PoseSkeletonOverlay : PoseOverlayBase
+public class PoseSkeletonOverlay : PoseOverlayLayerBase
 {
 	public PoseSkeletonOverlay()
 		: base("Skeleton")

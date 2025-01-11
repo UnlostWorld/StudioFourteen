@@ -30,8 +30,6 @@ public abstract class OverlayLayerBase(string group, string name)
 	public ILogger Log => Logging.ForContext(this.GetType());
 	public ServiceManager Services => ServiceManager.Instance;
 
-	public bool IsVisible { get; protected set; } = true;
-
 	public string DisplayGroup => Resources.Find($"LOC_OverlayGroup_{this.Group}", this.Group);
 	public string DisplayName => Resources.Find($"LOC_Overlay_{this.Name}", this.Name);
 

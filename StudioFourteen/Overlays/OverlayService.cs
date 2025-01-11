@@ -37,9 +37,6 @@ public partial class OverlayService
 		await base.Start();
 		this.Services.GroupPose.StateChanged += this.OnGroupPoseStateChanged;
 		this.OnGroupPoseStateChanged(this.Services.GroupPose.IsGroupPosing);
-
-		TestOverlayLayer test = new();
-		test.Enable();
 	}
 
 	public override async Task Stop()

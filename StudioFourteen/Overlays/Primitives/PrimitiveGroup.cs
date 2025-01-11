@@ -27,6 +27,7 @@ public class PrimitiveGroup : IPrimitive
 	public bool KeepScreenSize = false;
 
 	public PrimitiveGroup? Parent { get; set; }
+	public bool IsVisible { get; set; } = true;
 
 	public virtual void Enable(Canvas canvas)
 	{
@@ -59,6 +60,14 @@ public class PrimitiveGroup : IPrimitive
 			return this.Parent.GetTransform() * this.Transform;
 
 		return this.Transform;
+	}
+
+	public bool GetIsVisible()
+	{
+		if (this.Parent != null)
+			return this.Parent.GetIsVisible() && this.IsVisible;
+
+		return this.IsVisible;
 	}
 
 	public bool GetKeepScreenSize()
