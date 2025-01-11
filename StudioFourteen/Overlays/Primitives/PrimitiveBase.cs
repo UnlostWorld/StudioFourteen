@@ -152,7 +152,7 @@ public abstract class PrimitiveBase : IPrimitive
 
 	protected void SetZIndex(FrameworkElement el, float depth)
 	{
-		Canvas.SetZIndex(el, (int)(depth * 100000));
+		Canvas.SetZIndex(el, (int)(-depth * 100000));
 	}
 
 	protected Vector3 LocalToScreen(Vector3 local)

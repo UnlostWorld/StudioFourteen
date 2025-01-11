@@ -131,14 +131,14 @@ public class TranslationGizmoAxis : GizmoAxisBase
 		this.lineOne.X2 = arrowOneFromPos.X;
 		this.lineOne.Y2 = arrowOneFromPos.Y;
 		this.lineOne.Stroke = toPosOne.Z < originPos.Z ? this.ForegroundBrush : this.BackgroundBrush;
-		Panel.SetZIndex(this.lineOne, 200 - (int)(toPosOne.Z * 100));
+		this.SetZIndex(this.lineOne, toPosOne.Z);
 
 		this.arrowOne.X1 = arrowOneFromPos.X;
 		this.arrowOne.Y1 = arrowOneFromPos.Y;
 		this.arrowOne.X2 = toPosOne.X;
 		this.arrowOne.Y2 = toPosOne.Y;
 		this.arrowOne.Stroke = toPosOne.Z < originPos.Z ? this.ForegroundBrush : this.BackgroundBrush;
-		Panel.SetZIndex(this.arrowOne, 200 - (int)(toPosOne.Z * 100));
+		this.SetZIndex(this.arrowOne, toPosOne.Z);
 
 		// Two
 		Vector3 toPosTwo = this.LocalToScreen(this.segmentTwoEnd);
@@ -148,14 +148,14 @@ public class TranslationGizmoAxis : GizmoAxisBase
 		this.lineTwo.X2 = arrowTwoFromPos.X;
 		this.lineTwo.Y2 = arrowTwoFromPos.Y;
 		this.lineTwo.Stroke = toPosTwo.Z < originPos.Z ? this.ForegroundBrush : this.BackgroundBrush;
-		Panel.SetZIndex(this.lineTwo, 200 - (int)(toPosTwo.Z * 100));
+		this.SetZIndex(this.lineTwo, toPosTwo.Z);
 
 		this.arrowTwo.X1 = arrowTwoFromPos.X;
 		this.arrowTwo.Y1 = arrowTwoFromPos.Y;
 		this.arrowTwo.X2 = toPosTwo.X;
 		this.arrowTwo.Y2 = toPosTwo.Y;
 		this.arrowTwo.Stroke = toPosTwo.Z < originPos.Z ? this.ForegroundBrush : this.BackgroundBrush;
-		Panel.SetZIndex(this.arrowTwo, 200 - (int)(toPosTwo.Z * 100));
+		this.SetZIndex(this.arrowTwo, toPosTwo.Z);
 
 		if (this.IsAxisHovered)
 		{

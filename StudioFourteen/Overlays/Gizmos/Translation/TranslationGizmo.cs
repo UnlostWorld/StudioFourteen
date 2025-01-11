@@ -34,17 +34,17 @@ public partial class TranslationGizmo : GizmoBase
 	{
 		this.xAxis = new(GizmoAxes.X, this.Radius);
 		this.xAxis.Foreground = Color.FromArgb(0xFF, 0x33, 0x33, 0xFF);
-		this.xAxis.Background = Color.FromArgb(0x10, 0x33, 0x33, 0xFF);
+		this.xAxis.Background = Color.FromArgb(0xFF, 0x33, 0x33, 0x4D);
 		this.AddAxis(this.xAxis);
 
 		this.yAxis = new(GizmoAxes.Y, this.Radius);
 		this.yAxis.Foreground = Color.FromArgb(0xFF, 0x33, 0xFF, 0x33);
-		this.yAxis.Background = Color.FromArgb(0x10, 0x33, 0xFF, 0x33);
+		this.yAxis.Background = Color.FromArgb(0xFF, 0x33, 0x4D, 0x33);
 		this.AddAxis(this.yAxis);
 
 		this.zAxis = new(GizmoAxes.Z, this.Radius);
 		this.zAxis.Foreground = Color.FromArgb(0xFF, 0xFF, 0x33, 0x33);
-		this.zAxis.Background = Color.FromArgb(0x10, 0xFF, 0x33, 0x33);
+		this.zAxis.Background = Color.FromArgb(0xFF, 0x4D, 0x33, 0x33);
 		this.AddAxis(this.zAxis);
 
 		this.xDualAxis = new(GizmoAxes.X, this.Radius * 0.4f);

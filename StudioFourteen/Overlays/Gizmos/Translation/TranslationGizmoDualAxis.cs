@@ -172,7 +172,7 @@ public class TranslationGizmoDualAxis : GizmoAxisBase
 
 		// Get the corner with the lowest depth;
 		Vector3 bestCorner = Vector3.Zero;
-		double bestCornerDepth = double.MaxValue;
+		float bestCornerDepth = float.MaxValue;
 		for (int i = 0; i < this.possibleCorners.Length; i++)
 		{
 			Vector3 possibleCornerPos = this.LocalToScreen(this.possibleCorners[i]);
@@ -211,6 +211,8 @@ public class TranslationGizmoDualAxis : GizmoAxisBase
 		{
 			this.square.StrokeThickness = 0;
 		}
+
+		this.SetZIndex(this.square, bestCornerDepth);
 
 		this.dragAxisOnePos = this.LocalToScreen(this.dragAxisOne);
 		this.dragAxisTwoPos = this.LocalToScreen(this.dragAxisTwo);
