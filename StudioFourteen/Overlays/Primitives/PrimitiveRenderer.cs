@@ -17,6 +17,7 @@ namespace StudioFourteen.Overlays.Primitives;
 using Serilog;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows;
@@ -72,14 +73,22 @@ public class PrimitiveRenderer : Canvas
 	{
 		try
 		{
+			Stopwatch sw = new();
+
 			await this.MainThread();
 			while (this.IsVisible && !ServiceManager.ShutdownRequested)
 			{
-				await Task.Delay(10);
+				long delay = 16 - sw.ElapsedMilliseconds;
+				await Task.Delay(int.Max((int)delay, 1));
+				sw.Restart();
+
 				await this.MainThread();
 
 				if (!this.IsVisible || ServiceManager.ShutdownRequested)
 					return;
+
+				Matrix4x4 view = this.GetViewMatrix();
+				Matrix4x4 projection = this.GetProjectionMatrix();
 
 				for (int i = this.Primitives.Count - 1; i >= 0; i--)
 				{
@@ -87,7 +96,7 @@ public class PrimitiveRenderer : Canvas
 
 					try
 					{
-						primitive.Update(this.GetViewMatrix(), this.GetProjectionMatrix());
+						primitive.Update(view, projection);
 					}
 					catch (Exception ex)
 					{
