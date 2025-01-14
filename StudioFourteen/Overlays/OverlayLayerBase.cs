@@ -36,12 +36,17 @@ public abstract class OverlayLayerBase(string group, string name)
 	public bool IsHidden
 	{
 		get => this.persistence.GetPersistence<bool>();
-		set => this.persistence.SetPersistence(value);
+		set
+		{
+			this.persistence.SetPersistence(value);
+			this.IsVisible = !value;
+		}
 	}
 
 	public void Enable()
 	{
 		this.Services.Overlays.AddOverlay(this);
+		this.IsVisible = !this.IsHidden;
 	}
 
 	public void Disable()
