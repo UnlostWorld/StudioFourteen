@@ -185,6 +185,12 @@ public class MouseDevice : InputDeviceBase
 			axis.Value = 0.0f;
 		}
 
+		foreach (MouseButton button in this.draggingButtons)
+		{
+			this.dragAxis[button].X.Value = 0;
+			this.dragAxis[button].Y.Value = 0;
+		}
+
 		CursorUtility.SetCursorVisible(true);
 	}
 
