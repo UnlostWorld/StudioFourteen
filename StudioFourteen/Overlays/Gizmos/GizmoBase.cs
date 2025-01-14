@@ -32,6 +32,7 @@ using Vector = System.Windows.Vector;
 public abstract class GizmoBase : PrimitiveGroup
 {
 	public double Sensitivity = 1;
+	public bool WriteTransform = true;
 
 	protected readonly ILogger Log = Logging.ForContext<GizmoBase>();
 
@@ -57,6 +58,8 @@ public abstract class GizmoBase : PrimitiveGroup
 	public delegate void TransformChangedDelegate(Transform newTransform);
 
 	public event TransformChangedDelegate? TransformChanged;
+
+	public bool IsDragging => this.isDragging;
 
 	public void OnMouseLeftButtonDown(Point mousePos)
 	{
@@ -110,8 +113,10 @@ public abstract class GizmoBase : PrimitiveGroup
 
 				if (this.dragTransform.Value != this.Transform)
 				{
-					this.Transform = this.dragTransform.Value;
-					this.TransformChanged?.Invoke(this.Transform);
+					if (this.WriteTransform)
+						this.Transform = this.dragTransform.Value;
+
+					this.TransformChanged?.Invoke(this.dragTransform.Value);
 				}
 			}
 

@@ -15,16 +15,11 @@
 
 namespace StudioFourteen.Posing;
 
-using StudioFourteen.Overlays.Gizmos;
 using StudioFourteen.Overlays;
-using System.Numerics;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
-using StudioFourteen.Overlays.Gizmos.Translation;
+using StudioFourteen.Overlays.Gizmos;
 using StudioFourteen.Overlays.Gizmos.Rotation;
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using StudioFourteen.Overlays.Gizmos.Scale;
+using StudioFourteen.Overlays.Gizmos.Translation;
 
 public abstract class PoseOverlayLayerBase : OverlayLayerBase
 {
@@ -56,6 +51,7 @@ public class PoseGizmoOverlayLayer : PoseOverlayLayerBase
 	{
 		this.translation = new();
 		this.translation.Flip = true;
+		this.translation.WriteTransform = false;
 		this.translation.TransformChanged += this.OnTransformChanged;
 		this.AddChild(this.translation);
 
@@ -90,6 +86,7 @@ public class PoseGizmoOverlayLayer : PoseOverlayLayerBase
 		if (this.selection is not TransformSelectionBase transformSelection)
 			return;
 
+		this.translation.Transform = transformSelection.WorldTransform;
 		transformSelection.WorldTransform = newTransform;
 	}
 }
