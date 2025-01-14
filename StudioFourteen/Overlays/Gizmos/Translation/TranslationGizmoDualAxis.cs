@@ -28,6 +28,8 @@ using Vector = System.Windows.Vector;
 
 public class TranslationGizmoDualAxis : GizmoAxisBase
 {
+	public bool Flip = false;
+
 	private readonly Vector3[] possibleCorners = new Vector3[4];
 	private Vector3 dragAxisOne;
 	private Vector3 dragAxisTwo;
@@ -139,6 +141,12 @@ public class TranslationGizmoDualAxis : GizmoAxisBase
 		{
 			dragDeltaAxis1 *= (float)this.Services.Tablet.PenPressure;
 			dragDeltaAxis2 *= (float)this.Services.Tablet.PenPressure;
+		}
+
+		if (this.Flip)
+		{
+			dragDeltaAxis1 = -dragDeltaAxis1;
+			dragDeltaAxis2 = -dragDeltaAxis2;
 		}
 
 		Vector3 delta = Vector3.Zero;

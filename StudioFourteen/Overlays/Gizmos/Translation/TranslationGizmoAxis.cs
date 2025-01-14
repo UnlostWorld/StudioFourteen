@@ -29,6 +29,7 @@ using Vector = System.Windows.Vector;
 public class TranslationGizmoAxis : GizmoAxisBase
 {
 	public float Radius;
+	public bool Flip = false;
 
 	private Line? lineOne;
 	private Line? lineTwo;
@@ -225,6 +226,9 @@ public class TranslationGizmoAxis : GizmoAxisBase
 		{
 			dragDelta *= (float)this.Services.Tablet.PenPressure;
 		}
+
+		if (this.Flip)
+			dragDelta = -dragDelta;
 
 		Vector3 delta = Vector3.Zero;
 		if (this.Axis == GizmoAxes.X)

@@ -59,4 +59,17 @@ public partial class TranslationGizmo : GizmoBase
 		this.zDualAxis.Foreground = Color.FromArgb(0xFF, 0xFF, 0x33, 0x33);
 		this.AddAxis(this.zDualAxis);
 	}
+
+	public bool Flip
+	{
+		set
+		{
+			this.xAxis.Flip = value;
+			this.yAxis.Flip = value;
+			this.zAxis.Flip = value;
+			this.xDualAxis.Flip = value;
+			this.yDualAxis.Flip = value;
+			this.zDualAxis.Flip = value;
+		}
+	}
 }
