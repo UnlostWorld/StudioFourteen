@@ -24,6 +24,7 @@ using System.Windows.Controls.Primitives;
 using StudioFourteen.Overlays.Gizmos.Translation;
 using StudioFourteen.Overlays.Gizmos.Rotation;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using StudioFourteen.Overlays.Gizmos.Scale;
 
 public abstract class PoseOverlayLayerBase : OverlayLayerBase
 {
@@ -46,11 +47,9 @@ public abstract class PoseOverlayLayerBase : OverlayLayerBase
 
 public class PoseGizmoOverlayLayer : PoseOverlayLayerBase
 {
-	////private readonly GizmoTypes gizmoType = GizmoTypes.Rotation;
-
 	private readonly TranslationGizmo translation;
 	private readonly RotationGizmo rotation;
-	////private ScaleGizmo scale;
+	private readonly ScaleGizmo scale;
 
 	public PoseGizmoOverlayLayer()
 		: base("Gizmo")
@@ -62,6 +61,10 @@ public class PoseGizmoOverlayLayer : PoseOverlayLayerBase
 		this.rotation = new();
 		this.rotation.TransformChanged += this.OnTransformChanged;
 		this.AddChild(this.rotation);
+
+		this.scale = new();
+		this.scale.TransformChanged += this.OnTransformChanged;
+		this.AddChild(this.scale);
 	}
 
 	public unsafe override void OnFrameworkUpdate()
@@ -76,6 +79,9 @@ public class PoseGizmoOverlayLayer : PoseOverlayLayerBase
 
 		this.rotation.IsVisible = this.Services.Pose.Gizmo == GizmoTypes.Rotation;
 		this.rotation.Transform = transformSelection.WorldTransform;
+
+		this.scale.IsVisible = this.Services.Pose.Gizmo == GizmoTypes.Scale;
+		this.scale.Transform = transformSelection.WorldTransform;
 	}
 
 	private void OnTransformChanged(Transform newTransform)

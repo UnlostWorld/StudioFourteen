@@ -13,11 +13,11 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-/*
 namespace StudioFourteen.Overlays.Gizmos.Scale;
 
 using StudioFourteen.Extensions;
 using StudioFourteen.Overlays.Gizmos;
+using StudioFourteen.Structs;
 using System.Numerics;
 using System.Windows;
 using System.Windows.Controls;
@@ -29,31 +29,45 @@ using Vector = System.Windows.Vector;
 
 public class UniformScaleGizmoAxis : GizmoAxisBase
 {
-	private readonly Ellipse ellipse;
 	private readonly float radius;
+
+	private Ellipse? ellipse;
 
 	private Point startDragPos;
 	private Point centerPos;
 
-	public UniformScaleGizmoAxis(float radius, Canvas canvas)
+	public UniformScaleGizmoAxis(float radius)
 	{
 		this.radius = radius;
-
-		this.ellipse = new();
-		this.ellipse.Fill = this.BackgroundBrush;
-		this.ellipse.Stroke = this.ForegroundBrush;
-		this.ellipse.Width = radius * 2;
-		this.ellipse.Height = radius * 2;
-		canvas.Children.Add(this.ellipse);
 	}
 
-	public override void Transform(Matrix4x4 transformMatrix, Matrix4x4 viewMatrix, Vector2 center)
+	public override void Enable(Canvas canvas)
 	{
-		Canvas.SetLeft(this.ellipse, center.X - (this.ellipse.ActualWidth / 2));
-		Canvas.SetTop(this.ellipse, center.Y - (this.ellipse.ActualHeight / 2));
+		if (this.ellipse == null)
+		{
+			this.ellipse = this.AddChild<Ellipse>();
+			this.ellipse.Fill = this.BackgroundBrush;
+			this.ellipse.Stroke = this.ForegroundBrush;
+			this.ellipse.Width = this.radius * 2;
+			this.ellipse.Height = this.radius * 2;
+		}
+
+		base.Enable(canvas);
+	}
+
+	public override void Update()
+	{
+		base.Update();
+
+		if (this.ellipse == null)
+			return;
+
+		Vector3 pos = this.LocalToScreen(Vector3.Zero);
+		Canvas.SetLeft(this.ellipse, pos.X - (this.ellipse.ActualWidth / 2));
+		Canvas.SetTop(this.ellipse, pos.Y - (this.ellipse.ActualHeight / 2));
 		Panel.SetZIndex(this.ellipse, 0);
 
-		this.centerPos = center.ToPoint();
+		this.centerPos = pos.ToPoint();
 
 		this.ellipse.Fill = this.BackgroundBrush;
 		this.ellipse.Stroke = this.ForegroundBrush;
@@ -70,6 +84,9 @@ public class UniformScaleGizmoAxis : GizmoAxisBase
 
 	public override int GetDepthAtCursor(Point mousePos)
 	{
+		if (this.ellipse == null)
+			return int.MinValue;
+
 		float l = (float)(Canvas.GetLeft(this.ellipse) + (this.ellipse.ActualWidth / 2));
 		float t = (float)(Canvas.GetTop(this.ellipse) + (this.ellipse.ActualHeight / 2));
 		Point pos = new(l, t);
@@ -118,4 +135,3 @@ public class UniformScaleGizmoAxis : GizmoAxisBase
 		return transform;
 	}
 }
-*/

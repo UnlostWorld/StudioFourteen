@@ -17,6 +17,7 @@ namespace StudioFourteen.Overlays.Gizmos;
 
 using DependencyPropertyGenerator;
 using StudioFourteen.Overlays.Gizmos.Rotation;
+using StudioFourteen.Overlays.Gizmos.Scale;
 using StudioFourteen.Overlays.Gizmos.Translation;
 using StudioFourteen.Overlays.Primitives;
 using StudioFourteen.Posing;
@@ -29,20 +30,26 @@ public partial class GizmoControl : PrimitiveRenderer
 {
 	private readonly TranslationGizmo translation;
 	private readonly RotationGizmo rotation;
+	private readonly ScaleGizmo scale;
 
 	private Transform currentTransform;
 
 	public GizmoControl()
 	{
 		this.translation = new();
-		this.translation.TransformChanged += this.OnTranslationTransformChanged;
+		this.translation.TransformChanged += this.OnGizmoTransformChanged;
 		this.translation.KeepScreenSize = false;
 		this.AddPrimitive(this.translation);
 
 		this.rotation = new();
-		this.rotation.TransformChanged += this.OnRotationTransformChanged;
+		this.rotation.TransformChanged += this.OnGizmoTransformChanged;
 		this.rotation.KeepScreenSize = false;
 		this.AddPrimitive(this.rotation);
+
+		this.scale = new();
+		this.scale.TransformChanged += this.OnGizmoTransformChanged;
+		this.scale.KeepScreenSize = false;
+		this.AddPrimitive(this.scale);
 
 		this.OnGizmoTypeChanged(this.GizmoType);
 	}
@@ -67,12 +74,7 @@ public partial class GizmoControl : PrimitiveRenderer
 		return Matrix4x4.Identity;
 	}
 
-	private void OnTranslationTransformChanged(Transform newTransform)
-	{
-		this.Transform = newTransform;
-	}
-
-	private void OnRotationTransformChanged(Posing.Transform newTransform)
+	private void OnGizmoTransformChanged(Transform newTransform)
 	{
 		this.Transform = newTransform;
 	}
@@ -82,16 +84,20 @@ public partial class GizmoControl : PrimitiveRenderer
 		this.currentTransform = newValue;
 		this.rotation.Transform = this.currentTransform;
 		this.translation.Transform = this.currentTransform;
+		this.scale.Transform = this.currentTransform;
 	}
 
 	partial void OnSensitivityChanged(double newValue)
 	{
+		this.translation.Sensitivity = newValue;
 		this.rotation.Sensitivity = newValue;
+		this.scale.Sensitivity = newValue;
 	}
 
 	partial void OnGizmoTypeChanged(GizmoTypes newValue)
 	{
 		this.translation.IsVisible = newValue == GizmoTypes.Translation;
 		this.rotation.IsVisible = newValue == GizmoTypes.Rotation;
+		this.scale.IsVisible = newValue == GizmoTypes.Scale;
 	}
 }

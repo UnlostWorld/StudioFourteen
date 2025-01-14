@@ -13,7 +13,6 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-/*
 namespace StudioFourteen.Overlays.Gizmos.Scale;
 
 using StudioFourteen.Overlays.Gizmos;
@@ -29,21 +28,15 @@ using Vector = System.Windows.Vector;
 
 public class ScaleGizmoAxis : GizmoAxisBase
 {
-	private readonly Line line;
-	private readonly Line cap;
 	private readonly Vector3 segmentEnd;
 	private readonly Vector3 capStart;
 
-	public ScaleGizmoAxis(GizmoAxes axis, float radius, Canvas canvas, bool flip)
+	private Line? line;
+	private Line? cap;
+
+	public ScaleGizmoAxis(GizmoAxes axis, float radius, bool flip)
 	{
 		this.Axis = axis;
-
-		this.line = new();
-		this.line.StrokeThickness = 3;
-		this.line.Stroke = this.ForegroundBrush;
-		this.line.StrokeEndLineCap = PenLineCap.Triangle;
-		this.line.StrokeStartLineCap = PenLineCap.Round;
-		canvas.Children.Add(this.line);
 
 		if (this.Axis == GizmoAxes.X)
 		{
@@ -60,21 +53,42 @@ public class ScaleGizmoAxis : GizmoAxisBase
 			this.segmentEnd = flip ? Vector3.UnitZ * radius : -Vector3.UnitZ * radius;
 			this.capStart = flip ? Vector3.UnitZ * (radius * 0.85f) : -Vector3.UnitZ * (radius * 0.85f);
 		}
-
-		this.cap = new();
-		this.cap.StrokeThickness = 15;
-		this.cap.Stroke = this.ForegroundBrush;
-		this.cap.StrokeEndLineCap = PenLineCap.Round;
-		this.cap.StrokeStartLineCap = PenLineCap.Round;
-		canvas.Children.Add(this.cap);
 	}
 
-	public override void Transform(Matrix4x4 transformMatrix, Matrix4x4 viewMatrix, Vector2 center)
+	public override void Enable(Canvas canvas)
 	{
-		Vector3 originPos = this.Transform(Vector3.Zero, center, transformMatrix, viewMatrix);
+		if (this.line == null)
+		{
+			this.line = this.AddChild<Line>();
+			this.line.StrokeThickness = 3;
+			this.line.Stroke = this.ForegroundBrush;
+			this.line.StrokeEndLineCap = PenLineCap.Triangle;
+			this.line.StrokeStartLineCap = PenLineCap.Round;
+		}
 
-		Vector3 toPosOne = this.Transform(this.segmentEnd, center, transformMatrix, viewMatrix);
-		Vector3 arrowOneFromPos = this.Transform(this.capStart, center, transformMatrix, viewMatrix);
+		if (this.cap == null)
+		{
+			this.cap = this.AddChild<Line>();
+			this.cap.StrokeThickness = 15;
+			this.cap.Stroke = this.ForegroundBrush;
+			this.cap.StrokeEndLineCap = PenLineCap.Round;
+			this.cap.StrokeStartLineCap = PenLineCap.Round;
+		}
+
+		base.Enable(canvas);
+	}
+
+	public override void Update()
+	{
+		base.Update();
+
+		if (this.line == null || this.cap == null)
+			return;
+
+		Vector3 originPos = this.LocalToScreen(Vector3.Zero);
+
+		Vector3 toPosOne = this.LocalToScreen(this.segmentEnd);
+		Vector3 arrowOneFromPos = this.LocalToScreen(this.capStart);
 
 		this.line.X1 = originPos.X;
 		this.line.Y1 = originPos.Y;
@@ -102,6 +116,9 @@ public class ScaleGizmoAxis : GizmoAxisBase
 
 	public override int GetDepthAtCursor(Point mousePos)
 	{
+		if (this.line == null || this.cap == null)
+			return int.MinValue;
+
 		Point fromPos = new Point(this.cap.X1, this.cap.Y1);
 		Point toPos = new Point(this.cap.X2, this.cap.Y2);
 		double distance = Point.Subtract(mousePos, toPos).Length;
@@ -114,6 +131,9 @@ public class ScaleGizmoAxis : GizmoAxisBase
 
 	public override Transform UpdateDrag(Vector mouseDelta, Transform transform)
 	{
+		if (this.line == null || this.cap == null)
+			return transform;
+
 		Point a = new Point(this.cap.X2, this.cap.Y2);
 		Point b = new Point(this.cap.X1, this.cap.Y1);
 		Vector normal = a - b;
@@ -158,4 +178,3 @@ public class ScaleGizmoAxis : GizmoAxisBase
 		return transform;
 	}
 }
-*/

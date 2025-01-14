@@ -39,6 +39,7 @@ public interface IPrimitive
 public abstract class PrimitiveBase : IPrimitive
 {
 	public bool KeepScreenSize = false;
+	public bool IgnoreTransformScale = true;
 
 	private readonly List<FrameworkElement> elements = new();
 
@@ -89,6 +90,14 @@ public abstract class PrimitiveBase : IPrimitive
 		this.screenHeight = (float)this.parent.ActualHeight;
 		this.currentViewProjection = view * projection;
 		this.currentTransform = this.GetTransform().ToMatrix();
+
+		if (this.IgnoreTransformScale)
+		{
+			if (Matrix4x4.Decompose(this.currentTransform, out Vector3 scale, out Quaternion rotation, out Vector3 translation))
+			{
+				this.currentTransform = Posing.Transform.FromTRS(translation, rotation, Vector3.One).ToMatrix();
+			}
+		}
 
 		if (this.GetKeepScreenSize())
 		{
