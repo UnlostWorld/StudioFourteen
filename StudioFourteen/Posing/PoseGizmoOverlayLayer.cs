@@ -30,11 +30,11 @@ public abstract class PoseOverlayLayerBase : OverlayLayerBase
 	{
 	}
 
-	public void SetTarget(int targetIndex)
+	public virtual void SetTarget(int targetIndex)
 	{
 	}
 
-	public void SetSelection(SelectionBase? selection)
+	public virtual void SetSelection(SelectionBase? selection)
 	{
 		this.selection = selection;
 	}
@@ -73,12 +73,15 @@ public class PoseGizmoOverlayLayer : PoseOverlayLayerBase
 
 		this.translation.IsVisible = this.Services.Pose.Gizmo == GizmoTypes.Translation;
 		this.translation.Transform = transformSelection.WorldTransform;
+		this.translation.Sensitivity = transformSelection.GizmoSensitivity;
 
 		this.rotation.IsVisible = this.Services.Pose.Gizmo == GizmoTypes.Rotation;
 		this.rotation.Transform = transformSelection.WorldTransform;
+		this.rotation.Sensitivity = transformSelection.GizmoSensitivity;
 
 		this.scale.IsVisible = this.Services.Pose.Gizmo == GizmoTypes.Scale;
 		this.scale.Transform = transformSelection.WorldTransform;
+		this.scale.Sensitivity = transformSelection.GizmoSensitivity;
 	}
 
 	private void OnTransformChanged(Transform newTransform)

@@ -26,6 +26,9 @@ public class PrimitiveGroup : IPrimitive
 	public Transform Transform = Transform.Identity;
 	public bool KeepScreenSize = false;
 
+	private readonly Queue<IPrimitive> newPrimitives = new();
+	private readonly Queue<IPrimitive> deletePrimitives = new();
+
 	public PrimitiveGroup? Parent { get; set; }
 	public bool IsVisible { get; set; } = true;
 
@@ -46,11 +49,27 @@ public class PrimitiveGroup : IPrimitive
 		}
 	}
 
-	public virtual void Update(Matrix4x4 view, Matrix4x4 projection)
+	public virtual void Update(Matrix4x4 view, Matrix4x4 projection, Canvas canvas)
 	{
+		while(this.deletePrimitives.Count > 0)
+		{
+			IPrimitive primitive = this.deletePrimitives.Dequeue();
+			primitive.Parent = null;
+			primitive.Disable(canvas);
+			this.Children.Remove(primitive);
+		}
+
+		while(this.newPrimitives.Count > 0)
+		{
+			IPrimitive primitive = this.newPrimitives.Dequeue();
+			primitive.Parent = this;
+			primitive.Enable(canvas);
+			this.Children.Add(primitive);
+		}
+
 		foreach (IPrimitive primitive in this.Children)
 		{
-			primitive.Update(view, projection);
+			primitive.Update(view, projection, canvas);
 		}
 	}
 
@@ -82,12 +101,17 @@ public class PrimitiveGroup : IPrimitive
 		where T : IPrimitive, new()
 	{
 		T primitive = new T();
-		this.Children.Add(primitive);
+		this.newPrimitives.Enqueue(primitive);
 		return primitive;
 	}
 
 	protected void AddChild(IPrimitive primitive)
 	{
-		this.Children.Add(primitive);
+		this.newPrimitives.Enqueue(primitive);
+	}
+
+	protected void RemoveChild(IPrimitive primitive)
+	{
+		this.deletePrimitives.Enqueue(primitive);
 	}
 }

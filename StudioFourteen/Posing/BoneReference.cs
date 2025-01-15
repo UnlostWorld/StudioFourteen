@@ -31,7 +31,6 @@ public class BoneReference(BoneId id, string? name = null)
 {
 	public readonly BoneId Id = id;
 
-	public BoneReference? Parent;
 	public BoneReference? Mirror;
 	public bool IsValid = true;
 
@@ -88,7 +87,6 @@ public class BoneReference(BoneId id, string? name = null)
 
 	public void Dispose()
 	{
-		this.Parent = null;
 		this.Mirror = null;
 		this.IsValid = false;
 	}

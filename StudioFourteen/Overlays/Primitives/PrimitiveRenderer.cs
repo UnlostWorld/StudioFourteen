@@ -96,7 +96,7 @@ public class PrimitiveRenderer : Canvas
 
 					try
 					{
-						primitive.Update(view, projection);
+						primitive.Update(view, projection, this);
 					}
 					catch (Exception ex)
 					{

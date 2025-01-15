@@ -18,7 +18,6 @@ namespace StudioFourteen.Overlays.Gizmos;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
-using Serilog;
 using StudioFourteen;
 using StudioFourteen.Overlays.Primitives;
 
@@ -37,13 +36,6 @@ public abstract class GizmoAxisBase : PrimitiveBase
 	public double Sensitivity = 1.0;
 	public Color Foreground = Colors.Gray;
 	public Color Background = Colors.Black;
-
-	protected readonly ILogger Log = Logging.ForContext<GizmoAxisBase>();
-
-	public GizmoAxisBase()
-	{
-		this.Log = Logging.ForContext(this.GetType());
-	}
 
 	public GizmoAxes Axis { get; protected set; }
 	public virtual bool IsAxisHovered { get; set; } = false;

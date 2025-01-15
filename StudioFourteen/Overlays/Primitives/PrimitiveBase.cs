@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Overlays.Primitives;
 
+using Serilog;
 using StudioFourteen.Posing;
 using System.Collections.Generic;
 using System.Numerics;
@@ -27,7 +28,7 @@ public interface IPrimitive
 
 	PrimitiveGroup? Parent { get; set; }
 
-	void Update(Matrix4x4 view, Matrix4x4 projection);
+	void Update(Matrix4x4 view, Matrix4x4 projection, Canvas canvas);
 	void Enable(Canvas canvas);
 	void Disable(Canvas canvas);
 
@@ -41,6 +42,8 @@ public abstract class PrimitiveBase : IPrimitive
 	public bool KeepScreenSize = false;
 	public bool IgnoreTransformScale = true;
 
+	protected readonly ILogger Log;
+
 	private readonly List<FrameworkElement> elements = new();
 
 	private Canvas? parent;
@@ -49,6 +52,11 @@ public abstract class PrimitiveBase : IPrimitive
 	private Matrix4x4 currentViewProjection;
 	private Matrix4x4 currentTransform;
 	private bool currentVisibility = true;
+
+	public PrimitiveBase()
+	{
+		this.Log = Logging.ForContext(this.GetType());
+	}
 
 	public Transform Transform { get; set; } = Transform.Identity;
 	public PrimitiveGroup? Parent { get; set; }
@@ -66,7 +74,7 @@ public abstract class PrimitiveBase : IPrimitive
 		}
 	}
 
-	public virtual void Update(Matrix4x4 view, Matrix4x4 projection)
+	public virtual void Update(Matrix4x4 view, Matrix4x4 projection, Canvas canvas)
 	{
 		if (this.parent == null)
 			return;
