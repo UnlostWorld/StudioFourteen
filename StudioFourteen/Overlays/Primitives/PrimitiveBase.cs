@@ -49,6 +49,8 @@ public abstract class PrimitiveBase : IPrimitive
 	private Canvas? parent;
 	private float screenWidth = 0;
 	private float screenHeight = 0;
+	private Matrix4x4 currentView;
+	private Matrix4x4 currentProjection;
 	private Matrix4x4 currentViewProjection;
 	private Matrix4x4 currentTransform;
 	private bool currentVisibility = true;
@@ -61,6 +63,12 @@ public abstract class PrimitiveBase : IPrimitive
 	public Transform Transform { get; set; } = Transform.Identity;
 	public PrimitiveGroup? Parent { get; set; }
 	public bool IsVisible { get; set; } = true;
+
+	protected ServiceManager Services => ServiceManager.Instance;
+
+	protected Matrix4x4 View => this.currentView;
+	protected Matrix4x4 Projection => this.currentProjection;
+	protected Matrix4x4 ViewProjection => this.currentViewProjection;
 
 	public virtual void Enable(Canvas canvas)
 	{
@@ -96,6 +104,8 @@ public abstract class PrimitiveBase : IPrimitive
 
 		this.screenWidth = (float)this.parent.ActualWidth;
 		this.screenHeight = (float)this.parent.ActualHeight;
+		this.currentView = view;
+		this.currentProjection = projection;
 		this.currentViewProjection = view * projection;
 		this.currentTransform = this.GetTransform().ToMatrix();
 
