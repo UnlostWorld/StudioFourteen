@@ -43,8 +43,6 @@ public abstract class GizmoAxisBase : PrimitiveBase
 	protected Brush? ForegroundBrush { get; private set; }
 	protected Brush? BackgroundBrush { get; private set; }
 
-	protected ServiceManager Services => ServiceManager.Instance;
-
 	public abstract int GetDepthAtCursor(Point mousePos);
 
 	public virtual void StartDrag(Point mousePos)
