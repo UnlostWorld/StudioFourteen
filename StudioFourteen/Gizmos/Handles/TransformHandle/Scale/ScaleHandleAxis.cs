@@ -94,15 +94,15 @@ public class ScaleHandleAxis : TransformHandleAxisBase
 		this.line.Y1 = originPos.Y;
 		this.line.X2 = arrowOneFromPos.X;
 		this.line.Y2 = arrowOneFromPos.Y;
-		this.line.Stroke = toPosOne.Z < 0 ? this.ForegroundBrush : this.BackgroundBrush;
-		Panel.SetZIndex(this.line, 200 - (int)(toPosOne.Z * 100));
+		this.line.Stroke = toPosOne.Z < originPos.Z ? this.ForegroundBrush : this.BackgroundBrush;
+		this.SetZIndex(this.line, arrowOneFromPos.Z);
 
 		this.cap.X1 = arrowOneFromPos.X;
 		this.cap.Y1 = arrowOneFromPos.Y;
 		this.cap.X2 = toPosOne.X;
 		this.cap.Y2 = toPosOne.Y;
-		this.cap.Stroke = toPosOne.Z < 0 ? this.ForegroundBrush : this.BackgroundBrush;
-		Panel.SetZIndex(this.cap, 200 - (int)(toPosOne.Z * 100));
+		this.cap.Stroke = toPosOne.Z < originPos.Z ? this.ForegroundBrush : this.BackgroundBrush;
+		this.SetZIndex(this.cap, toPosOne.Z);
 
 		if (this.IsCursorOver)
 		{
