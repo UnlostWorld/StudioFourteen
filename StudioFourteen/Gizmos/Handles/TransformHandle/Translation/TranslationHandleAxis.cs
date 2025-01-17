@@ -106,6 +106,7 @@ public class TranslationHandleAxis : TransformHandleAxisBase
 		this.arrow.Y1 = arrowOneFromPos.Y;
 		this.arrow.X2 = toPosOne.X;
 		this.arrow.Y2 = toPosOne.Y;
+		this.arrow.IsEnabled = toPosOne.Z < originPos.Z;
 		this.SetZIndex(this.arrow, toPosOne.Z);
 
 		if (this.IsDragging)
@@ -124,7 +125,7 @@ public class TranslationHandleAxis : TransformHandleAxisBase
 
 	public override int HitTest(Point mousePos)
 	{
-		if (this.line == null || this.arrow == null)
+		if (this.line == null || this.arrow == null || !this.arrow.IsEnabled)
 			return int.MinValue;
 
 		Point fromPos = new Point(this.arrow.X1, this.arrow.Y1);

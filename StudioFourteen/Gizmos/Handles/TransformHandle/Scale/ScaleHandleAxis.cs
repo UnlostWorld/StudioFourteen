@@ -102,6 +102,7 @@ public class ScaleHandleAxis : TransformHandleAxisBase
 		this.cap.Y1 = arrowOneFromPos.Y;
 		this.cap.X2 = toPosOne.X;
 		this.cap.Y2 = toPosOne.Y;
+		this.cap.IsEnabled = toPosOne.Z < originPos.Z;
 		this.SetZIndex(this.cap, toPosOne.Z);
 
 		if (this.IsDragging)
@@ -127,7 +128,7 @@ public class ScaleHandleAxis : TransformHandleAxisBase
 
 	public override int HitTest(Point mousePos)
 	{
-		if (this.line == null || this.cap == null)
+		if (this.line == null || this.cap == null || !this.cap.IsEnabled)
 			return int.MinValue;
 
 		Point fromPos = new Point(this.cap.X1, this.cap.Y1);

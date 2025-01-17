@@ -191,6 +191,7 @@ public class RotationHandleAxis : TransformHandleAxisBase
 			line.Y1 = fromPos.Y;
 			line.X2 = toPos.X;
 			line.Y2 = toPos.Y;
+			line.IsEnabled = toPos.Z < zClip;
 
 			this.SetZIndex(line, toPos.Z + (this.IsCursorOver ? -0.0001f : 0));
 
