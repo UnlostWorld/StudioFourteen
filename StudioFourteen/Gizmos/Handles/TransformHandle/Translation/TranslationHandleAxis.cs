@@ -13,9 +13,9 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Overlays.Gizmos.Translation;
+namespace StudioFourteen.Gizmos.Handles.TransformHandle.Translation;
 
-using StudioFourteen.Overlays.Gizmos;
+using StudioFourteen.Gizmos.Handles.TransformHandle;
 using System.Numerics;
 using System.Windows;
 using System.Windows.Controls;
@@ -26,7 +26,7 @@ using System.Windows.Shapes;
 using Transform = StudioFourteen.Posing.Transform;
 using Vector = System.Windows.Vector;
 
-public class TranslationGizmoAxis : GizmoAxisBase
+public class TranslationHandleAxis : TransformHandleAxisBase
 {
 	public float Radius;
 	public bool Flip = false;
@@ -40,26 +40,26 @@ public class TranslationGizmoAxis : GizmoAxisBase
 	private Vector3 arrowOneStart;
 	private Vector3 arrowTwoStart;
 
-	public TranslationGizmoAxis(GizmoAxes axis, float radius)
+	public TranslationHandleAxis(TransformHandleAxes axis, float radius)
 	{
 		this.Axis = axis;
 		this.Radius = radius;
 
-		if (this.Axis == GizmoAxes.X)
+		if (this.Axis == TransformHandleAxes.X)
 		{
 			this.segmentOneEnd = -Vector3.UnitX * this.Radius;
 			this.segmentTwoEnd = Vector3.UnitX * this.Radius;
 			this.arrowOneStart = -Vector3.UnitX * (this.Radius * 0.85f);
 			this.arrowTwoStart = Vector3.UnitX * (this.Radius * 0.85f);
 		}
-		else if (this.Axis == GizmoAxes.Y)
+		else if (this.Axis == TransformHandleAxes.Y)
 		{
 			this.segmentOneEnd = -Vector3.UnitY * this.Radius;
 			this.segmentTwoEnd = Vector3.UnitY * this.Radius;
 			this.arrowOneStart = -Vector3.UnitY * (this.Radius * 0.85f);
 			this.arrowTwoStart = Vector3.UnitY * (this.Radius * 0.85f);
 		}
-		else if (this.Axis == GizmoAxes.Z)
+		else if (this.Axis == TransformHandleAxes.Z)
 		{
 			this.segmentOneEnd = -Vector3.UnitZ * this.Radius;
 			this.segmentTwoEnd = Vector3.UnitZ * this.Radius;
@@ -158,7 +158,7 @@ public class TranslationGizmoAxis : GizmoAxisBase
 		this.arrowTwo.Stroke = toPosTwo.Z < originPos.Z ? this.ForegroundBrush : this.BackgroundBrush;
 		this.SetZIndex(this.arrowTwo, toPosTwo.Z);
 
-		if (this.IsAxisHovered)
+		if (this.IsCursorOver)
 		{
 			this.arrowOne.StrokeThickness = 15;
 			this.arrowTwo.StrokeThickness = 15;
@@ -170,7 +170,7 @@ public class TranslationGizmoAxis : GizmoAxisBase
 		}
 	}
 
-	public override int GetDepthAtCursor(Point mousePos)
+	public override int HitTest(Point mousePos)
 	{
 		if (this.lineOne == null
 			|| this.lineTwo == null
@@ -195,7 +195,7 @@ public class TranslationGizmoAxis : GizmoAxisBase
 		return int.MinValue;
 	}
 
-	public override Transform UpdateDrag(Vector mouseDelta, Transform transform)
+	public override Transform OnDrag(Vector mouseDelta, Transform transform)
 	{
 		if (this.lineOne == null
 			|| this.lineTwo == null
@@ -231,15 +231,15 @@ public class TranslationGizmoAxis : GizmoAxisBase
 			dragDelta = -dragDelta;
 
 		Vector3 delta = Vector3.Zero;
-		if (this.Axis == GizmoAxes.X)
+		if (this.Axis == TransformHandleAxes.X)
 		{
 			delta = Vector3.UnitX * dragDelta;
 		}
-		else if (this.Axis == GizmoAxes.Y)
+		else if (this.Axis == TransformHandleAxes.Y)
 		{
 			delta = Vector3.UnitY * dragDelta;
 		}
-		else if (this.Axis == GizmoAxes.Z)
+		else if (this.Axis == TransformHandleAxes.Z)
 		{
 			delta = Vector3.UnitZ * dragDelta;
 		}

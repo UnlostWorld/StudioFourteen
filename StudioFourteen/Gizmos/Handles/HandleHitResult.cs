@@ -13,50 +13,14 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Overlays.Primitives;
+namespace StudioFourteen.Gizmos.Handles;
 
-using System;
-using System.Numerics;
-using System.Windows.Controls;
-using System.Windows.Media;
-using System.Windows.Shapes;
-
-public class EllipsePrimitive : PrimitiveBase
+public struct HandleHitResult
 {
-	public Color Foreground = Colors.White;
-	public float Radius = 100;
+	public HandleBase? Handle = null;
+	public int Depth = int.MinValue;
 
-	protected Ellipse? ellipse;
-
-	public override void Enable(Canvas canvas)
+	public HandleHitResult()
 	{
-		this.ellipse = new();
-		this.ellipse.Fill = new SolidColorBrush(this.Foreground);
-		this.ellipse.IsHitTestVisible = false;
-		canvas.Children.Add(this.ellipse);
-		base.Enable(canvas);
-	}
-
-	public override void Disable(Canvas canvas)
-	{
-		base.Disable(canvas);
-
-		canvas.Children.Remove(this.ellipse);
-		this.ellipse = null;
-	}
-
-	public override void Update()
-	{
-		if (this.ellipse == null)
-			return;
-
-		Vector3 centerPos = this.LocalToScreen(Vector3.Zero);
-
-		Canvas.SetLeft(this.ellipse, centerPos.X - this.Radius);
-		Canvas.SetTop(this.ellipse, centerPos.Y - this.Radius);
-		this.ellipse.Width = this.Radius * 2;
-		this.ellipse.Height = this.Radius * 2;
-
-		this.SetZIndex(this.ellipse, centerPos.Z);
 	}
 }

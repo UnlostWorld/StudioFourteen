@@ -316,9 +316,9 @@ public class GameCaptureService : ServiceBase
 								// Swap R and B
 								*(pBitmapData + n) =
 									0xFF000000 | // force alpha to 255
-									(x & 0x00FF0000) >> 16 |
+									((x & 0x00FF0000) >> 16) |
 									(x & 0x0000FF00) |
-									(x & 0x000000FF) << 16;
+									((x & 0x000000FF) << 16);
 							}
 						}
 					}

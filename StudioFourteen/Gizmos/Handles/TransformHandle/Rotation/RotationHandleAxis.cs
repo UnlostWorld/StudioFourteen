@@ -13,9 +13,9 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Overlays.Gizmos.Rotation;
+namespace StudioFourteen.Gizmos.Handles.TransformHandle.Rotation;
 
-using StudioFourteen.Overlays.Gizmos;
+using StudioFourteen.Gizmos.Handles.TransformHandle;
 
 using System;
 using System.Numerics;
@@ -28,7 +28,7 @@ using System.Windows.Shapes;
 using Transform = StudioFourteen.Posing.Transform;
 using Vector = System.Windows.Vector;
 
-public class RotationGizmoAxis : GizmoAxisBase
+public class RotationHandleAxis : TransformHandleAxisBase
 {
 	public int StrokeThickness = 3;
 
@@ -40,7 +40,7 @@ public class RotationGizmoAxis : GizmoAxisBase
 	private Point? dragStartToPos;
 	private Point? dragStartFromPos;
 
-	public RotationGizmoAxis(GizmoAxes axis)
+	public RotationHandleAxis(TransformHandleAxes axis)
 	{
 		this.Axis = axis;
 	}
@@ -54,15 +54,15 @@ public class RotationGizmoAxis : GizmoAxisBase
 			float p = i / (float)(this.points3d.Length - 1);
 			float r = p * (MathF.PI * 2);
 
-			if (this.Axis == GizmoAxes.Z)
+			if (this.Axis == TransformHandleAxes.Z)
 			{
 				this.points3d[i] = new Vector3(MathF.Cos(r), MathF.Sin(r), 0);
 			}
-			else if (this.Axis == GizmoAxes.X)
+			else if (this.Axis == TransformHandleAxes.X)
 			{
 				this.points3d[i] = new Vector3(0, MathF.Cos(r), MathF.Sin(r));
 			}
-			else if (this.Axis == GizmoAxes.Y)
+			else if (this.Axis == TransformHandleAxes.Y)
 			{
 				this.points3d[i] = new Vector3(MathF.Cos(r), 0, MathF.Sin(r));
 			}
@@ -75,8 +75,8 @@ public class RotationGizmoAxis : GizmoAxisBase
 			this.segments[i] = new();
 			this.segments[i].StrokeThickness = this.StrokeThickness;
 			this.segments[i].Stroke = new SolidColorBrush(this.Foreground);
-			this.segments[i].StrokeEndLineCap = System.Windows.Media.PenLineCap.Round;
-			this.segments[i].StrokeStartLineCap = System.Windows.Media.PenLineCap.Round;
+			this.segments[i].StrokeEndLineCap = PenLineCap.Round;
+			this.segments[i].StrokeStartLineCap = PenLineCap.Round;
 			this.segments[i].IsHitTestVisible = false;
 			canvas.Children.Add(this.segments[i]);
 		}
@@ -119,7 +119,7 @@ public class RotationGizmoAxis : GizmoAxisBase
 		}
 	}
 
-	public override Transform UpdateDrag(Vector mouseDelta, Transform transform)
+	public override Transform OnDrag(Vector mouseDelta, Transform transform)
 	{
 		if (this.dragStartToPos == null || this.dragStartFromPos == null)
 			return default;
@@ -147,15 +147,15 @@ public class RotationGizmoAxis : GizmoAxisBase
 		}
 
 		Quaternion rot = Quaternion.Identity;
-		if (this.Axis == GizmoAxes.X)
+		if (this.Axis == TransformHandleAxes.X)
 		{
 			rot = Quaternion.CreateFromAxisAngle(Vector3.UnitX, (float)angleChange);
 		}
-		else if (this.Axis == GizmoAxes.Y)
+		else if (this.Axis == TransformHandleAxes.Y)
 		{
 			rot = Quaternion.CreateFromAxisAngle(Vector3.UnitY, (float)-angleChange);
 		}
-		else if (this.Axis == GizmoAxes.Z)
+		else if (this.Axis == TransformHandleAxes.Z)
 		{
 			rot = Quaternion.CreateFromAxisAngle(Vector3.UnitZ, (float)angleChange);
 		}
@@ -163,7 +163,7 @@ public class RotationGizmoAxis : GizmoAxisBase
 		if (transform.ToTRS(out Vector3 translation, out Quaternion rotation, out Vector3 scale))
 		{
 			rotation *= rot;
-			transform = Posing.Transform.FromTRS(translation, rotation, scale);
+			transform = Transform.FromTRS(translation, rotation, scale);
 		}
 
 		return transform;
@@ -195,9 +195,9 @@ public class RotationGizmoAxis : GizmoAxisBase
 			line.Y2 = toPos.Y;
 			line.IsEnabled = isVisible;
 
-			this.SetZIndex(line, toPos.Z + (this.IsAxisHovered ? -0.0001f : 0));
+			this.SetZIndex(line, toPos.Z + (this.IsCursorOver ? -0.0001f : 0));
 
-			line.StrokeThickness = this.IsAxisHovered ? this.StrokeThickness + 3 : this.StrokeThickness;
+			line.StrokeThickness = this.IsCursorOver ? this.StrokeThickness + 3 : this.StrokeThickness;
 			line.Stroke = isVisible ? this.ForegroundBrush : this.BackgroundBrush;
 		}
 	}
@@ -205,7 +205,7 @@ public class RotationGizmoAxis : GizmoAxisBase
 	public void CheckAxisForMouseHover(
 		Point mousePos,
 		ref double closestAxisPointToMouseDistance,
-		ref RotationGizmoAxis? closestMouseAxis)
+		ref RotationHandleAxis? closestMouseAxis)
 	{
 		for (int i = 1; i < this.points3d.Length; i++)
 		{
@@ -227,10 +227,43 @@ public class RotationGizmoAxis : GizmoAxisBase
 		}
 	}
 
-	public override int GetDepthAtCursor(Point mousePos)
+	public override int HitTest(Point mousePos)
 	{
 		// Rotation gizmo uses CheckAxisForMouseHover instead for more accurate
 		// loop grabbing.
 		throw new NotSupportedException();
+	}
+
+	public override Transform OnScrollWheel(float delta, Transform transform)
+	{
+		float mouseWheel = delta / 10.0f;
+
+		if (Keyboard.Modifiers == ModifierKeys.Shift)
+			mouseWheel *= 10;
+
+		if (Keyboard.Modifiers == ModifierKeys.Control)
+			mouseWheel /= 10;
+
+		Quaternion rot = Quaternion.Identity;
+		if (this.Axis == TransformHandleAxes.X)
+		{
+			rot = Quaternion.CreateFromAxisAngle(Vector3.UnitX, mouseWheel);
+		}
+		else if (this.Axis == TransformHandleAxes.Y)
+		{
+			rot = Quaternion.CreateFromAxisAngle(Vector3.UnitY, -mouseWheel);
+		}
+		else if (this.Axis == TransformHandleAxes.Z)
+		{
+			rot = Quaternion.CreateFromAxisAngle(Vector3.UnitZ, mouseWheel);
+		}
+
+		if (transform.ToTRS(out Vector3 translation, out Quaternion rotation, out Vector3 scale))
+		{
+			rotation *= rot;
+			transform = Transform.FromTRS(translation, rotation, scale);
+		}
+
+		return transform;
 	}
 }

@@ -13,11 +13,36 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Overlays.Gizmos;
+namespace StudioFourteen.Gizmos.Handles.TransformHandle;
 
-public enum GizmoTypes
+using StudioFourteen.Gizmos;
+
+using Transform = StudioFourteen.Posing.Transform;
+
+public abstract class TransformHandleBase : GizmoGroup
 {
-	Translation,
-	Rotation,
-	Scale,
+	public double Sensitivity = 1;
+	public bool WriteTransform = true;
+
+	public TransformHandleBase()
+	{
+		this.KeepScreenSize = true;
+	}
+
+	public delegate void TransformChangedDelegate(Transform newTransform);
+
+	public event TransformChangedDelegate? TransformChanged;
+
+	public Transform OnAxisBeginDrag()
+	{
+		return this.Transform;
+	}
+
+	public void OnAxisDrag(Transform newTransform)
+	{
+		if (this.WriteTransform)
+			this.Transform = newTransform;
+
+		this.TransformChanged?.Invoke(newTransform);
+	}
 }

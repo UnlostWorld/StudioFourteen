@@ -5,7 +5,7 @@
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:gizmos="clr-namespace:StudioFourteen.Overlays.Gizmos"
+	xmlns:transform="clr-namespace:StudioFourteen.Gizmos.Handles.TransformHandle"
 	xmlns:local="clr-namespace:StudioFourteen.Posing"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:mvm="clr-namespace:StudioFourteen.Mvm"
@@ -29,7 +29,7 @@
 							Grid.Row="0"
 							Height="168">
 
-							<gizmos:GizmoControl
+							<transform:TransformHandleControl
 								GizmoType="{Binding Services.Pose.Gizmo}"
 								Sensitivity="{Binding Selection.GizmoSensitivity}"
 								Transform="{Binding WorldTransform}" />

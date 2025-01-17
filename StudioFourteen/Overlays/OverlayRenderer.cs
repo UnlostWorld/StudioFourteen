@@ -15,10 +15,17 @@
 
 namespace StudioFourteen.Overlays;
 
-using StudioFourteen.Overlays.Primitives;
+using StudioFourteen.Gizmos;
+using StudioFourteen.Utilities;
 using System.ComponentModel;
+using System.Numerics;
+using System.Windows;
+using System.Windows.Input;
+using WpfUtils.Extensions;
 
-public partial class OverlayRenderer : PrimitiveRenderer
+using CursorPoint = System.Drawing.Point;
+
+public partial class OverlayRenderer : GizmoRenderer
 {
 	public OverlayRenderer()
 	{
@@ -32,6 +39,61 @@ public partial class OverlayRenderer : PrimitiveRenderer
 		{
 			this.OnLayerAdded(layer);
 		}
+	}
+
+	protected override void OnMouseDown(MouseButtonEventArgs e)
+	{
+		base.OnMouseDown(e);
+
+		if (e.Handled)
+			return;
+
+		this.Services.Input.Mouse?.HandleMouse(e.ChangedButton, true);
+	}
+
+	protected override void OnMouseUp(MouseButtonEventArgs e)
+	{
+		base.OnMouseUp(e);
+
+		if (e.Handled)
+			return;
+
+		if (this.Services.Input.Mouse?.IsAnyDragging == false)
+		{
+			if (e.ChangedButton == MouseButton.Right)
+			{
+				////this.WorldContextMenu.Show(e.GetPosition(this));
+			}
+			else if (e.ChangedButton == MouseButton.Left)
+			{
+				this.Services.Target.TargetPosition(e.GetPosition(this)).Run();
+			}
+		}
+
+		this.Services.Input.Mouse?.HandleMouse(e.ChangedButton, false);
+	}
+
+	protected override void OnMouseMove(MouseEventArgs e)
+	{
+		base.OnMouseMove(e);
+
+		this.Services.Input.Mouse?.HandleMouseMove();
+	}
+
+	protected override void OnMouseLeave(MouseEventArgs e)
+	{
+		base.OnMouseLeave(e);
+		this.Services.Input.Mouse?.HandleMouseLeave();
+	}
+
+	protected override void OnMouseWheel(MouseWheelEventArgs e)
+	{
+		base.OnMouseWheel(e);
+
+		if (e.Handled)
+			return;
+
+		this.Services.Input.Mouse?.HandleMouseWheel(e.Delta / 120.0f);
 	}
 
 	private void OnLayerAdded(OverlayLayerBase overlay)

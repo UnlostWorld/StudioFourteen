@@ -30,4 +30,9 @@ public static class PointExtensions
 	{
 		return new Point(self.X, self.Y);
 	}
+
+	public static Vector2 ToVector2(this DrawingPoint self)
+	{
+		return new Vector2(self.X, self.Y);
+	}
 }

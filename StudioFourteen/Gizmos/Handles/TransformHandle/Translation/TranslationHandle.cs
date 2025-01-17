@@ -13,51 +13,51 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Overlays.Gizmos.Translation;
+namespace StudioFourteen.Gizmos.Handles.TransformHandle.Translation;
 
-using StudioFourteen.Overlays.Gizmos;
+using StudioFourteen.Gizmos.Handles.TransformHandle;
 using System.Windows.Media;
 
-public partial class TranslationGizmo : GizmoBase
+public partial class TranslationHandle : TransformHandleBase
 {
 	public float Radius = 0.35f;
 
-	private readonly TranslationGizmoAxis xAxis;
-	private readonly TranslationGizmoAxis yAxis;
-	private readonly TranslationGizmoAxis zAxis;
+	private readonly TranslationHandleAxis xAxis;
+	private readonly TranslationHandleAxis yAxis;
+	private readonly TranslationHandleAxis zAxis;
 
-	private readonly TranslationGizmoDualAxis xDualAxis;
-	private readonly TranslationGizmoDualAxis yDualAxis;
-	private readonly TranslationGizmoDualAxis zDualAxis;
+	private readonly TranslationHandleDualAxis xDualAxis;
+	private readonly TranslationHandleDualAxis yDualAxis;
+	private readonly TranslationHandleDualAxis zDualAxis;
 
-	public TranslationGizmo()
+	public TranslationHandle()
 	{
-		this.xAxis = new(GizmoAxes.X, this.Radius);
+		this.xAxis = new(TransformHandleAxes.X, this.Radius);
 		this.xAxis.Foreground = Color.FromArgb(0xFF, 0x33, 0x33, 0xFF);
 		this.xAxis.Background = Color.FromArgb(0xFF, 0x33, 0x33, 0x4D);
-		this.AddAxis(this.xAxis);
+		this.AddChild(this.xAxis);
 
-		this.yAxis = new(GizmoAxes.Y, this.Radius);
+		this.yAxis = new(TransformHandleAxes.Y, this.Radius);
 		this.yAxis.Foreground = Color.FromArgb(0xFF, 0x33, 0xFF, 0x33);
 		this.yAxis.Background = Color.FromArgb(0xFF, 0x33, 0x4D, 0x33);
-		this.AddAxis(this.yAxis);
+		this.AddChild(this.yAxis);
 
-		this.zAxis = new(GizmoAxes.Z, this.Radius);
+		this.zAxis = new(TransformHandleAxes.Z, this.Radius);
 		this.zAxis.Foreground = Color.FromArgb(0xFF, 0xFF, 0x33, 0x33);
 		this.zAxis.Background = Color.FromArgb(0xFF, 0x4D, 0x33, 0x33);
-		this.AddAxis(this.zAxis);
+		this.AddChild(this.zAxis);
 
-		this.xDualAxis = new(GizmoAxes.X, this.Radius * 0.4f);
+		this.xDualAxis = new(TransformHandleAxes.X, this.Radius * 0.4f);
 		this.xDualAxis.Foreground = Color.FromArgb(0xFF, 0x33, 0x33, 0xFF);
-		this.AddAxis(this.xDualAxis);
+		this.AddChild(this.xDualAxis);
 
-		this.yDualAxis = new(GizmoAxes.Y, this.Radius * 0.4f);
+		this.yDualAxis = new(TransformHandleAxes.Y, this.Radius * 0.4f);
 		this.yDualAxis.Foreground = Color.FromArgb(0xFF, 0x33, 0xFF, 0x33);
-		this.AddAxis(this.yDualAxis);
+		this.AddChild(this.yDualAxis);
 
-		this.zDualAxis = new(GizmoAxes.Z, this.Radius * 0.4f);
+		this.zDualAxis = new(TransformHandleAxes.Z, this.Radius * 0.4f);
 		this.zDualAxis.Foreground = Color.FromArgb(0xFF, 0xFF, 0x33, 0x33);
-		this.AddAxis(this.zDualAxis);
+		this.AddChild(this.zDualAxis);
 	}
 
 	public bool Flip

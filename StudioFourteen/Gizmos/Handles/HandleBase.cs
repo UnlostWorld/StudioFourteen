@@ -13,56 +13,51 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Overlays.Gizmos;
+namespace StudioFourteen.Gizmos.Handles;
 
+using StudioFourteen.Gizmos;
+using System;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
-using StudioFourteen;
-using StudioFourteen.Overlays.Primitives;
 
-using Transform = StudioFourteen.Posing.Transform;
-using Vector = System.Windows.Vector;
-
-public enum GizmoAxes
+public abstract class HandleBase : GizmoBase
 {
-	X,
-	Y,
-	Z,
-}
-
-public abstract class GizmoAxisBase : PrimitiveBase
-{
-	public double Sensitivity = 1.0;
-	public Color Foreground = Colors.Gray;
-	public Color Background = Colors.Black;
-
-	public GizmoAxes Axis { get; protected set; }
-	public virtual bool IsAxisHovered { get; set; } = false;
-
-	protected Brush? ForegroundBrush { get; private set; }
-	protected Brush? BackgroundBrush { get; private set; }
-
-	public abstract int GetDepthAtCursor(Point mousePos);
+	public bool IsCursorOver { get; private set; }
 
 	public virtual void StartDrag(Point mousePos)
 	{
 	}
 
-	public virtual Transform UpdateDrag(Vector mouseDelta, Transform currentTransform)
+	public virtual void OnDrag(Vector mouseDelta)
 	{
-		return default;
 	}
 
 	public virtual void EndDrag()
 	{
 	}
 
-	public override void Enable(Canvas canvas)
+	public virtual void SetIsCursorOver(bool isCursorOver)
 	{
-		base.Enable(canvas);
+		this.IsCursorOver = isCursorOver;
+	}
 
-		this.ForegroundBrush = new SolidColorBrush(this.Foreground);
-		this.BackgroundBrush = new SolidColorBrush(this.Background);
+	public override void HitTest(Point mousePos, ref HandleHitResult result)
+	{
+		int depth = this.HitTest(mousePos);
+
+		if (depth == int.MinValue)
+			return;
+
+		if (depth > result.Depth)
+		{
+			result.Depth = depth;
+			result.Handle = this;
+		}
+	}
+
+	public abstract int HitTest(Point mousePos);
+
+	public virtual bool OnScrollWheel(float delta)
+	{
+		return false;
 	}
 }

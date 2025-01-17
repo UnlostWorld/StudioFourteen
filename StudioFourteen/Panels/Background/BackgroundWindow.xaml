@@ -17,6 +17,7 @@
 	AllowsTransparency="True"
 	Background="Transparent"
 	MouseEnter="OnMouseEnterSelf"
+	PreviewMouseMove="OnPreviewMouseMove"
 	PreviewKeyDown="OnPreviewKeyDown"
 	PreviewKeyUp="OnPreviewKeyUp"
 	ResizeMode="NoResize"
@@ -74,17 +75,8 @@
 				</Style>
 			</Grid.Style>
 
-			<Rectangle
-				x:Name="Fill"
-				Fill="#01000000"
-				MouseEnter="OnMouseEnter"
-				MouseLeave="OnMouseLeave"
-				MouseMove="OnMouseMove"
-				MouseWheel="OnMouseWheel" />
-
 			<overlays:OverlayRenderer
-				ClipToBounds="True"
-				Visibility="{Binding Services.Overlays.OverlaysEnabled, Converter={StaticResource B2V}}" />
+				ClipToBounds="True"/>
 		</Grid>
 
 		<Grid>

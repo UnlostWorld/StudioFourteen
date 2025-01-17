@@ -13,28 +13,29 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Overlays.Gizmos;
+namespace StudioFourteen.Gizmos.Handles.TransformHandle;
 
 using DependencyPropertyGenerator;
-using StudioFourteen.Overlays.Gizmos.Rotation;
-using StudioFourteen.Overlays.Gizmos.Scale;
-using StudioFourteen.Overlays.Gizmos.Translation;
-using StudioFourteen.Overlays.Primitives;
 using StudioFourteen.Posing;
 using System.Numerics;
+using StudioFourteen.Gizmos;
+using StudioFourteen.Gizmos.Handles.TransformHandle;
+using StudioFourteen.Gizmos.Handles.TransformHandle.Rotation;
+using StudioFourteen.Gizmos.Handles.TransformHandle.Scale;
+using StudioFourteen.Gizmos.Handles.TransformHandle.Translation;
 
 [DependencyProperty<Posing.Transform>("Transform", DefaultBindingMode=DefaultBindingMode.TwoWay)]
 [DependencyProperty<double>("Sensitivity")]
-[DependencyProperty<GizmoTypes>("GizmoType")]
-public partial class GizmoControl : PrimitiveRenderer
+[DependencyProperty<TransformHandleTypes>("GizmoType")]
+public partial class TransformHandleControl : GizmoRenderer
 {
-	private readonly TranslationGizmo translation;
-	private readonly RotationGizmo rotation;
-	private readonly ScaleGizmo scale;
+	private readonly TranslationHandle translation;
+	private readonly RotationHandle rotation;
+	private readonly ScaleHandle scale;
 
 	private Transform currentTransform;
 
-	public GizmoControl()
+	public TransformHandleControl()
 	{
 		this.translation = new();
 		this.translation.TransformChanged += this.OnGizmoTransformChanged;
@@ -94,10 +95,10 @@ public partial class GizmoControl : PrimitiveRenderer
 		this.scale.Sensitivity = newValue;
 	}
 
-	partial void OnGizmoTypeChanged(GizmoTypes newValue)
+	partial void OnGizmoTypeChanged(TransformHandleTypes newValue)
 	{
-		this.translation.IsVisible = newValue == GizmoTypes.Translation;
-		this.rotation.IsVisible = newValue == GizmoTypes.Rotation;
-		this.scale.IsVisible = newValue == GizmoTypes.Scale;
+		this.translation.IsVisible = newValue == TransformHandleTypes.Translation;
+		this.rotation.IsVisible = newValue == TransformHandleTypes.Rotation;
+		this.scale.IsVisible = newValue == TransformHandleTypes.Scale;
 	}
 }

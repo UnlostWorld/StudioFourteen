@@ -14,7 +14,8 @@
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
 namespace StudioFourteen.Posing;
-using StudioFourteen.Overlays.Gizmos;
+
+using StudioFourteen.Gizmos.Handles.TransformHandle;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Xml.Linq;
@@ -23,38 +24,38 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
 public class BoneSelection : TransformSelectionBase
 {
 	// Bones default to rotation, so just set any translation or scale modes here.
-	private static readonly Dictionary<string, GizmoTypes> DefaultBoneGizmos = new()
+	private static readonly Dictionary<string, TransformHandleTypes> DefaultBoneGizmos = new()
 	{
 		// Face
-		{ "j_f_mmayu_l", GizmoTypes.Translation },
-		{ "j_f_mayu_l", GizmoTypes.Translation },
-		{ "j_f_miken_01_l", GizmoTypes.Translation },
-		{ "j_f_miken_02_l", GizmoTypes.Translation },
-		{ "j_f_dmiken_02_l", GizmoTypes.Translation },
-		{ "j_f_uhana", GizmoTypes.Translation },
-		{ "j_f_hana_l", GizmoTypes.Translation },
-		{ "j_f_dmemoto_l", GizmoTypes.Translation },
-		{ "j_f_hoho_l", GizmoTypes.Translation },
-		{ "j_f_dhoho_l", GizmoTypes.Translation },
-		{ "j_f_shoho_l", GizmoTypes.Translation },
+		{ "j_f_mmayu_l", TransformHandleTypes.Translation },
+		{ "j_f_mayu_l", TransformHandleTypes.Translation },
+		{ "j_f_miken_01_l", TransformHandleTypes.Translation },
+		{ "j_f_miken_02_l", TransformHandleTypes.Translation },
+		{ "j_f_dmiken_02_l", TransformHandleTypes.Translation },
+		{ "j_f_uhana", TransformHandleTypes.Translation },
+		{ "j_f_hana_l", TransformHandleTypes.Translation },
+		{ "j_f_dmemoto_l", TransformHandleTypes.Translation },
+		{ "j_f_hoho_l", TransformHandleTypes.Translation },
+		{ "j_f_dhoho_l", TransformHandleTypes.Translation },
+		{ "j_f_shoho_l", TransformHandleTypes.Translation },
 
 		// Mouth
-		{ "j_f_ulip_01_l", GizmoTypes.Translation },
-		{ "j_f_ulip_02_l", GizmoTypes.Translation },
-		{ "j_f_umlip_01_l", GizmoTypes.Translation },
-		{ "j_f_umlip_02_l", GizmoTypes.Translation },
-		{ "j_f_uslip_l", GizmoTypes.Translation },
-		{ "j_f_dlip_01_l", GizmoTypes.Translation },
-		{ "j_f_dlip_02_l", GizmoTypes.Translation },
-		{ "j_f_dmlip_01_l", GizmoTypes.Translation },
-		{ "j_f_dmlip_02_l", GizmoTypes.Translation },
-		{ "j_f_dslip_l", GizmoTypes.Translation },
+		{ "j_f_ulip_01_l", TransformHandleTypes.Translation },
+		{ "j_f_ulip_02_l", TransformHandleTypes.Translation },
+		{ "j_f_umlip_01_l", TransformHandleTypes.Translation },
+		{ "j_f_umlip_02_l", TransformHandleTypes.Translation },
+		{ "j_f_uslip_l", TransformHandleTypes.Translation },
+		{ "j_f_dlip_01_l", TransformHandleTypes.Translation },
+		{ "j_f_dlip_02_l", TransformHandleTypes.Translation },
+		{ "j_f_dmlip_01_l", TransformHandleTypes.Translation },
+		{ "j_f_dmlip_02_l", TransformHandleTypes.Translation },
+		{ "j_f_dslip_l", TransformHandleTypes.Translation },
 
 		// Eyes
-		{ "j_f_mabup_03in_l", GizmoTypes.Translation },
-		{ "j_f_mabup_02out_l", GizmoTypes.Translation },
-		{ "j_f_mabdn_03in_l", GizmoTypes.Translation },
-		{ "j_f_mabdn_02out_l", GizmoTypes.Translation },
+		{ "j_f_mabup_03in_l", TransformHandleTypes.Translation },
+		{ "j_f_mabup_02out_l", TransformHandleTypes.Translation },
+		{ "j_f_mabdn_03in_l", TransformHandleTypes.Translation },
+		{ "j_f_mabdn_02out_l", TransformHandleTypes.Translation },
 	};
 
 	private static readonly Dictionary<string, MirrorModes> DefaultMirrorModes = new()
@@ -101,11 +102,11 @@ public class BoneSelection : TransformSelectionBase
 	public override bool IsReady => this.bone != null && this.bone.LocalSpaceTransform != null && this.bone.ReferenceRelativeTransform != null;
 	public override double GizmoSensitivity => this.IsFaceBone ? 0.05 : 0.5;
 
-	public override GizmoTypes DefaultGizmo
+	public override TransformHandleTypes DefaultGizmo
 	{
 		get
 		{
-			GizmoTypes gizmo;
+			TransformHandleTypes gizmo;
 			if (DefaultBoneGizmos.TryGetValue(this.BoneName, out gizmo))
 			{
 				return gizmo;
@@ -120,7 +121,7 @@ public class BoneSelection : TransformSelectionBase
 				}
 			}
 
-			return GizmoTypes.Rotation;
+			return TransformHandleTypes.Rotation;
 		}
 	}
 

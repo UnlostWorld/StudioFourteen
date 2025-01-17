@@ -13,8 +13,8 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Overlays.Primitives;
-public class CameraWireframe : WireframePrimitive
+namespace StudioFourteen.Gizmos;
+public class CameraWireframe : WireframeGizmo
 {
 	public CameraWireframe()
 	{

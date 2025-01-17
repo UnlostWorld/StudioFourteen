@@ -13,80 +13,48 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Overlays.Gizmos.Rotation;
+namespace StudioFourteen.Gizmos.Handles.TransformHandle.Rotation;
 
-using StudioFourteen.Overlays.Gizmos;
-using StudioFourteen.Overlays.Primitives;
 using System.Windows;
 using System.Windows.Media;
+using StudioFourteen.Gizmos;
+using StudioFourteen.Gizmos.Handles;
+using StudioFourteen.Gizmos.Handles.TransformHandle;
 
-public partial class RotationGizmo : GizmoBase
+public partial class RotationHandle : TransformHandleBase
 {
-	private readonly EllipsePrimitive sphere;
-	private readonly RotationGizmoAxis xAxis;
-	private readonly RotationGizmoAxis yAxis;
-	private readonly RotationGizmoAxis zAxis;
+	private readonly EllipseGizmo sphere;
+	private readonly RotationHandleAxis xAxis;
+	private readonly RotationHandleAxis yAxis;
+	private readonly RotationHandleAxis zAxis;
 
-	public RotationGizmo()
+	public RotationHandle()
 	{
 		this.sphere = new();
 		this.sphere.Foreground = Color.FromArgb(0x80, 0, 0, 0);
 		this.sphere.Radius = 75;
 		this.AddChild(this.sphere);
 
-		this.xAxis = new(GizmoAxes.X);
+		this.xAxis = new(TransformHandleAxes.X);
 		this.xAxis.Foreground = Color.FromArgb(0xFF, 0x33, 0x33, 0xFF);
 		this.xAxis.Background = Color.FromArgb(0xFF, 0x33, 0x33, 0x4D);
 		this.AddChild(this.xAxis);
 
-		this.yAxis = new(GizmoAxes.Y);
+		this.yAxis = new(TransformHandleAxes.Y);
 		this.yAxis.Foreground = Color.FromArgb(0xFF, 0x33, 0xFF, 0x33);
 		this.yAxis.Background = Color.FromArgb(0xFF, 0x33, 0x4D, 0x33);
 		this.AddChild(this.yAxis);
 
-		this.zAxis = new(GizmoAxes.Z);
+		this.zAxis = new(TransformHandleAxes.Z);
 		this.zAxis.Foreground = Color.FromArgb(0xFF, 0xFF, 0x33, 0x33);
 		this.zAxis.Background = Color.FromArgb(0xFF, 0x4D, 0x33, 0x33);
 		this.AddChild(this.zAxis);
 	}
 
-	/*protected override void OnMouseWheel(MouseWheelEventArgs e)
-	{
-		base.OnMouseWheel(e);
-
-		if (this.closestAxisMousePos != null && this.closestMouseAxis != null)
-		{
-			float mouseWheel = e.Delta / 1000.0f;
-
-			if (Keyboard.Modifiers == ModifierKeys.Shift)
-				mouseWheel *= 10;
-
-			if (Keyboard.Modifiers == ModifierKeys.Control)
-				mouseWheel /= 10;
-
-			Quaternion rot = Quaternion.Identity;
-			if (this.closestMouseAxis.Axis == GizmoAxes.X)
-			{
-				rot = Quaternion.CreateFromAxisAngle(Vector3.UnitX, mouseWheel);
-			}
-			else if (this.closestMouseAxis.Axis == GizmoAxes.Y)
-			{
-				rot = Quaternion.CreateFromAxisAngle(Vector3.UnitY, -mouseWheel);
-			}
-			else if (this.closestMouseAxis.Axis == GizmoAxes.Z)
-			{
-				rot = Quaternion.CreateFromAxisAngle(Vector3.UnitZ, mouseWheel);
-			}
-
-			this.Rotation = this.Rotation * rot;
-			e.Handled = true;
-		}
-	}}*/
-
-	protected override GizmoAxisBase? GetHoverAxis(Point mousePos)
+	public override void HitTest(Point mousePos, ref HandleHitResult result)
 	{
 		double closestAxisPointToMouseDistance = 20;
-		RotationGizmoAxis? closestMouseAxis = null;
+		RotationHandleAxis? closestMouseAxis = null;
 
 		this.xAxis.CheckAxisForMouseHover(
 			mousePos,
@@ -103,6 +71,6 @@ public partial class RotationGizmo : GizmoBase
 			ref closestAxisPointToMouseDistance,
 			ref closestMouseAxis);
 
-		return closestMouseAxis;
+		result.Handle = closestMouseAxis;
 	}
 }

@@ -13,45 +13,11 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Overlays;
+namespace StudioFourteen.Gizmos.Handles.TransformHandle;
 
-using Serilog;
-using StudioFourteen.Gizmos;
-using StudioFourteen.Settings;
-
-public abstract class OverlayLayerBase(string group, string name)
-	: GizmoGroup
+public enum TransformHandleTypes
 {
-	public readonly string Group = group;
-	public readonly string Name = name;
-
-	protected readonly Persistence persistence = new($"Overlay_{group}_{name}");
-
-	public string DisplayGroup => Resources.Find($"LOC_OverlayGroup_{this.Group}", this.Group);
-	public string DisplayName => Resources.Find($"LOC_Overlay_{this.Name}", this.Name);
-
-	public bool IsHidden
-	{
-		get => this.persistence.GetPersistence<bool>();
-		set
-		{
-			this.persistence.SetPersistence(value);
-			this.IsVisible = !value;
-		}
-	}
-
-	public void Enable()
-	{
-		this.Services.Overlays.AddOverlay(this);
-		this.IsVisible = !this.IsHidden;
-	}
-
-	public void Disable()
-	{
-		this.Services.Overlays.RemoveOverlay(this);
-	}
-
-	public virtual void OnFrameworkUpdate()
-	{
-	}
+	Translation,
+	Rotation,
+	Scale,
 }

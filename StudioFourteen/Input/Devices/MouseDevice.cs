@@ -15,12 +15,13 @@
 
 namespace StudioFourteen.Input.Devices;
 
+using StudioFourteen.Extensions;
 using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Windows.Input;
-using static StudioFourteen.Overlays.Gizmos.Rotation.RotationGizmo;
+using static StudioFourteen.Gizmos.Handles.TransformHandle.Rotation.RotationHandle;
 
 public class MouseDevice : InputDeviceBase
 {
@@ -118,19 +119,22 @@ public class MouseDevice : InputDeviceBase
 		}
 	}
 
-	public void HandleMouse(MouseButton button, bool down, Vector2 position)
+	public void HandleMouse(MouseButton button, bool down)
 	{
+		System.Drawing.Point? mousePoint = this.Services.Windows.GetCursorPosition();
+
+		if (mousePoint == null)
+			return;
+
+		Vector2 newPos = mousePoint.Value.ToVector2();
+
 		this.buttonAxes[button].Value = down ? 1.0f : 0.0f;
 
 		if (down)
 		{
 			this.dragAxis[button].X.Value = 0;
 			this.dragAxis[button].Y.Value = 0;
-
-			if (position != Vector2.Zero)
-			{
-				this.dragStarts[button] = position;
-			}
+			this.dragStarts[button] = newPos;
 		}
 		else
 		{
@@ -140,8 +144,14 @@ public class MouseDevice : InputDeviceBase
 		}
 	}
 
-	public void HandleMouseMove(Vector2 newPos)
+	public void HandleMouseMove()
 	{
+		System.Drawing.Point? mousePoint = this.Services.Windows.GetCursorPosition();
+		if (mousePoint == null)
+			return;
+
+		Vector2 newPos = mousePoint.Value.ToVector2();
+
 		foreach ((MouseButton button, Vector2 dragStart) in this.dragStarts)
 		{
 			if (this.draggingButtons.Contains(button))
@@ -163,13 +173,19 @@ public class MouseDevice : InputDeviceBase
 
 		if (this.IsAnyDragging)
 		{
-			this.Services.Windows.SetCursorPosition(new((int)this.lastMousePosition.X, (int)this.lastMousePosition.Y));
+			foreach ((MouseButton button, Vector2 dragStart) in this.dragStarts)
+			{
+				this.Services.Windows.SetCursorPosition(new((int)dragStart.X, (int)dragStart.Y));
+			}
+
 			CursorUtility.SetCursorVisible(false);
 		}
-		else
-		{
-			this.lastMousePosition = newPos;
-		}
+
+		mousePoint = this.Services.Windows.GetCursorPosition();
+		if (mousePoint == null)
+			return;
+
+		this.lastMousePosition = mousePoint.Value.ToVector2();
 	}
 
 	public void HandleMouseLeave()

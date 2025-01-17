@@ -13,45 +13,59 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Overlays;
+namespace StudioFourteen.Gizmos;
 
-using Serilog;
-using StudioFourteen.Gizmos;
-using StudioFourteen.Settings;
+using System.Numerics;
+using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Shapes;
 
-public abstract class OverlayLayerBase(string group, string name)
-	: GizmoGroup
+public class LineGizmo : GizmoBase
 {
-	public readonly string Group = group;
-	public readonly string Name = name;
+	public Vector3 From;
+	public Vector3 To;
+	public Color Foreground = Colors.White;
+	public int Thickness = 1;
 
-	protected readonly Persistence persistence = new($"Overlay_{group}_{name}");
+	private Line? line;
 
-	public string DisplayGroup => Resources.Find($"LOC_OverlayGroup_{this.Group}", this.Group);
-	public string DisplayName => Resources.Find($"LOC_Overlay_{this.Name}", this.Name);
-
-	public bool IsHidden
+	public LineGizmo()
 	{
-		get => this.persistence.GetPersistence<bool>();
-		set
-		{
-			this.persistence.SetPersistence(value);
-			this.IsVisible = !value;
-		}
 	}
 
-	public void Enable()
+	public LineGizmo(Vector3 from, Vector3 to)
+		: this()
 	{
-		this.Services.Overlays.AddOverlay(this);
-		this.IsVisible = !this.IsHidden;
+		this.From = from;
+		this.To = to;
 	}
 
-	public void Disable()
+	public override void Enable(Canvas canvas)
 	{
-		this.Services.Overlays.RemoveOverlay(this);
+		if (this.line == null)
+			this.line = this.AddChild<Line>();
+
+		base.Enable(canvas);
 	}
 
-	public virtual void OnFrameworkUpdate()
+	public override void Update()
 	{
+		if (this.line == null)
+			return;
+
+		this.line.StrokeThickness = this.Thickness;
+
+		if (this.line.Stroke is not SolidColorBrush scb || scb.Color != this.Foreground)
+			this.line.Stroke = new SolidColorBrush(this.Foreground);
+
+		Vector3 fromPos = this.LocalToScreen(this.From);
+		Vector3 toPos = this.LocalToScreen(this.To);
+
+		this.line.X1 = fromPos.X;
+		this.line.Y1 = fromPos.Y;
+		this.line.X2 = toPos.X;
+		this.line.Y2 = toPos.Y;
+
+		this.SetZIndex(this.line, toPos.Z);
 	}
 }

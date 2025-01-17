@@ -13,7 +13,7 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Overlays.Primitives;
+namespace StudioFourteen.Gizmos;
 
 using System.Collections.Generic;
 using System.Numerics;
@@ -22,7 +22,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-public abstract class WireframePrimitive : PrimitiveBase
+public abstract class WireframeGizmo : GizmoBase
 {
 	private readonly List<(Vector3 From, Vector3 To)> lines = new();
 	private readonly List<Vector3[]> polyLines = new();

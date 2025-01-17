@@ -13,9 +13,9 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Overlays.Gizmos.Translation;
+namespace StudioFourteen.Gizmos.Handles.TransformHandle.Translation;
 
-using StudioFourteen.Overlays.Gizmos;
+using StudioFourteen.Gizmos.Handles.TransformHandle;
 using StudioFourteen.Structs;
 using System.Numerics;
 using System.Windows;
@@ -26,7 +26,7 @@ using System.Windows.Shapes;
 
 using Vector = System.Windows.Vector;
 
-public class TranslationGizmoDualAxis : GizmoAxisBase
+public class TranslationHandleDualAxis : TransformHandleAxisBase
 {
 	public bool Flip = false;
 
@@ -37,11 +37,11 @@ public class TranslationGizmoDualAxis : GizmoAxisBase
 	private Vector3 dragAxisTwoPos;
 	private Polygon? square;
 
-	public TranslationGizmoDualAxis(GizmoAxes axis, float radius)
+	public TranslationHandleDualAxis(TransformHandleAxes axis, float radius)
 	{
 		this.Axis = axis;
 
-		if (this.Axis == GizmoAxes.X)
+		if (this.Axis == TransformHandleAxes.X)
 		{
 			this.dragAxisOne = Vector3.UnitY;
 			this.dragAxisTwo = Vector3.UnitZ;
@@ -51,7 +51,7 @@ public class TranslationGizmoDualAxis : GizmoAxisBase
 			this.possibleCorners[2] = new Vector3(0, -radius, -radius);
 			this.possibleCorners[3] = new Vector3(0, radius, -radius);
 		}
-		else if (this.Axis == GizmoAxes.Y)
+		else if (this.Axis == TransformHandleAxes.Y)
 		{
 			this.dragAxisOne = Vector3.UnitX;
 			this.dragAxisTwo = Vector3.UnitZ;
@@ -61,7 +61,7 @@ public class TranslationGizmoDualAxis : GizmoAxisBase
 			this.possibleCorners[2] = new Vector3(-radius, 0, -radius);
 			this.possibleCorners[3] = new Vector3(radius, 0, -radius);
 		}
-		else if (this.Axis == GizmoAxes.Z)
+		else if (this.Axis == TransformHandleAxes.Z)
 		{
 			this.dragAxisOne = Vector3.UnitX;
 			this.dragAxisTwo = Vector3.UnitY;
@@ -95,7 +95,7 @@ public class TranslationGizmoDualAxis : GizmoAxisBase
 		base.Enable(canvas);
 	}
 
-	public override Posing.Transform UpdateDrag(Vector mouseDelta, Posing.Transform transform)
+	public override Posing.Transform OnDrag(Vector mouseDelta, Posing.Transform transform)
 	{
 		if (this.square == null)
 			return transform;
@@ -150,17 +150,17 @@ public class TranslationGizmoDualAxis : GizmoAxisBase
 		}
 
 		Vector3 delta = Vector3.Zero;
-		if (this.Axis == GizmoAxes.X)
+		if (this.Axis == TransformHandleAxes.X)
 		{
 			delta += Vector3.UnitY * dragDeltaAxis1;
 			delta += Vector3.UnitZ * dragDeltaAxis2;
 		}
-		else if (this.Axis == GizmoAxes.Y)
+		else if (this.Axis == TransformHandleAxes.Y)
 		{
 			delta += Vector3.UnitX * dragDeltaAxis1;
 			delta += Vector3.UnitZ * dragDeltaAxis2;
 		}
-		else if (this.Axis == GizmoAxes.Z)
+		else if (this.Axis == TransformHandleAxes.Z)
 		{
 			delta += Vector3.UnitX * dragDeltaAxis1;
 			delta += Vector3.UnitY * dragDeltaAxis2;
@@ -196,7 +196,7 @@ public class TranslationGizmoDualAxis : GizmoAxisBase
 		Vector3 onePoint = new Vector3(bestCorner.X, originPos.Y, originPos.Z);
 		Vector3 twoPoint = bestCorner;
 		Vector3 threePoint = new Vector3(originPos.X, bestCorner.Y, bestCorner.Z);
-		if (this.Axis == GizmoAxes.X)
+		if (this.Axis == TransformHandleAxes.X)
 		{
 			onePoint = new Vector3(bestCorner.X, bestCorner.Y, originPos.Z);
 			twoPoint = bestCorner;
@@ -211,7 +211,7 @@ public class TranslationGizmoDualAxis : GizmoAxisBase
 		this.square.Fill = this.ForegroundBrush;
 		this.square.Stroke = this.ForegroundBrush;
 
-		if (this.IsAxisHovered)
+		if (this.IsCursorOver)
 		{
 			this.square.StrokeThickness = 3;
 		}
@@ -226,7 +226,7 @@ public class TranslationGizmoDualAxis : GizmoAxisBase
 		this.dragAxisTwoPos = this.LocalToScreen(this.dragAxisTwo);
 	}
 
-	public override int GetDepthAtCursor(Point p)
+	public override int HitTest(Point p)
 	{
 		if (this.square == null)
 			return int.MinValue;

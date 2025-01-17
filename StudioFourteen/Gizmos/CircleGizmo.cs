@@ -13,7 +13,7 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Overlays.Primitives;
+namespace StudioFourteen.Gizmos;
 
 using System;
 using System.Numerics;
@@ -21,7 +21,7 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-public class CirclePrimitive : PrimitiveBase
+public class CircleGizmo : GizmoBase
 {
 	public Color Foreground = Colors.White;
 	public int Thickness = 1;
@@ -47,8 +47,8 @@ public class CirclePrimitive : PrimitiveBase
 			this.segments[i] = new();
 			this.segments[i].StrokeThickness = this.Thickness;
 			this.segments[i].Stroke = new SolidColorBrush(this.Foreground);
-			this.segments[i].StrokeEndLineCap = System.Windows.Media.PenLineCap.Round;
-			this.segments[i].StrokeStartLineCap = System.Windows.Media.PenLineCap.Round;
+			this.segments[i].StrokeEndLineCap = PenLineCap.Round;
+			this.segments[i].StrokeStartLineCap = PenLineCap.Round;
 			canvas.Children.Add(this.segments[i]);
 		}
 

@@ -16,8 +16,8 @@
 namespace StudioFourteen.Posing;
 
 using Dalamud.Plugin.Services;
+using StudioFourteen.Gizmos.Handles.TransformHandle;
 using StudioFourteen.Mvm;
-using StudioFourteen.Overlays.Gizmos;
 using System;
 using System.Numerics;
 
@@ -64,7 +64,7 @@ public abstract class TransformSelectionBase : SelectionBase
 	public virtual double TranslationSmallChange => 0.01;
 	public virtual double TranslationRange => 1;
 	public virtual int DecimalPlacesToDisplay => 2;
-	public virtual GizmoTypes DefaultGizmo => GizmoTypes.Translation;
+	public virtual TransformHandleTypes DefaultGizmo => TransformHandleTypes.Translation;
 	public virtual double GizmoSensitivity => 1.0;
 
 	[AutoNotify] public virtual bool IsReady => true;

@@ -19,7 +19,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.Havok.Animation.Rig;
-using StudioFourteen.Overlays.Primitives;
+using StudioFourteen.Gizmos;
 using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
@@ -126,7 +126,7 @@ public class PoseSkeletonOverlay : PoseOverlayLayerBase
 	}
 }
 
-public class BonePrimitive : PrimitiveBase
+public class BonePrimitive : GizmoBase
 {
 	public Vector3 From;
 	public Vector3 To;

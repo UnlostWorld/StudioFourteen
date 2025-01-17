@@ -13,10 +13,10 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Overlays.Gizmos.Scale;
+namespace StudioFourteen.Gizmos.Handles.TransformHandle.Scale;
 
 using StudioFourteen.Extensions;
-using StudioFourteen.Overlays.Gizmos;
+using StudioFourteen.Gizmos.Handles.TransformHandle;
 using StudioFourteen.Structs;
 using System.Numerics;
 using System.Windows;
@@ -27,7 +27,7 @@ using System.Windows.Shapes;
 using Transform = StudioFourteen.Posing.Transform;
 using Vector = System.Windows.Vector;
 
-public class UniformScaleGizmoAxis : GizmoAxisBase
+public class UniformScaleHandleAxis : TransformHandleAxisBase
 {
 	private readonly float radius;
 
@@ -36,7 +36,7 @@ public class UniformScaleGizmoAxis : GizmoAxisBase
 	private Point startDragPos;
 	private Point centerPos;
 
-	public UniformScaleGizmoAxis(float radius)
+	public UniformScaleHandleAxis(float radius)
 	{
 		this.radius = radius;
 	}
@@ -72,7 +72,7 @@ public class UniformScaleGizmoAxis : GizmoAxisBase
 		this.ellipse.Fill = this.BackgroundBrush;
 		this.ellipse.Stroke = this.ForegroundBrush;
 
-		if (this.IsAxisHovered)
+		if (this.IsCursorOver)
 		{
 			this.ellipse.StrokeThickness = 3;
 		}
@@ -82,7 +82,7 @@ public class UniformScaleGizmoAxis : GizmoAxisBase
 		}
 	}
 
-	public override int GetDepthAtCursor(Point mousePos)
+	public override int HitTest(Point mousePos)
 	{
 		if (this.ellipse == null)
 			return int.MinValue;
@@ -105,7 +105,7 @@ public class UniformScaleGizmoAxis : GizmoAxisBase
 		base.StartDrag(mousePos);
 	}
 
-	public override Transform UpdateDrag(Vector mouseDelta, Transform transform)
+	public override Transform OnDrag(Vector mouseDelta, Transform transform)
 	{
 		Vector normal = this.startDragPos - this.centerPos;
 		normal.Normalize();
@@ -129,7 +129,7 @@ public class UniformScaleGizmoAxis : GizmoAxisBase
 			dragDelta *= (float)this.Services.Tablet.PenPressure;
 		}
 
-		Transform scaleTransform = Posing.Transform.FromScale(Vector3.One + (Vector3.One * dragDelta));
+		Transform scaleTransform = Transform.FromScale(Vector3.One + (Vector3.One * dragDelta));
 		transform = scaleTransform * transform;
 
 		return transform;

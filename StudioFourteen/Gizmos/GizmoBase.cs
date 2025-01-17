@@ -13,20 +13,23 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Overlays.Primitives;
+namespace StudioFourteen.Gizmos;
 
 using Serilog;
+using StudioFourteen;
+using StudioFourteen.Gizmos.Handles;
 using StudioFourteen.Posing;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Windows;
 using System.Windows.Controls;
+using Vector = System.Windows.Vector;
 
-public interface IPrimitive
+public interface IGizmo
 {
 	public bool IsVisible { get; set; }
 
-	PrimitiveGroup? Parent { get; set; }
+	GizmoGroup? Parent { get; set; }
 
 	void Update(Matrix4x4 view, Matrix4x4 projection, Canvas canvas);
 	void Enable(Canvas canvas);
@@ -35,9 +38,11 @@ public interface IPrimitive
 	Transform GetTransform();
 	bool GetKeepScreenSize();
 	bool GetIsVisible();
+
+	void HitTest(Point mousePos, ref HandleHitResult result);
 }
 
-public abstract class PrimitiveBase : IPrimitive
+public abstract class GizmoBase : IGizmo
 {
 	public bool KeepScreenSize = false;
 	public bool IgnoreTransformScale = true;
@@ -55,13 +60,13 @@ public abstract class PrimitiveBase : IPrimitive
 	private Matrix4x4 currentTransform;
 	private bool currentVisibility = true;
 
-	public PrimitiveBase()
+	public GizmoBase()
 	{
 		this.Log = Logging.ForContext(this.GetType());
 	}
 
 	public Transform Transform { get; set; } = Transform.Identity;
-	public PrimitiveGroup? Parent { get; set; }
+	public GizmoGroup? Parent { get; set; }
 	public bool IsVisible { get; set; } = true;
 
 	protected ServiceManager Services => ServiceManager.Instance;
@@ -113,7 +118,7 @@ public abstract class PrimitiveBase : IPrimitive
 		{
 			if (Matrix4x4.Decompose(this.currentTransform, out Vector3 scale, out Quaternion rotation, out Vector3 translation))
 			{
-				this.currentTransform = Posing.Transform.FromTRS(translation, rotation, Vector3.One).ToMatrix();
+				this.currentTransform = Transform.FromTRS(translation, rotation, Vector3.One).ToMatrix();
 			}
 		}
 
@@ -169,6 +174,10 @@ public abstract class PrimitiveBase : IPrimitive
 		return this.IsVisible;
 	}
 
+	public virtual void HitTest(Point mousePos, ref HandleHitResult result)
+	{
+	}
+
 	protected T AddChild<T>()
 		where T : FrameworkElement, new()
 	{
@@ -179,7 +188,7 @@ public abstract class PrimitiveBase : IPrimitive
 
 	protected void SetZIndex(FrameworkElement el, float depth)
 	{
-		Canvas.SetZIndex(el, (int)(-depth * 100000));
+		Panel.SetZIndex(el, (int)(-depth * 100000));
 	}
 
 	protected Vector3 LocalToScreen(Vector3 local)

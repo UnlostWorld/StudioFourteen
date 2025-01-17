@@ -15,11 +15,11 @@
 
 namespace StudioFourteen.Posing;
 
+using StudioFourteen.Gizmos.Handles.TransformHandle;
+using StudioFourteen.Gizmos.Handles.TransformHandle.Rotation;
+using StudioFourteen.Gizmos.Handles.TransformHandle.Scale;
+using StudioFourteen.Gizmos.Handles.TransformHandle.Translation;
 using StudioFourteen.Overlays;
-using StudioFourteen.Overlays.Gizmos;
-using StudioFourteen.Overlays.Gizmos.Rotation;
-using StudioFourteen.Overlays.Gizmos.Scale;
-using StudioFourteen.Overlays.Gizmos.Translation;
 
 public abstract class PoseOverlayLayerBase : OverlayLayerBase
 {
@@ -40,13 +40,13 @@ public abstract class PoseOverlayLayerBase : OverlayLayerBase
 	}
 }
 
-public class PoseGizmoOverlayLayer : PoseOverlayLayerBase
+public class PoseTransformHandleOverlayLayer : PoseOverlayLayerBase
 {
-	private readonly TranslationGizmo translation;
-	private readonly RotationGizmo rotation;
-	private readonly ScaleGizmo scale;
+	private readonly TranslationHandle translation;
+	private readonly RotationHandle rotation;
+	private readonly ScaleHandle scale;
 
-	public PoseGizmoOverlayLayer()
+	public PoseTransformHandleOverlayLayer()
 		: base("Gizmo")
 	{
 		this.translation = new();
@@ -71,15 +71,15 @@ public class PoseGizmoOverlayLayer : PoseOverlayLayerBase
 		if (this.selection is not TransformSelectionBase transformSelection)
 			return;
 
-		this.translation.IsVisible = this.Services.Pose.Gizmo == GizmoTypes.Translation;
+		this.translation.IsVisible = this.Services.Pose.Gizmo == TransformHandleTypes.Translation;
 		this.translation.Transform = transformSelection.WorldTransform;
 		this.translation.Sensitivity = transformSelection.GizmoSensitivity;
 
-		this.rotation.IsVisible = this.Services.Pose.Gizmo == GizmoTypes.Rotation;
+		this.rotation.IsVisible = this.Services.Pose.Gizmo == TransformHandleTypes.Rotation;
 		this.rotation.Transform = transformSelection.WorldTransform;
 		this.rotation.Sensitivity = transformSelection.GizmoSensitivity;
 
-		this.scale.IsVisible = this.Services.Pose.Gizmo == GizmoTypes.Scale;
+		this.scale.IsVisible = this.Services.Pose.Gizmo == TransformHandleTypes.Scale;
 		this.scale.Transform = transformSelection.WorldTransform;
 		this.scale.Sensitivity = transformSelection.GizmoSensitivity;
 	}

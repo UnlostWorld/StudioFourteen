@@ -25,7 +25,6 @@ using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
 using FontAwesome.Sharp;
 using StudioFourteen.Context;
 using StudioFourteen.Files;
-using StudioFourteen.Overlays.Gizmos;
 using StudioFourteen.Plugin;
 using StudioFourteen.Services;
 using StudioFourteen.Utilities;
@@ -37,7 +36,7 @@ using System.Windows;
 using WpfUtils.Animation;
 using WpfUtils.Extensions;
 using PropertyChanged.SourceGenerator;
-using static FFXIVClientStructs.FFXIV.Component.GUI.AtkComponentNumericInput.Delegates;
+using StudioFourteen.Gizmos.Handles.TransformHandle;
 
 public enum MirrorModes
 {
@@ -66,14 +65,14 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 {
 	private readonly List<BoneId> boneIds = new();
 	private readonly Dictionary<BoneId, BoneReference> boneReferences = new();
-	private readonly PoseGizmoOverlayLayer poseGizmoOverlay = new();
+	private readonly PoseTransformHandleOverlayLayer poseGizmoOverlay = new();
 	private readonly PoseSkeletonOverlay poseSkeletonOverlay = new();
 
 	private SelectionBase? selection;
 
 	[Notify]
 	[AlsoNotify(nameof(PoseService.GizmoIndex))]
-	private GizmoTypes gizmo = GizmoTypes.Rotation;
+	private TransformHandleTypes gizmo = TransformHandleTypes.Rotation;
 
 	private Hook<UpdateBonePhysicsDelegate>? updateBonePhysicsHook;
 	private Hook<FinalizeSkeletonsDelegate>? finalizeSkeletonsHook;
@@ -114,7 +113,7 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 	public int GizmoIndex
 	{
 		get => (int)this.Gizmo;
-		set => this.Gizmo = (GizmoTypes)value;
+		set => this.Gizmo = (TransformHandleTypes)value;
 	}
 
 	public static string? GetMirrorBoneName(string name)

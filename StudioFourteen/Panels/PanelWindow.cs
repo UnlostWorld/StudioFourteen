@@ -419,8 +419,6 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 	protected virtual void OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
 	{
-		this.Services.Input.Mouse?.HandleMouse(e.ChangedButton, true, Vector2.Zero);
-
 		if (this.IsActive)
 			return;
 
@@ -430,7 +428,6 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 	protected virtual void OnPreviewMouseUp(object sender, MouseButtonEventArgs e)
 	{
-		this.Services.Input.Mouse?.HandleMouse(e.ChangedButton, false, Vector2.Zero);
 	}
 
 	partial void OnIsEmbeddedChanged(bool newValue)

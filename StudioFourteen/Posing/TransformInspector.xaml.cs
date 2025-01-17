@@ -17,15 +17,15 @@ namespace StudioFourteen.Posing;
 
 using DependencyPropertyGenerator;
 using PropertyChanged.SourceGenerator;
+using StudioFourteen.Gizmos.Handles.TransformHandle;
 using StudioFourteen.Mvm;
-using StudioFourteen.Overlays.Gizmos;
 using StudioFourteen.Settings;
 
 [DependencyProperty<TransformSelectionBase>("Selection")]
 [DependencyProperty<Persistence>("Persistence")]
 public partial class TransformInspector : View
 {
-	public GizmoTypes Gizmo => this.Services.Pose.Gizmo;
+	public TransformHandleTypes Gizmo => this.Services.Pose.Gizmo;
 
 	[AutoNotify]
 	public int DecimalPlacesDisplay => this.Selection?.DecimalPlacesToDisplay ?? 2;
@@ -37,7 +37,7 @@ public partial class TransformInspector : View
 		{
 			return this.Persistence?.GetPersistence<bool>(
 				$"ExpandTranslationSliders_{this.Gizmo}",
-				this.Gizmo == GizmoTypes.Translation) ?? false;
+				this.Gizmo == TransformHandleTypes.Translation) ?? false;
 		}
 
 		set => this.Persistence?.SetPersistence(value, $"ExpandTranslationSliders_{this.Gizmo}");
@@ -50,7 +50,7 @@ public partial class TransformInspector : View
 		{
 			return this.Persistence?.GetPersistence<bool>(
 				$"ExpandRotationSliders_{this.Gizmo}",
-				this.Gizmo == GizmoTypes.Rotation) ?? false;
+				this.Gizmo == TransformHandleTypes.Rotation) ?? false;
 		}
 
 		set => this.Persistence?.SetPersistence(value, $"ExpandRotationSliders_{this.Gizmo}");
@@ -63,7 +63,7 @@ public partial class TransformInspector : View
 		{
 			return this.Persistence?.GetPersistence<bool>(
 				$"ExpandScaleSliders_{this.Gizmo}",
-				this.Gizmo == GizmoTypes.Scale) ?? false;
+				this.Gizmo == TransformHandleTypes.Scale) ?? false;
 		}
 
 		set => this.Persistence?.SetPersistence(value, $"ExpandScaleSliders_{this.Gizmo}");

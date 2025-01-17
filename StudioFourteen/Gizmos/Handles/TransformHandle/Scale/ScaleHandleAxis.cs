@@ -13,9 +13,9 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Overlays.Gizmos.Scale;
+namespace StudioFourteen.Gizmos.Handles.TransformHandle.Scale;
 
-using StudioFourteen.Overlays.Gizmos;
+using StudioFourteen.Gizmos.Handles.TransformHandle;
 using System.Numerics;
 using System.Windows;
 using System.Windows.Controls;
@@ -26,7 +26,7 @@ using System.Windows.Shapes;
 using Transform = StudioFourteen.Posing.Transform;
 using Vector = System.Windows.Vector;
 
-public class ScaleGizmoAxis : GizmoAxisBase
+public class ScaleHandleAxis : TransformHandleAxisBase
 {
 	private readonly Vector3 segmentEnd;
 	private readonly Vector3 capStart;
@@ -34,21 +34,21 @@ public class ScaleGizmoAxis : GizmoAxisBase
 	private Line? line;
 	private Line? cap;
 
-	public ScaleGizmoAxis(GizmoAxes axis, float radius, bool flip)
+	public ScaleHandleAxis(TransformHandleAxes axis, float radius, bool flip)
 	{
 		this.Axis = axis;
 
-		if (this.Axis == GizmoAxes.X)
+		if (this.Axis == TransformHandleAxes.X)
 		{
 			this.segmentEnd = flip ? Vector3.UnitX * radius : -Vector3.UnitX * radius;
 			this.capStart = flip ? Vector3.UnitX * (radius * 0.85f) : -Vector3.UnitX * (radius * 0.85f);
 		}
-		else if (this.Axis == GizmoAxes.Y)
+		else if (this.Axis == TransformHandleAxes.Y)
 		{
 			this.segmentEnd = flip ? Vector3.UnitY * radius : -Vector3.UnitY * radius;
 			this.capStart = flip ? Vector3.UnitY * (radius * 0.85f) : -Vector3.UnitY * (radius * 0.85f);
 		}
-		else if (this.Axis == GizmoAxes.Z)
+		else if (this.Axis == TransformHandleAxes.Z)
 		{
 			this.segmentEnd = flip ? Vector3.UnitZ * radius : -Vector3.UnitZ * radius;
 			this.capStart = flip ? Vector3.UnitZ * (radius * 0.85f) : -Vector3.UnitZ * (radius * 0.85f);
@@ -104,7 +104,7 @@ public class ScaleGizmoAxis : GizmoAxisBase
 		this.cap.Stroke = toPosOne.Z < 0 ? this.ForegroundBrush : this.BackgroundBrush;
 		Panel.SetZIndex(this.cap, 200 - (int)(toPosOne.Z * 100));
 
-		if (this.IsAxisHovered)
+		if (this.IsCursorOver)
 		{
 			this.cap.StrokeThickness = 15;
 		}
@@ -114,7 +114,7 @@ public class ScaleGizmoAxis : GizmoAxisBase
 		}
 	}
 
-	public override int GetDepthAtCursor(Point mousePos)
+	public override int HitTest(Point mousePos)
 	{
 		if (this.line == null || this.cap == null)
 			return int.MinValue;
@@ -129,7 +129,7 @@ public class ScaleGizmoAxis : GizmoAxisBase
 		return int.MinValue;
 	}
 
-	public override Transform UpdateDrag(Vector mouseDelta, Transform transform)
+	public override Transform OnDrag(Vector mouseDelta, Transform transform)
 	{
 		if (this.line == null || this.cap == null)
 			return transform;
@@ -159,20 +159,20 @@ public class ScaleGizmoAxis : GizmoAxisBase
 		}
 
 		Vector3 delta = Vector3.Zero;
-		if (this.Axis == GizmoAxes.X)
+		if (this.Axis == TransformHandleAxes.X)
 		{
 			delta = Vector3.UnitX * dragDelta;
 		}
-		else if (this.Axis == GizmoAxes.Y)
+		else if (this.Axis == TransformHandleAxes.Y)
 		{
 			delta = Vector3.UnitY * dragDelta;
 		}
-		else if (this.Axis == GizmoAxes.Z)
+		else if (this.Axis == TransformHandleAxes.Z)
 		{
 			delta = Vector3.UnitZ * dragDelta;
 		}
 
-		Transform scaleTransform = Posing.Transform.FromScale(Vector3.One + delta);
+		Transform scaleTransform = Transform.FromScale(Vector3.One + delta);
 		transform = scaleTransform * transform;
 
 		return transform;

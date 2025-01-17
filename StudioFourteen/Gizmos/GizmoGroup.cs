@@ -13,28 +13,41 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Overlays.Primitives;
+namespace StudioFourteen.Gizmos;
 
 using StudioFourteen.Posing;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Windows.Controls;
+using System.Windows;
+using Serilog;
+using StudioFourteen;
+using StudioFourteen.Gizmos.Handles;
 
-public class PrimitiveGroup : IPrimitive
+public class GizmoGroup : IGizmo
 {
-	public readonly List<IPrimitive> Children = new();
+	public readonly List<IGizmo> Children = new();
 	public Transform Transform = Transform.Identity;
 	public bool KeepScreenSize = false;
 
-	private readonly Queue<IPrimitive> newPrimitives = new();
-	private readonly Queue<IPrimitive> deletePrimitives = new();
+	protected readonly ILogger Log;
 
-	public PrimitiveGroup? Parent { get; set; }
+	private readonly Queue<IGizmo> newPrimitives = new();
+	private readonly Queue<IGizmo> deletePrimitives = new();
+
+	public GizmoGroup()
+	{
+		this.Log = Logging.ForContext(this.GetType());
+	}
+
+	public ServiceManager Services => ServiceManager.Instance;
+	public GizmoGroup? Parent { get; set; }
 	public bool IsVisible { get; set; } = true;
+	public bool IsCursorOver { get; private set; }
 
 	public virtual void Enable(Canvas canvas)
 	{
-		foreach (IPrimitive primitive in this.Children)
+		foreach (IGizmo primitive in this.Children)
 		{
 			primitive.Parent = this;
 			primitive.Enable(canvas);
@@ -43,7 +56,7 @@ public class PrimitiveGroup : IPrimitive
 
 	public virtual void Disable(Canvas canvas)
 	{
-		foreach (IPrimitive primitive in this.Children)
+		foreach (IGizmo primitive in this.Children)
 		{
 			primitive.Disable(canvas);
 		}
@@ -51,23 +64,23 @@ public class PrimitiveGroup : IPrimitive
 
 	public virtual void Update(Matrix4x4 view, Matrix4x4 projection, Canvas canvas)
 	{
-		while(this.deletePrimitives.Count > 0)
+		while (this.deletePrimitives.Count > 0)
 		{
-			IPrimitive primitive = this.deletePrimitives.Dequeue();
+			IGizmo primitive = this.deletePrimitives.Dequeue();
 			primitive.Parent = null;
 			primitive.Disable(canvas);
 			this.Children.Remove(primitive);
 		}
 
-		while(this.newPrimitives.Count > 0)
+		while (this.newPrimitives.Count > 0)
 		{
-			IPrimitive primitive = this.newPrimitives.Dequeue();
+			IGizmo primitive = this.newPrimitives.Dequeue();
 			primitive.Parent = this;
 			primitive.Enable(canvas);
 			this.Children.Add(primitive);
 		}
 
-		foreach (IPrimitive primitive in this.Children)
+		foreach (IGizmo primitive in this.Children)
 		{
 			primitive.Update(view, projection, canvas);
 		}
@@ -97,20 +110,31 @@ public class PrimitiveGroup : IPrimitive
 		return this.KeepScreenSize;
 	}
 
+	public virtual void HitTest(Point mousePos, ref HandleHitResult result)
+	{
+		foreach (IGizmo primitive in this.Children)
+		{
+			if (!primitive.IsVisible)
+				continue;
+
+			primitive.HitTest(mousePos, ref result);
+		}
+	}
+
 	protected T AddChild<T>()
-		where T : IPrimitive, new()
+		where T : IGizmo, new()
 	{
 		T primitive = new T();
 		this.newPrimitives.Enqueue(primitive);
 		return primitive;
 	}
 
-	protected void AddChild(IPrimitive primitive)
+	protected void AddChild(IGizmo primitive)
 	{
 		this.newPrimitives.Enqueue(primitive);
 	}
 
-	protected void RemoveChild(IPrimitive primitive)
+	protected void RemoveChild(IGizmo primitive)
 	{
 		this.deletePrimitives.Enqueue(primitive);
 	}
