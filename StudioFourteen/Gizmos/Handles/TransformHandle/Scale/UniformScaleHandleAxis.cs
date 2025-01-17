@@ -69,8 +69,8 @@ public class UniformScaleHandleAxis : TransformHandleAxisBase
 
 		this.centerPos = pos.ToPoint();
 
-		this.ellipse.Fill = this.BackgroundBrush;
-		this.ellipse.Stroke = this.ForegroundBrush;
+		this.ellipse.Fill = this.IsDragging ? this.DraggingBackgroundBrush : this.BackgroundBrush;
+		this.ellipse.Stroke = this.IsDragging ? this.DraggingBrush : this.ForegroundBrush;
 
 		if (this.IsCursorOver)
 		{

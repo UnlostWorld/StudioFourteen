@@ -131,14 +131,12 @@ public class TranslationHandleAxis : TransformHandleAxisBase
 		this.lineOne.Y1 = originPos.Y;
 		this.lineOne.X2 = arrowOneFromPos.X;
 		this.lineOne.Y2 = arrowOneFromPos.Y;
-		this.lineOne.Stroke = toPosOne.Z < originPos.Z ? this.ForegroundBrush : this.BackgroundBrush;
 		this.SetZIndex(this.lineOne, toPosOne.Z);
 
 		this.arrowOne.X1 = arrowOneFromPos.X;
 		this.arrowOne.Y1 = arrowOneFromPos.Y;
 		this.arrowOne.X2 = toPosOne.X;
 		this.arrowOne.Y2 = toPosOne.Y;
-		this.arrowOne.Stroke = toPosOne.Z < originPos.Z ? this.ForegroundBrush : this.BackgroundBrush;
 		this.SetZIndex(this.arrowOne, toPosOne.Z);
 
 		// Two
@@ -148,15 +146,28 @@ public class TranslationHandleAxis : TransformHandleAxisBase
 		this.lineTwo.Y1 = originPos.Y;
 		this.lineTwo.X2 = arrowTwoFromPos.X;
 		this.lineTwo.Y2 = arrowTwoFromPos.Y;
-		this.lineTwo.Stroke = toPosTwo.Z < originPos.Z ? this.ForegroundBrush : this.BackgroundBrush;
 		this.SetZIndex(this.lineTwo, toPosTwo.Z);
 
 		this.arrowTwo.X1 = arrowTwoFromPos.X;
 		this.arrowTwo.Y1 = arrowTwoFromPos.Y;
 		this.arrowTwo.X2 = toPosTwo.X;
 		this.arrowTwo.Y2 = toPosTwo.Y;
-		this.arrowTwo.Stroke = toPosTwo.Z < originPos.Z ? this.ForegroundBrush : this.BackgroundBrush;
 		this.SetZIndex(this.arrowTwo, toPosTwo.Z);
+
+		if (this.IsDragging)
+		{
+			this.lineOne.Stroke = toPosOne.Z < originPos.Z ? this.DraggingBrush : this.DraggingBackgroundBrush;
+			this.arrowOne.Stroke = toPosOne.Z < originPos.Z ? this.DraggingBrush : this.DraggingBackgroundBrush;
+			this.lineTwo.Stroke = toPosTwo.Z < originPos.Z ? this.DraggingBrush : this.DraggingBackgroundBrush;
+			this.arrowTwo.Stroke = toPosTwo.Z < originPos.Z ? this.DraggingBrush : this.DraggingBackgroundBrush;
+		}
+		else
+		{
+			this.lineOne.Stroke = toPosOne.Z < originPos.Z ? this.ForegroundBrush : this.BackgroundBrush;
+			this.arrowOne.Stroke = toPosOne.Z < originPos.Z ? this.ForegroundBrush : this.BackgroundBrush;
+			this.lineTwo.Stroke = toPosTwo.Z < originPos.Z ? this.ForegroundBrush : this.BackgroundBrush;
+			this.arrowTwo.Stroke = toPosTwo.Z < originPos.Z ? this.ForegroundBrush : this.BackgroundBrush;
+		}
 
 		if (this.IsCursorOver)
 		{

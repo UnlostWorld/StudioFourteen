@@ -41,9 +41,14 @@ public abstract class TransformHandleBase : GizmoGroup
 	public Color ZAxisForeground => Color.FromArgb(0xFF, 0xFF, 0x33, 0x33);
 	public Color ZAxisBackground => Color.FromArgb(0xFF, 0x31, 0x1C, 0x1C);
 
-	public Transform OnAxisBeginDrag()
+	public Color DraggingBackground => Color.FromArgb(0xFF, 0x31, 0x31, 0x1C);
+
+	public void OnAxisBeginDrag(TransformHandleAxisBase axis)
 	{
-		return this.Transform;
+	}
+
+	public void OnAxisEndDrag(TransformHandleAxisBase axis)
+	{
 	}
 
 	public void OnAxisDrag(Transform newTransform)

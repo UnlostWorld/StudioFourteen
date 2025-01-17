@@ -208,8 +208,8 @@ public class TranslationHandleDualAxis : TransformHandleAxisBase
 		this.square.Points[2] = this.LocalToScreen(twoPoint).ToPoint();
 		this.square.Points[3] = this.LocalToScreen(threePoint).ToPoint();
 
-		this.square.Fill = this.ForegroundBrush;
-		this.square.Stroke = this.ForegroundBrush;
+		this.square.Fill = this.IsDragging ? this.DraggingBrush : this.ForegroundBrush;
+		this.square.Stroke = this.IsDragging ? this.DraggingBrush : this.ForegroundBrush;
 
 		if (this.IsCursorOver)
 		{

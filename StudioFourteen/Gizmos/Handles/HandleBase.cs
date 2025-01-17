@@ -18,13 +18,30 @@ namespace StudioFourteen.Gizmos.Handles;
 using StudioFourteen.Gizmos;
 using System;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 
 public abstract class HandleBase : GizmoBase
 {
+	public Color Dragging = Color.FromArgb(0xFF, 0xFF, 0xFF, 0x00);
+	public Color Foreground = Colors.Gray;
+
 	public bool IsCursorOver { get; private set; }
+	public bool IsDragging { get; private set; }
+
+	protected Brush? ForegroundBrush { get; private set; }
+	protected Brush? DraggingBrush { get; private set; }
+
+	public override void Enable(Canvas canvas)
+	{
+		base.Enable(canvas);
+		this.ForegroundBrush = new SolidColorBrush(this.Foreground);
+	}
 
 	public virtual void StartDrag(Point mousePos)
 	{
+		this.DraggingBrush = new SolidColorBrush(this.Dragging);
+		this.IsDragging = true;
 	}
 
 	public virtual void OnDrag(Vector mouseDelta)
@@ -33,6 +50,7 @@ public abstract class HandleBase : GizmoBase
 
 	public virtual void EndDrag()
 	{
+		this.IsDragging = false;
 	}
 
 	public virtual void SetIsCursorOver(bool isCursorOver)

@@ -35,16 +35,19 @@ public partial class TranslationHandle : TransformHandleBase
 		this.xAxis = new(TransformHandleAxes.X, this.Radius);
 		this.xAxis.Foreground = this.XAxisForeground;
 		this.xAxis.Background = this.XAxisBackground;
+		this.xAxis.DraggingBackground = this.DraggingBackground;
 		this.AddChild(this.xAxis);
 
 		this.yAxis = new(TransformHandleAxes.Y, this.Radius);
 		this.yAxis.Foreground = this.YAxisForeground;
 		this.yAxis.Background = this.YAxisBackground;
+		this.yAxis.DraggingBackground = this.DraggingBackground;
 		this.AddChild(this.yAxis);
 
 		this.zAxis = new(TransformHandleAxes.Z, this.Radius);
 		this.zAxis.Foreground = this.ZAxisForeground;
 		this.zAxis.Background = this.ZAxisBackground;
+		this.zAxis.DraggingBackground = this.DraggingBackground;
 		this.AddChild(this.zAxis);
 
 		this.xDualAxis = new(TransformHandleAxes.X, this.Radius * 0.4f);

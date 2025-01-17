@@ -186,19 +186,24 @@ public class RotationHandleAxis : TransformHandleAxisBase
 			Vector3 fromPos = this.LocalToScreen(this.points3d[i - 1]);
 			Vector3 toPos = this.LocalToScreen(this.points3d[i]);
 
-			bool isVisible = toPos.Z < zClip;
-
 			Line line = this.segments[i];
 			line.X1 = fromPos.X;
 			line.Y1 = fromPos.Y;
 			line.X2 = toPos.X;
 			line.Y2 = toPos.Y;
-			line.IsEnabled = isVisible;
 
 			this.SetZIndex(line, toPos.Z + (this.IsCursorOver ? -0.0001f : 0));
 
 			line.StrokeThickness = this.IsCursorOver ? this.StrokeThickness + 3 : this.StrokeThickness;
-			line.Stroke = isVisible ? this.ForegroundBrush : this.BackgroundBrush;
+
+			if (this.IsDragging)
+			{
+				line.Stroke = toPos.Z < zClip ? this.DraggingBrush : this.DraggingBackgroundBrush;
+			}
+			else
+			{
+				line.Stroke = toPos.Z < zClip ? this.ForegroundBrush : this.BackgroundBrush;
+			}
 		}
 	}
 

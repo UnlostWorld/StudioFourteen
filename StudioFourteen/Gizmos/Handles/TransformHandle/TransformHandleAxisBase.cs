@@ -32,22 +32,26 @@ public enum TransformHandleAxes
 
 public abstract class TransformHandleAxisBase : HandleBase
 {
-	public Color Foreground = Colors.Gray;
 	public Color Background = Colors.Black;
+	public Color DraggingBackground = Colors.LightYellow;
 
 	private TransformHandleBase? parent;
 	private Transform? dragTransform;
 
 	public TransformHandleAxes Axis { get; protected set; }
 
-	protected Brush? ForegroundBrush { get; private set; }
 	protected Brush? BackgroundBrush { get; private set; }
+	protected Brush? DraggingBackgroundBrush { get; private set; }
 
 	protected double Sensitivity => this.parent?.Sensitivity ?? 1.0;
 
 	public override void StartDrag(Point mousePos)
 	{
-		this.dragTransform = this.parent?.OnAxisBeginDrag();
+		if (this.parent == null)
+			return;
+
+		this.dragTransform = this.parent.Transform;
+		this.parent.OnAxisBeginDrag(this);
 		base.StartDrag(mousePos);
 	}
 
@@ -69,6 +73,7 @@ public abstract class TransformHandleAxisBase : HandleBase
 
 	public override void EndDrag()
 	{
+		this.parent?.OnAxisEndDrag(this);
 		base.EndDrag();
 		this.dragTransform = null;
 	}
@@ -81,20 +86,17 @@ public abstract class TransformHandleAxisBase : HandleBase
 	public override void Enable(Canvas canvas)
 	{
 		base.Enable(canvas);
-
-		this.ForegroundBrush = new SolidColorBrush(this.Foreground);
 		this.BackgroundBrush = new SolidColorBrush(this.Background);
-
+		this.DraggingBackgroundBrush = new SolidColorBrush(this.DraggingBackground);
 		this.parent = this.Parent as TransformHandleBase;
 	}
 
 	public sealed override bool OnScrollWheel(float delta)
 	{
-		this.dragTransform = this.parent?.OnAxisBeginDrag();
-
-		if (this.dragTransform == null)
+		if (this.parent == null)
 			return false;
 
+		this.dragTransform = this.parent.Transform;
 		Transform transform = this.OnScrollWheel(delta, this.dragTransform.Value);
 
 		if (this.dragTransform != transform)

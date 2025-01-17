@@ -33,36 +33,43 @@ public partial class ScaleHandle : TransformHandleBase
 		this.xAxis = new(TransformHandleAxes.X, this.Radius, false);
 		this.xAxis.Foreground = this.XAxisForeground;
 		this.xAxis.Background = this.XAxisBackground;
+		this.xAxis.DraggingBackground = this.DraggingBackground;
 		this.AddChild(this.xAxis);
 
 		this.yAxis = new(TransformHandleAxes.Y, this.Radius, false);
 		this.yAxis.Foreground = this.YAxisForeground;
 		this.yAxis.Background = this.YAxisBackground;
+		this.yAxis.DraggingBackground = this.DraggingBackground;
 		this.AddChild(this.yAxis);
 
 		this.zAxis = new(TransformHandleAxes.Z, this.Radius, false);
 		this.zAxis.Foreground = this.ZAxisForeground;
 		this.zAxis.Background = this.ZAxisBackground;
+		this.zAxis.DraggingBackground = this.DraggingBackground;
 		this.AddChild(this.zAxis);
 
 		this.xNegAxis = new(TransformHandleAxes.X, this.Radius, true);
 		this.xNegAxis.Foreground = this.XAxisForeground;
 		this.xNegAxis.Background = this.XAxisBackground;
+		this.xNegAxis.DraggingBackground = this.DraggingBackground;
 		this.AddChild(this.xNegAxis);
 
 		this.yNegAxis = new(TransformHandleAxes.Y, this.Radius, true);
 		this.yNegAxis.Foreground = this.YAxisForeground;
 		this.yNegAxis.Background = this.YAxisBackground;
+		this.yNegAxis.DraggingBackground = this.DraggingBackground;
 		this.AddChild(this.yNegAxis);
 
 		this.zNegAxis = new(TransformHandleAxes.Z, this.Radius, true);
 		this.zNegAxis.Foreground = this.ZAxisForeground;
 		this.zNegAxis.Background = this.ZAxisBackground;
+		this.zNegAxis.DraggingBackground = this.DraggingBackground;
 		this.AddChild(this.zNegAxis);
 
 		this.uniformAxis = new(this.UniformRadius);
 		this.uniformAxis.Foreground = Color.FromArgb(0xFF, 0x83, 0x83, 0x83);
 		this.uniformAxis.Background = Color.FromArgb(0x83, 0x83, 0x83, 0x83);
+		this.uniformAxis.DraggingBackground = this.DraggingBackground;
 		this.AddChild(this.uniformAxis);
 	}
 

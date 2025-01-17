@@ -30,16 +30,19 @@ public partial class RotationHandle : TransformHandleBase
 		this.xAxis = new(TransformHandleAxes.X);
 		this.xAxis.Foreground = this.XAxisForeground;
 		this.xAxis.Background = this.XAxisBackground;
+		this.xAxis.DraggingBackground = this.DraggingBackground;
 		this.AddChild(this.xAxis);
 
 		this.yAxis = new(TransformHandleAxes.Y);
 		this.yAxis.Foreground = this.YAxisForeground;
 		this.yAxis.Background = this.YAxisBackground;
+		this.yAxis.DraggingBackground = this.DraggingBackground;
 		this.AddChild(this.yAxis);
 
 		this.zAxis = new(TransformHandleAxes.Z);
 		this.zAxis.Foreground = this.ZAxisForeground;
 		this.zAxis.Background = this.ZAxisBackground;
+		this.zAxis.DraggingBackground = this.DraggingBackground;
 		this.AddChild(this.zAxis);
 	}
 
