@@ -28,6 +28,7 @@ using Vector = System.Windows.Vector;
 
 public class ScaleHandleAxis : TransformHandleAxisBase
 {
+	private readonly bool flip;
 	private readonly Vector3 segmentEnd;
 	private readonly Vector3 capStart;
 
@@ -37,6 +38,7 @@ public class ScaleHandleAxis : TransformHandleAxisBase
 	public ScaleHandleAxis(TransformHandleAxes axis, float radius, bool flip)
 	{
 		this.Axis = axis;
+		this.flip = flip;
 
 		if (this.Axis == TransformHandleAxes.X)
 		{

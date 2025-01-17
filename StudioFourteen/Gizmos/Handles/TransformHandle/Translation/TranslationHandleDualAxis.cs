@@ -28,7 +28,7 @@ using Vector = System.Windows.Vector;
 
 public class TranslationHandleDualAxis : TransformHandleAxisBase
 {
-	public bool Flip = false;
+	public bool Invert = false;
 
 	private readonly Vector3[] possibleCorners = new Vector3[4];
 	private Vector3 dragAxisOne;
@@ -143,7 +143,7 @@ public class TranslationHandleDualAxis : TransformHandleAxisBase
 			dragDeltaAxis2 *= (float)this.Services.Tablet.PenPressure;
 		}
 
-		if (this.Flip)
+		if (this.Invert)
 		{
 			dragDeltaAxis1 = -dragDeltaAxis1;
 			dragDeltaAxis2 = -dragDeltaAxis2;

@@ -25,6 +25,9 @@ public partial class TranslationHandle : TransformHandleBase
 	private readonly TranslationHandleAxis xAxis;
 	private readonly TranslationHandleAxis yAxis;
 	private readonly TranslationHandleAxis zAxis;
+	private readonly TranslationHandleAxis xNegAxis;
+	private readonly TranslationHandleAxis yNegAxis;
+	private readonly TranslationHandleAxis zNegAxis;
 
 	private readonly TranslationHandleDualAxis xDualAxis;
 	private readonly TranslationHandleDualAxis yDualAxis;
@@ -32,23 +35,41 @@ public partial class TranslationHandle : TransformHandleBase
 
 	public TranslationHandle()
 	{
-		this.xAxis = new(TransformHandleAxes.X, this.Radius);
+		this.xAxis = new(TransformHandleAxes.X, this.Radius, false);
 		this.xAxis.Foreground = this.XAxisForeground;
 		this.xAxis.Background = this.XAxisBackground;
 		this.xAxis.DraggingBackground = this.DraggingBackground;
 		this.AddChild(this.xAxis);
 
-		this.yAxis = new(TransformHandleAxes.Y, this.Radius);
+		this.yAxis = new(TransformHandleAxes.Y, this.Radius, false);
 		this.yAxis.Foreground = this.YAxisForeground;
 		this.yAxis.Background = this.YAxisBackground;
 		this.yAxis.DraggingBackground = this.DraggingBackground;
 		this.AddChild(this.yAxis);
 
-		this.zAxis = new(TransformHandleAxes.Z, this.Radius);
+		this.zAxis = new(TransformHandleAxes.Z, this.Radius, false);
 		this.zAxis.Foreground = this.ZAxisForeground;
 		this.zAxis.Background = this.ZAxisBackground;
 		this.zAxis.DraggingBackground = this.DraggingBackground;
 		this.AddChild(this.zAxis);
+
+		this.xNegAxis = new(TransformHandleAxes.X, this.Radius, true);
+		this.xNegAxis.Foreground = this.XAxisForeground;
+		this.xNegAxis.Background = this.XAxisBackground;
+		this.xNegAxis.DraggingBackground = this.DraggingBackground;
+		this.AddChild(this.xNegAxis);
+
+		this.yNegAxis = new(TransformHandleAxes.Y, this.Radius, true);
+		this.yNegAxis.Foreground = this.YAxisForeground;
+		this.yNegAxis.Background = this.YAxisBackground;
+		this.yNegAxis.DraggingBackground = this.DraggingBackground;
+		this.AddChild(this.yNegAxis);
+
+		this.zNegAxis = new(TransformHandleAxes.Z, this.Radius, true);
+		this.zNegAxis.Foreground = this.ZAxisForeground;
+		this.zNegAxis.Background = this.ZAxisBackground;
+		this.zNegAxis.DraggingBackground = this.DraggingBackground;
+		this.AddChild(this.zNegAxis);
 
 		this.xDualAxis = new(TransformHandleAxes.X, this.Radius * 0.4f);
 		this.xDualAxis.Foreground = this.XAxisForeground;
@@ -63,16 +84,19 @@ public partial class TranslationHandle : TransformHandleBase
 		this.AddChild(this.zDualAxis);
 	}
 
-	public bool Flip
+	public bool Invert
 	{
 		set
 		{
-			this.xAxis.Flip = value;
-			this.yAxis.Flip = value;
-			this.zAxis.Flip = value;
-			this.xDualAxis.Flip = value;
-			this.yDualAxis.Flip = value;
-			this.zDualAxis.Flip = value;
+			this.xAxis.Invert = value;
+			this.yAxis.Invert = value;
+			this.zAxis.Invert = value;
+			this.xNegAxis.Invert = value;
+			this.yNegAxis.Invert = value;
+			this.zNegAxis.Invert = value;
+			this.xDualAxis.Invert = value;
+			this.yDualAxis.Invert = value;
+			this.zDualAxis.Invert = value;
 		}
 	}
 }

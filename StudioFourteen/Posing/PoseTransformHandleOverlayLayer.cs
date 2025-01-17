@@ -50,7 +50,7 @@ public class PoseTransformHandleOverlayLayer : PoseOverlayLayerBase
 		: base("Gizmo")
 	{
 		this.translation = new();
-		this.translation.Flip = true;
+		this.translation.Invert = true;
 		this.translation.WriteTransform = false;
 		this.translation.TransformChanged += this.OnTransformChanged;
 		this.AddChild(this.translation);
