@@ -16,6 +16,7 @@
 namespace StudioFourteen.Gizmos.Handles.TransformHandle;
 
 using StudioFourteen.Gizmos;
+using System.Windows.Media;
 
 using Transform = StudioFourteen.Posing.Transform;
 
@@ -32,6 +33,13 @@ public abstract class TransformHandleBase : GizmoGroup
 	public delegate void TransformChangedDelegate(Transform newTransform);
 
 	public event TransformChangedDelegate? TransformChanged;
+
+	public Color XAxisForeground => Color.FromArgb(0xFF, 0x33, 0x33, 0xFF);
+	public Color XAxisBackground => Color.FromArgb(0xFF, 0x1C, 0x1C, 0x31);
+	public Color YAxisForeground => Color.FromArgb(0xFF, 0x33, 0xFF, 0x33);
+	public Color YAxisBackground => Color.FromArgb(0xFF, 0x1C, 0x31, 0x1C);
+	public Color ZAxisForeground => Color.FromArgb(0xFF, 0xFF, 0x33, 0x33);
+	public Color ZAxisBackground => Color.FromArgb(0xFF, 0x31, 0x1C, 0x1C);
 
 	public Transform OnAxisBeginDrag()
 	{

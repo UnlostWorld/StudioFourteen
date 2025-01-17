@@ -65,7 +65,7 @@ public class UniformScaleHandleAxis : TransformHandleAxisBase
 		Vector3 pos = this.LocalToScreen(Vector3.Zero);
 		Canvas.SetLeft(this.ellipse, pos.X - (this.ellipse.ActualWidth / 2));
 		Canvas.SetTop(this.ellipse, pos.Y - (this.ellipse.ActualHeight / 2));
-		Panel.SetZIndex(this.ellipse, 0);
+		this.SetZIndex(this.ellipse, pos.Z);
 
 		this.centerPos = pos.ToPoint();
 

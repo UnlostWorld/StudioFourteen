@@ -31,33 +31,33 @@ public partial class ScaleHandle : TransformHandleBase
 	public ScaleHandle()
 	{
 		this.xAxis = new(TransformHandleAxes.X, this.Radius, false);
-		this.xAxis.Foreground = Color.FromArgb(0xFF, 0x33, 0x33, 0xFF);
-		this.xAxis.Background = Color.FromArgb(0x10, 0x33, 0x33, 0xFF);
+		this.xAxis.Foreground = this.XAxisForeground;
+		this.xAxis.Background = this.XAxisBackground;
 		this.AddChild(this.xAxis);
 
 		this.yAxis = new(TransformHandleAxes.Y, this.Radius, false);
-		this.yAxis.Foreground = Color.FromArgb(0xFF, 0x33, 0xFF, 0x33);
-		this.yAxis.Background = Color.FromArgb(0x10, 0x33, 0xFF, 0x33);
+		this.yAxis.Foreground = this.YAxisForeground;
+		this.yAxis.Background = this.YAxisBackground;
 		this.AddChild(this.yAxis);
 
 		this.zAxis = new(TransformHandleAxes.Z, this.Radius, false);
-		this.zAxis.Foreground = Color.FromArgb(0xFF, 0xFF, 0x33, 0x33);
-		this.zAxis.Background = Color.FromArgb(0x10, 0xFF, 0x33, 0x33);
+		this.zAxis.Foreground = this.ZAxisForeground;
+		this.zAxis.Background = this.ZAxisBackground;
 		this.AddChild(this.zAxis);
 
 		this.xNegAxis = new(TransformHandleAxes.X, this.Radius, true);
-		this.xNegAxis.Foreground = Color.FromArgb(0xFF, 0x33, 0x33, 0xFF);
-		this.xNegAxis.Background = Color.FromArgb(0x10, 0x33, 0x33, 0xFF);
+		this.xNegAxis.Foreground = this.XAxisForeground;
+		this.xNegAxis.Background = this.XAxisBackground;
 		this.AddChild(this.xNegAxis);
 
 		this.yNegAxis = new(TransformHandleAxes.Y, this.Radius, true);
-		this.yNegAxis.Foreground = Color.FromArgb(0xFF, 0x33, 0xFF, 0x33);
-		this.yNegAxis.Background = Color.FromArgb(0x10, 0x33, 0xFF, 0x33);
+		this.yNegAxis.Foreground = this.YAxisForeground;
+		this.yNegAxis.Background = this.YAxisBackground;
 		this.AddChild(this.yNegAxis);
 
 		this.zNegAxis = new(TransformHandleAxes.Z, this.Radius, true);
-		this.zNegAxis.Foreground = Color.FromArgb(0xFF, 0xFF, 0x33, 0x33);
-		this.zNegAxis.Background = Color.FromArgb(0x10, 0xFF, 0x33, 0x33);
+		this.zNegAxis.Foreground = this.ZAxisForeground;
+		this.zNegAxis.Background = this.ZAxisBackground;
 		this.AddChild(this.zNegAxis);
 
 		this.uniformAxis = new(this.UniformRadius);

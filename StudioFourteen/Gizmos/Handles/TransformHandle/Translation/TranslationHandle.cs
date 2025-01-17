@@ -33,30 +33,30 @@ public partial class TranslationHandle : TransformHandleBase
 	public TranslationHandle()
 	{
 		this.xAxis = new(TransformHandleAxes.X, this.Radius);
-		this.xAxis.Foreground = Color.FromArgb(0xFF, 0x33, 0x33, 0xFF);
-		this.xAxis.Background = Color.FromArgb(0xFF, 0x33, 0x33, 0x4D);
+		this.xAxis.Foreground = this.XAxisForeground;
+		this.xAxis.Background = this.XAxisBackground;
 		this.AddChild(this.xAxis);
 
 		this.yAxis = new(TransformHandleAxes.Y, this.Radius);
-		this.yAxis.Foreground = Color.FromArgb(0xFF, 0x33, 0xFF, 0x33);
-		this.yAxis.Background = Color.FromArgb(0xFF, 0x33, 0x4D, 0x33);
+		this.yAxis.Foreground = this.YAxisForeground;
+		this.yAxis.Background = this.YAxisBackground;
 		this.AddChild(this.yAxis);
 
 		this.zAxis = new(TransformHandleAxes.Z, this.Radius);
-		this.zAxis.Foreground = Color.FromArgb(0xFF, 0xFF, 0x33, 0x33);
-		this.zAxis.Background = Color.FromArgb(0xFF, 0x4D, 0x33, 0x33);
+		this.zAxis.Foreground = this.ZAxisForeground;
+		this.zAxis.Background = this.ZAxisBackground;
 		this.AddChild(this.zAxis);
 
 		this.xDualAxis = new(TransformHandleAxes.X, this.Radius * 0.4f);
-		this.xDualAxis.Foreground = Color.FromArgb(0xFF, 0x33, 0x33, 0xFF);
+		this.xDualAxis.Foreground = this.XAxisForeground;
 		this.AddChild(this.xDualAxis);
 
 		this.yDualAxis = new(TransformHandleAxes.Y, this.Radius * 0.4f);
-		this.yDualAxis.Foreground = Color.FromArgb(0xFF, 0x33, 0xFF, 0x33);
+		this.yDualAxis.Foreground = this.YAxisForeground;
 		this.AddChild(this.yDualAxis);
 
 		this.zDualAxis = new(TransformHandleAxes.Z, this.Radius * 0.4f);
-		this.zDualAxis.Foreground = Color.FromArgb(0xFF, 0xFF, 0x33, 0x33);
+		this.zDualAxis.Foreground = this.ZAxisForeground;
 		this.AddChild(this.zDualAxis);
 	}
 

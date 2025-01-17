@@ -15,39 +15,31 @@
 
 namespace StudioFourteen.Gizmos.Handles.TransformHandle.Rotation;
 
-using System.Windows;
-using System.Windows.Media;
-using StudioFourteen.Gizmos;
 using StudioFourteen.Gizmos.Handles;
 using StudioFourteen.Gizmos.Handles.TransformHandle;
+using System.Windows;
 
 public partial class RotationHandle : TransformHandleBase
 {
-	private readonly EllipseGizmo sphere;
 	private readonly RotationHandleAxis xAxis;
 	private readonly RotationHandleAxis yAxis;
 	private readonly RotationHandleAxis zAxis;
 
 	public RotationHandle()
 	{
-		this.sphere = new();
-		this.sphere.Foreground = Color.FromArgb(0x80, 0, 0, 0);
-		this.sphere.Radius = 75;
-		this.AddChild(this.sphere);
-
 		this.xAxis = new(TransformHandleAxes.X);
-		this.xAxis.Foreground = Color.FromArgb(0xFF, 0x33, 0x33, 0xFF);
-		this.xAxis.Background = Color.FromArgb(0xFF, 0x33, 0x33, 0x4D);
+		this.xAxis.Foreground = this.XAxisForeground;
+		this.xAxis.Background = this.XAxisBackground;
 		this.AddChild(this.xAxis);
 
 		this.yAxis = new(TransformHandleAxes.Y);
-		this.yAxis.Foreground = Color.FromArgb(0xFF, 0x33, 0xFF, 0x33);
-		this.yAxis.Background = Color.FromArgb(0xFF, 0x33, 0x4D, 0x33);
+		this.yAxis.Foreground = this.YAxisForeground;
+		this.yAxis.Background = this.YAxisBackground;
 		this.AddChild(this.yAxis);
 
 		this.zAxis = new(TransformHandleAxes.Z);
-		this.zAxis.Foreground = Color.FromArgb(0xFF, 0xFF, 0x33, 0x33);
-		this.zAxis.Background = Color.FromArgb(0xFF, 0x4D, 0x33, 0x33);
+		this.zAxis.Foreground = this.ZAxisForeground;
+		this.zAxis.Background = this.ZAxisBackground;
 		this.AddChild(this.zAxis);
 	}
 
