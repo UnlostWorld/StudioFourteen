@@ -15,38 +15,12 @@
 
 namespace System.Numerics;
 
-using FFXIVClientStructs.Havok.Common.Base.Math.Vector;
+using System.Windows;
 
-public static class Vector3Extensions
+public static class Vector2Extensions
 {
-	public static bool IsApproximately(this Vector3 a, Vector3 b, float delta = float.Epsilon)
+	public static Point ToPoint(this Vector2 self)
 	{
-		return a.X.IsApproximately(b.X, delta)
-			&& a.Y.IsApproximately(b.Y, delta)
-			&& a.Z.IsApproximately(b.Z, delta);
-	}
-
-	public static Vector2 ToVector2(this Vector3 self)
-	{
-		return new Vector2(self.X, self.Y);
-	}
-
-	public static hkVector4f ToHkVector(this Vector3 self)
-	{
-		hkVector4f val = default;
-		val.X = self.X;
-		val.Y = self.Y;
-		val.Z = self.Z;
-		return val;
-	}
-
-	public static Windows.Point ToPoint(this Vector3 self)
-	{
-		return new Windows.Point(self.X, self.Y);
-	}
-
-	public static System.Drawing.Point ToDrawingPoint(this Vector3 self)
-	{
-		return new System.Drawing.Point((int)self.X, (int)self.Y);
+		return new Point(self.X, self.Y);
 	}
 }

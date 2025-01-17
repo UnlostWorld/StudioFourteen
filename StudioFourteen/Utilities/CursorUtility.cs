@@ -17,7 +17,11 @@ namespace StudioFourteen.Utilities;
 
 using System;
 using System.Drawing;
+using System.Numerics;
 using Windows.Win32;
+
+using DrawingPoint = System.Drawing.Point;
+using Point = System.Windows.Point;
 
 public static class CursorUtility
 {
@@ -34,8 +38,8 @@ public static class CursorUtility
 
 	public static Point GetPosition()
 	{
-		PInvoke.GetCursorPos(out Point point);
-		return point;
+		PInvoke.GetCursorPos(out DrawingPoint point);
+		return point.ToPoint();
 	}
 
 	public static void SetPosition(Point position)
@@ -45,7 +49,7 @@ public static class CursorUtility
 
 	public static IntPtr GetWindowUnderCursor()
 	{
-		PInvoke.GetCursorPos(out Point point);
+		PInvoke.GetCursorPos(out DrawingPoint point);
 		return PInvoke.WindowFromPoint(point);
 	}
 }

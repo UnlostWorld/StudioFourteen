@@ -15,24 +15,25 @@
 
 namespace StudioFourteen.Input.Devices;
 
-using StudioFourteen.Extensions;
 using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Windows;
 using System.Windows.Input;
-using static StudioFourteen.Gizmos.Handles.TransformHandle.Rotation.RotationHandle;
+
+using Vector = System.Windows.Vector;
 
 public class MouseDevice : InputDeviceBase
 {
-	private readonly Dictionary<MouseButton, Vector2> dragStarts = new();
+	private readonly Dictionary<MouseButton, Point> dragStarts = new();
 	private readonly HashSet<MouseButton> draggingButtons = new();
 	private readonly Dictionary<MouseButton, InputAxis> buttonAxes = new();
 	private readonly Dictionary<MouseButton, (InputAxisSigned X, InputAxisSigned Y)> dragAxis = new();
 
 	private readonly InputAxisSigned wheel;
 
-	private Vector2 lastMousePosition = Vector2.Zero;
+	private Point lastMousePosition;
 
 	public MouseDevice()
 	{
@@ -121,12 +122,10 @@ public class MouseDevice : InputDeviceBase
 
 	public void HandleMouse(MouseButton button, bool down)
 	{
-		System.Drawing.Point? mousePoint = this.Services.Windows.GetCursorPosition();
+		Point? mousePoint = this.Services.Windows.GetCursorPosition();
 
 		if (mousePoint == null)
 			return;
-
-		Vector2 newPos = mousePoint.Value.ToVector2();
 
 		this.buttonAxes[button].Value = down ? 1.0f : 0.0f;
 
@@ -134,7 +133,7 @@ public class MouseDevice : InputDeviceBase
 		{
 			this.dragAxis[button].X.Value = 0;
 			this.dragAxis[button].Y.Value = 0;
-			this.dragStarts[button] = newPos;
+			this.dragStarts[button] = mousePoint.Value;
 		}
 		else
 		{
@@ -146,18 +145,16 @@ public class MouseDevice : InputDeviceBase
 
 	public void HandleMouseMove()
 	{
-		System.Drawing.Point? mousePoint = this.Services.Windows.GetCursorPosition();
+		Point? mousePoint = this.Services.Windows.GetCursorPosition();
 		if (mousePoint == null)
 			return;
 
-		Vector2 newPos = mousePoint.Value.ToVector2();
-
-		foreach ((MouseButton button, Vector2 dragStart) in this.dragStarts)
+		foreach ((MouseButton button, Point dragStart) in this.dragStarts)
 		{
 			if (this.draggingButtons.Contains(button))
 				continue;
 
-			Vector2 totalDelta = newPos - dragStart;
+			Vector totalDelta = mousePoint.Value - dragStart;
 			if (Math.Abs(totalDelta.X) > 5.0f || Math.Abs(totalDelta.Y) > 5.0f)
 			{
 				this.draggingButtons.Add(button);
@@ -166,14 +163,14 @@ public class MouseDevice : InputDeviceBase
 
 		foreach(MouseButton button in this.draggingButtons)
 		{
-			Vector2 delta = newPos - this.lastMousePosition;
-			this.dragAxis[button].X.Value += delta.X / 8; // Sensitivity
-			this.dragAxis[button].Y.Value += delta.Y / 8;
+			Vector delta = mousePoint.Value - this.lastMousePosition;
+			this.dragAxis[button].X.Value += (float)delta.X / 8; // Sensitivity
+			this.dragAxis[button].Y.Value += (float)delta.Y / 8;
 		}
 
 		if (this.IsAnyDragging)
 		{
-			foreach ((MouseButton button, Vector2 dragStart) in this.dragStarts)
+			foreach ((MouseButton button, Point dragStart) in this.dragStarts)
 			{
 				this.Services.Windows.SetCursorPosition(new((int)dragStart.X, (int)dragStart.Y));
 			}
@@ -185,7 +182,7 @@ public class MouseDevice : InputDeviceBase
 		if (mousePoint == null)
 			return;
 
-		this.lastMousePosition = mousePoint.Value.ToVector2();
+		this.lastMousePosition = mousePoint.Value;
 	}
 
 	public void HandleMouseLeave()

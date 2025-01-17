@@ -178,6 +178,18 @@ public abstract class GizmoBase : IGizmo
 	{
 	}
 
+	public Vector3 LocalToScreen(Vector3 local)
+	{
+		Vector3 world = Vector3.Transform(local, this.currentTransform);
+		Vector3 cameraPos = this.currentViewProjection.TransformViewProjection(world);
+		Vector3 screenPos = new(cameraPos.X * this.screenWidth, cameraPos.Y * this.screenHeight, -cameraPos.Z);
+
+		if (float.IsNaN(screenPos.X) || float.IsNaN(screenPos.Y) || float.IsNaN(screenPos.Z))
+			return Vector3.Zero;
+
+		return screenPos;
+	}
+
 	protected T AddChild<T>()
 		where T : FrameworkElement, new()
 	{
@@ -189,17 +201,5 @@ public abstract class GizmoBase : IGizmo
 	protected void SetZIndex(FrameworkElement el, float depth)
 	{
 		Panel.SetZIndex(el, (int)(-depth * 100000));
-	}
-
-	protected Vector3 LocalToScreen(Vector3 local)
-	{
-		Vector3 world = Vector3.Transform(local, this.currentTransform);
-		Vector3 cameraPos = this.currentViewProjection.TransformViewProjection(world);
-		Vector3 screenPos = new(cameraPos.X * this.screenWidth, cameraPos.Y * this.screenHeight, -cameraPos.Z);
-
-		if (float.IsNaN(screenPos.X) || float.IsNaN(screenPos.Y) || float.IsNaN(screenPos.Z))
-			return Vector3.Zero;
-
-		return screenPos;
 	}
 }

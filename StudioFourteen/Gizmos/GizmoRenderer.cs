@@ -17,6 +17,7 @@ namespace StudioFourteen.Gizmos;
 using Serilog;
 using StudioFourteen.Extensions;
 using StudioFourteen.Gizmos.Handles;
+using StudioFourteen.Structs;
 using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
@@ -30,16 +31,15 @@ using System.Windows.Media;
 using WpfUtils;
 using WpfUtils.Extensions;
 
-using CursorPoint = System.Drawing.Point;
 using Vector = System.Windows.Vector;
 
 public class GizmoRenderer : Canvas
 {
 	public readonly List<IGizmo> Primitives = new();
-	private CursorPoint cursorKeepPosition;
 	private HandleBase? draggingHandle;
 	private HandleBase? cursorOverHandle;
 	private Point? lastDragMousePos;
+	private Vector? cursorDragOffset;
 	private bool isAnyMouseDown;
 
 	public GizmoRenderer()
@@ -82,17 +82,21 @@ public class GizmoRenderer : Canvas
 			this.CaptureMouse();
 
 			CursorUtility.SetCursorVisible(false);
-			this.cursorKeepPosition = CursorUtility.GetPosition();
+			Point cursorPosition = CursorUtility.GetPosition();
 
 			this.draggingHandle = this.cursorOverHandle;
 			if (this.draggingHandle != null)
 			{
 				Point mousePos = e.GetPosition(this);
 				this.draggingHandle.StartDrag(mousePos);
+
+				Vector3 handleScreenPosition = this.draggingHandle.LocalToScreen(Vector3.Zero);
+				this.cursorDragOffset = cursorPosition - handleScreenPosition.ToPoint();
+
 				e.Handled = true;
 			}
 
-			this.lastDragMousePos = this.cursorKeepPosition.ToWindowsPoint();
+			this.lastDragMousePos = cursorPosition;
 
 			e.Handled = true;
 		}
@@ -113,7 +117,12 @@ public class GizmoRenderer : Canvas
 			this.ReleaseMouseCapture();
 
 			CursorUtility.SetCursorVisible(true);
-			CursorUtility.SetPosition(this.cursorKeepPosition);
+
+			if (this.cursorDragOffset != null)
+			{
+				Vector3 handleScreenPosition = this.draggingHandle.LocalToScreen(Vector3.Zero);
+				CursorUtility.SetPosition(handleScreenPosition.ToPoint() + this.cursorDragOffset.Value);
+			}
 
 			this.cursorOverHandle?.EndDrag();
 
@@ -131,9 +140,9 @@ public class GizmoRenderer : Canvas
 		if (this.draggingHandle != null)
 		{
 			if (this.lastDragMousePos == null)
-				this.lastDragMousePos = CursorUtility.GetPosition().ToWindowsPoint();
+				this.lastDragMousePos = CursorUtility.GetPosition();
 
-			Point cursorPos = CursorUtility.GetPosition().ToWindowsPoint();
+			Point cursorPos = CursorUtility.GetPosition();
 			Vector mouseDelta = cursorPos - this.lastDragMousePos.Value;
 			this.lastDragMousePos = cursorPos;
 
@@ -141,8 +150,13 @@ public class GizmoRenderer : Canvas
 				this.draggingHandle.OnDrag(mouseDelta);
 
 			// Reset cursor location
-			CursorUtility.SetPosition(this.cursorKeepPosition);
-			this.lastDragMousePos = CursorUtility.GetPosition().ToWindowsPoint();
+			if (this.cursorDragOffset != null)
+			{
+				Vector3 handleScreenPosition = this.draggingHandle.LocalToScreen(Vector3.Zero);
+				CursorUtility.SetPosition(handleScreenPosition.ToPoint() + this.cursorDragOffset.Value);
+			}
+
+			this.lastDragMousePos = CursorUtility.GetPosition();
 
 			e.Handled = true;
 		}

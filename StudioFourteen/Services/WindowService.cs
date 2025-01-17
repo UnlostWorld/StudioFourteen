@@ -20,8 +20,6 @@ using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using ImGuiNET;
 using PropertyChanged.SourceGenerator;
-using StudioFourteen.Input;
-using StudioFourteen.Panels;
 using StudioFourteen.Plugin;
 using StudioFourteen.Studio;
 using StudioFourteen.Utilities;
@@ -30,17 +28,15 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Interop;
-
 using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
-using static FFXIVClientStructs.FFXIV.Client.Game.InstanceContent.PublicContentBozja.Delegates;
-using Point = System.Drawing.Point;
+
+using DrawingPoint = System.Drawing.Point;
+using Point = System.Windows.Point;
 using Setter = PropertyChanged.SourceGenerator.Setter;
 
 public partial class WindowService : ServiceBase
@@ -90,8 +86,8 @@ public partial class WindowService : ServiceBase
 
 		PInvoke.GetClientRect((HWND)this.XivProcess.MainWindowHandle, out RECT xivWindowRect);
 
-		Point tl = new(xivWindowRect.left, xivWindowRect.top);
-		Point br = new(xivWindowRect.right, xivWindowRect.bottom);
+		DrawingPoint tl = new(xivWindowRect.left, xivWindowRect.top);
+		DrawingPoint br = new(xivWindowRect.right, xivWindowRect.bottom);
 		PInvoke.ClientToScreen((HWND)this.XivProcess.MainWindowHandle, ref tl);
 		PInvoke.ClientToScreen((HWND)this.XivProcess.MainWindowHandle, ref br);
 		xivWindowRect.left = tl.X;
@@ -276,13 +272,14 @@ public partial class WindowService : ServiceBase
 		}
 	}
 
-	public void SetCursorPosition(Point pos)
+	public void SetCursorPosition(Point position)
 	{
 		if (this.XivWindowHwnd == null)
 			return;
 
-		PInvoke.ClientToScreen((HWND)this.XivWindowHwnd.Value, ref pos);
-		CursorUtility.SetPosition(pos);
+		DrawingPoint p = position.ToDrawingPoint();
+		PInvoke.ClientToScreen((HWND)this.XivWindowHwnd.Value, ref p);
+		CursorUtility.SetPosition(p.ToPoint());
 	}
 
 	public Point? GetCursorPosition()
@@ -290,7 +287,7 @@ public partial class WindowService : ServiceBase
 		if (this.XivWindowHwnd == null)
 			return null;
 
-		Point position = CursorUtility.GetPosition();
+		DrawingPoint position = CursorUtility.GetPosition().ToDrawingPoint();
 
 		PInvoke.ScreenToClient((HWND)this.XivWindowHwnd.Value, ref position);
 

@@ -13,26 +13,20 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Extensions;
+namespace System.Windows;
 
 using System.Numerics;
 using DrawingPoint = System.Drawing.Point;
-using Point = System.Windows.Point;
 
 public static class PointExtensions
 {
-	public static Point ToWindowsPoint(this DrawingPoint self)
+	public static DrawingPoint ToDrawingPoint(this Point self)
 	{
-		return new Point(self.X, self.Y);
+		return new DrawingPoint((int)self.X, (int)self.Y);
 	}
 
-	public static Point ToPoint(this Vector2 self)
+	public static Vector2 ToVector2(this Point self)
 	{
-		return new Point(self.X, self.Y);
-	}
-
-	public static Vector2 ToVector2(this DrawingPoint self)
-	{
-		return new Vector2(self.X, self.Y);
+		return new Vector2((int)self.X, (int)self.Y);
 	}
 }

@@ -96,18 +96,4 @@ public static class HkVectorExtensions
 		self.Z = vec.Z;
 		self.W = 0;
 	}
-
-	public static hkVector4f ToHkVector(this Vector3 self)
-	{
-		hkVector4f val = default;
-		val.X = self.X;
-		val.Y = self.Y;
-		val.Z = self.Z;
-		return val;
-	}
-
-	public static Point ToPoint(this Vector3 self)
-	{
-		return new Point(self.X, self.Y);
-	}
 }
