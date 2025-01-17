@@ -234,6 +234,6 @@ public class TranslationHandleDualAxis : TransformHandleAxisBase
 		if (!this.square.IsPointWithin(p))
 			return int.MinValue;
 
-		return 0;
+		return Panel.GetZIndex(this.square);
 	}
 }
