@@ -134,4 +134,12 @@ public class UniformScaleHandleAxis : TransformHandleAxisBase
 
 		return transform;
 	}
+
+	public override Transform OnScrollWheel(float delta, Transform transform)
+	{
+		delta /= 10;
+		Transform scaleTransform = Transform.FromScale(Vector3.One + (Vector3.One * delta));
+		transform = scaleTransform * transform;
+		return transform;
+	}
 }

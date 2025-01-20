@@ -17,6 +17,7 @@ namespace StudioFourteen.Gizmos.Handles.TransformHandle;
 
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using StudioFourteen.Gizmos.Handles;
 
@@ -95,6 +96,12 @@ public abstract class TransformHandleAxisBase : HandleBase
 	{
 		if (this.parent == null)
 			return false;
+
+		if (Keyboard.Modifiers == ModifierKeys.Shift)
+			delta *= 10;
+
+		if (Keyboard.Modifiers == ModifierKeys.Control)
+			delta /= 10;
 
 		this.dragTransform = this.parent.Transform;
 		Transform transform = this.OnScrollWheel(delta, this.dragTransform.Value);

@@ -188,4 +188,38 @@ public class TranslationHandleAxis : TransformHandleAxisBase
 		transform.Translation += delta;
 		return transform;
 	}
+
+	public override Transform OnScrollWheel(float delta, Transform currentTransform)
+	{
+		if (this.line == null || this.arrow == null)
+			return currentTransform;
+
+		delta /= 10;
+
+		Point a = new Point(this.arrow.X2, this.arrow.Y2);
+		Point b = new Point(this.arrow.X1, this.arrow.Y1);
+		Vector normal = a - b;
+		normal.Normalize();
+
+		if (this.Invert != this.flip)
+			delta = -delta;
+
+		Vector3 moveDelta = Vector3.Zero;
+		if (this.Axis == TransformHandleAxes.X)
+		{
+			moveDelta = Vector3.UnitX * delta;
+		}
+		else if (this.Axis == TransformHandleAxes.Y)
+		{
+			moveDelta = Vector3.UnitY * delta;
+		}
+		else if (this.Axis == TransformHandleAxes.Z)
+		{
+			moveDelta = Vector3.UnitZ * delta;
+		}
+
+		moveDelta = Vector3.Transform(moveDelta, currentTransform.Rotation);
+		currentTransform.Translation += moveDelta;
+		return currentTransform;
+	}
 }

@@ -244,12 +244,6 @@ public class RotationHandleAxis : TransformHandleAxisBase
 	{
 		float mouseWheel = delta / 10.0f;
 
-		if (Keyboard.Modifiers == ModifierKeys.Shift)
-			mouseWheel *= 10;
-
-		if (Keyboard.Modifiers == ModifierKeys.Control)
-			mouseWheel /= 10;
-
 		Quaternion rot = Quaternion.Identity;
 		if (this.Axis == TransformHandleAxes.X)
 		{

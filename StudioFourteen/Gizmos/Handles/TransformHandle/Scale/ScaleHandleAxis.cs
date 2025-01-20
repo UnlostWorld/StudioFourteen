@@ -170,23 +170,54 @@ public class ScaleHandleAxis : TransformHandleAxisBase
 			dragDelta *= (float)this.Services.Tablet.PenPressure;
 		}
 
-		Vector3 delta = Vector3.Zero;
+		Vector3 scaleDelta = Vector3.Zero;
 		if (this.Axis == TransformHandleAxes.X)
 		{
-			delta = Vector3.UnitX * dragDelta;
+			scaleDelta = Vector3.UnitX * dragDelta;
 		}
 		else if (this.Axis == TransformHandleAxes.Y)
 		{
-			delta = Vector3.UnitY * dragDelta;
+			scaleDelta = Vector3.UnitY * dragDelta;
 		}
 		else if (this.Axis == TransformHandleAxes.Z)
 		{
-			delta = Vector3.UnitZ * dragDelta;
+			scaleDelta = Vector3.UnitZ * dragDelta;
 		}
 
-		Transform scaleTransform = Transform.FromScale(Vector3.One + delta);
+		Transform scaleTransform = Transform.FromScale(Vector3.One + scaleDelta);
 		transform = scaleTransform * transform;
 
+		return transform;
+	}
+
+	public override Transform OnScrollWheel(float delta, Transform transform)
+	{
+		if (this.line == null || this.cap == null)
+			return transform;
+
+		delta /= 10;
+
+		Point a = new Point(this.cap.X2, this.cap.Y2);
+		Point b = new Point(this.cap.X1, this.cap.Y1);
+		Vector normal = a - b;
+		normal.Normalize();
+
+		Vector3 scaleDelta = Vector3.Zero;
+		if (this.Axis == TransformHandleAxes.X)
+		{
+			scaleDelta = Vector3.UnitX * delta;
+		}
+		else if (this.Axis == TransformHandleAxes.Y)
+		{
+			scaleDelta = Vector3.UnitY * delta;
+		}
+		else if (this.Axis == TransformHandleAxes.Z)
+		{
+			scaleDelta = Vector3.UnitZ * delta;
+		}
+
+		Transform scaleTransform = Transform.FromScale(Vector3.One + scaleDelta);
+		transform = scaleTransform * transform;
 		return transform;
 	}
 }
