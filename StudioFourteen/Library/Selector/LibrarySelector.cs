@@ -37,12 +37,12 @@ using WpfUtils.Utils;
 [DependencyProperty<object>("FooterTemplate")]
 [DependencyProperty<object>("BackgroundDetail")]
 [DependencyProperty<TagCollection>("Tags")]
-[DependencyProperty<TagCollection>("CurrentTags", DefaultBindingMode = DefaultBindingMode.TwoWay, DefaultValueExpression = "new StudioFourteen.Tags.TagCollection()")]
-[DependencyProperty<TagCollection>("AvailableTags", DefaultBindingMode = DefaultBindingMode.TwoWay, DefaultValueExpression = "new StudioFourteen.Tags.TagCollection()")]
+[DependencyProperty<TagCollection>("CurrentTags", DefaultBindingMode = DefaultBindingMode.TwoWay)]
+[DependencyProperty<TagCollection>("AvailableTags", DefaultBindingMode = DefaultBindingMode.TwoWay)]
 [DependencyProperty<string>("Search", DefaultBindingMode = DefaultBindingMode.TwoWay)]
 [DependencyProperty<Type>("Type")]
-[DependencyProperty<List<Type>>("Types", DefaultValueExpression ="new System.Collections.Generic.List<System.Type>()")]
-[DependencyProperty<bool>("IsLoading", DefaultBindingMode =DefaultBindingMode.OneWay)]
+[DependencyProperty<List<Type>>("Types")]
+[DependencyProperty<bool>("IsLoading", DefaultBindingMode = DefaultBindingMode.OneWay)]
 [DependencyProperty<bool>("Favorites")]
 public partial class LibrarySelector : PopOut
 {
@@ -61,6 +61,10 @@ public partial class LibrarySelector : PopOut
 	public LibrarySelector()
 	{
 		this.searchQueue = new(this.SearchAsync, 250);
+
+		this.CurrentTags = new TagCollection();
+		this.AvailableTags = new TagCollection();
+		this.Types = new List<Type>();
 
 		this.OnCurrentTagsChanged(null, this.CurrentTags);
 	}
