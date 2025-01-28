@@ -24,9 +24,16 @@
 					Background="Transparent"
 					PopOutHeader="{Binding SearchTitle}"
 					SearchTags="{Binding SearchTags}"
-					ToolTipHeader="{Binding SlotName}"
 					Type="{Binding LibraryType}"
 					Value="{Binding Item}">
+
+					<librarySelector:LibrarySelectorButton.ToolTipHeader>
+						<TextBlock
+							Margin="6"
+							Foreground="{DynamicResource ForegroundLightBrush}"
+							Text="{Binding SlotName}" />
+					</librarySelector:LibrarySelectorButton.ToolTipHeader>
+
 					<librarySelector:LibrarySelectorButton.IconBackground>
 						<Grid>
 							<controls:XivTexImage
@@ -132,7 +139,14 @@
 					PopOutHeader="{Binding DyeSearchTitle}"
 					Style="{DynamicResource LibrarySelectorIconOnly}"
 					Type="{x:Type libraryData:StainLibraryEntry}"
-					Value="{Binding Stain0}" />
+					Value="{Binding Stain0}">
+					<librarySelector:LibrarySelectorButton.ToolTipHeader>
+						<TextBlock
+							Margin="6"
+							Foreground="{DynamicResource ForegroundLightBrush}"
+							Text="{Binding SlotName}" />
+					</librarySelector:LibrarySelectorButton.ToolTipHeader>
+				</librarySelector:LibrarySelectorButton>
 
 				<librarySelector:LibrarySelectorButton
 					Grid.Column="2"
@@ -141,7 +155,14 @@
 					PopOutHeader="{Binding DyeSearchTitle}"
 					Style="{DynamicResource LibrarySelectorIconOnly}"
 					Type="{x:Type libraryData:StainLibraryEntry}"
-					Value="{Binding Stain1}" />
+					Value="{Binding Stain1}">
+					<librarySelector:LibrarySelectorButton.ToolTipHeader>
+						<TextBlock
+							Margin="6"
+							Foreground="{DynamicResource ForegroundLightBrush}"
+							Text="{Binding SlotName}" />
+					</librarySelector:LibrarySelectorButton.ToolTipHeader>
+				</librarySelector:LibrarySelectorButton>
 			</Grid>
 		</Border>
 	</DataTemplate>
