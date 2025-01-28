@@ -34,6 +34,7 @@ public partial class OverlayRenderer : GizmoRenderer
 
 		this.Services.Overlays.LayerAdded += this.OnLayerAdded;
 		this.Services.Overlays.LayerRemoved += this.OnLayerRemoved;
+		this.Services.Overlays.ShowOverlaysChanged += this.OnShowOverlaysChanged;
 
 		foreach(OverlayLayerBase layer in this.Services.Overlays.GetOverlayLayers())
 		{
@@ -98,11 +99,29 @@ public partial class OverlayRenderer : GizmoRenderer
 
 	private void OnLayerAdded(OverlayLayerBase overlay)
 	{
+		if (!this.Services.Overlays.ShowOverlays)
+			return;
+
 		this.AddPrimitive(overlay);
 	}
 
 	private void OnLayerRemoved(OverlayLayerBase overlay)
 	{
 		this.RemovePrimitive(overlay);
+	}
+
+	private void OnShowOverlaysChanged(bool state)
+	{
+		foreach (OverlayLayerBase layer in this.Services.Overlays.GetOverlayLayers())
+		{
+			if (state)
+			{
+				this.OnLayerAdded(layer);
+			}
+			else
+			{
+				this.OnLayerRemoved(layer);
+			}
+		}
 	}
 }

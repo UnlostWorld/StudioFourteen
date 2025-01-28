@@ -198,6 +198,8 @@
 
 	<!--  Overlays  -->
 	<sys:String x:Key="LOC_Overlays">Overlays</sys:String>
+	<sys:String x:Key="LOC_Overlays_ToggleGlobal">Toggle the Studio Fourteen overlay system. Disabling the overlay system will disable mouse inputs.</sys:String>
+	<sys:String x:Key="LOC_Overlays_ToggleVisibility">Hide all overlays.</sys:String>
 	<sys:String x:Key="LOC_OverlayBarDescription">Configure overlays that are visible on screen.</sys:String>
 	<sys:String x:Key="LOC_OverlayGroup_Cameras">Cameras</sys:String>
 	<sys:String x:Key="LOC_Overlay_Camera">Camera wireframes</sys:String>

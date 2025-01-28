@@ -25,12 +25,14 @@ public partial class OverlayService
 	: ServiceBase
 {
 	private readonly List<OverlayLayerBase> overlays = new();
-	[Notify] private bool overlaysEnabled = true;
+	[Notify] private bool showOverlays = true;
 
 	public delegate void OverlayEvent(OverlayLayerBase overlay);
+	public delegate void OverlayStateEvent(bool state);
 
 	public event OverlayEvent? LayerAdded;
 	public event OverlayEvent? LayerRemoved;
+	public event OverlayStateEvent? ShowOverlaysChanged;
 
 	public override async Task Start()
 	{
@@ -74,11 +76,20 @@ public partial class OverlayService
 	{
 		base.OnFrameworkUpdate(framework);
 
-		lock (this.overlays)
+		if (this.showOverlays != this.Settings.ShowOverlays)
 		{
-			foreach (OverlayLayerBase overlay in this.overlays)
+			this.ShowOverlays = this.Settings.ShowOverlays;
+			this.ShowOverlaysChanged?.Invoke(this.Settings.ShowOverlays);
+		}
+
+		if (this.ShowOverlays)
+		{
+			lock (this.overlays)
 			{
-				overlay.OnFrameworkUpdate();
+				foreach (OverlayLayerBase overlay in this.overlays)
+				{
+					overlay.OnFrameworkUpdate();
+				}
 			}
 		}
 	}

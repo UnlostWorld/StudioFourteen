@@ -96,6 +96,8 @@ public class SettingsService : ServiceBase
 		public bool HideStudioButton { get; set; } = false;
 		public bool OpenGroupPose { get; set; } = false;
 		public bool HideGenitals { get; set; } = false;
+		public bool EnableGlobalOverlay { get; set; } = true;
+		public bool ShowOverlays { get; set; } = true;
 
 		// Files
 		public string? LastSaveDirectory { get; set; }

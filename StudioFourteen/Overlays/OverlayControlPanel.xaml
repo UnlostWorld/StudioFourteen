@@ -9,7 +9,7 @@
 	xmlns:mvm="clr-namespace:StudioFourteen.Mvm"
 	xmlns:windows="clr-namespace:StudioFourteen.Panels"
 	Title="{DynamicResource LOC_Overlays}"
-	Width="100"
+	Width="132"
 	Height="58"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	DefaultPosition="1,0"
@@ -28,9 +28,24 @@
 			<StackPanel Orientation="Horizontal">
 
 				<ToggleButton
-					x:Name="VisibilityButton"
+					ToolTip="{DynamicResource LOC_Overlays_ToggleGlobal}"
+					x:Name="GlobalOverlayButton"
 					Width="32"
-					IsChecked="{Binding Services.Overlays.OverlaysEnabled}"
+					IsChecked="{Binding Services.Settings.Current.EnableGlobalOverlay}"
+					Style="{DynamicResource WpfUtilsIconToggleButton}">
+					<Grid>
+						<controls:IconBlock
+						Icon="MousePointer"
+						IconFont="Solid"/>
+					</Grid>
+				</ToggleButton>
+
+				<ToggleButton
+					x:Name="VisibilityButton"
+					ToolTip="{DynamicResource LOC_Overlays_ToggleVisibility}"
+					Width="32"
+					IsEnabled="{Binding IsChecked, ElementName=GlobalOverlayButton}"
+					IsChecked="{Binding Services.Settings.Current.ShowOverlays}"
 					Style="{DynamicResource WpfUtilsIconToggleButton}">
 					<Grid>
 						<controls:IconBlock
@@ -45,6 +60,8 @@
 				</ToggleButton>
 
 				<ToggleButton
+					ToolTip="{DynamicResource LOC_OverlayBarDescription}"
+					IsEnabled="{Binding IsChecked, ElementName=GlobalOverlayButton}"
 					x:Name="SettingsButton"
 					Width="32"
 					Style="{DynamicResource WpfUtilsIconToggleButton}">

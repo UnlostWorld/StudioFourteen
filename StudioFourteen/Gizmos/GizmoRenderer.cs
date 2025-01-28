@@ -55,7 +55,10 @@ public class GizmoRenderer : Canvas
 	{
 		this.Dispatcher.Invoke(() =>
 		{
-			primitive.Enable(this);
+			if (primitive.GetIsVisible())
+			{
+				primitive.Enable(this);
+			}
 		});
 
 		this.Primitives.Add(primitive);

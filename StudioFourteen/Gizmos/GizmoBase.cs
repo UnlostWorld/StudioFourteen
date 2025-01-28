@@ -80,6 +80,7 @@ public abstract class GizmoBase : IGizmo
 		this.parent = canvas;
 		this.screenWidth = (float)this.parent.ActualWidth;
 		this.screenHeight = (float)this.parent.ActualHeight;
+		this.currentVisibility = true;
 
 		foreach (FrameworkElement el in this.elements)
 		{

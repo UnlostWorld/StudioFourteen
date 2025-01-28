@@ -331,7 +331,7 @@ public partial class WindowService : ServiceBase
 		this.IsCursorOverStudio = this.GetIsCursorOverStudio();
 
 		this.EnableXivWindowOverlay = ((!this.IsCursorOverXiv && !this.IsCursorOverStudio) || (!this.IsCursorOverAtkUnit && !this.IsCursorOverImGui))
-			&& !this.Services.Reshade.IsReshadeOverlayOpen;
+			&& !this.Services.Reshade.IsReshadeOverlayOpen && this.Services.Settings.Current.EnableGlobalOverlay;
 
 		Rect xivClientRect = this.GetXivWindowClientSize();
 		if (xivClientRect != this.xivClientSize)
