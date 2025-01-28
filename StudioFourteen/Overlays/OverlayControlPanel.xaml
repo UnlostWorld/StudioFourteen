@@ -28,25 +28,23 @@
 			<StackPanel Orientation="Horizontal">
 
 				<ToggleButton
-					ToolTip="{DynamicResource LOC_Overlays_ToggleGlobal}"
 					x:Name="GlobalOverlayButton"
 					Width="32"
 					IsChecked="{Binding Services.Settings.Current.EnableGlobalOverlay}"
-					Style="{DynamicResource WpfUtilsIconToggleButton}">
+					Style="{DynamicResource WpfUtilsIconToggleButton}"
+					ToolTip="{DynamicResource LOC_Overlays_ToggleGlobal}">
 					<Grid>
-						<controls:IconBlock
-						Icon="MousePointer"
-						IconFont="Solid"/>
+						<controls:IconBlock Icon="MousePointer" IconFont="Solid" />
 					</Grid>
 				</ToggleButton>
 
 				<ToggleButton
 					x:Name="VisibilityButton"
-					ToolTip="{DynamicResource LOC_Overlays_ToggleVisibility}"
 					Width="32"
-					IsEnabled="{Binding IsChecked, ElementName=GlobalOverlayButton}"
 					IsChecked="{Binding Services.Settings.Current.ShowOverlays}"
-					Style="{DynamicResource WpfUtilsIconToggleButton}">
+					IsEnabled="{Binding IsChecked, ElementName=GlobalOverlayButton}"
+					Style="{DynamicResource WpfUtilsIconToggleButton}"
+					ToolTip="{DynamicResource LOC_Overlays_ToggleVisibility}">
 					<Grid>
 						<controls:IconBlock
 							Icon="Eye"
@@ -60,14 +58,12 @@
 				</ToggleButton>
 
 				<ToggleButton
-					ToolTip="{DynamicResource LOC_OverlayBarDescription}"
-					IsEnabled="{Binding IsChecked, ElementName=GlobalOverlayButton}"
 					x:Name="SettingsButton"
 					Width="32"
-					Style="{DynamicResource WpfUtilsIconToggleButton}">
-					<controls:IconBlock
-						Icon="LayerGroup"
-						IconFont="Solid" />
+					IsEnabled="{Binding IsChecked, ElementName=GlobalOverlayButton}"
+					Style="{DynamicResource WpfUtilsIconToggleButton}"
+					ToolTip="{DynamicResource LOC_OverlayBarDescription}">
+					<controls:IconBlock Icon="LayerGroup" IconFont="Solid" />
 				</ToggleButton>
 			</StackPanel>
 
@@ -87,18 +83,14 @@
 
 				<Grid>
 					<Grid.Resources>
-						<CollectionViewSource
-							x:Key="SettingsViewSource"
-							Source="{Binding Overlays}">
+						<CollectionViewSource x:Key="SettingsViewSource" Source="{Binding Overlays}">
 							<CollectionViewSource.GroupDescriptions>
 								<PropertyGroupDescription PropertyName="Group" />
 							</CollectionViewSource.GroupDescriptions>
 						</CollectionViewSource>
 
 						<DataTemplate DataType="{x:Type local:OverlayLayerBase}">
-							<ToggleButton
-								Content="{Binding DisplayName}"
-								IsChecked="{Binding IsHidden, Converter={StaticResource !B}}" />
+							<ToggleButton Content="{Binding DisplayName}" IsChecked="{Binding IsHidden, Converter={StaticResource !B}}" />
 						</DataTemplate>
 
 					</Grid.Resources>

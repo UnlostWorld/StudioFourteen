@@ -24,6 +24,8 @@ using System.IO;
 using System.Diagnostics;
 using Windows.Win32;
 using StudioFourteen.Plugin;
+using StudioFourteen.Panels;
+using WpfUtils.Extensions;
 
 public class ReshadeService : ServiceBase
 {
@@ -77,8 +79,17 @@ public class ReshadeService : ServiceBase
 		// 6.3.0 becomes 60300
 		if (versionPacked < 60300)
 		{
-			// TODO: Replace this with a message dialog that can be disabled.
-			this.Log.Error("Outdated Reshade install. Only version 6.3.0 or newer is supported. Please update reshade.");
+			this.Log.Information($"Reshade {version.ProductMajorPart}.{version.ProductMinorPart}.{version.ProductBuildPart} found.");
+
+			if (this.Settings.HasConfirmedReShadeVersion != versionPacked)
+			{
+				NotSupportedPanel? nsp = await ServiceManager.Instance.Panels.Open<NotSupportedPanel>();
+				if (nsp != null)
+				{
+					nsp.ReShadeVersionPacked = versionPacked;
+				}
+			}
+
 			return;
 		}
 

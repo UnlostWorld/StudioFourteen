@@ -91,6 +91,7 @@ public class SettingsService : ServiceBase
 		public List<string> OpenPanels { get; set; } = new();
 		public Dictionary<string, string> Persistence { get; set; } = new();
 		public Dictionary<string, int> Overlays { get; set; } = new();
+		public int HasConfirmedReShadeVersion { get; set; } = -1;
 
 		// Interface
 		public bool HideStudioButton { get; set; } = false;

@@ -206,6 +206,13 @@
 	<sys:String x:Key="LOC_Overlay_OrbitCameraTarget">Orbit camera target point</sys:String>
 	<sys:String x:Key="LOC_Overlay_OrbitCameraTargetBounds">Orbit camera target bounding box</sys:String>
 
+	<!--  Reshade  -->
+	<sys:String x:Key="LOC_Reshade_NotSupportedTitle">Unsupported ReShade version</sys:String>
+	<sys:String x:Key="LOC_Reshade_NotSupportedBody">You have an unsupported version of ReShade installed. Only versions 6.3.0 or newer are supported by the Studio Fourteen integration.</sys:String>
+	<sys:String x:Key="LOC_Reshade_NotSupportedInfo">You can continue to use this version of ReShade, however you will need to disable the Studio Fourteen overlay to access the ReShade UI. This will disable mouse inputs, including camera control.</sys:String>
+	<sys:String x:Key="LOC_Reshade_NotSupportedDontNotify">Dont notify me again</sys:String>
+	<sys:String x:Key="LOC_Reshade_NotSupportedHelp">The overlay can be disabled with the  :MousePointer: icon in the overlay control panel.</sys:String>
+
 	<!--  Tags  -->
 	<sys:String x:Key="LOC_Tag_LegacyPose">Legacy Pose</sys:String>
 	<sys:String x:Key="LOC_Tag_LegacyPose_ToolTip">A pose file created outside of Studio Fourteen. This file does not support all posing features, and expressions will not load.</sys:String>
