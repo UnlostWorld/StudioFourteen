@@ -139,6 +139,7 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Lib\WpfUtils\WpfUtils.csproj" />
+	  <ProjectReference Include="..\StudioServer.Client\StudioServer.Client.csproj" />
 	</ItemGroup>
 
 </Project>

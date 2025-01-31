@@ -113,5 +113,10 @@ public class SettingsService : ServiceBase
 
 		// Library
 		public HashSet<string> Favorites { get; set; } = new();
+
+		// Analytics
+		public bool HasConfirmedAnalyticOptions { get; set; } = false;
+		public bool SendOptionalAnalytics { get; set; } = false;
+		public bool SendErrorReports { get; set; } = true;
 	}
 }
