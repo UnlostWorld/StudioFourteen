@@ -17,11 +17,18 @@ namespace StudioFourteen.Analytics;
 
 using StudioFourteen.Services;
 using System.Threading.Tasks;
+using StudioServer.Client;
 
 public class AnalyticsService : ServiceBase
 {
 	public override async Task Start()
 	{
+		// Optional analytics default to false, so on firt run we wont
+		// send the started event, the user will be able to opt-in later
+		// in the first run.
+		if (this.Services.Settings.Current.SendOptionalAnalytics)
+			AnalyticEvent.Send(AnalyticEvents.StudioStarted);
+
 		if (!this.Services.Settings.Current.HasConfirmedAnalyticOptions)
 			this.Services.Panels.SetIsOpen<AnalyticsOptPanel>(true);
 
