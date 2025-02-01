@@ -67,6 +67,7 @@ public partial class LibraryContextMenu : PopOut
 		this.IsHitTestVisible = false;
 		this.placementTarget = placementTarget;
 		this.IsExpanded = false;
+		this.IsEnabled = false;
 		this.StaysOpen = true;
 
 		this.ShowResultMenu().Run();
@@ -105,6 +106,7 @@ public partial class LibraryContextMenu : PopOut
 	public void Expand()
 	{
 		this.IsExpanded = true;
+		this.IsEnabled = true;
 
 		this.CollectMenus().Run();
 
