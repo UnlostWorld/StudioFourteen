@@ -16,15 +16,24 @@
 namespace StudioFourteen.Posing;
 
 using DependencyPropertyGenerator;
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Gizmos.Handles.TransformHandle;
 using StudioFourteen.Mvm;
 using StudioFourteen.Settings;
+using System.Threading.Tasks;
+using WpfUtils;
+using WpfUtils.Utils;
 
 [DependencyProperty<TransformSelectionBase>("Selection")]
 [DependencyProperty<Persistence>("Persistence")]
 public partial class TransformInspector : View
 {
+	private readonly FuncQueue stopRecordQueue;
+
+	public TransformInspector()
+	{
+		this.stopRecordQueue = new(this.StopRecord, 500);
+	}
+
 	public TransformHandleTypes Gizmo => this.Services.Pose.Gizmo;
 
 	[AutoNotify]
@@ -93,5 +102,35 @@ public partial class TransformInspector : View
 
 			this.Selection.LocalTransform = value;
 		}
+	}
+
+	protected void OnTransformHandleControlManipulationBegin()
+	{
+		if (this.Selection == null)
+			return;
+
+		if (this.stopRecordQueue.Pending)
+		{
+			this.stopRecordQueue.Cancel();
+		}
+		else
+		{
+			this.Services.History.StartRecord(this.Selection);
+		}
+	}
+
+	protected void OnTransformHandleControlManipulationEnd()
+	{
+		this.stopRecordQueue.Invoke();
+	}
+
+	private async Task StopRecord()
+	{
+		await this.MainThread();
+
+		if (this.Selection == null)
+			return;
+
+		this.Services.History.StopRecord(this.Selection);
 	}
 }

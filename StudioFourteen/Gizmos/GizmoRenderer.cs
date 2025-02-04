@@ -48,6 +48,11 @@ public class GizmoRenderer : Canvas
 		this.IsVisibleChanged += this.OnIsVisibleChanged;
 	}
 
+	public delegate void ManipulationEvent();
+
+	public event ManipulationEvent? ManipulationBegin;
+	public event ManipulationEvent? ManipulationEnd;
+
 	public ILogger Log => Logging.ForContext(this.GetType());
 	public ServiceManager Services => ServiceManager.Instance;
 
@@ -83,6 +88,7 @@ public class GizmoRenderer : Canvas
 		if (this.cursorOverHandle != null)
 		{
 			this.CaptureMouse();
+			this.ManipulationBegin?.Invoke();
 
 			CursorUtility.SetCursorVisible(false);
 			Point cursorPosition = CursorUtility.GetPosition();
@@ -118,6 +124,7 @@ public class GizmoRenderer : Canvas
 		{
 			Point mousePos = e.GetPosition(this);
 			this.ReleaseMouseCapture();
+			this.ManipulationEnd?.Invoke();
 
 			CursorUtility.SetCursorVisible(true);
 
@@ -197,10 +204,13 @@ public class GizmoRenderer : Canvas
 
 		if (this.cursorOverHandle != null)
 		{
+			this.ManipulationBegin?.Invoke();
 			if (this.cursorOverHandle.OnScrollWheel(e.Delta / 120.0f))
 			{
 				e.Handled = true;
 			}
+
+			this.ManipulationEnd?.Invoke();
 		}
 	}
 

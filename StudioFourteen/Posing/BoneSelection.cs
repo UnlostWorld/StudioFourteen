@@ -15,7 +15,9 @@
 
 namespace StudioFourteen.Posing;
 
+using FontAwesome.Sharp;
 using StudioFourteen.Gizmos.Handles.TransformHandle;
+using StudioFourteen.History;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Xml.Linq;
@@ -292,5 +294,60 @@ public class BoneSelection : TransformSelectionBase
 		}
 
 		return mirror;
+	}
+
+	public override OperationBase StartRecord()
+	{
+		BonesTransformOperation c = new BonesTransformOperation(this.Name);
+
+		foreach (BoneReference bone in this.bones)
+		{
+			c.AddChild(bone.StartRecord());
+		}
+
+		return c;
+	}
+
+	public override bool StopRecord(ref OperationBase operation)
+	{
+		if (operation is BonesTransformOperation c)
+		{
+			foreach(BoneReference boneReference in this.bones)
+			{
+				OperationBase? op = c.GetChild(boneReference.Id);
+				if (op != null)
+				{
+					boneReference.StopRecord(ref op);
+				}
+			}
+		}
+
+		return true;
+	}
+}
+
+public class BonesTransformOperation : OperationCollectionBase
+{
+	public readonly string BoneName;
+
+	public BonesTransformOperation(string boneName)
+	{
+		this.BoneName = boneName;
+	}
+
+	public override string Description => $"Manipulate {this.BoneName}";
+	public override IconChar Icon => IconChar.Bone;
+
+	public OperationBase? GetChild(BoneId boneId)
+	{
+		foreach(OperationBase op in this.Children)
+		{
+			if (op is BoneTransformOperation boneOp && boneOp.BoneId == boneId)
+			{
+				return op;
+			}
+		}
+
+		return null;
 	}
 }

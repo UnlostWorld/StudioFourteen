@@ -372,6 +372,12 @@
 				<StackPanel>
 
 					<ToggleButton
+						IsChecked="{Binding IsHistoryOpen}"
+						ToolTip="{DynamicResource LOC_History}">
+						<wpfUtils:IconBlock Icon="History" />
+					</ToggleButton>
+
+					<ToggleButton
 						IsChecked="{Binding IsSettingsOpen}"
 						ToolTip="{DynamicResource LOC_Settings}">
 						<wpfUtils:IconBlock Icon="cogs" />

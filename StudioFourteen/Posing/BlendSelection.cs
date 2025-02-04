@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Posing;
 using StudioFourteen.Files;
+using StudioFourteen.History;
 using StudioFourteen.Plugin;
 using StudioFourteen.Utilities;
 using System;
@@ -147,6 +148,16 @@ public class BlendSelection(string name, BlendTarget target, int objectTableInde
 		{
 			bone.Selection.Reset();
 		}
+	}
+
+	public override OperationBase StartRecord()
+	{
+		throw new NotImplementedException();
+	}
+
+	public override bool StopRecord(ref OperationBase operation)
+	{
+		throw new NotImplementedException();
 	}
 
 	public struct BoneBlend(BoneSelection selection, Transform initial, BoneTransform right, BoneTransform? left = null)

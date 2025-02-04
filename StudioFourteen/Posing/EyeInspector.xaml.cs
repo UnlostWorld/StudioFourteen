@@ -18,6 +18,7 @@ namespace StudioFourteen.Posing;
 using Dalamud.Plugin.Services;
 using DependencyPropertyGenerator;
 using FFXIVClientStructs.FFXIV.Common.Lua;
+using StudioFourteen.History;
 using StudioFourteen.Mvm;
 using StudioFourteen.Structs.Extensions;
 using StudioFourteen.Utilities;
@@ -182,6 +183,16 @@ public class EyeSelection(int objectTableIndex)
 
 		this.EyeBone?.Deactivate();
 		this.IrisBone?.Deactivate();
+	}
+
+	public override OperationBase StartRecord()
+	{
+		throw new NotImplementedException();
+	}
+
+	public override bool StopRecord(ref OperationBase operation)
+	{
+		throw new NotImplementedException();
 	}
 
 	private async Task Init()

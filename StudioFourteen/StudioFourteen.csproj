@@ -142,4 +142,16 @@
 	  <ProjectReference Include="..\StudioServer.Client\StudioServer.Client.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Compile Update="History\HistoryPanel.xaml.cs">
+	    <SubType>Code</SubType>
+	  </Compile>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Page Update="History\HistoryPanel.xaml">
+	    <SubType>Designer</SubType>
+	  </Page>
+	</ItemGroup>
+
 </Project>

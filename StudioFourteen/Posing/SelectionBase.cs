@@ -17,11 +17,12 @@ namespace StudioFourteen.Posing;
 
 using Dalamud.Plugin.Services;
 using StudioFourteen.Gizmos.Handles.TransformHandle;
+using StudioFourteen.History;
 using StudioFourteen.Mvm;
 using System;
 using System.Numerics;
 
-public abstract class SelectionBase : AutoViewModel, IEquatable<SelectionBase>
+public abstract class SelectionBase : AutoViewModel, IEquatable<SelectionBase>, IHistoryProvider
 {
 	[AutoNotify] public abstract string Name { get; }
 	[AutoNotify] public abstract string? Subtitle { get; }
@@ -50,6 +51,9 @@ public abstract class SelectionBase : AutoViewModel, IEquatable<SelectionBase>
 	{
 		return this == other;
 	}
+
+	public abstract OperationBase StartRecord();
+	public abstract bool StopRecord(ref OperationBase operation);
 }
 
 public abstract class TransformSelectionBase : SelectionBase

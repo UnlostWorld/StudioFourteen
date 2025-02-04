@@ -5,11 +5,11 @@
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:transform="clr-namespace:StudioFourteen.Gizmos.Handles.TransformHandle"
 	xmlns:local="clr-namespace:StudioFourteen.Posing"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:mvm="clr-namespace:StudioFourteen.Mvm"
 	xmlns:pose="clr-namespace:StudioFourteen.Posing"
+	xmlns:transform="clr-namespace:StudioFourteen.Gizmos.Handles.TransformHandle"
 	xmlns:windows="clr-namespace:StudioFourteen.Panels"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
@@ -31,6 +31,8 @@
 
 							<transform:TransformHandleControl
 								GizmoType="{Binding Services.Pose.Gizmo}"
+								ManipulationBegin="OnTransformHandleControlManipulationBegin"
+								ManipulationEnd="OnTransformHandleControlManipulationEnd"
 								Sensitivity="{Binding Selection.GizmoSensitivity}"
 								Transform="{Binding WorldTransform}" />
 						</Grid>

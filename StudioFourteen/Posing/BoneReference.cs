@@ -19,6 +19,8 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.Havok.Animation.Rig;
 using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
+using FontAwesome.Sharp;
+using StudioFourteen.History;
 using StudioFourteen.Structs;
 using StudioFourteen.Structs.Extensions;
 using StudioFourteen.Utilities;
@@ -27,9 +29,9 @@ using System.Diagnostics;
 using System.Numerics;
 using WpfUtils.Animation;
 
-public class BoneReference(BoneId id, string? name = null)
+public class BoneReference : IHistoryProvider
 {
-	public readonly BoneId Id = id;
+	public readonly BoneId Id;
 
 	public BoneReference? Mirror;
 	public bool IsValid = true;
@@ -48,12 +50,18 @@ public class BoneReference(BoneId id, string? name = null)
 	private BoneTransform? loadModelSpaceBoneTransform;
 	private Transform? loadModelSpaceTransform;
 	private Transform? loadReferenceRelativeTransform;
-	private string? boneName = name;
+	private string? boneName;
 	private string? mirrorBoneName;
 	private bool hasCheckedMirror = false;
 	private bool isDecomposeError = false;
 
-	public Transform? Transform { get; private set; }
+	public BoneReference(BoneId id, string? name = null)
+	{
+		this.Id = id;
+		this.boneName = name;
+	}
+
+	public Transform? Transform { get; set; }
 	public Transform? LocalSpaceTransform { get; private set; }
 	public Transform? ModelSpaceTransform { get; private set; }
 	public Transform? ModelTransform { get; private set; }
@@ -399,6 +407,24 @@ public class BoneReference(BoneId id, string? name = null)
 		return pSkeleton;
 	}
 
+	public OperationBase StartRecord()
+	{
+		BoneTransformOperation operation = new BoneTransformOperation();
+		operation.BoneId = this.Id;
+		operation.From = this.Transform;
+		return operation;
+	}
+
+	public bool StopRecord(ref OperationBase operation)
+	{
+		if (operation is BoneTransformOperation op)
+		{
+			op.To = this.Transform;
+		}
+
+		return true;
+	}
+
 	private void ReverseMirror()
 	{
 		if (this.MirrorMode != MirrorModes.Receiving)
@@ -411,5 +437,29 @@ public class BoneReference(BoneId id, string? name = null)
 
 		this.MirrorMode = sourceMode;
 		this.Mirror.MirrorMode = MirrorModes.Receiving;
+	}
+}
+
+public class BoneTransformOperation : OperationBase
+{
+	public BoneId BoneId { get; set; }
+	public Transform? From { get; set; }
+	public Transform? To { get; set; }
+
+	public override string Description => $"Change Bone Transform {this.BoneId}";
+	public override IconChar Icon => IconChar.Bone;
+
+	public override bool Apply()
+	{
+		BoneReference boneRef = ServiceManager.Instance.Pose.GetOrCreateBoneReference(this.BoneId);
+		boneRef.Transform = this.To;
+		return true;
+	}
+
+	public override bool Revert()
+	{
+		BoneReference boneRef = ServiceManager.Instance.Pose.GetOrCreateBoneReference(this.BoneId);
+		boneRef.Transform = this.From;
+		return true;
 	}
 }

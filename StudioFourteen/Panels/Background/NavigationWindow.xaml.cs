@@ -152,6 +152,13 @@ public partial class NavigationWindow : PanelWindow
 		}
 	}
 
+	[AutoNotify]
+	public bool IsHistoryOpen
+	{
+		get => this.Services.Panels.GetIsOpen<History.HistoryPanel>();
+		set => this.Services.Panels.SetIsOpen<History.HistoryPanel>(true);
+	}
+
 	public override T? GetPersistence<T>([CallerMemberName] string id = "")
 		where T : default
 	{

@@ -18,6 +18,7 @@ namespace StudioFourteen.Posing;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
+using StudioFourteen.History;
 using StudioFourteen.Plugin;
 using System;
 using System.Numerics;
@@ -112,6 +113,16 @@ public class GameObjectSelection : TransformSelectionBase
 	public override void Reset()
 	{
 		// hmm...
+		throw new NotImplementedException();
+	}
+
+	public override OperationBase StartRecord()
+	{
+		throw new NotImplementedException();
+	}
+
+	public override bool StopRecord(ref OperationBase operation)
+	{
 		throw new NotImplementedException();
 	}
 }
