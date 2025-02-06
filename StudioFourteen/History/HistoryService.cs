@@ -19,6 +19,8 @@ using FontAwesome.Sharp;
 using StudioFourteen.Services;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
+using WpfUtils.Extensions;
 using WpfUtils.Utils;
 
 public interface IHistoryProvider
@@ -50,6 +52,11 @@ public class HistoryService : ServiceBase
 
 	public void GoTo(OperationBase operation)
 	{
+		this.GoToAsync(operation).Run();
+	}
+
+	public async Task GoToAsync(OperationBase operation)
+	{
 		if (this.currentOperation != null && this.currentProvider != null)
 			throw new Exception("Attempt to go to history while a record is in progress");
 
@@ -60,7 +67,7 @@ public class HistoryService : ServiceBase
 			while(this.UndoStack.Count > 0 && reverseOperation != operation)
 			{
 				reverseOperation = this.UndoStack.Pop();
-				reverseOperation.Revert();
+				await reverseOperation.Revert();
 				this.RedoStack.Push(reverseOperation);
 
 				this.HistoryRemoved?.Invoke(reverseOperation);
@@ -76,7 +83,7 @@ public class HistoryService : ServiceBase
 			while (this.RedoStack.Count > 0 && forwardOperation != operation)
 			{
 				forwardOperation = this.RedoStack.Pop();
-				forwardOperation.Apply();
+				await forwardOperation.Apply();
 				this.UndoStack.Push(forwardOperation);
 
 				this.HistoryAdded?.Invoke(forwardOperation);
@@ -93,6 +100,11 @@ public class HistoryService : ServiceBase
 
 	public void Undo()
 	{
+		this.UndoAsync().Run();
+	}
+
+	public async Task UndoAsync()
+	{
 		if (!this.CanUndo)
 			return;
 
@@ -100,7 +112,7 @@ public class HistoryService : ServiceBase
 			this.stopRecordQueue.InvokeImmediate();
 
 		OperationBase reverseOperation = this.UndoStack.Pop();
-		reverseOperation.Revert();
+		await reverseOperation.Revert();
 		this.RedoStack.Push(reverseOperation);
 
 		this.HistoryRemoved?.Invoke(reverseOperation);
@@ -110,6 +122,11 @@ public class HistoryService : ServiceBase
 
 	public void Redo()
 	{
+		this.RedoAsync().Run();
+	}
+
+	public async Task RedoAsync()
+	{
 		if (!this.CanRedo)
 			return;
 
@@ -117,7 +134,7 @@ public class HistoryService : ServiceBase
 			this.stopRecordQueue.InvokeImmediate();
 
 		OperationBase forwardOperation = this.RedoStack.Pop();
-		forwardOperation.Apply();
+		await forwardOperation.Apply();
 		this.UndoStack.Push(forwardOperation);
 
 		this.HistoryAdded?.Invoke(forwardOperation);
@@ -173,34 +190,28 @@ public abstract class OperationBase
 	public abstract IconChar Icon { get; }
 	public abstract string Description { get; }
 
-	public abstract bool Apply();
-	public abstract bool Revert();
+	public abstract Task Apply();
+	public abstract Task Revert();
 }
 
 public abstract class OperationCollectionBase : OperationBase
 {
 	protected readonly List<OperationBase> Children = new();
 
-	public override bool Apply()
+	public override async Task Apply()
 	{
-		bool success = true;
 		for(int i = 0; i < this.Children.Count; i++)
 		{
-			success &= this.Children[i].Apply();
+			await this.Children[i].Apply();
 		}
-
-		return success;
 	}
 
-	public override bool Revert()
+	public override async Task Revert()
 	{
-		bool success = true;
 		for (int i = this.Children.Count - 1; i >= 0; i--)
 		{
-			success &= this.Children[i].Revert();
+			await this.Children[i].Revert();
 		}
-
-		return success;
 	}
 
 	public void AddChild(OperationBase child)

@@ -27,6 +27,7 @@ using StudioFourteen.Utilities;
 using System;
 using System.Diagnostics;
 using System.Numerics;
+using System.Threading.Tasks;
 using WpfUtils.Animation;
 
 public class BoneReference : IHistoryProvider
@@ -449,17 +450,17 @@ public class BoneTransformOperation : OperationBase
 	public override string Description => $"Change Bone Transform {this.BoneId}";
 	public override IconChar Icon => IconChar.Bone;
 
-	public override bool Apply()
+	public override Task Apply()
 	{
 		BoneReference boneRef = ServiceManager.Instance.Pose.GetOrCreateBoneReference(this.BoneId);
 		boneRef.Transform = this.To;
-		return true;
+		return Task.CompletedTask;
 	}
 
-	public override bool Revert()
+	public override Task Revert()
 	{
 		BoneReference boneRef = ServiceManager.Instance.Pose.GetOrCreateBoneReference(this.BoneId);
 		boneRef.Transform = this.From;
-		return true;
+		return Task.CompletedTask;
 	}
 }

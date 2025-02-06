@@ -18,10 +18,14 @@ namespace StudioFourteen.Posing;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
+using FontAwesome.Sharp;
 using StudioFourteen.History;
 using StudioFourteen.Plugin;
+using StudioFourteen.Utilities;
 using System;
 using System.Numerics;
+using System.Threading.Tasks;
+using System.Windows.Media.Imaging;
 
 public class GameObjectSelection : TransformSelectionBase
 {
@@ -118,11 +122,71 @@ public class GameObjectSelection : TransformSelectionBase
 
 	public override OperationBase StartRecord()
 	{
-		throw new NotImplementedException();
+		GameObjectTransformOperation op = new GameObjectTransformOperation();
+		op.ObjectName = this.Name;
+		op.ObjectTableId = this.objectTableId;
+		op.From = this.LocalTransform;
+		return op;
 	}
 
 	public override bool StopRecord(ref OperationBase operation)
 	{
-		throw new NotImplementedException();
+		if (operation is GameObjectTransformOperation op)
+		{
+			op.To = this.LocalTransform;
+			return true;
+		}
+
+		return false;
+	}
+}
+
+public class GameObjectTransformOperation : OperationBase
+{
+	public string? ObjectName { get; set; }
+	public int ObjectTableId { get; set; }
+	public Transform? From { get; set; }
+	public Transform? To { get; set; }
+
+	public override string Description => $"Change {this.ObjectName} Transform";
+	public override IconChar Icon => IconChar.Person;
+
+	public override async Task Apply()
+	{
+		await this.Set(this.To);
+	}
+
+	public override async Task Revert()
+	{
+		await this.Set(this.From);
+	}
+
+	private async Task Set(Transform? transform)
+	{
+		if (transform == null)
+			return;
+
+		await Threads.FrameworkThread();
+
+		if (DalamudServices.ObjectTable == null)
+			return;
+
+		unsafe
+		{
+			Character* gameObject = (Character*)DalamudServices.ObjectTable.GetObjectAddress(this.ObjectTableId);
+			if (gameObject == null || gameObject->DrawObject == null)
+				return;
+
+			bool success = transform.Value.ToTRS(out Vector3 translation, out Quaternion rotation, out Vector3 scale);
+
+			if (success)
+			{
+				gameObject->DrawObject->Position = translation;
+				gameObject->DrawObject->Rotation = rotation;
+
+				// do not allow objects to scale below 0, it will break the game.
+				gameObject->DrawObject->Scale = Vector3.Max(scale, new Vector3(0.1f, 0.1f, 0.1f));
+			}
+		}
 	}
 }
