@@ -19,12 +19,17 @@ using PropertyChanged.SourceGenerator;
 using StudioFourteen.Panels;
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Controls;
 using WpfUtils.Extensions;
+
+using Panel = StudioFourteen.Panels.Panel;
 
 public partial class HistoryPanel : Panel
 {
+	private bool isRefreshing;
 	[Notify] private int selectedIndex;
-	public FastObservableCollection<OperationBase> History { get; init; } = new();
+
+	public FastObservableCollection<HistoryEntry> History { get; init; } = new();
 
 	protected override void OnOpened()
 	{
@@ -70,34 +75,55 @@ public partial class HistoryPanel : Panel
 
 	private void Refresh()
 	{
-		List<OperationBase> operations = new();
-
+		this.isRefreshing = true;
+		List<HistoryEntry> history = new();
+		HistoryEntry? mid = null;
 		foreach (OperationBase operation in this.Services.History.UndoStack)
 		{
-			operations.Add(operation);
+			HistoryEntry entry = new();
+			entry.Operation = operation;
+			entry.IsPast = true;
+			history.Add(entry);
+
+			mid = entry;
 		}
 
-		operations.Reverse();
+		history.Reverse();
 
 		foreach (OperationBase operation in this.Services.History.RedoStack)
 		{
-			operations.Add(operation);
+			HistoryEntry entry = new();
+			entry.Operation = operation;
+			entry.IsPast = false;
+			history.Add(entry);
 		}
 
-		this.History.Replace(operations);
-
-		if (this.Services.History.RedoStack.Count <= 0)
-		{
-			this.SelectedIndex = -1;
-		}
-		else
-		{
-			this.SelectedIndex = this.Services.History.UndoStack.Count;
-		}
+		this.History.Replace(history);
+		this.SelectedIndex = -1;
 
 		if (this.Services.History.UndoStack.Count > 0)
 		{
-			this.HistoryList.ScrollIntoView(this.Services.History.UndoStack.Peek());
+			this.HistoryList.ScrollIntoView(mid);
 		}
+
+		this.isRefreshing = false;
+	}
+
+	private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+	{
+		if (this.isRefreshing)
+			return;
+
+		HistoryEntry? entry = this.HistoryList.SelectedItem as HistoryEntry;
+		if (entry == null || entry.Operation == null)
+			return;
+
+		this.Services.History.GoTo(entry.Operation);
+	}
+
+	public class HistoryEntry
+	{
+		public OperationBase? Operation { get; set; }
+		public bool IsPast { get; set; }
 	}
 }

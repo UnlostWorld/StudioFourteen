@@ -73,6 +73,49 @@ public class HistoryService : ServiceBase
 		this.RaisePropertyChanged(nameof(this.CanRedo));
 	}
 
+	public void GoTo(OperationBase operation)
+	{
+		if (this.currentOperation != null && this.currentProvider != null)
+			throw new Exception("Attempt to go to history while a record is in progress");
+
+		if (this.UndoStack.Contains(operation))
+		{
+			// go undo
+			OperationBase? reverseOperation = null;
+			while(this.UndoStack.Count > 0 && reverseOperation != operation)
+			{
+				reverseOperation = this.UndoStack.Pop();
+				reverseOperation.Revert();
+				this.RedoStack.Push(reverseOperation);
+
+				this.HistoryRemoved?.Invoke(reverseOperation);
+			}
+
+			this.RaisePropertyChanged(nameof(this.CanUndo));
+			this.RaisePropertyChanged(nameof(this.CanRedo));
+		}
+		else if (this.RedoStack.Contains(operation))
+		{
+			// go redo
+			OperationBase? forwardOperation = null;
+			while (this.RedoStack.Count > 0 && forwardOperation != operation)
+			{
+				forwardOperation = this.RedoStack.Pop();
+				forwardOperation.Apply();
+				this.UndoStack.Push(forwardOperation);
+
+				this.HistoryAdded?.Invoke(forwardOperation);
+			}
+
+			this.RaisePropertyChanged(nameof(this.CanUndo));
+			this.RaisePropertyChanged(nameof(this.CanRedo));
+		}
+		else
+		{
+			throw new Exception("Specified operation is not part of the  history stacks");
+		}
+	}
+
 	public void Undo()
 	{
 		if (!this.CanUndo)
