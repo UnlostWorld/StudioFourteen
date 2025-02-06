@@ -31,8 +31,6 @@
 
 							<transform:TransformHandleControl
 								GizmoType="{Binding Services.Pose.Gizmo}"
-								ManipulationBegin="OnTransformHandleControlManipulationBegin"
-								ManipulationEnd="OnTransformHandleControlManipulationEnd"
 								Sensitivity="{Binding Selection.GizmoSensitivity}"
 								Transform="{Binding WorldTransform}" />
 						</Grid>

@@ -16,10 +16,10 @@
 namespace StudioFourteen.History;
 
 using FontAwesome.Sharp;
-using StudioFourteen.Posing;
 using StudioFourteen.Services;
 using System;
 using System.Collections.Generic;
+using WpfUtils.Utils;
 
 public interface IHistoryProvider
 {
@@ -29,8 +29,14 @@ public interface IHistoryProvider
 
 public class HistoryService : ServiceBase
 {
+	private readonly FuncQueue stopRecordQueue;
 	private OperationBase? currentOperation;
 	private IHistoryProvider? currentProvider;
+
+	public HistoryService()
+	{
+		this.stopRecordQueue = new(this.PostChange, 500);
+	}
 
 	public delegate void HistoryEvent(OperationBase operation);
 	public event HistoryEvent? HistoryAdded;
@@ -41,37 +47,6 @@ public class HistoryService : ServiceBase
 
 	public bool CanUndo => this.UndoStack.Count > 0;
 	public bool CanRedo => this.RedoStack.Count > 0;
-
-	public void StartRecord(IHistoryProvider provider)
-	{
-		if (this.currentProvider != null || this.currentOperation != null)
-			throw new Exception("Attempt to start histroy record while another record is in progress");
-
-		this.currentProvider = provider;
-		this.currentOperation = provider.StartRecord();
-	}
-
-	public void StopRecord(IHistoryProvider provider)
-	{
-		if (provider != this.currentProvider)
-			throw new Exception("Attempt to stop histroy record while a different record is in progress");
-
-		if (this.currentOperation == null)
-			throw new Exception("Attempt to stop histroy record while no record is in progress");
-
-		this.RedoStack.Clear();
-
-		this.currentProvider = null;
-		provider.StopRecord(ref this.currentOperation);
-
-		this.UndoStack.Push(this.currentOperation);
-		this.HistoryAdded?.Invoke(this.currentOperation);
-
-		this.currentOperation = null;
-
-		this.RaisePropertyChanged(nameof(this.CanUndo));
-		this.RaisePropertyChanged(nameof(this.CanRedo));
-	}
 
 	public void GoTo(OperationBase operation)
 	{
@@ -121,8 +96,8 @@ public class HistoryService : ServiceBase
 		if (!this.CanUndo)
 			return;
 
-		if (this.currentOperation != null && this.currentProvider != null)
-			throw new Exception("Attempt to perform undo while a record is in progress");
+		if (this.stopRecordQueue.Pending)
+			this.stopRecordQueue.InvokeImmediate();
 
 		OperationBase reverseOperation = this.UndoStack.Pop();
 		reverseOperation.Revert();
@@ -138,14 +113,56 @@ public class HistoryService : ServiceBase
 		if (!this.CanRedo)
 			return;
 
-		if (this.currentOperation != null && this.currentProvider != null)
-			throw new Exception("Attempt to perform undo while a record is in progress");
+		if (this.stopRecordQueue.Pending)
+			this.stopRecordQueue.InvokeImmediate();
 
 		OperationBase forwardOperation = this.RedoStack.Pop();
 		forwardOperation.Apply();
 		this.UndoStack.Push(forwardOperation);
 
 		this.HistoryAdded?.Invoke(forwardOperation);
+		this.RaisePropertyChanged(nameof(this.CanUndo));
+		this.RaisePropertyChanged(nameof(this.CanRedo));
+	}
+
+	public void RecordChange(IHistoryProvider provider)
+	{
+		if (this.currentProvider != provider)
+		{
+			if (this.stopRecordQueue.Pending)
+				this.stopRecordQueue.InvokeImmediate();
+
+			this.currentProvider = provider;
+			this.currentOperation = provider.StartRecord();
+		}
+
+		this.stopRecordQueue.Invoke();
+	}
+
+	private void PostChange()
+	{
+		if (this.currentOperation == null || this.currentProvider == null)
+			throw new Exception("Attempt to stop histroy record while no record is in progress");
+
+		bool didChange = this.currentProvider.StopRecord(ref this.currentOperation);
+
+		if (!didChange)
+			return;
+
+		// Is this operation already in the undo stack?
+		// This can occur if the PostChange method is called multiple times,
+		// which is valid.
+		if (this.UndoStack.Count > 0 && this.currentOperation == this.UndoStack.Peek())
+			return;
+
+		this.RedoStack.Clear();
+
+		this.UndoStack.Push(this.currentOperation);
+		this.HistoryAdded?.Invoke(this.currentOperation);
+
+		this.currentProvider = null;
+		this.currentOperation = null;
+
 		this.RaisePropertyChanged(nameof(this.CanUndo));
 		this.RaisePropertyChanged(nameof(this.CanRedo));
 	}
