@@ -31,17 +31,10 @@ public class PoseSkeletonOverlay : SelectionOverlayLayerBase
 {
 	private readonly Dictionary<(BoneId, BoneId), BonePrimitive> primitives = new();
 	private int lastTargetIndex = -1;
-	private int currentTargetIndex = -1;
 
 	public PoseSkeletonOverlay()
 		: base("Skeleton")
 	{
-	}
-
-	public override void SetTarget(int targetIndex)
-	{
-		base.SetTarget(targetIndex);
-		this.currentTargetIndex = targetIndex;
 	}
 
 	public override void Update(Matrix4x4 view, Matrix4x4 projection, Canvas canvas)
@@ -56,11 +49,11 @@ public class PoseSkeletonOverlay : SelectionOverlayLayerBase
 	{
 		base.OnFrameworkUpdate();
 
-		if (this.lastTargetIndex != this.currentTargetIndex)
+		if (this.lastTargetIndex != this.TargetIndex)
 		{
 			lock (this)
 			{
-				this.lastTargetIndex = this.currentTargetIndex;
+				this.lastTargetIndex = this.TargetIndex;
 
 				foreach (((BoneId boneId, BoneId parentId), BonePrimitive primitive) in this.primitives)
 				{
@@ -69,7 +62,7 @@ public class PoseSkeletonOverlay : SelectionOverlayLayerBase
 
 				this.primitives.Clear();
 
-				Character* character = this.Services.Target.GetCharacter(this.currentTargetIndex);
+				Character* character = this.Services.Target.GetCharacter(this.TargetIndex);
 				if (character == null)
 					return;
 

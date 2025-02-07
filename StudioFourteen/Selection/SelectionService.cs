@@ -56,8 +56,6 @@ public partial class SelectionService : ServiceBase
 
 			this.SelectionChanged?.Invoke(value);
 			this.RaisePropertyChanged();
-
-			this.poseGizmoOverlay.SetSelection(this.selection);
 		}
 	}
 
@@ -99,10 +97,8 @@ public partial class SelectionService : ServiceBase
 		this.Selection?.OnFrameworkUpdate(framework);
 	}
 
-	private void OnTargetChanged()
+	private void OnTargetChanged(int objectTableIndex)
 	{
-		this.poseGizmoOverlay.SetTarget(this.Services.Target.TargetObjectIndex);
-
 		// TODO: consider caching the previous selection this target had and restoring it?
 		this.Selection = new GameObjectSelection(this.Services.Target.TargetObjectIndex);
 	}

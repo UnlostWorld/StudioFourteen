@@ -16,22 +16,39 @@
 namespace StudioFourteen.Selection;
 
 using StudioFourteen.Overlays;
+using System.Windows.Controls;
 
 public abstract class SelectionOverlayLayerBase : OverlayLayerBase
 {
-	protected SelectionBase? selection;
-
 	public SelectionOverlayLayerBase(string name)
 		: base("Selection", name)
 	{
 	}
 
-	public virtual void SetTarget(int targetIndex)
+	protected SelectionBase? Selection => this.Services.Selection.Selection;
+	protected int TargetIndex => this.Services.Target.TargetObjectIndex;
+
+	public override void Enable(Canvas canvas)
+	{
+		base.Enable(canvas);
+
+		this.Services.Selection.SelectionChanged += this.OnSelectionChanged;
+		this.Services.Target.TargetChanged += this.OnTargetChanged;
+	}
+
+	public override void Disable(Canvas canvas)
+	{
+		base.Disable(canvas);
+
+		this.Services.Selection.SelectionChanged -= this.OnSelectionChanged;
+		this.Services.Target.TargetChanged -= this.OnTargetChanged;
+	}
+
+	protected virtual void OnSelectionChanged(SelectionBase? newSelection)
 	{
 	}
 
-	public virtual void SetSelection(SelectionBase? selection)
+	protected virtual void OnTargetChanged(int objectTableIndex)
 	{
-		this.selection = selection;
 	}
 }

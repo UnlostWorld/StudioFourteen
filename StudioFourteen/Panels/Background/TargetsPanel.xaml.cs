@@ -45,7 +45,7 @@ public partial class TargetsPanel : Panel
 			this.Characters.Add(new(i));
 		}
 
-		this.Services.Target.TargetChanged += this.OnTargetChanged;
+		this.Services.Target.TargetChanged += this.OnCurrentTargetChanged;
 	}
 
 	public List<CharacterViewModel> Characters { get; init; } = new();
@@ -76,7 +76,7 @@ public partial class TargetsPanel : Panel
 		}
 	}
 
-	private void OnTargetChanged()
+	private void OnCurrentTargetChanged(int objectTableIndex)
 	{
 		foreach(CharacterViewModel character in this.ValidCharacters)
 		{

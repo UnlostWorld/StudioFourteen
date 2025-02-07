@@ -45,7 +45,7 @@ public partial class TargetService : ServiceBase
 		this.previousTargetListener.Activate = this.OnPreviousTarget;
 	}
 
-	public delegate void TargetChangedDelegate();
+	public delegate void TargetChangedDelegate(int objectTableIndex);
 
 	public event TargetChangedDelegate? TargetChanged;
 
@@ -209,7 +209,7 @@ public partial class TargetService : ServiceBase
 
 		if (startIndex != this.TargetObjectIndex)
 		{
-			this.TargetChanged?.Invoke();
+			this.TargetChanged?.Invoke(this.targetObjectIndex);
 		}
 	}
 

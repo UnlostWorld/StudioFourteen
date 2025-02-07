@@ -49,7 +49,7 @@ public class TransformHandleOverlayLayer : SelectionOverlayLayerBase
 	{
 		base.OnFrameworkUpdate();
 
-		if (this.selection is not TransformSelectionBase transformSelection)
+		if (this.Selection is not TransformSelectionBase transformSelection)
 			return;
 
 		this.translation.IsVisible = this.Services.Selection.Gizmo == TransformHandleTypes.Translation;
@@ -67,7 +67,7 @@ public class TransformHandleOverlayLayer : SelectionOverlayLayerBase
 
 	private void OnTransformChanged(Transform newTransform)
 	{
-		if (this.selection is not TransformSelectionBase transformSelection)
+		if (this.Selection is not TransformSelectionBase transformSelection)
 			return;
 
 		this.translation.Transform = transformSelection.WorldTransform;

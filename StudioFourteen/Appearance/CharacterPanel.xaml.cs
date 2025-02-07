@@ -70,9 +70,9 @@ public partial class CharacterPanel : CharacterPanelBase
 		this.Equipment.OnFrameworkUpdate(pTarget);
 	}
 
-	protected override void OnTargetChanged()
+	protected override void OnTargetChanged(int objectTableIndex)
 	{
-		base.OnTargetChanged();
+		base.OnTargetChanged(objectTableIndex);
 
 		this.Customize.OnTargetChanged();
 		this.Equipment.OnTargetChanged();

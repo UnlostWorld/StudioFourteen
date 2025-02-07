@@ -65,11 +65,6 @@ public partial class PoseWindow : CharacterPanelBase
 		}
 	}
 
-	protected override void OnTargetChanged()
-	{
-		base.OnTargetChanged();
-	}
-
 	private void OnRevertClicked(object sender, RoutedEventArgs e)
 	{
 		if (this.TargetObjectIndex < 0)

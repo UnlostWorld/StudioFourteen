@@ -38,7 +38,7 @@ public abstract class CharacterPanelBase : Panel
 		this.Services.Target.TargetChanged += this.OnTargetChanged;
 		base.OnOpened();
 
-		this.OnTargetChanged();
+		this.OnTargetChanged(this.Services.Target.TargetObjectIndex);
 	}
 
 	protected override void OnClosed()
@@ -47,7 +47,7 @@ public abstract class CharacterPanelBase : Panel
 		base.OnClosed();
 	}
 
-	protected virtual void OnTargetChanged()
+	protected virtual void OnTargetChanged(int objectTableIndex)
 	{
 	}
 }
