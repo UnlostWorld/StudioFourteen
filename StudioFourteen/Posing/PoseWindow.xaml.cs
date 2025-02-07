@@ -50,7 +50,7 @@ public partial class PoseWindow : CharacterPanelBase
 		set => this.SetPersistence(value);
 	}
 
-	[AutoNotify] public SelectionBase? Selection => this.Services.Selection.Selection;
+	[AutoNotify] public SelectionBase? Selection => this.Services.Selection.Current;
 	[AutoNotify] public bool IsSelectionTransform => this.Selection is TransformSelectionBase;
 	[AutoNotify] public bool IsSelectionBlend => this.Selection is BlendSelection;
 	[AutoNotify] public bool IsSelectionEye => this.Selection is EyeSelection;
@@ -59,9 +59,9 @@ public partial class PoseWindow : CharacterPanelBase
 	{
 		base.OnOpened();
 
-		if (this.Services.Selection.Selection == null && this.TargetObjectIndex >= 0)
+		if (this.Services.Selection.Current == null && this.TargetObjectIndex >= 0)
 		{
-			this.Services.Selection.Selection = new GameObjectSelection((ushort)this.TargetObjectIndex);
+			this.Services.Selection.Current = new GameObjectSelection((ushort)this.TargetObjectIndex);
 		}
 	}
 
@@ -71,7 +71,7 @@ public partial class PoseWindow : CharacterPanelBase
 			return;
 
 		this.Services.Pose.FlushBoneReferences((ushort)this.TargetObjectIndex);
-		this.Services.Selection.Selection = new GameObjectSelection((ushort)this.TargetObjectIndex);
+		this.Services.Selection.Current = new GameObjectSelection((ushort)this.TargetObjectIndex);
 	}
 
 	private void OnBackgroundMouseDown(object sender, MouseButtonEventArgs e)
@@ -79,12 +79,12 @@ public partial class PoseWindow : CharacterPanelBase
 		if (this.TargetObjectIndex < 0)
 			return;
 
-		this.Services.Selection.Selection = new GameObjectSelection((ushort)this.TargetObjectIndex);
+		this.Services.Selection.Current = new GameObjectSelection((ushort)this.TargetObjectIndex);
 	}
 
 	private void OnClearClicked(object sender, RoutedEventArgs e)
 	{
-		this.Services.Selection.Selection = new GameObjectSelection((ushort)this.TargetObjectIndex);
+		this.Services.Selection.Current = new GameObjectSelection((ushort)this.TargetObjectIndex);
 	}
 
 	private async void OnReferenceClicked(object sender, RoutedEventArgs e)

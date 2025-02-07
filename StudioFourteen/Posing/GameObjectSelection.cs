@@ -24,6 +24,14 @@ using StudioFourteen.Selection;
 using System;
 using System.Numerics;
 
+public class GameObjectSelectionId(int objectTableIndex)
+	: ISelectionId
+{
+	public int ObjectTableIndex { get; init; } = objectTableIndex;
+
+	public override SelectionBase Create() => new GameObjectSelection(this.ObjectTableIndex);
+}
+
 public class GameObjectSelection : TransformSelectionBase
 {
 	private readonly int objectTableId;
@@ -63,6 +71,8 @@ public class GameObjectSelection : TransformSelectionBase
 		set => this.nextTransform = value;
 	}
 
+	public override ISelectionId Id => new GameObjectSelectionId(this.objectTableId);
+
 	public unsafe override void OnFrameworkUpdate(IFramework framework)
 	{
 		base.OnFrameworkUpdate(framework);
@@ -75,6 +85,7 @@ public class GameObjectSelection : TransformSelectionBase
 			return;
 
 		this.name = gameObject->GetDisplayName();
+		this.RaisePropertyChanged(nameof(this.Name));
 
 		if (this.nextTransform != null)
 		{
@@ -102,6 +113,7 @@ public class GameObjectSelection : TransformSelectionBase
 			gameObject->DrawObject->Scale);
 
 		this.isReady = true;
+		this.RaisePropertyChanged(nameof(this.IsReady));
 	}
 
 	public override bool Equals(SelectionBase? other)

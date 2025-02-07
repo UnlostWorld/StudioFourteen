@@ -357,13 +357,13 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 		}
 
 		// if we are flushing a bone we have selected, clear the selection
-		if (this.Services.Selection.Selection is BoneSelection boneSelection)
+		if (this.Services.Selection.Current is BoneSelection boneSelection)
 		{
 			foreach(BoneId usedId in boneSelection.BoneIds)
 			{
 				if (toRemove.Contains(usedId))
 				{
-					this.Services.Selection.Selection = null;
+					this.Services.Selection.Current = null;
 					break;
 				}
 			}

@@ -228,6 +228,19 @@ public class ServiceManagerBase
 		InteropService.CheckHooks();
 	}
 
+	public ServiceBase GetService(Type type)
+	{
+		foreach (ServiceBase service in this.services)
+		{
+			if (service.GetType() == type)
+			{
+				return service;
+			}
+		}
+
+		throw new Exception($"Service: {type} not found");
+	}
+
 	protected virtual void OnStart()
 	{
 	}

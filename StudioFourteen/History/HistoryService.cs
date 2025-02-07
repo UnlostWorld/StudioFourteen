@@ -37,6 +37,7 @@ public class HistoryService : ServiceBase
 {
 	private readonly FuncQueue stopRecordQueue;
 	private Operation? currentOperation;
+	private bool isApplyingOperation = false;
 
 	public HistoryService()
 	{
@@ -123,7 +124,9 @@ public class HistoryService : ServiceBase
 			this.stopRecordQueue.InvokeImmediate();
 
 		Operation reverseOperation = this.UndoStack.Pop();
+		this.isApplyingOperation = true;
 		await reverseOperation.Apply(true);
+		this.isApplyingOperation = false;
 		this.RedoStack.Push(reverseOperation);
 
 		this.HistoryRemoved?.Invoke(reverseOperation);
@@ -145,7 +148,9 @@ public class HistoryService : ServiceBase
 			this.stopRecordQueue.InvokeImmediate();
 
 		Operation forwardOperation = this.RedoStack.Pop();
+		this.isApplyingOperation = true;
 		await forwardOperation.Apply(false);
+		this.isApplyingOperation = false;
 		this.UndoStack.Push(forwardOperation);
 
 		this.HistoryAdded?.Invoke(forwardOperation);
@@ -155,6 +160,9 @@ public class HistoryService : ServiceBase
 
 	public void RecordChange(IHistoryTarget target, string description)
 	{
+		if (this.isApplyingOperation)
+			return;
+
 		if (this.currentOperation == null || !this.currentOperation.IsTarget(target))
 		{
 			if (this.stopRecordQueue.Pending)
@@ -224,6 +232,19 @@ public abstract class Operation
 
 			this.StartValues[property.Name] = property.GetValue(target);
 		}
+
+		MethodInfo[] methods = target.GetType().GetMethods();
+		foreach(MethodInfo method in methods)
+		{
+			HistoryAttribute? attribute = method.GetCustomAttribute<HistoryAttribute>();
+			if (attribute == null)
+				continue;
+
+			if (!method.Name.StartsWith("Get") || method.ReturnType == typeof(void))
+				continue;
+
+			this.StartValues[method.Name.Substring(3)] = method.Invoke(target, null);
+		}
 	}
 
 	public bool EndRecord()
@@ -251,10 +272,32 @@ public abstract class Operation
 			}
 		}
 
+		MethodInfo[] methods = target.GetType().GetMethods();
+		foreach (MethodInfo method in methods)
+		{
+			HistoryAttribute? attribute = method.GetCustomAttribute<HistoryAttribute>();
+			if (attribute == null)
+				continue;
+
+			if (!method.Name.StartsWith("Get") || method.ReturnType == typeof(void))
+				continue;
+
+			string name = method.Name.Substring(3);
+
+			object? startValue = this.StartValues[name];
+			object? endValue = method.Invoke(target, null);
+			change = !object.Equals(startValue, endValue);
+
+			if (change)
+			{
+				this.EndValues[name] = endValue;
+			}
+		}
+
 		return change;
 	}
 
-	public Task Apply(bool revert)
+	public async Task Apply(bool revert)
 	{
 		IHistoryTarget target = this.GetTarget();
 
@@ -269,11 +312,24 @@ public abstract class Operation
 			property?.SetValue(target, destValue);
 		}
 
-		return Task.CompletedTask;
+		foreach ((string propertyName, object? value) in this.EndValues)
+		{
+			object? destValue = revert ? this.StartValues[propertyName] : value;
+
+			MethodInfo? method = target.GetType().GetMethod($"Set{propertyName}");
+			if (method == null)
+				continue;
+
+			object? returnValue = method.Invoke(target, [destValue]);
+			if (returnValue is Task returnTask)
+			{
+				await returnTask;
+			}
+		}
 	}
 }
 
-[AttributeUsage(AttributeTargets.Property)]
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Method)]
 public class HistoryAttribute : Attribute
 {
 }

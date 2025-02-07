@@ -32,6 +32,7 @@ public abstract class SelectionBase : ViewModel, IHistoryTarget
 	[History] public virtual MirrorModes MirrorMode { get; set; }
 
 	public abstract bool CanReset { get; }
+	public abstract ISelectionId Id { get; }
 
 	public virtual void Reset()
 	{
@@ -63,15 +64,15 @@ public abstract class SelectionBase : ViewModel, IHistoryTarget
 	{
 		public override IHistoryTarget GetTarget()
 		{
-			if (ServiceManager.Instance.Selection.Selection == null)
+			if (ServiceManager.Instance.Selection.Current == null)
 				throw new Exception("No selection");
 
-			return ServiceManager.Instance.Selection.Selection;
+			return ServiceManager.Instance.Selection.Current;
 		}
 
 		public override bool IsTarget(IHistoryTarget target)
 		{
-			return ServiceManager.Instance.Selection.Selection == target;
+			return ServiceManager.Instance.Selection.Current == target;
 		}
 	}
 }

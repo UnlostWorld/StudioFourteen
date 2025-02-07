@@ -293,7 +293,7 @@ public partial class SkeletonView : Canvas
 				}
 
 				this.OnRenderSizeChanged(null);
-				this.OnSelectionChanged(ServiceManager.Instance.Selection.Selection);
+				this.OnSelectionChanged(ServiceManager.Instance.Selection.Current);
 			}
 		}
 		catch (Exception ex)
@@ -395,7 +395,7 @@ public partial class SkeletonView : Canvas
 
 		if (this.MouseOver != null)
 		{
-			ServiceManager.Instance.Selection.Selection = this.MouseOver.Selection;
+			ServiceManager.Instance.Selection.Current = this.MouseOver.Selection;
 			e.Handled = true;
 		}
 	}

@@ -25,7 +25,7 @@ public abstract class SelectionOverlayLayerBase : OverlayLayerBase
 	{
 	}
 
-	protected SelectionBase? Selection => this.Services.Selection.Selection;
+	protected SelectionBase? Selection => this.Services.Selection.Current;
 	protected int TargetIndex => this.Services.Target.TargetObjectIndex;
 
 	public override void Enable(Canvas canvas)

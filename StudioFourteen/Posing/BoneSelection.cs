@@ -15,14 +15,27 @@
 
 namespace StudioFourteen.Posing;
 
+using Dalamud.Plugin.Services;
 using FontAwesome.Sharp;
 using StudioFourteen.Gizmos.Handles.TransformHandle;
-using StudioFourteen.History;
 using StudioFourteen.Selection;
+using StudioFourteen.Utilities;
 using System.Collections.Generic;
 using System.Numerics;
-using System.Xml.Linq;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TextBox;
+using System.Threading.Tasks;
+
+public class BoneSelectionId(string boneName, int objectTableIndex)
+	: IAsyncSelectionId
+{
+	public string BoneName { get; init; } = boneName;
+	public int ObjectTableIndex { get; init; } = objectTableIndex;
+
+	public override async Task<SelectionBase?> CreateAsync()
+	{
+		await Threads.FrameworkThread();
+		return ServiceManager.Instance.Pose.FindBone(this.ObjectTableIndex, this.BoneName);
+	}
+}
 
 public class BoneSelection : TransformSelectionBase
 {
@@ -70,6 +83,7 @@ public class BoneSelection : TransformSelectionBase
 	private readonly List<BoneId> parentBoneIds;
 	private readonly List<BoneReference> bones = new();
 	private BoneReference? bone;
+	private bool isReady = false;
 
 	public BoneSelection(List<BoneId> bones, List<BoneId> parents, string name)
 	{
@@ -103,7 +117,7 @@ public class BoneSelection : TransformSelectionBase
 	public override double TranslationRange => this.IsFaceBone ? 0.02 : 0.1;
 	public override int DecimalPlacesToDisplay => this.IsFaceBone ? 4 : 2;
 	public override bool CanReset => true;
-	public override bool IsReady => this.bone != null && this.bone.LocalSpaceTransform != null && this.bone.ReferenceRelativeTransform != null;
+	public override bool IsReady => this.isReady;
 	public override double GizmoSensitivity => this.IsFaceBone ? 0.05 : 0.5;
 
 	public override TransformHandleTypes DefaultGizmo
@@ -189,6 +203,8 @@ public class BoneSelection : TransformSelectionBase
 		set => this.SetReferenceTransform(value);
 	}
 
+	public override ISelectionId Id => new BoneSelectionId(this.BoneName, this.boneIds[0].ObjectTableIndex);
+
 	public override void Activate()
 	{
 		this.bones.Clear();
@@ -198,6 +214,7 @@ public class BoneSelection : TransformSelectionBase
 		}
 
 		this.bone = this.bones[0];
+		this.RaisePropertyChanged(nameof(this.IsReady));
 
 		this.MirrorMode = this.GetDefaultMirrorMode();
 	}
@@ -296,5 +313,18 @@ public class BoneSelection : TransformSelectionBase
 		}
 
 		return mirror;
+	}
+
+	public override void OnFrameworkUpdate(IFramework framework)
+	{
+		base.OnFrameworkUpdate(framework);
+
+		bool newReady = this.bone != null && this.bone.LocalSpaceTransform != null && this.bone.ReferenceRelativeTransform != null;
+
+		if (newReady != this.isReady)
+		{
+			this.isReady = newReady;
+			this.RaisePropertyChanged(nameof(this.IsReady));
+		}
 	}
 }

@@ -16,17 +16,25 @@
 namespace StudioFourteen.Services;
 
 using Dalamud.Plugin.Services;
+using FontAwesome.Sharp;
+using StudioFourteen.History;
 using StudioFourteen.Mvm;
 using StudioFourteen.Plugin;
 using StudioFourteen.Settings;
+using System;
 using System.Threading.Tasks;
 
-public abstract class ServiceBase : ViewModel
+public abstract class ServiceBase : ViewModel, IHistoryTarget
 {
+	public virtual string Name => this.GetType().Name;
+	public virtual IconChar Icon => IconChar.Computer;
+
 	public bool IsAlive { get; private set; }
 	public bool IsAttached { get; private set; }
 
 	protected SettingsService.Configuration Settings => this.Services.Settings.Current;
+
+	public Operation CreateHistoryOperation() => new ServiceOperation(this.GetType());
 
 	public virtual Task Initialize()
 	{
@@ -73,5 +81,21 @@ public abstract class ServiceBase : ViewModel
 
 	protected virtual void OnFrameworkUpdate(IFramework framework)
 	{
+	}
+}
+
+public class ServiceOperation(Type type)
+	: Operation
+{
+	public Type ServiceType { get; init; } = type;
+
+	public override IHistoryTarget GetTarget()
+	{
+		return ServiceManager.Instance.GetService(this.ServiceType);
+	}
+
+	public override bool IsTarget(IHistoryTarget target)
+	{
+		return ServiceManager.Instance.Selection.Current == target;
 	}
 }

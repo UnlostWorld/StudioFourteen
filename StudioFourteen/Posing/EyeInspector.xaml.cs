@@ -15,21 +15,23 @@
 
 namespace StudioFourteen.Posing;
 
-using Dalamud.Plugin.Services;
 using DependencyPropertyGenerator;
-using FFXIVClientStructs.FFXIV.Common.Lua;
 using FontAwesome.Sharp;
-using StudioFourteen.History;
 using StudioFourteen.Mvm;
 using StudioFourteen.Selection;
 using StudioFourteen.Structs.Extensions;
 using StudioFourteen.Utilities;
-using System;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using System.Windows.Navigation;
 using WpfUtils.Extensions;
+
+public class EyeSelectionId(int objectTableIndex) : ISelectionId
+{
+	public int ObjectTableIndex { get; init; } = objectTableIndex;
+
+	public override SelectionBase Create() => new EyeSelection(this.ObjectTableIndex);
+}
 
 [DependencyProperty<EyeSelection>("Selection")]
 public partial class EyeInspector : View
@@ -163,6 +165,8 @@ public class EyeSelection(int objectTableIndex)
 	public BoneSelection? IrisBone { get; private set; }
 
 	public override bool CanReset => true;
+
+	public override ISelectionId Id => new EyeSelectionId(this.ObjectTableIndex);
 
 	public override void Reset()
 	{

@@ -47,6 +47,6 @@ public partial class ExpressionsView : View
 
 	private void OnEyeClicked(object sender, RoutedEventArgs e)
 	{
-		this.Services.Selection.Selection = new EyeSelection(this.ObjectTableIndex);
+		this.Services.Selection.Current = new EyeSelection(this.ObjectTableIndex);
 	}
 }

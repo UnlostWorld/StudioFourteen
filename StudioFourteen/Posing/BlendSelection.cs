@@ -16,8 +16,6 @@
 namespace StudioFourteen.Posing;
 
 using FontAwesome.Sharp;
-using StudioFourteen.Files;
-using StudioFourteen.History;
 using StudioFourteen.Plugin;
 using StudioFourteen.Selection;
 using StudioFourteen.Utilities;
@@ -28,7 +26,25 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using WpfUtils.Extensions;
 
-public class BlendSelection(string name, BlendTarget target, int objectTableIndex)
+public class BlendSelectionId(string blendTargetName, int objectTableIndex)
+	: ISelectionId
+{
+	public string BlendTargetName { get; init; } = blendTargetName;
+	public int ObjectTableIndex { get; init; } = objectTableIndex;
+
+	public override SelectionBase? Create()
+	{
+		BlendTarget? target = null;
+		ServiceManager.Instance.Data.ExpressionBlends?.TryGetValue(this.BlendTargetName, out target);
+
+		if (target == null)
+			return null;
+
+		return new BlendSelection(this.BlendTargetName, target, this.ObjectTableIndex);
+	}
+}
+
+public class BlendSelection(string blendTargetName, BlendTarget target, int objectTableIndex)
 	: SelectionBase
 {
 	private readonly int objectTableIndex = objectTableIndex;
@@ -36,7 +52,7 @@ public class BlendSelection(string name, BlendTarget target, int objectTableInde
 	private double value;
 	private MirrorModes mirrorMode = target.MirrorMode;
 
-	public override string Name => name;
+	public override string Name => blendTargetName;
 	public override string? Subtitle => null;
 	public override IconChar Icon => IconChar.BezierCurve;
 	public BlendTarget Target => target;
@@ -75,6 +91,8 @@ public class BlendSelection(string name, BlendTarget target, int objectTableInde
 			}
 		}
 	}
+
+	public override ISelectionId Id => new BlendSelectionId(blendTargetName, this.objectTableIndex);
 
 	public void SetValue(double value)
 	{
