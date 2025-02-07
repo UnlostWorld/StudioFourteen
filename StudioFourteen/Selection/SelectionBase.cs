@@ -60,6 +60,10 @@ public abstract class SelectionBase : ViewModel, IHistoryTarget
 		return new SelectionObjectOperation();
 	}
 
+	public virtual void FinalizeHistoryOperation(ref Operation operation)
+	{
+	}
+
 	public class SelectionObjectOperation : Operation
 	{
 		public override IHistoryTarget GetTarget()

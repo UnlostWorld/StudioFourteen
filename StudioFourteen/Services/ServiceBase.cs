@@ -36,6 +36,10 @@ public abstract class ServiceBase : ViewModel, IHistoryTarget
 
 	public Operation CreateHistoryOperation() => new ServiceOperation(this.GetType());
 
+	public virtual void FinalizeHistoryOperation(ref Operation operation)
+	{
+	}
+
 	public virtual Task Initialize()
 	{
 		this.IsAlive = true;

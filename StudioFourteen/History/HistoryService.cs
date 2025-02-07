@@ -31,12 +31,14 @@ public interface IHistoryTarget
 	IconChar Icon { get; }
 
 	Operation CreateHistoryOperation();
+	void FinalizeHistoryOperation(ref Operation operation);
 }
 
 public class HistoryService : ServiceBase
 {
 	private readonly FuncQueue stopRecordQueue;
 	private Operation? currentOperation;
+	private IHistoryTarget? currentTarget;
 	private bool isApplyingOperation = false;
 
 	public HistoryService()
@@ -163,11 +165,12 @@ public class HistoryService : ServiceBase
 		if (this.isApplyingOperation)
 			return;
 
-		if (this.currentOperation == null || !this.currentOperation.IsTarget(target))
+		if (this.currentOperation == null || this.currentTarget != target)
 		{
 			if (this.stopRecordQueue.Pending)
 				this.stopRecordQueue.InvokeImmediate();
 
+			this.currentTarget = target;
 			this.currentOperation = target.CreateHistoryOperation();
 			this.currentOperation.Description = description;
 			this.currentOperation.StartRecord();
@@ -178,13 +181,15 @@ public class HistoryService : ServiceBase
 
 	private void PostChange()
 	{
-		if (this.currentOperation == null)
+		if (this.currentOperation == null || this.currentTarget == null)
 			throw new Exception("Attempt to stop histroy record while no record is in progress");
 
 		bool didChange = this.currentOperation.EndRecord();
 
 		if (!didChange)
 			return;
+
+		this.currentTarget.FinalizeHistoryOperation(ref this.currentOperation);
 
 		// Is this operation already in the undo stack?
 		// This can occur if the PostChange method is called multiple times,

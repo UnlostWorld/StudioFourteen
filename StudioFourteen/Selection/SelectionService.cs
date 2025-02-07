@@ -38,10 +38,11 @@ public abstract class IAsyncSelectionId : ISelectionId
 	public sealed override SelectionBase? Create() => throw new NotSupportedException();
 }
 
-public partial class SelectionService : ServiceBase, IHistoryTarget
+public partial class SelectionService : ServiceBase
 {
 	private readonly TransformHandleOverlayLayer poseGizmoOverlay = new();
 	private SelectionBase? selection;
+	private string lastSelectionName = "Nothing";
 
 	[Notify]
 	[AlsoNotify(nameof(SelectionService.GizmoIndex))]
@@ -59,9 +60,8 @@ public partial class SelectionService : ServiceBase, IHistoryTarget
 		get => this.selection;
 		set
 		{
-			string? oldSelectionName = this.selection?.Name;
-			string? newSelectionName = value?.Name;
-			this.Services.History.RecordChange(this, $"{oldSelectionName} -> {newSelectionName}");
+			this.lastSelectionName = this.selection?.Name ?? "Nothing";
+			this.Services.History.RecordChange(this, $"Change");
 
 			this.selection?.Deactivate();
 
@@ -109,6 +109,14 @@ public partial class SelectionService : ServiceBase, IHistoryTarget
 		{
 			this.Current = value.Create();
 		}
+	}
+
+	public override void FinalizeHistoryOperation(ref Operation operation)
+	{
+		base.FinalizeHistoryOperation(ref operation);
+
+		string? newSelectionName = this.selection?.Name;
+		operation.Description = $"{this.lastSelectionName} > {newSelectionName}";
 	}
 
 	public override Task Start()
