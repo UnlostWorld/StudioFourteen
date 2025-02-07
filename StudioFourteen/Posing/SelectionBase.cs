@@ -16,21 +16,23 @@
 namespace StudioFourteen.Posing;
 
 using Dalamud.Plugin.Services;
+using FontAwesome.Sharp;
 using StudioFourteen.Gizmos.Handles.TransformHandle;
 using StudioFourteen.History;
 using StudioFourteen.Mvm;
 using System;
-using System.Numerics;
 
-public abstract class SelectionBase : AutoViewModel, IEquatable<SelectionBase>, IHistoryProvider
+public abstract class SelectionBase : AutoViewModel, IEquatable<SelectionBase>, IHistoryTarget
 {
 	[AutoNotify] public abstract string Name { get; }
 	[AutoNotify] public abstract string? Subtitle { get; }
+	public abstract IconChar Icon { get; }
 
 	public virtual bool CanMirror => false;
-	public virtual MirrorModes MirrorMode { get; set; }
+	[History] public virtual MirrorModes MirrorMode { get; set; }
 
 	public abstract bool CanReset { get; }
+
 	public virtual void Reset()
 	{
 	}
@@ -52,16 +54,34 @@ public abstract class SelectionBase : AutoViewModel, IEquatable<SelectionBase>, 
 		return this == other;
 	}
 
-	public abstract OperationBase StartRecord();
-	public abstract bool StopRecord(ref OperationBase operation);
+	public Operation CreateHistoryOperation()
+	{
+		return new SelectionObjectOperation();
+	}
+
+	public class SelectionObjectOperation : Operation
+	{
+		public override IHistoryTarget GetTarget()
+		{
+			if (ServiceManager.Instance.Pose.Selection == null)
+				throw new Exception("No selection");
+
+			return ServiceManager.Instance.Pose.Selection;
+		}
+
+		public override bool IsTarget(IHistoryTarget target)
+		{
+			return ServiceManager.Instance.Pose.Selection == target;
+		}
+	}
 }
 
 public abstract class TransformSelectionBase : SelectionBase
 {
-	public abstract Transform WorldTransform { get; set; }
-	public abstract Transform LocalTransform { get; set; }
+	[History] public abstract Transform WorldTransform { get; set; }
+	[History] public abstract Transform LocalTransform { get; set; }
 
-	[AutoNotify] public abstract bool LockTransform { get; set; }
+	[History][AutoNotify] public abstract bool LockTransform { get; set; }
 	[AutoNotify] public virtual bool CanLockTransform => true;
 
 	public virtual double TranslationLargeChange => 0.1;

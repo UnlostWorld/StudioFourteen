@@ -30,7 +30,7 @@ using System.Numerics;
 using System.Threading.Tasks;
 using WpfUtils.Animation;
 
-public class BoneReference : IHistoryProvider
+public class BoneReference
 {
 	public readonly BoneId Id;
 
@@ -62,7 +62,7 @@ public class BoneReference : IHistoryProvider
 		this.boneName = name;
 	}
 
-	public Transform? Transform { get; set; }
+	[History] public Transform? Transform { get; set; }
 	public Transform? LocalSpaceTransform { get; private set; }
 	public Transform? ModelSpaceTransform { get; private set; }
 	public Transform? ModelTransform { get; private set; }
@@ -408,24 +408,6 @@ public class BoneReference : IHistoryProvider
 		return pSkeleton;
 	}
 
-	public OperationBase StartRecord()
-	{
-		BoneTransformOperation operation = new BoneTransformOperation();
-		operation.BoneId = this.Id;
-		operation.From = this.Transform;
-		return operation;
-	}
-
-	public bool StopRecord(ref OperationBase operation)
-	{
-		if (operation is BoneTransformOperation op)
-		{
-			op.To = this.Transform;
-		}
-
-		return true;
-	}
-
 	private void ReverseMirror()
 	{
 		if (this.MirrorMode != MirrorModes.Receiving)
@@ -438,29 +420,5 @@ public class BoneReference : IHistoryProvider
 
 		this.MirrorMode = sourceMode;
 		this.Mirror.MirrorMode = MirrorModes.Receiving;
-	}
-}
-
-public class BoneTransformOperation : OperationBase
-{
-	public BoneId BoneId { get; set; }
-	public Transform? From { get; set; }
-	public Transform? To { get; set; }
-
-	public override string Description => $"Change Bone Transform {this.BoneId}";
-	public override IconChar Icon => IconChar.Bone;
-
-	public override Task Apply()
-	{
-		BoneReference boneRef = ServiceManager.Instance.Pose.GetOrCreateBoneReference(this.BoneId);
-		boneRef.Transform = this.To;
-		return Task.CompletedTask;
-	}
-
-	public override Task Revert()
-	{
-		BoneReference boneRef = ServiceManager.Instance.Pose.GetOrCreateBoneReference(this.BoneId);
-		boneRef.Transform = this.From;
-		return Task.CompletedTask;
 	}
 }

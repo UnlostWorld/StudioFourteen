@@ -18,6 +18,7 @@ namespace StudioFourteen.Posing;
 using Dalamud.Plugin.Services;
 using DependencyPropertyGenerator;
 using FFXIVClientStructs.FFXIV.Common.Lua;
+using FontAwesome.Sharp;
 using StudioFourteen.History;
 using StudioFourteen.Mvm;
 using StudioFourteen.Structs.Extensions;
@@ -138,6 +139,7 @@ public class EyeSelection(int objectTableIndex)
 
 	public override string Name => "Eye";
 	public override string? Subtitle => null;
+	public override IconChar Icon => IconChar.Eye;
 
 	public override bool CanMirror => true;
 	public override MirrorModes MirrorMode
@@ -183,16 +185,6 @@ public class EyeSelection(int objectTableIndex)
 
 		this.EyeBone?.Deactivate();
 		this.IrisBone?.Deactivate();
-	}
-
-	public override OperationBase StartRecord()
-	{
-		throw new NotImplementedException();
-	}
-
-	public override bool StopRecord(ref OperationBase operation)
-	{
-		throw new NotImplementedException();
 	}
 
 	private async Task Init()

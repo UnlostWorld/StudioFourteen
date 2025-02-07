@@ -47,7 +47,7 @@ public partial class HistoryPanel : Panel
 		this.Services.History.HistoryRemoved -= this.OnHistoryRemoved;
 	}
 
-	private void OnHistoryAdded(OperationBase operation)
+	private void OnHistoryAdded(Operation operation)
 	{
 		this.Dispatcher.Invoke(() =>
 		{
@@ -55,7 +55,7 @@ public partial class HistoryPanel : Panel
 		});
 	}
 
-	private void OnHistoryRemoved(OperationBase operation)
+	private void OnHistoryRemoved(Operation operation)
 	{
 		this.Dispatcher.Invoke(() =>
 		{
@@ -78,7 +78,7 @@ public partial class HistoryPanel : Panel
 		this.isRefreshing = true;
 		List<HistoryEntry> history = new();
 		HistoryEntry? mid = null;
-		foreach (OperationBase operation in this.Services.History.UndoStack)
+		foreach (Operation operation in this.Services.History.UndoStack)
 		{
 			HistoryEntry entry = new();
 			entry.Operation = operation;
@@ -90,7 +90,7 @@ public partial class HistoryPanel : Panel
 
 		history.Reverse();
 
-		foreach (OperationBase operation in this.Services.History.RedoStack)
+		foreach (Operation operation in this.Services.History.RedoStack)
 		{
 			HistoryEntry entry = new();
 			entry.Operation = operation;
@@ -123,7 +123,7 @@ public partial class HistoryPanel : Panel
 
 	public class HistoryEntry
 	{
-		public OperationBase? Operation { get; set; }
+		public Operation? Operation { get; set; }
 		public bool IsPast { get; set; }
 	}
 }

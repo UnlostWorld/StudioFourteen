@@ -35,6 +35,8 @@
 					<Grid>
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="32" />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition />
 						</Grid.ColumnDefinitions>
 
@@ -44,6 +46,18 @@
 							Icon="{Binding Operation.Icon}" />
 						<TextBlock
 							Grid.Column="1"
+							Foreground="{DynamicResource ForegroundLightBrush}"
+							Text="{Binding Operation.TargetName}" />
+
+						<Ellipse
+							Grid.Column="2"
+							Width="4"
+							Height="4"
+							Margin="6,0"
+							Fill="{DynamicResource ForegroundLightBrush}" />
+
+						<TextBlock
+							Grid.Column="3"
 							Foreground="{DynamicResource ForegroundLightBrush}"
 							Text="{Binding Operation.Description}" />
 

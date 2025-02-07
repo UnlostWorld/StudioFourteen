@@ -16,58 +16,69 @@
 namespace StudioFourteen.History;
 
 using FontAwesome.Sharp;
+using Serilog;
 using StudioFourteen.Services;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Threading.Tasks;
 using WpfUtils.Extensions;
 using WpfUtils.Utils;
 
-public interface IHistoryProvider
+public interface IHistoryTarget
 {
-	OperationBase StartRecord();
-	bool StopRecord(ref OperationBase operation);
+	string Name { get; }
+	IconChar Icon { get; }
+
+	Operation CreateHistoryOperation();
 }
 
 public class HistoryService : ServiceBase
 {
 	private readonly FuncQueue stopRecordQueue;
-	private OperationBase? currentOperation;
-	private IHistoryProvider? currentProvider;
+	private Operation? currentOperation;
 
 	public HistoryService()
 	{
 		this.stopRecordQueue = new(this.PostChange, 500);
 	}
 
-	public delegate void HistoryEvent(OperationBase operation);
+	public delegate void HistoryEvent(Operation operation);
 	public event HistoryEvent? HistoryAdded;
 	public event HistoryEvent? HistoryRemoved;
 
-	public Stack<OperationBase> UndoStack { get; init; } = new();
-	public Stack<OperationBase> RedoStack { get; init; } = new();
+	public Stack<Operation> UndoStack { get; init; } = new();
+	public Stack<Operation> RedoStack { get; init; } = new();
 
 	public bool CanUndo => this.UndoStack.Count > 0;
 	public bool CanRedo => this.RedoStack.Count > 0;
 
-	public void GoTo(OperationBase operation)
+	public static void Record(IHistoryTarget target, string description)
+	{
+		if (ServiceManager.ShutdownRequested)
+			return;
+
+		ServiceManager.Instance.History.RecordChange(target, description);
+	}
+
+	public void GoTo(Operation operation)
 	{
 		this.GoToAsync(operation).Run();
 	}
 
-	public async Task GoToAsync(OperationBase operation)
+	public async Task GoToAsync(Operation operation)
 	{
-		if (this.currentOperation != null && this.currentProvider != null)
+		if (this.currentOperation != null)
 			throw new Exception("Attempt to go to history while a record is in progress");
 
 		if (this.UndoStack.Contains(operation))
 		{
 			// go undo
-			OperationBase? reverseOperation = null;
+			Operation? reverseOperation = null;
 			while(this.UndoStack.Count > 0 && reverseOperation != operation)
 			{
 				reverseOperation = this.UndoStack.Pop();
-				await reverseOperation.Revert();
+				await reverseOperation.Apply(true);
 				this.RedoStack.Push(reverseOperation);
 
 				this.HistoryRemoved?.Invoke(reverseOperation);
@@ -79,11 +90,11 @@ public class HistoryService : ServiceBase
 		else if (this.RedoStack.Contains(operation))
 		{
 			// go redo
-			OperationBase? forwardOperation = null;
+			Operation? forwardOperation = null;
 			while (this.RedoStack.Count > 0 && forwardOperation != operation)
 			{
 				forwardOperation = this.RedoStack.Pop();
-				await forwardOperation.Apply();
+				await forwardOperation.Apply(false);
 				this.UndoStack.Push(forwardOperation);
 
 				this.HistoryAdded?.Invoke(forwardOperation);
@@ -111,8 +122,8 @@ public class HistoryService : ServiceBase
 		if (this.stopRecordQueue.Pending)
 			this.stopRecordQueue.InvokeImmediate();
 
-		OperationBase reverseOperation = this.UndoStack.Pop();
-		await reverseOperation.Revert();
+		Operation reverseOperation = this.UndoStack.Pop();
+		await reverseOperation.Apply(true);
 		this.RedoStack.Push(reverseOperation);
 
 		this.HistoryRemoved?.Invoke(reverseOperation);
@@ -133,8 +144,8 @@ public class HistoryService : ServiceBase
 		if (this.stopRecordQueue.Pending)
 			this.stopRecordQueue.InvokeImmediate();
 
-		OperationBase forwardOperation = this.RedoStack.Pop();
-		await forwardOperation.Apply();
+		Operation forwardOperation = this.RedoStack.Pop();
+		await forwardOperation.Apply(false);
 		this.UndoStack.Push(forwardOperation);
 
 		this.HistoryAdded?.Invoke(forwardOperation);
@@ -142,15 +153,16 @@ public class HistoryService : ServiceBase
 		this.RaisePropertyChanged(nameof(this.CanRedo));
 	}
 
-	public void RecordChange(IHistoryProvider provider)
+	public void RecordChange(IHistoryTarget target, string description)
 	{
-		if (this.currentProvider != provider)
+		if (this.currentOperation == null || !this.currentOperation.IsTarget(target))
 		{
 			if (this.stopRecordQueue.Pending)
 				this.stopRecordQueue.InvokeImmediate();
 
-			this.currentProvider = provider;
-			this.currentOperation = provider.StartRecord();
+			this.currentOperation = target.CreateHistoryOperation();
+			this.currentOperation.Description = description;
+			this.currentOperation.StartRecord();
 		}
 
 		this.stopRecordQueue.Invoke();
@@ -158,10 +170,10 @@ public class HistoryService : ServiceBase
 
 	private void PostChange()
 	{
-		if (this.currentOperation == null || this.currentProvider == null)
+		if (this.currentOperation == null)
 			throw new Exception("Attempt to stop histroy record while no record is in progress");
 
-		bool didChange = this.currentProvider.StopRecord(ref this.currentOperation);
+		bool didChange = this.currentOperation.EndRecord();
 
 		if (!didChange)
 			return;
@@ -177,7 +189,6 @@ public class HistoryService : ServiceBase
 		this.UndoStack.Push(this.currentOperation);
 		this.HistoryAdded?.Invoke(this.currentOperation);
 
-		this.currentProvider = null;
 		this.currentOperation = null;
 
 		this.RaisePropertyChanged(nameof(this.CanUndo));
@@ -185,42 +196,84 @@ public class HistoryService : ServiceBase
 	}
 }
 
-public abstract class OperationBase
+public abstract class Operation
 {
-	public abstract IconChar Icon { get; }
-	public abstract string Description { get; }
+	protected readonly ILogger Log = Logging.ForContext<Operation>();
 
-	public abstract Task Apply();
-	public abstract Task Revert();
-}
+	public IconChar Icon { get; set; }
+	public string? TargetName { get; set; }
+	public string? Description { get; set; }
 
-public abstract class OperationCollectionBase : OperationBase
-{
-	protected readonly List<OperationBase> Children = new();
+	public Dictionary<string, object?> StartValues { get; init; } = new();
+	public Dictionary<string, object?> EndValues { get; init; } = new();
 
-	public override async Task Apply()
+	public abstract IHistoryTarget GetTarget();
+	public abstract bool IsTarget(IHistoryTarget target);
+
+	public void StartRecord()
 	{
-		for(int i = 0; i < this.Children.Count; i++)
+		IHistoryTarget target = this.GetTarget();
+		this.Icon = target.Icon;
+		this.TargetName = target.Name;
+		PropertyInfo[] properties = target.GetType().GetProperties();
+		foreach (PropertyInfo property in properties)
 		{
-			await this.Children[i].Apply();
+			HistoryAttribute? attribute = property.GetCustomAttribute<HistoryAttribute>();
+			if (attribute == null)
+				continue;
+
+			this.StartValues[property.Name] = property.GetValue(target);
 		}
 	}
 
-	public override async Task Revert()
+	public bool EndRecord()
 	{
-		for (int i = this.Children.Count - 1; i >= 0; i--)
+		IHistoryTarget target = this.GetTarget();
+
+		bool change = false;
+		PropertyInfo[] properties = target.GetType().GetProperties();
+		foreach (PropertyInfo property in properties)
 		{
-			await this.Children[i].Revert();
+			HistoryAttribute? attribute = property.GetCustomAttribute<HistoryAttribute>();
+			if (attribute == null)
+				continue;
+
+			if (!this.StartValues.ContainsKey(property.Name))
+				continue;
+
+			object? startValue = this.StartValues[property.Name];
+			object? endValue = property.GetValue(target);
+			change = !object.Equals(startValue, endValue);
+
+			if (change)
+			{
+				this.EndValues[property.Name] = endValue;
+			}
 		}
+
+		return change;
 	}
 
-	public void AddChild(OperationBase child)
+	public Task Apply(bool revert)
 	{
-		this.Children.Add(child);
+		IHistoryTarget target = this.GetTarget();
+
+		if (target.Name != this.TargetName)
+			throw new Exception("History operation target name mismatch.");
+
+		foreach ((string propertyName, object? value) in this.EndValues)
+		{
+			object? destValue = revert ? this.StartValues[propertyName] : value;
+
+			PropertyInfo? property = target.GetType().GetProperty(propertyName);
+			property?.SetValue(target, destValue);
+		}
+
+		return Task.CompletedTask;
 	}
 }
 
-public abstract class CharacterOperationBase : OperationBase
+[AttributeUsage(AttributeTargets.Property)]
+public class HistoryAttribute : Attribute
 {
-	public int CharacterIndex { get; set; }
 }

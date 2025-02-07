@@ -14,6 +14,8 @@
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
 namespace StudioFourteen.Posing;
+
+using FontAwesome.Sharp;
 using StudioFourteen.Files;
 using StudioFourteen.History;
 using StudioFourteen.Plugin;
@@ -35,6 +37,7 @@ public class BlendSelection(string name, BlendTarget target, int objectTableInde
 
 	public override string Name => name;
 	public override string? Subtitle => null;
+	public override IconChar Icon => IconChar.BezierCurve;
 	public BlendTarget Target => target;
 	public override bool CanMirror => true;
 	public override bool CanReset => true;
@@ -148,16 +151,6 @@ public class BlendSelection(string name, BlendTarget target, int objectTableInde
 		{
 			bone.Selection.Reset();
 		}
-	}
-
-	public override OperationBase StartRecord()
-	{
-		throw new NotImplementedException();
-	}
-
-	public override bool StopRecord(ref OperationBase operation)
-	{
-		throw new NotImplementedException();
 	}
 
 	public struct BoneBlend(BoneSelection selection, Transform initial, BoneTransform right, BoneTransform? left = null)

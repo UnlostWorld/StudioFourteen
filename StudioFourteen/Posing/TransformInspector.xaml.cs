@@ -17,6 +17,7 @@ namespace StudioFourteen.Posing;
 
 using DependencyPropertyGenerator;
 using StudioFourteen.Gizmos.Handles.TransformHandle;
+using StudioFourteen.History;
 using StudioFourteen.Mvm;
 using StudioFourteen.Settings;
 
@@ -77,7 +78,7 @@ public partial class TransformInspector : View
 			if (this.Selection == null)
 				return;
 
-			this.Services.History.RecordChange(this.Selection);
+			HistoryService.Record(this.Selection, "Change World Transform");
 			this.Selection.WorldTransform = value;
 		}
 	}
@@ -91,7 +92,7 @@ public partial class TransformInspector : View
 			if (this.Selection == null)
 				return;
 
-			this.Services.History.RecordChange(this.Selection);
+			HistoryService.Record(this.Selection, "Change Local Transform");
 			this.Selection.LocalTransform = value;
 		}
 	}
