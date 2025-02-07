@@ -13,40 +13,25 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Posing;
+namespace StudioFourteen.Selection;
 
-using DependencyPropertyGenerator;
-using StudioFourteen.Mvm;
-using StudioFourteen.Selection;
-using System.Windows;
+using StudioFourteen.Overlays;
 
-[DependencyProperty<int>("ObjectTableIndex", DefaultValue = 1)]
-[DependencyProperty<bool>("FlipSides", DefaultValue = false)]
-public partial class ExpressionsView : View
+public abstract class SelectionOverlayLayerBase : OverlayLayerBase
 {
-	public ExpressionsView()
-	{
-		this.Services.Selection.SelectionChanged += this.OnPoseSelectionChanged;
-	}
+	protected SelectionBase? selection;
 
-	public double BackgroundOpacity => SkeletonView.BackgroundOpacity;
-
-	private void OnPoseSelectionChanged(SelectionBase? newSelection)
-	{
-		this.Dispatcher.Invoke(() =>
-		{
-			this.MouthToggle.IsChecked = false;
-			this.LeftEyeToggle.IsChecked = false;
-			this.RightEyeToggle.IsChecked = false;
-		});
-	}
-
-	partial void OnObjectTableIndexChanged(int newValue)
+	public SelectionOverlayLayerBase(string name)
+		: base("Selection", name)
 	{
 	}
 
-	private void OnEyeClicked(object sender, RoutedEventArgs e)
+	public virtual void SetTarget(int targetIndex)
 	{
-		this.Services.Selection.Selection = new EyeSelection(this.ObjectTableIndex);
+	}
+
+	public virtual void SetSelection(SelectionBase? selection)
+	{
+		this.selection = selection;
 	}
 }

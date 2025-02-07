@@ -47,6 +47,6 @@ public partial class BlendTargetView : View
 
 		BlendSelection selection = new(this.TargetName, this.Target, this.ObjectTableIndex);
 		selection.Flip = this.FlipBones;
-		this.Services.Pose.Selection = selection;
+		this.Services.Selection.Selection = selection;
 	}
 }

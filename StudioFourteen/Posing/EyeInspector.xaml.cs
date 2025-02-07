@@ -21,6 +21,7 @@ using FFXIVClientStructs.FFXIV.Common.Lua;
 using FontAwesome.Sharp;
 using StudioFourteen.History;
 using StudioFourteen.Mvm;
+using StudioFourteen.Selection;
 using StudioFourteen.Structs.Extensions;
 using StudioFourteen.Utilities;
 using System;

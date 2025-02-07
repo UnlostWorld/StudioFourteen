@@ -13,40 +13,27 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Posing;
+namespace StudioFourteen.Selection;
 
-using DependencyPropertyGenerator;
+using StudioFourteen.Gizmos.Handles.TransformHandle;
+using StudioFourteen.History;
 using StudioFourteen.Mvm;
-using StudioFourteen.Selection;
-using System.Windows;
+using StudioFourteen.Posing;
 
-[DependencyProperty<int>("ObjectTableIndex", DefaultValue = 1)]
-[DependencyProperty<bool>("FlipSides", DefaultValue = false)]
-public partial class ExpressionsView : View
+public abstract class TransformSelectionBase : SelectionBase
 {
-	public ExpressionsView()
-	{
-		this.Services.Selection.SelectionChanged += this.OnPoseSelectionChanged;
-	}
+	[History] public abstract Transform WorldTransform { get; set; }
+	[History] public abstract Transform LocalTransform { get; set; }
 
-	public double BackgroundOpacity => SkeletonView.BackgroundOpacity;
+	[History][AutoNotify] public abstract bool LockTransform { get; set; }
+	[AutoNotify] public virtual bool CanLockTransform => true;
 
-	private void OnPoseSelectionChanged(SelectionBase? newSelection)
-	{
-		this.Dispatcher.Invoke(() =>
-		{
-			this.MouthToggle.IsChecked = false;
-			this.LeftEyeToggle.IsChecked = false;
-			this.RightEyeToggle.IsChecked = false;
-		});
-	}
+	public virtual double TranslationLargeChange => 0.1;
+	public virtual double TranslationSmallChange => 0.01;
+	public virtual double TranslationRange => 1;
+	public virtual int DecimalPlacesToDisplay => 2;
+	public virtual TransformHandleTypes DefaultGizmo => TransformHandleTypes.Translation;
+	public virtual double GizmoSensitivity => 1.0;
 
-	partial void OnObjectTableIndexChanged(int newValue)
-	{
-	}
-
-	private void OnEyeClicked(object sender, RoutedEventArgs e)
-	{
-		this.Services.Selection.Selection = new EyeSelection(this.ObjectTableIndex);
-	}
+	[AutoNotify] public virtual bool IsReady => true;
 }

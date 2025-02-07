@@ -18,6 +18,7 @@ namespace StudioFourteen.Posing;
 using FontAwesome.Sharp;
 using StudioFourteen.Gizmos.Handles.TransformHandle;
 using StudioFourteen.History;
+using StudioFourteen.Selection;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Xml.Linq;

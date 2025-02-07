@@ -16,7 +16,6 @@
 namespace StudioFourteen.Posing;
 
 using Dalamud.Hooking;
-using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
@@ -26,17 +25,15 @@ using FontAwesome.Sharp;
 using StudioFourteen.Context;
 using StudioFourteen.Files;
 using StudioFourteen.Plugin;
+using StudioFourteen.Selection;
 using StudioFourteen.Services;
 using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
-using System.Windows;
 using WpfUtils.Animation;
 using WpfUtils.Extensions;
-using PropertyChanged.SourceGenerator;
-using StudioFourteen.Gizmos.Handles.TransformHandle;
 
 public enum MirrorModes
 {
@@ -65,56 +62,13 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 {
 	private readonly List<BoneId> boneIds = new();
 	private readonly Dictionary<BoneId, BoneReference> boneReferences = new();
-	private readonly PoseTransformHandleOverlayLayer poseGizmoOverlay = new();
 	private readonly PoseSkeletonOverlay poseSkeletonOverlay = new();
-
-	private SelectionBase? selection;
-
-	[Notify]
-	[AlsoNotify(nameof(PoseService.GizmoIndex))]
-	private TransformHandleTypes gizmo = TransformHandleTypes.Rotation;
 
 	private Hook<UpdateBonePhysicsDelegate>? updateBonePhysicsHook;
 	private Hook<FinalizeSkeletonsDelegate>? finalizeSkeletonsHook;
 
-	public delegate void SelectionChangedDelegate(SelectionBase? newSelection);
 	private delegate nint UpdateBonePhysicsDelegate(nint a1);
 	private delegate void FinalizeSkeletonsDelegate(nint a1);
-
-	public event SelectionChangedDelegate? SelectionChanged;
-
-	public SelectionBase? Selection
-	{
-		get => this.selection;
-		set
-		{
-			this.selection?.Deactivate();
-
-			this.selection = value;
-
-			if (this.selection != null)
-			{
-				this.selection.Activate();
-			}
-
-			if (this.selection is TransformSelectionBase transformSelection)
-			{
-				this.Gizmo = transformSelection.DefaultGizmo;
-			}
-
-			this.SelectionChanged?.Invoke(value);
-			this.RaisePropertyChanged();
-
-			this.poseGizmoOverlay.SetSelection(this.selection);
-			this.poseSkeletonOverlay.SetSelection(this.selection);
-		}
-	}
-
-	public int GizmoIndex
-	{
-		get => (int)this.Gizmo;
-		set => this.Gizmo = (TransformHandleTypes)value;
-	}
 
 	public static string? GetMirrorBoneName(string name)
 	{
@@ -134,7 +88,6 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 	{
 		this.Services.CharacterLifecycle.CharacterDestroyed += this.OnCharacterDestroyed;
 		this.Services.GroupPose.StateChanged += this.OnGroupPoseStateChange;
-		this.Services.Target.TargetChanged += this.OnTargetChanged;
 		WorldContextMenu.AddProvider(this);
 		return base.Start();
 	}
@@ -143,7 +96,6 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 	{
 		this.Services.CharacterLifecycle.CharacterDestroyed -= this.OnCharacterDestroyed;
 		this.Services.GroupPose.StateChanged -= this.OnGroupPoseStateChange;
-		this.Services.Target.TargetChanged -= this.OnTargetChanged;
 		this.FlushBoneReferences();
 		WorldContextMenu.RemoveProvider(this);
 		return base.Stop();
@@ -160,7 +112,6 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 		this.finalizeSkeletonsHook = InteropService.HookFromSignature<FinalizeSkeletonsDelegate>("40 53 57 41 55 48 83 EC ?? 65 48 8B 04 25 58", this.FinalizeSkeletonDetour);
 		this.finalizeSkeletonsHook?.Enable();
 
-		this.poseGizmoOverlay.Enable();
 		this.poseSkeletonOverlay.Enable();
 	}
 
@@ -171,7 +122,6 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 		this.updateBonePhysicsHook?.Dispose();
 		this.finalizeSkeletonsHook?.Dispose();
 
-		this.poseGizmoOverlay.Disable();
 		this.poseSkeletonOverlay.Disable();
 	}
 
@@ -407,13 +357,13 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 		}
 
 		// if we are flushing a bone we have selected, clear the selection
-		if (this.selection is BoneSelection boneSelection)
+		if (this.Services.Selection.Selection is BoneSelection boneSelection)
 		{
 			foreach(BoneId usedId in boneSelection.BoneIds)
 			{
 				if (toRemove.Contains(usedId))
 				{
-					this.Selection = null;
+					this.Services.Selection.Selection = null;
 					break;
 				}
 			}
@@ -590,12 +540,6 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 		return Task.CompletedTask;
 	}
 
-	protected override void OnFrameworkUpdate(IFramework framework)
-	{
-		base.OnFrameworkUpdate(framework);
-		this.Selection?.OnFrameworkUpdate(framework);
-	}
-
 	private async Task MoveTarget(Vector3 toPosition)
 	{
 		await Threads.FrameworkThread();
@@ -769,14 +713,5 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 	private void OnGroupPoseStateChange(bool newState)
 	{
 		this.FlushBoneReferences();
-	}
-
-	private void OnTargetChanged()
-	{
-		this.poseGizmoOverlay.SetTarget(this.Services.Target.TargetObjectIndex);
-		this.poseSkeletonOverlay.SetTarget(this.Services.Target.TargetObjectIndex);
-
-		// TODO: consider caching the previous selection this target had and restoring it?
-		this.Selection = new GameObjectSelection(this.Services.Target.TargetObjectIndex);
 	}
 }

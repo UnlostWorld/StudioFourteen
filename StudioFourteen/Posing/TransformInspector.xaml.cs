@@ -19,13 +19,14 @@ using DependencyPropertyGenerator;
 using StudioFourteen.Gizmos.Handles.TransformHandle;
 using StudioFourteen.History;
 using StudioFourteen.Mvm;
+using StudioFourteen.Selection;
 using StudioFourteen.Settings;
 
 [DependencyProperty<TransformSelectionBase>("Selection")]
 [DependencyProperty<Persistence>("Persistence")]
 public partial class TransformInspector : View
 {
-	public TransformHandleTypes Gizmo => this.Services.Pose.Gizmo;
+	public TransformHandleTypes Gizmo => this.Services.Selection.Gizmo;
 
 	[AutoNotify]
 	public int DecimalPlacesDisplay => this.Selection?.DecimalPlacesToDisplay ?? 2;

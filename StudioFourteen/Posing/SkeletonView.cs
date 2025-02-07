@@ -31,6 +31,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using WpfUtils;
+using StudioFourteen.Selection;
 
 [DependencyProperty<SkeletonViewDefinition>("ViewDefinition")]
 [DependencyProperty<int>("ObjectTableIndex", DefaultValue = 1)]
@@ -292,7 +293,7 @@ public partial class SkeletonView : Canvas
 				}
 
 				this.OnRenderSizeChanged(null);
-				this.OnSelectionChanged(ServiceManager.Instance.Pose.Selection);
+				this.OnSelectionChanged(ServiceManager.Instance.Selection.Selection);
 			}
 		}
 		catch (Exception ex)
@@ -394,7 +395,7 @@ public partial class SkeletonView : Canvas
 
 		if (this.MouseOver != null)
 		{
-			ServiceManager.Instance.Pose.Selection = this.MouseOver.Selection;
+			ServiceManager.Instance.Selection.Selection = this.MouseOver.Selection;
 			e.Handled = true;
 		}
 	}
@@ -471,7 +472,7 @@ public partial class SkeletonView : Canvas
 
 	private void OnLoaded()
 	{
-		ServiceManager.Instance.Pose.SelectionChanged += this.OnSelectionChanged;
+		ServiceManager.Instance.Selection.SelectionChanged += this.OnSelectionChanged;
 	}
 
 	private void OnUnloaded()
@@ -479,7 +480,7 @@ public partial class SkeletonView : Canvas
 		if (ServiceManager.ShutdownRequested)
 			return;
 
-		ServiceManager.Instance.Pose.SelectionChanged -= this.OnSelectionChanged;
+		ServiceManager.Instance.Selection.SelectionChanged -= this.OnSelectionChanged;
 	}
 
 	private void OnSelectionChanged(object? newSelection)

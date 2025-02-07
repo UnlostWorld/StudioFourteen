@@ -19,6 +19,7 @@ using FontAwesome.Sharp;
 using StudioFourteen.Files;
 using StudioFourteen.History;
 using StudioFourteen.Plugin;
+using StudioFourteen.Selection;
 using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;

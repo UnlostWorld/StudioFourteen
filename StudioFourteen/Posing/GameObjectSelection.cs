@@ -19,13 +19,10 @@ using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FontAwesome.Sharp;
-using StudioFourteen.History;
 using StudioFourteen.Plugin;
-using StudioFourteen.Utilities;
+using StudioFourteen.Selection;
 using System;
 using System.Numerics;
-using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
 
 public class GameObjectSelection : TransformSelectionBase
 {

@@ -13,16 +13,16 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Posing;
+namespace StudioFourteen.Selection;
 
 using Dalamud.Plugin.Services;
 using FontAwesome.Sharp;
-using StudioFourteen.Gizmos.Handles.TransformHandle;
 using StudioFourteen.History;
 using StudioFourteen.Mvm;
+using StudioFourteen.Posing;
 using System;
 
-public abstract class SelectionBase : AutoViewModel, IEquatable<SelectionBase>, IHistoryTarget
+public abstract class SelectionBase : ViewModel, IHistoryTarget
 {
 	[AutoNotify] public abstract string Name { get; }
 	[AutoNotify] public abstract string? Subtitle { get; }
@@ -63,33 +63,15 @@ public abstract class SelectionBase : AutoViewModel, IEquatable<SelectionBase>, 
 	{
 		public override IHistoryTarget GetTarget()
 		{
-			if (ServiceManager.Instance.Pose.Selection == null)
+			if (ServiceManager.Instance.Selection.Selection == null)
 				throw new Exception("No selection");
 
-			return ServiceManager.Instance.Pose.Selection;
+			return ServiceManager.Instance.Selection.Selection;
 		}
 
 		public override bool IsTarget(IHistoryTarget target)
 		{
-			return ServiceManager.Instance.Pose.Selection == target;
+			return ServiceManager.Instance.Selection.Selection == target;
 		}
 	}
-}
-
-public abstract class TransformSelectionBase : SelectionBase
-{
-	[History] public abstract Transform WorldTransform { get; set; }
-	[History] public abstract Transform LocalTransform { get; set; }
-
-	[History][AutoNotify] public abstract bool LockTransform { get; set; }
-	[AutoNotify] public virtual bool CanLockTransform => true;
-
-	public virtual double TranslationLargeChange => 0.1;
-	public virtual double TranslationSmallChange => 0.01;
-	public virtual double TranslationRange => 1;
-	public virtual int DecimalPlacesToDisplay => 2;
-	public virtual TransformHandleTypes DefaultGizmo => TransformHandleTypes.Translation;
-	public virtual double GizmoSensitivity => 1.0;
-
-	[AutoNotify] public virtual bool IsReady => true;
 }

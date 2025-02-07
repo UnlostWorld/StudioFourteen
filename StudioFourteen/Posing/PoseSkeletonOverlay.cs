@@ -20,15 +20,14 @@ using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.Havok.Animation.Rig;
 using StudioFourteen.Gizmos;
-using StudioFourteen.Utilities;
-using System;
+using StudioFourteen.Selection;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-public class PoseSkeletonOverlay : PoseOverlayLayerBase
+public class PoseSkeletonOverlay : SelectionOverlayLayerBase
 {
 	private readonly Dictionary<(BoneId, BoneId), BonePrimitive> primitives = new();
 	private int lastTargetIndex = -1;

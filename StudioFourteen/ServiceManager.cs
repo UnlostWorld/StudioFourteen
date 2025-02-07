@@ -52,4 +52,5 @@ public class ServiceManager : ServiceManagerBase
 	public Reshade.ReshadeService Reshade { get; init; } = new();
 	public Analytics.AnalyticsService Analytics { get; init; } = new();
 	public History.HistoryService History { get; init; } = new();
+	public Selection.SelectionService Selection { get; init; } = new();
 }
