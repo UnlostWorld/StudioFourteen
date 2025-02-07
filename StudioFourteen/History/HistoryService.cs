@@ -74,6 +74,8 @@ public class HistoryService : ServiceBase
 		if (this.currentOperation != null)
 			throw new Exception("Attempt to go to history while a record is in progress");
 
+		this.isApplyingOperation = true;
+
 		if (this.UndoStack.Contains(operation))
 		{
 			// go undo
@@ -110,6 +112,8 @@ public class HistoryService : ServiceBase
 		{
 			throw new Exception("Specified operation is not part of the  history stacks");
 		}
+
+		this.isApplyingOperation = false;
 	}
 
 	public void Undo()
