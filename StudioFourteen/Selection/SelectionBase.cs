@@ -26,6 +26,7 @@ public abstract class SelectionBase : ViewModel, IHistoryTarget
 {
 	[AutoNotify] public abstract string Name { get; }
 	[AutoNotify] public abstract string? Subtitle { get; }
+	[AutoNotify] public virtual bool IsReady => true;
 	public abstract IconChar Icon { get; }
 
 	public virtual bool CanMirror => false;

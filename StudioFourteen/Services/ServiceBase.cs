@@ -28,6 +28,7 @@ public abstract class ServiceBase : ViewModel, IHistoryTarget
 {
 	public virtual string Name => this.GetType().Name;
 	public virtual IconChar Icon => IconChar.Computer;
+	public bool IsReady => this.IsAlive;
 
 	public bool IsAlive { get; private set; }
 	public bool IsAttached { get; private set; }

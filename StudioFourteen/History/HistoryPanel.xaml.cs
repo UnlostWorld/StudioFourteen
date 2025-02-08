@@ -15,20 +15,17 @@
 
 namespace StudioFourteen.History;
 
-using PropertyChanged.SourceGenerator;
-using StudioFourteen.Panels;
+using FFXIVClientStructs;
+using ImGuizmoNET;
+using StudioFourteen.Services;
 using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Controls;
 using WpfUtils.Extensions;
 
 using Panel = StudioFourteen.Panels.Panel;
 
 public partial class HistoryPanel : Panel
 {
-	private bool isRefreshing;
-	[Notify] private int selectedIndex;
-
 	public FastObservableCollection<HistoryEntry> History { get; init; } = new();
 
 	protected override void OnOpened()
@@ -75,7 +72,6 @@ public partial class HistoryPanel : Panel
 
 	private void Refresh()
 	{
-		this.isRefreshing = true;
 		List<HistoryEntry> history = new();
 		HistoryEntry? mid = null;
 		foreach (Operation operation in this.Services.History.UndoStack)
@@ -99,26 +95,25 @@ public partial class HistoryPanel : Panel
 		}
 
 		this.History.Replace(history);
-		this.SelectedIndex = -1;
 
-		if (this.Services.History.UndoStack.Count > 0)
+		/*if (this.Services.History.UndoStack.Count > 0)
 		{
 			this.HistoryList.ScrollIntoView(mid);
-		}
-
-		this.isRefreshing = false;
+		}*/
 	}
 
-	private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+	private void OnOperationClicked(object sender, RoutedEventArgs e)
 	{
-		if (this.isRefreshing)
+		if (this.Services.History.IsApplyingOperation)
 			return;
 
-		HistoryEntry? entry = this.HistoryList.SelectedItem as HistoryEntry;
-		if (entry == null || entry.Operation == null)
-			return;
+		if (sender is FrameworkElement el && el.DataContext is HistoryEntry entry)
+		{
+			if (entry == null || entry.Operation == null)
+				return;
 
-		this.Services.History.GoTo(entry.Operation);
+			this.Services.History.GoTo(entry.Operation);
+		}
 	}
 
 	public class HistoryEntry

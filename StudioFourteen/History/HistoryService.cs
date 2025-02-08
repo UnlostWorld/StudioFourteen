@@ -21,14 +21,18 @@ using StudioFourteen.Services;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using TerraFX.Interop.Windows;
 using WpfUtils.Extensions;
 using WpfUtils.Utils;
+using static FFXIVClientStructs.FFXIV.Component.GUI.AtkComponentNumericInput.Delegates;
 
 public interface IHistoryTarget
 {
 	string Name { get; }
 	IconChar Icon { get; }
+	bool IsReady { get; }
 
 	Operation CreateHistoryOperation();
 	void FinalizeHistoryOperation(ref Operation operation);
@@ -53,8 +57,10 @@ public class HistoryService : ServiceBase
 	public Stack<Operation> UndoStack { get; init; } = new();
 	public Stack<Operation> RedoStack { get; init; } = new();
 
-	public bool CanUndo => this.UndoStack.Count > 0;
-	public bool CanRedo => this.RedoStack.Count > 0;
+	public bool CanUndo => this.UndoStack.Count > 0 && !this.isApplyingOperation;
+	public bool CanRedo => this.RedoStack.Count > 0 && !this.isApplyingOperation;
+
+	public bool IsApplyingOperation => this.isApplyingOperation;
 
 	public static void Record(IHistoryTarget target, string description)
 	{
@@ -66,6 +72,9 @@ public class HistoryService : ServiceBase
 
 	public void GoTo(Operation operation)
 	{
+		if (this.isApplyingOperation)
+			throw new Exception("Attempt to go to history while a history operation is in progress");
+
 		this.GoToAsync(operation).Run();
 	}
 
@@ -74,7 +83,13 @@ public class HistoryService : ServiceBase
 		if (this.currentOperation != null)
 			throw new Exception("Attempt to go to history while a record is in progress");
 
+		if (this.isApplyingOperation)
+			throw new Exception("Attempt to go to history while a history operation is in progress");
+
 		this.isApplyingOperation = true;
+		this.RaisePropertyChanged(nameof(this.CanUndo));
+		this.RaisePropertyChanged(nameof(this.CanRedo));
+		this.RaisePropertyChanged(nameof(this.IsApplyingOperation));
 
 		if (this.UndoStack.Contains(operation))
 		{
@@ -88,9 +103,6 @@ public class HistoryService : ServiceBase
 
 				this.HistoryRemoved?.Invoke(reverseOperation);
 			}
-
-			this.RaisePropertyChanged(nameof(this.CanUndo));
-			this.RaisePropertyChanged(nameof(this.CanRedo));
 		}
 		else if (this.RedoStack.Contains(operation))
 		{
@@ -104,9 +116,6 @@ public class HistoryService : ServiceBase
 
 				this.HistoryAdded?.Invoke(forwardOperation);
 			}
-
-			this.RaisePropertyChanged(nameof(this.CanUndo));
-			this.RaisePropertyChanged(nameof(this.CanRedo));
 		}
 		else
 		{
@@ -114,6 +123,9 @@ public class HistoryService : ServiceBase
 		}
 
 		this.isApplyingOperation = false;
+		this.RaisePropertyChanged(nameof(this.CanUndo));
+		this.RaisePropertyChanged(nameof(this.CanRedo));
+		this.RaisePropertyChanged(nameof(this.IsApplyingOperation));
 	}
 
 	public void Undo()
@@ -138,6 +150,7 @@ public class HistoryService : ServiceBase
 		this.HistoryRemoved?.Invoke(reverseOperation);
 		this.RaisePropertyChanged(nameof(this.CanUndo));
 		this.RaisePropertyChanged(nameof(this.CanRedo));
+		this.RaisePropertyChanged(nameof(this.IsApplyingOperation));
 	}
 
 	public void Redo()
@@ -162,6 +175,7 @@ public class HistoryService : ServiceBase
 		this.HistoryAdded?.Invoke(forwardOperation);
 		this.RaisePropertyChanged(nameof(this.CanUndo));
 		this.RaisePropertyChanged(nameof(this.CanRedo));
+		this.RaisePropertyChanged(nameof(this.IsApplyingOperation));
 	}
 
 	public void RecordChange(IHistoryTarget target, string description)
@@ -310,8 +324,11 @@ public abstract class Operation
 	{
 		IHistoryTarget target = this.GetTarget();
 
+		while (!target.IsReady)
+			await Task.Delay(10);
+
 		if (target.Name != this.TargetName)
-			throw new Exception("History operation target name mismatch.");
+			throw new Exception($"History operation target name mismatch. Expected {this.TargetName}, got {target.Name}");
 
 		foreach ((string propertyName, object? value) in this.EndValues)
 		{
@@ -329,10 +346,22 @@ public abstract class Operation
 			if (method == null)
 				continue;
 
+			HistoryAttribute? attribute = method.GetCustomAttribute<HistoryAttribute>();
+			if (attribute == null)
+				continue;
+
 			object? returnValue = method.Invoke(target, [destValue]);
-			if (returnValue is Task returnTask)
+
+			if (returnValue == null)
 			{
-				await returnTask;
+			}
+			else if (returnValue is Task task)
+			{
+				await task;
+			}
+			else
+			{
+				throw new Exception($"Unsupported return value in history operation: {returnValue.GetType()}");
 			}
 		}
 	}

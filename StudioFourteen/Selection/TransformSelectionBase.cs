@@ -34,6 +34,4 @@ public abstract class TransformSelectionBase : SelectionBase
 	public virtual int DecimalPlacesToDisplay => 2;
 	public virtual TransformHandleTypes DefaultGizmo => TransformHandleTypes.Translation;
 	public virtual double GizmoSensitivity => 1.0;
-
-	[AutoNotify] public virtual bool IsReady => true;
 }

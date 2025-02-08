@@ -319,7 +319,10 @@ public class BoneSelection : TransformSelectionBase
 	{
 		base.OnFrameworkUpdate(framework);
 
-		bool newReady = this.bone != null && this.bone.LocalSpaceTransform != null && this.bone.ReferenceRelativeTransform != null;
+		bool newReady =
+			this.bone != null
+			&& this.bone.LocalSpaceTransform != null
+			&& this.bone.ReferenceRelativeTransform != null;
 
 		if (newReady != this.isReady)
 		{

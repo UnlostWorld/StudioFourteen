@@ -25,55 +25,81 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
-		<ListBox
-			x:Name="HistoryList"
-			ItemsSource="{Binding History}"
-			SelectedIndex="{Binding SelectedIndex}"
-			SelectionChanged="OnSelectionChanged">
-			<ListBox.ItemTemplate>
-				<DataTemplate>
-					<Grid>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="32" />
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition Width="Auto" />
-							<ColumnDefinition />
-						</Grid.ColumnDefinitions>
+		<Border
+			Margin="1"
+			Style="{DynamicResource WpfUtilsControlBorder}">
+			<ItemsControl
+				x:Name="HistoryList"
+				ItemsSource="{Binding History}"
+				VirtualizingPanel.ScrollUnit="Pixel">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<VirtualizingStackPanel
+							IsVirtualizing="True"
+							VirtualizationMode="Recycling" />
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
 
-						<fa:IconBlock
-							Grid.Column="0"
-							Foreground="{DynamicResource ForegroundLightBrush}"
-							Icon="{Binding Operation.Icon}" />
-						<TextBlock
-							Grid.Column="1"
-							Foreground="{DynamicResource ForegroundLightBrush}"
-							Text="{Binding Operation.TargetName}" />
+				<ItemsControl.Template>
+					<ControlTemplate TargetType="ItemsControl">
+						<ScrollViewer
+							Padding="{TemplateBinding Padding}"
+							CanContentScroll="True"
+							Focusable="False">
+							<ItemsPresenter />
+						</ScrollViewer>
+					</ControlTemplate>
+				</ItemsControl.Template>
 
-						<Ellipse
-							Grid.Column="2"
-							Width="4"
-							Height="4"
-							Margin="6,0"
-							Fill="{DynamicResource ForegroundLightBrush}" />
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<Button
+							Margin="0"
+							Padding="12,0,6,0"
+							HorizontalContentAlignment="Stretch"
+							Background="Transparent"
+							BorderThickness="0"
+							Click="OnOperationClicked">
+							<Grid x:Name="ButtonContent">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="1*" />
+									<ColumnDefinition Width="26" />
+									<ColumnDefinition Width="2*" />
+								</Grid.ColumnDefinitions>
 
-						<TextBlock
-							Grid.Column="3"
-							Foreground="{DynamicResource ForegroundLightBrush}"
-							Text="{Binding Operation.Description}" />
+								<TextBlock
+									Grid.Column="0"
+									Foreground="{DynamicResource ForegroundLightBrush}"
+									Text="{Binding Operation.TargetName}"
+									TextAlignment="Right" />
 
-					</Grid>
+								<fa:IconBlock
+									Grid.Column="1"
+									FontSize="10"
+									Foreground="{DynamicResource ForegroundLightBrush}"
+									Icon="{Binding Operation.Icon}"
+									TextAlignment="Center" />
 
-					<DataTemplate.Triggers>
-						<DataTrigger
-							Binding="{Binding IsPast}"
-							Value="False">
-							<Setter Property="Opacity" Value="0.5" />
-						</DataTrigger>
-					</DataTemplate.Triggers>
+								<TextBlock
+									Grid.Column="2"
+									Foreground="{DynamicResource ForegroundLightBrush}"
+									Text="{Binding Operation.Description}" />
 
-				</DataTemplate>
-			</ListBox.ItemTemplate>
-		</ListBox>
+							</Grid>
+						</Button>
+
+						<DataTemplate.Triggers>
+							<DataTrigger
+								Binding="{Binding IsPast}"
+								Value="False">
+								<Setter TargetName="ButtonContent" Property="Opacity" Value="0.5" />
+							</DataTrigger>
+						</DataTemplate.Triggers>
+
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</Border>
 
 
 		<Border
