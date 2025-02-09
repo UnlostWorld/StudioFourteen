@@ -19,6 +19,7 @@ using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FontAwesome.Sharp;
+using StudioFourteen.History;
 using StudioFourteen.Plugin;
 using StudioFourteen.Selection;
 using System;
@@ -67,7 +68,14 @@ public class GameObjectSelection : TransformSelectionBase
 
 	public override Transform LocalTransform
 	{
-		get => this.lastTransform;
+		get
+		{
+			if (this.nextTransform != null)
+				return (Transform)this.nextTransform;
+
+			return this.lastTransform;
+		}
+
 		set => this.nextTransform = value;
 	}
 

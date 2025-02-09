@@ -246,6 +246,7 @@ public abstract class Operation
 		IHistoryTarget target = this.GetTarget();
 		this.Icon = target.Icon;
 		this.TargetName = target.Name;
+
 		PropertyInfo[] properties = target.GetType().GetProperties();
 		foreach (PropertyInfo property in properties)
 		{
@@ -274,7 +275,7 @@ public abstract class Operation
 	{
 		IHistoryTarget target = this.GetTarget();
 
-		bool change = false;
+		bool didAnyChange = false;
 		PropertyInfo[] properties = target.GetType().GetProperties();
 		foreach (PropertyInfo property in properties)
 		{
@@ -287,12 +288,14 @@ public abstract class Operation
 
 			object? startValue = this.StartValues[property.Name];
 			object? endValue = property.GetValue(target);
-			change = !object.Equals(startValue, endValue);
+			bool didPopertyChange = !object.Equals(startValue, endValue);
 
-			if (change)
+			if (didPopertyChange)
 			{
 				this.EndValues[property.Name] = endValue;
 			}
+
+			didAnyChange |= didPopertyChange;
 		}
 
 		MethodInfo[] methods = target.GetType().GetMethods();
@@ -309,15 +312,17 @@ public abstract class Operation
 
 			object? startValue = this.StartValues[name];
 			object? endValue = method.Invoke(target, null);
-			change = !object.Equals(startValue, endValue);
+			bool didMethodChange = !object.Equals(startValue, endValue);
 
-			if (change)
+			if (didMethodChange)
 			{
 				this.EndValues[name] = endValue;
 			}
+
+			didAnyChange |= didMethodChange;
 		}
 
-		return change;
+		return didAnyChange;
 	}
 
 	public async Task Apply(bool revert)

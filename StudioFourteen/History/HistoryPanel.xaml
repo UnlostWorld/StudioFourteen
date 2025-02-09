@@ -78,6 +78,7 @@
 									FontSize="10"
 									Foreground="{DynamicResource ForegroundLightBrush}"
 									Icon="{Binding Operation.Icon}"
+									IconFont="Solid"
 									TextAlignment="Center" />
 
 								<TextBlock
