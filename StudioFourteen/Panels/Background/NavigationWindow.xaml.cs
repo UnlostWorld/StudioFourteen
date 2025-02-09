@@ -17,6 +17,7 @@ namespace StudioFourteen.Studio.Background;
 
 using StudioFourteen.Appearance;
 using StudioFourteen.Library;
+using StudioFourteen.Marketplace;
 using StudioFourteen.Mvm;
 using StudioFourteen.Panels;
 using StudioFourteen.Plugin;
@@ -76,6 +77,13 @@ public partial class NavigationWindow : PanelWindow
 	{
 		get => this.Services.GroupPose.IsGroupPoseSettingsWindowVisible();
 		set => this.Services.GroupPose.SetGroupPoseSettingsWindowVisible(value);
+	}
+
+	[AutoNotify]
+	public bool IsMarketplaceOpen
+	{
+		get => this.Services.Panels.GetIsOpen<MarketplacePanel>();
+		set => this.Services.Panels.SetIsOpen<MarketplacePanel>(true);
 	}
 
 	[AutoNotify]

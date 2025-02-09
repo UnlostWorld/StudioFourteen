@@ -300,6 +300,12 @@
 				<StackPanel>
 
 					<ToggleButton
+						IsChecked="{Binding IsMarketplaceOpen}"
+						ToolTip="Marketplace">
+						<wpfUtils:IconBlock Icon="Shop" />
+					</ToggleButton>
+
+					<ToggleButton
 						IsChecked="{Binding IsLibraryOpen}"
 						ToolTip="{DynamicResource LOC_Library}">
 						<wpfUtils:IconBlock Icon="Book" />
