@@ -45,69 +45,83 @@ public class FileThumbnailService : ServiceBase
 
 	public void GetThumbnail(FileInfo fileInfo, Action<string> callback)
 	{
-		foreach (ThumbnailRequest otherRequest in this.requests)
+		try
 		{
-			if (otherRequest.FileInfo == fileInfo)
+			foreach (ThumbnailRequest otherRequest in this.requests)
 			{
-				otherRequest.Callbacks.Add(callback);
-				return;
+				if (otherRequest.FileInfo == fileInfo)
+				{
+					otherRequest.Callbacks.Add(callback);
+					return;
+				}
+			}
+
+			string name = this.HashName(fileInfo);
+			string dir = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}/StudioFourteen/Thumbnails/";
+
+			if (!Directory.Exists(dir))
+				Directory.CreateDirectory(dir);
+
+			string path = $"{dir}{name}.png";
+
+			if (File.Exists(path))
+			{
+				callback.Invoke(path);
+			}
+			else
+			{
+				ThumbnailRequest request = new();
+				request.Type = RequestTypes.FileEmbeddedImage;
+				request.FileInfo = fileInfo;
+				request.AddCallback(callback);
+				request.ThumbnailPath = path;
+				this.requests.Enqueue(request);
 			}
 		}
-
-		string name = this.HashName(fileInfo);
-		string dir = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}/StudioFourteen/Thumbnails/";
-
-		if (!Directory.Exists(dir))
-			Directory.CreateDirectory(dir);
-
-		string path = $"{dir}{name}.png";
-
-		if (File.Exists(path))
+		catch(Exception ex)
 		{
-			callback.Invoke(path);
-		}
-		else
-		{
-			ThumbnailRequest request = default;
-			request.Type = RequestTypes.FileEmbeddedImage;
-			request.FileInfo = fileInfo;
-			request.AddCallback(callback);
-			request.ThumbnailPath = path;
-			this.requests.Enqueue(request);
+			this.Log.Error(ex, "Failed to generate thumbnail");
 		}
 	}
 
 	public void GetThumbnailFromTexture(string texturePath, Action<string> callback)
 	{
-		foreach (ThumbnailRequest otherRequest in this.requests)
+		try
 		{
-			if (otherRequest.SourcePath == texturePath)
+			foreach (ThumbnailRequest otherRequest in this.requests)
 			{
-				otherRequest.Callbacks.Add(callback);
-				return;
+				if (otherRequest.SourcePath == texturePath)
+				{
+					otherRequest.Callbacks.Add(callback);
+					return;
+				}
+			}
+
+			string name = HashUtility.GetHashString($"Tex:{texturePath}");
+			string dir = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}/StudioFourteen/Thumbnails/";
+
+			if (!Directory.Exists(dir))
+				Directory.CreateDirectory(dir);
+
+			string path = $"{dir}{name}.png";
+
+			if (File.Exists(path))
+			{
+				callback.Invoke(path);
+			}
+			else
+			{
+				ThumbnailRequest request = new();
+				request.Type = RequestTypes.GameTexture;
+				request.SourcePath = texturePath;
+				request.AddCallback(callback);
+				request.ThumbnailPath = path;
+				this.requests.Enqueue(request);
 			}
 		}
-
-		string name = HashUtility.GetHashString($"Tex:{texturePath}");
-		string dir = $"{Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)}/StudioFourteen/Thumbnails/";
-
-		if (!Directory.Exists(dir))
-			Directory.CreateDirectory(dir);
-
-		string path = $"{dir}{name}.png";
-
-		if (File.Exists(path))
+		catch (Exception ex)
 		{
-			callback.Invoke(path);
-		}
-		else
-		{
-			ThumbnailRequest request = default;
-			request.Type = RequestTypes.GameTexture;
-			request.SourcePath = texturePath;
-			request.AddCallback(callback);
-			request.ThumbnailPath = path;
-			this.requests.Enqueue(request);
+			this.Log.Error(ex, "Failed to generate thumbnail");
 		}
 	}
 
