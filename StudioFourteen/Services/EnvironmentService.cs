@@ -22,52 +22,78 @@ using StudioFourteen.Plugin;
 using System;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Environment;
-using StudioFourteen.Mvm;
 using Lumina.Excel.Sheets;
+using FFXIVClientStructs.FFXIV.Client.System.Framework;
+using StudioFourteen.Utilities;
 
 public partial class EnvironmentService
 	: ServiceBase
 {
-	private Hook<OnCreateScene>? createSceneHook;
+	private Hook<CreateSceneDelegate>? createSceneHook;
+	private Hook<UpdateEorzeaTimeDelegate>? updateEorzeaTimeHook;
+
+	private long lastEorzeaTime;
+	private long? nextEorzeaTime;
+
+	[Notify] private bool isInTitleScreen;
+	[Notify] private bool canChangeTerritory;
 	[Notify] private TerritoryType? currentTerritory;
 	[Notify] private Weather? currentWeather;
+	[Notify] private bool freezeTime = false;
+	[Notify] private string time = string.Empty;
 
-	private delegate int OnCreateScene(string p1, uint p2, IntPtr p3, uint p4, IntPtr p5, int p6, uint p7);
+	private delegate int CreateSceneDelegate(string p1, uint p2, IntPtr p3, uint p4, IntPtr p5, int p6, uint p7);
+	private delegate void UpdateEorzeaTimeDelegate(IntPtr a1, IntPtr a2);
 
-	public unsafe bool IsInTitleScreen
+	public long EorzeaTime
 	{
 		get
 		{
-			nint? titleMenu = DalamudServices.GameGui?.GetAddonByName("_TitleMenu");
-			return titleMenu != null && titleMenu != nint.Zero;
+			if (this.nextEorzeaTime != null)
+				return (long)this.nextEorzeaTime;
+
+			return this.lastEorzeaTime;
+		}
+
+		set
+		{
+			this.nextEorzeaTime = value;
+			this.RaisePropertyChanged();
 		}
 	}
 
-	[AutoNotify]
-	public unsafe bool CanChangeTerritory
+	public int MinuteOfDay
 	{
 		get
 		{
-			try
-			{
-				// Has the user already logged in? don't let them change zones, just for safeties sake.
-				if (AgentLobby.Instance()->DataCenter != 0 || AgentLobby.Instance()->WorldId != 0)
-					return false;
+			long currentTime = this.EorzeaTime;
+			long timeVal = currentTime % 2764800;
+			long secondInDay = timeVal % 86400;
+			int minuteOfDay = (int)(secondInDay / 60f);
+			return minuteOfDay;
+		}
 
-				// Is the user on the title screen?
-				nint? charaSelect = DalamudServices.GameGui?.GetAddonByName("CharaSelect");
-				nint? charaMake = DalamudServices.GameGui?.GetAddonByName("CharaMake");
-				nint? titleDcWorldMap = DalamudServices.GameGui?.GetAddonByName("TitleDCWorldMap");
-				if (charaMake != nint.Zero || charaSelect != nint.Zero || titleDcWorldMap != nint.Zero)
-					return false;
+		set
+		{
+			this.EorzeaTime = (value * 60) + (86400 * ((byte)this.DayOfMonth - 1));
+			this.RaisePropertyChanged();
+		}
+	}
 
-				return !(DalamudServices.ClientState?.IsLoggedIn ?? false);
-			}
-			catch (Exception ex)
-			{
-				this.Log.Error(ex, "Error checking log in status");
-				return false;
-			}
+	public int DayOfMonth
+	{
+		get
+		{
+			long currentTime = this.EorzeaTime;
+			long timeVal = currentTime % 2764800;
+			int dayOfMonth = (int)(Math.Floor(timeVal / 86400f) + 1);
+			return dayOfMonth;
+		}
+
+		set
+		{
+			this.EorzeaTime = (this.MinuteOfDay * 60) + (86400 * ((byte)value - 1));
+			this.RaisePropertyChanged();
 		}
 	}
 
@@ -75,13 +101,23 @@ public partial class EnvironmentService
 	{
 		base.Attach();
 
-		this.createSceneHook = InteropService.HookFromSignature<OnCreateScene>("E8 ?? ?? ?? ?? 66 89 1D ?? ?? ?? ?? E9 ?? ?? ?? ??", this.HandleCreateScene);
+		if (DalamudServices.ClientState == null)
+			return;
+
+		this.createSceneHook = InteropService.HookFromSignature<CreateSceneDelegate>("E8 ?? ?? ?? ?? 66 89 1D ?? ?? ?? ?? E9 ?? ?? ?? ??", this.HandleCreateScene);
 		this.createSceneHook?.Enable();
+
+		this.updateEorzeaTimeHook = InteropService.HookFromSignature<UpdateEorzeaTimeDelegate>("48 89 5C 24 ?? 57 48 83 EC ?? 48 8B F9 48 8B DA 48 81 C1 ?? ?? ?? ?? E8 ?? ?? ?? ?? 4C", this.UpdateEorzeaTime);
+		this.updateEorzeaTimeHook?.Enable();
 	}
 
 	public override void Detach()
 	{
+		if (DalamudServices.ClientState == null)
+			return;
+
 		this.createSceneHook?.Dispose();
+		this.updateEorzeaTimeHook?.Dispose();
 		base.Detach();
 	}
 
@@ -118,13 +154,48 @@ public partial class EnvironmentService
 	{
 		base.OnFrameworkUpdate(framework);
 
+		Framework* pFramework = Framework.Instance();
+		if (pFramework == null)
+			return;
+
 		EnvManager* environmentManager = EnvManager.Instance();
 		if (environmentManager == null)
 			return;
 
+		// Time
+		long newEorzeaTime = pFramework->ClientTime.IsEorzeaTimeOverridden ? pFramework->ClientTime.EorzeaTimeOverride : pFramework->ClientTime.EorzeaTime;
+		bool hasTimeChanged = this.nextEorzeaTime != this.lastEorzeaTime;
+		this.lastEorzeaTime = newEorzeaTime;
+
+		if (this.nextEorzeaTime != null)
+		{
+			pFramework->ClientTime.EorzeaTime = (long)this.nextEorzeaTime;
+
+			if (pFramework->ClientTime.IsEorzeaTimeOverridden)
+				pFramework->ClientTime.EorzeaTimeOverride = (long)this.nextEorzeaTime;
+
+			this.nextEorzeaTime = null;
+		}
+
+		if (hasTimeChanged)
+		{
+			this.RaisePropertyChanged(nameof(this.EorzeaTime));
+			this.RaisePropertyChanged(nameof(this.MinuteOfDay));
+			this.RaisePropertyChanged(nameof(this.DayOfMonth));
+
+			TimeSpan displayTime = TimeSpan.FromMinutes(this.MinuteOfDay);
+			this.Time = string.Format("{0:D2}:{1:D2}", displayTime.Hours, displayTime.Minutes);
+		}
+
+		// Territory Change
+		this.IsInTitleScreen = this.GetIsInTitleScreen();
+		this.CanChangeTerritory = this.GetCanChangeTerritory();
+
+		// Weather
 		byte weatherId = environmentManager->ActiveWeather;
 		this.CurrentWeather = this.Services.GameData.GetRow<Weather>(weatherId);
 
+		// Territory
 		if (!this.IsInTitleScreen)
 		{
 			if (DalamudServices.ClientState == null)
@@ -145,5 +216,47 @@ public partial class EnvironmentService
 		this.CurrentTerritory = this.Services.GameData.GetRow<TerritoryType>(territoryId);
 
 		return this.createSceneHook.Original(backgroundPath, territoryId, p3, layerFilterKey, p5, p6, contentFinderConditionId);
+	}
+
+	private void UpdateEorzeaTime(IntPtr a1, IntPtr a2)
+	{
+		if (this.FreezeTime)
+			return;
+
+		this.updateEorzeaTimeHook?.Original(a1, a2);
+	}
+
+	private unsafe bool GetCanChangeTerritory()
+	{
+		Threads.VerifyFrameworkThread();
+
+		try
+		{
+			// Has the user already logged in? don't let them change zones, just for safeties sake.
+			if (AgentLobby.Instance()->DataCenter != 0 || AgentLobby.Instance()->WorldId != 0)
+				return false;
+
+			// Is the user on the title screen?
+			nint? charaSelect = DalamudServices.GameGui?.GetAddonByName("CharaSelect");
+			nint? charaMake = DalamudServices.GameGui?.GetAddonByName("CharaMake");
+			nint? titleDcWorldMap = DalamudServices.GameGui?.GetAddonByName("TitleDCWorldMap");
+			if (charaMake != nint.Zero || charaSelect != nint.Zero || titleDcWorldMap != nint.Zero)
+				return false;
+
+			return !(DalamudServices.ClientState?.IsLoggedIn ?? false);
+		}
+		catch (Exception ex)
+		{
+			this.Log.Error(ex, "Error checking log in status");
+			return false;
+		}
+	}
+
+	private unsafe bool GetIsInTitleScreen()
+	{
+		Threads.VerifyFrameworkThread();
+
+		nint? titleMenu = DalamudServices.GameGui?.GetAddonByName("_TitleMenu");
+		return titleMenu != null && titleMenu != nint.Zero;
 	}
 }

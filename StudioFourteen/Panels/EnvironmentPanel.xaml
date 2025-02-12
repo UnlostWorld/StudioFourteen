@@ -8,6 +8,7 @@
 	xmlns:librarySelector="clr-namespace:StudioFourteen.Library.Selector"
 	xmlns:local="clr-namespace:StudioFourteen.Panels"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:vectors="http://sharpvectors.codeplex.com/svgc/"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="{DynamicResource LOC_Environment}"
 	Width="300"
@@ -19,16 +20,155 @@
 	<Grid>
 		<StackPanel>
 
+			<TextBlock
+				Style="{DynamicResource LeftLabel}"
+				Text="{DynamicResource LOC_Environment_Territory}" />
 			<librarySelector:LibrarySelectorButton
 				IsEnabled="{Binding Services.Environment.CanChangeTerritory}"
 				Type="{x:Type gameData:TerritoryTypeLibraryEntry}"
 				Value="{Binding Territory}" />
 
+			<TextBlock
+				Style="{DynamicResource LeftLabel}"
+				Text="{DynamicResource LOC_Environment_Weather}" />
 			<librarySelector:LibrarySelectorButton
 				PopOutHeader="{DynamicResource LOC_Environment_WeatherSelect}"
 				SearchTags="{Binding WeatherTags}"
 				Type="{x:Type gameData:WeatherLibraryEntry}"
 				Value="{Binding Weather}" />
+
+			<TextBlock
+				Style="{DynamicResource LeftLabel}"
+				Text="{DynamicResource LOC_Environment_Time}" />
+
+			<ToggleButton
+				Content="{DynamicResource LOC_Environment_FreezeTime}"
+				IsChecked="{Binding Services.Environment.FreezeTime}" />
+
+			<Border
+				Grid.Column="0"
+				Margin="1"
+				Style="{DynamicResource WpfUtilsControlBorder}">
+
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition />
+						<ColumnDefinition />
+						<ColumnDefinition />
+						<ColumnDefinition />
+						<ColumnDefinition />
+						<ColumnDefinition Width="64" />
+					</Grid.ColumnDefinitions>
+
+					<vectors:SvgIcon
+						Grid.Column="0"
+						Width="14"
+						Height="14"
+						Fill="{DynamicResource ForegroundLightBrush}"
+						Opacity="0.33"
+						UriSource="pack://application:,,,/StudioFourteen;component/Assets/icon-night.svg" />
+
+					<vectors:SvgIcon
+						Grid.Column="1"
+						Width="20"
+						Height="20"
+						Fill="{DynamicResource ForegroundLightBrush}"
+						Opacity="0.33"
+						UriSource="pack://application:,,,/StudioFourteen;component/Assets/icon-sunrise.svg" />
+
+					<vectors:SvgIcon
+						Grid.Column="2"
+						Width="16"
+						Height="16"
+						Fill="{DynamicResource ForegroundLightBrush}"
+						Opacity="0.33"
+						UriSource="pack://application:,,,/StudioFourteen;component/Assets/icon-noon.svg" />
+
+					<vectors:SvgIcon
+						Grid.Column="3"
+						Width="20"
+						Height="20"
+						Fill="{DynamicResource ForegroundLightBrush}"
+						Opacity="0.33"
+						UriSource="pack://application:,,,/StudioFourteen;component/Assets/icon-sunset.svg" />
+
+					<vectors:SvgIcon
+						Grid.Column="4"
+						Width="14"
+						Height="14"
+						Fill="{DynamicResource ForegroundLightBrush}"
+						Opacity="0.33"
+						UriSource="pack://application:,,,/StudioFourteen;component/Assets/icon-night.svg" />
+
+					<Slider
+						Grid.ColumnSpan="5"
+						Background="Transparent"
+						IsEnabled="{Binding Services.Environment.FreezeTime}"
+						Maximum="1439"
+						Minimum="0"
+						Value="{Binding Services.Environment.MinuteOfDay}" />
+
+					<TextBlock
+						Grid.Column="6"
+						Margin="4,3"
+						VerticalAlignment="Center"
+						Foreground="{DynamicResource ForegroundLightBrush}"
+						Text="{Binding Services.Environment.Time, FallbackValue=00:00}" />
+				</Grid>
+			</Border>
+
+			<Border
+				Margin="1"
+				Style="{DynamicResource WpfUtilsControlBorder}">
+
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition />
+						<ColumnDefinition />
+						<ColumnDefinition />
+						<ColumnDefinition Width="64" />
+					</Grid.ColumnDefinitions>
+
+					<wpfUtils:NumberBox
+						Grid.ColumnSpan="4"
+						Background="Transparent"
+						IsEnabled="{Binding Services.Environment.FreezeTime}"
+						Maximum="30"
+						Minimum="1"
+						Slider="Absolute"
+						Value="{Binding Services.Environment.DayOfMonth}" />
+
+					<vectors:SvgIcon
+						Grid.Column="0"
+						Width="14"
+						Height="14"
+						Fill="{DynamicResource ForegroundLightBrush}"
+						IsHitTestVisible="False"
+						Opacity="0.33"
+						UriSource="pack://application:,,,/StudioFourteen;component/Assets/icon-moon-waxing.svg" />
+
+					<vectors:SvgIcon
+						Grid.Column="1"
+						Width="14"
+						Height="14"
+						Fill="{DynamicResource ForegroundLightBrush}"
+						IsHitTestVisible="False"
+						Opacity="0.33"
+						UriSource="pack://application:,,,/StudioFourteen;component/Assets/icon-moon-full.svg" />
+
+					<vectors:SvgIcon
+						Grid.Column="2"
+						Width="14"
+						Height="14"
+						Fill="{DynamicResource ForegroundLightBrush}"
+						IsHitTestVisible="False"
+						Opacity="0.33"
+						UriSource="pack://application:,,,/StudioFourteen;component/Assets/icon-moon-waning.svg" />
+
+
+
+				</Grid>
+			</Border>
 
 		</StackPanel>
 	</Grid>

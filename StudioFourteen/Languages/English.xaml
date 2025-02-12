@@ -195,6 +195,10 @@
 	<sys:String x:Key="LOC_FreeCamera_Position">Camera Position</sys:String>
 
 	<!--  Environment Panel  -->
+	<sys:String x:Key="LOC_Environment_Territory">Territory</sys:String>
+	<sys:String x:Key="LOC_Environment_Weather">Weather</sys:String>
+	<sys:String x:Key="LOC_Environment_Time">Time</sys:String>
+	<sys:String x:Key="LOC_Environment_FreezeTime">Freeze Time</sys:String>
 	<sys:String x:Key="LOC_Environment_WeatherSelect">Select a weather</sys:String>
 
 	<!--  Overlays  -->
