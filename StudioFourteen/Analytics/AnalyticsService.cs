@@ -17,7 +17,7 @@ namespace StudioFourteen.Analytics;
 
 using StudioFourteen.Services;
 using System.Threading.Tasks;
-using StudioServer.Client;
+using StudioServer.Client.Analytics;
 
 public class AnalyticsService : ServiceBase
 {
