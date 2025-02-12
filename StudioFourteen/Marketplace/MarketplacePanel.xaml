@@ -18,8 +18,6 @@
 	mc:Ignorable="d">
 
 	<Grid>
-		<webView:WebView2
-			Margin="12"
-			Source="https://www.xivmodarchive.com/" />
+		<webView:WebView2 Source="https://marketplace.unlostworld.duckdns.org/" />
 	</Grid>
 </panels:Panel>
