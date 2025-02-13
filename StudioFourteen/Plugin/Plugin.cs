@@ -59,6 +59,11 @@ public sealed class DalamudPlugin : IDalamudPlugin
 
 	public void Dispose()
 	{
+		// Dispose services before stopping them.
+		// We do this because dispose is synchronous, while
+		// stop is async, and we want to get any lingering hooks
+		// out before dalamud moves on from this method.
+		this.Services.Dispose();
 		this.Services.Stop().Wait();
 	}
 

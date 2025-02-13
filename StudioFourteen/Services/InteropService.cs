@@ -27,7 +27,7 @@ public class InteropService : ServiceBase
 {
 	private static readonly List<HookReference> Hooks = new();
 
-	public static Hook<TDelegate>? HookFromSignature<TDelegate>(string sig, TDelegate detour)
+	public static Hook<TDelegate>? HookFromSignature<TDelegate>(string sig, TDelegate detour, bool isLongLived = false)
 		where TDelegate : Delegate
 	{
 		if (DalamudServices.SigScanner == null)
@@ -38,7 +38,7 @@ public class InteropService : ServiceBase
 		try
 		{
 			nint address = DalamudServices.SigScanner.ScanText(sig);
-			return HookFromAddress<TDelegate>(address, detour);
+			return HookFromAddress<TDelegate>(address, detour, isLongLived);
 		}
 		catch (Exception ex)
 		{
@@ -47,7 +47,7 @@ public class InteropService : ServiceBase
 		}
 	}
 
-	public static Hook<TDelegate>? HookFromAddress<TDelegate>(nint address, TDelegate detour)
+	public static Hook<TDelegate>? HookFromAddress<TDelegate>(nint address, TDelegate detour, bool isLongLived = false)
 			where TDelegate : Delegate
 	{
 		if (DalamudServices.InteropProvider == null)
@@ -60,7 +60,7 @@ public class InteropService : ServiceBase
 			Logging.Shared.Information($"Created Hook {name} for address {address}");
 
 			Hook<TDelegate> hook = DalamudServices.InteropProvider.HookFromAddress<TDelegate>(address, detour);
-			Hooks.Add(new(hook, name));
+			Hooks.Add(new(hook, name, isLongLived));
 			return hook;
 		}
 		catch (Exception ex)
@@ -70,7 +70,7 @@ public class InteropService : ServiceBase
 		}
 	}
 
-	public static Hook<TDelegate>? HookFromImport<TDelegate>(ProcessModule? module, string moduleName, string functionName, uint hintOrOrdinal, TDelegate detour)
+	public static Hook<TDelegate>? HookFromImport<TDelegate>(ProcessModule? module, string moduleName, string functionName, uint hintOrOrdinal, TDelegate detour, bool isLongLived = false)
 		where TDelegate : Delegate
 	{
 		if (DalamudServices.InteropProvider == null)
@@ -83,7 +83,7 @@ public class InteropService : ServiceBase
 			Logging.Shared.Information($"Created Hook {name} for import {functionName}");
 
 			Hook<TDelegate> hook = DalamudServices.InteropProvider.HookFromImport<TDelegate>(module, moduleName, functionName, hintOrOrdinal, detour);
-			Hooks.Add(new(hook, name));
+			Hooks.Add(new(hook, name, isLongLived));
 			return hook;
 		}
 		catch (Exception ex)
@@ -93,10 +93,13 @@ public class InteropService : ServiceBase
 		}
 	}
 
-	public static void CheckHooks()
+	public static void CheckHooks(bool includeLongLived)
 	{
 		foreach (HookReference reference in Hooks)
 		{
+			if (reference.IsLongLived && !includeLongLived)
+				continue;
+
 			if (!reference.Hook.IsDisposed)
 			{
 				Logging.Shared.Error($"Hook {reference.Name} was not disposed!");
@@ -111,9 +114,10 @@ public class InteropService : ServiceBase
 		Hooks.Clear();
 	}
 
-	private class HookReference(IDalamudHook hook, string name)
+	private class HookReference(IDalamudHook hook, string name, bool longLived)
 	{
 		public readonly IDalamudHook Hook = hook;
 		public readonly string Name = name;
+		public readonly bool IsLongLived = longLived;
 	}
 }
