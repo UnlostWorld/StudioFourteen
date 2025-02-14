@@ -9,6 +9,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:overlays="clr-namespace:StudioFourteen.Overlays"
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
+	xmlns:photos="clr-namespace:StudioFourteen.Photos"
 	xmlns:studio="clr-namespace:StudioFourteen"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
@@ -17,9 +18,9 @@
 	AllowsTransparency="True"
 	Background="Transparent"
 	MouseEnter="OnMouseEnterSelf"
-	PreviewMouseMove="OnPreviewMouseMove"
 	PreviewKeyDown="OnPreviewKeyDown"
 	PreviewKeyUp="OnPreviewKeyUp"
+	PreviewMouseMove="OnPreviewMouseMove"
 	ResizeMode="NoResize"
 	SnapsToDevicePixels="True"
 	UseLayoutRounding="True"
@@ -75,8 +76,9 @@
 				</Style>
 			</Grid.Style>
 
-			<overlays:OverlayRenderer
-				ClipToBounds="True"/>
+			<overlays:OverlayRenderer ClipToBounds="True" />
+
+			<photos:PhotoGuides />
 		</Grid>
 
 		<Grid>

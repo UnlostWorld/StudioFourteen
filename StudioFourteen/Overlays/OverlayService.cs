@@ -76,11 +76,7 @@ public partial class OverlayService
 	{
 		base.OnFrameworkUpdate(framework);
 
-		if (this.showOverlays != this.Settings.ShowOverlays)
-		{
-			this.ShowOverlays = this.Settings.ShowOverlays;
-			this.ShowOverlaysChanged?.Invoke(this.Settings.ShowOverlays);
-		}
+		this.ShowOverlays = this.Settings.ShowOverlays && !this.Services.Photos.IsPhotoMode;
 
 		if (this.ShowOverlays)
 		{
@@ -92,6 +88,11 @@ public partial class OverlayService
 				}
 			}
 		}
+	}
+
+	private void OnShowOverlaysChanged(bool oldValue, bool newValue)
+	{
+		this.ShowOverlaysChanged?.Invoke(newValue);
 	}
 
 	private void OnGroupPoseStateChanged(bool newState)

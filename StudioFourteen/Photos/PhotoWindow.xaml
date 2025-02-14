@@ -8,8 +8,8 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="{DynamicResource LOC_Photo}"
-	Width="380"
-	Height="75"
+	Width="512"
+	Height="58"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	DefaultPosition="0.5,1"
@@ -38,78 +38,76 @@
 					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
 				</Grid.ColumnDefinitions>
 
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto" />
-					<RowDefinition />
-				</Grid.RowDefinitions>
-
-				<TextBlock
-					Grid.Row="0"
-					Grid.Column="0"
-					FontSize="10"
-					Style="{DynamicResource LeftLabel}"
-					Text="Aspect Ratio:" />
-
 				<ComboBox
-					Grid.Row="1"
 					Grid.Column="0"
-					Width="120"
-					SelectedIndex="0">
-					<ComboBoxItem Content="Any" />
-					<ComboBoxItem Content="1:1" />
-					<ComboBoxItem Content="4:3" />
-					<ComboBoxItem Content="16:9" />
-					<ComboBoxItem Content="16:10" />
-					<ComboBoxItem Content="21:9" />
-					<ComboBoxItem Content="32:9" />
+					Width="175"
+					ItemsSource="{Binding Services.Photos.AspectRatios}"
+					SelectedItem="{Binding SelectedAspectRatio}"
+					ToolTip="{DynamicResource LOC_Photo_AspectToolTip}">
+
+					<wpfUtils:PopOut.Header>
+						<TextBlock
+							Margin="12"
+							Text="{DynamicResource LOC_Photo_AspectPopOut}" />
+					</wpfUtils:PopOut.Header>
+
+					<ComboBox.ItemTemplate>
+						<DataTemplate>
+							<TextBlock Text="{Binding Name}" />
+						</DataTemplate>
+					</ComboBox.ItemTemplate>
 				</ComboBox>
 
-				<TextBlock
-					Grid.Row="0"
-					Grid.Column="1"
-					FontSize="10"
-					Style="{DynamicResource LeftLabel}"
-					Text="Guides:" />
-
 				<ComboBox
-					Grid.Row="1"
 					Grid.Column="1"
-					Width="120"
-					SelectedIndex="0">
-					<ComboBoxItem Content="None" />
-					<ComboBoxItem Content="Golden Ratio" />
+					Width="100"
+					SelectedIndex="{Binding GuideIndex}"
+					ToolTip="{DynamicResource LOC_Photo_GuidesToolTip}">
+
+					<wpfUtils:PopOut.Header>
+						<TextBlock
+							Margin="12"
+							Text="{DynamicResource LOC_Photo_GuidesPopOut}" />
+					</wpfUtils:PopOut.Header>
+
+					<ComboBoxItem Content="{DynamicResource LOC_Photo_Guides_None}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Photo_Guides_Thirds}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Photo_Guides_Circle}" />
 				</ComboBox>
 
 				<Button
-					Grid.RowSpan="2"
 					Grid.Column="2"
-					Width="41"
-					Height="41"
-					Margin="6,0"
+					Width="64"
+					Margin="2,0"
 					Background="Transparent"
-					Click="OnSaveClicked">
+					Click="OnSaveClicked"
+					ToolTip="{DynamicResource LOC_Photo_CaptureToolTip}">
 					<wpfUtils:IconBlock
-						FontSize="22"
+						FontSize="16"
 						Icon="Camera" />
 				</Button>
 
-				<ToggleButton
-					Grid.Row="1"
-					Grid.Column="3"
-					Padding="6,0"
-					IsChecked="{Binding HideUI}"
-					Style="{DynamicResource WpfUtilsIconToggleButton}">
-					<wpfUtils:IconBlock Icon="ObjectGroup" />
-				</ToggleButton>
+				<Button
+					Grid.Column="4"
+					Width="28"
+					Margin="0"
+					Click="OnCloseClicked"
+					ToolTip="{DynamicResource LOC_ClosePanelTooltip}">
+					<wpfUtils:IconBlock Icon="Times" />
+				</Button>
 
 				<ToggleButton
-					Grid.Row="1"
-					Grid.Column="4"
+					Grid.Column="3"
+					Width="28"
+					Margin="0"
 					Padding="6,0"
-					Style="{DynamicResource WpfUtilsIconToggleButton}">
-					<wpfUtils:IconBlock Icon="Eye" />
+					IsChecked="{Binding HideUI}"
+					Style="{DynamicResource WpfUtilsIconToggleButton}"
+					ToolTip="{DynamicResource LOC_Photo_ToggleUIToolTip}">
+					<wpfUtils:IconBlock Icon="ObjectGroup" />
 				</ToggleButton>
 			</Grid>
 		</Grid>

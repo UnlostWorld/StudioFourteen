@@ -15,12 +15,13 @@
 
 namespace StudioFourteen.Photos;
 
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Mvm;
 using StudioFourteen.Panels;
 using StudioFourteen.Plugin;
 using System;
 using System.Windows;
+
+using static StudioFourteen.Photos.PhotosService;
 
 public partial class PhotoWindow : Panel
 {
@@ -34,6 +35,53 @@ public partial class PhotoWindow : Panel
 		{
 			this.Persistence.SetPersistence(value);
 			this.Services.Photos.IsPhotoMode = this.HideUI;
+		}
+	}
+
+	public PhotosService.Guides Guide
+	{
+		get => this.Persistence.GetPersistence<PhotosService.Guides>();
+		set
+		{
+			this.Persistence.SetPersistence(value);
+			this.Services.Photos.Guide = value;
+		}
+	}
+
+	public int GuideIndex
+	{
+		get => (int)this.Guide;
+		set => this.Guide = (Guides)value;
+	}
+
+	public double AspectRatio
+	{
+		get => this.Persistence.GetPersistence<double>();
+		set
+		{
+			this.Persistence.SetPersistence(value);
+			this.Services.Photos.AspectRatio = value;
+		}
+	}
+
+	public AspectRatioEntry SelectedAspectRatio
+	{
+		get
+		{
+			foreach (AspectRatioEntry entry in this.Services.Photos.AspectRatios)
+			{
+				if (entry.Aspect == this.AspectRatio)
+				{
+					return entry;
+				}
+			}
+
+			return new AspectRatioEntry("Unknown", this.AspectRatio);
+		}
+
+		set
+		{
+			this.AspectRatio = value.Aspect;
 		}
 	}
 
@@ -51,35 +99,25 @@ public partial class PhotoWindow : Panel
 		this.SaveDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
 
 		this.Services.Photos.IsPhotoMode = this.HideUI;
+		this.Services.Photos.AspectRatio = this.AspectRatio;
+		this.Services.Photos.Guide = this.Guide;
 	}
 
 	protected override void OnClosed()
 	{
 		base.OnClosed();
 		this.Services.Photos.IsPhotoMode = false;
+		this.Services.Photos.AspectRatio = 0;
+		this.Services.Photos.Guide = Guides.None;
 	}
 
 	private void OnSaveClicked(object sender, RoutedEventArgs e)
 	{
-		/*Image? image = this.Capture.ToImage();
-		if (image == null)
-			return;
-
-		string metaDataJson = Serializer.Serialize(this.MetaData);
-		image.Metadata.ExifProfile = new();
-		image.Metadata.ExifProfile.SetValue(ExifTag.UserComment, metaDataJson);
-
-		JpegEncoder encoder = new()
-		{
-			Quality = 95,
-			Interleaved = false,
-		};
-
-		image.SaveAsJpeg($"{this.SaveDirectory}/test.jpg", encoder);*/
+		this.Services.Photos.Capture();
 	}
 
-	public class ImageMetadata : AutoViewModel
+	private void OnCloseClicked(object sender, RoutedEventArgs e)
 	{
-		[AutoNotify] public uint MapId { get; set; } = 0;
+		this.Close();
 	}
 }
