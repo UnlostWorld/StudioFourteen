@@ -71,6 +71,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		this.LocationChanged += this.OnLocationChanged;
 		this.Services.Studio.PropertyChanged += this.OnStudioPropertyChanged;
 		this.Services.Reshade.ReshadeOverlayChanged += this.OnReshadeOverlayChanged;
+		this.Services.Photos.PropertyChanged += this.OnPhotosPropertyChanged;
 
 		if (this.CanNavigate)
 		{
@@ -86,8 +87,11 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	{
 		get
 		{
-			if (this.panel?.AlwaysVisible == true)
+			if (this.panel?.VisibilityMode == PanelVisibility.Always)
 				return true;
+
+			if (this.Services.Photos.IsPhotoMode)
+				return this.panel?.VisibilityMode == PanelVisibility.PhotoMode;
 
 			if (!this.IsUiVisible)
 				return false;
@@ -100,8 +104,11 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	{
 		get
 		{
-			if (this.panel?.AlwaysVisible == true)
+			if (this.panel?.VisibilityMode == PanelVisibility.Always)
 				return true;
+
+			if (this.Services.Photos.IsPhotoMode)
+				return this.panel?.VisibilityMode == PanelVisibility.PhotoMode;
 
 			if (DalamudServices.GameGui?.GameUiHidden == true)
 				return false;
@@ -531,6 +538,12 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 	private void OnStudioPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
+		this.NotifyPropertyChanged(nameof(PanelWindow.IsUiVisibleAndOpen));
+	}
+
+	private void OnPhotosPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		this.NotifyPropertyChanged(nameof(PanelWindow.IsUiVisible));
 		this.NotifyPropertyChanged(nameof(PanelWindow.IsUiVisibleAndOpen));
 	}
 

@@ -13,11 +13,11 @@
 	MaxHeight="800"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
-	AlwaysVisible="True"
 	RememberWindowState="False"
 	ResizeMode="NoResize"
 	SizeToContent="Height"
 	TitleIcon="ExclamationCircle"
+	VisibilityMode="Always"
 	mc:Ignorable="d">
 
 	<StackPanel>

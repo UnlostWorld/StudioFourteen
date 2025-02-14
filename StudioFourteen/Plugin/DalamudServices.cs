@@ -39,4 +39,5 @@ public class DalamudServices
 	[PluginService] public static IGameInteropProvider? InteropProvider { get; private set; }
 	[PluginService] public static ITextureProvider? TextureProvider { get; private set; }
 	[PluginService] public static IGameConfig? GameConfig { get; private set; }
+	[PluginService] public static IContextMenu? ContextMenu { get; private set; }
 }

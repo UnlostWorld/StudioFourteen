@@ -20,6 +20,7 @@ using StudioFourteen.Library;
 using StudioFourteen.Marketplace;
 using StudioFourteen.Mvm;
 using StudioFourteen.Panels;
+using StudioFourteen.Photos;
 using StudioFourteen.Plugin;
 using StudioFourteen.Posing;
 using StudioFourteen.Save;
@@ -45,6 +46,9 @@ public partial class NavigationWindow : PanelWindow
 			if (!DalamudServices.IsAlive
 				|| DalamudServices.GameGui == null)
 				return true;
+
+			if (this.Services.Photos.IsPhotoMode)
+				return false;
 
 			if (this.Services.Settings.Current.HideStudioButton)
 				return false;

@@ -13,22 +13,29 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Studio;
+namespace StudioFourteen.Photos;
 
-using StudioFourteen.Plugin;
-using StudioFourteen.Serialization;
+using PropertyChanged.SourceGenerator;
+using StudioFourteen.Mvm;
 using StudioFourteen.Panels;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats.Jpeg;
-using SixLabors.ImageSharp.Metadata.Profiles.Exif;
+using StudioFourteen.Plugin;
 using System;
 using System.Windows;
-using StudioFourteen.Mvm;
 
 public partial class PhotoWindow : Panel
 {
 	[AutoNotify] public ImageMetadata MetaData { get; set; } = new();
 	[AutoNotify] public string SaveDirectory { get; set; } = string.Empty;
+
+	public bool HideUI
+	{
+		get => this.Persistence.GetPersistence<bool>();
+		set
+		{
+			this.Persistence.SetPersistence(value);
+			this.Services.Photos.IsPhotoMode = this.HideUI;
+		}
+	}
 
 	protected override void OnOpened()
 	{
@@ -42,15 +49,21 @@ public partial class PhotoWindow : Panel
 		this.MetaData.MapId = DalamudServices.ClientState.MapId;
 
 		this.SaveDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+
+		this.Services.Photos.IsPhotoMode = this.HideUI;
+	}
+
+	protected override void OnClosed()
+	{
+		base.OnClosed();
+		this.Services.Photos.IsPhotoMode = false;
 	}
 
 	private void OnSaveClicked(object sender, RoutedEventArgs e)
 	{
-		Image? image = this.Capture.ToImage();
+		/*Image? image = this.Capture.ToImage();
 		if (image == null)
 			return;
-
-		this.Flash.BeginStoryboard("Flash");
 
 		string metaDataJson = Serializer.Serialize(this.MetaData);
 		image.Metadata.ExifProfile = new();
@@ -62,7 +75,7 @@ public partial class PhotoWindow : Panel
 			Interleaved = false,
 		};
 
-		image.SaveAsJpeg($"{this.SaveDirectory}/test.jpg", encoder);
+		image.SaveAsJpeg($"{this.SaveDirectory}/test.jpg", encoder);*/
 	}
 
 	public class ImageMetadata : AutoViewModel

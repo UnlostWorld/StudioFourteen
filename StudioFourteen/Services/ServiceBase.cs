@@ -86,6 +86,8 @@ public abstract class ServiceBase : ViewModel, IHistoryTarget
 
 	public virtual void Dispose()
 	{
+		if (this.IsAttached)
+			this.Detach();
 	}
 
 	protected virtual void OnFrameworkUpdate(IFramework framework)

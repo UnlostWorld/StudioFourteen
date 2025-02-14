@@ -30,12 +30,19 @@ using System.Windows;
 using System.Windows.Controls;
 using WpfUtils.Extensions;
 
+public enum PanelVisibility
+{
+	Always,
+	WithUI,
+	PhotoMode,
+}
+
 [DependencyProperty<IconChar>("TitleIcon")]
 [DependencyProperty<string>("Title")]
 [DependencyProperty<string>("Subtitle")]
 [DependencyProperty<SizeToContent>("SizeToContent", DefaultValue =SizeToContent.Manual)]
 [DependencyProperty<ResizeMode>("ResizeMode", DefaultValue =ResizeMode.CanResizeWithGrip)]
-[DependencyProperty<bool>("AlwaysVisible", DefaultValue =false)]
+[DependencyProperty<PanelVisibility>("VisibilityMode", DefaultValue = PanelVisibility.WithUI)]
 [DependencyProperty<Style>("HostStyle")]
 [DependencyProperty<Point>("DefaultPosition", DefaultValueExpression= "new System.Windows.Point(0.5, 0.5)")]
 public partial class Panel : ContentControl, IAutoNotify

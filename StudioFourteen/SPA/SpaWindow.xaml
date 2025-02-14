@@ -128,20 +128,6 @@
 					PanelType="{x:Type pose:PoseWindow}" />
 			</TabItem>
 
-			<!--  Screenshot  -->
-			<TabItem>
-				<TabItem.Header>
-					<wpfUtils:IconBlock
-						Margin="12"
-						Icon="Image" />
-				</TabItem.Header>
-
-				<panels:PanelHost
-					Grid.Column="1"
-					Margin="2,1,0,0"
-					PanelType="{x:Type studio:PhotoWindow}" />
-			</TabItem>
-
 			<!--  Save  -->
 			<TabItem>
 				<TabItem.Header>
