@@ -300,6 +300,10 @@ public class CameraService : ServiceBase
 			this.current.Calculate(ref this.state, this.last, 1 - blendValue);
 			this.current.OnRender(ref this.state);
 
+			// in portrait preview mode, rotate the camera 90 degrees.
+			if (this.Services.Photos.IsPortrait)
+				this.state.Rotation *= Quaternion.CreateFromAxisAngle(Vector3.UnitX, -1.5707964f);
+
 			Vector3 forward = Vector3.Transform(new(1, 0, 0), this.state.Rotation);
 			Vector3 up = Vector3.Transform(new(0, 1, 0), this.state.Rotation);
 

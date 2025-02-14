@@ -38,6 +38,16 @@ public partial class PhotoWindow : Panel
 		}
 	}
 
+	public bool IsPortrait
+	{
+		get => this.Persistence.GetPersistence<bool>();
+		set
+		{
+			this.Persistence.SetPersistence(value);
+			this.Services.Photos.IsPortrait = this.IsPortrait;
+		}
+	}
+
 	public PhotosService.Guides Guide
 	{
 		get => this.Persistence.GetPersistence<PhotosService.Guides>();
@@ -101,6 +111,7 @@ public partial class PhotoWindow : Panel
 		this.Services.Photos.IsPhotoMode = this.HideUI;
 		this.Services.Photos.AspectRatio = this.AspectRatio;
 		this.Services.Photos.Guide = this.Guide;
+		this.Services.Photos.IsPortrait = this.IsPortrait;
 	}
 
 	protected override void OnClosed()
@@ -109,6 +120,7 @@ public partial class PhotoWindow : Panel
 		this.Services.Photos.IsPhotoMode = false;
 		this.Services.Photos.AspectRatio = 0;
 		this.Services.Photos.Guide = Guides.None;
+		this.Services.Photos.IsPortrait = false;
 	}
 
 	private void OnSaveClicked(object sender, RoutedEventArgs e)

@@ -26,6 +26,7 @@ public partial class PhotosService : ServiceBase
 	[Notify] private bool isPhotoMode;
 	[Notify] private Guides guide;
 	[Notify] private double aspectRatio = 0;
+	[Notify] private bool isPortrait;
 
 	public enum Guides
 	{

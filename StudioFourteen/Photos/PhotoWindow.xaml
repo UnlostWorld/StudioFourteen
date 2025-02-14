@@ -6,6 +6,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="clr-namespace:StudioFourteen.Panels"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:vectors="http://sharpvectors.codeplex.com/svgc/"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="{DynamicResource LOC_Photo}"
 	Width="512"
@@ -90,15 +91,6 @@
 						Icon="Camera" />
 				</Button>
 
-				<Button
-					Grid.Column="4"
-					Width="28"
-					Margin="0"
-					Click="OnCloseClicked"
-					ToolTip="{DynamicResource LOC_ClosePanelTooltip}">
-					<wpfUtils:IconBlock Icon="Times" />
-				</Button>
-
 				<ToggleButton
 					Grid.Column="3"
 					Width="28"
@@ -107,8 +99,42 @@
 					IsChecked="{Binding HideUI}"
 					Style="{DynamicResource WpfUtilsIconToggleButton}"
 					ToolTip="{DynamicResource LOC_Photo_ToggleUIToolTip}">
-					<wpfUtils:IconBlock Icon="ObjectGroup" />
+					<Grid>
+						<vectors:SvgIcon
+							Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"
+							UriSource="pack://application:,,,/StudioFourteen;component/Assets/icon-show-ui.svg"
+							Visibility="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}, Converter={StaticResource !B2V}}" />
+
+						<vectors:SvgIcon
+							Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"
+							UriSource="pack://application:,,,/StudioFourteen;component/Assets/icon-hide-ui.svg"
+							Visibility="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}, Converter={StaticResource B2V}}" />
+					</Grid>
 				</ToggleButton>
+
+				<ToggleButton
+					Grid.Column="4"
+					Width="28"
+					Margin="0"
+					Padding="6,0"
+					IsChecked="{Binding IsPortrait}"
+					Style="{DynamicResource WpfUtilsIconToggleButton}"
+					ToolTip="{DynamicResource LOC_Photo_TogglePortrait}">
+					<vectors:SvgIcon
+						Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"
+						UriSource="pack://application:,,,/StudioFourteen;component/Assets/icon-portrait-preview.svg" />
+				</ToggleButton>
+
+				<Button
+					Grid.Column="5"
+					Width="28"
+					Margin="0"
+					Click="OnCloseClicked"
+					ToolTip="{DynamicResource LOC_ClosePanelTooltip}">
+					<wpfUtils:IconBlock Icon="Times" />
+				</Button>
+
+
 			</Grid>
 		</Grid>
 	</Border>
