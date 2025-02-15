@@ -195,7 +195,7 @@ public partial class WindowService : ServiceBase
 
 		WindowInteropHelper wndInterop = new(wnd);
 
-		PInvoke.SetParent((HWND)wndInterop.Handle, (HWND)0);
+		PInvoke.SetParent((HWND)wndInterop.Handle, (HWND)0u);
 
 		const uint WS_POPUP = 0x80000000;
 		const uint WS_CHILD = 0x40000000;
