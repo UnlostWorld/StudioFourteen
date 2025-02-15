@@ -28,6 +28,8 @@ using WpfUtils;
 
 public class GameCapture : System.Windows.Controls.Image, ICaptureListener
 {
+	protected readonly ILogger Log;
+
 	private WriteableBitmap? bitmap;
 	private bool hasCapture = false;
 
@@ -41,12 +43,13 @@ public class GameCapture : System.Windows.Controls.Image, ICaptureListener
 			return;
 		}
 
+		this.IsVisibleChanged += this.OnIsVisibleChanged;
 		this.Loaded += this.OnLoaded;
 		this.Unloaded += this.OnUnloaded;
 		this.Dispatcher.ShutdownStarted += this.OnDispatcherShutdownStarted;
 	}
 
-	protected ILogger Log { get; private set; }
+	protected ServiceManager Services => ServiceManager.Instance;
 
 	public void OnCapture()
 	{
@@ -60,7 +63,8 @@ public class GameCapture : System.Windows.Controls.Image, ICaptureListener
 
 	private void OnLoaded(object sender, RoutedEventArgs e)
 	{
-		ServiceManager.Instance.GameCapture.AddListener(this);
+		if (this.IsVisible)
+			ServiceManager.Instance.GameCapture.AddListener(this);
 
 		Task.Run(this.UpdateLoop);
 	}
@@ -75,6 +79,18 @@ public class GameCapture : System.Windows.Controls.Image, ICaptureListener
 		ServiceManager.Instance.GameCapture.RemoveListener(this);
 	}
 
+	private void OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
+	{
+		if (this.IsVisible && this.IsLoaded)
+		{
+			ServiceManager.Instance.GameCapture.AddListener(this);
+		}
+		else
+		{
+			ServiceManager.Instance.GameCapture.RemoveListener(this);
+		}
+	}
+
 	private async Task UpdateLoop()
 	{
 		try
@@ -85,9 +101,17 @@ public class GameCapture : System.Windows.Controls.Image, ICaptureListener
 			{
 				await this.Dispatcher.MainThread();
 
-				if (this.hasCapture)
+				if (this.hasCapture && this.IsVisible)
 				{
-					ServiceManager.Instance.GameCapture.DrawBitmap(ref this.bitmap);
+					if (this.Services.Photos.ShowDepth)
+					{
+						this.Services.GameCapture.DrawDepthBufferToBitmap(ref this.bitmap);
+					}
+					else
+					{
+						this.Services.GameCapture.DrawBackBufferToBitmap(ref this.bitmap);
+					}
+
 					this.Source = this.bitmap;
 					this.hasCapture = false;
 				}

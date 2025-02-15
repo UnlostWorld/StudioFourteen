@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 class Log
 {
 public:
@@ -19,12 +21,12 @@ public:
 
 	Log(LogDelegate logger);
 
-	void Verbose(const char* message) const;
-	void Debug(const char* message) const;
-	void Information(const char* message) const;
-	void Warning(const char* message) const;
-	void Error(const char* message) const;
-	void Fatal(const char* message) const;
+	void Verbose(std::string message) const;
+	void Debug(std::string message) const;
+	void Information(std::string message) const;
+	void Warning(std::string message) const;
+	void Error(std::string message) const;
+	void Fatal(std::string message) const;
 
 private:
 	LogDelegate m_logToStudio;

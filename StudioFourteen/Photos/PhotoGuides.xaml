@@ -16,11 +16,9 @@
 	<Grid ClipToBounds="True">
 
 
-		<controls:GameCapture
-			Opacity="{Binding CaptureOpacity}"
-			Visibility="{Binding Services.Photos.IsPortrait, Converter={StaticResource B2V}}">
+		<controls:GameCapture Visibility="{Binding ShowCapture, Converter={StaticResource B2V}}">
 			<controls:GameCapture.LayoutTransform>
-				<RotateTransform Angle="-90" />
+				<RotateTransform Angle="{Binding CaptureAngle}" />
 			</controls:GameCapture.LayoutTransform>
 		</controls:GameCapture>
 

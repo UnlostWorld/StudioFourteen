@@ -18,8 +18,10 @@ namespace StudioFourteen.Services;
 using Dalamud.Hooking;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
+using FFXIVClientStructs.FFXIV.Common.Lua;
 using SixLabors.ImageSharp.PixelFormats;
 using StudioFourteen.Plugin;
+using StudioFourteen.Reshade;
 using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
@@ -47,13 +49,20 @@ public class GameCaptureService : ServiceBase
 
 	private Hook<InterfaceManager.ReshadeOnPresentDelegate>? reshadeOnPresentHook;
 	private byte[] bufferBgraData = Array.Empty<byte>();
-	private int bufferWidth = 0;
-	private int bufferHeight = 0;
-	private ComPtr<ID3D11Texture2D> bufferTexture = default;
+	private byte[] depthBufferFloatData = Array.Empty<byte>();
+
+	private int backBufferWidth = 0;
+	private int backBufferHeight = 0;
+	private int depthBufferWidth = 0;
+	private int depthBufferHeight = 0;
+	private ComPtr<ID3D11Texture2D> backBufferTexture = default;
+	private ComPtr<ID3D11Texture2D> depthBufferTexture = default;
 	private int captureId = 0;
 
-	private IntPtr pBuffer;
-	private int bufferLength;
+	private IntPtr pBackBuffer;
+	private int backBufferLength;
+	private IntPtr pDepthBuffer;
+	private int depthBufferLength;
 
 	public void AddListener(ICaptureListener listener)
 	{
@@ -99,17 +108,17 @@ public class GameCaptureService : ServiceBase
 		if (this.reshadeOnPresentHook != null && !this.reshadeOnPresentHook.IsDisposed)
 			this.reshadeOnPresentHook.Dispose();
 
-		this.bufferTexture.Dispose();
+		this.backBufferTexture.Dispose();
 	}
 
 	public Image? ToImage()
 	{
 		lock (this.lockObj)
 		{
-			if (this.bufferWidth == 0 || this.bufferHeight == 0)
+			if (this.backBufferWidth == 0 || this.backBufferHeight == 0)
 				return null;
 
-			return Image.LoadPixelData<Bgra32>(this.bufferBgraData, this.bufferWidth, this.bufferHeight);
+			return Image.LoadPixelData<Bgra32>(this.bufferBgraData, this.backBufferWidth, this.backBufferHeight);
 		}
 	}
 
@@ -120,9 +129,9 @@ public class GameCaptureService : ServiceBase
 			int x = (int)point.X;
 			int y = (int)point.Y;
 
-			int index = (y * (this.bufferWidth * 4)) + (x * 4);
+			int index = (y * (this.backBufferWidth * 4)) + (x * 4);
 
-			if (index + 4 > this.bufferLength)
+			if (index + 4 > this.backBufferLength)
 				return Colors.Transparent;
 
 			byte b = this.bufferBgraData[index];
@@ -134,27 +143,58 @@ public class GameCaptureService : ServiceBase
 	}
 
 	/// <summary>
-	/// Draw the contents of the latest game capture to the given bitmap.
+	/// Draw the contents of the latest back capture to the given bitmap.
 	/// </summary>
-	public unsafe void DrawBitmap(ref WriteableBitmap? destination)
+	public unsafe void DrawBackBufferToBitmap(ref WriteableBitmap? destination)
 	{
 		lock (this.lockObj)
 		{
-			if (this.bufferWidth == 0 || this.bufferHeight == 0)
+			if (this.backBufferWidth == 0 || this.backBufferHeight == 0)
 				return;
 
-			if (destination == null || destination.PixelWidth != this.bufferWidth || destination.PixelHeight != this.bufferHeight)
+			if (destination == null
+				|| destination.PixelWidth != this.backBufferWidth
+				|| destination.PixelHeight != this.backBufferHeight
+				|| destination.Format != PixelFormats.Bgra32)
 			{
 				destination = new WriteableBitmap(
-					this.bufferWidth,
-					this.bufferHeight,
+					this.backBufferWidth,
+					this.backBufferHeight,
 					300,
 					300,
 					PixelFormats.Bgra32,
 					null);
 			}
 
-			destination.WritePixels(new Int32Rect(0, 0, this.bufferWidth, this.bufferHeight), this.bufferBgraData, this.bufferWidth * 4, 0);
+			destination.WritePixels(new Int32Rect(0, 0, this.backBufferWidth, this.backBufferHeight), this.bufferBgraData, this.backBufferWidth * 4, 0);
+		}
+	}
+
+	/// <summary>
+	/// Draw the contents of the latest depth capture to the given bitmap.
+	/// </summary>
+	public unsafe void DrawDepthBufferToBitmap(ref WriteableBitmap? destination)
+	{
+		lock (this.lockObj)
+		{
+			if (this.depthBufferWidth == 0 || this.depthBufferHeight == 0)
+				return;
+
+			if (destination == null
+				|| destination.PixelWidth != this.depthBufferWidth
+				|| destination.PixelHeight != this.depthBufferHeight
+				|| destination.Format != PixelFormats.Gray32Float)
+			{
+				destination = new WriteableBitmap(
+					this.depthBufferWidth,
+					this.depthBufferHeight,
+					300,
+					300,
+					PixelFormats.Gray32Float,
+					null);
+			}
+
+			destination.WritePixels(new Int32Rect(0, 0, this.depthBufferWidth, this.depthBufferHeight), this.depthBufferFloatData, this.depthBufferWidth * 4, 0);
 		}
 	}
 
@@ -183,9 +223,30 @@ public class GameCaptureService : ServiceBase
 	}
 
 	/// <summary>
-	/// Capture the contents of the games swap chain back buffer.
+	/// Capture the co
+	/// ntents of the games swap chain back buffer.
 	/// </summary>
 	private unsafe void Capture()
+	{
+		if (!this.Services.Studio.IsOpen)
+			return;
+
+		if (this.listeners.Count <= 0)
+			return;
+
+		this.CaptureBack();
+		this.CaptureDepth();
+
+		this.captureId++;
+
+		// how long you plan on keeping this open for?
+		if (this.captureId >= int.MaxValue)
+		{
+			this.captureId = 0;
+		}
+	}
+
+	private unsafe void CaptureBack()
 	{
 		Threads.VerifyFrameworkThread();
 
@@ -193,12 +254,6 @@ public class GameCaptureService : ServiceBase
 		{
 			lock (this.lockObj)
 			{
-				if (!this.Services.Studio.IsOpen)
-					return;
-
-				if (this.listeners.Count <= 0)
-					return;
-
 				var kernelDev = Device.Instance();
 				if (kernelDev == null)
 					return;
@@ -225,22 +280,22 @@ public class GameCaptureService : ServiceBase
 				buffer->GetDesc(&description);
 
 				if (description.Format != DXGI_FORMAT.DXGI_FORMAT_R8G8B8A8_UNORM)
-					throw new Exception($"wrong format in buffer texture {description.Format}");
+					throw new Exception($"wrong format in back buffer texture {description.Format}");
 
-				this.bufferWidth = (int)description.Width;
-				this.bufferHeight = (int)description.Height;
+				this.backBufferWidth = (int)description.Width;
+				this.backBufferHeight = (int)description.Height;
 
-				if (this.bufferWidth == 0 || this.bufferHeight == 0)
+				if (this.backBufferWidth == 0 || this.backBufferHeight == 0)
 					return;
 
 				description.BindFlags = 0;
 				description.CPUAccessFlags = (uint)D3D11_CPU_ACCESS_FLAG.D3D11_CPU_ACCESS_READ;
 				description.Usage = D3D11_USAGE.D3D11_USAGE_STAGING;
 
-				if (this.bufferTexture.Get() == null)
+				if (this.backBufferTexture.Get() == null)
 				{
 					this.Log.Information("Creating a back buffer texture");
-					HRESULT createResult = device.Get()->CreateTexture2D(&description, null, this.bufferTexture.GetAddressOf());
+					HRESULT createResult = device.Get()->CreateTexture2D(&description, null, this.backBufferTexture.GetAddressOf());
 
 					if (createResult.FAILED)
 					{
@@ -254,25 +309,96 @@ public class GameCaptureService : ServiceBase
 				if (context.Get() == null)
 					return;
 
-				context.Get()->CopyResource((ID3D11Resource*)this.bufferTexture.Get(), (ID3D11Resource*)buffer);
+				context.Get()->CopyResource((ID3D11Resource*)this.backBufferTexture.Get(), (ID3D11Resource*)buffer);
 
 				D3D11_MAPPED_SUBRESOURCE mapped = default(D3D11_MAPPED_SUBRESOURCE);
-				HRESULT mapRsult = context.Get()->Map((ID3D11Resource*)this.bufferTexture.Get(), 0, D3D11_MAP.D3D11_MAP_READ, 0u, &mapped);
+				HRESULT mapRsult = context.Get()->Map((ID3D11Resource*)this.backBufferTexture.Get(), 0, D3D11_MAP.D3D11_MAP_READ, 0u, &mapped);
 				if (mapRsult.FAILED)
 					throw new Exception($"Failed to map texture resource");
 
-				int len = this.bufferWidth * this.bufferHeight * 4;
-				this.pBuffer = (IntPtr)mapped.pData;
-				this.bufferLength = len;
+				int len = this.backBufferWidth * this.backBufferHeight * 4;
+				this.pBackBuffer = (IntPtr)mapped.pData;
+				this.backBufferLength = len;
 
 				context.Get()->Unmap((ID3D11Resource*)buffer, 0u);
-				this.captureId++;
+			}
+		}
+		catch (Exception ex)
+		{
+			this.Log.Error(ex, "Error in graphics capture");
+		}
+	}
 
-				// how long you plan on keeping this open for?
-				if (this.captureId >= int.MaxValue)
+	/// <summary>
+	/// Capture the contents of the games depth buffer.
+	/// </summary>
+	private unsafe void CaptureDepth()
+	{
+		Threads.VerifyFrameworkThread();
+
+		try
+		{
+			lock (this.lockObj)
+			{
+				// would be real nice if we could get the depth buffer address directly, instead
+				// of relying on the reshade add-on to find it for us.
+				if (!this.Services.Reshade.IsReshade)
+					return;
+
+				ID3D11Texture2D* buffer = (ID3D11Texture2D*)this.Services.Reshade.DepthBufferAddress;
+				if (buffer == null)
+					return;
+
+				using ComPtr<ID3D11Device> device = default;
+				buffer->GetDevice(device.GetAddressOf());
+				if (device.Get() == null)
+					return;
+
+				D3D11_TEXTURE2D_DESC description;
+				buffer->GetDesc(&description);
+
+				if (description.Format != DXGI_FORMAT.DXGI_FORMAT_R24G8_TYPELESS)
+					throw new Exception($"wrong format in depth buffer texture {description.Format}");
+
+				this.depthBufferWidth = (int)description.Width;
+				this.depthBufferHeight = (int)description.Height;
+
+				if (this.depthBufferWidth == 0 || this.depthBufferHeight == 0)
+					return;
+
+				description.BindFlags = 0;
+				description.CPUAccessFlags = (uint)D3D11_CPU_ACCESS_FLAG.D3D11_CPU_ACCESS_READ;
+				description.Usage = D3D11_USAGE.D3D11_USAGE_STAGING;
+
+				if (this.depthBufferTexture.Get() == null)
 				{
-					this.captureId = 0;
+					this.Log.Information("Creating a depth buffer texture");
+					HRESULT createResult = device.Get()->CreateTexture2D(&description, null, this.depthBufferTexture.GetAddressOf());
+
+					if (createResult.FAILED)
+					{
+						throw new Exception("Failed to create texture");
+					}
 				}
+
+				using ComPtr<ID3D11DeviceContext> context = default;
+				device.Get()->GetImmediateContext(context.GetAddressOf());
+
+				if (context.Get() == null)
+					return;
+
+				context.Get()->CopyResource((ID3D11Resource*)this.depthBufferTexture.Get(), (ID3D11Resource*)buffer);
+
+				D3D11_MAPPED_SUBRESOURCE mapped = default(D3D11_MAPPED_SUBRESOURCE);
+				HRESULT mapRsult = context.Get()->Map((ID3D11Resource*)this.depthBufferTexture.Get(), 0, D3D11_MAP.D3D11_MAP_READ, 0u, &mapped);
+				if (mapRsult.FAILED)
+					throw new Exception($"Failed to map texture resource");
+
+				int len = this.depthBufferWidth * this.depthBufferHeight * 4;
+				this.pDepthBuffer = (IntPtr)mapped.pData;
+				this.depthBufferLength = len;
+
+				context.Get()->Unmap((ID3D11Resource*)buffer, 0u);
 			}
 		}
 		catch (Exception ex)
@@ -297,28 +423,55 @@ public class GameCaptureService : ServiceBase
 
 				lock (this.lockObj)
 				{
+					// Convert the back buffer ARGB32 to BGRA32
 					// https://stackoverflow.com/questions/21428272/show-rgba-image-from-memory
-					int numPixels = this.bufferHeight * this.bufferWidth;
-					unsafe
+					int numPixels = this.backBufferHeight * this.backBufferWidth;
+					if (numPixels > 0)
 					{
-						if (this.bufferBgraData.Length != this.bufferLength)
-							this.bufferBgraData = new byte[this.bufferLength];
-
-						fixed (byte* pDestData = &this.bufferBgraData[0])
+						unsafe
 						{
-							uint* pCurrent = (uint*)this.pBuffer;
-							uint* pBitmapData = (uint*)pDestData;
+							if (this.bufferBgraData.Length != this.backBufferLength)
+								this.bufferBgraData = new byte[this.backBufferLength];
 
-							for (int n = 0; n < numPixels; n++)
+							fixed (byte* pDestData = &this.bufferBgraData[0])
 							{
-								uint x = *(pCurrent++);
+								uint* pCurrent = (uint*)this.pBackBuffer;
+								uint* pBitmapData = (uint*)pDestData;
 
-								// Swap R and B
-								*(pBitmapData + n) =
-									0xFF000000 | // force alpha to 255
-									((x & 0x00FF0000) >> 16) |
-									(x & 0x0000FF00) |
-									((x & 0x000000FF) << 16);
+								for (int n = 0; n < numPixels; n++)
+								{
+									uint x = *(pCurrent++);
+
+									// Swap R and B
+									*(pBitmapData + n) =
+										0xFF000000 | // force alpha to 255
+										((x & 0x00FF0000) >> 16) |
+										(x & 0x0000FF00) |
+										((x & 0x000000FF) << 16);
+								}
+							}
+						}
+					}
+
+					// Convert the depth stencil buffer R24G8 to Floats
+					numPixels = this.depthBufferHeight * this.depthBufferWidth;
+					if (numPixels > 0)
+					{
+						unsafe
+						{
+							if (this.depthBufferFloatData.Length != this.depthBufferLength)
+								this.depthBufferFloatData = new byte[this.depthBufferLength];
+
+							fixed (byte* pDestData = &this.depthBufferFloatData[0])
+							{
+								uint* pCurrent = (uint*)this.pDepthBuffer;
+								float* pBitmapData = (float*)pDestData;
+
+								for (int n = 0; n < numPixels; n++)
+								{
+									uint x = *(pCurrent++);
+									*(pBitmapData + n) = (x & 0x00FFFFFF) / (float)0x00FFFFFF;
+								}
 							}
 						}
 					}

@@ -21,12 +21,12 @@ using System.ComponentModel;
 using System.Windows;
 using System;
 using System.Windows.Media.Animation;
+using PropertyChanged.SourceGenerator;
 
 [DependencyProperty<double>("BorderHalfWidth")]
 [DependencyProperty<double>("BorderHalfHeight")]
 [DependencyProperty<double>("AspectBoxHeight")]
 [DependencyProperty<double>("AspectBoxWidth")]
-[DependencyProperty<double>("CaptureOpacity")]
 public partial class PhotoGuides : View
 {
 	private readonly Storyboard changeAspectStoryboard;
@@ -34,7 +34,9 @@ public partial class PhotoGuides : View
 	private readonly DoubleAnimation borderHeightAnimation;
 	private readonly DoubleAnimation aspectBoxHeightAnimation;
 	private readonly DoubleAnimation aspectBoxWidthAnimation;
-	private readonly DoubleAnimation captureOpacityAnimation;
+
+	[Notify] private int captureAngle = 0;
+	[Notify] private bool showCapture = false;
 
 	public PhotoGuides()
 	{
@@ -88,18 +90,6 @@ public partial class PhotoGuides : View
 		Storyboard.SetTargetProperty(this.aspectBoxWidthAnimation, new(nameof(this.AspectBoxWidth)));
 		this.changeAspectStoryboard.Children.Add(this.aspectBoxWidthAnimation);
 
-		// CaptureOpacity
-		this.captureOpacityAnimation = new();
-		this.captureOpacityAnimation.Duration = new Duration(TimeSpan.FromMilliseconds(100));
-		this.captureOpacityAnimation.EasingFunction = new SineEase()
-		{
-			EasingMode = EasingMode.EaseOut,
-		};
-
-		Storyboard.SetTarget(this.captureOpacityAnimation, this);
-		Storyboard.SetTargetProperty(this.captureOpacityAnimation, new(nameof(this.CaptureOpacity)));
-		this.changeAspectStoryboard.Children.Add(this.captureOpacityAnimation);
-
 		this.Services.Photos.PropertyChanged += this.OnPhotosPropertyChanged;
 		this.CalculateAspectBox();
 	}
@@ -113,7 +103,8 @@ public partial class PhotoGuides : View
 	private void OnPhotosPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
 		if (e.PropertyName == nameof(PhotosService.AspectRatio)
-			|| e.PropertyName == nameof(PhotosService.IsPortrait))
+			|| e.PropertyName == nameof(PhotosService.IsPortrait)
+			|| e.PropertyName == nameof(PhotosService.ShowDepth))
 		{
 			try
 			{
@@ -167,14 +158,20 @@ public partial class PhotoGuides : View
 			boxWidth *= scale;
 		}
 
+		if (double.IsNaN(boxHeight)
+			|| double.IsNaN(boxWidth))
+			return;
+
 		this.Dispatcher.Invoke(() =>
 		{
 			this.aspectBoxHeightAnimation.To = boxHeight;
 			this.aspectBoxWidthAnimation.To = boxWidth;
 			this.borderWidthAnimation.To = (this.ActualWidth - boxWidth) / 2;
 			this.borderHeightAnimation.To = (this.ActualHeight - boxHeight) / 2;
-			this.captureOpacityAnimation.To = this.Services.Photos.IsPortrait ? 1.0 : 0.0;
 			this.BeginStoryboard(this.changeAspectStoryboard);
+
+			this.CaptureAngle = this.Services.Photos.IsPortrait ? -90 : 0;
+			this.ShowCapture = this.Services.Photos.IsPortrait || this.Services.Photos.ShowDepth;
 		});
 	}
 }

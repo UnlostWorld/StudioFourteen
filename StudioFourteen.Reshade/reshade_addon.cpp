@@ -1,4 +1,5 @@
 #include <reshade.hpp>
+#include <string>
 #include "Log.h"
 
 using namespace reshade;
@@ -11,6 +12,18 @@ RESHADE_API const char* NAME = "Studio Fourteen Reshade sync";
 RESHADE_API const char* DESCRIPTION = "Enables Studio Fourteen to communicate with Reshade";
 
 static const Log* Logger;
+static uint64_t s_depthPointer;
+
+static void on_begin_render_effects(effect_runtime* runtime, command_list* cmd_list, resource_view, resource_view)
+{
+	// Find the depth texture pointer:
+	effect_texture_variable var = runtime->find_texture_variable(nullptr, "DepthBufferTex");
+	resource_view srv = resource_view();
+	resource_view srv_srgb = resource_view();
+	runtime->get_texture_binding(var, &srv, &srv_srgb);
+	resource resource = runtime->get_device()->get_resource_from_view(srv);
+	s_depthPointer = resource.handle;
+}
 
 // https://stackoverflow.com/a/557774/9934501
 HMODULE GetCurrentModule()
@@ -31,6 +44,8 @@ STUDIO_API bool Initialize(Log::LogDelegate onLog)
 	if (!reshade::register_addon(GetCurrentModule()))
 		return false;
 
+	reshade::register_event<reshade::addon_event::reshade_begin_effects>(on_begin_render_effects);
+
 	Logger->Information("Add-On Started");
 
 	return true;
@@ -38,6 +53,7 @@ STUDIO_API bool Initialize(Log::LogDelegate onLog)
 
 STUDIO_API void Shutdown()
 {
+	reshade::unregister_event<reshade::addon_event::reshade_begin_effects>(on_begin_render_effects);
 	reshade::unregister_addon(GetCurrentModule());
 }
 
@@ -61,4 +77,9 @@ STUDIO_API bool UnregisterEvent(addon_event ev, void* callback)
 
 	func(GetCurrentModule(), ev, callback);
 	return true;
+}
+
+STUDIO_API uint64_t GetDepthTexture()
+{
+	return s_depthPointer;
 }

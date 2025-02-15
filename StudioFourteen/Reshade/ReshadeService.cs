@@ -15,17 +15,15 @@
 
 namespace StudioFourteen.Reshade;
 
+using Dalamud.Plugin.Services;
+using Serilog.Events;
+using StudioFourteen.Plugin;
 using StudioFourteen.Services;
 using System;
-using System.Runtime.InteropServices;
-using Serilog.Events;
-using System.Threading.Tasks;
-using System.IO;
 using System.Diagnostics;
-using Windows.Win32;
-using StudioFourteen.Plugin;
-using StudioFourteen.Panels;
-using WpfUtils.Extensions;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Threading.Tasks;
 
 public class ReshadeService : ServiceBase
 {
@@ -56,6 +54,8 @@ public class ReshadeService : ServiceBase
 
 	public bool IsReshade { get; private set; }
 	public bool IsReshadeOverlayOpen { get; set; }
+
+	public IntPtr DepthBufferAddress { get; private set; }
 
 	public override async Task Start()
 	{
@@ -131,6 +131,12 @@ public class ReshadeService : ServiceBase
 		ShutdownReshadeAddon();
 	}
 
+	protected override void OnFrameworkUpdate(IFramework framework)
+	{
+		this.DepthBufferAddress = GetDepthTexture();
+		base.OnFrameworkUpdate(framework);
+	}
+
 	[DllImport("StudioFourteen.Reshade.dll", EntryPoint = "Initialize")]
 	private static extern bool InitializeReshadeAddon(IntPtr onLog);
 
@@ -142,6 +148,9 @@ public class ReshadeService : ServiceBase
 
 	[DllImport("StudioFourteen.Reshade.dll", EntryPoint = "UnregisterEvent")]
 	private static extern void UnregisterEvent(AddonEvents evt, IntPtr callback);
+
+	[DllImport("StudioFourteen.Reshade.dll", EntryPoint = "GetDepthTexture")]
+	private static extern IntPtr GetDepthTexture();
 
 	private void OnLog(LogEventLevel logLevel, string message) => this.Log.Write(logLevel, message);
 

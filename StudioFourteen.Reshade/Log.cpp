@@ -5,32 +5,32 @@ Log::Log(LogDelegate logger)
 	this->m_logToStudio = logger;
 }
 
-void Log::Verbose(const char* message) const
+void Log::Verbose(std::string message) const
 {
-	this->m_logToStudio(LevelVerbose, message);
+	this->m_logToStudio(LevelVerbose, message.c_str());
 }
 
-void Log::Debug(const char* message) const
+void Log::Debug(std::string message) const
 {
-	this->m_logToStudio(LevelDebug, message);
+	this->m_logToStudio(LevelDebug, message.c_str());
 }
 
-void Log::Information(const char* message) const
+void Log::Information(std::string message) const
 {
-	this->m_logToStudio(LevelInformation, message);
+	this->m_logToStudio(LevelInformation, message.c_str());
 }
 
-void Log::Warning(const char* message) const
+void Log::Warning(std::string message) const
 {
-	this->m_logToStudio(LevelWarning, message);
+	this->m_logToStudio(LevelWarning, message.c_str());
 }
 
-void Log::Error(const char* message) const
+void Log::Error(std::string message) const
 {
-	this->m_logToStudio(LevelError, message);
+	this->m_logToStudio(LevelError, message.c_str());
 }
 
-void Log::Fatal(const char* message) const
+void Log::Fatal(std::string message) const
 {
-	this->m_logToStudio(LevelFatal, message);
+	this->m_logToStudio(LevelFatal, message.c_str());
 }
