@@ -40,6 +40,8 @@
 	<sys:String x:Key="LOC_Photo_Guides_Thirds">Thirds</sys:String>
 	<sys:String x:Key="LOC_Photo_Guides_Circle">Circle</sys:String>
 	<sys:String x:Key="LOC_Photo_GuidesPopOut">Select a set of guides to help align your photo.</sys:String>
+	<sys:String x:Key="LOC_Photo_Settings">Photo Settings</sys:String>
+	<sys:String x:Key="LOC_Photo_GroupPoseWarn">More features are available while in Group Pose.</sys:String>
 
 	<sys:String x:Key="LOC_Character_Race">Race</sys:String>
 	<sys:String x:Key="LOC_Character_Tribe">Tribe</sys:String>

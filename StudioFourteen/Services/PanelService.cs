@@ -23,6 +23,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using WpfUtils;
 using WpfUtils.Extensions;
 
 using Panel = StudioFourteen.Panels.Panel;
@@ -86,6 +87,26 @@ public class PanelService : ServiceBase
 		where T : Panel, new()
 	{
 		return this.Get<T>() != null;
+	}
+
+	public async Task<T?> GetOrOpen<T>()
+		where T : Panel, new()
+	{
+		T? panel = this.Get<T>();
+		if (panel != null)
+		{
+			await panel.MainThread();
+			Window? wnd = panel.FindParent<Window>();
+			if (wnd != null)
+			{
+				this.Services.Windows.BringToTop(wnd);
+				wnd.Activate();
+			}
+
+			return panel;
+		}
+
+		return await this.Open<T>();
 	}
 
 	public async Task<T?> Open<T>()

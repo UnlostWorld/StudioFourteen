@@ -127,7 +127,7 @@
 			</Grid>
 		</TabItem>
 
-		<TabItem Header="{DynamicResource LOC_Settings_Photos}">
+		<TabItem Header="{DynamicResource LOC_Settings_Photos}" x:Name="PhotosSection">
 			<StackPanel>
 
 				<TextBlock

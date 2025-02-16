@@ -76,7 +76,9 @@ public partial class OverlayService
 	{
 		base.OnFrameworkUpdate(framework);
 
-		this.ShowOverlays = this.Settings.ShowOverlays && !this.Services.Photos.IsPhotoMode;
+		this.ShowOverlays = this.Services.GroupPose.IsGroupPosing
+			&& this.Settings.ShowOverlays
+			&& !this.Services.Photos.IsPhotoMode;
 
 		if (this.ShowOverlays)
 		{

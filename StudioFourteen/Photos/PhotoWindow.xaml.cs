@@ -15,19 +15,15 @@
 
 namespace StudioFourteen.Photos;
 
-using StudioFourteen.Mvm;
+using PropertyChanged.SourceGenerator;
 using StudioFourteen.Panels;
-using StudioFourteen.Plugin;
-using System;
+using StudioFourteen.Settings;
 using System.Windows;
 
 using static StudioFourteen.Photos.PhotosService;
 
 public partial class PhotoWindow : Panel
 {
-	[AutoNotify] public ImageMetadata MetaData { get; set; } = new();
-	[AutoNotify] public string SaveDirectory { get; set; } = string.Empty;
-
 	public bool HideUI
 	{
 		get => this.Persistence.GetPersistence<bool>();
@@ -99,15 +95,6 @@ public partial class PhotoWindow : Panel
 	{
 		base.OnOpened();
 
-		if (DalamudServices.ClientState == null)
-			return;
-
-		AutoPropertyNotifyService.Register(this.MetaData);
-
-		this.MetaData.MapId = DalamudServices.ClientState.MapId;
-
-		this.SaveDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-
 		this.Services.Photos.IsPhotoMode = this.HideUI;
 		this.Services.Photos.AspectRatio = this.AspectRatio;
 		this.Services.Photos.Guide = this.Guide;
@@ -126,6 +113,11 @@ public partial class PhotoWindow : Panel
 	private void OnSaveClicked(object sender, RoutedEventArgs e)
 	{
 		this.Services.Photos.Capture();
+	}
+
+	private void OnSettingsClicked(object sender, RoutedEventArgs e)
+	{
+		SettingsPanel.Show("PhotosSection");
 	}
 
 	private void OnCloseClicked(object sender, RoutedEventArgs e)

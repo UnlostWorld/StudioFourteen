@@ -9,7 +9,7 @@
 	xmlns:vectors="http://sharpvectors.codeplex.com/svgc/"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="{DynamicResource LOC_Photo}"
-	Width="512"
+	Width="550"
 	Height="58"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
@@ -27,22 +27,36 @@
 		Style="{DynamicResource WpfUtilsControlBorder}">
 		<Grid>
 			<Grid.ColumnDefinitions>
-				<ColumnDefinition />
-				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition/>
+				<ColumnDefinition Width="Auto"/>
 			</Grid.ColumnDefinitions>
 
 			<Grid>
 				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="Auto"/>
+					<ColumnDefinition Width="Auto"/>
 				</Grid.ColumnDefinitions>
 
+				<Grid
+					Background="Transparent"
+					ToolTip="{DynamicResource LOC_Photo_GroupPoseWarn}"
+					Visibility="{Binding Services.Studio.IsOpenAndInGPose, Converter={StaticResource !B2V}}">
+					<wpfUtils:IconBlock
+						Grid.Column="0"
+						Icon="InfoCircle"
+						Foreground="{DynamicResource ForegroundLightBrush}"
+						Opacity="0.5"
+						Margin="6,2"/>
+				</Grid>
+
 				<ComboBox
+					Visibility="{Binding Services.Studio.IsOpenAndInGPose, Converter={StaticResource B2V}}"
 					Grid.Column="0"
 					Width="175"
 					ItemsSource="{Binding Services.Photos.AspectRatios}"
@@ -52,17 +66,18 @@
 					<wpfUtils:PopOut.Header>
 						<TextBlock
 							Margin="12"
-							Text="{DynamicResource LOC_Photo_AspectPopOut}" />
+							Text="{DynamicResource LOC_Photo_AspectPopOut}"/>
 					</wpfUtils:PopOut.Header>
 
 					<ComboBox.ItemTemplate>
 						<DataTemplate>
-							<TextBlock Text="{Binding Name}" />
+							<TextBlock Text="{Binding Name}"/>
 						</DataTemplate>
 					</ComboBox.ItemTemplate>
 				</ComboBox>
 
 				<ComboBox
+					Visibility="{Binding Services.Studio.IsOpenAndInGPose, Converter={StaticResource B2V}}"
 					Grid.Column="1"
 					Width="100"
 					SelectedIndex="{Binding GuideIndex}"
@@ -71,12 +86,12 @@
 					<wpfUtils:PopOut.Header>
 						<TextBlock
 							Margin="12"
-							Text="{DynamicResource LOC_Photo_GuidesPopOut}" />
+							Text="{DynamicResource LOC_Photo_GuidesPopOut}"/>
 					</wpfUtils:PopOut.Header>
 
-					<ComboBoxItem Content="{DynamicResource LOC_Photo_Guides_None}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Photo_Guides_Thirds}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Photo_Guides_Circle}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Photo_Guides_None}"/>
+					<ComboBoxItem Content="{DynamicResource LOC_Photo_Guides_Thirds}"/>
+					<ComboBoxItem Content="{DynamicResource LOC_Photo_Guides_Circle}"/>
 				</ComboBox>
 
 				<Button
@@ -87,8 +102,7 @@
 					Click="OnSaveClicked"
 					ToolTip="{DynamicResource LOC_Photo_CaptureToolTip}">
 					<wpfUtils:IconBlock
-						FontSize="16"
-						Icon="Camera" />
+						Icon="Camera"/>
 				</Button>
 
 				<ToggleButton
@@ -103,16 +117,17 @@
 						<vectors:SvgIcon
 							Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"
 							UriSource="pack://application:,,,/StudioFourteen;component/Assets/icon-show-ui.svg"
-							Visibility="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}, Converter={StaticResource !B2V}}" />
+							Visibility="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}, Converter={StaticResource !B2V}}"/>
 
 						<vectors:SvgIcon
 							Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"
 							UriSource="pack://application:,,,/StudioFourteen;component/Assets/icon-hide-ui.svg"
-							Visibility="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}, Converter={StaticResource B2V}}" />
+							Visibility="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}, Converter={StaticResource B2V}}"/>
 					</Grid>
 				</ToggleButton>
 
 				<ToggleButton
+					Visibility="{Binding Services.Studio.IsOpenAndInGPose, Converter={StaticResource B2V}}"
 					Grid.Column="4"
 					Width="28"
 					Margin="0"
@@ -121,10 +136,11 @@
 					IsEnabled="{Binding Services.Reshade.IsReshade}"
 					Style="{DynamicResource WpfUtilsIconToggleButton}"
 					ToolTip="{DynamicResource LOC_Photo_ToggleDepth}">
-					<TextBlock Text="D" />
+					<TextBlock Text="D"/>
 				</ToggleButton>
 
 				<ToggleButton
+					Visibility="{Binding Services.Studio.IsOpenAndInGPose, Converter={StaticResource B2V}}"
 					Grid.Column="5"
 					Width="28"
 					Margin="0"
@@ -134,16 +150,25 @@
 					ToolTip="{DynamicResource LOC_Photo_TogglePortrait}">
 					<vectors:SvgIcon
 						Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"
-						UriSource="pack://application:,,,/StudioFourteen;component/Assets/icon-portrait-preview.svg" />
+						UriSource="pack://application:,,,/StudioFourteen;component/Assets/icon-portrait-preview.svg"/>
 				</ToggleButton>
 
 				<Button
 					Grid.Column="6"
 					Width="28"
 					Margin="0"
+					Click="OnSettingsClicked"
+					ToolTip="{DynamicResource LOC_Photo_Settings}">
+					<wpfUtils:IconBlock Icon="Gears"/>
+				</Button>
+
+				<Button
+					Grid.Column="7"
+					Width="28"
+					Margin="0"
 					Click="OnCloseClicked"
 					ToolTip="{DynamicResource LOC_ClosePanelTooltip}">
-					<wpfUtils:IconBlock Icon="Times" />
+					<wpfUtils:IconBlock Icon="Times"/>
 				</Button>
 
 

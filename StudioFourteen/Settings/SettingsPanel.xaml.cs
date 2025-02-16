@@ -14,14 +14,50 @@
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
 namespace StudioFourteen.Settings;
-using StudioFourteen.Mvm;
+
 using StudioFourteen.Panels;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
+using WpfUtils;
+using WpfUtils.Extensions;
+
+using Panel = StudioFourteen.Panels.Panel;
 
 public partial class SettingsPanel : Panel
 {
-	[AutoNotify] public SettingsService.Configuration Settings => this.Services.Settings.Current;
+	public SettingsService.Configuration Settings => this.Services.Settings.Current;
+
+	public static void Show(string? elementName = null)
+	{
+		ShowAsync(elementName).Run();
+	}
+
+	public static async Task ShowAsync(string? elementName = null)
+	{
+		SettingsPanel? panel = await ServiceManager.Instance.Panels.GetOrOpen<SettingsPanel>();
+		if (panel == null)
+			return;
+
+		if (elementName != null)
+		{
+			await panel.MainThread();
+			panel.ShowElement(elementName);
+		}
+	}
+
+	public void ShowElement(string elementName)
+	{
+		object? element = this.FindName(elementName);
+		if (element == null)
+			return;
+
+		if (element is TabItem tabItem)
+		{
+			tabItem.IsSelected = true;
+		}
+	}
 
 	private async void OnBrosePhotoDirectoryClicked(object sender, RoutedEventArgs e)
 	{
