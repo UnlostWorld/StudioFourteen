@@ -136,9 +136,6 @@
 	<sys:String x:Key="LOC_SheetItem_GamerEscape">Gamer Escape</sys:String>
 	<sys:String x:Key="LOC_SheetItemEquipTo">Equip To</sys:String>
 
-
-
-
 	<sys:String x:Key="LOC_AppearanceCreateCharacter">Create Character</sys:String>
 	<sys:String x:Key="LOC_AppearanceApplyTo">Apply to</sys:String>
 
@@ -164,7 +161,6 @@
 	<sys:String x:Key="LOC_Settings_Interface_HideStudioButton_ToolTip">You can still access the Studio interface by using the chat command /s14 or from the dalamud plugin installer.</sys:String>
 	<sys:String x:Key="LOC_Settings_Interface_OpenGroupPose">Open Group Pose with Studio</sys:String>
 	<sys:String x:Key="LOC_Settings_Interface_HideGenitals">Hide genital bones</sys:String>
-
 	<sys:String x:Key="LOC_Settings_Files">Files</sys:String>
 	<sys:String x:Key="LOC_Settings_Files_DefaultMetadata">Default Metadata</sys:String>
 	<sys:String x:Key="LOC_Settings_Files_DefaultAuthor">Author:</sys:String>
@@ -174,6 +170,17 @@
 	<sys:String x:Key="LOC_Settings_Input_Save">Save Scene</sys:String>
 	<sys:String x:Key="LOC_Settings_Input_SaveAs">Toggle Save Window</sys:String>
 	<sys:String x:Key="LOC_Settings_Input_InvokeQuickSearch">Invoke Quick Search</sys:String>
+	<sys:String x:Key="LOC_Settings_Photos">Photos</sys:String>
+	<sys:String x:Key="LOC_Settings_Photos_Directory">Location</sys:String>
+	<sys:String x:Key="LOC_Settings_Photos_Format">Format</sys:String>
+	<sys:String x:Key="LOC_Settings_Photos_IncludeMetadata">Include Metadata</sys:String>
+	<sys:String x:Key="LOC_Settings_Photos_CaptureDepth">Capture Depth</sys:String>
+	<sys:String x:Key="LOC_Settings_Photos_Format_JPG">JPEG (*.jpg)</sys:String>
+	<sys:String x:Key="LOC_Settings_Photos_Format_BMP">Bitmap (*.bmp)</sys:String>
+	<sys:String x:Key="LOC_Settings_Photos_Format_PNG">PNG (*.png)</sys:String>
+	<sys:String x:Key="LOC_Settings_Photos_Format_TGA">Targa (*.tga)</sys:String>
+	<sys:String x:Key="LOC_Settings_Photos_Format_TIFF">Tiff (*.tiff)</sys:String>
+	<sys:String x:Key="LOC_Settings_Photos_Format_WEBP">WebP (*.webp)</sys:String>
 
 	<sys:String x:Key="LOC_Spa_Title">Studio Fourteen</sys:String>
 

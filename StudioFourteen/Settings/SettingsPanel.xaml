@@ -127,12 +127,12 @@
 			</Grid>
 		</TabItem>
 
-		<TabItem Header="Photos">
+		<TabItem Header="{DynamicResource LOC_Settings_Photos}">
 			<StackPanel>
 
 				<TextBlock
 					Style="{DynamicResource LeftLabel}"
-					Text="Location" />
+					Text="{DynamicResource LOC_Settings_Photos_Directory}" />
 
 				<Grid>
 					<Grid.ColumnDefinitions>
@@ -153,22 +153,22 @@
 
 				<TextBlock
 					Style="{DynamicResource LeftLabel}"
-					Text="Format ??" />
+					Text="{DynamicResource LOC_Settings_Photos_Format}" />
 				<ComboBox SelectedIndex="{Binding Settings.PhotoFormat, Converter={StaticResource EnumToIndex}}">
-					<ComboBoxItem Content="JPEG (*.jpeg)" />
-					<ComboBoxItem Content="Bitmap (*.bmp)" />
-					<ComboBoxItem Content="PNG (*.png)" />
-					<ComboBoxItem Content="Targa (*.tga)" />
-					<ComboBoxItem Content="Tiff (*.tiff)" />
-					<ComboBoxItem Content="WebP (*.webp)" />
+					<ComboBoxItem Content="{DynamicResource LOC_Settings_Photos_Format_JPG}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Settings_Photos_Format_BMP}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Settings_Photos_Format_PNG}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Settings_Photos_Format_TGA}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Settings_Photos_Format_TIFF}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Settings_Photos_Format_WEBP}" />
 				</ComboBox>
 
 				<ToggleButton
-					Content="Include Metadata"
+					Content="{DynamicResource LOC_Settings_Photos_IncludeMetadata}"
 					IsChecked="{Binding Settings.PhotoIncludeMetaData}" />
 
 				<ToggleButton
-					Content="Capture Depth"
+					Content="{DynamicResource LOC_Settings_Photos_CaptureDepth}"
 					IsChecked="{Binding Settings.PhotoCaptureDepth}" />
 
 			</StackPanel>
