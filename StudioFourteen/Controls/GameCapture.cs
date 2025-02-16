@@ -56,11 +56,6 @@ public class GameCapture : System.Windows.Controls.Image, ICaptureListener
 		this.hasCapture = true;
 	}
 
-	public Image? ToImage()
-	{
-		return ServiceManager.Instance.GameCapture.ToImage();
-	}
-
 	private void OnLoaded(object sender, RoutedEventArgs e)
 	{
 		if (this.IsVisible)

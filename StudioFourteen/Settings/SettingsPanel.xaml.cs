@@ -16,8 +16,24 @@
 namespace StudioFourteen.Settings;
 using StudioFourteen.Mvm;
 using StudioFourteen.Panels;
+using System.IO;
+using System.Windows;
 
 public partial class SettingsPanel : Panel
 {
 	[AutoNotify] public SettingsService.Configuration Settings => this.Services.Settings.Current;
+
+	private async void OnBrosePhotoDirectoryClicked(object sender, RoutedEventArgs e)
+	{
+		DirectoryInfo? dir = null;
+		if (this.Settings.PhotoDirectory != null)
+			dir = new DirectoryInfo(this.Settings.PhotoDirectory);
+
+		DirectoryInfo? newDir = await this.Services.Files.ShowDirectoryDialog(dir);
+
+		if (newDir == null)
+			return;
+
+		this.Settings.PhotoDirectory = newDir.FullName;
+	}
 }

@@ -127,5 +127,52 @@
 			</Grid>
 		</TabItem>
 
+		<TabItem Header="Photos">
+			<StackPanel>
+
+				<TextBlock
+					Style="{DynamicResource LeftLabel}"
+					Text="Location" />
+
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+
+					<TextBox
+						Grid.Column="0"
+						Text="{Binding Settings.PhotoDirectory}" />
+
+					<Button
+						Grid.Column="1"
+						Click="OnBrosePhotoDirectoryClicked"
+						Content="..." />
+				</Grid>
+
+
+				<TextBlock
+					Style="{DynamicResource LeftLabel}"
+					Text="Format ??" />
+				<ComboBox SelectedIndex="{Binding Settings.PhotoFormat, Converter={StaticResource EnumToIndex}}">
+					<ComboBoxItem Content="JPEG (*.jpeg)" />
+					<ComboBoxItem Content="Bitmap (*.bmp)" />
+					<ComboBoxItem Content="PNG (*.png)" />
+					<ComboBoxItem Content="Targa (*.tga)" />
+					<ComboBoxItem Content="Tiff (*.tiff)" />
+					<ComboBoxItem Content="WebP (*.webp)" />
+				</ComboBox>
+
+				<ToggleButton
+					Content="Include Metadata"
+					IsChecked="{Binding Settings.PhotoIncludeMetaData}" />
+
+				<ToggleButton
+					Content="Capture Depth"
+					IsChecked="{Binding Settings.PhotoCaptureDepth}" />
+
+			</StackPanel>
+		</TabItem>
+
 	</TabControl>
 </panels:Panel>

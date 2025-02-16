@@ -26,6 +26,7 @@ using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
@@ -49,20 +50,23 @@ public class GameCaptureService : ServiceBase
 
 	private Hook<InterfaceManager.ReshadeOnPresentDelegate>? reshadeOnPresentHook;
 	private byte[] bufferBgraData = Array.Empty<byte>();
-	private byte[] depthBufferFloatData = Array.Empty<byte>();
 
 	private int backBufferWidth = 0;
 	private int backBufferHeight = 0;
-	private int depthBufferWidth = 0;
-	private int depthBufferHeight = 0;
 	private ComPtr<ID3D11Texture2D> backBufferTexture = default;
-	private ComPtr<ID3D11Texture2D> depthBufferTexture = default;
-	private int captureId = 0;
-
 	private IntPtr pBackBuffer;
 	private int backBufferLength;
+
+	private byte[] depthBufferFloatData = Array.Empty<byte>();
+	private int depthBufferWidth = 0;
+	private int depthBufferHeight = 0;
+	private ComPtr<ID3D11Texture2D> depthBufferTexture = default;
 	private IntPtr pDepthBuffer;
 	private int depthBufferLength;
+
+	private int captureId = 0;
+	private int convertId = 0;
+	private bool forceCapture = false;
 
 	public void AddListener(ICaptureListener listener)
 	{
@@ -111,14 +115,32 @@ public class GameCaptureService : ServiceBase
 		this.backBufferTexture.Dispose();
 	}
 
-	public Image? ToImage()
+	public async Task<(Image? BackBuffer, Image? DepthBuffer)> ToImage()
 	{
+		if (this.listeners.Count <= 0)
+		{
+			// If we have no listeners, then we won't be capturing anything,
+			// so perform a capture manually.
+			this.forceCapture = true;
+			int waitForId = this.captureId + 1;
+			while(this.convertId < waitForId)
+				await Task.Delay(10);
+
+			this.forceCapture = false;
+		}
+
 		lock (this.lockObj)
 		{
-			if (this.backBufferWidth == 0 || this.backBufferHeight == 0)
-				return null;
+			Image? backBuffer = null;
+			Image? depthBuffer = null;
 
-			return Image.LoadPixelData<Bgra32>(this.bufferBgraData, this.backBufferWidth, this.backBufferHeight);
+			if (this.backBufferWidth != 0 && this.backBufferHeight != 0)
+				backBuffer = Image.LoadPixelData<Bgra32>(this.bufferBgraData, this.backBufferWidth, this.backBufferHeight);
+
+			if (this.depthBufferWidth != 0 && this.depthBufferHeight != 0)
+				depthBuffer = Image.LoadPixelData<GreyscaleFloat>(this.depthBufferFloatData, this.depthBufferWidth, this.depthBufferHeight);
+
+			return (backBuffer, depthBuffer);
 		}
 	}
 
@@ -223,15 +245,14 @@ public class GameCaptureService : ServiceBase
 	}
 
 	/// <summary>
-	/// Capture the co
-	/// ntents of the games swap chain back buffer.
+	/// Capture the contents of the games swap chain back buffer.
 	/// </summary>
 	private unsafe void Capture()
 	{
 		if (!this.Services.Studio.IsOpen)
 			return;
 
-		if (this.listeners.Count <= 0)
+		if (this.listeners.Count <= 0 && !this.forceCapture)
 			return;
 
 		this.CaptureBack();
@@ -410,15 +431,13 @@ public class GameCaptureService : ServiceBase
 	// A thread responsible for converting captures from rgba32 to bgra32 for use in WPF.
 	private void ConversionThread()
 	{
-		int lastCaptureId = 0;
-
 		while (this.IsAlive && this.IsAttached)
 		{
 			Thread.Sleep(10);
 
 			try
 			{
-				if (this.captureId == lastCaptureId)
+				if (this.captureId == this.convertId)
 					continue;
 
 				lock (this.lockObj)
@@ -476,7 +495,7 @@ public class GameCaptureService : ServiceBase
 						}
 					}
 
-					lastCaptureId = this.captureId;
+					this.convertId = this.captureId;
 				}
 
 				foreach (ICaptureListener listener in this.listeners)

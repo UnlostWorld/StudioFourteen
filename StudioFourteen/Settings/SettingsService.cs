@@ -16,17 +16,21 @@
 namespace StudioFourteen.Settings;
 
 using Dalamud.Configuration;
+using PropertyChanged.SourceGenerator;
 using StudioFourteen.Input;
+using StudioFourteen.Photos;
 using StudioFourteen.Plugin;
 using StudioFourteen.Save;
 using StudioFourteen.Serialization;
 using StudioFourteen.Services;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
 using WpfUtils.Utils;
 
-public class SettingsService : ServiceBase
+public partial class SettingsService : ServiceBase
 {
 	private readonly FuncQueue saveQueue;
 
@@ -55,6 +59,8 @@ public class SettingsService : ServiceBase
 
 		if (current != null)
 		{
+			current.Validate();
+			current.PropertyChanged += this.OnCurrentPropertyChanged;
 			this.Current = current;
 		}
 
@@ -85,38 +91,57 @@ public class SettingsService : ServiceBase
 		}
 	}
 
-	public class Configuration : IPluginConfiguration
+	private void OnCurrentPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
-		public int Version { get; set; } = 0;
-		public List<string> OpenPanels { get; set; } = new();
-		public Dictionary<string, string> Persistence { get; set; } = new();
-		public Dictionary<string, int> Overlays { get; set; } = new();
-		public int HasConfirmedReShadeVersion { get; set; } = -1;
+		this.Save();
+	}
 
-		// Interface
-		public bool HideStudioButton { get; set; } = false;
-		public bool OpenGroupPose { get; set; } = false;
-		public bool HideGenitals { get; set; } = false;
-		public bool EnableGlobalOverlay { get; set; } = true;
-		public bool ShowOverlays { get; set; } = true;
+	public partial class Configuration : IPluginConfiguration
+	{
+		[Notify] private Dictionary<string, string> persistence = new();
+		[Notify] private int hasConfirmedReShadeVersion = -1;
 
 		// Files
-		public string? LastSaveDirectory { get; set; }
-		public SaveService.SaveConfiguration SaveConfig { get; set; } = new();
+		[Notify] private string? lastSaveDirectory;
+		[Notify] private SaveService.SaveConfiguration saveConfig = new();
+		[Notify] private string? defaultAuthor;
+		[Notify] private string? defaultVersion = "1.0";
 
-		public string? DefaultAuthor { get; set; }
-		public string? DefaultVersion { get; set; } = "1.0";
-
-		// Input
-		public bool EnableBinds { get; set; } = true;
-		public Dictionary<InputAction, List<Bind>> CustomBinds { get; set; } = new();
-
-		// Library
-		public HashSet<string> Favorites { get; set; } = new();
+		// Photos
+		[Notify] private string? photoDirectory;
+		[Notify] private PhotosService.Formats photoFormat = PhotosService.Formats.Jpeg;
+		[Notify] private bool photoIncludeMetaData = true;
+		[Notify] private bool photoCaptureDepth = false;
 
 		// Analytics
-		public bool HasConfirmedAnalyticOptions { get; set; } = false;
-		public bool SendOptionalAnalytics { get; set; } = false;
-		public bool SendErrorReports { get; set; } = true;
+		[Notify] private bool hasConfirmedAnalyticOptions = false;
+		[Notify] private bool sendOptionalAnalytics = false;
+		[Notify] private bool sendErrorReports = true;
+
+		// Interface
+		[Notify] private bool hideStudioButton = false;
+		[Notify] private bool openGroupPose = false;
+		[Notify] private bool hideGenitals = true;
+		[Notify] private bool enableGlobalOverlay = true;
+		[Notify] private bool showOverlays = true;
+		[Notify] private Dictionary<string, int> overlays = new();
+		[Notify] private List<string> openPanels = new();
+
+		// Input
+		[Notify] private bool enableBinds = true;
+		[Notify] private Dictionary<InputAction, List<Bind>> customBinds = new();
+
+		// Library
+		[Notify] private HashSet<string> favorites = new();
+
+		public int Version { get; set; } = 0;
+
+		public void Validate()
+		{
+			if (this.PhotoDirectory == null)
+			{
+				this.PhotoDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Studio Fourteen");
+			}
+		}
 	}
 }

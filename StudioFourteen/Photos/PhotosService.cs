@@ -20,6 +20,15 @@ using PropertyChanged.SourceGenerator;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using WpfUtils.Extensions;
 using StudioFourteen.Mvm;
+using SixLabors.ImageSharp;
+using System.Threading.Tasks;
+using StudioFourteen.Serialization;
+using SixLabors.ImageSharp.Metadata.Profiles.Exif;
+using SixLabors.ImageSharp.Formats.Jpeg;
+using SixLabors.ImageSharp.Formats.Bmp;
+using SixLabors.ImageSharp.Formats.Png;
+using System;
+using System.IO;
 
 public partial class PhotosService : ServiceBase
 {
@@ -34,6 +43,16 @@ public partial class PhotosService : ServiceBase
 		None,
 		Thirds,
 		Circle,
+	}
+
+	public enum Formats
+	{
+		Jpeg,
+		Bmp,
+		Png,
+		Tga,
+		Tiff,
+		WebP,
 	}
 
 	public FastObservableCollection<AspectRatioEntry> AspectRatios { get; init; } = new()
@@ -53,21 +72,86 @@ public partial class PhotosService : ServiceBase
 
 	public void Capture()
 	{
-		/*Image? image = this.Capture.ToImage();
-		if (image == null)
+		this.CaptureAsync().Run();
+	}
+
+	public async Task CaptureAsync()
+	{
+		if (this.Settings.PhotoDirectory == null)
 			return;
 
-		string metaDataJson = Serializer.Serialize(this.MetaData);
-		image.Metadata.ExifProfile = new();
-		image.Metadata.ExifProfile.SetValue(ExifTag.UserComment, metaDataJson);
+		(Image? backBuffer, Image? depthBuffer) = await this.Services.GameCapture.ToImage();
 
-		JpegEncoder encoder = new()
+		if (backBuffer != null && this.Settings.PhotoIncludeMetaData)
 		{
-			Quality = 95,
-			Interleaved = false,
-		};
+			ImageMetadata metadata = new();
 
-		image.SaveAsJpeg($"{this.SaveDirectory}/test.jpg", encoder);*/
+			string metaDataJson = Serializer.Serialize(metadata);
+			backBuffer.Metadata.ExifProfile = new();
+			backBuffer.Metadata.ExifProfile.SetValue(ExifTag.UserComment, metaDataJson);
+		}
+
+		if (!Directory.Exists(this.Settings.PhotoDirectory))
+			Directory.CreateDirectory(this.Settings.PhotoDirectory);
+
+		// Custom formatting to avoid culture formats producing invalid file names.
+		string fileName = $"{this.Settings.PhotoDirectory}/{DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss")}";
+
+		switch (this.Settings.PhotoFormat)
+		{
+			case Formats.Jpeg:
+			{
+				JpegEncoder encoder = new()
+				{
+					Quality = 95,
+					Interleaved = false,
+				};
+
+				await backBuffer.SaveAsJpegAsync($"{fileName}.jpg", encoder);
+				break;
+			}
+
+			case Formats.Bmp:
+			{
+				await backBuffer.SaveAsBmpAsync($"{fileName}.bmp");
+				break;
+			}
+
+			case Formats.Png:
+			{
+				await backBuffer.SaveAsPngAsync($"{fileName}.png");
+				break;
+			}
+
+			case Formats.Tga:
+			{
+				await backBuffer.SaveAsTgaAsync($"{fileName}.tga");
+				break;
+			}
+
+			case Formats.Tiff:
+			{
+				await backBuffer.SaveAsTiffAsync($"{fileName}.tiff");
+				break;
+			}
+
+			case Formats.WebP:
+			{
+				await backBuffer.SaveAsWebpAsync($"{fileName}.webp");
+				break;
+			}
+		}
+
+		if (depthBuffer != null)
+		{
+			PngEncoder encoder = new()
+			{
+				ColorType = PngColorType.Grayscale,
+				BitDepth = PngBitDepth.Bit16,
+			};
+
+			await depthBuffer.SaveAsPngAsync($"{fileName} depth.png", encoder);
+		}
 	}
 
 	private unsafe void OnIsPhotoModeChanged(bool oldValue, bool newValue)
