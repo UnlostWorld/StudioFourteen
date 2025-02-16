@@ -134,10 +134,10 @@ public class GameCaptureService : ServiceBase
 			Image? backBuffer = null;
 			Image? depthBuffer = null;
 
-			if (this.backBufferWidth != 0 && this.backBufferHeight != 0)
+			if (this.backBufferWidth != 0 && this.backBufferHeight != 0 && this.bufferBgraData.Length > 0)
 				backBuffer = Image.LoadPixelData<Bgra32>(this.bufferBgraData, this.backBufferWidth, this.backBufferHeight);
 
-			if (this.depthBufferWidth != 0 && this.depthBufferHeight != 0)
+			if (this.depthBufferWidth != 0 && this.depthBufferHeight != 0 && this.depthBufferFloatData.Length > 0)
 				depthBuffer = Image.LoadPixelData<GreyscaleFloat>(this.depthBufferFloatData, this.depthBufferWidth, this.depthBufferHeight);
 
 			return (backBuffer, depthBuffer);
@@ -445,7 +445,7 @@ public class GameCaptureService : ServiceBase
 					// Convert the back buffer ARGB32 to BGRA32
 					// https://stackoverflow.com/questions/21428272/show-rgba-image-from-memory
 					int numPixels = this.backBufferHeight * this.backBufferWidth;
-					if (numPixels > 0)
+					if (numPixels > 0 && this.backBufferLength > 0)
 					{
 						unsafe
 						{
@@ -474,7 +474,7 @@ public class GameCaptureService : ServiceBase
 
 					// Convert the depth stencil buffer R24G8 to Floats
 					numPixels = this.depthBufferHeight * this.depthBufferWidth;
-					if (numPixels > 0)
+					if (numPixels > 0 && this.depthBufferLength > 0)
 					{
 						unsafe
 						{

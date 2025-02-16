@@ -17,15 +17,8 @@ namespace StudioFourteen.Cameras;
 
 using Dalamud.Hooking;
 using Dalamud.Plugin.Services;
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using FFXIVClientStructs.FFXIV.Client.Game.Control;
-using FFXIVClientStructs.FFXIV.Client.Graphics;
-using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
-using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
-using FFXIVClientStructs.FFXIV.Common.Component.BGCollision;
 using StudioFourteen.Plugin;
 using StudioFourteen.Services;
-using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -33,6 +26,7 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using WpfUtils.Animation;
+
 using CameraManager = FFXIVClientStructs.FFXIV.Client.Game.Control.CameraManager;
 using GameCamera = FFXIVClientStructs.FFXIV.Client.Game.Camera;
 using RenderCamera = FFXIVClientStructs.FFXIV.Client.Graphics.Render.Camera;
@@ -296,8 +290,12 @@ public class CameraService : ServiceBase
 
 			this.state.FieldOfView = camera->RenderCamera->FoV;
 
-			this.current.Tick(FramerateService.AverageDeltaTime);
-			this.current.Calculate(ref this.state, this.last, 1 - blendValue);
+			if (!this.Services.Photos.IsCapturing)
+			{
+				this.current.Tick(FramerateService.AverageDeltaTime);
+				this.current.Calculate(ref this.state, this.last, 1 - blendValue);
+			}
+
 			this.current.OnRender(ref this.state);
 
 			// in portrait preview mode, rotate the camera 90 degrees.
@@ -326,15 +324,18 @@ public class CameraService : ServiceBase
 			// Update all cameras in the background.
 			// TODO: we could move this to another thread to ensure
 			// the camera detour is fast.
-			CameraState temp = default;
-			foreach (StudioCameraBase otherCamera in this.Cameras)
+			if (!this.Services.Photos.IsCapturing)
 			{
-				if (otherCamera == this.current)
-					continue;
+				CameraState temp = default;
+				foreach (StudioCameraBase otherCamera in this.Cameras)
+				{
+					if (otherCamera == this.current)
+						continue;
 
-				otherCamera.Tick(FramerateService.AverageDeltaTime);
-				otherCamera.Calculate(ref temp);
-				otherCamera.OnRender(ref temp);
+					otherCamera.Tick(FramerateService.AverageDeltaTime);
+					otherCamera.Calculate(ref temp);
+					otherCamera.OnRender(ref temp);
+				}
 			}
 		}
 

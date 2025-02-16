@@ -25,10 +25,11 @@ using System.Threading.Tasks;
 using StudioFourteen.Serialization;
 using SixLabors.ImageSharp.Metadata.Profiles.Exif;
 using SixLabors.ImageSharp.Formats.Jpeg;
-using SixLabors.ImageSharp.Formats.Bmp;
 using SixLabors.ImageSharp.Formats.Png;
 using System;
 using System.IO;
+using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
+using StudioFourteen.Utilities;
 
 public partial class PhotosService : ServiceBase
 {
@@ -37,6 +38,7 @@ public partial class PhotosService : ServiceBase
 	[Notify] private double aspectRatio = 0;
 	[Notify] private bool isPortrait;
 	[Notify] private bool showDepth = false;
+	[Notify] private bool isCapturing = false;
 
 	public enum Guides
 	{
@@ -80,83 +82,157 @@ public partial class PhotosService : ServiceBase
 		if (this.Settings.PhotoDirectory == null)
 			return;
 
-		(Image? backBuffer, Image? depthBuffer) = await this.Services.GameCapture.ToImage();
+		this.IsCapturing = true;
 
-		if (backBuffer != null && this.Settings.PhotoIncludeMetaData)
+		bool superResolution = false;
+		uint originalWidth = 0;
+		uint originalHeight = 0;
+		bool success = false;
+
+		if (superResolution)
 		{
-			ImageMetadata metadata = new();
+			await Threads.FrameworkThread();
 
-			string metaDataJson = Serializer.Serialize(metadata);
-			backBuffer.Metadata.ExifProfile = new();
-			backBuffer.Metadata.ExifProfile.SetValue(ExifTag.UserComment, metaDataJson);
+			// 4096 x 2160
+			// 8192 x 4320
+			success = this.SetResolution(8192, 4320, out originalWidth, out originalHeight);
+			if (!success)
+			{
+				this.IsCapturing = false;
+				return;
+			}
+
+			success = await this.Services.Reshade.WaitForEffectsToLoad();
+			if (!success)
+			{
+				await Threads.FrameworkThread();
+				this.SetResolution(originalWidth, originalHeight, out _, out _);
+				this.IsCapturing = false;
+				return;
+			}
 		}
 
-		if (!Directory.Exists(this.Settings.PhotoDirectory))
-			Directory.CreateDirectory(this.Settings.PhotoDirectory);
+		await Threads.NonUiThread();
 
-		// Custom formatting to avoid culture formats producing invalid file names.
-		string fileName = $"{this.Settings.PhotoDirectory}/{DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss")}";
-
-		switch (this.Settings.PhotoFormat)
+		// Capture the screenshot
+		try
 		{
-			case Formats.Jpeg:
+			(Image? backBuffer, Image? depthBuffer) = await this.Services.GameCapture.ToImage();
+
+			// Add Metadata
+			if (backBuffer != null && this.Settings.PhotoIncludeMetaData)
 			{
-				JpegEncoder encoder = new()
+				ImageMetadata metadata = new();
+
+				string metaDataJson = Serializer.Serialize(metadata);
+				backBuffer.Metadata.ExifProfile = new();
+				backBuffer.Metadata.ExifProfile.SetValue(ExifTag.UserComment, metaDataJson);
+			}
+
+			// Save the screenshot
+			if (!Directory.Exists(this.Settings.PhotoDirectory))
+				Directory.CreateDirectory(this.Settings.PhotoDirectory);
+
+			// Custom formatting to avoid culture formats producing invalid file names.
+			string fileName = $"{this.Settings.PhotoDirectory}/{DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss")}";
+
+			switch (this.Settings.PhotoFormat)
+			{
+				case Formats.Jpeg:
 				{
-					Quality = 95,
-					Interleaved = false,
+					JpegEncoder encoder = new()
+					{
+						Quality = 95,
+						Interleaved = false,
+					};
+
+					await backBuffer.SaveAsJpegAsync($"{fileName}.jpg", encoder);
+					break;
+				}
+
+				case Formats.Bmp:
+				{
+					await backBuffer.SaveAsBmpAsync($"{fileName}.bmp");
+					break;
+				}
+
+				case Formats.Png:
+				{
+					await backBuffer.SaveAsPngAsync($"{fileName}.png");
+					break;
+				}
+
+				case Formats.Tga:
+				{
+					await backBuffer.SaveAsTgaAsync($"{fileName}.tga");
+					break;
+				}
+
+				case Formats.Tiff:
+				{
+					await backBuffer.SaveAsTiffAsync($"{fileName}.tiff");
+					break;
+				}
+
+				case Formats.WebP:
+				{
+					await backBuffer.SaveAsWebpAsync($"{fileName}.webp");
+					break;
+				}
+			}
+
+			if (depthBuffer != null)
+			{
+				PngEncoder encoder = new()
+				{
+					ColorType = PngColorType.Grayscale,
+					BitDepth = PngBitDepth.Bit16,
 				};
 
-				await backBuffer.SaveAsJpegAsync($"{fileName}.jpg", encoder);
-				break;
-			}
-
-			case Formats.Bmp:
-			{
-				await backBuffer.SaveAsBmpAsync($"{fileName}.bmp");
-				break;
-			}
-
-			case Formats.Png:
-			{
-				await backBuffer.SaveAsPngAsync($"{fileName}.png");
-				break;
-			}
-
-			case Formats.Tga:
-			{
-				await backBuffer.SaveAsTgaAsync($"{fileName}.tga");
-				break;
-			}
-
-			case Formats.Tiff:
-			{
-				await backBuffer.SaveAsTiffAsync($"{fileName}.tiff");
-				break;
-			}
-
-			case Formats.WebP:
-			{
-				await backBuffer.SaveAsWebpAsync($"{fileName}.webp");
-				break;
+				await depthBuffer.SaveAsPngAsync($"{fileName} depth.png", encoder);
 			}
 		}
-
-		if (depthBuffer != null)
+		catch(Exception ex)
 		{
-			PngEncoder encoder = new()
-			{
-				ColorType = PngColorType.Grayscale,
-				BitDepth = PngBitDepth.Bit16,
-			};
-
-			await depthBuffer.SaveAsPngAsync($"{fileName} depth.png", encoder);
+			this.Log.Error(ex, "Error in photo capture");
 		}
+
+		// Restore the resolution
+		if (superResolution)
+		{
+			await Threads.FrameworkThread();
+			this.SetResolution(originalWidth, originalHeight, out _, out _);
+
+			await this.Services.Reshade.WaitForEffectsToLoad();
+		}
+
+		this.IsCapturing = false;
 	}
 
 	private unsafe void OnIsPhotoModeChanged(bool oldValue, bool newValue)
 	{
 		RaptureAtkModule.Instance()->IsUiVisible = newValue;
+	}
+
+	private unsafe bool SetResolution(uint width, uint height, out uint oldWidth, out uint oldHeight)
+	{
+		Threads.VerifyFrameworkThread();
+
+		oldWidth = 0;
+		oldHeight = 0;
+
+		var kernelDev = Device.Instance();
+		if (kernelDev == null)
+			return false;
+
+		oldWidth = kernelDev->Width;
+		oldHeight = kernelDev->Height;
+
+		kernelDev->NewWidth = width;
+		kernelDev->NewHeight = height;
+		kernelDev->RequestResolutionChange = 1;
+
+		return true;
 	}
 
 	public class AspectRatioEntry(string name, double aspect)

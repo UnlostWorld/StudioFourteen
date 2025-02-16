@@ -30,24 +30,33 @@ public class ReshadeService : ServiceBase
 	private readonly LogDelegate onLog;
 	private readonly OpenOverlayDelegate onOpenOverlay;
 	private readonly SetCurrentPresetPathDelegate onSetCurrentPresetPath;
+	private readonly EffectRuntimeDelegate onReshadeReloadedEffects;
+
+	private bool isWaitingForEffectsReload;
+	private bool isWaitingForPresetChange;
 
 	public ReshadeService()
 	{
 		this.onLog = new LogDelegate(this.OnLog);
 		this.onOpenOverlay = new OpenOverlayDelegate(this.OnOpenOverlay);
 		this.onSetCurrentPresetPath = new SetCurrentPresetPathDelegate(this.OnSetCurrentPresetPath);
+		this.onReshadeReloadedEffects = new EffectRuntimeDelegate(this.OnReshadeReloadedEffects);
 	}
 
 	public delegate void ReshadeOverlayChangedDelegate(bool open);
+	public delegate void ReshadeDelegate();
 
 	private delegate void LogDelegate(LogEventLevel logLevel, string message);
 	private delegate bool OpenOverlayDelegate(IntPtr pEffectRuntime, bool open, int inputSource);
 	private delegate void SetCurrentPresetPathDelegate(IntPtr pEffectRuntime, string path);
+	private delegate void EffectRuntimeDelegate(IntPtr pEffectRuntime);
 
 	public event ReshadeOverlayChangedDelegate? ReshadeOverlayChanged;
 
 	public enum AddonEvents : uint
 	{
+		ReshadePresent = 75,
+		ReshadeReloadedEffects = 78,
 		SetCurrentPresetPath = 84,
 		OpenOverlay = 86,
 	}
@@ -117,6 +126,7 @@ public class ReshadeService : ServiceBase
 
 		RegisterEvent(AddonEvents.OpenOverlay, Marshal.GetFunctionPointerForDelegate(this.onOpenOverlay));
 		RegisterEvent(AddonEvents.SetCurrentPresetPath, Marshal.GetFunctionPointerForDelegate(this.onSetCurrentPresetPath));
+		RegisterEvent(AddonEvents.ReshadeReloadedEffects, Marshal.GetFunctionPointerForDelegate(this.onReshadeReloadedEffects));
 	}
 
 	public override void Detach()
@@ -128,7 +138,31 @@ public class ReshadeService : ServiceBase
 
 		UnregisterEvent(AddonEvents.OpenOverlay, Marshal.GetFunctionPointerForDelegate(this.onOpenOverlay));
 		UnregisterEvent(AddonEvents.SetCurrentPresetPath, Marshal.GetFunctionPointerForDelegate(this.onSetCurrentPresetPath));
+		UnregisterEvent(AddonEvents.ReshadeReloadedEffects, Marshal.GetFunctionPointerForDelegate(this.onReshadeReloadedEffects));
 		ShutdownReshadeAddon();
+	}
+
+	public async Task<bool> WaitForEffectsToLoad(long timeout = 60_000)
+	{
+		if (!this.IsReshade || !this.IsAttached)
+			return true;
+
+		Stopwatch sw = new();
+		sw.Start();
+
+		this.isWaitingForPresetChange = true;
+		while(this.isWaitingForPresetChange && sw.ElapsedMilliseconds < timeout)
+			await Task.Delay(100);
+
+		this.isWaitingForEffectsReload = true;
+		while(this.isWaitingForEffectsReload && sw.ElapsedMilliseconds < timeout)
+			await Task.Delay(100);
+
+		bool timedOut = sw.ElapsedMilliseconds > timeout;
+		if (timedOut)
+			this.Log.Error("Timeout waiting for effects to load");
+
+		return !timedOut;
 	}
 
 	protected override void OnFrameworkUpdate(IFramework framework)
@@ -167,6 +201,11 @@ public class ReshadeService : ServiceBase
 
 	private void OnSetCurrentPresetPath(IntPtr pEffectRuntime, string path)
 	{
-		this.Log.Information($"Reshade preset changed: {path}");
+		this.isWaitingForPresetChange = false;
+	}
+
+	private void OnReshadeReloadedEffects(IntPtr pEffectRuntime)
+	{
+		this.isWaitingForEffectsReload = false;
 	}
 }
