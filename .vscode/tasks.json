@@ -1,0 +1,41 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "shell",
+			"label": "MsBuildRelease",
+			"command": "msbuild.exe",
+			"args": [
+				"StudioFourteen.sln",
+				"-nologo",
+				"-nr:false",
+				"-p:platform=x64",
+				"-p:configuration=Release",
+				"-Restore",
+			],
+			"problemMatcher": ["$msCompile"],
+			"group": {
+			  "kind": "build",
+			  "isDefault": false
+			},
+		},
+		{
+			"type": "shell",
+			"label": "MsBuildDebug",
+			"command": "msbuild.exe",
+			"args": [
+				"StudioFourteen.sln",
+				"-nologo",
+				"-nr:false",
+				"-p:platform=x64",
+				"-p:configuration=Debug",
+				"-Restore",
+			],
+			"problemMatcher": ["$msCompile"],
+			"group": {
+			  "kind": "build",
+			  "isDefault": true
+			},
+		}
+	]
+}
