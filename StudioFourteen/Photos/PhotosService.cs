@@ -36,6 +36,8 @@ public partial class PhotosService : ServiceBase
 	[Notify] private bool isPhotoMode;
 	[Notify] private Guides guide;
 	[Notify] private double aspectRatio = 0;
+	[Notify] private uint width = 0;
+	[Notify] private uint height = 0;
 	[Notify] private bool isPortrait;
 	[Notify] private bool showDepth = false;
 	[Notify] private bool isCapturing = false;
@@ -59,15 +61,44 @@ public partial class PhotosService : ServiceBase
 
 	public FastObservableCollection<AspectRatioEntry> AspectRatios { get; init; } = new()
 	{
-		new("Monitor", 0),
+		new("Native", "Monitor", 0, 0, 0),
+		new("Native", "Instagram (1:1)", 1.0, 0, 0),
+		new("Native", "Surface (3:2)", 3.0 / 2.0, 0, 0),
+		new("Native", "Widescreen (16:9)", 16.0 / 9.0, 0, 0),
+		new("Native", "Widescreen (16:10)", 16.0 / 10.0, 0, 0),
+		new("Native", "Cinematic (21:9)", 21.0 / 9.0, 0, 0),
+		new("Native", "Ultrawide (21:9~)", 43 / 18.0, 0, 0),
+		new("Native", "Super-Ultrawide (32:9)", 32.0 / 9.0, 0, 0),
 
-		new("Square, Instagram (1:1)", 1),
-		new("(4:3)", 4.0 / 3.0),
-		new("Widescreen (16:9)", 16.0 / 9.0),
-		new("(16:10)", 16.0 / 10.0),
-		new("Cinematic (21:9)", 21.0 / 9.0),
-		new("Ultrawide (21:9~)", 3440.0 / 1440.0), // Not actually 21:9! thanks monitor industry!
-		new("Super-Ultrawide (32:9)", 32.0 / 9.0),
+		new("Surface (3:2)", "Full HD Plus", 3.0 / 2.0, 1920, 1280),
+		new("Surface (3:2)", "Surface Pro 3", 3.0 / 2.0, 2160, 1440),
+		new("Surface (3:2)", "Surface Pro 4", 3.0 / 2.0, 2736, 1824),
+		new("Surface (3:2)", "Surface Pro X", 3.0 / 2.0, 2880, 1920),
+		new("Surface (3:2)", "Surface Studio", 3.0 / 2.0, 4500, 3000),
+
+		new("Widescreen (16:9)", "720p", 16.0 / 9.0, 1280, 720),
+		new("Widescreen (16:9)", "1080p", 16.0 / 9.0, 1920, 1080),
+		new("Widescreen (16:9)", "1440p", 16.0 / 9.0, 2560, 1440),
+		new("Widescreen (16:9)", "2160p", 16.0 / 9.0, 3840, 2160),
+		new("Widescreen (16:9)", "2880p", 16.0 / 9.0, 5120, 2880),
+		new("Widescreen (16:9)", "4320p", 16.0 / 9.0, 7680, 4320),
+
+		new("Widescreen (16:10)", "Wide SXGA", 8.0 / 5.0, 1440, 900),
+		new("Widescreen (16:10)", "15\" Retina", 8.0 / 5.0, 2880, 1800),
+		new("Widescreen (16:10)", "16\" Retina", 8.0 / 5.0, 3072, 1920),
+
+		new("Cinematic (21:9)", "UltraWide FHD", 21.0 / 9.0, 2560, 1080),
+		new("Cinematic (21:9)", "Ultra-Wide 4K", 21.0 / 9.0, 3840, 1600),
+		new("Cinematic (21:9)", "Ultra-Wide 5K", 21.0 / 9.0, 5120, 2160),
+
+		new("Ultrawide (21:9~)", "1440p", 3440.0 / 1440.0, 3440, 1440),
+		new("Ultrawide (21:9~)", "2160p", 3440.0 / 1440.0, 5160, 2160),
+		new("Ultrawide (21:9~)", "2880p", 3440.0 / 1440.0, 6880, 2880),
+		new("Ultrawide (21:9~)", "4320p", 3440.0 / 1440.0, 10320, 4320),
+
+		new("Super-Ultrawide (32:9)", "1080p", 32.0 / 9, 3840, 1080),
+		new("Super-Ultrawide (32:9)", "1440p", 32.0 / 9, 5120, 1440),
+		new("Super-Ultrawide (32:9)", "2160p", 32.0 / 9, 7680, 2160),
 	};
 
 	public int GuideThickness => 2;
@@ -84,18 +115,16 @@ public partial class PhotosService : ServiceBase
 
 		this.IsCapturing = true;
 
-		bool superResolution = false;
+		bool customResolution = this.width > 0 && this.height > 0;
 		uint originalWidth = 0;
 		uint originalHeight = 0;
 		bool success = false;
 
-		if (superResolution)
+		if (customResolution)
 		{
 			await Threads.FrameworkThread();
 
-			// 4096 x 2160
-			// 8192 x 4320
-			success = this.SetResolution(8192, 4320, out originalWidth, out originalHeight);
+			success = this.SetResolution(this.width, this.height, out originalWidth, out originalHeight);
 			if (!success)
 			{
 				this.IsCapturing = false;
@@ -198,7 +227,7 @@ public partial class PhotosService : ServiceBase
 		}
 
 		// Restore the resolution
-		if (superResolution)
+		if (customResolution)
 		{
 			await Threads.FrameworkThread();
 			this.SetResolution(originalWidth, originalHeight, out _, out _);
@@ -235,14 +264,17 @@ public partial class PhotosService : ServiceBase
 		return true;
 	}
 
-	public class AspectRatioEntry(string name, double aspect)
-	{
-		public string? Name { get; set; } = name;
-		public double Aspect { get; set; } = aspect;
-	}
-
 	public class ImageMetadata : AutoViewModel
 	{
 		[AutoNotify] public uint MapId { get; set; } = 0;
 	}
+}
+
+public class AspectRatioEntry(string groupName, string name, double aspect, uint width, uint height)
+{
+	public string? Name { get; set; } = name;
+	public string? GroupName { get; set; } = groupName;
+	public double Aspect { get; set; } = aspect;
+	public uint Width { get; set; } = width;
+	public uint Height { get; set; } = height;
 }
