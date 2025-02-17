@@ -83,7 +83,7 @@
 						<TextBlock
 							Margin="6"
 							Foreground="{DynamicResource ForegroundLightBrush}"
-							Text="Select an Aspect Ratio and Resolution"
+							Text="{DynamicResource LOC_Photo_AspectPopOut}"
 							TextWrapping="Wrap" />
 					</wpfUtils:PopOut.Header>
 
