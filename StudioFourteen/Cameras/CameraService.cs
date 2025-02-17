@@ -291,11 +291,9 @@ public class CameraService : ServiceBase
 			this.state.FieldOfView = camera->RenderCamera->FoV;
 
 			if (!this.Services.Photos.IsCapturing)
-			{
 				this.current.Tick(FramerateService.AverageDeltaTime);
-				this.current.Calculate(ref this.state, this.last, 1 - blendValue);
-			}
 
+			this.current.Calculate(ref this.state, this.last, 1 - blendValue);
 			this.current.OnRender(ref this.state);
 
 			// in portrait preview mode, rotate the camera 90 degrees.
@@ -324,18 +322,17 @@ public class CameraService : ServiceBase
 			// Update all cameras in the background.
 			// TODO: we could move this to another thread to ensure
 			// the camera detour is fast.
-			if (!this.Services.Photos.IsCapturing)
+			CameraState temp = default;
+			foreach (StudioCameraBase otherCamera in this.Cameras)
 			{
-				CameraState temp = default;
-				foreach (StudioCameraBase otherCamera in this.Cameras)
-				{
-					if (otherCamera == this.current)
-						continue;
+				if (otherCamera == this.current)
+					continue;
 
+				if (!this.Services.Photos.IsCapturing)
 					otherCamera.Tick(FramerateService.AverageDeltaTime);
-					otherCamera.Calculate(ref temp);
-					otherCamera.OnRender(ref temp);
-				}
+
+				otherCamera.Calculate(ref temp);
+				otherCamera.OnRender(ref temp);
 			}
 		}
 
