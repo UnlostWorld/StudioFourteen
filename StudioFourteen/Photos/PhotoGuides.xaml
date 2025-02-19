@@ -109,5 +109,75 @@
 					StrokeThickness="{Binding Services.Photos.GuideThickness}" />
 			</Grid>
 		</Grid>
+
+
+		<Grid>
+			<Rectangle>
+				<Rectangle.Fill>
+					<SolidColorBrush Color="{Binding FillColor}" />
+				</Rectangle.Fill>
+			</Rectangle>
+
+			<Grid
+				Opacity="{Binding PhotoOpacity}"
+				RenderTransformOrigin="0.5, 0.5">
+
+				<Grid.RenderTransform>
+					<TransformGroup>
+						<ScaleTransform ScaleX="{Binding PhotoScale}" ScaleY="{Binding PhotoScale}" />
+						<RotateTransform Angle="{Binding PhotoAngle}" />
+						<TranslateTransform Y="{Binding PhotoOffset}" />
+					</TransformGroup>
+				</Grid.RenderTransform>
+
+				<Grid Margin="0">
+					<Grid.Effect>
+						<DropShadowEffect
+							BlurRadius="20"
+							Direction="0"
+							ShadowDepth="2" />
+					</Grid.Effect>
+
+					<Rectangle Fill="White" />
+
+					<Image
+						Margin="10,10,10,28"
+						Source="{Binding Services.Photos.LastSavedImage}" />
+
+					<TextBlock
+						Margin="6"
+						HorizontalAlignment="Right"
+						VerticalAlignment="Bottom"
+						Text="{Binding Services.Photos.LastSavedImage}" />
+				</Grid>
+			</Grid>
+
+			<Grid
+				Margin="50"
+				HorizontalAlignment="Center"
+				VerticalAlignment="Bottom"
+				Opacity="{Binding SpinnerOpacity}">
+
+				<Border
+					Margin="32,0,0,0"
+					VerticalAlignment="Center"
+					Background="{DynamicResource BackgroundBrush}"
+					CornerRadius="6">
+
+					<TextBlock
+						Grid.Row="1"
+						Margin="22,4,6,4"
+						VerticalAlignment="Center"
+						Foreground="{DynamicResource ForegroundLightBrush}"
+						Text="Waiting for ReShade..." />
+				</Border>
+
+				<ProgressBar
+					Grid.Row="0"
+					HorizontalAlignment="Left"
+					Style="{DynamicResource Spinner}" />
+			</Grid>
+		</Grid>
+
 	</Grid>
 </mvm:View>

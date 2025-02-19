@@ -78,6 +78,8 @@ public partial class PhotoWindow : Panel
 		{
 			this.AspectRatioIndex = this.Services.Photos.AspectRatios.IndexOf(value);
 			this.Services.Photos.AspectRatio = value.Aspect;
+			this.Services.Photos.Width = this.SelectedAspectRatio.Width;
+			this.Services.Photos.Height = this.SelectedAspectRatio.Height;
 
 			this.NotifyPropertyChanged(nameof(this.SelectedAspectRatio));
 			this.ResolutionToggle.IsChecked = false;

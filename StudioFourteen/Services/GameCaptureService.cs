@@ -505,7 +505,10 @@ public class GameCaptureService : ServiceBase
 			}
 			catch(Exception ex)
 			{
+				// Abort the conversion thread.
 				this.Log.Error(ex, "Error processing game capture");
+				this.convertId = int.MaxValue;
+				return;
 			}
 		}
 	}

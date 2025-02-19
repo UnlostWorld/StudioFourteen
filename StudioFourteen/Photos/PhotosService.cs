@@ -41,6 +41,12 @@ public partial class PhotosService : ServiceBase
 	[Notify] private bool isPortrait;
 	[Notify] private bool showDepth = false;
 	[Notify] private bool isCapturing = false;
+	[Notify] private CapturePhases capturePhase;
+	[Notify] private string? lastSavedImage;
+
+	public delegate Task CapturePhaseChangeDelegate(CapturePhases fromPhase, CapturePhases toPhase);
+
+	public event CapturePhaseChangeDelegate? PhaseChanged;
 
 	public enum Guides
 	{
@@ -57,6 +63,19 @@ public partial class PhotosService : ServiceBase
 		Tga,
 		Tiff,
 		WebP,
+	}
+
+	public enum CapturePhases
+	{
+		Starting,
+		ChangingResolution,
+		WaitingForReshade,
+		Capturing,
+		Saving,
+		Saved,
+		RestoreResolution,
+		WaitingForReshadeReset,
+		Done,
 	}
 
 	public FastObservableCollection<AspectRatioEntry> AspectRatios { get; init; } = new()
@@ -113,7 +132,28 @@ public partial class PhotosService : ServiceBase
 		if (this.Settings.PhotoDirectory == null)
 			return;
 
+		// Simulator
+		/*this.IsCapturing = true;
+		await this.DispachCapturePhaseChange(CapturePhases.Starting);
+		await Task.Delay(33);
+		await this.DispachCapturePhaseChange(CapturePhases.ChangingResolution);
+		await Task.Delay(100);
+		await this.DispachCapturePhaseChange(CapturePhases.WaitingForReshade);
+		await Task.Delay(5000);
+		await this.DispachCapturePhaseChange(CapturePhases.Capturing);
+		await Task.Delay(33);
+		await this.DispachCapturePhaseChange(CapturePhases.Saving);
+		await Task.Delay(150);
+		await this.DispachCapturePhaseChange(CapturePhases.RestoreResolution);
+		await Task.Delay(100);
+		await this.DispachCapturePhaseChange(CapturePhases.WaitingForReshadeReset);
+		await Task.Delay(1000);
+		await this.DispachCapturePhaseChange(CapturePhases.Done);
+		return;
+		#pragma warning disable*/
+
 		this.IsCapturing = true;
+		await this.DispachCapturePhaseChange(CapturePhases.Starting);
 
 		bool customResolution = this.width > 0 && this.height > 0;
 		uint originalWidth = 0;
@@ -122,6 +162,7 @@ public partial class PhotosService : ServiceBase
 
 		if (customResolution)
 		{
+			await this.DispachCapturePhaseChange(CapturePhases.ChangingResolution);
 			await Threads.FrameworkThread();
 
 			success = this.SetResolution(this.width, this.height, out originalWidth, out originalHeight);
@@ -131,6 +172,7 @@ public partial class PhotosService : ServiceBase
 				return;
 			}
 
+			await this.DispachCapturePhaseChange(CapturePhases.WaitingForReshade);
 			success = await this.Services.Reshade.WaitForEffectsToLoad();
 			if (!success)
 			{
@@ -146,6 +188,7 @@ public partial class PhotosService : ServiceBase
 		// Capture the screenshot
 		try
 		{
+			await this.DispachCapturePhaseChange(CapturePhases.Capturing);
 			(Image? backBuffer, Image? depthBuffer) = await this.Services.GameCapture.ToImage();
 
 			// Add Metadata
@@ -157,6 +200,8 @@ public partial class PhotosService : ServiceBase
 				backBuffer.Metadata.ExifProfile = new();
 				backBuffer.Metadata.ExifProfile.SetValue(ExifTag.UserComment, metaDataJson);
 			}
+
+			await this.DispachCapturePhaseChange(CapturePhases.Saving);
 
 			// Save the screenshot
 			if (!Directory.Exists(this.Settings.PhotoDirectory))
@@ -175,37 +220,43 @@ public partial class PhotosService : ServiceBase
 						Interleaved = false,
 					};
 
-					await backBuffer.SaveAsJpegAsync($"{fileName}.jpg", encoder);
+					fileName = $"{fileName}.jpg";
+					await backBuffer.SaveAsJpegAsync(fileName, encoder);
 					break;
 				}
 
 				case Formats.Bmp:
 				{
-					await backBuffer.SaveAsBmpAsync($"{fileName}.bmp");
+					fileName = $"{fileName}.bmp";
+					await backBuffer.SaveAsBmpAsync(fileName);
 					break;
 				}
 
 				case Formats.Png:
 				{
-					await backBuffer.SaveAsPngAsync($"{fileName}.png");
+					fileName = $"{fileName}.png";
+					await backBuffer.SaveAsPngAsync(fileName);
 					break;
 				}
 
 				case Formats.Tga:
 				{
-					await backBuffer.SaveAsTgaAsync($"{fileName}.tga");
+					fileName = $"{fileName}.tga";
+					await backBuffer.SaveAsTgaAsync(fileName);
 					break;
 				}
 
 				case Formats.Tiff:
 				{
-					await backBuffer.SaveAsTiffAsync($"{fileName}.tiff");
+					fileName = $"{fileName}.tiff";
+					await backBuffer.SaveAsTiffAsync(fileName);
 					break;
 				}
 
 				case Formats.WebP:
 				{
-					await backBuffer.SaveAsWebpAsync($"{fileName}.webp");
+					fileName = $"{fileName}.webp";
+					await backBuffer.SaveAsWebpAsync(fileName);
 					break;
 				}
 			}
@@ -220,6 +271,9 @@ public partial class PhotosService : ServiceBase
 
 				await depthBuffer.SaveAsPngAsync($"{fileName} depth.png", encoder);
 			}
+
+			this.LastSavedImage = fileName;
+			await this.DispachCapturePhaseChange(CapturePhases.Saved);
 		}
 		catch(Exception ex)
 		{
@@ -229,13 +283,29 @@ public partial class PhotosService : ServiceBase
 		// Restore the resolution
 		if (customResolution)
 		{
+			await this.DispachCapturePhaseChange(CapturePhases.RestoreResolution);
+
+			// Give a small delay for animations to cach up.
+			await Task.Delay(150);
+
 			await Threads.FrameworkThread();
 			this.SetResolution(originalWidth, originalHeight, out _, out _);
 
+			await this.DispachCapturePhaseChange(CapturePhases.WaitingForReshadeReset);
 			await this.Services.Reshade.WaitForEffectsToLoad();
 		}
 
+		await this.DispachCapturePhaseChange(CapturePhases.Done);
 		this.IsCapturing = false;
+	}
+
+	private async Task DispachCapturePhaseChange(CapturePhases newPhaase)
+	{
+		if (this.PhaseChanged == null)
+			return;
+
+		await this.PhaseChanged(this.CapturePhase, newPhaase);
+		this.CapturePhase = newPhaase;
 	}
 
 	private unsafe void OnIsPhotoModeChanged(bool oldValue, bool newValue)

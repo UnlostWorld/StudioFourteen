@@ -22,18 +22,40 @@ using System.Windows;
 using System;
 using System.Windows.Media.Animation;
 using PropertyChanged.SourceGenerator;
+using System.Windows.Media;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using WpfUtils;
+
+using static StudioFourteen.Photos.PhotosService;
 
 [DependencyProperty<double>("BorderHalfWidth")]
 [DependencyProperty<double>("BorderHalfHeight")]
 [DependencyProperty<double>("AspectBoxHeight")]
 [DependencyProperty<double>("AspectBoxWidth")]
+[DependencyProperty<Color>("FillColor")]
+[DependencyProperty<double>("SpinnerOpacity", DefaultValue = 0)]
+[DependencyProperty<double>("PhotoOpacity", DefaultValue = 0)]
+[DependencyProperty<double>("PhotoScale", DefaultValue = 1)]
+[DependencyProperty<double>("PhotoAngle", DefaultValue = 0)]
+[DependencyProperty<double>("PhotoOffset", DefaultValue = 0)]
 public partial class PhotoGuides : View
 {
+	private readonly Stopwatch photoFadeDelayTimer = new();
+
 	private readonly Storyboard changeAspectStoryboard;
 	private readonly DoubleAnimation borderWidthAnimation;
 	private readonly DoubleAnimation borderHeightAnimation;
 	private readonly DoubleAnimation aspectBoxHeightAnimation;
 	private readonly DoubleAnimation aspectBoxWidthAnimation;
+
+	private readonly Storyboard captureStoryboard;
+	private readonly ColorAnimation fillColorAnimation;
+	private readonly DoubleAnimation spinnerOpacityAnimation;
+	private readonly DoubleAnimation photoOpacityAnimation;
+	private readonly DoubleAnimation photoScaleAnimation;
+	private readonly DoubleAnimation photoAngleAnimation;
+	private readonly DoubleAnimation photoOffsetAnimation;
 
 	[Notify] private int captureAngle = 0;
 	[Notify] private bool showCapture = false;
@@ -41,56 +63,22 @@ public partial class PhotoGuides : View
 	public PhotoGuides()
 	{
 		this.changeAspectStoryboard = new();
+		this.borderWidthAnimation = this.changeAspectStoryboard.CreateAnimation<DoubleAnimation>(this, BorderHalfWidthProperty, 100, Easing.SineOut);
+		this.borderHeightAnimation = this.changeAspectStoryboard.CreateAnimation<DoubleAnimation>(this, BorderHalfHeightProperty, 100, Easing.SineOut);
+		this.aspectBoxHeightAnimation = this.changeAspectStoryboard.CreateAnimation<DoubleAnimation>(this, AspectBoxHeightProperty, 100, Easing.SineOut);
+		this.aspectBoxWidthAnimation = this.changeAspectStoryboard.CreateAnimation<DoubleAnimation>(this, AspectBoxWidthProperty, 100, Easing.SineOut);
 
-		// BorderHalfWidth
-		this.borderWidthAnimation = new();
-		this.borderWidthAnimation.Duration = new Duration(TimeSpan.FromMilliseconds(100));
-		this.borderWidthAnimation.EasingFunction = new SineEase()
-		{
-			EasingMode = EasingMode.EaseOut,
-		};
-
-		Storyboard.SetTarget(this.borderWidthAnimation, this);
-		Storyboard.SetTargetProperty(this.borderWidthAnimation, new(nameof(this.BorderHalfWidth)));
-		this.changeAspectStoryboard.Children.Add(this.borderWidthAnimation);
-
-		// BorderHalfHeight
-		this.borderHeightAnimation = new();
-		this.borderHeightAnimation.Duration = new Duration(TimeSpan.FromMilliseconds(100));
-		this.borderHeightAnimation.EasingFunction = new SineEase()
-		{
-			EasingMode = EasingMode.EaseOut,
-		};
-
-		Storyboard.SetTarget(this.borderHeightAnimation, this);
-		Storyboard.SetTargetProperty(this.borderHeightAnimation, new(nameof(this.BorderHalfHeight)));
-		this.changeAspectStoryboard.Children.Add(this.borderHeightAnimation);
-
-		// AspectBoxHeight
-		this.aspectBoxHeightAnimation = new();
-		this.aspectBoxHeightAnimation.Duration = new Duration(TimeSpan.FromMilliseconds(100));
-		this.aspectBoxHeightAnimation.EasingFunction = new SineEase()
-		{
-			EasingMode = EasingMode.EaseOut,
-		};
-
-		Storyboard.SetTarget(this.aspectBoxHeightAnimation, this);
-		Storyboard.SetTargetProperty(this.aspectBoxHeightAnimation, new(nameof(this.AspectBoxHeight)));
-		this.changeAspectStoryboard.Children.Add(this.aspectBoxHeightAnimation);
-
-		// AspectBoxWidth
-		this.aspectBoxWidthAnimation = new();
-		this.aspectBoxWidthAnimation.Duration = new Duration(TimeSpan.FromMilliseconds(100));
-		this.aspectBoxWidthAnimation.EasingFunction = new SineEase()
-		{
-			EasingMode = EasingMode.EaseOut,
-		};
-
-		Storyboard.SetTarget(this.aspectBoxWidthAnimation, this);
-		Storyboard.SetTargetProperty(this.aspectBoxWidthAnimation, new(nameof(this.AspectBoxWidth)));
-		this.changeAspectStoryboard.Children.Add(this.aspectBoxWidthAnimation);
+		// Capture
+		this.captureStoryboard = new();
+		this.fillColorAnimation = this.captureStoryboard.CreateAnimation<ColorAnimation>(this, FillColorProperty, 100, Easing.SineOut);
+		this.spinnerOpacityAnimation = this.captureStoryboard.CreateAnimation<DoubleAnimation>(this, SpinnerOpacityProperty, 250, Easing.SineOut);
+		this.photoOpacityAnimation = this.captureStoryboard.CreateAnimation<DoubleAnimation>(this, PhotoOpacityProperty, 100, Easing.SineOut);
+		this.photoScaleAnimation = this.captureStoryboard.CreateAnimation<DoubleAnimation>(this, PhotoScaleProperty, 1000, Easing.SineInOut);
+		this.photoAngleAnimation = this.captureStoryboard.CreateAnimation<DoubleAnimation>(this, PhotoAngleProperty, 1000, Easing.SineOut);
+		this.photoOffsetAnimation = this.captureStoryboard.CreateAnimation<DoubleAnimation>(this, PhotoOffsetProperty, 1000, Easing.SineIn);
 
 		this.Services.Photos.PropertyChanged += this.OnPhotosPropertyChanged;
+		this.Services.Photos.PhaseChanged += this.OnPhaseChanged;
 		this.CalculateAspectBox();
 	}
 
@@ -173,5 +161,158 @@ public partial class PhotoGuides : View
 			this.CaptureAngle = this.Services.Photos.IsPortrait ? -90 : 0;
 			this.ShowCapture = this.Services.Photos.IsPortrait || this.Services.Photos.ShowDepth;
 		});
+	}
+
+	private async Task OnPhaseChanged(CapturePhases fromPhase, CapturePhases toPhase)
+	{
+		await this.MainThread();
+
+		this.StopStoryboard(this.captureStoryboard);
+
+		switch (toPhase)
+		{
+			case CapturePhases.Starting:
+			{
+				this.fillColorAnimation.From = Colors.Transparent;
+				this.fillColorAnimation.To = Colors.Transparent;
+				this.fillColorAnimation.Duration = new(TimeSpan.FromMilliseconds(1));
+
+				this.photoOpacityAnimation.Duration = new(TimeSpan.FromMilliseconds(1));
+				this.photoOpacityAnimation.From = 0;
+				this.photoOpacityAnimation.To = 0;
+				this.photoScaleAnimation.Duration = new(TimeSpan.FromMilliseconds(1));
+				this.photoScaleAnimation.To = 1;
+				this.photoAngleAnimation.Duration = new(TimeSpan.FromMilliseconds(1));
+				this.photoAngleAnimation.To = 0;
+				this.photoOffsetAnimation.Duration = new(TimeSpan.FromMilliseconds(1));
+				this.photoOffsetAnimation.To = 0;
+
+				this.BeginStoryboard(this.captureStoryboard);
+				await Task.Delay(1);
+
+				break;
+			}
+
+			case CapturePhases.ChangingResolution:
+			case CapturePhases.WaitingForReshade:
+			{
+				this.fillColorAnimation.From = null;
+				this.fillColorAnimation.To = Colors.Black;
+				this.fillColorAnimation.Duration = new(TimeSpan.FromMilliseconds(100));
+
+				this.spinnerOpacityAnimation.To = 1;
+
+				this.photoOpacityAnimation.Duration = new(TimeSpan.FromMilliseconds(1));
+				this.photoOpacityAnimation.To = 0;
+
+				this.BeginStoryboard(this.captureStoryboard);
+				await Task.Delay(100);
+				break;
+			}
+
+			case CapturePhases.Capturing:
+			case CapturePhases.Saving:
+			{
+				this.fillColorAnimation.From = null;
+				this.fillColorAnimation.To = Colors.White;
+				this.fillColorAnimation.Duration = new(TimeSpan.FromMilliseconds(50));
+
+				this.spinnerOpacityAnimation.To = 0;
+				this.photoOpacityAnimation.To = 0;
+
+				this.BeginStoryboard(this.captureStoryboard);
+				await Task.Delay(75);
+				break;
+			}
+
+			case CapturePhases.Saved:
+			{
+				this.fillColorAnimation.From = null;
+				this.fillColorAnimation.To = Colors.White;
+				this.fillColorAnimation.Duration = new(TimeSpan.FromMilliseconds(100));
+
+				this.spinnerOpacityAnimation.To = 0;
+
+				this.photoOpacityAnimation.Duration = new(TimeSpan.FromMilliseconds(150));
+				this.photoOpacityAnimation.To = 0;
+				this.photoOpacityAnimation.To = 1;
+				this.photoScaleAnimation.Duration = new(TimeSpan.FromMilliseconds(150));
+				this.photoScaleAnimation.To = 0.75;
+				this.photoAngleAnimation.Duration = new(TimeSpan.FromMilliseconds(150));
+				this.photoAngleAnimation.To = (Random.Shared.NextDouble() * 10) - 5;
+				this.photoOffsetAnimation.Duration = new(TimeSpan.FromMilliseconds(150));
+				this.photoOffsetAnimation.To = 0;
+
+				this.photoFadeDelayTimer.Restart();
+
+				this.BeginStoryboard(this.captureStoryboard);
+				await Task.Delay(150);
+
+				break;
+			}
+
+			case CapturePhases.RestoreResolution:
+			{
+				this.fillColorAnimation.From = null;
+				this.fillColorAnimation.To = Colors.Black;
+				this.fillColorAnimation.Duration = new(TimeSpan.FromMilliseconds(250));
+
+				this.spinnerOpacityAnimation.To = 1;
+				this.photoOpacityAnimation.From = 1;
+				this.photoOpacityAnimation.To = 1;
+
+				this.BeginStoryboard(this.captureStoryboard);
+				await Task.Delay(250);
+				break;
+			}
+
+			case CapturePhases.WaitingForReshadeReset:
+			{
+				this.photoOpacityAnimation.From = 1;
+				this.photoOpacityAnimation.To = 1;
+
+				this.BeginStoryboard(this.captureStoryboard);
+				await Task.Delay(250);
+				break;
+			}
+
+			case CapturePhases.Done:
+			{
+				this.fillColorAnimation.From = null;
+				this.fillColorAnimation.To = Colors.Transparent;
+				this.fillColorAnimation.Duration = new(TimeSpan.FromMilliseconds(500));
+				this.spinnerOpacityAnimation.To = 0;
+				this.photoOpacityAnimation.From = 1;
+				this.photoOpacityAnimation.To = 1;
+				this.BeginStoryboard(this.captureStoryboard);
+				await Task.Delay(500);
+
+				// Ensure the taken photo remains on-screen for at least 1.5 seconds
+				// before fading out.
+				while (this.photoFadeDelayTimer.ElapsedMilliseconds < 1500)
+					await Task.Delay(100);
+
+				this.photoFadeDelayTimer.Stop();
+				await this.MainThread();
+
+				this.fillColorAnimation.From = Colors.Transparent;
+				this.fillColorAnimation.To = Colors.Transparent;
+				this.fillColorAnimation.Duration = new(TimeSpan.FromMilliseconds(500));
+
+				this.photoOpacityAnimation.Duration = new(TimeSpan.FromMilliseconds(500));
+				this.photoOpacityAnimation.From = 1;
+				this.photoOpacityAnimation.To = 0;
+				this.photoScaleAnimation.Duration = new(TimeSpan.FromMilliseconds(500));
+				this.photoScaleAnimation.To = 0.25;
+				this.photoAngleAnimation.Duration = new(TimeSpan.FromMilliseconds(500));
+				this.photoAngleAnimation.To = 0;
+				this.photoOffsetAnimation.Duration = new(TimeSpan.FromMilliseconds(500));
+				this.photoOffsetAnimation.To = 400;
+
+				this.BeginStoryboard(this.captureStoryboard);
+				await Task.Delay(500);
+				break;
+			}
+		}
 	}
 }
