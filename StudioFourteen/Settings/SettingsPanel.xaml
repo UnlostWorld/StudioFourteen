@@ -127,7 +127,9 @@
 			</Grid>
 		</TabItem>
 
-		<TabItem Header="{DynamicResource LOC_Settings_Photos}" x:Name="PhotosSection">
+		<TabItem
+			x:Name="PhotosSection"
+			Header="{DynamicResource LOC_Settings_Photos}">
 			<StackPanel>
 
 				<TextBlock
@@ -170,6 +172,18 @@
 				<ToggleButton
 					Content="{DynamicResource LOC_Settings_Photos_CaptureDepth}"
 					IsChecked="{Binding Settings.PhotoCaptureDepth}" />
+
+				<GroupBox Header="{DynamicResource LOC_Settings_Photos_Animations}">
+					<StackPanel>
+						<ToggleButton
+							Content="{DynamicResource LOC_Settings_Photos_Flash}"
+							IsChecked="{Binding Settings.PhotoAnimationFlash}" />
+
+						<ToggleButton
+							Content="{DynamicResource LOC_Settings_Photos_Review}"
+							IsChecked="{Binding Settings.PhotoAnimationPreview}" />
+					</StackPanel>
+				</GroupBox>
 
 			</StackPanel>
 		</TabItem>

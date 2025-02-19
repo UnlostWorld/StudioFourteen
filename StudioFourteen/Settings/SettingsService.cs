@@ -113,6 +113,9 @@ public partial class SettingsService : ServiceBase
 		[Notify] private bool photoIncludeMetaData = true;
 		[Notify] private bool photoCaptureDepth = false;
 
+		[Notify] private bool photoAnimationFlash = true;
+		[Notify] private bool photoAnimationPreview = true;
+
 		// Analytics
 		[Notify] private bool hasConfirmedAnalyticOptions = false;
 		[Notify] private bool sendOptionalAnalytics = false;

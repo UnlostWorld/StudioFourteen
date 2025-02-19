@@ -24,6 +24,7 @@ using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
+using StudioFourteen.Settings;
 
 public class View : UserControl, IAutoNotify
 {
@@ -88,6 +89,7 @@ public class View : UserControl, IAutoNotify
 	public event PropertyChangedEventHandler? PropertyChanged;
 
 	public ServiceManager Services => ServiceManager.Instance;
+	public SettingsService.Configuration Settings => this.Services.Settings.Current;
 
 	public virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
 	{

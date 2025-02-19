@@ -183,6 +183,9 @@
 	<sys:String x:Key="LOC_Settings_Photos_Format_TGA">Targa (*.tga)</sys:String>
 	<sys:String x:Key="LOC_Settings_Photos_Format_TIFF">Tiff (*.tiff)</sys:String>
 	<sys:String x:Key="LOC_Settings_Photos_Format_WEBP">WebP (*.webp)</sys:String>
+	<sys:String x:Key="LOC_Settings_Photos_Animations">Animations</sys:String>
+	<sys:String x:Key="LOC_Settings_Photos_Flash">Flash</sys:String>
+	<sys:String x:Key="LOC_Settings_Photos_Review">Review captured photo</sys:String>
 
 	<sys:String x:Key="LOC_Spa_Title">Studio Fourteen</sys:String>
 
