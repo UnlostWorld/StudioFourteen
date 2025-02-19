@@ -26,6 +26,7 @@ public class ServiceManager : ServiceManagerBase
 	public Mvm.AutoPropertyNotifyService AutoNotify { get; init; } = new();
 	public WindowService Windows { get; init; } = new();
 	public Settings.SettingsService Settings { get; init; } = new();
+	public ThemeService Theme { get; set; } = new();
 	public FramerateService Framerate { get; init; } = new();
 	public StudioService Studio { get; init; } = new();
 	public Data.DataService Data { get; init; } = new();

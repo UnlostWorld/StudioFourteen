@@ -264,19 +264,19 @@
 									Style="{StaticResource TitlebarToggleButton}"
 									ToolTip="{DynamicResource LOC_EmbedPanelTooltip}"
 									Visibility="{TemplateBinding CanChangeEmbed,
-																 Converter={StaticResource B2V}}">
+									                             Converter={StaticResource B2V}}">
 									<Grid>
 										<wpfUtils:IconBlock
 											FontSize="10"
 											Icon="ArrowRightFromBracket"
 											Visibility="{TemplateBinding IsEmbedded,
-																		 Converter={StaticResource B2V}}" />
+											                             Converter={StaticResource B2V}}" />
 
 										<wpfUtils:IconBlock
 											FontSize="10"
 											Icon="ArrowRightToBracket"
 											Visibility="{TemplateBinding IsEmbedded,
-																		 Converter={StaticResource !B2V}}" />
+											                             Converter={StaticResource !B2V}}" />
 									</Grid>
 								</ToggleButton>
 
@@ -293,13 +293,13 @@
 											FontSize="10"
 											Icon="WindowRestore"
 											Visibility="{TemplateBinding IsMaximized,
-																		 Converter={StaticResource B2V}}" />
+											                             Converter={StaticResource B2V}}" />
 
 										<wpfUtils:IconBlock
 											FontSize="10"
 											Icon="WindowMaximize"
 											Visibility="{TemplateBinding IsMaximized,
-																		 Converter={StaticResource !B2V}}" />
+											                             Converter={StaticResource !B2V}}" />
 									</Grid>
 								</ToggleButton>
 
@@ -311,7 +311,7 @@
 									Style="{StaticResource TitlebarButton}"
 									ToolTip="{DynamicResource LOC_ClosePanelTooltip}"
 									Visibility="{TemplateBinding CanClose,
-																 Converter={StaticResource B2V}}">
+									                             Converter={StaticResource B2V}}">
 
 									<Button.Resources>
 										<SolidColorBrush
@@ -347,7 +347,7 @@
 					x:Name="WindowBorder"
 					BorderBrush="{DynamicResource BackgroundBrush}"
 					BorderThickness="1"
-					CornerRadius="6" />
+					CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
 			</Grid>
 		</AdornerDecorator>
 
@@ -369,13 +369,17 @@
 							<DoubleAnimationUsingKeyFrames
 								Storyboard.TargetName="WindowScale"
 								Storyboard.TargetProperty="ScaleX">
-								<EasingDoubleKeyFrame KeyTime="0:00:00.200" Value="0.98">
+								<EasingDoubleKeyFrame
+									KeyTime="0:00:00.200"
+									Value="0.98">
 									<EasingDoubleKeyFrame.EasingFunction>
 										<SineEase EasingMode="EaseOut" />
 									</EasingDoubleKeyFrame.EasingFunction>
 								</EasingDoubleKeyFrame>
 
-								<EasingDoubleKeyFrame KeyTime="0:00:00.300" Value="1">
+								<EasingDoubleKeyFrame
+									KeyTime="0:00:00.300"
+									Value="1">
 									<EasingDoubleKeyFrame.EasingFunction>
 										<SineEase EasingMode="EaseIn" />
 									</EasingDoubleKeyFrame.EasingFunction>
@@ -390,13 +394,17 @@
 							<DoubleAnimationUsingKeyFrames
 								Storyboard.TargetName="WindowScale"
 								Storyboard.TargetProperty="ScaleX">
-								<EasingDoubleKeyFrame KeyTime="0:00:00.200" Value="1.02">
+								<EasingDoubleKeyFrame
+									KeyTime="0:00:00.200"
+									Value="1.02">
 									<EasingDoubleKeyFrame.EasingFunction>
 										<SineEase EasingMode="EaseOut" />
 									</EasingDoubleKeyFrame.EasingFunction>
 								</EasingDoubleKeyFrame>
 
-								<EasingDoubleKeyFrame KeyTime="0:00:00.300" Value="1">
+								<EasingDoubleKeyFrame
+									KeyTime="0:00:00.300"
+									Value="1">
 									<EasingDoubleKeyFrame.EasingFunction>
 										<SineEase EasingMode="EaseIn" />
 									</EasingDoubleKeyFrame.EasingFunction>

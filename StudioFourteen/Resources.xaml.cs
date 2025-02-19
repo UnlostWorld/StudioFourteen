@@ -16,18 +16,39 @@
 namespace StudioFourteen;
 
 using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Threading;
 
 public partial class Resources : ResourceDictionary
 {
+	private static readonly List<Uri> PendingMergedDictionaries = new();
+	private static readonly List<WeakReference<Resources>> ResourceInstances = new();
+
+	private readonly Dispatcher? ownerDispatcher;
+
+	public Resources()
+	{
+		this.ownerDispatcher = Dispatcher.CurrentDispatcher;
+	}
+
 	public static Resources? Shared { get; private set; }
 
 	public static Resources Load()
 	{
-		LoadShared();
-
 		Resources resources = new();
 		resources.Source = new("pack://application:,,,/StudioFourteen;component/Resources.xaml");
+
+		foreach(Uri dictionary in PendingMergedDictionaries)
+		{
+			Resources merged = new();
+			merged.Source = dictionary;
+			resources.MergedDictionaries.Add(merged);
+		}
+
+		ResourceInstances.Add(new(resources));
+
 		return resources;
 	}
 
@@ -38,13 +59,77 @@ public partial class Resources : ResourceDictionary
 
 		try
 		{
-			Resources resources = new();
-			resources.Source = new("pack://application:,,,/StudioFourteen;component/Resources.xaml");
-			Shared = resources;
+			Shared = Load();
 		}
 		catch (Exception ex)
 		{
-			Logging.Shared.Error(ex, "Error loading resources");
+			Logging.Shared.Error(ex, "Error loading shared resources");
+		}
+	}
+
+	public static void UnMergeDictionary(Uri uri)
+	{
+		PendingMergedDictionaries.Remove(uri);
+
+		if (Shared != null)
+		{
+			Shared.ownerDispatcher?.Invoke(() =>
+			{
+				foreach(ResourceDictionary dict in Shared.MergedDictionaries)
+				{
+					if (dict.Source == uri)
+					{
+						Shared.MergedDictionaries.Remove(dict);
+						break;
+					}
+				}
+			});
+		}
+
+		foreach (WeakReference<Resources> resourceReference in ResourceInstances)
+		{
+			if (resourceReference.TryGetTarget(out Resources? resource) && resource != null)
+			{
+				resource.ownerDispatcher?.Invoke(() =>
+				{
+					foreach (ResourceDictionary dict in resource.MergedDictionaries)
+					{
+						if (dict.Source == uri)
+						{
+							resource.MergedDictionaries.Remove(dict);
+							break;
+						}
+					}
+				});
+			}
+		}
+	}
+
+	public static void MergeDictionary(Uri uri)
+	{
+		PendingMergedDictionaries.Add(uri);
+
+		if (Shared != null)
+		{
+			Shared.ownerDispatcher?.Invoke(() =>
+			{
+				Resources merged = new();
+				merged.Source = uri;
+				Shared.MergedDictionaries.Add(merged);
+			});
+		}
+
+		foreach(WeakReference<Resources> resourceReference in ResourceInstances)
+		{
+			if (resourceReference.TryGetTarget(out Resources? resource) && resource != null)
+			{
+				resource.ownerDispatcher?.Invoke(() =>
+				{
+					Resources merged = new();
+					merged.Source = uri;
+					resource.MergedDictionaries.Add(merged);
+				});
+			}
 		}
 	}
 

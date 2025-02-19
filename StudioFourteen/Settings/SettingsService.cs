@@ -129,6 +129,7 @@ public partial class SettingsService : ServiceBase
 		[Notify] private bool showOverlays = true;
 		[Notify] private Dictionary<string, int> overlays = new();
 		[Notify] private List<string> openPanels = new();
+		[Notify] private string theme = "Dark";
 
 		// Input
 		[Notify] private bool enableBinds = true;

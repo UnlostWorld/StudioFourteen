@@ -178,7 +178,24 @@ public class PanelService : ServiceBase
 	public override async Task Start()
 	{
 		await base.Start();
+		await this.StartPanels();
+	}
 
+	public override async Task Stop()
+	{
+		await base.Stop();
+		this.StopPanels();
+	}
+
+	public async Task RestartPanels()
+	{
+		this.StopPanels();
+		await Task.Delay(100);
+		await this.StartPanels();
+	}
+
+	private async Task StartPanels()
+	{
 		this.backgroundWindow = await PanelWindow.CreatePanelWindow<BackgroundWindow>();
 		this.backgroundWindow?.Dispatcher.InvokeAsync(() => this.backgroundWindow.Show());
 
@@ -191,10 +208,8 @@ public class PanelService : ServiceBase
 		}
 	}
 
-	public override async Task Stop()
+	private void StopPanels()
 	{
-		await base.Stop();
-
 		this.backgroundWindow?.Dispatcher.Invoke(this.backgroundWindow.Close);
 		this.navigationWindow?.Dispatcher.Invoke(this.navigationWindow.Close);
 

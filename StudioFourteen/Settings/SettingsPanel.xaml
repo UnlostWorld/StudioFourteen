@@ -7,7 +7,9 @@
 	xmlns:local="clr-namespace:StudioFourteen.Studio"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
+	xmlns:services="clr-namespace:StudioFourteen.Services"
 	xmlns:settings="clr-namespace:StudioFourteen.Settings"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="{DynamicResource LOC_Settings}"
 	Width="300"
 	Height="450"
@@ -21,6 +23,28 @@
 
 		<TabItem Header="{DynamicResource LOC_Settings_Interface}">
 			<StackPanel>
+
+				<TextBlock
+					Style="{StaticResource LeftLabel}"
+					Text="{DynamicResource LOC_Settings_Interface_Theme}" />
+
+				<ComboBox
+					ItemsSource="{Binding Services.Theme.Themes}"
+					SelectedItem="{Binding Services.Theme.CurrentTheme}">
+
+					<wpfUtils:PopOut.Header>
+						<TextBlock
+							Margin="6"
+							Text="{DynamicResource LOC_Settings_Interface_ThemeToolTip}" />
+					</wpfUtils:PopOut.Header>
+
+					<ComboBox.ItemTemplate>
+						<DataTemplate DataType="{x:Type services:Theme}">
+							<TextBlock Text="{Binding Name}" />
+						</DataTemplate>
+					</ComboBox.ItemTemplate>
+				</ComboBox>
+
 				<ToggleButton
 					Grid.Row="0"
 					Margin="1"

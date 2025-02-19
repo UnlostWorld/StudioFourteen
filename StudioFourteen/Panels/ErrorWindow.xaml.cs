@@ -58,6 +58,7 @@ public partial class ErrorWindow : Panel
 	{
 		instance = this;
 		isOpening = false;
+
 		base.OnOpened();
 	}
 
