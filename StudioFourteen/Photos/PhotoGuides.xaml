@@ -142,13 +142,13 @@
 
 					<Image
 						Margin="10,10,10,28"
-						Source="{Binding Services.Photos.LastSavedImage}" />
+						Source="{Binding LastSavedImage}" />
 
 					<TextBlock
 						Margin="6"
 						HorizontalAlignment="Right"
 						VerticalAlignment="Bottom"
-						Text="{Binding Services.Photos.LastSavedImage}" />
+						Text="{Binding Services.Photos.LastSavedImagePath}" />
 				</Grid>
 			</Grid>
 

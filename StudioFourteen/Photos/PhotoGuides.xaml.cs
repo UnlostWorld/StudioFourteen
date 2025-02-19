@@ -15,16 +15,18 @@
 
 namespace StudioFourteen.Photos;
 
-using StudioFourteen.Mvm;
-using DependencyPropertyGenerator;
-using System.ComponentModel;
-using System.Windows;
 using System;
-using System.Windows.Media.Animation;
-using PropertyChanged.SourceGenerator;
-using System.Windows.Media;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
+using System.Windows.Media.Imaging;
+using DependencyPropertyGenerator;
+using PropertyChanged.SourceGenerator;
+using StudioFourteen.Mvm;
 using WpfUtils;
 
 using static StudioFourteen.Photos.PhotosService;
@@ -59,6 +61,7 @@ public partial class PhotoGuides : View
 
 	[Notify] private int captureAngle = 0;
 	[Notify] private bool showCapture = false;
+	[Notify] private WriteableBitmap? lastSavedImage;
 
 	public PhotoGuides()
 	{
@@ -163,7 +166,7 @@ public partial class PhotoGuides : View
 		});
 	}
 
-	private async Task OnPhaseChanged(CapturePhases fromPhase, CapturePhases toPhase)
+	private async Task OnPhaseChanged(CapturePhases fromPhase, CapturePhases toPhase, CancellationToken skipAnimationsToken)
 	{
 		await this.MainThread();
 
@@ -206,12 +209,11 @@ public partial class PhotoGuides : View
 				this.photoOpacityAnimation.To = 0;
 
 				this.BeginStoryboard(this.captureStoryboard);
-				await Task.Delay(100);
+				await Task.Delay(100, skipAnimationsToken);
 				break;
 			}
 
 			case CapturePhases.Capturing:
-			case CapturePhases.Saving:
 			{
 				this.fillColorAnimation.From = null;
 				this.fillColorAnimation.To = Colors.White;
@@ -221,7 +223,14 @@ public partial class PhotoGuides : View
 				this.photoOpacityAnimation.To = 0;
 
 				this.BeginStoryboard(this.captureStoryboard);
-				await Task.Delay(75);
+				await Task.Delay(75, skipAnimationsToken);
+				break;
+			}
+
+			case CapturePhases.Saving:
+			{
+				this.Services.GameCapture.DrawBackBufferToBitmap(ref this.lastSavedImage);
+				this.NotifyPropertyChanged(nameof(this.LastSavedImage));
 				break;
 			}
 
@@ -246,7 +255,7 @@ public partial class PhotoGuides : View
 				this.photoFadeDelayTimer.Restart();
 
 				this.BeginStoryboard(this.captureStoryboard);
-				await Task.Delay(150);
+				await Task.Delay(150, skipAnimationsToken);
 
 				break;
 			}
@@ -262,7 +271,7 @@ public partial class PhotoGuides : View
 				this.photoOpacityAnimation.To = 1;
 
 				this.BeginStoryboard(this.captureStoryboard);
-				await Task.Delay(250);
+				await Task.Delay(250, skipAnimationsToken);
 				break;
 			}
 
@@ -272,7 +281,7 @@ public partial class PhotoGuides : View
 				this.photoOpacityAnimation.To = 1;
 
 				this.BeginStoryboard(this.captureStoryboard);
-				await Task.Delay(250);
+				await Task.Delay(250, skipAnimationsToken);
 				break;
 			}
 
@@ -285,12 +294,11 @@ public partial class PhotoGuides : View
 				this.photoOpacityAnimation.From = 1;
 				this.photoOpacityAnimation.To = 1;
 				this.BeginStoryboard(this.captureStoryboard);
-				await Task.Delay(500);
 
-				// Ensure the taken photo remains on-screen for at least 1.5 seconds
-				// before fading out.
-				while (this.photoFadeDelayTimer.ElapsedMilliseconds < 1500)
-					await Task.Delay(100);
+				this.photoFadeDelayTimer.Start();
+
+				if (this.photoFadeDelayTimer.ElapsedMilliseconds < 1500)
+					await Task.Delay((int)(1500 - this.photoFadeDelayTimer.ElapsedMilliseconds), skipAnimationsToken);
 
 				this.photoFadeDelayTimer.Stop();
 				await this.MainThread();
@@ -310,7 +318,8 @@ public partial class PhotoGuides : View
 				this.photoOffsetAnimation.To = 400;
 
 				this.BeginStoryboard(this.captureStoryboard);
-				await Task.Delay(500);
+				await Task.Delay(500, skipAnimationsToken);
+
 				break;
 			}
 		}

@@ -30,9 +30,12 @@ using System;
 using System.IO;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
 using StudioFourteen.Utilities;
+using System.Threading;
 
 public partial class PhotosService : ServiceBase
 {
+	private CancellationTokenSource captureCancellation = new();
+
 	[Notify] private bool isPhotoMode;
 	[Notify] private Guides guide;
 	[Notify] private double aspectRatio = 0;
@@ -42,9 +45,9 @@ public partial class PhotosService : ServiceBase
 	[Notify] private bool showDepth = false;
 	[Notify] private bool isCapturing = false;
 	[Notify] private CapturePhases capturePhase;
-	[Notify] private string? lastSavedImage;
+	[Notify] private string? lastSavedImagePath;
 
-	public delegate Task CapturePhaseChangeDelegate(CapturePhases fromPhase, CapturePhases toPhase);
+	public delegate Task CapturePhaseChangeDelegate(CapturePhases fromPhase, CapturePhases toPhase, CancellationToken skipAnimationsToken);
 
 	public event CapturePhaseChangeDelegate? PhaseChanged;
 
@@ -132,27 +135,23 @@ public partial class PhotosService : ServiceBase
 		if (this.Settings.PhotoDirectory == null)
 			return;
 
-		// Simulator
-		/*this.IsCapturing = true;
-		await this.DispachCapturePhaseChange(CapturePhases.Starting);
-		await Task.Delay(33);
-		await this.DispachCapturePhaseChange(CapturePhases.ChangingResolution);
-		await Task.Delay(100);
-		await this.DispachCapturePhaseChange(CapturePhases.WaitingForReshade);
-		await Task.Delay(5000);
-		await this.DispachCapturePhaseChange(CapturePhases.Capturing);
-		await Task.Delay(33);
-		await this.DispachCapturePhaseChange(CapturePhases.Saving);
-		await Task.Delay(150);
-		await this.DispachCapturePhaseChange(CapturePhases.RestoreResolution);
-		await Task.Delay(100);
-		await this.DispachCapturePhaseChange(CapturePhases.WaitingForReshadeReset);
-		await Task.Delay(1000);
-		await this.DispachCapturePhaseChange(CapturePhases.Done);
-		return;
-		#pragma warning disable*/
+		if (this.IsCapturing)
+		{
+			// If we're already waiting on a queued capture, dont queue another one.
+			if (this.captureCancellation.IsCancellationRequested)
+				return;
+
+			this.captureCancellation.Cancel();
+
+			while (this.IsCapturing)
+			{
+				await Task.Delay(10);
+			}
+		}
 
 		this.IsCapturing = true;
+		this.captureCancellation = new();
+
 		await this.DispachCapturePhaseChange(CapturePhases.Starting);
 
 		bool customResolution = this.width > 0 && this.height > 0;
@@ -208,7 +207,29 @@ public partial class PhotosService : ServiceBase
 				Directory.CreateDirectory(this.Settings.PhotoDirectory);
 
 			// Custom formatting to avoid culture formats producing invalid file names.
-			string fileName = $"{this.Settings.PhotoDirectory}/{DateTime.Now.ToString("yyyy-MM-dd HH-mm-ss")}";
+			string fileName;
+			string extension = this.Settings.PhotoFormat switch
+			{
+				Formats.Jpeg => "jpg",
+				Formats.Bmp => "bmp",
+				Formats.Png => "png",
+				Formats.Tga => "tga",
+				Formats.Tiff => "tiff",
+				Formats.WebP => "webp",
+				_ => throw new NotSupportedException(),
+			};
+
+			int count = 0;
+			do
+			{
+				fileName = $"{this.Settings.PhotoDirectory}/{DateTime.Now.ToString("yyyy-MM-dd HH-mm")}.{extension}";
+
+				if (count > 0)
+					fileName = $"{this.Settings.PhotoDirectory}/{DateTime.Now.ToString("yyyy-MM-dd HH-mm")} ({count}).{extension}";
+
+				count++;
+			}
+			while (File.Exists(fileName));
 
 			switch (this.Settings.PhotoFormat)
 			{
@@ -220,42 +241,36 @@ public partial class PhotosService : ServiceBase
 						Interleaved = false,
 					};
 
-					fileName = $"{fileName}.jpg";
 					await backBuffer.SaveAsJpegAsync(fileName, encoder);
 					break;
 				}
 
 				case Formats.Bmp:
 				{
-					fileName = $"{fileName}.bmp";
 					await backBuffer.SaveAsBmpAsync(fileName);
 					break;
 				}
 
 				case Formats.Png:
 				{
-					fileName = $"{fileName}.png";
 					await backBuffer.SaveAsPngAsync(fileName);
 					break;
 				}
 
 				case Formats.Tga:
 				{
-					fileName = $"{fileName}.tga";
 					await backBuffer.SaveAsTgaAsync(fileName);
 					break;
 				}
 
 				case Formats.Tiff:
 				{
-					fileName = $"{fileName}.tiff";
 					await backBuffer.SaveAsTiffAsync(fileName);
 					break;
 				}
 
 				case Formats.WebP:
 				{
-					fileName = $"{fileName}.webp";
 					await backBuffer.SaveAsWebpAsync(fileName);
 					break;
 				}
@@ -272,7 +287,7 @@ public partial class PhotosService : ServiceBase
 				await depthBuffer.SaveAsPngAsync($"{fileName} depth.png", encoder);
 			}
 
-			this.LastSavedImage = fileName;
+			this.LastSavedImagePath = fileName;
 			await this.DispachCapturePhaseChange(CapturePhases.Saved);
 		}
 		catch(Exception ex)
@@ -304,7 +319,14 @@ public partial class PhotosService : ServiceBase
 		if (this.PhaseChanged == null)
 			return;
 
-		await this.PhaseChanged(this.CapturePhase, newPhaase);
+		try
+		{
+			await this.PhaseChanged(this.CapturePhase, newPhaase, this.captureCancellation.Token);
+		}
+		catch(TaskCanceledException)
+		{
+		}
+
 		this.CapturePhase = newPhaase;
 	}
 
