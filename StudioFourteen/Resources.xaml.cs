@@ -28,6 +28,11 @@ public partial class Resources : ResourceDictionary
 
 	private readonly Dispatcher? ownerDispatcher;
 
+	static Resources()
+	{
+		LoadShared();
+	}
+
 	public Resources()
 	{
 		this.ownerDispatcher = Dispatcher.CurrentDispatcher;
