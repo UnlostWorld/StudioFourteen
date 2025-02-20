@@ -232,6 +232,9 @@ public class PanelService : ServiceBase
 
 			panel.Close();
 		}
+
+		this.Services.Settings.SaveImmediate();
+		this.hasRestoredPanels = false;
 	}
 
 	private async Task RestorePanels()
