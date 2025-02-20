@@ -23,7 +23,6 @@
 		<Grid>
 			<wpfUtils:IconBlock
 				x:Name="Icon"
-				Foreground="{DynamicResource ForegroundLightBrush}"
 				Icon="FloppyDisk"
 				IconFont="Solid"
 				Opacity="1" />
@@ -49,31 +48,62 @@
 							Storyboard.TargetName="Icon"
 							Storyboard.TargetProperty="Opacity"
 							Duration="0:00:01.000">
-							<EasingDoubleKeyFrame KeyTime="0:00:00.000" Value="1" />
-							<EasingDoubleKeyFrame KeyTime="0:00:00.100" Value="0" />
-							<EasingDoubleKeyFrame KeyTime="0:00:00.750" Value="0" />
-							<EasingDoubleKeyFrame KeyTime="0:00:01.000" Value="1" />
+							<EasingDoubleKeyFrame
+								KeyTime="0:00:00.000"
+								Value="1" />
+							<EasingDoubleKeyFrame
+								KeyTime="0:00:00.100"
+								Value="0" />
+							<EasingDoubleKeyFrame
+								KeyTime="0:00:00.750"
+								Value="0" />
+							<EasingDoubleKeyFrame
+								KeyTime="0:00:01.000"
+								Value="1" />
 						</DoubleAnimationUsingKeyFrames>
 
 						<DoubleAnimationUsingKeyFrames
 							Storyboard.TargetName="Check"
 							Storyboard.TargetProperty="Opacity"
 							Duration="0:00:01.000">
-							<EasingDoubleKeyFrame KeyTime="0:00:00.000" Value="0" />
-							<EasingDoubleKeyFrame KeyTime="0:00:00.100" Value="1" />
-							<EasingDoubleKeyFrame KeyTime="0:00:00.750" Value="1" />
-							<EasingDoubleKeyFrame KeyTime="0:00:01.000" Value="0" />
+							<EasingDoubleKeyFrame
+								KeyTime="0:00:00.000"
+								Value="0" />
+							<EasingDoubleKeyFrame
+								KeyTime="0:00:00.100"
+								Value="1" />
+							<EasingDoubleKeyFrame
+								KeyTime="0:00:00.750"
+								Value="1" />
+							<EasingDoubleKeyFrame
+								KeyTime="0:00:01.000"
+								Value="0" />
 						</DoubleAnimationUsingKeyFrames>
 
 						<DoubleAnimationUsingKeyFrames
 							Storyboard.TargetName="CheckScale"
 							Storyboard.TargetProperty="ScaleX"
 							Duration="0:00:01.000">
-							<EasingDoubleKeyFrame EasingFunction="{StaticResource SinEaseOut}" KeyTime="0:00:00.000" Value="1" />
-							<EasingDoubleKeyFrame EasingFunction="{StaticResource SinEaseOut}" KeyTime="0:00:00.100" Value="1.5" />
-							<EasingDoubleKeyFrame EasingFunction="{StaticResource SinEaseIn}" KeyTime="0:00:00.300" Value="1" />
-							<EasingDoubleKeyFrame EasingFunction="{StaticResource SinEaseIn}" KeyTime="0:00:00.600" Value="1" />
-							<EasingDoubleKeyFrame EasingFunction="{StaticResource SinEaseIn}" KeyTime="0:00:01.000" Value="0" />
+							<EasingDoubleKeyFrame
+								EasingFunction="{StaticResource SinEaseOut}"
+								KeyTime="0:00:00.000"
+								Value="1" />
+							<EasingDoubleKeyFrame
+								EasingFunction="{StaticResource SinEaseOut}"
+								KeyTime="0:00:00.100"
+								Value="1.5" />
+							<EasingDoubleKeyFrame
+								EasingFunction="{StaticResource SinEaseIn}"
+								KeyTime="0:00:00.300"
+								Value="1" />
+							<EasingDoubleKeyFrame
+								EasingFunction="{StaticResource SinEaseIn}"
+								KeyTime="0:00:00.600"
+								Value="1" />
+							<EasingDoubleKeyFrame
+								EasingFunction="{StaticResource SinEaseIn}"
+								KeyTime="0:00:01.000"
+								Value="0" />
 						</DoubleAnimationUsingKeyFrames>
 					</Storyboard>
 				</BeginStoryboard>

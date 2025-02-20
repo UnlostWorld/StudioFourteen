@@ -558,7 +558,7 @@
 				<Border
 					x:Name="WindowShadow"
 					Background="Black"
-					CornerRadius="6"
+					CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}"
 					Opacity="0.25">
 					<Border.BitmapEffect>
 						<DropShadowBitmapEffect
@@ -580,7 +580,7 @@
 					x:Name="WindowBorder"
 					BorderBrush="{DynamicResource BackgroundBrush}"
 					BorderThickness="1"
-					CornerRadius="6" />
+					CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
 			</Grid>
 		</AdornerDecorator>
 
