@@ -28,11 +28,6 @@ public partial class Resources : ResourceDictionary
 
 	private readonly Dispatcher? ownerDispatcher;
 
-	static Resources()
-	{
-		LoadShared();
-	}
-
 	public Resources()
 	{
 		this.ownerDispatcher = Dispatcher.CurrentDispatcher;
@@ -42,6 +37,8 @@ public partial class Resources : ResourceDictionary
 
 	public static Resources Load()
 	{
+		LoadShared();
+
 		Resources resources = new();
 		resources.Source = new("pack://application:,,,/StudioFourteen;component/Resources.xaml");
 
@@ -64,7 +61,15 @@ public partial class Resources : ResourceDictionary
 
 		try
 		{
-			Shared = Load();
+			Shared = new();
+			Shared.Source = new("pack://application:,,,/StudioFourteen;component/Resources.xaml");
+
+			foreach (Uri dictionary in PendingMergedDictionaries)
+			{
+				Resources merged = new();
+				merged.Source = dictionary;
+				Shared.MergedDictionaries.Add(merged);
+			}
 		}
 		catch (Exception ex)
 		{
