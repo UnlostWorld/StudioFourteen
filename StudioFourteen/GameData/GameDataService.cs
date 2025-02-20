@@ -113,13 +113,23 @@ public class GameDataService : ServiceBase
 		await base.Initialize();
 
 		this.lumina = DalamudServices.DataManager?.GameData;
+
+#if DEBUG
 		if (this.lumina == null)
 		{
-			this.Log.Warning("Dalamud lumina not found, creating lumina instance.");
-			string? dir = Path.GetDirectoryName(this.Services.Windows.XivProcess?.MainModule?.FileName);
-			dir = $"{dir}/sqpack/";
+			string? dir;
+			if (this.Services.Windows.XivProcess == null)
+			{
+				dir = "C:/Program Files (x86)/Steam/steamapps/common/FINAL FANTASY XIV Online/game/sqpack/";
+			}
+			else
+			{
+				dir = $"{Path.GetDirectoryName(this.Services.Windows.XivProcess?.MainModule?.FileName)}/sqpack/";
+			}
+
 			this.lumina = new Lumina.GameData(dir);
 		}
+#endif
 
 		OnlineJsonFile<Dictionary<string, int>> bNpcNameIndexFile = new("https://raw.githubusercontent.com/ffxiv-teamcraft/ffxiv-teamcraft/refs/heads/staging/libs/data/src/lib/json/gubal-bnpcs-index.json", 1);
 		BattleNpcNameIndex = await bNpcNameIndexFile.GetAsync();

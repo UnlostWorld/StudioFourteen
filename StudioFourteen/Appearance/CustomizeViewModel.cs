@@ -18,6 +18,7 @@ namespace StudioFourteen.Appearance.Customize;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using Lumina.Excel;
 using StudioFourteen.GameData;
 using StudioFourteen.GameData.Library;
 using StudioFourteen.GameData.Sheets;
@@ -41,6 +42,18 @@ public partial class CustomizeViewModel : ViewModel
 	public CustomizeViewModel(DispatcherObject dispatcher)
 	{
 		this.dispatcher = dispatcher;
+
+#if DEBUG
+		if (DalamudServices.ObjectTable == null)
+		{
+			ExcelSheet<CharaMakeType>? charaMakeTypeSheet = ServiceManager.Instance.GameData.GetSheet<CharaMakeType>();
+
+			if (charaMakeTypeSheet == null)
+				return;
+
+			this.UpdateMenus(charaMakeTypeSheet[0]).Run();
+		}
+#endif
 	}
 
 	public bool HasValidTarget => this.Services.Target.HasValidTarget;
@@ -81,9 +94,6 @@ public partial class CustomizeViewModel : ViewModel
 		this.isUpdatingMenus = true;
 
 		await Threads.FrameworkThread();
-		List<MenuViewModel?> bodyMenus = new();
-		List<MenuViewModel?> headMenus = new();
-		List<MenuViewModel?> makeupMenus = new();
 
 		if (DalamudServices.ObjectTable == null)
 		{
@@ -94,7 +104,7 @@ public partial class CustomizeViewModel : ViewModel
 		CharaMakeType makeType;
 		unsafe
 		{
-			Character* pCharacter = (Character*)DalamudServices.ObjectTable.GetObjectAddress(this.Services.Target.TargetObjectIndex);
+			Character* pCharacter = this.Services.Target.GetCharacter(this.Services.Target.TargetObjectIndex);
 			if (pCharacter == null)
 				return;
 
@@ -105,6 +115,14 @@ public partial class CustomizeViewModel : ViewModel
 			makeType = characterMakeType.Value;
 		}
 
+		await this.UpdateMenus(makeType);
+	}
+
+	private async Task UpdateMenus(CharaMakeType makeType)
+	{
+		List<MenuViewModel?> bodyMenus = new();
+		List<MenuViewModel?> headMenus = new();
+		List<MenuViewModel?> makeupMenus = new();
 		RaceRows race = (RaceRows)makeType.Race.RowId;
 
 		bodyMenus.Add(this.GetMenu(makeType, CustomizeIndex.Race));

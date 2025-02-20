@@ -43,6 +43,16 @@ public partial class TargetService : ServiceBase
 	{
 		this.nextTargetListener.Activate = this.OnNextTarget;
 		this.previousTargetListener.Activate = this.OnPreviousTarget;
+
+#if DEBUG
+		if (DalamudServices.ObjectTable == null)
+		{
+			this.CharacterName = "Debug Character";
+			this.HasValidTarget = true;
+			this.IsTargetLoading = false;
+			this.TargetObjectIndex = 1;
+		}
+#endif
 	}
 
 	public delegate void TargetChangedDelegate(int objectTableIndex);
