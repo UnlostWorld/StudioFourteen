@@ -34,6 +34,9 @@ public sealed class DalamudPlugin : IDalamudPlugin
 		this.Log.Information($"Ensure assembly SharpVectors {typeof(SharpVectors.Converters.SvgIcon).Assembly}");
 		this.Log.Information($"Ensure assembly WebView2 {typeof(Microsoft.Web.WebView2.Wpf.WebView2).Assembly}");
 
+		// Ensure the pack URI scheme got registered
+		this.Log.Information($"Ensure Pack URI {System.IO.Packaging.PackUriHelper.UriSchemePack}");
+
 		pluginInterface.Create<DalamudServices>();
 
 		if (DalamudServices.CommandManager != null)
