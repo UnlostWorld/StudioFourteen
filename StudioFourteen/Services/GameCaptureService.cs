@@ -179,6 +179,8 @@ public class GameCaptureService : ServiceBase
 				|| destination.PixelHeight != this.backBufferHeight
 				|| destination.Format != PixelFormats.Bgra32)
 			{
+				this.Log.Information($"DEST >> {this.backBufferWidth}x{this.backBufferHeight}");
+
 				destination = new WriteableBitmap(
 					this.backBufferWidth,
 					this.backBufferHeight,
@@ -303,8 +305,14 @@ public class GameCaptureService : ServiceBase
 				if (description.Format != DXGI_FORMAT.DXGI_FORMAT_R8G8B8A8_UNORM)
 					throw new Exception($"wrong format in back buffer texture {description.Format}");
 
+				bool sizeDirty =
+					this.backBufferWidth != (int)description.Width
+					|| this.backBufferHeight != (int)description.Height;
+
 				this.backBufferWidth = (int)description.Width;
 				this.backBufferHeight = (int)description.Height;
+
+				this.Log.Information($"Back Buffer >> {this.backBufferWidth}x{this.backBufferHeight}");
 
 				if (this.backBufferWidth == 0 || this.backBufferHeight == 0)
 					return;
@@ -313,8 +321,10 @@ public class GameCaptureService : ServiceBase
 				description.CPUAccessFlags = (uint)D3D11_CPU_ACCESS_FLAG.D3D11_CPU_ACCESS_READ;
 				description.Usage = D3D11_USAGE.D3D11_USAGE_STAGING;
 
-				if (this.backBufferTexture.Get() == null)
+				if (sizeDirty || this.backBufferTexture.Get() == null)
 				{
+					this.backBufferTexture.Reset();
+
 					this.Log.Information("Creating a back buffer texture");
 					HRESULT createResult = device.Get()->CreateTexture2D(&description, null, this.backBufferTexture.GetAddressOf());
 
@@ -381,8 +391,12 @@ public class GameCaptureService : ServiceBase
 				if (description.Format != DXGI_FORMAT.DXGI_FORMAT_R24G8_TYPELESS)
 					throw new Exception($"wrong format in depth buffer texture {description.Format}");
 
-				this.depthBufferWidth = (int)description.Width;
-				this.depthBufferHeight = (int)description.Height;
+				bool sizeDirty =
+						this.backBufferWidth != (int)description.Width
+						|| this.backBufferHeight != (int)description.Height;
+
+				this.backBufferWidth = (int)description.Width;
+				this.backBufferHeight = (int)description.Height;
 
 				if (this.depthBufferWidth == 0 || this.depthBufferHeight == 0)
 					return;
@@ -391,8 +405,9 @@ public class GameCaptureService : ServiceBase
 				description.CPUAccessFlags = (uint)D3D11_CPU_ACCESS_FLAG.D3D11_CPU_ACCESS_READ;
 				description.Usage = D3D11_USAGE.D3D11_USAGE_STAGING;
 
-				if (this.depthBufferTexture.Get() == null)
+				if (sizeDirty || this.depthBufferTexture.Get() == null)
 				{
+					this.depthBufferTexture.Reset();
 					this.Log.Information("Creating a depth buffer texture");
 					HRESULT createResult = device.Get()->CreateTexture2D(&description, null, this.depthBufferTexture.GetAddressOf());
 
