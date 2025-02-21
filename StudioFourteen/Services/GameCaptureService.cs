@@ -392,11 +392,11 @@ public class GameCaptureService : ServiceBase
 					throw new Exception($"wrong format in depth buffer texture {description.Format}");
 
 				bool sizeDirty =
-						this.backBufferWidth != (int)description.Width
-						|| this.backBufferHeight != (int)description.Height;
+						this.depthBufferWidth != (int)description.Width
+						|| this.depthBufferHeight != (int)description.Height;
 
-				this.backBufferWidth = (int)description.Width;
-				this.backBufferHeight = (int)description.Height;
+				this.depthBufferWidth = (int)description.Width;
+				this.depthBufferHeight = (int)description.Height;
 
 				if (this.depthBufferWidth == 0 || this.depthBufferHeight == 0)
 					return;
