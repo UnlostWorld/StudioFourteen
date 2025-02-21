@@ -81,21 +81,6 @@ public partial class Resources : ResourceDictionary
 	{
 		PendingMergedDictionaries.Remove(uri);
 
-		if (Shared != null)
-		{
-			Shared.ownerDispatcher?.Invoke(() =>
-			{
-				foreach(ResourceDictionary dict in Shared.MergedDictionaries)
-				{
-					if (dict.Source == uri)
-					{
-						Shared.MergedDictionaries.Remove(dict);
-						break;
-					}
-				}
-			});
-		}
-
 		foreach (WeakReference<Resources> resourceReference in ResourceInstances)
 		{
 			if (resourceReference.TryGetTarget(out Resources? resource) && resource != null)
@@ -118,16 +103,6 @@ public partial class Resources : ResourceDictionary
 	public static void MergeDictionary(Uri uri)
 	{
 		PendingMergedDictionaries.Add(uri);
-
-		if (Shared != null)
-		{
-			Shared.ownerDispatcher?.Invoke(() =>
-			{
-				Resources merged = new();
-				merged.Source = uri;
-				Shared.MergedDictionaries.Add(merged);
-			});
-		}
 
 		foreach(WeakReference<Resources> resourceReference in ResourceInstances)
 		{
