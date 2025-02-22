@@ -149,6 +149,8 @@ public abstract class GizmoBase : IGizmo
 		{
 			canvas.Children.Remove(el);
 		}
+
+		this.elements.Clear();
 	}
 
 	public Transform GetTransform()

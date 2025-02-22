@@ -102,12 +102,12 @@ public partial class OverlayRenderer : GizmoRenderer
 		if (!this.Services.Overlays.ShowOverlays)
 			return;
 
-		this.AddPrimitive(overlay);
+		this.AddGizmo(overlay);
 	}
 
 	private void OnLayerRemoved(OverlayLayerBase overlay)
 	{
-		this.RemovePrimitive(overlay);
+		this.RemoveGizmo(overlay);
 	}
 
 	private void OnShowOverlaysChanged(bool state)

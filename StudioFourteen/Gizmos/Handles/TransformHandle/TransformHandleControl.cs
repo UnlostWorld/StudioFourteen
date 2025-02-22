@@ -40,17 +40,17 @@ public partial class TransformHandleControl : GizmoRenderer
 		this.translation = new();
 		this.translation.TransformChanged += this.OnGizmoTransformChanged;
 		this.translation.KeepScreenSize = false;
-		this.AddPrimitive(this.translation);
+		this.AddGizmo(this.translation);
 
 		this.rotation = new();
 		this.rotation.TransformChanged += this.OnGizmoTransformChanged;
 		this.rotation.KeepScreenSize = false;
-		this.AddPrimitive(this.rotation);
+		this.AddGizmo(this.rotation);
 
 		this.scale = new();
 		this.scale.TransformChanged += this.OnGizmoTransformChanged;
 		this.scale.KeepScreenSize = false;
-		this.AddPrimitive(this.scale);
+		this.AddGizmo(this.scale);
 
 		this.OnGizmoTypeChanged(this.GizmoType);
 	}

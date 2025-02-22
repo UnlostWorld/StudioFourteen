@@ -72,23 +72,12 @@ public class RotationHandleAxis : TransformHandleAxisBase
 
 		for (int i = 1; i < this.segments.Length; i++)
 		{
-			this.segments[i] = new();
+			this.segments[i] = this.AddChild<Line>();
 			this.segments[i].StrokeThickness = this.StrokeThickness;
 			this.segments[i].Stroke = new SolidColorBrush(this.Foreground);
 			this.segments[i].StrokeEndLineCap = PenLineCap.Round;
 			this.segments[i].StrokeStartLineCap = PenLineCap.Round;
 			this.segments[i].IsHitTestVisible = false;
-			canvas.Children.Add(this.segments[i]);
-		}
-	}
-
-	public override void Disable(Canvas canvas)
-	{
-		base.Disable(canvas);
-
-		for (int i = 1; i < this.segments.Length; i++)
-		{
-			canvas.Children.Remove(this.segments[i]);
 		}
 	}
 

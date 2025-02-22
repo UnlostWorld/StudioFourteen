@@ -35,12 +35,13 @@ using Vector = System.Windows.Vector;
 
 public class GizmoRenderer : Canvas
 {
-	public readonly List<IGizmo> Primitives = new();
+	public readonly List<IGizmo> Gizmos = new();
 	private HandleBase? draggingHandle;
 	private HandleBase? cursorOverHandle;
 	private Point? lastDragMousePos;
 	private Vector? cursorDragOffset;
 	private bool isAnyMouseDown;
+	private Task? renderTask;
 
 	public GizmoRenderer()
 	{
@@ -48,30 +49,47 @@ public class GizmoRenderer : Canvas
 		this.IsVisibleChanged += this.OnIsVisibleChanged;
 	}
 
+	public bool IsRenderTaskRunning => this.renderTask != null && !this.renderTask.IsCompleted;
+
 	public ILogger Log => Logging.ForContext(this.GetType());
 	public ServiceManager Services => ServiceManager.Instance;
 
-	public void AddPrimitive(IGizmo primitive)
+	public void AddGizmo(IGizmo gizmo)
 	{
 		this.Dispatcher.Invoke(() =>
 		{
-			if (primitive.GetIsVisible())
+			if (gizmo.GetIsVisible())
 			{
-				primitive.Enable(this);
+				try
+				{
+					gizmo.Enable(this);
+				}
+				catch (Exception ex)
+				{
+					this.Log.Error(ex, "Error enabling gizmo");
+					this.Gizmos.Remove(gizmo);
+				}
 			}
 		});
 
-		this.Primitives.Add(primitive);
+		this.Gizmos.Add(gizmo);
 	}
 
-	public void RemovePrimitive(IGizmo primitive)
+	public void RemoveGizmo(IGizmo gizmo)
 	{
 		this.Dispatcher.Invoke(() =>
 		{
-			primitive.Disable(this);
+			try
+			{
+				gizmo.Disable(this);
+			}
+			catch (Exception ex)
+			{
+				this.Log.Error(ex, "Error disabling gizmo");
+			}
 		});
 
-		this.Primitives.Remove(primitive);
+		this.Gizmos.Remove(gizmo);
 	}
 
 	protected override void OnMouseDown(MouseButtonEventArgs e)
@@ -209,13 +227,25 @@ public class GizmoRenderer : Canvas
 
 	protected virtual HandleBase? HitTest(Point mousePos)
 	{
-		HandleHitResult result = default;
-		foreach (IGizmo primitive in this.Primitives)
-		{
-			if (!primitive.IsVisible)
-				continue;
+		if (!this.IsRenderTaskRunning)
+			return null;
 
-			primitive.HitTest(mousePos, ref result);
+		HandleHitResult result = default;
+		foreach (IGizmo gizmo in this.Gizmos)
+		{
+			try
+			{
+				if (!gizmo.IsVisible)
+					continue;
+
+				gizmo.HitTest(mousePos, ref result);
+			}
+			catch(Exception ex)
+			{
+				this.Log.Error(ex, "Error in gizmo Hit Test");
+				this.Gizmos.Remove(gizmo);
+				break;
+			}
 		}
 
 		return result.Handle;
@@ -225,49 +255,69 @@ public class GizmoRenderer : Canvas
 	{
 		if (this.IsVisible)
 		{
-			this.RenderTask().Run();
+			this.StartRendering();
 		}
+	}
+
+	private void StartRendering()
+	{
+		if (this.IsRenderTaskRunning)
+			return;
+
+		this.renderTask = this.RenderTask();
+		this.renderTask.Run();
 	}
 
 	private async Task RenderTask()
 	{
+		this.Log.Information("Starting render task");
+
 		try
 		{
 			Stopwatch sw = new();
 
 			await this.MainThread();
-			while (this.IsVisible && !StudioFourteen.Services.ServiceManagerBase.ShutdownRequested)
+			while (this.IsVisible
+				&& !StudioFourteen.Services.ServiceManagerBase.ShutdownRequested
+				&& this.IsLoaded)
 			{
+				Matrix4x4 view = this.GetViewMatrix();
+				Matrix4x4 projection = this.GetProjectionMatrix();
+
+				for (int i = this.Gizmos.Count - 1; i >= 0; i--)
+				{
+					IGizmo gizmo = this.Gizmos[i];
+
+					try
+					{
+						gizmo.Update(view, projection, this);
+					}
+					catch (Exception ex)
+					{
+						this.Log.Error(ex, $"Error in gizmo transform {gizmo}");
+						this.Gizmos.Remove(gizmo);
+						break;
+					}
+				}
+
 				long delay = 16 - sw.ElapsedMilliseconds;
 				await Task.Delay(int.Max((int)delay, 1));
 				sw.Restart();
 
 				await this.MainThread();
-
-				if (!this.IsVisible || StudioFourteen.Services.ServiceManagerBase.ShutdownRequested)
-					return;
-
-				Matrix4x4 view = this.GetViewMatrix();
-				Matrix4x4 projection = this.GetProjectionMatrix();
-
-				for (int i = this.Primitives.Count - 1; i >= 0; i--)
-				{
-					IGizmo primitive = this.Primitives[i];
-
-					try
-					{
-						primitive.Update(view, projection, this);
-					}
-					catch (Exception ex)
-					{
-						this.Log.Error(ex, $"Error in primitive transform {primitive}");
-					}
-				}
 			}
 		}
 		catch (Exception ex)
 		{
 			this.Log.Error(ex, $"Error in primitive renderer");
 		}
+
+		await this.MainThread();
+		foreach (IGizmo primitive in this.Gizmos)
+		{
+			primitive.Disable(this);
+		}
+
+		this.Log.Information("Stopping render task");
 	}
 }
