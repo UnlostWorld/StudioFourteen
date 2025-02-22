@@ -15,8 +15,8 @@
 
 namespace StudioFourteen;
 
+using FFXIVClientStructs.FFXIV.Common.Lua;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Threading;
@@ -24,6 +24,7 @@ using System.Windows.Threading;
 public partial class Resources : ResourceDictionary
 {
 	private static readonly List<Uri> PendingMergedDictionaries = new();
+	private static readonly Dictionary<object, Func<object>> AddResource = new();
 	private static readonly List<WeakReference<Resources>> ResourceInstances = new();
 
 	private readonly Dispatcher? ownerDispatcher;
@@ -49,6 +50,11 @@ public partial class Resources : ResourceDictionary
 			resources.MergedDictionaries.Add(merged);
 		}
 
+		foreach((object key, Func<object> value) in AddResource)
+		{
+			resources[key] = value.Invoke();
+		}
+
 		ResourceInstances.Add(new(resources));
 
 		return resources;
@@ -69,6 +75,11 @@ public partial class Resources : ResourceDictionary
 				Resources merged = new();
 				merged.Source = dictionary;
 				Shared.MergedDictionaries.Add(merged);
+			}
+
+			foreach ((object key, Func<object> value) in AddResource)
+			{
+				Shared[key] = value.Invoke();
 			}
 		}
 		catch (Exception ex)
@@ -113,6 +124,38 @@ public partial class Resources : ResourceDictionary
 					Resources merged = new();
 					merged.Source = uri;
 					resource.MergedDictionaries.Add(merged);
+				});
+			}
+		}
+	}
+
+	public static void Set(object key, Func<object> value)
+	{
+		AddResource[key] = value;
+
+		foreach (WeakReference<Resources> resourceReference in ResourceInstances)
+		{
+			if (resourceReference.TryGetTarget(out Resources? resource) && resource != null)
+			{
+				resource.ownerDispatcher?.Invoke(() =>
+				{
+					resource[key] = value.Invoke();
+				});
+			}
+		}
+	}
+
+	public static void Clear(object key)
+	{
+		AddResource.Remove(key);
+
+		foreach (WeakReference<Resources> resourceReference in ResourceInstances)
+		{
+			if (resourceReference.TryGetTarget(out Resources? resource) && resource != null)
+			{
+				resource.ownerDispatcher?.Invoke(() =>
+				{
+					resource[key] = null;
 				});
 			}
 		}

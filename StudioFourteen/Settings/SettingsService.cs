@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using WpfUtils.Utils;
 
 public partial class SettingsService : ServiceBase
@@ -130,6 +131,7 @@ public partial class SettingsService : ServiceBase
 		[Notify] private Dictionary<string, int> overlays = new();
 		[Notify] private List<string> openPanels = new();
 		[Notify] private string theme = "Dark";
+		[Notify] private string trimColor = "Pink";
 
 		// Input
 		[Notify] private bool enableBinds = true;

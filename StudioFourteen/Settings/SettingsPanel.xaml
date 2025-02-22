@@ -45,6 +45,38 @@
 					</ComboBox.ItemTemplate>
 				</ComboBox>
 
+				<ComboBox
+					ItemsSource="{Binding Services.Theme.TrimColors}"
+					SelectedItem="{Binding Services.Theme.TrimColor}"
+					Visibility="{Binding Services.Theme.CurrentTheme.SupportsTrim, Converter={StaticResource B2V}}">
+
+					<wpfUtils:PopOut.Header>
+						<TextBlock
+							Margin="6"
+							Text="{DynamicResource LOC_Settings_Interface_ThemeToolTip}" />
+					</wpfUtils:PopOut.Header>
+
+					<ComboBox.ItemTemplate>
+						<DataTemplate DataType="{x:Type services:Trim}">
+							<Grid>
+
+								<Border
+									Width="32"
+									HorizontalAlignment="Left"
+									CornerRadius="{DynamicResource WpfUtilsBorderInnerCornerRadius}">
+									<Border.Background>
+										<SolidColorBrush Color="{Binding Color}" />
+									</Border.Background>
+								</Border>
+
+								<TextBlock
+									Margin="42,0,0,0"
+									Text="{Binding Name}" />
+							</Grid>
+						</DataTemplate>
+					</ComboBox.ItemTemplate>
+				</ComboBox>
+
 				<ToggleButton
 					Grid.Row="0"
 					Margin="1"
