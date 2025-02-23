@@ -72,6 +72,12 @@
 							</DataTrigger.ExitActions>
 
 						</DataTrigger>
+
+						<DataTrigger
+							Binding="{Binding Services.Windows.EnableXivWindowOverlay}"
+							Value="False">
+							<Setter Property="Opacity" Value="0" />
+						</DataTrigger>
 					</Style.Triggers>
 				</Style>
 			</Grid.Style>
