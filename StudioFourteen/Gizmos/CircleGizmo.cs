@@ -32,7 +32,7 @@ public class CircleGizmo : GizmoBase
 	private readonly Line[] segments = new Line[NumPoints];
 	private readonly Vector3[] points3d = new Vector3[NumPoints];
 
-	public override void Enable(Canvas canvas)
+	public override void Enable(GizmoRenderer renderer)
 	{
 		for (int i = 0; i < this.points3d.Length; i++)
 		{
@@ -49,19 +49,19 @@ public class CircleGizmo : GizmoBase
 			this.segments[i].Stroke = new SolidColorBrush(this.Foreground);
 			this.segments[i].StrokeEndLineCap = PenLineCap.Round;
 			this.segments[i].StrokeStartLineCap = PenLineCap.Round;
-			canvas.Children.Add(this.segments[i]);
+			renderer.Children.Add(this.segments[i]);
 		}
 
-		base.Enable(canvas);
+		base.Enable(renderer);
 	}
 
-	public override void Disable(Canvas canvas)
+	public override void Disable(GizmoRenderer renderer)
 	{
-		base.Disable(canvas);
+		base.Disable(renderer);
 
 		for (int i = 1; i < this.segments.Length; i++)
 		{
-			canvas.Children.Remove(this.segments[i]);
+			renderer.Children.Remove(this.segments[i]);
 		}
 	}
 

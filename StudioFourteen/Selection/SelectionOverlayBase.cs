@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Selection;
 
+using StudioFourteen.Gizmos;
 using StudioFourteen.Overlays;
 using System.Windows.Controls;
 
@@ -28,17 +29,17 @@ public abstract class SelectionOverlayLayerBase : OverlayLayerBase
 	protected SelectionBase? Selection => this.Services.Selection.Current;
 	protected int TargetIndex => this.Services.Target.TargetObjectIndex;
 
-	public override void Enable(Canvas canvas)
+	public override void Enable(GizmoRenderer renderer)
 	{
-		base.Enable(canvas);
+		base.Enable(renderer);
 
 		this.Services.Selection.SelectionChanged += this.OnSelectionChanged;
 		this.Services.Target.TargetChanged += this.OnTargetChanged;
 	}
 
-	public override void Disable(Canvas canvas)
+	public override void Disable(GizmoRenderer renderer)
 	{
-		base.Disable(canvas);
+		base.Disable(renderer);
 
 		this.Services.Selection.SelectionChanged -= this.OnSelectionChanged;
 		this.Services.Target.TargetChanged -= this.OnTargetChanged;

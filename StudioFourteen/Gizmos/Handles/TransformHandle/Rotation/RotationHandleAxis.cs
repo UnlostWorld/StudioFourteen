@@ -34,7 +34,8 @@ public class RotationHandleAxis : TransformHandleAxisBase
 
 	private const int NumPoints = 72;
 
-	private readonly Line[] segments = new Line[NumPoints];
+	private readonly string id = Guid.NewGuid().ToString();
+	private readonly Line?[] segments = new Line?[NumPoints];
 	private readonly Vector3[] points3d = new Vector3[NumPoints];
 
 	private Point? dragStartToPos;
@@ -45,9 +46,9 @@ public class RotationHandleAxis : TransformHandleAxisBase
 		this.Axis = axis;
 	}
 
-	public override void Enable(Canvas canvas)
+	public override void Enable(GizmoRenderer renderer)
 	{
-		base.Enable(canvas);
+		this.Log.Information($"Enable {this.id} for {renderer.Id}");
 
 		for (int i = 0; i < this.points3d.Length; i++)
 		{
@@ -72,13 +73,28 @@ public class RotationHandleAxis : TransformHandleAxisBase
 
 		for (int i = 1; i < this.segments.Length; i++)
 		{
-			this.segments[i] = this.AddChild<Line>();
-			this.segments[i].StrokeThickness = this.StrokeThickness;
-			this.segments[i].Stroke = new SolidColorBrush(this.Foreground);
-			this.segments[i].StrokeEndLineCap = PenLineCap.Round;
-			this.segments[i].StrokeStartLineCap = PenLineCap.Round;
-			this.segments[i].IsHitTestVisible = false;
+			Line segment = this.AddChild<Line>();
+			segment.StrokeThickness = this.StrokeThickness;
+			segment.Stroke = new SolidColorBrush(this.Foreground);
+			segment.StrokeEndLineCap = PenLineCap.Round;
+			segment.StrokeStartLineCap = PenLineCap.Round;
+			segment.IsHitTestVisible = false;
+			this.segments[i] = segment;
 		}
+
+		base.Enable(renderer);
+	}
+
+	public override void Disable(GizmoRenderer renderer)
+	{
+		this.Log.Information($"Disable {this.id} for {renderer.Id}");
+
+		for (int i = 1; i < this.segments.Length; i++)
+		{
+			this.segments[i] = null;
+		}
+
+		base.Disable(renderer);
 	}
 
 	public override void StartDrag(Point mousePos)
@@ -89,9 +105,9 @@ public class RotationHandleAxis : TransformHandleAxisBase
 
 		for (int i = 1; i < this.points3d.Length; i++)
 		{
-			Line segment = this.segments[i];
+			Line? segment = this.segments[i];
 
-			if (!segment.IsEnabled)
+			if (segment == null || !segment.IsEnabled)
 				continue;
 
 			Point fromPos = new Point(segment.X1, segment.Y1);
@@ -175,7 +191,10 @@ public class RotationHandleAxis : TransformHandleAxisBase
 			Vector3 fromPos = this.LocalToScreen(this.points3d[i - 1]);
 			Vector3 toPos = this.LocalToScreen(this.points3d[i]);
 
-			Line line = this.segments[i];
+			Line? line = this.segments[i];
+			if (line == null)
+				continue;
+
 			line.X1 = fromPos.X;
 			line.Y1 = fromPos.Y;
 			line.X2 = toPos.X;
@@ -204,9 +223,9 @@ public class RotationHandleAxis : TransformHandleAxisBase
 	{
 		for (int i = 1; i < this.points3d.Length; i++)
 		{
-			Line segment = this.segments[i];
+			Line? segment = this.segments[i];
 
-			if (!segment.IsEnabled)
+			if (segment == null || !segment.IsEnabled)
 				continue;
 
 			Point fromPos = new Point(segment.X1, segment.Y1);

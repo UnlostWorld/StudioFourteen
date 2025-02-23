@@ -32,8 +32,8 @@ public class GizmoGroup : IGizmo
 
 	protected readonly ILogger Log;
 
-	private readonly Queue<IGizmo> newPrimitives = new();
-	private readonly Queue<IGizmo> deletePrimitives = new();
+	private readonly Queue<IGizmo> newGizmos = new();
+	private readonly Queue<IGizmo> deleteGizmos = new();
 
 	public GizmoGroup()
 	{
@@ -44,45 +44,53 @@ public class GizmoGroup : IGizmo
 	public GizmoGroup? Parent { get; set; }
 	public bool IsVisible { get; set; } = true;
 	public bool IsCursorOver { get; private set; }
+	public bool IsEnabled { get; private set; }
 
-	public virtual void Enable(Canvas canvas)
+	public virtual void Enable(GizmoRenderer renderer)
 	{
-		foreach (IGizmo primitive in this.Children)
+		this.IsEnabled = true;
+
+		foreach (IGizmo gizmo in this.Children)
 		{
-			primitive.Parent = this;
-			primitive.Enable(canvas);
+			gizmo.Parent = this;
+			gizmo.Enable(renderer);
 		}
 	}
 
-	public virtual void Disable(Canvas canvas)
+	public virtual void Disable(GizmoRenderer renderer)
 	{
-		foreach (IGizmo primitive in this.Children)
+		this.IsEnabled = false;
+
+		foreach (IGizmo izmo in this.Children)
 		{
-			primitive.Disable(canvas);
+			izmo.Disable(renderer);
 		}
 	}
 
-	public virtual void Update(Matrix4x4 view, Matrix4x4 projection, Canvas canvas)
+	public virtual void Update(Matrix4x4 view, Matrix4x4 projection, GizmoRenderer renderer)
 	{
-		while (this.deletePrimitives.Count > 0)
+		while (this.deleteGizmos.Count > 0)
 		{
-			IGizmo primitive = this.deletePrimitives.Dequeue();
-			primitive.Parent = null;
-			primitive.Disable(canvas);
-			this.Children.Remove(primitive);
+			IGizmo gizmo = this.deleteGizmos.Dequeue();
+			gizmo.Parent = null;
+			gizmo.Disable(renderer);
+			this.Children.Remove(gizmo);
 		}
 
-		while (this.newPrimitives.Count > 0)
+		while (this.newGizmos.Count > 0)
 		{
-			IGizmo primitive = this.newPrimitives.Dequeue();
-			primitive.Parent = this;
-			primitive.Enable(canvas);
-			this.Children.Add(primitive);
+			IGizmo gizmo = this.newGizmos.Dequeue();
+			gizmo.Parent = this;
+			gizmo.Enable(renderer);
+			this.Children.Add(gizmo);
 		}
 
-		foreach (IGizmo primitive in this.Children)
+		foreach (IGizmo gizmo in this.Children)
 		{
-			primitive.Update(view, projection, canvas);
+			if (!gizmo.IsEnabled)
+				continue;
+
+			gizmo.Update(view, projection, renderer);
 		}
 	}
 
@@ -112,30 +120,30 @@ public class GizmoGroup : IGizmo
 
 	public virtual void HitTest(Point mousePos, ref HandleHitResult result)
 	{
-		foreach (IGizmo primitive in this.Children)
+		foreach (IGizmo gizmo in this.Children)
 		{
-			if (!primitive.IsVisible)
+			if (!gizmo.IsVisible)
 				continue;
 
-			primitive.HitTest(mousePos, ref result);
+			gizmo.HitTest(mousePos, ref result);
 		}
 	}
 
 	protected T AddChild<T>()
 		where T : IGizmo, new()
 	{
-		T primitive = new T();
-		this.newPrimitives.Enqueue(primitive);
-		return primitive;
+		T gizmo = new T();
+		this.newGizmos.Enqueue(gizmo);
+		return gizmo;
 	}
 
-	protected void AddChild(IGizmo primitive)
+	protected void AddChild(IGizmo gizmo)
 	{
-		this.newPrimitives.Enqueue(primitive);
+		this.newGizmos.Enqueue(gizmo);
 	}
 
-	protected void RemoveChild(IGizmo primitive)
+	protected void RemoveChild(IGizmo gizmo)
 	{
-		this.deletePrimitives.Enqueue(primitive);
+		this.deleteGizmos.Enqueue(gizmo);
 	}
 }

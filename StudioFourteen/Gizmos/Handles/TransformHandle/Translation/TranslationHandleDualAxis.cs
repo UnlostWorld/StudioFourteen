@@ -73,26 +73,23 @@ public class TranslationHandleDualAxis : TransformHandleAxisBase
 		}
 	}
 
-	public override void Enable(Canvas canvas)
+	public override void Enable(GizmoRenderer renderer)
 	{
-		if (this.square == null)
+		this.square = this.AddChild<Polygon>();
+		this.square.IsHitTestVisible = false;
+		this.square.Fill = this.ForegroundBrush;
+		this.square.Stroke = this.ForegroundBrush;
+		this.square.StrokeThickness = 0;
+		this.square.StrokeLineJoin = PenLineJoin.Bevel;
+		this.square.Points = new PointCollection()
 		{
-			this.square = this.AddChild<Polygon>();
-			this.square.IsHitTestVisible = false;
-			this.square.Fill = this.ForegroundBrush;
-			this.square.Stroke = this.ForegroundBrush;
-			this.square.StrokeThickness = 0;
-			this.square.StrokeLineJoin = PenLineJoin.Bevel;
-			this.square.Points = new PointCollection()
-			{
-				new Point(0, 0),
-				new Point(1, 0),
-				new Point(1, 1),
-				new Point(0, 1),
-			};
-		}
+			new Point(0, 0),
+			new Point(1, 0),
+			new Point(1, 1),
+			new Point(0, 1),
+		};
 
-		base.Enable(canvas);
+		base.Enable(renderer);
 	}
 
 	public override Posing.Transform OnDrag(Vector mouseDelta, Posing.Transform transform)

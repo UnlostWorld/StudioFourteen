@@ -16,29 +16,36 @@
 namespace StudioFourteen.Overlays;
 
 using StudioFourteen.Gizmos;
-using StudioFourteen.Utilities;
-using System.ComponentModel;
-using System.Numerics;
-using System.Windows;
 using System.Windows.Input;
 using WpfUtils.Extensions;
 
-using CursorPoint = System.Drawing.Point;
-
 public partial class OverlayRenderer : GizmoRenderer
 {
-	public OverlayRenderer()
+	protected override void OnLoaded()
 	{
-		if (DesignerProperties.GetIsInDesignMode(this))
-			return;
+		base.OnLoaded();
 
 		this.Services.Overlays.LayerAdded += this.OnLayerAdded;
 		this.Services.Overlays.LayerRemoved += this.OnLayerRemoved;
 		this.Services.Overlays.ShowOverlaysChanged += this.OnShowOverlaysChanged;
 
-		foreach(OverlayLayerBase layer in this.Services.Overlays.GetOverlayLayers())
+		foreach (OverlayLayerBase layer in this.Services.Overlays.GetOverlayLayers())
 		{
 			this.OnLayerAdded(layer);
+		}
+	}
+
+	protected override void OnUnloaded()
+	{
+		base.OnUnloaded();
+
+		this.Services.Overlays.LayerAdded -= this.OnLayerAdded;
+		this.Services.Overlays.LayerRemoved -= this.OnLayerRemoved;
+		this.Services.Overlays.ShowOverlaysChanged -= this.OnShowOverlaysChanged;
+
+		foreach (OverlayLayerBase layer in this.Services.Overlays.GetOverlayLayers())
+		{
+			this.OnLayerRemoved(layer);
 		}
 	}
 

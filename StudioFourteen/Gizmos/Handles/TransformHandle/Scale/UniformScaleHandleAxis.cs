@@ -41,18 +41,15 @@ public class UniformScaleHandleAxis : TransformHandleAxisBase
 		this.radius = radius;
 	}
 
-	public override void Enable(Canvas canvas)
+	public override void Enable(GizmoRenderer renderer)
 	{
-		if (this.ellipse == null)
-		{
-			this.ellipse = this.AddChild<Ellipse>();
-			this.ellipse.Fill = this.BackgroundBrush;
-			this.ellipse.Stroke = this.ForegroundBrush;
-			this.ellipse.Width = this.radius * 2;
-			this.ellipse.Height = this.radius * 2;
-		}
+		this.ellipse = this.AddChild<Ellipse>();
+		this.ellipse.Fill = this.BackgroundBrush;
+		this.ellipse.Stroke = this.ForegroundBrush;
+		this.ellipse.Width = this.radius * 2;
+		this.ellipse.Height = this.radius * 2;
 
-		base.Enable(canvas);
+		base.Enable(renderer);
 	}
 
 	public override void Update()

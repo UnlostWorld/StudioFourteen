@@ -40,12 +40,12 @@ public class LineGizmo : GizmoBase
 		this.To = to;
 	}
 
-	public override void Enable(Canvas canvas)
+	public override void Enable(GizmoRenderer renderer)
 	{
 		if (this.line == null)
 			this.line = this.AddChild<Line>();
 
-		base.Enable(canvas);
+		base.Enable(renderer);
 	}
 
 	public override void Update()

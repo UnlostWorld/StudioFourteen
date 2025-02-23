@@ -60,29 +60,23 @@ public class TranslationHandleAxis : TransformHandleAxisBase
 		}
 	}
 
-	public override void Enable(Canvas canvas)
+	public override void Enable(GizmoRenderer renderer)
 	{
-		if (this.line == null)
-		{
-			this.line = this.AddChild<Line>();
-			this.line.IsHitTestVisible = false;
-			this.line.StrokeThickness = 3;
-			this.line.Stroke = this.ForegroundBrush;
-			this.line.StrokeEndLineCap = PenLineCap.Triangle;
-			this.line.StrokeStartLineCap = PenLineCap.Round;
-		}
+		this.line = this.AddChild<Line>();
+		this.line.IsHitTestVisible = false;
+		this.line.StrokeThickness = 3;
+		this.line.Stroke = this.ForegroundBrush;
+		this.line.StrokeEndLineCap = PenLineCap.Triangle;
+		this.line.StrokeStartLineCap = PenLineCap.Round;
 
-		if (this.arrow == null)
-		{
-			this.arrow = this.AddChild<Line>();
-			this.arrow.IsHitTestVisible = false;
-			this.arrow.StrokeThickness = 15;
-			this.arrow.Stroke = this.ForegroundBrush;
-			this.arrow.StrokeEndLineCap = PenLineCap.Triangle;
-			this.arrow.StrokeStartLineCap = PenLineCap.Round;
-		}
+		this.arrow = this.AddChild<Line>();
+		this.arrow.IsHitTestVisible = false;
+		this.arrow.StrokeThickness = 15;
+		this.arrow.Stroke = this.ForegroundBrush;
+		this.arrow.StrokeEndLineCap = PenLineCap.Triangle;
+		this.arrow.StrokeStartLineCap = PenLineCap.Round;
 
-		base.Enable(canvas);
+		base.Enable(renderer);
 	}
 
 	public override void Update()

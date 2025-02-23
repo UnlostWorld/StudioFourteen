@@ -29,7 +29,7 @@ using System.Windows.Shapes;
 
 public class PoseSkeletonOverlay : SelectionOverlayLayerBase
 {
-	private readonly Dictionary<(BoneId, BoneId), BonePrimitive> primitives = new();
+	private readonly Dictionary<(BoneId, BoneId), BoneGizmo> gizmos = new();
 	private int lastTargetIndex = -1;
 
 	public PoseSkeletonOverlay()
@@ -37,11 +37,11 @@ public class PoseSkeletonOverlay : SelectionOverlayLayerBase
 	{
 	}
 
-	public override void Update(Matrix4x4 view, Matrix4x4 projection, Canvas canvas)
+	public override void Update(Matrix4x4 view, Matrix4x4 projection, GizmoRenderer renderer)
 	{
 		lock (this)
 		{
-			base.Update(view, projection, canvas);
+			base.Update(view, projection, renderer);
 		}
 	}
 
@@ -55,12 +55,12 @@ public class PoseSkeletonOverlay : SelectionOverlayLayerBase
 			{
 				this.lastTargetIndex = this.TargetIndex;
 
-				foreach (((BoneId boneId, BoneId parentId), BonePrimitive primitive) in this.primitives)
+				foreach (((BoneId boneId, BoneId parentId), BoneGizmo gizmo) in this.gizmos)
 				{
-					this.RemoveChild(primitive);
+					this.RemoveChild(gizmo);
 				}
 
-				this.primitives.Clear();
+				this.gizmos.Clear();
 
 				Character* character = this.Services.Target.GetCharacter(this.TargetIndex);
 				if (character == null)
@@ -95,11 +95,11 @@ public class PoseSkeletonOverlay : SelectionOverlayLayerBase
 							{
 								BoneId parentId = new(character->ObjectIndex, partialIdx, poseIdx, parentIndex);
 
-								if (!this.primitives.ContainsKey((boneId, parentId)))
+								if (!this.gizmos.ContainsKey((boneId, parentId)))
 								{
-									BonePrimitive bonePrimitive = new(boneId, parentId);
-									this.primitives.Add((boneId, parentId), bonePrimitive);
-									this.AddChild(bonePrimitive);
+									BoneGizmo gizmo = new(boneId, parentId);
+									this.gizmos.Add((boneId, parentId), gizmo);
+									this.AddChild(gizmo);
 								}
 							}
 						}
@@ -108,17 +108,17 @@ public class PoseSkeletonOverlay : SelectionOverlayLayerBase
 			}
 		}
 
-		if (this.primitives.Count <= 0)
+		if (this.gizmos.Count <= 0)
 			return;
 
-		foreach (((BoneId boneId, BoneId parentId), BonePrimitive primitive) in this.primitives)
+		foreach (((BoneId boneId, BoneId parentId), BoneGizmo gizmo) in this.gizmos)
 		{
-			primitive.OnFrameworkUpdate();
+			gizmo.OnFrameworkUpdate();
 		}
 	}
 }
 
-public class BonePrimitive : GizmoBase
+public class BoneGizmo : GizmoBase
 {
 	public Vector3 From;
 	public Vector3 To;
@@ -129,7 +129,7 @@ public class BonePrimitive : GizmoBase
 	private readonly BoneReference parent;
 	private Line? line;
 
-	public BonePrimitive(BoneId bone, BoneId parent)
+	public BoneGizmo(BoneId bone, BoneId parent)
 	{
 		this.bone = ServiceManager.Instance.Pose.GetOrCreateBoneReference(bone);
 		this.parent = ServiceManager.Instance.Pose.GetOrCreateBoneReference(parent);
@@ -151,12 +151,11 @@ public class BonePrimitive : GizmoBase
 		this.To = Vector3.Transform(Vector3.Zero, boneTransform.ToMatrix());
 	}
 
-	public override void Enable(Canvas canvas)
+	public override void Enable(GizmoRenderer renderer)
 	{
-		if (this.line == null)
-			this.line = this.AddChild<Line>();
+		this.line = this.AddChild<Line>();
 
-		base.Enable(canvas);
+		base.Enable(renderer);
 	}
 
 	public override void Update()

@@ -23,17 +23,17 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Windows;
 using System.Windows.Controls;
-using Vector = System.Windows.Vector;
 
 public interface IGizmo
 {
 	public bool IsVisible { get; set; }
+	public bool IsEnabled { get; }
 
 	GizmoGroup? Parent { get; set; }
 
-	void Update(Matrix4x4 view, Matrix4x4 projection, Canvas canvas);
-	void Enable(Canvas canvas);
-	void Disable(Canvas canvas);
+	void Update(Matrix4x4 view, Matrix4x4 projection, GizmoRenderer canvas);
+	void Enable(GizmoRenderer canvas);
+	void Disable(GizmoRenderer canvas);
 
 	Transform GetTransform();
 	bool GetKeepScreenSize();
@@ -51,7 +51,7 @@ public abstract class GizmoBase : IGizmo
 
 	private readonly List<FrameworkElement> elements = new();
 
-	private Canvas? parent;
+	private GizmoRenderer? parent;
 	private float screenWidth = 0;
 	private float screenHeight = 0;
 	private Matrix4x4 currentView;
@@ -68,6 +68,7 @@ public abstract class GizmoBase : IGizmo
 	public Transform Transform { get; set; } = Transform.Identity;
 	public GizmoGroup? Parent { get; set; }
 	public bool IsVisible { get; set; } = true;
+	public bool IsEnabled { get; private set; }
 
 	protected ServiceManager Services => ServiceManager.Instance;
 
@@ -75,20 +76,21 @@ public abstract class GizmoBase : IGizmo
 	protected Matrix4x4 Projection => this.currentProjection;
 	protected Matrix4x4 ViewProjection => this.currentViewProjection;
 
-	public virtual void Enable(Canvas canvas)
+	public virtual void Enable(GizmoRenderer renderer)
 	{
-		this.parent = canvas;
+		this.IsEnabled = true;
+		this.parent = renderer;
 		this.screenWidth = (float)this.parent.ActualWidth;
 		this.screenHeight = (float)this.parent.ActualHeight;
 		this.currentVisibility = true;
 
 		foreach (FrameworkElement el in this.elements)
 		{
-			canvas.Children.Add(el);
+			renderer.Children.Add(el);
 		}
 	}
 
-	public virtual void Update(Matrix4x4 view, Matrix4x4 projection, Canvas canvas)
+	public virtual void Update(Matrix4x4 view, Matrix4x4 projection, GizmoRenderer renderer)
 	{
 		if (this.parent == null)
 			return;
@@ -143,11 +145,13 @@ public abstract class GizmoBase : IGizmo
 	{
 	}
 
-	public virtual void Disable(Canvas canvas)
+	public virtual void Disable(GizmoRenderer renderer)
 	{
+		this.IsEnabled = false;
+
 		foreach (FrameworkElement el in this.elements)
 		{
-			canvas.Children.Remove(el);
+			renderer.Children.Remove(el);
 		}
 
 		this.elements.Clear();

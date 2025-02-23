@@ -84,9 +84,9 @@ public abstract class TransformHandleAxisBase : HandleBase
 		return currentTransform;
 	}
 
-	public override void Enable(Canvas canvas)
+	public override void Enable(GizmoRenderer renderer)
 	{
-		base.Enable(canvas);
+		base.Enable(renderer);
 		this.BackgroundBrush = new SolidColorBrush(this.Background);
 		this.DraggingBackgroundBrush = new SolidColorBrush(this.DraggingBackground);
 		this.parent = this.Parent as TransformHandleBase;

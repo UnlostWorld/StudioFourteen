@@ -32,9 +32,9 @@ public abstract class HandleBase : GizmoBase
 	protected Brush? ForegroundBrush { get; private set; }
 	protected Brush? DraggingBrush { get; private set; }
 
-	public override void Enable(Canvas canvas)
+	public override void Enable(GizmoRenderer renderer)
 	{
-		base.Enable(canvas);
+		base.Enable(renderer);
 		this.ForegroundBrush = new SolidColorBrush(this.Foreground);
 	}
 

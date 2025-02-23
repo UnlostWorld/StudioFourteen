@@ -57,27 +57,21 @@ public class ScaleHandleAxis : TransformHandleAxisBase
 		}
 	}
 
-	public override void Enable(Canvas canvas)
+	public override void Enable(GizmoRenderer renderer)
 	{
-		if (this.line == null)
-		{
-			this.line = this.AddChild<Line>();
-			this.line.StrokeThickness = 3;
-			this.line.Stroke = this.ForegroundBrush;
-			this.line.StrokeEndLineCap = PenLineCap.Triangle;
-			this.line.StrokeStartLineCap = PenLineCap.Round;
-		}
+		this.line = this.AddChild<Line>();
+		this.line.StrokeThickness = 3;
+		this.line.Stroke = this.ForegroundBrush;
+		this.line.StrokeEndLineCap = PenLineCap.Triangle;
+		this.line.StrokeStartLineCap = PenLineCap.Round;
 
-		if (this.cap == null)
-		{
-			this.cap = this.AddChild<Line>();
-			this.cap.StrokeThickness = 15;
-			this.cap.Stroke = this.ForegroundBrush;
-			this.cap.StrokeEndLineCap = PenLineCap.Round;
-			this.cap.StrokeStartLineCap = PenLineCap.Round;
-		}
+		this.cap = this.AddChild<Line>();
+		this.cap.StrokeThickness = 15;
+		this.cap.Stroke = this.ForegroundBrush;
+		this.cap.StrokeEndLineCap = PenLineCap.Round;
+		this.cap.StrokeStartLineCap = PenLineCap.Round;
 
-		base.Enable(canvas);
+		base.Enable(renderer);
 	}
 
 	public override void Update()

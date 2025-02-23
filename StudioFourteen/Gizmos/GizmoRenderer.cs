@@ -17,6 +17,8 @@ namespace StudioFourteen.Gizmos;
 using Serilog;
 using StudioFourteen.Extensions;
 using StudioFourteen.Gizmos.Handles;
+using StudioFourteen.Mvm;
+using StudioFourteen.Plugin;
 using StudioFourteen.Structs;
 using StudioFourteen.Utilities;
 using System;
@@ -35,21 +37,57 @@ using Vector = System.Windows.Vector;
 
 public class GizmoRenderer : Canvas
 {
+	public readonly string Id = Guid.NewGuid().ToString();
+
 	public readonly List<IGizmo> Gizmos = new();
 	private HandleBase? draggingHandle;
 	private HandleBase? cursorOverHandle;
 	private Point? lastDragMousePos;
 	private Vector? cursorDragOffset;
 	private bool isAnyMouseDown;
-	private Task? renderTask;
 
 	public GizmoRenderer()
 	{
 		this.Background = new SolidColorBrush(Color.FromArgb(1, 0, 0, 0));
-		this.IsVisibleChanged += this.OnIsVisibleChanged;
+
+		this.Loaded += (s, e) =>
+		{
+			try
+			{
+				this.OnLoaded();
+			}
+			catch (Exception ex)
+			{
+				this.Log.Error(ex, "Error loading gizmo renderer");
+			}
+		};
+
+		this.Unloaded += (s, e) =>
+		{
+			try
+			{
+				this.OnUnloaded();
+			}
+			catch (Exception ex)
+			{
+				this.Log.Error(ex, "Error unloading gizmo renderer");
+			}
+		};
+
+		this.Dispatcher.ShutdownStarted += (s, e) =>
+		{
+			try
+			{
+				this.OnUnloaded();
+			}
+			catch (Exception ex)
+			{
+				this.Log.Error(ex, "Error unloading gizmo renderer");
+			}
+		};
 	}
 
-	public bool IsRenderTaskRunning => this.renderTask != null && !this.renderTask.IsCompleted;
+	public bool IsRendererLoaded { get; private set; }
 
 	public ILogger Log => Logging.ForContext(this.GetType());
 	public ServiceManager Services => ServiceManager.Instance;
@@ -90,6 +128,19 @@ public class GizmoRenderer : Canvas
 		});
 
 		this.Gizmos.Remove(gizmo);
+	}
+
+	protected virtual void OnLoaded()
+	{
+		this.IsRendererLoaded = true;
+
+		this.RenderTask().Run();
+	}
+
+	protected virtual void OnUnloaded()
+	{
+		this.IsRendererLoaded = false;
+		this.Children.Clear();
 	}
 
 	protected override void OnMouseDown(MouseButtonEventArgs e)
@@ -227,7 +278,7 @@ public class GizmoRenderer : Canvas
 
 	protected virtual HandleBase? HitTest(Point mousePos)
 	{
-		if (!this.IsRenderTaskRunning)
+		if (!this.IsRendererLoaded)
 			return null;
 
 		HandleHitResult result = default;
@@ -251,35 +302,16 @@ public class GizmoRenderer : Canvas
 		return result.Handle;
 	}
 
-	private void OnIsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
-	{
-		if (this.IsVisible)
-		{
-			this.StartRendering();
-		}
-	}
-
-	private void StartRendering()
-	{
-		if (this.IsRenderTaskRunning)
-			return;
-
-		this.renderTask = this.RenderTask();
-		this.renderTask.Run();
-	}
-
 	private async Task RenderTask()
 	{
-		this.Log.Information("Starting render task");
+		this.Log.Information($"Starting render task: {this.Id}");
 
 		try
 		{
 			Stopwatch sw = new();
 
 			await this.MainThread();
-			while (this.IsVisible
-				&& !StudioFourteen.Services.ServiceManagerBase.ShutdownRequested
-				&& this.IsLoaded)
+			while (this.IsRendererLoaded)
 			{
 				Matrix4x4 view = this.GetViewMatrix();
 				Matrix4x4 projection = this.GetProjectionMatrix();
@@ -288,13 +320,16 @@ public class GizmoRenderer : Canvas
 				{
 					IGizmo gizmo = this.Gizmos[i];
 
+					if (!gizmo.IsEnabled)
+						continue;
+
 					try
 					{
 						gizmo.Update(view, projection, this);
 					}
 					catch (Exception ex)
 					{
-						this.Log.Error(ex, $"Error in gizmo transform {gizmo}");
+						this.Log.Error(ex, $"Error in gizmo update {gizmo} for {this.Id}");
 						this.Gizmos.Remove(gizmo);
 						break;
 					}
@@ -309,15 +344,17 @@ public class GizmoRenderer : Canvas
 		}
 		catch (Exception ex)
 		{
-			this.Log.Error(ex, $"Error in primitive renderer");
+			this.Log.Error(ex, $"Error in gizmo renderer");
 		}
 
 		await this.MainThread();
-		foreach (IGizmo primitive in this.Gizmos)
+		foreach (IGizmo gizmo in this.Gizmos)
 		{
-			primitive.Disable(this);
+			gizmo.Disable(this);
 		}
 
-		this.Log.Information("Stopping render task");
+		this.Gizmos.Clear();
+
+		this.Log.Information($"Stopping render task: {this.Id}");
 	}
 }

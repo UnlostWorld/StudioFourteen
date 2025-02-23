@@ -34,7 +34,7 @@ public abstract class WireframeGizmo : GizmoBase
 	public Quaternion Rotation { get; set; } = Quaternion.Identity;
 	public Vector3 Scale { get; set; } = Vector3.One;
 
-	public override void Enable(Canvas canvas)
+	public override void Enable(GizmoRenderer renderer)
 	{
 		for (int i = 0; i < this.lines.Count; i++)
 		{
@@ -60,12 +60,12 @@ public abstract class WireframeGizmo : GizmoBase
 			this.polyLineVisuals.Add(line);
 		}
 
-		base.Enable(canvas);
+		base.Enable(renderer);
 	}
 
-	public override void Disable(Canvas canvas)
+	public override void Disable(GizmoRenderer renderer)
 	{
-		base.Disable(canvas);
+		base.Disable(renderer);
 
 		this.lineVisuals.Clear();
 		this.polyLineVisuals.Clear();

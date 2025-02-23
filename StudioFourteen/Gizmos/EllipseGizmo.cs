@@ -28,20 +28,20 @@ public class EllipseGizmo : GizmoBase
 
 	protected Ellipse? ellipse;
 
-	public override void Enable(Canvas canvas)
+	public override void Enable(GizmoRenderer renderer)
 	{
 		this.ellipse = new();
 		this.ellipse.Fill = new SolidColorBrush(this.Foreground);
 		this.ellipse.IsHitTestVisible = false;
-		canvas.Children.Add(this.ellipse);
-		base.Enable(canvas);
+		renderer.Children.Add(this.ellipse);
+		base.Enable(renderer);
 	}
 
-	public override void Disable(Canvas canvas)
+	public override void Disable(GizmoRenderer renderer)
 	{
-		base.Disable(canvas);
+		base.Disable(renderer);
 
-		canvas.Children.Remove(this.ellipse);
+		renderer.Children.Remove(this.ellipse);
 		this.ellipse = null;
 	}
 
