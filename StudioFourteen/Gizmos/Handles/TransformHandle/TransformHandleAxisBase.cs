@@ -92,6 +92,13 @@ public abstract class TransformHandleAxisBase : HandleBase
 		this.parent = this.Parent as TransformHandleBase;
 	}
 
+	public override void Disable(GizmoRenderer renderer)
+	{
+		this.BackgroundBrush = null;
+		this.DraggingBackgroundBrush = null;
+		base.Disable(renderer);
+	}
+
 	public sealed override bool OnScrollWheel(float delta)
 	{
 		if (this.parent == null)

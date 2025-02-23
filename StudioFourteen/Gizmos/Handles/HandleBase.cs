@@ -38,6 +38,14 @@ public abstract class HandleBase : GizmoBase
 		this.ForegroundBrush = new SolidColorBrush(this.Foreground);
 	}
 
+	public override void Disable(GizmoRenderer renderer)
+	{
+		this.ForegroundBrush = null;
+		this.DraggingBrush = null;
+
+		base.Disable(renderer);
+	}
+
 	public virtual void StartDrag(Point mousePos)
 	{
 		this.DraggingBrush = new SolidColorBrush(this.Dragging);
