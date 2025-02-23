@@ -80,6 +80,9 @@ public partial class PhotoGuides : View
 		this.photoAngleAnimation = this.captureStoryboard.CreateAnimation<DoubleAnimation>(this, PhotoAngleProperty, 1000, Easing.SineOut);
 		this.photoOffsetAnimation = this.captureStoryboard.CreateAnimation<DoubleAnimation>(this, PhotoOffsetProperty, 1000, Easing.SineIn);
 
+		if (DesignerProperties.GetIsInDesignMode(this))
+			return;
+
 		this.Services.Photos.PropertyChanged += this.OnPhotosPropertyChanged;
 		this.Services.Photos.PhaseChanged += this.OnPhaseChanged;
 		this.CalculateAspectBox();

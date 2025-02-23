@@ -64,6 +64,7 @@ public partial class TargetService : ServiceBase
 	public override Task Start()
 	{
 		this.Services.GroupPose.StateChanged += this.OnGroupPoseStateChanged;
+		this.Services.Panels.PanelsRestarted += this.OnPanelsRestarted;
 		this.OnGroupPoseStateChanged(this.Services.GroupPose.IsGroupPosing);
 		return base.Start();
 	}
@@ -221,6 +222,11 @@ public partial class TargetService : ServiceBase
 		{
 			this.TargetChanged?.Invoke(this.targetObjectIndex);
 		}
+	}
+
+	private void OnPanelsRestarted(PanelService self)
+	{
+		this.Services.Panels.SetIsOpen<TargetsPanel>(this.Services.GroupPose.IsGroupPosing);
 	}
 
 	private void OnGroupPoseStateChanged(bool newState)

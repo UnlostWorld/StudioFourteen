@@ -38,6 +38,7 @@ public partial class OverlayService
 	{
 		await base.Start();
 		this.Services.GroupPose.StateChanged += this.OnGroupPoseStateChanged;
+		this.Services.Panels.PanelsRestarted += this.OnPanelsRestarted;
 		this.OnGroupPoseStateChanged(this.Services.GroupPose.IsGroupPosing);
 	}
 
@@ -100,5 +101,10 @@ public partial class OverlayService
 	private void OnGroupPoseStateChanged(bool newState)
 	{
 		this.Services.Panels.SetIsOpen<OverlayControlPanel>(newState);
+	}
+
+	private void OnPanelsRestarted(PanelService self)
+	{
+		this.Services.Panels.SetIsOpen<OverlayControlPanel>(this.Services.GroupPose.IsGroupPosing);
 	}
 }

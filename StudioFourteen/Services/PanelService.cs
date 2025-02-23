@@ -38,6 +38,9 @@ public class PanelService : ServiceBase
 	private BackgroundWindow? backgroundWindow;
 	private NavigationWindow? navigationWindow;
 
+	public delegate void PanelServiceDelegate(PanelService self);
+	public event PanelServiceDelegate? PanelsRestarted;
+
 	public IEnumerable<Panel> OpenPanels => this.openPanels;
 
 	public override Task Initialize()
@@ -192,6 +195,8 @@ public class PanelService : ServiceBase
 		this.StopPanels();
 		await Task.Delay(100);
 		await this.StartPanels();
+
+		this.PanelsRestarted?.Invoke(this);
 	}
 
 	private async Task StartPanels()

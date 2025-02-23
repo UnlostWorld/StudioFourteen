@@ -18,11 +18,8 @@ namespace StudioFourteen.Studio;
 using StudioFourteen.Panels;
 using StudioFourteen.Settings;
 using System;
-using System.Numerics;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using WpfUtils.Extensions;
 
 public partial class BackgroundWindow : PanelWindow
 {

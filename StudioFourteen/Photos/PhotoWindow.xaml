@@ -16,7 +16,6 @@
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	DefaultPosition="0.5,1"
 	HostStyle="{DynamicResource PanelToolbarStyle}"
-	RememberWindowState="False"
 	ResizeMode="NoResize"
 	TitleIcon="Image"
 	VisibilityMode="PhotoMode"
