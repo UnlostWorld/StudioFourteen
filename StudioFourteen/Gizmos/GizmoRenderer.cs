@@ -37,8 +37,6 @@ using Vector = System.Windows.Vector;
 
 public class GizmoRenderer : Canvas
 {
-	public readonly string Id = Guid.NewGuid().ToString();
-
 	public readonly List<IGizmo> Gizmos = new();
 	private HandleBase? draggingHandle;
 	private HandleBase? cursorOverHandle;
@@ -304,8 +302,6 @@ public class GizmoRenderer : Canvas
 
 	private async Task RenderTask()
 	{
-		this.Log.Information($"Starting render task: {this.Id}");
-
 		try
 		{
 			Stopwatch sw = new();
@@ -329,7 +325,7 @@ public class GizmoRenderer : Canvas
 					}
 					catch (Exception ex)
 					{
-						this.Log.Error(ex, $"Error in gizmo update {gizmo} for {this.Id}");
+						this.Log.Error(ex, $"Error in gizmo update {gizmo}");
 						this.Gizmos.Remove(gizmo);
 						break;
 					}
@@ -354,7 +350,5 @@ public class GizmoRenderer : Canvas
 		}
 
 		this.Gizmos.Clear();
-
-		this.Log.Information($"Stopping render task: {this.Id}");
 	}
 }

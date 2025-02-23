@@ -20,7 +20,6 @@ using StudioFourteen.Gizmos.Handles.TransformHandle;
 using System;
 using System.Numerics;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -34,7 +33,6 @@ public class RotationHandleAxis : TransformHandleAxisBase
 
 	private const int NumPoints = 72;
 
-	private readonly string id = Guid.NewGuid().ToString();
 	private readonly Line?[] segments = new Line?[NumPoints];
 	private readonly Vector3[] points3d = new Vector3[NumPoints];
 
@@ -48,8 +46,6 @@ public class RotationHandleAxis : TransformHandleAxisBase
 
 	public override void Enable(GizmoRenderer renderer)
 	{
-		this.Log.Information($"Enable {this.id} for {renderer.Id}");
-
 		for (int i = 0; i < this.points3d.Length; i++)
 		{
 			float p = i / (float)(this.points3d.Length - 1);
@@ -87,8 +83,6 @@ public class RotationHandleAxis : TransformHandleAxisBase
 
 	public override void Disable(GizmoRenderer renderer)
 	{
-		this.Log.Information($"Disable {this.id} for {renderer.Id}");
-
 		for (int i = 1; i < this.segments.Length; i++)
 		{
 			this.segments[i] = null;
