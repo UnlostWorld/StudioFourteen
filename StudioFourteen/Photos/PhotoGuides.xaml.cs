@@ -113,6 +113,9 @@ public partial class PhotoGuides : View
 
 	private void CalculateAspectBox()
 	{
+		if (DesignerProperties.GetIsInDesignMode(this))
+			return;
+
 		double aspect = this.Services.Photos.AspectRatio;
 
 		double height = this.ActualHeight;
