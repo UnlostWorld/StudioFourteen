@@ -13,25 +13,48 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Analytics;
+namespace StudioFourteen.Server;
 
-using StudioFourteen.Server.Analytics;
-using StudioFourteen.Services;
+using System;
+using System.Net;
+using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 
-public class AnalyticsService : ServiceBase
+public static class ServerApi
 {
-	public override async Task Start()
+	public static string Url = "http://unlostworld.duckdns.org/api/";
+
+	private static readonly HttpClient Client;
+
+	static ServerApi()
 	{
-		// Optional analytics default to false, so on firt run we wont
-		// send the started event, the user will be able to opt-in later
-		// in the first run.
-		if (this.Services.Settings.Current.SendOptionalAnalytics)
-			AnalyticEvent.Send(AnalyticEvents.StudioStarted);
+		HttpClientHandler handler = new();
+		handler.AutomaticDecompression = DecompressionMethods.All;
 
-		if (!this.Services.Settings.Current.HasConfirmedAnalyticOptions)
-			this.Services.Panels.SetIsOpen<AnalyticsOptPanel>(true);
+		Client = new(handler);
+	}
 
-		await base.Start();
+	public static async Task<string> GetAsync(string uri)
+	{
+		using HttpResponseMessage response = await Client.GetAsync(Url + uri);
+
+		return await response.Content.ReadAsStringAsync();
+	}
+
+	public static async Task<string> PostAsync(string uri, string data, string contentType)
+	{
+		using HttpContent content = new StringContent(data, Encoding.UTF8, contentType);
+
+		HttpRequestMessage requestMessage = new HttpRequestMessage()
+		{
+			Content = content,
+			Method = HttpMethod.Post,
+			RequestUri = new Uri(Url + uri),
+		};
+
+		using HttpResponseMessage response = await Client.SendAsync(requestMessage);
+
+		return await response.Content.ReadAsStringAsync();
 	}
 }

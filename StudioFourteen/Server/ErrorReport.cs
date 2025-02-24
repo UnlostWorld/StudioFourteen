@@ -13,25 +13,19 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Analytics;
+namespace StudioFourteen.Server.Analytics;
 
-using StudioFourteen.Server.Analytics;
-using StudioFourteen.Services;
 using System.Threading.Tasks;
+using System.Text.Json;
 
-public class AnalyticsService : ServiceBase
+public class ErrorReport
 {
-	public override async Task Start()
+	public string? Message { get; set; }
+	public string? LogFile { get; set; }
+
+	public Task<string> Send()
 	{
-		// Optional analytics default to false, so on firt run we wont
-		// send the started event, the user will be able to opt-in later
-		// in the first run.
-		if (this.Services.Settings.Current.SendOptionalAnalytics)
-			AnalyticEvent.Send(AnalyticEvents.StudioStarted);
-
-		if (!this.Services.Settings.Current.HasConfirmedAnalyticOptions)
-			this.Services.Panels.SetIsOpen<AnalyticsOptPanel>(true);
-
-		await base.Start();
+		string json = JsonSerializer.Serialize(this);
+		return ServerApi.PostAsync("/Analytics/Error", json, "application/json");
 	}
 }

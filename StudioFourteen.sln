@@ -22,8 +22,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "Test\Test.csproj", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StudioFourteen.Reshade", "StudioFourteen.Reshade\StudioFourteen.Reshade.vcxproj", "{46E9967C-C061-41B2-A56B-96B624F32278}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudioServer.Client", "StudioServer.Client\StudioServer.Client.csproj", "{B7C86216-CC78-49E2-8D72-8DBBE450EBD8}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
