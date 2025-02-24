@@ -18,28 +18,6 @@
 			  "kind": "build",
 			  "isDefault": true
 			},
-			"options": {
-				"statusbar": {
-					"label": "$(file-code) Build",
-					"hide": true,
-				}
-			}
-		},
-
-		{
-			"label": "Disconnect" ,
-			"command": "${command:workbench.action.debug.disconnect}",
-		},
-		{
-			"label": "Restart",
-			"command": "${command:workbench.action.debug.start}",
-			"dependsOn": ["Disconnect"],
-			"options": {
-				"statusbar": {
-					"label": "$(debug-rerun) Run",
-					"hide": false,
-				}
-			}
 		},
 	]
 }
