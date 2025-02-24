@@ -5,16 +5,12 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "MsBuild Release",
+            "name": "Run",
             "type": "coreclr",
             "request": "attach",
-            "preLaunchTask": "MsBuildRelease",
-        },
-        {
-            "name": "MsBuild Debug",
-            "type": "coreclr",
-            "request": "attach",
-            "preLaunchTask": "MsBuildDebug",
+			"justMyCode": true,
+            "preLaunchTask": "Build",
+			"processName": "ffxiv_dx11"
         }
     ]
 }

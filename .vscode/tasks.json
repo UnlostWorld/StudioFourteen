@@ -3,25 +3,7 @@
 	"tasks": [
 		{
 			"type": "shell",
-			"label": "MsBuildRelease",
-			"command": "msbuild.exe",
-			"args": [
-				"StudioFourteen.sln",
-				"-nologo",
-				"-nr:false",
-				"-p:platform=x64",
-				"-p:configuration=Release",
-				"-Restore",
-			],
-			"problemMatcher": ["$msCompile"],
-			"group": {
-			  "kind": "build",
-			  "isDefault": false
-			},
-		},
-		{
-			"type": "shell",
-			"label": "MsBuildDebug",
+			"label": "Build",
 			"command": "msbuild.exe",
 			"args": [
 				"StudioFourteen.sln",
@@ -36,6 +18,28 @@
 			  "kind": "build",
 			  "isDefault": true
 			},
-		}
+			"options": {
+				"statusbar": {
+					"label": "$(file-code) Build",
+					"hide": true,
+				}
+			}
+		},
+
+		{
+			"label": "Disconnect" ,
+			"command": "${command:workbench.action.debug.disconnect}",
+		},
+		{
+			"label": "Restart",
+			"command": "${command:workbench.action.debug.start}",
+			"dependsOn": ["Disconnect"],
+			"options": {
+				"statusbar": {
+					"label": "$(debug-rerun) Run",
+					"hide": false,
+				}
+			}
+		},
 	]
 }

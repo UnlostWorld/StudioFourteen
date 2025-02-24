@@ -67,7 +67,12 @@ public sealed class DalamudPlugin : IDalamudPlugin
 		// stop is async, and we want to get any lingering hooks
 		// out before dalamud moves on from this method.
 		this.Services.Dispose();
-		this.Services.Stop().Wait();
+
+		Task.Run(async () =>
+		{
+			await this.Services.Stop();
+			await Task.Delay(1000);
+		}).Wait();
 	}
 
 	private void OnDalamudOpenMainUi()

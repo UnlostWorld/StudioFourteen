@@ -15,13 +15,11 @@
 
 namespace StudioFourteen.Services;
 
-using Dalamud.Plugin.Services;
-using FFXIVClientStructs.FFXIV.Client.UI;
-using FFXIVClientStructs.FFXIV.Component.GUI;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Plugin;
 using StudioFourteen.SPA;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 public partial class StudioService : ServiceBase
@@ -46,8 +44,24 @@ public partial class StudioService : ServiceBase
 		return base.Shutdown();
 	}
 
+	public override async Task Start()
+	{
+		await base.Start();
+
+		#if DEBUG
+		{
+			if (this.Settings.WasStudioOpen)
+			{
+				this.Log.Information("Restoring studio state hello");
+				this.OpenStudio();
+			}
+		}
+		#endif
+	}
+
 	public override Task Stop()
 	{
+		this.Settings.WasStudioOpen = this.isOpen;
 		SpaWindow.CloseSpa();
 		return base.Stop();
 	}
