@@ -1,6 +1,3 @@
 [submodule "Lib/WpfUtils"]
 	path = Lib/WpfUtils
 	url = https://github.com/Yuki-Codes/WpfUtils.git
-[submodule "StudioServer.Client"]
-	path = StudioServer.Client
-	url = https://github.com/UnlostWorld/StudioServer.Client
