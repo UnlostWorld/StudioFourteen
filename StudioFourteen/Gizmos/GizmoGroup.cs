@@ -87,9 +87,6 @@ public class GizmoGroup : IGizmo
 
 		foreach (IGizmo gizmo in this.Children)
 		{
-			if (!gizmo.IsEnabled)
-				continue;
-
 			gizmo.Update(view, projection, renderer);
 		}
 	}

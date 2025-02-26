@@ -125,6 +125,7 @@ public class GizmoRenderer : Canvas
 			}
 		});
 
+		this.Log.Information($"Remove Gizmo: {gizmo}");
 		this.Gizmos.Remove(gizmo);
 	}
 
@@ -315,9 +316,6 @@ public class GizmoRenderer : Canvas
 				for (int i = this.Gizmos.Count - 1; i >= 0; i--)
 				{
 					IGizmo gizmo = this.Gizmos[i];
-
-					if (!gizmo.IsEnabled)
-						continue;
 
 					try
 					{
