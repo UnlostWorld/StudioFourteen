@@ -146,17 +146,20 @@ public class InputService : ServiceBase
 
 	public void AddDevice(InputDeviceBase device)
 	{
-		this.inputDevices.Add(device);
-
-		foreach (InputAxis axis in device.Axes)
+		lock(this)
 		{
-			if (this.axisLookup.ContainsKey(axis.Id))
-			{
-				this.Log.Error($"Axis Id collision: {axis.Id}");
-				continue;
-			}
+			this.inputDevices.Add(device);
 
-			this.axisLookup.Add(axis.Id, axis);
+			foreach (InputAxis axis in device.Axes)
+			{
+				if (this.axisLookup.ContainsKey(axis.Id))
+				{
+					this.Log.Error($"Axis Id collision: {axis.Id}");
+					continue;
+				}
+
+				this.axisLookup.Add(axis.Id, axis);
+			}
 		}
 	}
 
@@ -266,81 +269,84 @@ public class InputService : ServiceBase
 		if (!this.Services.Studio.IsOpen)
 			return;
 
-		foreach (InputDeviceBase device in this.inputDevices)
+		lock(this)
 		{
-			device.PreUpdate();
-		}
-
-		bool wasActive = this.IsXivTextInputActive;
-		this.IsXivTextInputActive = RaptureAtkModule.Instance()->AtkModule.IsTextInputActive();
-
-		// If Text Input just activated, and we have focus, set focus to xiv.
-		if (!wasActive && this.IsXivTextInputActive && this.Services.Windows.IsAnyStudioWindowActive())
-		{
-			this.Services.Windows.ActivateXivWindow();
-		}
-
-		// If text input is still active, but we are taking focus, send the escape key to clear
-		// the text input focus from xiv.
-		// TODO: it would be nicer if we could invoke something in the AtkModule to clear the games input focus.
-		if (wasActive && this.IsXivTextInputActive && this.Services.Windows.IsAnyStudioWindowActive())
-		{
-			this.Services.Windows.SendKeyToXiv(VirtualKey.ESCAPE, true);
-			this.Services.Windows.SendKeyToXiv(VirtualKey.ESCAPE, false);
-		}
-
-		if (this.IsXivTextInputActive || this.IsStudioTextInputActive)
-			return;
-
-		Dictionary<InputAction, float> combinedValues = new();
-
-		foreach(Bind bind in this.binds)
-		{
-			this.listeners.TryGetValue(bind.Action, out List<InputActionListener>? listeners);
-
-			// nobody listening?
-			if (listeners == null || listeners.Count == 0)
-				continue;
-
-			combinedValues.TryAdd(bind.Action, 0);
-			combinedValues[bind.Action] += bind.GetValue();
-		}
-
-		foreach((InputAction action, float value) in combinedValues)
-		{
-			this.listeners.TryGetValue(action, out List<InputActionListener>? listeners);
-
-			if (listeners == null || listeners.Count == 0)
-				continue;
-
-			foreach (InputActionListener listener in listeners)
+			foreach (InputDeviceBase device in this.inputDevices)
 			{
-				listener.SetValue(value);
+				device.PreUpdate();
 			}
-		}
 
-		DateTime mostRecentInput = DateTime.MinValue;
-		InputDeviceBase? mostRecentDevice = null;
-		foreach (InputDeviceBase device in this.inputDevices)
-		{
-			device.PostUpdate();
+			bool wasActive = this.IsXivTextInputActive;
+			this.IsXivTextInputActive = RaptureAtkModule.Instance()->AtkModule.IsTextInputActive();
 
-			foreach(InputAxis axis in device.Axes)
+			// If Text Input just activated, and we have focus, set focus to xiv.
+			if (!wasActive && this.IsXivTextInputActive && this.Services.Windows.IsAnyStudioWindowActive())
 			{
-				if (!axis.CanActivateDevice)
+				this.Services.Windows.ActivateXivWindow();
+			}
+
+			// If text input is still active, but we are taking focus, send the escape key to clear
+			// the text input focus from xiv.
+			// TODO: it would be nicer if we could invoke something in the AtkModule to clear the games input focus.
+			if (wasActive && this.IsXivTextInputActive && this.Services.Windows.IsAnyStudioWindowActive())
+			{
+				this.Services.Windows.SendKeyToXiv(VirtualKey.ESCAPE, true);
+				this.Services.Windows.SendKeyToXiv(VirtualKey.ESCAPE, false);
+			}
+
+			if (this.IsXivTextInputActive || this.IsStudioTextInputActive)
+				return;
+
+			Dictionary<InputAction, float> combinedValues = new();
+
+			foreach(Bind bind in this.binds)
+			{
+				this.listeners.TryGetValue(bind.Action, out List<InputActionListener>? listeners);
+
+				// nobody listening?
+				if (listeners == null || listeners.Count == 0)
 					continue;
 
-				if (axis.UtcLastInput > mostRecentInput)
+				combinedValues.TryAdd(bind.Action, 0);
+				combinedValues[bind.Action] += bind.GetValue();
+			}
+
+			foreach((InputAction action, float value) in combinedValues)
+			{
+				this.listeners.TryGetValue(action, out List<InputActionListener>? listeners);
+
+				if (listeners == null || listeners.Count == 0)
+					continue;
+
+				foreach (InputActionListener listener in listeners)
 				{
-					mostRecentInput = axis.UtcLastInput;
-					mostRecentDevice = device;
+					listener.SetValue(value);
 				}
 			}
-		}
 
-		if (mostRecentDevice != this.currentDevice)
-		{
-			this.SetCurrentDevice(mostRecentDevice);
+			DateTime mostRecentInput = DateTime.MinValue;
+			InputDeviceBase? mostRecentDevice = null;
+			foreach (InputDeviceBase device in this.inputDevices)
+			{
+				device.PostUpdate();
+
+				foreach(InputAxis axis in device.Axes)
+				{
+					if (!axis.CanActivateDevice)
+						continue;
+
+					if (axis.UtcLastInput > mostRecentInput)
+					{
+						mostRecentInput = axis.UtcLastInput;
+						mostRecentDevice = device;
+					}
+				}
+			}
+
+			if (mostRecentDevice != this.currentDevice)
+			{
+				this.SetCurrentDevice(mostRecentDevice);
+			}
 		}
 	}
 
