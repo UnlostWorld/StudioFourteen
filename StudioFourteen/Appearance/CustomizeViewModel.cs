@@ -67,6 +67,15 @@ public partial class CustomizeViewModel : ViewModel
 		if (this.isUpdatingMenus)
 			return;
 
+		bool canDraw = false;
+		unsafe
+		{
+			canDraw = pCharacter->IsReadyToDraw();
+		}
+
+		if (!canDraw)
+			return;
+
 		// TODO: Ensure race, tribe, and gender have not changed.
 		foreach (MenuViewModel? menu in this.BodyMenus)
 		{
@@ -86,36 +95,78 @@ public partial class CustomizeViewModel : ViewModel
 
 	public void OnTargetChanged()
 	{
-		this.UpdateMenus().Run();
+		this.UpdateMenus();
 	}
 
-	private async Task UpdateMenus()
+	private void UpdateMenus()
 	{
-		this.isUpdatingMenus = true;
+		this.UpdateMenusAsync().Run();
+	}
 
-		await Threads.FrameworkThread();
-
-		if (DalamudServices.ObjectTable == null)
+	private async Task UpdateMenusAsync()
+	{
+		try
 		{
-			this.isUpdatingMenus = false;
-			return;
-		}
+			this.isUpdatingMenus = true;
 
-		CharaMakeType makeType;
-		unsafe
+			await this.dispatcher.MainThread();
+
+			this.BodyMenus.Clear();
+			this.HeadMenus.Clear();
+			this.MakeupMenus.Clear();
+
+			await Threads.FrameworkThread();
+
+			if (DalamudServices.ObjectTable == null)
+			{
+				this.isUpdatingMenus = false;
+				return;
+			}
+
+			bool canDraw = false;
+			while(!canDraw)
+			{
+				await Task.Delay(100);
+				await Threads.FrameworkThread();
+
+				unsafe
+				{
+					Character* pCharacter = this.Services.Target.GetCharacter(this.Services.Target.TargetObjectIndex);
+					if (pCharacter == null)
+						continue;
+
+					if (!pCharacter->CanDraw())
+						continue;
+
+					canDraw = true;
+				}
+			}
+
+			await Threads.FrameworkThread();
+
+			CharaMakeType? makeType = null;
+			unsafe
+			{
+				Character* pCharacter = this.Services.Target.GetCharacter(this.Services.Target.TargetObjectIndex);
+				if (pCharacter == null)
+					return;
+
+				CharaMakeType? characterMakeType = pCharacter->GetCharaMakeType();
+				if (characterMakeType == null)
+					return;
+
+				makeType = characterMakeType.Value;
+			}
+
+			if (makeType == null)
+				throw new Exception("Failed to find character Make Type for target");
+
+			await this.UpdateMenus((CharaMakeType)makeType);
+		}
+		catch (Exception ex)
 		{
-			Character* pCharacter = this.Services.Target.GetCharacter(this.Services.Target.TargetObjectIndex);
-			if (pCharacter == null)
-				return;
-
-			CharaMakeType? characterMakeType = pCharacter->GetCharaMakeType();
-			if (characterMakeType == null)
-				return;
-
-			makeType = characterMakeType.Value;
+			this.Log.Error(ex, "Error updating customize menus");
 		}
-
-		await this.UpdateMenus(makeType);
 	}
 
 	private async Task UpdateMenus(CharaMakeType makeType)

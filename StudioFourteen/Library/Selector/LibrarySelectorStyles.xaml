@@ -7,8 +7,7 @@
 	xmlns:menu="clr-namespace:StudioFourteen.Library.LibraryMenu"
 	xmlns:results="clr-namespace:StudioFourteen.Library.Results"
 	xmlns:selector="clr-namespace:StudioFourteen.Library.Selector"
-	xmlns:tags="clr-namespace:StudioFourteen.Tags"
-	xmlns:wpfUtils="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp">
+	xmlns:tags="clr-namespace:StudioFourteen.Tags">
 
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="pack://application:,,,/WpfUtils;component/Controls/PopOutStyles.xaml" />
@@ -78,13 +77,13 @@
 				HorizontalAlignment="Right"
 				VerticalAlignment="Top"
 				Visibility="{Binding Entry.IsFavorite, Converter={StaticResource B2V}}">
-				<wpfUtils:IconBlock
+				<controls:IconBlock
 					Margin="-2,2,2,-2"
 					FontSize="18"
 					Foreground="{DynamicResource BackgroundBrush}"
 					Icon="Heart"
 					IconFont="Solid" />
-				<wpfUtils:IconBlock
+				<controls:IconBlock
 					FontSize="18"
 					Foreground="{DynamicResource TrimBrush}"
 					Icon="Heart"
@@ -157,9 +156,9 @@
 						HorizontalAlignment="Right"
 						VerticalAlignment="Top"
 						Background="Transparent">
-						<wpfUtils:IconBlock
+						<controls:IconBlock
 							Foreground="{DynamicResource ForegroundLightBrush}"
-							Icon="Times" />
+							Icon="Times"/>
 					</Button>
 
 					<ContentPresenter
@@ -196,7 +195,7 @@
 							IsSelected="{Binding RelativeSource={RelativeSource AncestorType={x:Type selector:LibrarySelector}}, Path=Favorites, Converter={StaticResource !B}}"
 							Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
 							ToolTip="{DynamicResource LOC_LibrarySelector_All}">
-							<wpfUtils:IconBlock
+							<controls:IconBlock
 								Icon="FileAlt"
 								IconFont="Solid" />
 						</ListBoxItem>
@@ -204,7 +203,7 @@
 							IsSelected="{Binding RelativeSource={RelativeSource AncestorType={x:Type selector:LibrarySelector}}, Path=Favorites}"
 							Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
 							ToolTip="{DynamicResource LOC_LibrarySelector_Favorites}">
-							<wpfUtils:IconBlock
+							<controls:IconBlock
 								Icon="Heart"
 								IconFont="Solid" />
 						</ListBoxItem>
@@ -220,14 +219,15 @@
 						Padding="28,0,0,0"
 						Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type selector:LibrarySelector}}, Path=Search, UpdateSourceTrigger=PropertyChanged}" />
 
-					<wpfUtils:IconBlock
+					<controls:IconBlock
 						Grid.Row="2"
 						Grid.Column="1"
 						Margin="10,2,0,2"
 						HorizontalAlignment="Left"
 						VerticalAlignment="Center"
 						Foreground="{DynamicResource ForegroundLightBrush}"
-						Icon="Search" />
+						Icon="Search"
+						IconFont="Solid"  />
 
 				</Grid>
 
