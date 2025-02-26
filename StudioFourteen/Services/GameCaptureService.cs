@@ -179,8 +179,6 @@ public class GameCaptureService : ServiceBase
 				|| destination.PixelHeight != this.backBufferHeight
 				|| destination.Format != PixelFormats.Bgra32)
 			{
-				this.Log.Information($"DEST >> {this.backBufferWidth}x{this.backBufferHeight}");
-
 				destination = new WriteableBitmap(
 					this.backBufferWidth,
 					this.backBufferHeight,
@@ -311,8 +309,6 @@ public class GameCaptureService : ServiceBase
 
 				this.backBufferWidth = (int)description.Width;
 				this.backBufferHeight = (int)description.Height;
-
-				this.Log.Information($"Back Buffer >> {this.backBufferWidth}x{this.backBufferHeight}");
 
 				if (this.backBufferWidth == 0 || this.backBufferHeight == 0)
 					return;
