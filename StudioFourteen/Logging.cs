@@ -24,6 +24,7 @@ using Serilog.Formatting;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text;
 
 public static class Logging
 {
@@ -81,25 +82,63 @@ public class Formatter : ITextFormatter
 			output.Write("] ");
 		}
 
-		output.Write(logEvent.MessageTemplate);
+		output.WriteLine(logEvent.MessageTemplate);
 
 		if (logEvent.Properties.TryGetValue("StackTrace", out var stackTrace))
 		{
-			output.WriteLine();
 			if (stackTrace is ScalarValue sv)
 			{
-				output.Write(sv.Value);
+				output.WriteLine(CleanStackTrace(sv.Value as string));
 			}
 		}
 
 		if (logEvent.Exception != null)
 		{
-			output.WriteLine();
 			output.WriteLine(logEvent.Exception.Message);
-			output.WriteLine(logEvent.Exception.StackTrace);
+			output.WriteLine(CleanStackTrace(logEvent.Exception.StackTrace));
+		}
+	}
+
+	private static string? CleanStackTrace(string? stack)
+	{
+		if (stack == null)
+			return null;
+
+		string[] lines = stack.Split('\n');
+
+		StringBuilder stackBuilder = new();
+		for (int i = 0; i < lines.Length; i++)
+		{
+			string line = lines[i];
+
+			// replace 'SomeFile.cs:line 116' with 'SomeFile.cs:116" so the line is clickable in VsCode.
+			line = line.Replace(":line ", ":");
+
+			// Remove the 'at' at the begining of every line.
+			line = line.Replace(" at ", " ");
+
+			// Pad out the file link so they line up nicely.
+			int length = line.IndexOf(" in ");
+			if (length > 0 && length < 120)
+			{
+				int offset = 120 - length;
+				for(int offsetIndex = 0; offsetIndex < offset; offsetIndex++)
+					line = line.Insert(length, " ");
+			}
+
+			// Shorten the file paths unless we are actively debugging (so they stay clickable)
+			if (!Debugger.IsAttached)
+			{
+				line = line.Replace("C:\\Projects\\StudioFourteen\\", "\\");
+			}
+
+			// Replace the 'in' with '@' between the method and file names.
+			line = line.Replace(" in ", " @ ");
+
+			stackBuilder.AppendLine(line);
 		}
 
-		output.WriteLine();
+		return stackBuilder.ToString();
 	}
 }
 
