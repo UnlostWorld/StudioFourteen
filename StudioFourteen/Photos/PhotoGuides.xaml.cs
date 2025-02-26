@@ -91,6 +91,10 @@ public partial class PhotoGuides : View
 	protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
 	{
 		base.OnRenderSizeChanged(sizeInfo);
+
+		if (DesignerProperties.GetIsInDesignMode(this))
+			return;
+
 		this.CalculateAspectBox();
 	}
 
@@ -113,9 +117,6 @@ public partial class PhotoGuides : View
 
 	private void CalculateAspectBox()
 	{
-		if (DesignerProperties.GetIsInDesignMode(this))
-			return;
-
 		double aspect = this.Services.Photos.AspectRatio;
 
 		double height = this.ActualHeight;
