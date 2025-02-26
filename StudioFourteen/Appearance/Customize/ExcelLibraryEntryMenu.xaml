@@ -14,7 +14,13 @@
 				Text="{Binding Name}" />
 			<librarySelector:LibrarySelectorButton
 				Type="{Binding EntryType}"
-				Value="{Binding Entry}" />
+				Value="{Binding Entry}" >
+
+				<librarySelector:LibrarySelectorButton.PopOutHeader>
+					<TextBlock Text="{Binding Name}" Margin="12"/>
+				</librarySelector:LibrarySelectorButton.PopOutHeader>
+			</librarySelector:LibrarySelectorButton>
+
 		</StackPanel>
 	</DataTemplate>
 </ResourceDictionary>
