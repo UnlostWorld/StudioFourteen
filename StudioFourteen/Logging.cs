@@ -24,7 +24,6 @@ using Serilog.Formatting;
 using System;
 using System.Diagnostics;
 using System.IO;
-using System.Threading.Tasks;
 
 public static class Logging
 {
@@ -37,7 +36,7 @@ public static class Logging
 
 		Configuration = new LoggerConfiguration();
 		Configuration.Enrich.With<StackEnricher>();
-		Configuration.WriteTo.Debug(formatter);
+		Configuration.WriteTo.Sink(new DebugSink(formatter));
 		Configuration.WriteTo.Sink(new ErrorWindowSink());
 		Configuration.WriteTo.Sink(new DalamudSink(formatter));
 
@@ -176,5 +175,36 @@ public class DalamudSink : ILogEventSink
 				break;
 			}
 		}
+	}
+}
+
+public class DebugSink : ILogEventSink
+{
+	private readonly ITextFormatter formatter;
+
+	public DebugSink(ITextFormatter formatter)
+	{
+		this.formatter = formatter;
+	}
+
+	public void Emit(LogEvent logEvent)
+	{
+		StringWriter writer = new();
+		this.formatter.Format(logEvent, writer);
+		string message = writer.ToString();
+		message = GetColorCode(logEvent.Level) + message.TrimEnd('\r', '\n');
+		System.Diagnostics.Debug.WriteLine(message);
+	}
+
+	private static string GetColorCode(LogEventLevel level)
+	{
+		switch (level)
+		{
+			case LogEventLevel.Warning: return "\u001b[1;33m ";
+			case LogEventLevel.Error: return "\u001b[1;31m ";
+			case LogEventLevel.Fatal: return "\u001b[1;31m ";
+		}
+
+		return string.Empty;
 	}
 }
