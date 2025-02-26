@@ -86,12 +86,10 @@ public class BoneReference
 	{
 		this.Locked = true;
 
-		if (this.LocalSpaceTransform == null)
+		if (this.LocalSpaceTransform == null || this.ReferenceTransform == null)
 			throw new Exception("Cannot set bone to reference before it has been ticked");
 
-		var newTransform = this.ReferenceTransform;
-		newTransform -= (Transform)this.LocalSpaceTransform;
-		this.Transform = newTransform;
+		this.Transform = this.ReferenceTransform / this.LocalSpaceTransform;
 	}
 
 	public void Dispose()
