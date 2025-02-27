@@ -150,6 +150,11 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 		this.Services.Files.SaveFile(file, $"{name}'s Appearance");
 	}
 
+	public bool IsPendingRedraw(int objectTableIndex)
+	{
+		return this.pendingRedraws.Contains(objectTableIndex);
+	}
+
 	Task WorldContextMenu.IProvider.GetMenu(WorldContextMenu menu)
 	{
 		if (menu.IsObject)
@@ -255,6 +260,32 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 		}
 
 		this.UpdateCustomize(objectTableIndex, customize, source);
+	}
+
+	public async Task WaitForRedraw(int objectTableIndex)
+	{
+		bool isReady = false;
+		while (!isReady)
+		{
+			await Task.Delay(10);
+
+			if (this.Services.CharacterAppearance.IsPendingRedraw(objectTableIndex))
+				continue;
+
+			await Threads.FrameworkThread();
+
+			unsafe
+			{
+				Character* pCharacter = this.Services.Target.GetCharacter(objectTableIndex);
+				if (!pCharacter->CanDraw())
+					continue;
+			}
+
+			isReady = true;
+
+			// Time to fade back in.
+			await Task.Delay(350);
+		}
 	}
 
 	protected unsafe override void OnFrameworkUpdate(IFramework framework)

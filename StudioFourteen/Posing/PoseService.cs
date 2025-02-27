@@ -229,6 +229,7 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 				return reference;
 			}
 
+			this.Log.Information($"Create bone reference {id}");
 			reference = new(id, name);
 
 			this.boneIds.Add(id);

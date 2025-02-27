@@ -173,8 +173,11 @@ public partial class PhotoGuides : View
 		});
 	}
 
-	private async Task OnPhaseChanged(CapturePhases fromPhase, CapturePhases toPhase, CancellationToken skipAnimationsToken)
+	private async Task OnPhaseChanged(CapturePhases fromPhase, CapturePhases toPhase, CancellationToken cancellationToken, bool animate)
 	{
+		if (!animate)
+			return;
+
 		await this.MainThread();
 
 		this.StopStoryboard(this.captureStoryboard);
@@ -216,7 +219,7 @@ public partial class PhotoGuides : View
 				this.photoOpacityAnimation.To = 0;
 
 				this.BeginStoryboard(this.captureStoryboard);
-				await Task.Delay(100, skipAnimationsToken);
+				await Task.Delay(100, cancellationToken);
 				break;
 			}
 
@@ -232,7 +235,7 @@ public partial class PhotoGuides : View
 				this.spinnerOpacityAnimation.To = 0;
 
 				this.BeginStoryboard(this.captureStoryboard);
-				await Task.Delay(75, skipAnimationsToken);
+				await Task.Delay(75, cancellationToken);
 				break;
 			}
 
@@ -278,7 +281,7 @@ public partial class PhotoGuides : View
 				if (this.Settings.PhotoAnimationFlash || this.Settings.PhotoAnimationPreview)
 				{
 					this.BeginStoryboard(this.captureStoryboard);
-					await Task.Delay(150, skipAnimationsToken);
+					await Task.Delay(150, cancellationToken);
 				}
 
 				break;
@@ -299,7 +302,7 @@ public partial class PhotoGuides : View
 				}
 
 				this.BeginStoryboard(this.captureStoryboard);
-				await Task.Delay(250, skipAnimationsToken);
+				await Task.Delay(250, cancellationToken);
 				break;
 			}
 
@@ -328,7 +331,7 @@ public partial class PhotoGuides : View
 					this.photoFadeDelayTimer.Start();
 
 					if (this.photoFadeDelayTimer.ElapsedMilliseconds < 1500)
-						await Task.Delay((int)(1500 - this.photoFadeDelayTimer.ElapsedMilliseconds), skipAnimationsToken);
+						await Task.Delay((int)(1500 - this.photoFadeDelayTimer.ElapsedMilliseconds), cancellationToken);
 
 					this.photoFadeDelayTimer.Stop();
 					await this.MainThread();
@@ -348,7 +351,7 @@ public partial class PhotoGuides : View
 					this.photoOffsetAnimation.To = 400;
 
 					this.BeginStoryboard(this.captureStoryboard);
-					await Task.Delay(500, skipAnimationsToken);
+					await Task.Delay(500, cancellationToken);
 				}
 
 				break;

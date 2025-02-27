@@ -15,12 +15,16 @@
 
 namespace StudioFourteen.Scripts;
 
+using System;
 using System.Threading.Tasks;
 using Serilog;
+using StudioFourteen.Studio;
 
 public abstract class ScriptBase
 {
 	protected readonly ILogger Log;
+
+	private LongTaskWindow? longTaskWindow;
 
 	public ScriptBase()
 	{
@@ -29,5 +33,25 @@ public abstract class ScriptBase
 
 	protected ServiceManager Services => ServiceManager.Instance;
 
-	public abstract Task Run();
+	public async Task RunScript()
+	{
+		this.longTaskWindow = await LongTaskWindow.Show();
+		try
+		{
+			await this.Run();
+		}
+		catch (Exception ex)
+		{
+			this.Log.Error(ex, "Error in script");
+		}
+
+		this.longTaskWindow?.Close();
+	}
+
+	protected abstract Task Run();
+
+	protected void SetStatus(string str)
+	{
+		this.longTaskWindow?.SetStatus(str);
+	}
 }

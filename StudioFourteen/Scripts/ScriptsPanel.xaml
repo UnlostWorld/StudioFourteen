@@ -31,12 +31,23 @@
 						HorizontalContentAlignment="Stretch"
 						Background="Transparent"
 						BorderThickness="0"
-						Click="OnScriptClicked">
+						Click="OnScriptClicked"
+						IsEnabled="{Binding IsRunning, Converter={StaticResource !B}}">
 						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition />
+								<ColumnDefinition Width="22" />
+							</Grid.ColumnDefinitions>
 
 							<TextBlock
+								Grid.Column="0"
 								Foreground="{DynamicResource ForegroundLightBrush}"
-								Text="{Binding Name}"/>
+								Text="{Binding Name}" />
+
+							<wpfUtils:IconBlock
+								Grid.Column="1"
+								Icon="CirclePlay"
+								Visibility="{Binding IsRunning, Converter={StaticResource B2V}}" />
 
 						</Grid>
 					</Button>

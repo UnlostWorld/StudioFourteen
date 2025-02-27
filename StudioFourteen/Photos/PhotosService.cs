@@ -47,7 +47,7 @@ public partial class PhotosService : ServiceBase
 	[Notify] private CapturePhases capturePhase;
 	[Notify] private string? lastSavedImagePath;
 
-	public delegate Task CapturePhaseChangeDelegate(CapturePhases fromPhase, CapturePhases toPhase, CancellationToken skipAnimationsToken);
+	public delegate Task CapturePhaseChangeDelegate(CapturePhases fromPhase, CapturePhases toPhase, CancellationToken cancellationToken, bool animate);
 
 	public event CapturePhaseChangeDelegate? PhaseChanged;
 
@@ -125,19 +125,19 @@ public partial class PhotosService : ServiceBase
 
 	public int GuideThickness => 2;
 
-	public void Capture()
+	public void Capture(string? name = null, bool animate = true)
 	{
-		this.CaptureAsync().Run();
+		this.CaptureAsync(name, animate).Run();
 	}
 
-	public async Task CaptureAsync()
+	public async Task CaptureAsync(string? name = null, bool animate = true)
 	{
 		if (this.Settings.PhotoDirectory == null)
 			return;
 
 		if (this.IsCapturing)
 		{
-			// If we're already waiting on a queued capture, dont queue another one.
+			// If we're already waiting on a queued capture, don't queue another one.
 			if (this.captureCancellation.IsCancellationRequested)
 				return;
 
@@ -152,7 +152,7 @@ public partial class PhotosService : ServiceBase
 		this.IsCapturing = true;
 		this.captureCancellation = new();
 
-		await this.DispachCapturePhaseChange(CapturePhases.Starting);
+		await this.DispatchCapturePhaseChange(CapturePhases.Starting, animate);
 
 		bool customResolution = this.width > 0 && this.height > 0;
 		uint originalWidth = 0;
@@ -161,7 +161,7 @@ public partial class PhotosService : ServiceBase
 
 		if (customResolution)
 		{
-			await this.DispachCapturePhaseChange(CapturePhases.ChangingResolution);
+			await this.DispatchCapturePhaseChange(CapturePhases.ChangingResolution, animate);
 			await Threads.FrameworkThread();
 
 			success = this.SetResolution(this.width, this.height, out originalWidth, out originalHeight);
@@ -171,7 +171,7 @@ public partial class PhotosService : ServiceBase
 				return;
 			}
 
-			await this.DispachCapturePhaseChange(CapturePhases.WaitingForReshade);
+			await this.DispatchCapturePhaseChange(CapturePhases.WaitingForReshade, animate);
 			success = await this.Services.Reshade.WaitForEffectsToLoad();
 			if (!success)
 			{
@@ -187,7 +187,7 @@ public partial class PhotosService : ServiceBase
 		// Capture the screenshot
 		try
 		{
-			await this.DispachCapturePhaseChange(CapturePhases.Capturing);
+			await this.DispatchCapturePhaseChange(CapturePhases.Capturing, animate);
 			(Image? backBuffer, Image? depthBuffer) = await this.Services.GameCapture.ToImage();
 
 			// Add Metadata
@@ -200,11 +200,14 @@ public partial class PhotosService : ServiceBase
 				backBuffer.Metadata.ExifProfile.SetValue(ExifTag.UserComment, metaDataJson);
 			}
 
-			await this.DispachCapturePhaseChange(CapturePhases.Saving);
+			await this.DispatchCapturePhaseChange(CapturePhases.Saving, animate);
 
 			// Save the screenshot
 			if (!Directory.Exists(this.Settings.PhotoDirectory))
 				Directory.CreateDirectory(this.Settings.PhotoDirectory);
+
+			if (name == null)
+				name = DateTime.Now.ToString("yyyy-MM-dd HH-mm");
 
 			// Custom formatting to avoid culture formats producing invalid file names.
 			string fileName;
@@ -222,10 +225,10 @@ public partial class PhotosService : ServiceBase
 			int count = 0;
 			do
 			{
-				fileName = $"{this.Settings.PhotoDirectory}/{DateTime.Now.ToString("yyyy-MM-dd HH-mm")}.{extension}";
+				fileName = $"{this.Settings.PhotoDirectory}/{name}.{extension}";
 
 				if (count > 0)
-					fileName = $"{this.Settings.PhotoDirectory}/{DateTime.Now.ToString("yyyy-MM-dd HH-mm")} ({count}).{extension}";
+					fileName = $"{this.Settings.PhotoDirectory}/{name} ({count}).{extension}";
 
 				count++;
 			}
@@ -288,7 +291,7 @@ public partial class PhotosService : ServiceBase
 			}
 
 			this.LastSavedImagePath = fileName;
-			await this.DispachCapturePhaseChange(CapturePhases.Saved);
+			await this.DispatchCapturePhaseChange(CapturePhases.Saved, animate);
 		}
 		catch(Exception ex)
 		{
@@ -298,36 +301,36 @@ public partial class PhotosService : ServiceBase
 		// Restore the resolution
 		if (customResolution)
 		{
-			await this.DispachCapturePhaseChange(CapturePhases.RestoreResolution);
+			await this.DispatchCapturePhaseChange(CapturePhases.RestoreResolution, animate);
 
-			// Give a small delay for animations to cach up.
+			// Give a small delay for animations to catch up.
 			await Task.Delay(150);
 
 			await Threads.FrameworkThread();
 			this.SetResolution(originalWidth, originalHeight, out _, out _);
 
-			await this.DispachCapturePhaseChange(CapturePhases.WaitingForReshadeReset);
+			await this.DispatchCapturePhaseChange(CapturePhases.WaitingForReshadeReset, animate);
 			await this.Services.Reshade.WaitForEffectsToLoad();
 		}
 
-		await this.DispachCapturePhaseChange(CapturePhases.Done);
+		await this.DispatchCapturePhaseChange(CapturePhases.Done, animate);
 		this.IsCapturing = false;
 	}
 
-	private async Task DispachCapturePhaseChange(CapturePhases newPhaase)
+	private async Task DispatchCapturePhaseChange(CapturePhases newPhase, bool animate)
 	{
 		if (this.PhaseChanged == null)
 			return;
 
 		try
 		{
-			await this.PhaseChanged(this.CapturePhase, newPhaase, this.captureCancellation.Token);
+			await this.PhaseChanged(this.CapturePhase, newPhase, this.captureCancellation.Token, animate);
 		}
 		catch(TaskCanceledException)
 		{
 		}
 
-		this.CapturePhase = newPhaase;
+		this.CapturePhase = newPhase;
 	}
 
 	private unsafe void OnIsPhotoModeChanged(bool oldValue, bool newValue)

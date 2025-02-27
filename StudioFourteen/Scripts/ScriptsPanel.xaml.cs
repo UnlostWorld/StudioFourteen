@@ -21,6 +21,7 @@ using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using PropertyChanged.SourceGenerator;
 using StudioFourteen.Utilities;
 using WpfUtils;
 using WpfUtils.Extensions;
@@ -70,21 +71,28 @@ public partial class ScriptsPanel : Panel
 	{
 		if (sender is Button btn && btn.DataContext is ScriptEntry entry)
 		{
-			if (entry.Type == null)
-				return;
-
-			ScriptBase? script = Activator.CreateInstance(entry.Type) as ScriptBase;
-
-			if (script == null)
-				return;
-
-			script.Run().Run();
+			entry.Run().Run();
 		}
 	}
 
-	public class ScriptEntry
+	public partial class ScriptEntry
 	{
-		public string? Name { get; set; }
-		public Type? Type { get; set; }
+		[Notify] private string? name;
+		[Notify] private Type? type;
+		[Notify] private bool isRunning;
+
+		public async Task Run()
+		{
+			if (this.Type == null)
+				return;
+
+			this.IsRunning = true;
+
+			ScriptBase? script = Activator.CreateInstance(this.Type) as ScriptBase;
+			if (script != null)
+				await script.RunScript();
+
+			this.IsRunning = false;
+		}
 	}
 }
