@@ -24,6 +24,7 @@ using StudioFourteen.Photos;
 using StudioFourteen.Plugin;
 using StudioFourteen.Posing;
 using StudioFourteen.Save;
+using StudioFourteen.Scripts;
 using StudioFourteen.Services;
 using StudioFourteen.Settings;
 using StudioFourteen.SPA;
@@ -144,6 +145,13 @@ public partial class NavigationWindow : PanelWindow
 	{
 		get => this.Services.Panels.GetIsOpen<SaveWindow>();
 		set => this.Services.Panels.SetIsOpen<SaveWindow>(true);
+	}
+
+	[AutoNotify]
+	public bool IsScriptsOpen
+	{
+		get => this.Services.Panels.GetIsOpen<ScriptsPanel>();
+		set => this.Services.Panels.SetIsOpen<ScriptsPanel>(true);
 	}
 
 	[AutoNotify]

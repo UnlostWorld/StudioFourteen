@@ -12,7 +12,7 @@
 	xmlns:vectors="http://sharpvectors.codeplex.com/svgc/"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Width="64"
-	Height="512"
+	Height="700"
 	MinWidth="32"
 	MinHeight="32"
 	d:DataContext="{Binding RelativeSource={RelativeSource Mode=Self}}"
@@ -271,6 +271,13 @@
 		<StackPanel>
 			<Border>
 				<StackPanel>
+
+					<ToggleButton
+						IsChecked="{Binding IsScriptsOpen}"
+						ToolTip="{DynamicResource LOC_Scripts}">
+						<wpfUtils:IconBlock Icon="Robot" />
+					</ToggleButton>
+
 					<ToggleButton
 						Width="32"
 						Height="32"
