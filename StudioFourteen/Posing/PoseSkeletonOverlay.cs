@@ -49,6 +49,9 @@ public class PoseSkeletonOverlay : SelectionOverlayLayerBase
 	{
 		base.OnFrameworkUpdate();
 
+		if (!this.IsEnabled || !this.IsVisible)
+			return;
+
 		if (this.lastTargetIndex != this.TargetIndex)
 		{
 			lock (this)
