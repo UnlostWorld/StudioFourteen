@@ -234,6 +234,10 @@ public partial class PhotosService : ServiceBase
 			}
 			while (File.Exists(fileName));
 
+			string? dirName = Path.GetDirectoryName(fileName);
+			if (dirName != null && !Directory.Exists(dirName))
+				Directory.CreateDirectory(dirName);
+
 			switch (this.Settings.PhotoFormat)
 			{
 				case Formats.Jpeg:
