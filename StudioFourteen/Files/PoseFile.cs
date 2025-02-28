@@ -112,6 +112,7 @@ public class PoseFile : FileBase
 				if (includeBones == null || includeBones.Contains(boneReference.Name))
 				{
 					BoneTransform boneTransform = new();
+					boneTransform.Locked = boneReference.Locked;
 
 					// Null out components that are irrelevantly small
 					if (!referenceRelative.Value.Translation.IsApproximately(Vector3.Zero, 0.001f))
@@ -129,14 +130,6 @@ public class PoseFile : FileBase
 					if (!referenceRelative.Value.Scale.IsApproximately(Vector3.One, 0.001f))
 						boneTransform.Scale = referenceRelative.Value.Scale;
 
-					// If all the components were irrelevantly small, then skip this bone
-					if (boneTransform.Translation == null
-						&& boneTransform.Rotation == null
-						&& boneTransform.Scale == null)
-					{
-						continue;
-					}
-
 					this.ReferenceRelativeBones.Add(boneReference.Name, boneTransform);
 				}
 			}
@@ -144,7 +137,7 @@ public class PoseFile : FileBase
 	}
 
 	[LibraryMenuTarget(IconChar.Running, "LOC_AppearanceApplyTo")]
-	public async Task Apply(int objectTableIndex)
+	public async Task Apply(int objectTableIndex, bool blend = true)
 	{
 		await Threads.FrameworkThread();
 
@@ -167,14 +160,10 @@ public class PoseFile : FileBase
 				BoneTransform? val = null;
 				if (this.ReferenceRelativeBones.TryGetValue(boneReference.Name, out val))
 				{
-					boneReference.SetReferenceRelativeTransform(val, true);
-				}
-				else
-				{
-					boneReference.SetToReference();
+					boneReference.SetReferenceRelativeTransform(val, blend);
+					boneReference.Locked = val.Locked;
 				}
 
-				boneReference.Locked = true;
 				continue;
 			}
 			else

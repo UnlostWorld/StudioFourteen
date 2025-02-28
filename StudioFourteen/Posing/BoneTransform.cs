@@ -38,4 +38,7 @@ public class BoneTransform
 
 	[JsonProperty("S")]
 	public Vector3? Scale { get; set; }
+
+	[JsonProperty("L")]
+	public bool Locked { get; set; } = false;
 }
