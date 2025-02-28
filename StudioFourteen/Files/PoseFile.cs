@@ -137,7 +137,12 @@ public class PoseFile : FileBase
 	}
 
 	[LibraryMenuTarget(IconChar.Running, "LOC_AppearanceApplyTo")]
-	public async Task Apply(int objectTableIndex, bool blend = true)
+	public Task Apply(int objectTableIndex)
+	{
+		return this.Apply(objectTableIndex, true);
+	}
+
+	public async Task Apply(int objectTableIndex, bool blend)
 	{
 		await Threads.FrameworkThread();
 
