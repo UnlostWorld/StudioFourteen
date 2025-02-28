@@ -38,6 +38,8 @@ public class CaptureAllRacesTribesGenders : ScriptBase
 		if (raceSheet == null)
 			return;
 
+		string dirName = DateTime.Now.ToString("yyyy-MM-dd HH-mm");
+
 		foreach(Race race in raceSheet)
 		{
 			if (race.RowId == 0)
@@ -58,9 +60,11 @@ public class CaptureAllRacesTribesGenders : ScriptBase
 
 					this.SetStatus($"{race.GetName()}, {tribe.GetName()}, {gender}");
 
-					await this.Services.CharacterAppearance.WaitForRedraw(objectIndex);
+					await this.Services.Redraw.RedrawAsync(objectIndex, false);
 
-					await this.Services.Photos.CaptureAsync($"{race.GetName()}-{tribe.GetName()}-{gender}", false);
+					await Task.Delay(100);
+
+					await this.Services.Photos.CaptureAsync($"{dirName}/{race.GetName()}-{tribe.GetName()}-{gender}", false);
 
 					await Threads.FrameworkThread();
 				}

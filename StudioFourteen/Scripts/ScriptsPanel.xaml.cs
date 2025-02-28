@@ -51,15 +51,21 @@ public partial class ScriptsPanel : Panel
 		Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
 		foreach (Assembly assembly in assemblies)
 		{
-			 foreach (Type t in assembly.GetExportedTypes())
+			try
 			{
-				if (t.IsAssignableTo(typeof(ScriptBase)) && !t.IsAbstract)
+				foreach (Type t in assembly.GetExportedTypes())
 				{
-					ScriptEntry entry = new();
-					entry.Name = t.Name;
-					entry.Type = t;
-					scripts.Add(entry);
+					if (t.IsAssignableTo(typeof(ScriptBase)) && !t.IsAbstract)
+					{
+						ScriptEntry entry = new();
+						entry.Name = t.Name;
+						entry.Type = t;
+						scripts.Add(entry);
+					}
 				}
+			}
+			catch(Exception)
+			{
 			}
 		}
 
