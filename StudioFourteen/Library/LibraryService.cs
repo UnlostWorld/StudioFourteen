@@ -164,6 +164,20 @@ public class LibraryService : ServiceBase
 		return results;
 	}
 
+	public T? GetSource<T>()
+		where T : SourceBase
+	{
+		foreach (SourceBase source in this.sources)
+		{
+			if (source is T tSource)
+			{
+				return tSource;
+			}
+		}
+
+		return null;
+	}
+
 	private void OnConfigurationChanged()
 	{
 		if (this.IsLoadingSources || this.IsScanning)

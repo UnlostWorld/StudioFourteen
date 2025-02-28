@@ -22,12 +22,14 @@ using StudioFourteen.Files;
 using StudioFourteen.Input;
 using StudioFourteen.Library.Filters;
 using StudioFourteen.Library.Results;
+using StudioFourteen.Library.Sources;
 using StudioFourteen.Mvm;
 using StudioFourteen.Tags;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -297,9 +299,24 @@ public partial class LibraryWindow : Panel
 		this.TagFilter.Tags.Add(tag);
 	}
 
-	private void OnBrowseClicked(object sender, RoutedEventArgs e)
+	private async void OnBrowseClicked(object sender, RoutedEventArgs e)
 	{
-		this.Services.Files.ShowOpenDialog(null, typeof(SceneFile), typeof(PoseFile), typeof(AppearanceFile));
+		FileInfo? file = await this.Services.Files.ShowOpenDialog(null, typeof(SceneFile), typeof(PoseFile), typeof(AppearanceFile));
+		if (file == null)
+			return;
+
+		FileTypeInfoBase? typeInfo = this.Services.Files.GetTypeInfo(file);
+		if (typeInfo == null)
+			return;
+
+		FileSource? fileSource = this.Services.Library.GetSource<FileSource>();
+		if (fileSource == null)
+			return;
+
+		await this.resultExecutionContext.Execute(fileSource.Get(file, typeInfo));
+
+		await this.MainThread();
+		this.Close();
 	}
 
 	private void OnDirectorySwapClicked(object sender, RoutedEventArgs e)

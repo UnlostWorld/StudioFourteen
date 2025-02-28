@@ -66,6 +66,11 @@ public class FileSource : SourceBase
 		this.watcher?.Dispose();
 	}
 
+	public FileEntry Get(FileInfo fileInfo, FileTypeInfoBase typeInfo)
+	{
+		return new(this, fileInfo, typeInfo);
+	}
+
 	protected override void Scan()
 	{
 		if (this.Directory == null)
@@ -112,7 +117,7 @@ public class FileSource : SourceBase
 			if (typeInfo == null)
 				continue;
 
-			parent.Add(new FileEntry(this, file, typeInfo));
+			parent.Add(this.Get(file, typeInfo));
 		}
 	}
 }
