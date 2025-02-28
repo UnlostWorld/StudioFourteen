@@ -26,33 +26,44 @@ using WpfUtils.Extensions;
 
 public class RedrawService : ServiceBase
 {
-	private const float FadeOutTimeMs = 150;
-	private const float FadeInTimeMs = 250;
+	private readonly Dictionary<int, Request> redraws = new();
 
-	private readonly Dictionary<int, RedrawPhases> redraws = new();
-
-	public enum RedrawPhases
+	public Request Redraw(int objectTableIndex, bool animate = true)
 	{
-		Pending,
-		FadeOut,
-		Redraw,
-		FadeIn,
-		Done,
+		lock(this.redraws)
+		{
+			Request request;
+			if (this.redraws.TryGetValue(objectTableIndex, out Request? otherRequest))
+			{
+				if (!otherRequest.IsDone && otherRequest.IsRunning)
+				{
+					if (!animate)
+						otherRequest.Animate = false;
+
+					return otherRequest;
+				}
+				else
+				{
+					request = otherRequest;
+					request.Reset();
+					request.Animate = animate;
+				}
+			}
+			else
+			{
+				request = new(objectTableIndex);
+				request.Animate = animate;
+				this.redraws.Add(objectTableIndex, request);
+			}
+
+			return request;
+		}
 	}
 
-	public void Redraw(int objectTableIndex)
+	public async Task RedrawAsync(int objectTableIndex, bool animate = true)
 	{
-		this.redraws[objectTableIndex] = RedrawPhases.Pending;
-	}
-
-	public bool IsPendingRedraw(int objectTableIndex)
-	{
-		return this.redraws.ContainsKey(objectTableIndex);
-	}
-
-	public async Task WaitForRedraw(int objectTableIndex)
-	{
-		while (this.redraws.ContainsKey(objectTableIndex))
+		Request request = this.Redraw(objectTableIndex, animate);
+		while (!request.IsDone)
 		{
 			await Task.Delay(10);
 		}
@@ -62,89 +73,129 @@ public class RedrawService : ServiceBase
 	{
 		base.OnFrameworkUpdate(framework);
 
-		foreach ((int objectTableIndex, RedrawPhases phase) in this.redraws)
+		lock(this.redraws)
 		{
-			if (phase == RedrawPhases.Pending)
+			foreach((int objectTableIndex, Request request) in this.redraws)
 			{
-				this.DoRedraw(objectTableIndex).Run();
+				if (!request.IsRunning && !request.IsDone)
+				{
+					request.Begin();
+				}
 			}
 		}
-
-		this.redraws.Clear();
 	}
 
-	private async Task DoRedraw(int objectTableIndex)
+	public class Request(int objectTableIndex)
 	{
-		this.redraws[objectTableIndex] = RedrawPhases.FadeOut;
+		private const float FadeOutTimeMs = 150;
+		private const float FadeInTimeMs = 250;
 
-		// Backup pose
-		PoseFile file = new();
-		await file.Save(objectTableIndex, false, null, true);
+		public bool IsRunning { get; private set; }
+		public bool IsDone { get; private set; }
+		public bool Animate { get; set; }
 
-		Stopwatch sw = new();
-		sw.Start();
-
-		while(sw.ElapsedMilliseconds < FadeOutTimeMs)
+		public async Task WaitFor()
 		{
-			await Threads.NextFrame();
-			float p = 1 - (sw.ElapsedMilliseconds / FadeOutTimeMs);
-
-			unsafe
+			while (!this.IsDone)
 			{
-				Character* pCharacter = this.Services.Target.GetCharacter(objectTableIndex);
-				pCharacter->Alpha = p;
+				await Task.Delay(10);
 			}
 		}
 
-		// Clear bone references
-		this.Services.Pose.FlushBoneReferences(objectTableIndex);
-
-		this.redraws[objectTableIndex] = RedrawPhases.Redraw;
-
-		// Perform redraw
-		await Threads.FrameworkThread();
-		unsafe
+		public void Begin()
 		{
-			Character* pCharacter = this.Services.Target.GetCharacter(objectTableIndex);
-			pCharacter->DisableDraw();
-			pCharacter->EnableDraw();
+			this.IsRunning = true;
+			this.Run().Run();
 		}
 
-		bool isReady = false;
-		while (!isReady)
+		public void Reset()
 		{
-			await Threads.NextFrame();
+			if (this.IsRunning)
+				throw new System.Exception("Attempt to reset a running redraw request");
+
+			this.IsDone = false;
+			this.Animate = true;
+		}
+
+		private async Task Run()
+		{
+			this.IsRunning = true;
+			this.IsDone = false;
+
+			// Backup pose
+			PoseFile file = new();
+			await file.Save(objectTableIndex, false, null, true);
+
+			Stopwatch sw = new();
+			sw.Start();
+
+			while(sw.ElapsedMilliseconds < FadeOutTimeMs && this.Animate)
+			{
+				await Threads.NextFrame();
+				float p = 1 - (sw.ElapsedMilliseconds / FadeOutTimeMs);
+
+				unsafe
+				{
+					Character* pCharacter = ServiceManager.Instance.Target.GetCharacter(objectTableIndex);
+					pCharacter->Alpha = p;
+				}
+			}
 
 			unsafe
 			{
-				Character* pCharacter = this.Services.Target.GetCharacter(objectTableIndex);
-				if (!pCharacter->CanDraw())
-					continue;
+				Character* pCharacter = ServiceManager.Instance.Target.GetCharacter(objectTableIndex);
+				pCharacter->Alpha = 0;
 			}
 
-			isReady = true;
-		}
+			// Clear bone references
+			ServiceManager.Instance.Pose.FlushBoneReferences(objectTableIndex);
 
-		await this.WaitForRedraw(objectTableIndex);
-
-		// Restore pose
-		await file.Apply(objectTableIndex, false);
-
-		this.redraws[objectTableIndex] = RedrawPhases.FadeIn;
-
-		sw.Restart();
-		while(sw.ElapsedMilliseconds < FadeInTimeMs)
-		{
-			await Threads.NextFrame();
-			float p = sw.ElapsedMilliseconds / FadeInTimeMs;
-
+			// Perform redraw
+			await Threads.FrameworkThread();
 			unsafe
 			{
-				Character* pCharacter = this.Services.Target.GetCharacter(objectTableIndex);
-				pCharacter->Alpha = p;
+				Character* pCharacter = ServiceManager.Instance.Target.GetCharacter(objectTableIndex);
+				pCharacter->DisableDraw();
+				pCharacter->EnableDraw();
 			}
-		}
 
-		this.redraws[objectTableIndex] = RedrawPhases.Done;
+			bool isReady = false;
+			while (!isReady)
+			{
+				await Threads.NextFrame();
+
+				unsafe
+				{
+					Character* pCharacter = ServiceManager.Instance.Target.GetCharacter(objectTableIndex);
+					if (!pCharacter->CanDraw())
+						continue;
+				}
+
+				isReady = true;
+			}
+
+			// Restore pose
+			await file.Apply(objectTableIndex, false);
+
+			sw.Restart();
+
+			// Can't skip the fade in since the games built-in fade will happen
+			// no matter what.
+			while(sw.ElapsedMilliseconds < FadeInTimeMs)
+			{
+				await Threads.NextFrame();
+				float p = sw.ElapsedMilliseconds / FadeInTimeMs;
+
+				unsafe
+				{
+					Character* pCharacter = ServiceManager.Instance.Target.GetCharacter(objectTableIndex);
+					pCharacter->Alpha = p;
+				}
+			}
+
+			// TODO: Umbrellas take 500ms to fade in, so detect if this target is holding an umbrella and wait a bit longer.
+			this.IsDone = true;
+			this.IsRunning = false;
+		}
 	}
 }
