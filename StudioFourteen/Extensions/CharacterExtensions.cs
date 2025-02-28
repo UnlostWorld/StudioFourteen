@@ -112,12 +112,6 @@ public static class CharacterExtensions
 		return self.DrawData.CustomizeData.GetValue(option);
 	}
 
-	public static void Redraw(ref this Character self)
-	{
-		self.DisableDraw();
-		self.EnableDraw();
-	}
-
 	public static ObjectKind GetKind(ref this Character self)
 	{
 		return (ObjectKind)self.ObjectKind;

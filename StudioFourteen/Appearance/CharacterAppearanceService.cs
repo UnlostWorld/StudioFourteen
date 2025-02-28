@@ -31,6 +31,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using WpfUtils.Extensions;
 
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.CharacterExtensions;
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
@@ -39,7 +40,6 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 {
 	private readonly GroupPoseCharactersLibrarySource provider = new();
 	private readonly ConcurrentDictionary<int, CharacterBackupAppearance> backup = new();
-	private readonly HashSet<int> pendingRedraws = new();
 
 	private Hook<EnforceKindRestrictionsDelegate>? enforceKindRestrictionsHook;
 
@@ -150,11 +150,6 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 		this.Services.Files.SaveFile(file, $"{name}'s Appearance");
 	}
 
-	public bool IsPendingRedraw(int objectTableIndex)
-	{
-		return this.pendingRedraws.Contains(objectTableIndex);
-	}
-
 	Task WorldContextMenu.IProvider.GetMenu(WorldContextMenu menu)
 	{
 		if (menu.IsObject)
@@ -186,7 +181,7 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 
 		pCharacter->ModelContainer.ModelCharaId = modelCharaId;
 
-		this.pendingRedraws.Add(pCharacter->ObjectIndex);
+		this.Services.Redraw.Redraw(objectTableIndex);
 	}
 
 	public unsafe void SetCustomizeValue(int objectTableIndex, CustomizeIndex index, byte value, UpdateSource source)
@@ -209,7 +204,7 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 			|| index == CustomizeIndex.ModelType
 			|| index == CustomizeIndex.Gender)
 		{
-			this.pendingRedraws.Add(pCharacter->ObjectIndex);
+			this.Services.Redraw.Redraw(objectTableIndex);
 		}
 
 		this.UpdateCustomize(objectTableIndex, null, source);
@@ -256,49 +251,10 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 			|| pCharacter->DrawData.CustomizeData[(int)CustomizeIndex.Tribe] != customize[(int)CustomizeIndex.Tribe]
 			|| pCharacter->DrawData.CustomizeData[(int)CustomizeIndex.ModelType] != customize[(int)CustomizeIndex.ModelType])
 		{
-			this.pendingRedraws.Add(pCharacter->ObjectIndex);
+			this.Services.Redraw.Redraw(objectTableIndex);
 		}
 
 		this.UpdateCustomize(objectTableIndex, customize, source);
-	}
-
-	public async Task WaitForRedraw(int objectTableIndex)
-	{
-		bool isReady = false;
-		while (!isReady)
-		{
-			await Task.Delay(10);
-
-			if (this.Services.CharacterAppearance.IsPendingRedraw(objectTableIndex))
-				continue;
-
-			await Threads.FrameworkThread();
-
-			unsafe
-			{
-				Character* pCharacter = this.Services.Target.GetCharacter(objectTableIndex);
-				if (!pCharacter->CanDraw())
-					continue;
-			}
-
-			isReady = true;
-
-			// Time to fade back in.
-			await Task.Delay(350);
-		}
-	}
-
-	protected unsafe override void OnFrameworkUpdate(IFramework framework)
-	{
-		base.OnFrameworkUpdate(framework);
-
-		foreach (int objectTargetId in this.pendingRedraws)
-		{
-			Character* pCharacter = this.Services.Target.GetCharacter(objectTargetId);
-			pCharacter->Redraw();
-		}
-
-		this.pendingRedraws.Clear();
 	}
 
 	private unsafe void UpdateCustomize(int objectTableIndex, CustomizeData? customize, UpdateSource source)
@@ -318,7 +274,7 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 		bool didLoad = ((Human*)pCharacter->DrawObject)->UpdateDrawData((byte*)custom, true);
 		if (!didLoad)
 		{
-			this.pendingRedraws.Add(pCharacter->ObjectIndex);
+			this.Services.Redraw.Redraw(objectTableIndex);
 		}
 	}
 

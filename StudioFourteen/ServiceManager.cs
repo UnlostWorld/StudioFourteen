@@ -55,4 +55,5 @@ public class ServiceManager : ServiceManagerBase
 	public History.HistoryService History { get; init; } = new();
 	public Selection.SelectionService Selection { get; init; } = new();
 	public Photos.PhotosService Photos { get; init; } = new();
+	public RedrawService Redraw { get; init; } = new();
 }
