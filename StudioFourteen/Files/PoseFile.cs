@@ -64,7 +64,7 @@ public class PoseFile : FileBase
 		this.MainHand = null;
 		this.OffHand = null;
 
-		List<BoneReference> references = ServiceManager.Instance.Pose.GetOrCreateBoneReferences(objectTableIndex);
+		List<BoneReference> references = await ServiceManager.Instance.Pose.GetOrCreateBoneReferences(objectTableIndex);
 
 		// Wait one frame for all the bone references to populate with real transform data.
 		await Threads.NextFrame();
@@ -151,7 +151,9 @@ public class PoseFile : FileBase
 		bool useReferenceRelativeBones = this.ReferenceRelativeBones != null;
 
 		// Get bone references
-		List<BoneReference> boneReferences = ServiceManager.Instance.Pose.GetOrCreateBoneReferences(objectTableIndex);
+		List<BoneReference> boneReferences = await ServiceManager.Instance.Pose.GetOrCreateBoneReferences(objectTableIndex);
+		await Threads.NextFrame();
+
 		foreach (BoneReference boneReference in boneReferences)
 		{
 			if (boneReference.Name == null)
@@ -160,17 +162,20 @@ public class PoseFile : FileBase
 			if (boneReference.Name == "n_root")
 				continue;
 
-			if (useReferenceRelativeBones)
+			if (useReferenceRelativeBones && this.ReferenceRelativeBones != null)
 			{
 				BoneTransform? val = null;
-				this.ReferenceRelativeBones?.TryGetValue(boneReference.Name, out val);
-
-				if (val != null)
+				if (this.ReferenceRelativeBones.TryGetValue(boneReference.Name, out val))
 				{
 					boneReference.SetReferenceRelativeTransform(val, true);
-					boneReference.Locked = true;
-					continue;
 				}
+				else
+				{
+					boneReference.SetToReference();
+				}
+
+				boneReference.Locked = true;
+				continue;
 			}
 			else
 			{

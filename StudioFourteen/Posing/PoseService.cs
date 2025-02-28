@@ -149,7 +149,7 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 	{
 		await Threads.FrameworkThread();
 
-		List<BoneReference> references = this.GetOrCreateBoneReferences(objectTableIndex);
+		List<BoneReference> references = await this.GetOrCreateBoneReferences(objectTableIndex);
 		foreach (BoneReference reference in references)
 		{
 			reference.Locked = locked;
@@ -160,7 +160,7 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 	{
 		await Threads.FrameworkThread();
 
-		List<BoneReference> references = this.GetOrCreateBoneReferences(objectTableIndex);
+		List<BoneReference> references = await this.GetOrCreateBoneReferences(objectTableIndex);
 		await Threads.NextFrame();
 		foreach(BoneReference reference in references)
 		{
@@ -168,7 +168,7 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 		}
 	}
 
-	public List<BoneReference> GetOrCreateBoneReferences(int objectTableIndex)
+	public async Task<List<BoneReference>> GetOrCreateBoneReferences(int objectTableIndex)
 	{
 		List<BoneReference> results = new();
 
@@ -177,42 +177,67 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 		if (DalamudServices.ObjectTable == null)
 			return results;
 
-		unsafe
+		bool didCreate = false;
+		lock (this.boneReferences)
 		{
-			Character* pCharacter = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
-			if (pCharacter == null)
-				return results;
-
-			CharacterBase* pCharacterBase = pCharacter->GetCharacterBase();
-			if (pCharacterBase == null)
-				return results;
-
-			ushort partialCount = pCharacterBase->Skeleton->PartialSkeletonCount;
-			for (int partialIdx = 0; partialIdx < partialCount; partialIdx++)
+			unsafe
 			{
-				PartialSkeleton* pPartialSkeleton = &pCharacterBase->Skeleton->PartialSkeletons[partialIdx];
+				Character* pCharacter = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
+				if (pCharacter == null)
+					return results;
 
-				byte poseCount = pPartialSkeleton->GetMaxPoses();
-				for (byte poseIdx = 0; poseIdx < poseCount; poseIdx++)
+				CharacterBase* pCharacterBase = pCharacter->GetCharacterBase();
+				if (pCharacterBase == null)
+					return results;
+
+				ushort partialCount = pCharacterBase->Skeleton->PartialSkeletonCount;
+				for (int partialIdx = 0; partialIdx < partialCount; partialIdx++)
 				{
-					hkaPose* pPose = pPartialSkeleton->GetHavokPose(poseIdx);
-					if (pPose == null)
-						continue;
+					PartialSkeleton* pPartialSkeleton = &pCharacterBase->Skeleton->PartialSkeletons[partialIdx];
 
-					int boneCount = pPose->Skeleton->Bones.Length;
-
-					// Create bone nodes
-					for (short boneIdx = 0; boneIdx < boneCount; boneIdx++)
+					byte poseCount = pPartialSkeleton->GetMaxPoses();
+					for (byte poseIdx = 0; poseIdx < poseCount; poseIdx++)
 					{
-						hkaBone bone = pPose->Skeleton->Bones[boneIdx];
-						string boneName = bone.Name.String ?? "Bone";
-						BoneId id = new(objectTableIndex, partialIdx, poseIdx, boneIdx);
+						hkaPose* pPose = pPartialSkeleton->GetHavokPose(poseIdx);
+						if (pPose == null)
+							continue;
 
-						results.Add(this.GetOrCreateBoneReference(id, boneName));
+						int boneCount = pPose->Skeleton->Bones.Length;
+
+						// Create bone nodes
+						for (short boneIdx = 0; boneIdx < boneCount; boneIdx++)
+						{
+							hkaBone bone = pPose->Skeleton->Bones[boneIdx];
+							string? boneName = bone.Name.String;
+							BoneId id = new(objectTableIndex, partialIdx, poseIdx, boneIdx);
+
+							if (this.boneReferences.TryGetValue(id, out BoneReference? reference))
+							{
+								results.Add(reference);
+							}
+							else
+							{
+								didCreate = true;
+								reference = new(id, boneName);
+								this.boneIds.Add(id);
+								this.boneReferences.Add(id, reference);
+								results.Add(reference);
+							}
+
+							results.Add(this.GetOrCreateBoneReference(id, boneName));
+						}
 					}
 				}
 			}
+
+			if (didCreate)
+			{
+				this.boneIds.Sort();
+			}
 		}
+
+		if (didCreate)
+			await Threads.NextFrame();
 
 		return results;
 	}
@@ -229,7 +254,6 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 				return reference;
 			}
 
-			this.Log.Information($"Create bone reference {id}");
 			reference = new(id, name);
 
 			this.boneIds.Add(id);

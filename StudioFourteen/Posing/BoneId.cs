@@ -107,11 +107,13 @@ public readonly struct BoneId(int objectTableIndex, int partialSkeletonIndex, by
 			return false;
 
 		partialSkeleton = &skeleton->PartialSkeletons[this.PartialSkeletonIndex];
-
 		if (partialSkeleton == null)
 			return false;
 
 		pose = partialSkeleton->GetHavokPose(this.PoseIndex);
+		if (pose == null || pose->Skeleton == null)
+			return false;
+
 		return true;
 	}
 }

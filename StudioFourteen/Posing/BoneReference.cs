@@ -123,9 +123,15 @@ public class BoneReference
 		this.shouldBlendNext = blend;
 	}
 
-	public void SetReferenceRelativeTransform(BoneTransform referenceRelativeTransform, bool blend)
+	public void SetReferenceRelativeTransform(BoneTransform? referenceRelativeTransform, bool blend)
 	{
 		this.ReverseMirror();
+
+		if (referenceRelativeTransform == null)
+		{
+			this.SetToReference();
+			return;
+		}
 
 		this.loadReferenceRelativeTransform = Posing.Transform.FromTRS(
 			referenceRelativeTransform.Translation ?? Vector3.Zero,
@@ -196,8 +202,12 @@ public class BoneReference
 		if (!this.Id.Resolve(out Character* pCharacter, out Skeleton* pSkeleton, out PartialSkeleton* pPartialSkeleton, out hkaPose* pPose))
 			return null;
 
+		if (pPose->Skeleton->Bones.Length <= this.Id.BoneIndex)
+			return null;
+
 		// Update or sanity check bone name, useful if the skeleton has changed during posing.
 		hkaBone bone = pPose->Skeleton->Bones[this.Id.BoneIndex];
+
 		if (this.boneName == null)
 		{
 			this.boneName = bone.Name.String;
