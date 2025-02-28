@@ -59,23 +59,29 @@ public class PanelService : ServiceBase
 
 	public void OnPanelOpened(Panel panel)
 	{
-		this.openPanels.Add(panel);
+		lock(this)
+		{
+			this.openPanels.Add(panel);
 
-		Type panelType = panel.GetType();
-		if (!this.lastOpenPanels.ContainsKey(panelType))
-			this.lastOpenPanels.Add(panelType, panel);
+			Type panelType = panel.GetType();
+			if (!this.lastOpenPanels.ContainsKey(panelType))
+				this.lastOpenPanels.Add(panelType, panel);
 
-		this.lastOpenPanels[panelType] = panel;
+			this.lastOpenPanels[panelType] = panel;
+		}
 	}
 
 	public void OnPanelClosed(Panel panel)
 	{
-		this.openPanels.Remove(panel);
-
-		Type panelType = panel.GetType();
-		if (this.lastOpenPanels.ContainsKey(panelType))
+		lock(this)
 		{
-			this.lastOpenPanels.Remove(panelType);
+			this.openPanels.Remove(panel);
+
+			Type panelType = panel.GetType();
+			if (this.lastOpenPanels.ContainsKey(panelType))
+			{
+				this.lastOpenPanels.Remove(panelType);
+			}
 		}
 	}
 
