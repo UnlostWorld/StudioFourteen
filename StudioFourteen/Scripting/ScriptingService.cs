@@ -65,17 +65,14 @@ public class ScriptingService : ServiceBase
 		{
 			panel.SetTitle(script.Name);
 
-			ScriptLogger logger = new ScriptLogger(panel);
-			ScriptStatus status = new ScriptStatus(panel);
+			panel.SetStatus($"Compiling Script: {script.Name}");
+			Assembly assembly = this.CompileScript(script, panel);
 
-			status.SetStatus($"Compiling Script: {script.Name}");
-			Assembly assembly = this.CompileScript(script, logger);
+			panel.SetStatus($"Running Script: {script.Name}");
+			await this.RunScript(script, assembly, panel);
 
-			status.SetStatus($"Running Script: {script.Name}");
-			await this.RunScript(assembly, logger, status);
-
-			status.SetProgress(1.0);
-			status.SetStatus($"Completed Script: {script.Name}");
+			panel.SetProgress(1.0);
+			panel.SetStatus($"Completed Script: {script.Name}");
 		}
 		catch(Exception ex)
 		{
@@ -87,7 +84,7 @@ public class ScriptingService : ServiceBase
 		this.isRunningScript = false;
 	}
 
-	private Assembly CompileScript(ScriptFile file, ScriptLogger logger)
+	private Assembly CompileScript(ScriptFile file, ScriptPanel panel)
 	{
 		if (this.loadContext == null)
 			throw new Exception("No assembly load context");
@@ -125,31 +122,23 @@ public class ScriptingService : ServiceBase
 
 		foreach (Diagnostic diagnostic in result.Diagnostics)
 		{
+			if (diagnostic.Severity == DiagnosticSeverity.Hidden)
+				continue;
+
 			string? location = null;
 			int line = diagnostic.Location.GetLineSpan().StartLinePosition.Line;
 			if (line > 0)
 				location = $"Line {line - 1}";
 
-			switch (diagnostic.Severity)
+			LogEventLevel level = diagnostic.Severity switch
 			{
-				case DiagnosticSeverity.Info:
-				{
-					logger.Information(diagnostic.GetMessage(), location);
-					break;
-				}
+				DiagnosticSeverity.Info => LogEventLevel.Information,
+				DiagnosticSeverity.Warning => LogEventLevel.Warning,
+				DiagnosticSeverity.Error => LogEventLevel.Error,
+				_ => throw new InvalidOperationException(),
+			};
 
-				case DiagnosticSeverity.Warning:
-				{
-					logger.Warning(diagnostic.GetMessage(), location);
-					break;
-				}
-
-				case DiagnosticSeverity.Error:
-				{
-					logger.Error(diagnostic.GetMessage(), location);
-					break;
-				}
-			}
+			panel.AppendLog(level, diagnostic.GetMessage(), location);
 		}
 
 		if (!result.Success)
@@ -163,7 +152,7 @@ public class ScriptingService : ServiceBase
 		return newAssembly;
 	}
 
-	private async Task RunScript(Assembly assembly, ScriptLogger scriptLogger, ScriptStatus status)
+	private async Task RunScript(ScriptFile file, Assembly assembly, ScriptPanel panel)
 	{
 		Type[] types = assembly.GetTypes();
 		Type? scriptType = null;
@@ -182,8 +171,20 @@ public class ScriptingService : ServiceBase
 		if (script == null)
 			throw new Exception("Failed to create instance of script");
 
-		script.Log = scriptLogger;
-		script.Status = status;
+		// Initialize script services
+		PropertyInfo[] properties = typeof(ScriptBase).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+		foreach(PropertyInfo property in properties)
+		{
+			if (property.PropertyType.BaseType == typeof(ScriptServiceBase))
+			{
+				ScriptServiceBase? service = property.GetValue(script) as ScriptServiceBase;
+				if (service == null)
+					continue;
+
+				service.File = file;
+				service.Panel = panel;
+			}
+		}
 
 		MethodInfo? runMethodInfo = scriptType.GetMethod("_InternalScriptRun");
 		if (runMethodInfo == null)

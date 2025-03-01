@@ -18,15 +18,15 @@ namespace StudioFourteen.Scripting.Instance;
 using Serilog.Events;
 using System;
 
-public class ScriptLogger(ScriptPanel outputPanel)
+public class ScriptLogger : ScriptServiceBase
 {
-	public void Information(string message) => outputPanel.AppendLog(LogEventLevel.Information, message);
-	public void Warning(string message) => outputPanel.AppendLog(LogEventLevel.Warning, message);
-	public void Error(string message) => outputPanel.AppendLog(LogEventLevel.Error, message);
-	public void Error(Exception ex, string message) => outputPanel.AppendLog(LogEventLevel.Error, message);
+	public void Information(string message) => this.Panel.AppendLog(LogEventLevel.Information, message);
+	public void Warning(string message) => this.Panel.AppendLog(LogEventLevel.Warning, message);
+	public void Error(string message) => this.Panel.AppendLog(LogEventLevel.Error, message);
+	public void Error(Exception ex, string message) => this.Panel.AppendLog(LogEventLevel.Error, message);
 
-	public void Information(string message, string? location) => outputPanel.AppendLog(LogEventLevel.Information, message, location);
-	public void Warning(string message, string? location) => outputPanel.AppendLog(LogEventLevel.Warning, message, location);
-	public void Error(string message, string? location) => outputPanel.AppendLog(LogEventLevel.Error, message, location);
-	public void Error(Exception ex, string message, string? location) => outputPanel.AppendLog(LogEventLevel.Error, message, location);
+	public void Information(string message, string? location) => this.Panel.AppendLog(LogEventLevel.Information, message, location);
+	public void Warning(string message, string? location) => this.Panel.AppendLog(LogEventLevel.Warning, message, location);
+	public void Error(string message, string? location) => this.Panel.AppendLog(LogEventLevel.Error, message, location);
+	public void Error(Exception ex, string message, string? location) => this.Panel.AppendLog(LogEventLevel.Error, message, location);
 }

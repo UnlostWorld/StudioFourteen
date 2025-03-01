@@ -1,4 +1,4 @@
-﻿// .                    @@             _____ _______ _    _ _____ _____ ____
+// .                    @@             _____ _______ _    _ _____ _____ ____
 //          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
 //         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
 //         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
@@ -15,15 +15,11 @@
 
 namespace StudioFourteen.Scripting.Instance;
 
-/// <summary>
-/// The base class of all script instances.
-/// Be cautious what is exposed here as we don't want scripts
-/// getting out of the Scripting.Instance namespace for security reasons.
-/// </summary>
-public class ScriptBase
+using System.Threading.Tasks;
+
+public class Status : ScriptServiceBase
 {
-	public ScriptLogger Log { get; set; } = new ScriptLogger();
-	public Library Library { get; init; } = new Library();
-	public Photo Photo { get; init; } = new Photo();
-	public Status Status { get; init; } = new Status();
+	public void Progress(int progress, int total) => this.Panel.SetProgress(progress / (double)total);
+	public void Progress(double progress) => this.Panel.SetProgress(progress);
+	public void Set(string status) => this.Panel.SetStatus(status);
 }

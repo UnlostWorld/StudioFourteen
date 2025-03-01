@@ -1,4 +1,4 @@
-﻿// .                    @@             _____ _______ _    _ _____ _____ ____
+// .                    @@             _____ _______ _    _ _____ _____ ____
 //          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
 //         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
 //         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
@@ -15,15 +15,19 @@
 
 namespace StudioFourteen.Scripting.Instance;
 
-/// <summary>
-/// The base class of all script instances.
-/// Be cautious what is exposed here as we don't want scripts
-/// getting out of the Scripting.Instance namespace for security reasons.
-/// </summary>
-public class ScriptBase
+using Serilog;
+
+public class ScriptServiceBase
 {
-	public ScriptLogger Log { get; set; } = new ScriptLogger();
-	public Library Library { get; init; } = new Library();
-	public Photo Photo { get; init; } = new Photo();
-	public Status Status { get; init; } = new Status();
+	protected readonly ILogger Log;
+
+	public ScriptServiceBase()
+	{
+		this.Log = Logging.ForContext(this.GetType());
+	}
+
+	internal ScriptFile File { get; set; } = null!;
+	internal ScriptPanel Panel { get; set; } = null!;
+
+	protected ServiceManager Services => ServiceManager.Instance;
 }
