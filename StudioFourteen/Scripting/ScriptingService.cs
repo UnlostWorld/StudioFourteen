@@ -16,6 +16,7 @@
 namespace StudioFourteen.Scripting;
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Runtime.Loader;
@@ -24,14 +25,17 @@ using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Emit;
 using Microsoft.CodeAnalysis.Text;
+using Serilog.Events;
 using StudioFourteen.Plugin;
 using StudioFourteen.Scripting.Instance;
 using StudioFourteen.Services;
 using StudioFourteen.Studio;
+using StudioFourteen.Utils;
 using WpfUtils.Extensions;
 
 public class ScriptingService : ServiceBase
 {
+	private readonly Dictionary<string, Assembly> assemblyCache = new();
 	private bool isRunningScript = false;
 	private AssemblyLoadContext? loadContext;
 
@@ -53,34 +57,44 @@ public class ScriptingService : ServiceBase
 	{
 		this.isRunningScript = true;
 
-		LongTaskWindow? ltw = await LongTaskWindow.Show();
-		if (ltw == null)
+		ScriptPanel? panel = await ScriptPanel.Show();
+		if (panel == null)
 			return;
 
 		try
 		{
-			ltw.SetStatus($"Compiling Script: {script.Name}");
-			Assembly assembly = this.CompileScript(script);
+			panel.SetTitle(script.Name);
 
-			ltw.SetStatus($"Running Script: {script.Name}");
-			await this.RunScript(assembly);
+			ScriptLogger logger = new ScriptLogger(panel);
+			ScriptStatus status = new ScriptStatus(panel);
 
-			ltw.SetStatus($"Completed Script: {script.Name}");
-			await Task.Delay(1000);
+			status.SetStatus($"Compiling Script: {script.Name}");
+			Assembly assembly = this.CompileScript(script, logger);
+
+			status.SetStatus($"Running Script: {script.Name}");
+			await this.RunScript(assembly, logger, status);
+
+			status.SetProgress(1.0);
+			status.SetStatus($"Completed Script: {script.Name}");
 		}
 		catch(Exception ex)
 		{
-			this.Log.Error(ex, $"Error compiling script file: {ex.Message}");
+			panel.SetStatus($"Error in script");
+			panel.AppendLog(LogEventLevel.Error, ex.Message);
+			panel.SetProgress(0.0);
 		}
 
 		this.isRunningScript = false;
-		ltw.Close();
 	}
 
-	private Assembly CompileScript(ScriptFile file)
+	private Assembly CompileScript(ScriptFile file, ScriptLogger logger)
 	{
 		if (this.loadContext == null)
 			throw new Exception("No assembly load context");
+
+		string hash = HashUtility.GetHashString(file.Text);
+		if (this.assemblyCache.TryGetValue(hash, out var assembly))
+			return assembly;
 
 		string preText =
 		@"using StudioFourteen.Scripting.Instance;
@@ -99,7 +113,7 @@ public class ScriptingService : ServiceBase
 		if (runtimePath == null)
 			throw new Exception("Unable to get system runtime directory");
 
-		CSharpCompilation compilation = CSharpCompilation.Create(this.Name, [parsedSyntaxTree], [], options);
+		CSharpCompilation compilation = CSharpCompilation.Create($"{this.Name}_{hash}", [parsedSyntaxTree], [], options);
 		compilation = compilation.AddReferences(MetadataReference.CreateFromFile("C:/Projects/StudioFourteen/StudioFourteen/bin/StudioFourteen.dll"));
 		compilation = compilation.AddReferences(MetadataReference.CreateFromFile($"{runtimePath}/System.Private.CoreLib.dll"));
 		compilation = compilation.AddReferences(MetadataReference.CreateFromFile($"{runtimePath}/System.Runtime.dll"));
@@ -108,23 +122,47 @@ public class ScriptingService : ServiceBase
 		using var pdbStream = new MemoryStream();
 		EmitResult result = compilation.Emit(peStream, pdbStream);
 
-		if (!result.Success)
+		foreach (Diagnostic diagnostic in result.Diagnostics)
 		{
-			foreach(Diagnostic diagnostic in result.Diagnostics)
-			{
-				this.Log.Information($"[{file.Name}][{diagnostic.Severity}] {diagnostic.GetMessage()}");
-			}
+			string? location = null;
+			int line = diagnostic.Location.GetLineSpan().StartLinePosition.Line;
+			if (line > 0)
+				location = $"Line {line - 1}";
 
-			throw new Exception("Failed to compile script");
+			switch (diagnostic.Severity)
+			{
+				case DiagnosticSeverity.Info:
+				{
+					logger.Information(diagnostic.GetMessage(), location);
+					break;
+				}
+
+				case DiagnosticSeverity.Warning:
+				{
+					logger.Warning(diagnostic.GetMessage(), location);
+					break;
+				}
+
+				case DiagnosticSeverity.Error:
+				{
+					logger.Error(diagnostic.GetMessage(), location);
+					break;
+				}
+			}
 		}
+
+		if (!result.Success)
+			throw new Exception("Failed to compile script");
 
 		peStream.Seek(0, SeekOrigin.Begin);
 		pdbStream.Seek(0, SeekOrigin.Begin);
 
-		return this.loadContext.LoadFromStream(peStream, pdbStream);
+		Assembly newAssembly = this.loadContext.LoadFromStream(peStream, pdbStream);
+		this.assemblyCache.Add(hash, newAssembly);
+		return newAssembly;
 	}
 
-	private async Task RunScript(Assembly assembly)
+	private async Task RunScript(Assembly assembly, ScriptLogger scriptLogger, ScriptStatus status)
 	{
 		Type[] types = assembly.GetTypes();
 		Type? scriptType = null;
@@ -142,6 +180,9 @@ public class ScriptingService : ServiceBase
 		ScriptBase? script = Activator.CreateInstance(scriptType) as ScriptBase;
 		if (script == null)
 			throw new Exception("Failed to create instance of script");
+
+		script.Log = scriptLogger;
+		script.Status = status;
 
 		MethodInfo? runMethodInfo = scriptType.GetMethod("_InternalScriptRun");
 		if (runMethodInfo == null)

@@ -15,12 +15,18 @@
 
 namespace StudioFourteen.Scripting.Instance;
 
-public class ScriptBase
-{
-	public ScriptLogger Log { get; set; } = null!;
-	public ScriptStatus Status { get; set; } = null!;
+using Serilog.Events;
+using System;
 
-	public void SetProgress(int progress, int total) => this.SetProgress(progress / (double)total);
-	public void SetProgress(double progress) => this.Status.SetProgress(progress);
-	public void SetStatus(string status) => this.Status.SetStatus(status);
+public class ScriptLogger(ScriptPanel outputPanel)
+{
+	public void Information(string message) => outputPanel.AppendLog(LogEventLevel.Information, message);
+	public void Warning(string message) => outputPanel.AppendLog(LogEventLevel.Warning, message);
+	public void Error(string message) => outputPanel.AppendLog(LogEventLevel.Error, message);
+	public void Error(Exception ex, string message) => outputPanel.AppendLog(LogEventLevel.Error, message);
+
+	public void Information(string message, string? location) => outputPanel.AppendLog(LogEventLevel.Information, message, location);
+	public void Warning(string message, string? location) => outputPanel.AppendLog(LogEventLevel.Warning, message, location);
+	public void Error(string message, string? location) => outputPanel.AppendLog(LogEventLevel.Error, message, location);
+	public void Error(Exception ex, string message, string? location) => outputPanel.AppendLog(LogEventLevel.Error, message, location);
 }

@@ -1,4 +1,4 @@
-﻿// .                    @@             _____ _______ _    _ _____ _____ ____
+// .                    @@             _____ _______ _    _ _____ _____ ____
 //          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
 //         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
 //         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
@@ -15,12 +15,8 @@
 
 namespace StudioFourteen.Scripting.Instance;
 
-public class ScriptBase
+public class ScriptStatus(ScriptPanel outputPanel)
 {
-	public ScriptLogger Log { get; set; } = null!;
-	public ScriptStatus Status { get; set; } = null!;
-
-	public void SetProgress(int progress, int total) => this.SetProgress(progress / (double)total);
-	public void SetProgress(double progress) => this.Status.SetProgress(progress);
-	public void SetStatus(string status) => this.Status.SetStatus(status);
+	public void SetStatus(string status) => outputPanel.SetStatus(status);
+	public void SetProgress(double? progress) => outputPanel.SetProgress(progress);
 }
