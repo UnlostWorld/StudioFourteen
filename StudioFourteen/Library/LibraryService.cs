@@ -15,6 +15,8 @@
 
 namespace StudioFourteen.Library;
 
+using StudioFourteen.Library.Filters;
+using StudioFourteen.Library.Results;
 using StudioFourteen.Library.Sources;
 using StudioFourteen.Services;
 using StudioFourteen.Tags;
@@ -176,6 +178,31 @@ public class LibraryService : ServiceBase
 		}
 
 		return null;
+	}
+
+	public List<T> GetAll<T>()
+		where T : LibraryEntryBase
+	{
+		List<FilterBase> filters = new List<FilterBase>();
+		filters.Add(new TypeFilter(typeof(T)));
+
+		GroupResult group = new(this.Root);
+		group.FilterEntries(filters.ToArray());
+		IEnumerable<Result>? results = group.Get(true);
+
+		List<T> finalResults = new();
+		if (results == null)
+			return finalResults;
+
+		foreach(Result result in results)
+		{
+			if (result.Entry is T tEntry)
+			{
+				finalResults.Add(tEntry);
+			}
+		}
+
+		return finalResults;
 	}
 
 	private void OnConfigurationChanged()

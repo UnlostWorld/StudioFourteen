@@ -19,6 +19,7 @@ public class ScriptBase
 {
 	public ScriptLogger Log { get; set; } = null!;
 	public ScriptStatus Status { get; set; } = null!;
+	public Library Library { get; init; } = new Library();
 
 	public void SetProgress(int progress, int total) => this.SetProgress(progress / (double)total);
 	public void SetProgress(double progress) => this.Status.SetProgress(progress);

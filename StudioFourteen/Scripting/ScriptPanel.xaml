@@ -71,7 +71,8 @@
 								<TextBlock
 									Grid.Column="1"
 									Foreground="{DynamicResource ForegroundLightBrush}"
-									Text="{Binding Message}" />
+									Text="{Binding Message}"
+									TextWrapping="Wrap" />
 
 								<TextBlock
 									Grid.Column="2"
