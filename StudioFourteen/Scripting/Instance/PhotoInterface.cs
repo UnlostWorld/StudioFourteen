@@ -17,9 +17,23 @@ namespace StudioFourteen.Scripting.Instance;
 
 using System.Threading.Tasks;
 
-public class Status : ScriptServiceBase
+public class PhotoInterface : ScriptServiceBase
 {
-	public void Progress(int progress, int total) => this.Panel.SetProgress(progress / (double)total);
-	public void Progress(double progress) => this.Panel.SetProgress(progress);
-	public void Set(string status) => this.Panel.SetStatus(status);
+	public Task CaptureAsync(string? name = null, bool animate = true)
+		=> this.Services.Photos.CaptureAsync(this.GetFileName(name), animate);
+
+	public void Capture(string? name = null, bool animate = true)
+		=> this.Services.Photos.Capture(this.GetFileName(name), animate);
+
+	/// <summary>
+	/// Script captured photos always go in a directory matching the script name.
+	/// </summary>
+	private string GetFileName(string? name)
+	{
+		if (name == null)
+			name = this.Services.Photos.GetDefaultFileName();
+
+		string scriptName = this.File.Name;
+		return $"{scriptName}/{name}";
+	}
 }

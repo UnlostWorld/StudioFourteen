@@ -193,6 +193,8 @@ public class RedrawService : ServiceBase
 				}
 			}
 
+			await Threads.NextFrame();
+
 			// TODO: Umbrellas take 500ms to fade in, so detect if this target is holding an umbrella and wait a bit longer.
 			this.IsDone = true;
 			this.IsRunning = false;

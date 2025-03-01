@@ -23,7 +23,8 @@ namespace StudioFourteen.Scripting.Instance;
 public class ScriptBase
 {
 	public ScriptLogger Log { get; set; } = new ScriptLogger();
-	public Library Library { get; init; } = new Library();
-	public Photo Photo { get; init; } = new Photo();
-	public Status Status { get; init; } = new Status();
+	public LibraryInterface Library { get; init; } = new LibraryInterface();
+	public PhotoInterface Photo { get; init; } = new PhotoInterface();
+	public StatusInterface Status { get; init; } = new StatusInterface();
+	public CharacterInterface Character { get; init; } = new CharacterInterface();
 }

@@ -48,6 +48,7 @@ public static class CharacterExtensions
 {
 	public enum UpdateSource
 	{
+		Script,
 		Interface,
 		Library,
 		Restore,

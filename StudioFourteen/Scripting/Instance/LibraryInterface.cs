@@ -20,7 +20,7 @@ using StudioFourteen.GameData.Library;
 using StudioFourteen.Library;
 using StudioFourteen.Library.Sources;
 
-public class Library : ScriptServiceBase
+public class LibraryInterface : ScriptServiceBase
 {
 	// Studio
 	// TODO: split these up by file type.
