@@ -65,6 +65,7 @@
 									x:Name="Icon"
 									Grid.Column="0"
 									Margin="3"
+									VerticalAlignment="Top"
 									Foreground="{DynamicResource ForegroundLightBrush}"
 									Icon="InfoCircle" />
 

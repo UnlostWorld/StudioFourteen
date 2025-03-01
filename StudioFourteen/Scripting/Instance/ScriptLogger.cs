@@ -24,9 +24,4 @@ public class ScriptLogger : ScriptServiceBase
 	public void Warning(string message) => this.Panel.AppendLog(LogEventLevel.Warning, message);
 	public void Error(string message) => this.Panel.AppendLog(LogEventLevel.Error, message);
 	public void Error(Exception ex, string message) => this.Panel.AppendLog(LogEventLevel.Error, message);
-
-	public void Information(string message, string? location) => this.Panel.AppendLog(LogEventLevel.Information, message, location);
-	public void Warning(string message, string? location) => this.Panel.AppendLog(LogEventLevel.Warning, message, location);
-	public void Error(string message, string? location) => this.Panel.AppendLog(LogEventLevel.Error, message, location);
-	public void Error(Exception ex, string message, string? location) => this.Panel.AppendLog(LogEventLevel.Error, message, location);
 }

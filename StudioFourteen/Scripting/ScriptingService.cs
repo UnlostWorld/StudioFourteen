@@ -20,22 +20,38 @@ using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
 using System.Runtime.Loader;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Emit;
 using Microsoft.CodeAnalysis.Text;
 using Serilog.Events;
 using StudioFourteen.Plugin;
 using StudioFourteen.Scripting.Instance;
 using StudioFourteen.Services;
-using StudioFourteen.Studio;
 using StudioFourteen.Utils;
 using WpfUtils.Extensions;
 
 public class ScriptingService : ServiceBase
 {
 	private readonly Dictionary<string, Assembly> assemblyCache = new();
+	private readonly HashSet<string> allowedNamespaces = new()
+	{
+		"StudioFourteen.Scripting.Instance",
+		"System.Threading.Tasks",
+	};
+
+	private readonly HashSet<string> allowedTypes = new()
+	{
+		"void",
+		"string",
+		"int",
+		"float",
+		"System.Runtime.CompilerServices.YieldAwaitable",
+	};
+
 	private bool isRunningScript = false;
 	private AssemblyLoadContext? loadContext;
 
@@ -66,7 +82,7 @@ public class ScriptingService : ServiceBase
 			panel.SetTitle(script.Name);
 
 			panel.SetStatus($"Compiling Script: {script.Name}");
-			Assembly assembly = this.CompileScript(script, panel);
+			Assembly assembly = await this.CompileScript(script, panel);
 
 			panel.SetStatus($"Running Script: {script.Name}");
 			await this.RunScript(script, assembly, panel);
@@ -84,37 +100,71 @@ public class ScriptingService : ServiceBase
 		this.isRunningScript = false;
 	}
 
-	private Assembly CompileScript(ScriptFile file, ScriptPanel panel)
+	private async Task<Assembly> CompileScript(ScriptFile file, ScriptPanel panel)
 	{
 		if (this.loadContext == null)
 			throw new Exception("No assembly load context");
 
-		string hash = HashUtility.GetHashString(file.Text);
+		string hash = HashUtility.GetHashString(file.Text, true);
 		if (this.assemblyCache.TryGetValue(hash, out var assembly))
 			return assembly;
 
-		string preText =
-		@"using StudioFourteen.Scripting.Instance;
-		using System.Threading.Tasks;
-		public class MyScript : ScriptBase{public async Task _InternalScriptRun(){await Task.Yield();";
+		StringBuilder textBuilder = new();
+		textBuilder.Append("using StudioFourteen.Scripting.Instance;");
+		textBuilder.Append("using System.Threading.Tasks;");
+		textBuilder.Append($"public class {file.Name}_{hash} : ScriptBase");
+		textBuilder.Append("{");
+		textBuilder.Append($"public async Task _InternalScriptRun()");
+		textBuilder.Append("{");
+		textBuilder.AppendLine("await Task.Yield();");
 
-		string postText = "}}";
+		textBuilder.AppendLine(file.Text);
 
-		SourceText codeString = SourceText.From(preText + file.Text + postText);
+		textBuilder.Append("}");
+		textBuilder.Append("}");
+
+		SourceText codeString = SourceText.From(textBuilder.ToString());
 		CSharpParseOptions parseOptions = CSharpParseOptions.Default.WithLanguageVersion(LanguageVersion.CSharp12);
 		SyntaxTree parsedSyntaxTree = SyntaxFactory.ParseSyntaxTree(codeString, parseOptions);
+
 		CSharpCompilationOptions options = new(OutputKind.DynamicallyLinkedLibrary);
 		options = options.WithAllowUnsafe(false);
+		options = options.WithOverflowChecks(true);
+		options = options.WithDeterministic(true);
 
 		string? runtimePath = Path.GetDirectoryName(typeof(object).Assembly.Location);
 		if (runtimePath == null)
 			throw new Exception("Unable to get system runtime directory");
 
-		CSharpCompilation compilation = CSharpCompilation.Create($"{this.Name}_{hash}", [parsedSyntaxTree], [], options);
+		CSharpCompilation compilation = CSharpCompilation.Create($"{file.Name}_{hash}", [parsedSyntaxTree], [], options);
 		compilation = compilation.AddReferences(MetadataReference.CreateFromFile("C:/Projects/StudioFourteen/StudioFourteen/bin/StudioFourteen.dll"));
 		compilation = compilation.AddReferences(MetadataReference.CreateFromFile($"{runtimePath}/System.Private.CoreLib.dll"));
 		compilation = compilation.AddReferences(MetadataReference.CreateFromFile($"{runtimePath}/System.Runtime.dll"));
 		compilation = compilation.AddReferences(MetadataReference.CreateFromFile($"{runtimePath}/System.Collections.dll"));
+
+		// Check Types
+		SemanticModel semanticModel = compilation.GetSemanticModel(parsedSyntaxTree);
+		SyntaxNode root = await parsedSyntaxTree.GetRootAsync();
+		IEnumerable<SyntaxNode> nodes = root.DescendantNodes(descendIntoChildren => true);
+		foreach(SyntaxNode node in nodes)
+		{
+			if (node is IdentifierNameSyntax nameSyntax)
+			{
+				ISymbol? symbol = semanticModel.GetSymbolInfo(nameSyntax).Symbol;
+				if (!this.IsSymbolAllowed(symbol))
+				{
+					throw new Exception($"Illegal symbol: {symbol} in name: \"{nameSyntax}\"");
+				}
+			}
+			else if (node is ExpressionSyntax expressionSyntax)
+			{
+				ITypeSymbol? symbol = semanticModel.GetTypeInfo(expressionSyntax).Type;
+				if (!this.IsSymbolAllowed(symbol))
+				{
+					throw new Exception($"Illegal symbol: {symbol} in expression: \"{expressionSyntax}\"");
+				}
+			}
+		}
 
 		using var peStream = new MemoryStream();
 		using var pdbStream = new MemoryStream();
@@ -138,6 +188,7 @@ public class ScriptingService : ServiceBase
 				_ => throw new InvalidOperationException(),
 			};
 
+			////this.Log.Write(level, diagnostic.GetMessage());
 			panel.AppendLog(level, diagnostic.GetMessage(), location);
 		}
 
@@ -148,8 +199,36 @@ public class ScriptingService : ServiceBase
 		pdbStream.Seek(0, SeekOrigin.Begin);
 
 		Assembly newAssembly = this.loadContext.LoadFromStream(peStream, pdbStream);
+
 		this.assemblyCache.Add(hash, newAssembly);
 		return newAssembly;
+	}
+
+	private bool IsSymbolAllowed(ISymbol? symbol)
+	{
+		if (symbol == null)
+			return true;
+
+		if (symbol is ITypeSymbol typeSymbol)
+		{
+			string? symbolName = typeSymbol.ToString();
+			if (symbolName == null)
+				return false;
+
+			if (this.allowedTypes.Contains(symbolName))
+				return true;
+
+			string? namespaceName = symbol.ContainingNamespace.ToString();
+			if (namespaceName == null)
+				return false;
+
+			if (this.allowedNamespaces.Contains(namespaceName))
+				return true;
+
+			return false;
+		}
+
+		return true;
 	}
 
 	private async Task RunScript(ScriptFile file, Assembly assembly, ScriptPanel panel)
