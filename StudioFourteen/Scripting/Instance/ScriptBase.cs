@@ -13,36 +13,34 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Studio;
+namespace StudioFourteen.Scripting.Instance;
 
-using PropertyChanged.SourceGenerator;
-using StudioFourteen.Panels;
-using System.Threading.Tasks;
+using System;
 
-public partial class LongTaskWindow : Panel
+public class ScriptBase
 {
-	[Notify] private string status = string.Empty;
-	[Notify] private double? progress = null;
+	protected readonly ScriptLogger Log = new();
+}
 
-	public static async Task<LongTaskWindow?> Show()
+public class ScriptLogger
+{
+	public void Information(string message)
 	{
-		return await ServiceManager.Instance.Panels.Open<LongTaskWindow>();
+		Logging.Shared.Information(message);
 	}
 
-	public void SetStatus(string status)
+	public void Warning(string message)
 	{
-		this.Status = status;
+		Logging.Shared.Warning(message);
 	}
 
-	public void SetProgress(double? progress)
+	public void Error(string message)
 	{
-		if (progress == null)
-		{
-			this.Progress = null;
-		}
-		else
-		{
-			this.Progress = progress * 100;
-		}
+		Logging.Shared.Error(message);
+	}
+
+	public void Error(Exception ex, string message)
+	{
+		Logging.Shared.Error(ex, message);
 	}
 }

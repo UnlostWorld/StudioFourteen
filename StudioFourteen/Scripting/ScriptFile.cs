@@ -13,36 +13,23 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Studio;
+namespace StudioFourteen.Scripting;
 
-using PropertyChanged.SourceGenerator;
-using StudioFourteen.Panels;
-using System.Threading.Tasks;
+using FontAwesome.Sharp;
+using StudioFourteen.Files;
+using StudioFourteen.Library.LibraryMenu;
 
-public partial class LongTaskWindow : Panel
+using Task = System.Threading.Tasks.Task;
+
+public class ScriptFile(string name, string text)
+	: FileBase
 {
-	[Notify] private string status = string.Empty;
-	[Notify] private double? progress = null;
+	public readonly string Text = text;
+	public readonly string Name = name;
 
-	public static async Task<LongTaskWindow?> Show()
+	[LibraryMenu(IconChar.Robot, "Run")]
+	public Task Run()
 	{
-		return await ServiceManager.Instance.Panels.Open<LongTaskWindow>();
-	}
-
-	public void SetStatus(string status)
-	{
-		this.Status = status;
-	}
-
-	public void SetProgress(double? progress)
-	{
-		if (progress == null)
-		{
-			this.Progress = null;
-		}
-		else
-		{
-			this.Progress = progress * 100;
-		}
+		return ServiceManager.Instance.Scripting.RunScriptAsync(this);
 	}
 }

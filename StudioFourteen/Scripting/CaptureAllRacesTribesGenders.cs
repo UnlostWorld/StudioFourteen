@@ -13,6 +13,7 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
+/*
 namespace StudioFourteen.Scripts;
 
 using System;
@@ -32,15 +33,34 @@ public class CaptureAllRacesTribesGenders : ScriptBase
 
 		this.SetStatus($"Starting...");
 
-		await Threads.FrameworkThread();
-
 		ExcelSheet<Race>? raceSheet = this.Services.GameData.GetSheet<Race>();
 		if (raceSheet == null)
 			return;
 
+		double count = 0;
+		foreach (Race race in raceSheet)
+		{
+			if (race.RowId == 0)
+				continue;
+
+			foreach (Tribe tribe in race.GetTribes())
+			{
+				if (tribe.RowId == 0)
+					continue;
+
+				foreach (Genders gender in Enum.GetValues<Genders>())
+				{
+					count++;
+				}
+			}
+		}
+
+		await Threads.FrameworkThread();
+
 		string dirName = DateTime.Now.ToString("yyyy-MM-dd HH-mm");
 
-		foreach(Race race in raceSheet)
+		int index = 0;
+		foreach (Race race in raceSheet)
 		{
 			if (race.RowId == 0)
 				continue;
@@ -56,13 +76,14 @@ public class CaptureAllRacesTribesGenders : ScriptBase
 
 				foreach(Genders gender in Enum.GetValues<Genders>())
 				{
+					index++;
+					this.SetProgress(index / count);
+
 					this.Services.CharacterAppearance.SetCustomizeValue(objectIndex, CustomizeIndex.Gender, (byte)gender, CharacterExtensions.UpdateSource.Interface);
 
 					this.SetStatus($"{race.GetName()}, {tribe.GetName()}, {gender}");
 
 					await this.Services.Redraw.RedrawAsync(objectIndex, false);
-
-					await Task.Delay(100);
 
 					await this.Services.Photos.CaptureAsync($"{dirName}/{race.GetName()}-{tribe.GetName()}-{gender}", false);
 
@@ -74,4 +95,4 @@ public class CaptureAllRacesTribesGenders : ScriptBase
 		this.SetStatus($"Completed");
 		await this.Services.CharacterAppearance.Restore(objectIndex);
 	}
-}
+}*/

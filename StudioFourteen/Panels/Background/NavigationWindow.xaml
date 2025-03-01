@@ -271,13 +271,6 @@
 		<StackPanel>
 			<Border>
 				<StackPanel>
-
-					<ToggleButton
-						IsChecked="{Binding IsScriptsOpen}"
-						ToolTip="{DynamicResource LOC_Scripts}">
-						<wpfUtils:IconBlock Icon="Robot" />
-					</ToggleButton>
-
 					<ToggleButton
 						Width="32"
 						Height="32"

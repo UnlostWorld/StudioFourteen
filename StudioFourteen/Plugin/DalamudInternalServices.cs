@@ -13,45 +13,36 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Scripts;
+namespace StudioFourteen.Plugin;
 
 using System;
-using System.Threading.Tasks;
-using Serilog;
-using StudioFourteen.Studio;
+using System.Reflection;
+using Dalamud.Plugin;
 
-public abstract class ScriptBase
+public static class DalamudInternalServices
 {
-	protected readonly ILogger Log;
+	public static object PluginManager => Get("Dalamud.Plugin.Internal.PluginManager");
 
-	private LongTaskWindow? longTaskWindow;
-
-	public ScriptBase()
+	private static object Get(string typeName)
 	{
-		this.Log = Logging.ForContext(this.GetType());
-	}
+		Assembly dalamudAssembly = typeof(IDalamudPluginInterface).Assembly;
+		Type? pluginManagerType = dalamudAssembly.GetType(typeName);
+		if (pluginManagerType == null)
+			throw new Exception($"Unable to locate type: {typeName}");
 
-	protected ServiceManager Services => ServiceManager.Instance;
+		Type? serviceType = dalamudAssembly.GetType("Dalamud.Service`1");
+		if (serviceType == null)
+			throw new Exception("Unable to locate service type");
 
-	public async Task RunScript()
-	{
-		this.longTaskWindow = await LongTaskWindow.Show();
-		try
-		{
-			await this.Run();
-		}
-		catch (Exception ex)
-		{
-			this.Log.Error(ex, "Error in script");
-		}
+		Type pluginManagerServiceType = serviceType.MakeGenericType(pluginManagerType);
+		MethodInfo? getMethod = pluginManagerServiceType.GetMethod("Get");
+		if (getMethod == null)
+			throw new Exception("Unable to locate service Get method");
 
-		this.longTaskWindow?.Close();
-	}
+		object? result = getMethod.Invoke(null, BindingFlags.Default, null, [], null);
+		if (result == null)
+			throw new Exception($"Failed to get service instance: {typeName}");
 
-	protected abstract Task Run();
-
-	protected void SetStatus(string str)
-	{
-		this.longTaskWindow?.SetStatus(str);
+		return result;
 	}
 }

@@ -17,6 +17,7 @@ namespace StudioFourteen.Files;
 
 using Microsoft.Win32;
 using StudioFourteen.Library.Sources;
+using StudioFourteen.Scripting;
 using StudioFourteen.Services;
 using StudioFourteen.Studio;
 using StudioFourteen.Utilities;
@@ -35,6 +36,7 @@ public class FileService : ServiceBase
 		new PoseFileTypeInfo(),
 		new SceneFileTypeInfo(),
 		new MareFileTypeInfo(),
+		new ScriptFileTypeInfo(),
 	};
 
 	public DirectoryInfo StudioFourteenAppDataDir { get; init; } = new DirectoryInfo($"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}/StudioFourteen/");

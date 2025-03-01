@@ -1,6 +1,7 @@
 ﻿<ResourceDictionary
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:Scripting="clr-namespace:StudioFourteen.Scripting"
 	xmlns:appearance="clr-namespace:StudioFourteen.Appearance"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
@@ -8,6 +9,7 @@
 	xmlns:gameData="clr-namespace:StudioFourteen.GameData.Library"
 	xmlns:library="clr-namespace:StudioFourteen.Library"
 	xmlns:markup="clr-namespace:WpfUtils.Markup;assembly=WpfUtils"
+	xmlns:scripting="clr-namespace:StudioFourteen.Scripting"
 	xmlns:services="clr-namespace:StudioFourteen.Services"
 	xmlns:sources="clr-namespace:StudioFourteen.Library.Sources"
 	xmlns:ss="clr-namespace:StudioFourteen"
@@ -282,6 +284,38 @@
 	</DataTemplate>
 
 	<DataTemplate
+		x:Key="LibraryIcon_ScriptFileTypeInfo"
+		DataType="{x:Type scripting:ScriptFileTypeInfo}">
+		<Viewbox CacheMode="BitmapCache">
+			<Grid>
+				<wpfUtils:IconBlock
+					Margin="1,2,-1,-2"
+					FontSize="72"
+					Foreground="#ADADAD"
+					Icon="File"
+					IconFont="Solid"
+					Opacity="0.25" />
+
+				<wpfUtils:IconBlock
+					FontSize="72"
+					Foreground="#FDFDFD"
+					Icon="File"
+					IconFont="Solid" />
+
+				<wpfUtils:IconBlock
+					Margin="5,0,0,-25"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Bottom"
+					FontSize="32"
+					Foreground="#ADADAD"
+					Icon="Robot"
+					IconFont="Solid" />
+			</Grid>
+
+		</Viewbox>
+	</DataTemplate>
+
+	<DataTemplate
 		x:Key="LibraryIcon_FileEntry"
 		DataType="{x:Type sources:FileEntry}">
 
@@ -458,6 +492,10 @@
 		<markup:TemplateSelectorEntry
 			TargetType="{x:Type files:SceneFileTypeInfo}"
 			Template="{StaticResource LibraryIcon_SceneFileTypeInfo}" />
+
+		<markup:TemplateSelectorEntry
+			TargetType="{x:Type Scripting:ScriptFileTypeInfo}"
+			Template="{StaticResource LibraryIcon_ScriptFileTypeInfo}" />
 
 		<markup:TemplateSelectorEntry
 			TargetType="{x:Type sources:FileEntry}"

@@ -1,4 +1,4 @@
-﻿// .                    @@             _____ _______ _    _ _____ _____ ____
+// .                    @@             _____ _______ _    _ _____ _____ ____
 //          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
 //         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
 //         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
@@ -13,36 +13,26 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Studio;
+namespace StudioFourteen.Scripting;
 
-using PropertyChanged.SourceGenerator;
-using StudioFourteen.Panels;
-using System.Threading.Tasks;
+using System;
+using System.IO;
+using StudioFourteen.Files;
 
-public partial class LongTaskWindow : Panel
+public class ScriptFileTypeInfo : FileTypeInfoBase
 {
-	[Notify] private string status = string.Empty;
-	[Notify] private double? progress = null;
+	public override string Extension => ".s14script";
+	public override string TypeName => "Script";
 
-	public static async Task<LongTaskWindow?> Show()
-	{
-		return await ServiceManager.Instance.Panels.Open<LongTaskWindow>();
-	}
+	public override Type LoadsType => typeof(ScriptFile);
 
-	public void SetStatus(string status)
+	public override FileBase? Load(FileInfo fileInfo)
 	{
-		this.Status = status;
-	}
+		if (!fileInfo.Exists)
+			return null;
 
-	public void SetProgress(double? progress)
-	{
-		if (progress == null)
-		{
-			this.Progress = null;
-		}
-		else
-		{
-			this.Progress = progress * 100;
-		}
+		string name = Path.GetFileNameWithoutExtension(fileInfo.FullName);
+		string text = File.ReadAllText(fileInfo.FullName);
+		return new ScriptFile(name, text);
 	}
 }

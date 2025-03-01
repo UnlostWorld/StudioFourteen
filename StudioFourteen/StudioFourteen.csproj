@@ -72,6 +72,7 @@
 		<PackageReference Include="FontAwesome.Sharp" Version="6.6.0" />
 		<PackageReference Include="JsonSubTypes" Version="2.0.1" />
 		<PackageReference Include="lz4net" Version="1.0.15.93" />
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.13.0" />
 		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3065.39" />
 		<PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.183">
 		  <PrivateAssets>all</PrivateAssets>
@@ -146,21 +147,6 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Lib\WpfUtils\WpfUtils.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Compile Update="History\HistoryPanel.xaml.cs">
-	    <SubType>Code</SubType>
-	  </Compile>
-	  <Compile Update="Marketplace\MarketplacePanel.xaml.cs">
-	    <SubType>Code</SubType>
-	  </Compile>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Page Update="History\HistoryPanel.xaml">
-	    <SubType>Designer</SubType>
-	  </Page>
 	</ItemGroup>
 
 </Project>

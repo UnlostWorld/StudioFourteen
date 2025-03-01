@@ -19,6 +19,7 @@ using Dalamud.Game.Command;
 using Dalamud.Plugin;
 using Serilog;
 using StudioFourteen.Settings;
+using System;
 using System.Threading.Tasks;
 
 public sealed class DalamudPlugin : IDalamudPlugin
@@ -27,6 +28,8 @@ public sealed class DalamudPlugin : IDalamudPlugin
 
 	public DalamudPlugin(IDalamudPluginInterface pluginInterface)
 	{
+		Instance = this;
+
 		// Hard reference our required satellite assemblies to make sure dalamuds plugin loader picks them up.
 		this.Log.Information($"Ensure assembly WpfUtils {typeof(WpfUtils.Dispatch).Assembly}");
 		this.Log.Information($"Ensure assembly FontAwesome {typeof(FontAwesome.Sharp.Icon).Assembly}");
@@ -57,6 +60,7 @@ public sealed class DalamudPlugin : IDalamudPlugin
 		Task.Run(this.Services.Start);
 	}
 
+	public static IDalamudPlugin? Instance { get; private set; }
 	public string Name => "Studio Fourteen";
 	public ILogger Log => Logging.ForContext<DalamudPlugin>();
 

@@ -23,7 +23,10 @@
 	<StackPanel>
 		<ProgressBar
 			Margin="6"
-			IsIndeterminate="True" />
+			IsIndeterminate="{Binding Progress, Converter={StaticResource NotNullToBoolConverter}}"
+			Maximum="100"
+			Minimum="0"
+			Value="{Binding Progress}" />
 
 		<TextBlock
 			HorizontalAlignment="Center"

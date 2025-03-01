@@ -56,4 +56,5 @@ public class ServiceManager : ServiceManagerBase
 	public Selection.SelectionService Selection { get; init; } = new();
 	public Photos.PhotosService Photos { get; init; } = new();
 	public RedrawService Redraw { get; init; } = new();
+	public Scripting.ScriptingService Scripting { get; init; } = new();
 }
