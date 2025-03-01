@@ -130,6 +130,8 @@ public partial class PhotosService : ServiceBase
 		this.CaptureAsync(name, animate).Run();
 	}
 
+	public string GetDefaultFileName() => DateTime.Now.ToString("yyyy-MM-dd HH-mm");
+
 	public async Task CaptureAsync(string? name = null, bool animate = true)
 	{
 		if (this.Settings.PhotoDirectory == null)
@@ -207,7 +209,7 @@ public partial class PhotosService : ServiceBase
 				Directory.CreateDirectory(this.Settings.PhotoDirectory);
 
 			if (name == null)
-				name = DateTime.Now.ToString("yyyy-MM-dd HH-mm");
+				name = this.GetDefaultFileName();
 
 			// Custom formatting to avoid culture formats producing invalid file names.
 			string fileName;
