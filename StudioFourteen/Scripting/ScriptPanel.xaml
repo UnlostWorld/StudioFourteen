@@ -124,7 +124,7 @@
 						HorizontalAlignment="Right"
 						Background="Transparent"
 						Click="OnCloseClicked"
-						Content="Close"
+						Content="{DynamicResource LOC_Close}"
 						Visibility="{Binding IsRunning, Converter={StaticResource !B2V}}" />
 
 					<Button
@@ -132,7 +132,7 @@
 						HorizontalAlignment="Right"
 						Background="Transparent"
 						Click="OnCancelClicked"
-						Content="Cancel"
+						Content="{DynamicResource LOC_Script_Cancel}"
 						Visibility="{Binding IsRunning, Converter={StaticResource B2V}}" />
 				</Grid>
 			</Border>
@@ -316,7 +316,7 @@
 						HorizontalAlignment="Right"
 						Background="Transparent"
 						Click="OnRunClicked"
-						Content="Start" />
+						Content="{DynamicResource LOC_Script_Run}" />
 				</Grid>
 			</Border>
 		</Grid>

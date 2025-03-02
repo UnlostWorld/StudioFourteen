@@ -4,6 +4,7 @@
 	xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
 	<sys:String x:Key="LOC_Confirm">Confirm</sys:String>
+	<sys:String x:Key="LOC_Close">Close</sys:String>
 
 	<sys:String x:Key="LOC_Error">Error</sys:String>
 	<sys:String x:Key="LOC_ErrorBodyMessage">An error has occurred. You can attempt to continue using Studio Fourteen, but we recommend restarting your game.</sys:String>
@@ -39,6 +40,8 @@
 	<sys:String x:Key="LOC_Script_TrustSelfTooltipJoke">Of course I trust them, they're me!</sys:String>
 	<sys:String x:Key="LOC_Script_TrustYes">Yes, I trust the authors</sys:String>
 	<sys:String x:Key="LOC_Script_TrustNo">No, I don't trust the authors</sys:String>
+	<sys:String x:Key="LOC_Script_Cancel">Stop Script</sys:String>
+	<sys:String x:Key="LOC_Script_Run">Start Script</sys:String>
 
 	<sys:String x:Key="LOC_Photo_ToggleUIToolTip">Toggle the UI</sys:String>
 	<sys:String x:Key="LOC_Photo_TogglePortrait">Rotate the Image by 90°</sys:String>
