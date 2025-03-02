@@ -40,16 +40,22 @@ public class ScriptingService : ServiceBase
 	private readonly HashSet<string> allowedNamespaces = new()
 	{
 		"StudioFourteen.Scripting.Instance",
+		"StudioFourteen.GameData.Library",
+		"StudioFourteen.Library.Sources",
 		"System.Threading.Tasks",
+		"System.Collections.Generic",
 	};
 
 	private readonly HashSet<string> allowedTypes = new()
 	{
+		"?",
 		"void",
 		"string",
 		"int",
 		"float",
+		"bool",
 		"System.Runtime.CompilerServices.YieldAwaitable",
+		"StudioFourteen.GameData.Genders",
 	};
 
 	private bool isRunningScript = false;
@@ -112,7 +118,7 @@ public class ScriptingService : ServiceBase
 		StringBuilder textBuilder = new();
 		textBuilder.Append("using StudioFourteen.Scripting.Instance;");
 		textBuilder.Append("using System.Threading.Tasks;");
-		textBuilder.Append($"public class {file.Name}_{hash} : ScriptBase");
+		textBuilder.Append("public class ScriptMain : ScriptBase");
 		textBuilder.Append("{");
 		textBuilder.Append($"public async Task _InternalScriptRun()");
 		textBuilder.Append("{");
