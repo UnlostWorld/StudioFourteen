@@ -15,11 +15,13 @@
 
 namespace StudioFourteen.Scripting.Instance;
 
+using System.Threading;
 using System.Threading.Tasks;
 using Dalamud.Game.ClientState.Objects.Enums;
 using StudioFourteen.GameData;
 using StudioFourteen.GameData.Library;
 using StudioFourteen.Utilities;
+
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.CharacterExtensions;
 
 public class CharacterInterface : ScriptServiceBase

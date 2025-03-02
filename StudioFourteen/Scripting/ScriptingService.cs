@@ -22,6 +22,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -145,6 +146,12 @@ public class ScriptingService : ServiceBase
 				}
 			}
 		}
+		catch(OperationCanceledException)
+		{
+			panel.SetProgress(0);
+			panel.SetStatus($"Canceled");
+			panel.IsRunning = false;
+		}
 		catch(Exception ex)
 		{
 			panel.SetStatus($"Error in script");
@@ -168,12 +175,11 @@ public class ScriptingService : ServiceBase
 
 		StringBuilder textBuilder = new();
 		textBuilder.Append("using StudioFourteen.Scripting.Instance;");
-		textBuilder.Append("using System.Threading.Tasks;");
 		textBuilder.Append("public class ScriptMain : ScriptBase");
 		textBuilder.Append("{");
-		textBuilder.Append($"public async Task _InternalScriptRun()");
+		textBuilder.Append($"public async System.Threading.Tasks.Task _InternalScriptRun()");
 		textBuilder.Append("{");
-		textBuilder.AppendLine("await Task.Yield();");
+		textBuilder.AppendLine("await System.Threading.Tasks.Task.Yield();");
 
 		textBuilder.AppendLine(file.Code);
 
@@ -305,9 +311,11 @@ public class ScriptingService : ServiceBase
 		if (scriptType == null)
 			throw new Exception("Failed to find ScriptBase type in script assembly");
 
-		ScriptBase? script = Activator.CreateInstance(scriptType) as ScriptBase;
+		ScriptBase? script = Activator.CreateInstance(scriptType, []) as ScriptBase;
 		if (script == null)
 			throw new Exception("Failed to create instance of script");
+
+		script.CancellationToken = file.GetCancellationToken();
 
 		// Initialize script services
 		PropertyInfo[] properties = typeof(ScriptBase).GetProperties(BindingFlags.Public | BindingFlags.Instance);
@@ -321,6 +329,7 @@ public class ScriptingService : ServiceBase
 
 				service.File = file;
 				service.Panel = panel;
+				service.CancellationToken = file.GetCancellationToken();
 			}
 		}
 
@@ -330,11 +339,13 @@ public class ScriptingService : ServiceBase
 		if (runMethodInfo == null)
 			throw new Exception("Failed to locate entry point in script");
 
+		panel.IsRunning = true;
+
 		object? entryReturn = runMethodInfo.Invoke(script, []);
 		Task? task = entryReturn as Task;
 		if (task != null)
-		{
 			await task;
-		}
+
+		panel.IsRunning = false;
 	}
 }

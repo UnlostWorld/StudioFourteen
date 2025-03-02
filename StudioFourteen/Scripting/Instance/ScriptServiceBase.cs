@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Scripting.Instance;
 
+using System.Threading;
 using Serilog;
 
 public class ScriptServiceBase
@@ -26,6 +27,7 @@ public class ScriptServiceBase
 		this.Log = Logging.ForContext(this.GetType());
 	}
 
+	internal CancellationToken CancellationToken { get; set; }
 	internal ScriptFile File { get; set; } = null!;
 	internal ScriptPanel Panel { get; set; } = null!;
 

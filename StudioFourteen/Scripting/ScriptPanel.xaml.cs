@@ -18,7 +18,6 @@ namespace StudioFourteen.Scripting;
 using PropertyChanged.SourceGenerator;
 using Serilog.Events;
 using StudioFourteen.Panels;
-using StudioFourteen.Scripting.Instance;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -38,6 +37,7 @@ public partial class ScriptPanel : Panel
 	[Notify] private bool isTrustPrompt = false;
 	[Notify] private bool isConfigurePrompt = false;
 	[Notify] private bool alwaysTrust = false;
+	[Notify] private bool isRunning = false;
 
 	public FastObservableCollection<LogEntry> ScriptLog { get; init; } = new();
 	public FastObservableCollection<OptionBase> Options { get; init; } = new();
@@ -183,6 +183,11 @@ public partial class ScriptPanel : Panel
 		this.IsConfigurePrompt = false;
 		this.IsInfo = true;
 		this.run = true;
+	}
+
+	private void OnCancelClicked(object sender, RoutedEventArgs e)
+	{
+		this.Script?.Cancel();
 	}
 }
 

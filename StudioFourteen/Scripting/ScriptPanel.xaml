@@ -21,7 +21,7 @@
 	mc:Ignorable="d">
 
 	<Grid>
-		<Grid Visibility="{Binding IsInfo, Converter={StaticResource B2V}, FallbackValue=Collapsed}">
+		<Grid Visibility="{Binding IsInfo, Converter={StaticResource B2V}, FallbackValue=Visible}">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
 				<RowDefinition Height="Auto" />
@@ -124,7 +124,16 @@
 						HorizontalAlignment="Right"
 						Background="Transparent"
 						Click="OnCloseClicked"
-						Content="Close" />
+						Content="Close"
+						Visibility="{Binding IsRunning, Converter={StaticResource !B2V}}" />
+
+					<Button
+						MinWidth="75"
+						HorizontalAlignment="Right"
+						Background="Transparent"
+						Click="OnCancelClicked"
+						Content="Cancel"
+						Visibility="{Binding IsRunning, Converter={StaticResource B2V}}" />
 				</Grid>
 			</Border>
 		</Grid>
@@ -240,7 +249,7 @@
 			</Grid>
 		</Grid>
 
-		<Grid Visibility="{Binding IsConfigurePrompt, Converter={StaticResource B2V}, FallbackValue=Visible}">
+		<Grid Visibility="{Binding IsConfigurePrompt, Converter={StaticResource B2V}, FallbackValue=Collapsed}">
 			<Grid.Resources>
 				<DataTemplate DataType="{x:Type local:CheckBoxOption}">
 					<CheckBox

@@ -15,6 +15,9 @@
 
 namespace StudioFourteen.Scripting.Instance;
 
+using System.Threading;
+using System.Threading.Tasks;
+
 /// <summary>
 /// The base class of all script instances.
 /// Be cautious what is exposed here as we don't want scripts
@@ -22,10 +25,72 @@ namespace StudioFourteen.Scripting.Instance;
 /// </summary>
 public class ScriptBase
 {
-	public ScriptLogger Log { get; set; } = new();
-	public LibraryInterface Library { get; init; } = new();
-	public PhotoInterface Photo { get; init; } = new();
-	public StatusInterface Status { get; init; } = new();
-	public CharacterInterface Character { get; init; } = new();
-	public OptionsInterface Options { get; init; } = new();
+	private readonly ScriptLogger log = new();
+	private readonly LibraryInterface library = new();
+	private readonly PhotoInterface photo = new();
+	private readonly StatusInterface status = new();
+	private readonly CharacterInterface character = new();
+	private readonly OptionsInterface options = new();
+
+	public ScriptLogger Log
+	{
+		get
+		{
+			this.CancellationToken.ThrowIfCancellationRequested();
+			return this.log;
+		}
+	}
+
+	public LibraryInterface Library
+	{
+		get
+		{
+			this.CancellationToken.ThrowIfCancellationRequested();
+			return this.library;
+		}
+	}
+
+	public PhotoInterface Photo
+	{
+		get
+		{
+			this.CancellationToken.ThrowIfCancellationRequested();
+			return this.photo;
+		}
+	}
+
+	public StatusInterface Status
+	{
+		get
+		{
+			this.CancellationToken.ThrowIfCancellationRequested();
+			return this.status;
+		}
+	}
+
+	public CharacterInterface Character
+	{
+		get
+		{
+			this.CancellationToken.ThrowIfCancellationRequested();
+			return this.character;
+		}
+	}
+
+	public OptionsInterface Options
+	{
+		get
+		{
+			this.CancellationToken.ThrowIfCancellationRequested();
+			return this.options;
+		}
+	}
+
+	public CancellationToken CancellationToken { get; set; }
+
+	public async Task Delay(int millisecondsDelay)
+	{
+		await Task.Delay(millisecondsDelay, this.CancellationToken);
+		this.CancellationToken.ThrowIfCancellationRequested();
+	}
 }

@@ -22,11 +22,14 @@ using StudioFourteen.Library.LibraryMenu;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 
 public class ScriptFile(FileInfo fileInfo, string hash)
 	: FileBase
 {
+	private readonly CancellationTokenSource tokenSource = new();
+
 	public FileInfo Info { get; set; } = fileInfo;
 	public string Hash { get; set; } = hash;
 	public string? Code { get; set; }
@@ -40,6 +43,9 @@ public class ScriptFile(FileInfo fileInfo, string hash)
 	{
 		return ServiceManager.Instance.Scripting.RunScriptAsync(this);
 	}
+
+	public void Cancel() => this.tokenSource.Cancel();
+	public CancellationToken GetCancellationToken() => this.tokenSource.Token;
 }
 
 public class DiagnosticEntry(LogEventLevel level, string message, string? location)
