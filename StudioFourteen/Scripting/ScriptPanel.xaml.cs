@@ -18,6 +18,9 @@ namespace StudioFourteen.Scripting;
 using PropertyChanged.SourceGenerator;
 using Serilog.Events;
 using StudioFourteen.Panels;
+using StudioFourteen.Scripting.Instance;
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using WpfUtils.Extensions;
@@ -25,15 +28,19 @@ using WpfUtils.Extensions;
 public partial class ScriptPanel : Panel
 {
 	private bool trust = false;
+	private bool run = false;
 
 	[Notify] private ScriptFile? script;
 	[Notify] private string status = string.Empty;
 	[Notify] private double progress = 0;
 	[Notify] private bool isIndeterminate = true;
+	[Notify] private bool isInfo = true;
 	[Notify] private bool isTrustPrompt = false;
+	[Notify] private bool isConfigurePrompt = false;
 	[Notify] private bool alwaysTrust = false;
 
 	public FastObservableCollection<LogEntry> ScriptLog { get; init; } = new();
+	public FastObservableCollection<OptionBase> Options { get; init; } = new();
 
 	public static async Task<ScriptPanel?> Show(ScriptFile script)
 	{
@@ -85,25 +92,97 @@ public partial class ScriptPanel : Panel
 
 	public async Task<bool> CheckTrust()
 	{
+		this.IsInfo = false;
 		this.IsTrustPrompt = true;
 		while (this.IsTrustPrompt)
 			await Task.Delay(100);
 
+		this.IsInfo = true;
+
 		return this.trust;
+	}
+
+	public async Task<Dictionary<string, object>?> Configure()
+	{
+		if (this.Script == null)
+			throw new InvalidOperationException();
+
+		await this.Dispatcher.InvokeAsync(() =>
+		{
+			foreach(ScriptOption option in this.Script.Options)
+			{
+				if (option.Name == null)
+					continue;
+
+				switch (option.Type)
+				{
+					case ScriptOption.Types.CheckBox:
+					{
+						this.Options.Add(new CheckBoxOption(option.Name, option.ToolTip));
+						break;
+					}
+
+					case ScriptOption.Types.Toggle:
+					{
+						this.Options.Add(new ToggleOption(option.Name, option.ToolTip));
+						break;
+					}
+
+					case ScriptOption.Types.Input:
+					{
+						this.Options.Add(new InputOption(option.Name, option.ToolTip));
+						break;
+					}
+				}
+			}
+		});
+
+		this.IsInfo = false;
+		this.IsConfigurePrompt = true;
+		while (this.IsConfigurePrompt)
+			await Task.Delay(100);
+
+		this.IsInfo = true;
+
+		if (!this.run)
+			return null;
+
+		Dictionary<string, object> results = new();
+		foreach(OptionBase option in this.Options)
+		{
+			results.Add(option.Name, option.Value);
+		}
+
+		return results;
+	}
+
+	protected override void OnClosed()
+	{
+		this.IsConfigurePrompt = false;
+		this.IsTrustPrompt = false;
+		this.IsInfo = true;
+		this.trust = false;
+		this.run = false;
+		base.OnClosed();
 	}
 
 	private void OnTrustClicked(object sender, RoutedEventArgs e)
 	{
 		this.IsTrustPrompt = false;
+		this.IsInfo = true;
 		this.trust = true;
 	}
 
 	private void OnCloseClicked(object sender, RoutedEventArgs e)
 	{
-		this.IsTrustPrompt = false;
-		this.trust = false;
-
 		this.Close();
+	}
+
+	private void OnRunClicked(object sender, RoutedEventArgs e)
+	{
+		this.IsConfigurePrompt = false;
+		this.IsInfo = true;
+		this.run = true;
 	}
 }
 
@@ -112,4 +191,32 @@ public class LogEntry(LogEventLevel level, string message, string? location)
 	public LogEventLevel Level { get; init; } = level;
 	public string Message { get; init; } = message;
 	public string? Location { get; init; } = location;
+}
+
+public abstract class OptionBase(string name, string? toolTip)
+{
+	public string Name { get; init; } = name;
+	public string? ToolTip { get; init; } = toolTip;
+	public abstract object Value { get; }
+}
+
+public class CheckBoxOption(string name, string? toolTip)
+	: OptionBase(name, toolTip)
+{
+	public bool IsChecked { get; set; }
+	public override object Value => this.IsChecked;
+}
+
+public class ToggleOption(string name, string? toolTip)
+	: OptionBase(name, toolTip)
+{
+	public bool IsChecked { get; set; }
+	public override object Value => this.IsChecked;
+}
+
+public class InputOption(string name, string? toolTip)
+	: OptionBase(name, toolTip)
+{
+	public string Text { get; set; } = string.Empty;
+	public override object Value => this.Text;
 }

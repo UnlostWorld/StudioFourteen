@@ -17,8 +17,11 @@ namespace StudioFourteen.Scripting;
 
 using System;
 using System.IO;
+using System.Text;
+using Serilog.Events;
 using StudioFourteen.Files;
 using StudioFourteen.Utils;
+using WpfUtils.Controls;
 
 public class ScriptFileTypeInfo : FileTypeInfoBase
 {
@@ -36,6 +39,66 @@ public class ScriptFileTypeInfo : FileTypeInfoBase
 		string text = File.ReadAllText(fileInfo.FullName);
 		string hash = HashUtility.GetHashString(text);
 
-		return new ScriptFile(fileInfo, hash, name, text);
+		ScriptFile script = new(fileInfo, hash);
+
+		int jsonStart = 0;
+		int jsonEnd = 0;
+		int jsonBrackets = 0;
+
+		for (int i = 0; i < text.Length; i++)
+		{
+			if (text[i] == '{')
+			{
+				if (jsonBrackets == 0)
+					jsonStart = i;
+
+				jsonBrackets++;
+			}
+			else if (text[i] == '}')
+			{
+				jsonBrackets--;
+
+				if (jsonBrackets == 0)
+				{
+					jsonEnd = i + 1;
+					break;
+				}
+			}
+		}
+
+		string json = text.Substring(jsonStart, jsonEnd - jsonStart);
+		script.Code = text.Substring(jsonEnd, text.Length - jsonEnd);
+
+		if (string.IsNullOrEmpty(json))
+		{
+			script.Diagnostics.Add(new(LogEventLevel.Error, "No header in script file", null));
+			script.HasErrors = true;
+			return script;
+		}
+
+		ScriptHeader? header = null;
+		try
+		{
+			header = Serialization.Serializer.Deserialize<ScriptHeader>(json);
+		}
+		catch(Exception ex)
+		{
+			script.Diagnostics.Add(new(LogEventLevel.Error, ex.Message, null));
+			script.HasErrors = true;
+			return script;
+		}
+
+		if (header != null)
+		{
+			script.Title = header.Title;
+			script.Author = header.Author;
+			script.Description = header.Description;
+			script.Version = header.Version;
+			script.Base64Image = header.Base64Image;
+			script.Tags = header.Tags;
+			script.Options = header.Options;
+		}
+
+		return script;
 	}
 }

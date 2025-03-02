@@ -18,6 +18,7 @@ namespace StudioFourteen.Scripting;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Text;
@@ -107,17 +108,23 @@ public class ScriptingService : ServiceBase
 
 		try
 		{
-			panel.SetTitle(script.Name);
+			panel.SetTitle(script.Title ?? string.Empty);
+
+			if (script.HasErrors)
+				throw new Exception("Script parsing failed");
 
 			Assembly? assembly = script.Assembly;
 			if (assembly == null)
 			{
-				panel.SetStatus($"Compiling Script: {script.Name}");
-				assembly = await this.CompileScript(script, panel);
+				panel.SetStatus($"Compiling Script: {script.Title}");
+				await this.CompileScript(script);
+				assembly = script.Assembly;
 			}
 
-			bool trust = this.GetIsScriptTrusted(script);
+			if (script.HasErrors)
+				throw new Exception("Script failed to compile");
 
+			bool trust = this.GetIsScriptTrusted(script);
 			if (!trust)
 			{
 				trust = await panel.CheckTrust();
@@ -126,24 +133,35 @@ public class ScriptingService : ServiceBase
 
 			if (trust)
 			{
-				panel.SetStatus($"Running Script: {script.Name}");
-				await this.RunScript(script, assembly, panel);
+				panel.SetStatus($"Configure Script: {script.Title}");
+				Dictionary<string, object>? options = await panel.Configure();
+				if (options != null)
+				{
+					panel.SetStatus($"Running Script: {script.Title}");
+					await this.RunScript(script, panel, options);
 
-				panel.SetProgress(1.0);
-				panel.SetStatus($"Completed Script: {script.Name}");
+					panel.SetProgress(1.0);
+					panel.SetStatus($"Completed Script: {script.Title}");
+				}
 			}
 		}
 		catch(Exception ex)
 		{
 			panel.SetStatus($"Error in script");
 			panel.AppendLog(LogEventLevel.Error, ex.Message);
+
+			foreach(DiagnosticEntry diagnostic in script.Diagnostics)
+			{
+				panel.AppendLog(diagnostic.Level, diagnostic.Message, diagnostic.Location);
+			}
+
 			panel.SetProgress(0.0);
 		}
 
 		this.isRunningScript = false;
 	}
 
-	private async Task<Assembly> CompileScript(ScriptFile file, ScriptPanel panel)
+	private async Task CompileScript(ScriptFile file)
 	{
 		if (this.loadContext == null)
 			throw new Exception("No assembly load context");
@@ -157,7 +175,7 @@ public class ScriptingService : ServiceBase
 		textBuilder.Append("{");
 		textBuilder.AppendLine("await Task.Yield();");
 
-		textBuilder.AppendLine(file.Text);
+		textBuilder.AppendLine(file.Code);
 
 		textBuilder.Append("}");
 		textBuilder.Append("}");
@@ -175,18 +193,18 @@ public class ScriptingService : ServiceBase
 		if (runtimePath == null)
 			throw new Exception("Unable to get system runtime directory");
 
-		CSharpCompilation compilation = CSharpCompilation.Create($"{file.Name}_{file.Hash}", [parsedSyntaxTree], [], options);
+		CSharpCompilation compilation = CSharpCompilation.Create($"{file.Info.Name}_{file.Hash}", [parsedSyntaxTree], [], options);
 		compilation = compilation.AddReferences(MetadataReference.CreateFromFile("C:/Projects/StudioFourteen/StudioFourteen/bin/StudioFourteen.dll"));
 		compilation = compilation.AddReferences(MetadataReference.CreateFromFile($"{runtimePath}/System.Private.CoreLib.dll"));
 		compilation = compilation.AddReferences(MetadataReference.CreateFromFile($"{runtimePath}/System.Runtime.dll"));
 		compilation = compilation.AddReferences(MetadataReference.CreateFromFile($"{runtimePath}/System.Collections.dll"));
 
-		// Check Types
 		SemanticModel semanticModel = compilation.GetSemanticModel(parsedSyntaxTree);
 		SyntaxNode root = await parsedSyntaxTree.GetRootAsync();
 		IEnumerable<SyntaxNode> nodes = root.DescendantNodes(descendIntoChildren => true);
 		foreach(SyntaxNode node in nodes)
 		{
+			// Check Types
 			if (node is IdentifierNameSyntax nameSyntax)
 			{
 				ISymbol? symbol = semanticModel.GetSymbolInfo(nameSyntax).Symbol;
@@ -227,19 +245,19 @@ public class ScriptingService : ServiceBase
 				_ => throw new InvalidOperationException(),
 			};
 
-			////this.Log.Write(level, diagnostic.GetMessage());
-			panel.AppendLog(level, diagnostic.GetMessage(), location);
+			file.Diagnostics.Add(new(level, diagnostic.GetMessage(), location));
 		}
 
 		if (!result.Success)
-			throw new Exception("Failed to compile script");
+		{
+			file.HasErrors = true;
+			return;
+		}
 
 		peStream.Seek(0, SeekOrigin.Begin);
 		pdbStream.Seek(0, SeekOrigin.Begin);
 
-		Assembly newAssembly = this.loadContext.LoadFromStream(peStream, pdbStream);
-		file.Assembly = newAssembly;
-		return newAssembly;
+		file.Assembly = this.loadContext.LoadFromStream(peStream, pdbStream);
 	}
 
 	private bool IsSymbolAllowed(ISymbol? symbol)
@@ -269,9 +287,12 @@ public class ScriptingService : ServiceBase
 		return true;
 	}
 
-	private async Task RunScript(ScriptFile file, Assembly assembly, ScriptPanel panel)
+	private async Task RunScript(ScriptFile file,  ScriptPanel panel, Dictionary<string, object> options)
 	{
-		Type[] types = assembly.GetTypes();
+		if (file.Assembly == null)
+			throw new InvalidOperationException("Attempt to run a script that is not compiled");
+
+		Type[] types = file.Assembly.GetTypes();
 		Type? scriptType = null;
 		foreach(Type type in types)
 		{
@@ -302,6 +323,8 @@ public class ScriptingService : ServiceBase
 				service.Panel = panel;
 			}
 		}
+
+		script.Options.Options = options;
 
 		MethodInfo? runMethodInfo = scriptType.GetMethod("_InternalScriptRun");
 		if (runMethodInfo == null)

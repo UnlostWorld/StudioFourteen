@@ -33,7 +33,7 @@ public class CharacterReference(int objectTableIndex)
 
 	private ServiceManager Services => ServiceManager.Instance;
 
-	public async Task RedrawAsync(RaceLibraryEntry? race, TribeLibraryEntry? tribe, Genders? gender)
+	public async Task RedrawAsync(RaceLibraryEntry? race = null, TribeLibraryEntry? tribe = null, Genders? gender = null)
 	{
 		await Threads.FrameworkThread();
 

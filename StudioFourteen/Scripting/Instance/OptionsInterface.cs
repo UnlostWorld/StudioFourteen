@@ -15,25 +15,31 @@
 
 namespace StudioFourteen.Scripting.Instance;
 
-using System.Threading.Tasks;
+using System;
+using System.Collections.Generic;
 
-public class PhotoInterface : ScriptServiceBase
+public class OptionsInterface : ScriptServiceBase
 {
-	public Task CaptureAsync(string? name = null, bool animate = true)
-		=> this.Services.Photos.CaptureAsync(this.GetFileName(name), animate);
+	internal Dictionary<string, object> Options = new();
 
-	public void Capture(string? name = null, bool animate = true)
-		=> this.Services.Photos.Capture(this.GetFileName(name), animate);
+	public bool GetCheckBox(string name) => this.Get<bool>(name);
+	public bool GetToggle(string name) => this.Get<bool>(name);
+	public string GetInput(string name) => this.Get<string>(name);
 
-	/// <summary>
-	/// Script captured photos always go in a directory matching the script name.
-	/// </summary>
-	private string GetFileName(string? name)
+	private T Get<T>(string name)
 	{
-		if (name == null)
-			name = this.Services.Photos.GetDefaultFileName();
+		if (this.Options.TryGetValue(name, out object? value))
+		{
+			if (value is T tValue)
+			{
+				return tValue;
+			}
+			else
+			{
+				throw new Exception($"Option {name} was wrong type");
+			}
+		}
 
-		string scriptName = this.File.Info.Name;
-		return $"{scriptName}/{name}";
+		throw new Exception($"Option {name} not found (Did you add it to the script header?)");
 	}
 }
