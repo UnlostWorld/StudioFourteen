@@ -31,6 +31,7 @@ public partial class ScriptPanel : Panel
 	[Notify] private double progress = 0;
 	[Notify] private bool isIndeterminate = true;
 	[Notify] private bool isTrustPrompt = false;
+	[Notify] private bool alwaysTrust = false;
 
 	public FastObservableCollection<LogEntry> ScriptLog { get; init; } = new();
 

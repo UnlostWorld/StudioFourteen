@@ -74,6 +74,29 @@ public class ScriptingService : ServiceBase
 		this.RunScriptAsync(script).Run();
 	}
 
+	public bool GetIsScriptTrusted(ScriptFile file)
+	{
+		if (this.Settings.TrustedScripts.TryGetValue(file.Info.FullName, out string? hash))
+		{
+			if (hash == "Always")
+				return true;
+
+			return file.Hash == hash;
+		}
+
+		return false;
+	}
+
+	public void SetScriptTrusted(ScriptFile file, bool always)
+	{
+		this.Settings.TrustedScripts[file.Info.FullName] = file.Hash;
+
+		if (always)
+		{
+			this.Settings.TrustedScripts[file.Info.FullName] = "Always";
+		}
+	}
+
 	public async Task RunScriptAsync(ScriptFile script)
 	{
 		this.isRunningScript = true;
@@ -93,7 +116,14 @@ public class ScriptingService : ServiceBase
 				assembly = await this.CompileScript(script, panel);
 			}
 
-			bool trust = await panel.CheckTrust();
+			bool trust = this.GetIsScriptTrusted(script);
+
+			if (!trust)
+			{
+				trust = await panel.CheckTrust();
+				this.SetScriptTrusted(script, panel.AlwaysTrust);
+			}
+
 			if (trust)
 			{
 				panel.SetStatus($"Running Script: {script.Name}");

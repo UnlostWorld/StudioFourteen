@@ -141,6 +141,9 @@ public partial class SettingsService : ServiceBase
 		// Library
 		[Notify] private HashSet<string> favorites = new();
 
+		// Scripts
+		[Notify] private Dictionary<string, string> trustedScripts = new();
+
 		public int Version { get; set; } = 0;
 
 		public void Validate()

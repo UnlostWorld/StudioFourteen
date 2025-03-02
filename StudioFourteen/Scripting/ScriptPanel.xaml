@@ -208,6 +208,7 @@
 				Grid.Row="7"
 				Grid.ColumnSpan="2"
 				Margin="1,1,1,3"
+				IsChecked="{Binding AlwaysTrust}"
 				Content="{DynamicResource LOC_Script_TrustSelf}">
 				<CheckBox.ToolTip>
 					<StackPanel>
