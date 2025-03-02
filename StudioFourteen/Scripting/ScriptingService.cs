@@ -36,7 +36,6 @@ using WpfUtils.Extensions;
 
 public class ScriptingService : ServiceBase
 {
-	private readonly Dictionary<string, Assembly> assemblyCache = new();
 	private readonly HashSet<string> allowedNamespaces = new()
 	{
 		"StudioFourteen.Scripting.Instance",
@@ -79,7 +78,7 @@ public class ScriptingService : ServiceBase
 	{
 		this.isRunningScript = true;
 
-		ScriptPanel? panel = await ScriptPanel.Show();
+		ScriptPanel? panel = await ScriptPanel.Show(script);
 		if (panel == null)
 			return;
 
@@ -87,14 +86,22 @@ public class ScriptingService : ServiceBase
 		{
 			panel.SetTitle(script.Name);
 
-			panel.SetStatus($"Compiling Script: {script.Name}");
-			Assembly assembly = await this.CompileScript(script, panel);
+			Assembly? assembly = script.Assembly;
+			if (assembly == null)
+			{
+				panel.SetStatus($"Compiling Script: {script.Name}");
+				assembly = await this.CompileScript(script, panel);
+			}
 
-			panel.SetStatus($"Running Script: {script.Name}");
-			await this.RunScript(script, assembly, panel);
+			bool trust = await panel.CheckTrust();
+			if (trust)
+			{
+				panel.SetStatus($"Running Script: {script.Name}");
+				await this.RunScript(script, assembly, panel);
 
-			panel.SetProgress(1.0);
-			panel.SetStatus($"Completed Script: {script.Name}");
+				panel.SetProgress(1.0);
+				panel.SetStatus($"Completed Script: {script.Name}");
+			}
 		}
 		catch(Exception ex)
 		{
@@ -110,10 +117,6 @@ public class ScriptingService : ServiceBase
 	{
 		if (this.loadContext == null)
 			throw new Exception("No assembly load context");
-
-		string hash = HashUtility.GetHashString(file.Text, true);
-		if (this.assemblyCache.TryGetValue(hash, out var assembly))
-			return assembly;
 
 		StringBuilder textBuilder = new();
 		textBuilder.Append("using StudioFourteen.Scripting.Instance;");
@@ -142,7 +145,7 @@ public class ScriptingService : ServiceBase
 		if (runtimePath == null)
 			throw new Exception("Unable to get system runtime directory");
 
-		CSharpCompilation compilation = CSharpCompilation.Create($"{file.Name}_{hash}", [parsedSyntaxTree], [], options);
+		CSharpCompilation compilation = CSharpCompilation.Create($"{file.Name}_{file.Hash}", [parsedSyntaxTree], [], options);
 		compilation = compilation.AddReferences(MetadataReference.CreateFromFile("C:/Projects/StudioFourteen/StudioFourteen/bin/StudioFourteen.dll"));
 		compilation = compilation.AddReferences(MetadataReference.CreateFromFile($"{runtimePath}/System.Private.CoreLib.dll"));
 		compilation = compilation.AddReferences(MetadataReference.CreateFromFile($"{runtimePath}/System.Runtime.dll"));
@@ -205,8 +208,7 @@ public class ScriptingService : ServiceBase
 		pdbStream.Seek(0, SeekOrigin.Begin);
 
 		Assembly newAssembly = this.loadContext.LoadFromStream(peStream, pdbStream);
-
-		this.assemblyCache.Add(hash, newAssembly);
+		file.Assembly = newAssembly;
 		return newAssembly;
 	}
 

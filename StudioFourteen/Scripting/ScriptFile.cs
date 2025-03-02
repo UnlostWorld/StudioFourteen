@@ -18,14 +18,19 @@ namespace StudioFourteen.Scripting;
 using FontAwesome.Sharp;
 using StudioFourteen.Files;
 using StudioFourteen.Library.LibraryMenu;
+using System.IO;
+using System.Reflection;
+using System.Threading.Tasks;
 
-using Task = System.Threading.Tasks.Task;
-
-public class ScriptFile(string name, string text)
+public class ScriptFile(FileInfo info, string hash, string name, string text)
 	: FileBase
 {
-	public readonly string Text = text;
-	public readonly string Name = name;
+	public FileInfo Info { get; init; } = info;
+	public string Hash { get; init; } = hash;
+	public string Text { get; init; } = text;
+	public string Name { get; init; } = name;
+
+	public Assembly? Assembly { get; set; }
 
 	[LibraryMenu(IconChar.Robot, "Run")]
 	public Task Run()

@@ -8,7 +8,7 @@
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="Script"
-	Width="400"
+	Width="512"
 	Height="300"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
@@ -21,110 +21,227 @@
 	mc:Ignorable="d">
 
 	<Grid>
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
+		<Grid Visibility="{Binding IsTrustPrompt, Converter={StaticResource !B2V}, FallbackValue=Collapsed}">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+				<RowDefinition />
+				<RowDefinition Height="Auto" />
+			</Grid.RowDefinitions>
 
-		<ProgressBar
-			Grid.Row="0"
-			Margin="6"
-			IsIndeterminate="{Binding IsIndeterminate}"
-			Maximum="100"
-			Minimum="0"
-			Value="{Binding Progress}" />
+			<ProgressBar
+				Grid.Row="0"
+				Margin="6"
+				IsIndeterminate="{Binding IsIndeterminate}"
+				Maximum="100"
+				Minimum="0"
+				Value="{Binding Progress}" />
 
-		<TextBlock
-			Grid.Row="1"
-			Margin="2,2,2,10"
-			HorizontalAlignment="Center"
-			VerticalAlignment="Center"
-			Foreground="{DynamicResource ForegroundLightBrush}"
-			Text="{Binding Status}" />
+			<TextBlock
+				Grid.Row="1"
+				Margin="2,2,2,10"
+				HorizontalAlignment="Center"
+				VerticalAlignment="Center"
+				Foreground="{DynamicResource ForegroundLightBrush}"
+				Text="{Binding Status}" />
 
-		<Border
+			<Border
+				Grid.Row="2"
+				Style="{DynamicResource WpfUtilsGroupBorder}">
+
+				<ScrollViewer
+					x:Name="Scroller"
+					HorizontalScrollBarVisibility="Disabled">
+					<ItemsControl ItemsSource="{Binding ScriptLog}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate DataType="{x:Type local:LogEntry}">
+								<Grid>
+									<Grid.ColumnDefinitions>
+										<ColumnDefinition Width="32" />
+										<ColumnDefinition />
+										<ColumnDefinition Width="Auto" />
+									</Grid.ColumnDefinitions>
+
+									<wpfUtils:IconBlock
+										x:Name="Icon"
+										Grid.Column="0"
+										Margin="3"
+										VerticalAlignment="Top"
+										Foreground="{DynamicResource ForegroundLightBrush}"
+										Icon="InfoCircle" />
+
+									<TextBlock
+										Grid.Column="1"
+										Foreground="{DynamicResource ForegroundLightBrush}"
+										Text="{Binding Message}"
+										TextWrapping="Wrap" />
+
+									<TextBlock
+										Grid.Column="2"
+										Margin="2,2,6,2"
+										HorizontalAlignment="Right"
+										Foreground="{DynamicResource ForegroundLightBrush}"
+										Text="{Binding Location}" />
+
+								</Grid>
+
+								<DataTemplate.Triggers>
+									<DataTrigger
+										Binding="{Binding Level}"
+										Value="Message">
+										<Setter TargetName="Icon" Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
+										<Setter TargetName="Icon" Property="Icon" Value="InfoCircle" />
+									</DataTrigger>
+
+									<DataTrigger
+										Binding="{Binding Level}"
+										Value="Warning">
+										<Setter TargetName="Icon" Property="Foreground" Value="Orange" />
+										<Setter TargetName="Icon" Property="Icon" Value="Warning" />
+									</DataTrigger>
+
+									<DataTrigger
+										Binding="{Binding Level}"
+										Value="Error">
+										<Setter TargetName="Icon" Property="Foreground" Value="Red" />
+										<Setter TargetName="Icon" Property="Icon" Value="Warning" />
+									</DataTrigger>
+								</DataTemplate.Triggers>
+
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</ScrollViewer>
+			</Border>
+
+			<Border
+				Grid.Row="3"
+				Style="{DynamicResource WpfUtilsControlBorder}"
+				Visibility="{Binding IsTrustPrompt, Converter={StaticResource !B2V}}">
+
+				<Grid>
+					<Button
+						MinWidth="75"
+						HorizontalAlignment="Right"
+						Background="Transparent"
+						Click="OnCloseClicked"
+						Content="Close" />
+				</Grid>
+			</Border>
+		</Grid>
+
+		<Grid
 			Grid.Row="2"
-			Style="{DynamicResource WpfUtilsGroupBorder}">
+			Visibility="{Binding IsTrustPrompt, Converter={StaticResource B2V}}">
 
-			<ScrollViewer
-				x:Name="Scroller"
-				HorizontalScrollBarVisibility="Disabled">
-				<ItemsControl ItemsSource="{Binding ScriptLog}">
-					<ItemsControl.ItemTemplate>
-						<DataTemplate DataType="{x:Type local:LogEntry}">
-							<Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="32" />
-									<ColumnDefinition />
-									<ColumnDefinition Width="Auto"/>
-								</Grid.ColumnDefinitions>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition />
+			</Grid.ColumnDefinitions>
 
-								<wpfUtils:IconBlock
-									x:Name="Icon"
-									Grid.Column="0"
-									Margin="3"
-									VerticalAlignment="Top"
-									Foreground="{DynamicResource ForegroundLightBrush}"
-									Icon="InfoCircle" />
+			<Grid.RowDefinitions>
+				<RowDefinition />
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+				<RowDefinition />
+				<RowDefinition Height="Auto" />
+				<RowDefinition />
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+			</Grid.RowDefinitions>
 
-								<TextBlock
-									Grid.Column="1"
-									Foreground="{DynamicResource ForegroundLightBrush}"
-									Text="{Binding Message}"
-									TextWrapping="Wrap" />
+			<wpfUtils:IconBlock
+				Grid.Row="1"
+				Grid.Column="0"
+				Margin="12,6"
+				FontSize="48"
+				Foreground="{DynamicResource ForegroundLightBrush}"
+				Icon="Warning" />
 
-								<TextBlock
-									Grid.Column="2"
-									HorizontalAlignment="Right"
-									Margin="2,2,6,2"
-									Foreground="{DynamicResource ForegroundLightBrush}"
-									Text="{Binding Location}" />
+			<TextBlock
+				Grid.Row="1"
+				Grid.Column="1"
+				Margin="6,2"
+				Foreground="{DynamicResource ForegroundBrush}"
+				Text="{DynamicResource LOC_Script_Warning}" />
 
-							</Grid>
+			<TextBlock
+				Grid.Row="2"
+				Grid.Column="0"
+				Margin="6,10,6,2"
+				FontSize="10"
+				Style="{DynamicResource RightLabel}"
+				Text="{DynamicResource LOC_Script_File}" />
+			<TextBlock
+				Grid.Row="2"
+				Grid.Column="1"
+				Margin="6,10,6,2"
+				FontSize="10"
+				Foreground="{DynamicResource ForegroundLightBrush}"
+				Text="{Binding Script.Info.FullName}" />
 
-							<DataTemplate.Triggers>
-								<DataTrigger
-									Binding="{Binding Level}"
-									Value="Message">
-									<Setter TargetName="Icon" Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
-									<Setter TargetName="Icon" Property="Icon" Value="InfoCircle" />
-								</DataTrigger>
+			<TextBlock
+				Grid.Row="3"
+				Grid.Column="0"
+				Margin="6,2"
+				FontSize="10"
+				Style="{DynamicResource RightLabel}"
+				Text="{DynamicResource LOC_Script_Hash}" />
+			<TextBlock
+				Grid.Row="3"
+				Grid.Column="1"
+				Margin="6,2"
+				FontSize="10"
+				Foreground="{DynamicResource ForegroundLightBrush}"
+				Text="{Binding Script.Hash}" />
 
-								<DataTrigger
-									Binding="{Binding Level}"
-									Value="Warning">
-									<Setter TargetName="Icon" Property="Foreground" Value="Orange" />
-									<Setter TargetName="Icon" Property="Icon" Value="Warning" />
-								</DataTrigger>
+			<TextBlock
+				Grid.Row="5"
+				Grid.ColumnSpan="2"
+				Margin="12,6"
+				Foreground="{DynamicResource ForegroundBrush}"
+				Text="{DynamicResource LOC_Script_Trust}"
+				TextAlignment="Center" />
 
-								<DataTrigger
-									Binding="{Binding Level}"
-									Value="Error">
-									<Setter TargetName="Icon" Property="Foreground" Value="Red" />
-									<Setter TargetName="Icon" Property="Icon" Value="Warning" />
-								</DataTrigger>
-							</DataTemplate.Triggers>
+			<CheckBox
+				Grid.Row="7"
+				Grid.ColumnSpan="2"
+				Margin="1,1,1,3"
+				Content="{DynamicResource LOC_Script_TrustSelf}">
+				<CheckBox.ToolTip>
+					<StackPanel>
+						<TextBlock Text="{DynamicResource LOC_Script_TrustSelfTooltip}" />
+						<TextBlock
+							FontSize="10"
+							Foreground="{DynamicResource ForegroundLightBrush}"
+							Text="{DynamicResource LOC_Script_TrustSelfTooltipJoke}" />
+					</StackPanel>
+				</CheckBox.ToolTip>
+			</CheckBox>
 
-						</DataTemplate>
-					</ItemsControl.ItemTemplate>
-				</ItemsControl>
-			</ScrollViewer>
-		</Border>
+			<Grid
+				Grid.Row="8"
+				Grid.ColumnSpan="2">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition />
+					<ColumnDefinition />
+				</Grid.ColumnDefinitions>
 
-		<Border
-			Grid.Row="3"
-			Style="{DynamicResource WpfUtilsControlBorder}">
-			<StackPanel
-				HorizontalAlignment="Right"
-				Orientation="Horizontal">
 				<Button
-					MinWidth="75"
+					Grid.Column="0"
+					Height="48"
+					Click="OnTrustClicked"
+					Content="{DynamicResource LOC_Script_TrustYes}" />
+
+				<Button
+					Grid.Column="1"
+					Height="48"
 					Click="OnCloseClicked"
-					Content="Close" />
-			</StackPanel>
-		</Border>
+					Content="{DynamicResource LOC_Script_TrustNo}" />
+			</Grid>
+		</Grid>
+
 
 	</Grid>
 </panels:Panel>

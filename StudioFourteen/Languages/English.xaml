@@ -30,6 +30,16 @@
 	<sys:String x:Key="LOC_History">History</sys:String>
 	<sys:String x:Key="LOC_Scripts">Scripts</sys:String>
 
+	<sys:String x:Key="LOC_Script_Warning">We strive to keep Studio Fourteen safe for our users. Script files have limited access and are heavily restricted, however the possibility remains for malicious code to be contained within script files.</sys:String>
+	<sys:String x:Key="LOC_Script_File">File:</sys:String>
+	<sys:String x:Key="LOC_Script_Hash">Hash:</sys:String>
+	<sys:String x:Key="LOC_Script_Trust">Do you trust the authors of this script?</sys:String>
+	<sys:String x:Key="LOC_Script_TrustSelf">I am the author of this script</sys:String>
+	<sys:String x:Key="LOC_Script_TrustSelfTooltip">Trust the script even if the hash changes.</sys:String>
+	<sys:String x:Key="LOC_Script_TrustSelfTooltipJoke">Of course I trust them, they're me!</sys:String>
+	<sys:String x:Key="LOC_Script_TrustYes">Yes, I trust the authors</sys:String>
+	<sys:String x:Key="LOC_Script_TrustNo">No, I don't trust the authors</sys:String>
+
 	<sys:String x:Key="LOC_Photo_ToggleUIToolTip">Toggle the UI</sys:String>
 	<sys:String x:Key="LOC_Photo_TogglePortrait">Rotate the Image by 90°</sys:String>
 	<sys:String x:Key="LOC_Photo_ToggleDepth">Display the depth buffer contents. This feature requires Reshade.</sys:String>

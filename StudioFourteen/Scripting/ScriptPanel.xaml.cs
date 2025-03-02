@@ -24,15 +24,25 @@ using WpfUtils.Extensions;
 
 public partial class ScriptPanel : Panel
 {
+	private bool trust = false;
+
+	[Notify] private ScriptFile? script;
 	[Notify] private string status = string.Empty;
 	[Notify] private double progress = 0;
 	[Notify] private bool isIndeterminate = true;
+	[Notify] private bool isTrustPrompt = false;
 
 	public FastObservableCollection<LogEntry> ScriptLog { get; init; } = new();
 
-	public static async Task<ScriptPanel?> Show()
+	public static async Task<ScriptPanel?> Show(ScriptFile script)
 	{
-		return await ServiceManager.Instance.Panels.Open<ScriptPanel>();
+		ScriptPanel? panel = await ServiceManager.Instance.Panels.Open<ScriptPanel>();
+		if (panel != null)
+		{
+			panel.Script = script;
+		}
+
+		return panel;
 	}
 
 	public void SetTitle(string title)
@@ -72,8 +82,26 @@ public partial class ScriptPanel : Panel
 		});
 	}
 
+	public async Task<bool> CheckTrust()
+	{
+		this.IsTrustPrompt = true;
+		while (this.IsTrustPrompt)
+			await Task.Delay(100);
+
+		return this.trust;
+	}
+
+	private void OnTrustClicked(object sender, RoutedEventArgs e)
+	{
+		this.IsTrustPrompt = false;
+		this.trust = true;
+	}
+
 	private void OnCloseClicked(object sender, RoutedEventArgs e)
 	{
+		this.IsTrustPrompt = false;
+		this.trust = false;
+
 		this.Close();
 	}
 }

@@ -18,6 +18,7 @@ namespace StudioFourteen.Scripting;
 using System;
 using System.IO;
 using StudioFourteen.Files;
+using StudioFourteen.Utils;
 
 public class ScriptFileTypeInfo : FileTypeInfoBase
 {
@@ -33,6 +34,8 @@ public class ScriptFileTypeInfo : FileTypeInfoBase
 
 		string name = Path.GetFileNameWithoutExtension(fileInfo.FullName);
 		string text = File.ReadAllText(fileInfo.FullName);
-		return new ScriptFile(name, text);
+		string hash = HashUtility.GetHashString(text);
+
+		return new ScriptFile(fileInfo, hash, name, text);
 	}
 }
