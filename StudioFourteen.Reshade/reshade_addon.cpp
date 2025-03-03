@@ -1,5 +1,6 @@
 #include <reshade.hpp>
 #include <string>
+#include <vector>
 #include "Log.h"
 
 using namespace reshade;
@@ -11,8 +12,8 @@ using namespace reshade::api;
 RESHADE_API const char* NAME = "Studio Fourteen Reshade sync";
 RESHADE_API const char* DESCRIPTION = "Enables Studio Fourteen to communicate with Reshade";
 
-static const Log* Logger;
-static uint64_t s_depthPointer;
+static const Log* Logger = nullptr;
+static uint64_t s_depthPointer = 0;
 
 static void on_begin_render_effects(effect_runtime* runtime, command_list* cmd_list, resource_view, resource_view)
 {
@@ -23,6 +24,11 @@ static void on_begin_render_effects(effect_runtime* runtime, command_list* cmd_l
 	runtime->get_texture_binding(var, &srv, &srv_srgb);
 	resource resource = runtime->get_device()->get_resource_from_view(srv);
 	s_depthPointer = resource.handle;
+}
+
+static void on_destroy(effect_runtime* pRuntime)
+{
+	// cleanup
 }
 
 // https://stackoverflow.com/a/557774/9934501
@@ -44,6 +50,7 @@ STUDIO_API bool Initialize(Log::LogDelegate onLog)
 	if (!reshade::register_addon(GetCurrentModule()))
 		return false;
 
+	reshade::register_event<reshade::addon_event::destroy_effect_runtime>(on_destroy);
 	reshade::register_event<reshade::addon_event::reshade_begin_effects>(on_begin_render_effects);
 
 	Logger->Information("Add-On Started");
@@ -53,6 +60,7 @@ STUDIO_API bool Initialize(Log::LogDelegate onLog)
 
 STUDIO_API void Shutdown()
 {
+	reshade::unregister_event<reshade::addon_event::destroy_effect_runtime>(on_destroy);
 	reshade::unregister_event<reshade::addon_event::reshade_begin_effects>(on_begin_render_effects);
 	reshade::unregister_addon(GetCurrentModule());
 }

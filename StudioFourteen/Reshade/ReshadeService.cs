@@ -106,10 +106,6 @@ public class ReshadeService : ServiceBase
 		this.IsReshade = true;
 	}
 
-	// TODO: Check the current reshade version and warn the user if
-	// the version is too old for us to communicate with.
-	// also don't attempt to initialize the addon if we know its too old.
-	// Also, GShade users still exist, we should check against that?
 	public override void Attach()
 	{
 		base.Attach();
