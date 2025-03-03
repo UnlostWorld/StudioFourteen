@@ -17,6 +17,7 @@ namespace StudioFourteen.Plugin;
 
 using System;
 using System.Collections;
+using System.IO;
 using System.Reflection;
 using System.Runtime.Loader;
 using Dalamud.Plugin;
@@ -44,6 +45,14 @@ public static class PluginManager
 
 			FieldInfo? instanceField = localPluginType.GetField("instance", BindingFlags.NonPublic | BindingFlags.Instance);
 			if (instanceField == null)
+				throw new Exception("Failed to locate instance field");
+
+			PropertyInfo? dllFileField = localPluginType.GetProperty("DllFile", BindingFlags.Public | BindingFlags.Instance);
+			if (dllFileField == null)
+				throw new Exception("Failed to locate dllFile property");
+
+			FileInfo? location = dllFileField.GetValue(localPlugin) as FileInfo;
+			if (location == null)
 				continue;
 
 			IDalamudPlugin? instance = instanceField.GetValue(localPlugin) as IDalamudPlugin;
@@ -68,6 +77,7 @@ public static class PluginManager
 				LocalPlugin result = default;
 				result.Interface = instance;
 				result.LoadContext = loadContext;
+				result.Location = location;
 				return result;
 			}
 		}
@@ -79,5 +89,6 @@ public static class PluginManager
 	{
 		public IDalamudPlugin Interface;
 		public AssemblyLoadContext LoadContext;
+		public FileInfo Location;
 	}
 }
