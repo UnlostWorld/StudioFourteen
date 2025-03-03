@@ -158,7 +158,7 @@
 						Background="Transparent">
 						<controls:IconBlock
 							Foreground="{DynamicResource ForegroundLightBrush}"
-							Icon="Times"/>
+							Icon="Times" />
 					</Button>
 
 					<ContentPresenter
@@ -227,7 +227,7 @@
 						VerticalAlignment="Center"
 						Foreground="{DynamicResource ForegroundLightBrush}"
 						Icon="Search"
-						IconFont="Solid"  />
+						IconFont="Solid" />
 
 				</Grid>
 

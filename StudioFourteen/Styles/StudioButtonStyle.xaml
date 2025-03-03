@@ -95,19 +95,25 @@
 								Storyboard.TargetName="MeteorTransform"
 								Storyboard.TargetProperty="ScaleX"
 								Duration="0:00:01.000">
-								<EasingDoubleKeyFrame KeyTime="0:00:00.000" Value="1">
+								<EasingDoubleKeyFrame
+									KeyTime="0:00:00.000"
+									Value="1">
 									<EasingDoubleKeyFrame.EasingFunction>
 										<ExponentialEase EasingMode="EaseInOut" />
 									</EasingDoubleKeyFrame.EasingFunction>
 								</EasingDoubleKeyFrame>
 
-								<EasingDoubleKeyFrame KeyTime="0:00:00.500" Value="1.15">
+								<EasingDoubleKeyFrame
+									KeyTime="0:00:00.500"
+									Value="1.15">
 									<EasingDoubleKeyFrame.EasingFunction>
 										<ExponentialEase EasingMode="EaseInOut" />
 									</EasingDoubleKeyFrame.EasingFunction>
 								</EasingDoubleKeyFrame>
 
-								<EasingDoubleKeyFrame KeyTime="0:00:01.000" Value="1.1" />
+								<EasingDoubleKeyFrame
+									KeyTime="0:00:01.000"
+									Value="1.1" />
 							</DoubleAnimationUsingKeyFrames>
 						</Storyboard>
 					</BeginStoryboard>
@@ -242,19 +248,25 @@
 								Storyboard.TargetName="MeteorTransform"
 								Storyboard.TargetProperty="ScaleX"
 								Duration="0:00:01.000">
-								<EasingDoubleKeyFrame KeyTime="0:00:00.000" Value="1">
+								<EasingDoubleKeyFrame
+									KeyTime="0:00:00.000"
+									Value="1">
 									<EasingDoubleKeyFrame.EasingFunction>
 										<ExponentialEase EasingMode="EaseInOut" />
 									</EasingDoubleKeyFrame.EasingFunction>
 								</EasingDoubleKeyFrame>
 
-								<EasingDoubleKeyFrame KeyTime="0:00:00.500" Value="1.15">
+								<EasingDoubleKeyFrame
+									KeyTime="0:00:00.500"
+									Value="1.15">
 									<EasingDoubleKeyFrame.EasingFunction>
 										<ExponentialEase EasingMode="EaseInOut" />
 									</EasingDoubleKeyFrame.EasingFunction>
 								</EasingDoubleKeyFrame>
 
-								<EasingDoubleKeyFrame KeyTime="0:00:01.000" Value="1.1" />
+								<EasingDoubleKeyFrame
+									KeyTime="0:00:01.000"
+									Value="1.1" />
 							</DoubleAnimationUsingKeyFrames>
 						</Storyboard>
 					</BeginStoryboard>
