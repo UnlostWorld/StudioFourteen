@@ -102,12 +102,13 @@
 
 					<ScrollViewer
 						x:Name="TagsArea"
-						MaxHeight="20"
+						MaxHeight="28"
 						Margin="1,0,0,4"
 						HorizontalScrollBarVisibility="Disabled"
+						IsEnabled="False"
 						VerticalScrollBarVisibility="Disabled">
 
-						<tags:TagDisplay Tags="{Binding Tags}" />
+						<tags:TagsControl Tags="{Binding Tags}" />
 					</ScrollViewer>
 
 					<Border>
@@ -197,6 +198,7 @@
 				Value="True">
 
 				<Setter TargetName="TagsArea" Property="VerticalScrollBarVisibility" Value="Auto" />
+				<Setter TargetName="TagsArea" Property="IsEnabled" Value="True" />
 
 				<DataTrigger.EnterActions>
 					<BeginStoryboard>
@@ -237,7 +239,7 @@
 							<DoubleAnimation
 								Storyboard.TargetName="TagsArea"
 								Storyboard.TargetProperty="MaxHeight"
-								To="20"
+								To="28"
 								Duration="0:00:00.050" />
 
 						</Storyboard>

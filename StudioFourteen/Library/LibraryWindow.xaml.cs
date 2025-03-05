@@ -254,7 +254,7 @@ public partial class LibraryWindow : Panel
 
 		this.navigation = Navigations.None;
 
-		if (this.SelectedResult == null)
+		if (this.SelectedResult == null && this.Results.Count > 0)
 			this.SelectedResult = this.Results[0];
 
 		this.ResultsGrid.ScrollIntoView(this.SelectedResult);

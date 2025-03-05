@@ -10,6 +10,7 @@
 		<!--  wpfUtils styles  -->
 		<ResourceDictionary Source="pack://application:,,,/WpfUtils;component/Styles.xaml" />
 
+
 		<!--  Custom styles  -->
 		<ResourceDictionary Source="./Styles/CheckBoxStyles.xaml" />
 		<ResourceDictionary Source="./Styles/StudioButtonStyle.xaml" />
@@ -22,6 +23,8 @@
 		<ResourceDictionary Source="./Library/Selector/LibrarySelectorButtonStyles.xaml" />
 		<ResourceDictionary Source="./Library/LibraryMenu/LibraryContextMenuStyles.xaml" />
 		<ResourceDictionary Source="./Context/WorldContextMenuStyles.xaml" />
+		<ResourceDictionary Source="./Tags/TagControlStyles.xaml" />
+		<ResourceDictionary Source="./Tags/TagsControlStyles.xaml" />
 		<ResourceDictionary Source="./Tags/TagSelectorStyles.xaml" />
 
 		<!--  Default Language  -->

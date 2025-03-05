@@ -30,8 +30,8 @@ using WpfUtils.Utils;
 public partial class TagSelector : Control
 {
 	private readonly FuncQueue searchQueue;
-	private TagDisplay? newTagDisplay;
-	private TagDisplay? tagDisplay;
+	private TagsControl? currentTagDisplay;
+	private TagsControl? newTagDisplay;
 	private TextBox? searchBox;
 
 	public TagSelector()
@@ -44,32 +44,37 @@ public partial class TagSelector : Control
 		if (this.newTagDisplay != null)
 			this.newTagDisplay.TagSelected -= this.OnNewTagSelected;
 
-		if (this.tagDisplay != null)
-			this.tagDisplay.TagSelected -= this.OnTagSelected;
+		if (this.currentTagDisplay != null)
+			this.currentTagDisplay.TagSelected -= this.OnCurrentTagSelected;
+
+		if (this.searchBox != null)
+			this.searchBox.TextChanged -= this.OnSearchTextChanged;
 
 		base.OnApplyTemplate();
-		this.newTagDisplay = this.GetTemplateChild("PART_PopOutTagDisplay") as TagDisplay;
-		this.tagDisplay = this.GetTemplateChild("PART_TagDisplay") as TagDisplay;
+		this.newTagDisplay = this.GetTemplateChild("PART_PopOutTagDisplay") as TagsControl;
+		this.currentTagDisplay = this.GetTemplateChild("PART_PopOutSelectedTagDisplay") as TagsControl;
 		this.searchBox = this.GetTemplateChild("PART_SearchBox") as TextBox;
+
+		if (this.currentTagDisplay != null)
+			this.currentTagDisplay.TagSelected += this.OnCurrentTagSelected;
 
 		if (this.newTagDisplay != null)
 			this.newTagDisplay.TagSelected += this.OnNewTagSelected;
-
-		if (this.tagDisplay != null)
-			this.tagDisplay.TagSelected += this.OnTagSelected;
 
 		if (this.searchBox != null)
 			this.searchBox.TextChanged += this.OnSearchTextChanged;
 	}
 
-	private void OnNewTagSelected(Tag tag)
-	{
-		this.SelectedTags?.Add(tag);
-	}
-
-	private void OnTagSelected(Tag tag)
+	private void OnCurrentTagSelected(Tag tag)
 	{
 		this.SelectedTags?.Remove(tag);
+		this.SearchTags?.Add(tag);
+	}
+
+	private void OnNewTagSelected(Tag tag)
+	{
+		this.SearchTags?.Remove(tag);
+		this.SelectedTags?.Add(tag);
 	}
 
 	partial void OnPopOutOpenChanged(bool newValue)

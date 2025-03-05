@@ -453,7 +453,6 @@
 				</wpfUtils:SwitchSelector>
 
 				<tags:TagSelector
-					HorizontalAlignment="Right"
 					SelectedTags="{Binding TagFilter.Tags}"
 					Tags="{Binding AvailableTags}">
 					<tags:TagSelector.Style>
