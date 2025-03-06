@@ -55,7 +55,7 @@ public partial class OrbitTargetCamera : OrbitCamera
 			this.targetBlend = TargetBlendDuration;
 		}
 
-		if (this.Services.Target.HasValidTarget)
+		if (this.Services.Target.HasValidTarget && !this.Services.Redraw.IsRedrawing(this.currentTargetIndex))
 		{
 			Vector3 targetPosition = this.oldTargetPosition;
 			Character* pTarget = this.Services.Target.GetTarget();
