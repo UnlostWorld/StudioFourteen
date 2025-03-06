@@ -291,7 +291,7 @@ public partial class LibraryWindow : Panel
 
 	private void OnTagsFilterChanged(object? sender, NotifyCollectionChangedEventArgs e)
 	{
-		this.searchQueue.Invoke();
+		this.searchQueue.InvokeImmediate();
 	}
 
 	private void OnInfoTagSelected(Tag tag)

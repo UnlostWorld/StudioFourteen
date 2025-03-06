@@ -18,9 +18,9 @@
 		x:Key="TagsControlTemplate"
 		TargetType="{x:Type local:TagsControl}">
 
-		<Grid Visibility="{Binding Tags.Count, Converter={StaticResource NotZeroToVisibility}, ElementName=View}">
-
+		<Grid>
 			<Border
+				Margin="1"
 				Background="{TemplateBinding Background}"
 				Style="{DynamicResource WpfUtilsControlBorder}">
 

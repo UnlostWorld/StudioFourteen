@@ -91,7 +91,7 @@ public partial class TagsControl : Control
 		this.itemsControl.HideClippedItems();
 
 		// Since the number appearing in the UI can cause more tags to become clipped,
-		// run the checkk again when we go from 0 to 1 for the first time.
+		// run the check again when we go from 0 to 1 for the first time.
 		if (this.InvisibleCount > 0 && oldCount <= 0)
 		{
 			Task.Run(async () =>
