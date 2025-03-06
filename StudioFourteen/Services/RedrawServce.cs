@@ -17,6 +17,7 @@ namespace StudioFourteen.Services;
 
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Numerics;
 using System.Threading.Tasks;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
@@ -67,6 +68,14 @@ public class RedrawService : ServiceBase
 		{
 			await Task.Delay(10);
 		}
+	}
+
+	public bool IsRedrawing(int objectTableIndex)
+	{
+		if (this.redraws.TryGetValue(objectTableIndex, out Request? otherRequest))
+			return !otherRequest.IsDone;
+
+		return false;
 	}
 
 	protected unsafe override void OnFrameworkUpdate(IFramework framework)
@@ -126,6 +135,18 @@ public class RedrawService : ServiceBase
 			PoseFile file = new();
 			await file.Save(objectTableIndex, false, null, true);
 
+			// Backup position
+			Vector3 position;
+			Quaternion rotation;
+			Vector3 scale;
+			unsafe
+			{
+				Character* pCharacter = ServiceManager.Instance.Target.GetCharacter(objectTableIndex);
+				position = pCharacter->DrawObject->Position;
+				rotation = pCharacter->DrawObject->Rotation;
+				scale = pCharacter->DrawObject->Scale;
+			}
+
 			Stopwatch sw = new();
 			sw.Start();
 
@@ -176,6 +197,16 @@ public class RedrawService : ServiceBase
 
 			// Restore pose
 			await file.Apply(objectTableIndex, false);
+
+			// Restore position
+			await Threads.FrameworkThread();
+			unsafe
+			{
+				Character* pCharacter = ServiceManager.Instance.Target.GetCharacter(objectTableIndex);
+				pCharacter->DrawObject->Position = position;
+				pCharacter->DrawObject->Rotation = rotation;
+				pCharacter->DrawObject->Scale = scale;
+			}
 
 			sw.Restart();
 
