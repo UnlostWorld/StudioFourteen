@@ -35,6 +35,7 @@ using System.Windows.Input;
 [DependencyProperty<Action<LibraryContextMenu>>("CollectingMenus")]
 [DependencyProperty<object>("PopOutFooter")]
 [DependencyProperty<object>("PopOutFooterTemplate")]
+[DependencyProperty<bool>("IsClear", DefaultBindingMode = DefaultBindingMode.OneWayToSource)]
 public partial class LibrarySelectorButton : Control
 {
 	private ButtonBase? button;
@@ -47,8 +48,9 @@ public partial class LibrarySelectorButton : Control
 
 		if (this.button != null)
 		{
-			this.button.MouseRightButtonUp -= this.OnMouseRightButtonUp;
+			this.button.MouseUp -= this.OnMouseButtonUp;
 			this.button.ToolTipOpening -= this.OnToolTipOpening;
+			this.button.MouseLeave -= this.OnMouseLeave;
 		}
 
 		this.button = this.GetTemplateChild("PART_Button") as ButtonBase;
@@ -57,7 +59,7 @@ public partial class LibrarySelectorButton : Control
 
 		if (this.button != null)
 		{
-			this.button.MouseRightButtonUp += this.OnMouseRightButtonUp;
+			this.button.MouseUp += this.OnMouseButtonUp;
 			this.button.ToolTipOpening += this.OnToolTipOpening;
 			this.button.MouseLeave += this.OnMouseLeave;
 		}
@@ -83,12 +85,21 @@ public partial class LibrarySelectorButton : Control
 		}
 	}
 
-	private void OnMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+	private void OnMouseButtonUp(object sender, MouseButtonEventArgs e)
 	{
-		if (this.Value is LibraryEntryBase entry)
+		if (e.ChangedButton == MouseButton.Middle)
 		{
-			this.menu?.Enter(entry, this);
-			this.menu?.Expand();
+			this.IsClear = true;
+			e.Handled = true;
+		}
+		else if (e.ChangedButton == MouseButton.Right)
+		{
+			if (this.Value is LibraryEntryBase entry)
+			{
+				this.menu?.Enter(entry, this);
+				this.menu?.Expand();
+				e.Handled = true;
+			}
 		}
 	}
 }

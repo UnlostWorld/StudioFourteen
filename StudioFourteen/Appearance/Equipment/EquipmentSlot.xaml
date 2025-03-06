@@ -25,7 +25,8 @@
 					PopOutHeader="{Binding SearchTitle}"
 					SearchTags="{Binding SearchTags}"
 					Type="{Binding LibraryType}"
-					Value="{Binding Item}">
+					Value="{Binding Item}"
+					IsClear="{Binding IsNone, Mode=TwoWay}">
 
 					<librarySelector:LibrarySelectorButton.ToolTipHeader>
 						<TextBlock
@@ -139,7 +140,8 @@
 					PopOutHeader="{Binding DyeSearchTitle}"
 					Style="{DynamicResource LibrarySelectorIconOnly}"
 					Type="{x:Type libraryData:StainLibraryEntry}"
-					Value="{Binding Stain0}">
+					Value="{Binding Stain0}"
+					IsClear="{Binding IsStain0None, Mode=TwoWay}">
 					<librarySelector:LibrarySelectorButton.ToolTipHeader>
 						<TextBlock
 							Margin="6"
@@ -155,7 +157,8 @@
 					PopOutHeader="{Binding DyeSearchTitle}"
 					Style="{DynamicResource LibrarySelectorIconOnly}"
 					Type="{x:Type libraryData:StainLibraryEntry}"
-					Value="{Binding Stain1}">
+					Value="{Binding Stain1}"
+					IsClear="{Binding IsStain1None, Mode=TwoWay}">
 					<librarySelector:LibrarySelectorButton.ToolTipHeader>
 						<TextBlock
 							Margin="6"

@@ -125,6 +125,28 @@ public abstract class GearViewModelBase<TLibraryType> : GearViewModelBase
 		}
 	}
 
+	public bool IsStain0None
+	{
+		get => this.Stain0Id == 0;
+		set => this.Stain0Id = 0;
+	}
+
+	public byte Stain0Id
+	{
+		get => this.nextWriteStain0 ?? this.lastReadStain0;
+		set
+		{
+			if (value == this.Stain0Id)
+				return;
+
+			this.nextWriteStain0 = value;
+			this.RaisePropertyChanged(nameof(this.Stain0Id));
+
+			this.stain0 = this.Services.GameData.GetLibraryEntry<StainLibraryEntry>(this.Stain0Id);
+			this.RaisePropertyChanged(nameof(this.Stain0));
+		}
+	}
+
 	public StainLibraryEntry? Stain1
 	{
 		get => this.stain1;
@@ -148,20 +170,10 @@ public abstract class GearViewModelBase<TLibraryType> : GearViewModelBase
 		}
 	}
 
-	public byte Stain0Id
+	public bool IsStain1None
 	{
-		get => this.nextWriteStain0 ?? this.lastReadStain0;
-		set
-		{
-			if (value == this.Stain0Id)
-				return;
-
-			this.nextWriteStain0 = value;
-			this.RaisePropertyChanged(nameof(this.Stain0Id));
-
-			this.stain0 = this.Services.GameData.GetLibraryEntry<StainLibraryEntry>(this.Stain0Id);
-			this.RaisePropertyChanged(nameof(this.Stain0));
-		}
+		get => this.Stain1Id == 0;
+		set => this.Stain1Id = 0;
 	}
 
 	public byte Stain1Id
