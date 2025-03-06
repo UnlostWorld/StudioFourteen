@@ -59,18 +59,18 @@
 				<StackPanel>
 					<TextBlock
 						Style="{DynamicResource Subscript}"
-						Text="Select a tag to remove it from the current filter." />
+						Text="{DynamicResource LOC_Tags_Remove}" />
 					<tags:TagsControl
 						MinHeight="26"
 						x:Name="PART_PopOutSelectedTagDisplay"
 						Grid.Row="1"
 						Tags="{TemplateBinding SelectedTags}" />
 
-					<Button x:Name="PART_ClearButton" HorizontalAlignment="Right" Content="Clear All"/>
+					<Button x:Name="PART_ClearButton" HorizontalAlignment="Right" Content="{DynamicResource LOC_Tags_Clear}"/>
 
 					<TextBlock
 						Style="{DynamicResource Subscript}"
-						Text="Select a tag to add it to the current filter." />
+						Text="{DynamicResource LOC_Tags_Add}" />
 
 					<Grid>
 						<TextBox
