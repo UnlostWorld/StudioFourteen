@@ -8,6 +8,7 @@
 			"justMyCode": true,
             "preLaunchTask": "Build",
 			"processName": "ffxiv_dx11",
+			"requireExactSource": false,
 
 			"logging": {
 				"moduleLoad": false
