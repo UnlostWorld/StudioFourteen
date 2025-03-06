@@ -106,8 +106,16 @@ public readonly struct BoneId(int objectTableIndex, int partialSkeletonIndex, by
 		if (skeleton == null)
 			return false;
 
+		ushort partialCount = characterBase->Skeleton->PartialSkeletonCount;
+		if (this.PartialSkeletonIndex >= partialCount)
+			return false;
+
 		partialSkeleton = &skeleton->PartialSkeletons[this.PartialSkeletonIndex];
 		if (partialSkeleton == null)
+			return false;
+
+		byte poseCount = partialSkeleton->GetMaxPoses();
+		if (this.PoseIndex >= poseCount)
 			return false;
 
 		pose = partialSkeleton->GetHavokPose(this.PoseIndex);

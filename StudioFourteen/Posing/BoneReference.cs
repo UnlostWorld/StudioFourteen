@@ -202,7 +202,7 @@ public class BoneReference
 		if (!this.Id.Resolve(out Character* pCharacter, out Skeleton* pSkeleton, out PartialSkeleton* pPartialSkeleton, out hkaPose* pPose))
 			return null;
 
-		if (pPose->Skeleton->Bones.Length <= this.Id.BoneIndex)
+		if (this.Id.BoneIndex >= pPose->Skeleton->Bones.Length)
 			return null;
 
 		// Update or sanity check bone name, useful if the skeleton has changed during posing.
