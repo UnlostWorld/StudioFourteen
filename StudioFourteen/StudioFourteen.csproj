@@ -149,4 +149,8 @@
 	  <ProjectReference Include="..\Lib\WpfUtils\WpfUtils.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Resource Include="Assets\Icons\Camera.svg" />
+	</ItemGroup>
+
 </Project>

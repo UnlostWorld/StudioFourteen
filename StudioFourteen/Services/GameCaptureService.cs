@@ -122,9 +122,9 @@ public class GameCaptureService : ServiceBase
 			// If we have no listeners, then we won't be capturing anything,
 			// so perform a capture manually.
 			this.forceCapture = true;
-			int waitForId = this.captureId + 1;
+			int waitForId = this.captureId + 10;
 			while(this.convertId < waitForId)
-				await Task.Delay(10);
+				await Task.Delay(100);
 
 			this.forceCapture = false;
 		}
@@ -453,6 +453,8 @@ public class GameCaptureService : ServiceBase
 
 				lock (this.lockObj)
 				{
+					int convertingCaptureId = this.captureId;
+
 					// Convert the back buffer ARGB32 to BGRA32
 					// https://stackoverflow.com/questions/21428272/show-rgba-image-from-memory
 					int numPixels = this.backBufferHeight * this.backBufferWidth;
@@ -506,7 +508,7 @@ public class GameCaptureService : ServiceBase
 						}
 					}
 
-					this.convertId = this.captureId;
+					this.convertId = convertingCaptureId;
 				}
 
 				foreach (ICaptureListener listener in this.listeners)

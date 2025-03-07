@@ -1,0 +1,178 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:StudioFourteen.Controls"
+	xmlns:local="clr-namespace:StudioFourteen.Launcher">
+
+	<ControlTemplate
+		x:Key="LauncherMenuTemplate"
+		TargetType="{x:Type local:LauncherMenu}">
+		<Grid Margin="12">
+
+			<Border
+				x:Name="WindowShadow"
+				Background="Black"
+				CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}"
+				Opacity="0.25">
+				<Border.BitmapEffect>
+					<DropShadowBitmapEffect
+						ShadowDepth="0"
+						Softness="0.75" />
+				</Border.BitmapEffect>
+			</Border>
+
+			<Border
+				x:Name="WindowBackground"
+				Background="{DynamicResource BackgroundBrush}"
+				CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
+
+			<Border
+				x:Name="WindowBorder"
+				BorderBrush="{DynamicResource BackgroundBrush}"
+				BorderThickness="1"
+				CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
+
+			<Grid Margin="{TemplateBinding Padding}">
+
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+
+				<TextBlock
+					Grid.Row="0"
+					Margin="12,12,12,3"
+					Foreground="{DynamicResource ForegroundLightBrush}"
+					Text="Studio Fourteen" />
+
+				<TextBox
+					Grid.Row="1"
+					Margin="3"
+					Padding="25,0,3,0" />
+
+				<controls:IconControl
+					Grid.Row="1"
+					Margin="12,0,0,0"
+					HorizontalAlignment="Left"
+					Foreground="{DynamicResource ForegroundLightBrush}"
+					Icon="fa-Search"
+					IsHitTestVisible="False" />
+
+				<Border
+					Grid.Row="2"
+					Margin="3"
+					Style="{DynamicResource WpfUtilsControlBorder}">
+
+					<ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Entries}">
+						<ItemsControl.ItemsPanel>
+							<ItemsPanelTemplate>
+								<UniformGrid Columns="2" />
+							</ItemsPanelTemplate>
+						</ItemsControl.ItemsPanel>
+
+						<ItemsControl.ItemTemplate>
+							<DataTemplate DataType="{x:Type local:LauncherEntry}">
+								<Button
+									Height="Auto"
+									HorizontalContentAlignment="Stretch">
+									<Grid Margin="3,6">
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="Auto" />
+											<ColumnDefinition />
+										</Grid.ColumnDefinitions>
+
+										<Grid.RowDefinitions>
+											<RowDefinition Height="Auto" />
+											<RowDefinition />
+										</Grid.RowDefinitions>
+
+										<controls:IconControl
+											Grid.Row="0"
+											Width="18"
+											Height="18"
+											Margin="2,2,0,0"
+											Icon="{Binding Icon}" />
+										<TextBlock
+											Grid.Row="0"
+											Grid.Column="1"
+											Margin="6,0,0,0"
+											VerticalAlignment="Center"
+											Text="{Binding Name}" />
+
+										<TextBlock
+											Grid.Row="1"
+											Grid.ColumnSpan="2"
+											Margin="0,3,0,0"
+											Style="{DynamicResource Subscript}"
+											Text="Laboriosam aut dolorem aut sit totam necessitatibus est."
+											TextWrapping="Wrap" />
+									</Grid>
+								</Button>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</Border>
+
+				<Border
+					Grid.Row="3"
+					Margin="3"
+					Style="{DynamicResource WpfUtilsControlBorder}">
+
+					<Grid>
+						<Button
+							Height="32"
+							HorizontalAlignment="Left"
+							HorizontalContentAlignment="Stretch">
+							<Grid>
+								<Ellipse
+									Width="22"
+									Height="22"
+									HorizontalAlignment="Left"
+									Fill="{DynamicResource ControlBackgroundBrush}"
+									Stroke="{DynamicResource ForegroundLightBrush}"
+									StrokeThickness="1" />
+
+								<TextBlock
+									Margin="28,0,0,0"
+									VerticalAlignment="Center"
+									Text="User Name" />
+							</Grid>
+						</Button>
+
+						<StackPanel
+							HorizontalAlignment="Right"
+							Orientation="Horizontal">
+							<Button
+								Width="32"
+								Height="32">
+								<controls:IconControl
+									Grid.Row="0"
+									Icon="fa-Cogs" />
+							</Button>
+
+							<Button
+								Width="32"
+								Height="32">
+								<controls:IconControl
+									Grid.Row="0"
+									Icon="fa-PowerOff" />
+							</Button>
+						</StackPanel>
+
+
+					</Grid>
+				</Border>
+
+			</Grid>
+		</Grid>
+	</ControlTemplate>
+
+	<Style TargetType="{x:Type local:LauncherMenu}">
+		<Setter Property="Template" Value="{StaticResource LauncherMenuTemplate}" />
+		<Setter Property="Width" Value="450" />
+	</Style>
+
+
+</ResourceDictionary>

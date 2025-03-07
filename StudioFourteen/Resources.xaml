@@ -13,8 +13,10 @@
 
 		<!--  Custom styles  -->
 		<ResourceDictionary Source="./Styles/CheckBoxStyles.xaml" />
-		<ResourceDictionary Source="./Styles/StudioButtonStyle.xaml" />
 		<ResourceDictionary Source="./Styles/SpinnerStyle.xaml" />
+		<ResourceDictionary Source="./Launcher/LauncherStyles.xaml" />
+		<ResourceDictionary Source="./Launcher/TaskBarStyles.xaml" />
+		<ResourceDictionary Source="./Launcher/LauncherMenuStyles.xaml" />
 
 		<!--  Custom controls  -->
 		<ResourceDictionary Source="./Panels/PanelWindowStyle.xaml" />
@@ -26,6 +28,7 @@
 		<ResourceDictionary Source="./Tags/TagControlStyles.xaml" />
 		<ResourceDictionary Source="./Tags/TagsControlStyles.xaml" />
 		<ResourceDictionary Source="./Tags/TagSelectorStyles.xaml" />
+		<ResourceDictionary Source="./Controls/IconControlStyles.xaml" />
 
 		<!--  Default Language  -->
 		<ResourceDictionary Source="./Languages/English.xaml" />

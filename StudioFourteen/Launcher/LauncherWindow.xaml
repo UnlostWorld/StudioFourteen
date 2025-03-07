@@ -1,0 +1,44 @@
+﻿<panels:PanelWindow
+	x:Class="StudioFourteen.Launcher.LauncherWindow"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="clr-namespace:StudioFourteen.Launcher"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:panels="clr-namespace:StudioFourteen.Panels"
+	d:DesignHeight="450"
+	d:DesignWidth="800"
+	mc:Ignorable="d">
+	<panels:PanelWindow.Template>
+		<ControlTemplate TargetType="{x:Type local:LauncherWindow}">
+			<AdornerDecorator x:Name="MainGrid">
+				<Grid
+					HorizontalAlignment="Left"
+					VerticalAlignment="Top">
+
+					<local:TaskBarControl Padding="0,45,0,0" />
+
+					<ToggleButton
+						x:Name="LauncherButton"
+						VerticalAlignment="Top"
+						IsChecked="{Binding IsMenuOpen, Mode=TwoWay, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+						Style="{DynamicResource LauncherButton}" />
+
+					<Popup
+						HorizontalOffset="50"
+						IsOpen="{Binding IsMenuOpen, Mode=TwoWay, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+						Placement="RelativePoint"
+						PlacementTarget="{Binding ElementName=LauncherButton}"
+						StaysOpen="False"
+						VerticalOffset="0">
+
+						<local:LauncherMenu />
+
+					</Popup>
+
+				</Grid>
+			</AdornerDecorator>
+		</ControlTemplate>
+	</panels:PanelWindow.Template>
+</panels:PanelWindow>

@@ -25,7 +25,7 @@ using static FFXIVClientStructs.FFXIV.Client.Game.Character.CharacterExtensions;
 
 public class CharacterInterface : ScriptServiceBase
 {
-	public Genders[] Genders => [GameData.Genders.Masculine, GameData.Genders.Feminine];
+	public Genders[] Genders => [GameData.Genders.Feminine, GameData.Genders.Masculine];
 
 	public CharacterReference GetCurrentTarget() => new (this.Services.Target.TargetObjectIndex);
 }

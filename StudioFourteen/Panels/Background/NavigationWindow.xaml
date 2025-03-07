@@ -72,8 +72,7 @@
 							Margin="-12,-6"
 							VerticalAlignment="Top"
 							Click="OnStudioClicked"
-							Focusable="False"
-							Style="{StaticResource StudioButton}" />
+							Focusable="False" />
 
 						<Grid Grid.Row="2">
 							<Grid.OpacityMask>

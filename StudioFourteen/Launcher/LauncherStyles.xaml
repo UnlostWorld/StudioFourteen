@@ -1,0 +1,107 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+	<BitmapImage
+		x:Key="LauncherButtonBackground"
+		UriSource="pack://application:,,,/StudioFourteen;component/Assets/launcher.png" />
+
+	<BitmapImage
+		x:Key="LauncherButtonHoverMask"
+		UriSource="pack://application:,,,/StudioFourteen;component/Assets/launcher-hover-mask.png" />
+
+	<ControlTemplate
+		x:Key="LauncherButtonTemplate"
+		TargetType="{x:Type ToggleButton}">
+		<Grid
+			x:Name="ButtonArea"
+			Opacity="1">
+
+			<Image Source="{DynamicResource LauncherButtonBackground}" />
+
+			<Grid>
+				<Grid.OpacityMask>
+					<ImageBrush ImageSource="{DynamicResource LauncherButtonHoverMask}" />
+				</Grid.OpacityMask>
+
+				<Rectangle
+					x:Name="HighlightFill"
+					Fill="{DynamicResource TrimBrush}"
+					Opacity="0" />
+
+				<Rectangle
+					x:Name="SelectedFill"
+					Fill="{DynamicResource TrimBrush}"
+					Opacity="0" />
+
+			</Grid>
+
+		</Grid>
+
+		<ControlTemplate.Triggers>
+			<Trigger Property="IsMouseOver" Value="True">
+				<Trigger.EnterActions>
+					<StopStoryboard BeginStoryboardName="PressedExit" />
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="HighlightFill"
+								Storyboard.TargetProperty="Opacity"
+								To="1"
+								Duration="0:00:00.150" />
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.EnterActions>
+
+				<Trigger.ExitActions>
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="HighlightFill"
+								Storyboard.TargetProperty="Opacity"
+								To="0"
+								Duration="0:00:00.250" />
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.ExitActions>
+			</Trigger>
+
+			<Trigger Property="IsPressed" Value="True">
+				<Trigger.EnterActions>
+					<BeginStoryboard x:Name="PressedEnter">
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="SelectedFill"
+								Storyboard.TargetProperty="Opacity"
+								To="1"
+								Duration="0:00:00.300" />
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.EnterActions>
+
+				<Trigger.ExitActions>
+					<BeginStoryboard x:Name="PressedExit">
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="SelectedFill"
+								Storyboard.TargetProperty="Opacity"
+								To="0"
+								Duration="0:00:00.250" />
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.ExitActions>
+			</Trigger>
+
+		</ControlTemplate.Triggers>
+
+	</ControlTemplate>
+
+	<Style
+		x:Key="LauncherButton"
+		TargetType="{x:Type ToggleButton}">
+		<Setter Property="Template" Value="{StaticResource LauncherButtonTemplate}" />
+		<Setter Property="Width" Value="48" />
+		<Setter Property="Height" Value="48" />
+	</Style>
+
+</ResourceDictionary>
