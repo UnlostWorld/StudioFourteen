@@ -50,13 +50,16 @@ public class ScriptingService : ServiceBase
 	private readonly HashSet<string> allowedTypes = new()
 	{
 		"?",
-		"void",
-		"string",
-		"int",
-		"float",
 		"bool",
-		"System.Runtime.CompilerServices.YieldAwaitable",
+		"byte",
+		"float",
+		"int",
+		"string",
+		"sbyte",
 		"StudioFourteen.GameData.Genders",
+		"System.Runtime.CompilerServices.YieldAwaitable",
+		"uint",
+		"void",
 	};
 
 	private bool isRunningScript = false;
@@ -156,6 +159,11 @@ public class ScriptingService : ServiceBase
 		{
 			panel.SetStatus($"Error in script");
 			panel.AppendLog(LogEventLevel.Error, ex.Message);
+
+			#if DEBUG
+			if (ex.StackTrace != null)
+				panel.AppendLog(LogEventLevel.Debug, ex.StackTrace);
+			#endif
 
 			foreach(DiagnosticEntry diagnostic in script.Diagnostics)
 			{
@@ -277,10 +285,13 @@ public class ScriptingService : ServiceBase
 			if (symbolName == null)
 				return false;
 
+			if (symbolName.EndsWith("[]"))
+				symbolName = symbolName.Substring(0, symbolName.Length - 2);
+
 			if (this.allowedTypes.Contains(symbolName))
 				return true;
 
-			string? namespaceName = symbol.ContainingNamespace.ToString();
+			string? namespaceName = symbol?.ContainingNamespace?.ToString();
 			if (namespaceName == null)
 				return false;
 

@@ -253,6 +253,7 @@
 			<Grid.Resources>
 				<DataTemplate DataType="{x:Type local:CheckBoxOption}">
 					<CheckBox
+						Margin="1"
 						Content="{Binding Name}"
 						IsChecked="{Binding IsChecked}"
 						ToolTip="{Binding ToolTip}" />

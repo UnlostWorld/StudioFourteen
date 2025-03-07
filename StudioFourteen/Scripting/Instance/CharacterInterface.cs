@@ -15,7 +15,6 @@
 
 namespace StudioFourteen.Scripting.Instance;
 
-using System.Threading;
 using System.Threading.Tasks;
 using Dalamud.Game.ClientState.Objects.Enums;
 using StudioFourteen.GameData;
@@ -26,6 +25,8 @@ using static FFXIVClientStructs.FFXIV.Client.Game.Character.CharacterExtensions;
 
 public class CharacterInterface : ScriptServiceBase
 {
+	public Genders[] Genders => [GameData.Genders.Masculine, GameData.Genders.Feminine];
+
 	public CharacterReference GetCurrentTarget() => new (this.Services.Target.TargetObjectIndex);
 }
 
