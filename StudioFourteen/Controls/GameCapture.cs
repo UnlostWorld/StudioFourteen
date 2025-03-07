@@ -38,10 +38,7 @@ public class GameCapture : System.Windows.Controls.Image, ICaptureListener
 		this.Log = Logging.ForContext<GameCapture>();
 
 		if (DesignerProperties.GetIsInDesignMode(this))
-		{
-			this.Source = new BitmapImage(new Uri("http://dev.mos.cms.futurecdn.net/HhsJyWHPnQsuojX9GcwWKe.jpg"));
 			return;
-		}
 
 		this.IsVisibleChanged += this.OnIsVisibleChanged;
 		this.Loaded += this.OnLoaded;

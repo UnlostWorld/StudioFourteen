@@ -339,8 +339,8 @@ public class GameCaptureService : ServiceBase
 				context.Get()->CopyResource((ID3D11Resource*)this.backBufferTexture.Get(), (ID3D11Resource*)buffer);
 
 				D3D11_MAPPED_SUBRESOURCE mapped = default(D3D11_MAPPED_SUBRESOURCE);
-				HRESULT mapRsult = context.Get()->Map((ID3D11Resource*)this.backBufferTexture.Get(), 0, D3D11_MAP.D3D11_MAP_READ, 0u, &mapped);
-				if (mapRsult.FAILED)
+				HRESULT mapResult = context.Get()->Map((ID3D11Resource*)this.backBufferTexture.Get(), 0, D3D11_MAP.D3D11_MAP_READ, 0u, &mapped);
+				if (mapResult.FAILED)
 					throw new Exception($"Failed to map texture resource");
 
 				int len = this.backBufferWidth * this.backBufferHeight * 4;
@@ -422,8 +422,8 @@ public class GameCaptureService : ServiceBase
 				context.Get()->CopyResource((ID3D11Resource*)this.depthBufferTexture.Get(), (ID3D11Resource*)buffer);
 
 				D3D11_MAPPED_SUBRESOURCE mapped = default(D3D11_MAPPED_SUBRESOURCE);
-				HRESULT mapRsult = context.Get()->Map((ID3D11Resource*)this.depthBufferTexture.Get(), 0, D3D11_MAP.D3D11_MAP_READ, 0u, &mapped);
-				if (mapRsult.FAILED)
+				HRESULT mapResult = context.Get()->Map((ID3D11Resource*)this.depthBufferTexture.Get(), 0, D3D11_MAP.D3D11_MAP_READ, 0u, &mapped);
+				if (mapResult.FAILED)
 					throw new Exception($"Failed to map texture resource");
 
 				int len = this.depthBufferWidth * this.depthBufferHeight * 4;
