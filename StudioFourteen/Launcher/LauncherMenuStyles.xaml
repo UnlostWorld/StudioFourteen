@@ -4,6 +4,8 @@
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:local="clr-namespace:StudioFourteen.Launcher">
 
+	<BooleanToVisibilityConverter x:Key="B2V"/>
+
 	<ControlTemplate
 		x:Key="LauncherMenuTemplate"
 		TargetType="{x:Type local:LauncherMenu}">
@@ -115,12 +117,13 @@
 								<ToggleButton
 									IsChecked="{Binding IsOpen}"
 									Height="Auto"
-									Style="{DynamicResource WpfUtilsIconToggleButton}"
+									Style="{DynamicResource WpfUtilsIconToggleButtonNoChecked}"
 									VerticalContentAlignment="Stretch"
 									HorizontalContentAlignment="Stretch"
 									IsEnabled="{Binding IsEnabled}">
 									<Grid Margin="3,6">
 										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="Auto" />
 											<ColumnDefinition Width="Auto" />
 											<ColumnDefinition />
 										</Grid.ColumnDefinitions>
@@ -130,23 +133,35 @@
 											<RowDefinition />
 										</Grid.RowDefinitions>
 
+										<Border
+											Grid.RowSpan="2"
+											Width="2"
+											Margin="2"
+											HorizontalAlignment="Left"
+											Background="{DynamicResource TrimBrush}"
+											CornerRadius="1"
+											Opacity="1"
+											Visibility="{Binding IsChecked, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}, Converter={StaticResource B2V}}"/>
+
 										<controls:IconControl
 											Grid.Row="0"
+											Grid.Column="1"
 											Width="18"
 											Height="18"
-											Margin="2,2,0,0"
-											Icon="{Binding Icon}" />
+											Margin="6,2,0,0"
+											Icon="{Binding Icon}"/>
 										<TextBlock
 											Grid.Row="0"
-											Grid.Column="1"
-											Margin="6,0,0,0"
+											Grid.Column="2"
+											Margin="10,0,0,0"
 											VerticalAlignment="Center"
-											Text="{Binding Name}" />
+											Text="{Binding Name}"/>
 
 										<TextBlock
 											Grid.Row="1"
+											Grid.Column="1"
 											Grid.ColumnSpan="2"
-											Margin="0,3,0,0"
+											Margin="6,3,0,0"
 											Style="{DynamicResource Subscript}"
 											Text="{Binding Description}"
 											TextWrapping="Wrap" />

@@ -122,9 +122,6 @@ public abstract class LauncherEntry(LauncherMenu menu)
 
 	private void Open()
 	{
-		if (this.GetIsOpen())
-			return;
-
 		this.owner.IsOpen = false;
 		Task.Run(() => this.SetOpen());
 	}
