@@ -2,11 +2,16 @@
 	"cSpell.words": [
 		"Argb",
 		"Bgra",
+		"chara",
+		"cutscenes",
 		"Dont",
 		"Dunesfolk",
 		"Duskwight",
 		"DXGI",
 		"Elezen",
+		"Eorzea",
+		"Facewear",
+		"Glamourer",
 		"Greyscale",
 		"Havok",
 		"Helions",
@@ -19,6 +24,7 @@
 		"Midlander",
 		"Miqote",
 		"ModelChara",
+		"mscorlib",
 		"Navigations",
 		"Plainsfolk",
 		"Raen",
@@ -29,6 +35,7 @@
 		"UNORM",
 		"Veena",
 		"Viera",
+		"WEBP",
 		"Xaela"
 	]
 }

@@ -38,14 +38,40 @@
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 					<RowDefinition />
-					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
 
-				<TextBlock
-					Grid.Row="0"
-					Margin="12,12,12,3"
-					Foreground="{DynamicResource ForegroundLightBrush}"
-					Text="Studio Fourteen" />
+
+				<Grid Grid.Row="0" Margin="3">
+					<Button
+						Height="32"
+						HorizontalAlignment="Left"
+						HorizontalContentAlignment="Stretch">
+						<Grid>
+							<Ellipse
+								Width="22"
+								Height="22"
+								HorizontalAlignment="Left"
+								Fill="{DynamicResource ControlBackgroundBrush}"
+								Stroke="{DynamicResource ForegroundLightBrush}"
+								StrokeThickness="1" />
+
+							<TextBlock
+								Margin="28,0,0,0"
+								VerticalAlignment="Center"
+								Text="User Name" />
+						</Grid>
+					</Button>
+
+					<Button
+						HorizontalAlignment="Right"
+						Width="32"
+						Height="32">
+						<controls:IconControl
+							Grid.Row="0"
+							Icon="fa-PowerOff" />
+					</Button>
+				</Grid>
+
 
 				<TextBox
 					Grid.Row="1"
@@ -68,7 +94,7 @@
 					<ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Entries}">
 						<ItemsControl.ItemsPanel>
 							<ItemsPanelTemplate>
-								<UniformGrid Columns="2" />
+								<UniformGrid Columns="3" />
 							</ItemsPanelTemplate>
 						</ItemsControl.ItemsPanel>
 
@@ -76,7 +102,9 @@
 							<DataTemplate DataType="{x:Type local:LauncherEntry}">
 								<Button
 									Height="Auto"
-									HorizontalContentAlignment="Stretch">
+									VerticalContentAlignment="Stretch"
+									HorizontalContentAlignment="Stretch"
+									IsEnabled="{Binding IsEnabled}">
 									<Grid Margin="3,6">
 										<Grid.ColumnDefinitions>
 											<ColumnDefinition Width="Auto" />
@@ -106,7 +134,7 @@
 											Grid.ColumnSpan="2"
 											Margin="0,3,0,0"
 											Style="{DynamicResource Subscript}"
-											Text="Laboriosam aut dolorem aut sit totam necessitatibus est."
+											Text="{Binding Description}"
 											TextWrapping="Wrap" />
 									</Grid>
 								</Button>
@@ -114,64 +142,13 @@
 						</ItemsControl.ItemTemplate>
 					</ItemsControl>
 				</Border>
-
-				<Border
-					Grid.Row="3"
-					Margin="3"
-					Style="{DynamicResource WpfUtilsControlBorder}">
-
-					<Grid>
-						<Button
-							Height="32"
-							HorizontalAlignment="Left"
-							HorizontalContentAlignment="Stretch">
-							<Grid>
-								<Ellipse
-									Width="22"
-									Height="22"
-									HorizontalAlignment="Left"
-									Fill="{DynamicResource ControlBackgroundBrush}"
-									Stroke="{DynamicResource ForegroundLightBrush}"
-									StrokeThickness="1" />
-
-								<TextBlock
-									Margin="28,0,0,0"
-									VerticalAlignment="Center"
-									Text="User Name" />
-							</Grid>
-						</Button>
-
-						<StackPanel
-							HorizontalAlignment="Right"
-							Orientation="Horizontal">
-							<Button
-								Width="32"
-								Height="32">
-								<controls:IconControl
-									Grid.Row="0"
-									Icon="fa-Cogs" />
-							</Button>
-
-							<Button
-								Width="32"
-								Height="32">
-								<controls:IconControl
-									Grid.Row="0"
-									Icon="fa-PowerOff" />
-							</Button>
-						</StackPanel>
-
-
-					</Grid>
-				</Border>
-
 			</Grid>
 		</Grid>
 	</ControlTemplate>
 
 	<Style TargetType="{x:Type local:LauncherMenu}">
 		<Setter Property="Template" Value="{StaticResource LauncherMenuTemplate}" />
-		<Setter Property="Width" Value="450" />
+		<Setter Property="Width" Value="600" />
 	</Style>
 
 

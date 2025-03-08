@@ -15,31 +15,31 @@
 
 namespace StudioFourteen.Launcher;
 
-using System.Collections.ObjectModel;
 using System.Windows.Controls;
-using DependencyPropertyGenerator;
 using WpfUtils.Extensions;
 
 public class LauncherMenu : Control
 {
 	public LauncherMenu()
 	{
-		this.Entries.Add(new("fa-Shop", "Marketplace"));
-		this.Entries.Add(new("fa-Book", "Library"));
+		this.Entries.Add(new("fa-Shop", "LOC_Marketplace", "LOC_MarketplaceDesc", false));
+		this.Entries.Add(new("fa-Book", "LOC_Library", "LOC_LibraryDesc", true));
 
-		this.Entries.Add(new("Camera", "Cameras"));
-		this.Entries.Add(new("fa-CloudMoonRain", "Environment"));
-		this.Entries.Add(new("fa-UserShield", "Characters"));
-		this.Entries.Add(new("fa-Running", "Posing"));
-		this.Entries.Add(new("fa-Lightbulb", "Lighting"));
-		this.Entries.Add(new("fa-Chair", "Furniture"));
-		this.Entries.Add(new("fa-Users", "Crowds"));
+		this.Entries.Add(new("Camera", "LOC_Camera", "LOC_CameraDesc", true));
+		this.Entries.Add(new("fa-CloudMoonRain", "LOC_Environment", "LOC_EnvironmentDesc", true));
+		this.Entries.Add(new("fa-UserShield", "LOC_Character", "LOC_CharacterDesc", true));
+		this.Entries.Add(new("fa-Running", "LOC_Pose", "LOC_PoseDesc", true));
+		this.Entries.Add(new("fa-Lightbulb", "LOC_Lighting", "LOC_LightingDesc", false));
+		this.Entries.Add(new("fa-Chair", "LOC_Furniture", "LOC_FurnitureDesc", false));
+		this.Entries.Add(new("fa-Users", "LOC_Crowds", "LOC_CrowdsDesc", false));
+		this.Entries.Add(new("fa-Fire", "LOC_Effects", "LOC_EffectsDesc", false));
 
-		this.Entries.Add(new("fa-Image", "Photo Capture"));
-		////this.Entries.Add(new("fa-Save", "Save"));
-		this.Entries.Add(new("fa-ObjectGroup", "Single Page Application"));
+		this.Entries.Add(new("fa-Image", "LOC_Photo", "LOC_PhotoDesc", true));
+		this.Entries.Add(new("fa-ObjectGroup", "LOC_Spa", "LOC_SpaDesc", true));
 
-		this.Entries.Add(new("fa-History", "History"));
+		this.Entries.Add(new("fa-History", "LOC_History", "LOC_HistoryDesc", true));
+		this.Entries.Add(new("fa-Save", "LOC_Save", "LOC_SaveDesc", true));
+		this.Entries.Add(new("fa-Cogs", "LOC_Settings", "LOC_SettingsDesc", true));
 	}
 
 	public FastObservableCollection<LauncherEntry> Entries { get; init; } = new();
@@ -47,12 +47,19 @@ public class LauncherMenu : Control
 
 public class LauncherEntry
 {
-	public LauncherEntry(string icon, string name)
+	private readonly string nameKey;
+	private readonly string descKey;
+
+	public LauncherEntry(string icon, string nameKey, string descKey, bool enabled)
 	{
 		this.Icon = icon;
-		this.Name = name;
+		this.nameKey = nameKey;
+		this.descKey = descKey;
+		this.IsEnabled = enabled;
 	}
 
+	public bool IsEnabled { get; set; }
 	public string Icon { get; set; }
-	public string? Name { get; set; }
+	public string? Name => Resources.Find(this.nameKey, this.nameKey);
+	public string? Description => Resources.Find(this.descKey, this.descKey);
 }

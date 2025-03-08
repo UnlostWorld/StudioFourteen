@@ -33,7 +33,15 @@ public partial class IconControl : Control
 
 		if (newValue.StartsWith("fa-"))
 		{
-			this.Content = Enum.Parse<IconChar>(newValue.Substring(3));
+			try
+			{
+				this.Content = Enum.Parse<IconChar>(newValue.Substring(3));
+			}
+			catch (Exception)
+			{
+				Logging.Shared.Warning($"Font Awesome icon {newValue} not found");
+				this.Content = IconChar.Question;
+			}
 		}
 		else
 		{

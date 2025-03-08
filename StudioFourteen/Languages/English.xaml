@@ -19,17 +19,37 @@
 
 	<sys:String x:Key="LOC_ToggleGPose">Toggle GPose</sys:String>
 	<sys:String x:Key="LOC_GPoseSettings">Group Pose Settings</sys:String>
+
 	<sys:String x:Key="LOC_Library">Library</sys:String>
-	<sys:String x:Key="LOC_Pose">Pose</sys:String>
-	<sys:String x:Key="LOC_Settings">Settings</sys:String>
-	<sys:String x:Key="LOC_Photo">Photo</sys:String>
-	<sys:String x:Key="LOC_Save">Save</sys:String>
+	<sys:String x:Key="LOC_LibraryDesc">Explore files and directories to find poses, characters, scenes, or any other type of file Studio Fourteen can use.</sys:String>
+	<sys:String x:Key="LOC_Pose">Posing</sys:String>
+	<sys:String x:Key="LOC_PoseDesc">Position and Pose characters, manipulate bones or blend expressions to get the perfect pose.</sys:String>
+	<sys:String x:Key="LOC_Photo">Photo Capture</sys:String>
+	<sys:String x:Key="LOC_PhotoDesc">Use guides, control the resolution and aspect ratio, and apply stickers to get the perfect shot.</sys:String>
 	<sys:String x:Key="LOC_Character">Character</sys:String>
+	<sys:String x:Key="LOC_CharacterDesc">Edit the appearance of characters, including equipment, customization options, and shader parameters.</sys:String>
 	<sys:String x:Key="LOC_Environment">Environment</sys:String>
-	<sys:String x:Key="LOC_Camera">Camera</sys:String>
+	<sys:String x:Key="LOC_EnvironmentDesc">Control the weather, Time, Festivals, and other environmental options.</sys:String>
+	<sys:String x:Key="LOC_Camera">Cameras</sys:String>
+	<sys:String x:Key="LOC_CameraDesc">Position the virtual cameras to get the best angle for editing or capturing.</sys:String>
 	<sys:String x:Key="LOC_Spa">Single Page Application</sys:String>
+	<sys:String x:Key="LOC_SpaDesc">Open all of Studio Fourteen in a single window, Anamnesis style, for a familiar multi-monitor experience.</sys:String>
 	<sys:String x:Key="LOC_History">History</sys:String>
-	<sys:String x:Key="LOC_Scripts">Scripts</sys:String>
+	<sys:String x:Key="LOC_HistoryDesc">View and control the Undo and Redo history. Jump to the past or branch your changes.</sys:String>
+	<sys:String x:Key="LOC_Marketplace">Marketplace</sys:String>
+	<sys:String x:Key="LOC_MarketplaceDesc">Find new poses, scenes, themes, stickers or anything else from creators around the world.</sys:String>
+	<sys:String x:Key="LOC_Lighting">Lighting</sys:String>
+	<sys:String x:Key="LOC_LightingDesc">Control the placement of lights to illuminate the scene.</sys:String>
+	<sys:String x:Key="LOC_Crowds">Crowds</sys:String>
+	<sys:String x:Key="LOC_CrowdsDesc">Create large groups of background characters to add hustle and bustle, or threatening hordes of monsters.</sys:String>
+	<sys:String x:Key="LOC_Effects">Effects</sys:String>
+	<sys:String x:Key="LOC_EffectsDesc">Control and place particle effects from abilities, actions, or cutscenes to bring your scene to life.</sys:String>
+	<sys:String x:Key="LOC_Furniture">Furniture</sys:String>
+	<sys:String x:Key="LOC_FurnitureDesc">Shape the world around you to create the perfect background. Move that tree out of the way!</sys:String>
+	<sys:String x:Key="LOC_Settings">Settings</sys:String>
+	<sys:String x:Key="LOC_SettingsDesc">Change theme, alter shortcut keys, and tweak the behavior of Studio Fourteen.</sys:String>
+	<sys:String x:Key="LOC_Save">Save</sys:String>
+	<sys:String x:Key="LOC_SaveDesc">Save and export your scene, containing all characters, poses, cameras, and everything else.</sys:String>
 
 	<sys:String x:Key="LOC_Script_Warning">We strive to keep Studio Fourteen safe for our users. Script files have limited access and are heavily restricted, however the possibility remains for malicious code to be contained within script files.</sys:String>
 	<sys:String x:Key="LOC_Script_File">File:</sys:String>
@@ -228,7 +248,7 @@
 	<sys:String x:Key="LOC_OrbitCamera_Distance">Distance</sys:String>
 	<sys:String x:Key="LOC_OrbitCamera_Angle">Angle</sys:String>
 	<sys:String x:Key="LOC_OrbitCamera_GroupPoseFov_Tooltip">The additional field of view from the 'Angle of View' Settings in the Group Pose Settings window.</sys:String>
-	<sys:String x:Key="LOC_OrbitCamera_GroupPoseRoll_Tooltip">The additional Z angle from the 'Roll Angle Setttings' in the Group Pose Settings window.</sys:String>
+	<sys:String x:Key="LOC_OrbitCamera_GroupPoseRoll_Tooltip">The additional Z angle from the 'Roll Angle Settings' in the Group Pose Settings window.</sys:String>
 	<sys:String x:Key="LOC_OrbitTargetCamera">Orbit Target</sys:String>
 	<sys:String x:Key="LOC_OrbitTargetCamera_ToolTip">A Camera that rotates around your current target. The default Group Pose camera type.</sys:String>
 	<sys:String x:Key="LOC_OrbitTargetCamera_Offset">Target Offset</sys:String>
@@ -249,7 +269,7 @@
 	<sys:String x:Key="LOC_Overlays_ToggleVisibility">Hide all overlays.</sys:String>
 	<sys:String x:Key="LOC_OverlayBarDescription">Configure overlays that are visible on screen.</sys:String>
 	<sys:String x:Key="LOC_OverlayGroup_Cameras">Cameras</sys:String>
-	<sys:String x:Key="LOC_Overlay_Camera">Camera wireframes</sys:String>
+	<sys:String x:Key="LOC_Overlay_Camera">Camera wireframe</sys:String>
 	<sys:String x:Key="LOC_Overlay_OrbitCameraTarget">Orbit camera target point</sys:String>
 	<sys:String x:Key="LOC_Overlay_OrbitCameraTargetBounds">Orbit camera target bounding box</sys:String>
 
