@@ -15,12 +15,16 @@
 
 namespace StudioFourteen.Launcher;
 
-using DependencyPropertyGenerator;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
-using WpfUtils.Extensions;
+using DependencyPropertyGenerator;
+using PropertyChanged.SourceGenerator;
+using StudioFourteen.Mvm;
 using StudioFourteen.Panels;
-using System.Collections.Generic;
+using WpfUtils;
+using WpfUtils.Extensions;
 
 using Panel = StudioFourteen.Panels.Panel;
 
@@ -95,23 +99,35 @@ public partial class TaskBarControl : Control
 			return;
 
 		this.panelEntries.Remove(panel);
-		this.Dispatcher.Invoke(() => this.Entries.Remove(entry));
+		this.RemoveEntry(entry).Run();
 	}
 
 	private void OnPanelMinimized(Panel panel)
 	{
 	}
+
+	private async Task RemoveEntry(TaskBarEntry entry)
+	{
+		await this.MainThread();
+		entry.IsVisible = false;
+		await Task.Delay(250);
+		this.Entries.Remove(entry);
+	}
 }
 
-public class TaskBarEntry(string icon, string title)
+public partial class TaskBarEntry(string icon, string title)
+: ViewModel
 {
+	[Notify] private bool isMinimized = false;
+	[Notify] private bool isVisible = true;
+
 	public string? Icon { get; set; } = icon;
 	public string? ToolTip { get; set; } = title;
-	public bool IsMinimized { get; set; } = false;
 }
 
 [DependencyProperty<bool>("IsMinimized")]
 [DependencyProperty<object>("Icon")]
+[DependencyProperty<bool>("IsTaskVisible")]
 public partial class TaskBarButtonControl : Control
 {
 	protected override void OnMouseUp(MouseButtonEventArgs e)

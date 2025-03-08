@@ -10,41 +10,97 @@
 	<ControlTemplate
 		x:Key="TaskBarButtonTemplate"
 		TargetType="{x:Type local:TaskBarButtonControl}">
-		<Grid TextBlock.Foreground="{DynamicResource ForegroundLightBrush}">
-
-			<Border
-				x:Name="BackgroundBorder"
-				Background="{TemplateBinding Background}"
-				Style="{DynamicResource WpfUtilsControlBorder}" />
-
-			<Border
-				x:Name="HoverBorder"
-				Opacity="0"
-				SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-				Style="{DynamicResource WpfUtilsControlHoverBorder}" />
-
+		<Grid
+			x:Name="OuterGrid"
+			Height="32">
 			<Grid
-				x:Name="ContentArea"
-				Margin="4,0,0,0">
+				x:Name="MainGrid"
+				Height="32"
+				TextBlock.Foreground="{DynamicResource ForegroundLightBrush}">
 
-				<controls:IconControl
-					Margin="{TemplateBinding Padding}"
-					Foreground="{DynamicResource ForegroundLightBrush}"
-					Icon="{TemplateBinding Icon}" />
+				<Border
+					x:Name="BackgroundBorder"
+					Background="{TemplateBinding Background}"
+					Style="{DynamicResource WpfUtilsControlBorder}" />
+
+				<Border
+					x:Name="HoverBorder"
+					Opacity="0"
+					SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+					Style="{DynamicResource WpfUtilsControlHoverBorder}" />
+
+				<Grid
+					x:Name="ContentArea"
+					Margin="4,0,0,0">
+
+					<controls:IconControl
+						Margin="{TemplateBinding Padding}"
+						Foreground="{DynamicResource ForegroundLightBrush}"
+						Icon="{TemplateBinding Icon}" />
+				</Grid>
+
+				<Border
+					x:Name="OpenIndicator"
+					Width="2"
+					Margin="2,6"
+					HorizontalAlignment="Left"
+					Background="{DynamicResource TrimBrush}"
+					CornerRadius="1"
+					Opacity="1" />
+
 			</Grid>
-
-			<Border
-				x:Name="OpenIndicator"
-				Width="2"
-				Margin="2,6"
-				HorizontalAlignment="Left"
-				Background="{DynamicResource TrimBrush}"
-				CornerRadius="1"
-				Opacity="1" />
-
 		</Grid>
 
 		<ControlTemplate.Triggers>
+
+			<Trigger Property="IsTaskVisible" Value="True">
+				<Trigger.EnterActions>
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="OuterGrid"
+								Storyboard.TargetProperty="Height"
+								From="0"
+								To="32"
+								Duration="00:00:00.150" >
+								<DoubleAnimation.EasingFunction>
+									<SineEase EasingMode="EaseOut"/>
+								</DoubleAnimation.EasingFunction>
+							</DoubleAnimation>
+
+							<DoubleAnimation
+								Storyboard.TargetName="MainGrid"
+								Storyboard.TargetProperty="Opacity"
+								From="0"
+								To="1"
+								Duration="00:00:00.150" />
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.EnterActions>
+				<Trigger.ExitActions>
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="OuterGrid"
+								Storyboard.TargetProperty="Height"
+								From="32"
+								To="0"
+								Duration="00:00:00.250" >
+								<DoubleAnimation.EasingFunction>
+									<SineEase EasingMode="EaseIn"/>
+								</DoubleAnimation.EasingFunction>
+							</DoubleAnimation>
+							<DoubleAnimation
+								Storyboard.TargetName="MainGrid"
+								Storyboard.TargetProperty="Opacity"
+								From="1"
+								To="0"
+								Duration="00:00:00.250" />
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.ExitActions>
+			</Trigger>
+
 			<Trigger Property="IsMinimized" Value="True">
 				<Trigger.EnterActions>
 					<BeginStoryboard>
@@ -147,9 +203,6 @@
 				</Trigger.ExitActions>
 
 			</Trigger>
-
-
-
 		</ControlTemplate.Triggers>
 	</ControlTemplate>
 
@@ -165,8 +218,6 @@
 		<Setter Property="Margin" Value="1" />
 		<Setter Property="SnapsToDevicePixels" Value="True" />
 		<Setter Property="FocusVisualStyle" Value="{DynamicResource WpfUtilsFocusVisualStyle}" />
-		<Setter Property="Width" Value="32" />
-		<Setter Property="Height" Value="32" />
 	</Style>
 
 	<ControlTemplate
@@ -261,7 +312,8 @@
 									<local:TaskBarButtonControl
 										Margin="1,0"
 										Icon="{Binding Icon}"
-										ToolTip="{Binding ToolTip}" />
+										ToolTip="{Binding ToolTip}"
+										IsTaskVisible="{Binding IsVisible}"/>
 								</DataTemplate>
 
 							</ItemsControl.ItemTemplate>
