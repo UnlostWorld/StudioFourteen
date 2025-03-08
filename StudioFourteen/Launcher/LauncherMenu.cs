@@ -17,18 +17,23 @@ namespace StudioFourteen.Launcher;
 
 using System;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
+using DependencyPropertyGenerator;
 using StudioFourteen.Mvm;
 using StudioFourteen.Panels;
 using StudioFourteen.SPA;
 using WpfUtils.Extensions;
-using DependencyPropertyGenerator;
 
 using Panel = StudioFourteen.Panels.Panel;
 
 [DependencyProperty<bool>("IsOpen")]
 public partial class LauncherMenu : Control
 {
+	private Button? userButton;
+	private Button? powerButton;
+	private TextBox? searchBox;
+
 	public LauncherMenu()
 	{
 		this.AddPanel<Marketplace.MarketplacePanel>("fa-Shop", "Marketplace", false);
@@ -52,6 +57,27 @@ public partial class LauncherMenu : Control
 	}
 
 	public FastObservableCollection<LauncherEntry> Entries { get; init; } = new();
+	protected ServiceManager Services => ServiceManager.Instance;
+
+	public override void OnApplyTemplate()
+	{
+		base.OnApplyTemplate();
+
+		this.userButton = this.GetTemplateChild("PART_UserButton") as Button;
+		this.powerButton = this.GetTemplateChild("PART_PowerButton") as Button;
+		this.searchBox = this.GetTemplateChild("PART_SearchBox") as TextBox;
+
+		if (this.powerButton != null)
+		{
+			this.powerButton.Click += this.OnPowerClicked;
+		}
+	}
+
+	private void OnPowerClicked(object sender, RoutedEventArgs e)
+	{
+		this.Services.Studio.CloseStudio();
+		this.IsOpen = false;
+	}
 
 	private void AddPanel<TPanel>(string icon, string name, bool enabled = true)
 		where TPanel : Panel, new()

@@ -12,7 +12,7 @@
 
 	<ControlTemplate
 		x:Key="LauncherButtonTemplate"
-		TargetType="{x:Type ToggleButton}">
+		TargetType="{x:Type Button}">
 		<Grid
 			x:Name="ButtonArea"
 			Opacity="1">
@@ -98,7 +98,7 @@
 
 	<Style
 		x:Key="LauncherButton"
-		TargetType="{x:Type ToggleButton}">
+		TargetType="{x:Type Button}">
 		<Setter Property="Template" Value="{StaticResource LauncherButtonTemplate}" />
 		<Setter Property="Width" Value="48" />
 		<Setter Property="Height" Value="48" />

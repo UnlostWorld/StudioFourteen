@@ -19,21 +19,21 @@
 
 					<local:TaskBarControl Padding="0,45,0,0" />
 
-					<ToggleButton
-						x:Name="LauncherButton"
+					<Button
+						x:Name="LaunchButton"
 						VerticalAlignment="Top"
-						IsChecked="{Binding IsMenuOpen, Mode=TwoWay, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+						Click="OnLaunchClicked"
 						Style="{DynamicResource LauncherButton}" />
 
 					<Popup
 						HorizontalOffset="50"
 						IsOpen="{Binding IsMenuOpen, Mode=TwoWay, RelativeSource={RelativeSource Mode=TemplatedParent}}"
 						Placement="RelativePoint"
-						PlacementTarget="{Binding ElementName=LauncherButton}"
+						PlacementTarget="{Binding ElementName=LaunchButton}"
 						StaysOpen="False"
 						VerticalOffset="0">
 
-						<local:LauncherMenu IsOpen="{Binding IsOpen, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type Popup}}}"/>
+						<local:LauncherMenu IsOpen="{Binding IsOpen, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type Popup}}}" />
 
 					</Popup>
 

@@ -17,8 +17,19 @@ namespace StudioFourteen.Launcher;
 
 using StudioFourteen.Panels;
 using DependencyPropertyGenerator;
+using System.Windows;
 
 [DependencyProperty<bool>("IsMenuOpen")]
 public partial class LauncherWindow : PanelWindow
 {
+	private void OnLaunchClicked(object sender, RoutedEventArgs e)
+	{
+		if (!this.Services.Studio.IsOpen)
+			this.Services.Studio.OpenStudio();
+
+		if (!this.IsMenuOpen)
+		{
+			this.IsMenuOpen = true;
+		}
+	}
 }

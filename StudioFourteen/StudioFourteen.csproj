@@ -151,6 +151,8 @@
 
 	<ItemGroup>
 	  <Resource Include="Assets\Icons\Camera.svg" />
+	  <Resource Include="Assets\Icons\GroupPose.svg" />
+	  <Resource Include="Assets\Icons\GroupPoseSettings.svg" />
 	</ItemGroup>
 
 </Project>

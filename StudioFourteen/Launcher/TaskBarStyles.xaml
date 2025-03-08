@@ -2,7 +2,10 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
+	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=WpfUtils"
 	xmlns:local="clr-namespace:StudioFourteen.Launcher">
+
+	<BooleanToVisibilityConverter x:Key="B2V" />
 
 	<ControlTemplate
 		x:Key="TaskBarButtonTemplate"
@@ -195,14 +198,56 @@
 				BorderThickness="1"
 				CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
 
-			<Grid Margin="{TemplateBinding Padding}">
+			<Grid
+				x:Name="ContentArea"
+				Margin="{TemplateBinding Padding}">
 
-				<Border
-					Margin="3"
-					Style="{DynamicResource WpfUtilsControlBorder}">
+				<Grid.OpacityMask>
+					<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+						<GradientStop Offset="0" Color="White" />
+						<GradientStop x:Name="WipeA" Offset="1" Color="White" />
+						<GradientStop x:Name="WipeB" Offset="1.1" Color="Transparent" />
+					</LinearGradientBrush>
+				</Grid.OpacityMask>
 
-					<StackPanel Orientation="Vertical">
+				<StackPanel>
+					<!--  Toggles  -->
+					<Border
+						Margin="3,3,3,1"
+						Style="{DynamicResource WpfUtilsControlBorder}">
 
+						<StackPanel Orientation="Vertical">
+
+							<ToggleButton
+								Width="32"
+								Height="32"
+								IsChecked="{Binding Path=IsInGPose, RelativeSource={RelativeSource AncestorType={x:Type local:TaskBarControl}}}"
+								Style="{DynamicResource WpfUtilsIconToggleButton}"
+								ToolTip="{DynamicResource LOC_ToggleGPose}">
+								<controls:IconControl
+									Margin="8"
+									Icon="GroupPose" />
+							</ToggleButton>
+
+							<ToggleButton
+								Width="32"
+								Height="32"
+								IsChecked="{Binding Path=IsGPoseSettingsOpen, RelativeSource={RelativeSource AncestorType={x:Type local:TaskBarControl}}}"
+								Style="{DynamicResource WpfUtilsIconToggleButton}"
+								ToolTip="{DynamicResource LOC_GPoseSettings}"
+								Visibility="{Binding Path=IsInGPose, RelativeSource={RelativeSource AncestorType={x:Type local:TaskBarControl}}, Converter={StaticResource B2V}}">
+								<controls:IconControl
+									Margin="8"
+									Icon="GroupPoseSettings" />
+							</ToggleButton>
+
+						</StackPanel>
+					</Border>
+
+					<!--  Panels  -->
+					<Border
+						Margin="3,1,3,3"
+						Style="{DynamicResource WpfUtilsControlBorder}">
 						<ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Entries}">
 							<ItemsControl.ItemsPanel>
 								<ItemsPanelTemplate>
@@ -221,10 +266,105 @@
 
 							</ItemsControl.ItemTemplate>
 						</ItemsControl>
-					</StackPanel>
-				</Border>
+
+					</Border>
+				</StackPanel>
 			</Grid>
 		</Grid>
+
+		<ControlTemplate.Triggers>
+			<Trigger Property="IsOpen" Value="False">
+
+				<Trigger.ExitActions>
+					<StopStoryboard BeginStoryboardName="CloseStoryboard" />
+					<BeginStoryboard Name="OpenStoryboard">
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="ContentArea"
+								Storyboard.TargetProperty="Opacity"
+								To="1"
+								Duration="0:00:00.050" />
+
+							<DoubleAnimation
+								Storyboard.TargetName="WipeA"
+								Storyboard.TargetProperty="Offset"
+								From="0"
+								To="1"
+								Duration="0:00:00.350">
+								<DoubleAnimation.EasingFunction>
+									<SineEase EasingMode="EaseOut" />
+								</DoubleAnimation.EasingFunction>
+							</DoubleAnimation>
+
+							<DoubleAnimation
+								Storyboard.TargetName="WipeB"
+								Storyboard.TargetProperty="Offset"
+								From="0.1"
+								To="1.1"
+								Duration="0:00:00.350">
+								<DoubleAnimation.EasingFunction>
+									<SineEase EasingMode="EaseOut" />
+								</DoubleAnimation.EasingFunction>
+							</DoubleAnimation>
+
+							<DoubleAnimation
+								Storyboard.TargetName="WindowBorder"
+								Storyboard.TargetProperty="Opacity"
+								To="1"
+								Duration="0:00:00.250" />
+
+							<DoubleAnimation
+								Storyboard.TargetName="WindowBackground"
+								Storyboard.TargetProperty="Opacity"
+								To="1"
+								Duration="0:00:00.250" />
+
+							<DoubleAnimation
+								BeginTime="0:00:00.200"
+								Storyboard.TargetName="WindowShadow"
+								Storyboard.TargetProperty="Opacity"
+								To="1"
+								Duration="0:00:00.100" />
+
+
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.ExitActions>
+
+				<Trigger.EnterActions>
+					<StopStoryboard BeginStoryboardName="OpenStoryboard" />
+					<BeginStoryboard Name="CloseStoryboard">
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="ContentArea"
+								Storyboard.TargetProperty="Opacity"
+								To="0"
+								Duration="0:00:00.250" />
+
+							<DoubleAnimation
+								Storyboard.TargetName="WindowBorder"
+								Storyboard.TargetProperty="Opacity"
+								To="0"
+								Duration="0:00:00.250" />
+
+							<DoubleAnimation
+								Storyboard.TargetName="WindowBackground"
+								Storyboard.TargetProperty="Opacity"
+								To="0"
+								Duration="0:00:00.250" />
+
+							<DoubleAnimation
+								Storyboard.TargetName="WindowShadow"
+								Storyboard.TargetProperty="Opacity"
+								To="0"
+								Duration="0:00:00.250" />
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.EnterActions>
+
+			</Trigger>
+		</ControlTemplate.Triggers>
+
 	</ControlTemplate>
 
 	<Style TargetType="{x:Type local:TaskBarControl}">

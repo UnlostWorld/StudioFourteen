@@ -36,20 +36,44 @@
 
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
 					<RowDefinition />
 				</Grid.RowDefinitions>
 
 
-				<Grid Grid.Row="0" Margin="3">
+				<Grid Grid.Row="0" Margin="2,2,2,0">
+
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition />
+						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition Width="Auto"/>
+					</Grid.ColumnDefinitions>
+
+					<Grid Grid.Column="1">
+						<TextBox
+							x:Name="PART_SearchBox"
+							Grid.Row="1"
+							Padding="25,0,3,0" />
+
+						<controls:IconControl
+							Grid.Row="1"
+							Margin="10,0,0,0"
+							HorizontalAlignment="Left"
+							Foreground="{DynamicResource ForegroundLightBrush}"
+							Icon="fa-Search"
+							IsHitTestVisible="False" />
+					</Grid>
+
 					<Button
-						Height="32"
+						x:Name="PART_UserButton"
+						Height="26"
+						Grid.Column="2"
 						HorizontalAlignment="Left"
 						HorizontalContentAlignment="Stretch">
 						<Grid>
 							<Ellipse
-								Width="22"
-								Height="22"
+								Width="20"
+								Height="20"
 								HorizontalAlignment="Left"
 								Fill="{DynamicResource ControlBackgroundBrush}"
 								Stroke="{DynamicResource ForegroundLightBrush}"
@@ -63,31 +87,19 @@
 					</Button>
 
 					<Button
+						x:Name="PART_PowerButton"
+						Grid.Column="3"
 						HorizontalAlignment="Right"
-						Width="32"
-						Height="32">
+						Height="26"
+						Width="32">
 						<controls:IconControl
 							Grid.Row="0"
 							Icon="fa-PowerOff" />
 					</Button>
 				</Grid>
 
-
-				<TextBox
-					Grid.Row="1"
-					Margin="3"
-					Padding="25,0,3,0" />
-
-				<controls:IconControl
-					Grid.Row="1"
-					Margin="12,0,0,0"
-					HorizontalAlignment="Left"
-					Foreground="{DynamicResource ForegroundLightBrush}"
-					Icon="fa-Search"
-					IsHitTestVisible="False" />
-
 				<Border
-					Grid.Row="2"
+					Grid.Row="1"
 					Margin="3"
 					Style="{DynamicResource WpfUtilsControlBorder}">
 
