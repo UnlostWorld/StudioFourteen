@@ -33,7 +33,7 @@
 						StaysOpen="False"
 						VerticalOffset="0">
 
-						<local:LauncherMenu />
+						<local:LauncherMenu IsOpen="{Binding IsOpen, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type Popup}}}"/>
 
 					</Popup>
 

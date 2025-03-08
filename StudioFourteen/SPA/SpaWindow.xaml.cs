@@ -49,4 +49,12 @@ public partial class SpaWindow : PanelWindow
 
 		instance.Dispatcher?.Invoke(instance.Close);
 	}
+
+	public static bool GetIsOpen()
+	{
+		if (instance == null)
+			return false;
+
+		return true;
+	}
 }

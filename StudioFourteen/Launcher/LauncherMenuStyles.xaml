@@ -100,8 +100,10 @@
 
 						<ItemsControl.ItemTemplate>
 							<DataTemplate DataType="{x:Type local:LauncherEntry}">
-								<Button
+								<ToggleButton
+									IsChecked="{Binding IsOpen}"
 									Height="Auto"
+									Style="{DynamicResource WpfUtilsIconToggleButton}"
 									VerticalContentAlignment="Stretch"
 									HorizontalContentAlignment="Stretch"
 									IsEnabled="{Binding IsEnabled}">
@@ -137,7 +139,7 @@
 											Text="{Binding Description}"
 											TextWrapping="Wrap" />
 									</Grid>
-								</Button>
+								</ToggleButton>
 							</DataTemplate>
 						</ItemsControl.ItemTemplate>
 					</ItemsControl>

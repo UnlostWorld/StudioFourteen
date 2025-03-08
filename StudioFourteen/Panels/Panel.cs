@@ -142,7 +142,8 @@ public partial class Panel : ContentControl, IAutoNotify
 
 	protected virtual void OnClosed()
 	{
-		this.Services.Panels.OnPanelClosed(this);
+		// TODO: Minimize flag
+		this.Services.Panels.OnPanelClosed(this, false);
 
 		if (DalamudServices.Framework != null)
 			DalamudServices.Framework.Update -= this.OnFrameworkUpdateSafe;

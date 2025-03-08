@@ -41,7 +41,12 @@ public class PanelService : ServiceBase
 	private LauncherWindow? launcher;
 
 	public delegate void PanelServiceDelegate(PanelService self);
+	public delegate void PanelDelegate(Panel panel);
+
 	public event PanelServiceDelegate? PanelsRestarted;
+	public event PanelDelegate? PanelOpened;
+	public event PanelDelegate? PanelMinimized;
+	public event PanelDelegate? PanelClosed;
 
 	public IEnumerable<Panel> OpenPanels => this.openPanels;
 
@@ -71,9 +76,11 @@ public class PanelService : ServiceBase
 
 			this.lastOpenPanels[panelType] = panel;
 		}
+
+		this.PanelOpened?.Invoke(panel);
 	}
 
-	public void OnPanelClosed(Panel panel)
+	public void OnPanelClosed(Panel panel, bool minimize)
 	{
 		lock(this)
 		{
@@ -84,6 +91,15 @@ public class PanelService : ServiceBase
 			{
 				this.lastOpenPanels.Remove(panelType);
 			}
+		}
+
+		if (minimize)
+		{
+			this.PanelMinimized?.Invoke(panel);
+		}
+		else
+		{
+			this.PanelClosed?.Invoke(panel);
 		}
 	}
 
