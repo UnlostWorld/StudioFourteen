@@ -84,6 +84,17 @@ public class Formatter : ITextFormatter
 
 		output.WriteLine(logEvent.MessageTemplate);
 
+		if (logEvent.Exception != null)
+		{
+			Exception? ex = logEvent.Exception;
+			while (ex != null)
+			{
+				output.Write("----> ");
+				output.WriteLine(ex.Message);
+				ex = ex.InnerException;
+			}
+		}
+
 		if (logEvent.Properties.TryGetValue("StackTrace", out var stackTrace))
 		{
 			if (stackTrace is ScalarValue sv)
@@ -94,8 +105,14 @@ public class Formatter : ITextFormatter
 
 		if (logEvent.Exception != null)
 		{
-			output.WriteLine(logEvent.Exception.Message);
-			output.WriteLine(CleanStackTrace(logEvent.Exception.StackTrace));
+			Exception? ex = logEvent.Exception;
+			while (ex != null)
+			{
+				output.Write("----> ");
+				output.WriteLine(ex.Message);
+				output.WriteLine(CleanStackTrace(ex.StackTrace));
+				ex = ex.InnerException;
+			}
 		}
 	}
 
