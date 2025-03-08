@@ -16,7 +16,7 @@
 	RememberWindowState="False"
 	ResizeMode="NoResize"
 	SizeToContent="Manual"
-	TitleIcon="ExclamationCircle"
+	TitleIcon="fa-ExclamationCircle"
 	VisibilityMode="Always"
 	mc:Ignorable="d">
 

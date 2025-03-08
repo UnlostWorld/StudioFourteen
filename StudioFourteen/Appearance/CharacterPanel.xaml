@@ -19,7 +19,7 @@
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	ResizeMode="CanResizeWithGrip"
 	Subtitle="{Binding CharacterName}"
-	TitleIcon="UserShield"
+	TitleIcon="fa-UserShield"
 	mc:Ignorable="d">
 
 	<Grid

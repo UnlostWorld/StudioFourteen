@@ -16,7 +16,7 @@
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	RememberWindowState="False"
 	ResizeMode="NoResize"
-	TitleIcon="FloppyDisk"
+	TitleIcon="fa-FloppyDisk"
 	mc:Ignorable="d">
 
 	<Grid IsEnabled="{Binding Services.Save.IsSaving, Converter={StaticResource !B}}">

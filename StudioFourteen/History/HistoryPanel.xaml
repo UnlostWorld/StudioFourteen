@@ -15,7 +15,7 @@
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	ResizeMode="CanResizeWithGrip"
-	TitleIcon="History"
+	TitleIcon="fa-History"
 	mc:Ignorable="d">
 
 	<Grid>

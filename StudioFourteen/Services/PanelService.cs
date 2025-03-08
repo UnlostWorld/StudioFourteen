@@ -37,7 +37,6 @@ public class PanelService : ServiceBase
 
 	private bool hasRestoredPanels = false;
 	private BackgroundWindow? backgroundWindow;
-	private NavigationWindow? navigationWindow;
 	private LauncherWindow? launcher;
 
 	public delegate void PanelServiceDelegate(PanelService self);
@@ -228,9 +227,6 @@ public class PanelService : ServiceBase
 		this.backgroundWindow = await PanelWindow.CreatePanelWindow<BackgroundWindow>();
 		this.backgroundWindow?.Dispatcher.InvokeAsync(() => this.backgroundWindow.Show());
 
-		this.navigationWindow = await PanelWindow.CreatePanelWindow<NavigationWindow>();
-		this.navigationWindow?.Dispatcher.InvokeAsync(() => this.navigationWindow.Show());
-
 		this.launcher = await PanelWindow.CreatePanelWindow<LauncherWindow>();
 		this.launcher?.Dispatcher.InvokeAsync(() => this.launcher.Show());
 
@@ -243,7 +239,6 @@ public class PanelService : ServiceBase
 	private void StopPanels()
 	{
 		this.backgroundWindow?.Dispatcher.Invoke(this.backgroundWindow.Close);
-		this.navigationWindow?.Dispatcher.Invoke(this.navigationWindow.Close);
 		this.launcher?.Dispatcher.Invoke(this.launcher.Close);
 
 		this.Settings.OpenPanels.Clear();

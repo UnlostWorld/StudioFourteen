@@ -7,34 +7,22 @@
 		TargetType="{x:Type ProgressBar}">
 
 		<Grid x:Name="IconGrid">
+			<Grid
+				x:Name="ForegroundArea"
+				Background="{DynamicResource TrimBrush}">
 
-			<Grid>
-				<Grid.Background>
-					<ImageBrush ImageSource="pack://application:,,,/StudioFourteen;component/Assets/icon-front-background.png" />
-				</Grid.Background>
+				<Ellipse x:Name="ColorWheel">
+					<Ellipse.Fill>
+						<ImageBrush
+							ImageSource="pack://application:,,,/StudioFourteen;component/Assets/rainbow-wheel.png"
+							Stretch="None">
 
-				<Grid
-					x:Name="ForegroundArea"
-					Background="{DynamicResource TrimBrush}">
-
-					<Grid.OpacityMask>
-						<ImageBrush ImageSource="pack://application:,,,/StudioFourteen;component/Assets/icon-front-mask.png" />
-					</Grid.OpacityMask>
-
-					<Ellipse x:Name="ColorWheel">
-						<Ellipse.Fill>
-							<ImageBrush
-								ImageSource="pack://application:,,,/StudioFourteen;component/Assets/rainbow-wheel.png"
-								Stretch="None">
-
-								<ImageBrush.RelativeTransform>
-									<RotateTransform x:Name="ColorWheelTransform" Angle="0" CenterX="0.5" CenterY="0.5" />
-								</ImageBrush.RelativeTransform>
-							</ImageBrush>
-						</Ellipse.Fill>
-					</Ellipse>
-
-				</Grid>
+							<ImageBrush.RelativeTransform>
+								<RotateTransform x:Name="ColorWheelTransform" Angle="0" CenterX="0.5" CenterY="0.5" />
+							</ImageBrush.RelativeTransform>
+						</ImageBrush>
+					</Ellipse.Fill>
+				</Ellipse>
 			</Grid>
 		</Grid>
 

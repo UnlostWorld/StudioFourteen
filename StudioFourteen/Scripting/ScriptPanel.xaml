@@ -16,7 +16,7 @@
 	RememberWindowState="False"
 	ResizeMode="NoResize"
 	SizeToContent="Manual"
-	TitleIcon="Robot"
+	TitleIcon="fa-Robot"
 	VisibilityMode="Always"
 	mc:Ignorable="d">
 

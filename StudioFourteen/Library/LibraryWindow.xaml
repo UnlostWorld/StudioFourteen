@@ -25,7 +25,7 @@
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	MouseMove="OnMouseMove"
 	Subtitle="{Binding CurrentTab.Name}"
-	TitleIcon="Book"
+	TitleIcon="fa-Book"
 	mc:Ignorable="d">
 
 	<Grid>

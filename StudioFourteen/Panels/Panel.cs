@@ -37,7 +37,7 @@ public enum PanelVisibility
 	PhotoMode,
 }
 
-[DependencyProperty<IconChar>("TitleIcon")]
+[DependencyProperty<string>("TitleIcon")]
 [DependencyProperty<string>("Title")]
 [DependencyProperty<string>("Subtitle")]
 [DependencyProperty<SizeToContent>("SizeToContent", DefaultValue =SizeToContent.Manual)]

@@ -21,7 +21,7 @@
 	RememberWindowState="False"
 	ResizeMode="NoResize"
 	Subtitle="{Binding Scene.Title}"
-	TitleIcon="Users"
+	TitleIcon="fa-Users"
 	mc:Ignorable="d">
 	<Grid>
 		<Grid.RowDefinitions>

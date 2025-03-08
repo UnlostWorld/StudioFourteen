@@ -65,7 +65,7 @@ public partial class TaskBarControl : Control
 
 	private void OnGroupPoseStateChanged(bool newState)
 	{
-		this.IsInGPose = newState;
+		this.Dispatcher.Invoke(() => this.IsInGPose = newState);
 	}
 
 	partial void OnIsInGPoseChanged(bool newValue)
@@ -78,7 +78,11 @@ public partial class TaskBarControl : Control
 		TaskBarEntry? entry;
 		if (this.panelEntries.TryGetValue(panel, out entry))
 			return;
-		entry = new(panel.TitleIcon.ToString(), panel.Title ?? string.Empty);
+
+		if (string.IsNullOrEmpty(panel.TitleIcon) || string.IsNullOrEmpty(panel.Title))
+			return;
+
+		entry = new(panel.TitleIcon, panel.Title);
 		this.panelEntries.Add(panel, entry);
 
 		this.Dispatcher.Invoke(() => this.Entries.Add(entry));

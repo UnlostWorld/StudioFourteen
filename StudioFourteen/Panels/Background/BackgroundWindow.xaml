@@ -123,12 +123,6 @@
 				</Style>
 			</Grid.Style>
 
-			<!--<overlays:OverlayBar
-				Margin="10"
-				HorizontalAlignment="Right"
-				VerticalAlignment="Top"
-				Visibility="{Binding Services.Studio.IsOpenAndInGPose, Converter={StaticResource B2V}}" />-->
-
 			<context:WorldContextMenu x:Name="WorldContextMenu" />
 		</Grid>
 	</Grid>

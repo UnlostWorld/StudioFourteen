@@ -15,7 +15,7 @@
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	d:DesignWidth="300"
 	SizeToContent="Height"
-	TitleIcon="CloudMoonRain"
+	TitleIcon="fa-CloudMoonRain"
 	mc:Ignorable="d">
 	<Grid>
 		<StackPanel>

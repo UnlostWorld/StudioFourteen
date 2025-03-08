@@ -17,7 +17,7 @@
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	ResizeMode="NoResize"
 	Subtitle="{Binding CharacterName}"
-	TitleIcon="Running"
+	TitleIcon="fa-Running"
 	mc:Ignorable="d">
 
 	<Grid>
@@ -214,7 +214,7 @@
 									<RowDefinition/>
 									<RowDefinition/>
 								</Grid.RowDefinitions>
-								
+
 								<Rectangle
 									Grid.RowSpan="3"
 									Grid.ColumnSpan="3"

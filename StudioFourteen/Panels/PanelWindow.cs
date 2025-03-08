@@ -120,7 +120,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		}
 	}
 
-	public bool HasIcon => this.Panel != null && this.Panel.TitleIcon != IconChar.None;
+	public bool HasIcon => this.Panel != null && !string.IsNullOrEmpty(this.Panel.TitleIcon);
 	public bool HasSubtitle => this.Panel != null && !string.IsNullOrEmpty(this.Panel.Subtitle);
 	public bool IsOpen { get; private set; }
 	public virtual bool CanNavigate => true;

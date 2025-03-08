@@ -17,7 +17,7 @@
 	DefaultPosition="0.5,1"
 	HostStyle="{DynamicResource PanelToolbarStyle}"
 	ResizeMode="NoResize"
-	TitleIcon="Image"
+	TitleIcon="fa-Image"
 	VisibilityMode="PhotoMode"
 	mc:Ignorable="d">
 
