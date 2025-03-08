@@ -77,6 +77,23 @@
 					</ComboBox.ItemTemplate>
 				</ComboBox>
 
+				<ComboBox
+					ItemsSource="{Binding Services.Theme.Launchers}"
+					SelectedItem="{Binding Services.Theme.Launcher}">
+
+					<wpfUtils:PopOut.Header>
+						<TextBlock
+							Margin="6"
+							Text="{DynamicResource LOC_Settings_Interface_ThemeToolTip}" />
+					</wpfUtils:PopOut.Header>
+
+					<ComboBox.ItemTemplate>
+						<DataTemplate DataType="{x:Type services:LauncherButton}">
+							<Image Source="{Binding IconPath}" Height="48" HorizontalAlignment="Center"/>
+						</DataTemplate>
+					</ComboBox.ItemTemplate>
+				</ComboBox>
+
 				<ToggleButton
 					Grid.Row="0"
 					Margin="1"

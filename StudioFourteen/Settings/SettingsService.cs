@@ -132,6 +132,7 @@ public partial class SettingsService : ServiceBase
 		[Notify] private List<string> openPanels = new();
 		[Notify] private string theme = "Dark";
 		[Notify] private string trimColor = "Pink";
+		[Notify] private string launcher = "Default";
 		[Notify] private bool wasStudioOpen = false;
 
 		// Input

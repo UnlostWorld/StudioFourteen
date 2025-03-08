@@ -27,8 +27,10 @@ public partial class ThemeService : ServiceBase
 {
 	[Notify] private Theme? currentTheme;
 	[Notify] private Trim? trimColor;
+	[Notify] private LauncherButton? launcher;
 
 	public ObservableCollection<Theme> Themes { get; init; } = new();
+	public ObservableCollection<LauncherButton> Launchers { get; init; } = new();
 	public ObservableCollection<Trim> TrimColors { get; init; } = new();
 
 	public override Task Initialize()
@@ -45,6 +47,16 @@ public partial class ThemeService : ServiceBase
 		this.TrimColors.Add(new("Orange", "#FF7C14"));
 		this.TrimColors.Add(new("Red", "#FF1414"));
 
+		this.Launchers.Add(new(
+			"Default",
+			"pack://application:,,,/StudioFourteen;component/Assets/launcher.png",
+			"pack://application:,,,/StudioFourteen;component/Launcher/Style_Default.xaml"));
+
+		this.Launchers.Add(new(
+			"Flat",
+			"pack://application:,,,/StudioFourteen;component/Assets/launcher-flat.png",
+			"pack://application:,,,/StudioFourteen;component/Launcher/Style_Flat.xaml"));
+
 		foreach (Theme theme in this.Themes)
 		{
 			if (theme.Name == this.Settings.Theme)
@@ -59,6 +71,15 @@ public partial class ThemeService : ServiceBase
 			if (trim.Name == this.Settings.TrimColor)
 			{
 				this.TrimColor = trim;
+			}
+		}
+
+		foreach (LauncherButton launcher in this.Launchers)
+		{
+			if (launcher.Name == this.Settings.Launcher)
+			{
+				Resources.MergeDictionary(new(launcher.Path));
+				this.launcher = launcher;
 			}
 		}
 
@@ -95,6 +116,20 @@ public partial class ThemeService : ServiceBase
 			Resources.Set("TrimBrush", () => new SolidColorBrush(newColor.Color));
 		}
 	}
+
+	private void OnLauncherChanged(LauncherButton? oldTheme, LauncherButton? newTheme)
+	{
+		if (newTheme == null)
+			return;
+
+		if (oldTheme != null)
+			Resources.UnMergeDictionary(new(oldTheme.Path));
+
+		this.Settings.Launcher = newTheme.Name;
+		Resources.MergeDictionary(new(newTheme.Path));
+
+		this.Services.Panels.RestartPanels().Run();
+	}
 }
 
 public class Theme(string name, string path, bool supportsTrim)
@@ -102,6 +137,13 @@ public class Theme(string name, string path, bool supportsTrim)
 	public string Name { get; init; } = name;
 	public string Path { get; init; } = path;
 	public bool SupportsTrim { get; init; } = supportsTrim;
+}
+
+public class LauncherButton(string name, string iconPath, string path)
+{
+	public string Name { get; init; } = name;
+	public string IconPath { get; init; } = iconPath;
+	public string Path { get; init; } = path;
 }
 
 public class Trim
