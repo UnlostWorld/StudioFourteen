@@ -440,11 +440,23 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		if (this.IsActive)
 			return;
 
-		Thread.Sleep(50);
+		// Hack fix for window focus states causing popups to open then close sometimes
+		// when Windows takes too long to set focus to everything.
+		int delay = 0;
+		if (Mouse.DirectlyOver is FrameworkElement el)
+		{
+			ButtonBase? button = el.FindParent<ButtonBase>();
+			if (button != null)
+			{
+				delay = 50;
+			}
+		}
+
+		Thread.Sleep(delay);
 		this.Services.Windows.BringToTop(this);
-		Thread.Sleep(50);
+		Thread.Sleep(delay);
 		this.Activate();
-		Thread.Sleep(50);
+		Thread.Sleep(delay);
 	}
 
 	protected virtual void OnPreviewMouseUp(object sender, MouseButtonEventArgs e)
