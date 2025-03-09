@@ -24,6 +24,7 @@ using DependencyPropertyGenerator;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Mvm;
 using StudioFourteen.Panels;
+using StudioFourteen.Settings;
 using WpfUtils;
 using WpfUtils.Extensions;
 
@@ -34,6 +35,7 @@ using Panel = StudioFourteen.Panels.Panel;
 public partial class TaskBarControl : Control
 {
 	private readonly Dictionary<Type, TaskBarEntry> panelEntries = new();
+	private bool hasRestoredSaves = false;
 
 	public TaskBarControl()
 	{
@@ -46,8 +48,12 @@ public partial class TaskBarControl : Control
 		this.Services.Panels.PanelActivated += this.OnPanelActivated;
 		this.Services.Panels.PanelDeactivated += this.OnPanelDeactivated;
 
-		this.IsOpen = this.Services.Studio.IsOpen;
 		this.IsInGPose = this.Services.GroupPose.IsGroupPosing;
+
+		if (this.Services.Studio.IsOpen)
+		{
+			this.OnStudioOpening();
+		}
 	}
 
 	public FastObservableCollection<TaskBarEntry> Entries { get; init; } = new();
@@ -59,9 +65,34 @@ public partial class TaskBarControl : Control
 	}*/
 
 	protected ServiceManager Services => ServiceManager.Instance;
+	protected SettingsService.Configuration Settings => this.Services.Settings.Current;
 
 	private void OnStudioOpening()
 	{
+		if (!this.hasRestoredSaves)
+		{
+			foreach((string typeName, TaskBarEntrySave save) in this.Settings.MinimizedTaskBarEntries)
+			{
+				if (save.Icon == null || save.Title == null)
+					continue;
+
+				Type? panelType = Type.GetType(typeName);
+				if (panelType == null)
+					continue;
+
+				if (this.panelEntries.ContainsKey(panelType))
+					continue;
+
+				TaskBarEntry? entry = new(save.Icon, save.Title, panelType);
+				entry.IsMinimized = true;
+				this.panelEntries.Add(panelType, entry);
+
+				this.Dispatcher.Invoke(() => this.Entries.Add(entry));
+			}
+
+			this.hasRestoredSaves = true;
+		}
+
 		this.Dispatcher.Invoke(() => this.IsOpen = true);
 	}
 
@@ -90,8 +121,7 @@ public partial class TaskBarControl : Control
 			if (string.IsNullOrEmpty(panel.TitleIcon) || string.IsNullOrEmpty(panel.Title))
 				return;
 
-			entry = new(panel.TitleIcon, panel.Title);
-			entry.Type = panel.GetType();
+			entry = new(panel.TitleIcon, panel.Title, panel.GetType());
 			this.panelEntries.Add(panel.GetType(), entry);
 
 			this.Dispatcher.Invoke(() => this.Entries.Add(entry));
@@ -99,6 +129,12 @@ public partial class TaskBarControl : Control
 		else
 		{
 			entry.IsMinimized = false;
+		}
+
+		string? typeName = entry.Type?.FullName;
+		if (typeName != null)
+		{
+			this.Settings.MinimizedTaskBarEntries.Remove(typeName);
 		}
 	}
 
@@ -119,6 +155,12 @@ public partial class TaskBarControl : Control
 			return;
 
 		entry.IsMinimized = true;
+
+		string? typeName = entry.Type?.FullName;
+		if (panel.RememberWindowState && typeName != null)
+		{
+			this.Settings.MinimizedTaskBarEntries.Add(typeName, entry.Save);
+		}
 	}
 
 	private void OnPanelDeactivated(Panel panel)
@@ -148,15 +190,39 @@ public partial class TaskBarControl : Control
 	}
 }
 
-public partial class TaskBarEntry(string icon, string title)
-: ViewModel
+public partial class TaskBarEntrySave
 {
+	public string? Icon { get; set; }
+	public string? Title { get; set; }
+}
+
+public partial class TaskBarEntry : ViewModel
+{
+	public readonly TaskBarEntrySave Save = new();
+
 	[Notify] private bool isMinimized = false;
 	[Notify] private bool isActive = true;
 	[Notify] private bool isVisible = true;
 
-	public string? Icon { get; set; } = icon;
-	public string? ToolTip { get; set; } = title;
+	public TaskBarEntry(string icon, string title, Type panelType)
+	{
+		this.Icon = icon;
+		this.Title = title;
+		this.Type = panelType;
+	}
+
+	public string? Icon
+	{
+		get => this.Save.Icon;
+		set => this.Save.Icon = value;
+	}
+
+	public string? Title
+	{
+		get => this.Save.Title;
+		set => this.Save.Title = value;
+	}
+
 	public Type? Type { get; set; }
 }
 

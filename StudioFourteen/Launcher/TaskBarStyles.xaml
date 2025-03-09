@@ -353,7 +353,7 @@
 									<local:TaskBarButtonControl
 										Margin="1,0"
 										Icon="{Binding Icon}"
-										ToolTip="{Binding ToolTip}"
+										ToolTip="{Binding Title}"
 										IsMinimized="{Binding IsMinimized}"
 										IsTaskVisible="{Binding IsVisible}"
 										PanelType="{Binding Type}"

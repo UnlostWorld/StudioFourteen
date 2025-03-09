@@ -130,6 +130,7 @@ public partial class SettingsService : ServiceBase
 		[Notify] private bool showOverlays = true;
 		[Notify] private Dictionary<string, int> overlays = new();
 		[Notify] private List<string> openPanels = new();
+		[Notify] private Dictionary<string, Launcher.TaskBarEntrySave> minimizedTaskBarEntries = new();
 		[Notify] private string theme = "Dark";
 		[Notify] private string trimColor = "Pink";
 		[Notify] private string launcher = "Default";
