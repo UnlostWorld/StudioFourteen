@@ -22,10 +22,13 @@ using StudioFourteen.Input;
 using StudioFourteen.Mvm;
 using StudioFourteen.Plugin;
 using StudioFourteen.Services;
+using StudioFourteen.Utilities;
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -437,8 +440,11 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		if (this.IsActive)
 			return;
 
+		Thread.Sleep(50);
 		this.Services.Windows.BringToTop(this);
+		Thread.Sleep(50);
 		this.Activate();
+		Thread.Sleep(50);
 	}
 
 	protected virtual void OnPreviewMouseUp(object sender, MouseButtonEventArgs e)
