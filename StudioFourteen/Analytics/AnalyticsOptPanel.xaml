@@ -32,6 +32,7 @@
 			Margin="12,3,12,12"
 			Opacity="0.5"
 			Style="{DynamicResource Subscript}"
+			Foreground="{DynamicResource ForegroundLightBrush}"
 			Text="{DynamicResource LOC_Analytics_OptPrivacy}"
 			TextAlignment="Center" />
 
@@ -44,6 +45,7 @@
 			Margin="12,3,12,12"
 			Opacity="0.5"
 			Style="{DynamicResource Subscript}"
+			Foreground="{DynamicResource ForegroundLightBrush}"
 			Text="{DynamicResource LOC_Analytics_OptionalDesc}"
 			TextAlignment="Center" />
 
@@ -56,6 +58,7 @@
 			Margin="12,3,12,12"
 			Opacity="0.5"
 			Style="{DynamicResource Subscript}"
+			Foreground="{DynamicResource ForegroundLightBrush}"
 			Text="{DynamicResource LOC_Analytics_ErrorsDesc}"
 			TextAlignment="Center" />
 

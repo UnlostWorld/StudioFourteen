@@ -58,6 +58,7 @@
 
 				<StackPanel>
 					<TextBlock
+						Foreground="{DynamicResource ForegroundLightBrush}"
 						Style="{DynamicResource Subscript}"
 						Text="{DynamicResource LOC_Tags_Remove}" />
 					<tags:TagsControl
@@ -69,6 +70,7 @@
 					<Button x:Name="PART_ClearButton" HorizontalAlignment="Right" Content="{DynamicResource LOC_Tags_Clear}"/>
 
 					<TextBlock
+						Foreground="{DynamicResource ForegroundLightBrush}"
 						Style="{DynamicResource Subscript}"
 						Text="{DynamicResource LOC_Tags_Add}" />
 
@@ -92,6 +94,7 @@
 
 					<TextBlock
 						HorizontalAlignment="Right"
+						Foreground="{DynamicResource ForegroundLightBrush}"
 						Style="{DynamicResource Subscript}"
 						Visibility="{Binding InvisibleSearchTagsCount, Converter={StaticResource NotZeroToVisibility}, RelativeSource={RelativeSource AncestorType={x:Type tags:TagSelector}}}">
 						<Run Text="+" />

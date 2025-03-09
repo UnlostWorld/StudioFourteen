@@ -31,6 +31,7 @@
 		<TextBlock
 			Margin="12,3,12,12"
 			Opacity="0.5"
+			Foreground="{DynamicResource ForegroundLightBrush}"
 			Style="{DynamicResource Subscript}"
 			Text="{DynamicResource LOC_Reshade_NotSupportedInfo}"
 			TextAlignment="Center" />
@@ -49,6 +50,7 @@
 				Margin="0,0,6,0"
 				fa:Awesome.Inline="{DynamicResource LOC_Reshade_NotSupportedHelp}"
 				Opacity="0.5"
+				Foreground="{DynamicResource ForegroundLightBrush}"
 				Style="{DynamicResource Subscript}"
 				TextAlignment="Right" />
 

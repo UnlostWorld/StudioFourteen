@@ -41,6 +41,7 @@
 			<TextBlock
 				Margin="3,3,3,0"
 				Opacity="0.5"
+				Foreground="{DynamicResource ForegroundLightBrush}"
 				Style="{DynamicResource Subscript}"
 				Text="{DynamicResource LOC_ErrorBodyLog}"
 				TextAlignment="Center" />
@@ -48,6 +49,7 @@
 			<TextBlock
 				Margin="3,3,3,6"
 				Opacity="0.5"
+				Foreground="{DynamicResource ForegroundLightBrush}"
 				Style="{DynamicResource Subscript}"
 				Text="{DynamicResource LOC_ErrorBodyCheck}"
 				TextAlignment="Center" />
