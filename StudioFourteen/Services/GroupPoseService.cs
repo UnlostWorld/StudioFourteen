@@ -53,6 +53,9 @@ public partial class GroupPoseService : ServiceBase
 			UIModule* pModule = (UIModule*)DalamudServices.GameGui.GetUIModule();
 			if (pModule != null)
 			{
+				if (state == pModule->IsInGPose())
+					return;
+
 				if (state)
 				{
 					pModule->EnterGPose();
