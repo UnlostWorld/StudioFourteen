@@ -84,17 +84,6 @@ public class Formatter : ITextFormatter
 
 		output.WriteLine(logEvent.MessageTemplate);
 
-		if (logEvent.Exception != null)
-		{
-			Exception? ex = logEvent.Exception;
-			while (ex != null)
-			{
-				output.Write("----> ");
-				output.WriteLine(ex.Message);
-				ex = ex.InnerException;
-			}
-		}
-
 		if (logEvent.Properties.TryGetValue("StackTrace", out var stackTrace))
 		{
 			if (stackTrace is ScalarValue sv)
@@ -103,16 +92,13 @@ public class Formatter : ITextFormatter
 			}
 		}
 
-		if (logEvent.Exception != null)
+		Exception? ex = logEvent.Exception;
+		while (ex != null)
 		{
-			Exception? ex = logEvent.Exception;
-			while (ex != null)
-			{
-				output.Write("----> ");
-				output.WriteLine(ex.Message);
-				output.WriteLine(CleanStackTrace(ex.StackTrace));
-				ex = ex.InnerException;
-			}
+			output.Write("----> ");
+			output.WriteLine(ex.Message);
+			output.WriteLine(CleanStackTrace(ex.StackTrace));
+			ex = ex.InnerException;
 		}
 	}
 
@@ -127,30 +113,16 @@ public class Formatter : ITextFormatter
 		for (int i = 0; i < lines.Length; i++)
 		{
 			string line = lines[i];
+			line = line.TrimEnd('\r', '\n');
 
 			// replace 'SomeFile.cs:line 116' with 'SomeFile.cs:116" so the line is clickable in VsCode.
 			line = line.Replace(":line ", ":");
-
-			// Remove the 'at' at the begining of every line.
-			line = line.Replace(" at ", " ");
-
-			// Pad out the file link so they line up nicely.
-			int length = line.IndexOf(" in ");
-			if (length > 0 && length < 120)
-			{
-				int offset = 120 - length;
-				for(int offsetIndex = 0; offsetIndex < offset; offsetIndex++)
-					line = line.Insert(length, " ");
-			}
 
 			// Shorten the file paths unless we are actively debugging (so they stay clickable)
 			if (!Debugger.IsAttached)
 			{
 				line = line.Replace("C:\\Projects\\StudioFourteen\\", "\\");
 			}
-
-			// Replace the 'in' with '@' between the method and file names.
-			line = line.Replace(" in ", " @ ");
 
 			stackBuilder.AppendLine(line);
 		}
@@ -202,32 +174,32 @@ public class DalamudSink : ILogEventSink
 		{
 			case LogEventLevel.Verbose:
 			{
-				DalamudServices.Log?.Verbose(logEvent.Exception, message);
+				DalamudServices.Log?.Verbose(message);
 				break;
 			}
 
 			case LogEventLevel.Debug:
 			{
-				DalamudServices.Log?.Debug(logEvent.Exception, message);
+				DalamudServices.Log?.Debug(message);
 				break;
 			}
 
 			case LogEventLevel.Information:
 			{
-				DalamudServices.Log?.Information(logEvent.Exception, message);
+				DalamudServices.Log?.Information(message);
 				break;
 			}
 
 			case LogEventLevel.Warning:
 			{
-				DalamudServices.Log?.Warning(logEvent.Exception, message);
+				DalamudServices.Log?.Warning(message);
 				break;
 			}
 
 			case LogEventLevel.Error:
 			case LogEventLevel.Fatal:
 			{
-				DalamudServices.Log?.Error(logEvent.Exception, message);
+				DalamudServices.Log?.Error(message);
 				break;
 			}
 		}
