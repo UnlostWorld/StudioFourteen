@@ -57,6 +57,11 @@ public partial class ThemeService : ServiceBase
 			"pack://application:,,,/StudioFourteen;component/Assets/launcher-flat.png",
 			"pack://application:,,,/StudioFourteen;component/Launcher/Style_Flat.xaml"));
 
+		this.Launchers.Add(new(
+			"Paper",
+			"pack://application:,,,/StudioFourteen;component/Assets/launcher-paper.png",
+			"pack://application:,,,/StudioFourteen;component/Launcher/Style_Paper.xaml"));
+
 		foreach (Theme theme in this.Themes)
 		{
 			if (theme.Name == this.Settings.Theme)

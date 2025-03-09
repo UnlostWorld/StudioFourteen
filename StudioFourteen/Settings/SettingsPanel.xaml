@@ -28,71 +28,89 @@
 					Style="{StaticResource LeftLabel}"
 					Text="{DynamicResource LOC_Settings_Interface_Theme}" />
 
-				<ComboBox
-					ItemsSource="{Binding Services.Theme.Themes}"
-					SelectedItem="{Binding Services.Theme.CurrentTheme}">
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition/>
+						<RowDefinition/>
+					</Grid.RowDefinitions>
 
-					<wpfUtils:PopOut.Header>
-						<TextBlock
-							Margin="6"
-							Text="{DynamicResource LOC_Settings_Interface_ThemeToolTip}" />
-					</wpfUtils:PopOut.Header>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition/>
+						<ColumnDefinition Width="Auto"/>
+					</Grid.ColumnDefinitions>
 
-					<ComboBox.ItemTemplate>
-						<DataTemplate DataType="{x:Type services:Theme}">
-							<TextBlock Text="{Binding Name}" />
-						</DataTemplate>
-					</ComboBox.ItemTemplate>
-				</ComboBox>
+					<ComboBox
+						Grid.Row="0"
+						Grid.Column="0"
+						ItemsSource="{Binding Services.Theme.Themes}"
+						SelectedItem="{Binding Services.Theme.CurrentTheme}">
 
-				<ComboBox
-					ItemsSource="{Binding Services.Theme.TrimColors}"
-					SelectedItem="{Binding Services.Theme.TrimColor}"
-					Visibility="{Binding Services.Theme.CurrentTheme.SupportsTrim, Converter={StaticResource B2V}}">
+						<wpfUtils:PopOut.Header>
+							<TextBlock
+								Margin="6"
+								Text="{DynamicResource LOC_Settings_Interface_ThemeToolTip}" />
+						</wpfUtils:PopOut.Header>
 
-					<wpfUtils:PopOut.Header>
-						<TextBlock
-							Margin="6"
-							Text="{DynamicResource LOC_Settings_Interface_ThemeToolTip}" />
-					</wpfUtils:PopOut.Header>
+						<ComboBox.ItemTemplate>
+							<DataTemplate DataType="{x:Type services:Theme}">
+								<TextBlock Text="{Binding Name}" />
+							</DataTemplate>
+						</ComboBox.ItemTemplate>
+					</ComboBox>
 
-					<ComboBox.ItemTemplate>
-						<DataTemplate DataType="{x:Type services:Trim}">
-							<Grid>
+					<ComboBox
+						Grid.Row="1"
+						Grid.Column="0"
+						ItemsSource="{Binding Services.Theme.TrimColors}"
+						SelectedItem="{Binding Services.Theme.TrimColor}"
+						Visibility="{Binding Services.Theme.CurrentTheme.SupportsTrim, Converter={StaticResource B2V}}">
 
-								<Border
-									Width="32"
-									HorizontalAlignment="Left"
-									CornerRadius="{DynamicResource WpfUtilsBorderInnerCornerRadius}">
-									<Border.Background>
-										<SolidColorBrush Color="{Binding Color}" />
-									</Border.Background>
-								</Border>
+						<wpfUtils:PopOut.Header>
+							<TextBlock
+								Margin="6"
+								Text="{DynamicResource LOC_Settings_Interface_ThemeToolTip}" />
+						</wpfUtils:PopOut.Header>
 
-								<TextBlock
-									Margin="42,0,0,0"
-									Text="{Binding Name}" />
-							</Grid>
-						</DataTemplate>
-					</ComboBox.ItemTemplate>
-				</ComboBox>
+						<ComboBox.ItemTemplate>
+							<DataTemplate DataType="{x:Type services:Trim}">
+								<Grid>
 
-				<ComboBox
-					ItemsSource="{Binding Services.Theme.Launchers}"
-					SelectedItem="{Binding Services.Theme.Launcher}">
+									<Border
+										Width="32"
+										HorizontalAlignment="Left"
+										CornerRadius="{DynamicResource WpfUtilsBorderInnerCornerRadius}">
+										<Border.Background>
+											<SolidColorBrush Color="{Binding Color}" />
+										</Border.Background>
+									</Border>
 
-					<wpfUtils:PopOut.Header>
-						<TextBlock
-							Margin="6"
-							Text="{DynamicResource LOC_Settings_Interface_ThemeToolTip}" />
-					</wpfUtils:PopOut.Header>
+									<TextBlock
+										Margin="42,0,0,0"
+										Text="{Binding Name}" />
+								</Grid>
+							</DataTemplate>
+						</ComboBox.ItemTemplate>
+					</ComboBox>
 
-					<ComboBox.ItemTemplate>
-						<DataTemplate DataType="{x:Type services:LauncherButton}">
-							<Image Source="{Binding IconPath}" Height="48" HorizontalAlignment="Center"/>
-						</DataTemplate>
-					</ComboBox.ItemTemplate>
-				</ComboBox>
+					<ComboBox
+						Grid.Column="1"
+						Grid.RowSpan="2"
+						ItemsSource="{Binding Services.Theme.Launchers}"
+						SelectedItem="{Binding Services.Theme.Launcher}">
+
+						<wpfUtils:PopOut.Header>
+							<TextBlock
+								Margin="6"
+								Text="{DynamicResource LOC_Settings_Interface_ThemeToolTip}" />
+						</wpfUtils:PopOut.Header>
+
+						<ComboBox.ItemTemplate>
+							<DataTemplate DataType="{x:Type services:LauncherButton}">
+								<Image Source="{Binding IconPath}" Height="48" HorizontalAlignment="Center"/>
+							</DataTemplate>
+						</ComboBox.ItemTemplate>
+					</ComboBox>
+				</Grid>
 
 				<ToggleButton
 					Grid.Row="0"
