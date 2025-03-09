@@ -105,29 +105,36 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 		await Threads.FrameworkThread();
 		int index = this.Spawn(position);
 
-		if (DalamudServices.ObjectTable != null)
-		{
-			bool canDraw = false;
-			while (!canDraw)
-			{
-				unsafe
-				{
-					Character* pCharacter = (Character*)DalamudServices.ObjectTable.GetObjectAddress(index);
-					canDraw = pCharacter->CanDraw();
-				}
+		if (index == -1)
+			return index;
 
-				if (!canDraw)
-				{
-					await Task.Delay(10);
-				}
+		bool canDraw = false;
+		while (!canDraw)
+		{
+			await Threads.NextFrame();
+			unsafe
+			{
+				Character* pCharacter = this.Services.Target.GetCharacter(index);
+				canDraw = pCharacter->CanDraw();
 			}
 		}
 
 		await Threads.NextFrame();
 
-		if (index != -1 && appearance != null)
+		string name = $"Studio {index}";
+		if (appearance != null)
 		{
+			if (appearance.Name != null)
+				name = appearance.Name;
+
 			await appearance.Apply(index);
+		}
+
+		await Threads.FrameworkThread();
+		unsafe
+		{
+			Character* pCharacter = this.Services.Target.GetCharacter(index);
+			pCharacter->SetDisplayName(name);
 		}
 
 		return index;

@@ -44,6 +44,7 @@ using WpfUtils.Utils;
 [DependencyProperty<List<Type>>("Types")]
 [DependencyProperty<bool>("IsLoading", DefaultBindingMode = DefaultBindingMode.OneWay)]
 [DependencyProperty<bool>("Favorites")]
+[DependencyProperty<bool>("CloseOnSelection")]
 public partial class LibrarySelector : PopOut
 {
 	protected readonly ILogger Log = Logging.ForContext<LibrarySelector>();
@@ -245,6 +246,11 @@ public partial class LibrarySelector : PopOut
 
 		Result? selectedResult = this.resultsBox.SelectedItem as Result;
 		this.SelectedItem = selectedResult?.Entry;
+
+		if (this.CloseOnSelection)
+		{
+			this.IsOpen = false;
+		}
 	}
 
 	private void OnTargetWindowPreviewMouseDown(object sender, MouseButtonEventArgs e)

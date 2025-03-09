@@ -12,6 +12,8 @@
 	xmlns:triggers="clr-namespace:WpfUtils.Triggers;assembly=WpfUtils"
 	xmlns:windows="clr-namespace:StudioFourteen.Panels"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	xmlns:librarySelector="clr-namespace:StudioFourteen.Library.Selector"
+	xmlns:appearance="clr-namespace:StudioFourteen.Appearance"
 	Title="Targets"
 	Width="1024"
 	Height="58"
@@ -170,15 +172,16 @@
 				Grid.ColumnSpan="2"
 				Style="{DynamicResource WpfUtilsControlBorder}" />
 
-			<Button
+			<ToggleButton
+				x:Name="AddCharacterButton"
 				Grid.Column="1"
 				Width="38"
 				VerticalAlignment="Stretch"
 				Background="Transparent"
-				Click="OnAddCharacterClicked"
+				Style="{DynamicResource WpfUtilsIconToggleButton}"
 				ToolTip="{DynamicResource LOC_Target_CreateCharacter}">
 				<wpfUtils:IconBlock Icon="UserPlus" />
-			</Button>
+			</ToggleButton>
 
 			<Button
 				Grid.Column="2"
@@ -193,5 +196,15 @@
 					IconFont="Solid" />
 			</Button>
 		</Grid>
+
+		<librarySelector:LibrarySelector
+			Header="Select a character to spawn:"
+			IsOpen="{Binding ElementName=AddCharacterButton, Path=IsChecked}"
+			PlacementTarget="{Binding ElementName=AddCharacterButton}"
+			StaysOpen="False"
+			CloseOnSelection="True"
+			Type="{x:Type appearance:ICharacterAppearance}"
+			SelectedItem="{Binding SelectedCharacterToSpawn}"/>
+
 	</Grid>
 </windows:Panel>

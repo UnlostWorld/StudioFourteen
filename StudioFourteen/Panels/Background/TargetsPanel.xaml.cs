@@ -22,6 +22,8 @@ using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Appearance;
+using StudioFourteen.Library;
+using StudioFourteen.Library.Sources;
 using StudioFourteen.Mvm;
 using StudioFourteen.Panels;
 using StudioFourteen.Plugin;
@@ -37,6 +39,7 @@ public partial class TargetsPanel : Panel
 {
 	[Notify] private CharacterViewModel? target;
 	[Notify] private string removeCharacterTooltip = string.Empty;
+	[Notify] private LibraryEntryBase? selectedCharacterToSpawn;
 
 	public TargetsPanel()
 	{
@@ -76,6 +79,26 @@ public partial class TargetsPanel : Panel
 		}
 	}
 
+	private void OnSelectedCharacterToSpawnChanged(LibraryEntryBase? oldEntry, LibraryEntryBase? newEntry)
+	{
+		if (newEntry == null)
+			return;
+
+		this.SelectedCharacterToSpawn = null;
+
+		if (newEntry.IsType(typeof(ICharacterAppearance)))
+		{
+			ICharacterAppearance? appearance = newEntry as ICharacterAppearance;
+			if (newEntry is FileEntry selectedFile)
+				appearance = selectedFile.File as ICharacterAppearance;
+
+			if (appearance == null)
+				return;
+
+			this.CreateCharacter(appearance).Run();
+		}
+	}
+
 	private void OnCurrentTargetChanged(int objectTableIndex)
 	{
 		foreach(CharacterViewModel character in this.ValidCharacters)
@@ -88,26 +111,6 @@ public partial class TargetsPanel : Panel
 		}
 
 		this.RemoveCharacterTooltip = StudioFourteen.Resources.Format("LOC_Target_DeleteCharacter", this.Target?.Name);
-	}
-
-	private void OnAddCharacterClicked(object sender, RoutedEventArgs e)
-	{
-		throw new NotImplementedException();
-		/*if (sender is UIElement target)
-		{
-			LibraryPopOut<ICharacterAppearance> popOut = new();
-			popOut.DefaultTags = new("Named");
-			popOut.PlacementTarget = target;
-			popOut.Title = "Create Character";
-			popOut.StaysOpen = false;
-			popOut.SelectionChanged = (appearance, isFinal) =>
-			{
-				if (appearance == null || !isFinal)
-					return;
-
-				this.CreateCharacter(appearance).Run();
-			};
-		}*/
 	}
 
 	private async Task CreateCharacter(ICharacterAppearance appearance)
