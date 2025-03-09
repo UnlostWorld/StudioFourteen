@@ -35,7 +35,18 @@ public partial class IconControl : Control
 		{
 			try
 			{
-				this.Content = Enum.Parse<IconChar>(newValue.Substring(3));
+				IconFont font = IconFont.Solid;
+				string iconName = newValue.Substring(3);
+				if (iconName.StartsWith("line-"))
+				{
+					font = IconFont.Regular;
+					iconName = iconName.Substring(5);
+				}
+
+				FontAwesomeIcon icon = new();
+				icon.Icon = Enum.Parse<IconChar>(iconName);
+				icon.Font = font;
+				this.Content = icon;
 			}
 			catch (Exception)
 			{
@@ -48,4 +59,10 @@ public partial class IconControl : Control
 			this.Content = $"pack://application:,,,/StudioFourteen;component/Assets/Icons/{newValue}.svg";
 		}
 	}
+}
+
+public class FontAwesomeIcon
+{
+	public IconChar Icon { get; set; }
+	public IconFont Font { get; set; } = IconFont.Solid;
 }

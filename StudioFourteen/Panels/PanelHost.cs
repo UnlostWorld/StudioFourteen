@@ -35,9 +35,9 @@ public partial class PanelHost : ContentControl, Panel.IHost
 		this.IsVisibleChanged += this.OnIsVisibleChanged;
 	}
 
-	Task Panel.IHost.CloseAsync()
+	Task Panel.IHost.CloseAsync(bool minimize)
 	{
-		this.panel?.SetIsOpen(this, false);
+		this.panel?.SetIsOpen(this, false, minimize);
 		return Task.CompletedTask;
 	}
 
@@ -46,7 +46,7 @@ public partial class PanelHost : ContentControl, Panel.IHost
 		if (DesignerProperties.GetIsInDesignMode(this))
 			return;
 
-		this.panel?.SetIsOpen(this, false);
+		this.panel?.SetIsOpen(this, false, false);
 		this.Content = null;
 
 		if (newValue == null)
@@ -58,7 +58,7 @@ public partial class PanelHost : ContentControl, Panel.IHost
 		{
 			this.panel.SetHost(this);
 			this.Content = this.panel;
-			this.panel.SetIsOpen(this, this.IsVisible);
+			this.panel.SetIsOpen(this, this.IsVisible, false);
 
 			this.panel.Width = double.NaN;
 			this.panel.Height = double.NaN;
@@ -69,16 +69,16 @@ public partial class PanelHost : ContentControl, Panel.IHost
 
 	private void OnShutdownStarted(object? sender, EventArgs e)
 	{
-		this.panel?.SetIsOpen(this, false);
+		this.panel?.SetIsOpen(this, false, false);
 	}
 
 	private void OnUnloaded(object sender, System.Windows.RoutedEventArgs e)
 	{
-		this.panel?.SetIsOpen(this, false);
+		this.panel?.SetIsOpen(this, false, false);
 	}
 
 	private void OnIsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e)
 	{
-		this.panel?.SetIsOpen(this, this.IsVisible);
+		this.panel?.SetIsOpen(this, this.IsVisible, true);
 	}
 }

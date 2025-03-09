@@ -55,6 +55,7 @@ public partial class Panel : ContentControl, IAutoNotify
 	private IHost? host;
 
 	private bool isVisible;
+	private bool isMinimized;
 
 	public Panel()
 	{
@@ -76,7 +77,7 @@ public partial class Panel : ContentControl, IAutoNotify
 
 	public interface IHost
 	{
-		Task CloseAsync();
+		Task CloseAsync(bool minimize);
 	}
 
 	public ServiceManager Services => ServiceManager.Instance;
@@ -102,30 +103,32 @@ public partial class Panel : ContentControl, IAutoNotify
 		this.host = host;
 	}
 
-	public void Close()
+	public void Close(bool minimize = false)
 	{
-		this.CloseAsync().Run();
+		this.CloseAsync(minimize).Run();
 	}
 
-	public Task CloseAsync()
+	public Task CloseAsync(bool minimize = false)
 	{
 		if (this.host == null)
 			return Task.CompletedTask;
 
-		return this.host.CloseAsync();
+		return this.host.CloseAsync(minimize);
 	}
 
-	public void SetIsOpen(IHost sender, bool isOpen)
+	public void SetIsOpen(IHost sender, bool isOpen, bool isMinimized)
 	{
 		if (this.host != sender)
 			throw new InvalidOperationException();
 
 		if (isOpen)
 		{
+			this.isMinimized = false;
 			this.OnOpened();
 		}
 		else
 		{
+			this.isMinimized = isMinimized;
 			this.OnClosed();
 		}
 	}
@@ -142,8 +145,7 @@ public partial class Panel : ContentControl, IAutoNotify
 
 	protected virtual void OnClosed()
 	{
-		// TODO: Minimize flag
-		this.Services.Panels.OnPanelClosed(this, false);
+		this.Services.Panels.OnPanelClosed(this, this.isMinimized);
 
 		if (DalamudServices.Framework != null)
 			DalamudServices.Framework.Update -= this.OnFrameworkUpdateSafe;

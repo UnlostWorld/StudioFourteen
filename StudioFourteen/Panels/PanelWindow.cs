@@ -49,6 +49,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	private double preScaleWidth;
 	private Panel? panel;
 	private bool isDragMoving = false;
+	private bool isMinimizing = false;
 
 	public PanelWindow()
 	{
@@ -177,7 +178,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 			if (this.IsOpen)
 			{
-				this.panel?.SetIsOpen(this, true);
+				this.panel?.SetIsOpen(this, true, false);
 			}
 
 			if (this.panel != null)
@@ -261,10 +262,11 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		}
 	}
 
-	public virtual async Task CloseAsync()
+	public virtual async Task CloseAsync(bool minimize = false)
 	{
 		this.IsOpen = false;
 		this.NotifyPropertyChanged(nameof(this.IsOpen));
+		this.isMinimizing = minimize;
 
 		await Task.Delay(250);
 		this.Dispatcher.Invoke(this.Close);
@@ -361,7 +363,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 			this.CanChangeEmbed = false;
 		}
 
-		this.panel?.SetIsOpen(this, true);
+		this.panel?.SetIsOpen(this, true, false);
 
 		// sometimes the position doesn't 'stick' if windows decides to move the window,
 		// so set it again after a short delay to ensure its in the right spot.
@@ -394,7 +396,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 			this.SavedSize = new Point(this.Width, this.Height);
 
 		AutoPropertyNotifyService.Remove(this);
-		this.panel?.SetIsOpen(this, false);
+		this.panel?.SetIsOpen(this, false, this.isMinimizing);
 	}
 
 	protected override void OnActivated(EventArgs e)

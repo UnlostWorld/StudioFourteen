@@ -47,7 +47,12 @@ public partial class PanelWindowResources
 
 	private void OnCloseClicked(object sender, RoutedEventArgs e)
 	{
-		GetWindow(sender).CloseAsync().Run();
+		GetWindow(sender).CloseAsync(false).Run();
+	}
+
+	private void OnMinimizeClicked(object sender, RoutedEventArgs e)
+	{
+		GetWindow(sender).CloseAsync(true).Run();
 	}
 
 	private void OnResizeThumbDragDelta(object sender, DragDeltaEventArgs e)

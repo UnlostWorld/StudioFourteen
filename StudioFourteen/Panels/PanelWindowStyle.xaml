@@ -214,115 +214,111 @@
 								Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Panel.Subtitle}" />
 						</StackPanel>
 
-						<Border
-							Margin="0,1,1,0"
+						<StackPanel
+							Grid.Row="0"
 							HorizontalAlignment="Right"
-							Background="Transparent"
-							Style="{DynamicResource WpfUtilsControlBorder}">
+							Orientation="Horizontal">
 
-							<Border.Visibility>
-								<MultiBinding Converter="{StaticResource MultiOrVisibility}">
-									<Binding
-										ElementName="EmbedButton"
-										Path="Visibility" />
-									<Binding
-										ElementName="CloseButton"
-										Path="Visibility" />
-								</MultiBinding>
-							</Border.Visibility>
+							<!--  Zoom Button
+							<ComboBox
+								Height="Auto"
+								Margin="0"
+								VerticalAlignment="Stretch"
+								ItemsSource="{Binding ZoomOptions}"
+								SelectedValue="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, Path=Scale}"
+								Template="{StaticResource ZoomComboBox}">
 
-							<StackPanel
-								Grid.Row="0"
-								HorizontalAlignment="Right"
-								Orientation="Horizontal">
+								<ComboBox.ItemTemplate>
+									<DataTemplate>
+										<TextBlock
+											Margin="2,0,0,1"
+											FontSize="12"
+											Text="{Binding ., StringFormat={}{0:P0}}" />
+									</DataTemplate>
+								</ComboBox.ItemTemplate>
+							</ComboBox>
 
-								<!--  Zoom Button  -->
-								<ComboBox
-									Height="Auto"
-									Margin="0"
-									VerticalAlignment="Stretch"
-									ItemsSource="{Binding ZoomOptions}"
-									SelectedValue="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, Path=Scale}"
-									Template="{StaticResource ZoomComboBox}">
+							Pop out button
+							<ToggleButton
+								x:Name="EmbedButton"
+								Width="32"
+								IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, Path=IsEmbedded, Converter={StaticResource !B}}"
+								Style="{StaticResource TitlebarToggleButton}"
+								ToolTip="{DynamicResource LOC_EmbedPanelTooltip}"
+								Visibility="{TemplateBinding CanChangeEmbed,
+																Converter={StaticResource B2V}}">
+								<Grid>
+									<wpfUtils:IconBlock
+										FontSize="10"
+										Icon="ArrowRightFromBracket"
+										Visibility="{TemplateBinding IsEmbedded,
+																		Converter={StaticResource B2V}}" />
 
-									<ComboBox.ItemTemplate>
-										<DataTemplate>
-											<TextBlock
-												Margin="2,0,0,1"
-												FontSize="12"
-												Text="{Binding ., StringFormat={}{0:P0}}" />
-										</DataTemplate>
-									</ComboBox.ItemTemplate>
-								</ComboBox>
+									<wpfUtils:IconBlock
+										FontSize="10"
+										Icon="ArrowRightToBracket"
+										Visibility="{TemplateBinding IsEmbedded,
+																		Converter={StaticResource !B2V}}" />
+								</Grid>
+							</ToggleButton>-->
 
-								<!--  Pop out button  -->
-								<ToggleButton
-									x:Name="EmbedButton"
-									Width="32"
-									IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, Path=IsEmbedded, Converter={StaticResource !B}}"
-									Style="{StaticResource TitlebarToggleButton}"
-									ToolTip="{DynamicResource LOC_EmbedPanelTooltip}"
-									Visibility="{TemplateBinding CanChangeEmbed,
-									                             Converter={StaticResource B2V}}">
-									<Grid>
-										<wpfUtils:IconBlock
-											FontSize="10"
-											Icon="ArrowRightFromBracket"
-											Visibility="{TemplateBinding IsEmbedded,
-											                             Converter={StaticResource B2V}}" />
+							<!-- Minimize button  -->
+							<Button
+								Width="32"
+								Click="OnMinimizeClicked"
+								Style="{StaticResource TitlebarButton}">
+									<controls:IconControl
+										Width="12"
+										Height="12"
+										Icon="fa-Minus"/>
+							</Button>
 
-										<wpfUtils:IconBlock
-											FontSize="10"
-											Icon="ArrowRightToBracket"
-											Visibility="{TemplateBinding IsEmbedded,
-											                             Converter={StaticResource !B2V}}" />
-									</Grid>
-								</ToggleButton>
+							<!--  Maximize button  -->
+							<ToggleButton
+								x:Name="MaximizeButton"
+								Width="32"
+								IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, Path=IsMaximized}"
+								Style="{StaticResource TitlebarToggleButton}"
+								ToolTip="{DynamicResource LOC_EmbedPanelTooltip}"
+								Visibility="Collapsed">
+								<Grid>
+									<controls:IconControl
+										Width="12"
+										Height="12"
+										Icon="fa-line-WindowRestore"
+										Visibility="{TemplateBinding IsMaximized,
+																		Converter={StaticResource B2V}}" />
 
-								<!--  Maximize button  -->
-								<ToggleButton
-									x:Name="MaximizeButton"
-									Width="32"
-									IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, Path=IsMaximized}"
-									Style="{StaticResource TitlebarToggleButton}"
-									ToolTip="{DynamicResource LOC_EmbedPanelTooltip}"
-									Visibility="Collapsed">
-									<Grid>
-										<wpfUtils:IconBlock
-											FontSize="10"
-											Icon="WindowRestore"
-											Visibility="{TemplateBinding IsMaximized,
-											                             Converter={StaticResource B2V}}" />
+									<controls:IconControl
+										Width="10"
+										Height="10"
+										Icon="fa-line-Square"
+										Visibility="{TemplateBinding IsMaximized,
+																		Converter={StaticResource !B2V}}" />
+								</Grid>
+							</ToggleButton>
 
-										<wpfUtils:IconBlock
-											FontSize="10"
-											Icon="WindowMaximize"
-											Visibility="{TemplateBinding IsMaximized,
-											                             Converter={StaticResource !B2V}}" />
-									</Grid>
-								</ToggleButton>
+							<!--  Close Button  -->
+							<Button
+								x:Name="CloseButton"
+								Width="48"
+								Click="OnCloseClicked"
+								Style="{StaticResource TitlebarButton}"
+								ToolTip="{DynamicResource LOC_ClosePanelTooltip}"
+								Visibility="{TemplateBinding CanClose,
+																Converter={StaticResource B2V}}">
 
-								<!--  Close Button  -->
-								<Button
-									x:Name="CloseButton"
-									Width="48"
-									Click="OnCloseClicked"
-									Style="{StaticResource TitlebarButton}"
-									ToolTip="{DynamicResource LOC_ClosePanelTooltip}"
-									Visibility="{TemplateBinding CanClose,
-									                             Converter={StaticResource B2V}}">
+								<Button.Resources>
+									<SolidColorBrush
+										x:Key="ControlHighlightBrush"
+										Color="#883434" />
+								</Button.Resources>
 
-									<Button.Resources>
-										<SolidColorBrush
-											x:Key="ControlHighlightBrush"
-											Color="#883434" />
-									</Button.Resources>
+								<controls:IconControl Icon="fa-Times" />
+							</Button>
 
-									<wpfUtils:IconBlock Icon="Times" />
-								</Button>
+						</StackPanel>
 
-							</StackPanel>
-						</Border>
 					</Grid>
 
 					<ContentPresenter
