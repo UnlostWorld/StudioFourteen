@@ -105,8 +105,13 @@ public class PanelService : ServiceBase
 	public T? Get<T>()
 		where T : Panel, new()
 	{
-		this.lastOpenPanels.TryGetValue(typeof(T), out var panel);
-		return panel as T;
+		return this.Get(typeof(T)) as T;
+	}
+
+	public Panel? Get(Type panelType)
+	{
+		this.lastOpenPanels.TryGetValue(panelType, out var panel);
+		return panel;
 	}
 
 	public bool GetIsOpen<T>()
@@ -174,13 +179,18 @@ public class PanelService : ServiceBase
 	public void SetIsOpen<T>(bool value)
 		where T : Panel, new()
 	{
+		this.SetIsOpen(typeof(T), value);
+	}
+
+	public void SetIsOpen(Type panelType, bool value)
+	{
 		if (value)
 		{
-			T? panel = this.Get<T>();
+			Panel? panel = this.Get(panelType);
 
 			if (panel == null)
 			{
-				this.Open<T>().Run();
+				this.Open(panelType).Run();
 			}
 			else
 			{
@@ -197,7 +207,7 @@ public class PanelService : ServiceBase
 		}
 		else
 		{
-			this.Get<T>()?.CloseAsync().Run();
+			this.Get(panelType)?.CloseAsync().Run();
 		}
 	}
 

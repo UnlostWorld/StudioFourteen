@@ -152,7 +152,7 @@
 								</EasingThicknessKeyFrame>
 								<EasingThicknessKeyFrame
 									KeyTime="0:00:00.100"
-									Value="12,0,0,0">
+									Value="10,0,0,0">
 									<EasingThicknessKeyFrame.EasingFunction>
 										<ExponentialEase EasingMode="EaseOut" />
 									</EasingThicknessKeyFrame.EasingFunction>
@@ -313,7 +313,9 @@
 										Margin="1,0"
 										Icon="{Binding Icon}"
 										ToolTip="{Binding ToolTip}"
-										IsTaskVisible="{Binding IsVisible}"/>
+										IsMinimized="{Binding IsMinimized}"
+										IsTaskVisible="{Binding IsVisible}"
+										PanelType="{Binding Type}"/>
 								</DataTemplate>
 
 							</ItemsControl.ItemTemplate>

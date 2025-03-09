@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Launcher;
 
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -32,7 +33,7 @@ using Panel = StudioFourteen.Panels.Panel;
 [DependencyProperty<bool>("IsInGPose")]
 public partial class TaskBarControl : Control
 {
-	private readonly Dictionary<Panel, TaskBarEntry> panelEntries = new();
+	private readonly Dictionary<Type, TaskBarEntry> panelEntries = new();
 
 	public TaskBarControl()
 	{
@@ -80,30 +81,42 @@ public partial class TaskBarControl : Control
 	private void OnPanelOpened(Panel panel)
 	{
 		TaskBarEntry? entry;
-		if (this.panelEntries.TryGetValue(panel, out entry))
-			return;
+		this.panelEntries.TryGetValue(panel.GetType(), out entry);
 
-		if (string.IsNullOrEmpty(panel.TitleIcon) || string.IsNullOrEmpty(panel.Title))
-			return;
+		if (entry == null)
+		{
+			if (string.IsNullOrEmpty(panel.TitleIcon) || string.IsNullOrEmpty(panel.Title))
+				return;
 
-		entry = new(panel.TitleIcon, panel.Title);
-		this.panelEntries.Add(panel, entry);
+			entry = new(panel.TitleIcon, panel.Title);
+			entry.Type = panel.GetType();
+			this.panelEntries.Add(panel.GetType(), entry);
 
-		this.Dispatcher.Invoke(() => this.Entries.Add(entry));
+			this.Dispatcher.Invoke(() => this.Entries.Add(entry));
+		}
+		else
+		{
+			entry.IsMinimized = false;
+		}
 	}
 
 	private void OnPanelClosed(Panel panel)
 	{
 		TaskBarEntry? entry;
-		if (!this.panelEntries.TryGetValue(panel, out entry) || entry == null)
+		if (!this.panelEntries.TryGetValue(panel.GetType(), out entry) || entry == null)
 			return;
 
-		this.panelEntries.Remove(panel);
+		this.panelEntries.Remove(panel.GetType());
 		this.RemoveEntry(entry).Run();
 	}
 
 	private void OnPanelMinimized(Panel panel)
 	{
+		TaskBarEntry? entry;
+		if (!this.panelEntries.TryGetValue(panel.GetType(), out entry) || entry == null)
+			return;
+
+		entry.IsMinimized = true;
 	}
 
 	private async Task RemoveEntry(TaskBarEntry entry)
@@ -123,11 +136,13 @@ public partial class TaskBarEntry(string icon, string title)
 
 	public string? Icon { get; set; } = icon;
 	public string? ToolTip { get; set; } = title;
+	public Type? Type { get; set; }
 }
 
 [DependencyProperty<bool>("IsMinimized")]
 [DependencyProperty<object>("Icon")]
 [DependencyProperty<bool>("IsTaskVisible")]
+[DependencyProperty<Type>("PanelType")]
 public partial class TaskBarButtonControl : Control
 {
 	protected override void OnMouseUp(MouseButtonEventArgs e)
@@ -136,6 +151,10 @@ public partial class TaskBarButtonControl : Control
 
 		if (e.ChangedButton == MouseButton.Left)
 		{
+			if (this.PanelType == null)
+				return;
+
+			ServiceManager.Instance.Panels.SetIsOpen(this.PanelType, true);
 		}
 	}
 }
