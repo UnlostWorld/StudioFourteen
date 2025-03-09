@@ -54,6 +54,12 @@ public partial class TargetsPanel : Panel
 	public List<CharacterViewModel> Characters { get; init; } = new();
 	public FastObservableCollection<CharacterViewModel> ValidCharacters { get; init; } = new();
 
+	public bool SpawnFavorites
+	{
+		get => this.GetPersistence<bool>();
+		set => this.SetPersistence(value);
+	}
+
 	protected override void OnFrameworkUpdate(IFramework framework)
 	{
 		base.OnFrameworkUpdate(framework);

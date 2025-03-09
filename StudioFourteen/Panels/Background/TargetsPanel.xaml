@@ -202,6 +202,7 @@
 			IsOpen="{Binding ElementName=AddCharacterButton, Path=IsChecked}"
 			PlacementTarget="{Binding ElementName=AddCharacterButton}"
 			StaysOpen="False"
+			Favorites="{Binding SpawnFavorites}"
 			CloseOnSelection="True"
 			Type="{x:Type appearance:ICharacterAppearance}"
 			SelectedItem="{Binding SelectedCharacterToSpawn}"/>

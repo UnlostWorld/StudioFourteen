@@ -43,7 +43,7 @@ using WpfUtils.Utils;
 [DependencyProperty<Type>("Type")]
 [DependencyProperty<List<Type>>("Types")]
 [DependencyProperty<bool>("IsLoading", DefaultBindingMode = DefaultBindingMode.OneWay)]
-[DependencyProperty<bool>("Favorites")]
+[DependencyProperty<bool>("Favorites", DefaultBindingMode = DefaultBindingMode.TwoWay)]
 [DependencyProperty<bool>("CloseOnSelection")]
 public partial class LibrarySelector : PopOut
 {

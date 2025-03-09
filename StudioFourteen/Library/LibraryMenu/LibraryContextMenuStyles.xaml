@@ -4,7 +4,8 @@
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=WpfUtils"
 	xmlns:menu="clr-namespace:StudioFourteen.Library.LibraryMenu"
 	xmlns:tags="clr-namespace:StudioFourteen.Tags"
-	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	xmlns:controls="clr-namespace:StudioFourteen.Controls">
 
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="pack://application:,,,/WpfUtils;component/Controls/PopOutStyles.xaml" />
@@ -13,6 +14,7 @@
 
 	<converters:IsEmptyToVisibilityConverter x:Key="IsEmptyToVisibility" />
 	<BooleanToVisibilityConverter x:Key="B2V" />
+	<converters:InvertedBoolToVisibilityConverter x:Key="!B2V" />
 
 	<ControlTemplate
 		x:Key="LibraryContextMenuTemplate"
@@ -131,35 +133,25 @@
 						<ScaleTransform x:Name="MenuAreaScale" ScaleY="0" />
 					</Border.LayoutTransform>
 
-					<StackPanel>
+					<StackPanel >
 						<UniformGrid Rows="1">
 							<ToggleButton
+								x:Name="FavoritesToggle"
 								Margin="0"
 								Background="Transparent"
-								IsChecked="{Binding IsFavorite}"
+								IsChecked="{Binding Entry.IsFavorite, RelativeSource={RelativeSource AncestorType={x:Type menu:LibraryContextMenu}}}"
 								Style="{DynamicResource WpfUtilsIconToggleButton}">
 
-								<wpfUtils:IconBlock Icon="Heart">
-									<wpfUtils:IconBlock.Style>
-										<Style TargetType="{x:Type wpfUtils:IconBlock}">
-											<Setter Property="IconFont" Value="Auto" />
-
-											<Style.Triggers>
-												<DataTrigger
-													Binding="{Binding IsFavorite}"
-													Value="True">
-													<Setter Property="IconFont" Value="Solid" />
-												</DataTrigger>
-											</Style.Triggers>
-										</Style>
-									</wpfUtils:IconBlock.Style>
-								</wpfUtils:IconBlock>
+								<Grid>
+									<controls:IconControl Icon="fa-Heart" Visibility="{Binding ElementName=FavoritesToggle, Path=IsChecked, Converter={StaticResource B2V}}"/>
+									<controls:IconControl Icon="fa-line-Heart" Visibility="{Binding ElementName=FavoritesToggle, Path=IsChecked, Converter={StaticResource !B2V}}"/>
+								</Grid>
 							</ToggleButton>
 
 							<Button
 								Margin="0"
-								Command="{Binding Icon.ExportCommand}"
-								IsEnabled="{Binding Icon.CanExport, FallbackValue=False}"
+								Command="{Binding Icon.ExportCommand, RelativeSource={RelativeSource AncestorType={x:Type menu:LibraryContextMenu}}}"
+								IsEnabled="{Binding Icon.CanExport, FallbackValue=False, RelativeSource={RelativeSource AncestorType={x:Type menu:LibraryContextMenu}}}"
 								ToolTip="{DynamicResource LOC_Library_ExportIcon}">
 								<wpfUtils:IconBlock
 									Icon="FileImage"
