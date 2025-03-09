@@ -16,18 +16,13 @@
 namespace StudioFourteen.Services;
 
 using Dalamud.Hooking;
+using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.UI;
-using FFXIVClientStructs.FFXIV.Client.UI.Agent;
-using FFXIVClientStructs.FFXIV.Common.Lua;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Input.Devices;
 using StudioFourteen.Plugin;
-using System;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
 using Task = System.Threading.Tasks.Task;
 
 public partial class GroupPoseService : ServiceBase
@@ -39,12 +34,14 @@ public partial class GroupPoseService : ServiceBase
 	private Hook<ExitDelegate>? exitHook;
 
 	[Notify(Setter.Private)] private bool isGroupPosing;
+	[Notify(Setter.Private)] private bool isGroupPoseSettingsWindowVisible;
 
 	public delegate void OnStateChangedDelegate(bool newState);
 	private unsafe delegate bool EnterDelegate(UIModule* uiModule);
 	private unsafe delegate void ExitDelegate(UIModule* uiModule);
 
 	public event OnStateChangedDelegate? StateChanged;
+	public event OnStateChangedDelegate? SettingsStateChanged;
 
 	public unsafe void SetGroupPose(bool state)
 	{
@@ -102,7 +99,7 @@ public partial class GroupPoseService : ServiceBase
 		this.exitHook?.Dispose();
 	}
 
-	public unsafe bool IsGroupPoseSettingsWindowVisible()
+	public unsafe bool GetIsGroupPoseSettingsWindowVisible()
 	{
 		if (!DalamudServices.IsAlive)
 			return false;
@@ -136,6 +133,18 @@ public partial class GroupPoseService : ServiceBase
 				return;
 
 			addon->Hide2();
+		}
+	}
+
+	protected override void OnFrameworkUpdate(IFramework framework)
+	{
+		base.OnFrameworkUpdate(framework);
+
+		bool isWindowVisible = this.GetIsGroupPoseSettingsWindowVisible();
+		if (isWindowVisible != this.isGroupPoseSettingsWindowVisible)
+		{
+			this.IsGroupPoseSettingsWindowVisible = isWindowVisible;
+			this.SettingsStateChanged?.Invoke(isWindowVisible);
 		}
 	}
 

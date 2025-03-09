@@ -52,8 +52,12 @@ public partial class StudioService : ServiceBase
 		{
 			if (this.Settings.WasStudioOpen)
 			{
-				this.Log.Information("Restoring studio state hello");
-				this.OpenStudio();
+				_ = Task.Run(async () =>
+				{
+					await Task.Delay(1000);
+					this.Log.Information("Restoring studio state");
+					this.OpenStudio();
+				});
 			}
 		}
 		#endif

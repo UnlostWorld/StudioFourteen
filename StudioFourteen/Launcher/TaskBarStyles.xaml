@@ -324,7 +324,7 @@
 							<ToggleButton
 								Width="32"
 								Height="32"
-								IsChecked="{Binding Path=IsGPoseSettingsOpen, RelativeSource={RelativeSource AncestorType={x:Type local:TaskBarControl}}}"
+								IsChecked="{Binding Path=IsGPoseSettingsOpen, RelativeSource={RelativeSource AncestorType={x:Type local:TaskBarControl}}, Mode=TwoWay}"
 								Style="{DynamicResource WpfUtilsIconToggleButton}"
 								ToolTip="{DynamicResource LOC_GPoseSettings}"
 								Visibility="{Binding Path=IsInGPose, RelativeSource={RelativeSource AncestorType={x:Type local:TaskBarControl}}, Converter={StaticResource B2V}}">

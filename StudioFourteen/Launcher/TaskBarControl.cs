@@ -32,6 +32,7 @@ using Panel = StudioFourteen.Panels.Panel;
 
 [DependencyProperty<bool>("IsOpen")]
 [DependencyProperty<bool>("IsInGPose")]
+[DependencyProperty<bool>("IsGPoseSettingsOpen")]
 public partial class TaskBarControl : Control
 {
 	private readonly Dictionary<Type, TaskBarEntry> panelEntries = new();
@@ -42,6 +43,7 @@ public partial class TaskBarControl : Control
 		this.Services.Studio.Opening += this.OnStudioOpening;
 		this.Services.Studio.Closing += this.OnStudioClosing;
 		this.Services.GroupPose.StateChanged += this.OnGroupPoseStateChanged;
+		this.Services.GroupPose.SettingsStateChanged += this.OnGroupPoseSettingsStateChanged;
 		this.Services.Panels.PanelOpened += this.OnPanelOpened;
 		this.Services.Panels.PanelClosed += this.OnPanelClosed;
 		this.Services.Panels.PanelMinimized += this.OnPanelMinimized;
@@ -49,6 +51,7 @@ public partial class TaskBarControl : Control
 		this.Services.Panels.PanelDeactivated += this.OnPanelDeactivated;
 
 		this.IsInGPose = this.Services.GroupPose.IsGroupPosing;
+		this.IsGPoseSettingsOpen = this.Services.GroupPose.IsGroupPoseSettingsWindowVisible;
 
 		if (this.Services.Studio.IsOpen)
 		{
@@ -57,12 +60,6 @@ public partial class TaskBarControl : Control
 	}
 
 	public FastObservableCollection<TaskBarEntry> Entries { get; init; } = new();
-
-	/*public unsafe bool IsGPoseSettingsOpen
-	{
-		get => this.Services.GroupPose.IsGroupPoseSettingsWindowVisible();
-		set => this.Services.GroupPose.SetGroupPoseSettingsWindowVisible(value);
-	}*/
 
 	protected ServiceManager Services => ServiceManager.Instance;
 	protected SettingsService.Configuration Settings => this.Services.Settings.Current;
@@ -101,6 +98,11 @@ public partial class TaskBarControl : Control
 		this.Dispatcher.Invoke(() => this.IsOpen = false);
 	}
 
+	private void OnGroupPoseSettingsStateChanged(bool settingsState)
+	{
+		this.Dispatcher.Invoke(() => this.IsGPoseSettingsOpen = settingsState);
+	}
+
 	private void OnGroupPoseStateChanged(bool newState)
 	{
 		this.Dispatcher.Invoke(() => this.IsInGPose = newState);
@@ -109,6 +111,11 @@ public partial class TaskBarControl : Control
 	partial void OnIsInGPoseChanged(bool newValue)
 	{
 		this.Services.GroupPose.SetGroupPose(newValue);
+	}
+
+	partial void OnIsGPoseSettingsOpenChanged(bool newValue)
+	{
+		this.Services.GroupPose.SetGroupPoseSettingsWindowVisible(newValue);
 	}
 
 	private void OnPanelOpened(Panel panel)
