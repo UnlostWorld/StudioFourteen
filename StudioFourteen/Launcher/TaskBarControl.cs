@@ -43,6 +43,8 @@ public partial class TaskBarControl : Control
 		this.Services.Panels.PanelOpened += this.OnPanelOpened;
 		this.Services.Panels.PanelClosed += this.OnPanelClosed;
 		this.Services.Panels.PanelMinimized += this.OnPanelMinimized;
+		this.Services.Panels.PanelActivated += this.OnPanelActivated;
+		this.Services.Panels.PanelDeactivated += this.OnPanelDeactivated;
 
 		this.IsOpen = this.Services.Studio.IsOpen;
 		this.IsInGPose = this.Services.GroupPose.IsGroupPosing;
@@ -119,6 +121,24 @@ public partial class TaskBarControl : Control
 		entry.IsMinimized = true;
 	}
 
+	private void OnPanelDeactivated(Panel panel)
+	{
+		TaskBarEntry? entry;
+		if (!this.panelEntries.TryGetValue(panel.GetType(), out entry) || entry == null)
+			return;
+
+		entry.IsActive = false;
+	}
+
+	private void OnPanelActivated(Panel panel)
+	{
+		TaskBarEntry? entry;
+		if (!this.panelEntries.TryGetValue(panel.GetType(), out entry) || entry == null)
+			return;
+
+		entry.IsActive = true;
+	}
+
 	private async Task RemoveEntry(TaskBarEntry entry)
 	{
 		await this.MainThread();
@@ -132,6 +152,7 @@ public partial class TaskBarEntry(string icon, string title)
 : ViewModel
 {
 	[Notify] private bool isMinimized = false;
+	[Notify] private bool isActive = true;
 	[Notify] private bool isVisible = true;
 
 	public string? Icon { get; set; } = icon;
@@ -143,6 +164,7 @@ public partial class TaskBarEntry(string icon, string title)
 [DependencyProperty<object>("Icon")]
 [DependencyProperty<bool>("IsTaskVisible")]
 [DependencyProperty<Type>("PanelType")]
+[DependencyProperty<bool>("IsActive")]
 public partial class TaskBarButtonControl : Control
 {
 	protected override void OnMouseUp(MouseButtonEventArgs e)

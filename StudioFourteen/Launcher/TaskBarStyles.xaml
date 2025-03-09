@@ -39,19 +39,60 @@
 						Icon="{TemplateBinding Icon}" />
 				</Grid>
 
-				<Border
+				<Grid
 					x:Name="OpenIndicator"
-					Width="2"
-					Margin="2,6"
 					HorizontalAlignment="Left"
-					Background="{DynamicResource TrimBrush}"
-					CornerRadius="1"
-					Opacity="1" />
+					Margin="2,6"
+					Width="2"
+					Opacity="1">
 
+					<Border
+						Background="{DynamicResource ForegroundLightBrush}"
+						CornerRadius="1"/>
+
+					<Border
+						x:Name="ActiveIndicator"
+						Background="{DynamicResource TrimBrush}"
+						CornerRadius="1"
+						Opacity="0"/>
+				</Grid>
 			</Grid>
 		</Grid>
 
 		<ControlTemplate.Triggers>
+
+			<Trigger Property="IsActive" Value="True">
+				<Trigger.EnterActions>
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="ActiveIndicator"
+								Storyboard.TargetProperty="Opacity"
+								To="1"
+								Duration="00:00:00.150" >
+								<DoubleAnimation.EasingFunction>
+									<SineEase EasingMode="EaseOut"/>
+								</DoubleAnimation.EasingFunction>
+							</DoubleAnimation>
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.EnterActions>
+				<Trigger.ExitActions>
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="ActiveIndicator"
+								Storyboard.TargetProperty="Opacity"
+								To="0"
+								Duration="00:00:00.250" >
+								<DoubleAnimation.EasingFunction>
+									<SineEase EasingMode="EaseIn"/>
+								</DoubleAnimation.EasingFunction>
+							</DoubleAnimation>
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.ExitActions>
+			</Trigger>
 
 			<Trigger Property="IsTaskVisible" Value="True">
 				<Trigger.EnterActions>
@@ -315,7 +356,8 @@
 										ToolTip="{Binding ToolTip}"
 										IsMinimized="{Binding IsMinimized}"
 										IsTaskVisible="{Binding IsVisible}"
-										PanelType="{Binding Type}"/>
+										PanelType="{Binding Type}"
+										IsActive="{Binding IsActive}"/>
 								</DataTemplate>
 
 							</ItemsControl.ItemTemplate>

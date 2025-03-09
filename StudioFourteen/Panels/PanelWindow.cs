@@ -404,6 +404,9 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		if (ServiceManager.ShutdownRequested)
 			return;
 
+		if (this.Panel != null)
+			this.Services.Panels.OnPanelActivated(this.Panel, true);
+
 		this.Navigation?.Activate();
 		base.OnActivated(e);
 	}
@@ -412,6 +415,9 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	{
 		if (ServiceManager.ShutdownRequested)
 			return;
+
+		if (this.Panel != null)
+			this.Services.Panels.OnPanelActivated(this.Panel, false);
 
 		this.Navigation?.Deactivate();
 		base.OnDeactivated(e);

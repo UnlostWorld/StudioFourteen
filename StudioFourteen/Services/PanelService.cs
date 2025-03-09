@@ -17,7 +17,6 @@ namespace StudioFourteen.Services;
 
 using StudioFourteen.Launcher;
 using StudioFourteen.Studio;
-using StudioFourteen.Studio.Background;
 using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
@@ -46,6 +45,8 @@ public class PanelService : ServiceBase
 	public event PanelDelegate? PanelOpened;
 	public event PanelDelegate? PanelMinimized;
 	public event PanelDelegate? PanelClosed;
+	public event PanelDelegate? PanelActivated;
+	public event PanelDelegate? PanelDeactivated;
 
 	public IEnumerable<Panel> OpenPanels => this.openPanels;
 
@@ -99,6 +100,18 @@ public class PanelService : ServiceBase
 		else
 		{
 			this.PanelClosed?.Invoke(panel);
+		}
+	}
+
+	public void OnPanelActivated(Panel panel, bool active)
+	{
+		if (active)
+		{
+			this.PanelActivated?.Invoke(panel);
+		}
+		else
+		{
+			this.PanelDeactivated?.Invoke(panel);
 		}
 	}
 
