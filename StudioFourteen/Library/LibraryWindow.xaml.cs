@@ -63,6 +63,7 @@ public partial class LibraryWindow : Panel
 	[Notify] private bool narrowMode;
 	private FrameworkElement? currentHover;
 	private int lastEntryClick = 0;
+	private double? waitingForPosition;
 
 	public LibraryWindow()
 	{
@@ -117,6 +118,12 @@ public partial class LibraryWindow : Panel
 	public TagCollection? PersistentTags
 	{
 		get => this.GetPersistence<TagCollection>();
+		set => this.SetPersistence(value);
+	}
+
+	public double? PersistentScrollPosition
+	{
+		get => this.GetPersistence<double>();
 		set => this.SetPersistence(value);
 	}
 
@@ -201,8 +208,19 @@ public partial class LibraryWindow : Panel
 		if (this.PersistentTags != null)
 			this.TagFilter.Tags.Replace(this.PersistentTags);
 
+		this.waitingForPosition = this.PersistentScrollPosition;
+
 		this.navigation = Navigations.OpenDir;
 		this.searchQueue.InvokeImmediate();
+	}
+
+	protected override void OnClosed()
+	{
+		ScrollViewer? scroll = this.ResultsGrid.FindChild<ScrollViewer>();
+		if (scroll != null)
+			this.PersistentScrollPosition = scroll.VerticalOffset;
+
+		base.OnClosed();
 	}
 
 	private void OnLibraryScanComplete()
@@ -277,7 +295,18 @@ public partial class LibraryWindow : Panel
 		if (this.SelectedResult == null && this.Results.Count > 0)
 			this.SelectedResult = this.Results[0];
 
-		this.ResultsGrid.ScrollIntoView(this.SelectedResult);
+		if (this.waitingForPosition != null)
+		{
+			ScrollViewer? scroll = this.ResultsGrid.FindChild<ScrollViewer>();
+			if (scroll != null)
+			{
+				scroll.ScrollToVerticalOffset((double)this.waitingForPosition);
+			}
+		}
+		else
+		{
+			this.ResultsGrid.ScrollIntoView(this.SelectedResult);
+		}
 
 		DependencyObject? item = this.ResultsGrid.ItemContainerGenerator.ContainerFromItem(this.SelectedResult);
 		if (hasFocus && item is UIElement el)
