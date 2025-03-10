@@ -29,7 +29,7 @@ public class TagCollectionConverter : JsonConverter<TagCollection>
 			return null;
 
 		TagCollection tags = new();
-		string[] tagNames = tagString.Split(", ");
+		string[] tagNames = tagString.Split(", ", StringSplitOptions.RemoveEmptyEntries);
 		foreach(string tagName in tagNames)
 		{
 			tags.Add(tagName);
