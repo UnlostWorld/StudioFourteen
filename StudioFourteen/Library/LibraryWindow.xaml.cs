@@ -114,6 +114,12 @@ public partial class LibraryWindow : Panel
 		set => this.SetPersistence(value);
 	}
 
+	public TagCollection? PersistentTags
+	{
+		get => this.GetPersistence<TagCollection>();
+		set => this.SetPersistence(value);
+	}
+
 	public bool Flatten
 	{
 		get => this.flatten;
@@ -191,6 +197,9 @@ public partial class LibraryWindow : Panel
 		this.Path.Clear();
 		this.Path.Add(this.Services.Library.Root);
 		this.LoadPath();
+
+		if (this.PersistentTags != null)
+			this.TagFilter.Tags.Replace(this.PersistentTags);
 
 		this.navigation = Navigations.OpenDir;
 		this.searchQueue.InvokeImmediate();
@@ -305,6 +314,7 @@ public partial class LibraryWindow : Panel
 	private void OnTagsFilterChanged(object? sender, NotifyCollectionChangedEventArgs e)
 	{
 		this.searchQueue.InvokeImmediate();
+		this.PersistentTags = this.TagFilter.Tags;
 	}
 
 	private void OnInfoTagSelected(Tag tag)
