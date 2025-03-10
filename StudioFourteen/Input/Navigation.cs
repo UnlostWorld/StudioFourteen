@@ -14,16 +14,12 @@
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
 namespace StudioFourteen.Input;
-
-using DependencyPropertyGenerator;
-using FFXIVClientStructs;
 using Serilog;
 using StudioFourteen.Panels;
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Automation.Provider;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
@@ -62,16 +58,16 @@ public partial class Navigation
 		this.Log = Logging.ForContext(this.GetType());
 
 		this.upListener = new(InputAction.Navigate_Up);
-		this.upListener.Activate = () => this.OnNavigate(FocusNavigationDirection.Up).Run();
+		this.upListener.Activate = () => this.OnNavigate(FocusNavigationDirection.Up, this.upListener).Run();
 
 		this.downListener = new(InputAction.Navigate_Down);
-		this.downListener.Activate = () => this.OnNavigate(FocusNavigationDirection.Down).Run();
+		this.downListener.Activate = () => this.OnNavigate(FocusNavigationDirection.Down, this.downListener).Run();
 
 		this.leftListener = new(InputAction.Navigate_Left);
-		this.leftListener.Activate = () => this.OnNavigate(FocusNavigationDirection.Left).Run();
+		this.leftListener.Activate = () => this.OnNavigate(FocusNavigationDirection.Left, this.leftListener).Run();
 
 		this.rightListener = new(InputAction.Navigate_Right);
-		this.rightListener.Activate = () => this.OnNavigate(FocusNavigationDirection.Right).Run();
+		this.rightListener.Activate = () => this.OnNavigate(FocusNavigationDirection.Right, this.rightListener).Run();
 
 		this.tabLeftListener = new(InputAction.Navigate_TabLeft);
 		this.tabLeftListener.Activate = () => this.OnTab(false).Run();
@@ -160,6 +156,21 @@ public partial class Navigation
 		this.tabRightListener.Disable();
 		this.enterListener.Disable();
 		this.backListener.Disable();
+	}
+
+	private async Task OnNavigate(FocusNavigationDirection direction, InputActionListener listener)
+	{
+		bool isFirstStep = true;
+		while(listener.Value > 0.5)
+		{
+			await this.OnNavigate(direction);
+
+			if (isFirstStep)
+				await Task.Delay(250);
+
+			isFirstStep = false;
+			await Task.Delay(200);
+		}
 	}
 
 	private async Task OnNavigate(FocusNavigationDirection direction)
