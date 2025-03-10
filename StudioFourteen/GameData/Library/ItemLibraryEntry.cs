@@ -25,10 +25,9 @@ using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Sources;
 using StudioFourteen.Utilities;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using TerraFX.Interop.Windows;
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
+
 using ClassJobCategory = StudioFourteen.GameData.Sheets.ClassJobCategory;
 
 public class ItemLibraryEntry : ExcelLibraryEntry
@@ -39,6 +38,9 @@ public class ItemLibraryEntry : ExcelLibraryEntry
 		: base(source, item.RowId)
 	{
 		this.Item = item;
+
+		if (this.Item.EquipSlotCategory.Value.IsEquipable())
+			this.Tags.Add("Equipable");
 
 		this.Tags.Add(this.Item.EquipSlotCategory.Value.ToTags());
 		this.Tags.Add(this.EquipRestriction?.ToTags());

@@ -76,4 +76,25 @@ public static class EquipSlotCategoryExtensions
 
 		return false;
 	}
+
+	public static bool IsEquipable(this EquipSlotCategory self)
+	{
+		foreach (EquipmentSlot slot in Enum.GetValues<EquipmentSlot>())
+		{
+			if (self.Contains(slot))
+			{
+				return true;
+			}
+		}
+
+		foreach (WeaponSlot slot in Enum.GetValues<WeaponSlot>())
+		{
+			if (self.Contains(slot))
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
 }
