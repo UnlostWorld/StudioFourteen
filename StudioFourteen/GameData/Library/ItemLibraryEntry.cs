@@ -180,6 +180,8 @@ public class ItemLibraryPreview(ItemLibraryEntry item)
 
 	protected override async Task Start(LibraryPreviewBase? other)
 	{
+		this.Log.Information($">> preview?");
+
 		if (other != null)
 		{
 			await other.StopPreviewAsync();

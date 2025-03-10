@@ -61,6 +61,19 @@ public abstract class GroupEntryBase : LibraryEntryBase
 		}
 	}
 
+	public GroupEntryBase? GetGroup(string identifier)
+	{
+		foreach(GroupEntryBase group in this.groupEntries)
+		{
+			if (group.Identifier == identifier)
+			{
+				return group;
+			}
+		}
+
+		return null;
+	}
+
 	public virtual void Clear()
 	{
 		lock (this)

@@ -16,6 +16,7 @@
 namespace StudioFourteen.Library;
 
 using FontAwesome.Sharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen;
 using StudioFourteen.Files;
@@ -29,7 +30,9 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Drawing.Design;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -105,6 +108,12 @@ public partial class LibraryWindow : Panel
 	[AutoNotify] public GroupEntryBase? CurrentGroup => this.Path.Count > 0 ? this.Path[this.Path.Count - 1] : null;
 	[AutoNotify] public bool CanChangeFlatten => this.SearchQueryFilter.IsEmpty;
 
+	public string? PersistentPath
+	{
+		get => this.GetPersistence<string>();
+		set => this.SetPersistence(value);
+	}
+
 	public bool Flatten
 	{
 		get => this.flatten;
@@ -148,6 +157,7 @@ public partial class LibraryWindow : Panel
 			// clear the path
 			this.Path.Clear();
 			this.Path.Add(this.Services.Library.Root);
+			this.SavePath();
 
 			this.navigation = Navigations.OpenDir;
 			this.searchQueue.InvokeImmediate();
@@ -180,6 +190,7 @@ public partial class LibraryWindow : Panel
 
 		this.Path.Clear();
 		this.Path.Add(this.Services.Library.Root);
+		this.LoadPath();
 
 		this.navigation = Navigations.OpenDir;
 		this.searchQueue.InvokeImmediate();
@@ -277,6 +288,8 @@ public partial class LibraryWindow : Panel
 				this.Path.RemoveAt(index + 1);
 			}
 
+			this.SavePath();
+
 			this.navigation = Navigations.Back;
 			this.searchQueue.InvokeImmediate();
 		}
@@ -346,6 +359,7 @@ public partial class LibraryWindow : Panel
 
 			this.navigation = Navigations.Back;
 			this.Path.Replace(newPath);
+			this.SavePath();
 			this.searchQueue.InvokeImmediate();
 		}
 	}
@@ -446,6 +460,7 @@ public partial class LibraryWindow : Panel
 		if (this.SelectedResult is GroupResult groupResult)
 		{
 			this.Path.Add(groupResult.Group);
+			this.SavePath();
 			this.navigation = Navigations.OpenDir;
 			this.searchQueue.InvokeImmediate();
 		}
@@ -508,6 +523,45 @@ public partial class LibraryWindow : Panel
 
 			this.currentHover = null;
 		}
+	}
+
+	private void SavePath()
+	{
+		StringBuilder sb = new();
+		foreach(GroupEntryBase segment in this.Path)
+		{
+			if (segment == this.Services.Library.Root)
+				continue;
+
+			sb.Append(segment.Identifier);
+			sb.Append("/");
+		}
+
+		this.PersistentPath = sb.ToString();
+	}
+
+	private void LoadPath()
+	{
+		string? path = this.PersistentPath;
+		if (path == null)
+			return;
+
+		string[] segments = path.Split("/");
+
+		List<GroupEntryBase> groups = new();
+		GroupEntryBase? current = this.Services.Library.Root;
+		groups.Add(current);
+
+		foreach(string identifier in segments)
+		{
+			current = current?.GetGroup(identifier);
+			if (current != null)
+			{
+				groups.Add(current);
+			}
+		}
+
+		this.Path.Replace(groups);
 	}
 }
 
