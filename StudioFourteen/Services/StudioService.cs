@@ -48,7 +48,7 @@ public partial class StudioService : ServiceBase
 	{
 		await base.Start();
 
-		#if DEBUG
+		/*#if DEBUG
 		{
 			if (this.Settings.WasStudioOpen)
 			{
@@ -60,7 +60,7 @@ public partial class StudioService : ServiceBase
 				});
 			}
 		}
-		#endif
+		#endif*/
 	}
 
 	public override Task Stop()
