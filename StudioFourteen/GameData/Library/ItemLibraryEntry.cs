@@ -180,8 +180,6 @@ public class ItemLibraryPreview(ItemLibraryEntry item)
 
 	protected override async Task Start(LibraryPreviewBase? other)
 	{
-		this.Log.Information($">> preview?");
-
 		if (other != null)
 		{
 			await other.StopPreviewAsync();
@@ -194,7 +192,6 @@ public class ItemLibraryPreview(ItemLibraryEntry item)
 			return;
 
 		EquipSlotCategory equipSlot = item.EquipSlot.Value;
-
 		foreach(EquipmentSlot slot in Enum.GetValues<EquipmentSlot>())
 		{
 			if (equipSlot.Contains(slot))
