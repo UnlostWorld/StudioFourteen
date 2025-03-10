@@ -53,35 +53,53 @@
 					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
 
-				<Border
-					Grid.Column="0"
-					Margin="1">
-					<StackPanel Orientation="Horizontal">
+				<StackPanel Orientation="Horizontal" Grid.Column="0">
+
+					<Border
+						Style="{DynamicResource WpfUtilsControlBorder}"
+						Margin="1">
+						<StackPanel Orientation="Horizontal">
+							<Button
+								Width="28"
+								Height="Auto"
+								Background="Transparent"
+								Click="OnBackClicked"
+								IsEnabled="{Binding CurrentGroup.Parent, Converter={StaticResource NotNullToBoolConverter}}"
+								ToolTip="{DynamicResource LOC_Library_GoUpTooltip}">
+								<wpfUtils:IconBlock Icon="ArrowLeft" />
+							</Button>
+
+							<Button
+								Width="28"
+								Height="Auto"
+								Background="Transparent"
+								Click="OnBackClicked"
+								IsEnabled="False"
+								ToolTip="{DynamicResource LOC_Library_GoUpTooltip}">
+								<wpfUtils:IconBlock Icon="ArrowRight" />
+							</Button>
+						</StackPanel>
+
+					</Border>
+
+					<Border
+						Style="{DynamicResource WpfUtilsControlBorder}"
+						Margin="1">
 						<Button
 							Width="28"
 							Height="Auto"
 							Background="Transparent"
-							Click="OnBackClicked"
+							Click="OnUpClicked"
 							IsEnabled="{Binding CurrentGroup.Parent, Converter={StaticResource NotNullToBoolConverter}}"
 							ToolTip="{DynamicResource LOC_Library_GoUpTooltip}">
-							<wpfUtils:IconBlock Icon="ArrowLeft" />
+							<wpfUtils:IconBlock Icon="ArrowUp" />
 						</Button>
+					</Border>
 
-						<Button
-							Width="28"
-							Height="Auto"
-							Background="Transparent"
-							Click="OnBackClicked"
-							IsEnabled="False"
-							ToolTip="{DynamicResource LOC_Library_GoUpTooltip}">
-							<wpfUtils:IconBlock Icon="ArrowRight" />
-						</Button>
-					</StackPanel>
 
-					<Border.Style>
+					<StackPanel.Style>
 						<Style
-							BasedOn="{StaticResource WpfUtilsControlBorder}"
-							TargetType="{x:Type Border}">
+							TargetType="{x:Type StackPanel}">
 
 							<Style.Triggers>
 								<DataTrigger
@@ -91,9 +109,9 @@
 								</DataTrigger>
 							</Style.Triggers>
 						</Style>
-					</Border.Style>
+					</StackPanel.Style>
 
-				</Border>
+				</StackPanel>
 
 				<Border Margin="1">
 					<Border.Style>

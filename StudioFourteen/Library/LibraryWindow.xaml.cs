@@ -340,6 +340,13 @@ public partial class LibraryWindow : Panel
 		this.searchQueue.InvokeImmediate();
 	}
 
+	private void OnUpClicked(object sender, RoutedEventArgs e)
+	{
+		this.navigation = Navigations.Back;
+		this.Path.RemoveAt(this.Path.Count - 1);
+		this.searchQueue.InvokeImmediate();
+	}
+
 	private void OnTagsFilterChanged(object? sender, NotifyCollectionChangedEventArgs e)
 	{
 		this.searchQueue.InvokeImmediate();
