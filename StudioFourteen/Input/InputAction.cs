@@ -63,7 +63,8 @@ public enum InputAction
 	OrbitCamera_MoveDown,
 	OrbitCamera_MoveLeft,
 	OrbitCamera_MoveRight,
-
+	OrbitCamera_MoveForward,
+	OrbitCamera_MoveBackward,
 	OrbitCamera_ZoomIn,
 	OrbitCamera_ZoomOut,
 	OrbitCamera_RotateLeft,

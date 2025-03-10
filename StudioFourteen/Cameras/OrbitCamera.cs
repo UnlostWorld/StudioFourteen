@@ -35,6 +35,8 @@ public partial class OrbitCamera : StudioCameraBase
 	private readonly InputActionListener moveDownListener = new(InputAction.OrbitCamera_MoveDown);
 	private readonly InputActionListener moveLeftListener = new(InputAction.OrbitCamera_MoveLeft);
 	private readonly InputActionListener moveRightListener = new(InputAction.OrbitCamera_MoveRight);
+	private readonly InputActionListener moveForwardListener = new (InputAction.OrbitCamera_MoveForward);
+	private readonly InputActionListener moveBackwardListener = new(InputAction.OrbitCamera_MoveBackward);
 	private readonly InputActionListener panUpListener = new(InputAction.OrbitCamera_PanUp);
 	private readonly InputActionListener panDownListener = new(InputAction.OrbitCamera_PanDown);
 	private readonly InputActionListener panLeftListener = new(InputAction.OrbitCamera_PanLeft);
@@ -95,6 +97,8 @@ public partial class OrbitCamera : StudioCameraBase
 		this.moveDownListener.Enable();
 		this.moveLeftListener.Enable();
 		this.moveRightListener.Enable();
+		this.moveForwardListener.Enable();
+		this.moveBackwardListener.Enable();
 		this.panUpListener.Enable();
 		this.panDownListener.Enable();
 		this.panLeftListener.Enable();
@@ -117,6 +121,8 @@ public partial class OrbitCamera : StudioCameraBase
 		this.moveDownListener.Disable();
 		this.moveLeftListener.Disable();
 		this.moveRightListener.Disable();
+		this.moveForwardListener.Disable();
+		this.moveBackwardListener.Disable();
 		this.panUpListener.Disable();
 		this.panDownListener.Disable();
 		this.panLeftListener.Disable();
@@ -140,6 +146,8 @@ public partial class OrbitCamera : StudioCameraBase
 		moveDir.Y -= this.moveDownListener.Value;
 		moveDir.X -= this.moveLeftListener.Value;
 		moveDir.X += this.moveRightListener.Value;
+		moveDir.Z += this.moveForwardListener.Value;
+		moveDir.Z -= this.moveBackwardListener.Value;
 		this.desiredMove = moveDir;
 
 		Vector3 rot = Vector3.Zero;

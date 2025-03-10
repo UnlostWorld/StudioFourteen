@@ -105,6 +105,8 @@ public class InputService : ServiceBase
 		this.AddBind(InputAction.OrbitCamera_MoveDown, KeyboardDevice.GetAxisId(VirtualKey.S), KeyboardDevice.GetAxisId(VirtualKey.SHIFT));
 		this.AddBind(InputAction.OrbitCamera_MoveLeft, KeyboardDevice.GetAxisId(VirtualKey.A), KeyboardDevice.GetAxisId(VirtualKey.SHIFT));
 		this.AddBind(InputAction.OrbitCamera_MoveRight, KeyboardDevice.GetAxisId(VirtualKey.D), KeyboardDevice.GetAxisId(VirtualKey.SHIFT));
+		this.AddBind(InputAction.OrbitCamera_MoveForward, KeyboardDevice.GetAxisId(VirtualKey.Q), KeyboardDevice.GetAxisId(VirtualKey.SHIFT));
+		this.AddBind(InputAction.OrbitCamera_MoveBackward, KeyboardDevice.GetAxisId(VirtualKey.E), KeyboardDevice.GetAxisId(VirtualKey.SHIFT));
 		this.AddBind(InputAction.OrbitCamera_MoveUp, MouseDevice.GetDragAxisId(MouseButtons.Right, MouseDevice.DragDirections.Up));
 		this.AddBind(InputAction.OrbitCamera_MoveDown, MouseDevice.GetDragAxisId(MouseButtons.Right, MouseDevice.DragDirections.Down));
 		this.AddBind(InputAction.OrbitCamera_MoveLeft, MouseDevice.GetDragAxisId(MouseButtons.Right, MouseDevice.DragDirections.Left));
