@@ -56,6 +56,7 @@ public class InputService : ServiceBase
 		this.AddBind(InputAction.Navigate_TabRight, KeyboardDevice.GetAxisId(VirtualKey.E));
 		this.AddBind(InputAction.Navigate_Enter, KeyboardDevice.GetAxisId(VirtualKey.SPACE));
 		this.AddBind(InputAction.Navigate_Back, KeyboardDevice.GetAxisId(VirtualKey.ESCAPE));
+		this.AddBind(InputAction.Navigate_Back, KeyboardDevice.GetAxisId(VirtualKey.BACK));
 
 		this.AddBind(InputAction.Navigate_Up, GamepadDevice.GetAxisId(GamepadDevice.Buttons.DpadUp));
 		this.AddBind(InputAction.Navigate_Down, GamepadDevice.GetAxisId(GamepadDevice.Buttons.DpadDown));
