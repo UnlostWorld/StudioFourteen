@@ -29,8 +29,9 @@
 		<ResourceDictionary Source="./Tags/TagsControlStyles.xaml" />
 		<ResourceDictionary Source="./Tags/TagSelectorStyles.xaml" />
 		<ResourceDictionary Source="./Controls/IconControlStyles.xaml" />
+        <ResourceDictionary Source="./Posing/BoneViewStyles.xaml" />
 
-		<!--  Default Language  -->
+        <!--  Default Language  -->
 		<ResourceDictionary Source="./Languages/English.xaml" />
 
 		<!--  Templates  -->

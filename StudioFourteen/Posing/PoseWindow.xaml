@@ -47,13 +47,13 @@
 				SelectedIndex="{Binding SelectedTab}"
 				Style="{DynamicResource WpfUtilsSideTabs}">
 				<TabItem>
-					<TabItem.Header>
-						<wpfUtils:IconBlock
+                    <TabItem.Header>
+                        <wpfUtils:IconBlock
 							Margin="12"
 							Icon="Person" />
-					</TabItem.Header>
+                    </TabItem.Header>
 
-					<TabItem.Visibility>
+                    <TabItem.Visibility>
 						<MultiBinding Converter="{StaticResource MultiOrVisibility}">
 							<Binding
 								ElementName="BodyView"
@@ -271,8 +271,15 @@
 							ViewDefinition="{Binding Services.Data.SkeletonViews[DiabolosWings]}" />
 					</Grid>
 				</TabItem>
-
-			</TabControl>
+                <TabItem>
+                    <TabItem.Header>
+                        <wpfUtils:IconBlock
+						Margin="12"
+						Icon="GripHorizontal" />
+                    </TabItem.Header>
+                    <pose:MatrixView/>
+                </TabItem>
+            </TabControl>
 		</Grid>
 
 		<Border Grid.Column="1">
