@@ -16,7 +16,7 @@
     
     <Grid>
         <StackPanel>
-            <GroupBox Header="Head">
+            <GroupBox Header="{DynamicResource LOC_PoseMatrix_HeadCategory}">
                 <Grid>
 
                     <Grid.ColumnDefinitions>
@@ -150,7 +150,7 @@
                 </Grid>
             </GroupBox>
 
-            <GroupBox Header="Pose_Matrix_HairAndAccessoriesCategory">
+            <GroupBox Header="{DynamicResource LOC_PoseMatrix_HairAndAccessoriesCategory}">
                
                 <Grid Margin="0, 2, 0, 0">
 
@@ -226,7 +226,7 @@
                 </Grid>
             </GroupBox>
 
-            <GroupBox Header="Pose_Matrix_BodyCategory">
+            <GroupBox Header="{DynamicResource LOC_PoseMatrix_BodyCategory}">
                 <Grid>
 
                     <Grid.ColumnDefinitions>
@@ -347,7 +347,7 @@
                 </Grid>
             </GroupBox>
 
-            <GroupBox Header="Pose_Matrix_GenitalCategory">
+            <GroupBox Header="{DynamicResource LOC_PoseMatrix_GenitalCategory}">
                 
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -417,76 +417,7 @@
 
             </GroupBox>
 
-            <GroupBox Header="Pose_Matrix_GenitalCategory">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                    </Grid.ColumnDefinitions>
-
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
-
-                    <TextBlock Grid.Column="0" Text="Pose_Penis" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
-                    <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal" >
-                        <local:BoneView BoneName="iv_ochinko_a" Label="1"/>
-                        <local:BoneView BoneName="iv_ochinko_b" Label="2"/>
-                        <local:BoneView BoneName="iv_ochinko_c" Label="3"/>
-                        <local:BoneView BoneName="iv_ochinko_d" Label="4"/>
-                        <local:BoneView BoneName="iv_ochinko_e" Label="5"/>
-                        <local:BoneView BoneName="iv_ochinko_f" Label="6"/>
-                    </StackPanel>
-
-                    <TextBlock Grid.Column="3" Text="Pose_Scrotum" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
-                    <StackPanel Grid.Column="4" Grid.Row="0" Orientation="Horizontal" >
-                        <local:BoneView BoneName="iv_kougan_l" Label="L"/>
-                        <local:BoneView BoneName="iv_kougan_r" Label="R"/>
-                    </StackPanel>
-
-                    <TextBlock Grid.Column="0" Grid.Row="1" Text="Pose_Vagina" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
-                    <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" >
-                        <local:BoneView BoneName="iv_omanko"/>
-                    </StackPanel>
-
-                    <TextBlock Grid.Column="3" Grid.Row="1" Text="Pose_Clitoris" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
-                    <StackPanel Grid.Column="4" Grid.Row="1" Orientation="Horizontal" >
-                        <local:BoneView BoneName="iv_kuritto"/>
-                    </StackPanel>
-
-                    <TextBlock Grid.Column="7" Grid.Row="1" Text="Pose_Labia" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
-                    <StackPanel Grid.Column="8" Grid.Row="1" Orientation="Horizontal" >
-                        <local:BoneView BoneName="iv_inshin_l" Label="L"/>
-                        <local:BoneView BoneName="iv_inshin_r" Label="R"/>
-                    </StackPanel>
-
-                    <TextBlock Grid.Column="0" Grid.Row="2" Text="Pose_Anus" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
-                    <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal" >
-                        <local:BoneView BoneName="iv_koumon"/>
-                        <local:BoneView BoneName="iv_koumon_l" Label="L"/>
-                        <local:BoneView BoneName="iv_koumon_r" Label="R"/>
-                    </StackPanel>
-
-                    <TextBlock Grid.Column="3" Grid.Row="2" Text="Pose_Buttocks" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
-                    <StackPanel Grid.Column="4" Grid.Row="2" Orientation="Horizontal" >
-                        <local:BoneView BoneName="iv_shiri_l" Label="L"/>
-                        <local:BoneView BoneName="iv_shiri_r" Label="R"/>
-                    </StackPanel>
-
-                </Grid>
-
-            </GroupBox>
-
-            <GroupBox Header="Pose_Matrix_LeftHandCategory">
+            <GroupBox Header="{DynamicResource LOC_PoseMatrix_LeftHandCategory}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
@@ -558,7 +489,7 @@
                 </Grid>
             </GroupBox>
 
-            <GroupBox Header="Pose_Matrix_RightHandCategory">
+            <GroupBox Header="{DynamicResource LOC_PoseMatrix_RightHandCategory}">
 
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -630,7 +561,7 @@
                 </Grid>
             </GroupBox>
 
-            <GroupBox Header="Pose_Matrix_LegsCategory">
+            <GroupBox Header="{DynamicResource LOC_PoseMatrix_LegsCategory}">
 
                 <Grid>
 
@@ -704,7 +635,7 @@
                 </Grid>
             </GroupBox>
 
-            <GroupBox Header=" Pose_Matrix_LeftFootCategory">
+            <GroupBox Header="{DynamicResource LOC_PoseMatrix_LeftFootCategory}">
 
                 <Grid>
                     <Grid.RowDefinitions>
@@ -761,64 +692,7 @@
                 </Grid>
             </GroupBox>
 
-            <GroupBox Header="Pose_Matrix_RightFootCategory">
-
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="auto"/>
-                        <ColumnDefinition Width="auto"/>
-                    </Grid.ColumnDefinitions>
-
-                    <TextBlock Grid.Column="0" Grid.Row="0" Text="Pose_Foot" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
-                    <local:BoneView Grid.Column="1" Grid.Row="0" BoneName="FootRight"/>
-
-                    <TextBlock Grid.Column="2" Grid.Row="0" Text="Pose_Toes" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
-                    <local:BoneView Grid.Column="3" Grid.Row="0" BoneName="ToesRight"/>
-
-                    <TextBlock Grid.Column="4" Grid.Row="0" Text="Pose_BigToe" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
-                    <StackPanel Orientation="Horizontal" Grid.Column="5" Grid.Row="0">
-                        <local:BoneView BoneName="iv_asi_oya_a_r" Label="1"/>
-                        <local:BoneView BoneName="iv_asi_oya_b_r" Label="2"/>
-                    </StackPanel>
-
-                    <TextBlock Grid.Column="6" Grid.Row="0" Text="Pose_IndexToe" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
-                    <StackPanel Orientation="Horizontal" Grid.Column="7" Grid.Row="0">
-                        <local:BoneView BoneName="iv_asi_hito_a_r" Label="1"/>
-                        <local:BoneView BoneName="iv_asi_hito_b_r" Label="2"/>
-                    </StackPanel>
-
-                    <TextBlock Grid.Column="0" Grid.Row="1" Text="Pose_MiddleToe" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
-                    <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1">
-                        <local:BoneView BoneName="iv_asi_naka_a_r" Label="1"/>
-                        <local:BoneView BoneName="iv_asi_naka_b_r" Label="2"/>
-                    </StackPanel>
-
-                    <TextBlock Grid.Column="2" Grid.Row="1" Text="Pose_ForeToe" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
-                    <StackPanel Orientation="Horizontal" Grid.Column="3" Grid.Row="1">
-                        <local:BoneView BoneName="iv_asi_kusu_a_r" Label="1"/>
-                        <local:BoneView BoneName="iv_asi_kusu_b_r" Label="2"/>
-                    </StackPanel>
-
-                    <TextBlock Grid.Column="4" Grid.Row="1" Text="Pose_PinkyToe" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
-                    <StackPanel Orientation="Horizontal" Grid.Column="5" Grid.Row="1">
-                        <local:BoneView BoneName="iv_asi_ko_a_r" Label="1"/>
-                        <local:BoneView BoneName="iv_asi_ko_b_r" Label="2"/>
-                    </StackPanel>
-
-                </Grid>
-            </GroupBox>
-
-            <GroupBox Header="Pose_Matrix_LeftFootCategory">
+            <GroupBox Header="{DynamicResource LOC_PoseMatrix_LeftFootCategory}">
 
                 <Grid>
                     <Grid.RowDefinitions>
@@ -875,7 +749,7 @@
                 </Grid>
             </GroupBox>
 
-            <GroupBox Header="Pose_Matrix_RightFootCategory">
+            <GroupBox Header="{DynamicResource LOC_PoseMatrix_RightFootCategory}">
 
                 <Grid>
                     <Grid.RowDefinitions>
@@ -932,7 +806,7 @@
                 </Grid>
             </GroupBox>
 
-            <GroupBox Header="Pose_Matrix_ClothesCategory">
+            <GroupBox Header="{DynamicResource LOC_PoseMatrix_ClothesCategory}">
 
                 <Grid>
 
@@ -985,7 +859,7 @@
                 </Grid>
             </GroupBox>
 
-            <GroupBox Header="Pose_Matrix_EquipmentCategory">
+            <GroupBox Header="{DynamicResource LOC_PoseMatrix_EquipmentCategory}">
 
                 <Grid>
                     <Grid.RowDefinitions>
@@ -1051,7 +925,7 @@
                 </Grid>
             </GroupBox>
 
-            <GroupBox Header="Pose_Matrix_WeaponCategory">
+            <GroupBox Header="{DynamicResource LOC_PoseMatrix_WeaponCategory}">
 
                 <Grid>
                     <Grid.RowDefinitions>

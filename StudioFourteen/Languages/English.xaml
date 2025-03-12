@@ -232,11 +232,24 @@
 	<sys:String x:Key="LOC_Pose_LockTransform">Pause animations on the selected bone</sys:String>
 	<sys:String x:Key="LOC_Pose_RevertPose">Revert all changes to {0}'s pose</sys:String>
 	<sys:String x:Key="LOC_Pose_Reference">Set the targeted actor to its reference pose</sys:String>
+	<sys:String x:Key="LOC_PoseMatrix_HeadCategory">Head</sys:String>
+	<sys:String x:Key="LOC_PoseMatrix_HairAndAccessoriesCategory">Hair and Accessories</sys:String>
+	<sys:String x:Key="LOC_PoseMatrix_BodyCategory">Body</sys:String>
+	<sys:String x:Key="LOC_PoseMatrix_GenitalCategory">Genitals</sys:String>
+	<sys:String x:Key="LOC_PoseMatrix_LeftHandCategory">Left Hand</sys:String>
+	<sys:String x:Key="LOC_PoseMatrix_RightHandCategory">Right Hand</sys:String>
+	<sys:String x:Key="LOC_PoseMatrix_LegsCategory">Legs</sys:String>
+	<sys:String x:Key="LOC_PoseMatrix_LeftFootCategory">Left Foot</sys:String>
+	<sys:String x:Key="LOC_PoseMatrix_RightFootCategory">Right Foot</sys:String>
+	<sys:String x:Key="LOC_PoseMatrix_ClothesCategory">Clothes</sys:String>
+	<sys:String x:Key="LOC_PoseMatrix_EquipmentCategory">Equipment</sys:String>
+	<sys:String x:Key="LOC_PoseMatrix_WeaponCategory">Weapon</sys:String>
 
 	<sys:String x:Key="LOC_Pose_Mirror_Header">Transfer values</sys:String>
 	<sys:String x:Key="LOC_Pose_Mirror_None">None</sys:String>
 	<sys:String x:Key="LOC_Pose_Mirror_Copy">Copy</sys:String>
 	<sys:String x:Key="LOC_Pose_Mirror_Flip">Mirror</sys:String>
+
 
 	<!--  Camera  -->
 	<sys:String x:Key="LOC_Camera_Fov">Field of View</sys:String>
