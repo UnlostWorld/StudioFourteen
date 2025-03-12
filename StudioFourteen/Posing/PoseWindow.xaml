@@ -277,7 +277,9 @@
 						Margin="12"
 						Icon="GripHorizontal" />
                     </TabItem.Header>
+					<ScrollViewer>
                     <pose:MatrixView/>
+					</ScrollViewer>
                 </TabItem>
             </TabControl>
 		</Grid>

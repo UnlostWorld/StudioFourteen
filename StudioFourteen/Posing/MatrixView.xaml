@@ -38,10 +38,10 @@
                         <RowDefinition/>
                     </Grid.RowDefinitions>
 
-                    <TextBlock Grid.Column="0" Grid.Row="0" Text="Pose_Head" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <TextBlock Grid.Column="0" Grid.Row="0" Text="{DynamicResource LOC_Bone_j_kao}" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
                     <local:BoneView Grid.Column="1" Grid.Row="0" BoneName="Head"/>
 
-                    <TextBlock Grid.Column="2" Grid.Row="0" Text="Pose_Nose" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <TextBlock Grid.Column="2" Grid.Row="0" Text="{DynamicResource LOC_Bone_j_f_hana}" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
                     <local:BoneView Grid.Column="3" Grid.Row="0" BoneName="Nose"/>
 
                     <TextBlock Grid.Column="4" Grid.Row="0" Text="Pose_Bridge" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
