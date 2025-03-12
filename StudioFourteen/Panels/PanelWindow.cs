@@ -85,17 +85,6 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 	public event PropertyChangedEventHandler? PropertyChanged;
 
-	[Flags]
-	public enum ResizeDirections
-	{
-		None,
-
-		Right,
-		Bottom,
-		Left,
-		Top,
-	}
-
 	public ServiceManager Services => ServiceManager.Instance;
 
 	public virtual bool IsUiVisibleAndOpen
@@ -260,7 +249,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		this.Panel?.SetPersistence(id, value);
 	}
 
-	public virtual void OnResizeDelta(ResizeDirections direction, DragDeltaEventArgs e)
+	public virtual void OnResizeDelta(DragDeltaEventArgs e)
 	{
 		double newWidth = this.ActualWidth + e.HorizontalChange;
 		double newHeight = this.ActualHeight + e.VerticalChange;
@@ -488,8 +477,8 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		}
 
 		// wiggle wiggle
-		this.OnResizeDelta(ResizeDirections.Right, new DragDeltaEventArgs(1, 1));
-		this.OnResizeDelta(ResizeDirections.Right, new DragDeltaEventArgs(-1, -1));
+		this.OnResizeDelta(new DragDeltaEventArgs(1, 1));
+		this.OnResizeDelta(new DragDeltaEventArgs(-1, -1));
 	}
 
 	partial void OnIsMaximizedChanged(bool newValue)

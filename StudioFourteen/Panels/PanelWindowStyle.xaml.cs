@@ -57,6 +57,6 @@ public partial class PanelWindowResources
 
 	private void OnResizeThumbDragDelta(object sender, DragDeltaEventArgs e)
 	{
-		GetWindow(sender).OnResizeDelta(PanelWindow.ResizeDirections.Right | PanelWindow.ResizeDirections.Bottom, e);
+		GetWindow(sender).OnResizeDelta(e);
 	}
 }
