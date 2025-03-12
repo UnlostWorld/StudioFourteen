@@ -4,13 +4,1119 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:StudioFourteen.Posing"
+             xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=WpfUtils"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="B2V"/>
+        <converters:InvertedBoolToVisibilityConverter x:Key="!B2V"/>
+        <converters:NotEmptyToVisibilityConverter x:Key="NotEmptyToVisibility"/>
+    </UserControl.Resources>
+    
     <Grid>
         <StackPanel>
             <GroupBox Header="Head">
-                <local:BoneView/>
+                <Grid>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Column="0" Grid.Row="0" Text="Pose_Head" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <local:BoneView Grid.Column="1" Grid.Row="0" BoneName="Head"/>
+
+                    <TextBlock Grid.Column="2" Grid.Row="0" Text="Pose_Nose" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <local:BoneView Grid.Column="3" Grid.Row="0" BoneName="Nose"/>
+
+                    <TextBlock Grid.Column="4" Grid.Row="0" Text="Pose_Bridge" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <local:BoneView Grid.Column="5" Grid.Row="0" BoneName="Bridge"/>
+
+                    <TextBlock Grid.Column="6" Grid.Row="0" Text="Pose_Ears" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Orientation="Horizontal" Grid.Column="7" Grid.Row="0">
+                        <local:BoneView BoneName="EarLeft" Label="L"/>
+                        <local:BoneView BoneName="EarRight" Label="R"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="8" Text="Pose_VieraEars" Style="{DynamicResource Label}" Visibility="{Binding IsViera, Converter={StaticResource B2V}}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Orientation="Horizontal" Grid.Column="9" Grid.ColumnSpan="4" Grid.Row="0" Visibility="{Binding IsEars01, Converter={StaticResource B2V}}">
+                        <local:BoneView BoneName="VieraEar01ALeft" Label="L1"/>
+                        <local:BoneView BoneName="VieraEar01BLeft" Label="L2"/>
+                        <local:BoneView BoneName="VieraEar01ARight" Label="R1"/>
+                        <local:BoneView BoneName="VieraEar01BRight" Label="R2"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Column="9" Grid.ColumnSpan="4" Grid.Row="0" Visibility="{Binding IsEars02, Converter={StaticResource B2V}}">
+                        <local:BoneView BoneName="VieraEar02ALeft" Label="L1"/>
+                        <local:BoneView BoneName="VieraEar02BLeft" Label="L2"/>
+                        <local:BoneView BoneName="VieraEar02ARight" Label="R1"/>
+                        <local:BoneView BoneName="VieraEar02BRight" Label="R2"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Column="9" Grid.ColumnSpan="4" Grid.Row="0" Visibility="{Binding IsEars03, Converter={StaticResource B2V}}">
+                        <local:BoneView BoneName="VieraEar03ALeft" Label="L1"/>
+                        <local:BoneView BoneName="VieraEar03BLeft" Label="L2"/>
+                        <local:BoneView BoneName="VieraEar03ARight" Label="R1"/>
+                        <local:BoneView BoneName="VieraEar03BRight" Label="R2"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Grid.Column="9" Grid.ColumnSpan="4" Grid.Row="0" Visibility="{Binding IsEars04, Converter={StaticResource B2V}}">
+                        <local:BoneView BoneName="VieraEar04ALeft" Label="L1"/>
+                        <local:BoneView BoneName="VieraEar04BLeft" Label="L2"/>
+                        <local:BoneView BoneName="VieraEar04ARight" Label="R1"/>
+                        <local:BoneView BoneName="VieraEar04BRight" Label="R2"/>
+                    </StackPanel>
+
+
+                    <TextBlock Grid.Column="0" Grid.Row="1" Text="Pose_Eyes" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" >
+                        <local:BoneView BoneName="EyeLeft" Label="L"/>
+                        <local:BoneView BoneName="EyeRight" Label="R"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="2" Grid.Row="1" Text="Pose_Eyebrows" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="3" Grid.Row="1" Orientation="Horizontal">
+                        <local:BoneView BoneName="EyebrowLeft" Label="L"/>
+                        <local:BoneView BoneName="EyebrowRight" Label="R"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="4" Grid.Row="1" Text="Pose_Brows" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="5" Grid.Row="1" Orientation="Horizontal">
+                        <local:BoneView BoneName="BrowLeft" Label="L"/>
+                        <local:BoneView BoneName="BrowRight" Label="R"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="6" Grid.Row="1" Text="Pose_Eyelids" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="7" Grid.Row="1" Orientation="Horizontal">
+                        <local:BoneView BoneName="EyelidUpperLeft" Label="L"/>
+                        <local:BoneView BoneName="EyelidUpperRight" Label="R"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="8" Grid.Row="1" Text="Pose_LowerLids" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="9" Grid.Row="1" Orientation="Horizontal">
+                        <local:BoneView BoneName="EyelidLowerLeft" Label="L"/>
+                        <local:BoneView BoneName="EyelidLowerRight" Label="R"/>
+                    </StackPanel>
+
+
+                    <TextBlock Grid.Column="0" Grid.Row="2" Text="Pose_Cheeks" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal"  Visibility="{Binding IsHrothgar, Converter={StaticResource !B2V}}">
+                        <local:BoneView BoneName="CheekLeft" Label="L"/>
+                        <local:BoneView BoneName="CheekRight" Label="R"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="2" Grid.Row="2" Text="Pose_Jaw" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="3" Grid.Row="2" Orientation="Horizontal">
+                        <local:BoneView BoneName="Jaw"/>
+                        <local:BoneView BoneName="HrothJawUpper" Visibility="{Binding IsHrothgar, Converter={StaticResource B2V}}"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="4" Grid.Row="2" Text="Pose_Mouth" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="5" Grid.Row="2" Orientation="Horizontal">
+                        <local:BoneView BoneName="LipsLeft" Label="L" Visibility="{Binding IsHrothgar, Converter={StaticResource !B2V}}"/>
+                        <local:BoneView BoneName="LipsRight" Label="R" Visibility="{Binding IsHrothgar, Converter={StaticResource !B2V}}"/>
+                        <local:BoneView BoneName="HrothLipsLeft" Label="L" Visibility="{Binding IsHrothgar, Converter={StaticResource B2V}}"/>
+                        <local:BoneView BoneName="HrothLipsRight" Label="R" Visibility="{Binding IsHrothgar, Converter={StaticResource B2V}}"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="6" Grid.Row="2" Text="Pose_UpperLip" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="7" Grid.Row="2" Orientation="Horizontal">
+                        <local:BoneView BoneName="LipUpperA" Label="1" Visibility="{Binding IsHrothgar, Converter={StaticResource !B2V}}"/>
+                        <local:BoneView BoneName="LipUpperB" Label="2" Visibility="{Binding IsHrothgar, Converter={StaticResource !B2V}}"/>
+                        <local:BoneView BoneName="HrothLipUpperLeft" Label="L" Visibility="{Binding IsHrothgar, Converter={StaticResource B2V}}"/>
+                        <local:BoneView BoneName="HrothLipUpper" Label="C" Visibility="{Binding IsHrothgar, Converter={StaticResource B2V}}"/>
+                        <local:BoneView BoneName="HrothLipUpperRight" Label="R" Visibility="{Binding IsHrothgar, Converter={StaticResource B2V}}"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="8" Grid.Row="2" Text="Pose_LowerLip" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="9" Grid.Row="2" Orientation="Horizontal">
+                        <local:BoneView BoneName="LipLowerA" Label="1" Visibility="{Binding IsHrothgar, Converter={StaticResource !B2V}}"/>
+                        <local:BoneView BoneName="LipLowerB" Label="2" Visibility="{Binding IsHrothgar, Converter={StaticResource !B2V}}"/>
+                        <local:BoneView BoneName="HrothLipLower" Visibility="{Binding IsHrothgar, Converter={StaticResource B2V}}"/>
+                    </StackPanel>
+
+                </Grid>
             </GroupBox>
+
+            <GroupBox Header="Pose_Matrix_HairAndAccessoriesCategory">
+               
+                <Grid Margin="0, 2, 0, 0">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0"
+											   Text="Pose_Earrings"
+											   Style="{DynamicResource Label}"
+											   Margin="16, 0, 3, 0" />
+                    <StackPanel Grid.Column="1"
+									Orientation="Horizontal">
+                        <local:BoneView BoneName="EarringALeft"
+											Label="L1" />
+                        <local:BoneView BoneName="EarringBLeft"
+											Label="L2" />
+                        <local:BoneView BoneName="EarringARight"
+											Label="R1" />
+                        <local:BoneView BoneName="EarringBRight"
+											Label="R2" />
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="2"
+											   Text="Pose_Whiskers"
+											   Style="{DynamicResource Label}"
+											   Margin="16, 0, 3, 0"
+											   Visibility="{Binding IsHrothgar, Converter={StaticResource B2V}}" />
+                    <StackPanel Grid.Column="3"
+									Orientation="Horizontal"
+									Visibility="{Binding IsHrothgar, Converter={StaticResource B2V}}">
+                        <local:BoneView BoneName="HrothWhiskersLeft"
+											Label="L" />
+                        <local:BoneView BoneName="HrothWhiskersRight"
+											Label="R" />
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="4" Text="Pose_General" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="5" Orientation="Horizontal" >
+                        <local:BoneView BoneName="HairFrontLeft" Label="L"/>
+                        <local:BoneView BoneName="HairFrontRight" Label="R"/>
+                        <local:BoneView BoneName="HairA" Label="1"/>
+                        <local:BoneView BoneName="HairB" Label="2"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="6" Text="Pose_Unique" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+
+                    <ItemsControl Grid.Column="7"
+									  ItemsSource="{Binding HairBones}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <WrapPanel Width="{Binding (FrameworkElement.ActualWidth), RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}"
+											   ItemWidth="{Binding (ListView.View).ItemWidth, RelativeSource={RelativeSource AncestorType=ListView}}"
+											   MinWidth="{Binding ItemWidth, RelativeSource={RelativeSource Self}}"
+											   ItemHeight="{Binding (ListView.View).ItemHeight, RelativeSource={RelativeSource AncestorType=ListView}}" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <local:BoneView />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Header="Pose_Matrix_BodyCategory">
+                <Grid>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Column="0" Grid.Row="0" Text="Pose_Neck" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <local:BoneView Grid.Column="1" Grid.Row="0" BoneName="Neck"/>
+
+                    <TextBlock Grid.Column="2" Grid.Row="0" Text="Pose_Cervical" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <local:BoneView Grid.Column="3" Grid.Row="0" BoneName="SpineC"/>
+
+                    <TextBlock Grid.Column="4" Grid.Row="0" Text="Pose_Thoracic" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <local:BoneView Grid.Column="5" Grid.Row="0" BoneName="SpineB"/>
+
+                    <TextBlock Grid.Column="6" Grid.Row="0" Text="Pose_Lumbar" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <local:BoneView Grid.Column="7" Grid.Row="0" BoneName="SpineA"/>
+
+                    <TextBlock Grid.Column="8" Grid.Row="0" Text="Pose_OtherAbdomen" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <local:BoneView Grid.Column="9" Grid.Row="0" BoneName="Abdomen"/>
+
+                    <TextBlock Grid.Column="0" Grid.Row="1" Text="Pose_Scabbards" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" >
+                        <local:BoneView BoneName="ScabbardLeft" Label="L"/>
+                        <local:BoneView BoneName="ScabbardRight" Label="R"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="2" Grid.Row="1" Text="Pose_Clavicles" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="3" Grid.Row="1" Orientation="Horizontal" >
+                        <local:BoneView BoneName="ClavicleLeft" Label="L"/>
+                        <local:BoneView BoneName="ClavicleRight" Label="R"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="4" Grid.Row="1" Text="Pose_Breasts" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="5" Grid.Row="1" Orientation="Horizontal" >
+                        <local:BoneView BoneName="BreastLeft" Label="L"/>
+                        <local:BoneView BoneName="BreastRight" Label="R"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="6" Grid.Row="1" Text="Pose_Pauldrons" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="7" Grid.Row="1" Orientation="Horizontal" >
+                        <local:BoneView BoneName="PauldronLeft" Label="L"/>
+                        <local:BoneView BoneName="PauldronRight" Label="R"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="0" Grid.Row="2" Text="Pose_Shields" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal" >
+                        <local:BoneView BoneName="ShieldLeft" Label="L"/>
+                        <local:BoneView BoneName="ShieldRight" Label="R"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="2" Grid.Row="2" Text="Pose_Shoulders" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="3" Grid.Row="2" Orientation="Horizontal" >
+                        <local:BoneView BoneName="ShoulderLeft" Label="L"/>
+                        <local:BoneView BoneName="ShoulderRight" Label="R"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="4" Grid.Row="2" Text="Pose_Arms" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="5" Grid.Row="2" Orientation="Horizontal" >
+                        <local:BoneView BoneName="ArmLeft" Label="L"/>
+                        <local:BoneView BoneName="ArmRight" Label="R"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="6" Grid.Row="2" Text="Pose_Couters" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="7" Grid.Row="2" Orientation="Horizontal" >
+                        <local:BoneView BoneName="CouterLeft" Label="L"/>
+                        <local:BoneView BoneName="CouterRight" Label="R"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="8" Grid.Row="2" Text="Pose_Elbows" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="9" Grid.Row="2" Orientation="Horizontal" >
+                        <local:BoneView BoneName="ElbowLeft" Label="L"/>
+                        <local:BoneView BoneName="ElbowRight" Label="R"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="0" Grid.Row="3" Text="Pose_Forearms" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="1" Grid.Row="3" Orientation="Horizontal" >
+                        <local:BoneView BoneName="ForearmLeft" Label="L"/>
+                        <local:BoneView BoneName="ForearmRight" Label="R"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="2" Grid.Row="3" Text="Pose_Wrists" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="3" Grid.Row="3" Orientation="Horizontal" >
+                        <local:BoneView BoneName="WristLeft" Label="L"/>
+                        <local:BoneView BoneName="WristRight" Label="R"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="4" Grid.Row="3" Text="Pose_IVCS_Breasts" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="5" Grid.Row="3" Orientation="Horizontal" >
+                        <local:BoneView BoneName="iv_c_mune_l" Label="L"/>
+                        <local:BoneView BoneName="iv_c_mune_r" Label="R"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="6" Grid.Row="3" Text="Pose_IVCS_Biceps" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="7" Grid.Row="3" Orientation="Horizontal" >
+                        <local:BoneView BoneName="iv_nitoukin_l" Label="L"/>
+                        <local:BoneView BoneName="iv_nitoukin_r" Label="R"/>
+                    </StackPanel>
+
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Header="Pose_Matrix_GenitalCategory">
+                
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Column="0" Text="Pose_Penis" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal" >
+                        <local:BoneView BoneName="iv_ochinko_a" Label="1"/>
+                        <local:BoneView BoneName="iv_ochinko_b" Label="2"/>
+                        <local:BoneView BoneName="iv_ochinko_c" Label="3"/>
+                        <local:BoneView BoneName="iv_ochinko_d" Label="4"/>
+                        <local:BoneView BoneName="iv_ochinko_e" Label="5"/>
+                        <local:BoneView BoneName="iv_ochinko_f" Label="6"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="3" Text="Pose_Scrotum" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="4" Grid.Row="0" Orientation="Horizontal" >
+                        <local:BoneView BoneName="iv_kougan_l" Label="L"/>
+                        <local:BoneView BoneName="iv_kougan_r" Label="R"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="0" Grid.Row="1" Text="Pose_Vagina" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" >
+                        <local:BoneView BoneName="iv_omanko"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="3" Grid.Row="1" Text="Pose_Clitoris" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="4" Grid.Row="1" Orientation="Horizontal" >
+                        <local:BoneView BoneName="iv_kuritto"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="7" Grid.Row="1" Text="Pose_Labia" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="8" Grid.Row="1" Orientation="Horizontal" >
+                        <local:BoneView BoneName="iv_inshin_l" Label="L"/>
+                        <local:BoneView BoneName="iv_inshin_r" Label="R"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="0" Grid.Row="2" Text="Pose_Anus" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal" >
+                        <local:BoneView BoneName="iv_koumon"/>
+                        <local:BoneView BoneName="iv_koumon_l" Label="L"/>
+                        <local:BoneView BoneName="iv_koumon_r" Label="R"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="3" Grid.Row="2" Text="Pose_Buttocks" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="4" Grid.Row="2" Orientation="Horizontal" >
+                        <local:BoneView BoneName="iv_shiri_l" Label="L"/>
+                        <local:BoneView BoneName="iv_shiri_r" Label="R"/>
+                    </StackPanel>
+
+                </Grid>
+
+            </GroupBox>
+
+            <GroupBox Header="Pose_Matrix_GenitalCategory">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Column="0" Text="Pose_Penis" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal" >
+                        <local:BoneView BoneName="iv_ochinko_a" Label="1"/>
+                        <local:BoneView BoneName="iv_ochinko_b" Label="2"/>
+                        <local:BoneView BoneName="iv_ochinko_c" Label="3"/>
+                        <local:BoneView BoneName="iv_ochinko_d" Label="4"/>
+                        <local:BoneView BoneName="iv_ochinko_e" Label="5"/>
+                        <local:BoneView BoneName="iv_ochinko_f" Label="6"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="3" Text="Pose_Scrotum" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="4" Grid.Row="0" Orientation="Horizontal" >
+                        <local:BoneView BoneName="iv_kougan_l" Label="L"/>
+                        <local:BoneView BoneName="iv_kougan_r" Label="R"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="0" Grid.Row="1" Text="Pose_Vagina" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" >
+                        <local:BoneView BoneName="iv_omanko"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="3" Grid.Row="1" Text="Pose_Clitoris" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="4" Grid.Row="1" Orientation="Horizontal" >
+                        <local:BoneView BoneName="iv_kuritto"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="7" Grid.Row="1" Text="Pose_Labia" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="8" Grid.Row="1" Orientation="Horizontal" >
+                        <local:BoneView BoneName="iv_inshin_l" Label="L"/>
+                        <local:BoneView BoneName="iv_inshin_r" Label="R"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="0" Grid.Row="2" Text="Pose_Anus" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="1" Grid.Row="2" Orientation="Horizontal" >
+                        <local:BoneView BoneName="iv_koumon"/>
+                        <local:BoneView BoneName="iv_koumon_l" Label="L"/>
+                        <local:BoneView BoneName="iv_koumon_r" Label="R"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="3" Grid.Row="2" Text="Pose_Buttocks" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="4" Grid.Row="2" Orientation="Horizontal" >
+                        <local:BoneView BoneName="iv_shiri_l" Label="L"/>
+                        <local:BoneView BoneName="iv_shiri_r" Label="R"/>
+                    </StackPanel>
+
+                </Grid>
+
+            </GroupBox>
+
+            <GroupBox Header="Pose_Matrix_LeftHandCategory">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Column="0" Text="Pose_Hands" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal" >
+                        <local:BoneView BoneName="HandLeft"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="2" Text="Pose_Weapons" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="3" Grid.Row="0" Orientation="Horizontal" >
+                        <local:BoneView BoneName="WeaponLeft"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="4" Text="Pose_Thumb" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="5" Grid.Row="0" Orientation="Horizontal" >
+                        <local:BoneView BoneName="ThumbALeft" Label="1"/>
+                        <local:BoneView BoneName="ThumbBLeft" Label="2"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="6" Text="Pose_Index" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="7" Grid.Row="0" Orientation="Horizontal" >
+                        <local:BoneView BoneName="IndexALeft" Label="1"/>
+                        <local:BoneView BoneName="IndexBLeft" Label="2"/>
+                        <local:BoneView BoneName="iv_hito_c_l" Label="3"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="0" Grid.Row="1" Text="Pose_Middle" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" >
+                        <local:BoneView BoneName="MiddleALeft" Label="1"/>
+                        <local:BoneView BoneName="MiddleBLeft" Label="2"/>
+                        <local:BoneView BoneName="iv_naka_c_l" Label="3"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="2" Grid.Row="1" Text="Pose_Ring" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="3" Grid.Row="1" Orientation="Horizontal" >
+                        <local:BoneView BoneName="RingALeft" Label="1"/>
+                        <local:BoneView BoneName="RingBLeft" Label="2"/>
+                        <local:BoneView BoneName="iv_kusu_c_l" Label="3"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="4" Grid.Row="1" Text="Pose_Pinky" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="5" Grid.Row="1" Orientation="Horizontal" >
+                        <local:BoneView BoneName="PinkyALeft" Label="1"/>
+                        <local:BoneView BoneName="PinkyBLeft" Label="2"/>
+                        <local:BoneView BoneName="iv_ko_c_l" Label="3"/>
+                    </StackPanel>
+
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Header="Pose_Matrix_RightHandCategory">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Column="0" Text="Pose_Hands" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" >
+                        <local:BoneView BoneName="HandRight"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="2" Text="Pose_Weapons" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="3" Grid.Row="0" Orientation="Horizontal" >
+                        <local:BoneView BoneName="WeaponRight"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="4" Text="Pose_Thumb" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="5" Grid.Row="0" Orientation="Horizontal" >
+                        <local:BoneView BoneName="ThumbARight" Label="1"/>
+                        <local:BoneView BoneName="ThumbBRight" Label="2"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="6" Text="Pose_Index" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="7" Grid.Row="0" Orientation="Horizontal" >
+                        <local:BoneView BoneName="IndexARight" Label="1"/>
+                        <local:BoneView BoneName="IndexBRight" Label="2"/>
+                        <local:BoneView BoneName="iv_hito_c_r" Label="3"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="0" Grid.Row="1" Text="Pose_Middle" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" >
+                        <local:BoneView BoneName="MiddleARight" Label="1"/>
+                        <local:BoneView BoneName="MiddleBRight" Label="2"/>
+                        <local:BoneView BoneName="iv_naka_c_r" Label="3"/>
+                    </StackPanel>
+
+
+                    <TextBlock Grid.Column="2" Grid.Row="1" Text="Pose_Ring" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="3" Grid.Row="1" Orientation="Horizontal" >
+                        <local:BoneView BoneName="RingARight" Label="1"/>
+                        <local:BoneView BoneName="RingBRight" Label="2"/>
+                        <local:BoneView BoneName="iv_kusu_c_r" Label="3"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="4" Grid.Row="1" Text="Pose_Pinky" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="5" Grid.Row="1" Orientation="Horizontal" >
+                        <local:BoneView BoneName="PinkyARight" Label="1"/>
+                        <local:BoneView BoneName="PinkyBRight" Label="2"/>
+                        <local:BoneView BoneName="iv_ko_c_r" Label="3"/>
+                    </StackPanel>
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Header="Pose_Matrix_LegsCategory">
+
+                <Grid>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Column="0" Grid.Row="0" Text="Pose_Legs" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal" >
+                        <local:BoneView BoneName="LegLeft" Label="L"/>
+                        <local:BoneView BoneName="LegRight" Label="R"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="2" Grid.Row="0" Text="Pose_Poleyns" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="3" Grid.Row="0" Orientation="Horizontal" >
+                        <local:BoneView BoneName="PoleynLeft" Label="L"/>
+                        <local:BoneView BoneName="PoleynRight" Label="R"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="4" Grid.Row="0" Text="Pose_Knees" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="5" Grid.Row="0" Orientation="Horizontal" >
+                        <local:BoneView BoneName="KneeLeft" Label="L"/>
+                        <local:BoneView BoneName="KneeRight" Label="R"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="6" Grid.Row="0" Text="Pose_Calves" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="7" Grid.Row="0" Orientation="Horizontal" >
+                        <local:BoneView BoneName="CalfLeft" Label="L"/>
+                        <local:BoneView BoneName="CalfRight" Label="R"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Grid.Row="1" Orientation="Horizontal" >
+                        <local:BoneView BoneName="SheatheLeft" Label="L"/>
+                        <local:BoneView BoneName="SheatheRight" Label="R"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="2" Grid.Row="1" Text="Pose_Holsters" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="3" Grid.Row="1" Orientation="Horizontal" >
+                        <local:BoneView BoneName="HolsterLeft" Label="L"/>
+                        <local:BoneView BoneName="HolsterRight" Label="R"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="4" Grid.Row="1" Text="Pose_Waist" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <local:BoneView Grid.Column="5" Grid.Row="1" BoneName="Waist"/>
+
+                    <TextBlock Grid.Column="6" Grid.Row="1" Text="Pose_Tail" Style="{DynamicResource Label}" Margin="16, 0, 3, 0" Visibility="{Binding HasTail, Converter={StaticResource B2V}}"/>
+                    <StackPanel Grid.Column="7" Grid.Row="1" Grid.ColumnSpan="2" Orientation="Horizontal" Visibility="{Binding HasTail, Converter={StaticResource B2V}}">
+                        <local:BoneView BoneName="TailA" Label="1"/>
+                        <local:BoneView BoneName="TailB" Label="2"/>
+                        <local:BoneView BoneName="TailC" Label="3"/>
+                        <local:BoneView BoneName="TailD" Label="4"/>
+                        <!--<local:BoneView BoneName="TailE" Label="5"/>-->
+                    </StackPanel>
+
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Header=" Pose_Matrix_LeftFootCategory">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" Grid.Row="0" Text="Pose_Foot" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <local:BoneView Grid.Column="1" Grid.Row="0" BoneName="FootLeft"/>
+
+                    <TextBlock Grid.Column="2" Grid.Row="0" Text="Pose_Toes" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <local:BoneView Grid.Column="3" Grid.Row="0" BoneName="ToesLeft"/>
+
+                    <TextBlock Grid.Column="4" Grid.Row="0" Text="Pose_BigToe" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Orientation="Horizontal" Grid.Column="5" Grid.Row="0">
+                        <local:BoneView BoneName="iv_asi_oya_a_l" Label="1"/>
+                        <local:BoneView BoneName="iv_asi_oya_b_l" Label="2"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="6" Grid.Row="0" Text="Pose_IndexToe" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Orientation="Horizontal" Grid.Column="7" Grid.Row="0">
+                        <local:BoneView BoneName="iv_asi_hito_a_l" Label="1"/>
+                        <local:BoneView BoneName="iv_asi_hito_b_l" Label="2"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="0" Grid.Row="1" Text="Pose_MiddleToe" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1">
+                        <local:BoneView BoneName="iv_asi_naka_a_l" Label="1"/>
+                        <local:BoneView BoneName="iv_asi_naka_b_l" Label="2"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="2" Grid.Row="1" Text="Pose_ForeToe" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Orientation="Horizontal" Grid.Column="3" Grid.Row="1">
+                        <local:BoneView BoneName="iv_asi_kusu_a_l" Label="1"/>
+                        <local:BoneView BoneName="iv_asi_kusu_b_l" Label="2"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="4" Grid.Row="1" Text="Pose_PinkyToe" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Orientation="Horizontal" Grid.Column="5" Grid.Row="1">
+                        <local:BoneView BoneName="iv_asi_ko_a_l" Label="1"/>
+                        <local:BoneView BoneName="iv_asi_ko_b_l" Label="2"/>
+                    </StackPanel>
+
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Header="Pose_Matrix_RightFootCategory">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" Grid.Row="0" Text="Pose_Foot" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <local:BoneView Grid.Column="1" Grid.Row="0" BoneName="FootRight"/>
+
+                    <TextBlock Grid.Column="2" Grid.Row="0" Text="Pose_Toes" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <local:BoneView Grid.Column="3" Grid.Row="0" BoneName="ToesRight"/>
+
+                    <TextBlock Grid.Column="4" Grid.Row="0" Text="Pose_BigToe" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Orientation="Horizontal" Grid.Column="5" Grid.Row="0">
+                        <local:BoneView BoneName="iv_asi_oya_a_r" Label="1"/>
+                        <local:BoneView BoneName="iv_asi_oya_b_r" Label="2"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="6" Grid.Row="0" Text="Pose_IndexToe" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Orientation="Horizontal" Grid.Column="7" Grid.Row="0">
+                        <local:BoneView BoneName="iv_asi_hito_a_r" Label="1"/>
+                        <local:BoneView BoneName="iv_asi_hito_b_r" Label="2"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="0" Grid.Row="1" Text="Pose_MiddleToe" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1">
+                        <local:BoneView BoneName="iv_asi_naka_a_r" Label="1"/>
+                        <local:BoneView BoneName="iv_asi_naka_b_r" Label="2"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="2" Grid.Row="1" Text="Pose_ForeToe" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Orientation="Horizontal" Grid.Column="3" Grid.Row="1">
+                        <local:BoneView BoneName="iv_asi_kusu_a_r" Label="1"/>
+                        <local:BoneView BoneName="iv_asi_kusu_b_r" Label="2"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="4" Grid.Row="1" Text="Pose_PinkyToe" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Orientation="Horizontal" Grid.Column="5" Grid.Row="1">
+                        <local:BoneView BoneName="iv_asi_ko_a_r" Label="1"/>
+                        <local:BoneView BoneName="iv_asi_ko_b_r" Label="2"/>
+                    </StackPanel>
+
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Header="Pose_Matrix_LeftFootCategory">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" Grid.Row="0" Text="Pose_Foot" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <local:BoneView Grid.Column="1" Grid.Row="0" BoneName="FootLeft"/>
+
+                    <TextBlock Grid.Column="2" Grid.Row="0" Text="Pose_Toes" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <local:BoneView Grid.Column="3" Grid.Row="0" BoneName="ToesLeft"/>
+
+                    <TextBlock Grid.Column="4" Grid.Row="0" Text="Pose_BigToe" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Orientation="Horizontal" Grid.Column="5" Grid.Row="0">
+                        <local:BoneView BoneName="iv_asi_oya_a_l" Label="1"/>
+                        <local:BoneView BoneName="iv_asi_oya_b_l" Label="2"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="6" Grid.Row="0" Text="Pose_IndexToe" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Orientation="Horizontal" Grid.Column="7" Grid.Row="0">
+                        <local:BoneView BoneName="iv_asi_hito_a_l" Label="1"/>
+                        <local:BoneView BoneName="iv_asi_hito_b_l" Label="2"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="0" Grid.Row="1" Text="Pose_MiddleToe" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1">
+                        <local:BoneView BoneName="iv_asi_naka_a_l" Label="1"/>
+                        <local:BoneView BoneName="iv_asi_naka_b_l" Label="2"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="2" Grid.Row="1" Text="Pose_ForeToe" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Orientation="Horizontal" Grid.Column="3" Grid.Row="1">
+                        <local:BoneView BoneName="iv_asi_kusu_a_l" Label="1"/>
+                        <local:BoneView BoneName="iv_asi_kusu_b_l" Label="2"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="4" Grid.Row="1" Text="Pose_PinkyToe" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Orientation="Horizontal" Grid.Column="5" Grid.Row="1">
+                        <local:BoneView BoneName="iv_asi_ko_a_l" Label="1"/>
+                        <local:BoneView BoneName="iv_asi_ko_b_l" Label="2"/>
+                    </StackPanel>
+
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Header="Pose_Matrix_RightFootCategory">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                        <ColumnDefinition Width="auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0" Grid.Row="0" Text="Pose_Foot" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <local:BoneView Grid.Column="1" Grid.Row="0" BoneName="FootRight"/>
+
+                    <TextBlock Grid.Column="2" Grid.Row="0" Text="Pose_Toes" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <local:BoneView Grid.Column="3" Grid.Row="0" BoneName="ToesRight"/>
+
+                    <TextBlock Grid.Column="4" Grid.Row="0" Text="Pose_BigToe" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Orientation="Horizontal" Grid.Column="5" Grid.Row="0">
+                        <local:BoneView BoneName="iv_asi_oya_a_r" Label="1"/>
+                        <local:BoneView BoneName="iv_asi_oya_b_r" Label="2"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="6" Grid.Row="0" Text="Pose_IndexToe" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Orientation="Horizontal" Grid.Column="7" Grid.Row="0">
+                        <local:BoneView BoneName="iv_asi_hito_a_r" Label="1"/>
+                        <local:BoneView BoneName="iv_asi_hito_b_r" Label="2"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="0" Grid.Row="1" Text="Pose_MiddleToe" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Orientation="Horizontal" Grid.Column="1" Grid.Row="1">
+                        <local:BoneView BoneName="iv_asi_naka_a_r" Label="1"/>
+                        <local:BoneView BoneName="iv_asi_naka_b_r" Label="2"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="2" Grid.Row="1" Text="Pose_ForeToe" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Orientation="Horizontal" Grid.Column="3" Grid.Row="1">
+                        <local:BoneView BoneName="iv_asi_kusu_a_r" Label="1"/>
+                        <local:BoneView BoneName="iv_asi_kusu_b_r" Label="2"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="4" Grid.Row="1" Text="Pose_PinkyToe" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Orientation="Horizontal" Grid.Column="5" Grid.Row="1">
+                        <local:BoneView BoneName="iv_asi_ko_a_r" Label="1"/>
+                        <local:BoneView BoneName="iv_asi_ko_b_r" Label="2"/>
+                    </StackPanel>
+
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Header="Pose_Matrix_ClothesCategory">
+
+                <Grid>
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <TextBlock Grid.Column="0" Grid.Row="0" Text="Pose_ClothesFront" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="1" Grid.Row="0" Orientation="Horizontal" >
+                        <local:BoneView BoneName="ClothFrontALeft" Label="L1"/>
+                        <local:BoneView BoneName="ClothFrontBLeft" Label="L2"/>
+                        <local:BoneView BoneName="ClothFrontCLeft" Label="L3"/>
+                        <local:BoneView BoneName="ClothFrontARight" Label="R1"/>
+                        <local:BoneView BoneName="ClothFrontBRight" Label="R2"/>
+                        <local:BoneView BoneName="ClothFrontCRight" Label="R3"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="2" Grid.Row="0" Text="Pose_ClothesBack" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="3" Grid.Row="0" Orientation="Horizontal" >
+                        <local:BoneView BoneName="ClothBackALeft" Label="L1"/>
+                        <local:BoneView BoneName="ClothBackBLeft" Label="L2"/>
+                        <local:BoneView BoneName="ClothBackCLeft" Label="L3"/>
+                        <local:BoneView BoneName="ClothBackARight" Label="R1"/>
+                        <local:BoneView BoneName="ClothBackBRight" Label="R2"/>
+                        <local:BoneView BoneName="ClothBackCRight" Label="R3"/>
+                    </StackPanel>
+
+                    <TextBlock Grid.Column="4" Grid.Row="0" Text="Pose_ClothesSides" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                    <StackPanel Grid.Column="5" Grid.Row="0" Orientation="Horizontal" >
+                        <local:BoneView BoneName="ClothSideALeft" Label="L1"/>
+                        <local:BoneView BoneName="ClothSideBLeft" Label="L2"/>
+                        <local:BoneView BoneName="ClothSideCLeft" Label="L3"/>
+                        <local:BoneView BoneName="ClothSideARight" Label="R1"/>
+                        <local:BoneView BoneName="ClothSideBRight" Label="R2"/>
+                        <local:BoneView BoneName="ClothSideCRight" Label="R3"/>
+                    </StackPanel>
+
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Header="Pose_Matrix_EquipmentCategory">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0" Visibility="{Binding MetBones, Converter={StaticResource NotEmptyToVisibility}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="72" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+												   Grid.Row="0"
+												   Text="Pose_EqHelm"
+												   Style="{DynamicResource Label}"
+												   Margin="16, 0, 3, 0" />
+
+                        <ItemsControl Grid.Column="1"
+										  Grid.Row="0"
+										  ItemsSource="{Binding MetBones}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Width="{Binding (FrameworkElement.ActualWidth), RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}"
+												   ItemWidth="{Binding (ListView.View).ItemWidth, RelativeSource={RelativeSource AncestorType=ListView}}"
+												   MinWidth="{Binding ItemWidth, RelativeSource={RelativeSource Self}}"
+												   ItemHeight="{Binding (ListView.View).ItemHeight, RelativeSource={RelativeSource AncestorType=ListView}}" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <local:BoneView />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
+
+                    <Grid Grid.Row="1" Visibility="{Binding TopBones, Converter={StaticResource NotEmptyToVisibility}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="72" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="Pose_EqTop" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                        <ItemsControl Grid.Column="1" ItemsSource="{Binding TopBones}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Width="{Binding (FrameworkElement.ActualWidth), RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}"
+												   ItemWidth="{Binding (ListView.View).ItemWidth, RelativeSource={RelativeSource AncestorType=ListView}}"
+												   MinWidth="{Binding ItemWidth, RelativeSource={RelativeSource Self}}"
+												   ItemHeight="{Binding (ListView.View).ItemHeight, RelativeSource={RelativeSource AncestorType=ListView}}" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <local:BoneView />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
+                </Grid>
+            </GroupBox>
+
+            <GroupBox Header="Pose_Matrix_WeaponCategory">
+
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+
+                    <Grid Grid.Row="0" Visibility="{Binding MainHandBones, Converter={StaticResource NotEmptyToVisibility}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"
+												   Grid.Row="0"
+												   Text="Pose_WeaponMainHand"
+												   Style="{DynamicResource Label}"
+												   Margin="16, 0, 3, 0" />
+
+                        <ItemsControl Grid.Column="1"
+										  Grid.Row="0"
+										  ItemsSource="{Binding MainHandBones}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Width="{Binding (FrameworkElement.ActualWidth), RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}"
+												   ItemWidth="{Binding (ListView.View).ItemWidth, RelativeSource={RelativeSource AncestorType=ListView}}"
+												   MinWidth="{Binding ItemWidth, RelativeSource={RelativeSource Self}}"
+												   ItemHeight="{Binding (ListView.View).ItemHeight, RelativeSource={RelativeSource AncestorType=ListView}}" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <local:BoneView />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
+
+                    <Grid Grid.Row="1" Visibility="{Binding OffHandBones, Converter={StaticResource NotEmptyToVisibility}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <TextBlock Grid.Column="0" Text="Pose_WeaponOffHand" Style="{DynamicResource Label}" Margin="16, 0, 3, 0"/>
+                        <ItemsControl Grid.Column="1" ItemsSource="{Binding OffHandBones}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Width="{Binding (FrameworkElement.ActualWidth), RelativeSource={RelativeSource AncestorType=ScrollContentPresenter}}"
+												   ItemWidth="{Binding (ListView.View).ItemWidth, RelativeSource={RelativeSource AncestorType=ListView}}"
+												   MinWidth="{Binding ItemWidth, RelativeSource={RelativeSource Self}}"
+												   ItemHeight="{Binding (ListView.View).ItemHeight, RelativeSource={RelativeSource AncestorType=ListView}}" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <local:BoneView />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </Grid>
+                </Grid>
+            </GroupBox>
+
         </StackPanel>
     </Grid>
 </UserControl>
