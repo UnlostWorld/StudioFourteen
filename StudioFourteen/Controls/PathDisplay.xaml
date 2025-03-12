@@ -35,17 +35,13 @@
 					Icon="CaretRight"
 					Visibility="Collapsed" />
 
-				<TextBlock
-					Margin="0,2,0,0"
-					Text="{Binding Name}" />
+				<TextBlock Margin="0,2,0,0" Text="{Binding Name}" />
 			</StackPanel>
 
 			<DataTemplate.Triggers>
-				<DataTrigger
-					Binding="{Binding Icon}"
-					Value="{x:Null}">
-					<Setter TargetName="Icon" Property="Visibility" Value="Collapsed" />
+				<DataTrigger Binding="{Binding Icon}" Value="{x:Null}">
 					<Setter TargetName="Caret" Property="Visibility" Value="Visible" />
+					<Setter TargetName="Icon" Property="Visibility" Value="Collapsed" />
 				</DataTrigger>
 			</DataTemplate.Triggers>
 		</DataTemplate>

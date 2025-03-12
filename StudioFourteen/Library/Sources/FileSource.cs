@@ -143,7 +143,7 @@ public class FileEntry : LibraryEntryBase
 				this.Tags.Add(fileBase.Tags);
 			}
 		}
-		catch(Exception ex)
+		catch (Exception ex)
 		{
 			// broken file!
 			this.Log.Warning(ex, $"Failed to load file: {file}");

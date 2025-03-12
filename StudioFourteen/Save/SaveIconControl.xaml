@@ -8,18 +8,12 @@
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	mc:Ignorable="d">
 
-	<SineEase
-		x:Key="SinEaseOut"
-		EasingMode="EaseOut" />
+	<SineEase x:Key="SinEaseOut" EasingMode="EaseOut" />
 
-	<SineEase
-		x:Key="SinEaseIn"
-		EasingMode="EaseIn" />
+	<SineEase x:Key="SinEaseIn" EasingMode="EaseIn" />
 
 
-	<ControlTemplate
-		x:Key="SaveIconControlTemplate"
-		TargetType="{x:Type local:SaveIconControl}">
+	<ControlTemplate x:Key="SaveIconControlTemplate" TargetType="{x:Type local:SaveIconControl}">
 		<Grid>
 			<wpfUtils:IconBlock
 				x:Name="Icon"
@@ -48,36 +42,20 @@
 							Storyboard.TargetName="Icon"
 							Storyboard.TargetProperty="Opacity"
 							Duration="0:00:01.000">
-							<EasingDoubleKeyFrame
-								KeyTime="0:00:00.000"
-								Value="1" />
-							<EasingDoubleKeyFrame
-								KeyTime="0:00:00.100"
-								Value="0" />
-							<EasingDoubleKeyFrame
-								KeyTime="0:00:00.750"
-								Value="0" />
-							<EasingDoubleKeyFrame
-								KeyTime="0:00:01.000"
-								Value="1" />
+							<EasingDoubleKeyFrame KeyTime="0:00:00.000" Value="1" />
+							<EasingDoubleKeyFrame KeyTime="0:00:00.100" Value="0" />
+							<EasingDoubleKeyFrame KeyTime="0:00:00.750" Value="0" />
+							<EasingDoubleKeyFrame KeyTime="0:00:01.000" Value="1" />
 						</DoubleAnimationUsingKeyFrames>
 
 						<DoubleAnimationUsingKeyFrames
 							Storyboard.TargetName="Check"
 							Storyboard.TargetProperty="Opacity"
 							Duration="0:00:01.000">
-							<EasingDoubleKeyFrame
-								KeyTime="0:00:00.000"
-								Value="0" />
-							<EasingDoubleKeyFrame
-								KeyTime="0:00:00.100"
-								Value="1" />
-							<EasingDoubleKeyFrame
-								KeyTime="0:00:00.750"
-								Value="1" />
-							<EasingDoubleKeyFrame
-								KeyTime="0:00:01.000"
-								Value="0" />
+							<EasingDoubleKeyFrame KeyTime="0:00:00.000" Value="0" />
+							<EasingDoubleKeyFrame KeyTime="0:00:00.100" Value="1" />
+							<EasingDoubleKeyFrame KeyTime="0:00:00.750" Value="1" />
+							<EasingDoubleKeyFrame KeyTime="0:00:01.000" Value="0" />
 						</DoubleAnimationUsingKeyFrames>
 
 						<DoubleAnimationUsingKeyFrames

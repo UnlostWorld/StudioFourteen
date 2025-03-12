@@ -14,9 +14,7 @@
 	<converters:NotZeroToVisibilityConverter x:Key="NotZeroToVisibility" />
 	<BooleanToVisibilityConverter x:Key="B2V" />
 
-	<ControlTemplate
-		x:Key="TagsControlTemplate"
-		TargetType="{x:Type local:TagsControl}">
+	<ControlTemplate x:Key="TagsControlTemplate" TargetType="{x:Type local:TagsControl}">
 
 		<Grid>
 			<Border
@@ -66,26 +64,20 @@
 
 
 
-	<Style
-		x:Key="LinearTagsControl"
-		TargetType="{x:Type local:TagsControl}">
-		<Setter Property="Template" Value="{StaticResource TagsControlTemplate}" />
+	<Style x:Key="LinearTagsControl" TargetType="{x:Type local:TagsControl}">
 		<Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
 
 		<Setter Property="ItemsPanelTemplate">
 			<Setter.Value>
 				<ItemsPanelTemplate>
-					<StackPanel
-						IsItemsHost="True"
-						Orientation="Horizontal" />
+					<StackPanel IsItemsHost="True" Orientation="Horizontal" />
 				</ItemsPanelTemplate>
 			</Setter.Value>
 		</Setter>
+		<Setter Property="Template" Value="{StaticResource TagsControlTemplate}" />
 	</Style>
 
-	<Style
-		BasedOn="{StaticResource LinearTagsControl}"
-		TargetType="{x:Type local:TagsControl}">
+	<Style BasedOn="{StaticResource LinearTagsControl}" TargetType="{x:Type local:TagsControl}">
 
 		<Setter Property="ItemsPanelTemplate">
 			<Setter.Value>

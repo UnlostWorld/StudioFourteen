@@ -40,11 +40,11 @@ public enum PanelVisibility
 [DependencyProperty<string>("TitleIcon")]
 [DependencyProperty<string>("Title")]
 [DependencyProperty<string>("Subtitle")]
-[DependencyProperty<SizeToContent>("SizeToContent", DefaultValue =SizeToContent.Manual)]
-[DependencyProperty<ResizeMode>("ResizeMode", DefaultValue =ResizeMode.CanResizeWithGrip)]
+[DependencyProperty<SizeToContent>("SizeToContent", DefaultValue = SizeToContent.Manual)]
+[DependencyProperty<ResizeMode>("ResizeMode", DefaultValue = ResizeMode.CanResizeWithGrip)]
 [DependencyProperty<PanelVisibility>("VisibilityMode", DefaultValue = PanelVisibility.WithUI)]
 [DependencyProperty<Style>("HostStyle")]
-[DependencyProperty<Point>("DefaultPosition", DefaultValueExpression= "new System.Windows.Point(0.5, 0.5)")]
+[DependencyProperty<Point>("DefaultPosition", DefaultValueExpression = "new System.Windows.Point(0.5, 0.5)")]
 public partial class Panel : ContentControl, IAutoNotify
 {
 	protected readonly ILogger Log;

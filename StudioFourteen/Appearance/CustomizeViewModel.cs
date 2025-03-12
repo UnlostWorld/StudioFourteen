@@ -124,7 +124,7 @@ public partial class CustomizeViewModel : ViewModel
 			}
 
 			bool canDraw = false;
-			while(!canDraw)
+			while (!canDraw)
 			{
 				await Task.Delay(100);
 				await Threads.FrameworkThread();

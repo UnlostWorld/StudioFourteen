@@ -7,12 +7,8 @@
 
 	<BooleanToVisibilityConverter x:Key="B2V" />
 
-	<ControlTemplate
-		x:Key="TaskBarButtonTemplate"
-		TargetType="{x:Type local:TaskBarButtonControl}">
-		<Grid
-			x:Name="OuterGrid"
-			Height="32">
+	<ControlTemplate x:Key="TaskBarButtonTemplate" TargetType="{x:Type local:TaskBarButtonControl}">
+		<Grid x:Name="OuterGrid" Height="32">
 			<Grid
 				x:Name="MainGrid"
 				Height="32"
@@ -29,9 +25,7 @@
 					SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
 					Style="{DynamicResource WpfUtilsControlHoverBorder}" />
 
-				<Grid
-					x:Name="ContentArea"
-					Margin="4,0,0,0">
+				<Grid x:Name="ContentArea" Margin="4,0,0,0">
 
 					<controls:IconControl
 						Margin="{TemplateBinding Padding}"
@@ -41,20 +35,18 @@
 
 				<Grid
 					x:Name="OpenIndicator"
-					HorizontalAlignment="Left"
-					Margin="2,6"
 					Width="2"
+					Margin="2,6"
+					HorizontalAlignment="Left"
 					Opacity="1">
 
-					<Border
-						Background="{DynamicResource ForegroundLightBrush}"
-						CornerRadius="1"/>
+					<Border Background="{DynamicResource ForegroundLightBrush}" CornerRadius="1" />
 
 					<Border
 						x:Name="ActiveIndicator"
 						Background="{DynamicResource TrimBrush}"
 						CornerRadius="1"
-						Opacity="0"/>
+						Opacity="0" />
 				</Grid>
 			</Grid>
 		</Grid>
@@ -69,9 +61,9 @@
 								Storyboard.TargetName="ActiveIndicator"
 								Storyboard.TargetProperty="Opacity"
 								To="1"
-								Duration="00:00:00.150" >
+								Duration="00:00:00.150">
 								<DoubleAnimation.EasingFunction>
-									<SineEase EasingMode="EaseOut"/>
+									<SineEase EasingMode="EaseOut" />
 								</DoubleAnimation.EasingFunction>
 							</DoubleAnimation>
 						</Storyboard>
@@ -84,9 +76,9 @@
 								Storyboard.TargetName="ActiveIndicator"
 								Storyboard.TargetProperty="Opacity"
 								To="0"
-								Duration="00:00:00.250" >
+								Duration="00:00:00.250">
 								<DoubleAnimation.EasingFunction>
-									<SineEase EasingMode="EaseIn"/>
+									<SineEase EasingMode="EaseIn" />
 								</DoubleAnimation.EasingFunction>
 							</DoubleAnimation>
 						</Storyboard>
@@ -103,9 +95,9 @@
 								Storyboard.TargetProperty="Height"
 								From="0"
 								To="32"
-								Duration="00:00:00.150" >
+								Duration="00:00:00.150">
 								<DoubleAnimation.EasingFunction>
-									<SineEase EasingMode="EaseOut"/>
+									<SineEase EasingMode="EaseOut" />
 								</DoubleAnimation.EasingFunction>
 							</DoubleAnimation>
 
@@ -126,9 +118,9 @@
 								Storyboard.TargetProperty="Height"
 								From="32"
 								To="0"
-								Duration="00:00:00.250" >
+								Duration="00:00:00.250">
 								<DoubleAnimation.EasingFunction>
-									<SineEase EasingMode="EaseIn"/>
+									<SineEase EasingMode="EaseIn" />
 								</DoubleAnimation.EasingFunction>
 							</DoubleAnimation>
 							<DoubleAnimation
@@ -146,27 +138,19 @@
 				<Trigger.EnterActions>
 					<BeginStoryboard>
 						<Storyboard>
-							<ThicknessAnimationUsingKeyFrames
-								Storyboard.TargetName="ContentArea"
-								Storyboard.TargetProperty="Margin">
+							<ThicknessAnimationUsingKeyFrames Storyboard.TargetName="ContentArea" Storyboard.TargetProperty="Margin">
 
-								<EasingThicknessKeyFrame
-									KeyTime="0:00:00.000"
-									Value="4,0,0,0">
+								<EasingThicknessKeyFrame KeyTime="0:00:00.000" Value="4,0,0,0">
 									<EasingThicknessKeyFrame.EasingFunction>
 										<ExponentialEase EasingMode="EaseOut" />
 									</EasingThicknessKeyFrame.EasingFunction>
 								</EasingThicknessKeyFrame>
-								<EasingThicknessKeyFrame
-									KeyTime="0:00:00.050"
-									Value="-12,0,0,0">
+								<EasingThicknessKeyFrame KeyTime="0:00:00.050" Value="-12,0,0,0">
 									<EasingThicknessKeyFrame.EasingFunction>
 										<ExponentialEase EasingMode="EaseOut" />
 									</EasingThicknessKeyFrame.EasingFunction>
 								</EasingThicknessKeyFrame>
-								<EasingThicknessKeyFrame
-									KeyTime="0:00:00.250"
-									Value="0,0,0,0" />
+								<EasingThicknessKeyFrame KeyTime="0:00:00.250" Value="0,0,0,0" />
 							</ThicknessAnimationUsingKeyFrames>
 							<DoubleAnimation
 								Storyboard.TargetName="OpenIndicator"
@@ -180,27 +164,19 @@
 				<Trigger.ExitActions>
 					<BeginStoryboard>
 						<Storyboard>
-							<ThicknessAnimationUsingKeyFrames
-								Storyboard.TargetName="ContentArea"
-								Storyboard.TargetProperty="Margin">
+							<ThicknessAnimationUsingKeyFrames Storyboard.TargetName="ContentArea" Storyboard.TargetProperty="Margin">
 
-								<EasingThicknessKeyFrame
-									KeyTime="0:00:00.000"
-									Value="4,0,0,0">
+								<EasingThicknessKeyFrame KeyTime="0:00:00.000" Value="4,0,0,0">
 									<EasingThicknessKeyFrame.EasingFunction>
 										<ExponentialEase EasingMode="EaseOut" />
 									</EasingThicknessKeyFrame.EasingFunction>
 								</EasingThicknessKeyFrame>
-								<EasingThicknessKeyFrame
-									KeyTime="0:00:00.100"
-									Value="10,0,0,0">
+								<EasingThicknessKeyFrame KeyTime="0:00:00.100" Value="10,0,0,0">
 									<EasingThicknessKeyFrame.EasingFunction>
 										<ExponentialEase EasingMode="EaseOut" />
 									</EasingThicknessKeyFrame.EasingFunction>
 								</EasingThicknessKeyFrame>
-								<EasingThicknessKeyFrame
-									KeyTime="0:00:00.250"
-									Value="4,0,0,0" />
+								<EasingThicknessKeyFrame KeyTime="0:00:00.250" Value="4,0,0,0" />
 							</ThicknessAnimationUsingKeyFrames>
 							<DoubleAnimation
 								Storyboard.TargetName="OpenIndicator"
@@ -248,22 +224,20 @@
 	</ControlTemplate>
 
 	<Style TargetType="{x:Type local:TaskBarButtonControl}">
-		<Setter Property="Template" Value="{StaticResource TaskBarButtonTemplate}" />
-		<Setter Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
 		<Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
 		<Setter Property="BorderBrush" Value="{DynamicResource TrimBrush}" />
 		<Setter Property="BorderThickness" Value="1" />
-		<Setter Property="HorizontalContentAlignment" Value="Center" />
-		<Setter Property="VerticalContentAlignment" Value="Center" />
-		<Setter Property="Padding" Value="4,0" />
-		<Setter Property="Margin" Value="1" />
-		<Setter Property="SnapsToDevicePixels" Value="True" />
 		<Setter Property="FocusVisualStyle" Value="{DynamicResource WpfUtilsFocusVisualStyle}" />
+		<Setter Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
+		<Setter Property="HorizontalContentAlignment" Value="Center" />
+		<Setter Property="Margin" Value="1" />
+		<Setter Property="Padding" Value="4,0" />
+		<Setter Property="SnapsToDevicePixels" Value="True" />
+		<Setter Property="Template" Value="{StaticResource TaskBarButtonTemplate}" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
 	</Style>
 
-	<ControlTemplate
-		x:Key="TaskBarTemplate"
-		TargetType="{x:Type local:TaskBarControl}">
+	<ControlTemplate x:Key="TaskBarTemplate" TargetType="{x:Type local:TaskBarControl}">
 
 		<Grid Margin="12">
 
@@ -273,9 +247,7 @@
 				CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}"
 				Opacity="0.25">
 				<Border.BitmapEffect>
-					<DropShadowBitmapEffect
-						ShadowDepth="0"
-						Softness="0.75" />
+					<DropShadowBitmapEffect ShadowDepth="0" Softness="0.75" />
 				</Border.BitmapEffect>
 			</Border>
 
@@ -290,9 +262,7 @@
 				BorderThickness="1"
 				CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
 
-			<Grid
-				x:Name="ContentArea"
-				Margin="{TemplateBinding Padding}">
+			<Grid x:Name="ContentArea" Margin="{TemplateBinding Padding}">
 
 				<Grid.OpacityMask>
 					<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
@@ -304,9 +274,7 @@
 
 				<StackPanel>
 					<!--  Toggles  -->
-					<Border
-						Margin="3,3,3,1"
-						Style="{DynamicResource WpfUtilsControlBorder}">
+					<Border Margin="3,3,3,1" Style="{DynamicResource WpfUtilsControlBorder}">
 
 						<StackPanel Orientation="Vertical">
 
@@ -316,9 +284,7 @@
 								IsChecked="{Binding Path=IsInGPose, RelativeSource={RelativeSource AncestorType={x:Type local:TaskBarControl}}}"
 								Style="{DynamicResource WpfUtilsIconToggleButton}"
 								ToolTip="{DynamicResource LOC_ToggleGPose}">
-								<controls:IconControl
-									Margin="8"
-									Icon="GroupPose" />
+								<controls:IconControl Margin="8" Icon="GroupPose" />
 							</ToggleButton>
 
 							<ToggleButton
@@ -328,24 +294,18 @@
 								Style="{DynamicResource WpfUtilsIconToggleButton}"
 								ToolTip="{DynamicResource LOC_GPoseSettings}"
 								Visibility="{Binding Path=IsInGPose, RelativeSource={RelativeSource AncestorType={x:Type local:TaskBarControl}}, Converter={StaticResource B2V}}">
-								<controls:IconControl
-									Margin="8"
-									Icon="GroupPoseSettings" />
+								<controls:IconControl Margin="8" Icon="GroupPoseSettings" />
 							</ToggleButton>
 
 						</StackPanel>
 					</Border>
 
 					<!--  Panels  -->
-					<Border
-						Margin="3,1,3,3"
-						Style="{DynamicResource WpfUtilsControlBorder}">
+					<Border Margin="3,1,3,3" Style="{DynamicResource WpfUtilsControlBorder}">
 						<ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Entries}">
 							<ItemsControl.ItemsPanel>
 								<ItemsPanelTemplate>
-									<StackPanel
-										IsItemsHost="True"
-										Orientation="Vertical" />
+									<StackPanel IsItemsHost="True" Orientation="Vertical" />
 								</ItemsPanelTemplate>
 							</ItemsControl.ItemsPanel>
 							<ItemsControl.ItemTemplate>
@@ -353,11 +313,11 @@
 									<local:TaskBarButtonControl
 										Margin="1,0"
 										Icon="{Binding Icon}"
-										ToolTip="{Binding Title}"
+										IsActive="{Binding IsActive}"
 										IsMinimized="{Binding IsMinimized}"
 										IsTaskVisible="{Binding IsVisible}"
 										PanelType="{Binding Type}"
-										IsActive="{Binding IsActive}"/>
+										ToolTip="{Binding Title}" />
 								</DataTemplate>
 
 							</ItemsControl.ItemTemplate>

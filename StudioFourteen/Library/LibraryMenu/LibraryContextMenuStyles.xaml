@@ -1,11 +1,11 @@
 ﻿<ResourceDictionary
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=WpfUtils"
 	xmlns:menu="clr-namespace:StudioFourteen.Library.LibraryMenu"
 	xmlns:tags="clr-namespace:StudioFourteen.Tags"
-	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
-	xmlns:controls="clr-namespace:StudioFourteen.Controls">
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="pack://application:,,,/WpfUtils;component/Controls/PopOutStyles.xaml" />
@@ -16,19 +16,13 @@
 	<BooleanToVisibilityConverter x:Key="B2V" />
 	<converters:InvertedBoolToVisibilityConverter x:Key="!B2V" />
 
-	<ControlTemplate
-		x:Key="LibraryContextMenuTemplate"
-		TargetType="{x:Type ContentControl}">
+	<ControlTemplate x:Key="LibraryContextMenuTemplate" TargetType="{x:Type ContentControl}">
 
-		<Grid
-			Margin="12"
-			VerticalAlignment="Top">
+		<Grid Margin="12" VerticalAlignment="Top">
 
 			<Grid>
 				<Grid.Effect>
-					<DropShadowEffect
-						Direction="270"
-						ShadowDepth="0" />
+					<DropShadowEffect Direction="270" ShadowDepth="0" />
 				</Grid.Effect>
 
 				<Border
@@ -51,9 +45,7 @@
 				Content="{Binding BackgroundDetail, RelativeSource={RelativeSource AncestorType={x:Type menu:LibraryContextMenu}}}" />
 
 			<StackPanel>
-				<ContentPresenter
-					Content="{Binding SourceHeader, RelativeSource={RelativeSource AncestorType={x:Type menu:LibraryContextMenu}}}"
-					ContentTemplate="{Binding SourceHeaderTemplate, RelativeSource={RelativeSource AncestorType={x:Type menu:LibraryContextMenu}}}" />
+				<ContentPresenter Content="{Binding SourceHeader, RelativeSource={RelativeSource AncestorType={x:Type menu:LibraryContextMenu}}}" ContentTemplate="{Binding SourceHeaderTemplate, RelativeSource={RelativeSource AncestorType={x:Type menu:LibraryContextMenu}}}" />
 
 				<StackPanel
 					Margin="6"
@@ -77,9 +69,7 @@
 							Content="{Binding .}"
 							Style="{DynamicResource LibraryIcon}" />
 
-						<Grid
-							Grid.Column="1"
-							VerticalAlignment="Center">
+						<Grid Grid.Column="1" VerticalAlignment="Center">
 							<Grid.RowDefinitions>
 								<RowDefinition Height="Auto" />
 								<RowDefinition Height="Auto" />
@@ -114,9 +104,7 @@
 					</ScrollViewer>
 
 					<Border>
-						<ContentPresenter
-							Content="{Binding .}"
-							Style="{DynamicResource LibrarySidebar}" />
+						<ContentPresenter Content="{Binding .}" Style="{DynamicResource LibrarySidebar}" />
 					</Border>
 				</StackPanel>
 
@@ -125,15 +113,13 @@
 					Foreground="{DynamicResource ForegroundLightBrush}"
 					Text="{Binding MultiSelectLabel, RelativeSource={RelativeSource AncestorType={x:Type menu:LibraryContextMenu}}}" />
 
-				<Border
-					x:Name="MenuArea"
-					Style="{DynamicResource WpfUtilsControlBorder}">
+				<Border x:Name="MenuArea" Style="{DynamicResource WpfUtilsControlBorder}">
 
 					<Border.LayoutTransform>
 						<ScaleTransform x:Name="MenuAreaScale" ScaleY="0" />
 					</Border.LayoutTransform>
 
-					<StackPanel >
+					<StackPanel>
 						<UniformGrid Rows="1">
 							<ToggleButton
 								x:Name="FavoritesToggle"
@@ -143,8 +129,8 @@
 								Style="{DynamicResource WpfUtilsIconToggleButton}">
 
 								<Grid>
-									<controls:IconControl Icon="fa-Heart" Visibility="{Binding ElementName=FavoritesToggle, Path=IsChecked, Converter={StaticResource B2V}}"/>
-									<controls:IconControl Icon="fa-line-Heart" Visibility="{Binding ElementName=FavoritesToggle, Path=IsChecked, Converter={StaticResource !B2V}}"/>
+									<controls:IconControl Icon="fa-Heart" Visibility="{Binding ElementName=FavoritesToggle, Path=IsChecked, Converter={StaticResource B2V}}" />
+									<controls:IconControl Icon="fa-line-Heart" Visibility="{Binding ElementName=FavoritesToggle, Path=IsChecked, Converter={StaticResource !B2V}}" />
 								</Grid>
 							</ToggleButton>
 
@@ -153,29 +139,23 @@
 								Command="{Binding Icon.ExportCommand, RelativeSource={RelativeSource AncestorType={x:Type menu:LibraryContextMenu}}}"
 								IsEnabled="{Binding Icon.CanExport, FallbackValue=False, RelativeSource={RelativeSource AncestorType={x:Type menu:LibraryContextMenu}}}"
 								ToolTip="{DynamicResource LOC_Library_ExportIcon}">
-								<wpfUtils:IconBlock
-									Icon="FileImage"
-									IconFont="Solid" />
+								<wpfUtils:IconBlock Icon="FileImage" IconFont="Solid" />
 							</Button>
 						</UniformGrid>
 
 						<Menu ItemsSource="{Binding Menus, RelativeSource={RelativeSource AncestorType={x:Type menu:LibraryContextMenu}}}">
 
 							<Menu.ItemTemplate>
-								<HierarchicalDataTemplate
-									DataType="{x:Type menu:MenuEntry}"
-									ItemsSource="{Binding Path=Children}" />
+								<HierarchicalDataTemplate DataType="{x:Type menu:MenuEntry}" ItemsSource="{Binding Path=Children}" />
 							</Menu.ItemTemplate>
 
 							<Menu.ItemContainerStyle>
-								<Style
-									BasedOn="{StaticResource WpfUtilsMenuItem}"
-									TargetType="{x:Type MenuItem}">
+								<Style BasedOn="{StaticResource WpfUtilsMenuItem}" TargetType="{x:Type MenuItem}">
+									<Setter Property="MenuItem.Command" Value="{Binding OnClicked}" />
 									<Setter Property="MenuItem.Header" Value="{Binding Label}" />
 									<Setter Property="MenuItem.Icon" Value="{Binding Icon}" />
 									<Setter Property="MenuItem.IsEnabled" Value="{Binding IsEnabled}" />
 									<Setter Property="MenuItem.ItemsSource" Value="{Binding Children}" />
-									<Setter Property="MenuItem.Command" Value="{Binding OnClicked}" />
 								</Style>
 							</Menu.ItemContainerStyle>
 						</Menu>
@@ -185,12 +165,10 @@
 		</Grid>
 
 		<ControlTemplate.Triggers>
-			<DataTrigger
-				Binding="{Binding IsExpanded, RelativeSource={RelativeSource AncestorType={x:Type menu:LibraryContextMenu}}}"
-				Value="True">
+			<DataTrigger Binding="{Binding IsExpanded, RelativeSource={RelativeSource AncestorType={x:Type menu:LibraryContextMenu}}}" Value="True">
+				<Setter TargetName="TagsArea" Property="IsEnabled" Value="True" />
 
 				<Setter TargetName="TagsArea" Property="VerticalScrollBarVisibility" Value="Auto" />
-				<Setter TargetName="TagsArea" Property="IsEnabled" Value="True" />
 
 				<DataTrigger.EnterActions>
 					<BeginStoryboard>
@@ -246,14 +224,12 @@
 		x:Key="LibraryContextMenuStyle"
 		BasedOn="{StaticResource WpfUtilsPopOut}"
 		TargetType="{x:Type menu:LibraryContextMenu}">
+		<Setter Property="Height" Value="600" />
 		<Setter Property="Template" Value="{StaticResource LibraryContextMenuTemplate}" />
 		<Setter Property="Width" Value="250" />
-		<Setter Property="Height" Value="600" />
 	</Style>
 
-	<Style
-		BasedOn="{StaticResource LibraryContextMenuStyle}"
-		TargetType="{x:Type menu:LibraryContextMenu}" />
+	<Style BasedOn="{StaticResource LibraryContextMenuStyle}" TargetType="{x:Type menu:LibraryContextMenu}" />
 
 
 </ResourceDictionary>

@@ -162,7 +162,7 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 
 		List<BoneReference> references = await this.GetOrCreateBoneReferences(objectTableIndex);
 		await Threads.NextFrame();
-		foreach(BoneReference reference in references)
+		foreach (BoneReference reference in references)
 		{
 			reference.SetToReference();
 		}
@@ -384,7 +384,7 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 		// if we are flushing a bone we have selected, clear the selection
 		if (this.Services.Selection.Current is BoneSelection boneSelection)
 		{
-			foreach(BoneId usedId in boneSelection.BoneIds)
+			foreach (BoneId usedId in boneSelection.BoneIds)
 			{
 				if (toRemove.Contains(usedId))
 				{
@@ -451,7 +451,7 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 
 		await Threads.NextFrame();
 
-		foreach(BoneReference bone in boneReferences)
+		foreach (BoneReference bone in boneReferences)
 		{
 			bone.Locked = true;
 
@@ -585,7 +585,7 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 		// Extremely simple and wonky lerp.
 		float duration = 500;
 		float time = 0;
-		while(time < duration)
+		while (time < duration)
 		{
 			await Task.Delay(33);
 			time += 33;
@@ -651,7 +651,7 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 	private unsafe void UpdateSkeletons()
 	{
 		List<BoneId> boneIds;
-		lock(this.boneIds)
+		lock (this.boneIds)
 		{
 			boneIds = new(this.boneIds);
 		}
@@ -660,7 +660,7 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 		{
 			HashSet<nint> modifiedSkeletonPointers = new();
 
-			foreach(BoneId boneId in boneIds)
+			foreach (BoneId boneId in boneIds)
 			{
 				BoneReference reference = this.boneReferences[boneId];
 				if (!reference.IsValid)

@@ -32,9 +32,7 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
-		<Grid
-			Grid.Row="0"
-			Grid.ColumnSpan="2">
+		<Grid Grid.Row="0" Grid.ColumnSpan="2">
 
 			<Grid.RowDefinitions>
 				<RowDefinition />
@@ -52,9 +50,7 @@
 				SelectedItem="{Binding SelectedDirectory}">
 
 				<wpfUtils:PopOut.Header>
-					<TextBlock
-						Margin="10"
-						Text="Select a Directory" />
+					<TextBlock Margin="10" Text="Select a Directory" />
 				</wpfUtils:PopOut.Header>
 
 				<ComboBox.Resources>
@@ -184,9 +180,7 @@
 			Grid.Row="1"
 			Grid.Column="1"
 			HorizontalScrollBarVisibility="Disabled">
-			<StackPanel
-				Grid.Row="0"
-				Margin="2">
+			<StackPanel Grid.Row="0" Margin="2">
 
 				<TextBlock
 					Margin="2,2,0,0"
@@ -307,9 +301,7 @@
 			Grid.Column="1"
 			Margin="1"
 			Style="{DynamicResource WpfUtilsControlBorder}">
-			<StackPanel
-				HorizontalAlignment="Right"
-				Orientation="Horizontal">
+			<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
 				<Button
 					MinWidth="100"
 					Click="OnSaveClicked"

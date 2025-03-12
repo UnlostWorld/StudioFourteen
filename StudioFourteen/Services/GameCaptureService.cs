@@ -123,7 +123,7 @@ public class GameCaptureService : ServiceBase
 			// so perform a capture manually.
 			this.forceCapture = true;
 			int waitForId = this.captureId + 10;
-			while(this.convertId < waitForId)
+			while (this.convertId < waitForId)
 				await Task.Delay(100);
 
 			this.forceCapture = false;
@@ -516,7 +516,7 @@ public class GameCaptureService : ServiceBase
 					listener.OnCapture();
 				}
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				// Abort the conversion thread.
 				this.Log.Error(ex, "Error processing game capture");

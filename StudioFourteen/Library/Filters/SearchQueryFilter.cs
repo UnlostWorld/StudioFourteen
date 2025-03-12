@@ -60,7 +60,7 @@ public class SearchQueryFilter : FilterBase
 
 	public override bool Filter(LibraryEntryBase entry)
 	{
-		if(this.Query == null)
+		if (this.Query == null)
 			return true;
 
 		return entry.Search(this.Query);

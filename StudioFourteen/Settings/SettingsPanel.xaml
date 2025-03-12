@@ -24,19 +24,17 @@
 		<TabItem Header="{DynamicResource LOC_Settings_Interface}">
 			<StackPanel>
 
-				<TextBlock
-					Style="{StaticResource LeftLabel}"
-					Text="{DynamicResource LOC_Settings_Interface_Theme}" />
+				<TextBlock Style="{StaticResource LeftLabel}" Text="{DynamicResource LOC_Settings_Interface_Theme}" />
 
 				<Grid>
 					<Grid.RowDefinitions>
-						<RowDefinition/>
-						<RowDefinition/>
+						<RowDefinition />
+						<RowDefinition />
 					</Grid.RowDefinitions>
 
 					<Grid.ColumnDefinitions>
-						<ColumnDefinition/>
-						<ColumnDefinition Width="Auto"/>
+						<ColumnDefinition />
+						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 
 					<ComboBox
@@ -46,9 +44,7 @@
 						SelectedItem="{Binding Services.Theme.CurrentTheme}">
 
 						<wpfUtils:PopOut.Header>
-							<TextBlock
-								Margin="6"
-								Text="{DynamicResource LOC_Settings_Interface_ThemeToolTip}" />
+							<TextBlock Margin="6" Text="{DynamicResource LOC_Settings_Interface_ThemeToolTip}" />
 						</wpfUtils:PopOut.Header>
 
 						<ComboBox.ItemTemplate>
@@ -66,9 +62,7 @@
 						Visibility="{Binding Services.Theme.CurrentTheme.SupportsTrim, Converter={StaticResource B2V}}">
 
 						<wpfUtils:PopOut.Header>
-							<TextBlock
-								Margin="6"
-								Text="{DynamicResource LOC_Settings_Interface_ThemeToolTip}" />
+							<TextBlock Margin="6" Text="{DynamicResource LOC_Settings_Interface_ThemeToolTip}" />
 						</wpfUtils:PopOut.Header>
 
 						<ComboBox.ItemTemplate>
@@ -84,29 +78,28 @@
 										</Border.Background>
 									</Border>
 
-									<TextBlock
-										Margin="42,0,0,0"
-										Text="{Binding Name}" />
+									<TextBlock Margin="42,0,0,0" Text="{Binding Name}" />
 								</Grid>
 							</DataTemplate>
 						</ComboBox.ItemTemplate>
 					</ComboBox>
 
 					<ComboBox
-						Grid.Column="1"
 						Grid.RowSpan="2"
+						Grid.Column="1"
 						ItemsSource="{Binding Services.Theme.Launchers}"
 						SelectedItem="{Binding Services.Theme.Launcher}">
 
 						<wpfUtils:PopOut.Header>
-							<TextBlock
-								Margin="6"
-								Text="{DynamicResource LOC_Settings_Interface_ThemeToolTip}" />
+							<TextBlock Margin="6" Text="{DynamicResource LOC_Settings_Interface_ThemeToolTip}" />
 						</wpfUtils:PopOut.Header>
 
 						<ComboBox.ItemTemplate>
 							<DataTemplate DataType="{x:Type services:LauncherButton}">
-								<Image Source="{Binding IconPath}" Height="48" HorizontalAlignment="Center"/>
+								<Image
+									Height="48"
+									HorizontalAlignment="Center"
+									Source="{Binding IconPath}" />
 							</DataTemplate>
 						</ComboBox.ItemTemplate>
 					</ComboBox>
@@ -218,14 +211,10 @@
 			</Grid>
 		</TabItem>
 
-		<TabItem
-			x:Name="PhotosSection"
-			Header="{DynamicResource LOC_Settings_Photos}">
+		<TabItem x:Name="PhotosSection" Header="{DynamicResource LOC_Settings_Photos}">
 			<StackPanel>
 
-				<TextBlock
-					Style="{DynamicResource LeftLabel}"
-					Text="{DynamicResource LOC_Settings_Photos_Directory}" />
+				<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Settings_Photos_Directory}" />
 
 				<Grid>
 					<Grid.ColumnDefinitions>
@@ -233,9 +222,7 @@
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 
-					<TextBox
-						Grid.Column="0"
-						Text="{Binding Settings.PhotoDirectory}" />
+					<TextBox Grid.Column="0" Text="{Binding Settings.PhotoDirectory}" />
 
 					<Button
 						Grid.Column="1"
@@ -244,9 +231,7 @@
 				</Grid>
 
 
-				<TextBlock
-					Style="{DynamicResource LeftLabel}"
-					Text="{DynamicResource LOC_Settings_Photos_Format}" />
+				<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Settings_Photos_Format}" />
 				<ComboBox SelectedIndex="{Binding Settings.PhotoFormat, Converter={StaticResource EnumToIndex}}">
 					<ComboBoxItem Content="{DynamicResource LOC_Settings_Photos_Format_JPG}" />
 					<ComboBoxItem Content="{DynamicResource LOC_Settings_Photos_Format_BMP}" />
@@ -256,23 +241,15 @@
 					<ComboBoxItem Content="{DynamicResource LOC_Settings_Photos_Format_WEBP}" />
 				</ComboBox>
 
-				<ToggleButton
-					Content="{DynamicResource LOC_Settings_Photos_IncludeMetadata}"
-					IsChecked="{Binding Settings.PhotoIncludeMetaData}" />
+				<ToggleButton Content="{DynamicResource LOC_Settings_Photos_IncludeMetadata}" IsChecked="{Binding Settings.PhotoIncludeMetaData}" />
 
-				<ToggleButton
-					Content="{DynamicResource LOC_Settings_Photos_CaptureDepth}"
-					IsChecked="{Binding Settings.PhotoCaptureDepth}" />
+				<ToggleButton Content="{DynamicResource LOC_Settings_Photos_CaptureDepth}" IsChecked="{Binding Settings.PhotoCaptureDepth}" />
 
 				<GroupBox Header="{DynamicResource LOC_Settings_Photos_Animations}">
 					<StackPanel>
-						<ToggleButton
-							Content="{DynamicResource LOC_Settings_Photos_Flash}"
-							IsChecked="{Binding Settings.PhotoAnimationFlash}" />
+						<ToggleButton Content="{DynamicResource LOC_Settings_Photos_Flash}" IsChecked="{Binding Settings.PhotoAnimationFlash}" />
 
-						<ToggleButton
-							Content="{DynamicResource LOC_Settings_Photos_Review}"
-							IsChecked="{Binding Settings.PhotoAnimationPreview}" />
+						<ToggleButton Content="{DynamicResource LOC_Settings_Photos_Review}" IsChecked="{Binding Settings.PhotoAnimationPreview}" />
 					</StackPanel>
 				</GroupBox>
 

@@ -243,46 +243,46 @@ public partial class PhotosService : ServiceBase
 			switch (this.Settings.PhotoFormat)
 			{
 				case Formats.Jpeg:
-				{
-					JpegEncoder encoder = new()
 					{
-						Quality = 95,
-						Interleaved = false,
-					};
+						JpegEncoder encoder = new()
+						{
+							Quality = 95,
+							Interleaved = false,
+						};
 
-					await backBuffer.SaveAsJpegAsync(fileName, encoder);
-					break;
-				}
+						await backBuffer.SaveAsJpegAsync(fileName, encoder);
+						break;
+					}
 
 				case Formats.Bmp:
-				{
-					await backBuffer.SaveAsBmpAsync(fileName);
-					break;
-				}
+					{
+						await backBuffer.SaveAsBmpAsync(fileName);
+						break;
+					}
 
 				case Formats.Png:
-				{
-					await backBuffer.SaveAsPngAsync(fileName);
-					break;
-				}
+					{
+						await backBuffer.SaveAsPngAsync(fileName);
+						break;
+					}
 
 				case Formats.Tga:
-				{
-					await backBuffer.SaveAsTgaAsync(fileName);
-					break;
-				}
+					{
+						await backBuffer.SaveAsTgaAsync(fileName);
+						break;
+					}
 
 				case Formats.Tiff:
-				{
-					await backBuffer.SaveAsTiffAsync(fileName);
-					break;
-				}
+					{
+						await backBuffer.SaveAsTiffAsync(fileName);
+						break;
+					}
 
 				case Formats.WebP:
-				{
-					await backBuffer.SaveAsWebpAsync(fileName);
-					break;
-				}
+					{
+						await backBuffer.SaveAsWebpAsync(fileName);
+						break;
+					}
 			}
 
 			if (depthBuffer != null)
@@ -299,7 +299,7 @@ public partial class PhotosService : ServiceBase
 			this.LastSavedImagePath = fileName;
 			await this.DispatchCapturePhaseChange(CapturePhases.Saved, animate);
 		}
-		catch(Exception ex)
+		catch (Exception ex)
 		{
 			this.Log.Error(ex, "Error in photo capture");
 		}
@@ -332,7 +332,7 @@ public partial class PhotosService : ServiceBase
 		{
 			await this.PhaseChanged(this.CapturePhase, newPhase, this.captureCancellation.Token, animate);
 		}
-		catch(TaskCanceledException)
+		catch (TaskCanceledException)
 		{
 		}
 

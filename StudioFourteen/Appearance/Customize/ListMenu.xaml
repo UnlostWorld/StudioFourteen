@@ -6,13 +6,9 @@
 
 	<DataTemplate DataType="{x:Type local:ListMenu}">
 		<StackPanel>
-			<TextBlock
-				Style="{DynamicResource LeftLabel}"
-				Text="{Binding Name}" />
+			<TextBlock Style="{DynamicResource LeftLabel}" Text="{Binding Name}" />
 
-			<controls:SwitchSelector
-				ItemsSource="{Binding Options}"
-				SelectedItem="{Binding Selected}">
+			<controls:SwitchSelector ItemsSource="{Binding Options}" SelectedItem="{Binding Selected}">
 				<ListBox.ItemTemplate>
 					<DataTemplate>
 						<TextBlock Text="{Binding Label}" />

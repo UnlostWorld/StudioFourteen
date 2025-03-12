@@ -28,7 +28,7 @@ public class TagCollection : FastObservableCollection<Tag>
 
 	public TagCollection(params string[] tags)
 	{
-		foreach(string tag in tags)
+		foreach (string tag in tags)
 		{
 			this.Add(tag);
 		}
@@ -67,7 +67,7 @@ public class TagCollection : FastObservableCollection<Tag>
 
 	public bool Matches(TagCollection other)
 	{
-		foreach(Tag tag in other)
+		foreach (Tag tag in other)
 		{
 			if (!this.Contains(tag))
 			{
@@ -81,7 +81,7 @@ public class TagCollection : FastObservableCollection<Tag>
 	public override string ToString()
 	{
 		StringBuilder builder = new();
-		foreach(Tag tag in this)
+		foreach (Tag tag in this)
 		{
 			builder.Append(tag.Name);
 			builder.Append(' ');

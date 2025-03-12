@@ -9,15 +9,11 @@
 
 	<DataTemplate DataType="{x:Type local:ExcelLibraryEntryMenu}">
 		<StackPanel>
-			<TextBlock
-				Style="{DynamicResource LeftLabel}"
-				Text="{Binding Name}" />
-			<librarySelector:LibrarySelectorButton
-				Type="{Binding EntryType}"
-				Value="{Binding Entry}" >
+			<TextBlock Style="{DynamicResource LeftLabel}" Text="{Binding Name}" />
+			<librarySelector:LibrarySelectorButton Type="{Binding EntryType}" Value="{Binding Entry}">
 
 				<librarySelector:LibrarySelectorButton.PopOutHeader>
-					<TextBlock Text="{Binding Name}" Margin="12"/>
+					<TextBlock Margin="12" Text="{Binding Name}" />
 				</librarySelector:LibrarySelectorButton.PopOutHeader>
 			</librarySelector:LibrarySelectorButton>
 

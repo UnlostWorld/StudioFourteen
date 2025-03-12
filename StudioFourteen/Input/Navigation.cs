@@ -161,7 +161,7 @@ public partial class Navigation
 	private async Task OnNavigate(FocusNavigationDirection direction, InputActionListener listener)
 	{
 		bool isFirstStep = true;
-		while(listener.Value > 0.5)
+		while (listener.Value > 0.5)
 		{
 			await this.OnNavigate(direction);
 

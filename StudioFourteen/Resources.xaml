@@ -29,9 +29,9 @@
 		<ResourceDictionary Source="./Tags/TagsControlStyles.xaml" />
 		<ResourceDictionary Source="./Tags/TagSelectorStyles.xaml" />
 		<ResourceDictionary Source="./Controls/IconControlStyles.xaml" />
-        <ResourceDictionary Source="./Posing/BoneViewStyles.xaml" />
+		<ResourceDictionary Source="./Posing/BoneViewStyles.xaml" />
 
-        <!--  Default Language  -->
+		<!--  Default Language  -->
 		<ResourceDictionary Source="./Languages/English.xaml" />
 
 		<!--  Templates  -->
@@ -80,9 +80,7 @@
 		ImageSource="pack://application:,,,/StudioFourteen;component/Assets/rainbow-wheel.png" />
 	-->
 
-	<Style
-		x:Key="IconCircleCutout"
-		TargetType="{x:Type wpfUtils:IconBlock}">
+	<Style x:Key="IconCircleCutout" TargetType="{x:Type wpfUtils:IconBlock}">
 
 		<Setter Property="Clip">
 			<Setter.Value>

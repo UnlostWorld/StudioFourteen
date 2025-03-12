@@ -14,12 +14,8 @@
 	<Canvas>
 
 		<Canvas.Resources>
-			<ControlTemplate
-				x:Key="PartToggle"
-				TargetType="{x:Type ToggleButton}">
-				<Grid
-					x:Name="Grid"
-					Background="{DynamicResource ForegroundLightBrush}" />
+			<ControlTemplate x:Key="PartToggle" TargetType="{x:Type ToggleButton}">
+				<Grid x:Name="Grid" Background="{DynamicResource ForegroundLightBrush}" />
 
 				<ControlTemplate.Triggers>
 					<Trigger Property="IsMouseOver" Value="True">
@@ -32,9 +28,7 @@
 			</ControlTemplate>
 		</Canvas.Resources>
 
-		<Image
-			Opacity="{Binding BackgroundOpacity}"
-			Source="/StudioFourteen;component/Assets/ExpressionBlend_Background.png" />
+		<Image Opacity="{Binding BackgroundOpacity}" Source="/StudioFourteen;component/Assets/ExpressionBlend_Background.png" />
 
 		<Button
 			Canvas.Left="20"
@@ -42,9 +36,7 @@
 			Width="100"
 			Height="100"
 			Click="OnEyeClicked">
-			<Image
-				Opacity="0.25"
-				Source="/StudioFourteen;component/Assets/Expression_Iris.png" />
+			<Image Opacity="0.25" Source="/StudioFourteen;component/Assets/Expression_Iris.png" />
 		</Button>
 
 		<ToggleButton
@@ -56,9 +48,7 @@
 			Background="Transparent"
 			Template="{StaticResource PartToggle}">
 			<ToggleButton.OpacityMask>
-				<ImageBrush
-					ImageSource="/StudioFourteen;component/Assets/ExpressionBlend_Mouth.png"
-					Stretch="UniformToFill" />
+				<ImageBrush ImageSource="/StudioFourteen;component/Assets/ExpressionBlend_Mouth.png" Stretch="UniformToFill" />
 			</ToggleButton.OpacityMask>
 		</ToggleButton>
 
@@ -72,9 +62,7 @@
 			Background="Transparent"
 			Template="{StaticResource PartToggle}">
 			<ToggleButton.OpacityMask>
-				<ImageBrush
-					ImageSource="/StudioFourteen;component/Assets/ExpressionBlend_Eye_Neutral.png"
-					Stretch="UniformToFill" />
+				<ImageBrush ImageSource="/StudioFourteen;component/Assets/ExpressionBlend_Eye_Neutral.png" Stretch="UniformToFill" />
 			</ToggleButton.OpacityMask>
 		</ToggleButton>
 
@@ -91,9 +79,7 @@
 				<ScaleTransform ScaleX="-1" />
 			</ToggleButton.LayoutTransform>
 			<ToggleButton.OpacityMask>
-				<ImageBrush
-					ImageSource="/StudioFourteen;component/Assets/ExpressionBlend_Eye_Neutral.png"
-					Stretch="UniformToFill" />
+				<ImageBrush ImageSource="/StudioFourteen;component/Assets/ExpressionBlend_Eye_Neutral.png" Stretch="UniformToFill" />
 			</ToggleButton.OpacityMask>
 		</ToggleButton>
 
@@ -107,9 +93,7 @@
 			VerticalOffset="50">
 
 			<ContentControl Style="{DynamicResource WpfUtilsPopupContent}">
-				<Border
-					Margin="3"
-					Style="{DynamicResource WpfUtilsControlBorder}">
+				<Border Margin="3" Style="{DynamicResource WpfUtilsControlBorder}">
 					<ItemsControl>
 						<ItemsControl.ItemsPanel>
 							<ItemsPanelTemplate>
@@ -117,24 +101,12 @@
 							</ItemsPanelTemplate>
 						</ItemsControl.ItemsPanel>
 
-						<local:BlendTargetView
-							ObjectTableIndex="{Binding ObjectTableIndex}"
-							TargetName="MouthFrown" />
-						<local:BlendTargetView
-							ObjectTableIndex="{Binding ObjectTableIndex}"
-							TargetName="MouthGrin" />
-						<local:BlendTargetView
-							ObjectTableIndex="{Binding ObjectTableIndex}"
-							TargetName="MouthPucker" />
-						<local:BlendTargetView
-							ObjectTableIndex="{Binding ObjectTableIndex}"
-							TargetName="MouthScared" />
-						<local:BlendTargetView
-							ObjectTableIndex="{Binding ObjectTableIndex}"
-							TargetName="MouthSmile" />
-						<local:BlendTargetView
-							ObjectTableIndex="{Binding ObjectTableIndex}"
-							TargetName="Tongue" />
+						<local:BlendTargetView ObjectTableIndex="{Binding ObjectTableIndex}" TargetName="MouthFrown" />
+						<local:BlendTargetView ObjectTableIndex="{Binding ObjectTableIndex}" TargetName="MouthGrin" />
+						<local:BlendTargetView ObjectTableIndex="{Binding ObjectTableIndex}" TargetName="MouthPucker" />
+						<local:BlendTargetView ObjectTableIndex="{Binding ObjectTableIndex}" TargetName="MouthScared" />
+						<local:BlendTargetView ObjectTableIndex="{Binding ObjectTableIndex}" TargetName="MouthSmile" />
+						<local:BlendTargetView ObjectTableIndex="{Binding ObjectTableIndex}" TargetName="Tongue" />
 					</ItemsControl>
 				</Border>
 			</ContentControl>
@@ -149,9 +121,7 @@
 			VerticalOffset="50">
 
 			<ContentControl Style="{DynamicResource WpfUtilsPopupContent}">
-				<Border
-					Margin="3"
-					Style="{DynamicResource WpfUtilsControlBorder}">
+				<Border Margin="3" Style="{DynamicResource WpfUtilsControlBorder}">
 					<ItemsControl>
 						<ItemsControl.ItemsPanel>
 							<ItemsPanelTemplate>
@@ -159,24 +129,12 @@
 							</ItemsPanelTemplate>
 						</ItemsControl.ItemsPanel>
 
-						<local:BlendTargetView
-							ObjectTableIndex="{Binding ObjectTableIndex}"
-							TargetName="EyeAmazed" />
-						<local:BlendTargetView
-							ObjectTableIndex="{Binding ObjectTableIndex}"
-							TargetName="EyeAnnoyed" />
-						<local:BlendTargetView
-							ObjectTableIndex="{Binding ObjectTableIndex}"
-							TargetName="EyeGrin" />
-						<local:BlendTargetView
-							ObjectTableIndex="{Binding ObjectTableIndex}"
-							TargetName="EyeConfused" />
-						<local:BlendTargetView
-							ObjectTableIndex="{Binding ObjectTableIndex}"
-							TargetName="EyeNeutral" />
-						<local:BlendTargetView
-							ObjectTableIndex="{Binding ObjectTableIndex}"
-							TargetName="EyeLids" />
+						<local:BlendTargetView ObjectTableIndex="{Binding ObjectTableIndex}" TargetName="EyeAmazed" />
+						<local:BlendTargetView ObjectTableIndex="{Binding ObjectTableIndex}" TargetName="EyeAnnoyed" />
+						<local:BlendTargetView ObjectTableIndex="{Binding ObjectTableIndex}" TargetName="EyeGrin" />
+						<local:BlendTargetView ObjectTableIndex="{Binding ObjectTableIndex}" TargetName="EyeConfused" />
+						<local:BlendTargetView ObjectTableIndex="{Binding ObjectTableIndex}" TargetName="EyeNeutral" />
+						<local:BlendTargetView ObjectTableIndex="{Binding ObjectTableIndex}" TargetName="EyeLids" />
 					</ItemsControl>
 				</Border>
 			</ContentControl>
@@ -191,9 +149,7 @@
 			VerticalOffset="50">
 
 			<ContentControl Style="{DynamicResource WpfUtilsPopupContent}">
-				<Border
-					Margin="3"
-					Style="{DynamicResource WpfUtilsControlBorder}">
+				<Border Margin="3" Style="{DynamicResource WpfUtilsControlBorder}">
 					<ItemsControl>
 						<ItemsControl.ItemsPanel>
 							<ItemsPanelTemplate>

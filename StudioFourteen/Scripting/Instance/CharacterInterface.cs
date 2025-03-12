@@ -27,7 +27,7 @@ public class CharacterInterface : ScriptServiceBase
 {
 	public Genders[] Genders => [GameData.Genders.Feminine, GameData.Genders.Masculine];
 
-	public CharacterReference GetCurrentTarget() => new (this.Services.Target.TargetObjectIndex);
+	public CharacterReference GetCurrentTarget() => new(this.Services.Target.TargetObjectIndex);
 }
 
 public class CharacterReference(int objectTableIndex)

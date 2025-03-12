@@ -118,9 +118,7 @@
 				</Rectangle.Fill>
 			</Rectangle>
 
-			<Grid
-				Opacity="{Binding PhotoOpacity}"
-				RenderTransformOrigin="0.5, 0.5">
+			<Grid Opacity="{Binding PhotoOpacity}" RenderTransformOrigin="0.5, 0.5">
 
 				<Grid.RenderTransform>
 					<TransformGroup>
@@ -140,9 +138,7 @@
 
 					<Rectangle Fill="White" />
 
-					<Image
-						Margin="10,10,10,28"
-						Source="{Binding LastSavedImage}" />
+					<Image Margin="10,10,10,28" Source="{Binding LastSavedImage}" />
 
 					<TextBlock
 						Margin="6"

@@ -129,7 +129,6 @@
 			}
 		}
 	},
-
 	"MouthGrin": {
 		"IconPath": "/Assets/ExpressionBlend_Mouth_Grin.png",
 		"RightBones": {
@@ -260,7 +259,6 @@
 			}
 		}
 	},
-
 	"MouthPucker": {
 		"IconPath": "/Assets/ExpressionBlend_Mouth_Pucker.png",
 		"RightBones": {
@@ -404,7 +402,6 @@
 			}
 		}
 	},
-
 	"MouthScared": {
 		"IconPath": "/Assets/ExpressionBlend_Mouth_Scared.png",
 		"RightBones": {
@@ -535,7 +532,6 @@
 			}
 		}
 	},
-
 	"MouthSmile": {
 		"IconPath": "/Assets/ExpressionBlend_Mouth_Smile.png",
 		"RightBones": {
@@ -666,7 +662,6 @@
 			}
 		}
 	},
-
 	"Tongue": {
 		"IconPath": "/Assets/ExpressionBlend_Tongue.png",
 		"RightBones": {
@@ -714,7 +709,6 @@
 			}
 		}
 	},
-
 	"EyeAmazed": {
 		"MirrorMode": "MirrorTRCopyS",
 		"IconPath": "/Assets/ExpressionBlend_Eye_Amazed.png",
@@ -791,7 +785,6 @@
 			}
 		}
 	},
-
 	"EyeAnnoyed": {
 		"MirrorMode": "MirrorTRCopyS",
 		"IconPath": "/Assets/ExpressionBlend_Eye_Annoyed.png",
@@ -868,7 +861,6 @@
 			}
 		}
 	},
-
 	"EyeGrin": {
 		"MirrorMode": "MirrorTRCopyS",
 		"IconPath": "/Assets/ExpressionBlend_Eye_Grin.png",
@@ -945,7 +937,6 @@
 			}
 		}
 	},
-
 	"EyeConfused": {
 		"MirrorMode": "MirrorTRCopyS",
 		"IconPath": "/Assets/ExpressionBlend_Eye_Confused.png",
@@ -1022,7 +1013,6 @@
 			}
 		}
 	},
-
 	"EyeNeutral": {
 		"MirrorMode": "MirrorTRCopyS",
 		"IconPath": "/Assets/ExpressionBlend_Eye_Neutral.png",
@@ -1099,7 +1089,6 @@
 			}
 		}
 	},
-
 	"EyeLids": {
 		"MirrorMode": "MirrorTRCopyS",
 		"IconPath": "/Assets/ExpressionBlend_Eye_Eyelid.png",

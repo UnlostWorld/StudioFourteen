@@ -7,9 +7,7 @@
 
 	<DataTemplate DataType="{x:Type local:PercentageMenu}">
 		<StackPanel>
-			<TextBlock
-				Style="{DynamicResource LeftLabel}"
-				Text="{Binding Name}" />
+			<TextBlock Style="{DynamicResource LeftLabel}" Text="{Binding Name}" />
 
 			<wpfUtils:NumberBox
 				Maximum="{Binding Maximum}"

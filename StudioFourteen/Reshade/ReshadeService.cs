@@ -147,11 +147,11 @@ public class ReshadeService : ServiceBase
 		sw.Start();
 
 		this.isWaitingForPresetChange = true;
-		while(this.isWaitingForPresetChange && sw.ElapsedMilliseconds < timeout)
+		while (this.isWaitingForPresetChange && sw.ElapsedMilliseconds < timeout)
 			await Task.Delay(100);
 
 		this.isWaitingForEffectsReload = true;
-		while(this.isWaitingForEffectsReload && sw.ElapsedMilliseconds < timeout)
+		while (this.isWaitingForEffectsReload && sw.ElapsedMilliseconds < timeout)
 			await Task.Delay(100);
 
 		bool timedOut = sw.ElapsedMilliseconds > timeout;

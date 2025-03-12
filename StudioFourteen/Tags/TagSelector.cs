@@ -154,7 +154,7 @@ public partial class TagSelector : Control
 
 		if (string.IsNullOrEmpty(this.searchBox?.Text))
 		{
-			foreach(Tag tag in this.Tags)
+			foreach (Tag tag in this.Tags)
 			{
 				if (this.SelectedTags?.Contains(tag) == true)
 					continue;

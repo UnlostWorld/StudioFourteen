@@ -38,7 +38,7 @@ public class TerritoryTypeLibraryEntry : ExcelLibraryEntry
 		WeatherRate? rate = this.Services.GameData.GetRow<WeatherRate>(this.Territory.WeatherRate);
 		if (rate != null)
 		{
-			foreach(RowRef<Weather> weather in rate.Value.Weather)
+			foreach (RowRef<Weather> weather in rate.Value.Weather)
 			{
 				if (!weather.IsValid)
 					continue;

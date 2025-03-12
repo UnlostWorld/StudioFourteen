@@ -149,23 +149,23 @@ public class ScriptingService : ServiceBase
 				}
 			}
 		}
-		catch(OperationCanceledException)
+		catch (OperationCanceledException)
 		{
 			panel.SetProgress(0);
 			panel.SetStatus($"Canceled");
 			panel.IsRunning = false;
 		}
-		catch(Exception ex)
+		catch (Exception ex)
 		{
 			panel.SetStatus($"Error in script");
 			panel.AppendLog(LogEventLevel.Error, ex.Message);
 
-			#if DEBUG
+#if DEBUG
 			if (ex.StackTrace != null)
 				panel.AppendLog(LogEventLevel.Debug, ex.StackTrace);
-			#endif
+#endif
 
-			foreach(DiagnosticEntry diagnostic in script.Diagnostics)
+			foreach (DiagnosticEntry diagnostic in script.Diagnostics)
 			{
 				panel.AppendLog(diagnostic.Level, diagnostic.Message, diagnostic.Location);
 			}
@@ -216,7 +216,7 @@ public class ScriptingService : ServiceBase
 		SemanticModel semanticModel = compilation.GetSemanticModel(parsedSyntaxTree);
 		SyntaxNode root = await parsedSyntaxTree.GetRootAsync();
 		IEnumerable<SyntaxNode> nodes = root.DescendantNodes(descendIntoChildren => true);
-		foreach(SyntaxNode node in nodes)
+		foreach (SyntaxNode node in nodes)
 		{
 			// Check Types
 			if (node is IdentifierNameSyntax nameSyntax)
@@ -304,14 +304,14 @@ public class ScriptingService : ServiceBase
 		return true;
 	}
 
-	private async Task RunScript(ScriptFile file,  ScriptPanel panel, Dictionary<string, object> options)
+	private async Task RunScript(ScriptFile file, ScriptPanel panel, Dictionary<string, object> options)
 	{
 		if (file.Assembly == null)
 			throw new InvalidOperationException("Attempt to run a script that is not compiled");
 
 		Type[] types = file.Assembly.GetTypes();
 		Type? scriptType = null;
-		foreach(Type type in types)
+		foreach (Type type in types)
 		{
 			if (type.BaseType == typeof(ScriptBase))
 			{
@@ -330,7 +330,7 @@ public class ScriptingService : ServiceBase
 
 		// Initialize script services
 		PropertyInfo[] properties = typeof(ScriptBase).GetProperties(BindingFlags.Public | BindingFlags.Instance);
-		foreach(PropertyInfo property in properties)
+		foreach (PropertyInfo property in properties)
 		{
 			if (property.PropertyType.BaseType == typeof(ScriptServiceBase))
 			{

@@ -194,7 +194,7 @@ public class ItemLibraryPreview(ItemLibraryEntry item)
 			return;
 
 		EquipSlotCategory equipSlot = item.EquipSlot.Value;
-		foreach(EquipmentSlot slot in Enum.GetValues<EquipmentSlot>())
+		foreach (EquipmentSlot slot in Enum.GetValues<EquipmentSlot>())
 		{
 			if (equipSlot.Contains(slot))
 			{
@@ -248,7 +248,7 @@ public class ItemLibrarySource : ExcelSheetLibrarySource<Item, ItemLibraryEntry>
 		if (modelId.Id == 0 && modelId.Variant == 0)
 			return null;
 
-		foreach(Item item in this.Sheet)
+		foreach (Item item in this.Sheet)
 		{
 			if (!item.EquipSlotCategory.Value.Contains(slot))
 				continue;

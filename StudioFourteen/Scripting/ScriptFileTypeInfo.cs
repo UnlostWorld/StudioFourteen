@@ -81,7 +81,7 @@ public class ScriptFileTypeInfo : FileTypeInfoBase
 		{
 			header = Serialization.Serializer.Deserialize<ScriptHeader>(json);
 		}
-		catch(Exception ex)
+		catch (Exception ex)
 		{
 			script.Diagnostics.Add(new(LogEventLevel.Error, ex.Message, null));
 			script.HasErrors = true;

@@ -290,7 +290,7 @@ public class GizmoRenderer : Canvas
 
 				gizmo.HitTest(mousePos, ref result);
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				this.Log.Error(ex, "Error in gizmo Hit Test");
 				this.Gizmos.Remove(gizmo);

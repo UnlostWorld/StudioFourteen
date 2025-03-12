@@ -391,7 +391,7 @@ public partial class LibraryWindow : Panel
 				return;
 
 			List<GroupEntryBase> newPath = new();
-			foreach(GroupEntryBase entry in this.Path)
+			foreach (GroupEntryBase entry in this.Path)
 			{
 				newPath.Add(entry);
 
@@ -466,7 +466,7 @@ public partial class LibraryWindow : Panel
 		else if (this.ResultsGrid.SelectedItems.Count > 1)
 		{
 			List<LibraryEntryBase> entries = new();
-			foreach(object? obj in this.ResultsGrid.SelectedItems)
+			foreach (object? obj in this.ResultsGrid.SelectedItems)
 			{
 				if (obj is Result result)
 				{
@@ -574,7 +574,7 @@ public partial class LibraryWindow : Panel
 	private void SavePath()
 	{
 		StringBuilder sb = new();
-		foreach(GroupEntryBase segment in this.Path)
+		foreach (GroupEntryBase segment in this.Path)
 		{
 			if (segment == this.Services.Library.Root)
 				continue;
@@ -598,7 +598,7 @@ public partial class LibraryWindow : Panel
 		GroupEntryBase? current = this.Services.Library.Root;
 		groups.Add(current);
 
-		foreach(string identifier in segments)
+		foreach (string identifier in segments)
 		{
 			current = current?.GetGroup(identifier);
 			if (current != null)

@@ -111,7 +111,7 @@ public class TabletService : ServiceBase
 
 	private void PacketThread()
 	{
-		while(this.data != null && this.IsAlive)
+		while (this.data != null && this.IsAlive)
 		{
 			try
 			{

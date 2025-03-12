@@ -34,7 +34,7 @@ public class GamepadDevice : InputDeviceBase
 
 	public GamepadDevice()
 	{
-		foreach(Buttons button in Enum.GetValues<Buttons>())
+		foreach (Buttons button in Enum.GetValues<Buttons>())
 		{
 			InputAxis axis = new(GetAxisId(button), this, true);
 			this.buttonAxes.Add(button, axis);
@@ -132,7 +132,7 @@ public class GamepadDevice : InputDeviceBase
 			axis.IsConsumed = false;
 		}
 
-		while(this.sendButtons.Count > 0)
+		while (this.sendButtons.Count > 0)
 		{
 			Buttons button = this.sendButtons.Dequeue();
 

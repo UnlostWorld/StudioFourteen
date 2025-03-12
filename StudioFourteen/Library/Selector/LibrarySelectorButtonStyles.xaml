@@ -10,9 +10,7 @@
 	<converters:StringHasContentToVisibilityConverter x:Key="StringHasContentToVisibility" />
 	<converters:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter" />
 
-	<ControlTemplate
-		x:Key="LibrarySelectorButtonTemplate"
-		TargetType="{x:Type librarySelector:LibrarySelectorButton}">
+	<ControlTemplate x:Key="LibrarySelectorButtonTemplate" TargetType="{x:Type librarySelector:LibrarySelectorButton}">
 		<Grid>
 			<ToggleButton
 				x:Name="PART_Button"
@@ -27,18 +25,11 @@
 						<ColumnDefinition />
 					</Grid.ColumnDefinitions>
 
-					<Grid
-						Grid.RowSpan="2"
-						Margin="3,3,3,2">
+					<Grid Grid.RowSpan="2" Margin="3,3,3,2">
 
-						<ContentPresenter
-							Content="{TemplateBinding IconBackground}"
-							Visibility="{TemplateBinding IconBackground,
-							                             Converter={StaticResource NotNullToVisibilityConverter}}" />
+						<ContentPresenter Content="{TemplateBinding IconBackground}" Visibility="{TemplateBinding IconBackground, Converter={StaticResource NotNullToVisibilityConverter}}" />
 
-						<ContentPresenter
-							Content="{TemplateBinding Value}"
-							Style="{DynamicResource LibraryIcon}" />
+						<ContentPresenter Content="{TemplateBinding Value}" Style="{DynamicResource LibraryIcon}" />
 					</Grid>
 
 					<Grid
@@ -95,14 +86,12 @@
 	</ControlTemplate>
 
 	<Style TargetType="{x:Type librarySelector:LibrarySelectorButton}">
+		<Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
 		<Setter Property="Height" Value="48" />
 		<Setter Property="Template" Value="{StaticResource LibrarySelectorButtonTemplate}" />
-		<Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
 	</Style>
 
-	<ControlTemplate
-		x:Key="LibrarySelectorButtonIconOnlyTemplate"
-		TargetType="{x:Type librarySelector:LibrarySelectorButton}">
+	<ControlTemplate x:Key="LibrarySelectorButtonIconOnlyTemplate" TargetType="{x:Type librarySelector:LibrarySelectorButton}">
 		<Grid>
 
 			<ToggleButton
@@ -114,10 +103,7 @@
 				ToolTip="!">
 
 				<Grid Margin="3">
-					<ContentPresenter
-						Content="{TemplateBinding IconBackground}"
-						Visibility="{TemplateBinding IconBackground,
-						                             Converter={StaticResource NotNullToVisibilityConverter}}" />
+					<ContentPresenter Content="{TemplateBinding IconBackground}" Visibility="{TemplateBinding IconBackground, Converter={StaticResource NotNullToVisibilityConverter}}" />
 					<ContentPresenter
 						HorizontalAlignment="Stretch"
 						VerticalAlignment="Stretch"
@@ -151,13 +137,11 @@
 		</Grid>
 	</ControlTemplate>
 
-	<Style
-		x:Key="LibrarySelectorIconOnly"
-		TargetType="{x:Type librarySelector:LibrarySelectorButton}">
-		<Setter Property="Height" Value="48" />
-		<Setter Property="Width" Value="48" />
-		<Setter Property="Template" Value="{StaticResource LibrarySelectorButtonIconOnlyTemplate}" />
+	<Style x:Key="LibrarySelectorIconOnly" TargetType="{x:Type librarySelector:LibrarySelectorButton}">
 		<Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
+		<Setter Property="Height" Value="48" />
+		<Setter Property="Template" Value="{StaticResource LibrarySelectorButtonIconOnlyTemplate}" />
+		<Setter Property="Width" Value="48" />
 	</Style>
 
 </ResourceDictionary>

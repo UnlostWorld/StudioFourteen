@@ -79,7 +79,7 @@ public class FileService : ServiceBase
 
 	public FileTypeInfoBase? GetTypeInfo(Type fileType)
 	{
-		foreach(FileTypeInfoBase fileTypeInfo in FileTypeInfos)
+		foreach (FileTypeInfoBase fileTypeInfo in FileTypeInfos)
 		{
 			if (fileTypeInfo.LoadsType == fileType)
 			{
@@ -219,7 +219,7 @@ public class FileService : ServiceBase
 		where TDialogType : FileDialog, new()
 	{
 		List<FileTypeInfoBase> fileTypeInfos = new();
-		foreach(Type fileType in fileTypes)
+		foreach (Type fileType in fileTypes)
 		{
 			FileTypeInfoBase? fileTypeInfo = this.GetTypeInfo(fileType);
 			if (fileTypeInfo == null)

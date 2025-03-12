@@ -30,24 +30,18 @@
 	<panels:PanelWindow.Template>
 		<ControlTemplate TargetType="{x:Type panels:PanelWindow}">
 			<AdornerDecorator>
-				<ContentPresenter
-					Content="{TemplateBinding Content}"
-					ContentTemplate="{TemplateBinding ContentTemplate}" />
+				<ContentPresenter Content="{TemplateBinding Content}" ContentTemplate="{TemplateBinding ContentTemplate}" />
 			</AdornerDecorator>
 		</ControlTemplate>
 	</panels:PanelWindow.Template>
 
 	<Grid x:Name="ContentArea">
-		<Grid
-			Background="Transparent"
-			Visibility="{Binding Services.Studio.IsOpenAndInGPose, Converter={StaticResource B2V}}">
+		<Grid Background="Transparent" Visibility="{Binding Services.Studio.IsOpenAndInGPose, Converter={StaticResource B2V}}">
 
 			<Grid.Style>
 				<Style TargetType="{x:Type Grid}">
 					<Style.Triggers>
-						<DataTrigger
-							Binding="{Binding Services.Windows.EnableXivWindowOverlay}"
-							Value="True">
+						<DataTrigger Binding="{Binding Services.Windows.EnableXivWindowOverlay}" Value="True">
 
 							<DataTrigger.EnterActions>
 								<BeginStoryboard>
@@ -73,9 +67,7 @@
 
 						</DataTrigger>
 
-						<DataTrigger
-							Binding="{Binding Services.Windows.EnableXivWindowOverlay}"
-							Value="False">
+						<DataTrigger Binding="{Binding Services.Windows.EnableXivWindowOverlay}" Value="False">
 							<Setter Property="Opacity" Value="0" />
 						</DataTrigger>
 					</Style.Triggers>
@@ -91,9 +83,7 @@
 			<Grid.Style>
 				<Style TargetType="{x:Type Grid}">
 					<Style.Triggers>
-						<DataTrigger
-							Binding="{Binding IsUiVisible}"
-							Value="False">
+						<DataTrigger Binding="{Binding IsUiVisible}" Value="False">
 
 							<Setter Property="IsHitTestVisible" Value="False" />
 

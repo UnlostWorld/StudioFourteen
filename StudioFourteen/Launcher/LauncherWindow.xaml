@@ -13,9 +13,7 @@
 	<panels:PanelWindow.Template>
 		<ControlTemplate TargetType="{x:Type local:LauncherWindow}">
 			<AdornerDecorator x:Name="MainGrid">
-				<Grid
-					HorizontalAlignment="Left"
-					VerticalAlignment="Top">
+				<Grid HorizontalAlignment="Left" VerticalAlignment="Top">
 
 					<local:TaskBarControl Padding="0,45,0,0" />
 

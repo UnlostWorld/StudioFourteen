@@ -14,9 +14,7 @@
 	<converters:NotNullToVisibilityConverter x:Key="NotNullToVisibility" />
 	<converters:NullToVisibilityConverter x:Key="NullToVisibility" />
 
-	<ControlTemplate
-		x:Key="TagControlTemplate"
-		TargetType="{x:Type local:TagControl}">
+	<ControlTemplate x:Key="TagControlTemplate" TargetType="{x:Type local:TagControl}">
 
 		<Button
 			x:Name="PART_TagButton"
@@ -27,9 +25,7 @@
 			Style="{DynamicResource WpfUtilsButtonNoDisabledFade}"
 			ToolTip="{TemplateBinding TagToolTip}">
 
-			<StackPanel
-				Margin="2,0"
-				Orientation="Horizontal">
+			<StackPanel Margin="2,0" Orientation="Horizontal">
 				<wpfUtils:IconBlock
 					Margin="0,0,4,0"
 					Foreground="{DynamicResource ForegroundLightBrush}"
@@ -38,13 +34,13 @@
 					Foreground="{TemplateBinding TagColor}"
 					Text="{TemplateBinding TagName}"
 					Visibility="{TemplateBinding TagColor,
-					                             Converter={StaticResource NotNullToVisibility}}" />
+												 Converter={StaticResource NotNullToVisibility}}" />
 
 				<TextBlock
 					Foreground="{DynamicResource ForegroundLightBrush}"
 					Text="{TemplateBinding TagName}"
 					Visibility="{TemplateBinding TagColor,
-					                             Converter={StaticResource NullToVisibility}}" />
+												 Converter={StaticResource NullToVisibility}}" />
 			</StackPanel>
 		</Button>
 	</ControlTemplate>

@@ -6,9 +6,7 @@
 	xmlns:sys="clr-namespace:System;assembly=mscorlib"
 	xmlns:vectors="http://sharpvectors.codeplex.com/svgc/">
 
-	<ControlTemplate
-		x:Key="IconControlTemplate"
-		TargetType="{x:Type local:IconControl}">
+	<ControlTemplate x:Key="IconControlTemplate" TargetType="{x:Type local:IconControl}">
 
 		<ControlTemplate.Resources>
 			<DataTemplate DataType="{x:Type local:FontAwesomeIcon}">
@@ -22,9 +20,7 @@
 			</DataTemplate>
 
 			<DataTemplate DataType="{x:Type sys:String}">
-				<vectors:SvgIcon
-					Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:IconControl}}, Path=Foreground}"
-					UriSource="{Binding .}" />
+				<vectors:SvgIcon Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:IconControl}}, Path=Foreground}" UriSource="{Binding .}" />
 			</DataTemplate>
 		</ControlTemplate.Resources>
 
@@ -32,10 +28,10 @@
 	</ControlTemplate>
 
 	<Style TargetType="{x:Type local:IconControl}">
-		<Setter Property="Template" Value="{StaticResource IconControlTemplate}" />
-		<Setter Property="Width" Value="14" />
 		<Setter Property="Height" Value="14" />
 		<Setter Property="HorizontalAlignment" Value="Center" />
+		<Setter Property="Template" Value="{StaticResource IconControlTemplate}" />
 		<Setter Property="VerticalAlignment" Value="Center" />
+		<Setter Property="Width" Value="14" />
 	</Style>
 </ResourceDictionary>

@@ -18,9 +18,7 @@
 	</DataTemplate>
 
 
-	<DataTemplate
-		x:Key="LibrarySidebar_Item"
-		DataType="{x:Type gameData:ItemLibraryEntry}">
+	<DataTemplate x:Key="LibrarySidebar_Item" DataType="{x:Type gameData:ItemLibraryEntry}">
 		<Grid>
 			<StackPanel>
 				<TextBlock
@@ -29,20 +27,14 @@
 					TextWrapping="Wrap"
 					Visibility="{Binding Description, Converter={StaticResource NotNullToVisibilityConverter}}" />
 
-				<TextBlock
-					Foreground="{DynamicResource ForegroundLightBrush}"
-					Text="{Binding ClassJobsName}" />
+				<TextBlock Foreground="{DynamicResource ForegroundLightBrush}" Text="{Binding ClassJobsName}" />
 
-				<TextBlock
-					Foreground="{DynamicResource ForegroundLightBrush}"
-					Visibility="{Binding EquipLevel, Converter={StaticResource GreaterThanToVisibility}, ConverterParameter=1}">
+				<TextBlock Foreground="{DynamicResource ForegroundLightBrush}" Visibility="{Binding EquipLevel, Converter={StaticResource GreaterThanToVisibility}, ConverterParameter=1}">
 					<Run Text="Lv." />
 					<Run Text="{Binding EquipLevel, Mode=OneWay}" />
 				</TextBlock>
 
-				<TextBlock
-					Foreground="{DynamicResource ForegroundLightBrush}"
-					Text="{Binding UICategoryName}" />
+				<TextBlock Foreground="{DynamicResource ForegroundLightBrush}" Text="{Binding UICategoryName}" />
 
 			</StackPanel>
 		</Grid>
@@ -50,9 +42,7 @@
 
 
 
-	<DataTemplate
-		x:Key="LibrarySidebar_FileEntry"
-		DataType="{x:Type sources:FileEntry}">
+	<DataTemplate x:Key="LibrarySidebar_FileEntry" DataType="{x:Type sources:FileEntry}">
 		<Grid>
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
@@ -71,9 +61,7 @@
 					Text="{Binding Author}"
 					Visibility="{Binding Author, Converter={StaticResource StringHasContentToVisibility}}" />
 
-				<TextBlock
-					Foreground="{DynamicResource ForegroundLightBrush}"
-					Visibility="{Binding Version, Converter={StaticResource StringHasContentToVisibility}}">
+				<TextBlock Foreground="{DynamicResource ForegroundLightBrush}" Visibility="{Binding Version, Converter={StaticResource StringHasContentToVisibility}}">
 					<Run Text="Ver: " />
 					<Run Text="{Binding Version, Mode=OneWay}" />
 				</TextBlock>
@@ -101,56 +89,36 @@
 		</Grid>
 	</DataTemplate>
 
-	<DataTemplate
-		x:Key="LibrarySidebar_Territory"
-		DataType="{x:Type gameData:TerritoryTypeLibraryEntry}">
+	<DataTemplate x:Key="LibrarySidebar_Territory" DataType="{x:Type gameData:TerritoryTypeLibraryEntry}">
 		<StackPanel>
 
 			<Image Source="{Binding ThumbnailPath}" />
 
 			<StackPanel>
-				<TextBlock
-					Foreground="{DynamicResource ForegroundLightBrush}"
-					Text="{Binding Zone}" />
+				<TextBlock Foreground="{DynamicResource ForegroundLightBrush}" Text="{Binding Zone}" />
 
-				<TextBlock
-					Foreground="{DynamicResource ForegroundLightBrush}"
-					Text="{Binding Region}" />
+				<TextBlock Foreground="{DynamicResource ForegroundLightBrush}" Text="{Binding Region}" />
 
-				<TextBlock
-					Foreground="{DynamicResource ForegroundLightBrush}"
-					Text="{Binding Place}" />
+				<TextBlock Foreground="{DynamicResource ForegroundLightBrush}" Text="{Binding Place}" />
 			</StackPanel>
 		</StackPanel>
 	</DataTemplate>
 
 	<markup:TemplateSelector x:Key="LibrarySidebarTemplateSelector">
 
-		<markup:TemplateSelectorEntry
-			TargetType="{x:Type gameData:ENpcResidentLibraryEntry}"
-			Template="{StaticResource LibrarySidebar_CharacterAppearance}" />
+		<markup:TemplateSelectorEntry TargetType="{x:Type gameData:ENpcResidentLibraryEntry}" Template="{StaticResource LibrarySidebar_CharacterAppearance}" />
 
-		<markup:TemplateSelectorEntry
-			TargetType="{x:Type gameData:BNpcBaseLibraryEntry}"
-			Template="{StaticResource LibrarySidebar_CharacterAppearance}" />
+		<markup:TemplateSelectorEntry TargetType="{x:Type gameData:BNpcBaseLibraryEntry}" Template="{StaticResource LibrarySidebar_CharacterAppearance}" />
 
-		<markup:TemplateSelectorEntry
-			TargetType="{x:Type gameData:ItemLibraryEntry}"
-			Template="{StaticResource LibrarySidebar_Item}" />
+		<markup:TemplateSelectorEntry TargetType="{x:Type gameData:ItemLibraryEntry}" Template="{StaticResource LibrarySidebar_Item}" />
 
-		<markup:TemplateSelectorEntry
-			TargetType="{x:Type gameData:TerritoryTypeLibraryEntry}"
-			Template="{StaticResource LibrarySidebar_Territory}" />
+		<markup:TemplateSelectorEntry TargetType="{x:Type gameData:TerritoryTypeLibraryEntry}" Template="{StaticResource LibrarySidebar_Territory}" />
 
-		<markup:TemplateSelectorEntry
-			TargetType="{x:Type sources:FileEntry}"
-			Template="{StaticResource LibrarySidebar_FileEntry}" />
+		<markup:TemplateSelectorEntry TargetType="{x:Type sources:FileEntry}" Template="{StaticResource LibrarySidebar_FileEntry}" />
 
 	</markup:TemplateSelector>
 
-	<Style
-		x:Key="LibrarySidebar"
-		TargetType="{x:Type ContentPresenter}">
+	<Style x:Key="LibrarySidebar" TargetType="{x:Type ContentPresenter}">
 		<Setter Property="ContentTemplateSelector" Value="{StaticResource LibrarySidebarTemplateSelector}" />
 		<Setter Property="TextBlock.Foreground" Value="{DynamicResource ForegroundBrush}" />
 		<Setter Property="VerticalAlignment" Value="Top" />

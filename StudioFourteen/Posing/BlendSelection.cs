@@ -123,7 +123,7 @@ public class BlendSelection(string blendTargetName, BlendTarget target, int obje
 		if (boneSelections == null)
 			return;
 
-		foreach(BoneSelection selection in boneSelections)
+		foreach (BoneSelection selection in boneSelections)
 		{
 			selection.Activate();
 		}
@@ -166,7 +166,7 @@ public class BlendSelection(string blendTargetName, BlendTarget target, int obje
 	{
 		base.Reset();
 
-		foreach(BoneBlend bone in this.bones)
+		foreach (BoneBlend bone in this.bones)
 		{
 			bone.Selection.Reset();
 		}

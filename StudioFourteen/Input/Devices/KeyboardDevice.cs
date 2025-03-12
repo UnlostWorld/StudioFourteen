@@ -63,7 +63,7 @@ public class KeyboardDevice : InputDeviceBase
 		if (!this.Services.Windows.IsAnyStudioWindowActive() && this.Services.Windows.IsXivWindowActive())
 		{
 			// Read XIV -> Studio
-			foreach((VirtualKey key, InputAxis axis) in this.axisLookup)
+			foreach ((VirtualKey key, InputAxis axis) in this.axisLookup)
 			{
 				bool isDown = DalamudServices.KeyState[key];
 				axis.Value = isDown ? 1.0f : 0.0f;

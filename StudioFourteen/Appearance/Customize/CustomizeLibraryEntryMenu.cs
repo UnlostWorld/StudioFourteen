@@ -88,7 +88,7 @@ public class CustomizeLibraryEntryMenu : MenuViewModel
 		base.OnValueChanged(oldValue, newValue);
 
 		List<CharaMakeCustomizeLibrarySource> sources = this.Services.Library.GetSources<CharaMakeCustomizeLibrarySource>();
-		foreach(CharaMakeCustomizeLibrarySource source in sources)
+		foreach (CharaMakeCustomizeLibrarySource source in sources)
 		{
 			this.entry = source.Find(
 				this.MakeType.Race.Value,

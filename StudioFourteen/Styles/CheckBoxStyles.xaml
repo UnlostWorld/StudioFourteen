@@ -3,13 +3,9 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
-	<ControlTemplate
-		x:Key="StudioVisibilityCheckBoxTemplate"
-		TargetType="{x:Type CheckBox}">
+	<ControlTemplate x:Key="StudioVisibilityCheckBoxTemplate" TargetType="{x:Type CheckBox}">
 
-		<Border
-			Background="{TemplateBinding Background}"
-			Style="{DynamicResource WpfUtilsControlBorder}">
+		<Border Background="{TemplateBinding Background}" Style="{DynamicResource WpfUtilsControlBorder}">
 			<Grid x:Name="Content">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto" />
@@ -138,15 +134,13 @@
 
 	</ControlTemplate>
 
-	<Style
-		x:Key="StudioVisibilityCheckBox"
-		TargetType="{x:Type CheckBox}">
+	<Style x:Key="StudioVisibilityCheckBox" TargetType="{x:Type CheckBox}">
+		<Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
+		<Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
 
 		<Setter Property="Height" Value="26" />
-		<Setter Property="SnapsToDevicePixels" Value="true" />
 		<Setter Property="OverridesDefaultStyle" Value="true" />
+		<Setter Property="SnapsToDevicePixels" Value="true" />
 		<Setter Property="Template" Value="{StaticResource StudioVisibilityCheckBoxTemplate}" />
-		<Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
-		<Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
 	</Style>
 </ResourceDictionary>

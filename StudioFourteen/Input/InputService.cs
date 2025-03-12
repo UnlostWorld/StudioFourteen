@@ -149,7 +149,7 @@ public class InputService : ServiceBase
 
 	public void AddDevice(InputDeviceBase device)
 	{
-		lock(this)
+		lock (this)
 		{
 			this.inputDevices.Add(device);
 
@@ -239,7 +239,7 @@ public class InputService : ServiceBase
 
 	public override void Attach()
 	{
-		foreach(InputDeviceBase device in this.inputDevices)
+		foreach (InputDeviceBase device in this.inputDevices)
 		{
 			device.Attach();
 		}
@@ -272,7 +272,7 @@ public class InputService : ServiceBase
 		if (!this.Services.Studio.IsOpen)
 			return;
 
-		lock(this)
+		lock (this)
 		{
 			foreach (InputDeviceBase device in this.inputDevices)
 			{
@@ -302,7 +302,7 @@ public class InputService : ServiceBase
 
 			Dictionary<InputAction, float> combinedValues = new();
 
-			foreach(Bind bind in this.binds)
+			foreach (Bind bind in this.binds)
 			{
 				this.listeners.TryGetValue(bind.Action, out List<InputActionListener>? listeners);
 
@@ -314,7 +314,7 @@ public class InputService : ServiceBase
 				combinedValues[bind.Action] += bind.GetValue();
 			}
 
-			foreach((InputAction action, float value) in combinedValues)
+			foreach ((InputAction action, float value) in combinedValues)
 			{
 				this.listeners.TryGetValue(action, out List<InputActionListener>? listeners);
 
@@ -333,7 +333,7 @@ public class InputService : ServiceBase
 			{
 				device.PostUpdate();
 
-				foreach(InputAxis axis in device.Axes)
+				foreach (InputAxis axis in device.Axes)
 				{
 					if (!axis.CanActivateDevice)
 						continue;

@@ -45,13 +45,9 @@
 				Foreground="{DynamicResource ForegroundLightBrush}"
 				Text="{Binding Status}" />
 
-			<Border
-				Grid.Row="2"
-				Style="{DynamicResource WpfUtilsGroupBorder}">
+			<Border Grid.Row="2" Style="{DynamicResource WpfUtilsGroupBorder}">
 
-				<ScrollViewer
-					x:Name="Scroller"
-					HorizontalScrollBarVisibility="Disabled">
+				<ScrollViewer x:Name="Scroller" HorizontalScrollBarVisibility="Disabled">
 					<ItemsControl ItemsSource="{Binding ScriptLog}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate DataType="{x:Type local:LogEntry}">
@@ -86,23 +82,17 @@
 								</Grid>
 
 								<DataTemplate.Triggers>
-									<DataTrigger
-										Binding="{Binding Level}"
-										Value="Message">
+									<DataTrigger Binding="{Binding Level}" Value="Message">
 										<Setter TargetName="Icon" Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
 										<Setter TargetName="Icon" Property="Icon" Value="InfoCircle" />
 									</DataTrigger>
 
-									<DataTrigger
-										Binding="{Binding Level}"
-										Value="Warning">
+									<DataTrigger Binding="{Binding Level}" Value="Warning">
 										<Setter TargetName="Icon" Property="Foreground" Value="Orange" />
 										<Setter TargetName="Icon" Property="Icon" Value="Warning" />
 									</DataTrigger>
 
-									<DataTrigger
-										Binding="{Binding Level}"
-										Value="Error">
+									<DataTrigger Binding="{Binding Level}" Value="Error">
 										<Setter TargetName="Icon" Property="Foreground" Value="Red" />
 										<Setter TargetName="Icon" Property="Icon" Value="Warning" />
 									</DataTrigger>
@@ -114,9 +104,7 @@
 				</ScrollViewer>
 			</Border>
 
-			<Border
-				Grid.Row="3"
-				Style="{DynamicResource WpfUtilsControlBorder}">
+			<Border Grid.Row="3" Style="{DynamicResource WpfUtilsControlBorder}">
 
 				<Grid>
 					<Button
@@ -227,9 +215,7 @@
 				</CheckBox.ToolTip>
 			</CheckBox>
 
-			<Grid
-				Grid.Row="8"
-				Grid.ColumnSpan="2">
+			<Grid Grid.Row="8" Grid.ColumnSpan="2">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition />
 					<ColumnDefinition />
@@ -268,13 +254,9 @@
 
 				<DataTemplate DataType="{x:Type local:InputOption}">
 					<StackPanel>
-						<TextBlock
-							Style="{DynamicResource LeftLabel}"
-							Text="{Binding Name}" />
+						<TextBlock Style="{DynamicResource LeftLabel}" Text="{Binding Name}" />
 
-						<TextBox
-							Text="{Binding Text}"
-							ToolTip="{Binding ToolTip}" />
+						<TextBox Text="{Binding Text}" ToolTip="{Binding ToolTip}" />
 					</StackPanel>
 				</DataTemplate>
 			</Grid.Resources>
@@ -307,9 +289,7 @@
 			</ScrollViewer>
 
 
-			<Border
-				Grid.Row="1"
-				Style="{DynamicResource WpfUtilsControlBorder}">
+			<Border Grid.Row="1" Style="{DynamicResource WpfUtilsControlBorder}">
 
 				<Grid>
 					<Button

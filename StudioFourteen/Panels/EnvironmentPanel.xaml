@@ -20,30 +20,22 @@
 	<Grid>
 		<StackPanel>
 
-			<TextBlock
-				Style="{DynamicResource LeftLabel}"
-				Text="{DynamicResource LOC_Environment_Territory}" />
+			<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Territory}" />
 			<librarySelector:LibrarySelectorButton
 				IsEnabled="{Binding Services.Environment.CanChangeTerritory}"
 				Type="{x:Type gameData:TerritoryTypeLibraryEntry}"
 				Value="{Binding Territory}" />
 
-			<TextBlock
-				Style="{DynamicResource LeftLabel}"
-				Text="{DynamicResource LOC_Environment_Weather}" />
+			<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Weather}" />
 			<librarySelector:LibrarySelectorButton
 				PopOutHeader="{DynamicResource LOC_Environment_WeatherSelect}"
 				SearchTags="{Binding WeatherTags}"
 				Type="{x:Type gameData:WeatherLibraryEntry}"
 				Value="{Binding Weather}" />
 
-			<TextBlock
-				Style="{DynamicResource LeftLabel}"
-				Text="{DynamicResource LOC_Environment_Time}" />
+			<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Time}" />
 
-			<ToggleButton
-				Content="{DynamicResource LOC_Environment_FreezeTime}"
-				IsChecked="{Binding Services.Environment.FreezeTime}" />
+			<ToggleButton Content="{DynamicResource LOC_Environment_FreezeTime}" IsChecked="{Binding Services.Environment.FreezeTime}" />
 
 			<Border
 				Grid.Column="0"
@@ -117,9 +109,7 @@
 				</Grid>
 			</Border>
 
-			<Border
-				Margin="1"
-				Style="{DynamicResource WpfUtilsControlBorder}">
+			<Border Margin="1" Style="{DynamicResource WpfUtilsControlBorder}">
 
 				<Grid>
 					<Grid.ColumnDefinitions>

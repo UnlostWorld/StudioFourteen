@@ -34,9 +34,9 @@ using System.Windows.Shapes;
 /// Interaction logic for MatrixView.xaml.
 /// </summary>
 public partial class MatrixView : UserControl
-    {
-        public MatrixView()
-        {
+{
+	public MatrixView()
+	{
 		this.InitializeComponent();
-        }
-    }
+	}
+}

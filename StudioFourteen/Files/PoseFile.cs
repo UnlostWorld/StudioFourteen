@@ -69,7 +69,7 @@ public class PoseFile : FileBase
 		// Wait one frame for all the bone references to populate with real transform data.
 		await Threads.NextFrame();
 
-		foreach(BoneReference boneReference in references)
+		foreach (BoneReference boneReference in references)
 		{
 			if (boneReference.Name == null)
 				continue;

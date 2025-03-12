@@ -66,7 +66,7 @@ public class PanelService : ServiceBase
 
 	public void OnPanelOpened(Panel panel)
 	{
-		lock(this)
+		lock (this)
 		{
 			this.openPanels.Add(panel);
 
@@ -82,7 +82,7 @@ public class PanelService : ServiceBase
 
 	public void OnPanelClosed(Panel panel, bool minimize)
 	{
-		lock(this)
+		lock (this)
 		{
 			this.openPanels.Remove(panel);
 

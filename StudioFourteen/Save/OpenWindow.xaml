@@ -128,9 +128,7 @@
 			Grid.Row="0"
 			Grid.Column="1"
 			HorizontalScrollBarVisibility="Disabled">
-			<StackPanel
-				Grid.Row="0"
-				Margin="2">
+			<StackPanel Grid.Row="0" Margin="2">
 
 				<TextBlock
 					Margin="2,2,0,0"
@@ -193,9 +191,7 @@
 									IsEnabled="{Binding CanIncludeAppearance}"
 									Style="{DynamicResource WpfUtilsIconToggleButton}"
 									ToolTip="{Binding ApplyAppearanceTooltip}">
-									<wpfUtils:IconBlock
-										Icon="UserShield"
-										IconFont="Solid" />
+									<wpfUtils:IconBlock Icon="UserShield" IconFont="Solid" />
 								</ToggleButton>
 
 								<ToggleButton
@@ -229,9 +225,7 @@
 													Grid.Column="0"
 													Icon="User"
 													IconFont="Solid" />
-												<TextBlock
-													Grid.Column="1"
-													Text="{Binding Name}" />
+												<TextBlock Grid.Column="1" Text="{Binding Name}" />
 											</Grid>
 										</DataTemplate>
 										<DataTemplate DataType="{x:Type local:OpenCreateCharacterViewModel}">
@@ -241,12 +235,8 @@
 													<ColumnDefinition />
 												</Grid.ColumnDefinitions>
 
-												<wpfUtils:IconBlock
-													Grid.Column="0"
-													Icon="UserPlus" />
-												<TextBlock
-													Grid.Column="1"
-													Text="Create Character" />
+												<wpfUtils:IconBlock Grid.Column="0" Icon="UserPlus" />
+												<TextBlock Grid.Column="1" Text="Create Character" />
 											</Grid>
 										</DataTemplate>
 										<DataTemplate DataType="{x:Type local:OpenIgnoreCharacterViewModel}">
@@ -256,12 +246,8 @@
 													<ColumnDefinition />
 												</Grid.ColumnDefinitions>
 
-												<wpfUtils:IconBlock
-													Grid.Column="0"
-													Icon="Times" />
-												<TextBlock
-													Grid.Column="1"
-													Text="Ignore" />
+												<wpfUtils:IconBlock Grid.Column="0" Icon="Times" />
+												<TextBlock Grid.Column="1" Text="Ignore" />
 											</Grid>
 										</DataTemplate>
 									</ComboBox.Resources>
@@ -286,9 +272,7 @@
 			Grid.Row="1"
 			Grid.Column="1"
 			Style="{DynamicResource WpfUtilsControlBorder}">
-			<StackPanel
-				HorizontalAlignment="Right"
-				Orientation="Horizontal">
+			<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
 				<Button
 					Width="100"
 					HorizontalAlignment="Right"

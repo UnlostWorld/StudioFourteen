@@ -91,7 +91,7 @@ public abstract class CharaMakeCustomizeLibrarySource : SourceBase
 {
 	public CharaMakeCustomizeLibraryEntry? Find(Race race, Tribe tribe, Genders gender, CustomizeIndex customizeIndex, byte featureId)
 	{
-		foreach(CharaMakeCustomizeLibraryEntry entry in this.AllEntries)
+		foreach (CharaMakeCustomizeLibraryEntry entry in this.AllEntries)
 		{
 			if (entry.Race.RowId == race.RowId
 				&& entry.Tribe.RowId == tribe.RowId
@@ -120,13 +120,13 @@ public class HairLibrarySource : CharaMakeCustomizeLibrarySource
 		if (hairMakeTypeSheet == null)
 			return;
 
-		foreach(HairMakeType hairMakeType in hairMakeTypeSheet)
+		foreach (HairMakeType hairMakeType in hairMakeTypeSheet)
 		{
 			Race race = hairMakeType.Race.Value;
 			Tribe tribe = hairMakeType.Tribe.Value;
 			Genders gender = (Genders)hairMakeType.Gender;
 
-			foreach(RowRef<CharaMakeCustomize> makeCustomize in hairMakeType.HairStyles)
+			foreach (RowRef<CharaMakeCustomize> makeCustomize in hairMakeType.HairStyles)
 			{
 				if (!makeCustomize.IsValid || makeCustomize.RowId == 0)
 					continue;

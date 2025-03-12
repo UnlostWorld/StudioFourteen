@@ -21,27 +21,25 @@
 		x:Key="TitlebarToggleButton"
 		BasedOn="{StaticResource WpfUtilsIconToggleButton}"
 		TargetType="{x:Type ToggleButton}">
-		<Setter Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
 		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
 		<Setter Property="Height" Value="Auto" />
-		<Setter Property="VerticalAlignment" Value="Stretch" />
 		<Setter Property="Margin" Value="0" />
+		<Setter Property="VerticalAlignment" Value="Stretch" />
 	</Style>
 
 	<Style
 		x:Key="TitlebarButton"
 		BasedOn="{StaticResource WpfUtilsButton}"
 		TargetType="{x:Type Button}">
+		<Setter Property="Background" Value="Transparent" />
 		<Setter Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
 		<Setter Property="Height" Value="Auto" />
-		<Setter Property="VerticalAlignment" Value="Stretch" />
-		<Setter Property="Background" Value="Transparent" />
 		<Setter Property="Margin" Value="0" />
+		<Setter Property="VerticalAlignment" Value="Stretch" />
 	</Style>
 
-	<ControlTemplate
-		x:Key="ZoomComboBox"
-		TargetType="{x:Type ComboBox}">
+	<ControlTemplate x:Key="ZoomComboBox" TargetType="{x:Type ComboBox}">
 		<Grid>
 
 			<ToggleButton
@@ -93,28 +91,16 @@
 					MinWidth="{TemplateBinding ActualWidth}"
 					MaxHeight="{TemplateBinding MaxDropDownHeight}"
 					Margin="16">
-					<Border
-						Background="Black"
-						CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}">
+					<Border Background="Black" CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}">
 						<Border.Effect>
-							<DropShadowEffect
-								Direction="270"
-								ShadowDepth="0" />
+							<DropShadowEffect Direction="270" ShadowDepth="0" />
 						</Border.Effect>
 					</Border>
 
-					<Border
-						Background="{DynamicResource BackgroundBrush}"
-						CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}">
-						<Border
-							Margin="2"
-							Style="{DynamicResource WpfUtilsControlBorder}">
-							<ScrollViewer
-								MinHeight="1"
-								MaxHeight="{TemplateBinding MaxDropDownHeight}">
-								<ItemsPresenter
-									Name="ItemsPresenter"
-									KeyboardNavigation.DirectionalNavigation="Contained" />
+					<Border Background="{DynamicResource BackgroundBrush}" CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}">
+						<Border Margin="2" Style="{DynamicResource WpfUtilsControlBorder}">
+							<ScrollViewer MinHeight="1" MaxHeight="{TemplateBinding MaxDropDownHeight}">
+								<ItemsPresenter Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained" />
 							</ScrollViewer>
 						</Border>
 					</Border>
@@ -126,9 +112,7 @@
 
 
 
-	<ControlTemplate
-		x:Key="PanelWindowTemplate"
-		TargetType="{x:Type local:PanelWindow}">
+	<ControlTemplate x:Key="PanelWindowTemplate" TargetType="{x:Type local:PanelWindow}">
 
 		<AdornerDecorator x:Name="MainGrid">
 
@@ -147,15 +131,11 @@
 					CornerRadius="6"
 					Opacity="0.25">
 					<Border.BitmapEffect>
-						<DropShadowBitmapEffect
-							ShadowDepth="0"
-							Softness="0.75" />
+						<DropShadowBitmapEffect ShadowDepth="0" Softness="0.75" />
 					</Border.BitmapEffect>
 				</Border>
 
-				<Border
-					Background="{DynamicResource BackgroundBrush}"
-					CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
+				<Border Background="{DynamicResource BackgroundBrush}" CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
 
 
 				<Grid ClipToBounds="True">
@@ -176,9 +156,7 @@
 						Margin="0,0,0,1">
 
 
-						<Grid
-							Background="Transparent"
-							MouseDown="OnTitleMouseDown" />
+						<Grid Background="Transparent" MouseDown="OnTitleMouseDown" />
 
 						<StackPanel
 							Margin="8,1"
@@ -262,15 +240,15 @@
 								</Grid>
 							</ToggleButton>-->
 
-							<!-- Minimize button  -->
+							<!--  Minimize button  -->
 							<Button
 								Width="32"
 								Click="OnMinimizeClicked"
 								Style="{StaticResource TitlebarButton}">
-									<controls:IconControl
-										Width="12"
-										Height="12"
-										Icon="fa-Minus"/>
+								<controls:IconControl
+									Width="12"
+									Height="12"
+									Icon="fa-Minus" />
 							</Button>
 
 							<!--  Maximize button  -->
@@ -287,14 +265,14 @@
 										Height="12"
 										Icon="fa-line-WindowRestore"
 										Visibility="{TemplateBinding IsMaximized,
-																		Converter={StaticResource B2V}}" />
+																	 Converter={StaticResource B2V}}" />
 
 									<controls:IconControl
 										Width="10"
 										Height="10"
 										Icon="fa-line-Square"
 										Visibility="{TemplateBinding IsMaximized,
-																		Converter={StaticResource !B2V}}" />
+																	 Converter={StaticResource !B2V}}" />
 								</Grid>
 							</ToggleButton>
 
@@ -306,12 +284,10 @@
 								Style="{StaticResource TitlebarButton}"
 								ToolTip="{DynamicResource LOC_ClosePanelTooltip}"
 								Visibility="{TemplateBinding CanClose,
-																Converter={StaticResource B2V}}">
+															 Converter={StaticResource B2V}}">
 
 								<Button.Resources>
-									<SolidColorBrush
-										x:Key="ControlHighlightBrush"
-										Color="#883434" />
+									<SolidColorBrush x:Key="ControlHighlightBrush" Color="#883434" />
 								</Button.Resources>
 
 								<controls:IconControl Icon="fa-Times" />
@@ -330,11 +306,14 @@
 					<Thumb
 						x:Name="ResizeGrip"
 						Grid.Row="1"
-						HorizontalAlignment="Right"
-						VerticalAlignment="Bottom"
 						DragDelta="OnResizeThumbDragDelta"
-						Style="{DynamicResource WpfUtilsResizeThumbCorner}"
+						Style="{DynamicResource WpfUtilsResizeThumbBottomRight}"
 						Visibility="Collapsed" />
+
+					<Thumb
+						Grid.Row="1"
+						DragDelta="OnResizeThumbDragDelta"
+						Style="{DynamicResource WpfUtilsResizeThumbBottomLeft}" />
 
 				</Grid>
 
@@ -348,8 +327,8 @@
 
 		<ControlTemplate.Triggers>
 			<Trigger Property="ResizeMode" Value="CanResizeWithGrip">
-				<Setter TargetName="ResizeGrip" Property="Visibility" Value="Visible" />
 				<Setter TargetName="MaximizeButton" Property="Visibility" Value="Visible" />
+				<Setter TargetName="ResizeGrip" Property="Visibility" Value="Visible" />
 			</Trigger>
 
 			<Trigger Property="IsActive" Value="True">
@@ -361,20 +340,14 @@
 				<Trigger.ExitActions>
 					<BeginStoryboard>
 						<Storyboard>
-							<DoubleAnimationUsingKeyFrames
-								Storyboard.TargetName="WindowScale"
-								Storyboard.TargetProperty="ScaleX">
-								<EasingDoubleKeyFrame
-									KeyTime="0:00:00.200"
-									Value="0.98">
+							<DoubleAnimationUsingKeyFrames Storyboard.TargetName="WindowScale" Storyboard.TargetProperty="ScaleX">
+								<EasingDoubleKeyFrame KeyTime="0:00:00.200" Value="0.98">
 									<EasingDoubleKeyFrame.EasingFunction>
 										<SineEase EasingMode="EaseOut" />
 									</EasingDoubleKeyFrame.EasingFunction>
 								</EasingDoubleKeyFrame>
 
-								<EasingDoubleKeyFrame
-									KeyTime="0:00:00.300"
-									Value="1">
+								<EasingDoubleKeyFrame KeyTime="0:00:00.300" Value="1">
 									<EasingDoubleKeyFrame.EasingFunction>
 										<SineEase EasingMode="EaseIn" />
 									</EasingDoubleKeyFrame.EasingFunction>
@@ -386,20 +359,14 @@
 				<Trigger.EnterActions>
 					<BeginStoryboard>
 						<Storyboard>
-							<DoubleAnimationUsingKeyFrames
-								Storyboard.TargetName="WindowScale"
-								Storyboard.TargetProperty="ScaleX">
-								<EasingDoubleKeyFrame
-									KeyTime="0:00:00.200"
-									Value="1.02">
+							<DoubleAnimationUsingKeyFrames Storyboard.TargetName="WindowScale" Storyboard.TargetProperty="ScaleX">
+								<EasingDoubleKeyFrame KeyTime="0:00:00.200" Value="1.02">
 									<EasingDoubleKeyFrame.EasingFunction>
 										<SineEase EasingMode="EaseOut" />
 									</EasingDoubleKeyFrame.EasingFunction>
 								</EasingDoubleKeyFrame>
 
-								<EasingDoubleKeyFrame
-									KeyTime="0:00:00.300"
-									Value="1">
+								<EasingDoubleKeyFrame KeyTime="0:00:00.300" Value="1">
 									<EasingDoubleKeyFrame.EasingFunction>
 										<SineEase EasingMode="EaseIn" />
 									</EasingDoubleKeyFrame.EasingFunction>
@@ -410,9 +377,7 @@
 				</Trigger.EnterActions>
 			</Trigger>
 
-			<DataTrigger
-				Binding="{Binding IsOpen}"
-				Value="True">
+			<DataTrigger Binding="{Binding IsOpen}" Value="True">
 
 				<Setter Property="Opacity" Value="1" />
 
@@ -472,9 +437,7 @@
 			</DataTrigger>
 
 
-			<DataTrigger
-				Binding="{Binding IsUiVisibleAndOpen}"
-				Value="False">
+			<DataTrigger Binding="{Binding IsUiVisibleAndOpen}" Value="False">
 				<DataTrigger.EnterActions>
 					<StopStoryboard BeginStoryboardName="FadeIn" />
 					<BeginStoryboard x:Name="FadeOut">
@@ -511,33 +474,29 @@
 			</DataTrigger>
 
 			<Trigger Property="IsMaximized" Value="True">
-				<Setter TargetName="WindowShadow" Property="Visibility" Value="Collapsed" />
-				<Setter TargetName="WindowBorder" Property="CornerRadius" Value="0" />
 				<Setter TargetName="InnerMainGrid" Property="Margin" Value="2" />
+				<Setter TargetName="WindowBorder" Property="CornerRadius" Value="0" />
+				<Setter TargetName="WindowShadow" Property="Visibility" Value="Collapsed" />
 			</Trigger>
 
 		</ControlTemplate.Triggers>
 
 	</ControlTemplate>
 
-	<Style
-		x:Key="PanelWindowStyle"
-		TargetType="{x:Type local:PanelWindow}">
-		<Setter Property="MinWidth" Value="128" />
-		<Setter Property="MinHeight" Value="128" />
+	<Style x:Key="PanelWindowStyle" TargetType="{x:Type local:PanelWindow}">
 		<Setter Property="AllowsTransparency" Value="True" />
 		<Setter Property="Background" Value="Transparent" />
+		<Setter Property="Icon" Value="../Assets/icon.ico" />
+		<Setter Property="MinHeight" Value="128" />
+		<Setter Property="MinWidth" Value="128" />
 		<Setter Property="ResizeMode" Value="CanResizeWithGrip" />
-		<Setter Property="WindowStyle" Value="None" />
 		<Setter Property="Template" Value="{StaticResource PanelWindowTemplate}" />
 		<Setter Property="UseLayoutRounding" Value="True" />
-		<Setter Property="Icon" Value="../Assets/icon.ico" />
+		<Setter Property="WindowStyle" Value="None" />
 	</Style>
 
 
-	<ControlTemplate
-		x:Key="PanelToolbarTemplate"
-		TargetType="{x:Type local:PanelWindow}">
+	<ControlTemplate x:Key="PanelToolbarTemplate" TargetType="{x:Type local:PanelWindow}">
 
 		<AdornerDecorator x:Name="MainGrid">
 
@@ -556,15 +515,11 @@
 					CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}"
 					Opacity="0.25">
 					<Border.BitmapEffect>
-						<DropShadowBitmapEffect
-							ShadowDepth="0"
-							Softness="0.75" />
+						<DropShadowBitmapEffect ShadowDepth="0" Softness="0.75" />
 					</Border.BitmapEffect>
 				</Border>
 
-				<Border
-					Background="{DynamicResource BackgroundBrush}"
-					CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
+				<Border Background="{DynamicResource BackgroundBrush}" CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
 
 				<ContentPresenter
 					Margin="3"
@@ -585,9 +540,7 @@
 				<Setter TargetName="WindowShadow" Property="Opacity" Value="1" />
 			</Trigger>
 
-			<DataTrigger
-				Binding="{Binding IsOpen}"
-				Value="True">
+			<DataTrigger Binding="{Binding IsOpen}" Value="True">
 
 				<Setter Property="Opacity" Value="1" />
 
@@ -647,9 +600,7 @@
 			</DataTrigger>
 
 
-			<DataTrigger
-				Binding="{Binding IsUiVisibleAndOpen}"
-				Value="False">
+			<DataTrigger Binding="{Binding IsUiVisibleAndOpen}" Value="False">
 				<DataTrigger.EnterActions>
 					<StopStoryboard BeginStoryboardName="FadeIn" />
 					<BeginStoryboard x:Name="FadeOut">
@@ -693,8 +644,8 @@
 		x:Key="PanelToolbarStyle"
 		BasedOn="{StaticResource PanelWindowStyle}"
 		TargetType="{x:Type local:PanelWindow}">
-		<Setter Property="MinWidth" Value="32" />
 		<Setter Property="MinHeight" Value="32" />
+		<Setter Property="MinWidth" Value="32" />
 		<Setter Property="Template" Value="{DynamicResource PanelToolbarTemplate}" />
 	</Style>
 

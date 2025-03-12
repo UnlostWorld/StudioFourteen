@@ -44,10 +44,10 @@ public class TagFilter : FilterBase
 
 	public override bool Filter(LibraryEntryBase entry)
 	{
-		if(entry.Tags == null)
+		if (entry.Tags == null)
 			return false;
 
-		if(entry.Tags.Matches(this.Tags))
+		if (entry.Tags.Matches(this.Tags))
 			return true;
 
 		return false;

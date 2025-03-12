@@ -1,13 +1,7 @@
-<ResourceDictionary
-	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-	<BitmapImage
-		x:Key="LauncherButtonBackground"
-		UriSource="pack://application:,,,/StudioFourteen;component/Assets/launcher.png" />
+	<BitmapImage x:Key="LauncherButtonBackground" UriSource="pack://application:,,,/StudioFourteen;component/Assets/launcher.png" />
 
-	<BitmapImage
-		x:Key="LauncherButtonHoverMask"
-		UriSource="pack://application:,,,/StudioFourteen;component/Assets/launcher-hover-mask.png" />
+	<BitmapImage x:Key="LauncherButtonHoverMask" UriSource="pack://application:,,,/StudioFourteen;component/Assets/launcher-hover-mask.png" />
 
 </ResourceDictionary>

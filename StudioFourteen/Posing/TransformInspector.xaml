@@ -25,9 +25,7 @@
 							<RowDefinition />
 						</Grid.RowDefinitions>
 
-						<Grid
-							Grid.Row="0"
-							Height="168">
+						<Grid Grid.Row="0" Height="168">
 
 							<transform:TransformHandleControl
 								GizmoType="{Binding Services.Selection.Gizmo}"
@@ -41,21 +39,15 @@
 							Style="{DynamicResource WpfUtilsSwitchSelectorNoBorder}">
 
 							<ListBoxItem Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}">
-								<wpfUtils:IconBlock
-									Icon="Arrows"
-									ToolTip="{DynamicResource LOC_Translate}" />
+								<wpfUtils:IconBlock Icon="Arrows" ToolTip="{DynamicResource LOC_Translate}" />
 							</ListBoxItem>
 
 							<ListBoxItem Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}">
-								<wpfUtils:IconBlock
-									Icon="Rotate"
-									ToolTip="{DynamicResource LOC_Rotate}" />
+								<wpfUtils:IconBlock Icon="Rotate" ToolTip="{DynamicResource LOC_Rotate}" />
 							</ListBoxItem>
 
 							<ListBoxItem Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}">
-								<wpfUtils:IconBlock
-									Icon="Maximize"
-									ToolTip="{DynamicResource LOC_Scale}" />
+								<wpfUtils:IconBlock Icon="Maximize" ToolTip="{DynamicResource LOC_Scale}" />
 							</ListBoxItem>
 						</wpfUtils:SwitchSelector>
 					</Grid>

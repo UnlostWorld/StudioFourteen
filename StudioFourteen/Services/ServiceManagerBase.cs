@@ -36,7 +36,7 @@ public class ServiceManagerBase
 		instance = this;
 
 		PropertyInfo[] properties = this.GetType().GetProperties();
-		foreach(PropertyInfo property in properties)
+		foreach (PropertyInfo property in properties)
 		{
 			if (property.GetValue(this) is ServiceBase service)
 			{
@@ -200,13 +200,13 @@ public class ServiceManagerBase
 
 	public void Attach()
 	{
-		foreach(ServiceBase service in this.services)
+		foreach (ServiceBase service in this.services)
 		{
 			try
 			{
 				service.Attach();
 			}
-			catch(Exception ex)
+			catch (Exception ex)
 			{
 				this.Log.Error(ex, $"Error attaching service: {service}");
 			}

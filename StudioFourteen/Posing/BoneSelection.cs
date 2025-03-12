@@ -172,7 +172,7 @@ public class BoneSelection : TransformSelectionBase
 		}
 		set
 		{
-			foreach(BoneReference bone in this.bones)
+			foreach (BoneReference bone in this.bones)
 			{
 				bone.MirrorMode = value;
 			}
@@ -227,7 +227,7 @@ public class BoneSelection : TransformSelectionBase
 
 	public override void Reset()
 	{
-		foreach(BoneReference bone in this.bones)
+		foreach (BoneReference bone in this.bones)
 		{
 			if (this.MirrorMode != MirrorModes.None && bone.Mirror != null)
 			{
@@ -246,7 +246,7 @@ public class BoneSelection : TransformSelectionBase
 		if (this.boneIds.Count != otherBone.boneIds.Count)
 			return false;
 
-		foreach(BoneId id in this.boneIds)
+		foreach (BoneId id in this.boneIds)
 		{
 			if (!otherBone.boneIds.Contains(id))
 			{

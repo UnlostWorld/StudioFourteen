@@ -25,18 +25,14 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
-		<Border
-			Margin="1"
-			Style="{DynamicResource WpfUtilsControlBorder}">
+		<Border Margin="1" Style="{DynamicResource WpfUtilsControlBorder}">
 			<ItemsControl
 				x:Name="HistoryList"
 				ItemsSource="{Binding History}"
 				VirtualizingPanel.ScrollUnit="Pixel">
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
-						<VirtualizingStackPanel
-							IsVirtualizing="True"
-							VirtualizationMode="Recycling" />
+						<VirtualizingStackPanel IsVirtualizing="True" VirtualizationMode="Recycling" />
 					</ItemsPanelTemplate>
 				</ItemsControl.ItemsPanel>
 
@@ -90,9 +86,7 @@
 						</Button>
 
 						<DataTemplate.Triggers>
-							<DataTrigger
-								Binding="{Binding IsPast}"
-								Value="False">
+							<DataTrigger Binding="{Binding IsPast}" Value="False">
 								<Setter TargetName="ButtonContent" Property="Opacity" Value="0.5" />
 							</DataTrigger>
 						</DataTemplate.Triggers>
@@ -107,9 +101,7 @@
 			Grid.Row="1"
 			Margin="1"
 			Style="{DynamicResource WpfUtilsControlBorder}">
-			<StackPanel
-				HorizontalAlignment="Right"
-				Orientation="Horizontal">
+			<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
 
 				<Button
 					HorizontalAlignment="Right"

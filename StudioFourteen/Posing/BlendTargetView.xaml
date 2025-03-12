@@ -10,9 +10,7 @@
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	mc:Ignorable="d">
 
-	<Button
-		Height="50"
-		Click="OnClick">
+	<Button Height="50" Click="OnClick">
 
 		<Grid
 			Width="100"

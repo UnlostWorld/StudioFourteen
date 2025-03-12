@@ -112,7 +112,7 @@ public partial class OpenWindow : Panel
 		{
 			Assignment assignment = new(scene.Actors[0]);
 
-			foreach(OpenCharacterViewModelBase character in this.Characters)
+			foreach (OpenCharacterViewModelBase character in this.Characters)
 			{
 				if (character is OpenIgnoreCharacterViewModel)
 					continue;

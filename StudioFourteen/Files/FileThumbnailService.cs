@@ -78,7 +78,7 @@ public class FileThumbnailService : ServiceBase
 				this.requests.Enqueue(request);
 			}
 		}
-		catch(Exception ex)
+		catch (Exception ex)
 		{
 			this.Log.Error(ex, "Failed to generate thumbnail");
 		}
@@ -129,7 +129,7 @@ public class FileThumbnailService : ServiceBase
 
 	private void ThumbnailGeneratorThread()
 	{
-		while(this.IsAlive)
+		while (this.IsAlive)
 		{
 			if (this.requests.Count <= 0)
 			{
@@ -208,7 +208,7 @@ public class FileThumbnailService : ServiceBase
 
 		image.Dispose();
 
-		foreach(Action<string> callback in request.Callbacks)
+		foreach (Action<string> callback in request.Callbacks)
 		{
 			callback.Invoke(request.ThumbnailPath);
 		}

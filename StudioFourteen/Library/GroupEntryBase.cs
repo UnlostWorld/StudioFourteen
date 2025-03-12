@@ -63,7 +63,7 @@ public abstract class GroupEntryBase : LibraryEntryBase
 
 	public GroupEntryBase? GetGroup(string identifier)
 	{
-		foreach(GroupEntryBase group in this.groupEntries)
+		foreach (GroupEntryBase group in this.groupEntries)
 		{
 			if (group.Identifier == identifier)
 			{

@@ -61,7 +61,7 @@ public partial class BoneView : ToggleButton
 		await this.MainThread();
 		string? boneName = this.BoneName;
 		await Threads.FrameworkThread();
-		if(boneName == null)
+		if (boneName == null)
 			return;
 
 		this.boneSelection = this.Services.Pose.FindBone(this.objectTableIndex, boneName);
@@ -71,7 +71,7 @@ public partial class BoneView : ToggleButton
 
 	private void OnClicked(object sender, RoutedEventArgs e)
 	{
-		if(this.boneSelection == null)
+		if (this.boneSelection == null)
 			return;
 
 		this.Services.Selection.Current = this.boneSelection;

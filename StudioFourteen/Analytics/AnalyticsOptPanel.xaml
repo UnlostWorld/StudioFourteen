@@ -30,9 +30,9 @@
 
 		<TextBlock
 			Margin="12,3,12,12"
+			Foreground="{DynamicResource ForegroundLightBrush}"
 			Opacity="0.5"
 			Style="{DynamicResource Subscript}"
-			Foreground="{DynamicResource ForegroundLightBrush}"
 			Text="{DynamicResource LOC_Analytics_OptPrivacy}"
 			TextAlignment="Center" />
 
@@ -43,9 +43,9 @@
 
 		<TextBlock
 			Margin="12,3,12,12"
+			Foreground="{DynamicResource ForegroundLightBrush}"
 			Opacity="0.5"
 			Style="{DynamicResource Subscript}"
-			Foreground="{DynamicResource ForegroundLightBrush}"
 			Text="{DynamicResource LOC_Analytics_OptionalDesc}"
 			TextAlignment="Center" />
 
@@ -56,9 +56,9 @@
 
 		<TextBlock
 			Margin="12,3,12,12"
+			Foreground="{DynamicResource ForegroundLightBrush}"
 			Opacity="0.5"
 			Style="{DynamicResource Subscript}"
-			Foreground="{DynamicResource ForegroundLightBrush}"
 			Text="{DynamicResource LOC_Analytics_ErrorsDesc}"
 			TextAlignment="Center" />
 

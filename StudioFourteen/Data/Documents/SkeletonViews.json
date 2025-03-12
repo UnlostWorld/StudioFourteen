@@ -28,12 +28,9 @@
 			"j_asi_c_l": "96, 353",
 			"j_asi_d_l": "90, 470",
 			"j_asi_e_l": "83, 490",
-
 			"character": "128, 490"
 		}
 	},
-
-
 	"Clothes": {
 		"Background": "/Assets/PoseCharacterClothesBackground.png",
 		"BackgroundFlipped": "/Assets/PoseCharacterClothesBackground_Flipped.png",
@@ -59,12 +56,9 @@
 			"n_hizasoubi_l": "95, 350",
 			"n_hijisoubi_l": "67, 180",
 			"n_buki_tate_l": "55, 220",
-
 			"character": "130, 490"
 		}
 	},
-
-
 	"Tail": {
 		"Background": "/Assets/PoseCharacterTailBackground.png",
 		"Bones": {
@@ -75,8 +69,6 @@
 			"n_sippo_e": "28, 112"
 		}
 	},
-
-
 	"Penis": {
 		"Background": "/Assets/PoseCharacterPenisBackground.png",
 		"Bones": {
@@ -89,8 +81,6 @@
 			"iv_kougan_l": "24, 106"
 		}
 	},
-
-
 	"Vagina": {
 		"Size": "64,64",
 		"Bones": {
@@ -99,8 +89,6 @@
 			"iv_inshin_l": "16, 42"
 		}
 	},
-
-
 	"Hands": {
 		"Background": "/Assets/PoseCharacterHandBackground.png",
 		"Bones": {
@@ -123,8 +111,6 @@
 			"iv_ko_c_l": "131, 57"
 		}
 	},
-
-
 	"Face": {
 		"Background": "/Assets/PoseCharacterFaceBackground.png",
 		"Bones": {
@@ -135,9 +121,7 @@
 			"j_f_mmayu_l": "166, 70",
 			"j_f_miken_01_l": "190, 90",
 			"j_f_miken_02_l": "203, 100",
-
 			"j_f_dmiken_l": "220, 100",
-
 			"j_f_eye_l": "145, 124",
 			"j_f_mab_l": "165, 124",
 			"j_f_mabdn_01_l": "148, 141",
@@ -146,7 +130,6 @@
 			"j_f_mabup_01_l": "148, 105",
 			"j_f_mabup_02out_l": "128, 110",
 			"j_f_mabup_03in_l": "168, 110",
-
 			"j_f_dmemoto_l": "170, 218",
 			"j_f_hoho_l": "135, 190",
 			"j_f_dhoho_l": "105, 211",
@@ -166,8 +149,6 @@
 			"j_f_ago": "229, 350"
 		}
 	},
-
-
 	"Tongue": {
 		"Background": "/Assets/PoseCharacterTongueBackground.png",
 		"Bones": {
@@ -176,8 +157,6 @@
 			"j_f_bero_03": "64, 32"
 		}
 	},
-
-
 	"DiabolosWings": {
 		"Background": "/Assets/PoseCharacterDiabolosWingsBackground.png",
 		"Bones": {

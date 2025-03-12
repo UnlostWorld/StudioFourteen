@@ -185,177 +185,177 @@ public partial class PhotoGuides : View
 		switch (toPhase)
 		{
 			case CapturePhases.Starting:
-			{
-				this.fillColorAnimation.From = Colors.Transparent;
-				this.fillColorAnimation.To = Colors.Transparent;
-				this.fillColorAnimation.Duration = new(TimeSpan.FromMilliseconds(1));
+				{
+					this.fillColorAnimation.From = Colors.Transparent;
+					this.fillColorAnimation.To = Colors.Transparent;
+					this.fillColorAnimation.Duration = new(TimeSpan.FromMilliseconds(1));
 
-				this.photoOpacityAnimation.Duration = new(TimeSpan.FromMilliseconds(1));
-				this.photoOpacityAnimation.From = 0;
-				this.photoOpacityAnimation.To = 0;
-				this.photoScaleAnimation.Duration = new(TimeSpan.FromMilliseconds(1));
-				this.photoScaleAnimation.To = 1;
-				this.photoAngleAnimation.Duration = new(TimeSpan.FromMilliseconds(1));
-				this.photoAngleAnimation.To = 0;
-				this.photoOffsetAnimation.Duration = new(TimeSpan.FromMilliseconds(1));
-				this.photoOffsetAnimation.To = 0;
+					this.photoOpacityAnimation.Duration = new(TimeSpan.FromMilliseconds(1));
+					this.photoOpacityAnimation.From = 0;
+					this.photoOpacityAnimation.To = 0;
+					this.photoScaleAnimation.Duration = new(TimeSpan.FromMilliseconds(1));
+					this.photoScaleAnimation.To = 1;
+					this.photoAngleAnimation.Duration = new(TimeSpan.FromMilliseconds(1));
+					this.photoAngleAnimation.To = 0;
+					this.photoOffsetAnimation.Duration = new(TimeSpan.FromMilliseconds(1));
+					this.photoOffsetAnimation.To = 0;
 
-				this.BeginStoryboard(this.captureStoryboard);
-				await Task.Delay(1);
+					this.BeginStoryboard(this.captureStoryboard);
+					await Task.Delay(1);
 
-				break;
-			}
+					break;
+				}
 
 			case CapturePhases.ChangingResolution:
 			case CapturePhases.WaitingForReshade:
-			{
-				this.fillColorAnimation.From = null;
-				this.fillColorAnimation.To = Colors.Black;
-				this.fillColorAnimation.Duration = new(TimeSpan.FromMilliseconds(100));
+				{
+					this.fillColorAnimation.From = null;
+					this.fillColorAnimation.To = Colors.Black;
+					this.fillColorAnimation.Duration = new(TimeSpan.FromMilliseconds(100));
 
-				this.spinnerOpacityAnimation.To = 1;
+					this.spinnerOpacityAnimation.To = 1;
 
-				this.photoOpacityAnimation.Duration = new(TimeSpan.FromMilliseconds(1));
-				this.photoOpacityAnimation.To = 0;
+					this.photoOpacityAnimation.Duration = new(TimeSpan.FromMilliseconds(1));
+					this.photoOpacityAnimation.To = 0;
 
-				this.BeginStoryboard(this.captureStoryboard);
-				await Task.Delay(100, cancellationToken);
-				break;
-			}
+					this.BeginStoryboard(this.captureStoryboard);
+					await Task.Delay(100, cancellationToken);
+					break;
+				}
 
 			case CapturePhases.Capturing:
-			{
-				if (this.Settings.PhotoAnimationFlash)
 				{
-					this.fillColorAnimation.From = null;
-					this.fillColorAnimation.To = Colors.White;
-					this.fillColorAnimation.Duration = new(TimeSpan.FromMilliseconds(50));
+					if (this.Settings.PhotoAnimationFlash)
+					{
+						this.fillColorAnimation.From = null;
+						this.fillColorAnimation.To = Colors.White;
+						this.fillColorAnimation.Duration = new(TimeSpan.FromMilliseconds(50));
+					}
+
+					this.spinnerOpacityAnimation.To = 0;
+
+					this.BeginStoryboard(this.captureStoryboard);
+					await Task.Delay(75, cancellationToken);
+					break;
 				}
-
-				this.spinnerOpacityAnimation.To = 0;
-
-				this.BeginStoryboard(this.captureStoryboard);
-				await Task.Delay(75, cancellationToken);
-				break;
-			}
 
 			case CapturePhases.Saving:
-			{
-				if (this.Settings.PhotoAnimationPreview)
 				{
-					this.Services.GameCapture.DrawBackBufferToBitmap(ref this.lastSavedImage);
-					this.NotifyPropertyChanged(nameof(this.LastSavedImage));
-				}
+					if (this.Settings.PhotoAnimationPreview)
+					{
+						this.Services.GameCapture.DrawBackBufferToBitmap(ref this.lastSavedImage);
+						this.NotifyPropertyChanged(nameof(this.LastSavedImage));
+					}
 
-				break;
-			}
+					break;
+				}
 
 			case CapturePhases.Saved:
-			{
-				if (this.Settings.PhotoAnimationFlash)
 				{
-					this.fillColorAnimation.From = null;
-					this.fillColorAnimation.To = Colors.White;
-					this.fillColorAnimation.Duration = new(TimeSpan.FromMilliseconds(100));
-				}
-				else
-				{
-					this.fillColorAnimation.To = Colors.Transparent;
-				}
+					if (this.Settings.PhotoAnimationFlash)
+					{
+						this.fillColorAnimation.From = null;
+						this.fillColorAnimation.To = Colors.White;
+						this.fillColorAnimation.Duration = new(TimeSpan.FromMilliseconds(100));
+					}
+					else
+					{
+						this.fillColorAnimation.To = Colors.Transparent;
+					}
 
-				if (this.Settings.PhotoAnimationPreview)
-				{
-					this.photoOpacityAnimation.Duration = new(TimeSpan.FromMilliseconds(150));
-					this.photoOpacityAnimation.To = 0;
-					this.photoOpacityAnimation.To = 1;
-					this.photoScaleAnimation.Duration = new(TimeSpan.FromMilliseconds(150));
-					this.photoScaleAnimation.To = 0.75;
-					this.photoAngleAnimation.Duration = new(TimeSpan.FromMilliseconds(150));
-					this.photoAngleAnimation.To = (Random.Shared.NextDouble() * 10) - 5;
-					this.photoOffsetAnimation.Duration = new(TimeSpan.FromMilliseconds(150));
-					this.photoOffsetAnimation.To = 0;
+					if (this.Settings.PhotoAnimationPreview)
+					{
+						this.photoOpacityAnimation.Duration = new(TimeSpan.FromMilliseconds(150));
+						this.photoOpacityAnimation.To = 0;
+						this.photoOpacityAnimation.To = 1;
+						this.photoScaleAnimation.Duration = new(TimeSpan.FromMilliseconds(150));
+						this.photoScaleAnimation.To = 0.75;
+						this.photoAngleAnimation.Duration = new(TimeSpan.FromMilliseconds(150));
+						this.photoAngleAnimation.To = (Random.Shared.NextDouble() * 10) - 5;
+						this.photoOffsetAnimation.Duration = new(TimeSpan.FromMilliseconds(150));
+						this.photoOffsetAnimation.To = 0;
 
-					this.photoFadeDelayTimer.Restart();
+						this.photoFadeDelayTimer.Restart();
+					}
+
+					if (this.Settings.PhotoAnimationFlash || this.Settings.PhotoAnimationPreview)
+					{
+						this.BeginStoryboard(this.captureStoryboard);
+						await Task.Delay(150, cancellationToken);
+					}
+
+					break;
 				}
-
-				if (this.Settings.PhotoAnimationFlash || this.Settings.PhotoAnimationPreview)
-				{
-					this.BeginStoryboard(this.captureStoryboard);
-					await Task.Delay(150, cancellationToken);
-				}
-
-				break;
-			}
 
 			case CapturePhases.RestoreResolution:
-			{
-				this.fillColorAnimation.From = null;
-				this.fillColorAnimation.To = Colors.Black;
-				this.fillColorAnimation.Duration = new(TimeSpan.FromMilliseconds(250));
-
-				this.spinnerOpacityAnimation.To = 1;
-
-				if (this.Settings.PhotoAnimationPreview)
 				{
-					this.photoOpacityAnimation.From = 1;
-					this.photoOpacityAnimation.To = 1;
-				}
+					this.fillColorAnimation.From = null;
+					this.fillColorAnimation.To = Colors.Black;
+					this.fillColorAnimation.Duration = new(TimeSpan.FromMilliseconds(250));
 
-				this.BeginStoryboard(this.captureStoryboard);
-				await Task.Delay(250, cancellationToken);
-				break;
-			}
+					this.spinnerOpacityAnimation.To = 1;
 
-			case CapturePhases.WaitingForReshadeReset:
-			{
-				break;
-			}
-
-			case CapturePhases.Done:
-			{
-				this.fillColorAnimation.From = null;
-				this.fillColorAnimation.To = Colors.Transparent;
-				this.fillColorAnimation.Duration = new(TimeSpan.FromMilliseconds(500));
-				this.spinnerOpacityAnimation.To = 0;
-
-				if (this.Settings.PhotoAnimationPreview)
-				{
-					this.photoOpacityAnimation.From = 1;
-					this.photoOpacityAnimation.To = 1;
-				}
-
-				this.BeginStoryboard(this.captureStoryboard);
-
-				if (this.Settings.PhotoAnimationPreview)
-				{
-					this.photoFadeDelayTimer.Start();
-
-					if (this.photoFadeDelayTimer.ElapsedMilliseconds < 1500)
-						await Task.Delay((int)(1500 - this.photoFadeDelayTimer.ElapsedMilliseconds), cancellationToken);
-
-					this.photoFadeDelayTimer.Stop();
-					await this.MainThread();
-
-					this.fillColorAnimation.From = Colors.Transparent;
-					this.fillColorAnimation.To = Colors.Transparent;
-					this.fillColorAnimation.Duration = new(TimeSpan.FromMilliseconds(500));
-
-					this.photoOpacityAnimation.Duration = new(TimeSpan.FromMilliseconds(500));
-					this.photoOpacityAnimation.From = 1;
-					this.photoOpacityAnimation.To = 0;
-					this.photoScaleAnimation.Duration = new(TimeSpan.FromMilliseconds(500));
-					this.photoScaleAnimation.To = 0.25;
-					this.photoAngleAnimation.Duration = new(TimeSpan.FromMilliseconds(500));
-					this.photoAngleAnimation.To = 0;
-					this.photoOffsetAnimation.Duration = new(TimeSpan.FromMilliseconds(500));
-					this.photoOffsetAnimation.To = 400;
+					if (this.Settings.PhotoAnimationPreview)
+					{
+						this.photoOpacityAnimation.From = 1;
+						this.photoOpacityAnimation.To = 1;
+					}
 
 					this.BeginStoryboard(this.captureStoryboard);
-					await Task.Delay(500, cancellationToken);
+					await Task.Delay(250, cancellationToken);
+					break;
 				}
 
-				break;
-			}
+			case CapturePhases.WaitingForReshadeReset:
+				{
+					break;
+				}
+
+			case CapturePhases.Done:
+				{
+					this.fillColorAnimation.From = null;
+					this.fillColorAnimation.To = Colors.Transparent;
+					this.fillColorAnimation.Duration = new(TimeSpan.FromMilliseconds(500));
+					this.spinnerOpacityAnimation.To = 0;
+
+					if (this.Settings.PhotoAnimationPreview)
+					{
+						this.photoOpacityAnimation.From = 1;
+						this.photoOpacityAnimation.To = 1;
+					}
+
+					this.BeginStoryboard(this.captureStoryboard);
+
+					if (this.Settings.PhotoAnimationPreview)
+					{
+						this.photoFadeDelayTimer.Start();
+
+						if (this.photoFadeDelayTimer.ElapsedMilliseconds < 1500)
+							await Task.Delay((int)(1500 - this.photoFadeDelayTimer.ElapsedMilliseconds), cancellationToken);
+
+						this.photoFadeDelayTimer.Stop();
+						await this.MainThread();
+
+						this.fillColorAnimation.From = Colors.Transparent;
+						this.fillColorAnimation.To = Colors.Transparent;
+						this.fillColorAnimation.Duration = new(TimeSpan.FromMilliseconds(500));
+
+						this.photoOpacityAnimation.Duration = new(TimeSpan.FromMilliseconds(500));
+						this.photoOpacityAnimation.From = 1;
+						this.photoOpacityAnimation.To = 0;
+						this.photoScaleAnimation.Duration = new(TimeSpan.FromMilliseconds(500));
+						this.photoScaleAnimation.To = 0.25;
+						this.photoAngleAnimation.Duration = new(TimeSpan.FromMilliseconds(500));
+						this.photoAngleAnimation.To = 0;
+						this.photoOffsetAnimation.Duration = new(TimeSpan.FromMilliseconds(500));
+						this.photoOffsetAnimation.To = 400;
+
+						this.BeginStoryboard(this.captureStoryboard);
+						await Task.Delay(500, cancellationToken);
+					}
+
+					break;
+				}
 		}
 	}
 }

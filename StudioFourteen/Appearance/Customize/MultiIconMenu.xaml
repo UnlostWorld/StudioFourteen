@@ -10,9 +10,7 @@
 
 	<DataTemplate DataType="{x:Type local:MultiIconMenu}">
 		<StackPanel>
-			<TextBlock
-				Style="{DynamicResource LeftLabel}"
-				Text="{Binding Name}" />
+			<TextBlock Style="{DynamicResource LeftLabel}" Text="{Binding Name}" />
 
 			<Border Style="{DynamicResource WpfUtilsControlBorder}">
 
@@ -27,9 +25,7 @@
 					</ItemsControl.ItemsPanel>
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
-							<ToggleButton
-								IsChecked="{Binding IsChecked}"
-								Style="{DynamicResource WpfUtilsIconToggleButton}">
+							<ToggleButton IsChecked="{Binding IsChecked}" Style="{DynamicResource WpfUtilsIconToggleButton}">
 								<Grid>
 									<Border
 										Background="{DynamicResource BackgroundBrush}"

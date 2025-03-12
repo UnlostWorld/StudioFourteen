@@ -353,30 +353,30 @@ public class GlamourerDesign
 				case CustomizeIndex.FacepaintColor: return this.FacePaintColor?.Apply == true ? this.FacePaintColor.Value : null;
 
 				case CustomizeIndex.FaceFeatures:
-				{
-					if (this.FacialFeature1?.Apply != true)
-						return null;
+					{
+						if (this.FacialFeature1?.Apply != true)
+							return null;
 
-					CustomizeFacialFeatures val = 0;
-					if (this.FacialFeature1?.Value == 1)
-						val |= CustomizeFacialFeatures.First;
-					if (this.FacialFeature2?.Value == 1)
-						val |= CustomizeFacialFeatures.Second;
-					if (this.FacialFeature3?.Value == 1)
-						val |= CustomizeFacialFeatures.Third;
-					if (this.FacialFeature4?.Value == 1)
-						val |= CustomizeFacialFeatures.Fourth;
-					if (this.FacialFeature5?.Value == 1)
-						val |= CustomizeFacialFeatures.Fifth;
-					if (this.FacialFeature6?.Value == 1)
-						val |= CustomizeFacialFeatures.Sixth;
-					if (this.FacialFeature7?.Value == 1)
-						val |= CustomizeFacialFeatures.Seventh;
-					if (this.LegacyTattoo?.Value == 1)
-						val |= CustomizeFacialFeatures.LegacyTattoo;
+						CustomizeFacialFeatures val = 0;
+						if (this.FacialFeature1?.Value == 1)
+							val |= CustomizeFacialFeatures.First;
+						if (this.FacialFeature2?.Value == 1)
+							val |= CustomizeFacialFeatures.Second;
+						if (this.FacialFeature3?.Value == 1)
+							val |= CustomizeFacialFeatures.Third;
+						if (this.FacialFeature4?.Value == 1)
+							val |= CustomizeFacialFeatures.Fourth;
+						if (this.FacialFeature5?.Value == 1)
+							val |= CustomizeFacialFeatures.Fifth;
+						if (this.FacialFeature6?.Value == 1)
+							val |= CustomizeFacialFeatures.Sixth;
+						if (this.FacialFeature7?.Value == 1)
+							val |= CustomizeFacialFeatures.Seventh;
+						if (this.LegacyTattoo?.Value == 1)
+							val |= CustomizeFacialFeatures.LegacyTattoo;
 
-					return (byte)val;
-				}
+						return (byte)val;
+					}
 			}
 
 			return null;

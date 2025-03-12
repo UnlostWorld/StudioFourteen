@@ -112,7 +112,7 @@ public class LibraryMenuTargetAttribute : LibraryMenuAttributeBase
 		}
 
 		int count = 0;
-		foreach((MenuEntry target, int objectTableIndex) in targets)
+		foreach ((MenuEntry target, int objectTableIndex) in targets)
 		{
 			if (canMethod != null)
 			{

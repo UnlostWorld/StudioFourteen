@@ -149,14 +149,14 @@ public static class RaceTribeExtensions
 			case TribeRows.KeeperOfTheMoon:
 			case TribeRows.Raen:
 			case TribeRows.Xaela:
-			{
-				return
-				[
-					ModelTypes.Young,
+				{
+					return
+					[
+						ModelTypes.Young,
 					ModelTypes.Normal,
 					ModelTypes.Old,
 				];
-			}
+				}
 
 			case TribeRows.Highlander:
 			case TribeRows.Plainsfolk:
@@ -167,12 +167,12 @@ public static class RaceTribeExtensions
 			case TribeRows.TheLost:
 			case TribeRows.Rava:
 			case TribeRows.Veena:
-			{
-				return
-				[
-					ModelTypes.Normal,
+				{
+					return
+					[
+						ModelTypes.Normal,
 				];
-			}
+				}
 		}
 
 		throw new Exception($"Unrecognized tribe {tribe.RowId}");

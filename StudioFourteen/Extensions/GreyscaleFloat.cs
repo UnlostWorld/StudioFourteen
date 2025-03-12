@@ -25,9 +25,9 @@ public partial struct GreyscaleFloat : IPixel<GreyscaleFloat>, IPackedVector<flo
 	public float Value;
 
 	public GreyscaleFloat(float v)
-    {
-        this.Value = v;
-    }
+	{
+		this.Value = v;
+	}
 
 	public float PackedValue
 	{
@@ -54,7 +54,7 @@ public partial struct GreyscaleFloat : IPixel<GreyscaleFloat>, IPackedVector<flo
 
 	public override readonly string ToString() => $"GreyscaleFloat({this.Value})";
 
-    // No support for conversion. sorry!
+	// No support for conversion. sorry!
 	public void FromArgb32(Argb32 source) => throw new System.NotImplementedException();
 	public void FromBgra5551(Bgra5551 source) => throw new System.NotImplementedException();
 	public void FromBgr24(Bgr24 source) => throw new System.NotImplementedException();
@@ -71,16 +71,16 @@ public partial struct GreyscaleFloat : IPixel<GreyscaleFloat>, IPackedVector<flo
 
 	public void ToRgba32(ref Rgba32 dest)
 	{
-        byte bValue = (byte)(this.Value * 255);
+		byte bValue = (byte)(this.Value * 255);
 
-        dest.A = 255;
-        dest.R = bValue;
-        dest.G = bValue;
-        dest.B = bValue;
+		dest.A = 255;
+		dest.R = bValue;
+		dest.G = bValue;
+		dest.B = bValue;
 	}
 
 	private void Pack(Vector4 vector)
-    {
-        this.Value = vector.X;
-    }
+	{
+		this.Value = vector.X;
+	}
 }

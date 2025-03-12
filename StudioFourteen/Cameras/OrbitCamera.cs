@@ -35,7 +35,7 @@ public partial class OrbitCamera : StudioCameraBase
 	private readonly InputActionListener moveDownListener = new(InputAction.OrbitCamera_MoveDown);
 	private readonly InputActionListener moveLeftListener = new(InputAction.OrbitCamera_MoveLeft);
 	private readonly InputActionListener moveRightListener = new(InputAction.OrbitCamera_MoveRight);
-	private readonly InputActionListener moveForwardListener = new (InputAction.OrbitCamera_MoveForward);
+	private readonly InputActionListener moveForwardListener = new(InputAction.OrbitCamera_MoveForward);
 	private readonly InputActionListener moveBackwardListener = new(InputAction.OrbitCamera_MoveBackward);
 	private readonly InputActionListener panUpListener = new(InputAction.OrbitCamera_PanUp);
 	private readonly InputActionListener panDownListener = new(InputAction.OrbitCamera_PanDown);

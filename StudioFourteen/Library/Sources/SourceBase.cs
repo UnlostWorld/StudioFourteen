@@ -35,7 +35,7 @@ public abstract class SourceBase : GroupEntryBase
 			this.Clear();
 			this.Scan();
 		}
-		catch(Exception ex)
+		catch (Exception ex)
 		{
 			this.Log.Error(ex, "Error scanning library source");
 		}

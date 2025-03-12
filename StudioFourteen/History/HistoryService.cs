@@ -95,7 +95,7 @@ public class HistoryService : ServiceBase
 		{
 			// go undo
 			Operation? reverseOperation = null;
-			while(this.UndoStack.Count > 0 && reverseOperation != operation)
+			while (this.UndoStack.Count > 0 && reverseOperation != operation)
 			{
 				reverseOperation = this.UndoStack.Pop();
 				await reverseOperation.Apply(true);
@@ -258,7 +258,7 @@ public abstract class Operation
 		}
 
 		MethodInfo[] methods = target.GetType().GetMethods();
-		foreach(MethodInfo method in methods)
+		foreach (MethodInfo method in methods)
 		{
 			HistoryAttribute? attribute = method.GetCustomAttribute<HistoryAttribute>();
 			if (attribute == null)

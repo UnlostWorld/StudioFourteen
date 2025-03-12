@@ -127,7 +127,7 @@ public partial class PhotoWindow : Panel
 		if (sender is Expander expander)
 		{
 			List<Expander> expanders = this.AspectsList.FindChildren<Expander>();
-			foreach(Expander otherExpander in expanders)
+			foreach (Expander otherExpander in expanders)
 			{
 				if (otherExpander == expander)
 					continue;

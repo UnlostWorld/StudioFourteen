@@ -146,7 +146,7 @@ public partial class LibraryContextMenu : PopOut
 
 		List<ContextMenuRoot> roots = new();
 
-		foreach(LibraryEntryBase entry in this.currentEntries)
+		foreach (LibraryEntryBase entry in this.currentEntries)
 		{
 			ContextMenuRoot root = new();
 			await entry.GetLibraryMenus(root);

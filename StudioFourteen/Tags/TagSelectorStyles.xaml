@@ -12,9 +12,7 @@
 
 	<converters:NotZeroToVisibilityConverter x:Key="NotZeroToVisibility" />
 
-	<ControlTemplate
-		x:Key="TagSelectorTemplate"
-		TargetType="{x:Type tags:TagSelector}">
+	<ControlTemplate x:Key="TagSelectorTemplate" TargetType="{x:Type tags:TagSelector}">
 
 		<Grid>
 
@@ -62,12 +60,15 @@
 						Style="{DynamicResource Subscript}"
 						Text="{DynamicResource LOC_Tags_Remove}" />
 					<tags:TagsControl
-						MinHeight="26"
 						x:Name="PART_PopOutSelectedTagDisplay"
 						Grid.Row="1"
+						MinHeight="26"
 						Tags="{TemplateBinding SelectedTags}" />
 
-					<Button x:Name="PART_ClearButton" HorizontalAlignment="Right" Content="{DynamicResource LOC_Tags_Clear}"/>
+					<Button
+						x:Name="PART_ClearButton"
+						HorizontalAlignment="Right"
+						Content="{DynamicResource LOC_Tags_Clear}" />
 
 					<TextBlock
 						Foreground="{DynamicResource ForegroundLightBrush}"
@@ -75,9 +76,7 @@
 						Text="{DynamicResource LOC_Tags_Add}" />
 
 					<Grid>
-						<TextBox
-							Padding="25,0,3,0"
-							x:Name="PART_SearchBox" />
+						<TextBox x:Name="PART_SearchBox" Padding="25,0,3,0" />
 
 						<wpfUtils:IconBlock
 							Margin="8,0,0,0"
@@ -108,18 +107,14 @@
 		</Grid>
 	</ControlTemplate>
 
-	<Style
-		x:Key="TagSelectorStyle"
-		TargetType="{x:Type tags:TagSelector}">
-		<Setter Property="Template" Value="{StaticResource TagSelectorTemplate}" />
-		<Setter Property="HorizontalAlignment" Value="Stretch" />
+	<Style x:Key="TagSelectorStyle" TargetType="{x:Type tags:TagSelector}">
 		<Setter Property="Focusable" Value="False" />
 		<Setter Property="Height" Value="28" />
+		<Setter Property="HorizontalAlignment" Value="Stretch" />
+		<Setter Property="Template" Value="{StaticResource TagSelectorTemplate}" />
 	</Style>
 
-	<Style
-		BasedOn="{StaticResource TagSelectorStyle}"
-		TargetType="{x:Type tags:TagSelector}" />
+	<Style BasedOn="{StaticResource TagSelectorStyle}" TargetType="{x:Type tags:TagSelector}" />
 
 
 </ResourceDictionary>

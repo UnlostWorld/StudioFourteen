@@ -29,20 +29,20 @@ public static class NpcEquipExtensions
 		switch (slot)
 		{
 			case WeaponSlot.MainHand:
-			{
-				modelId.Value = npcEquip.ModelMainHand;
-				modelId.Stain0 = (byte)npcEquip.DyeMainHand.RowId;
-				modelId.Stain1 = (byte)npcEquip.Dye2MainHand.RowId;
-				break;
-			}
+				{
+					modelId.Value = npcEquip.ModelMainHand;
+					modelId.Stain0 = (byte)npcEquip.DyeMainHand.RowId;
+					modelId.Stain1 = (byte)npcEquip.Dye2MainHand.RowId;
+					break;
+				}
 
 			case WeaponSlot.OffHand:
-			{
-				modelId.Value = npcEquip.ModelOffHand;
-				modelId.Stain0 = (byte)npcEquip.DyeOffHand.RowId;
-				modelId.Stain1 = (byte)npcEquip.Dye2OffHand.RowId;
-				break;
-			}
+				{
+					modelId.Value = npcEquip.ModelOffHand;
+					modelId.Stain0 = (byte)npcEquip.DyeOffHand.RowId;
+					modelId.Stain1 = (byte)npcEquip.Dye2OffHand.RowId;
+					break;
+				}
 		}
 
 		return modelId;
@@ -55,84 +55,84 @@ public static class NpcEquipExtensions
 		switch (slot)
 		{
 			case EquipmentSlot.Head:
-			{
-				modelId.Value = npcEquip.ModelHead;
-				modelId.Stain0 = (byte)npcEquip.DyeHead.RowId;
-				modelId.Stain1 = (byte)npcEquip.Dye2Head.RowId;
-				break;
-			}
+				{
+					modelId.Value = npcEquip.ModelHead;
+					modelId.Stain0 = (byte)npcEquip.DyeHead.RowId;
+					modelId.Stain1 = (byte)npcEquip.Dye2Head.RowId;
+					break;
+				}
 
 			case EquipmentSlot.Body:
-			{
-				modelId.Value = npcEquip.ModelBody;
-				modelId.Stain0 = (byte)npcEquip.DyeBody.RowId;
-				modelId.Stain1 = (byte)npcEquip.Dye2Body.RowId;
-				break;
-			}
+				{
+					modelId.Value = npcEquip.ModelBody;
+					modelId.Stain0 = (byte)npcEquip.DyeBody.RowId;
+					modelId.Stain1 = (byte)npcEquip.Dye2Body.RowId;
+					break;
+				}
 
 			case EquipmentSlot.Hands:
-			{
-				modelId.Value = npcEquip.ModelHands;
-				modelId.Stain0 = (byte)npcEquip.DyeHands.RowId;
-				modelId.Stain1 = (byte)npcEquip.Dye2Hands.RowId;
-				break;
-			}
+				{
+					modelId.Value = npcEquip.ModelHands;
+					modelId.Stain0 = (byte)npcEquip.DyeHands.RowId;
+					modelId.Stain1 = (byte)npcEquip.Dye2Hands.RowId;
+					break;
+				}
 
 			case EquipmentSlot.Legs:
-			{
-				modelId.Value = npcEquip.ModelLegs;
-				modelId.Stain0 = (byte)npcEquip.DyeLegs.RowId;
-				modelId.Stain1 = (byte)npcEquip.Dye2Legs.RowId;
-				break;
-			}
+				{
+					modelId.Value = npcEquip.ModelLegs;
+					modelId.Stain0 = (byte)npcEquip.DyeLegs.RowId;
+					modelId.Stain1 = (byte)npcEquip.Dye2Legs.RowId;
+					break;
+				}
 
 			case EquipmentSlot.Feet:
-			{
-				modelId.Value = npcEquip.ModelFeet;
-				modelId.Stain0 = (byte)npcEquip.DyeFeet.RowId;
-				modelId.Stain1 = (byte)npcEquip.Dye2Feet.RowId;
-				break;
-			}
+				{
+					modelId.Value = npcEquip.ModelFeet;
+					modelId.Stain0 = (byte)npcEquip.DyeFeet.RowId;
+					modelId.Stain1 = (byte)npcEquip.Dye2Feet.RowId;
+					break;
+				}
 
 			case EquipmentSlot.Ears:
-			{
-				modelId.Value = npcEquip.ModelEars;
-				modelId.Stain0 = (byte)npcEquip.DyeEars.RowId;
-				modelId.Stain1 = (byte)npcEquip.Dye2Ears.RowId;
-				break;
-			}
+				{
+					modelId.Value = npcEquip.ModelEars;
+					modelId.Stain0 = (byte)npcEquip.DyeEars.RowId;
+					modelId.Stain1 = (byte)npcEquip.Dye2Ears.RowId;
+					break;
+				}
 
 			case EquipmentSlot.Neck:
-			{
-				modelId.Value = npcEquip.ModelNeck;
-				modelId.Stain0 = (byte)npcEquip.DyeNeck.RowId;
-				modelId.Stain1 = (byte)npcEquip.Dye2Neck.RowId;
-				break;
-			}
+				{
+					modelId.Value = npcEquip.ModelNeck;
+					modelId.Stain0 = (byte)npcEquip.DyeNeck.RowId;
+					modelId.Stain1 = (byte)npcEquip.Dye2Neck.RowId;
+					break;
+				}
 
 			case EquipmentSlot.Wrists:
-			{
-				modelId.Value = npcEquip.ModelWrists;
-				modelId.Stain0 = (byte)npcEquip.DyeWrists.RowId;
-				modelId.Stain1 = (byte)npcEquip.Dye2Wrists.RowId;
-				break;
-			}
+				{
+					modelId.Value = npcEquip.ModelWrists;
+					modelId.Stain0 = (byte)npcEquip.DyeWrists.RowId;
+					modelId.Stain1 = (byte)npcEquip.Dye2Wrists.RowId;
+					break;
+				}
 
 			case EquipmentSlot.RFinger:
-			{
-				modelId.Value = npcEquip.ModelRightRing;
-				modelId.Stain0 = (byte)npcEquip.DyeRightRing.RowId;
-				modelId.Stain1 = (byte)npcEquip.Dye2RightRing.RowId;
-				break;
-			}
+				{
+					modelId.Value = npcEquip.ModelRightRing;
+					modelId.Stain0 = (byte)npcEquip.DyeRightRing.RowId;
+					modelId.Stain1 = (byte)npcEquip.Dye2RightRing.RowId;
+					break;
+				}
 
 			case EquipmentSlot.LFinger:
-			{
-				modelId.Value = npcEquip.ModelLeftRing;
-				modelId.Stain0 = (byte)npcEquip.DyeLeftRing.RowId;
-				modelId.Stain1 = (byte)npcEquip.Dye2LeftRing.RowId;
-				break;
-			}
+				{
+					modelId.Value = npcEquip.ModelLeftRing;
+					modelId.Stain0 = (byte)npcEquip.DyeLeftRing.RowId;
+					modelId.Stain1 = (byte)npcEquip.Dye2LeftRing.RowId;
+					break;
+				}
 		}
 
 		return modelId;
@@ -140,7 +140,7 @@ public static class NpcEquipExtensions
 
 	public static void GetHash(this NpcEquip npcEquip, ref StringBuilder stringBuilder)
 	{
-		foreach(WeaponSlot slot in Enum.GetValues<WeaponSlot>())
+		foreach (WeaponSlot slot in Enum.GetValues<WeaponSlot>())
 		{
 			WeaponModelId modelId = npcEquip.GetModelId(slot);
 			stringBuilder.Append(modelId.Id.ToString("X2"));

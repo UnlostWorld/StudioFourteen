@@ -68,7 +68,7 @@ public partial class TaskBarControl : Control
 	{
 		if (!this.hasRestoredSaves)
 		{
-			foreach((string typeName, TaskBarEntrySave save) in this.Settings.MinimizedTaskBarEntries)
+			foreach ((string typeName, TaskBarEntrySave save) in this.Settings.MinimizedTaskBarEntries)
 			{
 				if (save.Icon == null || save.Title == null)
 					continue;

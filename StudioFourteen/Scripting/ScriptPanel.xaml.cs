@@ -109,7 +109,7 @@ public partial class ScriptPanel : Panel
 
 		await this.Dispatcher.InvokeAsync(() =>
 		{
-			foreach(ScriptOption option in this.Script.Options)
+			foreach (ScriptOption option in this.Script.Options)
 			{
 				if (option.Name == null)
 					continue;
@@ -117,22 +117,22 @@ public partial class ScriptPanel : Panel
 				switch (option.Type)
 				{
 					case ScriptOption.Types.CheckBox:
-					{
-						this.Options.Add(new CheckBoxOption(option.Name, option.ToolTip));
-						break;
-					}
+						{
+							this.Options.Add(new CheckBoxOption(option.Name, option.ToolTip));
+							break;
+						}
 
 					case ScriptOption.Types.Toggle:
-					{
-						this.Options.Add(new ToggleOption(option.Name, option.ToolTip));
-						break;
-					}
+						{
+							this.Options.Add(new ToggleOption(option.Name, option.ToolTip));
+							break;
+						}
 
 					case ScriptOption.Types.Input:
-					{
-						this.Options.Add(new InputOption(option.Name, option.ToolTip));
-						break;
-					}
+						{
+							this.Options.Add(new InputOption(option.Name, option.ToolTip));
+							break;
+						}
 				}
 			}
 		});
@@ -148,7 +148,7 @@ public partial class ScriptPanel : Panel
 			return null;
 
 		Dictionary<string, object> results = new();
-		foreach(OptionBase option in this.Options)
+		foreach (OptionBase option in this.Options)
 		{
 			results.Add(option.Name, option.Value);
 		}

@@ -80,7 +80,7 @@ public partial class SkeletonView : Canvas
 
 	public BoneButton? GetButton(BoneId boneId)
 	{
-		foreach(BoneButton button in this.boneButtons)
+		foreach (BoneButton button in this.boneButtons)
 		{
 			if (button.Selection is BoneSelection boneSelection)
 			{
@@ -242,7 +242,7 @@ public partial class SkeletonView : Canvas
 				}
 			}
 		}
-		catch(Exception ex)
+		catch (Exception ex)
 		{
 			this.Log.Error(ex, "Error getting bone selections");
 			return false;
@@ -276,7 +276,7 @@ public partial class SkeletonView : Canvas
 					}
 				}
 
-				foreach(BoneButton button in this.boneButtons)
+				foreach (BoneButton button in this.boneButtons)
 				{
 					if (button.Selection is BoneSelection boneSelection)
 					{
@@ -348,7 +348,7 @@ public partial class SkeletonView : Canvas
 			}
 		}
 
-		foreach(BoneConnection connection in this.boneConnections)
+		foreach (BoneConnection connection in this.boneConnections)
 		{
 			connection.From = connection.FromBone.Position;
 			connection.To = connection.ToBone.Position;

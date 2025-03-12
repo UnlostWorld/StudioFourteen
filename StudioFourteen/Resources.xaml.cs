@@ -43,14 +43,14 @@ public partial class Resources : ResourceDictionary
 		Resources resources = new();
 		resources.Source = new("pack://application:,,,/StudioFourteen;component/Resources.xaml");
 
-		foreach(Uri dictionary in PendingMergedDictionaries)
+		foreach (Uri dictionary in PendingMergedDictionaries)
 		{
 			Resources merged = new();
 			merged.Source = dictionary;
 			resources.MergedDictionaries.Add(merged);
 		}
 
-		foreach((object key, Func<object> value) in AddResource)
+		foreach ((object key, Func<object> value) in AddResource)
 		{
 			resources[key] = value.Invoke();
 		}
@@ -115,7 +115,7 @@ public partial class Resources : ResourceDictionary
 	{
 		PendingMergedDictionaries.Add(uri);
 
-		foreach(WeakReference<Resources> resourceReference in ResourceInstances)
+		foreach (WeakReference<Resources> resourceReference in ResourceInstances)
 		{
 			if (resourceReference.TryGetTarget(out Resources? resource) && resource != null)
 			{

@@ -93,7 +93,7 @@ public partial class StudioService : ServiceBase
 				this.Services.GroupPose.SetGroupPose(true);
 			}
 		}
-		catch(Exception ex)
+		catch (Exception ex)
 		{
 			this.Log.Error(ex, "Error opening Studio Fourteen");
 		}
@@ -122,7 +122,7 @@ public partial class StudioService : ServiceBase
 				this.Services.GroupPose.SetGroupPose(false);
 			}
 		}
-		catch(Exception ex)
+		catch (Exception ex)
 		{
 			this.Log.Error(ex, "Error closing Studio Fourteen");
 		}

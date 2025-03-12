@@ -15,18 +15,14 @@
 				Text="{Binding Name}"
 				Visibility="{Binding Name, Converter={StaticResource NotNullToVisibilityConverter}}" />
 
-			<Grid
-				x:Name="ContentArea"
-				Margin="1">
+			<Grid x:Name="ContentArea" Margin="1">
 
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition MaxWidth="64" />
 					<ColumnDefinition />
 				</Grid.ColumnDefinitions>
 
-				<Border
-					Grid.ColumnSpan="2"
-					Style="{DynamicResource WpfUtilsControlBorder}" />
+				<Border Grid.ColumnSpan="2" Style="{DynamicResource WpfUtilsControlBorder}" />
 
 				<ToggleButton
 					Name="ToggleButton"
@@ -89,9 +85,7 @@
 
 
 					<Grid>
-						<ListBox
-							ItemsSource="{Binding Options}"
-							SelectedItem="{Binding Selected}">
+						<ListBox ItemsSource="{Binding Options}" SelectedItem="{Binding Selected}">
 							<ListBox.ItemsPanel>
 								<ItemsPanelTemplate>
 									<UniformGrid Columns="8" />

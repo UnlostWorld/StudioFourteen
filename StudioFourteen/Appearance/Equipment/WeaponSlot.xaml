@@ -8,9 +8,7 @@
 	xmlns:local="clr-namespace:StudioFourteen.Appearance.Equipment">
 
 	<DataTemplate DataType="{x:Type local:WeaponSlotViewModel}">
-		<Border
-			Margin="0,1"
-			Style="{DynamicResource WpfUtilsControlBorder}">
+		<Border Margin="0,1" Style="{DynamicResource WpfUtilsControlBorder}">
 			<Grid>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition />

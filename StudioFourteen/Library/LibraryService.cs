@@ -94,7 +94,7 @@ public class LibraryService : ServiceBase
 
 		this.rootItem.Clear();
 
-		foreach(SourceBase source in this.sources)
+		foreach (SourceBase source in this.sources)
 		{
 			this.rootItem.Add(source);
 		}
@@ -125,7 +125,7 @@ public class LibraryService : ServiceBase
 			sw.Start();
 
 			List<Task> scanTasks = new();
-			foreach(SourceBase source in this.sources)
+			foreach (SourceBase source in this.sources)
 			{
 				scanTasks.Add(Task.Run(() => this.ScanSource(source)));
 			}
@@ -135,7 +135,7 @@ public class LibraryService : ServiceBase
 			sw.Stop();
 			this.Log.Information($"Scanned {this.sources.Count} library sources in {sw.ElapsedMilliseconds}ms");
 		}
-		catch(Exception ex)
+		catch (Exception ex)
 		{
 			this.Log.Error(ex, "Error during library scan");
 		}
@@ -195,7 +195,7 @@ public class LibraryService : ServiceBase
 		if (results == null)
 			return finalResults;
 
-		foreach(Result result in results)
+		foreach (Result result in results)
 		{
 			if (result.Entry is T tEntry)
 			{
@@ -221,7 +221,7 @@ public class LibraryService : ServiceBase
 		{
 			source.ScanSource();
 		}
-		catch(Exception ex)
+		catch (Exception ex)
 		{
 			this.Log.Error(ex, $"Error in library source: {source.Name}");
 		}

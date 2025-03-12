@@ -31,7 +31,7 @@ public class RedrawService : ServiceBase
 
 	public Request Redraw(int objectTableIndex, bool animate = true)
 	{
-		lock(this.redraws)
+		lock (this.redraws)
 		{
 			Request request;
 			if (this.redraws.TryGetValue(objectTableIndex, out Request? otherRequest))
@@ -82,9 +82,9 @@ public class RedrawService : ServiceBase
 	{
 		base.OnFrameworkUpdate(framework);
 
-		lock(this.redraws)
+		lock (this.redraws)
 		{
-			foreach((int objectTableIndex, Request request) in this.redraws)
+			foreach ((int objectTableIndex, Request request) in this.redraws)
 			{
 				if (!request.IsRunning && !request.IsDone)
 				{
@@ -150,7 +150,7 @@ public class RedrawService : ServiceBase
 			Stopwatch sw = new();
 			sw.Start();
 
-			while(sw.ElapsedMilliseconds < FadeOutTimeMs && this.Animate)
+			while (sw.ElapsedMilliseconds < FadeOutTimeMs && this.Animate)
 			{
 				await Threads.NextFrame();
 				float p = 1 - (sw.ElapsedMilliseconds / FadeOutTimeMs);
@@ -212,7 +212,7 @@ public class RedrawService : ServiceBase
 
 			// Can't skip the fade in since the games built-in fade will happen
 			// no matter what.
-			while(sw.ElapsedMilliseconds < FadeInTimeMs)
+			while (sw.ElapsedMilliseconds < FadeInTimeMs)
 			{
 				await Threads.NextFrame();
 				float p = sw.ElapsedMilliseconds / FadeInTimeMs;

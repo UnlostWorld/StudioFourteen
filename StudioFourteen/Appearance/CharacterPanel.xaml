@@ -22,9 +22,7 @@
 	TitleIcon="fa-UserShield"
 	mc:Ignorable="d">
 
-	<Grid
-		x:Name="ContentArea"
-		IsEnabled="{Binding HasValidTarget}">
+	<Grid x:Name="ContentArea" IsEnabled="{Binding HasValidTarget}">
 
 		<Grid.Resources>
 			<ResourceDictionary>
@@ -66,9 +64,7 @@
 			<!--  Body  -->
 			<TabItem>
 				<TabItem.Header>
-					<wpfUtils:IconBlock
-						Margin="12"
-						Icon="Person" />
+					<wpfUtils:IconBlock Margin="12" Icon="Person" />
 				</TabItem.Header>
 
 				<ScrollViewer HorizontalScrollBarVisibility="Disabled">
@@ -115,19 +111,13 @@
 
 				<ScrollViewer HorizontalScrollBarVisibility="Disabled">
 					<StackPanel>
-						<TextBlock
-							Style="{DynamicResource LeftLabel}"
-							Text="Weapons" />
+						<TextBlock Style="{DynamicResource LeftLabel}" Text="Weapons" />
 						<ItemsControl ItemsSource="{Binding Equipment.Weapons}" />
 
-						<TextBlock
-							Style="{DynamicResource LeftLabel}"
-							Text="Equipment" />
+						<TextBlock Style="{DynamicResource LeftLabel}" Text="Equipment" />
 						<ItemsControl ItemsSource="{Binding Equipment.Equipment}" />
 
-						<TextBlock
-							Style="{DynamicResource LeftLabel}"
-							Text="Accessories" />
+						<TextBlock Style="{DynamicResource LeftLabel}" Text="Accessories" />
 						<ItemsControl ItemsSource="{Binding Equipment.Accessories}" />
 					</StackPanel>
 				</ScrollViewer>
@@ -143,19 +133,13 @@
 			<!--  Equipment  -->
 			<ScrollViewer HorizontalScrollBarVisibility="Disabled">
 				<StackPanel>
-					<TextBlock
-						Style="{DynamicResource LeftLabel}"
-						Text="Weapons" />
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="Weapons" />
 					<ItemsControl ItemsSource="{Binding Equipment.Weapons}" />
 
-					<TextBlock
-						Style="{DynamicResource LeftLabel}"
-						Text="Equipment" />
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="Equipment" />
 					<ItemsControl ItemsSource="{Binding Equipment.Equipment}" />
 
-					<TextBlock
-						Style="{DynamicResource LeftLabel}"
-						Text="Accessories" />
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="Accessories" />
 					<ItemsControl ItemsSource="{Binding Equipment.Accessories}" />
 				</StackPanel>
 			</ScrollViewer>
@@ -166,9 +150,7 @@
 			Grid.ColumnSpan="2"
 			Margin="0,2,0,0"
 			Style="{DynamicResource WpfUtilsControlBorder}">
-			<StackPanel
-				HorizontalAlignment="Right"
-				Orientation="Horizontal">
+			<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
 
 				<Button
 					Background="Transparent"

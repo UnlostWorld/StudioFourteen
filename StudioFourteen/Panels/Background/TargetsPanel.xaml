@@ -2,8 +2,10 @@
 	x:Class="StudioFourteen.Studio.Background.TargetsPanel"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:appearance="clr-namespace:StudioFourteen.Appearance"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:librarySelector="clr-namespace:StudioFourteen.Library.Selector"
 	xmlns:local="clr-namespace:StudioFourteen.Studio.Background"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:mvm="clr-namespace:StudioFourteen.Mvm"
@@ -12,8 +14,6 @@
 	xmlns:triggers="clr-namespace:WpfUtils.Triggers;assembly=WpfUtils"
 	xmlns:windows="clr-namespace:StudioFourteen.Panels"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
-	xmlns:librarySelector="clr-namespace:StudioFourteen.Library.Selector"
-	xmlns:appearance="clr-namespace:StudioFourteen.Appearance"
 	Title="Targets"
 	Width="1024"
 	Height="58"
@@ -46,9 +46,7 @@
 						Visibility="{Binding ValidCharacters.Count, Converter={StaticResource GreaterThanToVisibility}, ConverterParameter=6}">
 
 						<wpfUtils:PopOut.Header>
-							<TextBlock
-								Margin="10"
-								Text="{DynamicResource LOC_Target_Change}" />
+							<TextBlock Margin="10" Text="{DynamicResource LOC_Target_Change}" />
 						</wpfUtils:PopOut.Header>
 
 						<ComboBox.ItemTemplate>
@@ -64,9 +62,7 @@
 								</Grid>
 
 								<DataTemplate.Triggers>
-									<DataTrigger
-										Binding="{Binding IsValid}"
-										Value="False">
+									<DataTrigger Binding="{Binding IsValid}" Value="False">
 										<Setter Property="Visibility" Value="Collapsed" />
 									</DataTrigger>
 								</DataTemplate.Triggers>
@@ -76,9 +72,7 @@
 					</ComboBox>
 
 
-					<StackPanel
-						Orientation="Horizontal"
-						Visibility="{Binding ValidCharacters.Count, Converter={StaticResource LessThanToVisibility}, ConverterParameter=7}">
+					<StackPanel Orientation="Horizontal" Visibility="{Binding ValidCharacters.Count, Converter={StaticResource LessThanToVisibility}, ConverterParameter=7}">
 						<StackPanel.Resources>
 							<sys:Double x:Key="ButtonWidth">100</sys:Double>
 						</StackPanel.Resources>
@@ -93,9 +87,7 @@
 							<ItemsControl.ItemTemplate>
 								<DataTemplate DataType="{x:Type local:CharacterViewModel}">
 
-									<Grid
-										x:Name="ContentArea"
-										Width="0">
+									<Grid x:Name="ContentArea" Width="0">
 
 										<ToggleButton
 											Width="{StaticResource ButtonWidth}"
@@ -123,9 +115,7 @@
 									</Grid>
 
 									<DataTemplate.Triggers>
-										<DataTrigger
-											Binding="{Binding IsValid}"
-											Value="True">
+										<DataTrigger Binding="{Binding IsValid}" Value="True">
 											<DataTrigger.EnterActions>
 												<BeginStoryboard>
 													<Storyboard>
@@ -191,21 +181,19 @@
 				IsEnabled="{Binding Target, Converter={StaticResource NotNullToBoolConverter}}"
 				ToolTip="{Binding RemoveCharacterTooltip}">
 
-				<wpfUtils:IconBlock
-					Icon="TrashAlt"
-					IconFont="Solid" />
+				<wpfUtils:IconBlock Icon="TrashAlt" IconFont="Solid" />
 			</Button>
 		</Grid>
 
 		<librarySelector:LibrarySelector
+			CloseOnSelection="True"
+			Favorites="{Binding SpawnFavorites}"
 			Header="Select a character to spawn:"
 			IsOpen="{Binding ElementName=AddCharacterButton, Path=IsChecked}"
 			PlacementTarget="{Binding ElementName=AddCharacterButton}"
+			SelectedItem="{Binding SelectedCharacterToSpawn}"
 			StaysOpen="False"
-			Favorites="{Binding SpawnFavorites}"
-			CloseOnSelection="True"
-			Type="{x:Type appearance:ICharacterAppearance}"
-			SelectedItem="{Binding SelectedCharacterToSpawn}"/>
+			Type="{x:Type appearance:ICharacterAppearance}" />
 
 	</Grid>
 </windows:Panel>

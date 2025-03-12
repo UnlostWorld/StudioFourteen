@@ -9,9 +9,7 @@
 	xmlns:local="clr-namespace:StudioFourteen.Appearance.Equipment">
 
 	<DataTemplate DataType="{x:Type local:EquipmentSlotViewModel}">
-		<Border
-			Margin="0,1"
-			Style="{DynamicResource WpfUtilsControlBorder}">
+		<Border Margin="0,1" Style="{DynamicResource WpfUtilsControlBorder}">
 			<Grid>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition />
@@ -22,11 +20,11 @@
 				<librarySelector:LibrarySelectorButton
 					Grid.Column="0"
 					Background="Transparent"
+					IsClear="{Binding IsNone, Mode=TwoWay}"
 					PopOutHeader="{Binding SearchTitle}"
 					SearchTags="{Binding SearchTags}"
 					Type="{Binding LibraryType}"
-					Value="{Binding Item}"
-					IsClear="{Binding IsNone, Mode=TwoWay}">
+					Value="{Binding Item}">
 
 					<librarySelector:LibrarySelectorButton.ToolTipHeader>
 						<TextBlock
@@ -65,9 +63,7 @@
 					</librarySelector:LibrarySelectorButton.PopOutBackgroundDetail>
 
 					<librarySelector:LibrarySelectorButton.PopOutFooter>
-						<Border
-							Margin="3"
-							Style="{DynamicResource WpfUtilsControlBorder}">
+						<Border Margin="3" Style="{DynamicResource WpfUtilsControlBorder}">
 							<StackPanel Orientation="Vertical">
 								<ToggleButton
 									Height="44"
@@ -81,12 +77,8 @@
 											<ColumnDefinition />
 										</Grid.ColumnDefinitions>
 
-										<Viewbox
-											Width="38"
-											Height="38">
-											<Grid
-												Width="48"
-												Height="48">
+										<Viewbox Width="38" Height="38">
+											<Grid Width="48" Height="48">
 												<controls:XivTexImage
 													x:Name="IconBack"
 													Margin="0,0,0,0"
@@ -95,9 +87,7 @@
 													Rect="0, 192, 96, 96"
 													Visibility="Collapsed" />
 
-												<controls:XivIconImage
-													Margin="4,3,3,5"
-													Id="042422" />
+												<controls:XivIconImage Margin="4,3,3,5" Id="042422" />
 
 												<controls:XivTexImage
 													x:Name="IconShine"
@@ -106,9 +96,7 @@
 											</Grid>
 										</Viewbox>
 
-										<Grid
-											Grid.Column="1"
-											VerticalAlignment="Center">
+										<Grid Grid.Column="1" VerticalAlignment="Center">
 											<Grid.RowDefinitions>
 												<RowDefinition />
 												<RowDefinition Height="Auto" />
@@ -137,11 +125,11 @@
 					Grid.Column="1"
 					Margin="-2,0"
 					Background="Transparent"
+					IsClear="{Binding IsStain0None, Mode=TwoWay}"
 					PopOutHeader="{Binding DyeSearchTitle}"
 					Style="{DynamicResource LibrarySelectorIconOnly}"
 					Type="{x:Type libraryData:StainLibraryEntry}"
-					Value="{Binding Stain0}"
-					IsClear="{Binding IsStain0None, Mode=TwoWay}">
+					Value="{Binding Stain0}">
 					<librarySelector:LibrarySelectorButton.ToolTipHeader>
 						<TextBlock
 							Margin="6"
@@ -154,11 +142,11 @@
 					Grid.Column="2"
 					Margin="-2,0,0,0"
 					Background="Transparent"
+					IsClear="{Binding IsStain1None, Mode=TwoWay}"
 					PopOutHeader="{Binding DyeSearchTitle}"
 					Style="{DynamicResource LibrarySelectorIconOnly}"
 					Type="{x:Type libraryData:StainLibraryEntry}"
-					Value="{Binding Stain1}"
-					IsClear="{Binding IsStain1None, Mode=TwoWay}">
+					Value="{Binding Stain1}">
 					<librarySelector:LibrarySelectorButton.ToolTipHeader>
 						<TextBlock
 							Margin="6"

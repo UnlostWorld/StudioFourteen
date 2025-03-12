@@ -30,7 +30,7 @@ public class TagCollectionConverter : JsonConverter<TagCollection>
 
 		TagCollection tags = new();
 		string[] tagNames = tagString.Split(", ", StringSplitOptions.RemoveEmptyEntries);
-		foreach(string tagName in tagNames)
+		foreach (string tagName in tagNames)
 		{
 			tags.Add(tagName);
 		}
@@ -47,7 +47,7 @@ public class TagCollectionConverter : JsonConverter<TagCollection>
 		}
 
 		StringBuilder builder = new();
-		for(int i = 0; i < value.Count; i++)
+		for (int i = 0; i < value.Count; i++)
 		{
 			if (i > 0)
 				builder.Append(", ");

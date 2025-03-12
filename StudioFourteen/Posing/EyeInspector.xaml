@@ -33,9 +33,7 @@
 				ValueY="{Binding LookY, Mode=TwoWay}" />
 
 
-			<TextBlock
-				Style="{DynamicResource LeftLabel}"
-				Text="Iris Size" />
+			<TextBlock Style="{DynamicResource LeftLabel}" Text="Iris Size" />
 			<controls:NumberBox
 				Maximum="2"
 				Minimum="0.75"

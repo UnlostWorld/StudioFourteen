@@ -37,7 +37,7 @@ public static class PluginManager
 		if (installedPlugins == null)
 			throw new Exception("Failed to get installed plugins list");
 
-		foreach(object localPlugin in installedPlugins)
+		foreach (object localPlugin in installedPlugins)
 		{
 			Type localPluginType = localPlugin.GetType();
 			if (localPluginType.Name == "LocalDevPlugin" && localPluginType.BaseType != null)

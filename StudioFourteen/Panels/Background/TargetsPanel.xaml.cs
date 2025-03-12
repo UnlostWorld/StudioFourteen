@@ -107,7 +107,7 @@ public partial class TargetsPanel : Panel
 
 	private void OnCurrentTargetChanged(int objectTableIndex)
 	{
-		foreach(CharacterViewModel character in this.ValidCharacters)
+		foreach (CharacterViewModel character in this.ValidCharacters)
 		{
 			if (character.ObjectTableIndex == this.Services.Target.TargetObjectIndex)
 			{

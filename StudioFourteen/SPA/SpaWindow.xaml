@@ -32,9 +32,7 @@
 			<RowDefinition />
 		</Grid.RowDefinitions>
 
-		<Border
-			CornerRadius="6,6,6,0"
-			Style="{DynamicResource WpfUtilsControlBorder}" />
+		<Border CornerRadius="6,6,6,0" Style="{DynamicResource WpfUtilsControlBorder}" />
 
 		<panels:PanelHost
 			Grid.Row="0"
@@ -63,23 +61,17 @@
 			<!--  Library  -->
 			<TabItem>
 				<TabItem.Header>
-					<wpfUtils:IconBlock
-						Margin="12"
-						Icon="Book" />
+					<wpfUtils:IconBlock Margin="12" Icon="Book" />
 				</TabItem.Header>
 
-				<panels:PanelHost
-					Margin="2"
-					PanelType="{x:Type library:LibraryWindow}" />
+				<panels:PanelHost Margin="2" PanelType="{x:Type library:LibraryWindow}" />
 
 			</TabItem>
 
 			<!--  Environment  -->
 			<TabItem>
 				<TabItem.Header>
-					<wpfUtils:IconBlock
-						Margin="12"
-						Icon="Home" />
+					<wpfUtils:IconBlock Margin="12" Icon="Home" />
 				</TabItem.Header>
 
 				<Grid>
@@ -105,27 +97,19 @@
 			<!--  Character  -->
 			<TabItem>
 				<TabItem.Header>
-					<wpfUtils:IconBlock
-						Margin="12"
-						Icon="UserShield" />
+					<wpfUtils:IconBlock Margin="12" Icon="UserShield" />
 				</TabItem.Header>
 
-				<panels:PanelHost
-					Margin="2,1,0,0"
-					PanelType="{x:Type appearance:CharacterPanel}" />
+				<panels:PanelHost Margin="2,1,0,0" PanelType="{x:Type appearance:CharacterPanel}" />
 			</TabItem>
 
 			<!--  Pose  -->
 			<TabItem>
 				<TabItem.Header>
-					<wpfUtils:IconBlock
-						Margin="12"
-						Icon="Running" />
+					<wpfUtils:IconBlock Margin="12" Icon="Running" />
 				</TabItem.Header>
 
-				<panels:PanelHost
-					Margin="2,1,0,0"
-					PanelType="{x:Type pose:PoseWindow}" />
+				<panels:PanelHost Margin="2,1,0,0" PanelType="{x:Type pose:PoseWindow}" />
 			</TabItem>
 
 			<!--  Save  -->
@@ -146,9 +130,7 @@
 			<!--  Settings  -->
 			<TabItem>
 				<TabItem.Header>
-					<wpfUtils:IconBlock
-						Margin="12"
-						Icon="Gears" />
+					<wpfUtils:IconBlock Margin="12" Icon="Gears" />
 				</TabItem.Header>
 
 				<panels:PanelHost

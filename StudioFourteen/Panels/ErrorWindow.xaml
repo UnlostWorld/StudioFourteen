@@ -35,21 +35,19 @@
 			Text="{Binding ErrorMessage, FallbackValue=ErrorMessage}"
 			TextAlignment="Center" />
 
-		<StackPanel
-			Grid.Row="2"
-			Margin="0,3,0,3">
+		<StackPanel Grid.Row="2" Margin="0,3,0,3">
 			<TextBlock
 				Margin="3,3,3,0"
-				Opacity="0.5"
 				Foreground="{DynamicResource ForegroundLightBrush}"
+				Opacity="0.5"
 				Style="{DynamicResource Subscript}"
 				Text="{DynamicResource LOC_ErrorBodyLog}"
 				TextAlignment="Center" />
 
 			<TextBlock
 				Margin="3,3,3,6"
-				Opacity="0.5"
 				Foreground="{DynamicResource ForegroundLightBrush}"
+				Opacity="0.5"
 				Style="{DynamicResource Subscript}"
 				Text="{DynamicResource LOC_ErrorBodyCheck}"
 				TextAlignment="Center" />
@@ -61,24 +59,14 @@
 			Margin="1"
 			Style="{DynamicResource WpfUtilsControlBorder}">
 			<Grid>
-				<StackPanel
-					HorizontalAlignment="Left"
-					Orientation="Horizontal">
+				<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
 
-					<Button
-						Background="Transparent"
-						Click="OnConsoleClicked">
-						<TextBlock
-							Margin="3,0"
-							Text="{DynamicResource LOC_Console}" />
+					<Button Background="Transparent" Click="OnConsoleClicked">
+						<TextBlock Margin="3,0" Text="{DynamicResource LOC_Console}" />
 					</Button>
 
-					<Button
-						Background="Transparent"
-						Click="OnGitHubClicked">
-						<StackPanel
-							Margin="3,0"
-							Orientation="Horizontal">
+					<Button Background="Transparent" Click="OnGitHubClicked">
+						<StackPanel Margin="3,0" Orientation="Horizontal">
 							<wpfUtils:IconBlock
 								Margin="0,0,6,0"
 								FontSize="10"
@@ -87,12 +75,8 @@
 						</StackPanel>
 					</Button>
 
-					<Button
-						Background="Transparent"
-						Click="OnDiscordClicked">
-						<StackPanel
-							Margin="3,0"
-							Orientation="Horizontal">
+					<Button Background="Transparent" Click="OnDiscordClicked">
+						<StackPanel Margin="3,0" Orientation="Horizontal">
 							<wpfUtils:IconBlock
 								Margin="0,0,6,0"
 								FontSize="10"

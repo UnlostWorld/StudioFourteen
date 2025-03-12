@@ -40,7 +40,7 @@ public class MouseDevice : InputDeviceBase
 		this.wheel = new(MouseDevice.WheelPos, MouseDevice.WheelNeg, this, true);
 		this.AddAxis(this.wheel);
 
-		foreach(MouseButton button in Enum.GetValues<MouseButton>())
+		foreach (MouseButton button in Enum.GetValues<MouseButton>())
 		{
 			this.buttonAxes.Add(button, new(MouseDevice.GetAxisId(button), this, true));
 
@@ -61,7 +61,7 @@ public class MouseDevice : InputDeviceBase
 			this.AddAxis(y);
 		}
 
-		foreach((MouseButton button, InputAxis axis) in this.buttonAxes)
+		foreach ((MouseButton button, InputAxis axis) in this.buttonAxes)
 		{
 			this.AddAxis(axis);
 		}
@@ -161,7 +161,7 @@ public class MouseDevice : InputDeviceBase
 			}
 		}
 
-		foreach(MouseButton button in this.draggingButtons)
+		foreach (MouseButton button in this.draggingButtons)
 		{
 			Vector delta = mousePoint.Value - this.lastMousePosition;
 			this.dragAxis[button].X.Value += (float)delta.X / 8; // Sensitivity

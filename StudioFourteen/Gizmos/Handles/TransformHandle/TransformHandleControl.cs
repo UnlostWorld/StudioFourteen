@@ -24,7 +24,7 @@ using StudioFourteen.Gizmos.Handles.TransformHandle.Rotation;
 using StudioFourteen.Gizmos.Handles.TransformHandle.Scale;
 using StudioFourteen.Gizmos.Handles.TransformHandle.Translation;
 
-[DependencyProperty<Posing.Transform>("Transform", DefaultBindingMode=DefaultBindingMode.TwoWay)]
+[DependencyProperty<Posing.Transform>("Transform", DefaultBindingMode = DefaultBindingMode.TwoWay)]
 [DependencyProperty<double>("Sensitivity")]
 [DependencyProperty<TransformHandleTypes>("GizmoType")]
 public partial class TransformHandleControl : GizmoRenderer

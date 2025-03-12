@@ -136,7 +136,7 @@ public class SaveService : ServiceBase
 			file.Tags = this.MetaData.Tags;
 
 			// Actors
-			foreach((int objectTableIndex, bool include) in this.includeCharacters)
+			foreach ((int objectTableIndex, bool include) in this.includeCharacters)
 			{
 				if (!include)
 					continue;

@@ -22,9 +22,7 @@
 	<converters:InvertedBoolToVisibilityConverter x:Key="!B2V" />
 	<converters:BoolInversionConverter x:Key="!B" />
 
-	<DataTemplate
-		x:Key="LibrarySelectorResultTemplate"
-		DataType="{x:Type results:Result}">
+	<DataTemplate x:Key="LibrarySelectorResultTemplate" DataType="{x:Type results:Result}">
 		<Grid
 			x:Name="Content"
 			Grid.Column="1"
@@ -50,9 +48,7 @@
 				Style="{StaticResource LibraryIcon}"
 				TextBlock.Foreground="{DynamicResource ForegroundBrush}" />
 
-			<Grid
-				Grid.Column="1"
-				VerticalAlignment="Center">
+			<Grid Grid.Column="1" VerticalAlignment="Center">
 				<Grid.RowDefinitions>
 					<RowDefinition />
 					<RowDefinition Height="Auto" />
@@ -94,16 +90,12 @@
 		</Grid>
 	</DataTemplate>
 
-	<ControlTemplate
-		x:Key="LibrarySelectorTemplate"
-		TargetType="{x:Type ContentControl}">
+	<ControlTemplate x:Key="LibrarySelectorTemplate" TargetType="{x:Type ContentControl}">
 
 		<Grid Margin="12">
 			<Grid>
 				<Grid.Effect>
-					<DropShadowEffect
-						Direction="270"
-						ShadowDepth="0" />
+					<DropShadowEffect Direction="270" ShadowDepth="0" />
 				</Grid.Effect>
 
 				<Border
@@ -156,9 +148,7 @@
 						HorizontalAlignment="Right"
 						VerticalAlignment="Top"
 						Background="Transparent">
-						<controls:IconBlock
-							Foreground="{DynamicResource ForegroundLightBrush}"
-							Icon="Times" />
+						<controls:IconBlock Foreground="{DynamicResource ForegroundLightBrush}" Icon="Times" />
 					</Button>
 
 					<ContentPresenter
@@ -169,11 +159,9 @@
 						Content="{Binding RelativeSource={RelativeSource AncestorType={x:Type controls:PopOut}}, Path=Header}"
 						ContentTemplate="{Binding RelativeSource={RelativeSource AncestorType={x:Type controls:PopOut}}, Path=HeaderTemplate}">
 						<ContentPresenter.Resources>
-							<Style
-								BasedOn="{StaticResource WpfUtilsTextBlock}"
-								TargetType="{x:Type TextBlock}">
-								<Setter Property="TextWrapping" Value="Wrap" />
+							<Style BasedOn="{StaticResource WpfUtilsTextBlock}" TargetType="{x:Type TextBlock}">
 								<Setter Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
+								<Setter Property="TextWrapping" Value="Wrap" />
 							</Style>
 						</ContentPresenter.Resources>
 					</ContentPresenter>
@@ -195,17 +183,13 @@
 							IsSelected="{Binding RelativeSource={RelativeSource AncestorType={x:Type selector:LibrarySelector}}, Path=Favorites, Converter={StaticResource !B}}"
 							Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
 							ToolTip="{DynamicResource LOC_LibrarySelector_All}">
-							<controls:IconBlock
-								Icon="FileAlt"
-								IconFont="Solid" />
+							<controls:IconBlock Icon="FileAlt" IconFont="Solid" />
 						</ListBoxItem>
 						<ListBoxItem
 							IsSelected="{Binding RelativeSource={RelativeSource AncestorType={x:Type selector:LibrarySelector}}, Path=Favorites}"
 							Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
 							ToolTip="{DynamicResource LOC_LibrarySelector_Favorites}">
-							<controls:IconBlock
-								Icon="Heart"
-								IconFont="Solid" />
+							<controls:IconBlock Icon="Heart" IconFont="Solid" />
 						</ListBoxItem>
 					</controls:SwitchSelector>
 
@@ -245,9 +229,7 @@
 					ContentTemplate="{Binding RelativeSource={RelativeSource AncestorType={x:Type selector:LibrarySelector}}, Path=FooterTemplate}" />
 			</Grid>
 
-			<menu:LibraryContextMenu
-				x:Name="PART_ContextMenu"
-				Style="{DynamicResource LibraryContextMenuStyle}" />
+			<menu:LibraryContextMenu x:Name="PART_ContextMenu" Style="{DynamicResource LibraryContextMenuStyle}" />
 
 		</Grid>
 	</ControlTemplate>
@@ -257,14 +239,12 @@
 		x:Key="LibrarySelector"
 		BasedOn="{StaticResource WpfUtilsPopOut}"
 		TargetType="{x:Type selector:LibrarySelector}">
+		<Setter Property="Background" Value="{DynamicResource BackgroundBrush}" />
+		<Setter Property="Height" Value="500" />
 		<Setter Property="Template" Value="{DynamicResource LibrarySelectorTemplate}" />
 		<Setter Property="Width" Value="300" />
-		<Setter Property="Height" Value="500" />
-		<Setter Property="Background" Value="{DynamicResource BackgroundBrush}" />
 	</Style>
 
-	<Style
-		BasedOn="{StaticResource LibrarySelector}"
-		TargetType="{x:Type selector:LibrarySelector}" />
+	<Style BasedOn="{StaticResource LibrarySelector}" TargetType="{x:Type selector:LibrarySelector}" />
 
 </ResourceDictionary>

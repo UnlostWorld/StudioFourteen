@@ -53,11 +53,9 @@
 					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
 
-				<StackPanel Orientation="Horizontal" Grid.Column="0">
+				<StackPanel Grid.Column="0" Orientation="Horizontal">
 
-					<Border
-						Style="{DynamicResource WpfUtilsControlBorder}"
-						Margin="1">
+					<Border Margin="1" Style="{DynamicResource WpfUtilsControlBorder}">
 						<StackPanel Orientation="Horizontal">
 							<Button
 								Width="28"
@@ -82,9 +80,7 @@
 
 					</Border>
 
-					<Border
-						Style="{DynamicResource WpfUtilsControlBorder}"
-						Margin="1">
+					<Border Margin="1" Style="{DynamicResource WpfUtilsControlBorder}">
 						<Button
 							Width="28"
 							Height="Auto"
@@ -98,13 +94,10 @@
 
 
 					<StackPanel.Style>
-						<Style
-							TargetType="{x:Type StackPanel}">
+						<Style TargetType="{x:Type StackPanel}">
 
 							<Style.Triggers>
-								<DataTrigger
-									Binding="{Binding NarrowMode}"
-									Value="True">
+								<DataTrigger Binding="{Binding NarrowMode}" Value="True">
 									<Setter Property="Grid.Row" Value="1" />
 								</DataTrigger>
 							</Style.Triggers>
@@ -115,15 +108,11 @@
 
 				<Border Margin="1">
 					<Border.Style>
-						<Style
-							BasedOn="{StaticResource WpfUtilsControlBorder}"
-							TargetType="{x:Type Border}">
+						<Style BasedOn="{StaticResource WpfUtilsControlBorder}" TargetType="{x:Type Border}">
 
 							<Setter Property="Grid.Column" Value="1" />
 							<Style.Triggers>
-								<DataTrigger
-									Binding="{Binding NarrowMode}"
-									Value="True">
+								<DataTrigger Binding="{Binding NarrowMode}" Value="True">
 									<Setter Property="Grid.Column" Value="0" />
 									<Setter Property="Grid.ColumnSpan" Value="5" />
 								</DataTrigger>
@@ -202,17 +191,13 @@
 										Style="{DynamicResource WpfUtilsPopOut}">
 
 										<wpfUtils:PopOut.Header>
-											<TextBlock
-												Margin="10"
-												Foreground="{DynamicResource ForegroundLightBrush}">
+											<TextBlock Margin="10" Foreground="{DynamicResource ForegroundLightBrush}">
 												<Run Text="{Binding Name, Mode=OneTime}" />
 												<Run Text="/" />
 											</TextBlock>
 										</wpfUtils:PopOut.Header>
 
-										<ScrollViewer
-											Margin="0"
-											HorizontalScrollBarVisibility="Disabled">
+										<ScrollViewer Margin="0" HorizontalScrollBarVisibility="Disabled">
 											<ItemsControl ItemsSource="{Binding GroupEntries}">
 												<ItemsControl.ItemTemplate>
 													<DataTemplate DataType="{x:Type local:GroupEntryBase}">
@@ -220,9 +205,7 @@
 															HorizontalContentAlignment="Left"
 															Background="Transparent"
 															Click="OnDirectorySwapClicked">
-															<TextBlock
-																Margin="6,4"
-																Text="{Binding Name}" />
+															<TextBlock Margin="6,4" Text="{Binding Name}" />
 														</Button>
 													</DataTemplate>
 												</ItemsControl.ItemTemplate>
@@ -234,9 +217,7 @@
 								</Grid>
 
 								<DataTemplate.Triggers>
-									<DataTrigger
-										Binding="{Binding Icon}"
-										Value="None">
+									<DataTrigger Binding="{Binding Icon}" Value="None">
 										<Setter TargetName="Icon" Property="Visibility" Value="Collapsed" />
 										<Setter TargetName="Name" Property="Visibility" Value="Visible" />
 									</DataTrigger>
@@ -258,29 +239,21 @@
 						IsSelected="{Binding ViewList, Converter={StaticResource !B}}"
 						Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
 						ToolTip="{DynamicResource LOC_Library_IconViewTooltip}">
-						<wpfUtils:IconBlock
-							Icon="BorderAll"
-							IconFont="Solid" />
+						<wpfUtils:IconBlock Icon="BorderAll" IconFont="Solid" />
 					</ListBoxItem>
 					<ListBoxItem
 						IsSelected="{Binding ViewList}"
 						Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
 						ToolTip="{DynamicResource LOC_Library_ListViewTooltip}">
-						<wpfUtils:IconBlock
-							Icon="List"
-							IconFont="Solid" />
+						<wpfUtils:IconBlock Icon="List" IconFont="Solid" />
 					</ListBoxItem>
 
 					<wpfUtils:SwitchSelector.Style>
-						<Style
-							BasedOn="{StaticResource WpfUtilsSwitchSelector}"
-							TargetType="{x:Type wpfUtils:SwitchSelector}">
+						<Style BasedOn="{StaticResource WpfUtilsSwitchSelector}" TargetType="{x:Type wpfUtils:SwitchSelector}">
 
 							<Setter Property="Grid.Column" Value="2" />
 							<Style.Triggers>
-								<DataTrigger
-									Binding="{Binding NarrowMode}"
-									Value="True">
+								<DataTrigger Binding="{Binding NarrowMode}" Value="True">
 									<Setter Property="Grid.Column" Value="2" />
 									<Setter Property="Grid.Row" Value="1" />
 								</DataTrigger>
@@ -299,30 +272,22 @@
 						IsSelected="{Binding Flatten, Converter={StaticResource !B}}"
 						Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
 						ToolTip="{DynamicResource LOC_Library_DirectoryViewTooltip}">
-						<wpfUtils:IconBlock
-							Icon="Folder"
-							IconFont="Solid" />
+						<wpfUtils:IconBlock Icon="Folder" IconFont="Solid" />
 					</ListBoxItem>
 					<ListBoxItem
 						IsSelected="{Binding Flatten}"
 						Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
 						ToolTip="{DynamicResource LOC_Library_FlattenViewTooltip}">
-						<wpfUtils:IconBlock
-							Icon="FileAlt"
-							IconFont="Solid" />
+						<wpfUtils:IconBlock Icon="FileAlt" IconFont="Solid" />
 					</ListBoxItem>
 
 					<wpfUtils:SwitchSelector.Style>
-						<Style
-							BasedOn="{StaticResource WpfUtilsSwitchSelector}"
-							TargetType="{x:Type wpfUtils:SwitchSelector}">
+						<Style BasedOn="{StaticResource WpfUtilsSwitchSelector}" TargetType="{x:Type wpfUtils:SwitchSelector}">
 
 							<Setter Property="Grid.Column" Value="3" />
 
 							<Style.Triggers>
-								<DataTrigger
-									Binding="{Binding NarrowMode}"
-									Value="True">
+								<DataTrigger Binding="{Binding NarrowMode}" Value="True">
 									<Setter Property="Grid.Column" Value="3" />
 									<Setter Property="Grid.Row" Value="1" />
 								</DataTrigger>
@@ -338,11 +303,7 @@
 					Click="OnBrowseClicked">
 
 					<Button.Style>
-						<Style
-							BasedOn="{StaticResource WpfUtilsButton}"
-							TargetType="{x:Type Button}">
-
-							<Setter Property="Grid.Column" Value="4" />
+						<Style BasedOn="{StaticResource WpfUtilsButton}" TargetType="{x:Type Button}">
 							<Setter Property="Content">
 								<Setter.Value>
 									<StackPanel Orientation="Horizontal">
@@ -355,13 +316,13 @@
 								</Setter.Value>
 							</Setter>
 
+							<Setter Property="Grid.Column" Value="4" />
+
 							<Style.Triggers>
-								<DataTrigger
-									Binding="{Binding NarrowMode}"
-									Value="True">
+								<DataTrigger Binding="{Binding NarrowMode}" Value="True">
+									<Setter Property="Content" Value="..." />
 									<Setter Property="Grid.Column" Value="4" />
 									<Setter Property="Grid.Row" Value="1" />
-									<Setter Property="Content" Value="..." />
 									<Setter Property="Width" Value="28" />
 								</DataTrigger>
 							</Style.Triggers>
@@ -378,9 +339,7 @@
 					Visibility="{Binding NarrowMode, Converter={StaticResource B2V}}">
 
 					<wpfUtils:PopOut.Header>
-						<TextBlock
-							Margin="10"
-							Text="Select a file type to filter by:" />
+						<TextBlock Margin="10" Text="Select a file type to filter by:" />
 					</wpfUtils:PopOut.Header>
 
 					<ComboBox.ItemTemplate>
@@ -409,9 +368,7 @@
 							</Grid>
 
 							<DataTemplate.Triggers>
-								<DataTrigger
-									Binding="{Binding ElementName=MainGrid, Path=ActualWidth, Converter={StaticResource LessThanToBool}, ConverterParameter=75}"
-									Value="True">
+								<DataTrigger Binding="{Binding ElementName=MainGrid, Path=ActualWidth, Converter={StaticResource LessThanToBool}, ConverterParameter=75}" Value="True">
 									<Setter TargetName="LabelTextBlock" Property="Visibility" Value="Collapsed" />
 								</DataTrigger>
 							</DataTemplate.Triggers>
@@ -428,9 +385,7 @@
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition />
-					<ColumnDefinition
-						Width="0.5*"
-						MinWidth="50" />
+					<ColumnDefinition Width="0.5*" MinWidth="50" />
 				</Grid.ColumnDefinitions>
 
 				<Grid.RowDefinitions>
@@ -448,9 +403,7 @@
 					SelectedItem="{Binding CurrentTab}"
 					Visibility="{Binding NarrowMode, Converter={StaticResource !B2V}}">
 					<ListBox.ItemContainerStyle>
-						<Style
-							BasedOn="{StaticResource WpfUtilsSwitchSelectorItemStyle}"
-							TargetType="{x:Type ListBoxItem}">
+						<Style BasedOn="{StaticResource WpfUtilsSwitchSelectorItemStyle}" TargetType="{x:Type ListBoxItem}">
 							<Setter Property="HorizontalContentAlignment" Value="stretch" />
 						</Style>
 					</ListBox.ItemContainerStyle>
@@ -470,19 +423,13 @@
 					</ListBox.ItemTemplate>
 				</wpfUtils:SwitchSelector>
 
-				<tags:TagSelector
-					SelectedTags="{Binding TagFilter.Tags}"
-					Tags="{Binding AvailableTags}">
+				<tags:TagSelector SelectedTags="{Binding TagFilter.Tags}" Tags="{Binding AvailableTags}">
 					<tags:TagSelector.Style>
-						<Style
-							BasedOn="{StaticResource TagSelectorStyle}"
-							TargetType="{x:Type tags:TagSelector}">
+						<Style BasedOn="{StaticResource TagSelectorStyle}" TargetType="{x:Type tags:TagSelector}">
 							<Setter Property="Grid.Column" Value="1" />
 
 							<Style.Triggers>
-								<DataTrigger
-									Binding="{Binding NarrowMode}"
-									Value="True">
+								<DataTrigger Binding="{Binding NarrowMode}" Value="True">
 									<Setter Property="Grid.Column" Value="0" />
 									<Setter Property="Grid.ColumnSpan" Value="3" />
 									<Setter Property="Grid.Row" Value="1" />
@@ -493,9 +440,7 @@
 				</tags:TagSelector>
 
 				<Grid>
-					<TextBox
-						Padding="25,0,3,0"
-						Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" />
+					<TextBox Padding="25,0,3,0" Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" />
 
 					<wpfUtils:IconBlock
 						Margin="8,0,0,0"
@@ -508,9 +453,7 @@
 							<Setter Property="Grid.Column" Value="2" />
 
 							<Style.Triggers>
-								<DataTrigger
-									Binding="{Binding NarrowMode}"
-									Value="True">
+								<DataTrigger Binding="{Binding NarrowMode}" Value="True">
 									<Setter Property="Grid.Column" Value="0" />
 									<Setter Property="Grid.ColumnSpan" Value="3" />
 									<Setter Property="Grid.Row" Value="2" />
@@ -530,9 +473,7 @@
 				<Grid>
 
 					<Grid.Resources>
-						<ControlTemplate
-							x:Key="ListTemplate"
-							TargetType="{x:Type ListBox}">
+						<ControlTemplate x:Key="ListTemplate" TargetType="{x:Type ListBox}">
 							<ScrollViewer
 								Padding="{TemplateBinding Padding}"
 								Background="{DynamicResource BackgroundBrush}"
@@ -550,9 +491,7 @@
 								<ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
 
 								<ScrollViewer.Triggers>
-									<triggers:StoryboardEnumTrigger
-										Binding="{Binding NavigationAnimation, Mode=TwoWay}"
-										Target="{Binding RelativeSource={RelativeSource AncestorType={x:Type ScrollViewer}}}">
+									<triggers:StoryboardEnumTrigger Binding="{Binding NavigationAnimation, Mode=TwoWay}" Target="{Binding RelativeSource={RelativeSource AncestorType={x:Type ScrollViewer}}}">
 										<triggers:StoryboardEnumTrigger.Storyboards>
 
 											<Storyboard x:Name="OpenDir_Out">
@@ -737,11 +676,9 @@
 
 
 								<DataTemplate.Triggers>
-									<DataTrigger
-										Binding="{Binding Entry.Name}"
-										Value="{x:Null}">
-										<Setter TargetName="NameBlock" Property="Text" Value="{Binding EntryId}" />
+									<DataTrigger Binding="{Binding Entry.Name}" Value="{x:Null}">
 										<Setter TargetName="NameBlock" Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
+										<Setter TargetName="NameBlock" Property="Text" Value="{Binding EntryId}" />
 									</DataTrigger>
 								</DataTemplate.Triggers>
 

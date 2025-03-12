@@ -6,9 +6,7 @@
 
 	<DataTemplate DataType="{x:Type local:IconMenu}">
 		<StackPanel>
-			<TextBlock
-				Style="{DynamicResource LeftLabel}"
-				Text="{Binding Name}" />
+			<TextBlock Style="{DynamicResource LeftLabel}" Text="{Binding Name}" />
 
 			<controls:SwitchSelector
 				Height="Auto"
