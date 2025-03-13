@@ -569,8 +569,6 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	{
 		this.NotifyPropertyChanged(nameof(PanelWindow.HasIcon));
 		this.NotifyPropertyChanged(nameof(PanelWindow.HasSubtitle));
-
-		this.RememberState = this.Panel?.RememberWindowState == true;
 	}
 
 	private async Task WindowWatcher()
