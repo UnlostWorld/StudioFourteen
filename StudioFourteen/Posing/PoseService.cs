@@ -272,6 +272,9 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 			return null;
 
 		Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
+		if (character == null)
+			return null;
+
 		return this.FindBone(character, name);
 	}
 
