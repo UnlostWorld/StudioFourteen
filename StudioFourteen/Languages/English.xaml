@@ -46,6 +46,10 @@
 	<sys:String x:Key="LOC_EffectsDesc">Control and place particle effects from abilities, actions, or cutscenes to bring your scene to life.</sys:String>
 	<sys:String x:Key="LOC_Furniture">Furniture</sys:String>
 	<sys:String x:Key="LOC_FurnitureDesc">Shape the world around you to create the perfect background. Move that tree out of the way!</sys:String>
+	<sys:String x:Key="LOC_Animation">Animation</sys:String>
+	<sys:String x:Key="LOC_AnimationDesc">Start, Stop, and Scrub animations from abilities, actions, or cutscenes.</sys:String>
+	<sys:String x:Key="LOC_Sequencer">Animation</sys:String>
+	<sys:String x:Key="LOC_SequencerDesc">Plot out a sequence of actions, camera moves, animations, or poses to get things moving.</sys:String>
 	<sys:String x:Key="LOC_Settings">Settings</sys:String>
 	<sys:String x:Key="LOC_SettingsDesc">Change theme, alter shortcut keys, and tweak the behavior of Studio Fourteen.</sys:String>
 	<sys:String x:Key="LOC_Save">Save</sys:String>

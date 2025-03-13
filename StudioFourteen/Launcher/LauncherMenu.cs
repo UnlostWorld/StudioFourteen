@@ -48,6 +48,9 @@ public partial class LauncherMenu : Control
 		this.AddPanel<Library.LibraryWindow>("fa-Users", "Crowds", false);
 		this.AddPanel<Library.LibraryWindow>("fa-Fire", "Effects", false);
 
+		this.AddPanel<Library.LibraryWindow>("fa-Forward", "Animation", false);
+		this.AddPanel<Library.LibraryWindow>("fa-Stream", "Sequencer", false);
+
 		this.AddPanel<Photos.PhotoWindow>("fa-Image", "Photo");
 		this.AddEntry<SpaLauncherEntry>("fa-ObjectGroup", "Spa");
 
