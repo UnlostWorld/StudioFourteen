@@ -3,19 +3,15 @@
 	<ControlTemplate x:Key="StudioSpinnerTemplate" TargetType="{x:Type ProgressBar}">
 
 		<Grid x:Name="IconGrid">
-			<Grid x:Name="ForegroundArea" Background="{DynamicResource TrimBrush}">
-
-				<Ellipse x:Name="ColorWheel">
-					<Ellipse.Fill>
-						<ImageBrush ImageSource="pack://application:,,,/StudioFourteen;component/Assets/rainbow-wheel.png" Stretch="None">
-
-							<ImageBrush.RelativeTransform>
-								<RotateTransform x:Name="ColorWheelTransform" Angle="0" CenterX="0.5" CenterY="0.5" />
-							</ImageBrush.RelativeTransform>
-						</ImageBrush>
-					</Ellipse.Fill>
-				</Ellipse>
-			</Grid>
+			<Ellipse x:Name="ColorWheel" StrokeThickness="5">
+				<Ellipse.Stroke>
+					<ImageBrush ImageSource="pack://application:,,,/StudioFourteen;component/Assets/rainbow-wheel.png" Stretch="None">
+						<ImageBrush.RelativeTransform>
+							<RotateTransform x:Name="ColorWheelTransform" Angle="0" CenterX="0.5" CenterY="0.5" />
+						</ImageBrush.RelativeTransform>
+					</ImageBrush>
+				</Ellipse.Stroke>
+			</Ellipse>
 		</Grid>
 
 		<ControlTemplate.Triggers>
@@ -46,10 +42,11 @@
 	</ControlTemplate>
 
 	<Style x:Key="Spinner" TargetType="{x:Type ProgressBar}">
-		<Setter Property="Height" Value="64" />
+		<Setter Property="Height" Value="32" />
 		<Setter Property="IsIndeterminate" Value="True" />
+		<Setter Property="Margin" Value="3" />
 		<Setter Property="Template" Value="{StaticResource StudioSpinnerTemplate}" />
-		<Setter Property="Width" Value="64" />
+		<Setter Property="Width" Value="32" />
 	</Style>
 
 </ResourceDictionary>

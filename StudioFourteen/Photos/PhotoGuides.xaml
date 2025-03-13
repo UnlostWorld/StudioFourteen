@@ -149,9 +149,9 @@
 			</Grid>
 
 			<Grid
-				Margin="50"
+				Margin="0,50,0,0"
 				HorizontalAlignment="Center"
-				VerticalAlignment="Bottom"
+				VerticalAlignment="Top"
 				Opacity="{Binding SpinnerOpacity}">
 
 				<Border
@@ -160,18 +160,21 @@
 					Background="{DynamicResource BackgroundBrush}"
 					CornerRadius="6">
 
-					<TextBlock
-						Grid.Row="1"
-						Margin="22,4,6,4"
-						VerticalAlignment="Center"
-						Foreground="{DynamicResource ForegroundLightBrush}"
-						Text="Waiting for ReShade..." />
+					<StackPanel Orientation="Vertical">
+						<ProgressBar
+							Grid.Row="0"
+							Style="{DynamicResource Spinner}" />
+
+						<TextBlock
+							Grid.Row="1"
+							Margin="6,4,6,4"
+							VerticalAlignment="Center"
+							Foreground="{DynamicResource ForegroundBrush}"
+							Text="Waiting for ReShade..." />
+					</StackPanel>
 				</Border>
 
-				<ProgressBar
-					Grid.Row="0"
-					HorizontalAlignment="Left"
-					Style="{DynamicResource Spinner}" />
+
 			</Grid>
 		</Grid>
 
