@@ -53,6 +53,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	private Panel? panel;
 	private bool isDragMoving = false;
 	private bool isMinimizing = false;
+	private Point desiredPosition;
 
 	public PanelWindow()
 	{
@@ -72,7 +73,6 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		this.PreviewMouseUp += this.OnPreviewMouseUp;
 		this.PreviewKeyDown += this.OnPreviewKeyDown;
 		this.PreviewKeyUp += this.OnPreviewKeyUp;
-		this.LocationChanged += this.OnLocationChanged;
 		this.Services.Studio.PropertyChanged += this.OnStudioPropertyChanged;
 		this.Services.Reshade.ReshadeOverlayChanged += this.OnReshadeOverlayChanged;
 		this.Services.Photos.PropertyChanged += this.OnPhotosPropertyChanged;
@@ -152,7 +152,11 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	public Point Position
 	{
 		get => this.Services.Windows.GetPosition(this);
-		set => this.Services.Windows.SetPosition(this, value);
+		set
+		{
+			this.desiredPosition = value;
+			this.Services.Windows.SetPosition(this, value);
+		}
 	}
 
 	public FastObservableCollection<double> ZoomOptions { get; init; } = new()
@@ -368,18 +372,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 		this.panel?.SetIsOpen(this, true, false);
 
-		// sometimes the position doesn't 'stick' if windows decides to move the window,
-		// so set it again after a short delay to ensure its in the right spot.
-		Task.Run(async () =>
-		{
-			await Task.Delay(16);
-			await this.MainThread();
-
-			if (this.SavedPosition != null)
-			{
-				this.Position = (Point)this.SavedPosition;
-			}
-		});
+		this.WindowWatcher().Run();
 	}
 
 	protected virtual void OnClosed()
@@ -463,6 +456,17 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	{
 	}
 
+	protected override void OnLocationChanged(EventArgs e)
+	{
+		base.OnLocationChanged(e);
+
+		if (!this.isDragMoving)
+			return;
+
+		this.SavedPosition = this.Position;
+		this.Position = (Point)this.SavedPosition;
+	}
+
 	partial void OnIsEmbeddedChanged(bool newValue)
 	{
 		this.WindowState = WindowState.Normal;
@@ -542,14 +546,6 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		e.Handled = true;
 	}
 
-	private void OnLocationChanged(object? sender, EventArgs e)
-	{
-		if (!this.isDragMoving)
-			return;
-
-		this.SavedPosition = this.Position;
-	}
-
 	private void OnReshadeOverlayChanged(bool open)
 	{
 		this.NotifyPropertyChanged(nameof(PanelWindow.IsUiVisible));
@@ -577,5 +573,27 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	{
 		this.NotifyPropertyChanged(nameof(PanelWindow.HasIcon));
 		this.NotifyPropertyChanged(nameof(PanelWindow.HasSubtitle));
+	}
+
+	private async Task WindowWatcher()
+	{
+		await Task.Delay(16);
+		await this.MainThread();
+
+		if (this.SavedPosition != null)
+		{
+			this.Position = (Point)this.SavedPosition;
+		}
+
+		while(this.IsOpen)
+		{
+			if (!this.isDragMoving)
+			{
+				this.Position = this.desiredPosition;
+			}
+
+			await Task.Delay(500);
+			await this.MainThread();
+		}
 	}
 }

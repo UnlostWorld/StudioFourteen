@@ -12,8 +12,8 @@
 	mc:Ignorable="d">
 	<panels:PanelWindow.Template>
 		<ControlTemplate TargetType="{x:Type local:LauncherWindow}">
-			<AdornerDecorator x:Name="MainGrid">
-				<Grid HorizontalAlignment="Left" VerticalAlignment="Top">
+			<AdornerDecorator x:Name="MainGrid" HorizontalAlignment="Left" VerticalAlignment="Top">
+				<Grid>
 
 					<local:TaskBarControl Padding="0,45,0,0" />
 
