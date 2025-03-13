@@ -28,19 +28,39 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
-using System.Windows.Media;
 using WpfUtils.Utils;
 
 public partial class SettingsService : ServiceBase
 {
 	private readonly FuncQueue saveQueue;
+	private Configuration current = new Configuration();
 
 	public SettingsService()
 	{
 		this.saveQueue = new(this.SaveImmediate, 500);
 	}
 
-	public Configuration Current { get; private set; } = new Configuration();
+	public delegate void SettingChangedDelegate(string settingName, object? newValue);
+
+	public event SettingChangedDelegate? SettingChanged;
+
+	public Configuration Current
+	{
+		get => this.current;
+
+		private set
+		{
+			if (this.current != null)
+				this.current.PropertyChanged -= this.OnCurrentConfigPropertyChanged;
+
+			this.current = value;
+
+			if (this.current != null)
+			{
+				this.current.PropertyChanged += this.OnCurrentConfigPropertyChanged;
+			}
+		}
+	}
 
 	public override Task Initialize()
 	{
@@ -61,7 +81,6 @@ public partial class SettingsService : ServiceBase
 		if (current != null)
 		{
 			current.Validate();
-			current.PropertyChanged += this.OnCurrentPropertyChanged;
 			this.Current = current;
 		}
 
@@ -92,8 +111,13 @@ public partial class SettingsService : ServiceBase
 		}
 	}
 
-	private void OnCurrentPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	private void OnCurrentConfigPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
+		if (e.PropertyName == null)
+			return;
+
+		object? value = typeof(Configuration).GetProperty(e.PropertyName)?.GetValue(this.Current);
+		this.SettingChanged?.Invoke(e.PropertyName, value);
 		this.Save();
 	}
 
@@ -123,7 +147,7 @@ public partial class SettingsService : ServiceBase
 		[Notify] private bool sendErrorReports = true;
 
 		// Interface
-		[Notify] private bool hideStudioButton = false;
+		[Notify] private bool hideLauncherButton = false;
 		[Notify] private bool openGroupPose = false;
 		[Notify] private bool hideGenitals = true;
 		[Notify] private bool enableGlobalOverlay = true;

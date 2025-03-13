@@ -108,9 +108,9 @@
 				<ToggleButton
 					Grid.Row="0"
 					Margin="1"
-					Content="{DynamicResource LOC_Settings_Interface_HideStudioButton}"
-					IsChecked="{Binding Settings.HideStudioButton}"
-					ToolTip="{DynamicResource LOC_Settings_Interface_HideStudioButton_ToolTip}" />
+					Content="{DynamicResource LOC_Settings_Interface_HideLauncherButton}"
+					IsChecked="{Binding Settings.HideLauncherButton}"
+					ToolTip="{DynamicResource LOC_Settings_Interface_HideLauncherButton_ToolTip}" />
 
 				<ToggleButton
 					Grid.Row="0"

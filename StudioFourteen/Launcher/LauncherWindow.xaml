@@ -53,6 +53,7 @@
 
 					<Button
 						x:Name="LaunchButton"
+						Visibility="Visible"
 						VerticalAlignment="Top"
 						Click="OnLaunchClicked"
 						Style="{DynamicResource LauncherButton}" />
@@ -74,6 +75,9 @@
 			</AdornerDecorator>
 
 			<ControlTemplate.Triggers>
+				<Trigger Property="IsButtonVisible" Value="False">
+					<Setter TargetName="LaunchButton" Property="Visibility" Value="Collapsed" />
+				</Trigger>
 				<Trigger Property="IsRightSide" Value="True">
 					<Setter TargetName="LauncherMenuPopup" Property="HorizontalOffset" Value="-10" />
 				</Trigger>

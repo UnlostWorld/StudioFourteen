@@ -26,8 +26,16 @@ using System;
 [DependencyProperty<bool>("IsMenuOpen")]
 [DependencyProperty<bool>("IsRightSide")]
 [DependencyProperty<bool>("IsBottomSide")]
+[DependencyProperty<bool>("IsButtonVisible")]
 public partial class LauncherWindow : PanelWindow
 {
+	public LauncherWindow()
+	{
+		this.Services.Settings.SettingChanged += this.OnSettingChanged;
+		this.Services.Studio.Opening += this.OnStudioStateChanged;
+		this.Services.Studio.Closing += this.OnStudioStateChanged;
+	}
+
 	public Persistence Persistence { get; init; } = new($"Panel_Launcher");
 
 	public override T? GetPersistence<T>([CallerMemberName] string id = "")
@@ -68,5 +76,18 @@ public partial class LauncherWindow : PanelWindow
 		{
 			this.IsMenuOpen = true;
 		}
+	}
+
+	private void OnSettingChanged(string settingName, object? newValue)
+	{
+		this.OnStudioStateChanged();
+	}
+
+	private void OnStudioStateChanged()
+	{
+		this.Dispatcher.Invoke(() =>
+		{
+			this.IsButtonVisible = !this.Services.Settings.Current.HideLauncherButton || this.Services.Studio.IsOpen;
+		});
 	}
 }
