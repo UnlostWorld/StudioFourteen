@@ -18,10 +18,30 @@ namespace StudioFourteen.Launcher;
 using StudioFourteen.Panels;
 using DependencyPropertyGenerator;
 using System.Windows;
+using System.Windows.Input;
+using StudioFourteen.Settings;
+using System.Runtime.CompilerServices;
 
 [DependencyProperty<bool>("IsMenuOpen")]
 public partial class LauncherWindow : PanelWindow
 {
+	public Persistence Persistence { get; init; } = new($"Panel_Launcher");
+
+	public override T? GetPersistence<T>([CallerMemberName] string id = "")
+		where T : default
+		=> this.Persistence.GetPersistence<T>(id);
+
+	public override void SetPersistence(object? value, [CallerMemberName] string id = "") => this.Persistence.SetPersistence(value, id);
+	public override void SetPersistence(string id, object? value) => this.Persistence.SetPersistence(id, value);
+
+	private void OnTitleMouseDown(object sender, MouseButtonEventArgs e)
+	{
+		if (e.LeftButton == MouseButtonState.Pressed)
+		{
+			this.DragMove();
+		}
+	}
+
 	private void OnLaunchClicked(object sender, RoutedEventArgs e)
 	{
 		if (!this.Services.Studio.IsOpen)

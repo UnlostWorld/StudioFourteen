@@ -16,22 +16,17 @@
 namespace StudioFourteen.Panels;
 
 using DependencyPropertyGenerator;
-using FontAwesome.Sharp;
 using Serilog;
 using StudioFourteen.Input;
 using StudioFourteen.Mvm;
 using StudioFourteen.Plugin;
 using StudioFourteen.Services;
-using StudioFourteen.Utilities;
 using System;
 using System.ComponentModel;
-using System.Diagnostics;
-using System.Numerics;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using WpfUtils;
@@ -43,6 +38,8 @@ using WpfUtils.Windows;
 [DependencyProperty<bool>("CanChangeEmbed", DefaultValue = true)]
 [DependencyProperty<double>("Scale", DefaultValue = 1.0)]
 [DependencyProperty<bool>("IsMaximized", DefaultValue = false)]
+[DependencyProperty<bool>("RememberState", DefaultValue = false)]
+[DependencyProperty<Point>("DefaultPosition", DefaultValueExpression = "new System.Windows.Point(0.5, 0.5)")]
 public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 {
 	public readonly Navigation? Navigation;
@@ -197,6 +194,8 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 				this.Height = this.panel.Height;
 				this.MinWidth = this.panel.MinWidth + 24 + 6;
 				this.MinHeight = this.panel.MinHeight + 24 + 30;
+				this.RememberState = this.panel.RememberWindowState;
+				this.DefaultPosition = this.panel.DefaultPosition;
 
 				if (this.panel.HostStyle != null)
 					this.Style = this.panel.HostStyle;
@@ -335,7 +334,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 		this.Scale = this.SavedScale;
 
-		if (this.SavedPosition != null && this.panel?.RememberWindowState == true)
+		if (this.SavedPosition != null && this.RememberState)
 		{
 			this.Position = this.SavedPosition ?? new Point(0, 0);
 		}
@@ -464,7 +463,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 			return;
 
 		this.SavedPosition = this.Position;
-		this.Position = (Point)this.SavedPosition;
+		this.desiredPosition = this.Position;
 	}
 
 	partial void OnIsEmbeddedChanged(bool newValue)
@@ -511,10 +510,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	{
 		this.Dispatcher.Invoke(() =>
 		{
-			if (this.Panel == null)
-				return;
-
-			if (this.Panel.RememberWindowState == true)
+			if (this.RememberState)
 			{
 				if (this.SavedPosition != null)
 				{
@@ -523,7 +519,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 			}
 			else
 			{
-				this.Position = this.Panel.DefaultPosition;
+				this.Position = this.DefaultPosition;
 			}
 		});
 	}
@@ -573,6 +569,8 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	{
 		this.NotifyPropertyChanged(nameof(PanelWindow.HasIcon));
 		this.NotifyPropertyChanged(nameof(PanelWindow.HasSubtitle));
+
+		this.RememberState = this.Panel?.RememberWindowState == true;
 	}
 
 	private async Task WindowWatcher()
@@ -585,11 +583,16 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 			this.Position = (Point)this.SavedPosition;
 		}
 
-		while(this.IsOpen)
+		while(this.IsOpen && !ServiceManager.ShutdownRequested)
 		{
 			if (!this.isDragMoving)
 			{
 				this.Position = this.desiredPosition;
+
+				if (this.RememberState)
+				{
+					this.SavedPosition = this.Position;
+				}
 			}
 
 			await Task.Delay(500);
