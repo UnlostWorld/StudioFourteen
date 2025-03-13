@@ -21,8 +21,11 @@ using System.Windows;
 using System.Windows.Input;
 using StudioFourteen.Settings;
 using System.Runtime.CompilerServices;
+using System;
 
 [DependencyProperty<bool>("IsMenuOpen")]
+[DependencyProperty<bool>("IsRightSide")]
+[DependencyProperty<bool>("IsBottomSide")]
 public partial class LauncherWindow : PanelWindow
 {
 	public Persistence Persistence { get; init; } = new($"Panel_Launcher");
@@ -33,6 +36,20 @@ public partial class LauncherWindow : PanelWindow
 
 	public override void SetPersistence(object? value, [CallerMemberName] string id = "") => this.Persistence.SetPersistence(value, id);
 	public override void SetPersistence(string id, object? value) => this.Persistence.SetPersistence(id, value);
+
+	protected override void OnLocationChanged(EventArgs e)
+	{
+		base.OnLocationChanged(e);
+		this.IsRightSide = this.Position.X > 0.5;
+		this.IsBottomSide = this.Position.Y > 0.5;
+	}
+
+	protected override void OnOpened()
+	{
+		base.OnOpened();
+		this.IsRightSide = this.Position.X > 0.5;
+		this.IsBottomSide = this.Position.Y > 0.5;
+	}
 
 	private void OnTitleMouseDown(object sender, MouseButtonEventArgs e)
 	{

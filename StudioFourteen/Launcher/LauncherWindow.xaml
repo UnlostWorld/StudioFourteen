@@ -10,20 +10,21 @@
 	Width="64"
 	Height="512"
 	MinWidth="48"
-	RememberState="True"
 	DefaultPosition="0, 0"
+	RememberState="True"
 	SizeToContent="Manual"
 	mc:Ignorable="d">
 	<panels:PanelWindow.Template>
 		<ControlTemplate TargetType="{x:Type local:LauncherWindow}">
-			<AdornerDecorator
-				x:Name="MainGrid"
-				HorizontalAlignment="Center"
-				VerticalAlignment="Top">
+			<AdornerDecorator x:Name="MainGrid">
 				<Grid>
-					<local:TaskBarControl Padding="0,56,0,0" />
+					<local:TaskBarControl
+						x:Name="TaskBar"
+						Padding="0,56,0,0"
+						VerticalAlignment="Top" />
 
 					<Grid
+						x:Name="TitleBar"
 						Width="24"
 						Height="12"
 						Margin="0,52,0,0"
@@ -57,6 +58,7 @@
 						Style="{DynamicResource LauncherButton}" />
 
 					<Popup
+						x:Name="LauncherMenuPopup"
 						HorizontalOffset="50"
 						IsOpen="{Binding IsMenuOpen, Mode=TwoWay, RelativeSource={RelativeSource Mode=TemplatedParent}}"
 						Placement="RelativePoint"
@@ -70,6 +72,21 @@
 
 				</Grid>
 			</AdornerDecorator>
+
+			<ControlTemplate.Triggers>
+				<Trigger Property="IsRightSide" Value="True">
+					<Setter TargetName="LauncherMenuPopup" Property="HorizontalOffset" Value="-10" />
+				</Trigger>
+				<Trigger Property="IsBottomSide" Value="True">
+					<Setter TargetName="LauncherMenuPopup" Property="VerticalOffset" Value="48" />
+					<Setter TargetName="LaunchButton" Property="VerticalAlignment" Value="Bottom" />
+					<Setter TargetName="TaskBar" Property="Padding" Value="0,0,0,56" />
+					<Setter TargetName="TaskBar" Property="VerticalAlignment" Value="Bottom" />
+					<Setter TargetName="TitleBar" Property="Margin" Value="0,0,0,52" />
+					<Setter TargetName="TitleBar" Property="VerticalAlignment" Value="Bottom" />
+				</Trigger>
+			</ControlTemplate.Triggers>
+
 		</ControlTemplate>
 	</panels:PanelWindow.Template>
 </panels:PanelWindow>
