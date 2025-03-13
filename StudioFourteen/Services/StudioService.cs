@@ -48,24 +48,30 @@ public partial class StudioService : ServiceBase
 	{
 		await base.Start();
 
-		/*#if DEBUG
+		#if DEBUG
 		{
-			if (this.Settings.WasStudioOpen)
+			_ = Task.Run(async () =>
 			{
-				_ = Task.Run(async () =>
-				{
-					await Task.Delay(2000);
-					this.Log.Information("Restoring studio state");
-					this.OpenStudio();
-				});
-			}
+				await Task.Delay(2000);
+
+				if (!Debugger.IsAttached)
+					return;
+
+				this.OpenStudio();
+
+				while (Debugger.IsAttached)
+					await Task.Delay(1000);
+
+				this.CloseStudio();
+				this.Services.Dispose();
+				await this.Services.Stop();
+			});
 		}
-		#endif*/
+		#endif
 	}
 
 	public override Task Stop()
 	{
-		this.Settings.WasStudioOpen = this.isOpen;
 		SpaWindow.CloseSpa();
 		return base.Stop();
 	}

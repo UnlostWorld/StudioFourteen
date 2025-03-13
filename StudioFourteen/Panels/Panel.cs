@@ -135,22 +135,20 @@ public partial class Panel : ContentControl, IAutoNotify
 
 	protected virtual void OnOpened()
 	{
-		this.Services.Panels.OnPanelOpened(this);
-
 		if (DalamudServices.Framework != null)
 			DalamudServices.Framework.Update += this.OnFrameworkUpdateSafe;
 
 		AutoPropertyNotifyService.Register(this);
+		this.Services.Panels.OnPanelOpened(this);
 	}
 
 	protected virtual void OnClosed()
 	{
-		this.Services.Panels.OnPanelClosed(this, this.isMinimized);
-
 		if (DalamudServices.Framework != null)
 			DalamudServices.Framework.Update -= this.OnFrameworkUpdateSafe;
 
 		AutoPropertyNotifyService.Remove(this);
+		this.Services.Panels.OnPanelClosed(this, this.isMinimized);
 	}
 
 	protected virtual void OnFrameworkUpdate(IFramework framework)
@@ -159,6 +157,14 @@ public partial class Panel : ContentControl, IAutoNotify
 
 	private void OnFrameworkUpdateSafe(IFramework framework)
 	{
+		if (ServiceManager.ShutdownRequested)
+		{
+			if (DalamudServices.Framework != null)
+				DalamudServices.Framework.Update -= this.OnFrameworkUpdateSafe;
+
+			return;
+		}
+
 		if (!this.Services.Studio.IsOpen)
 			return;
 
