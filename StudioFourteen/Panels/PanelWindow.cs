@@ -211,6 +211,15 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 				this.NotifyPropertyChanged(nameof(this.IsUiVisible));
 				this.NotifyPropertyChanged(nameof(this.HasIcon));
 				this.NotifyPropertyChanged(nameof(this.HasSubtitle));
+
+				if (this.SavedPosition != null && this.RememberState)
+				{
+					this.Position = this.SavedPosition ?? new Point(0, 0);
+				}
+				else
+				{
+					this.Position = this.panel.DefaultPosition;
+				}
 			}
 		}
 	}
