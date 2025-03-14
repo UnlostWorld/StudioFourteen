@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Services;
 
+using System.Numerics;
 using Dalamud.Hooking;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
@@ -42,6 +43,8 @@ public partial class GroupPoseService : ServiceBase
 
 	public event OnStateChangedDelegate? StateChanged;
 	public event OnStateChangedDelegate? SettingsStateChanged;
+
+	public Vector3 EnterPosition { get; private set; }
 
 	public unsafe void SetGroupPose(bool state)
 	{
@@ -154,6 +157,8 @@ public partial class GroupPoseService : ServiceBase
 	private unsafe bool EnterDetour(UIModule* uiModule)
 	{
 		bool didEnter = this.enterHook?.Original.Invoke(uiModule) ?? false;
+
+		this.EnterPosition = this.Services.Target.GetCharacter(0)->DrawObject->Position;
 
 		if (didEnter)
 			this.SetState(true);

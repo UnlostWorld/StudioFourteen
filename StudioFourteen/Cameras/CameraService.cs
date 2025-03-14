@@ -237,6 +237,7 @@ public class CameraService : ServiceBase
 		if (newState)
 		{
 			this.Current = this.Cameras[0];
+			this.state.Position = this.Services.GroupPose.EnterPosition + new Vector3(0, 1.5f, 0);
 		}
 		else
 		{
