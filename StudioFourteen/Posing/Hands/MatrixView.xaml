@@ -18,21 +18,6 @@
 
 	<Grid>
 		<StackPanel>
-			
-
-					<TextBlock
-						Grid.Row="3"
-						Grid.Column="2"
-						Margin="16,0,3,0"
-						Style="{DynamicResource Label}"
-						Text="{DynamicResource LOC_Pose_Wrists}" />
-					<StackPanel
-						Grid.Row="3"
-						Grid.Column="3"
-						Orientation="Horizontal">
-						<local:BoneView BoneName="n_hte_l" Label="L" />
-						<local:BoneView BoneName="n_hte_r" Label="R" />
-					</StackPanel>
 
 			<GroupBox Header="{DynamicResource LOC_PoseMatrix_LeftHandCategory}">
 				<Grid>
@@ -43,17 +28,10 @@
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 
 					<Grid.RowDefinitions>
+						<RowDefinition />
 						<RowDefinition />
 						<RowDefinition />
 
@@ -63,47 +41,60 @@
 						Grid.Column="0"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Hands" />
+						Text="{DynamicResource LOC_Pose_Wrist}" />
 					<StackPanel
 						Grid.Row="0"
-						Grid.Column="1"
-						Orientation="Horizontal">
-						<local:BoneView BoneName="j_te_l" />
+						Grid.Column="1">
+						<local:BoneView BoneName="n_hte_l" />
 					</StackPanel>
-
+					
 					<TextBlock
 						Grid.Column="2"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Weapons" />
+						Text="Pose_Hands" />
 					<StackPanel
 						Grid.Row="0"
 						Grid.Column="3"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="n_buki_l" />
+						<local:BoneView BoneName="j_te_l" />
 					</StackPanel>
 
 					<TextBlock
 						Grid.Column="4"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Thumb" />
+						Text="Pose_Weapons" />
 					<StackPanel
 						Grid.Row="0"
 						Grid.Column="5"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="j_oya_a_l" Label="1" />
-						<local:BoneView BoneName=" " Label="2" />
+						<local:BoneView BoneName="n_buki_l" />
 					</StackPanel>
 
 					<TextBlock
-						Grid.Column="6"
+						Grid.Column="0"
+						Grid.Row="1"
+						Margin="16,0,3,0"
+						Style="{DynamicResource Label}"
+						Text="Pose_Thumb" />
+					<StackPanel
+						Grid.Row="1"
+						Grid.Column="1"
+						Orientation="Horizontal">
+						<local:BoneView BoneName="j_oya_a_l" Label="1" />
+						<local:BoneView BoneName="j_oya_b_l" Label="2" />
+					</StackPanel>
+
+					<TextBlock
+						Grid.Column="2"
+						Grid.Row="1"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
 						Text="Pose_Index" />
 					<StackPanel
-						Grid.Row="0"
-						Grid.Column="7"
+						Grid.Row="1"
+						Grid.Column="3"
 						Orientation="Horizontal">
 						<local:BoneView BoneName="j_hito_a_l" Label="1" />
 						<local:BoneView BoneName="j_hito_b_l" Label="2" />
@@ -112,28 +103,28 @@
 
 					<TextBlock
 						Grid.Row="1"
-						Grid.Column="0"
+						Grid.Column="4"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
 						Text="Pose_Middle" />
 					<StackPanel
 						Grid.Row="1"
-						Grid.Column="1"
+						Grid.Column="5"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="j_naka_a_r" Label="1" />
-						<local:BoneView BoneName="j_naka_b_r" Label="2" />
+						<local:BoneView BoneName="j_naka_a_l" Label="1" />
+						<local:BoneView BoneName="j_naka_b_l" Label="2" />
 						<local:BoneView BoneName="iv_naka_c_l" Label="3" />
 					</StackPanel>
 
 					<TextBlock
-						Grid.Row="1"
-						Grid.Column="2"
+						Grid.Row="2"
+						Grid.Column="0"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
 						Text="Pose_Ring" />
 					<StackPanel
-						Grid.Row="1"
-						Grid.Column="3"
+						Grid.Row="2"
+						Grid.Column="1"
 						Orientation="Horizontal">
 						<local:BoneView BoneName="j_kusu_a_l" Label="1" />
 						<local:BoneView BoneName="j_kusu_b_l" Label="2" />
@@ -141,14 +132,14 @@
 					</StackPanel>
 
 					<TextBlock
-						Grid.Row="1"
-						Grid.Column="4"
+						Grid.Row="2"
+						Grid.Column="2"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
 						Text="Pose_Pinky" />
 					<StackPanel
-						Grid.Row="1"
-						Grid.Column="5"
+						Grid.Row="2"
+						Grid.Column="3"
 						Orientation="Horizontal">
 						<local:BoneView BoneName="j_ko_a_l" Label="1" />
 						<local:BoneView BoneName="j_ko_b_l" Label="2" />
@@ -159,17 +150,8 @@
 			</GroupBox>
 
 			<GroupBox Header="{DynamicResource LOC_PoseMatrix_RightHandCategory}">
-
 				<Grid>
 					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="Auto" />
@@ -181,50 +163,68 @@
 					<Grid.RowDefinitions>
 						<RowDefinition />
 						<RowDefinition />
+						<RowDefinition />
+
 					</Grid.RowDefinitions>
 
 					<TextBlock
 						Grid.Column="0"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Hands" />
-					<StackPanel Grid.Column="1" Orientation="Horizontal">
-						<local:BoneView BoneName="j_te_r" />
+						Text="{DynamicResource LOC_Pose_Wrist}" />
+					<StackPanel
+						Grid.Row="0"
+						Grid.Column="1">
+						<local:BoneView BoneName="n_hte_r" />
 					</StackPanel>
-
+					
 					<TextBlock
 						Grid.Column="2"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Weapons" />
+						Text="Pose_Hands" />
 					<StackPanel
 						Grid.Row="0"
 						Grid.Column="3"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="n_buki_r" />
+						<local:BoneView BoneName="j_te_r" />
 					</StackPanel>
 
 					<TextBlock
 						Grid.Column="4"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Thumb" />
+						Text="Pose_Weapons" />
 					<StackPanel
 						Grid.Row="0"
 						Grid.Column="5"
+						Orientation="Horizontal">
+						<local:BoneView BoneName="n_buki_r" />
+					</StackPanel>
+
+					<TextBlock
+						Grid.Column="0"
+						Grid.Row="1"
+						Margin="16,0,3,0"
+						Style="{DynamicResource Label}"
+						Text="Pose_Thumb" />
+					<StackPanel
+						Grid.Row="1"
+						Grid.Column="1"
 						Orientation="Horizontal">
 						<local:BoneView BoneName="j_oya_a_r" Label="1" />
 						<local:BoneView BoneName="j_oya_b_r" Label="2" />
 					</StackPanel>
 
 					<TextBlock
-						Grid.Column="6"
+						Grid.Column="2"
+						Grid.Row="1"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
 						Text="Pose_Index" />
 					<StackPanel
-						Grid.Row="0"
-						Grid.Column="7"
+						Grid.Row="1"
+						Grid.Column="3"
 						Orientation="Horizontal">
 						<local:BoneView BoneName="j_hito_a_r" Label="1" />
 						<local:BoneView BoneName="j_hito_b_r" Label="2" />
@@ -233,29 +233,28 @@
 
 					<TextBlock
 						Grid.Row="1"
-						Grid.Column="0"
+						Grid.Column="4"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
 						Text="Pose_Middle" />
 					<StackPanel
 						Grid.Row="1"
-						Grid.Column="1"
+						Grid.Column="5"
 						Orientation="Horizontal">
 						<local:BoneView BoneName="j_naka_a_r" Label="1" />
 						<local:BoneView BoneName="j_naka_b_r" Label="2" />
 						<local:BoneView BoneName="iv_naka_c_r" Label="3" />
 					</StackPanel>
 
-
 					<TextBlock
-						Grid.Row="1"
-						Grid.Column="2"
+						Grid.Row="2"
+						Grid.Column="0"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
 						Text="Pose_Ring" />
 					<StackPanel
-						Grid.Row="1"
-						Grid.Column="3"
+						Grid.Row="2"
+						Grid.Column="1"
 						Orientation="Horizontal">
 						<local:BoneView BoneName="j_kusu_a_r" Label="1" />
 						<local:BoneView BoneName="j_kusu_b_r" Label="2" />
@@ -263,19 +262,20 @@
 					</StackPanel>
 
 					<TextBlock
-						Grid.Row="1"
-						Grid.Column="4"
+						Grid.Row="2"
+						Grid.Column="2"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
 						Text="Pose_Pinky" />
 					<StackPanel
-						Grid.Row="1"
-						Grid.Column="5"
+						Grid.Row="2"
+						Grid.Column="3"
 						Orientation="Horizontal">
 						<local:BoneView BoneName="j_ko_a_r" Label="1" />
 						<local:BoneView BoneName="j_ko_b_r" Label="2" />
 						<local:BoneView BoneName="iv_ko_c_r" Label="3" />
 					</StackPanel>
+
 				</Grid>
 			</GroupBox>
 		</StackPanel>

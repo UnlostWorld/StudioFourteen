@@ -362,7 +362,7 @@
 	<sys:String x:Key="LOC_Pose_Couters">Couters</sys:String>
 	<sys:String x:Key="LOC_Pose_Elbows">Elbows</sys:String>
 	<sys:String x:Key="LOC_Pose_Forearms">Forearms</sys:String>
-	<sys:String x:Key="LOC_Pose_Wrists">Wrists</sys:String>
+	<sys:String x:Key="LOC_Pose_Wrist">Wrist</sys:String>
 	<sys:String x:Key="LOC_Pose_Custom_Breasts">Custom Breasts</sys:String>
 	<sys:String x:Key="LOC_Pose_Custom_Biceps">Custom Biceps</sys:String>
 	<sys:String x:Key="LOC_Pose_Penis">Penis</sys:String>
