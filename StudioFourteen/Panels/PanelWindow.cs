@@ -551,17 +551,17 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 	private void OnReshadeOverlayChanged(bool open)
 	{
-			this.UpdateUiVisible();
+		this.UpdateUiVisible();
 	}
 
 	private void OnGameUiToggled(object? sender, bool e)
 	{
-			this.UpdateUiVisible();
+		this.UpdateUiVisible();
 	}
 
 	private void OnStudioPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
-			this.UpdateUiVisible();
+		this.UpdateUiVisible();
 	}
 
 	private void OnPhotosPropertyChanged(object? sender, PropertyChangedEventArgs e)
@@ -581,8 +581,6 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		{
 			this.IsUiVisible = this.GetIsUiVisible();
 			this.IsUiVisibleAndOpen = this.GetIsUiVisibleAndOpen();
-
-			this.Log.Information($">> {this.IsUiVisibleAndOpen}");
 		});
 	}
 
