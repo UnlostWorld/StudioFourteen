@@ -587,7 +587,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 		if (this.SavedPosition != null)
 		{
-			this.Position = (Point)this.SavedPosition;
+			this.Services.Windows.SetPosition(this, (Point)this.SavedPosition, true);
 		}
 
 		while(this.IsOpen && !ServiceManager.ShutdownRequested)
