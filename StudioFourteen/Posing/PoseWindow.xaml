@@ -6,6 +6,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:pose="clr-namespace:StudioFourteen.Posing"
+	xmlns:body="clr-namespace:StudioFourteen.Posing.Body"
 	xmlns:windows="clr-namespace:StudioFourteen.Panels"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="{DynamicResource LOC_Pose}"
@@ -59,68 +60,80 @@
 						</MultiBinding>
 					</TabItem.Visibility>
 
-					<Grid>
-						<Grid.ColumnDefinitions>
-							<ColumnDefinition Width="2*" />
-							<ColumnDefinition Width="2*" />
-							<ColumnDefinition Width="1*" />
-						</Grid.ColumnDefinitions>
+					<TabControl>
+						<TabItem Header="Simple">
 
-						<Rectangle
-							Grid.RowSpan="3"
-							Grid.ColumnSpan="3"
-							Fill="Transparent"
-							MouseDown="OnBackgroundMouseDown" />
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="2*" />
+									<ColumnDefinition Width="2*" />
+									<ColumnDefinition Width="1*" />
+								</Grid.ColumnDefinitions>
 
-						<pose:SkeletonView
-							x:Name="BodyView"
-							Grid.RowSpan="3"
-							Grid.Column="0"
-							Margin="-40,-45,-40,0"
-							FlipSides="{Binding FlipSides}"
-							ObjectTableIndex="{Binding TargetObjectIndex}"
-							ViewDefinition="{Binding Services.Data.SkeletonViews[Body]}" />
+								<Rectangle
+									Grid.RowSpan="3"
+									Grid.ColumnSpan="3"
+									Fill="Transparent"
+									MouseDown="OnBackgroundMouseDown" />
 
-						<pose:SkeletonView
-							x:Name="ClothesView"
-							Grid.RowSpan="3"
-							Grid.Column="1"
-							Margin="-40,-45,-40,0"
-							FlipSides="{Binding FlipSides}"
-							ObjectTableIndex="{Binding TargetObjectIndex}"
-							ViewDefinition="{Binding Services.Data.SkeletonViews[Clothes]}" />
+								<pose:SkeletonView
+									x:Name="BodyView"
+									Grid.RowSpan="3"
+									Grid.Column="0"
+									Margin="-40,-45,-40,0"
+									FlipSides="{Binding FlipSides}"
+									ObjectTableIndex="{Binding TargetObjectIndex}"
+									ViewDefinition="{Binding Services.Data.SkeletonViews[Body]}" />
 
-						<Grid Grid.Column="2" Margin="0,10">
-							<Grid.RowDefinitions>
-								<RowDefinition />
-								<RowDefinition />
-								<RowDefinition />
-							</Grid.RowDefinitions>
+								<pose:SkeletonView
+									x:Name="ClothesView"
+									Grid.RowSpan="3"
+									Grid.Column="1"
+									Margin="-40,-45,-40,0"
+									FlipSides="{Binding FlipSides}"
+									ObjectTableIndex="{Binding TargetObjectIndex}"
+									ViewDefinition="{Binding Services.Data.SkeletonViews[Clothes]}" />
 
-							<pose:SkeletonView
-								x:Name="TailView"
-								Grid.Row="0"
-								FlipSides="{Binding FlipSides}"
-								ObjectTableIndex="{Binding TargetObjectIndex}"
-								ViewDefinition="{Binding Services.Data.SkeletonViews[Tail]}" />
+								<Grid Grid.Column="2" Margin="0,10">
+									<Grid.RowDefinitions>
+										<RowDefinition />
+										<RowDefinition />
+										<RowDefinition />
+									</Grid.RowDefinitions>
 
-							<pose:SkeletonView
-								x:Name="PenisView"
-								Grid.Row="1"
-								FlipSides="{Binding FlipSides}"
-								Hide="{Binding Services.Settings.Current.HideGenitals}"
-								ObjectTableIndex="{Binding TargetObjectIndex}"
-								ViewDefinition="{Binding Services.Data.SkeletonViews[Penis]}" />
+									<pose:SkeletonView
+										x:Name="TailView"
+										Grid.Row="0"
+										FlipSides="{Binding FlipSides}"
+										ObjectTableIndex="{Binding TargetObjectIndex}"
+										ViewDefinition="{Binding Services.Data.SkeletonViews[Tail]}" />
 
-							<pose:SkeletonView
-								x:Name="VaginaView"
-								Grid.Row="2"
-								FlipSides="{Binding FlipSides}"
-								Hide="{Binding Services.Settings.Current.HideGenitals}"
-								ObjectTableIndex="{Binding TargetObjectIndex}"
-								ViewDefinition="{Binding Services.Data.SkeletonViews[Vagina]}" />
-						</Grid>
-					</Grid>
+									<pose:SkeletonView
+										x:Name="PenisView"
+										Grid.Row="1"
+										FlipSides="{Binding FlipSides}"
+										Hide="{Binding Services.Settings.Current.HideGenitals}"
+										ObjectTableIndex="{Binding TargetObjectIndex}"
+										ViewDefinition="{Binding Services.Data.SkeletonViews[Penis]}" />
+
+									<pose:SkeletonView
+										x:Name="VaginaView"
+										Grid.Row="2"
+										FlipSides="{Binding FlipSides}"
+										Hide="{Binding Services.Settings.Current.HideGenitals}"
+										ObjectTableIndex="{Binding TargetObjectIndex}"
+										ViewDefinition="{Binding Services.Data.SkeletonViews[Vagina]}" />
+								</Grid>
+							</Grid>
+						</TabItem>
+
+						<TabItem Header="Matrix">
+							<ScrollViewer>
+								<body:MatrixView />
+							</ScrollViewer>
+						</TabItem>
+
+					</TabControl>
 				</TabItem>
 
 				<TabItem>
@@ -244,14 +257,6 @@
 							ObjectTableIndex="{Binding TargetObjectIndex}"
 							ViewDefinition="{Binding Services.Data.SkeletonViews[DiabolosWings]}" />
 					</Grid>
-				</TabItem>
-				<TabItem>
-					<TabItem.Header>
-						<wpfUtils:IconBlock Margin="12" Icon="GripHorizontal" />
-					</TabItem.Header>
-					<ScrollViewer>
-						<pose:MatrixView />
-					</ScrollViewer>
 				</TabItem>
 			</TabControl>
 		</Grid>
