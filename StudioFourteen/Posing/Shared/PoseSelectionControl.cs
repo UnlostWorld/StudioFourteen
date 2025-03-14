@@ -13,22 +13,22 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Posing;
+namespace StudioFourteen.Posing.Shared;
 
 using System.Windows.Controls;
 using DependencyPropertyGenerator;
 using StudioFourteen.Selection;
 
-[DependencyProperty<string>("BoneName")]
+[DependencyProperty<string>("SelectionName")]
 [DependencyProperty<string>("Label")]
 [DependencyProperty<bool>("IsMouseHover")]
-public partial class BoneView : Control
+public partial class PoseSelectionControl : Control
 {
 	public SelectionBase? Selection;
 
 	public string? SafeName { get; private set; }
 
-	partial void OnBoneNameChanged(string? newValue)
+	partial void OnSelectionNameChanged(string? newValue)
 	{
 		this.SafeName = newValue;
 	}

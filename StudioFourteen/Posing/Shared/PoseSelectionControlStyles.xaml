@@ -1,10 +1,10 @@
 ﻿<ResourceDictionary
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:local="clr-namespace:StudioFourteen.Posing"
+	xmlns:local="clr-namespace:StudioFourteen.Posing.Shared"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls">
 
-	<ControlTemplate x:Key="BoneViewTemplate" TargetType="{x:Type local:BoneView}">
+	<ControlTemplate x:Key="PoseSelectionControlTemplate" TargetType="{x:Type local:PoseSelectionControl}">
 		<Grid>
 			<Ellipse Fill="{TemplateBinding Background}" />
 
@@ -50,12 +50,12 @@
 		</ControlTemplate.Triggers>
 	</ControlTemplate>
 
-	<Style TargetType="{x:Type local:BoneView}">
+	<Style TargetType="{x:Type local:PoseSelectionControl}">
 		<Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
 		<Setter Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
 		<Setter Property="Height" Value="15" />
 		<Setter Property="Margin" Value="2" />
-		<Setter Property="Template" Value="{StaticResource BoneViewTemplate}" />
+		<Setter Property="Template" Value="{StaticResource PoseSelectionControlTemplate}" />
 		<Setter Property="Width" Value="15" />
 	</Style>
 

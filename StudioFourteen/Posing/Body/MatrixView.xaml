@@ -4,9 +4,8 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=WpfUtils"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:local="clr-namespace:StudioFourteen.Posing"
-	xmlns:shared="clr-namespace:StudioFourteen.Posing.Shared"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:shared="clr-namespace:StudioFourteen.Posing.Shared"
 	d:DesignHeight="450"
 	d:DesignWidth="800"
 	mc:Ignorable="d">
@@ -24,25 +23,25 @@
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="Auto" />
 						<ColumnDefinition Width="Auto" />
-
 					</Grid.ColumnDefinitions>
+
 					<Grid.RowDefinitions>
 						<RowDefinition Height="Auto" />
 						<RowDefinition Height="Auto" />
 					</Grid.RowDefinitions>
 
-						<TextBlock
+					<TextBlock
 						Grid.Row="0"
 						Grid.Column="0"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
 						Text="{DynamicResource LOC_Bone_j_kao}" />
-					<local:BoneView
+					<shared:PoseSelectionControl
 						Grid.Row="0"
 						Grid.Column="1"
-						BoneName="j_kao" />
+						SelectionName="j_kao" />
 
-						<TextBlock
+					<TextBlock
 						Grid.Row="0"
 						Grid.Column="2"
 						Margin="16,0,3,0"
@@ -53,24 +52,24 @@
 						Grid.Row="0"
 						Grid.Column="3"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="j_zera_a_l" Label="L1" />
-						<local:BoneView BoneName="j_zera_b_l" Label="L2" />
-						<local:BoneView BoneName="j_zera_a_r" Label="R1" />
-						<local:BoneView BoneName="j_zera_b_r" Label="R2" />
-						<local:BoneView BoneName="j_zerb_a_l" Label="L1" />
-						<local:BoneView BoneName="j_zerb_b_l" Label="L2" />
-						<local:BoneView BoneName="j_zerb_a_r" Label="R1" />
-						<local:BoneView BoneName="j_zerb_b_r" Label="R2" />
-						<local:BoneView BoneName="j_zerc_a_l" Label="L1" />
-						<local:BoneView BoneName="j_zerc_b_l" Label="L2" />
-						<local:BoneView BoneName="j_zerc_a_r" Label="R1" />
-						<local:BoneView BoneName="j_zerc_b_r" Label="R2" />
-						<local:BoneView BoneName="j_zerd_a_l" Label="L1" />
-						<local:BoneView BoneName="j_zerd_b_l" Label="L2" />
-						<local:BoneView BoneName="j_zerd_a_r" Label="R1" />
-						<local:BoneView BoneName="j_zerd_b_r" Label="R2" />
-						<local:BoneView BoneName="j_mimi_l" Label="L" />
-						<local:BoneView BoneName="j_mimi_r" Label="R" />
+						<shared:PoseSelectionControl Label="L1" SelectionName="j_zera_a_l" />
+						<shared:PoseSelectionControl Label="L2" SelectionName="j_zera_b_l" />
+						<shared:PoseSelectionControl Label="R1" SelectionName="j_zera_a_r" />
+						<shared:PoseSelectionControl Label="R2" SelectionName="j_zera_b_r" />
+						<shared:PoseSelectionControl Label="L1" SelectionName="j_zerb_a_l" />
+						<shared:PoseSelectionControl Label="L2" SelectionName="j_zerb_b_l" />
+						<shared:PoseSelectionControl Label="R1" SelectionName="j_zerb_a_r" />
+						<shared:PoseSelectionControl Label="R2" SelectionName="j_zerb_b_r" />
+						<shared:PoseSelectionControl Label="L1" SelectionName="j_zerc_a_l" />
+						<shared:PoseSelectionControl Label="L2" SelectionName="j_zerc_b_l" />
+						<shared:PoseSelectionControl Label="R1" SelectionName="j_zerc_a_r" />
+						<shared:PoseSelectionControl Label="R2" SelectionName="j_zerc_b_r" />
+						<shared:PoseSelectionControl Label="L1" SelectionName="j_zerd_a_l" />
+						<shared:PoseSelectionControl Label="L2" SelectionName="j_zerd_b_l" />
+						<shared:PoseSelectionControl Label="R1" SelectionName="j_zerd_a_r" />
+						<shared:PoseSelectionControl Label="R2" SelectionName="j_zerd_b_r" />
+						<shared:PoseSelectionControl Label="L" SelectionName="j_mimi_l" />
+						<shared:PoseSelectionControl Label="R" SelectionName="j_mimi_r" />
 
 					</StackPanel>
 
@@ -81,26 +80,26 @@
 						Text="{DynamicResource LOC_Pose_Earrings}" />
 
 					<StackPanel Grid.Column="5" Orientation="Horizontal">
-						<local:BoneView BoneName="n_ear_a_l" Label="L1" />
-						<local:BoneView BoneName="n_ear_b_l" Label="L2" />
-						<local:BoneView BoneName="n_ear_a_r" Label="R1" />
-						<local:BoneView BoneName="n_ear_b_r" Label="R2" />
+						<shared:PoseSelectionControl Label="L1" SelectionName="n_ear_a_l" />
+						<shared:PoseSelectionControl Label="L2" SelectionName="n_ear_b_l" />
+						<shared:PoseSelectionControl Label="R1" SelectionName="n_ear_a_r" />
+						<shared:PoseSelectionControl Label="R2" SelectionName="n_ear_b_r" />
 					</StackPanel>
 
 					<TextBlock
-						Grid.Column="0"
 						Grid.Row="1"
+						Grid.Column="0"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
 						Text="{DynamicResource LOC_Pose_Hair}" />
 					<StackPanel
-					Grid.Column="1"
-					Grid.Row="1"
-					Orientation="Horizontal">
-						<local:BoneView BoneName="j_kami_f_l" Label="L" />
-						<local:BoneView BoneName="j_kami_f_r" Label="R" />
-						<local:BoneView BoneName="j_kami_a" Label="1" />
-						<local:BoneView BoneName="j_kami_b" Label="2" />
+						Grid.Row="1"
+						Grid.Column="1"
+						Orientation="Horizontal">
+						<shared:PoseSelectionControl Label="L" SelectionName="j_kami_f_l" />
+						<shared:PoseSelectionControl Label="R" SelectionName="j_kami_f_r" />
+						<shared:PoseSelectionControl Label="1" SelectionName="j_kami_a" />
+						<shared:PoseSelectionControl Label="2" SelectionName="j_kami_b" />
 					</StackPanel>
 
 					<!--<ItemsControl Grid.Column="7" ItemsSource="{Binding HairBones}">
@@ -116,7 +115,7 @@
 
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
-								<local:BoneView />
+								<shared:PoseSelectionControl />
 							</DataTemplate>
 						</ItemsControl.ItemTemplate>
 					</ItemsControl>-->
@@ -155,10 +154,10 @@
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
 						Text="{DynamicResource LOC_Pose_Neck}" />
-					<local:BoneView
+					<shared:PoseSelectionControl
 						Grid.Row="0"
 						Grid.Column="1"
-						BoneName="j_kubi" />
+						SelectionName="j_kubi" />
 
 					<TextBlock
 						Grid.Row="0"
@@ -166,21 +165,21 @@
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
 						Text="{DynamicResource LOC_Pose_Cervical}" />
-					<local:BoneView
+					<shared:PoseSelectionControl
 						Grid.Row="0"
 						Grid.Column="3"
-						BoneName="j_sebo_c" />
+						SelectionName="j_sebo_c" />
 
 					<TextBlock
 						Grid.Row="0"
 						Grid.Column="4"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="{DynamicResource LOC_Pose_Thoracic}"/>
-					<local:BoneView
+						Text="{DynamicResource LOC_Pose_Thoracic}" />
+					<shared:PoseSelectionControl
 						Grid.Row="0"
 						Grid.Column="5"
-						BoneName="j_sebo_b" />
+						SelectionName="j_sebo_b" />
 
 					<TextBlock
 						Grid.Row="0"
@@ -188,10 +187,10 @@
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
 						Text="{DynamicResource LOC_Pose_Lumbar}" />
-					<local:BoneView
+					<shared:PoseSelectionControl
 						Grid.Row="0"
 						Grid.Column="7"
-						BoneName="j_sebo_a" />
+						SelectionName="j_sebo_a" />
 
 					<TextBlock
 						Grid.Row="0"
@@ -199,10 +198,10 @@
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
 						Text="{DynamicResource LOC_Pose_OtherAbdomen}" />
-					<local:BoneView
+					<shared:PoseSelectionControl
 						Grid.Row="0"
 						Grid.Column="9"
-						BoneName="n_hara" />
+						SelectionName="n_hara" />
 
 					<TextBlock
 						Grid.Row="1"
@@ -214,8 +213,8 @@
 						Grid.Row="1"
 						Grid.Column="1"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="j_buki_sebo_l" Label="L" />
-						<local:BoneView BoneName="j_buki_sebo_r" Label="R" />
+						<shared:PoseSelectionControl Label="L" SelectionName="j_buki_sebo_l" />
+						<shared:PoseSelectionControl Label="R" SelectionName="j_buki_sebo_r" />
 					</StackPanel>
 
 					<TextBlock
@@ -228,8 +227,8 @@
 						Grid.Row="1"
 						Grid.Column="3"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="j_sako_l" Label="L" />
-						<local:BoneView BoneName="j_sako_r" Label="R" />
+						<shared:PoseSelectionControl Label="L" SelectionName="j_sako_l" />
+						<shared:PoseSelectionControl Label="R" SelectionName="j_sako_r" />
 					</StackPanel>
 
 					<TextBlock
@@ -242,8 +241,8 @@
 						Grid.Row="1"
 						Grid.Column="5"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="j_mune_l" Label="L" />
-						<local:BoneView BoneName="j_mune_r" Label="R" />
+						<shared:PoseSelectionControl Label="L" SelectionName="j_mune_l" />
+						<shared:PoseSelectionControl Label="R" SelectionName="j_mune_r" />
 					</StackPanel>
 
 					<TextBlock
@@ -256,8 +255,8 @@
 						Grid.Row="1"
 						Grid.Column="7"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="n_kataarmor_l" Label="L" />
-						<local:BoneView BoneName="n_kataarmor_r" Label="R" />
+						<shared:PoseSelectionControl Label="L" SelectionName="n_kataarmor_l" />
+						<shared:PoseSelectionControl Label="R" SelectionName="n_kataarmor_r" />
 					</StackPanel>
 
 					<TextBlock
@@ -270,8 +269,8 @@
 						Grid.Row="2"
 						Grid.Column="1"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="ShieldLeft" Label="L" />
-						<local:BoneView BoneName="ShieldRight" Label="R" />
+						<shared:PoseSelectionControl Label="L" SelectionName="ShieldLeft" />
+						<shared:PoseSelectionControl Label="R" SelectionName="ShieldRight" />
 					</StackPanel>
 
 					<TextBlock
@@ -284,8 +283,8 @@
 						Grid.Row="2"
 						Grid.Column="3"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="n_buki_tate_l" Label="L" />
-						<local:BoneView BoneName="n_buki_tate_r" Label="R" />
+						<shared:PoseSelectionControl Label="L" SelectionName="n_buki_tate_l" />
+						<shared:PoseSelectionControl Label="R" SelectionName="n_buki_tate_r" />
 					</StackPanel>
 
 					<TextBlock
@@ -298,8 +297,8 @@
 						Grid.Row="2"
 						Grid.Column="5"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="j_ude_a_l" Label="L" />
-						<local:BoneView BoneName="j_ude_a_r" Label="R" />
+						<shared:PoseSelectionControl Label="L" SelectionName="j_ude_a_l" />
+						<shared:PoseSelectionControl Label="R" SelectionName="j_ude_a_r" />
 					</StackPanel>
 
 					<TextBlock
@@ -312,8 +311,8 @@
 						Grid.Row="2"
 						Grid.Column="7"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="n_hijisoubi_l" Label="L" />
-						<local:BoneView BoneName="n_hijisoubi_r" Label="R" />
+						<shared:PoseSelectionControl Label="L" SelectionName="n_hijisoubi_l" />
+						<shared:PoseSelectionControl Label="R" SelectionName="n_hijisoubi_r" />
 					</StackPanel>
 
 					<TextBlock
@@ -326,8 +325,8 @@
 						Grid.Row="2"
 						Grid.Column="9"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="n_hhiji_l" Label="L" />
-						<local:BoneView BoneName="n_hhiji_r" Label="R" />
+						<shared:PoseSelectionControl Label="L" SelectionName="n_hhiji_l" />
+						<shared:PoseSelectionControl Label="R" SelectionName="n_hhiji_r" />
 					</StackPanel>
 
 					<TextBlock
@@ -340,8 +339,8 @@
 						Grid.Row="3"
 						Grid.Column="1"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="j_ude_b_l" Label="L" />
-						<local:BoneView BoneName="j_ude_b_r" Label="R" />
+						<shared:PoseSelectionControl Label="L" SelectionName="j_ude_b_l" />
+						<shared:PoseSelectionControl Label="R" SelectionName="j_ude_b_r" />
 					</StackPanel>
 
 					<TextBlock
@@ -354,8 +353,8 @@
 						Grid.Row="3"
 						Grid.Column="3"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="n_hte_l" Label="L" />
-						<local:BoneView BoneName="n_hte_r" Label="R" />
+						<shared:PoseSelectionControl Label="L" SelectionName="n_hte_l" />
+						<shared:PoseSelectionControl Label="R" SelectionName="n_hte_r" />
 					</StackPanel>
 
 					<TextBlock
@@ -368,8 +367,8 @@
 						Grid.Row="3"
 						Grid.Column="5"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="iv_c_mune_l" Label="L" />
-						<local:BoneView BoneName="iv_c_mune_r" Label="R" />
+						<shared:PoseSelectionControl Label="L" SelectionName="iv_c_mune_l" />
+						<shared:PoseSelectionControl Label="R" SelectionName="iv_c_mune_r" />
 					</StackPanel>
 
 					<TextBlock
@@ -382,8 +381,8 @@
 						Grid.Row="3"
 						Grid.Column="7"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="iv_nitoukin_l" Label="L" />
-						<local:BoneView BoneName="iv_nitoukin_r" Label="R" />
+						<shared:PoseSelectionControl Label="L" SelectionName="iv_nitoukin_l" />
+						<shared:PoseSelectionControl Label="R" SelectionName="iv_nitoukin_r" />
 					</StackPanel>
 
 				</Grid>
@@ -419,12 +418,12 @@
 						Grid.Row="0"
 						Grid.Column="1"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="iv_ochinko_a" Label="1" />
-						<local:BoneView BoneName="iv_ochinko_b" Label="2" />
-						<local:BoneView BoneName="iv_ochinko_c" Label="3" />
-						<local:BoneView BoneName="iv_ochinko_d" Label="4" />
-						<local:BoneView BoneName="iv_ochinko_e" Label="5" />
-						<local:BoneView BoneName="iv_ochinko_f" Label="6" />
+						<shared:PoseSelectionControl Label="1" SelectionName="iv_ochinko_a" />
+						<shared:PoseSelectionControl Label="2" SelectionName="iv_ochinko_b" />
+						<shared:PoseSelectionControl Label="3" SelectionName="iv_ochinko_c" />
+						<shared:PoseSelectionControl Label="4" SelectionName="iv_ochinko_d" />
+						<shared:PoseSelectionControl Label="5" SelectionName="iv_ochinko_e" />
+						<shared:PoseSelectionControl Label="6" SelectionName="iv_ochinko_f" />
 					</StackPanel>
 
 					<TextBlock
@@ -436,8 +435,8 @@
 						Grid.Row="0"
 						Grid.Column="4"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="iv_kougan_l" Label="L" />
-						<local:BoneView BoneName="iv_kougan_r" Label="R" />
+						<shared:PoseSelectionControl Label="L" SelectionName="iv_kougan_l" />
+						<shared:PoseSelectionControl Label="R" SelectionName="iv_kougan_r" />
 					</StackPanel>
 
 					<TextBlock
@@ -450,7 +449,7 @@
 						Grid.Row="1"
 						Grid.Column="1"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="iv_omanko" />
+						<shared:PoseSelectionControl SelectionName="iv_omanko" />
 					</StackPanel>
 
 					<TextBlock
@@ -463,7 +462,7 @@
 						Grid.Row="1"
 						Grid.Column="4"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="iv_kuritto" />
+						<shared:PoseSelectionControl SelectionName="iv_kuritto" />
 					</StackPanel>
 
 					<TextBlock
@@ -476,8 +475,8 @@
 						Grid.Row="1"
 						Grid.Column="8"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="iv_inshin_l" Label="L" />
-						<local:BoneView BoneName="iv_inshin_r" Label="R" />
+						<shared:PoseSelectionControl Label="L" SelectionName="iv_inshin_l" />
+						<shared:PoseSelectionControl Label="R" SelectionName="iv_inshin_r" />
 					</StackPanel>
 
 					<TextBlock
@@ -485,14 +484,14 @@
 						Grid.Column="0"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="{DynamicResource LOC_Pose_Anus}"/>
+						Text="{DynamicResource LOC_Pose_Anus}" />
 					<StackPanel
 						Grid.Row="2"
 						Grid.Column="1"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="iv_koumon" />
-						<local:BoneView BoneName="iv_koumon_l" Label="L" />
-						<local:BoneView BoneName="iv_koumon_r" Label="R" />
+						<shared:PoseSelectionControl SelectionName="iv_koumon" />
+						<shared:PoseSelectionControl Label="L" SelectionName="iv_koumon_l" />
+						<shared:PoseSelectionControl Label="R" SelectionName="iv_koumon_r" />
 					</StackPanel>
 
 					<TextBlock
@@ -505,8 +504,8 @@
 						Grid.Row="2"
 						Grid.Column="4"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="iv_shiri_l" Label="L" />
-						<local:BoneView BoneName="iv_shiri_r" Label="R" />
+						<shared:PoseSelectionControl Label="L" SelectionName="iv_shiri_l" />
+						<shared:PoseSelectionControl Label="R" SelectionName="iv_shiri_r" />
 					</StackPanel>
 
 				</Grid>
@@ -547,8 +546,8 @@
 						Grid.Row="0"
 						Grid.Column="1"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="j_asi_a_l" Label="L" />
-						<local:BoneView BoneName="j_asi_a_r" Label="R" />
+						<shared:PoseSelectionControl Label="L" SelectionName="j_asi_a_l" />
+						<shared:PoseSelectionControl Label="R" SelectionName="j_asi_a_r" />
 					</StackPanel>
 
 					<TextBlock
@@ -561,8 +560,8 @@
 						Grid.Row="0"
 						Grid.Column="3"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="n_hizasoubi_l" Label="L" />
-						<local:BoneView BoneName="n_hizasoubi_r" Label="R" />
+						<shared:PoseSelectionControl Label="L" SelectionName="n_hizasoubi_l" />
+						<shared:PoseSelectionControl Label="R" SelectionName="n_hizasoubi_r" />
 					</StackPanel>
 
 					<TextBlock
@@ -575,8 +574,8 @@
 						Grid.Row="0"
 						Grid.Column="5"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="j_asi_b_l" Label="L" />
-						<local:BoneView BoneName="j_asi_b_r" Label="R" />
+						<shared:PoseSelectionControl Label="L" SelectionName="j_asi_b_l" />
+						<shared:PoseSelectionControl Label="R" SelectionName="j_asi_b_r" />
 					</StackPanel>
 
 					<TextBlock
@@ -589,8 +588,8 @@
 						Grid.Row="0"
 						Grid.Column="7"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="j_asi_c_l" Label="L" />
-						<local:BoneView BoneName="j_asi_c_r" Label="R" />
+						<shared:PoseSelectionControl Label="L" SelectionName="j_asi_c_l" />
+						<shared:PoseSelectionControl Label="R" SelectionName="j_asi_c_r" />
 					</StackPanel>
 
 					<TextBlock
@@ -603,8 +602,8 @@
 						Grid.Row="1"
 						Grid.Column="1"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="j_buki_kosi_l" Label="L" />
-						<local:BoneView BoneName="j_buki_kosi_r" Label="R" />
+						<shared:PoseSelectionControl Label="L" SelectionName="j_buki_kosi_l" />
+						<shared:PoseSelectionControl Label="R" SelectionName="j_buki_kosi_r" />
 					</StackPanel>
 
 					<TextBlock
@@ -617,8 +616,8 @@
 						Grid.Row="1"
 						Grid.Column="3"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="j_buki2_kosi_l" Label="L" />
-						<local:BoneView BoneName="j_buki2_kosi_r" Label="R" />
+						<shared:PoseSelectionControl Label="L" SelectionName="j_buki2_kosi_l" />
+						<shared:PoseSelectionControl Label="R" SelectionName="j_buki2_kosi_r" />
 					</StackPanel>
 
 					<TextBlock
@@ -627,10 +626,10 @@
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
 						Text="{DynamicResource LOC_Bone_j_kosi}" />
-					<local:BoneView
+					<shared:PoseSelectionControl
 						Grid.Row="1"
 						Grid.Column="5"
-						BoneName="j_kosi" />
+						SelectionName="j_kosi" />
 
 					<TextBlock
 						Grid.Row="1"
@@ -643,11 +642,11 @@
 						Grid.Column="7"
 						Grid.ColumnSpan="2"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="n_sippo_a" Label="1" />
-						<local:BoneView BoneName="n_sippo_b" Label="2" />
-						<local:BoneView BoneName="n_sippo_c" Label="3" />
-						<local:BoneView BoneName="n_sippo_d" Label="4" />
-						<local:BoneView BoneName="n_sippo_e" Label="5" />
+						<shared:PoseSelectionControl Label="1" SelectionName="n_sippo_a" />
+						<shared:PoseSelectionControl Label="2" SelectionName="n_sippo_b" />
+						<shared:PoseSelectionControl Label="3" SelectionName="n_sippo_c" />
+						<shared:PoseSelectionControl Label="4" SelectionName="n_sippo_d" />
+						<shared:PoseSelectionControl Label="5" SelectionName="n_sippo_e" />
 					</StackPanel>
 
 				</Grid>
@@ -677,10 +676,10 @@
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
 						Text="{DynamicResource LOC_Pose_Foot}" />
-					<local:BoneView
+					<shared:PoseSelectionControl
 						Grid.Row="0"
 						Grid.Column="1"
-						BoneName="j_asi_d_l" />
+						SelectionName="j_asi_d_l" />
 
 					<TextBlock
 						Grid.Row="0"
@@ -688,10 +687,10 @@
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
 						Text="{DynamicResource LOC_Pose_Toes}" />
-					<local:BoneView
+					<shared:PoseSelectionControl
 						Grid.Row="0"
 						Grid.Column="3"
-						BoneName="j_asi_e_l" />
+						SelectionName="j_asi_e_l" />
 
 					<TextBlock
 						Grid.Row="0"
@@ -703,8 +702,8 @@
 						Grid.Row="0"
 						Grid.Column="5"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="iv_asi_oya_a_l" Label="1" />
-						<local:BoneView BoneName="iv_asi_oya_b_l" Label="2" />
+						<shared:PoseSelectionControl Label="1" SelectionName="iv_asi_oya_a_l" />
+						<shared:PoseSelectionControl Label="2" SelectionName="iv_asi_oya_b_l" />
 					</StackPanel>
 
 					<TextBlock
@@ -717,8 +716,8 @@
 						Grid.Row="0"
 						Grid.Column="7"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="iv_asi_hito_a_l" Label="1" />
-						<local:BoneView BoneName="iv_asi_hito_b_l" Label="2" />
+						<shared:PoseSelectionControl Label="1" SelectionName="iv_asi_hito_a_l" />
+						<shared:PoseSelectionControl Label="2" SelectionName="iv_asi_hito_b_l" />
 					</StackPanel>
 
 					<TextBlock
@@ -731,8 +730,8 @@
 						Grid.Row="1"
 						Grid.Column="1"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="iv_asi_naka_a_l" Label="1" />
-						<local:BoneView BoneName="iv_asi_naka_b_l" Label="2" />
+						<shared:PoseSelectionControl Label="1" SelectionName="iv_asi_naka_a_l" />
+						<shared:PoseSelectionControl Label="2" SelectionName="iv_asi_naka_b_l" />
 					</StackPanel>
 
 					<TextBlock
@@ -745,8 +744,8 @@
 						Grid.Row="1"
 						Grid.Column="3"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="iv_asi_kusu_a_l" Label="1" />
-						<local:BoneView BoneName="iv_asi_kusu_b_l" Label="2" />
+						<shared:PoseSelectionControl Label="1" SelectionName="iv_asi_kusu_a_l" />
+						<shared:PoseSelectionControl Label="2" SelectionName="iv_asi_kusu_b_l" />
 					</StackPanel>
 
 					<TextBlock
@@ -759,8 +758,8 @@
 						Grid.Row="1"
 						Grid.Column="5"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="iv_asi_ko_a_l" Label="1" />
-						<local:BoneView BoneName="iv_asi_ko_b_l" Label="2" />
+						<shared:PoseSelectionControl Label="1" SelectionName="iv_asi_ko_a_l" />
+						<shared:PoseSelectionControl Label="2" SelectionName="iv_asi_ko_b_l" />
 					</StackPanel>
 
 				</Grid>
@@ -790,10 +789,10 @@
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
 						Text="{DynamicResource LOC_Pose_Foot}" />
-					<local:BoneView
+					<shared:PoseSelectionControl
 						Grid.Row="0"
 						Grid.Column="1"
-						BoneName="j_asi_d_r" />
+						SelectionName="j_asi_d_r" />
 
 					<TextBlock
 						Grid.Row="0"
@@ -801,10 +800,10 @@
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
 						Text="{DynamicResource LOC_Pose_Toes}" />
-					<local:BoneView
+					<shared:PoseSelectionControl
 						Grid.Row="0"
 						Grid.Column="3"
-						BoneName="j_asi_e_r" />
+						SelectionName="j_asi_e_r" />
 
 					<TextBlock
 						Grid.Row="0"
@@ -816,8 +815,8 @@
 						Grid.Row="0"
 						Grid.Column="5"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="iv_asi_oya_a_r" Label="1" />
-						<local:BoneView BoneName="iv_asi_oya_b_r" Label="2" />
+						<shared:PoseSelectionControl Label="1" SelectionName="iv_asi_oya_a_r" />
+						<shared:PoseSelectionControl Label="2" SelectionName="iv_asi_oya_b_r" />
 					</StackPanel>
 
 					<TextBlock
@@ -830,8 +829,8 @@
 						Grid.Row="0"
 						Grid.Column="7"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="iv_asi_hito_a_r" Label="1" />
-						<local:BoneView BoneName="iv_asi_hito_b_r" Label="2" />
+						<shared:PoseSelectionControl Label="1" SelectionName="iv_asi_hito_a_r" />
+						<shared:PoseSelectionControl Label="2" SelectionName="iv_asi_hito_b_r" />
 					</StackPanel>
 
 					<TextBlock
@@ -844,8 +843,8 @@
 						Grid.Row="1"
 						Grid.Column="1"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="iv_asi_naka_a_r" Label="1" />
-						<local:BoneView BoneName="iv_asi_naka_b_r" Label="2" />
+						<shared:PoseSelectionControl Label="1" SelectionName="iv_asi_naka_a_r" />
+						<shared:PoseSelectionControl Label="2" SelectionName="iv_asi_naka_b_r" />
 					</StackPanel>
 
 					<TextBlock
@@ -858,8 +857,8 @@
 						Grid.Row="1"
 						Grid.Column="3"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="iv_asi_kusu_a_r" Label="1" />
-						<local:BoneView BoneName="iv_asi_kusu_b_r" Label="2" />
+						<shared:PoseSelectionControl Label="1" SelectionName="iv_asi_kusu_a_r" />
+						<shared:PoseSelectionControl Label="2" SelectionName="iv_asi_kusu_b_r" />
 					</StackPanel>
 
 					<TextBlock
@@ -867,13 +866,13 @@
 						Grid.Column="4"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="{DynamicResource LOC_Pose_PinkyToe}"/>
+						Text="{DynamicResource LOC_Pose_PinkyToe}" />
 					<StackPanel
 						Grid.Row="1"
 						Grid.Column="5"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="iv_asi_ko_a_r" Label="1" />
-						<local:BoneView BoneName="iv_asi_ko_b_r" Label="2" />
+						<shared:PoseSelectionControl Label="1" SelectionName="iv_asi_ko_a_r" />
+						<shared:PoseSelectionControl Label="2" SelectionName="iv_asi_ko_b_r" />
 					</StackPanel>
 
 				</Grid>
@@ -909,12 +908,12 @@
 						Grid.Row="0"
 						Grid.Column="1"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="j_sk_f_a_l" Label="L1" />
-						<local:BoneView BoneName="j_sk_f_b_l" Label="L2" />
-						<local:BoneView BoneName="j_sk_f_c_l" Label="L3" />
-						<local:BoneView BoneName="j_sk_f_a_r" Label="R1" />
-						<local:BoneView BoneName="j_sk_f_b_r" Label="R2" />
-						<local:BoneView BoneName="j_sk_f_c_r" Label="R3" />
+						<shared:PoseSelectionControl Label="L1" SelectionName="j_sk_f_a_l" />
+						<shared:PoseSelectionControl Label="L2" SelectionName="j_sk_f_b_l" />
+						<shared:PoseSelectionControl Label="L3" SelectionName="j_sk_f_c_l" />
+						<shared:PoseSelectionControl Label="R1" SelectionName="j_sk_f_a_r" />
+						<shared:PoseSelectionControl Label="R2" SelectionName="j_sk_f_b_r" />
+						<shared:PoseSelectionControl Label="R3" SelectionName="j_sk_f_c_r" />
 					</StackPanel>
 
 					<TextBlock
@@ -927,12 +926,12 @@
 						Grid.Row="0"
 						Grid.Column="3"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="j_sk_b_a_l" Label="L1" />
-						<local:BoneView BoneName="j_sk_b_b_l" Label="L2" />
-						<local:BoneView BoneName="j_sk_b_c_l" Label="L3" />
-						<local:BoneView BoneName="j_sk_b_a_r" Label="R1" />
-						<local:BoneView BoneName="j_sk_b_b_r" Label="R2" />
-						<local:BoneView BoneName="j_sk_b_c_r" Label="R3" />
+						<shared:PoseSelectionControl Label="L1" SelectionName="j_sk_b_a_l" />
+						<shared:PoseSelectionControl Label="L2" SelectionName="j_sk_b_b_l" />
+						<shared:PoseSelectionControl Label="L3" SelectionName="j_sk_b_c_l" />
+						<shared:PoseSelectionControl Label="R1" SelectionName="j_sk_b_a_r" />
+						<shared:PoseSelectionControl Label="R2" SelectionName="j_sk_b_b_r" />
+						<shared:PoseSelectionControl Label="R3" SelectionName="j_sk_b_c_r" />
 					</StackPanel>
 
 					<TextBlock
@@ -945,12 +944,12 @@
 						Grid.Row="0"
 						Grid.Column="5"
 						Orientation="Horizontal">
-						<local:BoneView BoneName="j_sk_s_a_l" Label="L1" />
-						<local:BoneView BoneName="j_sk_s_b_l" Label="L2" />
-						<local:BoneView BoneName="j_sk_s_c_l" Label="L3" />
-						<local:BoneView BoneName="j_sk_s_a_r" Label="R1" />
-						<local:BoneView BoneName="j_sk_s_b_r" Label="R2" />
-						<local:BoneView BoneName="j_sk_s_c_r" Label="R3" />
+						<shared:PoseSelectionControl Label="L1" SelectionName="j_sk_s_a_l" />
+						<shared:PoseSelectionControl Label="L2" SelectionName="j_sk_s_b_l" />
+						<shared:PoseSelectionControl Label="L3" SelectionName="j_sk_s_c_l" />
+						<shared:PoseSelectionControl Label="R1" SelectionName="j_sk_s_a_r" />
+						<shared:PoseSelectionControl Label="R2" SelectionName="j_sk_s_b_r" />
+						<shared:PoseSelectionControl Label="R3" SelectionName="j_sk_s_c_r" />
 					</StackPanel>
 
 				</Grid>
@@ -990,7 +989,7 @@
 
 							<ItemsControl.ItemTemplate>
 								<DataTemplate>
-									<local:BoneView />
+									<shared:PoseSelectionControl />
 								</DataTemplate>
 							</ItemsControl.ItemTemplate>
 						</ItemsControl>
@@ -1019,7 +1018,7 @@
 
 							<ItemsControl.ItemTemplate>
 								<DataTemplate>
-									<local:BoneView />
+									<shared:PoseSelectionControl />
 								</DataTemplate>
 							</ItemsControl.ItemTemplate>
 						</ItemsControl>
@@ -1061,7 +1060,7 @@
 
 							<ItemsControl.ItemTemplate>
 								<DataTemplate>
-									<local:BoneView />
+									<shared:PoseSelectionControl />
 								</DataTemplate>
 							</ItemsControl.ItemTemplate>
 						</ItemsControl>
@@ -1090,7 +1089,7 @@
 
 							<ItemsControl.ItemTemplate>
 								<DataTemplate>
-									<local:BoneView />
+									<shared:PoseSelectionControl />
 								</DataTemplate>
 							</ItemsControl.ItemTemplate>
 						</ItemsControl>

@@ -31,11 +31,11 @@ public class PoseViewBase : View
 {
 	public const double MouseOverDistance = 20;
 
-	private readonly Dictionary<string, List<BoneView>> targetNameLookup = new();
-	private readonly Dictionary<BoneId, List<BoneView>> targetIdLookup = new();
+	private readonly Dictionary<string, List<PoseSelectionControl>> targetNameLookup = new();
+	private readonly Dictionary<BoneId, List<PoseSelectionControl>> targetIdLookup = new();
 
-	private List<BoneView>? targets;
-	private BoneView? mouseOver;
+	private List<PoseSelectionControl>? targets;
+	private PoseSelectionControl? mouseOver;
 
 	public PoseViewBase()
 	{
@@ -44,7 +44,7 @@ public class PoseViewBase : View
 		this.Background = new SolidColorBrush(Colors.Transparent);
 	}
 
-	public BoneView? MouseOver
+	public PoseSelectionControl? MouseOver
 	{
 		get => this.mouseOver;
 		set
@@ -62,20 +62,20 @@ public class PoseViewBase : View
 		}
 	}
 
-	public List<BoneView>? GetTargets()
+	public List<PoseSelectionControl>? GetTargets()
 	{
 		return this.targets;
 	}
 
-	public List<BoneView>? GetTargets(BoneId boneId)
+	public List<PoseSelectionControl>? GetTargets(BoneId boneId)
 	{
-		this.targetIdLookup.TryGetValue(boneId, out List<BoneView>? views);
+		this.targetIdLookup.TryGetValue(boneId, out List<PoseSelectionControl>? views);
 		return views;
 	}
 
-	public List<BoneView>? GetTargets(string name)
+	public List<PoseSelectionControl>? GetTargets(string name)
 	{
-		this.targetNameLookup.TryGetValue(name, out List<BoneView>? views);
+		this.targetNameLookup.TryGetValue(name, out List<PoseSelectionControl>? views);
 		return views;
 	}
 
@@ -89,8 +89,8 @@ public class PoseViewBase : View
 		Point mousePos = Mouse.GetPosition(this);
 
 		double closestDist = double.MaxValue;
-		BoneView? closestLink = null;
-		foreach (BoneView target in this.targets)
+		PoseSelectionControl? closestLink = null;
+		foreach (PoseSelectionControl target in this.targets)
 		{
 			Point targetPos = target.TransformToAncestor(this).Transform(new Point(target.Width / 2, target.Height / 2));
 			double distance = Point.Subtract(mousePos, targetPos).Length;
@@ -134,8 +134,8 @@ public class PoseViewBase : View
 			return base.HitTestCore(hitTestParameters);
 
 		double closestDist = double.MaxValue;
-		BoneView? closestLink = null;
-		foreach (BoneView link in this.targets)
+		PoseSelectionControl? closestLink = null;
+		foreach (PoseSelectionControl link in this.targets)
 		{
 			Point targetPos = link.TransformToAncestor(this).Transform(new Point(link.ActualWidth / 2, link.ActualHeight));
 			double distance = Point.Subtract(hitTestParameters.HitPoint, targetPos).Length;
@@ -169,7 +169,7 @@ public class PoseViewBase : View
 
 	protected virtual async Task UpdateTargetsAsync()
 	{
-		this.targets = this.FindChildren<BoneView>();
+		this.targets = this.FindChildren<PoseSelectionControl>();
 
 		await Threads.FrameworkThread();
 
@@ -206,7 +206,7 @@ public class PoseViewBase : View
 			if (pCharacter == null)
 				return;
 
-			foreach (BoneView view in this.targets)
+			foreach (PoseSelectionControl view in this.targets)
 			{
 				this.PopulateView(view, pCharacter);
 			}
@@ -220,7 +220,7 @@ public class PoseViewBase : View
 		this.UpdateTargets();
 	}
 
-	private unsafe bool PopulateView(BoneView view, Character* pCharacter)
+	private unsafe bool PopulateView(PoseSelectionControl view, Character* pCharacter)
 	{
 		if (view.SafeName == null)
 			return false;

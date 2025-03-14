@@ -59,16 +59,16 @@ public partial class SimpleView : PoseViewBase
 			// populate bones
 			foreach ((string name, Point pos) in this.ViewDefinition.Bones)
 			{
-				BoneView target = new();
-				target.BoneName = name;
+				PoseSelectionControl target = new();
+				target.SelectionName = name;
 				this.canvas.Children.Add(target);
 				Canvas.SetZIndex(target, 100);
 
 				string? mirrorName = PoseService.GetMirrorBoneName(name);
 				if (mirrorName != null)
 				{
-					BoneView mirrorTarget = new();
-					mirrorTarget.BoneName = mirrorName;
+					PoseSelectionControl mirrorTarget = new();
+					mirrorTarget.SelectionName = mirrorName;
 					this.canvas.Children.Add(mirrorTarget);
 					Canvas.SetZIndex(target, 100);
 				}
@@ -84,21 +84,21 @@ public partial class SimpleView : PoseViewBase
 
 			await base.UpdateTargetsAsync();
 
-			List<BoneView>? allTargets = this.GetTargets();
+			List<PoseSelectionControl>? allTargets = this.GetTargets();
 			if (allTargets == null)
 				return;
 
-			foreach (BoneView target in allTargets)
+			foreach (PoseSelectionControl target in allTargets)
 			{
 				if (target.Selection is BoneSelection boneSelection)
 				{
 					foreach (BoneId parentBoneId in boneSelection.ParentBoneIds)
 					{
-						List<BoneView>? parents = this.GetTargets(parentBoneId);
+						List<PoseSelectionControl>? parents = this.GetTargets(parentBoneId);
 						if (parents == null)
 							continue;
 
-						foreach(BoneView parent in parents)
+						foreach(PoseSelectionControl parent in parents)
 						{
 							BoneConnection connection = new(target, parent, this.canvas);
 							this.boneConnections.Add(connection);
@@ -150,11 +150,11 @@ public partial class SimpleView : PoseViewBase
 		if (sizeInfo != null)
 			base.OnRenderSizeChanged(sizeInfo);
 
-		List<BoneView>? targets = this.GetTargets();
+		List<PoseSelectionControl>? targets = this.GetTargets();
 		if (targets == null)
 			return;
 
-		foreach (BoneView target in targets)
+		foreach (PoseSelectionControl target in targets)
 		{
 			if (target.SafeName == null)
 				continue;
@@ -237,12 +237,12 @@ public partial class SimpleView : PoseViewBase
 
 	public class BoneConnection
 	{
-		public readonly BoneView FromBone;
-		public readonly BoneView ToBone;
+		public readonly PoseSelectionControl FromBone;
+		public readonly PoseSelectionControl ToBone;
 
 		private readonly Line line;
 
-		public BoneConnection(BoneView fromBone, BoneView toBone, Canvas parent)
+		public BoneConnection(PoseSelectionControl fromBone, PoseSelectionControl toBone, Canvas parent)
 		{
 			this.FromBone = fromBone;
 			this.ToBone = toBone;
