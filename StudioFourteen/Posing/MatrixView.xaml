@@ -67,7 +67,7 @@
 						Grid.Column="4"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Bridge" />
+						Text="{DynamicResource LOC_Pose_Bridge}" />
 					<local:BoneView
 						Grid.Row="0"
 						Grid.Column="5"
@@ -78,7 +78,7 @@
 						Grid.Column="6"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Ears" />
+						Text="{DynamicResource LOC_Pose_Ears}" />
 					<StackPanel
 						Grid.Row="0"
 						Grid.Column="7"
@@ -91,7 +91,7 @@
 						Grid.Column="8"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_VieraEars"
+						Text="{DynamicResource LOC_Pose_VieraEars}"
 						Visibility="{Binding IsViera, Converter={StaticResource B2V}}" />
 					<StackPanel
 						Grid.Row="0"
@@ -144,7 +144,7 @@
 						Grid.Column="0"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Eyes" />
+						Text="{DynamicResource LOC_Pose_Eyes}" />
 					<StackPanel
 						Grid.Row="1"
 						Grid.Column="1"
@@ -158,7 +158,7 @@
 						Grid.Column="2"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Eyebrows" />
+						Text="{DynamicResource LOC_Pose_Eyebrows}" />
 					<StackPanel
 						Grid.Row="1"
 						Grid.Column="3"
@@ -172,7 +172,7 @@
 						Grid.Column="4"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Brows" />
+						Text="{DynamicResource LOC_Pose_Brows}" />
 					<StackPanel
 						Grid.Row="1"
 						Grid.Column="5"
@@ -186,7 +186,7 @@
 						Grid.Column="6"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Eyelids" />
+						Text="{DynamicResource LOC_Pose_Eyelids}" />
 					<StackPanel
 						Grid.Row="1"
 						Grid.Column="7"
@@ -200,7 +200,7 @@
 						Grid.Column="8"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_LowerLids" />
+						Text="{DynamicResource LOC_Pose_LowerLids}" />
 					<StackPanel
 						Grid.Row="1"
 						Grid.Column="9"
@@ -215,7 +215,7 @@
 						Grid.Column="0"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Cheeks" />
+						Text="{DynamicResource LOC_Pose_Cheeks}" />
 					<StackPanel
 						Grid.Row="2"
 						Grid.Column="1"
@@ -229,7 +229,7 @@
 						Grid.Column="2"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Jaw" />
+						Text="{DynamicResource LOC_Pose_Jaw}" />
 					<StackPanel
 						Grid.Row="2"
 						Grid.Column="3"
@@ -243,7 +243,7 @@
 						Grid.Column="4"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Mouth" />
+						Text="{DynamicResource LOC_Pose_Mouth}" />
 					<StackPanel
 						Grid.Row="2"
 						Grid.Column="5"
@@ -257,7 +257,7 @@
 						Grid.Column="6"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_UpperLip" />
+						Text="{DynamicResource LOC_Pose_UpperLip}" />
 					<StackPanel
 						Grid.Row="2"
 						Grid.Column="7"
@@ -274,7 +274,7 @@
 						Grid.Column="8"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_LowerLip" />
+						Text="{DynamicResource LOC_Pose_LowerLip}" />
 					<StackPanel
 						Grid.Row="2"
 						Grid.Column="9"
@@ -304,7 +304,7 @@
 						Grid.Column="0"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Earrings" />
+						Text="{DynamicResource LOC_Pose_Earrings}" />
 
 					<StackPanel Grid.Column="1" Orientation="Horizontal">
 						<local:BoneView BoneName="n_ear_a_l" Label="L1" />
@@ -317,7 +317,7 @@
 						Grid.Column="2"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Whiskers"
+						Text="{DynamicResource LOC_Pose_Whiskers}"
 						Visibility="{Binding IsHrothgar, Converter={StaticResource B2V}}" />
 
 					<StackPanel
@@ -332,7 +332,7 @@
 						Grid.Column="4"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_General" />
+						Text="{DynamicResource LOC_Pose_General}" />
 					<StackPanel Grid.Column="5" Orientation="Horizontal">
 						<local:BoneView BoneName="j_kami_f_l" Label="L" />
 						<local:BoneView BoneName="j_kami_f_r" Label="R" />
@@ -397,7 +397,7 @@
 						Grid.Column="0"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Neck" />
+						Text="{DynamicResource LOC_Pose_Neck}" />
 					<local:BoneView
 						Grid.Row="0"
 						Grid.Column="1"
@@ -408,7 +408,7 @@
 						Grid.Column="2"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Cervical" />
+						Text="{DynamicResource LOC_Pose_Cervical}" />
 					<local:BoneView
 						Grid.Row="0"
 						Grid.Column="3"
@@ -419,7 +419,7 @@
 						Grid.Column="4"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Thoracic" />
+						Text="{DynamicResource LOC_Pose_Thoracic}"/>
 					<local:BoneView
 						Grid.Row="0"
 						Grid.Column="5"
@@ -430,7 +430,7 @@
 						Grid.Column="6"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Lumbar" />
+						Text="{DynamicResource LOC_Pose_Lumbar}" />
 					<local:BoneView
 						Grid.Row="0"
 						Grid.Column="7"
@@ -441,7 +441,7 @@
 						Grid.Column="8"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_OtherAbdomen" />
+						Text="{DynamicResource LOC_Pose_OtherAbdomen}" />
 					<local:BoneView
 						Grid.Row="0"
 						Grid.Column="9"
@@ -452,7 +452,7 @@
 						Grid.Column="0"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Scabbards" />
+						Text="{DynamicResource LOC_Pose_Scabbards}" />
 					<StackPanel
 						Grid.Row="1"
 						Grid.Column="1"
@@ -466,7 +466,7 @@
 						Grid.Column="2"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Clavicles" />
+						Text="{DynamicResource LOC_Pose_Clavicles}" />
 					<StackPanel
 						Grid.Row="1"
 						Grid.Column="3"
@@ -480,7 +480,7 @@
 						Grid.Column="4"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Breasts" />
+						Text="{DynamicResource LOC_Pose_Breasts}" />
 					<StackPanel
 						Grid.Row="1"
 						Grid.Column="5"
@@ -494,7 +494,7 @@
 						Grid.Column="6"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Pauldrons" />
+						Text="{DynamicResource LOC_Pose_Pauldrons}" />
 					<StackPanel
 						Grid.Row="1"
 						Grid.Column="7"
@@ -508,7 +508,7 @@
 						Grid.Column="0"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Shields" />
+						Text="{DynamicResource LOC_Pose_Shields}" />
 					<StackPanel
 						Grid.Row="2"
 						Grid.Column="1"
@@ -522,7 +522,7 @@
 						Grid.Column="2"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Shoulders" />
+						Text="{DynamicResource LOC_Pose_Shoulders}" />
 					<StackPanel
 						Grid.Row="2"
 						Grid.Column="3"
@@ -536,7 +536,7 @@
 						Grid.Column="4"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Arms" />
+						Text="{DynamicResource LOC_Pose_Arms}" />
 					<StackPanel
 						Grid.Row="2"
 						Grid.Column="5"
@@ -550,7 +550,7 @@
 						Grid.Column="6"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Couters" />
+						Text="{DynamicResource LOC_Pose_Couters}" />
 					<StackPanel
 						Grid.Row="2"
 						Grid.Column="7"
@@ -564,7 +564,7 @@
 						Grid.Column="8"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Elbows" />
+						Text="{DynamicResource LOC_Pose_Elbows}" />
 					<StackPanel
 						Grid.Row="2"
 						Grid.Column="9"
@@ -578,7 +578,7 @@
 						Grid.Column="0"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Forearms" />
+						Text="{DynamicResource LOC_Pose_Forearms}" />
 					<StackPanel
 						Grid.Row="3"
 						Grid.Column="1"
@@ -592,7 +592,7 @@
 						Grid.Column="2"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Wrists" />
+						Text="{DynamicResource LOC_Pose_Wrists}" />
 					<StackPanel
 						Grid.Row="3"
 						Grid.Column="3"
@@ -606,7 +606,7 @@
 						Grid.Column="4"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_IVCS_Breasts" />
+						Text="{DynamicResource LOC_Pose_Custom_Breasts}" />
 					<StackPanel
 						Grid.Row="3"
 						Grid.Column="5"
@@ -620,7 +620,7 @@
 						Grid.Column="6"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_IVCS_Biceps" />
+						Text="{DynamicResource LOC_Pose_Custom_Biceps}" />
 					<StackPanel
 						Grid.Row="3"
 						Grid.Column="7"
@@ -657,7 +657,7 @@
 						Grid.Column="0"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Penis" />
+						Text="{DynamicResource LOC_Pose_Penis}" />
 					<StackPanel
 						Grid.Row="0"
 						Grid.Column="1"
@@ -674,7 +674,7 @@
 						Grid.Column="3"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Scrotum" />
+						Text="{DynamicResource LOC_Pose_Scrotum}" />
 					<StackPanel
 						Grid.Row="0"
 						Grid.Column="4"
@@ -688,7 +688,7 @@
 						Grid.Column="0"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Vagina" />
+						Text="{DynamicResource LOC_Pose_Vagina}" />
 					<StackPanel
 						Grid.Row="1"
 						Grid.Column="1"
@@ -701,7 +701,7 @@
 						Grid.Column="3"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Clitoris" />
+						Text="{DynamicResource LOC_Pose_Clitoris}" />
 					<StackPanel
 						Grid.Row="1"
 						Grid.Column="4"
@@ -714,7 +714,7 @@
 						Grid.Column="7"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Labia" />
+						Text="{DynamicResource LOC_Pose_Labia}" />
 					<StackPanel
 						Grid.Row="1"
 						Grid.Column="8"
@@ -728,7 +728,7 @@
 						Grid.Column="0"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Anus" />
+						Text="{DynamicResource LOC_Pose_Anus}"/>
 					<StackPanel
 						Grid.Row="2"
 						Grid.Column="1"
@@ -743,7 +743,7 @@
 						Grid.Column="3"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Buttocks" />
+						Text="{DynamicResource LOC_Pose_Buttocks}" />
 					<StackPanel
 						Grid.Row="2"
 						Grid.Column="4"
@@ -1030,7 +1030,7 @@
 						Grid.Column="0"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Legs" />
+						Text="{DynamicResource LOC_Pose_Legs}" />
 					<StackPanel
 						Grid.Row="0"
 						Grid.Column="1"
@@ -1044,7 +1044,7 @@
 						Grid.Column="2"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Poleyns" />
+						Text="{DynamicResource LOC_Pose_Poleyns}" />
 					<StackPanel
 						Grid.Row="0"
 						Grid.Column="3"
@@ -1058,7 +1058,7 @@
 						Grid.Column="4"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Knees" />
+						Text="{DynamicResource LOC_Pose_Knees}" />
 					<StackPanel
 						Grid.Row="0"
 						Grid.Column="5"
@@ -1072,7 +1072,7 @@
 						Grid.Column="6"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Calves" />
+						Text="{DynamicResource LOC_Pose_Calves}" />
 					<StackPanel
 						Grid.Row="0"
 						Grid.Column="7"
@@ -1081,6 +1081,12 @@
 						<local:BoneView BoneName="j_asi_c_r" Label="R" />
 					</StackPanel>
 
+					<TextBlock
+						Grid.Row="1"
+						Grid.Column="0"
+						Margin="16,0,3,0"
+						Style="{DynamicResource Label}"
+						Text="{DynamicResource LOC_Pose_Sheathes}" />
 					<StackPanel
 						Grid.Row="1"
 						Grid.Column="1"
@@ -1094,7 +1100,7 @@
 						Grid.Column="2"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Holsters" />
+						Text="{DynamicResource LOC_Pose_Holsters}" />
 					<StackPanel
 						Grid.Row="1"
 						Grid.Column="3"
@@ -1108,7 +1114,7 @@
 						Grid.Column="4"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Bone_j_kosi" />
+						Text="{DynamicResource LOC_Bone_j_kosi}" />
 					<local:BoneView
 						Grid.Row="1"
 						Grid.Column="5"
@@ -1119,7 +1125,7 @@
 						Grid.Column="6"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Tail"
+						Text="{DynamicResource LOC_Pose_Tail}"
 						Visibility="{Binding HasTail, Converter={StaticResource B2V}}" />
 					<StackPanel
 						Grid.Row="1"
@@ -1160,7 +1166,7 @@
 						Grid.Column="0"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Foot" />
+						Text="{DynamicResource LOC_Pose_Foot}" />
 					<local:BoneView
 						Grid.Row="0"
 						Grid.Column="1"
@@ -1171,7 +1177,7 @@
 						Grid.Column="2"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Toes" />
+						Text="{DynamicResource LOC_Pose_Toes}" />
 					<local:BoneView
 						Grid.Row="0"
 						Grid.Column="3"
@@ -1182,7 +1188,7 @@
 						Grid.Column="4"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_BigToe" />
+						Text="{DynamicResource LOC_Pose_BigToe}" />
 					<StackPanel
 						Grid.Row="0"
 						Grid.Column="5"
@@ -1196,7 +1202,7 @@
 						Grid.Column="6"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_IndexToe" />
+						Text="{DynamicResource LOC_Pose_IndexToe}" />
 					<StackPanel
 						Grid.Row="0"
 						Grid.Column="7"
@@ -1210,7 +1216,7 @@
 						Grid.Column="0"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_MiddleToe" />
+						Text="{DynamicResource LOC_Pose_MiddleToe}" />
 					<StackPanel
 						Grid.Row="1"
 						Grid.Column="1"
@@ -1224,7 +1230,7 @@
 						Grid.Column="2"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_ForeToe" />
+						Text="{DynamicResource LOC_Pose_ForeToe}" />
 					<StackPanel
 						Grid.Row="1"
 						Grid.Column="3"
@@ -1238,7 +1244,7 @@
 						Grid.Column="4"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_PinkyToe" />
+						Text="{DynamicResource LOC_Pose_PinkyToe}" />
 					<StackPanel
 						Grid.Row="1"
 						Grid.Column="5"
@@ -1273,7 +1279,7 @@
 						Grid.Column="0"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Foot" />
+						Text="{DynamicResource LOC_Pose_Foot}" />
 					<local:BoneView
 						Grid.Row="0"
 						Grid.Column="1"
@@ -1284,7 +1290,7 @@
 						Grid.Column="2"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_Toes" />
+						Text="{DynamicResource LOC_Pose_Toes}" />
 					<local:BoneView
 						Grid.Row="0"
 						Grid.Column="3"
@@ -1295,7 +1301,7 @@
 						Grid.Column="4"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_BigToe" />
+						Text="{DynamicResource LOC_Pose_BigToe}" />
 					<StackPanel
 						Grid.Row="0"
 						Grid.Column="5"
@@ -1309,7 +1315,7 @@
 						Grid.Column="6"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_IndexToe" />
+						Text="{DynamicResource LOC_Pose_IndexToe}" />
 					<StackPanel
 						Grid.Row="0"
 						Grid.Column="7"
@@ -1323,7 +1329,7 @@
 						Grid.Column="0"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_MiddleToe" />
+						Text="{DynamicResource LOC_Pose_MiddleToe}" />
 					<StackPanel
 						Grid.Row="1"
 						Grid.Column="1"
@@ -1337,7 +1343,7 @@
 						Grid.Column="2"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_ForeToe" />
+						Text="{DynamicResource LOC_Pose_ForeToe}" />
 					<StackPanel
 						Grid.Row="1"
 						Grid.Column="3"
@@ -1351,7 +1357,7 @@
 						Grid.Column="4"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_PinkyToe" />
+						Text="{DynamicResource LOC_Pose_PinkyToe}"/>
 					<StackPanel
 						Grid.Row="1"
 						Grid.Column="5"
@@ -1388,7 +1394,7 @@
 						Grid.Column="0"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_ClothesFront" />
+						Text="{DynamicResource LOC_Pose_ClothesFront}" />
 					<StackPanel
 						Grid.Row="0"
 						Grid.Column="1"
@@ -1406,7 +1412,7 @@
 						Grid.Column="2"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_ClothesBack" />
+						Text="{DynamicResource LOC_Pose_ClothesBack}" />
 					<StackPanel
 						Grid.Row="0"
 						Grid.Column="3"
@@ -1424,7 +1430,7 @@
 						Grid.Column="4"
 						Margin="16,0,3,0"
 						Style="{DynamicResource Label}"
-						Text="Pose_ClothesSides" />
+						Text="{DynamicResource LOC_Pose_ClothesSides}" />
 					<StackPanel
 						Grid.Row="0"
 						Grid.Column="5"

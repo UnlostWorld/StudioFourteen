@@ -329,6 +329,69 @@
 	<sys:String x:Key="LOC_Tag_OffHand">Off Hand</sys:String>
 	<sys:String x:Key="LOC_Tag_Prop">Prop</sys:String>
 
+	<!-- Pose Matrix Labels-->
+
+	<!-- Face bones for new Face Matrix View
+	<sys:String x:Key="LOC_Pose_Bridge">Bridge</sys:String>
+	<sys:String x:Key="LOC_Pose_Ears">Ears</sys:String>
+	<sys:String x:Key="LOC_Pose_VieraEars">Viera Ears</sys:String>
+	<sys:String x:Key="LOC_Pose_Eyes">Eyes</sys:String>
+	<sys:String x:Key="LOC_Pose_Eyebrows">Eyebrows</sys:String>
+	<sys:String x:Key="LOC_Pose_Brows">Brows</sys:String>
+	<sys:String x:Key="LOC_Pose_Eyelids">Eyelids</sys:String>
+	<sys:String x:Key="LOC_Pose_LowerLids">Lower Lids</sys:String>
+	<sys:String x:Key="LOC_Pose_Cheeks">Cheeks</sys:String>
+	<sys:String x:Key="LOC_Pose_Jaw">Jaw</sys:String>
+	<sys:String x:Key="LOC_Pose_Mouth">Mouth</sys:String>
+	<sys:String x:Key="LOC_Pose_UpperLip">Upper Lip</sys:String>
+	<sys:String x:Key="LOC_Pose_LowerLip">Lower Lip<sys:String> 
+	-->
+	<sys:String x:Key="LOC_Pose_Earrings">Earrings</sys:String>
+	<sys:String x:Key="LOC_Pose_Whiskers">Whiskers</sys:String>
+	<sys:String x:Key="LOC_Pose_General">General</sys:String>
+	<sys:String x:Key="LOC_Pose_Neck">Neck</sys:String>
+	<sys:String x:Key="LOC_Pose_Cervical">Cervical</sys:String>
+	<sys:String x:Key="LOC_Pose_Thoracic">Thoracic</sys:String>
+	<sys:String x:Key="LOC_Pose_Lumbar">Lumbar</sys:String>
+	<sys:String x:Key="LOC_Pose_OtherAbdomen">Other Abdomen</sys:String>
+	<sys:String x:Key="LOC_Pose_Scabbards">Scabbards</sys:String>
+	<sys:String x:Key="LOC_Pose_Clavicles">Clavicles</sys:String>
+	<sys:String x:Key="LOC_Pose_Breasts">Breasts</sys:String>
+	<sys:String x:Key="LOC_Pose_Pauldrons">Pauldrons</sys:String>
+	<sys:String x:Key="LOC_Pose_Shields">Shields</sys:String>
+	<sys:String x:Key="LOC_Pose_Shoulders">Shoulders</sys:String>
+	<sys:String x:Key="LOC_Pose_Arms">Arms</sys:String>
+	<sys:String x:Key="LOC_Pose_Couters">Couters</sys:String>
+	<sys:String x:Key="LOC_Pose_Elbows">Elbows</sys:String>
+	<sys:String x:Key="LOC_Pose_Forearms">Forearms</sys:String>
+	<sys:String x:Key="LOC_Pose_Wrists">Wrists</sys:String>
+	<sys:String x:Key="LOC_Pose_Custom_Breasts">Custom Breasts</sys:String>
+	<sys:String x:Key="LOC_Pose_Custom_Biceps">Custom Biceps</sys:String>
+	<sys:String x:Key="LOC_Pose_Penis">Penis</sys:String>
+	<sys:String x:Key="LOC_Pose_Scrotum">Scrotum</sys:String>
+	<sys:String x:Key="LOC_Pose_Vagina">Vagina</sys:String>
+	<sys:String x:Key="LOC_Pose_Clitoris">Clitoris</sys:String>
+	<sys:String x:Key="LOC_Pose_Labia">Labia</sys:String>
+	<sys:String x:Key="LOC_Pose_Anus">Anus</sys:String>
+	<sys:String x:Key="LOC_Pose_Buttocks">Buttocks</sys:String>
+	<sys:String x:Key="LOC_Pose_Legs">Legs</sys:String>
+	<sys:String x:Key="LOC_Pose_Poleyns">Poleyns</sys:String>
+	<sys:String x:Key="LOC_Pose_Knees">Knees</sys:String>
+	<sys:String x:Key="LOC_Pose_Calves">Calves</sys:String>
+	<sys:String x:Key="LOC_Pose_Holsters">Holsters</sys:String>
+	<sys:String x:Key="LOC_Pose_Tail">Tail</sys:String>
+	<sys:String x:Key="LOC_Pose_Foot">Foot</sys:String>
+	<sys:String x:Key="LOC_Pose_Toes">Toes</sys:String>
+	<sys:String x:Key="LOC_Pose_BigToe">Big Toe</sys:String>
+	<sys:String x:Key="LOC_Pose_IndexToe">Index Toe</sys:String>
+	<sys:String x:Key="LOC_Pose_MiddleToe">Middle Toe</sys:String>
+	<sys:String x:Key="LOC_Pose_ForeToe">Fore Toe</sys:String>
+	<sys:String x:Key="LOC_Pose_PinkyToe">Pinky Toe</sys:String>
+	<sys:String x:Key="LOC_Pose_ClothesFront">Clothes Front</sys:String>
+	<sys:String x:Key="LOC_Pose_ClothesBack">Clothes Back</sys:String>
+	<sys:String x:Key="LOC_Pose_ClothesSides">Clothes Sides</sys:String>
+	<sys:String x:Key="LOC_Pose_Sheathes">Sheathes</sys:String>
+
 	<!--  Bones  -->
 	<sys:String x:Key="LOC_Bone_n_root">Root</sys:String>
 	<sys:String x:Key="LOC_Bone_n_hara">Abdomen</sys:String>
