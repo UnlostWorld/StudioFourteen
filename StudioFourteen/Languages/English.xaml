@@ -389,6 +389,13 @@
 	<sys:String x:Key="LOC_Pose_ClothesBack">Clothes Back</sys:String>
 	<sys:String x:Key="LOC_Pose_ClothesSides">Clothes Sides</sys:String>
 	<sys:String x:Key="LOC_Pose_Sheathes">Sheathes</sys:String>
+	<sys:String x:Key="LOC_Pose_Hand">Hand</sys:String>
+	<sys:String x:Key="LOC_Pose_Weapon">Weapon</sys:String>
+	<sys:String x:Key="LOC_Pose_Thumb">Thumb</sys:String>
+	<sys:String x:Key="LOC_Pose_Index">Index</sys:String>
+	<sys:String x:Key="LOC_Pose_Middle">Middle</sys:String>
+	<sys:String x:Key="LOC_Pose_Ring">Ring</sys:String>
+	<sys:String x:Key="LOC_Pose_Pinky">Pinky</sys:String>
 
 	<!--  Bones  -->
 	<sys:String x:Key="LOC_Bone_n_root">Root</sys:String>
