@@ -43,8 +43,10 @@ public partial class IconControl : Control
 					iconName = iconName.Substring(5);
 				}
 
+				iconName = iconName.Replace("-", string.Empty);
+
 				FontAwesomeIcon icon = new();
-				icon.Icon = Enum.Parse<IconChar>(iconName);
+				icon.Icon = Enum.Parse<IconChar>(iconName, true);
 				icon.Font = font;
 				this.Content = icon;
 			}

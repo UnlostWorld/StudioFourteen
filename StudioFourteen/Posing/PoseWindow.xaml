@@ -51,16 +51,6 @@
 						<wpfUtils:IconBlock Margin="12" Icon="Person" />
 					</TabItem.Header>
 
-					<TabItem.Visibility>
-						<MultiBinding Converter="{StaticResource MultiOrVisibility}">
-							<Binding ElementName="BodyView" Path="Visibility" />
-							<Binding ElementName="ClothesView" Path="Visibility" />
-							<Binding ElementName="TailView" Path="Visibility" />
-							<Binding ElementName="PenisView" Path="Visibility" />
-							<Binding ElementName="VaginaView" Path="Visibility" />
-						</MultiBinding>
-					</TabItem.Visibility>
-
 					<TabControl>
 						<TabItem Header="Simple">
 
@@ -77,22 +67,20 @@
 									Fill="Transparent"
 									MouseDown="OnBackgroundMouseDown" />
 
-								<pose:SkeletonView
+								<pose:SimpleView
 									x:Name="BodyView"
 									Grid.RowSpan="3"
 									Grid.Column="0"
-									Margin="-40,-45,-40,0"
+									Margin="-40,0,-40,0"
 									FlipSides="{Binding FlipSides}"
-									ObjectTableIndex="{Binding TargetObjectIndex}"
 									ViewDefinition="{Binding Services.Data.SkeletonViews[Body]}" />
 
-								<pose:SkeletonView
+								<pose:SimpleView
 									x:Name="ClothesView"
 									Grid.RowSpan="3"
 									Grid.Column="1"
-									Margin="-40,-45,-40,0"
+									Margin="-40,0,-40,0"
 									FlipSides="{Binding FlipSides}"
-									ObjectTableIndex="{Binding TargetObjectIndex}"
 									ViewDefinition="{Binding Services.Data.SkeletonViews[Clothes]}" />
 
 								<Grid Grid.Column="2" Margin="0,10">
@@ -102,27 +90,24 @@
 										<RowDefinition />
 									</Grid.RowDefinitions>
 
-									<pose:SkeletonView
+									<pose:SimpleView
 										x:Name="TailView"
 										Grid.Row="0"
 										FlipSides="{Binding FlipSides}"
-										ObjectTableIndex="{Binding TargetObjectIndex}"
 										ViewDefinition="{Binding Services.Data.SkeletonViews[Tail]}" />
 
-									<pose:SkeletonView
+									<pose:SimpleView
 										x:Name="PenisView"
 										Grid.Row="1"
 										FlipSides="{Binding FlipSides}"
 										Hide="{Binding Services.Settings.Current.HideGenitals}"
-										ObjectTableIndex="{Binding TargetObjectIndex}"
 										ViewDefinition="{Binding Services.Data.SkeletonViews[Penis]}" />
 
-									<pose:SkeletonView
+									<pose:SimpleView
 										x:Name="VaginaView"
 										Grid.Row="2"
 										FlipSides="{Binding FlipSides}"
 										Hide="{Binding Services.Settings.Current.HideGenitals}"
-										ObjectTableIndex="{Binding TargetObjectIndex}"
 										ViewDefinition="{Binding Services.Data.SkeletonViews[Vagina]}" />
 								</Grid>
 							</Grid>
@@ -145,11 +130,6 @@
 							IconFont="Solid" />
 					</TabItem.Header>
 
-					<TabItem.Visibility>
-						<MultiBinding Converter="{StaticResource MultiOrVisibility}">
-							<Binding ElementName="HandsView" Path="Visibility" />
-						</MultiBinding>
-					</TabItem.Visibility>
 					<TabControl>
 						<TabItem Header="Simple">
 							<Grid>
@@ -158,11 +138,10 @@
 									Fill="Transparent"
 									MouseDown="OnBackgroundMouseDown" />
 
-								<pose:SkeletonView
+								<pose:SimpleView
 									x:Name="HandsView"
 									Grid.Row="0"
 									FlipSides="{Binding FlipSides}"
-									ObjectTableIndex="{Binding TargetObjectIndex}"
 									ViewDefinition="{Binding Services.Data.SkeletonViews[Hands]}" />
 							</Grid>
 						</TabItem>
@@ -180,13 +159,6 @@
 							Icon="FaceGrin"
 							IconFont="Solid" />
 					</TabItem.Header>
-
-					<TabItem.Visibility>
-						<MultiBinding Converter="{StaticResource MultiOrVisibility}">
-							<Binding ElementName="FaceView" Path="Visibility" />
-							<Binding ElementName="TongueView" Path="Visibility" />
-						</MultiBinding>
-					</TabItem.Visibility>
 
 					<TabControl
 						Margin="-3"
@@ -212,26 +184,18 @@
 									<RowDefinition />
 								</Grid.RowDefinitions>
 
-								<Rectangle
-									Grid.RowSpan="3"
-									Grid.ColumnSpan="3"
-									Fill="Transparent"
-									MouseDown="OnBackgroundMouseDown" />
-
-								<pose:SkeletonView
+								<pose:SimpleView
 									x:Name="FaceView"
 									Grid.RowSpan="3"
 									Grid.ColumnSpan="3"
 									FlipSides="{Binding FlipSides}"
-									ObjectTableIndex="{Binding TargetObjectIndex}"
 									ViewDefinition="{Binding Services.Data.SkeletonViews[Face]}" />
 
-								<pose:SkeletonView
+								<pose:SimpleView
 									x:Name="TongueView"
 									Grid.Row="2"
 									Grid.Column="2"
 									FlipSides="{Binding FlipSides}"
-									ObjectTableIndex="{Binding TargetObjectIndex}"
 									ViewDefinition="{Binding Services.Data.SkeletonViews[Tongue]}" />
 							</Grid>
 						</TabItem>
@@ -248,23 +212,11 @@
 							IconFont="Solid" />
 					</TabItem.Header>
 
-					<TabItem.Visibility>
-						<MultiBinding Converter="{StaticResource MultiOrVisibility}">
-							<Binding ElementName="DiabolosView" Path="Visibility" />
-						</MultiBinding>
-					</TabItem.Visibility>
-					<Grid>
-						<Rectangle
-							Grid.RowSpan="3"
-							Fill="Transparent"
-							MouseDown="OnBackgroundMouseDown" />
+					<pose:SimpleView
+						x:Name="DiabolosView"
+						FlipSides="{Binding FlipSides}"
+						ViewDefinition="{Binding Services.Data.SkeletonViews[DiabolosWings]}" />
 
-						<pose:SkeletonView
-							x:Name="DiabolosView"
-							FlipSides="{Binding FlipSides}"
-							ObjectTableIndex="{Binding TargetObjectIndex}"
-							ViewDefinition="{Binding Services.Data.SkeletonViews[DiabolosWings]}" />
-					</Grid>
 				</TabItem>
 			</TabControl>
 		</Grid>

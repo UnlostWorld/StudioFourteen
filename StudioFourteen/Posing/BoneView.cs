@@ -15,65 +15,21 @@
 
 namespace StudioFourteen.Posing;
 
-using System;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Primitives;
 using DependencyPropertyGenerator;
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using Serilog;
-using StudioFourteen.Utilities;
-using WpfUtils;
-using WpfUtils.Extensions;
+using StudioFourteen.Selection;
 
 [DependencyProperty<string>("BoneName")]
 [DependencyProperty<string>("Label")]
-public partial class BoneView : ToggleButton
+[DependencyProperty<bool>("IsMouseHover")]
+public partial class BoneView : Control
 {
-	protected readonly ILogger Log;
-	private int objectTableIndex;
+	public SelectionBase? Selection;
 
-	private BoneSelection? boneSelection;
-
-	public BoneView()
-	{
-		this.Services.Target.TargetChanged += this.OnTargetChanged;
-		this.Log = Logging.ForContext(this.GetType());
-		this.Click += this.OnClicked;
-	}
-
-	protected ServiceManager Services => ServiceManager.Instance;
-
-	private void OnTargetChanged(int objectTableIndex)
-	{
-		this.objectTableIndex = objectTableIndex;
-		this.Load().Run();
-	}
+	public string? SafeName { get; private set; }
 
 	partial void OnBoneNameChanged(string? newValue)
 	{
-		this.Load().Run();
-	}
-
-	private async Task Load()
-	{
-		await this.MainThread();
-		string? boneName = this.BoneName;
-		await Threads.FrameworkThread();
-		if (boneName == null)
-			return;
-
-		this.boneSelection = this.Services.Pose.FindBone(this.objectTableIndex, boneName);
-		await this.MainThread();
-		this.IsEnabled = this.boneSelection != null;
-	}
-
-	private void OnClicked(object sender, RoutedEventArgs e)
-	{
-		if (this.boneSelection == null)
-			return;
-
-		this.Services.Selection.Current = this.boneSelection;
+		this.SafeName = newValue;
 	}
 }
