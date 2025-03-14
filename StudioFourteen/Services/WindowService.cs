@@ -185,7 +185,7 @@ public partial class WindowService : ServiceBase
 		// TODO: This GetPosition only works for embedded windows, we should add a function to do the ClintRect
 		// conversion to find its relative position even while not embedded.
 		System.Windows.Point p = this.GetPosition(wnd);
-		this.SetPosition(wnd, p);
+		this.SetPosition(wnd, p, true);
 	}
 
 	public void Unembed(Window wnd)
@@ -205,7 +205,7 @@ public partial class WindowService : ServiceBase
 		PInvoke.SetWindowLong((HWND)wndInterop.Handle, WINDOW_LONG_PTR_INDEX.GWL_STYLE, style);
 	}
 
-	public void SetPosition(Window wnd, System.Windows.Point position)
+	public void SetPosition(Window wnd, System.Windows.Point position, bool setZ)
 	{
 		if (this.XivProcess == null)
 			return;
@@ -229,8 +229,16 @@ public partial class WindowService : ServiceBase
 		int w = 0;
 		int h = 0;
 
-		PInvoke.SetWindowPos((HWND)wndInterop.Handle, (HWND)IntPtr.Zero, x, y, w, h, SET_WINDOW_POS_FLAGS.SWP_SHOWWINDOW | SET_WINDOW_POS_FLAGS.SWP_NOSIZE | SET_WINDOW_POS_FLAGS.SWP_NOZORDER);
-		PInvoke.SetWindowPos((HWND)wndInterop.Handle, (HWND)IntPtr.Zero, x, y, w, h, SET_WINDOW_POS_FLAGS.SWP_NOSIZE | SET_WINDOW_POS_FLAGS.SWP_NOZORDER);
+		if (setZ)
+		{
+			PInvoke.SetWindowPos((HWND)wndInterop.Handle, (HWND)IntPtr.Zero, x, y, w, h, SET_WINDOW_POS_FLAGS.SWP_SHOWWINDOW | SET_WINDOW_POS_FLAGS.SWP_NOSIZE);
+			PInvoke.SetWindowPos((HWND)wndInterop.Handle, (HWND)IntPtr.Zero, x, y, w, h, SET_WINDOW_POS_FLAGS.SWP_NOSIZE);
+		}
+		else
+		{
+			PInvoke.SetWindowPos((HWND)wndInterop.Handle, (HWND)IntPtr.Zero, x, y, w, h, SET_WINDOW_POS_FLAGS.SWP_SHOWWINDOW | SET_WINDOW_POS_FLAGS.SWP_NOSIZE | SET_WINDOW_POS_FLAGS.SWP_NOZORDER);
+			PInvoke.SetWindowPos((HWND)wndInterop.Handle, (HWND)IntPtr.Zero, x, y, w, h, SET_WINDOW_POS_FLAGS.SWP_NOSIZE | SET_WINDOW_POS_FLAGS.SWP_NOZORDER);
+		}
 
 		if (wnd.Topmost)
 		{

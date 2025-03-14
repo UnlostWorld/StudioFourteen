@@ -152,7 +152,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		set
 		{
 			this.desiredPosition = value;
-			this.Services.Windows.SetPosition(this, value);
+			this.Services.Windows.SetPosition(this, value, false);
 		}
 	}
 

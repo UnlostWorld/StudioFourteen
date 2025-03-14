@@ -63,7 +63,7 @@ public partial class BackgroundWindow : PanelWindow
 		this.Width = xivWindowSize.Width;
 		this.Height = xivWindowSize.Height;
 
-		this.Services.Windows.SetPosition(this, new(0, 0));
+		this.Services.Windows.SetPosition(this, new(0, 0), false);
 	}
 
 	private void OnMouseEnterSelf(object sender, MouseEventArgs e)
