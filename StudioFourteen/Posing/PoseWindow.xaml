@@ -2,11 +2,12 @@
 	x:Class="StudioFourteen.Posing.PoseWindow"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:body="clr-namespace:StudioFourteen.Posing.Body"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:hands="clr-namespace:StudioFourteen.Posing.Hands"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:pose="clr-namespace:StudioFourteen.Posing"
-	xmlns:body="clr-namespace:StudioFourteen.Posing.Body"
 	xmlns:windows="clr-namespace:StudioFourteen.Panels"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="{DynamicResource LOC_Pose}"
@@ -149,20 +150,27 @@
 							<Binding ElementName="HandsView" Path="Visibility" />
 						</MultiBinding>
 					</TabItem.Visibility>
+					<TabControl>
+						<TabItem Header="Simple">
+							<Grid>
+								<Rectangle
+									Grid.RowSpan="3"
+									Fill="Transparent"
+									MouseDown="OnBackgroundMouseDown" />
 
-					<Grid>
-						<Rectangle
-							Grid.RowSpan="3"
-							Fill="Transparent"
-							MouseDown="OnBackgroundMouseDown" />
+								<pose:SkeletonView
+									x:Name="HandsView"
+									Grid.Row="0"
+									FlipSides="{Binding FlipSides}"
+									ObjectTableIndex="{Binding TargetObjectIndex}"
+									ViewDefinition="{Binding Services.Data.SkeletonViews[Hands]}" />
+							</Grid>
+						</TabItem>
+						<TabItem Header="Matrix">
+							<hands:MatrixView/>
+						</TabItem>
+					</TabControl>
 
-						<pose:SkeletonView
-							x:Name="HandsView"
-							Grid.Row="0"
-							FlipSides="{Binding FlipSides}"
-							ObjectTableIndex="{Binding TargetObjectIndex}"
-							ViewDefinition="{Binding Services.Data.SkeletonViews[Hands]}" />
-					</Grid>
 				</TabItem>
 
 				<TabItem>

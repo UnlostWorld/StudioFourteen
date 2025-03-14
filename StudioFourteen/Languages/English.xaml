@@ -237,7 +237,6 @@
 	<sys:String x:Key="LOC_Pose_RevertPose">Revert all changes to {0}'s pose</sys:String>
 	<sys:String x:Key="LOC_Pose_Reference">Set the targeted actor to its reference pose</sys:String>
 	<sys:String x:Key="LOC_PoseMatrix_HeadCategory">Head</sys:String>
-	<sys:String x:Key="LOC_PoseMatrix_HairAndAccessoriesCategory">Hair and Accessories</sys:String>
 	<sys:String x:Key="LOC_PoseMatrix_BodyCategory">Body</sys:String>
 	<sys:String x:Key="LOC_PoseMatrix_GenitalCategory">Genitals</sys:String>
 	<sys:String x:Key="LOC_PoseMatrix_LeftHandCategory">Left Hand</sys:String>
@@ -333,8 +332,6 @@
 
 	<!-- Face bones for new Face Matrix View
 	<sys:String x:Key="LOC_Pose_Bridge">Bridge</sys:String>
-	<sys:String x:Key="LOC_Pose_Ears">Ears</sys:String>
-	<sys:String x:Key="LOC_Pose_VieraEars">Viera Ears</sys:String>
 	<sys:String x:Key="LOC_Pose_Eyes">Eyes</sys:String>
 	<sys:String x:Key="LOC_Pose_Eyebrows">Eyebrows</sys:String>
 	<sys:String x:Key="LOC_Pose_Brows">Brows</sys:String>
@@ -346,9 +343,10 @@
 	<sys:String x:Key="LOC_Pose_UpperLip">Upper Lip</sys:String>
 	<sys:String x:Key="LOC_Pose_LowerLip">Lower Lip<sys:String> 
 	-->
+	<sys:String x:Key="LOC_Pose_Ears">Ears</sys:String>
 	<sys:String x:Key="LOC_Pose_Earrings">Earrings</sys:String>
 	<sys:String x:Key="LOC_Pose_Whiskers">Whiskers</sys:String>
-	<sys:String x:Key="LOC_Pose_General">General</sys:String>
+	<sys:String x:Key="LOC_Pose_Hair">Hair</sys:String>
 	<sys:String x:Key="LOC_Pose_Neck">Neck</sys:String>
 	<sys:String x:Key="LOC_Pose_Cervical">Cervical</sys:String>
 	<sys:String x:Key="LOC_Pose_Thoracic">Thoracic</sys:String>
