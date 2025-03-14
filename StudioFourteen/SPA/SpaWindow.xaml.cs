@@ -23,8 +23,6 @@ public partial class SpaWindow : PanelWindow
 {
 	private static SpaWindow? instance;
 
-	public override bool IsUiVisible => true;
-
 	public static void OpenSpa()
 	{
 		Task.Run(async () =>
@@ -57,4 +55,6 @@ public partial class SpaWindow : PanelWindow
 
 		return true;
 	}
+
+	protected override bool GetIsUiVisible() => true;
 }

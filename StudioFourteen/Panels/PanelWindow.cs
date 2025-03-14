@@ -16,6 +16,7 @@
 namespace StudioFourteen.Panels;
 
 using DependencyPropertyGenerator;
+using PropertyChanged.SourceGenerator;
 using Serilog;
 using StudioFourteen.Input;
 using StudioFourteen.Mvm;
@@ -52,6 +53,9 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	private bool isMinimizing = false;
 	private Point desiredPosition;
 
+	[Notify] private bool isUiVisible = true;
+	[Notify] private bool isUiVisibleAndOpen = true;
+
 	public PanelWindow()
 	{
 		this.Log = Logging.ForContext(this.GetType());
@@ -83,43 +87,6 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	public event PropertyChangedEventHandler? PropertyChanged;
 
 	public ServiceManager Services => ServiceManager.Instance;
-
-	public virtual bool IsUiVisibleAndOpen
-	{
-		get
-		{
-			if (this.panel?.VisibilityMode == PanelVisibility.Always)
-				return true;
-
-			if (this.Services.Photos.IsPhotoMode)
-				return this.panel?.VisibilityMode == PanelVisibility.PhotoMode;
-
-			if (!this.IsUiVisible)
-				return false;
-
-			return this.Services.Studio.IsOpen;
-		}
-	}
-
-	public virtual bool IsUiVisible
-	{
-		get
-		{
-			if (this.panel?.VisibilityMode == PanelVisibility.Always)
-				return true;
-
-			if (this.Services.Photos.IsPhotoMode)
-				return this.panel?.VisibilityMode == PanelVisibility.PhotoMode;
-
-			if (DalamudServices.GameGui?.GameUiHidden == true)
-				return false;
-
-			if (this.Services.Reshade.IsReshadeOverlayOpen)
-				return false;
-
-			return true;
-		}
-	}
 
 	public bool HasIcon => this.Panel != null && !string.IsNullOrEmpty(this.Panel.TitleIcon);
 	public bool HasSubtitle => this.Panel != null && !string.IsNullOrEmpty(this.Panel.Subtitle);
@@ -475,6 +442,37 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		this.desiredPosition = this.Position;
 	}
 
+	protected virtual bool GetIsUiVisible()
+	{
+		if (this.panel?.VisibilityMode == PanelVisibility.Always)
+			return true;
+
+		if (this.Services.Photos.IsPhotoMode)
+			return this.panel?.VisibilityMode == PanelVisibility.PhotoMode;
+
+		if (DalamudServices.GameGui?.GameUiHidden == true)
+			return false;
+
+		if (this.Services.Reshade.IsReshadeOverlayOpen)
+			return false;
+
+		return true;
+	}
+
+	protected virtual bool GetIsUiVisibleAndOpen()
+	{
+		if (this.panel?.VisibilityMode == PanelVisibility.Always)
+			return true;
+
+		if (this.Services.Photos.IsPhotoMode)
+			return this.panel?.VisibilityMode == PanelVisibility.PhotoMode;
+
+		if (!this.IsUiVisible)
+			return false;
+
+		return this.Services.Studio.IsOpen;
+	}
+
 	partial void OnIsEmbeddedChanged(bool newValue)
 	{
 		this.WindowState = WindowState.Normal;
@@ -553,31 +551,39 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 	private void OnReshadeOverlayChanged(bool open)
 	{
-		this.NotifyPropertyChanged(nameof(PanelWindow.IsUiVisible));
-		this.NotifyPropertyChanged(nameof(PanelWindow.IsUiVisibleAndOpen));
+			this.UpdateUiVisible();
 	}
 
 	private void OnGameUiToggled(object? sender, bool e)
 	{
-		this.NotifyPropertyChanged(nameof(PanelWindow.IsUiVisible));
-		this.NotifyPropertyChanged(nameof(PanelWindow.IsUiVisibleAndOpen));
+			this.UpdateUiVisible();
 	}
 
 	private void OnStudioPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
-		this.NotifyPropertyChanged(nameof(PanelWindow.IsUiVisibleAndOpen));
+			this.UpdateUiVisible();
 	}
 
 	private void OnPhotosPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
-		this.NotifyPropertyChanged(nameof(PanelWindow.IsUiVisible));
-		this.NotifyPropertyChanged(nameof(PanelWindow.IsUiVisibleAndOpen));
+		this.UpdateUiVisible();
 	}
 
 	private void OnPanelPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
 		this.NotifyPropertyChanged(nameof(PanelWindow.HasIcon));
 		this.NotifyPropertyChanged(nameof(PanelWindow.HasSubtitle));
+	}
+
+	private void UpdateUiVisible()
+	{
+		this.Dispatcher.Invoke(() =>
+		{
+			this.IsUiVisible = this.GetIsUiVisible();
+			this.IsUiVisibleAndOpen = this.GetIsUiVisibleAndOpen();
+
+			this.Log.Information($">> {this.IsUiVisibleAndOpen}");
+		});
 	}
 
 	private async Task WindowWatcher()

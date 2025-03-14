@@ -53,10 +53,10 @@
 
 					<Button
 						x:Name="LaunchButton"
-						Visibility="Visible"
 						VerticalAlignment="Top"
 						Click="OnLaunchClicked"
-						Style="{DynamicResource LauncherButton}" />
+						Style="{DynamicResource LauncherButton}"
+						Visibility="Visible" />
 
 					<Popup
 						x:Name="LauncherMenuPopup"
@@ -82,13 +82,48 @@
 					<Setter TargetName="LauncherMenuPopup" Property="HorizontalOffset" Value="-10" />
 				</Trigger>
 				<Trigger Property="IsBottomSide" Value="True">
-					<Setter TargetName="LauncherMenuPopup" Property="VerticalOffset" Value="48" />
 					<Setter TargetName="LaunchButton" Property="VerticalAlignment" Value="Bottom" />
+					<Setter TargetName="LauncherMenuPopup" Property="VerticalOffset" Value="48" />
 					<Setter TargetName="TaskBar" Property="Padding" Value="0,0,0,56" />
 					<Setter TargetName="TaskBar" Property="VerticalAlignment" Value="Bottom" />
 					<Setter TargetName="TitleBar" Property="Margin" Value="0,0,0,52" />
 					<Setter TargetName="TitleBar" Property="VerticalAlignment" Value="Bottom" />
 				</Trigger>
+				<DataTrigger Binding="{Binding IsUiVisible}" Value="False">
+					<DataTrigger.EnterActions>
+						<StopStoryboard BeginStoryboardName="FadeIn" />
+						<BeginStoryboard x:Name="FadeOut">
+							<Storyboard FillBehavior="HoldEnd">
+								<DoubleAnimation
+									Storyboard.TargetName="MainGrid"
+									Storyboard.TargetProperty="Opacity"
+									To="0"
+									Duration="0:00:00.100">
+									<DoubleAnimation.EasingFunction>
+										<SineEase EasingMode="EaseIn" />
+									</DoubleAnimation.EasingFunction>
+								</DoubleAnimation>
+							</Storyboard>
+						</BeginStoryboard>
+					</DataTrigger.EnterActions>
+
+					<DataTrigger.ExitActions>
+						<StopStoryboard BeginStoryboardName="FadeOut" />
+						<BeginStoryboard x:Name="FadeIn">
+							<Storyboard FillBehavior="Stop">
+								<DoubleAnimation
+									Storyboard.TargetName="MainGrid"
+									Storyboard.TargetProperty="Opacity"
+									To="1"
+									Duration="0:00:00.200">
+									<DoubleAnimation.EasingFunction>
+										<SineEase EasingMode="EaseOut" />
+									</DoubleAnimation.EasingFunction>
+								</DoubleAnimation>
+							</Storyboard>
+						</BeginStoryboard>
+					</DataTrigger.ExitActions>
+				</DataTrigger>
 			</ControlTemplate.Triggers>
 
 		</ControlTemplate>
