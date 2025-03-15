@@ -264,14 +264,20 @@ public partial class PoseViewBase : View
 
 	private void OnSelectionChanged(SelectionBase? oldSelection, SelectionBase? newSelection)
 	{
-		this.ForEachControlInSelection(oldSelection, (c) => c.IsSelected = false);
-		this.ForEachControlInSelection(newSelection, (c) => c.IsSelected = true);
+		this.Dispatcher.Invoke(() =>
+		{
+			this.ForEachControlInSelection(oldSelection, (c) => c.IsSelected = false);
+			this.ForEachControlInSelection(newSelection, (c) => c.IsSelected = true);
+		});
 	}
 
 	private void OnHoverChanged(SelectionBase? oldSelection, SelectionBase? newSelection)
 	{
-		this.ForEachControlInSelection(oldSelection, (c) => c.IsMouseHover = false);
-		this.ForEachControlInSelection(newSelection, (c) => c.IsMouseHover = true);
+		this.Dispatcher.Invoke(() =>
+		{
+			this.ForEachControlInSelection(oldSelection, (c) => c.IsMouseHover = false);
+			this.ForEachControlInSelection(newSelection, (c) => c.IsMouseHover = true);
+		});
 	}
 
 	private unsafe void PopulateControl(PoseSelectionControl control, Character* pCharacter)

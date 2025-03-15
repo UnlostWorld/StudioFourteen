@@ -51,8 +51,8 @@
 						<wpfUtils:IconBlock Margin="12" Icon="Person" />
 					</TabItem.Header>
 
-					<TabControl>
-						<TabItem Header="Simple">
+					<TabControl Margin="-3" SelectedIndex="{Binding SelectedBodyTab}">
+						<TabItem Header="{DynamicResource LOC_Pose_Simple}">
 
 							<Grid>
 								<Grid.ColumnDefinitions>
@@ -113,7 +113,7 @@
 							</Grid>
 						</TabItem>
 
-						<TabItem Header="Matrix">
+						<TabItem Header="{DynamicResource LOC_Pose_Matrix}">
 							<ScrollViewer>
 								<body:MatrixView />
 							</ScrollViewer>
@@ -130,8 +130,8 @@
 							IconFont="Solid" />
 					</TabItem.Header>
 
-					<TabControl>
-						<TabItem Header="Simple">
+					<TabControl Margin="-3" SelectedIndex="{Binding SelectedHandsTab}">
+						<TabItem Header="{DynamicResource LOC_Pose_Simple}">
 							<Grid>
 								<Rectangle
 									Grid.RowSpan="3"
@@ -145,8 +145,8 @@
 									ViewDefinition="{Binding Services.Data.SkeletonViews[Hands]}" />
 							</Grid>
 						</TabItem>
-						<TabItem Header="Matrix">
-							<hands:MatrixView/>
+						<TabItem Header="{DynamicResource LOC_Pose_Matrix}">
+							<hands:MatrixView />
 						</TabItem>
 					</TabControl>
 
@@ -169,7 +169,7 @@
 							<pose:ExpressionsView FlipSides="{Binding FlipSides}" ObjectTableIndex="{Binding TargetObjectIndex}" />
 						</TabItem>
 
-						<TabItem Header="Bones">
+						<TabItem Header="{DynamicResource LOC_Pose_Simple}">
 							<Grid>
 
 								<Grid.ColumnDefinitions>
