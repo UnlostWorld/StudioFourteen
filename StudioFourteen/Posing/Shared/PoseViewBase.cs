@@ -26,6 +26,7 @@ using System;
 using WpfUtils.Extensions;
 using System.Windows.Input;
 using System.Windows.Media;
+using StudioFourteen.Selection;
 
 public class PoseViewBase : View
 {
@@ -33,33 +34,13 @@ public class PoseViewBase : View
 
 	private readonly Dictionary<string, List<PoseSelectionControl>> targetNameLookup = new();
 	private readonly Dictionary<BoneId, List<PoseSelectionControl>> targetIdLookup = new();
+	private readonly Dictionary<ISelectionId, List<PoseSelectionControl>> targetSelectionLookup = new();
 
 	private List<PoseSelectionControl>? targets;
-	private PoseSelectionControl? mouseOver;
 
 	public PoseViewBase()
 	{
-		this.Services.Target.TargetChanged += this.OnTargetChanged;
-
 		this.Background = new SolidColorBrush(Colors.Transparent);
-	}
-
-	public PoseSelectionControl? MouseOver
-	{
-		get => this.mouseOver;
-		set
-		{
-			if (this.mouseOver == value)
-				return;
-
-			if (this.mouseOver != null)
-				this.mouseOver.IsMouseHover = false;
-
-			this.mouseOver = value;
-
-			if (this.mouseOver != null)
-				this.mouseOver.IsMouseHover = true;
-		}
 	}
 
 	public List<PoseSelectionControl>? GetTargets()
@@ -103,27 +84,27 @@ public class PoseViewBase : View
 
 		if (closestLink != null && closestDist < MouseOverDistance)
 		{
-			this.MouseOver = closestLink;
+			this.Services.Selection.Hover = closestLink.Selection;
 		}
 		else
 		{
-			this.MouseOver = null;
+			this.Services.Selection.Hover = null;
 		}
 	}
 
 	protected override void OnMouseLeave(MouseEventArgs e)
 	{
 		base.OnMouseLeave(e);
-		this.MouseOver = null;
+		this.Services.Selection.Hover = null;
 	}
 
 	protected override void OnMouseUp(MouseButtonEventArgs e)
 	{
 		base.OnMouseUp(e);
 
-		if (this.MouseOver != null)
+		if (this.Services.Selection.Hover != null)
 		{
-			ServiceManager.Instance.Selection.Current = this.MouseOver.Selection;
+			ServiceManager.Instance.Selection.Current = this.Services.Selection.Hover;
 			e.Handled = true;
 		}
 	}
@@ -159,7 +140,21 @@ public class PoseViewBase : View
 	protected override void OnLoaded()
 	{
 		base.OnLoaded();
+
+		this.Services.Target.TargetChanged += this.OnTargetChanged;
+		this.Services.Selection.SelectionChanged += this.OnSelectionChanged;
+		this.Services.Selection.HoverChanged += this.OnHoverChanged;
+
 		this.UpdateTargets();
+	}
+
+	protected override void OnUnloaded()
+	{
+		base.OnUnloaded();
+
+		this.Services.Target.TargetChanged -= this.OnTargetChanged;
+		this.Services.Selection.SelectionChanged -= this.OnSelectionChanged;
+		this.Services.Selection.HoverChanged -= this.OnHoverChanged;
 	}
 
 	protected void UpdateTargets()
@@ -208,11 +203,14 @@ public class PoseViewBase : View
 
 			foreach (PoseSelectionControl view in this.targets)
 			{
-				this.PopulateView(view, pCharacter);
+				this.PopulateControl(view, pCharacter);
 			}
 		}
 
 		await this.MainThread();
+
+		this.OnHoverChanged(null, this.Services.Selection.Hover);
+		this.OnSelectionChanged(null, this.Services.Selection.Current);
 	}
 
 	private void OnTargetChanged(int objectTableIndex)
@@ -220,59 +218,81 @@ public class PoseViewBase : View
 		this.UpdateTargets();
 	}
 
-	private unsafe bool PopulateView(PoseSelectionControl view, Character* pCharacter)
+	private void ForEachControlInSelection(SelectionBase? selection, Action<PoseSelectionControl> action)
 	{
-		if (view.SafeName == null)
-			return false;
-
-		try
+		if (selection != null)
 		{
-			if (!this.targetNameLookup.ContainsKey(view.SafeName))
-				this.targetNameLookup.Add(view.SafeName, new());
-
-			this.targetNameLookup[view.SafeName].Add(view);
-
-			if (view.SafeName == "character")
+			if (this.targetSelectionLookup.TryGetValue(selection.Id, out List<PoseSelectionControl>? controls) && controls != null)
 			{
-				view.Selection = new GameObjectSelection(pCharacter->ObjectIndex);
-				return true;
-			}
-
-			BoneSelection? selection = ServiceManager.Instance.Pose.FindBone(pCharacter, view.SafeName);
-			if (selection != null)
-			{
-				foreach (BoneId boneId in selection.BoneIds)
+				foreach(PoseSelectionControl control in controls)
 				{
-					if (!this.targetIdLookup.ContainsKey(boneId))
-						this.targetIdLookup.Add(boneId, new());
-
-					this.targetIdLookup[boneId].Add(view);
+					action.Invoke(control);
 				}
-
-				view.Selection = selection;
-				return true;
 			}
-
-			return false;
-		}
-		catch (Exception ex)
-		{
-			this.Log.Error(ex, $"Error getting bone selection for BoneView: {view.SafeName}");
-			return false;
 		}
 	}
 
-	/*private void OnSelectionChanged(object? newSelection)
+	private void OnSelectionChanged(SelectionBase? oldSelection, SelectionBase? newSelection)
 	{
-		if (newSelection is SelectionBase selection)
+		this.ForEachControlInSelection(oldSelection, (c) => c.IsSelected = false);
+		this.ForEachControlInSelection(newSelection, (c) => c.IsSelected = true);
+	}
+
+	private void OnHoverChanged(SelectionBase? oldSelection, SelectionBase? newSelection)
+	{
+		this.ForEachControlInSelection(oldSelection, (c) => c.IsMouseHover = false);
+		this.ForEachControlInSelection(newSelection, (c) => c.IsMouseHover = true);
+	}
+
+	private unsafe void PopulateControl(PoseSelectionControl control, Character* pCharacter)
+	{
+		if (control.SafeName == null)
+			return;
+
+		try
 		{
-			this.Dispatcher.Invoke(() =>
+			if (!this.targetNameLookup.ContainsKey(control.SafeName))
+				this.targetNameLookup.Add(control.SafeName, new());
+
+			this.targetNameLookup[control.SafeName].Add(control);
+
+			if (control.SafeName == "character")
 			{
-				foreach (var link in this.boneButtons)
+				control.Selection = new GameObjectSelection(pCharacter->ObjectIndex);
+			}
+			else
+			{
+				BoneSelection? selection = ServiceManager.Instance.Pose.FindBone(pCharacter, control.SafeName);
+				if (selection != null)
 				{
-					link.IsSelected = link.Selection.Equals(selection);
+					foreach (BoneId boneId in selection.BoneIds)
+					{
+						if (!this.targetIdLookup.ContainsKey(boneId))
+							this.targetIdLookup.Add(boneId, new());
+
+						this.targetIdLookup[boneId].Add(control);
+					}
+
+					control.Selection = selection;
 				}
-			});
+			}
+
+			if (control.Selection == null)
+			{
+				// TODO: Hide the control;
+			}
+			else
+			{
+				ISelectionId selectionId = control.Selection.Id;
+				if (!this.targetSelectionLookup.ContainsKey(selectionId))
+					this.targetSelectionLookup.Add(selectionId, new());
+
+				this.targetSelectionLookup[selectionId].Add(control);
+			}
 		}
-	}*/
+		catch (Exception ex)
+		{
+			this.Log.Error(ex, $"Error getting bone selection for BoneView: {control.SafeName}");
+		}
+	}
 }

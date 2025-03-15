@@ -45,7 +45,7 @@ public abstract class SelectionOverlayLayerBase : OverlayLayerBase
 		this.Services.Target.TargetChanged -= this.OnTargetChanged;
 	}
 
-	protected virtual void OnSelectionChanged(SelectionBase? newSelection)
+	protected virtual void OnSelectionChanged(SelectionBase? oldSelection, SelectionBase? newSelection)
 	{
 	}
 

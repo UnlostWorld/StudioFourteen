@@ -22,6 +22,7 @@ using StudioFourteen.Selection;
 [DependencyProperty<string>("SelectionName")]
 [DependencyProperty<string>("Label")]
 [DependencyProperty<bool>("IsMouseHover")]
+[DependencyProperty<bool>("IsSelected")]
 public partial class PoseSelectionControl : Control
 {
 	public SelectionBase? Selection;

@@ -38,6 +38,11 @@
 				<Setter TargetName="LabelText" Property="Foreground" Value="{DynamicResource ControlForegroundHighlightBrush}" />
 			</Trigger>
 
+			<Trigger Property="IsSelected" Value="true">
+				<Setter TargetName="Base" Property="Fill" Value="{DynamicResource TrimBrush}" />
+				<Setter TargetName="LabelText" Property="Foreground" Value="{DynamicResource TrimBrush}" />
+			</Trigger>
+
 			<Trigger Property="IsEnabled" Value="false">
 				<Setter Property="Visibility" Value="Collapsed" />
 			</Trigger>
