@@ -15,15 +15,18 @@
 
 namespace StudioFourteen.Posing;
 
+using Dalamud.Plugin.Services;
 using DependencyPropertyGenerator;
 using FontAwesome.Sharp;
 using StudioFourteen.Mvm;
 using StudioFourteen.Selection;
 using StudioFourteen.Structs.Extensions;
 using StudioFourteen.Utilities;
+using System;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using TerraFX.Interop.Windows;
 using WpfUtils.Extensions;
 
 public class EyeSelectionId(int objectTableIndex) : ISelectionId
@@ -31,6 +34,11 @@ public class EyeSelectionId(int objectTableIndex) : ISelectionId
 	public int ObjectTableIndex { get; init; } = objectTableIndex;
 
 	public override SelectionBase Create() => new EyeSelection(this.ObjectTableIndex);
+
+	public override int GetHashCode()
+	{
+		return HashCode.Combine(this.GetType(), this.ObjectTableIndex);
+	}
 }
 
 [DependencyProperty<EyeSelection>("Selection")]
@@ -66,8 +74,7 @@ public partial class EyeInspector : View
 	{
 		get
 		{
-			if (this.Selection?.EyeBone == null
-				|| !this.Selection.EyeBone.IsReady)
+			if (this.Selection?.EyeBone == null || !this.Selection.EyeBone.IsReady)
 				return Vector3.Zero;
 
 			if (this.trackingEuler != null)
@@ -78,8 +85,7 @@ public partial class EyeInspector : View
 
 		set
 		{
-			if (this.Selection?.EyeBone == null
-				|| !this.Selection.EyeBone.IsReady)
+			if (this.Selection?.EyeBone == null || !this.Selection.EyeBone.IsReady)
 				return;
 
 			this.trackingEuler = value;
@@ -192,6 +198,14 @@ public class EyeSelection(int objectTableIndex)
 		this.IrisBone?.Deactivate();
 	}
 
+	public override void OnFrameworkUpdate(IFramework framework)
+	{
+		base.OnFrameworkUpdate(framework);
+
+		this.EyeBone?.OnFrameworkUpdate(framework);
+		this.IrisBone?.OnFrameworkUpdate(framework);
+	}
+
 	private async Task Init()
 	{
 		await Threads.FrameworkThread();
@@ -202,12 +216,20 @@ public class EyeSelection(int objectTableIndex)
 			this.EyeBone.Activate();
 			this.EyeBone.MirrorMode = this.mirrorMode;
 		}
+		else
+		{
+			this.Log.Warning("No Eye bone found");
+		}
 
 		this.IrisBone = this.Services.Pose.FindBone(this.ObjectTableIndex, "j_f_irisprm_r");
 		if (this.IrisBone != null)
 		{
 			this.IrisBone.Activate();
 			this.IrisBone.MirrorMode = this.mirrorMode;
+		}
+		else
+		{
+			this.Log.Warning("No Iris bone found");
 		}
 	}
 }
