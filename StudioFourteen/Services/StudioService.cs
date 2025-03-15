@@ -17,7 +17,7 @@ namespace StudioFourteen.Services;
 
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Plugin;
-using StudioFourteen.SPA;
+using StudioFourteen.AIO;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -72,7 +72,7 @@ public partial class StudioService : ServiceBase
 
 	public override Task Stop()
 	{
-		SpaWindow.CloseSpa();
+		AioWindow.CloseAio();
 		return base.Stop();
 	}
 
