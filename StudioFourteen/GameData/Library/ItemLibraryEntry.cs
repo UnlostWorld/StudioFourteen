@@ -54,6 +54,15 @@ public class ItemLibraryEntry : ExcelLibraryEntry
 
 		if (this.EquipSlot != null)
 			this.Tags.Add(this.EquipSlot.Value.ToTags());
+
+		if (this.Item.DyeCount == 1)
+		{
+			this.Tags.Add("Dyeable (One Channel)");
+		}
+		else if (this.Item.DyeCount == 2)
+		{
+			this.Tags.Add("Dyeable (Two Channel)");
+		}
 	}
 
 	public override string? Name => this.Item.Name.GetString();
@@ -177,7 +186,9 @@ public class ItemLibraryEntry : ExcelLibraryEntry
 public class ItemLibraryPreview(ItemLibraryEntry item)
 	: LibraryPreviewBase
 {
-	private EquipmentSlot backupSlot;
+	private WeaponSlot backupWeaponSlot;
+	private WeaponModelId? backupWeapon;
+	private EquipmentSlot backupEquipmentSlot;
 	private EquipmentModelId? backupEquipment;
 
 	protected override async Task Start(LibraryPreviewBase? other)
@@ -202,13 +213,22 @@ public class ItemLibraryPreview(ItemLibraryEntry item)
 				return;
 			}
 		}
+
+		foreach (WeaponSlot slot in Enum.GetValues<WeaponSlot>())
+		{
+			if (equipSlot.Contains(slot))
+			{
+				await this.Start(slot);
+				return;
+			}
+		}
 	}
 
 	protected virtual async Task Start(EquipmentSlot slot)
 	{
 		await Threads.FrameworkThread();
 
-		this.backupSlot = slot;
+		this.backupEquipmentSlot = slot;
 
 		unsafe
 		{
@@ -223,18 +243,46 @@ public class ItemLibraryPreview(ItemLibraryEntry item)
 			CharacterExtensions.UpdateSource.Preview);
 	}
 
-	protected override async Task Stop()
+	protected virtual async Task Start(WeaponSlot slot)
 	{
-		if (this.backupEquipment == null)
-			return;
-
 		await Threads.FrameworkThread();
 
-		this.Services.CharacterAppearance.SetEquipment(
+		this.backupWeaponSlot = slot;
+
+		unsafe
+		{
+			Character* pCharacter = this.Services.Target.GetTarget();
+			this.backupWeapon = pCharacter->DrawData.Weapon(slot).ModelId;
+		}
+
+		this.Services.CharacterAppearance.SetWeapon(
 			this.Services.Target.TargetObjectIndex,
-			this.backupSlot,
-			this.backupEquipment.Value,
+			slot,
+			item.GetModelId(slot),
 			CharacterExtensions.UpdateSource.Preview);
+	}
+
+	protected override async Task Stop()
+	{
+		await Threads.FrameworkThread();
+
+		if (this.backupEquipment != null)
+		{
+			this.Services.CharacterAppearance.SetEquipment(
+				this.Services.Target.TargetObjectIndex,
+				this.backupEquipmentSlot,
+				this.backupEquipment.Value,
+				CharacterExtensions.UpdateSource.Preview);
+		}
+
+		if (this.backupWeapon != null)
+		{
+			this.Services.CharacterAppearance.SetWeapon(
+				this.Services.Target.TargetObjectIndex,
+				this.backupWeaponSlot,
+				this.backupWeapon.Value,
+				CharacterExtensions.UpdateSource.Preview);
+		}
 	}
 }
 

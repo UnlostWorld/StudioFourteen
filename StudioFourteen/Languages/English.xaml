@@ -328,7 +328,9 @@
 	<sys:String x:Key="LOC_Tag_LFinger">Left Finger</sys:String>
 	<sys:String x:Key="LOC_Tag_LRing">Left Ring</sys:String>
 	<sys:String x:Key="LOC_Tag_MainHand">Main Hand</sys:String>
+	<sys:String x:Key="LOC_Tag_MainArm">Main Arm</sys:String>
 	<sys:String x:Key="LOC_Tag_OffHand">Off Hand</sys:String>
+	<sys:String x:Key="LOC_Tag_OffArm">Off Arm</sys:String>
 	<sys:String x:Key="LOC_Tag_Prop">Prop</sys:String>
 
 	<!-- Pose Matrix Labels-->

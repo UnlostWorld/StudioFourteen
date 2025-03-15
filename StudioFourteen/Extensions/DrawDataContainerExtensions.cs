@@ -78,8 +78,8 @@ public static class DrawDataContainerExtensions
 	{
 		switch (self)
 		{
-			case WeaponSlot.MainHand: return Tag.Get("MainHand");
-			case WeaponSlot.OffHand: return Tag.Get("OffHand");
+			case WeaponSlot.MainHand: return Tag.Get("MainHand").WithAlias("MainArm");
+			case WeaponSlot.OffHand: return Tag.Get("OffHand").WithAlias("OffArm");
 			case WeaponSlot.Unk: return Tag.Get("Prop");
 		}
 
