@@ -72,7 +72,7 @@ public partial class SimpleView : PoseViewBase
 					PoseSelectionControl mirrorTarget = new();
 					mirrorTarget.SelectionName = mirrorName;
 					this.canvas.Children.Add(mirrorTarget);
-					Canvas.SetZIndex(target, 100);
+					Canvas.SetZIndex(target, -100);
 				}
 			}
 
