@@ -22,6 +22,7 @@ using StudioFourteen.Selection;
 using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 
@@ -85,37 +86,23 @@ public class BoneSelection : TransformSelectionBase
 		{ "j_f_eye_l", MirrorModes.MirrorTCopyRS },
 	};
 
-	private readonly List<BoneId> boneIds;
-	private readonly List<BoneId> parentBoneIds;
 	private readonly List<BoneReference> bones = new();
 	private BoneReference? bone;
 	private bool isReady = false;
 
-	public BoneSelection(List<BoneId> bones, List<BoneId> parents, string name)
+	public BoneSelection(Dictionary<BoneId, List<BoneId>> bonePaths, string name)
 	{
 		this.BoneName = name;
-		this.boneIds = bones;
-		this.parentBoneIds = parents;
+		this.BonePaths = bonePaths;
 
 		this.IsFaceBone = name.StartsWith("j_f_");
 	}
 
-	public BoneSelection(BoneId bone, BoneId parent, string name)
-		: this([bone], [parent], name)
-	{
-	}
-
-	public BoneSelection(BoneId bone, string name)
-		: this([bone], [], name)
-	{
-	}
-
+	public Dictionary<BoneId, List<BoneId>> BonePaths { get; private set; }
 	public override string Name => Resources.Find($"LOC_Bone_{this.BoneName}", this.BoneName);
 	public override string? Subtitle => this.BoneName;
 	public override IconChar Icon => IconChar.Bone;
 	public string BoneName { get; init; }
-	public IReadOnlyCollection<BoneId> BoneIds => this.boneIds.AsReadOnly();
-	public IReadOnlyCollection<BoneId> ParentBoneIds => this.parentBoneIds.AsReadOnly();
 
 	public bool IsFaceBone { get; private set; }
 	public override double TranslationLargeChange => this.IsFaceBone ? 0.01 : 0.1;
@@ -209,12 +196,12 @@ public class BoneSelection : TransformSelectionBase
 		set => this.SetReferenceTransform(value);
 	}
 
-	public override ISelectionId Id => new BoneSelectionId(this.BoneName, this.boneIds[0].ObjectTableIndex);
+	public override ISelectionId Id => new BoneSelectionId(this.BoneName, this.BonePaths.Keys.First().ObjectTableIndex);
 
 	public override void Activate()
 	{
 		this.bones.Clear();
-		foreach (BoneId boneId in this.boneIds)
+		foreach (BoneId boneId in this.BonePaths.Keys)
 		{
 			this.bones.Add(ServiceManager.Instance.Pose.GetOrCreateBoneReference(boneId));
 		}
@@ -249,12 +236,12 @@ public class BoneSelection : TransformSelectionBase
 		if (other is not BoneSelection otherBone)
 			return false;
 
-		if (this.boneIds.Count != otherBone.boneIds.Count)
+		if (this.BonePaths.Count != otherBone.BonePaths.Count)
 			return false;
 
-		foreach (BoneId id in this.boneIds)
+		foreach (BoneId id in this.BonePaths.Keys)
 		{
-			if (!otherBone.boneIds.Contains(id))
+			if (!otherBone.BonePaths.ContainsKey(id))
 			{
 				return false;
 			}

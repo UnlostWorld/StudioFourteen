@@ -255,6 +255,34 @@ public partial class PoseViewBase : View
 		}
 	}
 
+	protected virtual void OnSelectionChanged(SelectionBase? oldSelection, SelectionBase? newSelection)
+	{
+		this.Dispatcher.Invoke(() =>
+		{
+			if (this.controls != null)
+			{
+				foreach(PoseSelectionControl control in this.controls)
+				{
+					control.OnSelectionChanged(oldSelection, newSelection);
+				}
+			}
+		});
+	}
+
+	protected virtual void OnHoverChanged(SelectionBase? oldSelection, SelectionBase? newSelection)
+	{
+		this.Dispatcher.Invoke(() =>
+		{
+			if (this.controls != null)
+			{
+				foreach(PoseSelectionControl control in this.controls)
+				{
+					control.OnHoverChanged(oldSelection, newSelection);
+				}
+			}
+		});
+	}
+
 	partial void OnHideChanged()
 	{
 		this.UpdateTargets();
@@ -263,38 +291,6 @@ public partial class PoseViewBase : View
 	private void OnTargetChanged(int objectTableIndex)
 	{
 		this.UpdateTargets();
-	}
-
-	private void ForEachControlInSelection(SelectionBase? selection, Action<PoseSelectionControl> action)
-	{
-		if (selection != null)
-		{
-			if (this.controlSelectionLookup.TryGetValue(selection.Id, out List<PoseSelectionControl>? controls) && controls != null)
-			{
-				foreach(PoseSelectionControl control in controls)
-				{
-					action.Invoke(control);
-				}
-			}
-		}
-	}
-
-	private void OnSelectionChanged(SelectionBase? oldSelection, SelectionBase? newSelection)
-	{
-		this.Dispatcher.Invoke(() =>
-		{
-			this.ForEachControlInSelection(oldSelection, (c) => c.IsSelected = false);
-			this.ForEachControlInSelection(newSelection, (c) => c.IsSelected = true);
-		});
-	}
-
-	private void OnHoverChanged(SelectionBase? oldSelection, SelectionBase? newSelection)
-	{
-		this.Dispatcher.Invoke(() =>
-		{
-			this.ForEachControlInSelection(oldSelection, (c) => c.IsMouseHover = false);
-			this.ForEachControlInSelection(newSelection, (c) => c.IsMouseHover = true);
-		});
 	}
 
 	private unsafe void PopulateControl(PoseSelectionControl control, Character* pCharacter)
@@ -318,7 +314,7 @@ public partial class PoseViewBase : View
 				BoneSelection? selection = ServiceManager.Instance.Pose.FindBone(pCharacter, control.SafeName);
 				if (selection != null)
 				{
-					foreach (BoneId boneId in selection.BoneIds)
+					foreach (BoneId boneId in selection.BonePaths.Keys)
 					{
 						if (!this.controlIdLookup.ContainsKey(boneId))
 							this.controlIdLookup.Add(boneId, new());

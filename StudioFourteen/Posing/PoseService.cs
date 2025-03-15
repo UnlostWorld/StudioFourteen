@@ -286,8 +286,8 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 		if (characterBase == null)
 			return null;
 
-		List<BoneId> bones = new();
-		List<BoneId> parents = new();
+		Dictionary<BoneId, List<BoneId>> bones = new();
+
 		ushort partialCount = characterBase->Skeleton->PartialSkeletonCount;
 		for (int partialIdx = 0; partialIdx < partialCount; partialIdx++)
 		{
@@ -308,12 +308,23 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 
 					if (boneName == name)
 					{
-						bones.Add(new(character->ObjectIndex, partialIdx, poseIdx, boneIdx));
+						BoneId boneId = new(character->ObjectIndex, partialIdx, poseIdx, boneIdx);
+						bones.Add(boneId, new());
 
-						short parentIndex = pose->Skeleton->ParentIndices[boneIdx];
-						if (parentIndex != -1)
+						BoneId? parent = boneId;
+						while(parent != null)
 						{
-							parents.Add(new(character->ObjectIndex, partialIdx, poseIdx, parentIndex));
+							short parentIndex = pose->Skeleton->ParentIndices[parent.Value.BoneIndex];
+							if (parentIndex != -1)
+							{
+								BoneId parentBoneId = new(character->ObjectIndex, partialIdx, poseIdx, parentIndex);
+								bones[boneId].Add(parentBoneId);
+								parent = parentBoneId;
+							}
+							else
+							{
+								parent = null;
+							}
 						}
 					}
 				}
@@ -323,7 +334,7 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 		if (bones.Count <= 0)
 			return null;
 
-		return new BoneSelection(bones, parents, name);
+		return new BoneSelection(bones, name);
 	}
 
 	public void FlushBoneReferences()
@@ -387,7 +398,7 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 		// if we are flushing a bone we have selected, clear the selection
 		if (this.Services.Selection.Current is BoneSelection boneSelection)
 		{
-			foreach (BoneId usedId in boneSelection.BoneIds)
+			foreach (BoneId usedId in boneSelection.BonePaths.Keys)
 			{
 				if (toRemove.Contains(usedId))
 				{

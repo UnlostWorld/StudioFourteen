@@ -25,6 +25,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using StudioFourteen.Posing.Shared;
 using System.Threading.Tasks;
+using StudioFourteen.Selection;
 
 [DependencyProperty<SkeletonViewDefinition>("ViewDefinition")]
 [DependencyProperty<bool>("FlipSides", DefaultValue = false)]
@@ -60,7 +61,7 @@ public partial class SimpleView : PoseViewBase
 				PoseSelectionControl target = new();
 				target.SelectionName = name;
 				this.canvas.Children.Add(target);
-				Canvas.SetZIndex(target, 100);
+				Canvas.SetZIndex(target, -100);
 
 				string? mirrorName = PoseService.GetMirrorBoneName(name);
 				if (mirrorName != null)
@@ -90,9 +91,12 @@ public partial class SimpleView : PoseViewBase
 			{
 				if (target.Selection is BoneSelection boneSelection)
 				{
-					foreach (BoneId parentBoneId in boneSelection.ParentBoneIds)
+					foreach ((BoneId boneId, List<BoneId> pathToRoot) in boneSelection.BonePaths)
 					{
-						List<PoseSelectionControl>? parents = this.GetTargets(parentBoneId);
+						if (pathToRoot.Count <= 0)
+							continue;
+
+						List<PoseSelectionControl>? parents = this.GetTargets(pathToRoot[0]);
 						if (parents == null)
 							continue;
 
@@ -165,6 +169,17 @@ public partial class SimpleView : PoseViewBase
 		foreach (BoneConnection connection in this.boneConnections)
 		{
 			connection.UpdatePositions();
+			connection.OnSelectionChanged();
+		}
+	}
+
+	protected override void OnSelectionChanged(SelectionBase? oldSelection, SelectionBase? newSelection)
+	{
+		base.OnSelectionChanged(oldSelection, newSelection);
+
+		foreach(BoneConnection connection in this.boneConnections)
+		{
+			connection.OnSelectionChanged();
 		}
 	}
 
@@ -250,7 +265,7 @@ public partial class SimpleView : PoseViewBase
 			this.line.StrokeThickness = 1;
 			this.line.Opacity = 0.15;
 
-			Canvas.SetZIndex(this.line, 200);
+			Canvas.SetZIndex(this.line, 0);
 
 			parent.Children.Add(this.line);
 		}
@@ -280,6 +295,25 @@ public partial class SimpleView : PoseViewBase
 			this.line.Y1 = from.Y;
 			this.line.X2 = to.X;
 			this.line.Y2 = to.Y;
+		}
+
+		public void OnSelectionChanged()
+		{
+			if (this.ToBone.IsSelected)
+			{
+				this.line.SetResourceReference(Line.StrokeProperty, "TrimBrush");
+				this.line.Opacity = 0.5;
+			}
+			else if (this.ToBone.IsParentSelected)
+			{
+				this.line.SetResourceReference(Line.StrokeProperty, "TrimBrush");
+				this.line.Opacity = 0.15;
+			}
+			else
+			{
+				this.line.SetResourceReference(Line.StrokeProperty, "ForegroundLightBrush");
+				this.line.Opacity = 0.15;
+			}
 		}
 	}
 }

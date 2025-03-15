@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Posing.Shared;
 
+using System.Collections.Generic;
 using System.Windows.Controls;
 using DependencyPropertyGenerator;
 using StudioFourteen.Selection;
@@ -23,6 +24,7 @@ using StudioFourteen.Selection;
 [DependencyProperty<string>("Label")]
 [DependencyProperty<bool>("IsMouseHover")]
 [DependencyProperty<bool>("IsSelected")]
+[DependencyProperty<bool>("IsParentSelected")]
 [DependencyProperty<bool>("IsValid")]
 public partial class PoseSelectionControl : Control
 {
@@ -30,6 +32,44 @@ public partial class PoseSelectionControl : Control
 
 	public string? SafeName { get; private set; }
 	public bool IsSafeValid { get; set; }
+
+	public void OnHoverChanged(SelectionBase? oldSelection, SelectionBase? newSelection)
+	{
+		if (newSelection == null || this.Selection == null)
+		{
+			this.IsMouseHover = false;
+			return;
+		}
+
+		this.IsMouseHover = newSelection.Id == this.Selection.Id;
+	}
+
+	public void OnSelectionChanged(SelectionBase? oldSelection, SelectionBase? newSelection)
+	{
+		if (newSelection == null || this.Selection == null)
+		{
+			this.IsSelected = false;
+			return;
+		}
+
+		this.IsSelected = newSelection.Id == this.Selection.Id;
+
+		this.IsParentSelected = false;
+		if (this.Selection is BoneSelection boneSelection && newSelection is BoneSelection newBoneSelection)
+		{
+			foreach((BoneId selectedBoneId, _) in newBoneSelection.BonePaths)
+			{
+				foreach((BoneId boneId, List<BoneId> pathToRoot) in boneSelection.BonePaths)
+				{
+					if (pathToRoot.Contains(selectedBoneId))
+					{
+						this.IsParentSelected = true;
+						return;
+					}
+				}
+			}
+		}
+	}
 
 	partial void OnSelectionNameChanged(string? newValue)
 	{
