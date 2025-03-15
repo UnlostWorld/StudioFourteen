@@ -43,13 +43,13 @@
 				<Setter TargetName="LabelText" Property="Foreground" Value="{DynamicResource TrimBrush}" />
 			</Trigger>
 
-			<Trigger Property="IsEnabled" Value="false">
-				<Setter Property="Visibility" Value="Collapsed" />
-			</Trigger>
-
 			<Trigger Property="Label" Value="{x:Null}">
 				<Setter TargetName="Base" Property="Visibility" Value="Visible" />
 				<Setter TargetName="LabelText" Property="Visibility" Value="Collapsed" />
+			</Trigger>
+
+			<Trigger Property="IsValid" Value="false">
+				<Setter Property="Visibility" Value="Collapsed" />
 			</Trigger>
 
 		</ControlTemplate.Triggers>

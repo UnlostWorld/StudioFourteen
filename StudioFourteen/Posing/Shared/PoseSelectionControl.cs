@@ -23,11 +23,13 @@ using StudioFourteen.Selection;
 [DependencyProperty<string>("Label")]
 [DependencyProperty<bool>("IsMouseHover")]
 [DependencyProperty<bool>("IsSelected")]
+[DependencyProperty<bool>("IsValid")]
 public partial class PoseSelectionControl : Control
 {
 	public SelectionBase? Selection;
 
 	public string? SafeName { get; private set; }
+	public bool IsSafeValid { get; set; }
 
 	partial void OnSelectionNameChanged(string? newValue)
 	{

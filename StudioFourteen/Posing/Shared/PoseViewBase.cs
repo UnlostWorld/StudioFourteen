@@ -32,11 +32,11 @@ public class PoseViewBase : View
 {
 	public const double MouseOverDistance = 20;
 
-	private readonly Dictionary<string, List<PoseSelectionControl>> targetNameLookup = new();
-	private readonly Dictionary<BoneId, List<PoseSelectionControl>> targetIdLookup = new();
-	private readonly Dictionary<ISelectionId, List<PoseSelectionControl>> targetSelectionLookup = new();
+	private readonly Dictionary<string, List<PoseSelectionControl>> controlNameLookup = new();
+	private readonly Dictionary<BoneId, List<PoseSelectionControl>> controlIdLookup = new();
+	private readonly Dictionary<ISelectionId, List<PoseSelectionControl>> controlSelectionLookup = new();
 
-	private List<PoseSelectionControl>? targets;
+	private List<PoseSelectionControl>? controls;
 
 	public PoseViewBase()
 	{
@@ -45,18 +45,18 @@ public class PoseViewBase : View
 
 	public List<PoseSelectionControl>? GetTargets()
 	{
-		return this.targets;
+		return this.controls;
 	}
 
 	public List<PoseSelectionControl>? GetTargets(BoneId boneId)
 	{
-		this.targetIdLookup.TryGetValue(boneId, out List<PoseSelectionControl>? views);
+		this.controlIdLookup.TryGetValue(boneId, out List<PoseSelectionControl>? views);
 		return views;
 	}
 
 	public List<PoseSelectionControl>? GetTargets(string name)
 	{
-		this.targetNameLookup.TryGetValue(name, out List<PoseSelectionControl>? views);
+		this.controlNameLookup.TryGetValue(name, out List<PoseSelectionControl>? views);
 		return views;
 	}
 
@@ -64,14 +64,14 @@ public class PoseViewBase : View
 	{
 		base.OnMouseMove(e);
 
-		if (this.targets == null)
+		if (this.controls == null)
 			return;
 
 		Point mousePos = Mouse.GetPosition(this);
 
 		double closestDist = double.MaxValue;
 		PoseSelectionControl? closestLink = null;
-		foreach (PoseSelectionControl target in this.targets)
+		foreach (PoseSelectionControl target in this.controls)
 		{
 			Point targetPos = target.TransformToAncestor(this).Transform(new Point(target.Width / 2, target.Height / 2));
 			double distance = Point.Subtract(mousePos, targetPos).Length;
@@ -111,12 +111,12 @@ public class PoseViewBase : View
 
 	protected override HitTestResult? HitTestCore(PointHitTestParameters hitTestParameters)
 	{
-		if (this.targets == null)
+		if (this.controls == null)
 			return base.HitTestCore(hitTestParameters);
 
 		double closestDist = double.MaxValue;
 		PoseSelectionControl? closestLink = null;
-		foreach (PoseSelectionControl link in this.targets)
+		foreach (PoseSelectionControl link in this.controls)
 		{
 			Point targetPos = link.TransformToAncestor(this).Transform(new Point(link.ActualWidth / 2, link.ActualHeight));
 			double distance = Point.Subtract(hitTestParameters.HitPoint, targetPos).Length;
@@ -164,7 +164,7 @@ public class PoseViewBase : View
 
 	protected virtual async Task UpdateTargetsAsync()
 	{
-		this.targets = this.FindChildren<PoseSelectionControl>();
+		this.controls = this.FindChildren<PoseSelectionControl>();
 
 		await Threads.FrameworkThread();
 
@@ -201,13 +201,18 @@ public class PoseViewBase : View
 			if (pCharacter == null)
 				return;
 
-			foreach (PoseSelectionControl view in this.targets)
+			foreach (PoseSelectionControl control in this.controls)
 			{
-				this.PopulateControl(view, pCharacter);
+				this.PopulateControl(control, pCharacter);
 			}
 		}
 
 		await this.MainThread();
+
+		foreach (PoseSelectionControl control in this.controls)
+		{
+			control.IsValid = control.IsSafeValid;
+		}
 
 		this.OnHoverChanged(null, this.Services.Selection.Hover);
 		this.OnSelectionChanged(null, this.Services.Selection.Current);
@@ -222,7 +227,7 @@ public class PoseViewBase : View
 	{
 		if (selection != null)
 		{
-			if (this.targetSelectionLookup.TryGetValue(selection.Id, out List<PoseSelectionControl>? controls) && controls != null)
+			if (this.controlSelectionLookup.TryGetValue(selection.Id, out List<PoseSelectionControl>? controls) && controls != null)
 			{
 				foreach(PoseSelectionControl control in controls)
 				{
@@ -251,10 +256,10 @@ public class PoseViewBase : View
 
 		try
 		{
-			if (!this.targetNameLookup.ContainsKey(control.SafeName))
-				this.targetNameLookup.Add(control.SafeName, new());
+			if (!this.controlNameLookup.ContainsKey(control.SafeName))
+				this.controlNameLookup.Add(control.SafeName, new());
 
-			this.targetNameLookup[control.SafeName].Add(control);
+			this.controlNameLookup[control.SafeName].Add(control);
 
 			if (control.SafeName == "character")
 			{
@@ -267,10 +272,10 @@ public class PoseViewBase : View
 				{
 					foreach (BoneId boneId in selection.BoneIds)
 					{
-						if (!this.targetIdLookup.ContainsKey(boneId))
-							this.targetIdLookup.Add(boneId, new());
+						if (!this.controlIdLookup.ContainsKey(boneId))
+							this.controlIdLookup.Add(boneId, new());
 
-						this.targetIdLookup[boneId].Add(control);
+						this.controlIdLookup[boneId].Add(control);
 					}
 
 					control.Selection = selection;
@@ -279,15 +284,17 @@ public class PoseViewBase : View
 
 			if (control.Selection == null)
 			{
-				// TODO: Hide the control;
+				control.IsSafeValid = false;
 			}
 			else
 			{
-				ISelectionId selectionId = control.Selection.Id;
-				if (!this.targetSelectionLookup.ContainsKey(selectionId))
-					this.targetSelectionLookup.Add(selectionId, new());
+				control.IsSafeValid = true;
 
-				this.targetSelectionLookup[selectionId].Add(control);
+				ISelectionId selectionId = control.Selection.Id;
+				if (!this.controlSelectionLookup.ContainsKey(selectionId))
+					this.controlSelectionLookup.Add(selectionId, new());
+
+				this.controlSelectionLookup[selectionId].Add(control);
 			}
 		}
 		catch (Exception ex)
