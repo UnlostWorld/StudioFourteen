@@ -600,7 +600,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 		while(this.IsOpen && !ServiceManager.ShutdownRequested)
 		{
-			if (!this.isDragMoving)
+			if (!this.isDragMoving && this.IsEmbedded)
 			{
 				this.Position = this.desiredPosition;
 

@@ -32,8 +32,8 @@
 	<sys:String x:Key="LOC_EnvironmentDesc">Control the weather, Time, Festivals, and other environmental options.</sys:String>
 	<sys:String x:Key="LOC_Camera">Cameras</sys:String>
 	<sys:String x:Key="LOC_CameraDesc">Position the virtual cameras to get the best angle for editing or capturing.</sys:String>
-	<sys:String x:Key="LOC_Spa">Single Page Application</sys:String>
-	<sys:String x:Key="LOC_SpaDesc">Open all of Studio Fourteen in a single window, Anamnesis style, for a familiar multi-monitor experience.</sys:String>
+	<sys:String x:Key="LOC_AIO">All-in-One</sys:String>
+	<sys:String x:Key="LOC_AIODesc">Open all of Studio Fourteen in a single window, Anamnesis style, for a familiar multi-monitor experience.</sys:String>
 	<sys:String x:Key="LOC_History">History</sys:String>
 	<sys:String x:Key="LOC_HistoryDesc">View and control the Undo and Redo history. Jump to the past or branch your changes.</sys:String>
 	<sys:String x:Key="LOC_Marketplace">Marketplace</sys:String>
@@ -229,7 +229,7 @@
 	<sys:String x:Key="LOC_Settings_Photos_Flash">Flash</sys:String>
 	<sys:String x:Key="LOC_Settings_Photos_Review">Review captured photo</sys:String>
 
-	<sys:String x:Key="LOC_Spa_Title">Studio Fourteen</sys:String>
+	<sys:String x:Key="LOC_AOI_Title">Studio Fourteen</sys:String>
 
 	<sys:String x:Key="LOC_Pose_FlipSides">Flip Sides</sys:String>
 	<sys:String x:Key="LOC_Pose_SelectCharacter">Select the targeted actor</sys:String>

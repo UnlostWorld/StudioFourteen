@@ -22,7 +22,7 @@ using System.Windows.Controls;
 using DependencyPropertyGenerator;
 using StudioFourteen.Mvm;
 using StudioFourteen.Panels;
-using StudioFourteen.SPA;
+using StudioFourteen.AIO;
 using WpfUtils.Extensions;
 
 using Panel = StudioFourteen.Panels.Panel;
@@ -52,7 +52,7 @@ public partial class LauncherMenu : Control
 		this.AddPanel<Library.LibraryWindow>("fa-Stream", "Sequencer", false);
 
 		this.AddPanel<Photos.PhotoWindow>("fa-Image", "Photo");
-		this.AddEntry<SpaLauncherEntry>("fa-ObjectGroup", "Spa");
+		this.AddEntry<AioLauncherEntry>("fa-ObjectGroup", "AIO");
 
 		this.AddPanel<History.HistoryPanel>("fa-History", "History");
 		this.AddPanel<Save.SaveWindow>("fa-Save", "Save");
@@ -150,9 +150,9 @@ public class PanelLauncherEntry<T> : LauncherEntry
 	}
 }
 
-public class SpaLauncherEntry(LauncherMenu menu)
+public class AioLauncherEntry(LauncherMenu menu)
 	: LauncherEntry(menu)
 {
-	protected override bool GetIsOpen() => SpaWindow.GetIsOpen();
-	protected override void SetOpen() => SpaWindow.OpenSpa();
+	protected override bool GetIsOpen() => AioWindow.GetIsOpen();
+	protected override void SetOpen() => AioWindow.OpenAio();
 }

@@ -13,34 +13,34 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.SPA;
+namespace StudioFourteen.AIO;
 
 using StudioFourteen.Panels;
 using System.Threading.Tasks;
 using WpfUtils.Windows;
 
-public partial class SpaWindow : PanelWindow
+public partial class AioWindow : PanelWindow
 {
-	private static SpaWindow? instance;
+	private static AioWindow? instance;
 
-	public static void OpenSpa()
+	public static void OpenAio()
 	{
 		Task.Run(async () =>
 		{
-			SpaWindow? spa = await PanelWindow.CreatePanelWindow<SpaWindow>();
-			if (spa != null)
+			AioWindow? aio = await PanelWindow.CreatePanelWindow<AioWindow>();
+			if (aio != null)
 			{
-				instance = spa;
+				instance = aio;
 
-				spa.Dispatcher.Invoke(() =>
+				aio.Dispatcher.Invoke(() =>
 				{
-					spa.Show();
+					aio.Show();
 				});
 			}
 		});
 	}
 
-	public static void CloseSpa()
+	public static void CloseAio()
 	{
 		if (instance == null)
 			return;
