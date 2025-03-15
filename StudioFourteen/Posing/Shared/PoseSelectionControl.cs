@@ -13,43 +13,26 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Selection;
+namespace StudioFourteen.Posing.Shared;
 
-using StudioFourteen.Gizmos;
-using StudioFourteen.Overlays;
 using System.Windows.Controls;
+using DependencyPropertyGenerator;
+using StudioFourteen.Selection;
 
-public abstract class SelectionOverlayLayerBase : OverlayLayerBase
+[DependencyProperty<string>("SelectionName")]
+[DependencyProperty<string>("Label")]
+[DependencyProperty<bool>("IsMouseHover")]
+[DependencyProperty<bool>("IsSelected")]
+[DependencyProperty<bool>("IsValid")]
+public partial class PoseSelectionControl : Control
 {
-	public SelectionOverlayLayerBase(string name)
-		: base("Selection", name)
+	public SelectionBase? Selection;
+
+	public string? SafeName { get; private set; }
+	public bool IsSafeValid { get; set; }
+
+	partial void OnSelectionNameChanged(string? newValue)
 	{
-	}
-
-	protected SelectionBase? Selection => this.Services.Selection.Current;
-	protected int TargetIndex => this.Services.Target.TargetObjectIndex;
-
-	public override void Enable(GizmoRenderer renderer)
-	{
-		base.Enable(renderer);
-
-		this.Services.Selection.SelectionChanged += this.OnSelectionChanged;
-		this.Services.Target.TargetChanged += this.OnTargetChanged;
-	}
-
-	public override void Disable(GizmoRenderer renderer)
-	{
-		base.Disable(renderer);
-
-		this.Services.Selection.SelectionChanged -= this.OnSelectionChanged;
-		this.Services.Target.TargetChanged -= this.OnTargetChanged;
-	}
-
-	protected virtual void OnSelectionChanged(SelectionBase? oldSelection, SelectionBase? newSelection)
-	{
-	}
-
-	protected virtual void OnTargetChanged(int objectTableIndex)
-	{
+		this.SafeName = newValue;
 	}
 }

@@ -19,7 +19,6 @@ using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FontAwesome.Sharp;
-using StudioFourteen.History;
 using StudioFourteen.Plugin;
 using StudioFourteen.Selection;
 using System;
@@ -31,6 +30,11 @@ public class GameObjectSelectionId(int objectTableIndex)
 	public int ObjectTableIndex { get; init; } = objectTableIndex;
 
 	public override SelectionBase Create() => new GameObjectSelection(this.ObjectTableIndex);
+
+	public override int GetHashCode()
+	{
+		return HashCode.Combine(this.ObjectTableIndex);
+	}
 }
 
 public class GameObjectSelection : TransformSelectionBase

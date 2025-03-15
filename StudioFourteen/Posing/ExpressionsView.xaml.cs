@@ -29,9 +29,9 @@ public partial class ExpressionsView : View
 		this.Services.Selection.SelectionChanged += this.OnPoseSelectionChanged;
 	}
 
-	public double BackgroundOpacity => SkeletonView.BackgroundOpacity;
+	public double BackgroundOpacity => SimpleView.BackgroundOpacity;
 
-	private void OnPoseSelectionChanged(SelectionBase? newSelection)
+	private void OnPoseSelectionChanged(SelectionBase? oldSelection, SelectionBase? newSelection)
 	{
 		this.Dispatcher.Invoke(() =>
 		{

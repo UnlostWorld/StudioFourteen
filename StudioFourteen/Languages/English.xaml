@@ -236,6 +236,9 @@
 	<sys:String x:Key="LOC_Pose_LockTransform">Pause animations on the selected bone</sys:String>
 	<sys:String x:Key="LOC_Pose_RevertPose">Revert all changes to {0}'s pose</sys:String>
 	<sys:String x:Key="LOC_Pose_Reference">Set the targeted actor to its reference pose</sys:String>
+	<sys:String x:Key="LOC_Pose_Simple">Simple</sys:String>
+	<sys:String x:Key="LOC_Pose_Matrix">Matrix</sys:String>
+
 	<sys:String x:Key="LOC_PoseMatrix_HeadCategory">Head</sys:String>
 	<sys:String x:Key="LOC_PoseMatrix_BodyCategory">Body</sys:String>
 	<sys:String x:Key="LOC_PoseMatrix_GenitalCategory">Genitals</sys:String>
@@ -341,7 +344,7 @@
 	<sys:String x:Key="LOC_Pose_Jaw">Jaw</sys:String>
 	<sys:String x:Key="LOC_Pose_Mouth">Mouth</sys:String>
 	<sys:String x:Key="LOC_Pose_UpperLip">Upper Lip</sys:String>
-	<sys:String x:Key="LOC_Pose_LowerLip">Lower Lip<sys:String> 
+	<sys:String x:Key="LOC_Pose_LowerLip">Lower Lip<sys:String>
 	-->
 	<sys:String x:Key="LOC_Pose_Ears">Ears</sys:String>
 	<sys:String x:Key="LOC_Pose_Earrings">Earrings</sys:String>

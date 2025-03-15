@@ -16,7 +16,6 @@
 namespace StudioFourteen.Selection;
 
 using Dalamud.Plugin.Services;
-using FFXIVClientStructs.FFXIV.Common.Lua;
 using FontAwesome.Sharp;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Gizmos.Handles.TransformHandle;
@@ -24,11 +23,37 @@ using StudioFourteen.History;
 using StudioFourteen.Posing;
 using StudioFourteen.Services;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
-public abstract class ISelectionId
+public abstract class ISelectionId : IEquatable<ISelectionId?>
 {
+	public static bool operator ==(ISelectionId? left, ISelectionId? right)
+	{
+		return EqualityComparer<ISelectionId>.Default.Equals(left, right);
+	}
+
+	public static bool operator !=(ISelectionId? left, ISelectionId? right)
+	{
+		return !(left == right);
+	}
+
 	public abstract SelectionBase? Create();
+
+	public override bool Equals(object? obj)
+	{
+		return this.Equals(obj as ISelectionId);
+	}
+
+	public bool Equals(ISelectionId? other)
+	{
+		return other is not null && this.GetHashCode() == other.GetHashCode();
+	}
+
+	public override int GetHashCode()
+	{
+		throw new NotImplementedException();
+	}
 }
 
 public abstract class IAsyncSelectionId : ISelectionId
@@ -42,15 +67,17 @@ public partial class SelectionService : ServiceBase
 {
 	private readonly TransformHandleOverlayLayer poseGizmoOverlay = new();
 	private SelectionBase? selection;
+	private SelectionBase? hover;
 	private string lastSelectionName = "Nothing";
 
 	[Notify]
 	[AlsoNotify(nameof(SelectionService.GizmoIndex))]
 	private TransformHandleTypes gizmo = TransformHandleTypes.Rotation;
 
-	public delegate void SelectionChangedDelegate(SelectionBase? newSelection);
+	public delegate void SelectionChangedDelegate(SelectionBase? oldSelection, SelectionBase? newSelection);
 
 	public event SelectionChangedDelegate? SelectionChanged;
+	public event SelectionChangedDelegate? HoverChanged;
 
 	public override string Name => "Selection";
 	public override IconChar Icon => IconChar.MousePointer;
@@ -60,6 +87,8 @@ public partial class SelectionService : ServiceBase
 		get => this.selection;
 		set
 		{
+			SelectionBase? oldSelection = this.selection;
+
 			this.lastSelectionName = this.selection?.Name ?? "Nothing";
 			this.Services.History.RecordChange(this, $"Change");
 
@@ -77,7 +106,19 @@ public partial class SelectionService : ServiceBase
 				this.Gizmo = transformSelection.DefaultGizmo;
 			}
 
-			this.SelectionChanged?.Invoke(value);
+			this.SelectionChanged?.Invoke(oldSelection, value);
+			this.RaisePropertyChanged();
+		}
+	}
+
+	public SelectionBase? Hover
+	{
+		get => this.hover;
+		set
+		{
+			SelectionBase? oldHover = this.hover;
+			this.hover = value;
+			this.HoverChanged?.Invoke(oldHover, value);
 			this.RaisePropertyChanged();
 		}
 	}

@@ -29,21 +29,30 @@ public partial class PoseWindow : CharacterPanelBase
 {
 	[AutoNotify] public string RevertTooltip => StudioFourteen.Resources.Format("LOC_Pose_RevertPose", this.CharacterName);
 
-	[AutoNotify]
 	public int SelectedTab
 	{
 		get => this.GetPersistence<int>();
 		set => this.SetPersistence(value);
 	}
 
-	[AutoNotify]
+	public int SelectedBodyTab
+	{
+		get => this.GetPersistence<int>();
+		set => this.SetPersistence(value);
+	}
+
+	public int SelectedHandsTab
+	{
+		get => this.GetPersistence<int>();
+		set => this.SetPersistence(value);
+	}
+
 	public int SelectedFaceTab
 	{
 		get => this.GetPersistence<int>();
 		set => this.SetPersistence(value);
 	}
 
-	[AutoNotify]
 	public bool FlipSides
 	{
 		get => this.GetPersistence<bool>();

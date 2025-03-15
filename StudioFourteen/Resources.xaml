@@ -29,7 +29,7 @@
 		<ResourceDictionary Source="./Tags/TagsControlStyles.xaml" />
 		<ResourceDictionary Source="./Tags/TagSelectorStyles.xaml" />
 		<ResourceDictionary Source="./Controls/IconControlStyles.xaml" />
-		<ResourceDictionary Source="./Posing/BoneViewStyles.xaml" />
+		<ResourceDictionary Source="./Posing/Shared/PoseSelectionControlStyles.xaml" />
 
 		<!--  Default Language  -->
 		<ResourceDictionary Source="./Languages/English.xaml" />

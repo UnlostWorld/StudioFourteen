@@ -20,6 +20,7 @@ using FontAwesome.Sharp;
 using StudioFourteen.Gizmos.Handles.TransformHandle;
 using StudioFourteen.Selection;
 using StudioFourteen.Utilities;
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -34,6 +35,11 @@ public class BoneSelectionId(string boneName, int objectTableIndex)
 	{
 		await Threads.FrameworkThread();
 		return ServiceManager.Instance.Pose.FindBone(this.ObjectTableIndex, this.BoneName);
+	}
+
+	public override int GetHashCode()
+	{
+		return HashCode.Combine(this.BoneName, this.ObjectTableIndex);
 	}
 }
 
