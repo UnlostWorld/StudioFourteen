@@ -177,6 +177,8 @@ public partial class PoseViewBase : View
 
 	protected virtual async Task UpdateTargetsAsync()
 	{
+		await this.MainThread();
+
 		if (this.Hide)
 		{
 			this.Visibility = Visibility.Hidden;

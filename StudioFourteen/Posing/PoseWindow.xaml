@@ -83,6 +83,58 @@
 									FlipSides="{Binding FlipSides}"
 									ViewDefinition="{Binding Services.Data.SkeletonViews[Clothes]}" />
 
+								<TextBlock
+									Grid.RowSpan="3"
+									Grid.Column="0"
+									Margin="10,0,0,0"
+									HorizontalAlignment="Left"
+									VerticalAlignment="Top"
+									Foreground="{DynamicResource ControlBackgroundBrush}"
+									FontWeight="Bold"
+									FontSize="48"
+									IsHitTestVisible="False"
+									Text="L"
+									Visibility="{Binding FlipSides, Converter={StaticResource B2V}}"/>
+
+								<TextBlock
+									Grid.RowSpan="3"
+									Grid.Column="0"
+									Margin="0,0,0,0"
+									HorizontalAlignment="Left"
+									VerticalAlignment="Top"
+									Foreground="{DynamicResource ControlBackgroundBrush}"
+									FontWeight="Bold"
+									FontSize="48"
+									IsHitTestVisible="False"
+									Text="R"
+									Visibility="{Binding FlipSides, Converter={StaticResource !B2V}}"/>
+
+								<TextBlock
+									Grid.RowSpan="3"
+									Grid.Column="1"
+									Margin="0,0,40,0"
+									HorizontalAlignment="Right"
+									VerticalAlignment="Top"
+									Foreground="{DynamicResource ControlBackgroundBrush}"
+									FontWeight="Bold"
+									FontSize="48"
+									IsHitTestVisible="False"
+									Text="R"
+									Visibility="{Binding FlipSides, Converter={StaticResource B2V}}"/>
+
+								<TextBlock
+									Grid.RowSpan="3"
+									Grid.Column="1"
+									Margin="0,0,40,0"
+									HorizontalAlignment="Right"
+									VerticalAlignment="Top"
+									Foreground="{DynamicResource ControlBackgroundBrush}"
+									FontWeight="Bold"
+									FontSize="48"
+									IsHitTestVisible="False"
+									Text="L"
+									Visibility="{Binding FlipSides, Converter={StaticResource !B2V}}"/>
+
 								<Grid Grid.Column="2" Margin="0,10">
 									<Grid.RowDefinitions>
 										<RowDefinition />

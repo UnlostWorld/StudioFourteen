@@ -85,8 +85,18 @@ public partial class Panel : ContentControl, IAutoNotify
 	public Persistence Persistence { get; init; }
 
 	public T? GetPersistence<T>([CallerMemberName] string id = "", T? defaultValue = default) => this.Persistence.GetPersistence<T>(id, defaultValue);
-	public void SetPersistence(object? value, [CallerMemberName] string id = "") => this.Persistence.SetPersistence(value, id);
-	public void SetPersistence(string id, object? value) => this.Persistence.SetPersistence(id, value);
+
+	public void SetPersistence(object? value, [CallerMemberName] string id = "")
+	{
+		this.Persistence.SetPersistence(value, id);
+		this.NotifyPropertyChanged(new(id));
+	}
+
+	public void SetPersistence(string id, object? value)
+	{
+		this.Persistence.SetPersistence(id, value);
+		this.NotifyPropertyChanged(new(id));
+	}
 
 	public virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
 	{

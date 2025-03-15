@@ -26,6 +26,7 @@ using System.Windows.Shapes;
 using StudioFourteen.Posing.Shared;
 using System.Threading.Tasks;
 using StudioFourteen.Selection;
+using WpfUtils;
 
 [DependencyProperty<SkeletonViewDefinition>("ViewDefinition")]
 [DependencyProperty<bool>("FlipSides", DefaultValue = false)]
@@ -49,6 +50,8 @@ public partial class SimpleView : PoseViewBase
 	{
 		try
 		{
+			await this.MainThread();
+
 			this.boneConnections.Clear();
 			this.canvas.Children.Clear();
 
@@ -128,10 +131,6 @@ public partial class SimpleView : PoseViewBase
 			BitmapImage bmp = new();
 			bmp.BeginInit();
 			bmp.UriSource = new($"pack://application:,,,/StudioFourteen;component/{definition.Background}");
-
-			if (definition.BackgroundFlipped != null && this.FlipSides)
-				bmp.UriSource = new($"pack://application:,,,/StudioFourteen;component/{definition.BackgroundFlipped}");
-
 			bmp.EndInit();
 
 			this.backgroundWidth = bmp.PixelWidth;
@@ -177,10 +176,13 @@ public partial class SimpleView : PoseViewBase
 	{
 		base.OnSelectionChanged(oldSelection, newSelection);
 
-		foreach(BoneConnection connection in this.boneConnections)
+		this.Dispatcher.Invoke(() =>
 		{
-			connection.OnSelectionChanged();
-		}
+			foreach(BoneConnection connection in this.boneConnections)
+			{
+				connection.OnSelectionChanged();
+			}
+		});
 	}
 
 	partial void OnViewDefinitionChanged()
@@ -321,7 +323,6 @@ public partial class SimpleView : PoseViewBase
 public class SkeletonViewDefinition
 {
 	public string? Background { get; set; }
-	public string? BackgroundFlipped { get; set; }
 	public Dictionary<string, Point> Bones { get; set; } = new();
 	public Size Size { get; set; }
 }
