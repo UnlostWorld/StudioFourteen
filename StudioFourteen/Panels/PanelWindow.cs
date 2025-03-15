@@ -586,20 +586,16 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 	private async Task WindowWatcher()
 	{
-		// try 10 times to set the window to its starting position.
-		for(int i = 0; i < 10; i++)
-		{
-			await Task.Delay(16);
-			await this.MainThread();
+		await Task.Delay(16);
+		await this.MainThread();
 
-			if (this.SavedPosition != null)
-			{
-				this.Services.Windows.SetPosition(this, (Point)this.SavedPosition, true);
-			}
-			else
-			{
-				this.Services.Windows.SetPosition(this, this.Position, true);
-			}
+		if (this.SavedPosition != null)
+		{
+			this.Services.Windows.SetPosition(this, (Point)this.SavedPosition, true);
+		}
+		else
+		{
+			this.Services.Windows.SetPosition(this, this.Position, true);
 		}
 
 		while(this.IsOpen && !ServiceManager.ShutdownRequested)

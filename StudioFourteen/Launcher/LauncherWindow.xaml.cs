@@ -26,7 +26,7 @@ using System;
 [DependencyProperty<bool>("IsMenuOpen")]
 [DependencyProperty<bool>("IsRightSide")]
 [DependencyProperty<bool>("IsBottomSide")]
-[DependencyProperty<bool>("IsButtonVisible")]
+[DependencyProperty<bool>("IsButtonVisible", DefaultValue = true)]
 public partial class LauncherWindow : PanelWindow
 {
 	public LauncherWindow()
