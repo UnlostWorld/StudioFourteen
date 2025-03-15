@@ -89,6 +89,9 @@ public partial class SelectionService : ServiceBase
 		{
 			SelectionBase? oldSelection = this.selection;
 
+			if (oldSelection != null && value != null && oldSelection.Id == value.Id)
+				return;
+
 			this.lastSelectionName = this.selection?.Name ?? "Nothing";
 			this.Services.History.RecordChange(this, $"Change");
 

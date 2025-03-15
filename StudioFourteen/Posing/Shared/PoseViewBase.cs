@@ -110,8 +110,14 @@ public partial class PoseViewBase : View
 		if (this.Services.Selection.Hover != null)
 		{
 			ServiceManager.Instance.Selection.Current = this.Services.Selection.Hover;
-			e.Handled = true;
+			return;
 		}
+		else
+		{
+			ServiceManager.Instance.Selection.Current = new GameObjectSelection(this.Services.Target.TargetObjectIndex);
+		}
+
+		e.Handled = true;
 	}
 
 	protected override HitTestResult? HitTestCore(PointHitTestParameters hitTestParameters)
