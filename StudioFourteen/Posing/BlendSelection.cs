@@ -42,6 +42,11 @@ public class BlendSelectionId(string blendTargetName, int objectTableIndex)
 
 		return new BlendSelection(this.BlendTargetName, target, this.ObjectTableIndex);
 	}
+
+	public override int GetHashCode()
+	{
+		return HashCode.Combine(this.BlendTargetName, this.ObjectTableIndex);
+	}
 }
 
 public class BlendSelection(string blendTargetName, BlendTarget target, int objectTableIndex)
