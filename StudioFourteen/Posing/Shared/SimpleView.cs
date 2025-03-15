@@ -18,7 +18,6 @@ namespace StudioFourteen.Posing;
 using DependencyPropertyGenerator;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -29,7 +28,6 @@ using System.Threading.Tasks;
 
 [DependencyProperty<SkeletonViewDefinition>("ViewDefinition")]
 [DependencyProperty<bool>("FlipSides", DefaultValue = false)]
-[DependencyProperty<bool>("Hide", DefaultValue = false)]
 public partial class SimpleView : PoseViewBase
 {
 	public const double BackgroundOpacity = 0.25;

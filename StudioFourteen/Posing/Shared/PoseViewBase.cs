@@ -27,8 +27,10 @@ using WpfUtils.Extensions;
 using System.Windows.Input;
 using System.Windows.Media;
 using StudioFourteen.Selection;
+using DependencyPropertyGenerator;
 
-public class PoseViewBase : View
+[DependencyProperty<bool>("Hide", DefaultValue = false)]
+public partial class PoseViewBase : View
 {
 	public const double MouseOverDistance = 20;
 
@@ -164,6 +166,12 @@ public class PoseViewBase : View
 
 	protected virtual async Task UpdateTargetsAsync()
 	{
+		if (this.Hide)
+		{
+			this.Visibility = Visibility.Hidden;
+			return;
+		}
+
 		this.controls = this.FindChildren<PoseSelectionControl>();
 
 		await Threads.FrameworkThread();
@@ -209,13 +217,30 @@ public class PoseViewBase : View
 
 		await this.MainThread();
 
+		int validCount = 0;
 		foreach (PoseSelectionControl control in this.controls)
 		{
+			if (control.IsSafeValid)
+				validCount++;
+
 			control.IsValid = control.IsSafeValid;
 		}
 
-		this.OnHoverChanged(null, this.Services.Selection.Hover);
-		this.OnSelectionChanged(null, this.Services.Selection.Current);
+		if (validCount <= 0)
+		{
+			this.Visibility = Visibility.Hidden;
+		}
+		else
+		{
+			this.Visibility = Visibility.Visible;
+			this.OnHoverChanged(null, this.Services.Selection.Hover);
+			this.OnSelectionChanged(null, this.Services.Selection.Current);
+		}
+	}
+
+	partial void OnHideChanged()
+	{
+		this.UpdateTargets();
 	}
 
 	private void OnTargetChanged(int objectTableIndex)
