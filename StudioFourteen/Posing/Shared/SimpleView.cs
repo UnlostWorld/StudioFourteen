@@ -273,6 +273,9 @@ public partial class SimpleView : PoseViewBase
 			from += vector * 6;
 			to -= vector * 6;
 
+			if (double.IsNaN(from.X) || double.IsNaN(from.Y) || double.IsNaN(to.X) || double.IsNaN(to.Y))
+				return;
+
 			this.line.X1 = from.X;
 			this.line.Y1 = from.Y;
 			this.line.X2 = to.X;

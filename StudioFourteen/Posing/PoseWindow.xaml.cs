@@ -15,15 +15,17 @@
 
 namespace StudioFourteen.Posing;
 
-using StudioFourteen.Files;
 using StudioFourteen.Library;
 using StudioFourteen.Mvm;
 using StudioFourteen.Panels;
+using StudioFourteen.Posing.Shared;
 using StudioFourteen.Selection;
 using System;
 using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using DependencyPropertyGenerator;
 
 public partial class PoseWindow : CharacterPanelBase
 {
@@ -63,6 +65,14 @@ public partial class PoseWindow : CharacterPanelBase
 	[AutoNotify] public bool IsSelectionTransform => this.Selection is TransformSelectionBase;
 	[AutoNotify] public bool IsSelectionBlend => this.Selection is BlendSelection;
 	[AutoNotify] public bool IsSelectionEye => this.Selection is EyeSelection;
+
+	public void RegisterTabGroup(PoseTabItem tab)
+	{
+	}
+
+	public void RegisterPoseView(PoseViewBase view)
+	{
+	}
 
 	protected override void OnOpened()
 	{
@@ -122,5 +132,60 @@ public partial class PoseWindow : CharacterPanelBase
 	private void OnFlipPoseClicked(object sender, RoutedEventArgs e)
 	{
 		this.Services.Pose.Flip(this.TargetObjectIndex);
+	}
+}
+
+[DependencyProperty<string>("Category")]
+public partial class PoseTabItem : TabItem
+{
+	private List<PoseViewBase>? views;
+
+	public PoseTabItem()
+	{
+		this.Loaded += this.OnLoaded;
+	}
+
+	public bool IsValid { get; private set; }
+
+	public void OnViewIsValidChanged(PoseViewBase view, bool newValue)
+	{
+		this.CheckViews();
+	}
+
+	public void OnTabIsValidChanged(PoseTabItem view, bool newValue)
+	{
+		this.CheckViews();
+	}
+
+	private void OnLoaded(object sender, RoutedEventArgs e)
+	{
+		this.views = this.FindLogicalChildren<PoseViewBase>();
+	}
+
+	private void CheckViews()
+	{
+		int visibleCount = 0;
+
+		if (this.views != null)
+		{
+			foreach (PoseViewBase view in this.views)
+			{
+				if (view.IsValid)
+				{
+					visibleCount++;
+				}
+			}
+		}
+
+		if (visibleCount <= 0)
+		{
+			this.Visibility = Visibility.Hidden;
+			this.IsValid = false;
+		}
+		else
+		{
+			this.Visibility = Visibility.Visible;
+			this.IsValid = true;
+		}
 	}
 }

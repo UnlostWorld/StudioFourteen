@@ -39,11 +39,14 @@ public partial class PoseViewBase : View
 	private readonly Dictionary<ISelectionId, List<PoseSelectionControl>> controlSelectionLookup = new();
 
 	private List<PoseSelectionControl>? controls;
+	private PoseTabItem? parent;
 
 	public PoseViewBase()
 	{
 		this.Background = new SolidColorBrush(Colors.Transparent);
 	}
+
+	public bool IsValid { get; private set; }
 
 	public List<PoseSelectionControl>? GetTargets()
 	{
@@ -143,6 +146,8 @@ public partial class PoseViewBase : View
 	{
 		base.OnLoaded();
 
+		this.parent = this.FindLogicalParent<PoseTabItem>();
+
 		this.Services.Target.TargetChanged += this.OnTargetChanged;
 		this.Services.Selection.SelectionChanged += this.OnSelectionChanged;
 		this.Services.Selection.HoverChanged += this.OnHoverChanged;
@@ -169,10 +174,12 @@ public partial class PoseViewBase : View
 		if (this.Hide)
 		{
 			this.Visibility = Visibility.Hidden;
+			this.IsValid = false;
+			this.parent?.OnViewIsValidChanged(this, this.IsValid);
 			return;
 		}
 
-		this.controls = this.FindChildren<PoseSelectionControl>();
+		this.controls = this.FindLogicalChildren<PoseSelectionControl>();
 
 		await Threads.FrameworkThread();
 
@@ -229,12 +236,16 @@ public partial class PoseViewBase : View
 		if (validCount <= 0)
 		{
 			this.Visibility = Visibility.Hidden;
+			this.IsValid = false;
+			this.parent?.OnViewIsValidChanged(this, this.IsValid);
 		}
 		else
 		{
 			this.Visibility = Visibility.Visible;
 			this.OnHoverChanged(null, this.Services.Selection.Hover);
 			this.OnSelectionChanged(null, this.Services.Selection.Current);
+			this.IsValid = true;
+			this.parent?.OnViewIsValidChanged(this, this.IsValid);
 		}
 	}
 

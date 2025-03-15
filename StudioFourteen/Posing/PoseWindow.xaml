@@ -46,13 +46,13 @@
 				Padding="1"
 				SelectedIndex="{Binding SelectedTab}"
 				Style="{DynamicResource WpfUtilsSideTabs}">
-				<TabItem>
+				<pose:PoseTabItem>
 					<TabItem.Header>
 						<wpfUtils:IconBlock Margin="12" Icon="Person" />
 					</TabItem.Header>
 
 					<TabControl Margin="-3" SelectedIndex="{Binding SelectedBodyTab}">
-						<TabItem Header="{DynamicResource LOC_Pose_Simple}">
+						<pose:PoseTabItem Header="{DynamicResource LOC_Pose_Simple}">
 
 							<Grid>
 								<Grid.ColumnDefinitions>
@@ -111,18 +111,18 @@
 										ViewDefinition="{Binding Services.Data.SkeletonViews[Vagina]}" />
 								</Grid>
 							</Grid>
-						</TabItem>
+						</pose:PoseTabItem>
 
-						<TabItem Header="{DynamicResource LOC_Pose_Matrix}">
+						<pose:PoseTabItem Header="{DynamicResource LOC_Pose_Matrix}">
 							<ScrollViewer>
 								<body:MatrixView />
 							</ScrollViewer>
-						</TabItem>
+						</pose:PoseTabItem>
 
 					</TabControl>
-				</TabItem>
+				</pose:PoseTabItem>
 
-				<TabItem>
+				<pose:PoseTabItem>
 					<TabItem.Header>
 						<wpfUtils:IconBlock
 							Margin="12"
@@ -131,7 +131,7 @@
 					</TabItem.Header>
 
 					<TabControl Margin="-3" SelectedIndex="{Binding SelectedHandsTab}">
-						<TabItem Header="{DynamicResource LOC_Pose_Simple}">
+						<pose:PoseTabItem Header="{DynamicResource LOC_Pose_Simple}">
 							<Grid>
 								<Rectangle
 									Grid.RowSpan="3"
@@ -144,15 +144,15 @@
 									FlipSides="{Binding FlipSides}"
 									ViewDefinition="{Binding Services.Data.SkeletonViews[Hands]}" />
 							</Grid>
-						</TabItem>
-						<TabItem Header="{DynamicResource LOC_Pose_Matrix}">
+						</pose:PoseTabItem>
+						<pose:PoseTabItem Header="{DynamicResource LOC_Pose_Matrix}">
 							<hands:MatrixView />
-						</TabItem>
+						</pose:PoseTabItem>
 					</TabControl>
 
-				</TabItem>
+				</pose:PoseTabItem>
 
-				<TabItem>
+				<pose:PoseTabItem>
 					<TabItem.Header>
 						<wpfUtils:IconBlock
 							Margin="12"
@@ -165,11 +165,11 @@
 						Padding="0"
 						SelectedIndex="{Binding SelectedFaceTab}">
 
-						<TabItem Header="Expression">
+						<pose:PoseTabItem Header="Expression">
 							<pose:ExpressionsView FlipSides="{Binding FlipSides}" ObjectTableIndex="{Binding TargetObjectIndex}" />
-						</TabItem>
+						</pose:PoseTabItem>
 
-						<TabItem Header="{DynamicResource LOC_Pose_Simple}">
+						<pose:PoseTabItem Header="{DynamicResource LOC_Pose_Simple}">
 							<Grid>
 
 								<Grid.ColumnDefinitions>
@@ -198,12 +198,12 @@
 									FlipSides="{Binding FlipSides}"
 									ViewDefinition="{Binding Services.Data.SkeletonViews[Tongue]}" />
 							</Grid>
-						</TabItem>
+						</pose:PoseTabItem>
 					</TabControl>
 
-				</TabItem>
+				</pose:PoseTabItem>
 
-				<TabItem>
+				<pose:PoseTabItem>
 					<TabItem.Header>
 						<!--  TODO: wing Icon  -->
 						<wpfUtils:IconBlock
@@ -217,7 +217,7 @@
 						FlipSides="{Binding FlipSides}"
 						ViewDefinition="{Binding Services.Data.SkeletonViews[DiabolosWings]}" />
 
-				</TabItem>
+				</pose:PoseTabItem>
 			</TabControl>
 		</Grid>
 
