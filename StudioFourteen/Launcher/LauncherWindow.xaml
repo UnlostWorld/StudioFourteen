@@ -13,7 +13,8 @@
 	DefaultPosition="0, 0"
 	RememberState="True"
 	SizeToContent="Manual"
-	mc:Ignorable="d">
+	mc:Ignorable="d"
+	ShowInTaskbar="False">
 	<panels:PanelWindow.Template>
 		<ControlTemplate TargetType="{x:Type local:LauncherWindow}">
 			<AdornerDecorator x:Name="MainGrid">
