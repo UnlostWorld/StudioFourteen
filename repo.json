@@ -1,22 +1,22 @@
 [
-	{
-		"Author": "Unlost World",
-		"Name": "Studio Fourteen",
-		"InternalName": "StudioFourteen",
-		"Description": "A plugin for enhancing GPose functionality",
-		"AssemblyVersion": "1.0.0.80",
-		"TestingAssemblyVersion": "1.0.0.80",
-		"RepoUrl": "https://github.com/UnlostWorld/StudioFourteen",
-		"ApplicableVersion": "any",
-		"DalamudApiLevel": 8,
-		"Tags": [
-			"gpose",
-			"posing",
-			"screenshot"
-		],
-		"IconUrl": "https://github.com/UnlostWorld/StudioFourteen/blob/main/Assets/Icon/light-pride.png",
-		"DownloadLinkInstall": "https://github.com/UnlostWorld/StudioFourteen/releases/download/v80/latest.zip",
-		"DownloadLinkTesting": "https://github.com/UnlostWorld/StudioFourteen/releases/download/v80/latest.zip",
-		"DownloadLinkUpdate": "https://github.com/UnlostWorld/StudioFourteen/releases/download/v80/latest.zip",
-	}
-]
+  {
+      "Author": "Unlost World",
+      "Name": "Studio Fourteen",
+      "InternalName": "StudioFourteen",
+      "Description": "A plugin for enhancing GPose functionality",
+      "AssemblyVersion": "1.0.0.81",
+      "TestingAssemblyVersion": "1.0.0.81",
+      "RepoUrl": "https://github.com/UnlostWorld/StudioFourteen",
+      "ApplicableVersion": "any",
+      "DalamudApiLevel": 8,
+      "Tags": [
+        "gpose",
+        "posing",
+        "screenshot"
+      ],
+      "IconUrl": "https://github.com/UnlostWorld/StudioFourteen/blob/main/Assets/Icon/light-pride.png",
+      "DownloadLinkInstall": "https://github.com/UnlostWorld/StudioFourteen/releases/download/v81/latest.zip",
+      "DownloadLinkTesting": "https://github.com/UnlostWorld/StudioFourteen/releases/download/v81/latest.zip",
+      "DownloadLinkUpdate": "https://github.com/UnlostWorld/StudioFourteen/releases/download/v81/latest.zip",
+    }
+  ]
