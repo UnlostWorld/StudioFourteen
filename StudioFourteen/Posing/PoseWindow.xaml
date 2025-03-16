@@ -39,7 +39,9 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
-		<Grid Grid.Column="0" Margin="1,0,2,1">
+		<Grid
+			Grid.Column="0"
+			Margin="1,0,2,1">
 
 			<TabControl
 				x:Name="GuiTabs"
@@ -48,10 +50,14 @@
 				Style="{DynamicResource WpfUtilsSideTabs}">
 				<pose:PoseTabItem>
 					<TabItem.Header>
-						<wpfUtils:IconBlock Margin="12" Icon="Person" />
+						<wpfUtils:IconBlock
+							Margin="12"
+							Icon="Person" />
 					</TabItem.Header>
 
-					<TabControl Margin="-3" SelectedIndex="{Binding SelectedBodyTab}">
+					<TabControl
+						Margin="-3"
+						SelectedIndex="{Binding SelectedBodyTab}">
 						<pose:PoseTabItem Header="{DynamicResource LOC_Pose_Simple}">
 
 							<Grid>
@@ -67,13 +73,12 @@
 									Fill="Transparent"
 									MouseDown="OnBackgroundMouseDown" />
 
-								<pose:SimpleView
+								<body:BodySimpleView
 									x:Name="BodyView"
 									Grid.RowSpan="3"
 									Grid.Column="0"
-									Margin="-40,0,-40,0"
-									FlipSides="{Binding FlipSides}"
-									ViewDefinition="{Binding Services.Data.SkeletonViews[Body]}" />
+									Margin="0,0,0,0"
+									FlipSides="{Binding FlipSides}" />
 
 								<pose:SimpleView
 									x:Name="ClothesView"
@@ -81,7 +86,7 @@
 									Grid.Column="1"
 									Margin="-40,0,-40,0"
 									FlipSides="{Binding FlipSides}"
-									ViewDefinition="{Binding Services.Data.SkeletonViews[Clothes]}" />
+									LayoutName="Clothes" />
 
 								<TextBlock
 									Grid.RowSpan="3"
@@ -89,12 +94,12 @@
 									Margin="10,0,0,0"
 									HorizontalAlignment="Left"
 									VerticalAlignment="Top"
-									Foreground="{DynamicResource ControlBackgroundBrush}"
-									FontWeight="Bold"
 									FontSize="48"
+									FontWeight="Bold"
+									Foreground="{DynamicResource ControlBackgroundBrush}"
 									IsHitTestVisible="False"
 									Text="L"
-									Visibility="{Binding FlipSides, Converter={StaticResource B2V}}"/>
+									Visibility="{Binding FlipSides, Converter={StaticResource B2V}}" />
 
 								<TextBlock
 									Grid.RowSpan="3"
@@ -102,12 +107,12 @@
 									Margin="0,0,0,0"
 									HorizontalAlignment="Left"
 									VerticalAlignment="Top"
-									Foreground="{DynamicResource ControlBackgroundBrush}"
-									FontWeight="Bold"
 									FontSize="48"
+									FontWeight="Bold"
+									Foreground="{DynamicResource ControlBackgroundBrush}"
 									IsHitTestVisible="False"
 									Text="R"
-									Visibility="{Binding FlipSides, Converter={StaticResource !B2V}}"/>
+									Visibility="{Binding FlipSides, Converter={StaticResource !B2V}}" />
 
 								<TextBlock
 									Grid.RowSpan="3"
@@ -115,12 +120,12 @@
 									Margin="0,0,40,0"
 									HorizontalAlignment="Right"
 									VerticalAlignment="Top"
-									Foreground="{DynamicResource ControlBackgroundBrush}"
-									FontWeight="Bold"
 									FontSize="48"
+									FontWeight="Bold"
+									Foreground="{DynamicResource ControlBackgroundBrush}"
 									IsHitTestVisible="False"
 									Text="R"
-									Visibility="{Binding FlipSides, Converter={StaticResource B2V}}"/>
+									Visibility="{Binding FlipSides, Converter={StaticResource B2V}}" />
 
 								<TextBlock
 									Grid.RowSpan="3"
@@ -128,14 +133,16 @@
 									Margin="0,0,40,0"
 									HorizontalAlignment="Right"
 									VerticalAlignment="Top"
-									Foreground="{DynamicResource ControlBackgroundBrush}"
-									FontWeight="Bold"
 									FontSize="48"
+									FontWeight="Bold"
+									Foreground="{DynamicResource ControlBackgroundBrush}"
 									IsHitTestVisible="False"
 									Text="L"
-									Visibility="{Binding FlipSides, Converter={StaticResource !B2V}}"/>
+									Visibility="{Binding FlipSides, Converter={StaticResource !B2V}}" />
 
-								<Grid Grid.Column="2" Margin="0,10">
+								<Grid
+									Grid.Column="2"
+									Margin="0,10">
 									<Grid.RowDefinitions>
 										<RowDefinition />
 										<RowDefinition />
@@ -146,21 +153,21 @@
 										x:Name="TailView"
 										Grid.Row="0"
 										FlipSides="{Binding FlipSides}"
-										ViewDefinition="{Binding Services.Data.SkeletonViews[Tail]}" />
+										LayoutName="Tail" />
 
 									<pose:SimpleView
 										x:Name="PenisView"
 										Grid.Row="1"
 										FlipSides="{Binding FlipSides}"
 										Hide="{Binding Services.Settings.Current.HideGenitals}"
-										ViewDefinition="{Binding Services.Data.SkeletonViews[Penis]}" />
+										LayoutName="Penis" />
 
 									<pose:SimpleView
 										x:Name="VaginaView"
 										Grid.Row="2"
 										FlipSides="{Binding FlipSides}"
 										Hide="{Binding Services.Settings.Current.HideGenitals}"
-										ViewDefinition="{Binding Services.Data.SkeletonViews[Vagina]}" />
+										LayoutName="Vagina" />
 								</Grid>
 							</Grid>
 						</pose:PoseTabItem>
@@ -182,7 +189,9 @@
 							IconFont="Solid" />
 					</TabItem.Header>
 
-					<TabControl Margin="-3" SelectedIndex="{Binding SelectedHandsTab}">
+					<TabControl
+						Margin="-3"
+						SelectedIndex="{Binding SelectedHandsTab}">
 						<pose:PoseTabItem Header="{DynamicResource LOC_Pose_Simple}">
 							<Grid>
 								<Rectangle
@@ -194,7 +203,7 @@
 									x:Name="HandsView"
 									Grid.Row="0"
 									FlipSides="{Binding FlipSides}"
-									ViewDefinition="{Binding Services.Data.SkeletonViews[Hands]}" />
+									LayoutName="Hands" />
 							</Grid>
 						</pose:PoseTabItem>
 						<pose:PoseTabItem Header="{DynamicResource LOC_Pose_Matrix}">
@@ -218,7 +227,9 @@
 						SelectedIndex="{Binding SelectedFaceTab}">
 
 						<pose:PoseTabItem Header="Expression">
-							<pose:ExpressionsView FlipSides="{Binding FlipSides}" ObjectTableIndex="{Binding TargetObjectIndex}" />
+							<pose:ExpressionsView
+								FlipSides="{Binding FlipSides}"
+								ObjectTableIndex="{Binding TargetObjectIndex}" />
 						</pose:PoseTabItem>
 
 						<pose:PoseTabItem Header="{DynamicResource LOC_Pose_Simple}">
@@ -241,14 +252,14 @@
 									Grid.RowSpan="3"
 									Grid.ColumnSpan="3"
 									FlipSides="{Binding FlipSides}"
-									ViewDefinition="{Binding Services.Data.SkeletonViews[Face]}" />
+									LayoutName="Face" />
 
 								<pose:SimpleView
 									x:Name="TongueView"
 									Grid.Row="2"
 									Grid.Column="2"
 									FlipSides="{Binding FlipSides}"
-									ViewDefinition="{Binding Services.Data.SkeletonViews[Tongue]}" />
+									LayoutName="Tongue" />
 							</Grid>
 						</pose:PoseTabItem>
 					</TabControl>
@@ -267,7 +278,7 @@
 					<pose:SimpleView
 						x:Name="DiabolosView"
 						FlipSides="{Binding FlipSides}"
-						ViewDefinition="{Binding Services.Data.SkeletonViews[DiabolosWings]}" />
+						LayoutName="DiabolosWings" />
 
 				</pose:PoseTabItem>
 			</TabControl>
@@ -315,7 +326,9 @@
 							Visibility="{Binding Selection.CanMirror, Converter={StaticResource B2V}}">
 
 							<wpfUtils:PopOut.Header>
-								<TextBlock Margin="10" Text="{DynamicResource LOC_Pose_Mirror_Header}" />
+								<TextBlock
+									Margin="10"
+									Text="{DynamicResource LOC_Pose_Mirror_Header}" />
 							</wpfUtils:PopOut.Header>
 
 							<ComboBoxItem Tag="{x:Static pose:MirrorModes.None}">
@@ -325,8 +338,12 @@
 										<ColumnDefinition />
 									</Grid.ColumnDefinitions>
 
-									<wpfUtils:IconBlock Grid.Column="0" Icon="Minus" />
-									<TextBlock Grid.Column="1" Text="{DynamicResource LOC_Pose_Mirror_None}" />
+									<wpfUtils:IconBlock
+										Grid.Column="0"
+										Icon="Minus" />
+									<TextBlock
+										Grid.Column="1"
+										Text="{DynamicResource LOC_Pose_Mirror_None}" />
 								</Grid>
 							</ComboBoxItem>
 
@@ -337,8 +354,12 @@
 										<ColumnDefinition />
 									</Grid.ColumnDefinitions>
 
-									<wpfUtils:IconBlock Grid.Column="0" Icon="LeftLong" />
-									<TextBlock Grid.Column="1" Text="{DynamicResource LOC_Pose_Mirror_Copy}" />
+									<wpfUtils:IconBlock
+										Grid.Column="0"
+										Icon="LeftLong" />
+									<TextBlock
+										Grid.Column="1"
+										Text="{DynamicResource LOC_Pose_Mirror_Copy}" />
 								</Grid>
 							</ComboBoxItem>
 
@@ -349,8 +370,12 @@
 										<ColumnDefinition />
 									</Grid.ColumnDefinitions>
 
-									<wpfUtils:IconBlock Grid.Column="0" Icon="LeftRight" />
-									<TextBlock Grid.Column="1" Text="{DynamicResource LOC_Pose_Mirror_Flip}" />
+									<wpfUtils:IconBlock
+										Grid.Column="0"
+										Icon="LeftRight" />
+									<TextBlock
+										Grid.Column="1"
+										Text="{DynamicResource LOC_Pose_Mirror_Flip}" />
 								</Grid>
 							</ComboBoxItem>
 						</ComboBox>
@@ -360,7 +385,9 @@
 							Width="28"
 							Background="Transparent"
 							Click="OnResetSelectionClicked">
-							<wpfUtils:IconBlock Icon="RotateBack" IconFont="Solid" />
+							<wpfUtils:IconBlock
+								Icon="RotateBack"
+								IconFont="Solid" />
 						</Button>
 
 						<ToggleButton
@@ -371,7 +398,9 @@
 							IsEnabled="{Binding Selection.CanLockTransform, FallbackValue=false}"
 							Style="{DynamicResource WpfUtilsIconToggleButton}"
 							ToolTip="{DynamicResource LOC_Pose_LockTransform}">
-							<wpfUtils:IconBlock Icon="CirclePause" IconFont="Solid" />
+							<wpfUtils:IconBlock
+								Icon="CirclePause"
+								IconFont="Solid" />
 						</ToggleButton>
 					</Grid>
 				</Border>
@@ -394,7 +423,9 @@
 							Selection="{Binding Selection}"
 							Visibility="{Binding IsSelectionBlend, Converter={StaticResource B2V}}" />
 
-						<pose:EyeInspector Selection="{Binding Selection}" Visibility="{Binding IsSelectionEye, Converter={StaticResource B2V}}" />
+						<pose:EyeInspector
+							Selection="{Binding Selection}"
+							Visibility="{Binding IsSelectionEye, Converter={StaticResource B2V}}" />
 
 					</Grid>
 				</ScrollViewer>
@@ -409,7 +440,9 @@
 
 			<Grid>
 
-				<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+				<StackPanel
+					HorizontalAlignment="Left"
+					Orientation="Horizontal">
 					<ToggleButton
 						Width="100"
 						Background="Transparent"
@@ -427,7 +460,9 @@
 					</Button>
 				</StackPanel>
 
-				<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+				<StackPanel
+					HorizontalAlignment="Right"
+					Orientation="Horizontal">
 
 					<Button
 						Width="28"
@@ -442,7 +477,9 @@
 						Background="Transparent"
 						Click="OnClearClicked"
 						ToolTip="{DynamicResource LOC_Pose_SelectCharacter}">
-						<wpfUtils:IconBlock Icon="User" IconFont="Solid" />
+						<wpfUtils:IconBlock
+							Icon="User"
+							IconFont="Solid" />
 					</Button>
 
 					<Button
@@ -450,7 +487,9 @@
 						Background="Transparent"
 						Click="OnReferenceClicked"
 						ToolTip="{DynamicResource LOC_Pose_Reference}">
-						<wpfUtils:IconBlock Icon="Person" IconFont="Solid" />
+						<wpfUtils:IconBlock
+							Icon="Person"
+							IconFont="Solid" />
 					</Button>
 
 					<Button

@@ -1,6 +1,45 @@
 {
-	"Body": {
-		"Background": "/Assets/PoseCharacterBodyBackground.png",
+	// Midlander
+	"Body_1_0": {
+		"Background": "/Assets/Pose Backgrounds/1_0.png"
+	},
+	"Body_1_1": {
+		"Background": "/Assets/Pose Backgrounds/1_1.png",
+		"Bones": {
+			"j_kao": "106, 60",
+			"j_kubi": "106, 85",
+			"j_sebo_c": "106, 110",
+			"j_sebo_b": "106, 155",
+			"j_sebo_a": "106, 190",
+			"n_hara": "106, 205",
+			"j_kosi": "106, 220",
+			"iv_koumon": "106, 243",
+			"iv_koumon_l": "105, 230",
+			"iv_shiri_l": "91,247",
+			"j_sako_l": "108, 103",
+			"n_hkata_l": "83, 97",
+			"j_mune_l": "112,130",
+			"iv_c_mune_l": "105, 152",
+			"j_ude_a_l": "88, 117",
+			"iv_nitoukin_l": "65, 137",
+			"n_hhiji_l": "85, 170",
+			"j_ude_b_l": "65,170",
+			"n_hte_l": "60, 236",
+			"j_te_l": "53, 258",
+			"j_asi_a_l": "104, 265",
+			"j_asi_b_l": "100, 330",
+			"j_asi_c_l": "96, 353",
+			"j_asi_d_l": "90, 470",
+			"j_asi_e_l": "83, 490",
+			"character": "106, 490"
+		}
+	},
+	// Highlander
+	"Body_2_0": {
+		"Background": "/Assets/Pose Backgrounds/2_0.png"
+	},
+	"Body_2_1": {
+		"Background": "/Assets/Pose Backgrounds/2_1.png",
 		"Bones": {
 			"j_kao": "128, 60",
 			"j_kubi": "128, 85",
@@ -29,6 +68,107 @@
 			"j_asi_e_l": "83, 490",
 			"character": "128, 490"
 		}
+	},
+	// Wildwood
+	"Body_3_0": {
+		"Background": "/Assets/Pose Backgrounds/3_0.png",
+		"Bones": {
+			"j_kao": "128, 60"
+		}
+	},
+	"Body_3_1": {
+		"Background": "/Assets/Pose Backgrounds/3_1.png"
+	},
+	// Duskwight
+	"Body_4_0": {
+		"Background": "/Assets/Pose Backgrounds/4_0.png"
+	},
+	"Body_4_1": {
+		"Background": "/Assets/Pose Backgrounds/4_1.png"
+	},
+	//Plainsfolk
+	"Body_5_0": {
+		"Background": "/Assets/Pose Backgrounds/5_0.png"
+	},
+	"Body_5_1": {
+		"Background": "/Assets/Pose Backgrounds/5_1.png"
+	},
+	//Dunesfolk
+	"Body_6_0": {
+		"Background": "/Assets/Pose Backgrounds/6_0.png"
+	},
+	"Body_6_1": {
+		"Background": "/Assets/Pose Backgrounds/6_1.png"
+	},
+	//SeekerOfTheSun
+	"Body_7_0": {
+		"Background": "/Assets/Pose Backgrounds/7_0.png"
+	},
+	"Body_7_1": {
+		"Background": "/Assets/Pose Backgrounds/7_1.png"
+	},
+	//KeeperOfTheMoon
+	"Body_8_0": {
+		"Background": "/Assets/Pose Backgrounds/8_0.png"
+	},
+	"Body_8_1": {
+		"Background": "/Assets/Pose Backgrounds/8_1.png"
+	},
+	//SeaWolf
+	"Body_9_0": {
+		"Background": "/Assets/Pose Backgrounds/9_0.png"
+	},
+	"Body_9_1": {
+		"Background": "/Assets/Pose Backgrounds/9_1.png"
+	},
+	//Hellsguard
+	"Body_10_0": {
+		"Background": "/Assets/Pose Backgrounds/10_0.png"
+	},
+	"Body_10_1": {
+		"Background": "/Assets/Pose Backgrounds/10_1.png"
+	},
+	//Raen
+	"Body_11_0": {
+		"Background": "/Assets/Pose Backgrounds/11_0.png"
+	},
+	"Body_11_1": {
+		"Background": "/Assets/Pose Backgrounds/11_1.png"
+	},
+	//Xaela
+	"Body_12_0": {
+		"Background": "/Assets/Pose Backgrounds/12_0.png"
+	},
+	"Body_12_1": {
+		"Background": "/Assets/Pose Backgrounds/12_1.png"
+	},
+	//Helions
+	"Body_13_0": {
+		"Background": "/Assets/Pose Backgrounds/13_0.png"
+	},
+	"Body_13_1": {
+		"Background": "/Assets/Pose Backgrounds/13_1.png"
+	},
+	//TheLost
+	"Body_14_0": {
+		"Background": "/Assets/Pose Backgrounds/14_0.png"
+	},
+	"Body_14_1": {
+		"Background": "/Assets/Pose Backgrounds/14_1.png"
+	},
+	//Rava
+	"Body_15_0": {
+		"Background": "/Assets/Pose Backgrounds/15_0.png"
+	},
+	"Body_15_1": {
+		"Background": "/Assets/Pose Backgrounds/15_1.png"
+	},
+	//Veena
+	"Body_16_0": {
+		"Background": "/Assets/Pose Backgrounds/16_0.png"
+	},
+	"Body_16_1": {
+		"Background": "/Assets/Pose Backgrounds/16_1.png"
 	},
 	"Clothes": {
 		"Background": "/Assets/PoseCharacterClothesBackground.png",

@@ -42,11 +42,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Resource Include="Assets\*.*" />
+		<Resource Include="Assets\**" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<EmbeddedResource Include="Data\Documents\*.*" />
+		<EmbeddedResource Include="Data\Documents\**" />
 	</ItemGroup>
 
 
@@ -147,12 +147,6 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\Lib\WpfUtils\WpfUtils.csproj" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Resource Include="Assets\Icons\Camera.svg" />
-	  <Resource Include="Assets\Icons\GroupPose.svg" />
-	  <Resource Include="Assets\Icons\GroupPoseSettings.svg" />
 	</ItemGroup>
 
 </Project>

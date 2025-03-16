@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 using StudioFourteen.Selection;
 using WpfUtils;
 
-[DependencyProperty<SkeletonViewDefinition>("ViewDefinition")]
+[DependencyProperty<string>("LayoutName")]
 [DependencyProperty<bool>("FlipSides", DefaultValue = false)]
 public partial class SimpleView : PoseViewBase
 {
@@ -38,6 +38,7 @@ public partial class SimpleView : PoseViewBase
 	private readonly Canvas canvas;
 	private int backgroundWidth;
 	private int backgroundHeight;
+	private SimpleViewLayout? layout;
 
 	public SimpleView()
 	{
@@ -55,11 +56,13 @@ public partial class SimpleView : PoseViewBase
 			this.boneConnections.Clear();
 			this.canvas.Children.Clear();
 
-			if (this.ViewDefinition == null)
+			if (this.LayoutName == null
+			|| !this.Services.Data.SimplePoseLayouts?.TryGetValue(this.LayoutName, out this.layout) == true
+			|| this.layout == null)
 				return;
 
 			// populate bones
-			foreach ((string name, Point pos) in this.ViewDefinition.Bones)
+			foreach ((string name, Point pos) in this.layout.Bones)
 			{
 				PoseSelectionControl target = new();
 				target.SelectionName = name;
@@ -78,10 +81,10 @@ public partial class SimpleView : PoseViewBase
 
 			this.UpdateBackground();
 
-			if (this.ViewDefinition.Size.Width > 0 && this.ViewDefinition.Size.Height > 0)
+			if (this.layout.Size.Width > 0 && this.layout.Size.Height > 0)
 			{
-				this.backgroundWidth = (int)this.ViewDefinition.Size.Width;
-				this.backgroundHeight = (int)this.ViewDefinition.Size.Height;
+				this.backgroundWidth = (int)this.layout.Size.Width;
+				this.backgroundHeight = (int)this.layout.Size.Height;
 			}
 
 			await base.UpdateTargetsAsync();
@@ -122,28 +125,24 @@ public partial class SimpleView : PoseViewBase
 
 	protected void UpdateBackground()
 	{
-		SkeletonViewDefinition? definition = this.ViewDefinition;
-		if (definition == null)
+		if (this.layout?.Background == null)
 			return;
 
-		if (definition.Background != null)
-		{
-			BitmapImage bmp = new();
-			bmp.BeginInit();
-			bmp.UriSource = new($"pack://application:,,,/StudioFourteen;component/{definition.Background}");
-			bmp.EndInit();
+		BitmapImage bmp = new();
+		bmp.BeginInit();
+		bmp.UriSource = new($"pack://application:,,,/StudioFourteen;component/{this.layout.Background}");
+		bmp.EndInit();
 
-			this.backgroundWidth = bmp.PixelWidth;
-			this.backgroundHeight = bmp.PixelHeight;
+		this.backgroundWidth = bmp.PixelWidth;
+		this.backgroundHeight = bmp.PixelHeight;
 
-			ImageBrush brush = new();
-			brush.ImageSource = bmp;
-			brush.Stretch = Stretch.Uniform;
-			brush.Opacity = BackgroundOpacity;
-			brush.AlignmentX = AlignmentX.Left;
-			brush.AlignmentY = AlignmentY.Top;
-			this.canvas.Background = brush;
-		}
+		ImageBrush brush = new();
+		brush.ImageSource = bmp;
+		brush.Stretch = Stretch.Uniform;
+		brush.Opacity = BackgroundOpacity;
+		brush.AlignmentX = AlignmentX.Left;
+		brush.AlignmentY = AlignmentY.Top;
+		this.canvas.Background = brush;
 	}
 
 	protected override void OnRenderSizeChanged(SizeChangedInfo? sizeInfo)
@@ -185,20 +184,9 @@ public partial class SimpleView : PoseViewBase
 		});
 	}
 
-	partial void OnViewDefinitionChanged()
+	partial void OnLayoutNameChanged()
 	{
 		this.UpdateTargets();
-	}
-
-	private bool HasBone(string boneName)
-	{
-		if (this.ViewDefinition == null)
-			return false;
-
-		if (boneName.EndsWith("_r"))
-			boneName = boneName.Substring(0, boneName.Length - 2) + "_l";
-
-		return this.ViewDefinition.Bones.ContainsKey(boneName);
 	}
 
 	private Point GetPosition(string boneName)
@@ -218,7 +206,7 @@ public partial class SimpleView : PoseViewBase
 		}
 
 		Point pos;
-		if (this.ViewDefinition == null || !this.ViewDefinition.Bones.TryGetValue(lookupName, out pos))
+		if (this.layout == null || !this.layout.Bones.TryGetValue(lookupName, out pos))
 			return default;
 
 		double scaleY = this.ActualHeight / (double)this.backgroundHeight;
@@ -320,7 +308,7 @@ public partial class SimpleView : PoseViewBase
 	}
 }
 
-public class SkeletonViewDefinition
+public class SimpleViewLayout
 {
 	public string? Background { get; set; }
 	public Dictionary<string, Point> Bones { get; set; } = new();

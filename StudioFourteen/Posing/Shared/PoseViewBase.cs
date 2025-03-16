@@ -40,6 +40,7 @@ public partial class PoseViewBase : View
 
 	private List<PoseSelectionControl>? controls;
 	private PoseTabItem? parent;
+	private bool isUpdatingTargets = false;
 
 	public PoseViewBase()
 	{
@@ -47,6 +48,8 @@ public partial class PoseViewBase : View
 	}
 
 	public bool IsValid { get; private set; }
+
+	public int ObjectTableIndex => this.Services.Target.TargetObjectIndex;
 
 	public List<PoseSelectionControl>? GetTargets()
 	{
@@ -177,83 +180,96 @@ public partial class PoseViewBase : View
 
 	protected virtual async Task UpdateTargetsAsync()
 	{
-		await this.MainThread();
+		while (this.isUpdatingTargets)
+			await Task.Delay(100);
 
-		if (this.Hide)
+		this.isUpdatingTargets = true;
+		try
 		{
-			this.Visibility = Visibility.Hidden;
-			this.IsValid = false;
-			this.parent?.OnViewIsValidChanged(this, this.IsValid);
-			return;
-		}
+			await this.MainThread();
 
-		this.controls = this.FindLogicalChildren<PoseSelectionControl>();
+			if (this.Hide)
+			{
+				this.Visibility = Visibility.Hidden;
+				this.IsValid = false;
+				this.parent?.OnViewIsValidChanged(this, this.IsValid);
+				return;
+			}
 
-		await Threads.FrameworkThread();
+			this.controls = this.FindLogicalChildren<PoseSelectionControl>();
 
-		int objectTableIndex = this.Services.Target.TargetObjectIndex;
+			await Threads.FrameworkThread();
 
-		/*
-		// Check our object table index
-		bool result = await this.LoadFromTable(objectTableIndex, definition);
+			/*
+			// Check our object table index
+			bool result = await this.LoadFromTable(objectTableIndex, definition);
 
-		// check for ornaments
-		if (!result)
-		{
-			int ornamentTableIndex = -1;
+			// check for ornaments
+			if (!result)
+			{
+				int ornamentTableIndex = -1;
+				unsafe
+				{
+					Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
+					Ornament* ornament = character->OrnamentData.OrnamentObject;
+
+					if (ornament != null)
+					{
+						ornamentTableIndex = ornament->ObjectIndex;
+					}
+				}
+
+				result = await this.LoadFromTable(ornamentTableIndex, definition);
+			}
+
+			// TODO: check for mounts?
+			}*/
+
 			unsafe
 			{
-				Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
-				Ornament* ornament = character->OrnamentData.OrnamentObject;
+				Character* pCharacter = this.Services.Target.GetCharacter(this.ObjectTableIndex);
+				if (pCharacter == null)
+					return;
 
-				if (ornament != null)
+				foreach (PoseSelectionControl control in this.controls)
 				{
-					ornamentTableIndex = ornament->ObjectIndex;
+					this.PopulateControl(control, pCharacter);
 				}
 			}
 
-			result = await this.LoadFromTable(ornamentTableIndex, definition);
-		}
+			await this.MainThread();
 
-		// TODO: check for mounts?
-		}*/
-
-		unsafe
-		{
-			Character* pCharacter = this.Services.Target.GetCharacter(objectTableIndex);
-			if (pCharacter == null)
-				return;
-
+			int validCount = 0;
 			foreach (PoseSelectionControl control in this.controls)
 			{
-				this.PopulateControl(control, pCharacter);
+				if (control.IsSafeValid)
+					validCount++;
+
+				control.IsValid = control.IsSafeValid;
+			}
+
+			if (validCount <= 0)
+			{
+				this.Visibility = Visibility.Hidden;
+				this.IsValid = false;
+				this.parent?.OnViewIsValidChanged(this, this.IsValid);
+			}
+			else
+			{
+				this.Visibility = Visibility.Visible;
+				this.OnHoverChanged(null, this.Services.Selection.Hover);
+				this.OnSelectionChanged(null, this.Services.Selection.Current);
+				this.IsValid = true;
+				this.parent?.OnViewIsValidChanged(this, this.IsValid);
 			}
 		}
-
-		await this.MainThread();
-
-		int validCount = 0;
-		foreach (PoseSelectionControl control in this.controls)
+		catch(Exception ex)
 		{
-			if (control.IsSafeValid)
-				validCount++;
-
-			control.IsValid = control.IsSafeValid;
+			this.Log.Error(ex, "Error updating pose view");
 		}
-
-		if (validCount <= 0)
+		finally
 		{
-			this.Visibility = Visibility.Hidden;
-			this.IsValid = false;
-			this.parent?.OnViewIsValidChanged(this, this.IsValid);
-		}
-		else
-		{
-			this.Visibility = Visibility.Visible;
-			this.OnHoverChanged(null, this.Services.Selection.Hover);
-			this.OnSelectionChanged(null, this.Services.Selection.Current);
-			this.IsValid = true;
-			this.parent?.OnViewIsValidChanged(this, this.IsValid);
+			this.isUpdatingTargets = false;
 		}
 	}
 

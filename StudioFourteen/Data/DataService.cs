@@ -25,12 +25,12 @@ using System.Threading.Tasks;
 
 public class DataService : ServiceBase
 {
-	public Dictionary<string, SkeletonViewDefinition>? SkeletonViews { get; private set; }
+	public Dictionary<string, SimpleViewLayout>? SimplePoseLayouts { get; private set; }
 	public Dictionary<string, BlendTarget>? ExpressionBlends { get; private set; }
 
 	public override Task Initialize()
 	{
-		this.SkeletonViews = this.GetResourceDocument<Dictionary<string, SkeletonViewDefinition>>("SkeletonViews");
+		this.SimplePoseLayouts = this.GetResourceDocument<Dictionary<string, SimpleViewLayout>>("SimplePoseLayouts");
 		this.ExpressionBlends = this.GetResourceDocument<Dictionary<string, BlendTarget>>("ExpressionBlends");
 
 		return base.Initialize();
@@ -39,7 +39,7 @@ public class DataService : ServiceBase
 	private Stream? GetRawResourceStream(string name)
 	{
 		Assembly assembly = Assembly.GetExecutingAssembly();
-		string resourceName = $"StudioFourteen.Data.Documents.{name}.json";
+		string resourceName = $"StudioFourteen.Data.Documents.{name}.jsonc";
 		Stream? stream = assembly.GetManifestResourceStream(resourceName);
 
 		if (stream == null)
