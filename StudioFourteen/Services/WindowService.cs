@@ -175,12 +175,15 @@ public partial class WindowService : ServiceBase
 
 		PInvoke.SetParent((HWND)wndInterop.Handle, (HWND)this.XivProcess.MainWindowHandle);
 
-		const uint WS_POPUP = 0x80000000;
-		const uint WS_CHILD = 0x40000000;
+		PInvoke.SetWindowLong(
+			(HWND)wndInterop.Handle,
+			WINDOW_LONG_PTR_INDEX.GWL_STYLE,
+			(int)WINDOW_STYLE.WS_CHILD);
 
-		int style = PInvoke.GetWindowLong((HWND)wndInterop.Handle, WINDOW_LONG_PTR_INDEX.GWL_STYLE);
-		style = (int)((style & ~WS_POPUP) | WS_CHILD);
-		PInvoke.SetWindowLong((HWND)wndInterop.Handle, WINDOW_LONG_PTR_INDEX.GWL_STYLE, style);
+		PInvoke.SetWindowLong(
+			(HWND)wndInterop.Handle,
+			WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE,
+			(int)WINDOW_EX_STYLE.WS_EX_TOOLWINDOW);
 
 		// TODO: This GetPosition only works for embedded windows, we should add a function to do the ClintRect
 		// conversion to find its relative position even while not embedded.
@@ -197,12 +200,10 @@ public partial class WindowService : ServiceBase
 
 		PInvoke.SetParent((HWND)wndInterop.Handle, (HWND)0u);
 
-		const uint WS_POPUP = 0x80000000;
-		const uint WS_CHILD = 0x40000000;
-
-		int style = PInvoke.GetWindowLong((HWND)wndInterop.Handle, WINDOW_LONG_PTR_INDEX.GWL_STYLE);
-		style = (int)((style & ~WS_CHILD) | WS_POPUP);
-		PInvoke.SetWindowLong((HWND)wndInterop.Handle, WINDOW_LONG_PTR_INDEX.GWL_STYLE, style);
+		PInvoke.SetWindowLong(
+			(HWND)wndInterop.Handle,
+			WINDOW_LONG_PTR_INDEX.GWL_STYLE,
+			unchecked((int)WINDOW_STYLE.WS_POPUP));
 	}
 
 	public void SetPosition(Window wnd, System.Windows.Point position, bool setZ)

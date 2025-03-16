@@ -17,3 +17,6 @@ GetProcAddress
 GetModuleFileNameW
 LoadLibrary
 GetClientRect
+
+WINDOW_EX_STYLE
+WINDOW_STYLE

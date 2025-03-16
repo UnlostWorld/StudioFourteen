@@ -347,7 +347,14 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 		this.panel?.SetIsOpen(this, true, false);
 
-		this.WindowWatcher().Run();
+		if (this.SavedPosition != null)
+		{
+			this.Services.Windows.SetPosition(this, (Point)this.SavedPosition, true);
+		}
+		else
+		{
+			this.Services.Windows.SetPosition(this, this.Position, true);
+		}
 	}
 
 	protected virtual void OnClosed()
@@ -420,11 +427,18 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 			}
 		}
 
-		Thread.Sleep(delay);
+		if (delay > 0)
+			Thread.Sleep(delay);
+
 		this.Services.Windows.BringToTop(this);
-		Thread.Sleep(delay);
+
+		if (delay > 0)
+			Thread.Sleep(delay);
+
 		this.Activate();
-		Thread.Sleep(delay);
+
+		if (delay > 0)
+			Thread.Sleep(delay);
 	}
 
 	protected virtual void OnPreviewMouseUp(object sender, MouseButtonEventArgs e)
@@ -582,36 +596,5 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 			this.IsUiVisible = this.GetIsUiVisible();
 			this.IsUiVisibleAndOpen = this.GetIsUiVisibleAndOpen();
 		});
-	}
-
-	private async Task WindowWatcher()
-	{
-		await Task.Delay(16);
-		await this.MainThread();
-
-		if (this.SavedPosition != null)
-		{
-			this.Services.Windows.SetPosition(this, (Point)this.SavedPosition, true);
-		}
-		else
-		{
-			this.Services.Windows.SetPosition(this, this.Position, true);
-		}
-
-		while(this.IsOpen && !ServiceManager.ShutdownRequested)
-		{
-			if (!this.isDragMoving && this.IsEmbedded)
-			{
-				this.Position = this.desiredPosition;
-
-				if (this.RememberState)
-				{
-					this.SavedPosition = this.Position;
-				}
-			}
-
-			await Task.Delay(500);
-			await this.MainThread();
-		}
 	}
 }
