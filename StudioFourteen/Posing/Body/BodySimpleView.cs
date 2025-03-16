@@ -49,8 +49,6 @@ public class BodySimpleView : SimpleView
 
 		await this.MainThread();
 
-		this.Log.Information($">> {key}");
-
 		if (this.Services.Data.SimplePoseLayouts?.ContainsKey(key) != true)
 			return;
 

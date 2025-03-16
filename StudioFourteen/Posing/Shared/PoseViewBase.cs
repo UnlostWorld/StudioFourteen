@@ -110,6 +110,9 @@ public partial class PoseViewBase : View
 	{
 		base.OnMouseUp(e);
 
+		if (e.ChangedButton != MouseButton.Left)
+			return;
+
 		if (this.Services.Selection.Hover != null)
 		{
 			ServiceManager.Instance.Selection.Current = this.Services.Selection.Hover;

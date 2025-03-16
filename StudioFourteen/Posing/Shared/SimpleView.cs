@@ -27,6 +27,9 @@ using StudioFourteen.Posing.Shared;
 using System.Threading.Tasks;
 using StudioFourteen.Selection;
 using WpfUtils;
+using System.Windows.Input;
+using StudioFourteen.Serialization;
+using System.IO;
 
 [DependencyProperty<string>("LayoutName")]
 [DependencyProperty<bool>("FlipSides", DefaultValue = false)]
@@ -45,6 +48,53 @@ public partial class SimpleView : PoseViewBase
 		this.canvas = new();
 		this.canvas.IsHitTestVisible = false;
 		this.Content = this.canvas;
+	}
+
+	protected override void OnMouseMove(MouseEventArgs e)
+	{
+		base.OnMouseMove(e);
+
+		if (this.layout == null)
+			return;
+
+		Point mousePos = e.GetPosition(this.canvas);
+		if (e.RightButton == MouseButtonState.Pressed)
+		{
+			if (this.Services.Selection.Current is BoneSelection boneSelection)
+			{
+				foreach ((BoneId boneId, _) in boneSelection.BonePaths)
+				{
+					List<PoseSelectionControl>? targets = this.GetTargets(boneId);
+					if (targets == null)
+						continue;
+
+					foreach(PoseSelectionControl target in targets)
+					{
+						string? name = target.SafeName;
+						if (name == null)
+							continue;
+
+						Point pos = this.layout.Bones[name];
+						pos.X = mousePos.X / this.canvas.Width;
+						pos.Y = mousePos.Y / this.canvas.Height;
+						this.layout.Bones[name] = pos;
+					}
+				}
+
+				this.OnRenderSizeChanged(null);
+			}
+		}
+	}
+
+	protected override void OnMouseUp(MouseButtonEventArgs e)
+	{
+		base.OnMouseUp(e);
+
+		if (e.ChangedButton == MouseButton.Middle && this.layout != null)
+		{
+			string json = Serializer.Serialize(this.layout);
+			File.WriteAllText("Output.jsonc", json);
+		}
 	}
 
 	protected override async Task UpdateTargetsAsync()
@@ -138,11 +188,14 @@ public partial class SimpleView : PoseViewBase
 
 		ImageBrush brush = new();
 		brush.ImageSource = bmp;
-		brush.Stretch = Stretch.Uniform;
+		brush.Stretch = Stretch.None;
 		brush.Opacity = BackgroundOpacity;
-		brush.AlignmentX = AlignmentX.Left;
-		brush.AlignmentY = AlignmentY.Top;
+		////brush.AlignmentX = AlignmentX.Left;
+		////brush.AlignmentY = AlignmentY.Top;
 		this.canvas.Background = brush;
+
+		this.canvas.Width = bmp.PixelWidth;
+		this.canvas.Height = bmp.PixelHeight;
 	}
 
 	protected override void OnRenderSizeChanged(SizeChangedInfo? sizeInfo)
@@ -160,8 +213,11 @@ public partial class SimpleView : PoseViewBase
 				continue;
 
 			Point pos = this.GetPosition(target.SafeName);
-			Canvas.SetLeft(target, pos.X - (target.Width / 2) - target.Margin.Left);
-			Canvas.SetTop(target, pos.Y - (target.Height / 2) - target.Margin.Top);
+			pos.X = Math.Clamp(pos.X, 0, 1);
+			pos.Y = Math.Clamp(pos.Y, 0, 1);
+
+			Canvas.SetLeft(target, (pos.X * this.canvas.Width) - (target.Width / 2) - target.Margin.Left);
+			Canvas.SetTop(target, (pos.Y * this.canvas.Height) - (target.Height / 2) - target.Margin.Top);
 		}
 
 		foreach (BoneConnection connection in this.boneConnections)
@@ -209,9 +265,11 @@ public partial class SimpleView : PoseViewBase
 		if (this.layout == null || !this.layout.Bones.TryGetValue(lookupName, out pos))
 			return default;
 
-		double scaleY = this.ActualHeight / (double)this.backgroundHeight;
+		/*double scaleY = this.ActualHeight / (double)this.backgroundHeight;
 		double scaleX = this.ActualWidth / (double)this.backgroundWidth;
-		double scale = Math.Min(scaleX, scaleY);
+		double scale = Math.Min(scaleX, scaleY);*/
+
+		double scale = 1.0;
 
 		if (this.FlipSides && canFlip)
 		{
@@ -221,7 +279,7 @@ public partial class SimpleView : PoseViewBase
 		Point finalPos = default;
 		if (isFlip)
 		{
-			finalPos.X = (this.backgroundWidth - pos.X) * scale;
+			finalPos.X = (1 - pos.X) * scale;
 		}
 		else
 		{
