@@ -65,13 +65,12 @@
 									<ColumnDefinition Width="2*" />
 									<ColumnDefinition Width="1*" />
 								</Grid.ColumnDefinitions>
-
+							<Viewbox Grid.RowSpan="3" Grid.Column="0">
 								<body:BodySimpleView
 									x:Name="BodyView"
-									Grid.RowSpan="3"
-									Grid.Column="0"
 									Margin="0,0,0,0"
 									FlipSides="{Binding FlipSides}" />
+							</Viewbox>
 
 								<pose:SimpleView
 									x:Name="ClothesView"

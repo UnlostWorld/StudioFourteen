@@ -93,7 +93,7 @@ public partial class SimpleView : PoseViewBase
 		if (e.ChangedButton == MouseButton.Middle && this.layout != null)
 		{
 			string json = Serializer.Serialize(this.layout);
-			File.WriteAllText("Output.jsonc", json);
+			File.WriteAllText("C:/Users/bwill/OneDrive/Desktop/Output.jsonc", json);
 		}
 	}
 
@@ -110,6 +110,13 @@ public partial class SimpleView : PoseViewBase
 			|| !this.Services.Data.SimplePoseLayouts?.TryGetValue(this.LayoutName, out this.layout) == true
 			|| this.layout == null)
 				return;
+
+			if(this.layout.BasedOn != null)
+			{
+				this.Services.Data.SimplePoseLayouts?.TryGetValue(this.layout.BasedOn, out this.layout);
+				if (this.layout == null)
+					return;
+			}
 
 			// populate bones
 			foreach ((string name, Point pos) in this.layout.Bones)
@@ -371,4 +378,5 @@ public class SimpleViewLayout
 	public string? Background { get; set; }
 	public Dictionary<string, Point> Bones { get; set; } = new();
 	public Size Size { get; set; }
+	public string? BasedOn { get; set; }
 }
