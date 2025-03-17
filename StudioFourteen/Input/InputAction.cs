@@ -19,6 +19,8 @@ namespace StudioFourteen.Input;
 // taking precidence over elements at the bottom.
 public enum InputAction
 {
+	Focus_Game,
+
 	Navigate_Up,
 	Navigate_Down,
 	Navigate_Left,

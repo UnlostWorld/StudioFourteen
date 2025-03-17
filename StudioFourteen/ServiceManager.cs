@@ -48,7 +48,6 @@ public class ServiceManager : ServiceManagerBase
 	public Cameras.CameraService Camera { get; init; } = new();
 	public Overlays.OverlayService Overlays { get; init; } = new();
 	public EnvironmentService Environment { get; init; } = new();
-	public GameConfigService GameConfiguration { get; init; } = new();
 	public IPC.IPCService IPC { get; init; } = new();
 	public Reshade.ReshadeService Reshade { get; init; } = new();
 	public Analytics.AnalyticsService Analytics { get; init; } = new();

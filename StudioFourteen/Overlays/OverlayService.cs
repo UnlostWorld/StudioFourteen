@@ -100,11 +100,11 @@ public partial class OverlayService
 
 	private void OnGroupPoseStateChanged(bool newState)
 	{
-		this.Services.Panels.SetIsOpen<OverlayControlPanel>(newState);
+		this.Services.Panels.SetIsOpen<OverlayControlPanel>(newState, false);
 	}
 
 	private void OnPanelsRestarted(PanelService self)
 	{
-		this.Services.Panels.SetIsOpen<OverlayControlPanel>(this.Services.GroupPose.IsGroupPosing);
+		this.Services.Panels.SetIsOpen<OverlayControlPanel>(this.Services.GroupPose.IsGroupPosing, false);
 	}
 }

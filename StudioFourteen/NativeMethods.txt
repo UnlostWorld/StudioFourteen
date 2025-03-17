@@ -17,6 +17,8 @@ GetProcAddress
 GetModuleFileNameW
 LoadLibrary
 GetClientRect
+ShowWindow
+SetFocus
 
 WINDOW_EX_STYLE
 WINDOW_STYLE

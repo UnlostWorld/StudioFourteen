@@ -20,6 +20,8 @@ using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using ImGuiNET;
 using PropertyChanged.SourceGenerator;
+using StudioFourteen.Input;
+using StudioFourteen.Panels;
 using StudioFourteen.Plugin;
 using StudioFourteen.Studio;
 using StudioFourteen.Utilities;
@@ -41,6 +43,7 @@ using Setter = PropertyChanged.SourceGenerator.Setter;
 
 public partial class WindowService : ServiceBase
 {
+	private readonly InputActionListener clickActionListener;
 	private readonly HashSet<IntPtr> studioWindowHwnds = new();
 	private readonly HashSet<string> atkUnitBlacklist = new()
 	{
@@ -52,12 +55,17 @@ public partial class WindowService : ServiceBase
 	[Notify(Setter.Private)] private bool isCursorOverImGui;
 	[Notify(Setter.Private)] private bool isCursorOverXiv;
 	[Notify(Setter.Private)] private bool isCursorOverStudio;
-
 	[Notify(Setter.Private)] private bool enableXivWindowOverlay;
 
 	private Rect xivClientSize;
-
 	private unsafe AtkUnitBase* atkUnitUnderCursor;
+	private PanelWindow? topMostPanelWindow;
+
+	public WindowService()
+	{
+		this.clickActionListener = new(InputAction.Focus_Game, "WindowService Focus Game");
+		this.clickActionListener.Activate = this.OnFocusGame;
+	}
 
 	public delegate void OnXivClientSizeChanged(Rect newSize);
 
@@ -77,6 +85,18 @@ public partial class WindowService : ServiceBase
 		}
 
 		return base.Initialize();
+	}
+
+	public override void Attach()
+	{
+		base.Attach();
+		this.clickActionListener.Enable();
+	}
+
+	public override void Detach()
+	{
+		base.Detach();
+		this.clickActionListener.Disable();
 	}
 
 	public Rect GetXivWindowClientSize()
@@ -112,58 +132,53 @@ public partial class WindowService : ServiceBase
 
 	public bool IsAnyStudioWindowActive()
 	{
-		return this.studioWindowHwnds.Contains(PInvoke.GetForegroundWindow());
+		return this.topMostPanelWindow != null;
 	}
 
-	public void ActivateStudioWindow()
+	public void Activate(PanelWindow? window)
 	{
-		if (BackgroundWindow.Instance == null)
-			return;
+		PanelWindow? oldTopMost = this.topMostPanelWindow;
+		PanelWindow? newTopMost = window;
+		this.topMostPanelWindow = window;
 
-		BackgroundWindow.Instance.Dispatcher.Invoke(() =>
+		if (oldTopMost != null)
 		{
-			BackgroundWindow.Instance.Activate();
+			oldTopMost.Dispatcher.Invoke(() =>
+			{
+				oldTopMost.IsForeground = false;
+			});
+		}
+
+		if (newTopMost != null)
+		{
+			newTopMost.Dispatcher.Invoke(() =>
+			{
+				WindowInteropHelper wndInterop = new(newTopMost);
+				PInvoke.BringWindowToTop((HWND)wndInterop.Handle);
+				PInvoke.SetFocus((HWND)wndInterop.Handle);
+
+				newTopMost.IsForeground = true;
+			});
+		}
+		else
+		{
+			if (this.XivWindowHwnd != null)
+			{
+				PInvoke.SetForegroundWindow((HWND)this.XivWindowHwnd);
+				PInvoke.SetFocus((HWND)this.XivWindowHwnd);
+			}
+		}
+	}
+
+	public void SendToBack(PanelWindow window)
+	{
+		window.Dispatcher.Invoke(() =>
+		{
+			WindowInteropHelper wndInterop = new(window);
+
+			SET_WINDOW_POS_FLAGS flags = SET_WINDOW_POS_FLAGS.SWP_NOSIZE | SET_WINDOW_POS_FLAGS.SWP_NOMOVE | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE;
+			PInvoke.SetWindowPos((HWND)wndInterop.Handle, (HWND)new IntPtr(1), 0, 0, 0, 0, flags);
 		});
-	}
-
-	public void ActivateXivWindow()
-	{
-		if (this.XivWindowHwnd == null)
-			return;
-
-		PInvoke.SetForegroundWindow((HWND)this.XivWindowHwnd);
-	}
-
-	public bool IsXivWindowActive()
-	{
-		if (this.XivWindowHwnd == null)
-			return false;
-
-		return PInvoke.GetForegroundWindow() == this.XivWindowHwnd;
-	}
-
-	public void BringToTop(Window window)
-	{
-		this.BringXivWindowToTop();
-
-		WindowInteropHelper wndInterop = new(window);
-		PInvoke.BringWindowToTop((HWND)wndInterop.Handle);
-	}
-
-	public void SendToBack(Window window)
-	{
-		WindowInteropHelper wndInterop = new(window);
-
-		SET_WINDOW_POS_FLAGS flags = SET_WINDOW_POS_FLAGS.SWP_NOSIZE | SET_WINDOW_POS_FLAGS.SWP_NOMOVE | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE;
-		PInvoke.SetWindowPos((HWND)wndInterop.Handle, (HWND)new IntPtr(1), 0, 0, 0, 0, flags);
-	}
-
-	public void BringXivWindowToTop()
-	{
-		if (this.XivWindowHwnd == null)
-			return;
-
-		PInvoke.BringWindowToTop((HWND)this.XivWindowHwnd);
 	}
 
 	public void Embed(Window wnd)
@@ -172,8 +187,6 @@ public partial class WindowService : ServiceBase
 			return;
 
 		WindowInteropHelper wndInterop = new(wnd);
-
-		PInvoke.SetParent((HWND)wndInterop.Handle, (HWND)this.XivProcess.MainWindowHandle);
 
 		PInvoke.SetWindowLong(
 			(HWND)wndInterop.Handle,
@@ -184,6 +197,8 @@ public partial class WindowService : ServiceBase
 			(HWND)wndInterop.Handle,
 			WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE,
 			(int)WINDOW_EX_STYLE.WS_EX_TOOLWINDOW);
+
+		PInvoke.SetParent((HWND)wndInterop.Handle, (HWND)this.XivProcess.MainWindowHandle);
 
 		// TODO: This GetPosition only works for embedded windows, we should add a function to do the ClintRect
 		// conversion to find its relative position even while not embedded.
@@ -232,18 +247,18 @@ public partial class WindowService : ServiceBase
 
 		if (setZ)
 		{
-			PInvoke.SetWindowPos((HWND)wndInterop.Handle, (HWND)IntPtr.Zero, x, y, w, h, SET_WINDOW_POS_FLAGS.SWP_SHOWWINDOW | SET_WINDOW_POS_FLAGS.SWP_NOSIZE);
-			PInvoke.SetWindowPos((HWND)wndInterop.Handle, (HWND)IntPtr.Zero, x, y, w, h, SET_WINDOW_POS_FLAGS.SWP_NOSIZE);
+			PInvoke.SetWindowPos((HWND)wndInterop.Handle, (HWND)IntPtr.Zero, x, y, w, h, SET_WINDOW_POS_FLAGS.SWP_SHOWWINDOW | SET_WINDOW_POS_FLAGS.SWP_NOSIZE | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE);
+			PInvoke.SetWindowPos((HWND)wndInterop.Handle, (HWND)IntPtr.Zero, x, y, w, h, SET_WINDOW_POS_FLAGS.SWP_NOSIZE | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE);
 		}
 		else
 		{
-			PInvoke.SetWindowPos((HWND)wndInterop.Handle, (HWND)IntPtr.Zero, x, y, w, h, SET_WINDOW_POS_FLAGS.SWP_SHOWWINDOW | SET_WINDOW_POS_FLAGS.SWP_NOSIZE | SET_WINDOW_POS_FLAGS.SWP_NOZORDER);
-			PInvoke.SetWindowPos((HWND)wndInterop.Handle, (HWND)IntPtr.Zero, x, y, w, h, SET_WINDOW_POS_FLAGS.SWP_NOSIZE | SET_WINDOW_POS_FLAGS.SWP_NOZORDER);
+			PInvoke.SetWindowPos((HWND)wndInterop.Handle, (HWND)IntPtr.Zero, x, y, w, h, SET_WINDOW_POS_FLAGS.SWP_SHOWWINDOW | SET_WINDOW_POS_FLAGS.SWP_NOSIZE | SET_WINDOW_POS_FLAGS.SWP_NOZORDER | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE);
+			PInvoke.SetWindowPos((HWND)wndInterop.Handle, (HWND)IntPtr.Zero, x, y, w, h, SET_WINDOW_POS_FLAGS.SWP_NOSIZE | SET_WINDOW_POS_FLAGS.SWP_NOZORDER | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE);
 		}
 
 		if (wnd.Topmost)
 		{
-			PInvoke.SetWindowPos((HWND)wndInterop.Handle, (HWND)(IntPtr)(-1), x, y, w, h, SET_WINDOW_POS_FLAGS.SWP_NOSIZE | SET_WINDOW_POS_FLAGS.SWP_NOMOVE);
+			PInvoke.SetWindowPos((HWND)wndInterop.Handle, (HWND)(IntPtr)(-1), x, y, w, h, SET_WINDOW_POS_FLAGS.SWP_NOSIZE | SET_WINDOW_POS_FLAGS.SWP_NOMOVE | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE);
 		}
 	}
 
@@ -347,6 +362,18 @@ public partial class WindowService : ServiceBase
 		{
 			this.xivClientSize = xivClientRect;
 			this.XivClientSizeChanged?.Invoke(this.xivClientSize);
+		}
+	}
+
+	private void OnFocusGame()
+	{
+		if (this.Services.GroupPose.IsGroupPosing && this.Settings.EnableGlobalOverlay)
+		{
+			this.Activate(BackgroundWindow.Instance);
+		}
+		else
+		{
+			this.Activate(null);
 		}
 	}
 

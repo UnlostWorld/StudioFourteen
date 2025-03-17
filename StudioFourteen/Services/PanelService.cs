@@ -133,34 +133,33 @@ public class PanelService : ServiceBase
 		return this.Get<T>() != null;
 	}
 
-	public async Task<T?> GetOrOpen<T>()
+	public async Task<T?> GetOrOpen<T>(bool activate = true)
 		where T : Panel, new()
 	{
 		T? panel = this.Get<T>();
 		if (panel != null)
 		{
 			await panel.MainThread();
-			Window? wnd = panel.FindParent<Window>();
-			if (wnd != null)
+			PanelWindow? wnd = panel.FindParent<PanelWindow>();
+			if (wnd != null && activate)
 			{
-				this.Services.Windows.BringToTop(wnd);
 				wnd.Activate();
 			}
 
 			return panel;
 		}
 
-		return await this.Open<T>();
+		return await this.Open<T>(activate);
 	}
 
-	public async Task<T?> Open<T>()
+	public async Task<T?> Open<T>(bool activate = true)
 		where T : Panel, new()
 	{
-		Panel? p = await this.Open(typeof(T));
+		Panel? p = await this.Open(typeof(T), activate);
 		return p as T;
 	}
 
-	public async Task<Panel?> Open(Type panelType)
+	public async Task<Panel?> Open(Type panelType, bool activate = true)
 	{
 		PanelWindow? wnd = await PanelWindow.CreatePanelWindow<PanelWindow>();
 		if (wnd != null)
@@ -172,8 +171,12 @@ public class PanelService : ServiceBase
 				if (wnd.Panel != null)
 				{
 					wnd.Panel.SetHost(wnd);
-					wnd.ShowActivated = true; // ??
 					wnd.Show();
+
+					if (activate)
+					{
+						wnd.Activate();
+					}
 				}
 			});
 
@@ -189,13 +192,13 @@ public class PanelService : ServiceBase
 		this.Get<T>()?.CloseAsync().Run();
 	}
 
-	public void SetIsOpen<T>(bool value)
+	public void SetIsOpen<T>(bool value, bool activate = true)
 		where T : Panel, new()
 	{
-		this.SetIsOpen(typeof(T), value);
+		this.SetIsOpen(typeof(T), value, activate);
 	}
 
-	public void SetIsOpen(Type panelType, bool value)
+	public void SetIsOpen(Type panelType, bool value, bool activate = true)
 	{
 		if (value)
 		{
@@ -203,16 +206,15 @@ public class PanelService : ServiceBase
 
 			if (panel == null)
 			{
-				this.Open(panelType).Run();
+				this.Open(panelType, activate).Run();
 			}
 			else
 			{
 				panel.Dispatcher.Invoke(() =>
 				{
-					Window? wnd = panel.FindParent<Window>();
-					if (wnd != null)
+					PanelWindow? wnd = panel.FindParent<PanelWindow>();
+					if (wnd != null && activate)
 					{
-						this.Services.Windows.BringToTop(wnd);
 						wnd.Activate();
 					}
 				});
@@ -306,7 +308,7 @@ public class PanelService : ServiceBase
 			Type? panelType = Type.GetType(panelTypeName);
 			if (panelType != null)
 			{
-				await this.Open(panelType);
+				await this.Open(panelType, false);
 			}
 			else
 			{

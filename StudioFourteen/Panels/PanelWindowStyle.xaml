@@ -326,7 +326,7 @@
 				<Setter TargetName="ResizeGrip" Property="Visibility" Value="Visible" />
 			</Trigger>
 
-			<Trigger Property="IsActive" Value="True">
+			<Trigger Property="IsForeground" Value="True">
 				<Setter TargetName="WindowBorder" Property="BorderBrush" Value="{DynamicResource TrimBrush}" />
 				<Setter TargetName="WindowShadow" Property="Opacity" Value="1" />
 			</Trigger>
@@ -531,7 +531,7 @@
 		</AdornerDecorator>
 
 		<ControlTemplate.Triggers>
-			<Trigger Property="IsActive" Value="True">
+			<Trigger Property="IsForeground" Value="True">
 				<Setter TargetName="WindowBorder" Property="BorderBrush" Value="{DynamicResource TrimBrush}" />
 				<Setter TargetName="WindowShadow" Property="Opacity" Value="1" />
 			</Trigger>

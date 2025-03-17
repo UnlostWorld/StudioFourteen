@@ -226,12 +226,12 @@ public partial class TargetService : ServiceBase
 
 	private void OnPanelsRestarted(PanelService self)
 	{
-		this.Services.Panels.SetIsOpen<TargetsPanel>(this.Services.GroupPose.IsGroupPosing);
+		this.Services.Panels.SetIsOpen<TargetsPanel>(this.Services.GroupPose.IsGroupPosing, false);
 	}
 
 	private void OnGroupPoseStateChanged(bool newState)
 	{
-		this.Services.Panels.SetIsOpen<TargetsPanel>(newState);
+		this.Services.Panels.SetIsOpen<TargetsPanel>(newState, false);
 
 		if (newState)
 		{

@@ -60,15 +60,12 @@ public class KeyboardDevice : InputDeviceBase
 			axis.ConsumedBy = null;
 		}
 
-		if (!this.Services.Windows.IsAnyStudioWindowActive() && this.Services.Windows.IsXivWindowActive())
+		// Read XIV key states into Studio
+		/*foreach ((VirtualKey key, InputAxis axis) in this.axisLookup)
 		{
-			// Read XIV -> Studio
-			foreach ((VirtualKey key, InputAxis axis) in this.axisLookup)
-			{
-				bool isDown = DalamudServices.KeyState[key];
-				axis.Value = isDown ? 1.0f : 0.0f;
-			}
-		}
+			bool isDown = DalamudServices.KeyState[key];
+			axis.Value = isDown ? 1.0f : 0.0f;
+		}*/
 	}
 
 	public override void PostUpdate()
@@ -79,26 +76,15 @@ public class KeyboardDevice : InputDeviceBase
 		if (this.Services.Input.IsXivTextInputActive)
 			return;
 
-		if (!this.Services.Windows.IsAnyStudioWindowActive() && this.Services.Windows.IsXivWindowActive())
+		// block XIV keys that Studio consumed
+		foreach ((VirtualKey key, InputAxis axis) in this.axisLookup)
 		{
-			// read XIV -> Studio
-			foreach ((VirtualKey key, InputAxis axis) in this.axisLookup)
+			if (axis.IsConsumed)
 			{
-				if (axis.IsConsumed && DalamudServices.KeyState[key])
-				{
-					this.Services.Windows.ActivateStudioWindow();
-					DalamudServices.KeyState[key] = false;
-				}
+				DalamudServices.KeyState[key] = false;
 			}
-		}
-		else
-		{
-			// Write studio -> XIV
-			foreach ((VirtualKey key, InputAxis axis) in this.axisLookup)
+			else
 			{
-				if (axis.IsConsumed)
-					continue;
-
 				if (axis.Value > 0.001f && !this.keysSentToXiv.Contains(key))
 				{
 					this.Services.Windows.SendKeyToXiv(key, true);

@@ -42,6 +42,9 @@ public class InputService : ServiceBase
 
 	public InputService()
 	{
+		this.AddBind(InputAction.Focus_Game, MouseDevice.GetAxisId(MouseButtons.Left));
+		this.AddBind(InputAction.Focus_Game, MouseDevice.GetAxisId(MouseButtons.Right));
+
 		// Navigation
 		this.AddBind(InputAction.Navigate_Up, KeyboardDevice.GetAxisId(VirtualKey.UP));
 		this.AddBind(InputAction.Navigate_Down, KeyboardDevice.GetAxisId(VirtualKey.DOWN));
@@ -284,19 +287,19 @@ public class InputService : ServiceBase
 			this.IsXivTextInputActive = RaptureAtkModule.Instance()->AtkModule.IsTextInputActive();
 
 			// If Text Input just activated, and we have focus, set focus to xiv.
-			if (!wasActive && this.IsXivTextInputActive && this.Services.Windows.IsAnyStudioWindowActive())
+			/*if (!wasActive && this.IsXivTextInputActive && this.Services.Windows.IsAnyStudioWindowActive())
 			{
 				this.Services.Windows.ActivateXivWindow();
-			}
+			}*/
 
 			// If text input is still active, but we are taking focus, send the escape key to clear
 			// the text input focus from xiv.
 			// TODO: it would be nicer if we could invoke something in the AtkModule to clear the games input focus.
-			if (wasActive && this.IsXivTextInputActive && this.Services.Windows.IsAnyStudioWindowActive())
+			/*if (wasActive && this.IsXivTextInputActive && this.Services.Windows.IsAnyStudioWindowActive())
 			{
 				this.Services.Windows.SendKeyToXiv(VirtualKey.ESCAPE, true);
 				this.Services.Windows.SendKeyToXiv(VirtualKey.ESCAPE, false);
-			}
+			}*/
 
 			if (this.IsXivTextInputActive || this.IsStudioTextInputActive)
 				return;

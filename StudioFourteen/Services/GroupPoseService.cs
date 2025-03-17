@@ -130,7 +130,6 @@ public partial class GroupPoseService : ServiceBase
 			// this isn't ideal, as the addon will open with the gamepad controls visible,
 			// but its better than having no way to open this at all.
 			this.Services.Input.Gamepad?.SendButton(GamepadDevice.Buttons.FaceLeft);
-			this.Services.Windows.ActivateXivWindow();
 		}
 		else
 		{

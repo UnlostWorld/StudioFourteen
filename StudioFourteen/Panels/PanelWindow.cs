@@ -24,17 +24,19 @@ using StudioFourteen.Plugin;
 using StudioFourteen.Services;
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using WpfUtils;
+using TerraFX.Interop.Windows;
 using WpfUtils.Extensions;
 using WpfUtils.Windows;
 
 [DependencyProperty<bool>("IsEmbedded", DefaultValue = true)]
+[DependencyProperty<bool>("IsForeground", DefaultValue = false)]
 [DependencyProperty<bool>("CanClose", DefaultValue = true)]
 [DependencyProperty<bool>("CanChangeEmbed", DefaultValue = true)]
 [DependencyProperty<double>("Scale", DefaultValue = 1.0)]
@@ -51,7 +53,6 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	private Panel? panel;
 	private bool isDragMoving = false;
 	private bool isMinimizing = false;
-	private Point desiredPosition;
 
 	[Notify] private bool isUiVisible = true;
 	[Notify] private bool isUiVisibleAndOpen = true;
@@ -116,11 +117,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	public Point Position
 	{
 		get => this.Services.Windows.GetPosition(this);
-		set
-		{
-			this.desiredPosition = value;
-			this.Services.Windows.SetPosition(this, value, false);
-		}
+		set => this.Services.Windows.SetPosition(this, value, false);
 	}
 
 	public FastObservableCollection<double> ZoomOptions { get; init; } = new()
@@ -197,7 +194,17 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		if (ServiceManager.Instance.CurrentState > ServiceManagerBase.States.Started)
 			return null;
 
-		return await MultithreadedWindow.CreateInstanceAsync<T>();
+		T? panelWindow = await MultithreadedWindow.CreateInstanceAsync<T>();
+
+		if (panelWindow != null)
+		{
+			await panelWindow.Dispatcher.InvokeAsync(() =>
+			{
+				panelWindow.ShowActivated = false;
+			});
+		}
+
+		return panelWindow;
 	}
 
 	public virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
@@ -261,6 +268,25 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		this.isDragMoving = false;
 	}
 
+	public new void Activate()
+	{
+		this.Services.Windows.Activate(this);
+		this.SetFocusToWindow();
+		this.IsForeground = true;
+	}
+
+	protected override void OnActivated(EventArgs e)
+	{
+		this.IsForeground = true;
+		base.OnActivated(e);
+	}
+
+	protected override void OnDeactivated(EventArgs e)
+	{
+		this.IsForeground = false;
+		base.OnDeactivated(e);
+	}
+
 	protected void OnLoaded(object sender, RoutedEventArgs e)
 	{
 		try
@@ -289,6 +315,8 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 		this.Services.Windows.XivClientSizeChanged -= this.OnXivClientSizeChanged;
 		this.Services.Windows.OnWindowClosing(this);
+
+		this.IsForeground = false;
 
 		this.OnClosed();
 	}
@@ -377,30 +405,6 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		this.panel?.SetIsOpen(this, false, this.isMinimizing);
 	}
 
-	protected override void OnActivated(EventArgs e)
-	{
-		if (ServiceManager.ShutdownRequested)
-			return;
-
-		if (this.Panel != null)
-			this.Services.Panels.OnPanelActivated(this.Panel, true);
-
-		this.Navigation?.Activate();
-		base.OnActivated(e);
-	}
-
-	protected override void OnDeactivated(EventArgs e)
-	{
-		if (ServiceManager.ShutdownRequested)
-			return;
-
-		if (this.Panel != null)
-			this.Services.Panels.OnPanelActivated(this.Panel, false);
-
-		this.Navigation?.Deactivate();
-		base.OnDeactivated(e);
-	}
-
 	protected override void OnStateChanged(EventArgs e)
 	{
 		if (ServiceManager.ShutdownRequested)
@@ -412,33 +416,10 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 	protected virtual void OnPreviewMouseDown(object sender, MouseButtonEventArgs e)
 	{
-		if (this.IsActive)
+		if (this.IsForeground)
 			return;
 
-		// Hack fix for window focus states causing popups to open then close sometimes
-		// when Windows takes too long to set focus to everything.
-		int delay = 0;
-		if (Mouse.DirectlyOver is FrameworkElement el)
-		{
-			ButtonBase? button = el.FindParent<ButtonBase>();
-			if (button != null)
-			{
-				delay = 50;
-			}
-		}
-
-		if (delay > 0)
-			Thread.Sleep(delay);
-
-		this.Services.Windows.BringToTop(this);
-
-		if (delay > 0)
-			Thread.Sleep(delay);
-
 		this.Activate();
-
-		if (delay > 0)
-			Thread.Sleep(delay);
 	}
 
 	protected virtual void OnPreviewMouseUp(object sender, MouseButtonEventArgs e)
@@ -453,7 +434,6 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 			return;
 
 		this.SavedPosition = this.Position;
-		this.desiredPosition = this.Position;
 	}
 
 	protected virtual bool GetIsUiVisible()
@@ -508,6 +488,26 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	partial void OnIsMaximizedChanged(bool newValue)
 	{
 		this.WindowState = newValue ? WindowState.Maximized : WindowState.Normal;
+	}
+
+	partial void OnIsForegroundChanged(bool newValue)
+	{
+		if (ServiceManager.ShutdownRequested)
+			return;
+
+		if (this.Panel != null)
+			this.Services.Panels.OnPanelActivated(this.Panel, newValue);
+
+		if (newValue)
+		{
+			this.Navigation?.Activate();
+			this.OnActivated(new EventArgs());
+		}
+		else
+		{
+			this.Navigation?.Deactivate();
+			this.OnDeactivated(new EventArgs());
+		}
 	}
 
 	partial void OnScaleChanged()

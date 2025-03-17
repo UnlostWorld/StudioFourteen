@@ -15,14 +15,18 @@
 
 namespace StudioFourteen.Input.Devices;
 
-using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Windows;
 using System.Windows.Input;
+using FFXIVClientStructs.FFXIV.Client.Game.Control;
+using FFXIVClientStructs.FFXIV.Client.System.Input;
+using FFXIVClientStructs.FFXIV.Client.UI;
+using StudioFourteen.Utilities;
 
 using Vector = System.Windows.Vector;
+using XivInputManager = FFXIVClientStructs.FFXIV.Client.Game.Control.InputManager;
 
 public class MouseDevice : InputDeviceBase
 {
@@ -105,6 +109,36 @@ public class MouseDevice : InputDeviceBase
 			xAxis.ConsumedBy = null;
 			yAxis.ConsumedBy = null;
 		}
+
+		unsafe
+		{
+			MouseButtonFlags flags = UIInputData.Instance()->CursorInputs.MouseButtonHeldFlags;
+
+			if (flags.HasFlag(MouseButtonFlags.LBUTTON))
+			{
+				this.buttonAxes[MouseButton.Left].Value = 1.0f;
+			}
+
+			if (flags.HasFlag(MouseButtonFlags.RBUTTON))
+			{
+				this.buttonAxes[MouseButton.Left].Value = 1.0f;
+			}
+
+			if (flags.HasFlag(MouseButtonFlags.MBUTTON))
+			{
+				this.buttonAxes[MouseButton.Middle].Value = 1.0f;
+			}
+
+			if (flags.HasFlag(MouseButtonFlags.XBUTTON1))
+			{
+				this.buttonAxes[MouseButton.XButton1].Value = 1.0f;
+			}
+
+			if (flags.HasFlag(MouseButtonFlags.XBUTTON2))
+			{
+				this.buttonAxes[MouseButton.XButton2].Value = 1.0f;
+			}
+		}
 	}
 
 	public override void PostUpdate()
@@ -117,6 +151,11 @@ public class MouseDevice : InputDeviceBase
 		{
 			xAxis.Value = 0;
 			yAxis.Value = 0;
+		}
+
+		foreach ((MouseButton button, InputAxis axis) in this.buttonAxes)
+		{
+			axis.Value = 0;
 		}
 	}
 
