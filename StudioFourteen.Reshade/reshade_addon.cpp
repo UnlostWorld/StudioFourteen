@@ -14,6 +14,7 @@ RESHADE_API const char* DESCRIPTION = "Enables Studio Fourteen to communicate wi
 
 static const Log* Logger = nullptr;
 static uint64_t s_depthPointer = 0;
+static int s_renderedFrames = 0;
 
 static void on_begin_render_effects(effect_runtime* runtime, command_list* cmd_list, resource_view, resource_view)
 {
@@ -26,9 +27,18 @@ static void on_begin_render_effects(effect_runtime* runtime, command_list* cmd_l
 	s_depthPointer = resource.handle;
 }
 
+static void on_end_render_effects(effect_runtime* runtime, command_list* cmd_list, resource_view, resource_view)
+{
+	s_renderedFrames++;
+}
+
+static void on_init(effect_runtime* pRuntime)
+{
+}
+
 static void on_destroy(effect_runtime* pRuntime)
 {
-	// cleanup
+	s_renderedFrames = 0;
 }
 
 // https://stackoverflow.com/a/557774/9934501
@@ -50,8 +60,10 @@ STUDIO_API bool Initialize(Log::LogDelegate onLog)
 	if (!reshade::register_addon(GetCurrentModule()))
 		return false;
 
+	reshade::register_event<reshade::addon_event::init_effect_runtime>(on_init);
 	reshade::register_event<reshade::addon_event::destroy_effect_runtime>(on_destroy);
 	reshade::register_event<reshade::addon_event::reshade_begin_effects>(on_begin_render_effects);
+	reshade::register_event<reshade::addon_event::reshade_finish_effects>(on_end_render_effects);
 
 	Logger->Information("Add-On Started");
 
@@ -60,8 +72,10 @@ STUDIO_API bool Initialize(Log::LogDelegate onLog)
 
 STUDIO_API void Shutdown()
 {
+	reshade::unregister_event<reshade::addon_event::init_effect_runtime>(on_init);
 	reshade::unregister_event<reshade::addon_event::destroy_effect_runtime>(on_destroy);
 	reshade::unregister_event<reshade::addon_event::reshade_begin_effects>(on_begin_render_effects);
+	reshade::unregister_event<reshade::addon_event::reshade_finish_effects>(on_end_render_effects);
 	reshade::unregister_addon(GetCurrentModule());
 }
 
@@ -90,4 +104,14 @@ STUDIO_API bool UnregisterEvent(addon_event ev, void* callback)
 STUDIO_API uint64_t GetDepthTexture()
 {
 	return s_depthPointer;
+}
+
+STUDIO_API void ResetRenderedFrames()
+{
+	s_renderedFrames = 0;
+}
+
+STUDIO_API int GetRenderedFrames()
+{
+	return s_renderedFrames;
 }

@@ -30,17 +30,12 @@ public class ReshadeService : ServiceBase
 	private readonly LogDelegate onLog;
 	private readonly OpenOverlayDelegate onOpenOverlay;
 	private readonly SetCurrentPresetPathDelegate onSetCurrentPresetPath;
-	private readonly EffectRuntimeDelegate onReshadeReloadedEffects;
-
-	private bool isWaitingForEffectsReload;
-	private bool isWaitingForPresetChange;
 
 	public ReshadeService()
 	{
 		this.onLog = new LogDelegate(this.OnLog);
 		this.onOpenOverlay = new OpenOverlayDelegate(this.OnOpenOverlay);
 		this.onSetCurrentPresetPath = new SetCurrentPresetPathDelegate(this.OnSetCurrentPresetPath);
-		this.onReshadeReloadedEffects = new EffectRuntimeDelegate(this.OnReshadeReloadedEffects);
 	}
 
 	public delegate void ReshadeOverlayChangedDelegate(bool open);
@@ -122,7 +117,6 @@ public class ReshadeService : ServiceBase
 
 		RegisterEvent(AddonEvents.OpenOverlay, Marshal.GetFunctionPointerForDelegate(this.onOpenOverlay));
 		RegisterEvent(AddonEvents.SetCurrentPresetPath, Marshal.GetFunctionPointerForDelegate(this.onSetCurrentPresetPath));
-		RegisterEvent(AddonEvents.ReshadeReloadedEffects, Marshal.GetFunctionPointerForDelegate(this.onReshadeReloadedEffects));
 	}
 
 	public override void Detach()
@@ -134,7 +128,6 @@ public class ReshadeService : ServiceBase
 
 		UnregisterEvent(AddonEvents.OpenOverlay, Marshal.GetFunctionPointerForDelegate(this.onOpenOverlay));
 		UnregisterEvent(AddonEvents.SetCurrentPresetPath, Marshal.GetFunctionPointerForDelegate(this.onSetCurrentPresetPath));
-		UnregisterEvent(AddonEvents.ReshadeReloadedEffects, Marshal.GetFunctionPointerForDelegate(this.onReshadeReloadedEffects));
 		ShutdownReshadeAddon();
 	}
 
@@ -146,13 +139,16 @@ public class ReshadeService : ServiceBase
 		Stopwatch sw = new();
 		sw.Start();
 
-		this.isWaitingForPresetChange = true;
-		while (this.isWaitingForPresetChange && sw.ElapsedMilliseconds < timeout)
-			await Task.Delay(100);
+		ResetRenderedFrames();
 
-		this.isWaitingForEffectsReload = true;
-		while (this.isWaitingForEffectsReload && sw.ElapsedMilliseconds < timeout)
-			await Task.Delay(100);
+		while(GetRenderedFrames() < 60 * 2
+			&& sw.ElapsedMilliseconds < timeout)
+		{
+			await Task.Delay(500);
+		}
+
+		// Some extra time for auto-focus and adaption effects to do their thing.
+		await Task.Delay(5000);
 
 		bool timedOut = sw.ElapsedMilliseconds > timeout;
 		if (timedOut)
@@ -182,6 +178,12 @@ public class ReshadeService : ServiceBase
 	[DllImport("StudioFourteen.Reshade.dll", EntryPoint = "GetDepthTexture")]
 	private static extern IntPtr GetDepthTexture();
 
+	[DllImport("StudioFourteen.Reshade.dll", EntryPoint = "ResetRenderedFrames")]
+	private static extern int ResetRenderedFrames();
+
+	[DllImport("StudioFourteen.Reshade.dll", EntryPoint = "GetRenderedFrames")]
+	private static extern int GetRenderedFrames();
+
 	private void OnLog(LogEventLevel logLevel, string message) => this.Log.Write(logLevel, message);
 
 	private bool OnOpenOverlay(IntPtr pEffectRuntime, bool open, int inputSource)
@@ -197,11 +199,5 @@ public class ReshadeService : ServiceBase
 
 	private void OnSetCurrentPresetPath(IntPtr pEffectRuntime, string path)
 	{
-		this.isWaitingForPresetChange = false;
-	}
-
-	private void OnReshadeReloadedEffects(IntPtr pEffectRuntime)
-	{
-		this.isWaitingForEffectsReload = false;
 	}
 }
