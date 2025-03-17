@@ -243,46 +243,46 @@ public partial class PhotosService : ServiceBase
 			switch (this.Settings.PhotoFormat)
 			{
 				case Formats.Jpeg:
+				{
+					JpegEncoder encoder = new()
 					{
-						JpegEncoder encoder = new()
-						{
-							Quality = 95,
-							Interleaved = false,
-						};
+						Quality = 95,
+						Interleaved = false,
+					};
 
-						await backBuffer.SaveAsJpegAsync(fileName, encoder);
-						break;
-					}
+					await backBuffer.SaveAsJpegAsync(fileName, encoder);
+					break;
+				}
 
 				case Formats.Bmp:
-					{
-						await backBuffer.SaveAsBmpAsync(fileName);
-						break;
-					}
+				{
+					await backBuffer.SaveAsBmpAsync(fileName);
+					break;
+				}
 
 				case Formats.Png:
-					{
-						await backBuffer.SaveAsPngAsync(fileName);
-						break;
-					}
+				{
+					await backBuffer.SaveAsPngAsync(fileName);
+					break;
+				}
 
 				case Formats.Tga:
-					{
-						await backBuffer.SaveAsTgaAsync(fileName);
-						break;
-					}
+				{
+					await backBuffer.SaveAsTgaAsync(fileName);
+					break;
+				}
 
 				case Formats.Tiff:
-					{
-						await backBuffer.SaveAsTiffAsync(fileName);
-						break;
-					}
+				{
+					await backBuffer.SaveAsTiffAsync(fileName);
+					break;
+				}
 
 				case Formats.WebP:
-					{
-						await backBuffer.SaveAsWebpAsync(fileName);
-						break;
-					}
+				{
+					await backBuffer.SaveAsWebpAsync(fileName);
+					break;
+				}
 			}
 
 			if (depthBuffer != null)

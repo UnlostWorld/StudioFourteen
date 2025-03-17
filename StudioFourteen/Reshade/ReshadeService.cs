@@ -16,6 +16,7 @@
 namespace StudioFourteen.Reshade;
 
 using Dalamud.Plugin.Services;
+using PropertyChanged.SourceGenerator;
 using Serilog.Events;
 using StudioFourteen.Plugin;
 using StudioFourteen.Services;
@@ -25,41 +26,38 @@ using System.IO;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 
-public class ReshadeService : ServiceBase
+public static class ReshadeAddon
+{
+	[DllImport("StudioFourteen.Reshade.dll")] public static extern bool Initialize(IntPtr onLog);
+	[DllImport("StudioFourteen.Reshade.dll")] public static extern void Shutdown();
+	[DllImport("StudioFourteen.Reshade.dll")] public static extern IntPtr GetDepthTexture();
+	[DllImport("StudioFourteen.Reshade.dll")] public static extern int ResetRenderedFrames();
+	[DllImport("StudioFourteen.Reshade.dll")] public static extern int GetRenderedFrames();
+	[DllImport("StudioFourteen.Reshade.dll")] public static extern bool GetEffectsState();
+	[DllImport("StudioFourteen.Reshade.dll")] public static extern void SetEffectsState(bool state);
+	[DllImport("StudioFourteen.Reshade.dll")] public static extern bool GetIsOverlayOpen();
+}
+
+public partial class ReshadeService : ServiceBase
 {
 	private readonly LogDelegate onLog;
-	private readonly OpenOverlayDelegate onOpenOverlay;
-	private readonly SetCurrentPresetPathDelegate onSetCurrentPresetPath;
+
+	[Notify] private bool isReshadeOverlayOpen;
+	[Notify] private bool isReshadeEnabled;
+	[Notify] private IntPtr depthBufferAddress;
 
 	public ReshadeService()
 	{
 		this.onLog = new LogDelegate(this.OnLog);
-		this.onOpenOverlay = new OpenOverlayDelegate(this.OnOpenOverlay);
-		this.onSetCurrentPresetPath = new SetCurrentPresetPathDelegate(this.OnSetCurrentPresetPath);
 	}
 
 	public delegate void ReshadeOverlayChangedDelegate(bool open);
-	public delegate void ReshadeDelegate();
 
 	private delegate void LogDelegate(LogEventLevel logLevel, string message);
-	private delegate bool OpenOverlayDelegate(IntPtr pEffectRuntime, bool open, int inputSource);
-	private delegate void SetCurrentPresetPathDelegate(IntPtr pEffectRuntime, string path);
-	private delegate void EffectRuntimeDelegate(IntPtr pEffectRuntime);
 
 	public event ReshadeOverlayChangedDelegate? ReshadeOverlayChanged;
 
-	public enum AddonEvents : uint
-	{
-		ReshadePresent = 75,
-		ReshadeReloadedEffects = 78,
-		SetCurrentPresetPath = 84,
-		OpenOverlay = 86,
-	}
-
 	public bool IsReshade { get; private set; }
-	public bool IsReshadeOverlayOpen { get; set; }
-
-	public IntPtr DepthBufferAddress { get; private set; }
 
 	public override async Task Start()
 	{
@@ -108,15 +106,12 @@ public class ReshadeService : ServiceBase
 		if (!this.IsReshade)
 			return;
 
-		bool result = InitializeReshadeAddon(Marshal.GetFunctionPointerForDelegate(this.onLog));
+		bool result = ReshadeAddon.Initialize(Marshal.GetFunctionPointerForDelegate(this.onLog));
 
 		if (!result)
 			this.Log.Error("Error initializing reshade add-on");
 
 		this.Log.Information("Initialized Reshade add-on");
-
-		RegisterEvent(AddonEvents.OpenOverlay, Marshal.GetFunctionPointerForDelegate(this.onOpenOverlay));
-		RegisterEvent(AddonEvents.SetCurrentPresetPath, Marshal.GetFunctionPointerForDelegate(this.onSetCurrentPresetPath));
 	}
 
 	public override void Detach()
@@ -126,22 +121,20 @@ public class ReshadeService : ServiceBase
 		if (!this.IsReshade)
 			return;
 
-		UnregisterEvent(AddonEvents.OpenOverlay, Marshal.GetFunctionPointerForDelegate(this.onOpenOverlay));
-		UnregisterEvent(AddonEvents.SetCurrentPresetPath, Marshal.GetFunctionPointerForDelegate(this.onSetCurrentPresetPath));
-		ShutdownReshadeAddon();
+		ReshadeAddon.Shutdown();
 	}
 
 	public async Task<bool> WaitForEffectsToLoad(long timeout = 60_000)
 	{
-		if (!this.IsReshade || !this.IsAttached)
+		if (!this.IsReshade || !this.IsAttached || !this.IsReshadeEnabled)
 			return true;
 
 		Stopwatch sw = new();
 		sw.Start();
 
-		ResetRenderedFrames();
+		ReshadeAddon.ResetRenderedFrames();
 
-		while(GetRenderedFrames() < 60 * 2
+		while(ReshadeAddon.GetRenderedFrames() < 60 * 2
 			&& sw.ElapsedMilliseconds < timeout)
 		{
 			await Task.Delay(500);
@@ -159,45 +152,22 @@ public class ReshadeService : ServiceBase
 
 	protected override void OnFrameworkUpdate(IFramework framework)
 	{
-		this.DepthBufferAddress = GetDepthTexture();
+		this.IsReshadeOverlayOpen = ReshadeAddon.GetIsOverlayOpen();
+		this.DepthBufferAddress = ReshadeAddon.GetDepthTexture();
+		this.IsReshadeEnabled = ReshadeAddon.GetEffectsState();
+
 		base.OnFrameworkUpdate(framework);
 	}
 
-	[DllImport("StudioFourteen.Reshade.dll", EntryPoint = "Initialize")]
-	private static extern bool InitializeReshadeAddon(IntPtr onLog);
+	protected void OnIsReshadeOverlayOpenChanged(bool oldValue, bool newValue)
+	{
+		this.ReshadeOverlayChanged?.Invoke(newValue);
+	}
 
-	[DllImport("StudioFourteen.Reshade.dll", EntryPoint = "Shutdown")]
-	private static extern void ShutdownReshadeAddon();
-
-	[DllImport("StudioFourteen.Reshade.dll", EntryPoint = "RegisterEvent")]
-	private static extern void RegisterEvent(AddonEvents evt, IntPtr callback);
-
-	[DllImport("StudioFourteen.Reshade.dll", EntryPoint = "UnregisterEvent")]
-	private static extern void UnregisterEvent(AddonEvents evt, IntPtr callback);
-
-	[DllImport("StudioFourteen.Reshade.dll", EntryPoint = "GetDepthTexture")]
-	private static extern IntPtr GetDepthTexture();
-
-	[DllImport("StudioFourteen.Reshade.dll", EntryPoint = "ResetRenderedFrames")]
-	private static extern int ResetRenderedFrames();
-
-	[DllImport("StudioFourteen.Reshade.dll", EntryPoint = "GetRenderedFrames")]
-	private static extern int GetRenderedFrames();
+	protected void OnIsReshadeEnabledChanged(bool oldValue, bool newValue)
+	{
+		ReshadeAddon.SetEffectsState(newValue);
+	}
 
 	private void OnLog(LogEventLevel logLevel, string message) => this.Log.Write(logLevel, message);
-
-	private bool OnOpenOverlay(IntPtr pEffectRuntime, bool open, int inputSource)
-	{
-		this.IsReshadeOverlayOpen = open;
-		this.RaisePropertyChanged(nameof(this.IsReshadeOverlayOpen));
-		this.ReshadeOverlayChanged?.Invoke(open);
-
-		// We can stop the overlay from opening by returning true.
-		// We may want to do this if studio will have its own reshade UI.
-		return false;
-	}
-
-	private void OnSetCurrentPresetPath(IntPtr pEffectRuntime, string path)
-	{
-	}
 }

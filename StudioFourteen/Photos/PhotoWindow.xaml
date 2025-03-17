@@ -31,17 +31,7 @@
 				<ColumnDefinition Width="Auto" />
 			</Grid.ColumnDefinitions>
 
-			<Grid>
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="Auto" />
-					<ColumnDefinition Width="Auto" />
-				</Grid.ColumnDefinitions>
+			<StackPanel Orientation="Horizontal">
 
 				<Grid
 					Background="Transparent"
@@ -211,6 +201,19 @@
 				</ToggleButton>
 
 				<ToggleButton
+					Grid.Column="4"
+					Width="28"
+					Margin="0"
+					Padding="6,0"
+					IsChecked="{Binding Services.Reshade.IsReshadeEnabled}"
+					IsEnabled="{Binding Services.Reshade.IsReshade}"
+					Style="{DynamicResource WpfUtilsIconToggleButton}"
+					ToolTip="{DynamicResource LOC_Photo_ToggleReshade}"
+					Visibility="{Binding Services.Studio.IsOpenAndInGPose, Converter={StaticResource B2V}}">
+					<TextBlock Text="R" />
+				</ToggleButton>
+
+				<ToggleButton
 					Grid.Column="5"
 					Width="28"
 					Margin="0"
@@ -241,7 +244,7 @@
 				</Button>
 
 
-			</Grid>
+			</StackPanel>
 		</Grid>
 	</Border>
 </panels:Panel>

@@ -372,6 +372,9 @@ public class GameCaptureService : ServiceBase
 				if (!this.Services.Reshade.IsReshade)
 					return;
 
+				if (this.Services.Reshade.DepthBufferAddress == 0)
+					return;
+
 				ID3D11Texture2D* buffer = (ID3D11Texture2D*)this.Services.Reshade.DepthBufferAddress;
 				if (buffer == null)
 					return;
