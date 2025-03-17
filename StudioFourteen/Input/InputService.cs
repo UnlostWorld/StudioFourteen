@@ -25,6 +25,7 @@ using StudioFourteen.Services;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls.Primitives;
 
@@ -398,7 +399,9 @@ public class Bind
 		value = Math.Max(value, 0);
 
 		if (value > 0.001f)
-			primaryAxis.IsConsumed = true;
+		{
+			primaryAxis.ConsumedBy = this;
+		}
 
 		return value;
 	}

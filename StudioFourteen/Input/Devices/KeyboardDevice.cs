@@ -57,7 +57,7 @@ public class KeyboardDevice : InputDeviceBase
 
 		foreach (InputAxis axis in this.Axes)
 		{
-			axis.IsConsumed = false;
+			axis.ConsumedBy = null;
 		}
 
 		if (!this.Services.Windows.IsAnyStudioWindowActive() && this.Services.Windows.IsXivWindowActive())

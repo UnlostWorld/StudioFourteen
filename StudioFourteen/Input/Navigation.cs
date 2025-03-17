@@ -57,28 +57,30 @@ public partial class Navigation
 		this.scope = scope;
 		this.Log = Logging.ForContext(this.GetType());
 
-		this.upListener = new(InputAction.Navigate_Up);
+		string scopeName = scope.GetType().ToString();
+
+		this.upListener = new(InputAction.Navigate_Up, scopeName);
 		this.upListener.Activate = () => this.OnNavigate(FocusNavigationDirection.Up, this.upListener).Run();
 
-		this.downListener = new(InputAction.Navigate_Down);
+		this.downListener = new(InputAction.Navigate_Down, scopeName);
 		this.downListener.Activate = () => this.OnNavigate(FocusNavigationDirection.Down, this.downListener).Run();
 
-		this.leftListener = new(InputAction.Navigate_Left);
+		this.leftListener = new(InputAction.Navigate_Left, scopeName);
 		this.leftListener.Activate = () => this.OnNavigate(FocusNavigationDirection.Left, this.leftListener).Run();
 
-		this.rightListener = new(InputAction.Navigate_Right);
+		this.rightListener = new(InputAction.Navigate_Right, scopeName);
 		this.rightListener.Activate = () => this.OnNavigate(FocusNavigationDirection.Right, this.rightListener).Run();
 
-		this.tabLeftListener = new(InputAction.Navigate_TabLeft);
+		this.tabLeftListener = new(InputAction.Navigate_TabLeft, scopeName);
 		this.tabLeftListener.Activate = () => this.OnTab(false).Run();
 
-		this.tabRightListener = new(InputAction.Navigate_TabRight);
+		this.tabRightListener = new(InputAction.Navigate_TabRight, scopeName);
 		this.tabRightListener.Activate = () => this.OnTab(true).Run();
 
-		this.enterListener = new(InputAction.Navigate_Enter);
+		this.enterListener = new(InputAction.Navigate_Enter, scopeName);
 		this.enterListener.Activate = () => this.OnEnter().Run();
 
-		this.backListener = new(InputAction.Navigate_Back);
+		this.backListener = new(InputAction.Navigate_Back, scopeName);
 		this.backListener.Activate = () => this.OnBack().Run();
 	}
 

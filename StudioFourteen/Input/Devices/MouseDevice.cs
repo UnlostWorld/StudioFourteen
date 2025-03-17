@@ -93,17 +93,17 @@ public class MouseDevice : InputDeviceBase
 
 	public override void PreUpdate()
 	{
-		this.wheel.IsConsumed = false;
+		this.wheel.ConsumedBy = null;
 
 		foreach ((MouseButton button, InputAxis axis) in this.buttonAxes)
 		{
-			axis.IsConsumed = false;
+			axis.ConsumedBy = null;
 		}
 
 		foreach ((MouseButton button, (InputAxisSigned xAxis, InputAxisSigned yAxis)) in this.dragAxis)
 		{
-			xAxis.IsConsumed = false;
-			yAxis.IsConsumed = false;
+			xAxis.ConsumedBy = null;
+			yAxis.ConsumedBy = null;
 		}
 	}
 

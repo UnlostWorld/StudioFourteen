@@ -77,10 +77,12 @@ public class InputAxis(string id, InputDeviceBase device, bool canActivateDevice
 
 	public string Id => id;
 	public InputDeviceBase Device => device;
-	public bool IsConsumed { get; set; }
+	public Bind? ConsumedBy { get; set; }
 
 	public DateTime UtcLastInput { get; private set; }
 	public bool CanActivateDevice => canActivateDevice;
+
+	public bool IsConsumed => this.ConsumedBy != null;
 
 	public virtual float Value
 	{
@@ -102,13 +104,13 @@ public class InputAxisSigned(string positiveId, string negativeId, InputDeviceBa
 	public readonly InputAxis Positive = new(positiveId, device, canActivateDevice);
 	public readonly InputAxis Negative = new(negativeId, device, canActivateDevice);
 
-	public bool IsConsumed
+	public Bind? ConsumedBy
 	{
-		get => this.Positive.IsConsumed || this.Negative.IsConsumed;
+		get => this.Positive.ConsumedBy ?? this.Negative.ConsumedBy;
 		set
 		{
-			this.Positive.IsConsumed = value;
-			this.Negative.IsConsumed = value;
+			this.Positive.ConsumedBy = value;
+			this.Negative.ConsumedBy = value;
 		}
 	}
 

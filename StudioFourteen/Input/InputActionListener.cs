@@ -23,14 +23,16 @@ public class InputActionListener
 
 	private readonly InputAction keyBindEvent;
 
-	public InputActionListener(InputAction evt)
+	public InputActionListener(InputAction evt, string? name = null)
 	{
 		this.keyBindEvent = evt;
+		this.Name = name;
 	}
 
 	public float Value { get; set; }
 	public Action? Activate { get; set; }
 	public Action? Deactivate { get; set; }
+	public string? Name { get; init; }
 
 	public void Enable()
 	{

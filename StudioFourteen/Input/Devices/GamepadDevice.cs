@@ -129,7 +129,7 @@ public class GamepadDevice : InputDeviceBase
 			}
 
 			axis.Value = value ? 1 : 0;
-			axis.IsConsumed = false;
+			axis.ConsumedBy = null;
 		}
 
 		while (this.sendButtons.Count > 0)
