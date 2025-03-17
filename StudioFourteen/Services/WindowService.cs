@@ -97,6 +97,7 @@ public partial class WindowService : ServiceBase
 	{
 		base.Detach();
 		this.clickActionListener.Disable();
+		this.Activate(null);
 	}
 
 	public Rect GetXivWindowClientSize()
