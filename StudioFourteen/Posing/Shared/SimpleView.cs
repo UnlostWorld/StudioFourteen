@@ -27,9 +27,6 @@ using StudioFourteen.Posing.Shared;
 using System.Threading.Tasks;
 using StudioFourteen.Selection;
 using WpfUtils;
-using System.Windows.Input;
-using StudioFourteen.Serialization;
-using System.IO;
 
 [DependencyProperty<string>("LayoutName")]
 [DependencyProperty<bool>("FlipSides", DefaultValue = false)]
@@ -39,62 +36,14 @@ public partial class SimpleView : PoseViewBase
 
 	private readonly List<BoneConnection> boneConnections = new();
 	private readonly Canvas canvas;
-	private int backgroundWidth;
-	private int backgroundHeight;
 	private SimpleViewLayout? layout;
+	private double backgroundAspect;
 
 	public SimpleView()
 	{
 		this.canvas = new();
 		this.canvas.IsHitTestVisible = false;
 		this.Content = this.canvas;
-	}
-
-	protected override void OnMouseMove(MouseEventArgs e)
-	{
-		base.OnMouseMove(e);
-
-		if (this.layout == null)
-			return;
-
-		Point mousePos = e.GetPosition(this.canvas);
-		if (e.RightButton == MouseButtonState.Pressed)
-		{
-			if (this.Services.Selection.Current is BoneSelection boneSelection)
-			{
-				foreach ((BoneId boneId, _) in boneSelection.BonePaths)
-				{
-					List<PoseSelectionControl>? targets = this.GetTargets(boneId);
-					if (targets == null)
-						continue;
-
-					foreach(PoseSelectionControl target in targets)
-					{
-						string? name = target.SafeName;
-						if (name == null)
-							continue;
-
-						Point pos = this.layout.Bones[name];
-						pos.X = mousePos.X / this.canvas.Width;
-						pos.Y = mousePos.Y / this.canvas.Height;
-						this.layout.Bones[name] = pos;
-					}
-				}
-
-				this.OnRenderSizeChanged(null);
-			}
-		}
-	}
-
-	protected override void OnMouseUp(MouseButtonEventArgs e)
-	{
-		base.OnMouseUp(e);
-
-		if (e.ChangedButton == MouseButton.Middle && this.layout != null)
-		{
-			string json = Serializer.Serialize(this.layout);
-			File.WriteAllText("C:/Users/bwill/OneDrive/Desktop/Output.jsonc", json);
-		}
 	}
 
 	protected override async Task UpdateTargetsAsync()
@@ -137,12 +86,6 @@ public partial class SimpleView : PoseViewBase
 			}
 
 			this.UpdateBackground();
-
-			if (this.layout.Size.Width > 0 && this.layout.Size.Height > 0)
-			{
-				this.backgroundWidth = (int)this.layout.Size.Width;
-				this.backgroundHeight = (int)this.layout.Size.Height;
-			}
 
 			await base.UpdateTargetsAsync();
 
@@ -190,19 +133,15 @@ public partial class SimpleView : PoseViewBase
 		bmp.UriSource = new($"pack://application:,,,/StudioFourteen;component/{this.layout.Background}");
 		bmp.EndInit();
 
-		this.backgroundWidth = bmp.PixelWidth;
-		this.backgroundHeight = bmp.PixelHeight;
-
 		ImageBrush brush = new();
 		brush.ImageSource = bmp;
-		brush.Stretch = Stretch.None;
+		brush.Stretch = Stretch.Uniform;
 		brush.Opacity = BackgroundOpacity;
-		////brush.AlignmentX = AlignmentX.Left;
-		////brush.AlignmentY = AlignmentY.Top;
+		brush.AlignmentX = AlignmentX.Center;
+		brush.AlignmentY = AlignmentY.Center;
 		this.canvas.Background = brush;
 
-		this.canvas.Width = bmp.PixelWidth;
-		this.canvas.Height = bmp.PixelHeight;
+		this.backgroundAspect = bmp.Width / bmp.Height;
 	}
 
 	protected override void OnRenderSizeChanged(SizeChangedInfo? sizeInfo)
@@ -223,8 +162,22 @@ public partial class SimpleView : PoseViewBase
 			pos.X = Math.Clamp(pos.X, 0, 1);
 			pos.Y = Math.Clamp(pos.Y, 0, 1);
 
-			Canvas.SetLeft(target, (pos.X * this.canvas.Width) - (target.Width / 2) - target.Margin.Left);
-			Canvas.SetTop(target, (pos.Y * this.canvas.Height) - (target.Height / 2) - target.Margin.Top);
+			double areaAspect = this.ActualWidth / this.ActualHeight;
+
+			double height = this.ActualHeight;
+			double width = height * this.backgroundAspect;
+
+			if (areaAspect < this.backgroundAspect)
+			{
+				width = this.ActualWidth;
+				height = this.ActualWidth * (1 / this.backgroundAspect);
+			}
+
+			double xOffset = (this.ActualWidth - width) / 2;
+			double yOffset = (this.ActualHeight - height) / 2;
+
+			Canvas.SetLeft(target, xOffset + (pos.X * width) - (target.Width / 2) - target.Margin.Left);
+			Canvas.SetTop(target, yOffset + (pos.Y * height) - (target.Height / 2) - target.Margin.Top);
 		}
 
 		foreach (BoneConnection connection in this.boneConnections)
@@ -272,12 +225,6 @@ public partial class SimpleView : PoseViewBase
 		if (this.layout == null || !this.layout.Bones.TryGetValue(lookupName, out pos))
 			return default;
 
-		/*double scaleY = this.ActualHeight / (double)this.backgroundHeight;
-		double scaleX = this.ActualWidth / (double)this.backgroundWidth;
-		double scale = Math.Min(scaleX, scaleY);*/
-
-		double scale = 1.0;
-
 		if (this.FlipSides && canFlip)
 		{
 			isFlip = !isFlip;
@@ -286,14 +233,14 @@ public partial class SimpleView : PoseViewBase
 		Point finalPos = default;
 		if (isFlip)
 		{
-			finalPos.X = (1 - pos.X) * scale;
+			finalPos.X = 1 - pos.X;
 		}
 		else
 		{
-			finalPos.X = pos.X * scale;
+			finalPos.X = pos.X;
 		}
 
-		finalPos.Y = pos.Y * scale;
+		finalPos.Y = pos.Y;
 		return finalPos;
 	}
 

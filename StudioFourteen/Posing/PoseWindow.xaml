@@ -12,7 +12,9 @@
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="{DynamicResource LOC_Pose}"
 	Width="700"
+	MinWidth="500"
 	Height="550"
+	MinHeight="300"
 	VerticalAlignment="Top"
 	VerticalContentAlignment="Top"
 	d:Background="{DynamicResource BackgroundBrush}"
@@ -62,20 +64,22 @@
 							<Grid>
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="2*" />
-									<ColumnDefinition Width="2*" />
+									<ColumnDefinition Width="2.7*" />
 									<ColumnDefinition Width="1*" />
 								</Grid.ColumnDefinitions>
-							<Viewbox Grid.RowSpan="3" Grid.Column="0">
+
 								<body:BodySimpleView
 									x:Name="BodyView"
-									Margin="0,0,0,0"
+									Grid.RowSpan="3"
+									Grid.Column="0"
+									Margin="10"
 									FlipSides="{Binding FlipSides}" />
-							</Viewbox>
 
 								<pose:SimpleView
 									x:Name="ClothesView"
 									Grid.RowSpan="3"
 									Grid.Column="1"
+									Margin="10"
 									FlipSides="{Binding FlipSides}"
 									LayoutName="Clothes" />
 
