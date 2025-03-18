@@ -14,7 +14,6 @@
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
 namespace StudioFourteen.Services;
-
 using StudioFourteen.Launcher;
 using StudioFourteen.Studio;
 using StudioFourteen.Utilities;

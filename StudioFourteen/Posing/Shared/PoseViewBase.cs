@@ -81,12 +81,18 @@ public partial class PoseViewBase : View
 		PoseSelectionControl? closestLink = null;
 		foreach (PoseSelectionControl target in this.controls)
 		{
-			Point targetPos = target.TransformToAncestor(this).Transform(new Point(target.Width / 2, target.Height / 2));
-			double distance = Point.Subtract(mousePos, targetPos).Length;
-			if (distance < closestDist)
+			try
 			{
-				closestDist = distance;
-				closestLink = target;
+				Point targetPos = target.TransformToAncestor(this).Transform(new Point(target.Width / 2, target.Height / 2));
+				double distance = Point.Subtract(mousePos, targetPos).Length;
+				if (distance < closestDist)
+				{
+					closestDist = distance;
+					closestLink = target;
+				}
+			}
+			catch (Exception)
+			{
 			}
 		}
 

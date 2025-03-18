@@ -43,6 +43,7 @@ using Setter = PropertyChanged.SourceGenerator.Setter;
 
 public partial class WindowService : ServiceBase
 {
+	private readonly HashSet<PanelWindow> mouseOverPanelWindows = new();
 	private readonly InputActionListener clickActionListener;
 	private readonly HashSet<IntPtr> studioWindowHwnds = new();
 	private readonly HashSet<string> atkUnitBlacklist = new()
@@ -169,6 +170,23 @@ public partial class WindowService : ServiceBase
 				PInvoke.SetFocus((HWND)this.XivWindowHwnd);
 			}
 		}
+	}
+
+	public void SetMouseOver(PanelWindow window, bool enter)
+	{
+		if (enter)
+		{
+			this.mouseOverPanelWindows.Add(window);
+		}
+		else
+		{
+			this.mouseOverPanelWindows.Remove(window);
+		}
+	}
+
+	public bool IsMouseOverWindow()
+	{
+		return this.mouseOverPanelWindows.Count > 0;
 	}
 
 	public void SendToBack(PanelWindow window)
