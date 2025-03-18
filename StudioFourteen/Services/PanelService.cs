@@ -241,7 +241,7 @@ public class PanelService : ServiceBase
 	public async Task RestartPanels()
 	{
 		this.StopPanels();
-		await Task.Delay(100);
+		await Task.Delay(1000);
 		await this.StartPanels();
 
 		this.PanelsRestarted?.Invoke(this);
