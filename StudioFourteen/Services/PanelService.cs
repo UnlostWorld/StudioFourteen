@@ -199,29 +199,29 @@ public class PanelService : ServiceBase
 
 	public void SetIsOpen(Type panelType, bool value, bool activate = true)
 	{
-		if (value)
-		{
-			Panel? panel = this.Get(panelType);
+		this.SetIsOpenAsync(panelType, value, activate).Run();
+	}
 
-			if (panel == null)
+	public async Task SetIsOpenAsync(Type panelType, bool value, bool activate = true)
+	{
+		Panel? panel = this.Get(panelType);
+
+		if (value && panel == null)
+		{
+			await this.Open(panelType, activate);
+		}
+		else if (value && panel != null)
+		{
+			await panel.MainThread();
+			PanelWindow? wnd = panel.FindParent<PanelWindow>();
+			if (wnd != null && activate)
 			{
-				this.Open(panelType, activate).Run();
-			}
-			else
-			{
-				panel.Dispatcher.Invoke(() =>
-				{
-					PanelWindow? wnd = panel.FindParent<PanelWindow>();
-					if (wnd != null && activate)
-					{
-						wnd.Activate();
-					}
-				});
+				wnd.Activate();
 			}
 		}
-		else
+		else if (!value && panel != null)
 		{
-			this.Get(panelType)?.CloseAsync().Run();
+			await panel.CloseAsync();
 		}
 	}
 

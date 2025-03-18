@@ -61,6 +61,7 @@ public partial class WindowService : ServiceBase
 	private Rect xivClientSize;
 	private unsafe AtkUnitBase* atkUnitUnderCursor;
 	private PanelWindow? topMostPanelWindow;
+	private PanelWindow? lastTopMostPanelWindow;
 
 	public WindowService()
 	{
@@ -137,17 +138,27 @@ public partial class WindowService : ServiceBase
 		return this.topMostPanelWindow != null;
 	}
 
+	public bool IsActive(PanelWindow? window)
+	{
+		return this.topMostPanelWindow == window;
+	}
+
+	public bool WasLastActive(PanelWindow? window)
+	{
+		return this.lastTopMostPanelWindow == window;
+	}
+
 	public void Activate(PanelWindow? window)
 	{
-		PanelWindow? oldTopMost = this.topMostPanelWindow;
+		this.lastTopMostPanelWindow = this.topMostPanelWindow;
 		PanelWindow? newTopMost = window;
 		this.topMostPanelWindow = window;
 
-		if (oldTopMost != null)
+		if (this.lastTopMostPanelWindow != null)
 		{
-			oldTopMost.Dispatcher.Invoke(() =>
+			this.lastTopMostPanelWindow.Dispatcher.Invoke(() =>
 			{
-				oldTopMost.IsForeground = false;
+				this.lastTopMostPanelWindow.IsForeground = false;
 			});
 		}
 

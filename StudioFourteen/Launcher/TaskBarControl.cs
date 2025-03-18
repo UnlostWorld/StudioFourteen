@@ -18,6 +18,7 @@ namespace StudioFourteen.Launcher;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using DependencyPropertyGenerator;
@@ -240,16 +241,44 @@ public partial class TaskBarEntry : ViewModel
 [DependencyProperty<bool>("IsActive")]
 public partial class TaskBarButtonControl : Control
 {
+	protected ServiceManager Services => ServiceManager.Instance;
+
 	protected override void OnMouseUp(MouseButtonEventArgs e)
 	{
 		base.OnMouseUp(e);
 
 		if (e.ChangedButton == MouseButton.Left)
 		{
-			if (this.PanelType == null)
-				return;
+			this.HandleClickAsync().Run();
+		}
+	}
 
-			ServiceManager.Instance.Panels.SetIsOpen(this.PanelType, true);
+	private async Task HandleClickAsync()
+	{
+		if (this.PanelType == null)
+			return;
+
+		Panel? panel = this.Services.Panels.Get(this.PanelType);
+
+		if (panel == null)
+		{
+			await this.Services.Panels.Open(this.PanelType, true);
+		}
+		else if (panel != null)
+		{
+			await panel.MainThread();
+			PanelWindow? wnd = panel.FindParent<PanelWindow>();
+			if (wnd != null)
+			{
+				if (this.Services.Windows.IsActive(wnd) || this.Services.Windows.WasLastActive(wnd))
+				{
+					await wnd.CloseAsync(true);
+				}
+				else
+				{
+					wnd.Activate();
+				}
+			}
 		}
 	}
 }
