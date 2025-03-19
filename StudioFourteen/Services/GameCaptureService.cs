@@ -68,6 +68,9 @@ public class GameCaptureService : ServiceBase
 	private int convertId = 0;
 	private bool forceCapture = false;
 
+	public float DepthMinimum { get; set; } = 0.0f;
+	public float DepthMaximum { get; set; } = 1.0f;
+
 	public void AddListener(ICaptureListener listener)
 	{
 		lock (this.lockObj)
@@ -506,6 +509,10 @@ public class GameCaptureService : ServiceBase
 								{
 									uint x = *(pCurrent++);
 									*(pBitmapData + n) = (x & 0x00FFFFFF) / (float)0x00FFFFFF;
+
+									float v = *(pBitmapData + n);
+									v = MathUtility.InverseLerp(this.DepthMinimum, this.DepthMaximum, v);
+									*(pBitmapData + n) = v;
 								}
 							}
 						}

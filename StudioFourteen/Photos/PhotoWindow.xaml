@@ -243,6 +243,10 @@
 					<wpfUtils:IconBlock Icon="Times" />
 				</Button>
 
+				<!--
+				<Slider Minimum="0" Maximum="1" Value="{Binding Services.GameCapture.Min}" Width="128"/>
+				<Slider Minimum="0" Maximum="1" Value="{Binding Services.GameCapture.Max}" Width="128"/>
+				-->
 
 			</StackPanel>
 		</Grid>
