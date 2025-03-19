@@ -98,6 +98,8 @@ public partial class PoseWindow : CharacterPanelBase
 		{
 			this.Services.Selection.Current = new ObjectTableSelection((ushort)this.TargetObjectIndex);
 		}
+
+		this.Selection = this.Services.Selection.Current;
 	}
 
 	protected override void OnClosed()
