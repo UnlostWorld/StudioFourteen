@@ -178,6 +178,9 @@ public partial class PoseViewBase : View
 	{
 		base.OnUnloaded();
 
+		if (ServiceManager.ShutdownRequested)
+			return;
+
 		this.Services.Target.TargetChanged -= this.OnTargetChanged;
 		this.Services.Selection.SelectionChanged -= this.OnSelectionChanged;
 		this.Services.Selection.HoverChanged -= this.OnHoverChanged;
