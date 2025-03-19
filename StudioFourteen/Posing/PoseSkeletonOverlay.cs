@@ -27,6 +27,8 @@ using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
+using Transform = StudioFourteen.Transform;
+
 public class PoseSkeletonOverlay : SelectionOverlayLayerBase
 {
 	private readonly Dictionary<(BoneId, BoneId), BoneGizmo> gizmos = new();

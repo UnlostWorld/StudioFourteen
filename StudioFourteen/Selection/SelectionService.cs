@@ -25,6 +25,7 @@ using StudioFourteen.Services;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows;
 
 public abstract class ISelectionId : IEquatable<ISelectionId?>
 {
@@ -119,12 +120,17 @@ public partial class SelectionService : ServiceBase
 		get => this.hover;
 		set
 		{
+			if (this.hover == value)
+				return;
+
 			SelectionBase? oldHover = this.hover;
 			this.hover = value;
 			this.HoverChanged?.Invoke(oldHover, value);
 			this.RaisePropertyChanged();
 		}
 	}
+
+	public UIElement? HoverSource { get; set; }
 
 	public int GizmoIndex
 	{
@@ -193,11 +199,16 @@ public partial class SelectionService : ServiceBase
 	{
 		base.OnFrameworkUpdate(framework);
 		this.Current?.OnFrameworkUpdate(framework);
+
+		if (this.Hover != this.Current)
+		{
+			this.Hover?.OnFrameworkUpdate(framework);
+		}
 	}
 
 	private void OnTargetChanged(int objectTableIndex)
 	{
 		// TODO: consider caching the previous selection this target had and restoring it?
-		this.Current = new GameObjectSelection(this.Services.Target.TargetObjectIndex);
+		this.Current = new ObjectTableSelection(this.Services.Target.TargetObjectIndex);
 	}
 }

@@ -24,7 +24,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Shapes;
 
-using Transform = StudioFourteen.Posing.Transform;
+using Transform = StudioFourteen.Transform;
 using Vector = System.Windows.Vector;
 
 public class UniformScaleHandleAxis : TransformHandleAxisBase

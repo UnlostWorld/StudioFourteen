@@ -308,7 +308,7 @@ public class GizmoRenderer : Canvas
 			Stopwatch sw = new();
 
 			await this.MainThread();
-			while (this.IsRendererLoaded)
+			while (this.IsRendererLoaded && !ServiceManager.ShutdownRequested)
 			{
 				Matrix4x4 view = this.GetViewMatrix();
 				Matrix4x4 projection = this.GetProjectionMatrix();

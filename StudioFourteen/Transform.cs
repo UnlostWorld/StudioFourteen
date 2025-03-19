@@ -13,7 +13,7 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Posing;
+namespace StudioFourteen;
 
 using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
 using StudioFourteen.Structs;

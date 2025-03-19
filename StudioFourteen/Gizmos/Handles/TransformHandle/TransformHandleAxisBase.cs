@@ -21,7 +21,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using StudioFourteen.Gizmos.Handles;
 
-using Transform = StudioFourteen.Posing.Transform;
+using Transform = StudioFourteen.Transform;
 using Vector = System.Windows.Vector;
 
 public enum TransformHandleAxes

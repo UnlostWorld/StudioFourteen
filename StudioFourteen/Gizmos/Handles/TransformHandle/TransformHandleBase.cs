@@ -18,7 +18,7 @@ namespace StudioFourteen.Gizmos.Handles.TransformHandle;
 using StudioFourteen.Gizmos;
 using System.Windows.Media;
 
-using Transform = StudioFourteen.Posing.Transform;
+using Transform = StudioFourteen.Transform;
 
 public abstract class TransformHandleBase : GizmoGroup
 {

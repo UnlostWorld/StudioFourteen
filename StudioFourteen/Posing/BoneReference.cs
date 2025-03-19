@@ -133,7 +133,7 @@ public class BoneReference
 			return;
 		}
 
-		this.loadReferenceRelativeTransform = Posing.Transform.FromTRS(
+		this.loadReferenceRelativeTransform = StudioFourteen.Transform.FromTRS(
 			referenceRelativeTransform.Translation ?? Vector3.Zero,
 			referenceRelativeTransform.Rotation ?? Quaternion.Identity,
 			referenceRelativeTransform.Scale ?? Vector3.One);
@@ -155,7 +155,7 @@ public class BoneReference
 		else
 		{
 			this.fromTransform = this.Transform;
-			this.toTransform = new Posing.Transform();
+			this.toTransform = new Transform();
 			this.blendOnUnload = true;
 			this.blendTime.Restart();
 		}
@@ -174,7 +174,7 @@ public class BoneReference
 		this.ReferenceTransform = pPose->Skeleton->ReferencePose[this.Id.BoneIndex];
 		this.ModelSpaceTransform = *pPose->AccessBoneModelSpace(this.Id.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
 
-		this.ModelTransform = Posing.Transform.FromTRS(
+		this.ModelTransform = StudioFourteen.Transform.FromTRS(
 			pCharacter->DrawObject->Position,
 			pCharacter->DrawObject->Rotation,
 			pCharacter->DrawObject->Scale);
@@ -307,7 +307,7 @@ public class BoneReference
 			if (this.blendOnLoad)
 			{
 				if (this.Transform == null)
-					this.Transform = new Posing.Transform();
+					this.Transform = new StudioFourteen.Transform();
 
 				this.fromTransform = this.Transform;
 				this.blendTime.Restart();
@@ -336,7 +336,7 @@ public class BoneReference
 				float p = this.blendTime.ElapsedMilliseconds / PoseBlendTimeMs;
 				p = Math.Clamp(p, 0, 1);
 				p = this.blendEase.Ease(p, EasingFunctionBase.EasingModes.EaseInOut);
-				this.Transform = Posing.Transform.Lerp(this.fromTransform.Value, this.toTransform.Value, p);
+				this.Transform = StudioFourteen.Transform.Lerp(this.fromTransform.Value, this.toTransform.Value, p);
 
 				if (p >= 1)
 				{

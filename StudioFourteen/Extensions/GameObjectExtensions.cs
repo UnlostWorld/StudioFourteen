@@ -18,7 +18,7 @@ namespace FFXIVClientStructs.FFXIV.Client.Game.Object;
 using global::System;
 using global::System.Runtime.InteropServices;
 using global::System.Collections.Generic;
-using StudioFourteen.Posing;
+using StudioFourteen;
 
 public static class GameObjectExtensions
 {

@@ -16,20 +16,38 @@
 namespace StudioFourteen.Posing;
 
 using StudioFourteen.Library;
-using StudioFourteen.Mvm;
 using StudioFourteen.Panels;
 using StudioFourteen.Posing.Shared;
 using StudioFourteen.Selection;
-using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using DependencyPropertyGenerator;
+using PropertyChanged.SourceGenerator;
+using WpfUtils.Utils;
+using System.Threading.Tasks;
+using System;
+using WpfUtils;
 
 public partial class PoseWindow : CharacterPanelBase
 {
-	[AutoNotify] public string RevertTooltip => StudioFourteen.Resources.Format("LOC_Pose_RevertPose", this.CharacterName);
+	private readonly FuncQueue showTooltipQueue;
+	private SelectionBase? nextHover;
+
+	[Notify] private string revertTooltip = string.Empty;
+	[Notify] private SelectionBase? selection;
+	[Notify] private bool isSelectionTransform;
+	[Notify] private bool isSelectionBlend;
+	[Notify] private bool isSelectionEye;
+	[Notify] private SelectionBase? hover;
+	[Notify] private bool isHoverTooltipOpen = false;
+	[Notify] private UIElement? hoverTarget;
+
+	public PoseWindow()
+	{
+		this.showTooltipQueue = new(this.ShowTooltip, 500);
+	}
 
 	public int SelectedTab
 	{
@@ -61,11 +79,6 @@ public partial class PoseWindow : CharacterPanelBase
 		set => this.SetPersistence(value);
 	}
 
-	[AutoNotify] public SelectionBase? Selection => this.Services.Selection.Current;
-	[AutoNotify] public bool IsSelectionTransform => this.Selection is TransformSelectionBase;
-	[AutoNotify] public bool IsSelectionBlend => this.Selection is BlendSelection;
-	[AutoNotify] public bool IsSelectionEye => this.Selection is EyeSelection;
-
 	public void RegisterTabGroup(PoseTabItem tab)
 	{
 	}
@@ -78,10 +91,56 @@ public partial class PoseWindow : CharacterPanelBase
 	{
 		base.OnOpened();
 
+		this.Services.Selection.SelectionChanged += this.OnSelectionChanged;
+		this.Services.Selection.HoverChanged += this.OnHoverChanged;
+
 		if (this.Services.Selection.Current == null && this.TargetObjectIndex >= 0)
 		{
-			this.Services.Selection.Current = new GameObjectSelection((ushort)this.TargetObjectIndex);
+			this.Services.Selection.Current = new ObjectTableSelection((ushort)this.TargetObjectIndex);
 		}
+	}
+
+	protected override void OnClosed()
+	{
+		base.OnClosed();
+
+		this.IsHoverTooltipOpen = false;
+		this.Services.Selection.SelectionChanged -= this.OnSelectionChanged;
+		this.Services.Selection.HoverChanged -= this.OnHoverChanged;
+	}
+
+	protected override void OnTargetChanged(int objectTableIndex)
+	{
+		base.OnTargetChanged(objectTableIndex);
+		this.RevertTooltip = StudioFourteen.Resources.Format("LOC_Pose_RevertPose", this.CharacterName);
+	}
+
+	private void OnHoverChanged(SelectionBase? oldSelection, SelectionBase? newSelection)
+	{
+		this.IsHoverTooltipOpen = false;
+		this.showTooltipQueue.Cancel();
+
+		if (newSelection != null && this.Services.Selection.HoverSource is PoseSelectionControl target)
+		{
+			this.nextHover = newSelection;
+			this.HoverTarget = target;
+			this.showTooltipQueue.Invoke();
+		}
+	}
+
+	private async Task ShowTooltip()
+	{
+		await this.MainThread();
+		this.Hover = this.nextHover;
+		this.IsHoverTooltipOpen = true;
+	}
+
+	private void OnSelectionChanged(SelectionBase? oldSelection, SelectionBase? newSelection)
+	{
+		this.Selection = newSelection;
+		this.IsSelectionTransform = this.Selection is TransformSelectionBase;
+		this.IsSelectionBlend = this.Selection is BlendSelection;
+		this.IsSelectionEye = this.Selection is EyeSelection;
 	}
 
 	private void OnRevertClicked(object sender, RoutedEventArgs e)
@@ -90,7 +149,7 @@ public partial class PoseWindow : CharacterPanelBase
 			return;
 
 		this.Services.Pose.FlushBoneReferences((ushort)this.TargetObjectIndex);
-		this.Services.Selection.Current = new GameObjectSelection((ushort)this.TargetObjectIndex);
+		this.Services.Selection.Current = new ObjectTableSelection((ushort)this.TargetObjectIndex);
 	}
 
 	private void OnBackgroundMouseDown(object sender, MouseButtonEventArgs e)
@@ -98,12 +157,12 @@ public partial class PoseWindow : CharacterPanelBase
 		if (this.TargetObjectIndex < 0)
 			return;
 
-		this.Services.Selection.Current = new GameObjectSelection((ushort)this.TargetObjectIndex);
+		this.Services.Selection.Current = new ObjectTableSelection((ushort)this.TargetObjectIndex);
 	}
 
 	private void OnClearClicked(object sender, RoutedEventArgs e)
 	{
-		this.Services.Selection.Current = new GameObjectSelection((ushort)this.TargetObjectIndex);
+		this.Services.Selection.Current = new ObjectTableSelection((ushort)this.TargetObjectIndex);
 	}
 
 	private async void OnReferenceClicked(object sender, RoutedEventArgs e)

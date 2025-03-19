@@ -334,6 +334,12 @@
 	<sys:String x:Key="LOC_Tag_OffArm">Off Arm</sys:String>
 	<sys:String x:Key="LOC_Tag_Prop">Prop</sys:String>
 
+	<!-- Selection -->
+	<sys:String x:Key="LOC_Selection_Blend">Blend</sys:String>
+	<sys:String x:Key="LOC_Selection_Bone">Bone</sys:String>
+	<sys:String x:Key="LOC_Selection_Eye">Eye Controls</sys:String>
+	<sys:String x:Key="LOC_Selection_ObjectTable">Game Object</sys:String>
+
 	<!-- Pose Matrix Labels-->
 
 	<!-- Face bones for new Face Matrix View
@@ -478,7 +484,9 @@
 	<sys:String x:Key="LOC_Bone_n_hijisoubi_l">Couter Left</sys:String>
 	<sys:String x:Key="LOC_Bone_n_hijisoubi_r">Couter Right</sys:String>
 	<sys:String x:Key="LOC_Bone_n_hte_l">Wrist Left</sys:String>
+	<sys:String x:Key="LOC_Bone_n_hte_l_Tooltip">Rotates the left wrist, twisting the left forearm, but does not affect the left hand.</sys:String>
 	<sys:String x:Key="LOC_Bone_n_hte_r">Wrist Right</sys:String>
+	<sys:String x:Key="LOC_Bone_n_hte_r_Tooltip">Rotates the right wrist, twisting the right forearm, but does not affect the right hand.</sys:String>
 	<sys:String x:Key="LOC_Bone_j_hito_a_l">Index A Left</sys:String>
 	<sys:String x:Key="LOC_Bone_j_hito_a_r">Index A Right</sys:String>
 	<sys:String x:Key="LOC_Bone_j_ko_a_l">Pinky A Left</sys:String>

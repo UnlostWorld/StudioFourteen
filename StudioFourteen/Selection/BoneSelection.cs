@@ -13,18 +13,20 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Posing;
+namespace StudioFourteen.Selection;
 
 using Dalamud.Plugin.Services;
 using FontAwesome.Sharp;
 using StudioFourteen.Gizmos.Handles.TransformHandle;
-using StudioFourteen.Selection;
+using StudioFourteen.Posing;
 using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
+
+using StudioTransform = StudioFourteen.Transform;
 
 public class BoneSelectionId(string boneName, int objectTableIndex)
 	: IAsyncSelectionId
@@ -88,7 +90,6 @@ public class BoneSelection : TransformSelectionBase
 
 	private readonly List<BoneReference> bones = new();
 	private BoneReference? bone;
-	private bool isReady = false;
 
 	public BoneSelection(Dictionary<BoneId, List<BoneId>> bonePaths, string name)
 	{
@@ -96,12 +97,15 @@ public class BoneSelection : TransformSelectionBase
 		this.BonePaths = bonePaths;
 
 		this.IsFaceBone = name.StartsWith("j_f_");
+
+		this.Name = Resources.Find($"LOC_Bone_{this.BoneName}", this.BoneName);
+		this.Subtitle = name;
+		this.Description = Resources.Find($"LOC_Bone_{this.BoneName}_Tooltip", string.Empty);
 	}
 
 	public Dictionary<BoneId, List<BoneId>> BonePaths { get; private set; }
-	public override string Name => Resources.Find($"LOC_Bone_{this.BoneName}", this.BoneName);
-	public override string? Subtitle => this.BoneName;
 	public override IconChar Icon => IconChar.Bone;
+	public override string TypeName => Resources.Find("LOC_Selection_Bone", "Bone");
 	public string BoneName { get; init; }
 
 	public bool IsFaceBone { get; private set; }
@@ -110,7 +114,6 @@ public class BoneSelection : TransformSelectionBase
 	public override double TranslationRange => this.IsFaceBone ? 0.02 : 0.1;
 	public override int DecimalPlacesToDisplay => this.IsFaceBone ? 4 : 2;
 	public override bool CanReset => true;
-	public override bool IsReady => this.isReady;
 	public override double GizmoSensitivity => this.IsFaceBone ? 0.05 : 0.5;
 
 	public override TransformHandleTypes DefaultGizmo
@@ -312,15 +315,9 @@ public class BoneSelection : TransformSelectionBase
 	{
 		base.OnFrameworkUpdate(framework);
 
-		bool newReady =
+		this.IsReady =
 			this.bone != null
 			&& this.bone.LocalSpaceTransform != null
 			&& this.bone.ReferenceRelativeTransform != null;
-
-		if (newReady != this.isReady)
-		{
-			this.isReady = newReady;
-			this.RaisePropertyChanged(nameof(this.IsReady));
-		}
 	}
 }

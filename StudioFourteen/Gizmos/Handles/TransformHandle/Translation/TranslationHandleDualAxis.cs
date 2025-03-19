@@ -24,6 +24,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
+using Transform = StudioFourteen.Transform;
 using Vector = System.Windows.Vector;
 
 public class TranslationHandleDualAxis : TransformHandleAxisBase
@@ -92,7 +93,7 @@ public class TranslationHandleDualAxis : TransformHandleAxisBase
 		base.Enable(renderer);
 	}
 
-	public override Posing.Transform OnDrag(Vector mouseDelta, Posing.Transform transform)
+	public override Transform OnDrag(Vector mouseDelta, Transform transform)
 	{
 		if (this.square == null)
 			return transform;

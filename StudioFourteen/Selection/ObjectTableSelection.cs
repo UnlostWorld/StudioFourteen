@@ -13,23 +13,22 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Posing;
+namespace StudioFourteen.Selection;
 
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FontAwesome.Sharp;
 using StudioFourteen.Plugin;
-using StudioFourteen.Selection;
 using System;
 using System.Numerics;
 
-public class GameObjectSelectionId(int objectTableIndex)
+public class ObjectTableSelectionId(int objectTableIndex)
 	: ISelectionId
 {
 	public int ObjectTableIndex { get; init; } = objectTableIndex;
 
-	public override SelectionBase Create() => new GameObjectSelection(this.ObjectTableIndex);
+	public override SelectionBase Create() => new ObjectTableSelection(this.ObjectTableIndex);
 
 	public override int GetHashCode()
 	{
@@ -37,25 +36,21 @@ public class GameObjectSelectionId(int objectTableIndex)
 	}
 }
 
-public class GameObjectSelection : TransformSelectionBase
+public class ObjectTableSelection : TransformSelectionBase
 {
 	private readonly int objectTableId;
-	private string? name;
-	private bool isReady = false;
 
 	private Transform lastTransform = default;
 	private Transform? nextTransform;
 
-	public GameObjectSelection(int objectTableId)
+	public ObjectTableSelection(int objectTableId)
 	{
 		this.objectTableId = objectTableId;
+		this.Name = $"{objectTableId}";
 	}
 
-	public override bool IsReady => this.isReady;
-
-	public override string Name => this.name ?? "Unknown";
 	public override IconChar Icon => IconChar.User;
-	public override string? Subtitle => null;
+	public override string TypeName => Resources.Find("LOC_Selection_ObjectTable", "Object Table");
 	public override bool CanReset => true;
 
 	public override bool LockTransform
@@ -83,7 +78,7 @@ public class GameObjectSelection : TransformSelectionBase
 		set => this.nextTransform = value;
 	}
 
-	public override ISelectionId Id => new GameObjectSelectionId(this.objectTableId);
+	public override ISelectionId Id => new ObjectTableSelectionId(this.objectTableId);
 
 	public unsafe override void OnFrameworkUpdate(IFramework framework)
 	{
@@ -92,12 +87,11 @@ public class GameObjectSelection : TransformSelectionBase
 		if (DalamudServices.ObjectTable == null)
 			throw new Exception("No Object Table");
 
-		Character* gameObject = (Character*)DalamudServices.ObjectTable.GetObjectAddress(this.objectTableId);
+		GameObject* gameObject = (GameObject*)DalamudServices.ObjectTable.GetObjectAddress(this.objectTableId);
 		if (gameObject == null || gameObject->DrawObject == null)
 			return;
 
-		this.name = gameObject->GetDisplayName();
-		this.RaisePropertyChanged(nameof(this.Name));
+		this.Name = gameObject->GetDisplayName();
 
 		if (this.nextTransform != null)
 		{
@@ -124,13 +118,12 @@ public class GameObjectSelection : TransformSelectionBase
 			gameObject->DrawObject->Rotation,
 			gameObject->DrawObject->Scale);
 
-		this.isReady = true;
-		this.RaisePropertyChanged(nameof(this.IsReady));
+		this.IsReady = true;
 	}
 
 	public override bool Equals(SelectionBase? other)
 	{
-		if (other is not GameObjectSelection otherGameObject)
+		if (other is not ObjectTableSelection otherGameObject)
 			return false;
 
 		return this.objectTableId == otherGameObject.objectTableId;

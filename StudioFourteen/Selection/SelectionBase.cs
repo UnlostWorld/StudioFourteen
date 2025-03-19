@@ -17,17 +17,21 @@ namespace StudioFourteen.Selection;
 
 using Dalamud.Plugin.Services;
 using FontAwesome.Sharp;
+using PropertyChanged.SourceGenerator;
 using StudioFourteen.History;
 using StudioFourteen.Mvm;
 using StudioFourteen.Posing;
 using System;
 
-public abstract class SelectionBase : ViewModel, IHistoryTarget
+public abstract partial class SelectionBase : ViewModel, IHistoryTarget
 {
-	[AutoNotify] public abstract string Name { get; }
-	[AutoNotify] public abstract string? Subtitle { get; }
-	[AutoNotify] public virtual bool IsReady => true;
+	[Notify] private string name = string.Empty;
+	[Notify] private string? subtitle;
+	[Notify] private string? description;
+	[Notify] private bool isReady = false;
+
 	public abstract IconChar Icon { get; }
+	public abstract string TypeName { get; }
 
 	public virtual bool CanMirror => false;
 	[History] public virtual MirrorModes MirrorMode { get; set; }

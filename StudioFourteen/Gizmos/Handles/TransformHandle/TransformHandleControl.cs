@@ -16,15 +16,15 @@
 namespace StudioFourteen.Gizmos.Handles.TransformHandle;
 
 using DependencyPropertyGenerator;
-using StudioFourteen.Posing;
 using System.Numerics;
 using StudioFourteen.Gizmos;
-using StudioFourteen.Gizmos.Handles.TransformHandle;
 using StudioFourteen.Gizmos.Handles.TransformHandle.Rotation;
 using StudioFourteen.Gizmos.Handles.TransformHandle.Scale;
 using StudioFourteen.Gizmos.Handles.TransformHandle.Translation;
 
-[DependencyProperty<Posing.Transform>("Transform", DefaultBindingMode = DefaultBindingMode.TwoWay)]
+using Transform = StudioFourteen.Transform;
+
+[DependencyProperty<Transform>("Transform", DefaultBindingMode = DefaultBindingMode.TwoWay)]
 [DependencyProperty<double>("Sensitivity")]
 [DependencyProperty<TransformHandleTypes>("GizmoType")]
 public partial class TransformHandleControl : GizmoRenderer

@@ -49,21 +49,29 @@ public class BlendSelectionId(string blendTargetName, int objectTableIndex)
 	}
 }
 
-public class BlendSelection(string blendTargetName, BlendTarget target, int objectTableIndex)
-	: SelectionBase
+public class BlendSelection : SelectionBase
 {
-	private readonly int objectTableIndex = objectTableIndex;
+	private readonly int objectTableIndex;
+	private readonly string blendTargetName;
 	private readonly List<BoneBlend> bones = new();
 	private double value;
-	private MirrorModes mirrorMode = target.MirrorMode;
+	private MirrorModes mirrorMode;
 
-	public override string Name => blendTargetName;
-	public override string? Subtitle => null;
+	public BlendSelection(string blendTargetName, BlendTarget target, int objectTableIndex)
+	{
+		this.objectTableIndex = objectTableIndex;
+		this.blendTargetName = blendTargetName;
+		this.Name = blendTargetName;
+		this.Target = target;
+		this.mirrorMode = target.MirrorMode;
+	}
+
+	public override string TypeName => Resources.Find("LOC_Selection_Blend", "Blend");
 	public override IconChar Icon => IconChar.BezierCurve;
-	public BlendTarget Target => target;
 	public override bool CanMirror => true;
 	public override bool CanReset => true;
 
+	public BlendTarget Target { get; private set; }
 	public bool Flip { get; set; }
 
 	public double Value
@@ -97,7 +105,7 @@ public class BlendSelection(string blendTargetName, BlendTarget target, int obje
 		}
 	}
 
-	public override ISelectionId Id => new BlendSelectionId(blendTargetName, this.objectTableIndex);
+	public override ISelectionId Id => new BlendSelectionId(this.blendTargetName, this.objectTableIndex);
 
 	public void SetValue(double value)
 	{

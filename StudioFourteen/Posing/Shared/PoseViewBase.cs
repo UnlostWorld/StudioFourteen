@@ -98,6 +98,7 @@ public partial class PoseViewBase : View
 
 		if (closestLink != null && closestDist < MouseOverDistance)
 		{
+			this.Services.Selection.HoverSource = closestLink;
 			this.Services.Selection.Hover = closestLink.Selection;
 		}
 		else
@@ -126,7 +127,7 @@ public partial class PoseViewBase : View
 		}
 		else
 		{
-			ServiceManager.Instance.Selection.Current = new GameObjectSelection(this.Services.Target.TargetObjectIndex);
+			ServiceManager.Instance.Selection.Current = new ObjectTableSelection(this.Services.Target.TargetObjectIndex);
 		}
 
 		e.Handled = true;
@@ -334,7 +335,7 @@ public partial class PoseViewBase : View
 
 			if (control.SafeName == "character")
 			{
-				control.Selection = new GameObjectSelection(pCharacter->ObjectIndex);
+				control.Selection = new ObjectTableSelection(pCharacter->ObjectIndex);
 			}
 			else
 			{

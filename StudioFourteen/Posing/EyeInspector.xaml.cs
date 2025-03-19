@@ -141,14 +141,18 @@ public partial class EyeInspector : View
 	}
 }
 
-public class EyeSelection(int objectTableIndex)
-	: SelectionBase
+public class EyeSelection : SelectionBase
 {
 	private MirrorModes mirrorMode = MirrorModes.MirrorTCopyRS;
 
-	public override string Name => "Eye";
-	public override string? Subtitle => null;
+	public EyeSelection(int objectTableIndex)
+	{
+		this.ObjectTableIndex = objectTableIndex;
+		this.Name = "Eye";
+	}
+
 	public override IconChar Icon => IconChar.Eye;
+	public override string TypeName => Resources.Find("LOC_Selection_Eye", "Blend");
 
 	public override bool CanMirror => true;
 	public override MirrorModes MirrorMode
@@ -165,7 +169,7 @@ public class EyeSelection(int objectTableIndex)
 		}
 	}
 
-	public int ObjectTableIndex { get; init; } = objectTableIndex;
+	public int ObjectTableIndex { get; init; }
 
 	public BoneSelection? EyeBone { get; private set; }
 	public BoneSelection? IrisBone { get; private set; }

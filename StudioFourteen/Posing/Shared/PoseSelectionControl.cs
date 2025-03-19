@@ -15,10 +15,14 @@
 
 namespace StudioFourteen.Posing.Shared;
 
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using DependencyPropertyGenerator;
 using StudioFourteen.Selection;
+using WpfUtils;
+using WpfUtils.Utils;
 
 [DependencyProperty<string>("SelectionName")]
 [DependencyProperty<string>("Label")]
@@ -28,8 +32,7 @@ using StudioFourteen.Selection;
 [DependencyProperty<bool>("IsValid")]
 public partial class PoseSelectionControl : Control
 {
-	public SelectionBase? Selection;
-
+	public SelectionBase? Selection { get; set; }
 	public string? SafeName { get; private set; }
 	public bool IsSafeValid { get; set; }
 
@@ -41,7 +44,8 @@ public partial class PoseSelectionControl : Control
 			return;
 		}
 
-		this.IsMouseHover = newSelection.Id == this.Selection.Id;
+		bool isHover = newSelection.Id == this.Selection.Id;
+		this.IsMouseHover = isHover;
 	}
 
 	public void OnSelectionChanged(SelectionBase? oldSelection, SelectionBase? newSelection)
