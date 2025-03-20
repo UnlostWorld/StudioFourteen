@@ -139,10 +139,10 @@ public class PoseFile : FileBase
 	[LibraryMenuTarget(IconChar.Running, "LOC_AppearanceApplyTo")]
 	public Task Apply(int objectTableIndex)
 	{
-		return this.Apply(objectTableIndex, true);
+		return this.Apply(objectTableIndex, false);
 	}
 
-	public async Task Apply(int objectTableIndex, bool blend)
+	public async Task Apply(int objectTableIndex, bool immediate)
 	{
 		await Threads.FrameworkThread();
 
@@ -165,12 +165,12 @@ public class PoseFile : FileBase
 				BoneTransform? val = null;
 				if (this.ReferenceRelativeBones.TryGetValue(boneReference.Name, out val))
 				{
-					boneReference.SetReferenceRelativeTransform(val, blend);
+					boneReference.SetReferenceRelativeTransform(val, !immediate);
 					boneReference.Locked = val.Locked;
 				}
 				else
 				{
-					boneReference.Reset(false);
+					boneReference.Reset(immediate);
 				}
 
 				continue;
@@ -205,8 +205,14 @@ public class PoseFile : FileBase
 					continue;
 				}
 			}
+		}
 
-			boneReference.Reset(false);
+		foreach (BoneReference boneReference in boneReferences)
+		{
+			while(boneReference.IsBlending)
+			{
+				await Task.Delay(10);
+			}
 		}
 	}
 

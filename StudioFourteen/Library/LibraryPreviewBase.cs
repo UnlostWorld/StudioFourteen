@@ -23,6 +23,7 @@ public abstract class LibraryPreviewBase
 {
 	private bool isStarting = false;
 	private bool isStopping = false;
+	private LibraryEntryBase? entry;
 
 	public bool HasStopped { get; private set; }
 	public bool HasStarted { get; private set; }
@@ -30,11 +31,17 @@ public abstract class LibraryPreviewBase
 	protected ILogger Log => Logging.ForContext(this.GetType());
 	protected ServiceManager Services => ServiceManager.Instance;
 
-	public void StartPreview(LibraryPreviewBase? other)
+	public bool IsEntry(LibraryEntryBase entry)
+	{
+		return this.entry == entry;
+	}
+
+	public void StartPreview(LibraryEntryBase entry, LibraryPreviewBase? other)
 	{
 		if (this.HasStarted)
 			return;
 
+		this.entry = entry;
 		this.StartPreviewAsync(other).Run();
 	}
 

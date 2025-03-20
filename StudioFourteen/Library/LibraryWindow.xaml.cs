@@ -497,14 +497,14 @@ public partial class LibraryWindow : Panel
 
 	private async void OnResultEnter(object sender, RoutedEventArgs e)
 	{
-		if (this.currentPreview != null)
-		{
-			await this.currentPreview.StopPreviewAsync();
-			this.currentPreview = null;
-		}
-
 		if (this.SelectedResult is GroupResult groupResult)
 		{
+			if (this.currentPreview != null)
+			{
+				this.currentPreview.StopPreview();
+				this.currentPreview = null;
+			}
+
 			this.Path.Add(groupResult.Group);
 			this.SavePath();
 			this.navigation = Navigations.OpenDir;
@@ -512,6 +512,16 @@ public partial class LibraryWindow : Panel
 		}
 		else if (this.SelectedResult is Result result)
 		{
+			if (this.currentPreview != null)
+			{
+				if (!this.currentPreview.IsEntry(result.Entry))
+				{
+					await this.currentPreview.StopPreviewAsync();
+				}
+
+				this.currentPreview = null;
+			}
+
 			await this.resultExecutionContext.Execute(result.Entry);
 		}
 	}
@@ -543,7 +553,7 @@ public partial class LibraryWindow : Panel
 				lastPreview = null;
 
 			this.currentPreview = nextPreview;
-			this.currentPreview?.StartPreview(lastPreview);
+			this.currentPreview?.StartPreview(result.Entry, lastPreview);
 		}
 	}
 
