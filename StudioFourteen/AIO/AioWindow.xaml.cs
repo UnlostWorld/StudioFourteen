@@ -20,6 +20,8 @@ using System.Threading.Tasks;
 using System.Windows;
 using WpfUtils.Windows;
 using DependencyPropertyGenerator;
+using System;
+using WpfUtils;
 
 [DependencyProperty<bool>("IsMenuOpen")]
 public partial class AioWindow : PanelWindow
@@ -60,6 +62,18 @@ public partial class AioWindow : PanelWindow
 	}
 
 	protected override bool GetIsUiVisible() => true;
+
+	protected override void OnOpened()
+	{
+		base.OnOpened();
+		this.Services.Panels.CreateAllInOnePanelCallback = this.CreatePanel;
+	}
+
+	private async Task<Panel?> CreatePanel(Type panelType)
+	{
+		await this.MainThread();
+		return this.PanelArea.SetPanel(panelType);
+	}
 
 	private void OnLaunchClicked(object sender, RoutedEventArgs e)
 	{

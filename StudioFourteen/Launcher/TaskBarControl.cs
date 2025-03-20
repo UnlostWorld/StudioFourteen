@@ -54,17 +54,21 @@ public partial class TaskBarControl : Control
 
 		this.IsInGPose = this.Services.GroupPose.IsGroupPosing;
 		this.IsGPoseSettingsOpen = this.Services.GroupPose.IsGroupPoseSettingsWindowVisible;
-
-		if (this.Services.Studio.IsOpen)
-		{
-			this.OnStudioOpening();
-		}
+		this.Loaded += this.OnLoaded;
 	}
 
 	public FastObservableCollection<TaskBarEntry> Entries { get; init; } = new();
 
 	protected ServiceManager Services => ServiceManager.Instance;
 	protected SettingsService.Configuration Settings => this.Services.Settings.Current;
+
+	private void OnLoaded(object sender, RoutedEventArgs e)
+	{
+		if (this.Services.Studio.IsOpen)
+		{
+			this.OnStudioOpening();
+		}
+	}
 
 	private void OnStudioOpening()
 	{
@@ -86,7 +90,11 @@ public partial class TaskBarControl : Control
 				entry.IsMinimized = true;
 				this.panelEntries.Add(panelType, entry);
 
-				this.Dispatcher.Invoke(() => this.Entries.Add(entry));
+				this.Dispatcher.Invoke(() =>
+				{
+					this.Entries.Add(entry);
+					entry.IsAIO = this.IsAIO;
+				});
 			}
 
 			this.hasRestoredSaves = true;
@@ -133,7 +141,11 @@ public partial class TaskBarControl : Control
 			entry = new(panel.TitleIcon, panel.Title, panel.GetType());
 			this.panelEntries.Add(panel.GetType(), entry);
 
-			this.Dispatcher.Invoke(() => this.Entries.Add(entry));
+			this.Dispatcher.Invoke(() =>
+			{
+				entry.IsAIO = this.IsAIO;
+				this.Entries.Add(entry);
+			});
 		}
 		else
 		{
@@ -212,6 +224,7 @@ public partial class TaskBarEntry : ViewModel
 	[Notify] private bool isMinimized = false;
 	[Notify] private bool isActive = true;
 	[Notify] private bool isVisible = true;
+	[Notify] private bool isAIO = false;
 
 	public TaskBarEntry(string icon, string title, Type panelType)
 	{
@@ -240,6 +253,7 @@ public partial class TaskBarEntry : ViewModel
 [DependencyProperty<bool>("IsTaskVisible")]
 [DependencyProperty<Type>("PanelType")]
 [DependencyProperty<bool>("IsActive")]
+[DependencyProperty<bool>("IsAIO")]
 public partial class TaskBarButtonControl : Control
 {
 	protected ServiceManager Services => ServiceManager.Instance;
@@ -259,25 +273,31 @@ public partial class TaskBarButtonControl : Control
 		if (this.PanelType == null)
 			return;
 
-		Panel? panel = this.Services.Panels.Get(this.PanelType);
-
-		if (panel == null)
+		if (this.IsAIO)
 		{
-			await this.Services.Panels.Open(this.PanelType, true);
 		}
-		else if (panel != null)
+		else
 		{
-			await panel.MainThread();
-			PanelWindow? wnd = panel.FindParent<PanelWindow>();
-			if (wnd != null)
+			Panel? panel = this.Services.Panels.Get(this.PanelType);
+
+			if (panel == null)
 			{
-				if (this.Services.Windows.IsActive(wnd) || this.Services.Windows.WasLastActive(wnd))
+				await this.Services.Panels.Open(this.PanelType, true);
+			}
+			else if (panel != null)
+			{
+				await panel.MainThread();
+				PanelWindow? wnd = panel.FindParent<PanelWindow>();
+				if (wnd != null)
 				{
-					await wnd.CloseAsync(true);
-				}
-				else
-				{
-					wnd.Activate();
+					if (this.Services.Windows.IsActive(wnd) || this.Services.Windows.WasLastActive(wnd))
+					{
+						await wnd.CloseAsync(true);
+					}
+					else
+					{
+						wnd.Activate();
+					}
 				}
 			}
 		}

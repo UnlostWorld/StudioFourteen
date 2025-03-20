@@ -18,7 +18,7 @@
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	IsEmbedded="False"
 	TitleMargin="45,0,0,0"
-	Topmost="True"
+	Topmost="False"
 	mc:Ignorable="d">
 
 	<Grid Margin="1">
@@ -29,14 +29,13 @@
 		</Grid.RowDefinitions>
 
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="50" />
 			<ColumnDefinition />
 		</Grid.ColumnDefinitions>
 
 		<panels:PanelHost
 			Grid.Row="0"
-			Grid.ColumnSpan="2"
-			Margin="50,0,0,0"
+			Grid.Column="1"
 			PanelType="{x:Type background:TargetsPanel}" />
 
 		<Button
@@ -66,6 +65,12 @@
 			<launcher:LauncherMenu IsAIO="True" IsOpen="{Binding IsOpen, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type Popup}}}" />
 
 		</Popup>
+
+		<panels:PanelHost
+			x:Name="PanelArea"
+			Grid.Row="1"
+			Grid.Column="1"
+			Margin="0,4,0,0" />
 
 	</Grid>
 </panels:PanelWindow>

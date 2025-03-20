@@ -154,7 +154,7 @@ public class PanelLauncherEntry<T> : LauncherEntry
 	}
 
 	protected override bool GetIsOpen() => this.Services.Panels.GetIsOpen<T>();
-	protected override void SetOpen() => this.Services.Panels.SetIsOpen<T>(true);
+	protected override void SetOpen() => this.Services.Panels.SetIsOpen<T>(true, true, this.IsAIO);
 
 	private void OnPanelChanged(Panel panel)
 	{

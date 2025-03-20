@@ -317,7 +317,8 @@
 										IsMinimized="{Binding IsMinimized}"
 										IsTaskVisible="{Binding IsVisible}"
 										PanelType="{Binding Type}"
-										ToolTip="{Binding Title}" />
+										ToolTip="{Binding Title}"
+										IsAIO="{Binding IsAIO}" />
 								</DataTemplate>
 
 							</ItemsControl.ItemTemplate>

@@ -22,6 +22,7 @@ using System.ComponentModel;
 using System.Windows.Controls;
 using System.Windows;
 using System.Threading.Tasks;
+using Lumina.Excel.Sheets;
 
 [DependencyProperty<Type>("PanelType")]
 public partial class PanelHost : ContentControl, Panel.IHost
@@ -35,6 +36,31 @@ public partial class PanelHost : ContentControl, Panel.IHost
 		this.IsVisibleChanged += this.OnIsVisibleChanged;
 	}
 
+	public Panel? SetPanel(Type? panelType)
+	{
+		this.panel?.SetIsOpen(this, false, false);
+		this.Content = null;
+
+		if (panelType == null)
+			return null;
+
+		this.panel = Activator.CreateInstance(panelType) as Panel;
+
+		if (this.panel != null)
+		{
+			this.panel.SetHost(this);
+			this.Content = this.panel;
+			this.panel.SetIsOpen(this, this.IsVisible, false);
+
+			this.panel.Width = double.NaN;
+			this.panel.Height = double.NaN;
+			this.panel.HorizontalAlignment = HorizontalAlignment.Stretch;
+			this.panel.VerticalAlignment = VerticalAlignment.Stretch;
+		}
+
+		return this.panel;
+	}
+
 	Task Panel.IHost.CloseAsync(bool minimize)
 	{
 		this.panel?.SetIsOpen(this, false, minimize);
@@ -46,25 +72,7 @@ public partial class PanelHost : ContentControl, Panel.IHost
 		if (DesignerProperties.GetIsInDesignMode(this))
 			return;
 
-		this.panel?.SetIsOpen(this, false, false);
-		this.Content = null;
-
-		if (newValue == null)
-			return;
-
-		this.panel = Activator.CreateInstance(newValue) as Panel;
-
-		if (panel != null)
-		{
-			this.panel.SetHost(this);
-			this.Content = this.panel;
-			this.panel.SetIsOpen(this, this.IsVisible, false);
-
-			this.panel.Width = double.NaN;
-			this.panel.Height = double.NaN;
-			this.panel.HorizontalAlignment = HorizontalAlignment.Stretch;
-			this.panel.VerticalAlignment = VerticalAlignment.Stretch;
-		}
+		this.SetPanel(newValue);
 	}
 
 	private void OnShutdownStarted(object? sender, EventArgs e)

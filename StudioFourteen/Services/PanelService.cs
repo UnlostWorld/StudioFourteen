@@ -14,6 +14,8 @@
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
 namespace StudioFourteen.Services;
+
+using PropertyChanged.SourceGenerator;
 using StudioFourteen.Launcher;
 using StudioFourteen.Studio;
 using StudioFourteen.Utilities;
@@ -48,7 +50,7 @@ public class PanelService : ServiceBase
 	public event PanelDelegate? PanelDeactivated;
 
 	public IEnumerable<Panel> OpenPanels => this.openPanels;
-
+	public Func<Type, Task<Panel?>>? CreateAllInOnePanelCallback { get; set; }
 	public override Task Initialize()
 	{
 		EventManager.RegisterClassHandler(typeof(FrameworkElement), FrameworkElement.LoadedEvent, new RoutedEventHandler((s, e) => this.OnLoaded(s, e)));
@@ -151,35 +153,42 @@ public class PanelService : ServiceBase
 		return await this.Open<T>(activate);
 	}
 
-	public async Task<T?> Open<T>(bool activate = true)
+	public async Task<T?> Open<T>(bool activate = true, bool isAIO = false)
 		where T : Panel, new()
 	{
 		Panel? p = await this.Open(typeof(T), activate);
 		return p as T;
 	}
 
-	public async Task<Panel?> Open(Type panelType, bool activate = true)
+	public async Task<Panel?> Open(Type panelType, bool activate = true, bool isAIO = false)
 	{
-		PanelWindow? wnd = await PanelWindow.CreatePanelWindow<PanelWindow>();
-		if (wnd != null)
+		if (!isAIO)
 		{
-			await wnd.Dispatcher.InvokeAsync(() =>
+			PanelWindow? wnd = await PanelWindow.CreatePanelWindow<PanelWindow>();
+			if (wnd != null)
 			{
-				wnd.Panel = Activator.CreateInstance(panelType) as Panel;
-
-				if (wnd.Panel != null)
+				await wnd.Dispatcher.InvokeAsync(() =>
 				{
-					wnd.Panel.SetHost(wnd);
-					wnd.Show();
+					wnd.Panel = Activator.CreateInstance(panelType) as Panel;
 
-					if (activate)
+					if (wnd.Panel != null)
 					{
-						wnd.Activate();
-					}
-				}
-			});
+						wnd.Panel.SetHost(wnd);
+						wnd.Show();
 
-			return wnd.Panel;
+						if (activate)
+						{
+							wnd.Activate();
+						}
+					}
+				});
+
+				return wnd.Panel;
+			}
+		}
+		else if(this.CreateAllInOnePanelCallback != null)
+		{
+			return await this.CreateAllInOnePanelCallback.Invoke(panelType);
 		}
 
 		return null;
@@ -191,24 +200,24 @@ public class PanelService : ServiceBase
 		this.Get<T>()?.CloseAsync().Run();
 	}
 
-	public void SetIsOpen<T>(bool value, bool activate = true)
+	public void SetIsOpen<T>(bool value, bool activate = true, bool isAIO = false)
 		where T : Panel, new()
 	{
-		this.SetIsOpen(typeof(T), value, activate);
+		this.SetIsOpen(typeof(T), value, activate, isAIO);
 	}
 
-	public void SetIsOpen(Type panelType, bool value, bool activate = true)
+	public void SetIsOpen(Type panelType, bool value, bool activate = true, bool isAIO = false)
 	{
-		this.SetIsOpenAsync(panelType, value, activate).Run();
+		this.SetIsOpenAsync(panelType, value, activate, isAIO).Run();
 	}
 
-	public async Task SetIsOpenAsync(Type panelType, bool value, bool activate = true)
+	public async Task SetIsOpenAsync(Type panelType, bool value, bool activate = true, bool isAIO = false)
 	{
 		Panel? panel = this.Get(panelType);
 
 		if (value && panel == null)
 		{
-			await this.Open(panelType, activate);
+			await this.Open(panelType, activate, isAIO);
 		}
 		else if (value && panel != null)
 		{
