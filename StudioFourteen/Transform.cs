@@ -86,21 +86,6 @@ public struct Transform : IEquatable<Transform>
 	public static Transform operator *(Transform left, Transform right) => left.matrix * right.matrix;
 	public static Transform operator -(Transform left, Transform right) => left.matrix - right.matrix;
 
-	public static Transform operator /(Transform left, Transform right)
-	{
-		if (left.ToTRS(out Vector3 leftTranslation, out Quaternion leftRotation, out Vector3 leftScale)
-			&& right.ToTRS(out Vector3 rightTranslation, out Quaternion rightRotation, out Vector3 rightScale))
-		{
-			Vector3 translation = Vector3.Transform(leftTranslation - rightTranslation, Quaternion.Inverse(rightRotation));
-			Quaternion rotation = Quaternion.Normalize(Quaternion.Inverse(rightRotation) * leftRotation);
-			Vector3 scale = leftScale / rightScale;
-
-			return Transform.FromTRS(translation, rotation, scale);
-		}
-
-		throw new Exception("Failed to unpack transforms for divide");
-	}
-
 	public static bool operator !=(Transform left, Transform right) => !(left == right);
 	public static bool operator ==(Transform left, Transform right) => left.matrix == right.matrix;
 
@@ -122,6 +107,23 @@ public struct Transform : IEquatable<Transform>
 		return Matrix4x4.Lerp(from.matrix, to.matrix, amount);
 	}
 
+	public static bool Divide(Transform left, Transform right, out Transform? result)
+	{
+		result = null;
+		if (left.ToTRS(out Vector3 leftTranslation, out Quaternion leftRotation, out Vector3 leftScale)
+			&& right.ToTRS(out Vector3 rightTranslation, out Quaternion rightRotation, out Vector3 rightScale))
+		{
+			Vector3 translation = Vector3.Transform(leftTranslation - rightTranslation, Quaternion.Inverse(rightRotation));
+			Quaternion rotation = Quaternion.Normalize(Quaternion.Inverse(rightRotation) * leftRotation);
+			Vector3 scale = leftScale / rightScale;
+
+			result = Transform.FromTRS(translation, rotation, scale);
+			return true;
+		}
+
+		return false;
+	}
+
 	public Matrix4x4 ToMatrix() => this.matrix;
 	public override readonly bool Equals(object? obj) => this.matrix.Equals(obj);
 	public readonly bool Equals(Transform other) => this.matrix == other.matrix;
@@ -135,5 +137,10 @@ public struct Transform : IEquatable<Transform>
 
 		rotation = Quaternion.Normalize(rotation);
 		return true;
+	}
+
+	public bool DivideBy(Transform right, out Transform? result)
+	{
+		return Transform.Divide(this, right, out result);
 	}
 }

@@ -89,7 +89,9 @@ public class BoneReference
 		if (this.LocalSpaceTransform == null || this.ReferenceTransform == null)
 			throw new Exception("Cannot set bone to reference before it has been ticked");
 
-		this.Transform = this.ReferenceTransform / this.LocalSpaceTransform;
+		Transform? output;
+		bool success = this.ReferenceTransform.Value.DivideBy((Transform)this.LocalSpaceTransform, out output);
+		this.Transform = output;
 	}
 
 	public void Dispose()
@@ -181,14 +183,9 @@ public class BoneReference
 
 		if (this.LocalSpaceTransform != null)
 		{
-			try
-			{
-				this.ReferenceRelativeTransform = (Transform)this.LocalSpaceTransform / (Transform)this.ReferenceTransform;
-			}
-			catch (Exception)
-			{
-				Logging.Shared.Warning($"Failed to get reference relative transform for bone: {this.boneName}");
-			}
+			Transform? output;
+			bool success = this.LocalSpaceTransform.Value.DivideBy((Transform)this.ReferenceTransform, out output);
+			this.ReferenceRelativeTransform = output;
 		}
 	}
 
@@ -317,15 +314,8 @@ public class BoneReference
 				this.fromTransform = null;
 			}
 
-			try
-			{
-				this.toTransform = this.loadLocalSpaceTransform / this.baseLocalTransform;
-				this.loadLocalSpaceTransform = null;
-			}
-			catch (Exception)
-			{
-				Logging.Shared.Warning($"Failed to get target transform while loading local space transform for bone: {this.boneName}");
-			}
+			bool success = this.loadLocalSpaceTransform.Value.DivideBy((Transform)this.baseLocalTransform, out this.toTransform);
+			this.loadLocalSpaceTransform = null;
 		}
 
 		// Apply blend to the Transform.

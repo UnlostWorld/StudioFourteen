@@ -258,11 +258,15 @@ public class BoneSelection : TransformSelectionBase
 		if (this.bone == null || this.bone.ModelTransform == null)
 			return;
 
-		Transform modelSpaceTransform = transform / this.bone.ModelTransform.Value;
+		Transform? modelSpaceTransform;
+		bool success = Transform.Divide(transform, this.bone.ModelTransform.Value, out modelSpaceTransform);
 
-		foreach (BoneReference bone in this.bones)
+		if (success && modelSpaceTransform != null)
 		{
-			bone.SetModelSpaceTransform(modelSpaceTransform);
+			foreach (BoneReference bone in this.bones)
+			{
+				bone.SetModelSpaceTransform((Transform)modelSpaceTransform);
+			}
 		}
 	}
 

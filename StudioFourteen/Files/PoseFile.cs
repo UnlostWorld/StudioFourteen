@@ -168,11 +168,17 @@ public class PoseFile : FileBase
 					boneReference.SetReferenceRelativeTransform(val, blend);
 					boneReference.Locked = val.Locked;
 				}
+				else
+				{
+					boneReference.Reset(false);
+				}
 
 				continue;
 			}
 			else
 			{
+				boneReference.Reset(true);
+
 				// no face bones for legacy poses
 				if (boneReference.Name.StartsWith("j_f_"))
 					continue;
