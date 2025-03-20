@@ -239,7 +239,7 @@
 
 	<ControlTemplate x:Key="TaskBarTemplate" TargetType="{x:Type local:TaskBarControl}">
 
-		<Grid Margin="12">
+		<Grid Margin="12" x:Name="MainGrid">
 
 			<Border
 				x:Name="WindowShadow"
@@ -329,6 +329,14 @@
 		</Grid>
 
 		<ControlTemplate.Triggers>
+
+			<Trigger Property="IsAIO" Value="True">
+				<Setter TargetName="MainGrid" Property="Margin" Value="0"/>
+				<Setter TargetName="WindowShadow" Property="Visibility" Value="Collapsed"/>
+				<Setter TargetName="WindowBackground" Property="Visibility" Value="Collapsed"/>
+				<Setter TargetName="WindowBorder" Property="Visibility" Value="Collapsed"/>
+			</Trigger>
+
 			<Trigger Property="IsOpen" Value="False">
 
 				<Trigger.ExitActions>

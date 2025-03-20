@@ -34,6 +34,7 @@ using Panel = StudioFourteen.Panels.Panel;
 [DependencyProperty<bool>("IsOpen")]
 [DependencyProperty<bool>("IsInGPose")]
 [DependencyProperty<bool>("IsGPoseSettingsOpen")]
+[DependencyProperty<bool>("IsAIO")]
 public partial class TaskBarControl : Control
 {
 	private readonly Dictionary<Type, TaskBarEntry> panelEntries = new();

@@ -155,42 +155,43 @@
 						Height="28"
 						Margin="0,0,0,1">
 
-
 						<Grid Background="Transparent" MouseDown="OnTitleMouseDown" />
 
-						<StackPanel
-							Margin="8,1"
-							VerticalAlignment="Center"
-							IsHitTestVisible="False"
-							Orientation="Horizontal">
-
-							<controls:IconControl
-								MinWidth="12"
-								Margin="0,1,6,0"
+						<Grid Margin="{TemplateBinding TitleMargin}">
+							<StackPanel
+								Margin="8,1"
 								VerticalAlignment="Center"
-								Foreground="{DynamicResource ForegroundLightBrush}"
-								Icon="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Panel.TitleIcon}"
-								Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=HasIcon, Converter={StaticResource B2V}}" />
+								IsHitTestVisible="False"
+								Orientation="Horizontal">
 
-							<TextBlock
-								VerticalAlignment="Center"
-								Foreground="{DynamicResource ForegroundLightBrush}"
-								Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Title}" />
+								<controls:IconControl
+									MinWidth="12"
+									Margin="0,1,6,0"
+									VerticalAlignment="Center"
+									Foreground="{DynamicResource ForegroundLightBrush}"
+									Icon="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Panel.TitleIcon}"
+									Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=HasIcon, Converter={StaticResource B2V}}" />
 
-							<Ellipse
-								x:Name="SubtitleSeperator"
-								Width="4"
-								Height="4"
-								Margin="6,1,6,0"
-								VerticalAlignment="Center"
-								Fill="{DynamicResource ForegroundLightBrush}"
-								Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=HasSubtitle, Converter={StaticResource B2V}}" />
+								<TextBlock
+									VerticalAlignment="Center"
+									Foreground="{DynamicResource ForegroundLightBrush}"
+									Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Title}" />
 
-							<TextBlock
-								VerticalAlignment="Center"
-								Foreground="{DynamicResource ForegroundLightBrush}"
-								Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Panel.Subtitle}" />
-						</StackPanel>
+								<Ellipse
+									x:Name="SubtitleSeperator"
+									Width="4"
+									Height="4"
+									Margin="6,1,6,0"
+									VerticalAlignment="Center"
+									Fill="{DynamicResource ForegroundLightBrush}"
+									Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=HasSubtitle, Converter={StaticResource B2V}}" />
+
+								<TextBlock
+									VerticalAlignment="Center"
+									Foreground="{DynamicResource ForegroundLightBrush}"
+									Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Panel.Subtitle}" />
+							</StackPanel>
+						</Grid>
 
 						<StackPanel
 							Grid.Row="0"
@@ -485,10 +486,10 @@
 		<Setter Property="MinHeight" Value="128" />
 		<Setter Property="MinWidth" Value="128" />
 		<Setter Property="ResizeMode" Value="CanResizeWithGrip" />
+		<Setter Property="ShowInTaskbar" Value="False" />
 		<Setter Property="Template" Value="{StaticResource PanelWindowTemplate}" />
 		<Setter Property="UseLayoutRounding" Value="True" />
 		<Setter Property="WindowStyle" Value="None" />
-		<Setter Property="ShowInTaskbar" Value="False"/>
 	</Style>
 
 
@@ -642,8 +643,8 @@
 		TargetType="{x:Type local:PanelWindow}">
 		<Setter Property="MinHeight" Value="32" />
 		<Setter Property="MinWidth" Value="32" />
+		<Setter Property="ShowInTaskbar" Value="False" />
 		<Setter Property="Template" Value="{DynamicResource PanelToolbarTemplate}" />
-		<Setter Property="ShowInTaskbar" Value="False"/>
 	</Style>
 
 </ResourceDictionary>

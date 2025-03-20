@@ -106,6 +106,8 @@ public partial class SimpleView : PoseViewBase
 			if (allTargets == null)
 				return;
 
+			await this.MainThread();
+
 			foreach (PoseSelectionControl target in allTargets)
 			{
 				if (target.Selection is BoneSelection boneSelection)

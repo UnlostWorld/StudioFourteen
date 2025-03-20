@@ -42,6 +42,7 @@ using WpfUtils.Windows;
 [DependencyProperty<double>("Scale", DefaultValue = 1.0)]
 [DependencyProperty<bool>("IsMaximized", DefaultValue = false)]
 [DependencyProperty<bool>("RememberState", DefaultValue = false)]
+[DependencyProperty<Thickness>("TitleMargin")]
 [DependencyProperty<Point>("DefaultPosition", DefaultValueExpression = "new System.Windows.Point(0.5, 0.5)")]
 public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 {

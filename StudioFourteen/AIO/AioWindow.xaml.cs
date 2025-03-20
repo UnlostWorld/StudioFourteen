@@ -17,8 +17,11 @@ namespace StudioFourteen.AIO;
 
 using StudioFourteen.Panels;
 using System.Threading.Tasks;
+using System.Windows;
 using WpfUtils.Windows;
+using DependencyPropertyGenerator;
 
+[DependencyProperty<bool>("IsMenuOpen")]
 public partial class AioWindow : PanelWindow
 {
 	private static AioWindow? instance;
@@ -57,4 +60,12 @@ public partial class AioWindow : PanelWindow
 	}
 
 	protected override bool GetIsUiVisible() => true;
+
+	private void OnLaunchClicked(object sender, RoutedEventArgs e)
+	{
+		if (!this.IsMenuOpen)
+		{
+			this.IsMenuOpen = true;
+		}
+	}
 }

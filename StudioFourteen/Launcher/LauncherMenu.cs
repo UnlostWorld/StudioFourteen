@@ -28,6 +28,7 @@ using WpfUtils.Extensions;
 using Panel = StudioFourteen.Panels.Panel;
 
 [DependencyProperty<bool>("IsOpen")]
+[DependencyProperty<bool>("IsAIO", DefaultValue = false)]
 public partial class LauncherMenu : Control
 {
 	private Button? userButton;
@@ -36,27 +37,7 @@ public partial class LauncherMenu : Control
 
 	public LauncherMenu()
 	{
-		this.AddPanel<Marketplace.MarketplacePanel>("fa-Shop", "Marketplace", false);
-		this.AddPanel<Library.LibraryWindow>("fa-Book", "Library");
-
-		this.AddPanel<CameraPanel>("Camera", "Camera");
-		this.AddPanel<EnvironmentPanel>("fa-CloudMoonRain", "Environment");
-		this.AddPanel<Appearance.CharacterPanel>("fa-UserShield", "Character");
-		this.AddPanel<Posing.PoseWindow>("fa-Running", "Pose");
-		this.AddPanel<Library.LibraryWindow>("fa-Lightbulb", "Lighting", false);
-		this.AddPanel<Library.LibraryWindow>("fa-Chair", "Furniture", false);
-		this.AddPanel<Library.LibraryWindow>("fa-Users", "Crowds", false);
-		this.AddPanel<Library.LibraryWindow>("fa-Fire", "Effects", false);
-
-		this.AddPanel<Library.LibraryWindow>("fa-Forward", "Animation", false);
-		this.AddPanel<Library.LibraryWindow>("fa-Stream", "Sequencer", false);
-
-		this.AddPanel<Photos.PhotoWindow>("fa-Image", "Photo");
-		this.AddEntry<AioLauncherEntry>("fa-ObjectGroup", "AIO");
-
-		this.AddPanel<History.HistoryPanel>("fa-History", "History");
-		this.AddPanel<Save.SaveWindow>("fa-Save", "Save");
-		this.AddPanel<Settings.SettingsPanel>("fa-Cogs", "Settings");
+		this.Loaded += this.OnLoaded;
 	}
 
 	public FastObservableCollection<LauncherEntry> Entries { get; init; } = new();
@@ -74,6 +55,35 @@ public partial class LauncherMenu : Control
 		{
 			this.powerButton.Click += this.OnPowerClicked;
 		}
+	}
+
+	private void OnLoaded(object sender, RoutedEventArgs e)
+	{
+		this.Entries.Clear();
+
+		this.AddPanel<Marketplace.MarketplacePanel>("fa-Shop", "Marketplace", false);
+		this.AddPanel<Library.LibraryWindow>("fa-Book", "Library");
+
+		this.AddPanel<CameraPanel>("Camera", "Camera");
+		this.AddPanel<EnvironmentPanel>("fa-CloudMoonRain", "Environment");
+		this.AddPanel<Appearance.CharacterPanel>("fa-UserShield", "Character");
+		this.AddPanel<Posing.PoseWindow>("fa-Running", "Pose");
+		this.AddPanel<Library.LibraryWindow>("fa-Lightbulb", "Lighting", false);
+		this.AddPanel<Library.LibraryWindow>("fa-Chair", "Furniture", false);
+		this.AddPanel<Library.LibraryWindow>("fa-Users", "Crowds", false);
+		this.AddPanel<Library.LibraryWindow>("fa-Fire", "Effects", false);
+
+		this.AddPanel<Library.LibraryWindow>("fa-Forward", "Animation", false);
+		this.AddPanel<Library.LibraryWindow>("fa-Stream", "Sequencer", false);
+
+		this.AddPanel<Photos.PhotoWindow>("fa-Image", "Photo");
+
+		if (!this.IsAIO)
+			this.AddEntry<AioLauncherEntry>("fa-ObjectGroup", "AIO");
+
+		this.AddPanel<History.HistoryPanel>("fa-History", "History");
+		this.AddPanel<Save.SaveWindow>("fa-Save", "Save");
+		this.AddPanel<Settings.SettingsPanel>("fa-Cogs", "Settings");
 	}
 
 	private void OnPowerClicked(object sender, RoutedEventArgs e)
@@ -98,6 +108,7 @@ public partial class LauncherMenu : Control
 		entry.Name = name;
 		entry.Icon = icon;
 		entry.IsEnabled = enabled;
+		entry.IsAIO = this.IsAIO;
 		this.Entries.Add(entry);
 	}
 }
@@ -110,6 +121,7 @@ public abstract class LauncherEntry(LauncherMenu menu)
 	public bool IsEnabled { get; set; }
 	public string? Icon { get; set; }
 	public string? Name { get; set; }
+	public bool IsAIO { get; set; }
 
 	public string? DisplayName => Resources.Find($"LOC_{this.Name}", this.Name ?? string.Empty);
 	public string? Description => Resources.Find($"LOC_{this.Name}Desc", this.Name ?? string.Empty);
