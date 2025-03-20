@@ -30,6 +30,7 @@ using StudioFourteen.Selection;
 using DependencyPropertyGenerator;
 
 [DependencyProperty<bool>("Hide", DefaultValue = false)]
+[DependencyProperty<bool>("UpdateWithAppearance", DefaultValue = false)]
 public partial class PoseViewBase : View
 {
 	public const double MouseOverDistance = 20;
@@ -170,6 +171,7 @@ public partial class PoseViewBase : View
 		this.Services.Target.TargetChanged += this.OnTargetChanged;
 		this.Services.Selection.SelectionChanged += this.OnSelectionChanged;
 		this.Services.Selection.HoverChanged += this.OnHoverChanged;
+		this.Services.CharacterAppearance.OnAppearanceChanged += this.OnAppearanceChanged;
 
 		this.UpdateTargets();
 	}
@@ -184,6 +186,7 @@ public partial class PoseViewBase : View
 		this.Services.Target.TargetChanged -= this.OnTargetChanged;
 		this.Services.Selection.SelectionChanged -= this.OnSelectionChanged;
 		this.Services.Selection.HoverChanged -= this.OnHoverChanged;
+		this.Services.CharacterAppearance.OnAppearanceChanged -= this.OnAppearanceChanged;
 	}
 
 	protected void UpdateTargets()
@@ -322,6 +325,17 @@ public partial class PoseViewBase : View
 	private void OnTargetChanged(int objectTableIndex)
 	{
 		this.UpdateTargets();
+	}
+
+	private void OnAppearanceChanged(int objectTableIndex)
+	{
+		this.Dispatcher.Invoke(() =>
+		{
+			if (this.UpdateWithAppearance)
+			{
+				this.UpdateTargets();
+			}
+		});
 	}
 
 	private unsafe void PopulateControl(PoseSelectionControl control, Character* pCharacter)

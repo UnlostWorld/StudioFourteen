@@ -63,6 +63,7 @@
 								</Grid.ColumnDefinitions>
 
 								<body:BodySimpleView
+									UpdateWithAppearance="True"
 									x:Name="BodyView"
 									Grid.RowSpan="3"
 									Grid.Column="0"

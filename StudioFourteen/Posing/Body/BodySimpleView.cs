@@ -15,10 +15,10 @@
 
 namespace StudioFourteen.Posing.Body;
 
+using System;
 using System.Threading.Tasks;
 using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using StudioFourteen.GameData;
 using StudioFourteen.Utilities;
 using WpfUtils;
 
@@ -41,10 +41,11 @@ public class BodySimpleView : SimpleView
 			byte vieraEars = pCharacter->GetCustomizeValue(CustomizeIndex.RaceFeatureType);
 
 			key = $"Body_{tribe}_{gender}";
-			/*if (tribe == 15 || tribe == 16)
+			if (tribe == 15 || tribe == 16)
 			{
+				vieraEars = Math.Clamp(vieraEars, (byte)1, (byte)4);
 				key = $"Body_{tribe}_{gender}_{vieraEars}";
-			}*/
+			}
 		}
 
 		await this.MainThread();

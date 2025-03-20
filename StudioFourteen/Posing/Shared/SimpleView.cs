@@ -55,9 +55,22 @@ public partial class SimpleView : PoseViewBase
 			this.boneConnections.Clear();
 			this.canvas.Children.Clear();
 
-			if (this.LayoutName == null
-			|| !this.Services.Data.SimplePoseLayouts?.TryGetValue(this.LayoutName, out this.layout) == true
-			|| this.layout == null)
+			if (this.LayoutName == null)
+				return;
+
+			string? layoutName = this.LayoutName;
+			this.layout = new();
+
+			do
+			{
+				SimpleViewLayout? basedOnLayout = null;
+				this.Services.Data.SimplePoseLayouts?.TryGetValue(layoutName, out basedOnLayout);
+				layoutName = basedOnLayout?.BasedOn;
+				this.layout.MergeBasedOn(basedOnLayout);
+			}
+			while(!string.IsNullOrEmpty(layoutName));
+
+			if (this.layout == null)
 				return;
 
 			if(this.layout.BasedOn != null)
@@ -324,6 +337,22 @@ public class SimpleViewLayout
 {
 	public string? Background { get; set; }
 	public Dictionary<string, Point> Bones { get; set; } = new();
-	public Size Size { get; set; }
 	public string? BasedOn { get; set; }
+
+	public void MergeBasedOn(SimpleViewLayout? parent)
+	{
+		if (parent == null)
+			return;
+
+		if (this.Background == null)
+			this.Background = parent.Background;
+
+		foreach((string key, Point pos) in parent.Bones)
+		{
+			if (this.Bones.ContainsKey(key))
+				continue;
+
+			this.Bones.Add(key, pos);
+		}
+	}
 }

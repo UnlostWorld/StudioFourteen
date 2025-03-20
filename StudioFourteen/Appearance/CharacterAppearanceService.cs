@@ -17,7 +17,6 @@ namespace StudioFourteen.Appearance;
 
 using Dalamud.Game.ClientState.Objects.Enums;
 using Dalamud.Hooking;
-using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FontAwesome.Sharp;
@@ -29,9 +28,7 @@ using StudioFourteen.Services;
 using StudioFourteen.Utilities;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using WpfUtils.Extensions;
 
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.CharacterExtensions;
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
@@ -43,7 +40,10 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 
 	private Hook<EnforceKindRestrictionsDelegate>? enforceKindRestrictionsHook;
 
+	public delegate void AppearanceChangedDelegate(int objectTableIndex);
 	private delegate byte EnforceKindRestrictionsDelegate(nint a1, nint a2);
+
+	public event AppearanceChangedDelegate? OnAppearanceChanged;
 
 	public override Task Start()
 	{
@@ -182,6 +182,7 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 		pCharacter->ModelContainer.ModelCharaId = modelCharaId;
 
 		this.Services.Redraw.Redraw(objectTableIndex);
+		this.OnAppearanceChanged?.Invoke(objectTableIndex);
 	}
 
 	public unsafe void SetCustomizeValue(int objectTableIndex, CustomizeIndex index, byte value, UpdateSource source)
@@ -220,6 +221,7 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 			this.Backup(pCharacter);
 
 		pCharacter->DrawData.LoadWeapon(slot, item, 1, 1, 0, 0);
+		this.OnAppearanceChanged?.Invoke(objectTableIndex);
 	}
 
 	public unsafe void SetEquipment(int objectTableIndex, Span<EquipmentModelId> equipment, UpdateSource source)
@@ -241,6 +243,7 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 			this.Backup(pCharacter);
 
 		pCharacter->DrawData.LoadEquipment(slot, &item, true);
+		this.OnAppearanceChanged?.Invoke(objectTableIndex);
 	}
 
 	public unsafe void SetCustomize(int objectTableIndex, CustomizeData customize, UpdateSource source)
@@ -276,6 +279,8 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 		{
 			this.Services.Redraw.Redraw(objectTableIndex);
 		}
+
+		this.OnAppearanceChanged?.Invoke(objectTableIndex);
 	}
 
 	private void OnGroupPoseStateChange(bool newState)
