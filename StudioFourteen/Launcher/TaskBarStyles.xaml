@@ -318,7 +318,7 @@
 										IsTaskVisible="{Binding IsVisible}"
 										PanelType="{Binding Type}"
 										ToolTip="{Binding Title}"
-										IsAIO="{Binding IsAIO}" />
+										Context="{Binding Context}" />
 								</DataTemplate>
 
 							</ItemsControl.ItemTemplate>
@@ -331,7 +331,7 @@
 
 		<ControlTemplate.Triggers>
 
-			<Trigger Property="IsAIO" Value="True">
+			<Trigger Property="HideBackground" Value="True">
 				<Setter TargetName="MainGrid" Property="Margin" Value="0"/>
 				<Setter TargetName="WindowShadow" Property="Visibility" Value="Collapsed"/>
 				<Setter TargetName="WindowBackground" Property="Visibility" Value="Collapsed"/>

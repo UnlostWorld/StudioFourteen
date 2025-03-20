@@ -1,4 +1,4 @@
-﻿// .                    @@             _____ _______ _    _ _____ _____ ____
+// .                    @@             _____ _______ _    _ _____ _____ ____
 //          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
 //         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
 //         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
@@ -13,36 +13,33 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Studio;
+namespace StudioFourteen.AIO;
 
-using PropertyChanged.SourceGenerator;
-using StudioFourteen.Panels;
+using System;
 using System.Threading.Tasks;
+using StudioFourteen.Panels;
 
-public partial class LongTaskWindow : Panel
+public class AllInOnePanelsContextState : PanelsContextStateBase
 {
-	[Notify] private string status = string.Empty;
-	[Notify] private double? progress = null;
+	public AioWindow? Window { get; set; }
 
-	public static async Task<LongTaskWindow?> Show()
+	public override Task<Panel?> CreatePanelAsync(Type panelType, bool activate)
 	{
-		return await ServiceManager.Instance.Panels.GamePanels.CreatePanelAsync<LongTaskWindow>();
+		throw new NotImplementedException();
 	}
 
-	public void SetStatus(string status)
+	public override Task RestorePanels()
 	{
-		this.Status = status;
+		throw new NotImplementedException();
 	}
 
-	public void SetProgress(double? progress)
+	public override Task StopPanels()
 	{
-		if (progress == null)
-		{
-			this.Progress = null;
-		}
-		else
-		{
-			this.Progress = progress * 100;
-		}
+		throw new NotImplementedException();
+	}
+
+	public override Task TogglePanel(Type panelType)
+	{
+		throw new NotImplementedException();
 	}
 }

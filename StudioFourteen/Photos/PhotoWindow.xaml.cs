@@ -114,7 +114,7 @@ public partial class PhotoWindow : Panel
 
 	private void OnSettingsClicked(object sender, RoutedEventArgs e)
 	{
-		SettingsPanel.Show("PhotosSection");
+		SettingsPanel.Show(this.GetContext(), "PhotosSection");
 	}
 
 	private void OnCloseClicked(object sender, RoutedEventArgs e)

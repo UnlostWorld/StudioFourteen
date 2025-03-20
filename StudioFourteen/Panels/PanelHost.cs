@@ -25,6 +25,7 @@ using System.Threading.Tasks;
 using Lumina.Excel.Sheets;
 
 [DependencyProperty<Type>("PanelType")]
+[DependencyProperty<PanelsContextStateBase>("Context")]
 public partial class PanelHost : ContentControl, Panel.IHost
 {
 	private Panel? panel;
@@ -40,6 +41,9 @@ public partial class PanelHost : ContentControl, Panel.IHost
 	{
 		this.panel?.SetIsOpen(this, false, false);
 		this.Content = null;
+
+		if (this.Context == null)
+			return null;
 
 		if (panelType == null)
 			return null;
@@ -67,12 +71,25 @@ public partial class PanelHost : ContentControl, Panel.IHost
 		return Task.CompletedTask;
 	}
 
+	PanelsContextStateBase Panel.IHost.GetContext()
+	{
+		if (this.Context == null)
+			throw new Exception("No context in panel host");
+
+		return this.Context;
+	}
+
 	partial void OnPanelTypeChanged(Type? newValue)
 	{
 		if (DesignerProperties.GetIsInDesignMode(this))
 			return;
 
 		this.SetPanel(newValue);
+	}
+
+	partial void OnContextChanged()
+	{
+		this.SetPanel(this.PanelType);
 	}
 
 	private void OnShutdownStarted(object? sender, EventArgs e)

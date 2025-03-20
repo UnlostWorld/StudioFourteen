@@ -46,7 +46,7 @@ public partial class ErrorWindow : Panel
 				return;
 
 			isOpening = true;
-			ServiceManager.Instance.Panels.Open<ErrorWindow>().Run();
+			ServiceManager.Instance.Panels.GamePanels.CreatePanel<ErrorWindow>();
 		}
 		else
 		{
@@ -75,12 +75,12 @@ public partial class ErrorWindow : Panel
 
 	private void OnGitHubClicked(object sender, RoutedEventArgs e)
 	{
-		UrlUtility.Open("https://github.com/XIV-Tools/StudioFourteen");
+		UrlUtility.Open("https://github.com/UnlostWorld/StudioFourteen");
 	}
 
 	private void OnDiscordClicked(object sender, RoutedEventArgs e)
 	{
-		UrlUtility.Open("https://discord.gg/KvGJCCnG8t");
+		////UrlUtility.Open("");
 	}
 
 	private void OnConfirmClicked(object sender, RoutedEventArgs e)

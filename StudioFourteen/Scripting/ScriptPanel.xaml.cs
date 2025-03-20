@@ -44,7 +44,7 @@ public partial class ScriptPanel : Panel
 
 	public static async Task<ScriptPanel?> Show(ScriptFile script)
 	{
-		ScriptPanel? panel = await ServiceManager.Instance.Panels.Open<ScriptPanel>();
+		ScriptPanel? panel = await ServiceManager.Instance.Panels.GamePanels.CreatePanelAsync<ScriptPanel>();
 		if (panel != null)
 		{
 			panel.Script = script;

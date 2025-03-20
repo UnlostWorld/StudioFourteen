@@ -57,6 +57,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 	[Notify] private bool isUiVisible = true;
 	[Notify] private bool isUiVisibleAndOpen = true;
+	[Notify] private PanelsContextStateBase? context;
 
 	public PanelWindow()
 	{
@@ -189,7 +190,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		}
 	}
 
-	public static async Task<T?> CreatePanelWindow<T>()
+	public static async Task<T?> CreatePanelWindow<T>(PanelsContextStateBase context)
 		where T : PanelWindow
 	{
 		if (ServiceManager.Instance.CurrentState > ServiceManagerBase.States.Started)
@@ -199,6 +200,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 		if (panelWindow != null)
 		{
+			panelWindow.Context = context;
 			await panelWindow.Dispatcher.InvokeAsync(() =>
 			{
 				panelWindow.ShowActivated = false;
@@ -206,6 +208,14 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		}
 
 		return panelWindow;
+	}
+
+	public PanelsContextStateBase GetContext()
+	{
+		if (this.Context == null)
+			throw new Exception("No Context in panel window");
+
+		return this.Context;
 	}
 
 	public virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
@@ -509,7 +519,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 			return;
 
 		if (this.Panel != null)
-			this.Services.Panels.OnPanelActivated(this.Panel, newValue);
+			this.GetContext().OnPanelActivated(this.Panel, newValue);
 
 		if (newValue)
 		{

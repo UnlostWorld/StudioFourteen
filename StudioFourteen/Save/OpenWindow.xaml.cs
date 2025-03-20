@@ -49,7 +49,7 @@ public partial class OpenWindow : Panel
 	{
 		try
 		{
-			OpenWindow? panel = await ServiceManager.Instance.Panels.Open<OpenWindow>();
+			OpenWindow? panel = await ServiceManager.Instance.Panels.GamePanels.CreatePanelAsync<OpenWindow>();
 
 			if (panel == null)
 				throw new Exception("No Open Window");

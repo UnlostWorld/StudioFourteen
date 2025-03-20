@@ -19,7 +19,8 @@
 	IsEmbedded="False"
 	TitleMargin="45,0,0,0"
 	Topmost="False"
-	mc:Ignorable="d">
+	mc:Ignorable="d"
+	x:Name="AioWindowMain">
 
 	<Grid Margin="1">
 
@@ -36,6 +37,7 @@
 		<panels:PanelHost
 			Grid.Row="0"
 			Grid.Column="1"
+			Context="{Binding Context}"
 			PanelType="{x:Type background:TargetsPanel}" />
 
 		<Button
@@ -51,7 +53,8 @@
 		<launcher:TaskBarControl
 			Grid.Row="1"
 			Grid.Column="0"
-			IsAIO="True" />
+			HideBackground="True"
+			Context="{Binding Context}" />
 
 		<Popup
 			x:Name="LauncherMenuPopup"
@@ -62,12 +65,15 @@
 			StaysOpen="False"
 			VerticalOffset="0">
 
-			<launcher:LauncherMenu IsAIO="True" IsOpen="{Binding IsOpen, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type Popup}}}" />
+			<launcher:LauncherMenu
+				Context="{Binding Context, ElementName=AioWindowMain}"
+				IsOpen="{Binding IsOpen, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type Popup}}}" />
 
 		</Popup>
 
 		<panels:PanelHost
 			x:Name="PanelArea"
+			Context="{Binding Context}"
 			Grid.Row="1"
 			Grid.Column="1"
 			Margin="0,4,0,0" />

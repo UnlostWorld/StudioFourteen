@@ -30,6 +30,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Emit;
 using Microsoft.CodeAnalysis.Text;
 using Serilog.Events;
+using StudioFourteen.Panels;
 using StudioFourteen.Plugin;
 using StudioFourteen.Scripting.Instance;
 using StudioFourteen.Services;

@@ -85,7 +85,7 @@ public partial class CharacterPanel : CharacterPanelBase
 
 	private void OnImportClicked(object sender, RoutedEventArgs e)
 	{
-		LibraryWindow.Open();
+		LibraryWindow.Open(this.GetContext());
 	}
 
 	private async void OnExportClicked(object sender, RoutedEventArgs e)

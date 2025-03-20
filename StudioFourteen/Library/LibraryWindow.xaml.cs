@@ -25,6 +25,7 @@ using StudioFourteen.Library.Filters;
 using StudioFourteen.Library.Results;
 using StudioFourteen.Library.Sources;
 using StudioFourteen.Mvm;
+using StudioFourteen.Panels;
 using StudioFourteen.Tags;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -177,16 +178,16 @@ public partial class LibraryWindow : Panel
 		}
 	}
 
-	public static void Open(LibraryTab? tab = null)
+	public static void Open(PanelsContextStateBase context, LibraryTab? tab = null)
 	{
-		OpenAsync(tab).Run();
+		OpenAsync(context, tab).Run();
 	}
 
-	public static async Task OpenAsync(LibraryTab? tab = null)
+	public static async Task OpenAsync(PanelsContextStateBase context, LibraryTab? tab = null)
 	{
-		LibraryWindow? panel = ServiceManager.Instance.Panels.Get<LibraryWindow>();
+		LibraryWindow? panel = context.GetOpenPanel<LibraryWindow>();
 		if (panel == null)
-			panel = await ServiceManager.Instance.Panels.Open<LibraryWindow>();
+			panel = await context.CreatePanelAsync<LibraryWindow>();
 
 		if (panel == null)
 			return;

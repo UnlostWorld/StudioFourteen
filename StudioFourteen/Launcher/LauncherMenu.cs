@@ -28,7 +28,7 @@ using WpfUtils.Extensions;
 using Panel = StudioFourteen.Panels.Panel;
 
 [DependencyProperty<bool>("IsOpen")]
-[DependencyProperty<bool>("IsAIO", DefaultValue = false)]
+[DependencyProperty<PanelsContextStateBase>("Context")]
 public partial class LauncherMenu : Control
 {
 	private Button? userButton;
@@ -57,6 +57,14 @@ public partial class LauncherMenu : Control
 		}
 	}
 
+	public PanelsContextStateBase GetContext()
+	{
+		if (this.Context == null)
+			throw new Exception("No Context in launcher menu");
+
+		return this.Context;
+	}
+
 	private void OnLoaded(object sender, RoutedEventArgs e)
 	{
 		this.Entries.Clear();
@@ -78,8 +86,8 @@ public partial class LauncherMenu : Control
 
 		this.AddPanel<Photos.PhotoWindow>("fa-Image", "Photo");
 
-		if (!this.IsAIO)
-			this.AddEntry<AioLauncherEntry>("fa-ObjectGroup", "AIO");
+		////if (!this.IsAIO)
+		this.AddEntry<AioLauncherEntry>("fa-ObjectGroup", "AIO");
 
 		this.AddPanel<History.HistoryPanel>("fa-History", "History");
 		this.AddPanel<Save.SaveWindow>("fa-Save", "Save");
@@ -108,7 +116,6 @@ public partial class LauncherMenu : Control
 		entry.Name = name;
 		entry.Icon = icon;
 		entry.IsEnabled = enabled;
-		entry.IsAIO = this.IsAIO;
 		this.Entries.Add(entry);
 	}
 }
@@ -132,13 +139,15 @@ public abstract class LauncherEntry(LauncherMenu menu)
 		set => this.Open();
 	}
 
+	public PanelsContextStateBase GetContext() => this.owner.GetContext();
+
 	protected abstract bool GetIsOpen();
 	protected abstract void SetOpen();
 
 	private void Open()
 	{
 		this.owner.IsOpen = false;
-		Task.Run(() => this.SetOpen());
+		this.SetOpen();
 	}
 }
 
@@ -148,13 +157,13 @@ public class PanelLauncherEntry<T> : LauncherEntry
 	public PanelLauncherEntry(LauncherMenu menu)
 		: base(menu)
 	{
-		this.Services.Panels.PanelOpened += this.OnPanelChanged;
-		this.Services.Panels.PanelClosed += this.OnPanelChanged;
-		this.Services.Panels.PanelMinimized += this.OnPanelChanged;
+		this.GetContext().PanelOpened += this.OnPanelChanged;
+		this.GetContext().PanelClosed += this.OnPanelChanged;
+		this.GetContext().PanelMinimized += this.OnPanelChanged;
 	}
 
-	protected override bool GetIsOpen() => this.Services.Panels.GetIsOpen<T>();
-	protected override void SetOpen() => this.Services.Panels.SetIsOpen<T>(true, true, this.IsAIO);
+	protected override bool GetIsOpen() => this.GetContext().GetOpenPanel<T>() != null;
+	protected override void SetOpen() => this.GetContext().CreatePanel<T>(true);
 
 	private void OnPanelChanged(Panel panel)
 	{

@@ -30,7 +30,7 @@ public sealed class DalamudPlugin : IDalamudPlugin
 	{
 		Instance = this;
 
-		// Hard reference our required satellite assemblies to make sure dalamuds plugin loader picks them up.
+		// Hard reference our required satellite assemblies to make sure dalamud's plugin loader picks them up.
 		this.Log.Information($"Ensure assembly WpfUtils {typeof(WpfUtils.Dispatch).Assembly}");
 		this.Log.Information($"Ensure assembly FontAwesome {typeof(FontAwesome.Sharp.Icon).Assembly}");
 		this.Log.Information($"Ensure assembly VirtualizingWrapPanel Pro {typeof(WpfToolkit.Controls.VirtualizingWrapPanel).Assembly}");
@@ -86,7 +86,7 @@ public sealed class DalamudPlugin : IDalamudPlugin
 
 	private void OnDalamudOpenConfigUi()
 	{
-		this.Services.Panels.SetIsOpen<SettingsPanel>(true);
+		this.Services.Panels.GamePanels.SetIsOpen<SettingsPanel>(true, true);
 	}
 
 	private void OnS14Command(string command, string arguments)

@@ -15,16 +15,14 @@
 
 namespace StudioFourteen.Services;
 
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Launcher;
+using StudioFourteen.Panels;
 using StudioFourteen.Studio;
 using StudioFourteen.Utilities;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using WpfUtils;
 using WpfUtils.Extensions;
 
 using Panel = StudioFourteen.Panels.Panel;
@@ -32,25 +30,22 @@ using PanelWindow = StudioFourteen.Panels.PanelWindow;
 
 public class PanelService : ServiceBase
 {
-	private readonly List<Panel> openPanels = new List<Panel>();
-	private readonly Dictionary<Type, Panel> lastOpenPanels = new();
+	public readonly GamePanelsContextState GamePanels;
 
+	private readonly List<PanelsContextStateBase> contexts = new();
 	private bool hasRestoredPanels = false;
 	private BackgroundWindow? backgroundWindow;
 	private LauncherWindow? launcher;
 
+	public PanelService()
+	{
+		this.GamePanels = this.CreateContext<GamePanelsContextState>();
+	}
+
 	public delegate void PanelServiceDelegate(PanelService self);
-	public delegate void PanelDelegate(Panel panel);
 
 	public event PanelServiceDelegate? PanelsRestarted;
-	public event PanelDelegate? PanelOpened;
-	public event PanelDelegate? PanelMinimized;
-	public event PanelDelegate? PanelClosed;
-	public event PanelDelegate? PanelActivated;
-	public event PanelDelegate? PanelDeactivated;
 
-	public IEnumerable<Panel> OpenPanels => this.openPanels;
-	public Func<Type, Task<Panel?>>? CreateAllInOnePanelCallback { get; set; }
 	public override Task Initialize()
 	{
 		EventManager.RegisterClassHandler(typeof(FrameworkElement), FrameworkElement.LoadedEvent, new RoutedEventHandler((s, e) => this.OnLoaded(s, e)));
@@ -65,173 +60,12 @@ public class PanelService : ServiceBase
 		return base.Shutdown();
 	}
 
-	public void OnPanelOpened(Panel panel)
+	public T CreateContext<T>()
+		where T : PanelsContextStateBase, new()
 	{
-		lock (this)
-		{
-			this.openPanels.Add(panel);
-
-			Type panelType = panel.GetType();
-			if (!this.lastOpenPanels.ContainsKey(panelType))
-				this.lastOpenPanels.Add(panelType, panel);
-
-			this.lastOpenPanels[panelType] = panel;
-		}
-
-		this.PanelOpened?.Invoke(panel);
-	}
-
-	public void OnPanelClosed(Panel panel, bool minimize)
-	{
-		lock (this)
-		{
-			this.openPanels.Remove(panel);
-
-			Type panelType = panel.GetType();
-			if (this.lastOpenPanels.ContainsKey(panelType))
-			{
-				this.lastOpenPanels.Remove(panelType);
-			}
-		}
-
-		if (minimize)
-		{
-			this.PanelMinimized?.Invoke(panel);
-		}
-		else
-		{
-			this.PanelClosed?.Invoke(panel);
-		}
-	}
-
-	public void OnPanelActivated(Panel panel, bool active)
-	{
-		if (active)
-		{
-			this.PanelActivated?.Invoke(panel);
-		}
-		else
-		{
-			this.PanelDeactivated?.Invoke(panel);
-		}
-	}
-
-	public T? Get<T>()
-		where T : Panel, new()
-	{
-		return this.Get(typeof(T)) as T;
-	}
-
-	public Panel? Get(Type panelType)
-	{
-		this.lastOpenPanels.TryGetValue(panelType, out var panel);
-		return panel;
-	}
-
-	public bool GetIsOpen<T>()
-		where T : Panel, new()
-	{
-		return this.Get<T>() != null;
-	}
-
-	public async Task<T?> GetOrOpen<T>(bool activate = true)
-		where T : Panel, new()
-	{
-		T? panel = this.Get<T>();
-		if (panel != null)
-		{
-			await panel.MainThread();
-			PanelWindow? wnd = panel.FindParent<PanelWindow>();
-			if (wnd != null && activate)
-			{
-				wnd.Activate();
-			}
-
-			return panel;
-		}
-
-		return await this.Open<T>(activate);
-	}
-
-	public async Task<T?> Open<T>(bool activate = true, bool isAIO = false)
-		where T : Panel, new()
-	{
-		Panel? p = await this.Open(typeof(T), activate);
-		return p as T;
-	}
-
-	public async Task<Panel?> Open(Type panelType, bool activate = true, bool isAIO = false)
-	{
-		if (!isAIO)
-		{
-			PanelWindow? wnd = await PanelWindow.CreatePanelWindow<PanelWindow>();
-			if (wnd != null)
-			{
-				await wnd.Dispatcher.InvokeAsync(() =>
-				{
-					wnd.Panel = Activator.CreateInstance(panelType) as Panel;
-
-					if (wnd.Panel != null)
-					{
-						wnd.Panel.SetHost(wnd);
-						wnd.Show();
-
-						if (activate)
-						{
-							wnd.Activate();
-						}
-					}
-				});
-
-				return wnd.Panel;
-			}
-		}
-		else if(this.CreateAllInOnePanelCallback != null)
-		{
-			return await this.CreateAllInOnePanelCallback.Invoke(panelType);
-		}
-
-		return null;
-	}
-
-	public void Close<T>()
-		where T : Panel, new()
-	{
-		this.Get<T>()?.CloseAsync().Run();
-	}
-
-	public void SetIsOpen<T>(bool value, bool activate = true, bool isAIO = false)
-		where T : Panel, new()
-	{
-		this.SetIsOpen(typeof(T), value, activate, isAIO);
-	}
-
-	public void SetIsOpen(Type panelType, bool value, bool activate = true, bool isAIO = false)
-	{
-		this.SetIsOpenAsync(panelType, value, activate, isAIO).Run();
-	}
-
-	public async Task SetIsOpenAsync(Type panelType, bool value, bool activate = true, bool isAIO = false)
-	{
-		Panel? panel = this.Get(panelType);
-
-		if (value && panel == null)
-		{
-			await this.Open(panelType, activate, isAIO);
-		}
-		else if (value && panel != null)
-		{
-			await panel.MainThread();
-			PanelWindow? wnd = panel.FindParent<PanelWindow>();
-			if (wnd != null && activate)
-			{
-				wnd.Activate();
-			}
-		}
-		else if (!value && panel != null)
-		{
-			await panel.CloseAsync();
-		}
+		T context = new T();
+		this.contexts.Add(context);
+		return context;
 	}
 
 	public override async Task Start()
@@ -243,12 +77,12 @@ public class PanelService : ServiceBase
 	public override async Task Stop()
 	{
 		await base.Stop();
-		this.StopPanels();
+		await this.StopPanels();
 	}
 
 	public async Task RestartPanels()
 	{
-		this.StopPanels();
+		await this.StopPanels();
 		await Task.Delay(1000);
 		await this.StartPanels();
 
@@ -257,10 +91,10 @@ public class PanelService : ServiceBase
 
 	private async Task StartPanels()
 	{
-		this.backgroundWindow = await PanelWindow.CreatePanelWindow<BackgroundWindow>();
+		this.backgroundWindow = await PanelWindow.CreatePanelWindow<BackgroundWindow>(this.GamePanels);
 		this.backgroundWindow?.Dispatcher.InvokeAsync(() => this.backgroundWindow.Show());
 
-		this.launcher = await PanelWindow.CreatePanelWindow<LauncherWindow>();
+		this.launcher = await PanelWindow.CreatePanelWindow<LauncherWindow>(this.GamePanels);
 		this.launcher?.Dispatcher.InvokeAsync(() => this.launcher.Show());
 
 		if (!this.hasRestoredPanels && this.Services.Studio.IsOpen)
@@ -269,32 +103,16 @@ public class PanelService : ServiceBase
 		}
 	}
 
-	private void StopPanels()
+	private async Task StopPanels()
 	{
 		this.backgroundWindow?.Dispatcher.Invoke(this.backgroundWindow.Close);
 		this.launcher?.Dispatcher.Invoke(this.launcher.Close);
 
-		this.Settings.OpenPanels.Clear();
-
-		List<Panel> openPanels = new(this.openPanels);
-		foreach (Panel? panel in openPanels)
+		foreach (PanelsContextStateBase context in this.contexts)
 		{
-			if (panel == null)
-				continue;
-
-			if (panel.RememberWindowState)
-			{
-				string? panelTypeName = panel.GetType().FullName;
-				if (panelTypeName != null)
-				{
-					this.Settings.OpenPanels.Add(panelTypeName);
-				}
-			}
-
-			panel.Close();
+			await context.StopPanels();
 		}
 
-		this.Services.Settings.SaveImmediate();
 		this.hasRestoredPanels = false;
 	}
 
@@ -311,17 +129,9 @@ public class PanelService : ServiceBase
 		// plus a short delay
 		await Task.Delay(100);
 
-		foreach (string panelTypeName in this.Settings.OpenPanels)
+		foreach (PanelsContextStateBase context in this.contexts)
 		{
-			Type? panelType = Type.GetType(panelTypeName);
-			if (panelType != null)
-			{
-				await this.Open(panelType, false);
-			}
-			else
-			{
-				this.Log.Information($"Failed to find panel type {panelTypeName}");
-			}
+			await context.RestorePanels();
 		}
 	}
 

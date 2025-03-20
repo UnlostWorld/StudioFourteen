@@ -12,9 +12,9 @@
 	MinWidth="48"
 	DefaultPosition="0, 0"
 	RememberState="True"
+	ShowInTaskbar="False"
 	SizeToContent="Manual"
-	mc:Ignorable="d"
-	ShowInTaskbar="False">
+	mc:Ignorable="d">
 	<panels:PanelWindow.Template>
 		<ControlTemplate TargetType="{x:Type local:LauncherWindow}">
 			<AdornerDecorator x:Name="MainGrid">
@@ -22,6 +22,7 @@
 					<local:TaskBarControl
 						x:Name="TaskBar"
 						Padding="0,56,0,0"
+						Context="{Binding Context}"
 						VerticalAlignment="Top" />
 
 					<Grid
@@ -68,7 +69,7 @@
 						StaysOpen="False"
 						VerticalOffset="0">
 
-						<local:LauncherMenu IsOpen="{Binding IsOpen, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type Popup}}}" />
+						<local:LauncherMenu Context="{Binding Context}" IsOpen="{Binding IsOpen, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type Popup}}}" />
 
 					</Popup>
 

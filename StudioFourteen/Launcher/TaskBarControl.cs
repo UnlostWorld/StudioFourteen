@@ -34,7 +34,8 @@ using Panel = StudioFourteen.Panels.Panel;
 [DependencyProperty<bool>("IsOpen")]
 [DependencyProperty<bool>("IsInGPose")]
 [DependencyProperty<bool>("IsGPoseSettingsOpen")]
-[DependencyProperty<bool>("IsAIO")]
+[DependencyProperty<PanelsContextStateBase>("Context")]
+[DependencyProperty<bool>("HideBackground")]
 public partial class TaskBarControl : Control
 {
 	private readonly Dictionary<Type, TaskBarEntry> panelEntries = new();
@@ -46,11 +47,6 @@ public partial class TaskBarControl : Control
 		this.Services.Studio.Closing += this.OnStudioClosing;
 		this.Services.GroupPose.StateChanged += this.OnGroupPoseStateChanged;
 		this.Services.GroupPose.SettingsStateChanged += this.OnGroupPoseSettingsStateChanged;
-		this.Services.Panels.PanelOpened += this.OnPanelOpened;
-		this.Services.Panels.PanelClosed += this.OnPanelClosed;
-		this.Services.Panels.PanelMinimized += this.OnPanelMinimized;
-		this.Services.Panels.PanelActivated += this.OnPanelActivated;
-		this.Services.Panels.PanelDeactivated += this.OnPanelDeactivated;
 
 		this.IsInGPose = this.Services.GroupPose.IsGroupPosing;
 		this.IsGPoseSettingsOpen = this.Services.GroupPose.IsGroupPoseSettingsWindowVisible;
@@ -62,6 +58,27 @@ public partial class TaskBarControl : Control
 	protected ServiceManager Services => ServiceManager.Instance;
 	protected SettingsService.Configuration Settings => this.Services.Settings.Current;
 
+	partial void OnContextChanged(PanelsContextStateBase? oldValue, PanelsContextStateBase? newValue)
+	{
+		if (oldValue != null)
+		{
+			oldValue.PanelOpened += this.OnPanelOpened;
+			oldValue.PanelClosed += this.OnPanelClosed;
+			oldValue.PanelMinimized += this.OnPanelMinimized;
+			oldValue.PanelActivated += this.OnPanelActivated;
+			oldValue.PanelDeactivated += this.OnPanelDeactivated;
+		}
+
+		if (newValue != null)
+		{
+			newValue.PanelOpened += this.OnPanelOpened;
+			newValue.PanelClosed += this.OnPanelClosed;
+			newValue.PanelMinimized += this.OnPanelMinimized;
+			newValue.PanelActivated += this.OnPanelActivated;
+			newValue.PanelDeactivated += this.OnPanelDeactivated;
+		}
+	}
+
 	private void OnLoaded(object sender, RoutedEventArgs e)
 	{
 		if (this.Services.Studio.IsOpen)
@@ -72,6 +89,18 @@ public partial class TaskBarControl : Control
 
 	private void OnStudioOpening()
 	{
+		this.OnStudioOpeningAsync().Run();
+	}
+
+	private async Task OnStudioOpeningAsync()
+	{
+		await this.MainThread();
+
+		if (this.Context == null)
+			throw new Exception("No context in task bar");
+
+		PanelsContextStateBase context = this.Context;
+
 		if (!this.hasRestoredSaves)
 		{
 			foreach ((string typeName, TaskBarEntrySave save) in this.Settings.MinimizedTaskBarEntries)
@@ -86,21 +115,17 @@ public partial class TaskBarControl : Control
 				if (this.panelEntries.ContainsKey(panelType))
 					continue;
 
-				TaskBarEntry? entry = new(save.Icon, save.Title, panelType);
+				TaskBarEntry? entry = new(context, save.Icon, save.Title, panelType);
 				entry.IsMinimized = true;
 				this.panelEntries.Add(panelType, entry);
 
-				this.Dispatcher.Invoke(() =>
-				{
-					this.Entries.Add(entry);
-					entry.IsAIO = this.IsAIO;
-				});
+				this.Entries.Add(entry);
 			}
 
 			this.hasRestoredSaves = true;
 		}
 
-		this.Dispatcher.Invoke(() => this.IsOpen = true);
+		this.IsOpen = true;
 	}
 
 	private void OnStudioClosing()
@@ -130,22 +155,31 @@ public partial class TaskBarControl : Control
 
 	private void OnPanelOpened(Panel panel)
 	{
+		this.OnPanelOpenedAsync(panel).Run();
+	}
+
+	private async Task OnPanelOpenedAsync(Panel panel)
+	{
+		await this.MainThread();
+
+		PanelsContextStateBase? context = this.Context;
+		if (panel.GetContext() != context)
+			return;
+
 		TaskBarEntry? entry;
 		this.panelEntries.TryGetValue(panel.GetType(), out entry);
 
 		if (entry == null)
 		{
+			await panel.MainThread();
 			if (string.IsNullOrEmpty(panel.TitleIcon) || string.IsNullOrEmpty(panel.Title))
 				return;
 
-			entry = new(panel.TitleIcon, panel.Title, panel.GetType());
+			entry = new(context, panel.TitleIcon, panel.Title, panel.GetType());
 			this.panelEntries.Add(panel.GetType(), entry);
 
-			this.Dispatcher.Invoke(() =>
-			{
-				entry.IsAIO = this.IsAIO;
-				this.Entries.Add(entry);
-			});
+			await this.MainThread();
+			this.Entries.Add(entry);
 		}
 		else
 		{
@@ -224,13 +258,13 @@ public partial class TaskBarEntry : ViewModel
 	[Notify] private bool isMinimized = false;
 	[Notify] private bool isActive = true;
 	[Notify] private bool isVisible = true;
-	[Notify] private bool isAIO = false;
 
-	public TaskBarEntry(string icon, string title, Type panelType)
+	public TaskBarEntry(PanelsContextStateBase context, string icon, string title, Type panelType)
 	{
 		this.Icon = icon;
 		this.Title = title;
 		this.Type = panelType;
+		this.Context = context;
 	}
 
 	public string? Icon
@@ -246,6 +280,7 @@ public partial class TaskBarEntry : ViewModel
 	}
 
 	public Type? Type { get; set; }
+	public PanelsContextStateBase Context { get; init; }
 }
 
 [DependencyProperty<bool>("IsMinimized")]
@@ -253,7 +288,7 @@ public partial class TaskBarEntry : ViewModel
 [DependencyProperty<bool>("IsTaskVisible")]
 [DependencyProperty<Type>("PanelType")]
 [DependencyProperty<bool>("IsActive")]
-[DependencyProperty<bool>("IsAIO")]
+[DependencyProperty<PanelsContextStateBase>("Context")]
 public partial class TaskBarButtonControl : Control
 {
 	protected ServiceManager Services => ServiceManager.Instance;
@@ -270,36 +305,11 @@ public partial class TaskBarButtonControl : Control
 
 	private async Task HandleClickAsync()
 	{
-		if (this.PanelType == null)
+		Logging.Information($"?? {this.PanelType} {this.Context}");
+
+		if (this.PanelType == null || this.Context == null)
 			return;
 
-		if (this.IsAIO)
-		{
-		}
-		else
-		{
-			Panel? panel = this.Services.Panels.Get(this.PanelType);
-
-			if (panel == null)
-			{
-				await this.Services.Panels.Open(this.PanelType, true);
-			}
-			else if (panel != null)
-			{
-				await panel.MainThread();
-				PanelWindow? wnd = panel.FindParent<PanelWindow>();
-				if (wnd != null)
-				{
-					if (this.Services.Windows.IsActive(wnd) || this.Services.Windows.WasLastActive(wnd))
-					{
-						await wnd.CloseAsync(true);
-					}
-					else
-					{
-						wnd.Activate();
-					}
-				}
-			}
-		}
+		await this.Context.TogglePanel(this.PanelType);
 	}
 }

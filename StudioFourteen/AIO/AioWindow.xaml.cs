@@ -32,9 +32,11 @@ public partial class AioWindow : PanelWindow
 	{
 		Task.Run(async () =>
 		{
-			AioWindow? aio = await PanelWindow.CreatePanelWindow<AioWindow>();
+			AllInOnePanelsContextState contextState = new();
+			AioWindow? aio = await PanelWindow.CreatePanelWindow<AioWindow>(contextState);
 			if (aio != null)
 			{
+				contextState.Window = aio;
 				instance = aio;
 
 				aio.Dispatcher.Invoke(() =>
@@ -66,7 +68,6 @@ public partial class AioWindow : PanelWindow
 	protected override void OnOpened()
 	{
 		base.OnOpened();
-		this.Services.Panels.CreateAllInOnePanelCallback = this.CreatePanel;
 	}
 
 	private async Task<Panel?> CreatePanel(Type panelType)

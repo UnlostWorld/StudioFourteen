@@ -85,7 +85,7 @@ public partial class ReshadeService : ServiceBase
 
 			if (this.Settings.HasConfirmedReShadeVersion != versionPacked)
 			{
-				NotSupportedPanel? nsp = await ServiceManager.Instance.Panels.Open<NotSupportedPanel>();
+				NotSupportedPanel? nsp = await ServiceManager.Instance.Panels.GamePanels.CreatePanelAsync<NotSupportedPanel>(true);
 				if (nsp != null)
 				{
 					nsp.ReShadeVersionPacked = versionPacked;

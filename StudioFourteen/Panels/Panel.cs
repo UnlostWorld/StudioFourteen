@@ -21,6 +21,7 @@ using FontAwesome.Sharp;
 using Serilog;
 using StudioFourteen.Mvm;
 using StudioFourteen.Plugin;
+using StudioFourteen.Services;
 using StudioFourteen.Settings;
 using System;
 using System.ComponentModel;
@@ -78,6 +79,7 @@ public partial class Panel : ContentControl, IAutoNotify
 	public interface IHost
 	{
 		Task CloseAsync(bool minimize);
+		PanelsContextStateBase GetContext();
 	}
 
 	public ServiceManager Services => ServiceManager.Instance;
@@ -111,6 +113,14 @@ public partial class Panel : ContentControl, IAutoNotify
 	public void SetHost(IHost host)
 	{
 		this.host = host;
+	}
+
+	public PanelsContextStateBase GetContext()
+	{
+		if (this.host == null)
+			throw new InvalidOperationException();
+
+		return this.host.GetContext();
 	}
 
 	public void Close(bool minimize = false)
@@ -149,7 +159,7 @@ public partial class Panel : ContentControl, IAutoNotify
 			DalamudServices.Framework.Update += this.OnFrameworkUpdateSafe;
 
 		AutoPropertyNotifyService.Register(this);
-		this.Services.Panels.OnPanelOpened(this);
+		this.GetContext().OnPanelOpened(this);
 	}
 
 	protected virtual void OnClosed()
@@ -158,7 +168,7 @@ public partial class Panel : ContentControl, IAutoNotify
 			DalamudServices.Framework.Update -= this.OnFrameworkUpdateSafe;
 
 		AutoPropertyNotifyService.Remove(this);
-		this.Services.Panels.OnPanelClosed(this, this.isMinimized);
+		this.GetContext().OnPanelClosed(this, this.isMinimized);
 	}
 
 	protected virtual void OnFrameworkUpdate(IFramework framework)
