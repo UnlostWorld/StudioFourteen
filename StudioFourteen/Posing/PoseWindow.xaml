@@ -10,6 +10,7 @@
 	xmlns:pose="clr-namespace:StudioFourteen.Posing"
 	xmlns:windows="clr-namespace:StudioFourteen.Panels"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	Title="{DynamicResource LOC_Pose}"
 	Width="700"
 	Height="550"
@@ -49,7 +50,7 @@
 				Style="{DynamicResource WpfUtilsSideTabs}">
 				<pose:PoseTabItem>
 					<TabItem.Header>
-						<wpfUtils:IconBlock Margin="12" Icon="Person" />
+						<controls:IconControl Margin="12" Icon="fa-person"/>
 					</TabItem.Header>
 
 					<TabControl Margin="-3" SelectedIndex="{Binding SelectedBodyTab}">
@@ -171,10 +172,7 @@
 
 				<pose:PoseTabItem>
 					<TabItem.Header>
-						<wpfUtils:IconBlock
-							Margin="12"
-							Icon="Hand"
-							IconFont="Solid" />
+						<controls:IconControl Margin="12" Icon="fa-hand"/>
 					</TabItem.Header>
 
 					<TabControl Margin="-3" SelectedIndex="{Binding SelectedHandsTab}">
@@ -201,10 +199,7 @@
 
 				<pose:PoseTabItem>
 					<TabItem.Header>
-						<wpfUtils:IconBlock
-							Margin="12"
-							Icon="FaceGrin"
-							IconFont="Solid" />
+						<controls:IconControl Margin="12" Icon="fa-face-grin"/>
 					</TabItem.Header>
 
 					<TabControl
@@ -252,11 +247,7 @@
 
 				<pose:PoseTabItem>
 					<TabItem.Header>
-						<!--  TODO: wing Icon  -->
-						<wpfUtils:IconBlock
-							Margin="12"
-							Icon="Dove"
-							IconFont="Solid" />
+						<controls:IconControl Margin="12" Icon="Wing"/>
 					</TabItem.Header>
 
 					<pose:SimpleView
@@ -320,7 +311,7 @@
 										<ColumnDefinition />
 									</Grid.ColumnDefinitions>
 
-									<wpfUtils:IconBlock Grid.Column="0" Icon="Minus" />
+									<controls:IconControl Grid.Column="0" Icon="fa-minus"/>
 									<TextBlock Grid.Column="1" Text="{DynamicResource LOC_Pose_Mirror_None}" />
 								</Grid>
 							</ComboBoxItem>
@@ -332,7 +323,7 @@
 										<ColumnDefinition />
 									</Grid.ColumnDefinitions>
 
-									<wpfUtils:IconBlock Grid.Column="0" Icon="LeftLong" />
+									<controls:IconControl Grid.Column="0" Icon="fa-left-long"/>
 									<TextBlock Grid.Column="1" Text="{DynamicResource LOC_Pose_Mirror_Copy}" />
 								</Grid>
 							</ComboBoxItem>
@@ -344,7 +335,7 @@
 										<ColumnDefinition />
 									</Grid.ColumnDefinitions>
 
-									<wpfUtils:IconBlock Grid.Column="0" Icon="LeftRight" />
+									<controls:IconControl Grid.Column="0" Icon="fa-left-right"/>
 									<TextBlock Grid.Column="1" Text="{DynamicResource LOC_Pose_Mirror_Flip}" />
 								</Grid>
 							</ComboBoxItem>
@@ -355,7 +346,7 @@
 							Width="28"
 							Background="Transparent"
 							Click="OnResetSelectionClicked">
-							<wpfUtils:IconBlock Icon="RotateBack" IconFont="Solid" />
+							<controls:IconControl Icon="fa-rotate-back"/>
 						</Button>
 
 						<ToggleButton
@@ -366,7 +357,7 @@
 							IsEnabled="{Binding Selection.CanLockTransform, FallbackValue=false}"
 							Style="{DynamicResource WpfUtilsIconToggleButton}"
 							ToolTip="{DynamicResource LOC_Pose_LockTransform}">
-							<wpfUtils:IconBlock Icon="CirclePause" IconFont="Solid" />
+							<controls:IconControl Grid.Column="0" Icon="fa-circle-pause"/>
 						</ToggleButton>
 					</Grid>
 				</Border>
@@ -429,7 +420,7 @@
 						Background="Transparent"
 						Click="OnRevertClicked"
 						ToolTip="{DynamicResource LOC_Revert}">
-						<wpfUtils:IconBlock Icon="Undo" />
+						<controls:IconControl Icon="fa-undo"/>
 					</Button>
 
 					<Button
@@ -437,7 +428,7 @@
 						Background="Transparent"
 						Click="OnClearClicked"
 						ToolTip="{DynamicResource LOC_Pose_SelectCharacter}">
-						<wpfUtils:IconBlock Icon="User" IconFont="Solid" />
+						<controls:IconControl Icon="fa-user"/>
 					</Button>
 
 					<Button
@@ -445,7 +436,7 @@
 						Background="Transparent"
 						Click="OnReferenceClicked"
 						ToolTip="{DynamicResource LOC_Pose_Reference}">
-						<wpfUtils:IconBlock Icon="Person" IconFont="Solid" />
+						<controls:IconControl Icon="fa-person"/>
 					</Button>
 
 					<Button

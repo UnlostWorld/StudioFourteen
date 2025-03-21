@@ -124,9 +124,12 @@ public partial class PoseWindow : CharacterPanelBase
 
 		if (newSelection != null && this.Services.Selection.HoverSource is PoseSelectionControl target)
 		{
-			this.nextHover = newSelection;
-			this.HoverTarget = target;
-			this.showTooltipQueue.Invoke();
+			if (target.FindParent<PoseWindow>() == this)
+			{
+				this.nextHover = newSelection;
+				this.HoverTarget = target;
+				this.showTooltipQueue.Invoke();
+			}
 		}
 	}
 

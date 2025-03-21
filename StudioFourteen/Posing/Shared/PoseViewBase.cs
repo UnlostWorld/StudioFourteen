@@ -28,6 +28,8 @@ using System.Windows.Input;
 using System.Windows.Media;
 using StudioFourteen.Selection;
 using DependencyPropertyGenerator;
+using TerraFX.Interop.Windows;
+using StudioFourteen.Plugin;
 
 [DependencyProperty<bool>("Hide", DefaultValue = false)]
 [DependencyProperty<bool>("UpdateWithAppearance", DefaultValue = false)]
@@ -214,19 +216,17 @@ public partial class PoseViewBase : View
 
 			this.controls = this.FindLogicalChildren<PoseSelectionControl>();
 
-			await Threads.FrameworkThread();
+			// Try character
+			bool isValid = await this.PopulateControl(this.ObjectTableIndex);
 
-			/*
-			// Check our object table index
-			bool result = await this.LoadFromTable(objectTableIndex, definition);
-
-			// check for ornaments
-			if (!result)
+			// Try ornaments
+			if (!isValid)
 			{
+				await Threads.FrameworkThread();
 				int ornamentTableIndex = -1;
 				unsafe
 				{
-					Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
+					Character* character = this.Services.Target.GetCharacter(this.ObjectTableIndex);
 					Ornament* ornament = character->OrnamentData.OrnamentObject;
 
 					if (ornament != null)
@@ -235,36 +235,17 @@ public partial class PoseViewBase : View
 					}
 				}
 
-				result = await this.LoadFromTable(ornamentTableIndex, definition);
+				isValid = await this.PopulateControl(ornamentTableIndex);
 			}
 
-			// TODO: check for mounts?
-			}*/
-
-			unsafe
+			// TODO: Mounts
+			if (!isValid)
 			{
-				Character* pCharacter = this.Services.Target.GetCharacter(this.ObjectTableIndex);
-				if (pCharacter == null)
-					return;
-
-				foreach (PoseSelectionControl control in this.controls)
-				{
-					this.PopulateControl(control, pCharacter);
-				}
 			}
 
 			await this.MainThread();
 
-			int validCount = 0;
-			foreach (PoseSelectionControl control in this.controls)
-			{
-				if (control.IsSafeValid)
-					validCount++;
-
-				control.IsValid = control.IsSafeValid;
-			}
-
-			if (validCount <= 0)
+			if (!isValid)
 			{
 				this.Visibility = Visibility.Hidden;
 				this.IsValid = false;
@@ -287,6 +268,39 @@ public partial class PoseViewBase : View
 		{
 			this.isUpdatingTargets = false;
 		}
+	}
+
+	protected async Task<bool> PopulateControl(int objectTableIndex)
+	{
+		if (this.controls == null || DalamudServices.ObjectTable == null)
+			return false;
+
+		await Threads.FrameworkThread();
+
+		unsafe
+		{
+			Character* pCharacter = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
+			if (pCharacter == null)
+				return false;
+
+			foreach (PoseSelectionControl control in this.controls)
+			{
+				this.PopulateControl(control, pCharacter);
+			}
+		}
+
+		await this.MainThread();
+
+		int validCount = 0;
+		foreach (PoseSelectionControl control in this.controls)
+		{
+			if (control.IsSafeValid)
+				validCount++;
+
+			control.IsValid = control.IsSafeValid;
+		}
+
+		return validCount > 0;
 	}
 
 	protected virtual void OnSelectionChanged(SelectionBase? oldSelection, SelectionBase? newSelection)
