@@ -49,6 +49,8 @@ public class PoseFile : FileBase
 	{
 		base.GetAutoTags(tags);
 
+		tags.Add("Pose");
+
 		if (this.ReferenceRelativeBones == null)
 		{
 			tags.Add("LegacyPose");

@@ -141,6 +141,8 @@ public class AppearanceFile : FileBase, ICharacterAppearance
 	{
 		base.GetAutoTags(tags);
 
+		tags.Add("Appearance").WithAlias("Character");
+
 		Race? race = this.Race != null ? ServiceManager.Instance.GameData.GetRow<Race>((byte)this.Race) : null;
 		Tribe? tribe = this.Tribe != null ? ServiceManager.Instance.GameData.GetRow<Tribe>((byte)this.Tribe) : null;
 

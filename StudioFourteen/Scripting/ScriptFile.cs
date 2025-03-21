@@ -19,6 +19,7 @@ using FontAwesome.Sharp;
 using Serilog.Events;
 using StudioFourteen.Files;
 using StudioFourteen.Library.LibraryMenu;
+using StudioFourteen.Tags;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -37,6 +38,11 @@ public class ScriptFile(FileInfo fileInfo, string hash)
 	public bool HasErrors { get; set; } = false;
 	public List<DiagnosticEntry> Diagnostics { get; init; } = new();
 	public List<ScriptOption> Options { get; set; } = new();
+
+	public override void GetAutoTags(TagCollection tags)
+	{
+		tags.Add("Script");
+	}
 
 	[LibraryMenu(IconChar.Robot, "Run")]
 	public Task Run()
