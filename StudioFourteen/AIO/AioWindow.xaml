@@ -20,6 +20,7 @@
 	TitleMargin="45,0,0,0"
 	Topmost="False"
 	mc:Ignorable="d"
+	RememberState="False"
 	x:Name="AioWindowMain">
 
 	<Grid Margin="1">
