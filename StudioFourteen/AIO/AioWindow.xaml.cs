@@ -34,6 +34,9 @@ public partial class AioWindow : PanelWindow
 
 	public static void OpenAio()
 	{
+		if (instance != null)
+			return;
+
 		Task.Run(async () =>
 		{
 			AioWindow? aio = await PanelWindow.CreatePanelWindow<AioWindow>(ServiceManager.Instance.Panels.AioPanels);
@@ -71,7 +74,11 @@ public partial class AioWindow : PanelWindow
 		await this.MainThread();
 		this.CurrentPanel = this.PanelArea.SetPanel(panelType);
 
-		this.CurrentTitle = StudioFourteen.Resources.Find("LOC_AIO_Title", "Studio Fourteen") + " - " + this.CurrentPanel?.Title;
+		string currentTitle = StudioFourteen.Resources.Find("LOC_AIO_Title", "Studio Fourteen");
+		if (this.CurrentPanel != null)
+			currentTitle += " - " + this.CurrentPanel.Title;
+
+		this.CurrentTitle = currentTitle;
 
 		return this.CurrentPanel;
 	}
@@ -82,6 +89,12 @@ public partial class AioWindow : PanelWindow
 	{
 		this.CurrentTitle = StudioFourteen.Resources.Find("LOC_AIO_Title", "Studio Fourteen");
 		base.OnOpened();
+	}
+
+	protected override void OnClosed()
+	{
+		base.OnClosed();
+		instance = null;
 	}
 
 	private void OnLaunchClicked(object sender, RoutedEventArgs e)
