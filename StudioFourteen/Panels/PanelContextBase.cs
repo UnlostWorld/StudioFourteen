@@ -22,14 +22,14 @@ using Serilog;
 using StudioFourteen.Settings;
 using WpfUtils.Extensions;
 
-public abstract class PanelsContextStateBase
+public abstract class PanelContextBase
 {
 	protected readonly ILogger Log;
 
 	protected readonly List<Panel> openPanels = new List<Panel>();
 	protected readonly Dictionary<Type, Panel> openPanelsTypeLookup = new();
 
-	public PanelsContextStateBase()
+	public PanelContextBase()
 	{
 		this.Log = Logging.ForContext(this.GetType());
 	}
@@ -45,7 +45,7 @@ public abstract class PanelsContextStateBase
 	protected ServiceManager Services => ServiceManager.Instance;
 	protected SettingsService.Configuration Settings => this.Services.Settings.Current;
 
-	public void OnPanelOpened(Panel panel)
+	public virtual void OnPanelOpened(Panel panel)
 	{
 		lock (this)
 		{
@@ -58,7 +58,7 @@ public abstract class PanelsContextStateBase
 		this.PanelOpened?.Invoke(panel);
 	}
 
-	public void OnPanelClosed(Panel panel, bool isMinimized)
+	public virtual void OnPanelClosed(Panel panel, bool isMinimized)
 	{
 		lock (this)
 		{

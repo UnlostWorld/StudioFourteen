@@ -29,12 +29,12 @@ public partial class SettingsPanel : Panel
 {
 	public SettingsService.Configuration Settings => this.Services.Settings.Current;
 
-	public static void Show(PanelsContextStateBase context, string? elementName = null)
+	public static void Show(PanelContextBase context, string? elementName = null)
 	{
 		ShowAsync(context, elementName).Run();
 	}
 
-	public static async Task ShowAsync(PanelsContextStateBase context, string? elementName = null)
+	public static async Task ShowAsync(PanelContextBase context, string? elementName = null)
 	{
 		SettingsPanel? panel = await context.SetIsOpenAsync<SettingsPanel>(true, true);
 		if (panel == null)

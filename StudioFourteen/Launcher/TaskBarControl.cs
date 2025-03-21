@@ -34,12 +34,11 @@ using Panel = StudioFourteen.Panels.Panel;
 [DependencyProperty<bool>("IsOpen")]
 [DependencyProperty<bool>("IsInGPose")]
 [DependencyProperty<bool>("IsGPoseSettingsOpen")]
-[DependencyProperty<PanelsContextStateBase>("Context")]
+[DependencyProperty<PanelContextBase>("Context")]
 [DependencyProperty<bool>("HideBackground")]
 public partial class TaskBarControl : Control
 {
 	private readonly Dictionary<Type, TaskBarEntry> panelEntries = new();
-	private bool hasRestoredSaves = false;
 
 	public TaskBarControl()
 	{
@@ -58,7 +57,7 @@ public partial class TaskBarControl : Control
 	protected ServiceManager Services => ServiceManager.Instance;
 	protected SettingsService.Configuration Settings => this.Services.Settings.Current;
 
-	partial void OnContextChanged(PanelsContextStateBase? oldValue, PanelsContextStateBase? newValue)
+	partial void OnContextChanged(PanelContextBase? oldValue, PanelContextBase? newValue)
 	{
 		if (oldValue != null)
 		{
@@ -89,43 +88,7 @@ public partial class TaskBarControl : Control
 
 	private void OnStudioOpening()
 	{
-		this.OnStudioOpeningAsync().Run();
-	}
-
-	private async Task OnStudioOpeningAsync()
-	{
-		await this.MainThread();
-
-		if (this.Context == null)
-			throw new Exception("No context in task bar");
-
-		PanelsContextStateBase context = this.Context;
-
-		if (!this.hasRestoredSaves)
-		{
-			foreach ((string typeName, TaskBarEntrySave save) in this.Settings.MinimizedTaskBarEntries)
-			{
-				if (save.Icon == null || save.Title == null)
-					continue;
-
-				Type? panelType = Type.GetType(typeName);
-				if (panelType == null)
-					continue;
-
-				if (this.panelEntries.ContainsKey(panelType))
-					continue;
-
-				TaskBarEntry? entry = new(context, save.Icon, save.Title, panelType);
-				entry.IsMinimized = true;
-				this.panelEntries.Add(panelType, entry);
-
-				this.Entries.Add(entry);
-			}
-
-			this.hasRestoredSaves = true;
-		}
-
-		this.IsOpen = true;
+		this.Dispatcher.Invoke(() => this.IsOpen = true);
 	}
 
 	private void OnStudioClosing()
@@ -162,7 +125,7 @@ public partial class TaskBarControl : Control
 	{
 		await this.MainThread();
 
-		PanelsContextStateBase? context = this.Context;
+		PanelContextBase? context = this.Context;
 		if (panel.GetContext() != context)
 			return;
 
@@ -210,12 +173,6 @@ public partial class TaskBarControl : Control
 			return;
 
 		entry.IsMinimized = true;
-
-		string? typeName = entry.Type?.FullName;
-		if (panel.RememberWindowState && typeName != null)
-		{
-			this.Settings.MinimizedTaskBarEntries.Add(typeName, entry.Save);
-		}
 	}
 
 	private void OnPanelDeactivated(Panel panel)
@@ -259,7 +216,7 @@ public partial class TaskBarEntry : ViewModel
 	[Notify] private bool isActive = true;
 	[Notify] private bool isVisible = true;
 
-	public TaskBarEntry(PanelsContextStateBase context, string icon, string title, Type panelType)
+	public TaskBarEntry(PanelContextBase context, string icon, string title, Type panelType)
 	{
 		this.Icon = icon;
 		this.Title = title;
@@ -280,7 +237,7 @@ public partial class TaskBarEntry : ViewModel
 	}
 
 	public Type? Type { get; set; }
-	public PanelsContextStateBase Context { get; init; }
+	public PanelContextBase Context { get; init; }
 }
 
 [DependencyProperty<bool>("IsMinimized")]
@@ -288,7 +245,7 @@ public partial class TaskBarEntry : ViewModel
 [DependencyProperty<bool>("IsTaskVisible")]
 [DependencyProperty<Type>("PanelType")]
 [DependencyProperty<bool>("IsActive")]
-[DependencyProperty<PanelsContextStateBase>("Context")]
+[DependencyProperty<PanelContextBase>("Context")]
 public partial class TaskBarButtonControl : Control
 {
 	protected ServiceManager Services => ServiceManager.Instance;

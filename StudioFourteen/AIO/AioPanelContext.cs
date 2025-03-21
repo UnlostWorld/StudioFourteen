@@ -19,27 +19,42 @@ using System;
 using System.Threading.Tasks;
 using StudioFourteen.Panels;
 
-public class AllInOnePanelsContextState : PanelsContextStateBase
+public class AioPanelContext : PanelContextBase
 {
 	public AioWindow? Window { get; set; }
+	public Panel? CurrentPanel { get; private set; }
 
-	public override Task<Panel?> CreatePanelAsync(Type panelType, bool activate)
+	public override async Task<Panel?> CreatePanelAsync(Type panelType, bool activate)
 	{
-		throw new NotImplementedException();
+		if (this.Window == null)
+			throw new Exception("No AioWindow in context");
+
+		this.CurrentPanel = await this.Window.CreatePanel(panelType);
+		return this.CurrentPanel;
 	}
 
 	public override Task RestorePanels()
 	{
-		throw new NotImplementedException();
+		AioWindow.OpenAio();
+		return Task.CompletedTask;
 	}
 
 	public override Task StopPanels()
 	{
-		throw new NotImplementedException();
+		AioWindow.CloseAio();
+		return Task.CompletedTask;
 	}
 
-	public override Task TogglePanel(Type panelType)
+	public override async Task TogglePanel(Type panelType)
 	{
-		throw new NotImplementedException();
+		if (this.CurrentPanel?.GetType() == panelType)
+			return;
+
+		await this.CreatePanelAsync(panelType, true);
+	}
+
+	public override void OnPanelClosed(Panel panel, bool isMinimized)
+	{
+		base.OnPanelClosed(panel, true);
 	}
 }

@@ -22,21 +22,24 @@ using WpfUtils.Windows;
 using DependencyPropertyGenerator;
 using System;
 using WpfUtils;
+using PropertyChanged.SourceGenerator;
 
 [DependencyProperty<bool>("IsMenuOpen")]
 public partial class AioWindow : PanelWindow
 {
 	private static AioWindow? instance;
 
+	[Notify] private Panel? currentPanel;
+	[Notify] private string? currentTitle;
+
 	public static void OpenAio()
 	{
 		Task.Run(async () =>
 		{
-			AllInOnePanelsContextState contextState = new();
-			AioWindow? aio = await PanelWindow.CreatePanelWindow<AioWindow>(contextState);
+			AioWindow? aio = await PanelWindow.CreatePanelWindow<AioWindow>(ServiceManager.Instance.Panels.AioPanels);
 			if (aio != null)
 			{
-				contextState.Window = aio;
+				ServiceManager.Instance.Panels.AioPanels.Window = aio;
 				instance = aio;
 
 				aio.Dispatcher.Invoke(() =>
@@ -63,17 +66,22 @@ public partial class AioWindow : PanelWindow
 		return true;
 	}
 
+	public async Task<Panel?> CreatePanel(Type panelType)
+	{
+		await this.MainThread();
+		this.CurrentPanel = this.PanelArea.SetPanel(panelType);
+
+		this.CurrentTitle = StudioFourteen.Resources.Find("LOC_AIO_Title", "Studio Fourteen") + " - " + this.CurrentPanel?.Title;
+
+		return this.CurrentPanel;
+	}
+
 	protected override bool GetIsUiVisible() => true;
 
 	protected override void OnOpened()
 	{
+		this.CurrentTitle = StudioFourteen.Resources.Find("LOC_AIO_Title", "Studio Fourteen");
 		base.OnOpened();
-	}
-
-	private async Task<Panel?> CreatePanel(Type panelType)
-	{
-		await this.MainThread();
-		return this.PanelArea.SetPanel(panelType);
 	}
 
 	private void OnLaunchClicked(object sender, RoutedEventArgs e)

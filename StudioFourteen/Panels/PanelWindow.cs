@@ -57,7 +57,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 	[Notify] private bool isUiVisible = true;
 	[Notify] private bool isUiVisibleAndOpen = true;
-	[Notify] private PanelsContextStateBase? context;
+	[Notify] private PanelContextBase? context;
 
 	public PanelWindow()
 	{
@@ -190,7 +190,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		}
 	}
 
-	public static async Task<T?> CreatePanelWindow<T>(PanelsContextStateBase context)
+	public static async Task<T?> CreatePanelWindow<T>(PanelContextBase context)
 		where T : PanelWindow
 	{
 		if (ServiceManager.Instance.CurrentState > ServiceManagerBase.States.Started)
@@ -210,7 +210,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		return panelWindow;
 	}
 
-	public PanelsContextStateBase GetContext()
+	public PanelContextBase GetContext()
 	{
 		if (this.Context == null)
 			throw new Exception("No Context in panel window");

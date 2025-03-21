@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Services;
 
+using StudioFourteen.AIO;
 using StudioFourteen.Launcher;
 using StudioFourteen.Panels;
 using StudioFourteen.Studio;
@@ -30,16 +31,18 @@ using PanelWindow = StudioFourteen.Panels.PanelWindow;
 
 public class PanelService : ServiceBase
 {
-	public readonly GamePanelsContextState GamePanels;
+	public readonly GamePanelContext GamePanels;
+	public readonly AioPanelContext AioPanels;
 
-	private readonly List<PanelsContextStateBase> contexts = new();
+	private readonly List<PanelContextBase> contexts = new();
 	private bool hasRestoredPanels = false;
 	private BackgroundWindow? backgroundWindow;
 	private LauncherWindow? launcher;
 
 	public PanelService()
 	{
-		this.GamePanels = this.CreateContext<GamePanelsContextState>();
+		this.GamePanels = this.CreateContext<GamePanelContext>();
+		this.AioPanels = this.CreateContext<AioPanelContext>();
 	}
 
 	public delegate void PanelServiceDelegate(PanelService self);
@@ -61,7 +64,7 @@ public class PanelService : ServiceBase
 	}
 
 	public T CreateContext<T>()
-		where T : PanelsContextStateBase, new()
+		where T : PanelContextBase, new()
 	{
 		T context = new T();
 		this.contexts.Add(context);
@@ -108,7 +111,7 @@ public class PanelService : ServiceBase
 		this.backgroundWindow?.Dispatcher.Invoke(this.backgroundWindow.Close);
 		this.launcher?.Dispatcher.Invoke(this.launcher.Close);
 
-		foreach (PanelsContextStateBase context in this.contexts)
+		foreach (PanelContextBase context in this.contexts)
 		{
 			await context.StopPanels();
 		}
@@ -129,7 +132,7 @@ public class PanelService : ServiceBase
 		// plus a short delay
 		await Task.Delay(100);
 
-		foreach (PanelsContextStateBase context in this.contexts)
+		foreach (PanelContextBase context in this.contexts)
 		{
 			await context.RestorePanels();
 		}

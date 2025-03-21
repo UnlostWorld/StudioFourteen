@@ -35,6 +35,8 @@ using System.Windows;
 using System.Windows.Interop;
 using Windows.Win32;
 using Windows.Win32.Foundation;
+using Windows.Win32.System.Com.StructuredStorage;
+using Windows.Win32.UI.Shell.PropertiesSystem;
 using Windows.Win32.UI.WindowsAndMessaging;
 
 using DrawingPoint = System.Drawing.Point;
@@ -43,6 +45,7 @@ using Setter = PropertyChanged.SourceGenerator.Setter;
 
 public partial class WindowService : ServiceBase
 {
+	private readonly Guid propertyGuid = Guid.NewGuid();
 	private readonly HashSet<PanelWindow> mouseOverPanelWindows = new();
 	private readonly InputActionListener clickActionListener;
 	private readonly HashSet<IntPtr> studioWindowHwnds = new();
@@ -218,6 +221,8 @@ public partial class WindowService : ServiceBase
 
 		WindowInteropHelper wndInterop = new(wnd);
 
+		wnd.ShowInTaskbar = false;
+
 		PInvoke.SetWindowLong(
 			(HWND)wndInterop.Handle,
 			WINDOW_LONG_PTR_INDEX.GWL_STYLE,
@@ -242,6 +247,8 @@ public partial class WindowService : ServiceBase
 			return;
 
 		WindowInteropHelper wndInterop = new(wnd);
+
+		wnd.ShowInTaskbar = true;
 
 		PInvoke.SetParent((HWND)wndInterop.Handle, (HWND)0u);
 

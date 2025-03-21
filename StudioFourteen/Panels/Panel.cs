@@ -79,7 +79,7 @@ public partial class Panel : ContentControl, IAutoNotify
 	public interface IHost
 	{
 		Task CloseAsync(bool minimize);
-		PanelsContextStateBase GetContext();
+		PanelContextBase GetContext();
 	}
 
 	public ServiceManager Services => ServiceManager.Instance;
@@ -115,7 +115,7 @@ public partial class Panel : ContentControl, IAutoNotify
 		this.host = host;
 	}
 
-	public PanelsContextStateBase GetContext()
+	public PanelContextBase GetContext()
 	{
 		if (this.host == null)
 			throw new InvalidOperationException();

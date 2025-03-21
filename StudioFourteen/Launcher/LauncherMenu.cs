@@ -28,7 +28,7 @@ using WpfUtils.Extensions;
 using Panel = StudioFourteen.Panels.Panel;
 
 [DependencyProperty<bool>("IsOpen")]
-[DependencyProperty<PanelsContextStateBase>("Context")]
+[DependencyProperty<PanelContextBase>("Context")]
 public partial class LauncherMenu : Control
 {
 	private Button? userButton;
@@ -57,7 +57,7 @@ public partial class LauncherMenu : Control
 		}
 	}
 
-	public PanelsContextStateBase GetContext()
+	public PanelContextBase GetContext()
 	{
 		if (this.Context == null)
 			throw new Exception("No Context in launcher menu");
@@ -65,7 +65,23 @@ public partial class LauncherMenu : Control
 		return this.Context;
 	}
 
+	partial void OnContextChanged()
+	{
+		if (this.Context == null)
+			return;
+
+		this.Populate();
+	}
+
 	private void OnLoaded(object sender, RoutedEventArgs e)
+	{
+		if (this.Context == null)
+			return;
+
+		this.Populate();
+	}
+
+	private void Populate()
 	{
 		this.Entries.Clear();
 
@@ -86,8 +102,8 @@ public partial class LauncherMenu : Control
 
 		this.AddPanel<Photos.PhotoWindow>("fa-Image", "Photo");
 
-		////if (!this.IsAIO)
-		this.AddEntry<AioLauncherEntry>("fa-ObjectGroup", "AIO");
+		if (this.Context is not AioPanelContext)
+			this.AddEntry<AioLauncherEntry>("fa-ObjectGroup", "AIO");
 
 		this.AddPanel<History.HistoryPanel>("fa-History", "History");
 		this.AddPanel<Save.SaveWindow>("fa-Save", "Save");
@@ -139,7 +155,7 @@ public abstract class LauncherEntry(LauncherMenu menu)
 		set => this.Open();
 	}
 
-	public PanelsContextStateBase GetContext() => this.owner.GetContext();
+	public PanelContextBase GetContext() => this.owner.GetContext();
 
 	protected abstract bool GetIsOpen();
 	protected abstract void SetOpen();

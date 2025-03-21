@@ -486,7 +486,6 @@
 		<Setter Property="MinHeight" Value="128" />
 		<Setter Property="MinWidth" Value="128" />
 		<Setter Property="ResizeMode" Value="CanResizeWithGrip" />
-		<Setter Property="ShowInTaskbar" Value="False" />
 		<Setter Property="Template" Value="{StaticResource PanelWindowTemplate}" />
 		<Setter Property="UseLayoutRounding" Value="True" />
 		<Setter Property="WindowStyle" Value="None" />

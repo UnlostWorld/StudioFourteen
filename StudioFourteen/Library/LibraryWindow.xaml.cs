@@ -178,12 +178,12 @@ public partial class LibraryWindow : Panel
 		}
 	}
 
-	public static void Open(PanelsContextStateBase context, LibraryTab? tab = null)
+	public static void Open(PanelContextBase context, LibraryTab? tab = null)
 	{
 		OpenAsync(context, tab).Run();
 	}
 
-	public static async Task OpenAsync(PanelsContextStateBase context, LibraryTab? tab = null)
+	public static async Task OpenAsync(PanelContextBase context, LibraryTab? tab = null)
 	{
 		LibraryWindow? panel = context.GetOpenPanel<LibraryWindow>();
 		if (panel == null)

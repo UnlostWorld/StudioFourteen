@@ -21,7 +21,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using WpfUtils;
 
-public class GamePanelsContextState : PanelsContextStateBase
+public class GamePanelContext : PanelContextBase
 {
 	public override async Task<Panel?> CreatePanelAsync(Type panelType, bool activate)
 	{
@@ -95,8 +95,6 @@ public class GamePanelsContextState : PanelsContextStateBase
 	public override async Task TogglePanel(Type panelType)
 	{
 		Panel? panel = this.GetOpenPanel(panelType);
-
-		this.Log.Information($"?? {panel}");
 
 		if (panel == null)
 		{
