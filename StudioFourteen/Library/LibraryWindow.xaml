@@ -128,6 +128,7 @@
 						<ItemsControl.ItemsPanel>
 							<ItemsPanelTemplate>
 								<StackPanel
+									Margin="2,0"
 									HorizontalAlignment="Left"
 									VerticalAlignment="Center"
 									Orientation="Horizontal" />
@@ -137,23 +138,22 @@
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
 								<Grid>
-
-
 									<StackPanel Orientation="Horizontal">
 										<Button
-											Margin="0"
-											Padding="10,0"
+											Margin="-2,0"
+											Padding="4,0"
 											Background="Transparent"
 											Click="OnDirectorySelected">
 
 											<Grid>
 												<wpfUtils:IconBlock
 													x:Name="Icon"
-													Margin="2"
+													Margin="8,2"
 													Icon="{Binding Icon}" />
 
 												<TextBlock
 													x:Name="Name"
+													Margin="2"
 													Text="{Binding Name}"
 													Visibility="Collapsed" />
 
@@ -169,7 +169,7 @@
 											Visibility="{Binding HasSubGroups, Converter={StaticResource B2V}}">
 											<Path
 												Grid.Column="1"
-												Margin="3"
+												Margin="0,2"
 												HorizontalAlignment="Center"
 												VerticalAlignment="Center"
 												Data="M 0,0 5,3 0,6"
@@ -329,63 +329,13 @@
 						</Style>
 					</Button.Style>
 				</Button>
-
-				<ComboBox
-					Grid.Row="1"
-					Grid.Column="1"
-					MinWidth="50"
-					ItemsSource="{Binding Tabs}"
-					SelectedItem="{Binding CurrentTab}"
-					Visibility="{Binding NarrowMode, Converter={StaticResource B2V}}">
-
-					<wpfUtils:PopOut.Header>
-						<TextBlock Margin="10" Text="Select a file type to filter by:" />
-					</wpfUtils:PopOut.Header>
-
-					<ComboBox.ItemTemplate>
-						<DataTemplate DataType="{x:Type local:LibraryTab}">
-							<Grid
-								x:Name="MainGrid"
-								Background="Transparent"
-								ToolTip="{Binding Name}">
-
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="22" />
-									<ColumnDefinition />
-								</Grid.ColumnDefinitions>
-
-								<wpfUtils:IconBlock
-									Grid.Column="0"
-									HorizontalAlignment="Center"
-									Icon="{Binding Icon}"
-									IconFont="Solid" />
-
-								<TextBlock
-									x:Name="LabelTextBlock"
-									Grid.Column="1"
-									Margin="6,-1,0,0"
-									Text="{Binding Name}" />
-							</Grid>
-
-							<DataTemplate.Triggers>
-								<DataTrigger Binding="{Binding ElementName=MainGrid, Path=ActualWidth, Converter={StaticResource LessThanToBool}, ConverterParameter=75}" Value="True">
-									<Setter TargetName="LabelTextBlock" Property="Visibility" Value="Collapsed" />
-								</DataTrigger>
-							</DataTemplate.Triggers>
-
-						</DataTemplate>
-					</ComboBox.ItemTemplate>
-
-				</ComboBox>
-
 			</Grid>
 
 			<!--  Filter Bar  -->
 			<Grid Grid.Row="1">
 				<Grid.ColumnDefinitions>
-					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition />
-					<ColumnDefinition Width="0.5*" MinWidth="50" />
+					<ColumnDefinition Width="0.5*" MinWidth="75" />
 				</Grid.ColumnDefinitions>
 
 				<Grid.RowDefinitions>
@@ -394,44 +344,13 @@
 					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
 
-				<Grid.Resources />
-
-				<wpfUtils:SwitchSelector
-					Grid.Column="0"
-					HorizontalContentAlignment="Stretch"
-					ItemsSource="{Binding Tabs}"
-					SelectedItem="{Binding CurrentTab}"
-					Visibility="{Binding NarrowMode, Converter={StaticResource !B2V}}">
-					<ListBox.ItemContainerStyle>
-						<Style BasedOn="{StaticResource WpfUtilsSwitchSelectorItemStyle}" TargetType="{x:Type ListBoxItem}">
-							<Setter Property="HorizontalContentAlignment" Value="stretch" />
-						</Style>
-					</ListBox.ItemContainerStyle>
-
-					<ListBox.ItemTemplate>
-						<DataTemplate DataType="{x:Type local:LibraryTab}">
-							<Grid
-								Width="25"
-								Background="Transparent"
-								ToolTip="{Binding Name}">
-								<wpfUtils:IconBlock
-									HorizontalAlignment="Center"
-									Icon="{Binding Icon}"
-									IconFont="Solid" />
-							</Grid>
-						</DataTemplate>
-					</ListBox.ItemTemplate>
-				</wpfUtils:SwitchSelector>
-
-				<tags:TagSelector SelectedTags="{Binding TagFilter.Tags}" Tags="{Binding AvailableTags}">
+				<tags:TagSelector Grid.Column="0" SelectedTags="{Binding TagFilter.Tags}" Tags="{Binding AvailableTags}">
 					<tags:TagSelector.Style>
 						<Style BasedOn="{StaticResource TagSelectorStyle}" TargetType="{x:Type tags:TagSelector}">
-							<Setter Property="Grid.Column" Value="1" />
 
 							<Style.Triggers>
 								<DataTrigger Binding="{Binding NarrowMode}" Value="True">
-									<Setter Property="Grid.Column" Value="0" />
-									<Setter Property="Grid.ColumnSpan" Value="3" />
+									<Setter Property="Grid.ColumnSpan" Value="2" />
 									<Setter Property="Grid.Row" Value="1" />
 								</DataTrigger>
 							</Style.Triggers>

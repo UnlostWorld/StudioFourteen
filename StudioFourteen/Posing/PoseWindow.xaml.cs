@@ -185,7 +185,7 @@ public partial class PoseWindow : CharacterPanelBase
 
 	private void OnImportClicked(object sender, RoutedEventArgs e)
 	{
-		LibraryWindow.Open(this.GetContext(), LibraryWindow.PosesTab);
+		LibraryWindow.Open(this.GetContext());
 	}
 
 	private async void OnExportClicked(object sender, RoutedEventArgs e)

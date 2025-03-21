@@ -14,11 +14,7 @@
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
 namespace StudioFourteen.Library;
-
-using FontAwesome.Sharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using PropertyChanged.SourceGenerator;
-using StudioFourteen;
 using StudioFourteen.Files;
 using StudioFourteen.Input;
 using StudioFourteen.Library.Filters;
@@ -29,9 +25,7 @@ using StudioFourteen.Panels;
 using StudioFourteen.Tags;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing.Design;
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
@@ -41,16 +35,11 @@ using System.Windows.Input;
 using WpfUtils;
 using WpfUtils.Extensions;
 using WpfUtils.Utils;
+
 using Panel = StudioFourteen.Panels.Panel;
 
 public partial class LibraryWindow : Panel
 {
-	public static LibraryTab AllTab = new("All", IconChar.List);
-	public static LibraryTab FavoritesTab = new("Favorites", IconChar.Heart, new LibraryFavoritesFilter());
-	public static LibraryTab AppearancesTab = new("Appearances", IconChar.UserShield);
-	public static LibraryTab PosesTab = new("Poses", IconChar.PersonRunning);
-	public static LibraryTab ScenesTab = new("Scenes", IconChar.Users);
-
 	private readonly FuncQueue searchQueue;
 	private readonly FuncQueue stopPreviewQueue;
 	private readonly Stopwatch searchStopwatch = new();
@@ -91,15 +80,6 @@ public partial class LibraryWindow : Panel
 		Back_In,
 		Back_Out,
 	}
-
-	public List<LibraryTab> Tabs { get; init; } = new()
-	{
-		AllTab,
-		FavoritesTab,
-		AppearancesTab,
-		PosesTab,
-		ScenesTab,
-	};
 
 	public FastObservableCollection<Result> Results { get; init; } = new();
 	public FastObservableCollection<GroupEntryBase> Path { get; init; } = new();
@@ -150,51 +130,17 @@ public partial class LibraryWindow : Panel
 		}
 	}
 
-	public LibraryTab CurrentTab
+	public static void Open(PanelContextBase context)
 	{
-		get
-		{
-			int index = this.GetPersistence<int>();
-
-			if (index < 0 | index >= this.Tabs.Count)
-				index = 0;
-
-			return this.Tabs[index];
-		}
-		set
-		{
-			int oldIndex = this.GetPersistence<int>();
-			int index = this.Tabs.IndexOf(value);
-			this.SetPersistence(index);
-			this.NotifyPropertyChanged();
-
-			// clear the path
-			this.Path.Clear();
-			this.Path.Add(this.Services.Library.Root);
-			this.SavePath();
-
-			this.navigation = Navigations.OpenDir;
-			this.searchQueue.InvokeImmediate();
-		}
+		OpenAsync(context).Run();
 	}
 
-	public static void Open(PanelContextBase context, LibraryTab? tab = null)
-	{
-		OpenAsync(context, tab).Run();
-	}
-
-	public static async Task OpenAsync(PanelContextBase context, LibraryTab? tab = null)
+	public static async Task OpenAsync(PanelContextBase context)
 	{
 		LibraryWindow? panel = context.GetOpenPanel<LibraryWindow>();
 		if (panel == null)
-			panel = await context.CreatePanelAsync<LibraryWindow>();
-
-		if (panel == null)
-			return;
-
-		if (tab != null)
 		{
-			await panel.Dispatcher.InvokeAsync(() => panel.CurrentTab = tab);
+			panel = await context.CreatePanelAsync<LibraryWindow>();
 		}
 	}
 
@@ -250,9 +196,6 @@ public partial class LibraryWindow : Panel
 		await Dispatch.NonUiThread();
 
 		List<FilterBase> filters = new List<FilterBase>();
-
-		filters.AddRange(this.CurrentTab.Filters);
-
 		filters.Add(this.TagFilter);
 		filters.Add(this.SearchQueryFilter);
 
@@ -620,12 +563,4 @@ public partial class LibraryWindow : Panel
 
 		this.Path.Replace(groups);
 	}
-}
-
-public class LibraryTab(string name, IconChar icon, params FilterBase[] filters)
-	: ViewModel
-{
-	public string Name { get; init; } = Resources.Find($"LOC_Library_{name}", name);
-	public IconChar Icon { get; init; } = icon;
-	public FilterBase[] Filters { get; init; } = filters;
 }
