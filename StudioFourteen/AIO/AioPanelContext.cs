@@ -35,12 +35,15 @@ public class AioPanelContext : PanelContextBase
 
 	public override Task RestorePanels()
 	{
-		AioWindow.OpenAio();
+		if (this.Settings.IsAioWindowOpen)
+			AioWindow.OpenAio();
+
 		return Task.CompletedTask;
 	}
 
 	public override Task StopPanels()
 	{
+		this.Settings.IsAioWindowOpen = AioWindow.GetIsOpen();
 		AioWindow.CloseAio();
 		return Task.CompletedTask;
 	}
