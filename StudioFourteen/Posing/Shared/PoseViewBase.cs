@@ -359,6 +359,9 @@ public partial class PoseViewBase : View
 
 		try
 		{
+			if (this.Settings.HideGenitals && this.Services.Data.GenitalBones?.Contains(control.SafeName) == true)
+				return;
+
 			if (!this.controlNameLookup.ContainsKey(control.SafeName))
 				this.controlNameLookup.Add(control.SafeName, new());
 

@@ -27,11 +27,13 @@ public class DataService : ServiceBase
 {
 	public Dictionary<string, SimpleViewLayout>? SimplePoseLayouts { get; private set; }
 	public Dictionary<string, BlendTarget>? ExpressionBlends { get; private set; }
+	public HashSet<string>? GenitalBones { get; private set; }
 
 	public override Task Initialize()
 	{
 		this.SimplePoseLayouts = this.GetResourceDocument<Dictionary<string, SimpleViewLayout>>("SimplePoseLayouts");
 		this.ExpressionBlends = this.GetResourceDocument<Dictionary<string, BlendTarget>>("ExpressionBlends");
+		this.GenitalBones = this.GetResourceDocument<HashSet<string>>("GenitalBones");
 
 		return base.Initialize();
 	}

@@ -148,14 +148,12 @@
 										x:Name="PenisView"
 										Grid.Row="1"
 										FlipSides="{Binding FlipSides}"
-										Hide="{Binding Services.Settings.Current.HideGenitals}"
 										LayoutName="Penis" />
 
 									<pose:SimpleView
 										x:Name="VaginaView"
 										Grid.Row="2"
 										FlipSides="{Binding FlipSides}"
-										Hide="{Binding Services.Settings.Current.HideGenitals}"
 										LayoutName="Vagina" />
 								</Grid>
 							</Grid>
