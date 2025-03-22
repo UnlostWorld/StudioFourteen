@@ -27,8 +27,6 @@ using Panel = StudioFourteen.Panels.Panel;
 
 public partial class SettingsPanel : Panel
 {
-	public SettingsService.Configuration Settings => this.Services.Settings.Current;
-
 	public static void Show(PanelContextBase context, string? elementName = null)
 	{
 		ShowAsync(context, elementName).Run();

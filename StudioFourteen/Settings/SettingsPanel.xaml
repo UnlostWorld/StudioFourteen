@@ -106,23 +106,34 @@
 				</Grid>
 
 				<ToggleButton
-					Grid.Row="0"
 					Margin="1"
 					Content="{DynamicResource LOC_Settings_Interface_HideLauncherButton}"
 					IsChecked="{Binding Settings.HideLauncherButton}"
 					ToolTip="{DynamicResource LOC_Settings_Interface_HideLauncherButton_ToolTip}" />
 
 				<ToggleButton
-					Grid.Row="0"
 					Margin="1"
 					Content="{DynamicResource LOC_Settings_Interface_OpenGroupPose}"
 					IsChecked="{Binding Settings.OpenGroupPose}" />
 
 				<ToggleButton
-					Grid.Row="0"
 					Margin="1"
 					Content="{DynamicResource LOC_Settings_Interface_HideGenitals}"
 					IsChecked="{Binding Settings.HideGenitals}" />
+
+				<TextBlock Text="Library preview mode" Style="{DynamicResource LeftLabel}"/>
+				<ComboBox SelectedIndex="{Binding Settings.LibraryPreviewMode, Converter={StaticResource EnumToIndex}}">
+
+					<wpfUtils:PopOut.Header>
+						<TextBlock Text="{DynamicResource LOC_Settings_Interface_LibraryPreviewMode_Description}" Margin="12"/>
+					</wpfUtils:PopOut.Header>
+
+					<ComboBoxItem Content="{DynamicResource LOC_Settings_Interface_LibraryPreviewMode_Temporary}"/>
+					<ComboBoxItem Content="{DynamicResource LOC_Settings_Interface_LibraryPreviewMode_Permanent}"/>
+					<ComboBoxItem Content="{DynamicResource LOC_Settings_Interface_LibraryPreviewMode_Disabled}"/>
+				</ComboBox>
+
+
 			</StackPanel>
 		</TabItem>
 

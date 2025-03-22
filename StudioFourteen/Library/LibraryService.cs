@@ -25,6 +25,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 
+public enum PreviewModes
+{
+	Temporary,
+	Permanent,
+	Disabled,
+}
+
 public class LibraryService : ServiceBase
 {
 	private readonly LibraryRoot rootItem = new();

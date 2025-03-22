@@ -357,8 +357,8 @@ public partial class LibraryWindow : Panel
 	// Hijack the result tooltip logic.
 	private void OnResultToolTipOpening(object sender, ToolTipEventArgs? e)
 	{
-		if (e != null)
-			e.Handled = true;
+		////if (e != null)
+		////	e.Handled = true;
 
 		if (sender is not FrameworkElement senderElement)
 			return;
@@ -368,7 +368,32 @@ public partial class LibraryWindow : Panel
 
 		this.currentHover = senderElement;
 		this.LibraryContextMenu.Enter(result.Entry, senderElement);
-		this.StartPreview().Run();
+
+		if (this.Settings.LibraryPreviewMode != PreviewModes.Disabled)
+		{
+			this.StartPreview().Run();
+		}
+	}
+
+	private void OnResultToolTipClosing(object sender, ToolTipEventArgs? e)
+	{
+		if (Mouse.RightButton == MouseButtonState.Pressed)
+			return;
+
+		if (this.currentHover == null)
+			return;
+
+		if (this.currentHover.DataContext is Result result)
+		{
+			this.LibraryContextMenu.Leave(result.Entry);
+
+			if (this.Settings.LibraryPreviewMode != PreviewModes.Permanent)
+			{
+				this.stopPreviewQueue.Invoke();
+			}
+		}
+
+		this.currentHover = null;
 	}
 
 	private void OnResultMouseLeft(object sender, MouseButtonEventArgs e)
@@ -498,30 +523,6 @@ public partial class LibraryWindow : Panel
 
 			this.currentPreview = nextPreview;
 			this.currentPreview?.StartPreview(result.Entry, lastPreview);
-		}
-	}
-
-	private void OnMouseMove(object sender, MouseEventArgs e)
-	{
-		if (this.currentHover != null)
-		{
-			Point p = Mouse.GetPosition(this.currentHover);
-
-			if (p.X >= -5
-				&& p.Y >= -5
-				&& p.X <= this.currentHover.ActualWidth + 5
-				&& p.Y <= this.currentHover.ActualHeight + 5)
-			{
-				return;
-			}
-
-			if (this.currentHover.DataContext is Result result)
-			{
-				this.LibraryContextMenu.Leave(result.Entry);
-				this.stopPreviewQueue.Invoke();
-			}
-
-			this.currentHover = null;
 		}
 	}
 

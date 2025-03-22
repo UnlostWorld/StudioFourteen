@@ -23,7 +23,6 @@
 	MinHeight="300"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
-	MouseMove="OnMouseMove"
 	Subtitle="{Binding CurrentTab.Name}"
 	TitleIcon="fa-Book"
 	mc:Ignorable="d">
@@ -550,8 +549,9 @@
 									Background="Transparent"
 									MouseLeftButtonUp="OnResultMouseLeft"
 									MouseRightButtonUp="OnResultMouseRight"
-									ToolTip="!"
-									ToolTipOpening="OnResultToolTipOpening">
+									ToolTip=""
+									ToolTipOpening="OnResultToolTipOpening"
+									ToolTipClosing="OnResultToolTipClosing">
 
 									<Grid.RowDefinitions>
 										<RowDefinition Height="Auto" />

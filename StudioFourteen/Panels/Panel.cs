@@ -83,6 +83,8 @@ public partial class Panel : ContentControl, IAutoNotify
 	}
 
 	public ServiceManager Services => ServiceManager.Instance;
+	public SettingsService.Configuration Settings => this.Services.Settings.Current;
+
 	public bool RememberWindowState { get; set; } = true;
 	public Persistence Persistence { get; init; }
 

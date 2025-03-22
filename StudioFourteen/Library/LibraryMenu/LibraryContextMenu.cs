@@ -50,6 +50,8 @@ public partial class LibraryContextMenu : PopOut
 	protected readonly ILogger Log = Logging.ForContext<LibraryContextMenu>();
 	private readonly List<LibraryEntryBase> currentEntries = new();
 	private UIElement? placementTarget;
+	private bool isLeaving = false;
+	private bool isEntering = false;
 
 	public LibraryContextMenu()
 	{
@@ -59,48 +61,50 @@ public partial class LibraryContextMenu : PopOut
 	public ServiceManager Services => ServiceManager.Instance;
 	public FastObservableCollection<MenuEntry> Menus { get; init; } = new();
 
-	public bool Enter(FrameworkElement placementTarget)
-	{
-		if (this.IsOpen && this.IsExpanded)
-			return false;
-
-		this.IsHitTestVisible = false;
-		this.placementTarget = placementTarget;
-		this.IsExpanded = false;
-		this.IsEnabled = false;
-		this.StaysOpen = true;
-
-		this.ShowResultMenu().Run();
-		return true;
-	}
-
 	public void Enter(List<LibraryEntryBase> entries, FrameworkElement placementTarget)
 	{
 		this.MultiSelectLabel = $"{entries.Count} items";
 		this.currentEntries.Clear();
 		this.currentEntries.AddRange(entries);
 
-		this.Enter(placementTarget);
+		this.EnterAsync(placementTarget).Run();
 	}
 
 	public void Enter(LibraryEntryBase entry, FrameworkElement placementTarget)
 	{
 		if (this.IsOpen && !this.currentEntries.Contains(entry))
+		{
 			this.IsOpen = false;
+		}
+		else if (this.IsOpen && this.currentEntries.Contains(entry))
+		{
+			return;
+		}
 
 		this.MultiSelectLabel = null;
 		this.currentEntries.Clear();
 		this.currentEntries.Add(entry);
 
-		this.Enter(placementTarget);
+		this.EnterAsync(placementTarget).Run();
 	}
 
 	public void Leave(LibraryEntryBase? result)
 	{
+		this.LeaveAsync().Run();
+	}
+
+	public async Task LeaveAsync()
+	{
 		if (this.IsOpen && this.IsExpanded)
 			return;
 
+		while(this.isEntering)
+			await Task.Delay(50);
+
+		this.isLeaving = true;
 		this.IsOpen = false;
+		await Task.Delay(150);
+		this.isLeaving = false;
 	}
 
 	public void Expand()
@@ -123,9 +127,23 @@ public partial class LibraryContextMenu : PopOut
 		this.Dispatcher.Invoke(() => this.IsOpen = false);
 	}
 
-	private async Task ShowResultMenu()
+	public async Task EnterAsync(FrameworkElement placementTarget)
 	{
+		while (this.isLeaving)
+			await Task.Delay(10);
+
+		this.isEntering = true;
+
 		await this.MainThread();
+
+		if (this.IsOpen && this.IsExpanded)
+			return;
+
+		this.IsHitTestVisible = false;
+		this.placementTarget = placementTarget;
+		this.IsExpanded = false;
+		this.IsEnabled = false;
+		this.StaysOpen = true;
 
 		if (this.placementTarget == null || this.currentEntries.Count <= 0)
 			return;
@@ -136,6 +154,8 @@ public partial class LibraryContextMenu : PopOut
 
 		this.PlacementTarget = this.placementTarget;
 		this.IsOpen = true;
+		await Task.Delay(150);
+		this.isEntering = false;
 	}
 
 	private async Task CollectMenus()

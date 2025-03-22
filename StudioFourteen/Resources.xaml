@@ -65,6 +65,7 @@
 	<converters:GreaterThanToVisibilityConverter x:Key="GreaterThanToVisibility" />
 	<converters:AbsoluteNumberConverter x:Key="AbsoluteNumber" />
 	<converters:NumberConverter x:Key="NumberConverter" />
+	<converters:EnumToIndexConverter x:Key="EnumToIndex" />
 
 	<!--  Multi converters  -->
 	<converters:MultiBoolAndConverter x:Key="MultiBoolAnd" />

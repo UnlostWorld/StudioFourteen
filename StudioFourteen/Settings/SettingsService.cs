@@ -18,6 +18,7 @@ namespace StudioFourteen.Settings;
 using Dalamud.Configuration;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Input;
+using StudioFourteen.Library;
 using StudioFourteen.Photos;
 using StudioFourteen.Plugin;
 using StudioFourteen.Save;
@@ -165,6 +166,7 @@ public partial class SettingsService : ServiceBase
 
 		// Library
 		[Notify] private HashSet<string> favorites = new();
+		[Notify] private PreviewModes libraryPreviewMode = PreviewModes.Permanent;
 
 		// Scripts
 		[Notify] private Dictionary<string, string> trustedScripts = new();
