@@ -16,36 +16,48 @@
 namespace StudioFourteen.Services;
 
 using PropertyChanged.SourceGenerator;
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Reflection;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Media;
+using TerraFX.Interop.Windows;
 using WpfUtils.Extensions;
+using StudioFourteen.Themes;
 using static FFXIVClientStructs.FFXIV.Component.GUI.AtkUIColorHolder.Delegates;
 
 public partial class ThemeService : ServiceBase
 {
+	private Trim? trimColor;
+
 	[Notify] private Theme? currentTheme;
-	[Notify] private Trim? trimColor;
 	[Notify] private LauncherButton? launcher;
+	[Notify] private List<Trim>? trimColors;
 
 	public ObservableCollection<Theme> Themes { get; init; } = new();
 	public ObservableCollection<LauncherButton> Launchers { get; init; } = new();
-	public ObservableCollection<Trim> TrimColors { get; init; } = new();
+
+	public Trim? TrimColor
+	{
+		get => this.trimColor;
+		set
+		{
+			lock(this)
+			{
+				this.trimColor = value;
+				this.OnTrimColorChanged(value);
+				this.RaisePropertyChanged();
+			}
+		}
+	}
 
 	public override Task Initialize()
 	{
-		this.Themes.Add(new("Dark", "pack://application:,,,/WpfUtils;component/Themes/Dark.xaml", true));
-		this.Themes.Add(new("Light", "pack://application:,,,/WpfUtils;component/Themes/Light.xaml", true));
-		this.Themes.Add(new("Nier", "pack://application:,,,/WpfUtils;component/Themes/Nier.xaml", false));
-
-		this.TrimColors.Add(new("Pink", "#FF1493"));
-		this.TrimColors.Add(new("Blue", "#1484FF"));
-		this.TrimColors.Add(new("Mint", "#14FFB3"));
-		this.TrimColors.Add(new("Green", "#5CFF14"));
-		this.TrimColors.Add(new("Yellow", "#FBFF14"));
-		this.TrimColors.Add(new("Orange", "#FF7C14"));
-		this.TrimColors.Add(new("Red", "#FF1414"));
+		this.Themes.Add(new("Dark", "pack://application:,,,/StudioFourteen;component/Themes/Dark.xaml"));
+		this.Themes.Add(new("Light", "pack://application:,,,/StudioFourteen;component/Themes/Light.xaml"));
+		this.Themes.Add(new("Nier", "pack://application:,,,/StudioFourteen;component/Themes/Nier.xaml"));
 
 		this.Launchers.Add(new(
 			"Default",
@@ -71,11 +83,16 @@ public partial class ThemeService : ServiceBase
 			}
 		}
 
-		foreach (Trim trim in this.TrimColors)
+		this.LoadTrimColors(this.CurrentTheme);
+
+		if (this.TrimColors != null)
 		{
-			if (trim.Name == this.Settings.TrimColor)
+			foreach (Trim trim in this.TrimColors)
 			{
-				this.TrimColor = trim;
+				if (trim.Name == this.Settings.TrimColor)
+				{
+					this.TrimColor = trim;
+				}
 			}
 		}
 
@@ -93,33 +110,39 @@ public partial class ThemeService : ServiceBase
 
 	private void OnCurrentThemeChanged(Theme? oldTheme, Theme? newTheme)
 	{
-		if (newTheme == null)
-			return;
+		try
+		{
+			if (newTheme == null)
+				return;
 
-		if (oldTheme != null)
-			Resources.UnMergeDictionary(new(oldTheme.Path));
+			if (oldTheme != null)
+				Resources.UnMergeDictionary(new(oldTheme.Path));
 
-		if (!newTheme.SupportsTrim)
 			Resources.Clear("TrimBrush");
 
-		this.Settings.Theme = newTheme.Name;
-		Resources.MergeDictionary(new(newTheme.Path));
-		this.OnTrimColorChanged(null, this.TrimColor);
+			this.LoadTrimColors(newTheme);
 
-		this.Services.Panels.RestartPanels().Run();
+			this.Settings.Theme = newTheme.Name;
+
+			Resources.MergeDictionary(new(newTheme.Path));
+			this.OnTrimColorChanged(this.TrimColor);
+
+			this.Services.Panels.RestartPanels().Run();
+		}
+		catch (Exception e)
+		{
+			this.Log.Error(e, "changing theme");
+		}
 	}
 
-	private void OnTrimColorChanged(Trim? oldColor, Trim? newColor)
+	private void OnTrimColorChanged(Trim? newColor)
 	{
 		if (newColor == null)
 			return;
 
 		this.Settings.TrimColor = newColor.Name;
 
-		if (this.CurrentTheme?.SupportsTrim == true)
-		{
-			Resources.Set("TrimBrush", () => new SolidColorBrush(newColor.Color));
-		}
+		Resources.Set("TrimBrush", () => new SolidColorBrush(newColor.Color));
 	}
 
 	private void OnLauncherChanged(LauncherButton? oldTheme, LauncherButton? newTheme)
@@ -135,13 +158,70 @@ public partial class ThemeService : ServiceBase
 
 		this.Services.Panels.RestartPanels().Run();
 	}
+
+	private void LoadTrimColors(Theme? newTheme)
+	{
+		try
+		{
+			lock (this)
+			{
+				if (newTheme == null)
+					return;
+
+				ResourceDictionary dictionary = new ResourceDictionary();
+				dictionary.Source = new(newTheme.Path);
+				this.TrimColors = null;
+
+				if (!dictionary.Contains("TrimColors"))
+					return;
+
+				Array? trimColors = dictionary["TrimColors"] as Array;
+				if (trimColors == null)
+					return;
+
+				string? oldTrimColor = this.Settings.TrimColor;
+				Trim? newTrimColor = null;
+
+				List<Trim> newColors = new();
+
+				foreach (object? trimColorObject in trimColors)
+				{
+					if (trimColorObject == null)
+						continue;
+
+					TrimColor? trimColor = trimColorObject as TrimColor;
+					if (trimColor == null || trimColor.Name == null || trimColor.Color == null)
+						continue;
+
+					Trim newTrim = new(trimColor.Name, trimColor.Color.Value);
+					newColors.Add(newTrim);
+
+					if (oldTrimColor != null && trimColor.Name == oldTrimColor)
+					{
+						newTrimColor = newTrim;
+					}
+				}
+
+				this.TrimColors = newColors;
+				if (newTrimColor == null && newColors.Count > 0)
+					newTrimColor = newColors[0];
+
+				this.TrimColor = newTrimColor;
+
+				this.Log.Information($"new trim color {newTrimColor} --> {this.TrimColor} ?????????");
+			}
+		}
+		catch (Exception e)
+		{
+			this.Log.Error(e, "caught");
+		}
+	}
 }
 
-public class Theme(string name, string path, bool supportsTrim)
+public class Theme(string name, string path)
 {
 	public string Name { get; init; } = name;
 	public string Path { get; init; } = path;
-	public bool SupportsTrim { get; init; } = supportsTrim;
 }
 
 public class LauncherButton(string name, string iconPath, string path)

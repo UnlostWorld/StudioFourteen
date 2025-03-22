@@ -8,6 +8,7 @@ obj/
 deploy/
 Setup/Release/
 Setup/Debug/
+Documentation/
 *.tlog
 *.iobj
 *.ipdb

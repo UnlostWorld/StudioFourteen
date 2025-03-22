@@ -59,7 +59,7 @@
 						Grid.Column="0"
 						ItemsSource="{Binding Services.Theme.TrimColors}"
 						SelectedItem="{Binding Services.Theme.TrimColor}"
-						Visibility="{Binding Services.Theme.CurrentTheme.SupportsTrim, Converter={StaticResource B2V}}">
+						Visibility="{Binding Services.Theme.TrimColors, Converter={StaticResource NotNullToVisibility}}">
 
 						<wpfUtils:PopOut.Header>
 							<TextBlock Margin="6" Text="{DynamicResource LOC_Settings_Interface_ThemeToolTip}" />
