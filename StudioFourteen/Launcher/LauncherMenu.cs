@@ -85,29 +85,29 @@ public partial class LauncherMenu : Control
 	{
 		this.Entries.Clear();
 
-		this.AddPanel<Marketplace.MarketplacePanel>("fa-Shop", "Marketplace", false);
-		this.AddPanel<Library.LibraryWindow>("fa-Book", "Library");
+		this.AddPanel<Marketplace.MarketplacePanel>("Marketplace", false);
+		this.AddPanel<Library.LibraryWindow>("Library");
 
-		this.AddPanel<CameraPanel>("Camera", "Camera");
-		this.AddPanel<EnvironmentPanel>("fa-CloudMoonRain", "Environment");
-		this.AddPanel<Appearance.CharacterPanel>("fa-UserShield", "Character");
-		this.AddPanel<Posing.PoseWindow>("fa-Running", "Pose");
-		this.AddPanel<Library.LibraryWindow>("fa-Lightbulb", "Lighting", false);
-		this.AddPanel<Library.LibraryWindow>("fa-Chair", "Furniture", false);
-		this.AddPanel<Library.LibraryWindow>("fa-Users", "Crowds", false);
-		this.AddPanel<Library.LibraryWindow>("fa-Fire", "Effects", false);
+		this.AddPanel<CameraPanel>("Camera");
+		this.AddPanel<EnvironmentPanel>("Environment");
+		this.AddPanel<Appearance.CharacterPanel>("Character");
+		this.AddPanel<Posing.PoseWindow>("Pose");
+		this.AddPanel<Library.LibraryWindow>("Lighting", false);
+		this.AddPanel<Library.LibraryWindow>("Furniture", false);
+		this.AddPanel<Library.LibraryWindow>("Crowds", false);
+		this.AddPanel<Library.LibraryWindow>("Effects", false);
 
-		this.AddPanel<Library.LibraryWindow>("fa-Forward", "Animation", false);
-		this.AddPanel<Library.LibraryWindow>("fa-Stream", "Sequencer", false);
+		this.AddPanel<Library.LibraryWindow>("Animation", false);
+		this.AddPanel<Library.LibraryWindow>("Sequencer", false);
 
-		this.AddPanel<Photos.PhotoWindow>("fa-Image", "Photo");
+		this.AddPanel<Photos.PhotoWindow>("Photo");
 
 		if (this.Context is not AioPanelContext)
-			this.AddEntry<AioLauncherEntry>("fa-ObjectGroup", "AIO");
+			this.AddEntry<AioLauncherEntry>("AIO");
 
-		this.AddPanel<History.HistoryPanel>("fa-History", "History");
-		this.AddPanel<Save.SaveWindow>("fa-Save", "Save");
-		this.AddPanel<Settings.SettingsPanel>("fa-Cogs", "Settings");
+		this.AddPanel<History.HistoryPanel>("History");
+		this.AddPanel<Save.SaveWindow>("Save");
+		this.AddPanel<Settings.SettingsPanel>("Settings");
 	}
 
 	private void OnPowerClicked(object sender, RoutedEventArgs e)
@@ -116,13 +116,13 @@ public partial class LauncherMenu : Control
 		this.IsOpen = false;
 	}
 
-	private void AddPanel<TPanel>(string icon, string name, bool enabled = true)
+	private void AddPanel<TPanel>(string name, bool enabled = true)
 		where TPanel : Panel, new()
 	{
-		this.AddEntry<PanelLauncherEntry<TPanel>>(icon, name, enabled);
+		this.AddEntry<PanelLauncherEntry<TPanel>>(name, enabled);
 	}
 
-	private void AddEntry<T>(string icon, string name, bool enabled = true)
+	private void AddEntry<T>(string name, bool enabled = true)
 		where T : LauncherEntry
 	{
 		T? entry = Activator.CreateInstance(typeof(T), [this]) as T;
@@ -130,7 +130,6 @@ public partial class LauncherMenu : Control
 			return;
 
 		entry.Name = name;
-		entry.Icon = icon;
 		entry.IsEnabled = enabled;
 		this.Entries.Add(entry);
 	}
@@ -142,12 +141,12 @@ public abstract class LauncherEntry(LauncherMenu menu)
 	protected readonly LauncherMenu owner = menu;
 
 	public bool IsEnabled { get; set; }
-	public string? Icon { get; set; }
 	public string? Name { get; set; }
 	public bool IsAIO { get; set; }
 
 	public string? DisplayName => Resources.Find($"LOC_{this.Name}", this.Name ?? string.Empty);
 	public string? Description => Resources.Find($"LOC_{this.Name}Desc", this.Name ?? string.Empty);
+	public object? Icon => Resources.Find($"ICON_Title_{this.Name}");
 
 	public bool IsOpen
 	{

@@ -14,7 +14,7 @@
 	Height="450"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	ResizeMode="NoResize"
-	TitleIcon="fa-VideoCamera"
+	TitleIcon="{DynamicResource ICON_Title_Camera}"
 	mc:Ignorable="d">
 	<Border
 		Grid.Column="0"

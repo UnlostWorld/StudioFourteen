@@ -19,7 +19,7 @@
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	ResizeMode="CanResizeWithGrip"
 	Subtitle="{Binding CharacterName}"
-	TitleIcon="fa-UserShield"
+	TitleIcon="{DynamicResource ICON_Title_Character}"
 	mc:Ignorable="d">
 
 	<Grid x:Name="ContentArea" IsEnabled="{Binding HasValidTarget}">

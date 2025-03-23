@@ -23,6 +23,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using DependencyPropertyGenerator;
 using PropertyChanged.SourceGenerator;
+using StudioFourteen.Icons;
 using StudioFourteen.Mvm;
 using StudioFourteen.Panels;
 using StudioFourteen.Settings;
@@ -135,7 +136,7 @@ public partial class TaskBarControl : Control
 		if (entry == null)
 		{
 			await panel.MainThread();
-			if (string.IsNullOrEmpty(panel.TitleIcon) || string.IsNullOrEmpty(panel.Title))
+			if (panel.TitleIcon == null || string.IsNullOrEmpty(panel.Title))
 				return;
 
 			entry = new(context, panel.TitleIcon, panel.Title, panel.GetType());
@@ -216,7 +217,7 @@ public partial class TaskBarEntry : ViewModel
 	[Notify] private bool isActive = true;
 	[Notify] private bool isVisible = true;
 
-	public TaskBarEntry(PanelContextBase context, string icon, string title, Type panelType)
+	public TaskBarEntry(PanelContextBase context, IconDefinitionBase icon, string title, Type panelType)
 	{
 		this.Icon = icon;
 		this.Title = title;
@@ -224,10 +225,10 @@ public partial class TaskBarEntry : ViewModel
 		this.Context = context;
 	}
 
-	public string? Icon
+	public IconDefinitionBase? Icon
 	{
-		get => this.Save.Icon;
-		set => this.Save.Icon = value;
+		get => IconDefinitionBase.Parse(this.Save.Icon);
+		set => this.Save.Icon = value?.ToString();
 	}
 
 	public string? Title
@@ -262,8 +263,6 @@ public partial class TaskBarButtonControl : Control
 
 	private async Task HandleClickAsync()
 	{
-		Logging.Information($"?? {this.PanelType} {this.Context}");
-
 		if (this.PanelType == null || this.Context == null)
 			return;
 

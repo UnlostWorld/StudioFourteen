@@ -16,7 +16,7 @@
 	MinWidth="300"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
-	TitleIcon="fa-Gears"
+	TitleIcon="{DynamicResource ICON_Title_Settings}"
 	mc:Ignorable="d">
 
 	<TabControl>

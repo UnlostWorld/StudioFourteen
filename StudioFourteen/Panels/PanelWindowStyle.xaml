@@ -5,6 +5,7 @@
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
 	xmlns:local="clr-namespace:StudioFourteen.Panels"
+	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
 	<ResourceDictionary.MergedDictionaries>
@@ -148,14 +149,19 @@
 						<ScaleTransform ScaleX="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Scale}" ScaleY="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Scale}" />
 					</Grid.LayoutTransform>
 
-
-
 					<Grid
 						Grid.Row="0"
 						Height="28"
 						Margin="0,0,0,1">
 
-						<Grid Background="Transparent" MouseDown="OnTitleMouseDown" />
+						<Grid Background="Transparent" MouseDown="OnTitleMouseDown" >
+							<Grid.ContextMenu>
+								<ContextMenu>
+									<MenuItem Header="Pop out" Icon="fa-arrow-right-from-bracket"/>
+									<MenuItem Header="Zoom" Icon="fa-search"/>
+								</ContextMenu>
+							</Grid.ContextMenu>
+						</Grid>
 
 						<Grid Margin="{TemplateBinding TitleMargin}">
 							<StackPanel
@@ -164,8 +170,9 @@
 								IsHitTestVisible="False"
 								Orientation="Horizontal">
 
-								<controls:IconControl
+								<icons:IconView
 									MinWidth="12"
+									Height="14"
 									Margin="0,1,6,0"
 									VerticalAlignment="Center"
 									Foreground="{DynamicResource ForegroundLightBrush}"

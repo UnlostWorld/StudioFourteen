@@ -16,7 +16,7 @@
 	RememberWindowState="False"
 	ResizeMode="NoResize"
 	SizeToContent="Manual"
-	TitleIcon="fa-Robot"
+	TitleIcon="{DynamicResource ICON_Title_Script}"
 	VisibilityMode="Always"
 	mc:Ignorable="d">
 

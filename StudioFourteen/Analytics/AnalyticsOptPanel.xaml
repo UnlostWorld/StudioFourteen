@@ -16,7 +16,7 @@
 	RememberWindowState="False"
 	ResizeMode="NoResize"
 	SizeToContent="Height"
-	TitleIcon="fa-ExclamationCircle"
+	TitleIcon="{DynamicResource ICON_Title_Warning}"
 	VisibilityMode="Always"
 	mc:Ignorable="d">
 

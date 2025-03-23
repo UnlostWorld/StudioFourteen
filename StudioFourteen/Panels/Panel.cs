@@ -19,6 +19,7 @@ using Dalamud.Plugin.Services;
 using DependencyPropertyGenerator;
 using FontAwesome.Sharp;
 using Serilog;
+using StudioFourteen.Icons;
 using StudioFourteen.Mvm;
 using StudioFourteen.Plugin;
 using StudioFourteen.Services;
@@ -38,7 +39,7 @@ public enum PanelVisibility
 	PhotoMode,
 }
 
-[DependencyProperty<string>("TitleIcon")]
+[DependencyProperty<IconDefinitionBase>("TitleIcon")]
 [DependencyProperty<string>("Title")]
 [DependencyProperty<string>("Subtitle")]
 [DependencyProperty<SizeToContent>("SizeToContent", DefaultValue = SizeToContent.Manual)]

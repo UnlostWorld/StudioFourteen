@@ -7,7 +7,6 @@
 	xmlns:local="clr-namespace:StudioFourteen.Photos"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
-	xmlns:vectors="http://sharpvectors.codeplex.com/svgc/"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="{DynamicResource LOC_Photo}"
 	Width="800"
@@ -17,7 +16,7 @@
 	DefaultPosition="0.5,1"
 	HostStyle="{DynamicResource PanelToolbarStyle}"
 	ResizeMode="NoResize"
-	TitleIcon="fa-Image"
+	TitleIcon="{DynamicResource ICON_Title_Photo}"
 	VisibilityMode="PhotoMode"
 	mc:Ignorable="d">
 
@@ -175,14 +174,14 @@
 					Style="{DynamicResource WpfUtilsIconToggleButton}"
 					ToolTip="{DynamicResource LOC_Photo_ToggleUIToolTip}">
 					<Grid>
-						<vectors:SvgIcon
-							Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"
-							UriSource="pack://application:,,,/StudioFourteen;component/Assets/icon-show-ui.svg"
+						<controls:IconControl
+							Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"
+							Icon="ShowUi"
 							Visibility="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}, Converter={StaticResource !B2V}}" />
 
-						<vectors:SvgIcon
-							Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"
-							UriSource="pack://application:,,,/StudioFourteen;component/Assets/icon-hide-ui.svg"
+						<controls:IconControl
+							Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"
+							Icon="HideUi"
 							Visibility="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}, Converter={StaticResource B2V}}" />
 					</Grid>
 				</ToggleButton>
@@ -222,7 +221,7 @@
 					Style="{DynamicResource WpfUtilsIconToggleButton}"
 					ToolTip="{DynamicResource LOC_Photo_TogglePortrait}"
 					Visibility="{Binding Services.Studio.IsOpenAndInGPose, Converter={StaticResource B2V}}">
-					<vectors:SvgIcon Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}" UriSource="pack://application:,,,/StudioFourteen;component/Assets/icon-portrait-preview.svg" />
+					<controls:IconControl Icon="PortraitPreview" />
 				</ToggleButton>
 
 				<Button

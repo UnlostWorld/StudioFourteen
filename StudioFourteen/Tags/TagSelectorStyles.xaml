@@ -3,8 +3,9 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=WpfUtils"
 	xmlns:tags="clr-namespace:StudioFourteen.Tags"
-	xmlns:vectors="http://sharpvectors.codeplex.com/svgc/"
-	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
+	xmlns:controls="clr-namespace:StudioFourteen.Controls"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	xmlns:icons="clr-namespace:StudioFourteen.Icons">
 
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="pack://application:,,,/WpfUtils;component/Controls/PopOutStyles.xaml" />
@@ -37,13 +38,13 @@
 						Style="{DynamicResource LinearTagsControl}"
 						Tags="{TemplateBinding SelectedTags}" />
 
-					<vectors:SvgIcon
+					<icons:IconView
 						Grid.Column="1"
 						Height="12"
 						Margin="6"
 						VerticalAlignment="Center"
-						Fill="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"
-						UriSource="pack://application:,,,/StudioFourteen;component/Assets/icon-tags-add.svg" />
+						Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"
+						Icon="{DynamicResource ICON_TagsAdd}" />
 				</Grid>
 			</ToggleButton>
 

@@ -34,7 +34,7 @@ public sealed class DalamudPlugin : IDalamudPlugin
 		this.Log.Information($"Ensure assembly WpfUtils {typeof(WpfUtils.Dispatch).Assembly}");
 		this.Log.Information($"Ensure assembly FontAwesome {typeof(FontAwesome.Sharp.Icon).Assembly}");
 		this.Log.Information($"Ensure assembly VirtualizingWrapPanel Pro {typeof(WpfToolkit.Controls.VirtualizingWrapPanel).Assembly}");
-		this.Log.Information($"Ensure assembly SharpVectors {typeof(SharpVectors.Converters.SvgIcon).Assembly}");
+		this.Log.Information($"Ensure assembly SVGImage {typeof(SVGImage.SVG.SVGImage).Assembly}");
 		this.Log.Information($"Ensure assembly WebView2 {typeof(Microsoft.Web.WebView2.Wpf.WebView2).Assembly}");
 
 		// Ensure the pack URI scheme got registered

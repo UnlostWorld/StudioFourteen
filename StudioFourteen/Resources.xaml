@@ -10,8 +10,8 @@
 		<!--  wpfUtils styles  -->
 		<ResourceDictionary Source="pack://application:,,,/WpfUtils;component/Styles.xaml" />
 
-
 		<!--  Custom styles  -->
+		<ResourceDictionary Source="./Icons/IconStyles.xaml"/>
 		<ResourceDictionary Source="./Styles/CheckBoxStyles.xaml" />
 		<ResourceDictionary Source="./Styles/SpinnerStyle.xaml" />
 		<ResourceDictionary Source="./Launcher/LauncherStyles.xaml" />
@@ -32,6 +32,7 @@
 		<ResourceDictionary Source="./Posing/Shared/PoseSelectionControlStyles.xaml" />
 
 		<!--  Default Language  -->
+		<ResourceDictionary Source="./Icons/Icons.xaml"/>
 		<ResourceDictionary Source="./Languages/English.xaml" />
 
 		<!--  Templates  -->

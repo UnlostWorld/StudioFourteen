@@ -21,7 +21,7 @@
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	Subtitle="{Binding CharacterName}"
-	TitleIcon="fa-Running"
+	TitleIcon="{DynamicResource ICON_Title_Pose}"
 	mc:Ignorable="d">
 
 	<Grid>

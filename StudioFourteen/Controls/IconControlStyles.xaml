@@ -3,10 +3,12 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
 	xmlns:local="clr-namespace:StudioFourteen.Controls"
-	xmlns:sys="clr-namespace:System;assembly=mscorlib"
-	xmlns:vectors="http://sharpvectors.codeplex.com/svgc/">
+	xmlns:svg="https://github.com/dotnetprojects/SVGImage"
+	xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
-	<ControlTemplate x:Key="IconControlTemplate" TargetType="{x:Type local:IconControl}">
+	<ControlTemplate
+		x:Key="IconControlTemplate"
+		TargetType="{x:Type local:IconControl}">
 
 		<ControlTemplate.Resources>
 			<DataTemplate DataType="{x:Type local:FontAwesomeIcon}">
@@ -21,7 +23,8 @@
 			</DataTemplate>
 
 			<DataTemplate DataType="{x:Type sys:String}">
-				<vectors:SvgIcon Fill="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:IconControl}}, Path=Foreground}" UriSource="{Binding .}" />
+				<svg:SVGImage
+					UriSource="{Binding .}" />
 			</DataTemplate>
 		</ControlTemplate.Resources>
 

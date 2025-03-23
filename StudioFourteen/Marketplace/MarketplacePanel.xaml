@@ -14,7 +14,7 @@
 	Height="600"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
-	TitleIcon="fa-Shop"
+	TitleIcon="{DynamicResource ICON_Title_Marketplace}"
 	mc:Ignorable="d">
 
 	<Grid>

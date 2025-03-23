@@ -21,7 +21,7 @@
 	RememberWindowState="False"
 	ResizeMode="NoResize"
 	Subtitle="{Binding Scene.Title}"
-	TitleIcon="fa-Users"
+	TitleIcon="{DynamicResource ICON_Title_Scene}"
 	mc:Ignorable="d">
 	<Grid>
 		<Grid.RowDefinitions>
