@@ -39,7 +39,7 @@ public class StainLibraryEntry : ExcelLibraryEntry
 
 	public override string? Name => this.Stain.Name.GetString();
 	public string? Description => this.Stain.Name2.GetString();
-	public ImageReference? Icon => this.Item?.Icon;
+	public override object? Icon => this.Item?.Icon;
 	public ItemLibraryEntry? Item => this.Services.GameData.GetLibraryEntry<ItemLibraryEntry>(StainToItemRow(this.RowId));
 
 	public MediaColor? Color

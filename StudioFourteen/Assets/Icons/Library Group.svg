@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 256 256" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g transform="matrix(1,0,0,1,4.05829,-18.3156)">
+        <path d="M237.218,79.759C237.218,70.529 229.724,63.035 220.494,63.035L28.559,63.035C19.329,63.035 11.835,70.529 11.835,79.759L11.835,213.548C11.835,222.778 19.329,230.271 28.559,230.271L220.494,230.271C229.724,230.271 237.218,222.778 237.218,213.548L237.218,79.759Z"  style="fill:url(#background);"/>
+    </g>
+    <g transform="matrix(1,0,0,1,2,14)">
+        <path d="M239.276,179.277L239.276,52.22C239.276,45.873 234.123,40.72 227.776,40.72L135.77,40.72C129.423,40.72 124.269,45.873 124.269,52.22L124.269,60.72L27.067,60.72C19.796,60.72 13.893,66.622 13.893,73.893L13.893,179.277C13.893,186.548 19.796,192.45 27.067,192.45L226.103,192.45C233.374,192.45 239.276,186.548 239.276,179.277Z" style="fill:url(#foreground);"/>
+    </g>
+	<defs>
+        <linearGradient id="foreground">
+			<stop stop-color="#FF1493"/>
+		</linearGradient>
+		<linearGradient id="background">
+			<stop stop-color="#333333"/>
+		</linearGradient>
+    </defs>
+</svg>

@@ -33,8 +33,6 @@ public abstract class GroupEntryBase : LibraryEntryBase
 	{
 	}
 
-	public virtual IconChar Icon => IconChar.None;
-
 	public IEnumerable<LibraryEntryBase> AllEntries => this.allEntries;
 	public int AllCount => this.allEntries.Count;
 
@@ -42,6 +40,7 @@ public abstract class GroupEntryBase : LibraryEntryBase
 	public int GroupCount => this.groupEntries.Count;
 
 	public override string? SubTitle => $"{this.AllCount} items";
+	public override object? Icon => Resources.Find("ICON_Library_Group");
 
 	public GroupEntryBase? Parent { get; private set; }
 

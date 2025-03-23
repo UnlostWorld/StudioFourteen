@@ -36,7 +36,6 @@
 		<ResourceDictionary Source="./Languages/English.xaml" />
 
 		<!--  Templates  -->
-		<ResourceDictionary Source="./Library/LibraryIconTemplates.xaml" />
 		<ResourceDictionary Source="./Library/LibraryBodyTemplates.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 

@@ -13,6 +13,7 @@
 	xmlns:results="clr-namespace:StudioFourteen.Library.Results"
 	xmlns:structs="clr-namespace:StudioFourteen.Structs"
 	xmlns:tags="clr-namespace:StudioFourteen.Tags"
+	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:triggers="clr-namespace:WpfUtils.Triggers;assembly=WpfUtils"
 	xmlns:vwp="clr-namespace:WpfToolkit.Controls;assembly=VirtualizingWrapPanel"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
@@ -140,23 +141,23 @@
 									<StackPanel Orientation="Horizontal">
 										<Button
 											Margin="-2,0"
-											Padding="4,0"
+											Padding="4,0,6,0"
 											Background="Transparent"
 											Click="OnDirectorySelected">
 
-											<Grid>
-												<wpfUtils:IconBlock
+											<StackPanel Orientation="Horizontal">
+												<ContentPresenter
 													x:Name="Icon"
-													Margin="8,2"
-													Icon="{Binding Icon}" />
+													Margin="4,6"
+													MaxWidth="22"
+													Content="{Binding Icon}"/>
 
 												<TextBlock
 													x:Name="Name"
-													Margin="2"
-													Text="{Binding Name}"
-													Visibility="Collapsed" />
-
-											</Grid>
+													VerticalAlignment="Center"
+													Margin="0,2"
+													Text="{Binding Name}"/>
+											</StackPanel>
 										</Button>
 
 										<ToggleButton
@@ -174,8 +175,6 @@
 												Data="M 0,0 5,3 0,6"
 												Stroke="{Binding ElementName=SubDirButton, Path=Foreground}"
 												StrokeThickness="1" />
-
-
 										</ToggleButton>
 									</StackPanel>
 
@@ -216,9 +215,8 @@
 								</Grid>
 
 								<DataTemplate.Triggers>
-									<DataTrigger Binding="{Binding Icon}" Value="None">
+									<DataTrigger Binding="{Binding Icon}" Value="{x:Null}">
 										<Setter TargetName="Icon" Property="Visibility" Value="Collapsed" />
-										<Setter TargetName="Name" Property="Visibility" Value="Visible" />
 									</DataTrigger>
 								</DataTemplate.Triggers>
 
@@ -561,8 +559,7 @@
 									<ContentPresenter
 										Height="{Binding ActualWidth, RelativeSource={RelativeSource Mode=Self}}"
 										Margin="3"
-										Content="{Binding Entry}"
-										Style="{DynamicResource LibraryIcon}" />
+										Content="{Binding Icon}"/>
 
 									<Grid
 										Margin="0,5,5,0"

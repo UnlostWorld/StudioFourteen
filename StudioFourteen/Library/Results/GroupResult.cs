@@ -21,9 +21,16 @@ using StudioFourteen.Tags;
 using System;
 using System.Collections.Generic;
 
-public class Result(LibraryEntryBase entry)
+public class Result
 {
-	public LibraryEntryBase Entry { get; set; } = entry;
+	public Result(LibraryEntryBase entry)
+	{
+		this.Entry = entry;
+		this.Icon = entry.Icon;
+	}
+
+	public LibraryEntryBase Entry { get; set; }
+	public object? Icon { get; set; }
 
 	public string? EntryId => this.Entry?.ToString();
 }

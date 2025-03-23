@@ -66,7 +66,7 @@ public class ENpcResidentLibraryEntry : ExcelLibraryEntry, ICharacterAppearance
 
 	public override string? Name => this.Npc.Singular.GetString();
 
-	public ImageReference? Icon
+	public override object? Icon
 	{
 		get
 		{

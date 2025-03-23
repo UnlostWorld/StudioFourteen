@@ -35,6 +35,7 @@ public class AppearanceFileTypeInfo : JsonFileTypeInfoBase<AppearanceFile>
 {
 	public override string Extension => ".chara";
 	public override string TypeName => "Appearance File";
+	public override object? Icon => Resources.Find("ICON_Library_Entry_Appearance");
 }
 
 [Serializable]

@@ -5,6 +5,7 @@
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=WpfUtils"
 	xmlns:menu="clr-namespace:StudioFourteen.Library.LibraryMenu"
 	xmlns:tags="clr-namespace:StudioFourteen.Tags"
+	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
 	<ResourceDictionary.MergedDictionaries>
@@ -61,13 +62,13 @@
 							<ColumnDefinition />
 						</Grid.ColumnDefinitions>
 
-						<ContentPresenter
+						<icons:IconView
 							Grid.RowSpan="2"
 							Width="48"
+							Foreground="{DynamicResource ForegroundLightBrush}"
 							Height="48"
 							Margin="-2,-1,0,0"
-							Content="{Binding .}"
-							Style="{DynamicResource LibraryIcon}" />
+							Content="{Binding Icon}"/>
 
 						<Grid Grid.Column="1" VerticalAlignment="Center">
 							<Grid.RowDefinitions>

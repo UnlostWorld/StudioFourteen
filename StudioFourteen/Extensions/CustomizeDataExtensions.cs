@@ -104,7 +104,7 @@ public static class CustomizeDataExtensions
 		return charaMakeTypeSheet.GetMakeType(tribe, gender);
 	}
 
-	public static ImageReference? GetIcon(ref readonly this CustomizeData self)
+	public static ImageReference? GetIcon(this CustomizeData self)
 	{
 		ExcelSheet<HairMakeType>? hairMakeTypeSheet = ServiceManager.Instance.GameData.GetSheet<HairMakeType>();
 		if (hairMakeTypeSheet == null)

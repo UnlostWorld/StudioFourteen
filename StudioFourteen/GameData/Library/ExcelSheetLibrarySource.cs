@@ -22,6 +22,8 @@ using System.Collections.Generic;
 
 public abstract class ExcelSheetLibrarySource : SourceBase
 {
+	public override object? Icon => Resources.Find("ICON_Library_Group_XIV");
+
 	public abstract object? GetRowObject(uint rowId);
 }
 

@@ -1,4 +1,4 @@
-﻿// .                    @@             _____ _______ _    _ _____ _____ ____
+// .                    @@             _____ _______ _    _ _____ _____ ____
 //          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
 //         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
 //         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
@@ -13,18 +13,13 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.GameData.Library;
+namespace StudioFourteen.Icons;
 
-using Lumina.Excel.Sheets;
-using Lumina.Text.ReadOnly;
-using StudioFourteen.Library.Sources;
-
-public class WeatherLibraryEntry(SourceBase source, Weather weather)
-	: ExcelLibraryEntry(source, weather.RowId)
+public class Svg : IconDefinitionBase
 {
-	public Weather Excel => weather;
+	public string UriSource => $"pack://application:,,,/StudioFourteen;component/Assets/Icons/{this.Source}.svg";
+	public string? Source { get; set; }
 
-	public override string? Name => weather.Name.GetString();
-	public string? Description => null;
-	public override object? Icon => new ImageReference(weather.Icon);
+	protected override string? IconToString() => this.Source;
+	protected override void ParseIcon(string icon) => this.Source = icon;
 }

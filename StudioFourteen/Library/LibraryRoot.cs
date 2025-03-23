@@ -20,7 +20,7 @@ using FontAwesome.Sharp;
 internal class LibraryRoot()
 	: GroupEntryBase(null)
 {
-	public override IconChar Icon => IconChar.Book;
+	public override object? Icon => Resources.Find("ICON_Library_Root");
 	public override string Name => "Library";
 	protected override string GetInternalId() => "Root";
 }

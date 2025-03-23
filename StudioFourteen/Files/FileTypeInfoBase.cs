@@ -26,6 +26,7 @@ public abstract class FileTypeInfoBase
 	public abstract string Extension { get; }
 	public abstract string TypeName { get; }
 	public abstract Type LoadsType { get; }
+	public virtual object? Icon => null;
 
 	public abstract FileBase? Load(FileInfo fileInfo);
 }

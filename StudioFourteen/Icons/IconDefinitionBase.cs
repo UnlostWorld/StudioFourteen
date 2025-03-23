@@ -16,7 +16,6 @@
 namespace StudioFourteen.Icons;
 
 using System;
-using FontAwesome.Sharp;
 
 public abstract class IconDefinitionBase
 {
@@ -61,35 +60,5 @@ public abstract class IconDefinitionBase
 		}
 
 		throw new NotSupportedException();
-	}
-}
-
-public class Svg : IconDefinitionBase
-{
-	public string UriSource => $"pack://application:,,,/StudioFourteen;component/Assets/Icons/{this.Source}.svg";
-	public string? Source { get; set; }
-
-	protected override string? IconToString() => this.Source;
-	protected override void ParseIcon(string icon) => this.Source = icon;
-}
-
-public class Fa : IconDefinitionBase
-{
-	public IconChar Icon { get; set; }
-	public IconFont Font { get; set; }
-
-	protected override string? IconToString()
-	{
-		return $"{this.Icon}-{this.Font}";
-	}
-
-	protected override void ParseIcon(string icon)
-	{
-		string[] parts = icon.Split("-");
-
-		this.Icon = Enum.Parse<IconChar>(parts[0]);
-		this.Font = Enum.Parse<IconFont>(parts[1]);
-
-		Logging.Information($"???? {this.Icon}  --  {this.Font}");
 	}
 }

@@ -14,7 +14,6 @@
 		<ResourceDictionary Source="pack://application:,,,/WpfUtils;component/Styles/TextBlockStyles.xaml" />
 		<ResourceDictionary Source="pack://application:,,,/WpfUtils;component/Styles/ListBoxStyles.xaml" />
 		<ResourceDictionary Source="../LibraryMenu/LibraryContextMenuStyles.xaml" />
-		<ResourceDictionary Source="../LibraryIconTemplates.xaml" />
 		<ResourceDictionary Source="../LibraryBodyTemplates.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 
@@ -44,8 +43,7 @@
 				Height="38"
 				Margin="3"
 				VerticalAlignment="Center"
-				Content="{Binding Entry}"
-				Style="{StaticResource LibraryIcon}"
+				Content="{Binding Entry.Icon}"
 				TextBlock.Foreground="{DynamicResource ForegroundBrush}" />
 
 			<Grid Grid.Column="1" VerticalAlignment="Center">

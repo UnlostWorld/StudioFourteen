@@ -1,4 +1,4 @@
-﻿// .                    @@             _____ _______ _    _ _____ _____ ____
+// .                    @@             _____ _______ _    _ _____ _____ ____
 //          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
 //         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
 //         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
@@ -13,18 +13,13 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.GameData.Library;
+namespace StudioFourteen.Icons;
+using System.Windows.Controls;
+using DependencyPropertyGenerator;
+using FontAwesome.Sharp;
 
-using Lumina.Excel.Sheets;
-using Lumina.Text.ReadOnly;
-using StudioFourteen.Library.Sources;
-
-public class WeatherLibraryEntry(SourceBase source, Weather weather)
-	: ExcelLibraryEntry(source, weather.RowId)
+[DependencyProperty<IconChar>("Icon")]
+[DependencyProperty<IconFont>("IconFont")]
+public partial class FaIconView : Control
 {
-	public Weather Excel => weather;
-
-	public override string? Name => weather.Name.GetString();
-	public string? Description => null;
-	public override object? Icon => new ImageReference(weather.Icon);
 }

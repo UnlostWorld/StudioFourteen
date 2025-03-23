@@ -1,4 +1,4 @@
-﻿// .                    @@             _____ _______ _    _ _____ _____ ____
+// .                    @@             _____ _______ _    _ _____ _____ ____
 //          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
 //         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
 //         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
@@ -13,18 +13,26 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.GameData.Library;
+namespace StudioFourteen.Icons;
 
-using Lumina.Excel.Sheets;
-using Lumina.Text.ReadOnly;
-using StudioFourteen.Library.Sources;
+using System;
+using FontAwesome.Sharp;
 
-public class WeatherLibraryEntry(SourceBase source, Weather weather)
-	: ExcelLibraryEntry(source, weather.RowId)
+public class Fa : IconDefinitionBase
 {
-	public Weather Excel => weather;
+	public IconChar Icon { get; set; }
+	public IconFont Font { get; set; }
 
-	public override string? Name => weather.Name.GetString();
-	public string? Description => null;
-	public override object? Icon => new ImageReference(weather.Icon);
+	protected override string? IconToString()
+	{
+		return $"{this.Icon}-{this.Font}";
+	}
+
+	protected override void ParseIcon(string icon)
+	{
+		string[] parts = icon.Split("-");
+
+		this.Icon = Enum.Parse<IconChar>(parts[0]);
+		this.Font = Enum.Parse<IconFont>(parts[1]);
+	}
 }

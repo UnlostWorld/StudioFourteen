@@ -51,6 +51,7 @@ public abstract class LibraryEntryBase : ITagged, INotifyPropertyChanged
 
 	public abstract string? Name { get; }
 	public abstract string? SubTitle { get; }
+	public virtual object? Icon => Resources.Find("ICON_Library_Entry");
 
 	public virtual bool IsVisible { get; set; }
 	public TagCollection Tags { get; init; } = new();

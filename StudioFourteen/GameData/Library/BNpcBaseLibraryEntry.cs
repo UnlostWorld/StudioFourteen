@@ -40,6 +40,7 @@ public class BNpcBaseLibraryEntry
 {
 	private readonly BNpcBase bNpcBase;
 	private readonly string? name;
+	private readonly ImageReference? icon;
 
 	public BNpcBaseLibraryEntry(SourceBase source, BNpcBase npc)
 		: base(source, npc.RowId)
@@ -49,6 +50,8 @@ public class BNpcBaseLibraryEntry
 		CustomizeData? customize = this.Customize;
 		if (customize == null)
 			return;
+
+		this.icon = customize.Value.GetIcon();
 
 		TagCollection? tags = this.bNpcBase.ModelChara.Value.ToTags();
 		if (tags != null)
@@ -79,19 +82,6 @@ public class BNpcBaseLibraryEntry
 
 	public override string? Name => string.IsNullOrEmpty(this.name) ? null : this.name;
 	public override string? SubTitle => $"#{this.bNpcBase.RowId}";
-
-	public ImageReference? Icon
-	{
-		get
-		{
-			CustomizeData? customize = this.Customize;
-			if (customize == null)
-				return null;
-
-			CustomizeData d = customize.Value;
-			return d.GetIcon();
-		}
-	}
 
 	public CustomizeData? Customize
 	{

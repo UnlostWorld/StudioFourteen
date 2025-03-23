@@ -62,7 +62,7 @@ public class CharaMakeCustomizeLibraryEntry : LibraryEntryBase
 	}
 
 	public override string? SubTitle => $"#{this.MakeCustomize.Value.FeatureID}";
-	public ImageReference? Icon => new ImageReference(this.MakeCustomize.Value.Icon);
+	public override object? Icon => new ImageReference(this.MakeCustomize.Value.Icon);
 
 	public override string? Name
 	{

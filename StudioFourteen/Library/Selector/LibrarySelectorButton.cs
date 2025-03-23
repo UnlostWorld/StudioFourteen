@@ -25,6 +25,7 @@ using System.Windows.Input;
 
 [DependencyProperty<Type>("Type")]
 [DependencyProperty<LibraryEntryBase>("Value", DefaultBindingMode = DefaultBindingMode.TwoWay)]
+[DependencyProperty<object>("Icon")]
 [DependencyProperty<object>("IconBackground")]
 [DependencyProperty<TagCollection>("SearchTags")]
 [DependencyProperty<object>("PopOutHeader")]
@@ -63,6 +64,11 @@ public partial class LibrarySelectorButton : Control
 			this.button.ToolTipOpening += this.OnToolTipOpening;
 			this.button.MouseLeave += this.OnMouseLeave;
 		}
+	}
+
+	partial void OnValueChanged()
+	{
+		this.Icon = this.Value?.Icon;
 	}
 
 	// Hijack the tooltip logic.

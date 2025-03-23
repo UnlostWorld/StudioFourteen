@@ -14,6 +14,7 @@
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
 namespace StudioFourteen.Files;
+
 using FontAwesome.Sharp;
 using StudioFourteen.Library;
 using StudioFourteen.Library.LibraryMenu;
@@ -30,6 +31,7 @@ public class PoseFileTypeInfo : JsonFileTypeInfoBase<PoseFile>
 {
 	public override string Extension => ".pose";
 	public override string TypeName => "Pose";
+	public override object? Icon => Resources.Find("ICON_Library_Entry_Pose");
 }
 
 [Serializable]

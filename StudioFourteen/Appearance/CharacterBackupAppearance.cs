@@ -28,6 +28,7 @@ public class CharacterBackupAppearance
 	: LibraryEntryBase, ICharacterAppearance
 {
 	private readonly string? name;
+	private readonly ImageReference? icon;
 
 	public unsafe CharacterBackupAppearance(Character* character)
 		: base(null)
@@ -39,7 +40,7 @@ public class CharacterBackupAppearance
 		this.Tags.Add("Named");
 
 		CustomizeData customize = this.DrawData.CustomizeData;
-		this.Icon = customize.GetIcon();
+		this.icon = customize.GetIcon();
 	}
 
 	public CharacterBackupAppearance(Character character)
@@ -52,14 +53,14 @@ public class CharacterBackupAppearance
 		this.Tags.Add("Named");
 
 		CustomizeData customize = this.DrawData.CustomizeData;
-		this.Icon = customize.GetIcon();
+		this.icon = customize.GetIcon();
 	}
 
 	public DrawDataContainer DrawData { get; private set; }
 	public int ModelId { get; private set; }
 	public override string Name => this.name ?? string.Empty;
 	public override string? SubTitle => null;
-	public ImageReference? Icon { get; private set; }
+	public override object? Icon => this.icon;
 
 	[LibraryMenu(IconChar.Plus, "LOC_AppearanceCreateCharacter")]
 	public Task Spawn()

@@ -16,6 +16,7 @@
 namespace StudioFourteen.Library.Sources;
 
 using StudioFourteen.Files;
+using StudioFourteen.Icons;
 using StudioFourteen.Library.Filters;
 using StudioFourteen.Library.LibraryMenu;
 using System;
@@ -125,8 +126,6 @@ public class FileSource : SourceBase
 public class FileEntry : LibraryEntryBase
 {
 	private readonly FileInfo fileInfo;
-	private string? iconPath;
-	private bool hasGeneratedIcon;
 
 	public FileEntry(SourceBase source, FileInfo file, FileTypeInfoBase typeInfo)
 		: base(source)
@@ -155,6 +154,18 @@ public class FileEntry : LibraryEntryBase
 	public override string Name => Path.GetFileNameWithoutExtension(this.fileInfo.Name);
 	public override string? SubTitle => this.fileInfo.DirectoryName;
 
+	public override object? Icon
+	{
+		get
+		{
+			object? typeIcon = this.TypeInfo.Icon;
+			if (typeIcon != null)
+				return new ThumbnailIcon(this.fileInfo, typeIcon);
+
+			return new ThumbnailIcon(this.fileInfo, Resources.Find("ICON_Library_Entry"));
+		}
+	}
+
 	public FileBase? File
 	{
 		get
@@ -176,20 +187,6 @@ public class FileEntry : LibraryEntryBase
 	public string? Description => this.File?.Description;
 	public string? Version => this.File?.Version;
 	public ImageSource? Image => this.File?.GetImage();
-
-	public string? IconPath
-	{
-		get
-		{
-			if (!this.hasGeneratedIcon)
-			{
-				this.hasGeneratedIcon = true;
-				ServiceManager.Instance.Thumbnails.GetThumbnail(this.fileInfo, this.OnThumbnailGenerated);
-			}
-
-			return this.iconPath;
-		}
-	}
 
 	public override bool IsType(Type type)
 	{
@@ -229,12 +226,6 @@ public class FileEntry : LibraryEntryBase
 	}
 
 	protected override string GetInternalId() => this.fileInfo.FullName;
-
-	private void OnThumbnailGenerated(string path)
-	{
-		this.iconPath = path;
-		this.NotifyPropertyChanged(nameof(FileEntry.IconPath));
-	}
 }
 
 public class DirectoryEntry : GroupEntryBase

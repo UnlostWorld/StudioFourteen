@@ -67,7 +67,7 @@ public class ItemLibraryEntry : ExcelLibraryEntry
 
 	public override string? Name => this.Item.Name.GetString();
 	public string? Description => this.Item.Description.GetString();
-	public ImageReference? Icon => new ImageReference(this.Item.Icon);
+	public override object? Icon => new ImageReference(this.Item.Icon);
 
 	public int EquipLevel => this.Item.LevelEquip;
 
