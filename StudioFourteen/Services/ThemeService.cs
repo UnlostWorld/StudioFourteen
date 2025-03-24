@@ -17,47 +17,24 @@ namespace StudioFourteen.Services;
 
 using PropertyChanged.SourceGenerator;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Reflection;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Media;
-using TerraFX.Interop.Windows;
 using WpfUtils.Extensions;
-using StudioFourteen.Themes;
-using static FFXIVClientStructs.FFXIV.Component.GUI.AtkUIColorHolder.Delegates;
 
 public partial class ThemeService : ServiceBase
 {
-	private Trim? trimColor;
-
 	[Notify] private Theme? currentTheme;
 	[Notify] private LauncherButton? launcher;
-	[Notify] private List<Trim>? trimColors;
 
 	public ObservableCollection<Theme> Themes { get; init; } = new();
 	public ObservableCollection<LauncherButton> Launchers { get; init; } = new();
 
-	public Trim? TrimColor
-	{
-		get => this.trimColor;
-		set
-		{
-			lock(this)
-			{
-				this.trimColor = value;
-				this.OnTrimColorChanged(value);
-				this.RaisePropertyChanged();
-			}
-		}
-	}
-
 	public override Task Initialize()
 	{
-		this.Themes.Add(new("Dark", "pack://application:,,,/StudioFourteen;component/Themes/Dark.xaml"));
-		this.Themes.Add(new("Light", "pack://application:,,,/StudioFourteen;component/Themes/Light.xaml"));
-		this.Themes.Add(new("Nier", "pack://application:,,,/StudioFourteen;component/Themes/Nier.xaml"));
+		this.Themes.Add(new("Dark", "pack://application:,,,/StudioFourteen;component/Themes/StudioDark.xaml"));
+		this.Themes.Add(new("Light", "pack://application:,,,/StudioFourteen;component/Themes/StudioLight.xaml"));
+		this.Themes.Add(new("Nier", "pack://application:,,,/StudioFourteen;component/Themes/StudioNier.xaml"));
 
 		this.Launchers.Add(new(
 			"Default",
@@ -83,19 +60,6 @@ public partial class ThemeService : ServiceBase
 			}
 		}
 
-		this.LoadTrimColors(this.CurrentTheme);
-
-		if (this.TrimColors != null)
-		{
-			foreach (Trim trim in this.TrimColors)
-			{
-				if (trim.Name == this.Settings.TrimColor)
-				{
-					this.TrimColor = trim;
-				}
-			}
-		}
-
 		foreach (LauncherButton launcher in this.Launchers)
 		{
 			if (launcher.Name == this.Settings.Launcher)
@@ -118,14 +82,8 @@ public partial class ThemeService : ServiceBase
 			if (oldTheme != null)
 				Resources.UnMergeDictionary(new(oldTheme.Path));
 
-			Resources.Clear("TrimBrush");
-
-			this.LoadTrimColors(newTheme);
-
 			this.Settings.Theme = newTheme.Name;
-
 			Resources.MergeDictionary(new(newTheme.Path));
-			this.OnTrimColorChanged(this.TrimColor);
 
 			this.Services.Panels.RestartPanels().Run();
 		}
@@ -133,16 +91,6 @@ public partial class ThemeService : ServiceBase
 		{
 			this.Log.Error(e, "changing theme");
 		}
-	}
-
-	private void OnTrimColorChanged(Trim? newColor)
-	{
-		if (newColor == null)
-			return;
-
-		this.Settings.TrimColor = newColor.Name;
-
-		Resources.Set("TrimBrush", () => new SolidColorBrush(newColor.Color));
 	}
 
 	private void OnLauncherChanged(LauncherButton? oldTheme, LauncherButton? newTheme)
@@ -157,64 +105,6 @@ public partial class ThemeService : ServiceBase
 		Resources.MergeDictionary(new(newTheme.Path));
 
 		this.Services.Panels.RestartPanels().Run();
-	}
-
-	private void LoadTrimColors(Theme? newTheme)
-	{
-		try
-		{
-			lock (this)
-			{
-				if (newTheme == null)
-					return;
-
-				ResourceDictionary dictionary = new ResourceDictionary();
-				dictionary.Source = new(newTheme.Path);
-				this.TrimColors = null;
-
-				if (!dictionary.Contains("TrimColors"))
-					return;
-
-				Array? trimColors = dictionary["TrimColors"] as Array;
-				if (trimColors == null)
-					return;
-
-				string? oldTrimColor = this.Settings.TrimColor;
-				Trim? newTrimColor = null;
-
-				List<Trim> newColors = new();
-
-				foreach (object? trimColorObject in trimColors)
-				{
-					if (trimColorObject == null)
-						continue;
-
-					TrimColor? trimColor = trimColorObject as TrimColor;
-					if (trimColor == null || trimColor.Name == null || trimColor.Color == null)
-						continue;
-
-					Trim newTrim = new(trimColor.Name, trimColor.Color.Value);
-					newColors.Add(newTrim);
-
-					if (oldTrimColor != null && trimColor.Name == oldTrimColor)
-					{
-						newTrimColor = newTrim;
-					}
-				}
-
-				this.TrimColors = newColors;
-				if (newTrimColor == null && newColors.Count > 0)
-					newTrimColor = newColors[0];
-
-				this.TrimColor = newTrimColor;
-
-				this.Log.Information($"new trim color {newTrimColor} --> {this.TrimColor} ?????????");
-			}
-		}
-		catch (Exception e)
-		{
-			this.Log.Error(e, "caught");
-		}
 	}
 }
 

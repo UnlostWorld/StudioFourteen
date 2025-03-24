@@ -157,7 +157,7 @@ public partial class SettingsService : ServiceBase
 		[Notify] private List<string> openPanels = new();
 		[Notify] private Dictionary<string, Launcher.TaskBarEntrySave> minimizedTaskBarEntries = new();
 		[Notify] private string theme = "Dark";
-		[Notify] private string trimColor = "Pink";
+		[Notify] private Dictionary<string, string> themeOptions = new();
 		[Notify] private string launcher = "Default";
 		[Notify] private bool isAioWindowOpen = false;
 

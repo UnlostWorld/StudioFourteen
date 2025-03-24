@@ -2,7 +2,6 @@
                     xmlns:themes="clr-namespace:StudioFourteen.Themes">
 
 	<SolidColorBrush x:Key="ForegroundBrush" Color="#585438" />
-
 	<SolidColorBrush x:Key="ForegroundLightBrush" Color="#585438" />
 
 	<DrawingBrush
@@ -50,9 +49,7 @@
 	</DrawingBrush>
 
 	<SolidColorBrush x:Key="ControlHighlightBrush" Color="#585438" />
-
 	<SolidColorBrush x:Key="ControlBackgroundSelectedBrush" Color="#585438" />
-
 	<SolidColorBrush x:Key="ControlForegroundHighlightBrush" Color="#CCC8AF" />
 
 	<CornerRadius x:Key="WpfUtilsBorderInnerCornerRadius">0</CornerRadius>

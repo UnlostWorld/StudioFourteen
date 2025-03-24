@@ -2,31 +2,43 @@
                     xmlns:themes="clr-namespace:StudioFourteen.Themes">
 
 	<SolidColorBrush x:Key="ForegroundBrush" Color="#ECECEC" />
-
 	<SolidColorBrush x:Key="ForegroundLightBrush" Color="#838383" />
-
 	<SolidColorBrush x:Key="BackgroundBrush" Color="#222222" />
-
 	<SolidColorBrush x:Key="BackgroundLightBrush" Color="#333333" />
-
 	<SolidColorBrush x:Key="TrimBrush" Color="#FF1493" />
-
 	<SolidColorBrush x:Key="ControlBackgroundBrush" Color="#171717" />
-
 	<SolidColorBrush x:Key="ControlHighlightBrush" Color="#343434" />
-
 	<SolidColorBrush x:Key="ControlForegroundHighlightBrush" Color="#ECECEC" />
-
 	<SolidColorBrush x:Key="ControlBackgroundSelectedBrush" Color="#222222" />
 
-    <x:Array x:Key="TrimColors" Type="{x:Type themes:TrimColor}">
-        <themes:TrimColor Name="Pink" Color="#FF1493"/>
-        <themes:TrimColor Name="Blue" Color="#1484FF"/>
-        <themes:TrimColor Name="Teal" Color="#14FFB3"/>
-        <themes:TrimColor Name="Green" Color="#5CFF14"/>
-        <themes:TrimColor Name="Yellow" Color="#FBFF14"/>
-        <themes:TrimColor Name="Orange" Color="#FF7C14"/>
-        <themes:TrimColor Name="Red" Color="#FF1414"/>
-    </x:Array>
+	<themes:ThemeOptionsSet Name="Trim Color" x:Key="ThemeOptions" Key="TrimBrush">
+		<themes:ThemeOption Name="Pink">
+			<SolidColorBrush Color="#FF1493" />
+		</themes:ThemeOption>
+
+		<themes:ThemeOption Name="Blue">
+			<SolidColorBrush Color="#1484FF" />
+		</themes:ThemeOption>
+
+		<themes:ThemeOption Name="Teal">
+			<SolidColorBrush Color="#14FFB3" />
+		</themes:ThemeOption>
+
+		<themes:ThemeOption Name="Green">
+			<SolidColorBrush Color="#5CFF14" />
+		</themes:ThemeOption>
+
+		<themes:ThemeOption Name="Yellow">
+			<SolidColorBrush Color="#FBFF14" />
+		</themes:ThemeOption>
+
+		<themes:ThemeOption Name="Orange">
+			<SolidColorBrush Color="#FF7C14" />
+		</themes:ThemeOption>
+
+		<themes:ThemeOption Name="Red">
+			<SolidColorBrush Color="#FF1414" />
+		</themes:ThemeOption>
+	</themes:ThemeOptionsSet>
 
 </ResourceDictionary>
