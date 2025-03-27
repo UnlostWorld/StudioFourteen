@@ -23,6 +23,7 @@ using FontAwesome.Sharp;
 using Lumina.Excel.Sheets;
 using StudioFourteen.Context;
 using StudioFourteen.Files;
+using StudioFourteen.Interop;
 using StudioFourteen.Plugin;
 using StudioFourteen.Services;
 using StudioFourteen.Utilities;
@@ -38,11 +39,7 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 	private readonly GroupPoseCharactersLibrarySource provider = new();
 	private readonly ConcurrentDictionary<int, CharacterBackupAppearance> backup = new();
 
-	private Hook<EnforceKindRestrictionsDelegate>? enforceKindRestrictionsHook;
-
 	public delegate void AppearanceChangedDelegate(int objectTableIndex);
-	private delegate byte EnforceKindRestrictionsDelegate(nint a1, nint a2);
-
 	public event AppearanceChangedDelegate? OnAppearanceChanged;
 
 	public override Task Start()
@@ -71,15 +68,14 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 	{
 		base.Attach();
 
-		this.enforceKindRestrictionsHook = InteropService.HookFromSignature<EnforceKindRestrictionsDelegate>("E8 ?? ?? ?? ?? 41 B0 ?? 48 8B D6 48 8B", this.EnforceKindRestrictionsDetour);
-		this.enforceKindRestrictionsHook?.Enable();
+		Hooks.EnforceKind.Enable(this.EnforceKindRestrictionsDetour);
 	}
 
 	public override void Detach()
 	{
 		base.Detach();
 
-		this.enforceKindRestrictionsHook?.Dispose();
+		Hooks.EnforceKind.Disable();
 	}
 
 	public unsafe bool CanRestore(Character* character)

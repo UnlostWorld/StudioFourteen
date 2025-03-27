@@ -20,6 +20,7 @@ using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
 using FFXIVClientStructs.FFXIV.Common.Lua;
 using SixLabors.ImageSharp.PixelFormats;
+using StudioFourteen.Interop;
 using StudioFourteen.Plugin;
 using StudioFourteen.Reshade;
 using StudioFourteen.Utilities;
@@ -48,7 +49,6 @@ public class GameCaptureService : ServiceBase
 	private readonly object lockObj = new();
 	private readonly HashSet<ICaptureListener> listeners = new();
 
-	private Hook<InterfaceManager.ReshadeOnPresentDelegate>? reshadeOnPresentHook;
 	private byte[] bufferBgraData = Array.Empty<byte>();
 
 	private int backBufferWidth = 0;
@@ -93,9 +93,7 @@ public class GameCaptureService : ServiceBase
 
 		if (SwapChainHelper.IsReshade)
 		{
-			this.reshadeOnPresentHook = InteropService.HookFromAddress<InterfaceManager.ReshadeOnPresentDelegate>(SwapChainHelper.ReshadeOnPresent, this.ReshadeOnPresentDetour);
-			this.reshadeOnPresentHook?.Enable();
-
+			Hooks.ReshadeOnPresent.Enable(SwapChainHelper.ReshadeOnPresent, this.ReshadeOnPresentDetour);
 			InterfaceManager.DisableReshadePresent();
 		}
 
@@ -112,8 +110,7 @@ public class GameCaptureService : ServiceBase
 			InterfaceManager.EnableReshadePresent();
 		}
 
-		if (this.reshadeOnPresentHook != null && !this.reshadeOnPresentHook.IsDisposed)
-			this.reshadeOnPresentHook.Dispose();
+		Hooks.ReshadeOnPresent.Disable();
 
 		this.backBufferTexture.Dispose();
 	}
@@ -237,10 +234,7 @@ public class GameCaptureService : ServiceBase
 	// get rendered _after_ our capture is complete, since we disable their hook.
 	private void ReshadeOnPresentDetour(nint swapChain, uint flags, nint presentParams)
 	{
-		if (this.reshadeOnPresentHook == null)
-			return;
-
-		this.reshadeOnPresentHook.Original(swapChain, flags, presentParams);
+		Hooks.ReshadeOnPresent.Original(swapChain, flags, presentParams);
 
 		this.Capture();
 

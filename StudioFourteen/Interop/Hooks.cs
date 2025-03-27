@@ -1,0 +1,100 @@
+﻿// .                    @@             _____ _______ _    _ _____ _____ ____
+//          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
+//         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
+//         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
+//        @@@@       @@@@@@@          ____) |  | |  | |__| | |__| || || |__| |
+//    @@@@@             @@@          |_____/   |_|   \____/|_____/_____\____/
+//     @@@      @@@      @@        ___     _    _   _  __   _____  ___  ___  _  _
+//      @@    @@@@@@@    @@       |  _|  / _ \ | | | || _ \|_   _|| __|| __|| \| |
+//      @@    @@@@@@@    @   @    | __| | (_) || |_| ||   /  | |  | _| | _| | .` |
+//    @@@@      @@@      @@@@     |_|    \___/  \___/ |_|_\  |_|  |___||___||_|\_|
+//     @@@@             @@@        https://github.com/UnlostWorld/StudioFourteen
+//       @@@@@      @@@@@
+//        @@@@@@@@@@@@@@                This software is licensed under the
+//            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
+
+namespace StudioFourteen.Interop;
+
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using FFXIVClientStructs.FFXIV.Client.UI;
+using StudioFourteen.Plugin;
+using System;
+using System.Runtime.InteropServices;
+
+public static class Hooks
+{
+	#pragma warning disable SA1201
+
+	// Brio Signatures:
+	// 		https://github.com/Etheirys/Brio
+	// 		Special thanks to @Minmoose, @AsgardXIV
+
+	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Actor/ActorAppearanceService.cs#L58
+	public delegate byte EnforceKindRestrictionsDelegate(nint a1, nint a2);
+	public static readonly SignatureHook<EnforceKindRestrictionsDelegate> EnforceKind = new("E8 ?? ?? ?? ?? 41 B0 ?? 48 8B D6 48 8B");
+
+	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Camera/CameraService.cs#L60
+	public unsafe delegate nint SceneCameraUpdateDelegate(FFXIVClientStructs.FFXIV.Client.Graphics.Scene.Camera* sceneCamera);
+	public static readonly SignatureHook<SceneCameraUpdateDelegate> SceneCameraUpdate = new("48 ?? ?? ?? ?? ?? 48 81 EC ?? ?? ?? ?? F6 81 EC ?? ?? ?? ?? 48 8B ?? 48 ?? ?? ??");
+
+	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Camera/CameraService.cs#L60
+	public unsafe delegate void CameraMatrixLoadDelegate(FFXIVClientStructs.FFXIV.Client.Graphics.Render.Camera* camera, nint a1);
+	public static readonly SignatureHook<CameraMatrixLoadDelegate> CameraMatrixLoad = new("E8 ?? ?? ?? ?? 48 8B 93 90 02 ?? ?? 48 8D 4C 24 40");
+
+	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Camera/CameraService.cs#L60
+	public unsafe delegate nint GPoseCameraUpdateDelegate(StudioFourteen.Cameras.GroupPoseCamera* camera);
+	public static readonly SignatureHook<GPoseCameraUpdateDelegate> GPoseCameraUpdate = new("40 55 53 57 48 8D 6C 24 A0 48 81 EC ?? ?? ?? ?? 48 8B 1D");
+
+	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Posing/SkeletonService.cs#L59
+	public delegate nint UpdateBonePhysicsDelegate(nint a1);
+	public static readonly SignatureHook<UpdateBonePhysicsDelegate> UpdateBonePhysics = new("48 89 5C 24 ?? 48 89 6C 24 ?? 48 89 74 24 ?? 57 41 56 41 57 48 83 EC ?? 48 8B 79 ?? 45 33 FF");
+
+	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Posing/SkeletonService.cs#L63
+	public delegate void FinalizeSkeletonsDelegate(nint a1);
+	public static readonly SignatureHook<FinalizeSkeletonsDelegate> FinalizeSkeletons = new("40 53 57 41 55 48 83 EC ?? 65 48 8B 04 25 58");
+
+	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Core/ObjectMonitorService.cs#L40
+	public unsafe delegate nint CharacterEventDelegate(Character* character);
+	public static readonly SignatureHook<CharacterEventDelegate> CharacterInitialize = new("E8 ?? ?? ?? ?? 8D 57 ?? C6 83");
+
+	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Core/ObjectMonitorService.cs#L44
+	public static readonly SignatureHook<CharacterEventDelegate> CharacterFinalize = new("48 89 5C 24 ?? 48 89 74 24 ?? 57 48 83 EC ?? 48 8D 05 ?? ?? ?? ?? 48 8B D9 48 89 01 48 8D 05 ?? ?? ?? ?? 48 89 81 ?? ?? ?? ?? 48 81 C1");
+
+	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/World/TimeService.cs#L98
+	public delegate void UpdateEorzeaTimeDelegate(IntPtr a1, IntPtr a2);
+	public static readonly SignatureHook<UpdateEorzeaTimeDelegate> UpdateEorzeaTime = new("48 89 5C 24 ?? 57 48 83 EC ?? 48 8B F9 48 8B DA 48 81 C1 ?? ?? ?? ?? E8 ?? ?? ?? ?? 4C");
+
+	// Dalamud Signatures:
+	//  	https://github.com/goatcorp/Dalamud
+	// 		Special thanks to @goaaats
+
+	// https://github.com/goatcorp/Dalamud/blob/master/Dalamud/Game/ClientState/ClientStateAddressResolver.cs#L47
+	public delegate int ControllerPollDelegate(IntPtr controllerInput);
+	public static readonly SignatureHook<ControllerPollDelegate> ControllerPoll = new("40 55 53 57 41 54 41 57 48 8D AC 24 ?? ?? ?? ?? 48 81 EC ?? ?? ?? ?? 44 0F 29 B4 24");
+
+	// https://github.com/goatcorp/Dalamud/blob/master/Dalamud/Game/Addon/Events/AddonEventManagerAddressResolver.cs
+	public unsafe delegate nint UpdateGameCursorDelegate(RaptureAtkModule* module);
+	public static readonly SignatureHook<UpdateGameCursorDelegate> UpdateGameCursor = new("48 89 74 24 ?? 48 89 7C 24 ?? 41 56 48 83 EC 20 4C 8B F1 E8 ?? ?? ?? ?? 49 8B CE");
+
+	// https://github.com/goatcorp/Dalamud/blob/master/Dalamud/Interface/Internal/InterfaceManager.cs#L1043
+	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
+	public delegate IntPtr SetUser32CursorDelegate(IntPtr hCursor);
+	public static readonly ImportHook<SetUser32CursorDelegate> SetCursor = new(null, "user32.dll", "SetCursor", 0);
+
+	// Title Edit Signatures:
+	// 		https://github.com/Caraxi/TitleEditPlugin
+	// 		Special thanks to @Caraxi
+
+	// https://github.com/Caraxi/TitleEditPlugin/blob/master/TitleEdit/TitleEditAddressResolver.cs#L40
+	public delegate int CreateSceneDelegate(string p1, uint p2, IntPtr p3, uint p4, IntPtr p5, int p6, uint p7);
+	public static readonly SignatureHook<CreateSceneDelegate> CreateScene = new("E8 ?? ?? ?? ?? 66 89 1D ?? ?? ?? ?? E9 ?? ?? ?? ??");
+
+	// Other Hooks
+	public unsafe delegate bool EnterGroupPoseDelegate(UIModule* uiModule);
+	public static readonly AddressHook<EnterGroupPoseDelegate> EnterGroupPose = new();
+
+	public unsafe delegate void ExitGroupPoseDelegate(UIModule* uiModule);
+	public static readonly AddressHook<ExitGroupPoseDelegate> ExitGroupPose = new();
+
+	public static readonly AddressHook<InterfaceManager.ReshadeOnPresentDelegate> ReshadeOnPresent = new();
+}

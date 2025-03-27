@@ -17,6 +17,7 @@ namespace StudioFourteen.Cameras;
 
 using Dalamud.Hooking;
 using Dalamud.Plugin.Services;
+using StudioFourteen.Interop;
 using StudioFourteen.Plugin;
 using StudioFourteen.Services;
 using System;
@@ -57,10 +58,6 @@ public class CameraService : ServiceBase
 	private const float CameraBlendTimeMs = 1000;
 	private readonly Stopwatch blendWatch = new();
 
-	private Hook<GPoseCameraUpdateDelegate>? gPoseCameraUpdateHook;
-	private Hook<SceneCameraUpdateDelegate>? sceneCameraUpdateHook;
-	private Hook<CameraMatrixLoadDelegate>? cameraMatrixLoadHook;
-
 	private StudioCameraBase? current;
 	private StudioCameraBase? last;
 	private CameraState state = default;
@@ -68,9 +65,6 @@ public class CameraService : ServiceBase
 
 	public delegate void CamerasChangedDelegate();
 	public delegate void CameraChangedDelegate(StudioCameraBase? oldCamera, StudioCameraBase? newCamera);
-	private unsafe delegate nint GPoseCameraUpdateDelegate(GroupPoseCamera* camera);
-	private unsafe delegate nint SceneCameraUpdateDelegate(SceneCamera* sceneCamera);
-	private unsafe delegate void CameraMatrixLoadDelegate(RenderCamera* camera, nint a1);
 
 	public event CamerasChangedDelegate? CamerasChanged;
 	public event CameraChangedDelegate? CurrentCameraChanged;
@@ -126,14 +120,9 @@ public class CameraService : ServiceBase
 
 		this.InitialCamera = *(GroupPoseCamera*)CameraManager.Instance()->Camera;
 
-		this.sceneCameraUpdateHook = InteropService.HookFromSignature<SceneCameraUpdateDelegate>("48 ?? ?? ?? ?? ?? 48 81 EC ?? ?? ?? ?? F6 81 EC ?? ?? ?? ?? 48 8B ?? 48 ?? ?? ??", this.SceneCameraUpdateDetour);
-		this.sceneCameraUpdateHook?.Enable();
-
-		this.cameraMatrixLoadHook = InteropService.HookFromSignature<CameraMatrixLoadDelegate>("E8 ?? ?? ?? ?? 48 8B 93 90 02 ?? ?? 48 8D 4C 24 40", this.CameraMatrixLoad);
-		this.cameraMatrixLoadHook?.Enable();
-
-		this.gPoseCameraUpdateHook = InteropService.HookFromSignature<GPoseCameraUpdateDelegate>("40 55 53 57 48 8D 6C 24 A0 48 81 EC ?? ?? ?? ?? 48 8B 1D", this.GroupPoseCameraUpdateDetour);
-		this.gPoseCameraUpdateHook?.Enable();
+		Hooks.SceneCameraUpdate.Enable(this.SceneCameraUpdateDetour);
+		Hooks.CameraMatrixLoad.Enable(this.CameraMatrixLoad);
+		Hooks.GPoseCameraUpdate.Enable(this.GroupPoseCameraUpdateDetour);
 
 		// Special case to reinitialize the orbit target camera each time
 		// the camera service attaches so that any changes to the group pose camera
@@ -161,9 +150,9 @@ public class CameraService : ServiceBase
 			camera->Rotation = this.InitialCamera.Value.Rotation;
 		}
 
-		this.sceneCameraUpdateHook?.Dispose();
-		this.cameraMatrixLoadHook?.Dispose();
-		this.gPoseCameraUpdateHook?.Dispose();
+		Hooks.SceneCameraUpdate.Disable();
+		Hooks.CameraMatrixLoad.Disable();
+		Hooks.GPoseCameraUpdate.Disable();
 
 		this.blendWatch.Stop();
 	}
@@ -247,9 +236,6 @@ public class CameraService : ServiceBase
 
 	private unsafe nint GroupPoseCameraUpdateDetour(GroupPoseCamera* camera)
 	{
-		if (this.gPoseCameraUpdateHook == null)
-			return 0;
-
 		if (this.Services.GroupPose.IsGroupPosing
 			&& !this.doAttachBlend
 			&& this.current != null)
@@ -257,15 +243,12 @@ public class CameraService : ServiceBase
 			this.current?.UpdateGroupPoseCamera(camera);
 		}
 
-		return this.gPoseCameraUpdateHook.Original(camera);
+		return Hooks.GPoseCameraUpdate.Original(camera);
 	}
 
 	private unsafe nint SceneCameraUpdateDetour(SceneCamera* camera)
 	{
-		if (this.sceneCameraUpdateHook == null)
-			return 0;
-
-		nint result = this.sceneCameraUpdateHook.Original(camera);
+		nint result = Hooks.SceneCameraUpdate.Original(camera);
 
 		if (this.Services.GroupPose.IsGroupPosing && this.current != null)
 		{
@@ -346,9 +329,6 @@ public class CameraService : ServiceBase
 
 	private unsafe void CameraMatrixLoad(RenderCamera* camera, nint a1)
 	{
-		if (this.cameraMatrixLoadHook == null || this.cameraMatrixLoadHook.IsDisposed)
-			return;
-
-		this.cameraMatrixLoadHook.Original(camera, a1);
+		Hooks.CameraMatrixLoad.Original(camera, a1);
 	}
 }

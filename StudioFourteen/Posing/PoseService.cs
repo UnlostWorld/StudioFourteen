@@ -24,6 +24,7 @@ using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
 using FontAwesome.Sharp;
 using StudioFourteen.Context;
 using StudioFourteen.Files;
+using StudioFourteen.Interop;
 using StudioFourteen.Plugin;
 using StudioFourteen.Selection;
 using StudioFourteen.Services;
@@ -64,12 +65,6 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 	private readonly Dictionary<BoneId, BoneReference> boneReferences = new();
 	private readonly PoseSkeletonOverlay poseSkeletonOverlay = new();
 
-	private Hook<UpdateBonePhysicsDelegate>? updateBonePhysicsHook;
-	private Hook<FinalizeSkeletonsDelegate>? finalizeSkeletonsHook;
-
-	private delegate nint UpdateBonePhysicsDelegate(nint a1);
-	private delegate void FinalizeSkeletonsDelegate(nint a1);
-
 	public static string? GetMirrorBoneName(string name)
 	{
 		if (name.EndsWith("_l"))
@@ -105,13 +100,8 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 	{
 		base.Attach();
 
-		this.updateBonePhysicsHook = InteropService.HookFromSignature<UpdateBonePhysicsDelegate>("48 89 5C 24 ?? 48 89 6C 24 ?? 48 89 74 24 ?? 57 41 56 41 57 48 83 EC ?? 48 8B 79 ?? 45 33 FF", this.UpdateBonePhysicsDetour);
-		this.updateBonePhysicsHook?.Enable();
-
-		// JMP in Framework.TaskRenderGraphicsRender
-		this.finalizeSkeletonsHook = InteropService.HookFromSignature<FinalizeSkeletonsDelegate>("40 53 57 41 55 48 83 EC ?? 65 48 8B 04 25 58", this.FinalizeSkeletonDetour);
-		this.finalizeSkeletonsHook?.Enable();
-
+		Hooks.UpdateBonePhysics.Enable(this.UpdateBonePhysicsDetour);
+		Hooks.FinalizeSkeletons.Enable(this.FinalizeSkeletonDetour);
 		this.poseSkeletonOverlay.Enable();
 	}
 
@@ -119,8 +109,8 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 	{
 		base.Detach();
 
-		this.updateBonePhysicsHook?.Dispose();
-		this.finalizeSkeletonsHook?.Dispose();
+		Hooks.UpdateBonePhysics.Disable();
+		Hooks.FinalizeSkeletons.Disable();
 
 		this.poseSkeletonOverlay.Disable();
 	}
@@ -620,10 +610,7 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 
 	private unsafe nint UpdateBonePhysicsDetour(nint a1)
 	{
-		if (this.updateBonePhysicsHook == null)
-			return 0;
-
-		nint result = this.updateBonePhysicsHook.Original(a1);
+		nint result = Hooks.UpdateBonePhysics.Original(a1);
 
 		try
 		{
@@ -642,10 +629,7 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 
 	private void FinalizeSkeletonDetour(nint a1)
 	{
-		if (this.finalizeSkeletonsHook == null)
-			return;
-
-		this.finalizeSkeletonsHook.Original(a1);
+		Hooks.FinalizeSkeletons.Original(a1);
 
 		try
 		{

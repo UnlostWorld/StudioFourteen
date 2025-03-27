@@ -25,13 +25,11 @@ using FFXIVClientStructs.FFXIV.Client.Graphics.Environment;
 using Lumina.Excel.Sheets;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using StudioFourteen.Utilities;
+using StudioFourteen.Interop;
 
 public partial class EnvironmentService
 	: ServiceBase
 {
-	private Hook<CreateSceneDelegate>? createSceneHook;
-	private Hook<UpdateEorzeaTimeDelegate>? updateEorzeaTimeHook;
-
 	private long lastEorzeaTime;
 	private long? nextEorzeaTime;
 
@@ -41,9 +39,6 @@ public partial class EnvironmentService
 	[Notify] private Weather? currentWeather;
 	[Notify] private bool freezeTime = false;
 	[Notify] private string time = string.Empty;
-
-	private delegate int CreateSceneDelegate(string p1, uint p2, IntPtr p3, uint p4, IntPtr p5, int p6, uint p7);
-	private delegate void UpdateEorzeaTimeDelegate(IntPtr a1, IntPtr a2);
 
 	public long EorzeaTime
 	{
@@ -104,11 +99,8 @@ public partial class EnvironmentService
 		if (DalamudServices.ClientState == null)
 			return;
 
-		this.createSceneHook = InteropService.HookFromSignature<CreateSceneDelegate>("E8 ?? ?? ?? ?? 66 89 1D ?? ?? ?? ?? E9 ?? ?? ?? ??", this.HandleCreateScene);
-		this.createSceneHook?.Enable();
-
-		this.updateEorzeaTimeHook = InteropService.HookFromSignature<UpdateEorzeaTimeDelegate>("48 89 5C 24 ?? 57 48 83 EC ?? 48 8B F9 48 8B DA 48 81 C1 ?? ?? ?? ?? E8 ?? ?? ?? ?? 4C", this.UpdateEorzeaTime);
-		this.updateEorzeaTimeHook?.Enable();
+		Hooks.CreateScene.Enable(this.HandleCreateScene);
+		Hooks.UpdateEorzeaTime.Enable(this.UpdateEorzeaTime);
 	}
 
 	public override void Detach()
@@ -116,8 +108,8 @@ public partial class EnvironmentService
 		if (DalamudServices.ClientState == null)
 			return;
 
-		this.createSceneHook?.Dispose();
-		this.updateEorzeaTimeHook?.Dispose();
+		Hooks.CreateScene.Disable();
+		Hooks.UpdateEorzeaTime.Disable();
 		base.Detach();
 	}
 
@@ -132,7 +124,7 @@ public partial class EnvironmentService
 			if (string.IsNullOrEmpty(background))
 				return;
 
-			this.createSceneHook?.Original(background, territory.RowId, 0, 0, 0, -1, 0);
+			Hooks.CreateScene.Original(background, territory.RowId, 0, 0, 0, -1, 0);
 			this.CurrentTerritory = territory;
 		});
 	}
@@ -210,12 +202,9 @@ public partial class EnvironmentService
 	{
 		this.Log.Information($"Changed Scene: {backgroundPath}");
 
-		if (this.createSceneHook == null)
-			return 0;
-
 		this.CurrentTerritory = this.Services.GameData.GetRow<TerritoryType>(territoryId);
 
-		return this.createSceneHook.Original(backgroundPath, territoryId, p3, layerFilterKey, p5, p6, contentFinderConditionId);
+		return Hooks.CreateScene.Original(backgroundPath, territoryId, p3, layerFilterKey, p5, p6, contentFinderConditionId);
 	}
 
 	private void UpdateEorzeaTime(IntPtr a1, IntPtr a2)
@@ -223,7 +212,7 @@ public partial class EnvironmentService
 		if (this.FreezeTime)
 			return;
 
-		this.updateEorzeaTimeHook?.Original(a1, a2);
+		Hooks.UpdateEorzeaTime.Original(a1, a2);
 	}
 
 	private unsafe bool GetCanChangeTerritory()

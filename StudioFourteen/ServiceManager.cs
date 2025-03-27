@@ -22,7 +22,6 @@ public class ServiceManager : ServiceManagerBase
 	public static new ServiceManager Instance => (ServiceManager)ServiceManagerBase.Instance;
 
 	public Online.OnlineService Online { get; init; } = new();
-	public InteropService Interop { get; init; } = new();
 	public Mvm.AutoPropertyNotifyService AutoNotify { get; init; } = new();
 	public WindowService Windows { get; init; } = new();
 	public Settings.SettingsService Settings { get; init; } = new();

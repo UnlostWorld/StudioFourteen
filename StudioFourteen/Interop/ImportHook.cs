@@ -13,39 +13,33 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services;
+namespace StudioFourteen.Interop;
 
+using Dalamud.Hooking;
+using StudioFourteen.Plugin;
 using System;
-using FFXIVClientStructs.FFXIV.Client.UI;
-using StudioFourteen.Interop;
+using System.Diagnostics;
 
-public class CursorService : ServiceBase
+public class ImportHook<TDelegate>(ProcessModule? module, string moduleName, string functionName, uint hintOrOrdinal)
+	: HookBase<TDelegate>
+	where TDelegate : Delegate
 {
-	public unsafe override void Attach()
+	protected override Hook<TDelegate>? Create(TDelegate detour)
 	{
-		base.Attach();
+		if (DalamudServices.InteropProvider == null)
+			return null;
 
-		Hooks.UpdateGameCursor.Enable(this.UpdateCursorDetour);
-		Hooks.SetCursor.Enable(this.SetCursorDetour);
-	}
+		string name = typeof(TDelegate).Name;
 
-	public override void Detach()
-	{
-		base.Detach();
-		Hooks.UpdateGameCursor.Disable();
-		Hooks.SetCursor.Disable();
-	}
-
-	private unsafe nint UpdateCursorDetour(RaptureAtkModule* module)
-    {
-		return Hooks.UpdateGameCursor.Original(module);
-    }
-
-	private IntPtr SetCursorDetour(IntPtr hCursor)
-	{
-		if (this.Services.Windows.IsMouseOverWindow())
-			return IntPtr.Zero;
-
-		return Hooks.SetCursor.Original(hCursor);
+		try
+		{
+			Logging.Shared.Information($"Creating Hook {name} for import {functionName} in {moduleName}");
+			return DalamudServices.InteropProvider.HookFromImport(module, moduleName, functionName, hintOrOrdinal, detour);
+		}
+		catch (Exception ex)
+		{
+			Logging.ForContext<DalamudServices>().Error(ex, $"Error creating hook {name} from import");
+			return null;
+		}
 	}
 }

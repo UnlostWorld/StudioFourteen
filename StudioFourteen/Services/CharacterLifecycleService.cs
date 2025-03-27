@@ -22,6 +22,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FontAwesome.Sharp;
 using StudioFourteen.Appearance;
 using StudioFourteen.Context;
+using StudioFourteen.Interop;
 using StudioFourteen.Mvm;
 using StudioFourteen.Plugin;
 using StudioFourteen.Utilities;
@@ -37,11 +38,7 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 {
 	private static readonly List<ushort> CreatedIndexes = new();
 
-	private Hook<CharacterEventDelegate>? characterInitializeHook;
-	private Hook<CharacterEventDelegate>? characterFinalizeHook;
-
 	public delegate void CharacterDelegate(int objectTableIndex);
-	private unsafe delegate nint CharacterEventDelegate(Character* character);
 
 	public event CharacterDelegate? CharacterCreated;
 	public event CharacterDelegate? CharacterDestroyed;
@@ -201,19 +198,15 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 	{
 		base.Attach();
 
-		this.characterInitializeHook = InteropService.HookFromSignature<CharacterEventDelegate>("E8 ?? ?? ?? ?? 8D 57 ?? C6 83", this.CharacterInitializeDetour);
-		this.characterInitializeHook?.Enable();
-
-		this.characterFinalizeHook = InteropService.HookFromSignature<CharacterEventDelegate>("48 89 5C 24 ?? 48 89 74 24 ?? 57 48 83 EC ?? 48 8D 05 ?? ?? ?? ?? 48 8B D9 48 89 01 48 8D 05 ?? ?? ?? ?? 48 89 81 ?? ?? ?? ?? 48 81 C1", this.CharacterFinalizeDetour);
-		this.characterFinalizeHook?.Enable();
+		Hooks.CharacterInitialize.Enable(this.CharacterInitializeDetour);
+		Hooks.CharacterFinalize.Enable(this.CharacterFinalizeDetour);
 	}
 
 	public override void Detach()
 	{
 		base.Detach();
-
-		this.characterInitializeHook?.Dispose();
-		this.characterFinalizeHook?.Dispose();
+		Hooks.CharacterInitialize.Disable();
+		Hooks.CharacterFinalize.Disable();
 	}
 
 	public Task GetMenu(WorldContextMenu menu)
@@ -232,13 +225,8 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 
 	private unsafe nint CharacterInitializeDetour(Character* character)
 	{
-		if (this.characterInitializeHook == null)
-			return 0;
-
-		nint result = this.characterInitializeHook.Original.Invoke(character);
-
+		nint result = Hooks.CharacterInitialize.Original.Invoke(character);
 		this.CharacterCreated?.Invoke(character->ObjectIndex);
-
 		return result;
 	}
 
@@ -253,13 +241,8 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 			this.Log.Information($"created character was destroyed: {idx}");
 		}
 
-		if (this.characterFinalizeHook == null)
-			return 0;
-
-		nint result = this.characterFinalizeHook.Original.Invoke(character);
-
+		nint result = Hooks.CharacterFinalize.Original.Invoke(character);
 		this.CharacterDestroyed?.Invoke(objectTableIndex);
-
 		return result;
 	}
 

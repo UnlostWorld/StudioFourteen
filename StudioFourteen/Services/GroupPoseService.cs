@@ -23,6 +23,7 @@ using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Input.Devices;
+using StudioFourteen.Interop;
 using StudioFourteen.Plugin;
 using Task = System.Threading.Tasks.Task;
 
@@ -31,15 +32,10 @@ public partial class GroupPoseService : ServiceBase
 	public const int GPoseCharacterCount = 39;
 	public const int GPoseFirstCharacter = 201;
 
-	private Hook<EnterDelegate>? enterHook;
-	private Hook<ExitDelegate>? exitHook;
-
 	[Notify(Setter.Private)] private bool isGroupPosing;
 	[Notify(Setter.Private)] private bool isGroupPoseSettingsWindowVisible;
 
 	public delegate void OnStateChangedDelegate(bool newState);
-	private unsafe delegate bool EnterDelegate(UIModule* uiModule);
-	private unsafe delegate void ExitDelegate(UIModule* uiModule);
 
 	public event OnStateChangedDelegate? StateChanged;
 	public event OnStateChangedDelegate? SettingsStateChanged;
@@ -85,14 +81,9 @@ public partial class GroupPoseService : ServiceBase
 			return;
 
 		UIModule* uiModule = Framework.Instance()->UIModule;
-		var enterAddress = (nint)uiModule->VirtualTable->EnterGPose;
-		var exitAddress = (nint)uiModule->VirtualTable->ExitGPose;
 
-		this.enterHook = InteropService.HookFromAddress<EnterDelegate>(enterAddress, this.EnterDetour);
-		this.enterHook?.Enable();
-
-		this.exitHook = InteropService.HookFromAddress<ExitDelegate>(exitAddress, this.ExitDetour);
-		this.exitHook?.Enable();
+		Hooks.EnterGroupPose.Enable((nint)uiModule->VirtualTable->EnterGPose, this.EnterDetour);
+		Hooks.ExitGroupPose.Enable((nint)uiModule->VirtualTable->ExitGPose, this.ExitDetour);
 
 		this.IsGroupPosing = DalamudServices.ClientState?.IsGPosing == true || this.Services.Environment.IsInTitleScreen;
 	}
@@ -101,8 +92,8 @@ public partial class GroupPoseService : ServiceBase
 	{
 		base.Detach();
 
-		this.enterHook?.Dispose();
-		this.exitHook?.Dispose();
+		Hooks.EnterGroupPose.Disable();
+		Hooks.ExitGroupPose.Disable();
 	}
 
 	public unsafe bool GetIsGroupPoseSettingsWindowVisible()
@@ -155,7 +146,7 @@ public partial class GroupPoseService : ServiceBase
 
 	private unsafe bool EnterDetour(UIModule* uiModule)
 	{
-		bool didEnter = this.enterHook?.Original.Invoke(uiModule) ?? false;
+		bool didEnter = Hooks.EnterGroupPose.Original.Invoke(uiModule);
 
 		this.EnterPosition = this.Services.Target.GetCharacter(0)->DrawObject->Position;
 
@@ -167,7 +158,7 @@ public partial class GroupPoseService : ServiceBase
 
 	private unsafe void ExitDetour(UIModule* uiModule)
 	{
-		this.exitHook?.Original.Invoke(uiModule);
+		Hooks.ExitGroupPose.Original.Invoke(uiModule);
 		this.SetState(false);
 	}
 

@@ -21,6 +21,7 @@ namespace StudioFourteen.Input.Devices;
 
 using Dalamud.Game.ClientState.GamePad;
 using Dalamud.Hooking;
+using StudioFourteen.Interop;
 using StudioFourteen.Services;
 using System;
 using System.Collections.Generic;
@@ -30,7 +31,6 @@ public class GamepadDevice : InputDeviceBase
 {
 	private readonly Dictionary<Buttons, InputAxis> buttonAxes = new();
 	private readonly Queue<Buttons> sendButtons = new();
-	private Hook<ControllerPoll>? gamepadPoll;
 
 	public GamepadDevice()
 	{
@@ -41,8 +41,6 @@ public class GamepadDevice : InputDeviceBase
 			this.Axes.Add(axis);
 		}
 	}
-
-	private delegate int ControllerPoll(IntPtr controllerInput);
 
 	public enum Buttons
 	{
@@ -74,13 +72,12 @@ public class GamepadDevice : InputDeviceBase
 
 	public override void Attach()
 	{
-		this.gamepadPoll = InteropService.HookFromSignature<ControllerPoll>("40 55 53 57 41 54 41 57 48 8D AC 24 ?? ?? ?? ?? 48 81 EC ?? ?? ?? ?? 44 0F 29 B4 24", this.GamepadPollDetour);
-		this.gamepadPoll?.Enable();
+		Hooks.ControllerPoll.Enable(this.GamepadPollDetour);
 	}
 
 	public override void Detach()
 	{
-		this.gamepadPoll?.Dispose();
+		Hooks.ControllerPoll.Disable();
 	}
 
 	public override void Activate()
@@ -103,10 +100,7 @@ public class GamepadDevice : InputDeviceBase
 
 	private unsafe int GamepadPollDetour(IntPtr gamepadInput)
 	{
-		if (this.gamepadPoll == null)
-			throw new InvalidOperationException();
-
-		int ret = this.gamepadPoll.Original(gamepadInput);
+		int ret = Hooks.ControllerPoll.Original(gamepadInput);
 
 		GamepadInput* input = (GamepadInput*)gamepadInput;
 		ushort buttonValues = input->ButtonsRaw;

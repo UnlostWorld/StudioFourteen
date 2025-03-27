@@ -13,39 +13,42 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services;
+namespace StudioFourteen.Interop;
 
+using Dalamud.Hooking;
+using StudioFourteen.Plugin;
 using System;
-using FFXIVClientStructs.FFXIV.Client.UI;
-using StudioFourteen.Interop;
 
-public class CursorService : ServiceBase
+public class AddressHook<TDelegate>
+	: HookBase<TDelegate>
+	where TDelegate : Delegate
 {
-	public unsafe override void Attach()
-	{
-		base.Attach();
+	private nint address;
 
-		Hooks.UpdateGameCursor.Enable(this.UpdateCursorDetour);
-		Hooks.SetCursor.Enable(this.SetCursorDetour);
+	public void Enable(nint address, TDelegate detour)
+	{
+		this.Destroy();
+		this.address = address;
+		this.Enable(detour);
 	}
 
-	public override void Detach()
+	protected override Hook<TDelegate>? Create(TDelegate detour)
 	{
-		base.Detach();
-		Hooks.UpdateGameCursor.Disable();
-		Hooks.SetCursor.Disable();
-	}
+		if (DalamudServices.InteropProvider == null)
+			return null;
 
-	private unsafe nint UpdateCursorDetour(RaptureAtkModule* module)
-    {
-		return Hooks.UpdateGameCursor.Original(module);
-    }
+		string name = typeof(TDelegate).Name;
 
-	private IntPtr SetCursorDetour(IntPtr hCursor)
-	{
-		if (this.Services.Windows.IsMouseOverWindow())
-			return IntPtr.Zero;
-
-		return Hooks.SetCursor.Original(hCursor);
+		try
+		{
+			Logging.Shared.Information($"Creating Hook {name} for address {this.address}");
+			Hook<TDelegate> hook = DalamudServices.InteropProvider.HookFromAddress(this.address, detour);
+			return hook;
+		}
+		catch (Exception ex)
+		{
+			Logging.ForContext<DalamudServices>().Error(ex, $"Error creating hook {name} from address");
+			return null;
+		}
 	}
 }

@@ -13,39 +13,59 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services;
+namespace StudioFourteen.Interop;
 
+using Dalamud.Hooking;
 using System;
-using FFXIVClientStructs.FFXIV.Client.UI;
-using StudioFourteen.Interop;
 
-public class CursorService : ServiceBase
+public abstract class HookBase<TDelegate>
+	where TDelegate : Delegate
 {
-	public unsafe override void Attach()
-	{
-		base.Attach();
+	private Hook<TDelegate>? hook;
 
-		Hooks.UpdateGameCursor.Enable(this.UpdateCursorDetour);
-		Hooks.SetCursor.Enable(this.SetCursorDetour);
+	public TDelegate Original
+	{
+		get
+		{
+			if (this.hook == null)
+				throw new Exception("Attempt to get hook original before the hook as been enabled");
+
+			return this.hook.Original;
+		}
 	}
 
-	public override void Detach()
+	public void Enable(TDelegate detour)
 	{
-		base.Detach();
-		Hooks.UpdateGameCursor.Disable();
-		Hooks.SetCursor.Disable();
+		if (this.hook == null)
+			this.hook = this.Create(detour);
+
+		if (this.hook == null)
+			return;
+
+		this.hook.Enable();
 	}
 
-	private unsafe nint UpdateCursorDetour(RaptureAtkModule* module)
-    {
-		return Hooks.UpdateGameCursor.Original(module);
-    }
-
-	private IntPtr SetCursorDetour(IntPtr hCursor)
+	public void Disable()
 	{
-		if (this.Services.Windows.IsMouseOverWindow())
-			return IntPtr.Zero;
+		if (this.hook == null)
+			return;
 
-		return Hooks.SetCursor.Original(hCursor);
+		if (this.hook.IsEnabled)
+		{
+			this.hook.Disable();
+		}
+
+		if (!this.hook.IsDisposed)
+		{
+			this.hook.Dispose();
+		}
 	}
+
+	public void Destroy()
+	{
+		this.Disable();
+		this.hook = null;
+	}
+
+	protected abstract Hook<TDelegate>? Create(TDelegate detour);
 }

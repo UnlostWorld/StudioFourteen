@@ -173,8 +173,6 @@ public class ServiceManagerBase
 			}
 		}
 
-		InteropService.CheckHooks(true);
-
 		this.state = States.Stopped;
 		this.state = States.ShuttingDown;
 
@@ -226,8 +224,6 @@ public class ServiceManagerBase
 				this.Log.Error(ex, $"Error detaching service: {service}");
 			}
 		}
-
-		InteropService.CheckHooks(false);
 	}
 
 	public void Dispose()
@@ -243,8 +239,6 @@ public class ServiceManagerBase
 				this.Log.Error(ex, $"Error disposing service: {service}");
 			}
 		}
-
-		InteropService.CheckHooks(false);
 	}
 
 	public ServiceBase GetService(Type type)
