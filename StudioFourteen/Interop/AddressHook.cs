@@ -23,13 +23,19 @@ public class AddressHook<TDelegate>
 	: HookBase<TDelegate>
 	where TDelegate : Delegate
 {
+	private readonly Func<nint> resolveAddress;
 	private nint address;
 
-	public void Enable(nint address, TDelegate detour)
+	public AddressHook(Func<nint> resolveAddress)
+	{
+		this.resolveAddress = resolveAddress;
+	}
+
+	public override void Enable(TDelegate detour)
 	{
 		this.Destroy();
-		this.address = address;
-		this.Enable(detour);
+		this.address = this.resolveAddress.Invoke();
+		base.Enable(detour);
 	}
 
 	protected override Hook<TDelegate>? Create(TDelegate detour)

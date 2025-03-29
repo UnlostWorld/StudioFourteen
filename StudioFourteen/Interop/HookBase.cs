@@ -34,7 +34,7 @@ public abstract class HookBase<TDelegate>
 		}
 	}
 
-	public void Enable(TDelegate detour)
+	public virtual void Enable(TDelegate detour)
 	{
 		if (this.hook == null)
 			this.hook = this.Create(detour);
@@ -45,7 +45,7 @@ public abstract class HookBase<TDelegate>
 		this.hook.Enable();
 	}
 
-	public void Disable()
+	public virtual void Disable()
 	{
 		if (this.hook == null)
 			return;

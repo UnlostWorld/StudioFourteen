@@ -35,7 +35,7 @@ public class TerritoryTypeLibraryEntry : ExcelLibraryEntry
 		this.Territory = territory;
 
 		// Find all weathers that can naturally spawn here and tag them.
-		WeatherRate? rate = this.Services.GameData.GetRow<WeatherRate>(this.Territory.WeatherRate);
+		WeatherRate? rate = this.Territory.WeatherRate.Value;
 		if (rate != null)
 		{
 			foreach (RowRef<Weather> weather in rate.Value.Weather)
@@ -125,7 +125,7 @@ public class TerritoryTypeLibraryEntry : ExcelLibraryEntry
 
 				LoadingImage loadingImage = this.Territory.LoadingImage.Value;
 
-				string? fileName = loadingImage.Unknown0.GetString();
+				string? fileName = loadingImage.FileName.GetString();
 				if (fileName == null)
 					return null;
 

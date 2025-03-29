@@ -53,10 +53,10 @@ public static class EquipRaceCategoryExtensions
 		if (self.AuRa)
 			tags.Add(raceSheet.GetRow(RaceRows.AuRa).GetName() ?? "AuRa");
 
-		if (self.Unknown0)
+		if (self.Hrothgar)
 			tags.Add(raceSheet.GetRow(RaceRows.Hrothgar).GetName() ?? "Hrothgar");
 
-		if (self.Unknown1)
+		if (self.Viera)
 			tags.Add(raceSheet.GetRow(RaceRows.Viera).GetName() ?? "Viera");
 
 		return tags;

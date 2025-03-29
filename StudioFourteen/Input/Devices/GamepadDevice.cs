@@ -13,19 +13,15 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-// Dalamud
-// https://github.com/goatcorp/Dalamud/blob/master/Dalamud/Game/ClientState/ClientStateAddressResolver.cs
-// https://github.com/goatcorp/Dalamud/blob/master/Dalamud/Game/ClientState/GamePad/GamepadInput.cs
-// https://github.com/goatcorp/Dalamud/blob/master/Dalamud/Game/ClientState/GamePad/GamepadState.cs
 namespace StudioFourteen.Input.Devices;
 
-using Dalamud.Game.ClientState.GamePad;
-using Dalamud.Hooking;
+using FFXIVClientStructs.FFXIV.Client.System.Input;
 using StudioFourteen.Interop;
-using StudioFourteen.Services;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+
+using ClientButtons = FFXIVClientStructs.FFXIV.Client.System.Input.GamepadButtonsFlags;
 
 public class GamepadDevice : InputDeviceBase
 {
@@ -44,23 +40,23 @@ public class GamepadDevice : InputDeviceBase
 
 	public enum Buttons
 	{
-		None = 0,
-		DpadUp = 1,
-		DpadDown = 2,
-		DpadLeft = 4,
-		DpadRight = 8,
-		FaceUp = 0x10,
-		FaceDown = 0x20,
-		FaceLeft = 0x40,
-		FaceRight = 0x80,
-		LeftShoulder = 0x100,
-		LeftTrigger = 0x200,
-		LeftStick = 0x400,
-		RightShoulder = 0x800,
-		RightTrigger = 0x1000,
-		RightStick = 0x2000,
-		Start = 0x8000,
-		Select = 0x4000,
+		None = ClientButtons.None,
+		DpadUp = ClientButtons.DPadUp,
+		DpadDown = ClientButtons.DPadDown,
+		DpadLeft = ClientButtons.DPadLeft,
+		DpadRight = ClientButtons.DPadRight,
+		FaceUp = ClientButtons.Triangle,
+		FaceDown = ClientButtons.Cross,
+		FaceLeft = ClientButtons.Square,
+		FaceRight = ClientButtons.Circle,
+		LeftShoulder = ClientButtons.L1,
+		LeftTrigger = ClientButtons.L2,
+		LeftStick = ClientButtons.L3,
+		RightShoulder = ClientButtons.R1,
+		RightTrigger = ClientButtons.R2,
+		RightStick = ClientButtons.R3,
+		Start = ClientButtons.Start,
+		Select = ClientButtons.Select,
 	}
 
 	public static string GetAxisId(Buttons button) => $"Gamepad:{button}";
@@ -70,14 +66,14 @@ public class GamepadDevice : InputDeviceBase
 		this.sendButtons.Enqueue(button);
 	}
 
-	public override void Attach()
+	public unsafe override void Attach()
 	{
-		Hooks.ControllerPoll.Enable(this.GamepadPollDetour);
+		Hooks.PadDevicePoll.Enable(this.GamepadPollDetour);
 	}
 
 	public override void Detach()
 	{
-		Hooks.ControllerPoll.Disable();
+		Hooks.PadDevicePoll.Disable();
 	}
 
 	public override void Activate()
@@ -98,16 +94,15 @@ public class GamepadDevice : InputDeviceBase
 		base.Deactivate();
 	}
 
-	private unsafe int GamepadPollDetour(IntPtr gamepadInput)
+	private unsafe nint GamepadPollDetour(PadDevice* pPadDevice)
 	{
-		int ret = Hooks.ControllerPoll.Original(gamepadInput);
+		nint ret = Hooks.PadDevicePoll.Original(pPadDevice);
 
-		GamepadInput* input = (GamepadInput*)gamepadInput;
-		ushort buttonValues = input->ButtonsRaw;
+		Buttons buttonValues = (Buttons)pPadDevice->GamepadInputData.Buttons;
 
 		foreach ((Buttons button, InputAxis axis) in this.buttonAxes)
 		{
-			bool value = (buttonValues & (ushort)button) > 0;
+			bool value = buttonValues.HasFlag(button);
 
 			// first press, pre-consume
 			bool pressed = value && axis.Value < 0.001f;
@@ -116,10 +111,10 @@ public class GamepadDevice : InputDeviceBase
 			// input?
 			if (pressed || axis.IsConsumed)
 			{
-				input->ButtonsRaw &= (ushort)~button;
-				input->ButtonsPressed &= (ushort)~button;
-				input->ButtonsReleased &= (ushort)~button;
-				input->ButtonsRepeat &= (ushort)~button;
+				pPadDevice->GamepadInputData.Buttons &= (ClientButtons)~button;
+				pPadDevice->GamepadInputData.ButtonsPressed &= (ClientButtons)~button;
+				pPadDevice->GamepadInputData.ButtonsReleased &= (ClientButtons)~button;
+				pPadDevice->GamepadInputData.ButtonsRepeat &= (ClientButtons)~button;
 			}
 
 			axis.Value = value ? 1 : 0;
@@ -130,8 +125,8 @@ public class GamepadDevice : InputDeviceBase
 		{
 			Buttons button = this.sendButtons.Dequeue();
 
-			input->ButtonsRaw |= (ushort)button;
-			input->ButtonsPressed |= (ushort)button;
+			pPadDevice->GamepadInputData.Buttons |= (ClientButtons)button;
+			pPadDevice->GamepadInputData.ButtonsPressed |= (ClientButtons)button;
 		}
 
 		return ret;

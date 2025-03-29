@@ -80,10 +80,8 @@ public partial class GroupPoseService : ServiceBase
 		if (DalamudServices.Framework == null)
 			return;
 
-		UIModule* uiModule = Framework.Instance()->UIModule;
-
-		Hooks.EnterGroupPose.Enable((nint)uiModule->VirtualTable->EnterGPose, this.EnterDetour);
-		Hooks.ExitGroupPose.Enable((nint)uiModule->VirtualTable->ExitGPose, this.ExitDetour);
+		Hooks.EnterGroupPose.Enable(this.EnterDetour);
+		Hooks.ExitGroupPose.Enable(this.ExitDetour);
 
 		this.IsGroupPosing = DalamudServices.ClientState?.IsGPosing == true || this.Services.Environment.IsInTitleScreen;
 	}

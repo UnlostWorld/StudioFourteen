@@ -93,7 +93,7 @@ public class GameCaptureService : ServiceBase
 
 		if (SwapChainHelper.IsReshade)
 		{
-			Hooks.ReshadeOnPresent.Enable(SwapChainHelper.ReshadeOnPresent, this.ReshadeOnPresentDetour);
+			Hooks.ReshadeOnPresent.Enable(this.ReshadeOnPresentDetour);
 			InterfaceManager.DisableReshadePresent();
 		}
 
