@@ -30,6 +30,7 @@ using WpfUtils;
 using WpfUtils.Commands;
 using WpfUtils.Controls;
 using WpfUtils.Extensions;
+using WpfUtils.Utils;
 
 public interface ILibraryContextMenu
 {
@@ -49,13 +50,13 @@ public partial class LibraryContextMenu : PopOut
 {
 	protected readonly ILogger Log = Logging.ForContext<LibraryContextMenu>();
 	private readonly List<LibraryEntryBase> currentEntries = new();
+	private readonly FuncQueue closeQueue;
 	private UIElement? placementTarget;
-	private bool isLeaving = false;
-	private bool isEntering = false;
 
 	public LibraryContextMenu()
 	{
 		this.MouseRightButtonUp += this.OnMouseRightButtonUp;
+		this.closeQueue = new(this.CloseActual, 200);
 	}
 
 	public ServiceManager Services => ServiceManager.Instance;
@@ -67,14 +68,14 @@ public partial class LibraryContextMenu : PopOut
 		this.currentEntries.Clear();
 		this.currentEntries.AddRange(entries);
 
-		this.EnterAsync(placementTarget).Run();
+		this.Enter(placementTarget);
 	}
 
 	public void Enter(LibraryEntryBase entry, FrameworkElement placementTarget)
 	{
 		if (this.IsOpen && !this.currentEntries.Contains(entry))
 		{
-			this.IsOpen = false;
+			this.closeQueue.Invoke();
 		}
 		else if (this.IsOpen && this.currentEntries.Contains(entry))
 		{
@@ -85,26 +86,15 @@ public partial class LibraryContextMenu : PopOut
 		this.currentEntries.Clear();
 		this.currentEntries.Add(entry);
 
-		this.EnterAsync(placementTarget).Run();
+		this.Enter(placementTarget);
 	}
 
 	public void Leave(LibraryEntryBase? result)
 	{
-		this.LeaveAsync().Run();
-	}
-
-	public async Task LeaveAsync()
-	{
 		if (this.IsOpen && this.IsExpanded)
 			return;
 
-		while(this.isEntering)
-			await Task.Delay(50);
-
-		this.isLeaving = true;
-		this.IsOpen = false;
-		await Task.Delay(150);
-		this.isLeaving = false;
+		this.closeQueue.Invoke();
 	}
 
 	public void Expand()
@@ -127,14 +117,9 @@ public partial class LibraryContextMenu : PopOut
 		this.Dispatcher.Invoke(() => this.IsOpen = false);
 	}
 
-	public async Task EnterAsync(FrameworkElement placementTarget)
+	public void Enter(FrameworkElement placementTarget)
 	{
-		while (this.isLeaving)
-			await Task.Delay(10);
-
-		this.isEntering = true;
-
-		await this.MainThread();
+		this.closeQueue.Cancel();
 
 		if (this.IsOpen && this.IsExpanded)
 			return;
@@ -153,9 +138,18 @@ public partial class LibraryContextMenu : PopOut
 			this.Entry = this.currentEntries[0];
 
 		this.PlacementTarget = this.placementTarget;
+
+		// Bump the pffset to get an already open panel to move.
+		this.HorizontalOffset++;
+		this.HorizontalOffset--;
+
 		this.IsOpen = true;
-		await Task.Delay(150);
-		this.isEntering = false;
+	}
+
+	private async Task CloseActual()
+	{
+		await this.MainThread();
+		this.IsOpen = false;
 	}
 
 	private async Task CollectMenus()
