@@ -59,6 +59,8 @@ public abstract class HookBase<TDelegate>
 		{
 			this.hook.Dispose();
 		}
+
+		this.hook = null;
 	}
 
 	public void Destroy()
