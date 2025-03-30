@@ -36,7 +36,6 @@
 			Grid.Row="2"
 			Maximum="{Binding BlendMaximum}"
 			Minimum="{Binding BlendMinimum}"
-			Slider="Absolute"
 			UncapTextInput="True"
 			Value="{Binding BlendValue}">
 			<wpfUtils:NumberBox.Suffix>

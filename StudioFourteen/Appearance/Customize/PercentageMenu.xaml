@@ -9,10 +9,11 @@
 		<StackPanel>
 			<TextBlock Style="{DynamicResource LeftLabel}" Text="{Binding Name}" />
 
+			<TextBlock Text="Hello"/>
+
 			<wpfUtils:NumberBox
 				Maximum="{Binding Maximum}"
 				Minimum="{Binding Minimum}"
-				Slider="Absolute"
 				Value="{Binding Value}" />
 		</StackPanel>
 	</DataTemplate>

@@ -49,31 +49,7 @@
 				Margin="3,0"
 				Style="{DynamicResource RightLabel}"
 				Text="X:" />
-			<wpfUtils:RelativeSlider
-				Grid.Row="0"
-				Grid.Column="1"
-				LargeChange="{Binding LargeChange, ElementName=View}"
-				Maximum="{Binding Path=Maximum, ElementName=View}"
-				Minimum="{Binding Path=Minimum, ElementName=View}"
-				PreviewMouseDown="OnSliderMouseDown"
-				PreviewMouseUp="OnSliderMouseUp"
-				RelativeRange="{Binding Range, ElementName=View}"
-				RelativeValue="{Binding ValueX, ElementName=View}"
-				SmallChange="{Binding SmallChange, ElementName=View}"
-				TickFrequency="{Binding Path=TickFrequency, ElementName=View}"
-				Visibility="{Binding IsRelative, ElementName=View, Converter={StaticResource B2V}}" />
-			<wpfUtils:Slider
-				Grid.Row="0"
-				Grid.Column="1"
-				LargeChange="{Binding LargeChange, ElementName=View}"
-				Maximum="{Binding Path=Maximum, ElementName=View}"
-				Minimum="{Binding Path=Minimum, ElementName=View}"
-				PreviewMouseDown="OnSliderMouseDown"
-				PreviewMouseUp="OnSliderMouseUp"
-				SmallChange="{Binding SmallChange, ElementName=View}"
-				TickFrequency="{Binding Path=TickFrequency, ElementName=View}"
-				Visibility="{Binding IsRelative, ElementName=View, Converter={StaticResource !B2V}}"
-				Value="{Binding ValueX, ElementName=View}" />
+
 
 			<TextBlock
 				Grid.Row="1"
@@ -81,31 +57,7 @@
 				Margin="3,0"
 				Style="{DynamicResource RightLabel}"
 				Text="Y:" />
-			<wpfUtils:RelativeSlider
-				Grid.Row="1"
-				Grid.Column="1"
-				LargeChange="{Binding LargeChange, ElementName=View}"
-				Maximum="{Binding Path=Maximum, ElementName=View}"
-				Minimum="{Binding Path=Minimum, ElementName=View}"
-				PreviewMouseDown="OnSliderMouseDown"
-				PreviewMouseUp="OnSliderMouseUp"
-				RelativeRange="{Binding Range, ElementName=View}"
-				RelativeValue="{Binding ValueY, ElementName=View}"
-				SmallChange="{Binding SmallChange, ElementName=View}"
-				TickFrequency="{Binding Path=TickFrequency, ElementName=View}"
-				Visibility="{Binding IsRelative, ElementName=View, Converter={StaticResource B2V}}" />
-			<wpfUtils:Slider
-				Grid.Row="1"
-				Grid.Column="1"
-				LargeChange="{Binding LargeChange, ElementName=View}"
-				Maximum="{Binding Path=Maximum, ElementName=View}"
-				Minimum="{Binding Path=Minimum, ElementName=View}"
-				PreviewMouseDown="OnSliderMouseDown"
-				PreviewMouseUp="OnSliderMouseUp"
-				SmallChange="{Binding SmallChange, ElementName=View}"
-				TickFrequency="{Binding Path=TickFrequency, ElementName=View}"
-				Visibility="{Binding IsRelative, ElementName=View, Converter={StaticResource !B2V}}"
-				Value="{Binding ValueY, ElementName=View}" />
+
 		</Grid>
 	</Expander>
 </mvm:View>

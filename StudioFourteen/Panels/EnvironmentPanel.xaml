@@ -126,7 +126,6 @@
 						IsEnabled="{Binding Services.Environment.FreezeTime}"
 						Maximum="30"
 						Minimum="1"
-						Slider="Absolute"
 						Value="{Binding Services.Environment.DayOfMonth}" />
 
 					<icons:IconView

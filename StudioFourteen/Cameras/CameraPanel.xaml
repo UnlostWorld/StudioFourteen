@@ -191,7 +191,6 @@
 											Grid.Row="1"
 											Maximum="220"
 											Minimum="0"
-											Slider="Absolute"
 											TickFrequency="0.01"
 											Value="{Binding FieldOfView}" />
 									</Grid>
@@ -201,7 +200,6 @@
 									<controls:NumberBox
 										Maximum="300"
 										Minimum="0.1"
-										Slider="Absolute"
 										TickFrequency="1"
 										Value="{Binding Distance}" />
 
@@ -270,7 +268,6 @@
 											Grid.Row="1"
 											Maximum="220"
 											Minimum="0"
-											Slider="Absolute"
 											TickFrequency="0.01"
 											Value="{Binding FieldOfView}" />
 									</Grid>
@@ -280,7 +277,6 @@
 									<controls:NumberBox
 										Maximum="300"
 										Minimum="0.1"
-										Slider="Absolute"
 										TickFrequency="1"
 										Value="{Binding Distance}" />
 

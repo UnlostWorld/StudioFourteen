@@ -37,7 +37,6 @@
 			<controls:NumberBox
 				Maximum="2"
 				Minimum="0.75"
-				Slider="Absolute"
 				TickFrequency="0.01"
 				Value="{Binding IrisSize}" />
 

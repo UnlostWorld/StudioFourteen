@@ -29,6 +29,8 @@
 		<ResourceDictionary Source="./Tags/TagsControlStyles.xaml" />
 		<ResourceDictionary Source="./Tags/TagSelectorStyles.xaml" />
 		<ResourceDictionary Source="./Controls/IconControlStyles.xaml" />
+		<ResourceDictionary Source="./Controls/SliderStyles.xaml" />
+		<ResourceDictionary Source="./Controls/NumberSliderStyles.xaml" />
 		<ResourceDictionary Source="./Posing/Shared/PoseSelectionControlStyles.xaml" />
 
 		<!--  Default Language  -->
