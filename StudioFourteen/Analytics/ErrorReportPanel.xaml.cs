@@ -13,59 +13,30 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Studio;
+namespace StudioFourteen.Analytics;
 
 using StudioFourteen.Panels;
 using System.Windows;
 using StudioFourteen.Plugin;
-using WpfUtils.Extensions;
+using PropertyChanged.SourceGenerator;
 
-public partial class ErrorWindow : Panel
+public partial class ErrorReportPanel : Panel
 {
-	private static ErrorWindow? instance;
-	private static bool isOpening = false;
-	private static string? message = "An Unknown error has occurred";
+	[Notify] private string? errorMessage;
+	[Notify] private bool isSending = false;
+	[Notify] private string? shortCode;
+	[Notify] private bool reportingEnabled = true;
 
-	public string? ErrorMessage
+	public bool IsDebug
 	{
-		get => message;
-		set
+		get
 		{
-			message = value;
-			this.NotifyPropertyChanged();
+#if DEBUG
+			return true;
+#else
+			return false;
+#endif
 		}
-	}
-
-	public static void Show(string message)
-	{
-		ErrorWindow.message = message;
-
-		if (instance == null)
-		{
-			if (isOpening)
-				return;
-
-			isOpening = true;
-			ServiceManager.Instance.Panels.GamePanels.CreatePanel<ErrorWindow>();
-		}
-		else
-		{
-			instance.NotifyPropertyChanged(nameof(ErrorMessage));
-		}
-	}
-
-	protected override void OnOpened()
-	{
-		instance = this;
-		isOpening = false;
-
-		base.OnOpened();
-	}
-
-	protected override void OnClosed()
-	{
-		instance = null;
-		base.OnClosed();
 	}
 
 	private void OnConsoleClicked(object sender, RoutedEventArgs e)

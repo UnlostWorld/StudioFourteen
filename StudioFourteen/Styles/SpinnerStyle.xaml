@@ -1,11 +1,19 @@
-﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-	<ControlTemplate x:Key="StudioSpinnerTemplate" TargetType="{x:Type ProgressBar}">
+	<ControlTemplate
+		x:Key="StudioSpinnerTemplate"
+		TargetType="{x:Type ProgressBar}">
 
 		<Grid x:Name="IconGrid">
-			<Ellipse x:Name="ColorWheel" StrokeThickness="5">
+			<Ellipse
+				x:Name="ColorWheel"
+				StrokeThickness="3">
 				<Ellipse.Stroke>
-					<ImageBrush ImageSource="pack://application:,,,/StudioFourteen;component/Assets/rainbow-wheel.png" Stretch="None">
+					<ImageBrush
+						ImageSource="pack://application:,,,/StudioFourteen;component/Assets/rainbow-wheel.png"
+						Stretch="None">
 						<ImageBrush.RelativeTransform>
 							<RotateTransform x:Name="ColorWheelTransform" Angle="0" CenterX="0.5" CenterY="0.5" />
 						</ImageBrush.RelativeTransform>
@@ -41,7 +49,9 @@
 		</ControlTemplate.Triggers>
 	</ControlTemplate>
 
-	<Style x:Key="Spinner" TargetType="{x:Type ProgressBar}">
+	<Style
+		x:Key="Spinner"
+		TargetType="{x:Type ProgressBar}">
 		<Setter Property="Height" Value="32" />
 		<Setter Property="IsIndeterminate" Value="True" />
 		<Setter Property="Margin" Value="3" />

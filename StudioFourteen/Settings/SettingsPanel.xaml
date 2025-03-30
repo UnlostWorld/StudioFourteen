@@ -9,8 +9,8 @@
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
 	xmlns:services="clr-namespace:StudioFourteen.Services"
 	xmlns:settings="clr-namespace:StudioFourteen.Settings"
-	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	xmlns:themes="clr-namespace:StudioFourteen.Themes"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="{DynamicResource LOC_Settings}"
 	Width="300"
 	Height="450"
@@ -56,15 +56,15 @@
 					</ComboBox>
 
 					<ComboBox
-						DataContext="{DynamicResource ThemeOptions}"
 						Grid.Row="1"
 						Grid.Column="0"
+						DataContext="{DynamicResource ThemeOptions}"
 						ItemsSource="{Binding Options}"
 						SelectedItem="{Binding CurrentOption}">
 
 						<ComboBox.Resources>
 							<DataTemplate DataType="{x:Type SolidColorBrush}">
-								<Border Background="{Binding .}" CornerRadius="4"/>
+								<Border Background="{Binding .}" CornerRadius="4" />
 							</DataTemplate>
 						</ComboBox.Resources>
 
@@ -78,7 +78,7 @@
 									<ContentPresenter
 										Width="32"
 										HorizontalAlignment="Left"
-										Content="{Binding Value}"/>
+										Content="{Binding Value}" />
 
 									<TextBlock Margin="42,0,0,0" Text="{Binding Name}" />
 								</Grid>
@@ -123,16 +123,16 @@
 					Content="{DynamicResource LOC_Settings_Interface_HideGenitals}"
 					IsChecked="{Binding Settings.HideGenitals}" />
 
-				<TextBlock Text="Library preview mode" Style="{DynamicResource LeftLabel}"/>
+				<TextBlock Style="{DynamicResource LeftLabel}" Text="Library preview mode" />
 				<ComboBox SelectedIndex="{Binding Settings.LibraryPreviewMode, Converter={StaticResource EnumToIndex}}">
 
 					<wpfUtils:PopOut.Header>
-						<TextBlock Text="{DynamicResource LOC_Settings_Interface_LibraryPreviewMode_Description}" Margin="12"/>
+						<TextBlock Margin="12" Text="{DynamicResource LOC_Settings_Interface_LibraryPreviewMode_Description}" />
 					</wpfUtils:PopOut.Header>
 
-					<ComboBoxItem Content="{DynamicResource LOC_Settings_Interface_LibraryPreviewMode_Temporary}"/>
-					<ComboBoxItem Content="{DynamicResource LOC_Settings_Interface_LibraryPreviewMode_Permanent}"/>
-					<ComboBoxItem Content="{DynamicResource LOC_Settings_Interface_LibraryPreviewMode_Disabled}"/>
+					<ComboBoxItem Content="{DynamicResource LOC_Settings_Interface_LibraryPreviewMode_Temporary}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Settings_Interface_LibraryPreviewMode_Permanent}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Settings_Interface_LibraryPreviewMode_Disabled}" />
 				</ComboBox>
 
 
@@ -266,6 +266,28 @@
 					</StackPanel>
 				</GroupBox>
 
+			</StackPanel>
+		</TabItem>
+
+		<TabItem x:Name="AnalyticsSection" Header="{DynamicResource LOC_Settings_Analytics}">
+			<StackPanel>
+				<ToggleButton
+					Content="{DynamicResource LOC_Analytics_Errors}"
+					IsChecked="{Binding Settings.SendErrorReports}"
+					ToolTip="{DynamicResource LOC_Analytics_ErrorsDesc}" />
+
+				<ToggleButton
+					Content="{DynamicResource LOC_Analytics_Optional}"
+					IsChecked="{Binding Settings.SendOptionalAnalytics}"
+					ToolTip="{DynamicResource LOC_Analytics_OptionalDesc}" />
+
+				<TextBlock
+					Margin="12,3,12,12"
+					Foreground="{DynamicResource ForegroundLightBrush}"
+					Opacity="0.5"
+					Style="{DynamicResource Subscript}"
+					Text="{DynamicResource LOC_Analytics_OptPrivacy}"
+					TextAlignment="Center" />
 			</StackPanel>
 		</TabItem>
 

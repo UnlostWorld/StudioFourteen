@@ -13,48 +13,34 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Server;
+namespace StudioOnline.Analytics;
 
-using System;
-using System.Net;
-using System.Net.Http;
-using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
-public static class ServerApi
+public enum AnalyticEvents
 {
-	public static string Url = "http://unlostworld.duckdns.org/api/";
+	None = 0,
 
-	private static readonly HttpClient Client;
+	StudioStarted,
+}
 
-	static ServerApi()
+public class AnalyticEvent
+{
+	public AnalyticEvents Event { get; set; }
+	public string? EventData { get; set; }
+
+	public static void Send(AnalyticEvents evt, string? data = null)
 	{
-		HttpClientHandler handler = new();
-		handler.AutomaticDecompression = DecompressionMethods.All;
-
-		Client = new(handler);
+		AnalyticEvent eventObj = new();
+		eventObj.Event = evt;
+		eventObj.EventData = data;
+		Task.Run(eventObj.Send);
 	}
 
-	public static async Task<string> GetAsync(string uri)
+	public Task Send()
 	{
-		using HttpResponseMessage response = await Client.GetAsync(Url + uri);
-
-		return await response.Content.ReadAsStringAsync();
-	}
-
-	public static async Task<string> PostAsync(string uri, string data, string contentType)
-	{
-		using HttpContent content = new StringContent(data, Encoding.UTF8, contentType);
-
-		HttpRequestMessage requestMessage = new HttpRequestMessage()
-		{
-			Content = content,
-			Method = HttpMethod.Post,
-			RequestUri = new Uri(Url + uri),
-		};
-
-		using HttpResponseMessage response = await Client.SendAsync(requestMessage);
-
-		return await response.Content.ReadAsStringAsync();
+		string json = JsonSerializer.Serialize(this);
+		return ServerApi.PostAsync("/Analytics/Event", json, "application/json");
 	}
 }

@@ -13,7 +13,7 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Server.Analytics;
+namespace StudioOnline.Analytics;
 
 using System.Threading.Tasks;
 using System.Text.Json;
@@ -26,6 +26,6 @@ public class ErrorReport
 	public Task<string> Send()
 	{
 		string json = JsonSerializer.Serialize(this);
-		return ServerApi.PostAsync("/Analytics/Error", json, "application/json");
+		return ServerApi.PostAsync("Analytics/Error", json, "application/json");
 	}
 }

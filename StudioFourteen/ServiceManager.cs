@@ -56,4 +56,5 @@ public class ServiceManager : ServiceManagerBase
 	public RedrawService Redraw { get; init; } = new();
 	public Scripting.ScriptingService Scripting { get; init; } = new();
 	public CursorService Cursor { get; init; } = new();
+	public Analytics.ErrorReportingService Errors { get; init; } = new();
 }

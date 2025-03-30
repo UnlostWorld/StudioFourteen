@@ -38,7 +38,8 @@ public static class Logging
 		Configuration = new LoggerConfiguration();
 		Configuration.Enrich.With<StackEnricher>();
 		Configuration.WriteTo.Sink(new DebugSink(formatter));
-		Configuration.WriteTo.Sink(new ErrorWindowSink());
+		////Configuration.WriteTo.Sink(new ErrorWindowSink());
+		Configuration.WriteTo.Sink(new ErrorReportingSink());
 		Configuration.WriteTo.Sink(new DalamudSink(formatter));
 
 		Logger = Configuration.CreateLogger();
@@ -142,7 +143,7 @@ public class StackEnricher : ILogEventEnricher
 	}
 }
 
-public class ErrorWindowSink : ILogEventSink
+/*public class ErrorWindowSink : ILogEventSink
 {
 	public void Emit(LogEvent logEvent)
 	{
@@ -150,6 +151,14 @@ public class ErrorWindowSink : ILogEventSink
 		{
 			ErrorWindow.Show($"{logEvent.MessageTemplate.Text}\n{logEvent.Exception?.Message}");
 		}
+	}
+}*/
+
+public class ErrorReportingSink : ILogEventSink
+{
+	public void Emit(LogEvent logEvent)
+	{
+		ServiceManager.Instance.Errors.HandleLog(logEvent);
 	}
 }
 
