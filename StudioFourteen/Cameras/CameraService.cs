@@ -252,71 +252,78 @@ public class CameraService : ServiceBase
 
 		if (this.Services.GroupPose.IsGroupPosing && this.current != null)
 		{
-			if (!this.current.IsInitialized)
+			try
 			{
-				this.current.Initialize(this.state, this.last);
-			}
-
-			float blendValue = 0;
-			if (this.last != null || this.doAttachBlend)
-			{
-				blendValue = this.blendWatch.ElapsedMilliseconds / CameraBlendTimeMs;
-				blendValue = this.BlendEase.Ease(blendValue, EasingFunctionBase.EasingModes.EaseInOut);
-
-				if (this.blendWatch.ElapsedMilliseconds > CameraBlendTimeMs)
+				if (!this.current.IsInitialized)
 				{
-					blendValue = 0;
-					this.last = null;
-					this.doAttachBlend = false;
-					this.blendWatch.Stop();
+					this.current.Initialize(this.state, this.last);
 				}
-			}
 
-			this.state.FieldOfView = camera->RenderCamera->FoV;
+				float blendValue = 0;
+				if (this.last != null || this.doAttachBlend)
+				{
+					blendValue = this.blendWatch.ElapsedMilliseconds / CameraBlendTimeMs;
+					blendValue = this.BlendEase.Ease(blendValue, EasingFunctionBase.EasingModes.EaseInOut);
 
-			if (!this.Services.Photos.IsCapturing)
-				this.current.Tick(FramerateService.AverageDeltaTime);
+					if (this.blendWatch.ElapsedMilliseconds > CameraBlendTimeMs)
+					{
+						blendValue = 0;
+						this.last = null;
+						this.doAttachBlend = false;
+						this.blendWatch.Stop();
+					}
+				}
 
-			this.current.Calculate(ref this.state, this.last, 1 - blendValue);
-			this.current.OnRender(ref this.state);
-
-			// in portrait preview mode, rotate the camera 90 degrees.
-			if (this.Services.Photos.IsPortrait)
-				this.state.Rotation *= Quaternion.CreateFromAxisAngle(Vector3.UnitX, -1.5707964f);
-
-			Vector3 forward = Vector3.Transform(new(1, 0, 0), this.state.Rotation);
-			Vector3 up = Vector3.Transform(new(0, 1, 0), this.state.Rotation);
-
-			Matrix4x4 newMatrix = Matrix4x4.CreateLookTo(this.state.Position, forward, up);
-
-			if (this.doAttachBlend && this.InitialCamera != null)
-			{
-				Matrix4x4 initialMatrix = this.InitialCamera.Value.Camera.SceneCamera.ViewMatrix;
-				camera->ViewMatrix = Matrix4x4.Lerp(camera->ViewMatrix, newMatrix, blendValue);
-			}
-			else
-			{
-				camera->ViewMatrix = newMatrix;
-			}
-
-			this.CameraMatrixLoad(camera->RenderCamera, (nint)(&camera->ViewMatrix));
-
-			camera->RenderCamera->FoV = this.state.FieldOfView;
-
-			// Update all cameras in the background.
-			// TODO: we could move this to another thread to ensure
-			// the camera detour is fast.
-			CameraState temp = default;
-			foreach (StudioCameraBase otherCamera in this.Cameras)
-			{
-				if (otherCamera == this.current)
-					continue;
+				this.state.FieldOfView = camera->RenderCamera->FoV;
 
 				if (!this.Services.Photos.IsCapturing)
-					otherCamera.Tick(FramerateService.AverageDeltaTime);
+					this.current.Tick(FramerateService.AverageDeltaTime);
 
-				otherCamera.Calculate(ref temp);
-				otherCamera.OnRender(ref temp);
+				this.current.Calculate(ref this.state, this.last, 1 - blendValue);
+				this.current.OnRender(ref this.state);
+
+				// in portrait preview mode, rotate the camera 90 degrees.
+				if (this.Services.Photos.IsPortrait)
+					this.state.Rotation *= Quaternion.CreateFromAxisAngle(Vector3.UnitX, -1.5707964f);
+
+				Vector3 forward = Vector3.Transform(new(1, 0, 0), this.state.Rotation);
+				Vector3 up = Vector3.Transform(new(0, 1, 0), this.state.Rotation);
+
+				Matrix4x4 newMatrix = Matrix4x4.CreateLookTo(this.state.Position, forward, up);
+
+				if (this.doAttachBlend && this.InitialCamera != null)
+				{
+					Matrix4x4 initialMatrix = this.InitialCamera.Value.Camera.SceneCamera.ViewMatrix;
+					camera->ViewMatrix = Matrix4x4.Lerp(camera->ViewMatrix, newMatrix, blendValue);
+				}
+				else
+				{
+					camera->ViewMatrix = newMatrix;
+				}
+
+				this.CameraMatrixLoad(camera->RenderCamera, (nint)(&camera->ViewMatrix));
+
+				camera->RenderCamera->FoV = this.state.FieldOfView;
+
+				// Update all cameras in the background.
+				// TODO: we could move this to another thread to ensure
+				// the camera detour is fast.
+				CameraState temp = default;
+				foreach (StudioCameraBase otherCamera in this.Cameras)
+				{
+					if (otherCamera == this.current)
+						continue;
+
+					if (!this.Services.Photos.IsCapturing)
+						otherCamera.Tick(FramerateService.AverageDeltaTime);
+
+					otherCamera.Calculate(ref temp);
+					otherCamera.OnRender(ref temp);
+				}
+			}
+			catch (Exception ex)
+			{
+				this.Log.Error(ex, "Error in camera update");
 			}
 		}
 
