@@ -19,3 +19,4 @@ Documentation/
 *.idb
 *.recipe
 *.ilk
+config.json

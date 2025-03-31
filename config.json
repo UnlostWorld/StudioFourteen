@@ -11,8 +11,10 @@
     "Panel_LibraryWindow_PersistentScrollPosition": "0.0",
     "Panel_CameraPanel_SavedPosition": "0.5,0.5",
     "Panel_CameraPanel_SavedSize": "350,450",
-    "Panel_EnvironmentPanel_SavedPosition": "0.5,0.5",
-    "Panel_EnvironmentPanel_SavedSize": "300,284"
+    "Panel_EnvironmentPanel_SavedPosition": "0.40989583333333335,0.1712962962962963",
+    "Panel_EnvironmentPanel_SavedSize": "256,383",
+    "Panel_SettingsPanel_SavedPosition": "0.46729559748427674,0.4634920634920635",
+    "Panel_SettingsPanel_SavedSize": "330,450"
   },
   "HasConfirmedReShadeVersion": -1,
   "SaveConfig": {

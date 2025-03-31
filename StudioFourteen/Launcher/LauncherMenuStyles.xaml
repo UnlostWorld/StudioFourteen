@@ -91,9 +91,9 @@
 						Grid.Column="3"
 						Width="32"
 						Height="26"
-						HorizontalAlignment="Right">
-						<icons:IconView Grid.Row="0" Icon="{DynamicResource ICON_CloseStudio}" />
-					</Button>
+						Padding="6"
+						HorizontalAlignment="Right"
+						Content="{DynamicResource ICON_CloseStudio}" />
 				</Grid>
 
 				<Border
@@ -101,7 +101,8 @@
 					Margin="3"
 					Style="{DynamicResource WpfUtilsControlBorder}">
 
-					<ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Entries}">
+					<ItemsControl
+						ItemsSource="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Entries}">
 						<ItemsControl.ItemsPanel>
 							<ItemsPanelTemplate>
 								<UniformGrid Columns="3" />
