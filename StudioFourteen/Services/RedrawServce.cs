@@ -29,6 +29,18 @@ public class RedrawService : ServiceBase
 {
 	private readonly Dictionary<int, Request> redraws = new();
 
+	public override void Attach()
+	{
+		this.Services.Tick.Add(TickService.Channels.StudioTick, this.OnTick);
+		base.Attach();
+	}
+
+	public override void Detach()
+	{
+		this.Services.Tick.Remove(TickService.Channels.StudioTick, this.OnTick);
+		base.Detach();
+	}
+
 	public Request Redraw(int objectTableIndex, bool animate = true)
 	{
 		lock (this.redraws)
@@ -78,10 +90,8 @@ public class RedrawService : ServiceBase
 		return false;
 	}
 
-	protected unsafe override void OnFrameworkUpdate(IFramework framework)
+	protected void OnTick()
 	{
-		base.OnFrameworkUpdate(framework);
-
 		lock (this.redraws)
 		{
 			foreach ((int objectTableIndex, Request request) in this.redraws)

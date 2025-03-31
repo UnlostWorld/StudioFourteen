@@ -184,25 +184,24 @@ public partial class SelectionService : ServiceBase
 	public override void Attach()
 	{
 		base.Attach();
-
+		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
 		this.poseGizmoOverlay.Enable();
 	}
 
 	public override void Detach()
 	{
 		base.Detach();
-
+		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
 		this.poseGizmoOverlay.Disable();
 	}
 
-	protected override void OnFrameworkUpdate(IFramework framework)
+	protected void OnGameTick()
 	{
-		base.OnFrameworkUpdate(framework);
-		this.Current?.OnFrameworkUpdate(framework);
+		this.Current?.OnGameTick();
 
 		if (this.Hover != this.Current)
 		{
-			this.Hover?.OnFrameworkUpdate(framework);
+			this.Hover?.OnGameTick();
 		}
 	}
 

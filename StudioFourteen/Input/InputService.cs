@@ -243,6 +243,8 @@ public class InputService : ServiceBase
 
 	public override void Attach()
 	{
+		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
+
 		foreach (InputDeviceBase device in this.inputDevices)
 		{
 			device.Attach();
@@ -253,6 +255,8 @@ public class InputService : ServiceBase
 
 	public override void Detach()
 	{
+		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
+
 		foreach (InputDeviceBase device in this.inputDevices)
 		{
 			device.Detach();
@@ -269,10 +273,8 @@ public class InputService : ServiceBase
 		return null;
 	}
 
-	protected override unsafe void OnFrameworkUpdate(IFramework framework)
+	protected unsafe void OnGameTick()
 	{
-		base.OnFrameworkUpdate(framework);
-
 		if (!this.Services.Studio.IsOpen)
 			return;
 

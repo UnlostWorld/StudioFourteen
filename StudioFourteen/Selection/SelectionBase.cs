@@ -51,7 +51,7 @@ public abstract partial class SelectionBase : ViewModel, IHistoryTarget
 	{
 	}
 
-	public virtual void OnFrameworkUpdate(IFramework framework)
+	public virtual void OnGameTick()
 	{
 	}
 

@@ -15,11 +15,9 @@
 
 namespace StudioFourteen.Services;
 
-using Dalamud.Plugin.Services;
 using FontAwesome.Sharp;
 using StudioFourteen.History;
 using StudioFourteen.Mvm;
-using StudioFourteen.Plugin;
 using StudioFourteen.Settings;
 using System;
 using System.Threading.Tasks;
@@ -63,24 +61,13 @@ public abstract class ServiceBase : ViewModel, IHistoryTarget
 		return Task.CompletedTask;
 	}
 
-	public virtual Task Tick()
-	{
-		return Task.CompletedTask;
-	}
-
 	public virtual void Attach()
 	{
-		if (DalamudServices.Framework != null)
-			DalamudServices.Framework.Update += this.OnFrameworkUpdate;
-
 		this.IsAttached = true;
 	}
 
 	public virtual void Detach()
 	{
-		if (DalamudServices.Framework != null)
-			DalamudServices.Framework.Update -= this.OnFrameworkUpdate;
-
 		this.IsAttached = false;
 	}
 
@@ -88,10 +75,6 @@ public abstract class ServiceBase : ViewModel, IHistoryTarget
 	{
 		if (this.IsAttached)
 			this.Detach();
-	}
-
-	protected virtual void OnFrameworkUpdate(IFramework framework)
-	{
 	}
 }
 

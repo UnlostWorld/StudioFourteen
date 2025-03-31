@@ -77,7 +77,19 @@ public class AutoPropertyNotifyService : ServiceBase
 		return base.Stop();
 	}
 
-	public override Task Tick()
+	public override void Attach()
+	{
+		this.Services.Tick.Add(TickService.Channels.StudioTick, this.OnTick);
+		base.Attach();
+	}
+
+	public override void Detach()
+	{
+		this.Services.Tick.Remove(TickService.Channels.StudioTick, this.OnTick);
+		base.Detach();
+	}
+
+	public void OnTick()
 	{
 		try
 		{
@@ -113,8 +125,6 @@ public class AutoPropertyNotifyService : ServiceBase
 		{
 			this.Log.Error(ex, "error ticking auto properties");
 		}
-
-		return base.Tick();
 	}
 
 	private static void Remove(TrackedObject obj)

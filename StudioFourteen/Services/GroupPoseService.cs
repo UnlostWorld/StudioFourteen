@@ -77,9 +77,7 @@ public partial class GroupPoseService : ServiceBase
 	{
 		base.Attach();
 
-		if (DalamudServices.Framework == null)
-			return;
-
+		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
 		Hooks.EnterGroupPose.Enable(this.EnterDetour);
 		Hooks.ExitGroupPose.Enable(this.ExitDetour);
 
@@ -90,6 +88,7 @@ public partial class GroupPoseService : ServiceBase
 	{
 		base.Detach();
 
+		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
 		Hooks.EnterGroupPose.Disable();
 		Hooks.ExitGroupPose.Disable();
 	}
@@ -130,10 +129,8 @@ public partial class GroupPoseService : ServiceBase
 		}
 	}
 
-	protected override void OnFrameworkUpdate(IFramework framework)
+	protected void OnGameTick()
 	{
-		base.OnFrameworkUpdate(framework);
-
 		bool isWindowVisible = this.GetIsGroupPoseSettingsWindowVisible();
 		if (isWindowVisible != this.isGroupPoseSettingsWindowVisible)
 		{

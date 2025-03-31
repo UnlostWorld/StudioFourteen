@@ -106,6 +106,8 @@ public partial class ReshadeService : ServiceBase
 		if (!this.IsReshade)
 			return;
 
+		this.Services.Tick.Add(TickService.Channels.StudioTick, this.OnTick);
+
 		bool result = ReshadeAddon.Initialize(Marshal.GetFunctionPointerForDelegate(this.onLog));
 
 		if (!result)
@@ -121,6 +123,7 @@ public partial class ReshadeService : ServiceBase
 		if (!this.IsReshade)
 			return;
 
+		this.Services.Tick.Remove(TickService.Channels.StudioTick, this.OnTick);
 		ReshadeAddon.Shutdown();
 	}
 
@@ -150,13 +153,11 @@ public partial class ReshadeService : ServiceBase
 		return !timedOut;
 	}
 
-	protected override void OnFrameworkUpdate(IFramework framework)
+	protected void OnTick()
 	{
 		this.IsReshadeOverlayOpen = ReshadeAddon.GetIsOverlayOpen();
 		this.DepthBufferAddress = ReshadeAddon.GetDepthTexture();
 		this.IsReshadeEnabled = ReshadeAddon.GetEffectsState();
-
-		base.OnFrameworkUpdate(framework);
 	}
 
 	protected void OnIsReshadeOverlayOpenChanged(bool oldValue, bool newValue)

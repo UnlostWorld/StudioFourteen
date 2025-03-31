@@ -96,10 +96,15 @@ public partial class WindowService : ServiceBase
 	{
 		base.Attach();
 		this.clickActionListener.Enable();
+
+		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
+		this.Services.Tick.Add(TickService.Channels.StudioTick, this.OnTick);
 	}
 
 	public override void Detach()
 	{
+		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
+		this.Services.Tick.Remove(TickService.Channels.StudioTick, this.OnTick);
 		base.Detach();
 		this.clickActionListener.Disable();
 		this.Activate(null);
@@ -376,10 +381,8 @@ public partial class WindowService : ServiceBase
 		this.studioWindowHwnds.Remove(windowInteropHelper.Handle);
 	}
 
-	protected unsafe override void OnFrameworkUpdate(IFramework framework)
+	protected unsafe void OnGameTick()
 	{
-		base.OnFrameworkUpdate(framework);
-
 		AtkUnitBase* pAtkUnit = this.GetAtkUnitUnderCursor();
 
 		////if (pAtkUnit != null)
@@ -388,6 +391,10 @@ public partial class WindowService : ServiceBase
 		this.atkUnitUnderCursor = pAtkUnit;
 		this.IsCursorOverAtkUnit = pAtkUnit != null;
 		this.IsCursorOverImGui = this.GetIsCursorOverImGui();
+	}
+
+	protected unsafe void OnTick()
+	{
 		this.IsCursorOverXiv = this.GetIsCursorOverXiv();
 		this.IsCursorOverStudio = this.GetIsCursorOverStudio();
 

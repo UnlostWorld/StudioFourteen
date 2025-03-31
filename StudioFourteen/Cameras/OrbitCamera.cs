@@ -137,9 +137,9 @@ public partial class OrbitCamera : StudioCameraBase
 		this.rotateDownListener.Disable();
 	}
 
-	public override void OnFrameworkUpdate(IFramework framework)
+	public override void OnGameTick()
 	{
-		base.OnFrameworkUpdate(framework);
+		base.OnGameTick();
 
 		Vector3 moveDir = Vector3.Zero;
 		moveDir.Y += this.moveUpListener.Value;

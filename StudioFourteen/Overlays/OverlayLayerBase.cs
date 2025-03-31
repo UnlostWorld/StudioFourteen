@@ -51,7 +51,7 @@ public abstract class OverlayLayerBase(string group, string name)
 		this.Services.Overlays.RemoveOverlay(this);
 	}
 
-	public virtual void OnFrameworkUpdate()
+	public virtual void OnTick()
 	{
 	}
 }

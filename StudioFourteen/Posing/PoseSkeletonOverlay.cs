@@ -47,9 +47,9 @@ public class PoseSkeletonOverlay : SelectionOverlayLayerBase
 		}
 	}
 
-	public unsafe override void OnFrameworkUpdate()
+	public unsafe override void OnTick()
 	{
-		base.OnFrameworkUpdate();
+		base.OnTick();
 
 		if (!this.IsEnabled || !this.IsVisible)
 			return;

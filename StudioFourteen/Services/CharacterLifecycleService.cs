@@ -69,24 +69,6 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 		this.DestroyAllCreated();
 	}
 
-	public override Task Tick()
-	{
-		try
-		{
-			if (!this.Services.GroupPose.IsGroupPosing && CreatedIndexes.Count > 0)
-			{
-				this.DestroyAllCreated();
-				this.Log.Warning("Left GPose with spawned characters. deleting...");
-			}
-		}
-		catch (Exception ex)
-		{
-			this.Log.Error(ex, "Error checking group pose state");
-		}
-
-		return base.Tick();
-	}
-
 	public async Task<int> CreateAsync(ICharacterAppearance? appearance = null)
 	{
 		return await this.CreateAsync(Vector3.Zero, appearance);
@@ -194,21 +176,6 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 		CreatedIndexes.Clear();
 	}
 
-	public override unsafe void Attach()
-	{
-		base.Attach();
-
-		Hooks.CharacterInitialize.Enable(this.CharacterInitializeDetour);
-		Hooks.CharacterFinalize.Enable(this.CharacterFinalizeDetour);
-	}
-
-	public override void Detach()
-	{
-		base.Detach();
-		Hooks.CharacterInitialize.Disable();
-		Hooks.CharacterFinalize.Disable();
-	}
-
 	public Task GetMenu(WorldContextMenu menu)
 	{
 		if (menu.IsObject)
@@ -221,6 +188,39 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 		}
 
 		return Task.CompletedTask;
+	}
+
+	public override unsafe void Attach()
+	{
+		base.Attach();
+
+		Hooks.CharacterInitialize.Enable(this.CharacterInitializeDetour);
+		Hooks.CharacterFinalize.Enable(this.CharacterFinalizeDetour);
+		this.Services.Tick.Add(TickService.Channels.StudioTick, this.OnTick);
+	}
+
+	public override void Detach()
+	{
+		base.Detach();
+		Hooks.CharacterInitialize.Disable();
+		Hooks.CharacterFinalize.Disable();
+		this.Services.Tick.Remove(TickService.Channels.StudioTick, this.OnTick);
+	}
+
+	protected void OnTick()
+	{
+		try
+		{
+			if (!this.Services.GroupPose.IsGroupPosing && CreatedIndexes.Count > 0)
+			{
+				this.DestroyAllCreated();
+				this.Log.Warning("Left GPose with spawned characters. deleting...");
+			}
+		}
+		catch (Exception ex)
+		{
+			this.Log.Error(ex, "Error checking group pose state");
+		}
 	}
 
 	private unsafe nint CharacterInitializeDetour(Character* character)

@@ -25,7 +25,6 @@ public class ServiceManager : ServiceManagerBase
 	public Mvm.AutoPropertyNotifyService AutoNotify { get; init; } = new();
 	public WindowService Windows { get; init; } = new();
 	public Settings.SettingsService Settings { get; init; } = new();
-	public FramerateService Framerate { get; init; } = new();
 	public StudioService Studio { get; init; } = new();
 	public Data.DataService Data { get; init; } = new();
 	public GameData.GameDataService GameData { get; init; } = new();
@@ -57,4 +56,5 @@ public class ServiceManager : ServiceManagerBase
 	public Scripting.ScriptingService Scripting { get; init; } = new();
 	public CursorService Cursor { get; init; } = new();
 	public Analytics.ErrorReportingService Errors { get; init; } = new();
+	public TickService Tick { get; init; } = new();
 }

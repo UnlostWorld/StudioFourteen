@@ -91,6 +91,8 @@ public class GameCaptureService : ServiceBase
 	{
 		base.Attach();
 
+		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
+
 		if (SwapChainHelper.IsReshade)
 		{
 			Hooks.ReshadeOnPresent.Enable(this.ReshadeOnPresentDetour);
@@ -104,6 +106,8 @@ public class GameCaptureService : ServiceBase
 	public override void Detach()
 	{
 		base.Detach();
+
+		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
 
 		if (SwapChainHelper.IsReshade)
 		{
@@ -220,7 +224,7 @@ public class GameCaptureService : ServiceBase
 		}
 	}
 
-	protected override void OnFrameworkUpdate(IFramework framework)
+	protected void OnGameTick()
 	{
 		// If not using reshade, fallback to just run before ImGUI within dalamud's present
 		if (!SwapChainHelper.IsReshade)

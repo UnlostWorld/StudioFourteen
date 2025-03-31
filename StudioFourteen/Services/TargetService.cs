@@ -69,6 +69,18 @@ public partial class TargetService : ServiceBase
 		return base.Start();
 	}
 
+	public override void Attach()
+	{
+		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
+		base.Attach();
+	}
+
+	public override void Detach()
+	{
+		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
+		base.Detach();
+	}
+
 	public unsafe Character* GetCharacter(int objectTableIndex)
 	{
 		Threads.VerifyFrameworkThread();
@@ -206,10 +218,8 @@ public partial class TargetService : ServiceBase
 		}
 	}
 
-	protected unsafe override void OnFrameworkUpdate(IFramework framework)
+	protected unsafe void OnGameTick()
 	{
-		base.OnFrameworkUpdate(framework);
-
 		int startIndex = this.TargetObjectIndex;
 
 		Character* pTarget = this.GetTarget();

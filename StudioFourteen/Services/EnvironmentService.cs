@@ -96,20 +96,16 @@ public partial class EnvironmentService
 	{
 		base.Attach();
 
-		if (DalamudServices.ClientState == null)
-			return;
-
 		Hooks.CreateScene.Enable(this.HandleCreateScene);
 		Hooks.UpdateEorzeaTime.Enable(this.UpdateEorzeaTime);
+		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
 	}
 
 	public override void Detach()
 	{
-		if (DalamudServices.ClientState == null)
-			return;
-
 		Hooks.CreateScene.Disable();
 		Hooks.UpdateEorzeaTime.Disable();
+		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
 		base.Detach();
 	}
 
@@ -142,10 +138,8 @@ public partial class EnvironmentService
 		});
 	}
 
-	protected unsafe override void OnFrameworkUpdate(IFramework framework)
+	protected unsafe void OnGameTick()
 	{
-		base.OnFrameworkUpdate(framework);
-
 		Framework* pFramework = Framework.Instance();
 		if (pFramework == null)
 			return;

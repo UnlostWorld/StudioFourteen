@@ -81,7 +81,7 @@ public abstract partial class StudioCameraBase : ViewModel, IDisposable
 	{
 	}
 
-	public virtual void OnFrameworkUpdate(IFramework framework)
+	public virtual void OnGameTick()
 	{
 	}
 

@@ -115,9 +115,9 @@ public partial class FreeCamera : StudioCameraBase
 		camera->Camera.Distance = float.MaxValue;
 	}
 
-	public override void OnFrameworkUpdate(IFramework framework)
+	public override void OnGameTick()
 	{
-		base.OnFrameworkUpdate(framework);
+		base.OnGameTick();
 
 		Vector3 moveDir = Vector3.Zero;
 		moveDir.X += this.moveForwardsListener.Value;

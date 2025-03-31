@@ -202,12 +202,12 @@ public class EyeSelection : SelectionBase
 		this.IrisBone?.Deactivate();
 	}
 
-	public override void OnFrameworkUpdate(IFramework framework)
+	public override void OnGameTick()
 	{
-		base.OnFrameworkUpdate(framework);
+		base.OnGameTick();
 
-		this.EyeBone?.OnFrameworkUpdate(framework);
-		this.IrisBone?.OnFrameworkUpdate(framework);
+		this.EyeBone?.OnGameTick();
+		this.IrisBone?.OnGameTick();
 	}
 
 	private async Task Init()

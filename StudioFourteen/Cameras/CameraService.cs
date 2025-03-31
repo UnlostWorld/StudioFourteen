@@ -112,13 +112,12 @@ public class CameraService : ServiceBase
 	{
 		base.Attach();
 
-		if (!DalamudServices.IsAlive)
-			return;
-
 		this.doAttachBlend = true;
 		this.blendWatch.Restart();
 
 		this.InitialCamera = *(GroupPoseCamera*)CameraManager.Instance()->Camera;
+
+		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
 
 		Hooks.SceneCameraUpdate.Enable(this.SceneCameraUpdateDetour);
 		Hooks.CameraMatrixLoad.Enable(this.CameraMatrixLoad);
@@ -137,9 +136,6 @@ public class CameraService : ServiceBase
 	{
 		base.Detach();
 
-		if (!DalamudServices.IsAlive)
-			return;
-
 		GroupPoseCamera* camera = (GroupPoseCamera*)CameraManager.Instance()->Camera;
 
 		// Restore camera settings
@@ -149,6 +145,8 @@ public class CameraService : ServiceBase
 			camera->Pan = this.InitialCamera.Value.Pan;
 			camera->Rotation = this.InitialCamera.Value.Rotation;
 		}
+
+		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
 
 		Hooks.SceneCameraUpdate.Disable();
 		Hooks.CameraMatrixLoad.Disable();
@@ -211,13 +209,11 @@ public class CameraService : ServiceBase
 		return this.CurrentViewProjection.TransformViewProjection(worldPos);
 	}
 
-	protected override void OnFrameworkUpdate(IFramework framework)
+	protected void OnGameTick()
 	{
-		base.OnFrameworkUpdate(framework);
-
 		if (this.Services.GroupPose.IsGroupPosing && this.current != null)
 		{
-			this.current.OnFrameworkUpdate(framework);
+			this.current.OnGameTick();
 		}
 	}
 
@@ -250,6 +246,8 @@ public class CameraService : ServiceBase
 	{
 		nint result = Hooks.SceneCameraUpdate.Original(camera);
 
+		float deltaTime = 60 / 1000.0f;
+
 		if (this.Services.GroupPose.IsGroupPosing && this.current != null)
 		{
 			try
@@ -277,7 +275,7 @@ public class CameraService : ServiceBase
 				this.state.FieldOfView = camera->RenderCamera->FoV;
 
 				if (!this.Services.Photos.IsCapturing)
-					this.current.Tick(FramerateService.AverageDeltaTime);
+					this.current.Tick(deltaTime);
 
 				this.current.Calculate(ref this.state, this.last, 1 - blendValue);
 				this.current.OnRender(ref this.state);
@@ -315,7 +313,7 @@ public class CameraService : ServiceBase
 						continue;
 
 					if (!this.Services.Photos.IsCapturing)
-						otherCamera.Tick(FramerateService.AverageDeltaTime);
+						otherCamera.Tick(deltaTime);
 
 					otherCamera.Calculate(ref temp);
 					otherCamera.OnRender(ref temp);

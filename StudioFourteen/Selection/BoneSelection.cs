@@ -315,9 +315,9 @@ public class BoneSelection : TransformSelectionBase
 		return mirror;
 	}
 
-	public override void OnFrameworkUpdate(IFramework framework)
+	public override void OnGameTick()
 	{
-		base.OnFrameworkUpdate(framework);
+		base.OnGameTick();
 
 		this.IsReady =
 			this.bone != null

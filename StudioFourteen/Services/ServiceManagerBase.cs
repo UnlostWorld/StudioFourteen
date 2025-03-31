@@ -17,18 +17,15 @@ namespace StudioFourteen.Services;
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Reflection;
 using System.Threading.Tasks;
 using Serilog;
-using TerraFX.Interop.Windows;
 
 public class ServiceManagerBase
 {
 	private static ServiceManagerBase? instance;
 	private readonly List<ServiceBase> services = new();
 	private States state = States.None;
-	private bool isTicking = false;
 
 	public ServiceManagerBase()
 	{
@@ -130,8 +127,6 @@ public class ServiceManagerBase
 
 		this.state = States.Started;
 
-		_ = Task.Run(async () => await this.Tick());
-
 		this.Log.Information("Studio Fourteen has started");
 	}
 
@@ -154,10 +149,6 @@ public class ServiceManagerBase
 		}
 
 		this.state = States.Stopping;
-
-		// wait for any in progress ticks
-		while (this.isTicking)
-			await Task.Delay(100);
 
 		this.Detach();
 
@@ -260,34 +251,5 @@ public class ServiceManagerBase
 
 	protected virtual void OnStop()
 	{
-	}
-
-	private async Task Tick()
-	{
-		while (this.state == States.Started)
-		{
-			await Task.Delay(10);
-
-			this.isTicking = true;
-			foreach (ServiceBase service in this.services)
-			{
-				if (ShutdownRequested)
-					break;
-
-				try
-				{
-					if (service.IsAlive)
-					{
-						await service.Tick();
-					}
-				}
-				catch (Exception ex)
-				{
-					Logging.Shared.Error(ex, "Error ticking services");
-				}
-			}
-
-			this.isTicking = false;
-		}
 	}
 }

@@ -80,9 +80,9 @@ public class ObjectTableSelection : TransformSelectionBase
 
 	public override ISelectionId Id => new ObjectTableSelectionId(this.objectTableId);
 
-	public unsafe override void OnFrameworkUpdate(IFramework framework)
+	public unsafe override void OnGameTick()
 	{
-		base.OnFrameworkUpdate(framework);
+		base.OnGameTick();
 
 		if (DalamudServices.ObjectTable == null)
 			throw new Exception("No Object Table");

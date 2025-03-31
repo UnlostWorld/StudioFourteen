@@ -48,6 +48,18 @@ public partial class OverlayService
 		this.Services.GroupPose.StateChanged -= this.OnGroupPoseStateChanged;
 	}
 
+	public override void Attach()
+	{
+		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnTick);
+		base.Attach();
+	}
+
+	public override void Detach()
+	{
+		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnTick);
+		base.Attach();
+	}
+
 	public void AddOverlay(OverlayLayerBase overlay)
 	{
 		lock (this.overlays)
@@ -73,10 +85,8 @@ public partial class OverlayService
 		return this.overlays;
 	}
 
-	protected override void OnFrameworkUpdate(IFramework framework)
+	protected void OnTick()
 	{
-		base.OnFrameworkUpdate(framework);
-
 		this.ShowOverlays = this.Services.GroupPose.IsGroupPosing
 			&& this.Settings.ShowOverlays
 			&& !this.Services.Photos.IsPhotoMode;
@@ -87,7 +97,7 @@ public partial class OverlayService
 			{
 				foreach (OverlayLayerBase overlay in this.overlays)
 				{
-					overlay.OnFrameworkUpdate();
+					overlay.OnTick();
 				}
 			}
 		}
