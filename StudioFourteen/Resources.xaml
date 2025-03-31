@@ -12,7 +12,6 @@
 
 		<!--  Custom styles  -->
 		<ResourceDictionary Source="./Icons/IconStyles.xaml"/>
-		<ResourceDictionary Source="./Styles/CheckBoxStyles.xaml" />
 		<ResourceDictionary Source="./Styles/SpinnerStyle.xaml" />
 		<ResourceDictionary Source="./Launcher/LauncherStyles.xaml" />
 		<ResourceDictionary Source="./Launcher/TaskBarStyles.xaml" />
@@ -20,7 +19,6 @@
 
 		<!--  Custom controls  -->
 		<ResourceDictionary Source="./Panels/PanelWindowStyle.xaml" />
-		<ResourceDictionary Source="./Save/SaveIconControl.xaml" />
 		<ResourceDictionary Source="./Library/Selector/LibrarySelectorStyles.xaml" />
 		<ResourceDictionary Source="./Library/Selector/LibrarySelectorButtonStyles.xaml" />
 		<ResourceDictionary Source="./Library/LibraryMenu/LibraryContextMenuStyles.xaml" />
@@ -28,7 +26,6 @@
 		<ResourceDictionary Source="./Tags/TagControlStyles.xaml" />
 		<ResourceDictionary Source="./Tags/TagsControlStyles.xaml" />
 		<ResourceDictionary Source="./Tags/TagSelectorStyles.xaml" />
-		<ResourceDictionary Source="./Controls/IconControlStyles.xaml" />
 		<ResourceDictionary Source="./Controls/SliderStyles.xaml" />
 		<ResourceDictionary Source="./Controls/NumberSliderStyles.xaml" />
 		<ResourceDictionary Source="./Posing/Shared/PoseSelectionControlStyles.xaml" />

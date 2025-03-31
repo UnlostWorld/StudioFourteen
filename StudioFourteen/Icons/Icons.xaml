@@ -49,8 +49,8 @@
 	<icons:Fa x:Key="ICON_Title_Animation" Icon="Person" Font="Solid" />
 	<icons:Fa x:Key="ICON_Title_Sequencer" Icon="GripLines" Font="Solid" />
 	<icons:Fa x:Key="ICON_Title_AIO" Icon="ObjectGroup" Font="Solid" />
-	<icons:Fa x:Key="ICON_Discord" Icon="Discord" Font="Solid" />
-	<icons:Fa x:Key="ICON_GitHub" Icon="Github" Font="Solid" />
+	<icons:Fa x:Key="ICON_Discord" Icon="Discord" />
+	<icons:Fa x:Key="ICON_GitHub" Icon="Github"/>
 	<icons:Fa x:Key="ICON_FavoriteOn" Icon="Heart" Font="Solid" />
 	<icons:Fa x:Key="ICON_FavoriteOff" Icon="Heart" Font="Solid" />
 	<icons:Fa x:Key="ICON_Character_Body" Icon="Person" Font="Solid" />
@@ -78,4 +78,9 @@
 	<icons:Fa x:Key="ICON_Transform_Rotate" Icon="Rotate" Font="Solid" />
 	<icons:Fa x:Key="ICON_Transform_Scale" Icon="Maximize" Font="Solid" />
 	<icons:Svg x:Key="ICON_Photo_Portrait" Source="PortraitPreview"/>
+
+	<icons:Fa x:Key="ICON_Window_Minimze" Icon="Minus" Font="Solid" />
+	<icons:Fa x:Key="ICON_Window_Maximize" Icon="Square"/>
+	<icons:Fa x:Key="ICON_Window_Restore" Icon="WindowRestore"/>
+	<icons:Fa x:Key="ICON_Window_Close" Icon="Times"/>
 </ResourceDictionary>

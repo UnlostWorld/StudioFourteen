@@ -4,8 +4,8 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
-	xmlns:local="clr-namespace:StudioFourteen.Panels"
 	xmlns:icons="clr-namespace:StudioFourteen.Icons"
+	xmlns:local="clr-namespace:StudioFourteen.Panels"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
 	<ResourceDictionary.MergedDictionaries>
@@ -81,11 +81,11 @@
 						Height="28"
 						Margin="0,0,0,1">
 
-						<Grid Background="Transparent" MouseDown="OnTitleMouseDown" >
+						<Grid Background="Transparent" MouseDown="OnTitleMouseDown">
 							<Grid.ContextMenu>
 								<ContextMenu>
-									<MenuItem Header="Pop out" Icon="fa-arrow-right-from-bracket"/>
-									<MenuItem Header="Zoom" Icon="fa-search"/>
+									<MenuItem Header="Pop out" Icon="fa-arrow-right-from-bracket" />
+									<MenuItem Header="Zoom" Icon="fa-search" />
 								</ContextMenu>
 							</Grid.ContextMenu>
 						</Grid>
@@ -98,8 +98,8 @@
 								Orientation="Horizontal">
 
 								<icons:IconView
-									MinWidth="12"
 									Height="14"
+									MinWidth="12"
 									Margin="0,1,6,0"
 									VerticalAlignment="Center"
 									Foreground="{DynamicResource ForegroundLightBrush}"
@@ -135,34 +135,28 @@
 							<!--  Minimize button  -->
 							<Button
 								Width="32"
+								Padding="10"
 								Click="OnMinimizeClicked"
-								Style="{StaticResource TitleBarButton}">
-								<controls:IconControl
-									Width="12"
-									Height="12"
-									Icon="fa-Minus" />
-							</Button>
+								Style="{StaticResource TitleBarButton}"
+								Content="{DynamicResource ICON_Window_Minimze}"/>
 
 							<!--  Maximize button  -->
 							<ToggleButton
 								x:Name="MaximizeButton"
 								Width="32"
+								Padding="10"
 								IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, Path=IsMaximized}"
 								Style="{StaticResource TitleBarToggleButton}"
 								ToolTip="{DynamicResource LOC_EmbedPanelTooltip}"
 								Visibility="Collapsed">
 								<Grid>
 									<controls:IconControl
-										Width="12"
-										Height="12"
-										Icon="fa-line-WindowRestore"
+										Icon="{DynamicResource ICON_Window_Restore}"
 										Visibility="{TemplateBinding IsMaximized,
 																	 Converter={StaticResource B2V}}" />
 
 									<controls:IconControl
-										Width="10"
-										Height="10"
-										Icon="fa-line-Square"
+										Icon="{DynamicResource ICON_Window_Maximize}"
 										Visibility="{TemplateBinding IsMaximized,
 																	 Converter={StaticResource !B2V}}" />
 								</Grid>
@@ -172,7 +166,9 @@
 							<Button
 								x:Name="CloseButton"
 								Width="48"
+								Padding="10,9"
 								Click="OnCloseClicked"
+								Content="{DynamicResource ICON_Window_Close}"
 								Style="{StaticResource TitleBarButton}"
 								ToolTip="{DynamicResource LOC_ClosePanelTooltip}"
 								Visibility="{TemplateBinding CanClose,
@@ -181,8 +177,6 @@
 								<Button.Resources>
 									<SolidColorBrush x:Key="ControlHighlightBrush" Color="#883434" />
 								</Button.Resources>
-
-								<controls:IconControl Icon="fa-Times" />
 							</Button>
 
 						</StackPanel>
