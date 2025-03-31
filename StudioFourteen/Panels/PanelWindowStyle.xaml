@@ -40,79 +40,6 @@
 		<Setter Property="VerticalAlignment" Value="Stretch" />
 	</Style>
 
-	<ControlTemplate x:Key="ZoomComboBox" TargetType="{x:Type ComboBox}">
-		<Grid>
-
-			<ToggleButton
-				Name="toggleButton"
-				IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-				Style="{StaticResource TitleBarToggleButton}">
-
-				<Grid Margin="2,0">
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition />
-					</Grid.ColumnDefinitions>
-
-					<wpfUtils:IconBlock
-						Grid.Column="0"
-						Margin="4,0,0,0"
-						VerticalAlignment="Center"
-						FontSize="10"
-						Icon="UpRightAndDownLeftFromCenter" />
-
-					<ContentPresenter
-						Name="contentPresenter"
-						Grid.Column="1"
-						Margin="{TemplateBinding Padding}"
-						VerticalAlignment="Center"
-						Content="{TemplateBinding SelectionBoxItem}"
-						ContentStringFormat="{TemplateBinding SelectionBoxItemStringFormat}"
-						ContentTemplate="{TemplateBinding SelectionBoxItemTemplate}"
-						ContentTemplateSelector="{TemplateBinding ItemTemplateSelector}"
-						IsHitTestVisible="False" />
-
-				</Grid>
-
-			</ToggleButton>
-
-			<Popup
-				Name="PART_Popup"
-				Grid.Column="0"
-				AllowsTransparency="True"
-				Focusable="False"
-				IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-				Placement="Bottom"
-				PlacementTarget="{Binding ElementName=toggleButton}"
-				PopupAnimation="Fade"
-				SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-				UseLayoutRounding="{TemplateBinding UseLayoutRounding}">
-
-				<Grid
-					MinWidth="{TemplateBinding ActualWidth}"
-					MaxHeight="{TemplateBinding MaxDropDownHeight}"
-					Margin="16">
-					<Border Background="Black" CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}">
-						<Border.Effect>
-							<DropShadowEffect Direction="270" ShadowDepth="0" />
-						</Border.Effect>
-					</Border>
-
-					<Border Background="{DynamicResource BackgroundBrush}" CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}">
-						<Border Margin="2" Style="{DynamicResource WpfUtilsControlBorder}">
-							<ScrollViewer MinHeight="1" MaxHeight="{TemplateBinding MaxDropDownHeight}">
-								<ItemsPresenter Name="ItemsPresenter" KeyboardNavigation.DirectionalNavigation="Contained" />
-							</ScrollViewer>
-						</Border>
-					</Border>
-				</Grid>
-
-			</Popup>
-		</Grid>
-	</ControlTemplate>
-
-
-
 	<ControlTemplate x:Key="PanelWindowTemplate" TargetType="{x:Type local:PanelWindow}">
 
 		<AdornerDecorator x:Name="MainGrid">
@@ -204,49 +131,6 @@
 							Grid.Row="0"
 							HorizontalAlignment="Right"
 							Orientation="Horizontal">
-
-							<!--  Zoom Button
-							<ComboBox
-								Height="Auto"
-								Margin="0"
-								VerticalAlignment="Stretch"
-								ItemsSource="{Binding ZoomOptions}"
-								SelectedValue="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, Path=Scale}"
-								Template="{StaticResource ZoomComboBox}">
-
-								<ComboBox.ItemTemplate>
-									<DataTemplate>
-										<TextBlock
-											Margin="2,0,0,1"
-											FontSize="12"
-											Text="{Binding ., StringFormat={}{0:P0}}" />
-									</DataTemplate>
-								</ComboBox.ItemTemplate>
-							</ComboBox>
-
-							Pop out button
-							<ToggleButton
-								x:Name="EmbedButton"
-								Width="32"
-								IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, Path=IsEmbedded, Converter={StaticResource !B}}"
-								Style="{StaticResource TitleBarToggleButton}"
-								ToolTip="{DynamicResource LOC_EmbedPanelTooltip}"
-								Visibility="{TemplateBinding CanChangeEmbed,
-																Converter={StaticResource B2V}}">
-								<Grid>
-									<wpfUtils:IconBlock
-										FontSize="10"
-										Icon="ArrowRightFromBracket"
-										Visibility="{TemplateBinding IsEmbedded,
-																		Converter={StaticResource B2V}}" />
-
-									<wpfUtils:IconBlock
-										FontSize="10"
-										Icon="ArrowRightToBracket"
-										Visibility="{TemplateBinding IsEmbedded,
-																		Converter={StaticResource !B2V}}" />
-								</Grid>
-							</ToggleButton>-->
 
 							<!--  Minimize button  -->
 							<Button

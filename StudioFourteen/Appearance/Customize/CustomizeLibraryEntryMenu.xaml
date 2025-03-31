@@ -23,7 +23,6 @@
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
 
-
 			<TextBlock
 				Grid.Row="0"
 				Grid.ColumnSpan="2"
@@ -44,9 +43,8 @@
 				Width="42"
 				IsChecked="{Binding ToggleMenu.IsChecked}"
 				Style="{DynamicResource WpfUtilsIconToggleButton}"
-				Visibility="{Binding ToggleMenu, Converter={StaticResource NotNullToVisibilityConverter}}">
-				<controls:IconBlock Icon="ArrowsLeftRight" />
-			</ToggleButton>
+				Visibility="{Binding ToggleMenu, Converter={StaticResource NotNullToVisibilityConverter}}"
+				Content="{DynamicResource ICON_Character_FlipLR}"/>
 
 			<controls:NumberBox
 				Grid.Row="2"

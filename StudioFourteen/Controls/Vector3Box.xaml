@@ -21,14 +21,7 @@
 				TickFrequency="{Binding TickFrequency, ElementName=View}"
 				X="{Binding ValueX, ElementName=View}"
 				Y="{Binding ValueY, ElementName=View}"
-				Z="{Binding ValueZ, ElementName=View}">
-				<wpfUtils:MultiNumberBox.Prefix>
-					<wpfUtils:IconBlock
-						Margin="6,1,2,0"
-						Foreground="{DynamicResource BackgroundLightBrush}"
-						Icon="{Binding Icon, ElementName=View}" />
-				</wpfUtils:MultiNumberBox.Prefix>
-			</wpfUtils:MultiNumberBox>
+				Z="{Binding ValueZ, ElementName=View}"/>
 
 		</Expander.Header>
 

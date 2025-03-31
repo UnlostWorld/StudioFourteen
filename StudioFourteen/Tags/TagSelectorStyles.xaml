@@ -79,11 +79,11 @@
 					<Grid>
 						<TextBox x:Name="PART_SearchBox" Padding="25,0,3,0" />
 
-						<wpfUtils:IconBlock
+						<controls:IconControl
 							Margin="8,0,0,0"
 							HorizontalAlignment="Left"
 							Foreground="{DynamicResource ForegroundLightBrush}"
-							Icon="Search" />
+							Icon="{DynamicResource ICON_Search}" />
 					</Grid>
 
 					<tags:TagsControl

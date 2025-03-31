@@ -4,7 +4,7 @@
 	xmlns:context="clr-namespace:StudioFourteen.Context"
 	xmlns:local="clr-namespace:StudioFourteen.Context"
 	xmlns:tags="clr-namespace:StudioFourteen.Tags"
-	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
+	xmlns:controls="clr-namespace:StudioFourteen.Controls">
 
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="pack://application:,,,/WpfUtils;component/Controls/PopOutStyles.xaml" />
@@ -62,10 +62,9 @@
 											Command="{Binding OnClicked}"
 											IsEnabled="{Binding IsEnabled}"
 											ToolTip="{Binding Label}">
-											<wpfUtils:IconBlock
-												FontSize="14"
-												Icon="{Binding Icon}"
-												IconFont="Solid" />
+											<controls:IconControl
+												Height="14"
+												Icon="{Binding Icon}" />
 										</Button>
 									</DataTemplate>
 								</ItemsControl.ItemTemplate>

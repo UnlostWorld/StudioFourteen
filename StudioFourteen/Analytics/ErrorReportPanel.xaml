@@ -6,7 +6,7 @@
 	xmlns:local="clr-namespace:StudioFourteen.Studio"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
-	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	Title="{DynamicResource LOC_Error}"
 	Width="400"
 	MaxHeight="800"
@@ -102,20 +102,20 @@
 
 					<Button Background="Transparent" Click="OnGitHubClicked">
 						<StackPanel Margin="3,0" Orientation="Horizontal">
-							<wpfUtils:IconBlock
+							<controls:IconControl
 								Margin="0,0,6,0"
-								FontSize="10"
-								Icon="Github" />
+								Height="10"
+								Icon="{DynamicResource ICON_GitHub}" />
 							<TextBlock Text="{DynamicResource LOC_GitHub}" />
 						</StackPanel>
 					</Button>
 
 					<Button Background="Transparent" Click="OnDiscordClicked">
 						<StackPanel Margin="3,0" Orientation="Horizontal">
-							<wpfUtils:IconBlock
+							<controls:IconControl
 								Margin="0,0,6,0"
-								FontSize="10"
-								Icon="Discord" />
+								Height="10"
+								Icon="{DynamicResource ICON_Discord}" />
 							<TextBlock Text="{DynamicResource LOC_Discord}" />
 						</StackPanel>
 					</Button>

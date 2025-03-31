@@ -5,7 +5,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="clr-namespace:StudioFourteen.Tags"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	x:Name="View"
 	d:DesignHeight="300"
 	d:DesignWidth="300"
@@ -26,10 +26,10 @@
 			ToolTip="{TemplateBinding TagToolTip}">
 
 			<StackPanel Margin="2,0" Orientation="Horizontal">
-				<wpfUtils:IconBlock
+				<controls:IconControl
 					Margin="0,0,4,0"
 					Foreground="{DynamicResource ForegroundLightBrush}"
-					Icon="Tag" />
+					Icon="{DynamicResource ICON_Tag}" />
 				<TextBlock
 					Foreground="{TemplateBinding TagColor}"
 					Text="{TemplateBinding TagName}"

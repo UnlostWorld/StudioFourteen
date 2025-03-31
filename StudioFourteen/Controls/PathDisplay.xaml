@@ -6,7 +6,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="clr-namespace:StudioFourteen.Controls"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	Margin="1"
 	d:DesignWidth="400"
 	mc:Ignorable="d">
@@ -20,19 +20,16 @@
 	<ItemsControl.ItemTemplate>
 		<DataTemplate DataType="{x:Type local:PathSegment}">
 			<StackPanel Orientation="Horizontal">
-				<wpfUtils:IconBlock
+				<controls:IconControl
 					x:Name="Icon"
 					Width="14"
 					Margin="0,4,4,2"
-					Icon="{Binding Icon}"
-					IconFont="Solid"
-					TextAlignment="Center" />
+					Icon="{Binding Icon}"/>
 
-				<wpfUtils:IconBlock
+				<controls:IconControl
 					x:Name="Caret"
 					Margin="6,4,6,2"
-					FontSize="10"
-					Icon="CaretRight"
+					Icon="{DynamicResource ICON_PathSeperator}"
 					Visibility="Collapsed" />
 
 				<TextBlock Margin="0,2,0,0" Text="{Binding Name}" />

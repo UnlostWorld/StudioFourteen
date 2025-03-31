@@ -5,8 +5,7 @@
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=WpfUtils"
 	xmlns:menu="clr-namespace:StudioFourteen.Library.LibraryMenu"
 	xmlns:tags="clr-namespace:StudioFourteen.Tags"
-	xmlns:icons="clr-namespace:StudioFourteen.Icons"
-	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
+	xmlns:icons="clr-namespace:StudioFourteen.Icons">
 
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="pack://application:,,,/WpfUtils;component/Controls/PopOutStyles.xaml" />
@@ -140,7 +139,7 @@
 								Command="{Binding Icon.ExportCommand, RelativeSource={RelativeSource AncestorType={x:Type menu:LibraryContextMenu}}}"
 								IsEnabled="{Binding Icon.CanExport, FallbackValue=False, RelativeSource={RelativeSource AncestorType={x:Type menu:LibraryContextMenu}}}"
 								ToolTip="{DynamicResource LOC_Library_ExportIcon}">
-								<wpfUtils:IconBlock Icon="FileImage" IconFont="Solid" />
+								<controls:IconControl Icon="{DynamicResource ICON_Export}" />
 							</Button>
 						</UniformGrid>
 

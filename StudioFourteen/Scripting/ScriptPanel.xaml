@@ -6,7 +6,7 @@
 	xmlns:local="clr-namespace:StudioFourteen.Scripting"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
-	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	Title="Script"
 	Width="512"
 	Height="300"
@@ -58,13 +58,13 @@
 										<ColumnDefinition Width="Auto" />
 									</Grid.ColumnDefinitions>
 
-									<wpfUtils:IconBlock
+									<controls:IconControl
 										x:Name="Icon"
 										Grid.Column="0"
 										Margin="3"
 										VerticalAlignment="Top"
 										Foreground="{DynamicResource ForegroundLightBrush}"
-										Icon="InfoCircle" />
+										Icon="{DynamicResource ICON_Info}" />
 
 									<TextBlock
 										Grid.Column="1"
@@ -145,13 +145,13 @@
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
 
-			<wpfUtils:IconBlock
+			<controls:IconControl
 				Grid.Row="1"
 				Grid.Column="0"
 				Margin="12,6"
-				FontSize="48"
+				Height="48"
 				Foreground="{DynamicResource ForegroundLightBrush}"
-				Icon="Warning" />
+				Icon="{DynamicResource ICON_Warning}" />
 
 			<TextBlock
 				Grid.Row="1"

@@ -38,17 +38,20 @@
 							SelectedIndex="{Binding Services.Selection.GizmoIndex}"
 							Style="{DynamicResource WpfUtilsSwitchSelectorNoBorder}">
 
-							<ListBoxItem Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}">
-								<wpfUtils:IconBlock Icon="Arrows" ToolTip="{DynamicResource LOC_Translate}" />
-							</ListBoxItem>
+							<ListBoxItem
+								Content="{DynamicResource ICON_Transform_Translate}"
+								Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
+								ToolTip="{DynamicResource LOC_Translate}" />
 
-							<ListBoxItem Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}">
-								<wpfUtils:IconBlock Icon="Rotate" ToolTip="{DynamicResource LOC_Rotate}" />
-							</ListBoxItem>
+							<ListBoxItem
+								Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
+								Content="{DynamicResource ICON_Transform_Rotate}"
+								ToolTip="{DynamicResource LOC_Rotate}" />
 
-							<ListBoxItem Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}">
-								<wpfUtils:IconBlock Icon="Maximize" ToolTip="{DynamicResource LOC_Scale}" />
-							</ListBoxItem>
+							<ListBoxItem
+								Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
+								ToolTip="{DynamicResource LOC_Scale}"
+								Content="{DynamicResource ICON_Transform_Scale}"/>
 						</wpfUtils:SwitchSelector>
 					</Grid>
 				</Border>

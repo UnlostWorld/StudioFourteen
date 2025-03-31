@@ -6,10 +6,13 @@
 	<icons:Svg x:Key="ICON_GroupPose" Source="GroupPose" />
 	<icons:Svg x:Key="ICON_GroupPoseSettings" Source="GroupPoseSettings" />
 	<icons:Svg x:Key="ICON_TagsAdd" Source="TagsAdd" />
+	<icons:Fa x:Key="ICON_Tag" Icon="Tag" />
 	<icons:Svg x:Key="ICON_MoonWaxing" Source="MoonWaxing" />
 	<icons:Svg x:Key="ICON_MoonFull" Source="MoonFull" />
 	<icons:Svg x:Key="ICON_MoonWaning" Source="MoonWaning" />
-
+	<icons:Fa x:Key="ICON_Close" Icon="Times" Font="Solid" />
+	<icons:Fa x:Key="ICON_Search" Icon="Search" Font="Solid" />
+	<icons:Fa x:Key="ICON_OpnFile" Icon="FolderOpen" Font="Solid" />
 	<icons:Fa x:Key="ICON_Library_Root" Icon="Book" Font="Solid" />
 	<icons:Svg x:Key="ICON_Library_Group" Source="Library Group" />
 	<icons:Svg x:Key="ICON_Library_Group_XIV" Source="Library Group XIV" />
@@ -17,7 +20,15 @@
 	<icons:Svg x:Key="ICON_Library_Entry_Script" Source="Library Entry Script" />
 	<icons:Svg x:Key="ICON_Library_Entry_Pose" Source="Library Entry Pose" />
 	<icons:Svg x:Key="ICON_Library_Entry_Appearance" Source="Library Entry Appearance" />
-
+	<icons:Fa x:Key="ICON_Library_Back" Icon="ArrowLeft" Font="Solid"  />
+	<icons:Fa x:Key="ICON_Library_Forward" Icon="ArrowRight" Font="Solid"  />
+	<icons:Fa x:Key="ICON_Library_Up" Icon="ArrowUp" Font="Solid"  />
+	<icons:Fa x:Key="ICON_Library_FilterFavorites" Icon="Heart" Font="Solid" />
+	<icons:Fa x:Key="ICON_Library_FilterAll" Icon="FileAlt" Font="Solid" />
+	<icons:Fa x:Key="ICON_Library_ViewIcons" Icon="BorderAll" Font="Solid" />
+	<icons:Fa x:Key="ICON_Library_ViewList" Icon="List" Font="Solid" />
+	<icons:Fa x:Key="ICON_Library_FlattenOff" Icon="Folder" Font="Solid" />
+	<icons:Fa x:Key="ICON_Library_FlattenOn" Icon="FileAlt" Font="Solid" />
 	<icons:Fa x:Key="ICON_Title_Warning" Icon="ExclamationCircle" Font="Solid" />
 	<icons:Fa x:Key="ICON_Title_Character" Icon="UserShield" Font="Solid" />
 	<icons:Fa x:Key="ICON_Title_Camera" Icon="VideoCamera" Font="Solid" />
@@ -38,5 +49,33 @@
 	<icons:Fa x:Key="ICON_Title_Animation" Icon="Person" Font="Solid" />
 	<icons:Fa x:Key="ICON_Title_Sequencer" Icon="GripLines" Font="Solid" />
 	<icons:Fa x:Key="ICON_Title_AIO" Icon="ObjectGroup" Font="Solid" />
-
+	<icons:Fa x:Key="ICON_Discord" Icon="Discord" Font="Solid" />
+	<icons:Fa x:Key="ICON_GitHub" Icon="Github" Font="Solid" />
+	<icons:Fa x:Key="ICON_FavoriteOn" Icon="Heart" Font="Solid" />
+	<icons:Fa x:Key="ICON_FavoriteOff" Icon="Heart" Font="Solid" />
+	<icons:Fa x:Key="ICON_Character_Body" Icon="Person" Font="Solid" />
+	<icons:Fa x:Key="ICON_Character_Face" Icon="FaceSmile" Font="Solid" />
+	<icons:Fa x:Key="ICON_Character_Makeup" Icon="PaintBrush" Font="Solid" />
+	<icons:Fa x:Key="ICON_Character_Gear" Icon="Shirt" Font="Solid" />
+	<icons:Fa x:Key="ICON_Character_FlipLR" Icon="ArrowsLeftRight" Font="Solid" />
+	<icons:Fa x:Key="ICON_Undo" Icon="UndoAlt" Font="Solid" />
+	<icons:Fa x:Key="ICON_Redo" Icon="RedoAlt" Font="Solid" />
+	<icons:Fa x:Key="ICON_Reset" Icon="Undo" Font="Solid" />
+	<icons:Fa x:Key="ICON_PathSeperator" Icon="CaretRight" Font="Solid" />
+	<icons:Fa x:Key="ICON_Export" Icon="FileImage" Font="Solid" />
+	<icons:Fa x:Key="ICON_GlobalOverlay" Icon="MousePointer" Font="Solid" />
+	<icons:Fa x:Key="ICON_VisibilityOn" Icon="Eye" Font="Solid" />
+	<icons:Fa x:Key="ICON_VisibilityOff" Icon="EyeSlash" Font="Solid" />
+	<icons:Fa x:Key="ICON_OverlayLayers" Icon="LayerGroup" Font="Solid" />
+	<icons:Fa x:Key="ICON_AddCharacter" Icon="UserPlus" Font="Solid" />
+	<icons:Fa x:Key="ICON_DeleteCharacter" Icon="UserPlus" Font="Solid" />
+	<icons:Fa x:Key="ICON_Info" Icon="InfoCircle" Font="Solid" />
+	<icons:Fa x:Key="ICON_Warning" Icon="Warning" Font="Solid" />
+	<icons:Fa x:Key="ICON_CaptureImage" Icon="Camera" Font="Solid" />
+	<icons:Svg x:Key="ICON_ShowUi" Source="ShowUi" />
+	<icons:Svg x:Key="ICON_HideUi" Source="HideUi" />
+	<icons:Fa x:Key="ICON_Transform_Translate" Icon="Arrows" Font="Solid" />
+	<icons:Fa x:Key="ICON_Transform_Rotate" Icon="Rotate" Font="Solid" />
+	<icons:Fa x:Key="ICON_Transform_Scale" Icon="Maximize" Font="Solid" />
+	<icons:Svg x:Key="ICON_Photo_Portrait" Source="PortraitPreview"/>
 </ResourceDictionary>

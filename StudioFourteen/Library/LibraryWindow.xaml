@@ -5,6 +5,7 @@
 	xmlns:behaviors="clr-namespace:WpfUtils.Behaviors;assembly=WpfUtils"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:input="clr-namespace:StudioFourteen.Input"
 	xmlns:local="clr-namespace:StudioFourteen.Library"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -13,7 +14,6 @@
 	xmlns:results="clr-namespace:StudioFourteen.Library.Results"
 	xmlns:structs="clr-namespace:StudioFourteen.Structs"
 	xmlns:tags="clr-namespace:StudioFourteen.Tags"
-	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:triggers="clr-namespace:WpfUtils.Triggers;assembly=WpfUtils"
 	xmlns:vwp="clr-namespace:WpfToolkit.Controls;assembly=VirtualizingWrapPanel"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
@@ -64,7 +64,7 @@
 								Click="OnBackClicked"
 								IsEnabled="{Binding CurrentGroup.Parent, Converter={StaticResource NotNullToBoolConverter}}"
 								ToolTip="{DynamicResource LOC_Library_GoUpTooltip}">
-								<wpfUtils:IconBlock Icon="ArrowLeft" />
+								<controls:IconControl Icon="{DynamicResource ICON_Library_Back}" />
 							</Button>
 
 							<Button
@@ -74,7 +74,7 @@
 								Click="OnBackClicked"
 								IsEnabled="False"
 								ToolTip="{DynamicResource LOC_Library_GoUpTooltip}">
-								<wpfUtils:IconBlock Icon="ArrowRight" />
+								<controls:IconControl Icon="{DynamicResource ICON_Library_Forward}" />
 							</Button>
 						</StackPanel>
 
@@ -88,7 +88,7 @@
 							Click="OnUpClicked"
 							IsEnabled="{Binding CurrentGroup.Parent, Converter={StaticResource NotNullToBoolConverter}}"
 							ToolTip="{DynamicResource LOC_Library_GoUpTooltip}">
-							<wpfUtils:IconBlock Icon="ArrowUp" />
+							<controls:IconControl Icon="{DynamicResource ICON_Library_Up}" />
 						</Button>
 					</Border>
 
@@ -148,15 +148,15 @@
 											<StackPanel Orientation="Horizontal">
 												<ContentPresenter
 													x:Name="Icon"
-													Margin="4,6"
 													MaxWidth="22"
-													Content="{Binding Icon}"/>
+													Margin="4,6"
+													Content="{Binding Icon}" />
 
 												<TextBlock
 													x:Name="Name"
-													VerticalAlignment="Center"
 													Margin="0,2"
-													Text="{Binding Name}"/>
+													VerticalAlignment="Center"
+													Text="{Binding Name}" />
 											</StackPanel>
 										</Button>
 
@@ -236,13 +236,13 @@
 						IsSelected="{Binding ViewList, Converter={StaticResource !B}}"
 						Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
 						ToolTip="{DynamicResource LOC_Library_IconViewTooltip}">
-						<wpfUtils:IconBlock Icon="BorderAll" IconFont="Solid" />
+						<controls:IconControl Icon="{DynamicResource ICON_Library_ViewIcons}" />
 					</ListBoxItem>
 					<ListBoxItem
 						IsSelected="{Binding ViewList}"
 						Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
 						ToolTip="{DynamicResource LOC_Library_ListViewTooltip}">
-						<wpfUtils:IconBlock Icon="List" IconFont="Solid" />
+						<controls:IconControl Icon="{DynamicResource ICON_Library_ViewList}"/>
 					</ListBoxItem>
 
 					<wpfUtils:SwitchSelector.Style>
@@ -269,13 +269,13 @@
 						IsSelected="{Binding Flatten, Converter={StaticResource !B}}"
 						Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
 						ToolTip="{DynamicResource LOC_Library_DirectoryViewTooltip}">
-						<wpfUtils:IconBlock Icon="Folder" IconFont="Solid" />
+						<controls:IconControl Icon="{DynamicResource ICON_Library_Flatten}" />
 					</ListBoxItem>
 					<ListBoxItem
 						IsSelected="{Binding Flatten}"
 						Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
 						ToolTip="{DynamicResource LOC_Library_FlattenViewTooltip}">
-						<wpfUtils:IconBlock Icon="FileAlt" IconFont="Solid" />
+						<controls:IconControl Icon="{DynamicResource ICON_Library_FlattenOn}" />
 					</ListBoxItem>
 
 					<wpfUtils:SwitchSelector.Style>
@@ -304,10 +304,7 @@
 							<Setter Property="Content">
 								<Setter.Value>
 									<StackPanel Orientation="Horizontal">
-										<wpfUtils:IconBlock
-											Margin="0,0,3,0"
-											Icon="FolderOpen"
-											IconFont="Solid" />
+										<controls:IconControl Margin="0,0,3,0" Icon="{DynamicResource ICON_OpnFile}" />
 										<TextBlock Text="{DynamicResource LOC_Library_OpenFile}" />
 									</StackPanel>
 								</Setter.Value>
@@ -341,7 +338,10 @@
 					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
 
-				<tags:TagSelector Grid.Column="0" SelectedTags="{Binding TagFilter.Tags}" Tags="{Binding AvailableTags}">
+				<tags:TagSelector
+					Grid.Column="0"
+					SelectedTags="{Binding TagFilter.Tags}"
+					Tags="{Binding AvailableTags}">
 					<tags:TagSelector.Style>
 						<Style BasedOn="{StaticResource TagSelectorStyle}" TargetType="{x:Type tags:TagSelector}">
 
@@ -358,11 +358,11 @@
 				<Grid>
 					<TextBox Padding="25,0,3,0" Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" />
 
-					<wpfUtils:IconBlock
+					<controls:IconControl
 						Margin="8,0,0,0"
 						HorizontalAlignment="Left"
 						Foreground="{DynamicResource ForegroundLightBrush}"
-						Icon="Search" />
+						Icon="{DynamicResource ICON_Search}" />
 
 					<Grid.Style>
 						<Style TargetType="{x:Type Grid}">
@@ -548,8 +548,8 @@
 									MouseLeftButtonUp="OnResultMouseLeft"
 									MouseRightButtonUp="OnResultMouseRight"
 									ToolTip=""
-									ToolTipOpening="OnResultToolTipOpening"
-									ToolTipClosing="OnResultToolTipClosing">
+									ToolTipClosing="OnResultToolTipClosing"
+									ToolTipOpening="OnResultToolTipOpening">
 
 									<Grid.RowDefinitions>
 										<RowDefinition Height="Auto" />
@@ -559,27 +559,19 @@
 									<ContentPresenter
 										Height="{Binding ActualWidth, RelativeSource={RelativeSource Mode=Self}}"
 										Margin="3"
-										Content="{Binding Icon}"/>
+										Content="{Binding Icon}" />
 
 									<Grid
 										Margin="0,5,5,0"
 										HorizontalAlignment="Right"
 										VerticalAlignment="Top"
 										Visibility="{Binding Entry.IsFavorite, Converter={StaticResource B2V}}">
-										<wpfUtils:IconBlock
+										<controls:IconControl
 											Margin="-2,2,2,-2"
-											FontSize="28"
+											Height="28"
 											Foreground="{DynamicResource BackgroundBrush}"
-											Icon="Heart"
-											IconFont="Solid" />
-										<wpfUtils:IconBlock
-											FontSize="28"
-											Foreground="{DynamicResource TrimBrush}"
-											Icon="Heart"
-											IconFont="Solid" />
-
+											Icon="{DynamicResource ICON_FavoriteOn}" />
 									</Grid>
-
 
 									<TextBlock
 										x:Name="NameBlock"

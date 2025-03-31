@@ -191,7 +191,7 @@
 									IsEnabled="{Binding CanIncludeAppearance}"
 									Style="{DynamicResource WpfUtilsIconToggleButton}"
 									ToolTip="{Binding ApplyAppearanceTooltip}">
-									<wpfUtils:IconBlock Icon="UserShield" IconFont="Solid" />
+									<TextBlock Text="UserShield"/>
 								</ToggleButton>
 
 								<ToggleButton
@@ -203,7 +203,7 @@
 									IsEnabled="{Binding CanIncludePose}"
 									Style="{DynamicResource WpfUtilsIconToggleButton}"
 									ToolTip="{Binding ApplyPoseTooltip}">
-									<wpfUtils:IconBlock Icon="Running" />
+									<TextBlock Text="Running" />
 								</ToggleButton>
 
 								<ComboBox
@@ -221,10 +221,7 @@
 													<ColumnDefinition />
 												</Grid.ColumnDefinitions>
 
-												<wpfUtils:IconBlock
-													Grid.Column="0"
-													Icon="User"
-													IconFont="Solid" />
+												<TextBlock Text="User"/>
 												<TextBlock Grid.Column="1" Text="{Binding Name}" />
 											</Grid>
 										</DataTemplate>
@@ -235,7 +232,7 @@
 													<ColumnDefinition />
 												</Grid.ColumnDefinitions>
 
-												<wpfUtils:IconBlock Grid.Column="0" Icon="UserPlus" />
+												<TextBlock Text="UserPlus" />
 												<TextBlock Grid.Column="1" Text="Create Character" />
 											</Grid>
 										</DataTemplate>
@@ -246,7 +243,7 @@
 													<ColumnDefinition />
 												</Grid.ColumnDefinitions>
 
-												<wpfUtils:IconBlock Grid.Column="0" Icon="Times" />
+												<TextBlock Text="Times" />
 												<TextBlock Grid.Column="1" Text="Ignore" />
 											</Grid>
 										</DataTemplate>

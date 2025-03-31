@@ -274,7 +274,7 @@
 											VerticalAlignment="Stretch"
 											Background="Transparent"
 											ToolTip="{Binding ExportAppearanceToolTipText}">
-											<wpfUtils:IconBlock Icon="UserShield" />
+											<TextBlock Text="UserShield" />
 										</Button>
 
 										<Button
@@ -285,7 +285,7 @@
 											VerticalAlignment="Stretch"
 											Background="Transparent"
 											ToolTip="{Binding ExportPoseToolTipText}">
-											<wpfUtils:IconBlock Icon="Running" />
+											<TextBlock Text="Running" />
 										</Button>
 									</Grid>
 								</Border>

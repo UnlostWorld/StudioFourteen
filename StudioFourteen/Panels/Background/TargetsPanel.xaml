@@ -169,9 +169,8 @@
 				VerticalAlignment="Stretch"
 				Background="Transparent"
 				Style="{DynamicResource WpfUtilsIconToggleButton}"
-				ToolTip="{DynamicResource LOC_Target_CreateCharacter}">
-				<wpfUtils:IconBlock Icon="UserPlus" />
-			</ToggleButton>
+				ToolTip="{DynamicResource LOC_Target_CreateCharacter}"
+				Content="{DynamicResource ICON_AddCharacter}"/>
 
 			<Button
 				Grid.Column="2"
@@ -179,10 +178,8 @@
 				Background="Transparent"
 				Click="OnRemoveCharacterClicked"
 				IsEnabled="{Binding Target, Converter={StaticResource NotNullToBoolConverter}}"
-				ToolTip="{Binding RemoveCharacterTooltip}">
-
-				<wpfUtils:IconBlock Icon="TrashAlt" IconFont="Solid" />
-			</Button>
+				ToolTip="{Binding RemoveCharacterTooltip}"
+				Content="{DynamicResource ICON_DeleteCharacter}"/>
 		</Grid>
 
 		<librarySelector:LibrarySelector

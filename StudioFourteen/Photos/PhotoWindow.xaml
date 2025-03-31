@@ -36,11 +36,11 @@
 					Background="Transparent"
 					ToolTip="{DynamicResource LOC_Photo_GroupPoseWarn}"
 					Visibility="{Binding Services.Studio.IsOpenAndInGPose, Converter={StaticResource !B2V}}">
-					<wpfUtils:IconBlock
+					<controls:IconControl
 						Grid.Column="0"
 						Margin="6,2"
 						Foreground="{DynamicResource ForegroundLightBrush}"
-						Icon="InfoCircle"
+						Icon="{DynamicResource ICON_Info}"
 						Opacity="0.5" />
 				</Grid>
 
@@ -162,7 +162,7 @@
 					Background="Transparent"
 					Click="OnSaveClicked"
 					ToolTip="{DynamicResource LOC_Photo_CaptureToolTip}">
-					<wpfUtils:IconBlock Icon="Camera" />
+					<controls:IconControl Icon="{DynamicResource ICON_CaptureImage}" />
 				</Button>
 
 				<ToggleButton
@@ -176,12 +176,12 @@
 					<Grid>
 						<controls:IconControl
 							Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"
-							Icon="ShowUi"
+							Icon="{DynamicResource ICON_ShowUi}"
 							Visibility="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}, Converter={StaticResource !B2V}}" />
 
 						<controls:IconControl
 							Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"
-							Icon="HideUi"
+							Icon="{DynamicResource ICON_HideUi}"
 							Visibility="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}, Converter={StaticResource B2V}}" />
 					</Grid>
 				</ToggleButton>
@@ -221,7 +221,7 @@
 					Style="{DynamicResource WpfUtilsIconToggleButton}"
 					ToolTip="{DynamicResource LOC_Photo_TogglePortrait}"
 					Visibility="{Binding Services.Studio.IsOpenAndInGPose, Converter={StaticResource B2V}}">
-					<controls:IconControl Icon="PortraitPreview" />
+					<controls:IconControl Icon="{DynamicResource ICON_Photo_Portrait}" />
 				</ToggleButton>
 
 				<Button
@@ -230,7 +230,7 @@
 					Margin="0"
 					Click="OnSettingsClicked"
 					ToolTip="{DynamicResource LOC_Photo_Settings}">
-					<wpfUtils:IconBlock Icon="Gears" />
+					<controls:IconControl Icon="{DynamicResource ICON_Title_Settings}" />
 				</Button>
 
 				<Button
@@ -239,7 +239,7 @@
 					Margin="0"
 					Click="OnCloseClicked"
 					ToolTip="{DynamicResource LOC_ClosePanelTooltip}">
-					<wpfUtils:IconBlock Icon="Times" />
+					<controls:IconControl Icon="{DynamicResource ICON_Close}" />
 				</Button>
 
 				<!--
