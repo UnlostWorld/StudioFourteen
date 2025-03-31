@@ -18,10 +18,10 @@ namespace StudioFourteen.Icons;
 using System.Windows.Controls;
 using DependencyPropertyGenerator;
 
-[DependencyProperty<IconDefinitionBase>("Icon")]
+[DependencyProperty<object>("Icon")]
 public partial class IconView : ContentControl
 {
-	partial void OnIconChanged(IconDefinitionBase? newValue)
+	partial void OnIconChanged(object? newValue)
 	{
 		this.Content = newValue;
 	}

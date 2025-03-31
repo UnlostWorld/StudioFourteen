@@ -5,7 +5,14 @@
     "Panel_ErrorReportPanel_SavedSize": "400,270",
     "Panel_AnalyticsOptPanel_SavedPosition": "0.5,0.5",
     "Panel_AnalyticsOptPanel_SavedSize": "400,349",
-    "Panel_LibraryWindow_SavedPosition": "0.21428571428571427,0.27708333333333335"
+    "Panel_LibraryWindow_SavedPosition": "0.37857142857142856,0.3145833333333333",
+    "Panel_LibraryWindow_PersistentPath": "",
+    "Panel_LibraryWindow_SavedSize": "800,600",
+    "Panel_LibraryWindow_PersistentScrollPosition": "0.0",
+    "Panel_CameraPanel_SavedPosition": "0.5,0.5",
+    "Panel_CameraPanel_SavedSize": "350,450",
+    "Panel_EnvironmentPanel_SavedPosition": "0.5,0.5",
+    "Panel_EnvironmentPanel_SavedSize": "300,284"
   },
   "HasConfirmedReShadeVersion": -1,
   "SaveConfig": {
@@ -34,7 +41,9 @@
   "OpenPanels": [],
   "MinimizedTaskBarEntries": {},
   "Theme": "Dark",
-  "ThemeOptions": {},
+  "ThemeOptions": {
+    "Trim Color": "Pink"
+  },
   "Launcher": "Default",
   "IsAioWindowOpen": false,
   "EnableBinds": true,

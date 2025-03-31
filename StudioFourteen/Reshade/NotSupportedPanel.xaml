@@ -8,6 +8,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
+	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	Title="{DynamicResource LOC_Reshade_NotSupportedTitle}"
 	Width="400"
 	MaxHeight="800"
@@ -76,18 +77,18 @@
 
 						<StackPanel Orientation="Horizontal">
 
-							<controls:IconControl
+							<icons:IconView
 								Margin="12,6,6,6"
 								Foreground="{DynamicResource TrimBrush}"
 								Icon="{DynamicResource ICON_GlobalOverlay}" />
 
-							<controls:IconControl
+							<icons:IconView
 								Margin="6,6,6,6"
 								Foreground="{DynamicResource ForegroundLightBrush}"
 								Icon="{DynamicResource ICON_VisibilityOn}"
 								Opacity="0.25" />
 
-							<controls:IconControl
+							<icons:IconView
 								Margin="6,6,12,6"
 								Foreground="{DynamicResource ForegroundLightBrush}"
 								Icon="{DynamicResource ICON_OverlayLayers}"

@@ -53,7 +53,7 @@
 						<ColumnDefinition Width="64" />
 					</Grid.ColumnDefinitions>
 
-					<controls:IconControl
+					<icons:IconView
 						Grid.Column="0"
 						Width="14"
 						Height="14"
@@ -61,7 +61,7 @@
 						Opacity="0.33"
 						Icon="Night" />
 
-					<controls:IconControl
+					<icons:IconView
 						Grid.Column="1"
 						Width="20"
 						Height="20"
@@ -69,7 +69,7 @@
 						Opacity="0.33"
 						Icon="Sunrise" />
 
-					<controls:IconControl
+					<icons:IconView
 						Grid.Column="2"
 						Width="16"
 						Height="16"
@@ -77,7 +77,7 @@
 						Opacity="0.33"
 						Icon="Noon" />
 
-					<controls:IconControl
+					<icons:IconView
 						Grid.Column="3"
 						Width="20"
 						Height="20"
@@ -85,7 +85,7 @@
 						Opacity="0.33"
 						Icon="Sunset" />
 
-					<controls:IconControl
+					<icons:IconView
 						Grid.Column="4"
 						Width="14"
 						Height="14"

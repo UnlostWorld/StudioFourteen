@@ -150,12 +150,12 @@
 								ToolTip="{DynamicResource LOC_EmbedPanelTooltip}"
 								Visibility="Collapsed">
 								<Grid>
-									<controls:IconControl
+									<icons:IconView
 										Icon="{DynamicResource ICON_Window_Restore}"
 										Visibility="{TemplateBinding IsMaximized,
 																	 Converter={StaticResource B2V}}" />
 
-									<controls:IconControl
+									<icons:IconView
 										Icon="{DynamicResource ICON_Window_Maximize}"
 										Visibility="{TemplateBinding IsMaximized,
 																	 Converter={StaticResource !B2V}}" />

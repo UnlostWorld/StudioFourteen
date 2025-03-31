@@ -40,7 +40,7 @@
 
 					<icons:IconView
 						Grid.Column="1"
-						Height="12"
+						Height="10"
 						Margin="6"
 						VerticalAlignment="Center"
 						Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"
@@ -79,8 +79,9 @@
 					<Grid>
 						<TextBox x:Name="PART_SearchBox" Padding="25,0,3,0" />
 
-						<controls:IconControl
+						<icons:IconView
 							Margin="8,0,0,0"
+							Height="14"
 							HorizontalAlignment="Left"
 							Foreground="{DynamicResource ForegroundLightBrush}"
 							Icon="{DynamicResource ICON_Search}" />

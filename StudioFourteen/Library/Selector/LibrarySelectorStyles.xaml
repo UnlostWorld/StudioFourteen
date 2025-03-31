@@ -3,12 +3,13 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
-	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=wpfUtils"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
+	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:menu="clr-namespace:StudioFourteen.Library.LibraryMenu"
 	xmlns:results="clr-namespace:StudioFourteen.Library.Results"
 	xmlns:selector="clr-namespace:StudioFourteen.Library.Selector"
-	xmlns:tags="clr-namespace:StudioFourteen.Tags">
+	xmlns:tags="clr-namespace:StudioFourteen.Tags"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=wpfUtils">
 
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="pack://application:,,,/WpfUtils;component/Controls/PopOutStyles.xaml" />
@@ -72,12 +73,12 @@
 				HorizontalAlignment="Right"
 				VerticalAlignment="Top"
 				Visibility="{Binding Entry.IsFavorite, Converter={StaticResource B2V}}">
-				<controls:IconControl
-					Margin="-2,2,2,-2"
+				<icons:IconView
 					Height="18"
+					Margin="-2,2,2,-2"
 					Foreground="{DynamicResource BackgroundBrush}"
 					Icon="{DynamicResource ICON_FavoriteOn}" />
-				<controls:IconControl
+				<icons:IconView
 					Height="18"
 					Foreground="{DynamicResource TrimBrush}"
 					Icon="{DynamicResource ICON_FavoriteOff}" />
@@ -145,7 +146,7 @@
 						HorizontalAlignment="Right"
 						VerticalAlignment="Top"
 						Background="Transparent">
-						<controls:IconControl Foreground="{DynamicResource ForegroundLightBrush}" Icon="{DynamicResource ICON_Close}" />
+						<icons:IconView Foreground="{DynamicResource ForegroundLightBrush}" Icon="{DynamicResource ICON_Close}" />
 					</Button>
 
 					<ContentPresenter
@@ -180,13 +181,13 @@
 							IsSelected="{Binding RelativeSource={RelativeSource AncestorType={x:Type selector:LibrarySelector}}, Path=Favorites, Converter={StaticResource !B}}"
 							Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
 							ToolTip="{DynamicResource LOC_LibrarySelector_All}">
-							<controls:IconControl Icon="{DynamicResource ICON_Library_FilterAll}"/>
+							<icons:IconView Icon="{DynamicResource ICON_Library_FilterAll}" />
 						</ListBoxItem>
 						<ListBoxItem
 							IsSelected="{Binding RelativeSource={RelativeSource AncestorType={x:Type selector:LibrarySelector}}, Path=Favorites}"
 							Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
 							ToolTip="{DynamicResource LOC_LibrarySelector_Favorites}">
-							<controls:IconControl Icon="{DynamicResource ICON_Library_FilterFavorites}"/>
+							<icons:IconView Icon="{DynamicResource ICON_Library_FilterFavorites}" />
 						</ListBoxItem>
 					</wpfUtils:SwitchSelector>
 
@@ -200,14 +201,14 @@
 						Padding="28,0,0,0"
 						Text="{Binding RelativeSource={RelativeSource AncestorType={x:Type selector:LibrarySelector}}, Path=Search, UpdateSourceTrigger=PropertyChanged}" />
 
-					<controls:IconControl
+					<icons:IconView
 						Grid.Row="2"
 						Grid.Column="1"
 						Margin="10,2,0,2"
 						HorizontalAlignment="Left"
 						VerticalAlignment="Center"
 						Foreground="{DynamicResource ForegroundLightBrush}"
-						Icon="{DynamicResource ICON_Search}"/>
+						Icon="{DynamicResource ICON_Search}" />
 
 				</Grid>
 

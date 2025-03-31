@@ -129,8 +129,8 @@
 								Style="{DynamicResource WpfUtilsIconToggleButton}">
 
 								<Grid>
-									<controls:IconControl Icon="fa-Heart" Visibility="{Binding ElementName=FavoritesToggle, Path=IsChecked, Converter={StaticResource B2V}}" />
-									<controls:IconControl Icon="fa-line-Heart" Visibility="{Binding ElementName=FavoritesToggle, Path=IsChecked, Converter={StaticResource !B2V}}" />
+									<icons:IconView Icon="fa-Heart" Visibility="{Binding ElementName=FavoritesToggle, Path=IsChecked, Converter={StaticResource B2V}}" />
+									<icons:IconView Icon="fa-line-Heart" Visibility="{Binding ElementName=FavoritesToggle, Path=IsChecked, Converter={StaticResource !B2V}}" />
 								</Grid>
 							</ToggleButton>
 
@@ -139,7 +139,7 @@
 								Command="{Binding Icon.ExportCommand, RelativeSource={RelativeSource AncestorType={x:Type menu:LibraryContextMenu}}}"
 								IsEnabled="{Binding Icon.CanExport, FallbackValue=False, RelativeSource={RelativeSource AncestorType={x:Type menu:LibraryContextMenu}}}"
 								ToolTip="{DynamicResource LOC_Library_ExportIcon}">
-								<controls:IconControl Icon="{DynamicResource ICON_Export}" />
+								<icons:IconView Icon="{DynamicResource ICON_Export}" />
 							</Button>
 						</UniformGrid>
 

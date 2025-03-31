@@ -64,7 +64,7 @@
 								Click="OnBackClicked"
 								IsEnabled="{Binding CurrentGroup.Parent, Converter={StaticResource NotNullToBoolConverter}}"
 								ToolTip="{DynamicResource LOC_Library_GoUpTooltip}">
-								<controls:IconControl Icon="{DynamicResource ICON_Library_Back}" />
+								<icons:IconView Height="14" Icon="{DynamicResource ICON_Library_Back}" />
 							</Button>
 
 							<Button
@@ -74,7 +74,7 @@
 								Click="OnBackClicked"
 								IsEnabled="False"
 								ToolTip="{DynamicResource LOC_Library_GoUpTooltip}">
-								<controls:IconControl Icon="{DynamicResource ICON_Library_Forward}" />
+								<icons:IconView Height="14" Icon="{DynamicResource ICON_Library_Forward}" />
 							</Button>
 						</StackPanel>
 
@@ -88,7 +88,7 @@
 							Click="OnUpClicked"
 							IsEnabled="{Binding CurrentGroup.Parent, Converter={StaticResource NotNullToBoolConverter}}"
 							ToolTip="{DynamicResource LOC_Library_GoUpTooltip}">
-							<controls:IconControl Icon="{DynamicResource ICON_Library_Up}" />
+							<icons:IconView Height="14" Icon="{DynamicResource ICON_Library_Up}" />
 						</Button>
 					</Border>
 
@@ -236,13 +236,13 @@
 						IsSelected="{Binding ViewList, Converter={StaticResource !B}}"
 						Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
 						ToolTip="{DynamicResource LOC_Library_IconViewTooltip}">
-						<controls:IconControl Icon="{DynamicResource ICON_Library_ViewIcons}" />
+						<icons:IconView Height="14" Icon="{DynamicResource ICON_Library_ViewIcons}" />
 					</ListBoxItem>
 					<ListBoxItem
 						IsSelected="{Binding ViewList}"
 						Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
 						ToolTip="{DynamicResource LOC_Library_ListViewTooltip}">
-						<controls:IconControl Icon="{DynamicResource ICON_Library_ViewList}"/>
+						<icons:IconView Height="14" Icon="{DynamicResource ICON_Library_ViewList}" />
 					</ListBoxItem>
 
 					<wpfUtils:SwitchSelector.Style>
@@ -269,13 +269,13 @@
 						IsSelected="{Binding Flatten, Converter={StaticResource !B}}"
 						Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
 						ToolTip="{DynamicResource LOC_Library_DirectoryViewTooltip}">
-						<controls:IconControl Icon="{DynamicResource ICON_Library_Flatten}" />
+						<icons:IconView Height="14" Icon="{DynamicResource ICON_Library_FlattenOff}" />
 					</ListBoxItem>
 					<ListBoxItem
 						IsSelected="{Binding Flatten}"
 						Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
 						ToolTip="{DynamicResource LOC_Library_FlattenViewTooltip}">
-						<controls:IconControl Icon="{DynamicResource ICON_Library_FlattenOn}" />
+						<icons:IconView Height="14" Icon="{DynamicResource ICON_Library_FlattenOn}" />
 					</ListBoxItem>
 
 					<wpfUtils:SwitchSelector.Style>
@@ -304,7 +304,7 @@
 							<Setter Property="Content">
 								<Setter.Value>
 									<StackPanel Orientation="Horizontal">
-										<controls:IconControl Margin="0,0,3,0" Icon="{DynamicResource ICON_OpnFile}" />
+										<icons:IconView Height="14" Margin="0,0,3,0" Icon="{DynamicResource ICON_OpnFile}" />
 										<TextBlock Text="{DynamicResource LOC_Library_OpenFile}" />
 									</StackPanel>
 								</Setter.Value>
@@ -358,7 +358,8 @@
 				<Grid>
 					<TextBox Padding="25,0,3,0" Text="{Binding Search, UpdateSourceTrigger=PropertyChanged}" />
 
-					<controls:IconControl
+					<icons:IconView
+						Height="14"
 						Margin="8,0,0,0"
 						HorizontalAlignment="Left"
 						Foreground="{DynamicResource ForegroundLightBrush}"
@@ -566,9 +567,9 @@
 										HorizontalAlignment="Right"
 										VerticalAlignment="Top"
 										Visibility="{Binding Entry.IsFavorite, Converter={StaticResource B2V}}">
-										<controls:IconControl
-											Margin="-2,2,2,-2"
+										<icons:IconView
 											Height="28"
+											Margin="-2,2,2,-2"
 											Foreground="{DynamicResource BackgroundBrush}"
 											Icon="{DynamicResource ICON_FavoriteOn}" />
 									</Grid>

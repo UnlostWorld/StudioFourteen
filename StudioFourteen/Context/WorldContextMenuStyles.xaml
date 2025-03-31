@@ -2,9 +2,10 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:context="clr-namespace:StudioFourteen.Context"
+	xmlns:controls="clr-namespace:StudioFourteen.Controls"
+	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:local="clr-namespace:StudioFourteen.Context"
-	xmlns:tags="clr-namespace:StudioFourteen.Tags"
-	xmlns:controls="clr-namespace:StudioFourteen.Controls">
+	xmlns:tags="clr-namespace:StudioFourteen.Tags">
 
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary Source="pack://application:,,,/WpfUtils;component/Controls/PopOutStyles.xaml" />
@@ -62,9 +63,7 @@
 											Command="{Binding OnClicked}"
 											IsEnabled="{Binding IsEnabled}"
 											ToolTip="{Binding Label}">
-											<controls:IconControl
-												Height="14"
-												Icon="{Binding Icon}" />
+											<icons:IconView Height="14" Icon="{Binding Icon}" />
 										</Button>
 									</DataTemplate>
 								</ItemsControl.ItemTemplate>

@@ -9,6 +9,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:mvm="clr-namespace:StudioFourteen.Mvm"
 	xmlns:windows="clr-namespace:StudioFourteen.Panels"
+	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	Title="{DynamicResource LOC_Overlays}"
 	Width="132"
 	Height="58"
@@ -35,7 +36,7 @@
 					Style="{DynamicResource WpfUtilsIconToggleButton}"
 					ToolTip="{DynamicResource LOC_Overlays_ToggleGlobal}">
 					<Grid>
-						<controls:IconControl Icon="{DynamicResource ICON_GlobalOverlay}" />
+						<icons:IconView Icon="{DynamicResource ICON_GlobalOverlay}" />
 					</Grid>
 				</ToggleButton>
 
@@ -47,10 +48,10 @@
 					Style="{DynamicResource WpfUtilsIconToggleButton}"
 					ToolTip="{DynamicResource LOC_Overlays_ToggleVisibility}">
 					<Grid>
-						<controls:IconControl
+						<icons:IconView
 							Icon="{DynamicResource ICON_VisibilityOn}"
 							Visibility="{Binding ElementName=VisibilityButton, Path=IsChecked, Converter={StaticResource B2V}}" />
-						<controls:IconControl
+						<icons:IconView
 							Icon="{DynamicResource ICON_VisibilityOff}"
 							Visibility="{Binding ElementName=VisibilityButton, Path=IsChecked, Converter={StaticResource !B2V}}" />
 					</Grid>
@@ -62,7 +63,7 @@
 					IsEnabled="{Binding IsChecked, ElementName=GlobalOverlayButton}"
 					Style="{DynamicResource WpfUtilsIconToggleButton}"
 					ToolTip="{DynamicResource LOC_OverlayBarDescription}">
-					<controls:IconControl Icon="{DynamicResource ICON_OverlayLayers}"/>
+					<icons:IconView Icon="{DynamicResource ICON_OverlayLayers}" />
 				</ToggleButton>
 			</StackPanel>
 
@@ -89,7 +90,8 @@
 						</CollectionViewSource>
 
 						<DataTemplate DataType="{x:Type local:OverlayLayerBase}">
-							<ToggleButton Content="{Binding DisplayName}" IsChecked="{Binding IsHidden, Converter={StaticResource !B}}" />
+							<ToggleButton Content="{Binding DisplayName}"
+								IsChecked="{Binding IsHidden, Converter={StaticResource !B}}" />
 						</DataTemplate>
 
 					</Grid.Resources>

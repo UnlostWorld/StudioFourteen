@@ -15,6 +15,7 @@
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	DefaultPosition="0.5,1"
 	HostStyle="{DynamicResource PanelToolbarStyle}"
+	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	ResizeMode="NoResize"
 	TitleIcon="{DynamicResource ICON_Title_Photo}"
 	VisibilityMode="PhotoMode"
@@ -36,7 +37,7 @@
 					Background="Transparent"
 					ToolTip="{DynamicResource LOC_Photo_GroupPoseWarn}"
 					Visibility="{Binding Services.Studio.IsOpenAndInGPose, Converter={StaticResource !B2V}}">
-					<controls:IconControl
+					<icons:IconView
 						Grid.Column="0"
 						Margin="6,2"
 						Foreground="{DynamicResource ForegroundLightBrush}"
@@ -76,7 +77,8 @@
 					</wpfUtils:PopOut.Header>
 
 					<wpfUtils:PopOut.Resources>
-						<CollectionViewSource x:Key="ListBoxItems" Source="{Binding Services.Photos.AspectRatios}">
+						<CollectionViewSource x:Key="ListBoxItems"
+							Source="{Binding Services.Photos.AspectRatios}">
 							<CollectionViewSource.GroupDescriptions>
 								<PropertyGroupDescription PropertyName="GroupName" />
 							</CollectionViewSource.GroupDescriptions>
@@ -99,9 +101,12 @@
 										<Setter Property="Template">
 											<Setter.Value>
 												<ControlTemplate>
-													<Expander Expanded="OnAspectsExpanderExpanded" Style="{DynamicResource WpfUtilsClickableExpander}">
+													<Expander Expanded="OnAspectsExpanderExpanded"
+														Style="{DynamicResource WpfUtilsClickableExpander}">
 														<Expander.Header>
-															<TextBlock Foreground="{DynamicResource ForegroundLightBrush}" Text="{Binding Items[0].GroupName}" />
+															<TextBlock
+																Foreground="{DynamicResource ForegroundLightBrush}"
+																Text="{Binding Items[0].GroupName}" />
 														</Expander.Header>
 														<ItemsPresenter />
 													</Expander>
@@ -162,7 +167,7 @@
 					Background="Transparent"
 					Click="OnSaveClicked"
 					ToolTip="{DynamicResource LOC_Photo_CaptureToolTip}">
-					<controls:IconControl Icon="{DynamicResource ICON_CaptureImage}" />
+					<icons:IconView Icon="{DynamicResource ICON_CaptureImage}" />
 				</Button>
 
 				<ToggleButton
@@ -174,12 +179,12 @@
 					Style="{DynamicResource WpfUtilsIconToggleButton}"
 					ToolTip="{DynamicResource LOC_Photo_ToggleUIToolTip}">
 					<Grid>
-						<controls:IconControl
+						<icons:IconView
 							Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"
 							Icon="{DynamicResource ICON_ShowUi}"
 							Visibility="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}, Converter={StaticResource !B2V}}" />
 
-						<controls:IconControl
+						<icons:IconView
 							Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"
 							Icon="{DynamicResource ICON_HideUi}"
 							Visibility="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}, Converter={StaticResource B2V}}" />
@@ -221,7 +226,7 @@
 					Style="{DynamicResource WpfUtilsIconToggleButton}"
 					ToolTip="{DynamicResource LOC_Photo_TogglePortrait}"
 					Visibility="{Binding Services.Studio.IsOpenAndInGPose, Converter={StaticResource B2V}}">
-					<controls:IconControl Icon="{DynamicResource ICON_Photo_Portrait}" />
+					<icons:IconView Icon="{DynamicResource ICON_Photo_Portrait}" />
 				</ToggleButton>
 
 				<Button
@@ -230,7 +235,7 @@
 					Margin="0"
 					Click="OnSettingsClicked"
 					ToolTip="{DynamicResource LOC_Photo_Settings}">
-					<controls:IconControl Icon="{DynamicResource ICON_Title_Settings}" />
+					<icons:IconView Icon="{DynamicResource ICON_Title_Settings}" />
 				</Button>
 
 				<Button
@@ -239,7 +244,7 @@
 					Margin="0"
 					Click="OnCloseClicked"
 					ToolTip="{DynamicResource LOC_ClosePanelTooltip}">
-					<controls:IconControl Icon="{DynamicResource ICON_Close}" />
+					<icons:IconView Icon="{DynamicResource ICON_Close}" />
 				</Button>
 
 				<!--

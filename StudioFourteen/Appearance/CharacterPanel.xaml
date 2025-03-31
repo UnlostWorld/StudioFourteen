@@ -7,6 +7,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:equipment="clr-namespace:StudioFourteen.Appearance.Equipment"
 	xmlns:gameData="clr-namespace:StudioFourteen.GameData.Library"
+	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:library="clr-namespace:StudioFourteen.Library"
 	xmlns:local="clr-namespace:StudioFourteen.Appearance"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -64,7 +65,7 @@
 			<!--  Body  -->
 			<TabItem>
 				<TabItem.Header>
-					<controls:IconControl Margin="12" Icon="{DynamicResource ICON_Pose_Body}" />
+					<icons:IconView Margin="12" Icon="{DynamicResource ICON_Pose_Body}" />
 				</TabItem.Header>
 
 				<ScrollViewer HorizontalScrollBarVisibility="Disabled">
@@ -75,7 +76,7 @@
 			<!--  Face  -->
 			<TabItem>
 				<TabItem.Header>
-					<controls:IconControl Margin="12" Icon="{DynamicResource ICON_Pose_Face}" />
+					<icons:IconView Margin="12" Icon="{DynamicResource ICON_Pose_Face}" />
 				</TabItem.Header>
 
 				<ScrollViewer HorizontalScrollBarVisibility="Disabled">
@@ -86,7 +87,7 @@
 			<!--  Makeup  -->
 			<TabItem>
 				<TabItem.Header>
-					<controls:IconControl Margin="12" Icon="{DynamicResource ICON_Character_Makeup}" />
+					<icons:IconView Margin="12" Icon="{DynamicResource ICON_Character_Makeup}" />
 				</TabItem.Header>
 
 				<ScrollViewer HorizontalScrollBarVisibility="Disabled">
@@ -97,7 +98,7 @@
 			<!--  Equipment  -->
 			<TabItem Visibility="{Binding UseTwoColumns, Converter={StaticResource !B2V}}">
 				<TabItem.Header>
-					<controls:IconControl Margin="12" Icon="{DynamicResource ICON_Character_Gear}" />
+					<icons:IconView Margin="12" Icon="{DynamicResource ICON_Character_Gear}" />
 				</TabItem.Header>
 
 				<ScrollViewer HorizontalScrollBarVisibility="Disabled">
