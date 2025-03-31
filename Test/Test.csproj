@@ -1,11 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
 	<OutputType>WinExe</OutputType>
+	<AppendTargetFramework>False</AppendTargetFramework>
+	<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	<TargetFramework>net9.0-windows</TargetFramework>
 	<Nullable>enable</Nullable>
 	<ImplicitUsings>enable</ImplicitUsings>
 	<UseWPF>true</UseWPF>
 	<Platforms>x64</Platforms>
+	<OutputPath>.\bin\</OutputPath>
   </PropertyGroup>
 
 	<PropertyGroup>

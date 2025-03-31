@@ -13,7 +13,13 @@
 			"logging": {
 				"moduleLoad": false
 			}
-
+        },
+		{
+            "name": "Test",
+            "type": "coreclr",
+			"request": "launch",
+			"program": "${workspaceFolder}/Test/bin/Test.dll",
+			"preLaunchTask": "Build",
         }
     ]
 }

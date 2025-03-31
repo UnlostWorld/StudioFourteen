@@ -1,0 +1,41 @@
+{
+  "Version": 0,
+  "Persistence": {
+    "Panel_ErrorReportPanel_SavedPosition": "0.5,0.5",
+    "Panel_ErrorReportPanel_SavedSize": "400,270"
+  },
+  "HasConfirmedReShadeVersion": -1,
+  "SaveConfig": {
+    "IncludeLocation": true,
+    "IncludeWeather": true,
+    "IncludeTimeOfDay": true,
+    "IncludePoses": true,
+    "IncludeAppearances": false
+  },
+  "DefaultVersion": "1.0",
+  "PhotoFormat": 0,
+  "PhotoIncludeMetaData": true,
+  "PhotoCaptureDepth": false,
+  "PhotoAnimationFlash": true,
+  "PhotoAnimationPreview": true,
+  "HasConfirmedAnalyticOptions": false,
+  "SendOptionalAnalytics": false,
+  "SendErrorReports": true,
+  "HideLauncherButton": false,
+  "OpenGroupPose": false,
+  "HideGenitals": true,
+  "EnableGlobalOverlay": true,
+  "ShowOverlays": true,
+  "Overlays": {},
+  "OpenPanels": [],
+  "MinimizedTaskBarEntries": {},
+  "Theme": "Dark",
+  "ThemeOptions": {},
+  "Launcher": "Default",
+  "IsAioWindowOpen": false,
+  "EnableBinds": true,
+  "CustomBinds": {},
+  "Favorites": [],
+  "LibraryPreviewMode": 1,
+  "TrustedScripts": {}
+}
