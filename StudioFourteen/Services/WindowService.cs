@@ -371,14 +371,20 @@ public partial class WindowService : ServiceBase
 
 	public void OnWindowOpening(Window window)
 	{
-		WindowInteropHelper windowInteropHelper = new(window);
-		this.studioWindowHwnds.Add(windowInteropHelper.Handle);
+		lock(this.studioWindowHwnds)
+		{
+			WindowInteropHelper windowInteropHelper = new(window);
+			this.studioWindowHwnds.Add(windowInteropHelper.Handle);
+		}
 	}
 
 	public void OnWindowClosing(Window window)
 	{
-		WindowInteropHelper windowInteropHelper = new(window);
-		this.studioWindowHwnds.Remove(windowInteropHelper.Handle);
+		lock(this.studioWindowHwnds)
+		{
+			WindowInteropHelper windowInteropHelper = new(window);
+			this.studioWindowHwnds.Remove(windowInteropHelper.Handle);
+		}
 	}
 
 	protected unsafe void OnGameTick()
@@ -428,8 +434,11 @@ public partial class WindowService : ServiceBase
 
 	private bool GetIsCursorOverStudio()
 	{
-		IntPtr hwnd = CursorUtility.GetWindowUnderCursor();
-		return this.studioWindowHwnds.Contains(hwnd);
+		lock(this.studioWindowHwnds)
+		{
+			IntPtr hwnd = CursorUtility.GetWindowUnderCursor();
+			return this.studioWindowHwnds.Contains(hwnd);
+		}
 	}
 
 	private bool GetIsCursorOverImGui()

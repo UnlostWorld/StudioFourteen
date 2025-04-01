@@ -15,6 +15,7 @@
 			<ToggleButton
 				x:Name="PART_Button"
 				Height="Auto"
+				Padding="0"
 				HorizontalContentAlignment="Stretch"
 				Background="{TemplateBinding Background}"
 				Style="{DynamicResource WpfUtilsIconToggleButton}"
@@ -95,6 +96,7 @@
 			<ToggleButton
 				x:Name="PART_Button"
 				Height="Auto"
+				Padding="0"
 				HorizontalContentAlignment="Stretch"
 				Background="{TemplateBinding Background}"
 				Style="{DynamicResource WpfUtilsIconToggleButton}"

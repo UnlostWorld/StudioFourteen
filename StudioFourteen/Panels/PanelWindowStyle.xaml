@@ -98,9 +98,9 @@
 								Orientation="Horizontal">
 
 								<icons:IconView
-									Height="14"
+									Height="16"
 									MinWidth="12"
-									Margin="0,1,6,0"
+									Margin="0,1,4,0"
 									VerticalAlignment="Center"
 									Foreground="{DynamicResource ForegroundLightBrush}"
 									Icon="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Panel.TitleIcon}"
@@ -135,7 +135,7 @@
 							<!--  Minimize button  -->
 							<Button
 								Width="32"
-								Padding="10"
+								Padding="8"
 								Click="OnMinimizeClicked"
 								Style="{StaticResource TitleBarButton}"
 								Content="{DynamicResource ICON_Window_Minimze}"/>
@@ -144,7 +144,7 @@
 							<ToggleButton
 								x:Name="MaximizeButton"
 								Width="32"
-								Padding="10"
+								Padding="7"
 								IsChecked="{Binding RelativeSource={RelativeSource TemplatedParent}, Mode=TwoWay, Path=IsMaximized}"
 								Style="{StaticResource TitleBarToggleButton}"
 								ToolTip="{DynamicResource LOC_EmbedPanelTooltip}"
@@ -166,7 +166,7 @@
 							<Button
 								x:Name="CloseButton"
 								Width="48"
-								Padding="10,9"
+								Padding="6"
 								Click="OnCloseClicked"
 								Content="{DynamicResource ICON_Window_Close}"
 								Style="{StaticResource TitleBarButton}"

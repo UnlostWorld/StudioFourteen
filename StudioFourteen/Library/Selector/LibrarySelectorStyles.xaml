@@ -141,13 +141,13 @@
 						x:Name="PART_CloseButton"
 						Grid.Row="0"
 						Grid.Column="2"
-						Width="32"
-						Height="32"
+						Width="24"
+						Height="24"
+						Padding="6"
 						HorizontalAlignment="Right"
 						VerticalAlignment="Top"
-						Background="Transparent">
-						<icons:IconView Foreground="{DynamicResource ForegroundLightBrush}" Icon="{DynamicResource ICON_Close}" />
-					</Button>
+						Background="Transparent"
+						Content="{DynamicResource ICON_Close}"/>
 
 					<ContentPresenter
 						Grid.Row="0"
@@ -205,6 +205,8 @@
 						Grid.Row="2"
 						Grid.Column="1"
 						Margin="10,2,0,2"
+						Width="14"
+						Height="14"
 						HorizontalAlignment="Left"
 						VerticalAlignment="Center"
 						Foreground="{DynamicResource ForegroundLightBrush}"

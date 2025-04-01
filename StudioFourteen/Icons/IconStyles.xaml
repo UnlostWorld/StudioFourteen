@@ -9,6 +9,7 @@
 	<!-- SVG Icons -->
 	<DataTemplate DataType="{x:Type icons:Svg}">
 		<icons:SvgIconView
+			Margin="2"
 			HorizontalContentAlignment="Center"
 			VerticalContentAlignment="Center"
 			Midground="{DynamicResource BackgroundLightBrush}"
@@ -34,6 +35,7 @@
 
 	<ControlTemplate x:Key="FaIconViewTemplate" TargetType="{x:Type icons:FaIconView}">
 		<fa:IconImage
+			Margin="2"
 			Foreground="{TemplateBinding Foreground}"
 			Icon="{TemplateBinding Icon}"
 			IconFont="{TemplateBinding IconFont}" />

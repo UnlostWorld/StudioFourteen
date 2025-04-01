@@ -53,7 +53,8 @@
 
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition />
-			<ColumnDefinition Width="{Binding UseTwoColumns, Converter={StaticResource ColumnVisibility}, ConverterParameter=*}" />
+			<ColumnDefinition
+				Width="{Binding UseTwoColumns, Converter={StaticResource ColumnVisibility}, ConverterParameter=*}" />
 		</Grid.ColumnDefinitions>
 
 		<TabControl
@@ -63,44 +64,29 @@
 			Style="{DynamicResource WpfUtilsSideTabs}">
 
 			<!--  Body  -->
-			<TabItem>
-				<TabItem.Header>
-					<icons:IconView Margin="12" Icon="{DynamicResource ICON_Pose_Body}" />
-				</TabItem.Header>
-
+			<TabItem Header="{DynamicResource ICON_Pose_Body}">
 				<ScrollViewer HorizontalScrollBarVisibility="Disabled">
 					<ItemsControl ItemsSource="{Binding Customize.BodyMenus}" />
 				</ScrollViewer>
 			</TabItem>
 
 			<!--  Face  -->
-			<TabItem>
-				<TabItem.Header>
-					<icons:IconView Margin="12" Icon="{DynamicResource ICON_Pose_Face}" />
-				</TabItem.Header>
-
+			<TabItem Header="{DynamicResource ICON_Pose_Face}">
 				<ScrollViewer HorizontalScrollBarVisibility="Disabled">
 					<ItemsControl ItemsSource="{Binding Customize.HeadMenus}" />
 				</ScrollViewer>
 			</TabItem>
 
 			<!--  Makeup  -->
-			<TabItem>
-				<TabItem.Header>
-					<icons:IconView Margin="12" Icon="{DynamicResource ICON_Character_Makeup}" />
-				</TabItem.Header>
-
+			<TabItem Header="{DynamicResource ICON_Character_Makeup}">
 				<ScrollViewer HorizontalScrollBarVisibility="Disabled">
 					<ItemsControl ItemsSource="{Binding Customize.MakeupMenus}" />
 				</ScrollViewer>
 			</TabItem>
 
 			<!--  Equipment  -->
-			<TabItem Visibility="{Binding UseTwoColumns, Converter={StaticResource !B2V}}">
-				<TabItem.Header>
-					<icons:IconView Margin="12" Icon="{DynamicResource ICON_Character_Gear}" />
-				</TabItem.Header>
-
+			<TabItem Header="{DynamicResource ICON_Character_Gear}"
+				Visibility="{Binding UseTwoColumns, Converter={StaticResource !B2V}}">
 				<ScrollViewer HorizontalScrollBarVisibility="Disabled">
 					<StackPanel>
 						<TextBlock Style="{DynamicResource LeftLabel}" Text="Weapons" />
