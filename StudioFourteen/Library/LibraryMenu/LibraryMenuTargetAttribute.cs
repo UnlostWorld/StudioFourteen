@@ -95,7 +95,7 @@ public class LibraryMenuTargetAttribute : LibraryMenuAttributeBase
 				if (i == targetService.TargetObjectIndex)
 					continue;
 
-				Character* pCharacter = ServiceManager.Instance.GameObjects.GetCharacter(i);
+				Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(i);
 				if (pCharacter == null)
 					continue;
 

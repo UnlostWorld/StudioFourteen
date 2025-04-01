@@ -227,7 +227,7 @@ public partial class PoseViewBase : View
 				int ornamentTableIndex = -1;
 				unsafe
 				{
-					Character* character = this.Services.GameObjects.GetCharacter(this.ObjectTableIndex);
+					Character* character = this.Services.GameObjects.Get<Character>(this.ObjectTableIndex);
 					Ornament* ornament = character->OrnamentData.OrnamentObject;
 
 					if (ornament != null)
@@ -280,7 +280,7 @@ public partial class PoseViewBase : View
 
 		unsafe
 		{
-			Character* pCharacter = this.Services.GameObjects.GetCharacter(objectTableIndex);
+			Character* pCharacter = this.Services.GameObjects.Get<Character>(objectTableIndex);
 			if (pCharacter == null)
 				return false;
 

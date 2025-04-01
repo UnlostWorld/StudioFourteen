@@ -167,7 +167,7 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 	{
 		TickService.VerifyGameTickThread();
 
-		Character* pCharacter = this.Services.GameObjects.GetCharacter(objectTableIndex);
+		Character* pCharacter = this.Services.GameObjects.Get<Character>(objectTableIndex);
 
 		if (pCharacter->ModelContainer.ModelCharaId == modelCharaId)
 			return;
@@ -185,7 +185,7 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 	{
 		TickService.VerifyGameTickThread();
 
-		Character* pCharacter = this.Services.GameObjects.GetCharacter(objectTableIndex);
+		Character* pCharacter = this.Services.GameObjects.Get<Character>(objectTableIndex);
 
 		byte oldValue = pCharacter->DrawData.CustomizeData.GetValue(index);
 		if (oldValue == value)
@@ -211,7 +211,7 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 	{
 		TickService.VerifyGameTickThread();
 
-		Character* pCharacter = this.Services.GameObjects.GetCharacter(objectTableIndex);
+		Character* pCharacter = this.Services.GameObjects.Get<Character>(objectTableIndex);
 
 		if (source != UpdateSource.Restore && source != UpdateSource.Preview)
 			this.Backup(pCharacter);
@@ -233,7 +233,7 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 	{
 		TickService.VerifyGameTickThread();
 
-		Character* pCharacter = this.Services.GameObjects.GetCharacter(objectTableIndex);
+		Character* pCharacter = this.Services.GameObjects.Get<Character>(objectTableIndex);
 
 		if (source != UpdateSource.Restore && source != UpdateSource.Preview)
 			this.Backup(pCharacter);
@@ -244,7 +244,7 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 
 	public unsafe void SetCustomize(int objectTableIndex, CustomizeData customize, UpdateSource source)
 	{
-		Character* pCharacter = this.Services.GameObjects.GetCharacter(objectTableIndex);
+		Character* pCharacter = this.Services.GameObjects.Get<Character>(objectTableIndex);
 
 		if (pCharacter->DrawData.CustomizeData[(int)CustomizeIndex.Race] != customize[(int)CustomizeIndex.Race]
 			|| pCharacter->DrawData.CustomizeData[(int)CustomizeIndex.Tribe] != customize[(int)CustomizeIndex.Tribe]
@@ -260,7 +260,7 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 	{
 		TickService.VerifyGameTickThread();
 
-		Character* pCharacter = this.Services.GameObjects.GetCharacter(objectTableIndex);
+		Character* pCharacter = this.Services.GameObjects.Get<Character>(objectTableIndex);
 
 		if (source != UpdateSource.Restore)
 			this.Backup(pCharacter);

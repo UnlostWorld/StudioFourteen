@@ -33,7 +33,7 @@ public class BodySimpleView : SimpleView
 
 		unsafe
 		{
-			Character* pCharacter = this.Services.GameObjects.GetCharacter(this.ObjectTableIndex);
+			Character* pCharacter = this.Services.GameObjects.Get<Character>(this.ObjectTableIndex);
 			if (pCharacter == null)
 				return;
 

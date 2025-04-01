@@ -95,7 +95,7 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 			await Threads.NextFrame();
 			unsafe
 			{
-				Character* pCharacter = this.Services.GameObjects.GetCharacter(index);
+				Character* pCharacter = this.Services.GameObjects.Get<Character>(index);
 				canDraw = pCharacter->CanDraw();
 			}
 		}
@@ -114,7 +114,7 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 		await TickService.GameTick();
 		unsafe
 		{
-			Character* pCharacter = this.Services.GameObjects.GetCharacter(index);
+			Character* pCharacter = this.Services.GameObjects.Get<Character>(index);
 			pCharacter->SetDisplayName(name);
 		}
 

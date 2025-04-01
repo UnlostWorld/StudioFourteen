@@ -143,7 +143,7 @@ public partial class GroupPoseService : ServiceBase
 	{
 		bool didEnter = Hooks.EnterGroupPose.Original.Invoke(uiModule);
 
-		this.EnterPosition = this.Services.GameObjects.GetCharacter(0)->DrawObject->Position;
+		this.EnterPosition = this.Services.GameObjects.Get(0)->DrawObject->Position;
 
 		if (didEnter)
 			this.SetState(true);

@@ -15,7 +15,6 @@
 
 namespace StudioFourteen.Services;
 
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 
 public class GameObjectsService : ServiceBase
@@ -26,23 +25,33 @@ public class GameObjectsService : ServiceBase
 		return GameObjectManager.Instance()->Objects.IndexSorted[objectTableIndex];
 	}
 
-	public unsafe Character* GetCharacter(int objectTableIndex)
+	public unsafe GameObject* Get(GameObjectId objectId)
 	{
 		TickService.VerifyGameTickThread();
+		return GameObjectManager.Instance()->Objects.GetObjectByGameObjectId(objectId);
+	}
 
-		GameObject* pGameObject = this.Get(objectTableIndex);
-		if (pGameObject == null)
-			return null;
+	public unsafe GameObject* Get(uint entityId)
+	{
+		TickService.VerifyGameTickThread();
+		return GameObjectManager.Instance()->Objects.GetObjectByEntityId(entityId);
+	}
 
-		Character* pCharacter = (Character*)pGameObject;
-		if (pCharacter == null)
-			return null;
+	public unsafe T* Get<T>(int objectTableIndex)
+		where T : unmanaged
+	{
+		return (T*)this.Get(objectTableIndex);
+	}
 
-		// why are we doing this here?
-		if (pCharacter->ObjectKind == ObjectKind.Ornament
-			|| pCharacter->ObjectKind == ObjectKind.Mount)
-			return null;
+	public unsafe T* Get<T>(GameObjectId objectId)
+		where T : unmanaged
+	{
+		return (T*)this.Get(objectId);
+	}
 
-		return pCharacter;
+	public unsafe T* Get<T>(uint entityId)
+		where T : unmanaged
+	{
+		return (T*)this.Get(entityId);
 	}
 }

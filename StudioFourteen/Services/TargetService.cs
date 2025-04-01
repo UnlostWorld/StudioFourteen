@@ -115,7 +115,7 @@ public partial class TargetService : ServiceBase
 			}
 
 			// Player
-			return this.Services.GameObjects.GetCharacter(0);
+			return this.Services.GameObjects.Get<Character>(0);
 		}
 	}
 
@@ -154,7 +154,7 @@ public partial class TargetService : ServiceBase
 			Character* pTarget = null;
 			for (int i = fromObjectTableIndex + 1; i < max; i++)
 			{
-				pTarget = this.Services.GameObjects.GetCharacter(i);
+				pTarget = this.Services.GameObjects.Get<Character>(i);
 
 				if (pTarget != null)
 				{
@@ -166,7 +166,7 @@ public partial class TargetService : ServiceBase
 			{
 				for (int i = fromObjectTableIndex - 1; i >= min; i--)
 				{
-					pTarget = this.Services.GameObjects.GetCharacter(i);
+					pTarget = this.Services.GameObjects.Get<Character>(i);
 
 					if (pTarget != null)
 					{
@@ -257,7 +257,7 @@ public partial class TargetService : ServiceBase
 				newIndex = max;
 			}
 
-			newTarget = this.Services.GameObjects.GetCharacter(newIndex);
+			newTarget = this.Services.GameObjects.Get<Character>(newIndex);
 		}
 
 		if (newTarget != null)
@@ -273,7 +273,7 @@ public partial class TargetService : ServiceBase
 		if (DalamudServices.ObjectTable == null)
 			return;
 
-		Character* target = this.Services.GameObjects.GetCharacter(objectTableIndex);
+		Character* target = this.Services.GameObjects.Get<Character>(objectTableIndex);
 		if (target == null)
 			return;
 

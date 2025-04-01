@@ -132,7 +132,7 @@ public partial class CustomizeViewModel : ViewModel
 
 				unsafe
 				{
-					Character* pCharacter = this.Services.GameObjects.GetCharacter(this.Services.Target.TargetObjectIndex);
+					Character* pCharacter = this.Services.GameObjects.Get<Character>(this.Services.Target.TargetObjectIndex);
 					if (pCharacter == null)
 						continue;
 
@@ -148,7 +148,7 @@ public partial class CustomizeViewModel : ViewModel
 			CharaMakeType? makeType = null;
 			unsafe
 			{
-				Character* pCharacter = this.Services.GameObjects.GetCharacter(this.Services.Target.TargetObjectIndex);
+				Character* pCharacter = this.Services.GameObjects.Get<Character>(this.Services.Target.TargetObjectIndex);
 				if (pCharacter == null)
 					return;
 

@@ -220,7 +220,7 @@ public class AppearanceFile : FileBase, ICharacterAppearance
 
 		unsafe
 		{
-			Character* pCharacter = ServiceManager.Instance.GameObjects.GetCharacter(objectTableIndex);
+			Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(objectTableIndex);
 			this.ModelType = (uint)pCharacter->ModelContainer.ModelCharaId;
 			this.Race = (Races)pCharacter->GetCustomizeValue(CustomizeIndex.Race);
 			this.Gender = (Genders)pCharacter->GetCustomizeValue(CustomizeIndex.Gender);
