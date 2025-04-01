@@ -228,11 +228,13 @@ public partial class PoseViewBase : View
 				unsafe
 				{
 					Character* character = this.Services.GameObjects.Get<Character>(this.ObjectTableIndex);
-					Ornament* ornament = character->OrnamentData.OrnamentObject;
-
-					if (ornament != null)
+					if (character != null)
 					{
-						ornamentTableIndex = ornament->ObjectIndex;
+						Ornament* ornament = character->OrnamentData.OrnamentObject;
+						if (ornament != null)
+						{
+							ornamentTableIndex = ornament->ObjectIndex;
+						}
 					}
 				}
 
