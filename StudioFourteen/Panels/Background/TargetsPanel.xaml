@@ -95,21 +95,12 @@
 											Background="Transparent"
 											IsChecked="{Binding IsCurrent}"
 											Style="{DynamicResource WpfUtilsIconToggleButton}">
-											<Grid Margin="6,3">
 
-												<Grid.RowDefinitions>
-													<RowDefinition />
-													<RowDefinition Height="Auto" />
-												</Grid.RowDefinitions>
-
-												<TextBlock
-													Grid.Row="0"
-													Margin="0"
-													HorizontalAlignment="Center"
-													Text="{Binding Name}"
-													TextTrimming="CharacterEllipsis"
-													TextWrapping="NoWrap" />
-											</Grid>
+											<TextBlock
+												HorizontalAlignment="Center"
+												Text="{Binding Name}"
+												TextTrimming="CharacterEllipsis"
+												TextWrapping="NoWrap" />
 
 										</ToggleButton>
 									</Grid>
@@ -165,7 +156,7 @@
 			<ToggleButton
 				x:Name="AddCharacterButton"
 				Grid.Column="1"
-				Width="38"
+				Width="32"
 				VerticalAlignment="Stretch"
 				Background="Transparent"
 				Style="{DynamicResource WpfUtilsIconToggleButton}"

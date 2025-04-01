@@ -49,11 +49,7 @@
 				Padding="1"
 				SelectedIndex="{Binding SelectedTab}"
 				Style="{DynamicResource WpfUtilsSideTabs}">
-				<pose:PoseTabItem>
-					<TabItem.Header>
-						<icons:IconView Margin="12" Icon="fa-person" />
-					</TabItem.Header>
-
+				<pose:PoseTabItem Header="{DynamicResource ICON_Pose_Body}">
 					<TabControl Margin="-3" SelectedIndex="{Binding SelectedBodyTab}">
 						<pose:PoseTabItem Header="{DynamicResource LOC_Pose_Simple}">
 
@@ -169,11 +165,7 @@
 					</TabControl>
 				</pose:PoseTabItem>
 
-				<pose:PoseTabItem>
-					<TabItem.Header>
-						<icons:IconView Margin="12" Icon="fa-hand" />
-					</TabItem.Header>
-
+				<pose:PoseTabItem Header="{DynamicResource ICON_Pose_Hands}">
 					<TabControl Margin="-3" SelectedIndex="{Binding SelectedHandsTab}">
 						<pose:PoseTabItem Header="{DynamicResource LOC_Pose_Simple}">
 							<Grid>
@@ -196,10 +188,7 @@
 
 				</pose:PoseTabItem>
 
-				<pose:PoseTabItem>
-					<TabItem.Header>
-						<icons:IconView Margin="12" Icon="fa-face-grin" />
-					</TabItem.Header>
+				<pose:PoseTabItem Header="{DynamicResource ICON_Pose_Face}">
 
 					<TabControl
 						Margin="-3"
@@ -245,11 +234,7 @@
 
 				</pose:PoseTabItem>
 
-				<pose:PoseTabItem>
-					<TabItem.Header>
-						<icons:IconView Margin="12" Icon="Wing" />
-					</TabItem.Header>
-
+				<pose:PoseTabItem Header="{DynamicResource ICON_Pose_Wings}">
 					<pose:SimpleView
 						x:Name="DiabolosView"
 						FlipSides="{Binding FlipSides}"

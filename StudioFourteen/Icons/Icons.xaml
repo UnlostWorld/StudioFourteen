@@ -3,6 +3,12 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:icons="clr-namespace:StudioFourteen.Icons">
 
+	<icons:Fa x:Key="ICON_Window_Minimze" Icon="Minus" Font="Solid" />
+	<icons:Fa x:Key="ICON_Window_Maximize" Icon="Square"/>
+	<icons:Fa x:Key="ICON_Window_Restore" Icon="WindowRestore"/>
+	<icons:Fa x:Key="ICON_Window_Close" Icon="Times"/>
+	<icons:Fa x:Key="ICON_CloseStudio" Icon="PowerOff"/>
+
 	<icons:Svg x:Key="ICON_GroupPose" Source="GroupPose" />
 	<icons:Svg x:Key="ICON_GroupPoseSettings" Source="GroupPoseSettings" />
 	<icons:Svg x:Key="ICON_TagsAdd" Source="TagsAdd" />
@@ -68,7 +74,7 @@
 	<icons:Fa x:Key="ICON_VisibilityOff" Icon="EyeSlash" Font="Solid" />
 	<icons:Fa x:Key="ICON_OverlayLayers" Icon="LayerGroup" Font="Solid" />
 	<icons:Fa x:Key="ICON_AddCharacter" Icon="UserPlus" Font="Solid" />
-	<icons:Fa x:Key="ICON_DeleteCharacter" Icon="UserPlus" Font="Solid" />
+	<icons:Svg x:Key="ICON_DeleteCharacter" Source="CharacterDelete"/>
 	<icons:Fa x:Key="ICON_Info" Icon="InfoCircle" Font="Solid" />
 	<icons:Fa x:Key="ICON_Warning" Icon="Warning" Font="Solid" />
 	<icons:Fa x:Key="ICON_CaptureImage" Icon="Camera" Font="Solid" />
@@ -79,10 +85,8 @@
 	<icons:Fa x:Key="ICON_Transform_Scale" Icon="Maximize" Font="Solid" />
 	<icons:Svg x:Key="ICON_Photo_Portrait" Source="PortraitPreview"/>
 
-	<icons:Fa x:Key="ICON_Window_Minimze" Icon="Minus" Font="Solid" />
-	<icons:Fa x:Key="ICON_Window_Maximize" Icon="Square"/>
-	<icons:Fa x:Key="ICON_Window_Restore" Icon="WindowRestore"/>
-	<icons:Fa x:Key="ICON_Window_Close" Icon="Times"/>
-
-	<icons:Fa x:Key="ICON_CloseStudio" Icon="PowerOff"/>
+	<icons:Fa x:Key="ICON_Pose_Body" Icon="Person" />
+	<icons:Fa x:Key="ICON_Pose_Hands" Icon="Hand" Font="Solid" />
+	<icons:Fa x:Key="ICON_Pose_Face" Icon="FaceGrin" Font="Solid" />
+	<icons:Svg x:Key="ICON_Pose_Wings" Source="Wing"/>
 </ResourceDictionary>
