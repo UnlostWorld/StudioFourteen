@@ -15,14 +15,25 @@
 
 namespace StudioFourteen.Services;
 
+using System;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
+using FFXIVClientStructs.Interop;
 
 public class GameObjectsService : ServiceBase
 {
 	public unsafe GameObject* Get(int objectTableIndex)
 	{
 		TickService.VerifyGameTickThread();
-		return GameObjectManager.Instance()->Objects.IndexSorted[objectTableIndex];
+
+		Span<Pointer<GameObject>> indexSorted = GameObjectManager.Instance()->Objects.IndexSorted;
+
+		if (objectTableIndex < 0)
+			return null;
+
+		if (objectTableIndex >= indexSorted.Length)
+			return null;
+
+		return indexSorted[objectTableIndex];
 	}
 
 	public unsafe GameObject* Get(GameObjectId objectId)
