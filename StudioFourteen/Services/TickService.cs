@@ -86,7 +86,7 @@ public partial class TickService : ServiceBase
 		{
 			foreach(Action action in callbacks)
 			{
-				this.Log.Warning($"Tick listener: {action} not removed before shutdown.");
+				this.Log.Warning($"Tick listener: {action.Method} on {action.Target} not removed before shutdown.");
 			}
 		}
 
@@ -138,7 +138,7 @@ public partial class TickService : ServiceBase
 				}
 				catch(Exception ex)
 				{
-					this.Log.Error(ex, $"Error ticking {callback}. This callback will be disabled.");
+					this.Log.Error(ex, $"Error ticking {callback.Method} on {callback.Target}. This callback will be disabled.");
 					this.tickListeners[channel].Remove(callback);
 					break;
 				}
@@ -157,7 +157,7 @@ public partial class TickService : ServiceBase
 				}
 				catch(Exception ex)
 				{
-					this.Log.Error(ex, $"Error dispatching {dispatch}.");
+					this.Log.Error(ex, $"Error dispatching {dispatch.Method} on {dispatch.Target}.");
 					break;
 				}
 			}
