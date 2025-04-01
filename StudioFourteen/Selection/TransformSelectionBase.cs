@@ -15,18 +15,16 @@
 
 namespace StudioFourteen.Selection;
 
+using PropertyChanged.SourceGenerator;
 using StudioFourteen.Gizmos.Handles.TransformHandle;
-using StudioFourteen.History;
-using StudioFourteen.Mvm;
-using StudioFourteen.Posing;
 
-public abstract class TransformSelectionBase : SelectionBase
+public abstract partial class TransformSelectionBase : SelectionBase
 {
-	[History] public abstract Transform WorldTransform { get; set; }
-	[History] public abstract Transform LocalTransform { get; set; }
+	[Notify][PropertyAttribute("StudioFourteen.History.History")] private Transform worldTransform;
+	[Notify][PropertyAttribute("StudioFourteen.History.History")] private Transform localTransform;
+	[Notify][PropertyAttribute("StudioFourteen.History.History")] private bool lockTransform;
 
-	[History][AutoNotify] public abstract bool LockTransform { get; set; }
-	[AutoNotify] public virtual bool CanLockTransform => true;
+	public virtual bool CanLockTransform => true;
 
 	public virtual double TranslationLargeChange => 0.1;
 	public virtual double TranslationSmallChange => 0.01;
@@ -34,4 +32,16 @@ public abstract class TransformSelectionBase : SelectionBase
 	public virtual int DecimalPlacesToDisplay => 2;
 	public virtual TransformHandleTypes DefaultGizmo => TransformHandleTypes.Translation;
 	public virtual double GizmoSensitivity => 1.0;
+
+	protected virtual void OnWorldTransformChanged(Transform oldValue, Transform newValue)
+	{
+	}
+
+	protected virtual void OnLocalTransformChanged(Transform oldValue, Transform newValue)
+	{
+	}
+
+	protected virtual void OnLockTransformChanged(bool oldValue, bool newValue)
+	{
+	}
 }

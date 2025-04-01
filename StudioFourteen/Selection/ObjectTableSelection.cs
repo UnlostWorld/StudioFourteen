@@ -20,6 +20,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FontAwesome.Sharp;
 using StudioFourteen.Plugin;
+using StudioFourteen.Structs.Extensions;
 using System;
 using System.Numerics;
 
@@ -40,8 +41,10 @@ public class ObjectTableSelection : TransformSelectionBase
 {
 	private readonly int objectTableId;
 
-	private Transform lastTransform = default;
 	private Transform? nextTransform;
+	private Vector3 lastPosition = Vector3.Zero;
+	private Quaternion lastRotation = Quaternion.Identity;
+	private Vector3 lastScale = Vector3.Zero;
 
 	public ObjectTableSelection(int objectTableId)
 	{
@@ -53,41 +56,13 @@ public class ObjectTableSelection : TransformSelectionBase
 	public override string TypeName => Resources.Find("LOC_Selection_ObjectTable", "Object Table");
 	public override bool CanReset => true;
 
-	public override bool LockTransform
-	{
-		get => this.Services.Pose.AreAllBoneReferencesLocked(this.objectTableId);
-		set => this.Services.Pose.SetAllBoneReferencesLocked(this.objectTableId, value);
-	}
-
-	public override Transform WorldTransform
-	{
-		get => this.LocalTransform;
-		set => this.LocalTransform = value;
-	}
-
-	public override Transform LocalTransform
-	{
-		get
-		{
-			if (this.nextTransform != null)
-				return (Transform)this.nextTransform;
-
-			return this.lastTransform;
-		}
-
-		set => this.nextTransform = value;
-	}
-
 	public override ISelectionId Id => new ObjectTableSelectionId(this.objectTableId);
 
 	public unsafe override void OnGameTick()
 	{
 		base.OnGameTick();
 
-		if (DalamudServices.ObjectTable == null)
-			throw new Exception("No Object Table");
-
-		GameObject* gameObject = (GameObject*)DalamudServices.ObjectTable.GetObjectAddress(this.objectTableId);
+		GameObject* gameObject = this.Services.GameObjects.Get(this.objectTableId);
 		if (gameObject == null || gameObject->DrawObject == null)
 			return;
 
@@ -113,10 +88,24 @@ public class ObjectTableSelection : TransformSelectionBase
 			}
 		}
 
-		this.lastTransform = Transform.FromTRS(
-			gameObject->DrawObject->Position,
-			gameObject->DrawObject->Rotation,
-			gameObject->DrawObject->Scale);
+		Vector3 newPosition = gameObject->DrawObject->Position;
+		Quaternion newRotation = gameObject->DrawObject->Rotation;
+		Vector3 newScale = gameObject->DrawObject->Scale;
+
+		if (!newPosition.IsApproximately(this.lastPosition, 0.001f)
+			|| !newRotation.IsApproximately(this.lastRotation, 0.001f)
+			|| !newScale.IsApproximately(this.lastScale, 0.001f))
+		{
+			this.lastPosition = newPosition;
+			this.lastRotation = newRotation;
+			this.lastScale = newScale;
+
+			Transform newTransform = Transform.FromTRS(newPosition, newRotation, newScale);
+			this.LocalTransform = newTransform;
+			this.WorldTransform = newTransform;
+		}
+
+		this.LockTransform = this.Services.Pose.AreAllBoneReferencesLocked(this.objectTableId);
 
 		this.IsReady = true;
 	}
@@ -133,5 +122,20 @@ public class ObjectTableSelection : TransformSelectionBase
 	{
 		// hmm...
 		throw new NotImplementedException();
+	}
+
+	protected override void OnLocalTransformChanged(Transform oldValue, Transform newValue)
+	{
+		this.nextTransform = newValue;
+	}
+
+	protected override void OnWorldTransformChanged(Transform oldValue, Transform newValue)
+	{
+		this.nextTransform = newValue;
+	}
+
+	protected override void OnLockTransformChanged(bool oldValue, bool newValue)
+	{
+		this.Services.Pose.SetAllBoneReferencesLocked(this.objectTableId, newValue);
 	}
 }

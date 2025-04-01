@@ -140,18 +140,6 @@ public class BoneSelection : TransformSelectionBase
 		}
 	}
 
-	public override bool LockTransform
-	{
-		get => this.bone?.Locked == true;
-		set
-		{
-			if (this.bone == null)
-				return;
-
-			this.bone.Locked = value;
-		}
-	}
-
 	public override bool CanMirror => true;
 	public override MirrorModes MirrorMode
 	{
@@ -174,24 +162,6 @@ public class BoneSelection : TransformSelectionBase
 				bone.MirrorMode = value;
 			}
 		}
-	}
-
-	public override Transform WorldTransform
-	{
-		get
-		{
-			if (this.bone == null || this.bone.ModelTransform == null || this.bone.ModelSpaceTransform == null)
-				return default;
-
-			return this.bone.ModelSpaceTransform.Value * this.bone.ModelTransform.Value;
-		}
-		set => this.SetWorldTransform(value);
-	}
-
-	public override Transform LocalTransform
-	{
-		get => this.bone?.LocalSpaceTransform ?? default;
-		set => this.SetLocalTransform(value);
 	}
 
 	public Transform ReferenceRelativeTransform
@@ -254,31 +224,6 @@ public class BoneSelection : TransformSelectionBase
 		return true;
 	}
 
-	public void SetWorldTransform(Transform transform)
-	{
-		if (this.bone == null || this.bone.ModelTransform == null)
-			return;
-
-		Transform? modelSpaceTransform;
-		bool success = Transform.Divide(transform, this.bone.ModelTransform.Value, out modelSpaceTransform);
-
-		if (success && modelSpaceTransform != null)
-		{
-			foreach (BoneReference bone in this.bones)
-			{
-				bone.SetModelSpaceTransform((Transform)modelSpaceTransform);
-			}
-		}
-	}
-
-	public void SetLocalTransform(Transform localTransform)
-	{
-		foreach (BoneReference bone in this.bones)
-		{
-			bone.SetLocalSpaceTransform(localTransform);
-		}
-	}
-
 	public void SetReferenceTransform(Transform referenceTransform)
 	{
 		BoneTransform transform = new BoneTransform();
@@ -324,5 +269,50 @@ public class BoneSelection : TransformSelectionBase
 			this.bone != null
 			&& this.bone.LocalSpaceTransform != null
 			&& this.bone.ReferenceRelativeTransform != null;
+
+		if (this.bone == null
+			|| this.bone.LocalSpaceTransform == null
+			|| this.bone.ReferenceRelativeTransform == null
+			|| this.bone.ModelSpaceTransform == null
+			|| this.bone.ModelTransform == null)
+			return;
+
+		this.LockTransform = this.bone.Locked;
+
+		this.WorldTransform = this.bone.ModelSpaceTransform.Value * this.bone.ModelTransform.Value;
+		this.LocalTransform = (Transform)this.bone.LocalSpaceTransform;
+	}
+
+	protected override void OnLockTransformChanged(bool oldValue, bool newValue)
+	{
+		if (this.bone == null)
+			return;
+
+		this.bone.Locked = newValue;
+	}
+
+	protected override void OnWorldTransformChanged(StudioTransform oldValue, StudioTransform newValue)
+	{
+		if (this.bone == null || this.bone.ModelTransform == null)
+			return;
+
+		Transform? modelSpaceTransform;
+		bool success = Transform.Divide(newValue, this.bone.ModelTransform.Value, out modelSpaceTransform);
+
+		if (success && modelSpaceTransform != null)
+		{
+			foreach (BoneReference bone in this.bones)
+			{
+				bone.SetModelSpaceTransform((Transform)modelSpaceTransform);
+			}
+		}
+	}
+
+	protected override void OnLocalTransformChanged(StudioTransform oldValue, StudioTransform newValue)
+	{
+		foreach (BoneReference bone in this.bones)
+		{
+			bone.SetLocalSpaceTransform(newValue);
+		}
 	}
 }

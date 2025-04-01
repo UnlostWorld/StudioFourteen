@@ -250,6 +250,9 @@ public class GameCaptureService : ServiceBase
 	/// </summary>
 	private unsafe void Capture()
 	{
+		if (ServiceManager.ShutdownRequested)
+			return;
+
 		if (!this.Services.Studio.IsOpen)
 			return;
 

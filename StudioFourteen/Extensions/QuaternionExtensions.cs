@@ -70,10 +70,19 @@ public static class QuaternionExtensions
 
 	public static bool IsApproximately(this Quaternion a, Quaternion b, float delta = float.Epsilon)
 	{
-		return a.X.IsApproximately(b.X, delta)
-			&& a.Y.IsApproximately(b.Y, delta)
-			&& a.Z.IsApproximately(b.Z, delta)
-			&& a.W.IsApproximately(b.W, delta);
+		Vector3 vA = Vector3.Transform(Vector3.UnitX, a);
+		Vector3 vB = Vector3.Transform(Vector3.UnitX, b);
+
+		if (!vA.IsApproximately(vB, delta))
+			return false;
+
+		vA = Vector3.Transform(Vector3.UnitY, a);
+		vB = Vector3.Transform(Vector3.UnitY, b);
+
+		if (!vA.IsApproximately(vB, delta))
+			return false;
+
+		return true;
 	}
 
 	public static Quaternion Conjugate(this Quaternion value)
