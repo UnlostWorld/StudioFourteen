@@ -44,32 +44,6 @@ public partial class StudioService : ServiceBase
 		return base.Shutdown();
 	}
 
-	public override async Task Start()
-	{
-		await base.Start();
-
-		#if DEBUG
-		{
-			_ = Task.Run(async () =>
-			{
-				await Task.Delay(2000);
-
-				if (!Debugger.IsAttached)
-					return;
-
-				this.OpenStudio();
-
-				while (Debugger.IsAttached)
-					await Task.Delay(1000);
-
-				this.CloseStudio();
-				this.Services.Dispose();
-				await this.Services.Stop();
-			});
-		}
-		#endif
-	}
-
 	public override Task Stop()
 	{
 		AioWindow.CloseAio();
