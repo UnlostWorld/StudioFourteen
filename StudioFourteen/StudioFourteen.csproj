@@ -61,6 +61,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Apos.WintabDN" Version="0.0.1" />
+		<PackageReference Include="Crayon" Version="2.0.69" />
 		<PackageReference Include="DependencyPropertyGenerator" Version="1.5.0">
 		  <PrivateAssets>all</PrivateAssets>
 		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>

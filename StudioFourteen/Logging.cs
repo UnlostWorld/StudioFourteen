@@ -33,14 +33,12 @@ public static class Logging
 
 	static Logging()
 	{
-		Formatter formatter = new();
-
 		Configuration = new LoggerConfiguration();
 		Configuration.Enrich.With<StackEnricher>();
-		Configuration.WriteTo.Sink(new DebugSink(formatter));
+		Configuration.WriteTo.Sink(new DebugSink(new Formatter(true)));
 		////Configuration.WriteTo.Sink(new ErrorWindowSink());
 		Configuration.WriteTo.Sink(new ErrorReportingSink());
-		Configuration.WriteTo.Sink(new DalamudSink(formatter));
+		Configuration.WriteTo.Sink(new DalamudSink(new Formatter(false)));
 
 		Logger = Configuration.CreateLogger();
 
@@ -64,15 +62,13 @@ public static class Logging
 	public static void Information(string message) => Shared.Information(message);
 }
 
-public class Formatter : ITextFormatter
+public class Formatter(bool includeLevel, bool includeContext = true) : ITextFormatter
 {
 	public void Format(LogEvent logEvent, TextWriter output)
 	{
-		output.Write("[");
-		output.Write(logEvent.Level);
-		output.Write("] ");
-
-		if (logEvent.Properties.TryGetValue("Context", out var contextValue))
+		if (includeLevel)
+			output.Write(ToLevelTag(logEvent.Level));
+		if (includeContext && logEvent.Properties.TryGetValue("Context", out var contextValue))
 		{
 			output.Write("[");
 			if (contextValue is ScalarValue sv)
@@ -130,6 +126,21 @@ public class Formatter : ITextFormatter
 
 		return stackBuilder.ToString();
 	}
+
+	private static string ToLevelTag(LogEventLevel level)
+	{
+		switch (level)
+		{
+			case LogEventLevel.Verbose: return Crayon.Output.Dim().Text("[VRB] ");
+			case LogEventLevel.Debug: return Crayon.Output.White().Text("[DBG] ");
+			case LogEventLevel.Information: return Crayon.Output.White().Text("[INF] ");
+			case LogEventLevel.Warning: return Crayon.Output.Yellow().Text("[WRN] ");
+			case LogEventLevel.Error: return Crayon.Output.Red().Text("[ERR] ");
+			case LogEventLevel.Fatal: return Crayon.Output.Black().Background.Red().Text("[FAT] ");
+		}
+
+		throw new NotSupportedException();
+	}
 }
 
 public class StackEnricher : ILogEventEnricher
@@ -142,17 +153,6 @@ public class StackEnricher : ILogEventEnricher
 		}
 	}
 }
-
-/*public class ErrorWindowSink : ILogEventSink
-{
-	public void Emit(LogEvent logEvent)
-	{
-		if (logEvent.Level >= LogEventLevel.Error)
-		{
-			ErrorWindow.Show($"{logEvent.MessageTemplate.Text}\n{logEvent.Exception?.Message}");
-		}
-	}
-}*/
 
 public class ErrorReportingSink : ILogEventSink
 {
@@ -225,6 +225,7 @@ public class DebugSink : ILogEventSink
 	public DebugSink(ITextFormatter formatter)
 	{
 		this.formatter = formatter;
+		SayHello();
 	}
 
 	public void Emit(LogEvent logEvent)
@@ -232,19 +233,26 @@ public class DebugSink : ILogEventSink
 		StringWriter writer = new();
 		this.formatter.Format(logEvent, writer);
 		string message = writer.ToString();
-		message = GetColorCode(logEvent.Level) + message.TrimEnd('\r', '\n');
-		System.Diagnostics.Debug.WriteLine(message);
+		message = message.TrimEnd('\r', '\n');
+		Debug.WriteLine(message);
 	}
 
-	private static string GetColorCode(LogEventLevel level)
+	private static void SayHello()
 	{
-		switch (level)
-		{
-			case LogEventLevel.Warning: return "\u001b[1;33m ";
-			case LogEventLevel.Error: return "\u001b[1;31m ";
-			case LogEventLevel.Fatal: return "\u001b[1;31m ";
-		}
-
-		return string.Empty;
+		var rainbow = new Crayon.Rainbow(0.5);
+		Debug.WriteLine(rainbow.Next().Text(@"                      @@             _____ _______ _    _ _____ _____ ____		"));
+		Debug.WriteLine(rainbow.Next().Text(@"          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \		"));
+		Debug.WriteLine(rainbow.Next().Text(@"         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |		"));
+		Debug.WriteLine(rainbow.Next().Text(@"         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |		"));
+		Debug.WriteLine(rainbow.Next().Text(@"        @@@@       @@@@@@@          ____) |  | |  | |__| | |__| || || |__| |		"));
+		Debug.WriteLine(rainbow.Next().Text(@"    @@@@@             @@@          |_____/   |_|   \____/|_____/_____\____/		"));
+		Debug.WriteLine(rainbow.Next().Text(@"     @@@      @@@      @@        ___     _    _   _  __   _____  ___  ___  _  _	"));
+		Debug.WriteLine(rainbow.Next().Text(@"      @@    @@@@@@@    @@       |  _|  / _ \ | | | || _ \|_   _|| __|| __|| \| |	"));
+		Debug.WriteLine(rainbow.Next().Text(@"      @@    @@@@@@@    @   @    | __| | (_) || |_| ||   /  | |  | _| | _| | .` |	"));
+		Debug.WriteLine(rainbow.Next().Text(@"    @@@@      @@@      @@@@     |_|    \___/  \___/ |_|_\  |_|  |___||___||_|\_|	"));
+		Debug.WriteLine(rainbow.Next().Text(@"     @@@@             @@@        https://github.com/UnlostWorld/StudioFourteen	"));
+		Debug.WriteLine(rainbow.Next().Text(@"       @@@@@      @@@@@															"));
+		Debug.WriteLine(rainbow.Next().Text(@"        @@@@@@@@@@@@@@                This software is licensed under the			"));
+		Debug.WriteLine(rainbow.Next().Text(@"            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3			"));
 	}
 }
