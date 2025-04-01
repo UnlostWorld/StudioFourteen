@@ -66,6 +66,8 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 	{
 		WorldContextMenu.RemoveProvider(this);
 		await base.Stop();
+
+		await TickService.GameTick();
 		this.DestroyAllCreated();
 	}
 
@@ -76,12 +78,12 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 
 	public async Task<int> CreateAsync(Vector3 position, ICharacterAppearance? appearance = null)
 	{
-		await Threads.FrameworkThread();
+		await TickService.GameTick();
 
 		if (!this.CanSpawn)
 			return -1;
 
-		await Threads.FrameworkThread();
+		await TickService.GameTick();
 		int index = this.Spawn(position);
 
 		if (index == -1)
@@ -93,7 +95,7 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 			await Threads.NextFrame();
 			unsafe
 			{
-				Character* pCharacter = this.Services.Target.GetCharacter(index);
+				Character* pCharacter = this.Services.GameObjects.GetCharacter(index);
 				canDraw = pCharacter->CanDraw();
 			}
 		}
@@ -109,10 +111,10 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 			await appearance.Apply(index);
 		}
 
-		await Threads.FrameworkThread();
+		await TickService.GameTick();
 		unsafe
 		{
-			Character* pCharacter = this.Services.Target.GetCharacter(index);
+			Character* pCharacter = this.Services.GameObjects.GetCharacter(index);
 			pCharacter->SetDisplayName(name);
 		}
 
@@ -126,7 +128,7 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 
 	public async Task<bool> DestroyAsync(int objectTableIndex)
 	{
-		await Threads.FrameworkThread();
+		await TickService.GameTick();
 
 		if (DalamudServices.ObjectTable == null)
 			return false;
@@ -155,6 +157,8 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 
 	public unsafe void DestroyAllCreated()
 	{
+		TickService.VerifyGameTickThread();
+
 		List<ushort> indexes = CreatedIndexes.ToList();
 		ClientObjectManager* com = ClientObjectManager.Instance();
 		foreach (ushort idx in indexes)
@@ -166,11 +170,8 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 				continue;
 			}
 
-			Threads.RunOnFrameworkThread(() =>
-			{
-				this.Log.Information($"Deleting object: {idx} - {deletingCharacter->GetDisplayName()}");
-				com->DeleteObjectByIndex(idx, 0);
-			});
+			this.Log.Information($"Deleting object: {idx} - {deletingCharacter->GetDisplayName()}");
+			com->DeleteObjectByIndex(idx, 0);
 		}
 
 		CreatedIndexes.Clear();
@@ -196,7 +197,7 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 
 		Hooks.CharacterInitialize.Enable(this.CharacterInitializeDetour);
 		Hooks.CharacterFinalize.Enable(this.CharacterFinalizeDetour);
-		this.Services.Tick.Add(TickService.Channels.StudioTick, this.OnTick);
+		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnTick);
 	}
 
 	public override void Detach()
@@ -204,7 +205,7 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 		base.Detach();
 		Hooks.CharacterInitialize.Disable();
 		Hooks.CharacterFinalize.Disable();
-		this.Services.Tick.Remove(TickService.Channels.StudioTick, this.OnTick);
+		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnTick);
 	}
 
 	protected void OnTick()
@@ -251,7 +252,7 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 		if (DalamudServices.ClientState?.LocalPlayer == null)
 			return -1;
 
-		Threads.VerifyFrameworkThread();
+		TickService.VerifyGameTickThread();
 
 		Character* player = (Character*)DalamudServices.ClientState.LocalPlayer.Address;
 

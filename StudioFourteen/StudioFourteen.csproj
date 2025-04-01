@@ -49,15 +49,11 @@
 		<EmbeddedResource Include="Data\Documents\**" />
 	</ItemGroup>
 
-
 	<ItemGroup>
 	  <Content Include="Assets\icon.ico" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="$(DalamudLibPath)\..\..\..\dalamud.boot.log" Link="dalamud.boot.log" />
-		<None Include="$(DalamudLibPath)\..\..\..\dalamud.log" Link="dalamud.log" />
-		<None Include="$(DalamudLibPath)\..\..\..\pluginConfigs\StudioFourteen.json" Link="config.json" />
 		<None Include="..\StudioFourteen.Reshade\bin\StudioFourteen.Reshade.dll" Link="StudioFourteen.Reshade.dll">
 		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
@@ -95,6 +91,10 @@
 		<PackageReference Include="TerraFX.Interop.Windows" Version="10.0.26100" />
 		<PackageReference Include="VirtualizingWrapPanel" Version="2.1.1" />
 	</ItemGroup>
+
+	<PropertyGroup>
+   		<DefineConstants>DALAMUD</DefineConstants>
+	</PropertyGroup>
 
 	<ItemGroup>
 		<Reference Include="FFXIVClientStructs">

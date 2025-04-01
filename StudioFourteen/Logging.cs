@@ -158,6 +158,9 @@ public class ErrorReportingSink : ILogEventSink
 {
 	public void Emit(LogEvent logEvent)
 	{
+		if (ServiceManager.ShutdownRequested)
+			return;
+
 		ServiceManager.Instance.Errors.HandleLog(logEvent);
 	}
 }

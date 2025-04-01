@@ -20,6 +20,7 @@ using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.Havok.Animation.Rig;
 using StudioFourteen.Plugin;
+using StudioFourteen.Services;
 using StudioFourteen.Utilities;
 using System;
 
@@ -89,7 +90,7 @@ public readonly struct BoneId(int objectTableIndex, int partialSkeletonIndex, by
 		if (DalamudServices.ObjectTable == null)
 			return false;
 
-		Threads.VerifyFrameworkThread();
+		TickService.VerifyGameTickThread();
 
 		character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(this.ObjectTableIndex);
 		if (character == null)

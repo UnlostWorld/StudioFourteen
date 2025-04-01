@@ -23,6 +23,7 @@ using StudioFourteen.Appearance;
 using StudioFourteen.GameData.Extensions;
 using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Sources;
+using StudioFourteen.Services;
 using StudioFourteen.Tags;
 using StudioFourteen.Utilities;
 using System;
@@ -101,7 +102,7 @@ public class BNpcBaseLibraryEntry
 	[LibraryMenuTarget(IconChar.UserShield, "LOC_AppearanceApplyTo")]
 	public async Task Apply(int objectTableIndex)
 	{
-		await Threads.FrameworkThread();
+		await TickService.GameTick();
 
 		this.Services.CharacterAppearance.SetModelCharaId(objectTableIndex, this.bNpcBase.ModelChara.Value, UpdateSource.Library);
 

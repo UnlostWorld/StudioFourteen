@@ -20,6 +20,7 @@ using DependencyPropertyGenerator;
 using FontAwesome.Sharp;
 using StudioFourteen.Mvm;
 using StudioFourteen.Selection;
+using StudioFourteen.Services;
 using StudioFourteen.Structs.Extensions;
 using StudioFourteen.Utilities;
 using System;
@@ -212,7 +213,7 @@ public class EyeSelection : SelectionBase
 
 	private async Task Init()
 	{
-		await Threads.FrameworkThread();
+		await TickService.GameTick();
 
 		this.EyeBone = this.Services.Pose.FindBone(this.ObjectTableIndex, "j_f_eye_r");
 		if (this.EyeBone != null)

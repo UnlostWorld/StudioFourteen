@@ -23,6 +23,7 @@ using Lumina.Text.ReadOnly;
 using StudioFourteen.Appearance;
 using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Sources;
+using StudioFourteen.Services;
 using StudioFourteen.Tags;
 using StudioFourteen.Utilities;
 using System;
@@ -90,7 +91,7 @@ public class ENpcResidentLibraryEntry : ExcelLibraryEntry, ICharacterAppearance
 	[LibraryMenuTarget(IconChar.UserShield, "LOC_AppearanceApplyTo")]
 	public async Task Apply(int objectTableIndex)
 	{
-		await Threads.FrameworkThread();
+		await TickService.GameTick();
 
 		if (this.ENpcBase == null)
 			return;

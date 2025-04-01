@@ -20,6 +20,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Client.Graphics;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.FFXIV.Common.Component.BGCollision;
+using StudioFourteen.Services;
 using System.Numerics;
 
 using CameraManager = FFXIVClientStructs.FFXIV.Client.Graphics.Scene.CameraManager;
@@ -28,7 +29,7 @@ public static class RayCast
 {
 	public static unsafe HitInfo Cast(Vector2 screenPosition)
 	{
-		Threads.VerifyFrameworkThread();
+		TickService.VerifyGameTickThread();
 
 		HitInfo info = new();
 

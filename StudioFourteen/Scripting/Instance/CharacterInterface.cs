@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using Dalamud.Game.ClientState.Objects.Enums;
 using StudioFourteen.GameData;
 using StudioFourteen.GameData.Library;
+using StudioFourteen.Services;
 using StudioFourteen.Utilities;
 
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.CharacterExtensions;
@@ -38,7 +39,7 @@ public class CharacterReference(int objectTableIndex)
 
 	public async Task RedrawAsync(RaceLibraryEntry? race = null, TribeLibraryEntry? tribe = null, Genders? gender = null)
 	{
-		await Threads.FrameworkThread();
+		await TickService.GameTick();
 
 		if (race != null)
 			this.Services.CharacterAppearance.SetCustomizeValue(this.ObjectTableIndex, CustomizeIndex.Race, (byte)race.RowId, UpdateSource.Script);

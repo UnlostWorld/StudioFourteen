@@ -137,7 +137,7 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 
 	public async void SetAllBoneReferencesLocked(int objectTableIndex, bool locked)
 	{
-		await Threads.FrameworkThread();
+		await TickService.GameTick();
 
 		List<BoneReference> references = await this.GetOrCreateBoneReferences(objectTableIndex);
 		foreach (BoneReference reference in references)
@@ -148,7 +148,7 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 
 	public async Task SetToReferencePose(int objectTableIndex)
 	{
-		await Threads.FrameworkThread();
+		await TickService.GameTick();
 
 		List<BoneReference> references = await this.GetOrCreateBoneReferences(objectTableIndex);
 		await Threads.NextFrame();
@@ -162,7 +162,7 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 	{
 		List<BoneReference> results = new();
 
-		Threads.VerifyFrameworkThread();
+		TickService.VerifyGameTickThread();
 
 		if (DalamudServices.ObjectTable == null)
 			return results;
@@ -256,7 +256,7 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 
 	public unsafe BoneSelection? FindBone(int objectTableIndex, string name)
 	{
-		Threads.VerifyFrameworkThread();
+		TickService.VerifyGameTickThread();
 
 		if (DalamudServices.ObjectTable == null)
 			return null;
@@ -270,7 +270,7 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 
 	public unsafe BoneSelection? FindBone(Character* character, string name)
 	{
-		Threads.VerifyFrameworkThread();
+		TickService.VerifyGameTickThread();
 
 		CharacterBase* characterBase = character->GetCharacterBase();
 		if (characterBase == null)
@@ -406,7 +406,7 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 
 	public async Task FlipAsync(int objectTableIndex)
 	{
-		await Threads.FrameworkThread();
+		await TickService.GameTick();
 
 		if (DalamudServices.ObjectTable == null)
 			return;
@@ -571,7 +571,7 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 
 	private async Task MoveTarget(Vector3 toPosition)
 	{
-		await Threads.FrameworkThread();
+		await TickService.GameTick();
 
 		if (DalamudServices.ObjectTable == null)
 			return;
@@ -598,7 +598,7 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 
 			Vector3 newPosition = Vector3.Lerp(fromPosition, toPosition, p);
 
-			await Threads.FrameworkThread();
+			await TickService.GameTick();
 
 			unsafe
 			{

@@ -23,6 +23,7 @@ using Newtonsoft.Json;
 using StudioFourteen.Appearance;
 using StudioFourteen.GameData;
 using StudioFourteen.Library.LibraryMenu;
+using StudioFourteen.Services;
 using StudioFourteen.Tags;
 using StudioFourteen.Utilities;
 using System;
@@ -168,7 +169,7 @@ public class AppearanceFile : FileBase, ICharacterAppearance
 
 	public async Task Apply(int objectTableIndex, CharacterExtensions.UpdateSource source)
 	{
-		await Threads.FrameworkThread();
+		await TickService.GameTick();
 
 		CharacterAppearanceService appearanceService = ServiceManager.Instance.CharacterAppearance;
 		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.Race, (byte)(this.Race ?? 0), source);
@@ -215,11 +216,11 @@ public class AppearanceFile : FileBase, ICharacterAppearance
 
 	public async Task Read(int objectTableIndex)
 	{
-		await Threads.FrameworkThread();
+		await TickService.GameTick();
 
 		unsafe
 		{
-			Character* pCharacter = ServiceManager.Instance.Target.GetCharacter(objectTableIndex);
+			Character* pCharacter = ServiceManager.Instance.GameObjects.GetCharacter(objectTableIndex);
 			this.ModelType = (uint)pCharacter->ModelContainer.ModelCharaId;
 			this.Race = (Races)pCharacter->GetCustomizeValue(CustomizeIndex.Race);
 			this.Gender = (Genders)pCharacter->GetCustomizeValue(CustomizeIndex.Gender);

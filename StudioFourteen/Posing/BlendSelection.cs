@@ -18,6 +18,7 @@ namespace StudioFourteen.Posing;
 using FontAwesome.Sharp;
 using StudioFourteen.Plugin;
 using StudioFourteen.Selection;
+using StudioFourteen.Services;
 using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
@@ -130,7 +131,7 @@ public class BlendSelection : SelectionBase
 
 	public async Task Initialize(bool flipSides)
 	{
-		await Threads.FrameworkThread();
+		await TickService.GameTick();
 
 		List<BoneSelection>? boneSelections = this.Target.GetBones(this.objectTableIndex, flipSides);
 		if (boneSelections == null)
@@ -271,7 +272,7 @@ public class BlendTarget
 
 	public List<BoneSelection>? GetBones(int objectTableIndex, bool flipBones)
 	{
-		Threads.VerifyFrameworkThread();
+		TickService.VerifyGameTickThread();
 
 		if (DalamudServices.ObjectTable == null)
 			return null;

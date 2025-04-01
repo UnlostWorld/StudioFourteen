@@ -570,7 +570,7 @@
 										<icons:IconView
 											Height="28"
 											Margin="-2,2,2,-2"
-											Foreground="{DynamicResource BackgroundBrush}"
+											Foreground="{DynamicResource TrimBrush}"
 											Icon="{DynamicResource ICON_FavoriteOn}" />
 									</Grid>
 

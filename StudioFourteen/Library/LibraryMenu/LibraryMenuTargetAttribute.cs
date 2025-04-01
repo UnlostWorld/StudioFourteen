@@ -73,7 +73,7 @@ public class LibraryMenuTargetAttribute : LibraryMenuAttributeBase
 		}
 
 		// "Apply to..."
-		await Threads.FrameworkThread();
+		await TickService.GameTick();
 
 		MenuEntry applyToEntry = menu.AddMenu(this.Icon, this.Label);
 
@@ -95,7 +95,7 @@ public class LibraryMenuTargetAttribute : LibraryMenuAttributeBase
 				if (i == targetService.TargetObjectIndex)
 					continue;
 
-				Character* pCharacter = ServiceManager.Instance.Target.GetCharacter(i);
+				Character* pCharacter = ServiceManager.Instance.GameObjects.GetCharacter(i);
 				if (pCharacter == null)
 					continue;
 

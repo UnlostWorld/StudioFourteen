@@ -90,7 +90,7 @@ public static unsafe class Hooks
 	// Client Struct Hooks
 	// 		https://github.com/aers/FFXIVClientStructs
 	// 		Big thanks to everyone in the Client Structs team. ❤
-	public delegate bool TickDelegate();
+	public unsafe delegate bool TickDelegate(Framework* pFramework);
 	public static readonly AddressHook<TickDelegate> Tick = new(() => (nint)Framework.StaticVirtualTablePointer->Tick);
 
 	public delegate bool EnterGroupPoseDelegate(UIModule* uiModule);

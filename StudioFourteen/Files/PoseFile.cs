@@ -19,6 +19,7 @@ using FontAwesome.Sharp;
 using StudioFourteen.Library;
 using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Posing;
+using StudioFourteen.Services;
 using StudioFourteen.Structs.Extensions;
 using StudioFourteen.Tags;
 using StudioFourteen.Utilities;
@@ -61,7 +62,7 @@ public class PoseFile : FileBase
 
 	public async Task Save(int objectTableIndex, bool includeLegacyBones = true, HashSet<string>? includeBones = null, bool onlyEdits = false)
 	{
-		await Threads.FrameworkThread();
+		await TickService.GameTick();
 
 		this.Bones = new();
 		this.ReferenceRelativeBones = new();
@@ -148,7 +149,7 @@ public class PoseFile : FileBase
 
 	public async Task Apply(int objectTableIndex, bool immediate)
 	{
-		await Threads.FrameworkThread();
+		await TickService.GameTick();
 
 		bool useReferenceRelativeBones = this.ReferenceRelativeBones != null;
 

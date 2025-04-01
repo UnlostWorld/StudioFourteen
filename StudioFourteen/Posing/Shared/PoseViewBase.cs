@@ -30,6 +30,7 @@ using StudioFourteen.Selection;
 using DependencyPropertyGenerator;
 using TerraFX.Interop.Windows;
 using StudioFourteen.Plugin;
+using StudioFourteen.Services;
 
 [DependencyProperty<bool>("Hide", DefaultValue = false)]
 [DependencyProperty<bool>("UpdateWithAppearance", DefaultValue = false)]
@@ -222,11 +223,11 @@ public partial class PoseViewBase : View
 			// Try ornaments
 			if (!isValid)
 			{
-				await Threads.FrameworkThread();
+				await TickService.GameTick();
 				int ornamentTableIndex = -1;
 				unsafe
 				{
-					Character* character = this.Services.Target.GetCharacter(this.ObjectTableIndex);
+					Character* character = this.Services.GameObjects.GetCharacter(this.ObjectTableIndex);
 					Ornament* ornament = character->OrnamentData.OrnamentObject;
 
 					if (ornament != null)
@@ -275,11 +276,11 @@ public partial class PoseViewBase : View
 		if (this.controls == null || DalamudServices.ObjectTable == null)
 			return false;
 
-		await Threads.FrameworkThread();
+		await TickService.GameTick();
 
 		unsafe
 		{
-			Character* pCharacter = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
+			Character* pCharacter = this.Services.GameObjects.GetCharacter(objectTableIndex);
 			if (pCharacter == null)
 				return false;
 

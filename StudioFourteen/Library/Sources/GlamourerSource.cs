@@ -25,6 +25,7 @@ using StudioFourteen.Appearance;
 using StudioFourteen.GameData;
 using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Plugin;
+using StudioFourteen.Services;
 using StudioFourteen.Tags;
 using StudioFourteen.Utilities;
 using System;
@@ -95,7 +96,7 @@ public class GlamourerEntry
 	[LibraryMenuTarget(IconChar.UserShield, "LOC_AppearanceApplyTo")]
 	public async Task Apply(int objectTableIndex)
 	{
-		await Threads.FrameworkThread();
+		await TickService.GameTick();
 
 		if (this.design.Customize != null)
 		{

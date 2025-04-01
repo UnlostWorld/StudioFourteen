@@ -21,6 +21,7 @@ using FFXIVClientStructs.Havok.Animation.Rig;
 using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
 using FontAwesome.Sharp;
 using StudioFourteen.History;
+using StudioFourteen.Services;
 using StudioFourteen.Structs;
 using StudioFourteen.Structs.Extensions;
 using StudioFourteen.Utilities;
@@ -165,7 +166,7 @@ public class BoneReference
 
 	public unsafe void FinalizeBones()
 	{
-		Threads.VerifyFrameworkThread();
+		TickService.VerifyGameTickThread();
 
 		if (!this.IsValid)
 			return;
@@ -191,7 +192,7 @@ public class BoneReference
 
 	public unsafe Skeleton* Tick()
 	{
-		Threads.VerifyFrameworkThread();
+		TickService.VerifyGameTickThread();
 
 		if (!this.IsValid)
 			return null;

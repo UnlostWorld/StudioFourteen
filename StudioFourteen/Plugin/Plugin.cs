@@ -22,6 +22,8 @@ using StudioFourteen.Settings;
 using System;
 using System.Threading.Tasks;
 
+#if DALAMUD
+
 public sealed class DalamudPlugin : IDalamudPlugin
 {
 	public readonly ServiceManager Services = new();
@@ -101,3 +103,5 @@ public sealed class DalamudPlugin : IDalamudPlugin
 		}
 	}
 }
+
+#endif

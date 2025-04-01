@@ -27,6 +27,7 @@ using StudioFourteen.Library;
 using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Sources;
 using StudioFourteen.Plugin;
+using StudioFourteen.Services;
 using StudioFourteen.Utilities;
 using System.Threading.Tasks;
 
@@ -80,7 +81,7 @@ public class CharaMakeCustomizeLibraryEntry : LibraryEntryBase
 	[LibraryMenuTarget(FontAwesome.Sharp.IconChar.PaintBrush, "LOC_AppearanceApplyTo")]
 	public async Task Apply(int objectTableIndex)
 	{
-		await Threads.FrameworkThread();
+		await TickService.GameTick();
 		this.Services.CharacterAppearance.SetCustomizeValue(objectTableIndex, this.CustomizeIndex, this.MakeCustomize.Value.FeatureID, CharacterExtensions.UpdateSource.Library);
 	}
 

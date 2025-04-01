@@ -13,48 +13,36 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Posing.Body;
+namespace StudioFourteen.Services;
 
-using System;
-using System.Threading.Tasks;
-using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using StudioFourteen.Services;
-using StudioFourteen.Utilities;
-using WpfUtils;
+using FFXIVClientStructs.FFXIV.Client.Game.Object;
 
-public class BodySimpleView : SimpleView
+public class GameObjectsService : ServiceBase
 {
-	protected override async Task UpdateTargetsAsync()
+	public unsafe GameObject* Get(int objectTableIndex)
 	{
-		await TickService.GameTick();
+		TickService.VerifyGameTickThread();
+		return GameObjectManager.Instance()->Objects.IndexSorted[objectTableIndex];
+	}
 
-		string key;
+	public unsafe Character* GetCharacter(int objectTableIndex)
+	{
+		TickService.VerifyGameTickThread();
 
-		unsafe
-		{
-			Character* pCharacter = this.Services.GameObjects.GetCharacter(this.ObjectTableIndex);
-			if (pCharacter == null)
-				return;
+		GameObject* pGameObject = this.Get(objectTableIndex);
+		if (pGameObject == null)
+			return null;
 
-			byte tribe = pCharacter->GetCustomizeValue(CustomizeIndex.Tribe);
-			byte gender = pCharacter->GetCustomizeValue(CustomizeIndex.Gender);
-			byte vieraEars = pCharacter->GetCustomizeValue(CustomizeIndex.RaceFeatureType);
+		Character* pCharacter = (Character*)pGameObject;
+		if (pCharacter == null)
+			return null;
 
-			key = $"Body_{tribe}_{gender}";
-			if (tribe == 15 || tribe == 16)
-			{
-				vieraEars = Math.Clamp(vieraEars, (byte)1, (byte)4);
-				key = $"Body_{tribe}_{gender}_{vieraEars}";
-			}
-		}
+		// why are we doing this here?
+		if (pCharacter->ObjectKind == ObjectKind.Ornament
+			|| pCharacter->ObjectKind == ObjectKind.Mount)
+			return null;
 
-		await this.MainThread();
-
-		if (this.Services.Data.SimplePoseLayouts?.ContainsKey(key) != true)
-			return;
-
-		this.LayoutName = key;
-		await base.UpdateTargetsAsync();
+		return pCharacter;
 	}
 }

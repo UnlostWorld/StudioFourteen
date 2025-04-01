@@ -81,46 +81,14 @@ public partial class TargetService : ServiceBase
 		base.Detach();
 	}
 
-	public unsafe Character* GetCharacter(int objectTableIndex)
+	public void SetTarget(int objectTableIndex)
 	{
-		Threads.VerifyFrameworkThread();
-
-		if (DalamudServices.ObjectTable == null)
-			return null;
-
-		IntPtr address = DalamudServices.ObjectTable?.GetObjectAddress(objectTableIndex) ?? IntPtr.Zero;
-		if (address == IntPtr.Zero)
-			return null;
-
-		Character* pCharacter = (Character*)address;
-		if (pCharacter == null)
-			return null;
-
-		if (pCharacter->ObjectKind == ObjectKind.Ornament
-			|| pCharacter->ObjectKind == ObjectKind.Mount)
-			return null;
-
-		return pCharacter;
-	}
-
-	public unsafe void SetTarget(int objectTableIndex)
-	{
-		Threads.RunOnFrameworkThread(() =>
-		{
-			if (DalamudServices.ObjectTable == null)
-				return;
-
-			Character* target = this.GetCharacter(objectTableIndex);
-			if (target == null)
-				return;
-
-			TargetSystem.Instance()->GPoseTarget = (GameObject*)target;
-		});
+		this.Services.Tick.Dispatch(TickService.Channels.GameTick, () => this.SetTargetInternal(objectTableIndex));
 	}
 
 	public unsafe Character* GetTarget()
 	{
-		Threads.VerifyFrameworkThread();
+		TickService.VerifyGameTickThread();
 
 		if (DalamudServices.ObjectTable == null)
 			return null;
@@ -147,7 +115,7 @@ public partial class TargetService : ServiceBase
 			}
 
 			// Player
-			return this.GetCharacter(0);
+			return this.Services.GameObjects.GetCharacter(0);
 		}
 	}
 
@@ -158,7 +126,7 @@ public partial class TargetService : ServiceBase
 
 	public async Task TargetPosition(Vector2 screenPosition)
 	{
-		await Threads.FrameworkThread();
+		await TickService.GameTick();
 
 		unsafe
 		{
@@ -173,12 +141,9 @@ public partial class TargetService : ServiceBase
 
 	public async Task<bool> MoveTarget(int fromObjectTableIndex)
 	{
-		await Threads.FrameworkThread();
+		await TickService.GameTick();
 
 		if (!this.Services.GroupPose.IsGroupPosing)
-			return false;
-
-		if (DalamudServices.ObjectTable == null)
 			return false;
 
 		int min = GroupPoseService.GPoseFirstCharacter;
@@ -189,7 +154,7 @@ public partial class TargetService : ServiceBase
 			Character* pTarget = null;
 			for (int i = fromObjectTableIndex + 1; i < max; i++)
 			{
-				pTarget = this.GetCharacter(i);
+				pTarget = this.Services.GameObjects.GetCharacter(i);
 
 				if (pTarget != null)
 				{
@@ -201,7 +166,7 @@ public partial class TargetService : ServiceBase
 			{
 				for (int i = fromObjectTableIndex - 1; i >= min; i--)
 				{
-					pTarget = this.GetCharacter(i);
+					pTarget = this.Services.GameObjects.GetCharacter(i);
 
 					if (pTarget != null)
 					{
@@ -257,17 +222,17 @@ public partial class TargetService : ServiceBase
 
 	private unsafe void OnNextTarget()
 	{
-		Threads.RunOnFrameworkThread(() => this.AdvanceTarget(1));
+		this.Services.Tick.Dispatch(TickService.Channels.GameTick, () => this.AdvanceTarget(1));
 	}
 
 	private void OnPreviousTarget()
 	{
-		Threads.RunOnFrameworkThread(() => this.AdvanceTarget(-1));
+		this.Services.Tick.Dispatch(TickService.Channels.GameTick, () => this.AdvanceTarget(-1));
 	}
 
 	private unsafe void AdvanceTarget(int count)
 	{
-		Threads.VerifyFrameworkThread();
+		TickService.VerifyGameTickThread();
 
 		if (DalamudServices.ObjectTable == null)
 			return;
@@ -292,12 +257,26 @@ public partial class TargetService : ServiceBase
 				newIndex = max;
 			}
 
-			newTarget = this.GetCharacter(newIndex);
+			newTarget = this.Services.GameObjects.GetCharacter(newIndex);
 		}
 
 		if (newTarget != null)
 		{
 			this.SetTarget(newIndex);
 		}
+	}
+
+	private unsafe void SetTargetInternal(int objectTableIndex)
+	{
+		TickService.VerifyGameTickThread();
+
+		if (DalamudServices.ObjectTable == null)
+			return;
+
+		Character* target = this.Services.GameObjects.GetCharacter(objectTableIndex);
+		if (target == null)
+			return;
+
+		TargetSystem.Instance()->GPoseTarget = (GameObject*)target;
 	}
 }

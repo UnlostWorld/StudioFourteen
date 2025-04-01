@@ -125,7 +125,7 @@ public class SaveService : ServiceBase
 		this.IsSaving = true;
 		this.Saving?.Invoke();
 
-		await Threads.FrameworkThread();
+		await TickService.GameTick();
 
 		// do save!
 		{
@@ -211,7 +211,7 @@ public class SaveService : ServiceBase
 
 	public unsafe bool CanInclude(Character* pCharacter)
 	{
-		Threads.VerifyFrameworkThread();
+		TickService.VerifyGameTickThread();
 
 		if (pCharacter == null)
 			return false;

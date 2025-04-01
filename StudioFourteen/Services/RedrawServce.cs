@@ -151,7 +151,7 @@ public class RedrawService : ServiceBase
 			Vector3 scale;
 			unsafe
 			{
-				Character* pCharacter = ServiceManager.Instance.Target.GetCharacter(objectTableIndex);
+				Character* pCharacter = ServiceManager.Instance.GameObjects.GetCharacter(objectTableIndex);
 				position = pCharacter->DrawObject->Position;
 				rotation = pCharacter->DrawObject->Rotation;
 				scale = pCharacter->DrawObject->Scale;
@@ -167,14 +167,14 @@ public class RedrawService : ServiceBase
 
 				unsafe
 				{
-					Character* pCharacter = ServiceManager.Instance.Target.GetCharacter(objectTableIndex);
+					Character* pCharacter = ServiceManager.Instance.GameObjects.GetCharacter(objectTableIndex);
 					pCharacter->Alpha = p;
 				}
 			}
 
 			unsafe
 			{
-				Character* pCharacter = ServiceManager.Instance.Target.GetCharacter(objectTableIndex);
+				Character* pCharacter = ServiceManager.Instance.GameObjects.GetCharacter(objectTableIndex);
 				pCharacter->Alpha = 0;
 			}
 
@@ -182,10 +182,10 @@ public class RedrawService : ServiceBase
 			ServiceManager.Instance.Pose.FlushBoneReferences(objectTableIndex);
 
 			// Perform redraw
-			await Threads.FrameworkThread();
+			await TickService.GameTick();
 			unsafe
 			{
-				Character* pCharacter = ServiceManager.Instance.Target.GetCharacter(objectTableIndex);
+				Character* pCharacter = ServiceManager.Instance.GameObjects.GetCharacter(objectTableIndex);
 				pCharacter->DisableDraw();
 				pCharacter->EnableDraw();
 			}
@@ -197,7 +197,7 @@ public class RedrawService : ServiceBase
 
 				unsafe
 				{
-					Character* pCharacter = ServiceManager.Instance.Target.GetCharacter(objectTableIndex);
+					Character* pCharacter = ServiceManager.Instance.GameObjects.GetCharacter(objectTableIndex);
 					if (!pCharacter->CanDraw())
 						continue;
 				}
@@ -209,10 +209,10 @@ public class RedrawService : ServiceBase
 			await file.Apply(objectTableIndex, false);
 
 			// Restore position
-			await Threads.FrameworkThread();
+			await TickService.GameTick();
 			unsafe
 			{
-				Character* pCharacter = ServiceManager.Instance.Target.GetCharacter(objectTableIndex);
+				Character* pCharacter = ServiceManager.Instance.GameObjects.GetCharacter(objectTableIndex);
 				pCharacter->DrawObject->Position = position;
 				pCharacter->DrawObject->Rotation = rotation;
 				pCharacter->DrawObject->Scale = scale;
@@ -229,7 +229,7 @@ public class RedrawService : ServiceBase
 
 				unsafe
 				{
-					Character* pCharacter = ServiceManager.Instance.Target.GetCharacter(objectTableIndex);
+					Character* pCharacter = ServiceManager.Instance.GameObjects.GetCharacter(objectTableIndex);
 					pCharacter->Alpha = p;
 				}
 			}

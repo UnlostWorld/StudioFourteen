@@ -27,6 +27,7 @@ using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Sources;
 using StudioFourteen.Plugin;
 using StudioFourteen.Serialization;
+using StudioFourteen.Services;
 using StudioFourteen.Tags;
 using StudioFourteen.Utilities;
 using System;
@@ -119,7 +120,7 @@ public class MareFile
 	[LibraryMenuTarget(IconChar.UserShield, "LOC_AppearanceApplyTo")]
 	public async Task Apply(int objectTableIndex)
 	{
-		await Threads.FrameworkThread();
+		await TickService.GameTick();
 
 		if (this.FilePath == null || DalamudServices.ObjectTable == null)
 			return;

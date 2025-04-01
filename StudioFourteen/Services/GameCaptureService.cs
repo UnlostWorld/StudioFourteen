@@ -270,7 +270,7 @@ public class GameCaptureService : ServiceBase
 
 	private unsafe void CaptureBack()
 	{
-		Threads.VerifyFrameworkThread();
+		TickService.VerifyGameTickThread();
 
 		try
 		{
@@ -362,7 +362,7 @@ public class GameCaptureService : ServiceBase
 	/// </summary>
 	private unsafe void CaptureDepth()
 	{
-		Threads.VerifyFrameworkThread();
+		TickService.VerifyGameTickThread();
 
 		try
 		{

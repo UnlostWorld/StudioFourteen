@@ -21,6 +21,7 @@ using StudioFourteen.GameData;
 using StudioFourteen.Library;
 using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Plugin;
+using StudioFourteen.Services;
 using StudioFourteen.Utilities;
 using System.Threading.Tasks;
 
@@ -76,7 +77,7 @@ public class CharacterBackupAppearance
 
 	public async Task Apply(int objectTableIndex, CharacterExtensions.UpdateSource source)
 	{
-		await Threads.FrameworkThread();
+		await TickService.GameTick();
 
 		if (DalamudServices.ObjectTable == null)
 			return;

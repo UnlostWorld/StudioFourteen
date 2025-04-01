@@ -24,6 +24,7 @@ using StudioFourteen.GameData.Library;
 using StudioFourteen.GameData.Sheets;
 using StudioFourteen.Mvm;
 using StudioFourteen.Plugin;
+using StudioFourteen.Services;
 using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
@@ -115,7 +116,7 @@ public partial class CustomizeViewModel : ViewModel
 			this.HeadMenus.Clear();
 			this.MakeupMenus.Clear();
 
-			await Threads.FrameworkThread();
+			await TickService.GameTick();
 
 			if (DalamudServices.ObjectTable == null)
 			{
@@ -127,11 +128,11 @@ public partial class CustomizeViewModel : ViewModel
 			while (!canDraw)
 			{
 				await Task.Delay(100);
-				await Threads.FrameworkThread();
+				await TickService.GameTick();
 
 				unsafe
 				{
-					Character* pCharacter = this.Services.Target.GetCharacter(this.Services.Target.TargetObjectIndex);
+					Character* pCharacter = this.Services.GameObjects.GetCharacter(this.Services.Target.TargetObjectIndex);
 					if (pCharacter == null)
 						continue;
 
@@ -142,12 +143,12 @@ public partial class CustomizeViewModel : ViewModel
 				}
 			}
 
-			await Threads.FrameworkThread();
+			await TickService.GameTick();
 
 			CharaMakeType? makeType = null;
 			unsafe
 			{
-				Character* pCharacter = this.Services.Target.GetCharacter(this.Services.Target.TargetObjectIndex);
+				Character* pCharacter = this.Services.GameObjects.GetCharacter(this.Services.Target.TargetObjectIndex);
 				if (pCharacter == null)
 					return;
 

@@ -67,7 +67,7 @@ public class PoseSkeletonOverlay : SelectionOverlayLayerBase
 
 				this.gizmos.Clear();
 
-				Character* character = this.Services.Target.GetCharacter(this.TargetIndex);
+				Character* character = this.Services.GameObjects.GetCharacter(this.TargetIndex);
 				if (character == null)
 					return;
 

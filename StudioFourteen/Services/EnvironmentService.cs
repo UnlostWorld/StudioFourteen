@@ -211,7 +211,7 @@ public partial class EnvironmentService
 
 	private unsafe bool GetCanChangeTerritory()
 	{
-		Threads.VerifyFrameworkThread();
+		TickService.VerifyGameTickThread();
 
 		try
 		{
@@ -237,7 +237,7 @@ public partial class EnvironmentService
 
 	private unsafe bool GetIsInTitleScreen()
 	{
-		Threads.VerifyFrameworkThread();
+		TickService.VerifyGameTickThread();
 
 		nint? titleMenu = DalamudServices.GameGui?.GetAddonByName("_TitleMenu");
 		return titleMenu != null && titleMenu != nint.Zero;

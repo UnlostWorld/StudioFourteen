@@ -127,7 +127,7 @@ public class PanelService : ServiceBase
 		this.hasRestoredPanels = true;
 
 		// make sure at least one game frame as passed
-		await Threads.FrameworkThread();
+		await TickService.GameTick();
 
 		// plus a short delay
 		await Task.Delay(100);

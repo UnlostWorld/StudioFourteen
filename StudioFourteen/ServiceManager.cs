@@ -57,4 +57,5 @@ public class ServiceManager : ServiceManagerBase
 	public CursorService Cursor { get; init; } = new();
 	public Analytics.ErrorReportingService Errors { get; init; } = new();
 	public TickService Tick { get; init; } = new();
+	public GameObjectsService GameObjects { get; init; } = new();
 }

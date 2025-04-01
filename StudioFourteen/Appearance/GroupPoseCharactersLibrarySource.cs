@@ -19,7 +19,6 @@ using StudioFourteen;
 using StudioFourteen.Library.Sources;
 using StudioFourteen.Plugin;
 using StudioFourteen.Services;
-using StudioFourteen.Utilities;
 using System.Threading.Tasks;
 
 public class GroupPoseCharactersLibrarySource : SourceBase
@@ -33,7 +32,8 @@ public class GroupPoseCharactersLibrarySource : SourceBase
 		Task.Run(async () =>
 		{
 			await Task.Delay(1500);
-			await Threads.RunOnFrameworkThread(() => this.BackupAll());
+			await TickService.GameTick();
+			this.BackupAll();
 		});
 	}
 

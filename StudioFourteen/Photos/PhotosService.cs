@@ -164,7 +164,7 @@ public partial class PhotosService : ServiceBase
 		if (customResolution)
 		{
 			await this.DispatchCapturePhaseChange(CapturePhases.ChangingResolution, animate);
-			await Threads.FrameworkThread();
+			await TickService.GameTick();
 
 			success = this.SetResolution(this.width, this.height, out originalWidth, out originalHeight);
 			if (!success)
@@ -177,7 +177,7 @@ public partial class PhotosService : ServiceBase
 			success = await this.Services.Reshade.WaitForEffectsToLoad();
 			if (!success)
 			{
-				await Threads.FrameworkThread();
+				await TickService.GameTick();
 				this.SetResolution(originalWidth, originalHeight, out _, out _);
 				this.IsCapturing = false;
 				return;
@@ -312,7 +312,7 @@ public partial class PhotosService : ServiceBase
 			// Give a small delay for animations to catch up.
 			await Task.Delay(150);
 
-			await Threads.FrameworkThread();
+			await TickService.GameTick();
 			this.SetResolution(originalWidth, originalHeight, out _, out _);
 
 			await this.DispatchCapturePhaseChange(CapturePhases.WaitingForReshadeReset, animate);
@@ -346,7 +346,7 @@ public partial class PhotosService : ServiceBase
 
 	private unsafe bool SetResolution(uint width, uint height, out uint oldWidth, out uint oldHeight)
 	{
-		Threads.VerifyFrameworkThread();
+		TickService.VerifyGameTickThread();
 
 		oldWidth = 0;
 		oldHeight = 0;

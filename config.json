@@ -1,11 +1,11 @@
 {
   "Version": 0,
   "Persistence": {
-    "Panel_ErrorReportPanel_SavedPosition": "0.36770833333333336,0.387037037037037",
+    "Panel_ErrorReportPanel_SavedPosition": "0.6869791666666667,0.075",
     "Panel_ErrorReportPanel_SavedSize": "400,270",
     "Panel_AnalyticsOptPanel_SavedPosition": "0.5,0.5",
     "Panel_AnalyticsOptPanel_SavedSize": "400,349",
-    "Panel_LibraryWindow_SavedPosition": "0.37857142857142856,0.3145833333333333",
+    "Panel_LibraryWindow_SavedPosition": "0.5366071428571428,0.4041666666666667",
     "Panel_LibraryWindow_PersistentPath": "",
     "Panel_LibraryWindow_SavedSize": "800,600",
     "Panel_LibraryWindow_PersistentScrollPosition": "0.0",
@@ -14,7 +14,8 @@
     "Panel_EnvironmentPanel_SavedPosition": "0.40989583333333335,0.1712962962962963",
     "Panel_EnvironmentPanel_SavedSize": "256,383",
     "Panel_SettingsPanel_SavedPosition": "0.46729559748427674,0.4634920634920635",
-    "Panel_SettingsPanel_SavedSize": "330,450"
+    "Panel_SettingsPanel_SavedSize": "330,450",
+    "Panel_Launcher_SavedPosition": "0.004849137931034483,0.02112676056338028"
   },
   "HasConfirmedReShadeVersion": -1,
   "SaveConfig": {

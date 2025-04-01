@@ -19,6 +19,7 @@ using Dalamud.Plugin.Services;
 using FontAwesome.Sharp;
 using StudioFourteen.Gizmos.Handles.TransformHandle;
 using StudioFourteen.Posing;
+using StudioFourteen.Services;
 using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
@@ -36,7 +37,7 @@ public class BoneSelectionId(string boneName, int objectTableIndex)
 
 	public override async Task<SelectionBase?> CreateAsync()
 	{
-		await Threads.FrameworkThread();
+		await TickService.GameTick();
 		return ServiceManager.Instance.Pose.FindBone(this.ObjectTableIndex, this.BoneName);
 	}
 

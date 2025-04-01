@@ -23,6 +23,7 @@ using StudioFourteen.GameData.Extensions;
 using StudioFourteen.Library;
 using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Sources;
+using StudioFourteen.Services;
 using StudioFourteen.Utilities;
 using System;
 using System.Threading.Tasks;
@@ -127,7 +128,7 @@ public class ItemLibraryEntry : ExcelLibraryEntry
 
 	public async Task EquipTo(int objectTableId, EquipmentSlot slot)
 	{
-		await Threads.FrameworkThread();
+		await TickService.GameTick();
 
 		this.Services.CharacterAppearance.SetEquipment(
 			this.Services.Target.TargetObjectIndex,
@@ -226,7 +227,7 @@ public class ItemLibraryPreview(ItemLibraryEntry item)
 
 	protected virtual async Task Start(EquipmentSlot slot)
 	{
-		await Threads.FrameworkThread();
+		await TickService.GameTick();
 
 		this.backupEquipmentSlot = slot;
 
@@ -245,7 +246,7 @@ public class ItemLibraryPreview(ItemLibraryEntry item)
 
 	protected virtual async Task Start(WeaponSlot slot)
 	{
-		await Threads.FrameworkThread();
+		await TickService.GameTick();
 
 		this.backupWeaponSlot = slot;
 
@@ -264,7 +265,7 @@ public class ItemLibraryPreview(ItemLibraryEntry item)
 
 	protected override async Task Stop()
 	{
-		await Threads.FrameworkThread();
+		await TickService.GameTick();
 
 		if (this.backupEquipment != null)
 		{

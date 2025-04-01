@@ -21,6 +21,7 @@ using FontAwesome.Sharp;
 using Serilog;
 using StudioFourteen.Input;
 using StudioFourteen.Library.LibraryMenu;
+using StudioFourteen.Services;
 using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
@@ -105,7 +106,7 @@ public partial class WorldContextMenu : PopOut
 		this.IconMenus.Clear();
 
 		string? name = null;
-		await Threads.FrameworkThread();
+		await TickService.GameTick();
 
 		unsafe
 		{
