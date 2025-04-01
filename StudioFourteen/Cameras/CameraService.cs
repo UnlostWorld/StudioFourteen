@@ -146,7 +146,7 @@ public class CameraService : ServiceBase
 			camera->Rotation = this.InitialCamera.Value.Rotation;
 		}
 
-		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
+		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
 
 		Hooks.SceneCameraUpdate.Disable();
 		Hooks.CameraMatrixLoad.Disable();

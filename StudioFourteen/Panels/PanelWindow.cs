@@ -616,6 +616,9 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	{
 		this.Dispatcher.Invoke(() =>
 		{
+			if (ServiceManager.ShutdownRequested)
+				return;
+
 			this.IsUiVisible = this.GetIsUiVisible();
 			this.IsUiVisibleAndOpen = this.GetIsUiVisibleAndOpen();
 		});
