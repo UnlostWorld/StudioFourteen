@@ -17,21 +17,21 @@
 				Width="{Binding ActualHeight, RelativeSource={RelativeSource Mode=Self}}"
 				Margin="1">
 
-				<Ellipse Stroke="{TemplateBinding Background}" StrokeThickness="8" />
+				<Ellipse Stroke="{TemplateBinding Background}" StrokeThickness="12" />
 
 				<Ellipse
 					x:Name="HoverEllipse"
-					Margin="2"
+					Margin="3"
 					Opacity="0"
 					Stroke="{DynamicResource ControlHighlightBrush}"
-					StrokeThickness="4" />
+					StrokeThickness="6" />
 
 				<shapes:FillArc
-					Margin="2"
+					Margin="3"
 					Maximum="{TemplateBinding Maximum}"
 					Minimum="{TemplateBinding Minimum}"
 					Stroke="{TemplateBinding Foreground}"
-					StrokeThickness="4"
+					StrokeThickness="6"
 					Value="{TemplateBinding Value}" />
 
 			</Grid>
@@ -39,7 +39,8 @@
 
 		<ControlTemplate.Triggers>
 			<Trigger Property="IsMouseOver" Value="True">
-				<Setter Property="Foreground" Value="{DynamicResource ControlForegroundHighlightBrush}" />
+				<Setter Property="Foreground"
+					Value="{DynamicResource ControlForegroundHighlightBrush}" />
 				<Setter TargetName="HoverEllipse" Property="Opacity" Value="1" />
 			</Trigger>
 
@@ -50,14 +51,135 @@
 
 	</ControlTemplate>
 
-	<Style TargetType="{x:Type local:Slider}">
+	<Style TargetType="{x:Type local:Slider}" x:Key="StudioSlider">
 		<Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
 		<Setter Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
 		<Setter Property="FrameworkElement.FocusVisualStyle" Value="{x:Null}" />
-		<Setter Property="Margin" Value="1" />
-		<Setter Property="MinHeight" Value="26" />
+		<Setter Property="Margin" Value="0" />
+		<Setter Property="MinHeight" Value="32" />
 		<Setter Property="Template" Value="{StaticResource SliderTemplate}" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
 	</Style>
+
+
+	<ControlTemplate x:Key="WrapSliderTemplate" TargetType="{x:Type local:Slider}">
+
+		<Grid Background="Transparent">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition />
+			</Grid.ColumnDefinitions>
+
+			<Grid
+				Grid.Column="0"
+				Width="{Binding ActualHeight, RelativeSource={RelativeSource Mode=Self}}"
+				Margin="1">
+
+				<Ellipse Stroke="{TemplateBinding Background}" StrokeThickness="12" />
+
+				<Ellipse
+					x:Name="HoverEllipse"
+					Margin="3"
+					Opacity="0"
+					Stroke="{DynamicResource ControlHighlightBrush}"
+					StrokeThickness="6" />
+
+				<shapes:PointArc
+					Margin="3"
+					Spread="23"
+					Maximum="{TemplateBinding Maximum}"
+					Minimum="{TemplateBinding Minimum}"
+					Stroke="{TemplateBinding Foreground}"
+					StrokeThickness="6"
+					Value="{TemplateBinding Value}" />
+
+			</Grid>
+		</Grid>
+
+		<ControlTemplate.Triggers>
+			<Trigger Property="IsMouseOver" Value="True">
+				<Setter Property="Foreground"
+					Value="{DynamicResource ControlForegroundHighlightBrush}" />
+				<Setter TargetName="HoverEllipse" Property="Opacity" Value="1" />
+			</Trigger>
+
+			<Trigger Property="IsMouseDown" Value="True">
+				<Setter Property="Foreground" Value="{DynamicResource TrimBrush}" />
+			</Trigger>
+		</ControlTemplate.Triggers>
+
+	</ControlTemplate>
+
+	<Style TargetType="{x:Type local:Slider}" x:Key="WrapSlider"
+		BasedOn="{StaticResource StudioSlider}">
+		<Setter Property="Template" Value="{StaticResource WrapSliderTemplate}" />
+	</Style>
+
+
+	<ControlTemplate x:Key="RelativeSliderTemplate" TargetType="{x:Type local:Slider}">
+
+		<Grid Background="Transparent">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition />
+			</Grid.ColumnDefinitions>
+
+			<Grid
+				Grid.Column="0"
+				Width="{Binding ActualHeight, RelativeSource={RelativeSource Mode=Self}}"
+				Margin="1">
+
+				<Ellipse Stroke="{TemplateBinding Background}" StrokeThickness="12" />
+
+				<Ellipse
+					x:Name="HoverEllipse"
+					Margin="3"
+					Opacity="0"
+					Stroke="{DynamicResource ControlHighlightBrush}"
+					StrokeThickness="6" />
+
+				<shapes:PointArc
+					Margin="2"
+					Spread="23"
+					Maximum="1"
+					Minimum="0"
+					AngleOffset="-90"
+					Stroke="{TemplateBinding Foreground}"
+					StrokeThickness="6"
+					Value="{TemplateBinding ChangeProgress}" />
+
+				<shapes:PointArc
+					Margin="2"
+					Spread="23"
+					Maximum="1"
+					Minimum="0"
+					AngleOffset="90"
+					Stroke="{TemplateBinding Foreground}"
+					StrokeThickness="6"
+					Value="{TemplateBinding ChangeProgress}" />
+
+			</Grid>
+		</Grid>
+
+		<ControlTemplate.Triggers>
+			<Trigger Property="IsMouseOver" Value="True">
+				<Setter Property="Foreground"
+					Value="{DynamicResource ControlForegroundHighlightBrush}" />
+				<Setter TargetName="HoverEllipse" Property="Opacity" Value="1" />
+			</Trigger>
+
+			<Trigger Property="IsMouseDown" Value="True">
+				<Setter Property="Foreground" Value="{DynamicResource TrimBrush}" />
+			</Trigger>
+		</ControlTemplate.Triggers>
+
+	</ControlTemplate>
+
+	<Style TargetType="{x:Type local:Slider}" x:Key="RelativeSlider"
+		BasedOn="{StaticResource StudioSlider}">
+		<Setter Property="Template" Value="{StaticResource RelativeSliderTemplate}" />
+	</Style>
+
+	<Style TargetType="{x:Type local:Slider}" BasedOn="{StaticResource StudioSlider}" />
 
 </ResourceDictionary>

@@ -29,6 +29,8 @@
 		<ResourceDictionary Source="./Controls/SliderStyles.xaml" />
 		<ResourceDictionary Source="./Controls/NumberSliderStyles.xaml" />
 		<ResourceDictionary Source="./Posing/Shared/PoseSelectionControlStyles.xaml" />
+		<ResourceDictionary Source="./Controls/TransformControlStyles.xaml"/>
+		<ResourceDictionary Source="./Controls/Vector3ControlStyles.xaml"/>
 
 		<!--  Default Language  -->
 		<ResourceDictionary Source="./Icons/Icons.xaml"/>

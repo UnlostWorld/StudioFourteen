@@ -15,12 +15,15 @@
 
 namespace StudioFourteen.Controls;
 
+using System.Windows;
 using System.Windows.Controls;
 using DependencyPropertyGenerator;
 
 [DependencyProperty<double>("Value", DefaultBindingMode = DefaultBindingMode.TwoWay)]
 [DependencyProperty<double>("Minimum")]
 [DependencyProperty<double>("Maximum")]
+[DependencyProperty<double>("Change", DefaultValue = 1)]
+[DependencyProperty<Style>("SliderStyle")]
 public partial class NumberSlider : Control
 {
 }

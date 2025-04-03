@@ -26,9 +26,7 @@ public abstract partial class TransformSelectionBase : SelectionBase
 
 	public virtual bool CanLockTransform => true;
 
-	public virtual double TranslationLargeChange => 0.1;
-	public virtual double TranslationSmallChange => 0.01;
-	public virtual double TranslationRange => 1;
+	public virtual double TranslationChange => 0.1;
 	public virtual int DecimalPlacesToDisplay => 2;
 	public virtual TransformHandleTypes DefaultGizmo => TransformHandleTypes.Translation;
 	public virtual double GizmoSensitivity => 1.0;

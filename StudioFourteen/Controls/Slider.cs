@@ -21,6 +21,8 @@ using StudioFourteen.Utilities;
 using DependencyPropertyGenerator;
 
 [DependencyProperty<bool>("IsMouseDown")]
+[DependencyProperty<double>("Change", DefaultValue = 1)]
+[DependencyProperty<double>("ChangeProgress", DefaultValue = 0)]
 public partial class Slider : System.Windows.Controls.Slider
 {
 	private Point startPosition;
@@ -51,12 +53,12 @@ public partial class Slider : System.Windows.Controls.Slider
 			var newPos = CursorUtility.GetPosition();
 			Vector delta = newPos - this.startPosition;
 
-			// About 512 pixels to go from the min value to the max value.
-			double range = this.Maximum - this.Minimum;
-			double rate = range / 512;
+			double change = this.Change;
+			if (change == 0)
+				change = 1;
 
+			double rate = change / 10;
 			this.Value += (rate * delta.X) * this.GetChangeMultiplier();
-
 			CursorUtility.SetPosition(this.startPosition);
 		}
 	}
@@ -81,5 +83,29 @@ public partial class Slider : System.Windows.Controls.Slider
 		e.Handled = true;
 
 		base.OnPreviewMouseUp(e);
+	}
+
+	protected override void OnValueChanged(double oldValue, double newValue)
+	{
+		base.OnValueChanged(oldValue, newValue);
+
+		double change = this.Change;
+		if (change == 0)
+			change = 1;
+
+		double p = this.Value;
+		p /= 10;
+		p = p / change;
+
+		if (p < 0)
+		{
+			p = 1 - (-p % 1);
+		}
+		else
+		{
+			p = p % 1;
+		}
+
+		this.ChangeProgress = p;
 	}
 }

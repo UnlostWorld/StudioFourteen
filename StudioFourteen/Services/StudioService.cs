@@ -50,6 +50,20 @@ public partial class StudioService : ServiceBase
 		return base.Stop();
 	}
 
+	public override Task Start()
+	{
+		if (Debugger.IsAttached)
+		{
+			Task.Run(async () =>
+			{
+				await Task.Delay(500);
+				this.OpenStudio();
+			});
+		}
+
+		return base.Start();
+	}
+
 	public void OpenStudio()
 	{
 		if (this.IsOpen)

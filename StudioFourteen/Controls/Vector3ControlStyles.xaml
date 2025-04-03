@@ -1,0 +1,74 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="clr-namespace:StudioFourteen.Controls"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
+
+
+	<ControlTemplate TargetType="{x:Type local:Vector3Control}" x:Key="StudioVector3ControlTemplate">
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition />
+				<RowDefinition />
+				<RowDefinition />
+			</Grid.RowDefinitions>
+
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition />
+			</Grid.ColumnDefinitions>
+
+			<TextBlock
+				Grid.Row="0"
+				Grid.Column="0"
+				Margin="3,0"
+				Style="{DynamicResource RightLabel}"
+				Text="X:" />
+			<local:NumberSlider
+				Grid.Row="0"
+				Grid.Column="1"
+				Style="{Binding NumberSliderStyle, RelativeSource={RelativeSource TemplatedParent}}"
+				Change="{Binding Change, RelativeSource={RelativeSource TemplatedParent}}"
+				Maximum="{Binding Maximum, RelativeSource={RelativeSource TemplatedParent}}"
+				Minimum="{Binding Minimum, RelativeSource={RelativeSource TemplatedParent}}"
+				Value="{Binding ValueX, RelativeSource={RelativeSource TemplatedParent}}" />
+
+
+			<TextBlock
+				Grid.Row="1"
+				Grid.Column="0"
+				Margin="3,0"
+				Style="{DynamicResource RightLabel}"
+				Text="Y:" />
+			<local:NumberSlider
+				Grid.Column="1"
+				Grid.Row="1"
+				Style="{Binding NumberSliderStyle, RelativeSource={RelativeSource TemplatedParent}}"
+				Change="{Binding Change, RelativeSource={RelativeSource TemplatedParent}}"
+				Maximum="{Binding Maximum, RelativeSource={RelativeSource TemplatedParent}}"
+				Minimum="{Binding Minimum, RelativeSource={RelativeSource TemplatedParent}}"
+				Value="{Binding ValueY, RelativeSource={RelativeSource TemplatedParent}}" />
+
+			<TextBlock
+				Grid.Row="2"
+				Grid.Column="0"
+				Margin="3,0"
+				Style="{DynamicResource RightLabel}"
+				Text="Z:" />
+			<local:NumberSlider
+				Grid.Column="1"
+				Grid.Row="2"
+				Style="{Binding NumberSliderStyle, RelativeSource={RelativeSource TemplatedParent}}"
+				Change="{Binding Change, RelativeSource={RelativeSource TemplatedParent}}"
+				Maximum="{Binding Maximum, RelativeSource={RelativeSource TemplatedParent}}"
+				Minimum="{Binding Minimum, RelativeSource={RelativeSource TemplatedParent}}"
+				Value="{Binding ValueZ, RelativeSource={RelativeSource TemplatedParent}}" />
+		</Grid>
+
+	</ControlTemplate>
+
+	<Style TargetType="{x:Type local:Vector3Control}">
+		<Setter Property="Template" Value="{StaticResource StudioVector3ControlTemplate}"/>
+	</Style>
+
+</ResourceDictionary>

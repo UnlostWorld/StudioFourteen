@@ -4,32 +4,49 @@
 	xmlns:local="clr-namespace:StudioFourteen.Controls"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
+	<!-- Slider -->
 	<ControlTemplate x:Key="NumberSliderTemplate" TargetType="{x:Type local:NumberSlider}">
 		<Grid>
 			<Grid.ColumnDefinitions>
-				<ColumnDefinition Width="Auto"/>
+				<ColumnDefinition Width="Auto" />
 				<ColumnDefinition />
 			</Grid.ColumnDefinitions>
 
 			<local:Slider
-				x:Name="TestSlider"
-				Maximum="{TemplateBinding Maximum}"
-				Minimum="{TemplateBinding Minimum}"
+				Style="{Binding SliderStyle, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+				Change="{Binding Change, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+				Maximum="{Binding Maximum, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+				Minimum="{Binding Minimum, RelativeSource={RelativeSource Mode=TemplatedParent}}"
 				Value="{Binding Value, Mode=TwoWay, RelativeSource={RelativeSource Mode=TemplatedParent}}" />
 
 			<wpfUtils:NumberBox
 				Buttons="True"
 				Grid.Column="1"
-				Maximum="{TemplateBinding Maximum}"
-				Minimum="{TemplateBinding Minimum}"
+				TickFrequency="{Binding Change, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+				Maximum="{Binding Maximum, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+				Minimum="{Binding Minimum, RelativeSource={RelativeSource Mode=TemplatedParent}}"
 				Value="{Binding Value, Mode=TwoWay, RelativeSource={RelativeSource Mode=TemplatedParent}}" />
 
 		</Grid>
 	</ControlTemplate>
 
-	<Style TargetType="{x:Type local:NumberSlider}" >
-		<Setter Property="Template" Value="{StaticResource NumberSliderTemplate}"/>
-		<Setter Property="HorizontalAlignment" Value="Stretch"/>
+	<Style TargetType="{x:Type local:NumberSlider}" x:Key="StudioNumberSlider">
+		<Setter Property="Template" Value="{StaticResource NumberSliderTemplate}" />
+		<Setter Property="HorizontalAlignment" Value="Stretch" />
+		<Setter Property="SliderStyle" Value="{DynamicResource StudioSlider}"/>
 	</Style>
+
+	<Style TargetType="{x:Type local:NumberSlider}" x:Key="NumberRelativeSlider"
+		BasedOn="{StaticResource StudioNumberSlider}">
+		<Setter Property="SliderStyle" Value="{DynamicResource RelativeSlider}"/>
+	</Style>
+
+	<Style TargetType="{x:Type local:NumberSlider}" x:Key="NumberWrapSlider"
+		BasedOn="{StaticResource StudioNumberSlider}">
+		<Setter Property="SliderStyle" Value="{DynamicResource WrapSlider}"/>
+	</Style>
+
+	<!-- Default -->
+	<Style TargetType="{x:Type local:NumberSlider}" BasedOn="{StaticResource StudioNumberSlider}" />
 
 </ResourceDictionary>

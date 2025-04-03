@@ -110,9 +110,7 @@ public class BoneSelection : TransformSelectionBase
 	public string BoneName { get; init; }
 
 	public bool IsFaceBone { get; private set; }
-	public override double TranslationLargeChange => this.IsFaceBone ? 0.01 : 0.1;
-	public override double TranslationSmallChange => this.IsFaceBone ? 0.001 : 0.01;
-	public override double TranslationRange => this.IsFaceBone ? 0.02 : 0.1;
+	public override double TranslationChange => this.IsFaceBone ? 0.01 : 0.1;
 	public override int DecimalPlacesToDisplay => this.IsFaceBone ? 4 : 2;
 	public override bool CanReset => true;
 	public override double GizmoSensitivity => this.IsFaceBone ? 0.05 : 0.5;

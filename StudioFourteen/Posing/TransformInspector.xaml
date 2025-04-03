@@ -58,13 +58,16 @@
 			</Grid>
 
 			<controls:TransformControl
-				RotationExpand="{Binding ExpandRotationSliders}"
-				ScaleExpand="{Binding ExpandScaleSliders}"
 				TranslationDecimalPlaces="{Binding DecimalPlacesDisplay}"
-				TranslationExpand="{Binding ExpandTranslationSliders}"
-				TranslationLargeChange="{Binding Selection.TranslationLargeChange}"
-				TranslationRange="{Binding Selection.TranslationRange}"
-				TranslationSmallChange="{Binding Selection.TranslationSmallChange}"
+				TranslationChange="{Binding Selection.TranslationChange}"
+				TranslationMinimum="-100000"
+				TranslationMaximum="100000"
+				RotationMinimum="-180"
+				RotationMaximum="180"
+				RotationChange="1"
+				ScaleMinimum="0.001"
+				ScaleMaximum="100"
+				ScaleChange="0.1"
 				Value="{Binding LocalTransform}" />
 
 		</StackPanel>

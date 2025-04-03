@@ -159,13 +159,12 @@
 									<TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
 
 									<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_OrbitCamera_Target}" />
-									<controls1:Vector3Box
+									<controls1:Vector3Control
 										DecimalPlaces="3"
 										IsRelative="True"
 										Maximum="100000"
 										Minimum="-100000"
-										Range="10"
-										TickFrequency="0.1"
+										Change="0.1"
 										Value="{Binding Target}" />
 
 									<Grid>
@@ -216,16 +215,16 @@
 										ToolTip="{DynamicResource LOC_OrbitCamera_GroupPoseRoll_Tooltip}"
 										Visibility="{Binding GroupPoseRollAdjust, Converter={StaticResource NotZeroToVisibility}}" />
 
-									<controls1:Vector3Box
+									<controls1:Vector3Control
 										Grid.Row="1"
 										Maximum="180"
 										Minimum="-180"
-										TickFrequency="1"
+										Change="1"
 										Wrap="True"
 										Value="{Binding Angle}" />
 
 									<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Camera_Rotation}" />
-									<controls1:QuaternionBox Quaternion="{Binding Rotation}" TickFrequency="1" />
+									<controls1:QuaternionBox Quaternion="{Binding Rotation}" Change="1" />
 
 								</StackPanel>
 							</DataTemplate>
@@ -236,13 +235,12 @@
 									<TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
 
 									<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_OrbitTargetCamera_Offset}" />
-									<controls1:Vector3Box
+									<controls1:Vector3Control
 										DecimalPlaces="3"
 										IsRelative="True"
 										Maximum="100000"
 										Minimum="-100000"
-										Range="10"
-										TickFrequency="0.1"
+										Change="0.1"
 										Value="{Binding TargetOffset}" />
 
 									<Grid>
@@ -309,7 +307,7 @@
 									</Grid>
 
 									<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Camera_Rotation}" />
-									<controls1:QuaternionBox Quaternion="{Binding Rotation}" TickFrequency="1" />
+									<controls1:QuaternionBox Quaternion="{Binding Rotation}" Change="1" />
 								</StackPanel>
 							</DataTemplate>
 
@@ -320,10 +318,10 @@
 									<TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
 
 									<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_FreeCamera_Position}" />
-									<controls1:Vector3Box TickFrequency="0.01" Value="{Binding Position}" />
+									<controls1:Vector3Control Change="0.01" Value="{Binding Position}" />
 
 									<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Camera_Rotation}" />
-									<controls1:QuaternionBox Quaternion="{Binding Rotation}" TickFrequency="1" />
+									<controls1:QuaternionBox Quaternion="{Binding Rotation}" Change="1" />
 
 
 								</StackPanel>

@@ -20,7 +20,7 @@ using StudioFourteen.Structs.Extensions;
 using System.Numerics;
 
 [DependencyProperty<Quaternion>("Quaternion", DefaultBindingMode = DefaultBindingMode.TwoWay)]
-public partial class QuaternionBox : Vector3Box
+public partial class QuaternionBox : Vector3Control
 {
 	private bool isValueUpdating = false;
 	private bool isComponentUpdating = false;
@@ -30,8 +30,7 @@ public partial class QuaternionBox : Vector3Box
 		this.Minimum = -180;
 		this.Maximum = 180;
 		this.Wrap = true;
-		this.SmallChange = 1;
-		this.LargeChange = 45;
+		this.Change = 5;
 		this.DecimalPlaces = 2;
 	}
 
@@ -65,8 +64,6 @@ public partial class QuaternionBox : Vector3Box
 
 		Vector3 euler = newValue.ToEuler();
 		this.Value = euler;
-
-		this.Log.Information($"ROT: {euler}");
 
 		this.isValueUpdating = false;
 	}

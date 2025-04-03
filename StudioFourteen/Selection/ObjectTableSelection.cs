@@ -56,6 +56,8 @@ public class ObjectTableSelection : TransformSelectionBase
 	public override string TypeName => Resources.Find("LOC_Selection_ObjectTable", "Object Table");
 	public override bool CanReset => true;
 
+	public override double TranslationChange => 0.1f;
+
 	public override ISelectionId Id => new ObjectTableSelectionId(this.objectTableId);
 
 	public unsafe override void OnGameTick()

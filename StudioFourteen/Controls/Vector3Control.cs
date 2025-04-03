@@ -16,28 +16,23 @@
 namespace StudioFourteen.Controls;
 
 using DependencyPropertyGenerator;
-using FontAwesome.Sharp;
-using PropertyChanged.SourceGenerator;
-using StudioFourteen.Mvm;
 using System.Numerics;
-using System.Windows.Input;
+using System.Windows;
+using System.Windows.Controls;
 
 [DependencyProperty<Vector3>("Value", DefaultBindingMode = DefaultBindingMode.TwoWay)]
 [DependencyProperty<bool>("Expand", DefaultBindingMode = DefaultBindingMode.TwoWay)]
-[DependencyProperty<float>("ValueX")]
-[DependencyProperty<float>("ValueY")]
-[DependencyProperty<float>("ValueZ")]
-[DependencyProperty<IconChar>("Icon")]
-[DependencyProperty<double>("LargeChange", DefaultValue = 1)]
-[DependencyProperty<double>("SmallChange", DefaultValue = 0.1)]
-[DependencyProperty<double>("Range", DefaultValue = 100)]
-[DependencyProperty<double>("TickFrequency", DefaultValue = 1)]
+[DependencyProperty<float>("ValueX", DefaultBindingMode = DefaultBindingMode.TwoWay)]
+[DependencyProperty<float>("ValueY", DefaultBindingMode = DefaultBindingMode.TwoWay)]
+[DependencyProperty<float>("ValueZ", DefaultBindingMode = DefaultBindingMode.TwoWay)]
+[DependencyProperty<double>("Change", DefaultValue = 1)]
 [DependencyProperty<bool>("Wrap")]
 [DependencyProperty<double>("Minimum")]
 [DependencyProperty<double>("Maximum")]
 [DependencyProperty<int>("DecimalPlaces")]
 [DependencyProperty<bool>("IsRelative")]
-public partial class Vector3Box : View
+[DependencyProperty<Style>("NumberSliderStyle")]
+public partial class Vector3Control : Control
 {
 	private Vector3? trackingValue;
 	private bool isUpdatingValue = false;
@@ -51,13 +46,6 @@ public partial class Vector3Box : View
 
 			return this.Value;
 		}
-	}
-
-	protected override void OnLoaded()
-	{
-		base.OnLoaded();
-
-		this.OnValueChanged();
 	}
 
 	protected virtual void OnInternalValueChanged(Vector3 newValue)
@@ -122,7 +110,7 @@ public partial class Vector3Box : View
 		}
 	}
 
-	private void OnSliderMouseDown(object sender, MouseButtonEventArgs e)
+	/*private void OnSliderMouseDown(object sender, MouseButtonEventArgs e)
 	{
 		this.trackingValue = this.Value;
 	}
@@ -131,5 +119,5 @@ public partial class Vector3Box : View
 	{
 		this.trackingValue = null;
 		this.OnValueChanged();
-	}
+	}*/
 }
