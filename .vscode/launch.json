@@ -9,6 +9,7 @@
             "preLaunchTask": "Build",
 			"processName": "ffxiv_dx11",
 			"requireExactSource": false,
+			"internalConsoleOptions": "openOnSessionStart",
 
 			"logging": {
 				"moduleLoad": false
@@ -20,6 +21,7 @@
 			"request": "launch",
 			"program": "${workspaceFolder}/Test/bin/Test.dll",
 			"preLaunchTask": "Build",
+			"internalConsoleOptions": "openOnSessionStart",
         }
     ]
 }
