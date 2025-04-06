@@ -89,9 +89,10 @@ public class InputAxis(string id, InputDeviceBase device, bool canActivateDevice
 		get => this.value;
 		set
 		{
+			float delta = Math.Abs(this.value - value);
 			this.value = value;
 
-			if (value > 0.001)
+			if (delta > 0.001)
 			{
 				this.UtcLastInput = DateTime.UtcNow;
 			}
