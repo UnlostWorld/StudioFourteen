@@ -138,6 +138,12 @@ public partial class SimpleView : PoseViewBase
 		}
 	}
 
+	protected override void ClearTargets()
+	{
+		this.canvas.Children.Clear();
+		base.ClearTargets();
+	}
+
 	protected void UpdateBackground()
 	{
 		if (this.layout?.Background == null)

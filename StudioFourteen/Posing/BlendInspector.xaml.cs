@@ -17,9 +17,11 @@ namespace StudioFourteen.Posing;
 
 using DependencyPropertyGenerator;
 using StudioFourteen.Mvm;
+using StudioFourteen.Selection;
 using System.Windows;
 
-[DependencyProperty<BlendSelection>("Selection")]
+[DependencyProperty<SelectionBase>("Selection")]
+[DependencyProperty<BlendSelection>("BlendSelection")]
 public partial class BlendInspector : View
 {
 	private bool extendClamps = false;
@@ -30,10 +32,10 @@ public partial class BlendInspector : View
 	{
 		get
 		{
-			if (this.Selection == null)
+			if (this.BlendSelection == null)
 				return 0;
 
-			if (this.Selection.HasLeft)
+			if (this.BlendSelection.HasLeft)
 				return this.extendClamps ? -500 : -100;
 
 			return 0;
@@ -44,7 +46,7 @@ public partial class BlendInspector : View
 	{
 		get
 		{
-			if (this.Selection == null)
+			if (this.BlendSelection == null)
 				return 0;
 
 			return this.extendClamps ? 500 : 100;
@@ -65,16 +67,18 @@ public partial class BlendInspector : View
 
 	public double BlendValue
 	{
-		get => (this.Selection?.Value * 100) ?? 0;
+		get => (this.BlendSelection?.Value * 100) ?? 0;
 		set
 		{
-			this.Selection?.SetValue(value / 100);
+			this.BlendSelection?.SetValue(value / 100);
 			this.NotifyPropertyChanged();
 		}
 	}
 
 	partial void OnSelectionChanged()
 	{
+		this.BlendSelection = this.Selection as BlendSelection;
+
 		this.NotifyPropertyChanged(nameof(BlendInspector.BlendValue));
 		this.NotifyPropertyChanged(nameof(BlendInspector.BlendMinimum));
 		this.NotifyPropertyChanged(nameof(BlendInspector.BlendMaximum));

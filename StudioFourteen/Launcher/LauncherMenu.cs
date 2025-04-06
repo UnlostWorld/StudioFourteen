@@ -35,11 +35,6 @@ public partial class LauncherMenu : Control
 	private Button? powerButton;
 	private TextBox? searchBox;
 
-	public LauncherMenu()
-	{
-		this.Loaded += this.OnLoaded;
-	}
-
 	public FastObservableCollection<LauncherEntry> Entries { get; init; } = new();
 	protected ServiceManager Services => ServiceManager.Instance;
 
@@ -66,14 +61,6 @@ public partial class LauncherMenu : Control
 	}
 
 	partial void OnContextChanged()
-	{
-		if (this.Context == null)
-			return;
-
-		this.Populate();
-	}
-
-	private void OnLoaded(object sender, RoutedEventArgs e)
 	{
 		if (this.Context == null)
 			return;

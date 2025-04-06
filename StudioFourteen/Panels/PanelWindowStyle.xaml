@@ -72,9 +72,9 @@
 						<RowDefinition />
 					</Grid.RowDefinitions>
 
-					<Grid.LayoutTransform>
+					<!--<Grid.LayoutTransform>
 						<ScaleTransform ScaleX="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Scale}" ScaleY="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Scale}" />
-					</Grid.LayoutTransform>
+					</Grid.LayoutTransform>-->
 
 					<Grid
 						Grid.Row="0"

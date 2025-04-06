@@ -42,10 +42,12 @@ public class EyeSelectionId(int objectTableIndex) : ISelectionId
 	}
 }
 
-[DependencyProperty<EyeSelection>("Selection")]
+[DependencyProperty<SelectionBase>("Selection")]
 public partial class EyeInspector : View
 {
 	private Vector3? trackingEuler;
+
+	public EyeSelection? EyeSelection => this.Selection as EyeSelection;
 
 	[AutoNotify]
 	public double LookX
@@ -75,26 +77,26 @@ public partial class EyeInspector : View
 	{
 		get
 		{
-			if (this.Selection?.EyeBone == null || !this.Selection.EyeBone.IsReady)
+			if (this.EyeSelection?.EyeBone == null || !this.EyeSelection.EyeBone.IsReady)
 				return Vector3.Zero;
 
 			if (this.trackingEuler != null)
 				return this.trackingEuler.Value;
 
-			return this.Selection.EyeBone.LocalTransform.Rotation.ToEuler();
+			return this.EyeSelection.EyeBone.LocalTransform.Rotation.ToEuler();
 		}
 
 		set
 		{
-			if (this.Selection?.EyeBone == null || !this.Selection.EyeBone.IsReady)
+			if (this.EyeSelection?.EyeBone == null || !this.EyeSelection.EyeBone.IsReady)
 				return;
 
 			this.trackingEuler = value;
 
-			if (this.Selection.EyeBone.LocalTransform.ToTRS(out Vector3 translation, out Quaternion rotation, out Vector3 scale))
+			if (this.EyeSelection.EyeBone.LocalTransform.ToTRS(out Vector3 translation, out Quaternion rotation, out Vector3 scale))
 			{
 				rotation.FromEuler(value);
-				this.Selection.EyeBone.LocalTransform = Transform.FromTRS(translation, rotation, scale);
+				this.EyeSelection.EyeBone.LocalTransform = Transform.FromTRS(translation, rotation, scale);
 			}
 		}
 	}
@@ -104,24 +106,24 @@ public partial class EyeInspector : View
 	{
 		get
 		{
-			if (this.Selection?.IrisBone == null
-				|| !this.Selection.IrisBone.IsReady)
+			if (this.EyeSelection?.IrisBone == null
+				|| !this.EyeSelection.IrisBone.IsReady)
 				return -1;
 
-			return this.Selection.IrisBone.LocalTransform.Scale.X;
+			return this.EyeSelection.IrisBone.LocalTransform.Scale.X;
 		}
 		set
 		{
-			if (this.Selection?.IrisBone == null
-				|| !this.Selection.IrisBone.IsReady)
+			if (this.EyeSelection?.IrisBone == null
+				|| !this.EyeSelection.IrisBone.IsReady)
 				return;
 
-			if (this.Selection.IrisBone.LocalTransform.ToTRS(out Vector3 translation, out Quaternion rotation, out Vector3 scale))
+			if (this.EyeSelection.IrisBone.LocalTransform.ToTRS(out Vector3 translation, out Quaternion rotation, out Vector3 scale))
 			{
 				scale.X = (float)value;
 				scale.Y = (float)value;
 				scale.Z = (float)value;
-				this.Selection.IrisBone.LocalTransform = Transform.FromTRS(translation, rotation, scale);
+				this.EyeSelection.IrisBone.LocalTransform = Transform.FromTRS(translation, rotation, scale);
 			}
 		}
 	}

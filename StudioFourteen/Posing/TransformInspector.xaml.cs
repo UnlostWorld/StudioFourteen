@@ -22,14 +22,16 @@ using StudioFourteen.Mvm;
 using StudioFourteen.Selection;
 using StudioFourteen.Settings;
 
-[DependencyProperty<TransformSelectionBase>("Selection")]
+[DependencyProperty<SelectionBase>("Selection")]
 [DependencyProperty<Persistence>("Persistence")]
 public partial class TransformInspector : View
 {
 	public TransformHandleTypes Gizmo => this.Services.Selection.Gizmo;
 
+	public TransformSelectionBase? TransformSelection => this.Selection as TransformSelectionBase;
+
 	[AutoNotify]
-	public int DecimalPlacesDisplay => this.Selection?.DecimalPlacesToDisplay ?? 2;
+	public int DecimalPlacesDisplay => this.TransformSelection?.DecimalPlacesToDisplay ?? 2;
 
 	[AutoNotify]
 	public bool ExpandTranslationSliders
@@ -73,28 +75,28 @@ public partial class TransformInspector : View
 	[AutoNotify]
 	public Transform WorldTransform
 	{
-		get => this.Selection?.WorldTransform ?? default;
+		get => this.TransformSelection?.WorldTransform ?? default;
 		set
 		{
-			if (this.Selection == null)
+			if (this.TransformSelection == null)
 				return;
 
-			HistoryService.Record(this.Selection, "Change World Transform");
-			this.Selection.WorldTransform = value;
+			HistoryService.Record(this.TransformSelection, "Change World Transform");
+			this.TransformSelection.WorldTransform = value;
 		}
 	}
 
 	[AutoNotify]
 	public Transform LocalTransform
 	{
-		get => this.Selection?.LocalTransform ?? default;
+		get => this.TransformSelection?.LocalTransform ?? default;
 		set
 		{
-			if (this.Selection == null)
+			if (this.TransformSelection == null)
 				return;
 
-			HistoryService.Record(this.Selection, "Change Local Transform");
-			this.Selection.LocalTransform = value;
+			HistoryService.Record(this.TransformSelection, "Change Local Transform");
+			this.TransformSelection.LocalTransform = value;
 		}
 	}
 }

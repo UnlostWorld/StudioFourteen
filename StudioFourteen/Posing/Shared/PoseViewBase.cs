@@ -190,6 +190,16 @@ public partial class PoseViewBase : View
 		this.Services.Selection.SelectionChanged -= this.OnSelectionChanged;
 		this.Services.Selection.HoverChanged -= this.OnHoverChanged;
 		this.Services.CharacterAppearance.OnAppearanceChanged -= this.OnAppearanceChanged;
+
+		this.ClearTargets();
+	}
+
+	protected virtual void ClearTargets()
+	{
+		this.controls?.Clear();
+		this.controlNameLookup.Clear();
+		this.controlIdLookup.Clear();
+		this.controlSelectionLookup.Clear();
 	}
 
 	protected void UpdateTargets()
@@ -205,6 +215,7 @@ public partial class PoseViewBase : View
 		this.isUpdatingTargets = true;
 		try
 		{
+			await Task.Delay(10);
 			await this.MainThread();
 
 			if (this.Hide)

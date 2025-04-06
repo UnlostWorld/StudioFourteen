@@ -28,7 +28,7 @@
 			HorizontalAlignment="Center"
 			VerticalAlignment="Center"
 			Opacity="0.5"
-			Source="{Binding Selection.Target.Icon}"
+			Source="{Binding BlendSelection.Target.Icon}"
 			Stretch="Uniform" />
 
 
