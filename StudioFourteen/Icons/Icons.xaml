@@ -89,4 +89,9 @@
 	<icons:Fa x:Key="ICON_Pose_Hands" Icon="Hand" Font="Solid" />
 	<icons:Fa x:Key="ICON_Pose_Face" Icon="FaceGrin" Font="Solid" />
 	<icons:Svg x:Key="ICON_Pose_Wings" Source="Wing"/>
+	<icons:Fa x:Key="ICON_Pose_Mirror_None" Icon="Minus" />
+	<icons:Fa x:Key="ICON_Pose_Mirror_Copy" Icon="LeftLong" />
+	<icons:Fa x:Key="ICON_Pose_Mirror_Flip" Icon="LeftRight" />
+	<icons:Fa x:Key="ICON_Pose_LockTransform" Icon="CirclePause" />
+	<icons:Fa x:Key="ICON_Pose_Reset" Icon="RotateBack" />
 </ResourceDictionary>

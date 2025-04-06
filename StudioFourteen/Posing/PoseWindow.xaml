@@ -297,7 +297,7 @@
 										<ColumnDefinition />
 									</Grid.ColumnDefinitions>
 
-									<icons:IconView Grid.Column="0" Icon="fa-minus" />
+									<icons:IconView Grid.Column="0" Icon="{DynamicResource ICON_Pose_Mirror_None}" />
 									<TextBlock Grid.Column="1"
 										Text="{DynamicResource LOC_Pose_Mirror_None}" />
 								</Grid>
@@ -310,7 +310,7 @@
 										<ColumnDefinition />
 									</Grid.ColumnDefinitions>
 
-									<icons:IconView Grid.Column="0" Icon="fa-left-long" />
+									<icons:IconView Grid.Column="0" Icon="{DynamicResource ICON_Pose_Mirror_Copy}" />
 									<TextBlock Grid.Column="1"
 										Text="{DynamicResource LOC_Pose_Mirror_Copy}" />
 								</Grid>
@@ -323,7 +323,7 @@
 										<ColumnDefinition />
 									</Grid.ColumnDefinitions>
 
-									<icons:IconView Grid.Column="0" Icon="fa-left-right" />
+									<icons:IconView Grid.Column="0" Icon="{DynamicResource ICON_Pose_Mirror_Flip}" />
 									<TextBlock Grid.Column="1"
 										Text="{DynamicResource LOC_Pose_Mirror_Flip}" />
 								</Grid>
@@ -335,7 +335,7 @@
 							Width="28"
 							Background="Transparent"
 							Click="OnResetSelectionClicked">
-							<icons:IconView Icon="fa-rotate-back" />
+							<icons:IconView Icon="{DynamicResource ICON_Pose_Reset}" />
 						</Button>
 
 						<ToggleButton
@@ -346,7 +346,7 @@
 							IsEnabled="{Binding Selection.CanLockTransform, FallbackValue=false}"
 							Style="{DynamicResource WpfUtilsIconToggleButton}"
 							ToolTip="{DynamicResource LOC_Pose_LockTransform}">
-							<icons:IconView Grid.Column="0" Icon="fa-circle-pause" />
+							<icons:IconView Grid.Column="0" Icon="{DynamicResource ICON_Pose_LockTransform}" />
 						</ToggleButton>
 					</Grid>
 				</Border>
