@@ -25,6 +25,10 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
+using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
+using Serilog.Parsing;
+using System.Collections.Generic;
 
 public static class Logging
 {
@@ -44,6 +48,19 @@ public static class Logging
 
 		WpfUtils.Logging.Log.HandleMessage = WpfLog;
 		WpfUtils.Logging.Log.HandleError = WpfError;
+
+		StudioTraceListener listener = new();
+		PresentationTraceSources.AnimationSource.Listeners.Add(listener);
+		PresentationTraceSources.DataBindingSource.Listeners.Add(listener);
+		PresentationTraceSources.DependencyPropertySource.Listeners.Add(listener);
+		PresentationTraceSources.DocumentsSource.Listeners.Add(listener);
+		PresentationTraceSources.FreezableSource.Listeners.Add(listener);
+		PresentationTraceSources.HwndHostSource.Listeners.Add(listener);
+		PresentationTraceSources.MarkupSource.Listeners.Add(listener);
+		PresentationTraceSources.NameScopeSource.Listeners.Add(listener);
+		PresentationTraceSources.ResourceDictionarySource.Listeners.Add(listener);
+		PresentationTraceSources.RoutedEventSource.Listeners.Add(listener);
+		PresentationTraceSources.ShellSource.Listeners.Add(listener);
 	}
 
 	public static ILogger Shared => Logger;
@@ -60,6 +77,23 @@ public static class Logging
 	public static void WpfError(Exception? ex, string message) => Shared.Error(ex, message);
 
 	public static void Information(string message) => Shared.Information(message);
+
+	public static void Dispose()
+	{
+		WpfUtils.Logging.Log.HandleMessage = null;
+		WpfUtils.Logging.Log.HandleError = null;
+		PresentationTraceSources.AnimationSource.Listeners.Clear();
+		PresentationTraceSources.DataBindingSource.Listeners.Clear();
+		PresentationTraceSources.DependencyPropertySource.Listeners.Clear();
+		PresentationTraceSources.DocumentsSource.Listeners.Clear();
+		PresentationTraceSources.FreezableSource.Listeners.Clear();
+		PresentationTraceSources.HwndHostSource.Listeners.Clear();
+		PresentationTraceSources.MarkupSource.Listeners.Clear();
+		PresentationTraceSources.NameScopeSource.Listeners.Clear();
+		PresentationTraceSources.ResourceDictionarySource.Listeners.Clear();
+		PresentationTraceSources.RoutedEventSource.Listeners.Clear();
+		PresentationTraceSources.ShellSource.Listeners.Clear();
+	}
 }
 
 public class Formatter(bool includeLevel, bool includeContext = true) : ITextFormatter
@@ -220,6 +254,7 @@ public class DalamudSink : ILogEventSink
 
 public class DebugSink : ILogEventSink
 {
+	public static bool IsWriting = false;
 	private readonly ITextFormatter formatter;
 
 	public DebugSink(ITextFormatter formatter)
@@ -234,11 +269,15 @@ public class DebugSink : ILogEventSink
 		this.formatter.Format(logEvent, writer);
 		string message = writer.ToString();
 		message = message.TrimEnd('\r', '\n');
+
+		IsWriting = true;
 		Debug.WriteLine(message);
+		IsWriting = false;
 	}
 
 	private static void SayHello()
 	{
+		IsWriting = true;
 		var rainbow = new Crayon.Rainbow(0.5);
 		Debug.WriteLine(rainbow.Next().Text(@"                      @@             _____ _______ _    _ _____ _____ ____		"));
 		Debug.WriteLine(rainbow.Next().Text(@"          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \		"));
@@ -254,5 +293,59 @@ public class DebugSink : ILogEventSink
 		Debug.WriteLine(rainbow.Next().Text(@"       @@@@@      @@@@@															"));
 		Debug.WriteLine(rainbow.Next().Text(@"        @@@@@@@@@@@@@@                This software is licensed under the			"));
 		Debug.WriteLine(rainbow.Next().Text(@"            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3			"));
+		IsWriting = false;
+	}
+}
+
+public class StudioTraceListener
+	: TraceListener
+{
+	public override void Write(string? message)
+	{
+	}
+
+	public override void WriteLine(string? message)
+	{
+	}
+
+	public override void TraceEvent(TraceEventCache? eventCache, string source, TraceEventType eventType, int id, [StringSyntax("CompositeFormat")] string? format, params object?[]? args)
+	{
+		base.TraceEvent(eventCache, source, eventType, id, format, args);
+
+		if (format == null)
+			return;
+
+		string message = format;
+
+		if (args != null)
+			message = string.Format(CultureInfo.InvariantCulture, format!, args);
+
+		MessageTemplate template = new MessageTemplateParser().Parse(message);
+		List<LogEventProperty> properties = new()
+		{
+			new LogEventProperty("Context", new ScalarValue(source)),
+		};
+
+		LogEvent evt = new(DateTimeOffset.Now, ToSerilogLevel(eventType), null, template, properties);
+		Logging.Shared.Write(evt);
+	}
+
+	private static LogEventLevel ToSerilogLevel(TraceEventType eventType)
+	{
+		switch (eventType)
+		{
+			case TraceEventType.Critical: return LogEventLevel.Fatal;
+			case TraceEventType.Error: return LogEventLevel.Error;
+			case TraceEventType.Warning: return LogEventLevel.Warning;
+			case TraceEventType.Information: return LogEventLevel.Information;
+			case TraceEventType.Verbose:
+			case TraceEventType.Start:
+			case TraceEventType.Stop:
+			case TraceEventType.Suspend:
+			case TraceEventType.Resume:
+			case TraceEventType.Transfer: return LogEventLevel.Verbose;
+		}
+
+		throw new NotSupportedException();
 	}
 }

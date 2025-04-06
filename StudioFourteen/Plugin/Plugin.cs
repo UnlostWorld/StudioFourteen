@@ -79,6 +79,8 @@ public sealed class DalamudPlugin : IDalamudPlugin
 			await this.Services.Stop();
 			await Task.Delay(1000);
 		}).Wait();
+
+		Logging.Dispose();
 	}
 
 	private void OnDalamudOpenMainUi()
