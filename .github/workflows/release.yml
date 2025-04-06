@@ -32,7 +32,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           submodules: true # Grab any submodules that may be required
-          
+
       - name: Download Dalamud
         uses: gamedev-thingy/Download-Extract@v2
         with:
@@ -47,14 +47,14 @@ jobs:
 
       - name: Setup MSBuild
         uses: microsoft/setup-msbuild@v2
-        
+
       - name: Navigate to Workspace
         run: cd $GITHUB_WORKSPACE
 
       - name: Build Solution
         run: |
           msbuild.exe StudioFourteen.sln -nologo -nr:false -p:platform="x64" -p:configuration="Release" -Restore
-          
+
       - name: Zip Release
         uses: TheDoctor0/zip-release@0.6.0
         with:
@@ -72,42 +72,42 @@ jobs:
           #body: ${{ steps.Changelog.outputs.changelog }}
           draft: false
           token: ${{ secrets.GITHUB_TOKEN }}
-            
-      - name: Update repo.json
-        uses: DamianReeves/write-file-action@master
-        with:
-          path: repo.json
-          write-mode: overwrite
-          contents: |
-            [
-              {
-                  "Author": "Unlost World",
-                  "Name": "Studio Fourteen",
-                  "InternalName": "StudioFourteen",
-                  "Description": "A plugin for enhancing GPose functionality",
-                  "AssemblyVersion": "1.0.0.${{github.run_number}}",
-                  "TestingAssemblyVersion": "1.0.0.${{github.run_number}}",
-                  "RepoUrl": "https://github.com/UnlostWorld/StudioFourteen",
-                  "ApplicableVersion": "any",
-                  "DalamudApiLevel": 8,
-                  "Tags": [
-                    "gpose",
-                    "posing",
-                    "screenshot"
-                  ],
-                  "IconUrl": "https://github.com/UnlostWorld/StudioFourteen/blob/main/Assets/Icon/light-pride.png",
-                  "DownloadLinkInstall": "https://github.com/UnlostWorld/StudioFourteen/releases/download/v${{github.run_number}}/latest.zip",
-                  "DownloadLinkTesting": "https://github.com/UnlostWorld/StudioFourteen/releases/download/v${{github.run_number}}/latest.zip",
-                  "DownloadLinkUpdate": "https://github.com/UnlostWorld/StudioFourteen/releases/download/v${{github.run_number}}/latest.zip",
-                }
-              ]
-          
-  
-      - name: Update repo.json
-        run: |
-          git add repo.json
-          git config --local user.name "github-actions [bot]"
-          git config --local user.email "github-actions@users.noreply.github.com"
-          git commit -m "Update repo.json for ${{ github.ref_name }}"
-          
-          git push origin HEAD:main
+
+     # - name: Update repo.json
+     #   uses: DamianReeves/write-file-action@master
+     #   with:
+     #     path: repo.json
+     #     write-mode: overwrite
+     #     contents: |
+     #       [
+     #         {
+     #             "Author": "Unlost World",
+     #             "Name": "Studio Fourteen",
+     #             "InternalName": "StudioFourteen",
+     #             "Description": "A plugin for enhancing GPose functionality",
+     #             "AssemblyVersion": "1.0.0.${{github.run_number}}",
+     #             "TestingAssemblyVersion": "1.0.0.${{github.run_number}}",
+     #             "RepoUrl": "https://github.com/UnlostWorld/StudioFourteen",
+     #             "ApplicableVersion": "any",
+     #             "DalamudApiLevel": 8,
+     #             "Tags": [
+     #               "gpose",
+     #               "posing",
+     #               "screenshot"
+     #             ],
+     #             "IconUrl": "https://github.com/UnlostWorld/StudioFourteen/blob/main/Assets/Icon/light-pride.png",
+     #             "DownloadLinkInstall": "https://github.com/UnlostWorld/StudioFourteen/releases/download/v${{github.run_number}}/latest.zip",
+     #             "DownloadLinkTesting": "https://github.com/UnlostWorld/StudioFourteen/releases/download/v${{github.run_number}}/latest.zip",
+     #             "DownloadLinkUpdate": "https://github.com/UnlostWorld/StudioFourteen/releases/download/v${{github.run_number}}/latest.zip",
+     #           }
+     #         ]
+
+
+     # - name: Update repo.json
+     #   run: |
+     #     git add repo.json
+     #     git config --local user.name "github-actions [bot]"
+     #     git config --local user.email "github-actions@users.noreply.github.com"
+     #     git commit -m "Update repo.json for ${{ github.ref_name }}"
+	 #
+     #     git push origin HEAD:main
