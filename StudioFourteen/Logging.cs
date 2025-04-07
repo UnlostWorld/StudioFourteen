@@ -315,6 +315,9 @@ public class StudioTraceListener
 		if (format == null)
 			return;
 
+		if (eventType <= TraceEventType.Warning)
+			return;
+
 		string message = format;
 
 		if (args != null)
