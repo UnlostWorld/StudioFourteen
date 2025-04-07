@@ -30,32 +30,13 @@ using StudioFourteen.Interop;
 public partial class EnvironmentService
 	: ServiceBase
 {
-	private long lastEorzeaTime;
-	private long? nextEorzeaTime;
-
+	[Notify] private long eorzeaTime;
 	[Notify] private bool isInTitleScreen;
 	[Notify] private bool canChangeTerritory;
 	[Notify] private TerritoryType? currentTerritory;
 	[Notify] private Weather? currentWeather;
 	[Notify] private bool freezeTime = false;
 	[Notify] private string time = string.Empty;
-
-	public long EorzeaTime
-	{
-		get
-		{
-			if (this.nextEorzeaTime != null)
-				return (long)this.nextEorzeaTime;
-
-			return this.lastEorzeaTime;
-		}
-
-		set
-		{
-			this.nextEorzeaTime = value;
-			this.RaisePropertyChanged();
-		}
-	}
 
 	public int MinuteOfDay
 	{
@@ -150,28 +131,21 @@ public partial class EnvironmentService
 
 		// Time
 		long newEorzeaTime = pFramework->ClientTime.IsEorzeaTimeOverridden ? pFramework->ClientTime.EorzeaTimeOverride : pFramework->ClientTime.EorzeaTime;
-		bool hasTimeChanged = this.nextEorzeaTime != this.lastEorzeaTime;
-		this.lastEorzeaTime = newEorzeaTime;
-
-		if (this.nextEorzeaTime != null)
+		if (this.freezeTime)
 		{
-			pFramework->ClientTime.EorzeaTime = (long)this.nextEorzeaTime;
-
 			if (pFramework->ClientTime.IsEorzeaTimeOverridden)
-				pFramework->ClientTime.EorzeaTimeOverride = (long)this.nextEorzeaTime;
+			{
+				pFramework->ClientTime.EorzeaTimeOverride = (long)this.eorzeaTime;
+			}
+			else
+			{
+				pFramework->ClientTime.EorzeaTime = (long)this.eorzeaTime;
+			}
 
-			this.nextEorzeaTime = null;
+			newEorzeaTime = (long)this.eorzeaTime;
 		}
 
-		if (hasTimeChanged)
-		{
-			this.RaisePropertyChanged(nameof(this.EorzeaTime));
-			this.RaisePropertyChanged(nameof(this.MinuteOfDay));
-			this.RaisePropertyChanged(nameof(this.DayOfMonth));
-
-			TimeSpan displayTime = TimeSpan.FromMinutes(this.MinuteOfDay);
-			this.Time = string.Format("{0:D2}:{1:D2}", displayTime.Hours, displayTime.Minutes);
-		}
+		this.EorzeaTime = newEorzeaTime;
 
 		// Territory Change
 		this.IsInTitleScreen = this.GetIsInTitleScreen();
@@ -192,6 +166,15 @@ public partial class EnvironmentService
 		}
 	}
 
+	protected void OnEorzeaTimeChanged()
+	{
+		this.RaisePropertyChanged(nameof(this.MinuteOfDay));
+		this.RaisePropertyChanged(nameof(this.DayOfMonth));
+
+		TimeSpan displayTime = TimeSpan.FromMinutes(this.MinuteOfDay);
+		this.Time = string.Format("{0:D2}:{1:D2}", displayTime.Hours, displayTime.Minutes);
+	}
+
 	private int HandleCreateScene(string backgroundPath, uint territoryId, IntPtr p3, uint layerFilterKey, IntPtr p5, int p6, uint contentFinderConditionId)
 	{
 		this.Log.Information($"Changed Scene: {backgroundPath}");
@@ -203,7 +186,7 @@ public partial class EnvironmentService
 
 	private void UpdateEorzeaTime(IntPtr a1, IntPtr a2)
 	{
-		if (this.FreezeTime)
+		if (this.freezeTime)
 			return;
 
 		Hooks.UpdateEorzeaTime.Original(a1, a2);

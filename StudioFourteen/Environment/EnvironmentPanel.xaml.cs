@@ -13,10 +13,11 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Panels;
+namespace StudioFourteen.Environment;
 
 using Lumina.Excel.Sheets;
 using StudioFourteen.GameData.Library;
+using StudioFourteen.Panels;
 using StudioFourteen.Services;
 using StudioFourteen.Tags;
 using System.ComponentModel;

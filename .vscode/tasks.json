@@ -12,8 +12,9 @@
 				"-p:platform=x64",
 				"-p:configuration=Debug",
 				"-Restore",
+				"/consoleloggerparameters:'ForceNoAlign;NoSummary'",
 			],
-			"problemMatcher": ["$msCompile"],
+			"problemMatcher": "$msCompile",
 			"group": {
 			  "kind": "build",
 			  "isDefault": true

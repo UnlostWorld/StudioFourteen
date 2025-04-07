@@ -16,7 +16,6 @@
 namespace StudioFourteen.Launcher;
 
 using System;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using DependencyPropertyGenerator;
@@ -24,6 +23,7 @@ using StudioFourteen.Mvm;
 using StudioFourteen.Panels;
 using StudioFourteen.AIO;
 using WpfUtils.Extensions;
+using StudioFourteen.Environment;
 
 using Panel = StudioFourteen.Panels.Panel;
 

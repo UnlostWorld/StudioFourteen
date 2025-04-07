@@ -85,6 +85,11 @@
 	<icons:Fa x:Key="ICON_Transform_Scale" Icon="Maximize" Font="Solid" />
 	<icons:Svg x:Key="ICON_Photo_Portrait" Source="PortraitPreview"/>
 
+	<icons:Svg x:Key="ICON_Environment_Night" Source="Night" />
+	<icons:Svg x:Key="ICON_Environment_Sunrise" Source="Sunrise" />
+	<icons:Svg x:Key="ICON_Environment_Noon" Source="Noon" />
+	<icons:Svg x:Key="ICON_Environment_Sunset" Source="Sunset" />
+
 	<icons:Fa x:Key="ICON_Pose_Body" Icon="Person" />
 	<icons:Fa x:Key="ICON_Pose_Hands" Icon="Hand" Font="Solid" />
 	<icons:Fa x:Key="ICON_Pose_Face" Icon="FaceGrin" Font="Solid" />
