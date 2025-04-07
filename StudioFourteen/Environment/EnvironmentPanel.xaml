@@ -43,71 +43,100 @@
 			<ToggleButton Content="{DynamicResource LOC_Environment_FreezeTime}"
 				IsChecked="{Binding Services.Environment.FreezeTime}" />
 
-			<evironment:TimeControl
-				Margin="0,6,0,0"
-				IsEnabled="{Binding Services.Environment.FreezeTime}"
-				Maximum="1439"
-				Minimum="0"
-				Change="5"
-				Width="75"
-				Height="75"
-				Value="{Binding Services.Environment.MinuteOfDay}"/>
+			<Grid HorizontalAlignment="Center" IsEnabled="{Binding Services.Environment.FreezeTime}" Margin="6, 12, 6, 0">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition />
+					<ColumnDefinition />
+				</Grid.ColumnDefinitions>
+
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+
+				<controls:IconSlider
+					Margin="12,0"
+					Grid.Row="0"
+					Maximum="1439"
+					Minimum="0"
+					Change="10"
+					Width="75"
+					Height="75"
+					Value="{Binding Services.Environment.MinuteOfDay}"
+					DownIcon="{DynamicResource ICON_Environment_Night}"
+					LeftIcon="{DynamicResource ICON_Environment_Sunrise}"
+					TopIcon="{DynamicResource ICON_Environment_Noon}"
+					RightIcon="{DynamicResource ICON_Environment_Sunset}" />
+
+				<TextBox
+					Width="100"
+					Grid.Row="1"
+					Margin="6,2"
+					TextAlignment="Center"
+					Foreground="{DynamicResource ForegroundLightBrush}"
+					Text="{Binding Services.Environment.DisplayTime}" />
+
+				<controls:IconSlider
+					Margin="12,0"
+					Grid.Row="0"
+					Grid.Column="1"
+					Maximum="31"
+					Minimum="0"
+					Width="75"
+					Height="75"
+					Change="0.5"
+					Value="{Binding Services.Environment.DayOfMonth}"
+					DownIcon="{DynamicResource ICON_Environment_MoonEmpty}"
+					LeftIcon="{DynamicResource ICON_Environment_MoonWaxing}"
+					TopIcon="{DynamicResource ICON_Environment_MoonFull}"
+					RightIcon="{DynamicResource ICON_Environment_MoonWaning}" />
+
+				<ComboBox
+					SelectedIndex="{Binding Services.Environment.DayOfMonth}"
+					Grid.Row="1"
+					Width="100"
+					Grid.Column="1">
+					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_0}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_1}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_2}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_3}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_4}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_5}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_6}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_7}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_8}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_9}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_0}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_11}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_12}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_13}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_14}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_15}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_16}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_17}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_18}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_19}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_10}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_21}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_22}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_23}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_24}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_25}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_26}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_27}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_28}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_29}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_30}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_31}" />
+				</ComboBox>
+			</Grid>
 
 			<TextBlock
+			 	Margin="6, 3, 6, 12"
 				HorizontalAlignment="Center"
 				VerticalAlignment="Center"
 				Foreground="{DynamicResource ForegroundLightBrush}"
-				Text="{Binding Services.Environment.Time, FallbackValue=00:00}"
-				Margin="0,0,0,6"/>
-
-			<Border Margin="1" Style="{DynamicResource WpfUtilsControlBorder}">
-
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition />
-						<ColumnDefinition />
-						<ColumnDefinition />
-						<ColumnDefinition Width="64" />
-					</Grid.ColumnDefinitions>
-
-					<wpfUtils:NumberBox
-						Grid.ColumnSpan="4"
-						Background="Transparent"
-						IsEnabled="{Binding Services.Environment.FreezeTime}"
-						Maximum="30"
-						Minimum="1"
-						Value="{Binding Services.Environment.DayOfMonth}" />
-
-					<icons:IconView
-						Grid.Column="0"
-						Width="14"
-						Height="14"
-						Foreground="{DynamicResource ForegroundLightBrush}"
-						IsHitTestVisible="False"
-						Opacity="0.33"
-						Icon="{DynamicResource ICON_MoonWaxing}" />
-
-					<icons:IconView
-						Grid.Column="1"
-						Width="14"
-						Height="14"
-						Foreground="{DynamicResource ForegroundLightBrush}"
-						IsHitTestVisible="False"
-						Opacity="0.33"
-						Icon="{DynamicResource ICON_MoonFull}" />
-
-					<icons:IconView
-						Grid.Column="2"
-						Width="14"
-						Height="14"
-						Foreground="{DynamicResource ForegroundLightBrush}"
-						IsHitTestVisible="False"
-						Opacity="0.33"
-						Icon="{DynamicResource ICON_MoonWaning}" />
-
-
-				</Grid>
-			</Border>
+				Text="{Binding Services.Environment.DisplayMonth}" />
 
 		</StackPanel>
 	</Grid>

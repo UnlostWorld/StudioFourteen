@@ -19,13 +19,16 @@ using System.Windows;
 using System.Windows.Input;
 using StudioFourteen.Utilities;
 using DependencyPropertyGenerator;
+using System;
 
 [DependencyProperty<bool>("IsMouseDown")]
+[DependencyProperty<bool>("WrapMouseDrag", DefaultValue = true)]
 [DependencyProperty<double>("Change", DefaultValue = 1)]
 [DependencyProperty<double>("ChangeProgress", DefaultValue = 0)]
 public partial class Slider : System.Windows.Controls.Slider
 {
 	private Point startPosition;
+	private double trackingValue;
 
 	protected double GetChangeMultiplier()
 	{
@@ -58,7 +61,23 @@ public partial class Slider : System.Windows.Controls.Slider
 				change = 1;
 
 			double rate = change / 10;
-			this.Value += (rate * delta.X) * this.GetChangeMultiplier();
+			this.trackingValue += (rate * delta.X) * this.GetChangeMultiplier();
+
+			if (this.WrapMouseDrag)
+			{
+				double range = this.Maximum - this.Minimum;
+				while(this.trackingValue > this.Maximum)
+					this.trackingValue -= range;
+
+				while(this.trackingValue < this.Minimum)
+					this.trackingValue += range;
+			}
+			else
+			{
+				this.trackingValue = Math.Clamp(this.trackingValue, this.Minimum, this.Maximum);
+			}
+
+			this.Value = this.trackingValue;
 			CursorUtility.SetPosition(this.startPosition);
 		}
 	}
@@ -67,6 +86,7 @@ public partial class Slider : System.Windows.Controls.Slider
 	{
 		this.startPosition = CursorUtility.GetPosition();
 		this.IsMouseDown = true;
+		this.trackingValue = this.Value;
 		this.CaptureMouse();
 		CursorUtility.SetCursorVisible(false);
 		e.Handled = true;

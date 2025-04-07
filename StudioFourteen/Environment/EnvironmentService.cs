@@ -16,61 +16,50 @@
 namespace StudioFourteen.Services;
 
 using PropertyChanged.SourceGenerator;
-using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using StudioFourteen.Plugin;
 using System;
-using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Environment;
 using Lumina.Excel.Sheets;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
-using StudioFourteen.Utilities;
 using StudioFourteen.Interop;
+using System.Collections.Generic;
+
+using Task = System.Threading.Tasks.Task;
 
 public partial class EnvironmentService
 	: ServiceBase
 {
+	private readonly Dictionary<int, string> dayNameLookup = new();
+	private readonly Dictionary<int, string> monthNameLookup = new();
+
 	[Notify] private long eorzeaTime;
+	[Notify] private int dayOfMonth;
+	[Notify] private int minuteOfDay;
 	[Notify] private bool isInTitleScreen;
 	[Notify] private bool canChangeTerritory;
 	[Notify] private TerritoryType? currentTerritory;
 	[Notify] private Weather? currentWeather;
 	[Notify] private bool freezeTime = false;
-	[Notify] private string time = string.Empty;
 
-	public int MinuteOfDay
+	[Notify] private string displayTime = string.Empty;
+	[Notify] private string displayMonth = string.Empty;
+
+	private bool isUpdatingEorzeaTime = false;
+
+	public override async Task Start()
 	{
-		get
+		for (int i = 0; i < 12; i++)
 		{
-			long currentTime = this.EorzeaTime;
-			long timeVal = currentTime % 2764800;
-			long secondInDay = timeVal % 86400;
-			int minuteOfDay = (int)(secondInDay / 60f);
-			return minuteOfDay;
+			this.monthNameLookup[i] = Resources.Find($"LOC_Time_Month_{i}", i.ToString());
 		}
 
-		set
+		for (int i = 0; i < 32; i++)
 		{
-			this.EorzeaTime = (value * 60) + (86400 * ((byte)this.DayOfMonth - 1));
-			this.RaisePropertyChanged();
-		}
-	}
-
-	public int DayOfMonth
-	{
-		get
-		{
-			long currentTime = this.EorzeaTime;
-			long timeVal = currentTime % 2764800;
-			int dayOfMonth = (int)(Math.Floor(timeVal / 86400f) + 1);
-			return dayOfMonth;
+			this.dayNameLookup[i] = Resources.Find($"LOC_Time_Day_{i}", i.ToString());
 		}
 
-		set
-		{
-			this.EorzeaTime = (this.MinuteOfDay * 60) + (86400 * ((byte)value - 1));
-			this.RaisePropertyChanged();
-		}
+		await base.Start();
 	}
 
 	public override void Attach()
@@ -168,11 +157,43 @@ public partial class EnvironmentService
 
 	protected void OnEorzeaTimeChanged()
 	{
-		this.RaisePropertyChanged(nameof(this.MinuteOfDay));
-		this.RaisePropertyChanged(nameof(this.DayOfMonth));
+		this.isUpdatingEorzeaTime = true;
+
+		long currentTime = this.EorzeaTime;
+		long timeVal = currentTime % 2764800;
+		long secondInDay = timeVal % 86400;
+		this.MinuteOfDay = (int)(secondInDay / 60f);
+		this.DayOfMonth = (int)Math.Floor(timeVal / 86400f);
 
 		TimeSpan displayTime = TimeSpan.FromMinutes(this.MinuteOfDay);
-		this.Time = string.Format("{0:D2}:{1:D2}", displayTime.Hours, displayTime.Minutes);
+
+		int hours = displayTime.Hours;
+		bool isPm = hours > 12;
+		if (isPm)
+			hours -= 12;
+
+		int month = DateTime.UtcNow.Month - 1;
+
+		this.DisplayTime = $"{hours}:{displayTime.Minutes.ToString("D2")}{(isPm ? "pm" : "am")}";
+		this.displayMonth = $"{this.monthNameLookup[month]}, 1577";
+
+		this.isUpdatingEorzeaTime = false;
+	}
+
+	protected void OnDayOfMonthChanged(int oldValue, int newValue)
+	{
+		if (this.isUpdatingEorzeaTime)
+			return;
+
+		this.EorzeaTime = (this.MinuteOfDay * 60) + (86400 * (byte)newValue);
+	}
+
+	protected void OnMinuteOfDayChanged(int oldValue, int newValue)
+	{
+		if (this.isUpdatingEorzeaTime)
+			return;
+
+		this.EorzeaTime = (newValue * 60) + (86400 * (byte)this.DayOfMonth);
 	}
 
 	private int HandleCreateScene(string backgroundPath, uint territoryId, IntPtr p3, uint layerFilterKey, IntPtr p5, int p6, uint contentFinderConditionId)

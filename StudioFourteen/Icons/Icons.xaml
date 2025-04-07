@@ -90,6 +90,11 @@
 	<icons:Svg x:Key="ICON_Environment_Noon" Source="Noon" />
 	<icons:Svg x:Key="ICON_Environment_Sunset" Source="Sunset" />
 
+	<icons:Svg x:Key="ICON_Environment_MoonFull" Source="MoonFull" />
+	<icons:Svg x:Key="ICON_Environment_MoonEmpty" Source="MoonEmpty" />
+	<icons:Svg x:Key="ICON_Environment_MoonWaxing" Source="MoonWaxing" />
+	<icons:Svg x:Key="ICON_Environment_MoonWaning" Source="MoonWaning" />
+
 	<icons:Fa x:Key="ICON_Pose_Body" Icon="Person" />
 	<icons:Fa x:Key="ICON_Pose_Hands" Icon="Hand" Font="Solid" />
 	<icons:Fa x:Key="ICON_Pose_Face" Icon="FaceGrin" Font="Solid" />

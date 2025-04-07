@@ -13,47 +13,54 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Environment;
+namespace StudioFourteen.Controls;
 
-using StudioFourteen.Controls;
 using DependencyPropertyGenerator;
-using System;
 using StudioFourteen.Utilities;
 
-[DependencyProperty<double>("SunsetAlpha")]
-[DependencyProperty<double>("SunriseAlpha")]
-[DependencyProperty<double>("NoonAlpha")]
-[DependencyProperty<double>("NightAlpha")]
-public partial class TimeControl : Slider
+[DependencyProperty<double>("DownOpacity")]
+[DependencyProperty<double>("LeftOpacity")]
+[DependencyProperty<double>("TopOpacity")]
+[DependencyProperty<double>("RightOpacity")]
+[DependencyProperty<object>("DownIcon")]
+[DependencyProperty<object>("LeftIcon")]
+[DependencyProperty<object>("TopIcon")]
+[DependencyProperty<object>("RightIcon")]
+public partial class IconSlider : Slider
 {
 	protected override void OnValueChanged(double oldValue, double newValue)
 	{
 		base.OnValueChanged(oldValue, newValue);
 
-		float p = MathUtility.InverseLerp(0, 1440, (float)newValue);
+		float p = MathUtility.InverseLerp(0, (float)this.Maximum, (float)newValue);
 
-		if (p > 0 && p < 0.25f)
+		this.DownOpacity = 0;
+		this.LeftOpacity = 0;
+		this.TopOpacity = 0;
+		this.RightOpacity = 0;
+
+		if (p >= 0 && p <= 0.25f)
 		{
-			this.NightAlpha = MathUtility.InverseLerp(0.25f, 0, p);
-			this.SunriseAlpha = MathUtility.InverseLerp(0, 0.25f, p);
+			this.DownOpacity = MathUtility.InverseLerp(0.25f, 0, p);
+			this.LeftOpacity = MathUtility.InverseLerp(0, 0.25f, p);
 		}
 
-		if (p > 0.25f && p < 0.5f)
+		if (p >= 0.25f && p <= 0.5f)
 		{
-			this.SunriseAlpha = MathUtility.InverseLerp(0.5f, 0.25f, p);
-			this.NoonAlpha = MathUtility.InverseLerp(0.25f, 0.5f, p);
+			this.LeftOpacity = MathUtility.InverseLerp(0.5f, 0.25f, p);
+			this.TopOpacity = MathUtility.InverseLerp(0.25f, 0.5f, p);
 		}
 
-		if (p > 0.5f && p < 0.75f)
+		if (p >= 0.5f && p <= 0.75f)
 		{
-			this.NoonAlpha = MathUtility.InverseLerp(0.75f, 0.5f, p);
-			this.SunsetAlpha = MathUtility.InverseLerp(0.5f, 0.75f, p);
+			this.TopOpacity = MathUtility.InverseLerp(0.75f, 0.5f, p);
+			this.RightOpacity = MathUtility.InverseLerp(0.5f, 0.75f, p);
 		}
 
-		if (p > 0.75 && p < 1.0f)
+		if (p >= 0.75 && p <= 1.0f)
 		{
-			this.SunsetAlpha = MathUtility.InverseLerp(1.0f, 0.75f, p);
-			this.NightAlpha = MathUtility.InverseLerp(0.75f, 1.0f, p);
+			this.RightOpacity = MathUtility.InverseLerp(1.0f, 0.75f, p);
+			this.DownOpacity = MathUtility.InverseLerp(0.75f, 1.0f, p);
 		}
 	}
 }
