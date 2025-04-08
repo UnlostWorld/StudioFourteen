@@ -27,6 +27,7 @@
 					StrokeThickness="6" />
 
 				<shapes:FillArc
+					x:Name="Content"
 					Margin="3"
 					Maximum="{TemplateBinding Maximum}"
 					Minimum="{TemplateBinding Minimum}"
@@ -41,11 +42,63 @@
 			<Trigger Property="IsMouseOver" Value="True">
 				<Setter Property="Foreground"
 					Value="{DynamicResource ControlForegroundHighlightBrush}" />
-				<Setter TargetName="HoverEllipse" Property="Opacity" Value="1" />
+				<Trigger.EnterActions>
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="HoverEllipse"
+								Storyboard.TargetProperty="Opacity"
+								From="0"
+								To="1"
+								Duration="00:00:00.1" />
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.EnterActions>
+
+				<Trigger.ExitActions>
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="HoverEllipse"
+								Storyboard.TargetProperty="Opacity"
+								From="1"
+								To="0"
+								Duration="00:00:00.2" />
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.ExitActions>
 			</Trigger>
 
 			<Trigger Property="IsMouseDown" Value="True">
 				<Setter Property="Foreground" Value="{DynamicResource TrimBrush}" />
+			</Trigger>
+
+			<Trigger Property="IsEnabled" Value="false">
+				<Trigger.EnterActions>
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="Content"
+								Storyboard.TargetProperty="Opacity"
+								From="1"
+								To="0.5"
+								Duration="00:00:00.1" />
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.EnterActions>
+
+				<Trigger.ExitActions>
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="Content"
+								Storyboard.TargetProperty="Opacity"
+								From="0.5"
+								To="1"
+								Duration="00:00:00.2" />
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.ExitActions>
 			</Trigger>
 		</ControlTemplate.Triggers>
 
@@ -85,6 +138,7 @@
 					StrokeThickness="6" />
 
 				<shapes:PointArc
+					x:Name="Content"
 					Margin="3"
 					Spread="23"
 					Maximum="{TemplateBinding Maximum}"
@@ -100,11 +154,63 @@
 			<Trigger Property="IsMouseOver" Value="True">
 				<Setter Property="Foreground"
 					Value="{DynamicResource ControlForegroundHighlightBrush}" />
-				<Setter TargetName="HoverEllipse" Property="Opacity" Value="1" />
+				<Trigger.EnterActions>
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="HoverEllipse"
+								Storyboard.TargetProperty="Opacity"
+								From="0"
+								To="1"
+								Duration="00:00:00.1" />
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.EnterActions>
+
+				<Trigger.ExitActions>
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="HoverEllipse"
+								Storyboard.TargetProperty="Opacity"
+								From="1"
+								To="0"
+								Duration="00:00:00.2" />
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.ExitActions>
 			</Trigger>
 
 			<Trigger Property="IsMouseDown" Value="True">
 				<Setter Property="Foreground" Value="{DynamicResource TrimBrush}" />
+			</Trigger>
+
+			<Trigger Property="IsEnabled" Value="false">
+				<Trigger.EnterActions>
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="Content"
+								Storyboard.TargetProperty="Opacity"
+								From="1"
+								To="0.5"
+								Duration="00:00:00.1" />
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.EnterActions>
+
+				<Trigger.ExitActions>
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="Content"
+								Storyboard.TargetProperty="Opacity"
+								From="0.5"
+								To="1"
+								Duration="00:00:00.2" />
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.ExitActions>
 			</Trigger>
 		</ControlTemplate.Triggers>
 
@@ -138,6 +244,7 @@
 					Stroke="{DynamicResource ControlHighlightBrush}"
 					StrokeThickness="6" />
 
+			<Grid x:Name="Content">
 				<shapes:PointArc
 					Margin="2"
 					Spread="23"
@@ -157,7 +264,7 @@
 					Stroke="{TemplateBinding Foreground}"
 					StrokeThickness="6"
 					Value="{TemplateBinding ChangeProgress}" />
-
+				</Grid>
 			</Grid>
 		</Grid>
 
@@ -165,11 +272,63 @@
 			<Trigger Property="IsMouseOver" Value="True">
 				<Setter Property="Foreground"
 					Value="{DynamicResource ControlForegroundHighlightBrush}" />
-				<Setter TargetName="HoverEllipse" Property="Opacity" Value="1" />
+				<Trigger.EnterActions>
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="HoverEllipse"
+								Storyboard.TargetProperty="Opacity"
+								From="0"
+								To="1"
+								Duration="00:00:00.1" />
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.EnterActions>
+
+				<Trigger.ExitActions>
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="HoverEllipse"
+								Storyboard.TargetProperty="Opacity"
+								From="1"
+								To="0"
+								Duration="00:00:00.2" />
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.ExitActions>
 			</Trigger>
 
 			<Trigger Property="IsMouseDown" Value="True">
 				<Setter Property="Foreground" Value="{DynamicResource TrimBrush}" />
+			</Trigger>
+
+			<Trigger Property="IsEnabled" Value="false">
+				<Trigger.EnterActions>
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="Content"
+								Storyboard.TargetProperty="Opacity"
+								From="1"
+								To="0.5"
+								Duration="00:00:00.1" />
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.EnterActions>
+
+				<Trigger.ExitActions>
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="Content"
+								Storyboard.TargetProperty="Opacity"
+								From="0.5"
+								To="1"
+								Duration="00:00:00.2" />
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.ExitActions>
 			</Trigger>
 		</ControlTemplate.Triggers>
 
