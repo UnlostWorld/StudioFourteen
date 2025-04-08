@@ -219,26 +219,35 @@ public class InputService : ServiceBase
 
 	public bool HasListener(InputAction evt)
 	{
-		if (!this.listeners.ContainsKey(evt))
-			return false;
+		lock(this.listeners)
+		{
+			if (!this.listeners.ContainsKey(evt))
+				return false;
 
-		return this.listeners[evt].Count > 0;
+			return this.listeners[evt].Count > 0;
+		}
 	}
 
 	public void AddListener(InputAction evt, InputActionListener listener)
 	{
-		if (!this.listeners.ContainsKey(evt))
-			this.listeners.Add(evt, new());
+		lock(this.listeners)
+		{
+			if (!this.listeners.ContainsKey(evt))
+				this.listeners.Add(evt, new());
 
-		this.listeners[evt].Add(listener);
+			this.listeners[evt].Add(listener);
+		}
 	}
 
 	public void RemoveListener(InputAction evt, InputActionListener listener)
 	{
-		if (!this.listeners.ContainsKey(evt))
-			return;
+		lock(this.listeners)
+		{
+			if (!this.listeners.ContainsKey(evt))
+				return;
 
-		this.listeners[evt].Remove(listener);
+			this.listeners[evt].Remove(listener);
+		}
 	}
 
 	public override void Attach()
