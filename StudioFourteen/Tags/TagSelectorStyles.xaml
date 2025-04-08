@@ -40,8 +40,8 @@
 
 					<icons:IconView
 						Grid.Column="1"
-						Height="10"
-						Margin="6"
+						Height="16"
+						Margin="6,0"
 						VerticalAlignment="Center"
 						Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"
 						Icon="{DynamicResource ICON_TagsAdd}" />

@@ -102,13 +102,9 @@
 				Style="{DynamicResource WpfUtilsIconToggleButton}"
 				ToolTip="!">
 
-				<Grid Margin="3">
+				<Grid Margin="3,3,3,2">
 					<ContentPresenter Content="{TemplateBinding IconBackground}" Visibility="{TemplateBinding IconBackground, Converter={StaticResource NotNullToVisibilityConverter}}" />
-					<ContentPresenter
-						HorizontalAlignment="Stretch"
-						VerticalAlignment="Stretch"
-						Content="{TemplateBinding Value}"
-						Style="{DynamicResource LibraryIcon}" />
+					<ContentPresenter Content="{TemplateBinding Icon}" />
 				</Grid>
 			</ToggleButton>
 

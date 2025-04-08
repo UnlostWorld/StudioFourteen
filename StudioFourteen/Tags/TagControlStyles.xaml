@@ -29,7 +29,7 @@
 			<StackPanel Margin="2,0" Orientation="Horizontal">
 				<icons:IconView
 					Margin="0,0,4,0"
-					Height="10"
+					Height="16"
 					Foreground="{DynamicResource ForegroundLightBrush}"
 					Icon="{DynamicResource ICON_Tag}" />
 				<TextBlock

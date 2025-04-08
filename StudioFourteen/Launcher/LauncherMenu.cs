@@ -137,7 +137,7 @@ public abstract class LauncherEntry(LauncherMenu menu)
 
 	public bool IsOpen
 	{
-		get => this.GetIsOpen();
+		get => this.IsEnabled && this.GetIsOpen();
 		set => this.Open();
 	}
 

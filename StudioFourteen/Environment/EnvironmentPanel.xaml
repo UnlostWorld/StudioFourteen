@@ -73,7 +73,6 @@
 					Grid.Row="1"
 					Margin="6,2"
 					TextAlignment="Center"
-					Foreground="{DynamicResource ForegroundLightBrush}"
 					Text="{Binding Services.Environment.DisplayTime}" />
 
 				<controls:IconSlider
