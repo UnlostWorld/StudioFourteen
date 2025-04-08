@@ -15,7 +15,6 @@
 
 namespace StudioFourteen.Services;
 
-using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Event;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
@@ -31,7 +30,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
-using TerraFX.Interop.Windows;
 using WpfUtils.Extensions;
 
 public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
@@ -130,25 +128,35 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 	{
 		await TickService.GameTick();
 
-		if (DalamudServices.ObjectTable == null)
-			return false;
-
 		// change to a new target before deleting the actor as Mare assumes no target = left gpose
 		// and will crash.
 		bool success = await this.Services.Target.MoveTarget(objectTableIndex);
 		if (!success)
 			return false;
 
+		await TickService.GameTick();
+
 		unsafe
 		{
-			GameObject* character = (GameObject*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
+			GameObject* character = this.Services.GameObjects.Get(objectTableIndex);
 
 			ClientObjectManager* com = ClientObjectManager.Instance();
-			uint idx = com->GetIndexByObject((GameObject*)character);
+			uint idx = com->GetIndexByObject(character);
 			if (idx == 0xFFFFFFFF)
 				return false;
 
+			TickService.VerifyGameTickThread();
+
+			// Something about calling DeleteObjectByIndex outside of dalamuds update
+			// causes a nasty crash, even when calling it on the games tick thread.
+			#if DALAMUD
+			Plugin.DalamudServices.Framework!.RunOnFrameworkThread(() =>
+			{
+				com->DeleteObjectByIndex((ushort)idx, 0);
+			});
+			#else
 			com->DeleteObjectByIndex((ushort)idx, 0);
+			#endif
 		}
 
 		await Threads.NextFrame();
@@ -171,7 +179,17 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 			}
 
 			this.Log.Information($"Deleting object: {idx} - {deletingCharacter->GetDisplayName()}");
-			com->DeleteObjectByIndex(idx, 0);
+
+			// Something about calling DeleteObjectByIndex outside of dalamuds update
+			// causes a nasty crash, even when calling it on the games tick thread.
+			#if DALAMUD
+			Plugin.DalamudServices.Framework!.RunOnFrameworkThread(() =>
+			{
+				com->DeleteObjectByIndex((ushort)idx, 0);
+			});
+			#else
+			com->DeleteObjectByIndex((ushort)idx, 0);
+			#endif
 		}
 
 		CreatedIndexes.Clear();
@@ -249,12 +267,9 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 
 	private unsafe int Spawn(Vector3 position)
 	{
-		if (DalamudServices.ClientState?.LocalPlayer == null)
-			return -1;
-
 		TickService.VerifyGameTickThread();
 
-		Character* player = (Character*)DalamudServices.ClientState.LocalPlayer.Address;
+		Character* player = this.Services.GameObjects.Get<Character>(0);
 
 		if (player == null)
 			return -1;

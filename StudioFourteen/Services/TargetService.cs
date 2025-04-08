@@ -178,8 +178,17 @@ public partial class TargetService : ServiceBase
 			if (pTarget == null)
 				return false;
 
-			this.SetTarget(pTarget->ObjectIndex);
-			return true;
+			this.SetTargetInternal(pTarget->ObjectIndex);
+		}
+
+		// Give a delay for any other plugins or processes to deal with the changed target
+		await Threads.NextFrame();
+
+		// Ensure we actually selected a new target
+		unsafe
+		{
+			Character* pNewTarget = this.GetTarget();
+			return pNewTarget->ObjectIndex != fromObjectTableIndex;
 		}
 	}
 

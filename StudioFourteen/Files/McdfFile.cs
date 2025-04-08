@@ -122,25 +122,29 @@ public class MareFile
 	{
 		await TickService.GameTick();
 
-		if (this.FilePath == null || DalamudServices.ObjectTable == null)
+		if (this.FilePath == null || DalamudServices.ObjectTable == null || DalamudServices.Framework == null)
 			return;
 
-		IGameObject? target = DalamudServices.ObjectTable[objectTableIndex];
-		if (target == null)
-			return;
-
-		if (this.Name != null)
+		await DalamudServices.Framework.RunOnFrameworkThread(() =>
 		{
-			unsafe
-			{
-				Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
-				character->SetDisplayName(this.Name);
-			}
-		}
+			IGameObject? target = DalamudServices.ObjectTable[objectTableIndex];
+			if (target == null)
+				return;
 
-		// The async version of LoadMcdf has some issues, but if we try to load two mcdf's
-		// too close together it doesn't work, so just delay for a while.
-		bool success = ServiceManager.Instance.IPC.MareSynchronosLoadMcdf(this.FilePath, target);
+			if (this.Name != null)
+			{
+				unsafe
+				{
+					Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
+					character->SetDisplayName(this.Name);
+				}
+			}
+
+			// The async version of LoadMcdf has some issues, but if we try to load two mcdf's
+			// too close together it doesn't work, so just delay for a while.
+			bool success = ServiceManager.Instance.IPC.MareSynchronosLoadMcdf(this.FilePath, target);
+		});
+
 		await Task.Delay(3000);
 	}
 

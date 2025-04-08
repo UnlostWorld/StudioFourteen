@@ -95,10 +95,17 @@ public partial class TickService : ServiceBase
 
 	public void Dispatch(Channels channel, Action callback)
 	{
-		if (!this.tickDispatchers.ContainsKey(channel))
-			this.tickDispatchers.Add(channel, new());
+		if (currentChannel == channel)
+		{
+			callback.Invoke();
+		}
+		else
+		{
+			if (!this.tickDispatchers.ContainsKey(channel))
+				this.tickDispatchers.Add(channel, new());
 
-		this.tickDispatchers[channel].Enqueue(callback);
+			this.tickDispatchers[channel].Enqueue(callback);
+		}
 	}
 
 	public void Add(Channels channel, Action callback)
