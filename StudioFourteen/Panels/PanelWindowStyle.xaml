@@ -50,7 +50,8 @@
 				RenderTransformOrigin="0.5,0.5">
 
 				<Grid.RenderTransform>
-					<ScaleTransform x:Name="WindowScale" ScaleX="0.01" ScaleY="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ScaleX}" />
+					<ScaleTransform x:Name="WindowScale" ScaleX="0.01"
+						ScaleY="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ScaleX}" />
 				</Grid.RenderTransform>
 
 				<Border
@@ -63,7 +64,8 @@
 					</Border.BitmapEffect>
 				</Border>
 
-				<Border Background="{DynamicResource BackgroundBrush}" CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
+				<Border Background="{DynamicResource BackgroundBrush}"
+					CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
 
 
 				<Grid ClipToBounds="True">
@@ -72,9 +74,10 @@
 						<RowDefinition />
 					</Grid.RowDefinitions>
 
-					<!--<Grid.LayoutTransform>
-						<ScaleTransform ScaleX="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Scale}" ScaleY="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Scale}" />
-					</Grid.LayoutTransform>-->
+					<Grid.LayoutTransform>
+						<ScaleTransform ScaleX="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Scale}"
+							ScaleY="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Scale}"/>
+					</Grid.LayoutTransform>
 
 					<Grid
 						Grid.Row="0"
@@ -83,9 +86,23 @@
 
 						<Grid Background="Transparent" MouseDown="OnTitleMouseDown">
 							<Grid.ContextMenu>
-								<ContextMenu>
-									<MenuItem Header="Pop out" Icon="fa-arrow-right-from-bracket" />
-									<MenuItem Header="Zoom" Icon="fa-search" />
+								<ContextMenu
+									DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:PanelWindow}}}">
+									<MenuItem IsEnabled="{TemplateBinding IsEmbedded}"
+										Header="Pop out" Icon="{DynamicResource ICON_Window_PopOut}"
+										Command="{TemplateBinding PopOutCommand}" />
+									<MenuItem
+										IsEnabled="{Binding IsEmbedded, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource !B}}"
+										Header="Pop in" Icon="{DynamicResource ICON_Window_PopOut}"
+										Command="{TemplateBinding PopInCommand}" />
+									<MenuItem Header="Zoom"
+										Icon="{DynamicResource ICON_Window_Zoom}">
+										<MenuItem Header="75%" Command="{TemplateBinding SetZoom75Command}"/>
+										<MenuItem Header="100%" Command="{TemplateBinding SetZoom100Command}" IsChecked="true"/>
+										<MenuItem Header="125%" Command="{TemplateBinding SetZoom125Command}"/>
+										<MenuItem Header="150%" Command="{TemplateBinding SetZoom150Command}" />
+										<MenuItem Header="200%" Command="{TemplateBinding SetZoom200Command}"/>
+									</MenuItem>
 								</ContextMenu>
 							</Grid.ContextMenu>
 						</Grid>
@@ -136,9 +153,9 @@
 							<Button
 								Width="32"
 								Padding="8"
-								Click="OnMinimizeClicked"
+								Command="{TemplateBinding MinimizeCommand}"
 								Style="{StaticResource TitleBarButton}"
-								Content="{DynamicResource ICON_Window_Minimze}"/>
+								Content="{DynamicResource ICON_Window_Minimze}" />
 
 							<!--  Maximize button  -->
 							<ToggleButton
@@ -167,7 +184,7 @@
 								x:Name="CloseButton"
 								Width="48"
 								Padding="6"
-								Click="OnCloseClicked"
+								Command="{TemplateBinding CloseCommand}"
 								Content="{DynamicResource ICON_Window_Close}"
 								Style="{StaticResource TitleBarButton}"
 								ToolTip="{DynamicResource LOC_ClosePanelTooltip}"
@@ -201,7 +218,8 @@
 					Grid.Row="1"
 					Margin="-10"
 					Visibility="Collapsed">
-					<Thumb DragDelta="OnResizeThumbDragDelta" Style="{DynamicResource WpfUtilsResizeThumbCorner}" />
+					<Thumb DragDelta="OnResizeThumbDragDelta"
+						Style="{DynamicResource WpfUtilsResizeThumbCorner}" />
 				</Grid>
 			</Grid>
 		</AdornerDecorator>
@@ -213,7 +231,8 @@
 			</Trigger>
 
 			<Trigger Property="IsForeground" Value="True">
-				<Setter TargetName="WindowBorder" Property="BorderBrush" Value="{DynamicResource TrimBrush}" />
+				<Setter TargetName="WindowBorder" Property="BorderBrush"
+					Value="{DynamicResource TrimBrush}" />
 				<Setter TargetName="WindowShadow" Property="Opacity" Value="1" />
 			</Trigger>
 
@@ -221,7 +240,8 @@
 				<Trigger.ExitActions>
 					<BeginStoryboard>
 						<Storyboard>
-							<DoubleAnimationUsingKeyFrames Storyboard.TargetName="WindowScale" Storyboard.TargetProperty="ScaleX">
+							<DoubleAnimationUsingKeyFrames Storyboard.TargetName="WindowScale"
+								Storyboard.TargetProperty="ScaleX">
 								<EasingDoubleKeyFrame KeyTime="0:00:00.200" Value="0.98">
 									<EasingDoubleKeyFrame.EasingFunction>
 										<SineEase EasingMode="EaseOut" />
@@ -240,7 +260,8 @@
 				<Trigger.EnterActions>
 					<BeginStoryboard>
 						<Storyboard>
-							<DoubleAnimationUsingKeyFrames Storyboard.TargetName="WindowScale" Storyboard.TargetProperty="ScaleX">
+							<DoubleAnimationUsingKeyFrames Storyboard.TargetName="WindowScale"
+								Storyboard.TargetProperty="ScaleX">
 								<EasingDoubleKeyFrame KeyTime="0:00:00.200" Value="1.02">
 									<EasingDoubleKeyFrame.EasingFunction>
 										<SineEase EasingMode="EaseOut" />
@@ -387,7 +408,8 @@
 				RenderTransformOrigin="0.5,0.5">
 
 				<Grid.RenderTransform>
-					<ScaleTransform x:Name="WindowScale" ScaleX="0.01" ScaleY="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ScaleX}" />
+					<ScaleTransform x:Name="WindowScale" ScaleX="0.01"
+						ScaleY="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ScaleX}" />
 				</Grid.RenderTransform>
 
 				<Border
@@ -400,7 +422,8 @@
 					</Border.BitmapEffect>
 				</Border>
 
-				<Border Background="{DynamicResource BackgroundBrush}" CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
+				<Border Background="{DynamicResource BackgroundBrush}"
+					CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
 
 				<ContentPresenter
 					Margin="3"
@@ -417,7 +440,8 @@
 
 		<ControlTemplate.Triggers>
 			<Trigger Property="IsForeground" Value="True">
-				<Setter TargetName="WindowBorder" Property="BorderBrush" Value="{DynamicResource TrimBrush}" />
+				<Setter TargetName="WindowBorder" Property="BorderBrush"
+					Value="{DynamicResource TrimBrush}" />
 				<Setter TargetName="WindowShadow" Property="Opacity" Value="1" />
 			</Trigger>
 

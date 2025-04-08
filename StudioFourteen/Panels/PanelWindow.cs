@@ -32,6 +32,7 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using TerraFX.Interop.Windows;
+using WpfUtils.Commands;
 using WpfUtils.Extensions;
 using WpfUtils.Windows;
 
@@ -44,6 +45,15 @@ using WpfUtils.Windows;
 [DependencyProperty<bool>("RememberState", DefaultValue = false)]
 [DependencyProperty<Thickness>("TitleMargin")]
 [DependencyProperty<Point>("DefaultPosition", DefaultValueExpression = "new System.Windows.Point(0.5, 0.5)")]
+[DependencyProperty<ICommand>("CloseCommand")]
+[DependencyProperty<ICommand>("MinimizeCommand")]
+[DependencyProperty<ICommand>("PopInCommand")]
+[DependencyProperty<ICommand>("PopOutCommand")]
+[DependencyProperty<ICommand>("SetZoom75Command")]
+[DependencyProperty<ICommand>("SetZoom100Command")]
+[DependencyProperty<ICommand>("SetZoom125Command")]
+[DependencyProperty<ICommand>("SetZoom150Command")]
+[DependencyProperty<ICommand>("SetZoom200Command")]
 public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 {
 	public readonly Navigation? Navigation;
@@ -80,6 +90,17 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		this.Services.Studio.PropertyChanged += this.OnStudioPropertyChanged;
 		this.Services.Reshade.ReshadeOverlayChanged += this.OnReshadeOverlayChanged;
 		this.Services.Photos.PropertyChanged += this.OnPhotosPropertyChanged;
+
+		this.CloseCommand = new SimpleCommand(async () => await this.CloseAsync(false));
+		this.MinimizeCommand = new SimpleCommand(async () => await this.CloseAsync(true));
+		this.PopOutCommand = new SimpleCommand(() => this.IsEmbedded = false);
+		this.PopInCommand = new SimpleCommand(() => this.IsEmbedded = true);
+
+		this.SetZoom75Command = new SimpleCommand(() => this.Scale = 0.75);
+		this.SetZoom100Command = new SimpleCommand(() => this.Scale = 1.0);
+		this.SetZoom125Command = new SimpleCommand(() => this.Scale = 1.25);
+		this.SetZoom150Command = new SimpleCommand(() => this.Scale = 1.5);
+		this.SetZoom200Command = new SimpleCommand(() => this.Scale = 2.0);
 
 		if (this.CanNavigate)
 		{

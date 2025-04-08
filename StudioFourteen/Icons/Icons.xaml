@@ -7,6 +7,8 @@
 	<icons:Fa x:Key="ICON_Window_Maximize" Icon="Square"/>
 	<icons:Fa x:Key="ICON_Window_Restore" Icon="WindowRestore"/>
 	<icons:Fa x:Key="ICON_Window_Close" Icon="Times"/>
+	<icons:Fa x:Key="ICON_Window_PopOut" Icon="ArrowRightFromBracket"/>
+	<icons:Fa x:Key="ICON_Window_Zoom" Icon="SearchPlus"/>
 	<icons:Fa x:Key="ICON_CloseStudio" Icon="PowerOff"/>
 
 	<icons:Svg x:Key="ICON_GroupPose" Source="GroupPose" />

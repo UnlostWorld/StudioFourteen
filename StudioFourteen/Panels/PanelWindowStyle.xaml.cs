@@ -19,7 +19,6 @@ using System;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using WpfUtils.Extensions;
 
 public partial class PanelWindowResources
 {
@@ -29,6 +28,9 @@ public partial class PanelWindowResources
 		if (sender is FrameworkElement el)
 		{
 			window = el.FindParent<PanelWindow>();
+
+			if(window == null)
+				window = el.DataContext as PanelWindow;
 		}
 
 		if (window == null)
@@ -43,16 +45,6 @@ public partial class PanelWindowResources
 		{
 			GetWindow(sender).DragMove();
 		}
-	}
-
-	private void OnCloseClicked(object sender, RoutedEventArgs e)
-	{
-		GetWindow(sender).CloseAsync(false).Run();
-	}
-
-	private void OnMinimizeClicked(object sender, RoutedEventArgs e)
-	{
-		GetWindow(sender).CloseAsync(true).Run();
 	}
 
 	private void OnResizeThumbDragDelta(object sender, DragDeltaEventArgs e)
