@@ -30,6 +30,8 @@ public partial class Slider : System.Windows.Controls.Slider
 	private Point startPosition;
 	private double trackingValue;
 
+	protected ServiceManager Services => ServiceManager.Instance;
+
 	protected double GetChangeMultiplier()
 	{
 		if (Keyboard.IsKeyDown(Key.LeftShift))
@@ -61,7 +63,12 @@ public partial class Slider : System.Windows.Controls.Slider
 				change = 1;
 
 			double rate = change / 10;
-			this.trackingValue += (rate * delta.X) * this.GetChangeMultiplier();
+			rate = (rate * delta.X) * this.GetChangeMultiplier();
+
+			if (this.Services.Tablet.PenPressure > 0)
+				rate *= this.Services.Tablet.PenPressure;
+
+			this.trackingValue += rate;
 
 			if (this.WrapMouseDrag)
 			{
@@ -79,6 +86,7 @@ public partial class Slider : System.Windows.Controls.Slider
 
 			this.Value = this.trackingValue;
 			CursorUtility.SetPosition(this.startPosition);
+			this.startPosition = CursorUtility.GetPosition();
 		}
 	}
 

@@ -141,9 +141,7 @@ public class RotationHandleAxis : TransformHandleAxisBase
 			angleChange /= 10;
 
 		if (this.Services.Tablet.PenPressure > 0)
-		{
 			angleChange *= this.Services.Tablet.PenPressure;
-		}
 
 		Quaternion rot = Quaternion.Identity;
 		if (this.Axis == TransformHandleAxes.X)

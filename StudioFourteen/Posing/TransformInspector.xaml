@@ -64,7 +64,7 @@
 				TranslationMaximum="100000"
 				RotationMinimum="-180"
 				RotationMaximum="180"
-				RotationChange="1"
+				RotationChange="5"
 				ScaleMinimum="0.001"
 				ScaleMaximum="100"
 				ScaleChange="0.1"

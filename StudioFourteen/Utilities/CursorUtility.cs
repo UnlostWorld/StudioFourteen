@@ -44,6 +44,10 @@ public static class CursorUtility
 
 	public static void SetPosition(Point position)
 	{
+		// Do not attempt to move the mouse cursor if its actually a tablet pen.
+		if (ServiceManager.Instance.Tablet.PenPressure > 0)
+			return;
+
 		PInvoke.SetCursorPos((int)position.X, (int)position.Y);
 	}
 
