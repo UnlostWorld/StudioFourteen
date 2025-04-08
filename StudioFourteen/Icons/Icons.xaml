@@ -104,4 +104,5 @@
 	<icons:Fa x:Key="ICON_Pose_Mirror_Flip" Icon="LeftRight" />
 	<icons:Fa x:Key="ICON_Pose_LockTransform" Icon="CirclePause" />
 	<icons:Fa x:Key="ICON_Pose_Reset" Icon="RotateBack" />
+	<icons:Fa x:Key="ICON_Pose_Reference" Icon="Person" />
 </ResourceDictionary>

@@ -32,7 +32,7 @@
 		</DrawingBrush.Drawing>
 	</DrawingBrush>
 
-	<SolidColorBrush x:Key="TrimBrush" Color="#585438" />
+	<SolidColorBrush x:Key="TrimBrush" Color="#CD664D" />
 
 	<DrawingBrush
 		x:Key="ControlBackgroundBrush"

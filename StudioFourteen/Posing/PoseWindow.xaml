@@ -410,15 +410,7 @@
 						Background="Transparent"
 						Click="OnRevertClicked"
 						ToolTip="{DynamicResource LOC_Revert}">
-						<icons:IconView Icon="fa-undo" />
-					</Button>
-
-					<Button
-						Width="28"
-						Background="Transparent"
-						Click="OnClearClicked"
-						ToolTip="{DynamicResource LOC_Pose_SelectCharacter}">
-						<icons:IconView Icon="fa-user" />
+						<icons:IconView Icon="{DynamicResource ICON_Pose_Reset}" />
 					</Button>
 
 					<Button
@@ -426,7 +418,7 @@
 						Background="Transparent"
 						Click="OnReferenceClicked"
 						ToolTip="{DynamicResource LOC_Pose_Reference}">
-						<icons:IconView Icon="fa-person" />
+						<icons:IconView Icon="{DynamicResource ICON_Pose_Reference}" />
 					</Button>
 
 					<Button
