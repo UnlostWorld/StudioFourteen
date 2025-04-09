@@ -1,0 +1,94 @@
+<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:StudioFourteen.Controls"
+	xmlns:cameras="clr-namespace:StudioFourteen.Cameras"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=WpfUtils">
+
+	<converters:NotZeroToVisibilityConverter x:Key="NotZeroToVisibility" />
+
+	<DataTemplate DataType="{x:Type cameras:OrbitTargetCamera}">
+		<StackPanel>
+			<TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+
+			<TextBlock Style="{DynamicResource LeftLabel}"
+				Text="{DynamicResource LOC_OrbitTargetCamera_Offset}" />
+			<controls:Vector3Control
+				DecimalPlaces="3"
+				Maximum="100000"
+				Minimum="-100000"
+				Change="0.1"
+				Value="{Binding TargetOffset}" />
+
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+
+				<TextBlock
+					Grid.Row="0"
+					Style="{DynamicResource LeftLabel}"
+					Text="{DynamicResource LOC_Camera_Fov}" />
+
+				<TextBlock
+					Grid.Row="0"
+					Margin="0,0,3,0"
+					Style="{DynamicResource RightLabel}"
+					Text="{Binding GroupPoseFovAdjust, Mode=OneWay, StringFormat='{}{0:+#°;-#°;}'}"
+					ToolTip="{DynamicResource LOC_OrbitCamera_GroupPoseFov_Tooltip}"
+					Visibility="{Binding GroupPoseFovAdjust, Converter={StaticResource NotZeroToVisibility}}" />
+
+				<wpfUtils:NumberBox
+					Grid.Row="1"
+					Maximum="220"
+					Minimum="0"
+					TickFrequency="0.01"
+					Value="{Binding FieldOfView}" />
+			</Grid>
+
+
+			<TextBlock Style="{DynamicResource LeftLabel}"
+				Text="{DynamicResource LOC_OrbitCamera_Distance}" />
+			<wpfUtils:NumberBox
+				Maximum="300"
+				Minimum="0.1"
+				TickFrequency="1"
+				Value="{Binding Distance}" />
+
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+				</Grid.RowDefinitions>
+
+				<TextBlock
+					Grid.Row="0"
+					Style="{DynamicResource LeftLabel}"
+					Text="{DynamicResource LOC_OrbitCamera_Angle}" />
+
+				<TextBlock
+					Grid.Row="0"
+					Margin="0,0,3,0"
+					Style="{DynamicResource RightLabel}"
+					Text="{Binding GroupPoseRollAdjust, Mode=OneWay, StringFormat='{}{0:+#°;-#°;}'}"
+					ToolTip="{DynamicResource LOC_OrbitCamera_GroupPoseRoll_Tooltip}"
+					Visibility="{Binding GroupPoseRollAdjust, Converter={StaticResource NotZeroToVisibility}}" />
+
+				<controls:Vector2Control
+					Grid.Row="1"
+					Maximum="180"
+					Minimum="-180"
+					Wrap="True"
+					Value="{Binding Angle}"
+					NumberSliderStyle="{DynamicResource NumberWrapSlider}" />
+			</Grid>
+
+			<TextBlock Style="{DynamicResource LeftLabel}"
+				Text="{DynamicResource LOC_Camera_Rotation}" />
+			<controls:QuaternionControl Value="{Binding Rotation}" Change="1" />
+		</StackPanel>
+	</DataTemplate>
+
+</ResourceDictionary>
