@@ -148,10 +148,10 @@ public partial class Vector3Control : MultiNumberSliderControl
 }
 
 [DependencyProperty<double>("Change", DefaultValue = 1)]
-[DependencyProperty<bool>("Wrap")]
-[DependencyProperty<double>("Minimum")]
-[DependencyProperty<double>("Maximum")]
-[DependencyProperty<int>("DecimalPlaces")]
+[DependencyProperty<bool>("Wrap", DefaultValue = true)]
+[DependencyProperty<double>("Minimum", DefaultValue = double.MinValue)]
+[DependencyProperty<double>("Maximum", DefaultValue = double.MaxValue)]
+[DependencyProperty<int>("DecimalPlaces", DefaultValue = 3)]
 [DependencyProperty<Style>("NumberSliderStyle")]
 [DependencyProperty<ObservableCollection<MultiNumberSliderControlChannel>>("Channels")]
 public abstract partial class MultiNumberSliderControl

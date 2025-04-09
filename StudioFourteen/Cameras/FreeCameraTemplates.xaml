@@ -11,7 +11,7 @@
 
 			<TextBlock Style="{DynamicResource LeftLabel}"
 				Text="{DynamicResource LOC_FreeCamera_Position}" />
-			<controls:Vector3Control Change="0.01" Value="{Binding Position}" />
+			<controls:Vector3Control Change="0.1" Value="{Binding Position}" />
 
 			<TextBlock Style="{DynamicResource LeftLabel}"
 				Text="{DynamicResource LOC_Camera_Rotation}" />
