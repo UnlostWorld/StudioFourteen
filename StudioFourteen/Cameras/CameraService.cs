@@ -17,6 +17,7 @@ namespace StudioFourteen.Cameras;
 
 using Dalamud.Hooking;
 using Dalamud.Plugin.Services;
+using StudioFourteen.Cameras.Modifiers;
 using StudioFourteen.Interop;
 using StudioFourteen.Plugin;
 using StudioFourteen.Services;
@@ -278,6 +279,12 @@ public class CameraService : ServiceBase
 					this.current.Tick(deltaTime);
 
 				this.current.Calculate(ref this.state, this.last, 1 - blendValue);
+
+				foreach(CameraModifierBase modifier in this.current.Modifiers)
+				{
+					modifier.Calculate(ref this.state, blendValue);
+				}
+
 				this.current.OnRender(ref this.state);
 
 				// in portrait preview mode, rotate the camera 90 degrees.

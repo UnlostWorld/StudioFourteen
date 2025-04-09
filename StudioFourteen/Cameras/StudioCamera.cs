@@ -19,8 +19,10 @@ using Dalamud.Plugin.Services;
 using JsonSubTypes;
 using Newtonsoft.Json;
 using PropertyChanged.SourceGenerator;
+using StudioFourteen.Cameras.Modifiers;
 using StudioFourteen.Mvm;
 using System;
+using System.Collections.ObjectModel;
 
 [JsonConverter(typeof(JsonSubtypes), "TypeName")]
 [JsonSubtypes.KnownSubType(typeof(OrbitCamera), "OrbitCamera")]
@@ -41,6 +43,8 @@ public abstract partial class StudioCameraBase : ViewModel, IDisposable
 	[JsonIgnore] public abstract string TypeDisplayName { get; }
 	[JsonIgnore] public bool IsInitialized { get; set; } = false;
 
+	public ObservableCollection<CameraModifierBase> Modifiers { get; init; } = new();
+
 	public string TypeName => this.GetType().Name;
 
 	public void Reset()
@@ -57,6 +61,10 @@ public abstract partial class StudioCameraBase : ViewModel, IDisposable
 
 	public virtual void Tick(float deltaTime)
 	{
+		foreach(CameraModifierBase modifier in this.Modifiers)
+		{
+			modifier.Tick(deltaTime);
+		}
 	}
 
 	public unsafe virtual void Calculate(ref CameraState state, StudioCameraBase? blend = null, float blendWeight = 0)

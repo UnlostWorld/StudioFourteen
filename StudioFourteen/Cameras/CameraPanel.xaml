@@ -1,12 +1,12 @@
-﻿<local:Panel
-	x:Class="StudioFourteen.Panels.CameraPanel"
+﻿<panels:Panel
+	x:Class="StudioFourteen.Cameras.CameraPanel"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:cameras="clr-namespace:StudioFourteen.Cameras"
-	xmlns:controls="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
-	xmlns:controls1="clr-namespace:StudioFourteen.Controls"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:local="clr-namespace:StudioFourteen.Panels"
+	xmlns:panels="clr-namespace:StudioFourteen.Panels"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:pose="clr-namespace:StudioFourteen.Posing"
 	Title="{DynamicResource LOC_Camera}"
@@ -27,6 +27,8 @@
 				<ResourceDictionary Source="OrbitCameraTemplates.xaml"/>
 				<ResourceDictionary Source="OrbitTargetCameraTemplates.xaml"/>
 				<ResourceDictionary Source="FreeCameraTemplates.xaml"/>
+
+				<ResourceDictionary Source="Modifiers/ModifierTemplates.xaml"/>
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
 	</Border.Resources>
@@ -44,16 +46,16 @@
 					<RowDefinition />
 				</Grid.RowDefinitions>
 
-				<controls:SwitchSelector
+				<wpfUtils:SwitchSelector
 					Grid.Row="0"
 					Margin="0,0,-10,0"
 					Background="Transparent"
-					ItemsSource="{Binding Cameras}"
+					ItemsSource="{Binding Tabs}"
 					SelectedValue="{Binding Current}"
 					Style="{DynamicResource WpfUtilsSwitchSelectorVertical}">
 
-					<ListBox.ItemTemplate>
-						<DataTemplate>
+					<ListBox.Resources>
+						<DataTemplate DataType="{x:Type cameras:CameraEntry}">
 							<Grid Margin="6,0,10,0">
 								<Grid.RowDefinitions>
 									<RowDefinition Height="Auto" />
@@ -63,18 +65,21 @@
 								<TextBlock
 									Grid.Row="0"
 									HorizontalAlignment="Left"
-									Text="{Binding Name}" />
+									Text="{Binding Camera.Name}" />
 
 								<TextBlock
 									Grid.Row="1"
 									Margin="0,-4,0,0"
 									FontSize="10"
 									Style="{DynamicResource LeftLabel}"
-									Text="{Binding TypeDisplayName}" />
+									Text="{Binding Camera.TypeDisplayName}" />
 							</Grid>
 						</DataTemplate>
-					</ListBox.ItemTemplate>
-				</controls:SwitchSelector>
+
+						<DataTemplate DataType="{x:Type cameras:ModifierEntry}">
+						</DataTemplate>
+					</ListBox.Resources>
+				</wpfUtils:SwitchSelector>
 
 				<ToggleButton
 					x:Name="AddCameraButton"
@@ -85,19 +90,19 @@
 					Content="+ New"
 					Style="{DynamicResource WpfUtilsIconToggleButton}" />
 
-				<controls:PopOut
+				<wpfUtils:PopOut
 					Width="300"
 					Background="{DynamicResource ControlBackgroundBrush}"
 					IsOpen="{Binding ElementName=AddCameraButton, Path=IsChecked}"
 					PlacementTarget="{Binding ElementName=AddCameraButton}"
 					StaysOpen="False">
 
-					<controls:PopOut.Header>
+					<wpfUtils:PopOut.Header>
 						<TextBlock
 							Margin="6"
 							Foreground="{DynamicResource ForegroundLightBrush}"
 							Text="Select the type of camera to create:" />
-					</controls:PopOut.Header>
+					</wpfUtils:PopOut.Header>
 
 					<StackPanel>
 						<Button
@@ -143,7 +148,7 @@
 						</Button>
 					</StackPanel>
 
-				</controls:PopOut>
+				</wpfUtils:PopOut>
 			</Grid>
 
 			<Border
@@ -159,7 +164,18 @@
 					</Grid.RowDefinitions>
 
 					<ScrollViewer HorizontalScrollBarVisibility="Disabled">
-						<ContentPresenter Margin="3" Content="{Binding Services.Camera.Current}"/>
+						<StackPanel>
+							<TextBox Text="{Binding Services.Camera.Current.Name, UpdateSourceTrigger=PropertyChanged}" />
+
+							<GroupBox Header="{Binding Services.Camera.Current.TypeDisplayName}">
+								<ContentPresenter Margin="3" Content="{Binding Services.Camera.Current}"/>
+							</GroupBox>
+
+							<GroupBox Header="Shaky">
+								<ItemsControl ItemsSource="{Binding Services.Camera.Current.Modifiers}"/>
+							</GroupBox>
+
+						</StackPanel>
 					</ScrollViewer>
 
 					<Border
@@ -169,18 +185,27 @@
 						<Grid>
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="Auto" />
 								<ColumnDefinition />
 								<ColumnDefinition Width="Auto" />
 							</Grid.ColumnDefinitions>
 
 							<Button
+								Grid.Column="0"
+								MinWidth="75"
+								Background="Transparent"
+								Click="OnActivateCameraClicked"
+								Content="Activate" />
+
+							<Button
+								Grid.Column="1"
 								MinWidth="75"
 								Background="Transparent"
 								Click="OnDeleteCameraClicked"
 								Content="{DynamicResource LOC_Delete}" />
 
 							<Button
-								Grid.Column="2"
+								Grid.Column="3"
 								Background="Transparent"
 								Click="OnResetCameraClicked"
 								Content="{DynamicResource ICON_Reset}"/>
@@ -191,4 +216,4 @@
 			</Border>
 		</Grid>
 	</Border>
-</local:Panel>
+</panels:Panel>

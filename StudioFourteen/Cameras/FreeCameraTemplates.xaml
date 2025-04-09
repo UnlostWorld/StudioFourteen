@@ -7,8 +7,6 @@
 
 	<DataTemplate DataType="{x:Type cameras:FreeCamera}">
 		<StackPanel>
-			<TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
-
 			<TextBlock Style="{DynamicResource LeftLabel}"
 				Text="{DynamicResource LOC_FreeCamera_Position}" />
 			<controls:Vector3Control Change="0.1" Value="{Binding Position}" />
@@ -16,7 +14,6 @@
 			<TextBlock Style="{DynamicResource LeftLabel}"
 				Text="{DynamicResource LOC_Camera_Rotation}" />
 			<controls:QuaternionControl Value="{Binding Rotation}" Change="1" />
-
 		</StackPanel>
 	</DataTemplate>
 

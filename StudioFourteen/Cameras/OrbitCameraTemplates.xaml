@@ -10,8 +10,6 @@
 
 	<DataTemplate DataType="{x:Type cameras:OrbitCamera}">
 		<StackPanel>
-			<TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
-
 			<TextBlock Style="{DynamicResource LeftLabel}"
 				Text="{DynamicResource LOC_OrbitCamera_Target}" />
 			<controls:Vector3Control

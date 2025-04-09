@@ -112,6 +112,7 @@
 		<Setter Property="MinHeight" Value="32" />
 		<Setter Property="Template" Value="{StaticResource SliderTemplate}" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
+		<Setter Property="WrapMouseDrag" Value="False"/>
 	</Style>
 
 
@@ -218,6 +219,7 @@
 
 	<Style TargetType="{x:Type local:Slider}" x:Key="WrapSlider"
 		BasedOn="{StaticResource StudioSlider}">
+		<Setter Property="WrapMouseDrag" Value="True"/>
 		<Setter Property="Template" Value="{StaticResource WrapSliderTemplate}" />
 	</Style>
 
@@ -336,6 +338,7 @@
 
 	<Style TargetType="{x:Type local:Slider}" x:Key="RelativeSlider"
 		BasedOn="{StaticResource StudioSlider}">
+		<Setter Property="WrapMouseDrag" Value="False"/>
 		<Setter Property="Template" Value="{StaticResource RelativeSliderTemplate}" />
 	</Style>
 
