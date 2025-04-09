@@ -1,0 +1,62 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="clr-namespace:StudioFourteen.Controls"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
+
+
+	<ControlTemplate TargetType="{x:Type local:MultiNumberSliderControl}"
+		x:Key="MultiNumberSliderControlTemplate">
+		<Grid>
+			<ItemsControl ItemsSource="{TemplateBinding Channels}">
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="22" />
+								<ColumnDefinition />
+							</Grid.ColumnDefinitions>
+
+							<TextBlock
+								Grid.Column="0"
+								Margin="3,0"
+								Style="{DynamicResource RightLabel}"
+								Text="{Binding Label}" />
+
+							<local:NumberSlider
+								Grid.Row="0"
+								Grid.Column="1"
+								Style="{Binding NumberSliderStyle}"
+								Change="{Binding Change}"
+								Maximum="{Binding Maximum}"
+								Minimum="{Binding Minimum}"
+								Value="{Binding Value}" />
+						</Grid>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</Grid>
+	</ControlTemplate>
+
+	<Style x:Key="StudioMultiNumberSliderControl"
+		TargetType="{x:Type local:MultiNumberSliderControl}">
+		<Setter Property="Template" Value="{StaticResource MultiNumberSliderControlTemplate}" />
+		<Setter Property="NumberSliderStyle" Value="{DynamicResource NumberRelativeSlider}" />
+	</Style>
+
+	<Style BasedOn="{StaticResource StudioMultiNumberSliderControl}"
+		TargetType="{x:Type local:Vector3Control}" />
+
+	<Style BasedOn="{StaticResource StudioMultiNumberSliderControl}"
+		TargetType="{x:Type local:Vector2Control}" />
+
+	<Style BasedOn="{StaticResource StudioMultiNumberSliderControl}"
+		TargetType="{x:Type local:QuaternionControl}" >
+		<Setter Property="Minimum" Value="-180"/>
+		<Setter Property="Maximum" Value="180"/>
+		<Setter Property="Change" Value="5"/>
+		<Setter Property="NumberSliderStyle" Value="{DynamicResource NumberWrapSlider}"/>
+	</Style>
+
+</ResourceDictionary>
