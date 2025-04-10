@@ -54,6 +54,13 @@ public partial class CameraPanel : Panel
 		this.AddCameraButton.IsChecked = false;
 	}
 
+	private void OnCreateShakyModifieraClicked(object sender, RoutedEventArgs e)
+	{
+		this.Services.Camera.Current?.Modifiers.Add(new ShakyModifier());
+		this.AddCameraButton.IsChecked = false;
+		this.PopulateTabs();
+	}
+
 	private void OnActivateCameraClicked(object sender, RoutedEventArgs e)
 	{
 		if (this.Current is CameraEntry camera)
@@ -71,7 +78,16 @@ public partial class CameraPanel : Panel
 		if (this.Services.Camera.Current == null)
 			return;
 
-		this.Services.Camera.DeleteCamera(this.Services.Camera.Current);
+		if (this.current is CameraEntry cameraEntry && cameraEntry.Camera != null)
+		{
+			this.Services.Camera.DeleteCamera(cameraEntry.Camera);
+		}
+		else if (this.current is ModifierEntry modifierEntry && modifierEntry.Modifier != null)
+		{
+			modifierEntry.Parent?.Camera?.Modifiers.Remove(modifierEntry.Modifier);
+		}
+
+		this.PopulateTabs();
 	}
 
 	private void OnResetCameraClicked(object sender, RoutedEventArgs e)

@@ -29,7 +29,7 @@ public partial class OverlayRenderer : GizmoRenderer
 		this.Services.Overlays.LayerRemoved += this.OnLayerRemoved;
 		this.Services.Overlays.ShowOverlaysChanged += this.OnShowOverlaysChanged;
 
-		foreach (OverlayLayerBase layer in this.Services.Overlays.GetOverlayLayers())
+		foreach (OverlayLayerBase layer in this.Services.Overlays.GetOverlayLayers().ToArray())
 		{
 			this.OnLayerAdded(layer);
 		}

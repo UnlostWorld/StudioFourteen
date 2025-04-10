@@ -284,6 +284,8 @@
 	<sys:String x:Key="LOC_FreeCamera_ToolTip">A Camera that can be freely moved and rotated through the world</sys:String>
 	<sys:String x:Key="LOC_FreeCamera_Position">Camera Position</sys:String>
 
+	<sys:String x:Key="LOC_ShakyModifierCamera">Shaky</sys:String>
+
 	<!--  Environment Panel  -->
 	<sys:String x:Key="LOC_Environment_Territory">Territory</sys:String>
 	<sys:String x:Key="LOC_Environment_Weather">Weather</sys:String>

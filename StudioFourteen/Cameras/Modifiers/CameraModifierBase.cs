@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Cameras.Modifiers;
 
+using System.Text.Json.Serialization;
 using Serilog;
 
 public abstract class CameraModifierBase
@@ -25,6 +26,8 @@ public abstract class CameraModifierBase
 	{
 		this.Log = Logging.ForContext(this.GetType());
 	}
+
+	[JsonIgnore] public abstract string TypeDisplayName { get; }
 
 	protected ServiceManager Services => ServiceManager.Instance;
 

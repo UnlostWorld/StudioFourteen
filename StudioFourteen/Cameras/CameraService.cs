@@ -258,7 +258,7 @@ public class CameraService : ServiceBase
 					this.current.Initialize(this.state, this.last);
 				}
 
-				float blendValue = 0;
+				float blendValue = 1;
 				if (this.last != null || this.doAttachBlend)
 				{
 					blendValue = this.blendWatch.ElapsedMilliseconds / CameraBlendTimeMs;
@@ -266,7 +266,7 @@ public class CameraService : ServiceBase
 
 					if (this.blendWatch.ElapsedMilliseconds > CameraBlendTimeMs)
 					{
-						blendValue = 0;
+						blendValue = 1;
 						this.last = null;
 						this.doAttachBlend = false;
 						this.blendWatch.Stop();

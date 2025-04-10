@@ -5,6 +5,7 @@
 	xmlns:cameras="clr-namespace:StudioFourteen.Cameras"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
+	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -77,6 +78,19 @@
 						</DataTemplate>
 
 						<DataTemplate DataType="{x:Type cameras:ModifierEntry}">
+							<Grid Margin="6,0,10,0">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="16"/>
+									<ColumnDefinition />
+								</Grid.ColumnDefinitions>
+
+								<icons:IconView Icon="{DynamicResource ICON_CameraModifier}" Margin="2"/>
+
+								<TextBlock
+									Grid.Column="1"
+									Grid.Row="1"
+									Text="{Binding Modifier.TypeDisplayName}" />
+							</Grid>
 						</DataTemplate>
 					</ListBox.Resources>
 				</wpfUtils:SwitchSelector>
@@ -146,6 +160,29 @@
 									Text="{DynamicResource LOC_FreeCamera_ToolTip}" />
 							</StackPanel>
 						</Button>
+
+						<Border Background="{DynamicResource BackgroundBrush}" Margin="-2, 6,-2,3">
+							<TextBlock
+								Margin="6"
+								Foreground="{DynamicResource ForegroundLightBrush}"
+								Text="Add a modifier to the current camera:" />
+
+						</Border>
+
+						<Button
+							Height="Auto"
+							HorizontalContentAlignment="Stretch"
+							Background="Transparent"
+							Click="OnCreateShakyModifieraClicked">
+						<StackPanel Margin="0,6">
+							<TextBlock Foreground="{DynamicResource ForegroundBrush}" Text="Shaky" />
+							<TextBlock
+								Foreground="{DynamicResource ForegroundLightBrush}"
+								Style="{DynamicResource Subscript}"
+								Text="Adds procedural shake to the camera" />
+						</StackPanel>
+					</Button>
+
 					</StackPanel>
 
 				</wpfUtils:PopOut>
@@ -164,17 +201,19 @@
 					</Grid.RowDefinitions>
 
 					<ScrollViewer HorizontalScrollBarVisibility="Disabled">
-						<StackPanel>
+						<StackPanel Margin="3" >
 							<TextBox Text="{Binding Services.Camera.Current.Name, UpdateSourceTrigger=PropertyChanged}" />
+							<ContentPresenter Content="{Binding Current}">
+								<ContentPresenter.Resources>
+									<DataTemplate DataType="{x:Type cameras:CameraEntry}">
+										<ContentPresenter Content="{Binding Camera}"/>
+									</DataTemplate>
 
-							<GroupBox Header="{Binding Services.Camera.Current.TypeDisplayName}">
-								<ContentPresenter Margin="3" Content="{Binding Services.Camera.Current}"/>
-							</GroupBox>
-
-							<GroupBox Header="Shaky">
-								<ItemsControl ItemsSource="{Binding Services.Camera.Current.Modifiers}"/>
-							</GroupBox>
-
+									<DataTemplate DataType="{x:Type cameras:ModifierEntry}">
+										<ContentPresenter Content="{Binding Modifier}"/>
+									</DataTemplate>
+								</ContentPresenter.Resources>
+							</ContentPresenter>
 						</StackPanel>
 					</ScrollViewer>
 
@@ -190,12 +229,12 @@
 								<ColumnDefinition Width="Auto" />
 							</Grid.ColumnDefinitions>
 
-							<Button
+							<!--<Button
 								Grid.Column="0"
 								MinWidth="75"
 								Background="Transparent"
 								Click="OnActivateCameraClicked"
-								Content="Activate" />
+								Content="Activate" />-->
 
 							<Button
 								Grid.Column="1"

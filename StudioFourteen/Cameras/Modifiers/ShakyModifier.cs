@@ -29,6 +29,8 @@ public class ShakyModifier : CameraModifierBase
 	public float RotationIntensity { get; set; } = 0.5f;
 	public float Speed { get; set; } = 1.0f;
 
+	public override string TypeDisplayName => Resources.Find("LOC_ShakyModifierCamera", "Shaky");
+
 	public override void Tick(float deltaTime)
 	{
 		base.Tick(deltaTime);
@@ -50,7 +52,7 @@ public class ShakyModifier : CameraModifierBase
 	{
 		base.Calculate(ref state, weight);
 
-		state.Position += this.pos;
-		state.Rotation *= this.rot;
+		state.Position += Vector3.Lerp(Vector3.Zero, this.pos, weight);
+		state.Rotation *= Quaternion.Lerp(Quaternion.Identity, this.rot, weight);
 	}
 }
