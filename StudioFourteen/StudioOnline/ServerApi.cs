@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 public static class ServerApi
 {
-	public static string Url = "https://unlostworld.duckdns.org/api/";
+	public static string Url = "https://fourteen.studio/api/";
 
 	private static readonly HttpClient Client;
 
