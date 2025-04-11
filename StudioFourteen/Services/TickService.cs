@@ -45,7 +45,9 @@ public partial class TickService : ServiceBase
 	}
 
 	public static SwitchToTickChannel GameTick() => new(TickService.Channels.GameTick);
+	public static SwitchToTickChannel NextGameTick() => new(TickService.Channels.GameTick);
 	public static SwitchToTickChannel StudioTick() => new(TickService.Channels.StudioTick);
+	public static SwitchToTickChannel NextStudioTick() => new(TickService.Channels.StudioTick);
 
 	public static void VerifyGameTickThread() => VerifyTickChannelThread(TickService.Channels.GameTick);
 	public static void VerifyStudioTickThread() => VerifyTickChannelThread(TickService.Channels.StudioTick);
@@ -93,9 +95,9 @@ public partial class TickService : ServiceBase
 		return base.Shutdown();
 	}
 
-	public void Dispatch(Channels channel, Action callback)
+	public void Dispatch(Channels channel, Action callback, bool canImmediate = true)
 	{
-		if (currentChannel == channel)
+		if (currentChannel == channel && canImmediate)
 		{
 			callback.Invoke();
 		}

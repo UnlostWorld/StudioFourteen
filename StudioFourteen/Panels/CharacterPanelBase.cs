@@ -15,7 +15,6 @@
 
 namespace StudioFourteen.Panels;
 
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using StudioFourteen.Mvm;
 
 public abstract class CharacterPanelBase : Panel
