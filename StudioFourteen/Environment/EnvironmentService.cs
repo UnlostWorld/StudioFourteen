@@ -175,7 +175,9 @@ public partial class EnvironmentService
 		int month = DateTime.UtcNow.Month - 1;
 
 		this.DisplayTime = $"{hours}:{displayTime.Minutes.ToString("D2")}{(isPm ? "pm" : "am")}";
-		this.displayMonth = $"{this.monthNameLookup[month]}, 1577";
+
+		if (this.monthNameLookup.ContainsKey(month))
+			this.displayMonth = $"{this.monthNameLookup[month]}, 1577";
 
 		this.isUpdatingEorzeaTime = false;
 	}

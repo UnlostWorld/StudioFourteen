@@ -84,7 +84,7 @@ public partial class LauncherMenu : Control
 		this.AddPanel<Library.LibraryWindow>("Crowds", false);
 		this.AddPanel<Library.LibraryWindow>("Effects", false);
 
-		this.AddPanel<Library.LibraryWindow>("Animation", false);
+		this.AddPanel<Animation.AnimationPanel>("Animation");
 		this.AddPanel<Library.LibraryWindow>("Sequencer", false);
 
 		this.AddPanel<Photos.PhotoWindow>("Photo");
