@@ -111,7 +111,7 @@ public abstract class MenuViewModel
 		}
 	}
 
-	public unsafe virtual void OnFrameworkUpdate(Character* pCharacter)
+	public unsafe virtual void OnGameTick(Character* pCharacter)
 	{
 		byte oldValue = this.Value;
 		this.lastReadValue = pCharacter->GetCustomizeValue(this.CustomizeIndex);

@@ -60,9 +60,9 @@ public partial class TargetsPanel : Panel
 		set => this.SetPersistence(value);
 	}
 
-	protected override void OnFrameworkUpdate(IFramework framework)
+	protected override void OnGameTick()
 	{
-		base.OnFrameworkUpdate(framework);
+		base.OnGameTick();
 
 		List<CharacterViewModel> validCharacters = new();
 		bool changed = false;

@@ -58,16 +58,16 @@ public partial class CharacterPanel : CharacterPanelBase
 		set => this.SetPersistence(value);
 	}
 
-	protected unsafe override void OnFrameworkUpdate(IFramework framework)
+	protected unsafe override void OnGameTick()
 	{
-		base.OnFrameworkUpdate(framework);
+		base.OnGameTick();
 
 		Character* pTarget = this.Services.Target.GetTarget();
 		if (pTarget == null)
 			return;
 
-		this.Customize.OnFrameworkUpdate(pTarget);
-		this.Equipment.OnFrameworkUpdate(pTarget);
+		this.Customize.OnGameTick(pTarget);
+		this.Equipment.OnGameTick(pTarget);
 	}
 
 	protected override void OnTargetChanged(int objectTableIndex)

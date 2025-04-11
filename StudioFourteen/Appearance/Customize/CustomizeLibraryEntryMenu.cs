@@ -77,10 +77,10 @@ public class CustomizeLibraryEntryMenu : MenuViewModel
 
 	public ToggleMenu? ToggleMenu { get; init; }
 
-	public override unsafe void OnFrameworkUpdate(Character* pCharacter)
+	public override unsafe void OnGameTick(Character* pCharacter)
 	{
-		base.OnFrameworkUpdate(pCharacter);
-		this.ToggleMenu?.OnFrameworkUpdate(pCharacter);
+		base.OnGameTick(pCharacter);
+		this.ToggleMenu?.OnGameTick(pCharacter);
 	}
 
 	protected override void OnValueChanged(byte oldValue, byte newValue)

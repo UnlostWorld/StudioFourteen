@@ -117,9 +117,9 @@ public partial class SaveWindow : Panel
 		this.RecentDirectories.Add(new AddDirectoryViewModel());
 	}
 
-	protected override unsafe void OnFrameworkUpdate(IFramework framework)
+	protected override unsafe void OnGameTick()
 	{
-		base.OnFrameworkUpdate(framework);
+		base.OnGameTick();
 
 		if (DalamudServices.ObjectTable == null)
 			return;

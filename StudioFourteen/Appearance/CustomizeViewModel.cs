@@ -63,7 +63,7 @@ public partial class CustomizeViewModel : ViewModel
 	public FastObservableCollection<MenuViewModel?> HeadMenus { get; init; } = new();
 	public FastObservableCollection<MenuViewModel?> MakeupMenus { get; init; } = new();
 
-	public unsafe void OnFrameworkUpdate(Character* pCharacter)
+	public unsafe void OnGameTick(Character* pCharacter)
 	{
 		if (this.isUpdatingMenus)
 			return;
@@ -80,17 +80,17 @@ public partial class CustomizeViewModel : ViewModel
 		// TODO: Ensure race, tribe, and gender have not changed.
 		foreach (MenuViewModel? menu in this.BodyMenus)
 		{
-			menu?.OnFrameworkUpdate(pCharacter);
+			menu?.OnGameTick(pCharacter);
 		}
 
 		foreach (MenuViewModel? menu in this.HeadMenus)
 		{
-			menu?.OnFrameworkUpdate(pCharacter);
+			menu?.OnGameTick(pCharacter);
 		}
 
 		foreach (MenuViewModel? menu in this.MakeupMenus)
 		{
-			menu?.OnFrameworkUpdate(pCharacter);
+			menu?.OnGameTick(pCharacter);
 		}
 	}
 

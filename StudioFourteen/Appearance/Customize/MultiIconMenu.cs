@@ -52,9 +52,9 @@ public class MultiIconMenu : MakeMenuViewModel
 
 	public List<Option>? Options { get; set; }
 
-	public override unsafe void OnFrameworkUpdate(Character* pCharacter)
+	public override unsafe void OnGameTick(Character* pCharacter)
 	{
-		base.OnFrameworkUpdate(pCharacter);
+		base.OnGameTick(pCharacter);
 
 		byte faceType = pCharacter->GetCustomizeValue(CustomizeIndex.FaceType);
 		if (faceType != this.faceType)

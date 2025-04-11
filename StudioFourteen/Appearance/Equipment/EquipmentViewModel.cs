@@ -50,7 +50,7 @@ public class EquipmentViewModel : ViewModel
 	{
 	}
 
-	public unsafe void OnFrameworkUpdate(Character* pCharacter)
+	public unsafe void OnGameTick(Character* pCharacter)
 	{
 		foreach (GearViewModelBase gearViewModel in this.Weapons)
 		{

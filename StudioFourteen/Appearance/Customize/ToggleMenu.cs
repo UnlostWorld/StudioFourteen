@@ -39,10 +39,10 @@ public class ToggleMenu : MenuViewModel
 
 	public MenuViewModel? InnerMenu { get; private set; }
 
-	public override unsafe void OnFrameworkUpdate(Character* pCharacter)
+	public override unsafe void OnGameTick(Character* pCharacter)
 	{
-		base.OnFrameworkUpdate(pCharacter);
-		this.InnerMenu?.OnFrameworkUpdate(pCharacter);
+		base.OnGameTick(pCharacter);
+		this.InnerMenu?.OnGameTick(pCharacter);
 	}
 
 	protected override void OnValueChanged(byte oldValue, byte newValue)

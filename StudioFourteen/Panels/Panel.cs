@@ -158,8 +158,7 @@ public partial class Panel : ContentControl, IAutoNotify
 
 	protected virtual void OnOpened()
 	{
-		if (DalamudServices.Framework != null)
-			DalamudServices.Framework.Update += this.OnFrameworkUpdateSafe;
+		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTickSafe);
 
 		AutoPropertyNotifyService.Register(this);
 		this.GetContext().OnPanelOpened(this);
@@ -167,26 +166,20 @@ public partial class Panel : ContentControl, IAutoNotify
 
 	protected virtual void OnClosed()
 	{
-		if (DalamudServices.Framework != null)
-			DalamudServices.Framework.Update -= this.OnFrameworkUpdateSafe;
+		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTickSafe);
 
 		AutoPropertyNotifyService.Remove(this);
 		this.GetContext().OnPanelClosed(this, this.isMinimized);
 	}
 
-	protected virtual void OnFrameworkUpdate(IFramework framework)
+	protected virtual void OnGameTick()
 	{
 	}
 
-	private void OnFrameworkUpdateSafe(IFramework framework)
+	private void OnGameTickSafe()
 	{
 		if (ServiceManager.ShutdownRequested)
-		{
-			if (DalamudServices.Framework != null)
-				DalamudServices.Framework.Update -= this.OnFrameworkUpdateSafe;
-
 			return;
-		}
 
 		if (!this.Services.Studio.IsOpen)
 			return;
@@ -196,12 +189,12 @@ public partial class Panel : ContentControl, IAutoNotify
 
 		try
 		{
-			this.OnFrameworkUpdate(framework);
+			this.OnGameTick();
 		}
 		catch (Exception ex)
 		{
 			this.frameworkException = ex;
-			this.Log.Error(ex, "Error in framework update");
+			this.Log.Error(ex, "Error in panel game tick");
 		}
 	}
 }

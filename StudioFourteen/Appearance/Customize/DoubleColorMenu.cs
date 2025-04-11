@@ -41,10 +41,10 @@ public class DoubleColorMenu : MakeMenuViewModel
 	public ColorMenu Left { get; set; }
 	public ColorMenu Right { get; set; }
 
-	public override unsafe void OnFrameworkUpdate(Character* pCharacter)
+	public override unsafe void OnGameTick(Character* pCharacter)
 	{
-		base.OnFrameworkUpdate(pCharacter);
-		this.Left.OnFrameworkUpdate(pCharacter);
-		this.Right.OnFrameworkUpdate(pCharacter);
+		base.OnGameTick(pCharacter);
+		this.Left.OnGameTick(pCharacter);
+		this.Right.OnGameTick(pCharacter);
 	}
 }

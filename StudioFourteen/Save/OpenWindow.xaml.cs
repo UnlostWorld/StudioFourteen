@@ -137,9 +137,9 @@ public partial class OpenWindow : Panel
 		}
 	}
 
-	protected override unsafe void OnFrameworkUpdate(IFramework framework)
+	protected override unsafe void OnGameTick()
 	{
-		base.OnFrameworkUpdate(framework);
+		base.OnGameTick();
 
 		if (DalamudServices.ObjectTable == null)
 			return;
