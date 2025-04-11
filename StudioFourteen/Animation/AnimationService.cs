@@ -17,10 +17,12 @@ namespace StudioFourteen.Animation;
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
+using FFXIVClientStructs.FFXIV.Client.System.Scheduler.Base;
 using FFXIVClientStructs.Havok.Animation.Animation;
 using FFXIVClientStructs.Havok.Animation.Playback;
 using FFXIVClientStructs.Havok.Animation.Playback.Control.Default;
@@ -107,12 +109,31 @@ public partial class AnimationService : ServiceBase
 	}
 
 	public partial class AnimationController(int objectIndex)
+		: INotifyPropertyChanged
 	{
 		public readonly int ObjectIndex = objectIndex;
 
-		[Notify] private float currentTime = 0;
+		private float seekSpeed = 1;
+		private float? targetTime;
+		private float currentTime = 0;
+
 		[Notify] private float duration = 0;
 		[Notify] private float speed = 1.0f;
+
+		public float CurrentTime
+		{
+			get
+			{
+				if (this.targetTime != null)
+					return (float)this.targetTime;
+
+				return this.currentTime;
+			}
+			set
+			{
+				this.targetTime = value;
+			}
+		}
 
 		public async Task PlayEmoteAsync(Emote emote)
 		{
@@ -138,6 +159,9 @@ public partial class AnimationService : ServiceBase
 			if (timeline == null)
 				return;
 
+			this.targetTime = null;
+
+			pCharacter->Timeline.BaseOverride = (ushort)timelineId;
 			pCharacter->Timeline.TimelineSequencer.PlayTimeline((ushort)timelineId);
 		}
 
@@ -150,13 +174,23 @@ public partial class AnimationService : ServiceBase
 			if (pCharacter == null)
 				return;
 
-			this.GetCurrentAnimationTime(pCharacter, out float time, out float duration);
-			this.CurrentTime = time;
+			this.GetCurrentAnimationTime(pCharacter, out float liveTime, out float duration);
 			this.Duration = duration;
 
-			foreach(TimelineSlots slot in Enum.GetValues<TimelineSlots>())
+			if (this.targetTime == null)
 			{
-				ushort timelineId = pCharacter->Timeline.TimelineSequencer.GetSlotTimeline((uint)slot);
+				if (this.currentTime != liveTime)
+				{
+					this.currentTime = liveTime;
+					this.OnPropertyChanged(new (nameof(this.CurrentTime)));
+				}
+			}
+			else
+			{
+				// Seek
+				float targetTime = float.Clamp((float)this.targetTime, 0.01f, duration - 0.1f);
+				float delta = targetTime - liveTime;
+				this.seekSpeed = float.Clamp(delta * 10, -5, 5);
 			}
 		}
 
@@ -164,9 +198,14 @@ public partial class AnimationService : ServiceBase
 		{
 			Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(this.ObjectIndex);
 			float currentSpeed = pCharacter->Timeline.OverallSpeed;
-			if (currentSpeed != this.speed)
+
+			float targetSpeed = this.speed;
+			if (this.targetTime != null)
+				targetSpeed = this.seekSpeed;
+
+			if (currentSpeed != targetSpeed)
 			{
-				pCharacter->Timeline.OverallSpeed = this.speed;
+				pCharacter->Timeline.OverallSpeed = targetSpeed;
 				return true;
 			}
 

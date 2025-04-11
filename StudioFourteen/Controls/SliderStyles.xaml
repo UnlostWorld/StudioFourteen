@@ -223,6 +223,11 @@
 		<Setter Property="Template" Value="{StaticResource WrapSliderTemplate}" />
 	</Style>
 
+	<Style TargetType="{x:Type local:Slider}" x:Key="PointSlider"
+		BasedOn="{StaticResource StudioSlider}">
+		<Setter Property="WrapMouseDrag" Value="False"/>
+		<Setter Property="Template" Value="{StaticResource WrapSliderTemplate}" />
+	</Style>
 
 	<ControlTemplate x:Key="RelativeSliderTemplate" TargetType="{x:Type local:Slider}">
 

@@ -46,6 +46,11 @@
 		<Setter Property="SliderStyle" Value="{DynamicResource WrapSlider}"/>
 	</Style>
 
+	<Style TargetType="{x:Type local:NumberSlider}" x:Key="NumberPointSlider"
+		BasedOn="{StaticResource StudioNumberSlider}">
+		<Setter Property="SliderStyle" Value="{DynamicResource PointSlider}"/>
+	</Style>
+
 	<!-- Default -->
 	<Style TargetType="{x:Type local:NumberSlider}" BasedOn="{StaticResource StudioNumberSlider}" />
 

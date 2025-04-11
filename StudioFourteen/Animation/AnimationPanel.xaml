@@ -23,13 +23,13 @@
 
 		<controls:NumberSlider
 			Change="0.01"
-			Maximum="1"
-			Minimum="-1"
+			Maximum="2"
+			Minimum="0"
 			Value="{Binding Controller.Speed}" />
 
 		<controls:NumberSlider
 			Change="0.1"
-			Style="{DynamicResource NumberWrapSlider}"
+			Style="{DynamicResource NumberPointSlider}"
 			Maximum="{Binding Controller.Duration}"
 			Minimum="0"
 			Value="{Binding Controller.CurrentTime}" />
