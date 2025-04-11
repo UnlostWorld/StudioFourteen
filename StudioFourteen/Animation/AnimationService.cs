@@ -21,13 +21,19 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using Lumina.Excel;
 using Lumina.Excel.Sheets;
+using PropertyChanged.SourceGenerator;
+using StudioFourteen.Interop;
 using StudioFourteen.Services;
 using StudioFourteen.Utilities;
+
 using Action = Lumina.Excel.Sheets.Action;
 using ActionTimeline = StudioFourteen.GameData.Sheets.ActionTimeline;
 
-public class AnimationService : ServiceBase
+public partial class AnimationService : ServiceBase
 {
+	[Notify]
+	private float speed = 1.0f;
+
 	public enum TimelineSlots : uint
 	{
 		Base = 0,
@@ -56,9 +62,16 @@ public class AnimationService : ServiceBase
 		ShortTarget,
 	}
 
-	public override void Attach()
+	public unsafe override void Attach()
 	{
+		Hooks.CalculateAndApplyOverallSpeedHook.Enable(this.CalculateAndApplyOverallSpeed);
 		base.Attach();
+	}
+
+	public override void Detach()
+	{
+		Hooks.CalculateAndApplyOverallSpeedHook.Disable();
+		base.Detach();
 	}
 
 	public async Task PlayEmoteAsync(ushort emoteId, int objectIndex)
@@ -76,8 +89,11 @@ public class AnimationService : ServiceBase
 			return;
 
 		Character* pCharacter = this.Services.GameObjects.Get<Character>(objectIndex);
-		EmoteController.PoseType poseKind = (EmoteController.PoseType)pCharacter->EmoteController.GetPoseKind();
-		EmoteTimelineSlot timeLineSlot = this.GetTimelineSlotForPose(poseKind);
+		int poseKind = pCharacter->EmoteController.GetPoseKind();
+		if (poseKind == -1)
+			return;
+
+		EmoteTimelineSlot timeLineSlot = this.GetTimelineSlotForPose((EmoteController.PoseType)poseKind);
 
 		uint introTimelineId = emote.Value.ActionTimeline[(int)EmoteTimelineSlot.Intro].RowId;
 		uint timelineId = emote.Value.ActionTimeline[(int)timeLineSlot].RowId;
@@ -101,5 +117,20 @@ public class AnimationService : ServiceBase
 		}
 
 		throw new NotSupportedException();
+	}
+
+	private unsafe bool CalculateAndApplyOverallSpeed(TimelineContainer* self)
+	{
+		bool dirty = Hooks.CalculateAndApplyOverallSpeedHook.Original(self);
+
+		Character* pCharacter = self->OwnerObject;
+		float currentSpeed = pCharacter->Timeline.OverallSpeed;
+		if (currentSpeed != this.speed)
+		{
+			pCharacter->Timeline.OverallSpeed = this.speed;
+			return true;
+		}
+
+		return dirty;
 	}
 }

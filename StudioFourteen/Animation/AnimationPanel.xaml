@@ -5,6 +5,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
+	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="{DynamicResource LOC_Animation}"
 	Width="300"
@@ -15,8 +16,10 @@
 	TitleIcon="{DynamicResource ICON_Title_Animation}"
 	mc:Ignorable="d" >
 
-	<Grid>
+	<StackPanel>
 		<Button Click="OnTestClicked" Content="Test"/>
-	</Grid>
+
+		<controls:NumberSlider Value="{Binding Services.Animations.Speed}" Minimum="-1" Maximum="1" Change="0.01"/>
+	</StackPanel>
 
 </panels:Panel>
