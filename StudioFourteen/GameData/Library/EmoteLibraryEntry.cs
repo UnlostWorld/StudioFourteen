@@ -32,6 +32,7 @@ public class EmoteLibraryEntry : ExcelLibraryEntry, ITimelineAnimation
 		: base(source, emote.RowId)
 	{
 		this.Emote = emote;
+		this.Tags.Add("Player Animation");
 	}
 
 	public enum EmoteTimelineSlot : uint

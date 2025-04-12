@@ -15,15 +15,18 @@
 
 namespace StudioFourteen.Animation;
 
+using System.Collections.ObjectModel;
 using System.Windows;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Panels;
+using StudioFourteen.Tags;
 using WpfUtils.Extensions;
 
 public partial class AnimationPanel : Panel
 {
 	[Notify] private AnimationService.AnimationController? controller;
 	[Notify] private ITimelineAnimation? animation;
+	[Notify] private TagCollection defaultTags = new("Player Animation");
 
 	public void OnPlayClicked(object sender, RoutedEventArgs args)
 	{

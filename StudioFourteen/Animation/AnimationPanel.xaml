@@ -30,7 +30,8 @@
 			<librarySelector:LibrarySelectorButton
 				Grid.Column="0"
 				Type="{x:Type animation:ITimelineAnimation}"
-				Value="{Binding Animation}" />
+				Value="{Binding Animation}"
+				SearchTags="{Binding DefaultTags}"/>
 
 			<Button
 				Visibility="{Binding Controller.IsPlayingAnimation, Converter={StaticResource !B2V}}"

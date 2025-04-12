@@ -38,7 +38,10 @@ public class ActionLibraryEntry : ExcelLibraryEntry, ITimelineAnimation
 		this.Action = action;
 
 		if (action.IsPlayerAction)
+		{
 			this.Tags.Add("Player Action");
+			this.Tags.Add("Player Animation");
+		}
 
 		if (action.IsPvP)
 			this.Tags.Add("PvP");
@@ -47,7 +50,10 @@ public class ActionLibraryEntry : ExcelLibraryEntry, ITimelineAnimation
 			this.Tags.Add("Mounted");
 
 		if (action.ClassJob.IsValid)
+		{
 			this.Tags.Add(action.ClassJob.Value.ToTags());
+			this.Tags.Add("Player Animation");
+		}
 
 		if (action.IsRoleAction)
 			this.Tags.Add("Role");

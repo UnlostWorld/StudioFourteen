@@ -256,8 +256,6 @@ public partial class AnimationService : ServiceBase
 			CharacterModes initialMode = pCharacter->Mode;
 			byte initialModeParam = pCharacter->ModeParam;
 
-			this.Log.Information($">> {timelineId}");
-
 			pCharacter->SetMode(CharacterModes.AnimLock, 0);
 			pCharacter->Timeline.TimelineSequencer.PlayTimeline(timelineId);
 			pCharacter->SetMode(initialMode, initialModeParam);
