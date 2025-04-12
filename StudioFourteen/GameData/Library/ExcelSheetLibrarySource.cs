@@ -93,11 +93,11 @@ public class ExcelSheetLibrarySource<TExcel, TEntry> : ExcelSheetLibrarySource<T
 
 		foreach (TExcel row in this.Sheet)
 		{
-			TEntry? entry = this.GetRow(row.RowId);
-			if (entry == null)
+			if (!this.IncludeEntry(row))
 				continue;
 
-			if (!this.IncludeEntry(row))
+			TEntry? entry = this.GetRow(row.RowId);
+			if (entry == null)
 				continue;
 
 			this.Add(entry);

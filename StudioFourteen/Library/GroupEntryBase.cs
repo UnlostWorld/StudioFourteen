@@ -48,6 +48,9 @@ public abstract class GroupEntryBase : LibraryEntryBase
 
 	public virtual void Add(LibraryEntryBase entry)
 	{
+		if (!entry.IsValid)
+			return;
+
 		lock (this)
 		{
 			this.allEntries.Add(entry);

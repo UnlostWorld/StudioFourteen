@@ -150,6 +150,8 @@ public class GameDataService : ServiceBase
 		this.AddLibraryExcelSheet<Stain, StainLibraryEntry>();
 		this.AddLibraryExcelSheet<TerritoryType, TerritoryTypeLibraryEntry>();
 		this.AddLibraryExcelSheet<Weather, WeatherLibraryEntry>();
+		this.AddLibraryExcelSheet<Emote, EmoteLibraryEntry>();
+		this.AddLibraryExcelSheet<Lumina.Excel.Sheets.Action, ActionLibraryEntry>();
 
 		this.Services.Library.AddSource(new HairLibrarySource());
 		this.Services.Library.AddSource(new FacePaintLibrarySource());
