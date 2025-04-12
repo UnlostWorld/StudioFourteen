@@ -99,6 +99,7 @@
 	<icons:Svg x:Key="ICON_Environment_MoonWaning" Source="MoonWaning" />
 
 	<icons:Fa x:Key="ICON_Animation_Play" Icon="Play" />
+	<icons:Fa x:Key="ICON_Animation_Stop" Icon="Stop" />
 
 	<icons:Fa x:Key="ICON_Pose_Body" Icon="Person" />
 	<icons:Fa x:Key="ICON_Pose_Hands" Icon="Hand" Font="Solid" />

@@ -16,9 +16,7 @@
 namespace StudioFourteen.Animation;
 
 using System.Windows;
-using Lumina.Excel.Sheets;
 using PropertyChanged.SourceGenerator;
-using StudioFourteen.GameData.Library;
 using StudioFourteen.Panels;
 using WpfUtils.Extensions;
 
@@ -35,6 +33,11 @@ public partial class AnimationPanel : Panel
 		}
 	}
 
+	public void OnStopClicked(object sender, RoutedEventArgs args)
+	{
+		this.Controller?.ResetAsync().Run();
+	}
+
 	protected override void OnOpened()
 	{
 		base.OnOpened();
@@ -46,10 +49,6 @@ public partial class AnimationPanel : Panel
 	{
 		base.OnClosed();
 		this.Services.Target.TargetChanged -= this.OnTargetChanged;
-	}
-
-	protected void OnTimelinePositionChanged(float oldValue, float newValue)
-	{
 	}
 
 	private void OnTargetChanged(int objectTableIndex)

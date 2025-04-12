@@ -33,6 +33,7 @@
 				Value="{Binding Animation}" />
 
 			<Button
+				Visibility="{Binding Controller.IsPlayingAnimation, Converter={StaticResource !B2V}}"
 				IsEnabled="{Binding Animation, Converter={StaticResource NotNullToBoolConverter}}"
 				HorizontalAlignment="Stretch"
 				Height="48"
@@ -40,24 +41,38 @@
 				Padding="12"
 				Content="{DynamicResource ICON_Animation_Play}"
 				Grid.Column="1" />
+
+			<Button
+				Visibility="{Binding Controller.IsPlayingAnimation, Converter={StaticResource B2V}}"
+				IsEnabled="{Binding Animation, Converter={StaticResource NotNullToBoolConverter}}"
+				HorizontalAlignment="Stretch"
+				Height="48"
+				Click="OnStopClicked"
+				Padding="12"
+				Content="{DynamicResource ICON_Animation_Stop}"
+				Grid.Column="1" />
 		</Grid>
 
 		<ToggleButton
 			IsChecked="{Binding Controller.EnableLoop}"
 			Content="Enable animation loop" />
 
-		<TextBlock Text="Speed" />
+		<TextBlock
+			Margin="0,12,0,0"
+			Text="{Binding Controller.CurrentBaseTimelineKey}"
+			Foreground="{DynamicResource ForegroundLightBrush}"/>
+		<ProgressBar
+			Maximum="{Binding Controller.Duration}"
+			Minimum="0"
+			Value="{Binding Controller.CurrentTime}"
+			Margin="4"/>
 
+		<TextBlock Text="Speed" Style="{DynamicResource LeftLabel}"/>
 		<controls:NumberSlider
 			Change="0.01"
 			Maximum="2"
 			Minimum="0"
 			Value="{Binding Controller.Speed}" />
-
-		<ProgressBar
-			Maximum="{Binding Controller.Duration}"
-			Minimum="0"
-			Value="{Binding Controller.CurrentTime}" />
 
 	</StackPanel>
 

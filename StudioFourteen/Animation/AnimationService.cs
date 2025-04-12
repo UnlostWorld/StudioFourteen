@@ -22,11 +22,13 @@ using System.Threading.Tasks;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
+using FFXIVClientStructs.FFXIV.Client.System.Scheduler.Base;
 using FFXIVClientStructs.Havok.Animation.Animation;
 using FFXIVClientStructs.Havok.Animation.Playback;
 using FFXIVClientStructs.Havok.Animation.Playback.Control.Default;
 using Lumina.Excel.Sheets;
 using PropertyChanged.SourceGenerator;
+using Serilog;
 using StudioFourteen.Interop;
 using StudioFourteen.Services;
 using TerraFX.Interop.Windows;
@@ -99,17 +101,27 @@ public partial class AnimationService : ServiceBase
 		return dirty;
 	}
 
-	public partial class AnimationController(int objectIndex)
-		: INotifyPropertyChanged
+	public partial class AnimationController : INotifyPropertyChanged
 	{
-		public readonly int ObjectIndex = objectIndex;
+		public readonly int ObjectIndex;
+
+		protected readonly ILogger Log;
 
 		[Notify] private float currentTime = 0;
 		[Notify] private float duration = 0;
 		[Notify] private float speed = 1.0f;
 		[Notify] private bool enableLoop = false;
+		[Notify] private string currentBaseTimelineKey = string.Empty;
+		[Notify] private bool isPlayingAnimation = false;
 
+		private ITimelineAnimation? currentAnimation;
 		private ushort? initialBaseOverride = 0;
+
+		public AnimationController(int objectIndex)
+		{
+			this.ObjectIndex = objectIndex;
+			this.Log = Logging.ForContext($"AnimationController {objectIndex}");
+		}
 
 		public async Task PlayAnimationAsync(ITimelineAnimation emote)
 		{
@@ -122,15 +134,10 @@ public partial class AnimationService : ServiceBase
 			TickService.VerifyGameTickThread();
 
 			Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(this.ObjectIndex);
-
-			CharacterModes initialMode = pCharacter->Mode;
-			byte initialModeParam = pCharacter->ModeParam;
-
-			int poseKind = pCharacter->EmoteController.GetPoseKind();
-			if (poseKind == -1)
+			if (pCharacter == null)
 				return;
 
-			pCharacter->SetMode(CharacterModes.AnimLock, 0);
+			this.currentAnimation = animation;
 
 			if (this.enableLoop)
 			{
@@ -138,18 +145,16 @@ public partial class AnimationService : ServiceBase
 					this.initialBaseOverride = pCharacter->Timeline.BaseOverride;
 
 				pCharacter->Timeline.BaseOverride =	animation.LoopTimelineId;
-				pCharacter->Timeline.TimelineSequencer.PlayTimeline(animation.IntroTimelineId);
+				this.PlayTimeline(pCharacter, animation.IntroTimelineId);
 			}
 			else if (animation.IntroTimelineId != 0)
 			{
-				pCharacter->Timeline.TimelineSequencer.PlayTimeline(animation.IntroTimelineId);
+				this.PlayTimeline(pCharacter, animation.IntroTimelineId);
 			}
 			else
 			{
-				pCharacter->Timeline.TimelineSequencer.PlayTimeline(animation.LoopTimelineId);
+				this.PlayTimeline(pCharacter, animation.LoopTimelineId);
 			}
-
-			pCharacter->SetMode(initialMode, initialModeParam);
 		}
 
 		public async Task ResetLoopAsync()
@@ -160,6 +165,7 @@ public partial class AnimationService : ServiceBase
 
 		public unsafe void ResetLoop()
 		{
+			TickService.VerifyGameTickThread();
 			Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(this.ObjectIndex);
 
 			if (this.initialBaseOverride != null)
@@ -173,18 +179,54 @@ public partial class AnimationService : ServiceBase
 			}
 		}
 
+		public async Task ResetAsync()
+		{
+			await TickService.GameTick();
+			this.Reset();
+		}
+
+		public unsafe void Reset()
+		{
+			TickService.VerifyGameTickThread();
+			this.ResetLoop();
+
+			Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(this.ObjectIndex);
+			this.PlayTimeline(pCharacter, 368);
+		}
+
 		public unsafe void OnGameTick()
 		{
 			TickService.VerifyGameTickThread();
 
 			Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(this.ObjectIndex);
-
 			if (pCharacter == null)
 				return;
 
 			this.GetCurrentAnimationTime(pCharacter, out float liveTime, out float duration);
 			this.Duration = duration;
 			this.CurrentTime = liveTime;
+
+			SchedulerTimeline* baseTimeline = pCharacter->Timeline.TimelineSequencer.GetSchedulerTimeline((int)TimelineSlots.Base);
+
+			if (baseTimeline != null)
+			{
+				this.CurrentBaseTimelineKey = baseTimeline->ActionTimelineKey;
+			}
+			else
+			{
+				 this.CurrentBaseTimelineKey = string.Empty;
+			}
+
+			if (this.currentAnimation != null)
+			{
+				ushort timeLineId = pCharacter->Timeline.TimelineSequencer.GetSlotTimeline((uint)TimelineSlots.Base);
+				this.IsPlayingAnimation = this.currentAnimation.IntroTimelineId == timeLineId || this.currentAnimation.LoopTimelineId == timeLineId;
+
+				if (!this.IsPlayingAnimation)
+				{
+					this.currentAnimation = null;
+				}
+			}
 		}
 
 		public unsafe bool CalculateAndApplyOverallSpeed()
@@ -207,6 +249,18 @@ public partial class AnimationService : ServiceBase
 			{
 				this.ResetLoopAsync().Run();
 			}
+		}
+
+		private unsafe void PlayTimeline(Character* pCharacter, ushort timelineId)
+		{
+			CharacterModes initialMode = pCharacter->Mode;
+			byte initialModeParam = pCharacter->ModeParam;
+
+			this.Log.Information($">> {timelineId}");
+
+			pCharacter->SetMode(CharacterModes.AnimLock, 0);
+			pCharacter->Timeline.TimelineSequencer.PlayTimeline(timelineId);
+			pCharacter->SetMode(initialMode, initialModeParam);
 		}
 
 		private unsafe bool GetCurrentAnimationTime(Character* pCharacter, out float time, out float duration)
