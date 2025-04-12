@@ -18,20 +18,21 @@ namespace StudioFourteen.Animation;
 using System.Windows;
 using Lumina.Excel.Sheets;
 using PropertyChanged.SourceGenerator;
+using StudioFourteen.GameData.Library;
 using StudioFourteen.Panels;
 using WpfUtils.Extensions;
 
 public partial class AnimationPanel : Panel
 {
 	[Notify] private AnimationService.AnimationController? controller;
+	[Notify] private ITimelineAnimation? animation;
 
-	public void OnTestClicked(object sender, RoutedEventArgs args)
+	public void OnPlayClicked(object sender, RoutedEventArgs args)
 	{
-		Emote? emote = this.Services.GameData.GetRow<Emote>(121);
-		if (emote == null)
-			return;
-
-		this.Controller?.PlayEmoteAsync((Emote)emote).Run();
+		if (this.animation != null)
+		{
+			this.Controller?.PlayAnimationAsync(this.animation).Run();
+		}
 	}
 
 	protected override void OnOpened()

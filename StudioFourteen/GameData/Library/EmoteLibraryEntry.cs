@@ -19,15 +19,34 @@ using System.Threading.Tasks;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using Lumina.Excel.Sheets;
 using Lumina.Text.ReadOnly;
+using StudioFourteen.Animation;
 using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Sources;
 using StudioFourteen.Services;
 
-public class EmoteLibraryEntry(SourceBase source, Emote emote)
-	: ExcelLibraryEntry(source, emote.RowId)
+public class EmoteLibraryEntry : ExcelLibraryEntry, ITimelineAnimation
 {
-	public override string? Name => emote.Name.GetString();
-	public override object? Icon => new ImageReference(emote.Icon);
+	public readonly Emote Emote;
+
+	public EmoteLibraryEntry(SourceBase source, Emote emote)
+		: base(source, emote.RowId)
+	{
+		this.Emote = emote;
+	}
+
+	public enum EmoteTimelineSlot : uint
+	{
+		Standard,
+		Intro,
+		Ground,
+		Chair,
+		Blend,
+		Expression,
+		ShortTarget,
+	}
+
+	public override string? Name => this.Emote.Name.GetString();
+	public override object? Icon => new ImageReference(this.Emote.Icon);
 
 	public override bool IsValid
 	{
@@ -36,7 +55,7 @@ public class EmoteLibraryEntry(SourceBase source, Emote emote)
 			if (!base.IsValid)
 				return false;
 
-			foreach(var rowRef in emote.ActionTimeline)
+			foreach(var rowRef in this.Emote.ActionTimeline)
 			{
 				if (rowRef.RowId != 0)
 				{
@@ -48,16 +67,38 @@ public class EmoteLibraryEntry(SourceBase source, Emote emote)
 		}
 	}
 
+	// TODO: Support for sit groundsit etc slots
+	public ushort LoopTimelineId => (ushort)this.Emote.ActionTimeline[(int)EmoteTimelineSlot.Standard].RowId;
+	public ushort IntroTimelineId => (ushort)this.Emote.ActionTimeline[(int)EmoteTimelineSlot.Intro].RowId;
+
 	[LibraryMenu("Execute")]
 	public async Task ExecuteEmote()
 	{
 		await TickService.GameTick();
 		unsafe
 		{
-			if (!EmoteManager.Instance()->CanExecuteEmote((ushort)emote.RowId))
+			if (!EmoteManager.Instance()->CanExecuteEmote((ushort)this.Emote.RowId))
 				return;
 
-			EmoteManager.Instance()->ExecuteEmote((ushort)emote.RowId);
+			EmoteManager.Instance()->ExecuteEmote((ushort)this.Emote.RowId);
 		}
 	}
+
+	/*
+	private static EmoteTimelineSlot GetTimelineSlotForPose(EmoteController.PoseType poseKind)
+	{
+		switch (poseKind)
+		{
+			case EmoteController.PoseType.Sit: return EmoteTimelineSlot.Chair;
+			case EmoteController.PoseType.GroundSit: return EmoteTimelineSlot.Ground;
+			case EmoteController.PoseType.Doze:
+			case EmoteController.PoseType.Umbrella:
+			case EmoteController.PoseType.Accessory:
+			case EmoteController.PoseType.Idle:
+			case EmoteController.PoseType.WeaponDrawn: return EmoteTimelineSlot.Standard;
+		}
+
+		throw new NotSupportedException();
+	}
+	*/
 }

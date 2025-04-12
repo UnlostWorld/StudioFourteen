@@ -202,6 +202,9 @@ public class HistoryService : ServiceBase
 		if (this.currentOperation == null || this.currentTarget == null)
 			throw new Exception("Attempt to stop histroy record while no record is in progress");
 
+		if (ServiceManager.ShutdownRequested)
+			return;
+
 		bool didChange = this.currentOperation.EndRecord();
 
 		if (!didChange)

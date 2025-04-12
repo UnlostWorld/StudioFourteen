@@ -21,13 +21,14 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using Lumina.Excel.Sheets;
 using Lumina.Text.ReadOnly;
+using StudioFourteen.Animation;
 using StudioFourteen.GameData.Extensions;
 using StudioFourteen.Icons;
 using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Sources;
 using StudioFourteen.Services;
 
-public class ActionLibraryEntry : ExcelLibraryEntry
+public class ActionLibraryEntry : ExcelLibraryEntry, ITimelineAnimation
 {
 	public readonly Action Action;
 
@@ -81,6 +82,9 @@ public class ActionLibraryEntry : ExcelLibraryEntry
 			return new ImageReference(this.Action.Icon);
 		}
 	}
+
+	public ushort IntroTimelineId => (ushort)this.Action.AnimationEnd.RowId;
+	public ushort LoopTimelineId => (ushort)this.Action.AnimationEnd.RowId;
 
 	[LibraryMenu("Execute")]
 	public async Task ExecuteEmote()

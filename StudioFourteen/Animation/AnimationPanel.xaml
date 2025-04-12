@@ -5,7 +5,10 @@
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:gameData="clr-namespace:StudioFourteen.GameData.Library"
+	xmlns:librarySelector="clr-namespace:StudioFourteen.Library.Selector"
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
+	xmlns:animation="clr-namespace:StudioFourteen.Animation"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Title="{DynamicResource LOC_Animation}"
 	Width="300"
@@ -16,10 +19,34 @@
 	TitleIcon="{DynamicResource ICON_Title_Animation}"
 	mc:Ignorable="d">
 
-	<StackPanel>
-		<TextBlock Text="{Binding Controller}" />
+	<StackPanel Margin="3">
 
-		<Button Click="OnTestClicked" Content="Test" />
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition />
+				<ColumnDefinition Width="Auto" />
+			</Grid.ColumnDefinitions>
+
+			<librarySelector:LibrarySelectorButton
+				Grid.Column="0"
+				Type="{x:Type animation:ITimelineAnimation}"
+				Value="{Binding Animation}" />
+
+			<Button
+				IsEnabled="{Binding Animation, Converter={StaticResource NotNullToBoolConverter}}"
+				HorizontalAlignment="Stretch"
+				Height="48"
+				Click="OnPlayClicked"
+				Padding="12"
+				Content="{DynamicResource ICON_Animation_Play}"
+				Grid.Column="1" />
+		</Grid>
+
+		<ToggleButton
+			IsChecked="{Binding Controller.EnableLoop}"
+			Content="Enable animation loop" />
+
+		<TextBlock Text="Speed" />
 
 		<controls:NumberSlider
 			Change="0.01"
@@ -27,9 +54,7 @@
 			Minimum="0"
 			Value="{Binding Controller.Speed}" />
 
-		<controls:NumberSlider
-			Change="0.1"
-			Style="{DynamicResource NumberPointSlider}"
+		<ProgressBar
 			Maximum="{Binding Controller.Duration}"
 			Minimum="0"
 			Value="{Binding Controller.CurrentTime}" />

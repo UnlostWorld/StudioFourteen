@@ -22,19 +22,21 @@ using System.Threading.Tasks;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
-using FFXIVClientStructs.FFXIV.Client.System.Scheduler.Base;
 using FFXIVClientStructs.Havok.Animation.Animation;
 using FFXIVClientStructs.Havok.Animation.Playback;
 using FFXIVClientStructs.Havok.Animation.Playback.Control.Default;
-using Lumina.Excel;
 using Lumina.Excel.Sheets;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Interop;
 using StudioFourteen.Services;
-using StudioFourteen.Utilities;
 using TerraFX.Interop.Windows;
-using Action = Lumina.Excel.Sheets.Action;
-using ActionTimeline = StudioFourteen.GameData.Sheets.ActionTimeline;
+using WpfUtils.Extensions;
+
+public interface ITimelineAnimation
+{
+	public ushort LoopTimelineId { get; }
+	public ushort IntroTimelineId { get; }
+}
 
 public partial class AnimationService : ServiceBase
 {
@@ -55,17 +57,6 @@ public partial class AnimationService : ServiceBase
 		Parts3 = 10,
 		Parts4 = 11,
 		Overlay = 12,
-	}
-
-	public enum EmoteTimelineSlot : uint
-	{
-		Standard,
-		Intro,
-		Ground,
-		Chair,
-		Blend,
-		Expression,
-		ShortTarget,
 	}
 
 	public AnimationController GetController(int objectIndex)
@@ -113,56 +104,73 @@ public partial class AnimationService : ServiceBase
 	{
 		public readonly int ObjectIndex = objectIndex;
 
-		private float seekSpeed = 1;
-		private float? targetTime;
-		private float currentTime = 0;
-
+		[Notify] private float currentTime = 0;
 		[Notify] private float duration = 0;
 		[Notify] private float speed = 1.0f;
+		[Notify] private bool enableLoop = false;
 
-		public float CurrentTime
-		{
-			get
-			{
-				if (this.targetTime != null)
-					return (float)this.targetTime;
+		private ushort? initialBaseOverride = 0;
 
-				return this.currentTime;
-			}
-			set
-			{
-				this.targetTime = value;
-			}
-		}
-
-		public async Task PlayEmoteAsync(Emote emote)
+		public async Task PlayAnimationAsync(ITimelineAnimation emote)
 		{
 			await TickService.GameTick();
-			this.PlayEmote(emote);
+			this.PlayAnimation(emote);
 		}
 
-		public unsafe void PlayEmote(Emote emote)
+		public unsafe void PlayAnimation(ITimelineAnimation animation)
 		{
 			TickService.VerifyGameTickThread();
 
 			Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(this.ObjectIndex);
+
+			CharacterModes initialMode = pCharacter->Mode;
+			byte initialModeParam = pCharacter->ModeParam;
+
 			int poseKind = pCharacter->EmoteController.GetPoseKind();
 			if (poseKind == -1)
 				return;
 
-			EmoteTimelineSlot timeLineSlot = GetTimelineSlotForPose((EmoteController.PoseType)poseKind);
-			uint timelineId = emote.ActionTimeline[(int)timeLineSlot].RowId;
-			if (timelineId == 0)
-				timelineId = emote.ActionTimeline[(int)EmoteTimelineSlot.Standard].RowId;
+			pCharacter->SetMode(CharacterModes.AnimLock, 0);
 
-			ActionTimeline? timeline = ServiceManager.Instance.GameData.GetRow<ActionTimeline>(timelineId);
-			if (timeline == null)
-				return;
+			if (this.enableLoop)
+			{
+				if (this.initialBaseOverride == null)
+					this.initialBaseOverride = pCharacter->Timeline.BaseOverride;
 
-			this.targetTime = null;
+				pCharacter->Timeline.BaseOverride =	animation.LoopTimelineId;
+				pCharacter->Timeline.TimelineSequencer.PlayTimeline(animation.IntroTimelineId);
+			}
+			else if (animation.IntroTimelineId != 0)
+			{
+				pCharacter->Timeline.TimelineSequencer.PlayTimeline(animation.IntroTimelineId);
+			}
+			else
+			{
+				pCharacter->Timeline.TimelineSequencer.PlayTimeline(animation.LoopTimelineId);
+			}
 
-			pCharacter->Timeline.BaseOverride = (ushort)timelineId;
-			pCharacter->Timeline.TimelineSequencer.PlayTimeline((ushort)timelineId);
+			pCharacter->SetMode(initialMode, initialModeParam);
+		}
+
+		public async Task ResetLoopAsync()
+		{
+			await TickService.GameTick();
+			this.ResetLoop();
+		}
+
+		public unsafe void ResetLoop()
+		{
+			Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(this.ObjectIndex);
+
+			if (this.initialBaseOverride != null)
+			{
+				pCharacter->Timeline.BaseOverride =	(ushort)this.initialBaseOverride;
+				this.initialBaseOverride = null;
+			}
+			else
+			{
+				pCharacter->Timeline.BaseOverride = 0;
+			}
 		}
 
 		public unsafe void OnGameTick()
@@ -176,22 +184,7 @@ public partial class AnimationService : ServiceBase
 
 			this.GetCurrentAnimationTime(pCharacter, out float liveTime, out float duration);
 			this.Duration = duration;
-
-			if (this.targetTime == null)
-			{
-				if (this.currentTime != liveTime)
-				{
-					this.currentTime = liveTime;
-					this.OnPropertyChanged(new (nameof(this.CurrentTime)));
-				}
-			}
-			else
-			{
-				// Seek
-				float targetTime = float.Clamp((float)this.targetTime, 0.01f, duration - 0.1f);
-				float delta = targetTime - liveTime;
-				this.seekSpeed = float.Clamp(delta * 10, -5, 5);
-			}
+			this.CurrentTime = liveTime;
 		}
 
 		public unsafe bool CalculateAndApplyOverallSpeed()
@@ -199,33 +192,21 @@ public partial class AnimationService : ServiceBase
 			Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(this.ObjectIndex);
 			float currentSpeed = pCharacter->Timeline.OverallSpeed;
 
-			float targetSpeed = this.speed;
-			if (this.targetTime != null)
-				targetSpeed = this.seekSpeed;
-
-			if (currentSpeed != targetSpeed)
+			if (currentSpeed != this.speed)
 			{
-				pCharacter->Timeline.OverallSpeed = targetSpeed;
+				pCharacter->Timeline.OverallSpeed = this.speed;
 				return true;
 			}
 
 			return false;
 		}
 
-		private static EmoteTimelineSlot GetTimelineSlotForPose(EmoteController.PoseType poseKind)
+		protected void OnEnableLoopChanged(bool oldValue, bool newValue)
 		{
-			switch (poseKind)
+			if (newValue == false)
 			{
-				case EmoteController.PoseType.Sit: return EmoteTimelineSlot.Chair;
-				case EmoteController.PoseType.GroundSit: return EmoteTimelineSlot.Ground;
-				case EmoteController.PoseType.Doze:
-				case EmoteController.PoseType.Umbrella:
-				case EmoteController.PoseType.Accessory:
-				case EmoteController.PoseType.Idle:
-				case EmoteController.PoseType.WeaponDrawn: return EmoteTimelineSlot.Standard;
+				this.ResetLoopAsync().Run();
 			}
-
-			throw new NotSupportedException();
 		}
 
 		private unsafe bool GetCurrentAnimationTime(Character* pCharacter, out float time, out float duration)
