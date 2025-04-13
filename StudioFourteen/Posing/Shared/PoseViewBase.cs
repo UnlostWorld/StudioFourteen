@@ -286,7 +286,7 @@ public partial class PoseViewBase : View
 
 	protected async Task<bool> PopulateControl(int objectTableIndex)
 	{
-		if (this.controls == null || DalamudServices.ObjectTable == null)
+		if (this.controls == null)
 			return false;
 
 		await TickService.GameTick();

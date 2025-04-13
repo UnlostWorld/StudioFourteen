@@ -79,9 +79,6 @@ public class CharacterBackupAppearance
 	{
 		await TickService.GameTick();
 
-		if (DalamudServices.ObjectTable == null)
-			return;
-
 		this.Services.CharacterAppearance.SetModelCharaId(objectTableIndex, this.ModelId, source);
 		this.Services.CharacterAppearance.SetEquipment(objectTableIndex, this.DrawData.EquipmentModelIds, source);
 		this.Services.CharacterAppearance.SetCustomize(objectTableIndex, this.DrawData.CustomizeData, source);

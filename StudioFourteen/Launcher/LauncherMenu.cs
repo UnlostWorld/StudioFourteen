@@ -93,7 +93,6 @@ public partial class LauncherMenu : Control
 			this.AddEntry<AioLauncherEntry>("AIO");
 
 		this.AddPanel<History.HistoryPanel>("History");
-		this.AddPanel<Save.SaveWindow>("Save");
 		this.AddPanel<Settings.SettingsPanel>("Settings");
 	}
 

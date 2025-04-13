@@ -38,7 +38,6 @@ public class ServiceManager : ServiceManagerBase
 	public Files.FileThumbnailService Thumbnails { get; init; } = new();
 	public TargetService Target { get; init; } = new();
 	public Tablet.TabletService Tablet { get; init; } = new();
-	public Save.SaveService Save { get; init; } = new();
 	public ActorRoleService Roles { get; init; } = new();
 	public Files.FileService Files { get; init; } = new();
 	public ThemeService Theme { get; set; } = new();

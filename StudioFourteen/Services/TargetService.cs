@@ -43,23 +43,11 @@ public partial class TargetService : ServiceBase
 	{
 		this.nextTargetListener.Activate = this.OnNextTarget;
 		this.previousTargetListener.Activate = this.OnPreviousTarget;
-
-#if DEBUG
-		if (DalamudServices.ObjectTable == null)
-		{
-			this.CharacterName = "Debug Character";
-			this.HasValidTarget = true;
-			this.IsTargetLoading = false;
-			this.TargetObjectIndex = 1;
-		}
-#endif
 	}
 
 	public delegate void TargetChangedDelegate(int objectTableIndex);
 
 	public event TargetChangedDelegate? TargetChanged;
-
-	public int ObjectTableCount => DalamudServices.ObjectTable?.Length ?? 0;
 
 	public override Task Start()
 	{
@@ -89,9 +77,6 @@ public partial class TargetService : ServiceBase
 	public unsafe Character* GetTarget()
 	{
 		TickService.VerifyGameTickThread();
-
-		if (DalamudServices.ObjectTable == null)
-			return null;
 
 		if (ServiceManager.Instance.GroupPose.IsGroupPosing)
 		{
@@ -243,9 +228,6 @@ public partial class TargetService : ServiceBase
 	{
 		TickService.VerifyGameTickThread();
 
-		if (DalamudServices.ObjectTable == null)
-			return;
-
 		int max = GroupPoseService.GPoseFirstCharacter + GroupPoseService.GPoseCharacterCount;
 		int newIndex = this.targetObjectIndex;
 		Character* newTarget = null;
@@ -278,9 +260,6 @@ public partial class TargetService : ServiceBase
 	private unsafe void SetTargetInternal(int objectTableIndex)
 	{
 		TickService.VerifyGameTickThread();
-
-		if (DalamudServices.ObjectTable == null)
-			return;
 
 		Character* target = this.Services.GameObjects.Get<Character>(objectTableIndex);
 		if (target == null)

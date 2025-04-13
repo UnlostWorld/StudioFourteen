@@ -131,13 +131,10 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 	{
 		await TickService.GameTick();
 
-		if (DalamudServices.ObjectTable == null)
-			return;
-
 		string name = $"#{objectTableIndex}";
 		unsafe
 		{
-			Character* pCharacter = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
+			Character* pCharacter = this.Services.GameObjects.Get<Character>(objectTableIndex);
 			name = pCharacter->GetDisplayName();
 		}
 

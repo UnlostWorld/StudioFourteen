@@ -48,13 +48,12 @@ public class GroupPoseCharactersLibrarySource : SourceBase
 		// back up the appearance of every character in gpose
 		for (int i = GroupPoseService.GPoseFirstCharacter; i < GroupPoseService.GPoseFirstCharacter + GroupPoseService.GPoseCharacterCount; ++i)
 		{
-			nint? address = DalamudServices.ObjectTable?.GetObjectAddress(i);
-			if (address == null || address == nint.Zero)
+			Character* pCharacter = this.Services.GameObjects.Get<Character>(i);
+
+			if (pCharacter == null)
 				continue;
 
-			Character* character = (Character*)address;
-
-			CharacterBackupAppearance appearance = new(character);
+			CharacterBackupAppearance appearance = new(pCharacter);
 			this.Add(appearance);
 		}
 	}

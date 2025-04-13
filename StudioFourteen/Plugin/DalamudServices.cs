@@ -29,7 +29,6 @@ public class DalamudServices
 	[PluginService] public static ICommandManager? CommandManager { get; private set; }
 	[PluginService] public static IDataManager? DataManager { get; private set; }
 	[PluginService] public static IClientState? ClientState { get; private set; }
-	[PluginService] public static IObjectTable? ObjectTable { get; private set; }
 	[PluginService] public static ISigScanner? SigScanner { get; private set; }
 	[PluginService] public static IFramework? Framework { get; private set; }
 	[PluginService] public static IKeyState? KeyState { get; private set; }

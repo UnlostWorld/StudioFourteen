@@ -274,9 +274,6 @@ public class BlendTarget
 	{
 		TickService.VerifyGameTickThread();
 
-		if (DalamudServices.ObjectTable == null)
-			return null;
-
 		List<BoneSelection> selections = new();
 
 		if (this.RightBones == null)

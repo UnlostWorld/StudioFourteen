@@ -84,7 +84,7 @@ public class LibraryMenuTargetAttribute : LibraryMenuAttributeBase
 		if (!isGroupPose)
 		{
 			fromIndex = 0;
-			toIndex = Math.Min(targetService.ObjectTableCount, GroupPoseService.GPoseFirstCharacter);
+			toIndex = Math.Min(ServiceManager.Instance.GameObjects.GetTableLength(), GroupPoseService.GPoseFirstCharacter);
 		}
 
 		List<(MenuEntry, int)> targets = new();

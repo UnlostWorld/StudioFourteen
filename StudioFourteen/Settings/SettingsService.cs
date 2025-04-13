@@ -21,7 +21,6 @@ using StudioFourteen.Input;
 using StudioFourteen.Library;
 using StudioFourteen.Photos;
 using StudioFourteen.Plugin;
-using StudioFourteen.Save;
 using StudioFourteen.Serialization;
 using StudioFourteen.Services;
 using System;
@@ -129,7 +128,6 @@ public partial class SettingsService : ServiceBase
 
 		// Files
 		[Notify] private string? lastSaveDirectory;
-		[Notify] private SaveService.SaveConfiguration saveConfig = new();
 		[Notify] private string? defaultAuthor;
 		[Notify] private string? defaultVersion = "1.0";
 

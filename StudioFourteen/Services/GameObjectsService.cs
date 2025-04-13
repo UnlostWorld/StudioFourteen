@@ -36,6 +36,14 @@ public class GameObjectsService : ServiceBase
 		return indexSorted[objectTableIndex];
 	}
 
+	public unsafe int GetTableLength()
+	{
+		TickService.VerifyGameTickThread();
+
+		Span<Pointer<GameObject>> indexSorted = GameObjectManager.Instance()->Objects.IndexSorted;
+		return indexSorted.Length;
+	}
+
 	public unsafe GameObject* Get(GameObjectId objectId)
 	{
 		TickService.VerifyGameTickThread();

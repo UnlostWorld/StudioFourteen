@@ -40,8 +40,8 @@ public class SceneFile : FileBase
 	public List<Actor> Actors { get; set; } = new();
 	public List<StudioCameraBase> Cameras { get; set; } = new();
 
-	[LibraryMenu(IconChar.UsersBetweenLines, "LOC_OpenScene")]
-	public Task Apply() => ServiceManager.Instance.Save.OpenAsync(this);
+	////[LibraryMenu(IconChar.UsersBetweenLines, "LOC_OpenScene")]
+	////public Task Apply() => ServiceManager.Instance.Save.OpenAsync(this);
 
 	public class Actor
 	{

@@ -164,15 +164,12 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 
 		TickService.VerifyGameTickThread();
 
-		if (DalamudServices.ObjectTable == null)
-			return results;
-
 		bool didCreate = false;
 		lock (this.boneReferences)
 		{
 			unsafe
 			{
-				Character* pCharacter = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
+				Character* pCharacter = this.Services.GameObjects.Get<Character>(objectTableIndex);
 				if (pCharacter == null)
 					return results;
 
@@ -258,14 +255,11 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 	{
 		TickService.VerifyGameTickThread();
 
-		if (DalamudServices.ObjectTable == null)
+		Character* pCharacter = this.Services.GameObjects.Get<Character>(objectTableIndex);
+		if (pCharacter == null)
 			return null;
 
-		Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
-		if (character == null)
-			return null;
-
-		return this.FindBone(character, name);
+		return this.FindBone(pCharacter, name);
 	}
 
 	public unsafe BoneSelection? FindBone(Character* character, string name)
@@ -408,14 +402,11 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 	{
 		await TickService.GameTick();
 
-		if (DalamudServices.ObjectTable == null)
-			return;
-
 		List<BoneReference> boneReferences = new();
 
 		unsafe
 		{
-			Character* pCharacter = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
+			Character* pCharacter = this.Services.GameObjects.Get<Character>(objectTableIndex);
 			if (pCharacter == null)
 				return;
 
@@ -478,13 +469,10 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 
 	public async Task ExportPose(int objectTableIndex)
 	{
-		if (DalamudServices.ObjectTable == null)
-			return;
-
 		string name = $"#{objectTableIndex}";
 		unsafe
 		{
-			Character* pCharacter = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
+			Character* pCharacter = this.Services.GameObjects.Get<Character>(objectTableIndex);
 			name = pCharacter->GetDisplayName();
 		}
 
@@ -573,16 +561,13 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 	{
 		await TickService.GameTick();
 
-		if (DalamudServices.ObjectTable == null)
-			return;
-
 		int objectTargetIndex = this.Services.Target.TargetObjectIndex;
 		EasingFunctionBase ease = new SineEase();
 
 		Vector3 fromPosition;
 		unsafe
 		{
-			Character* pCharacter = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTargetIndex);
+			Character* pCharacter = this.Services.GameObjects.Get<Character>(objectTargetIndex);
 			fromPosition = pCharacter->DrawObject->Position;
 		}
 
@@ -602,7 +587,7 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 
 			unsafe
 			{
-				Character* pCharacter = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTargetIndex);
+				Character* pCharacter = this.Services.GameObjects.Get<Character>(objectTargetIndex);
 				pCharacter->DrawObject->Position = newPosition;
 			}
 		}

@@ -87,12 +87,9 @@ public readonly struct BoneId(int objectTableIndex, int partialSkeletonIndex, by
 		partialSkeleton = null;
 		pose = null;
 
-		if (DalamudServices.ObjectTable == null)
-			return false;
-
 		TickService.VerifyGameTickThread();
 
-		character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(this.ObjectTableIndex);
+		character = ServiceManager.Instance.GameObjects.Get<Character>(this.ObjectTableIndex);
 		if (character == null)
 			return false;
 

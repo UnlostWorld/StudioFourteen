@@ -171,8 +171,7 @@ public unsafe partial class CharacterViewModel : ViewModel
 
 	public unsafe void OnFrameworkUpdate()
 	{
-		IntPtr address = DalamudServices.ObjectTable?.GetObjectAddress(this.ObjectTableIndex) ?? IntPtr.Zero;
-		Character* pCharacter = (Character*)address;
+		Character* pCharacter = this.Services.GameObjects.Get<Character>(this.ObjectTableIndex);
 
 		this.IsValid = pCharacter != null;
 

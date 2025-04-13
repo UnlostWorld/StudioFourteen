@@ -43,18 +43,6 @@ public partial class CustomizeViewModel : ViewModel
 	public CustomizeViewModel(DispatcherObject dispatcher)
 	{
 		this.dispatcher = dispatcher;
-
-#if DEBUG
-		if (DalamudServices.ObjectTable == null)
-		{
-			ExcelSheet<CharaMakeType>? charaMakeTypeSheet = ServiceManager.Instance.GameData.GetSheet<CharaMakeType>();
-
-			if (charaMakeTypeSheet == null)
-				return;
-
-			this.UpdateMenus(charaMakeTypeSheet[0]).Run();
-		}
-#endif
 	}
 
 	public bool HasValidTarget => this.Services.Target.HasValidTarget;
@@ -117,12 +105,6 @@ public partial class CustomizeViewModel : ViewModel
 			this.MakeupMenus.Clear();
 
 			await TickService.GameTick();
-
-			if (DalamudServices.ObjectTable == null)
-			{
-				this.isUpdatingMenus = false;
-				return;
-			}
 
 			bool canDraw = false;
 			while (!canDraw)
