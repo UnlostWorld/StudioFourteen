@@ -142,7 +142,8 @@ public class BlendSelection : SelectionBase
 			selection.Activate();
 		}
 
-		await Threads.NextFrame();
+		await Task.Delay(100);
+		await TickService.GameTick();
 
 		foreach (BoneSelection boneSelection in boneSelections)
 		{

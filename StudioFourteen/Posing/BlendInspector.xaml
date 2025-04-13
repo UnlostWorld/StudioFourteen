@@ -8,6 +8,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:mvm="clr-namespace:StudioFourteen.Mvm"
 	xmlns:pose="clr-namespace:StudioFourteen.Posing"
+	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
@@ -32,21 +33,12 @@
 			Stretch="Uniform" />
 
 
-		<wpfUtils:NumberBox
+		<controls:NumberSlider
 			Grid.Row="2"
 			Maximum="{Binding BlendMaximum}"
 			Minimum="{Binding BlendMinimum}"
-			UncapTextInput="True"
-			Value="{Binding BlendValue}">
-			<wpfUtils:NumberBox.Suffix>
-				<TextBlock
-					HorizontalAlignment="Left"
-					VerticalAlignment="Center"
-					Foreground="{DynamicResource BackgroundLightBrush}"
-					Style="{DynamicResource WpfUtilsTextBlock}"
-					Text="%" />
-			</wpfUtils:NumberBox.Suffix>
-		</wpfUtils:NumberBox>
+			Change="1"
+			Value="{Binding BlendValue}"/>
 
 		<ToggleButton
 			Grid.Row="3"
