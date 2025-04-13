@@ -21,14 +21,14 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using StudioFourteen.Interop;
-
+using Windows.Win32;
 using Task = System.Threading.Tasks.Task;
 
 public partial class TickService : ServiceBase
 {
 	private const int TickDelay = 100;
 
-	[ThreadStatic] private static TickService.Channels currentChannel;
+	[ThreadStatic] private static TickService.Channels currentChannel = Channels.None;
 
 	private readonly Dictionary<Channels, List<Action>> tickListeners = new();
 	private readonly Dictionary<Channels, Queue<Action>> tickDispatchers = new();
@@ -40,6 +40,8 @@ public partial class TickService : ServiceBase
 
 	public enum Channels
 	{
+		None,
+
 		GameTick,
 		StudioTick,
 	}
@@ -60,20 +62,19 @@ public partial class TickService : ServiceBase
 		}
 	}
 
-	public unsafe override void Attach()
+	public override void Dispose()
 	{
-		base.Attach();
-		Hooks.Tick.Enable(this.OnGameTick);
-	}
-
-	public override void Detach()
-	{
-		base.Detach();
 		Hooks.Tick.Disable();
+		base.Dispose();
 	}
 
 	public override Task Initialize()
 	{
+		unsafe
+		{
+			Hooks.Tick.Enable(this.OnGameTick);
+		}
+
 		Thread panelMainThread = new Thread(this.TickThread);
 		panelMainThread.Start();
 
@@ -181,7 +182,7 @@ public partial class TickService : ServiceBase
 
 	private void TickThread()
 	{
-		while(this.shouldTick)
+		while(this.shouldTick && !ServiceManager.ShutdownRequested)
 		{
 			Thread.Sleep(TickDelay);
 			this.PerformTick(Channels.StudioTick);

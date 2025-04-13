@@ -21,6 +21,7 @@ using Serilog;
 using StudioFourteen.Settings;
 using System;
 using System.Threading.Tasks;
+using WpfUtils.Extensions;
 
 #if DALAMUD
 
@@ -73,14 +74,9 @@ public sealed class DalamudPlugin : IDalamudPlugin
 		// stop is async, and we want to get any lingering hooks
 		// out before dalamud moves on from this method.
 		this.Services.Dispose();
-
-		Task.Run(async () =>
-		{
-			await this.Services.Stop();
-			await Task.Delay(1000);
-		}).Wait();
-
 		Logging.Dispose();
+
+		this.Services.Stop().Run();
 	}
 
 	private void OnDalamudOpenMainUi()
