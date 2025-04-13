@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Appearance;
 
+using System.Numerics;
 using System.Threading.Tasks;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using StudioFourteen.DragAndDrop;
@@ -61,6 +62,21 @@ public class CharacterAppearanceDragSceneInstance(ICharacterAppearance appearanc
 		Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(this.spawnedObjectId);
 		if (pCharacter == null || pCharacter->DrawObject == null)
 			return;
+
+		Vector3 lastPos = pCharacter->DrawObject->Position;
+		Vector3 move = hit.Position - lastPos;
+
+		if (move.Length() > 0.05)
+		{
+			// 0-out the y movement so swe dont rotate people sidways.
+			lastPos.Y = hit.Position.Y;
+
+			Matrix4x4 mat = Matrix4x4.CreateLookAt(hit.Position, lastPos, Vector3.UnitY);
+			Quaternion rot = Quaternion.CreateFromRotationMatrix(mat);
+			rot = Quaternion.Identity / Quaternion.Normalize(rot);
+
+			pCharacter->DrawObject->Rotation = rot;
+		}
 
 		pCharacter->DrawObject->Position = hit.Position;
 	}

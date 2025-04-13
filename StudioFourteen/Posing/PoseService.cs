@@ -17,6 +17,7 @@ namespace StudioFourteen.Posing;
 
 using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.Havok.Animation.Rig;
@@ -96,12 +97,13 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 		return base.Stop();
 	}
 
-	public override void Attach()
+	public unsafe override void Attach()
 	{
 		base.Attach();
 
 		Hooks.UpdateBonePhysics.Enable(this.UpdateBonePhysicsDetour);
 		Hooks.FinalizeSkeletons.Enable(this.FinalizeSkeletonDetour);
+		Hooks.SetPosition.Enable(this.SetPosition);
 		this.poseSkeletonOverlay.Enable();
 	}
 
@@ -111,6 +113,7 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 
 		Hooks.UpdateBonePhysics.Disable();
 		Hooks.FinalizeSkeletons.Disable();
+		Hooks.SetPosition.Disable();
 
 		this.poseSkeletonOverlay.Disable();
 	}
@@ -555,6 +558,14 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 		}
 
 		return Task.CompletedTask;
+	}
+
+	private unsafe void SetPosition(GameObject* self, float x, float y, float z)
+	{
+		if (this.Services.GroupPose.IsGroupPoseLoaded)
+			return;
+
+		Hooks.SetPosition.Original(self, x, y, z);
 	}
 
 	private async Task MoveTarget(Vector3 toPosition)

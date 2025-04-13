@@ -25,6 +25,7 @@ using PropertyChanged.SourceGenerator;
 using StudioFourteen.Input.Devices;
 using StudioFourteen.Interop;
 using StudioFourteen.Plugin;
+using WpfUtils.Extensions;
 using Task = System.Threading.Tasks.Task;
 
 public partial class GroupPoseService : ServiceBase
@@ -34,6 +35,7 @@ public partial class GroupPoseService : ServiceBase
 
 	[Notify(Setter.Private)] private bool isGroupPosing;
 	[Notify(Setter.Private)] private bool isGroupPoseSettingsWindowVisible;
+	[Notify(Setter.Private)] private bool isGroupPoseLoaded;
 
 	public delegate void OnStateChangedDelegate(bool newState);
 
@@ -70,6 +72,7 @@ public partial class GroupPoseService : ServiceBase
 	public override Task Initialize()
 	{
 		this.IsGroupPosing = DalamudServices.ClientState?.IsGPosing == true || this.Services.Environment.IsInTitleScreen;
+		this.IsGroupPoseLoaded = this.isGroupPosing;
 		return base.Initialize();
 	}
 
@@ -82,6 +85,7 @@ public partial class GroupPoseService : ServiceBase
 		Hooks.ExitGroupPose.Enable(this.ExitDetour);
 
 		this.IsGroupPosing = DalamudServices.ClientState?.IsGPosing == true || this.Services.Environment.IsInTitleScreen;
+		this.IsGroupPoseLoaded = this.isGroupPosing;
 	}
 
 	public override void Detach()
@@ -161,6 +165,12 @@ public partial class GroupPoseService : ServiceBase
 	{
 		this.StateChanged?.Invoke(newState);
 		this.IsGroupPosing = newState;
-		this.RaisePropertyChanged(nameof(GroupPoseService.IsGroupPosing));
+		this.CheckLoaded().Run();
+	}
+
+	private async Task CheckLoaded()
+	{
+		await Task.Delay(1000);
+		this.IsGroupPoseLoaded = this.isGroupPosing;
 	}
 }

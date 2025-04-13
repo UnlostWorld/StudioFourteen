@@ -16,12 +16,14 @@
 namespace StudioFourteen.Interop;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.System.Input;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using StudioFourteen.Plugin;
 using System;
 using System.Runtime.InteropServices;
+using TerraFX.Interop.Windows;
 
 public static unsafe class Hooks
 {
@@ -104,4 +106,5 @@ public static unsafe class Hooks
 
 	public static readonly AddressHook<InterfaceManager.ReshadeOnPresentDelegate> ReshadeOnPresent = new(() => SwapChainHelper.ReshadeOnPresent);
 	public static readonly AddressHook<PadDevice.Delegates.Poll> PadDevicePoll = new(() => (nint)PadDevice.StaticVirtualTablePointer->Poll);
+	public static readonly AddressHook<GameObject.Delegates.SetPosition> SetPosition = new(() => GameObject.Addresses.SetPosition.Value);
 }
