@@ -96,8 +96,17 @@ public partial class AnimationService : ServiceBase
 		bool dirty = Hooks.CalculateAndApplyOverallSpeedHook.Original(self);
 
 		int objectIndex = self->OwnerObject->ObjectIndex;
-		AnimationController controller = this.GetController(objectIndex);
-		dirty |= controller.CalculateAndApplyOverallSpeed();
+		try
+		{
+			AnimationController controller = this.GetController(objectIndex);
+			dirty |= controller.CalculateAndApplyOverallSpeed(self);
+		}
+		catch(Exception ex)
+		{
+			this.Log.Error(ex, "Error in CalculateAndApplyOverallSpeed, hook will be disabled");
+			Hooks.CalculateAndApplyOverallSpeedHook.Disable();
+		}
+
 		return dirty;
 	}
 
@@ -229,14 +238,13 @@ public partial class AnimationService : ServiceBase
 			}
 		}
 
-		public unsafe bool CalculateAndApplyOverallSpeed()
+		public unsafe bool CalculateAndApplyOverallSpeed(TimelineContainer* self)
 		{
-			Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(this.ObjectIndex);
-			float currentSpeed = pCharacter->Timeline.OverallSpeed;
+			float currentSpeed = self->OverallSpeed;
 
 			if (currentSpeed != this.speed)
 			{
-				pCharacter->Timeline.OverallSpeed = this.speed;
+				self->OverallSpeed = this.speed;
 				return true;
 			}
 
