@@ -21,6 +21,7 @@ using FontAwesome.Sharp;
 using Lumina.Excel.Sheets;
 using Newtonsoft.Json;
 using StudioFourteen.Appearance;
+using StudioFourteen.DragAndDrop;
 using StudioFourteen.GameData;
 using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Services;
@@ -153,8 +154,10 @@ public class AppearanceFile : FileBase, ICharacterAppearance
 		tags.Add(tribe?.ToTags());
 	}
 
+	public IDragSceneInstance CreateSceneInstance() => new CharacterAppearanceDragSceneInstance(this);
+
 	[LibraryMenu(IconChar.Plus, "LOC_AppearanceCreateCharacter")]
-	public Task Spawn()
+	public Task<int> Spawn()
 	{
 		return ServiceManager.Instance.CharacterLifecycle.CreateAsync(this);
 	}

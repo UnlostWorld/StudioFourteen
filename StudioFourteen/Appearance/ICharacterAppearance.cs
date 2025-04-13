@@ -16,11 +16,52 @@
 namespace StudioFourteen.Appearance;
 
 using System.Threading.Tasks;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using StudioFourteen.DragAndDrop;
+using StudioFourteen.Services;
+using StudioFourteen.Utilities;
 
-public interface ICharacterAppearance
+public interface ICharacterAppearance : IDraggable
 {
 	string? Name { get; }
 
 	public Task Apply(int objectTableIndex);
-	public Task Spawn();
+	public Task<int> Spawn();
+}
+
+public class CharacterAppearanceDragSceneInstance(ICharacterAppearance appearance) : IDragSceneInstance
+{
+	private int spawnedObjectId = -1;
+
+	public async Task EnterScene()
+	{
+		if (this.spawnedObjectId != -1)
+			return;
+
+		this.spawnedObjectId = await appearance.Spawn();
+	}
+
+	public void Drop()
+	{
+	}
+
+	public async Task LeaveScene()
+	{
+		await ServiceManager.Instance.CharacterLifecycle.DestroyAsync(this.spawnedObjectId);
+		this.spawnedObjectId = -1;
+	}
+
+	public unsafe void UpdatePosition(HitInfo hit)
+	{
+		TickService.VerifyGameTickThread();
+
+		if (this.spawnedObjectId == -1)
+			return;
+
+		Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(this.spawnedObjectId);
+		if (pCharacter == null || pCharacter->DrawObject == null)
+			return;
+
+		pCharacter->DrawObject->Position = hit.Position;
+	}
 }

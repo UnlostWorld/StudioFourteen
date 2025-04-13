@@ -548,6 +548,7 @@
 									Background="Transparent"
 									MouseLeftButtonUp="OnResultMouseLeft"
 									MouseRightButtonUp="OnResultMouseRight"
+									MouseMove="OnResultMouseMove"
 									ToolTip=""
 									ToolTipClosing="OnResultToolTipClosing"
 									ToolTipOpening="OnResultToolTipOpening">

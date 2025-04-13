@@ -16,6 +16,7 @@
 namespace StudioFourteen.Services;
 
 using System;
+using System.Windows;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using StudioFourteen.Interop;
 
@@ -43,7 +44,7 @@ public class CursorService : ServiceBase
 
 	private IntPtr SetCursorDetour(IntPtr hCursor)
 	{
-		if (this.Services.Windows.IsMouseOverWindow())
+		if (this.Services.Windows.IsMouseOverWindow() || this.Services.DragAndDrop.IsDragging)
 			return IntPtr.Zero;
 
 		return Hooks.SetCursor.Original(hCursor);

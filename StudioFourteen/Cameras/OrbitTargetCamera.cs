@@ -59,7 +59,7 @@ public partial class OrbitTargetCamera : OrbitCamera
 		{
 			Vector3 targetPosition = this.oldTargetPosition;
 			Character* pTarget = this.Services.Target.GetTarget();
-			if (pTarget != null)
+			if (pTarget != null && pTarget->DrawObject != null)
 			{
 				targetPosition = pTarget->DrawObject->Position;
 				targetPosition.Y = targetPosition.Y + (pTarget->Height * 1.5f);

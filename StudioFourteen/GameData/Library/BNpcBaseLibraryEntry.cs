@@ -20,6 +20,7 @@ using FontAwesome.Sharp;
 using Lumina.Excel;
 using Lumina.Excel.Sheets;
 using StudioFourteen.Appearance;
+using StudioFourteen.DragAndDrop;
 using StudioFourteen.GameData.Extensions;
 using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Sources;
@@ -93,8 +94,10 @@ public class BNpcBaseLibraryEntry
 		}
 	}
 
+	public IDragSceneInstance CreateSceneInstance() => new CharacterAppearanceDragSceneInstance(this);
+
 	[LibraryMenu(IconChar.Plus, "LOC_AppearanceCreateCharacter")]
-	public Task Spawn()
+	public Task<int> Spawn()
 	{
 		return ServiceManager.Instance.CharacterLifecycle.CreateAsync(this);
 	}

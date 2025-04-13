@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Library;
 using PropertyChanged.SourceGenerator;
+using StudioFourteen.DragAndDrop;
 using StudioFourteen.Files;
 using StudioFourteen.Input;
 using StudioFourteen.Library.Filters;
@@ -394,6 +395,23 @@ public partial class LibraryWindow : Panel
 		}
 
 		this.currentHover = null;
+	}
+
+	private void OnResultMouseMove(object sender, MouseEventArgs e)
+	{
+		if (e.LeftButton != MouseButtonState.Pressed)
+			return;
+
+		if (sender is not FrameworkElement senderElement)
+			return;
+
+		if (senderElement.DataContext is not Result result)
+			return;
+
+		if (result.Entry is not IDraggable draggable)
+			return;
+
+		this.Services.DragAndDrop.Drag(senderElement, draggable);
 	}
 
 	private void OnResultMouseLeft(object sender, MouseButtonEventArgs e)

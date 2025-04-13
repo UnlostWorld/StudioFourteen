@@ -22,11 +22,20 @@ using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.FFXIV.Common.Component.BGCollision;
 using StudioFourteen.Services;
 using System.Numerics;
-
+using System.Windows;
 using CameraManager = FFXIVClientStructs.FFXIV.Client.Graphics.Scene.CameraManager;
 
 public static class RayCast
 {
+	public static unsafe HitInfo? CastFromCursor()
+	{
+		Point? p = ServiceManager.Instance.Windows.GetCursorPosition();
+		if (p == null)
+			return null;
+
+		return RayCast.Cast(new Vector2((float)p.Value.X, (float)p.Value.Y));
+	}
+
 	public static unsafe HitInfo Cast(Vector2 screenPosition)
 	{
 		TickService.VerifyGameTickThread();
@@ -40,7 +49,6 @@ public static class RayCast
 			info.GameObject = pObject;
 			info.ObjectTableIndex = pObject->ObjectIndex;
 			info.Position = pObject->Position;
-			return info;
 		}
 
 		// Fallback to BG collision to see where the mouse hit the world.

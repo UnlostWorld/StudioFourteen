@@ -17,6 +17,7 @@ namespace StudioFourteen.Appearance;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FontAwesome.Sharp;
 using StudioFourteen;
+using StudioFourteen.DragAndDrop;
 using StudioFourteen.GameData;
 using StudioFourteen.Library;
 using StudioFourteen.Library.LibraryMenu;
@@ -63,8 +64,10 @@ public class CharacterBackupAppearance
 	public override string? SubTitle => null;
 	public override object? Icon => this.icon;
 
+	public IDragSceneInstance CreateSceneInstance() => new CharacterAppearanceDragSceneInstance(this);
+
 	[LibraryMenu(IconChar.Plus, "LOC_AppearanceCreateCharacter")]
-	public Task Spawn()
+	public Task<int> Spawn()
 	{
 		return ServiceManager.Instance.CharacterLifecycle.CreateAsync(this);
 	}

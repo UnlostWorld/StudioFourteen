@@ -94,4 +94,24 @@ public partial class BackgroundWindow : PanelWindow
 	{
 		this.Services.Windows.SendToBack(this);
 	}
+
+	private void OnDragEnter(object sender, DragEventArgs e)
+	{
+		this.Services.DragAndDrop.HandleDragEnterScene(e);
+	}
+
+	private void OnDragOver(object sender, DragEventArgs e)
+	{
+		this.Services.DragAndDrop.HandleDragOverScene(e);
+	}
+
+	private void OnDragLeave(object sender, DragEventArgs e)
+	{
+		this.Services.DragAndDrop.HandleDragLeaveScene(e);
+	}
+
+	private void OnDrop(object sender, DragEventArgs e)
+	{
+		this.Services.DragAndDrop.HandleDropScene(e);
+	}
 }

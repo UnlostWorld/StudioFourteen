@@ -22,6 +22,7 @@ using Lumina.Excel;
 using Lumina.Excel.Sheets;
 using Serilog;
 using StudioFourteen.Appearance;
+using StudioFourteen.DragAndDrop;
 using StudioFourteen.GameData;
 using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Plugin;
@@ -87,8 +88,10 @@ public class GlamourerEntry
 	public override string Name => this.design.Name ?? "Unknown";
 	public override string? SubTitle => this.design.Identifier;
 
+	public IDragSceneInstance CreateSceneInstance() => new CharacterAppearanceDragSceneInstance(this);
+
 	[LibraryMenu(IconChar.Plus, "LOC_AppearanceCreateCharacter")]
-	public Task Spawn()
+	public Task<int> Spawn()
 	{
 		return ServiceManager.Instance.CharacterLifecycle.CreateAsync(this);
 	}

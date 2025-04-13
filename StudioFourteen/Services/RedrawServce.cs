@@ -198,6 +198,9 @@ public class RedrawService : ServiceBase
 				unsafe
 				{
 					Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(objectTableIndex);
+					if (pCharacter == null)
+						return;
+
 					if (!pCharacter->CanDraw())
 						continue;
 				}

@@ -21,6 +21,7 @@ using Lumina.Excel;
 using Lumina.Excel.Sheets;
 using Lumina.Text.ReadOnly;
 using StudioFourteen.Appearance;
+using StudioFourteen.DragAndDrop;
 using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Sources;
 using StudioFourteen.Services;
@@ -82,8 +83,10 @@ public class ENpcResidentLibraryEntry : ExcelLibraryEntry, ICharacterAppearance
 
 	public ENpcBase? ENpcBase => ServiceManager.Instance.GameData.GetRow<ENpcBase>(this.Npc.RowId);
 
+	public IDragSceneInstance CreateSceneInstance() => new CharacterAppearanceDragSceneInstance(this);
+
 	[LibraryMenu(IconChar.Plus, "LOC_AppearanceCreateCharacter")]
-	public Task Spawn()
+	public Task<int> Spawn()
 	{
 		return ServiceManager.Instance.CharacterLifecycle.CreateAsync(this);
 	}

@@ -23,6 +23,7 @@ using FontAwesome.Sharp;
 using LZ4;
 using Newtonsoft.Json;
 using StudioFourteen.Appearance;
+using StudioFourteen.DragAndDrop;
 using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Sources;
 using StudioFourteen.Plugin;
@@ -111,8 +112,10 @@ public class MareFile
 	public string GlamourerData { get; set; } = string.Empty;
 	public string? Name { get; set; }
 
+	public IDragSceneInstance CreateSceneInstance() => new CharacterAppearanceDragSceneInstance(this);
+
 	[LibraryMenu(IconChar.Plus, "LOC_AppearanceCreateCharacter")]
-	public Task Spawn()
+	public Task<int> Spawn()
 	{
 		return ServiceManager.Instance.CharacterLifecycle.CreateAsync(this);
 	}

@@ -58,4 +58,5 @@ public class ServiceManager : ServiceManagerBase
 	public TickService Tick { get; init; } = new();
 	public GameObjectsService GameObjects { get; init; } = new();
 	public Animation.AnimationService Animations { get; init; } = new();
+	public DragAndDrop.DragAndDropService DragAndDrop { get; init; } = new();
 }
