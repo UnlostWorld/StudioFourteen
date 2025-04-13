@@ -16,6 +16,18 @@
 			}
         },
 		{
+            "name": "Attach",
+            "type": "coreclr",
+            "request": "attach",
+			"processName": "ffxiv_dx11",
+			"requireExactSource": false,
+			"internalConsoleOptions": "openOnSessionStart",
+
+			"logging": {
+				"moduleLoad": false
+			}
+        },
+		{
             "name": "Test",
             "type": "coreclr",
 			"request": "launch",
