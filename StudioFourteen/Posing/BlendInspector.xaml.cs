@@ -18,7 +18,9 @@ namespace StudioFourteen.Posing;
 using DependencyPropertyGenerator;
 using StudioFourteen.Mvm;
 using StudioFourteen.Selection;
+using System.Threading.Tasks;
 using System.Windows;
+using WpfUtils;
 
 [DependencyProperty<SelectionBase>("Selection")]
 [DependencyProperty<BlendSelection>("BlendSelection")]
@@ -83,5 +85,13 @@ public partial class BlendInspector : View
 		this.NotifyPropertyChanged(nameof(BlendInspector.BlendMinimum));
 		this.NotifyPropertyChanged(nameof(BlendInspector.BlendMaximum));
 		this.NotifyPropertyChanged(nameof(BlendInspector.ExtendClamps));
+
+		Task.Run(async () =>
+		{
+			await Task.Delay(50);
+			await this.MainThread();
+			this.NotifyPropertyChanged(nameof(BlendInspector.BlendMinimum));
+			this.NotifyPropertyChanged(nameof(BlendInspector.BlendMaximum));
+		});
 	}
 }

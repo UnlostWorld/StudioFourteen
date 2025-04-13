@@ -15,16 +15,9 @@
 	d:DesignWidth="200"
 	mc:Ignorable="d">
 
-	<Grid Margin="1">
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-			<RowDefinition Height="Auto" />
-		</Grid.RowDefinitions>
+	<StackPanel Margin="1">
 
 		<Image
-			Grid.Row="1"
 			Height="100"
 			HorizontalAlignment="Center"
 			VerticalAlignment="Center"
@@ -32,18 +25,31 @@
 			Source="{Binding BlendSelection.Target.Icon}"
 			Stretch="Uniform" />
 
-
-		<controls:NumberSlider
-			Grid.Row="2"
+		<controls:Slider
 			Maximum="{Binding BlendMaximum}"
 			Minimum="{Binding BlendMinimum}"
 			Change="1"
+			Style="{DynamicResource FlatSlider}"
 			Value="{Binding BlendValue}"/>
 
+		<wpfUtils:NumberBox
+			Maximum="{Binding BlendMaximum}"
+			Minimum="{Binding BlendMinimum}"
+			UncapTextInput="True"
+			Value="{Binding BlendValue}">
+			<wpfUtils:NumberBox.Suffix>
+				<TextBlock
+					HorizontalAlignment="Left"
+					VerticalAlignment="Center"
+					Foreground="{DynamicResource BackgroundLightBrush}"
+					Style="{DynamicResource WpfUtilsTextBlock}"
+					Text="%" />
+			</wpfUtils:NumberBox.Suffix>
+		</wpfUtils:NumberBox>
+
 		<ToggleButton
-			Grid.Row="3"
 			Content="Delimit"
 			IsChecked="{Binding ExtendClamps}" />
 
-	</Grid>
+	</StackPanel>
 </mvm:View>

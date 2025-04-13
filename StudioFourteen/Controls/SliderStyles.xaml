@@ -112,7 +112,7 @@
 		<Setter Property="MinHeight" Value="32" />
 		<Setter Property="Template" Value="{StaticResource SliderTemplate}" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
-		<Setter Property="WrapMouseDrag" Value="False"/>
+		<Setter Property="WrapMouseDrag" Value="False" />
 	</Style>
 
 
@@ -219,13 +219,13 @@
 
 	<Style TargetType="{x:Type local:Slider}" x:Key="WrapSlider"
 		BasedOn="{StaticResource StudioSlider}">
-		<Setter Property="WrapMouseDrag" Value="True"/>
+		<Setter Property="WrapMouseDrag" Value="True" />
 		<Setter Property="Template" Value="{StaticResource WrapSliderTemplate}" />
 	</Style>
 
 	<Style TargetType="{x:Type local:Slider}" x:Key="PointSlider"
 		BasedOn="{StaticResource StudioSlider}">
-		<Setter Property="WrapMouseDrag" Value="False"/>
+		<Setter Property="WrapMouseDrag" Value="False" />
 		<Setter Property="Template" Value="{StaticResource WrapSliderTemplate}" />
 	</Style>
 
@@ -251,26 +251,26 @@
 					Stroke="{DynamicResource ControlHighlightBrush}"
 					StrokeThickness="6" />
 
-			<Grid x:Name="Content">
-				<shapes:PointArc
-					Margin="2"
-					Spread="23"
-					Maximum="1"
-					Minimum="0"
-					AngleOffset="-90"
-					Stroke="{TemplateBinding Foreground}"
-					StrokeThickness="6"
-					Value="{TemplateBinding ChangeProgress}" />
+				<Grid x:Name="Content">
+					<shapes:PointArc
+						Margin="2"
+						Spread="23"
+						Maximum="1"
+						Minimum="0"
+						AngleOffset="-90"
+						Stroke="{TemplateBinding Foreground}"
+						StrokeThickness="6"
+						Value="{TemplateBinding ChangeProgress}" />
 
-				<shapes:PointArc
-					Margin="2"
-					Spread="23"
-					Maximum="1"
-					Minimum="0"
-					AngleOffset="90"
-					Stroke="{TemplateBinding Foreground}"
-					StrokeThickness="6"
-					Value="{TemplateBinding ChangeProgress}" />
+					<shapes:PointArc
+						Margin="2"
+						Spread="23"
+						Maximum="1"
+						Minimum="0"
+						AngleOffset="90"
+						Stroke="{TemplateBinding Foreground}"
+						StrokeThickness="6"
+						Value="{TemplateBinding ChangeProgress}" />
 				</Grid>
 			</Grid>
 		</Grid>
@@ -343,10 +343,119 @@
 
 	<Style TargetType="{x:Type local:Slider}" x:Key="RelativeSlider"
 		BasedOn="{StaticResource StudioSlider}">
-		<Setter Property="WrapMouseDrag" Value="False"/>
+		<Setter Property="WrapMouseDrag" Value="False" />
 		<Setter Property="Template" Value="{StaticResource RelativeSliderTemplate}" />
 	</Style>
 
 	<Style TargetType="{x:Type local:Slider}" BasedOn="{StaticResource StudioSlider}" />
+
+
+	<ControlTemplate x:Key="FlatSliderTemplate" TargetType="{x:Type local:Slider}">
+
+		<Grid Background="Transparent">
+			<Grid Margin="1">
+
+				<Border Style="{DynamicResource WpfUtilsControlBorder}" />
+
+				<Border
+					x:Name="HoverEllipse"
+					Style="{DynamicResource WpfUtilsControlHoverBorder}"
+					Opacity="0" />
+
+				<Track IsHitTestVisible="false"
+					x:Name="PART_Track"
+					Margin="4,2">
+					<Track.Thumb>
+						<Thumb Foreground="{TemplateBinding Foreground}">
+							<Thumb.Style>
+								<Style TargetType="{x:Type Thumb}">
+									<Setter Property="Width" Value="10"/>
+									<Setter Property="Height" Value="22"/>
+									<Setter Property="Template">
+										<Setter.Value>
+											<ControlTemplate TargetType="{x:Type Thumb}">
+												<Border CornerRadius="3" Background="{TemplateBinding Foreground}"/>
+											</ControlTemplate>
+										</Setter.Value>
+									</Setter>
+								</Style>
+							</Thumb.Style>
+						</Thumb>
+					</Track.Thumb>
+				</Track>
+			</Grid>
+		</Grid>
+
+		<ControlTemplate.Triggers>
+			<Trigger Property="IsMouseOver" Value="True">
+				<Setter Property="Foreground"
+					Value="{DynamicResource ControlForegroundHighlightBrush}" />
+				<Trigger.EnterActions>
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="HoverEllipse"
+								Storyboard.TargetProperty="Opacity"
+								From="0"
+								To="1"
+								Duration="00:00:00.1" />
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.EnterActions>
+
+				<Trigger.ExitActions>
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="HoverEllipse"
+								Storyboard.TargetProperty="Opacity"
+								From="1"
+								To="0"
+								Duration="00:00:00.2" />
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.ExitActions>
+			</Trigger>
+
+			<Trigger Property="IsMouseDown" Value="True">
+				<Setter Property="Foreground" Value="{DynamicResource TrimBrush}" />
+			</Trigger>
+
+			<Trigger Property="IsEnabled" Value="false">
+				<Trigger.EnterActions>
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="Content"
+								Storyboard.TargetProperty="Opacity"
+								From="1"
+								To="0.5"
+								Duration="00:00:00.1" />
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.EnterActions>
+
+				<Trigger.ExitActions>
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="Content"
+								Storyboard.TargetProperty="Opacity"
+								From="0.5"
+								To="1"
+								Duration="00:00:00.2" />
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.ExitActions>
+			</Trigger>
+		</ControlTemplate.Triggers>
+	</ControlTemplate>
+
+
+	<Style TargetType="{x:Type local:Slider}" x:Key="FlatSlider"
+		BasedOn="{StaticResource StudioSlider}">
+		<Setter Property="WrapMouseDrag" Value="False" />
+		<Setter Property="Template" Value="{StaticResource FlatSliderTemplate}" />
+	</Style>
 
 </ResourceDictionary>
