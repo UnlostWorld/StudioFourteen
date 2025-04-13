@@ -122,8 +122,7 @@ public class MareFile
 	{
 		await TickService.GameTick();
 
-		throw new NotImplementedException();
-		/*if (this.FilePath == null || DalamudServices.ObjectTable == null || DalamudServices.Framework == null)
+		if (this.FilePath == null || DalamudServices.ObjectTable == null || DalamudServices.Framework == null)
 			return;
 
 		await DalamudServices.Framework.RunOnFrameworkThread(() =>
@@ -146,7 +145,7 @@ public class MareFile
 			bool success = ServiceManager.Instance.IPC.MareSynchronosLoadMcdf(this.FilePath, target);
 		});
 
-		await Task.Delay(3000);*/
+		await Task.Delay(3000);
 	}
 
 	public override void GetAutoTags(TagCollection tags)

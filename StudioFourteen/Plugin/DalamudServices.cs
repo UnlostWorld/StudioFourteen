@@ -36,4 +36,5 @@ public class DalamudServices
 	[PluginService] public static ITextureSubstitutionProvider? TextureSubstitutionProvider { get; private set; }
 	[PluginService] public static IGameInteropProvider? InteropProvider { get; private set; }
 	[PluginService] public static ITextureProvider? TextureProvider { get; private set; }
+	[PluginService] public static IObjectTable? ObjectTable { get; private set; }
 }
