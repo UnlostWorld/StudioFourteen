@@ -145,18 +145,7 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 			if (idx == 0xFFFFFFFF)
 				return false;
 
-			TickService.VerifyGameTickThread();
-
-			// Something about calling DeleteObjectByIndex outside of dalamuds update
-			// causes a nasty crash, even when calling it on the games tick thread.
-			#if DALAMUD
-			Plugin.DalamudServices.Framework!.RunOnFrameworkThread(() =>
-			{
-				com->DeleteObjectByIndex((ushort)idx, 0);
-			});
-			#else
 			com->DeleteObjectByIndex((ushort)idx, 0);
-			#endif
 		}
 
 		await Threads.NextFrame();
