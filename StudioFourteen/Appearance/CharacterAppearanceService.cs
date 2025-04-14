@@ -44,7 +44,7 @@ public class CharacterAppearanceService : ServiceBase
 		this.Services.GroupPose.StateChanged += this.OnGroupPoseStateChange;
 		this.Services.Library.AddSource(this.provider);
 
-		this.Services.Context.RegisterProider<CharacterAppearanceContextMenuProvider>();
+		this.Services.Context.RegisterProvider<CharacterAppearanceContextMenuProvider>();
 
 		if (this.Services.GroupPose.IsGroupPosing)
 		{

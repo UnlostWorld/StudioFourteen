@@ -56,13 +56,13 @@ public class ContextMenuService : ServiceBase
 {
 	private readonly List<IContextProvider> providers = new();
 
-	public void RegisterProider<T>()
+	public void RegisterProvider<T>()
 		where T : IContextProvider, new()
 	{
-		this.RegisterProider(new T());
+		this.RegisterProvider(new T());
 	}
 
-	public void RegisterProider(IContextProvider provider)
+	public void RegisterProvider(IContextProvider provider)
 	{
 		this.providers.Add(provider);
 	}
