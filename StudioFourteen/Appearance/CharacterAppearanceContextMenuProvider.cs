@@ -1,4 +1,4 @@
-﻿// .                    @@             _____ _______ _    _ _____ _____ ____
+// .                    @@             _____ _______ _    _ _____ _____ ____
 //          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
 //         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
 //         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
@@ -16,11 +16,30 @@
 namespace StudioFourteen.Appearance;
 
 using System.Threading.Tasks;
-using StudioFourteen.DragAndDrop;
+using StudioFourteen.Context;
+using System.Collections.Generic;
 
-public interface ICharacterAppearance : IDraggable
+public class CharacterAppearanceContextMenuProvider : ContextProvider<ICharacterAppearance>
 {
-	string? Name { get; }
+	protected override Task GetMenus(ICharacterAppearance target, ref List<MenuEntry> menus)
+	{
+		menus.Add(new("ICON_AddCharacter", "LOC_Context_Spawn", () => this.Spawn(target)));
 
-	public Task Apply(int objectTableIndex, UpdateSource source);
+		/*MenuEntry applyParent = new(null, "Apply To");
+
+		for(int i = 0; i < 10; i++)
+		{
+			MenuEntry subEntry = new(null, $"> {i}");
+			applyParent.AddChild(subEntry);
+		}
+
+		menus.Add(applyParent);*/
+
+		return Task.CompletedTask;
+	}
+
+	private Task<int> Spawn(ICharacterAppearance target)
+	{
+		return this.Services.CharacterLifecycle.CreateAsync(target, UpdateSource.Interface);
+	}
 }

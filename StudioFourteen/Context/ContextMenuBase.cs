@@ -25,24 +25,24 @@ using WpfUtils.Extensions;
 public interface IContextMenu
 {
 	void OnMenuInvoked(MenuEntry entry);
+	Task OnMenusLoaded(List<MenuEntry> entries);
 }
 
 public class MenuEntry
 {
-	private readonly List<MenuEntry> pendingChildren = new();
 	private readonly Func<Task>? invoke;
 
 	public MenuEntry()
 	{
 	}
 
-	public MenuEntry(object? icon, string? label, Func<Task>? invoke = null)
+	public MenuEntry(object? icon, string label, Func<Task>? invoke = null)
 	{
 		if (icon is string str)
 			icon = Resources.Find(str);
 
 		this.Icon = icon;
-		this.Label = label;
+		this.Label = Resources.Find(label, label);
 		this.invoke = invoke;
 		this.OnClicked = new SimpleCommand(this.Invoke);
 	}
@@ -54,26 +54,9 @@ public class MenuEntry
 	public bool IsEnabled { get; set; } = true;
 
 	public FastObservableCollection<MenuEntry> Children { get; init; } = new();
-	public IContextMenu? ContextMenu { get; private set; }
+	public IContextMenu? ContextMenu { get; set; }
 
-	public bool HasChildren => this.Children.Count > 0 || this.pendingChildren.Count > 0;
-
-	public void SetContextMenu(IContextMenu? contextMenu)
-	{
-		this.ContextMenu = contextMenu;
-
-		foreach (MenuEntry entry in this.pendingChildren)
-		{
-			this.Children.Add(entry);
-		}
-
-		this.pendingChildren.Clear();
-
-		foreach (MenuEntry entry in this.Children)
-		{
-			entry.SetContextMenu(contextMenu);
-		}
-	}
+	public bool HasChildren => this.Children.Count > 0;
 
 	public Task Invoke()
 	{
@@ -86,23 +69,8 @@ public class MenuEntry
 		return t;
 	}
 
-	public MenuEntry AddChild(object? icon, string? label, Func<Task>? invoke = null)
+	public void AddChild(MenuEntry child)
 	{
-		MenuEntry child = new(icon, label, invoke);
-		this.pendingChildren.Add(child);
-		return child;
-	}
-
-	public MenuEntry AddChild(object? icon, string? label, Action? invoke = null)
-	{
-		Func<Task> f = () =>
-		{
-			invoke?.Invoke();
-			return Task.CompletedTask;
-		};
-
-		MenuEntry child = new(icon, label, f);
-		this.pendingChildren.Add(child);
-		return child;
+		this.Children.Add(child);
 	}
 }

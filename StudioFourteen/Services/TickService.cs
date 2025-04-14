@@ -104,71 +104,86 @@ public partial class TickService : ServiceBase
 		}
 		else
 		{
-			if (!this.tickDispatchers.ContainsKey(channel))
-				this.tickDispatchers.Add(channel, new());
+			lock (this.tickDispatchers)
+			{
+				if (!this.tickDispatchers.ContainsKey(channel))
+					this.tickDispatchers.Add(channel, new());
 
-			this.tickDispatchers[channel].Enqueue(callback);
+				this.tickDispatchers[channel].Enqueue(callback);
+			}
 		}
 	}
 
 	public void Add(Channels channel, Action callback)
 	{
-		if (!this.tickListeners.ContainsKey(channel))
-			this.tickListeners.Add(channel, new());
+		lock (this.tickListeners)
+		{
+			if (!this.tickListeners.ContainsKey(channel))
+				this.tickListeners.Add(channel, new());
 
-		this.tickListeners[channel].Add(callback);
+			this.tickListeners[channel].Add(callback);
+		}
 	}
 
 	public void Remove(Channels channel, Action callback)
 	{
-		if (!this.tickListeners.ContainsKey(channel))
-			return;
+		lock (this.tickListeners)
+		{
+			if (!this.tickListeners.ContainsKey(channel))
+				return;
 
-		this.tickListeners[channel].Remove(callback);
+			this.tickListeners[channel].Remove(callback);
+		}
 	}
 
 	private void PerformTick(Channels channel)
 	{
 		currentChannel = channel;
 
-		this.tickListeners.TryGetValue(channel, out var callbacks);
-		if (callbacks != null)
+		lock(this.tickListeners)
 		{
-			foreach(Action? callback in this.tickListeners[channel].ToArray())
+			this.tickListeners.TryGetValue(channel, out var callbacks);
+			if (callbacks != null)
 			{
-				if (callback?.Target == null)
+				foreach(Action? callback in this.tickListeners[channel].ToArray())
 				{
-					this.tickListeners[channel].Remove(callback);
-					break;
-				}
+					if (callback?.Target == null)
+					{
+						this.tickListeners[channel].Remove(callback);
+						break;
+					}
 
-				try
-				{
-					callback?.Invoke();
-				}
-				catch(Exception ex)
-				{
-					this.Log.Error(ex, $"Error ticking {callback?.Method} on {callback?.Target}. This callback will be disabled.");
-					this.tickListeners[channel].Remove(callback);
-					break;
+					try
+					{
+						callback?.Invoke();
+					}
+					catch(Exception ex)
+					{
+						this.Log.Error(ex, $"Error ticking {callback?.Method} on {callback?.Target}. This callback will be disabled.");
+						this.tickListeners[channel].Remove(callback);
+						break;
+					}
 				}
 			}
 		}
 
-		this.tickDispatchers.TryGetValue(channel, out var dispatches);
-		if (dispatches != null)
+		lock (this.tickDispatchers)
 		{
-			while(dispatches.Count > 0)
+			this.tickDispatchers.TryGetValue(channel, out var dispatches);
+			if (dispatches != null)
 			{
-				Action? dispatch = dispatches.Dequeue();
-				try
+				while(dispatches.Count > 0)
 				{
-					dispatch?.Invoke();
-				}
-				catch(Exception ex)
-				{
-					this.Log.Error(ex, $"Error dispatching {dispatch?.Method} on {dispatch?.Target}.");
-					break;
+					Action? dispatch = dispatches.Dequeue();
+					try
+					{
+						dispatch?.Invoke();
+					}
+					catch(Exception ex)
+					{
+						this.Log.Error(ex, $"Error dispatching {dispatch?.Method} on {dispatch?.Target}.");
+						break;
+					}
 				}
 			}
 		}

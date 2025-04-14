@@ -19,7 +19,6 @@ public enum UpdateSource
 {
 	Script,
 	Interface,
-	Library,
 	Restore,
 	Preview,
 }

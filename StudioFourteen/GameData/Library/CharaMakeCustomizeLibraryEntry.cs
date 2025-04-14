@@ -81,7 +81,7 @@ public class CharaMakeCustomizeLibraryEntry : LibraryEntryBase
 	public async Task Apply(int objectTableIndex)
 	{
 		await TickService.GameTick();
-		this.Services.CharacterAppearance.SetCustomizeValue(objectTableIndex, this.CustomizeIndex, this.MakeCustomize.Value.FeatureID, UpdateSource.Library);
+		this.Services.CharacterAppearance.SetCustomizeValue(objectTableIndex, this.CustomizeIndex, this.MakeCustomize.Value.FeatureID, UpdateSource.Interface);
 	}
 
 	protected override string GetInternalId() => $"{this.MakeCustomize.RowId}";

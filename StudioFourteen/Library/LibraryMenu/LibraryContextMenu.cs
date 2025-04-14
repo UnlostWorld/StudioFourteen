@@ -34,7 +34,6 @@ using WpfUtils.Utils;
 [DependencyProperty<object>("SourceHeader")]
 [DependencyProperty<object>("SourceHeaderTemplate")]
 [DependencyProperty<object>("BackgroundDetail")]
-[DependencyProperty<Action<LibraryContextMenu>>("CollectingMenus")]
 public partial class LibraryContextMenu : PopOut, IContextMenu
 {
 	protected readonly ILogger Log = Logging.ForContext<LibraryContextMenu>();
@@ -91,7 +90,7 @@ public partial class LibraryContextMenu : PopOut, IContextMenu
 		this.IsExpanded = true;
 		this.IsEnabled = true;
 
-		this.CollectMenus().Run();
+		this.Services.Context.GetContext(this, this.currentEntries.ToArray());
 
 		this.Dispatcher.Invoke(() =>
 		{
@@ -135,90 +134,16 @@ public partial class LibraryContextMenu : PopOut, IContextMenu
 		this.IsOpen = true;
 	}
 
+	public async Task OnMenusLoaded(List<MenuEntry> entries)
+	{
+		await this.MainThread();
+		this.Menus.Replace(entries);
+	}
+
 	private async Task CloseActual()
 	{
 		await this.MainThread();
 		this.IsOpen = false;
-	}
-
-	private Task CollectMenus()
-	{
-		this.Menus.Clear();
-
-		this.CollectingMenus?.Invoke(this);
-
-		/*foreach (LibraryEntryBase entry in this.currentEntries)
-		{
-			ContextMenuRoot root = new();
-			await entry.GetLibraryMenus(root);
-			roots.Add(root);
-		}
-
-		await this.MainThread();
-
-		if (this.currentEntries.Count == 1)
-		{
-			foreach (MenuEntry entry in roots[0].Children)
-			{
-				entry.SetContextMenu(this);
-				this.Menus.Add(entry);
-			}
-		}
-		else if (this.currentEntries.Count > 1)
-		{
-			// Get all entries, grouped by their labels.
-			Dictionary<string, List<MenuEntry>> entryLookup = new();
-			List<string> entryLabels = new();
-			foreach (ContextMenuRoot root in roots)
-			{
-				foreach (MenuEntry entry in root.Children)
-				{
-					if (entry.Label == null)
-						continue;
-
-					if (!entry.IsEnabled)
-						continue;
-
-					if (!entryLookup.ContainsKey(entry.Label))
-					{
-						entryLabels.Add(entry.Label);
-						entryLookup.Add(entry.Label, new());
-					}
-
-					entryLookup[entry.Label].Add(entry);
-				}
-			}
-
-			// get all menu entries that are valid for all selected library entries
-			foreach (string label in entryLabels)
-			{
-				if (entryLookup[label].Count != this.currentEntries.Count)
-					continue;
-
-				Func<Task> invoke = async () =>
-				{
-					LongTaskWindow? ltw = await LongTaskWindow.Show();
-
-					int count = entryLookup[label].Count;
-					int current = 0;
-					foreach (MenuEntry subEntry in entryLookup[label])
-					{
-						current++;
-						ltw?.SetStatus($"{current} / {count}");
-
-						await subEntry.Invoke();
-					}
-
-					ltw?.Close();
-				};
-
-				MenuEntry groupEntry = new(entryLookup[label][0].Icon, label, invoke);
-				groupEntry.SetContextMenu(this);
-				this.Menus.Add(groupEntry);
-			}
-		}*/
-
-		return Task.CompletedTask;
 	}
 
 	private void OnMouseRightButtonUp(object sender, MouseButtonEventArgs e)

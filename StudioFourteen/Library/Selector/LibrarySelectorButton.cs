@@ -33,7 +33,6 @@ using System.Windows.Input;
 [DependencyProperty<object>("ToolTipHeader")]
 [DependencyProperty<object>("ToolTipHeaderTemplate")]
 [DependencyProperty<object>("PopOutBackgroundDetail")]
-[DependencyProperty<Action<LibraryContextMenu>>("CollectingMenus")]
 [DependencyProperty<object>("PopOutFooter")]
 [DependencyProperty<object>("PopOutFooterTemplate")]
 [DependencyProperty<bool>("IsClear", DefaultBindingMode = DefaultBindingMode.OneWayToSource)]

@@ -59,4 +59,5 @@ public class ServiceManager : ServiceManagerBase
 	public GameObjectsService GameObjects { get; init; } = new();
 	public Animation.AnimationService Animations { get; init; } = new();
 	public DragAndDrop.DragAndDropService DragAndDrop { get; init; } = new();
+	public Context.ContextMenuService Context { get; init; } = new();
 }

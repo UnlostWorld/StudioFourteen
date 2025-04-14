@@ -1,0 +1,98 @@
+// .                    @@             _____ _______ _    _ _____ _____ ____
+//          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
+//         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
+//         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
+//        @@@@       @@@@@@@          ____) |  | |  | |__| | |__| || || |__| |
+//    @@@@@             @@@          |_____/   |_|   \____/|_____/_____\____/
+//     @@@      @@@      @@        ___     _    _   _  __   _____  ___  ___  _  _
+//      @@    @@@@@@@    @@       |  _|  / _ \ | | | || _ \|_   _|| __|| __|| \| |
+//      @@    @@@@@@@    @   @    | __| | (_) || |_| ||   /  | |  | _| | _| | .` |
+//    @@@@      @@@      @@@@     |_|    \___/  \___/ |_|_\  |_|  |___||___||_|\_|
+//     @@@@             @@@        https://github.com/UnlostWorld/StudioFourteen
+//       @@@@@      @@@@@
+//        @@@@@@@@@@@@@@                This software is licensed under the
+//            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
+
+namespace StudioFourteen.Context;
+
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Serilog;
+using StudioFourteen.Services;
+using WpfUtils.Extensions;
+
+public interface IContextProvider
+{
+	Type GetTargetType();
+	Task GetMenus(object target, ref List<MenuEntry> menus);
+}
+
+public abstract class ContextProvider<T> : IContextProvider
+{
+	protected readonly ILogger Log;
+
+	public ContextProvider()
+	{
+		this.Log = Logging.ForContext(this.GetType());
+	}
+
+	protected ServiceManager Services => ServiceManager.Instance;
+
+	public Task GetMenus(object target, ref List<MenuEntry> menus)
+	{
+		if (target is not T tTarget)
+			return Task.CompletedTask;
+
+		return this.GetMenus(tTarget, ref menus);
+	}
+
+	public Type GetTargetType() => typeof(T);
+
+	protected abstract Task GetMenus(T target, ref List<MenuEntry> menus);
+}
+
+public class ContextMenuService : ServiceBase
+{
+	private readonly List<IContextProvider> providers = new();
+
+	public void RegisterProider<T>()
+		where T : IContextProvider, new()
+	{
+		this.RegisterProider(new T());
+	}
+
+	public void RegisterProider(IContextProvider provider)
+	{
+		this.providers.Add(provider);
+	}
+
+	public void GetContext(IContextMenu menu, params object[] targets)
+	{
+		this.GetContextAsync(menu, targets).Run();
+	}
+
+	public async Task GetContextAsync(IContextMenu menu, params object[] targets)
+	{
+		List<MenuEntry> menus = new();
+		foreach(object target in targets)
+		{
+			Type objectType = target.GetType();
+
+			foreach(IContextProvider provider in this.providers)
+			{
+				if (!objectType.IsAssignableTo(provider.GetTargetType()))
+					continue;
+
+				await provider.GetMenus(target, ref menus);
+			}
+		}
+
+		foreach(MenuEntry entry in menus)
+		{
+			entry.ContextMenu = menu;
+		}
+
+		await menu.OnMenusLoaded(menus);
+	}
+}

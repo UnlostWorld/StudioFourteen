@@ -133,7 +133,7 @@ public class ItemLibraryEntry : ExcelLibraryEntry
 			this.Services.Target.TargetObjectIndex,
 			slot,
 			this.GetModelId(slot),
-			UpdateSource.Library);
+			UpdateSource.Interface);
 	}
 
 	public Task<bool> CanEquipTo(int objectTableId)

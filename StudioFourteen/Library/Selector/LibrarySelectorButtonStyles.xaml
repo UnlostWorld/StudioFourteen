@@ -61,7 +61,6 @@
 			<menu:LibraryContextMenu
 				x:Name="PART_Menu"
 				BackgroundDetail="{TemplateBinding PopOutBackgroundDetail}"
-				CollectingMenus="{TemplateBinding CollectingMenus}"
 				SourceHeader="{TemplateBinding ToolTipHeader}"
 				SourceHeaderTemplate="{TemplateBinding ToolTipHeaderTemplate}"
 				Style="{DynamicResource LibraryContextMenuStyle}" />
@@ -111,7 +110,6 @@
 			<menu:LibraryContextMenu
 				x:Name="PART_Menu"
 				BackgroundDetail="{TemplateBinding PopOutBackgroundDetail}"
-				CollectingMenus="{TemplateBinding CollectingMenus}"
 				SourceHeader="{TemplateBinding ToolTipHeader}"
 				SourceHeaderTemplate="{TemplateBinding ToolTipHeaderTemplate}"
 				Style="{DynamicResource LibraryContextMenuStyle}" />
