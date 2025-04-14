@@ -42,8 +42,10 @@ public class CharacterAppearanceDragSceneInstance(ICharacterAppearance appearanc
 		this.spawnedObjectId = await appearance.Spawn();
 	}
 
-	public void Drop()
+	public async Task Drop(HitInfo hit)
 	{
+		await TickService.GameTick();
+		this.UpdatePosition(hit);
 	}
 
 	public async Task LeaveScene()

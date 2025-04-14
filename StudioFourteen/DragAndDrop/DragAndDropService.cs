@@ -34,7 +34,7 @@ public interface IDragSceneInstance
 	Task EnterScene();
 	void UpdatePosition(HitInfo hit);
 	Task LeaveScene();
-	void Drop();
+	Task Drop(HitInfo hit);
 }
 
 public partial class DragAndDropService : ServiceBase
@@ -42,7 +42,7 @@ public partial class DragAndDropService : ServiceBase
 	[Notify] private bool isDragging;
 
 	private IDraggable? currentDragObject;
-	private IDragSceneInstance? currentSceneInstance;
+	private DragAndDropOperation? currentOperation;
 
 	public override void Attach()
 	{
@@ -70,20 +70,21 @@ public partial class DragAndDropService : ServiceBase
 		if (this.currentDragObject == null)
 			return;
 
-		if (this.currentSceneInstance != null)
+		if (this.currentOperation != null)
 			return;
 
-		this.currentSceneInstance = this.currentDragObject.CreateSceneInstance();
-		if (this.currentSceneInstance != null)
+		IDragSceneInstance? instance = this.currentDragObject.CreateSceneInstance();
+		if (instance != null)
 		{
+			this.currentOperation = new(instance);
 			e.Effects = DragDropEffects.Move;
-			this.currentSceneInstance.EnterScene().Run();
+			this.currentOperation.EnterScene().Run();
 		}
 	}
 
 	public void HandleDragOverScene(DragEventArgs e)
 	{
-		if (this.currentSceneInstance != null)
+		if (this.currentOperation != null)
 		{
 			e.Effects = DragDropEffects.Move;
 		}
@@ -91,31 +92,78 @@ public partial class DragAndDropService : ServiceBase
 
 	public void HandleDragLeaveScene(DragEventArgs e)
 	{
-		if (this.currentSceneInstance != null)
+		if (this.currentOperation != null)
 		{
-			this.currentSceneInstance.LeaveScene();
-			this.currentSceneInstance = null;
+			this.currentOperation.LeaveScene().Run();
+			this.currentOperation = null;
 		}
 	}
 
 	public void HandleDropScene(DragEventArgs e)
 	{
-		if (this.currentSceneInstance != null)
+		if (this.currentOperation != null)
 		{
-			this.currentSceneInstance.Drop();
-			this.currentSceneInstance = null;
+			this.currentOperation.Drop().Run();
+			this.currentOperation = null;
 		}
 	}
 
 	private void OnGameTick()
 	{
-		if (this.currentSceneInstance == null)
+		if (this.currentOperation == null)
 			return;
 
 		HitInfo? hit = RayCast.CastFromCursor();
 		if (hit == null)
 			return;
 
-		this.currentSceneInstance.UpdatePosition(hit);
+		this.currentOperation.UpdatePosition(hit);
+	}
+}
+
+public class DragAndDropOperation(IDragSceneInstance instance)
+{
+	private bool isEntering;
+	private bool isLeaving;
+	private bool isDropping;
+	private HitInfo? lastHit;
+
+	public async Task EnterScene()
+	{
+		while(this.isLeaving || this.isDropping)
+			await Task.Delay(100);
+
+		this.isEntering = true;
+		await instance.EnterScene();
+		this.isEntering = false;
+	}
+
+	public async Task LeaveScene()
+	{
+		while(this.isEntering || this.isDropping)
+			await Task.Delay(100);
+
+		this.isLeaving = true;
+		await instance.LeaveScene();
+		this.isLeaving = false;
+	}
+
+	public async Task Drop()
+	{
+		while(this.isEntering || this.isLeaving)
+			await Task.Delay(100);
+
+		if (this.lastHit == null)
+			throw new Exception("Last Hit is null");
+
+		this.isDropping = true;
+		await instance.Drop(this.lastHit);
+		this.isDropping = false;
+	}
+
+	public void UpdatePosition(HitInfo hit)
+	{
+		this.lastHit = hit;
+		instance.UpdatePosition(hit);
 	}
 }
