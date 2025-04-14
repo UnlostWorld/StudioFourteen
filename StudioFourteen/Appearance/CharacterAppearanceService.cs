@@ -23,6 +23,7 @@ using FontAwesome.Sharp;
 using Lumina.Excel.Sheets;
 using StudioFourteen.Context;
 using StudioFourteen.Files;
+using StudioFourteen.GameData.Library;
 using StudioFourteen.Interop;
 using StudioFourteen.Plugin;
 using StudioFourteen.Services;
@@ -204,16 +205,31 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 		this.UpdateCustomize(objectTableIndex, null, source);
 	}
 
-	public unsafe void SetWeapon(int objectTableIndex, WeaponSlot slot, WeaponModelId item, UpdateSource source)
+	public unsafe void SetWeapon(int objectTableIndex, WeaponSlot slot, WeaponModelId modelId, UpdateSource source)
 	{
 		TickService.VerifyGameTickThread();
+
+		// We don't know what it does, lets not mess with it.
+		if (slot == WeaponSlot.Unk)
+			return;
+
+		// Verify that the weapon is valid, or else the character will just vanish.
+		if (modelId.Value != 0)
+		{
+			ItemLibraryEntry? item = this.Services.GameData.Items?.Find(slot, modelId);
+			if (item == null)
+			{
+				this.Log.Warning($"Attempt to set invalid {slot} model: {modelId.Id}, {modelId.Type}, {modelId.Variant} to character {objectTableIndex}");
+				modelId.Value = 0;
+			}
+		}
 
 		Character* pCharacter = this.Services.GameObjects.Get<Character>(objectTableIndex);
 
 		if (source != UpdateSource.Restore && source != UpdateSource.Preview)
 			this.Backup(pCharacter);
 
-		pCharacter->DrawData.LoadWeapon(slot, item, 1, 1, 0, 0);
+		pCharacter->DrawData.LoadWeapon(slot, modelId, 1, 1, 0, 0);
 		this.OnAppearanceChanged?.Invoke(objectTableIndex);
 	}
 
