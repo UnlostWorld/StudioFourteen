@@ -216,7 +216,7 @@ public class RedrawService : ServiceBase
 			}
 
 			// Restore pose
-			await file.Apply(objectTableIndex, false);
+			await file.Apply(objectTableIndex, UpdateSource.Restore, false);
 
 			// Restore position
 			await TickService.GameTick();

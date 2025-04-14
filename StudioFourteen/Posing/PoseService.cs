@@ -60,7 +60,7 @@ public enum MirrorModes
 	Receiving,
 }
 
-public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
+public partial class PoseService : ServiceBase
 {
 	private readonly List<BoneId> boneIds = new();
 	private readonly Dictionary<BoneId, BoneReference> boneReferences = new();
@@ -84,7 +84,6 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 	{
 		this.Services.CharacterLifecycle.CharacterDestroyed += this.OnCharacterDestroyed;
 		this.Services.GroupPose.StateChanged += this.OnGroupPoseStateChange;
-		WorldContextMenu.AddProvider(this);
 		return base.Start();
 	}
 
@@ -93,7 +92,6 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 		this.Services.CharacterLifecycle.CharacterDestroyed -= this.OnCharacterDestroyed;
 		this.Services.GroupPose.StateChanged -= this.OnGroupPoseStateChange;
 		this.FlushBoneReferences();
-		WorldContextMenu.RemoveProvider(this);
 		return base.Stop();
 	}
 
@@ -537,27 +535,6 @@ public partial class PoseService : ServiceBase, WorldContextMenu.IProvider
 		PoseFile file = new();
 		await file.Save(objectTableIndex);
 		this.Services.Files.SaveFile(file, $"{name}'s Pose");
-	}
-
-	public Task GetMenu(WorldContextMenu menu)
-	{
-		if (menu.IsObject)
-		{
-			bool hasReference = this.HasBoneReferences(menu.ObjectTableIndex);
-			menu.Add(IconChar.RotateLeft, "Restore Pose", hasReference, (h) =>
-			{
-				this.FlushBoneReferences(h.ObjectTableIndex);
-				return Task.CompletedTask;
-			});
-
-			menu.Add(IconChar.Save, "Export Pose", true, (h) => this.ExportPose(h.ObjectTableIndex));
-		}
-		else
-		{
-			menu.Add(IconChar.ArrowLeft, $"Move {this.Services.Target.CharacterName} Here", true, (h) => this.MoveTarget(h.Position));
-		}
-
-		return Task.CompletedTask;
 	}
 
 	private unsafe void SetPosition(GameObject* self, float x, float y, float z)

@@ -156,21 +156,7 @@ public class AppearanceFile : FileBase, ICharacterAppearance
 
 	public IDragSceneInstance CreateSceneInstance() => new CharacterAppearanceDragSceneInstance(this);
 
-	[LibraryMenu(IconChar.Plus, "LOC_AppearanceCreateCharacter")]
-	public Task<int> Spawn()
-	{
-		return ServiceManager.Instance.CharacterLifecycle.CreateAsync(this);
-	}
-
-	public Task<bool> CanSpawn() => Task.FromResult(ServiceManager.Instance.CharacterLifecycle.CanSpawn);
-
-	[LibraryMenuTarget(IconChar.UserShield, "LOC_AppearanceApplyTo")]
-	public async Task Apply(int objectTableIndex)
-	{
-		await this.Apply(objectTableIndex, CharacterExtensions.UpdateSource.Library);
-	}
-
-	public async Task Apply(int objectTableIndex, CharacterExtensions.UpdateSource source)
+	public async Task Apply(int objectTableIndex, UpdateSource source)
 	{
 		await TickService.GameTick();
 

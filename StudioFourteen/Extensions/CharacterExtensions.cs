@@ -44,17 +44,8 @@ public enum CharacterFlags : byte
 	VisorToggle = 8,
 }
 
-public static class CharacterExtensions
+public static partial class CharacterExtensions
 {
-	public enum UpdateSource
-	{
-		Script,
-		Interface,
-		Library,
-		Restore,
-		Preview,
-	}
-
 	public static bool CanDraw(ref this Character self)
 	{
 		if (!self.IsReadyToDraw())

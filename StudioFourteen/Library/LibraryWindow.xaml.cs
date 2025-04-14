@@ -45,7 +45,6 @@ public partial class LibraryWindow : Panel
 	private readonly FuncQueue searchQueue;
 	private readonly FuncQueue stopPreviewQueue;
 	private readonly Stopwatch searchStopwatch = new();
-	private readonly LibraryDoubleClickContext resultExecutionContext = new();
 	private LibraryPreviewBase? currentPreview;
 	private bool flatten = false;
 	[Notify] private Result? selectedResult = null;
@@ -318,7 +317,7 @@ public partial class LibraryWindow : Panel
 		if (fileSource == null)
 			return;
 
-		await this.resultExecutionContext.Execute(fileSource.Get(file, typeInfo));
+		////await this.resultExecutionContext.Execute(fileSource.Get(file, typeInfo));
 
 		await this.MainThread();
 		this.Close();
@@ -524,7 +523,7 @@ public partial class LibraryWindow : Panel
 				this.currentPreview = null;
 			}
 
-			await this.resultExecutionContext.Execute(result.Entry);
+			////await this.resultExecutionContext.Execute(result.Entry);
 		}
 	}
 

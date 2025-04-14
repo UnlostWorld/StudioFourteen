@@ -196,26 +196,6 @@ public class FileEntry : LibraryEntryBase
 		return this.TypeInfo.LoadsType.IsAssignableTo(type);
 	}
 
-	public override async Task GetLibraryMenus(ILibraryContextMenu menu)
-	{
-		await base.GetLibraryMenus(menu);
-
-		FileBase? file = this.File;
-		if (file != null)
-		{
-			Type type = file.GetType();
-			MethodInfo[] methods = type.GetMethods();
-			foreach (MethodInfo method in methods)
-			{
-				LibraryMenuAttributeBase? attribute = method.GetCustomAttribute<LibraryMenuAttributeBase>();
-				if (attribute == null)
-					continue;
-
-				await attribute.GetMenu(file, method, menu);
-			}
-		}
-	}
-
 	public override LibraryPreviewBase? GetPreview()
 	{
 		FileBase? file = this.File;

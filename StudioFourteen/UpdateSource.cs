@@ -1,4 +1,4 @@
-﻿// .                    @@             _____ _______ _    _ _____ _____ ____
+// .                    @@             _____ _______ _    _ _____ _____ ____
 //          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
 //         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
 //         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
@@ -13,14 +13,13 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Library.LibraryMenu;
+namespace StudioFourteen;
 
-using System;
-using System.Reflection;
-using System.Threading.Tasks;
-
-[AttributeUsage(AttributeTargets.Method)]
-public abstract class LibraryMenuAttributeBase : Attribute
+public enum UpdateSource
 {
-	public abstract Task GetMenu(object methodTarget, MethodInfo method, ILibraryContextMenu menu);
+	Script,
+	Interface,
+	Library,
+	Restore,
+	Preview,
 }

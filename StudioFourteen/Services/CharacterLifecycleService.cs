@@ -18,7 +18,6 @@ namespace StudioFourteen.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Event;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
-using FontAwesome.Sharp;
 using StudioFourteen.Appearance;
 using StudioFourteen.Context;
 using StudioFourteen.Interop;
@@ -33,7 +32,7 @@ using System.Numerics;
 using System.Threading.Tasks;
 using WpfUtils.Extensions;
 
-public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
+public class CharacterLifecycleService : ServiceBase
 {
 	private static readonly List<ushort> CreatedIndexes = new();
 
@@ -55,27 +54,20 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 		}
 	}
 
-	public override Task Start()
-	{
-		WorldContextMenu.AddProvider(this);
-		return base.Start();
-	}
-
 	public override async Task Stop()
 	{
-		WorldContextMenu.RemoveProvider(this);
 		await base.Stop();
 
 		await TickService.GameTick();
 		this.DestroyAllCreated();
 	}
 
-	public async Task<int> CreateAsync(ICharacterAppearance? appearance = null)
+	public async Task<int> CreateAsync(ICharacterAppearance? appearance, UpdateSource updateSource)
 	{
-		return await this.CreateAsync(Vector3.Zero, appearance);
+		return await this.CreateAsync(Vector3.Zero, appearance, updateSource);
 	}
 
-	public async Task<int> CreateAsync(Vector3 position, ICharacterAppearance? appearance = null)
+	public async Task<int> CreateAsync(Vector3 position, ICharacterAppearance? appearance, UpdateSource updateSource)
 	{
 		await TickService.GameTick();
 
@@ -114,7 +106,7 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 			if (appearance.Name != null)
 				name = appearance.Name;
 
-			await appearance.Apply(index);
+			await appearance.Apply(index, updateSource);
 		}
 
 		await TickService.GameTick();
@@ -180,20 +172,6 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 		}
 
 		CreatedIndexes.Clear();
-	}
-
-	public Task GetMenu(WorldContextMenu menu)
-	{
-		if (menu.IsObject)
-		{
-			menu.AddIcon(IconChar.TrashCan, "Destroy Character", true, (h) => this.DestroyAsync(h.ObjectTableIndex));
-		}
-		else
-		{
-			menu.AddIcon(IconChar.UserPlus, "Create Character", true, (h) => this.CreateAsync(h.Position));
-		}
-
-		return Task.CompletedTask;
 	}
 
 	public override unsafe void Attach()

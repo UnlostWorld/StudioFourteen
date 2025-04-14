@@ -141,13 +141,7 @@ public class PoseFile : FileBase
 		}
 	}
 
-	[LibraryMenuTarget(IconChar.Running, "LOC_AppearanceApplyTo")]
-	public Task Apply(int objectTableIndex)
-	{
-		return this.Apply(objectTableIndex, false);
-	}
-
-	public async Task Apply(int objectTableIndex, bool immediate)
+	public async Task Apply(int objectTableIndex, UpdateSource source, bool immediate = false)
 	{
 		await TickService.GameTick();
 
@@ -260,7 +254,7 @@ public class PoseFile : FileBase
 				await Task.Delay(33);
 			}
 
-			await file.Apply(this.Services.Target.TargetObjectIndex);
+			await file.Apply(this.Services.Target.TargetObjectIndex, UpdateSource.Preview);
 		}
 
 		protected override async Task Stop()
@@ -268,7 +262,7 @@ public class PoseFile : FileBase
 			if (this.backupPose == null)
 				throw new Exception("No backup pose in pose preview");
 
-			await this.backupPose.Apply(this.Services.Target.TargetObjectIndex);
+			await this.backupPose.Apply(this.Services.Target.TargetObjectIndex, UpdateSource.Restore);
 		}
 	}
 }

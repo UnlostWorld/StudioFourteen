@@ -14,16 +14,12 @@
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
 namespace StudioFourteen.Appearance;
+
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using FontAwesome.Sharp;
-using StudioFourteen;
 using StudioFourteen.DragAndDrop;
 using StudioFourteen.GameData;
 using StudioFourteen.Library;
-using StudioFourteen.Library.LibraryMenu;
-using StudioFourteen.Plugin;
 using StudioFourteen.Services;
-using StudioFourteen.Utilities;
 using System.Threading.Tasks;
 
 public class CharacterBackupAppearance
@@ -66,19 +62,7 @@ public class CharacterBackupAppearance
 
 	public IDragSceneInstance CreateSceneInstance() => new CharacterAppearanceDragSceneInstance(this);
 
-	[LibraryMenu(IconChar.Plus, "LOC_AppearanceCreateCharacter")]
-	public Task<int> Spawn()
-	{
-		return ServiceManager.Instance.CharacterLifecycle.CreateAsync(this);
-	}
-
-	[LibraryMenuTarget(IconChar.UserShield, "LOC_AppearanceApplyTo")]
-	public Task Apply(int objectTableIndex)
-	{
-		return this.Apply(objectTableIndex, CharacterExtensions.UpdateSource.Library);
-	}
-
-	public async Task Apply(int objectTableIndex, CharacterExtensions.UpdateSource source)
+	public async Task Apply(int objectTableIndex, UpdateSource source)
 	{
 		await TickService.GameTick();
 

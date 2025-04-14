@@ -78,11 +78,10 @@ public class CharaMakeCustomizeLibraryEntry : LibraryEntryBase
 
 	public override string ToString() => $"#{this.MakeCustomize.RowId}";
 
-	[LibraryMenuTarget(FontAwesome.Sharp.IconChar.PaintBrush, "LOC_AppearanceApplyTo")]
 	public async Task Apply(int objectTableIndex)
 	{
 		await TickService.GameTick();
-		this.Services.CharacterAppearance.SetCustomizeValue(objectTableIndex, this.CustomizeIndex, this.MakeCustomize.Value.FeatureID, CharacterExtensions.UpdateSource.Library);
+		this.Services.CharacterAppearance.SetCustomizeValue(objectTableIndex, this.CustomizeIndex, this.MakeCustomize.Value.FeatureID, UpdateSource.Library);
 	}
 
 	protected override string GetInternalId() => $"{this.MakeCustomize.RowId}";

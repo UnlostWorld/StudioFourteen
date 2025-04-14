@@ -16,28 +16,17 @@
 namespace StudioFourteen.Library.LibraryMenu;
 
 using DependencyPropertyGenerator;
-using FFXIVClientStructs.FFXIV.Client.Game.UI;
-using FontAwesome.Sharp;
 using Serilog;
-using StudioFourteen.Studio;
+using StudioFourteen.Context;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using System.Windows.Threading;
 using WpfUtils;
-using WpfUtils.Commands;
 using WpfUtils.Controls;
 using WpfUtils.Extensions;
 using WpfUtils.Utils;
-
-public interface ILibraryContextMenu
-{
-	MenuEntry AddMenu(IconChar? icon, string? label);
-	MenuEntry AddMenu(IconChar? icon, string? label, Func<Task> invoke);
-	MenuEntry AddMenu(IconChar? icon, string? label, Action invoke);
-}
 
 [DependencyProperty<LibraryEntryBase>("Entry")]
 [DependencyProperty<string>("MultiSelectLabel")]
@@ -46,7 +35,7 @@ public interface ILibraryContextMenu
 [DependencyProperty<object>("SourceHeaderTemplate")]
 [DependencyProperty<object>("BackgroundDetail")]
 [DependencyProperty<Action<LibraryContextMenu>>("CollectingMenus")]
-public partial class LibraryContextMenu : PopOut
+public partial class LibraryContextMenu : PopOut, IContextMenu
 {
 	protected readonly ILogger Log = Logging.ForContext<LibraryContextMenu>();
 	private readonly List<LibraryEntryBase> currentEntries = new();
@@ -152,15 +141,13 @@ public partial class LibraryContextMenu : PopOut
 		this.IsOpen = false;
 	}
 
-	private async Task CollectMenus()
+	private Task CollectMenus()
 	{
 		this.Menus.Clear();
 
 		this.CollectingMenus?.Invoke(this);
 
-		List<ContextMenuRoot> roots = new();
-
-		foreach (LibraryEntryBase entry in this.currentEntries)
+		/*foreach (LibraryEntryBase entry in this.currentEntries)
 		{
 			ContextMenuRoot root = new();
 			await entry.GetLibraryMenus(root);
@@ -229,7 +216,9 @@ public partial class LibraryContextMenu : PopOut
 				groupEntry.SetContextMenu(this);
 				this.Menus.Add(groupEntry);
 			}
-		}
+		}*/
+
+		return Task.CompletedTask;
 	}
 
 	private void OnMouseRightButtonUp(object sender, MouseButtonEventArgs e)
@@ -239,117 +228,5 @@ public partial class LibraryContextMenu : PopOut
 			this.Expand();
 			e.Handled = true;
 		}
-	}
-
-	private class ContextMenuRoot : ILibraryContextMenu
-	{
-		public readonly List<MenuEntry> Children = new();
-
-		public void AddMenu(MenuEntry entry)
-		{
-			this.Children.Add(entry);
-		}
-
-		public MenuEntry AddMenu(IconChar? icon, string? label)
-		{
-			MenuEntry entry = new(icon, label);
-			this.Children.Add(entry);
-			return entry;
-		}
-
-		public MenuEntry AddMenu(IconChar? icon, string? label, Action invoke)
-		{
-			Func<Task> f = () =>
-			{
-				invoke?.Invoke();
-				return Task.CompletedTask;
-			};
-
-			return this.AddMenu(icon, label, f);
-		}
-
-		public MenuEntry AddMenu(IconChar? icon, string? label, Func<Task> invoke)
-		{
-			MenuEntry entry = new(icon, label, invoke);
-			this.Children.Add(entry);
-			return entry;
-		}
-	}
-}
-
-public class MenuEntry
-{
-	private readonly List<MenuEntry> pendingChildren = new();
-	private readonly Func<Task>? invoke;
-
-	public MenuEntry()
-	{
-	}
-
-	public MenuEntry(IconChar? icon, string? label, Func<Task>? invoke = null)
-	{
-		this.Icon = icon;
-		this.Label = label;
-		this.invoke = invoke;
-		this.OnClicked = new SimpleCommand(this.Invoke);
-	}
-
-	public IconChar? Icon { get; set; }
-	public string? Label { get; set; }
-	public ICommand? OnClicked { get; set; }
-
-	public bool IsEnabled { get; set; } = true;
-
-	public FastObservableCollection<MenuEntry> Children { get; init; } = new();
-	public LibraryContextMenu? ContextMenu { get; private set; }
-
-	public bool HasChildren => this.Children.Count > 0 || this.pendingChildren.Count > 0;
-
-	public void SetContextMenu(LibraryContextMenu? contextMenu)
-	{
-		this.ContextMenu = contextMenu;
-
-		foreach (MenuEntry entry in this.pendingChildren)
-		{
-			this.Children.Add(entry);
-		}
-
-		this.pendingChildren.Clear();
-
-		foreach (MenuEntry entry in this.Children)
-		{
-			entry.SetContextMenu(contextMenu);
-		}
-	}
-
-	public Task Invoke()
-	{
-		Task? t = this.invoke?.Invoke();
-		this.ContextMenu?.OnMenuInvoked(this);
-
-		if (t == null)
-			return Task.CompletedTask;
-
-		return t;
-	}
-
-	public MenuEntry AddChild(IconChar? icon, string? label, Func<Task>? invoke = null)
-	{
-		MenuEntry child = new(icon, label, invoke);
-		this.pendingChildren.Add(child);
-		return child;
-	}
-
-	public MenuEntry AddChild(IconChar? icon, string? label, Action? invoke = null)
-	{
-		Func<Task> f = () =>
-		{
-			invoke?.Invoke();
-			return Task.CompletedTask;
-		};
-
-		MenuEntry child = new(icon, label, f);
-		this.pendingChildren.Add(child);
-		return child;
 	}
 }

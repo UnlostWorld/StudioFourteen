@@ -83,20 +83,6 @@ public abstract class LibraryEntryBase : ITagged, INotifyPropertyChanged
 		this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 	}
 
-	public virtual async Task GetLibraryMenus(ILibraryContextMenu menu)
-	{
-		Type type = this.GetType();
-		MethodInfo[] methods = type.GetMethods();
-		foreach (MethodInfo method in methods)
-		{
-			LibraryMenuAttributeBase? attribute = method.GetCustomAttribute<LibraryMenuAttributeBase>();
-			if (attribute == null)
-				continue;
-
-			await attribute.GetMenu(this, method, menu);
-		}
-	}
-
 	public virtual LibraryPreviewBase? GetPreview()
 	{
 		return null;

@@ -120,7 +120,7 @@
 					</Border.LayoutTransform>
 
 					<StackPanel>
-						<UniformGrid Rows="1">
+						<UniformGrid Rows="1" Height="28">
 							<ToggleButton
 								x:Name="FavoritesToggle"
 								Margin="0"
@@ -129,21 +129,13 @@
 								Style="{DynamicResource WpfUtilsIconToggleButton}">
 
 								<Grid>
-									<icons:IconView Icon="fa-Heart" Visibility="{Binding ElementName=FavoritesToggle, Path=IsChecked, Converter={StaticResource B2V}}" />
-									<icons:IconView Icon="fa-line-Heart" Visibility="{Binding ElementName=FavoritesToggle, Path=IsChecked, Converter={StaticResource !B2V}}" />
+									<icons:IconView Icon="{DynamicResource ICON_FavoriteOn}" Visibility="{Binding ElementName=FavoritesToggle, Path=IsChecked, Converter={StaticResource B2V}}" />
+									<icons:IconView Icon="{DynamicResource ICON_FavoriteOff}" Visibility="{Binding ElementName=FavoritesToggle, Path=IsChecked, Converter={StaticResource !B2V}}" />
 								</Grid>
 							</ToggleButton>
-
-							<Button
-								Margin="0"
-								Command="{Binding Icon.ExportCommand, RelativeSource={RelativeSource AncestorType={x:Type menu:LibraryContextMenu}}}"
-								IsEnabled="{Binding Icon.CanExport, FallbackValue=False, RelativeSource={RelativeSource AncestorType={x:Type menu:LibraryContextMenu}}}"
-								ToolTip="{DynamicResource LOC_Library_ExportIcon}">
-								<icons:IconView Icon="{DynamicResource ICON_Export}" />
-							</Button>
 						</UniformGrid>
 
-						<Menu ItemsSource="{Binding Menus, RelativeSource={RelativeSource AncestorType={x:Type menu:LibraryContextMenu}}}">
+						<!--<Menu ItemsSource="{Binding Menus, RelativeSource={RelativeSource AncestorType={x:Type menu:LibraryContextMenu}}}">
 
 							<Menu.ItemTemplate>
 								<HierarchicalDataTemplate DataType="{x:Type menu:MenuEntry}" ItemsSource="{Binding Path=Children}" />
@@ -158,7 +150,7 @@
 									<Setter Property="MenuItem.ItemsSource" Value="{Binding Children}" />
 								</Style>
 							</Menu.ItemContainerStyle>
-						</Menu>
+						</Menu>-->
 					</StackPanel>
 				</Border>
 			</StackPanel>

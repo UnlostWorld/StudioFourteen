@@ -44,7 +44,6 @@ public class ScriptFile(FileInfo fileInfo, string hash)
 		tags.Add("Script");
 	}
 
-	[LibraryMenu(IconChar.Robot, "Run")]
 	public Task Run()
 	{
 		return ServiceManager.Instance.Scripting.RunScriptAsync(this);

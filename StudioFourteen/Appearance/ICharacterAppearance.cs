@@ -26,8 +26,7 @@ public interface ICharacterAppearance : IDraggable
 {
 	string? Name { get; }
 
-	public Task Apply(int objectTableIndex);
-	public Task<int> Spawn();
+	public Task Apply(int objectTableIndex, UpdateSource source);
 }
 
 public class CharacterAppearanceDragSceneInstance(ICharacterAppearance appearance) : IDragSceneInstance
@@ -39,7 +38,7 @@ public class CharacterAppearanceDragSceneInstance(ICharacterAppearance appearanc
 		if (this.spawnedObjectId != -1)
 			return;
 
-		this.spawnedObjectId = await appearance.Spawn();
+		this.spawnedObjectId = await ServiceManager.Instance.CharacterLifecycle.CreateAsync(appearance, UpdateSource.Preview);
 	}
 
 	public async Task Drop(HitInfo hit)

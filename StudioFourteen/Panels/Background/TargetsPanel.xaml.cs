@@ -121,7 +121,7 @@ public partial class TargetsPanel : Panel
 
 	private async Task CreateCharacter(ICharacterAppearance appearance)
 	{
-		int index = await this.Services.CharacterLifecycle.CreateAsync(appearance);
+		int index = await this.Services.CharacterLifecycle.CreateAsync(appearance, UpdateSource.Interface);
 		await this.SelectObject(index);
 	}
 

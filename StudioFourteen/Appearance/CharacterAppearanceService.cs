@@ -16,18 +16,14 @@
 namespace StudioFourteen.Appearance;
 
 using Dalamud.Game.ClientState.Objects.Enums;
-using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
-using FontAwesome.Sharp;
 using Lumina.Excel.Sheets;
 using StudioFourteen.Context;
 using StudioFourteen.Files;
 using StudioFourteen.GameData.Library;
 using StudioFourteen.Interop;
-using StudioFourteen.Plugin;
 using StudioFourteen.Services;
-using StudioFourteen.Utilities;
 using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
@@ -35,7 +31,7 @@ using System.Threading.Tasks;
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.CharacterExtensions;
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 
-public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvider
+public class CharacterAppearanceService : ServiceBase
 {
 	private readonly GroupPoseCharactersLibrarySource provider = new();
 	private readonly ConcurrentDictionary<int, CharacterBackupAppearance> backup = new();
@@ -53,14 +49,11 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 			this.provider.OnEnterGroupPose();
 		}
 
-		WorldContextMenu.AddProvider(this);
-
 		return base.Start();
 	}
 
 	public override Task Stop()
 	{
-		WorldContextMenu.RemoveProvider(this);
 		this.Services.GroupPose.StateChanged -= this.OnGroupPoseStateChange;
 		return base.Stop();
 	}
@@ -124,7 +117,7 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 		if (!this.backup.ContainsKey(objectTableIndex))
 			return;
 
-		await this.backup[objectTableIndex].Apply(objectTableIndex, CharacterExtensions.UpdateSource.Restore);
+		await this.backup[objectTableIndex].Apply(objectTableIndex, UpdateSource.Restore);
 		this.backup.TryRemove(objectTableIndex, out var _);
 	}
 
@@ -142,18 +135,6 @@ public class CharacterAppearanceService : ServiceBase, WorldContextMenu.IProvide
 		AppearanceFile file = new();
 		await file.Read(objectTableIndex);
 		this.Services.Files.SaveFile(file, $"{name}'s Appearance");
-	}
-
-	Task WorldContextMenu.IProvider.GetMenu(WorldContextMenu menu)
-	{
-		if (menu.IsObject)
-		{
-			bool hasBackup = this.backup.ContainsKey(menu.ObjectTableIndex);
-			menu.Add(IconChar.RotateLeft, "Restore Appearance", hasBackup, (h) => this.Restore(h.ObjectTableIndex));
-			menu.Add(IconChar.Save, "Export Appearance", true, (h) => this.Save(h.ObjectTableIndex));
-		}
-
-		return Task.CompletedTask;
 	}
 
 	public unsafe void SetModelCharaId(int objectTableIndex, ModelChara modelChara, UpdateSource source)

@@ -49,16 +49,16 @@ public class SceneFile : FileBase
 		public PoseFile? Pose { get; set; }
 		public AppearanceFile? Appearance { get; set; }
 
-		public async Task Apply(int objectTableIndex)
+		public async Task Apply(int objectTableIndex, UpdateSource source)
 		{
 			if (this.Pose != null)
 			{
-				await this.Pose.Apply(objectTableIndex);
+				await this.Pose.Apply(objectTableIndex, source);
 			}
 
 			if (this.Appearance != null)
 			{
-				await this.Appearance.Apply(objectTableIndex);
+				await this.Appearance.Apply(objectTableIndex, source);
 			}
 		}
 	}

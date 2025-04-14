@@ -108,7 +108,6 @@ public class ItemLibraryEntry : ExcelLibraryEntry
 		return id;
 	}
 
-	[LibraryMenuTarget(IconChar.UserShield, "LOC_SheetItemEquipTo")]
 	public async Task EquipTo(int objectTableId)
 	{
 		if (this.EquipSlot == null)
@@ -134,7 +133,7 @@ public class ItemLibraryEntry : ExcelLibraryEntry
 			this.Services.Target.TargetObjectIndex,
 			slot,
 			this.GetModelId(slot),
-			CharacterExtensions.UpdateSource.Library);
+			UpdateSource.Library);
 	}
 
 	public Task<bool> CanEquipTo(int objectTableId)
@@ -145,7 +144,7 @@ public class ItemLibraryEntry : ExcelLibraryEntry
 		return Task.FromResult(true);
 	}
 
-	public override Task GetLibraryMenus(ILibraryContextMenu menu)
+	/*public override Task GetLibraryMenus(ILibraryContextMenu menu)
 	{
 		MenuEntry webSearchMenu = menu.AddMenu(
 			IconChar.Search,
@@ -176,7 +175,7 @@ public class ItemLibraryEntry : ExcelLibraryEntry
 			});
 
 		return base.GetLibraryMenus(menu);
-	}
+	}*/
 
 	public override LibraryPreviewBase? GetPreview()
 	{
@@ -241,7 +240,7 @@ public class ItemLibraryPreview(ItemLibraryEntry item)
 			this.Services.Target.TargetObjectIndex,
 			slot,
 			item.GetModelId(slot),
-			CharacterExtensions.UpdateSource.Preview);
+			UpdateSource.Preview);
 	}
 
 	protected virtual async Task Start(WeaponSlot slot)
@@ -260,7 +259,7 @@ public class ItemLibraryPreview(ItemLibraryEntry item)
 			this.Services.Target.TargetObjectIndex,
 			slot,
 			item.GetModelId(slot),
-			CharacterExtensions.UpdateSource.Preview);
+			UpdateSource.Preview);
 	}
 
 	protected override async Task Stop()
@@ -273,7 +272,7 @@ public class ItemLibraryPreview(ItemLibraryEntry item)
 				this.Services.Target.TargetObjectIndex,
 				this.backupEquipmentSlot,
 				this.backupEquipment.Value,
-				CharacterExtensions.UpdateSource.Preview);
+				UpdateSource.Preview);
 		}
 
 		if (this.backupWeapon != null)
@@ -282,7 +281,7 @@ public class ItemLibraryPreview(ItemLibraryEntry item)
 				this.Services.Target.TargetObjectIndex,
 				this.backupWeaponSlot,
 				this.backupWeapon.Value,
-				CharacterExtensions.UpdateSource.Preview);
+				UpdateSource.Preview);
 		}
 	}
 }

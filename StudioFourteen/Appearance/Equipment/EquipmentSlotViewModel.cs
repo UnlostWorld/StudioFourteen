@@ -119,7 +119,7 @@ public class EquipmentSlotViewModel : GearViewModelBase<ItemLibraryEntry>
 		}
 
 		if (changed)
-			this.Services.CharacterAppearance.SetEquipment(pCharacter->ObjectIndex, this.Slot, modelId, CharacterExtensions.UpdateSource.Interface);
+			this.Services.CharacterAppearance.SetEquipment(pCharacter->ObjectIndex, this.Slot, modelId, UpdateSource.Interface);
 
 		if (this.lastReadId != modelId.Id || this.lastReadId != modelId.Id)
 		{

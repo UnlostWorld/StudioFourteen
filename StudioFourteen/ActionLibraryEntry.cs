@@ -91,15 +91,4 @@ public class ActionLibraryEntry : ExcelLibraryEntry, ITimelineAnimation
 
 	public ushort IntroTimelineId => (ushort)this.Action.AnimationEnd.RowId;
 	public ushort LoopTimelineId => (ushort)this.Action.AnimationEnd.RowId;
-
-	[LibraryMenu("Execute")]
-	public async Task ExecuteEmote()
-	{
-		await TickService.GameTick();
-		unsafe
-		{
-			uint actionId = ActionManager.Instance()->GetAdjustedActionId(this.Action.RowId);
-			ActionManager.Instance()->UseAction(ActionType.Action, actionId);
-		}
-	}
 }

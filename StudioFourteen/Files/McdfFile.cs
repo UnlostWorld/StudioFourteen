@@ -114,14 +114,7 @@ public class MareFile
 
 	public IDragSceneInstance CreateSceneInstance() => new CharacterAppearanceDragSceneInstance(this);
 
-	[LibraryMenu(IconChar.Plus, "LOC_AppearanceCreateCharacter")]
-	public Task<int> Spawn()
-	{
-		return ServiceManager.Instance.CharacterLifecycle.CreateAsync(this);
-	}
-
-	[LibraryMenuTarget(IconChar.UserShield, "LOC_AppearanceApplyTo")]
-	public async Task Apply(int objectTableIndex)
+	public async Task Apply(int objectTableIndex, UpdateSource source)
 	{
 		await TickService.GameTick();
 

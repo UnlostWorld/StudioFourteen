@@ -90,14 +90,7 @@ public class GlamourerEntry
 
 	public IDragSceneInstance CreateSceneInstance() => new CharacterAppearanceDragSceneInstance(this);
 
-	[LibraryMenu(IconChar.Plus, "LOC_AppearanceCreateCharacter")]
-	public Task<int> Spawn()
-	{
-		return ServiceManager.Instance.CharacterLifecycle.CreateAsync(this);
-	}
-
-	[LibraryMenuTarget(IconChar.UserShield, "LOC_AppearanceApplyTo")]
-	public async Task Apply(int objectTableIndex)
+	public async Task Apply(int objectTableIndex, UpdateSource updateSource)
 	{
 		await TickService.GameTick();
 
@@ -109,7 +102,7 @@ public class GlamourerEntry
 				if (value == null)
 					continue;
 
-				this.Services.CharacterAppearance.SetCustomizeValue(objectTableIndex, index, (byte)value, CharacterExtensions.UpdateSource.Library);
+				this.Services.CharacterAppearance.SetCustomizeValue(objectTableIndex, index, (byte)value, updateSource);
 			}
 		}
 
@@ -121,7 +114,7 @@ public class GlamourerEntry
 				if (id == null)
 					continue;
 
-				this.Services.CharacterAppearance.SetEquipment(objectTableIndex, index, (EquipmentModelId)id, CharacterExtensions.UpdateSource.Library);
+				this.Services.CharacterAppearance.SetEquipment(objectTableIndex, index, (EquipmentModelId)id, updateSource);
 			}
 
 			foreach (WeaponSlot index in Enum.GetValues<WeaponSlot>())
@@ -130,7 +123,7 @@ public class GlamourerEntry
 				if (id == null)
 					continue;
 
-				this.Services.CharacterAppearance.SetWeapon(objectTableIndex, index, (WeaponModelId)id, CharacterExtensions.UpdateSource.Library);
+				this.Services.CharacterAppearance.SetWeapon(objectTableIndex, index, (WeaponModelId)id, updateSource);
 			}
 		}
 

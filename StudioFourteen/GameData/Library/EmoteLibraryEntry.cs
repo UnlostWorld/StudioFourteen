@@ -72,19 +72,6 @@ public class EmoteLibraryEntry : ExcelLibraryEntry, ITimelineAnimation
 	public ushort LoopTimelineId => (ushort)this.Emote.ActionTimeline[(int)EmoteTimelineSlot.Standard].RowId;
 	public ushort IntroTimelineId => (ushort)this.Emote.ActionTimeline[(int)EmoteTimelineSlot.Intro].RowId;
 
-	[LibraryMenu("Execute")]
-	public async Task ExecuteEmote()
-	{
-		await TickService.GameTick();
-		unsafe
-		{
-			if (!EmoteManager.Instance()->CanExecuteEmote((ushort)this.Emote.RowId))
-				return;
-
-			EmoteManager.Instance()->ExecuteEmote((ushort)this.Emote.RowId);
-		}
-	}
-
 	/*
 	private static EmoteTimelineSlot GetTimelineSlotForPose(EmoteController.PoseType poseKind)
 	{

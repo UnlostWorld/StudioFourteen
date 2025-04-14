@@ -85,35 +85,28 @@ public class ENpcResidentLibraryEntry : ExcelLibraryEntry, ICharacterAppearance
 
 	public IDragSceneInstance CreateSceneInstance() => new CharacterAppearanceDragSceneInstance(this);
 
-	[LibraryMenu(IconChar.Plus, "LOC_AppearanceCreateCharacter")]
-	public Task<int> Spawn()
-	{
-		return ServiceManager.Instance.CharacterLifecycle.CreateAsync(this);
-	}
-
-	[LibraryMenuTarget(IconChar.UserShield, "LOC_AppearanceApplyTo")]
-	public async Task Apply(int objectTableIndex)
+	public async Task Apply(int objectTableIndex, UpdateSource source)
 	{
 		await TickService.GameTick();
 
 		if (this.ENpcBase == null)
 			return;
 
-		this.Services.CharacterAppearance.SetModelCharaId(objectTableIndex, this.ENpcBase.Value.ModelChara.Value, UpdateSource.Library);
-		this.Services.CharacterAppearance.SetCustomize(objectTableIndex, this.ENpcBase.Value.CustomizeData, UpdateSource.Library);
+		this.Services.CharacterAppearance.SetModelCharaId(objectTableIndex, this.ENpcBase.Value.ModelChara.Value, source);
+		this.Services.CharacterAppearance.SetCustomize(objectTableIndex, this.ENpcBase.Value.CustomizeData, source);
 
 		if (this.ENpcBase.Value.NpcEquip.IsValid)
 		{
 			foreach (WeaponSlot slot in Enum.GetValues<WeaponSlot>())
 			{
 				WeaponModelId modelId = this.ENpcBase.Value.GetModelId(slot);
-				this.Services.CharacterAppearance.SetWeapon(objectTableIndex, slot, modelId, UpdateSource.Library);
+				this.Services.CharacterAppearance.SetWeapon(objectTableIndex, slot, modelId, source);
 			}
 
 			foreach (EquipmentSlot slot in Enum.GetValues<EquipmentSlot>())
 			{
 				EquipmentModelId modelId = this.ENpcBase.Value.GetModelId(slot);
-				this.Services.CharacterAppearance.SetEquipment(objectTableIndex, slot, modelId, UpdateSource.Library);
+				this.Services.CharacterAppearance.SetEquipment(objectTableIndex, slot, modelId, source);
 			}
 		}
 	}
