@@ -160,14 +160,14 @@ public partial class TickService : ServiceBase
 		{
 			while(dispatches.Count > 0)
 			{
-				Action dispatch = dispatches.Dequeue();
+				Action? dispatch = dispatches.Dequeue();
 				try
 				{
-					dispatch.Invoke();
+					dispatch?.Invoke();
 				}
 				catch(Exception ex)
 				{
-					this.Log.Error(ex, $"Error dispatching {dispatch.Method} on {dispatch.Target}.");
+					this.Log.Error(ex, $"Error dispatching {dispatch?.Method} on {dispatch?.Target}.");
 					break;
 				}
 			}

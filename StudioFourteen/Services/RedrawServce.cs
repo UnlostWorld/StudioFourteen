@@ -149,33 +149,40 @@ public class RedrawService : ServiceBase
 			Vector3 position;
 			Quaternion rotation;
 			Vector3 scale;
+			bool doFadeOut;
 			unsafe
 			{
 				Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(objectTableIndex);
 				position = pCharacter->DrawObject->Position;
 				rotation = pCharacter->DrawObject->Rotation;
 				scale = pCharacter->DrawObject->Scale;
+
+				doFadeOut = this.Animate && pCharacter->Alpha > 0.01f;
 			}
 
 			Stopwatch sw = new();
-			sw.Start();
 
-			while (sw.ElapsedMilliseconds < FadeOutTimeMs && this.Animate)
+			if (doFadeOut)
 			{
-				await Threads.NextFrame();
-				float p = 1 - (sw.ElapsedMilliseconds / FadeOutTimeMs);
+				sw.Start();
+
+				while (sw.ElapsedMilliseconds < FadeOutTimeMs)
+				{
+					await Threads.NextFrame();
+					float p = 1 - (sw.ElapsedMilliseconds / FadeOutTimeMs);
+
+					unsafe
+					{
+						Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(objectTableIndex);
+						pCharacter->Alpha = p;
+					}
+				}
 
 				unsafe
 				{
 					Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(objectTableIndex);
-					pCharacter->Alpha = p;
+					pCharacter->Alpha = 0;
 				}
-			}
-
-			unsafe
-			{
-				Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(objectTableIndex);
-				pCharacter->Alpha = 0;
 			}
 
 			// Clear bone references
@@ -238,6 +245,12 @@ public class RedrawService : ServiceBase
 			}
 
 			await Threads.NextFrame();
+
+			unsafe
+			{
+				Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(objectTableIndex);
+				pCharacter->Alpha = 1.0f;
+			}
 
 			// TODO: Umbrellas take 500ms to fade in, so detect if this target is holding an umbrella and wait a bit longer.
 			this.IsDone = true;

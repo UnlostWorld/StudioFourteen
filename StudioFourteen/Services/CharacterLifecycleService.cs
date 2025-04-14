@@ -27,6 +27,7 @@ using StudioFourteen.Plugin;
 using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -87,16 +88,23 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 		if (index == -1)
 			return index;
 
+		Stopwatch sw = new Stopwatch();
+		sw.Start();
 		bool canDraw = false;
-		while (!canDraw)
+		while (!canDraw && sw.ElapsedMilliseconds < 1000)
 		{
 			await Threads.NextFrame();
 			unsafe
 			{
 				Character* pCharacter = this.Services.GameObjects.Get<Character>(index);
+				pCharacter->Alpha = 1.0f;
 				canDraw = pCharacter->CanDraw();
 			}
 		}
+
+		sw.Stop();
+		if (sw.ElapsedMilliseconds >= 1000)
+			throw new Exception("Failed to create character, timout waiting for draw");
 
 		await Threads.NextFrame();
 
@@ -168,17 +176,7 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 			}
 
 			this.Log.Information($"Deleting object: {idx} - {deletingCharacter->GetDisplayName()}");
-
-			// Something about calling DeleteObjectByIndex outside of dalamuds update
-			// causes a nasty crash, even when calling it on the games tick thread.
-			#if DALAMUD
-			Plugin.DalamudServices.Framework!.RunOnFrameworkThread(() =>
-			{
-				com->DeleteObjectByIndex((ushort)idx, 0);
-			});
-			#else
 			com->DeleteObjectByIndex((ushort)idx, 0);
-			#endif
 		}
 
 		CreatedIndexes.Clear();
@@ -274,6 +272,8 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 		if (pSpawned == null)
 			return -1;
 
+		pSpawned->Alpha = 0.01f;
+
 		EventGPoseController* gposeController = &EventFramework.Instance()->EventSceneModule.EventGPoseController;
 		gposeController->AddCharacterToGPose(pSpawned); // This is safe even if the list is full. The game will also cleanup for us.
 
@@ -311,6 +311,8 @@ public class CharacterLifecycleService : ServiceBase, WorldContextMenu.IProvider
 		pSpawned->GameObject.DisableDraw();
 		pSpawned->CharacterSetup.CopyFromCharacter(pSpawned, CharacterSetupContainer.CopyFlags.None);
 		pSpawned->GameObject.EnableDraw();
+
+		pSpawned->Alpha = 0.01f;
 
 		CreatedIndexes.Add(spawnedCharacterId);
 
