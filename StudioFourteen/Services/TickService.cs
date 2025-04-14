@@ -30,8 +30,8 @@ public partial class TickService : ServiceBase
 
 	[ThreadStatic] private static TickService.Channels currentChannel = Channels.None;
 
-	private readonly Dictionary<Channels, List<Action>> tickListeners = new();
-	private readonly Dictionary<Channels, Queue<Action>> tickDispatchers = new();
+	private readonly Dictionary<Channels, List<Action?>> tickListeners = new();
+	private readonly Dictionary<Channels, Queue<Action?>> tickDispatchers = new();
 	private bool shouldTick = true;
 
 	public delegate void TickDelegate();
@@ -85,11 +85,11 @@ public partial class TickService : ServiceBase
 	{
 		this.shouldTick = false;
 
-		foreach((Channels chanel, List<Action> callbacks) in this.tickListeners)
+		foreach((Channels chanel, List<Action?> callbacks) in this.tickListeners)
 		{
-			foreach(Action action in callbacks)
+			foreach(Action? action in callbacks)
 			{
-				this.Log.Warning($"Tick listener: {action.Method} on {action.Target} not removed before shutdown.");
+				this.Log.Warning($"Tick listener: {action?.Method} on {action?.Target} not removed before shutdown.");
 			}
 		}
 
@@ -134,9 +134,9 @@ public partial class TickService : ServiceBase
 		this.tickListeners.TryGetValue(channel, out var callbacks);
 		if (callbacks != null)
 		{
-			foreach(Action callback in this.tickListeners[channel].ToArray())
+			foreach(Action? callback in this.tickListeners[channel].ToArray())
 			{
-				if (callback.Target == null)
+				if (callback?.Target == null)
 				{
 					this.tickListeners[channel].Remove(callback);
 					break;
@@ -144,11 +144,11 @@ public partial class TickService : ServiceBase
 
 				try
 				{
-					callback.Invoke();
+					callback?.Invoke();
 				}
 				catch(Exception ex)
 				{
-					this.Log.Error(ex, $"Error ticking {callback.Method} on {callback.Target}. This callback will be disabled.");
+					this.Log.Error(ex, $"Error ticking {callback?.Method} on {callback?.Target}. This callback will be disabled.");
 					this.tickListeners[channel].Remove(callback);
 					break;
 				}
