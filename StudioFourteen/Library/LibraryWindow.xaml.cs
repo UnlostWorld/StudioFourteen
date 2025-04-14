@@ -24,6 +24,7 @@ using StudioFourteen.Library.Sources;
 using StudioFourteen.Mvm;
 using StudioFourteen.Panels;
 using StudioFourteen.Tags;
+using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
@@ -408,10 +409,24 @@ public partial class LibraryWindow : Panel
 		if (senderElement.DataContext is not Result result)
 			return;
 
-		if (result.Entry is not IDraggable draggable)
-			return;
+		if (result.Entry is FileEntry file)
+		{
+			if (!file.TypeInfo.LoadsType.IsAssignableTo(typeof(IDraggable)))
+				return;
 
-		this.Services.DragAndDrop.Drag(senderElement, draggable);
+			IDraggable? draggable = file.File as IDraggable;
+			if (draggable == null)
+				throw new Exception("Unexpected file type");
+
+			this.Services.DragAndDrop.Drag(senderElement, draggable);
+		}
+		else
+		{
+			if (result.Entry is not IDraggable draggable)
+				return;
+
+			this.Services.DragAndDrop.Drag(senderElement, draggable);
+		}
 	}
 
 	private void OnResultMouseLeft(object sender, MouseButtonEventArgs e)
