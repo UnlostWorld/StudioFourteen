@@ -25,7 +25,7 @@ using WpfUtils.Extensions;
 public interface IContextProvider
 {
 	Type GetTargetType();
-	Task GetMenus(object target, ref List<MenuEntry> menus);
+	Task GetMenus(object target, List<MenuEntry> menus);
 }
 
 public abstract class ContextProvider<T> : IContextProvider
@@ -39,17 +39,17 @@ public abstract class ContextProvider<T> : IContextProvider
 
 	protected ServiceManager Services => ServiceManager.Instance;
 
-	public Task GetMenus(object target, ref List<MenuEntry> menus)
+	public Task GetMenus(object target, List<MenuEntry> menus)
 	{
 		if (target is not T tTarget)
 			return Task.CompletedTask;
 
-		return this.GetMenus(tTarget, ref menus);
+		return this.GetMenus(tTarget, menus);
 	}
 
 	public Type GetTargetType() => typeof(T);
 
-	protected abstract Task GetMenus(T target, ref List<MenuEntry> menus);
+	protected abstract Task GetMenus(T target, List<MenuEntry> menus);
 }
 
 public class ContextMenuService : ServiceBase
@@ -84,7 +84,7 @@ public class ContextMenuService : ServiceBase
 				if (!objectType.IsAssignableTo(provider.GetTargetType()))
 					continue;
 
-				await provider.GetMenus(target, ref menus);
+				await provider.GetMenus(target, menus);
 			}
 		}
 

@@ -56,6 +56,20 @@ public class GameObjectsService : ServiceBase
 		return GameObjectManager.Instance()->Objects.GetObjectByEntityId(entityId);
 	}
 
+	public unsafe GameObject*[] GetAll()
+	{
+		TickService.VerifyGameTickThread();
+		Span<Pointer<GameObject>> indexSorted = GameObjectManager.Instance()->Objects.IndexSorted;
+
+		GameObject*[] results = new GameObject*[indexSorted.Length];
+		for (int i = 0; i < indexSorted.Length; i++)
+		{
+			results[i] = indexSorted[i];
+		}
+
+		return results;
+	}
+
 	public unsafe T* Get<T>(int objectTableIndex)
 		where T : unmanaged
 	{

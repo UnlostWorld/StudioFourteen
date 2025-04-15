@@ -87,6 +87,7 @@
 	<sys:String x:Key="LOC_Character_BodyShape">Body Shape</sys:String>
 
 	<sys:String x:Key="LOC_Context_Spawn">Add to scene</sys:String>
+	<sys:String x:Key="LOC_Context_ApplyTo">Apply To</sys:String>
 
 	<sys:String x:Key="LOC_EquipmentSlot_Head">Head</sys:String>
 	<sys:String x:Key="LOC_EquipmentSlot_Body">Body</sys:String>

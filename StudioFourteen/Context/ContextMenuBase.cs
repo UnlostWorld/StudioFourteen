@@ -18,6 +18,7 @@ namespace StudioFourteen.Context;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
 using WpfUtils.Commands;
 using WpfUtils.Extensions;
@@ -53,24 +54,29 @@ public class MenuEntry
 
 	public bool IsEnabled { get; set; } = true;
 
+	public MenuEntry? Parent { get; private set; }
 	public FastObservableCollection<MenuEntry> Children { get; init; } = new();
 	public IContextMenu? ContextMenu { get; set; }
 
 	public bool HasChildren => this.Children.Count > 0;
 
-	public Task Invoke()
+	public async Task Invoke()
 	{
+		if (this.Parent != null)
+			await this.Parent.Invoke();
+
 		Task? t = this.invoke?.Invoke();
 		this.ContextMenu?.OnMenuInvoked(this);
 
 		if (t == null)
-			return Task.CompletedTask;
+			return;
 
-		return t;
+		await t;
 	}
 
 	public void AddChild(MenuEntry child)
 	{
 		this.Children.Add(child);
+		child.Parent = this;
 	}
 }

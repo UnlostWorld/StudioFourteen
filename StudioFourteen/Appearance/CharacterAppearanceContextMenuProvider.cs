@@ -18,28 +18,51 @@ namespace StudioFourteen.Appearance;
 using System.Threading.Tasks;
 using StudioFourteen.Context;
 using System.Collections.Generic;
+using StudioFourteen.Services;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using FFXIVClientStructs.FFXIV.Client.Game.Object;
 
 public class CharacterAppearanceContextMenuProvider : ContextProvider<ICharacterAppearance>
 {
-	protected override Task GetMenus(ICharacterAppearance target, ref List<MenuEntry> menus)
+	protected override async Task GetMenus(ICharacterAppearance target, List<MenuEntry> menus)
 	{
 		menus.Add(new("ICON_AddCharacter", "LOC_Context_Spawn", () => this.Spawn(target)));
 
-		/*MenuEntry applyParent = new(null, "Apply To");
+		await TickService.GameTick();
 
-		for(int i = 0; i < 10; i++)
+		MenuEntry applyParent = new(null, "LOC_Context_ApplyTo");
+
+		unsafe
 		{
-			MenuEntry subEntry = new(null, $"> {i}");
-			applyParent.AddChild(subEntry);
+			GameObject*[] pObjects = this.Services.GameObjects.GetAll();
+			foreach(GameObject* pObject in pObjects)
+			{
+				if (!CharacterAppearanceService.IsValidTarget(pObject))
+					continue;
+
+				Character* pCharacter = (Character*)pObject;
+				if (pCharacter == null)
+					continue;
+
+				int index = pCharacter->ObjectIndex;
+				MenuEntry subEntry = new(null, pCharacter->GetDisplayName(), () => this.Apply(target, index));
+				applyParent.AddChild(subEntry);
+			}
 		}
 
-		menus.Add(applyParent);*/
-
-		return Task.CompletedTask;
+		if (applyParent.Children.Count > 0)
+		{
+			menus.Add(applyParent);
+		}
 	}
 
 	private Task<int> Spawn(ICharacterAppearance target)
 	{
 		return this.Services.CharacterLifecycle.CreateAsync(target, UpdateSource.Interface);
+	}
+
+	private Task Apply(ICharacterAppearance target, int index)
+	{
+		return target.Apply(index, UpdateSource.Interface);
 	}
 }

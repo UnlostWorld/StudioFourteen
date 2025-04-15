@@ -17,6 +17,7 @@ namespace StudioFourteen.Appearance;
 
 using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using Lumina.Excel.Sheets;
 using StudioFourteen.Context;
@@ -30,6 +31,7 @@ using System.Threading.Tasks;
 
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.CharacterExtensions;
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
+using ObjectKind = FFXIVClientStructs.FFXIV.Client.Game.Object.ObjectKind;
 
 public class CharacterAppearanceService : ServiceBase
 {
@@ -38,6 +40,29 @@ public class CharacterAppearanceService : ServiceBase
 
 	public delegate void AppearanceChangedDelegate(int objectTableIndex);
 	public event AppearanceChangedDelegate? OnAppearanceChanged;
+
+	public static unsafe bool IsValidTarget(GameObject* pObject)
+	{
+		TickService.VerifyGameTickThread();
+
+		Character* pCharacter = (Character*)pObject;
+		if (pCharacter == null)
+			return false;
+
+		if (!pCharacter->CanDraw())
+			return false;
+
+		if (string.IsNullOrEmpty(pCharacter->NameString))
+			return false;
+
+		if (pCharacter->ObjectKind != ObjectKind.BattleNpc
+		&& pCharacter->ObjectKind != ObjectKind.Pc
+		&& pCharacter->ObjectKind != ObjectKind.EventNpc
+		&& pCharacter->ObjectKind != ObjectKind.Retainer)
+			return false;
+
+		return true;
+	}
 
 	public override Task Start()
 	{
