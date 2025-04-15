@@ -336,7 +336,7 @@ public class InputService : ServiceBase
 				if (listeners == null || listeners.Count == 0)
 					continue;
 
-				foreach (InputActionListener listener in listeners)
+				foreach (InputActionListener listener in listeners.ToArray())
 				{
 					listener.SetValue(value);
 				}

@@ -243,6 +243,9 @@ public class MouseDevice : InputDeviceBase
 			this.dragAxis[button].Y.Value = 0;
 		}
 
+		this.draggingButtons.Clear();
+		this.dragStarts.Clear();
+
 		CursorUtility.SetCursorVisible(true);
 	}
 
