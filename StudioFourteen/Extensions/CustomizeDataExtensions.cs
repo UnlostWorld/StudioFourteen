@@ -31,6 +31,7 @@ using HairMakeType = StudioFourteen.GameData.Sheets.HairMakeType;
 public static class CustomizeDataExtensions
 {
 	public const int NumOptions = (int)CustomizeIndex.FacepaintColor + 1;
+	public static readonly CustomizeData Empty;
 
 	[Flags]
 	public enum FacialFeatures : byte
@@ -55,10 +56,10 @@ public static class CustomizeDataExtensions
 		return self.Data[(int)option];
 	}
 
-	public static void SetValue(ref this CustomizeData self, CustomizeIndex option, byte value)
+	public static void SetValue(ref this CustomizeData self, byte option, byte value)
 	{
 		// Ensure a valid tribe is set whenever changing race.
-		if (option == CustomizeIndex.Race)
+		if (option == 0)
 		{
 			Race? oldRace = ServiceManager.Instance.GameData.GetRow<Race>(self.GetValue(CustomizeIndex.Race));
 			int tribeIndex = -1;
@@ -81,7 +82,12 @@ public static class CustomizeDataExtensions
 			}
 		}
 
-		self.Data[(int)option] = value;
+		self.Data[option] = value;
+	}
+
+	public static void SetValue(ref this CustomizeData self, CustomizeIndex option, byte value)
+	{
+		self.SetValue((byte)option, value);
 	}
 
 	public static void Import(ref this CustomizeData self, CustomizeData other)
