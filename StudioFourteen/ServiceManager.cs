@@ -44,7 +44,6 @@ public class ServiceManager : ServiceManagerBase
 	public PanelService Panels { get; init; } = new();
 	public Cameras.CameraService Camera { get; init; } = new();
 	public Overlays.OverlayService Overlays { get; init; } = new();
-	public EnvironmentService Environment { get; init; } = new();
 	public IPC.IPCService IPC { get; init; } = new();
 	public Reshade.ReshadeService Reshade { get; init; } = new();
 	public Analytics.AnalyticsService Analytics { get; init; } = new();
@@ -60,4 +59,7 @@ public class ServiceManager : ServiceManagerBase
 	public Animation.AnimationService Animations { get; init; } = new();
 	public DragAndDrop.DragAndDropService DragAndDrop { get; init; } = new();
 	public Context.ContextMenuService Context { get; init; } = new();
+	public Environment.EnvironmentService Environment { get; init; } = new();
+	public Environment.TerritoryService Territory { get; init; } = new();
+	public Environment.TimeService Time { get; init; } = new();
 }

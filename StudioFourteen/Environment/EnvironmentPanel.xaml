@@ -25,9 +25,9 @@
 			<TextBlock Style="{DynamicResource LeftLabel}"
 				Text="{DynamicResource LOC_Environment_Territory}" />
 			<librarySelector:LibrarySelectorButton
-				IsEnabled="{Binding Services.Environment.CanChangeTerritory}"
+				IsEnabled="{Binding Services.Territory.CanChangeTerritory}"
 				Type="{x:Type gameData:TerritoryTypeLibraryEntry}"
-				Value="{Binding Territory}" />
+				Value="{Binding Services.Territory.CurrentTerritory}" />
 
 			<TextBlock Style="{DynamicResource LeftLabel}"
 				Text="{DynamicResource LOC_Environment_Weather}" />
@@ -35,15 +35,15 @@
 				PopOutHeader="{DynamicResource LOC_Environment_WeatherSelect}"
 				SearchTags="{Binding WeatherTags}"
 				Type="{x:Type gameData:WeatherLibraryEntry}"
-				Value="{Binding Weather}" />
+				Value="{Binding Services.Environment.CurrentWeather}" />
 
 			<TextBlock Style="{DynamicResource LeftLabel}"
 				Text="{DynamicResource LOC_Environment_Time}" />
 
 			<ToggleButton Content="{DynamicResource LOC_Environment_FreezeTime}"
-				IsChecked="{Binding Services.Environment.FreezeTime}" />
+				IsChecked="{Binding Services.Time.FreezeTime}" />
 
-			<Grid HorizontalAlignment="Center" IsEnabled="{Binding Services.Environment.FreezeTime}" Margin="6, 12, 6, 0">
+			<Grid HorizontalAlignment="Center" IsEnabled="{Binding Services.Time.FreezeTime}" Margin="6, 12, 6, 0">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition />
 					<ColumnDefinition />
@@ -62,7 +62,7 @@
 					Change="10"
 					Width="75"
 					Height="75"
-					Value="{Binding Services.Environment.MinuteOfDay}"
+					Value="{Binding Services.Time.MinuteOfDay}"
 					DownIcon="{DynamicResource ICON_Environment_Night}"
 					LeftIcon="{DynamicResource ICON_Environment_Sunrise}"
 					TopIcon="{DynamicResource ICON_Environment_Noon}"
@@ -73,7 +73,7 @@
 					Grid.Row="1"
 					Margin="6,2"
 					TextAlignment="Center"
-					Text="{Binding Services.Environment.DisplayTime}" />
+					Text="{Binding Services.Time.DisplayTime}" />
 
 				<controls:IconSlider
 					Margin="12,0"
@@ -84,14 +84,14 @@
 					Width="75"
 					Height="75"
 					Change="0.5"
-					Value="{Binding Services.Environment.DayOfMonth}"
+					Value="{Binding Services.Time.DayOfMonth}"
 					DownIcon="{DynamicResource ICON_Environment_MoonEmpty}"
 					LeftIcon="{DynamicResource ICON_Environment_MoonWaxing}"
 					TopIcon="{DynamicResource ICON_Environment_MoonFull}"
 					RightIcon="{DynamicResource ICON_Environment_MoonWaning}" />
 
 				<ComboBox
-					SelectedIndex="{Binding Services.Environment.DayOfMonth}"
+					SelectedIndex="{Binding Services.Time.DayOfMonth}"
 					Grid.Row="1"
 					Width="100"
 					Grid.Column="1">
@@ -135,7 +135,7 @@
 				HorizontalAlignment="Center"
 				VerticalAlignment="Center"
 				Foreground="{DynamicResource ForegroundLightBrush}"
-				Text="{Binding Services.Environment.DisplayMonth}" />
+				Text="{Binding Services.Time.DisplayMonth}" />
 
 		</StackPanel>
 	</Grid>

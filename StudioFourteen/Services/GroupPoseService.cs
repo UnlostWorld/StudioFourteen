@@ -71,7 +71,7 @@ public partial class GroupPoseService : ServiceBase
 
 	public override Task Initialize()
 	{
-		this.IsGroupPosing = DalamudServices.ClientState?.IsGPosing == true || this.Services.Environment.IsInTitleScreen;
+		this.IsGroupPosing = DalamudServices.ClientState?.IsGPosing == true || this.Services.Territory.IsInTitleScreen;
 		this.IsGroupPoseLoaded = this.isGroupPosing;
 		return base.Initialize();
 	}
@@ -84,7 +84,7 @@ public partial class GroupPoseService : ServiceBase
 		Hooks.EnterGroupPose.Enable(this.EnterDetour);
 		Hooks.ExitGroupPose.Enable(this.ExitDetour);
 
-		this.IsGroupPosing = DalamudServices.ClientState?.IsGPosing == true || this.Services.Environment.IsInTitleScreen;
+		this.IsGroupPosing = DalamudServices.ClientState?.IsGPosing == true || this.Services.Territory.IsInTitleScreen;
 		this.IsGroupPoseLoaded = this.isGroupPosing;
 	}
 
