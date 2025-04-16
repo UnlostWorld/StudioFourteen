@@ -20,6 +20,7 @@ using FontAwesome.Sharp;
 using StudioFourteen.Gizmos.Handles.TransformHandle;
 using StudioFourteen.Posing;
 using StudioFourteen.Services;
+using StudioFourteen.Structs.Extensions;
 using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
@@ -91,6 +92,7 @@ public class BoneSelection : TransformSelectionBase
 
 	private readonly List<BoneReference> bones = new();
 	private BoneReference? bone;
+	private bool isReading = false;
 
 	public BoneSelection(Dictionary<BoneId, List<BoneId>> bonePaths, string name)
 	{
@@ -277,8 +279,10 @@ public class BoneSelection : TransformSelectionBase
 
 		this.LockTransform = this.bone.Locked;
 
+		this.isReading = true;
 		this.WorldTransform = this.bone.ModelSpaceTransform.Value * this.bone.ModelTransform.Value;
 		this.LocalTransform = (Transform)this.bone.LocalSpaceTransform;
+		this.isReading = false;
 	}
 
 	protected override void OnLockTransformChanged(bool oldValue, bool newValue)
@@ -291,7 +295,7 @@ public class BoneSelection : TransformSelectionBase
 
 	protected override void OnWorldTransformChanged(StudioTransform oldValue, StudioTransform newValue)
 	{
-		if (this.bone == null || this.bone.ModelTransform == null)
+		if (this.isReading || this.bone == null || this.bone.ModelTransform == null)
 			return;
 
 		Transform? modelSpaceTransform;
@@ -308,6 +312,12 @@ public class BoneSelection : TransformSelectionBase
 
 	protected override void OnLocalTransformChanged(StudioTransform oldValue, StudioTransform newValue)
 	{
+		if (this.isReading)
+			return;
+
+		Quaternion from = oldValue.Rotation;
+		Quaternion to = newValue.Rotation;
+
 		foreach (BoneReference bone in this.bones)
 		{
 			bone.SetLocalSpaceTransform(newValue);

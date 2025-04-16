@@ -39,6 +39,12 @@ public class BoneReference
 	public bool IsValid = true;
 
 	private const float PoseBlendTimeMs = 250;
+
+	private static readonly Vector3 MinScale = new Vector3(0.1f, 0.1f, 0.1f);
+	private static readonly Vector3 MaxScale = new Vector3(1000, 1000, 1000);
+	private static readonly Vector3 MinTranslate = new Vector3(-10, -10, -10);
+	private static readonly Vector3 MaxTranslate = new Vector3(10, 10, 10);
+
 	private readonly Stopwatch blendTime = new();
 	private readonly EasingFunctionBase blendEase = new SineEase();
 	private bool blendOnLoad = false;
@@ -260,9 +266,14 @@ public class BoneReference
 		if (this.loadModelSpaceTransform != null)
 		{
 			hkQsTransformf* boneModelTransform = pPose->AccessBoneModelSpace(this.Id.BoneIndex, hkaPose.PropagateOrNot.Propagate);
-			boneModelTransform->Translation.Set(this.loadModelSpaceTransform.Value.Translation.ToHkVector());
+
+			Vector3 translation = Vector3.Clamp(this.loadModelSpaceTransform.Value.Translation, MinTranslate, MaxTranslate);
+			boneModelTransform->Translation.Set(translation);
+
 			boneModelTransform->Rotation.Set(this.loadModelSpaceTransform.Value.Rotation.ToHkQuaternion());
-			boneModelTransform->Scale.Set(this.loadModelSpaceTransform.Value.Scale.ToHkVector());
+
+			Vector3 scale = Vector3.Clamp(this.loadModelSpaceTransform.Value.Scale, MinScale, MaxScale);
+			boneModelTransform->Scale.Set(scale);
 
 			this.loadLocalSpaceTransform = *pPose->AccessBoneLocalSpace(this.Id.BoneIndex);
 			this.loadModelSpaceTransform = null;
@@ -369,11 +380,9 @@ public class BoneReference
 			{
 				this.isDecomposeError = false;
 
-				// do not allow bones to scale to 0. bad things happen.
-				scale = Vector3.Max(scale, new Vector3(0.1f, 0.1f, 0.1f));
-				pTransform->Translation.Set(translation);
+				pTransform->Translation.Set(Vector3.Clamp(translation, MinTranslate, MaxTranslate));
 				pTransform->Rotation.Set(rotation);
-				pTransform->Scale.Set(scale);
+				pTransform->Scale.Set(Vector3.Clamp(scale, MinScale, MaxScale));
 			}
 			else
 			{

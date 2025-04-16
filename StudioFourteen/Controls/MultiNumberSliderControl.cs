@@ -180,6 +180,7 @@ public abstract partial class MultiNumberSliderControl
 	partial void OnMaximumChanged() => this.OnPropertiesChanged(nameof(this.Maximum));
 	partial void OnDecimalPlacesChanged() => this.OnPropertiesChanged(nameof(this.DecimalPlaces));
 	partial void OnNumberSliderStyleChanged() => this.OnPropertiesChanged(nameof(this.NumberSliderStyle));
+	partial void OnChangeChanged() => this.OnPropertiesChanged(nameof(this.Change));
 
 	private void OnPropertiesChanged(string name)
 	{
