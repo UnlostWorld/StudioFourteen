@@ -114,6 +114,14 @@ public class CharacterLifecycleService : ServiceBase
 		{
 			Character* pCharacter = this.Services.GameObjects.Get<Character>(index);
 			pCharacter->SetDisplayName(name);
+
+			// Move the spawned charactes draw object to teh current targets location.
+			Character* pTarget = this.Services.Target.GetTarget();
+			if (pCharacter->DrawObject != null && pTarget != null && pTarget->DrawObject != null)
+			{
+				pCharacter->DrawObject->Position = pTarget->DrawObject->Position;
+				pCharacter->DrawObject->Rotation = pTarget->DrawObject->Rotation;
+			}
 		}
 
 		return index;
