@@ -96,7 +96,7 @@ public class CharacterLifecycleService : ServiceBase
 
 		sw.Stop();
 		if (sw.ElapsedMilliseconds >= 1000)
-			throw new Exception("Failed to create character, timout waiting for draw");
+			throw new Exception("Failed to create character, timeout waiting for draw");
 
 		await Threads.NextFrame();
 
@@ -115,7 +115,7 @@ public class CharacterLifecycleService : ServiceBase
 			Character* pCharacter = this.Services.GameObjects.Get<Character>(index);
 			pCharacter->SetDisplayName(name);
 
-			// Move the spawned charactes draw object to teh current targets location.
+			// Move the spawned characters draw object to teh current targets location.
 			Character* pTarget = this.Services.Target.GetTarget();
 			if (pCharacter->DrawObject != null && pTarget != null && pTarget->DrawObject != null)
 			{
