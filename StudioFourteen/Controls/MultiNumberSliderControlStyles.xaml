@@ -46,6 +46,26 @@
 	</Style>
 
 	<Style BasedOn="{StaticResource StudioMultiNumberSliderControl}"
+		TargetType="{x:Type local:Color4Control}" >
+		<Setter Property="Minimum" Value="0"/>
+		<Setter Property="Maximum" Value="1"/>
+		<Setter Property="Change" Value="0.1"/>
+		<Setter Property="NumberSliderStyle" Value="{DynamicResource StudioNumberSlider}"/>
+	</Style>
+
+	<Style BasedOn="{StaticResource StudioMultiNumberSliderControl}"
+		TargetType="{x:Type local:Color3Control}" >
+		<Setter Property="Minimum" Value="0"/>
+		<Setter Property="Maximum" Value="1"/>
+		<Setter Property="Change" Value="0.1"/>
+		<Setter Property="NumberSliderStyle" Value="{DynamicResource StudioNumberSlider}"/>
+	</Style>
+
+
+	<Style BasedOn="{StaticResource StudioMultiNumberSliderControl}"
+		TargetType="{x:Type local:Vector4Control}" />
+
+	<Style BasedOn="{StaticResource StudioMultiNumberSliderControl}"
 		TargetType="{x:Type local:Vector3Control}" />
 
 	<Style BasedOn="{StaticResource StudioMultiNumberSliderControl}"

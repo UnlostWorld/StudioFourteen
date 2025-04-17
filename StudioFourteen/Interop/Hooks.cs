@@ -20,6 +20,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.System.Input;
 using FFXIVClientStructs.FFXIV.Client.UI;
+using StudioFourteen.Interop.Structs.Environment;
 using StudioFourteen.Plugin;
 using System;
 using System.Runtime.InteropServices;
@@ -71,27 +72,6 @@ public static unsafe class Hooks
 	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Actor/ActionTimelineService.cs#L41
 	public static readonly SignatureHook<TimelineContainer.Delegates.CalculateAndApplyOverallSpeed> CalculateAndApplyOverallSpeedHook = new ("E8 ?? ?? ?? ?? 48 8D 8B ?? ?? ?? ?? 48 8B 01 FF 50 ?? 48 8D 8B ?? ?? ?? ?? 48 8B 01 FF 50 ?? F6 83");
 
-	// Dalamud Signatures:
-	//  	https://github.com/goatcorp/Dalamud
-	// 		Special thanks to @goaaats
-
-	// https://github.com/goatcorp/Dalamud/blob/master/Dalamud/Game/Addon/Events/AddonEventManagerAddressResolver.cs
-	public delegate nint UpdateGameCursorDelegate(RaptureAtkModule* module);
-	public static readonly SignatureHook<UpdateGameCursorDelegate> UpdateGameCursor = new("48 89 74 24 ?? 48 89 7C 24 ?? 41 56 48 83 EC 20 4C 8B F1 E8 ?? ?? ?? ?? 49 8B CE");
-
-	// https://github.com/goatcorp/Dalamud/blob/master/Dalamud/Interface/Internal/InterfaceManager.cs#L1043
-	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate IntPtr SetUser32CursorDelegate(IntPtr hCursor);
-	public static readonly ImportHook<SetUser32CursorDelegate> SetCursor = new(null, "user32.dll", "SetCursor", 0);
-
-	// Title Edit Signatures:
-	// 		https://github.com/Caraxi/TitleEditPlugin
-	// 		Special thanks to @Caraxi
-
-	// https://github.com/Caraxi/TitleEditPlugin/blob/master/TitleEdit/TitleEditAddressResolver.cs#L40
-	public delegate int CreateSceneDelegate(string p1, uint p2, IntPtr p3, uint p4, IntPtr p5, int p6, uint p7);
-	public static readonly SignatureHook<CreateSceneDelegate> CreateScene = new("E8 ?? ?? ?? ?? 66 89 1D ?? ?? ?? ?? E9 ?? ?? ?? ??");
-
 	// Client Struct Hooks
 	// 		https://github.com/aers/FFXIVClientStructs
 	// 		Big thanks to everyone in the Client Structs team. ❤
@@ -107,4 +87,33 @@ public static unsafe class Hooks
 	public static readonly AddressHook<InterfaceManager.ReshadeOnPresentDelegate> ReshadeOnPresent = new(() => SwapChainHelper.ReshadeOnPresent);
 	public static readonly AddressHook<PadDevice.Delegates.Poll> PadDevicePoll = new(() => (nint)PadDevice.StaticVirtualTablePointer->Poll);
 	public static readonly AddressHook<GameObject.Delegates.SetPosition> SetPosition = new(() => GameObject.Addresses.SetPosition.Value);
+
+	// Dalamud Signatures:
+	//  	https://github.com/goatcorp/Dalamud
+	// 		Special thanks to @goaaats
+
+	// https://github.com/goatcorp/Dalamud/blob/master/Dalamud/Game/Addon/Events/AddonEventManagerAddressResolver.cs
+	public delegate nint UpdateGameCursorDelegate(RaptureAtkModule* module);
+	public static readonly SignatureHook<UpdateGameCursorDelegate> UpdateGameCursor = new("48 89 74 24 ?? 48 89 7C 24 ?? 41 56 48 83 EC 20 4C 8B F1 E8 ?? ?? ?? ?? 49 8B CE");
+
+	// https://github.com/goatcorp/Dalamud/blob/master/Dalamud/Interface/Internal/InterfaceManager.cs#L1043
+	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
+	public delegate IntPtr SetUser32CursorDelegate(IntPtr hCursor);
+	public static readonly ImportHook<SetUser32CursorDelegate> SetCursor = new(null, "user32.dll", "SetCursor", 0);
+
+	// Ktisis Signatures:
+	// 		https://github.com/ktisis-tools/Ktisis/
+	// 		Special thanks to @chirp
+
+	// https://github.com/ktisis-tools/Ktisis/blob/v0.3/main/Ktisis/Scene/Modules/EnvModule.cs#L97
+	public unsafe delegate nint EnvStateCopyDelegate(EnvState* dest, EnvState* src);
+	public static readonly SignatureHook<EnvStateCopyDelegate> EnvStateCopy = new("E8 ?? ?? ?? ?? 49 3B F5 75 0D");
+
+	// Title Edit Signatures:
+	// 		https://github.com/Caraxi/TitleEditPlugin
+	// 		Special thanks to @Caraxi
+
+	// https://github.com/Caraxi/TitleEditPlugin/blob/master/TitleEdit/TitleEditAddressResolver.cs#L40
+	public delegate int CreateSceneDelegate(string p1, uint p2, IntPtr p3, uint p4, IntPtr p5, int p6, uint p7);
+	public static readonly SignatureHook<CreateSceneDelegate> CreateScene = new("E8 ?? ?? ?? ?? 66 89 1D ?? ?? ?? ?? E9 ?? ?? ?? ??");
 }

@@ -28,6 +28,7 @@
 	<icons:Svg x:Key="ICON_Library_Entry_Script" Source="Library Entry Script" />
 	<icons:Svg x:Key="ICON_Library_Entry_Pose" Source="Library Entry Pose" />
 	<icons:Svg x:Key="ICON_Library_Entry_Appearance" Source="Library Entry Appearance" />
+	<icons:Svg x:Key="ICON_Library_Entry_Environment" Source="Library Entry Environment" />
 	<icons:Fa x:Key="ICON_Library_Back" Icon="ArrowLeft" Font="Solid"  />
 	<icons:Fa x:Key="ICON_Library_Forward" Icon="ArrowRight" Font="Solid"  />
 	<icons:Fa x:Key="ICON_Library_Up" Icon="ArrowUp" Font="Solid"  />
@@ -97,6 +98,15 @@
 	<icons:Svg x:Key="ICON_Environment_MoonEmpty" Source="MoonEmpty" />
 	<icons:Svg x:Key="ICON_Environment_MoonWaxing" Source="MoonWaxing" />
 	<icons:Svg x:Key="ICON_Environment_MoonWaning" Source="MoonWaning" />
+
+	<icons:Fa x:Key="ICON_Environment_Home" Icon="Home" />
+	<icons:Fa x:Key="ICON_Environment_Lighting" Icon="Lightbulb" Font="Solid"/>
+	<icons:Fa x:Key="ICON_Environment_Stars" Icon="Star" Font="Solid"/>
+	<icons:Fa x:Key="ICON_Environment_Fog" Icon="Smog" />
+	<icons:Fa x:Key="ICON_Environment_Clouds" Icon="Cloud" />
+	<icons:Fa x:Key="ICON_Environment_Rain" Icon="CloudShowersHeavy" />
+	<icons:Fa x:Key="ICON_Environment_Dust" Icon="Braille" />
+	<icons:Fa x:Key="ICON_Environment_Wind" Icon="Wind" />
 
 	<icons:Fa x:Key="ICON_Animation_Play" Icon="Play" />
 	<icons:Fa x:Key="ICON_Animation_Stop" Icon="Stop" />

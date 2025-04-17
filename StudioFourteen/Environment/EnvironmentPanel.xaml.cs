@@ -15,9 +15,12 @@
 
 namespace StudioFourteen.Environment;
 
+using System.Windows;
 using StudioFourteen.GameData.Library;
+using StudioFourteen.Library;
 using StudioFourteen.Panels;
 using StudioFourteen.Tags;
+using WpfUtils.Extensions;
 
 public partial class EnvironmentPanel : Panel
 {
@@ -44,5 +47,15 @@ public partial class EnvironmentPanel : Panel
 		{
 			this.WeatherTags.Add(territory.Tag);
 		}
+	}
+
+	private void OnImportClicked(object sender, RoutedEventArgs e)
+	{
+		LibraryWindow.Open(this.GetContext());
+	}
+
+	private void OnExportClicked(object sender, RoutedEventArgs e)
+	{
+		this.Services.Environment.Export().Run();
 	}
 }

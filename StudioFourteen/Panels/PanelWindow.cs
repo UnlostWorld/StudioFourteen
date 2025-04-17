@@ -207,6 +207,11 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 				{
 					this.Position = this.panel.DefaultPosition;
 				}
+
+				if (this.Height <= this.MinHeight)
+				{
+					this.Height = this.MinHeight;
+				}
 			}
 		}
 	}
@@ -396,6 +401,16 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 				{
 					this.Width = this.SavedSize.Value.X;
 					this.Height = this.SavedSize.Value.Y;
+				}
+
+				if (this.Height <= this.MinHeight)
+				{
+					this.Height = this.MinHeight;
+				}
+
+				if (this.Width <= this.MinWidth)
+				{
+					this.Width = this.MinWidth;
 				}
 			}
 		}

@@ -15,9 +15,7 @@
 
 namespace StudioFourteen.Files;
 
-using FontAwesome.Sharp;
 using StudioFourteen.Library;
-using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Posing;
 using StudioFourteen.Services;
 using StudioFourteen.Structs.Extensions;

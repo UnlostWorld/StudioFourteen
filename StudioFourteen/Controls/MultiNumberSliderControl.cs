@@ -147,6 +147,143 @@ public partial class Vector3Control : MultiNumberSliderControl
 	partial void OnValueChanged() => this.OnControlValueChanged();
 }
 
+[DependencyProperty<Vector4>("Value", DefaultBindingMode = DefaultBindingMode.TwoWay)]
+public partial class Vector4Control : MultiNumberSliderControl
+{
+	public Vector4Control()
+	{
+		this.AddChannel(
+			() => "X:",
+			() => this.Value.X,
+			(v) =>
+			{
+				Vector4 val = this.Value;
+				val.X = (float)v;
+				this.Value = val;
+			});
+
+		this.AddChannel(
+			() => "Y:",
+			() => this.Value.Y,
+			(v) =>
+			{
+				Vector4 val = this.Value;
+				val.Y = (float)v;
+				this.Value = val;
+			});
+
+		this.AddChannel(
+			() => "Z:",
+			() => this.Value.Z,
+			(v) =>
+			{
+				Vector4 val = this.Value;
+				val.Z = (float)v;
+				this.Value = val;
+			});
+
+		this.AddChannel(
+			() => "W:",
+			() => this.Value.W,
+			(v) =>
+			{
+				Vector4 val = this.Value;
+				val.W = (float)v;
+				this.Value = val;
+			});
+	}
+
+	partial void OnValueChanged() => this.OnControlValueChanged();
+}
+
+[DependencyProperty<Vector3>("Value", DefaultBindingMode = DefaultBindingMode.TwoWay)]
+public partial class Color3Control : MultiNumberSliderControl
+{
+	public Color3Control()
+	{
+		this.AddChannel(
+			() => "R:",
+			() => this.Value.X,
+			(v) =>
+			{
+				Vector3 val = this.Value;
+				val.X = (float)v;
+				this.Value = val;
+			});
+
+		this.AddChannel(
+			() => "G:",
+			() => this.Value.Y,
+			(v) =>
+			{
+				Vector3 val = this.Value;
+				val.Y = (float)v;
+				this.Value = val;
+			});
+
+		this.AddChannel(
+			() => "B:",
+			() => this.Value.Z,
+			(v) =>
+			{
+				Vector3 val = this.Value;
+				val.Z = (float)v;
+				this.Value = val;
+			});
+	}
+
+	partial void OnValueChanged() => this.OnControlValueChanged();
+}
+
+[DependencyProperty<Vector4>("Value", DefaultBindingMode = DefaultBindingMode.TwoWay)]
+public partial class Color4Control : MultiNumberSliderControl
+{
+	public Color4Control()
+	{
+		this.AddChannel(
+			() => "R:",
+			() => this.Value.X,
+			(v) =>
+			{
+				Vector4 val = this.Value;
+				val.X = (float)v;
+				this.Value = val;
+			});
+
+		this.AddChannel(
+			() => "G:",
+			() => this.Value.Y,
+			(v) =>
+			{
+				Vector4 val = this.Value;
+				val.Y = (float)v;
+				this.Value = val;
+			});
+
+		this.AddChannel(
+			() => "B:",
+			() => this.Value.Z,
+			(v) =>
+			{
+				Vector4 val = this.Value;
+				val.Z = (float)v;
+				this.Value = val;
+			});
+
+		this.AddChannel(
+			() => "A:",
+			() => this.Value.W,
+			(v) =>
+			{
+				Vector4 val = this.Value;
+				val.W = (float)v;
+				this.Value = val;
+			});
+	}
+
+	partial void OnValueChanged() => this.OnControlValueChanged();
+}
+
 [DependencyProperty<double>("Change", DefaultValue = 1)]
 [DependencyProperty<bool>("Wrap", DefaultValue = true)]
 [DependencyProperty<double>("Minimum", DefaultValue = double.MinValue)]

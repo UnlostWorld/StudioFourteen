@@ -51,6 +51,15 @@ public partial class TerritoryService
 		base.Detach();
 	}
 
+	public void ChangeTerritory(uint territoryId)
+	{
+		TerritoryTypeLibraryEntry? territory = this.Services.GameData.GetLibraryEntry<TerritoryTypeLibraryEntry>(territoryId);
+		if (territory == null)
+			return;
+
+		this.ChangeTerritory(territory.Territory);
+	}
+
 	public void ChangeTerritory(TerritoryType territory)
 	{
 		TickService.VerifyGameTickThread();

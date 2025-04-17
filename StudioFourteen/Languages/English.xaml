@@ -5,6 +5,8 @@
 
 	<sys:String x:Key="LOC_Confirm">Confirm</sys:String>
 	<sys:String x:Key="LOC_Close">Close</sys:String>
+	<sys:String x:Key="LOC_Import">Import</sys:String>
+	<sys:String x:Key="LOC_Export">Export</sys:String>
 
 	<sys:String x:Key="LOC_Error">Error</sys:String>
 	<sys:String x:Key="LOC_ErrorBodyMessage">An error has occurred. You can attempt to continue using Studio Fourteen, but we recommend restarting your game.</sys:String>
@@ -293,8 +295,58 @@
 	<sys:String x:Key="LOC_Environment_Territory">Territory</sys:String>
 	<sys:String x:Key="LOC_Environment_Weather">Weather</sys:String>
 	<sys:String x:Key="LOC_Environment_Time">Time</sys:String>
-	<sys:String x:Key="LOC_Environment_FreezeTime">Freeze Time</sys:String>
 	<sys:String x:Key="LOC_Environment_WeatherSelect">Select a weather</sys:String>
+
+	<sys:String x:Key="LOC_Environment_Lighting">Lighting</sys:String>
+	<sys:String x:Key="LOC_Environment_Lighting_SunColor">Sun Color</sys:String>
+	<sys:String x:Key="LOC_Environment_Lighting_MoonColor">Moon Color</sys:String>
+	<sys:String x:Key="LOC_Environment_Lighting_AmbientColor">Ambient color</sys:String>
+	<sys:String x:Key="LOC_Environment_Lighting_AmbientSaturation">Ambient Saturation</sys:String>
+	<sys:String x:Key="LOC_Environment_Lighting_AmbientTemperature">Ambient Temperature</sys:String>
+
+	<sys:String x:Key="LOC_Environment_Stars">Stars</sys:String>
+	<sys:String x:Key="LOC_Environment_Stars_ConstellationIntensity">Constellation Intensity</sys:String>
+	<sys:String x:Key="LOC_Environment_Stars_Constellations">Constellations</sys:String>
+	<sys:String x:Key="LOC_Environment_Stars_Stars">Stars</sys:String>
+	<sys:String x:Key="LOC_Environment_Stars_GalaxyIntensity">Galaxy Intensity</sys:String>
+	<sys:String x:Key="LOC_Environment_Stars_StarIntensity">Star Intensity</sys:String>
+	<sys:String x:Key="LOC_Environment_Stars_MoonColor">Moon Color</sys:String>
+	<sys:String x:Key="LOC_Environment_Stars_MoonBrightness">Moon Brightness</sys:String>
+
+	<sys:String x:Key="LOC_Environment_Fog">Fog</sys:String>
+	<sys:String x:Key="LOC_Environment_Fog_Color">Color</sys:String>
+	<sys:String x:Key="LOC_Environment_Fog_Distance">Distance</sys:String>
+	<sys:String x:Key="LOC_Environment_Fog_Thickness">Thickness</sys:String>
+	<sys:String x:Key="LOC_Environment_Fog_Opacity">Opacity</sys:String>
+	<sys:String x:Key="LOC_Environment_Fog_SkyVisibility">Sky Visibility</sys:String>
+
+	<sys:String x:Key="LOC_Environment_Clouds">Clouds</sys:String>
+	<sys:String x:Key="LOC_Environment_Clouds_Color">Color</sys:String>
+	<sys:String x:Key="LOC_Environment_Clouds_Color2">Color 2</sys:String>
+	<sys:String x:Key="LOC_Environment_Clouds_Gradient">Gradient</sys:String>
+	<sys:String x:Key="LOC_Environment_Clouds_SideHeight">Side Height</sys:String>
+
+	<sys:String x:Key="LOC_Environment_Rain">Rain</sys:String>
+	<sys:String x:Key="LOC_Environment_Rain_Raindrops">Raindrops</sys:String>
+	<sys:String x:Key="LOC_Environment_Rain_Intensity">Intensity</sys:String>
+	<sys:String x:Key="LOC_Environment_Rain_Weight">Weight</sys:String>
+	<sys:String x:Key="LOC_Environment_Rain_Scatter">Scatter</sys:String>
+	<sys:String x:Key="LOC_Environment_Rain_Size">Size</sys:String>
+	<sys:String x:Key="LOC_Environment_Rain_Color">Color</sys:String>
+
+	<sys:String x:Key="LOC_Environment_Dust">Dust</sys:String>
+	<sys:String x:Key="LOC_Environment_Dust_Intensity">Intensity</sys:String>
+	<sys:String x:Key="LOC_Environment_Dust_Weight">Weight</sys:String>
+	<sys:String x:Key="LOC_Environment_Dust_Spread">Spread</sys:String>
+	<sys:String x:Key="LOC_Environment_Dust_Size">Size</sys:String>
+	<sys:String x:Key="LOC_Environment_Dust_Color">Color</sys:String>
+	<sys:String x:Key="LOC_Environment_Dust_Glow">Glow</sys:String>
+	<sys:String x:Key="LOC_Environment_Dust_Spin">Spin</sys:String>
+
+	<sys:String x:Key="LOC_Environment_Wind">Wind</sys:String>
+	<sys:String x:Key="LOC_Environment_Wind_Direction">Direction</sys:String>
+	<sys:String x:Key="LOC_Environment_Wind_Angle">Angle</sys:String>
+	<sys:String x:Key="LOC_Environment_Wind_Speed">Speed</sys:String>
 
 	<!--  Overlays  -->
 	<sys:String x:Key="LOC_Overlays">Overlays</sys:String>

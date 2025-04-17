@@ -37,6 +37,7 @@ public class FileService : ServiceBase
 		new SceneFileTypeInfo(),
 		new MareFileTypeInfo(),
 		new ScriptFileTypeInfo(),
+		new EnvironmentFileTypeInfo(),
 	};
 
 	public DirectoryInfo StudioFourteenAppDataDir { get; init; } = new DirectoryInfo($"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}/StudioFourteen/");

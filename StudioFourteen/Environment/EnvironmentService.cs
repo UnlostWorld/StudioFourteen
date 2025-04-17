@@ -17,10 +17,12 @@ namespace StudioFourteen.Environment;
 
 using PropertyChanged.SourceGenerator;
 using Lumina.Excel.Sheets;
+using StudioFourteen.Interop.Structs.Environment;
+using StudioFourteen.Interop;
 using StudioFourteen.Services;
 using System.Threading.Tasks;
 using StudioFourteen.GameData.Library;
-using FFXIVClientStructs.FFXIV.Client.Graphics.Environment;
+using StudioFourteen.Files;
 
 public partial class EnvironmentService
 	: ServiceBase
@@ -29,14 +31,19 @@ public partial class EnvironmentService
 
 	private bool isReadingWeather;
 
+	public EnvironmentState CurrentState { get; set; } = new();
+
 	public unsafe override void Attach()
 	{
 		base.Attach();
+
+		Hooks.EnvStateCopy.Enable(this.EnvStateCopy);
 		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
 	}
 
 	public override void Detach()
 	{
+		Hooks.EnvStateCopy.Disable();
 		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
 		base.Detach();
 	}
@@ -49,19 +56,31 @@ public partial class EnvironmentService
 
 	public unsafe void ChangeWeather(Weather weather)
 	{
+		this.ChangeWeather((byte)weather.RowId);
+	}
+
+	public unsafe void ChangeWeather(byte weatherId)
+	{
 		TickService.VerifyGameTickThread();
 
-		EnvManager* pEnvironmentManager = EnvManager.Instance();
+		EnvManagerEx* pEnvironmentManager = EnvManagerEx.Instance();
 		if (pEnvironmentManager == null)
 			return;
 
-		pEnvironmentManager->ActiveWeather = (byte)weather.RowId;
+		pEnvironmentManager->ActiveWeather = weatherId;
 		pEnvironmentManager->TransitionTime = 0;
+	}
+
+	public async Task Export()
+	{
+		EnvironmentFile file = new();
+		await file.Save();
+		this.Services.Files.SaveFile(file, $"Environment");
 	}
 
 	protected unsafe void OnGameTick()
 	{
-		EnvManager* pEnvironmentManager = EnvManager.Instance();
+		EnvManagerEx* pEnvironmentManager = EnvManagerEx.Instance();
 		if (pEnvironmentManager == null)
 			return;
 
@@ -81,5 +100,14 @@ public partial class EnvironmentService
 			return;
 
 		this.Services.Tick.Dispatch(TickService.Channels.GameTick, () => this.ChangeWeather(newValue.Excel));
+	}
+
+	private unsafe nint EnvStateCopy(EnvState* dest, EnvState* src)
+	{
+		nint result = Hooks.EnvStateCopy.Original(dest, src);
+		this.CurrentState.ReadFrom(dest);
+		this.CurrentState.WriteTo(dest);
+
+		return result;
 	}
 }

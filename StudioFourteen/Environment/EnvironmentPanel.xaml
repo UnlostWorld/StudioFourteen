@@ -2,141 +2,446 @@
 	x:Class="StudioFourteen.Environment.EnvironmentPanel"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:evironment="clr-namespace:StudioFourteen.Environment"
 	xmlns:gameData="clr-namespace:StudioFourteen.GameData.Library"
+	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:library="clr-namespace:StudioFourteen.Library"
 	xmlns:librarySelector="clr-namespace:StudioFourteen.Library.Selector"
-	xmlns:panels="clr-namespace:StudioFourteen.Panels"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:panels="clr-namespace:StudioFourteen.Panels"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
-	xmlns:controls="clr-namespace:StudioFourteen.Controls"
-	xmlns:icons="clr-namespace:StudioFourteen.Icons"
-	xmlns:evironment="clr-namespace:StudioFourteen.Environment"
 	Title="{DynamicResource LOC_Environment}"
-	Width="300"
-	d:DataContext="{Bind`ing Path=., RelativeSource={RelativeSource Mode=Self}}"
-	d:DesignWidth="300"
-	SizeToContent="Height"
+	Width="350"
+	Height="550"
+	MinHeight="510"
+	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	TitleIcon="{DynamicResource ICON_Title_Environment}"
 	mc:Ignorable="d">
 	<Grid>
-		<StackPanel>
 
-			<TextBlock Style="{DynamicResource LeftLabel}"
-				Text="{DynamicResource LOC_Environment_Territory}" />
-			<librarySelector:LibrarySelectorButton
-				IsEnabled="{Binding Services.Territory.CanChangeTerritory}"
-				Type="{x:Type gameData:TerritoryTypeLibraryEntry}"
-				Value="{Binding Services.Territory.CurrentTerritory}" />
+		<Grid.RowDefinitions>
+			<RowDefinition />
+			<RowDefinition Height="Auto"/>
+		</Grid.RowDefinitions>
 
-			<TextBlock Style="{DynamicResource LeftLabel}"
-				Text="{DynamicResource LOC_Environment_Weather}" />
-			<librarySelector:LibrarySelectorButton
-				PopOutHeader="{DynamicResource LOC_Environment_WeatherSelect}"
-				SearchTags="{Binding WeatherTags}"
-				Type="{x:Type gameData:WeatherLibraryEntry}"
-				Value="{Binding Services.Environment.CurrentWeather}" />
+		<TabControl Grid.Row="0" Style="{DynamicResource WpfUtilsSideTabs}">
+			<TabItem Header="{DynamicResource ICON_Environment_Home}">
+				<StackPanel>
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Territory}" />
+					<librarySelector:LibrarySelectorButton
+						IsEnabled="{Binding Services.Territory.CanChangeTerritory}"
+						Type="{x:Type gameData:TerritoryTypeLibraryEntry}"
+						Value="{Binding Services.Territory.CurrentTerritory}" />
 
-			<TextBlock Style="{DynamicResource LeftLabel}"
-				Text="{DynamicResource LOC_Environment_Time}" />
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Weather}" />
+					<librarySelector:LibrarySelectorButton
+						PopOutHeader="{DynamicResource LOC_Environment_WeatherSelect}"
+						SearchTags="{Binding WeatherTags}"
+						Type="{x:Type gameData:WeatherLibraryEntry}"
+						Value="{Binding Services.Environment.CurrentWeather}" />
 
-			<ToggleButton Content="{DynamicResource LOC_Environment_FreezeTime}"
-				IsChecked="{Binding Services.Time.FreezeTime}" />
+					<ToggleButton
+						Margin="0,20,0,0"
+						Content="{DynamicResource LOC_Environment_Time}"
+						IsChecked="{Binding Services.Time.FreezeTime}" />
 
-			<Grid HorizontalAlignment="Center" IsEnabled="{Binding Services.Time.FreezeTime}" Margin="6, 12, 6, 0">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition />
-					<ColumnDefinition />
-				</Grid.ColumnDefinitions>
+					<Grid
+						Margin="6,12,6,0"
+						HorizontalAlignment="Center"
+						IsEnabled="{Binding Services.Time.FreezeTime}">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition />
+							<ColumnDefinition />
+						</Grid.ColumnDefinitions>
 
-				<Grid.RowDefinitions>
-					<RowDefinition Height="Auto" />
-					<RowDefinition Height="Auto" />
-				</Grid.RowDefinitions>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
 
-				<controls:IconSlider
-					Margin="12,0"
-					Grid.Row="0"
-					Maximum="1439"
-					Minimum="0"
-					Change="10"
-					Width="75"
-					Height="75"
-					Value="{Binding Services.Time.MinuteOfDay}"
-					DownIcon="{DynamicResource ICON_Environment_Night}"
-					LeftIcon="{DynamicResource ICON_Environment_Sunrise}"
-					TopIcon="{DynamicResource ICON_Environment_Noon}"
-					RightIcon="{DynamicResource ICON_Environment_Sunset}" />
+						<controls:IconSlider
+							Grid.Row="0"
+							Width="75"
+							Height="75"
+							Margin="12,0"
+							Change="10"
+							DownIcon="{DynamicResource ICON_Environment_Night}"
+							LeftIcon="{DynamicResource ICON_Environment_Sunrise}"
+							Maximum="1439"
+							Minimum="0"
+							RightIcon="{DynamicResource ICON_Environment_Sunset}"
+							TopIcon="{DynamicResource ICON_Environment_Noon}"
+							Value="{Binding Services.Time.MinuteOfDay}" />
 
-				<TextBox
-					Width="100"
-					Grid.Row="1"
-					Margin="6,2"
-					TextAlignment="Center"
-					Text="{Binding Services.Time.DisplayTime}" />
+						<TextBox
+							Grid.Row="1"
+							Width="100"
+							Margin="6,2"
+							Text="{Binding Services.Time.DisplayTime}"
+							TextAlignment="Center" />
 
-				<controls:IconSlider
-					Margin="12,0"
-					Grid.Row="0"
-					Grid.Column="1"
-					Maximum="31"
-					Minimum="0"
-					Width="75"
-					Height="75"
-					Change="0.5"
-					Value="{Binding Services.Time.DayOfMonth}"
-					DownIcon="{DynamicResource ICON_Environment_MoonEmpty}"
-					LeftIcon="{DynamicResource ICON_Environment_MoonWaxing}"
-					TopIcon="{DynamicResource ICON_Environment_MoonFull}"
-					RightIcon="{DynamicResource ICON_Environment_MoonWaning}" />
+						<controls:IconSlider
+							Grid.Row="0"
+							Grid.Column="1"
+							Width="75"
+							Height="75"
+							Margin="12,0"
+							Change="0.5"
+							DownIcon="{DynamicResource ICON_Environment_MoonEmpty}"
+							LeftIcon="{DynamicResource ICON_Environment_MoonWaxing}"
+							Maximum="31"
+							Minimum="0"
+							RightIcon="{DynamicResource ICON_Environment_MoonWaning}"
+							TopIcon="{DynamicResource ICON_Environment_MoonFull}"
+							Value="{Binding Services.Time.DayOfMonth}" />
 
-				<ComboBox
-					SelectedIndex="{Binding Services.Time.DayOfMonth}"
-					Grid.Row="1"
-					Width="100"
-					Grid.Column="1">
-					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_0}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_1}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_2}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_3}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_4}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_5}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_6}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_7}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_8}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_9}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_0}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_11}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_12}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_13}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_14}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_15}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_16}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_17}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_18}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_19}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_10}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_21}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_22}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_23}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_24}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_25}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_26}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_27}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_28}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_29}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_30}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Time_Day_31}" />
-				</ComboBox>
-			</Grid>
+						<ComboBox
+							Grid.Row="1"
+							Grid.Column="1"
+							Width="100"
+							SelectedIndex="{Binding Services.Time.DayOfMonth}">
+							<ComboBoxItem Content="{DynamicResource LOC_Time_Day_0}" />
+							<ComboBoxItem Content="{DynamicResource LOC_Time_Day_1}" />
+							<ComboBoxItem Content="{DynamicResource LOC_Time_Day_2}" />
+							<ComboBoxItem Content="{DynamicResource LOC_Time_Day_3}" />
+							<ComboBoxItem Content="{DynamicResource LOC_Time_Day_4}" />
+							<ComboBoxItem Content="{DynamicResource LOC_Time_Day_5}" />
+							<ComboBoxItem Content="{DynamicResource LOC_Time_Day_6}" />
+							<ComboBoxItem Content="{DynamicResource LOC_Time_Day_7}" />
+							<ComboBoxItem Content="{DynamicResource LOC_Time_Day_8}" />
+							<ComboBoxItem Content="{DynamicResource LOC_Time_Day_9}" />
+							<ComboBoxItem Content="{DynamicResource LOC_Time_Day_0}" />
+							<ComboBoxItem Content="{DynamicResource LOC_Time_Day_11}" />
+							<ComboBoxItem Content="{DynamicResource LOC_Time_Day_12}" />
+							<ComboBoxItem Content="{DynamicResource LOC_Time_Day_13}" />
+							<ComboBoxItem Content="{DynamicResource LOC_Time_Day_14}" />
+							<ComboBoxItem Content="{DynamicResource LOC_Time_Day_15}" />
+							<ComboBoxItem Content="{DynamicResource LOC_Time_Day_16}" />
+							<ComboBoxItem Content="{DynamicResource LOC_Time_Day_17}" />
+							<ComboBoxItem Content="{DynamicResource LOC_Time_Day_18}" />
+							<ComboBoxItem Content="{DynamicResource LOC_Time_Day_19}" />
+							<ComboBoxItem Content="{DynamicResource LOC_Time_Day_10}" />
+							<ComboBoxItem Content="{DynamicResource LOC_Time_Day_21}" />
+							<ComboBoxItem Content="{DynamicResource LOC_Time_Day_22}" />
+							<ComboBoxItem Content="{DynamicResource LOC_Time_Day_23}" />
+							<ComboBoxItem Content="{DynamicResource LOC_Time_Day_24}" />
+							<ComboBoxItem Content="{DynamicResource LOC_Time_Day_25}" />
+							<ComboBoxItem Content="{DynamicResource LOC_Time_Day_26}" />
+							<ComboBoxItem Content="{DynamicResource LOC_Time_Day_27}" />
+							<ComboBoxItem Content="{DynamicResource LOC_Time_Day_28}" />
+							<ComboBoxItem Content="{DynamicResource LOC_Time_Day_29}" />
+							<ComboBoxItem Content="{DynamicResource LOC_Time_Day_30}" />
+							<ComboBoxItem Content="{DynamicResource LOC_Time_Day_31}" />
+						</ComboBox>
+					</Grid>
 
-			<TextBlock
-			 	Margin="6, 3, 6, 12"
-				HorizontalAlignment="Center"
-				VerticalAlignment="Center"
-				Foreground="{DynamicResource ForegroundLightBrush}"
-				Text="{Binding Services.Time.DisplayMonth}" />
+					<TextBlock
+						Margin="6,3,6,12"
+						HorizontalAlignment="Center"
+						VerticalAlignment="Center"
+						Foreground="{DynamicResource ForegroundLightBrush}"
+						Text="{Binding Services.Time.DisplayMonth}" />
+				</StackPanel>
+			</TabItem>
 
-		</StackPanel>
+			<TabItem Header="{DynamicResource ICON_Environment_Lighting}">
+				<StackPanel DataContext="{Binding Services.Environment.CurrentState.Lighting}">
+					<ToggleButton Content="{DynamicResource LOC_Environment_Lighting}" IsChecked="{Binding Freeze}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Lighting_SunColor}" />
+					<controls:Color3Control IsEnabled="{Binding Freeze}" Value="{Binding SunLightColor}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Lighting_MoonColor}" />
+					<controls:Color3Control IsEnabled="{Binding Freeze}" Value="{Binding MoonLightColor}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Lighting_AmbientColor}" />
+					<controls:Color3Control IsEnabled="{Binding Freeze}" Value="{Binding Ambient}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Lighting_AmbientSaturation}" />
+					<controls:NumberSlider
+						Change="0.1"
+						IsEnabled="{Binding Freeze}"
+						Maximum="5"
+						Minimum="0"
+						Value="{Binding AmbientSaturation}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Lighting_AmbientTemperature}" />
+					<controls:NumberSlider
+						Change="0.1"
+						IsEnabled="{Binding Freeze}"
+						Maximum="5"
+						Minimum="0"
+						Value="{Binding Temperature}" />
+				</StackPanel>
+			</TabItem>
+
+			<TabItem Header="{DynamicResource ICON_Environment_Stars}">
+				<StackPanel DataContext="{Binding Services.Environment.CurrentState.Stars}">
+					<ToggleButton Content="{DynamicResource LOC_Environment_Stars}" IsChecked="{Binding Freeze}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Stars_ConstellationIntensity}" />
+					<controls:NumberSlider
+						Change="0.1"
+						IsEnabled="{Binding Freeze}"
+						Maximum="5"
+						Minimum="0"
+						Value="{Binding ConstellationIntensity}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Stars_Constellations}" />
+					<controls:NumberSlider
+						Change="0.1"
+						IsEnabled="{Binding Freeze}"
+						Maximum="5"
+						Minimum="0"
+						Value="{Binding Constellations}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Stars_Stars}" />
+					<controls:NumberSlider
+						Change="0.1"
+						IsEnabled="{Binding Freeze}"
+						Maximum="20"
+						Minimum="0"
+						Value="{Binding Stars}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Stars_GalaxyIntensity}" />
+					<controls:NumberSlider
+						Change="0.1"
+						IsEnabled="{Binding Freeze}"
+						Maximum="5"
+						Minimum="0"
+						Value="{Binding GalaxyIntensity}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Stars_StarIntensity}" />
+					<controls:NumberSlider
+						Change="0.1"
+						IsEnabled="{Binding Freeze}"
+						Maximum="5"
+						Minimum="0"
+						Value="{Binding StarIntensity}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Stars_MoonColor}" />
+					<controls:Color4Control IsEnabled="{Binding Freeze}" Value="{Binding MoonColor}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Stars_MoonBrightness}" />
+					<controls:NumberSlider
+						Change="0.1"
+						IsEnabled="{Binding Freeze}"
+						Maximum="1"
+						Minimum="0"
+						Value="{Binding MoonBrightness}" />
+				</StackPanel>
+			</TabItem>
+
+			<TabItem Header="{DynamicResource ICON_Environment_Fog}">
+				<StackPanel DataContext="{Binding Services.Environment.CurrentState.Fog}">
+					<ToggleButton Content="{DynamicResource LOC_Environment_Fog}" IsChecked="{Binding Freeze}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Fog_Color}" />
+					<controls:Color4Control IsEnabled="{Binding Freeze}" Value="{Binding Color}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Fog_Distance}" />
+					<controls:NumberSlider
+						IsEnabled="{Binding Freeze}"
+						Maximum="5000"
+						Minimum="0"
+						Value="{Binding Distance}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Fog_Thickness}" />
+					<controls:NumberSlider
+						IsEnabled="{Binding Freeze}"
+						Maximum="50"
+						Minimum="0"
+						Value="{Binding Thickness}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Fog_Opacity}" />
+					<controls:NumberSlider
+						Change="0.1"
+						IsEnabled="{Binding Freeze}"
+						Maximum="5"
+						Minimum="0"
+						Value="{Binding Opacity}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Fog_SkyVisibility}" />
+					<controls:NumberSlider
+						IsEnabled="{Binding Freeze}"
+						Maximum="1"
+						Minimum="0"
+						Value="{Binding SkyVisibility}" />
+				</StackPanel>
+			</TabItem>
+
+			<TabItem Header="{DynamicResource ICON_Environment_Clouds}">
+				<StackPanel DataContext="{Binding Services.Environment.CurrentState.Clouds}">
+					<ToggleButton Content="{DynamicResource LOC_Environment_Clouds}" IsChecked="{Binding Freeze}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Clouds_Color}" />
+					<controls:Color3Control IsEnabled="{Binding Freeze}" Value="{Binding CloudColor}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Clouds_Color2}" />
+					<controls:Color3Control IsEnabled="{Binding Freeze}" Value="{Binding Color2}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Clouds_Gradient}" />
+					<controls:NumberSlider
+						IsEnabled="{Binding Freeze}"
+						Maximum="10"
+						Minimum="0"
+						Value="{Binding Gradient}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Clouds_SideHeight}" />
+					<controls:NumberSlider
+						IsEnabled="{Binding Freeze}"
+						Maximum="20"
+						Minimum="0"
+						Value="{Binding SideHeight}" />
+
+					<!--
+						CloudTexture
+						CloudSideTexture
+					-->
+				</StackPanel>
+			</TabItem>
+
+			<TabItem Header="{DynamicResource ICON_Environment_Rain}">
+				<StackPanel DataContext="{Binding Services.Environment.CurrentState.Rain}">
+					<ToggleButton Content="{DynamicResource LOC_Environment_Rain}" IsChecked="{Binding Freeze}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Rain_Raindrops}" />
+					<controls:NumberSlider
+						IsEnabled="{Binding Freeze}"
+						Maximum="20"
+						Minimum="0"
+						Value="{Binding Raindrops}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Rain_Intensity}" />
+					<controls:NumberSlider
+						IsEnabled="{Binding Freeze}"
+						Maximum="1"
+						Minimum="0"
+						Value="{Binding Intensity}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Rain_Weight}" />
+					<controls:NumberSlider
+						IsEnabled="{Binding Freeze}"
+						Maximum="50"
+						Minimum="0"
+						Value="{Binding Weight}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Rain_Scatter}" />
+					<controls:NumberSlider
+						Change="0.1"
+						IsEnabled="{Binding Freeze}"
+						Maximum="5"
+						Minimum="0"
+						Value="{Binding Scatter}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Rain_Size}" />
+					<controls:NumberSlider
+						Change="0.1"
+						IsEnabled="{Binding Freeze}"
+						Maximum="1"
+						Minimum="0"
+						Value="{Binding Size}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Rain_Color}" />
+					<controls:Color4Control
+						IsEnabled="{Binding Freeze}"
+						Value="{Binding Color}" />
+				</StackPanel>
+			</TabItem>
+
+			<TabItem Header="{DynamicResource ICON_Environment_Dust}">
+				<StackPanel DataContext="{Binding Services.Environment.CurrentState.Dust}">
+					<ToggleButton Content="{DynamicResource LOC_Environment_Dust}" IsChecked="{Binding Freeze}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Dust_Intensity}" />
+					<controls:NumberSlider
+						Change="0.1"
+						IsEnabled="{Binding Freeze}"
+						Maximum="5"
+						Minimum="0"
+						Value="{Binding Intensity}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Dust_Weight}" />
+					<controls:NumberSlider
+						IsEnabled="{Binding Freeze}"
+						Maximum="50"
+						Minimum="0"
+						Value="{Binding Weight}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Dust_Spread}" />
+					<controls:NumberSlider
+						Change="0.1"
+						IsEnabled="{Binding Freeze}"
+						Maximum="5"
+						Minimum="0"
+						Value="{Binding Spread}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Dust_Size}" />
+					<controls:NumberSlider
+						IsEnabled="{Binding Freeze}"
+						Maximum="100"
+						Minimum="0"
+						Value="{Binding Size}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Dust_Color}" />
+					<controls:Color4Control IsEnabled="{Binding Freeze}" Value="{Binding Color}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Dust_Glow}" />
+					<controls:NumberSlider
+						IsEnabled="{Binding Freeze}"
+						Maximum="50"
+						Minimum="0"
+						Value="{Binding Glow}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Dust_Spin}" />
+					<controls:NumberSlider
+						IsEnabled="{Binding Freeze}"
+						Maximum="50"
+						Minimum="0"
+						Value="{Binding Spin}" />
+
+					<!--
+						TextureId
+					-->
+				</StackPanel>
+			</TabItem>
+
+			<TabItem DataContext="{Binding Services.Environment.CurrentState.Wind}" Header="{DynamicResource ICON_Environment_Wind}">
+				<StackPanel>
+					<ToggleButton Content="{DynamicResource LOC_Environment_Wind}" IsChecked="{Binding Freeze}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Wind_Direction}" />
+					<controls:NumberSlider
+						IsEnabled="{Binding Freeze}"
+						Maximum="360"
+						Minimum="0"
+						Value="{Binding Direction}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Wind_Angle}" />
+					<controls:NumberSlider
+						IsEnabled="{Binding Freeze}"
+						Maximum="360"
+						Minimum="0"
+						Value="{Binding Angle}" />
+
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Wind_Speed}" />
+					<controls:NumberSlider
+						IsEnabled="{Binding Freeze}"
+						Maximum="500"
+						Minimum="0"
+						Value="{Binding Speed}" />
+				</StackPanel>
+			</TabItem>
+		</TabControl>
+
+		<Border Grid.Row="1" Style="{DynamicResource WpfUtilsControlBorder}" Margin="0,2,0,0">
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+				<Button Content="{DynamicResource LOC_Import}" MinWidth="100" Click="OnImportClicked"/>
+				<Button Content="{DynamicResource LOC_Export}" MinWidth="100" Click="OnExportClicked"/>
+			</StackPanel>
+		</Border>
+
 	</Grid>
 </panels:Panel>
