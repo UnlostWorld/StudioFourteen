@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using StudioFourteen.Files;
+using StudioFourteen.Posing;
 using StudioFourteen.Utilities;
 using WpfUtils.Extensions;
 

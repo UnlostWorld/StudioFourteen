@@ -15,7 +15,9 @@
 
 namespace StudioFourteen.Library;
 using PropertyChanged.SourceGenerator;
+using StudioFourteen.Appearance;
 using StudioFourteen.DragAndDrop;
+using StudioFourteen.Environment;
 using StudioFourteen.Files;
 using StudioFourteen.Input;
 using StudioFourteen.Library.Filters;
@@ -23,6 +25,8 @@ using StudioFourteen.Library.Results;
 using StudioFourteen.Library.Sources;
 using StudioFourteen.Mvm;
 using StudioFourteen.Panels;
+using StudioFourteen.Posing;
+using StudioFourteen.Scripting;
 using StudioFourteen.Tags;
 using System;
 using System.Collections.Generic;
@@ -305,7 +309,14 @@ public partial class LibraryWindow : Panel
 
 	private async void OnBrowseClicked(object sender, RoutedEventArgs e)
 	{
-		FileInfo? file = await this.Services.Files.ShowOpenDialog(null, typeof(SceneFile), typeof(PoseFile), typeof(AppearanceFile));
+		FileInfo? file = await this.Services.Files.ShowOpenDialog(
+			null,
+			typeof(SceneFile),
+			typeof(PoseFile),
+			typeof(AppearanceFile),
+			typeof(ScriptFile),
+			typeof(EnvironmentFile));
+
 		if (file == null)
 			return;
 

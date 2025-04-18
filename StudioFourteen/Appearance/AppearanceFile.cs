@@ -13,24 +13,20 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Files;
+namespace StudioFourteen.Appearance;
 
 using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using FontAwesome.Sharp;
 using Lumina.Excel.Sheets;
-using Newtonsoft.Json;
-using StudioFourteen.Appearance;
 using StudioFourteen.DragAndDrop;
+using StudioFourteen.Files;
 using StudioFourteen.GameData;
-using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Services;
 using StudioFourteen.Tags;
-using StudioFourteen.Utilities;
 using System;
 using System.Numerics;
 using System.Threading.Tasks;
-using System.Windows.Input;
+
 using CustomizeFacialFeatures = FFXIVClientStructs.FFXIV.Client.Game.Character.CustomizeDataExtensions.FacialFeatures;
 
 public class AppearanceFileTypeInfo : JsonFileTypeInfoBase<AppearanceFile>

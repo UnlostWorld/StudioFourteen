@@ -13,16 +13,17 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Files;
+namespace StudioFourteen.Environment;
 
 using System;
 using System.Threading.Tasks;
 using StudioFourteen.Environment;
+using StudioFourteen.Files;
 using StudioFourteen.Services;
 
 public class EnvironmentFileTypeInfo : JsonFileTypeInfoBase<EnvironmentFile>
 {
-	public override string Extension => ".env";
+	public override string Extension => ".s14env";
 	public override string TypeName => "Environment";
 	public override object? Icon => Resources.Find("ICON_Library_Entry_Environment");
 }

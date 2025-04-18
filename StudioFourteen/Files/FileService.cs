@@ -16,7 +16,10 @@
 namespace StudioFourteen.Files;
 
 using Microsoft.Win32;
+using StudioFourteen.Appearance;
+using StudioFourteen.Environment;
 using StudioFourteen.Library.Sources;
+using StudioFourteen.Posing;
 using StudioFourteen.Scripting;
 using StudioFourteen.Services;
 using StudioFourteen.Studio;

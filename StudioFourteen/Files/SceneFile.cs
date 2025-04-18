@@ -15,17 +15,18 @@
 
 namespace StudioFourteen.Files;
 
-using FontAwesome.Sharp;
+using StudioFourteen.Appearance;
 using StudioFourteen.Cameras;
-using StudioFourteen.Library.LibraryMenu;
+using StudioFourteen.Environment;
+using StudioFourteen.Posing;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
 public class SceneFileTypeInfo : JsonFileTypeInfoBase<SceneFile>
 {
-	public override string Extension => ".studio";
-	public override string TypeName => "Studio Scene";
+	public override string Extension => ".s14scene";
+	public override string TypeName => "Scene";
 }
 
 [Serializable]
@@ -33,10 +34,7 @@ public class SceneFile : FileBase
 {
 	public string Guid { get; set; } = System.Guid.NewGuid().ToString();
 
-	// TODO
-	////public string Location { get; set; }
-	////public string TimeOfDay { get; set; }
-	////public string Weather { get; set; }
+	public EnvironmentFile Environment { get; set; } = new();
 	public List<Actor> Actors { get; set; } = new();
 	public List<StudioCameraBase> Cameras { get; set; } = new();
 

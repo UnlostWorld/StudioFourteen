@@ -13,10 +13,10 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Files;
+namespace StudioFourteen.Posing;
 
+using StudioFourteen.Files;
 using StudioFourteen.Library;
-using StudioFourteen.Posing;
 using StudioFourteen.Services;
 using StudioFourteen.Structs.Extensions;
 using StudioFourteen.Tags;
