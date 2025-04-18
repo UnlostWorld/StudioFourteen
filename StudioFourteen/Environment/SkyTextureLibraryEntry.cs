@@ -16,7 +16,7 @@
 namespace StudioFourteen.Environment;
 
 using System;
-using Lumina.Data.Files;
+using System.Threading.Tasks;
 using StudioFourteen.GameData;
 using StudioFourteen.Library;
 using StudioFourteen.Library.Sources;
@@ -31,7 +31,12 @@ public class SkyTextureLibraryEntry(uint id, string path, SkyTextureSource sourc
 	public override IComparable DefaultSortValue => id;
 	public override object? Icon => new ImageReference(path);
 
-	public TexFile? Load() => ServiceManager.Instance.GameData.GetFile<TexFile>(path);
+	public override Task Execute()
+	{
+		this.Services.Environment.CurrentState.FreezeSkyTexture = true;
+		this.Services.Environment.CurrentState.SkyTexture = this;
+		return Task.CompletedTask;
+	}
 
 	protected override string GetInternalId() => $"SkyTex{id}";
 }

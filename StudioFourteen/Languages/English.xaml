@@ -351,6 +351,7 @@
 	<sys:String x:Key="LOC_Environment_Wind_Speed">Speed</sys:String>
 
 	<sys:String x:Key="LOC_Environment_Context_Apply">Apply Environment to scene</sys:String>
+	<sys:String x:Key="LOC_Environment_Context_ApplySkyTex">Apply Sky Texture to scene</sys:String>
 
 	<!--  Overlays  -->
 	<sys:String x:Key="LOC_Overlays">Overlays</sys:String>

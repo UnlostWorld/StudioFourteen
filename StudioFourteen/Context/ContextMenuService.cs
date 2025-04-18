@@ -63,6 +63,7 @@ public class ContextMenuService : ServiceBase
 	{
 		this.RegisterProvider<CharacterAppearanceContextMenuProvider>();
 		this.RegisterProvider<EnvironmentFileContextMenuProvider>();
+		this.RegisterProvider<SkyTextureContextMenuProvider>();
 
 		return base.Start();
 	}
