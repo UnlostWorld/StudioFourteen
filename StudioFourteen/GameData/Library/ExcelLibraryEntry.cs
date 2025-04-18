@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.GameData.Library;
 
+using System;
 using StudioFourteen.Library;
 using StudioFourteen.Library.Sources;
 
@@ -24,6 +25,7 @@ public abstract class ExcelLibraryEntry(SourceBase source, uint rowId)
 	public uint RowId => rowId;
 
 	public override string? SubTitle => $"#{rowId}";
+	public override IComparable DefaultSortValue => this.RowId;
 
 	public override string ToString() => $"#{rowId}";
 	protected override string GetInternalId() => $"{this.GetType().Name}_{rowId}";

@@ -57,6 +57,26 @@ public class GameDataService : ServiceBase
 		}
 	}
 
+	public bool GetFileExists(string path)
+	{
+		if (ServiceManager.ShutdownRequested)
+			return false;
+
+		if (this.lumina == null)
+			return false;
+
+		string? newPath = DalamudServices.TextureSubstitutionProvider?.GetSubstitutedPath(path) ?? path;
+		if (Path.IsPathRooted(newPath))
+		{
+			// TODO
+			throw new NotSupportedException();
+		}
+		else
+		{
+			return this.lumina.FileExists(newPath);
+		}
+	}
+
 	public ExcelSheet<T>? GetSheet<T>()
 		where T : struct, IExcelRow<T>
 	{

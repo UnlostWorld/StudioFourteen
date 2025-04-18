@@ -15,7 +15,6 @@
 
 namespace StudioFourteen.Library.Results;
 
-using StudioFourteen.GameData.Library;
 using StudioFourteen.Library.Filters;
 using StudioFourteen.Tags;
 using System;
@@ -132,21 +131,7 @@ public class GroupResult : Result
 					if (a.Entry is not GroupEntryBase && b.Entry is GroupEntryBase)
 						return 1;
 
-					if (a.Entry is GroupEntryBase && b.Entry is GroupEntryBase)
-					{
-						if (a.Entry.Name == null || b.Entry.Name == null)
-							return a.Entry.Identifier.CompareTo(b.Entry.Identifier);
-
-						return a.Entry.Name.CompareTo(b.Entry.Name);
-					}
-
-					if (a.Entry is ExcelLibraryEntry rowA && b.Entry is ExcelLibraryEntry rowB)
-						return rowA.RowId.CompareTo(rowB.RowId);
-
-					if (a.Entry is CharaMakeCustomizeLibraryEntry cA && b.Entry is CharaMakeCustomizeLibraryEntry cB)
-						return cA.MakeCustomize.Value.FeatureID.CompareTo(cB.MakeCustomize.Value.FeatureID);
-
-					return 0;
+					return a.Entry.DefaultSortValue.CompareTo(b.Entry.DefaultSortValue);
 				});
 
 				return this.results.Count > 0;

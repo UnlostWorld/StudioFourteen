@@ -49,6 +49,7 @@ public abstract class LibraryEntryBase : ITagged, INotifyPropertyChanged
 
 	public ServiceManager Services => ServiceManager.Instance;
 
+	public virtual IComparable DefaultSortValue => this.Name ?? this.Identifier;
 	public abstract string? Name { get; }
 	public abstract string? SubTitle { get; }
 	public virtual object? Icon => Resources.Find("ICON_Library_Entry");

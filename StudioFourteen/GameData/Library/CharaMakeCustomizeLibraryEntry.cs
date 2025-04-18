@@ -29,6 +29,7 @@ using StudioFourteen.Library.Sources;
 using StudioFourteen.Plugin;
 using StudioFourteen.Services;
 using StudioFourteen.Utilities;
+using System;
 using System.Threading.Tasks;
 
 using HairMakeType = StudioFourteen.GameData.Sheets.HairMakeType;
@@ -64,6 +65,7 @@ public class CharaMakeCustomizeLibraryEntry : LibraryEntryBase
 
 	public override string? SubTitle => $"#{this.MakeCustomize.Value.FeatureID}";
 	public override object? Icon => new ImageReference(this.MakeCustomize.Value.Icon);
+	public override IComparable DefaultSortValue => this.MakeCustomize.Value.FeatureID;
 
 	public override string? Name
 	{
