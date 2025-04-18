@@ -22,16 +22,14 @@ using StudioFourteen.Interop;
 using StudioFourteen.Services;
 using System.Threading.Tasks;
 using StudioFourteen.GameData.Library;
-using StudioFourteen.Files;
 
 public partial class EnvironmentService
 	: ServiceBase
 {
 	[Notify] private WeatherLibraryEntry? currentWeather;
+	[Notify] private EnvironmentState currentState = new();
 
 	private bool isReadingWeather;
-
-	public EnvironmentState CurrentState { get; set; } = new();
 
 	public unsafe override void Attach()
 	{
@@ -76,6 +74,11 @@ public partial class EnvironmentService
 		EnvironmentFile file = new();
 		await file.Save();
 		this.Services.Files.SaveFile(file, $"Environment");
+	}
+
+	public void Reset()
+	{
+		this.CurrentState = new();
 	}
 
 	protected unsafe void OnGameTick()

@@ -437,10 +437,16 @@
 		</TabControl>
 
 		<Border Grid.Row="1" Style="{DynamicResource WpfUtilsControlBorder}" Margin="0,2,0,0">
-			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-				<Button Content="{DynamicResource LOC_Import}" MinWidth="100" Click="OnImportClicked"/>
-				<Button Content="{DynamicResource LOC_Export}" MinWidth="100" Click="OnExportClicked"/>
-			</StackPanel>
+			<Grid>
+				<StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
+					<Button Content="{DynamicResource ICON_Reset}" Click="OnResetClicked"/>
+				</StackPanel>
+
+				<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+					<Button Content="{DynamicResource LOC_Import}" MinWidth="100" Click="OnImportClicked"/>
+					<Button Content="{DynamicResource LOC_Export}" MinWidth="100" Click="OnExportClicked"/>
+				</StackPanel>
+			</Grid>
 		</Border>
 
 	</Grid>

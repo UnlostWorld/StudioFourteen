@@ -69,6 +69,11 @@ public partial class TimeService
 		base.Detach();
 	}
 
+	public void Reset()
+	{
+		this.freezeTime = false;
+	}
+
 	protected unsafe void OnGameTick()
 	{
 		Framework* pFramework = Framework.Instance();

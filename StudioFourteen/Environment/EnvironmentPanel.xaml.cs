@@ -49,6 +49,12 @@ public partial class EnvironmentPanel : Panel
 		}
 	}
 
+	private void OnResetClicked(object sender, RoutedEventArgs e)
+	{
+		this.Services.Environment.Reset();
+		this.Services.Time.Reset();
+	}
+
 	private void OnImportClicked(object sender, RoutedEventArgs e)
 	{
 		LibraryWindow.Open(this.GetContext());

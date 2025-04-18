@@ -348,6 +348,8 @@
 	<sys:String x:Key="LOC_Environment_Wind_Angle">Angle</sys:String>
 	<sys:String x:Key="LOC_Environment_Wind_Speed">Speed</sys:String>
 
+	<sys:String x:Key="LOC_Environment_Context_Apply">Apply Environment to scene</sys:String>
+
 	<!--  Overlays  -->
 	<sys:String x:Key="LOC_Overlays">Overlays</sys:String>
 	<sys:String x:Key="LOC_Overlays_ToggleGlobal">Toggle the Studio Fourteen overlay system. Disabling the overlay system will disable mouse inputs.</sys:String>

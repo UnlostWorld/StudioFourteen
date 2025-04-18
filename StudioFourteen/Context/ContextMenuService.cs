@@ -19,6 +19,9 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Serilog;
+using StudioFourteen.Appearance;
+using StudioFourteen.Environment;
+using StudioFourteen.Library.Sources;
 using StudioFourteen.Services;
 using WpfUtils.Extensions;
 
@@ -56,6 +59,14 @@ public class ContextMenuService : ServiceBase
 {
 	private readonly List<IContextProvider> providers = new();
 
+	public override Task Start()
+	{
+		this.RegisterProvider<CharacterAppearanceContextMenuProvider>();
+		this.RegisterProvider<EnvironmentFileContextMenuProvider>();
+
+		return base.Start();
+	}
+
 	public void RegisterProvider<T>()
 		where T : IContextProvider, new()
 	{
@@ -77,14 +88,21 @@ public class ContextMenuService : ServiceBase
 		List<MenuEntry> menus = new();
 		foreach(object target in targets)
 		{
-			Type objectType = target.GetType();
+			object? targetActual = target;
+			if (targetActual is FileEntry fileEntry)
+				targetActual = fileEntry.File;
+
+			if (targetActual == null)
+				continue;
+
+			Type objectType = targetActual.GetType();
 
 			foreach(IContextProvider provider in this.providers)
 			{
 				if (!objectType.IsAssignableTo(provider.GetTargetType()))
 					continue;
 
-				await provider.GetMenus(target, menus);
+				await provider.GetMenus(targetActual, menus);
 			}
 		}
 
