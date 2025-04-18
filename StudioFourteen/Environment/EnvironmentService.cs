@@ -26,10 +26,18 @@ using StudioFourteen.GameData.Library;
 public partial class EnvironmentService
 	: ServiceBase
 {
+	public readonly SkyTextureSource SkyTextureSource = new();
+
 	[Notify] private WeatherLibraryEntry? currentWeather;
 	[Notify] private EnvironmentState currentState = new();
 
 	private bool isReadingWeather;
+
+	public override Task Initialize()
+	{
+		this.Services.Library.AddSource(this.SkyTextureSource);
+		return base.Initialize();
+	}
 
 	public unsafe override void Attach()
 	{

@@ -42,6 +42,17 @@
 						Type="{x:Type gameData:WeatherLibraryEntry}"
 						Value="{Binding Services.Environment.CurrentWeather}" />
 
+
+					<ToggleButton
+						Margin="0,20,0,0"
+						Content="{DynamicResource LOC_Environment_SkyTexture}"
+						IsChecked="{Binding Services.Environment.CurrentState.FreezeSkyTexture}" />
+					<librarySelector:LibrarySelectorButton
+						IsEnabled="{Binding Services.Environment.CurrentState.FreezeSkyTexture}"
+						PopOutHeader="{DynamicResource LOC_Environment_SkyTextureSelect}"
+						Type="{x:Type evironment:SkyTextureLibraryEntry}"
+						Value="{Binding Services.Environment.CurrentState.SkyTexture}" />
+
 					<ToggleButton
 						Margin="0,20,0,0"
 						Content="{DynamicResource LOC_Environment_Time}"
@@ -292,7 +303,7 @@
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Clouds_SideHeight}" />
 					<controls:NumberSlider
 						IsEnabled="{Binding Freeze}"
-						Maximum="20"
+						Maximum="1"
 						Minimum="0"
 						Value="{Binding SideHeight}" />
 

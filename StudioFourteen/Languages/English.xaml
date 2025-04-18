@@ -296,6 +296,8 @@
 	<sys:String x:Key="LOC_Environment_Weather">Weather</sys:String>
 	<sys:String x:Key="LOC_Environment_Time">Time</sys:String>
 	<sys:String x:Key="LOC_Environment_WeatherSelect">Select a weather</sys:String>
+	<sys:String x:Key="LOC_Environment_SkyTexture">Sky Texture</sys:String>
+	<sys:String x:Key="LOC_Environment_SkyTextureSelect">Select a Sky Texture</sys:String>
 
 	<sys:String x:Key="LOC_Environment_Lighting">Lighting</sys:String>
 	<sys:String x:Key="LOC_Environment_Lighting_SunColor">Sun Color</sys:String>

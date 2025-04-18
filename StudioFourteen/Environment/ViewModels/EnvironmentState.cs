@@ -15,11 +15,15 @@
 
 namespace StudioFourteen.Environment;
 
+using PropertyChanged.SourceGenerator;
 using StudioFourteen.Interop.Structs.Environment;
 using StudioFourteen.Services;
 
 public partial class EnvironmentState
 {
+	[Notify] private bool freezeSkyTexture = false;
+	[Notify] private SkyTextureLibraryEntry? skyTexture;
+
 	public EnvironmentLighting Lighting { get; init; } = new();
 	public EnvironmentStars Stars { get; init; } = new();
 	public EnvironmentFog Fog { get; init; } = new();
@@ -31,6 +35,9 @@ public partial class EnvironmentState
 	public unsafe void ReadFrom(EnvState* pModel)
 	{
 		TickService.VerifyGameTickThread();
+
+		if (!this.FreezeSkyTexture && (this.SkyTexture == null || this.SkyTexture.SkyTexId != pModel->SkyId))
+			this.SkyTexture = ServiceManager.Instance.Environment.SkyTextureSource.Get(pModel->SkyId);
 
 		this.Lighting.CheckAndReadFrom(pModel);
 		this.Stars.CheckAndReadFrom(pModel);
@@ -44,6 +51,9 @@ public partial class EnvironmentState
 	public unsafe void WriteTo(EnvState* pModel)
 	{
 		TickService.VerifyGameTickThread();
+
+		if (this.FreezeSkyTexture && this.SkyTexture != null)
+			pModel->SkyId = this.SkyTexture.SkyTexId;
 
 		this.Lighting.CheckAndWriteTo(pModel);
 		this.Stars.CheckAndWriteTo(pModel);
