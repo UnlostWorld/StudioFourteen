@@ -152,6 +152,11 @@ public class AppearanceFile : FileBase, ICharacterAppearance
 
 	public IDragSceneInstance CreateSceneInstance() => new CharacterAppearanceDragSceneInstance(this);
 
+	public override Task Execute()
+	{
+		return this.Apply(ServiceManager.Instance.Target.TargetObjectIndex, UpdateSource.Interface);
+	}
+
 	public async Task Apply(int objectTableIndex, UpdateSource source)
 	{
 		await TickService.GameTick();

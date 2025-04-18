@@ -310,7 +310,7 @@
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Rain_Raindrops}" />
 					<controls:NumberSlider
 						IsEnabled="{Binding Freeze}"
-						Maximum="20"
+						Maximum="1"
 						Minimum="0"
 						Value="{Binding Raindrops}" />
 

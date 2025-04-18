@@ -139,6 +139,11 @@ public class PoseFile : FileBase
 		}
 	}
 
+	public override Task Execute()
+	{
+		return this.Apply(ServiceManager.Instance.Target.TargetObjectIndex, UpdateSource.Interface);
+	}
+
 	public async Task Apply(int objectTableIndex, UpdateSource source, bool immediate = false)
 	{
 		await TickService.GameTick();

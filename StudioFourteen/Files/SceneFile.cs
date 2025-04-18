@@ -41,6 +41,11 @@ public class SceneFile : FileBase
 	////[LibraryMenu(IconChar.UsersBetweenLines, "LOC_OpenScene")]
 	////public Task Apply() => ServiceManager.Instance.Save.OpenAsync(this);
 
+	public override Task Execute()
+	{
+		throw new NotImplementedException();
+	}
+
 	public class Actor
 	{
 		public string? Role { get; set; }

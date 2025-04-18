@@ -71,6 +71,11 @@ public abstract class LibraryEntryBase : ITagged, INotifyPropertyChanged
 		}
 	}
 
+	public virtual Task Execute()
+	{
+		return Task.CompletedTask;
+	}
+
 	public virtual bool IsType(Type type) => this.GetType().IsAssignableTo(type);
 	public virtual bool Search(string[] query) => SearchUtility.Matches(this.Name, query);
 

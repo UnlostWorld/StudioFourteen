@@ -53,6 +53,11 @@ public class EnvironmentFile : FileBase
 		return Task.CompletedTask;
 	}
 
+	public override Task Execute()
+	{
+		return this.Apply();
+	}
+
 	public async Task Apply()
 	{
 		await TickService.GameTick();

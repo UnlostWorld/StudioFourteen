@@ -20,6 +20,7 @@ using Serilog.Events;
 using StudioFourteen.Files;
 using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Tags;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -44,7 +45,7 @@ public class ScriptFile(FileInfo fileInfo, string hash)
 		tags.Add("Script");
 	}
 
-	public Task Run()
+	public override Task Execute()
 	{
 		return ServiceManager.Instance.Scripting.RunScriptAsync(this);
 	}
@@ -77,4 +78,9 @@ public class ScriptOption
 public class ScriptHeader : FileBase
 {
 	public List<ScriptOption> Options { get; set; } = new();
+
+	public override Task Execute()
+	{
+		throw new NotSupportedException();
+	}
 }

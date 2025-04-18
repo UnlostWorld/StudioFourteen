@@ -19,6 +19,7 @@ using StudioFourteen.Library;
 using StudioFourteen.Tags;
 using System;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 
@@ -69,4 +70,6 @@ public abstract class FileBase
 	{
 		return null;
 	}
+
+	public abstract Task Execute();
 }

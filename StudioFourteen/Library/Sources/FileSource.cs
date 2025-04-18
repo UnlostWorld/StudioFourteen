@@ -205,6 +205,16 @@ public class FileEntry : LibraryEntryBase
 		return base.GetPreview();
 	}
 
+	public override Task Execute()
+	{
+		FileBase? file = this.File;
+
+		if (file == null)
+			return Task.CompletedTask;
+
+		return file.Execute();
+	}
+
 	protected override string GetInternalId() => this.fileInfo.FullName;
 }
 

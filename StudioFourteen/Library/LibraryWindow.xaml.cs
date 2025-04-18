@@ -534,7 +534,7 @@ public partial class LibraryWindow : Panel
 				this.currentPreview = null;
 			}
 
-			////await this.resultExecutionContext.Execute(result.Entry);
+			await result.Entry.Execute();
 		}
 	}
 
