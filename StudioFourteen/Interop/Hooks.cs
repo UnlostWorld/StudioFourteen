@@ -24,7 +24,7 @@ using StudioFourteen.Interop.Structs.Environment;
 using StudioFourteen.Plugin;
 using System;
 using System.Runtime.InteropServices;
-using TerraFX.Interop.Windows;
+using Windows.Win32.UI.WindowsAndMessaging;
 
 public static unsafe class Hooks
 {
@@ -35,85 +35,85 @@ public static unsafe class Hooks
 	// 		Special thanks to @Minmoose, @AsgardXIV
 
 	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Actor/ActorAppearanceService.cs#L58
-	public delegate byte EnforceKindRestrictionsDelegate(nint a1, nint a2);
-	public static readonly SignatureHook<EnforceKindRestrictionsDelegate> EnforceKind = new("E8 ?? ?? ?? ?? 41 B0 ?? 48 8B D6 48 8B");
+	internal delegate byte EnforceKindRestrictionsDelegate(nint a1, nint a2);
+	internal static readonly SignatureHook<EnforceKindRestrictionsDelegate> EnforceKind = new("E8 ?? ?? ?? ?? 41 B0 ?? 48 8B D6 48 8B");
 
 	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Camera/CameraService.cs#L60
-	public delegate nint SceneCameraUpdateDelegate(FFXIVClientStructs.FFXIV.Client.Graphics.Scene.Camera* sceneCamera);
-	public static readonly SignatureHook<SceneCameraUpdateDelegate> SceneCameraUpdate = new("48 ?? ?? ?? ?? ?? 48 81 EC ?? ?? ?? ?? F6 81 EC ?? ?? ?? ?? 48 8B ?? 48 ?? ?? ??");
+	internal delegate nint SceneCameraUpdateDelegate(FFXIVClientStructs.FFXIV.Client.Graphics.Scene.Camera* sceneCamera);
+	internal static readonly SignatureHook<SceneCameraUpdateDelegate> SceneCameraUpdate = new("48 ?? ?? ?? ?? ?? 48 81 EC ?? ?? ?? ?? F6 81 EC ?? ?? ?? ?? 48 8B ?? 48 ?? ?? ??");
 
 	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Camera/CameraService.cs#L64
-	public delegate void CameraMatrixLoadDelegate(FFXIVClientStructs.FFXIV.Client.Graphics.Render.Camera* camera, nint a1);
-	public static readonly SignatureHook<CameraMatrixLoadDelegate> CameraMatrixLoad = new("E8 ?? ?? ?? ?? 48 8B 93 90 02 ?? ?? 48 8D 4C 24 40");
+	internal delegate void CameraMatrixLoadDelegate(FFXIVClientStructs.FFXIV.Client.Graphics.Render.Camera* camera, nint a1);
+	internal static readonly SignatureHook<CameraMatrixLoadDelegate> CameraMatrixLoad = new("E8 ?? ?? ?? ?? 48 8B 93 90 02 ?? ?? 48 8D 4C 24 40");
 
 	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Camera/CameraService.cs#L56
-	public delegate nint GPoseCameraUpdateDelegate(StudioFourteen.Cameras.GroupPoseCamera* camera);
-	public static readonly SignatureHook<GPoseCameraUpdateDelegate> GPoseCameraUpdate = new("40 55 53 57 48 8D 6C 24 A0 48 81 EC ?? ?? ?? ?? 48 8B 1D");
+	internal delegate nint GPoseCameraUpdateDelegate(StudioFourteen.Cameras.GroupPoseCamera* camera);
+	internal static readonly SignatureHook<GPoseCameraUpdateDelegate> GPoseCameraUpdate = new("40 55 53 57 48 8D 6C 24 A0 48 81 EC ?? ?? ?? ?? 48 8B 1D");
 
 	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Posing/SkeletonService.cs#L59
-	public delegate nint UpdateBonePhysicsDelegate(nint a1);
-	public static readonly SignatureHook<UpdateBonePhysicsDelegate> UpdateBonePhysics = new("48 89 5C 24 ?? 48 89 6C 24 ?? 48 89 74 24 ?? 57 41 56 41 57 48 83 EC ?? 48 8B 79 ?? 45 33 FF");
+	internal delegate nint UpdateBonePhysicsDelegate(nint a1);
+	internal static readonly SignatureHook<UpdateBonePhysicsDelegate> UpdateBonePhysics = new("48 89 5C 24 ?? 48 89 6C 24 ?? 48 89 74 24 ?? 57 41 56 41 57 48 83 EC ?? 48 8B 79 ?? 45 33 FF");
 
 	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Posing/SkeletonService.cs#L63
-	public delegate void FinalizeSkeletonsDelegate(nint a1);
-	public static readonly SignatureHook<FinalizeSkeletonsDelegate> FinalizeSkeletons = new("40 53 55 57 41 55 48 83 EC 68");
+	internal delegate void FinalizeSkeletonsDelegate(nint a1);
+	internal static readonly SignatureHook<FinalizeSkeletonsDelegate> FinalizeSkeletons = new("40 53 55 57 41 55 48 83 EC 68");
 
 	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Core/ObjectMonitorService.cs#L40
-	public delegate nint CharacterEventDelegate(Character* character);
-	public static readonly SignatureHook<CharacterEventDelegate> CharacterInitialize = new("E8 ?? ?? ?? ?? 8D 57 ?? C6 83");
+	internal delegate nint CharacterEventDelegate(Character* character);
+	internal static readonly SignatureHook<CharacterEventDelegate> CharacterInitialize = new("E8 ?? ?? ?? ?? 8D 57 ?? C6 83");
 
 	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Core/ObjectMonitorService.cs#L44
-	public static readonly SignatureHook<CharacterEventDelegate> CharacterFinalize = new("48 89 5C 24 ?? 48 89 74 24 ?? 57 48 83 EC ?? 48 8D 05 ?? ?? ?? ?? 48 8B D9 48 89 01 48 8D 05 ?? ?? ?? ?? 48 89 81 ?? ?? ?? ?? 48 81 C1");
+	internal static readonly SignatureHook<CharacterEventDelegate> CharacterFinalize = new("48 89 5C 24 ?? 48 89 74 24 ?? 57 48 83 EC ?? 48 8D 05 ?? ?? ?? ?? 48 8B D9 48 89 01 48 8D 05 ?? ?? ?? ?? 48 89 81 ?? ?? ?? ?? 48 81 C1");
 
 	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/World/TimeService.cs#L98
-	public delegate void UpdateEorzeaTimeDelegate(IntPtr a1, IntPtr a2);
-	public static readonly SignatureHook<UpdateEorzeaTimeDelegate> UpdateEorzeaTime = new("48 89 5C 24 ?? 57 48 83 EC ?? 48 8B F9 48 8B DA 48 81 C1 ?? ?? ?? ?? E8 ?? ?? ?? ?? 4C");
+	internal delegate void UpdateEorzeaTimeDelegate(IntPtr a1, IntPtr a2);
+	internal static readonly SignatureHook<UpdateEorzeaTimeDelegate> UpdateEorzeaTime = new("48 89 5C 24 ?? 57 48 83 EC ?? 48 8B F9 48 8B DA 48 81 C1 ?? ?? ?? ?? E8 ?? ?? ?? ?? 4C");
 
 	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Actor/ActionTimelineService.cs#L41
-	public static readonly SignatureHook<TimelineContainer.Delegates.CalculateAndApplyOverallSpeed> CalculateAndApplyOverallSpeedHook = new ("E8 ?? ?? ?? ?? 48 8D 8B ?? ?? ?? ?? 48 8B 01 FF 50 ?? 48 8D 8B ?? ?? ?? ?? 48 8B 01 FF 50 ?? F6 83");
+	internal static readonly SignatureHook<TimelineContainer.Delegates.CalculateAndApplyOverallSpeed> CalculateAndApplyOverallSpeedHook = new ("E8 ?? ?? ?? ?? 48 8D 8B ?? ?? ?? ?? 48 8B 01 FF 50 ?? 48 8D 8B ?? ?? ?? ?? 48 8B 01 FF 50 ?? F6 83");
 
 	// Client Struct Hooks
 	// 		https://github.com/aers/FFXIVClientStructs
 	// 		Big thanks to everyone in the Client Structs team. ❤
-	public unsafe delegate bool TickDelegate(Framework* pFramework);
-	public static readonly AddressHook<TickDelegate> Tick = new(() => (nint)Framework.StaticVirtualTablePointer->Tick);
+	internal unsafe delegate bool TickDelegate(Framework* pFramework);
+	internal static readonly AddressHook<TickDelegate> Tick = new(() => (nint)Framework.StaticVirtualTablePointer->Tick);
 
-	public delegate bool EnterGroupPoseDelegate(UIModule* uiModule);
-	public static readonly AddressHook<EnterGroupPoseDelegate> EnterGroupPose = new(() => (nint)Framework.Instance()->UIModule->VirtualTable->EnterGPose);
+	internal delegate bool EnterGroupPoseDelegate(UIModule* uiModule);
+	internal static readonly AddressHook<EnterGroupPoseDelegate> EnterGroupPose = new(() => (nint)Framework.Instance()->UIModule->VirtualTable->EnterGPose);
 
-	public delegate void ExitGroupPoseDelegate(UIModule* uiModule);
-	public static readonly AddressHook<ExitGroupPoseDelegate> ExitGroupPose = new(() => (nint)Framework.Instance()->UIModule->VirtualTable->ExitGPose);
+	internal delegate void ExitGroupPoseDelegate(UIModule* uiModule);
+	internal static readonly AddressHook<ExitGroupPoseDelegate> ExitGroupPose = new(() => (nint)Framework.Instance()->UIModule->VirtualTable->ExitGPose);
 
-	public static readonly AddressHook<InterfaceManager.ReshadeOnPresentDelegate> ReshadeOnPresent = new(() => SwapChainHelper.ReshadeOnPresent);
-	public static readonly AddressHook<PadDevice.Delegates.Poll> PadDevicePoll = new(() => (nint)PadDevice.StaticVirtualTablePointer->Poll);
-	public static readonly AddressHook<GameObject.Delegates.SetPosition> SetPosition = new(() => GameObject.Addresses.SetPosition.Value);
+	internal static readonly AddressHook<InterfaceManager.ReshadeOnPresentDelegate> ReshadeOnPresent = new(() => SwapChainHelper.ReshadeOnPresent);
+	internal static readonly AddressHook<PadDevice.Delegates.Poll> PadDevicePoll = new(() => (nint)PadDevice.StaticVirtualTablePointer->Poll);
+	internal static readonly AddressHook<GameObject.Delegates.SetPosition> SetPosition = new(() => GameObject.Addresses.SetPosition.Value);
 
 	// Dalamud Signatures:
 	//  	https://github.com/goatcorp/Dalamud
 	// 		Special thanks to @goaaats
 
 	// https://github.com/goatcorp/Dalamud/blob/master/Dalamud/Game/Addon/Events/AddonEventManagerAddressResolver.cs
-	public delegate nint UpdateGameCursorDelegate(RaptureAtkModule* module);
-	public static readonly SignatureHook<UpdateGameCursorDelegate> UpdateGameCursor = new("48 89 74 24 ?? 48 89 7C 24 ?? 41 56 48 83 EC 20 4C 8B F1 E8 ?? ?? ?? ?? 49 8B CE");
+	internal delegate nint UpdateGameCursorDelegate(RaptureAtkModule* module);
+	internal static readonly SignatureHook<UpdateGameCursorDelegate> UpdateGameCursor = new("48 89 74 24 ?? 48 89 7C 24 ?? 41 56 48 83 EC 20 4C 8B F1 E8 ?? ?? ?? ?? 49 8B CE");
 
 	// https://github.com/goatcorp/Dalamud/blob/master/Dalamud/Interface/Internal/InterfaceManager.cs#L1043
 	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	public delegate IntPtr SetUser32CursorDelegate(IntPtr hCursor);
-	public static readonly ImportHook<SetUser32CursorDelegate> SetCursor = new(null, "user32.dll", "SetCursor", 0);
+	internal delegate IntPtr SetUser32CursorDelegate(HCURSOR hCursor);
+	internal static readonly ImportHook<SetUser32CursorDelegate> SetCursor = new(null, "user32.dll", "SetCursor", 0);
 
 	// Ktisis Signatures:
 	// 		https://github.com/ktisis-tools/Ktisis/
 	// 		Special thanks to @chirp
 
 	// https://github.com/ktisis-tools/Ktisis/blob/v0.3/main/Ktisis/Scene/Modules/EnvModule.cs#L97
-	public unsafe delegate nint EnvStateCopyDelegate(EnvState* dest, EnvState* src);
-	public static readonly SignatureHook<EnvStateCopyDelegate> EnvStateCopy = new("E8 ?? ?? ?? ?? 49 3B F5 75 0D");
+	internal unsafe delegate nint EnvStateCopyDelegate(EnvState* dest, EnvState* src);
+	internal static readonly SignatureHook<EnvStateCopyDelegate> EnvStateCopy = new("E8 ?? ?? ?? ?? 49 3B F5 75 0D");
 
 	// Title Edit Signatures:
 	// 		https://github.com/Caraxi/TitleEditPlugin
 	// 		Special thanks to @Caraxi
 
 	// https://github.com/Caraxi/TitleEditPlugin/blob/master/TitleEdit/TitleEditAddressResolver.cs#L40
-	public delegate int CreateSceneDelegate(string p1, uint p2, IntPtr p3, uint p4, IntPtr p5, int p6, uint p7);
-	public static readonly SignatureHook<CreateSceneDelegate> CreateScene = new("E8 ?? ?? ?? ?? 66 89 1D ?? ?? ?? ?? E9 ?? ?? ?? ??");
+	internal delegate int CreateSceneDelegate(string p1, uint p2, IntPtr p3, uint p4, IntPtr p5, int p6, uint p7);
+	internal static readonly SignatureHook<CreateSceneDelegate> CreateScene = new("E8 ?? ?? ?? ?? 66 89 1D ?? ?? ?? ?? E9 ?? ?? ?? ??");
 }

@@ -52,7 +52,7 @@ public class ServiceManager : ServiceManagerBase
 	public Photos.PhotosService Photos { get; init; } = new();
 	public RedrawService Redraw { get; init; } = new();
 	public Scripting.ScriptingService Scripting { get; init; } = new();
-	public CursorService Cursor { get; init; } = new();
+	public Cursors.CursorService Cursor { get; init; } = new();
 	public Analytics.ErrorReportingService Errors { get; init; } = new();
 	public TickService Tick { get; init; } = new();
 	public GameObjectsService GameObjects { get; init; } = new();

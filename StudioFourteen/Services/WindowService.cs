@@ -208,6 +208,11 @@ public partial class WindowService : ServiceBase
 		return this.mouseOverPanelWindows.Count > 0;
 	}
 
+	public PanelWindow? GetMouseOverWindow()
+	{
+		return this.mouseOverPanelWindows.FirstOrDefault();
+	}
+
 	public void SendToBack(PanelWindow window)
 	{
 		window.Dispatcher.Invoke(() =>
