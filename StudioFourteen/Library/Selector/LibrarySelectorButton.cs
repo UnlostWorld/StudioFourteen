@@ -19,6 +19,7 @@ using DependencyPropertyGenerator;
 using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Tags;
 using System;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
@@ -42,9 +43,13 @@ public partial class LibrarySelectorButton : Control
 	private LibraryContextMenu? menu;
 	private LibrarySelector? selector;
 
+	protected ServiceManager Services => ServiceManager.Instance;
+
 	public override void OnApplyTemplate()
 	{
 		base.OnApplyTemplate();
+
+		this.AllowDrop = true;
 
 		if (this.button != null)
 		{
@@ -63,6 +68,36 @@ public partial class LibrarySelectorButton : Control
 			this.button.ToolTipOpening += this.OnToolTipOpening;
 			this.button.MouseLeave += this.OnMouseLeave;
 		}
+	}
+
+	protected override void OnDragEnter(DragEventArgs e)
+	{
+		base.OnDragEnter(e);
+
+		if (this.Services.DragAndDrop.CurrentDragObject is not LibraryEntryBase)
+			return;
+
+		Type type = this.Services.DragAndDrop.CurrentDragObject.GetType();
+		if (!type.IsAssignableTo(this.Type))
+			return;
+
+		e.Effects = DragDropEffects.Move;
+		e.Handled = true;
+	}
+
+	protected override void OnDrop(DragEventArgs e)
+	{
+		base.OnDrop(e);
+
+		if (this.Services.DragAndDrop.CurrentDragObject is not LibraryEntryBase entry)
+			return;
+
+		Type type = this.Services.DragAndDrop.CurrentDragObject.GetType();
+		if (!type.IsAssignableTo(this.Type))
+			return;
+
+		this.Value = entry;
+		e.Handled = true;
 	}
 
 	partial void OnValueChanged()

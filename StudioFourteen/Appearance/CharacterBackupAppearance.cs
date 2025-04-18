@@ -60,7 +60,7 @@ public class CharacterBackupAppearance
 	public override string? SubTitle => null;
 	public override object? Icon => this.icon;
 
-	public IDragSceneInstance CreateSceneInstance() => new CharacterAppearanceDragSceneInstance(this);
+	public override IDragSceneInstance CreateSceneInstance() => new CharacterAppearanceDragSceneInstance(this);
 
 	public async Task Apply(int objectTableIndex, UpdateSource source)
 	{

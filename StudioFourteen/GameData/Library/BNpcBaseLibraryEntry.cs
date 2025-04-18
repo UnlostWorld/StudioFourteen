@@ -94,7 +94,7 @@ public class BNpcBaseLibraryEntry
 		}
 	}
 
-	public IDragSceneInstance CreateSceneInstance() => new CharacterAppearanceDragSceneInstance(this);
+	public override IDragSceneInstance CreateSceneInstance() => new CharacterAppearanceDragSceneInstance(this);
 
 	public async Task Apply(int objectTableIndex, UpdateSource source)
 	{

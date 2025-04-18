@@ -88,7 +88,7 @@ public class GlamourerEntry
 	public override string Name => this.design.Name ?? "Unknown";
 	public override string? SubTitle => this.design.Identifier;
 
-	public IDragSceneInstance CreateSceneInstance() => new CharacterAppearanceDragSceneInstance(this);
+	public override IDragSceneInstance CreateSceneInstance() => new CharacterAppearanceDragSceneInstance(this);
 
 	public async Task Apply(int objectTableIndex, UpdateSource updateSource)
 	{

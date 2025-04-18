@@ -71,7 +71,7 @@ public class MountLibraryEntry : ExcelLibraryEntry, ICharacterAppearance
 			source);
 	}
 
-	public IDragSceneInstance? CreateSceneInstance() => new CharacterAppearanceDragSceneInstance(this);
+	public override IDragSceneInstance? CreateSceneInstance() => new CharacterAppearanceDragSceneInstance(this);
 
 	public EquipmentModelId GetModelId(DrawDataContainer.EquipmentSlot slot)
 	{

@@ -40,8 +40,8 @@ public interface IDragSceneInstance
 public partial class DragAndDropService : ServiceBase
 {
 	[Notify] private bool isDragging;
+	[Notify] private IDraggable? currentDragObject;
 
-	private IDraggable? currentDragObject;
 	private DragAndDropOperation? currentOperation;
 
 	public override void Attach()
@@ -59,35 +59,49 @@ public partial class DragAndDropService : ServiceBase
 	public void Drag(FrameworkElement owner, IDraggable obj)
 	{
 		this.IsDragging = true;
-		this.currentDragObject = obj;
+		this.CurrentDragObject = obj;
 
 		DragDrop.DoDragDrop(owner, obj, DragDropEffects.All);
 		this.IsDragging = false;
+
+		this.Log.Information("END");
 	}
 
 	public void HandleDragEnterScene(DragEventArgs e)
 	{
-		if (this.currentDragObject == null)
+		if (this.CurrentDragObject == null)
 			return;
 
 		if (this.currentOperation != null)
 			return;
 
-		IDragSceneInstance? instance = this.currentDragObject.CreateSceneInstance();
+		IDragSceneInstance? instance = this.CurrentDragObject.CreateSceneInstance();
 		if (instance != null)
 		{
 			this.currentOperation = new(instance);
-			e.Effects = DragDropEffects.Move;
+			e.Effects = DragDropEffects.Copy;
 			this.currentOperation.EnterScene().Run();
 		}
+		else
+		{
+			e.Effects = DragDropEffects.None;
+		}
+
+		e.Handled = true;
 	}
 
 	public void HandleDragOverScene(DragEventArgs e)
 	{
 		if (this.currentOperation != null)
 		{
-			e.Effects = DragDropEffects.Move;
+			e.Effects = DragDropEffects.Copy;
 		}
+		else
+		{
+			e.Effects = DragDropEffects.None;
+		}
+
+		e.Handled = true;
 	}
 
 	public void HandleDragLeaveScene(DragEventArgs e)

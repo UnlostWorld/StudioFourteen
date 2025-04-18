@@ -83,7 +83,7 @@ public class ENpcResidentLibraryEntry : ExcelLibraryEntry, ICharacterAppearance
 
 	public ENpcBase? ENpcBase => ServiceManager.Instance.GameData.GetRow<ENpcBase>(this.Npc.RowId);
 
-	public IDragSceneInstance CreateSceneInstance() => new CharacterAppearanceDragSceneInstance(this);
+	public override IDragSceneInstance CreateSceneInstance() => new CharacterAppearanceDragSceneInstance(this);
 
 	public async Task Apply(int objectTableIndex, UpdateSource source)
 	{

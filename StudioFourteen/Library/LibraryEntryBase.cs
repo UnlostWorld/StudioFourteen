@@ -16,9 +16,11 @@
 namespace StudioFourteen.Library;
 
 using Serilog;
+using StudioFourteen.DragAndDrop;
 using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Sources;
 using StudioFourteen.Tags;
+using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -32,7 +34,7 @@ public delegate void EntryEvent();
 /// <summary>
 /// An entry is a library object.
 /// </summary>
-public abstract class LibraryEntryBase : ITagged, INotifyPropertyChanged
+public abstract class LibraryEntryBase : ITagged, INotifyPropertyChanged, IDraggable
 {
 	protected readonly ILogger Log;
 
@@ -71,6 +73,8 @@ public abstract class LibraryEntryBase : ITagged, INotifyPropertyChanged
 			this.NotifyPropertyChanged();
 		}
 	}
+
+	public virtual IDragSceneInstance? CreateSceneInstance() => null;
 
 	public virtual Task Execute()
 	{
