@@ -33,24 +33,31 @@ using WpfUtils.Controls;
 
 public class CursorService : ServiceBase
 {
+	private readonly Cursor xivPointer;
+	private readonly Cursor xivLink;
+	private readonly Cursor xivGrab;
+
 	public CursorService()
 	{
-		this.Pointer = this.LoadCursor("pointer.cur");
-		this.Link = this.LoadCursor("link.cur");
-		this.Grab = this.LoadCursor("grab.cur");
+		this.xivPointer = this.LoadCursor("pointer.cur");
+		this.xivLink = this.LoadCursor("link.cur");
+		this.xivGrab = this.LoadCursor("grab.cur");
 
-		this.SetCursor<PanelWindow>(this.Pointer);
-		this.SetCursor<PopOut>(this.Pointer);
-		this.SetCursor<LauncherMenu>(this.Pointer);
-		this.SetCursor<Window>(this.Pointer);
-		this.SetCursor<ToggleButton>(this.Link);
-		this.SetCursor<ListBoxItem>(this.Link);
-		this.SetCursor<Button>(this.Link);
+		this.SetCursor<PanelWindow>(CursorType.Pointer);
+		this.SetCursor<PopOut>(CursorType.Pointer);
+		this.SetCursor<LauncherMenu>(CursorType.Pointer);
+		this.SetCursor<Window>(CursorType.Pointer);
+		this.SetCursor<ToggleButton>(CursorType.Link);
+		this.SetCursor<ListBoxItem>(CursorType.Link);
+		this.SetCursor<Button>(CursorType.Link);
 	}
 
-	public Cursor? Pointer { get; init; }
-	public Cursor? Link { get; init; }
-	public Cursor? Grab { get; init; }
+	public enum CursorType
+	{
+		Pointer,
+		Link,
+		Grab,
+	}
 
 	public unsafe override void Attach()
 	{
@@ -67,9 +74,17 @@ public class CursorService : ServiceBase
 		Hooks.SetCursor.Disable();
 	}
 
-	public void SetDragCursor(DragDropEffects effect)
+	public Cursor GetCursor(CursorType type)
 	{
-		Mouse.SetCursor(this.Grab);
+		bool useSystem = this.Settings.UseSystemCursors;
+		switch (type)
+		{
+			case CursorType.Pointer: return useSystem ? Cursors.Arrow : this.xivPointer;
+			case CursorType.Link: return useSystem ? Cursors.Hand : this.xivLink;
+			case CursorType.Grab: return useSystem ? Cursors.Hand : this.xivGrab;
+		}
+
+		throw new NotSupportedException();
 	}
 
 	private unsafe nint UpdateCursorDetour(RaptureAtkModule* module)
@@ -96,7 +111,7 @@ public class CursorService : ServiceBase
 		return new Cursor(stream);
 	}
 
-	private void SetCursor<T>(Cursor? cursor)
+	private void SetCursor<T>(CursorType type)
 		where T : FrameworkElement
 	{
 		EventManager.RegisterClassHandler(
@@ -109,7 +124,7 @@ public class CursorService : ServiceBase
 
 				if (s is FrameworkElement fe)
 				{
-					fe.Cursor = cursor;
+					fe.Cursor = ServiceManager.Instance.Cursor.GetCursor(type);
 				}
 			}));
 	}

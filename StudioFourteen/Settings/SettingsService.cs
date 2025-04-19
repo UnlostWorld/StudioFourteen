@@ -158,6 +158,7 @@ public partial class SettingsService : ServiceBase
 		[Notify] private Dictionary<string, string> themeOptions = new();
 		[Notify] private string launcher = "Default";
 		[Notify] private bool isAioWindowOpen = false;
+		[Notify] private bool useSystemCursors = false;
 
 		// Input
 		[Notify] private bool enableBinds = true;

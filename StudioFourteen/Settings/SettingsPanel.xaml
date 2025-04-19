@@ -136,6 +136,12 @@
 				</ComboBox>
 
 
+				<ToggleButton
+					Margin="1"
+					Content="Use system cursors"
+					IsChecked="{Binding Settings.UseSystemCursors}" />
+
+
 			</StackPanel>
 		</TabItem>
 

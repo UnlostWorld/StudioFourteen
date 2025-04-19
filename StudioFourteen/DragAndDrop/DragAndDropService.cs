@@ -18,7 +18,9 @@ namespace StudioFourteen.DragAndDrop;
 using System;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using PropertyChanged.SourceGenerator;
+using StudioFourteen.Cursors;
 using StudioFourteen.Services;
 using StudioFourteen.Utilities;
 using WpfUtils.Extensions;
@@ -153,7 +155,7 @@ public partial class DragAndDropService : ServiceBase
 
 	private void GiveFeedback(object sender, GiveFeedbackEventArgs e)
 	{
-		this.Services.Cursor.SetDragCursor(e.Effects);
+		Mouse.SetCursor(this.Services.Cursor.GetCursor(CursorService.CursorType.Grab));
 		e.Handled = true;
 	}
 

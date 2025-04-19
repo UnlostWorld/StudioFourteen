@@ -54,6 +54,8 @@
 						ScaleY="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ScaleX}" />
 				</Grid.RenderTransform>
 
+				<Grid Background="Transparent" Margin="-12"/>
+
 				<Border
 					x:Name="WindowShadow"
 					Background="Black"

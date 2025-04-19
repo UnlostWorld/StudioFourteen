@@ -31,7 +31,6 @@ public partial class BackgroundWindow : PanelWindow
 	{
 		Instance = this;
 		this.ContentArea.DataContext = this;
-		Mouse.OverrideCursor = this.Services.Cursor.Pointer;
 	}
 
 	public override bool CanNavigate => false;
