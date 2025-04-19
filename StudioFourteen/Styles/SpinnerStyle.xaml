@@ -53,7 +53,7 @@
 		x:Key="Spinner"
 		TargetType="{x:Type ProgressBar}">
 		<Setter Property="Height" Value="32" />
-		<Setter Property="IsIndeterminate" Value="True" />
+		<Setter Property="IsIndeterminate" Value="False" />
 		<Setter Property="Margin" Value="3" />
 		<Setter Property="Template" Value="{StaticResource StudioSpinnerTemplate}" />
 		<Setter Property="Width" Value="32" />
