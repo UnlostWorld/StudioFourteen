@@ -21,6 +21,7 @@ ShowWindow
 SetFocus
 SetCursor
 EnableWindow
+SetLayeredWindowAttributes
 
 WINDOW_EX_STYLE
 WINDOW_STYLE

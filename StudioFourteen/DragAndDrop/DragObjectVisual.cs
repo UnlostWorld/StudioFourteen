@@ -15,13 +15,16 @@
 
 namespace StudioFourteen.DragAndDrop;
 
+using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Effects;
 using Windows.Win32;
 using Windows.Win32.Foundation;
+using Windows.Win32.UI.WindowsAndMessaging;
 
 public class DragObjectVisual : Window
 {
@@ -30,13 +33,12 @@ public class DragObjectVisual : Window
 		this.WindowStyle = WindowStyle.None;
 		this.AllowsTransparency = true;
 		this.Topmost = true;
-		this.IsHitTestVisible = false;
 		this.Background = new SolidColorBrush(Colors.Transparent);
+		this.Opacity = 0.75;
+		this.AllowDrop = false;
+		this.ShowActivated = false;
 
 		this.Resources = StudioFourteen.Resources.Load();
-
-		WindowInteropHelper wndInterop = new(this);
-		PInvoke.EnableWindow((HWND)wndInterop.Handle, false);
 
 		DropShadowEffect shadow = new();
 		shadow.BlurRadius = 10;
@@ -52,5 +54,17 @@ public class DragObjectVisual : Window
 
 		this.Width = 100;
 		this.Height = 100;
+
+		this.Loaded += this.OnLoaded;
+	}
+
+	private void OnLoaded(object sender, RoutedEventArgs e)
+	{
+		WindowInteropHelper wndInterop = new(this);
+
+		PInvoke.SetWindowLong(
+			(HWND)wndInterop.Handle,
+			WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE,
+			(int)WINDOW_EX_STYLE.WS_EX_TRANSPARENT | (int)WINDOW_EX_STYLE.WS_EX_LAYERED | (int)WINDOW_EX_STYLE.WS_EX_APPWINDOW | (int)WINDOW_EX_STYLE.WS_EX_TOPMOST);
 	}
 }

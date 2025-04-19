@@ -170,7 +170,7 @@ public partial class GroupPoseService : ServiceBase
 
 	private async Task CheckLoaded()
 	{
-		await Task.Delay(1000);
+		await Task.Delay(2000);
 		this.IsGroupPoseLoaded = this.isGroupPosing;
 	}
 }
