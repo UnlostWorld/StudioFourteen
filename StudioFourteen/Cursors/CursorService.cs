@@ -37,6 +37,7 @@ public class CursorService : ServiceBase
 	{
 		this.Pointer = this.LoadCursor("pointer.cur");
 		this.Link = this.LoadCursor("link.cur");
+		this.Grab = this.LoadCursor("grab.cur");
 
 		this.SetCursor<PanelWindow>(this.Pointer);
 		this.SetCursor<PopOut>(this.Pointer);
@@ -49,6 +50,7 @@ public class CursorService : ServiceBase
 
 	public Cursor? Pointer { get; init; }
 	public Cursor? Link { get; init; }
+	public Cursor? Grab { get; init; }
 
 	public unsafe override void Attach()
 	{
@@ -63,6 +65,11 @@ public class CursorService : ServiceBase
 		base.Detach();
 		Hooks.UpdateGameCursor.Disable();
 		Hooks.SetCursor.Disable();
+	}
+
+	public void SetDragCursor(DragDropEffects effect)
+	{
+		Mouse.SetCursor(this.Grab);
 	}
 
 	private unsafe nint UpdateCursorDetour(RaptureAtkModule* module)

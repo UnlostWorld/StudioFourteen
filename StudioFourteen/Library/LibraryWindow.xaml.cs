@@ -428,14 +428,11 @@ public partial class LibraryWindow : Panel
 			if (draggable == null)
 				throw new Exception("Unexpected file type");
 
-			this.Services.DragAndDrop.Drag(senderElement, draggable);
+			this.Services.DragAndDrop.Drag(senderElement, draggable, result.Entry);
 		}
 		else
 		{
-			if (result.Entry is not IDraggable draggable)
-				return;
-
-			this.Services.DragAndDrop.Drag(senderElement, draggable);
+			this.Services.DragAndDrop.Drag(senderElement, result.Entry);
 		}
 	}
 

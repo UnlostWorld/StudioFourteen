@@ -20,6 +20,7 @@ GetClientRect
 ShowWindow
 SetFocus
 SetCursor
+EnableWindow
 
 WINDOW_EX_STYLE
 WINDOW_STYLE

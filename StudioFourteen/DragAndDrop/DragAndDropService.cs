@@ -16,7 +16,6 @@
 namespace StudioFourteen.DragAndDrop;
 
 using System;
-using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows;
 using PropertyChanged.SourceGenerator;
@@ -27,6 +26,7 @@ using WpfUtils.Extensions;
 public interface IDraggable
 {
 	IDragSceneInstance? CreateSceneInstance();
+	object? GetDragPreviewContent() => null;
 }
 
 public interface IDragSceneInstance
@@ -43,6 +43,7 @@ public partial class DragAndDropService : ServiceBase
 	[Notify] private IDraggable? currentDragObject;
 
 	private DragAndDropOperation? currentOperation;
+	private DragObjectVisual? currentVisual;
 
 	public override void Attach()
 	{
@@ -56,15 +57,31 @@ public partial class DragAndDropService : ServiceBase
 		base.Detach();
 	}
 
-	public void Drag(FrameworkElement owner, IDraggable obj)
+	public void Drag(FrameworkElement owner, IDraggable obj, IDraggable? previewParent = null)
 	{
 		this.IsDragging = true;
 		this.CurrentDragObject = obj;
 
-		DragDrop.DoDragDrop(owner, obj, DragDropEffects.All);
-		this.IsDragging = false;
+		object? dragPreview = obj.GetDragPreviewContent();
+		if (dragPreview == null)
+			dragPreview = previewParent?.GetDragPreviewContent();
 
-		this.Log.Information("END");
+		if (dragPreview != null)
+		{
+			this.currentVisual = new(dragPreview);
+			this.currentVisual.Show();
+		}
+
+		owner.GiveFeedback += this.GiveFeedback;
+		owner.QueryContinueDrag += this.QuerryContinueDrag;
+
+		DragDrop.DoDragDrop(owner, obj, DragDropEffects.All);
+
+		this.currentVisual?.Close();
+		this.currentVisual = null;
+		owner.GiveFeedback -= this.GiveFeedback;
+		owner.QueryContinueDrag -= this.QuerryContinueDrag;
+		this.IsDragging = false;
 	}
 
 	public void HandleDragEnterScene(DragEventArgs e)
@@ -132,6 +149,22 @@ public partial class DragAndDropService : ServiceBase
 			return;
 
 		this.currentOperation.UpdatePosition(hit);
+	}
+
+	private void GiveFeedback(object sender, GiveFeedbackEventArgs e)
+	{
+		this.Services.Cursor.SetDragCursor(e.Effects);
+		e.Handled = true;
+	}
+
+	private void QuerryContinueDrag(object sender, QueryContinueDragEventArgs e)
+	{
+		if (this.currentVisual == null)
+			return;
+
+		Point cursorPos = CursorUtility.GetPosition();
+		this.currentVisual.Left = cursorPos.X - (this.currentVisual.Width / 2);
+		this.currentVisual.Top = cursorPos.Y - (this.currentVisual.Height / 2);
 	}
 }
 

@@ -17,14 +17,10 @@ namespace StudioFourteen.Library;
 
 using Serilog;
 using StudioFourteen.DragAndDrop;
-using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Sources;
 using StudioFourteen.Tags;
-using StudioFourteen.Utilities;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using WpfUtils;
@@ -74,6 +70,7 @@ public abstract class LibraryEntryBase : ITagged, INotifyPropertyChanged, IDragg
 		}
 	}
 
+	public virtual object? GetDragPreviewContent() => this.Icon;
 	public virtual IDragSceneInstance? CreateSceneInstance() => null;
 
 	public virtual Task Execute()
