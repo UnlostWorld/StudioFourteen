@@ -341,6 +341,9 @@ public class CameraService : ServiceBase
 
 	private unsafe void CameraMatrixLoad(RenderCamera* camera, nint a1)
 	{
+		if (!Hooks.CameraMatrixLoad.IsValid)
+			return;
+
 		Hooks.CameraMatrixLoad.Original(camera, a1);
 	}
 }

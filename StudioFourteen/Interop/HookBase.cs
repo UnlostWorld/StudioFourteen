@@ -23,6 +23,8 @@ public abstract class HookBase<TDelegate>
 {
 	private Hook<TDelegate>? hook;
 
+	public bool IsValid => this.hook != null;
+
 	public TDelegate Original
 	{
 		get
