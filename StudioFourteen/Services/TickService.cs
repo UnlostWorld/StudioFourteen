@@ -140,50 +140,56 @@ public partial class TickService : ServiceBase
 	{
 		currentChannel = channel;
 
+		Dictionary<Channels, List<Action?>> tickListeners;
 		lock(this.tickListeners)
 		{
-			this.tickListeners.TryGetValue(channel, out var callbacks);
-			if (callbacks != null)
-			{
-				foreach(Action? callback in this.tickListeners[channel].ToArray())
-				{
-					if (callback?.Target == null)
-					{
-						this.tickListeners[channel].Remove(callback);
-						break;
-					}
+			tickListeners = new(this.tickListeners);
+		}
 
-					try
-					{
-						callback?.Invoke();
-					}
-					catch(Exception ex)
-					{
-						this.Log.Error(ex, $"Error ticking {callback?.Method} on {callback?.Target}. This callback will be disabled.");
-						this.tickListeners[channel].Remove(callback);
-						break;
-					}
+		this.tickListeners.TryGetValue(channel, out var callbacks);
+		if (callbacks != null)
+		{
+			foreach(Action? callback in this.tickListeners[channel].ToArray())
+			{
+				if (callback?.Target == null)
+				{
+					this.tickListeners[channel].Remove(callback);
+					break;
+				}
+
+				try
+				{
+					callback?.Invoke();
+				}
+				catch(Exception ex)
+				{
+					this.Log.Error(ex, $"Error ticking {callback?.Method} on {callback?.Target}. This callback will be disabled.");
+					this.tickListeners[channel].Remove(callback);
+					break;
 				}
 			}
 		}
 
+		Dictionary<Channels, Queue<Action?>> tickDispatchers;
 		lock (this.tickDispatchers)
 		{
-			this.tickDispatchers.TryGetValue(channel, out var dispatches);
-			if (dispatches != null)
+			tickDispatchers = new(this.tickDispatchers);
+		}
+
+		this.tickDispatchers.TryGetValue(channel, out var dispatches);
+		if (dispatches != null)
+		{
+			while(dispatches.Count > 0)
 			{
-				while(dispatches.Count > 0)
+				Action? dispatch = dispatches.Dequeue();
+				try
 				{
-					Action? dispatch = dispatches.Dequeue();
-					try
-					{
-						dispatch?.Invoke();
-					}
-					catch(Exception ex)
-					{
-						this.Log.Error(ex, $"Error dispatching {dispatch?.Method} on {dispatch?.Target}.");
-						break;
-					}
+					dispatch?.Invoke();
+				}
+				catch(Exception ex)
+				{
+					this.Log.Error(ex, $"Error dispatching {dispatch?.Method} on {dispatch?.Target}.");
+					break;
 				}
 			}
 		}
