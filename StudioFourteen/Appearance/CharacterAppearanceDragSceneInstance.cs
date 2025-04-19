@@ -26,6 +26,8 @@ public class CharacterAppearanceDragSceneInstance(ICharacterAppearance appearanc
 {
 	private int spawnedObjectId = -1;
 
+	public object? GetOperationIcon() => Resources.Find("ICON_Drag_AddCharacter");
+
 	public async Task EnterScene()
 	{
 		if (this.spawnedObjectId != -1)

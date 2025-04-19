@@ -37,6 +37,8 @@ public interface IDragSceneInstance
 	void UpdatePosition(HitInfo hit);
 	Task LeaveScene();
 	Task Drop(HitInfo hit);
+
+	object? GetOperationIcon();
 }
 
 public partial class DragAndDropService : ServiceBase
@@ -46,6 +48,22 @@ public partial class DragAndDropService : ServiceBase
 
 	private DragAndDropOperation? currentOperation;
 	private DragObjectVisual? currentVisual;
+
+	private object? dragOperationIconNo;
+	private object? dragOperationIconAssign;
+
+	public override Task Start()
+	{
+		this.dragOperationIconNo = Resources.Find("ICON_Drag_No");
+		this.dragOperationIconAssign = Resources.Find("ICON_Drag_Assign");
+		return base.Start();
+	}
+
+	public override Task Shutdown()
+	{
+		this.currentVisual?.Close();
+		return base.Shutdown();
+	}
 
 	public override void Attach()
 	{
@@ -61,6 +79,8 @@ public partial class DragAndDropService : ServiceBase
 
 	public void Drag(FrameworkElement owner, IDraggable obj, IDraggable? previewParent = null)
 	{
+		this.currentVisual?.Close();
+
 		this.IsDragging = true;
 		this.CurrentDragObject = obj;
 
@@ -75,14 +95,15 @@ public partial class DragAndDropService : ServiceBase
 		}
 
 		owner.GiveFeedback += this.GiveFeedback;
-		owner.QueryContinueDrag += this.QuerryContinueDrag;
+		owner.QueryContinueDrag += this.QueryContinueDrag;
 
-		DragDrop.DoDragDrop(owner, obj, DragDropEffects.All);
+		string msg = "Hey, dont drag that over here.";
+		DragDrop.DoDragDrop(owner, msg, DragDropEffects.All);
 
 		this.currentVisual?.Close();
 		this.currentVisual = null;
 		owner.GiveFeedback -= this.GiveFeedback;
-		owner.QueryContinueDrag -= this.QuerryContinueDrag;
+		owner.QueryContinueDrag -= this.QueryContinueDrag;
 		this.IsDragging = false;
 	}
 
@@ -155,11 +176,30 @@ public partial class DragAndDropService : ServiceBase
 
 	private void GiveFeedback(object sender, GiveFeedbackEventArgs e)
 	{
+		if (this.currentVisual != null)
+		{
+			object? opIcon = this.currentOperation?.GetOperationIcon();
+
+			if (opIcon == null)
+			{
+				if (e.Effects == DragDropEffects.Move)
+				{
+					opIcon = this.dragOperationIconAssign;
+				}
+				else
+				{
+					opIcon = this.dragOperationIconNo;
+				}
+			}
+
+			this.currentVisual.SetOperation(opIcon);
+		}
+
 		Mouse.SetCursor(this.Services.Cursor.GetCursor(CursorService.CursorType.Grab));
 		e.Handled = true;
 	}
 
-	private void QuerryContinueDrag(object sender, QueryContinueDragEventArgs e)
+	private void QueryContinueDrag(object sender, QueryContinueDragEventArgs e)
 	{
 		if (this.currentVisual == null)
 			return;
@@ -215,4 +255,6 @@ public class DragAndDropOperation(IDragSceneInstance instance)
 		this.lastHit = hit;
 		instance.UpdatePosition(hit);
 	}
+
+	public object? GetOperationIcon() => instance.GetOperationIcon();
 }
