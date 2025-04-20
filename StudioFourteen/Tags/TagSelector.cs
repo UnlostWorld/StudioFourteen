@@ -33,7 +33,7 @@ using WpfUtils.Utils;
 [DependencyProperty<bool>("PopOutOpen", DefaultBindingMode = DefaultBindingMode.TwoWay)]
 public partial class TagSelector : Control
 {
-	private const int MaxNumResultTags = 15;
+	private const int MaxNumResultTags = 50;
 
 	private readonly FuncQueue searchQueue;
 	private TagsControl? currentTagDisplay;
@@ -160,6 +160,8 @@ public partial class TagSelector : Control
 					continue;
 
 				totalResults++;
+
+				Logging.Information(tag.Name);
 
 				if (results.Count >= MaxNumResultTags)
 					continue;

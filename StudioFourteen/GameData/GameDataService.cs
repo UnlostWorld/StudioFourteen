@@ -173,6 +173,7 @@ public class GameDataService : ServiceBase
 		this.AddLibraryExcelSheet<Emote, EmoteLibraryEntry>();
 		this.AddLibraryExcelSheet<Lumina.Excel.Sheets.Action, ActionLibraryEntry>();
 		this.AddLibraryExcelSheet<Mount, MountLibraryEntry>();
+		this.AddLibraryExcelSheet<Status, StatusLibraryEntry>();
 
 		this.Services.Library.AddSource(new HairLibrarySource());
 		this.Services.Library.AddSource(new FacePaintLibrarySource());
