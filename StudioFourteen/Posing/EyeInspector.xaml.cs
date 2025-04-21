@@ -15,19 +15,16 @@
 
 namespace StudioFourteen.Posing;
 
-using Dalamud.Plugin.Services;
 using DependencyPropertyGenerator;
 using FontAwesome.Sharp;
 using StudioFourteen.Mvm;
 using StudioFourteen.Selection;
 using StudioFourteen.Services;
 using StudioFourteen.Structs.Extensions;
-using StudioFourteen.Utilities;
 using System;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using TerraFX.Interop.Windows;
 using WpfUtils.Extensions;
 
 public class EyeSelectionId(int objectTableIndex) : ISelectionId

@@ -20,18 +20,15 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.System.Scheduler.Base;
 using FFXIVClientStructs.Havok.Animation.Animation;
 using FFXIVClientStructs.Havok.Animation.Playback;
 using FFXIVClientStructs.Havok.Animation.Playback.Control.Default;
-using Lumina.Excel.Sheets;
 using PropertyChanged.SourceGenerator;
 using Serilog;
 using StudioFourteen.Interop;
 using StudioFourteen.Services;
-using TerraFX.Interop.Windows;
 using WpfUtils.Extensions;
 
 public interface ITimelineAnimation

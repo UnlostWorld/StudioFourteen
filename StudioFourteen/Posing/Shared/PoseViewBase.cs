@@ -18,7 +18,6 @@ namespace StudioFourteen.Posing.Shared;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using StudioFourteen.Mvm;
-using StudioFourteen.Utilities;
 using System.Windows;
 using WpfUtils;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
@@ -28,8 +27,6 @@ using System.Windows.Input;
 using System.Windows.Media;
 using StudioFourteen.Selection;
 using DependencyPropertyGenerator;
-using TerraFX.Interop.Windows;
-using StudioFourteen.Plugin;
 using StudioFourteen.Services;
 
 [DependencyProperty<bool>("Hide", DefaultValue = false)]

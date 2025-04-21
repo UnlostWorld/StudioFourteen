@@ -15,35 +15,33 @@
 
 namespace StudioFourteen.Services;
 
-using Dalamud.Hooking;
-using Dalamud.Plugin.Services;
-using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
-using FFXIVClientStructs.FFXIV.Common.Lua;
-using SixLabors.ImageSharp.PixelFormats;
-using StudioFourteen.Interop;
-using StudioFourteen.Plugin;
-using StudioFourteen.Reshade;
-using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using TerraFX.Interop.DirectX;
-using TerraFX.Interop.Windows;
+using SharpDX;
+using SharpDX.Direct3D11;
+using SixLabors.ImageSharp.PixelFormats;
+using StudioFourteen.Interop;
+using StudioFourteen.Plugin;
+using StudioFourteen.Utilities;
 
 using Color = System.Windows.Media.Color;
+using Device = SharpDX.Direct3D11.Device;
 using Image = SixLabors.ImageSharp.Image;
 using Point = System.Windows.Point;
+using XivDevice = FFXIVClientStructs.FFXIV.Client.Graphics.Kernel.Device;
 
 public interface ICaptureListener
 {
 	// Note: Invoked from the games main render thread. Don't do much work here.
 	void OnCapture();
 }
-
+#pragma warning disable
 public class GameCaptureService : ServiceBase
 {
 	private readonly object lockObj = new();
@@ -53,14 +51,14 @@ public class GameCaptureService : ServiceBase
 
 	private int backBufferWidth = 0;
 	private int backBufferHeight = 0;
-	private ComPtr<ID3D11Texture2D> backBufferTexture = default;
+	private Texture2D? backBufferTexture;
 	private IntPtr pBackBuffer;
 	private int backBufferLength;
 
 	private byte[] depthBufferFloatData = Array.Empty<byte>();
 	private int depthBufferWidth = 0;
 	private int depthBufferHeight = 0;
-	private ComPtr<ID3D11Texture2D> depthBufferTexture = default;
+	private Texture2D? depthBufferTexture;
 	private IntPtr pDepthBuffer;
 	private int depthBufferLength;
 
@@ -99,8 +97,8 @@ public class GameCaptureService : ServiceBase
 			InterfaceManager.DisableReshadePresent();
 		}
 
-		Thread conversionThread = new(new ThreadStart(this.ConversionThread));
-		conversionThread.Start();
+		////Thread conversionThread = new(new ThreadStart(this.ConversionThread));
+		////conversionThread.Start();
 	}
 
 	public override void Detach()
@@ -116,7 +114,10 @@ public class GameCaptureService : ServiceBase
 
 		Hooks.ReshadeOnPresent.Disable();
 
-		this.backBufferTexture.Dispose();
+		this.backBufferTexture?.Dispose();
+		this.backBufferTexture = null;
+		this.depthBufferTexture?.Dispose();
+		this.depthBufferTexture = null;
 	}
 
 	public async Task<(Image? BackBuffer, Image? DepthBuffer)> ToImage()
@@ -260,7 +261,7 @@ public class GameCaptureService : ServiceBase
 			return;
 
 		this.CaptureBack();
-		this.CaptureDepth();
+		////this.CaptureDepth();
 
 		this.captureId++;
 
@@ -279,7 +280,7 @@ public class GameCaptureService : ServiceBase
 		{
 			lock (this.lockObj)
 			{
-				var kernelDev = Device.Instance();
+				var kernelDev = XivDevice.Instance();
 				if (kernelDev == null)
 					return;
 
@@ -292,19 +293,17 @@ public class GameCaptureService : ServiceBase
 				if (swapChain->BackBuffer == null)
 					return;
 
-				ID3D11Texture2D* buffer = (ID3D11Texture2D*)swapChain->BackBuffer->D3D11Texture2D;
-				if (buffer == null)
+				Texture2D backBuffer = (Texture2D)(nint)swapChain->BackBuffer->D3D11Texture2D;
+				if (backBuffer == null)
 					return;
 
-				using ComPtr<ID3D11Device> device = default;
-				buffer->GetDevice(device.GetAddressOf());
-				if (device.Get() == null)
+				Device device = backBuffer.Device;
+				if (device == null)
 					return;
 
-				D3D11_TEXTURE2D_DESC description;
-				buffer->GetDesc(&description);
+				Texture2DDescription description = backBuffer.Description;
 
-				if (description.Format != DXGI_FORMAT.DXGI_FORMAT_R8G8B8A8_UNORM)
+				if (description.Format != SharpDX.DXGI.Format.R8G8B8A8_UNorm)
 					throw new Exception($"wrong format in back buffer texture {description.Format}");
 
 				bool sizeDirty =
@@ -318,40 +317,83 @@ public class GameCaptureService : ServiceBase
 					return;
 
 				description.BindFlags = 0;
-				description.CPUAccessFlags = (uint)D3D11_CPU_ACCESS_FLAG.D3D11_CPU_ACCESS_READ;
-				description.Usage = D3D11_USAGE.D3D11_USAGE_STAGING;
+				description.CpuAccessFlags = CpuAccessFlags.Read;
+				description.Usage = ResourceUsage.Staging;
 
-				if (sizeDirty || this.backBufferTexture.Get() == null)
+				if (sizeDirty || this.backBufferTexture == null)
 				{
-					this.backBufferTexture.Reset();
+					this.backBufferTexture?.Dispose();
 
 					this.Log.Information("Creating a back buffer texture");
-					HRESULT createResult = device.Get()->CreateTexture2D(&description, null, this.backBufferTexture.GetAddressOf());
-
-					if (createResult.FAILED)
-					{
-						throw new Exception("Failed to create texture");
-					}
+					this.backBufferTexture = new Texture2D(device, description);
 				}
 
-				using ComPtr<ID3D11DeviceContext> context = default;
-				device.Get()->GetImmediateContext(context.GetAddressOf());
-
-				if (context.Get() == null)
+				DeviceContext context = device.ImmediateContext;
+				if (context == null)
 					return;
 
-				context.Get()->CopyResource((ID3D11Resource*)this.backBufferTexture.Get(), (ID3D11Resource*)buffer);
+				context.CopyResource(backBuffer, this.backBufferTexture);
 
-				D3D11_MAPPED_SUBRESOURCE mapped = default(D3D11_MAPPED_SUBRESOURCE);
-				HRESULT mapResult = context.Get()->Map((ID3D11Resource*)this.backBufferTexture.Get(), 0, D3D11_MAP.D3D11_MAP_READ, 0u, &mapped);
-				if (mapResult.FAILED)
-					throw new Exception($"Failed to map texture resource");
+				DataStream stream;
+
+				DataBox data = context.MapSubresource(this.backBufferTexture, 0, MapMode.Read, MapFlags.None, out stream);
+				if (data.IsEmpty)
+					throw new Exception("Failed to map subresource for back buffer");
 
 				int len = this.backBufferWidth * this.backBufferHeight * 4;
-				this.pBackBuffer = (IntPtr)mapped.pData;
+				this.pBackBuffer = data.DataPointer;
 				this.backBufferLength = len;
 
-				context.Get()->Unmap((ID3D11Resource*)buffer, 0u);
+				using MemoryStream ms = new();
+				stream.CopyTo(ms);
+				this.bufferBgraData = ms.ToArray();
+
+				for (int i = 0; i < len; i++)
+				{
+					if (this.bufferBgraData[i] == 0)
+						this.bufferBgraData[i] = 255;
+				}
+
+				// Convert the back buffer ARGB32 to BGRA32
+				// https://stackoverflow.com/questions/21428272/show-rgba-image-from-memory
+				/*int numPixels = this.backBufferHeight * this.backBufferWidth;
+				if (numPixels > 0 && this.backBufferLength > 0)
+				{
+					unsafe
+					{
+						if (this.bufferBgraData.Length != this.backBufferLength)
+							this.bufferBgraData = new byte[this.backBufferLength];
+
+						fixed (byte* pDestData = &this.bufferBgraData[0])
+						{
+							uint* pCurrent = (uint*)this.pBackBuffer;
+							uint* pBitmapData = (uint*)pDestData;
+
+							for (int n = 0; n < numPixels; n++)
+							{
+								uint x = *(pCurrent++);
+
+								if (x != 0)
+									x = 1;
+
+								// Swap R and B
+								*(pBitmapData + n) =
+									0xFF000000 | // force alpha to 255
+									((x & 0x00FF0000) >> 16) |
+									(x & 0x0000FF00) |
+									((x & 0x000000FF) << 16);
+							}
+						}
+					}
+				}*/
+
+				context.UnmapSubresource(this.backBufferTexture, 0);
+				this.convertId = this.captureId;
+
+				foreach (ICaptureListener listener in this.listeners)
+				{
+					listener.OnCapture();
+				}
 			}
 		}
 		catch (Exception ex)
@@ -363,7 +405,7 @@ public class GameCaptureService : ServiceBase
 	/// <summary>
 	/// Capture the contents of the games depth buffer.
 	/// </summary>
-	private unsafe void CaptureDepth()
+	/*private unsafe void CaptureDepth()
 	{
 		TickService.VerifyGameTickThread();
 
@@ -379,19 +421,17 @@ public class GameCaptureService : ServiceBase
 				if (this.Services.Reshade.DepthBufferAddress == 0)
 					return;
 
-				ID3D11Texture2D* buffer = (ID3D11Texture2D*)this.Services.Reshade.DepthBufferAddress;
+				Texture2D buffer = (Texture2D)this.Services.Reshade.DepthBufferAddress;
 				if (buffer == null)
 					return;
 
-				using ComPtr<ID3D11Device> device = default;
-				buffer->GetDevice(device.GetAddressOf());
-				if (device.Get() == null)
+				Device device = buffer.Device;
+				if (device == null)
 					return;
 
-				D3D11_TEXTURE2D_DESC description;
-				buffer->GetDesc(&description);
+				Texture2DDescription description = buffer.Description;
 
-				if (description.Format != DXGI_FORMAT.DXGI_FORMAT_R24G8_TYPELESS)
+				if (description.Format != SharpDX.DXGI.Format.R24G8_Typeless)
 					throw new Exception($"wrong format in depth buffer texture {description.Format}");
 
 				bool sizeDirty =
@@ -405,49 +445,42 @@ public class GameCaptureService : ServiceBase
 					return;
 
 				description.BindFlags = 0;
-				description.CPUAccessFlags = (uint)D3D11_CPU_ACCESS_FLAG.D3D11_CPU_ACCESS_READ;
-				description.Usage = D3D11_USAGE.D3D11_USAGE_STAGING;
+				description.CpuAccessFlags = CpuAccessFlags.Read;
+				description.Usage = ResourceUsage.Staging;
 
-				if (sizeDirty || this.depthBufferTexture.Get() == null)
+				if (sizeDirty || this.depthBufferTexture == null)
 				{
-					this.depthBufferTexture.Reset();
-					this.Log.Information("Creating a depth buffer texture");
-					HRESULT createResult = device.Get()->CreateTexture2D(&description, null, this.depthBufferTexture.GetAddressOf());
+					this.depthBufferTexture?.Dispose();
 
-					if (createResult.FAILED)
-					{
-						throw new Exception("Failed to create texture");
-					}
+					this.Log.Information("Creating a depth buffer texture");
+					this.depthBufferTexture = new(device, description);
 				}
 
-				using ComPtr<ID3D11DeviceContext> context = default;
-				device.Get()->GetImmediateContext(context.GetAddressOf());
-
-				if (context.Get() == null)
+				DeviceContext context = device.ImmediateContext;
+				if (context == null)
 					return;
 
-				context.Get()->CopyResource((ID3D11Resource*)this.depthBufferTexture.Get(), (ID3D11Resource*)buffer);
+				context.CopyResource(this.depthBufferTexture, buffer);
 
-				D3D11_MAPPED_SUBRESOURCE mapped = default(D3D11_MAPPED_SUBRESOURCE);
-				HRESULT mapResult = context.Get()->Map((ID3D11Resource*)this.depthBufferTexture.Get(), 0, D3D11_MAP.D3D11_MAP_READ, 0u, &mapped);
-				if (mapResult.FAILED)
-					throw new Exception($"Failed to map texture resource");
+				DataBox data = context.MapSubresource(this.depthBufferTexture, 0, MapMode.Read, MapFlags.DoNotWait);
+				if (data.IsEmpty)
+					throw new Exception("Failed to map subresource for depth");
 
 				int len = this.depthBufferWidth * this.depthBufferHeight * 4;
-				this.pDepthBuffer = (IntPtr)mapped.pData;
+				this.pDepthBuffer = data.DataPointer;
 				this.depthBufferLength = len;
 
-				context.Get()->Unmap((ID3D11Resource*)buffer, 0u);
+				context.UnmapSubresource(buffer, 0);
 			}
 		}
 		catch (Exception ex)
 		{
 			this.Log.Error(ex, "Error in graphics capture");
 		}
-	}
+	}*/
 
 	// A thread responsible for converting captures from rgba32 to bgra32 for use in WPF.
-	private void ConversionThread()
+	/*private void ConversionThread()
 	{
 		while (this.IsAlive && this.IsAttached)
 		{
@@ -535,5 +568,5 @@ public class GameCaptureService : ServiceBase
 				return;
 			}
 		}
-	}
+	}*/
 }

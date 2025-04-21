@@ -21,12 +21,9 @@ using StudioFourteen.Services;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using TerraFX.Interop.Windows;
 using WpfUtils.Extensions;
 using WpfUtils.Utils;
-using static FFXIVClientStructs.FFXIV.Component.GUI.AtkComponentNumericInput.Delegates;
 
 public interface IHistoryTarget
 {
