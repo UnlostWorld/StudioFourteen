@@ -62,4 +62,5 @@ public class ServiceManager : ServiceManagerBase
 	public Environment.EnvironmentService Environment { get; init; } = new();
 	public Environment.TerritoryService Territory { get; init; } = new();
 	public Environment.TimeService Time { get; init; } = new();
+	public Rendering.RenderingService Rendering { get; init; } = new();
 }

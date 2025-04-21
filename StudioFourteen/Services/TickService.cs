@@ -44,6 +44,7 @@ public partial class TickService : ServiceBase
 
 		GameTick,
 		StudioTick,
+		ImGuiDraw,
 	}
 
 	public static SwitchToTickChannel GameTick() => new(TickService.Channels.GameTick);
@@ -78,12 +79,20 @@ public partial class TickService : ServiceBase
 		Thread panelMainThread = new Thread(this.TickThread);
 		panelMainThread.Start();
 
+		if (Plugin.DalamudServices.PluginInterface != null)
+			Plugin.DalamudServices.PluginInterface.UiBuilder.Draw += this.OnImGuiDraw;
+
 		return base.Initialize();
 	}
 
 	public override Task Shutdown()
 	{
 		this.shouldTick = false;
+
+		Hooks.Tick.Disable();
+
+		if (Plugin.DalamudServices.PluginInterface != null)
+			Plugin.DalamudServices.PluginInterface.UiBuilder.Draw -= this.OnImGuiDraw;
 
 		foreach((Channels chanel, List<Action?> callbacks) in this.tickListeners)
 		{
@@ -208,6 +217,11 @@ public partial class TickService : ServiceBase
 			Thread.Sleep(TickDelay);
 			this.PerformTick(Channels.StudioTick);
 		}
+	}
+
+	private void OnImGuiDraw()
+	{
+		this.PerformTick(Channels.ImGuiDraw);
 	}
 
 	public struct SwitchToTickChannel(TickService.Channels channel)
