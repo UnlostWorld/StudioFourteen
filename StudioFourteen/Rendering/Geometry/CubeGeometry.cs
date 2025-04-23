@@ -13,35 +13,55 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-struct Constants
-{
-    float4x4 ViewProjection;
-};
+namespace StudioFourteen.Rendering.Geometry;
 
-struct Vertex
+public class CubeGeometry : GeometryBase
 {
-	float4 Position:POSITION;
-	float4 Color:COLOR;
-};
+	protected override void Load(out Vertex[] vertices, out ushort[] indices)
+	{
+		vertices =
+		[
 
-struct VertexResult
-{
-    float4 Position : SV_POSITION;
-    float4 Color : COLOR;
-};
+			// Bottom
+			new (-0.5f, -0.5f, -0.5f, 1, 0, 0),
+			new (-0.5f, -0.5f, +0.5f, 1, 1, 0),
+			new (+0.5f, -0.5f, +0.5f, 0, 1, 0),
+			new (+0.5f, -0.5f, -0.5f, 0, 1, 1),
 
-Constants constants : register(c0);
+			// Top
+			new (-0.5f, +0.5f, -0.5f, 0, 0, 1),
+			new (-0.5f, +0.5f, +0.5f, 1, 0, 1),
+			new (+0.5f, +0.5f, +0.5f, 1, 0, 0),
+			new (+0.5f, +0.5f, -0.5f, 1, 1, 0),
 
-VertexResult vert(in Vertex vertex)
-{
-	VertexResult result;
-	result.Position = vertex.Position;
-	result.Color = vertex.Color;
-	////result.position = mul(position, constants.ViewProjection);
-	return result;
-}
+		];
 
-float4 pixel(VertexResult vertex) : SV_TARGET
-{
-	return vertex.Color;
+		indices =
+		[
+
+			// Bottom
+			0, 1, 2,
+			2, 3, 0,
+
+			// Top
+			6, 5, 4,
+			4, 7, 6,
+
+			// Front
+			3, 2, 6,
+			6, 7, 3,
+
+			// Back
+			5, 1, 0,
+			0, 4, 5,
+
+			// Side L
+			1, 5, 6,
+			6, 2, 1,
+
+			// Side R
+			7, 4, 0,
+			0, 3, 7,
+		];
+	}
 }

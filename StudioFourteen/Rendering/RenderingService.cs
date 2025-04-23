@@ -46,7 +46,7 @@ public class RenderingService : ServiceBase
 	public RenderingService()
 	{
 		MaterialBase mat = new TestMaterial();
-		GeometryBase geo = new TriangleGeometry();
+		GeometryBase geo = new CubeGeometry();
 		this.Add(new(mat, geo));
 	}
 
@@ -157,11 +157,15 @@ public class RenderingService : ServiceBase
 		}
 
 		this.constants.ViewProjection = Matrix4x4.Transpose(this.Services.Camera.CurrentViewProjection);
+		this.constants.TestColor = new Vector4(1, 0, 0, 1);
 		this.deviceContext.UpdateSubresource(ref this.constants, this.constantsBuffer);
 
 		////context.ClearRenderTargetView(this.renderTargetView, new(0, 0, 0, 0));
 		this.deviceContext.Rasterizer.SetViewport(0, 0, kernelDev->Width, kernelDev->Height);
 		this.deviceContext.OutputMerger.SetTargets(this.backBufferTargetView);
+
+		this.deviceContext.VertexShader.SetConstantBuffer(0, this.constantsBuffer);
+		this.deviceContext.GeometryShader.SetConstantBuffer(0, this.constantsBuffer);
 
 		foreach(Renderable renderable in this.renderables)
 		{
@@ -177,5 +181,6 @@ public class RenderingService : ServiceBase
 	public struct Constants
 	{
 		public Matrix4x4 ViewProjection;
+		public Vector4 TestColor;
 	}
 }

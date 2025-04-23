@@ -42,7 +42,7 @@ public abstract class MaterialBase : IDisposable
 	{
 		string name = this.Shader;
 		Assembly assembly = Assembly.GetExecutingAssembly();
-		string resourceName = $"StudioFourteen.Rendering.Shaders.{name}";
+		string resourceName = $"StudioFourteen.Rendering.Materials.{name}";
 		Stream? stream = assembly.GetManifestResourceStream(resourceName);
 		if (stream == null)
 			throw new Exception($"Shader \"{name}\" not found in manifest resources");

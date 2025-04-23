@@ -31,6 +31,24 @@ public struct Vertex
         this.Color = color;
     }
 
+	public Vertex(Vector4 position)
+    {
+        this.Position = position;
+        this.Color = Vector4.One;
+    }
+
+	public Vertex(float x, float y, float z, float w = 1.0f)
+    {
+        this.Position = new (x, y, z, w);
+        this.Color = Vector4.One;
+    }
+
+	public Vertex(float x, float y, float z, float r, float g, float b)
+    {
+        this.Position = new(x, y, z, 1.0f);
+        this.Color = new(r, g, b, 1.0f);
+    }
+
 	public InputElement[] GetInputElements() =>
 	[
 		new InputElement("POSITION", 0, SharpDX.DXGI.Format.R32G32B32_Float, 0, 0, InputClassification.PerVertexData, 0),

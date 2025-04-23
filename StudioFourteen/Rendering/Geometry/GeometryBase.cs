@@ -24,33 +24,40 @@ using Buffer = SharpDX.Direct3D11.Buffer;
 
 public abstract class GeometryBase : IDisposable
 {
-	private Buffer? buffer;
-	private int vertexLength = 0;
+	private Buffer? vertices;
+	private Buffer? indices;
+	private int indexLength = 0;
 
-	public bool IsLoaded => this.buffer != null;
-
-	public abstract Vertex[] Vertices { get; }
+	public bool IsLoaded => this.vertices != null && this.indices != null;
 
 	public void Load(Device device)
 	{
-		Vertex[] vertices = this.Vertices;
-		this.vertexLength = vertices.Length;
-		this.buffer = Buffer.Create(device, BindFlags.VertexBuffer, vertices);
+		Vertex[] vertices;
+		ushort [] indices;
+		this.Load(out vertices, out indices);
+
+		this.indexLength = indices.Length;
+		this.vertices = Buffer.Create(device, BindFlags.VertexBuffer, vertices);
+		this.indices = Buffer.Create(device, BindFlags.IndexBuffer, indices);
 	}
 
 	public void Bind(DeviceContext context)
 	{
 		context.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
-		context.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(this.buffer, SharpDX.Utilities.SizeOf<Vertex>(), 0));
+		context.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(this.vertices, SharpDX.Utilities.SizeOf<Vertex>(), 0));
+		context.InputAssembler.SetIndexBuffer(this.indices, SharpDX.DXGI.Format.R16_UInt, 0);
 	}
 
 	public void Draw(DeviceContext context)
 	{
-		context.Draw(this.vertexLength, 0);
+		context.DrawIndexed(this.indexLength, 0, 0);
 	}
 
 	public void Dispose()
 	{
-		this.buffer?.Dispose();
+		this.vertices?.Dispose();
+		this.indices?.Dispose();
 	}
+
+	protected abstract void Load(out Vertex[] vertices, out ushort[] indices);
 }

@@ -13,14 +13,37 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Geometry;
-
-public class TriangleGeometry : GeometryBase
+struct Constants
 {
-	public override Vertex[] Vertices =>
-	[
-		new Vertex(new(-0.5f, 0.5f, 0.0f, 0.0f), new(1, 0, 0, 1)),
-		new Vertex(new(0.5f, 0.5f, 0.0f, 0.0f), new(0, 1, 0, 1)),
-		new Vertex(new(0.0f, -0.5f, 0.0f, 0.0f), new(0, 0, 1, 1)),
-	];
+    float4x4 ViewProjection;
+	float4 Color;
+};
+
+struct Vertex
+{
+	float4 Position:POSITION;
+	float4 Color:COLOR;
+};
+
+struct VertexResult
+{
+    float4 Position:SV_POSITION;
+    float4 Color:COLOR;
+	float4 WorldPosition:WORLD;
+};
+
+Constants constants : register(c0);
+
+VertexResult vert(in Vertex vertex)
+{
+	VertexResult result;
+	result.Position = mul(vertex.Position, constants.ViewProjection);
+	result.Color = vertex.Color;
+	result.WorldPosition = vertex.Position;
+	return result;
+}
+
+float4 pixel(VertexResult vertex) : SV_TARGET
+{
+	return vertex.Color;
 }
