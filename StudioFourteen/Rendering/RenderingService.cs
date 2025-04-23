@@ -15,23 +15,37 @@
 
 namespace StudioFourteen.Rendering;
 
-using System;
-using System.Numerics;
-using SharpDX.D3DCompiler;
-using SharpDX.Direct3D;
+using System.Collections.Generic;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using StudioFourteen.Interop;
 using StudioFourteen.Plugin;
 using StudioFourteen.Services;
+using StudioFourteen.Rendering.Materials;
+using StudioFourteen.Rendering.Geometry;
 
-using Buffer = SharpDX.Direct3D11.Buffer;
 using Device = SharpDX.Direct3D11.Device;
 using XivDevice = FFXIVClientStructs.FFXIV.Client.Graphics.Kernel.Device;
 
 public class RenderingService : ServiceBase
 {
-	private readonly TheCube cube = new();
+	private readonly List<Renderable> renderables = new();
+
+	private Device? device;
+	private RenderTargetView? backBufferTargetView;
+	private DeviceContext? deviceContext;
+
+	public RenderingService()
+	{
+		MaterialBase mat = new TestMaterial();
+		GeometryBase geo = new TriangleGeometry();
+		this.Add(new(mat, geo));
+	}
+
+	public void Add(Renderable renderable)
+	{
+		this.renderables.Add(renderable);
+	}
 
 	public unsafe override void Attach()
 	{
@@ -49,6 +63,11 @@ public class RenderingService : ServiceBase
 	public override void Detach()
 	{
 		base.Detach();
+
+		this.backBufferTargetView?.Dispose();
+		this.backBufferTargetView = null;
+		this.deviceContext?.Dispose();
+		this.deviceContext = null;
 
 		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
 
@@ -94,100 +113,33 @@ public class RenderingService : ServiceBase
 		if (backBuffer == null)
 			return;
 
-		Device device = backBuffer.Device;
-		if (device == null)
+		this.device = backBuffer.Device;
+		if (this.device == null)
 			return;
 
-		RenderTargetViewDescription desc = default;
-		desc.Format = Format.R8G8B8A8_UNorm;
-		desc.Dimension = RenderTargetViewDimension.Texture2D;
-		desc.Texture2D = new() { };
+		if (this.backBufferTargetView == null)
+		{
+			RenderTargetViewDescription desc = default;
+			desc.Format = Format.R8G8B8A8_UNorm;
+			desc.Dimension = RenderTargetViewDimension.Texture2D;
+			desc.Texture2D = new() { };
+			this.backBufferTargetView = new(this.device, backBuffer, desc);
+		}
 
-		using RenderTargetView renderTargetView = new(device, backBuffer, desc);
-		using DeviceContext context = new(device);
+		if (this.deviceContext == null)
+			this.deviceContext = new(this.device);
 
 		////context.ClearRenderTargetView(this.renderTargetView, new(0, 0, 0, 0));
-		context.Rasterizer.SetViewport(0, 0, kernelDev->Width, kernelDev->Height);
-		context.OutputMerger.SetTargets(renderTargetView);
+		this.deviceContext.Rasterizer.SetViewport(0, 0, kernelDev->Width, kernelDev->Height);
+		this.deviceContext.OutputMerger.SetTargets(this.backBufferTargetView);
 
-		this.cube.Initialize(device, context);
-		this.cube.Draw(device, context);
+		foreach(Renderable renderable in this.renderables)
+		{
+			renderable.Draw(this.device, this.deviceContext);
+		}
 
-		using CommandList cmds = context.FinishCommandList(false);
-		device.ImmediateContext.ExecuteCommandList(cmds, true);
-		context.ClearState();
-	}
-}
-
-public class TheCube : IDisposable
-{
-	private bool isInitialized = false;
-
-	private VertexShader? vertexShader;
-	private PixelShader? pixelShader;
-	private Buffer? vertices;
-	private InputLayout? layout;
-
-	public void Initialize(Device device, DeviceContext context)
-	{
-		if (this.isInitialized)
-			return;
-
-		this.isInitialized = true;
-
-		string shaderStr = @"
-			float4 vert(float4 position : POSITION) : SV_POSITION
-			{
-			   return position;
-			}
-
-			float4 pixel(float4 position : SV_POSITION) : SV_TARGET
-			{
-			   return float4(1.0, 0.0, 0.0, 1.0);
-			}";
-
-		var vertexShaderByteCode = ShaderBytecode.Compile(shaderStr, "vert", "vs_4_0", ShaderFlags.Debug);
-		this.vertexShader = new VertexShader(device, vertexShaderByteCode);
-
-		var pixelShaderByteCode = ShaderBytecode.Compile(shaderStr, "pixel", "ps_4_0", ShaderFlags.Debug);
-		this.pixelShader = new PixelShader(device, pixelShaderByteCode);
-
-		var signature = ShaderSignature.GetInputSignature(vertexShaderByteCode);
-
-		// Layout from VertexShader input signature
-		this.layout = new InputLayout(
-			device,
-			signature,
-			[
-				new InputElement("POSITION", 0, Format.R32G32B32_Float, 0),
-	        ]);
-
-		// Instantiate Vertex buiffer from vertex data
-		this.vertices = Buffer.Create(
-			device,
-			BindFlags.VertexBuffer,
-			[
-				new Vector3(-0.5f, 0.5f, 0.0f), new Vector3(0.5f, 0.5f, 0.0f), new Vector3(0.0f, -0.5f, 0.0f)
-			]);
-	}
-
-	public unsafe void Draw(Device device, DeviceContext context)
-	{
-		context.InputAssembler.InputLayout = this.layout;
-
-		context.VertexShader.Set(this.vertexShader);
-		context.PixelShader.Set(this.pixelShader);
-		context.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
-		context.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(this.vertices, SharpDX.Utilities.SizeOf<Vector3>(), 0));
-
-		context.Draw(3, 0);
-	}
-
-	public void Dispose()
-	{
-		this.vertices?.Dispose();
-		this.pixelShader?.Dispose();
-		this.vertexShader?.Dispose();
-		this.layout?.Dispose();
+		using CommandList cmds = this.deviceContext.FinishCommandList(false);
+		this.device.ImmediateContext.ExecuteCommandList(cmds, true);
+		this.deviceContext.ClearState();
 	}
 }

@@ -48,6 +48,7 @@
 	<ItemGroup>
 		<EmbeddedResource Include="Data\Documents\**" />
 		<EmbeddedResource Include="Cursors\**" />
+		<EmbeddedResource Include="Rendering\Shaders\*.hlsl" />
 	</ItemGroup>
 
 	<ItemGroup>
