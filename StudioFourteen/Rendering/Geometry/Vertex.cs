@@ -13,14 +13,27 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering;
+namespace StudioFourteen.Rendering.Geometry;
 
 using System.Numerics;
 using System.Runtime.InteropServices;
+using SharpDX.Direct3D11;
 
 [StructLayout(LayoutKind.Sequential)]
 public struct Vertex
 {
 	public Vector4 Position;
 	public Vector4 Color;
+
+	public Vertex(Vector4 position, Vector4 color)
+    {
+        this.Position = position;
+        this.Color = color;
+    }
+
+	public InputElement[] GetInputElements() =>
+	[
+		new InputElement("POSITION", 0, SharpDX.DXGI.Format.R32G32B32_Float, 0, 0, InputClassification.PerVertexData, 0),
+		new InputElement("COLOR", 0, SharpDX.DXGI.Format.R32G32B32_Float, 16, 0, InputClassification.PerVertexData, 0),
+    ];
 }

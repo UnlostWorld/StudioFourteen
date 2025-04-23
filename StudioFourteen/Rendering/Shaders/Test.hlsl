@@ -13,12 +13,35 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-float4 vert(float4 position : POSITION) : SV_POSITION
+struct Constants
 {
-   return position;
+    float4x4 ViewProjection;
+};
+
+struct Vertex
+{
+	float4 Position:POSITION;
+	float4 Color:COLOR;
+};
+
+struct VertexResult
+{
+    float4 Position : SV_POSITION;
+    float4 Color : COLOR;
+};
+
+Constants constants : register(c0);
+
+VertexResult vert(in Vertex vertex)
+{
+	VertexResult result;
+	result.Position = vertex.Position;
+	result.Color = vertex.Color;
+	////result.position = mul(position, constants.ViewProjection);
+	return result;
 }
 
-float4 pixel(float4 position : SV_POSITION) : SV_TARGET
+float4 pixel(VertexResult vertex) : SV_TARGET
 {
-   return float4(1.0, 0.0, 0.0, 1.0);
+	return vertex.Color;
 }

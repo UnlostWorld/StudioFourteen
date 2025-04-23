@@ -25,6 +25,9 @@ public class Renderable : IDisposable
 	public MaterialBase? Material;
 	public GeometryBase? Geometry;
 
+	private Exception? materialException;
+	private Exception? geometryException;
+
 	public Renderable()
 	{
 	}
@@ -35,19 +38,41 @@ public class Renderable : IDisposable
 		this.Geometry = geometry;
 	}
 
-	public void Draw(Device device, DeviceContext deviceContext)
+	public void Draw(RenderingService service, Device device, DeviceContext deviceContext)
 	{
-		if (this.Material == null)
+		if (this.Material == null || this.materialException != null)
 			return;
 
-		if (this.Geometry == null)
+		if (this.Geometry == null || this.geometryException != null)
 			return;
 
 		if (!this.Material.IsLoaded)
-			this.Material.Load(device);
+		{
+			try
+			{
+				this.Material.Load(device);
+			}
+			catch (Exception ex)
+			{
+				this.materialException = ex;
+				service.LogInternalError($"Error loading material: {this.Material}", ex);
+				return;
+			}
+		}
 
 		if (!this.Geometry.IsLoaded)
-			this.Geometry.Load(device);
+		{
+			try
+			{
+				this.Geometry.Load(device);
+			}
+			catch (Exception ex)
+			{
+				this.geometryException = ex;
+				service.LogInternalError($"Error loading geometry: {this.Geometry}", ex);
+				return;
+			}
+		}
 
 		this.Material.Bind(deviceContext);
 		this.Geometry.Bind(deviceContext);

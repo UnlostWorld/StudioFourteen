@@ -15,18 +15,24 @@
 
 namespace StudioFourteen.Rendering;
 
+using System;
 using System.Collections.Generic;
+using System.Numerics;
+using System.Runtime.InteropServices;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using StudioFourteen.Interop;
 using StudioFourteen.Plugin;
-using StudioFourteen.Services;
-using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Geometry;
+using StudioFourteen.Rendering.Materials;
+using StudioFourteen.Services;
 
+using Buffer = SharpDX.Direct3D11.Buffer;
 using Device = SharpDX.Direct3D11.Device;
 using XivDevice = FFXIVClientStructs.FFXIV.Client.Graphics.Kernel.Device;
 
+// Thanks to Pictomancy for much of the initial DX11 Setup logic.
+// https://github.com/sourpuh/ffxiv_pictomancy/tree/master
 public class RenderingService : ServiceBase
 {
 	private readonly List<Renderable> renderables = new();
@@ -34,6 +40,8 @@ public class RenderingService : ServiceBase
 	private Device? device;
 	private RenderTargetView? backBufferTargetView;
 	private DeviceContext? deviceContext;
+	private Buffer? constantsBuffer;
+	private Constants constants;
 
 	public RenderingService()
 	{
@@ -68,6 +76,8 @@ public class RenderingService : ServiceBase
 		this.backBufferTargetView = null;
 		this.deviceContext?.Dispose();
 		this.deviceContext = null;
+		this.constantsBuffer?.Dispose();
+		this.constantsBuffer = null;
 
 		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
 
@@ -77,6 +87,11 @@ public class RenderingService : ServiceBase
 		}
 
 		Hooks.ReshadeOnPresent.Disable();
+	}
+
+	public void LogInternalError(string message, Exception ex)
+	{
+		this.Log.Error(ex, message);
 	}
 
 	protected void OnGameTick()
@@ -129,17 +144,38 @@ public class RenderingService : ServiceBase
 		if (this.deviceContext == null)
 			this.deviceContext = new(this.device);
 
+		if (this.constantsBuffer == null)
+		{
+			this.constantsBuffer = new(
+				this.device,
+				SharpDX.Utilities.SizeOf<Constants>(),
+				ResourceUsage.Default,
+				BindFlags.ConstantBuffer,
+				CpuAccessFlags.None,
+				ResourceOptionFlags.None,
+				0);
+		}
+
+		this.constants.ViewProjection = Matrix4x4.Transpose(this.Services.Camera.CurrentViewProjection);
+		this.deviceContext.UpdateSubresource(ref this.constants, this.constantsBuffer);
+
 		////context.ClearRenderTargetView(this.renderTargetView, new(0, 0, 0, 0));
 		this.deviceContext.Rasterizer.SetViewport(0, 0, kernelDev->Width, kernelDev->Height);
 		this.deviceContext.OutputMerger.SetTargets(this.backBufferTargetView);
 
 		foreach(Renderable renderable in this.renderables)
 		{
-			renderable.Draw(this.device, this.deviceContext);
+			renderable.Draw(this, this.device, this.deviceContext);
 		}
 
 		using CommandList cmds = this.deviceContext.FinishCommandList(false);
 		this.device.ImmediateContext.ExecuteCommandList(cmds, true);
 		this.deviceContext.ClearState();
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	public struct Constants
+	{
+		public Matrix4x4 ViewProjection;
 	}
 }

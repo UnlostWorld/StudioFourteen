@@ -15,14 +15,12 @@
 
 namespace StudioFourteen.Rendering.Geometry;
 
-using System.Numerics;
-
 public class TriangleGeometry : GeometryBase
 {
-	public override Vector3[] Vertices =>
+	public override Vertex[] Vertices =>
 	[
-		new Vector3(-0.5f, 0.5f, 0.0f),
-		new Vector3(0.5f, 0.5f, 0.0f),
-		new Vector3(0.0f, -0.5f, 0.0f)
+		new Vertex(new(-0.5f, 0.5f, 0.0f, 0.0f), new(1, 0, 0, 1)),
+		new Vertex(new(0.5f, 0.5f, 0.0f, 0.0f), new(0, 1, 0, 1)),
+		new Vertex(new(0.0f, -0.5f, 0.0f, 0.0f), new(0, 0, 1, 1)),
 	];
 }

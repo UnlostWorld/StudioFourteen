@@ -29,11 +29,11 @@ public abstract class GeometryBase : IDisposable
 
 	public bool IsLoaded => this.buffer != null;
 
-	public abstract Vector3[] Vertices { get; }
+	public abstract Vertex[] Vertices { get; }
 
 	public void Load(Device device)
 	{
-		Vector3[] vertices = this.Vertices;
+		Vertex[] vertices = this.Vertices;
 		this.vertexLength = vertices.Length;
 		this.buffer = Buffer.Create(device, BindFlags.VertexBuffer, vertices);
 	}
@@ -41,7 +41,7 @@ public abstract class GeometryBase : IDisposable
 	public void Bind(DeviceContext context)
 	{
 		context.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
-		context.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(this.buffer, SharpDX.Utilities.SizeOf<Vector3>(), 0));
+		context.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(this.buffer, SharpDX.Utilities.SizeOf<Vertex>(), 0));
 	}
 
 	public void Draw(DeviceContext context)

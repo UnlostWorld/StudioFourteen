@@ -20,6 +20,7 @@ using System.IO;
 using System.Reflection;
 using SharpDX.D3DCompiler;
 using SharpDX.Direct3D11;
+using StudioFourteen.Rendering.Geometry;
 
 public abstract class MaterialBase : IDisposable
 {
@@ -49,21 +50,14 @@ public abstract class MaterialBase : IDisposable
 		using StreamReader reader = new StreamReader(stream);
 		string hlsl = reader.ReadToEnd();
 
-		var vertexShaderByteCode = ShaderBytecode.Compile(hlsl, this.VertEntryPoint, this.VertProfile, this.Flags);
+		CompilationResult vertexShaderByteCode = ShaderBytecode.Compile(hlsl, this.VertEntryPoint, this.VertProfile, this.Flags);
 		this.vertexShader = new VertexShader(device, vertexShaderByteCode);
 
-		var pixelShaderByteCode = ShaderBytecode.Compile(hlsl, this.PixelEntryPoint, this.PixelProfile, this.Flags);
+		CompilationResult pixelShaderByteCode = ShaderBytecode.Compile(hlsl, this.PixelEntryPoint, this.PixelProfile, this.Flags);
 		this.pixelShader = new PixelShader(device, pixelShaderByteCode);
 
-		var signature = ShaderSignature.GetInputSignature(vertexShaderByteCode);
-
-		// Layout from VertexShader input signature
-		this.layout = new InputLayout(
-			device,
-			signature,
-			[
-				new InputElement("POSITION", 0, SharpDX.DXGI.Format.R32G32B32_Float, 0),
-	        ]);
+		ShaderSignature signature = ShaderSignature.GetInputSignature(vertexShaderByteCode);
+		this.layout = new InputLayout(device, signature, default(Vertex).GetInputElements());
 	}
 
 	public void Bind(DeviceContext context)
