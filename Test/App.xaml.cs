@@ -17,16 +17,21 @@ namespace StudioFourteen.Test;
 
 using StudioFourteen;
 using System.Windows;
+using StudioFourteen.Rendering.WPF;
 
 public partial class App : Application
 {
 	private readonly ServiceManager services = new();
+	private readonly Window window = new();
+	private readonly D3D11Surface renderer = new();
 
 	protected override void OnStartup(StartupEventArgs e)
 	{
 		base.OnStartup(e);
 
+		this.window.Content = this.renderer;
+		this.window.Show();
+
 		Task.Run(this.services.Start);
 	}
 }
-

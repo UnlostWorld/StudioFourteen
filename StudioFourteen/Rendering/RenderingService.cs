@@ -17,14 +17,12 @@ namespace StudioFourteen.Rendering;
 
 using System;
 using System.Numerics;
-using System.Threading.Tasks;
-using Dalamud.Interface.Utility;
-using FFXIVClientStructs.FFXIV.Client.Game.Control;
-using ImGuiNET;
 using SharpDX.D3DCompiler;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
+using StudioFourteen.Interop;
+using StudioFourteen.Plugin;
 using StudioFourteen.Services;
 
 using Buffer = SharpDX.Direct3D11.Buffer;
@@ -35,29 +33,52 @@ public class RenderingService : ServiceBase
 {
 	private readonly TheCube cube = new();
 
-	private Texture2D? renderTexture;
-	private RenderTargetView? renderTargetView;
-	private ShaderResourceView? shaderResourceView;
-
 	public unsafe override void Attach()
 	{
-		this.Services.Tick.Add(TickService.Channels.ImGuiDraw, this.OnGameTick);
+		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
+
+		if (SwapChainHelper.IsReshade)
+		{
+			Hooks.ReshadeOnPresent.Enable(this.ReshadeOnPresentDetour);
+			InterfaceManager.DisableReshadePresent();
+		}
+
 		base.Attach();
 	}
 
 	public override void Detach()
 	{
-		this.Services.Tick.Remove(TickService.Channels.ImGuiDraw, this.OnGameTick);
 		base.Detach();
+
+		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
+
+		if (SwapChainHelper.IsReshade)
+		{
+			InterfaceManager.EnableReshadePresent();
+		}
+
+		Hooks.ReshadeOnPresent.Disable();
 	}
 
-	private unsafe void OnGameTick()
+	protected void OnGameTick()
+	{
+		// If not using reshade, fallback to just run before ImGUI within dalamud's present
+		if (!SwapChainHelper.IsReshade)
+		{
+			InterfaceManager.RunBeforeImGuiRender(this.Render);
+		}
+	}
+
+	private void ReshadeOnPresentDetour(nint swapChain, uint flags, nint presentParams)
+	{
+		Hooks.ReshadeOnPresent.Original(swapChain, flags, presentParams);
+		this.Render();
+	}
+
+	private unsafe void Render()
 	{
 		var kernelDev = XivDevice.Instance();
 		if (kernelDev == null)
-			return;
-
-		if (this.Services.Windows.XivWindowHwnd == null)
 			return;
 
 		var swapChain = kernelDev->SwapChain;
@@ -77,67 +98,24 @@ public class RenderingService : ServiceBase
 		if (device == null)
 			return;
 
-		if (this.renderTexture == null)
-		{
-			Texture2DDescription desc = default;
-			desc.Width = (int)kernelDev->Width;
-			desc.Height = (int)kernelDev->Height;
-			desc.MipLevels = 1;
-			desc.ArraySize = 1;
-			desc.Format = Format.R8G8B8A8_UNorm;
-			desc.SampleDescription = new(1, 0);
-			desc.Usage = ResourceUsage.Default;
-			desc.BindFlags = BindFlags.RenderTarget | BindFlags.ShaderResource;
-			desc.CpuAccessFlags = CpuAccessFlags.None;
-			desc.OptionFlags = ResourceOptionFlags.None;
+		RenderTargetViewDescription desc = default;
+		desc.Format = Format.R8G8B8A8_UNorm;
+		desc.Dimension = RenderTargetViewDimension.Texture2D;
+		desc.Texture2D = new() { };
 
-			this.renderTexture = new(device, desc);
+		using RenderTargetView renderTargetView = new(device, backBuffer, desc);
+		using DeviceContext context = new(device);
 
-			this.renderTargetView?.Dispose();
-			this.renderTargetView = null;
-			this.shaderResourceView?.Dispose();
-			this.shaderResourceView = null;
-		}
-
-		if (this.renderTargetView == null)
-		{
-			RenderTargetViewDescription desc = default;
-			desc.Format = Format.R8G8B8A8_UNorm;
-			desc.Dimension = RenderTargetViewDimension.Texture2D;
-			desc.Texture2D = new() { };
-			this.renderTargetView = new(device, this.renderTexture, desc);
-		}
-
-		if (this.shaderResourceView == null)
-		{
-			ShaderResourceViewDescription desc = default;
-			desc.Format = Format.R8G8B8A8_UNorm;
-			desc.Dimension = ShaderResourceViewDimension.Texture2D;
-			desc.Texture2D.MostDetailedMip = 0;
-			desc.Texture2D.MipLevels = 1;
-			this.shaderResourceView = new(device, this.renderTexture, desc);
-		}
-
-		DeviceContext context = new(device);
-
-		context.ClearRenderTargetView(this.renderTargetView, new(0, 0, 0, 0));
+		////context.ClearRenderTargetView(this.renderTargetView, new(0, 0, 0, 0));
 		context.Rasterizer.SetViewport(0, 0, kernelDev->Width, kernelDev->Height);
-		////context.OutputMerger.SetRenderTargets(this.renderTargetView);
-		context.OutputMerger.SetTargets(this.renderTargetView);
-		context.PixelShader.SetShaderResource(0, this.shaderResourceView);
+		context.OutputMerger.SetTargets(renderTargetView);
 
 		this.cube.Initialize(device, context);
 		this.cube.Draw(device, context);
 
-		using CommandList cmds = context.FinishCommandList(true);
+		using CommandList cmds = context.FinishCommandList(false);
 		device.ImmediateContext.ExecuteCommandList(cmds, true);
 		context.ClearState();
-
-		ImDrawListPtr drawList = ImGui.GetBackgroundDrawList();
-		drawList.AddImage(
-			this.shaderResourceView.NativePointer,
-			ImGuiHelpers.MainViewport.Pos,
-			ImGuiHelpers.MainViewport.Pos + new Vector2(1920, 1080));
 	}
 }
 

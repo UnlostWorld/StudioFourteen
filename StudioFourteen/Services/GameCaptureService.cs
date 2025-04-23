@@ -85,7 +85,7 @@ public class GameCaptureService : ServiceBase
 		}
 	}
 
-	public override void Attach()
+	/*public override void Attach()
 	{
 		base.Attach();
 
@@ -118,7 +118,7 @@ public class GameCaptureService : ServiceBase
 		this.backBufferTexture = null;
 		this.depthBufferTexture?.Dispose();
 		this.depthBufferTexture = null;
-	}
+	}*/
 
 	public async Task<(Image? BackBuffer, Image? DepthBuffer)> ToImage()
 	{
