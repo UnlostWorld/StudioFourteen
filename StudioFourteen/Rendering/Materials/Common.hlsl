@@ -13,30 +13,23 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Geometry;
-
-using System.Numerics;
-using System.Runtime.InteropServices;
-using SharpDX.Direct3D11;
-
-[StructLayout(LayoutKind.Sequential)]
-public struct Vertex
+struct Constants
 {
-	public Vector4 Position;
-	public Vector4 Color;
-	public Vector2 TexCoord;
+    float4x4 ViewProjection;
+};
 
-	public Vertex(Vector4 position, Vector4 color, Vector2 texCoord)
-	{
-		this.Position = position;
-		this.Color = color;
-		this.TexCoord = texCoord;
-	}
+struct Vertex
+{
+	float4 Position:POSITION;
+	float4 Color:COLOR;
+	float2 TexCoord:TEXCOORD;
+};
 
-	public InputElement[] GetInputElements() =>
-	[
-		new InputElement("Position", 0, SharpDX.DXGI.Format.R32G32B32A32_Float, 0, 0, InputClassification.PerVertexData, 0),
-		new InputElement("Color", 0, SharpDX.DXGI.Format.R32G32B32A32_Float, InputElement.AppendAligned, 0, InputClassification.PerVertexData, 0),
-		new InputElement("TexCoord", 0, SharpDX.DXGI.Format.R32G32_Float, InputElement.AppendAligned, 0, InputClassification.PerVertexData, 0),
-	];
-}
+struct VertexResult
+{
+    float4 Position:SV_POSITION;
+    float4 Color:COLOR;
+	float2 TexCoord:TEXCOORD;
+};
+
+Constants constants : register(c0);

@@ -45,9 +45,7 @@ public class RenderingService : ServiceBase
 
 	public RenderingService()
 	{
-		MaterialBase mat = new TestMaterial();
-		GeometryBase geo = new CubeGeometry();
-		this.Add(new(mat, geo));
+		////this.Add(new(new BlitMaterial(), new QuadGeometry()));
 	}
 
 	public void Add(Renderable renderable)

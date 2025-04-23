@@ -13,30 +13,18 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Geometry;
+#include "Common.hlsl"
 
-using System.Numerics;
-using System.Runtime.InteropServices;
-using SharpDX.Direct3D11;
-
-[StructLayout(LayoutKind.Sequential)]
-public struct Vertex
+VertexResult vert(in Vertex vertex)
 {
-	public Vector4 Position;
-	public Vector4 Color;
-	public Vector2 TexCoord;
+	VertexResult result;
+	result.Position = vertex.Position;
+	result.Color = vertex.Color;
+	result.TexCoord = vertex.TexCoord;
+	return result;
+}
 
-	public Vertex(Vector4 position, Vector4 color, Vector2 texCoord)
-	{
-		this.Position = position;
-		this.Color = color;
-		this.TexCoord = texCoord;
-	}
-
-	public InputElement[] GetInputElements() =>
-	[
-		new InputElement("Position", 0, SharpDX.DXGI.Format.R32G32B32A32_Float, 0, 0, InputClassification.PerVertexData, 0),
-		new InputElement("Color", 0, SharpDX.DXGI.Format.R32G32B32A32_Float, InputElement.AppendAligned, 0, InputClassification.PerVertexData, 0),
-		new InputElement("TexCoord", 0, SharpDX.DXGI.Format.R32G32_Float, InputElement.AppendAligned, 0, InputClassification.PerVertexData, 0),
-	];
+float4 pixel(VertexResult vertex) : SV_TARGET
+{
+	return float4(vertex.TexCoord.x, vertex.TexCoord.y, 1, 1);
 }

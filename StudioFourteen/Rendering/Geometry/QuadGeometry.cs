@@ -15,28 +15,22 @@
 
 namespace StudioFourteen.Rendering.Geometry;
 
-using System.Numerics;
-using System.Runtime.InteropServices;
-using SharpDX.Direct3D11;
-
-[StructLayout(LayoutKind.Sequential)]
-public struct Vertex
+public class QuadGeometry : GeometryBase
 {
-	public Vector4 Position;
-	public Vector4 Color;
-	public Vector2 TexCoord;
-
-	public Vertex(Vector4 position, Vector4 color, Vector2 texCoord)
+	protected override void Load(out Vertex[] vertices, out ushort[] indices)
 	{
-		this.Position = position;
-		this.Color = color;
-		this.TexCoord = texCoord;
-	}
+		vertices =
+		[
+			new (new(-1, -1, 0, 1), new(1, 1, 0, 1), new(0, 0)),
+			new (new(+1, -1, 0, 1), new(0, 1, 0, 1), new(1, 0)),
+			new (new(+1, +1, 0, 1), new(0, 1, 1, 1), new(1, 1)),
+			new (new(-1, +1, 0, 1), new(0, 0, 1, 1), new(0, 1)),
+		];
 
-	public InputElement[] GetInputElements() =>
-	[
-		new InputElement("Position", 0, SharpDX.DXGI.Format.R32G32B32A32_Float, 0, 0, InputClassification.PerVertexData, 0),
-		new InputElement("Color", 0, SharpDX.DXGI.Format.R32G32B32A32_Float, InputElement.AppendAligned, 0, InputClassification.PerVertexData, 0),
-		new InputElement("TexCoord", 0, SharpDX.DXGI.Format.R32G32_Float, InputElement.AppendAligned, 0, InputClassification.PerVertexData, 0),
-	];
+		indices =
+		[
+			0, 2, 1,
+			0, 3, 2,
+		];
+	}
 }

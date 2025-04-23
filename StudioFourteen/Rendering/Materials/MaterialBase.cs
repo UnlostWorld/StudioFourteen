@@ -18,6 +18,7 @@ namespace StudioFourteen.Rendering.Materials;
 using System;
 using System.IO;
 using System.Reflection;
+using System.Text;
 using SharpDX.D3DCompiler;
 using SharpDX.Direct3D11;
 using StudioFourteen.Rendering.Geometry;
@@ -40,15 +41,9 @@ public abstract class MaterialBase : IDisposable
 
 	public void Load(Device device)
 	{
-		string name = this.Shader;
-		Assembly assembly = Assembly.GetExecutingAssembly();
-		string resourceName = $"StudioFourteen.Rendering.Materials.{name}";
-		Stream? stream = assembly.GetManifestResourceStream(resourceName);
-		if (stream == null)
-			throw new Exception($"Shader \"{name}\" not found in manifest resources");
-
-		using StreamReader reader = new StreamReader(stream);
-		string hlsl = reader.ReadToEnd();
+		StringBuilder hlslBuilder = new();
+		GetShader(this.Shader, ref hlslBuilder, 0);
+		string hlsl = hlslBuilder.ToString();
 
 		CompilationResult vertexShaderByteCode = ShaderBytecode.Compile(hlsl, this.VertEntryPoint, this.VertProfile, this.Flags);
 		this.vertexShader = new VertexShader(device, vertexShaderByteCode);
@@ -73,5 +68,49 @@ public abstract class MaterialBase : IDisposable
 		this.vertexShader?.Dispose();
 		this.pixelShader?.Dispose();
 		this.layout?.Dispose();
+	}
+
+	private static void GetShader(string file, ref StringBuilder builder, int depth)
+	{
+		if (depth >= 100)
+		{
+			Logging.Shared.Error($"Shader loader exceeded maximum depth for shader: {file}");
+			return;
+		}
+
+		Assembly assembly = Assembly.GetExecutingAssembly();
+		string resourceName = $"StudioFourteen.Rendering.Materials.{file}";
+		Stream? stream = assembly.GetManifestResourceStream(resourceName);
+		if (stream == null)
+			throw new Exception($"Shader \"{file}\" not found in manifest resources");
+
+		using StreamReader reader = new StreamReader(stream);
+		while(!reader.EndOfStream)
+		{
+			string? line = reader.ReadLine();
+
+			// skip empty lines
+			if (string.IsNullOrEmpty(line))
+				continue;
+
+			line = line.Trim();
+
+			// skip comments
+			if (line.StartsWith("//"))
+				continue;
+
+			// perform includes
+			if (line.StartsWith("#include"))
+			{
+				string subFile = line.Replace("#include", string.Empty);
+				subFile = subFile.Trim();
+				subFile = subFile.Trim('\"');
+				GetShader(subFile, ref builder, depth + 1);
+			}
+			else
+			{
+				builder.AppendLine(line);
+			}
+		}
 	}
 }
