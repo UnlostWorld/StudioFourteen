@@ -56,7 +56,9 @@ public partial class StudioService : ServiceBase
 		{
 			Task.Run(async () =>
 			{
-				await Task.Delay(500);
+				while(ServiceManager.Instance.CurrentState <= ServiceManagerBase.States.Starting)
+					await Task.Delay(10);
+
 				this.OpenStudio();
 			});
 		}
