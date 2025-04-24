@@ -16,18 +16,12 @@
 namespace StudioFourteen.Rendering;
 
 using System;
-using System.Collections.Generic;
-using System.Numerics;
-using System.Runtime.InteropServices;
 using SharpDX.Direct3D11;
-using SharpDX.DXGI;
 using StudioFourteen.Interop;
 using StudioFourteen.Plugin;
-using StudioFourteen.Rendering.Geometry;
-using StudioFourteen.Rendering.Materials;
+using StudioFourteen.Rendering.Stages;
 using StudioFourteen.Services;
 
-using Buffer = SharpDX.Direct3D11.Buffer;
 using Device = SharpDX.Direct3D11.Device;
 using XivDevice = FFXIVClientStructs.FFXIV.Client.Graphics.Kernel.Device;
 
@@ -35,23 +29,15 @@ using XivDevice = FFXIVClientStructs.FFXIV.Client.Graphics.Kernel.Device;
 // https://github.com/sourpuh/ffxiv_pictomancy/tree/master
 public class RenderingService : ServiceBase
 {
-	private readonly List<Renderable> renderables = new();
+	public readonly GenerateMaskDepthStage GenerateMaskDepthStage = new(0);
+	public readonly GeometryStage GeometryStage = new();
 
 	private Device? device;
-	private RenderTargetView? backBufferTargetView;
 	private DeviceContext? deviceContext;
-	private Buffer? constantsBuffer;
-	private Constants constants;
 
-	public RenderingService()
-	{
-		////this.Add(new(new BlitMaterial(), new QuadGeometry()));
-	}
-
-	public void Add(Renderable renderable)
-	{
-		this.renderables.Add(renderable);
-	}
+	public Texture2D? BackBuffer { get; private set; }
+	public int Width => this.BackBuffer?.Description.Width ?? 0;
+	public int Height => this.BackBuffer?.Description.Height ?? 0;
 
 	public unsafe override void Attach()
 	{
@@ -70,13 +56,6 @@ public class RenderingService : ServiceBase
 	{
 		base.Detach();
 
-		this.backBufferTargetView?.Dispose();
-		this.backBufferTargetView = null;
-		this.deviceContext?.Dispose();
-		this.deviceContext = null;
-		this.constantsBuffer?.Dispose();
-		this.constantsBuffer = null;
-
 		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
 
 		if (SwapChainHelper.IsReshade)
@@ -85,6 +64,17 @@ public class RenderingService : ServiceBase
 		}
 
 		Hooks.ReshadeOnPresent.Disable();
+	}
+
+	public override void Dispose()
+	{
+		this.deviceContext?.Dispose();
+		this.deviceContext = null;
+
+		this.GenerateMaskDepthStage.Dispose();
+		this.GeometryStage.Dispose();
+
+		base.Dispose();
 	}
 
 	public void LogInternalError(string message, Exception ex)
@@ -122,63 +112,21 @@ public class RenderingService : ServiceBase
 		if (swapChain->BackBuffer == null)
 			return;
 
-		Texture2D backBuffer = (Texture2D)(nint)swapChain->BackBuffer->D3D11Texture2D;
-		if (backBuffer == null)
+		this.BackBuffer = (Texture2D)(nint)swapChain->BackBuffer->D3D11Texture2D;
+		if (this.BackBuffer == null)
 			return;
 
-		this.device = backBuffer.Device;
+		if (this.BackBuffer.Description.Format != SharpDX.DXGI.Format.R8G8B8A8_UNorm)
+			throw new Exception($"wrong format in back buffer texture {this.BackBuffer.Description.Format}");
+
+		this.device = this.BackBuffer.Device;
 		if (this.device == null)
 			return;
-
-		if (this.backBufferTargetView == null)
-		{
-			RenderTargetViewDescription desc = default;
-			desc.Format = Format.R8G8B8A8_UNorm;
-			desc.Dimension = RenderTargetViewDimension.Texture2D;
-			desc.Texture2D = new() { };
-			this.backBufferTargetView = new(this.device, backBuffer, desc);
-		}
 
 		if (this.deviceContext == null)
 			this.deviceContext = new(this.device);
 
-		if (this.constantsBuffer == null)
-		{
-			this.constantsBuffer = new(
-				this.device,
-				SharpDX.Utilities.SizeOf<Constants>(),
-				ResourceUsage.Default,
-				BindFlags.ConstantBuffer,
-				CpuAccessFlags.None,
-				ResourceOptionFlags.None,
-				0);
-		}
-
-		this.constants.ViewProjection = Matrix4x4.Transpose(this.Services.Camera.CurrentViewProjection);
-		this.constants.TestColor = new Vector4(1, 0, 0, 1);
-		this.deviceContext.UpdateSubresource(ref this.constants, this.constantsBuffer);
-
-		////context.ClearRenderTargetView(this.renderTargetView, new(0, 0, 0, 0));
-		this.deviceContext.Rasterizer.SetViewport(0, 0, kernelDev->Width, kernelDev->Height);
-		this.deviceContext.OutputMerger.SetTargets(this.backBufferTargetView);
-
-		this.deviceContext.VertexShader.SetConstantBuffer(0, this.constantsBuffer);
-		this.deviceContext.GeometryShader.SetConstantBuffer(0, this.constantsBuffer);
-
-		foreach(Renderable renderable in this.renderables)
-		{
-			renderable.Draw(this, this.device, this.deviceContext);
-		}
-
-		using CommandList cmds = this.deviceContext.FinishCommandList(false);
-		this.device.ImmediateContext.ExecuteCommandList(cmds, true);
-		this.deviceContext.ClearState();
-	}
-
-	[StructLayout(LayoutKind.Sequential)]
-	public struct Constants
-	{
-		public Matrix4x4 ViewProjection;
-		public Vector4 TestColor;
+		this.GenerateMaskDepthStage.Render(this, this.device, this.deviceContext);
+		this.GeometryStage.Render(this, this.device, this.deviceContext);
 	}
 }

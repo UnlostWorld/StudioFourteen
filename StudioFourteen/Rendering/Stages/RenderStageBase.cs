@@ -13,9 +13,16 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Materials;
+namespace StudioFourteen.Rendering.Stages;
 
-public class TestMaterial : MaterialBase
+using System;
+using SharpDX.Direct3D11;
+
+public abstract class RenderStageBase : IDisposable
 {
-	public override string Shader => "Test.hlsl";
+	public abstract void Render(RenderingService service, Device device, DeviceContext deviceContext);
+
+	public virtual void Dispose()
+	{
+	}
 }

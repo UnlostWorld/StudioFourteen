@@ -15,16 +15,21 @@
 
 #include "Common.hlsl"
 
-VertexResult vert(in Vertex vertex)
+Pixel vert(in Vertex vertex)
 {
-	VertexResult result;
+	Pixel result;
 	result.Position = mul(vertex.Position, constants.ViewProjection);
 	result.Color = vertex.Color;
 	result.TexCoord = vertex.TexCoord;
+	result.ScreenPosition = result.Position;
 	return result;
 }
 
-float4 pixel(VertexResult vertex) : SV_TARGET
+float4 pixel(Pixel pixel) : SV_TARGET
 {
-	return vertex.Color;
+	float2 maskDepth = GetMaskDepth(pixel);
+
+	float4 color = pixel.Color;
+	color.a = maskDepth.r;
+	return color;
 }

@@ -23,15 +23,13 @@ using SharpDX.D3DCompiler;
 using SharpDX.Direct3D11;
 using StudioFourteen.Rendering.Geometry;
 
-public abstract class MaterialBase : IDisposable
+public class Material(string shader) : IDisposable
 {
 	private VertexShader? vertexShader;
 	private PixelShader? pixelShader;
 	private InputLayout? layout;
 
 	public bool IsLoaded => this.vertexShader != null;
-
-	public abstract string Shader { get; }
 
 	public virtual string VertProfile => "vs_4_0";
 	public virtual string VertEntryPoint => "vert";
@@ -42,7 +40,7 @@ public abstract class MaterialBase : IDisposable
 	public void Load(Device device)
 	{
 		StringBuilder hlslBuilder = new();
-		GetShader(this.Shader, ref hlslBuilder, 0);
+		GetShader(shader, ref hlslBuilder, 0);
 		string hlsl = hlslBuilder.ToString();
 
 		CompilationResult vertexShaderByteCode = ShaderBytecode.Compile(hlsl, this.VertEntryPoint, this.VertProfile, this.Flags);
@@ -105,6 +103,9 @@ public abstract class MaterialBase : IDisposable
 				string subFile = line.Replace("#include", string.Empty);
 				subFile = subFile.Trim();
 				subFile = subFile.Trim('\"');
+
+				// TODO: path resolution actually
+				subFile = subFile.Replace("../", string.Empty);
 				GetShader(subFile, ref builder, depth + 1);
 			}
 			else

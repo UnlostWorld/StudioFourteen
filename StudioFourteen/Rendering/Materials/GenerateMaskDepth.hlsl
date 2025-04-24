@@ -13,9 +13,14 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Materials;
+#include "Blit.hlsl"
 
-public class BlitMaterial : MaterialBase
+float4 pixel(Pixel pixel) : SV_TARGET
 {
-	public override string Shader => "Blit.hlsl";
+	float4 color = SampleBackBuffer(pixel.TexCoord);
+	float v = 1 - color.a;
+	if (v > 0.4)
+		v = 1;
+
+	return float4(v, v, v, 1);
 }

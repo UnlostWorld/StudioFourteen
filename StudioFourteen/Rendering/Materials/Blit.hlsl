@@ -15,16 +15,19 @@
 
 #include "Common.hlsl"
 
-VertexResult vert(in Vertex vertex)
+Texture2D backBuffer_texture : register(t0);
+SamplerState backBuffer_sampler : register(s0);
+
+float4 SampleBackBuffer(float2 uv)
 {
-	VertexResult result;
+	return backBuffer_texture.Sample(backBuffer_sampler, uv);
+}
+
+Pixel vert(in Vertex vertex)
+{
+	Pixel result;
 	result.Position = vertex.Position;
 	result.Color = vertex.Color;
 	result.TexCoord = vertex.TexCoord;
 	return result;
-}
-
-float4 pixel(VertexResult vertex) : SV_TARGET
-{
-	return float4(vertex.TexCoord.x, vertex.TexCoord.y, 1, 1);
 }

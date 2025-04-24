@@ -22,7 +22,7 @@ using StudioFourteen.Rendering.Materials;
 
 public class Renderable : IDisposable
 {
-	public MaterialBase? Material;
+	public Material? Material;
 	public GeometryBase? Geometry;
 
 	private Exception? materialException;
@@ -32,7 +32,7 @@ public class Renderable : IDisposable
 	{
 	}
 
-	public Renderable(MaterialBase material, GeometryBase geometry)
+	public Renderable(Material material, GeometryBase geometry)
 	{
 		this.Material = material;
 		this.Geometry = geometry;
@@ -79,7 +79,7 @@ public class Renderable : IDisposable
 		this.Geometry.Draw(deviceContext);
 	}
 
-	public void Dispose()
+	public virtual void Dispose()
 	{
 		this.Material?.Dispose();
 		this.Geometry?.Dispose();
