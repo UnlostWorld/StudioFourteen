@@ -15,11 +15,13 @@
 
 namespace StudioFourteen.Rendering.Stages;
 
+using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using StudioFourteen.Rendering.Geometry;
-using StudioFourteen.Rendering.Materials;
+
 using Device = SharpDX.Direct3D11.Device;
+using Material = StudioFourteen.Rendering.Materials.Material;
 
 public class GenerateMaskDepthStage : RenderStageBase
 {
@@ -28,6 +30,9 @@ public class GenerateMaskDepthStage : RenderStageBase
 
 	private Texture2D? backBufferCopyTexture;
 	private ShaderResourceView? backBufferResourceView;
+	private Texture2D? depthStencilTexture;
+	private ShaderResourceView? depthResourceView;
+	private ShaderResourceView? stencilResourceView;
 	private Texture2D? maskDepthTexture;
 	private RenderTargetView? maskDepthRenderTargetView;
 	private ShaderResourceView? maskDepthResourceView;
@@ -43,9 +48,13 @@ public class GenerateMaskDepthStage : RenderStageBase
 
 	public ShaderResourceView? Res => this.maskDepthResourceView;
 
-	public override void Render(RenderingService service, Device device, DeviceContext deviceContext)
+	public unsafe override void Render(RenderingService service, Device device, DeviceContext deviceContext)
 	{
 		if (service.BackBuffer == null)
+			return;
+
+		RenderTargetManagerEx* pRenderTargetManager = RenderTargetManagerEx.Instance();
+		if (pRenderTargetManager == null)
 			return;
 
 		// Create a shader resource copy of the back buffer so it can be accessed in the shader
@@ -61,6 +70,18 @@ public class GenerateMaskDepthStage : RenderStageBase
 			this.backBufferCopyTexture = new Texture2D(device, desc);
 
 			this.backBufferResourceView = new(device, this.backBufferCopyTexture);
+		}
+
+		// Create a handle to the depth stencil
+		if (this.depthStencilTexture == null && pRenderTargetManager->DepthStencil != null)
+		{
+			this.depthStencilTexture = new((nint)pRenderTargetManager->DepthStencil->D3D11Texture2D);
+			////this.depthStencilTexture = new(service.Services.Reshade.DepthBufferAddress);
+			this.depthResourceView = new(device, this.depthStencilTexture);
+
+			ShaderResourceViewDescription desc = this.depthResourceView.Description;
+			desc.Format = Format.X24_Typeless_G8_UInt;
+			this.stencilResourceView = new(device, this.depthStencilTexture, desc);
 		}
 
 		// Create an output texture
@@ -80,7 +101,7 @@ public class GenerateMaskDepthStage : RenderStageBase
 			rtDesc.Format = Format.R8G8B8A8_UNorm;
 			rtDesc.Dimension = RenderTargetViewDimension.Texture2D;
 			rtDesc.Texture2D = new() { };
-			this.maskDepthRenderTargetView = new(device, this.maskDepthTexture, rtDesc);
+			this.maskDepthRenderTargetView = new(device, service.BackBuffer, rtDesc);
 
 			this.maskDepthResourceView = new(device, this.maskDepthTexture);
 		}
@@ -91,8 +112,10 @@ public class GenerateMaskDepthStage : RenderStageBase
 		// Set the output target to the new buffer
 		deviceContext.OutputMerger.SetTargets(this.maskDepthRenderTargetView);
 
-		// Pass the back buffer into the shader
+		// Pass the buffers into the shader
 		deviceContext.PixelShader.SetShaderResource(0, this.backBufferResourceView);
+		deviceContext.PixelShader.SetShaderResource(1, this.depthResourceView);
+		deviceContext.PixelShader.SetShaderResource(2, this.stencilResourceView);
 
 		deviceContext.Rasterizer.SetViewport(0, 0, service.Width, service.Height);
 
@@ -110,6 +133,13 @@ public class GenerateMaskDepthStage : RenderStageBase
 	{
 		this.renderable.Dispose();
 		this.backBufferCopyTexture?.Dispose();
+		this.depthStencilTexture?.Dispose();
+		this.maskDepthTexture?.Dispose();
+		this.maskDepthRenderTargetView?.Dispose();
+		this.maskDepthResourceView?.Dispose();
+		this.depthResourceView?.Dispose();
+		this.stencilResourceView?.Dispose();
+		this.depthStencilTexture?.Dispose();
 		base.Dispose();
 	}
 }

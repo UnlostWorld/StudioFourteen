@@ -16,6 +16,10 @@
 namespace StudioFourteen.Rendering;
 
 using System;
+using System.Runtime.InteropServices;
+using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
+using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
+using InteropGenerator.Runtime.Attributes;
 using SharpDX.Direct3D11;
 using StudioFourteen.Interop;
 using StudioFourteen.Plugin;
@@ -31,6 +35,7 @@ public class RenderingService : ServiceBase
 {
 	public readonly GenerateMaskDepthStage GenerateMaskDepthStage = new(0);
 	public readonly GeometryStage GeometryStage = new();
+	public DrawBufferStage DrawBuffer = new();
 
 	private Device? device;
 	private DeviceContext? deviceContext;
@@ -99,11 +104,11 @@ public class RenderingService : ServiceBase
 
 	private unsafe void Render()
 	{
-		var kernelDev = XivDevice.Instance();
-		if (kernelDev == null)
+		XivDevice* xivDevice = XivDevice.Instance();
+		if (xivDevice == null)
 			return;
 
-		var swapChain = kernelDev->SwapChain;
+		SwapChain* swapChain = xivDevice->SwapChain;
 		if (swapChain == null)
 			return;
 

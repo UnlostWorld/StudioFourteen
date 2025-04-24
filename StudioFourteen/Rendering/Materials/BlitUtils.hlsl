@@ -13,33 +13,21 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-#include "BlitUtils.hlsl"
+#include "Common.hlsl"
 
-Texture2D back_texture : register(t0);
-SamplerState back_sampler : register(s0);
+Texture2D buffer_texture : register(t0);
+SamplerState buffer_sampler : register(s0);
 
-Texture2D depth_texture : register(t1);
-SamplerState depth_sampler : register(s1);
-
-Texture2D stencil_texture : register(t2);
-SamplerState stencil_sampler : register(s2);
-
-
-float4 pixel(Pixel pixel) : SV_TARGET
+float4 SampleBuffer(float2 uv)
 {
-	float mask = back_texture.Sample(back_sampler, pixel.TexCoord).a;
+	return buffer_texture.Sample(buffer_sampler, uv);
+}
 
-	// Invert the mask
-	mask = 1 - mask;
-
-	// Filter out any low-transparency objects, such as the sky.
-	if (mask > 0.4)
-		mask = 1;
-
-	float depth = depth_texture.Sample(depth_sampler, pixel.TexCoord).r;
-
-	// This isn't working. =(
-	float stencil = stencil_texture.Sample(stencil_sampler, pixel.TexCoord).g;
-
-	return float4(mask, depth, stencil, 1);
+Pixel vert(in Vertex vertex)
+{
+	Pixel result;
+	result.Position = vertex.Position;
+	result.Color = vertex.Color;
+	result.TexCoord = vertex.TexCoord;
+	return result;
 }

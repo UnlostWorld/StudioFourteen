@@ -13,33 +13,22 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-#include "BlitUtils.hlsl"
+namespace FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 
-Texture2D back_texture : register(t0);
-SamplerState back_sampler : register(s0);
+using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
+using global::System.Runtime.InteropServices;
 
-Texture2D depth_texture : register(t1);
-SamplerState depth_sampler : register(s1);
-
-Texture2D stencil_texture : register(t2);
-SamplerState stencil_sampler : register(s2);
-
-
-float4 pixel(Pixel pixel) : SV_TARGET
+[StructLayout(LayoutKind.Explicit)]
+public unsafe partial struct RenderTargetManagerEx
 {
-	float mask = back_texture.Sample(back_sampler, pixel.TexCoord).a;
+	[FieldOffset(0x4D8)] internal Texture* BeforeUIBuffer;
+	[FieldOffset(0x570)] internal Texture* BackBuffer;
+	[FieldOffset(0x578)] internal Texture* DepthStencil;
+	[FieldOffset(0x5A8)] internal Texture* ScreenSpaceReflectionsBuffer;
+	[FieldOffset(0x648)] internal Texture* MotionVectors;
 
-	// Invert the mask
-	mask = 1 - mask;
-
-	// Filter out any low-transparency objects, such as the sky.
-	if (mask > 0.4)
-		mask = 1;
-
-	float depth = depth_texture.Sample(depth_sampler, pixel.TexCoord).r;
-
-	// This isn't working. =(
-	float stencil = stencil_texture.Sample(stencil_sampler, pixel.TexCoord).g;
-
-	return float4(mask, depth, stencil, 1);
+	public static RenderTargetManagerEx* Instance()
+	{
+		return (RenderTargetManagerEx*)RenderTargetManager.Instance();
+	}
 }

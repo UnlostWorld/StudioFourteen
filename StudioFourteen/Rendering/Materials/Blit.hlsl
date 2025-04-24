@@ -13,21 +13,10 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-#include "Common.hlsl"
+#include "BlitUtils.hlsl"
 
-Texture2D backBuffer_texture : register(t0);
-SamplerState backBuffer_sampler : register(s0);
-
-float4 SampleBackBuffer(float2 uv)
+float4 pixel(Pixel pixel) : SV_TARGET
 {
-	return backBuffer_texture.Sample(backBuffer_sampler, uv);
-}
-
-Pixel vert(in Vertex vertex)
-{
-	Pixel result;
-	result.Position = vertex.Position;
-	result.Color = vertex.Color;
-	result.TexCoord = vertex.TexCoord;
-	return result;
+	float4 v = SampleBuffer(pixel.TexCoord);
+	return v;
 }
