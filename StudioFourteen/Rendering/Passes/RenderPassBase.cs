@@ -13,21 +13,16 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-#include "BlitUtils.hlsl"
+namespace StudioFourteen.Rendering.Passes;
 
-Texture2D back_texture : register(t0);
-SamplerState back_sampler : register(s0);
+using System;
+using SharpDX.Direct3D11;
 
-float4 pixel(Pixel pixel) : SV_TARGET
+public abstract class RenderPassBase : IDisposable
 {
-	float mask = back_texture.Sample(back_sampler, pixel.TexCoord).a;
+	public abstract void Render(RenderingService service, Device device, DeviceContext deviceContext);
 
-	// Invert the mask
-	mask = 1 - mask;
-
-	// Filter out any low-transparency objects, such as the sky.
-	if (mask > 0.4)
-		mask = 1;
-
-	return mask;
+	public virtual void Dispose()
+	{
+	}
 }

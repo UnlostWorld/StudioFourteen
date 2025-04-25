@@ -16,14 +16,11 @@
 namespace StudioFourteen.Rendering;
 
 using System;
-using System.Runtime.InteropServices;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
-using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
-using InteropGenerator.Runtime.Attributes;
 using SharpDX.Direct3D11;
 using StudioFourteen.Interop;
 using StudioFourteen.Plugin;
-using StudioFourteen.Rendering.Stages;
+using StudioFourteen.Rendering.Passes;
 using StudioFourteen.Services;
 
 using Device = SharpDX.Direct3D11.Device;
@@ -33,9 +30,9 @@ using XivDevice = FFXIVClientStructs.FFXIV.Client.Graphics.Kernel.Device;
 // https://github.com/sourpuh/ffxiv_pictomancy/tree/master
 public class RenderingService : ServiceBase
 {
-	public readonly GenerateMaskDepthStage GenerateMaskDepthStage = new();
-	public readonly GeometryStage GeometryStage = new();
-	public DrawBufferStage DrawBuffer = new();
+	public readonly GenerateMaskDepthPass GenerateMaskDepth = new();
+	public readonly GeometryPass Geometry = new();
+	public readonly DrawBufferPass DrawBuffer = new();
 
 	private Device? device;
 	private DeviceContext? deviceContext;
@@ -76,8 +73,8 @@ public class RenderingService : ServiceBase
 		this.deviceContext?.Dispose();
 		this.deviceContext = null;
 
-		this.GenerateMaskDepthStage.Dispose();
-		this.GeometryStage.Dispose();
+		this.GenerateMaskDepth.Dispose();
+		this.Geometry.Dispose();
 
 		base.Dispose();
 	}
@@ -131,7 +128,9 @@ public class RenderingService : ServiceBase
 		if (this.deviceContext == null)
 			this.deviceContext = new(this.device);
 
-		this.GenerateMaskDepthStage.Render(this, this.device, this.deviceContext);
-		this.GeometryStage.Render(this, this.device, this.deviceContext);
+		// Perform render passes.
+		// TODO: Array of render passes?
+		this.GenerateMaskDepth.Render(this, this.device, this.deviceContext);
+		this.Geometry.Render(this, this.device, this.deviceContext);
 	}
 }

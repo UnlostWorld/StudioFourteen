@@ -15,8 +15,6 @@
 
 namespace StudioFourteen.Rendering.Gizmos;
 
-using System;
-using StudioFourteen.Rendering.Geometry;
 using StudioFourteen.Selection;
 using StudioFourteen.Services;
 
@@ -24,8 +22,8 @@ public class SelectionGizmo : GizmoBase
 {
 	public SelectionGizmo()
 	{
-		this.Material = new("VertexColor.hlsl");
-		this.Geometry = new FlatCubeGeometry();
+		this.Material = EmbeddedMaterial.GeometryVertexColor;
+		this.Geometry = EmbeddedGeometry.FlatCube;
 	}
 
 	public override void Enable()

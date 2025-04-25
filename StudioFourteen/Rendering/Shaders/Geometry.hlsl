@@ -22,6 +22,14 @@ struct Constants
 	float4x4 ObjectTransform;
 };
 
+struct Pixel
+{
+    float4 Position:SV_POSITION;
+    float4 Color:COLOR;
+	float2 TexCoord:TEXCOORD;
+	float4 ScreenPosition:SCREENPOS;
+};
+
 Constants constants : register(c0);
 
 Texture2D mask_texture : register(t0);

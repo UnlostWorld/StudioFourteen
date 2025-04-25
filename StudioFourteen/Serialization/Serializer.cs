@@ -18,6 +18,7 @@ namespace StudioFourteen.Serialization;
 using Newtonsoft.Json;
 using StudioFourteen.Serialization.Converters;
 using System.Globalization;
+using System.IO;
 
 public static class Serializer
 {
@@ -54,5 +55,11 @@ public static class Serializer
 	public static T? Deserialize<T>(string json)
 	{
 		return JsonConvert.DeserializeObject<T>(json, Settings);
+	}
+
+	public static T? Deserialize<T>(Stream stream)
+	{
+		using StreamReader reader = new (stream);
+		return JsonConvert.DeserializeObject<T>(reader.ReadToEnd(), Settings);
 	}
 }

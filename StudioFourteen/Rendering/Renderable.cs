@@ -17,13 +17,11 @@ namespace StudioFourteen.Rendering;
 
 using System;
 using SharpDX.Direct3D11;
-using StudioFourteen.Rendering.Geometry;
-using StudioFourteen.Rendering.Materials;
 
 public class Renderable : IDisposable
 {
 	public Material? Material;
-	public GeometryBase? Geometry;
+	public Geometry? Geometry;
 
 	private Exception? materialException;
 	private Exception? geometryException;
@@ -32,7 +30,7 @@ public class Renderable : IDisposable
 	{
 	}
 
-	public Renderable(Material material, GeometryBase geometry)
+	public Renderable(Material material, Geometry geometry)
 	{
 		this.Material = material;
 		this.Geometry = geometry;

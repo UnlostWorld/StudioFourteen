@@ -13,28 +13,23 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Stages;
+namespace StudioFourteen.Rendering.Passes;
 
 using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
-using StudioFourteen.Rendering.Geometry;
+
 using Device = SharpDX.Direct3D11.Device;
 
-public class GeometryStage : RenderStageBase
+public class GeometryPass : RenderPassBase
 {
 	private readonly List<RenderableObject> renderables = new();
 	private Buffer? constantsBuffer;
 	private Constants constants;
 	private RenderTargetView? backBufferTargetView;
 	private BlendState? blend;
-
-	public GeometryStage()
-	{
-		////this.renderables.Add(new(new("VertexColor.hlsl"), new FlatCubeGeometry()));
-	}
 
 	public void Add(RenderableObject obj)
 	{

@@ -13,17 +13,11 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-struct Vertex
-{
-	float4 Position:POSITION;
-	float4 Color:COLOR;
-	float2 TexCoord:TEXCOORD;
-};
+#include "Geometry.hlsl"
 
-struct Pixel
+float4 pixel(Pixel pixel) : SV_TARGET
 {
-    float4 Position:SV_POSITION;
-    float4 Color:COLOR;
-	float2 TexCoord:TEXCOORD;
-	float4 ScreenPosition:SCREENPOS;
-};
+	float4 color = pixel.Color;
+	color.a = GetClippingAlpha(pixel);
+	return color;
+}

@@ -13,44 +13,62 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Geometry;
+namespace StudioFourteen.Rendering;
 
 using System;
-using System.Numerics;
+using System.Collections.Generic;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 
 using Buffer = SharpDX.Direct3D11.Buffer;
 
-public abstract class GeometryBase : IDisposable
+public abstract class Geometry() : IDisposable
 {
 	private Buffer? vertices;
+	private int vertexLength = 0;
 	private Buffer? indices;
 	private int indexLength = 0;
 
-	public bool IsLoaded => this.vertices != null && this.indices != null;
+	private Mesh? mesh;
+
+	public bool IsLoaded => this.vertices != null;
 
 	public void Load(Device device)
 	{
-		Vertex[] vertices;
-		ushort [] indices;
-		this.Load(out vertices, out indices);
+		this.mesh = this.GetMesh();
 
-		this.indexLength = indices.Length;
+		Vertex[] vertices = this.mesh.Vertices.ToArray();
+		this.vertexLength = vertices.Length;
 		this.vertices = Buffer.Create(device, BindFlags.VertexBuffer, vertices);
-		this.indices = Buffer.Create(device, BindFlags.IndexBuffer, indices);
+
+		if (this.mesh.Indices != null)
+		{
+			ushort [] indices = this.mesh.Indices.ToArray();
+			this.indexLength = indices.Length;
+			this.indices = Buffer.Create(device, BindFlags.IndexBuffer, indices);
+		}
 	}
 
 	public void Bind(DeviceContext context)
 	{
-		context.InputAssembler.PrimitiveTopology = PrimitiveTopology.TriangleList;
+		if (this.mesh == null)
+			return;
+
+		context.InputAssembler.PrimitiveTopology = this.mesh.Topology;
 		context.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(this.vertices, SharpDX.Utilities.SizeOf<Vertex>(), 0));
 		context.InputAssembler.SetIndexBuffer(this.indices, SharpDX.DXGI.Format.R16_UInt, 0);
 	}
 
 	public void Draw(DeviceContext context)
 	{
-		context.DrawIndexed(this.indexLength, 0, 0);
+		if (this.indices == null)
+		{
+			context.Draw(this.vertexLength, 0);
+		}
+		else
+		{
+			context.DrawIndexed(this.indexLength, 0, 0);
+		}
 	}
 
 	public void Dispose()
@@ -59,5 +77,12 @@ public abstract class GeometryBase : IDisposable
 		this.indices?.Dispose();
 	}
 
-	protected abstract void Load(out Vertex[] vertices, out ushort[] indices);
+	protected abstract Mesh GetMesh();
+}
+
+public class Mesh
+{
+	public PrimitiveTopology Topology;
+	public List<Vertex> Vertices { get; set; } = new();
+	public List<ushort>? Indices { get; set; }
 }

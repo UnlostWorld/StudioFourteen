@@ -13,24 +13,32 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Geometry;
+namespace StudioFourteen.Rendering;
 
-public class QuadGeometry : GeometryBase
+using System;
+using System.IO;
+using System.Reflection;
+using StudioFourteen.Serialization;
+
+public class EmbeddedGeometry(string file) : Geometry
 {
-	protected override void Load(out Vertex[] vertices, out ushort[] indices)
-	{
-		vertices =
-		[
-			new (new(-1, -1, 0, 1), new(1, 1, 0, 1), new(0, 1)),
-			new (new(+1, -1, 0, 1), new(0, 1, 0, 1), new(1, 1)),
-			new (new(+1, +1, 0, 1), new(0, 1, 1, 1), new(1, 0)),
-			new (new(-1, +1, 0, 1), new(0, 0, 1, 1), new(0, 0)),
-		];
+	public static readonly EmbeddedGeometry Cube = new("Cube.jsonc");
+	public static readonly EmbeddedGeometry FlatCube = new("FlatCube.jsonc");
+	public static readonly EmbeddedGeometry Quad = new("Quad.jsonc");
+	public static readonly EmbeddedGeometry WireCube = new("WireCube.jsonc");
 
-		indices =
-		[
-			0, 2, 1,
-			0, 3, 2,
-		];
+	protected override Mesh GetMesh()
+	{
+		Assembly assembly = Assembly.GetExecutingAssembly();
+		string resourceName = $"StudioFourteen.Rendering.Meshes.{file}";
+		Stream? stream = assembly.GetManifestResourceStream(resourceName);
+		if (stream == null)
+			throw new Exception($"Mesh \"{file}\" not found in manifest resources");
+
+		Mesh? mesh = Serializer.Deserialize<Mesh>(stream);
+		if (mesh == null)
+			throw new Exception($"Mesh \"{file}\" failed to deserialize");
+
+		return mesh;
 	}
 }

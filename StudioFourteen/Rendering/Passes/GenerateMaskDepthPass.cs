@@ -13,17 +13,15 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Stages;
+namespace StudioFourteen.Rendering.Passes;
 
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
-using StudioFourteen.Rendering.Geometry;
 
 using Device = SharpDX.Direct3D11.Device;
-using Material = StudioFourteen.Rendering.Materials.Material;
 
-public class GenerateMaskDepthStage : RenderStageBase
+public class GenerateMaskDepthPass : RenderPassBase
 {
 	private readonly Renderable renderable;
 
@@ -35,11 +33,9 @@ public class GenerateMaskDepthStage : RenderStageBase
 	private RenderTargetView? maskRenderTargetView;
 	private ShaderResourceView? maskResourceView;
 
-	public GenerateMaskDepthStage()
+	public GenerateMaskDepthPass()
 	{
-		Material material = new("GenerateMaskDepth.hlsl");
-		QuadGeometry geometry = new();
-		this.renderable = new(material, geometry);
+		this.renderable = new(EmbeddedMaterial.BlitAlphaMask, EmbeddedGeometry.Quad);
 	}
 
 	public unsafe override void Render(RenderingService service, Device device, DeviceContext deviceContext)

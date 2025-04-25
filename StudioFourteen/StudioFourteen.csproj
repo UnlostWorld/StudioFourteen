@@ -48,8 +48,8 @@
 	<ItemGroup>
 		<EmbeddedResource Include="Data\Documents\**" />
 		<EmbeddedResource Include="Cursors\**" />
-		<EmbeddedResource Include="Rendering\Materials\**\*.hlsl" />
-		<EmbeddedResource Include="Rendering\Geometry\*.waveobj" />
+		<EmbeddedResource Include="Rendering\Shaders\*.hlsl" />
+		<EmbeddedResource Include="Rendering\Meshes\*.jsonc" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -13,11 +13,30 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-#include "GeometryUtils.hlsl"
+namespace StudioFourteen.Rendering;
 
-float4 pixel(Pixel pixel) : SV_TARGET
+using System.Numerics;
+using System.Runtime.InteropServices;
+using SharpDX.Direct3D11;
+
+[StructLayout(LayoutKind.Sequential)]
+public struct Vertex
 {
-	float4 color = pixel.Color;
-	color.a = GetClippingAlpha(pixel);
-	return color;
+	public Vector4 Position;
+	public Vector4 Color;
+	public Vector2 TexCoord;
+
+	public Vertex(Vector4 position, Vector4 color, Vector2 texCoord)
+	{
+		this.Position = position;
+		this.Color = color;
+		this.TexCoord = texCoord;
+	}
+
+	public InputElement[] GetInputElements() =>
+	[
+		new InputElement("Position", 0, SharpDX.DXGI.Format.R32G32B32A32_Float, 0, 0, InputClassification.PerVertexData, 0),
+		new InputElement("Color", 0, SharpDX.DXGI.Format.R32G32B32A32_Float, InputElement.AppendAligned, 0, InputClassification.PerVertexData, 0),
+		new InputElement("TexCoord", 0, SharpDX.DXGI.Format.R32G32_Float, InputElement.AppendAligned, 0, InputClassification.PerVertexData, 0),
+	];
 }

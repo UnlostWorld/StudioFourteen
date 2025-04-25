@@ -15,9 +15,6 @@
 
 namespace StudioFourteen.Rendering;
 
-using StudioFourteen.Rendering.Geometry;
-using StudioFourteen.Rendering.Materials;
-
 public class RenderableObject : Renderable
 {
 	public Transform Transform = Transform.Identity;
@@ -26,7 +23,7 @@ public class RenderableObject : Renderable
 	{
 	}
 
-	public RenderableObject(Material material, GeometryBase geometry)
+	public RenderableObject(Material material, Geometry geometry)
 		: base(material, geometry)
 	{
 	}

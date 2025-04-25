@@ -13,21 +13,18 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-#include "Common.hlsl"
+#include "Blit.hlsl"
 
-Texture2D buffer_texture : register(t0);
-SamplerState buffer_sampler : register(s0);
-
-float4 SampleBuffer(float2 uv)
+float4 pixel(Pixel pixel) : SV_TARGET
 {
-	return buffer_texture.Sample(buffer_sampler, uv);
-}
+	float mask = buffer_texture.Sample(buffer_sampler, pixel.TexCoord).a;
 
-Pixel vert(in Vertex vertex)
-{
-	Pixel result;
-	result.Position = vertex.Position;
-	result.Color = vertex.Color;
-	result.TexCoord = vertex.TexCoord;
-	return result;
+	// Invert the mask
+	mask = 1 - mask;
+
+	// Filter out any low-transparency objects, such as the sky.
+	if (mask > 0.4)
+		mask = 1;
+
+	return mask;
 }

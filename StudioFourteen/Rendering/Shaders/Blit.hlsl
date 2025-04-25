@@ -13,16 +13,21 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Stages;
+#include "Common.hlsl"
 
-using System;
-using SharpDX.Direct3D11;
+Texture2D buffer_texture : register(t0);
+SamplerState buffer_sampler : register(s0);
 
-public abstract class RenderStageBase : IDisposable
+struct Pixel
 {
-	public abstract void Render(RenderingService service, Device device, DeviceContext deviceContext);
+	float4 Position:SV_POSITION;
+	float2 TexCoord:TEXCOORD;
+};
 
-	public virtual void Dispose()
-	{
-	}
+Pixel vert(in Vertex vertex)
+{
+	Pixel result;
+	result.TexCoord = vertex.TexCoord;
+	result.Position = vertex.Position;
+	return result;
 }

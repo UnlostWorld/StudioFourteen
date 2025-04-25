@@ -30,11 +30,11 @@ public class GizmoBase : RenderableObject
 
 	public virtual void Enable()
 	{
-		this.Services.Rendering.GeometryStage.Add(this);
+		this.Services.Rendering.Geometry.Add(this);
 	}
 
 	public virtual void Disable()
 	{
-		this.Services.Rendering.GeometryStage.Remove(this);
+		this.Services.Rendering.Geometry.Remove(this);
 	}
 }

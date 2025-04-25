@@ -13,10 +13,9 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-#include "BlitUtils.hlsl"
+#include "Blit.hlsl"
 
 float4 pixel(Pixel pixel) : SV_TARGET
 {
-	float4 v = SampleBuffer(pixel.TexCoord);
-	return v;
+	return buffer_texture.Sample(buffer_sampler, pixel.TexCoord);
 }

@@ -13,17 +13,15 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Stages;
+namespace StudioFourteen.Rendering.Passes;
 
 using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
-using StudioFourteen.Rendering.Geometry;
-using StudioFourteen.Rendering.Materials;
 
 using Device = SharpDX.Direct3D11.Device;
 
-public class DrawBufferStage : RenderStageBase
+public class DrawBufferPass : RenderPassBase
 {
 	private readonly Renderable renderable;
 
@@ -32,14 +30,12 @@ public class DrawBufferStage : RenderStageBase
 	private ShaderResourceView? bufferResourceView;
 	private RenderTargetView? backBufferTargetView;
 
-	public DrawBufferStage()
+	public DrawBufferPass()
 	{
-		Material material = new("Blit.hlsl");
-		QuadGeometry geometry = new();
-		this.renderable = new(material, geometry);
+		this.renderable = new(EmbeddedMaterial.Blit, EmbeddedGeometry.Quad);
 	}
 
-	public unsafe DrawBufferStage(Texture* pTexture)
+	public unsafe DrawBufferPass(Texture* pTexture)
 		: this()
 	{
 		nint address = (nint)pTexture->D3D11Texture2D;
@@ -49,7 +45,7 @@ public class DrawBufferStage : RenderStageBase
 		this.Set(address);
 	}
 
-	public DrawBufferStage(nint address)
+	public DrawBufferPass(nint address)
 		: this()
 	{
 		this.Set(address);
