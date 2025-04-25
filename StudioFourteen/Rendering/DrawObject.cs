@@ -57,7 +57,7 @@ public class DrawObject : DrawBase
 			catch (Exception ex)
 			{
 				this.materialException = ex;
-				Logging.Shared.Error($"Error loading material: {this.Material}", ex);
+				Logging.Shared.Error(ex, $"Error loading material: {this.Material}");
 				return;
 			}
 		}
@@ -71,7 +71,7 @@ public class DrawObject : DrawBase
 			catch (Exception ex)
 			{
 				this.geometryException = ex;
-				Logging.Shared.Error($"Error loading geometry: {this.Geometry}", ex);
+				Logging.Shared.Error(ex, $"Error loading geometry: {this.Geometry}");
 				return;
 			}
 		}

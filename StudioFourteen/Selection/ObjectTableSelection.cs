@@ -39,7 +39,7 @@ public class ObjectTableSelectionId(int objectTableIndex)
 
 public class ObjectTableSelection : TransformSelectionBase
 {
-	private readonly int objectTableId;
+	public readonly int ObjectTableId;
 
 	private Transform? nextTransform;
 	private Vector3 lastPosition = Vector3.Zero;
@@ -48,7 +48,7 @@ public class ObjectTableSelection : TransformSelectionBase
 
 	public ObjectTableSelection(int objectTableId)
 	{
-		this.objectTableId = objectTableId;
+		this.ObjectTableId = objectTableId;
 		this.Name = $"{objectTableId}";
 	}
 
@@ -58,13 +58,13 @@ public class ObjectTableSelection : TransformSelectionBase
 
 	public override double TranslationChange => 0.1f;
 
-	public override ISelectionId Id => new ObjectTableSelectionId(this.objectTableId);
+	public override ISelectionId Id => new ObjectTableSelectionId(this.ObjectTableId);
 
 	public unsafe override void OnGameTick()
 	{
 		base.OnGameTick();
 
-		GameObject* gameObject = this.Services.GameObjects.Get(this.objectTableId);
+		GameObject* gameObject = this.Services.GameObjects.Get(this.ObjectTableId);
 		if (gameObject == null || gameObject->DrawObject == null)
 			return;
 
@@ -107,7 +107,7 @@ public class ObjectTableSelection : TransformSelectionBase
 			this.WorldTransform = newTransform;
 		}
 
-		this.LockTransform = this.Services.Pose.AreAllBoneReferencesLocked(this.objectTableId);
+		this.LockTransform = this.Services.Pose.AreAllBoneReferencesLocked(this.ObjectTableId);
 
 		this.IsReady = true;
 	}
@@ -117,7 +117,7 @@ public class ObjectTableSelection : TransformSelectionBase
 		if (other is not ObjectTableSelection otherGameObject)
 			return false;
 
-		return this.objectTableId == otherGameObject.objectTableId;
+		return this.ObjectTableId == otherGameObject.ObjectTableId;
 	}
 
 	public override void Reset()
@@ -138,6 +138,6 @@ public class ObjectTableSelection : TransformSelectionBase
 
 	protected override void OnLockTransformChanged(bool oldValue, bool newValue)
 	{
-		this.Services.Pose.SetAllBoneReferencesLocked(this.objectTableId, newValue);
+		this.Services.Pose.SetAllBoneReferencesLocked(this.ObjectTableId, newValue);
 	}
 }

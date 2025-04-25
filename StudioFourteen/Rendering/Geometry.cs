@@ -19,11 +19,17 @@ using System;
 using System.Collections.Generic;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
-
+using StudioFourteen.Rendering.Meshes;
 using Buffer = SharpDX.Direct3D11.Buffer;
 
 public abstract class Geometry() : IDisposable
 {
+	public static readonly EmbeddedGeometry Cube = new("Cube.jsonc");
+	public static readonly EmbeddedGeometry FlatCube = new("FlatCube.jsonc");
+	public static readonly EmbeddedGeometry Quad = new("Quad.jsonc");
+	public static readonly EmbeddedGeometry WireCube = new("WireCube.jsonc");
+	public static readonly GeneratedGeometry<WireCircle> WireCircle = new();
+
 	private Buffer? vertices;
 	private int vertexLength = 0;
 	private Buffer? indices;

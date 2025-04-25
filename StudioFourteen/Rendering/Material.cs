@@ -21,6 +21,11 @@ using SharpDX.Direct3D11;
 
 public abstract class Material : IDisposable
 {
+	public static readonly EmbeddedMaterial Blit = new("Blit_Copy.hlsl");
+	public static readonly EmbeddedMaterial BlitAlphaMask = new("Blit_AlphaMask.hlsl");
+	public static readonly EmbeddedMaterial GeometryVertexColor = new("Geometry_VertexColor.hlsl");
+	public static readonly EmbeddedMaterial Line = new("Line.hlsl", true);
+
 	private VertexShader? vertexShader;
 	private PixelShader? pixelShader;
 	private GeometryShader? geometryShader;

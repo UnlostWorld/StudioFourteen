@@ -13,29 +13,27 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering;
+namespace StudioFourteen.Rendering.Meshes;
 
 using System;
-using System.IO;
-using System.Reflection;
-using StudioFourteen.Serialization;
+using System.Numerics;
+using SharpDX.Direct3D;
 
-public class EmbeddedGeometry(string file) : Geometry
+public class WireCircle : Mesh
 {
-	public override string ToString() => $"Geometry file {file}";
+	private const int NumPoints = 144;
 
-	protected override Mesh GetMesh()
+	public WireCircle()
 	{
-		Assembly assembly = Assembly.GetExecutingAssembly();
-		string resourceName = $"StudioFourteen.Rendering.Meshes.{file}";
-		Stream? stream = assembly.GetManifestResourceStream(resourceName);
-		if (stream == null)
-			throw new Exception($"Mesh \"{file}\" not found in manifest resources");
+		this.Topology = PrimitiveTopology.LineStrip;
 
-		Mesh? mesh = Serializer.Deserialize<Mesh>(stream);
-		if (mesh == null)
-			throw new Exception($"Mesh \"{file}\" failed to deserialize");
+		for (int i = 0; i < NumPoints; i++)
+		{
+			float p = i / (float)(NumPoints - 1);
+			float r = p * (MathF.PI * 2);
 
-		return mesh;
+			Vector4 to = new Vector4(MathF.Cos(r), 0, MathF.Sin(r), 1);
+			this.Vertices.Add(new Vertex(to));
+		}
 	}
 }

@@ -100,8 +100,11 @@ public struct Transform : IEquatable<Transform>
 	}
 
 	public static Transform FromTranslation(Vector3 translation) => Matrix4x4.CreateTranslation(translation);
+	public static Transform FromTranslation(float x, float y, float z) => Matrix4x4.CreateTranslation(x, y, z);
 	public static Transform FromRotation(Quaternion rotation) => Matrix4x4.CreateFromQuaternion(rotation);
 	public static Transform FromScale(Vector3 scale) => Matrix4x4.CreateScale(scale);
+	public static Transform FromScale(float x, float y, float z) => Matrix4x4.CreateScale(x, y, z);
+	public static Transform FromScale(float scale) => Matrix4x4.CreateScale(scale);
 
 	public static Transform Lerp(Transform from, Transform to, float amount)
 	{

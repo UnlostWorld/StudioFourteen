@@ -15,27 +15,8 @@
 
 namespace StudioFourteen.Rendering;
 
-using System;
-using System.IO;
-using System.Reflection;
-using StudioFourteen.Serialization;
-
-public class EmbeddedGeometry(string file) : Geometry
+public class GeneratedGeometry<T>() : Geometry
+	where T : Mesh, new()
 {
-	public override string ToString() => $"Geometry file {file}";
-
-	protected override Mesh GetMesh()
-	{
-		Assembly assembly = Assembly.GetExecutingAssembly();
-		string resourceName = $"StudioFourteen.Rendering.Meshes.{file}";
-		Stream? stream = assembly.GetManifestResourceStream(resourceName);
-		if (stream == null)
-			throw new Exception($"Mesh \"{file}\" not found in manifest resources");
-
-		Mesh? mesh = Serializer.Deserialize<Mesh>(stream);
-		if (mesh == null)
-			throw new Exception($"Mesh \"{file}\" failed to deserialize");
-
-		return mesh;
-	}
+	protected override Mesh GetMesh() => new T();
 }

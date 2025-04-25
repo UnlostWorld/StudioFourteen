@@ -40,6 +40,7 @@ public static class Serializer
 		Settings.Converters.Add(new Vector4NullableConverter());
 		Settings.Converters.Add(new QuaternionConverter());
 		Settings.Converters.Add(new QuaternionNullableConverter());
+		Settings.Converters.Add(new ColorConverter());
 	}
 
 	public static string Serialize(object obj)

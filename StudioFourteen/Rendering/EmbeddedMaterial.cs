@@ -23,11 +23,6 @@ using SharpDX.Direct3D11;
 
 public class EmbeddedMaterial(string file, bool hasGeometry = false) : Material
 {
-	public static readonly EmbeddedMaterial Blit = new("Blit_Copy.hlsl");
-	public static readonly EmbeddedMaterial BlitAlphaMask = new("Blit_AlphaMask.hlsl");
-	public static readonly EmbeddedMaterial GeometryVertexColor = new("Geometry_VertexColor.hlsl");
-	public static readonly EmbeddedMaterial Line = new("Line.hlsl", true);
-
 	private string? combinedShaderHlsl;
 
 	public override string VertEntryPoint => "vert";
@@ -44,6 +39,8 @@ public class EmbeddedMaterial(string file, bool hasGeometry = false) : Material
 
 		this.combinedShaderHlsl = null;
 	}
+
+	public override string ToString() => $"Material file {file}";
 
 	protected override string GetVertexShader() => this.combinedShaderHlsl ?? string.Empty;
 	protected override string GetPixelShader() => this.combinedShaderHlsl ?? string.Empty;

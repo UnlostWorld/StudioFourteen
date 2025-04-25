@@ -23,7 +23,7 @@ using Device = SharpDX.Direct3D11.Device;
 
 public class DrawBufferPass : RenderPassBase
 {
-	private readonly DrawObject quad = new(EmbeddedMaterial.Blit, EmbeddedGeometry.Quad);
+	private readonly DrawObject quad = new(Material.Blit, Geometry.Quad);
 	private readonly DrawState state = new(0);
 
 	private Texture2D? buffer;

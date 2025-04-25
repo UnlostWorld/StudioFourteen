@@ -23,10 +23,25 @@ using SharpDX.Direct3D11;
 public struct Vertex
 {
 	public Vector4 Position;
-	public Vector4 Color;
+	public Color Color = Color.White;
 	public Vector2 TexCoord;
 
-	public Vertex(Vector4 position, Vector4 color, Vector2 texCoord)
+	public Vertex()
+	{
+	}
+
+	public Vertex(Vector4 position)
+	{
+		this.Position = position;
+	}
+
+	public Vertex(Vector4 position, Color color)
+	{
+		this.Position = position;
+		this.Color = color;
+	}
+
+	public Vertex(Vector4 position, Color color, Vector2 texCoord)
 	{
 		this.Position = position;
 		this.Color = color;

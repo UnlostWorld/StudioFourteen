@@ -15,22 +15,17 @@
 
 namespace StudioFourteen.Rendering.Gizmos;
 
+using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using StudioFourteen.Selection;
 using StudioFourteen.Services;
 
 public class SelectionGizmo : GizmoBase
 {
-	private readonly DrawObject cube = new(EmbeddedMaterial.Line, EmbeddedGeometry.WireCube);
-	private readonly DrawObject cube2 = new(EmbeddedMaterial.Line, EmbeddedGeometry.WireCube);
+	private readonly DrawObject circle = new(Material.Line, Geometry.WireCircle);
 
 	public SelectionGizmo()
 	{
-		this.cube.Color = new(1, 0, 0, 1);
-		this.Add(this.cube);
-
-		this.cube2.Color = new(0, 1, 0, 1);
-		this.cube2.Transform *= Transform.FromTranslation(new (0, 1, 0));
-		this.Add(this.cube2);
+		this.Add(this.circle);
 	}
 
 	public override void Enable()
@@ -45,6 +40,7 @@ public class SelectionGizmo : GizmoBase
 		base.Disable();
 	}
 
+	// TODO: can we update this during Draw for less flickering?
 	private unsafe void OnGameTick()
 	{
 		SelectionBase? currentSelection = this.Services.Selection.Current;
@@ -54,6 +50,16 @@ public class SelectionGizmo : GizmoBase
 		if (currentSelection is TransformSelectionBase transformSelection)
 		{
 			this.Transform = transformSelection.WorldTransform;
+		}
+
+		if (currentSelection is ObjectTableSelection objectSelection)
+		{
+			GameObject* gameObject = this.Services.GameObjects.Get(objectSelection.ObjectTableId);
+			if (gameObject == null || gameObject->DrawObject == null)
+				return;
+
+			this.Transform = Transform.FromScale(gameObject->HitboxRadius / 2, 1, gameObject->HitboxRadius / 2);
+			this.Transform *= objectSelection.WorldTransform;
 		}
 	}
 }

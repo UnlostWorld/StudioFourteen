@@ -20,10 +20,11 @@ using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 
 using Device = SharpDX.Direct3D11.Device;
+using Material = StudioFourteen.Rendering.Material;
 
 public class GenerateMaskDepthPass : RenderPassBase
 {
-	private readonly DrawObject quad = new(EmbeddedMaterial.BlitAlphaMask, EmbeddedGeometry.Quad);
+	private readonly DrawObject quad = new(Material.BlitAlphaMask, Geometry.Quad);
 	private readonly DrawState state = new(0);
 
 	private Texture2D? backBufferCopyTexture;
