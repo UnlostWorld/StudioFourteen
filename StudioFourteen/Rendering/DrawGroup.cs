@@ -13,28 +13,39 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Gizmos;
+namespace StudioFourteen.Rendering;
 
-using Serilog;
+using System.Collections.Generic;
 
-public class GizmoBase : DrawGroup
+public class DrawGroup : DrawBase
 {
-	protected readonly ILogger Log;
+	public readonly List<DrawBase> Children = new();
 
-	public GizmoBase()
+	public void Add(DrawBase draw)
 	{
-		this.Log = Logging.ForContext(this.GetType());
+		this.Children.Add(draw);
 	}
 
-	protected ServiceManager Services => ServiceManager.Instance;
-
-	public virtual void Enable()
+	public void Remove(DrawBase draw)
 	{
-		this.Services.Rendering.Geometry.Add(this);
+		this.Children.Remove(draw);
 	}
 
-	public virtual void Disable()
+	public override void Draw(Transform transform, DrawState drawState)
 	{
-		this.Services.Rendering.Geometry.Remove(this);
+		Transform thisTransform = transform * this.Transform;
+
+		foreach(DrawBase child in this.Children)
+		{
+			child.Draw(thisTransform, drawState);
+		}
+	}
+
+	public override void Dispose()
+	{
+		foreach(DrawBase child in this.Children)
+		{
+			child.Dispose();
+		}
 	}
 }

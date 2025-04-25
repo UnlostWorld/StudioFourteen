@@ -23,31 +23,20 @@ using Device = SharpDX.Direct3D11.Device;
 
 public class DrawBufferPass : RenderPassBase
 {
-	private readonly Renderable renderable;
+	private readonly DrawObject quad = new(EmbeddedMaterial.Blit, EmbeddedGeometry.Quad);
+	private readonly DrawState state = new(0);
 
 	private Texture2D? buffer;
 	private Texture2D? bufferCopyTexture;
 	private ShaderResourceView? bufferResourceView;
 	private RenderTargetView? backBufferTargetView;
 
-	public DrawBufferPass()
-	{
-		this.renderable = new(EmbeddedMaterial.Blit, EmbeddedGeometry.Quad);
-	}
-
-	public unsafe DrawBufferPass(Texture* pTexture)
-		: this()
+	public unsafe void Set(Texture* pTexture)
 	{
 		nint address = (nint)pTexture->D3D11Texture2D;
 		if (address == 0)
 			return;
 
-		this.Set(address);
-	}
-
-	public DrawBufferPass(nint address)
-		: this()
-	{
 		this.Set(address);
 	}
 
@@ -110,7 +99,8 @@ public class DrawBufferPass : RenderPassBase
 		deviceContext.OutputMerger.SetTargets(this.backBufferTargetView);
 		deviceContext.Rasterizer.SetViewport(0, 0, service.Width, service.Height);
 
-		this.renderable.Draw(service, device, deviceContext);
+		this.state.Bind(device, deviceContext);
+		this.quad.Draw(Transform.Identity, this.state);
 
 		using CommandList cmds = deviceContext.FinishCommandList(false);
 		device.ImmediateContext.ExecuteCommandList(cmds, true);
@@ -119,7 +109,7 @@ public class DrawBufferPass : RenderPassBase
 
 	public override void Dispose()
 	{
-		this.renderable.Dispose();
+		this.quad.Dispose();
 		this.bufferCopyTexture?.Dispose();
 		this.backBufferTargetView?.Dispose();
 		base.Dispose();

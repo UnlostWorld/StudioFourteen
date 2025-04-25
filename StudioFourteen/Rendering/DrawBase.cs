@@ -15,16 +15,12 @@
 
 namespace StudioFourteen.Rendering;
 
-public class RenderableObject : Renderable
+using System;
+
+public abstract class DrawBase : IDisposable
 {
 	public Transform Transform = Transform.Identity;
 
-	public RenderableObject()
-	{
-	}
-
-	public RenderableObject(Material material, Geometry geometry)
-		: base(material, geometry)
-	{
-	}
+	public abstract void Draw(Transform transform, DrawState drawState);
+	public abstract void Dispose();
 }

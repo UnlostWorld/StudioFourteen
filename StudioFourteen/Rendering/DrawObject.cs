@@ -16,9 +16,8 @@
 namespace StudioFourteen.Rendering;
 
 using System;
-using SharpDX.Direct3D11;
 
-public class Renderable : IDisposable
+public class DrawObject : DrawBase
 {
 	public Material? Material;
 	public Geometry? Geometry;
@@ -26,17 +25,17 @@ public class Renderable : IDisposable
 	private Exception? materialException;
 	private Exception? geometryException;
 
-	public Renderable()
+	public DrawObject()
 	{
 	}
 
-	public Renderable(Material material, Geometry geometry)
+	public DrawObject(Material material, Geometry geometry)
 	{
 		this.Material = material;
 		this.Geometry = geometry;
 	}
 
-	public void Draw(RenderingService service, Device device, DeviceContext deviceContext)
+	public override void Draw(Transform transform, DrawState drawState)
 	{
 		if (this.Material == null || this.materialException != null)
 			return;
@@ -44,42 +43,42 @@ public class Renderable : IDisposable
 		if (this.Geometry == null || this.geometryException != null)
 			return;
 
+		if (drawState.Device == null)
+			return;
+
 		if (!this.Material.IsLoaded)
 		{
 			try
 			{
-				this.Material.Load(device);
+				this.Material.Load(drawState.Device);
 			}
 			catch (Exception ex)
 			{
 				this.materialException = ex;
-				service.LogInternalError($"Error loading material: {this.Material}", ex);
+				Logging.Shared.Error($"Error loading material: {this.Material}", ex);
 				return;
 			}
 		}
 
-		// TODO: Move geometry into a geometry cache so if we're drawing lots of the same geo we're not
-		// loading it many times.
 		if (!this.Geometry.IsLoaded)
 		{
 			try
 			{
-				this.Geometry.Load(device);
+				this.Geometry.Load(drawState.Device);
 			}
 			catch (Exception ex)
 			{
 				this.geometryException = ex;
-				service.LogInternalError($"Error loading geometry: {this.Geometry}", ex);
+				Logging.Shared.Error($"Error loading geometry: {this.Geometry}", ex);
 				return;
 			}
 		}
 
-		this.Material.Bind(deviceContext);
-		this.Geometry.Bind(deviceContext);
-		this.Geometry.Draw(deviceContext);
+		Transform thisTransform = transform * this.Transform;
+		drawState.Draw(thisTransform, this.Material, this.Geometry);
 	}
 
-	public virtual void Dispose()
+	public override void Dispose()
 	{
 		this.Material?.Dispose();
 		this.Geometry?.Dispose();

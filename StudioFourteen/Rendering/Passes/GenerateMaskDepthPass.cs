@@ -23,7 +23,8 @@ using Device = SharpDX.Direct3D11.Device;
 
 public class GenerateMaskDepthPass : RenderPassBase
 {
-	private readonly Renderable renderable;
+	private readonly DrawObject quad = new(EmbeddedMaterial.BlitAlphaMask, EmbeddedGeometry.Quad);
+	private readonly DrawState state = new(0);
 
 	private Texture2D? backBufferCopyTexture;
 	private ShaderResourceView? backBufferResourceView;
@@ -32,11 +33,6 @@ public class GenerateMaskDepthPass : RenderPassBase
 	private Texture2D? maskTexture;
 	private RenderTargetView? maskRenderTargetView;
 	private ShaderResourceView? maskResourceView;
-
-	public GenerateMaskDepthPass()
-	{
-		this.renderable = new(EmbeddedMaterial.BlitAlphaMask, EmbeddedGeometry.Quad);
-	}
 
 	public unsafe override void Render(RenderingService service, Device device, DeviceContext deviceContext)
 	{
@@ -103,7 +99,8 @@ public class GenerateMaskDepthPass : RenderPassBase
 
 		deviceContext.Rasterizer.SetViewport(0, 0, service.Width, service.Height);
 
-		this.renderable.Draw(service, device, deviceContext);
+		this.state.Bind(device, deviceContext);
+		this.quad.Draw(Transform.Identity, this.state);
 
 		using CommandList cmds = deviceContext.FinishCommandList(false);
 		device.ImmediateContext.ExecuteCommandList(cmds, true);
@@ -116,7 +113,7 @@ public class GenerateMaskDepthPass : RenderPassBase
 
 	public override void Dispose()
 	{
-		this.renderable.Dispose();
+		this.quad.Dispose();
 		this.backBufferCopyTexture?.Dispose();
 		this.depthStencilTexture?.Dispose();
 		this.maskTexture?.Dispose();

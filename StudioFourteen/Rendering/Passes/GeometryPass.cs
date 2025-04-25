@@ -17,7 +17,6 @@ namespace StudioFourteen.Rendering.Passes;
 
 using System.Collections.Generic;
 using System.Numerics;
-using System.Runtime.InteropServices;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 
@@ -25,13 +24,13 @@ using Device = SharpDX.Direct3D11.Device;
 
 public class GeometryPass : RenderPassBase
 {
-	private readonly List<RenderableObject> renderables = new();
-	private Buffer? constantsBuffer;
-	private Constants constants;
+	private readonly List<DrawBase> renderables = new();
+	private readonly DrawState drawState = new(0);
+
 	private RenderTargetView? backBufferTargetView;
 	private BlendState? blend;
 
-	public void Add(RenderableObject obj)
+	public void Add(DrawBase obj)
 	{
 		lock(this.renderables)
 		{
@@ -39,7 +38,7 @@ public class GeometryPass : RenderPassBase
 		}
 	}
 
-	public void Remove(RenderableObject obj)
+	public void Remove(DrawBase obj)
 	{
 		lock(this.renderables)
 		{
@@ -58,18 +57,6 @@ public class GeometryPass : RenderPassBase
 			this.backBufferTargetView = new(device, service.BackBuffer, desc);
 		}
 
-		if (this.constantsBuffer == null)
-		{
-			this.constantsBuffer = new(
-				device,
-				SharpDX.Utilities.SizeOf<Constants>(),
-				ResourceUsage.Default,
-				BindFlags.ConstantBuffer,
-				CpuAccessFlags.None,
-				ResourceOptionFlags.None,
-				0);
-		}
-
 		if (this.blend == null)
 		{
 			BlendStateDescription blendDesc = default;
@@ -86,23 +73,20 @@ public class GeometryPass : RenderPassBase
 			this.blend = new(device, blendDesc);
 		}
 
-		this.constants.ClippingPlanes.X = service.Services.Camera.NearPlane;
-		this.constants.ClippingPlanes.Y = service.Services.Camera.FarPlane;
-		this.constants.ViewProjection = Matrix4x4.Transpose(service.Services.Camera.CurrentViewProjection);
+		this.drawState.Data.ClippingPlanes.X = service.Services.Camera.NearPlane;
+		this.drawState.Data.ClippingPlanes.Y = service.Services.Camera.FarPlane;
+		this.drawState.Data.ViewProjection = Matrix4x4.Transpose(service.Services.Camera.CurrentViewProjection);
+		this.drawState.Bind(device, deviceContext);
 
 		deviceContext.Rasterizer.SetViewport(0, 0, service.Width, service.Height);
 		deviceContext.OutputMerger.SetBlendState(this.blend, null, -1);
 		deviceContext.OutputMerger.SetTargets(this.backBufferTargetView);
-		deviceContext.VertexShader.SetConstantBuffer(0, this.constantsBuffer);
-		deviceContext.GeometryShader.SetConstantBuffer(0, this.constantsBuffer);
 
 		lock(this.renderables)
 		{
-			foreach(RenderableObject renderable in this.renderables)
+			foreach(DrawBase renderable in this.renderables)
 			{
-				this.constants.ObjectTransform = Matrix4x4.Transpose(renderable.Transform.ToMatrix());
-				deviceContext.UpdateSubresource(ref this.constants, this.constantsBuffer);
-				renderable.Draw(service, device, deviceContext);
+				renderable.Draw(Transform.Identity, this.drawState);
 			}
 		}
 
@@ -115,22 +99,14 @@ public class GeometryPass : RenderPassBase
 	{
 		this.backBufferTargetView?.Dispose();
 		this.backBufferTargetView = null;
-		this.constantsBuffer?.Dispose();
-		this.constantsBuffer = null;
 
-		foreach(RenderableObject renderable in this.renderables)
+		this.drawState.Dispose();
+
+		foreach(DrawBase renderable in this.renderables)
 		{
 			renderable.Dispose();
 		}
 
 		base.Dispose();
-	}
-
-	[StructLayout(LayoutKind.Sequential)]
-	public struct Constants
-	{
-		public Vector4 ClippingPlanes;
-		public Matrix4x4 ViewProjection;
-		public Matrix4x4 ObjectTransform;
 	}
 }
