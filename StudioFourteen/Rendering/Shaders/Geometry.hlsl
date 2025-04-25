@@ -50,7 +50,7 @@ float2 GetScreenPosition(Pixel pixel)
 	return 0.5f * float2(pos.x, -pos.y) + 0.5f;
 }
 
-float GetClippingAlpha(Pixel pixel)
+float GetClippingAlpha(Pixel pixel, float depthClipAlpha = 0)
 {
 	float2 screenPos = GetScreenPosition(pixel);
 	float mask = mask_texture.Sample(mask_sampler, screenPos).r;
@@ -58,7 +58,7 @@ float GetClippingAlpha(Pixel pixel)
 	float thisDepth = GetDepth(pixel);
 
 	if (thisDepth < depth)
-		return 0;
+		mask = mask * depthClipAlpha;
 
 	return mask;
 }

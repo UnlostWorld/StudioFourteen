@@ -1,5 +1,5 @@
 {
-	"Topology": 0,
+	"Topology": "TriangleList",
 	"Vertices": [
 		{
 			"Position": "-1, -1, 0, 1",

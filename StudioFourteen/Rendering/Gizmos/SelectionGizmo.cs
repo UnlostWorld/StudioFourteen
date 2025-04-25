@@ -22,8 +22,8 @@ public class SelectionGizmo : GizmoBase
 {
 	public SelectionGizmo()
 	{
-		this.Material = EmbeddedMaterial.GeometryVertexColor;
-		this.Geometry = EmbeddedGeometry.FlatCube;
+		this.Material = EmbeddedMaterial.Line;
+		this.Geometry = EmbeddedGeometry.WireCube;
 	}
 
 	public override void Enable()

@@ -1,0 +1,136 @@
+{
+	"Topology": "LineList",
+	"Vertices": [
+		{
+			"Position": "-0.5, -0.5, -0.5, 1",
+			"Color": "1, 1, 1, 1",
+			"TexCoord": "0, 0"
+		},
+		{
+			"Position": "-0.5, -0.5, 0.5, 1",
+			"Color": "1, 1, 1, 1",
+			"TexCoord": "0, 0"
+		},
+
+		{
+			"Position": "-0.5, 0.5, -0.5, 1",
+			"Color": "1, 1, 1, 1",
+			"TexCoord": "0, 0"
+		},
+		{
+			"Position": "-0.5, 0.5, 0.5, 1",
+			"Color": "1, 1, 1, 1",
+			"TexCoord": "0, 0"
+		},
+
+		{
+			"Position": "0.5, -0.5, -0.5, 1",
+			"Color": "1, 1, 1, 1",
+			"TexCoord": "0, 0"
+		},
+		{
+			"Position": "0.5, -0.5, 0.5, 1",
+			"Color": "1, 1, 1, 1",
+			"TexCoord": "0, 0"
+		},
+
+		{
+			"Position": "0.5, 0.5, -0.5, 1",
+			"Color": "1, 1, 1, 1",
+			"TexCoord": "0, 0"
+		},
+		{
+			"Position": "0.5, 0.5, 0.5, 1",
+			"Color": "1, 1, 1, 1",
+			"TexCoord": "0, 0"
+		},
+
+		{
+			"Position": "-0.5, -0.5, -0.5, 1",
+			"Color": "1, 1, 1, 1",
+			"TexCoord": "0, 0"
+		},
+		{
+			"Position": "0.5, -0.5, -0.5, 1",
+			"Color": "1, 1, 1, 1",
+			"TexCoord": "0, 0"
+		},
+
+		{
+			"Position": "-0.5, 0.5, -0.5, 1",
+			"Color": "1, 1, 1, 1",
+			"TexCoord": "0, 0"
+		},
+		{
+			"Position": "0.5, 0.5, -0.5, 1",
+			"Color": "1, 1, 1, 1",
+			"TexCoord": "0, 0"
+		},
+
+		{
+			"Position": "-0.5, -0.5, 0.5, 1",
+			"Color": "1, 1, 1, 1",
+			"TexCoord": "0, 0"
+		},
+		{
+			"Position": "0.5, -0.5, 0.5, 1",
+			"Color": "1, 1, 1, 1",
+			"TexCoord": "0, 0"
+		},
+
+		{
+			"Position": "-0.5, 0.5, 0.5, 1",
+			"Color": "1, 1, 1, 1",
+			"TexCoord": "0, 0"
+		},
+		{
+			"Position": "0.5, 0.5, 0.5, 1",
+			"Color": "1, 1, 1, 1",
+			"TexCoord": "0, 0"
+		},
+
+		{
+			"Position": "-0.5, 0.5, 0.5, 1",
+			"Color": "1, 1, 1, 1",
+			"TexCoord": "0, 0"
+		},
+		{
+			"Position": "-0.5, -0.5, 0.5, 1",
+			"Color": "1, 1, 1, 1",
+			"TexCoord": "0, 0"
+		},
+
+		{
+			"Position": "0.5, 0.5, 0.5, 1",
+			"Color": "1, 1, 1, 1",
+			"TexCoord": "0, 0"
+		},
+		{
+			"Position": "0.5, -0.5, 0.5, 1",
+			"Color": "1, 1, 1, 1",
+			"TexCoord": "0, 0"
+		},
+
+		{
+			"Position": "-0.5, 0.5, -0.5, 1",
+			"Color": "1, 1, 1, 1",
+			"TexCoord": "0, 0"
+		},
+		{
+			"Position": "-0.5, -0.5, -0.5, 1",
+			"Color": "1, 1, 1, 1",
+			"TexCoord": "0, 0"
+		},
+
+		{
+			"Position": "0.5, 0.5, -0.5, 1",
+			"Color": "1, 1, 1, 1",
+			"TexCoord": "0, 0"
+		},
+		{
+			"Position": "0.5, -0.5, -0.5, 1",
+			"Color": "1, 1, 1, 1",
+			"TexCoord": "0, 0"
+		}
+	]
+}
