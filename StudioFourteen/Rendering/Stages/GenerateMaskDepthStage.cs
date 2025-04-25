@@ -32,7 +32,6 @@ public class GenerateMaskDepthStage : RenderStageBase
 	private ShaderResourceView? backBufferResourceView;
 	private Texture2D? depthStencilTexture;
 	private ShaderResourceView? depthResourceView;
-	private ShaderResourceView? stencilResourceView;
 	private Texture2D? maskDepthTexture;
 	private RenderTargetView? maskDepthRenderTargetView;
 	private ShaderResourceView? maskDepthResourceView;
@@ -78,10 +77,6 @@ public class GenerateMaskDepthStage : RenderStageBase
 			this.depthStencilTexture = new((nint)pRenderTargetManager->DepthStencil->D3D11Texture2D);
 			////this.depthStencilTexture = new(service.Services.Reshade.DepthBufferAddress);
 			this.depthResourceView = new(device, this.depthStencilTexture);
-
-			ShaderResourceViewDescription desc = this.depthResourceView.Description;
-			desc.Format = Format.X24_Typeless_G8_UInt;
-			this.stencilResourceView = new(device, this.depthStencilTexture, desc);
 		}
 
 		// Create an output texture
@@ -101,7 +96,7 @@ public class GenerateMaskDepthStage : RenderStageBase
 			rtDesc.Format = Format.R8G8B8A8_UNorm;
 			rtDesc.Dimension = RenderTargetViewDimension.Texture2D;
 			rtDesc.Texture2D = new() { };
-			this.maskDepthRenderTargetView = new(device, service.BackBuffer, rtDesc);
+			this.maskDepthRenderTargetView = new(device, this.maskDepthTexture, rtDesc);
 
 			this.maskDepthResourceView = new(device, this.maskDepthTexture);
 		}
@@ -115,7 +110,6 @@ public class GenerateMaskDepthStage : RenderStageBase
 		// Pass the buffers into the shader
 		deviceContext.PixelShader.SetShaderResource(0, this.backBufferResourceView);
 		deviceContext.PixelShader.SetShaderResource(1, this.depthResourceView);
-		deviceContext.PixelShader.SetShaderResource(2, this.stencilResourceView);
 
 		deviceContext.Rasterizer.SetViewport(0, 0, service.Width, service.Height);
 
@@ -138,7 +132,6 @@ public class GenerateMaskDepthStage : RenderStageBase
 		this.maskDepthRenderTargetView?.Dispose();
 		this.maskDepthResourceView?.Dispose();
 		this.depthResourceView?.Dispose();
-		this.stencilResourceView?.Dispose();
 		this.depthStencilTexture?.Dispose();
 		base.Dispose();
 	}

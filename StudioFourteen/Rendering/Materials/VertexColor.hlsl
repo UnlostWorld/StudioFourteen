@@ -27,9 +27,9 @@ Pixel vert(in Vertex vertex)
 
 float4 pixel(Pixel pixel) : SV_TARGET
 {
-	float2 maskDepth = GetMaskDepth(pixel);
+	float4 maskDepth = GetMaskDepth(pixel);
 
 	float4 color = pixel.Color;
-	color.a = maskDepth.r;
+	color.a = maskDepth.a;
 	return color;
 }

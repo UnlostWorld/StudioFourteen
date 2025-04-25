@@ -21,9 +21,6 @@ SamplerState back_sampler : register(s0);
 Texture2D depth_texture : register(t1);
 SamplerState depth_sampler : register(s1);
 
-Texture2D stencil_texture : register(t2);
-SamplerState stencil_sampler : register(s2);
-
 
 float4 pixel(Pixel pixel) : SV_TARGET
 {
@@ -38,8 +35,5 @@ float4 pixel(Pixel pixel) : SV_TARGET
 
 	float depth = depth_texture.Sample(depth_sampler, pixel.TexCoord).r;
 
-	// This isn't working. =(
-	float stencil = stencil_texture.Sample(stencil_sampler, pixel.TexCoord).g;
-
-	return float4(mask, depth, stencil, 1);
+	return float4(depth, 1, 1, mask);
 }
