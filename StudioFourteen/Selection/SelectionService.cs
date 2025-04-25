@@ -21,6 +21,7 @@ using PropertyChanged.SourceGenerator;
 using StudioFourteen.Gizmos.Handles.TransformHandle;
 using StudioFourteen.History;
 using StudioFourteen.Posing;
+using StudioFourteen.Rendering.Gizmos;
 using StudioFourteen.Services;
 using System;
 using System.Collections.Generic;
@@ -67,6 +68,7 @@ public abstract class IAsyncSelectionId : ISelectionId
 public partial class SelectionService : ServiceBase
 {
 	private readonly TransformHandleOverlayLayer poseGizmoOverlay = new();
+	private readonly SelectionGizmo selectionGizmo = new();
 	private SelectionBase? selection;
 	private SelectionBase? hover;
 	private string lastSelectionName = "Nothing";
@@ -186,6 +188,7 @@ public partial class SelectionService : ServiceBase
 		base.Attach();
 		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
 		this.poseGizmoOverlay.Enable();
+		this.selectionGizmo.Enable();
 	}
 
 	public override void Detach()
@@ -193,6 +196,7 @@ public partial class SelectionService : ServiceBase
 		base.Detach();
 		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
 		this.poseGizmoOverlay.Disable();
+		this.selectionGizmo.Disable();
 	}
 
 	protected void OnGameTick()

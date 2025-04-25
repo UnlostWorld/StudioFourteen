@@ -13,11 +13,6 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-struct Constants
-{
-    float4x4 ViewProjection;
-};
-
 struct Vertex
 {
 	float4 Position:POSITION;
@@ -32,20 +27,3 @@ struct Pixel
 	float2 TexCoord:TEXCOORD;
 	float4 ScreenPosition:SCREENPOS;
 };
-
-Constants constants : register(c0);
-
-Texture2D maskDepth_texture : register(t0);
-SamplerState maskDepth_sampler : register(s0);
-
-float2 GetScreenPosition(Pixel pixel)
-{
-	float3 pos = pixel.ScreenPosition.xyz / pixel.ScreenPosition.w;
-	return 0.5f * float2(pos.x, -pos.y) + 0.5f;
-}
-
-float4 GetMaskDepth(Pixel pixel)
-{
-	float2 screenPos = GetScreenPosition(pixel);
-	return maskDepth_texture.Sample(maskDepth_sampler, screenPos);
-}

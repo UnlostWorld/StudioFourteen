@@ -60,6 +60,8 @@ public class Renderable : IDisposable
 			}
 		}
 
+		// TODO: Move geometry into a geometry cache so if we're drawing lots of the same geo we're not
+		// loading it many times.
 		if (!this.Geometry.IsLoaded)
 		{
 			try

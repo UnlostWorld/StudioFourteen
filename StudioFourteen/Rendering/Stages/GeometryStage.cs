@@ -25,7 +25,7 @@ using Device = SharpDX.Direct3D11.Device;
 
 public class GeometryStage : RenderStageBase
 {
-	private readonly List<Renderable> renderables = new();
+	private readonly List<RenderableObject> renderables = new();
 	private Buffer? constantsBuffer;
 	private Constants constants;
 	private RenderTargetView? backBufferTargetView;
@@ -33,7 +33,23 @@ public class GeometryStage : RenderStageBase
 
 	public GeometryStage()
 	{
-		this.renderables.Add(new(new("VertexColor.hlsl"), new FlatCubeGeometry()));
+		////this.renderables.Add(new(new("VertexColor.hlsl"), new FlatCubeGeometry()));
+	}
+
+	public void Add(RenderableObject obj)
+	{
+		lock(this.renderables)
+		{
+			this.renderables.Add(obj);
+		}
+	}
+
+	public void Remove(RenderableObject obj)
+	{
+		lock(this.renderables)
+		{
+			this.renderables.Remove(obj);
+		}
 	}
 
 	public override void Render(RenderingService service, Device device, DeviceContext deviceContext)
@@ -76,7 +92,6 @@ public class GeometryStage : RenderStageBase
 		}
 
 		this.constants.ViewProjection = Matrix4x4.Transpose(service.Services.Camera.CurrentViewProjection);
-		deviceContext.UpdateSubresource(ref this.constants, this.constantsBuffer);
 
 		deviceContext.Rasterizer.SetViewport(0, 0, service.Width, service.Height);
 		deviceContext.OutputMerger.SetBlendState(this.blend, null, -1);
@@ -84,9 +99,14 @@ public class GeometryStage : RenderStageBase
 		deviceContext.VertexShader.SetConstantBuffer(0, this.constantsBuffer);
 		deviceContext.GeometryShader.SetConstantBuffer(0, this.constantsBuffer);
 
-		foreach(Renderable renderable in this.renderables)
+		lock(this.renderables)
 		{
-			renderable.Draw(service, device, deviceContext);
+			foreach(RenderableObject renderable in this.renderables)
+			{
+				this.constants.ObjectTransform = Matrix4x4.Transpose(renderable.Transform.ToMatrix());
+				deviceContext.UpdateSubresource(ref this.constants, this.constantsBuffer);
+				renderable.Draw(service, device, deviceContext);
+			}
 		}
 
 		using CommandList cmds = deviceContext.FinishCommandList(false);
@@ -101,7 +121,7 @@ public class GeometryStage : RenderStageBase
 		this.constantsBuffer?.Dispose();
 		this.constantsBuffer = null;
 
-		foreach(Renderable renderable in this.renderables)
+		foreach(RenderableObject renderable in this.renderables)
 		{
 			renderable.Dispose();
 		}
@@ -113,5 +133,6 @@ public class GeometryStage : RenderStageBase
 	public struct Constants
 	{
 		public Matrix4x4 ViewProjection;
+		public Matrix4x4 ObjectTransform;
 	}
 }

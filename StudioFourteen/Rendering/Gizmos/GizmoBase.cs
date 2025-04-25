@@ -13,13 +13,28 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-#include "GeometryUtils.hlsl"
+namespace StudioFourteen.Rendering.Gizmos;
 
-float4 pixel(Pixel pixel) : SV_TARGET
+using Serilog;
+
+public class GizmoBase : RenderableObject
 {
-	float4 maskDepth = GetMaskDepth(pixel);
+	protected readonly ILogger Log;
 
-	float4 color = pixel.Color;
-	color.a = maskDepth.a;
-	return color;
+	public GizmoBase()
+	{
+		this.Log = Logging.ForContext(this.GetType());
+	}
+
+	protected ServiceManager Services => ServiceManager.Instance;
+
+	public virtual void Enable()
+	{
+		this.Services.Rendering.GeometryStage.Add(this);
+	}
+
+	public virtual void Disable()
+	{
+		this.Services.Rendering.GeometryStage.Remove(this);
+	}
 }

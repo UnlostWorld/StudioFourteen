@@ -13,13 +13,21 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-#include "GeometryUtils.hlsl"
+namespace StudioFourteen.Rendering;
 
-float4 pixel(Pixel pixel) : SV_TARGET
+using StudioFourteen.Rendering.Geometry;
+using StudioFourteen.Rendering.Materials;
+
+public class RenderableObject : Renderable
 {
-	float4 maskDepth = GetMaskDepth(pixel);
+	public Transform Transform = Transform.Identity;
 
-	float4 color = pixel.Color;
-	color.a = maskDepth.a;
-	return color;
+	public RenderableObject()
+	{
+	}
+
+	public RenderableObject(Material material, GeometryBase geometry)
+		: base(material, geometry)
+	{
+	}
 }

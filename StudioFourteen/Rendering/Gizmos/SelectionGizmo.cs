@@ -13,13 +13,42 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-#include "GeometryUtils.hlsl"
+namespace StudioFourteen.Rendering.Gizmos;
 
-float4 pixel(Pixel pixel) : SV_TARGET
+using System;
+using StudioFourteen.Rendering.Geometry;
+using StudioFourteen.Selection;
+using StudioFourteen.Services;
+
+public class SelectionGizmo : GizmoBase
 {
-	float4 maskDepth = GetMaskDepth(pixel);
+	public SelectionGizmo()
+	{
+		this.Material = new("VertexColor.hlsl");
+		this.Geometry = new FlatCubeGeometry();
+	}
 
-	float4 color = pixel.Color;
-	color.a = maskDepth.a;
-	return color;
+	public override void Enable()
+	{
+		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
+		base.Enable();
+	}
+
+	public override void Disable()
+	{
+		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
+		base.Disable();
+	}
+
+	private unsafe void OnGameTick()
+	{
+		SelectionBase? currentSelection = this.Services.Selection.Current;
+		if (currentSelection == null)
+			return;
+
+		if (currentSelection is TransformSelectionBase transformSelection)
+		{
+			this.Transform = transformSelection.WorldTransform;
+		}
+	}
 }
