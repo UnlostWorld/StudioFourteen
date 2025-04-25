@@ -95,6 +95,8 @@ public class CameraService : ServiceBase
 
 	public List<StudioCameraBase> Cameras { get; init; } = new();
 
+	public float NearPlane { get; private set; }
+	public float FarPlane { get; private set; }
 	public Matrix4x4 CurrentView { get; private set; }
 	public Matrix4x4 CurrentProjection { get; private set; }
 	public Matrix4x4 CurrentViewProjection { get; private set; }
@@ -331,6 +333,9 @@ public class CameraService : ServiceBase
 				this.Log.Error(ex, "Error in camera update");
 			}
 		}
+
+		this.NearPlane = camera->RenderCamera->NearPlane;
+		this.FarPlane = camera->RenderCamera->FarPlane;
 
 		this.CurrentView = camera->ViewMatrix;
 		this.CurrentProjection = camera->RenderCamera->ProjectionMatrix;

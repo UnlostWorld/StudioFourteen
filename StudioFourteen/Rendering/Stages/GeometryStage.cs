@@ -91,6 +91,8 @@ public class GeometryStage : RenderStageBase
 			this.blend = new(device, blendDesc);
 		}
 
+		this.constants.ClippingPlanes.X = service.Services.Camera.NearPlane;
+		this.constants.ClippingPlanes.Y = service.Services.Camera.FarPlane;
 		this.constants.ViewProjection = Matrix4x4.Transpose(service.Services.Camera.CurrentViewProjection);
 
 		deviceContext.Rasterizer.SetViewport(0, 0, service.Width, service.Height);
@@ -132,6 +134,7 @@ public class GeometryStage : RenderStageBase
 	[StructLayout(LayoutKind.Sequential)]
 	public struct Constants
 	{
+		public Vector4 ClippingPlanes;
 		public Matrix4x4 ViewProjection;
 		public Matrix4x4 ObjectTransform;
 	}

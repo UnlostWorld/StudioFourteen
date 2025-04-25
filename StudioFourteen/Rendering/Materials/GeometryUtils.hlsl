@@ -17,14 +17,24 @@
 
 struct Constants
 {
+	float4 ClippingPlanes;
     float4x4 ViewProjection;
 	float4x4 ObjectTransform;
 };
 
 Constants constants : register(c0);
 
-Texture2D maskDepth_texture : register(t0);
-SamplerState maskDepth_sampler : register(s0);
+Texture2D mask_texture : register(t0);
+SamplerState mask_sampler : register(s0);
+
+Texture2D depth_texture : register(t1);
+SamplerState depth_sampler : register(s1);
+
+float GetDepth(Pixel pixel)
+{
+	float3 pos = pixel.ScreenPosition.xyz / pixel.ScreenPosition.w;
+	return pos.z;
+}
 
 float2 GetScreenPosition(Pixel pixel)
 {
@@ -32,10 +42,17 @@ float2 GetScreenPosition(Pixel pixel)
 	return 0.5f * float2(pos.x, -pos.y) + 0.5f;
 }
 
-float4 GetMaskDepth(Pixel pixel)
+float GetClippingAlpha(Pixel pixel)
 {
 	float2 screenPos = GetScreenPosition(pixel);
-	return maskDepth_texture.Sample(maskDepth_sampler, screenPos);
+	float mask = mask_texture.Sample(mask_sampler, screenPos).r;
+	float depth = depth_texture.Sample(depth_sampler, screenPos).r;
+	float thisDepth = GetDepth(pixel);
+
+	if (thisDepth < depth)
+		return 0;
+
+	return mask;
 }
 
 Pixel vert(in Vertex vertex)

@@ -17,9 +17,7 @@
 
 float4 pixel(Pixel pixel) : SV_TARGET
 {
-	float4 maskDepth = GetMaskDepth(pixel);
-
 	float4 color = pixel.Color;
-	color.a = maskDepth.a;
+	color.a = GetClippingAlpha(pixel);
 	return color;
 }

@@ -25,27 +25,22 @@ using Material = StudioFourteen.Rendering.Materials.Material;
 
 public class GenerateMaskDepthStage : RenderStageBase
 {
-	private readonly int samplerSlot;
 	private readonly Renderable renderable;
 
 	private Texture2D? backBufferCopyTexture;
 	private ShaderResourceView? backBufferResourceView;
 	private Texture2D? depthStencilTexture;
 	private ShaderResourceView? depthResourceView;
-	private Texture2D? maskDepthTexture;
-	private RenderTargetView? maskDepthRenderTargetView;
-	private ShaderResourceView? maskDepthResourceView;
+	private Texture2D? maskTexture;
+	private RenderTargetView? maskRenderTargetView;
+	private ShaderResourceView? maskResourceView;
 
-	public GenerateMaskDepthStage(int samplerSlot)
+	public GenerateMaskDepthStage()
 	{
-		this.samplerSlot = samplerSlot;
-
 		Material material = new("GenerateMaskDepth.hlsl");
 		QuadGeometry geometry = new();
 		this.renderable = new(material, geometry);
 	}
-
-	public ShaderResourceView? Res => this.maskDepthResourceView;
 
 	public unsafe override void Render(RenderingService service, Device device, DeviceContext deviceContext)
 	{
@@ -80,36 +75,35 @@ public class GenerateMaskDepthStage : RenderStageBase
 		}
 
 		// Create an output texture
-		if (this.maskDepthTexture == null
-			|| this.maskDepthTexture.Description.Width != service.Width
-			|| this.maskDepthTexture.Description.Height != service.Height)
+		if (this.maskTexture == null
+			|| this.maskTexture.Description.Width != service.Width
+			|| this.maskTexture.Description.Height != service.Height)
 		{
-			this.maskDepthTexture?.Dispose();
-			this.maskDepthRenderTargetView?.Dispose();
-			this.maskDepthResourceView?.Dispose();
+			this.maskTexture?.Dispose();
+			this.maskRenderTargetView?.Dispose();
+			this.maskResourceView?.Dispose();
 
 			Texture2DDescription desc = service.BackBuffer.Description;
 			desc.BindFlags = BindFlags.ShaderResource | BindFlags.RenderTarget;
-			this.maskDepthTexture = new(device, desc);
+			this.maskTexture = new(device, desc);
 
 			RenderTargetViewDescription rtDesc = default;
 			rtDesc.Format = Format.R8G8B8A8_UNorm;
 			rtDesc.Dimension = RenderTargetViewDimension.Texture2D;
 			rtDesc.Texture2D = new() { };
-			this.maskDepthRenderTargetView = new(device, this.maskDepthTexture, rtDesc);
+			this.maskRenderTargetView = new(device, this.maskTexture, rtDesc);
 
-			this.maskDepthResourceView = new(device, this.maskDepthTexture);
+			this.maskResourceView = new(device, this.maskTexture);
 		}
 
 		// Copy the back buffer into the copy
 		deviceContext.CopyResource(service.BackBuffer, this.backBufferCopyTexture);
 
 		// Set the output target to the new buffer
-		deviceContext.OutputMerger.SetTargets(this.maskDepthRenderTargetView);
+		deviceContext.OutputMerger.SetTargets(this.maskRenderTargetView);
 
 		// Pass the buffers into the shader
 		deviceContext.PixelShader.SetShaderResource(0, this.backBufferResourceView);
-		deviceContext.PixelShader.SetShaderResource(1, this.depthResourceView);
 
 		deviceContext.Rasterizer.SetViewport(0, 0, service.Width, service.Height);
 
@@ -120,7 +114,8 @@ public class GenerateMaskDepthStage : RenderStageBase
 		deviceContext.ClearState();
 
 		// Pass the mask depth into future shaders
-		deviceContext.PixelShader.SetShaderResource(this.samplerSlot, this.maskDepthResourceView);
+		deviceContext.PixelShader.SetShaderResource(0, this.maskResourceView);
+		deviceContext.PixelShader.SetShaderResource(1, this.depthResourceView);
 	}
 
 	public override void Dispose()
@@ -128,9 +123,9 @@ public class GenerateMaskDepthStage : RenderStageBase
 		this.renderable.Dispose();
 		this.backBufferCopyTexture?.Dispose();
 		this.depthStencilTexture?.Dispose();
-		this.maskDepthTexture?.Dispose();
-		this.maskDepthRenderTargetView?.Dispose();
-		this.maskDepthResourceView?.Dispose();
+		this.maskTexture?.Dispose();
+		this.maskRenderTargetView?.Dispose();
+		this.maskResourceView?.Dispose();
 		this.depthResourceView?.Dispose();
 		this.depthStencilTexture?.Dispose();
 		base.Dispose();

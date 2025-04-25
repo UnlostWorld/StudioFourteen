@@ -18,10 +18,6 @@
 Texture2D back_texture : register(t0);
 SamplerState back_sampler : register(s0);
 
-Texture2D depth_texture : register(t1);
-SamplerState depth_sampler : register(s1);
-
-
 float4 pixel(Pixel pixel) : SV_TARGET
 {
 	float mask = back_texture.Sample(back_sampler, pixel.TexCoord).a;
@@ -33,7 +29,5 @@ float4 pixel(Pixel pixel) : SV_TARGET
 	if (mask > 0.4)
 		mask = 1;
 
-	float depth = depth_texture.Sample(depth_sampler, pixel.TexCoord).r;
-
-	return float4(depth, 1, 1, mask);
+	return mask;
 }

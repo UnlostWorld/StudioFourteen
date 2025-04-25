@@ -33,7 +33,7 @@ using XivDevice = FFXIVClientStructs.FFXIV.Client.Graphics.Kernel.Device;
 // https://github.com/sourpuh/ffxiv_pictomancy/tree/master
 public class RenderingService : ServiceBase
 {
-	public readonly GenerateMaskDepthStage GenerateMaskDepthStage = new(0);
+	public readonly GenerateMaskDepthStage GenerateMaskDepthStage = new();
 	public readonly GeometryStage GeometryStage = new();
 	public DrawBufferStage DrawBuffer = new();
 
