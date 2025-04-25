@@ -50,6 +50,7 @@ public class DrawState(int slot)
 
 		context.VertexShader.SetConstantBuffer(slot, this.constantsBuffer);
 		context.GeometryShader.SetConstantBuffer(slot, this.constantsBuffer);
+		context.PixelShader.SetConstantBuffer(slot, this.constantsBuffer);
 	}
 
 	public void Dispose()
@@ -58,7 +59,7 @@ public class DrawState(int slot)
 		this.constantsBuffer = null;
 	}
 
-	public void Draw(Transform transform, Material material, Geometry geometry)
+	public void Draw(Color color, Transform transform, Material material, Geometry geometry)
 	{
 		if (this.DeviceContext == null)
 			return;
@@ -67,6 +68,7 @@ public class DrawState(int slot)
 		geometry.Bind(this.DeviceContext);
 
 		this.Data.ObjectTransform = Matrix4x4.Transpose(transform.ToMatrix());
+		this.Data.ObjectColor = color;
 		this.DeviceContext.UpdateSubresource(ref this.Data, this.constantsBuffer);
 
 		geometry.Draw(this.DeviceContext);
@@ -78,5 +80,6 @@ public class DrawState(int slot)
 		public Vector4 ClippingPlanes;
 		public Matrix4x4 ViewProjection;
 		public Matrix4x4 ObjectTransform;
+		public Color ObjectColor;
 	}
 }

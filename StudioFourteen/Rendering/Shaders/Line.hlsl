@@ -157,6 +157,7 @@ void geometry(line Pixel input[2], inout TriangleStream<Pixel> triangleStream)
 float4 pixel(Pixel pixel) : SV_TARGET
 {
 	float4 color = pixel.Color;
+	color *= constants.ObjectColor;
 	color.a = GetClippingAlpha(pixel, 0.1);
 	return color;
 }

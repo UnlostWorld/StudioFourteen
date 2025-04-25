@@ -20,6 +20,7 @@ struct Constants
 	float4 ClippingPlanes;
     float4x4 ViewProjection;
 	float4x4 ObjectTransform;
+	float4 ObjectColor;
 };
 
 struct Pixel

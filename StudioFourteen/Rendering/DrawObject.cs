@@ -19,6 +19,8 @@ using System;
 
 public class DrawObject : DrawBase
 {
+	public Color Color = Color.White;
+
 	public Material? Material;
 	public Geometry? Geometry;
 
@@ -75,7 +77,7 @@ public class DrawObject : DrawBase
 		}
 
 		Transform thisTransform = transform * this.Transform;
-		drawState.Draw(thisTransform, this.Material, this.Geometry);
+		drawState.Draw(this.Color, thisTransform, this.Material, this.Geometry);
 	}
 
 	public override void Dispose()

@@ -13,12 +13,33 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-#include "Geometry.hlsl"
+namespace StudioFourteen.Rendering;
 
-float4 pixel(Pixel pixel) : SV_TARGET
+using System.Numerics;
+using System.Runtime.InteropServices;
+
+[StructLayout(LayoutKind.Sequential)]
+public struct Color
 {
-	float4 color = pixel.Color;
-	color *= constants.Color;
-	color.a = GetClippingAlpha(pixel);
-	return color;
+	public static readonly Color White = new(1, 1, 1, 1);
+	public static readonly Color Black = new(0, 0, 0, 1);
+	public static readonly Color Transparent = new(0, 0, 0, 0);
+
+	public float R;
+	public float G;
+	public float B;
+	public float A;
+
+	public Color(float r, float g, float b, float a)
+	{
+		this.R = r;
+		this.G = g;
+		this.B = b;
+		this.A = a;
+	}
+
+	public static implicit operator Vector4(Color color)
+	{
+		return new(color.R, color.G, color.B, color.A);
+	}
 }

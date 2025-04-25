@@ -21,10 +21,16 @@ using StudioFourteen.Services;
 public class SelectionGizmo : GizmoBase
 {
 	private readonly DrawObject cube = new(EmbeddedMaterial.Line, EmbeddedGeometry.WireCube);
+	private readonly DrawObject cube2 = new(EmbeddedMaterial.Line, EmbeddedGeometry.WireCube);
 
 	public SelectionGizmo()
 	{
+		this.cube.Color = new(1, 0, 0, 1);
 		this.Add(this.cube);
+
+		this.cube2.Color = new(0, 1, 0, 1);
+		this.cube2.Transform *= Transform.FromTranslation(new (0, 1, 0));
+		this.Add(this.cube2);
 	}
 
 	public override void Enable()
