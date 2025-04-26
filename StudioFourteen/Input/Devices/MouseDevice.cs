@@ -35,6 +35,9 @@ public class MouseDevice : InputDeviceBase
 	private readonly Dictionary<MouseButton, InputAxis> buttonAxes = new();
 	private readonly Dictionary<MouseButton, (InputAxisSigned X, InputAxisSigned Y)> dragAxis = new();
 
+	private readonly InputAxis positionX;
+	private readonly InputAxis positionY;
+
 	private readonly InputAxisSigned wheel;
 
 	private Point lastMousePosition;
@@ -43,6 +46,12 @@ public class MouseDevice : InputDeviceBase
 	{
 		this.wheel = new(MouseDevice.WheelPos, MouseDevice.WheelNeg, this, true);
 		this.AddAxis(this.wheel);
+
+		this.positionX = new(MouseDevice.PositionX, this, false);
+		this.AddAxis(this.positionX);
+
+		this.positionY = new(MouseDevice.PositionY, this, false);
+		this.AddAxis(this.positionY);
 
 		foreach (MouseButton button in Enum.GetValues<MouseButton>())
 		{
@@ -81,6 +90,8 @@ public class MouseDevice : InputDeviceBase
 
 	public static string WheelPos => "Mouse:Wheel+";
 	public static string WheelNeg => "Mouse:Wheel-";
+	public static string PositionX => $"Mouse:Position:X";
+	public static string PositionY => $"Mouse:Position:Y";
 
 	public bool IsAnyDragging => this.draggingButtons.Count > 0;
 
@@ -187,6 +198,10 @@ public class MouseDevice : InputDeviceBase
 		Point? mousePoint = this.Services.Windows.GetCursorPosition();
 		if (mousePoint == null)
 			return;
+
+		Rect clientSize = this.Services.Windows.GetXivWindowClientSize();
+		this.positionX.Value = (float)(mousePoint.Value.X / clientSize.Width);
+		this.positionY.Value = (float)(mousePoint.Value.Y / clientSize.Height);
 
 		foreach ((MouseButton button, Point dragStart) in this.dragStarts)
 		{
