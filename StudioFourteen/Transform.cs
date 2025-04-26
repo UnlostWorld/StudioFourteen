@@ -142,4 +142,18 @@ public struct Transform : IEquatable<Transform>
 	{
 		return Transform.Divide(this, right, out result);
 	}
+
+	public Vector4 TransformViewProjection(Vector4 worldPos)
+	{
+		Vector4 vector = Vector4.Transform(worldPos, this.matrix);
+
+		vector *= MathF.Abs(1f / vector.W);
+		return new Vector4
+		{
+			X = (vector.X + 1f) * 0.5f,
+			Y = (1f - vector.Y) * 0.5f,
+			Z = vector.Z,
+			W = 1,
+		};
+	}
 }

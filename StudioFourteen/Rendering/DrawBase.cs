@@ -16,6 +16,7 @@
 namespace StudioFourteen.Rendering;
 
 using System;
+using System.Numerics;
 
 public abstract class DrawBase : IDisposable
 {
@@ -23,4 +24,10 @@ public abstract class DrawBase : IDisposable
 
 	public abstract void Draw(Transform transform, DrawState drawState);
 	public abstract void Dispose();
+
+	public abstract void HitTest(
+		Vector2 screenPosition,
+		Transform transform,
+		Transform viewProjection,
+		ref HitTestResult result);
 }

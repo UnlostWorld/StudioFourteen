@@ -16,13 +16,14 @@
 namespace StudioFourteen.Rendering;
 
 using System;
+using System.Numerics;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
 using SharpDX.Direct3D11;
 using StudioFourteen.Interop;
 using StudioFourteen.Plugin;
 using StudioFourteen.Rendering.Passes;
 using StudioFourteen.Services;
-
+using StudioFourteen.Utilities;
 using Device = SharpDX.Direct3D11.Device;
 using XivDevice = FFXIVClientStructs.FFXIV.Client.Graphics.Kernel.Device;
 

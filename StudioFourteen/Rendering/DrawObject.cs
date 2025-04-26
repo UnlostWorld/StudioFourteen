@@ -16,6 +16,7 @@
 namespace StudioFourteen.Rendering;
 
 using System;
+using System.Numerics;
 
 public class DrawObject : DrawBase
 {
@@ -78,6 +79,24 @@ public class DrawObject : DrawBase
 
 		Transform thisTransform = transform * this.Transform;
 		drawState.Draw(this.Color, thisTransform, this.Material, this.Geometry);
+	}
+
+	public override void HitTest(Vector2 screenPosition, Transform transform, Transform viewProjection, ref HitTestResult result)
+	{
+		if (this.Geometry == null)
+			return;
+
+		// TODO: it would be really nice to bounding box check this for optimization.
+		// if this becomes a hot path, lets do that.
+		Mesh mesh = this.Geometry.GetMesh();
+		Transform thisTransform = transform * this.Transform;
+
+		mesh.HitTest(screenPosition, thisTransform, viewProjection, ref result);
+
+		if (result.Mesh == mesh)
+		{
+			result.DrawObject = this;
+		}
 	}
 
 	public override void Dispose()

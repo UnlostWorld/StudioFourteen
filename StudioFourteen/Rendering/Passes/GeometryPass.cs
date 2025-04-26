@@ -46,6 +46,16 @@ public class GeometryPass : RenderPassBase
 		}
 	}
 
+	public void HitTest(Vector2 screenPosition, ref HitTestResult result)
+	{
+		Matrix4x4 viewProj = ServiceManager.Instance.Camera.CurrentViewProjection;
+
+		foreach(DrawBase draw in this.renderables)
+		{
+			draw.HitTest(screenPosition, Transform.Identity, viewProj, ref result);
+		}
+	}
+
 	public override void Render(RenderingService service, Device device, DeviceContext deviceContext)
 	{
 		if (this.backBufferTargetView == null)

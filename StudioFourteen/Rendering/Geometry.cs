@@ -16,10 +16,9 @@
 namespace StudioFourteen.Rendering;
 
 using System;
-using System.Collections.Generic;
-using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using StudioFourteen.Rendering.Meshes;
+
 using Buffer = SharpDX.Direct3D11.Buffer;
 
 public abstract class Geometry() : IDisposable
@@ -83,12 +82,13 @@ public abstract class Geometry() : IDisposable
 		this.indices?.Dispose();
 	}
 
-	protected abstract Mesh GetMesh();
-}
+	public Mesh GetMesh()
+	{
+		if (this.mesh == null)
+			this.mesh = this.LoadMesh();
 
-public class Mesh
-{
-	public PrimitiveTopology Topology;
-	public List<Vertex> Vertices { get; set; } = new();
-	public List<ushort>? Indices { get; set; }
+		return this.mesh;
+	}
+
+	protected abstract Mesh LoadMesh();
 }

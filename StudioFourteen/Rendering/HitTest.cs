@@ -15,8 +15,10 @@
 
 namespace StudioFourteen.Rendering;
 
-public class GeneratedGeometry<T>() : Geometry
-	where T : Mesh, new()
+public class HitTestResult
 {
-	protected override Mesh LoadMesh() => new T();
+	public float Distance = float.MaxValue;
+	public Mesh? Mesh;
+	public Vertex? MeshVertex;
+	public DrawObject? DrawObject;
 }

@@ -24,7 +24,7 @@ public class EmbeddedGeometry(string file) : Geometry
 {
 	public override string ToString() => $"Geometry file {file}";
 
-	protected override Mesh GetMesh()
+	protected override Mesh LoadMesh()
 	{
 		Assembly assembly = Assembly.GetExecutingAssembly();
 		string resourceName = $"StudioFourteen.Rendering.Meshes.{file}";
