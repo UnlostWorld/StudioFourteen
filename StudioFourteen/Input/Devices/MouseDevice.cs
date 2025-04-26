@@ -98,6 +98,8 @@ public class MouseDevice : InputDeviceBase
 	public static string GetAxisId(MouseButton button) => $"Mouse:{button}";
 	public static string GetDragAxisId(MouseButton button, DragDirections direction) => $"Mouse:{button}Drag{direction}";
 
+	public Vector2 GetPosition() => new(this.positionX.Value, this.positionY.Value);
+
 	public override void Attach()
 	{
 	}
@@ -149,6 +151,8 @@ public class MouseDevice : InputDeviceBase
 			{
 				this.buttonAxes[MouseButton.XButton2].Value = 1.0f;
 			}
+
+			this.UpdateMousePosition();
 		}
 	}
 
@@ -193,7 +197,37 @@ public class MouseDevice : InputDeviceBase
 		}
 	}
 
-	public void HandleMouseMove()
+	public void HandleMouseLeave()
+	{
+		foreach ((MouseButton button, (InputAxisSigned xAxis, InputAxisSigned yAxis)) in this.dragAxis)
+		{
+			xAxis.Value = 0;
+			yAxis.Value = 0;
+		}
+
+		foreach ((MouseButton button, InputAxis axis) in this.buttonAxes)
+		{
+			axis.Value = 0.0f;
+		}
+
+		foreach (MouseButton button in this.draggingButtons)
+		{
+			this.dragAxis[button].X.Value = 0;
+			this.dragAxis[button].Y.Value = 0;
+		}
+
+		this.draggingButtons.Clear();
+		this.dragStarts.Clear();
+
+		CursorUtility.SetCursorVisible(true);
+	}
+
+	public void HandleMouseWheel(float delta)
+	{
+		this.wheel.Value += delta;
+	}
+
+	private void UpdateMousePosition()
 	{
 		Point? mousePoint = this.Services.Windows.GetCursorPosition();
 		if (mousePoint == null)
@@ -237,35 +271,5 @@ public class MouseDevice : InputDeviceBase
 			return;
 
 		this.lastMousePosition = mousePoint.Value;
-	}
-
-	public void HandleMouseLeave()
-	{
-		foreach ((MouseButton button, (InputAxisSigned xAxis, InputAxisSigned yAxis)) in this.dragAxis)
-		{
-			xAxis.Value = 0;
-			yAxis.Value = 0;
-		}
-
-		foreach ((MouseButton button, InputAxis axis) in this.buttonAxes)
-		{
-			axis.Value = 0.0f;
-		}
-
-		foreach (MouseButton button in this.draggingButtons)
-		{
-			this.dragAxis[button].X.Value = 0;
-			this.dragAxis[button].Y.Value = 0;
-		}
-
-		this.draggingButtons.Clear();
-		this.dragStarts.Clear();
-
-		CursorUtility.SetCursorVisible(true);
-	}
-
-	public void HandleMouseWheel(float delta)
-	{
-		this.wheel.Value += delta;
 	}
 }

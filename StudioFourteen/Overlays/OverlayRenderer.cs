@@ -84,8 +84,6 @@ public partial class OverlayRenderer : GizmoRenderer
 	protected override void OnMouseMove(MouseEventArgs e)
 	{
 		base.OnMouseMove(e);
-
-		this.Services.Input.Mouse?.HandleMouseMove();
 	}
 
 	protected override void OnMouseLeave(MouseEventArgs e)
