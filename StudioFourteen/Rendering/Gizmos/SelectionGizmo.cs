@@ -28,20 +28,7 @@ public class SelectionGizmo : GizmoBase
 		this.Add(this.circle);
 	}
 
-	public override void Enable()
-	{
-		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
-		base.Enable();
-	}
-
-	public override void Disable()
-	{
-		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
-		base.Disable();
-	}
-
-	// TODO: can we update this during Draw for less flickering?
-	private unsafe void OnGameTick()
+	public unsafe override void Draw(Transform transform, DrawState drawState)
 	{
 		SelectionBase? currentSelection = this.Services.Selection.Current;
 		if (currentSelection == null)
@@ -59,7 +46,9 @@ public class SelectionGizmo : GizmoBase
 				return;
 
 			this.Transform = Transform.FromScale(gameObject->HitboxRadius / 2, 1, gameObject->HitboxRadius / 2);
-			this.Transform *= objectSelection.WorldTransform;
+			this.Transform *= Transform.FromTRS(gameObject->DrawObject->Position, gameObject->DrawObject->Rotation, gameObject->DrawObject->Scale);
 		}
+
+		base.Draw(transform, drawState);
 	}
 }
