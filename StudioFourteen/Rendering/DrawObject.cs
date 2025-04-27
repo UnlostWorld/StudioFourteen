@@ -17,13 +17,15 @@ namespace StudioFourteen.Rendering;
 
 using System;
 using System.Numerics;
+using StudioFourteen.Rendering.Geometries;
+using StudioFourteen.Rendering.Materials;
 
 public class DrawObject : DrawBase
 {
 	public Color Color = Color.White;
 
-	public Material? Material;
-	public Geometry? Geometry;
+	public MaterialBase? Material;
+	public GeometryBase? Geometry;
 
 	private Exception? materialException;
 	private Exception? geometryException;
@@ -32,7 +34,7 @@ public class DrawObject : DrawBase
 	{
 	}
 
-	public DrawObject(Material material, Geometry geometry)
+	public DrawObject(MaterialBase material, GeometryBase geometry)
 	{
 		this.Material = material;
 		this.Geometry = geometry;
@@ -83,17 +85,10 @@ public class DrawObject : DrawBase
 
 	public override void HitTest(Vector2 screenPosition, Transform transform, Transform viewProjection, ref HitTestResult result)
 	{
-		if (this.Geometry == null)
-			return;
-
-		// TODO: it would be really nice to bounding box check this for optimization.
-		// if this becomes a hot path, lets do that.
-		Mesh mesh = this.Geometry.GetMesh();
 		Transform thisTransform = transform * this.Transform;
+		this.Geometry?.HitTest(screenPosition, thisTransform, viewProjection, ref result);
 
-		mesh.HitTest(screenPosition, thisTransform, viewProjection, ref result);
-
-		if (result.Mesh == mesh)
+		if (result.Geometry == this.Geometry)
 		{
 			result.DrawObject = this;
 		}

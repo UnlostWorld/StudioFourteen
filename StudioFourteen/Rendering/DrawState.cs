@@ -19,7 +19,8 @@ using System;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using SharpDX.Direct3D11;
-
+using StudioFourteen.Rendering.Geometries;
+using StudioFourteen.Rendering.Materials;
 using Buffer = SharpDX.Direct3D11.Buffer;
 
 public class DrawState(int slot)
@@ -59,7 +60,7 @@ public class DrawState(int slot)
 		this.constantsBuffer = null;
 	}
 
-	public void Draw(Color color, Transform transform, Material material, Geometry geometry)
+	public void Draw(Color color, Transform transform, MaterialBase material, GeometryBase geometry)
 	{
 		if (this.DeviceContext == null)
 			return;

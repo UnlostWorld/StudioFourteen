@@ -13,10 +13,21 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering;
+namespace StudioFourteen.Rendering.Geometries;
 
-public class GeneratedGeometry<T>() : Geometry
-	where T : Mesh, new()
+using System;
+using System.Numerics;
+using SharpDX.Direct3D11;
+
+public abstract class GeometryBase : IDisposable
 {
-	protected override Mesh LoadMesh() => new T();
+	public abstract bool IsLoaded { get; }
+
+	public abstract void Load(Device device);
+	public abstract void Bind(DeviceContext context);
+	public abstract void Draw(DeviceContext context);
+
+	public abstract void Dispose();
+
+	public abstract void HitTest(Vector2 screenPosition, Transform transform, Transform viewProjection, ref HitTestResult result);
 }

@@ -13,15 +13,29 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering;
+namespace StudioFourteen.Rendering.Geometries;
 
-using StudioFourteen.Rendering.Geometries;
+using System;
+using System.IO;
+using System.Reflection;
+using StudioFourteen.Serialization;
 
-public class HitTestResult
+public class EmbeddedGeometry(string file) : MeshGeometryBase
 {
-	public float Distance = float.MaxValue;
-	public GeometryBase? Geometry;
-	public Mesh? Mesh;
-	public Vertex? MeshVertex;
-	public DrawObject? DrawObject;
+	public override string ToString() => $"Geometry file {file}";
+
+	protected override Mesh LoadMesh()
+	{
+		Assembly assembly = Assembly.GetExecutingAssembly();
+		string resourceName = $"StudioFourteen.Rendering.Meshes.{file}";
+		Stream? stream = assembly.GetManifestResourceStream(resourceName);
+		if (stream == null)
+			throw new Exception($"Mesh \"{file}\" not found in manifest resources");
+
+		Mesh? mesh = Serializer.Deserialize<Mesh>(stream);
+		if (mesh == null)
+			throw new Exception($"Mesh \"{file}\" failed to deserialize");
+
+		return mesh;
+	}
 }

@@ -13,19 +13,14 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering;
+namespace StudioFourteen.Rendering.Materials;
 
 using System;
 using SharpDX.D3DCompiler;
 using SharpDX.Direct3D11;
 
-public abstract class Material : IDisposable
+public abstract class MaterialBase : IDisposable
 {
-	public static readonly EmbeddedMaterial Blit = new("Blit_Copy.hlsl");
-	public static readonly EmbeddedMaterial BlitAlphaMask = new("Blit_AlphaMask.hlsl");
-	public static readonly EmbeddedMaterial GeometryVertexColor = new("Geometry_VertexColor.hlsl");
-	public static readonly EmbeddedMaterial Line = new("Line.hlsl", true);
-
 	private VertexShader? vertexShader;
 	private PixelShader? pixelShader;
 	private GeometryShader? geometryShader;

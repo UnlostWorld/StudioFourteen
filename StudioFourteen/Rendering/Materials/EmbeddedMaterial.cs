@@ -13,7 +13,7 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering;
+namespace StudioFourteen.Rendering.Materials;
 
 using System;
 using System.IO;
@@ -21,7 +21,7 @@ using System.Reflection;
 using System.Text;
 using SharpDX.Direct3D11;
 
-public class EmbeddedMaterial(string file, bool hasGeometry = false) : Material
+public class EmbeddedMaterial(string file, bool hasGeometry = false) : MaterialBase
 {
 	private string? combinedShaderHlsl;
 

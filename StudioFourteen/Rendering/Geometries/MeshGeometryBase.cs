@@ -13,58 +13,51 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering;
+namespace StudioFourteen.Rendering.Geometries;
 
-using System;
+using System.Numerics;
 using SharpDX.Direct3D11;
-using StudioFourteen.Rendering.Meshes;
 
-using Buffer = SharpDX.Direct3D11.Buffer;
-
-public abstract class Geometry() : IDisposable
+public abstract class MeshGeometryBase : GeometryBase
 {
-	public static readonly EmbeddedGeometry Cube = new("Cube.jsonc");
-	public static readonly EmbeddedGeometry FlatCube = new("FlatCube.jsonc");
-	public static readonly EmbeddedGeometry Quad = new("Quad.jsonc");
-	public static readonly EmbeddedGeometry WireCube = new("WireCube.jsonc");
-	public static readonly GeneratedGeometry<WireCircle> WireCircle = new();
+	private Mesh? mesh;
 
 	private Buffer? vertices;
+	private VertexBufferBinding vertexBufferBinding;
 	private int vertexLength = 0;
 	private Buffer? indices;
 	private int indexLength = 0;
 
-	private Mesh? mesh;
+	public override bool IsLoaded => this.vertices != null;
 
-	public bool IsLoaded => this.vertices != null;
-
-	public void Load(Device device)
+	public override void Load(Device device)
 	{
-		this.mesh = this.GetMesh();
+		this.mesh = this.LoadMesh();
 
 		Vertex[] vertices = this.mesh.Vertices.ToArray();
 		this.vertexLength = vertices.Length;
 		this.vertices = Buffer.Create(device, BindFlags.VertexBuffer, vertices);
+		this.vertexBufferBinding = new VertexBufferBinding(this.vertices, SharpDX.Utilities.SizeOf<Vertex>(), 0);
 
 		if (this.mesh.Indices != null)
 		{
-			ushort [] indices = this.mesh.Indices.ToArray();
+			ushort[] indices = this.mesh.Indices.ToArray();
 			this.indexLength = indices.Length;
 			this.indices = Buffer.Create(device, BindFlags.IndexBuffer, indices);
 		}
 	}
 
-	public void Bind(DeviceContext context)
+	public override void Bind(DeviceContext context)
 	{
 		if (this.mesh == null)
 			return;
 
 		context.InputAssembler.PrimitiveTopology = this.mesh.Topology;
-		context.InputAssembler.SetVertexBuffers(0, new VertexBufferBinding(this.vertices, SharpDX.Utilities.SizeOf<Vertex>(), 0));
+		context.InputAssembler.SetVertexBuffers(0, this.vertexBufferBinding);
 		context.InputAssembler.SetIndexBuffer(this.indices, SharpDX.DXGI.Format.R16_UInt, 0);
 	}
 
-	public void Draw(DeviceContext context)
+	public override void Draw(DeviceContext context)
 	{
 		if (this.indices == null)
 		{
@@ -76,18 +69,18 @@ public abstract class Geometry() : IDisposable
 		}
 	}
 
-	public void Dispose()
-	{
-		this.vertices?.Dispose();
-		this.indices?.Dispose();
-	}
-
-	public Mesh GetMesh()
+	public override void HitTest(Vector2 screenPosition, Transform transform, Transform viewProjection, ref HitTestResult result)
 	{
 		if (this.mesh == null)
 			this.mesh = this.LoadMesh();
 
-		return this.mesh;
+		this.mesh.HitTest(screenPosition, transform, viewProjection, ref result);
+	}
+
+	public override void Dispose()
+	{
+		this.vertices?.Dispose();
+		this.indices?.Dispose();
 	}
 
 	protected abstract Mesh LoadMesh();
