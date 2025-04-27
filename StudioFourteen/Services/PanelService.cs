@@ -18,8 +18,6 @@ namespace StudioFourteen.Services;
 using StudioFourteen.AIO;
 using StudioFourteen.Launcher;
 using StudioFourteen.Panels;
-using StudioFourteen.Studio;
-using StudioFourteen.Utilities;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
@@ -36,7 +34,6 @@ public class PanelService : ServiceBase
 
 	private readonly List<PanelContextBase> contexts = new();
 	private bool hasRestoredPanels = false;
-	private BackgroundWindow? backgroundWindow;
 	private LauncherWindow? launcher;
 
 	public PanelService()
@@ -94,9 +91,6 @@ public class PanelService : ServiceBase
 
 	private async Task StartPanels()
 	{
-		this.backgroundWindow = await PanelWindow.CreatePanelWindow<BackgroundWindow>(this.GamePanels);
-		this.backgroundWindow?.Dispatcher.InvokeAsync(() => this.backgroundWindow.Show());
-
 		this.launcher = await PanelWindow.CreatePanelWindow<LauncherWindow>(this.GamePanels);
 		this.launcher?.Dispatcher.InvokeAsync(() => this.launcher.Show());
 
@@ -108,7 +102,6 @@ public class PanelService : ServiceBase
 
 	private async Task StopPanels()
 	{
-		this.backgroundWindow?.Dispatcher.Invoke(this.backgroundWindow.Close);
 		this.launcher?.Dispatcher.Invoke(this.launcher.Close);
 
 		foreach (PanelContextBase context in this.contexts)

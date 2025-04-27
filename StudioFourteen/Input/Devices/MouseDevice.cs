@@ -23,6 +23,8 @@ using System.Windows.Input;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.System.Input;
 using FFXIVClientStructs.FFXIV.Client.UI;
+using ImGuiScene;
+using StudioFourteen.Plugin;
 using StudioFourteen.Utilities;
 
 using Vector = System.Windows.Vector;
@@ -98,6 +100,20 @@ public class MouseDevice : InputDeviceBase
 	public static string GetAxisId(MouseButton button) => $"Mouse:{button}";
 	public static string GetDragAxisId(MouseButton button, DragDirections direction) => $"Mouse:{button}Drag{direction}";
 
+	public static MouseButtonFlags GetEngineFlags(MouseButton button)
+	{
+		switch (button)
+		{
+			case MouseButton.Left: return MouseButtonFlags.LBUTTON;
+			case MouseButton.Middle: return MouseButtonFlags.MBUTTON;
+			case MouseButton.Right: return MouseButtonFlags.RBUTTON;
+			case MouseButton.XButton1: return MouseButtonFlags.XBUTTON1;
+			case MouseButton.XButton2: return MouseButtonFlags.XBUTTON2;
+		}
+
+		throw new NotImplementedException();
+	}
+
 	public Vector2 GetPosition() => new(this.positionX.Value, this.positionY.Value);
 
 	public override void Attach()
@@ -108,7 +124,7 @@ public class MouseDevice : InputDeviceBase
 	{
 	}
 
-	public override void PreUpdate()
+	public unsafe override void PreUpdate()
 	{
 		this.wheel.ConsumedBy = null;
 
@@ -123,44 +139,16 @@ public class MouseDevice : InputDeviceBase
 			yAxis.ConsumedBy = null;
 		}
 
-		unsafe
-		{
-			MouseButtonFlags flags = UIInputData.Instance()->CursorInputs.MouseButtonHeldFlags;
-
-			if (flags.HasFlag(MouseButtonFlags.LBUTTON))
-			{
-				this.buttonAxes[MouseButton.Left].Value = 1.0f;
-			}
-
-			if (flags.HasFlag(MouseButtonFlags.RBUTTON))
-			{
-				this.buttonAxes[MouseButton.Left].Value = 1.0f;
-			}
-
-			if (flags.HasFlag(MouseButtonFlags.MBUTTON))
-			{
-				this.buttonAxes[MouseButton.Middle].Value = 1.0f;
-			}
-
-			if (flags.HasFlag(MouseButtonFlags.XBUTTON1))
-			{
-				this.buttonAxes[MouseButton.XButton1].Value = 1.0f;
-			}
-
-			if (flags.HasFlag(MouseButtonFlags.XBUTTON2))
-			{
-				this.buttonAxes[MouseButton.XButton2].Value = 1.0f;
-			}
-
-			this.UpdateMousePosition();
-		}
+		this.UpdateMousePosition();
 	}
 
-	public override void PostUpdate()
+	public unsafe override void PostUpdate()
 	{
 		base.PostUpdate();
 
 		this.wheel.Value = 0;
+
+		UIInputData* pInputData = UIInputData.Instance();
 
 		foreach ((MouseButton button, (InputAxisSigned xAxis, InputAxisSigned yAxis)) in this.dragAxis)
 		{
@@ -174,13 +162,17 @@ public class MouseDevice : InputDeviceBase
 		}
 	}
 
-	public void HandleMouse(MouseButton button, bool down)
+	public bool HandleMouseButton(MouseButton button, bool down)
 	{
+		if (!this.ShouldHandleMouse())
+			return false;
+
 		Point? mousePoint = this.Services.Windows.GetCursorPosition();
 
 		if (mousePoint == null)
-			return;
+			return false;
 
+		// if we are not in group pose, dont swallow all mouse inputs.
 		this.buttonAxes[button].Value = down ? 1.0f : 0.0f;
 
 		if (down)
@@ -195,6 +187,17 @@ public class MouseDevice : InputDeviceBase
 			this.dragStarts.Remove(button);
 			CursorUtility.SetCursorVisible(true);
 		}
+
+		return true;
+	}
+
+	public bool HandleMouseWheel(float delta)
+	{
+		if (!this.ShouldHandleMouse())
+			return false;
+
+		this.wheel.Value += delta;
+		return true;
 	}
 
 	public void HandleMouseLeave()
@@ -222,9 +225,34 @@ public class MouseDevice : InputDeviceBase
 		CursorUtility.SetCursorVisible(true);
 	}
 
-	public void HandleMouseWheel(float delta)
+	private bool ShouldHandleMouse()
 	{
-		this.wheel.Value += delta;
+		// Never capture mouse outside of group pose.
+		if (!this.Services.GroupPose.IsGroupPosing)
+			return false;
+
+		// If the user has disabled the overlay system globabally,
+		// never capture mouse inputs.
+		if (!this.Services.Settings.Current.EnableGlobalOverlay)
+			return false;
+
+		// Don't process mouse if the cursor is over a in-game UI element
+		if (this.Services.Windows.IsCursorOverAtkUnit)
+			return false;
+
+		// Don't process mouse if the cursor is over a Dalamud ImGUI element.
+		if (this.Services.Windows.IsCursorOverImGui)
+			return false;
+
+		// This shouldn't happen, but to be safe.
+		if (this.Services.Windows.IsCursorOverStudio)
+			return false;
+
+		// If the reshade overlay is open, let it do its cursor things.
+		if (this.Services.Reshade.IsReshadeOverlayOpen)
+			return false;
+
+		return true;
 	}
 
 	private void UpdateMousePosition()

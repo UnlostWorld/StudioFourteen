@@ -22,6 +22,8 @@ SetFocus
 SetCursor
 EnableWindow
 SetLayeredWindowAttributes
+SetWindowLongPtr
+CallWindowProc
 
 WINDOW_EX_STYLE
 WINDOW_STYLE

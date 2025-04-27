@@ -18,6 +18,7 @@ namespace StudioFourteen.Files;
 using Microsoft.Win32;
 using StudioFourteen.Appearance;
 using StudioFourteen.Environment;
+using StudioFourteen.Launcher;
 using StudioFourteen.Library.Sources;
 using StudioFourteen.Posing;
 using StudioFourteen.Scripting;
@@ -103,10 +104,10 @@ public class FileService : ServiceBase
 
 	public async Task<DirectoryInfo?> ShowDirectoryDialog(DirectoryInfo? defaultInfo = null)
 	{
-		BackgroundWindow? bgWindow = BackgroundWindow.Instance;
+		LauncherWindow? bgWindow = LauncherWindow.Instance;
 		if (bgWindow == null)
 		{
-			this.Log.Error("No background window found");
+			this.Log.Error("No launcher window found");
 			return null;
 		}
 
@@ -238,10 +239,10 @@ public class FileService : ServiceBase
 	private async Task<FileInfo?> ShowDialog<TDialogType>(FileSystemInfo? defaultInfo, params FileTypeInfoBase[] fileTypeInfos)
 		where TDialogType : FileDialog, new()
 	{
-		BackgroundWindow? bgWindow = BackgroundWindow.Instance;
+		LauncherWindow? bgWindow = LauncherWindow.Instance;
 		if (bgWindow == null)
 		{
-			this.Log.Error("No background window found");
+			this.Log.Error("No launcher window found");
 			return null;
 		}
 

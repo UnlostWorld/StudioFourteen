@@ -16,27 +16,25 @@
 namespace StudioFourteen.Services;
 
 using Dalamud.Game.ClientState.Keys;
-using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Component.GUI;
 using ImGuiNET;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Input;
 using StudioFourteen.Panels;
 using StudioFourteen.Plugin;
-using StudioFourteen.Studio;
 using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Interop;
 using Windows.Win32;
 using Windows.Win32.Foundation;
-using Windows.Win32.System.Com.StructuredStorage;
-using Windows.Win32.UI.Shell.PropertiesSystem;
 using Windows.Win32.UI.WindowsAndMessaging;
 
 using DrawingPoint = System.Drawing.Point;
@@ -59,12 +57,13 @@ public partial class WindowService : ServiceBase
 	[Notify(Setter.Private)] private bool isCursorOverImGui;
 	[Notify(Setter.Private)] private bool isCursorOverXiv;
 	[Notify(Setter.Private)] private bool isCursorOverStudio;
-	[Notify(Setter.Private)] private bool enableXivWindowOverlay;
 
 	private Rect xivClientSize;
 	private unsafe AtkUnitBase* atkUnitUnderCursor;
 	private PanelWindow? topMostPanelWindow;
 	private PanelWindow? lastTopMostPanelWindow;
+	private WndProcDelegate? wndProc;
+	private nint oldWndProcPtr;
 
 	public WindowService()
 	{
@@ -73,6 +72,7 @@ public partial class WindowService : ServiceBase
 	}
 
 	public delegate void OnXivClientSizeChanged(Rect newSize);
+	private delegate long WndProcDelegate(IntPtr hWnd, uint msg, ulong wParam, long lParam);
 
 	public event OnXivClientSizeChanged? XivClientSizeChanged;
 
@@ -97,6 +97,15 @@ public partial class WindowService : ServiceBase
 		base.Attach();
 		this.clickActionListener.Enable();
 
+  		// hook wndproc
+		// https://github.com/ff-meli/ImGuiScene/blob/master/ImGuiScene/ImGui_Impl/Input/ImGui_Input_Impl_Direct.cs
+		if (this.XivWindowHwnd != null)
+	   	{
+			this.wndProc = this.WndProcDetour;
+			nint wndProcPtr = Marshal.GetFunctionPointerForDelegate(this.wndProc);
+			this.oldWndProcPtr = PInvoke.SetWindowLongPtr((HWND)this.XivWindowHwnd, WINDOW_LONG_PTR_INDEX.GWL_WNDPROC, wndProcPtr);
+	   	}
+
 		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
 		this.Services.Tick.Add(TickService.Channels.StudioTick, this.OnTick);
 	}
@@ -105,7 +114,15 @@ public partial class WindowService : ServiceBase
 	{
 		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
 		this.Services.Tick.Remove(TickService.Channels.StudioTick, this.OnTick);
+
+		if (this.oldWndProcPtr != 0 && this.XivWindowHwnd != null)
+		{
+			PInvoke.SetWindowLongPtr((HWND)this.XivWindowHwnd, WINDOW_LONG_PTR_INDEX.GWL_WNDPROC, this.oldWndProcPtr);
+			this.oldWndProcPtr = 0;
+		}
+
 		base.Detach();
+
 		this.clickActionListener.Disable();
 		this.Activate(null);
 	}
@@ -409,9 +426,6 @@ public partial class WindowService : ServiceBase
 		this.IsCursorOverXiv = this.GetIsCursorOverXiv();
 		this.IsCursorOverStudio = this.GetIsCursorOverStudio();
 
-		this.EnableXivWindowOverlay = ((!this.IsCursorOverXiv && !this.IsCursorOverStudio) || (!this.IsCursorOverAtkUnit && !this.IsCursorOverImGui))
-			&& !this.Services.Reshade.IsReshadeOverlayOpen && this.Services.Settings.Current.EnableGlobalOverlay;
-
 		Rect xivClientRect = this.GetXivWindowClientSize();
 		if (xivClientRect != this.xivClientSize)
 		{
@@ -422,14 +436,7 @@ public partial class WindowService : ServiceBase
 
 	private void OnFocusGame()
 	{
-		if (this.Services.GroupPose.IsGroupPosing && this.Settings.EnableGlobalOverlay)
-		{
-			this.Activate(BackgroundWindow.Instance);
-		}
-		else
-		{
-			this.Activate(null);
-		}
+		this.Activate(null);
 	}
 
 	private bool GetIsCursorOverXiv()
@@ -498,5 +505,80 @@ public partial class WindowService : ServiceBase
 		}
 
 		return null;
+	}
+
+	private long WndProcDetour(nint hWnd, uint msg, ulong wParam, long lParam)
+	{
+		if (this.oldWndProcPtr == 0)
+		{
+			this.Log.Warning("No old wndproc defined!");
+			return 0;
+		}
+
+		if (hWnd == this.XivWindowHwnd)
+		{
+			if (this.HandleWindowMessage(msg, wParam))
+			{
+				return 0;
+			}
+		}
+
+		return CallWindowProc(this.oldWndProcPtr, hWnd, msg, wParam, lParam);
+	}
+
+	private bool HandleWindowMessage(uint msg, ulong wParam)
+	{
+		WindowMessages message = (WindowMessages)msg;
+
+		Input.Devices.MouseDevice? mouseDevice = this.Services.Input.Mouse;
+		if (mouseDevice == null)
+			return false;
+
+		ulong hWord = (wParam >> 16) & 0xFFFF;
+		switch (message)
+		{
+			case WindowMessages.WM_LBUTTONDOWN: return mouseDevice.HandleMouseButton(MouseButton.Left, true);
+			case WindowMessages.WM_LBUTTONUP: return mouseDevice.HandleMouseButton(MouseButton.Left, false);
+			case WindowMessages.WM_RBUTTONDOWN: return mouseDevice.HandleMouseButton(MouseButton.Right, true);
+			case WindowMessages.WM_RBUTTONUP: return mouseDevice.HandleMouseButton(MouseButton.Right, false);
+			case WindowMessages.WM_MBUTTONDOWN: return mouseDevice.HandleMouseButton(MouseButton.Middle, true);
+			case WindowMessages.WM_MBUTTONUP: return mouseDevice.HandleMouseButton(MouseButton.Middle, false);
+			case WindowMessages.WM_XBUTTONDOWN: return mouseDevice.HandleMouseButton((ushort)hWord == 1 ? MouseButton.XButton1 : MouseButton.XButton2, true);
+			case WindowMessages.WM_XBUTTONUP: return mouseDevice.HandleMouseButton((ushort)hWord == 1 ? MouseButton.XButton1 : MouseButton.XButton2, false);
+			case WindowMessages.WM_MOUSEWHEEL: return mouseDevice.HandleMouseWheel((float)((short)hWord / 120.0f));
+		}
+
+		// TODO: Keyboard?
+		return false;
+	}
+
+#pragma warning disable
+	[DllImport("user32.dll")]
+    private static extern long CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, uint Msg, ulong wParam, long lParam);
+
+	public enum WindowMessages
+	{
+        ////WM_MOUSEMOVE = 0x0200,
+        WM_LBUTTONDOWN = 0x0201,
+        WM_LBUTTONUP = 0x0202,
+       //// WM_LBUTTONDBLCLK = 0x0203,
+        WM_RBUTTONDOWN = 0x0204,
+        WM_RBUTTONUP = 0x0205,
+       //// WM_RBUTTONDBLCLK = 0x0206,
+        WM_MBUTTONDOWN = 0x0207,
+        WM_MBUTTONUP = 0x0208,
+        ////WM_MBUTTONDBLCLK = 0x0209,
+        WM_MOUSEWHEEL = 0x020A,
+        WM_XBUTTONDOWN = 0x020B,
+        WM_XBUTTONUP = 0x020C,
+        ////WM_XBUTTONDBLCLK = 0x020D,
+        ////WM_MOUSEHWHEEL = 0x020E,
+
+		// We could
+		/*WM_KEYDOWN = 0x0100,
+        WM_KEYUP = 0x0101,
+		WM_CHAR = 0x0102,
+		WM_SYSKEYDOWN = 0x0104,
+        WM_SYSKEYUP = 0x0105,*/
 	}
 }

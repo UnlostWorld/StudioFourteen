@@ -29,8 +29,11 @@ using System;
 [DependencyProperty<bool>("IsButtonVisible", DefaultValue = true)]
 public partial class LauncherWindow : PanelWindow
 {
+	public static LauncherWindow? Instance;
+
 	public LauncherWindow()
 	{
+		Instance = this;
 		this.Services.Settings.SettingChanged += this.OnSettingChanged;
 		this.Services.Studio.Opening += this.OnStudioStateChanged;
 		this.Services.Studio.Closing += this.OnStudioStateChanged;
