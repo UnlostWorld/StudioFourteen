@@ -23,6 +23,7 @@ using StudioFourteen.History;
 using StudioFourteen.Posing;
 using StudioFourteen.Rendering.Gizmos;
 using StudioFourteen.Services;
+using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -126,7 +127,9 @@ public partial class SelectionService : ServiceBase
 				return;
 
 			SelectionBase? oldHover = this.hover;
+			oldHover?.Deactivate();
 			this.hover = value;
+			this.hover?.Activate();
 			this.HoverChanged?.Invoke(oldHover, value);
 			this.RaisePropertyChanged();
 		}
@@ -202,6 +205,29 @@ public partial class SelectionService : ServiceBase
 	protected void OnGameTick()
 	{
 		this.Current?.OnGameTick();
+
+		if (!this.Services.Windows.IsCursorOverStudio)
+		{
+			SelectionBase? newHover = null;
+			HitInfo? hit = RayCast.CastFromCursor();
+			if (hit != null)
+			{
+				if (hit.ObjectTableIndex != -1)
+				{
+					if (this.Hover is ObjectTableSelection currentHover
+						&& currentHover.ObjectTableId != hit.ObjectTableIndex)
+					{
+						newHover = this.Hover;
+					}
+					else
+					{
+						newHover = new ObjectTableSelection(hit.ObjectTableIndex);
+					}
+				}
+			}
+
+			this.Hover = newHover;
+		}
 
 		if (this.Hover != this.Current)
 		{
