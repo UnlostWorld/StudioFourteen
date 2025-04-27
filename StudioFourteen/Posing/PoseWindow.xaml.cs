@@ -119,18 +119,21 @@ public partial class PoseWindow : CharacterPanelBase
 
 	private void OnHoverChanged(SelectionBase? oldSelection, SelectionBase? newSelection)
 	{
-		this.IsHoverTooltipOpen = false;
-		this.showTooltipQueue.Cancel();
-
-		if (newSelection != null && this.Services.Selection.HoverSource is PoseSelectionControl target)
+		this.Dispatcher.Invoke(() =>
 		{
-			if (target.FindParent<PoseWindow>() == this)
+			this.IsHoverTooltipOpen = false;
+			this.showTooltipQueue.Cancel();
+
+			if (newSelection != null && this.Services.Selection.HoverSource is PoseSelectionControl target)
 			{
-				this.nextHover = newSelection;
-				this.HoverTarget = target;
-				this.showTooltipQueue.Invoke();
+				if (target.FindParent<PoseWindow>() == this)
+				{
+					this.nextHover = newSelection;
+					this.HoverTarget = target;
+					this.showTooltipQueue.Invoke();
+				}
 			}
-		}
+		});
 	}
 
 	private async Task ShowTooltip()

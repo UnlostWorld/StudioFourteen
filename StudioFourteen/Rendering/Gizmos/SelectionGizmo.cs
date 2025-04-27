@@ -22,6 +22,7 @@ using StudioFourteen.Services;
 public class SelectionGizmo : GizmoBase
 {
 	private readonly DrawObject circle = new(Material.Line, Geometry.WireCircle);
+	////private readonly DrawObject line = new(Material.Line, Geometry.WireCircle);
 
 	public SelectionGizmo()
 	{
@@ -30,16 +31,13 @@ public class SelectionGizmo : GizmoBase
 
 	public unsafe override void Draw(Transform transform, DrawState drawState)
 	{
-		SelectionBase? currentSelection = this.Services.Selection.Current;
-		if (currentSelection == null)
-			return;
-
-		if (currentSelection is TransformSelectionBase transformSelection)
+		SelectionBase? currentHover = this.Services.Selection.Hover;
+		if (currentHover == null)
 		{
-			this.Transform = transformSelection.WorldTransform;
+			return;
 		}
 
-		if (currentSelection is ObjectTableSelection objectSelection)
+		if (currentHover is ObjectTableSelection objectSelection)
 		{
 			GameObject* gameObject = this.Services.GameObjects.Get(objectSelection.ObjectTableId);
 			if (gameObject == null || gameObject->DrawObject == null)
@@ -47,6 +45,15 @@ public class SelectionGizmo : GizmoBase
 
 			this.Transform = Transform.FromScale(gameObject->HitboxRadius / 2, 1, gameObject->HitboxRadius / 2);
 			this.Transform *= Transform.FromTRS(gameObject->DrawObject->Position, gameObject->DrawObject->Rotation, gameObject->DrawObject->Scale);
+		}
+		else if (currentHover is BoneSelection boneSelection)
+		{
+			this.Transform = Transform.FromScale(0.15f, 1, 0.15f);
+			this.Transform *= boneSelection.WorldTransform;
+		}
+		else if (currentHover is TransformSelectionBase transformSelection)
+		{
+			this.Transform = transformSelection.WorldTransform;
 		}
 
 		base.Draw(transform, drawState);
