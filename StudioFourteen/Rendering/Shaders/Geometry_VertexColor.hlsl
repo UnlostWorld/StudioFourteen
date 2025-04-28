@@ -18,7 +18,7 @@
 float4 pixel(Pixel pixel) : SV_TARGET
 {
 	float4 color = pixel.Color;
-	color *= constants.Color;
+	color *= constants.ObjectColor;
 	color.a = GetClippingAlpha(pixel);
 	return color;
 }

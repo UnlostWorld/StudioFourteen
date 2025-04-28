@@ -13,26 +13,30 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering;
+namespace StudioFourteen.Rendering.Passes;
 
-using StudioFourteen.Rendering.Geometries;
+using System.Numerics;
+using SharpDX.Direct3D11;
 using StudioFourteen.Rendering.Materials;
-using StudioFourteen.Rendering.Meshes;
 
-public static class Geometry
+public class GridPass : GeometryPass
 {
-	public static readonly EmbeddedGeometry Cube = new("Cube.jsonc");
-	public static readonly EmbeddedGeometry FlatCube = new("FlatCube.jsonc");
-	public static readonly EmbeddedGeometry Quad = new("Quad.jsonc");
-	public static readonly EmbeddedGeometry Plane = new("Plane.jsonc");
-	public static readonly EmbeddedGeometry WireCube = new("WireCube.jsonc");
-	public static readonly GeneratedGeometry<WireCircle> WireCircle = new();
-}
+	private readonly DrawObject plane;
+	private readonly EmbeddedMaterial gridMaterial = new("Grid.hlsl", false);
 
-public static class Material
-{
-	public static readonly EmbeddedMaterial Blit = new("Blit_Copy.hlsl");
-	public static readonly EmbeddedMaterial BlitAlphaMask = new("Blit_AlphaMask.hlsl");
-	public static readonly EmbeddedMaterial GeometryVertexColor = new("Geometry_VertexColor.hlsl");
-	public static readonly EmbeddedMaterial Line = new("Line.hlsl", true);
+	public GridPass()
+	{
+		this.plane = new(this.gridMaterial, Geometry.Plane);
+		this.Add(this.plane);
+	}
+
+	public override void Render(RenderingService service, Device device, DeviceContext deviceContext)
+	{
+		this.plane.Transform = Transform.FromTranslation(
+			-603,
+			30,
+			-839);
+
+		base.Render(service, device, deviceContext);
+	}
 }

@@ -32,6 +32,7 @@ using XivDevice = FFXIVClientStructs.FFXIV.Client.Graphics.Kernel.Device;
 public class RenderingService : ServiceBase
 {
 	public readonly GenerateMaskDepthPass GenerateMaskDepth = new();
+	public readonly GridPass Grid = new();
 	public readonly GeometryPass Geometry = new();
 	public readonly DrawBufferPass DrawBuffer = new();
 
@@ -130,8 +131,16 @@ public class RenderingService : ServiceBase
 			this.deviceContext = new(this.device);
 
 		// Perform render passes.
-		// TODO: Array of render passes?
-		this.GenerateMaskDepth.Render(this, this.device, this.deviceContext);
-		this.Geometry.Render(this, this.device, this.deviceContext);
+		this.Render(this.GenerateMaskDepth);
+		this.Render(this.Grid);
+		this.Render(this.Geometry);
+	}
+
+	private void Render(RenderPassBase pass)
+	{
+		if (this.device == null || this.deviceContext == null)
+			return;
+
+		pass.Render(this, this.device, this.deviceContext);
 	}
 }

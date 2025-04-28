@@ -82,5 +82,6 @@ public class DrawState(int slot)
 		public Matrix4x4 ViewProjection;
 		public Matrix4x4 ObjectTransform;
 		public Color ObjectColor;
+		public Vector4 CameraPosition;
 	}
 }
