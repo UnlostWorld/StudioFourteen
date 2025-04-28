@@ -69,7 +69,6 @@ public abstract class IAsyncSelectionId : ISelectionId
 public partial class SelectionService : ServiceBase
 {
 	private readonly TransformHandleOverlayLayer poseGizmoOverlay = new();
-	private readonly SelectionGizmo selectionGizmo = new();
 	private SelectionBase? selection;
 	private SelectionBase? hover;
 	private string lastSelectionName = "Nothing";
@@ -99,19 +98,15 @@ public partial class SelectionService : ServiceBase
 			this.lastSelectionName = this.selection?.Name ?? "Nothing";
 			this.Services.History.RecordChange(this, $"Change");
 
-			this.selection?.Deactivate();
+			if (this.selection != null && this.selection.IsActive)
+				this.selection.Deactivate();
 
+			this.selection?.OnSelected(false);
 			this.selection = value;
+			this.selection?.OnSelected(true);
 
-			if (this.selection != null)
-			{
+			if (this.selection != null && !this.selection.IsActive)
 				this.selection.Activate();
-			}
-
-			if (this.selection is TransformSelectionBase transformSelection)
-			{
-				this.Gizmo = transformSelection.DefaultGizmo;
-			}
 
 			this.SelectionChanged?.Invoke(oldSelection, value);
 			this.RaisePropertyChanged();
@@ -127,9 +122,16 @@ public partial class SelectionService : ServiceBase
 				return;
 
 			SelectionBase? oldHover = this.hover;
-			oldHover?.Deactivate();
+			if (this.hover != null && this.hover != this.selection && this.hover.IsActive)
+				this.hover.Deactivate();
+
+			this.Hover?.OnHovered(false);
 			this.hover = value;
-			this.hover?.Activate();
+			this.Hover?.OnHovered(true);
+
+			if (this.hover != null && !this.hover.IsActive)
+				this.hover.Activate();
+
 			this.HoverChanged?.Invoke(oldHover, value);
 			this.RaisePropertyChanged();
 		}
@@ -191,7 +193,6 @@ public partial class SelectionService : ServiceBase
 		base.Attach();
 		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
 		this.poseGizmoOverlay.Enable();
-		this.selectionGizmo.Enable();
 	}
 
 	public override void Detach()
@@ -199,7 +200,6 @@ public partial class SelectionService : ServiceBase
 		base.Detach();
 		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
 		this.poseGizmoOverlay.Disable();
-		this.selectionGizmo.Disable();
 	}
 
 	protected void OnGameTick()
@@ -208,25 +208,27 @@ public partial class SelectionService : ServiceBase
 
 		if (!this.Services.Windows.IsCursorOverStudio)
 		{
-			SelectionBase? newHover = null;
 			HitInfo? hit = RayCast.CastFromCursor();
 			if (hit != null)
 			{
-				if (hit.ObjectTableIndex != -1)
+				if (this.Hover?.IsHit(hit) != true)
 				{
-					if (this.Hover is ObjectTableSelection currentHover
-						&& currentHover.ObjectTableId != hit.ObjectTableIndex)
+					this.Hover = null;
+
+					if (this.Current?.IsHit(hit) == true)
 					{
-						newHover = this.Hover;
+						this.Hover = this.Current;
 					}
 					else
 					{
-						newHover = new ObjectTableSelection(hit.ObjectTableIndex);
+						// TODO: somewhere else?
+						if (hit.ObjectTableIndex != -1)
+						{
+							this.Hover = new ObjectTableSelection(hit.ObjectTableIndex);
+						}
 					}
 				}
 			}
-
-			this.Hover = newHover;
 		}
 
 		if (this.Hover != this.Current)

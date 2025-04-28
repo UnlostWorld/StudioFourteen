@@ -17,6 +17,8 @@ namespace StudioFourteen.Rendering;
 
 using System.Collections.Generic;
 using System.Numerics;
+using StudioFourteen.Rendering.Geometries;
+using StudioFourteen.Rendering.Materials;
 
 public class DrawGroup : DrawBase
 {
@@ -25,6 +27,11 @@ public class DrawGroup : DrawBase
 	public void Add(DrawBase draw)
 	{
 		this.Children.Add(draw);
+	}
+
+	public void Add(MaterialBase material, GeometryBase geometry)
+	{
+		this.Children.Add(new DrawObject(material, geometry));
 	}
 
 	public void Remove(DrawBase draw)

@@ -13,31 +13,42 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Gizmos;
+namespace StudioFourteen.Rendering.Gizmos.Handles;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using StudioFourteen.Selection;
-using StudioFourteen.Services;
 
-public class SelectionGizmo : GizmoBase
+public class HandleBase : GizmoBase
 {
 	private readonly DrawObject circle = new(Material.Line, Geometry.WireCircle);
-	////private readonly DrawObject line = new(Material.Line, Geometry.WireCircle);
 
-	public SelectionGizmo()
+	public HandleBase()
 	{
 		this.Add(this.circle);
 	}
 
+	// TODO: a handle service for doing the hit test dispatch, instead of cramming it
+	// into the render pass?
+
+	/*
+	// Test
+		Vector2? mouse = this.Services.Input.Mouse?.GetPosition();
+		if (mouse != null)
+		{
+			HitTestResult result = new();
+			this.Geometry.HitTest(mouse.Value, ref result);
+
+			this.Log.Information($">> {result.DrawObject} {result.Distance}");
+		}
+		*/
+
 	public unsafe override void Draw(Transform transform, DrawState drawState)
 	{
-		SelectionBase? currentHover = this.Services.Selection.Hover;
-		if (currentHover == null)
-		{
+		SelectionBase? currentSelection = this.Services.Selection.Current;
+		if (currentSelection == null)
 			return;
-		}
 
-		if (currentHover is ObjectTableSelection objectSelection)
+		if (currentSelection is ObjectTableSelection objectSelection)
 		{
 			GameObject* gameObject = this.Services.GameObjects.Get(objectSelection.ObjectTableId);
 			if (gameObject == null || gameObject->DrawObject == null)
@@ -45,15 +56,6 @@ public class SelectionGizmo : GizmoBase
 
 			this.Transform = Transform.FromScale(gameObject->HitboxRadius / 2, 1, gameObject->HitboxRadius / 2);
 			this.Transform *= Transform.FromTRS(gameObject->DrawObject->Position, gameObject->DrawObject->Rotation, gameObject->DrawObject->Scale);
-		}
-		else if (currentHover is BoneSelection boneSelection)
-		{
-			this.Transform = Transform.FromScale(0.15f, 1, 0.15f);
-			this.Transform *= boneSelection.WorldTransform;
-		}
-		else if (currentHover is TransformSelectionBase transformSelection)
-		{
-			this.Transform = transformSelection.WorldTransform;
 		}
 
 		base.Draw(transform, drawState);

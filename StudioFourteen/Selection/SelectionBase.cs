@@ -15,23 +15,30 @@
 
 namespace StudioFourteen.Selection;
 
-using Dalamud.Plugin.Services;
 using FontAwesome.Sharp;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.History;
 using StudioFourteen.Mvm;
 using StudioFourteen.Posing;
+using StudioFourteen.Utilities;
 using System;
 
 public abstract partial class SelectionBase : ViewModel, IHistoryTarget
 {
-	[Notify] private string name = string.Empty;
-	[Notify] private string? subtitle;
-	[Notify] private string? description;
-	[Notify] private bool isReady = false;
+	private SelectionGizmoBase? gizmo;
+
+	[Notify(Setter.Protected)] private string name = string.Empty;
+	[Notify(Setter.Protected)] private string? subtitle;
+	[Notify(Setter.Protected)] private string? description;
+	[Notify(Setter.Protected)] private bool isReady = false;
+	[Notify(Setter.Private)] private bool isHovered;
+	[Notify(Setter.Private)] private bool isSelected;
+
+	public bool IsActive { get; private set; }
 
 	public abstract IconChar Icon { get; }
 	public abstract string TypeName { get; }
+	public virtual SelectionGizmoBase? Gizmo => null;
 
 	public virtual bool CanMirror => false;
 	[History] public virtual MirrorModes MirrorMode { get; set; }
@@ -45,10 +52,26 @@ public abstract partial class SelectionBase : ViewModel, IHistoryTarget
 
 	public virtual void Activate()
 	{
+		this.IsActive = true;
+		this.gizmo = this.Gizmo;
+		this.gizmo?.SetSelection(this);
+		this.gizmo?.Enable();
 	}
 
 	public virtual void Deactivate()
 	{
+		this.IsActive = false;
+		this.gizmo?.Disable();
+	}
+
+	public virtual void OnSelected(bool value)
+	{
+		this.IsSelected = value;
+	}
+
+	public virtual void OnHovered(bool value)
+	{
+		this.IsHovered = value;
 	}
 
 	public virtual void OnGameTick()
@@ -68,6 +91,8 @@ public abstract partial class SelectionBase : ViewModel, IHistoryTarget
 	public virtual void FinalizeHistoryOperation(ref Operation operation)
 	{
 	}
+
+	public virtual bool IsHit(HitInfo hitInfo) => false;
 
 	public class SelectionObjectOperation : Operation
 	{

@@ -20,7 +20,11 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FontAwesome.Sharp;
 using StudioFourteen.Plugin;
+using StudioFourteen.Rendering;
+using StudioFourteen.Rendering.Gizmos;
+using StudioFourteen.Services;
 using StudioFourteen.Structs.Extensions;
+using StudioFourteen.Utilities;
 using System;
 using System.Numerics;
 
@@ -54,11 +58,36 @@ public class ObjectTableSelection : TransformSelectionBase
 
 	public override IconChar Icon => IconChar.User;
 	public override string TypeName => Resources.Find("LOC_Selection_ObjectTable", "Object Table");
-	public override bool CanReset => true;
+	public override bool CanReset => false;
+	public override SelectionGizmoBase? Gizmo => new ObjectTableSelectionGizmo();
 
 	public override double TranslationChange => 0.1f;
 
 	public override ISelectionId Id => new ObjectTableSelectionId(this.ObjectTableId);
+
+	public override bool IsHit(HitInfo hitInfo)
+	{
+		return hitInfo.ObjectTableIndex == this.ObjectTableId;
+	}
+
+	public override void OnHovered(bool value)
+	{
+		base.OnHovered(value);
+
+		bool highlight = value && !this.IsSelected;
+
+		this.Services.Tick.Dispatch(TickService.Channels.GameTick, () =>
+		{
+			unsafe
+			{
+				GameObject* gameObject = this.Services.GameObjects.Get(this.ObjectTableId);
+				if (gameObject == null || gameObject->DrawObject == null)
+					return;
+
+				gameObject->Highlight(highlight ? ObjectHighlightColor.Magenta : ObjectHighlightColor.None);
+			}
+		});
+	}
 
 	public unsafe override void OnGameTick()
 	{
@@ -139,5 +168,35 @@ public class ObjectTableSelection : TransformSelectionBase
 	protected override void OnLockTransformChanged(bool oldValue, bool newValue)
 	{
 		this.Services.Pose.SetAllBoneReferencesLocked(this.ObjectTableId, newValue);
+	}
+}
+
+public class ObjectTableSelectionGizmo : SelectionGizmo<ObjectTableSelection>
+{
+	private readonly DrawObject circle = new(Material.Line, Geometry.WireCircle);
+
+	public ObjectTableSelectionGizmo()
+	{
+		this.Add(this.circle);
+	}
+
+	protected unsafe override bool Draw(ObjectTableSelection selection)
+	{
+		GameObject* gameObject = this.Services.GameObjects.Get(selection.ObjectTableId);
+		if (gameObject == null || gameObject->DrawObject == null)
+			return false;
+
+		float alpha = 0.0f;
+		if (selection.IsSelected)
+			alpha += 0.75f;
+		if (selection.IsHovered)
+			alpha += 0.25f;
+
+		this.circle.Color = new Color(1, 1, 1, alpha);
+
+		this.Transform = Transform.FromScale(gameObject->HitboxRadius / 2, 1, gameObject->HitboxRadius / 2);
+		this.Transform *= Transform.FromTRS(gameObject->DrawObject->Position, gameObject->DrawObject->Rotation, gameObject->DrawObject->Scale);
+
+		return true;
 	}
 }
