@@ -34,7 +34,7 @@ public class GridPass : GeometryPass
 	{
 		this.plane.Transform = Transform.FromTranslation(
 			-603,
-			30,
+			30.05f,
 			-839);
 
 		base.Render(service, device, deviceContext);
