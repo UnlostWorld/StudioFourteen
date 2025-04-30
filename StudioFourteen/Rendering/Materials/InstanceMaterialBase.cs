@@ -13,32 +13,24 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Passes;
+namespace StudioFourteen.Rendering.Materials;
 
-using System;
+using System.Runtime.CompilerServices;
 using SharpDX.Direct3D11;
-using Buffer = SharpDX.Direct3D11.Buffer;
 
-public abstract class RenderPassBase : IDisposable
-{
-	public abstract void Render(RenderingService service, Device device, DeviceContext deviceContext);
-
-	public virtual void Dispose()
-	{
-	}
-}
-
-public abstract class InstanceRenderPassBase<T> : RenderPassBase
+public abstract class InstanceMaterialBase<T> : MaterialBase
 	where T : unmanaged
 {
-	public T PassData;
-	private Buffer? constantsBuffer;
+	private readonly ConditionalWeakTable<DrawObject, Instance> drawObjectDataStore = new();
+	private Buffer? dataBuffer;
 
-	public override void Render(RenderingService service, Device device, DeviceContext deviceContext)
+	public override void Bind(DrawObject obj, Device device, DeviceContext context)
 	{
-		if (this.constantsBuffer == null)
+		base.Bind(obj, device, context);
+
+		if (this.dataBuffer == null)
 		{
-			this.constantsBuffer = new(
+			this.dataBuffer = new(
 				device,
 				SharpDX.Utilities.SizeOf<T>(),
 				ResourceUsage.Default,
@@ -48,17 +40,34 @@ public abstract class InstanceRenderPassBase<T> : RenderPassBase
 				0);
 		}
 
-		deviceContext.VertexShader.SetConstantBuffer(Registers.PerPassData, this.constantsBuffer);
-		deviceContext.GeometryShader.SetConstantBuffer(Registers.PerPassData, this.constantsBuffer);
-		deviceContext.PixelShader.SetConstantBuffer(Registers.PerPassData, this.constantsBuffer);
+		context.VertexShader.SetConstantBuffer(Registers.PerMaterialData, this.dataBuffer);
+		context.GeometryShader.SetConstantBuffer(Registers.PerMaterialData, this.dataBuffer);
+		context.PixelShader.SetConstantBuffer(Registers.PerMaterialData, this.dataBuffer);
 
-		deviceContext.UpdateSubresource(ref this.PassData, this.constantsBuffer);
+		T data = this.GetInstanceData(obj);
+
+		// TODO: Use a buffer array and an index instead of updating every draw call?
+		context.UpdateSubresource(ref data, this.dataBuffer);
 	}
 
-	public override void Dispose()
+	public ref T GetInstanceData(DrawObject obj)
 	{
-		base.Dispose();
-		this.constantsBuffer?.Dispose();
-		this.constantsBuffer = null;
+		if (!this.drawObjectDataStore.TryGetValue(obj, out var instance))
+		{
+			instance = new();
+			this.SetDefault(ref instance.Data);
+			this.drawObjectDataStore.Add(obj, instance);
+		}
+
+		return ref instance.Data;
+	}
+
+	protected virtual void SetDefault(ref T instance)
+	{
+	}
+
+	private class Instance
+	{
+		public T Data;
 	}
 }

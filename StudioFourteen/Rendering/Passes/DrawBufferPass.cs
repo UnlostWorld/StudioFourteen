@@ -20,11 +20,11 @@ using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 
 using Device = SharpDX.Direct3D11.Device;
+using Format = SharpDX.DXGI.Format;
 
 public class DrawBufferPass : RenderPassBase
 {
 	private readonly DrawObject quad = new(Material.Blit, Geometry.Quad);
-	private readonly DrawState state = new(0);
 
 	private Texture2D? buffer;
 	private Texture2D? bufferCopyTexture;
@@ -99,8 +99,7 @@ public class DrawBufferPass : RenderPassBase
 		deviceContext.OutputMerger.SetTargets(this.backBufferTargetView);
 		deviceContext.Rasterizer.SetViewport(0, 0, service.Width, service.Height);
 
-		this.state.Bind(device, deviceContext);
-		this.quad.Draw(Transform.Identity, this.state);
+		this.quad.Draw(Transform.Identity, device, deviceContext);
 
 		using CommandList cmds = deviceContext.FinishCommandList(false);
 		device.ImmediateContext.ExecuteCommandList(cmds, true);

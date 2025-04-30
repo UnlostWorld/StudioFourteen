@@ -17,8 +17,11 @@ namespace StudioFourteen.Rendering;
 
 using System;
 using System.Numerics;
+using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
+using SharpDX.Direct3D11;
 using StudioFourteen.Rendering.Geometries;
 using StudioFourteen.Rendering.Materials;
+using Device = SharpDX.Direct3D11.Device;
 
 public class DrawObject : DrawBase
 {
@@ -40,7 +43,7 @@ public class DrawObject : DrawBase
 		this.Geometry = geometry;
 	}
 
-	public override void Draw(Transform transform, DrawState drawState)
+	public override void Draw(Transform transform, Device device, DeviceContext deviceContext)
 	{
 		if (this.Material == null || this.materialException != null)
 			return;
@@ -48,14 +51,11 @@ public class DrawObject : DrawBase
 		if (this.Geometry == null || this.geometryException != null)
 			return;
 
-		if (drawState.Device == null)
-			return;
-
 		if (!this.Material.IsLoaded)
 		{
 			try
 			{
-				this.Material.Load(drawState.Device);
+				this.Material.Load(device);
 			}
 			catch (Exception ex)
 			{
@@ -69,7 +69,7 @@ public class DrawObject : DrawBase
 		{
 			try
 			{
-				this.Geometry.Load(drawState.Device);
+				this.Geometry.Load(device);
 			}
 			catch (Exception ex)
 			{
@@ -80,7 +80,15 @@ public class DrawObject : DrawBase
 		}
 
 		Transform thisTransform = transform * this.Transform;
-		drawState.Draw(this.Color, thisTransform, this.Material, this.Geometry);
+
+		this.Material.Bind(this, device, deviceContext);
+		this.Geometry.Bind(this, device, deviceContext);
+
+		////this.Data.ObjectTransform = Matrix4x4.Transpose(thisTransform.ToMatrix());
+		////this.Data.ObjectColor = this.Color;
+		////this.DeviceContext.UpdateSubresource(ref this.Data, this.constantsBuffer);
+
+		this.Geometry.Draw(deviceContext);
 	}
 
 	public override void HitTest(Vector2 screenPosition, Transform transform, Transform viewProjection, ref HitTestResult result)

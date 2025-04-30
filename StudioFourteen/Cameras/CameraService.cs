@@ -100,10 +100,11 @@ public class CameraService : ServiceBase
 	public Matrix4x4 CurrentView { get; private set; }
 	public Matrix4x4 CurrentProjection { get; private set; }
 	public Matrix4x4 CurrentViewProjection { get; private set; }
+	public Vector3 CurrentPosition { get; private set; }
 
 	public override Task Start()
 	{
-		this.Cameras.Add(new OrbitTargetCamera());
+		this.Cameras.Add(new OrbitCamera());
 
 		this.Services.GroupPose.StateChanged += this.OnGroupPoseStateChanged;
 		this.OnGroupPoseStateChanged(this.Services.GroupPose.IsGroupPosing);
@@ -295,6 +296,8 @@ public class CameraService : ServiceBase
 
 				Vector3 forward = Vector3.Transform(new(1, 0, 0), this.state.Rotation);
 				Vector3 up = Vector3.Transform(new(0, 1, 0), this.state.Rotation);
+
+				this.CurrentPosition = this.state.Position;
 
 				Matrix4x4 newMatrix = Matrix4x4.CreateLookTo(this.state.Position, forward, up);
 

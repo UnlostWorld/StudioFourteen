@@ -17,6 +17,7 @@ namespace StudioFourteen.Rendering;
 
 using System.Collections.Generic;
 using System.Numerics;
+using SharpDX.Direct3D11;
 using StudioFourteen.Rendering.Geometries;
 using StudioFourteen.Rendering.Materials;
 
@@ -39,13 +40,13 @@ public class DrawGroup : DrawBase
 		this.Children.Remove(draw);
 	}
 
-	public override void Draw(Transform transform, DrawState drawState)
+	public override void Draw(Transform transform, Device device, DeviceContext deviceContext)
 	{
 		Transform thisTransform = transform * this.Transform;
 
 		foreach(DrawBase child in this.Children)
 		{
-			child.Draw(thisTransform, drawState);
+			child.Draw(thisTransform, device, deviceContext);
 		}
 	}
 

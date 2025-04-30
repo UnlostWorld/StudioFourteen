@@ -17,15 +17,15 @@ namespace StudioFourteen.Rendering.Passes;
 
 using System.Collections.Generic;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 
 using Device = SharpDX.Direct3D11.Device;
 
-public class GeometryPass : RenderPassBase
+public class GeometryPass : InstanceRenderPassBase<GeometryPass.GeometryPassData>
 {
 	private readonly List<DrawBase> renderables = new();
-	private readonly DrawState drawState = new(0);
 
 	private RenderTargetView? backBufferTargetView;
 	private BlendState? blend;
@@ -58,6 +58,11 @@ public class GeometryPass : RenderPassBase
 
 	public override void Render(RenderingService service, Device device, DeviceContext deviceContext)
 	{
+		this.PassData.ViewProjection = Matrix4x4.Transpose(service.Services.Camera.CurrentViewProjection);
+		this.PassData.CameraPosition = new Vector4(service.Services.Camera.CurrentPosition, 1);
+
+		base.Render(service, device, deviceContext);
+
 		if (this.backBufferTargetView == null)
 		{
 			RenderTargetViewDescription desc = default;
@@ -83,11 +88,6 @@ public class GeometryPass : RenderPassBase
 			this.blend = new(device, blendDesc);
 		}
 
-		this.drawState.Data.ClippingPlanes.X = service.Services.Camera.NearPlane;
-		this.drawState.Data.ClippingPlanes.Y = service.Services.Camera.FarPlane;
-		this.drawState.Data.ViewProjection = Matrix4x4.Transpose(service.Services.Camera.CurrentViewProjection);
-		this.drawState.Bind(device, deviceContext);
-
 		deviceContext.Rasterizer.SetViewport(0, 0, service.Width, service.Height);
 		deviceContext.OutputMerger.SetBlendState(this.blend, null, -1);
 		deviceContext.OutputMerger.SetTargets(this.backBufferTargetView);
@@ -96,7 +96,7 @@ public class GeometryPass : RenderPassBase
 		{
 			foreach(DrawBase renderable in this.renderables)
 			{
-				renderable.Draw(Transform.Identity, this.drawState);
+				renderable.Draw(Transform.Identity, device, deviceContext);
 			}
 		}
 
@@ -110,13 +110,18 @@ public class GeometryPass : RenderPassBase
 		this.backBufferTargetView?.Dispose();
 		this.backBufferTargetView = null;
 
-		this.drawState.Dispose();
-
 		foreach(DrawBase renderable in this.renderables)
 		{
 			renderable.Dispose();
 		}
 
 		base.Dispose();
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	public struct GeometryPassData
+	{
+		public Matrix4x4 ViewProjection;
+		public Vector4 CameraPosition;
 	}
 }

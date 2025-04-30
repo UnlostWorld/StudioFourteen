@@ -21,18 +21,18 @@ using StudioFourteen.Rendering.Meshes;
 
 public static class Geometry
 {
-	public static readonly EmbeddedGeometry Cube = new("Cube.jsonc");
-	public static readonly EmbeddedGeometry FlatCube = new("FlatCube.jsonc");
-	public static readonly EmbeddedGeometry Quad = new("Quad.jsonc");
-	public static readonly EmbeddedGeometry Plane = new("Plane.jsonc");
-	public static readonly EmbeddedGeometry WireCube = new("WireCube.jsonc");
-	public static readonly GeneratedGeometry<WireCircle> WireCircle = new();
+	public static readonly GeometryBase Cube = new EmbeddedGeometry("Cube.jsonc");
+	public static readonly GeometryBase FlatCube = new EmbeddedGeometry("FlatCube.jsonc");
+	public static readonly GeometryBase Quad = new EmbeddedGeometry("Quad.jsonc");
+	public static readonly GeometryBase Plane = new EmbeddedGeometry("Plane.jsonc");
+	public static readonly GeometryBase WireCube = new EmbeddedGeometry("WireCube.jsonc");
+	public static readonly GeometryBase WireCircle = new GeneratedGeometry<WireCircle>();
 }
 
 public static class Material
 {
-	public static readonly EmbeddedMaterial Blit = new("Blit_Copy.hlsl");
-	public static readonly EmbeddedMaterial BlitAlphaMask = new("Blit_AlphaMask.hlsl");
-	public static readonly EmbeddedMaterial GeometryVertexColor = new("Geometry_VertexColor.hlsl");
-	public static readonly EmbeddedMaterial Line = new("Line.hlsl", true);
+	public static readonly BlitMaterial Blit = new();
+	public static readonly BlitAlphaMaskMaterial BlitAlphaMask = new();
+	public static readonly VertexColor GeometryVertexColor = new();
+	public static readonly LineMaterial Line = new();
 }

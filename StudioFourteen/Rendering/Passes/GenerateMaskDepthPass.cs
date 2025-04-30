@@ -25,7 +25,6 @@ using Material = StudioFourteen.Rendering.Material;
 public class GenerateMaskDepthPass : RenderPassBase
 {
 	private readonly DrawObject quad = new(Material.BlitAlphaMask, Geometry.Quad);
-	private readonly DrawState state = new(0);
 
 	private Texture2D? backBufferCopyTexture;
 	private ShaderResourceView? backBufferResourceView;
@@ -100,8 +99,7 @@ public class GenerateMaskDepthPass : RenderPassBase
 
 		deviceContext.Rasterizer.SetViewport(0, 0, service.Width, service.Height);
 
-		this.state.Bind(device, deviceContext);
-		this.quad.Draw(Transform.Identity, this.state);
+		this.quad.Draw(Transform.Identity, device, deviceContext);
 
 		using CommandList cmds = deviceContext.FinishCommandList(false);
 		device.ImmediateContext.ExecuteCommandList(cmds, true);

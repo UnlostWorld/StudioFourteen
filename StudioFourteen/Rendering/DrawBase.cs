@@ -17,12 +17,13 @@ namespace StudioFourteen.Rendering;
 
 using System;
 using System.Numerics;
+using SharpDX.Direct3D11;
 
 public abstract class DrawBase : IDisposable
 {
 	public Transform Transform = Transform.Identity;
 
-	public abstract void Draw(Transform transform, DrawState drawState);
+	public abstract void Draw(Transform transform, Device device, DeviceContext deviceContext);
 	public abstract void Dispose();
 
 	public abstract void HitTest(

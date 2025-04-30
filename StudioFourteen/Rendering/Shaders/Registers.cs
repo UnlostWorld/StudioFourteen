@@ -13,21 +13,11 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Geometries;
+namespace StudioFourteen.Rendering;
 
-using System;
-using System.Numerics;
-using SharpDX.Direct3D11;
-
-public abstract class GeometryBase : IDisposable
+public static class Registers
 {
-	public abstract bool IsLoaded { get; }
-
-	public abstract void Load(Device device);
-	public abstract void Bind(DrawObject obj, Device device, DeviceContext deviceContext);
-	public abstract void Draw(DeviceContext context);
-
-	public abstract void Dispose();
-
-	public abstract void HitTest(Vector2 screenPosition, Transform transform, Transform viewProjection, ref HitTestResult result);
+	public const int PerPassData = 0;
+	public const int PerObjectData = 1;
+	public const int PerMaterialData = 2;
 }

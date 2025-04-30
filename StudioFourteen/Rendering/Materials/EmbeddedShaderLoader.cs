@@ -19,32 +19,55 @@ using System;
 using System.IO;
 using System.Reflection;
 using System.Text;
-using SharpDX.Direct3D11;
+using SharpDX;
+using SharpDX.D3DCompiler;
 
-public class EmbeddedMaterial(string file, bool hasGeometry = false) : MaterialBase
+public abstract class ShaderLoader
 {
-	private string? combinedShaderHlsl;
+	public ShaderBytecode? Bytecode { get; private set; }
+	public Result ResultCode { get; private set; }
+	public bool HasErrors => this.ResultCode.Failure;
+	public string? Message { get; private set; }
 
-	public override string VertEntryPoint => "vert";
-	public override string PixelEntryPoint => "pixel";
-	public override string GeometryEntryPoint => "geometry";
+	public void Load()
+	{
+		CompilationResult result = this.LoadShader();
+		this.Bytecode = result.Bytecode;
+		this.ResultCode = result.ResultCode;
+		this.Message = result.Message;
+	}
 
-	public override void Load(Device device)
+	protected abstract CompilationResult LoadShader();
+}
+
+public abstract class HlslShaderLoader(string profile, string entryPoint = "Main", ShaderFlags flags = ShaderFlags.None)
+	: ShaderLoader
+{
+	protected sealed override CompilationResult LoadShader()
+	{
+		string hlsl = this.GetHlsl();
+
+		#if DEBUG
+		{
+			flags |= ShaderFlags.Debug;
+		}
+		#endif
+
+		return ShaderBytecode.Compile(hlsl, entryPoint, profile, flags);
+	}
+
+	protected abstract string GetHlsl();
+}
+
+public class EmbeddedShaderLoader(string file, string profile, string entryPoint = "Main", ShaderFlags flags = ShaderFlags.None)
+	: HlslShaderLoader(profile, entryPoint, flags)
+{
+	protected override string GetHlsl()
 	{
 		StringBuilder hlslBuilder = new();
 		GetShader(file, ref hlslBuilder, 0);
-		this.combinedShaderHlsl = hlslBuilder.ToString();
-
-		base.Load(device);
-
-		this.combinedShaderHlsl = null;
+		return hlslBuilder.ToString();
 	}
-
-	public override string ToString() => $"Material file {file}";
-
-	protected override string GetVertexShader() => this.combinedShaderHlsl ?? string.Empty;
-	protected override string GetPixelShader() => this.combinedShaderHlsl ?? string.Empty;
-	protected override string? GetGeometryShader() => hasGeometry ? this.combinedShaderHlsl : null;
 
 	private static void GetShader(string file, ref StringBuilder builder, int depth)
 	{
@@ -64,16 +87,10 @@ public class EmbeddedMaterial(string file, bool hasGeometry = false) : MaterialB
 		while(!reader.EndOfStream)
 		{
 			string? line = reader.ReadLine();
-
-			// skip empty lines
-			if (string.IsNullOrEmpty(line))
+			if (line == null)
 				continue;
 
 			line = line.Trim();
-
-			// skip comments
-			if (line.StartsWith("//"))
-				continue;
 
 			// perform includes
 			if (line.StartsWith("#include"))

@@ -13,21 +13,13 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Geometries;
+namespace StudioFourteen.Rendering.Materials;
 
-using System;
-using System.Numerics;
-using SharpDX.Direct3D11;
-
-public abstract class GeometryBase : IDisposable
+public class BlitMaterial : MaterialBase
 {
-	public abstract bool IsLoaded { get; }
+	protected override ShaderLoader VertexShader =>
+		new EmbeddedShaderLoader("Blit_copy.hlsl", "vs_4_0", "vert");
 
-	public abstract void Load(Device device);
-	public abstract void Bind(DrawObject obj, Device device, DeviceContext deviceContext);
-	public abstract void Draw(DeviceContext context);
-
-	public abstract void Dispose();
-
-	public abstract void HitTest(Vector2 screenPosition, Transform transform, Transform viewProjection, ref HitTestResult result);
+	protected override ShaderLoader PixelShader =>
+		new EmbeddedShaderLoader("Blit_copy.hlsl", "ps_4_0", "pixel");
 }

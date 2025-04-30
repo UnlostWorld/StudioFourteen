@@ -47,14 +47,14 @@ public abstract class MeshGeometryBase : GeometryBase
 		}
 	}
 
-	public override void Bind(DeviceContext context)
+	public override void Bind(DrawObject obj, Device device, DeviceContext deviceContext)
 	{
 		if (this.mesh == null)
 			return;
 
-		context.InputAssembler.PrimitiveTopology = this.mesh.Topology;
-		context.InputAssembler.SetVertexBuffers(0, this.vertexBufferBinding);
-		context.InputAssembler.SetIndexBuffer(this.indices, SharpDX.DXGI.Format.R16_UInt, 0);
+		deviceContext.InputAssembler.PrimitiveTopology = this.mesh.Topology;
+		deviceContext.InputAssembler.SetVertexBuffers(0, this.vertexBufferBinding);
+		deviceContext.InputAssembler.SetIndexBuffer(this.indices, SharpDX.DXGI.Format.R16_UInt, 0);
 	}
 
 	public override void Draw(DeviceContext context)

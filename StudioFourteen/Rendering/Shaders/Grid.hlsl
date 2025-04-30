@@ -15,16 +15,31 @@
 
 // https://dev.to/javiersalcedopuyo/simple-infinite-grid-shader-5fah
 
-#include "Common.hlsl"
-
 #define mod(x,y) ((x) - (y) * floor((x)/(y)))
 
-struct Constants
+cbuffer GeometryPassData : register(b0)
 {
-	float4 ClippingPlanes;
     float4x4 ViewProjection;
-	float4x4 ObjectTransform;
-	float4 ObjectColor;
+	float4 CameraPosition;
+};
+
+cbuffer GeometryInstanceData : register(b1)
+{
+	float4 Transform;
+};
+
+cbuffer MaterialInstanceData : register(b2)
+{
+	float4 Color;
+	float GridSize;
+	float LineThickness;
+};
+
+struct Vertex
+{
+	float4 Position:POSITION;
+	float4 Color:COLOR;
+	float2 TexCoord:TEXCOORD;
 };
 
 struct Fragment
@@ -32,19 +47,11 @@ struct Fragment
     float4 Position:SV_POSITION;
     float4 Color:COLOR;
 	float2 TexCoord:TEXCOORD;
-	float4 ScreenPosition:SCREENPOS;
+	float4 Position2:POSITION;
+	float4 WorldPosition:WORLDPOS;
 };
 
-static const float grid_size = 100.0f;
-static const float cell_size = 1.0f;
-
-static const float cell_line_thickness = 0.0002f;
-static const float half_cell_size = cell_size * 0.5f;
-static const float subcell_size = 0.1f;
-static const float half_subcell_size = subcell_size * 0.5f;
-static const float subcell_line_thickness = 0.0001f;
-
-Constants constants : register(c0);
+static const float quadScale = 100.0f;
 
 Texture2D mask_texture : register(t0);
 SamplerState mask_sampler : register(s0);
@@ -54,13 +61,13 @@ SamplerState depth_sampler : register(s1);
 
 float GetDepth(Fragment pixel)
 {
-	float3 pos = pixel.ScreenPosition.xyz / pixel.ScreenPosition.w;
+	float3 pos = pixel.Position2.xyz / pixel.Position2.w;
 	return pos.z;
 }
 
 float2 GetScreenPosition(Fragment pixel)
 {
-	float3 pos = pixel.ScreenPosition.xyz / pixel.ScreenPosition.w;
+	float3 pos = pixel.Position2.xyz / pixel.Position2.w;
 	return 0.5f * float2(pos.x, -pos.y) + 0.5f;
 }
 
@@ -79,40 +86,44 @@ float GetClippingAlpha(Fragment pixel, float depthClipAlpha = 0)
 
 Fragment vert(in Vertex vertex)
 {
-	float4 position = vertex.Position;
-	position.xyz *= grid_size;
-	position = mul(position, constants.ObjectTransform);
-	position = mul(position, constants.ViewProjection);
-
 	Fragment result;
-	result.Position = position;
+
+	float4 position = vertex.Position;
+	position.xyz *= quadScale;
+	position.xz += CameraPosition.xz;
+	///position = mul(position, Transform);
+	result.WorldPosition = position;
+
+	result.Position = mul(position, ViewProjection);
+	result.Position2 = result.Position;
 	result.Color = vertex.Color;
 	result.TexCoord = vertex.TexCoord;
-	result.ScreenPosition = position;
 	return result;
 }
 
 float4 pixel(Fragment frag) : SV_TARGET
 {
-	float2 cell_coords = mod((frag.TexCoord * (grid_size / 5)) + half_cell_size, cell_size);
-	float2 distance_to_cell = abs(cell_coords - half_cell_size);
+	float largeGridSize = GridSize * 10;
+	float2 cell_coords = mod((frag.WorldPosition.xz * 1) + (largeGridSize * 0.5f), largeGridSize / 2);
+	float2 distance_to_cell = abs(cell_coords - (largeGridSize * 0.5f));
 
-	float2 subcell_coords = mod((frag.TexCoord * (grid_size / 5)) + half_subcell_size, subcell_size);
-	float2 distance_to_subcell = abs(subcell_coords - half_subcell_size);
+	float2 subcell_coords = mod((frag.WorldPosition.xz * 1) + (GridSize * 0.5f), GridSize / 2);
+	float2 distance_to_subcell = abs(subcell_coords - (GridSize * 0.5f));
 
-	float r = smoothstep(0, grid_size, frag.Position.w);
+	// Fade out towards the ends
+	float r = smoothstep(0, quadScale, frag.Position.w);
 	r = 1 - r;
 
-	float4 color = constants.ObjectColor;
+	float4 color = Color;
 	color.a = 0;
-	if (any(distance_to_subcell < subcell_line_thickness * frag.Position.w))
+	if (any(distance_to_subcell < LineThickness * frag.Position.w))
 	{
-		color.a = 0.2f;
+		color.a = 0.25;
 	}
 
-	if(any(distance_to_cell < cell_line_thickness * frag.Position.w))
+	if(any(distance_to_cell < LineThickness * frag.Position.w))
 	{
-		color.a = 0.5f;
+		color.a = 1;
 	}
 
 	color.a *= GetClippingAlpha(frag, 0.0f);

@@ -14,7 +14,8 @@
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
 namespace StudioFourteen.Selection;
-using StudioFourteen.Rendering;
+
+using SharpDX.Direct3D11;
 
 public abstract class SelectionGizmo<T> : SelectionGizmoBase
 	where T : SelectionBase
@@ -29,7 +30,7 @@ public abstract class SelectionGizmo<T> : SelectionGizmoBase
 		this.selection = tSelection;
 	}
 
-	public sealed override void Draw(Transform transform, DrawState drawState)
+	public override void Draw(Transform transform, Device device, DeviceContext deviceContext)
 	{
 		if (this.selection == null)
 			return;
@@ -37,7 +38,7 @@ public abstract class SelectionGizmo<T> : SelectionGizmoBase
 		if (!this.Draw(this.selection))
 			return;
 
-		base.Draw(transform, drawState);
+		base.Draw(transform, device, deviceContext);
 	}
 
 	protected abstract bool Draw(T selection);

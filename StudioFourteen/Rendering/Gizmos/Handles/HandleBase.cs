@@ -16,6 +16,7 @@
 namespace StudioFourteen.Rendering.Gizmos.Handles;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
+using SharpDX.Direct3D11;
 using StudioFourteen.Selection;
 
 public class HandleBase : GizmoBase
@@ -41,23 +42,4 @@ public class HandleBase : GizmoBase
 			this.Log.Information($">> {result.DrawObject} {result.Distance}");
 		}
 		*/
-
-	public unsafe override void Draw(Transform transform, DrawState drawState)
-	{
-		SelectionBase? currentSelection = this.Services.Selection.Current;
-		if (currentSelection == null)
-			return;
-
-		if (currentSelection is ObjectTableSelection objectSelection)
-		{
-			GameObject* gameObject = this.Services.GameObjects.Get(objectSelection.ObjectTableId);
-			if (gameObject == null || gameObject->DrawObject == null)
-				return;
-
-			this.Transform = Transform.FromScale(gameObject->HitboxRadius / 2, 1, gameObject->HitboxRadius / 2);
-			this.Transform *= Transform.FromTRS(gameObject->DrawObject->Position, gameObject->DrawObject->Rotation, gameObject->DrawObject->Scale);
-		}
-
-		base.Draw(transform, drawState);
-	}
 }

@@ -13,21 +13,34 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Geometries;
+namespace StudioFourteen.Rendering.Materials;
 
-using System;
-using System.Numerics;
-using SharpDX.Direct3D11;
+using System.Runtime.InteropServices;
 
-public abstract class GeometryBase : IDisposable
+public class GridMaterial : InstanceMaterialBase<GridMaterial.GridInstanceData>
 {
-	public abstract bool IsLoaded { get; }
+	protected override ShaderLoader VertexShader =>
+		new EmbeddedShaderLoader("Grid.hlsl", "vs_4_0", "vert");
 
-	public abstract void Load(Device device);
-	public abstract void Bind(DrawObject obj, Device device, DeviceContext deviceContext);
-	public abstract void Draw(DeviceContext context);
+	protected override ShaderLoader PixelShader =>
+		new EmbeddedShaderLoader("Grid.hlsl", "ps_4_0", "pixel");
 
-	public abstract void Dispose();
+	protected override void SetDefault(ref GridInstanceData instance)
+	{
+		base.SetDefault(ref instance);
 
-	public abstract void HitTest(Vector2 screenPosition, Transform transform, Transform viewProjection, ref HitTestResult result);
+		instance.Color = Color.White;
+		instance.GridSize = 1.0f;
+		instance.LineThickness = 0.002f;
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	public struct GridInstanceData
+	{
+		public Color Color;
+		public float GridSize;
+		public float LineThickness;
+		public float Unused2;
+		public float Unused3;
+	}
 }

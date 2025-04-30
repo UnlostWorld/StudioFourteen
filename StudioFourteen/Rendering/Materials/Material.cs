@@ -28,34 +28,33 @@ public abstract class MaterialBase : IDisposable
 
 	public bool IsLoaded => this.vertexShader != null;
 
-	public virtual string VertProfile => "vs_4_0";
-	public abstract string VertEntryPoint { get; }
-	public virtual string PixelProfile => "ps_4_0";
-	public abstract string PixelEntryPoint { get; }
-	public virtual string GeometryProfile => "gs_4_0";
-	public abstract string GeometryEntryPoint { get; }
-	public virtual ShaderFlags Flags => ShaderFlags.Debug;
+	protected abstract ShaderLoader VertexShader { get; }
+	protected abstract ShaderLoader PixelShader { get; }
+	protected virtual ShaderLoader? GeometryShader { get; }
 
 	public virtual void Load(Device device)
 	{
-		CompilationResult vertexShaderByteCode = ShaderBytecode.Compile(this.GetVertexShader(), this.VertEntryPoint, this.VertProfile, this.Flags);
-		this.vertexShader = new VertexShader(device, vertexShaderByteCode);
+		ShaderLoader vertexShaderLoader = this.VertexShader;
+		ShaderLoader pixelShaderLoader = this.PixelShader;
+		ShaderLoader? geometryShaderLoader = this.GeometryShader;
 
-		CompilationResult pixelShaderByteCode = ShaderBytecode.Compile(this.GetPixelShader(), this.PixelEntryPoint, this.PixelProfile, this.Flags);
-		this.pixelShader = new PixelShader(device, pixelShaderByteCode);
+		vertexShaderLoader.Load();
+		pixelShaderLoader.Load();
+		geometryShaderLoader?.Load();
 
-		string? geometryHlsl = this.GetGeometryShader();
-		if (geometryHlsl != null)
+		this.vertexShader = new VertexShader(device, vertexShaderLoader.Bytecode);
+		this.pixelShader = new PixelShader(device, pixelShaderLoader.Bytecode);
+
+		if (geometryShaderLoader != null)
 		{
-			CompilationResult geometryShaderByteCode = ShaderBytecode.Compile(geometryHlsl, this.GeometryEntryPoint, this.GeometryProfile, this.Flags);
-			this.geometryShader = new GeometryShader(device, geometryShaderByteCode);
+			this.geometryShader = new GeometryShader(device, geometryShaderLoader.Bytecode);
 		}
 
-		ShaderSignature signature = ShaderSignature.GetInputSignature(vertexShaderByteCode);
+		ShaderSignature signature = ShaderSignature.GetInputSignature(vertexShaderLoader.Bytecode);
 		this.layout = new InputLayout(device, signature, default(Vertex).GetInputElements());
 	}
 
-	public void Bind(DeviceContext context)
+	public virtual void Bind(DrawObject obj, Device device, DeviceContext context)
 	{
 		context.InputAssembler.InputLayout = this.layout;
 
@@ -71,8 +70,4 @@ public abstract class MaterialBase : IDisposable
 		this.geometryShader?.Dispose();
 		this.layout?.Dispose();
 	}
-
-	protected abstract string GetVertexShader();
-	protected abstract string GetPixelShader();
-	protected abstract string? GetGeometryShader();
 }

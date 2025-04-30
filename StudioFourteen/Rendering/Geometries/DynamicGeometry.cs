@@ -68,23 +68,23 @@ public abstract class DynamicGeometryBase : GeometryBase
 		}
 	}
 
-	public override void Bind(DeviceContext context)
+	public override void Bind(DrawObject obj, Device device, DeviceContext deviceContext)
 	{
 		DataStream dataStream;
-		context.MapSubresource(this.vertexBuffer, MapMode.WriteDiscard, MapFlags.None, out dataStream);
+		deviceContext.MapSubresource(this.vertexBuffer, MapMode.WriteDiscard, MapFlags.None, out dataStream);
 		dataStream.WriteRange(this.vertices);
-		context.UnmapSubresource(this.vertexBuffer, 0);
+		deviceContext.UnmapSubresource(this.vertexBuffer, 0);
 
 		if (this.indices != null)
 		{
-			context.MapSubresource(this.indexBuffer, MapMode.WriteDiscard, MapFlags.None, out dataStream);
+			deviceContext.MapSubresource(this.indexBuffer, MapMode.WriteDiscard, MapFlags.None, out dataStream);
 			dataStream.WriteRange(this.indices);
-			context.UnmapSubresource(this.indexBuffer, 0);
+			deviceContext.UnmapSubresource(this.indexBuffer, 0);
 		}
 
-		context.InputAssembler.PrimitiveTopology = this.TopologyType;
-		context.InputAssembler.SetVertexBuffers(0, this.vertexBufferBinding);
-		context.InputAssembler.SetIndexBuffer(this.indexBuffer, SharpDX.DXGI.Format.R16_UInt, 0);
+		deviceContext.InputAssembler.PrimitiveTopology = this.TopologyType;
+		deviceContext.InputAssembler.SetVertexBuffers(0, this.vertexBufferBinding);
+		deviceContext.InputAssembler.SetIndexBuffer(this.indexBuffer, SharpDX.DXGI.Format.R16_UInt, 0);
 	}
 
 	public override void Draw(DeviceContext context)

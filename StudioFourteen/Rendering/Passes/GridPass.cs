@@ -22,7 +22,7 @@ using StudioFourteen.Rendering.Materials;
 public class GridPass : GeometryPass
 {
 	private readonly DrawObject plane;
-	private readonly EmbeddedMaterial gridMaterial = new("Grid.hlsl", false);
+	private readonly GridMaterial gridMaterial = new();
 
 	public GridPass()
 	{
@@ -36,6 +36,8 @@ public class GridPass : GeometryPass
 			-603,
 			30.05f,
 			-839);
+
+		////this.gridMaterial.GetInstanceData(this.plane).CellLineThickness = 1.0f;
 
 		base.Render(service, device, deviceContext);
 	}
