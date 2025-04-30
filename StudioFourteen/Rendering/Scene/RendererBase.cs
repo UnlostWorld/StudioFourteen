@@ -13,33 +13,8 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Passes;
+namespace StudioFourteen.Rendering.Scene;
 
-using System.Numerics;
-using SharpDX.Direct3D11;
-using StudioFourteen.Rendering.Materials;
-using StudioFourteen.Rendering.Scene;
-
-public class GridPass : GeometryPass
+public abstract class RendererBase : SceneObject
 {
-	private readonly MeshRenderer plane;
-	private readonly GridMaterial gridMaterial = new();
-
-	public GridPass()
-	{
-		this.plane = new(Meshes.Plane, this.gridMaterial);
-		this.Add(this.plane);
-	}
-
-	public override void Render(RenderingService service, Device device, DeviceContext deviceContext)
-	{
-		this.plane.Transform = Transform.FromTranslation(
-			0,
-			30.05f,
-			0);
-
-		////this.gridMaterial.GetInstanceData(this.plane).CellLineThickness = 1.0f;
-
-		base.Render(service, device, deviceContext);
-	}
 }

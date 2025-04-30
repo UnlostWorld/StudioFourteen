@@ -13,17 +13,18 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering;
+namespace StudioFourteen.Rendering.Scene;
 
 using System;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using SharpDX.Direct3D11;
 using StudioFourteen.Rendering.Materials;
 
 using Buffer = SharpDX.Direct3D11.Buffer;
 using Device = SharpDX.Direct3D11.Device;
 
-public class MeshRenderer : RendererBase
+public class MeshRenderer : InstanceRendererBase<MeshRenderer.PerRendererData>
 {
 	public MaterialBase? Material;
 	public Mesh? Mesh;
@@ -48,6 +49,10 @@ public class MeshRenderer : RendererBase
 
 	public override void Draw(Transform transform, Device device, DeviceContext deviceContext)
 	{
+		Transform thisTransform = transform * this.Transform;
+		this.Data.Transform = Matrix4x4.Transpose(thisTransform.ToMatrix());
+		base.Draw(transform, device, deviceContext);
+
 		if (this.Material == null || this.materialException != null)
 			return;
 
@@ -83,16 +88,11 @@ public class MeshRenderer : RendererBase
 			}
 		}
 
-		Transform thisTransform = transform * this.Transform;
-
-		this.Material.Bind(this, device, deviceContext);
-
 		deviceContext.InputAssembler.PrimitiveTopology = this.Mesh.Topology;
 		deviceContext.InputAssembler.SetVertexBuffers(0, this.vertexBufferBinding);
 		deviceContext.InputAssembler.SetIndexBuffer(this.indices, SharpDX.DXGI.Format.R16_UInt, 0);
 
-		////this.Data.ObjectTransform = Matrix4x4.Transpose(thisTransform.ToMatrix());
-		////this.DeviceContext.UpdateSubresource(ref this.Data, this.constantsBuffer);
+		this.Material.Bind(this, device, deviceContext);
 
 		if (this.indices == null)
 		{
@@ -111,7 +111,7 @@ public class MeshRenderer : RendererBase
 
 		if (result.Mesh == this.Mesh)
 		{
-			result.Renderer = this;
+			result.SceneObject = this;
 		}
 	}
 
@@ -120,5 +120,11 @@ public class MeshRenderer : RendererBase
 		this.Material?.Dispose();
 		this.vertices?.Dispose();
 		this.indices?.Dispose();
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	public struct PerRendererData
+	{
+		public Matrix4x4 Transform;
 	}
 }

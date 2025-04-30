@@ -17,17 +17,11 @@ namespace StudioFourteen.Rendering.Gizmos.Handles;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using SharpDX.Direct3D11;
+using StudioFourteen.Rendering.Scene;
 using StudioFourteen.Selection;
 
 public class HandleBase : GizmoBase
 {
-	private readonly MeshRenderer circle = new(Meshes.WireCircle, Material.Line);
-
-	public HandleBase()
-	{
-		this.Add(this.circle);
-	}
-
 	// TODO: a handle service for doing the hit test dispatch, instead of cramming it
 	// into the render pass?
 

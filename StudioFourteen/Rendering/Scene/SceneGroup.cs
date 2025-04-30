@@ -13,22 +13,22 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering;
+namespace StudioFourteen.Rendering.Scene;
 
 using System.Collections.Generic;
 using System.Numerics;
 using SharpDX.Direct3D11;
 
-public class RendererGroup : RendererBase
+public class SceneGroup : SceneObject
 {
-	public readonly List<RendererBase> Children = new();
+	public readonly List<SceneObject> Children = new();
 
-	public void Add(RendererBase draw)
+	public void Add(SceneObject draw)
 	{
 		this.Children.Add(draw);
 	}
 
-	public void Remove(RendererBase draw)
+	public void Remove(SceneObject draw)
 	{
 		this.Children.Remove(draw);
 	}
@@ -37,7 +37,7 @@ public class RendererGroup : RendererBase
 	{
 		Transform thisTransform = transform * this.Transform;
 
-		foreach(RendererBase child in this.Children)
+		foreach(SceneObject child in this.Children)
 		{
 			child.Draw(thisTransform, device, deviceContext);
 		}
@@ -51,7 +51,7 @@ public class RendererGroup : RendererBase
 	{
 		Transform thisTransform = transform * this.Transform;
 
-		foreach(RendererBase child in this.Children)
+		foreach(SceneObject child in this.Children)
 		{
 			child.HitTest(screenPosition, thisTransform, viewProjection, ref result);
 		}
@@ -59,7 +59,7 @@ public class RendererGroup : RendererBase
 
 	public override void Dispose()
 	{
-		foreach(RendererBase child in this.Children)
+		foreach(SceneObject child in this.Children)
 		{
 			child.Dispose();
 		}

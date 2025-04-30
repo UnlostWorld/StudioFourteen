@@ -15,10 +15,12 @@
 
 namespace StudioFourteen.Rendering;
 
+using StudioFourteen.Rendering.Scene;
+
 public class HitTestResult
 {
 	public float Distance = float.MaxValue;
 	public Mesh? Mesh;
 	public Vertex? MeshVertex;
-	public RendererBase? Renderer;
+	public SceneObject? SceneObject;
 }

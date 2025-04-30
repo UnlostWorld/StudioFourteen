@@ -18,6 +18,7 @@ namespace StudioFourteen.Rendering.Passes;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
+using StudioFourteen.Rendering.Scene;
 
 using Device = SharpDX.Direct3D11.Device;
 using Material = StudioFourteen.Rendering.Material;

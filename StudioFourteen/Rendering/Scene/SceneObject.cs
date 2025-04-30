@@ -13,13 +13,13 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering;
+namespace StudioFourteen.Rendering.Scene;
 
 using System;
 using System.Numerics;
 using SharpDX.Direct3D11;
 
-public abstract class RendererBase : IDisposable
+public abstract class SceneObject : IDisposable
 {
 	public Transform Transform = Transform.Identity;
 

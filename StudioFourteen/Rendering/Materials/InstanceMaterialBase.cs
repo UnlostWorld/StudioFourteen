@@ -17,14 +17,15 @@ namespace StudioFourteen.Rendering.Materials;
 
 using System.Runtime.CompilerServices;
 using SharpDX.Direct3D11;
+using StudioFourteen.Rendering.Scene;
 
-public abstract class InstanceMaterialBase<T> : MaterialBase
-	where T : unmanaged
+public abstract class InstanceMaterialBase<TDataType> : MaterialBase
+	where TDataType : unmanaged
 {
-	private readonly ConditionalWeakTable<MeshRenderer, Instance> drawObjectDataStore = new();
+	private readonly ConditionalWeakTable<RendererBase, Instance> drawObjectDataStore = new();
 	private Buffer? dataBuffer;
 
-	public override void Bind(MeshRenderer obj, Device device, DeviceContext context)
+	public override void Bind(RendererBase obj, Device device, DeviceContext context)
 	{
 		base.Bind(obj, device, context);
 
@@ -32,7 +33,7 @@ public abstract class InstanceMaterialBase<T> : MaterialBase
 		{
 			this.dataBuffer = new(
 				device,
-				SharpDX.Utilities.SizeOf<T>(),
+				SharpDX.Utilities.SizeOf<TDataType>(),
 				ResourceUsage.Default,
 				BindFlags.ConstantBuffer,
 				CpuAccessFlags.None,
@@ -44,13 +45,13 @@ public abstract class InstanceMaterialBase<T> : MaterialBase
 		context.GeometryShader.SetConstantBuffer(Registers.PerMaterialData, this.dataBuffer);
 		context.PixelShader.SetConstantBuffer(Registers.PerMaterialData, this.dataBuffer);
 
-		T data = this.GetInstanceData(obj);
+		TDataType data = this.GetInstanceData(obj);
 
 		// TODO: Use a buffer array and an index instead of updating every draw call?
 		context.UpdateSubresource(ref data, this.dataBuffer);
 	}
 
-	public ref T GetInstanceData(MeshRenderer obj)
+	public ref TDataType GetInstanceData(RendererBase obj)
 	{
 		if (!this.drawObjectDataStore.TryGetValue(obj, out var instance))
 		{
@@ -62,12 +63,12 @@ public abstract class InstanceMaterialBase<T> : MaterialBase
 		return ref instance.Data;
 	}
 
-	protected virtual void SetDefault(ref T instance)
+	protected virtual void SetDefault(ref TDataType instance)
 	{
 	}
 
 	private class Instance
 	{
-		public T Data;
+		public TDataType Data;
 	}
 }

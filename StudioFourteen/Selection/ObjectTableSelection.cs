@@ -22,6 +22,7 @@ using FontAwesome.Sharp;
 using StudioFourteen.Plugin;
 using StudioFourteen.Rendering;
 using StudioFourteen.Rendering.Gizmos;
+using StudioFourteen.Rendering.Scene;
 using StudioFourteen.Services;
 using StudioFourteen.Structs.Extensions;
 using StudioFourteen.Utilities;

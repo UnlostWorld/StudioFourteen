@@ -16,8 +16,9 @@
 namespace StudioFourteen.Rendering.Gizmos;
 
 using Serilog;
+using StudioFourteen.Rendering.Scene;
 
-public class GizmoBase : RendererGroup
+public class GizmoBase : SceneGroup
 {
 	protected readonly ILogger Log;
 

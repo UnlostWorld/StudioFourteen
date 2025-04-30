@@ -18,6 +18,6 @@ namespace StudioFourteen.Rendering;
 public static class Registers
 {
 	public const int PerPassData = 0;
-	public const int PerObjectData = 1;
+	public const int PerRendererData = 1;
 	public const int PerMaterialData = 2;
 }

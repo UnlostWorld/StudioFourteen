@@ -23,7 +23,7 @@ cbuffer GeometryPassData : register(b0)
 	float4 CameraPosition;
 };
 
-cbuffer GeometryInstanceData : register(b1)
+cbuffer RendererInstanceData : register(b1)
 {
 	float4 Transform;
 };
@@ -91,7 +91,6 @@ Fragment vert(in Vertex vertex)
 	float4 position = vertex.Position;
 	position.xyz *= quadScale;
 	position.xz += CameraPosition.xz;
-	///position = mul(position, Transform);
 	result.WorldPosition = position;
 
 	result.Position = mul(position, ViewProjection);

@@ -18,6 +18,7 @@ namespace StudioFourteen.Rendering.Materials;
 using System;
 using SharpDX.D3DCompiler;
 using SharpDX.Direct3D11;
+using StudioFourteen.Rendering.Scene;
 
 public abstract class MaterialBase : IDisposable
 {
@@ -54,7 +55,7 @@ public abstract class MaterialBase : IDisposable
 		this.layout = new InputLayout(device, signature, default(Vertex).GetInputElements());
 	}
 
-	public virtual void Bind(MeshRenderer obj, Device device, DeviceContext context)
+	public virtual void Bind(RendererBase renderer, Device device, DeviceContext context)
 	{
 		context.InputAssembler.InputLayout = this.layout;
 

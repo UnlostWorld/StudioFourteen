@@ -20,29 +20,29 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
-
+using StudioFourteen.Rendering.Scene;
 using Device = SharpDX.Direct3D11.Device;
 
 public class GeometryPass : InstanceRenderPassBase<GeometryPass.GeometryPassData>
 {
-	private readonly List<RendererBase> renderables = new();
+	private readonly List<SceneObject> sceneObjects = new();
 
 	private RenderTargetView? backBufferTargetView;
 	private BlendState? blend;
 
-	public void Add(RendererBase obj)
+	public void Add(SceneObject obj)
 	{
-		lock(this.renderables)
+		lock(this.sceneObjects)
 		{
-			this.renderables.Add(obj);
+			this.sceneObjects.Add(obj);
 		}
 	}
 
-	public void Remove(RendererBase obj)
+	public void Remove(SceneObject obj)
 	{
-		lock(this.renderables)
+		lock(this.sceneObjects)
 		{
-			this.renderables.Remove(obj);
+			this.sceneObjects.Remove(obj);
 		}
 	}
 
@@ -50,7 +50,7 @@ public class GeometryPass : InstanceRenderPassBase<GeometryPass.GeometryPassData
 	{
 		Matrix4x4 viewProj = ServiceManager.Instance.Camera.CurrentViewProjection;
 
-		foreach(RendererBase draw in this.renderables)
+		foreach(SceneObject draw in this.sceneObjects)
 		{
 			draw.HitTest(screenPosition, Transform.Identity, viewProj, ref result);
 		}
@@ -92,9 +92,9 @@ public class GeometryPass : InstanceRenderPassBase<GeometryPass.GeometryPassData
 		deviceContext.OutputMerger.SetBlendState(this.blend, null, -1);
 		deviceContext.OutputMerger.SetTargets(this.backBufferTargetView);
 
-		lock(this.renderables)
+		lock(this.sceneObjects)
 		{
-			foreach(RendererBase renderable in this.renderables)
+			foreach(SceneObject renderable in this.sceneObjects)
 			{
 				renderable.Draw(Transform.Identity, device, deviceContext);
 			}
@@ -110,7 +110,7 @@ public class GeometryPass : InstanceRenderPassBase<GeometryPass.GeometryPassData
 		this.backBufferTargetView?.Dispose();
 		this.backBufferTargetView = null;
 
-		foreach(RendererBase renderable in this.renderables)
+		foreach(SceneObject renderable in this.sceneObjects)
 		{
 			renderable.Dispose();
 		}
