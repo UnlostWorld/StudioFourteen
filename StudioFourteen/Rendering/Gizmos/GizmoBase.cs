@@ -31,11 +31,11 @@ public class GizmoBase : SceneGroup
 
 	public virtual void Enable()
 	{
-		this.Services.Rendering.Geometry.Add(this);
+		this.Services.Rendering.Forward.Add(this);
 	}
 
 	public virtual void Disable()
 	{
-		this.Services.Rendering.Geometry.Remove(this);
+		this.Services.Rendering.Forward.Remove(this);
 	}
 }

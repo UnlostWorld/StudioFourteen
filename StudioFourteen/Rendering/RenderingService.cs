@@ -17,10 +17,12 @@ namespace StudioFourteen.Rendering;
 
 using System;
 using System.Numerics;
+using System.Threading.Tasks;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
 using SharpDX.Direct3D11;
 using StudioFourteen.Interop;
 using StudioFourteen.Plugin;
+using StudioFourteen.Rendering.Gizmos;
 using StudioFourteen.Rendering.Passes;
 using StudioFourteen.Services;
 using StudioFourteen.Utilities;
@@ -32,8 +34,7 @@ using XivDevice = FFXIVClientStructs.FFXIV.Client.Graphics.Kernel.Device;
 public class RenderingService : ServiceBase
 {
 	public readonly GenerateMaskDepthPass GenerateMaskDepth = new();
-	public readonly GridPass Grid = new();
-	public readonly GeometryPass Geometry = new();
+	public readonly ForwardPass Forward = new();
 	public readonly DrawBufferPass DrawBuffer = new();
 
 	private Device? device;
@@ -42,6 +43,15 @@ public class RenderingService : ServiceBase
 	public Texture2D? BackBuffer { get; private set; }
 	public int Width => this.BackBuffer?.Description.Width ?? 0;
 	public int Height => this.BackBuffer?.Description.Height ?? 0;
+
+	public override Task Start()
+	{
+		// TODO: GizmoService
+		GridGizmo g = new();
+		g.Enable();
+
+		return base.Start();
+	}
 
 	public unsafe override void Attach()
 	{
@@ -76,7 +86,7 @@ public class RenderingService : ServiceBase
 		this.deviceContext = null;
 
 		this.GenerateMaskDepth.Dispose();
-		this.Geometry.Dispose();
+		this.Forward.Dispose();
 
 		base.Dispose();
 	}
@@ -132,8 +142,7 @@ public class RenderingService : ServiceBase
 
 		// Perform render passes.
 		this.Render(this.GenerateMaskDepth);
-		this.Render(this.Grid);
-		this.Render(this.Geometry);
+		this.Render(this.Forward);
 	}
 
 	private void Render(RenderPassBase pass)

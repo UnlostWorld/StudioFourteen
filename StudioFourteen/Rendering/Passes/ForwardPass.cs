@@ -20,10 +20,11 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
+using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Scene;
 using Device = SharpDX.Direct3D11.Device;
 
-public class GeometryPass : InstanceRenderPassBase<GeometryPass.GeometryPassData>
+public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 {
 	private readonly List<SceneObject> sceneObjects = new();
 
@@ -119,7 +120,7 @@ public class GeometryPass : InstanceRenderPassBase<GeometryPass.GeometryPassData
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
-	public struct GeometryPassData
+	public struct ForwardPassData
 	{
 		public Matrix4x4 ViewProjection;
 		public Vector4 CameraPosition;

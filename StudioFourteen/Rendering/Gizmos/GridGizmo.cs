@@ -13,33 +13,17 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Passes;
+namespace StudioFourteen.Rendering.Gizmos;
 
-using System.Numerics;
-using SharpDX.Direct3D11;
 using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Scene;
 
-public class GridPass : GeometryPass
+public class GridGizmo : GizmoBase
 {
-	private readonly MeshRenderer plane;
-	private readonly GridMaterial gridMaterial = new();
+	public readonly GridMaterial Material = new();
 
-	public GridPass()
+	public GridGizmo()
 	{
-		this.plane = new(Meshes.Plane, this.gridMaterial);
-		this.Add(this.plane);
-	}
-
-	public override void Render(RenderingService service, Device device, DeviceContext deviceContext)
-	{
-		this.plane.Transform = Transform.FromTranslation(
-			0,
-			30.05f,
-			0);
-
-		////this.gridMaterial.GetInstanceData(this.plane).CellLineThickness = 1.0f;
-
-		base.Render(service, device, deviceContext);
+		this.Add(new MeshRenderer(Meshes.Plane, this.Material));
 	}
 }
