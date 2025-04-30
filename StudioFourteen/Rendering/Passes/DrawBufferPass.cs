@@ -17,14 +17,13 @@ namespace StudioFourteen.Rendering.Passes;
 
 using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
 using SharpDX.Direct3D11;
-using SharpDX.DXGI;
 
 using Device = SharpDX.Direct3D11.Device;
 using Format = SharpDX.DXGI.Format;
 
 public class DrawBufferPass : RenderPassBase
 {
-	private readonly DrawObject quad = new(Material.Blit, Geometry.Quad);
+	private readonly MeshRenderer quad = new(Meshes.Quad, Material.Blit);
 
 	private Texture2D? buffer;
 	private Texture2D? bufferCopyTexture;

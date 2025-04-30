@@ -13,7 +13,7 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Meshes;
+namespace StudioFourteen.Rendering.MeshGenerators;
 
 using System;
 using System.Numerics;

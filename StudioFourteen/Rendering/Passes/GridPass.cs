@@ -21,12 +21,12 @@ using StudioFourteen.Rendering.Materials;
 
 public class GridPass : GeometryPass
 {
-	private readonly DrawObject plane;
+	private readonly MeshRenderer plane;
 	private readonly GridMaterial gridMaterial = new();
 
 	public GridPass()
 	{
-		this.plane = new(this.gridMaterial, Geometry.Plane);
+		this.plane = new(Meshes.Plane, this.gridMaterial);
 		this.Add(this.plane);
 	}
 

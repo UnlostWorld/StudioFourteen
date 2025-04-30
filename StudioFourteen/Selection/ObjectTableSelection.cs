@@ -173,7 +173,7 @@ public class ObjectTableSelection : TransformSelectionBase
 
 public class ObjectTableSelectionGizmo : SelectionGizmo<ObjectTableSelection>
 {
-	private readonly DrawObject circle = new(Material.Line, Geometry.WireCircle);
+	private readonly MeshRenderer circle = new(Meshes.WireCircle, Material.Line);
 
 	public ObjectTableSelectionGizmo()
 	{
@@ -192,7 +192,7 @@ public class ObjectTableSelectionGizmo : SelectionGizmo<ObjectTableSelection>
 		if (selection.IsHovered)
 			alpha += 0.25f;
 
-		this.circle.Color = new Color(1, 1, 1, alpha);
+		////this.circle.Color = new Color(1, 1, 1, alpha);
 
 		this.Transform = Transform.FromScale(gameObject->HitboxRadius / 2, 1, gameObject->HitboxRadius / 2);
 		this.Transform *= Transform.FromTRS(gameObject->DrawObject->Position, gameObject->DrawObject->Rotation, gameObject->DrawObject->Scale);

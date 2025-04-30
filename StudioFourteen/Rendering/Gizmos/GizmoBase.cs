@@ -17,7 +17,7 @@ namespace StudioFourteen.Rendering.Gizmos;
 
 using Serilog;
 
-public class GizmoBase : DrawGroup
+public class GizmoBase : RendererGroup
 {
 	protected readonly ILogger Log;
 

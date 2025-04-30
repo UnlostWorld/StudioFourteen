@@ -24,7 +24,7 @@ using Material = StudioFourteen.Rendering.Material;
 
 public class GenerateMaskDepthPass : RenderPassBase
 {
-	private readonly DrawObject quad = new(Material.BlitAlphaMask, Geometry.Quad);
+	private readonly MeshRenderer quad = new(Meshes.Quad, Material.BlitAlphaMask);
 
 	private Texture2D? backBufferCopyTexture;
 	private ShaderResourceView? backBufferResourceView;

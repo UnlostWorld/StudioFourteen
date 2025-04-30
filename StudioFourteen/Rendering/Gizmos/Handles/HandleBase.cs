@@ -21,7 +21,7 @@ using StudioFourteen.Selection;
 
 public class HandleBase : GizmoBase
 {
-	private readonly DrawObject circle = new(Material.Line, Geometry.WireCircle);
+	private readonly MeshRenderer circle = new(Meshes.WireCircle, Material.Line);
 
 	public HandleBase()
 	{

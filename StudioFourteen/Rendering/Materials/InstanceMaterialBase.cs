@@ -21,10 +21,10 @@ using SharpDX.Direct3D11;
 public abstract class InstanceMaterialBase<T> : MaterialBase
 	where T : unmanaged
 {
-	private readonly ConditionalWeakTable<DrawObject, Instance> drawObjectDataStore = new();
+	private readonly ConditionalWeakTable<MeshRenderer, Instance> drawObjectDataStore = new();
 	private Buffer? dataBuffer;
 
-	public override void Bind(DrawObject obj, Device device, DeviceContext context)
+	public override void Bind(MeshRenderer obj, Device device, DeviceContext context)
 	{
 		base.Bind(obj, device, context);
 
@@ -50,7 +50,7 @@ public abstract class InstanceMaterialBase<T> : MaterialBase
 		context.UpdateSubresource(ref data, this.dataBuffer);
 	}
 
-	public ref T GetInstanceData(DrawObject obj)
+	public ref T GetInstanceData(MeshRenderer obj)
 	{
 		if (!this.drawObjectDataStore.TryGetValue(obj, out var instance))
 		{

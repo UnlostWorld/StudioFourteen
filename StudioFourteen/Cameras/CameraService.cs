@@ -104,7 +104,7 @@ public class CameraService : ServiceBase
 
 	public override Task Start()
 	{
-		this.Cameras.Add(new OrbitCamera());
+		this.Cameras.Add(new OrbitTargetCamera());
 
 		this.Services.GroupPose.StateChanged += this.OnGroupPoseStateChanged;
 		this.OnGroupPoseStateChanged(this.Services.GroupPose.IsGroupPosing);

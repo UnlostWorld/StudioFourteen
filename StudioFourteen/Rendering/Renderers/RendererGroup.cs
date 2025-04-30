@@ -13,21 +13,55 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Geometries;
+namespace StudioFourteen.Rendering;
 
-using System;
+using System.Collections.Generic;
 using System.Numerics;
 using SharpDX.Direct3D11;
 
-public abstract class GeometryBase : IDisposable
+public class RendererGroup : RendererBase
 {
-	public abstract bool IsLoaded { get; }
+	public readonly List<RendererBase> Children = new();
 
-	public abstract void Load(Device device);
-	public abstract void Bind(DrawObject obj, Device device, DeviceContext deviceContext);
-	public abstract void Draw(DeviceContext context);
+	public void Add(RendererBase draw)
+	{
+		this.Children.Add(draw);
+	}
 
-	public abstract void Dispose();
+	public void Remove(RendererBase draw)
+	{
+		this.Children.Remove(draw);
+	}
 
-	public abstract void HitTest(Vector2 screenPosition, Transform transform, Transform viewProjection, ref HitTestResult result);
+	public override void Draw(Transform transform, Device device, DeviceContext deviceContext)
+	{
+		Transform thisTransform = transform * this.Transform;
+
+		foreach(RendererBase child in this.Children)
+		{
+			child.Draw(thisTransform, device, deviceContext);
+		}
+	}
+
+	public override void HitTest(
+		Vector2 screenPosition,
+		Transform transform,
+		Transform viewProjection,
+		ref HitTestResult result)
+	{
+		Transform thisTransform = transform * this.Transform;
+
+		foreach(RendererBase child in this.Children)
+		{
+			child.HitTest(screenPosition, thisTransform, viewProjection, ref result);
+		}
+	}
+
+	public override void Dispose()
+	{
+		foreach(RendererBase child in this.Children)
+		{
+			child.Dispose();
+		}
+	}
 }

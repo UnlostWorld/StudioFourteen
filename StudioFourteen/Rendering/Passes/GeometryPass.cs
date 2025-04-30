@@ -25,12 +25,12 @@ using Device = SharpDX.Direct3D11.Device;
 
 public class GeometryPass : InstanceRenderPassBase<GeometryPass.GeometryPassData>
 {
-	private readonly List<DrawBase> renderables = new();
+	private readonly List<RendererBase> renderables = new();
 
 	private RenderTargetView? backBufferTargetView;
 	private BlendState? blend;
 
-	public void Add(DrawBase obj)
+	public void Add(RendererBase obj)
 	{
 		lock(this.renderables)
 		{
@@ -38,7 +38,7 @@ public class GeometryPass : InstanceRenderPassBase<GeometryPass.GeometryPassData
 		}
 	}
 
-	public void Remove(DrawBase obj)
+	public void Remove(RendererBase obj)
 	{
 		lock(this.renderables)
 		{
@@ -50,7 +50,7 @@ public class GeometryPass : InstanceRenderPassBase<GeometryPass.GeometryPassData
 	{
 		Matrix4x4 viewProj = ServiceManager.Instance.Camera.CurrentViewProjection;
 
-		foreach(DrawBase draw in this.renderables)
+		foreach(RendererBase draw in this.renderables)
 		{
 			draw.HitTest(screenPosition, Transform.Identity, viewProj, ref result);
 		}
@@ -94,7 +94,7 @@ public class GeometryPass : InstanceRenderPassBase<GeometryPass.GeometryPassData
 
 		lock(this.renderables)
 		{
-			foreach(DrawBase renderable in this.renderables)
+			foreach(RendererBase renderable in this.renderables)
 			{
 				renderable.Draw(Transform.Identity, device, deviceContext);
 			}
@@ -110,7 +110,7 @@ public class GeometryPass : InstanceRenderPassBase<GeometryPass.GeometryPassData
 		this.backBufferTargetView?.Dispose();
 		this.backBufferTargetView = null;
 
-		foreach(DrawBase renderable in this.renderables)
+		foreach(RendererBase renderable in this.renderables)
 		{
 			renderable.Dispose();
 		}

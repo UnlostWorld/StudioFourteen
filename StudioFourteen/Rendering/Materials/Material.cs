@@ -54,7 +54,7 @@ public abstract class MaterialBase : IDisposable
 		this.layout = new InputLayout(device, signature, default(Vertex).GetInputElements());
 	}
 
-	public virtual void Bind(DrawObject obj, Device device, DeviceContext context)
+	public virtual void Bind(MeshRenderer obj, Device device, DeviceContext context)
 	{
 		context.InputAssembler.InputLayout = this.layout;
 

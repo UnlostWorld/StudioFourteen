@@ -17,14 +17,32 @@ namespace StudioFourteen.Rendering;
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Numerics;
+using System.Reflection;
 using SharpDX.Direct3D;
+using StudioFourteen.Serialization;
 
 public class Mesh
 {
 	public PrimitiveTopology Topology;
 	public List<Vertex> Vertices { get; set; } = new();
 	public List<ushort>? Indices { get; set; }
+
+	public static Mesh LoadEmbedded(string file)
+	{
+		Assembly assembly = Assembly.GetExecutingAssembly();
+		string resourceName = $"StudioFourteen.Rendering.Meshes.{file}";
+		Stream? stream = assembly.GetManifestResourceStream(resourceName);
+		if (stream == null)
+			throw new Exception($"Mesh \"{file}\" not found in manifest resources");
+
+		Mesh? mesh = Serializer.Deserialize<Mesh>(stream);
+		if (mesh == null)
+			throw new Exception($"Mesh \"{file}\" failed to deserialize");
+
+		return mesh;
+	}
 
 	public void HitTest(
 		Vector2 screenPosition,

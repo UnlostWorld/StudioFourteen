@@ -15,18 +15,17 @@
 
 namespace StudioFourteen.Rendering;
 
-using StudioFourteen.Rendering.Geometries;
 using StudioFourteen.Rendering.Materials;
-using StudioFourteen.Rendering.Meshes;
+using StudioFourteen.Rendering.MeshGenerators;
 
-public static class Geometry
+public static class Meshes
 {
-	public static readonly GeometryBase Cube = new EmbeddedGeometry("Cube.jsonc");
-	public static readonly GeometryBase FlatCube = new EmbeddedGeometry("FlatCube.jsonc");
-	public static readonly GeometryBase Quad = new EmbeddedGeometry("Quad.jsonc");
-	public static readonly GeometryBase Plane = new EmbeddedGeometry("Plane.jsonc");
-	public static readonly GeometryBase WireCube = new EmbeddedGeometry("WireCube.jsonc");
-	public static readonly GeometryBase WireCircle = new GeneratedGeometry<WireCircle>();
+	public static readonly Mesh Cube = Mesh.LoadEmbedded("Cube.jsonc");
+	public static readonly Mesh FlatCube = Mesh.LoadEmbedded("FlatCube.jsonc");
+	public static readonly Mesh Quad = Mesh.LoadEmbedded("Quad.jsonc");
+	public static readonly Mesh Plane = Mesh.LoadEmbedded("Plane.jsonc");
+	public static readonly Mesh WireCube = Mesh.LoadEmbedded("WireCube.jsonc");
+	public static readonly Mesh WireCircle = new WireCircle();
 }
 
 public static class Material

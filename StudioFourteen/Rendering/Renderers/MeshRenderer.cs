@@ -17,30 +17,33 @@ namespace StudioFourteen.Rendering;
 
 using System;
 using System.Numerics;
-using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
 using SharpDX.Direct3D11;
-using StudioFourteen.Rendering.Geometries;
 using StudioFourteen.Rendering.Materials;
+
+using Buffer = SharpDX.Direct3D11.Buffer;
 using Device = SharpDX.Direct3D11.Device;
 
-public class DrawObject : DrawBase
+public class MeshRenderer : RendererBase
 {
-	public Color Color = Color.White;
-
 	public MaterialBase? Material;
-	public GeometryBase? Geometry;
+	public Mesh? Mesh;
+
+	private Buffer? vertices;
+	private VertexBufferBinding vertexBufferBinding;
+	private int vertexLength = 0;
+	private Buffer? indices;
+	private int indexLength = 0;
 
 	private Exception? materialException;
-	private Exception? geometryException;
 
-	public DrawObject()
+	public MeshRenderer()
 	{
 	}
 
-	public DrawObject(MaterialBase material, GeometryBase geometry)
+	public MeshRenderer(Mesh mesh, MaterialBase material)
 	{
+		this.Mesh = mesh;
 		this.Material = material;
-		this.Geometry = geometry;
 	}
 
 	public override void Draw(Transform transform, Device device, DeviceContext deviceContext)
@@ -48,7 +51,7 @@ public class DrawObject : DrawBase
 		if (this.Material == null || this.materialException != null)
 			return;
 
-		if (this.Geometry == null || this.geometryException != null)
+		if (this.Mesh == null)
 			return;
 
 		if (!this.Material.IsLoaded)
@@ -65,46 +68,57 @@ public class DrawObject : DrawBase
 			}
 		}
 
-		if (!this.Geometry.IsLoaded)
+		if (this.vertices == null)
 		{
-			try
+			Vertex[] vertices = this.Mesh.Vertices.ToArray();
+			this.vertexLength = vertices.Length;
+			this.vertices = Buffer.Create(device, BindFlags.VertexBuffer, vertices);
+			this.vertexBufferBinding = new VertexBufferBinding(this.vertices, SharpDX.Utilities.SizeOf<Vertex>(), 0);
+
+			if (this.Mesh.Indices != null)
 			{
-				this.Geometry.Load(device);
-			}
-			catch (Exception ex)
-			{
-				this.geometryException = ex;
-				Logging.Shared.Error(ex, $"Error loading geometry: {this.Geometry}");
-				return;
+				ushort[] indices = this.Mesh.Indices.ToArray();
+				this.indexLength = indices.Length;
+				this.indices = Buffer.Create(device, BindFlags.IndexBuffer, indices);
 			}
 		}
 
 		Transform thisTransform = transform * this.Transform;
 
 		this.Material.Bind(this, device, deviceContext);
-		this.Geometry.Bind(this, device, deviceContext);
+
+		deviceContext.InputAssembler.PrimitiveTopology = this.Mesh.Topology;
+		deviceContext.InputAssembler.SetVertexBuffers(0, this.vertexBufferBinding);
+		deviceContext.InputAssembler.SetIndexBuffer(this.indices, SharpDX.DXGI.Format.R16_UInt, 0);
 
 		////this.Data.ObjectTransform = Matrix4x4.Transpose(thisTransform.ToMatrix());
-		////this.Data.ObjectColor = this.Color;
 		////this.DeviceContext.UpdateSubresource(ref this.Data, this.constantsBuffer);
 
-		this.Geometry.Draw(deviceContext);
+		if (this.indices == null)
+		{
+			deviceContext.Draw(this.vertexLength, 0);
+		}
+		else
+		{
+			deviceContext.DrawIndexed(this.indexLength, 0, 0);
+		}
 	}
 
 	public override void HitTest(Vector2 screenPosition, Transform transform, Transform viewProjection, ref HitTestResult result)
 	{
 		Transform thisTransform = transform * this.Transform;
-		this.Geometry?.HitTest(screenPosition, thisTransform, viewProjection, ref result);
+		this.Mesh?.HitTest(screenPosition, thisTransform, viewProjection, ref result);
 
-		if (result.Geometry == this.Geometry)
+		if (result.Mesh == this.Mesh)
 		{
-			result.DrawObject = this;
+			result.Renderer = this;
 		}
 	}
 
 	public override void Dispose()
 	{
 		this.Material?.Dispose();
-		this.Geometry?.Dispose();
+		this.vertices?.Dispose();
+		this.indices?.Dispose();
 	}
 }
