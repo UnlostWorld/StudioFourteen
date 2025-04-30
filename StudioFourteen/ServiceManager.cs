@@ -36,14 +36,13 @@ public class ServiceManager : ServiceManagerBase
 	public GameCaptureService GameCapture { get; init; } = new();
 	public Posing.PoseService Pose { get; init; } = new();
 	public Files.FileThumbnailService Thumbnails { get; init; } = new();
-	public TargetService Target { get; init; } = new();
+	public Targets.TargetService Target { get; init; } = new();
 	public Tablet.TabletService Tablet { get; init; } = new();
 	public ActorRoleService Roles { get; init; } = new();
 	public Files.FileService Files { get; init; } = new();
 	public ThemeService Theme { get; set; } = new();
 	public PanelService Panels { get; init; } = new();
 	public Cameras.CameraService Camera { get; init; } = new();
-	public Overlays.OverlayService Overlays { get; init; } = new();
 	public IPC.IPCService IPC { get; init; } = new();
 	public Reshade.ReshadeService Reshade { get; init; } = new();
 	public Analytics.AnalyticsService Analytics { get; init; } = new();
@@ -63,4 +62,5 @@ public class ServiceManager : ServiceManagerBase
 	public Environment.TerritoryService Territory { get; init; } = new();
 	public Environment.TimeService Time { get; init; } = new();
 	public Rendering.RenderingService Rendering { get; init; } = new();
+	public Rendering.Gizmos.GizmoService Gizmos { get; init; } = new();
 }

@@ -149,7 +149,6 @@ public partial class SettingsService : ServiceBase
 		[Notify] private bool hideLauncherButton = false;
 		[Notify] private bool openGroupPose = false;
 		[Notify] private bool hideGenitals = true;
-		[Notify] private bool enableGlobalOverlay = true;
 		[Notify] private bool showOverlays = true;
 		[Notify] private Dictionary<string, int> overlays = new();
 		[Notify] private List<string> openPanels = new();
@@ -161,7 +160,8 @@ public partial class SettingsService : ServiceBase
 		[Notify] private bool useSystemCursors = false;
 
 		// Input
-		[Notify] private bool enableBinds = true;
+		[Notify] private bool allowKeyboardCapture = true;
+		[Notify] private bool allowMouseCapture = true;
 		[Notify] private Dictionary<InputAction, List<Bind>> customBinds = new();
 
 		// Library

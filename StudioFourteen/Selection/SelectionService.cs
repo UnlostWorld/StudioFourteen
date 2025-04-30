@@ -68,7 +68,6 @@ public abstract class IAsyncSelectionId : ISelectionId
 
 public partial class SelectionService : ServiceBase
 {
-	private readonly TransformHandleOverlayLayer poseGizmoOverlay = new();
 	private SelectionBase? selection;
 	private SelectionBase? hover;
 	private string lastSelectionName = "Nothing";
@@ -192,14 +191,12 @@ public partial class SelectionService : ServiceBase
 	{
 		base.Attach();
 		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
-		this.poseGizmoOverlay.Enable();
 	}
 
 	public override void Detach()
 	{
 		base.Detach();
 		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
-		this.poseGizmoOverlay.Disable();
 	}
 
 	protected void OnGameTick()

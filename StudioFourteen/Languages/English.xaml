@@ -223,6 +223,7 @@
 	<sys:String x:Key="LOC_Settings_Input_Save">Save Scene</sys:String>
 	<sys:String x:Key="LOC_Settings_Input_SaveAs">Toggle Save Window</sys:String>
 	<sys:String x:Key="LOC_Settings_Input_InvokeQuickSearch">Invoke Quick Search</sys:String>
+	<sys:String x:Key="LOC_Settings_Input_Mouse">Enable mouse input</sys:String>
 	<sys:String x:Key="LOC_Settings_Photos">Photos</sys:String>
 	<sys:String x:Key="LOC_Settings_Photos_Directory">Location</sys:String>
 	<sys:String x:Key="LOC_Settings_Photos_Format">Format</sys:String>
@@ -270,6 +271,8 @@
 	<sys:String x:Key="LOC_Pose_Mirror_Copy">Copy</sys:String>
 	<sys:String x:Key="LOC_Pose_Mirror_Flip">Mirror</sys:String>
 
+	<!--  Gizmos  -->
+	<sys:String x:Key="LOC_Gizmos">View Gizmo options</sys:String>
 
 	<!--  Camera  -->
 	<sys:String x:Key="LOC_Camera_Fov">Field of View</sys:String>
@@ -353,22 +356,12 @@
 	<sys:String x:Key="LOC_Environment_Context_Apply">Apply Environment to scene</sys:String>
 	<sys:String x:Key="LOC_Environment_Context_ApplySkyTex">Apply Sky Texture to scene</sys:String>
 
-	<!--  Overlays  -->
-	<sys:String x:Key="LOC_Overlays">Overlays</sys:String>
-	<sys:String x:Key="LOC_Overlays_ToggleGlobal">Toggle the Studio Fourteen overlay system. Disabling the overlay system will disable mouse inputs.</sys:String>
-	<sys:String x:Key="LOC_Overlays_ToggleVisibility">Hide all overlays.</sys:String>
-	<sys:String x:Key="LOC_OverlayBarDescription">Configure overlays that are visible on screen.</sys:String>
-	<sys:String x:Key="LOC_OverlayGroup_Cameras">Cameras</sys:String>
-	<sys:String x:Key="LOC_Overlay_Camera">Camera wireframe</sys:String>
-	<sys:String x:Key="LOC_Overlay_OrbitCameraTarget">Orbit camera target point</sys:String>
-	<sys:String x:Key="LOC_Overlay_OrbitCameraTargetBounds">Orbit camera target bounding box</sys:String>
-
 	<!--  Reshade  -->
 	<sys:String x:Key="LOC_Reshade_NotSupportedTitle">Unsupported ReShade version</sys:String>
 	<sys:String x:Key="LOC_Reshade_NotSupportedBody">You have an unsupported version of ReShade installed. Only versions 6.3.0 or newer are supported by the Studio Fourteen integration.</sys:String>
-	<sys:String x:Key="LOC_Reshade_NotSupportedInfo">You can continue to use this version of ReShade, however you will need to disable the Studio Fourteen overlay to access the ReShade UI. This will disable mouse inputs, including camera control.</sys:String>
+	<sys:String x:Key="LOC_Reshade_NotSupportedInfo">You can continue to use this version of ReShade, however you will need to disable Studio Fourteen's mouse input to access the ReShade UI.</sys:String>
 	<sys:String x:Key="LOC_Reshade_NotSupportedDontNotify">Dont notify me again</sys:String>
-	<sys:String x:Key="LOC_Reshade_NotSupportedHelp">The overlay can be disabled with the  :MousePointer: icon in the overlay control panel.</sys:String>
+	<sys:String x:Key="LOC_Reshade_NotSupportedHelp">The overlay can be disabled with the  :MousePointer: icon in the task bar.</sys:String>
 
 	<!--  Analytics  -->
 	<sys:String x:Key="LOC_Analytics_OptTitle">Analytics Options</sys:String>

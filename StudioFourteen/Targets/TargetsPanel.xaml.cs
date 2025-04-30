@@ -13,7 +13,7 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Studio.Background;
+namespace StudioFourteen.Targets;
 
 using Dalamud.Plugin.Services;
 using DependencyPropertyGenerator;

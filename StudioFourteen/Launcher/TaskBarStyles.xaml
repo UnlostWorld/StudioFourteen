@@ -3,21 +3,17 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=WpfUtils"
-	xmlns:local="clr-namespace:StudioFourteen.Launcher"
-	xmlns:icons="clr-namespace:StudioFourteen.Icons">
+	xmlns:icons="clr-namespace:StudioFourteen.Icons"
+	xmlns:local="clr-namespace:StudioFourteen.Launcher">
 
 	<ResourceDictionary.MergedDictionaries>
-		<ResourceDictionary Source="../Icons/IconStyles.xaml"/>
+		<ResourceDictionary Source="../Icons/IconStyles.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 
 	<BooleanToVisibilityConverter x:Key="B2V" />
 
-	<ControlTemplate
-		x:Key="TaskBarButtonTemplate"
-		TargetType="{x:Type local:TaskBarButtonControl}">
-		<Grid
-			x:Name="OuterGrid"
-			Height="32">
+	<ControlTemplate x:Key="TaskBarButtonTemplate" TargetType="{x:Type local:TaskBarButtonControl}">
+		<Grid x:Name="OuterGrid" Height="32">
 			<Grid
 				x:Name="MainGrid"
 				Height="32"
@@ -34,9 +30,7 @@
 					SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
 					Style="{DynamicResource WpfUtilsControlHoverBorder}" />
 
-				<Grid
-					x:Name="ContentArea"
-					Margin="4,0,0,0">
+				<Grid x:Name="ContentArea" Margin="4,0,0,0">
 
 					<icons:IconView
 						Margin="{TemplateBinding Padding}"
@@ -51,9 +45,7 @@
 					HorizontalAlignment="Left"
 					Opacity="1">
 
-					<Border
-						Background="{DynamicResource ForegroundLightBrush}"
-						CornerRadius="1" />
+					<Border Background="{DynamicResource ForegroundLightBrush}" CornerRadius="1" />
 
 					<Border
 						x:Name="ActiveIndicator"
@@ -151,27 +143,19 @@
 				<Trigger.EnterActions>
 					<BeginStoryboard>
 						<Storyboard>
-							<ThicknessAnimationUsingKeyFrames
-								Storyboard.TargetName="ContentArea"
-								Storyboard.TargetProperty="Margin">
+							<ThicknessAnimationUsingKeyFrames Storyboard.TargetName="ContentArea" Storyboard.TargetProperty="Margin">
 
-								<EasingThicknessKeyFrame
-									KeyTime="0:00:00.000"
-									Value="4,0,0,0">
+								<EasingThicknessKeyFrame KeyTime="0:00:00.000" Value="4,0,0,0">
 									<EasingThicknessKeyFrame.EasingFunction>
 										<ExponentialEase EasingMode="EaseOut" />
 									</EasingThicknessKeyFrame.EasingFunction>
 								</EasingThicknessKeyFrame>
-								<EasingThicknessKeyFrame
-									KeyTime="0:00:00.050"
-									Value="-12,0,0,0">
+								<EasingThicknessKeyFrame KeyTime="0:00:00.050" Value="-12,0,0,0">
 									<EasingThicknessKeyFrame.EasingFunction>
 										<ExponentialEase EasingMode="EaseOut" />
 									</EasingThicknessKeyFrame.EasingFunction>
 								</EasingThicknessKeyFrame>
-								<EasingThicknessKeyFrame
-									KeyTime="0:00:00.250"
-									Value="0,0,0,0" />
+								<EasingThicknessKeyFrame KeyTime="0:00:00.250" Value="0,0,0,0" />
 							</ThicknessAnimationUsingKeyFrames>
 							<DoubleAnimation
 								Storyboard.TargetName="OpenIndicator"
@@ -185,27 +169,19 @@
 				<Trigger.ExitActions>
 					<BeginStoryboard>
 						<Storyboard>
-							<ThicknessAnimationUsingKeyFrames
-								Storyboard.TargetName="ContentArea"
-								Storyboard.TargetProperty="Margin">
+							<ThicknessAnimationUsingKeyFrames Storyboard.TargetName="ContentArea" Storyboard.TargetProperty="Margin">
 
-								<EasingThicknessKeyFrame
-									KeyTime="0:00:00.000"
-									Value="4,0,0,0">
+								<EasingThicknessKeyFrame KeyTime="0:00:00.000" Value="4,0,0,0">
 									<EasingThicknessKeyFrame.EasingFunction>
 										<ExponentialEase EasingMode="EaseOut" />
 									</EasingThicknessKeyFrame.EasingFunction>
 								</EasingThicknessKeyFrame>
-								<EasingThicknessKeyFrame
-									KeyTime="0:00:00.100"
-									Value="10,0,0,0">
+								<EasingThicknessKeyFrame KeyTime="0:00:00.100" Value="10,0,0,0">
 									<EasingThicknessKeyFrame.EasingFunction>
 										<ExponentialEase EasingMode="EaseOut" />
 									</EasingThicknessKeyFrame.EasingFunction>
 								</EasingThicknessKeyFrame>
-								<EasingThicknessKeyFrame
-									KeyTime="0:00:00.250"
-									Value="4,0,0,0" />
+								<EasingThicknessKeyFrame KeyTime="0:00:00.250" Value="4,0,0,0" />
 							</ThicknessAnimationUsingKeyFrames>
 							<DoubleAnimation
 								Storyboard.TargetName="OpenIndicator"
@@ -266,13 +242,9 @@
 		<Setter Property="VerticalContentAlignment" Value="Center" />
 	</Style>
 
-	<ControlTemplate
-		x:Key="TaskBarTemplate"
-		TargetType="{x:Type local:TaskBarControl}">
+	<ControlTemplate x:Key="TaskBarTemplate" TargetType="{x:Type local:TaskBarControl}">
 
-		<Grid
-			x:Name="MainGrid"
-			Margin="12">
+		<Grid x:Name="MainGrid" Margin="12">
 
 			<Border
 				x:Name="WindowShadow"
@@ -280,9 +252,7 @@
 				CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}"
 				Opacity="0.25">
 				<Border.BitmapEffect>
-					<DropShadowBitmapEffect
-						ShadowDepth="0"
-						Softness="0.75" />
+					<DropShadowBitmapEffect ShadowDepth="0" Softness="0.75" />
 				</Border.BitmapEffect>
 			</Border>
 
@@ -297,9 +267,7 @@
 				BorderThickness="1"
 				CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
 
-			<Grid
-				x:Name="ContentArea"
-				Margin="{TemplateBinding Padding}">
+			<Grid x:Name="ContentArea" Margin="{TemplateBinding Padding}">
 
 				<Grid.OpacityMask>
 					<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
@@ -311,9 +279,7 @@
 
 				<StackPanel>
 					<!--  Toggles  -->
-					<Border
-						Margin="3,3,3,1"
-						Style="{DynamicResource WpfUtilsControlBorder}">
+					<Border Margin="3,3,3,1" Style="{DynamicResource WpfUtilsControlBorder}">
 
 						<StackPanel Orientation="Vertical">
 
@@ -321,35 +287,49 @@
 								Width="32"
 								Height="32"
 								Padding="8"
+								Content="{DynamicResource ICON_GroupPose}"
 								IsChecked="{Binding Path=IsInGPose, RelativeSource={RelativeSource AncestorType={x:Type local:TaskBarControl}}}"
 								Style="{DynamicResource WpfUtilsIconToggleButton}"
-								ToolTip="{DynamicResource LOC_ToggleGPose}"
-								Content="{DynamicResource ICON_GroupPose}"/>
+								ToolTip="{DynamicResource LOC_ToggleGPose}" />
 
 							<ToggleButton
 								Width="32"
 								Height="32"
 								Padding="8"
+								Content="{DynamicResource ICON_GroupPoseSettings}"
 								IsChecked="{Binding Path=IsGPoseSettingsOpen, RelativeSource={RelativeSource AncestorType={x:Type local:TaskBarControl}}, Mode=TwoWay}"
 								Style="{DynamicResource WpfUtilsIconToggleButton}"
 								ToolTip="{DynamicResource LOC_GPoseSettings}"
-								Visibility="{Binding Path=IsInGPose, RelativeSource={RelativeSource AncestorType={x:Type local:TaskBarControl}}, Converter={StaticResource B2V}}"
-								Content="{DynamicResource ICON_GroupPoseSettings}">
-							</ToggleButton>
+								Visibility="{Binding Path=IsInGPose, RelativeSource={RelativeSource AncestorType={x:Type local:TaskBarControl}}, Converter={StaticResource B2V}}" />
+
+							<ToggleButton
+								Width="32"
+								Height="32"
+								Padding="8"
+								Content="{DynamicResource ICON_MouseInput}"
+								IsChecked="{Binding AllowMouseCapture, RelativeSource={RelativeSource AncestorType={x:Type local:TaskBarControl}}, Mode=TwoWay}"
+								Style="{DynamicResource WpfUtilsIconToggleButton}"
+								ToolTip="{DynamicResource LOC_Settings_Input_Mouse}"
+								Visibility="{Binding Path=IsInGPose, RelativeSource={RelativeSource AncestorType={x:Type local:TaskBarControl}}, Converter={StaticResource B2V}}" />
+
+							<ToggleButton
+								Width="32"
+								Height="32"
+								Padding="8"
+								Content="{DynamicResource ICON_Gizmos}"
+								Style="{DynamicResource WpfUtilsIconToggleButton}"
+								ToolTip="{DynamicResource LOC_Gizmos}"
+								Visibility="{Binding Path=IsInGPose, RelativeSource={RelativeSource AncestorType={x:Type local:TaskBarControl}}, Converter={StaticResource B2V}}" />
 
 						</StackPanel>
 					</Border>
 
 					<!--  Panels  -->
-					<Border
-						Margin="3,1,3,3"
-						Style="{DynamicResource WpfUtilsControlBorder}">
+					<Border Margin="3,1,3,3" Style="{DynamicResource WpfUtilsControlBorder}">
 						<ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Entries}">
 							<ItemsControl.ItemsPanel>
 								<ItemsPanelTemplate>
-									<StackPanel
-										IsItemsHost="True"
-										Orientation="Vertical" />
+									<StackPanel IsItemsHost="True" Orientation="Vertical" />
 								</ItemsPanelTemplate>
 							</ItemsControl.ItemsPanel>
 							<ItemsControl.ItemTemplate>
@@ -377,9 +357,9 @@
 
 			<Trigger Property="HideBackground" Value="True">
 				<Setter TargetName="MainGrid" Property="Margin" Value="0" />
-				<Setter TargetName="WindowShadow" Property="Visibility" Value="Collapsed" />
 				<Setter TargetName="WindowBackground" Property="Visibility" Value="Collapsed" />
 				<Setter TargetName="WindowBorder" Property="Visibility" Value="Collapsed" />
+				<Setter TargetName="WindowShadow" Property="Visibility" Value="Collapsed" />
 			</Trigger>
 
 			<Trigger Property="IsOpen" Value="False">

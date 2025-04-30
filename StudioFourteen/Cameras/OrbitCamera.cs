@@ -15,16 +15,12 @@
 
 namespace StudioFourteen.Cameras;
 
-using Dalamud.Plugin.Services;
-using FFXIVClientStructs.FFXIV.Common.Lua;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Input;
-using StudioFourteen.Overlays;
 using StudioFourteen.Structs.Extensions;
 using StudioFourteen.Utilities;
 using System;
 using System.Numerics;
-using System.Windows.Input;
 
 public partial class OrbitCamera : StudioCameraBase
 {

@@ -76,10 +76,10 @@
 	<icons:Fa x:Key="ICON_Reset" Icon="Undo" Font="Solid" />
 	<icons:Fa x:Key="ICON_PathSeperator" Icon="CaretRight" Font="Solid" />
 	<icons:Fa x:Key="ICON_Export" Icon="FileImage" Font="Solid" />
-	<icons:Fa x:Key="ICON_GlobalOverlay" Icon="MousePointer" Font="Solid" />
+	<icons:Fa x:Key="ICON_MouseInput" Icon="MousePointer" Font="Solid" />
 	<icons:Fa x:Key="ICON_VisibilityOn" Icon="Eye" Font="Solid" />
 	<icons:Fa x:Key="ICON_VisibilityOff" Icon="EyeSlash" Font="Solid" />
-	<icons:Fa x:Key="ICON_OverlayLayers" Icon="LayerGroup" Font="Solid" />
+	<icons:Fa x:Key="ICON_Gizmos" Icon="LayerGroup" Font="Solid" />
 	<icons:Fa x:Key="ICON_AddCharacter" Icon="UserPlus" Font="Solid" />
 	<icons:Svg x:Key="ICON_DeleteCharacter" Source="CharacterDelete"/>
 	<icons:Fa x:Key="ICON_Info" Icon="InfoCircle" Font="Solid" />

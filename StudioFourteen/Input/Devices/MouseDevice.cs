@@ -233,7 +233,7 @@ public class MouseDevice : InputDeviceBase
 
 		// If the user has disabled the overlay system globabally,
 		// never capture mouse inputs.
-		if (!this.Services.Settings.Current.EnableGlobalOverlay)
+		if (!this.Services.Settings.Current.AllowMouseCapture)
 			return false;
 
 		// Don't process mouse if the cursor is over a in-game UI element

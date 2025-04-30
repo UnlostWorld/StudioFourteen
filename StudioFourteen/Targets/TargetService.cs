@@ -13,14 +13,11 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services;
+namespace StudioFourteen.Targets;
 
-using Dalamud.Plugin.Services;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
-using StudioFourteen.Plugin;
-using StudioFourteen.Studio.Background;
 using StudioFourteen.Utilities;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -28,6 +25,7 @@ using System.Windows;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Input;
 using System;
+using StudioFourteen.Services;
 
 public partial class TargetService : ServiceBase
 {

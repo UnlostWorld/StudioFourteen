@@ -37,6 +37,7 @@ using Panel = StudioFourteen.Panels.Panel;
 [DependencyProperty<bool>("IsGPoseSettingsOpen")]
 [DependencyProperty<PanelContextBase>("Context")]
 [DependencyProperty<bool>("HideBackground")]
+[DependencyProperty<bool>("AllowMouseCapture")]
 public partial class TaskBarControl : Control
 {
 	private readonly Dictionary<Type, TaskBarEntry> panelEntries = new();
@@ -47,6 +48,7 @@ public partial class TaskBarControl : Control
 		this.Services.Studio.Closing += this.OnStudioClosing;
 		this.Services.GroupPose.StateChanged += this.OnGroupPoseStateChanged;
 		this.Services.GroupPose.SettingsStateChanged += this.OnGroupPoseSettingsStateChanged;
+		this.Services.Settings.SettingChanged += this.OnSettingsOpenChanged;
 
 		this.IsInGPose = this.Services.GroupPose.IsGroupPosing;
 		this.IsGPoseSettingsOpen = this.Services.GroupPose.IsGroupPoseSettingsWindowVisible;
@@ -85,6 +87,8 @@ public partial class TaskBarControl : Control
 		{
 			this.OnStudioOpening();
 		}
+
+		this.AllowMouseCapture = this.Settings.AllowMouseCapture;
 	}
 
 	private void OnStudioOpening()
@@ -200,6 +204,16 @@ public partial class TaskBarControl : Control
 		entry.IsVisible = false;
 		await Task.Delay(250);
 		this.Entries.Remove(entry);
+	}
+
+	private void OnSettingsOpenChanged(string settingName, object? newValue)
+	{
+		this.AllowMouseCapture = this.Settings.AllowMouseCapture;
+	}
+
+	partial void OnAllowMouseCaptureChanged(bool oldValue, bool newValue)
+	{
+		this.Settings.AllowMouseCapture = newValue;
 	}
 }
 

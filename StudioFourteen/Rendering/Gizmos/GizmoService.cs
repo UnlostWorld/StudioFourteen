@@ -1,4 +1,4 @@
-﻿// .                    @@             _____ _______ _    _ _____ _____ ____
+// .                    @@             _____ _______ _    _ _____ _____ ____
 //          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
 //         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
 //         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
@@ -13,40 +13,23 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Overlays;
+namespace StudioFourteen.Rendering.Gizmos;
 
-using StudioFourteen.Panels;
-using System.ComponentModel;
-using WpfUtils.Extensions;
+using StudioFourteen.Services;
 
-public partial class OverlayControlPanel : Panel
+public class GizmoService : ServiceBase
 {
-	public OverlayControlPanel()
+	public readonly GridGizmo Grid = new();
+
+	public override void Attach()
 	{
-		if (DesignerProperties.GetIsInDesignMode(this))
-			return;
-
-		this.Services.Overlays.LayerAdded += this.OnLayerAdded;
-		this.Services.Overlays.LayerRemoved += this.OnLayerRemoved;
-
-		this.Overlays.AddRange(this.Services.Overlays.GetOverlayLayers());
+		this.Grid.Enable();
+		base.Attach();
 	}
 
-	public FastObservableCollection<OverlayLayerBase> Overlays { get; init; } = new();
-
-	private void OnLayerAdded(OverlayLayerBase overlay)
+	public override void Detach()
 	{
-		this.Dispatcher.Invoke(() =>
-		{
-			this.Overlays.Add(overlay);
-		});
-	}
-
-	private void OnLayerRemoved(OverlayLayerBase overlay)
-	{
-		this.Dispatcher.Invoke(() =>
-		{
-			this.Overlays.Remove(overlay);
-		});
+		this.Grid.Disable();
+		base.Detach();
 	}
 }
