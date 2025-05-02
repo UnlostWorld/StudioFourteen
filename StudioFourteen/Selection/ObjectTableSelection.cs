@@ -181,6 +181,8 @@ public class ObjectTableSelectionGizmo : SelectionGizmo<ObjectTableSelection>
 		this.Add(this.circle);
 	}
 
+	public override string Name => "Character Selection";
+
 	protected unsafe override bool Draw(ObjectTableSelection selection)
 	{
 		GameObject* gameObject = this.Services.GameObjects.Get(selection.ObjectTableId);

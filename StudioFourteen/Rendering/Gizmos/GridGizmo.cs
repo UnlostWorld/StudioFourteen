@@ -20,10 +20,47 @@ using StudioFourteen.Rendering.Scene;
 
 public class GridGizmo : GizmoBase
 {
-	public readonly GridMaterial Material = new();
+	private readonly MeshRenderer gridRenderer = new(Meshes.Plane, new GridMaterial());
 
 	public GridGizmo()
 	{
-		this.Add(new MeshRenderer(Meshes.Plane, this.Material));
+		this.Add(this.gridRenderer);
+	}
+
+	public override string Name => "Grid";
+
+	public float Opacity
+	{
+		get => this.GetPersistence<float>(defaultValue: 0.75f);
+		set => this.SetPersistence(value);
+	}
+
+	public float GridSize
+	{
+		get => this.GetPersistence<float>(defaultValue: 1.0f);
+		set => this.SetPersistence(value);
+	}
+
+	public float LineThickness
+	{
+		get => this.GetPersistence<float>(defaultValue: 0.2f);
+		set => this.SetPersistence(value);
+	}
+
+	public float Height
+	{
+		get => this.GetPersistence<float>();
+		set => this.SetPersistence(value);
+	}
+
+	protected override void OnPersistenceChanged()
+	{
+		base.OnPersistenceChanged();
+
+		ref GridMaterial.GridInstanceData data = ref this.gridRenderer.GetMaterialInstance<GridMaterial.GridInstanceData>();
+		data.Color.A = this.Opacity;
+		data.GridSize = this.GridSize;
+		data.LineThickness = this.LineThickness;
+		data.Height = this.Height;
 	}
 }

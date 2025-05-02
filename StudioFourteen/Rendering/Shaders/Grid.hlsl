@@ -33,6 +33,7 @@ cbuffer MaterialInstanceData : register(b2)
 	float4 Color;
 	float GridSize;
 	float LineThickness;
+	float Height;
 };
 
 struct Vertex
@@ -91,6 +92,7 @@ Fragment vert(in Vertex vertex)
 	float4 position = vertex.Position;
 	position.xyz *= quadScale;
 	position.xz += CameraPosition.xz;
+	position.y += Height;
 	result.WorldPosition = position;
 
 	result.Position = mul(position, ViewProjection);
@@ -115,16 +117,17 @@ float4 pixel(Fragment frag) : SV_TARGET
 
 	float4 color = Color;
 	color.a = 0;
-	if (any(distance_to_subcell < LineThickness * frag.Position.w))
+	if (any(distance_to_subcell < (LineThickness / 100) * frag.Position.w))
 	{
-		color.a = 0.25;
+		color.a = 0.5;
 	}
 
-	if(any(distance_to_cell < LineThickness * frag.Position.w))
+	if(any(distance_to_cell < (LineThickness / 100) * frag.Position.w))
 	{
 		color.a = 1;
 	}
 
+	color.a *= Color.a;
 	color.a *= GetClippingAlpha(frag, 0.0f);
 	color.a *= r;
 	return color;

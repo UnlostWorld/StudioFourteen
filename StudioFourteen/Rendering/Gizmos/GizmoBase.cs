@@ -15,27 +15,81 @@
 
 namespace StudioFourteen.Rendering.Gizmos;
 
+using System;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using PropertyChanged.SourceGenerator;
 using Serilog;
 using StudioFourteen.Rendering.Scene;
+using StudioFourteen.Settings;
 
-public class GizmoBase : SceneGroup
+public abstract class GizmoBase : SceneGroup, INotifyPropertyChanged
 {
 	protected readonly ILogger Log;
 
 	public GizmoBase()
 	{
 		this.Log = Logging.ForContext(this.GetType());
+		this.Persistence = Persistence.GetPersistence($"Gizmo_{this.GetType().Name}");
+
+		this.Persistence.PersistenceChanged += this.OnPersistenceChanged;
+	}
+
+	public event PropertyChangedEventHandler? PropertyChanged;
+
+	public abstract string Name { get; }
+
+	public float IsEnabled
+	{
+		get => this.GetPersistence<float>();
+		set => this.SetPersistence(value);
 	}
 
 	protected ServiceManager Services => ServiceManager.Instance;
+	protected Persistence Persistence { get; init; }
 
 	public virtual void Enable()
 	{
-		this.Services.Rendering.Forward.Add(this);
+		this.Services.Gizmos.Enable(this);
 	}
 
 	public virtual void Disable()
 	{
-		this.Services.Rendering.Forward.Remove(this);
+		this.Services.Gizmos.Disable(this);
 	}
+
+	public T? GetPersistence<T>([CallerMemberName] string id = "", T? defaultValue = default) => this.Persistence.GetPersistence<T>(id, defaultValue);
+
+	public void SetPersistence(object? value, [CallerMemberName] string id = "")
+	{
+		this.Persistence.SetPersistence(value, id);
+		this.PropertyChanged?.Invoke(this, new(id));
+	}
+
+	public void SetPersistence(string id, object? value)
+	{
+		this.Persistence.SetPersistence(id, value);
+		this.PropertyChanged?.Invoke(this, new(id));
+	}
+
+	protected virtual void OnPersistenceChanged()
+	{
+	}
+
+	private void OnPersistenceChanged(Persistence persistence)
+	{
+		this.OnPersistenceChanged();
+	}
+
+	/*
+	// Test
+	Vector2? mouse = this.Services.Input.Mouse?.GetPosition();
+	if (mouse != null)
+	{
+		HitTestResult result = new();
+		this.Geometry.HitTest(mouse.Value, ref result);
+
+		this.Log.Information($">> {result.DrawObject} {result.Distance}");
+	}
+	*/
 }

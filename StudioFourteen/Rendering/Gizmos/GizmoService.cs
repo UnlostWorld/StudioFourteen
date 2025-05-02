@@ -15,21 +15,43 @@
 
 namespace StudioFourteen.Rendering.Gizmos;
 
+using System;
+using System.Collections.Generic;
 using StudioFourteen.Services;
 
 public class GizmoService : ServiceBase
 {
-	public readonly GridGizmo Grid = new();
+	public readonly List<GizmoBase> Gizmos = new();
+	private readonly GridGizmo grid = new();
+
+	public delegate void GizmosChangedDelegate();
+	public event GizmosChangedDelegate? GizmosChanged;
 
 	public override void Attach()
 	{
-		this.Grid.Enable();
+		this.grid.Enable();
 		base.Attach();
 	}
 
 	public override void Detach()
 	{
-		this.Grid.Disable();
+		this.grid.Disable();
 		base.Detach();
+	}
+
+	public void Enable(GizmoBase gizmo)
+	{
+		this.Gizmos.Add(gizmo);
+		this.GizmosChanged?.Invoke();
+
+		this.Services.Rendering.Forward.Add(gizmo);
+	}
+
+	public void Disable(GizmoBase gizmo)
+	{
+		this.Gizmos.Remove(gizmo);
+		this.GizmosChanged?.Invoke();
+
+		this.Services.Rendering.Forward.Remove(gizmo);
 	}
 }

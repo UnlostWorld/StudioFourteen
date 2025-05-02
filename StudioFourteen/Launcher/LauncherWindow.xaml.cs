@@ -39,7 +39,7 @@ public partial class LauncherWindow : PanelWindow
 		this.Services.Studio.Closing += this.OnStudioStateChanged;
 	}
 
-	public Persistence Persistence { get; init; } = new($"Panel_Launcher");
+	public Persistence Persistence { get; init; } = Persistence.GetPersistence($"Panel_Launcher");
 
 	public override T? GetPersistence<T>([CallerMemberName] string id = "")
 		where T : default

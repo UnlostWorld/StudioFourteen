@@ -13,27 +13,36 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Gizmos.Handles;
+namespace StudioFourteen.Rendering.Gizmos;
 
-using FFXIVClientStructs.FFXIV.Client.Game.Object;
-using SharpDX.Direct3D11;
-using StudioFourteen.Rendering.Scene;
-using StudioFourteen.Selection;
+using System;
+using System.Collections.ObjectModel;
+using System.Windows.Controls;
+using Serilog;
+using WpfUtils.Extensions;
 
-public class HandleBase : GizmoBase
+public partial class GizmoControlPanel : UserControl
 {
-	// TODO: a handle service for doing the hit test dispatch, instead of cramming it
-	// into the render pass?
+	protected readonly ILogger Log;
 
-	/*
-	// Test
-		Vector2? mouse = this.Services.Input.Mouse?.GetPosition();
-		if (mouse != null)
+	public GizmoControlPanel()
+	{
+		this.InitializeComponent();
+		this.DataContext = this;
+		this.Log = Logging.ForContext<GizmoControlPanel>();
+
+		this.Services.Gizmos.GizmosChanged += this.OnGizmosChanged;
+		this.Gizmos.Replace(this.Services.Gizmos.Gizmos);
+	}
+
+	public FastObservableCollection<GizmoBase> Gizmos { get; init; } = new();
+	public ServiceManager Services => ServiceManager.Instance;
+
+	private void OnGizmosChanged()
+	{
+		this.Dispatcher.Invoke(() =>
 		{
-			HitTestResult result = new();
-			this.Geometry.HitTest(mouse.Value, ref result);
-
-			this.Log.Information($">> {result.DrawObject} {result.Distance}");
-		}
-		*/
+			this.Gizmos.Replace(this.Services.Gizmos.Gizmos);
+		});
+	}
 }

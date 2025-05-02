@@ -63,7 +63,7 @@ public partial class Panel : ContentControl, IAutoNotify
 	{
 		this.panelId = this.GetType().Name;
 		this.Log = Logging.ForContext(this.GetType());
-		this.Persistence = new($"Panel_{this.panelId}");
+		this.Persistence = Persistence.GetPersistence($"Panel_{this.panelId}");
 
 		// Load a new copy of the resources. Each panel needs its own instance for threading reasons.
 		this.Resources = StudioFourteen.Resources.Load();

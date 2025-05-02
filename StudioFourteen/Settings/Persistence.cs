@@ -14,23 +14,44 @@
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
 namespace StudioFourteen.Settings;
+
 using StudioFourteen.Serialization;
 using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
-public class Persistence(string persistenceId)
+public class Persistence
 {
-	private readonly string persistenceId = persistenceId;
-	private readonly Dictionary<string, object?> persistenceCache = [];
+	private static readonly Dictionary<string, Persistence> PersistenceObjectCache = new();
+	private readonly Dictionary<string, object?> valueCache = [];
+	private readonly string persistenceId;
+
+	private Persistence(string persistenceId)
+	{
+		this.persistenceId = persistenceId;
+	}
+
+	public delegate void PersistenceDelegate(Persistence persistence);
+
+	public event PersistenceDelegate? PersistenceChanged;
+
+	public static Persistence GetPersistence(string persistenceId)
+	{
+		if (PersistenceObjectCache.TryGetValue(persistenceId, out var persistence))
+			return persistence;
+
+		Persistence newPersistence = new(persistenceId);
+		PersistenceObjectCache[persistenceId] = newPersistence;
+		return newPersistence;
+	}
 
 	public T? GetPersistence<T>([CallerMemberName] string id = "", T? defaultValue = default)
 	{
 		try
 		{
-			lock (this.persistenceCache)
+			lock (this.valueCache)
 			{
-				if (this.persistenceCache.TryGetValue(id, out object? value))
+				if (this.valueCache.TryGetValue(id, out object? value))
 				{
 					return (T?)value;
 				}
@@ -44,10 +65,10 @@ public class Persistence(string persistenceId)
 			if (!json.StartsWith('"') || !json.EndsWith('"'))
 				json = '"' + json + '"';
 
-			lock (this.persistenceCache)
+			lock (this.valueCache)
 			{
 				T? value = Serializer.Deserialize<T>(json);
-				this.persistenceCache.Add(id, value);
+				this.valueCache.Add(id, value);
 				return value;
 			}
 		}
@@ -67,10 +88,12 @@ public class Persistence(string persistenceId)
 	{
 		try
 		{
-			lock (this.persistenceCache)
+			lock (this.valueCache)
 			{
-				this.persistenceCache[id] = value;
+				this.valueCache[id] = value;
 			}
+
+			this.PersistenceChanged?.Invoke(this);
 
 			string persistenceId = this.persistenceId + "_" + id;
 

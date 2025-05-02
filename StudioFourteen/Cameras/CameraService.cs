@@ -336,6 +336,10 @@ public class CameraService : ServiceBase
 				this.Log.Error(ex, "Error in camera update");
 			}
 		}
+		else
+		{
+			this.CurrentPosition = camera->Position;
+		}
 
 		this.NearPlane = camera->RenderCamera->NearPlane;
 		this.FarPlane = camera->RenderCamera->FarPlane;

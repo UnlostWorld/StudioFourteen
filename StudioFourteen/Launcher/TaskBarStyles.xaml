@@ -2,7 +2,9 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
+	xmlns:gizmos="clr-namespace:StudioFourteen.Rendering.Gizmos"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=WpfUtils"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:local="clr-namespace:StudioFourteen.Launcher">
 
@@ -316,10 +318,18 @@
 								Width="32"
 								Height="32"
 								Padding="8"
+								x:Name="GizmoToggle"
 								Content="{DynamicResource ICON_Gizmos}"
 								Style="{DynamicResource WpfUtilsIconToggleButton}"
-								ToolTip="{DynamicResource LOC_Gizmos}"
-								Visibility="{Binding Path=IsInGPose, RelativeSource={RelativeSource AncestorType={x:Type local:TaskBarControl}}, Converter={StaticResource B2V}}" />
+								ToolTip="{DynamicResource LOC_Gizmos}"/>
+
+							<wpfUtils:PopOut
+								Style="{DynamicResource WpfUtilsPopOut}"
+								IsOpen="{Binding IsChecked, ElementName=GizmoToggle}"
+								PlacementTarget="{Binding ElementName=GizmoToggle}"
+								StaysOpen="False">
+								<gizmos:GizmoControlPanel />
+							</wpfUtils:PopOut>
 
 						</StackPanel>
 					</Border>

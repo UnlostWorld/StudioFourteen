@@ -47,6 +47,17 @@ public class MeshRenderer : InstanceRendererBase<MeshRenderer.PerRendererData>
 		this.Material = material;
 	}
 
+	public ref TDataType GetMaterialInstance<TDataType>()
+		where TDataType : unmanaged
+	{
+		if (this.Material is InstanceMaterialBase<TDataType> instanceMaterial)
+		{
+			return ref instanceMaterial.GetInstanceData(this);
+		}
+
+		throw new Exception("Material was not an instance material");
+	}
+
 	public override void Draw(Transform transform, Device device, DeviceContext deviceContext)
 	{
 		Transform thisTransform = transform * this.Transform;

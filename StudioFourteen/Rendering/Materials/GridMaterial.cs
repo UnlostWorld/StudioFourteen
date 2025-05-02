@@ -31,7 +31,7 @@ public class GridMaterial : InstanceMaterialBase<GridMaterial.GridInstanceData>
 
 		instance.Color = Color.White;
 		instance.GridSize = 1.0f;
-		instance.LineThickness = 0.002f;
+		instance.LineThickness = 0.2f;
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
@@ -40,7 +40,7 @@ public class GridMaterial : InstanceMaterialBase<GridMaterial.GridInstanceData>
 		public Color Color;
 		public float GridSize;
 		public float LineThickness;
-		public float Unused2;
+		public float Height;
 		public float Unused3;
 	}
 }
