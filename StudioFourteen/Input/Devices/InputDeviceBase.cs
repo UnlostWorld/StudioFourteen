@@ -79,7 +79,7 @@ public class InputAxis(string id, InputDeviceBase device, bool canActivateDevice
 	public InputDeviceBase Device => device;
 	public Bind? ConsumedBy { get; set; }
 
-	public DateTime UtcLastInput { get; private set; }
+	public DateTime UtcLastInput { get; set; }
 	public bool CanActivateDevice => canActivateDevice;
 
 	public bool IsConsumed => this.ConsumedBy != null;

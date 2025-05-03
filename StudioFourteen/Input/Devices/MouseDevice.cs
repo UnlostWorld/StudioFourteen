@@ -118,6 +118,21 @@ public class MouseDevice : InputDeviceBase
 
 	public override void Attach()
 	{
+		// Listen for mouse down on any UI element
+		// and update the last input time to force focus mode to switch
+		// correctly, even when we're not capturing mouse inputs.
+		EventManager.RegisterClassHandler(
+			typeof(UIElement),
+			FrameworkElement.MouseDownEvent,
+			new RoutedEventHandler((s, e) =>
+			{
+				if (ServiceManager.ShutdownRequested)
+					return;
+
+				this.buttonAxes[MouseButton.Left].UtcLastInput = DateTime.UtcNow;
+			}));
+
+		this.buttonAxes[MouseButton.Left].UtcLastInput = DateTime.UtcNow;
 	}
 
 	public override void Detach()
