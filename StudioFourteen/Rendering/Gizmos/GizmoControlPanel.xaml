@@ -6,6 +6,8 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:gizmos="clr-namespace:StudioFourteen.Rendering.Gizmos"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=WpfUtils"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	mc:Ignorable="d"
 	Width="200"
 	Height="350">
@@ -50,6 +52,8 @@
 							<ContentPresenter Content="{Binding .}">
 								<ContentPresenter.Resources>
 
+									<converters:BoolInversionConverter x:Key="!B" />
+
 									<!--  Grid Gizmo  -->
 									<DataTemplate DataType="{x:Type gizmos:GridGizmo}">
 										<StackPanel>
@@ -57,7 +61,20 @@
 											<controls:NumberSlider Value="{Binding Opacity}" Minimum="0" Maximum="1" Change="0.1"/>
 
 											<TextBlock Style="{DynamicResource LabelLeft}" Text="{DynamicResource LOC_Gizmos_GridHeight}"/>
-											<controls:NumberSlider Value="{Binding Height}" Minimum="-2000" Maximum="2000" Style="{DynamicResource NumberRelativeSlider}"/>
+											<wpfUtils:SwitchSelector>
+												<ListBoxItem
+													IsSelected="{Binding KeepAtTargetHeight, Converter={StaticResource !B}}"
+													Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
+													Content="Manual">
+												</ListBoxItem>
+												<ListBoxItem
+													IsSelected="{Binding KeepAtTargetHeight}"
+													Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
+													Content="Automatic"/>
+											</wpfUtils:SwitchSelector>
+
+											<controls:NumberSlider IsEnabled="{Binding KeepAtTargetHeight, Converter={StaticResource !B}}" Value="{Binding Height}" Minimum="-2000" Maximum="2000" Style="{DynamicResource NumberRelativeSlider}"/>
+
 										</StackPanel>
 									</DataTemplate>
 

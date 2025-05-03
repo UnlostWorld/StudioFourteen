@@ -15,6 +15,8 @@
 
 namespace StudioFourteen.Rendering.Gizmos;
 
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using SharpDX.Direct3D11;
 using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Scene;
 
@@ -35,10 +37,31 @@ public class GridGizmo : GizmoBase
 		set => this.SetPersistence(value);
 	}
 
+	public bool KeepAtTargetHeight
+	{
+		get => this.GetPersistence<bool>();
+		set => this.SetPersistence(value);
+	}
+
 	public float Height
 	{
 		get => this.GetPersistence<float>();
 		set => this.SetPersistence(value);
+	}
+
+	public unsafe override void Draw(Transform transform, Device device, DeviceContext deviceContext)
+	{
+		if (this.KeepAtTargetHeight)
+		{
+			Character* target = this.Services.Target.GetTarget();
+			if (target != null && target->DrawObject != null)
+			{
+				ref GridMaterial.GridInstanceData data = ref this.gridRenderer.GetMaterialInstance<GridMaterial.GridInstanceData>();
+				data.Height = target->DrawObject->Position.Y;
+			}
+		}
+
+		base.Draw(transform, device, deviceContext);
 	}
 
 	protected override void OnPersistenceChanged()
@@ -47,6 +70,10 @@ public class GridGizmo : GizmoBase
 
 		ref GridMaterial.GridInstanceData data = ref this.gridRenderer.GetMaterialInstance<GridMaterial.GridInstanceData>();
 		data.Color.A = this.Opacity;
-		data.Height = this.Height;
+
+		if (!this.KeepAtTargetHeight)
+		{
+			data.Height = this.Height;
+		}
 	}
 }
