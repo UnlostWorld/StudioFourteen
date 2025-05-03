@@ -42,6 +42,9 @@ public partial class GizmoControlPanel : UserControl
 	{
 		this.Dispatcher.Invoke(() =>
 		{
+			if (this.Services.Gizmos.GizmoControlPanelOpen)
+				return;
+
 			this.Gizmos.Replace(this.Services.Gizmos.Gizmos);
 		});
 	}

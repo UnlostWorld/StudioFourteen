@@ -105,10 +105,10 @@ Fragment vert(in Vertex vertex)
 float4 pixel(Fragment frag) : SV_TARGET
 {
 	float largeGridSize = GridSize * 10;
-	float2 cell_coords = mod((frag.WorldPosition.xz * 1) + (largeGridSize * 0.5f), largeGridSize / 2);
+	float2 cell_coords = mod((frag.WorldPosition.xz * 1) + (largeGridSize * 0.5f), largeGridSize);
 	float2 distance_to_cell = abs(cell_coords - (largeGridSize * 0.5f));
 
-	float2 subcell_coords = mod((frag.WorldPosition.xz * 1) + (GridSize * 0.5f), GridSize / 2);
+	float2 subcell_coords = mod((frag.WorldPosition.xz * 1) + (GridSize * 0.5f), GridSize);
 	float2 distance_to_subcell = abs(subcell_coords - (GridSize * 0.5f));
 
 	// Fade out towards the ends
@@ -119,7 +119,7 @@ float4 pixel(Fragment frag) : SV_TARGET
 	color.a = 0;
 	if (any(distance_to_subcell < (LineThickness / 100) * frag.Position.w))
 	{
-		color.a = 0.5;
+		color.a = 0.25;
 	}
 
 	if(any(distance_to_cell < (LineThickness / 100) * frag.Position.w))

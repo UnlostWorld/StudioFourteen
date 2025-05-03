@@ -18,11 +18,14 @@ namespace StudioFourteen.Rendering.Gizmos;
 using System;
 using System.Collections.Generic;
 using StudioFourteen.Services;
+using PropertyChanged.SourceGenerator;
 
-public class GizmoService : ServiceBase
+public partial class GizmoService : ServiceBase
 {
 	public readonly List<GizmoBase> Gizmos = new();
 	private readonly GridGizmo grid = new();
+
+	[Notify] private bool gizmoControlPanelOpen;
 
 	public delegate void GizmosChangedDelegate();
 	public event GizmosChangedDelegate? GizmosChanged;
@@ -37,6 +40,11 @@ public class GizmoService : ServiceBase
 	{
 		this.grid.Disable();
 		base.Detach();
+	}
+
+	public bool IsEnabled(GizmoBase gizmo)
+	{
+		return this.Gizmos.Contains(gizmo);
 	}
 
 	public void Enable(GizmoBase gizmo)

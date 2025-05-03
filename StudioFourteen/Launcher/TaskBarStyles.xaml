@@ -319,6 +319,7 @@
 								Height="32"
 								Padding="8"
 								x:Name="GizmoToggle"
+								IsChecked="{Binding Services.Gizmos.GizmoControlPanelOpen}"
 								Content="{DynamicResource ICON_Gizmos}"
 								Style="{DynamicResource WpfUtilsIconToggleButton}"
 								ToolTip="{DynamicResource LOC_Gizmos}"/>
@@ -328,6 +329,7 @@
 								IsOpen="{Binding IsChecked, ElementName=GizmoToggle}"
 								PlacementTarget="{Binding ElementName=GizmoToggle}"
 								StaysOpen="False">
+
 								<gizmos:GizmoControlPanel />
 							</wpfUtils:PopOut>
 

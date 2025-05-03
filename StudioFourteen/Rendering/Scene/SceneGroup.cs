@@ -23,6 +23,8 @@ public class SceneGroup : SceneObject
 {
 	public readonly List<SceneObject> Children = new();
 
+	public virtual bool Visible { get; set; }
+
 	public void Add(SceneObject draw)
 	{
 		this.Children.Add(draw);
@@ -35,6 +37,9 @@ public class SceneGroup : SceneObject
 
 	public override void Draw(Transform transform, Device device, DeviceContext deviceContext)
 	{
+		if (!this.Visible)
+			return;
+
 		Transform thisTransform = transform * this.Transform;
 
 		foreach(SceneObject child in this.Children)

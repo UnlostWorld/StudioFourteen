@@ -15,10 +15,8 @@
 
 namespace StudioFourteen.Rendering.Gizmos;
 
-using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using PropertyChanged.SourceGenerator;
 using Serilog;
 using StudioFourteen.Rendering.Scene;
 using StudioFourteen.Settings;
@@ -39,9 +37,9 @@ public abstract class GizmoBase : SceneGroup, INotifyPropertyChanged
 
 	public abstract string Name { get; }
 
-	public float IsEnabled
+	public override bool Visible
 	{
-		get => this.GetPersistence<float>();
+		get => this.GetPersistence<bool>();
 		set => this.SetPersistence(value);
 	}
 

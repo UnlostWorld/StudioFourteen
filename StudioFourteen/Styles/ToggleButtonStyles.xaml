@@ -1,0 +1,26 @@
+<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:WpfUtils.Controls">
+
+	<ResourceDictionary.MergedDictionaries>
+		<ResourceDictionary Source="pack://application:,,,/WpfUtils;component/Styles/ToggleButtonStyles.xaml" />
+	</ResourceDictionary.MergedDictionaries>
+
+
+	<Style
+		x:Key="VisibilityToggle"
+		TargetType="{x:Type ToggleButton}"
+		BasedOn="{StaticResource WpfUtilsIconToggleButton}">
+		<Setter Property="Content" Value="{DynamicResource ICON_VisibilityOff}"/>
+		<Setter Property="Height" Value="24"/>
+
+		<Style.Triggers>
+			<Trigger Property="IsChecked" Value="True">
+				<Setter Property="Content" Value="{DynamicResource ICON_VisibilityOn}"/>
+			</Trigger>
+		</Style.Triggers>
+
+	</Style>
+
+</ResourceDictionary>

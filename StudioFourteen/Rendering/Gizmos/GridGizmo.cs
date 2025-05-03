@@ -35,18 +35,6 @@ public class GridGizmo : GizmoBase
 		set => this.SetPersistence(value);
 	}
 
-	public float GridSize
-	{
-		get => this.GetPersistence<float>(defaultValue: 1.0f);
-		set => this.SetPersistence(value);
-	}
-
-	public float LineThickness
-	{
-		get => this.GetPersistence<float>(defaultValue: 0.2f);
-		set => this.SetPersistence(value);
-	}
-
 	public float Height
 	{
 		get => this.GetPersistence<float>();
@@ -59,8 +47,6 @@ public class GridGizmo : GizmoBase
 
 		ref GridMaterial.GridInstanceData data = ref this.gridRenderer.GetMaterialInstance<GridMaterial.GridInstanceData>();
 		data.Color.A = this.Opacity;
-		data.GridSize = this.GridSize;
-		data.LineThickness = this.LineThickness;
 		data.Height = this.Height;
 	}
 }
