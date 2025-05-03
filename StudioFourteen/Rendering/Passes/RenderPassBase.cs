@@ -23,6 +23,22 @@ public abstract class RenderPassBase : IDisposable
 {
 	public abstract void Render(RenderingService service, Device device, DeviceContext deviceContext);
 
+	public virtual void OnResolutionChanging()
+	{
+	}
+
+	public virtual void OnResolutionChanged()
+	{
+	}
+
+	public virtual void Attach()
+	{
+	}
+
+	public virtual void Detach()
+	{
+	}
+
 	public virtual void Dispose()
 	{
 	}

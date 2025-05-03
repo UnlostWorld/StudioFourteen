@@ -57,6 +57,22 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 		}
 	}
 
+	public override void OnResolutionChanging()
+	{
+		this.backBufferTargetView?.Dispose();
+		this.backBufferTargetView = null;
+
+		base.OnResolutionChanging();
+	}
+
+	public override void Detach()
+	{
+		this.backBufferTargetView?.Dispose();
+		this.backBufferTargetView = null;
+
+		base.Detach();
+	}
+
 	public override void Render(RenderingService service, Device device, DeviceContext deviceContext)
 	{
 		this.PassData.ViewProjection = Matrix4x4.Transpose(service.Services.Camera.CurrentViewProjection);
@@ -66,10 +82,13 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 
 		if (this.backBufferTargetView == null)
 		{
+			this.backBufferTargetView?.Dispose();
+
 			RenderTargetViewDescription desc = default;
 			desc.Format = Format.R8G8B8A8_UNorm;
 			desc.Dimension = RenderTargetViewDimension.Texture2D;
 			desc.Texture2D = new() { };
+
 			this.backBufferTargetView = new(device, service.BackBuffer, desc);
 		}
 

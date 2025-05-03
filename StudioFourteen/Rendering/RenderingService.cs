@@ -16,6 +16,7 @@
 namespace StudioFourteen.Rendering;
 
 using System;
+using System.Collections.Generic;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
 using SharpDX.Direct3D11;
 using StudioFourteen.Interop;
@@ -34,12 +35,20 @@ public class RenderingService : ServiceBase
 	public readonly ForwardPass Forward = new();
 	public readonly DrawBufferPass DrawBuffer = new();
 
+	private readonly List<RenderPassBase> passes = new();
 	private Device? device;
 	private DeviceContext? deviceContext;
+	private int resolutionChangeCooldown = 15;
+
+	public RenderingService()
+	{
+		this.passes.Add(this.GenerateMaskDepth);
+		this.passes.Add(this.Forward);
+	}
 
 	public Texture2D? BackBuffer { get; private set; }
-	public int Width => this.BackBuffer?.Description.Width ?? 0;
-	public int Height => this.BackBuffer?.Description.Height ?? 0;
+	public uint Width { get; private set; }
+	public uint Height { get; private set; }
 
 	public unsafe override void Attach()
 	{
@@ -49,6 +58,11 @@ public class RenderingService : ServiceBase
 		{
 			Hooks.ReshadeOnPresent.Enable(this.ReshadeOnPresentDetour);
 			InterfaceManager.DisableReshadePresent();
+		}
+
+		foreach(RenderPassBase pass in this.passes)
+		{
+			pass.Attach();
 		}
 
 		base.Attach();
@@ -66,6 +80,11 @@ public class RenderingService : ServiceBase
 		}
 
 		Hooks.ReshadeOnPresent.Disable();
+
+		foreach(RenderPassBase pass in this.passes)
+		{
+			pass.Detach();
+		}
 	}
 
 	public override void Dispose()
@@ -73,8 +92,9 @@ public class RenderingService : ServiceBase
 		this.deviceContext?.Dispose();
 		this.deviceContext = null;
 
-		this.GenerateMaskDepth.Dispose();
-		this.Forward.Dispose();
+		this.GenerateMaskDepth?.Dispose();
+		this.Forward?.Dispose();
+		this.DrawBuffer?.Dispose();
 
 		base.Dispose();
 	}
@@ -101,9 +121,46 @@ public class RenderingService : ServiceBase
 
 	private unsafe void Render()
 	{
+		if (!this.IsAttached || ServiceManager.ShutdownRequested)
+			return;
+
 		XivDevice* xivDevice = XivDevice.Instance();
 		if (xivDevice == null)
 			return;
+
+		if (this.Width != xivDevice->Width || this.Height != xivDevice->Height)
+		{
+			this.Width = xivDevice->Width;
+			this.Height = xivDevice->Height;
+			this.Log.Information($"Resolution Changed: {this.Width}x{this.Height}");
+			this.resolutionChangeCooldown = 15;
+
+			foreach(RenderPassBase pass in this.passes)
+			{
+				pass.OnResolutionChanged();
+			}
+
+			return;
+		}
+
+		if (this.Width != xivDevice->NewWidth || this.Height != xivDevice->NewHeight)
+		{
+			this.Log.Information($"Resolution Changing: {xivDevice->Width}x{xivDevice->Height} -> {xivDevice->NewWidth}x{xivDevice->NewHeight}");
+
+			foreach(RenderPassBase pass in this.passes)
+			{
+				pass.OnResolutionChanging();
+			}
+
+			this.resolutionChangeCooldown = 15;
+			return;
+		}
+
+		if (this.resolutionChangeCooldown > 0)
+		{
+			this.resolutionChangeCooldown--;
+			return;
+		}
 
 		SwapChain* swapChain = xivDevice->SwapChain;
 		if (swapChain == null)
@@ -129,15 +186,17 @@ public class RenderingService : ServiceBase
 			this.deviceContext = new(this.device);
 
 		// Perform render passes.
-		this.Render(this.GenerateMaskDepth);
-		this.Render(this.Forward);
-	}
-
-	private void Render(RenderPassBase pass)
-	{
-		if (this.device == null || this.deviceContext == null)
-			return;
-
-		pass.Render(this, this.device, this.deviceContext);
+		foreach(RenderPassBase pass in this.passes)
+		{
+			try
+			{
+				pass.Render(this, this.device, this.deviceContext);
+			}
+			catch(Exception ex)
+			{
+				this.Log.Error(ex, $"Error in rendering pass: {pass}");
+				this.Detach();
+			}
+		}
 	}
 }
