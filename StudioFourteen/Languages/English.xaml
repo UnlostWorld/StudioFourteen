@@ -273,6 +273,11 @@
 
 	<!--  Gizmos  -->
 	<sys:String x:Key="LOC_Gizmos">View Gizmo options</sys:String>
+	<sys:String x:Key="LOC_GizmosHeader">Configure Gizmos and Overlays:</sys:String>
+	<sys:String x:Key="LOC_GizmosVisibility_ToolTip">Hide the gizmo</sys:String>
+
+	<sys:String x:Key="LOC_Gizmos_GridOpacity">Opacity</sys:String>
+	<sys:String x:Key="LOC_Gizmos_GridHeight">Height</sys:String>
 
 	<!--  Camera  -->
 	<sys:String x:Key="LOC_Camera_Fov">Field of View</sys:String>

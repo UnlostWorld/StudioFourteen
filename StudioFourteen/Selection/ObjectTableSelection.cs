@@ -60,7 +60,6 @@ public class ObjectTableSelection : TransformSelectionBase
 	public override IconChar Icon => IconChar.User;
 	public override string TypeName => Resources.Find("LOC_Selection_ObjectTable", "Object Table");
 	public override bool CanReset => false;
-	public override SelectionGizmoBase? Gizmo => new ObjectTableSelectionGizmo();
 
 	public override double TranslationChange => 0.1f;
 
@@ -169,37 +168,5 @@ public class ObjectTableSelection : TransformSelectionBase
 	protected override void OnLockTransformChanged(bool oldValue, bool newValue)
 	{
 		this.Services.Pose.SetAllBoneReferencesLocked(this.ObjectTableId, newValue);
-	}
-}
-
-public class ObjectTableSelectionGizmo : SelectionGizmo<ObjectTableSelection>
-{
-	private readonly MeshRenderer circle = new(Meshes.WireCircle, Material.Line);
-
-	public ObjectTableSelectionGizmo()
-	{
-		this.Add(this.circle);
-	}
-
-	public override string Name => "Character Selection";
-
-	protected unsafe override bool Draw(ObjectTableSelection selection)
-	{
-		GameObject* gameObject = this.Services.GameObjects.Get(selection.ObjectTableId);
-		if (gameObject == null || gameObject->DrawObject == null)
-			return false;
-
-		float alpha = 0.0f;
-		if (selection.IsSelected)
-			alpha += 0.75f;
-		if (selection.IsHovered)
-			alpha += 0.25f;
-
-		////this.circle.Color = new Color(1, 1, 1, alpha);
-
-		this.Transform = Transform.FromScale(gameObject->HitboxRadius / 2, 1, gameObject->HitboxRadius / 2);
-		this.Transform *= Transform.FromTRS(gameObject->DrawObject->Position, gameObject->DrawObject->Rotation, gameObject->DrawObject->Scale);
-
-		return true;
 	}
 }

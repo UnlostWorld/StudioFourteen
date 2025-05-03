@@ -25,8 +25,6 @@ using System;
 
 public abstract partial class SelectionBase : ViewModel, IHistoryTarget
 {
-	private SelectionGizmoBase? gizmo;
-
 	[Notify(Setter.Protected)] private string name = string.Empty;
 	[Notify(Setter.Protected)] private string? subtitle;
 	[Notify(Setter.Protected)] private string? description;
@@ -38,7 +36,6 @@ public abstract partial class SelectionBase : ViewModel, IHistoryTarget
 
 	public abstract IconChar Icon { get; }
 	public abstract string TypeName { get; }
-	public virtual SelectionGizmoBase? Gizmo => null;
 
 	public virtual bool CanMirror => false;
 	[History] public virtual MirrorModes MirrorMode { get; set; }
@@ -53,15 +50,11 @@ public abstract partial class SelectionBase : ViewModel, IHistoryTarget
 	public virtual void Activate()
 	{
 		this.IsActive = true;
-		this.gizmo = this.Gizmo;
-		this.gizmo?.SetSelection(this);
-		this.gizmo?.Enable();
 	}
 
 	public virtual void Deactivate()
 	{
 		this.IsActive = false;
-		this.gizmo?.Disable();
 	}
 
 	public virtual void OnSelected(bool value)

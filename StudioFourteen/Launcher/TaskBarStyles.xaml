@@ -327,8 +327,13 @@
 							<wpfUtils:PopOut
 								Style="{DynamicResource WpfUtilsPopOut}"
 								IsOpen="{Binding IsChecked, ElementName=GizmoToggle}"
+								Placement="Right"
 								PlacementTarget="{Binding ElementName=GizmoToggle}"
 								StaysOpen="False">
+
+								<wpfUtils:PopOut.Header>
+									<TextBlock Text="{DynamicResource LOC_GizmosHeader}" Foreground="{DynamicResource ForegroundLightBrush}"/>
+								</wpfUtils:PopOut.Header>
 
 								<gizmos:GizmoControlPanel />
 							</wpfUtils:PopOut>
