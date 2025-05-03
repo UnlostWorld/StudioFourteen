@@ -39,7 +39,7 @@ public abstract class GizmoBase : SceneGroup, INotifyPropertyChanged
 
 	public override bool Visible
 	{
-		get => this.GetPersistence<bool>();
+		get => this.GetPersistence<bool>(defaultValue: true);
 		set => this.SetPersistence(value);
 	}
 
@@ -49,6 +49,7 @@ public abstract class GizmoBase : SceneGroup, INotifyPropertyChanged
 	public virtual void Enable()
 	{
 		this.Services.Gizmos.Enable(this);
+		this.OnPersistenceChanged();
 	}
 
 	public virtual void Disable()
