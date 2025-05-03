@@ -35,6 +35,22 @@ public class GenerateMaskDepthPass : RenderPassBase
 	private RenderTargetView? maskRenderTargetView;
 	private ShaderResourceView? maskResourceView;
 
+	public override void OnResolutionChanged()
+	{
+		this.maskTexture?.Dispose();
+		this.maskTexture = null;
+
+		this.depthStencilTexture = null;
+
+		this.backBufferResourceView?.Dispose();
+		this.backBufferResourceView = null;
+
+		this.backBufferCopyTexture?.Dispose();
+		this.backBufferCopyTexture = null;
+
+		base.OnResolutionChanged();
+	}
+
 	public unsafe override void Render(RenderingService service, Device device, DeviceContext deviceContext)
 	{
 		if (service.BackBuffer == null)
@@ -45,9 +61,7 @@ public class GenerateMaskDepthPass : RenderPassBase
 			return;
 
 		// Create a shader resource copy of the back buffer so it can be accessed in the shader
-		if (this.backBufferCopyTexture == null
-			|| this.backBufferCopyTexture.Description.Width != service.Width
-			|| this.backBufferCopyTexture.Description.Height != service.Height)
+		if (this.backBufferCopyTexture == null)
 		{
 			this.backBufferCopyTexture?.Dispose();
 			this.backBufferResourceView?.Dispose();
@@ -68,9 +82,7 @@ public class GenerateMaskDepthPass : RenderPassBase
 		}
 
 		// Create an output texture
-		if (this.maskTexture == null
-			|| this.maskTexture.Description.Width != service.Width
-			|| this.maskTexture.Description.Height != service.Height)
+		if (this.maskTexture == null)
 		{
 			this.maskTexture?.Dispose();
 			this.maskRenderTargetView?.Dispose();
