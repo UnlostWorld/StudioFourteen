@@ -21,6 +21,11 @@ using DependencyPropertyGenerator;
 [DependencyProperty<object>("Icon")]
 public partial class IconView : ContentControl
 {
+	public IconView()
+	{
+		this.Focusable = false;
+	}
+
 	partial void OnIconChanged(object? newValue)
 	{
 		this.Content = newValue;

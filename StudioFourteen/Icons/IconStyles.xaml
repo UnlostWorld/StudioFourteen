@@ -10,6 +10,7 @@
 	<DataTemplate DataType="{x:Type icons:Svg}">
 		<icons:SvgIconView
 			Margin="2"
+			Focusable="False"
 			HorizontalContentAlignment="Center"
 			VerticalContentAlignment="Center"
 			Midground="{DynamicResource BackgroundLightBrush}"
@@ -30,7 +31,7 @@
 
 	<!-- FA Icons -->
 	<DataTemplate DataType="{x:Type icons:Fa}">
-		<icons:FaIconView Icon="{Binding Icon}" IconFont="{Binding Font}" />
+		<icons:FaIconView Focusable="False" Icon="{Binding Icon}" IconFont="{Binding Font}" />
 	</DataTemplate>
 
 	<ControlTemplate x:Key="FaIconViewTemplate" TargetType="{x:Type icons:FaIconView}">
@@ -42,6 +43,7 @@
 	</ControlTemplate>
 
 	<Style TargetType="{x:Type icons:FaIconView}">
+		<Setter Property="Focusable" Value="False" />
 		<Setter Property="Template" Value="{StaticResource FaIconViewTemplate}" />
 	</Style>
 

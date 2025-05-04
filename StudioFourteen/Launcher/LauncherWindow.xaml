@@ -66,6 +66,7 @@
 					</Grid>
 
 					<Button
+						Focusable="False"
 						x:Name="LaunchButton"
 						VerticalAlignment="Top"
 						Click="OnLaunchClicked"

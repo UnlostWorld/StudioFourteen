@@ -474,6 +474,7 @@
 	</ControlTemplate>
 
 	<Style TargetType="{x:Type local:TaskBarControl}">
+		<Setter Property="Focusable" Value="false" />
 		<Setter Property="Template" Value="{StaticResource TaskBarTemplate}" />
 	</Style>
 
