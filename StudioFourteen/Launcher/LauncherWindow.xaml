@@ -19,11 +19,23 @@
 		<ControlTemplate TargetType="{x:Type local:LauncherWindow}">
 			<AdornerDecorator x:Name="MainGrid">
 				<Grid>
-					<local:TaskBarControl
-						x:Name="TaskBar"
-						Padding="0,56,0,0"
-						Context="{Binding Context}"
-						VerticalAlignment="Top" />
+					<Grid
+						Margin="0,12,0,0"
+						HorizontalAlignment="Center"
+						VerticalAlignment="Top">
+
+						<local:TaskBarControl
+							x:Name="TaskBar"
+							Margin="-12"
+							Padding="0,56,0,0"
+							Context="{Binding Context}" />
+
+						<Border
+							x:Name="WindowBorder"
+							BorderBrush="{DynamicResource BackgroundBrush}"
+							BorderThickness="1"
+							CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
+					</Grid>
 
 					<Grid
 						x:Name="TitleBar"
@@ -77,6 +89,10 @@
 			</AdornerDecorator>
 
 			<ControlTemplate.Triggers>
+				<Trigger Property="IsForeground" Value="True">
+					<Setter TargetName="WindowBorder" Property="BorderBrush" Value="{DynamicResource TrimBrush}" />
+				</Trigger>
+
 				<Trigger Property="IsButtonVisible" Value="False">
 					<Setter TargetName="LaunchButton" Property="Visibility" Value="Collapsed" />
 				</Trigger>
