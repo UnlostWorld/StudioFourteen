@@ -534,9 +534,14 @@ public partial class WindowService : ServiceBase
 		if (mouseDevice == null)
 			return false;
 
+		Input.Devices.KeyboardDevice? keyboardDevice = this.Services.Input.Keyboard;
+		if (keyboardDevice == null)
+			return false;
+
 		ulong hWord = (wParam >> 16) & 0xFFFF;
 		switch (message)
 		{
+			// Mouse
 			case WindowMessages.WM_LBUTTONDOWN: return mouseDevice.HandleMouseButton(MouseButton.Left, true);
 			case WindowMessages.WM_LBUTTONUP: return mouseDevice.HandleMouseButton(MouseButton.Left, false);
 			case WindowMessages.WM_RBUTTONDOWN: return mouseDevice.HandleMouseButton(MouseButton.Right, true);
@@ -546,9 +551,15 @@ public partial class WindowService : ServiceBase
 			case WindowMessages.WM_XBUTTONDOWN: return mouseDevice.HandleMouseButton((ushort)hWord == 1 ? MouseButton.XButton1 : MouseButton.XButton2, true);
 			case WindowMessages.WM_XBUTTONUP: return mouseDevice.HandleMouseButton((ushort)hWord == 1 ? MouseButton.XButton1 : MouseButton.XButton2, false);
 			case WindowMessages.WM_MOUSEWHEEL: return mouseDevice.HandleMouseWheel((float)((short)hWord / 120.0f));
+
+			// Keyboard
+			case WindowMessages.WM_SYSKEYDOWN:
+			case WindowMessages.WM_KEYDOWN: return keyboardDevice.HandleKey((int)wParam, true);
+			case WindowMessages.WM_SYSKEYUP:
+			case WindowMessages.WM_KEYUP: return keyboardDevice.HandleKey((int)wParam, false);
+			case WindowMessages.WM_CHAR: return keyboardDevice.HandleChar((uint)wParam);
 		}
 
-		// TODO: Keyboard?
 		return false;
 	}
 
@@ -574,11 +585,11 @@ public partial class WindowService : ServiceBase
         ////WM_XBUTTONDBLCLK = 0x020D,
         ////WM_MOUSEHWHEEL = 0x020E,
 
-		// We could
-		/*WM_KEYDOWN = 0x0100,
+
+		WM_KEYDOWN = 0x0100,
         WM_KEYUP = 0x0101,
 		WM_CHAR = 0x0102,
 		WM_SYSKEYDOWN = 0x0104,
-        WM_SYSKEYUP = 0x0105,*/
+        WM_SYSKEYUP = 0x0105,
 	}
 }

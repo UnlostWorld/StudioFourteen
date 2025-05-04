@@ -81,9 +81,6 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 		this.Loaded += this.OnLoaded;
 		this.PreviewMouseDown += this.OnPreviewMouseDown;
-		this.PreviewMouseUp += this.OnPreviewMouseUp;
-		this.PreviewKeyDown += this.OnPreviewKeyDown;
-		this.PreviewKeyUp += this.OnPreviewKeyUp;
 		this.Services.Studio.PropertyChanged += this.OnStudioPropertyChanged;
 		this.Services.Reshade.ReshadeOverlayChanged += this.OnReshadeOverlayChanged;
 		this.Services.Photos.PropertyChanged += this.OnPhotosPropertyChanged;
@@ -466,10 +463,6 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		this.Activate();
 	}
 
-	protected virtual void OnPreviewMouseUp(object sender, MouseButtonEventArgs e)
-	{
-	}
-
 	protected override void OnLocationChanged(EventArgs e)
 	{
 		base.OnLocationChanged(e);
@@ -599,24 +592,6 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 				this.Position = this.DefaultPosition;
 			}
 		});
-	}
-
-	private void OnPreviewKeyDown(object sender, KeyEventArgs e)
-	{
-		if (this.Services.Input.IsStudioTextInputActive)
-			return;
-
-		this.Services.Input.Keyboard?.HandleKey(e.Key, true);
-		e.Handled = true;
-	}
-
-	private void OnPreviewKeyUp(object sender, KeyEventArgs e)
-	{
-		if (this.Services.Input.IsStudioTextInputActive)
-			return;
-
-		this.Services.Input.Keyboard?.HandleKey(e.Key, false);
-		e.Handled = true;
 	}
 
 	private void OnReshadeOverlayChanged(bool open)

@@ -208,7 +208,10 @@ public partial class TaskBarControl : Control
 
 	private void OnSettingsOpenChanged(string settingName, object? newValue)
 	{
-		this.AllowMouseCapture = this.Settings.AllowMouseCapture;
+		this.Dispatcher.Invoke(() =>
+		{
+			this.AllowMouseCapture = this.Settings.AllowMouseCapture;
+		});
 	}
 
 	partial void OnAllowMouseCaptureChanged(bool oldValue, bool newValue)

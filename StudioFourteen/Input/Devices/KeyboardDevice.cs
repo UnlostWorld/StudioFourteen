@@ -107,14 +107,33 @@ public class KeyboardDevice : InputDeviceBase
 		return DalamudServices.KeyState.GetValidVirtualKeys();
 	}
 
-	public void HandleKey(Key key, bool down)
+	public bool HandleChar(uint charId)
+	{
+		return false;
+	}
+
+	public bool HandleKey(int keyId, bool down)
+	{
+		VirtualKey vKey = (VirtualKey)keyId;
+		if (vKey == VirtualKey.NO_KEY)
+			return false;
+
+		return this.HandleKey(vKey, down);
+	}
+
+	public bool HandleKey(Key key, bool down)
 	{
 		VirtualKey vKey = (VirtualKey)KeyInterop.VirtualKeyFromKey(key);
 		if (vKey == VirtualKey.NO_KEY)
-			return;
+			return false;
 
+		return this.HandleKey(vKey, down);
+	}
+
+	public bool HandleKey(VirtualKey vKey, bool down)
+	{
 		if (DalamudServices.KeyState == null)
-			return;
+			return false;
 
 		if (vKey == VirtualKey.LSHIFT || vKey == VirtualKey.RSHIFT)
 			vKey = VirtualKey.SHIFT;
@@ -126,10 +145,10 @@ public class KeyboardDevice : InputDeviceBase
 			vKey = VirtualKey.CONTROL;
 
 		if (!DalamudServices.KeyState.IsVirtualKeyValid(vKey))
-			return;
+			return false;
 
 		if (!this.axisLookup.ContainsKey(vKey))
-			return;
+			return false;
 
 		this.axisLookup[vKey].Value = down ? 1.0f : 0.0f;
 
@@ -139,14 +158,16 @@ public class KeyboardDevice : InputDeviceBase
 			{
 				if (tb.IsFocused && (tb.IsKeyboardFocused || tb.IsKeyboardFocusWithin))
 				{
-					if (key == Key.Escape)
+					if (vKey == VirtualKey.ESCAPE)
 					{
 						tb.SetFocusToWindow();
 					}
 
-					return;
+					return true;
 				}
 			}
 		}
+
+		return false;
 	}
 }
