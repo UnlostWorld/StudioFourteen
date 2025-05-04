@@ -179,6 +179,10 @@ public class MouseDevice : InputDeviceBase
 
 	public bool HandleMouseButton(MouseButton button, bool down)
 	{
+		// If we are clicking into xiv, ensure any stuio windows have lost foxcus correctly.
+		if (!this.Services.Windows.IsCursorOverStudio)
+			this.Services.Windows.Activate(null);
+
 		if (!this.ShouldHandleMouse())
 			return false;
 
