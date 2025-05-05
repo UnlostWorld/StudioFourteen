@@ -77,7 +77,7 @@
 	<sys:String x:Key="LOC_Photo_GuidesToolTip">Guides</sys:String>
 	<sys:String x:Key="LOC_Photo_Guides_None">No Guides</sys:String>
 	<sys:String x:Key="LOC_Photo_Guides_Thirds">Thirds</sys:String>
-	<sys:String x:Key="LOC_Photo_Guides_Circle">Circle</sys:String>
+	<sys:String x:Key="LOC_Photo_Guides_Crosshair">Crosshair</sys:String>
 	<sys:String x:Key="LOC_Photo_GuidesPopOut">Select a set of guides to help align your photo.</sys:String>
 	<sys:String x:Key="LOC_Photo_Settings">Photo Settings</sys:String>
 

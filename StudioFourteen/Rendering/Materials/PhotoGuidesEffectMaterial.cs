@@ -30,6 +30,15 @@ public class PhotoGuidesEffectMaterial : InstanceMaterialBase<PhotoGuidesEffectM
 	private float toLeftRight;
 	private float toTopBottom;
 
+	public enum GuideModes : uint
+	{
+		None,
+		Thirds,
+		Crosshair,
+	}
+
+	public GuideModes GuidesMode { get; set; }
+
 	protected ServiceManager Services => ServiceManager.Instance;
 
 	protected override ShaderLoader VertexShader =>
@@ -41,6 +50,8 @@ public class PhotoGuidesEffectMaterial : InstanceMaterialBase<PhotoGuidesEffectM
 	public override void UpdateInstanceData(ref InstanceData instance)
 	{
 		base.UpdateInstanceData(ref instance);
+
+		instance.GuidesMode = (uint)this.GuidesMode;
 
 		float p = this.lerpTimer.ElapsedMilliseconds / LerpTimeMs;
 		p = Math.Clamp(p, 0.0f, 1.0f);
@@ -90,7 +101,7 @@ public class PhotoGuidesEffectMaterial : InstanceMaterialBase<PhotoGuidesEffectM
 	{
 		public float LeftRight;
 		public float TopBottom;
-		public float Unused3;
+		public uint GuidesMode;
 		public float Unused4;
 	}
 }

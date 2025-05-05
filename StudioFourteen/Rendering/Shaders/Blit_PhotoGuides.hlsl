@@ -15,13 +15,22 @@
 
 #include "Blit.hlsl"
 
+cbuffer EffectPassData : register(b0)
+{
+    float2 ScreenSize;
+	float Unused1;
+	float Unused2;
+};
+
 cbuffer MaterialInstanceData : register(b2)
 {
 	float LeftRight;
 	float TopBottom;
-	float Unused1;
-	float Unused2;
+	uint GuidesMode;
+	float Unused3;
 };
+
+static const float lineWidthPixels = 4;
 
 float4 pixel(Pixel pixel) : SV_TARGET
 {
@@ -39,6 +48,46 @@ float4 pixel(Pixel pixel) : SV_TARGET
 	{
 		float bw = (color.r + color.g + color.b) / 3;
 		color.rgb = bw * 0.25;
+	}
+	else
+	{
+		// Thirds
+		if (GuidesMode == 1)
+		{
+			float lineWidthX = (lineWidthPixels / ScreenSize.x) / 2;
+			float lineWidthY = (lineWidthPixels / ScreenSize.y) / 2;
+
+			float left = lerp(LeftRight, 1 - LeftRight, 0.333);
+			float right = lerp(LeftRight, 1 - LeftRight, 0.666);
+			float top = invLerp(TopBottom, 1 - TopBottom, 0.333);
+			float bottom = invLerp(TopBottom, 1 - TopBottom, 0.666);
+
+			if ((pixel.TexCoord.x < left + lineWidthX && pixel.TexCoord.x > left - lineWidthX)
+				|| (pixel.TexCoord.x < right + lineWidthX && pixel.TexCoord.x > right - lineWidthX)
+				|| (pixel.TexCoord.y < top + lineWidthY && pixel.TexCoord.y > top - lineWidthY)
+				|| (pixel.TexCoord.y < bottom + lineWidthY && pixel.TexCoord.y > bottom - lineWidthY))
+			{
+				float bw = (color.r + color.g + color.b) / 3;
+				color.rgb = bw * 0.5;
+			}
+		}
+
+		// Crosshair
+		else if (GuidesMode == 2)
+		{
+			float lineWidthX = (lineWidthPixels / ScreenSize.x) / 2;
+			float lineWidthY = (lineWidthPixels / ScreenSize.y) / 2;
+
+			float vertical = lerp(LeftRight, 1 - LeftRight, 0.5);
+			float horizontal = invLerp(TopBottom, 1 - TopBottom, 0.5);
+
+			if ((pixel.TexCoord.x < vertical + lineWidthX && pixel.TexCoord.x > vertical - lineWidthX)
+				|| (pixel.TexCoord.y < horizontal + lineWidthY && pixel.TexCoord.y > horizontal - lineWidthY))
+			{
+				float bw = (color.r + color.g + color.b) / 3;
+				color.rgb = bw * 0.5;
+			}
+		}
 	}
 
 	color.a = mask;

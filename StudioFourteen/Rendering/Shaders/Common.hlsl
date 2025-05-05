@@ -19,3 +19,5 @@ struct Vertex
 	float4 Color:COLOR;
 	float2 TexCoord:TEXCOORD;
 };
+
+#define invLerp(from, to, value) (value - from) / (to - from);

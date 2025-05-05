@@ -37,7 +37,6 @@ public partial class PhotosService : ServiceBase
 	private CancellationTokenSource captureCancellation = new();
 
 	[Notify] private bool isPhotoMode;
-	[Notify] private Guides guide;
 	[Notify] private double aspectRatio = 0;
 	[Notify] private uint width = 0;
 	[Notify] private uint height = 0;
@@ -49,13 +48,6 @@ public partial class PhotosService : ServiceBase
 	public delegate Task CapturePhaseChangeDelegate(CapturePhases fromPhase, CapturePhases toPhase, CancellationToken cancellationToken, bool animate);
 
 	public event CapturePhaseChangeDelegate? PhaseChanged;
-
-	public enum Guides
-	{
-		None,
-		Thirds,
-		Circle,
-	}
 
 	public enum Formats
 	{

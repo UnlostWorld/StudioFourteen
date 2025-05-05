@@ -26,7 +26,6 @@ using System.Windows;
 using System.Windows.Controls;
 using WpfUtils.Extensions;
 
-using static StudioFourteen.Photos.PhotosService;
 using Panel = StudioFourteen.Panels.Panel;
 
 public partial class PhotoWindow : Panel
@@ -49,20 +48,20 @@ public partial class PhotoWindow : Panel
 		}
 	}
 
-	public PhotosService.Guides Guide
+	public PhotoGuidesEffectMaterial.GuideModes Guide
 	{
-		get => this.Persistence.GetPersistence<PhotosService.Guides>();
+		get => this.Persistence.GetPersistence<PhotoGuidesEffectMaterial.GuideModes>();
 		set
 		{
 			this.Persistence.SetPersistence(value);
-			this.Services.Photos.Guide = value;
+			this.guidesMaterial.GuidesMode = value;
 		}
 	}
 
 	public int GuideIndex
 	{
 		get => (int)this.Guide;
-		set => this.Guide = (Guides)value;
+		set => this.Guide = (PhotoGuidesEffectMaterial.GuideModes)value;
 	}
 
 	public int AspectRatioIndex
@@ -97,11 +96,11 @@ public partial class PhotoWindow : Panel
 		this.Services.Photos.AspectRatio = this.SelectedAspectRatio.Aspect;
 		this.Services.Photos.Width = this.SelectedAspectRatio.Width;
 		this.Services.Photos.Height = this.SelectedAspectRatio.Height;
-		this.Services.Photos.Guide = this.Guide;
 
 		this.Services.Rendering.AddPass(this.guidesPass);
 
 		this.guidesMaterial.SetAspectRatio(this.SelectedAspectRatio.Aspect);
+		this.guidesMaterial.GuidesMode = this.Guide;
 	}
 
 	protected override void OnClosed()
@@ -109,7 +108,6 @@ public partial class PhotoWindow : Panel
 		base.OnClosed();
 		this.Services.Photos.IsPhotoMode = false;
 		this.Services.Photos.AspectRatio = 0;
-		this.Services.Photos.Guide = Guides.None;
 
 		this.RemoveGuidesAsync().Run();
 	}
@@ -131,6 +129,7 @@ public partial class PhotoWindow : Panel
 
 	private async Task RemoveGuidesAsync()
 	{
+		this.guidesMaterial.GuidesMode = PhotoGuidesEffectMaterial.GuideModes.None;
 		this.guidesMaterial.SetAspectRatio(0);
 		await Task.Delay(250);
 

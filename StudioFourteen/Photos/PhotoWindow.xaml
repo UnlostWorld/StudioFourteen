@@ -142,7 +142,7 @@
 
 					<ComboBoxItem Content="{DynamicResource LOC_Photo_Guides_None}" />
 					<ComboBoxItem Content="{DynamicResource LOC_Photo_Guides_Thirds}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Photo_Guides_Circle}" />
+					<ComboBoxItem Content="{DynamicResource LOC_Photo_Guides_Crosshair}" />
 				</ComboBox>
 
 				<Button
