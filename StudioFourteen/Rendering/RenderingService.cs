@@ -19,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
 using SharpDX.Direct3D11;
-using StudioFourteen.Interop;
 using StudioFourteen.Plugin;
 using StudioFourteen.Rendering.Passes;
 using StudioFourteen.Services;
@@ -31,17 +30,18 @@ using XivDevice = FFXIVClientStructs.FFXIV.Client.Graphics.Kernel.Device;
 // https://github.com/sourpuh/ffxiv_pictomancy/tree/master
 public class RenderingService : ServiceBase
 {
-	public readonly GenerateMaskDepthPass GenerateMaskDepth = new();
 	public readonly ForwardPass Forward = new();
 
+	private readonly GenerateUiMaskPass generateUiMaskPass = new();
 	private readonly List<RenderPassBase> passes = new();
 	private Device? device;
 	private DeviceContext? deviceContext;
 	private int resolutionChangeCooldown = 15;
+	private bool needsImGuiRequeue = false;
+	private bool canRender = false;
 
 	public RenderingService()
 	{
-		this.passes.Add(this.GenerateMaskDepth);
 		this.passes.Add(this.Forward);
 	}
 
@@ -61,20 +61,19 @@ public class RenderingService : ServiceBase
 
 	public unsafe override void Attach()
 	{
-		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
-
-		if (SwapChainHelper.IsReshade)
-		{
-			Hooks.ReshadeOnPresent.Enable(this.ReshadeOnPresentDetour);
-			InterfaceManager.DisableReshadePresent();
-		}
-
+		this.generateUiMaskPass.Attach();
 		foreach(RenderPassBase pass in this.passes)
 		{
 			pass.Attach();
 		}
 
+		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
+		this.Services.Reshade.ReshadeBeforeEffects += this.OnBeforeReshadeRender;
+		this.Services.Reshade.ReshadeAfterEffects += this.OnAfterReshadeRender;
+
 		base.Attach();
+
+		InterfaceManager.RunBeforeImGuiRender(this.OnBeforeImGuiRender);
 	}
 
 	public override void Detach()
@@ -82,14 +81,10 @@ public class RenderingService : ServiceBase
 		base.Detach();
 
 		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
+		this.Services.Reshade.ReshadeBeforeEffects -= this.OnBeforeReshadeRender;
+		this.Services.Reshade.ReshadeAfterEffects -= this.OnAfterReshadeRender;
 
-		if (SwapChainHelper.IsReshade)
-		{
-			InterfaceManager.EnableReshadePresent();
-		}
-
-		Hooks.ReshadeOnPresent.Disable();
-
+		this.generateUiMaskPass.Detach();
 		foreach(RenderPassBase pass in this.passes)
 		{
 			pass.Detach();
@@ -101,6 +96,7 @@ public class RenderingService : ServiceBase
 		this.deviceContext?.Dispose();
 		this.deviceContext = null;
 
+		this.generateUiMaskPass.Dispose();
 		foreach(RenderPassBase pass in this.passes)
 		{
 			pass.Dispose();
@@ -114,29 +110,54 @@ public class RenderingService : ServiceBase
 		this.Log.Error(ex, message);
 	}
 
-	protected void OnGameTick()
+	private void OnBeforeImGuiRender()
 	{
-		// If not using reshade, fallback to just run before ImGUI within dalamud's present
-		if (!SwapChainHelper.IsReshade)
+		if (this.IsAttached)
 		{
-			InterfaceManager.RunBeforeImGuiRender(this.Render);
+			this.needsImGuiRequeue = true;
+
+			if (this.Services.Reshade.IsReshadeEnabled)
+				return;
+
+			this.SetUpRender();
+			this.RenderUiMask();
+			this.RenderPasses();
 		}
 	}
 
-	private void ReshadeOnPresentDetour(nint swapChain, uint flags, nint presentParams)
+	private void OnBeforeReshadeRender()
 	{
-		Hooks.ReshadeOnPresent.Original(swapChain, flags, presentParams);
-		this.Render();
+		this.SetUpRender();
+		this.RenderUiMask();
 	}
 
-	private unsafe void Render()
+	private void OnAfterReshadeRender()
+	{
+		this.RenderPasses();
+	}
+
+	private void OnGameTick()
+	{
+		if (this.needsImGuiRequeue)
+		{
+			InterfaceManager.RunBeforeImGuiRender(this.OnBeforeImGuiRender);
+			this.needsImGuiRequeue = false;
+		}
+	}
+
+	private void SetUpRender()
+	{
+		this.canRender = this.TrySetUpRender();
+	}
+
+	private unsafe bool TrySetUpRender()
 	{
 		if (!this.IsAttached || ServiceManager.ShutdownRequested)
-			return;
+			return false;
 
 		XivDevice* xivDevice = XivDevice.Instance();
 		if (xivDevice == null)
-			return;
+			return false;
 
 		if (this.Width != xivDevice->Width || this.Height != xivDevice->Height)
 		{
@@ -150,7 +171,7 @@ public class RenderingService : ServiceBase
 				pass.OnResolutionChanged();
 			}
 
-			return;
+			return false;
 		}
 
 		if (this.Width != xivDevice->NewWidth || this.Height != xivDevice->NewHeight)
@@ -163,43 +184,60 @@ public class RenderingService : ServiceBase
 			}
 
 			this.resolutionChangeCooldown = 15;
-			return;
+			return false;
 		}
 
 		if (this.resolutionChangeCooldown > 0)
 		{
 			this.resolutionChangeCooldown--;
-			return;
+			return false;
 		}
 
 		SwapChain* swapChain = xivDevice->SwapChain;
 		if (swapChain == null)
-			return;
+			return false;
 
 		// BackBuffer should be something from IDXGISwapChain->GetBuffer, which means that IDXGISwapChain itself
 		// must have been fully initialized.
 		if (swapChain->BackBuffer == null)
-			return;
+			return false;
 
 		this.BackBuffer = (Texture2D)(nint)swapChain->BackBuffer->D3D11Texture2D;
 		if (this.BackBuffer == null)
-			return;
+			return false;
 
 		if (this.BackBuffer.Description.Format != SharpDX.DXGI.Format.R8G8B8A8_UNorm)
 			throw new Exception($"wrong format in back buffer texture {this.BackBuffer.Description.Format}");
 
 		this.device = this.BackBuffer.Device;
 		if (this.device == null)
-			return;
+			return false;
 
 		if (this.deviceContext == null)
 			this.deviceContext = new(this.device);
+
+		return true;
+	}
+
+	private void RenderUiMask()
+	{
+		if (!this.canRender || this.device == null || this.deviceContext == null)
+			return;
+
+		this.generateUiMaskPass.Render(this, this.device, this.deviceContext);
+	}
+
+	private void RenderPasses()
+	{
+		if (!this.canRender || this.device == null || this.deviceContext == null)
+			return;
 
 		// Perform render passes.
 		foreach(RenderPassBase pass in this.passes)
 		{
 			try
 			{
+				this.generateUiMaskPass.Bind(this.deviceContext);
 				pass.Render(this, this.device, this.deviceContext);
 			}
 			catch(Exception ex)

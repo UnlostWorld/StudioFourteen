@@ -12,11 +12,12 @@ using namespace reshade::api;
 RESHADE_API const char* NAME = "Studio Fourteen Reshade sync";
 RESHADE_API const char* DESCRIPTION = "Enables Studio Fourteen to communicate with Reshade";
 
+typedef void (*EmptyDelegate)();
+
 static const Log* Logger = nullptr;
 static effect_runtime* s_pRuntime = nullptr;
-
-static uint64_t s_depthPointer = 0;
-STUDIO_API uint64_t GetDepthTexture() { return s_depthPointer; }
+static EmptyDelegate m_onBeginRenderEffects;
+static EmptyDelegate m_onFinishRenderEffects;
 
 static int s_renderedFrames = 0;
 STUDIO_API void ResetRenderedFrames() { s_renderedFrames = 0; }
@@ -38,13 +39,7 @@ STUDIO_API bool GetIsOverlayOpen() { return s_isOverlayOpen; }
 
 static void on_begin_render_effects(effect_runtime* runtime, command_list* cmd_list, resource_view, resource_view)
 {
-	// Find the depth texture pointer:
-	effect_texture_variable var = runtime->find_texture_variable(nullptr, "DepthBufferTex");
-	resource_view srv = resource_view();
-	resource_view srv_srgb = resource_view();
-	runtime->get_texture_binding(var, &srv, &srv_srgb);
-	resource resource = runtime->get_device()->get_resource_from_view(srv);
-	s_depthPointer = resource.handle;
+	m_onBeginRenderEffects();
 }
 
 static void on_end_render_effects(effect_runtime* pRuntime, command_list*, resource_view, resource_view)
@@ -55,17 +50,17 @@ static void on_end_render_effects(effect_runtime* pRuntime, command_list*, resou
 	s_pRuntime = pRuntime;
 	s_effectsState = true;
 	s_renderedFrames++;
+
+	m_onFinishRenderEffects();
 }
 
 static void on_init(effect_runtime* pRuntime)
 {
-	s_depthPointer = 0;
 }
 
 static void on_destroy(effect_runtime* pRuntime)
 {
 	s_renderedFrames = 0;
-	s_depthPointer = 0;
 }
 
 static bool on_set_effects_state(effect_runtime* pRuntime, bool newState)
@@ -120,4 +115,14 @@ STUDIO_API void Shutdown()
 	reshade::unregister_event<reshade::addon_event::reshade_set_effects_state>(on_set_effects_state);
 	reshade::unregister_event<reshade::addon_event::reshade_open_overlay>(on_open_overlay);
 	reshade::unregister_addon(GetCurrentModule());
+}
+
+STUDIO_API void SetBeginRenderingEffectsCallback(EmptyDelegate callback)
+{
+	m_onBeginRenderEffects = callback;
+}
+
+STUDIO_API void SetFinishRenderingEffectsCallback(EmptyDelegate callback)
+{
+	m_onFinishRenderEffects = callback;
 }

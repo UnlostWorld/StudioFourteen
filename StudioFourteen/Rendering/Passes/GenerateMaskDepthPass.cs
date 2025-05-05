@@ -23,7 +23,7 @@ using StudioFourteen.Rendering.Scene;
 using Device = SharpDX.Direct3D11.Device;
 using Material = StudioFourteen.Rendering.Material;
 
-public class GenerateMaskDepthPass : RenderPassBase
+public class GenerateUiMaskPass : RenderPassBase
 {
 	private readonly MeshRenderer quad = new(Meshes.Quad, Material.BlitAlphaMask);
 
@@ -108,7 +108,7 @@ public class GenerateMaskDepthPass : RenderPassBase
 		deviceContext.OutputMerger.SetTargets(this.maskRenderTargetView);
 
 		// Pass the buffers into the shader
-		deviceContext.PixelShader.SetShaderResource(0, this.backBufferResourceView);
+		deviceContext.PixelShader.SetShaderResource(2, this.backBufferResourceView);
 
 		deviceContext.Rasterizer.SetViewport(0, 0, service.Width, service.Height);
 
@@ -117,7 +117,10 @@ public class GenerateMaskDepthPass : RenderPassBase
 		using CommandList cmds = deviceContext.FinishCommandList(false);
 		device.ImmediateContext.ExecuteCommandList(cmds, true);
 		deviceContext.ClearState();
+	}
 
+	public void Bind(DeviceContext deviceContext)
+	{
 		// Pass the mask depth into future shaders
 		deviceContext.PixelShader.SetShaderResource(0, this.maskResourceView);
 		deviceContext.PixelShader.SetShaderResource(1, this.depthResourceView);

@@ -20,6 +20,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.System.Input;
 using FFXIVClientStructs.FFXIV.Client.UI;
+using SharpDX.Direct3D9;
 using StudioFourteen.Interop.Structs.Environment;
 using StudioFourteen.Plugin;
 using System;
@@ -84,7 +85,6 @@ public static unsafe class Hooks
 	internal delegate void ExitGroupPoseDelegate(UIModule* uiModule);
 	internal static readonly AddressHook<ExitGroupPoseDelegate> ExitGroupPose = new(() => (nint)Framework.Instance()->UIModule->VirtualTable->ExitGPose);
 
-	internal static readonly AddressHook<InterfaceManager.ReshadeOnPresentDelegate> ReshadeOnPresent = new(() => SwapChainHelper.ReshadeOnPresent);
 	internal static readonly AddressHook<PadDevice.Delegates.Poll> PadDevicePoll = new(() => (nint)PadDevice.StaticVirtualTablePointer->Poll);
 	internal static readonly AddressHook<GameObject.Delegates.SetPosition> SetPosition = new(() => GameObject.Addresses.SetPosition.Value);
 
@@ -95,6 +95,9 @@ public static unsafe class Hooks
 	// https://github.com/goatcorp/Dalamud/blob/master/Dalamud/Game/Addon/Events/AddonEventManagerAddressResolver.cs
 	internal delegate nint UpdateGameCursorDelegate(RaptureAtkModule* module);
 	internal static readonly SignatureHook<UpdateGameCursorDelegate> UpdateGameCursor = new("48 89 74 24 ?? 48 89 7C 24 ?? 41 56 48 83 EC 20 4C 8B F1 E8 ?? ?? ?? ?? 49 8B CE");
+
+	[UnmanagedFunctionPointer(CallingConvention.ThisCall)]
+	internal delegate int DxgiSwapChainPresentDelegate(nint* swapChain, uint syncInterval, uint flags);
 
 	// https://github.com/goatcorp/Dalamud/blob/master/Dalamud/Interface/Internal/InterfaceManager.cs#L1043
 	[UnmanagedFunctionPointer(CallingConvention.StdCall)]

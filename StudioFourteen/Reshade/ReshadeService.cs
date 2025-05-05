@@ -30,32 +30,38 @@ public static class ReshadeAddon
 {
 	[DllImport("StudioFourteen.Reshade.dll")] public static extern bool Initialize(IntPtr onLog);
 	[DllImport("StudioFourteen.Reshade.dll")] public static extern void Shutdown();
-	[DllImport("StudioFourteen.Reshade.dll")] public static extern IntPtr GetDepthTexture();
 	[DllImport("StudioFourteen.Reshade.dll")] public static extern int ResetRenderedFrames();
 	[DllImport("StudioFourteen.Reshade.dll")] public static extern int GetRenderedFrames();
 	[DllImport("StudioFourteen.Reshade.dll")] public static extern bool GetEffectsState();
 	[DllImport("StudioFourteen.Reshade.dll")] public static extern void SetEffectsState(bool state);
 	[DllImport("StudioFourteen.Reshade.dll")] public static extern bool GetIsOverlayOpen();
+	[DllImport("StudioFourteen.Reshade.dll")] public static extern bool SetBeginRenderingEffectsCallback(IntPtr callback);
+	[DllImport("StudioFourteen.Reshade.dll")] public static extern bool SetFinishRenderingEffectsCallback(IntPtr callback);
 }
 
 public partial class ReshadeService : ServiceBase
 {
 	private readonly LogDelegate onLog;
+	private readonly EmptyDelegate onBeginRenderingEffects;
+	private readonly EmptyDelegate onFinishRenderingEffects;
 
 	[Notify] private bool isReshadeOverlayOpen;
 	[Notify] private bool isReshadeEnabled;
-	[Notify] private IntPtr depthBufferAddress;
 
 	public ReshadeService()
 	{
 		this.onLog = new LogDelegate(this.OnLog);
+		this.onBeginRenderingEffects = new EmptyDelegate(this.OnBeginRenderingEffects);
+		this.onFinishRenderingEffects = new EmptyDelegate(this.OnFinishRenderingEffects);
 	}
 
+	public delegate void EmptyDelegate();
 	public delegate void ReshadeOverlayChangedDelegate(bool open);
-
 	private delegate void LogDelegate(LogEventLevel logLevel, string message);
 
 	public event ReshadeOverlayChangedDelegate? ReshadeOverlayChanged;
+	public event EmptyDelegate? ReshadeBeforeEffects;
+	public event EmptyDelegate? ReshadeAfterEffects;
 
 	public bool IsReshade { get; private set; }
 
@@ -114,6 +120,9 @@ public partial class ReshadeService : ServiceBase
 			this.Log.Error("Error initializing reshade add-on");
 
 		this.Log.Information("Initialized Reshade add-on");
+
+		ReshadeAddon.SetBeginRenderingEffectsCallback(Marshal.GetFunctionPointerForDelegate(this.onBeginRenderingEffects));
+		ReshadeAddon.SetFinishRenderingEffectsCallback(Marshal.GetFunctionPointerForDelegate(this.onFinishRenderingEffects));
 	}
 
 	public override void Detach()
@@ -156,7 +165,6 @@ public partial class ReshadeService : ServiceBase
 	protected void OnTick()
 	{
 		this.IsReshadeOverlayOpen = ReshadeAddon.GetIsOverlayOpen();
-		this.DepthBufferAddress = ReshadeAddon.GetDepthTexture();
 		this.IsReshadeEnabled = ReshadeAddon.GetEffectsState();
 	}
 
@@ -171,4 +179,14 @@ public partial class ReshadeService : ServiceBase
 	}
 
 	private void OnLog(LogEventLevel logLevel, string message) => this.Log.Write(logLevel, message);
+
+	private void OnBeginRenderingEffects()
+	{
+		this.ReshadeBeforeEffects?.Invoke();
+	}
+
+	private void OnFinishRenderingEffects()
+	{
+		this.ReshadeAfterEffects?.Invoke();
+	}
 }

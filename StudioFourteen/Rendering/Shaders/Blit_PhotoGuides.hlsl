@@ -35,7 +35,8 @@ static const float lineWidthPixels = 4;
 float4 pixel(Pixel pixel) : SV_TARGET
 {
 	float4 color = buffer_texture.Sample(buffer_sampler, pixel.TexCoord);
-	float mask = 1 - color.a;
+	float mask = mask_texture.Sample(mask_sampler, pixel.TexCoord).r;
+
 	if(mask < 0.3)
 		mask = 0;
 

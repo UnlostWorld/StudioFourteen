@@ -15,8 +15,14 @@
 
 #include "Common.hlsl"
 
-Texture2D buffer_texture : register(t0);
-SamplerState buffer_sampler : register(s0);
+Texture2D mask_texture : register(t0);
+SamplerState mask_sampler : register(s0);
+
+Texture2D depth_texture : register(t1);
+SamplerState depth_sampler : register(s1);
+
+Texture2D buffer_texture : register(t2);
+SamplerState buffer_sampler : register(s2);
 
 struct Pixel
 {

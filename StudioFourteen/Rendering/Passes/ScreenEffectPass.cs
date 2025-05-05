@@ -101,7 +101,7 @@ public class ScreenEffectPass(MaterialBase material) : InstanceRenderPassBase<Sc
 		deviceContext.CopyResource(service.BackBuffer, this.backBufferCopyTexture);
 
 		// Pass the buffers into the shader
-		deviceContext.PixelShader.SetShaderResource(0, this.backBufferResourceView);
+		deviceContext.PixelShader.SetShaderResource(2, this.backBufferResourceView);
 
 		// Set the output
 		deviceContext.Rasterizer.SetViewport(0, 0, service.Width, service.Height);

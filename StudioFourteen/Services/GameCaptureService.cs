@@ -227,23 +227,6 @@ public class GameCaptureService : ServiceBase
 
 	protected void OnGameTick()
 	{
-		// If not using reshade, fallback to just run before ImGUI within dalamud's present
-		if (!SwapChainHelper.IsReshade)
-		{
-			InterfaceManager.RunBeforeImGuiRender(this.Capture);
-		}
-	}
-
-	// When running reshade, we intercept the present call to capture the screen after reshade.
-	// We also call into Dalamud's InterfaceManager detour to make sure the dalamud windows
-	// get rendered _after_ our capture is complete, since we disable their hook.
-	private void ReshadeOnPresentDetour(nint swapChain, uint flags, nint presentParams)
-	{
-		Hooks.ReshadeOnPresent.Original(swapChain, flags, presentParams);
-
-		this.Capture();
-
-		InterfaceManager.ReshadeOnPresentDetour(swapChain, flags, presentParams);
 	}
 
 	/// <summary>

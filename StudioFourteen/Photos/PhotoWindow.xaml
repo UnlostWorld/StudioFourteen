@@ -182,10 +182,8 @@
 					Margin="0"
 					Padding="6,0"
 					IsChecked="{Binding Services.Photos.ShowDepth}"
-					IsEnabled="{Binding Services.Reshade.IsReshade}"
 					Style="{DynamicResource WpfUtilsIconToggleButton}"
-					ToolTip="{DynamicResource LOC_Photo_ToggleDepth}"
-					Visibility="{Binding Services.Studio.IsOpenAndInGPose, Converter={StaticResource B2V}}">
+					ToolTip="{DynamicResource LOC_Photo_ToggleDepth}">
 					<TextBlock Text="D" />
 				</ToggleButton>
 
@@ -197,8 +195,7 @@
 					IsChecked="{Binding Services.Reshade.IsReshadeEnabled}"
 					IsEnabled="{Binding Services.Reshade.IsReshade}"
 					Style="{DynamicResource WpfUtilsIconToggleButton}"
-					ToolTip="{DynamicResource LOC_Photo_ToggleReshade}"
-					Visibility="{Binding Services.Studio.IsOpenAndInGPose, Converter={StaticResource B2V}}">
+					ToolTip="{DynamicResource LOC_Photo_ToggleReshade}">
 					<TextBlock Text="R" />
 				</ToggleButton>
 
