@@ -32,26 +32,12 @@
 			</Grid.ColumnDefinitions>
 
 			<StackPanel Orientation="Horizontal">
-
-				<Grid
-					Background="Transparent"
-					ToolTip="{DynamicResource LOC_Photo_GroupPoseWarn}"
-					Visibility="{Binding Services.Studio.IsOpenAndInGPose, Converter={StaticResource !B2V}}">
-					<icons:IconView
-						Grid.Column="0"
-						Margin="6,2"
-						Foreground="{DynamicResource ForegroundLightBrush}"
-						Icon="{DynamicResource ICON_Info}"
-						Opacity="0.5" />
-				</Grid>
-
 				<ToggleButton
 					x:Name="ResolutionToggle"
 					Grid.Column="0"
 					Width="250"
 					Style="{DynamicResource WpfUtilsComboBoxButton}"
-					ToolTip="{DynamicResource LOC_Photo_AspectToolTip}"
-					Visibility="{Binding Services.Studio.IsOpenAndInGPose, Converter={StaticResource B2V}}">
+					ToolTip="{DynamicResource LOC_Photo_AspectToolTip}">
 					<Grid Margin="2">
 						<TextBlock TextTrimming="CharacterEllipsis">
 							<Run Text="{Binding SelectedAspectRatio.GroupName}" />
@@ -148,8 +134,7 @@
 					Grid.Column="1"
 					Width="100"
 					SelectedIndex="{Binding GuideIndex}"
-					ToolTip="{DynamicResource LOC_Photo_GuidesToolTip}"
-					Visibility="{Binding Services.Studio.IsOpenAndInGPose, Converter={StaticResource B2V}}">
+					ToolTip="{DynamicResource LOC_Photo_GuidesToolTip}">
 
 					<wpfUtils:PopOut.Header>
 						<TextBlock Margin="12" Text="{DynamicResource LOC_Photo_GuidesPopOut}" />
@@ -215,18 +200,6 @@
 					ToolTip="{DynamicResource LOC_Photo_ToggleReshade}"
 					Visibility="{Binding Services.Studio.IsOpenAndInGPose, Converter={StaticResource B2V}}">
 					<TextBlock Text="R" />
-				</ToggleButton>
-
-				<ToggleButton
-					Grid.Column="5"
-					Width="28"
-					Margin="0"
-					Padding="6,0"
-					IsChecked="{Binding IsPortrait}"
-					Style="{DynamicResource WpfUtilsIconToggleButton}"
-					ToolTip="{DynamicResource LOC_Photo_TogglePortrait}"
-					Visibility="{Binding Services.Studio.IsOpenAndInGPose, Converter={StaticResource B2V}}">
-					<icons:IconView Icon="{DynamicResource ICON_Photo_Portrait}" />
 				</ToggleButton>
 
 				<Button

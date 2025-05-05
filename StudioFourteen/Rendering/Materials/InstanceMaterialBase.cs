@@ -47,8 +47,14 @@ public abstract class InstanceMaterialBase<TDataType> : MaterialBase
 
 		TDataType data = this.GetInstanceData(obj);
 
+		this.UpdateInstanceData(ref data);
+
 		// TODO: Use a buffer array and an index instead of updating every draw call?
 		context.UpdateSubresource(ref data, this.dataBuffer);
+	}
+
+	public virtual void UpdateInstanceData(ref TDataType instance)
+	{
 	}
 
 	public ref TDataType GetInstanceData(RendererBase obj)

@@ -14,112 +14,8 @@
 	mc:Ignorable="d">
 
 	<Grid ClipToBounds="True">
-		<controls:GameCapture Visibility="{Binding ShowCapture, Converter={StaticResource B2V}}">
-			<controls:GameCapture.LayoutTransform>
-				<RotateTransform Angle="{Binding CaptureAngle}" />
-			</controls:GameCapture.LayoutTransform>
-		</controls:GameCapture>
-
-		<Rectangle
-			Width="{Binding BorderHalfWidth}"
-			HorizontalAlignment="Left"
-			Fill="Black" />
-
-		<Rectangle
-			Width="{Binding BorderHalfWidth}"
-			HorizontalAlignment="Right"
-			Fill="Black" />
-
-		<Rectangle
-			Height="{Binding BorderHalfHeight}"
-			VerticalAlignment="Top"
-			Fill="Black" />
-
-		<Rectangle
-			Height="{Binding BorderHalfHeight}"
-			VerticalAlignment="Bottom"
-			Fill="Black" />
-
-		<Grid
-			Width="{Binding AspectBoxWidth}"
-			Height="{Binding AspectBoxHeight}"
-			HorizontalAlignment="Center"
-			VerticalAlignment="Center">
-
-			<!--  Thirds  -->
-			<Grid Visibility="{Binding Services.Photos.Guide, Converter={StaticResource EnumToVisibility}, ConverterParameter=Thirds}">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition />
-					<ColumnDefinition />
-					<ColumnDefinition />
-				</Grid.ColumnDefinitions>
-
-				<Grid.RowDefinitions>
-					<RowDefinition />
-					<RowDefinition />
-					<RowDefinition />
-				</Grid.RowDefinitions>
-
-				<Line
-					Grid.Row="1"
-					Grid.ColumnSpan="3"
-					VerticalAlignment="Bottom"
-					Stretch="Fill"
-					Stroke="Black"
-					StrokeThickness="{Binding Services.Photos.GuideThickness}"
-					X1="0"
-					X2="1" />
-
-				<Line
-					Grid.Row="1"
-					Grid.ColumnSpan="3"
-					VerticalAlignment="Top"
-					Stretch="Fill"
-					Stroke="Black"
-					StrokeThickness="{Binding Services.Photos.GuideThickness}"
-					X1="0"
-					X2="1" />
-
-				<Line
-					Grid.RowSpan="3"
-					Grid.Column="1"
-					HorizontalAlignment="Left"
-					Stretch="Fill"
-					Stroke="Black"
-					StrokeThickness="{Binding Services.Photos.GuideThickness}"
-					Y1="0"
-					Y2="1" />
-
-				<Line
-					Grid.RowSpan="3"
-					Grid.Column="1"
-					HorizontalAlignment="Right"
-					Stretch="Fill"
-					Stroke="Black"
-					StrokeThickness="{Binding Services.Photos.GuideThickness}"
-					Y1="0"
-					Y2="1" />
-			</Grid>
-
-			<!--  Circle  -->
-			<Grid Visibility="{Binding Services.Photos.Guide, Converter={StaticResource EnumToVisibility}, ConverterParameter=Circle}">
-				<Ellipse
-					Stretch="Fill"
-					Stroke="Black"
-					StrokeThickness="{Binding Services.Photos.GuideThickness}" />
-			</Grid>
-		</Grid>
-
-
 		<Grid>
-			<Rectangle>
-				<Rectangle.Fill>
-					<SolidColorBrush Color="{Binding FillColor}" />
-				</Rectangle.Fill>
-			</Rectangle>
-
 			<Grid Opacity="{Binding PhotoOpacity}" RenderTransformOrigin="0.5, 0.5">
-
 				<Grid.RenderTransform>
 					<TransformGroup>
 						<ScaleTransform ScaleX="{Binding PhotoScale}" ScaleY="{Binding PhotoScale}" />
@@ -147,36 +43,6 @@
 						Text="{Binding Services.Photos.LastSavedImagePath}" />
 				</Grid>
 			</Grid>
-
-			<Grid
-				Margin="0,50,0,0"
-				HorizontalAlignment="Center"
-				VerticalAlignment="Top"
-				Opacity="{Binding SpinnerOpacity}">
-
-				<Border
-					Margin="32,0,0,0"
-					VerticalAlignment="Center"
-					Background="{DynamicResource BackgroundBrush}"
-					CornerRadius="6">
-
-					<StackPanel Orientation="Vertical">
-						<ProgressBar
-							Grid.Row="0"
-							Style="{DynamicResource Spinner}" />
-
-						<TextBlock
-							Grid.Row="1"
-							Margin="6,4,6,4"
-							VerticalAlignment="Center"
-							Foreground="{DynamicResource ForegroundBrush}"
-							Text="Waiting for ReShade..." />
-					</StackPanel>
-				</Border>
-
-
-			</Grid>
 		</Grid>
-
 	</Grid>
 </mvm:View>

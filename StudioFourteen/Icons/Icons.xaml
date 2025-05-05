@@ -90,7 +90,6 @@
 	<icons:Fa x:Key="ICON_Transform_Translate" Icon="Arrows" Font="Solid" />
 	<icons:Fa x:Key="ICON_Transform_Rotate" Icon="Rotate" Font="Solid" />
 	<icons:Fa x:Key="ICON_Transform_Scale" Icon="Maximize" Font="Solid" />
-	<icons:Svg x:Key="ICON_Photo_Portrait" Source="PortraitPreview"/>
 
 	<icons:Fa x:Key="ICON_CameraModifier" Icon="Plus" />
 

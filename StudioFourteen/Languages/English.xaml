@@ -69,7 +69,6 @@
 	<sys:String x:Key="LOC_Script_Run">Start Script</sys:String>
 
 	<sys:String x:Key="LOC_Photo_ToggleUIToolTip">Toggle the UI</sys:String>
-	<sys:String x:Key="LOC_Photo_TogglePortrait">Rotate the Image by 90°</sys:String>
 	<sys:String x:Key="LOC_Photo_ToggleDepth">Display the depth buffer contents. This feature requires Reshade.</sys:String>
 	<sys:String x:Key="LOC_Photo_ToggleReshade">Enable ReShade effects.</sys:String>
 	<sys:String x:Key="LOC_Photo_CaptureToolTip">Capture a Screenshot</sys:String>
@@ -81,7 +80,6 @@
 	<sys:String x:Key="LOC_Photo_Guides_Circle">Circle</sys:String>
 	<sys:String x:Key="LOC_Photo_GuidesPopOut">Select a set of guides to help align your photo.</sys:String>
 	<sys:String x:Key="LOC_Photo_Settings">Photo Settings</sys:String>
-	<sys:String x:Key="LOC_Photo_GroupPoseWarn">More features are available while in Group Pose.</sys:String>
 
 	<sys:String x:Key="LOC_Character_Race">Race</sys:String>
 	<sys:String x:Key="LOC_Character_Tribe">Tribe</sys:String>

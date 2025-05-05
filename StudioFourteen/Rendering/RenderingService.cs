@@ -33,7 +33,6 @@ public class RenderingService : ServiceBase
 {
 	public readonly GenerateMaskDepthPass GenerateMaskDepth = new();
 	public readonly ForwardPass Forward = new();
-	public readonly DrawBufferPass DrawBuffer = new();
 
 	private readonly List<RenderPassBase> passes = new();
 	private Device? device;
@@ -49,6 +48,16 @@ public class RenderingService : ServiceBase
 	public Texture2D? BackBuffer { get; private set; }
 	public uint Width { get; private set; }
 	public uint Height { get; private set; }
+
+	public void AddPass(RenderPassBase pass)
+	{
+		this.passes.Add(pass);
+	}
+
+	public void RemovePass(RenderPassBase pass)
+	{
+		this.passes.Remove(pass);
+	}
 
 	public unsafe override void Attach()
 	{
@@ -92,9 +101,10 @@ public class RenderingService : ServiceBase
 		this.deviceContext?.Dispose();
 		this.deviceContext = null;
 
-		this.GenerateMaskDepth?.Dispose();
-		this.Forward?.Dispose();
-		this.DrawBuffer?.Dispose();
+		foreach(RenderPassBase pass in this.passes)
+		{
+			pass.Dispose();
+		}
 
 		base.Dispose();
 	}

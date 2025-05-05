@@ -15,70 +15,53 @@
 
 namespace StudioFourteen.Rendering.Passes;
 
-using System.Collections.Generic;
-using System.Numerics;
-using System.Runtime.InteropServices;
 using SharpDX.Direct3D11;
-using SharpDX.DXGI;
 using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Scene;
+
 using Device = SharpDX.Direct3D11.Device;
+using Format = SharpDX.DXGI.Format;
 
-public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
+public class ScreenEffectPass(MaterialBase material) : RenderPassBase
 {
-	private readonly List<SceneObject> sceneObjects = new();
+	private readonly MeshRenderer quad = new(Meshes.Quad, material);
 
+	private Texture2D? backBufferCopyTexture;
+	private ShaderResourceView? backBufferResourceView;
 	private RenderTargetView? backBufferTargetView;
 	private BlendState? blend;
 
-	public void Add(SceneObject obj)
+	public override void OnResolutionChanged()
 	{
-		lock(this.sceneObjects)
-		{
-			this.sceneObjects.Add(obj);
-		}
-	}
+		this.backBufferResourceView?.Dispose();
+		this.backBufferResourceView = null;
 
-	public void Remove(SceneObject obj)
-	{
-		lock(this.sceneObjects)
-		{
-			this.sceneObjects.Remove(obj);
-		}
-	}
+		this.backBufferCopyTexture?.Dispose();
+		this.backBufferCopyTexture = null;
 
-	public void HitTest(Vector2 screenPosition, ref HitTestResult result)
-	{
-		Matrix4x4 viewProj = ServiceManager.Instance.Camera.CurrentViewProjection;
-
-		foreach(SceneObject draw in this.sceneObjects)
-		{
-			draw.HitTest(screenPosition, Transform.Identity, viewProj, ref result);
-		}
-	}
-
-	public override void OnResolutionChanging()
-	{
 		this.backBufferTargetView?.Dispose();
 		this.backBufferTargetView = null;
 
-		base.OnResolutionChanging();
-	}
-
-	public override void Detach()
-	{
-		this.backBufferTargetView?.Dispose();
-		this.backBufferTargetView = null;
-
-		base.Detach();
+		base.OnResolutionChanged();
 	}
 
 	public override void Render(RenderingService service, Device device, DeviceContext deviceContext)
 	{
-		this.PassData.ViewProjection = Matrix4x4.Transpose(service.Services.Camera.CurrentViewProjection);
-		this.PassData.CameraPosition = new Vector4(service.Services.Camera.CurrentPosition, 1);
+		if (service.BackBuffer == null)
+			return;
 
-		base.Render(service, device, deviceContext);
+		// Create a shader resource copy of the back buffer so it can be accessed in the shader
+		if (this.backBufferCopyTexture == null)
+		{
+			this.backBufferCopyTexture?.Dispose();
+			this.backBufferResourceView?.Dispose();
+
+			Texture2DDescription desc = service.BackBuffer.Description;
+			desc.BindFlags = BindFlags.ShaderResource;
+			this.backBufferCopyTexture = new Texture2D(device, desc);
+
+			this.backBufferResourceView = new(device, this.backBufferCopyTexture);
+		}
 
 		if (this.backBufferTargetView == null)
 		{
@@ -108,17 +91,18 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 			this.blend = new(device, blendDesc);
 		}
 
+		// Copy the back buffer into the copy
+		deviceContext.CopyResource(service.BackBuffer, this.backBufferCopyTexture);
+
+		// Pass the buffers into the shader
+		deviceContext.PixelShader.SetShaderResource(0, this.backBufferResourceView);
+
+		// Set the output
 		deviceContext.Rasterizer.SetViewport(0, 0, service.Width, service.Height);
 		deviceContext.OutputMerger.SetBlendState(this.blend, null, -1);
 		deviceContext.OutputMerger.SetTargets(this.backBufferTargetView);
 
-		lock(this.sceneObjects)
-		{
-			foreach(SceneObject renderable in this.sceneObjects)
-			{
-				renderable.Draw(Transform.Identity, device, deviceContext);
-			}
-		}
+		this.quad.Draw(Transform.Identity, device, deviceContext);
 
 		using CommandList cmds = deviceContext.FinishCommandList(false);
 		device.ImmediateContext.ExecuteCommandList(cmds, true);
@@ -127,21 +111,11 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 
 	public override void Dispose()
 	{
+		this.quad.Dispose();
+		this.backBufferResourceView?.Dispose();
+		this.backBufferCopyTexture?.Dispose();
 		this.backBufferTargetView?.Dispose();
-		this.backBufferTargetView = null;
-
-		foreach(SceneObject renderable in this.sceneObjects)
-		{
-			renderable.Dispose();
-		}
 
 		base.Dispose();
-	}
-
-	[StructLayout(LayoutKind.Sequential)]
-	public struct ForwardPassData
-	{
-		public Matrix4x4 ViewProjection;
-		public Vector4 CameraPosition;
 	}
 }

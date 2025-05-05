@@ -17,8 +17,11 @@ namespace StudioFourteen.Photos;
 
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Panels;
+using StudioFourteen.Rendering.Materials;
+using StudioFourteen.Rendering.Passes;
 using StudioFourteen.Settings;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using WpfUtils.Extensions;
@@ -28,6 +31,14 @@ using Panel = StudioFourteen.Panels.Panel;
 
 public partial class PhotoWindow : Panel
 {
+	private readonly PhotoGuidesEffectMaterial guidesMaterial = new();
+	private readonly ScreenEffectPass guidesPass;
+
+	public PhotoWindow()
+	{
+		this.guidesPass = new(this.guidesMaterial);
+	}
+
 	public bool HideUI
 	{
 		get => this.Persistence.GetPersistence<bool>();
@@ -35,16 +46,6 @@ public partial class PhotoWindow : Panel
 		{
 			this.Persistence.SetPersistence(value);
 			this.Services.Photos.IsPhotoMode = this.HideUI;
-		}
-	}
-
-	public bool IsPortrait
-	{
-		get => this.Persistence.GetPersistence<bool>();
-		set
-		{
-			this.Persistence.SetPersistence(value);
-			this.Services.Photos.IsPortrait = this.IsPortrait;
 		}
 	}
 
@@ -81,6 +82,8 @@ public partial class PhotoWindow : Panel
 			this.Services.Photos.Width = this.SelectedAspectRatio.Width;
 			this.Services.Photos.Height = this.SelectedAspectRatio.Height;
 
+			this.guidesMaterial.SetAspectRatio(value.Aspect);
+
 			this.NotifyPropertyChanged(nameof(this.SelectedAspectRatio));
 			this.ResolutionToggle.IsChecked = false;
 		}
@@ -95,7 +98,10 @@ public partial class PhotoWindow : Panel
 		this.Services.Photos.Width = this.SelectedAspectRatio.Width;
 		this.Services.Photos.Height = this.SelectedAspectRatio.Height;
 		this.Services.Photos.Guide = this.Guide;
-		this.Services.Photos.IsPortrait = this.IsPortrait;
+
+		this.Services.Rendering.AddPass(this.guidesPass);
+
+		this.guidesMaterial.SetAspectRatio(this.SelectedAspectRatio.Aspect);
 	}
 
 	protected override void OnClosed()
@@ -104,7 +110,8 @@ public partial class PhotoWindow : Panel
 		this.Services.Photos.IsPhotoMode = false;
 		this.Services.Photos.AspectRatio = 0;
 		this.Services.Photos.Guide = Guides.None;
-		this.Services.Photos.IsPortrait = false;
+
+		this.RemoveGuidesAsync().Run();
 	}
 
 	private void OnSaveClicked(object sender, RoutedEventArgs e)
@@ -120,6 +127,14 @@ public partial class PhotoWindow : Panel
 	private void OnCloseClicked(object sender, RoutedEventArgs e)
 	{
 		this.Close();
+	}
+
+	private async Task RemoveGuidesAsync()
+	{
+		this.guidesMaterial.SetAspectRatio(0);
+		await Task.Delay(250);
+
+		this.Services.Rendering.RemovePass(this.guidesPass);
 	}
 
 	private void OnAspectsExpanderExpanded(object sender, RoutedEventArgs e)
