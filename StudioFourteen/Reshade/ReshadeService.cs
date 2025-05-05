@@ -114,15 +114,14 @@ public partial class ReshadeService : ServiceBase
 
 		this.Services.Tick.Add(TickService.Channels.StudioTick, this.OnTick);
 
+		ReshadeAddon.SetBeginRenderingEffectsCallback(Marshal.GetFunctionPointerForDelegate(this.onBeginRenderingEffects));
+		ReshadeAddon.SetFinishRenderingEffectsCallback(Marshal.GetFunctionPointerForDelegate(this.onFinishRenderingEffects));
 		bool result = ReshadeAddon.Initialize(Marshal.GetFunctionPointerForDelegate(this.onLog));
 
 		if (!result)
 			this.Log.Error("Error initializing reshade add-on");
 
 		this.Log.Information("Initialized Reshade add-on");
-
-		ReshadeAddon.SetBeginRenderingEffectsCallback(Marshal.GetFunctionPointerForDelegate(this.onBeginRenderingEffects));
-		ReshadeAddon.SetFinishRenderingEffectsCallback(Marshal.GetFunctionPointerForDelegate(this.onFinishRenderingEffects));
 	}
 
 	public override void Detach()
