@@ -97,7 +97,7 @@ public partial class PhotoWindow : Panel
 		this.Services.Photos.Width = this.SelectedAspectRatio.Width;
 		this.Services.Photos.Height = this.SelectedAspectRatio.Height;
 
-		this.Services.Rendering.AddPass(this.guidesPass);
+		this.Services.Rendering.AddAfterEffectsPass(this.guidesPass);
 
 		this.guidesMaterial.SetAspectRatio(this.SelectedAspectRatio.Aspect);
 		this.guidesMaterial.GuidesMode = this.Guide;
@@ -133,7 +133,7 @@ public partial class PhotoWindow : Panel
 		this.guidesMaterial.SetAspectRatio(0);
 		await Task.Delay(250);
 
-		this.Services.Rendering.RemovePass(this.guidesPass);
+		this.Services.Rendering.RemoveAfterEffectsPass(this.guidesPass);
 	}
 
 	private void OnAspectsExpanderExpanded(object sender, RoutedEventArgs e)

@@ -181,17 +181,6 @@
 					Width="28"
 					Margin="0"
 					Padding="6,0"
-					IsChecked="{Binding Services.Photos.ShowDepth}"
-					Style="{DynamicResource WpfUtilsIconToggleButton}"
-					ToolTip="{DynamicResource LOC_Photo_ToggleDepth}">
-					<TextBlock Text="D" />
-				</ToggleButton>
-
-				<ToggleButton
-					Grid.Column="4"
-					Width="28"
-					Margin="0"
-					Padding="6,0"
 					IsChecked="{Binding Services.Reshade.IsReshadeEnabled}"
 					IsEnabled="{Binding Services.Reshade.IsReshade}"
 					Style="{DynamicResource WpfUtilsIconToggleButton}"

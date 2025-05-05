@@ -33,7 +33,8 @@ public class RenderingService : ServiceBase
 	public readonly ForwardPass Forward = new();
 
 	private readonly GenerateUiMaskPass generateUiMaskPass = new();
-	private readonly List<RenderPassBase> passes = new();
+	private readonly List<RenderPassBase> beforeEffectsPasses = new();
+	private readonly List<RenderPassBase> afterEffectsPasses = new();
 	private Device? device;
 	private DeviceContext? deviceContext;
 	private int resolutionChangeCooldown = 15;
@@ -42,27 +43,37 @@ public class RenderingService : ServiceBase
 
 	public RenderingService()
 	{
-		this.passes.Add(this.Forward);
+		this.beforeEffectsPasses.Add(this.Forward);
 	}
 
 	public Texture2D? BackBuffer { get; private set; }
 	public uint Width { get; private set; }
 	public uint Height { get; private set; }
 
-	public void AddPass(RenderPassBase pass)
+	public void AddBeforeEffectsPass(RenderPassBase pass)
 	{
-		this.passes.Add(pass);
+		this.beforeEffectsPasses.Add(pass);
 	}
 
-	public void RemovePass(RenderPassBase pass)
+	public void RemoveBeforeEffectsPass(RenderPassBase pass)
 	{
-		this.passes.Remove(pass);
+		this.beforeEffectsPasses.Remove(pass);
+	}
+
+	public void AddAfterEffectsPass(RenderPassBase pass)
+	{
+		this.afterEffectsPasses.Add(pass);
+	}
+
+	public void RemoveAfterEffectsPass(RenderPassBase pass)
+	{
+		this.afterEffectsPasses.Remove(pass);
 	}
 
 	public unsafe override void Attach()
 	{
 		this.generateUiMaskPass.Attach();
-		foreach(RenderPassBase pass in this.passes)
+		foreach(RenderPassBase pass in this.beforeEffectsPasses)
 		{
 			pass.Attach();
 		}
@@ -85,7 +96,7 @@ public class RenderingService : ServiceBase
 		this.Services.Reshade.ReshadeAfterEffects -= this.OnAfterReshadeRender;
 
 		this.generateUiMaskPass.Detach();
-		foreach(RenderPassBase pass in this.passes)
+		foreach(RenderPassBase pass in this.beforeEffectsPasses)
 		{
 			pass.Detach();
 		}
@@ -97,7 +108,7 @@ public class RenderingService : ServiceBase
 		this.deviceContext = null;
 
 		this.generateUiMaskPass.Dispose();
-		foreach(RenderPassBase pass in this.passes)
+		foreach(RenderPassBase pass in this.beforeEffectsPasses)
 		{
 			pass.Dispose();
 		}
@@ -121,7 +132,8 @@ public class RenderingService : ServiceBase
 
 			this.SetUpRender();
 			this.RenderUiMask();
-			this.RenderPasses();
+			this.RenderBeforeEffectsPasses();
+			this.RenderAfterEffectsPasses();
 		}
 	}
 
@@ -129,11 +141,12 @@ public class RenderingService : ServiceBase
 	{
 		this.SetUpRender();
 		this.RenderUiMask();
+		this.RenderBeforeEffectsPasses();
 	}
 
 	private void OnAfterReshadeRender()
 	{
-		this.RenderPasses();
+		this.RenderAfterEffectsPasses();
 	}
 
 	private void OnGameTick()
@@ -166,7 +179,7 @@ public class RenderingService : ServiceBase
 			this.Log.Information($"Resolution Changed: {this.Width}x{this.Height}");
 			this.resolutionChangeCooldown = 15;
 
-			foreach(RenderPassBase pass in this.passes)
+			foreach(RenderPassBase pass in this.beforeEffectsPasses)
 			{
 				pass.OnResolutionChanged();
 			}
@@ -178,7 +191,7 @@ public class RenderingService : ServiceBase
 		{
 			this.Log.Information($"Resolution Changing: {xivDevice->Width}x{xivDevice->Height} -> {xivDevice->NewWidth}x{xivDevice->NewHeight}");
 
-			foreach(RenderPassBase pass in this.passes)
+			foreach(RenderPassBase pass in this.beforeEffectsPasses)
 			{
 				pass.OnResolutionChanging();
 			}
@@ -227,13 +240,16 @@ public class RenderingService : ServiceBase
 		this.generateUiMaskPass.Render(this, this.device, this.deviceContext);
 	}
 
-	private void RenderPasses()
+	private void RenderBeforeEffectsPasses() => this.RenderPasses(this.beforeEffectsPasses);
+	private void RenderAfterEffectsPasses() => this.RenderPasses(this.afterEffectsPasses);
+
+	private void RenderPasses(IEnumerable<RenderPassBase> passes)
 	{
 		if (!this.canRender || this.device == null || this.deviceContext == null)
 			return;
 
 		// Perform render passes.
-		foreach(RenderPassBase pass in this.passes)
+		foreach(RenderPassBase pass in passes)
 		{
 			try
 			{

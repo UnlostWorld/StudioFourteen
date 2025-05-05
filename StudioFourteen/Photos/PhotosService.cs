@@ -40,7 +40,6 @@ public partial class PhotosService : ServiceBase
 	[Notify] private double aspectRatio = 0;
 	[Notify] private uint width = 0;
 	[Notify] private uint height = 0;
-	[Notify] private bool showDepth = false;
 	[Notify] private bool isCapturing = false;
 	[Notify] private CapturePhases capturePhase;
 	[Notify] private string? lastSavedImagePath;
