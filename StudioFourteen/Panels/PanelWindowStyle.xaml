@@ -406,7 +406,7 @@
 
 			<Grid
 				Margin="12"
-				HorizontalAlignment="Center"
+				HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
 				RenderTransformOrigin="0.5,0.5">
 
 				<Grid.RenderTransform>
@@ -554,6 +554,7 @@
 		<Setter Property="MinHeight" Value="32" />
 		<Setter Property="MinWidth" Value="32" />
 		<Setter Property="ShowInTaskbar" Value="False" />
+		<Setter Property="HorizontalAlignment" Value="Center"/>
 		<Setter Property="Template" Value="{DynamicResource PanelToolbarTemplate}" />
 	</Style>
 

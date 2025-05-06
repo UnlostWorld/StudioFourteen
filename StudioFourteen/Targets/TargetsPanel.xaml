@@ -17,6 +17,7 @@
 	Title="Targets"
 	Width="1024"
 	Height="58"
+	HorizontalAlignment="Center"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	DefaultPosition="0.5,0"
 	HostStyle="{DynamicResource PanelToolbarStyle}"

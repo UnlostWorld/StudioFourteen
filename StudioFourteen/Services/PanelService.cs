@@ -138,6 +138,8 @@ public class PanelService : ServiceBase
 
 	private void OnOpening()
 	{
+		this.GamePanels.CreatePanel<ToolBarPanel>();
+
 		if (!this.hasRestoredPanels && this.Services.Studio.IsOpen)
 		{
 			this.RestorePanels().Run();

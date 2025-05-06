@@ -100,14 +100,14 @@
 				<Trigger Property="IsRightSide" Value="True">
 					<Setter TargetName="LauncherMenuPopup" Property="HorizontalOffset" Value="-10" />
 				</Trigger>
-				<Trigger Property="IsBottomSide" Value="True">
+				<!--<Trigger Property="IsBottomSide" Value="True">
 					<Setter TargetName="LaunchButton" Property="VerticalAlignment" Value="Bottom" />
 					<Setter TargetName="LauncherMenuPopup" Property="VerticalOffset" Value="48" />
 					<Setter TargetName="TaskBar" Property="Padding" Value="0,0,0,56" />
 					<Setter TargetName="TaskBar" Property="VerticalAlignment" Value="Bottom" />
 					<Setter TargetName="TitleBar" Property="Margin" Value="0,0,0,52" />
 					<Setter TargetName="TitleBar" Property="VerticalAlignment" Value="Bottom" />
-				</Trigger>
+				</Trigger>-->
 				<DataTrigger Binding="{Binding IsUiVisible}" Value="False">
 					<DataTrigger.EnterActions>
 						<StopStoryboard BeginStoryboardName="FadeIn" />

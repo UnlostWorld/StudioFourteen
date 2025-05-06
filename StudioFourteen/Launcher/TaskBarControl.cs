@@ -33,11 +33,8 @@ using WpfUtils.Extensions;
 using Panel = StudioFourteen.Panels.Panel;
 
 [DependencyProperty<bool>("IsOpen")]
-[DependencyProperty<bool>("IsInGPose")]
-[DependencyProperty<bool>("IsGPoseSettingsOpen")]
 [DependencyProperty<PanelContextBase>("Context")]
 [DependencyProperty<bool>("HideBackground")]
-[DependencyProperty<bool>("AllowMouseCapture")]
 public partial class TaskBarControl : Control
 {
 	private readonly Dictionary<Type, TaskBarEntry> panelEntries = new();
@@ -46,12 +43,7 @@ public partial class TaskBarControl : Control
 	{
 		this.Services.Studio.Opening += this.OnStudioOpening;
 		this.Services.Studio.Closing += this.OnStudioClosing;
-		this.Services.GroupPose.StateChanged += this.OnGroupPoseStateChanged;
-		this.Services.GroupPose.SettingsStateChanged += this.OnGroupPoseSettingsStateChanged;
-		this.Services.Settings.SettingChanged += this.OnSettingsOpenChanged;
 
-		this.IsInGPose = this.Services.GroupPose.IsGroupPosing;
-		this.IsGPoseSettingsOpen = this.Services.GroupPose.IsGroupPoseSettingsWindowVisible;
 		this.Loaded += this.OnLoaded;
 	}
 
@@ -87,8 +79,6 @@ public partial class TaskBarControl : Control
 		{
 			this.OnStudioOpening();
 		}
-
-		this.AllowMouseCapture = this.Settings.AllowMouseCapture;
 	}
 
 	private void OnStudioOpening()
@@ -99,26 +89,6 @@ public partial class TaskBarControl : Control
 	private void OnStudioClosing()
 	{
 		this.Dispatcher.Invoke(() => this.IsOpen = false);
-	}
-
-	private void OnGroupPoseSettingsStateChanged(bool settingsState)
-	{
-		this.Dispatcher.Invoke(() => this.IsGPoseSettingsOpen = settingsState);
-	}
-
-	private void OnGroupPoseStateChanged(bool newState)
-	{
-		this.Dispatcher.Invoke(() => this.IsInGPose = newState);
-	}
-
-	partial void OnIsInGPoseChanged(bool newValue)
-	{
-		this.Services.GroupPose.SetGroupPose(newValue);
-	}
-
-	partial void OnIsGPoseSettingsOpenChanged(bool newValue)
-	{
-		this.Services.GroupPose.SetGroupPoseSettingsWindowVisible(newValue);
 	}
 
 	private void OnPanelOpened(Panel panel)
@@ -204,19 +174,6 @@ public partial class TaskBarControl : Control
 		entry.IsVisible = false;
 		await Task.Delay(250);
 		this.Entries.Remove(entry);
-	}
-
-	private void OnSettingsOpenChanged(string settingName, object? newValue)
-	{
-		this.Dispatcher.Invoke(() =>
-		{
-			this.AllowMouseCapture = this.Settings.AllowMouseCapture;
-		});
-	}
-
-	partial void OnAllowMouseCaptureChanged(bool oldValue, bool newValue)
-	{
-		this.Settings.AllowMouseCapture = newValue;
 	}
 }
 

@@ -177,6 +177,8 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 				this.MinHeight = this.panel.MinHeight + 24 + 30;
 				this.RememberState = this.panel.RememberWindowState;
 				this.DefaultPosition = this.panel.DefaultPosition;
+				this.HorizontalAlignment = this.panel.HorizontalAlignment;
+				this.VerticalAlignment = this.panel.VerticalAlignment;
 
 				if (this.panel.HostStyle != null)
 					this.Style = this.panel.HostStyle;
