@@ -17,8 +17,10 @@ namespace StudioFourteen.Rendering;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
 using SharpDX.Direct3D11;
+using SixLabors.ImageSharp;
 using StudioFourteen.Plugin;
 using StudioFourteen.Rendering.Passes;
 using StudioFourteen.Services;
@@ -249,8 +251,11 @@ public class RenderingService : ServiceBase
 			return;
 
 		// Perform render passes.
-		foreach(RenderPassBase pass in passes)
+		foreach(RenderPassBase pass in passes.ToArray())
 		{
+			if (!pass.IncludeInScreenshots && this.Services.Photos.IsCapturing)
+				continue;
+
 			try
 			{
 				this.generateUiMaskPass.Bind(this.deviceContext);
@@ -260,6 +265,7 @@ public class RenderingService : ServiceBase
 			{
 				this.Log.Error(ex, $"Error in rendering pass: {pass}");
 				this.Detach();
+				return;
 			}
 		}
 	}

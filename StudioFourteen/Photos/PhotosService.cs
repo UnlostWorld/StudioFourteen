@@ -31,9 +31,11 @@ using System.IO;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
 using StudioFourteen.Utilities;
 using System.Threading;
+using StudioFourteen.Rendering.Passes;
 
 public partial class PhotosService : ServiceBase
 {
+	private readonly CapturePass renderPass = new();
 	private CancellationTokenSource captureCancellation = new();
 
 	[Notify] private bool isPhotoMode;
@@ -180,7 +182,17 @@ public partial class PhotosService : ServiceBase
 		try
 		{
 			await this.DispatchCapturePhaseChange(CapturePhases.Capturing, animate);
-			(Image? backBuffer, Image? depthBuffer) = await this.Services.GameCapture.ToImage();
+
+			this.Services.Rendering.AddAfterEffectsPass(this.renderPass);
+			this.renderPass.DoCapture();
+
+			while(this.renderPass.Capture == null)
+				await Task.Delay(10);
+
+			Image? backBuffer = this.renderPass.Capture;
+			Image? depthBuffer = this.renderPass.DepthCapture;
+
+			this.Services.Rendering.RemoveAfterEffectsPass(this.renderPass);
 
 			// Add Metadata
 			if (backBuffer != null && this.Settings.PhotoIncludeMetaData)

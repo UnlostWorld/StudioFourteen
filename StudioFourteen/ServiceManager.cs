@@ -33,7 +33,6 @@ public class ServiceManager : ServiceManagerBase
 	public Appearance.CharacterAppearanceService CharacterAppearance { get; init; } = new();
 	public Library.LibraryService Library { get; init; } = new();
 	public Input.InputService Input { get; init; } = new();
-	public GameCaptureService GameCapture { get; init; } = new();
 	public Posing.PoseService Pose { get; init; } = new();
 	public Files.FileThumbnailService Thumbnails { get; init; } = new();
 	public Targets.TargetService Target { get; init; } = new();

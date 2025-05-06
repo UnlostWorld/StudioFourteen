@@ -21,6 +21,8 @@ using Buffer = SharpDX.Direct3D11.Buffer;
 
 public abstract class RenderPassBase : IDisposable
 {
+	public bool IncludeInScreenshots { get; set; } = false;
+
 	public abstract void Render(RenderingService service, Device device, DeviceContext deviceContext);
 
 	public virtual void OnResolutionChanging()
