@@ -28,12 +28,12 @@ using WpfUtils.Extensions;
 
 using Panel = StudioFourteen.Panels.Panel;
 
-public partial class PhotoWindow : Panel
+public partial class PhotoPanel : Panel
 {
 	private readonly PhotoGuidesEffectMaterial guidesMaterial = new();
 	private readonly ScreenEffectPass guidesPass;
 
-	public PhotoWindow()
+	public PhotoPanel()
 	{
 		this.guidesPass = new(this.guidesMaterial);
 	}

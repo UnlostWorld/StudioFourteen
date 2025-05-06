@@ -87,7 +87,7 @@ public partial class LauncherMenu : Control
 		this.AddPanel<Animation.AnimationPanel>("Animation");
 		this.AddPanel<Library.LibraryWindow>("Sequencer", false);
 
-		this.AddPanel<Photos.PhotoWindow>("Photo");
+		this.AddPanel<Photos.PhotoPanel>("Photo");
 
 		if (this.Context is not AioPanelContext)
 			this.AddEntry<AioLauncherEntry>("AIO");

@@ -32,6 +32,8 @@ using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
 using StudioFourteen.Utilities;
 using System.Threading;
 using StudioFourteen.Rendering.Passes;
+using StudioFourteen.Panels;
+using WpfUtils;
 
 public partial class PhotosService : ServiceBase
 {
@@ -146,41 +148,44 @@ public partial class PhotosService : ServiceBase
 		this.IsCapturing = true;
 		this.captureCancellation = new();
 
-		await this.DispatchCapturePhaseChange(CapturePhases.Starting, animate);
-
 		bool customResolution = this.width > 0 && this.height > 0;
 		uint originalWidth = 0;
 		uint originalHeight = 0;
 		bool success = false;
+		CaptureAnimationWindow? animationWindow = null;
 
-		if (customResolution)
-		{
-			await this.DispatchCapturePhaseChange(CapturePhases.ChangingResolution, animate);
-			await TickService.GameTick();
-
-			success = this.SetResolution(this.width, this.height, out originalWidth, out originalHeight);
-			if (!success)
-			{
-				this.IsCapturing = false;
-				return;
-			}
-
-			await this.DispatchCapturePhaseChange(CapturePhases.WaitingForReshade, animate);
-			success = await this.Services.Reshade.WaitForEffectsToLoad();
-			if (!success)
-			{
-				await TickService.GameTick();
-				this.SetResolution(originalWidth, originalHeight, out _, out _);
-				this.IsCapturing = false;
-				return;
-			}
-		}
-
-		await Threads.NonUiThread();
-
-		// Capture the screenshot
 		try
 		{
+			animationWindow = await PanelWindow.CreatePanelWindow<CaptureAnimationWindow>(this.Services.Panels.GamePanels);
+			animationWindow?.Dispatcher.InvokeAsync(() => animationWindow.Show());
+
+			await this.DispatchCapturePhaseChange(CapturePhases.Starting, animate);
+
+			if (customResolution)
+			{
+				await this.DispatchCapturePhaseChange(CapturePhases.ChangingResolution, animate);
+				await TickService.GameTick();
+
+				success = this.SetResolution(this.width, this.height, out originalWidth, out originalHeight);
+				if (!success)
+				{
+					this.IsCapturing = false;
+					return;
+				}
+
+				await this.DispatchCapturePhaseChange(CapturePhases.WaitingForReshade, animate);
+				success = await this.Services.Reshade.WaitForEffectsToLoad();
+				if (!success)
+				{
+					await TickService.GameTick();
+					this.SetResolution(originalWidth, originalHeight, out _, out _);
+					this.IsCapturing = false;
+					return;
+				}
+			}
+
+			await Threads.NonUiThread();
+
 			await this.DispatchCapturePhaseChange(CapturePhases.Capturing, animate);
 
 			this.Services.Rendering.AddAfterEffectsPass(this.renderPass);
@@ -322,6 +327,8 @@ public partial class PhotosService : ServiceBase
 		}
 
 		await this.DispatchCapturePhaseChange(CapturePhases.Done, animate);
+
+		animationWindow?.Dispatcher.InvokeAsync(() => animationWindow.Close());
 		this.IsCapturing = false;
 	}
 
