@@ -161,8 +161,6 @@ public partial class TagSelector : Control
 
 				totalResults++;
 
-				Logging.Information(tag.Name);
-
 				if (results.Count >= MaxNumResultTags)
 					continue;
 
