@@ -49,7 +49,8 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 
 	public void HitTest(Vector2 screenPosition, ref HitTestResult result)
 	{
-		Matrix4x4 viewProj = ServiceManager.Instance.Camera.CurrentViewProjection;
+		// pSure this is wrong, but...
+		Matrix4x4 viewProj = ServiceManager.Instance.Camera.CurrentView * ServiceManager.Instance.Camera.CurrentProjection;
 
 		foreach(SceneObject draw in this.sceneObjects)
 		{
@@ -75,7 +76,8 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 
 	public override void Render(RenderingService service, Device device, DeviceContext deviceContext)
 	{
-		this.PassData.ViewProjection = Matrix4x4.Transpose(service.Services.Camera.CurrentViewProjection);
+		this.PassData.ViewMatrix = Matrix4x4.Transpose(service.Services.Camera.CurrentView);
+		this.PassData.ProjectionMatrix = Matrix4x4.Transpose(service.Services.Camera.CurrentProjection);
 		this.PassData.CameraPosition = new Vector4(service.Services.Camera.CurrentPosition, 1);
 
 		base.Render(service, device, deviceContext);
@@ -141,7 +143,8 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 	[StructLayout(LayoutKind.Sequential)]
 	public struct ForwardPassData
 	{
-		public Matrix4x4 ViewProjection;
+		public Matrix4x4 ViewMatrix;
+		public Matrix4x4 ProjectionMatrix;
 		public Vector4 CameraPosition;
 	}
 }

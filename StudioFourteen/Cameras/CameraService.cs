@@ -21,6 +21,7 @@ using StudioFourteen.Cameras.Modifiers;
 using StudioFourteen.Interop;
 using StudioFourteen.Plugin;
 using StudioFourteen.Services;
+using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -99,7 +100,6 @@ public class CameraService : ServiceBase
 	public float FarPlane { get; private set; }
 	public Matrix4x4 CurrentView { get; private set; }
 	public Matrix4x4 CurrentProjection { get; private set; }
-	public Matrix4x4 CurrentViewProjection { get; private set; }
 	public Vector3 CurrentPosition { get; private set; }
 
 	public override Task Start()
@@ -210,7 +210,8 @@ public class CameraService : ServiceBase
 
 	public Vector3 WorldToCamera(Vector3 worldPos)
 	{
-		return this.CurrentViewProjection.TransformViewProjection(worldPos);
+		Matrix4x4 viewProj = this.CurrentView * this.CurrentProjection;
+		return viewProj.TransformViewProjection(worldPos);
 	}
 
 	protected void OnGameTick()
@@ -251,6 +252,9 @@ public class CameraService : ServiceBase
 		nint result = Hooks.SceneCameraUpdate.Original(camera);
 
 		float deltaTime = 60 / 1000.0f;
+
+		this.NearPlane = camera->RenderCamera->NearPlane;
+		this.FarPlane = camera->RenderCamera->FarPlane;
 
 		if (this.Services.GroupPose.IsGroupPosing && this.current != null)
 		{
@@ -309,7 +313,9 @@ public class CameraService : ServiceBase
 
 				this.CameraMatrixLoad(camera->RenderCamera, (nint)(&camera->ViewMatrix));
 
-				camera->RenderCamera->FoV = this.state.FieldOfView;
+				// This does update the Fov, but the projection matrix we read does not inherrit it
+				// for some reason, so lets just use the gpose FoV values.
+				////camera->RenderCamera->FoV = this.state.FieldOfView;
 
 				// Update all cameras in the background.
 				// TODO: we could move this to another thread to ensure
@@ -337,12 +343,8 @@ public class CameraService : ServiceBase
 			this.CurrentPosition = camera->Position;
 		}
 
-		this.NearPlane = camera->RenderCamera->NearPlane;
-		this.FarPlane = camera->RenderCamera->FarPlane;
-
 		this.CurrentView = camera->ViewMatrix;
 		this.CurrentProjection = camera->RenderCamera->ProjectionMatrix;
-		this.CurrentViewProjection = this.CurrentView * this.CurrentProjection;
 
 		return result;
 	}

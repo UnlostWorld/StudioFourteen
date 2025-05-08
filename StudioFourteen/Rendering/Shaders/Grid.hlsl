@@ -19,7 +19,8 @@
 
 cbuffer GeometryPassData : register(b0)
 {
-    float4x4 ViewProjection;
+    float4x4 ViewMatrix;
+	float4x4 ProjectionMatrix;
 	float4 CameraPosition;
 };
 
@@ -95,7 +96,7 @@ Fragment vert(in Vertex vertex)
 	position.y += Height;
 	result.WorldPosition = position;
 
-	result.Position = mul(position, ViewProjection);
+	result.Position = mul(mul(position, ViewMatrix), ProjectionMatrix);
 	result.Position2 = result.Position;
 	result.Color = vertex.Color;
 	result.TexCoord = vertex.TexCoord;
