@@ -100,6 +100,8 @@ public class CameraService : ServiceBase
 	public float FarPlane { get; private set; }
 	public Matrix4x4 CurrentView { get; private set; }
 	public Matrix4x4 CurrentProjection { get; private set; }
+	public Matrix4x4 LastView { get; private set; }
+	public Matrix4x4 LastProjection { get; private set; }
 	public Vector3 CurrentPosition { get; private set; }
 
 	public override Task Start()
@@ -343,7 +345,10 @@ public class CameraService : ServiceBase
 			this.CurrentPosition = camera->Position;
 		}
 
-		this.CurrentView = camera->ViewMatrix;
+		this.LastView = this.CurrentView;
+		this.LastProjection = this.CurrentProjection;
+
+		this.CurrentView = camera->RenderCamera->ViewMatrix;
 		this.CurrentProjection = camera->RenderCamera->ProjectionMatrix;
 
 		return result;
