@@ -53,7 +53,7 @@ struct Fragment
 	float4 WorldPosition:WORLDPOS;
 };
 
-static const float quadScale = 100.0f;
+static const float quadScale = 50.0f;
 
 Texture2D mask_texture : register(t0);
 SamplerState mask_sampler : register(s0);
@@ -118,12 +118,12 @@ float4 pixel(Fragment frag) : SV_TARGET
 
 	float4 color = Color;
 	color.a = 0;
-	if (any(distance_to_subcell < (LineThickness / 100) * frag.Position.w))
+	if (any(distance_to_subcell < (LineThickness / 100) * (frag.Position.w * 2)))
 	{
 		color.a = 0.25;
 	}
 
-	if(any(distance_to_cell < (LineThickness / 100) * frag.Position.w))
+	if(any(distance_to_cell < (LineThickness / 100) * (frag.Position.w * 2)))
 	{
 		color.a = 1;
 	}
