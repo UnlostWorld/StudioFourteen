@@ -57,7 +57,7 @@ public partial class EnvironmentPanel : Panel
 
 	private void OnImportClicked(object sender, RoutedEventArgs e)
 	{
-		LibraryWindow.Open(this.GetContext());
+		LibraryPanel.Open(this.GetContext());
 	}
 
 	private void OnExportClicked(object sender, RoutedEventArgs e)

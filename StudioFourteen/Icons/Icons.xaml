@@ -42,25 +42,25 @@
 	<icons:Fa x:Key="ICON_Library_ViewList" Icon="List" Font="Solid" />
 	<icons:Fa x:Key="ICON_Library_FlattenOff" Icon="Folder" Font="Solid" />
 	<icons:Fa x:Key="ICON_Library_FlattenOn" Icon="FileAlt" Font="Solid" />
-	<icons:Fa x:Key="ICON_Title_Warning" Icon="ExclamationCircle" Font="Solid" />
-	<icons:Fa x:Key="ICON_Title_Character" Icon="UserShield" Font="Solid" />
-	<icons:Fa x:Key="ICON_Title_Camera" Icon="VideoCamera" Font="Solid" />
-	<icons:Fa x:Key="ICON_Title_History" Icon="History" Font="Solid" />
-	<icons:Fa x:Key="ICON_Title_Library" Icon="Book" Font="Solid" />
-	<icons:Fa x:Key="ICON_Title_Marketplace" Icon="Shop" Font="Solid" />
-	<icons:Fa x:Key="ICON_Title_Environment" Icon="CloudMoonRain" Font="Solid" />
-	<icons:Fa x:Key="ICON_Title_Photo" Icon="Image" Font="Solid" />
-	<icons:Fa x:Key="ICON_Title_Pose" Icon="Running" Font="Solid" />
-	<icons:Fa x:Key="ICON_Title_Scene" Icon="Users" Font="Solid" />
-	<icons:Fa x:Key="ICON_Title_Save" Icon="FloppyDisk" Font="Solid" />
-	<icons:Fa x:Key="ICON_Title_Script" Icon="Robot" Font="Solid" />
-	<icons:Fa x:Key="ICON_Title_Settings" Icon="Gears" Font="Solid" />
-	<icons:Fa x:Key="ICON_Title_Lighting" Icon="Lightbulb" Font="Solid" />
-	<icons:Fa x:Key="ICON_Title_Furniture" Icon="Chair" Font="Solid" />
-	<icons:Fa x:Key="ICON_Title_Crowds" Icon="Users" Font="Solid" />
-	<icons:Fa x:Key="ICON_Title_Effects" Icon="Fire" Font="Solid" />
-	<icons:Fa x:Key="ICON_Title_Animation" Icon="Person" Font="Solid" />
-	<icons:Fa x:Key="ICON_Title_Sequencer" Icon="GripLines" Font="Solid" />
+	<icons:Fa x:Key="ICON_Title_WarningPanel" Icon="ExclamationCircle" Font="Solid" />
+	<icons:Fa x:Key="ICON_Title_CharacterPanel" Icon="UserShield" Font="Solid" />
+	<icons:Fa x:Key="ICON_Title_CameraPanel" Icon="VideoCamera" Font="Solid" />
+	<icons:Fa x:Key="ICON_Title_HistoryPanel" Icon="History" Font="Solid" />
+	<icons:Fa x:Key="ICON_Title_LibraryPanel" Icon="Book" Font="Solid" />
+	<icons:Fa x:Key="ICON_Title_MarketplacePanel" Icon="Shop" Font="Solid" />
+	<icons:Fa x:Key="ICON_Title_EnvironmentPanel" Icon="CloudMoonRain" Font="Solid" />
+	<icons:Fa x:Key="ICON_Title_PhotoPanel" Icon="Image" Font="Solid" />
+	<icons:Fa x:Key="ICON_Title_PosePanel" Icon="Running" Font="Solid" />
+	<icons:Fa x:Key="ICON_Title_ScenePanel" Icon="Users" Font="Solid" />
+	<icons:Fa x:Key="ICON_Title_SavePanel" Icon="FloppyDisk" Font="Solid" />
+	<icons:Fa x:Key="ICON_Title_ScriptPanel" Icon="Robot" Font="Solid" />
+	<icons:Fa x:Key="ICON_Title_SettingsPanel" Icon="Gears" Font="Solid" />
+	<icons:Fa x:Key="ICON_Title_LightingPanel" Icon="Lightbulb" Font="Solid" />
+	<icons:Fa x:Key="ICON_Title_FurniturePanel" Icon="Chair" Font="Solid" />
+	<icons:Fa x:Key="ICON_Title_CrowdsPanel" Icon="Users" Font="Solid" />
+	<icons:Fa x:Key="ICON_Title_EffectsPanel" Icon="Fire" Font="Solid" />
+	<icons:Fa x:Key="ICON_Title_AnimationPanel" Icon="Person" Font="Solid" />
+	<icons:Fa x:Key="ICON_Title_SequencerPanel" Icon="GripLines" Font="Solid" />
 	<icons:Fa x:Key="ICON_Title_AIO" Icon="ObjectGroup" Font="Solid" />
 	<icons:Fa x:Key="ICON_Discord" Icon="Discord" />
 	<icons:Fa x:Key="ICON_GitHub" Icon="Github"/>

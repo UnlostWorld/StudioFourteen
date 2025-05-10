@@ -14,7 +14,6 @@
 	xmlns:triggers="clr-namespace:WpfUtils.Triggers;assembly=WpfUtils"
 	xmlns:windows="clr-namespace:StudioFourteen.Panels"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
-	Title="Targets"
 	Width="1024"
 	Height="58"
 	HorizontalAlignment="Center"

@@ -8,7 +8,6 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
-	Title="{DynamicResource LOC_Photo}"
 	Width="800"
 	Height="58"
 	d:Background="{DynamicResource BackgroundBrush}"
@@ -17,7 +16,6 @@
 	HostStyle="{DynamicResource PanelToolbarStyle}"
 	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	ResizeMode="NoResize"
-	TitleIcon="{DynamicResource ICON_Title_Photo}"
 	VisibilityMode="PhotoMode"
 	mc:Ignorable="d">
 

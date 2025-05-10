@@ -23,6 +23,7 @@ using DependencyPropertyGenerator;
 using System;
 using WpfUtils;
 using PropertyChanged.SourceGenerator;
+using StudioFourteen.Environment;
 
 [DependencyProperty<bool>("IsMenuOpen")]
 public partial class AioWindow : PanelWindow
@@ -76,7 +77,7 @@ public partial class AioWindow : PanelWindow
 
 		string currentTitle = StudioFourteen.Resources.Find("LOC_AIO_Title", "Studio Fourteen");
 		if (this.CurrentPanel != null)
-			currentTitle += " - " + this.CurrentPanel.Title;
+			currentTitle += " - " + this.Services.Panels.GetPanelTitle(this.CurrentPanel.GetType());
 
 		this.CurrentTitle = currentTitle;
 
@@ -89,6 +90,28 @@ public partial class AioWindow : PanelWindow
 	{
 		this.CurrentTitle = StudioFourteen.Resources.Find("LOC_AIO_Title", "Studio Fourteen");
 		base.OnOpened();
+
+		Task.Run(async () =>
+		{
+			await Task.Delay(250);
+			await this.MainThread();
+
+			////this.TaskBar.AddEntry<Marketplace.MarketplacePanel>("Marketplace");
+			this.TaskBar.AddEntry<Library.LibraryPanel>();
+			this.TaskBar.AddEntry<Cameras.CameraPanel>();
+			this.TaskBar.AddEntry<EnvironmentPanel>();
+			this.TaskBar.AddEntry<Appearance.CharacterPanel>();
+			this.TaskBar.AddEntry<Posing.PosePanel>();
+			////this.TaskBar.AddEntry<Library.LibraryWindow>("Lighting");
+			////this.TaskBar.AddEntry<Library.LibraryWindow>("Furniture");
+			////this.TaskBar.AddEntry<Library.LibraryWindow>("Crowds");
+			////this.TaskBar.AddEntry<Library.LibraryWindow>("Effects");
+			this.TaskBar.AddEntry<Animation.AnimationPanel>();
+			////this.TaskBar.AddEntry<Library.LibraryWindow>("Sequencer");
+			this.TaskBar.AddEntry<Photos.PhotoPanel>();
+			this.TaskBar.AddEntry<History.HistoryPanel>();
+			this.TaskBar.AddEntry<Settings.SettingsPanel>();
+		});
 	}
 
 	protected override void OnClosed()

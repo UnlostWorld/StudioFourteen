@@ -72,28 +72,23 @@ public partial class LauncherMenu : Control
 	{
 		this.Entries.Clear();
 
-		this.AddPanel<Marketplace.MarketplacePanel>("Marketplace", false);
-		this.AddPanel<Library.LibraryWindow>("Library");
+		this.AddPanel<Marketplace.MarketplacePanel>(false);
+		this.AddPanel<Library.LibraryPanel>();
 
-		this.AddPanel<Cameras.CameraPanel>("Camera");
-		this.AddPanel<EnvironmentPanel>("Environment");
-		this.AddPanel<Appearance.CharacterPanel>("Character");
-		this.AddPanel<Posing.PoseWindow>("Pose");
-		this.AddPanel<Library.LibraryWindow>("Lighting", false);
-		this.AddPanel<Library.LibraryWindow>("Furniture", false);
-		this.AddPanel<Library.LibraryWindow>("Crowds", false);
-		this.AddPanel<Library.LibraryWindow>("Effects", false);
+		this.AddPanel<Cameras.CameraPanel>();
+		this.AddPanel<EnvironmentPanel>();
+		this.AddPanel<Appearance.CharacterPanel>();
+		this.AddPanel<Posing.PosePanel>();
 
-		this.AddPanel<Animation.AnimationPanel>("Animation");
-		this.AddPanel<Library.LibraryWindow>("Sequencer", false);
+		this.AddPanel<Animation.AnimationPanel>();
 
-		this.AddPanel<Photos.PhotoPanel>("Photo");
+		this.AddPanel<Photos.PhotoPanel>();
 
 		if (this.Context is not AioPanelContext)
-			this.AddEntry<AioLauncherEntry>("AIO");
+			this.AddEntry<AioLauncherEntry>();
 
-		this.AddPanel<History.HistoryPanel>("History");
-		this.AddPanel<Settings.SettingsPanel>("Settings");
+		this.AddPanel<History.HistoryPanel>();
+		this.AddPanel<Settings.SettingsPanel>();
 	}
 
 	private void OnPowerClicked(object sender, RoutedEventArgs e)
@@ -102,20 +97,19 @@ public partial class LauncherMenu : Control
 		this.IsOpen = false;
 	}
 
-	private void AddPanel<TPanel>(string name, bool enabled = true)
+	private void AddPanel<TPanel>(bool enabled = true)
 		where TPanel : Panel, new()
 	{
-		this.AddEntry<PanelLauncherEntry<TPanel>>(name, enabled);
+		this.AddEntry<PanelLauncherEntry<TPanel>>(enabled);
 	}
 
-	private void AddEntry<T>(string name, bool enabled = true)
+	private void AddEntry<T>(bool enabled = true)
 		where T : LauncherEntry
 	{
 		T? entry = Activator.CreateInstance(typeof(T), [this]) as T;
 		if (entry == null)
 			return;
 
-		entry.Name = name;
 		entry.IsEnabled = enabled;
 		this.Entries.Add(entry);
 	}
@@ -127,12 +121,11 @@ public abstract class LauncherEntry(LauncherMenu menu)
 	protected readonly LauncherMenu owner = menu;
 
 	public bool IsEnabled { get; set; }
-	public string? Name { get; set; }
 	public bool IsAIO { get; set; }
 
-	public string? DisplayName => Resources.Find($"LOC_{this.Name}", this.Name ?? string.Empty);
-	public string? Description => Resources.Find($"LOC_{this.Name}Desc", this.Name ?? string.Empty);
-	public object? Icon => Resources.Find($"ICON_Title_{this.Name}");
+	public abstract string? DisplayName { get; }
+	public abstract string? Description { get; }
+	public abstract object? Icon { get; }
 
 	public bool IsOpen
 	{
@@ -163,6 +156,10 @@ public class PanelLauncherEntry<T> : LauncherEntry
 		this.GetContext().PanelMinimized += this.OnPanelChanged;
 	}
 
+	public override string? DisplayName => this.Services.Panels.GetPanelTitle(typeof(T));
+	public override string? Description => this.Services.Panels.GetPanelDescription(typeof(T));
+	public override object? Icon => this.Services.Panels.GetPanelIcon(typeof(T));
+
 	protected override bool GetIsOpen() => this.GetContext().GetOpenPanel<T>() != null;
 	protected override void SetOpen() => this.GetContext().CreatePanel<T>(true);
 
@@ -175,6 +172,10 @@ public class PanelLauncherEntry<T> : LauncherEntry
 public class AioLauncherEntry(LauncherMenu menu)
 	: LauncherEntry(menu)
 {
+	public override string? DisplayName => Resources.Find($"LOC_AIO", "AIO");
+	public override string? Description => Resources.Find($"LOC_AIODesc", string.Empty);
+	public override object? Icon => Resources.Find($"ICON_Title_AIO");
+
 	protected override bool GetIsOpen() => AioWindow.GetIsOpen();
 	protected override void SetOpen() => AioWindow.OpenAio();
 }

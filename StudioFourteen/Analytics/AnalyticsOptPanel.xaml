@@ -8,7 +8,6 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
-	Title="{DynamicResource LOC_Analytics_OptTitle}"
 	Width="400"
 	MaxHeight="800"
 	d:Background="{DynamicResource BackgroundBrush}"
@@ -16,7 +15,6 @@
 	RememberWindowState="False"
 	ResizeMode="NoResize"
 	SizeToContent="Height"
-	TitleIcon="{DynamicResource ICON_Title_Warning}"
 	VisibilityMode="Always"
 	mc:Ignorable="d">
 

@@ -12,12 +12,10 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
-	Title="{DynamicResource LOC_Environment}"
 	Width="350"
 	Height="550"
 	MinHeight="510"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
-	TitleIcon="{DynamicResource ICON_Title_Environment}"
 	mc:Ignorable="d">
 	<Grid>
 

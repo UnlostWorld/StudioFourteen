@@ -9,14 +9,12 @@
 	xmlns:local="clr-namespace:StudioFourteen.History"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
-	Title="{DynamicResource LOC_History}"
 	Width="300"
 	Height="400"
 	MaxHeight="800"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	ResizeMode="CanResizeWithGrip"
-	TitleIcon="{DynamicResource ICON_Title_History}"
 	mc:Ignorable="d">
 
 	<Grid>

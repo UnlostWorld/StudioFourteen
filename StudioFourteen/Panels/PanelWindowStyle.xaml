@@ -122,7 +122,7 @@
 									Margin="0,1,4,0"
 									VerticalAlignment="Center"
 									Foreground="{DynamicResource ForegroundLightBrush}"
-									Icon="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Panel.TitleIcon}"
+									Icon="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TitleIcon}"
 									Visibility="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=HasIcon, Converter={StaticResource B2V}}" />
 
 								<TextBlock

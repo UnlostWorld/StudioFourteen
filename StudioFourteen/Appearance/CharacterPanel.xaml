@@ -12,7 +12,6 @@
 	xmlns:local="clr-namespace:StudioFourteen.Appearance"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
-	Title="{DynamicResource LOC_Character}"
 	Width="350"
 	Height="600"
 	MinWidth="350"
@@ -20,7 +19,6 @@
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	ResizeMode="CanResizeWithGrip"
 	Subtitle="{Binding CharacterName}"
-	TitleIcon="{DynamicResource ICON_Title_Character}"
 	mc:Ignorable="d">
 
 	<Grid x:Name="ContentArea" IsEnabled="{Binding HasValidTarget}">

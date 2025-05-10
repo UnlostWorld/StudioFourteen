@@ -40,6 +40,7 @@ using WpfUtils.Windows;
 [DependencyProperty<double>("Scale", DefaultValue = 1.0)]
 [DependencyProperty<bool>("IsMaximized", DefaultValue = false)]
 [DependencyProperty<bool>("RememberState", DefaultValue = false)]
+[DependencyProperty<object>("TitleIcon")]
 [DependencyProperty<Thickness>("TitleMargin")]
 [DependencyProperty<Point>("DefaultPosition", DefaultValueExpression = "new System.Windows.Point(0.5, 0.5)")]
 [DependencyProperty<ICommand>("CloseCommand")]
@@ -106,7 +107,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 	public ServiceManager Services => ServiceManager.Instance;
 
-	public bool HasIcon => this.Panel != null && this.Panel.TitleIcon != null;
+	public bool HasIcon => this.TitleIcon != null;
 	public bool HasSubtitle => this.Panel != null && !string.IsNullOrEmpty(this.Panel.Subtitle);
 	public bool IsOpen { get; private set; }
 	public virtual bool CanNavigate => true;
@@ -168,7 +169,8 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 			if (this.panel != null)
 			{
-				this.Title = this.panel.Title;
+				this.Title = this.Services.Panels.GetPanelTitle(this.panel.GetType());
+				this.TitleIcon = this.Services.Panels.GetPanelIcon(this.panel.GetType());
 				this.SizeToContent = this.panel.SizeToContent;
 				this.ResizeMode = this.panel.ResizeMode;
 				this.Width = this.panel.Width;

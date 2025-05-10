@@ -44,7 +44,7 @@ using WpfUtils.Utils;
 
 using Panel = StudioFourteen.Panels.Panel;
 
-public partial class LibraryWindow : Panel
+public partial class LibraryPanel : Panel
 {
 	private readonly FuncQueue searchQueue;
 	private readonly FuncQueue stopPreviewQueue;
@@ -60,7 +60,7 @@ public partial class LibraryWindow : Panel
 	private int lastEntryClick = 0;
 	private double? waitingForPosition;
 
-	public LibraryWindow()
+	public LibraryPanel()
 	{
 		this.searchQueue = new(this.SearchAsync, 250);
 		this.stopPreviewQueue = new(this.StopPreview, 250);
@@ -142,10 +142,10 @@ public partial class LibraryWindow : Panel
 
 	public static async Task OpenAsync(PanelContextBase context)
 	{
-		LibraryWindow? panel = context.GetOpenPanel<LibraryWindow>();
+		LibraryPanel? panel = context.GetOpenPanel<LibraryPanel>();
 		if (panel == null)
 		{
-			panel = await context.CreatePanelAsync<LibraryWindow>();
+			panel = await context.CreatePanelAsync<LibraryPanel>();
 		}
 	}
 

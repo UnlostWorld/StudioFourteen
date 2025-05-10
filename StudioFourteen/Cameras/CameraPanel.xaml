@@ -10,11 +10,9 @@
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:pose="clr-namespace:StudioFourteen.Posing"
-	Title="{DynamicResource LOC_Camera}"
 	Width="350"
 	Height="450"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
-	TitleIcon="{DynamicResource ICON_Title_Camera}"
 	mc:Ignorable="d">
 	<Border
 		Grid.Column="0"

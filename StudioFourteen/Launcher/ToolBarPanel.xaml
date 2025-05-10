@@ -10,7 +10,6 @@
 	xmlns:sys="clr-namespace:System;assembly=mscorlib"
 	xmlns:windows="clr-namespace:StudioFourteen.Panels"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
-	Title="ToolBar"
 	Width="350"
 	HorizontalAlignment="Right"
 	Height="58"

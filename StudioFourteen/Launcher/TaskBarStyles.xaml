@@ -269,7 +269,7 @@
 				BorderThickness="1"
 				CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
 
-			<Grid x:Name="ContentArea" Margin="{TemplateBinding Padding}" Width="38">
+			<Grid x:Name="ContentArea" Margin="{TemplateBinding Padding}" MinWidth="38">
 
 				<Grid.OpacityMask>
 					<LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
@@ -290,7 +290,6 @@
 							<DataTemplate DataType="{x:Type local:TaskBarEntry}">
 								<local:TaskBarButtonControl
 									Margin="1,0"
-									Context="{Binding Context}"
 									Icon="{Binding Icon}"
 									IsActive="{Binding IsActive}"
 									IsMinimized="{Binding IsMinimized}"

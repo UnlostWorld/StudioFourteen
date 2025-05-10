@@ -11,13 +11,11 @@
 	xmlns:settings="clr-namespace:StudioFourteen.Settings"
 	xmlns:themes="clr-namespace:StudioFourteen.Themes"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
-	Title="{DynamicResource LOC_Settings}"
 	Width="300"
 	Height="450"
 	MinWidth="300"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
-	TitleIcon="{DynamicResource ICON_Title_Settings}"
 	mc:Ignorable="d">
 
 	<TabControl>

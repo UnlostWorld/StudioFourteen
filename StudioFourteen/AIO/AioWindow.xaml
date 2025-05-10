@@ -17,7 +17,6 @@
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	IsEmbedded="False"
-	TitleMargin="45,0,0,0"
 	Topmost="False"
 	mc:Ignorable="d"
 	RememberState="False"
@@ -41,36 +40,13 @@
 			Context="{Binding Context}"
 			PanelType="{x:Type targets:TargetsPanel}" />
 
-		<Button
-			x:Name="LaunchButton"
-			Grid.RowSpan="2"
-			Grid.ColumnSpan="2"
-			Margin="0,-24,0,0"
-			HorizontalAlignment="Left"
-			VerticalAlignment="Top"
-			Click="OnLaunchClicked"
-			Style="{DynamicResource LauncherButton}" />
-
 		<launcher:TaskBarControl
-			Grid.Row="1"
+			x:Name="TaskBar"
+			Grid.Row="0"
+			Grid.RowSpan="2"
 			Grid.Column="0"
 			HideBackground="True"
 			Context="{Binding Context}" />
-
-		<Popup
-			x:Name="LauncherMenuPopup"
-			HorizontalOffset="50"
-			IsOpen="{Binding IsMenuOpen, Mode=TwoWay}"
-			Placement="RelativePoint"
-			PlacementTarget="{Binding ElementName=LaunchButton}"
-			StaysOpen="False"
-			VerticalOffset="0">
-
-			<launcher:LauncherMenu
-				Context="{Binding Context, ElementName=AioWindowMain}"
-				IsOpen="{Binding IsOpen, Mode=TwoWay, RelativeSource={RelativeSource AncestorType={x:Type Popup}}}" />
-
-		</Popup>
 
 		<panels:PanelHost
 			x:Name="PanelArea"

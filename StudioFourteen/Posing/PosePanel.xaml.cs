@@ -30,7 +30,7 @@ using System.Threading.Tasks;
 using System;
 using WpfUtils;
 
-public partial class PoseWindow : CharacterPanelBase
+public partial class PosePanel : CharacterPanelBase
 {
 	private readonly FuncQueue showTooltipQueue;
 	private SelectionBase? nextHover;
@@ -44,7 +44,7 @@ public partial class PoseWindow : CharacterPanelBase
 	[Notify] private bool isHoverTooltipOpen = false;
 	[Notify] private UIElement? hoverTarget;
 
-	public PoseWindow()
+	public PosePanel()
 	{
 		this.showTooltipQueue = new(this.ShowTooltip, 500);
 	}
@@ -126,7 +126,7 @@ public partial class PoseWindow : CharacterPanelBase
 
 			if (newSelection != null && this.Services.Selection.HoverSource is PoseSelectionControl target)
 			{
-				if (target.FindParent<PoseWindow>() == this)
+				if (target.FindParent<PosePanel>() == this)
 				{
 					this.nextHover = newSelection;
 					this.HoverTarget = target;
@@ -188,7 +188,7 @@ public partial class PoseWindow : CharacterPanelBase
 
 	private void OnImportClicked(object sender, RoutedEventArgs e)
 	{
-		LibraryWindow.Open(this.GetContext());
+		LibraryPanel.Open(this.GetContext());
 	}
 
 	private async void OnExportClicked(object sender, RoutedEventArgs e)

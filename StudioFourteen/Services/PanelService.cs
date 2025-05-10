@@ -18,6 +18,7 @@ namespace StudioFourteen.Services;
 using StudioFourteen.AIO;
 using StudioFourteen.Launcher;
 using StudioFourteen.Panels;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
@@ -45,6 +46,10 @@ public class PanelService : ServiceBase
 	public delegate void PanelServiceDelegate(PanelService self);
 
 	public event PanelServiceDelegate? PanelsRestarted;
+
+	public string GetPanelTitle(Type type) => Resources.Find($"LOC_{type.Name}", string.Empty);
+	public string GetPanelDescription(Type type) => Resources.Find($"LOC_{type.Name}Desc", string.Empty);
+	public object? GetPanelIcon(Type type) => Resources.Find($"ICON_Title_{type.Name}");
 
 	public override Task Initialize()
 	{

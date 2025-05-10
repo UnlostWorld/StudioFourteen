@@ -8,7 +8,6 @@
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:icons="clr-namespace:StudioFourteen.Icons"
-	Title="Script"
 	Width="512"
 	Height="300"
 	d:Background="{DynamicResource BackgroundBrush}"
@@ -17,7 +16,6 @@
 	RememberWindowState="False"
 	ResizeMode="NoResize"
 	SizeToContent="Manual"
-	TitleIcon="{DynamicResource ICON_Title_Script}"
 	VisibilityMode="Always"
 	mc:Ignorable="d">
 

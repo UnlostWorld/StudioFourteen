@@ -28,7 +28,7 @@ public partial class BlendInspector : View
 {
 	private bool extendClamps = false;
 
-	public PoseWindow? Panel => this.FindParent<PoseWindow>();
+	public PosePanel? Panel => this.FindParent<PosePanel>();
 
 	public double BlendMinimum
 	{

@@ -39,8 +39,6 @@ public enum PanelVisibility
 	PhotoMode,
 }
 
-[DependencyProperty<IconDefinitionBase>("TitleIcon")]
-[DependencyProperty<string>("Title")]
 [DependencyProperty<string>("Subtitle")]
 [DependencyProperty<SizeToContent>("SizeToContent", DefaultValue = SizeToContent.Manual)]
 [DependencyProperty<ResizeMode>("ResizeMode", DefaultValue = ResizeMode.CanResizeWithGrip)]

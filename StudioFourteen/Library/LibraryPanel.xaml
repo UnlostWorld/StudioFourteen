@@ -1,5 +1,5 @@
 ﻿<panels:Panel
-	x:Class="StudioFourteen.Library.LibraryWindow"
+	x:Class="StudioFourteen.Library.LibraryPanel"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:behaviors="clr-namespace:WpfUtils.Behaviors;assembly=WpfUtils"
@@ -17,7 +17,6 @@
 	xmlns:triggers="clr-namespace:WpfUtils.Triggers;assembly=WpfUtils"
 	xmlns:vwp="clr-namespace:WpfToolkit.Controls;assembly=VirtualizingWrapPanel"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
-	Title="{DynamicResource LOC_Library}"
 	Width="800"
 	Height="600"
 	MinWidth="280"
@@ -25,7 +24,6 @@
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	Subtitle="{Binding CurrentTab.Name}"
-	TitleIcon="{DynamicResource ICON_Title_Library}"
 	mc:Ignorable="d">
 
 	<Grid>

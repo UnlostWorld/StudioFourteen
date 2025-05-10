@@ -52,6 +52,18 @@ public partial class TaskBarControl : Control
 	protected ServiceManager Services => ServiceManager.Instance;
 	protected SettingsService.Configuration Settings => this.Services.Settings.Current;
 
+	public void AddEntry<T>()
+	{
+		TaskBarEntry entry = new(typeof(T));
+		entry.IsMinimized = true;
+
+		this.Dispatcher.Invoke(() =>
+		{
+			this.panelEntries.Add(typeof(T), entry);
+			this.Entries.Add(entry);
+		});
+	}
+
 	partial void OnContextChanged(PanelContextBase? oldValue, PanelContextBase? newValue)
 	{
 		if (oldValue != null)
@@ -104,30 +116,22 @@ public partial class TaskBarControl : Control
 		if (panel.GetContext() != context)
 			return;
 
+		if (!panel.RememberWindowState)
+			return;
+
 		TaskBarEntry? entry;
 		this.panelEntries.TryGetValue(panel.GetType(), out entry);
 
 		if (entry == null)
 		{
-			await panel.MainThread();
-			if (panel.TitleIcon == null || string.IsNullOrEmpty(panel.Title))
-				return;
-
-			entry = new(context, panel.TitleIcon, panel.Title, panel.GetType());
+			entry = new(panel.GetType());
 			this.panelEntries.Add(panel.GetType(), entry);
 
-			await this.MainThread();
 			this.Entries.Add(entry);
 		}
 		else
 		{
 			entry.IsMinimized = false;
-		}
-
-		string? typeName = entry.Type?.FullName;
-		if (typeName != null)
-		{
-			this.Settings.MinimizedTaskBarEntries.Remove(typeName);
 		}
 	}
 
@@ -177,42 +181,23 @@ public partial class TaskBarControl : Control
 	}
 }
 
-public partial class TaskBarEntrySave
-{
-	public string? Icon { get; set; }
-	public string? Title { get; set; }
-}
-
 public partial class TaskBarEntry : ViewModel
 {
-	public readonly TaskBarEntrySave Save = new();
+	private readonly Type panelType;
 
 	[Notify] private bool isMinimized = false;
 	[Notify] private bool isActive = true;
 	[Notify] private bool isVisible = true;
 
-	public TaskBarEntry(PanelContextBase context, IconDefinitionBase icon, string title, Type panelType)
+	public TaskBarEntry(Type panelType)
 	{
-		this.Icon = icon;
-		this.Title = title;
-		this.Type = panelType;
-		this.Context = context;
+		this.panelType = panelType;
 	}
 
-	public IconDefinitionBase? Icon
-	{
-		get => IconDefinitionBase.Parse(this.Save.Icon);
-		set => this.Save.Icon = value?.ToString();
-	}
-
-	public string? Title
-	{
-		get => this.Save.Title;
-		set => this.Save.Title = value;
-	}
-
-	public Type? Type { get; set; }
-	public PanelContextBase Context { get; init; }
+	public Type? Type => this.panelType;
+	public string Title => ServiceManager.Instance.Panels.GetPanelTitle(this.panelType);
+	public string Description => ServiceManager.Instance.Panels.GetPanelDescription(this.panelType);
+	public object? Icon => ServiceManager.Instance.Panels.GetPanelIcon(this.panelType);
 }
 
 [DependencyProperty<bool>("IsMinimized")]
@@ -220,7 +205,6 @@ public partial class TaskBarEntry : ViewModel
 [DependencyProperty<bool>("IsTaskVisible")]
 [DependencyProperty<Type>("PanelType")]
 [DependencyProperty<bool>("IsActive")]
-[DependencyProperty<PanelContextBase>("Context")]
 public partial class TaskBarButtonControl : Control
 {
 	protected ServiceManager Services => ServiceManager.Instance;
@@ -237,9 +221,13 @@ public partial class TaskBarButtonControl : Control
 
 	private async Task HandleClickAsync()
 	{
-		if (this.PanelType == null || this.Context == null)
+		if (this.PanelType == null)
 			return;
 
-		await this.Context.TogglePanel(this.PanelType);
+		TaskBarControl? taskBar = this.FindParent<TaskBarControl>();
+		if (taskBar == null || taskBar.Context == null)
+			return;
+
+		await taskBar.Context.TogglePanel(this.PanelType);
 	}
 }
