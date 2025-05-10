@@ -23,7 +23,7 @@ public class SceneGroup : SceneObject
 {
 	public readonly List<SceneObject> Children = new();
 
-	public virtual bool Visible { get; set; }
+	public virtual bool Visible { get; set; } = true;
 
 	public void Add(SceneObject draw)
 	{

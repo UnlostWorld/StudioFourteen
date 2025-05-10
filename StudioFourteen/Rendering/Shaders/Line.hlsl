@@ -18,13 +18,18 @@
 
 #include "Geometry.hlsl"
 
+cbuffer MaterialInstanceData : register(MaterialDataRegister)
+{
+	float4 Color;
+};
+
 static const float PI = 3.1415926f;
 static const float fRatio = 2.0f;
 static float fThickness = 0.0025f;
 
-void addHalfCircle(inout TriangleStream<Pixel> triangleStream, int nCountTriangles, float4 linePointToConnect, float fPointWComponent, float fAngle, float4 color)
+void addHalfCircle(inout TriangleStream<Fragment> triangleStream, int nCountTriangles, float4 linePointToConnect, float fPointWComponent, float fAngle, float4 color)
 {
-    Pixel output = (Pixel)0;
+    Fragment output = (Fragment)0;
 	output.Color = color;
     for (int nI = 0; nI < nCountTriangles; ++nI)
     {
@@ -55,9 +60,9 @@ void addHalfCircle(inout TriangleStream<Pixel> triangleStream, int nCountTriangl
 }
 
 [maxvertexcount(42)]
-void geometry(line Pixel input[2], inout TriangleStream<Pixel> triangleStream)
+void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStream)
 {
-    Pixel output= (Pixel)0;
+    Fragment output= (Fragment)0;
 
     int nCountTriangles = 6;
 
@@ -154,10 +159,10 @@ void geometry(line Pixel input[2], inout TriangleStream<Pixel> triangleStream)
     triangleStream.Append(output);
 }
 
-float4 pixel(Pixel pixel) : SV_TARGET
+float4 pixel(Fragment pixel) : SV_TARGET
 {
 	float4 color = pixel.Color;
-	color *= constants.ObjectColor;
+	//color *= constants.ObjectColor;
 	color.a *= GetClippingAlpha(pixel, 0.1);
 	return color;
 }

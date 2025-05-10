@@ -24,27 +24,41 @@ using StudioFourteen.Rendering.Materials;
 using Buffer = SharpDX.Direct3D11.Buffer;
 using Device = SharpDX.Direct3D11.Device;
 
-public class MeshRenderer : InstanceRendererBase<MeshRenderer.PerRendererData>
+public class LineRenderer : InstanceRendererBase<MeshRenderer.PerRendererData>
 {
-	public MaterialBase? Material;
-	public Mesh? Mesh;
+	public LineMaterial? Material;
+
+	private readonly Vertex[] vertArray = new Vertex[2]
+	{
+		new Vertex(Vector4.One, Color.White),
+		new Vertex(Vector4.One, Color.White),
+	};
 
 	private Buffer? vertices;
 	private VertexBufferBinding vertexBufferBinding;
 	private int vertexLength = 0;
-	private Buffer? indices;
-	private int indexLength = 0;
 
 	private Exception? materialException;
 
-	public MeshRenderer()
+	public LineRenderer()
 	{
 	}
 
-	public MeshRenderer(Mesh mesh, MaterialBase material)
+	public LineRenderer(LineMaterial material)
 	{
-		this.Mesh = mesh;
 		this.Material = material;
+	}
+
+	public Vector3 From
+	{
+		get => this.vertArray[0].Position.AsVector3();
+		set => this.vertArray[0].Position = new(value, 1.0f);
+	}
+
+	public Vector3 To
+	{
+		get => this.vertArray[1].Position.AsVector3();
+		set => this.vertArray[1].Position = new(value, 1.0f);
 	}
 
 	public ref TDataType GetMaterialInstance<TDataType>()
@@ -67,9 +81,6 @@ public class MeshRenderer : InstanceRendererBase<MeshRenderer.PerRendererData>
 		if (this.Material == null || this.materialException != null)
 			return;
 
-		if (this.Mesh == null)
-			return;
-
 		if (!this.Material.IsLoaded)
 		{
 			try
@@ -86,56 +97,27 @@ public class MeshRenderer : InstanceRendererBase<MeshRenderer.PerRendererData>
 
 		if (this.vertices == null)
 		{
-			Vertex[] vertices = this.Mesh.Vertices.ToArray();
-			this.vertexLength = vertices.Length;
-			this.vertices = Buffer.Create(device, BindFlags.VertexBuffer, vertices);
+			this.vertexLength = 2;
+			this.vertices = Buffer.Create(device, BindFlags.VertexBuffer, this.vertArray);
 			this.vertexBufferBinding = new VertexBufferBinding(this.vertices, SharpDX.Utilities.SizeOf<Vertex>(), 0);
-
-			if (this.Mesh.Indices != null)
-			{
-				ushort[] indices = this.Mesh.Indices.ToArray();
-				this.indexLength = indices.Length;
-				this.indices = Buffer.Create(device, BindFlags.IndexBuffer, indices);
-			}
 		}
 
-		deviceContext.InputAssembler.PrimitiveTopology = this.Mesh.Topology;
+		deviceContext.UpdateSubresource(this.vertArray, this.vertices);
+
+		deviceContext.InputAssembler.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.LineList;
 		deviceContext.InputAssembler.SetVertexBuffers(0, this.vertexBufferBinding);
-		deviceContext.InputAssembler.SetIndexBuffer(this.indices, SharpDX.DXGI.Format.R16_UInt, 0);
 
 		this.Material.Bind(this, device, deviceContext);
-
-		if (this.indices == null)
-		{
-			deviceContext.Draw(this.vertexLength, 0);
-		}
-		else
-		{
-			deviceContext.DrawIndexed(this.indexLength, 0, 0);
-		}
+		deviceContext.Draw(this.vertexLength, 0);
 	}
 
 	public override void HitTest(Vector2 screenPosition, Transform transform, Transform viewProjection, ref HitTestResult result)
 	{
-		Transform thisTransform = transform * this.Transform;
-		this.Mesh?.HitTest(screenPosition, thisTransform, viewProjection, ref result);
-
-		if (result.Mesh == this.Mesh)
-		{
-			result.SceneObject = this;
-		}
 	}
 
 	public override void Dispose()
 	{
 		this.Material?.Dispose();
 		this.vertices?.Dispose();
-		this.indices?.Dispose();
-	}
-
-	[StructLayout(LayoutKind.Sequential)]
-	public struct PerRendererData
-	{
-		public Matrix4x4 Transform;
 	}
 }

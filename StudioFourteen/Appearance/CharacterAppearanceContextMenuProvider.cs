@@ -34,16 +34,9 @@ public class CharacterAppearanceContextMenuProvider : ContextProvider<ICharacter
 
 		unsafe
 		{
-			GameObject*[] pObjects = this.Services.GameObjects.GetAll();
-			foreach(GameObject* pObject in pObjects)
+			Character*[] pCharacters = this.Services.CharacterLifecycle.GetAllCharacters();
+			foreach(Character* pCharacter in pCharacters)
 			{
-				if (!CharacterAppearanceService.IsValidTarget(pObject))
-					continue;
-
-				Character* pCharacter = (Character*)pObject;
-				if (pCharacter == null)
-					continue;
-
 				int index = pCharacter->ObjectIndex;
 				MenuEntry subEntry = new(null, pCharacter->GetDisplayName(), () => this.Apply(target, index));
 				applyParent.AddChild(subEntry);

@@ -15,23 +15,26 @@
 
 #include "Common.hlsl"
 
-struct Constants
+cbuffer GeometryPassData : register(PassDataRegister)
 {
-	float4 ClippingPlanes;
-    float4x4 ViewProjection;
-	float4x4 ObjectTransform;
-	float4 ObjectColor;
+    float4x4 ViewMatrix;
+	float4x4 ProjectionMatrix;
+	float4 CameraPosition;
 };
 
-struct Pixel
+cbuffer RendererInstanceData : register(RendererDataRegister)
+{
+	float4x4 Transform;
+};
+
+struct Fragment
 {
     float4 Position:SV_POSITION;
     float4 Color:COLOR;
 	float2 TexCoord:TEXCOORD;
-	float4 ScreenPosition:SCREENPOS;
+	float4 ScreenPosition:POSITION;
+	float4 WorldPosition:WORLDPOS;
 };
-
-Constants constants : register(c0);
 
 Texture2D mask_texture : register(t0);
 SamplerState mask_sampler : register(s0);
@@ -39,24 +42,24 @@ SamplerState mask_sampler : register(s0);
 Texture2D depth_texture : register(t1);
 SamplerState depth_sampler : register(s1);
 
-float GetDepth(Pixel pixel)
+float GetDepth(Fragment frag)
 {
-	float3 pos = pixel.ScreenPosition.xyz / pixel.ScreenPosition.w;
+	float3 pos = frag.ScreenPosition.xyz / frag.ScreenPosition.w;
 	return pos.z;
 }
 
-float2 GetScreenPosition(Pixel pixel)
+float2 GetScreenPosition(Fragment frag)
 {
-	float3 pos = pixel.ScreenPosition.xyz / pixel.ScreenPosition.w;
+	float3 pos = frag.ScreenPosition.xyz / frag.ScreenPosition.w;
 	return 0.5f * float2(pos.x, -pos.y) + 0.5f;
 }
 
-float GetClippingAlpha(Pixel pixel, float depthClipAlpha = 0)
+float GetClippingAlpha(Fragment frag, float depthClipAlpha = 0)
 {
-	float2 screenPos = GetScreenPosition(pixel);
+	float2 screenPos = GetScreenPosition(frag);
 	float mask = mask_texture.Sample(mask_sampler, screenPos).r;
 	float depth = depth_texture.Sample(depth_sampler, screenPos).r;
-	float thisDepth = GetDepth(pixel);
+	float thisDepth = GetDepth(frag);
 
 	if (thisDepth < depth)
 		mask = mask * depthClipAlpha;
@@ -64,13 +67,14 @@ float GetClippingAlpha(Pixel pixel, float depthClipAlpha = 0)
 	return mask;
 }
 
-Pixel vert(in Vertex vertex)
+Fragment vert(in Vertex vertex)
 {
 	float4 position = vertex.Position;
-	position = mul(position, constants.ObjectTransform);
-	position = mul(position, constants.ViewProjection);
+	position = mul(position, Transform);
+	position = mul(position, ViewMatrix);
+	position = mul(position, ProjectionMatrix);
 
-	Pixel result;
+	Fragment result;
 	result.Position = position;
 	result.Color = vertex.Color;
 	result.TexCoord = vertex.TexCoord;

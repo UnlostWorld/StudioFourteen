@@ -62,6 +62,35 @@ public class CharacterLifecycleService : ServiceBase
 		this.DestroyAllCreated();
 	}
 
+	public unsafe Character*[] GetAllCharacters()
+	{
+		TickService.VerifyGameTickThread();
+
+		GameObject*[] pObjects = this.Services.GameObjects.GetAll();
+		Character*[] pBufferCharacters = new Character*[pObjects.Length];
+		int characterCount = 0;
+		for(int i = 0; i < pObjects.Length; i++)
+		{
+			if (!CharacterAppearanceService.IsValidTarget(pObjects[i]))
+				continue;
+
+			Character* pCharacter = (Character*)pObjects[i];
+			if (pCharacter == null)
+				continue;
+
+			pBufferCharacters[characterCount] = pCharacter;
+			characterCount++;
+		}
+
+		Character*[] pCharacters = new Character*[characterCount];
+		for(int i = 0; i < characterCount; i++)
+		{
+			pCharacters[i] = pBufferCharacters[i];
+		}
+
+		return pCharacters;
+	}
+
 	public async Task<int> CreateAsync(ICharacterAppearance? appearance, UpdateSource updateSource)
 	{
 		return await this.CreateAsync(Vector3.Zero, appearance, updateSource);

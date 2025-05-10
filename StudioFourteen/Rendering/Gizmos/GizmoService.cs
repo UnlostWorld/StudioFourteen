@@ -32,12 +32,14 @@ public partial class GizmoService : ServiceBase
 
 	public override void Attach()
 	{
+		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
 		this.grid.Enable();
 		base.Attach();
 	}
 
 	public override void Detach()
 	{
+		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
 		this.grid.Disable();
 		base.Detach();
 	}
@@ -61,5 +63,13 @@ public partial class GizmoService : ServiceBase
 		this.GizmosChanged?.Invoke();
 
 		this.Services.Rendering.Forward.Remove(gizmo);
+	}
+
+	private void OnGameTick()
+	{
+		foreach(GizmoBase gizmo in this.Gizmos)
+		{
+			gizmo.OnGameTick();
+		}
 	}
 }

@@ -15,18 +15,13 @@
 
 namespace StudioFourteen.Posing;
 
-using Dalamud.Hooking;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.Havok.Animation.Rig;
 using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
-using FontAwesome.Sharp;
-using StudioFourteen.Context;
-using StudioFourteen.Files;
 using StudioFourteen.Interop;
-using StudioFourteen.Plugin;
 using StudioFourteen.Selection;
 using StudioFourteen.Services;
 using StudioFourteen.Utilities;
@@ -64,6 +59,7 @@ public partial class PoseService : ServiceBase
 {
 	private readonly List<BoneId> boneIds = new();
 	private readonly Dictionary<BoneId, BoneReference> boneReferences = new();
+	private readonly SkeletonsGizmo gizmo = new();
 
 	public static string? GetMirrorBoneName(string name)
 	{
@@ -98,6 +94,8 @@ public partial class PoseService : ServiceBase
 	{
 		base.Attach();
 
+		////this.gizmo.Enable();
+
 		Hooks.UpdateBonePhysics.Enable(this.UpdateBonePhysicsDetour);
 		Hooks.FinalizeSkeletons.Enable(this.FinalizeSkeletonDetour);
 		Hooks.SetPosition.Enable(this.SetPosition);
@@ -106,6 +104,8 @@ public partial class PoseService : ServiceBase
 	public override void Detach()
 	{
 		base.Detach();
+
+		this.gizmo.Disable();
 
 		Hooks.UpdateBonePhysics.Disable();
 		Hooks.FinalizeSkeletons.Disable();
@@ -157,64 +157,15 @@ public partial class PoseService : ServiceBase
 
 	public async Task<List<BoneReference>> GetOrCreateBoneReferences(int objectTableIndex)
 	{
+		await TickService.GameTick();
+
 		List<BoneReference> results = new();
-
-		TickService.VerifyGameTickThread();
-
 		bool didCreate = false;
-		lock (this.boneReferences)
+		results = this.GetOrCreateBoneReferencesUnsafe(objectTableIndex, ref didCreate);
+
+		if (didCreate)
 		{
-			unsafe
-			{
-				Character* pCharacter = this.Services.GameObjects.Get<Character>(objectTableIndex);
-				if (pCharacter == null)
-					return results;
-
-				CharacterBase* pCharacterBase = pCharacter->GetCharacterBase();
-				if (pCharacterBase == null)
-					return results;
-
-				ushort partialCount = pCharacterBase->Skeleton->PartialSkeletonCount;
-				for (int partialIdx = 0; partialIdx < partialCount; partialIdx++)
-				{
-					PartialSkeleton* pPartialSkeleton = &pCharacterBase->Skeleton->PartialSkeletons[partialIdx];
-
-					byte poseCount = pPartialSkeleton->GetMaxPoses();
-					for (byte poseIdx = 0; poseIdx < poseCount; poseIdx++)
-					{
-						hkaPose* pPose = pPartialSkeleton->GetHavokPose(poseIdx);
-						if (pPose == null)
-							continue;
-
-						int boneCount = pPose->Skeleton->Bones.Length;
-
-						// Create bone nodes
-						for (short boneIdx = 0; boneIdx < boneCount; boneIdx++)
-						{
-							hkaBone bone = pPose->Skeleton->Bones[boneIdx];
-							string? boneName = bone.Name.String;
-							BoneId id = new(objectTableIndex, partialIdx, poseIdx, boneIdx);
-
-							if (this.boneReferences.TryGetValue(id, out BoneReference? reference))
-							{
-								results.Add(reference);
-							}
-							else
-							{
-								didCreate = true;
-								reference = new(id, boneName);
-								this.boneIds.Add(id);
-								this.boneReferences.Add(id, reference);
-								results.Add(reference);
-							}
-
-							results.Add(this.GetOrCreateBoneReference(id, boneName));
-						}
-					}
-				}
-			}
-
-			if (didCreate)
+			lock (this.boneReferences)
 			{
 				this.boneIds.Sort();
 			}
@@ -222,6 +173,65 @@ public partial class PoseService : ServiceBase
 
 		if (didCreate)
 			await Threads.NextFrame();
+
+		return results;
+	}
+
+	public unsafe List<BoneReference> GetOrCreateBoneReferencesUnsafe(int objectTableIndex, ref bool didCreateNewReferences)
+	{
+		TickService.VerifyGameTickThread();
+		List<BoneReference> results = new();
+		didCreateNewReferences = false;
+
+		Character* pCharacter = this.Services.GameObjects.Get<Character>(objectTableIndex);
+		if (pCharacter == null)
+			return results;
+
+		CharacterBase* pCharacterBase = pCharacter->GetCharacterBase();
+		if (pCharacterBase == null)
+			return results;
+
+		lock (this.boneReferences)
+		{
+			ushort partialCount = pCharacterBase->Skeleton->PartialSkeletonCount;
+			for (int partialIdx = 0; partialIdx < partialCount; partialIdx++)
+			{
+				PartialSkeleton* pPartialSkeleton = &pCharacterBase->Skeleton->PartialSkeletons[partialIdx];
+
+				byte poseCount = pPartialSkeleton->GetMaxPoses();
+				for (byte poseIdx = 0; poseIdx < poseCount; poseIdx++)
+				{
+					hkaPose* pPose = pPartialSkeleton->GetHavokPose(poseIdx);
+					if (pPose == null)
+						continue;
+
+					int boneCount = pPose->Skeleton->Bones.Length;
+
+					// Create bone nodes
+					for (short boneIdx = 0; boneIdx < boneCount; boneIdx++)
+					{
+						hkaBone bone = pPose->Skeleton->Bones[boneIdx];
+						string? boneName = bone.Name.String;
+						BoneId id = new(objectTableIndex, partialIdx, poseIdx, boneIdx);
+
+						if (this.boneReferences.TryGetValue(id, out BoneReference? reference))
+						{
+							results.Add(reference);
+						}
+						else
+						{
+							didCreateNewReferences = true;
+							reference = new(id, boneName);
+							this.boneIds.Add(id);
+							this.boneReferences.Add(id, reference);
+							results.Add(reference);
+						}
+
+						results.Add(this.GetOrCreateBoneReference(id, boneName));
+					}
+				}
+			}
+		}
 
 		return results;
 	}

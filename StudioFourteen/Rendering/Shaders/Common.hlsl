@@ -21,3 +21,8 @@ struct Vertex
 };
 
 #define invLerp(from, to, value) (value - from) / (to - from);
+#define mod(x,y) ((x) - (y) * floor((x)/(y)))
+
+#define PassDataRegister b0
+#define RendererDataRegister b1
+#define MaterialDataRegister b2

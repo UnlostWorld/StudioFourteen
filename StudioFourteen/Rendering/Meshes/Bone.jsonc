@@ -1,0 +1,16 @@
+{
+	"Topology": "LineList",
+	"Vertices": [
+		{
+			"Position": "0, 0, 0, 1",
+			"Color": "1, 1, 1, 1",
+			"TexCoord": "0, 0"
+		},
+
+		{
+			"Position": "1, 0, 0, 1",
+			"Color": "1, 1, 1, 1",
+			"TexCoord": "0, 0"
+		}
+	]
+}

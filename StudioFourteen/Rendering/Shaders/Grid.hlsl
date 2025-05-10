@@ -13,35 +13,29 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
+// Thanks Javier Salcedo!
 // https://dev.to/javiersalcedopuyo/simple-infinite-grid-shader-5fah
 
-#define mod(x,y) ((x) - (y) * floor((x)/(y)))
+#include "Common.hlsl"
 
-cbuffer GeometryPassData : register(b0)
+cbuffer GeometryPassData : register(PassDataRegister)
 {
     float4x4 ViewMatrix;
 	float4x4 ProjectionMatrix;
 	float4 CameraPosition;
 };
 
-cbuffer RendererInstanceData : register(b1)
+cbuffer RendererInstanceData : register(RendererDataRegister)
 {
 	float4 Transform;
 };
 
-cbuffer MaterialInstanceData : register(b2)
+cbuffer MaterialInstanceData : register(MaterialDataRegister)
 {
 	float4 Color;
 	float GridSize;
 	float LineThickness;
 	float Height;
-};
-
-struct Vertex
-{
-	float4 Position:POSITION;
-	float4 Color:COLOR;
-	float2 TexCoord:TEXCOORD;
 };
 
 struct Fragment
