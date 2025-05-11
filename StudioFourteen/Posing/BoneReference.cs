@@ -183,10 +183,11 @@ public class BoneReference
 		this.ReferenceTransform = pPose->Skeleton->ReferencePose[this.Id.BoneIndex];
 		this.ModelSpaceTransform = *pPose->AccessBoneModelSpace(this.Id.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
 
+		float scale = pCharacter->GetCharacterScale();
 		this.ModelTransform = StudioFourteen.Transform.FromTRS(
 			pCharacter->DrawObject->Position,
 			pCharacter->DrawObject->Rotation,
-			pCharacter->DrawObject->Scale);
+			pCharacter->DrawObject->Scale * scale);
 
 		if (this.LocalSpaceTransform != null)
 		{

@@ -15,15 +15,13 @@
 
 namespace StudioFourteen.Posing;
 
-using System;
 using System.Collections.Generic;
 using System.Numerics;
-using System.Threading.Tasks;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.Havok.Animation.Rig;
-using SharpDX.Direct3D11;
+using StudioFourteen.Interop.Structs;
 using StudioFourteen.Rendering;
 using StudioFourteen.Rendering.Gizmos;
 using StudioFourteen.Rendering.Scene;
@@ -132,11 +130,12 @@ public class SkeletonGizmo : SceneGroup
 				continue;
 
 			Transform modelSpaceTransform = *pPose->AccessBoneModelSpace(id.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
+			float scale = pCharacter->GetCharacterScale();
 
 			Transform modelTransform = Transform.FromTRS(
 				pCharacter->DrawObject->Position,
 				pCharacter->DrawObject->Rotation,
-				pCharacter->DrawObject->Scale);
+				pCharacter->DrawObject->Scale * scale);
 
 			renderer.Transform = Transform.FromScale(0.25f);
 			renderer.Transform *= modelSpaceTransform * modelTransform;
@@ -159,10 +158,13 @@ public class SkeletonGizmo : SceneGroup
 			Transform modelSpaceTransform = *pPose->AccessBoneModelSpace(id.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
 			Transform parentModelSpaceTransform = *pParentPose->AccessBoneModelSpace(parentId.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
 
+			CharacterBase* pBase = pCharacter->GetCharacterBase();
+			float scale = pCharacter->GetCharacterScale();
+
 			Transform modelTransform = Transform.FromTRS(
 				pCharacter->DrawObject->Position,
 				pCharacter->DrawObject->Rotation,
-				pCharacter->DrawObject->Scale);
+				pCharacter->DrawObject->Scale * scale);
 
 			Transform boneTransform = modelSpaceTransform * modelTransform;
 			Transform parentTransform = parentModelSpaceTransform * modelTransform;

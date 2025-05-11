@@ -22,6 +22,7 @@ using global::System;
 using Lumina.Excel.Sheets;
 using StudioFourteen;
 using StudioFourteen.GameData.Sheets;
+using StudioFourteen.Interop.Structs;
 using StudioFourteen.Utilities;
 
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
@@ -92,6 +93,12 @@ public static partial class CharacterExtensions
 	public static unsafe CharacterBase* GetCharacterBase(ref this Character self)
 	{
 		return (CharacterBase*)self.DrawObject;
+	}
+
+	public static unsafe float GetCharacterScale(ref this Character self)
+	{
+		CharacterBaseScale* pscale = (CharacterBaseScale*)self.DrawObject;
+		return pscale->ScaleFactor;
 	}
 
 	public static CharaMakeType? GetCharaMakeType(ref readonly this Character self)

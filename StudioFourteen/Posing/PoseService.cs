@@ -22,6 +22,7 @@ using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.Havok.Animation.Rig;
 using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
 using StudioFourteen.Interop;
+using StudioFourteen.Interop.Structs;
 using StudioFourteen.Selection;
 using StudioFourteen.Services;
 using StudioFourteen.Utilities;
@@ -94,7 +95,7 @@ public partial class PoseService : ServiceBase
 	{
 		base.Attach();
 
-		////this.gizmo.Enable();
+		this.gizmo.Enable();
 
 		Hooks.UpdateBonePhysics.Enable(this.UpdateBonePhysicsDetour);
 		Hooks.FinalizeSkeletons.Enable(this.FinalizeSkeletonDetour);
