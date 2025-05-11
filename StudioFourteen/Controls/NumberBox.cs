@@ -20,6 +20,8 @@ using System.Data;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
 using DependencyPropertyGenerator;
 using StudioFourteen.Utilities;
 
@@ -29,18 +31,55 @@ using StudioFourteen.Utilities;
 [DependencyProperty<double>("Value", DefaultBindingMode = DefaultBindingMode.TwoWay)]
 [DependencyProperty<double>("Change")]
 [DependencyProperty<double>("ChangeProgress", DefaultValue = 0)]
+[DependencyProperty<double>("ChangePosIntensity", DefaultValue = 0)]
+[DependencyProperty<double>("ChangeNegIntensity", DefaultValue = 0)]
 [DependencyProperty<bool>("Wrap", DefaultValue = true)]
 [DependencyProperty<bool>("IsTextFocused")]
 public partial class NumberBox : Control
 {
+	private readonly Storyboard intensityNegStoryboard;
+	private readonly Storyboard intensityPosStoryboard;
+
 	private Point startPosition;
 	private double trackingValue;
-
 	private FrameworkElement? clicker;
 	private TextBox? textBox;
 	private Button? downButton;
 	private Button? upButton;
 	private bool isDoubleClick = false;
+
+	public NumberBox()
+	{
+		DoubleAnimation intensityNegAnimation = new();
+		intensityNegAnimation.To = 0;
+		intensityNegAnimation.From = 1;
+		intensityNegAnimation.Duration = new Duration(TimeSpan.FromMilliseconds(500));
+		intensityNegAnimation.EasingFunction = new PowerEase()
+		{
+			EasingMode = EasingMode.EaseOut,
+		};
+
+		Storyboard.SetTarget(intensityNegAnimation, this);
+		Storyboard.SetTargetProperty(intensityNegAnimation, new PropertyPath(ChangeNegIntensityProperty));
+
+		this.intensityNegStoryboard = new();
+		this.intensityNegStoryboard.Children.Add(intensityNegAnimation);
+
+		DoubleAnimation intensityPosAnimation = new();
+		intensityPosAnimation.To = 0;
+		intensityPosAnimation.From = 1;
+		intensityPosAnimation.Duration = new Duration(TimeSpan.FromMilliseconds(500));
+		intensityPosAnimation.EasingFunction = new PowerEase()
+		{
+			EasingMode = EasingMode.EaseOut,
+		};
+
+		Storyboard.SetTarget(intensityPosAnimation, this);
+		Storyboard.SetTargetProperty(intensityPosAnimation, new PropertyPath(ChangePosIntensityProperty));
+
+		this.intensityPosStoryboard = new();
+		this.intensityPosStoryboard.Children.Add(intensityPosAnimation);
+	}
 
 	protected ServiceManager Services => ServiceManager.Instance;
 
@@ -119,6 +158,15 @@ public partial class NumberBox : Control
 				rate *= this.Services.Tablet.PenPressure;
 
 			this.trackingValue += rate;
+
+			if (rate < 0)
+			{
+				this.intensityNegStoryboard.Begin();
+			}
+			else if (rate > 0)
+			{
+				this.intensityPosStoryboard.Begin();
+			}
 
 			if (this.Wrap)
 			{

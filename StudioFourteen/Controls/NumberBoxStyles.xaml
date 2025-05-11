@@ -2,6 +2,7 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:local="clr-namespace:StudioFourteen.Controls"
+	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:shapes="clr-namespace:WpfUtils.Shapes;assembly=WpfUtils">
 
 	<ControlTemplate x:Key="NumberBoxTemplate" TargetType="{x:Type local:NumberBox}">
@@ -15,6 +16,22 @@
 					<ColumnDefinition />
 					<ColumnDefinition Width="Auto" />
 				</Grid.ColumnDefinitions>
+
+				<icons:IconView
+					x:Name="PART_DownIcon"
+					Width="16"
+					Height="16"
+					Grid.Column="0"
+					Opacity="{TemplateBinding ChangeNegIntensity}"
+					Icon="{DynamicResource ICON_NumberBoxDown}"/>
+
+				<icons:IconView
+					x:Name="PART_UpIcon"
+					Width="16"
+					Height="16"
+					Grid.Column="2"
+					Opacity="{TemplateBinding ChangePosIntensity}"
+					Icon="{DynamicResource ICON_NumberBoxUp}"/>
 
 				<Button
 					x:Name="PART_DownButton"
@@ -47,9 +64,16 @@
 		</Grid>
 
 		<ControlTemplate.Triggers>
-			<Trigger Property="IsMouseOver" Value="True">
-				<Setter Property="Foreground" Value="{DynamicResource ControlForegroundHighlightBrush}"/>
-				<Trigger.EnterActions>
+			<MultiTrigger>
+				 <MultiTrigger.Conditions>
+                    <Condition Property="IsMouseDown" Value="False" />
+                    <Condition Property="IsMouseOver" Value="True" />
+                </MultiTrigger.Conditions>
+                <MultiTrigger.Setters>
+                    <Setter Property="Foreground" Value="{DynamicResource ControlForegroundHighlightBrush}"/>
+                </MultiTrigger.Setters>
+
+				<MultiTrigger.EnterActions>
 					<BeginStoryboard>
 						<Storyboard>
 							<DoubleAnimation
@@ -73,8 +97,8 @@
 							</DoubleAnimation>
 						</Storyboard>
 					</BeginStoryboard>
-				</Trigger.EnterActions>
-				<Trigger.ExitActions>
+				</MultiTrigger.EnterActions>
+				<MultiTrigger.ExitActions>
 					<BeginStoryboard>
 						<Storyboard>
 							<DoubleAnimation
@@ -98,12 +122,14 @@
 							</DoubleAnimation>
 						</Storyboard>
 					</BeginStoryboard>
-				</Trigger.ExitActions>
-			</Trigger>
+				</MultiTrigger.ExitActions>
+			</MultiTrigger>
 
 			<Trigger Property="IsTextFocused" Value="True">
 				<Setter TargetName="PART_UpButton" Property="Visibility" Value="Collapsed"/>
 				<Setter TargetName="PART_DownButton" Property="Visibility" Value="Collapsed"/>
+				<Setter TargetName="PART_UpIcon" Property="Visibility" Value="Collapsed"/>
+				<Setter TargetName="PART_DownIcon" Property="Visibility" Value="Collapsed"/>
 				<Setter TargetName="PART_Clicker" Property="Visibility" Value="Collapsed"/>
 			</Trigger>
 
