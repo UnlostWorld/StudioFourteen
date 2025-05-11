@@ -24,10 +24,9 @@
 								Style="{DynamicResource RightLabel}"
 								Text="{Binding Label}" />
 
-							<local:NumberSlider
+							<local:NumberBox
 								Grid.Row="0"
 								Grid.Column="1"
-								Style="{Binding NumberSliderStyle}"
 								Change="{Binding Change}"
 								Maximum="{Binding Maximum}"
 								Minimum="{Binding Minimum}"

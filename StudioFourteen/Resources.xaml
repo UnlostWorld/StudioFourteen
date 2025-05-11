@@ -34,6 +34,8 @@
 		<ResourceDictionary Source="./Controls/TransformControlStyles.xaml"/>
 		<ResourceDictionary Source="./Controls/MultiNumberSliderControlStyles.xaml"/>
 
+		<ResourceDictionary Source="./Controls/NumberBoxStyles.xaml"/>
+
 		<!--  Default Language  -->
 		<ResourceDictionary Source="./Icons/Icons.xaml"/>
 		<ResourceDictionary Source="./Languages/English.xaml" />

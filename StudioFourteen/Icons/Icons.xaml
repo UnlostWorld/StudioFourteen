@@ -11,6 +11,9 @@
 	<icons:Fa x:Key="ICON_Window_Zoom" Icon="SearchPlus"/>
 	<icons:Fa x:Key="ICON_CloseStudio" Icon="PowerOff"/>
 
+	<icons:Fa x:Key="ICON_NumberBoxDown" Icon="ChevronLeft"/>
+	<icons:Fa x:Key="ICON_NumberBoxUp" Icon="ChevronRight"/>
+
 	<icons:Fa x:Key="ICON_Drag_No" Icon="Times"/>
 	<icons:Fa x:Key="ICON_Drag_Assign" Icon="Share"/>
 	<icons:Fa x:Key="ICON_Drag_AddCharacter" Icon="UserPlus"/>
