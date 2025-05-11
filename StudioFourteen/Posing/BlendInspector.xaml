@@ -32,20 +32,10 @@
 			Style="{DynamicResource FlatSlider}"
 			Value="{Binding BlendValue}"/>
 
-		<wpfUtils:NumberBox
+		<controls:NumberBox
 			Maximum="{Binding BlendMaximum}"
 			Minimum="{Binding BlendMinimum}"
-			UncapTextInput="True"
-			Value="{Binding BlendValue}">
-			<wpfUtils:NumberBox.Suffix>
-				<TextBlock
-					HorizontalAlignment="Left"
-					VerticalAlignment="Center"
-					Foreground="{DynamicResource BackgroundLightBrush}"
-					Style="{DynamicResource WpfUtilsTextBlock}"
-					Text="%" />
-			</wpfUtils:NumberBox.Suffix>
-		</wpfUtils:NumberBox>
+			Value="{Binding BlendValue}"/>
 
 		<ToggleButton
 			Content="Delimit"

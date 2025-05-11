@@ -9,8 +9,7 @@
 
 		<StackPanel>
 			<GroupBox Header="Position">
-				<local:Vector3Control
-					NumberSliderStyle="{DynamicResource NumberRelativeSlider}"
+				<local:Vector3Box
 					Value="{Binding Translation, RelativeSource={RelativeSource TemplatedParent}}"
 					Maximum="{TemplateBinding TranslationMaximum}"
 					Minimum="{TemplateBinding TranslationMinimum}"
@@ -18,8 +17,7 @@
 					DecimalPlaces="{TemplateBinding TranslationDecimalPlaces}" />
 			</GroupBox>
 			<GroupBox Header="Rotation">
-				<local:Vector3Control
-					NumberSliderStyle="{DynamicResource NumberWrapSlider}"
+				<local:Vector3Box
 					Value="{Binding RotationEuler, RelativeSource={RelativeSource TemplatedParent}}"
 					Maximum="{TemplateBinding RotationMaximum}"
 					Minimum="{TemplateBinding RotationMinimum}"
@@ -27,8 +25,7 @@
 					DecimalPlaces="{TemplateBinding RotationDecimalPlaces}" />
 			</GroupBox>
 			<GroupBox Header="Scale">
-				<local:Vector3Control
-					NumberSliderStyle="{DynamicResource NumberRelativeSlider}"
+				<local:Vector3Box
 					Value="{Binding Scale, RelativeSource={RelativeSource TemplatedParent}}"
 					Maximum="{TemplateBinding ScaleMaximum}"
 					Minimum="{TemplateBinding ScaleMinimum}"

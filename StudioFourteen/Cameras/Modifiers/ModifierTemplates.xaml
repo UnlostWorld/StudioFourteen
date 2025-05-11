@@ -9,15 +9,15 @@
 		<StackPanel>
 			<TextBlock Style="{DynamicResource LeftLabel}"
 				Text="Position Intensity" />
-			<controls:NumberSlider Change="0.1" Value="{Binding PositionIntensity}" Minimum="0" Maximum = "1"/>
+			<controls:NumberBox Change="0.1" Value="{Binding PositionIntensity}" Minimum="0" Maximum = "1"/>
 
 			<TextBlock Style="{DynamicResource LeftLabel}"
 				Text="Rotation Intensity" />
-			<controls:NumberSlider Change="0.1" Value="{Binding RotationIntensity}" Minimum="0" Maximum = "10"/>
+			<controls:NumberBox Change="0.1" Value="{Binding RotationIntensity}" Minimum="0" Maximum = "10"/>
 
 			<TextBlock Style="{DynamicResource LeftLabel}"
 				Text="Speed" />
-			<controls:NumberSlider Change="0.1" Value="{Binding Speed}" Minimum="0" Maximum = "3"/>
+			<controls:NumberBox Change="0.1" Value="{Binding Speed}" Minimum="0" Maximum = "3"/>
 
 		</StackPanel>
 	</DataTemplate>

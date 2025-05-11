@@ -1,7 +1,8 @@
 ﻿<ResourceDictionary
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:controls="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=WpfUtils"
 	xmlns:local="clr-namespace:StudioFourteen.Appearance.Customize">
 
@@ -42,14 +43,14 @@
 					</Border>
 				</ToggleButton>
 
-				<controls:PopOut
+				<wpfUtils:PopOut
 					Background="{DynamicResource ControlBackgroundBrush}"
 					IsOpen="{Binding IsChecked, Mode=TwoWay, ElementName=ToggleButton}"
 					PlacementTarget="{Binding ElementName=ToggleButton}"
 					StaysOpen="False"
 					Style="{DynamicResource WpfUtilsPopOut}">
 
-					<controls:PopOut.Header>
+					<wpfUtils:PopOut.Header>
 						<Grid>
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition />
@@ -71,7 +72,6 @@
 							<controls:NumberBox
 								Grid.Row="1"
 								Grid.Column="0"
-								Buttons="True"
 								Value="{Binding Value}" />
 
 							<TextBox
@@ -81,7 +81,7 @@
 								IsReadOnly="True"
 								Text="{Binding Selected.Hex}" />
 						</Grid>
-					</controls:PopOut.Header>
+					</wpfUtils:PopOut.Header>
 
 
 					<Grid>
@@ -107,13 +107,11 @@
 						</ListBox>
 					</Grid>
 
-				</controls:PopOut>
+				</wpfUtils:PopOut>
 
 				<controls:NumberBox
 					Grid.Column="1"
 					Margin="0"
-					BorderBrush="Transparent"
-					Buttons="True"
 					Maximum="255"
 					Minimum="0"
 					Value="{Binding Value}" />

@@ -58,7 +58,7 @@
 									<DataTemplate DataType="{x:Type gizmos:GridGizmo}">
 										<StackPanel>
 											<TextBlock Style="{DynamicResource LabelLeft}" Text="{DynamicResource LOC_Gizmos_GridOpacity}"/>
-											<controls:NumberSlider Value="{Binding Opacity}" Minimum="0" Maximum="1" Change="0.1"/>
+											<controls:NumberBox Value="{Binding Opacity}" Minimum="0" Maximum="1" Change="0.1"/>
 
 											<TextBlock Style="{DynamicResource LabelLeft}" Text="{DynamicResource LOC_Gizmos_GridHeight}"/>
 											<wpfUtils:SwitchSelector>
@@ -73,7 +73,7 @@
 													Content="Automatic"/>
 											</wpfUtils:SwitchSelector>
 
-											<controls:NumberSlider IsEnabled="{Binding KeepAtTargetHeight, Converter={StaticResource !B}}" Value="{Binding Height}" Minimum="-2000" Maximum="2000" Style="{DynamicResource NumberRelativeSlider}"/>
+											<controls:NumberBox IsEnabled="{Binding KeepAtTargetHeight, Converter={StaticResource !B}}" Value="{Binding Height}" Minimum="-2000" Maximum="2000" Style="{DynamicResource NumberRelativeSlider}"/>
 
 										</StackPanel>
 									</DataTemplate>

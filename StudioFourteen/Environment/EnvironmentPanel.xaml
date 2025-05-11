@@ -160,16 +160,16 @@
 					<ToggleButton Content="{DynamicResource LOC_Environment_Lighting}" IsChecked="{Binding Freeze}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Lighting_SunColor}" />
-					<controls:Color3Control IsEnabled="{Binding Freeze}" Value="{Binding SunLightColor}" />
+					<controls:Color3Box IsEnabled="{Binding Freeze}" Value="{Binding SunLightColor}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Lighting_MoonColor}" />
-					<controls:Color3Control IsEnabled="{Binding Freeze}" Value="{Binding MoonLightColor}" />
+					<controls:Color3Box IsEnabled="{Binding Freeze}" Value="{Binding MoonLightColor}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Lighting_AmbientColor}" />
-					<controls:Color3Control IsEnabled="{Binding Freeze}" Value="{Binding Ambient}" />
+					<controls:Color3Box IsEnabled="{Binding Freeze}" Value="{Binding Ambient}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Lighting_AmbientSaturation}" />
-					<controls:NumberSlider
+					<controls:NumberBox
 						Change="0.1"
 						IsEnabled="{Binding Freeze}"
 						Maximum="5"
@@ -177,7 +177,7 @@
 						Value="{Binding AmbientSaturation}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Lighting_AmbientTemperature}" />
-					<controls:NumberSlider
+					<controls:NumberBox
 						Change="0.1"
 						IsEnabled="{Binding Freeze}"
 						Maximum="5"
@@ -191,7 +191,7 @@
 					<ToggleButton Content="{DynamicResource LOC_Environment_Stars}" IsChecked="{Binding Freeze}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Stars_ConstellationIntensity}" />
-					<controls:NumberSlider
+					<controls:NumberBox
 						Change="0.1"
 						IsEnabled="{Binding Freeze}"
 						Maximum="5"
@@ -199,7 +199,7 @@
 						Value="{Binding ConstellationIntensity}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Stars_Constellations}" />
-					<controls:NumberSlider
+					<controls:NumberBox
 						Change="0.1"
 						IsEnabled="{Binding Freeze}"
 						Maximum="5"
@@ -207,7 +207,7 @@
 						Value="{Binding Constellations}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Stars_Stars}" />
-					<controls:NumberSlider
+					<controls:NumberBox
 						Change="0.1"
 						IsEnabled="{Binding Freeze}"
 						Maximum="20"
@@ -215,7 +215,7 @@
 						Value="{Binding Stars}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Stars_GalaxyIntensity}" />
-					<controls:NumberSlider
+					<controls:NumberBox
 						Change="0.1"
 						IsEnabled="{Binding Freeze}"
 						Maximum="5"
@@ -223,7 +223,7 @@
 						Value="{Binding GalaxyIntensity}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Stars_StarIntensity}" />
-					<controls:NumberSlider
+					<controls:NumberBox
 						Change="0.1"
 						IsEnabled="{Binding Freeze}"
 						Maximum="5"
@@ -231,10 +231,10 @@
 						Value="{Binding StarIntensity}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Stars_MoonColor}" />
-					<controls:Color4Control IsEnabled="{Binding Freeze}" Value="{Binding MoonColor}" />
+					<controls:Color4Box IsEnabled="{Binding Freeze}" Value="{Binding MoonColor}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Stars_MoonBrightness}" />
-					<controls:NumberSlider
+					<controls:NumberBox
 						Change="0.1"
 						IsEnabled="{Binding Freeze}"
 						Maximum="1"
@@ -248,24 +248,24 @@
 					<ToggleButton Content="{DynamicResource LOC_Environment_Fog}" IsChecked="{Binding Freeze}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Fog_Color}" />
-					<controls:Color4Control IsEnabled="{Binding Freeze}" Value="{Binding Color}" />
+					<controls:Color4Box IsEnabled="{Binding Freeze}" Value="{Binding Color}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Fog_Distance}" />
-					<controls:NumberSlider
+					<controls:NumberBox
 						IsEnabled="{Binding Freeze}"
 						Maximum="5000"
 						Minimum="0"
 						Value="{Binding Distance}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Fog_Thickness}" />
-					<controls:NumberSlider
+					<controls:NumberBox
 						IsEnabled="{Binding Freeze}"
 						Maximum="50"
 						Minimum="0"
 						Value="{Binding Thickness}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Fog_Opacity}" />
-					<controls:NumberSlider
+					<controls:NumberBox
 						Change="0.1"
 						IsEnabled="{Binding Freeze}"
 						Maximum="5"
@@ -273,7 +273,7 @@
 						Value="{Binding Opacity}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Fog_SkyVisibility}" />
-					<controls:NumberSlider
+					<controls:NumberBox
 						IsEnabled="{Binding Freeze}"
 						Maximum="1"
 						Minimum="0"
@@ -286,20 +286,20 @@
 					<ToggleButton Content="{DynamicResource LOC_Environment_Clouds}" IsChecked="{Binding Freeze}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Clouds_Color}" />
-					<controls:Color3Control IsEnabled="{Binding Freeze}" Value="{Binding CloudColor}" />
+					<controls:Color3Box IsEnabled="{Binding Freeze}" Value="{Binding CloudColor}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Clouds_Color2}" />
-					<controls:Color3Control IsEnabled="{Binding Freeze}" Value="{Binding Color2}" />
+					<controls:Color3Box IsEnabled="{Binding Freeze}" Value="{Binding Color2}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Clouds_Gradient}" />
-					<controls:NumberSlider
+					<controls:NumberBox
 						IsEnabled="{Binding Freeze}"
 						Maximum="10"
 						Minimum="0"
 						Value="{Binding Gradient}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Clouds_SideHeight}" />
-					<controls:NumberSlider
+					<controls:NumberBox
 						IsEnabled="{Binding Freeze}"
 						Maximum="1"
 						Minimum="0"
@@ -317,28 +317,28 @@
 					<ToggleButton Content="{DynamicResource LOC_Environment_Rain}" IsChecked="{Binding Freeze}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Rain_Raindrops}" />
-					<controls:NumberSlider
+					<controls:NumberBox
 						IsEnabled="{Binding Freeze}"
 						Maximum="1"
 						Minimum="0"
 						Value="{Binding Raindrops}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Rain_Intensity}" />
-					<controls:NumberSlider
+					<controls:NumberBox
 						IsEnabled="{Binding Freeze}"
 						Maximum="1"
 						Minimum="0"
 						Value="{Binding Intensity}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Rain_Weight}" />
-					<controls:NumberSlider
+					<controls:NumberBox
 						IsEnabled="{Binding Freeze}"
 						Maximum="50"
 						Minimum="0"
 						Value="{Binding Weight}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Rain_Scatter}" />
-					<controls:NumberSlider
+					<controls:NumberBox
 						Change="0.1"
 						IsEnabled="{Binding Freeze}"
 						Maximum="5"
@@ -346,7 +346,7 @@
 						Value="{Binding Scatter}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Rain_Size}" />
-					<controls:NumberSlider
+					<controls:NumberBox
 						Change="0.1"
 						IsEnabled="{Binding Freeze}"
 						Maximum="1"
@@ -354,7 +354,7 @@
 						Value="{Binding Size}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Rain_Color}" />
-					<controls:Color4Control
+					<controls:Color4Box
 						IsEnabled="{Binding Freeze}"
 						Value="{Binding Color}" />
 				</StackPanel>
@@ -365,7 +365,7 @@
 					<ToggleButton Content="{DynamicResource LOC_Environment_Dust}" IsChecked="{Binding Freeze}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Dust_Intensity}" />
-					<controls:NumberSlider
+					<controls:NumberBox
 						Change="0.1"
 						IsEnabled="{Binding Freeze}"
 						Maximum="5"
@@ -373,14 +373,14 @@
 						Value="{Binding Intensity}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Dust_Weight}" />
-					<controls:NumberSlider
+					<controls:NumberBox
 						IsEnabled="{Binding Freeze}"
 						Maximum="50"
 						Minimum="0"
 						Value="{Binding Weight}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Dust_Spread}" />
-					<controls:NumberSlider
+					<controls:NumberBox
 						Change="0.1"
 						IsEnabled="{Binding Freeze}"
 						Maximum="5"
@@ -388,24 +388,24 @@
 						Value="{Binding Spread}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Dust_Size}" />
-					<controls:NumberSlider
+					<controls:NumberBox
 						IsEnabled="{Binding Freeze}"
 						Maximum="100"
 						Minimum="0"
 						Value="{Binding Size}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Dust_Color}" />
-					<controls:Color4Control IsEnabled="{Binding Freeze}" Value="{Binding Color}" />
+					<controls:Color4Box IsEnabled="{Binding Freeze}" Value="{Binding Color}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Dust_Glow}" />
-					<controls:NumberSlider
+					<controls:NumberBox
 						IsEnabled="{Binding Freeze}"
 						Maximum="50"
 						Minimum="0"
 						Value="{Binding Glow}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Dust_Spin}" />
-					<controls:NumberSlider
+					<controls:NumberBox
 						IsEnabled="{Binding Freeze}"
 						Maximum="50"
 						Minimum="0"
@@ -422,21 +422,21 @@
 					<ToggleButton Content="{DynamicResource LOC_Environment_Wind}" IsChecked="{Binding Freeze}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Wind_Direction}" />
-					<controls:NumberSlider
+					<controls:NumberBox
 						IsEnabled="{Binding Freeze}"
 						Maximum="360"
 						Minimum="0"
 						Value="{Binding Direction}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Wind_Angle}" />
-					<controls:NumberSlider
+					<controls:NumberBox
 						IsEnabled="{Binding Freeze}"
 						Maximum="360"
 						Minimum="0"
 						Value="{Binding Angle}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Wind_Speed}" />
-					<controls:NumberSlider
+					<controls:NumberBox
 						IsEnabled="{Binding Freeze}"
 						Maximum="500"
 						Minimum="0"

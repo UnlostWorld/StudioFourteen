@@ -29,12 +29,10 @@
 		<ResourceDictionary Source="./Tags/TagSelectorStyles.xaml" />
 		<ResourceDictionary Source="./Controls/SliderStyles.xaml" />
 		<ResourceDictionary Source="./Controls/IconSliderStyles.xaml" />
-		<ResourceDictionary Source="./Controls/NumberSliderStyles.xaml" />
 		<ResourceDictionary Source="./Posing/Shared/PoseSelectionControlStyles.xaml" />
 		<ResourceDictionary Source="./Controls/TransformControlStyles.xaml"/>
-		<ResourceDictionary Source="./Controls/MultiNumberSliderControlStyles.xaml"/>
-
 		<ResourceDictionary Source="./Controls/NumberBoxStyles.xaml"/>
+		<ResourceDictionary Source="./Controls/MultiNumberBoxStyles.xaml"/>
 
 		<!--  Default Language  -->
 		<ResourceDictionary Source="./Icons/Icons.xaml"/>

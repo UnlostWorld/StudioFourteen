@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:controls="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=WpfUtils"
 	xmlns:gameData="clr-namespace:StudioFourteen.GameData.Library"
 	xmlns:library="clr-namespace:StudioFourteen.Library.Selector"
@@ -49,7 +49,6 @@
 			<controls:NumberBox
 				Grid.Row="2"
 				Grid.Column="1"
-				Buttons="True"
 				Maximum="255"
 				Minimum="0"
 				Value="{Binding Value}" />

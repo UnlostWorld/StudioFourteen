@@ -26,9 +26,9 @@ using System.Windows;
 using System.Windows.Controls;
 
 [DependencyProperty<Quaternion>("Value", DefaultBindingMode = DefaultBindingMode.TwoWay)]
-public partial class QuaternionControl : MultiNumberSliderControl
+public partial class QuaternionBox : MultiNumberBox
 {
-	public QuaternionControl()
+	public QuaternionBox()
 	{
 		this.AddChannel(
 			() => "X:",
@@ -80,9 +80,9 @@ public partial class QuaternionControl : MultiNumberSliderControl
 }
 
 [DependencyProperty<Vector2>("Value", DefaultBindingMode = DefaultBindingMode.TwoWay)]
-public partial class Vector2Control : MultiNumberSliderControl
+public partial class Vector2Box : MultiNumberBox
 {
-	public Vector2Control()
+	public Vector2Box()
 	{
 		this.AddChannel(
 			() => "X:",
@@ -109,9 +109,9 @@ public partial class Vector2Control : MultiNumberSliderControl
 }
 
 [DependencyProperty<Vector3>("Value", DefaultBindingMode = DefaultBindingMode.TwoWay)]
-public partial class Vector3Control : MultiNumberSliderControl
+public partial class Vector3Box : MultiNumberBox
 {
-	public Vector3Control()
+	public Vector3Box()
 	{
 		this.AddChannel(
 			() => "X:",
@@ -148,9 +148,9 @@ public partial class Vector3Control : MultiNumberSliderControl
 }
 
 [DependencyProperty<Vector4>("Value", DefaultBindingMode = DefaultBindingMode.TwoWay)]
-public partial class Vector4Control : MultiNumberSliderControl
+public partial class Vector4Box : MultiNumberBox
 {
-	public Vector4Control()
+	public Vector4Box()
 	{
 		this.AddChannel(
 			() => "X:",
@@ -197,9 +197,9 @@ public partial class Vector4Control : MultiNumberSliderControl
 }
 
 [DependencyProperty<Vector3>("Value", DefaultBindingMode = DefaultBindingMode.TwoWay)]
-public partial class Color3Control : MultiNumberSliderControl
+public partial class Color3Box : MultiNumberBox
 {
-	public Color3Control()
+	public Color3Box()
 	{
 		this.AddChannel(
 			() => "R:",
@@ -236,9 +236,9 @@ public partial class Color3Control : MultiNumberSliderControl
 }
 
 [DependencyProperty<Vector4>("Value", DefaultBindingMode = DefaultBindingMode.TwoWay)]
-public partial class Color4Control : MultiNumberSliderControl
+public partial class Color4Box : MultiNumberBox
 {
-	public Color4Control()
+	public Color4Box()
 	{
 		this.AddChannel(
 			() => "R:",
@@ -290,8 +290,8 @@ public partial class Color4Control : MultiNumberSliderControl
 [DependencyProperty<double>("Maximum", DefaultValue = double.MaxValue)]
 [DependencyProperty<int>("DecimalPlaces", DefaultValue = 3)]
 [DependencyProperty<Style>("NumberSliderStyle")]
-[DependencyProperty<ObservableCollection<MultiNumberSliderControlChannel>>("Channels")]
-public abstract partial class MultiNumberSliderControl
+[DependencyProperty<ObservableCollection<MultiNumberBoxChannel>>("Channels")]
+public abstract partial class MultiNumberBox
 	: Control
 {
 	public void AddChannel(Func<string> getLabel, Func<double> getValue, Action<double> setValue)
@@ -299,7 +299,7 @@ public abstract partial class MultiNumberSliderControl
 		if (this.Channels == null)
 			this.Channels = new();
 
-		this.Channels.Add(new MultiNumberSliderControlChannel(this, getLabel, getValue, setValue));
+		this.Channels.Add(new MultiNumberBoxChannel(this, getLabel, getValue, setValue));
 	}
 
 	public void OnControlValueChanged()
@@ -307,7 +307,7 @@ public abstract partial class MultiNumberSliderControl
 		if (this.Channels == null)
 			return;
 
-		foreach (MultiNumberSliderControlChannel channel in this.Channels)
+		foreach (MultiNumberBoxChannel channel in this.Channels)
 		{
 			channel.OnControlValueChanged();
 		}
@@ -324,14 +324,14 @@ public abstract partial class MultiNumberSliderControl
 		if (this.Channels == null)
 			return;
 
-		foreach (MultiNumberSliderControlChannel channel in this.Channels)
+		foreach (MultiNumberBoxChannel channel in this.Channels)
 		{
 			channel.OnControlPropertyChanged(name);
 		}
 	}
 }
 
-public partial class MultiNumberSliderControlChannel(MultiNumberSliderControl control, Func<string> getLabel, Func<double> getValue, Action<double> setValue)
+public partial class MultiNumberBoxChannel(MultiNumberBox control, Func<string> getLabel, Func<double> getValue, Action<double> setValue)
 	: INotifyPropertyChanged
 {
 	public event PropertyChangedEventHandler? PropertyChanged;

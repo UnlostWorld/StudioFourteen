@@ -67,7 +67,7 @@
 			Margin="4"/>
 
 		<TextBlock Text="Speed" Style="{DynamicResource LeftLabel}"/>
-		<controls:NumberSlider
+		<controls:NumberBox
 			Change="0.01"
 			Maximum="2"
 			Minimum="0"

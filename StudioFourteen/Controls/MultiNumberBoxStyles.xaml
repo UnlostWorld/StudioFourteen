@@ -5,8 +5,8 @@
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
 
-	<ControlTemplate TargetType="{x:Type local:MultiNumberSliderControl}"
-		x:Key="MultiNumberSliderControlTemplate">
+	<ControlTemplate TargetType="{x:Type local:MultiNumberBox}"
+		x:Key="MultiNumberBoxTemplate">
 		<Grid>
 			<ItemsControl ItemsSource="{TemplateBinding Channels}">
 				<ItemsControl.ItemTemplate>
@@ -38,44 +38,40 @@
 		</Grid>
 	</ControlTemplate>
 
-	<Style x:Key="StudioMultiNumberSliderControl"
-		TargetType="{x:Type local:MultiNumberSliderControl}">
-		<Setter Property="Template" Value="{StaticResource MultiNumberSliderControlTemplate}" />
-		<Setter Property="NumberSliderStyle" Value="{DynamicResource NumberRelativeSlider}" />
+	<Style x:Key="StudioMultiNumberBox"
+		TargetType="{x:Type local:MultiNumberBox}">
+		<Setter Property="Template" Value="{StaticResource MultiNumberBoxTemplate}" />
 	</Style>
 
-	<Style BasedOn="{StaticResource StudioMultiNumberSliderControl}"
-		TargetType="{x:Type local:Color4Control}" >
+	<Style BasedOn="{StaticResource StudioMultiNumberBox}"
+		TargetType="{x:Type local:Color4Box}" >
 		<Setter Property="Minimum" Value="0"/>
 		<Setter Property="Maximum" Value="1"/>
 		<Setter Property="Change" Value="0.1"/>
-		<Setter Property="NumberSliderStyle" Value="{DynamicResource StudioNumberSlider}"/>
 	</Style>
 
-	<Style BasedOn="{StaticResource StudioMultiNumberSliderControl}"
-		TargetType="{x:Type local:Color3Control}" >
+	<Style BasedOn="{StaticResource StudioMultiNumberBox}"
+		TargetType="{x:Type local:Color3Box}" >
 		<Setter Property="Minimum" Value="0"/>
 		<Setter Property="Maximum" Value="1"/>
 		<Setter Property="Change" Value="0.1"/>
-		<Setter Property="NumberSliderStyle" Value="{DynamicResource StudioNumberSlider}"/>
 	</Style>
 
 
-	<Style BasedOn="{StaticResource StudioMultiNumberSliderControl}"
-		TargetType="{x:Type local:Vector4Control}" />
+	<Style BasedOn="{StaticResource StudioMultiNumberBox}"
+		TargetType="{x:Type local:Vector4Box}" />
 
-	<Style BasedOn="{StaticResource StudioMultiNumberSliderControl}"
-		TargetType="{x:Type local:Vector3Control}" />
+	<Style BasedOn="{StaticResource StudioMultiNumberBox}"
+		TargetType="{x:Type local:Vector3Box}" />
 
-	<Style BasedOn="{StaticResource StudioMultiNumberSliderControl}"
-		TargetType="{x:Type local:Vector2Control}" />
+	<Style BasedOn="{StaticResource StudioMultiNumberBox}"
+		TargetType="{x:Type local:Vector2Box}" />
 
-	<Style BasedOn="{StaticResource StudioMultiNumberSliderControl}"
-		TargetType="{x:Type local:QuaternionControl}" >
+	<Style BasedOn="{StaticResource StudioMultiNumberBox}"
+		TargetType="{x:Type local:QuaternionBox}" >
 		<Setter Property="Minimum" Value="-180"/>
 		<Setter Property="Maximum" Value="180"/>
 		<Setter Property="Change" Value="5"/>
-		<Setter Property="NumberSliderStyle" Value="{DynamicResource NumberWrapSlider}"/>
 	</Style>
 
 </ResourceDictionary>
