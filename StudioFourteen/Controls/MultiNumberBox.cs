@@ -285,7 +285,7 @@ public partial class Color4Box : MultiNumberBox
 }
 
 [DependencyProperty<double>("Change", DefaultValue = 1)]
-[DependencyProperty<bool>("Wrap", DefaultValue = true)]
+[DependencyProperty<bool>("Wrap", DefaultValue = false)]
 [DependencyProperty<double>("Minimum", DefaultValue = double.MinValue)]
 [DependencyProperty<double>("Maximum", DefaultValue = double.MaxValue)]
 [DependencyProperty<int>("DecimalPlaces", DefaultValue = 3)]

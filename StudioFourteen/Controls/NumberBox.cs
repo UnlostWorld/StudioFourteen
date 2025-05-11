@@ -20,21 +20,21 @@ using System.Data;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Animation;
 using DependencyPropertyGenerator;
 using StudioFourteen.Utilities;
 
 [DependencyProperty<bool>("IsMouseDown")]
-[DependencyProperty<double>("Minimum")]
-[DependencyProperty<double>("Maximum")]
+[DependencyProperty<double>("Minimum", DefaultValue = double.MinValue)]
+[DependencyProperty<double>("Maximum", DefaultValue = double.MaxValue)]
 [DependencyProperty<double>("Value", DefaultBindingMode = DefaultBindingMode.TwoWay)]
 [DependencyProperty<double>("Change")]
 [DependencyProperty<double>("ChangeProgress", DefaultValue = 0)]
 [DependencyProperty<double>("ChangePosIntensity", DefaultValue = 0)]
 [DependencyProperty<double>("ChangeNegIntensity", DefaultValue = 0)]
-[DependencyProperty<bool>("Wrap", DefaultValue = true)]
+[DependencyProperty<bool>("Wrap", DefaultValue = false)]
 [DependencyProperty<bool>("IsTextFocused")]
+[DependencyProperty<bool>("ShowProgress", DefaultValue = false)]
 public partial class NumberBox : Control
 {
 	private readonly Storyboard intensityNegStoryboard;
@@ -80,6 +80,9 @@ public partial class NumberBox : Control
 		this.intensityPosStoryboard = new();
 		this.intensityPosStoryboard.Children.Add(intensityPosAnimation);
 	}
+
+	public double DefaultMinimum => double.MinValue;
+	public double DefaultMaximum => double.MaxValue;
 
 	protected ServiceManager Services => ServiceManager.Instance;
 
@@ -128,6 +131,8 @@ public partial class NumberBox : Control
 			this.textBox.GotFocus += this.OnTextGotFocus;
 			this.textBox.LostFocus += this.OnTextLostFocus;
 			this.textBox.PreviewKeyDown += this.OnTextKey;
+
+			this.textBox.Text = this.Value.ToString("0.###");
 		}
 
 		base.OnApplyTemplate();
@@ -286,12 +291,38 @@ public partial class NumberBox : Control
 
 	private void OnDownClicked(object sender, RoutedEventArgs e)
 	{
-		this.Value -= this.CalculateChange(1);
+		this.Tick(-this.CalculateChange(1));
 	}
 
 	private void OnUpClicked(object sender, RoutedEventArgs e)
 	{
-		this.Value += this.CalculateChange(1);
+		this.Tick(this.CalculateChange(1));
+	}
+
+	private void Tick(double change)
+	{
+		double newValue = this.Value + change;
+		if (this.Wrap)
+		{
+			double range = this.Maximum - this.Minimum;
+			while(newValue > this.Maximum)
+				newValue -= range;
+
+			while(newValue < this.Minimum)
+				newValue += range;
+		}
+		else
+		{
+			newValue = double.Clamp(newValue, this.Minimum, this.Maximum);
+		}
+
+		this.Value = newValue;
+
+		if (this.textBox != null)
+		{
+			this.textBox.Text = this.Value.ToString("0.###");
+			this.textBox.CaretIndex = int.MaxValue;
+		}
 	}
 
 	private void OnTextGotFocus(object sender, RoutedEventArgs e)
@@ -323,15 +354,11 @@ public partial class NumberBox : Control
 		// TODO: Integrate with studio navigation system.
 		else if (e.Key == Key.Up)
 		{
-			this.Value += this.CalculateChange(1);
-			this.textBox.Text = this.Value.ToString("0.###");
-			this.textBox.CaretIndex = int.MaxValue;
+			this.Tick(this.CalculateChange(1));
 		}
 		else if (e.Key == Key.Down)
 		{
-			this.Value -= this.CalculateChange(1);
-			this.textBox.Text = this.Value.ToString("0.###");
-			this.textBox.CaretIndex = int.MaxValue;
+			this.Tick(-this.CalculateChange(1));
 		}
 	}
 

@@ -40,6 +40,23 @@
 					Focusable="False"
 					Opacity="0"/>
 
+				<Button
+					x:Name="PART_UpButton"
+					Grid.Column="2"
+					Content="{DynamicResource ICON_NumberBoxUp}"
+					Focusable="False"
+					Opacity="0"/>
+
+				<ProgressBar
+					x:Name="PART_Progress"
+					Margin="10, 2"
+					Height="1"
+					VerticalAlignment="Bottom"
+					Grid.ColumnSpan="3"
+					Minimum="{TemplateBinding Minimum}"
+					Maximum="{TemplateBinding Maximum}"
+					Value="{TemplateBinding Value}"/>
+
 				<Border
 					x:Name="HoverHighlight"
 					Grid.Column="1"
@@ -47,19 +64,14 @@
 					Style="{DynamicResource WpfUtilsControlHoverBorder}" />
 
 				<TextBox
+					Background="Transparent"
 					Name="PART_TextBox"
 					Grid.Column="1"
 					Focusable="False"
 					HorizontalContentAlignment="Center"/>
 
-				<Rectangle Fill="Transparent" Grid.Column="1" x:Name="PART_Clicker"/>
+				<Rectangle Fill="Transparent" Grid.Column="1" x:Name="PART_Clicker" Visibility="Visible"/>
 
-				<Button
-					x:Name="PART_UpButton"
-					Grid.Column="2"
-					Content="{DynamicResource ICON_NumberBoxUp}"
-					Focusable="False"
-					Opacity="0"/>
 			</Grid>
 		</Grid>
 
@@ -131,6 +143,10 @@
 				<Setter TargetName="PART_UpIcon" Property="Visibility" Value="Collapsed"/>
 				<Setter TargetName="PART_DownIcon" Property="Visibility" Value="Collapsed"/>
 				<Setter TargetName="PART_Clicker" Property="Visibility" Value="Collapsed"/>
+			</Trigger>
+
+			<Trigger Property="ShowProgress" Value="False">
+				<Setter TargetName="PART_Progress" Property="Visibility" Value="Collapsed"/>
 			</Trigger>
 
 		</ControlTemplate.Triggers>

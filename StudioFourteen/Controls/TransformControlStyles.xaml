@@ -18,6 +18,7 @@
 			</GroupBox>
 			<GroupBox Header="Rotation">
 				<local:Vector3Box
+					Wrap="True"
 					Value="{Binding RotationEuler, RelativeSource={RelativeSource TemplatedParent}}"
 					Maximum="{TemplateBinding RotationMaximum}"
 					Minimum="{TemplateBinding RotationMinimum}"

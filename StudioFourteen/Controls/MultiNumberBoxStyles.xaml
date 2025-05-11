@@ -11,7 +11,6 @@
 			<ItemsControl ItemsSource="{TemplateBinding Channels}">
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
-
 						<Grid>
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="22" />
@@ -28,6 +27,7 @@
 								Grid.Row="0"
 								Grid.Column="1"
 								Change="{Binding Change}"
+								Wrap="{Binding Wrap}"
 								Maximum="{Binding Maximum}"
 								Minimum="{Binding Minimum}"
 								Value="{Binding Value}" />
@@ -72,6 +72,7 @@
 		<Setter Property="Minimum" Value="-180"/>
 		<Setter Property="Maximum" Value="180"/>
 		<Setter Property="Change" Value="5"/>
+		<Setter Property="Wrap" Value="True"/>
 	</Style>
 
 </ResourceDictionary>
