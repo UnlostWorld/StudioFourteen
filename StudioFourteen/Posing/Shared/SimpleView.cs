@@ -64,7 +64,7 @@ public partial class SimpleView : PoseViewBase
 			do
 			{
 				SimpleViewLayout? basedOnLayout = null;
-				this.Services.Data.SimplePoseLayouts?.TryGetValue(layoutName, out basedOnLayout);
+				this.Services.Content.SimplePoseLayouts?.TryGetValue(layoutName, out basedOnLayout);
 				layoutName = basedOnLayout?.BasedOn;
 				this.layout.MergeBasedOn(basedOnLayout);
 			}
@@ -75,7 +75,7 @@ public partial class SimpleView : PoseViewBase
 
 			if(this.layout.BasedOn != null)
 			{
-				this.Services.Data.SimplePoseLayouts?.TryGetValue(this.layout.BasedOn, out this.layout);
+				this.Services.Content.SimplePoseLayouts?.TryGetValue(this.layout.BasedOn, out this.layout);
 				if (this.layout == null)
 					return;
 			}

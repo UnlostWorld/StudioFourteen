@@ -26,7 +26,6 @@ public class ServiceManager : ServiceManagerBase
 	public WindowService Windows { get; init; } = new();
 	public Settings.SettingsService Settings { get; init; } = new();
 	public StudioService Studio { get; init; } = new();
-	public Data.DataService Data { get; init; } = new();
 	public GameData.GameDataService GameData { get; init; } = new();
 	public CharacterLifecycleService CharacterLifecycle { get; init; } = new();
 	public GroupPoseService GroupPose { get; init; } = new();

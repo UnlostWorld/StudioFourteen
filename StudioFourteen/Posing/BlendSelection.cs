@@ -36,7 +36,7 @@ public class BlendSelectionId(string blendTargetName, int objectTableIndex)
 	public override SelectionBase? Create()
 	{
 		BlendTarget? target = null;
-		ServiceManager.Instance.Data.ExpressionBlends?.TryGetValue(this.BlendTargetName, out target);
+		ServiceManager.Instance.Content.ExpressionBlends?.TryGetValue(this.BlendTargetName, out target);
 
 		if (target == null)
 			return null;

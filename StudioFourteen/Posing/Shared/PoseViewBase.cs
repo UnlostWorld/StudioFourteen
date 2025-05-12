@@ -370,7 +370,7 @@ public partial class PoseViewBase : View
 
 		try
 		{
-			if (this.Settings.HideGenitals && this.Services.Data.GenitalBones?.Contains(control.SafeName) == true)
+			if (this.Settings.HideGenitals && this.Services.Content.GenitalBones?.Contains(control.SafeName) == true)
 				return;
 
 			if (!this.controlNameLookup.ContainsKey(control.SafeName))

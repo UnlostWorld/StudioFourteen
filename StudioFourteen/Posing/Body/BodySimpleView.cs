@@ -51,7 +51,7 @@ public class BodySimpleView : SimpleView
 
 		await this.MainThread();
 
-		if (this.Services.Data.SimplePoseLayouts?.ContainsKey(key) != true)
+		if (this.Services.Content.SimplePoseLayouts?.ContainsKey(key) != true)
 			return;
 
 		this.LayoutName = key;

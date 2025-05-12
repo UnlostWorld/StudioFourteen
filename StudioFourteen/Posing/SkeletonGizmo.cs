@@ -148,7 +148,7 @@ public class SkeletonGizmo : SceneGroup
 
 					if (boneName != null
 						&& ServiceManager.Instance.Settings.Current.HideGenitals
-						&& ServiceManager.Instance.Data.GenitalBones?.Contains(boneName) == true)
+						&& ServiceManager.Instance.Content.GenitalBones?.Contains(boneName) == true)
 					{
 						continue;
 					}

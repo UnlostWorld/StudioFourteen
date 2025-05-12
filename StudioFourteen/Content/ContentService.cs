@@ -16,12 +16,22 @@
 namespace StudioFourteen.Content;
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using StudioFourteen.Plugin;
+using StudioFourteen.Posing;
 using StudioFourteen.Services;
 
 public class ContentService : ServiceBase
 {
+	private readonly JsonContentReference<Dictionary<string, SimpleViewLayout>> simplePoseLayoutsContent = new("SimplePoseLayouts.jsonc");
+	private readonly JsonContentReference<Dictionary<string, BlendTarget>> expressionBlends = new("ExpressionBlends.jsonc");
+	private readonly JsonContentReference<HashSet<string>> genitalBones = new("GenitalBones.jsonc");
+
+	public Dictionary<string, SimpleViewLayout>? SimplePoseLayouts => this.simplePoseLayoutsContent.Get();
+	public Dictionary<string, BlendTarget>? ExpressionBlends => this.expressionBlends.Get();
+	public HashSet<string>? GenitalBones => this.genitalBones.Get();
+
 	public Stream GetContent(string path)
 	{
 		FileStream stream = new(this.ResolvePath(path), FileMode.Open, FileAccess.Read);

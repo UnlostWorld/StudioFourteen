@@ -28,14 +28,14 @@ public partial class BlendTargetView : View
 
 	partial void OnTargetNameChanged()
 	{
-		if (this.Services.Data.ExpressionBlends == null)
+		if (this.Services.Content.ExpressionBlends == null)
 			return;
 
 		if (this.TargetName == null)
 			return;
 
 		BlendTarget? target;
-		this.Services.Data.ExpressionBlends.TryGetValue(this.TargetName, out target);
+		this.Services.Content.ExpressionBlends.TryGetValue(this.TargetName, out target);
 
 		this.Target = target;
 	}
