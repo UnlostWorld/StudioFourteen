@@ -71,9 +71,6 @@ public class CharacterLifecycleService : ServiceBase
 		int characterCount = 0;
 		for(int i = 0; i < pObjects.Length; i++)
 		{
-			if (!CharacterAppearanceService.IsValidTarget(pObjects[i]))
-				continue;
-
 			Character* pCharacter = (Character*)pObjects[i];
 			if (pCharacter == null)
 				continue;

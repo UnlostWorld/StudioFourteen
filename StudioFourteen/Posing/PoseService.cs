@@ -95,7 +95,7 @@ public partial class PoseService : ServiceBase
 	{
 		base.Attach();
 
-		////this.gizmo.Enable();
+		this.gizmo.Enable();
 
 		Hooks.UpdateBonePhysics.Enable(this.UpdateBonePhysicsDetour);
 		Hooks.FinalizeSkeletons.Enable(this.FinalizeSkeletonDetour);

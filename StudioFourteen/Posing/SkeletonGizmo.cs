@@ -21,6 +21,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.Havok.Animation.Rig;
+using SharpDX.Direct3D11;
 using StudioFourteen.Interop.Structs;
 using StudioFourteen.Rendering;
 using StudioFourteen.Rendering.Gizmos;
@@ -60,16 +61,6 @@ public class SkeletonsGizmo : GizmoBase
 		base.Disable();
 	}
 
-	public override void OnGameTick()
-	{
-		base.OnGameTick();
-
-		foreach(SkeletonGizmo skeleton in this.skeletonLookup.Values)
-		{
-			skeleton.OnGameTick();
-		}
-	}
-
 	private unsafe void Initialize()
 	{
 		TickService.VerifyGameTickThread();
@@ -100,6 +91,11 @@ public class SkeletonsGizmo : GizmoBase
 		if (this.skeletonLookup.ContainsKey(objectTableIndex))
 			return;
 
+		// Hide skeletons for non gpose actors while in gpose.
+		/*if (ServiceManager.Instance.GroupPose.IsGroupPosing
+			&& objectTableIndex > GroupPoseService.GPoseFirstCharacter)
+			return;*/
+
 		SkeletonGizmo gizmo = new(objectTableIndex);
 		gizmo.Initialize();
 		this.Add(gizmo);
@@ -119,8 +115,73 @@ public class SkeletonGizmo : SceneGroup
 		this.ObjectTableIndex = objectTableIndex;
 	}
 
-	public unsafe void OnGameTick()
+	public unsafe void Initialize()
 	{
+		TickService.VerifyGameTickThread();
+
+		Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(this.ObjectTableIndex);
+		if (pCharacter == null)
+			return;
+
+		CharacterBase* characterBase = pCharacter->GetCharacterBase();
+		if (characterBase == null)
+			return;
+
+		ushort partialCount = characterBase->Skeleton->PartialSkeletonCount;
+		for (int partialIdx = 0; partialIdx < partialCount; partialIdx++)
+		{
+			PartialSkeleton* partialSkeleton = &characterBase->Skeleton->PartialSkeletons[partialIdx];
+
+			byte poseIdx = 0;
+			////byte poseCount = partialSkeleton->GetMaxPoses();
+			////for (byte poseIdx = 0; poseIdx < poseCount; poseIdx++)
+			{
+				hkaPose* pose = partialSkeleton->GetHavokPose(poseIdx);
+				if (pose == null)
+					continue;
+
+				int boneCount = pose->Skeleton->Bones.Length;
+				for (short boneIdx = 0; boneIdx < boneCount; boneIdx++)
+				{
+					hkaBone bone = pose->Skeleton->Bones[boneIdx];
+					string? boneName = bone.Name.String;
+
+					if (boneName != null
+						&& ServiceManager.Instance.Settings.Current.HideGenitals
+						&& ServiceManager.Instance.Data.GenitalBones?.Contains(boneName) == true)
+					{
+						continue;
+					}
+
+					BoneId boneId = new(pCharacter->ObjectIndex, partialIdx, poseIdx, boneIdx);
+
+					if (!this.boneRenderers.ContainsKey(boneId))
+					{
+						MeshRenderer renderer = new(Meshes.Bone, Material.Dot);
+						this.Add(renderer);
+						this.boneRenderers.Add(boneId, renderer);
+					}
+
+					short parentIndex = pose->Skeleton->ParentIndices[boneIdx];
+					if (parentIndex != -1)
+					{
+						BoneId parentBoneId = new(pCharacter->ObjectIndex, partialIdx, poseIdx, parentIndex);
+						if (!this.connectionRenderers.ContainsKey((boneId, parentBoneId)))
+						{
+							LineRenderer renderer = new(Material.Line);
+							this.Add(renderer);
+							this.connectionRenderers.Add((boneId, parentBoneId), renderer);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	public unsafe override void Draw(Transform transform, Device device, DeviceContext deviceContext)
+	{
+		base.Draw(transform, device, deviceContext);
+
 		foreach((BoneId id, MeshRenderer renderer) in this.boneRenderers)
 		{
 			if (!id.Resolve(out Character* pCharacter, out Skeleton* pSkeleton, out PartialSkeleton* pPartialSkeleton, out hkaPose* pPose))
@@ -177,68 +238,6 @@ public class SkeletonGizmo : SceneGroup
 			renderer.To = vector;
 
 			renderer.Transform = Transform.FromTranslation(parentPos);
-		}
-	}
-
-	public unsafe void Initialize()
-	{
-		TickService.VerifyGameTickThread();
-
-		Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(this.ObjectTableIndex);
-		if (pCharacter == null)
-			return;
-
-		CharacterBase* characterBase = pCharacter->GetCharacterBase();
-		if (characterBase == null)
-			return;
-
-		ushort partialCount = characterBase->Skeleton->PartialSkeletonCount;
-		for (int partialIdx = 0; partialIdx < partialCount; partialIdx++)
-		{
-			PartialSkeleton* partialSkeleton = &characterBase->Skeleton->PartialSkeletons[partialIdx];
-
-			byte poseCount = partialSkeleton->GetMaxPoses();
-			for (byte poseIdx = 0; poseIdx < poseCount; poseIdx++)
-			{
-				hkaPose* pose = partialSkeleton->GetHavokPose(poseIdx);
-				if (pose == null)
-					continue;
-
-				int boneCount = pose->Skeleton->Bones.Length;
-				for (short boneIdx = 0; boneIdx < boneCount; boneIdx++)
-				{
-					hkaBone bone = pose->Skeleton->Bones[boneIdx];
-					string? boneName = bone.Name.String;
-
-					if (boneName != null
-						&& ServiceManager.Instance.Settings.Current.HideGenitals
-						&& ServiceManager.Instance.Data.GenitalBones?.Contains(boneName) == true)
-					{
-						continue;
-					}
-
-					BoneId boneId = new(pCharacter->ObjectIndex, partialIdx, poseIdx, boneIdx);
-
-					if (!this.boneRenderers.ContainsKey(boneId))
-					{
-						MeshRenderer renderer = new(Meshes.Bone, Material.Dot);
-						this.Add(renderer);
-						this.boneRenderers.Add(boneId, renderer);
-					}
-
-					short parentIndex = pose->Skeleton->ParentIndices[boneIdx];
-					if (parentIndex != -1)
-					{
-						BoneId parentBoneId = new(pCharacter->ObjectIndex, partialIdx, poseIdx, parentIndex);
-						if (!this.connectionRenderers.ContainsKey((boneId, parentBoneId)))
-						{
-							LineRenderer renderer = new(Material.Line);
-							this.Add(renderer);
-							this.connectionRenderers.Add((boneId, parentBoneId), renderer);
-						}
-					}
-				}
-			}
 		}
 	}
 }
