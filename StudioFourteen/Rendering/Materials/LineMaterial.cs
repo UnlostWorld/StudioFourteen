@@ -15,14 +15,12 @@
 
 namespace StudioFourteen.Rendering.Materials;
 
+using SharpDX.D3DCompiler;
+using StudioFourteen.Content;
+
 public class LineMaterial : MaterialBase
 {
-	protected override ShaderLoader VertexShader =>
-		new EmbeddedShaderLoader("Line.hlsl", "vs_4_0", "vert");
-
-	protected override ShaderLoader PixelShader =>
-		new EmbeddedShaderLoader("Line.hlsl", "ps_4_0", "pixel");
-
-	protected override ShaderLoader? GeometryShader =>
-		new EmbeddedShaderLoader("Line.hlsl", "gs_4_0", "geometry");
+	protected override IContent<ShaderBytecode> VertexShader => new ShaderReference("Shaders/Line.hlsl", "vs_4_0", "vert");
+	protected override IContent<ShaderBytecode> PixelShader => new ShaderReference("Shaders/Line.hlsl", "ps_4_0", "pixel");
+	protected override IContent<ShaderBytecode>? GeometryShader => new ShaderReference("Shaders/Line.hlsl", "gs_4_0", "geometry");
 }

@@ -48,12 +48,14 @@
 	<ItemGroup>
 		<EmbeddedResource Include="Data\Documents\**" />
 		<EmbeddedResource Include="Cursors\**" />
-		<EmbeddedResource Include="Rendering\Shaders\*.hlsl" />
-		<EmbeddedResource Include="Rendering\Meshes\*.jsonc" />
 	</ItemGroup>
 
 	<ItemGroup>
 	  <Content Include="Assets\icon.ico" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Content Include="Content\Base\**" CopyToOutputDirectory="Always"/>
 	</ItemGroup>
 
 	<ItemGroup>

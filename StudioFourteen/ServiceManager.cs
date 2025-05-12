@@ -62,4 +62,5 @@ public class ServiceManager : ServiceManagerBase
 	public Environment.TimeService Time { get; init; } = new();
 	public Rendering.RenderingService Rendering { get; init; } = new();
 	public Rendering.Gizmos.GizmoService Gizmos { get; init; } = new();
+	public Content.ContentService Content { get; init; } = new();
 }

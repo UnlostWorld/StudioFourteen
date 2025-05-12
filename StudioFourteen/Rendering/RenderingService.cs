@@ -239,7 +239,15 @@ public class RenderingService : ServiceBase
 		if (!this.canRender || this.device == null || this.deviceContext == null)
 			return;
 
-		this.generateUiMaskPass.Render(this, this.device, this.deviceContext);
+		try
+		{
+			this.generateUiMaskPass.Render(this, this.device, this.deviceContext);
+		}
+		catch (Exception ex)
+		{
+			this.Log.Error(ex, $"Error in render Ui Mask");
+			this.Detach();
+		}
 	}
 
 	private void RenderBeforeEffectsPasses() => this.RenderPasses(this.beforeEffectsPasses);

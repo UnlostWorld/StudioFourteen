@@ -13,33 +13,9 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Materials;
+namespace StudioFourteen.Content;
 
-using System.Runtime.InteropServices;
-using SharpDX.D3DCompiler;
-using StudioFourteen.Content;
-
-public class GridMaterial : InstanceMaterialBase<GridMaterial.GridInstanceData>
+public interface IContent<T>
 {
-	protected override IContent<ShaderBytecode> VertexShader => new ShaderReference("Shaders/Grid.hlsl", "vs_4_0", "vert");
-	protected override IContent<ShaderBytecode> PixelShader => new ShaderReference("Shaders/Grid.hlsl", "ps_4_0", "pixel");
-
-	protected override void SetDefault(ref GridInstanceData instance)
-	{
-		base.SetDefault(ref instance);
-
-		instance.Color = Color.White;
-		instance.GridSize = 1.0f;
-		instance.LineThickness = 0.1f;
-	}
-
-	[StructLayout(LayoutKind.Sequential)]
-	public struct GridInstanceData
-	{
-		public Color Color;
-		public float GridSize;
-		public float LineThickness;
-		public float Height;
-		public float Unused3;
-	}
+	T Get();
 }

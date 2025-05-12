@@ -15,18 +15,19 @@
 
 namespace StudioFourteen.Rendering;
 
+using StudioFourteen.Content;
 using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.MeshGenerators;
 
 public static class Meshes
 {
-	public static readonly Mesh Cube = Mesh.LoadEmbedded("Cube.jsonc");
-	public static readonly Mesh FlatCube = Mesh.LoadEmbedded("FlatCube.jsonc");
-	public static readonly Mesh Quad = Mesh.LoadEmbedded("Quad.jsonc");
-	public static readonly Mesh Plane = Mesh.LoadEmbedded("Plane.jsonc");
-	public static readonly Mesh WireCube = Mesh.LoadEmbedded("WireCube.jsonc");
-	public static readonly Mesh WireCircle = new WireCircle();
-	public static readonly Mesh Bone = Mesh.LoadEmbedded("Bone.jsonc");
+	public static readonly IContent<Mesh> Cube = new JsonContentReference<Mesh>("Meshes/Cube.jsonc");
+	public static readonly IContent<Mesh> FlatCube = new JsonContentReference<Mesh>("Meshes/FlatCube.jsonc");
+	public static readonly IContent<Mesh> Quad = new JsonContentReference<Mesh>("Meshes/Quad.jsonc");
+	public static readonly IContent<Mesh> Plane = new JsonContentReference<Mesh>("Meshes/Plane.jsonc");
+	public static readonly IContent<Mesh> WireCube = new JsonContentReference<Mesh>("Meshes/WireCube.jsonc");
+	public static readonly IContent<Mesh> WireCircle = new WireCircle();
+	public static readonly IContent<Mesh> Bone = new JsonContentReference<Mesh>("Meshes/Bone.jsonc");
 }
 
 public static class Material

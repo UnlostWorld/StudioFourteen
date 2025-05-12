@@ -19,13 +19,13 @@ using System;
 using System.Numerics;
 using SharpDX.Direct3D;
 
-public class WireCircle : Mesh
+public class WireCircle : MeshGenerator
 {
 	private const int NumPoints = 144;
 
-	public WireCircle()
+	protected override void Generate(ref Mesh mesh)
 	{
-		this.Topology = PrimitiveTopology.LineStrip;
+		mesh.Topology = PrimitiveTopology.LineStrip;
 
 		for (int i = 0; i < NumPoints; i++)
 		{
@@ -33,7 +33,7 @@ public class WireCircle : Mesh
 			float r = p * (MathF.PI * 2);
 
 			Vector4 to = new Vector4(MathF.Cos(r), 0, MathF.Sin(r), 1);
-			this.Vertices.Add(new Vertex(to));
+			mesh.Vertices.Add(new Vertex(to));
 		}
 	}
 }

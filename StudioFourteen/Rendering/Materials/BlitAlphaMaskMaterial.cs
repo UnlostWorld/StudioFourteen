@@ -15,11 +15,11 @@
 
 namespace StudioFourteen.Rendering.Materials;
 
+using SharpDX.D3DCompiler;
+using StudioFourteen.Content;
+
 public class BlitAlphaMaskMaterial : MaterialBase
 {
-	protected override ShaderLoader VertexShader =>
-		new EmbeddedShaderLoader("Blit_AlphaMask.hlsl", "vs_4_0", "vert");
-
-	protected override ShaderLoader PixelShader =>
-		new EmbeddedShaderLoader("Blit_AlphaMask.hlsl", "ps_4_0", "pixel");
+	protected override IContent<ShaderBytecode> VertexShader => new ShaderReference("Shaders/Blit_AlphaMask.hlsl", "vs_4_0", "vert");
+	protected override IContent<ShaderBytecode> PixelShader => new ShaderReference("Shaders/Blit_AlphaMask.hlsl", "ps_4_0", "pixel");
 }

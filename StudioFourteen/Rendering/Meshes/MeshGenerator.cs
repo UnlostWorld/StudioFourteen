@@ -13,33 +13,24 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Materials;
+namespace StudioFourteen.Rendering.MeshGenerators;
 
-using System.Runtime.InteropServices;
-using SharpDX.D3DCompiler;
 using StudioFourteen.Content;
 
-public class GridMaterial : InstanceMaterialBase<GridMaterial.GridInstanceData>
+public abstract class MeshGenerator : IContent<Mesh>
 {
-	protected override IContent<ShaderBytecode> VertexShader => new ShaderReference("Shaders/Grid.hlsl", "vs_4_0", "vert");
-	protected override IContent<ShaderBytecode> PixelShader => new ShaderReference("Shaders/Grid.hlsl", "ps_4_0", "pixel");
+	private Mesh? mesh;
 
-	protected override void SetDefault(ref GridInstanceData instance)
+	public Mesh Get()
 	{
-		base.SetDefault(ref instance);
+		if (this.mesh == null)
+		{
+			this.mesh = new();
+			this.Generate(ref this.mesh);
+		}
 
-		instance.Color = Color.White;
-		instance.GridSize = 1.0f;
-		instance.LineThickness = 0.1f;
+		return this.mesh;
 	}
 
-	[StructLayout(LayoutKind.Sequential)]
-	public struct GridInstanceData
-	{
-		public Color Color;
-		public float GridSize;
-		public float LineThickness;
-		public float Height;
-		public float Unused3;
-	}
+	protected abstract void Generate(ref Mesh mesh);
 }

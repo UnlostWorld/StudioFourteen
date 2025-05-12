@@ -18,6 +18,8 @@ namespace StudioFourteen.Rendering.Materials;
 using System;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using SharpDX.D3DCompiler;
+using StudioFourteen.Content;
 using WpfUtils.Animation;
 
 public class PhotoGuidesEffectMaterial : InstanceMaterialBase<PhotoGuidesEffectMaterial.InstanceData>
@@ -41,11 +43,8 @@ public class PhotoGuidesEffectMaterial : InstanceMaterialBase<PhotoGuidesEffectM
 
 	protected ServiceManager Services => ServiceManager.Instance;
 
-	protected override ShaderLoader VertexShader =>
-		new EmbeddedShaderLoader("Blit_PhotoGuides.hlsl", "vs_4_0", "vert");
-
-	protected override ShaderLoader PixelShader =>
-		new EmbeddedShaderLoader("Blit_PhotoGuides.hlsl", "ps_4_0", "pixel");
+	protected override IContent<ShaderBytecode> VertexShader => new ShaderReference("Shaders/Blit_PhotoGuides.hlsl", "vs_4_0", "vert");
+	protected override IContent<ShaderBytecode> PixelShader => new ShaderReference("Shaders/Blit_PhotoGuides.hlsl", "ps_4_0", "pixel");
 
 	public override void UpdateInstanceData(ref InstanceData instance)
 	{

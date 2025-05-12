@@ -13,33 +13,21 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Materials;
+namespace StudioFourteen.Content;
 
-using System.Runtime.InteropServices;
-using SharpDX.D3DCompiler;
-using StudioFourteen.Content;
+using System;
+using System.IO;
+using StudioFourteen.Serialization;
 
-public class GridMaterial : InstanceMaterialBase<GridMaterial.GridInstanceData>
+public class JsonContentReference<T>(string path)
+	: ContentReference<T>(path)
 {
-	protected override IContent<ShaderBytecode> VertexShader => new ShaderReference("Shaders/Grid.hlsl", "vs_4_0", "vert");
-	protected override IContent<ShaderBytecode> PixelShader => new ShaderReference("Shaders/Grid.hlsl", "ps_4_0", "pixel");
-
-	protected override void SetDefault(ref GridInstanceData instance)
+	protected override T Load(Stream stream)
 	{
-		base.SetDefault(ref instance);
+		T? mesh = Serializer.Deserialize<T>(stream);
+		if (mesh == null)
+			throw new Exception($"Content \"{this.Path}\" failed to deserialize");
 
-		instance.Color = Color.White;
-		instance.GridSize = 1.0f;
-		instance.LineThickness = 0.1f;
-	}
-
-	[StructLayout(LayoutKind.Sequential)]
-	public struct GridInstanceData
-	{
-		public Color Color;
-		public float GridSize;
-		public float LineThickness;
-		public float Height;
-		public float Unused3;
+		return mesh;
 	}
 }

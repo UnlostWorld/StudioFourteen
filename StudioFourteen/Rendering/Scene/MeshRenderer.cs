@@ -19,6 +19,7 @@ using System;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using SharpDX.Direct3D11;
+using StudioFourteen.Content;
 using StudioFourteen.Rendering.Materials;
 
 using Buffer = SharpDX.Direct3D11.Buffer;
@@ -27,7 +28,7 @@ using Device = SharpDX.Direct3D11.Device;
 public class MeshRenderer : InstanceRendererBase<MeshRenderer.PerRendererData>
 {
 	public MaterialBase? Material;
-	public Mesh? Mesh;
+	public IContent<Mesh>? Mesh;
 
 	private Buffer? vertices;
 	private VertexBufferBinding vertexBufferBinding;
@@ -41,7 +42,7 @@ public class MeshRenderer : InstanceRendererBase<MeshRenderer.PerRendererData>
 	{
 	}
 
-	public MeshRenderer(Mesh mesh, MaterialBase material)
+	public MeshRenderer(IContent<Mesh> mesh, MaterialBase material)
 	{
 		this.Mesh = mesh;
 		this.Material = material;
@@ -70,6 +71,8 @@ public class MeshRenderer : InstanceRendererBase<MeshRenderer.PerRendererData>
 		if (this.Mesh == null)
 			return;
 
+		Mesh mesh = this.Mesh.Get();
+
 		if (!this.Material.IsLoaded)
 		{
 			try
@@ -86,20 +89,20 @@ public class MeshRenderer : InstanceRendererBase<MeshRenderer.PerRendererData>
 
 		if (this.vertices == null)
 		{
-			Vertex[] vertices = this.Mesh.Vertices.ToArray();
+			Vertex[] vertices = mesh.Vertices.ToArray();
 			this.vertexLength = vertices.Length;
 			this.vertices = Buffer.Create(device, BindFlags.VertexBuffer, vertices);
 			this.vertexBufferBinding = new VertexBufferBinding(this.vertices, SharpDX.Utilities.SizeOf<Vertex>(), 0);
 
-			if (this.Mesh.Indices != null)
+			if (mesh.Indices != null)
 			{
-				ushort[] indices = this.Mesh.Indices.ToArray();
+				ushort[] indices = mesh.Indices.ToArray();
 				this.indexLength = indices.Length;
 				this.indices = Buffer.Create(device, BindFlags.IndexBuffer, indices);
 			}
 		}
 
-		deviceContext.InputAssembler.PrimitiveTopology = this.Mesh.Topology;
+		deviceContext.InputAssembler.PrimitiveTopology = mesh.Topology;
 		deviceContext.InputAssembler.SetVertexBuffers(0, this.vertexBufferBinding);
 		deviceContext.InputAssembler.SetIndexBuffer(this.indices, SharpDX.DXGI.Format.R16_UInt, 0);
 
@@ -118,7 +121,7 @@ public class MeshRenderer : InstanceRendererBase<MeshRenderer.PerRendererData>
 	public override void HitTest(Vector2 screenPosition, Transform transform, Transform viewProjection, ref HitTestResult result)
 	{
 		Transform thisTransform = transform * this.Transform;
-		this.Mesh?.HitTest(screenPosition, thisTransform, viewProjection, ref result);
+		this.Mesh?.Get().HitTest(screenPosition, thisTransform, viewProjection, ref result);
 
 		if (result.Mesh == this.Mesh)
 		{

@@ -18,6 +18,7 @@ namespace StudioFourteen.Rendering.Materials;
 using System;
 using SharpDX.D3DCompiler;
 using SharpDX.Direct3D11;
+using StudioFourteen.Content;
 using StudioFourteen.Rendering.Scene;
 
 public abstract class MaterialBase : IDisposable
@@ -29,29 +30,25 @@ public abstract class MaterialBase : IDisposable
 
 	public bool IsLoaded => this.vertexShader != null;
 
-	protected abstract ShaderLoader VertexShader { get; }
-	protected abstract ShaderLoader PixelShader { get; }
-	protected virtual ShaderLoader? GeometryShader { get; }
+	protected abstract IContent<ShaderBytecode> VertexShader { get; }
+	protected abstract IContent<ShaderBytecode> PixelShader { get; }
+	protected virtual IContent<ShaderBytecode>? GeometryShader { get; }
 
 	public virtual void Load(Device device)
 	{
-		ShaderLoader vertexShaderLoader = this.VertexShader;
-		ShaderLoader pixelShaderLoader = this.PixelShader;
-		ShaderLoader? geometryShaderLoader = this.GeometryShader;
+		ShaderBytecode vertexByteCode = this.VertexShader.Get();
+		ShaderBytecode pixelByteCode = this.PixelShader.Get();
+		ShaderBytecode? geometryByteCode = this.GeometryShader?.Get();
 
-		vertexShaderLoader.Load();
-		pixelShaderLoader.Load();
-		geometryShaderLoader?.Load();
+		this.vertexShader = new VertexShader(device, vertexByteCode);
+		this.pixelShader = new PixelShader(device, pixelByteCode);
 
-		this.vertexShader = new VertexShader(device, vertexShaderLoader.Bytecode);
-		this.pixelShader = new PixelShader(device, pixelShaderLoader.Bytecode);
-
-		if (geometryShaderLoader != null)
+		if (geometryByteCode != null)
 		{
-			this.geometryShader = new GeometryShader(device, geometryShaderLoader.Bytecode);
+			this.geometryShader = new GeometryShader(device, geometryByteCode);
 		}
 
-		ShaderSignature signature = ShaderSignature.GetInputSignature(vertexShaderLoader.Bytecode);
+		ShaderSignature signature = ShaderSignature.GetInputSignature(vertexByteCode);
 		this.layout = new InputLayout(device, signature, default(Vertex).GetInputElements());
 	}
 

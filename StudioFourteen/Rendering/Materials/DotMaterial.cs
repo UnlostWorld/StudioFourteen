@@ -15,14 +15,12 @@
 
 namespace StudioFourteen.Rendering.Materials;
 
+using SharpDX.D3DCompiler;
+using StudioFourteen.Content;
+
 public class DotMaterial : MaterialBase
 {
-	protected override ShaderLoader VertexShader =>
-		new EmbeddedShaderLoader("Dot.hlsl", "vs_4_0", "vert");
-
-	protected override ShaderLoader PixelShader =>
-		new EmbeddedShaderLoader("Dot.hlsl", "ps_4_0", "pixel");
-
-	protected override ShaderLoader? GeometryShader =>
-		new EmbeddedShaderLoader("Dot.hlsl", "gs_4_0", "geometry");
+	protected override IContent<ShaderBytecode> VertexShader => new ShaderReference("Shaders/Dot.hlsl", "vs_4_0", "vert");
+	protected override IContent<ShaderBytecode> PixelShader => new ShaderReference("Shaders/Dot.hlsl", "ps_4_0", "pixel");
+	protected override IContent<ShaderBytecode>? GeometryShader => new ShaderReference("Shaders/Dot.hlsl", "gs_4_0", "geometry");
 }

@@ -13,33 +13,30 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Materials;
+namespace StudioFourteen.Content;
 
-using System.Runtime.InteropServices;
-using SharpDX.D3DCompiler;
-using StudioFourteen.Content;
+using System;
+using System.IO;
+using StudioFourteen.Plugin;
+using StudioFourteen.Services;
 
-public class GridMaterial : InstanceMaterialBase<GridMaterial.GridInstanceData>
+public class ContentService : ServiceBase
 {
-	protected override IContent<ShaderBytecode> VertexShader => new ShaderReference("Shaders/Grid.hlsl", "vs_4_0", "vert");
-	protected override IContent<ShaderBytecode> PixelShader => new ShaderReference("Shaders/Grid.hlsl", "ps_4_0", "pixel");
-
-	protected override void SetDefault(ref GridInstanceData instance)
+	public Stream GetContent(string path)
 	{
-		base.SetDefault(ref instance);
+		FileStream stream = new(this.ResolvePath(path), FileMode.Open, FileAccess.Read);
+		if (stream == null)
+			throw new Exception($"Content \"{path}\" not found in content directory");
 
-		instance.Color = Color.White;
-		instance.GridSize = 1.0f;
-		instance.LineThickness = 0.1f;
+		return stream;
 	}
 
-	[StructLayout(LayoutKind.Sequential)]
-	public struct GridInstanceData
+	private string ResolvePath(string path)
 	{
-		public Color Color;
-		public float GridSize;
-		public float LineThickness;
-		public float Height;
-		public float Unused3;
+		FileInfo? assembly = DalamudServices.PluginInterface?.AssemblyLocation;
+		if (assembly == null)
+			return path;
+
+		return $"{assembly.DirectoryName}/Content/Base/{path}";
 	}
 }
