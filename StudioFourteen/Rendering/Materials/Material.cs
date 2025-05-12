@@ -28,7 +28,29 @@ public abstract class MaterialBase : IDisposable
 	private GeometryShader? geometryShader;
 	private InputLayout? layout;
 
-	public bool IsLoaded => this.vertexShader != null;
+	private IContent<ShaderBytecode>? vertexShaderContent;
+	private IContent<ShaderBytecode>? pixelShaderContent;
+	private IContent<ShaderBytecode>? geometryShaderContent;
+
+	public bool IsLoaded
+	{
+		get
+		{
+			if (this.vertexShader == null)
+				return false;
+
+			if (this.vertexShaderContent?.IsLoaded == false)
+				return false;
+
+			if (this.pixelShaderContent?.IsLoaded == false)
+				return false;
+
+			if (this.geometryShaderContent?.IsLoaded == false)
+				return false;
+
+			return true;
+		}
+	}
 
 	protected abstract IContent<ShaderBytecode> VertexShader { get; }
 	protected abstract IContent<ShaderBytecode> PixelShader { get; }
@@ -36,9 +58,23 @@ public abstract class MaterialBase : IDisposable
 
 	public virtual void Load(Device device)
 	{
-		ShaderBytecode vertexByteCode = this.VertexShader.Get();
-		ShaderBytecode pixelByteCode = this.PixelShader.Get();
-		ShaderBytecode? geometryByteCode = this.GeometryShader?.Get();
+		if (this.vertexShaderContent == null)
+			this.vertexShaderContent = this.VertexShader;
+
+		if (this.pixelShaderContent == null)
+			this.pixelShaderContent = this.PixelShader;
+
+		if (this.geometryShaderContent == null)
+			this.geometryShaderContent = this.GeometryShader;
+
+		this.vertexShader?.Dispose();
+		this.pixelShader?.Dispose();
+		this.geometryShader?.Dispose();
+		this.layout?.Dispose();
+
+		ShaderBytecode vertexByteCode = this.vertexShaderContent.Get();
+		ShaderBytecode pixelByteCode = this.pixelShaderContent.Get();
+		ShaderBytecode? geometryByteCode = this.geometryShaderContent?.Get();
 
 		this.vertexShader = new VertexShader(device, vertexByteCode);
 		this.pixelShader = new PixelShader(device, pixelByteCode);

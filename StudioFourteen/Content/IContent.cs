@@ -17,5 +17,6 @@ namespace StudioFourteen.Content;
 
 public interface IContent<T>
 {
+	bool IsLoaded => true;
 	T Get();
 }

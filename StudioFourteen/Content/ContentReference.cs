@@ -17,15 +17,33 @@ namespace StudioFourteen.Content;
 
 using System.IO;
 
-public abstract class ContentReference<T>(string path)
-	: IContent<T>
+public abstract class ContentReference(string path)
 {
 	public readonly string Path = path;
 
+	public abstract void Reload();
+}
+
+public abstract class ContentReference<T>(string path)
+	: ContentReference(path), IContent<T>
+{
+	private T? instance;
+	public bool IsLoaded => this.instance != null;
+
+	public sealed override void Reload()
+	{
+		this.instance = default;
+	}
+
 	public T Get()
 	{
-		Stream stream = ServiceManager.Instance.Content.GetContent(this.Path);
-		return this.Load(stream);
+		if (this.instance == null)
+		{
+			Stream stream = ServiceManager.Instance.Content.GetContent(this);
+			this.instance = this.Load(stream);
+		}
+
+		return this.instance;
 	}
 
 	protected abstract T Load(Stream stream);
