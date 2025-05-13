@@ -117,7 +117,6 @@ public class LineRenderer : InstanceRendererBase<MeshRenderer.PerRendererData>
 
 	public override void Dispose()
 	{
-		this.Material?.Dispose();
 		this.vertices?.Dispose();
 	}
 }

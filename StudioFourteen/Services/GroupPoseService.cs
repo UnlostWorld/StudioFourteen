@@ -168,6 +168,7 @@ public partial class GroupPoseService : ServiceBase
 
 	private void SetState(bool newState)
 	{
+		this.Log.Information($"Group Pose State changed {newState}");
 		this.StateChanged?.Invoke(newState);
 		this.IsGroupPosing = newState;
 		this.CheckLoaded().Run();
@@ -175,7 +176,13 @@ public partial class GroupPoseService : ServiceBase
 
 	private async Task CheckLoaded()
 	{
-		await Task.Delay(3000);
+		this.IsGroupPoseLoaded = false;
+
+		if (!this.isGroupPosing)
+			return;
+
+		await Task.Delay(2000);
 		this.IsGroupPoseLoaded = this.isGroupPosing;
+		this.Log.Information($"Group Pose Loaded");
 	}
 }

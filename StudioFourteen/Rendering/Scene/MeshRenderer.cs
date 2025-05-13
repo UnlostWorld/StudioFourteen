@@ -131,7 +131,6 @@ public class MeshRenderer : InstanceRendererBase<MeshRenderer.PerRendererData>
 
 	public override void Dispose()
 	{
-		this.Material?.Dispose();
 		this.vertices?.Dispose();
 		this.indices?.Dispose();
 	}

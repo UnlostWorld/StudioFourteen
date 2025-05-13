@@ -277,8 +277,8 @@ public class RenderingService : ServiceBase
 
 			try
 			{
-				////this.generateUiMaskPass.Bind(this.deviceContext);
-				////pass.Render(this, this.device, this.deviceContext);
+				this.generateUiMaskPass.Bind(this.deviceContext);
+				pass.Render(this, this.device, this.deviceContext);
 			}
 			catch(Exception ex)
 			{

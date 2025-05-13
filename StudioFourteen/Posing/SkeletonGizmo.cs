@@ -18,6 +18,7 @@ namespace StudioFourteen.Posing;
 using System.Collections.Generic;
 using System.Numerics;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using FFXIVClientStructs.Havok.Animation.Rig;
@@ -78,26 +79,23 @@ public class SkeletonsGizmo : GizmoBase
 
 		if (this.skeletonLookup.TryGetValue(objectTableIndex, out var skeletonGizmo))
 		{
+			this.Log.Information($">> REMOVE {objectTableIndex}");
+
+			skeletonGizmo.Visible = false;
 			this.Remove(skeletonGizmo);
 			skeletonGizmo.Dispose();
 			this.skeletonLookup.Remove(objectTableIndex);
 		}
 	}
 
-	private void OnCharacterCreated(int objectTableIndex)
+	private unsafe void OnCharacterCreated(int objectTableIndex)
 	{
 		TickService.VerifyGameTickThread();
 
 		if (this.skeletonLookup.ContainsKey(objectTableIndex))
 			return;
 
-		// Hide skeletons for non gpose actors while in gpose.
-		/*if (ServiceManager.Instance.GroupPose.IsGroupPosing
-			&& objectTableIndex > GroupPoseService.GPoseFirstCharacter)
-			return;*/
-
 		SkeletonGizmo gizmo = new(objectTableIndex);
-		gizmo.Initialize();
 		this.Add(gizmo);
 		this.skeletonLookup.Add(objectTableIndex, gizmo);
 	}
@@ -109,6 +107,7 @@ public class SkeletonGizmo : SceneGroup
 
 	private readonly Dictionary<BoneId, MeshRenderer> boneRenderers = new();
 	private readonly Dictionary<(BoneId, BoneId), LineRenderer> connectionRenderers = new();
+	private bool isInitialized = false;
 
 	public SkeletonGizmo(int objectTableIndex)
 	{
@@ -176,15 +175,39 @@ public class SkeletonGizmo : SceneGroup
 				}
 			}
 		}
+
+		this.isInitialized = this.boneRenderers.Count > 0;
 	}
 
 	public unsafe override void Draw(Transform transform, Device device, DeviceContext deviceContext)
 	{
-		base.Draw(transform, device, deviceContext);
+		if (ServiceManager.Instance.GroupPose.IsGroupPosing
+			&& this.ObjectTableIndex < GroupPoseService.GPoseFirstCharacter
+			&& this.ObjectTableIndex > GroupPoseService.GPoseFirstCharacter + GroupPoseService.GPoseCharacterCount)
+			return;
+
+		Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(this.ObjectTableIndex);
+		if (pCharacter == null)
+			return;
+
+		if (pCharacter->ObjectKind != ObjectKind.Pc
+			&& pCharacter->ObjectKind != ObjectKind.BattleNpc
+			&& pCharacter->ObjectKind != ObjectKind.EventNpc)
+			return;
+
+		if(!this.isInitialized)
+			this.Initialize();
+
+		Transform thisTransform = transform * this.Transform;
+
+		////base.Draw(transform, device, deviceContext);
 
 		foreach((BoneId id, MeshRenderer renderer) in this.boneRenderers)
 		{
-			if (!id.Resolve(out Character* pCharacter, out Skeleton* pSkeleton, out PartialSkeleton* pPartialSkeleton, out hkaPose* pPose))
+			if (!id.Resolve(out _, out Skeleton* pSkeleton, out PartialSkeleton* pPartialSkeleton, out hkaPose* pPose))
+				continue;
+
+			if (!pCharacter->CanDraw())
 				continue;
 
 			if (id.BoneIndex >= pPose->Skeleton->Bones.Length)
@@ -200,11 +223,16 @@ public class SkeletonGizmo : SceneGroup
 
 			renderer.Transform = Transform.FromScale(0.25f);
 			renderer.Transform *= modelSpaceTransform * modelTransform;
+
+			renderer.Draw(thisTransform, device, deviceContext);
 		}
 
 		foreach(((BoneId id, BoneId parentId), LineRenderer renderer) in this.connectionRenderers)
 		{
-			if (!id.Resolve(out Character* pCharacter, out Skeleton* pSkeleton, out PartialSkeleton* pPartialSkeleton, out hkaPose* pPose))
+			if (!id.Resolve(out _, out Skeleton* pSkeleton, out PartialSkeleton* pPartialSkeleton, out hkaPose* pPose))
+				continue;
+
+			if (!pCharacter->CanDraw())
 				continue;
 
 			if (id.BoneIndex >= pPose->Skeleton->Bones.Length)
@@ -238,6 +266,15 @@ public class SkeletonGizmo : SceneGroup
 			renderer.To = vector;
 
 			renderer.Transform = Transform.FromTranslation(parentPos);
+
+			renderer.Draw(thisTransform, device, deviceContext);
 		}
+	}
+
+	public override void Dispose()
+	{
+		this.boneRenderers.Clear();
+		this.connectionRenderers.Clear();
+		base.Dispose();
 	}
 }

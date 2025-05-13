@@ -97,6 +97,7 @@ public abstract class MaterialBase : IDisposable
 		context.GeometryShader.Set(this.geometryShader);
 	}
 
+	// TODO: Materials are shared, so currently they are never actually disposed!
 	public void Dispose()
 	{
 		this.vertexShader?.Dispose();
