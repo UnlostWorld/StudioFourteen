@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
+using SharpDX;
 using SharpDX.Direct3D11;
 using SixLabors.ImageSharp;
 using StudioFourteen.Plugin;
@@ -167,71 +168,81 @@ public class RenderingService : ServiceBase
 
 	private unsafe bool TrySetUpRender()
 	{
-		if (!this.IsAttached || ServiceManager.ShutdownRequested)
-			return false;
-
-		XivDevice* xivDevice = XivDevice.Instance();
-		if (xivDevice == null)
-			return false;
-
-		if (this.Width != xivDevice->Width || this.Height != xivDevice->Height)
+		try
 		{
-			this.Width = xivDevice->Width;
-			this.Height = xivDevice->Height;
-			this.Log.Information($"Resolution Changed: {this.Width}x{this.Height}");
-			this.resolutionChangeCooldown = 15;
+			if (!this.IsAttached || ServiceManager.ShutdownRequested)
+				return false;
 
-			foreach(RenderPassBase pass in this.beforeEffectsPasses)
+			XivDevice* xivDevice = XivDevice.Instance();
+			if (xivDevice == null)
+				return false;
+
+			if (this.Width != xivDevice->Width || this.Height != xivDevice->Height)
 			{
-				pass.OnResolutionChanged();
+				this.Width = xivDevice->Width;
+				this.Height = xivDevice->Height;
+				this.Log.Information($"Resolution Changed: {this.Width}x{this.Height}");
+				this.resolutionChangeCooldown = 15;
+
+				foreach(RenderPassBase pass in this.beforeEffectsPasses)
+				{
+					pass.OnResolutionChanged();
+				}
+
+				return false;
 			}
 
-			return false;
-		}
-
-		if (this.Width != xivDevice->NewWidth || this.Height != xivDevice->NewHeight)
-		{
-			this.Log.Information($"Resolution Changing: {xivDevice->Width}x{xivDevice->Height} -> {xivDevice->NewWidth}x{xivDevice->NewHeight}");
-
-			foreach(RenderPassBase pass in this.beforeEffectsPasses)
+			if (this.Width != xivDevice->NewWidth || this.Height != xivDevice->NewHeight)
 			{
-				pass.OnResolutionChanging();
+				this.Log.Information($"Resolution Changing: {xivDevice->Width}x{xivDevice->Height} -> {xivDevice->NewWidth}x{xivDevice->NewHeight}");
+
+				foreach(RenderPassBase pass in this.beforeEffectsPasses)
+				{
+					pass.OnResolutionChanging();
+				}
+
+				this.resolutionChangeCooldown = 15;
+				return false;
 			}
 
-			this.resolutionChangeCooldown = 15;
-			return false;
-		}
+			if (this.resolutionChangeCooldown > 0)
+			{
+				this.resolutionChangeCooldown--;
+				return false;
+			}
 
-		if (this.resolutionChangeCooldown > 0)
+			SwapChain* swapChain = xivDevice->SwapChain;
+			if (swapChain == null)
+				return false;
+
+			// BackBuffer should be something from IDXGISwapChain->GetBuffer, which means that IDXGISwapChain itself
+			// must have been fully initialized.
+			if (swapChain->BackBuffer == null)
+				return false;
+
+			this.BackBuffer = (Texture2D)(nint)swapChain->BackBuffer->D3D11Texture2D;
+			if (this.BackBuffer == null)
+				return false;
+
+			if (this.BackBuffer.Description.Format != SharpDX.DXGI.Format.R8G8B8A8_UNorm)
+				throw new Exception($"wrong format in back buffer texture {this.BackBuffer.Description.Format}");
+
+			this.device = this.BackBuffer.Device;
+			if (this.device == null)
+				return false;
+
+			if (this.deviceContext == null)
+				this.deviceContext = new(this.device);
+
+			return true;
+		}
+		catch (Exception ex)
 		{
-			this.resolutionChangeCooldown--;
-			return false;
+			this.Log.Error(ex, "Error attempting to set up render device");
+			this.Detach();
 		}
 
-		SwapChain* swapChain = xivDevice->SwapChain;
-		if (swapChain == null)
-			return false;
-
-		// BackBuffer should be something from IDXGISwapChain->GetBuffer, which means that IDXGISwapChain itself
-		// must have been fully initialized.
-		if (swapChain->BackBuffer == null)
-			return false;
-
-		this.BackBuffer = (Texture2D)(nint)swapChain->BackBuffer->D3D11Texture2D;
-		if (this.BackBuffer == null)
-			return false;
-
-		if (this.BackBuffer.Description.Format != SharpDX.DXGI.Format.R8G8B8A8_UNorm)
-			throw new Exception($"wrong format in back buffer texture {this.BackBuffer.Description.Format}");
-
-		this.device = this.BackBuffer.Device;
-		if (this.device == null)
-			return false;
-
-		if (this.deviceContext == null)
-			this.deviceContext = new(this.device);
-
-		return true;
+		return false;
 	}
 
 	private void RenderUiMask()
@@ -266,8 +277,8 @@ public class RenderingService : ServiceBase
 
 			try
 			{
-				this.generateUiMaskPass.Bind(this.deviceContext);
-				pass.Render(this, this.device, this.deviceContext);
+				////this.generateUiMaskPass.Bind(this.deviceContext);
+				////pass.Render(this, this.device, this.deviceContext);
 			}
 			catch(Exception ex)
 			{
