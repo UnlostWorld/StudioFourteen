@@ -18,6 +18,7 @@ namespace StudioFourteen.Services;
 using System.Numerics;
 using Dalamud.Hooking;
 using Dalamud.Plugin.Services;
+using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
@@ -147,7 +148,11 @@ public partial class GroupPoseService : ServiceBase
 	{
 		bool didEnter = Hooks.EnterGroupPose.Original.Invoke(uiModule);
 
-		this.EnterPosition = this.Services.GameObjects.Get(0)->DrawObject->Position;
+		GameObject* pObject = this.Services.GameObjects.Get(0);
+		if (pObject != null && pObject->DrawObject != null)
+		{
+			this.EnterPosition = pObject->DrawObject->Position;
+		}
 
 		if (didEnter)
 			this.SetState(true);
@@ -170,7 +175,7 @@ public partial class GroupPoseService : ServiceBase
 
 	private async Task CheckLoaded()
 	{
-		await Task.Delay(2000);
+		await Task.Delay(3000);
 		this.IsGroupPoseLoaded = this.isGroupPosing;
 	}
 }
