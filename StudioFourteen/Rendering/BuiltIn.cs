@@ -37,5 +37,5 @@ public static class Material
 	public static readonly VertexColor GeometryVertexColor = new();
 	public static readonly BasicMaterial Line = new("Shaders/Line.hlsl", true);
 	public static readonly BasicMaterial Bone = new("Shaders/Bone.hlsl", true);
-	public static readonly BasicMaterial Dot = new("Shaders/Dot.hlsl", true);
+	public static readonly BasicMaterial BoneCap = new("Shaders/BoneCap.hlsl", true);
 }

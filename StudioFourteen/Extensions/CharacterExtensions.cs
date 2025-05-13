@@ -87,11 +87,6 @@ public static partial class CharacterExtensions
 		return selfName;
 	}
 
-	public static unsafe Color GetDisplayColor(ref this Character self)
-	{
-		return self.GameObject.GetDisplayColor();
-	}
-
 	public static unsafe CharacterBase* GetCharacterBase(ref this Character self)
 	{
 		return (CharacterBase*)self.DrawObject;

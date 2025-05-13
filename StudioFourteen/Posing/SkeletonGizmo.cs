@@ -150,24 +150,25 @@ public class SkeletonGizmo : SceneGroup
 						continue;
 					}
 
+					if (boneName == "n_root")
+						continue;
+
 					BoneId boneId = new(pCharacter->ObjectIndex, partialIdx, poseIdx, boneIdx);
 
 					if (!this.boneRenderers.ContainsKey(boneId))
 					{
-						////MeshRenderer renderer = new(Meshes.Bone, Material.Dot);
-						////this.Add(renderer);
-						////this.boneRenderers.Add(boneId, renderer);
+						MeshRenderer renderer = new(Meshes.Bone, Material.BoneCap);
+						this.Add(renderer);
+						this.boneRenderers.Add(boneId, renderer);
 					}
 
 					short parentIndex = pose->Skeleton->ParentIndices[boneIdx];
-					if (parentIndex != -1)
+					if (parentIndex > 0)
 					{
 						BoneId parentBoneId = new(pCharacter->ObjectIndex, partialIdx, poseIdx, parentIndex);
 						if (!this.connectionRenderers.ContainsKey((boneId, parentBoneId)))
 						{
 							LineRenderer renderer = new(Material.Bone);
-							renderer.Color = pCharacter->GetDisplayColor();
-
 							this.Add(renderer);
 							this.connectionRenderers.Add((boneId, parentBoneId), renderer);
 						}
@@ -264,8 +265,8 @@ public class SkeletonGizmo : SceneGroup
 
 			renderer.From = parentPos;
 			renderer.To = bonePos;
-
 			renderer.Transform = modelTransform;
+			renderer.Color = ServiceManager.Instance.Target.TargetObjectIndex == this.ObjectTableIndex ? Color.White : new Color(0.5f, 0.5f, 0.5f, 0.25f);
 
 			renderer.Draw(thisTransform, device, deviceContext);
 		}

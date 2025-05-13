@@ -24,7 +24,6 @@ using StudioFourteen.Rendering;
 public static class GameObjectExtensions
 {
 	private static readonly Dictionary<string, string> NameMap = new();
-	private static readonly Dictionary<int, Color> ColorMap = new();
 
 	public static unsafe string? GetNameAsString(ref this GameObject self)
 	{
@@ -47,29 +46,6 @@ public static class GameObjectExtensions
 			return newName;
 
 		return name;
-	}
-
-	public static void SetDisplayColor(ref this GameObject self, string displayName)
-	{
-		NameMap[self.NameString] = displayName;
-	}
-
-	public static Color GetDisplayColor(ref this GameObject self)
-	{
-		Color color;
-		if (!ColorMap.TryGetValue(self.ObjectIndex, out color))
-		{
-			Random r = Random.Shared;
-			color = new Color(
-				0.5f + r.NextSingle(),
-				0.5f + r.NextSingle(),
-				0.5f + r.NextSingle(),
-				1.0f);
-
-			ColorMap.Add(self.ObjectIndex, color);
-		}
-
-		return color;
 	}
 
 	public static unsafe Transform GetTransform(ref this GameObject self)

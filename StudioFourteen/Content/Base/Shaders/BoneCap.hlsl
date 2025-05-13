@@ -26,6 +26,8 @@ cbuffer MaterialInstanceData : register(MaterialDataRegister)
 static const float PI = 3.1415926f;
 static const float fRatio = 2.0f;
 static float fThickness = 0.01f;
+static float zOffset = 0.0001f;
+static float fShadowSize = 0.5f;
 
 [maxvertexcount(42)]
 void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStream)
@@ -44,22 +46,27 @@ void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStr
 	output.Color = input[0].Color;
     for (int nI = 0; nI < nCountTriangles; ++nI)
     {
+		output.TexCoord = float2(-1,0);
         output.Position.x = cos((PI * 2 / nCountTriangles * nI)) * fThickness / fRatio;
         output.Position.y = sin((PI * 2 / nCountTriangles * nI)) * fThickness;
-        output.Position.z = 0.0f;
+        output.Position.z = zOffset;
         output.Position.w = 0.0f;
         output.Position += positionPoint0Transformed;
         output.Position *= fPoint0w;
 		output.ScreenPosition = output.Position;
         triangleStream.Append(output);
 
-        output.Position = positionPoint0Transformed * fPoint0w;
+		output.TexCoord = float2(-1,1);
+        output.Position = positionPoint0Transformed;
+		output.Position.z += zOffset;
+		output.Position *= fPoint0w;
 		output.ScreenPosition = output.Position;
         triangleStream.Append(output);
 
+		output.TexCoord = float2(-1,0);
         output.Position.x = cos((PI * 2 / nCountTriangles * (nI + 1))) * fThickness / fRatio;
         output.Position.y = sin((PI * 2 / nCountTriangles * (nI + 1))) * fThickness;
-        output.Position.z = 0.0f;
+        output.Position.z = zOffset;
         output.Position.w = 0.0f;
         output.Position += positionPoint0Transformed;
         output.Position *= fPoint0w;
@@ -70,10 +77,19 @@ void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStr
     }
 }
 
-float4 pixel(Fragment pixel) : SV_TARGET
+float4 pixel(Fragment frag) : SV_TARGET
 {
-	float4 color = pixel.Color;
-	//color *= constants.ObjectColor;
-	color.a *= GetClippingAlpha(pixel, 0.1);
+	float4 color = frag.Color * ObjectColor;
+
+	// End Cap
+	if (frag.TexCoord.x < 0)
+	{
+		if (frag.TexCoord.y < fShadowSize)
+		{
+			color.rgb = 0;
+		}
+	}
+
+	color.a *= GetUiClippingAlpha(frag);
 	return color;
 }
