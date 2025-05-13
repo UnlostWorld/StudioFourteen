@@ -40,12 +40,20 @@ public class MeshRenderer : InstanceRendererBase<MeshRenderer.PerRendererData>
 
 	public MeshRenderer()
 	{
+		this.Color = Color.White;
 	}
 
 	public MeshRenderer(IContent<Mesh> mesh, MaterialBase material)
 	{
 		this.Mesh = mesh;
 		this.Material = material;
+		this.Color = Color.White;
+	}
+
+	public Color Color
+	{
+		get => this.Data.Color;
+		set => this.Data.Color = value;
 	}
 
 	public ref TDataType GetMaterialInstance<TDataType>()
@@ -139,5 +147,6 @@ public class MeshRenderer : InstanceRendererBase<MeshRenderer.PerRendererData>
 	public struct PerRendererData
 	{
 		public Matrix4x4 Transform;
+		public Color Color;
 	}
 }

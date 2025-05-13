@@ -26,7 +26,7 @@ using Device = SharpDX.Direct3D11.Device;
 
 public class LineRenderer : InstanceRendererBase<MeshRenderer.PerRendererData>
 {
-	public LineMaterial? Material;
+	public MaterialBase? Material;
 
 	private readonly Vertex[] vertArray = new Vertex[2]
 	{
@@ -42,11 +42,19 @@ public class LineRenderer : InstanceRendererBase<MeshRenderer.PerRendererData>
 
 	public LineRenderer()
 	{
+		this.Color = Color.White;
 	}
 
-	public LineRenderer(LineMaterial material)
+	public LineRenderer(MaterialBase material)
 	{
 		this.Material = material;
+		this.Color = Color.White;
+	}
+
+	public Color Color
+	{
+		get => this.Data.Color;
+		set => this.Data.Color = value;
 	}
 
 	public Vector3 From

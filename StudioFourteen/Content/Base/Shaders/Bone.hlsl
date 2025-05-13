@@ -159,9 +159,13 @@ void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStr
     triangleStream.Append(output);
 }
 
-float4 pixel(Fragment pixel) : SV_TARGET
+float4 pixel(Fragment frag) : SV_TARGET
 {
-	float4 color = pixel.Color * ObjectColor;
-	color.a *= GetClippingAlpha(pixel, 0.1);
+	float4 color = frag.Color * ObjectColor;
+	color.a *= GetUiClippingAlpha(frag);
+
+	float thisDepth = GetDepth(frag);
+	color.rgb *= clamp(smoothstep(0.02, 0.09, thisDepth), 0.25, 1.0);
+
 	return color;
 }

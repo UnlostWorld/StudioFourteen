@@ -19,13 +19,10 @@ using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using global::System;
-using Lumina.Excel.Sheets;
 using StudioFourteen;
-using StudioFourteen.GameData.Sheets;
 using StudioFourteen.Interop.Structs;
-using StudioFourteen.Utilities;
+using StudioFourteen.Rendering;
 
-using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 using CharaMakeType = StudioFourteen.GameData.Sheets.CharaMakeType;
 using ObjectKind = Dalamud.Game.ClientState.Objects.Enums.ObjectKind;
 
@@ -88,6 +85,11 @@ public static partial class CharacterExtensions
 		}
 
 		return selfName;
+	}
+
+	public static unsafe Color GetDisplayColor(ref this Character self)
+	{
+		return self.GameObject.GetDisplayColor();
 	}
 
 	public static unsafe CharacterBase* GetCharacterBase(ref this Character self)

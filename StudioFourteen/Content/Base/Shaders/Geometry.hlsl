@@ -25,6 +25,7 @@ cbuffer GeometryPassData : register(PassDataRegister)
 cbuffer RendererInstanceData : register(RendererDataRegister)
 {
 	float4x4 Transform;
+	float4 ObjectColor = 1;
 };
 
 struct Fragment
@@ -34,6 +35,7 @@ struct Fragment
 	float2 TexCoord:TEXCOORD;
 	float4 ScreenPosition:POSITION;
 	float4 WorldPosition:WORLDPOS;
+	float4 ObjectPosition:OBJPOS;
 };
 
 Texture2D mask_texture : register(t0);
@@ -54,6 +56,12 @@ float2 GetScreenPosition(Fragment frag)
 	return 0.5f * float2(pos.x, -pos.y) + 0.5f;
 }
 
+float GetUiClippingAlpha(Fragment frag)
+{
+	float2 screenPos = GetScreenPosition(frag);
+	return mask_texture.Sample(mask_sampler, screenPos).r;
+}
+
 float GetClippingAlpha(Fragment frag, float depthClipAlpha = 0)
 {
 	float2 screenPos = GetScreenPosition(frag);
@@ -69,15 +77,17 @@ float GetClippingAlpha(Fragment frag, float depthClipAlpha = 0)
 
 Fragment vert(in Vertex vertex)
 {
+	Fragment result;
+
 	float4 position = vertex.Position;
 	position = mul(position, Transform);
 	position = mul(position, ViewMatrix);
 	position = mul(position, ProjectionMatrix);
-
-	Fragment result;
 	result.Position = position;
+	result.ScreenPosition = position;
+
 	result.Color = vertex.Color;
 	result.TexCoord = vertex.TexCoord;
-	result.ScreenPosition = position;
+
 	return result;
 }

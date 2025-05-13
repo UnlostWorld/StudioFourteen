@@ -79,8 +79,6 @@ public class SkeletonsGizmo : GizmoBase
 
 		if (this.skeletonLookup.TryGetValue(objectTableIndex, out var skeletonGizmo))
 		{
-			this.Log.Information($">> REMOVE {objectTableIndex}");
-
 			skeletonGizmo.Visible = false;
 			this.Remove(skeletonGizmo);
 			skeletonGizmo.Dispose();
@@ -156,9 +154,9 @@ public class SkeletonGizmo : SceneGroup
 
 					if (!this.boneRenderers.ContainsKey(boneId))
 					{
-						MeshRenderer renderer = new(Meshes.Bone, Material.Dot);
-						this.Add(renderer);
-						this.boneRenderers.Add(boneId, renderer);
+						////MeshRenderer renderer = new(Meshes.Bone, Material.Dot);
+						////this.Add(renderer);
+						////this.boneRenderers.Add(boneId, renderer);
 					}
 
 					short parentIndex = pose->Skeleton->ParentIndices[boneIdx];
@@ -167,7 +165,9 @@ public class SkeletonGizmo : SceneGroup
 						BoneId parentBoneId = new(pCharacter->ObjectIndex, partialIdx, poseIdx, parentIndex);
 						if (!this.connectionRenderers.ContainsKey((boneId, parentBoneId)))
 						{
-							LineRenderer renderer = new(Material.Line);
+							LineRenderer renderer = new(Material.Bone);
+							renderer.Color = pCharacter->GetDisplayColor();
+
 							this.Add(renderer);
 							this.connectionRenderers.Add((boneId, parentBoneId), renderer);
 						}
@@ -255,17 +255,17 @@ public class SkeletonGizmo : SceneGroup
 				pCharacter->DrawObject->Rotation,
 				pCharacter->DrawObject->Scale * scale);
 
-			Transform boneTransform = modelSpaceTransform * modelTransform;
-			Transform parentTransform = parentModelSpaceTransform * modelTransform;
+			Transform boneTransform = modelSpaceTransform; // * modelTransform;
+			Transform parentTransform = parentModelSpaceTransform; // * modelTransform;
 
 			Vector3 bonePos = Vector3.Transform(Vector3.Zero, boneTransform.ToMatrix());
 			Vector3 parentPos = Vector3.Transform(Vector3.Zero, parentTransform.ToMatrix());
 			Vector3 vector = bonePos - parentPos;
 
-			renderer.From = Vector3.Zero;
-			renderer.To = vector;
+			renderer.From = parentPos;
+			renderer.To = bonePos;
 
-			renderer.Transform = Transform.FromTranslation(parentPos);
+			renderer.Transform = modelTransform;
 
 			renderer.Draw(thisTransform, device, deviceContext);
 		}

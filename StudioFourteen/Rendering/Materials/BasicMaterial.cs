@@ -18,9 +18,10 @@ namespace StudioFourteen.Rendering.Materials;
 using SharpDX.D3DCompiler;
 using StudioFourteen.Content;
 
-public class DotMaterial : MaterialBase
+public class BasicMaterial(string shader, bool includeGeometry = false)
+	: MaterialBase
 {
-	protected override IContent<ShaderBytecode> VertexShader => new ShaderReference("Shaders/Dot.hlsl", "vs_4_0", "vert");
-	protected override IContent<ShaderBytecode> PixelShader => new ShaderReference("Shaders/Dot.hlsl", "ps_4_0", "pixel");
-	protected override IContent<ShaderBytecode>? GeometryShader => new ShaderReference("Shaders/Dot.hlsl", "gs_4_0", "geometry");
+	protected override IContent<ShaderBytecode> VertexShader => new ShaderReference(shader, "vs_4_0", "vert");
+	protected override IContent<ShaderBytecode> PixelShader => new ShaderReference(shader, "ps_4_0", "pixel");
+	protected override IContent<ShaderBytecode>? GeometryShader => includeGeometry ? new ShaderReference(shader, "gs_4_0", "geometry") : null;
 }
