@@ -43,7 +43,7 @@ public class Mesh
 				from = Vector4.Transform(from, transform.ToMatrix());
 				from = viewProjection.TransformViewProjection(from);
 
-				to = this.Vertices[1].Position;
+				to = this.Vertices[i].Position;
 				to = Vector4.Transform(to, transform.ToMatrix());
 				to = viewProjection.TransformViewProjection(to);
 
@@ -60,6 +60,39 @@ public class Mesh
 				if (toDist < result.Distance)
 				{
 					result.MeshVertex = this.Vertices[i];
+					result.Distance = toDist;
+					result.Mesh = this;
+				}
+			}
+		}
+		else if (this.Topology == PrimitiveTopology.LineList)
+		{
+			Vector4 from;
+			Vector4 to;
+
+			for (int i = 0; i < this.Vertices.Count; i += 2)
+			{
+				from = this.Vertices[i].Position;
+				from = Vector4.Transform(from, transform.ToMatrix());
+				from = viewProjection.TransformViewProjection(from);
+
+				to = this.Vertices[i + 1].Position;
+				to = Vector4.Transform(to, transform.ToMatrix());
+				to = viewProjection.TransformViewProjection(to);
+
+				// TODO: get closest point on line instead of this laziness.
+				float fromDist = (screenPosition - from.AsVector2()).Length();
+				if (fromDist < result.Distance)
+				{
+					result.MeshVertex = this.Vertices[i];
+					result.Distance = fromDist;
+					result.Mesh = this;
+				}
+
+				float toDist = (screenPosition - to.AsVector2()).Length();
+				if (toDist < result.Distance)
+				{
+					result.MeshVertex = this.Vertices[i + 1];
 					result.Distance = toDist;
 					result.Mesh = this;
 				}

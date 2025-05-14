@@ -16,11 +16,20 @@
 namespace StudioFourteen.Rendering.Passes;
 
 using System;
+using Serilog;
 using SharpDX.Direct3D11;
 using Buffer = SharpDX.Direct3D11.Buffer;
 
 public abstract class RenderPassBase : IDisposable
 {
+	public ILogger Log;
+
+	public RenderPassBase()
+	{
+		this.Log = Logging.ForContext(this.GetType());
+	}
+
+	public ServiceManager Services => ServiceManager.Instance;
 	public bool IncludeInScreenshots { get; set; } = false;
 
 	public abstract void Render(RenderingService service, Device device, DeviceContext deviceContext);

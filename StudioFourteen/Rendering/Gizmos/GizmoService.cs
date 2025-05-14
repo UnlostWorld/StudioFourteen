@@ -19,6 +19,8 @@ using System;
 using System.Collections.Generic;
 using StudioFourteen.Services;
 using PropertyChanged.SourceGenerator;
+using System.Numerics;
+using StudioFourteen.Posing;
 
 public partial class GizmoService : ServiceBase
 {
@@ -79,6 +81,19 @@ public partial class GizmoService : ServiceBase
 
 	private void OnGameTick()
 	{
+		Vector2? mousepos = this.Services.Input.Mouse?.GetPosition();
+
+		if (mousepos != null)
+		{
+			HitTestResult hitTestResult = new();
+			this.Services.Rendering.Forward.HitTest(mousepos.Value, ref hitTestResult);
+
+			if (hitTestResult.SceneObject != null)
+			{
+				this.Log.Information($">> {hitTestResult.SceneObject}");
+			}
+		}
+
 		foreach(GizmoBase gizmo in this.Gizmos)
 		{
 			gizmo.OnGameTick();

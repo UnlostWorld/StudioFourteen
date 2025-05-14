@@ -17,17 +17,13 @@ namespace StudioFourteen.Rendering.Gizmos;
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using Serilog;
 using StudioFourteen.Rendering.Scene;
 using StudioFourteen.Settings;
 
 public abstract class GizmoBase : SceneGroup, INotifyPropertyChanged
 {
-	protected readonly ILogger Log;
-
 	public GizmoBase()
 	{
-		this.Log = Logging.ForContext(this.GetType());
 		this.Persistence = Persistence.GetPersistence($"Gizmo_{this.GetType().Name}");
 
 		this.Persistence.PersistenceChanged += this.OnPersistenceChanged;
@@ -37,13 +33,12 @@ public abstract class GizmoBase : SceneGroup, INotifyPropertyChanged
 
 	public abstract string Name { get; }
 
-	public override bool Visible
+	public override bool IsVisible
 	{
 		get => this.GetPersistence<bool>(defaultValue: true);
 		set => this.SetPersistence(value);
 	}
 
-	protected ServiceManager Services => ServiceManager.Instance;
 	protected Persistence Persistence { get; init; }
 
 	public virtual void Enable()

@@ -17,11 +17,23 @@ namespace StudioFourteen.Rendering.Scene;
 
 using System;
 using System.Numerics;
+using Serilog;
 using SharpDX.Direct3D11;
 
 public abstract class SceneObject : IDisposable
 {
 	public Transform Transform = Transform.Identity;
+
+	protected readonly ILogger Log;
+
+	public SceneObject()
+	{
+		this.Log = Logging.ForContext(this.GetType());
+	}
+
+	public ServiceManager Services => ServiceManager.Instance;
+	public virtual bool IsHitTestVisible { get; set; } = true;
+	public virtual bool IsVisible { get; set; } = true;
 
 	public abstract void Draw(Transform transform, Device device, DeviceContext deviceContext);
 	public abstract void Dispose();

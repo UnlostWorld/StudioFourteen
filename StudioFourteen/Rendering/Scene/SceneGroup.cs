@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Rendering.Scene;
 
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 using SharpDX.Direct3D11;
@@ -22,8 +23,6 @@ using SharpDX.Direct3D11;
 public class SceneGroup : SceneObject
 {
 	public readonly List<SceneObject> Children = new();
-
-	public virtual bool Visible { get; set; } = true;
 
 	public void Add(SceneObject draw)
 	{
@@ -37,14 +36,25 @@ public class SceneGroup : SceneObject
 
 	public override void Draw(Transform transform, Device device, DeviceContext deviceContext)
 	{
-		if (!this.Visible)
+		if (!this.IsVisible)
 			return;
 
 		Transform thisTransform = transform * this.Transform;
 
 		foreach(SceneObject child in this.Children)
 		{
-			child.Draw(thisTransform, device, deviceContext);
+			if (!child.IsVisible)
+				continue;
+
+			try
+			{
+				child.Draw(thisTransform, device, deviceContext);
+			}
+			catch (Exception ex)
+			{
+				child.IsVisible = false;
+				this.Log.Error(ex, $"Error drawing scene object: {child}. This object will be disabled.");
+			}
 		}
 	}
 
@@ -54,11 +64,25 @@ public class SceneGroup : SceneObject
 		Transform viewProjection,
 		ref HitTestResult result)
 	{
+		if (!this.IsHitTestVisible)
+			return;
+
 		Transform thisTransform = transform * this.Transform;
 
 		foreach(SceneObject child in this.Children)
 		{
-			child.HitTest(screenPosition, thisTransform, viewProjection, ref result);
+			if (!child.IsHitTestVisible)
+				continue;
+
+			try
+			{
+				child.HitTest(screenPosition, Transform.Identity, viewProjection, ref result);
+			}
+			catch (Exception ex)
+			{
+				child.IsHitTestVisible = false;
+				this.Log.Error(ex, $"Error hit testing scene object: {child}. This object will be disabled.");
+			}
 		}
 	}
 

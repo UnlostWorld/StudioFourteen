@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Rendering.Passes;
 
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.InteropServices;
@@ -53,12 +54,22 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 
 	public void HitTest(Vector2 screenPosition, ref HitTestResult result)
 	{
-		// pSure this is wrong, but...
-		Matrix4x4 viewProj = ServiceManager.Instance.Camera.CurrentView * ServiceManager.Instance.Camera.CurrentProjection;
+		Matrix4x4 viewProj = this.Services.Camera.CurrentView * this.Services.Camera.CurrentProjection;
 
 		foreach(SceneObject draw in this.sceneObjects)
 		{
-			draw.HitTest(screenPosition, Transform.Identity, viewProj, ref result);
+			if (!draw.IsHitTestVisible)
+				continue;
+
+			try
+			{
+				draw.HitTest(screenPosition, Transform.Identity, viewProj, ref result);
+			}
+			catch (Exception ex)
+			{
+				draw.IsHitTestVisible = false;
+				this.Log.Error(ex, $"Error hit testing forward object: {draw}. This object will be disabled.");
+			}
 		}
 	}
 

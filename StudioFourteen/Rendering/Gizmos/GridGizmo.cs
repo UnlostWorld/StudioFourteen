@@ -27,6 +27,9 @@ public class GridGizmo : GizmoBase
 	public GridGizmo()
 	{
 		this.Add(this.gridRenderer);
+
+		// TODO:
+		this.IsHitTestVisible = false;
 	}
 
 	public override string Name => "Grid";

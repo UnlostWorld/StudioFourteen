@@ -69,6 +69,9 @@ public class MeshRenderer : InstanceRendererBase<MeshRenderer.PerRendererData>
 
 	public override void Draw(Transform transform, Device device, DeviceContext deviceContext)
 	{
+		if (!this.IsVisible)
+			return;
+
 		Transform thisTransform = transform * this.Transform;
 		this.Data.Transform = Matrix4x4.Transpose(thisTransform.ToMatrix());
 		base.Draw(thisTransform, device, deviceContext);
@@ -128,10 +131,13 @@ public class MeshRenderer : InstanceRendererBase<MeshRenderer.PerRendererData>
 
 	public override void HitTest(Vector2 screenPosition, Transform transform, Transform viewProjection, ref HitTestResult result)
 	{
+		if (!this.IsHitTestVisible)
+			return;
+
 		Transform thisTransform = transform * this.Transform;
 		this.Mesh?.Get().HitTest(screenPosition, thisTransform, viewProjection, ref result);
 
-		if (result.Mesh == this.Mesh)
+		if (result.Mesh == this.Mesh?.Get())
 		{
 			result.SceneObject = this;
 		}

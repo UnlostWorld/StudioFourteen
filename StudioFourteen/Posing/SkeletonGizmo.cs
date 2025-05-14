@@ -79,7 +79,7 @@ public class SkeletonsGizmo : GizmoBase
 
 		if (this.skeletonLookup.TryGetValue(objectTableIndex, out var skeletonGizmo))
 		{
-			skeletonGizmo.Visible = false;
+			skeletonGizmo.IsVisible = false;
 			this.Remove(skeletonGizmo);
 			skeletonGizmo.Dispose();
 			this.skeletonLookup.Remove(objectTableIndex);
