@@ -21,8 +21,8 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
-using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Scene;
+
 using Device = SharpDX.Direct3D11.Device;
 
 public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
@@ -52,7 +52,7 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 		}
 	}
 
-	public void HitTest(Vector2 screenPosition, ref HitTestResult result)
+	public void HitTest(Vector2 screenPosition, HitTestResult result)
 	{
 		Matrix4x4 viewProj = this.Services.Camera.CurrentView * this.Services.Camera.CurrentProjection;
 
@@ -63,7 +63,7 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 
 			try
 			{
-				draw.HitTest(screenPosition, Transform.Identity, viewProj, ref result);
+				draw.HitTest(screenPosition, Transform.Identity, viewProj, result);
 			}
 			catch (Exception ex)
 			{

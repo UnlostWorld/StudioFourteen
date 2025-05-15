@@ -95,6 +95,10 @@ public static partial class CharacterExtensions
 	public static unsafe float GetCharacterScale(ref this Character self)
 	{
 		CharacterBaseScale* pscale = (CharacterBaseScale*)self.DrawObject;
+
+		if (pscale == null)
+			return 1.0f;
+
 		return pscale->ScaleFactor;
 	}
 

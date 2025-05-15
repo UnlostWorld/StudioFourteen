@@ -72,7 +72,7 @@ public class MeshRenderer : InstanceRendererBase<MeshRenderer.PerRendererData>
 		if (!this.IsVisible)
 			return;
 
-		Transform thisTransform = transform * this.Transform;
+		Transform thisTransform = this.Transform * transform;
 		this.Data.Transform = Matrix4x4.Transpose(thisTransform.ToMatrix());
 		base.Draw(thisTransform, device, deviceContext);
 
@@ -129,17 +129,33 @@ public class MeshRenderer : InstanceRendererBase<MeshRenderer.PerRendererData>
 		}
 	}
 
-	public override void HitTest(Vector2 screenPosition, Transform transform, Transform viewProjection, ref HitTestResult result)
+	public override void HitTest(Vector2 screenPosition, Transform transform, Transform viewProjection, HitTestResult result)
 	{
 		if (!this.IsHitTestVisible)
 			return;
 
-		Transform thisTransform = transform * this.Transform;
-		this.Mesh?.Get().HitTest(screenPosition, thisTransform, viewProjection, ref result);
+		Transform thisTransform = this.Transform * transform;
 
-		if (result.Mesh == this.Mesh?.Get())
+		if (this.Mesh != null)
 		{
-			result.SceneObject = this;
+			Mesh mesh = this.Mesh.Get();
+
+			// Very basic 'closest vert' hit testing.
+			// TODO: Start checking line and face intersections based on the mesh topology?
+			for (int i = 0; i < mesh.Vertices.Count; i += 2)
+			{
+				Vector4 vertPos = mesh.Vertices[i].Position;
+				vertPos = Vector4.Transform(vertPos, thisTransform.ToMatrix());
+				vertPos = viewProjection.TransformViewProjection(vertPos);
+
+				float fromDist = (screenPosition - vertPos.AsVector2()).Length();
+				if (fromDist < result.Distance)
+				{
+					result.MeshVertex = mesh.Vertices[i];
+					result.Distance = fromDist;
+					result.SceneObject = this;
+				}
+			}
 		}
 	}
 

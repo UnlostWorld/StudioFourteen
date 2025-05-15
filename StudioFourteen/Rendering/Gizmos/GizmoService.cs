@@ -86,11 +86,11 @@ public partial class GizmoService : ServiceBase
 		if (mousepos != null)
 		{
 			HitTestResult hitTestResult = new();
-			this.Services.Rendering.Forward.HitTest(mousepos.Value, ref hitTestResult);
+			this.Services.Rendering.Forward.HitTest(mousepos.Value, hitTestResult);
 
 			if (hitTestResult.SceneObject != null)
 			{
-				this.Log.Information($">> {hitTestResult.SceneObject}");
+				hitTestResult.SceneObject.PerformOnHit(hitTestResult);
 			}
 		}
 

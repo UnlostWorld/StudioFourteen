@@ -23,6 +23,7 @@ using SharpDX.Direct3D11;
 public abstract class SceneObject : IDisposable
 {
 	public Transform Transform = Transform.Identity;
+	public SceneObject? Parent;
 
 	protected readonly ILogger Log;
 
@@ -42,5 +43,24 @@ public abstract class SceneObject : IDisposable
 		Vector2 screenPosition,
 		Transform transform,
 		Transform viewProjection,
-		ref HitTestResult result);
+		HitTestResult result);
+
+	public virtual void OnHit(HitTestResult result)
+	{
+	}
+
+	public virtual void PerformOnHit(HitTestResult result)
+	{
+		result.Handled = false;
+
+		this.OnHit(result);
+
+		if (result.Handled)
+			return;
+
+		if (this.Parent != null)
+		{
+			this.Parent.PerformOnHit(result);
+		}
+	}
 }

@@ -119,12 +119,33 @@ public class LineRenderer : InstanceRendererBase<MeshRenderer.PerRendererData>
 		deviceContext.Draw(this.vertexLength, 0);
 	}
 
-	public override void HitTest(Vector2 screenPosition, Transform transform, Transform viewProjection, ref HitTestResult result)
-	{
-	}
-
 	public override void Dispose()
 	{
 		this.vertices?.Dispose();
+	}
+
+	public override void HitTest(Vector2 screenPosition, Transform transform, Transform viewProjection, HitTestResult result)
+	{
+		if (!this.IsHitTestVisible)
+			return;
+
+		Transform thisTransform = this.Transform * transform;
+
+		// Very basic 'closest vert' hit testing.
+		// TODO: Start checking nearest point on line.
+		for (int i = 0; i < this.vertArray.Length; i += 2)
+		{
+			Vector4 vertPos = this.vertArray[i].Position;
+			vertPos = Vector4.Transform(vertPos, thisTransform.ToMatrix());
+			vertPos = viewProjection.TransformViewProjection(vertPos);
+
+			float fromDist = (screenPosition - vertPos.AsVector2()).Length();
+			if (fromDist < result.Distance)
+			{
+				result.MeshVertex = this.vertArray[i];
+				result.Distance = fromDist;
+				result.SceneObject = this;
+			}
+		}
 	}
 }

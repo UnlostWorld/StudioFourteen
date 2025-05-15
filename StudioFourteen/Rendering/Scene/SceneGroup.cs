@@ -24,14 +24,18 @@ public class SceneGroup : SceneObject
 {
 	public readonly List<SceneObject> Children = new();
 
-	public void Add(SceneObject draw)
+	public void Add(SceneObject sceneObject)
 	{
-		this.Children.Add(draw);
+		sceneObject.Parent = this;
+		this.Children.Add(sceneObject);
 	}
 
-	public void Remove(SceneObject draw)
+	public void Remove(SceneObject sceneObject)
 	{
-		this.Children.Remove(draw);
+		if (sceneObject.Parent == this)
+			sceneObject.Parent = null;
+
+		this.Children.Remove(sceneObject);
 	}
 
 	public override void Draw(Transform transform, Device device, DeviceContext deviceContext)
@@ -39,9 +43,11 @@ public class SceneGroup : SceneObject
 		if (!this.IsVisible)
 			return;
 
-		Transform thisTransform = transform * this.Transform;
+		this.OnDraw();
 
-		foreach(SceneObject child in this.Children)
+		Transform thisTransform = this.Transform * transform;
+
+		foreach (SceneObject child in this.Children)
 		{
 			if (!child.IsVisible)
 				continue;
@@ -62,21 +68,21 @@ public class SceneGroup : SceneObject
 		Vector2 screenPosition,
 		Transform transform,
 		Transform viewProjection,
-		ref HitTestResult result)
+		HitTestResult result)
 	{
 		if (!this.IsHitTestVisible)
 			return;
 
-		Transform thisTransform = transform * this.Transform;
+		Transform thisTransform = this.Transform * transform;
 
-		foreach(SceneObject child in this.Children)
+		foreach (SceneObject child in this.Children)
 		{
 			if (!child.IsHitTestVisible)
 				continue;
 
 			try
 			{
-				child.HitTest(screenPosition, Transform.Identity, viewProjection, ref result);
+				child.HitTest(screenPosition, thisTransform, viewProjection, result);
 			}
 			catch (Exception ex)
 			{
@@ -88,9 +94,13 @@ public class SceneGroup : SceneObject
 
 	public override void Dispose()
 	{
-		foreach(SceneObject child in this.Children)
+		foreach (SceneObject child in this.Children)
 		{
 			child.Dispose();
 		}
+	}
+
+	protected virtual void OnDraw()
+	{
 	}
 }

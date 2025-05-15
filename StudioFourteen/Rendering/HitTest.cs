@@ -20,7 +20,7 @@ using StudioFourteen.Rendering.Scene;
 public class HitTestResult
 {
 	public float Distance = float.MaxValue;
-	public Mesh? Mesh;
 	public Vertex? MeshVertex;
 	public SceneObject? SceneObject;
+	public bool Handled = false;
 }
