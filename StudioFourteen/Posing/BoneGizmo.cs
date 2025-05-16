@@ -22,10 +22,11 @@ using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.Havok.Animation.Rig;
 using StudioFourteen.Rendering;
 using StudioFourteen.Rendering.Scene;
+using StudioFourteen.Rendering.Scene.Handles;
 
 using Material = StudioFourteen.Rendering.Material;
 
-public class BoneGizmo : SceneGroup
+public class BoneGizmo : Handle
 {
 	private readonly BoneId boneId;
 	private readonly MeshRenderer capRenderer;
@@ -39,7 +40,6 @@ public class BoneGizmo : SceneGroup
 	}
 
 	protected bool IsObjectTargeted => ServiceManager.Instance.Target.TargetObjectIndex == this.boneId.ObjectTableIndex;
-	protected bool IsMouseOver { get; private set; }
 
 	public void AddChild(BoneId childId)
 	{
@@ -47,13 +47,6 @@ public class BoneGizmo : SceneGroup
 		renderer.IsHitTestVisible = false;
 		this.Add(renderer);
 		this.connectionRenderers.Add(childId, renderer);
-	}
-
-	public override void OnHit(HitTestResult result)
-	{
-		result.Handled = true;
-		this.IsMouseOver = true;
-		base.OnHit(result);
 	}
 
 	protected unsafe override void OnDraw()
@@ -76,7 +69,7 @@ public class BoneGizmo : SceneGroup
 		Transform boneTransform = *pPose->AccessBoneModelSpace(this.boneId.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
 		this.capRenderer.Transform = boneTransform;
 
-		this.capRenderer.Color = this.IsMouseOver ? Color.Black : Color.White;
+		this.capRenderer.Color = this.IsHovered ? Color.Black : Color.White;
 
 		Vector3 bonePos = Vector3.Transform(Vector3.Zero, boneTransform.ToMatrix());
 

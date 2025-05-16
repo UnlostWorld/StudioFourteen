@@ -13,7 +13,7 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Gizmos;
+namespace StudioFourteen.Rendering.Scene.Gizmos;
 
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -78,16 +78,4 @@ public abstract class GizmoBase : SceneGroup, INotifyPropertyChanged
 	{
 		this.OnPersistenceChanged();
 	}
-
-	/*
-	// Test
-	Vector2? mouse = this.Services.Input.Mouse?.GetPosition();
-	if (mouse != null)
-	{
-		HitTestResult result = new();
-		this.Geometry.HitTest(mouse.Value, ref result);
-
-		this.Log.Information($">> {result.DrawObject} {result.Distance}");
-	}
-	*/
 }

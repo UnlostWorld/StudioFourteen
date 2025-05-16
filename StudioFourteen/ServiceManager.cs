@@ -60,6 +60,7 @@ public class ServiceManager : ServiceManagerBase
 	public Environment.TerritoryService Territory { get; init; } = new();
 	public Environment.TimeService Time { get; init; } = new();
 	public Rendering.RenderingService Rendering { get; init; } = new();
-	public Rendering.Gizmos.GizmoService Gizmos { get; init; } = new();
+	public Rendering.Scene.Gizmos.GizmoService Gizmos { get; init; } = new();
+	public Rendering.Scene.Handles.HandleService Handles { get; init; } = new();
 	public Content.ContentService Content { get; init; } = new();
 }

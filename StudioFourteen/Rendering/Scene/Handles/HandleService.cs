@@ -13,70 +13,39 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Gizmos;
+namespace StudioFourteen.Rendering.Scene.Handles;
 
-using System;
-using System.Collections.Generic;
 using StudioFourteen.Services;
-using PropertyChanged.SourceGenerator;
 using System.Numerics;
-using StudioFourteen.Posing;
+using System.Runtime.CompilerServices;
+using StudioFourteen.Rendering.Scene;
 
-public partial class GizmoService : ServiceBase
+public partial class HandleService : ServiceBase
 {
-	public readonly List<GizmoBase> Gizmos = new();
-	private readonly GridGizmo grid = new();
+	private readonly ConditionalWeakTable<SceneObject, Handle?> parentHandles = new();
+	private Handle? currentHover;
 
-	[Notify] private bool gizmoControlPanelOpen;
-
-	public delegate void GizmosChangedDelegate();
-	public event GizmosChangedDelegate? GizmosChanged;
+	public Handle? CurrentHover
+	{
+		get => this.currentHover;
+		set
+		{
+			this.currentHover?.OnHover(false);
+			this.currentHover = value;
+			this.currentHover?.OnHover(true);
+		}
+	}
 
 	public override void Attach()
 	{
 		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
-
-		foreach(GizmoBase gizmo in this.Gizmos)
-		{
-			this.Services.Rendering.Forward.Add(gizmo);
-		}
-
-		this.grid.Enable();
 		base.Attach();
 	}
 
 	public override void Detach()
 	{
 		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
-
-		foreach(GizmoBase gizmo in this.Gizmos)
-		{
-			this.Services.Rendering.Forward.Remove(gizmo);
-		}
-
-		this.grid.Disable();
 		base.Detach();
-	}
-
-	public bool IsEnabled(GizmoBase gizmo)
-	{
-		return this.Gizmos.Contains(gizmo);
-	}
-
-	public void Enable(GizmoBase gizmo)
-	{
-		this.Gizmos.Add(gizmo);
-		this.GizmosChanged?.Invoke();
-
-		this.Services.Rendering.Forward.Add(gizmo);
-	}
-
-	public void Disable(GizmoBase gizmo)
-	{
-		this.Gizmos.Remove(gizmo);
-		this.GizmosChanged?.Invoke();
-
-		this.Services.Rendering.Forward.Remove(gizmo);
 	}
 
 	private void OnGameTick()
@@ -87,16 +56,20 @@ public partial class GizmoService : ServiceBase
 		{
 			HitTestResult hitTestResult = new();
 			this.Services.Rendering.Forward.HitTest(mousepos.Value, hitTestResult);
-
-			if (hitTestResult.SceneObject != null)
-			{
-				hitTestResult.SceneObject.PerformOnHit(hitTestResult);
-			}
+			this.CurrentHover = this.GetHandle(hitTestResult.SceneObject);
 		}
+	}
 
-		foreach(GizmoBase gizmo in this.Gizmos)
-		{
-			gizmo.OnGameTick();
-		}
+	private Handle? GetHandle(SceneObject? obj)
+	{
+		if (obj == null)
+			return null;
+
+		if (this.parentHandles.TryGetValue(obj, out Handle? handle))
+			return handle;
+
+		handle = obj.GetParent<Handle>();
+		this.parentHandles.Add(obj, handle);
+		return handle;
 	}
 }

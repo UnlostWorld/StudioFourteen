@@ -13,7 +13,7 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Gizmos;
+namespace StudioFourteen.Rendering.Scene.Gizmos;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using SharpDX.Direct3D11;

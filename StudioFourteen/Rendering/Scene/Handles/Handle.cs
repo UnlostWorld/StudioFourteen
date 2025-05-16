@@ -13,46 +13,14 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Scene;
+namespace StudioFourteen.Rendering.Scene.Handles;
 
-using System;
-using System.Numerics;
-using Serilog;
-using SharpDX.Direct3D11;
-
-public abstract class SceneObject : IDisposable
+public abstract class Handle : SceneGroup
 {
-	public Transform Transform = Transform.Identity;
-	public SceneObject? Parent;
+	public bool IsHovered { get; private set; }
 
-	protected readonly ILogger Log;
-
-	public SceneObject()
+	public virtual void OnHover(bool hover)
 	{
-		this.Log = Logging.ForContext(this.GetType());
-	}
-
-	public ServiceManager Services => ServiceManager.Instance;
-	public virtual bool IsHitTestVisible { get; set; } = true;
-	public virtual bool IsVisible { get; set; } = true;
-
-	public abstract void Draw(Transform transform, Device device, DeviceContext deviceContext);
-	public abstract void Dispose();
-
-	public abstract void HitTest(
-		Vector2 screenPosition,
-		Transform transform,
-		Transform viewProjection,
-		HitTestResult result);
-
-	public virtual T? GetParent<T>()
-	{
-		if (this is T tThis)
-			return tThis;
-
-		if (this.Parent != null)
-			return this.Parent.GetParent<T>();
-
-		return default;
+		this.IsHovered = hover;
 	}
 }

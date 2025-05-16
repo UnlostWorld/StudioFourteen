@@ -15,13 +15,11 @@
 
 namespace StudioFourteen.Selection;
 
-using Dalamud.Plugin.Services;
 using FontAwesome.Sharp;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Gizmos.Handles.TransformHandle;
 using StudioFourteen.History;
 using StudioFourteen.Posing;
-using StudioFourteen.Rendering.Gizmos;
 using StudioFourteen.Services;
 using StudioFourteen.Utilities;
 using System;
