@@ -47,7 +47,7 @@ public class ShaderReference(string path, string profile, string entryPoint = "M
 			return;
 		}
 
-		Stream stream = ServiceManager.Instance.Content.GetContent(file);
+		using Stream stream = ServiceManager.Instance.Content.GetContent(file);
 
 		if (stream == null)
 			throw new Exception($"Shader \"{file}\" not found in manifest resources");

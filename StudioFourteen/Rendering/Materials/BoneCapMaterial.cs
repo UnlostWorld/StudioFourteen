@@ -13,38 +13,25 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Content;
+namespace StudioFourteen.Rendering.Materials;
 
-using System.IO;
+using System.Runtime.InteropServices;
+using SharpDX.D3DCompiler;
+using StudioFourteen.Content;
 
-public abstract class ContentReference(string path)
+public class BoneCapMaterial : InstanceMaterialBase<BoneCapMaterial.InstanceData>
 {
-	public readonly string Path = path;
+	protected override IContent<ShaderBytecode> VertexShader => new ShaderReference("Shaders/BoneCap.hlsl", "vs_4_0", "vert");
+	protected override IContent<ShaderBytecode> PixelShader => new ShaderReference("Shaders/BoneCap.hlsl", "ps_4_0", "pixel");
+	protected override IContent<ShaderBytecode>? GeometryShader => new ShaderReference("Shaders/BoneCap.hlsl", "gs_4_0", "geometry");
 
-	public abstract void Reload();
-}
-
-public abstract class ContentReference<T>(string path)
-	: ContentReference(path), IContent<T>
-{
-	private T? instance;
-	public bool IsLoaded => this.instance != null;
-
-	public sealed override void Reload()
+	[StructLayout(LayoutKind.Sequential)]
+	public struct InstanceData
 	{
-		this.instance = default;
+		public Color Color;
+		public float Size;
+		public float DepthOffset;
+		public float Unused2;
+		public float Unused3;
 	}
-
-	public T Get()
-	{
-		if (this.instance == null)
-		{
-			using Stream stream = ServiceManager.Instance.Content.GetContent(this);
-			this.instance = this.Load(stream);
-		}
-
-		return this.instance;
-	}
-
-	protected abstract T Load(Stream stream);
 }

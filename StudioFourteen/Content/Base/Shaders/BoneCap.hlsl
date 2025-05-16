@@ -21,6 +21,8 @@
 cbuffer MaterialInstanceData : register(MaterialDataRegister)
 {
 	float4 Color;
+	float Size;
+	float DepthOffset;
 };
 
 static const float PI = 3.1415926f;
@@ -36,6 +38,8 @@ void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStr
 
     int nCountTriangles = 12;
 
+	float thickness = fThickness * Size;
+
     float4 positionPoint0Transformed = input[0].Position;
 
     float fPoint0w = positionPoint0Transformed.w;
@@ -47,9 +51,9 @@ void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStr
     for (int nI = 0; nI < nCountTriangles; ++nI)
     {
 		output.TexCoord = float2(-1,0);
-        output.Position.x = cos((PI * 2 / nCountTriangles * nI)) * fThickness / fRatio;
-        output.Position.y = sin((PI * 2 / nCountTriangles * nI)) * fThickness;
-        output.Position.z = zOffset;
+        output.Position.x = cos((PI * 2 / nCountTriangles * nI)) * thickness / fRatio;
+        output.Position.y = sin((PI * 2 / nCountTriangles * nI)) * thickness;
+        output.Position.z = (zOffset + DepthOffset);
         output.Position.w = 0.0f;
         output.Position += positionPoint0Transformed;
         output.Position *= fPoint0w;
@@ -58,15 +62,15 @@ void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStr
 
 		output.TexCoord = float2(-1,1);
         output.Position = positionPoint0Transformed;
-		output.Position.z += zOffset;
+		output.Position.z += (zOffset + DepthOffset);
 		output.Position *= fPoint0w;
 		output.ScreenPosition = output.Position;
         triangleStream.Append(output);
 
 		output.TexCoord = float2(-1,0);
-        output.Position.x = cos((PI * 2 / nCountTriangles * (nI + 1))) * fThickness / fRatio;
-        output.Position.y = sin((PI * 2 / nCountTriangles * (nI + 1))) * fThickness;
-        output.Position.z = zOffset;
+        output.Position.x = cos((PI * 2 / nCountTriangles * (nI + 1))) * thickness / fRatio;
+        output.Position.y = sin((PI * 2 / nCountTriangles * (nI + 1))) * thickness;
+        output.Position.z = (zOffset + DepthOffset);
         output.Position.w = 0.0f;
         output.Position += positionPoint0Transformed;
         output.Position *= fPoint0w;
@@ -84,7 +88,7 @@ float4 pixel(Fragment frag) : SV_TARGET
 	// End Cap
 	if (frag.TexCoord.x < 0)
 	{
-		if (frag.TexCoord.y < fShadowSize)
+		if (frag.TexCoord.y < (fShadowSize / Size))
 		{
 			color.rgb = 0;
 		}

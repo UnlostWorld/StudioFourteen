@@ -21,6 +21,7 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.Havok.Animation.Rig;
 using StudioFourteen.Rendering;
+using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Scene;
 using StudioFourteen.Rendering.Scene.Handles;
 
@@ -69,7 +70,8 @@ public class BoneGizmo : Handle
 		Transform boneTransform = *pPose->AccessBoneModelSpace(this.boneId.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
 		this.capRenderer.Transform = boneTransform;
 
-		this.capRenderer.Color = this.IsHovered ? Color.Black : Color.White;
+		Material.BoneCap.GetInstanceData(this.capRenderer).Size = this.IsHovered ? 2.0f : 1.0f;
+		Material.BoneCap.GetInstanceData(this.capRenderer).DepthOffset = this.IsHovered ? 0.001f : 0f;
 
 		Vector3 bonePos = Vector3.Transform(Vector3.Zero, boneTransform.ToMatrix());
 
