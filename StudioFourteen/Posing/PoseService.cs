@@ -259,6 +259,56 @@ public partial class PoseService : ServiceBase
 		}
 	}
 
+	public unsafe HashSet<string> GetAllBoneNames(int objectTableIndex)
+	{
+		TickService.VerifyGameTickThread();
+
+		Character* pCharacter = this.Services.GameObjects.Get<Character>(objectTableIndex);
+		if (pCharacter == null)
+			return new();
+
+		return this.GetAllBoneNames(pCharacter);
+	}
+
+	public unsafe HashSet<string> GetAllBoneNames(Character* pCharacter)
+	{
+		TickService.VerifyGameTickThread();
+
+		HashSet<string> results = new();
+
+		CharacterBase* characterBase = pCharacter->GetCharacterBase();
+		if (characterBase == null)
+			return results;
+
+		ushort partialCount = characterBase->Skeleton->PartialSkeletonCount;
+		for (int partialIdx = 0; partialIdx < partialCount; partialIdx++)
+		{
+			PartialSkeleton* partialSkeleton = &characterBase->Skeleton->PartialSkeletons[partialIdx];
+
+			byte poseCount = partialSkeleton->GetMaxPoses();
+			for (byte poseIdx = 0; poseIdx < poseCount; poseIdx++)
+			{
+				hkaPose* pose = partialSkeleton->GetHavokPose(poseIdx);
+				if (pose == null)
+					continue;
+
+				int boneCount = pose->Skeleton->Bones.Length;
+				for (short boneIdx = 0; boneIdx < boneCount; boneIdx++)
+				{
+					hkaBone bone = pose->Skeleton->Bones[boneIdx];
+					string? boneName = bone.Name.String;
+
+					if (boneName == null)
+						boneName = "[Null]";
+
+					results.Add(boneName);
+				}
+			}
+		}
+
+		return results;
+	}
+
 	public unsafe BoneSelection? FindBone(int objectTableIndex, string name)
 	{
 		TickService.VerifyGameTickThread();

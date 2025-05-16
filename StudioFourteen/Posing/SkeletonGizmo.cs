@@ -18,17 +18,14 @@ namespace StudioFourteen.Posing;
 using System.Collections.Generic;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
-using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
-using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
-using FFXIVClientStructs.Havok.Animation.Rig;
 using StudioFourteen.Rendering.Scene;
+using StudioFourteen.Selection;
 using StudioFourteen.Services;
 
 public class SkeletonGizmo : SceneGroup
 {
 	public readonly int ObjectTableIndex;
 
-	private readonly Dictionary<BoneId, BoneGizmo> boneGizmos = new();
 	private bool isInitialized = false;
 
 	public SkeletonGizmo(int objectTableIndex)
@@ -38,67 +35,23 @@ public class SkeletonGizmo : SceneGroup
 
 	public unsafe void Initialize()
 	{
-		TickService.VerifyGameTickThread();
-
-		Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(this.ObjectTableIndex);
-		if (pCharacter == null)
-			return;
-
-		CharacterBase* characterBase = pCharacter->GetCharacterBase();
-		if (characterBase == null)
-			return;
-
-		ushort partialCount = characterBase->Skeleton->PartialSkeletonCount;
-		for (int partialIdx = 0; partialIdx < partialCount; partialIdx++)
+		HashSet<string> boneNames = this.Services.Pose.GetAllBoneNames(this.ObjectTableIndex);
+		foreach (string boneName in boneNames)
 		{
-			PartialSkeleton* partialSkeleton = &characterBase->Skeleton->PartialSkeletons[partialIdx];
+			if (this.Services.Settings.Current.HideGenitals
+				&& this.Services.Content.GenitalBones?.Contains(boneName) == true)
+				continue;
 
-			byte poseIdx = 0;
-			////byte poseCount = partialSkeleton->GetMaxPoses();
-			////for (byte poseIdx = 0; poseIdx < poseCount; poseIdx++)
-			{
-				hkaPose* pose = partialSkeleton->GetHavokPose(poseIdx);
-				if (pose == null)
-					continue;
+			BoneSelection? selection = this.Services.Pose.FindBone(this.ObjectTableIndex, boneName);
 
-				int boneCount = pose->Skeleton->Bones.Length;
-				for (short boneIdx = 0; boneIdx < boneCount; boneIdx++)
-				{
-					hkaBone bone = pose->Skeleton->Bones[boneIdx];
-					string? boneName = bone.Name.String;
+			if (selection == null)
+				continue;
 
-					if (boneName != null
-						&& ServiceManager.Instance.Settings.Current.HideGenitals
-						&& ServiceManager.Instance.Content.GenitalBones?.Contains(boneName) == true)
-					{
-						continue;
-					}
-
-					if (boneName == "n_root")
-						continue;
-
-					BoneId boneId = new(pCharacter->ObjectIndex, partialIdx, poseIdx, boneIdx);
-
-					BoneGizmo gizmo = this.GetOrAddBoneGizmo(boneId);
-
-					short parentIndex = pose->Skeleton->ParentIndices[boneIdx];
-					if (parentIndex > 0)
-					{
-						BoneId parentBoneId = new(pCharacter->ObjectIndex, partialIdx, poseIdx, parentIndex);
-						BoneGizmo parentGizmo = this.GetOrAddBoneGizmo(parentBoneId);
-						parentGizmo.AddChild(boneId);
-					}
-				}
-			}
+			BoneGizmo gizmo = new(selection);
+			this.Add(gizmo);
 		}
 
-		this.isInitialized = this.boneGizmos.Count > 0;
-	}
-
-	public override void Dispose()
-	{
-		this.boneGizmos.Clear();
-		base.Dispose();
+		this.isInitialized = this.Children.Count > 0;
 	}
 
 	protected unsafe override void OnDraw()
@@ -132,18 +85,5 @@ public class SkeletonGizmo : SceneGroup
 			pCharacter->DrawObject->Scale * scale);
 
 		this.Transform = modelTransform;
-	}
-
-	private BoneGizmo GetOrAddBoneGizmo(BoneId boneId)
-	{
-		BoneGizmo? gizmo;
-		if (!this.boneGizmos.TryGetValue(boneId, out gizmo))
-		{
-			gizmo = new(boneId);
-			this.Add(gizmo);
-			this.boneGizmos.Add(boneId, gizmo);
-		}
-
-		return gizmo;
 	}
 }

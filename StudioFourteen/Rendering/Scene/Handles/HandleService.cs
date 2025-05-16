@@ -50,13 +50,24 @@ public partial class HandleService : ServiceBase
 
 	private void OnGameTick()
 	{
-		Vector2? mousepos = this.Services.Input.Mouse?.GetPosition();
-
-		if (mousepos != null)
+		if (this.Services.Windows.IsCursorOverAtkUnit
+		|| this.Services.Windows.IsCursorOverImGui
+		|| this.Services.Windows.IsCursorOverStudio
+		|| this.Services.Reshade.IsReshadeOverlayOpen
+		|| !this.Services.Windows.IsCursorOverXiv)
 		{
-			HitTestResult hitTestResult = new();
-			this.Services.Rendering.Forward.HitTest(mousepos.Value, hitTestResult);
-			this.CurrentHover = this.GetHandle(hitTestResult.SceneObject);
+			this.CurrentHover = null;
+		}
+		else
+		{
+			Vector2? mousepos = this.Services.Input.Mouse?.GetPosition();
+
+			if (mousepos != null)
+			{
+				HitTestResult hitTestResult = new();
+				this.Services.Rendering.Forward.HitTest(mousepos.Value, hitTestResult);
+				this.CurrentHover = this.GetHandle(hitTestResult.SceneObject);
+			}
 		}
 	}
 

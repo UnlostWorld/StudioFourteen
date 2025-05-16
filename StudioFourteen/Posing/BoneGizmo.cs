@@ -21,33 +21,46 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.Havok.Animation.Rig;
 using StudioFourteen.Rendering;
-using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Scene;
 using StudioFourteen.Rendering.Scene.Handles;
+using StudioFourteen.Selection;
 
 using Material = StudioFourteen.Rendering.Material;
 
 public class BoneGizmo : Handle
 {
 	private readonly BoneId boneId;
+	private readonly BoneId? parentBoneId;
 	private readonly MeshRenderer capRenderer;
-	private readonly Dictionary<BoneId, LineRenderer> connectionRenderers = new();
+	private readonly LineRenderer? connectionRenderer;
+	private readonly BoneSelection selection;
 
-	public BoneGizmo(BoneId boneId)
+	public BoneGizmo(BoneSelection selection)
 	{
-		this.boneId = boneId;
+		this.selection = selection;
+
 		this.capRenderer = new(Meshes.Bone, Material.BoneCap);
 		this.Add(this.capRenderer);
+
+		foreach ((BoneId boneId, List<BoneId> path) in this.selection.BonePaths)
+		{
+			this.boneId = boneId;
+
+			if (path.Count > 0)
+			{
+				this.connectionRenderer = new(Material.Bone);
+				this.connectionRenderer.IsHitTestVisible = false;
+				this.Add(this.connectionRenderer);
+				this.parentBoneId = path[0];
+			}
+
+			break;
+		}
 	}
 
-	protected bool IsObjectTargeted => ServiceManager.Instance.Target.TargetObjectIndex == this.boneId.ObjectTableIndex;
-
-	public void AddChild(BoneId childId)
+	public override void OnHover(bool hover)
 	{
-		LineRenderer renderer = new(Material.Bone);
-		renderer.IsHitTestVisible = false;
-		this.Add(renderer);
-		this.connectionRenderers.Add(childId, renderer);
+		base.OnHover(hover);
 	}
 
 	protected unsafe override void OnDraw()
@@ -75,17 +88,15 @@ public class BoneGizmo : Handle
 
 		Vector3 bonePos = Vector3.Transform(Vector3.Zero, boneTransform.ToMatrix());
 
-		foreach ((BoneId childId, LineRenderer renderer) in this.connectionRenderers)
+		if (this.connectionRenderer != null && this.parentBoneId != null)
 		{
-			if (childId.BoneIndex >= pPose->Skeleton->Bones.Length)
-				continue;
+			if (this.parentBoneId.Value.BoneIndex >= pPose->Skeleton->Bones.Length)
+				return;
 
-			Transform childModelSpaceTransform = *pPose->AccessBoneModelSpace(childId.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
-
+			Transform childModelSpaceTransform = *pPose->AccessBoneModelSpace(this.parentBoneId.Value.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
 			Vector3 childPos = Vector3.Transform(Vector3.Zero, childModelSpaceTransform.ToMatrix());
-
-			renderer.From = bonePos;
-			renderer.To = childPos;
+			this.connectionRenderer.To = bonePos;
+			this.connectionRenderer.From = childPos;
 		}
 	}
 }
