@@ -40,18 +40,15 @@ public class SceneGroup : SceneObject
 
 	public override void Draw(Transform transform, Device device, DeviceContext deviceContext)
 	{
+		this.OnDraw();
+
 		if (!this.IsVisible)
 			return;
-
-		this.OnDraw();
 
 		Transform thisTransform = this.Transform * transform;
 
 		foreach (SceneObject child in this.Children)
 		{
-			if (!child.IsVisible)
-				continue;
-
 			try
 			{
 				child.Draw(thisTransform, device, deviceContext);
@@ -70,14 +67,14 @@ public class SceneGroup : SceneObject
 		Transform viewProjection,
 		HitTestResult result)
 	{
-		if (!this.IsHitTestVisible)
+		if (!this.IsHitTestVisible || !this.IsVisible)
 			return;
 
 		Transform thisTransform = this.Transform * transform;
 
 		foreach (SceneObject child in this.Children)
 		{
-			if (!child.IsHitTestVisible)
+			if (!child.IsHitTestVisible || !child.IsVisible)
 				continue;
 
 			try

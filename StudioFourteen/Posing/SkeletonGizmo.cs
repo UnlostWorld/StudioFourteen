@@ -56,12 +56,14 @@ public class SkeletonGizmo : SceneGroup
 
 	protected unsafe override void OnDraw()
 	{
-		base.OnDraw();
+		this.IsVisible = false;
 
 		if (ServiceManager.Instance.GroupPose.IsGroupPosing
-			&& this.ObjectTableIndex < GroupPoseService.GPoseFirstCharacter
-			&& this.ObjectTableIndex > GroupPoseService.GPoseFirstCharacter + GroupPoseService.GPoseCharacterCount)
+			&& (this.ObjectTableIndex < GroupPoseService.GPoseFirstCharacter
+			|| this.ObjectTableIndex > GroupPoseService.GPoseFirstCharacter + GroupPoseService.GPoseCharacterCount))
+		{
 			return;
+		}
 
 		Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(this.ObjectTableIndex);
 		if (pCharacter == null || pCharacter->DrawObject == null)
@@ -85,5 +87,8 @@ public class SkeletonGizmo : SceneGroup
 			pCharacter->DrawObject->Scale * scale);
 
 		this.Transform = modelTransform;
+
+		this.IsVisible = true;
+		base.OnDraw();
 	}
 }
