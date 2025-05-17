@@ -20,6 +20,7 @@ using System.Numerics;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.Havok.Animation.Rig;
+using Lumina.Excel.Sheets;
 using StudioFourteen.Rendering;
 using StudioFourteen.Rendering.Scene;
 using StudioFourteen.Rendering.Scene.Handles;
@@ -27,22 +28,20 @@ using StudioFourteen.Selection;
 
 using Material = StudioFourteen.Rendering.Material;
 
-public class BoneGizmo : Handle
+public class BoneGizmo : SelectionHandle
 {
 	private readonly BoneId boneId;
 	private readonly BoneId? parentBoneId;
 	private readonly MeshRenderer capRenderer;
 	private readonly LineRenderer? connectionRenderer;
-	private readonly BoneSelection selection;
 
 	public BoneGizmo(BoneSelection selection)
+		: base(selection)
 	{
-		this.selection = selection;
-
 		this.capRenderer = new(Meshes.Bone, Material.BoneCap);
 		this.Add(this.capRenderer);
 
-		foreach ((BoneId boneId, List<BoneId> path) in this.selection.BonePaths)
+		foreach ((BoneId boneId, List<BoneId> path) in selection.BonePaths)
 		{
 			this.boneId = boneId;
 
@@ -56,11 +55,6 @@ public class BoneGizmo : Handle
 
 			break;
 		}
-	}
-
-	public override void OnHover(bool hover)
-	{
-		base.OnHover(hover);
 	}
 
 	protected unsafe override void OnDraw()

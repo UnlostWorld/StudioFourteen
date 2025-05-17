@@ -413,9 +413,6 @@ public partial class WindowService : ServiceBase
 	{
 		AtkUnitBase* pAtkUnit = this.GetAtkUnitUnderCursor();
 
-		////if (pAtkUnit != null)
-		////	this.Log.Information($">> {pAtkUnit->NameString}");
-
 		this.atkUnitUnderCursor = pAtkUnit;
 		this.IsCursorOverAtkUnit = pAtkUnit != null;
 		this.IsCursorOverImGui = this.GetIsCursorOverImGui();

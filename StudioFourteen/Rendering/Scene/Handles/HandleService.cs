@@ -30,9 +30,12 @@ public partial class HandleService : ServiceBase
 		get => this.currentHover;
 		set
 		{
-			this.currentHover?.OnHover(false);
+			if (this.currentHover == value)
+				return;
+
+			this.currentHover?.SetIsHandleHovered(false);
 			this.currentHover = value;
-			this.currentHover?.OnHover(true);
+			this.currentHover?.SetIsHandleHovered(true);
 		}
 	}
 
@@ -65,6 +68,10 @@ public partial class HandleService : ServiceBase
 			if (mousepos != null)
 			{
 				HitTestResult hitTestResult = new();
+
+				// TODO: Scale this with resolution and aspect?
+				hitTestResult.Distance = 20f / 1920f; // 20px on a 1920 monitor.
+
 				this.Services.Rendering.Forward.HitTest(mousepos.Value, hitTestResult);
 				this.CurrentHover = this.GetHandle(hitTestResult.SceneObject);
 			}

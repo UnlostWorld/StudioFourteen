@@ -134,7 +134,7 @@ public partial class SelectionService : ServiceBase
 		}
 	}
 
-	public UIElement? HoverSource { get; set; }
+	public object? HoverSource { get; set; }
 
 	public int GizmoIndex
 	{
@@ -201,7 +201,7 @@ public partial class SelectionService : ServiceBase
 	{
 		this.Current?.OnGameTick();
 
-		if (!this.Services.Windows.IsCursorOverStudio)
+		/*if (!this.Services.Windows.IsCursorOverStudio)
 		{
 			HitInfo? hit = RayCast.CastFromCursor();
 			if (hit != null)
@@ -224,7 +224,7 @@ public partial class SelectionService : ServiceBase
 					}
 				}
 			}
-		}
+		}*/
 
 		if (this.Hover != this.Current)
 		{

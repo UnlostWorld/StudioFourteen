@@ -15,17 +15,49 @@
 
 namespace StudioFourteen.Rendering.Scene.Handles;
 
-public abstract class Handle : SceneGroup
-{
-	public bool IsHovered { get; private set; }
+using System;
+using StudioFourteen.Selection;
 
-	public virtual void SetIsHandleHovered(bool isHovered)
+public class SelectionHandle : Handle
+{
+	private readonly SelectionBase selection;
+
+	public SelectionHandle(SelectionBase selection)
 	{
-		this.OnIsHoveredChanged(isHovered);
+		this.selection = selection;
+
+		this.Services.Selection.HoverChanged += this.OnSelectionHoverChanged;
 	}
 
-	protected virtual void OnIsHoveredChanged(bool isHovered)
+	public sealed override void SetIsHandleHovered(bool hover)
 	{
-		this.IsHovered = isHovered;
+		if (hover)
+		{
+			this.Services.Selection.Hover = this.selection;
+			this.Services.Selection.HoverSource = this;
+		}
+		else if (this.Services.Selection.Hover?.Id == this.selection.Id)
+		{
+			this.Services.Selection.Hover = null;
+		}
+
+		base.SetIsHandleHovered(hover);
+	}
+
+	protected override void OnIsHoveredChanged(bool isHovered)
+	{
+		base.OnIsHoveredChanged(isHovered);
+	}
+
+	private void OnSelectionHoverChanged(SelectionBase? oldSelection, SelectionBase? newSelection)
+	{
+		if (oldSelection?.Id == this.selection.Id)
+		{
+			this.OnIsHoveredChanged(false);
+		}
+		else if (newSelection?.Id == this.selection.Id)
+		{
+			this.OnIsHoveredChanged(true);
+		}
 	}
 }
