@@ -285,8 +285,9 @@ public partial class PoseService : ServiceBase
 		{
 			PartialSkeleton* partialSkeleton = &characterBase->Skeleton->PartialSkeletons[partialIdx];
 
-			byte poseCount = partialSkeleton->GetMaxPoses();
-			for (byte poseIdx = 0; poseIdx < poseCount; poseIdx++)
+			////byte poseCount = partialSkeleton->GetMaxPoses();
+			////for (byte poseIdx = 0; poseIdx < poseCount; poseIdx++)
+			byte poseIdx = 0;
 			{
 				hkaPose* pose = partialSkeleton->GetHavokPose(poseIdx);
 				if (pose == null)
@@ -298,8 +299,8 @@ public partial class PoseService : ServiceBase
 					hkaBone bone = pose->Skeleton->Bones[boneIdx];
 					string? boneName = bone.Name.String;
 
-					if (boneName == null)
-						boneName = "[Null]";
+					if (boneName == null || boneName == "n_root")
+						continue;
 
 					results.Add(boneName);
 				}
@@ -335,8 +336,9 @@ public partial class PoseService : ServiceBase
 		{
 			PartialSkeleton* partialSkeleton = &characterBase->Skeleton->PartialSkeletons[partialIdx];
 
-			byte poseCount = partialSkeleton->GetMaxPoses();
-			for (byte poseIdx = 0; poseIdx < poseCount; poseIdx++)
+			////byte poseCount = partialSkeleton->GetMaxPoses();
+			////for (byte poseIdx = 0; poseIdx < poseCount; poseIdx++)
+			byte poseIdx = 0;
 			{
 				hkaPose* pose = partialSkeleton->GetHavokPose(poseIdx);
 				if (pose == null)
@@ -477,8 +479,9 @@ public partial class PoseService : ServiceBase
 			{
 				PartialSkeleton* pPartialSkeleton = &pCharacterBase->Skeleton->PartialSkeletons[partialIdx];
 
-				byte poseCount = pPartialSkeleton->GetMaxPoses();
-				for (byte poseIdx = 0; poseIdx < poseCount; poseIdx++)
+				////byte poseCount = partialSkeleton->GetMaxPoses();
+				////for (byte poseIdx = 0; poseIdx < poseCount; poseIdx++)
+				byte poseIdx = 0;
 				{
 					hkaPose* pPose = pPartialSkeleton->GetHavokPose(poseIdx);
 					if (pPose == null)

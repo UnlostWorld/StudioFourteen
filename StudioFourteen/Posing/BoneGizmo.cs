@@ -30,6 +30,7 @@ using Material = StudioFourteen.Rendering.Material;
 
 public class BoneGizmo : SelectionHandle
 {
+	private readonly BoneSelection boneSelection;
 	private readonly BoneId boneId;
 	private readonly BoneId? parentBoneId;
 	private readonly MeshRenderer capRenderer;
@@ -38,6 +39,7 @@ public class BoneGizmo : SelectionHandle
 	public BoneGizmo(BoneSelection selection)
 		: base(selection)
 	{
+		this.boneSelection = selection;
 		this.capRenderer = new(Meshes.Bone, Material.BoneCap);
 		this.Add(this.capRenderer);
 
@@ -47,6 +49,9 @@ public class BoneGizmo : SelectionHandle
 
 			if (path.Count > 0)
 			{
+				if (path[0].BoneIndex == 0)
+					continue;
+
 				this.connectionRenderer = new(Material.Bone);
 				this.connectionRenderer.IsHitTestVisible = false;
 				this.Add(this.connectionRenderer);
@@ -92,5 +97,13 @@ public class BoneGizmo : SelectionHandle
 			this.connectionRenderer.To = bonePos;
 			this.connectionRenderer.From = childPos;
 		}
+	}
+
+	protected override void OnIsHoveredChanged(bool isHovered)
+	{
+		if (isHovered)
+			Logging.Information($">> {this.boneSelection.BoneName}");
+
+		base.OnIsHoveredChanged(isHovered);
 	}
 }
