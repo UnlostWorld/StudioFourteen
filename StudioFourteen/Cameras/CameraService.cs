@@ -226,7 +226,7 @@ public class CameraService : ServiceBase
 
 	private void OnGroupPoseStateChanged(bool newState)
 	{
-		if (newState)
+		if (newState && this.Cameras.Count > 0)
 		{
 			this.Current = this.Cameras[0];
 			this.state.Position = this.Services.GroupPose.EnterPosition + new Vector3(0, 1.5f, 0);
@@ -342,6 +342,10 @@ public class CameraService : ServiceBase
 		}
 		else
 		{
+			// For some reason depth doesn't work unless we set the VM here
+			// even though we don't appear to use it anwhere else.
+			camera->ViewMatrix = camera->RenderCamera->ViewMatrix;
+
 			this.CurrentPosition = camera->Position;
 		}
 
