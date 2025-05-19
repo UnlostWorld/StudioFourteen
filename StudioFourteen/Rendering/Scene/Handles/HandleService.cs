@@ -25,6 +25,8 @@ public partial class HandleService : ServiceBase
 	private readonly ConditionalWeakTable<SceneObject, Handle?> parentHandles = new();
 	private Handle? currentHover;
 
+	public bool IsCursorOverHandle => this.CurrentHover != null;
+
 	public Handle? CurrentHover
 	{
 		get => this.currentHover;

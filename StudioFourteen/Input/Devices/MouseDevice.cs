@@ -246,14 +246,16 @@ public class MouseDevice : InputDeviceBase
 
 	private bool ShouldHandleMouse()
 	{
-		// Never capture mouse outside of group pose.
-		if (!this.Services.GroupPose.IsGroupPosing)
-			return false;
-
 		// If the user has disabled the overlay system globabally,
 		// never capture mouse inputs.
 		if (!this.Services.Settings.Current.AllowMouseCapture)
 			return false;
+
+		// Capture the mouse if a studio window or gizmo handle is under
+		// ths cursor.
+		if (this.Services.Windows.IsCursorOverStudio
+			|| this.Services.Handles.IsCursorOverHandle)
+			return true;
 
 		// Don't process mouse if the cursor is over a in-game UI element
 		if (this.Services.Windows.IsCursorOverAtkUnit)
@@ -263,26 +265,24 @@ public class MouseDevice : InputDeviceBase
 		if (this.Services.Windows.IsCursorOverImGui)
 			return false;
 
-		// This shouldn't happen, but to be safe.
-		if (this.Services.Windows.IsCursorOverStudio)
-			return false;
-
 		// If the reshade overlay is open, let it do its cursor things.
 		if (this.Services.Reshade.IsReshadeOverlayOpen)
 			return false;
 
-		return true;
+		// in group pose, capture all scene mouse inputs.
+		return this.Services.GroupPose.IsGroupPosing;
 	}
 
 	private void UpdateMousePosition()
 	{
 		Point? mousePoint = this.Services.Windows.GetCursorPosition();
-		if (mousePoint == null)
-			return;
-
 		Rect clientSize = this.Services.Windows.GetXivWindowClientSize();
-		this.positionX.Value = (float)(mousePoint.Value.X / clientSize.Width);
-		this.positionY.Value = (float)(mousePoint.Value.Y / clientSize.Height);
+
+		if (mousePoint == null)
+		{
+			this.HandleMouseLeave();
+			return;
+		}
 
 		foreach ((MouseButton button, Point dragStart) in this.dragStarts)
 		{
@@ -311,6 +311,11 @@ public class MouseDevice : InputDeviceBase
 			}
 
 			CursorUtility.SetCursorVisible(false);
+		}
+		else
+		{
+			this.positionX.Value = (float)(mousePoint.Value.X / clientSize.Width);
+			this.positionY.Value = (float)(mousePoint.Value.Y / clientSize.Height);
 		}
 
 		mousePoint = this.Services.Windows.GetCursorPosition();
