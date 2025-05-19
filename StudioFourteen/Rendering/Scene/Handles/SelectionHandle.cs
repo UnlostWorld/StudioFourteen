@@ -27,7 +27,10 @@ public class SelectionHandle : Handle
 		this.selection = selection;
 
 		this.Services.Selection.HoverChanged += this.OnSelectionHoverChanged;
+		this.Services.Selection.SelectionChanged += this.OnSelectionChanged;
 	}
+
+	public bool IsSelected { get; private set; }
 
 	public sealed override void SetIsHandleHovered(bool hover)
 	{
@@ -42,6 +45,13 @@ public class SelectionHandle : Handle
 		}
 
 		base.SetIsHandleHovered(hover);
+	}
+
+	public override void Select()
+	{
+		base.Select();
+
+		this.Services.Selection.Current = this.selection;
 	}
 
 	protected override void OnIsHoveredChanged(bool isHovered)
@@ -59,5 +69,10 @@ public class SelectionHandle : Handle
 		{
 			this.OnIsHoveredChanged(true);
 		}
+	}
+
+	private void OnSelectionChanged(SelectionBase? oldSelection, SelectionBase? newSelection)
+	{
+		this.IsSelected = newSelection?.Id == this.selection.Id;
 	}
 }

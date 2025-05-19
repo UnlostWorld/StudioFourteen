@@ -191,7 +191,6 @@ public class MouseDevice : InputDeviceBase
 		if (mousePoint == null)
 			return false;
 
-		// if we are not in group pose, dont swallow all mouse inputs.
 		this.buttonAxes[button].Value = down ? 1.0f : 0.0f;
 
 		if (down)

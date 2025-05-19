@@ -19,11 +19,18 @@ using StudioFourteen.Services;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using StudioFourteen.Rendering.Scene;
+using StudioFourteen.Input;
 
 public partial class HandleService : ServiceBase
 {
 	private readonly ConditionalWeakTable<SceneObject, Handle?> parentHandles = new();
+	private readonly InputActionListener selectListener;
 	private Handle? currentHover;
+
+	public HandleService()
+	{
+		this.selectListener = new(InputAction.Select_Handle, "Handle Service Select");
+	}
 
 	public bool IsCursorOverHandle => this.CurrentHover != null;
 
@@ -43,12 +50,16 @@ public partial class HandleService : ServiceBase
 
 	public override void Attach()
 	{
+		this.selectListener.Enable();
+
 		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
 		base.Attach();
 	}
 
 	public override void Detach()
 	{
+		this.selectListener.Disable();
+
 		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
 		base.Detach();
 	}
@@ -76,6 +87,11 @@ public partial class HandleService : ServiceBase
 
 				this.Services.Rendering.Forward.HitTest(mousepos.Value, hitTestResult);
 				this.CurrentHover = this.GetHandle(hitTestResult.SceneObject);
+			}
+
+			if (this.selectListener.Value > 0.25)
+			{
+				this.currentHover?.Select();
 			}
 		}
 	}

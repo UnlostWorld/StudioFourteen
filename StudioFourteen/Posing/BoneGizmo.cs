@@ -82,8 +82,11 @@ public class BoneGizmo : SelectionHandle
 		Transform boneTransform = *pPose->AccessBoneModelSpace(this.boneId.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
 		this.capRenderer.Transform = boneTransform;
 
-		Material.BoneCap.GetInstanceData(this.capRenderer).Size = this.IsHovered ? 2.0f : 1.0f;
-		Material.BoneCap.GetInstanceData(this.capRenderer).DepthOffset = this.IsHovered ? 0.001f : 0f;
+		bool isHoveredOrSelected = this.IsHovered | this.IsSelected;
+
+		Material.BoneCap.GetInstanceData(this.capRenderer).Size = isHoveredOrSelected ? 2.0f : 1.0f;
+		Material.BoneCap.GetInstanceData(this.capRenderer).DepthOffset = isHoveredOrSelected ? 0.001f : 0f;
+		Material.BoneCap.GetInstanceData(this.capRenderer).Color = this.IsSelected ? Color.White : new(1, 0, 0, 1);
 
 		Vector3 bonePos = Vector3.Transform(Vector3.Zero, boneTransform.ToMatrix());
 
@@ -97,13 +100,5 @@ public class BoneGizmo : SelectionHandle
 			this.connectionRenderer.To = bonePos;
 			this.connectionRenderer.From = childPos;
 		}
-	}
-
-	protected override void OnIsHoveredChanged(bool isHovered)
-	{
-		if (isHovered)
-			Logging.Information($">> {this.boneSelection.BoneName}");
-
-		base.OnIsHoveredChanged(isHovered);
 	}
 }

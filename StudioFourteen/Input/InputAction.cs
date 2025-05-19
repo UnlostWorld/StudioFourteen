@@ -21,6 +21,8 @@ public enum InputAction
 {
 	Focus_Game,
 
+	Select_Handle,
+
 	Navigate_Up,
 	Navigate_Down,
 	Navigate_Left,

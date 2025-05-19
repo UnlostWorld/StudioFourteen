@@ -24,6 +24,10 @@ public abstract class Handle : SceneGroup
 		this.OnIsHoveredChanged(isHovered);
 	}
 
+	public virtual void Select()
+	{
+	}
+
 	protected virtual void OnIsHoveredChanged(bool isHovered)
 	{
 		this.IsHovered = isHovered;
