@@ -45,7 +45,7 @@ public partial class Resources : ResourceDictionary
 
 		foreach (Uri dictionary in PendingMergedDictionaries)
 		{
-			Resources merged = new();
+			ResourceDictionary merged = new();
 			merged.Source = dictionary;
 			resources.MergedDictionaries.Add(merged);
 		}
@@ -72,7 +72,7 @@ public partial class Resources : ResourceDictionary
 
 			foreach (Uri dictionary in PendingMergedDictionaries)
 			{
-				Resources merged = new();
+				ResourceDictionary merged = new();
 				merged.Source = dictionary;
 				Shared.MergedDictionaries.Add(merged);
 			}
@@ -121,7 +121,7 @@ public partial class Resources : ResourceDictionary
 			{
 				resource.ownerDispatcher?.Invoke(() =>
 				{
-					Resources merged = new();
+					ResourceDictionary merged = new();
 					merged.Source = uri;
 					resource.MergedDictionaries.Add(merged);
 				});

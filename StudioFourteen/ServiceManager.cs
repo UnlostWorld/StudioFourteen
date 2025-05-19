@@ -38,7 +38,6 @@ public class ServiceManager : ServiceManagerBase
 	public Tablet.TabletService Tablet { get; init; } = new();
 	public ActorRoleService Roles { get; init; } = new();
 	public Files.FileService Files { get; init; } = new();
-	public ThemeService Theme { get; set; } = new();
 	public PanelService Panels { get; init; } = new();
 	public Cameras.CameraService Camera { get; init; } = new();
 	public IPC.IPCService IPC { get; init; } = new();
@@ -63,4 +62,5 @@ public class ServiceManager : ServiceManagerBase
 	public Rendering.Scene.Gizmos.GizmoService Gizmos { get; init; } = new();
 	public Rendering.Scene.Handles.HandleService Handles { get; init; } = new();
 	public Content.ContentService Content { get; init; } = new();
+	public ResourcePacks.ResourcePackService ResourcePacks { get; init; } = new();
 }

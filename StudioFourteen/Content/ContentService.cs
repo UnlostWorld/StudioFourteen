@@ -62,10 +62,17 @@ public class ContentService : ServiceBase
 		return base.Initialize();
 	}
 
+	public List<string> GetContents(string directoryPath)
+	{
+		string resolvedPath = this.ResolvePath(directoryPath);
+		string[] paths = Directory.GetFiles(resolvedPath, "*.*", SearchOption.AllDirectories);
+		return new List<string>(paths);
+	}
+
 	public Stream GetContent(ContentReference reference)
 	{
 		#if DEBUG
-		lock(this.references)
+		lock (this.references)
 		{
 			string resolvedPath = this.ResolvePath(reference.Path);
 

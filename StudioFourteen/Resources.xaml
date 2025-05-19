@@ -33,6 +33,7 @@
 		<ResourceDictionary Source="./Controls/TransformControlStyles.xaml"/>
 		<ResourceDictionary Source="./Controls/NumberBoxStyles.xaml"/>
 		<ResourceDictionary Source="./Controls/MultiNumberBoxStyles.xaml"/>
+		<ResourceDictionary Source="./Controls/GripStyles.xaml"/>
 
 		<!--  Default Language  -->
 		<ResourceDictionary Source="./Icons/Icons.xaml"/>
@@ -77,5 +78,21 @@
 	<converters:MultiBoolAndToVisibilityConverter x:Key="MultiBoolAndToVisibility" />
 	<converters:AnyBoolIsFalseToBoolMultiConverter x:Key="AnyBoolIsFalseToBool" />
 	<converters:MultiOrVisibilityConverter x:Key="MultiOrVisibility" />
+
+	<!-- Default colors -->
+	<SolidColorBrush x:Key="ForegroundBrush" Color="#ECECEC" />
+	<SolidColorBrush x:Key="ForegroundLightBrush" Color="#838383" />
+	<SolidColorBrush x:Key="BackgroundBrush" Color="#222222" />
+	<SolidColorBrush x:Key="BackgroundLightBrush" Color="#333333" />
+	<SolidColorBrush x:Key="TrimBrush" Color="#FF1493" />
+	<SolidColorBrush x:Key="ControlBackgroundBrush" Color="#171717" />
+	<SolidColorBrush x:Key="ControlHighlightBrush" Color="#343434" />
+	<SolidColorBrush x:Key="ControlForegroundHighlightBrush" Color="#ECECEC" />
+	<SolidColorBrush x:Key="ControlBackgroundSelectedBrush" Color="#222222" />
+
+	<!-- Default Launcher Button -->
+	<BitmapImage x:Key="LauncherButtonBackground" UriSource="pack://application:,,,/StudioFourteen;component/Assets/launcher.png" />
+	<BitmapImage x:Key="LauncherButtonHoverMask" UriSource="pack://application:,,,/StudioFourteen;component/Assets/launcher-hover-mask.png" />
+
 
 </local:Resources>

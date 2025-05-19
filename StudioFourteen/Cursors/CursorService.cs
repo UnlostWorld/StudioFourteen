@@ -18,10 +18,10 @@ namespace StudioFourteen.Cursors;
 using System;
 using System.IO;
 using System.Reflection;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using StudioFourteen.Controls;
 using System.Windows.Input;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using StudioFourteen.Interop;
@@ -36,12 +36,14 @@ public class CursorService : ServiceBase
 	private readonly Cursor xivPointer;
 	private readonly Cursor xivLink;
 	private readonly Cursor xivGrab;
+	private readonly Cursor xivHand;
 
 	public CursorService()
 	{
 		this.xivPointer = this.LoadCursor("pointer.cur");
 		this.xivLink = this.LoadCursor("link.cur");
 		this.xivGrab = this.LoadCursor("grab.cur");
+		this.xivHand = this.LoadCursor("hand.cur");
 
 		this.SetCursor<PanelWindow>(CursorType.Pointer);
 		this.SetCursor<PopOut>(CursorType.Pointer);
@@ -50,12 +52,14 @@ public class CursorService : ServiceBase
 		this.SetCursor<ToggleButton>(CursorType.Link);
 		this.SetCursor<ListBoxItem>(CursorType.Link);
 		this.SetCursor<Button>(CursorType.Link);
+		this.SetCursor<Grip>(CursorType.Hand);
 	}
 
 	public enum CursorType
 	{
 		Pointer,
 		Link,
+		Hand,
 		Grab,
 	}
 
@@ -74,6 +78,11 @@ public class CursorService : ServiceBase
 		Hooks.SetCursor.Disable();
 	}
 
+	public void SetCursor(CursorType type)
+	{
+		Mouse.SetCursor(this.GetCursor(type));
+	}
+
 	public Cursor GetCursor(CursorType type)
 	{
 		bool useSystem = this.Settings.UseSystemCursors;
@@ -82,6 +91,7 @@ public class CursorService : ServiceBase
 			case CursorType.Pointer: return useSystem ? Cursors.Arrow : this.xivPointer;
 			case CursorType.Link: return useSystem ? Cursors.Hand : this.xivLink;
 			case CursorType.Grab: return useSystem ? Cursors.Hand : this.xivGrab;
+			case CursorType.Hand: return useSystem ? Cursors.Arrow : this.xivHand;
 		}
 
 		throw new NotSupportedException();

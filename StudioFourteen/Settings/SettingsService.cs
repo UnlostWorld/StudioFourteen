@@ -152,11 +152,9 @@ public partial class SettingsService : ServiceBase
 		[Notify] private bool showOverlays = true;
 		[Notify] private Dictionary<string, int> overlays = new();
 		[Notify] private List<string> openPanels = new();
-		[Notify] private string theme = "Dark";
-		[Notify] private Dictionary<string, string> themeOptions = new();
-		[Notify] private string launcher = "Default";
 		[Notify] private bool isAioWindowOpen = false;
 		[Notify] private bool useSystemCursors = false;
+		[Notify] private List<string> resourcePacks = new();
 
 		// Input
 		[Notify] private bool allowKeyboardCapture = true;
