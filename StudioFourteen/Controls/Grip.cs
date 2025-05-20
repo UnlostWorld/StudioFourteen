@@ -22,10 +22,18 @@ using StudioFourteen.Cursors;
 [DependencyProperty<Directions>("Direction")]
 public partial class Grip : StudioControl
 {
+	private bool isDragging = false;
+
 	public Grip()
 	{
 		this.Cursor = this.Services.Cursor.GetCursor(CursorService.CursorType.Hand);
 	}
+
+	public delegate void GripDragDelegate(Grip sender, MouseEventArgs args);
+
+	public event GripDragDelegate? DragStart;
+	public event GripDragDelegate? DragMove;
+	public event GripDragDelegate? DragEnd;
 
 	public enum Directions
 	{
@@ -40,7 +48,19 @@ public partial class Grip : StudioControl
 
 		this.Cursor = this.Services.Cursor.GetCursor(CursorService.CursorType.Grab);
 
+		this.isDragging = true;
 		this.CaptureMouse();
+		this.DragStart?.Invoke(this, e);
+	}
+
+	protected override void OnMouseMove(MouseEventArgs e)
+	{
+		base.OnMouseMove(e);
+
+		if (this.isDragging)
+		{
+			this.DragMove?.Invoke(this, e);
+		}
 	}
 
 	protected override void OnMouseUp(MouseButtonEventArgs e)
@@ -50,5 +70,7 @@ public partial class Grip : StudioControl
 		this.Cursor = this.Services.Cursor.GetCursor(CursorService.CursorType.Hand);
 
 		this.ReleaseMouseCapture();
+		this.DragEnd?.Invoke(this, e);
+		this.isDragging = false;
 	}
 }

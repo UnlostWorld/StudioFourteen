@@ -16,32 +16,225 @@
 namespace StudioFourteen.Controls;
 
 using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
+using DependencyPropertyGenerator;
+using WpfUtils;
 
 public class OrderableItemsControl : ItemsControl
 {
-	public OrderableItemsControl()
+	private AdornerLayer? adornerLayer;
+	private AdornerContentPresenter? dragAdorner;
+	private OrderableItemControl? draggingContainer;
+	private OrderableItemControl? dropBeforeContainer;
+	private double draggingContainerHeight;
+	private int fromIndex = -1;
+
+	public override void OnApplyTemplate()
 	{
+		base.OnApplyTemplate();
 	}
 
-	protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
+	internal void StartDrag(OrderableItemControl container, MouseEventArgs args)
 	{
-		base.PrepareContainerForItemOverride(element, item);
+		this.draggingContainer = container;
+		object item = container.DataContext;
+		this.draggingContainerHeight = container.ActualHeight;
+		this.fromIndex = this.Items.IndexOf(item);
 
-		if (element is FrameworkElement uiElement)
+		this.adornerLayer = AdornerLayer.GetAdornerLayer(this);
+		if (this.adornerLayer != null)
 		{
+			OrderableItemControl dragChild = new();
+			dragChild.Style = this.ItemContainerStyle;
+			dragChild.Content = container.DataContext;
+			dragChild.ContentTemplate = this.ItemTemplate;
+
+			this.dragAdorner = new(this, dragChild);
+			this.adornerLayer?.Add(this.dragAdorner);
+
+			this.Dispatcher.Invoke(async () =>
+			{
+				await Task.Delay(10);
+				await this.MainThread();
+				Point p = args.GetPosition(this);
+				TranslateTransform moveTransform = new(22, p.Y + this.draggingContainerHeight + 22);
+				this.dragAdorner.RenderTransform = moveTransform;
+			});
+		}
+
+		container.Opacity = 0;
+		container.Height = 0;
+
+		if (this.fromIndex + 1 < this.Items.Count)
+		{
+			this.dropBeforeContainer = this.ItemContainerGenerator.ContainerFromIndex(this.fromIndex + 1) as OrderableItemControl;
+			this.dropBeforeContainer?.SetTopGhost(this.draggingContainerHeight, false);
 		}
 	}
 
-	protected override bool IsItemItsOwnContainerOverride(object item)
+	internal void UpdateDrag(OrderableItemControl container, MouseEventArgs args)
 	{
-		return item is ContentControl;
+		if (container != this.draggingContainer)
+			return;
+
+		if (this.dragAdorner != null)
+		{
+			Point p = args.GetPosition(this);
+			TranslateTransform moveTransform = new(22, p.Y + this.draggingContainerHeight + 22);
+			this.dragAdorner.RenderTransform = moveTransform;
+		}
+
+		int dropIndex = -1;
+		for (int i = 0; i < this.Items.Count; i++)
+		{
+			OrderableItemControl? otherContainer = this.ItemContainerGenerator.ContainerFromIndex(i) as OrderableItemControl;
+			if (otherContainer == null)
+				continue;
+
+			Point p = args.GetPosition(otherContainer);
+
+			double posY = p.Y + otherContainer.Margin.Top;
+			double otherContainerTotalHeight = otherContainer.ActualHeight + otherContainer.Margin.Bottom + otherContainer.Margin.Top;
+
+			// Before this container
+			if (posY > 0
+				&& posY <= otherContainerTotalHeight / 2
+				&& posY <= otherContainerTotalHeight)
+			{
+				dropIndex = i;
+			}
+
+			// After this container
+			if (posY > 0
+				&& posY > otherContainerTotalHeight / 2
+				&& posY <= otherContainerTotalHeight)
+			{
+				dropIndex = i + 1;
+			}
+		}
+
+		OrderableItemControl? newDropBeforeContainer = null;
+
+		if (dropIndex < 0 || dropIndex >= this.Items.Count)
+		{
+			// Drop end
+		}
+		else
+		{
+			newDropBeforeContainer = this.ItemContainerGenerator.ContainerFromIndex(dropIndex) as OrderableItemControl;
+		}
+
+		if (this.dropBeforeContainer != newDropBeforeContainer)
+		{
+			this.dropBeforeContainer?.SetTopGhost(0);
+			this.dropBeforeContainer = newDropBeforeContainer;
+			this.dropBeforeContainer?.SetTopGhost(this.draggingContainerHeight);
+		}
 	}
 
-	protected override DependencyObject GetContainerForItemOverride()
+	internal void StopDrag(OrderableItemControl container, MouseEventArgs args)
 	{
-		return new ContentControl();
+		this.dropBeforeContainer?.SetTopGhost(0);
+		this.dropBeforeContainer = null;
+
+		if (this.draggingContainer != null)
+		{
+			this.draggingContainer.Opacity = 1;
+			this.draggingContainer.Height = double.NaN;
+			this.draggingContainer = null;
+		}
+
+		this.adornerLayer?.Remove(this.dragAdorner);
+	}
+
+	protected override bool IsItemItsOwnContainerOverride(object item) => item is OrderableItemControl;
+	protected override DependencyObject GetContainerForItemOverride() => new OrderableItemControl();
+}
+
+[DependencyProperty<double>("TopGhostSize")]
+public partial class OrderableItemControl : ContentControl
+{
+	private readonly Storyboard ghostStoryboard;
+	private readonly DoubleAnimation topGhostAnimation;
+	private OrderableItemsControl? itemsControl;
+	private Grip? dragGrip;
+
+	public OrderableItemControl()
+	{
+		this.ghostStoryboard = new();
+
+		this.topGhostAnimation = new();
+		this.topGhostAnimation.Duration = new(TimeSpan.FromMilliseconds(250));
+		this.ghostStoryboard.Children.Add(this.topGhostAnimation);
+		CubicEase ease = new();
+		ease.EasingMode = EasingMode.EaseInOut;
+		this.topGhostAnimation.EasingFunction = ease;
+		Storyboard.SetTarget(this.topGhostAnimation, this);
+		Storyboard.SetTargetProperty(this.topGhostAnimation, new PropertyPath(TopGhostSizeProperty.Name));
+	}
+
+	public override void OnApplyTemplate()
+	{
+		base.OnApplyTemplate();
+
+		this.itemsControl = this.FindParent<OrderableItemsControl>();
+
+		if (this.dragGrip != null)
+		{
+			this.dragGrip.DragStart -= this.OnDragStart;
+			this.dragGrip.DragMove -= this.OnDragMove;
+			this.dragGrip.DragEnd -= this.OnDragEnd;
+		}
+
+		this.dragGrip = this.GetTemplateChild("PART_Grip") as Grip;
+
+		if (this.dragGrip != null)
+		{
+			this.dragGrip.DragStart += this.OnDragStart;
+			this.dragGrip.DragMove += this.OnDragMove;
+			this.dragGrip.DragEnd += this.OnDragEnd;
+		}
+	}
+
+	internal void SetTopGhost(double size, bool animate = true)
+	{
+		if (!animate)
+		{
+			this.TopGhostSize = size;
+			this.ghostStoryboard.Stop();
+		}
+		else
+		{
+			this.topGhostAnimation.To = size;
+			this.ghostStoryboard.Begin();
+		}
+	}
+
+	private void OnDragStart(Grip sender, MouseEventArgs args)
+	{
+		this.itemsControl?.StartDrag(this, args);
+	}
+
+	private void OnDragMove(Grip sender, MouseEventArgs args)
+	{
+		this.itemsControl?.UpdateDrag(this, args);
+	}
+
+	private void OnDragEnd(Grip sender, MouseEventArgs args)
+	{
+		this.itemsControl?.StopDrag(this, args);
+	}
+
+	partial void OnTopGhostSizeChanged(double newValue)
+	{
+		var m = this.Margin;
+		m.Top = newValue;
+		this.Margin = m;
 	}
 }
