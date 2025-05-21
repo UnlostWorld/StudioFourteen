@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Services;
+using WpfUtils.Extensions;
 
 public partial class ResourcePackService : ServiceBase
 {
@@ -47,15 +48,31 @@ public partial class ResourcePackService : ServiceBase
 
 			string iconPath = $"{Path.GetDirectoryName(path)}/{packIcon}";
 
-			this.Packs.Add(new(fileName, packName ?? fileName, packAuthor, iconPath));
+			this.Packs.Add(new(path, fileName, packName ?? fileName, packAuthor, iconPath));
 		}
 
 		return base.Start();
 	}
+
+	public void Apply()
+	{
+		foreach (ResourcePackReference pack in this.Packs)
+		{
+			Resources.UnMergeDictionary(new(pack.Path));
+
+			if (pack.Enabled)
+			{
+				Resources.MergeDictionary(new(pack.Path));
+			}
+		}
+
+		this.Services.Panels.RestartPanels().Run();
+	}
 }
 
-public class ResourcePackReference(string fileName, string name, string? author, string? iconPath)
+public class ResourcePackReference(string path, string fileName, string name, string? author, string? iconPath)
 {
+	public string Path { get; init; } = path;
 	public string FileName { get; init; } = fileName;
 	public string Name { get; init; } = name;
 	public string? Author { get; init; } = author;

@@ -89,5 +89,11 @@ public partial class SettingsPanel : Panel
 
 	private void OnPacksCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
 	{
+		this.Services.ResourcePacks.Packs = new(this.ResourcePacks);
+	}
+
+	private void OnApplyResourcePacksClicked(object sender, RoutedEventArgs e)
+	{
+		this.Services.ResourcePacks.Apply();
 	}
 }

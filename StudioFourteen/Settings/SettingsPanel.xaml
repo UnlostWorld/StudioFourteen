@@ -28,47 +28,62 @@
 					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
 
-				<Border Style="{DynamicResource WpfUtilsControlBorder}">
-					<controls:OrderableItemsControl ItemsSource="{Binding ResourcePacks, Mode=TwoWay}">
-						<ItemsControl.ItemTemplate>
-							<DataTemplate>
-								<CheckBox Height="Auto">
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition />
+						<RowDefinition Height="Auto" />
+					</Grid.RowDefinitions>
 
-									<Grid Margin="3">
-										<Grid.ColumnDefinitions>
-											<ColumnDefinition Width="Auto" />
-											<ColumnDefinition />
-										</Grid.ColumnDefinitions>
+					<Border Grid.Row="0" Style="{DynamicResource WpfUtilsControlBorder}">
+						<controls:OrderableItemsControl ItemsSource="{Binding ResourcePacks, Mode=TwoWay}">
+							<ItemsControl.ItemTemplate>
+								<DataTemplate>
+									<CheckBox Height="Auto" IsChecked="{Binding Enabled}">
 
-										<Grid.RowDefinitions>
-											<RowDefinition />
-											<RowDefinition />
-										</Grid.RowDefinitions>
+										<Grid Margin="3">
+											<Grid.ColumnDefinitions>
+												<ColumnDefinition Width="Auto" />
+												<ColumnDefinition />
+											</Grid.ColumnDefinitions>
 
-										<Image
-											Grid.RowSpan="2"
-											Grid.Column="0"
-											Width="48"
-											Height="32"
-											Margin="0,0,12,0"
-											Source="{Binding IconPath}" />
+											<Grid.RowDefinitions>
+												<RowDefinition />
+												<RowDefinition />
+											</Grid.RowDefinitions>
 
-										<TextBlock
-											Grid.Row="0"
-											Grid.Column="1"
-											Text="{Binding Name}" />
-										<TextBlock
-											Grid.Row="1"
-											Grid.Column="1"
-											Style="{DynamicResource Subscript}"
-											Text="{Binding Author}" />
-									</Grid>
+											<Image
+												Grid.RowSpan="2"
+												Grid.Column="0"
+												Width="48"
+												Height="32"
+												Margin="0,0,12,0"
+												Source="{Binding IconPath}" />
 
-								</CheckBox>
-							</DataTemplate>
-						</ItemsControl.ItemTemplate>
-					</controls:OrderableItemsControl>
-				</Border>
+											<TextBlock
+												Grid.Row="0"
+												Grid.Column="1"
+												Text="{Binding Name}" />
+											<TextBlock
+												Grid.Row="1"
+												Grid.Column="1"
+												Style="{DynamicResource Subscript}"
+												Text="{Binding Author}" />
+										</Grid>
+
+									</CheckBox>
+								</DataTemplate>
+							</ItemsControl.ItemTemplate>
+						</controls:OrderableItemsControl>
+					</Border>
+
+					<Button
+						Grid.Row="1"
+						MinWidth="75"
+						HorizontalAlignment="Right"
+						Click="OnApplyResourcePacksClicked"
+						Content="Apply" />
+
+				</Grid>
 
 				<StackPanel Grid.Row="1" Margin="0,6,0,0">
 
