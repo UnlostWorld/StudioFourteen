@@ -34,6 +34,7 @@
 		<ResourceDictionary Source="./Controls/NumberBoxStyles.xaml"/>
 		<ResourceDictionary Source="./Controls/MultiNumberBoxStyles.xaml"/>
 		<ResourceDictionary Source="./Controls/GripStyles.xaml"/>
+		<ResourceDictionary Source="./Controls/OrderableItemsControlStyles.xaml"/>
 
 		<!--  Default Language  -->
 		<ResourceDictionary Source="./Icons/Icons.xaml"/>

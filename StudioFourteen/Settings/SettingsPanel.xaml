@@ -29,34 +29,7 @@
 				</Grid.RowDefinitions>
 
 				<Border Style="{DynamicResource WpfUtilsControlBorder}">
-					<controls:OrderableItemsControl ItemsSource="{Binding Services.ResourcePacks.Packs}">
-
-						<ItemsControl.ItemContainerStyle>
-							<Style TargetType="{x:Type ContentControl}">
-								<Setter Property="Template">
-									<Setter.Value>
-										<ControlTemplate TargetType="{x:Type controls:OrderableItemControl}">
-											<Grid Background="{DynamicResource ControlBackgroundBrush}">
-												<Grid.ColumnDefinitions>
-													<ColumnDefinition Width="24" />
-													<ColumnDefinition />
-												</Grid.ColumnDefinitions>
-
-												<controls:Grip
-													Grid.Column="0"
-													Direction="Vertical"
-													x:Name="PART_Grip"/>
-
-												<ContentPresenter Grid.Column="1"
-													Content="{TemplateBinding Content}"
-													ContentTemplate="{TemplateBinding ContentTemplate}"/>
-											</Grid>
-										</ControlTemplate>
-									</Setter.Value>
-								</Setter>
-							</Style>
-						</ItemsControl.ItemContainerStyle>
-
+					<controls:OrderableItemsControl ItemsSource="{Binding ResourcePacks, Mode=TwoWay}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate>
 								<CheckBox Height="Auto">

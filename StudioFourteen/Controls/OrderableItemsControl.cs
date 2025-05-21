@@ -16,6 +16,7 @@
 namespace StudioFourteen.Controls;
 
 using System;
+using System.Collections;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -34,6 +35,7 @@ public class OrderableItemsControl : ItemsControl
 	private OrderableItemControl? dropBeforeContainer;
 	private double draggingContainerHeight;
 	private int fromIndex = -1;
+	private int toIndex = -1;
 
 	public override void OnApplyTemplate()
 	{
@@ -58,14 +60,7 @@ public class OrderableItemsControl : ItemsControl
 			this.dragAdorner = new(this, dragChild);
 			this.adornerLayer?.Add(this.dragAdorner);
 
-			this.Dispatcher.Invoke(async () =>
-			{
-				await Task.Delay(10);
-				await this.MainThread();
-				Point p = args.GetPosition(this);
-				TranslateTransform moveTransform = new(22, p.Y + this.draggingContainerHeight + 22);
-				this.dragAdorner.RenderTransform = moveTransform;
-			});
+			this.dragAdorner.Loaded += (s, e) => this.UpdateDragPosition(args.GetPosition(this));
 		}
 
 		container.Opacity = 0;
@@ -83,14 +78,9 @@ public class OrderableItemsControl : ItemsControl
 		if (container != this.draggingContainer)
 			return;
 
-		if (this.dragAdorner != null)
-		{
-			Point p = args.GetPosition(this);
-			TranslateTransform moveTransform = new(22, p.Y + this.draggingContainerHeight + 22);
-			this.dragAdorner.RenderTransform = moveTransform;
-		}
+		this.UpdateDragPosition(args.GetPosition(this));
 
-		int dropIndex = -1;
+		this.toIndex = -1;
 		for (int i = 0; i < this.Items.Count; i++)
 		{
 			OrderableItemControl? otherContainer = this.ItemContainerGenerator.ContainerFromIndex(i) as OrderableItemControl;
@@ -107,7 +97,7 @@ public class OrderableItemsControl : ItemsControl
 				&& posY <= otherContainerTotalHeight / 2
 				&& posY <= otherContainerTotalHeight)
 			{
-				dropIndex = i;
+				this.toIndex = i;
 			}
 
 			// After this container
@@ -115,20 +105,46 @@ public class OrderableItemsControl : ItemsControl
 				&& posY > otherContainerTotalHeight / 2
 				&& posY <= otherContainerTotalHeight)
 			{
-				dropIndex = i + 1;
+				this.toIndex = i + 1;
+			}
+		}
+
+		// Check drag to top
+		if (this.toIndex == -1)
+		{
+			OrderableItemControl? otherContainer = this.ItemContainerGenerator.ContainerFromIndex(0) as OrderableItemControl;
+			if (otherContainer != null)
+			{
+				Point p = args.GetPosition(otherContainer);
+				double posY = p.Y + otherContainer.Margin.Top;
+				if (posY < 0)
+				{
+					this.toIndex = 0;
+				}
+			}
+		}
+
+		// Check drag to end
+		if (this.toIndex == -1)
+		{
+			OrderableItemControl? otherContainer = this.ItemContainerGenerator.ContainerFromIndex(this.Items.Count - 1) as OrderableItemControl;
+			if (otherContainer != null)
+			{
+				Point p = args.GetPosition(otherContainer);
+				double posY = p.Y + otherContainer.Margin.Top;
+				double otherContainerTotalHeight = otherContainer.ActualHeight + otherContainer.Margin.Bottom + otherContainer.Margin.Top;
+
+				if (posY > otherContainerTotalHeight)
+				{
+					this.toIndex = this.Items.Count;
+				}
 			}
 		}
 
 		OrderableItemControl? newDropBeforeContainer = null;
 
-		if (dropIndex < 0 || dropIndex >= this.Items.Count)
-		{
-			// Drop end
-		}
-		else
-		{
-			newDropBeforeContainer = this.ItemContainerGenerator.ContainerFromIndex(dropIndex) as OrderableItemControl;
-		}
+		if (this.toIndex >= 0 && this.toIndex < this.Items.Count)
+			newDropBeforeContainer = this.ItemContainerGenerator.ContainerFromIndex(this.toIndex) as OrderableItemControl;
 
 		if (this.dropBeforeContainer != newDropBeforeContainer)
 		{
@@ -140,7 +156,7 @@ public class OrderableItemsControl : ItemsControl
 
 	internal void StopDrag(OrderableItemControl container, MouseEventArgs args)
 	{
-		this.dropBeforeContainer?.SetTopGhost(0);
+		this.dropBeforeContainer?.SetTopGhost(0, false);
 		this.dropBeforeContainer = null;
 
 		if (this.draggingContainer != null)
@@ -151,10 +167,52 @@ public class OrderableItemsControl : ItemsControl
 		}
 
 		this.adornerLayer?.Remove(this.dragAdorner);
+
+		if (this.toIndex > this.fromIndex)
+			this.toIndex--;
+
+		if (this.toIndex < 0)
+			this.toIndex = 0;
+
+		if (this.toIndex > this.Items.Count - 1)
+			this.toIndex = this.Items.Count - 1;
+
+		object item = container.DataContext;
+
+		if (this.ItemsSource != null)
+		{
+			if (this.ItemsSource is IList list)
+			{
+				list.RemoveAt(this.fromIndex);
+				list.Insert(this.toIndex, item);
+				this.ItemsSource = list;
+			}
+		}
+		else
+		{
+			this.Items.RemoveAt(this.fromIndex);
+			this.Items.Insert(this.toIndex, item);
+		}
 	}
 
 	protected override bool IsItemItsOwnContainerOverride(object item) => item is OrderableItemControl;
 	protected override DependencyObject GetContainerForItemOverride() => new OrderableItemControl();
+
+	private void UpdateDragPosition(Point position)
+	{
+		if (this.dragAdorner == null)
+			return;
+
+		double offset = 22; // ??
+
+		double y = position.Y;
+		double min = (this.draggingContainerHeight / 2) - 6;
+		double max = this.ActualHeight - (this.draggingContainerHeight / 2) - 6;
+		y = double.Clamp(y, min, max);
+
+		TranslateTransform moveTransform = new(offset, y + this.draggingContainerHeight + offset);
+		this.dragAdorner.RenderTransform = moveTransform;
+	}
 }
 
 [DependencyProperty<double>("TopGhostSize")]

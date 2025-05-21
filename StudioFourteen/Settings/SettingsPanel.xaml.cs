@@ -16,6 +16,9 @@
 namespace StudioFourteen.Settings;
 
 using StudioFourteen.Panels;
+using StudioFourteen.ResourcePacks;
+using System;
+using System.Collections.Specialized;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
@@ -27,6 +30,13 @@ using Panel = StudioFourteen.Panels.Panel;
 
 public partial class SettingsPanel : Panel
 {
+	public SettingsPanel()
+	{
+		this.ResourcePacks.CollectionChanged += this.OnPacksCollectionChanged;
+	}
+
+	public FastObservableCollection<ResourcePackReference> ResourcePacks { get; init; } = new();
+
 	public static void Show(PanelContextBase context, string? elementName = null)
 	{
 		ShowAsync(context, elementName).Run();
@@ -57,6 +67,12 @@ public partial class SettingsPanel : Panel
 		}
 	}
 
+	protected override void OnOpened()
+	{
+		this.ResourcePacks.Replace(this.Services.ResourcePacks.Packs);
+		base.OnOpened();
+	}
+
 	private async void OnBrosePhotoDirectoryClicked(object sender, RoutedEventArgs e)
 	{
 		DirectoryInfo? dir = null;
@@ -69,5 +85,9 @@ public partial class SettingsPanel : Panel
 			return;
 
 		this.Settings.PhotoDirectory = newDir.FullName;
+	}
+
+	private void OnPacksCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)
+	{
 	}
 }

@@ -19,11 +19,12 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
+using PropertyChanged.SourceGenerator;
 using StudioFourteen.Services;
 
 public partial class ResourcePackService : ServiceBase
 {
-	public List<ResourcePackReference> Packs { get; init; } = new();
+	public List<ResourcePackReference> Packs = new();
 
 	public override Task Start()
 	{
