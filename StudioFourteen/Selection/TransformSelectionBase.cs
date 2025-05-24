@@ -17,9 +17,12 @@ namespace StudioFourteen.Selection;
 
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Gizmos.Handles.TransformHandle;
+using StudioFourteen.Rendering.Scene.Gizmos.Transforms;
 
 public abstract partial class TransformSelectionBase : SelectionBase
 {
+	private readonly TransformGizmo gizmo = new();
+
 	[Notify][PropertyAttribute("StudioFourteen.History.History")] private Transform worldTransform;
 	[Notify][PropertyAttribute("StudioFourteen.History.History")] private Transform localTransform;
 	[Notify][PropertyAttribute("StudioFourteen.History.History")] private bool lockTransform;
@@ -30,6 +33,24 @@ public abstract partial class TransformSelectionBase : SelectionBase
 	public virtual int DecimalPlacesToDisplay => 2;
 	public virtual TransformHandleTypes DefaultGizmo => TransformHandleTypes.Translation;
 	public virtual double GizmoSensitivity => 1.0;
+
+	public override void Activate()
+	{
+		base.Activate();
+		this.gizmo.Enable();
+	}
+
+	public override void Deactivate()
+	{
+		base.Deactivate();
+		this.gizmo.Disable();
+	}
+
+	public override void OnGameTick()
+	{
+		this.gizmo.Transform = this.WorldTransform;
+		base.OnGameTick();
+	}
 
 	protected virtual void OnWorldTransformChanged(Transform oldValue, Transform newValue)
 	{

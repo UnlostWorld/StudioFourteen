@@ -51,6 +51,14 @@ public partial class ResourcePackService : ServiceBase
 			this.Packs.Add(new(path, fileName, packName ?? fileName, packAuthor, iconPath));
 		}
 
+		foreach (ResourcePackReference pack in this.Packs)
+		{
+			if (pack.Enabled)
+			{
+				Resources.MergeDictionary(new(pack.Path));
+			}
+		}
+
 		return base.Start();
 	}
 
