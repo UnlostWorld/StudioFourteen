@@ -25,6 +25,7 @@ public class SkeletonsGizmo : GizmoBase
 	private readonly Dictionary<int, SkeletonGizmo> skeletonLookup = new();
 
 	public override string Name => "Skeletons";
+	public override bool KeepScreenSize => false;
 
 	public override void Enable()
 	{

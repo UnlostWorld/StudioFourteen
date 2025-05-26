@@ -40,6 +40,9 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 	{
 		lock(this.sceneObjects)
 		{
+			if (this.sceneObjects.Contains(obj))
+				return;
+
 			this.sceneObjects.Add(obj);
 		}
 	}

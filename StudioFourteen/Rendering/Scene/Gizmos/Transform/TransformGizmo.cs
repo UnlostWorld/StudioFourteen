@@ -57,7 +57,7 @@ public class AxisHandle : Handle
 
 	public AxisHandle()
 	{
-		this.circleRenderer = new(Meshes.WireCircle, Material.Line);
+		this.circleRenderer = new(Meshes.WireCircle, Material.GizmoLine);
 		this.Add(this.circleRenderer);
 	}
 

@@ -16,7 +16,9 @@
 namespace StudioFourteen.Rendering.Scene.Gizmos;
 
 using System.ComponentModel;
+using System.Numerics;
 using System.Runtime.CompilerServices;
+using SharpDX.Direct3D11;
 using StudioFourteen.Rendering.Scene;
 using StudioFourteen.Settings;
 
@@ -32,6 +34,7 @@ public abstract class GizmoBase : SceneGroup, INotifyPropertyChanged
 	public event PropertyChangedEventHandler? PropertyChanged;
 
 	public abstract string Name { get; }
+	public virtual bool KeepScreenSize => true;
 
 	public override bool IsVisible
 	{
@@ -68,6 +71,20 @@ public abstract class GizmoBase : SceneGroup, INotifyPropertyChanged
 
 	public virtual void OnGameTick()
 	{
+	}
+
+	public override void Draw(Transform transform, Device device, DeviceContext deviceContext)
+	{
+		if (this.KeepScreenSize)
+		{
+			Vector4 gizmoPos = Vector4.Transform(new Vector4(0, 0, 0, 1), this.Transform.ToMatrix());
+			Vector4 vector = gizmoPos - new Vector4(this.Services.Camera.CurrentPosition, 1.0f);
+			float distance = vector.Length() * 0.1f;
+
+			this.Transform = Transform.FromScale(distance) * this.Transform;
+		}
+
+		base.Draw(transform, device, deviceContext);
 	}
 
 	protected virtual void OnPersistenceChanged()
