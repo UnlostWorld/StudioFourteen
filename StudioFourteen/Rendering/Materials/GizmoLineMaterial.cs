@@ -15,11 +15,27 @@
 
 namespace StudioFourteen.Rendering.Materials;
 
+using System.Runtime.InteropServices;
 using SharpDX.D3DCompiler;
 using StudioFourteen.Content;
+using StudioFourteen.Rendering.Scene;
 
-public class VertexColor : MaterialBase
+[StructLayout(LayoutKind.Sequential)]
+public struct GizmoLineMaterial : IMaterial
 {
-	protected override IContent<ShaderBytecode> VertexShader => new ShaderReference("Shaders/Geometry_vertexColor.hlsl", "vs_4_0", "vert");
-	protected override IContent<ShaderBytecode> PixelShader => new ShaderReference("Shaders/Geometry_vertexColor.hlsl", "ps_4_0", "pixel");
+	public Color Color;
+	public float Thickness;
+	public float Unused1;
+	public float Unused2;
+	public float Unused3;
+
+	public IContent<ShaderBytecode>? GetVertexShader() => new ShaderReference("Shaders/GizmoLine.hlsl", "vs_4_0", "vert");
+	public IContent<ShaderBytecode>? GetPixelShader() => new ShaderReference("Shaders/GizmoLine.hlsl", "ps_4_0", "pixel");
+	public IContent<ShaderBytecode>? GetGeometryShader() => new ShaderReference("Shaders/GizmoLine.hlsl", "gs_4_0", "geometry");
+
+	public void Initialize()
+	{
+		this.Color = Color.White;
+		this.Thickness = 1.0f;
+	}
 }

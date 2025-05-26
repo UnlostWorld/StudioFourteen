@@ -18,14 +18,14 @@ namespace StudioFourteen.Rendering.Passes;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
+using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Scene;
 
 using Device = SharpDX.Direct3D11.Device;
-using Material = StudioFourteen.Rendering.Material;
 
 public class GenerateUiMaskPass : RenderPassBase
 {
-	private readonly MeshRenderer quad = new(Meshes.Quad, Material.BlitAlphaMask);
+	private readonly MeshRenderer<BlitAlphaMaskMaterial> quad = new(Meshes.Quad);
 
 	private Texture2D? backBufferCopyTexture;
 	private ShaderResourceView? backBufferResourceView;

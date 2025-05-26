@@ -18,28 +18,25 @@ namespace StudioFourteen.Rendering.Materials;
 using System.Runtime.InteropServices;
 using SharpDX.D3DCompiler;
 using StudioFourteen.Content;
+using StudioFourteen.Rendering.Scene;
 
-public class GridMaterial : InstanceMaterialBase<GridMaterial.GridInstanceData>
+[StructLayout(LayoutKind.Sequential)]
+public struct GridMaterial : IMaterial
 {
-	protected override IContent<ShaderBytecode> VertexShader => new ShaderReference("Shaders/Grid.hlsl", "vs_4_0", "vert");
-	protected override IContent<ShaderBytecode> PixelShader => new ShaderReference("Shaders/Grid.hlsl", "ps_4_0", "pixel");
+	public Color Color;
+	public float GridSize;
+	public float LineThickness;
+	public float Height;
+	public float Unused3;
 
-	protected override void SetDefault(ref GridInstanceData instance)
+	public IContent<ShaderBytecode>? GetVertexShader() => new ShaderReference("Shaders/Grid.hlsl", "vs_4_0", "vert");
+	public IContent<ShaderBytecode>? GetPixelShader() => new ShaderReference("Shaders/Grid.hlsl", "ps_4_0", "pixel");
+	public IContent<ShaderBytecode>? GetGeometryShader() => null;
+
+	public void Initialize()
 	{
-		base.SetDefault(ref instance);
-
-		instance.Color = Color.White;
-		instance.GridSize = 1.0f;
-		instance.LineThickness = 0.1f;
-	}
-
-	[StructLayout(LayoutKind.Sequential)]
-	public struct GridInstanceData
-	{
-		public Color Color;
-		public float GridSize;
-		public float LineThickness;
-		public float Height;
-		public float Unused3;
+		this.Color = Color.White;
+		this.GridSize = 1.0f;
+		this.LineThickness = 0.1f;
 	}
 }

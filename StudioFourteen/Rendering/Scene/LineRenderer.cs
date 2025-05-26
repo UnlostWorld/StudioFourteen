@@ -24,10 +24,9 @@ using StudioFourteen.Rendering.Materials;
 using Buffer = SharpDX.Direct3D11.Buffer;
 using Device = SharpDX.Direct3D11.Device;
 
-public class LineRenderer : InstanceRendererBase<MeshRenderer.PerRendererData>
+public class LineRenderer<TMaterialData> : InstanceRendererBase<MeshRendererInstanceData, TMaterialData>
+	where TMaterialData : unmanaged, IMaterial
 {
-	public MaterialBase? Material;
-
 	private readonly Vertex[] vertArray = new Vertex[2]
 	{
 		new Vertex(Vector4.One, Color.White),
@@ -37,25 +36,6 @@ public class LineRenderer : InstanceRendererBase<MeshRenderer.PerRendererData>
 	private Buffer? vertices;
 	private VertexBufferBinding vertexBufferBinding;
 	private int vertexLength = 0;
-
-	private Exception? materialException;
-
-	public LineRenderer()
-	{
-		this.Color = Color.White;
-	}
-
-	public LineRenderer(MaterialBase material)
-	{
-		this.Material = material;
-		this.Color = Color.White;
-	}
-
-	public Color Color
-	{
-		get => this.Data.Color;
-		set => this.Data.Color = value;
-	}
 
 	public Vector3 From
 	{
@@ -69,39 +49,11 @@ public class LineRenderer : InstanceRendererBase<MeshRenderer.PerRendererData>
 		set => this.vertArray[1].Position = new(value, 1.0f);
 	}
 
-	public ref TDataType GetMaterialInstance<TDataType>()
-		where TDataType : unmanaged
-	{
-		if (this.Material is InstanceMaterialBase<TDataType> instanceMaterial)
-		{
-			return ref instanceMaterial.GetInstanceData(this);
-		}
-
-		throw new Exception("Material was not an instance material");
-	}
-
 	public override void Draw(Transform transform, Device device, DeviceContext deviceContext)
 	{
 		Transform thisTransform = transform * this.Transform;
-		this.Data.Transform = Matrix4x4.Transpose(thisTransform.ToMatrix());
+		this.Instance.Transform = Matrix4x4.Transpose(thisTransform.ToMatrix());
 		base.Draw(thisTransform, device, deviceContext);
-
-		if (this.Material == null || this.materialException != null)
-			return;
-
-		if (!this.Material.IsLoaded)
-		{
-			try
-			{
-				this.Material.Load(device);
-			}
-			catch (Exception ex)
-			{
-				this.materialException = ex;
-				Logging.Shared.Error(ex, $"Error loading material: {this.Material}");
-				return;
-			}
-		}
 
 		if (this.vertices == null)
 		{
@@ -114,8 +66,6 @@ public class LineRenderer : InstanceRendererBase<MeshRenderer.PerRendererData>
 
 		deviceContext.InputAssembler.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.LineList;
 		deviceContext.InputAssembler.SetVertexBuffers(0, this.vertexBufferBinding);
-
-		this.Material.Bind(this, device, deviceContext);
 		deviceContext.Draw(this.vertexLength, 0);
 	}
 

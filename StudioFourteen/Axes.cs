@@ -22,4 +22,5 @@ public static class Axes
 	public static Color XColor = new Color(1, 0, 0, 1);
 	public static Color YColor = new Color(0, 1, 0, 1);
 	public static Color ZColor = new Color(0, 0, 1, 1);
+	public static Color HoverColor = new Color(1, 1, 0, 1);
 }

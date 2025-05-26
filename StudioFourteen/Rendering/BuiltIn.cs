@@ -30,13 +30,13 @@ public static class Meshes
 	public static readonly IContent<Mesh> Bone = new JsonContentReference<Mesh>("Meshes/Bone.jsonc");
 }
 
-public static class Material
+/*public static class Material
 {
 	public static readonly BlitMaterial Blit = new();
 	public static readonly BlitAlphaMaskMaterial BlitAlphaMask = new();
 	public static readonly VertexColor GeometryVertexColor = new();
 	public static readonly BasicMaterial Line = new("Shaders/Line.hlsl", true);
 	public static readonly BasicMaterial Bone = new("Shaders/Bone.hlsl", true);
-	public static readonly BasicMaterial GizmoLine = new("Shaders/GizmoLine.hlsl", true);
+	public static readonly GizmoLineMaterial GizmoLine = new();
 	public static readonly BoneCapMaterial BoneCap = new();
-}
+}*/

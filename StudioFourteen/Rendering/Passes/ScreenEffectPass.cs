@@ -24,9 +24,18 @@ using StudioFourteen.Rendering.Scene;
 using Device = SharpDX.Direct3D11.Device;
 using Format = SharpDX.DXGI.Format;
 
-public class ScreenEffectPass(MaterialBase material) : InstanceRenderPassBase<ScreenEffectPass.EffectPassData>
+[StructLayout(LayoutKind.Sequential)]
+public struct ScreenEffectPassData
 {
-	private readonly MeshRenderer quad = new(Meshes.Quad, material);
+	public Vector2 ScreenSize;
+	public float Unused1;
+	public float Unused2;
+}
+
+public class ScreenEffectPass<TMaterialData>() : InstanceRenderPassBase<ScreenEffectPassData>
+	where TMaterialData : unmanaged, IMaterial
+{
+	private readonly MeshRenderer<TMaterialData> quad = new(Meshes.Quad);
 
 	private Texture2D? backBufferCopyTexture;
 	private ShaderResourceView? backBufferResourceView;
@@ -52,7 +61,7 @@ public class ScreenEffectPass(MaterialBase material) : InstanceRenderPassBase<Sc
 		if (service.BackBuffer == null)
 			return;
 
-		this.PassData.ScreenSize = new (service.Width, service.Height);
+		this.PassData.ScreenSize = new(service.Width, service.Height);
 
 		base.Render(service, device, deviceContext);
 
@@ -123,13 +132,5 @@ public class ScreenEffectPass(MaterialBase material) : InstanceRenderPassBase<Sc
 		this.backBufferTargetView?.Dispose();
 
 		base.Dispose();
-	}
-
-	[StructLayout(LayoutKind.Sequential)]
-	public struct EffectPassData
-	{
-		public Vector2 ScreenSize;
-		public float Unused1;
-		public float Unused2;
 	}
 }

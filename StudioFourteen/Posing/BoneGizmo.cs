@@ -22,25 +22,24 @@ using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.Havok.Animation.Rig;
 using Lumina.Excel.Sheets;
 using StudioFourteen.Rendering;
+using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Scene;
 using StudioFourteen.Rendering.Scene.Handles;
 using StudioFourteen.Selection;
-
-using Material = StudioFourteen.Rendering.Material;
 
 public class BoneGizmo : SelectionHandle
 {
 	private readonly BoneSelection boneSelection;
 	private readonly BoneId boneId;
 	private readonly BoneId? parentBoneId;
-	private readonly MeshRenderer capRenderer;
-	private readonly LineRenderer? connectionRenderer;
+	private readonly MeshRenderer<BoneCapMaterial> capRenderer;
+	private readonly LineRenderer<BoneMaterial>? connectionRenderer;
 
 	public BoneGizmo(BoneSelection selection)
 		: base(selection)
 	{
 		this.boneSelection = selection;
-		this.capRenderer = new(Meshes.Bone, Material.BoneCap);
+		this.capRenderer = new(Meshes.Bone);
 		this.Add(this.capRenderer);
 
 		foreach ((BoneId boneId, List<BoneId> path) in selection.BonePaths)
@@ -52,7 +51,7 @@ public class BoneGizmo : SelectionHandle
 				if (path[0].BoneIndex == 0)
 					continue;
 
-				this.connectionRenderer = new(Material.Bone);
+				this.connectionRenderer = new();
 				this.connectionRenderer.IsHitTestVisible = false;
 				this.Add(this.connectionRenderer);
 				this.parentBoneId = path[0];
@@ -84,9 +83,9 @@ public class BoneGizmo : SelectionHandle
 
 		bool isHoveredOrSelected = this.IsHovered | this.IsSelected;
 
-		Material.BoneCap.GetInstanceData(this.capRenderer).Size = isHoveredOrSelected ? 2.0f : 1.0f;
-		Material.BoneCap.GetInstanceData(this.capRenderer).DepthOffset = isHoveredOrSelected ? 0.001f : 0f;
-		Material.BoneCap.GetInstanceData(this.capRenderer).Color = this.IsSelected ? Color.White : new(1, 0, 0, 1);
+		this.capRenderer.Material.Size = isHoveredOrSelected ? 2.0f : 1.0f;
+		this.capRenderer.Material.DepthOffset = isHoveredOrSelected ? 0.001f : 0f;
+		////this.capRenderer.Material.Color = this.IsSelected ? Color.White : new(1, 0, 0, 1);
 
 		Vector3 bonePos = Vector3.Transform(Vector3.Zero, boneTransform.ToMatrix());
 

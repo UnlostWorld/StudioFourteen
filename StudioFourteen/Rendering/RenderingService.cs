@@ -24,6 +24,7 @@ using SharpDX.Direct3D11;
 using SixLabors.ImageSharp;
 using StudioFourteen.Plugin;
 using StudioFourteen.Rendering.Passes;
+using StudioFourteen.Rendering.Scene;
 using StudioFourteen.Services;
 
 using Device = SharpDX.Direct3D11.Device;
@@ -33,6 +34,7 @@ using XivDevice = FFXIVClientStructs.FFXIV.Client.Graphics.Kernel.Device;
 // https://github.com/sourpuh/ffxiv_pictomancy/tree/master
 public class RenderingService : ServiceBase
 {
+	public readonly ShaderCache ShaderCache = new();
 	public readonly ForwardPass Forward = new();
 
 	private readonly GenerateUiMaskPass generateUiMaskPass = new();
@@ -116,6 +118,8 @@ public class RenderingService : ServiceBase
 			pass.Dispose();
 		}
 
+		this.ShaderCache.Dispose();
+
 		base.Dispose();
 	}
 
@@ -158,6 +162,11 @@ public class RenderingService : ServiceBase
 		{
 			InterfaceManager.RunBeforeImGuiRender(this.OnBeforeImGuiRender);
 			this.needsImGuiRequeue = false;
+		}
+
+		if (this.device != null)
+		{
+			this.ShaderCache.OnTick(this.device);
 		}
 	}
 

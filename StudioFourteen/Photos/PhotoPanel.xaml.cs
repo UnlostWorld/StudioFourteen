@@ -30,13 +30,7 @@ using Panel = StudioFourteen.Panels.Panel;
 
 public partial class PhotoPanel : Panel
 {
-	private readonly PhotoGuidesEffectMaterial guidesMaterial = new();
-	private readonly ScreenEffectPass guidesPass;
-
-	public PhotoPanel()
-	{
-		this.guidesPass = new(this.guidesMaterial);
-	}
+	private readonly ScreenEffectPass<PhotoGuidesEffectMaterial> guidesPass = new();
 
 	public bool HideUI
 	{
@@ -48,7 +42,7 @@ public partial class PhotoPanel : Panel
 		}
 	}
 
-	public PhotoGuidesEffectMaterial.GuideModes Guide
+	/*public PhotoGuidesEffectMaterial.GuideModes Guide
 	{
 		get => this.Persistence.GetPersistence<PhotoGuidesEffectMaterial.GuideModes>();
 		set
@@ -86,21 +80,21 @@ public partial class PhotoPanel : Panel
 			this.NotifyPropertyChanged(nameof(this.SelectedAspectRatio));
 			this.ResolutionToggle.IsChecked = false;
 		}
-	}
+	}*/
 
 	protected override void OnOpened()
 	{
 		base.OnOpened();
 
 		this.Services.Photos.IsPhotoMode = this.HideUI;
-		this.Services.Photos.AspectRatio = this.SelectedAspectRatio.Aspect;
-		this.Services.Photos.Width = this.SelectedAspectRatio.Width;
-		this.Services.Photos.Height = this.SelectedAspectRatio.Height;
+		////this.Services.Photos.AspectRatio = this.SelectedAspectRatio.Aspect;
+		////this.Services.Photos.Width = this.SelectedAspectRatio.Width;
+		////this.Services.Photos.Height = this.SelectedAspectRatio.Height;
 
 		this.Services.Rendering.AddAfterEffectsPass(this.guidesPass);
 
-		this.guidesMaterial.SetAspectRatio(this.SelectedAspectRatio.Aspect);
-		this.guidesMaterial.GuidesMode = this.Guide;
+		////this.guidesMaterial.SetAspectRatio(this.SelectedAspectRatio.Aspect);
+		////this.guidesMaterial.GuidesMode = this.Guide;
 	}
 
 	protected override void OnClosed()
@@ -129,8 +123,8 @@ public partial class PhotoPanel : Panel
 
 	private async Task RemoveGuidesAsync()
 	{
-		this.guidesMaterial.GuidesMode = PhotoGuidesEffectMaterial.GuideModes.None;
-		this.guidesMaterial.SetAspectRatio(0);
+		////this.guidesMaterial.GuidesMode = PhotoGuidesEffectMaterial.GuideModes.None;
+		////this.guidesMaterial.SetAspectRatio(0);
 		await Task.Delay(250);
 
 		this.Services.Rendering.RemoveAfterEffectsPass(this.guidesPass);

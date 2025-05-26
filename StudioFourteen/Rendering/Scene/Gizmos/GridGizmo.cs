@@ -22,7 +22,7 @@ using StudioFourteen.Rendering.Scene;
 
 public class GridGizmo : GizmoBase
 {
-	private readonly MeshRenderer gridRenderer = new(Meshes.Plane, new GridMaterial());
+	private readonly MeshRenderer<GridMaterial> gridRenderer = new(Meshes.Plane);
 
 	public GridGizmo()
 	{
@@ -59,8 +59,7 @@ public class GridGizmo : GizmoBase
 			Character* target = this.Services.Target.GetTarget();
 			if (target != null && target->DrawObject != null)
 			{
-				ref GridMaterial.GridInstanceData data = ref this.gridRenderer.GetMaterialInstance<GridMaterial.GridInstanceData>();
-				data.Height = target->DrawObject->Position.Y;
+				this.gridRenderer.Material.Height = target->DrawObject->Position.Y;
 			}
 		}
 
@@ -71,12 +70,11 @@ public class GridGizmo : GizmoBase
 	{
 		base.OnPersistenceChanged();
 
-		ref GridMaterial.GridInstanceData data = ref this.gridRenderer.GetMaterialInstance<GridMaterial.GridInstanceData>();
-		data.Color.A = this.Opacity;
+		this.gridRenderer.Material.Color.A = this.Opacity;
 
 		if (!this.KeepAtTargetHeight)
 		{
-			data.Height = this.Height;
+			this.gridRenderer.Material.Height = this.Height;
 		}
 	}
 }

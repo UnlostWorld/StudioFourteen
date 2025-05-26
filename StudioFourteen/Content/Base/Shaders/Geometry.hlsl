@@ -25,7 +25,6 @@ cbuffer GeometryPassData : register(PassDataRegister)
 cbuffer RendererInstanceData : register(RendererDataRegister)
 {
 	float4x4 Transform;
-	float4 ObjectColor = 1;
 };
 
 struct Fragment

@@ -16,37 +16,112 @@
 namespace StudioFourteen.Rendering.Scene;
 
 using System;
-using System.Collections.Generic;
+using SharpDX.D3DCompiler;
 using SharpDX.Direct3D11;
+using StudioFourteen.Content;
+
 using Buffer = SharpDX.Direct3D11.Buffer;
 
-public abstract class InstanceRendererBase<T> : RendererBase
-	where T : unmanaged
+public interface IMaterial
 {
-	public T Data;
-	private readonly Dictionary<Type, Buffer> rendererTypeBuffer = new();
+	IContent<ShaderBytecode>? GetVertexShader();
+	IContent<ShaderBytecode>? GetPixelShader();
+	IContent<ShaderBytecode>? GetGeometryShader();
+
+	void Initialize();
+}
+
+public abstract class InstanceRendererBase<TRendererData, TMaterialData> : RendererBase
+	where TRendererData : unmanaged
+	where TMaterialData : unmanaged, IMaterial
+{
+	public TRendererData Instance;
+	public TMaterialData Material;
+
+	private Buffer? rendererDataBuffer;
+	private Buffer? materialDataBuffer;
+
+	private Shader? shader;
+	private InputLayout? layout;
 
 	public override void Draw(Transform transform, Device device, DeviceContext deviceContext)
 	{
-		if (!this.rendererTypeBuffer.TryGetValue(this.GetType(), out Buffer? dataBuffer) || dataBuffer == null)
+		if (this.rendererDataBuffer == null)
 		{
-			dataBuffer = new(
+			this.rendererDataBuffer = new(
 				device,
-				SharpDX.Utilities.SizeOf<T>(),
+				SharpDX.Utilities.SizeOf<TRendererData>(),
 				ResourceUsage.Default,
 				BindFlags.ConstantBuffer,
 				CpuAccessFlags.None,
 				ResourceOptionFlags.None,
 				0);
-
-			this.rendererTypeBuffer[this.GetType()] = dataBuffer;
 		}
 
-		deviceContext.VertexShader.SetConstantBuffer(Registers.PerRendererData, dataBuffer);
-		deviceContext.GeometryShader.SetConstantBuffer(Registers.PerRendererData, dataBuffer);
-		deviceContext.PixelShader.SetConstantBuffer(Registers.PerRendererData, dataBuffer);
+		if (this.materialDataBuffer == null)
+		{
+			int size = SharpDX.Utilities.SizeOf<TMaterialData>();
+
+			if (size == 0)
+				throw new Exception($"{typeof(TMaterialData)} size is 0. Ensure there are at least 16 bytes occupied (one Vector4)");
+
+			if (size % 16 != 0)
+				throw new Exception($"{typeof(TMaterialData)} is not divisible by 16, ensure struct is packed in sets of 4 floats.");
+
+			this.materialDataBuffer = new(
+				device,
+				size,
+				ResourceUsage.Default,
+				BindFlags.ConstantBuffer,
+				CpuAccessFlags.None,
+				ResourceOptionFlags.None,
+				0);
+		}
+
+		if (this.shader == null)
+		{
+			this.shader = this.Services.Rendering.ShaderCache.GetShader<TMaterialData>(device);
+
+			if (this.shader == null)
+				return;
+
+			if (this.shader.VertexSignature != null)
+				this.layout = new InputLayout(device, this.shader.VertexSignature, default(Vertex).GetInputElements());
+
+			this.Material.Initialize();
+		}
+
+		if (this.layout != null)
+			deviceContext.InputAssembler.InputLayout = this.layout;
+
+		if (this.shader.Vertex != null)
+		{
+			deviceContext.VertexShader.Set(this.shader.Vertex);
+			deviceContext.VertexShader.SetConstantBuffer(Registers.PerRendererData, this.rendererDataBuffer);
+			deviceContext.VertexShader.SetConstantBuffer(Registers.PerMaterialData, this.materialDataBuffer);
+		}
+
+		if (this.shader.Geometry != null)
+		{
+			deviceContext.GeometryShader.Set(this.shader.Geometry);
+			deviceContext.GeometryShader.SetConstantBuffer(Registers.PerRendererData, this.rendererDataBuffer);
+			deviceContext.GeometryShader.SetConstantBuffer(Registers.PerMaterialData, this.materialDataBuffer);
+		}
+
+		if (this.shader.Pixel != null)
+		{
+			deviceContext.PixelShader.Set(this.shader.Pixel);
+			deviceContext.PixelShader.SetConstantBuffer(Registers.PerRendererData, this.rendererDataBuffer);
+			deviceContext.PixelShader.SetConstantBuffer(Registers.PerMaterialData, this.materialDataBuffer);
+		}
 
 		// TODO: Use a buffer array and an index instead of updating every draw call?
-		deviceContext.UpdateSubresource(ref this.Data, dataBuffer);
+		deviceContext.UpdateSubresource(ref this.Instance, this.rendererDataBuffer);
+		deviceContext.UpdateSubresource(ref this.Material, this.materialDataBuffer);
+	}
+
+	public override void Dispose()
+	{
+		this.layout?.Dispose();
 	}
 }

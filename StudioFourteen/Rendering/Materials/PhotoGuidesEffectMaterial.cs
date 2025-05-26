@@ -20,8 +20,30 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 using SharpDX.D3DCompiler;
 using StudioFourteen.Content;
+using StudioFourteen.Rendering.Scene;
 using WpfUtils.Animation;
 
+[StructLayout(LayoutKind.Sequential)]
+public struct PhotoGuidesEffectMaterial : IMaterial
+{
+	public float LeftRight;
+	public float TopBottom;
+	public uint GuidesMode;
+	public float Unused4;
+
+	public IContent<ShaderBytecode>? GetVertexShader() => new ShaderReference("Shaders/Blit_PhotoGuides.hlsl", "vs_4_0", "vert");
+	public IContent<ShaderBytecode>? GetPixelShader() => new ShaderReference("Shaders/Blit_PhotoGuides.hlsl", "ps_4_0", "pixel");
+	public IContent<ShaderBytecode>? GetGeometryShader() => null;
+
+	public void Initialize()
+	{
+		this.LeftRight = 0;
+		this.TopBottom = 0;
+		this.GuidesMode = 0;
+	}
+}
+
+/*
 public class PhotoGuidesEffectMaterial : InstanceMaterialBase<PhotoGuidesEffectMaterial.InstanceData>
 {
 	private const float LerpTimeMs = 250;
@@ -43,8 +65,8 @@ public class PhotoGuidesEffectMaterial : InstanceMaterialBase<PhotoGuidesEffectM
 
 	protected ServiceManager Services => ServiceManager.Instance;
 
-	protected override IContent<ShaderBytecode> VertexShader => new ShaderReference("Shaders/Blit_PhotoGuides.hlsl", "vs_4_0", "vert");
-	protected override IContent<ShaderBytecode> PixelShader => new ShaderReference("Shaders/Blit_PhotoGuides.hlsl", "ps_4_0", "pixel");
+	protected override IContent<ShaderBytecode> VertexShader
+	protected override IContent<ShaderBytecode> PixelShader
 
 	public override void UpdateInstanceData(ref InstanceData instance)
 	{
@@ -104,3 +126,4 @@ public class PhotoGuidesEffectMaterial : InstanceMaterialBase<PhotoGuidesEffectM
 		public float Unused4;
 	}
 }
+*/

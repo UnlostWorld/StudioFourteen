@@ -33,7 +33,7 @@
 								<ToggleButton
 									Margin="-12,-5,0,-5"
 									Grid.Column="0"
-									IsChecked="{Binding Visible}"
+									IsChecked="{Binding IsVisible}"
 									Style="{DynamicResource VisibilityToggle}"
 									ToolTip="{DynamicResource LOC_GizmosVisibility_ToolTip}"/>
 

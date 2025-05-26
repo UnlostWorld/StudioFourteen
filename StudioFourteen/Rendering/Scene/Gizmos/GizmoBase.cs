@@ -69,30 +69,30 @@ public abstract class GizmoBase : SceneGroup, INotifyPropertyChanged
 		this.PropertyChanged?.Invoke(this, new(id));
 	}
 
-	public virtual void OnGameTick()
+	protected virtual void OnPersistenceChanged()
 	{
 	}
 
-	public override void Draw(Transform transform, Device device, DeviceContext deviceContext)
+	protected override void OnDraw()
 	{
 		if (this.KeepScreenSize)
 		{
-			Vector4 gizmoPos = Vector4.Transform(new Vector4(0, 0, 0, 1), this.Transform.ToMatrix());
-			Vector4 vector = gizmoPos - new Vector4(this.Services.Camera.CurrentPosition, 1.0f);
-			float distance = vector.Length() * 0.1f;
-
-			this.Transform = Transform.FromScale(distance) * this.Transform;
+			this.LocalTransform = this.GetCameraScaleTransform();
 		}
 
-		base.Draw(transform, device, deviceContext);
-	}
-
-	protected virtual void OnPersistenceChanged()
-	{
+		base.OnDraw();
 	}
 
 	private void OnPersistenceChanged(Persistence persistence)
 	{
 		this.OnPersistenceChanged();
+	}
+
+	private Transform GetCameraScaleTransform()
+	{
+		Vector4 gizmoPos = Vector4.Transform(new Vector4(0, 0, 0, 1), this.Transform.ToMatrix());
+		Vector4 vector = gizmoPos - new Vector4(this.Services.Camera.CurrentPosition, 1.0f);
+		float distance = vector.Length() * 0.1f;
+		return Transform.FromScale(distance);
 	}
 }

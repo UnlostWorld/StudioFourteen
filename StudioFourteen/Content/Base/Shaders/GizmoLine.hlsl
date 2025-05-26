@@ -21,22 +21,25 @@
 cbuffer MaterialInstanceData : register(MaterialDataRegister)
 {
 	float4 Color;
+	float Thickness;
 };
 
 static float zOffset = 0.5f;
 static const float PI = 3.1415926f;
 static const float fRatio = 2.0f;
-static float fThickness = 0.0075f;
 static float fShadowSize = 0.75f;
+static float fThickness = 0.0075f;
 
 void addHalfCircle(inout TriangleStream<Fragment> triangleStream, int nCountTriangles, float4 linePointToConnect, float fPointWComponent, float fAngle, float4 color)
 {
+	float thickness = fThickness * Thickness;
+
     Fragment output = (Fragment)0;
 	output.Color = color;
     for (int nI = 0; nI < nCountTriangles; ++nI)
     {
-        output.Position.x = cos(fAngle + (PI / nCountTriangles * nI)) * fThickness / fRatio;
-        output.Position.y = sin(fAngle + (PI / nCountTriangles * nI)) * fThickness;
+        output.Position.x = cos(fAngle + (PI / nCountTriangles * nI)) * thickness / fRatio;
+        output.Position.y = sin(fAngle + (PI / nCountTriangles * nI)) * thickness;
         output.Position.z = zOffset;
         output.Position.w = 0.0f;
         output.Position += linePointToConnect;
@@ -48,8 +51,8 @@ void addHalfCircle(inout TriangleStream<Fragment> triangleStream, int nCountTria
 		output.ScreenPosition = output.Position;
         triangleStream.Append(output);
 
-        output.Position.x = cos(fAngle + (PI / nCountTriangles * (nI + 1))) * fThickness / fRatio;
-        output.Position.y = sin(fAngle + (PI / nCountTriangles * (nI + 1))) * fThickness;
+        output.Position.x = cos(fAngle + (PI / nCountTriangles * (nI + 1))) * thickness / fRatio;
+        output.Position.y = sin(fAngle + (PI / nCountTriangles * (nI + 1))) * thickness;
         output.Position.z = zOffset;
         output.Position.w = 0.0f;
         output.Position += linePointToConnect;
@@ -97,17 +100,19 @@ void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStr
     fAngle *= -1.0f;
     fAngle -= PI * 0.5f;
 
+	float thickness = fThickness * Thickness;
+
     //first half circle of the line
-    //addHalfCircle(triangleStream, nCountTriangles, positionPoint0Transformed, fPoint0w, fAngle, input[0].Color);
-    //addHalfCircle(triangleStream, nCountTriangles, positionPoint1Transformed, fPoint1w, fAngle + PI, input[1].Color);
+   // addHalfCircle(triangleStream, nCountTriangles, positionPoint0Transformed, fPoint0w, fAngle, input[0].Color);
+   // addHalfCircle(triangleStream, nCountTriangles, positionPoint1Transformed, fPoint1w, fAngle + PI, input[1].Color);
 
     //connection between the two circles
     //triangle1
 	output.Color = input[0].Color;
 	output.Color.a = 1;
 	output.TexCoord = float2(0,-1);
-    output.Position.x = cos(fAngle) * fThickness / fRatio;
-    output.Position.y = sin(fAngle) * fThickness;
+    output.Position.x = cos(fAngle) * thickness / fRatio;
+    output.Position.y = sin(fAngle) * thickness;
     output.Position.z = zOffset;
     output.Position.w = 0.0f;
     output.Position += positionPoint0Transformed;
@@ -117,8 +122,8 @@ void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStr
 
 	output.TexCoord = float2(1,-1);
 	output.Color.a = 1;
-    output.Position.x = cos(fAngle + (PI / nCountTriangles * (nCountTriangles))) * fThickness / fRatio;
-    output.Position.y = sin(fAngle + (PI / nCountTriangles * (nCountTriangles))) * fThickness;
+    output.Position.x = cos(fAngle + (PI / nCountTriangles * (nCountTriangles))) * thickness / fRatio;
+    output.Position.y = sin(fAngle + (PI / nCountTriangles * (nCountTriangles))) * thickness;
     output.Position.z = zOffset;
     output.Position.w = 0.0f;
     output.Position += positionPoint0Transformed;
@@ -128,8 +133,8 @@ void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStr
 
 	output.TexCoord = float2(1,-1);
 	output.Color.a = 0;
-    output.Position.x = cos(fAngle + (PI / nCountTriangles * (nCountTriangles))) * fThickness / fRatio;
-    output.Position.y = sin(fAngle + (PI / nCountTriangles * (nCountTriangles))) * fThickness;
+    output.Position.x = cos(fAngle + (PI / nCountTriangles * (nCountTriangles))) * thickness / fRatio;
+    output.Position.y = sin(fAngle + (PI / nCountTriangles * (nCountTriangles))) * thickness;
     output.Position.z = zOffset;
     output.Position.w = 0.0f;
     output.Position += positionPoint1Transformed;
@@ -141,8 +146,8 @@ void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStr
 	output.Color = input[1].Color;
 	output.TexCoord = float2(0,-1);
 	output.Color.a = 1;
-    output.Position.x = cos(fAngle) * fThickness / fRatio;
-    output.Position.y = sin(fAngle) * fThickness;
+    output.Position.x = cos(fAngle) * thickness / fRatio;
+    output.Position.y = sin(fAngle) * thickness;
     output.Position.z = zOffset;
     output.Position.w = 0.0f;
     output.Position += positionPoint0Transformed;
@@ -152,8 +157,8 @@ void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStr
 
 	output.TexCoord = float2(0,-1);
 	output.Color.a = 0;
-    output.Position.x = cos(fAngle) * fThickness / fRatio;
-    output.Position.y = sin(fAngle) * fThickness;
+    output.Position.x = cos(fAngle) * thickness / fRatio;
+    output.Position.y = sin(fAngle) * thickness;
     output.Position.z = zOffset;
     output.Position.w = 0.0f;
     output.Position += positionPoint1Transformed;
@@ -163,8 +168,8 @@ void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStr
 
 	output.TexCoord = float2(1,-1);
 	output.Color.a = 0;
-    output.Position.x = cos(fAngle + (PI / nCountTriangles * (nCountTriangles))) * fThickness / fRatio;
-    output.Position.y = sin(fAngle + (PI / nCountTriangles * (nCountTriangles))) * fThickness;
+    output.Position.x = cos(fAngle + (PI / nCountTriangles * (nCountTriangles))) * thickness / fRatio;
+    output.Position.y = sin(fAngle + (PI / nCountTriangles * (nCountTriangles))) * thickness;
     output.Position.z = zOffset;
     output.Position.w = 0.0f;
     output.Position += positionPoint1Transformed;
@@ -176,13 +181,12 @@ void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStr
 float4 pixel(Fragment frag) : SV_TARGET
 {
 	float l = frag.Color.a;
-	frag.Color.a = 1;
-	float4 color = frag.Color * ObjectColor;
+	float4 color = Color;
 
 	// End Cap
 	if (frag.TexCoord.x < 0)
 	{
-		if (frag.TexCoord.y < fShadowSize)
+		if (frag.TexCoord.y < (fShadowSize / Thickness))
 		{
 			color.rgb = 0;
 		}
@@ -193,14 +197,14 @@ float4 pixel(Fragment frag) : SV_TARGET
 	{
 		if (frag.TexCoord.x > 0.5)
 		{
-			if (frag.TexCoord.x > (1 - (fShadowSize / 2)))
+			if (frag.TexCoord.x > (1 - ((fShadowSize / Thickness) / 2)))
 			{
 				color.rgb = 0;
 			}
 		}
 		else
 		{
-			if (frag.TexCoord.x < (fShadowSize / 2))
+			if (frag.TexCoord.x < ((fShadowSize / Thickness) / 2))
 			{
 				color.rgb = 0;
 			}

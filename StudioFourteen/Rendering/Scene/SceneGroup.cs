@@ -24,6 +24,8 @@ public class SceneGroup : SceneObject
 {
 	public readonly List<SceneObject> Children = new();
 
+	protected Transform LocalTransform { get; set; } = Transform.Identity;
+
 	public void Add(SceneObject sceneObject)
 	{
 		sceneObject.Parent = this;
@@ -45,7 +47,7 @@ public class SceneGroup : SceneObject
 		if (!this.IsVisible)
 			return;
 
-		Transform thisTransform = this.Transform * transform;
+		Transform thisTransform = (this.LocalTransform * this.Transform) * transform;
 
 		foreach (SceneObject child in this.Children)
 		{
@@ -70,7 +72,7 @@ public class SceneGroup : SceneObject
 		if (!this.IsHitTestVisible || !this.IsVisible)
 			return;
 
-		Transform thisTransform = this.Transform * transform;
+		Transform thisTransform = (this.LocalTransform * this.Transform) * transform;
 
 		foreach (SceneObject child in this.Children)
 		{

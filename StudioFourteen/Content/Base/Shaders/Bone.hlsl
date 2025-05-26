@@ -140,7 +140,7 @@ float4 pixel(Fragment frag) : SV_TARGET
 {
 	float l = frag.Color.a;
 	frag.Color.a = 1;
-	float4 color = frag.Color * ObjectColor;
+	float4 color = Color;
 
 	// End Cap
 	if (frag.TexCoord.x < 0)

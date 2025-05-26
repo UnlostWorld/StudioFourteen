@@ -83,7 +83,7 @@ void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStr
 
 float4 pixel(Fragment frag) : SV_TARGET
 {
-	float4 color = frag.Color * ObjectColor;
+	float4 color = Color;
 
 	// End Cap
 	if (frag.TexCoord.x < 0)

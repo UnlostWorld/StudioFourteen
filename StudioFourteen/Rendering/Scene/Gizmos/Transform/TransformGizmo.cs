@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Rendering.Scene.Gizmos.Transforms;
 
+using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Scene.Handles;
 
 public class TransformGizmo : GizmoBase
@@ -53,17 +54,29 @@ public class QuaternionGizmo : SceneGroup
 
 public class AxisHandle : Handle
 {
-	private readonly MeshRenderer circleRenderer;
+	private readonly MeshRenderer<GizmoLineMaterial> circleRenderer;
 
 	public AxisHandle()
 	{
-		this.circleRenderer = new(Meshes.WireCircle, Material.GizmoLine);
+		this.circleRenderer = new(Meshes.WireCircle);
 		this.Add(this.circleRenderer);
 	}
 
-	public Color Color
+	public Color Color { get; set; }
+
+	protected override void OnDraw()
 	{
-		get => this.circleRenderer.Color;
-		set => this.circleRenderer.Color = value;
+		base.OnDraw();
+
+		this.circleRenderer.Material.Color = this.Color;
+
+		if (this.IsHovered)
+		{
+			this.circleRenderer.Material.Thickness = 1.5f;
+		}
+		else
+		{
+			this.circleRenderer.Material.Thickness = 1.0f;
+		}
 	}
 }

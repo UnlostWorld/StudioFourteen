@@ -15,11 +15,22 @@
 
 namespace StudioFourteen.Rendering.Materials;
 
+using System.Numerics;
+using System.Runtime.InteropServices;
 using SharpDX.D3DCompiler;
 using StudioFourteen.Content;
+using StudioFourteen.Rendering.Scene;
 
-public class BlitMaterial : MaterialBase
+[StructLayout(LayoutKind.Sequential)]
+public struct BlitMaterial : IMaterial
 {
-	protected override IContent<ShaderBytecode> VertexShader => new ShaderReference("Shaders/Blit_copy.hlsl", "vs_4_0", "vert");
-	protected override IContent<ShaderBytecode> PixelShader => new ShaderReference("Shaders/Blit_copy.hlsl", "ps_4_0", "pixel");
+	public Vector4 Unused;
+
+	public IContent<ShaderBytecode>? GetVertexShader() => new ShaderReference("Shaders/Blit_copy.hlsl", "vs_4_0", "vert");
+	public IContent<ShaderBytecode>? GetPixelShader() => new ShaderReference("Shaders/Blit_copy.hlsl", "ps_4_0", "pixel");
+	public IContent<ShaderBytecode>? GetGeometryShader() => null;
+
+	public void Initialize()
+	{
+	}
 }

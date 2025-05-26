@@ -18,20 +18,25 @@ namespace StudioFourteen.Rendering.Materials;
 using System.Runtime.InteropServices;
 using SharpDX.D3DCompiler;
 using StudioFourteen.Content;
+using StudioFourteen.Rendering.Scene;
 
-public class BoneCapMaterial : InstanceMaterialBase<BoneCapMaterial.InstanceData>
+[StructLayout(LayoutKind.Sequential)]
+public struct BoneCapMaterial : IMaterial
 {
-	protected override IContent<ShaderBytecode> VertexShader => new ShaderReference("Shaders/BoneCap.hlsl", "vs_4_0", "vert");
-	protected override IContent<ShaderBytecode> PixelShader => new ShaderReference("Shaders/BoneCap.hlsl", "ps_4_0", "pixel");
-	protected override IContent<ShaderBytecode>? GeometryShader => new ShaderReference("Shaders/BoneCap.hlsl", "gs_4_0", "geometry");
+	public Color Color;
+	public float Size;
+	public float DepthOffset;
+	public float Unused2;
+	public float Unused3;
 
-	[StructLayout(LayoutKind.Sequential)]
-	public struct InstanceData
+	public IContent<ShaderBytecode>? GetVertexShader() => new ShaderReference("Shaders/BoneCap.hlsl", "vs_4_0", "vert");
+	public IContent<ShaderBytecode>? GetPixelShader() => new ShaderReference("Shaders/BoneCap.hlsl", "ps_4_0", "pixel");
+	public IContent<ShaderBytecode>? GetGeometryShader() => new ShaderReference("Shaders/BoneCap.hlsl", "gs_4_0", "geometry");
+
+	public void Initialize()
 	{
-		public Color Color;
-		public float Size;
-		public float DepthOffset;
-		public float Unused2;
-		public float Unused3;
+		this.Color = Color.White;
+		this.Size = 1.0f;
+		this.DepthOffset = 0.0f;
 	}
 }

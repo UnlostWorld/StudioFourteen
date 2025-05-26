@@ -15,13 +15,22 @@
 
 namespace StudioFourteen.Rendering.Materials;
 
+using System.Runtime.InteropServices;
 using SharpDX.D3DCompiler;
 using StudioFourteen.Content;
+using StudioFourteen.Rendering.Scene;
 
-public class BasicMaterial(string shader, bool includeGeometry = false)
-	: MaterialBase
+[StructLayout(LayoutKind.Sequential)]
+public struct BoneMaterial : IMaterial
 {
-	protected override IContent<ShaderBytecode> VertexShader => new ShaderReference(shader, "vs_4_0", "vert");
-	protected override IContent<ShaderBytecode> PixelShader => new ShaderReference(shader, "ps_4_0", "pixel");
-	protected override IContent<ShaderBytecode>? GeometryShader => includeGeometry ? new ShaderReference(shader, "gs_4_0", "geometry") : null;
+	public Color Color;
+
+	public IContent<ShaderBytecode>? GetVertexShader() => new ShaderReference("Shaders/Bone.hlsl", "vs_4_0", "vert");
+	public IContent<ShaderBytecode>? GetPixelShader() => new ShaderReference("Shaders/Bone.hlsl", "ps_4_0", "pixel");
+	public IContent<ShaderBytecode>? GetGeometryShader() => new ShaderReference("Shaders/Bone.hlsl", "gs_4_0", "geometry");
+
+	public void Initialize()
+	{
+		this.Color = Color.White;
+	}
 }
