@@ -94,26 +94,17 @@ public abstract class InstanceRendererBase<TRendererData, TMaterialData> : Rende
 		if (this.layout != null)
 			deviceContext.InputAssembler.InputLayout = this.layout;
 
-		if (this.shader.Vertex != null)
-		{
-			deviceContext.VertexShader.Set(this.shader.Vertex);
-			deviceContext.VertexShader.SetConstantBuffer(Registers.PerRendererData, this.rendererDataBuffer);
-			deviceContext.VertexShader.SetConstantBuffer(Registers.PerMaterialData, this.materialDataBuffer);
-		}
+		deviceContext.VertexShader.Set(this.shader.Vertex);
+		deviceContext.VertexShader.SetConstantBuffer(Registers.PerRendererData, this.rendererDataBuffer);
+		deviceContext.VertexShader.SetConstantBuffer(Registers.PerMaterialData, this.materialDataBuffer);
 
-		if (this.shader.Geometry != null)
-		{
-			deviceContext.GeometryShader.Set(this.shader.Geometry);
-			deviceContext.GeometryShader.SetConstantBuffer(Registers.PerRendererData, this.rendererDataBuffer);
-			deviceContext.GeometryShader.SetConstantBuffer(Registers.PerMaterialData, this.materialDataBuffer);
-		}
+		deviceContext.GeometryShader.Set(this.shader.Geometry);
+		deviceContext.GeometryShader.SetConstantBuffer(Registers.PerRendererData, this.rendererDataBuffer);
+		deviceContext.GeometryShader.SetConstantBuffer(Registers.PerMaterialData, this.materialDataBuffer);
 
-		if (this.shader.Pixel != null)
-		{
-			deviceContext.PixelShader.Set(this.shader.Pixel);
-			deviceContext.PixelShader.SetConstantBuffer(Registers.PerRendererData, this.rendererDataBuffer);
-			deviceContext.PixelShader.SetConstantBuffer(Registers.PerMaterialData, this.materialDataBuffer);
-		}
+		deviceContext.PixelShader.Set(this.shader.Pixel);
+		deviceContext.PixelShader.SetConstantBuffer(Registers.PerRendererData, this.rendererDataBuffer);
+		deviceContext.PixelShader.SetConstantBuffer(Registers.PerMaterialData, this.materialDataBuffer);
 
 		// TODO: Use a buffer array and an index instead of updating every draw call?
 		deviceContext.UpdateSubresource(ref this.Instance, this.rendererDataBuffer);

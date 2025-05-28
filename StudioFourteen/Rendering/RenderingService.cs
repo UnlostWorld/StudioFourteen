@@ -48,7 +48,7 @@ public class RenderingService : ServiceBase
 
 	public RenderingService()
 	{
-		this.beforeEffectsPasses.Add(this.Forward);
+		this.afterEffectsPasses.Add(this.Forward);
 	}
 
 	public Texture2D? BackBuffer { get; private set; }
@@ -83,6 +83,11 @@ public class RenderingService : ServiceBase
 			pass.Attach();
 		}
 
+		foreach(RenderPassBase pass in this.afterEffectsPasses)
+		{
+			pass.Attach();
+		}
+
 		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
 		this.Services.Reshade.ReshadeBeforeEffects += this.OnBeforeReshadeRender;
 		this.Services.Reshade.ReshadeAfterEffects += this.OnAfterReshadeRender;
@@ -101,7 +106,12 @@ public class RenderingService : ServiceBase
 		this.Services.Reshade.ReshadeAfterEffects -= this.OnAfterReshadeRender;
 
 		this.generateUiMaskPass.Detach();
-		foreach(RenderPassBase pass in this.beforeEffectsPasses)
+		foreach (RenderPassBase pass in this.beforeEffectsPasses)
+		{
+			pass.Detach();
+		}
+
+		foreach(RenderPassBase pass in this.afterEffectsPasses)
 		{
 			pass.Detach();
 		}
@@ -114,6 +124,11 @@ public class RenderingService : ServiceBase
 
 		this.generateUiMaskPass.Dispose();
 		foreach(RenderPassBase pass in this.beforeEffectsPasses)
+		{
+			pass.Dispose();
+		}
+
+		foreach(RenderPassBase pass in this.afterEffectsPasses)
 		{
 			pass.Dispose();
 		}
@@ -198,6 +213,11 @@ public class RenderingService : ServiceBase
 					pass.OnResolutionChanged();
 				}
 
+				foreach(RenderPassBase pass in this.afterEffectsPasses)
+				{
+					pass.OnResolutionChanged();
+				}
+
 				return false;
 			}
 
@@ -206,6 +226,11 @@ public class RenderingService : ServiceBase
 				this.Log.Information($"Resolution Changing: {xivDevice->Width}x{xivDevice->Height} -> {xivDevice->NewWidth}x{xivDevice->NewHeight}");
 
 				foreach(RenderPassBase pass in this.beforeEffectsPasses)
+				{
+					pass.OnResolutionChanging();
+				}
+
+				foreach(RenderPassBase pass in this.afterEffectsPasses)
 				{
 					pass.OnResolutionChanging();
 				}

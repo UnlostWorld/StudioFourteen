@@ -65,6 +65,10 @@ public class SkeletonGizmo : SceneGroup
 			return;
 		}
 
+		// Add this as a gizmo option.
+		if (this.Services.Target.TargetObjectIndex != this.ObjectTableIndex)
+			return;
+
 		Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(this.ObjectTableIndex);
 		if (pCharacter == null || pCharacter->DrawObject == null)
 			return;
