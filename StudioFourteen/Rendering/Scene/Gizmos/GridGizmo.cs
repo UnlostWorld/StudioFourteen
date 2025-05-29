@@ -22,7 +22,7 @@ using StudioFourteen.Rendering.Scene;
 
 public class GridGizmo : GizmoBase
 {
-	private readonly MeshRenderer<GridMaterial> gridRenderer = new(Meshes.Plane);
+	private readonly MeshRenderer<GridMaterial> gridRenderer = new(MeshContent.Plane);
 
 	public GridGizmo()
 	{

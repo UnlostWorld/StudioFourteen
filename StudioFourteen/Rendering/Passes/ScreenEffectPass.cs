@@ -35,7 +35,7 @@ public struct ScreenEffectPassData
 public class ScreenEffectPass<TMaterialData>() : InstanceRenderPassBase<ScreenEffectPassData>
 	where TMaterialData : unmanaged, IMaterial
 {
-	private readonly MeshRenderer<TMaterialData> quad = new(Meshes.Quad);
+	private readonly MeshRenderer<TMaterialData> quad = new(MeshContent.Quad);
 
 	private Texture2D? backBufferCopyTexture;
 	private ShaderResourceView? backBufferResourceView;

@@ -13,42 +13,18 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering;
+namespace StudioFourteen.Rendering.Meshes.Polygon;
 
-using System;
-using System.Numerics;
-using System.Runtime.InteropServices;
+using System.IO;
+using StudioFourteen.Content;
 
-[StructLayout(LayoutKind.Sequential)]
-public struct Color
+public class PolygonMeshReference(string path)
+	: ContentReference<Mesh>(path)
 {
-	public static readonly Color White = new(1.0f, 1.0f, 1.0f, 1.0f);
-	public static readonly Color Black = new(0.0f, 0.0f, 0.0f, 1.0f);
-	public static readonly Color Transparent = new(0.0f, 0.0f, 0.0f, 0.0f);
-
-	public float R;
-	public float G;
-	public float B;
-	public float A;
-
-	public Color(float r, float g, float b, float a)
+	protected override Mesh Load(Stream stream)
 	{
-		this.R = r;
-		this.G = g;
-		this.B = b;
-		this.A = a;
-	}
-
-	public Color(byte a, byte r, byte g, byte b)
-	{
-		this.R = r / 255.0f;
-		this.G = g / 255.0f;
-		this.B = b / 255.0f;
-		this.A = a / 255.0f;
-	}
-
-	public static implicit operator Vector4(Color color)
-	{
-		return new(color.R, color.G, color.B, color.A);
+		PolygonMesh mesh = new();
+		mesh.Load(stream);
+		return mesh;
 	}
 }

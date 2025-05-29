@@ -74,7 +74,7 @@ float GetClippingAlpha(Fragment frag, float depthClipAlpha = 0)
 	return mask;
 }
 
-Fragment vert(in Vertex vertex)
+Fragment DefaultVert(in Vertex vertex)
 {
 	Fragment result;
 

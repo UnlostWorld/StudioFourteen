@@ -25,7 +25,7 @@ using Device = SharpDX.Direct3D11.Device;
 
 public class GenerateUiMaskPass : RenderPassBase
 {
-	private readonly MeshRenderer<BlitAlphaMaskMaterial> quad = new(Meshes.Quad);
+	private readonly MeshRenderer<BlitAlphaMaskMaterial> quad = new(MeshContent.Quad);
 
 	private Texture2D? backBufferCopyTexture;
 	private ShaderResourceView? backBufferResourceView;

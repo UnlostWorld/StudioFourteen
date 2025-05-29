@@ -50,8 +50,8 @@ public struct Vertex
 
 	public InputElement[] GetInputElements() =>
 	[
-		new InputElement("Position", 0, SharpDX.DXGI.Format.R32G32B32A32_Float, 0, 0, InputClassification.PerVertexData, 0),
-		new InputElement("Color", 0, SharpDX.DXGI.Format.R32G32B32A32_Float, InputElement.AppendAligned, 0, InputClassification.PerVertexData, 0),
-		new InputElement("TexCoord", 0, SharpDX.DXGI.Format.R32G32_Float, InputElement.AppendAligned, 0, InputClassification.PerVertexData, 0),
+		new InputElement("POSITION", 0, SharpDX.DXGI.Format.R32G32B32A32_Float, 0, 0, InputClassification.PerVertexData, 0),
+		new InputElement("COLOR", 0, SharpDX.DXGI.Format.R32G32B32A32_Float, InputElement.AppendAligned, 0, InputClassification.PerVertexData, 0),
+		new InputElement("TEXCOORD", 0, SharpDX.DXGI.Format.R32G32_Float, InputElement.AppendAligned, 0, InputClassification.PerVertexData, 0),
 	];
 }

@@ -28,6 +28,11 @@ static const float fRatio = 2.0f;
 static float fThickness = 0.0075f;
 static float fShadowSize = 0.75f;
 
+Fragment vert(in Vertex vertex)
+{
+	return DefaultVert(vertex);
+}
+
 [maxvertexcount(12)]
 void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStream)
 {

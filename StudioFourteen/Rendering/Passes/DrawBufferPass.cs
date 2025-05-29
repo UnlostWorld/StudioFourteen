@@ -25,7 +25,7 @@ using Format = SharpDX.DXGI.Format;
 
 public class DrawBufferPass : RenderPassBase
 {
-	private readonly MeshRenderer<BlitMaterial> quad = new(Meshes.Quad);
+	private readonly MeshRenderer<BlitMaterial> quad = new(MeshContent.Quad);
 
 	private Texture2D? buffer;
 	private Texture2D? bufferCopyTexture;

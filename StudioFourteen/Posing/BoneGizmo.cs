@@ -39,7 +39,7 @@ public class BoneGizmo : SelectionHandle
 		: base(selection)
 	{
 		this.boneSelection = selection;
-		this.capRenderer = new(Meshes.Bone);
+		this.capRenderer = new(MeshContent.Bone);
 		this.Add(this.capRenderer);
 
 		foreach ((BoneId boneId, List<BoneId> path) in selection.BonePaths)

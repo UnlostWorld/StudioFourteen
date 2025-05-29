@@ -30,6 +30,11 @@ static const float fRatio = 2.0f;
 static float fShadowSize = 0.75f;
 static float fThickness = 0.0075f;
 
+Fragment vert(in Vertex vertex)
+{
+	return DefaultVert(vertex);
+}
+
 void addHalfCircle(inout TriangleStream<Fragment> triangleStream, int nCountTriangles, float4 linePointToConnect, float fPointWComponent, float fAngle, float4 color)
 {
 	float thickness = fThickness * Thickness;
@@ -212,5 +217,9 @@ float4 pixel(Fragment frag) : SV_TARGET
 	}
 
 	color.a *= GetUiClippingAlpha(frag);
+
+	if (color.a <= 0)
+		discard;
+
 	return color;
 }

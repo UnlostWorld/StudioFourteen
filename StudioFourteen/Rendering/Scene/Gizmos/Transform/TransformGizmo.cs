@@ -35,6 +35,7 @@ public class QuaternionGizmo : SceneGroup
 	private readonly AxisHandle xHandle = new();
 	private readonly AxisHandle yHandle = new();
 	private readonly AxisHandle zHandle = new();
+	private readonly OrbHandle orbHandle = new();
 
 	public QuaternionGizmo()
 	{
@@ -49,6 +50,8 @@ public class QuaternionGizmo : SceneGroup
 		this.Add(this.zHandle);
 		this.zHandle.Transform = Transform.FromRotation(0, 0, 90);
 		this.zHandle.Color = Axes.ZColor;
+
+		this.Add(this.orbHandle);
 	}
 }
 
@@ -58,7 +61,7 @@ public class AxisHandle : Handle
 
 	public AxisHandle()
 	{
-		this.circleRenderer = new(Meshes.WireCircle);
+		this.circleRenderer = new(MeshContent.WireCircle);
 		this.Add(this.circleRenderer);
 	}
 
@@ -78,5 +81,16 @@ public class AxisHandle : Handle
 		{
 			this.circleRenderer.Material.Thickness = 1.0f;
 		}
+	}
+}
+
+public class OrbHandle : Handle
+{
+	private readonly MeshRenderer<PositionColorMaterial> sphereRenderer;
+
+	public OrbHandle()
+	{
+		this.sphereRenderer = new(MeshContent.Sphere);
+		this.Add(this.sphereRenderer);
 	}
 }

@@ -17,9 +17,10 @@ namespace StudioFourteen.Rendering;
 
 using StudioFourteen.Content;
 using StudioFourteen.Rendering.Materials;
+using StudioFourteen.Rendering.Meshes.Polygon;
 using StudioFourteen.Rendering.MeshGenerators;
 
-public static class Meshes
+public static class MeshContent
 {
 	public static readonly IContent<Mesh> Cube = new JsonContentReference<Mesh>("Meshes/Cube.jsonc");
 	public static readonly IContent<Mesh> FlatCube = new JsonContentReference<Mesh>("Meshes/FlatCube.jsonc");
@@ -28,15 +29,5 @@ public static class Meshes
 	public static readonly IContent<Mesh> WireCube = new JsonContentReference<Mesh>("Meshes/WireCube.jsonc");
 	public static readonly IContent<Mesh> WireCircle = new WireCircle();
 	public static readonly IContent<Mesh> Bone = new JsonContentReference<Mesh>("Meshes/Bone.jsonc");
+	public static readonly IContent<Mesh> Sphere = new PolygonMeshReference("Meshes/Sphere.ply");
 }
-
-/*public static class Material
-{
-	public static readonly BlitMaterial Blit = new();
-	public static readonly BlitAlphaMaskMaterial BlitAlphaMask = new();
-	public static readonly VertexColor GeometryVertexColor = new();
-	public static readonly BasicMaterial Line = new("Shaders/Line.hlsl", true);
-	public static readonly BasicMaterial Bone = new("Shaders/Bone.hlsl", true);
-	public static readonly GizmoLineMaterial GizmoLine = new();
-	public static readonly BoneCapMaterial BoneCap = new();
-}*/

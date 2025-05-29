@@ -31,6 +31,11 @@ static float fThickness = 0.01f;
 static float zOffset = 0.0001f;
 static float fShadowSize = 0.5f;
 
+Fragment vert(in Vertex vertex)
+{
+	return DefaultVert(vertex);
+}
+
 [maxvertexcount(42)]
 void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStream)
 {
