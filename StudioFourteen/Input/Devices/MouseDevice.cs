@@ -179,7 +179,7 @@ public class MouseDevice : InputDeviceBase
 
 	public bool HandleMouseButton(MouseButton button, bool down)
 	{
-		// If we are clicking into xiv, ensure any stuio windows have lost foxcus correctly.
+		// If we are clicking into xiv, ensure any studio windows have lost focus correctly.
 		if (!this.Services.Windows.IsCursorOverStudio)
 			this.Services.Windows.Activate(null);
 
@@ -245,7 +245,7 @@ public class MouseDevice : InputDeviceBase
 
 	private bool ShouldHandleMouse()
 	{
-		// If the user has disabled the overlay system globabally,
+		// If the user has disabled the overlay system globally,
 		// never capture mouse inputs.
 		if (!this.Services.Settings.Current.AllowMouseCapture)
 			return false;

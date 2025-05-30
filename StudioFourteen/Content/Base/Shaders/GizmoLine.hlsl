@@ -24,7 +24,7 @@ cbuffer MaterialInstanceData : register(MaterialDataRegister)
 	float Thickness;
 };
 
-static float zOffset = 0.5f;
+static float zOffset = 0.0f;
 static const float PI = 3.1415926f;
 static const float fRatio = 2.0f;
 static float fShadowSize = 0.75f;
@@ -90,14 +90,14 @@ void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStr
 
     //calculate the angle between the 2 points on the screen
     float3 positionDifference = positionPoint0Transformed.xyz - positionPoint1Transformed.xyz;
-    float3 coordinateSysten = float3(1.0f, 0.0f, 0.0f);
+    float3 coordinateSystem = float3(1.0f, 0.0f, 0.0f);
 
     positionDifference.z = 0.0f;
-    coordinateSysten.z = 0.0f;
+    coordinateSystem.z = 0.0f;
 
-    float fAngle = acos(dot(positionDifference.xy, coordinateSysten.xy) / (length(positionDifference.xy) * length(coordinateSysten.xy)));
+    float fAngle = acos(dot(positionDifference.xy, coordinateSystem.xy) / (length(positionDifference.xy) * length(coordinateSystem.xy)));
 
-    if (cross(positionDifference, coordinateSysten).z < 0.0f)
+    if (cross(positionDifference, coordinateSystem).z < 0.0f)
     {
         fAngle = 2.0f * PI - fAngle;
     }

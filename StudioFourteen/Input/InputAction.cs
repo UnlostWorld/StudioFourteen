@@ -16,12 +16,16 @@
 namespace StudioFourteen.Input;
 
 // NOTE: these are in priority order, with elements at the top
-// taking precidence over elements at the bottom.
+// taking precedence over elements at the bottom.
 public enum InputAction
 {
 	Focus_Game,
 
-	Select_Handle,
+	Handle_Select,
+	Handle_Up,
+	Handle_Down,
+	Handle_Left,
+	Handle_Right,
 
 	Navigate_Up,
 	Navigate_Down,

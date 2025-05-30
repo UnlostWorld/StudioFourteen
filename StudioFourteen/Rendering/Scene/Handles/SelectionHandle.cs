@@ -18,7 +18,7 @@ namespace StudioFourteen.Rendering.Scene.Handles;
 using System;
 using StudioFourteen.Selection;
 
-public class SelectionHandle : Handle
+public class SelectionHandle : SelectableHandle
 {
 	private readonly SelectionBase selection;
 
@@ -47,9 +47,9 @@ public class SelectionHandle : Handle
 		base.SetIsHandleHovered(hover);
 	}
 
-	public override void Select()
+	protected override void OnSelect()
 	{
-		base.Select();
+		base.OnSelect();
 
 		this.Services.Selection.Current = this.selection;
 	}

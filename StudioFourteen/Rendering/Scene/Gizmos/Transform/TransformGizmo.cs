@@ -40,22 +40,22 @@ public class QuaternionGizmo : SceneGroup
 	public QuaternionGizmo()
 	{
 		this.Add(this.xHandle);
-		this.xHandle.Transform = Transform.FromRotation(0, 90, 0);
+		this.xHandle.Transform = Transform.FromRotation(0, 90, 0) * Transform.FromScale(0.5f);
 		this.xHandle.Color = Axes.XColor;
 
 		this.Add(this.yHandle);
-		this.yHandle.Transform = Transform.FromRotation(0, 0, 0);
+		this.yHandle.Transform = Transform.FromRotation(0, 0, 0) * Transform.FromScale(0.5f);
 		this.yHandle.Color = Axes.YColor;
 
 		this.Add(this.zHandle);
-		this.zHandle.Transform = Transform.FromRotation(0, 0, 90);
+		this.zHandle.Transform = Transform.FromRotation(0, 0, 90) * Transform.FromScale(0.5f);
 		this.zHandle.Color = Axes.ZColor;
 
 		this.Add(this.orbHandle);
 	}
 }
 
-public class AxisHandle : Handle
+public class AxisHandle : DraggableHandle
 {
 	private readonly MeshRenderer<GizmoLineMaterial> circleRenderer;
 
@@ -84,13 +84,22 @@ public class AxisHandle : Handle
 	}
 }
 
-public class OrbHandle : Handle
+public class OrbHandle : DraggableHandle
 {
-	private readonly MeshRenderer<PositionColorMaterial> sphereRenderer;
+	private readonly MeshRenderer<GizmoFlatMaterial> sphereRenderer;
 
 	public OrbHandle()
 	{
 		this.sphereRenderer = new(MeshContent.Sphere);
 		this.Add(this.sphereRenderer);
+		this.sphereRenderer.Transform = Transform.FromScale(0.48f);
+		this.sphereRenderer.HitTestBias = -0.75f;
+	}
+
+	protected override void OnDraw()
+	{
+		base.OnDraw();
+
+		this.sphereRenderer.Material.Color = new(0.0f, 0.0f, 0.0f, 0.75f);
 	}
 }

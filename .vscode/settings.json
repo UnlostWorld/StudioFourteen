@@ -3,6 +3,7 @@
 		"Argb",
 		"Bgra",
 		"Caraxi",
+		"cbuffer",
 		"chara",
 		"cutscenes",
 		"Dont",
@@ -26,8 +27,10 @@
 		"HRESULT",
 		"Hyur",
 		"IDXGI",
+		"inout",
 		"Ktisis",
 		"Lalafell",
+		"maxvertexcount",
 		"mcdf",
 		"Midlander",
 		"Minmoose",
@@ -35,6 +38,7 @@
 		"ModelChara",
 		"mscorlib",
 		"Navigations",
+		"OBJPOS",
 		"Pictomancy",
 		"Plainsfolk",
 		"Raen",
@@ -50,7 +54,9 @@
 		"Viera",
 		"Viewbox",
 		"WEBP",
-		"Xaela"
+		"WORLDPOS",
+		"Xaela",
+		"XBUTTON"
 	],
 	"github-actions.workflows.pinned.workflows": [
 		".github/workflows/release.yml"

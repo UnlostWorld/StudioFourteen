@@ -34,6 +34,8 @@ public class MeshRenderer<TMaterialData> : InstanceRendererBase<MeshRendererInst
 {
 	public IContent<Mesh>? Mesh;
 
+	public float HitTestBias = 0;
+
 	private Buffer? vertices;
 	private VertexBufferBinding vertexBufferBinding;
 	private int vertexLength = 0;
@@ -112,6 +114,7 @@ public class MeshRenderer<TMaterialData> : InstanceRendererBase<MeshRendererInst
 				vertPos = viewProjection.TransformViewProjection(vertPos);
 
 				float fromDist = (screenPosition - vertPos.AsVector2()).Length();
+				fromDist -= this.HitTestBias / 100;
 				if (fromDist < result.Distance)
 				{
 					result.MeshVertex = mesh.Vertices[i];

@@ -44,7 +44,12 @@ public class InputService : ServiceBase
 	{
 		this.AddBind(InputAction.Focus_Game, KeyboardDevice.GetAxisId(VirtualKey.G), KeyboardDevice.GetAxisId(VirtualKey.SHIFT));
 
-		this.AddBind(InputAction.Select_Handle, MouseDevice.GetAxisId(MouseButtons.Left));
+		// Handles
+		this.AddBind(InputAction.Handle_Select, MouseDevice.GetAxisId(MouseButtons.Left));
+		this.AddBind(InputAction.Handle_Up, MouseDevice.GetDragAxisId(MouseButtons.Left, MouseDevice.DragDirections.Up));
+		this.AddBind(InputAction.Handle_Down, MouseDevice.GetDragAxisId(MouseButtons.Left, MouseDevice.DragDirections.Down));
+		this.AddBind(InputAction.Handle_Left, MouseDevice.GetDragAxisId(MouseButtons.Left, MouseDevice.DragDirections.Left));
+		this.AddBind(InputAction.Handle_Right, MouseDevice.GetDragAxisId(MouseButtons.Left, MouseDevice.DragDirections.Right));
 
 		// Navigation
 		this.AddBind(InputAction.Navigate_Up, KeyboardDevice.GetAxisId(VirtualKey.UP));
