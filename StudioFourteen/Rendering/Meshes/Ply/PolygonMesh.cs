@@ -135,7 +135,7 @@ public class PolygonMesh : Mesh
 
 					default:
 					{
-						throw new Exception($"Unsupported element typoe: {parts[1]}");
+						throw new Exception($"Unsupported element type: {parts[1]}");
 					}
 				}
 
@@ -147,7 +147,7 @@ public class PolygonMesh : Mesh
 				if (this.processingElement == Elements.Vertex)
 				{
 					if (parts[1] != "float")
-						throw new Exception("Unsupported property format. onyl float property format is supported for vertex values.");
+						throw new Exception("Unsupported property format. only float property format is supported for vertex values.");
 
 					this.vertexPropertyOrder.Add(Enum.Parse<VertexProperties>(parts[2], true));
 				}
