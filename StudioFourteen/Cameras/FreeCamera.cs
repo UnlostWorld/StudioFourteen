@@ -30,22 +30,22 @@ public partial class FreeCamera : StudioCameraBase
 	private const float MoveSpeed = 2.0f;
 	private const float MoveSpeedMaximum = 200.0f;
 
-	private readonly InputActionListener moveForwardsListener = new(InputAction.FreeCamera_MoveForwards);
-	private readonly InputActionListener moveBackListener = new(InputAction.FreeCamera_MoveBack);
-	private readonly InputActionListener moveUpListener = new(InputAction.FreeCamera_MoveUp);
-	private readonly InputActionListener moveDownListener = new(InputAction.FreeCamera_MoveDown);
-	private readonly InputActionListener moveLeftListener = new(InputAction.FreeCamera_MoveLeft);
-	private readonly InputActionListener moveRightListener = new(InputAction.FreeCamera_MoveRight);
-	private readonly InputActionListener yawLeftListener = new(InputAction.FreeCamera_YawLeft);
-	private readonly InputActionListener yawRightListener = new(InputAction.FreeCamera_YawRight);
-	private readonly InputActionListener pitchUpListener = new(InputAction.FreeCamera_PitchUp);
-	private readonly InputActionListener pitchDownListener = new(InputAction.FreeCamera_PitchDown);
-	private readonly InputActionListener rollLeftListener = new(InputAction.FreeCamera_RollLeft);
-	private readonly InputActionListener rollRightListener = new(InputAction.FreeCamera_RollRight);
-	private readonly InputActionListener rotateLeftListener = new(InputAction.FreeCamera_RotateLeft);
-	private readonly InputActionListener rotateRightListener = new(InputAction.FreeCamera_RotateRight);
-	private readonly InputActionListener rotateUpListener = new(InputAction.FreeCamera_RotateUp);
-	private readonly InputActionListener rotateDownListener = new(InputAction.FreeCamera_RotateDown);
+	private readonly Input0DListener moveForwardsListener = new(InputAction.FreeCamera_MoveForwards);
+	private readonly Input0DListener moveBackListener = new(InputAction.FreeCamera_MoveBack);
+	private readonly Input0DListener moveUpListener = new(InputAction.FreeCamera_MoveUp);
+	private readonly Input0DListener moveDownListener = new(InputAction.FreeCamera_MoveDown);
+	private readonly Input0DListener moveLeftListener = new(InputAction.FreeCamera_MoveLeft);
+	private readonly Input0DListener moveRightListener = new(InputAction.FreeCamera_MoveRight);
+	private readonly Input0DListener yawLeftListener = new(InputAction.FreeCamera_YawLeft);
+	private readonly Input0DListener yawRightListener = new(InputAction.FreeCamera_YawRight);
+	private readonly Input0DListener pitchUpListener = new(InputAction.FreeCamera_PitchUp);
+	private readonly Input0DListener pitchDownListener = new(InputAction.FreeCamera_PitchDown);
+	private readonly Input0DListener rollLeftListener = new(InputAction.FreeCamera_RollLeft);
+	private readonly Input0DListener rollRightListener = new(InputAction.FreeCamera_RollRight);
+	private readonly Input0DListener rotateLeftListener = new(InputAction.FreeCamera_RotateLeft);
+	private readonly Input0DListener rotateRightListener = new(InputAction.FreeCamera_RotateRight);
+	private readonly Input0DListener rotateUpListener = new(InputAction.FreeCamera_RotateUp);
+	private readonly Input0DListener rotateDownListener = new(InputAction.FreeCamera_RotateDown);
 
 	[Notify] private Vector3 position;
 	[Notify] private Quaternion rotation;

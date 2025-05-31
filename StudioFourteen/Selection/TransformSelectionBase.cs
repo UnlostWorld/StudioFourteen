@@ -48,7 +48,15 @@ public abstract partial class TransformSelectionBase : SelectionBase
 
 	public override void OnGameTick()
 	{
-		this.gizmo.Transform = this.WorldTransform;
+		if (this.gizmo.IsBeingManipulated)
+		{
+			this.WorldTransform = this.gizmo.Transform;
+		}
+		else
+		{
+			this.gizmo.Transform = this.WorldTransform;
+		}
+
 		base.OnGameTick();
 	}
 

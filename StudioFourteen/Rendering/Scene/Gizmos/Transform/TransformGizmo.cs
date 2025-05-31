@@ -15,52 +15,68 @@
 
 namespace StudioFourteen.Rendering.Scene.Gizmos.Transforms;
 
+using System.Numerics;
 using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Scene.Handles;
 
 public class TransformGizmo : GizmoBase
 {
-	private readonly QuaternionGizmo rotation = new();
+	private readonly QuaternionGizmo rotation;
 
 	public TransformGizmo()
 	{
+		this.rotation = new(this);
 		this.Add(this.rotation);
 	}
 
 	public override string Name => "Transform";
+
+	public override bool IsBeingManipulated => this.rotation.IsBeingManipulated;
 }
 
 public class QuaternionGizmo : SceneGroup
 {
-	private readonly AxisHandle xHandle = new();
-	private readonly AxisHandle yHandle = new();
-	private readonly AxisHandle zHandle = new();
-	private readonly OrbHandle orbHandle = new();
+	private readonly AxisHandle xHandle;
+	private readonly AxisHandle yHandle;
+	private readonly AxisHandle zHandle;
+	private readonly OrbHandle orbHandle;
 
-	public QuaternionGizmo()
+	public QuaternionGizmo(GizmoBase gizmo)
 	{
+		this.xHandle = new(gizmo);
 		this.Add(this.xHandle);
 		this.xHandle.Transform = Transform.FromRotation(0, 90, 0) * Transform.FromScale(0.5f);
 		this.xHandle.Color = Axes.XColor;
 
+		this.yHandle = new(gizmo);
 		this.Add(this.yHandle);
 		this.yHandle.Transform = Transform.FromRotation(0, 0, 0) * Transform.FromScale(0.5f);
 		this.yHandle.Color = Axes.YColor;
 
+		this.zHandle = new(gizmo);
 		this.Add(this.zHandle);
 		this.zHandle.Transform = Transform.FromRotation(0, 0, 90) * Transform.FromScale(0.5f);
 		this.zHandle.Color = Axes.ZColor;
 
+		this.orbHandle = new(gizmo);
 		this.Add(this.orbHandle);
 	}
+
+	public bool IsBeingManipulated =>
+		this.xHandle.IsHovered
+		|| this.yHandle.IsHovered
+		|| this.zHandle.IsHovered
+		|| this.orbHandle.IsHovered;
 }
 
-public class AxisHandle : DraggableHandle
+public class AxisHandle : Handle
 {
 	private readonly MeshRenderer<GizmoLineMaterial> circleRenderer;
+	private readonly GizmoBase gizmo;
 
-	public AxisHandle()
+	public AxisHandle(GizmoBase gizmo)
 	{
+		this.gizmo = gizmo;
 		this.circleRenderer = new(MeshContent.WireCircle);
 		this.Add(this.circleRenderer);
 	}
@@ -71,7 +87,14 @@ public class AxisHandle : DraggableHandle
 	{
 		base.OnDraw();
 
-		this.circleRenderer.Material.Color = this.Color;
+		if (this.IsPressed)
+		{
+			this.circleRenderer.Material.Color = Color.White;
+		}
+		else
+		{
+			this.circleRenderer.Material.Color = this.Color;
+		}
 
 		if (this.IsHovered)
 		{
@@ -82,14 +105,24 @@ public class AxisHandle : DraggableHandle
 			this.circleRenderer.Material.Thickness = 1.0f;
 		}
 	}
+
+	protected override void OnDrag(Vector2 delta)
+	{
+		// TODO: Not this.
+		////this.gizmo.Transform *= Transform.FromTranslation(delta.X / 100, delta.Y / 100, 0);
+
+		base.OnDrag(delta);
+	}
 }
 
-public class OrbHandle : DraggableHandle
+public class OrbHandle : Handle
 {
 	private readonly MeshRenderer<GizmoFlatMaterial> sphereRenderer;
+	private readonly GizmoBase gizmo;
 
-	public OrbHandle()
+	public OrbHandle(GizmoBase gizmo)
 	{
+		this.gizmo = gizmo;
 		this.sphereRenderer = new(MeshContent.Sphere);
 		this.Add(this.sphereRenderer);
 		this.sphereRenderer.Transform = Transform.FromScale(0.48f);

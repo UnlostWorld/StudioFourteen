@@ -20,6 +20,7 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using StudioFourteen.Rendering.Scene;
 using StudioFourteen.Input;
+using System.Windows.Input;
 
 public partial class HandleService : ServiceBase
 {
@@ -60,13 +61,14 @@ public partial class HandleService : ServiceBase
 		|| this.Services.Windows.IsCursorOverImGui
 		|| this.Services.Windows.IsCursorOverStudio
 		|| this.Services.Reshade.IsReshadeOverlayOpen
-		|| !this.Services.Windows.IsCursorOverXiv)
+		|| !this.Services.Windows.IsCursorOverXiv
+		|| this.Services.Input.Mouse == null)
 		{
 			this.CurrentHover = null;
 		}
 		else
 		{
-			Vector2? mousePosition = this.Services.Input.Mouse?.GetPosition();
+			/*Vector2? mousePosition = this.Services.Input.Mouse.Position.Value;
 
 			if (mousePosition != null)
 			{
@@ -79,7 +81,11 @@ public partial class HandleService : ServiceBase
 				this.CurrentHover = this.GetHandle(hitTestResult.SceneObject);
 			}
 
-			this.CurrentHover?.OnGameTick();
+			if (this.CurrentHover != null)
+			{
+				bool mouseDown = this.Servicses.Input.Mouse.Buttons[MouseButton.Left].Value;
+				this.CurrentHover.SetIsHandlePressed(mouseDown);
+			}*/
 		}
 	}
 

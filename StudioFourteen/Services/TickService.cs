@@ -17,6 +17,7 @@ namespace StudioFourteen.Services;
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
@@ -43,21 +44,23 @@ public partial class TickService : ServiceBase
 		None,
 
 		GameTick,
+		LateGameTick,
 		StudioTick,
 		ImGuiDraw,
 	}
 
 	public static SwitchToTickChannel GameTick() => new(TickService.Channels.GameTick);
+	public static SwitchToTickChannel LateGameTick() => new(TickService.Channels.LateGameTick);
 	public static SwitchToTickChannel NextGameTick() => new(TickService.Channels.GameTick);
 	public static SwitchToTickChannel StudioTick() => new(TickService.Channels.StudioTick);
 	public static SwitchToTickChannel NextStudioTick() => new(TickService.Channels.StudioTick);
 
-	public static void VerifyGameTickThread() => VerifyTickChannelThread(TickService.Channels.GameTick);
+	public static void VerifyGameTickThread() => VerifyTickChannelThread(TickService.Channels.GameTick, TickService.Channels.LateGameTick);
 	public static void VerifyStudioTickThread() => VerifyTickChannelThread(TickService.Channels.StudioTick);
 
-	public static void VerifyTickChannelThread(TickService.Channels channel)
+	public static void VerifyTickChannelThread(params TickService.Channels[] channels)
 	{
-		if (currentChannel != channel)
+		if (!channels.Contains(currentChannel))
 		{
 			throw new InvalidThreadException();
 		}
@@ -207,6 +210,7 @@ public partial class TickService : ServiceBase
 	private unsafe bool OnGameTick(Framework* pFramework)
 	{
 		this.PerformTick(Channels.GameTick);
+		this.PerformTick(Channels.LateGameTick);
 		return Hooks.Tick.Original(pFramework);
 	}
 

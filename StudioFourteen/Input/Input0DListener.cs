@@ -14,16 +14,17 @@
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
 namespace StudioFourteen.Input;
+
 using Serilog;
 using System;
 
-public class InputActionListener
+public class Input0DListener
 {
-	public readonly ILogger Log = Logging.ForContext<InputActionListener>();
+	public readonly ILogger Log = Logging.ForContext<Input0DListener>();
 
 	private readonly InputAction keyBindEvent;
 
-	public InputActionListener(InputAction evt, string? name = null)
+	public Input0DListener(InputAction evt, string? name = null)
 	{
 		this.keyBindEvent = evt;
 		this.Name = name;

@@ -42,6 +42,11 @@ public abstract class GizmoBase : SceneGroup, INotifyPropertyChanged
 		set => this.SetPersistence(value);
 	}
 
+	public virtual bool IsBeingManipulated
+	{
+		get => false;
+	}
+
 	protected Persistence Persistence { get; init; }
 
 	public virtual void Enable()

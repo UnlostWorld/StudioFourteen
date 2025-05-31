@@ -27,24 +27,34 @@ public partial class OrbitCamera : StudioCameraBase
 	protected Vector3 desiredRot = Vector3.Zero;
 	protected Vector3 desiredMove = Vector3.Zero;
 
-	private readonly InputActionListener moveUpListener = new(InputAction.OrbitCamera_MoveUp);
-	private readonly InputActionListener moveDownListener = new(InputAction.OrbitCamera_MoveDown);
-	private readonly InputActionListener moveLeftListener = new(InputAction.OrbitCamera_MoveLeft);
-	private readonly InputActionListener moveRightListener = new(InputAction.OrbitCamera_MoveRight);
-	private readonly InputActionListener moveForwardListener = new(InputAction.OrbitCamera_MoveForward);
-	private readonly InputActionListener moveBackwardListener = new(InputAction.OrbitCamera_MoveBackward);
-	private readonly InputActionListener panUpListener = new(InputAction.OrbitCamera_PanUp);
-	private readonly InputActionListener panDownListener = new(InputAction.OrbitCamera_PanDown);
-	private readonly InputActionListener panLeftListener = new(InputAction.OrbitCamera_PanLeft);
-	private readonly InputActionListener panRightListener = new(InputAction.OrbitCamera_PanRight);
-	private readonly InputActionListener rollLeftListener = new(InputAction.OrbitCamera_RollLeft);
-	private readonly InputActionListener rollRightListener = new(InputAction.OrbitCamera_RollRight);
-	private readonly InputActionListener zoomInListener = new(InputAction.OrbitCamera_ZoomIn);
-	private readonly InputActionListener zoomOutListener = new(InputAction.OrbitCamera_ZoomOut);
-	private readonly InputActionListener rotateLeftListener = new(InputAction.OrbitCamera_RotateLeft);
-	private readonly InputActionListener rotateRightListener = new(InputAction.OrbitCamera_RotateRight);
-	private readonly InputActionListener rotateUpListener = new(InputAction.OrbitCamera_RotateUp);
-	private readonly InputActionListener rotateDownListener = new(InputAction.OrbitCamera_RotateDown);
+	private readonly Input3DListener moveListener = new(
+		InputAction.OrbitCamera_MoveRight,
+		InputAction.OrbitCamera_MoveLeft,
+		InputAction.OrbitCamera_MoveUp,
+		InputAction.OrbitCamera_MoveDown,
+		InputAction.OrbitCamera_MoveForward,
+		InputAction.OrbitCamera_MoveBackward,
+		"Orbit Camera Move");
+
+	private readonly Input3DListener panListener = new(
+		InputAction.OrbitCamera_PanUp,
+		InputAction.OrbitCamera_PanDown,
+		InputAction.OrbitCamera_PanLeft,
+		InputAction.OrbitCamera_PanRight,
+		InputAction.OrbitCamera_RollLeft,
+		InputAction.OrbitCamera_RollRight,
+		"Orbit Camera Pan");
+
+	private readonly Input1DListener zoomListener = new(
+		InputAction.OrbitCamera_ZoomIn,
+		InputAction.OrbitCamera_ZoomOut,
+		"Orbit Camera Zoom");
+
+	private readonly Input2DListener rotateListener = new(
+		InputAction.OrbitCamera_RotateRight,
+		InputAction.OrbitCamera_RotateLeft,
+		InputAction.OrbitCamera_RotateDown,
+		InputAction.OrbitCamera_RotateUp);
 
 	private float actualDistance;
 
@@ -89,84 +99,30 @@ public partial class OrbitCamera : StudioCameraBase
 	{
 		base.Activate();
 
-		this.moveUpListener.Enable();
-		this.moveDownListener.Enable();
-		this.moveLeftListener.Enable();
-		this.moveRightListener.Enable();
-		this.moveForwardListener.Enable();
-		this.moveBackwardListener.Enable();
-		this.panUpListener.Enable();
-		this.panDownListener.Enable();
-		this.panLeftListener.Enable();
-		this.panRightListener.Enable();
-		this.rollLeftListener.Enable();
-		this.rollRightListener.Enable();
-		this.zoomInListener.Enable();
-		this.zoomOutListener.Enable();
-		this.rotateLeftListener.Enable();
-		this.rotateRightListener.Enable();
-		this.rotateUpListener.Enable();
-		this.rotateDownListener.Enable();
+		this.moveListener.Enable();
+		this.panListener.Enable();
+		this.zoomListener.Enable();
+		this.rotateListener.Enable();
 	}
 
 	public override void Deactivate()
 	{
 		base.Deactivate();
 
-		this.moveUpListener.Disable();
-		this.moveDownListener.Disable();
-		this.moveLeftListener.Disable();
-		this.moveRightListener.Disable();
-		this.moveForwardListener.Disable();
-		this.moveBackwardListener.Disable();
-		this.panUpListener.Disable();
-		this.panDownListener.Disable();
-		this.panLeftListener.Disable();
-		this.panRightListener.Disable();
-		this.rollLeftListener.Disable();
-		this.rollRightListener.Disable();
-		this.zoomInListener.Disable();
-		this.zoomOutListener.Disable();
-		this.rotateLeftListener.Disable();
-		this.rotateRightListener.Disable();
-		this.rotateUpListener.Disable();
-		this.rotateDownListener.Disable();
+		this.moveListener.Disable();
+		this.panListener.Disable();
+		this.zoomListener.Disable();
+		this.rotateListener.Disable();
 	}
 
 	public override void OnGameTick()
 	{
 		base.OnGameTick();
 
-		Vector3 moveDir = Vector3.Zero;
-		moveDir.Y += this.moveUpListener.Value;
-		moveDir.Y -= this.moveDownListener.Value;
-		moveDir.X -= this.moveLeftListener.Value;
-		moveDir.X += this.moveRightListener.Value;
-		moveDir.Z += this.moveForwardListener.Value;
-		moveDir.Z -= this.moveBackwardListener.Value;
-		this.desiredMove = moveDir;
-
-		Vector3 rot = Vector3.Zero;
-		rot.X += this.panLeftListener.Value / 2;
-		rot.X -= this.panRightListener.Value / 2;
-		rot.Y += this.panUpListener.Value / 2;
-		rot.Y -= this.panDownListener.Value / 2;
-		rot.Z -= this.rollLeftListener.Value;
-		rot.Z += this.rollRightListener.Value;
-		this.desiredRot = rot;
-
-		float d = this.distance;
-		d -= this.zoomInListener.Value;
-		d += this.zoomOutListener.Value;
-		this.Distance = Math.Max(d, 0.1f);
-
-		Vector2 angle = this.Angle;
-		angle.X -= this.rotateLeftListener.Value;
-		angle.X += this.rotateRightListener.Value;
-		angle.Y -= this.rotateUpListener.Value;
-		angle.Y += this.rotateDownListener.Value;
-		angle = MathUtility.Wrap(angle);
-		this.Angle = angle;
+		this.desiredMove = this.moveListener.Value;
+		this.desiredRot = this.panListener.Value / 2;
+		this.Distance = Math.Max(this.distance + this.zoomListener.Value, 0.1f);
+		this.Angle = MathUtility.Wrap(this.Angle + this.rotateListener.Value);
 	}
 
 	public override void Tick(float deltaTime)

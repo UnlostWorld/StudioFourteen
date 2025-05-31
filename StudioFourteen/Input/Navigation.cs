@@ -43,14 +43,14 @@ public partial class Navigation
 	protected readonly ILogger Log;
 
 	private readonly DependencyObject scope;
-	private readonly InputActionListener upListener;
-	private readonly InputActionListener downListener;
-	private readonly InputActionListener leftListener;
-	private readonly InputActionListener rightListener;
-	private readonly InputActionListener tabLeftListener;
-	private readonly InputActionListener tabRightListener;
-	private readonly InputActionListener enterListener;
-	private readonly InputActionListener backListener;
+	private readonly Input0DListener upListener;
+	private readonly Input0DListener downListener;
+	private readonly Input0DListener leftListener;
+	private readonly Input0DListener rightListener;
+	private readonly Input0DListener tabLeftListener;
+	private readonly Input0DListener tabRightListener;
+	private readonly Input0DListener enterListener;
+	private readonly Input0DListener backListener;
 
 	public Navigation(DependencyObject scope)
 	{
@@ -160,7 +160,7 @@ public partial class Navigation
 		this.backListener.Disable();
 	}
 
-	private async Task OnNavigate(FocusNavigationDirection direction, InputActionListener listener)
+	private async Task OnNavigate(FocusNavigationDirection direction, Input0DListener listener)
 	{
 		bool isFirstStep = true;
 		while (listener.Value > 0.5)

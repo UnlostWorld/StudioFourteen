@@ -45,7 +45,7 @@ public partial class WindowService : ServiceBase
 {
 	private readonly Guid propertyGuid = Guid.NewGuid();
 	private readonly HashSet<PanelWindow> mouseOverPanelWindows = new();
-	private readonly InputActionListener clickActionListener;
+	private readonly Input0DListener clickActionListener;
 	private readonly HashSet<IntPtr> studioWindowHwnds = new();
 	private readonly HashSet<string> atkUnitBlacklist = new()
 	{

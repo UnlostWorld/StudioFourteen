@@ -33,7 +33,7 @@ using MouseButtons = System.Windows.Input.MouseButton;
 
 public class InputService : ServiceBase
 {
-	private readonly Dictionary<InputAction, List<InputActionListener>> listeners = new();
+	private readonly Dictionary<InputAction, List<Input0DListener>> listeners = new();
 	private readonly List<InputDeviceBase> inputDevices = new();
 	private readonly Dictionary<string, InputAxis> axisLookup = new();
 	private readonly List<Bind> binds = new();
@@ -234,7 +234,7 @@ public class InputService : ServiceBase
 		}
 	}
 
-	public void AddListener(InputAction evt, InputActionListener listener)
+	public void AddListener(InputAction evt, Input0DListener listener)
 	{
 		lock(this.listeners)
 		{
@@ -245,7 +245,7 @@ public class InputService : ServiceBase
 		}
 	}
 
-	public void RemoveListener(InputAction evt, InputActionListener listener)
+	public void RemoveListener(InputAction evt, Input0DListener listener)
 	{
 		lock(this.listeners)
 		{
@@ -259,6 +259,7 @@ public class InputService : ServiceBase
 	public override void Attach()
 	{
 		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
+		this.Services.Tick.Add(TickService.Channels.LateGameTick, this.OnLateGameTick);
 
 		foreach (InputDeviceBase device in this.inputDevices)
 		{
@@ -271,6 +272,7 @@ public class InputService : ServiceBase
 	public override void Detach()
 	{
 		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
+		this.Services.Tick.Remove(TickService.Channels.LateGameTick, this.OnLateGameTick);
 
 		foreach (InputDeviceBase device in this.inputDevices)
 		{
@@ -325,7 +327,7 @@ public class InputService : ServiceBase
 
 			foreach (Bind bind in this.binds)
 			{
-				this.listeners.TryGetValue(bind.Action, out List<InputActionListener>? listeners);
+				this.listeners.TryGetValue(bind.Action, out List<Input0DListener>? listeners);
 
 				// nobody listening?
 				if (listeners == null || listeners.Count == 0)
@@ -337,17 +339,23 @@ public class InputService : ServiceBase
 
 			foreach ((InputAction action, float value) in combinedValues)
 			{
-				this.listeners.TryGetValue(action, out List<InputActionListener>? listeners);
+				this.listeners.TryGetValue(action, out List<Input0DListener>? listeners);
 
 				if (listeners == null || listeners.Count == 0)
 					continue;
 
-				foreach (InputActionListener listener in listeners.ToArray())
+				foreach (Input0DListener listener in listeners.ToArray())
 				{
 					listener.SetValue(value);
 				}
 			}
+		}
+	}
 
+	protected unsafe void OnLateGameTick()
+	{
+		lock (this)
+		{
 			DateTime mostRecentInput = DateTime.MinValue;
 			InputDeviceBase? mostRecentDevice = null;
 			foreach (InputDeviceBase device in this.inputDevices)

@@ -13,42 +13,31 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Scene.Handles;
+namespace StudioFourteen.Input;
 
 using System.Numerics;
 
-public abstract class Handle : SceneGroup
+public class Input2DListener(
+	InputAction xPos,
+	InputAction xNeg,
+	InputAction yPos,
+	InputAction yNeg,
+	string? name = null)
 {
-	public bool IsHovered { get; private set; }
-	public bool IsPressed { get; private set; }
+	public Input1DListener X = new(xPos, xNeg, name);
+	public Input1DListener Y = new(yPos, yNeg, name);
 
-	public virtual void SetIsHandleHovered(bool isHovered)
+	public Vector2 Value => new(this.X.Value, this.Y.Value);
+
+	public virtual void Enable()
 	{
-		if (this.IsHovered == isHovered)
-			return;
-
-		this.OnIsHoveredChanged(isHovered);
+		this.X.Enable();
+		this.Y.Enable();
 	}
 
-	public virtual void SetIsHandlePressed(bool isPressed)
+	public virtual void Disable()
 	{
-		if (this.IsPressed == isPressed)
-			return;
-
-		this.OnIsPressedChanged(isPressed);
-	}
-
-	protected virtual void OnIsHoveredChanged(bool isHovered)
-	{
-		this.IsHovered = isHovered;
-	}
-
-	protected virtual void OnIsPressedChanged(bool isPressed)
-	{
-		this.IsPressed = isPressed;
-	}
-
-	protected virtual void OnDrag(Vector2 delta)
-	{
+		this.X.Disable();
+		this.Y.Disable();
 	}
 }

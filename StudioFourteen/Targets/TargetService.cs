@@ -29,8 +29,8 @@ using StudioFourteen.Services;
 
 public partial class TargetService : ServiceBase
 {
-	private readonly InputActionListener nextTargetListener = new(InputAction.NextTarget);
-	private readonly InputActionListener previousTargetListener = new(InputAction.PreviousTarget);
+	private readonly Input0DListener nextTargetListener = new(InputAction.NextTarget);
+	private readonly Input0DListener previousTargetListener = new(InputAction.PreviousTarget);
 
 	[Notify] private string? characterName;
 	[Notify] private bool hasValidTarget = false;
