@@ -54,12 +54,24 @@ public class CharacterLifecycleService : ServiceBase
 		}
 	}
 
-	public override async Task Stop()
+	public override unsafe void Attach()
 	{
-		await base.Stop();
+		base.Attach();
 
-		await TickService.GameTick();
+		Hooks.CharacterInitialize.Enable(this.CharacterInitializeDetour);
+		Hooks.CharacterFinalize.Enable(this.CharacterFinalizeDetour);
+		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnTick);
+	}
+
+	public override void Detach()
+	{
+		base.Detach();
+
 		this.DestroyAllCreated();
+
+		Hooks.CharacterInitialize.Disable();
+		Hooks.CharacterFinalize.Disable();
+		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnTick);
 	}
 
 	public unsafe Character*[] GetAllCharacters()
@@ -69,7 +81,7 @@ public class CharacterLifecycleService : ServiceBase
 		GameObject*[] pObjects = this.Services.GameObjects.GetAll();
 		Character*[] pBufferCharacters = new Character*[pObjects.Length];
 		int characterCount = 0;
-		for(int i = 0; i < pObjects.Length; i++)
+		for (int i = 0; i < pObjects.Length; i++)
 		{
 			Character* pCharacter = (Character*)pObjects[i];
 			if (pCharacter == null)
@@ -80,7 +92,7 @@ public class CharacterLifecycleService : ServiceBase
 		}
 
 		Character*[] pCharacters = new Character*[characterCount];
-		for(int i = 0; i < characterCount; i++)
+		for (int i = 0; i < characterCount; i++)
 		{
 			pCharacters[i] = pBufferCharacters[i];
 		}
@@ -206,23 +218,6 @@ public class CharacterLifecycleService : ServiceBase
 		}
 
 		CreatedIndexes.Clear();
-	}
-
-	public override unsafe void Attach()
-	{
-		base.Attach();
-
-		Hooks.CharacterInitialize.Enable(this.CharacterInitializeDetour);
-		Hooks.CharacterFinalize.Enable(this.CharacterFinalizeDetour);
-		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnTick);
-	}
-
-	public override void Detach()
-	{
-		base.Detach();
-		Hooks.CharacterInitialize.Disable();
-		Hooks.CharacterFinalize.Disable();
-		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnTick);
 	}
 
 	protected void OnTick()
