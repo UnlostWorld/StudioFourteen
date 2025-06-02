@@ -124,11 +124,11 @@ public class AxisHandle : Handle
 		float angleChange = dragDelta / 50;
 		angleChange *= this.Sensitivity;
 
-		/*if (Keyboard.Modifiers == ModifierKeys.Shift)
+		if (this.Services.Input.FastChange)
 			angleChange *= 10;
 
-		if (Keyboard.Modifiers == ModifierKeys.Control)
-			angleChange /= 10;*/
+		if (this.Services.Input.SlowChange)
+			angleChange /= 10;
 
 		if (this.Services.Tablet.PenPressure > 0)
 			angleChange *= (float)this.Services.Tablet.PenPressure;

@@ -38,6 +38,9 @@ public class InputService : ServiceBase
 	private readonly Dictionary<string, InputAxis> axisLookup = new();
 	private readonly List<Bind> binds = new();
 
+	private readonly Input0DListener fastChangeListener = new(InputAction.FastChange, "Input Service Fast Change");
+	private readonly Input0DListener slowChangeListener = new(InputAction.SlowChange, "Input Service Slow Change");
+
 	private InputDeviceBase? currentDevice = null;
 
 	public InputService()
@@ -128,6 +131,10 @@ public class InputService : ServiceBase
 		this.AddBind(InputAction.OrbitCamera_RotateLeft, MouseDevice.GetDragAxisId(MouseButtons.Left, MouseDevice.DragDirections.Left));
 		this.AddBind(InputAction.OrbitCamera_RotateDown, MouseDevice.GetDragAxisId(MouseButtons.Left, MouseDevice.DragDirections.Down));
 		this.AddBind(InputAction.OrbitCamera_RotateUp, MouseDevice.GetDragAxisId(MouseButtons.Left, MouseDevice.DragDirections.Up));
+
+		// General
+		this.AddBind(InputAction.SlowChange, KeyboardDevice.GetAxisId(VirtualKey.CONTROL));
+		this.AddBind(InputAction.FastChange, KeyboardDevice.GetAxisId(VirtualKey.SHIFT));
 	}
 
 	public KeyboardDevice? Keyboard => this.GetDevice<KeyboardDevice>();
@@ -147,6 +154,9 @@ public class InputService : ServiceBase
 			return false;
 		}
 	}
+
+	public bool SlowChange => this.slowChangeListener.Value > 0.05f;
+	public bool FastChange => this.fastChangeListener.Value > 0.05f;
 
 	public override Task Start()
 	{
@@ -266,6 +276,9 @@ public class InputService : ServiceBase
 			device.Attach();
 		}
 
+		this.slowChangeListener.Enable();
+		this.fastChangeListener.Enable();
+
 		base.Attach();
 	}
 
@@ -278,6 +291,9 @@ public class InputService : ServiceBase
 		{
 			device.Detach();
 		}
+
+		this.slowChangeListener.Disable();
+		this.fastChangeListener.Disable();
 
 		base.Detach();
 	}

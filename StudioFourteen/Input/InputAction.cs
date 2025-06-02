@@ -79,4 +79,7 @@ public enum InputAction
 	OrbitCamera_RotateRight,
 	OrbitCamera_RotateUp,
 	OrbitCamera_RotateDown,
+
+	FastChange,
+	SlowChange,
 }
