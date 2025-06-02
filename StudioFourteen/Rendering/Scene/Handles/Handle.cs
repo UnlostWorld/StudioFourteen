@@ -38,6 +38,11 @@ public abstract class Handle : SceneGroup
 		this.OnIsPressedChanged(isPressed);
 	}
 
+	public virtual void HandleDrag(Vector2 delta)
+	{
+		this.OnDrag(delta);
+	}
+
 	protected virtual void OnIsHoveredChanged(bool isHovered)
 	{
 		this.IsHovered = isHovered;

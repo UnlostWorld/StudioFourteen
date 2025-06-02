@@ -115,6 +115,7 @@ public class MouseDevice : InputDeviceBase
 	}
 
 	public Vector2 GetPosition() => new(this.positionX.Value, this.positionY.Value);
+	public bool GetButton(MouseButton button) => this.buttonAxes[button].Value > 0.05f;
 
 	public override void Attach()
 	{
@@ -163,18 +164,16 @@ public class MouseDevice : InputDeviceBase
 
 		this.wheel.Value = 0;
 
-		UIInputData* pInputData = UIInputData.Instance();
-
 		foreach ((MouseButton button, (InputAxisSigned xAxis, InputAxisSigned yAxis)) in this.dragAxis)
 		{
 			xAxis.Value = 0;
 			yAxis.Value = 0;
 		}
 
-		foreach ((MouseButton button, InputAxis axis) in this.buttonAxes)
+		/*foreach ((MouseButton button, InputAxis axis) in this.buttonAxes)
 		{
 			axis.Value = 0;
-		}
+		}*/
 	}
 
 	public bool HandleMouseButton(MouseButton button, bool down)
