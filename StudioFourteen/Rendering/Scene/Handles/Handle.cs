@@ -59,6 +59,11 @@ public abstract class Handle : SceneGroup
 		this.OnDrag(delta);
 	}
 
+	public virtual bool GetToolTip(ref string content, ref Vector3 worldPosition)
+	{
+		return false;
+	}
+
 	protected virtual void OnIsHoveredChanged(bool isHovered)
 	{
 		this.IsHovered = isHovered;

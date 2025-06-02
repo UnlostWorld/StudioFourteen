@@ -36,7 +36,14 @@ public abstract class SceneObject : IDisposable
 	public virtual bool IsHitTestVisible { get; set; } = true;
 	public virtual bool IsVisible { get; set; } = true;
 
-	public abstract void Draw(Transform transform, Device device, DeviceContext deviceContext);
+	public Vector3 WorldPosition { get; protected set; }
+
+	public virtual void Draw(Transform transform, Device device, DeviceContext deviceContext)
+	{
+		Transform thisTransform = this.Transform * transform;
+		this.WorldPosition = Vector3.Transform(Vector3.Zero, thisTransform.ToMatrix());
+	}
+
 	public abstract void Dispose();
 
 	public abstract void HitTest(

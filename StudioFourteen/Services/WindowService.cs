@@ -230,7 +230,7 @@ public partial class WindowService : ServiceBase
 		return this.mouseOverPanelWindows.FirstOrDefault();
 	}
 
-	public void SendToBack(PanelWindow window)
+	public void SendToBack(Window window)
 	{
 		window.Dispatcher.Invoke(() =>
 		{

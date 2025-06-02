@@ -15,9 +15,11 @@
 
 namespace StudioFourteen.Rendering.Scene.Gizmos.Transforms;
 
+using System;
 using System.Numerics;
 using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Scene.Handles;
+using StudioFourteen.Structs.Extensions;
 
 public class TransformGizmo : GizmoBase
 {
@@ -93,19 +95,29 @@ public class AxisHandle : Handle
 		this.fromLineRenderer = new();
 		this.fromLineRenderer.IsHitTestVisible = false;
 		this.fromLineRenderer.IsVisible = false;
-		this.fromLineRenderer.Material.Outline = 0;
 		this.Add(this.fromLineRenderer);
 
 		this.toLineRenderer = new();
 		this.toLineRenderer.IsHitTestVisible = false;
 		this.toLineRenderer.IsVisible = false;
-		this.toLineRenderer.Material.Outline = 0;
 		this.Add(this.toLineRenderer);
 	}
 
 	public Color Color { get; set; }
 	public float Sensitivity { get; set; } = 1.0f;
 	public Vector3 AxisUnit { get; set; }
+
+	public override bool GetToolTip(ref string content, ref Vector3 worldPosition)
+	{
+		if (!this.IsDragging)
+			return false;
+
+		Vector3 euler = this.totalRotation.ToEuler();
+
+		content = $"{euler.X.ToString("F1")}°";
+		worldPosition = this.gizmo.WorldPosition;
+		return true;
+	}
 
 	protected override void OnDraw()
 	{

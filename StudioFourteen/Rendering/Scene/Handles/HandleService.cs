@@ -21,11 +21,11 @@ using System.Runtime.CompilerServices;
 using StudioFourteen.Rendering.Scene;
 using StudioFourteen.Input;
 using System.Windows.Input;
+using System.Threading.Tasks;
 
 public partial class HandleService : ServiceBase
 {
 	private readonly ConditionalWeakTable<SceneObject, Handle?> parentHandles = new();
-
 	private readonly Input2DListener dragListener = new(
 		InputAction.Handle_Right,
 		InputAction.Handle_Left,
@@ -36,6 +36,7 @@ public partial class HandleService : ServiceBase
 	private readonly HitTestResult pressHitTestResult = new();
 	private Handle? currentHover;
 	private Handle? currentPress;
+	private HandleTipWindow? handleTipWindow;
 
 	public bool IsCursorOverHandle => this.CurrentHover != null;
 
@@ -51,9 +52,19 @@ public partial class HandleService : ServiceBase
 			if (this.currentHover == value)
 				return;
 
-			this.currentHover?.SetIsHandleHovered(false);
+			if (this.currentHover != null)
+			{
+				this.currentHover.SetIsHandleHovered(false);
+				this.handleTipWindow?.Hide(this.currentHover);
+			}
+
 			this.currentHover = value;
-			this.currentHover?.SetIsHandleHovered(true);
+
+			if (this.currentHover != null)
+			{
+				this.currentHover.SetIsHandleHovered(true);
+				this.handleTipWindow?.Show(this.currentHover);
+			}
 		}
 	}
 
@@ -80,6 +91,12 @@ public partial class HandleService : ServiceBase
 		}
 	}
 
+	public override async Task Start()
+	{
+		this.handleTipWindow = await HandleTipWindow.CreateInstanceAsync<HandleTipWindow>();
+		await base.Start();
+	}
+
 	public override void Attach()
 	{
 		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
@@ -89,6 +106,7 @@ public partial class HandleService : ServiceBase
 	public override void Detach()
 	{
 		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
+		this.handleTipWindow?.Hide(null);
 		base.Detach();
 	}
 
@@ -136,6 +154,14 @@ public partial class HandleService : ServiceBase
 			{
 				Vector2 drag = this.dragListener.Value;
 				this.CurrentPress.HandleDrag(this.pressHitTestResult, drag);
+			}
+
+			if (this.currentHover != null)
+			{
+				string toolTipContent = string.Empty;
+				Vector3 toolTipPosition = Vector3.Zero;
+				bool show = this.currentHover.GetToolTip(ref toolTipContent, ref toolTipPosition);
+				this.handleTipWindow?.Update(show, toolTipContent, toolTipPosition);
 			}
 		}
 	}

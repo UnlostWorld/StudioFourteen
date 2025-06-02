@@ -42,12 +42,14 @@ public class SceneGroup : SceneObject
 
 	public override void Draw(Transform transform, Device device, DeviceContext deviceContext)
 	{
+		base.Draw(transform, device, deviceContext);
 		this.OnDraw();
 
 		if (!this.IsVisible)
 			return;
 
-		Transform thisTransform = (this.LocalTransform * this.Transform) * transform;
+		Transform thisTransform = this.LocalTransform * this.Transform * transform;
+		this.WorldPosition = Vector3.Transform(Vector3.Zero, thisTransform.ToMatrix());
 
 		foreach (SceneObject child in this.Children)
 		{
