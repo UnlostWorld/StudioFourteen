@@ -126,7 +126,7 @@ public class OrbHandle : Handle
 		this.sphereRenderer = new(MeshContent.Sphere);
 		this.Add(this.sphereRenderer);
 		this.sphereRenderer.Transform = Transform.FromScale(0.48f);
-		this.sphereRenderer.HitTestBias = -0.75f;
+		this.sphereRenderer.HitTestBias = -0.5f;
 	}
 
 	protected override void OnDraw()

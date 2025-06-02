@@ -68,24 +68,25 @@ public partial class HandleService : ServiceBase
 		}
 		else
 		{
-			/*Vector2? mousePosition = this.Services.Input.Mouse.Position.Value;
+			Vector2? mousePosition = this.Services.Input.Mouse.GetPosition();
 
 			if (mousePosition != null)
 			{
 				HitTestResult hitTestResult = new();
 
 				// TODO: Scale this with resolution and aspect?
-				hitTestResult.Distance = 20f / 1920f; // 20px on a 1920 monitor.
+				hitTestResult.MaxDistance = 20f / 1920f; // 20px on a 1920 monitor.
 
 				this.Services.Rendering.Forward.HitTest(mousePosition.Value, hitTestResult);
+
 				this.CurrentHover = this.GetHandle(hitTestResult.SceneObject);
 			}
 
 			if (this.CurrentHover != null)
 			{
-				bool mouseDown = this.Servicses.Input.Mouse.Buttons[MouseButton.Left].Value;
-				this.CurrentHover.SetIsHandlePressed(mouseDown);
-			}*/
+				////bool mouseDown = this.Servicses.Input.Mouse.Buttons[MouseButton.Left].Value;
+				////this.CurrentHover.SetIsHandlePressed(mouseDown);
+			}
 		}
 	}
 

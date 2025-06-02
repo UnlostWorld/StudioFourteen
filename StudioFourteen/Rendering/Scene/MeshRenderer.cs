@@ -114,12 +114,18 @@ public class MeshRenderer<TMaterialData> : InstanceRendererBase<MeshRendererInst
 				vertPos = viewProjection.TransformViewProjection(vertPos);
 
 				float fromDist = (screenPosition - vertPos.AsVector2()).Length();
+				if (fromDist > result.MaxDistance)
+					continue;
+
 				fromDist -= this.HitTestBias / 100;
+				fromDist -= vertPos.Z * 10;
+
 				if (fromDist < result.Distance)
 				{
 					result.MeshVertex = mesh.Vertices[i];
 					result.Distance = fromDist;
 					result.SceneObject = this;
+					result.Depth = vertPos.Z;
 				}
 			}
 		}
