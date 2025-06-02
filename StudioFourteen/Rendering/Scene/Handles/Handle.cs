@@ -19,8 +19,6 @@ using System.Numerics;
 
 public abstract class Handle : SceneGroup
 {
-	protected Vector2 dragStartScreenNormal;
-
 	public bool IsHovered { get; private set; }
 	public bool IsPressed { get; private set; }
 	public bool IsDragging { get; private set; }
@@ -50,10 +48,13 @@ public abstract class Handle : SceneGroup
 	public virtual void HandleDrag(HitTestResult initiatingHitResult, Vector2 delta)
 	{
 		if (!this.IsDragging)
+		{
+			this.IsDragging = true;
 			this.OnStartDrag(initiatingHitResult);
+		}
 
 		if (delta.Length() == 0)
-			return;
+				return;
 
 		this.OnDrag(delta);
 	}
@@ -70,7 +71,6 @@ public abstract class Handle : SceneGroup
 
 	protected virtual void OnStartDrag(HitTestResult hitTest)
 	{
-		this.dragStartScreenNormal = hitTest.ScreenNormal;
 	}
 
 	protected virtual void OnDrag(Vector2 delta)

@@ -75,13 +75,32 @@ public class QuaternionGizmo : SceneGroup
 public class AxisHandle : Handle
 {
 	private readonly MeshRenderer<GizmoLineMaterial> circleRenderer;
+	private readonly LineRenderer<GizmoLineMaterial> fromLineRenderer;
+	private readonly LineRenderer<GizmoLineMaterial> toLineRenderer;
 	private readonly GizmoBase gizmo;
+
+	private Vector2 dragStartScreenNormal;
+	private Vector4 dragStartVertPos;
+	private Quaternion totalRotation;
 
 	public AxisHandle(GizmoBase gizmo)
 	{
 		this.gizmo = gizmo;
 		this.circleRenderer = new(MeshContent.WireCircle);
+		this.circleRenderer.Material.EndCaps = 0;
 		this.Add(this.circleRenderer);
+
+		this.fromLineRenderer = new();
+		this.fromLineRenderer.IsHitTestVisible = false;
+		this.fromLineRenderer.IsVisible = false;
+		this.fromLineRenderer.Material.Outline = 0;
+		this.Add(this.fromLineRenderer);
+
+		this.toLineRenderer = new();
+		this.toLineRenderer.IsHitTestVisible = false;
+		this.toLineRenderer.IsVisible = false;
+		this.toLineRenderer.Material.Outline = 0;
+		this.Add(this.toLineRenderer);
 	}
 
 	public Color Color { get; set; }
@@ -90,15 +109,22 @@ public class AxisHandle : Handle
 
 	protected override void OnDraw()
 	{
+		this.fromLineRenderer.IsVisible = this.IsDragging;
+		this.toLineRenderer.IsVisible = this.IsDragging;
+
 		base.OnDraw();
 
 		if (this.IsPressed)
 		{
 			this.circleRenderer.Material.Color = Color.White;
+			this.fromLineRenderer.Material.Color = Color.White;
+			this.toLineRenderer.Material.Color = Color.White;
 		}
 		else
 		{
 			this.circleRenderer.Material.Color = this.Color;
+			this.fromLineRenderer.Material.Color = this.Color;
+			this.toLineRenderer.Material.Color = this.Color;
 		}
 
 		if (this.IsHovered)
@@ -108,6 +134,28 @@ public class AxisHandle : Handle
 		else
 		{
 			this.circleRenderer.Material.Thickness = 1.0f;
+		}
+
+		if (this.IsDragging)
+		{
+			Vector3 from = this.dragStartVertPos.AsVector3();
+			this.fromLineRenderer.From = from * 0.01f;
+			this.fromLineRenderer.To = from * 0.95f;
+
+			Vector3 to = Vector3.Transform(this.dragStartVertPos.AsVector3(), Quaternion.Inverse(this.totalRotation));
+			this.toLineRenderer.From = to * 0.01f;
+			this.toLineRenderer.To = to * 0.95f;
+		}
+	}
+
+	protected override void OnStartDrag(HitTestResult hitTest)
+	{
+		this.totalRotation = Quaternion.Identity;
+		this.dragStartScreenNormal = hitTest.ScreenNormal;
+
+		if (hitTest.MeshVertex != null)
+		{
+			this.dragStartVertPos = hitTest.MeshVertex.Value.Position;
 		}
 	}
 
@@ -136,6 +184,8 @@ public class AxisHandle : Handle
 		Quaternion rot = Quaternion.CreateFromAxisAngle(this.AxisUnit, angleChange);
 		this.gizmo.Transform = Transform.FromRotation(rot) * this.gizmo.Transform;
 		base.OnDrag(delta);
+
+		this.totalRotation *= Quaternion.CreateFromAxisAngle(Vector3.UnitY, angleChange);
 	}
 }
 

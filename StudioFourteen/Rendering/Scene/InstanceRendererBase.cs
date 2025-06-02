@@ -44,6 +44,11 @@ public abstract class InstanceRendererBase<TRendererData, TMaterialData> : Rende
 	private Shader? shader;
 	private InputLayout? layout;
 
+	public InstanceRendererBase()
+	{
+		this.Material.Initialize();
+	}
+
 	public override void Draw(Transform transform, Device device, DeviceContext deviceContext)
 	{
 		if (this.rendererDataBuffer == null)
@@ -66,7 +71,7 @@ public abstract class InstanceRendererBase<TRendererData, TMaterialData> : Rende
 				throw new Exception($"{typeof(TMaterialData)} size is 0. Ensure there are at least 16 bytes occupied (one Vector4)");
 
 			if (size % 16 != 0)
-				throw new Exception($"{typeof(TMaterialData)} is not divisible by 16, ensure struct is packed in sets of 4 floats.");
+				throw new Exception($"{typeof(TMaterialData)} is {size} bytes. Not divisible by 16, ensure struct is packed in sets of 4 floats.");
 
 			this.materialDataBuffer = new(
 				device,
@@ -86,9 +91,9 @@ public abstract class InstanceRendererBase<TRendererData, TMaterialData> : Rende
 				return;
 
 			if (this.shader.VertexSignature != null)
+			{
 				this.layout = new InputLayout(device, this.shader.VertexSignature, default(Vertex).GetInputElements());
-
-			this.Material.Initialize();
+			}
 		}
 
 		if (this.layout != null)

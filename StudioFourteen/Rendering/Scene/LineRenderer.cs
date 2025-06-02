@@ -51,6 +51,9 @@ public class LineRenderer<TMaterialData> : InstanceRendererBase<MeshRendererInst
 
 	public override void Draw(Transform transform, Device device, DeviceContext deviceContext)
 	{
+		if (!this.IsVisible)
+			return;
+
 		Transform thisTransform = transform * this.Transform;
 		this.Instance.Transform = Matrix4x4.Transpose(thisTransform.ToMatrix());
 		base.Draw(thisTransform, device, deviceContext);

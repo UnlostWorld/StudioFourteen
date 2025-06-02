@@ -22,6 +22,8 @@ cbuffer MaterialInstanceData : register(MaterialDataRegister)
 {
 	float4 Color;
 	float Thickness;
+	float EndCaps;
+	float Outline;
 };
 
 static float zOffset = 0.0f;
@@ -50,10 +52,12 @@ void addHalfCircle(inout TriangleStream<Fragment> triangleStream, int nCountTria
         output.Position += linePointToConnect;
         output.Position *= fPointWComponent;
 		output.ScreenPosition = output.Position;
+        output.TexCoord = float2(-1, 0);
         triangleStream.Append(output);
 
         output.Position = linePointToConnect * fPointWComponent;
 		output.ScreenPosition = output.Position;
+        output.TexCoord = float2(-1, 1);
         triangleStream.Append(output);
 
         output.Position.x = cos(fAngle + (PI / nCountTriangles * (nI + 1))) * thickness / fRatio;
@@ -63,6 +67,7 @@ void addHalfCircle(inout TriangleStream<Fragment> triangleStream, int nCountTria
         output.Position += linePointToConnect;
         output.Position *= fPointWComponent;
 		output.ScreenPosition = output.Position;
+        output.TexCoord = float2(-1, 0);
         triangleStream.Append(output);
 
         triangleStream.RestartStrip();
@@ -108,8 +113,11 @@ void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStr
 	float thickness = fThickness * Thickness;
 
     //first half circle of the line
-   // addHalfCircle(triangleStream, nCountTriangles, positionPoint0Transformed, fPoint0w, fAngle, input[0].Color);
-   // addHalfCircle(triangleStream, nCountTriangles, positionPoint1Transformed, fPoint1w, fAngle + PI, input[1].Color);
+	if (EndCaps)
+	{
+   	 	addHalfCircle(triangleStream, nCountTriangles, positionPoint0Transformed, fPoint0w, fAngle, input[0].Color);
+    	addHalfCircle(triangleStream, nCountTriangles, positionPoint1Transformed, fPoint1w, fAngle + PI, input[1].Color);
+	}
 
     //connection between the two circles
     //triangle1
@@ -193,6 +201,9 @@ float4 pixel(Fragment frag) : SV_TARGET
 	{
 		if (frag.TexCoord.y < (fShadowSize / Thickness))
 		{
+            if (Outline == 0)
+                discard;
+
 			color.rgb = 0;
 		}
 	}
@@ -204,6 +215,9 @@ float4 pixel(Fragment frag) : SV_TARGET
 		{
 			if (frag.TexCoord.x > (1 - ((fShadowSize / Thickness) / 2)))
 			{
+                if (Outline == 0)
+                    discard;
+
 				color.rgb = 0;
 			}
 		}
@@ -211,6 +225,9 @@ float4 pixel(Fragment frag) : SV_TARGET
 		{
 			if (frag.TexCoord.x < ((fShadowSize / Thickness) / 2))
 			{
+                if (Outline == 0)
+                    discard;
+
 				color.rgb = 0;
 			}
 		}
