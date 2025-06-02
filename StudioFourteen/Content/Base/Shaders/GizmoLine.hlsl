@@ -111,6 +111,7 @@ void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStr
     fAngle -= PI * 0.5f;
 
 	float thickness = fThickness * Thickness;
+    float3 extend = 0;
 
     //first half circle of the line
 	if (EndCaps)
@@ -118,6 +119,12 @@ void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStr
    	 	addHalfCircle(triangleStream, nCountTriangles, positionPoint0Transformed, fPoint0w, fAngle, input[0].Color);
     	addHalfCircle(triangleStream, nCountTriangles, positionPoint1Transformed, fPoint1w, fAngle + PI, input[1].Color);
 	}
+    else
+    {
+        extend = positionDifference;
+	    extend = normalize(extend);
+	    extend *= 0.003f;
+    }
 
     //connection between the two circles
     //triangle1
@@ -129,6 +136,7 @@ void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStr
     output.Position.z = zOffset;
     output.Position.w = 0.0f;
     output.Position += positionPoint0Transformed;
+	output.Position.xyz += extend;
     output.Position *= fPoint0w; //undo calculate out the W parameter, because of usage of perspective rendering
 	output.ScreenPosition = output.Position;
 	triangleStream.Append(output);
@@ -140,6 +148,7 @@ void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStr
     output.Position.z = zOffset;
     output.Position.w = 0.0f;
     output.Position += positionPoint0Transformed;
+	output.Position.xyz += extend;
     output.Position *= fPoint0w;
 	output.ScreenPosition = output.Position;
     triangleStream.Append(output);
@@ -151,6 +160,7 @@ void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStr
     output.Position.z = zOffset;
     output.Position.w = 0.0f;
     output.Position += positionPoint1Transformed;
+	output.Position.xyz -= extend;
     output.Position *= fPoint1w;
 	output.ScreenPosition = output.Position;
     triangleStream.Append(output);
@@ -164,6 +174,7 @@ void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStr
     output.Position.z = zOffset;
     output.Position.w = 0.0f;
     output.Position += positionPoint0Transformed;
+	output.Position.xyz += extend;
     output.Position *= fPoint0w;
 	output.ScreenPosition = output.Position;
     triangleStream.Append(output);
@@ -175,6 +186,7 @@ void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStr
     output.Position.z = zOffset;
     output.Position.w = 0.0f;
     output.Position += positionPoint1Transformed;
+	output.Position.xyz -= extend;
     output.Position *= fPoint1w;
 	output.ScreenPosition = output.Position;
     triangleStream.Append(output);
@@ -186,6 +198,7 @@ void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStr
     output.Position.z = zOffset;
     output.Position.w = 0.0f;
     output.Position += positionPoint1Transformed;
+	output.Position.xyz += extend;
     output.Position *= fPoint1w;
 	output.ScreenPosition = output.Position;
     triangleStream.Append(output);
