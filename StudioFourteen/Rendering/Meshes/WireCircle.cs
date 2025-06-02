@@ -35,5 +35,24 @@ public class WireCircle : MeshGenerator
 			Vector4 to = new Vector4(MathF.Cos(r), 0, MathF.Sin(r), 1);
 			mesh.Vertices.Add(new Vertex(to));
 		}
+
+		// Generate normals
+		for (int i = 0; i < mesh.Vertices.Count; i++)
+		{
+			Vertex from = mesh.Vertices[i];
+
+			Vertex to;
+			if (i == mesh.Vertices.Count - 1)
+			{
+				to = mesh.Vertices[0];
+			}
+			else
+			{
+				to = mesh.Vertices[i + 1];
+			}
+
+			from.Normal = Vector4.Normalize(to.Position - from.Position);
+			mesh.Vertices[i] = from;
+		}
 	}
 }

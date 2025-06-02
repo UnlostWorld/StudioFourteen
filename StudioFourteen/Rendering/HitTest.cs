@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Rendering;
 
+using System.Numerics;
 using StudioFourteen.Rendering.Scene;
 
 public class HitTestResult
@@ -25,4 +26,16 @@ public class HitTestResult
 	public SceneObject? SceneObject;
 	public bool Handled = false;
 	public float Depth = -1;
+	public Vector2 ScreenNormal = Vector2.Zero;
+
+	public void Clear()
+	{
+		this.Distance = float.MaxValue;
+		this.MaxDistance = float.MaxValue;
+		this.MeshVertex = null;
+		this.SceneObject = null;
+		this.Handled = false;
+		this.Depth = -1;
+		this.ScreenNormal = Vector2.Zero;
+	}
 }

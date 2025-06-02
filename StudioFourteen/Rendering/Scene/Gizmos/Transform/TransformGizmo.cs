@@ -45,18 +45,21 @@ public class QuaternionGizmo : SceneGroup
 	{
 		this.xHandle = new(gizmo);
 		this.Add(this.xHandle);
-		this.xHandle.Transform = Transform.FromRotation(0, 90, 0) * Transform.FromScale(0.5f);
+		this.xHandle.Transform = Transform.FromRotation(0, 0, -90) * Transform.FromScale(0.5f);
 		this.xHandle.Color = Axes.XColor;
+		this.xHandle.AxisUnit = Vector3.UnitX;
 
 		this.yHandle = new(gizmo);
 		this.Add(this.yHandle);
 		this.yHandle.Transform = Transform.FromRotation(0, 0, 0) * Transform.FromScale(0.5f);
 		this.yHandle.Color = Axes.YColor;
+		this.yHandle.AxisUnit = Vector3.UnitY;
 
 		this.zHandle = new(gizmo);
 		this.Add(this.zHandle);
-		this.zHandle.Transform = Transform.FromRotation(0, 0, 90) * Transform.FromScale(0.5f);
+		this.zHandle.Transform = Transform.FromRotation(0, 90, 0) * Transform.FromScale(0.5f);
 		this.zHandle.Color = Axes.ZColor;
+		this.zHandle.AxisUnit = Vector3.UnitZ;
 
 		this.orbHandle = new(gizmo);
 		this.Add(this.orbHandle);
@@ -82,6 +85,8 @@ public class AxisHandle : Handle
 	}
 
 	public Color Color { get; set; }
+	public float Sensitivity { get; set; } = 1.0f;
+	public Vector3 AxisUnit { get; set; }
 
 	protected override void OnDraw()
 	{
@@ -111,6 +116,25 @@ public class AxisHandle : Handle
 		// TODO: Not this.
 		////this.gizmo.Transform *= Transform.FromTranslation(delta.X / 100, delta.Y / 100, 0);
 
+		float mag = delta.Length();
+		delta = Vector2.Normalize(delta);
+
+		float dot = Vector2.Dot(delta, this.dragStartScreenNormal);
+		float dragDelta = (float)(mag * dot);
+		float angleChange = dragDelta / 50;
+		angleChange *= this.Sensitivity;
+
+		/*if (Keyboard.Modifiers == ModifierKeys.Shift)
+			angleChange *= 10;
+
+		if (Keyboard.Modifiers == ModifierKeys.Control)
+			angleChange /= 10;*/
+
+		if (this.Services.Tablet.PenPressure > 0)
+			angleChange *= (float)this.Services.Tablet.PenPressure;
+
+		Quaternion rot = Quaternion.CreateFromAxisAngle(this.AxisUnit, angleChange);
+		this.gizmo.Transform = Transform.FromRotation(rot) * this.gizmo.Transform;
 		base.OnDrag(delta);
 	}
 }

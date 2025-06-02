@@ -126,6 +126,11 @@ public class MeshRenderer<TMaterialData> : InstanceRendererBase<MeshRendererInst
 					result.Distance = fromDist;
 					result.SceneObject = this;
 					result.Depth = vertPos.Z;
+
+					Vector4 vertNormal = mesh.Vertices[i].Normal;
+					vertNormal = Vector4.Transform(vertNormal, thisTransform.ToMatrix());
+					vertNormal = viewProjection.TransformViewProjection(vertNormal);
+					result.ScreenNormal = Vector2.Normalize(vertNormal.AsVector2());
 				}
 			}
 		}

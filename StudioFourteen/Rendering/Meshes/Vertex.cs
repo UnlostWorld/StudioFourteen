@@ -25,6 +25,7 @@ public struct Vertex
 	public Vector4 Position;
 	public Color Color = Color.White;
 	public Vector2 TexCoord;
+	public Vector4 Normal = Vector4.UnitY;
 
 	public Vertex()
 	{
@@ -53,5 +54,6 @@ public struct Vertex
 		new InputElement("POSITION", 0, SharpDX.DXGI.Format.R32G32B32A32_Float, 0, 0, InputClassification.PerVertexData, 0),
 		new InputElement("COLOR", 0, SharpDX.DXGI.Format.R32G32B32A32_Float, InputElement.AppendAligned, 0, InputClassification.PerVertexData, 0),
 		new InputElement("TEXCOORD", 0, SharpDX.DXGI.Format.R32G32_Float, InputElement.AppendAligned, 0, InputClassification.PerVertexData, 0),
+		new InputElement("NORMAL", 0, SharpDX.DXGI.Format.R32G32B32A32_Float, InputElement.AppendAligned, 0, InputClassification.PerVertexData, 0),
 	];
 }

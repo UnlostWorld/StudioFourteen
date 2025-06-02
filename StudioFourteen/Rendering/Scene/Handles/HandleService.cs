@@ -33,6 +33,7 @@ public partial class HandleService : ServiceBase
 		InputAction.Handle_Up,
 		"Handle Service Move");
 
+	private readonly HitTestResult pressHitTestResult = new();
 	private Handle? currentHover;
 	private Handle? currentPress;
 
@@ -110,14 +111,12 @@ public partial class HandleService : ServiceBase
 				Vector2? mousePosition = this.Services.Input.Mouse.GetPosition();
 				if (mousePosition != null)
 				{
-					HitTestResult hitTestResult = new();
+					this.pressHitTestResult.Clear();
 
 					// TODO: Scale this with resolution and aspect?
-					hitTestResult.MaxDistance = 20f / 1920f; // 20px on a 1920 monitor.
-
-					this.Services.Rendering.Forward.HitTest(mousePosition.Value, hitTestResult);
-
-					this.CurrentHover = this.GetHandle(hitTestResult.SceneObject);
+					this.pressHitTestResult.MaxDistance = 20f / 1920f; // 20px on a 1920 monitor.
+					this.Services.Rendering.Forward.HitTest(mousePosition.Value, this.pressHitTestResult);
+					this.CurrentHover = this.GetHandle(this.pressHitTestResult.SceneObject);
 				}
 			}
 
@@ -136,7 +135,7 @@ public partial class HandleService : ServiceBase
 			if (this.CurrentPress != null)
 			{
 				Vector2 drag = this.dragListener.Value;
-				this.CurrentPress.HandleDrag(drag);
+				this.CurrentPress.HandleDrag(this.pressHitTestResult, drag);
 			}
 		}
 	}
