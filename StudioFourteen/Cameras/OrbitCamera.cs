@@ -46,8 +46,8 @@ public partial class OrbitCamera : StudioCameraBase
 		"Orbit Camera Pan");
 
 	private readonly Input1DListener zoomListener = new(
-		InputAction.OrbitCamera_ZoomIn,
 		InputAction.OrbitCamera_ZoomOut,
+		InputAction.OrbitCamera_ZoomIn,
 		"Orbit Camera Zoom");
 
 	private readonly Input2DListener rotateListener = new(
