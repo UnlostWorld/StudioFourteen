@@ -16,10 +16,12 @@
 namespace StudioFourteen.Rendering.Scene.Handles;
 
 using Serilog;
+using System.Drawing;
 using System.Numerics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
+using System.Windows.Media.Effects;
 using WpfUtils.Windows;
 
 public partial class HandleTipWindow : MultithreadedWindow
@@ -53,6 +55,12 @@ public partial class HandleTipWindow : MultithreadedWindow
 		this.textBlock.HorizontalAlignment = HorizontalAlignment.Center;
 		this.textBlock.VerticalAlignment = VerticalAlignment.Center;
 		this.textBlock.Foreground = new SolidColorBrush(Colors.White);
+		this.textBlock.FontWeight = FontWeights.Bold;
+
+		DropShadowEffect shadow = new();
+		shadow.ShadowDepth = 0;
+		this.textBlock.Effect = shadow;
+
 		this.Content = this.textBlock;
 	}
 
@@ -81,7 +89,7 @@ public partial class HandleTipWindow : MultithreadedWindow
 			this.textBlock.Text = content;
 
 			Vector3 pos = this.Services.Camera.WorldToCamera(worldPosition);
-			this.Services.Windows.SetPosition(this, new Point(pos.X, pos.Y), false);
+			this.Services.Windows.SetPosition(this, new System.Windows.Point(pos.X, pos.Y), false);
 			this.Services.Windows.SendToBack(this);
 		});
 	}

@@ -15,18 +15,17 @@
 
 namespace StudioFourteen.Rendering.Scene;
 
-using System;
 using System.Numerics;
-using System.Runtime.InteropServices;
 using SharpDX.Direct3D11;
-using StudioFourteen.Rendering.Materials;
-
+using StudioFourteen.Utilities;
 using Buffer = SharpDX.Direct3D11.Buffer;
 using Device = SharpDX.Direct3D11.Device;
 
 public class LineRenderer<TMaterialData> : InstanceRendererBase<MeshRendererInstanceData, TMaterialData>
 	where TMaterialData : unmanaged, IMaterial
 {
+	public float HitTestBias = 0;
+
 	private readonly Vertex[] vertArray = new Vertex[2]
 	{
 		new Vertex(Vector4.One, Color.White),
@@ -84,21 +83,31 @@ public class LineRenderer<TMaterialData> : InstanceRendererBase<MeshRendererInst
 
 		Transform thisTransform = this.Transform * transform;
 
-		// Very basic 'closest vert' hit testing.
-		// TODO: Start checking nearest point on line.
-		for (int i = 0; i < this.vertArray.Length; i += 2)
-		{
-			Vector4 vertPos = this.vertArray[i].Position;
-			vertPos = Vector4.Transform(vertPos, thisTransform.ToMatrix());
-			vertPos = viewProjection.TransformViewProjection(vertPos);
+		Vector4 fromPos = this.vertArray[0].Position;
+		fromPos = Vector4.Transform(fromPos, thisTransform.ToMatrix());
+		fromPos = viewProjection.TransformViewProjection(fromPos);
 
-			float fromDist = (screenPosition - vertPos.AsVector2()).Length();
-			if (fromDist < result.Distance)
-			{
-				result.MeshVertex = this.vertArray[i];
-				result.Distance = fromDist;
-				result.SceneObject = this;
-			}
+		Vector4 toPos = this.vertArray[1].Position;
+		toPos = Vector4.Transform(toPos, thisTransform.ToMatrix());
+		toPos = viewProjection.TransformViewProjection(toPos);
+
+		Vector2 nearestPoint = MathUtility.FindNearestPointOnLine(fromPos.AsVector2(), toPos.AsVector2(), screenPosition);
+
+		float fromDist = (screenPosition - nearestPoint).Length();
+		if (fromDist > result.MaxDistance)
+			return;
+
+		float zDepth = fromPos.Z;
+
+		fromDist -= this.HitTestBias / 100;
+		fromDist -= zDepth * 10;
+
+		if (fromDist < result.Distance)
+		{
+			result.Distance = fromDist;
+			result.SceneObject = this;
+			result.Depth = zDepth;
+			result.ScreenNormal = Vector2.Normalize(toPos.AsVector2() - fromPos.AsVector2());
 		}
 	}
 }

@@ -30,4 +30,5 @@ public static class MeshContent
 	public static readonly IContent<Mesh> WireCircle = new WireCircle();
 	public static readonly IContent<Mesh> Bone = new JsonContentReference<Mesh>("Meshes/Bone.jsonc");
 	public static readonly IContent<Mesh> Sphere = new PolygonMeshReference("Meshes/Sphere.ply");
+	public static readonly IContent<Mesh> Cone = new PolygonMeshReference("Meshes/Cone.ply");
 }

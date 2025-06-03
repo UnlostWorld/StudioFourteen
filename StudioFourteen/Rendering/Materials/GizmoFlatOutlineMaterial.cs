@@ -13,28 +13,24 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Scene.Gizmos.Transforms;
+namespace StudioFourteen.Rendering.Materials;
 
-public class TransformGizmo : GizmoBase
+using System.Numerics;
+using System.Runtime.InteropServices;
+using SharpDX.D3DCompiler;
+using StudioFourteen.Content;
+using StudioFourteen.Rendering.Scene;
+
+[StructLayout(LayoutKind.Sequential)]
+public struct GizmoFlatOutlineMaterial : IMaterial
 {
-	private readonly RotationGizmo rotation;
-	private readonly TranslationGizmo translation;
+	public Vector4 Unused;
 
-	public TransformGizmo()
+	public IContent<ShaderBytecode>? GetVertexShader() => new ShaderReference("Shaders/GizmoFlatOutline.hlsl", "vs_4_0", "vert");
+	public IContent<ShaderBytecode>? GetPixelShader() => new ShaderReference("Shaders/GizmoFlatOutline.hlsl", "ps_4_0", "pixel");
+	public IContent<ShaderBytecode>? GetGeometryShader() => null;
+
+	public void Initialize()
 	{
-		this.rotation = new(this);
-		this.Add(this.rotation);
-
-		this.translation = new(this);
-		this.Add(this.translation);
-
-		this.rotation.IsVisible = false;
-		this.translation.IsVisible = true;
 	}
-
-	public override string Name => "Transform";
-
-	public override bool IsBeingManipulated =>
-		this.rotation.IsBeingManipulated
-		|| this.translation.IsBeingManipulated;
 }

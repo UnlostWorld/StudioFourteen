@@ -13,28 +13,34 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Scene.Gizmos.Transforms;
+#include "Geometry.hlsl"
 
-public class TransformGizmo : GizmoBase
+cbuffer MaterialInstanceData : register(MaterialDataRegister)
 {
-	private readonly RotationGizmo rotation;
-	private readonly TranslationGizmo translation;
+};
 
-	public TransformGizmo()
-	{
-		this.rotation = new(this);
-		this.Add(this.rotation);
+Fragment vert(in Vertex vertex)
+{
+	Fragment result = DefaultVert(vertex);
 
-		this.translation = new(this);
-		this.Add(this.translation);
+	float4 position = vertex.Position;
+	position.xyz = position.xyz * 1.33;
+	position = mul(position, Transform);
+	position = mul(position, ViewMatrix);
+	position = mul(position, ProjectionMatrix);
+	position.z -= 0.005;
+	result.Position = position;
 
-		this.rotation.IsVisible = false;
-		this.translation.IsVisible = true;
-	}
+	return result;
+}
 
-	public override string Name => "Transform";
+float4 pixel(Fragment frag) : SV_TARGET
+{
+	float4 color = float4(0,0,0,1);
+	color.a *= GetUiClippingAlpha(frag);
 
-	public override bool IsBeingManipulated =>
-		this.rotation.IsBeingManipulated
-		|| this.translation.IsBeingManipulated;
+	if (color.a <= 0)
+		discard;
+
+	return color;
 }

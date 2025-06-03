@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Utilities;
 
+using System;
 using System.Numerics;
 
 public static class MathUtility
@@ -38,5 +39,20 @@ public static class MathUtility
 	public static float InverseLerp(float a, float b, float v)
 	{
 		return (v - a) / (b - a);
+	}
+
+	// https://stackoverflow.com/a/51906100/9934501
+	public static Vector2 FindNearestPointOnLine(Vector2 origin, Vector2 end, Vector2 point)
+	{
+		// Get heading
+		Vector2 heading = end - origin;
+		float magnitudeMax = heading.Length();
+		heading = Vector2.Normalize(heading);
+
+		// Do projection from the point but clamp it
+		Vector2 lhs = point - origin;
+		float dotP = Vector2.Dot(lhs, heading);
+		dotP = Math.Clamp(dotP, 0f, magnitudeMax);
+		return origin + (heading * dotP);
 	}
 }
