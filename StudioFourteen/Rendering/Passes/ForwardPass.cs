@@ -137,7 +137,7 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 		if (this.depthStencilTexture == null)
 		{
 			Texture2DDescription desc = default;
-			desc.Format = Format.D16_UNorm;
+			desc.Format = Format.D24_UNorm_S8_UInt;
 			desc.ArraySize = 1;
 			desc.MipLevels = 1;
 			desc.Width = (int)service.Width;
@@ -158,10 +158,11 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 
 		if (this.depthStencilState == null)
 		{
-			DepthStencilStateDescription desc = default;
+			DepthStencilStateDescription desc = DepthStencilStateDescription.Default();
 			desc.DepthComparison = Comparison.GreaterEqual;
 			desc.DepthWriteMask = DepthWriteMask.All;
 			desc.IsDepthEnabled = true;
+			desc.IsStencilEnabled = true;
 
 			this.depthStencilState = new(device, desc);
 		}
@@ -169,9 +170,9 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 		deviceContext.Rasterizer.SetViewport(0, 0, service.Width, service.Height);
 		deviceContext.OutputMerger.SetBlendState(this.blend, null, -1);
 		deviceContext.OutputMerger.SetTargets(this.depthStencilView, this.backBufferTargetView);
-		deviceContext.OutputMerger.SetDepthStencilState(this.depthStencilState);
+		deviceContext.OutputMerger.SetDepthStencilState(this.depthStencilState, int.MinValue);
 
-		deviceContext.ClearDepthStencilView(this.depthStencilView, DepthStencilClearFlags.Depth, 0f, 0);
+		deviceContext.ClearDepthStencilView(this.depthStencilView, DepthStencilClearFlags.Depth, 0f, byte.MaxValue);
 
 		lock(this.sceneObjects)
 		{

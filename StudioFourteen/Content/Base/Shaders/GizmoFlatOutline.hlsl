@@ -17,6 +17,7 @@
 
 cbuffer MaterialInstanceData : register(MaterialDataRegister)
 {
+	float4 OutlineColor;
 };
 
 Fragment vert(in Vertex vertex)
@@ -36,7 +37,7 @@ Fragment vert(in Vertex vertex)
 
 float4 pixel(Fragment frag) : SV_TARGET
 {
-	float4 color = float4(0,0,0,1);
+	float4 color = OutlineColor;
 	color.a *= GetUiClippingAlpha(frag);
 
 	if (color.a <= 0)

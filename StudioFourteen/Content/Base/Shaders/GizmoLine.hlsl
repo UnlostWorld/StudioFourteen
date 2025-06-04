@@ -21,9 +21,10 @@
 cbuffer MaterialInstanceData : register(MaterialDataRegister)
 {
 	float4 Color;
+	float4 OutlineColor;
 	float Thickness;
 	float EndCaps;
-	float Outline;
+	float FadeOutDepth;
 };
 
 static float zOffset = 0.0f;
@@ -214,10 +215,7 @@ float4 pixel(Fragment frag) : SV_TARGET
 	{
 		if (frag.TexCoord.y < (fShadowSize / Thickness))
 		{
-            if (Outline == 0)
-                discard;
-
-			color.rgb = 0;
+			color.rgb = OutlineColor.rgb;
 		}
 	}
 
@@ -228,26 +226,31 @@ float4 pixel(Fragment frag) : SV_TARGET
 		{
 			if (frag.TexCoord.x > (1 - ((fShadowSize / Thickness) / 2)))
 			{
-                if (Outline == 0)
-                    discard;
-
-				color.rgb = 0;
+				color.rgb = OutlineColor.rgb;
 			}
 		}
 		else
 		{
 			if (frag.TexCoord.x < ((fShadowSize / Thickness) / 2))
 			{
-                if (Outline == 0)
-                    discard;
-
-				color.rgb = 0;
+				color.rgb = OutlineColor.rgb;
 			}
 		}
 	}
 
-	color.a *= GetUiClippingAlpha(frag);
+	// Fade out if the line goes behind the root of this object.
+	if (FadeOutDepth > 0)
+	{
+		float4 position = float4(0,0,0,1);
+		position = mul(position, Transform);
+		position = mul(position, ViewMatrix);
+		position = mul(position, ProjectionMatrix);
 
+		float d = 1 - smoothstep(position.w, position.w + FadeOutDepth, frag.Position.w);
+		color.a *= d;
+	}
+
+	color.a *= GetUiClippingAlpha(frag);
 	if (color.a <= 0)
 		discard;
 

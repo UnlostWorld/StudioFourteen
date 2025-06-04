@@ -24,7 +24,7 @@ using StudioFourteen.Rendering.Scene;
 [StructLayout(LayoutKind.Sequential)]
 public struct GizmoFlatOutlineMaterial : IMaterial
 {
-	public Vector4 Unused;
+	public Vector4 OutlineColor;
 
 	public IContent<ShaderBytecode>? GetVertexShader() => new ShaderReference("Shaders/GizmoFlatOutline.hlsl", "vs_4_0", "vert");
 	public IContent<ShaderBytecode>? GetPixelShader() => new ShaderReference("Shaders/GizmoFlatOutline.hlsl", "ps_4_0", "pixel");

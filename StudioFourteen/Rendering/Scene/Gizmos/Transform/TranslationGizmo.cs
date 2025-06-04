@@ -71,6 +71,7 @@ public class TranslationGizmo : SceneGroup
 				new(1, 0, 0),
 				Quaternion.CreateFromYawPitchRoll(0, 0, -90 * QuaternionExtensions.Deg2Rad),
 				new(0.25f, 0.25f, 0.25f));
+			this.coneOutlineRenderer.Material.OutlineColor = Axes.OutlineColor;
 			this.Add(this.coneOutlineRenderer);
 
 			this.coneRenderer = new(MeshContent.Cone);
@@ -83,6 +84,7 @@ public class TranslationGizmo : SceneGroup
 			this.lineRenderer = new();
 			this.lineRenderer.From = Vector3.UnitX * 0.05f;
 			this.lineRenderer.To = Vector3.UnitX * 0.95f;
+			this.lineRenderer.Material.OutlineColor = Axes.OutlineColor;
 			this.Add(this.lineRenderer);
 		}
 
@@ -95,7 +97,7 @@ public class TranslationGizmo : SceneGroup
 			if (!this.IsDragging)
 				return false;
 
-			content = $"??.?m";
+			content = $"{this.totalTranslation.Length().ToString("F1")}m";
 			worldPosition = this.gizmo.WorldPosition;
 			return true;
 		}

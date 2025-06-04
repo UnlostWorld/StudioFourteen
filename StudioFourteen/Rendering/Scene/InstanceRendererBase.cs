@@ -36,14 +36,19 @@ public abstract class InstanceRendererBase<TRendererData, TMaterialData> : Rende
 	where TRendererData : unmanaged
 	where TMaterialData : unmanaged, IMaterial
 {
+	public int Stencil = int.MinValue;
+	public Comparison StencilMode = Comparison.Always;
+
 	public TRendererData Instance;
 	public TMaterialData Material;
+	public bool WriteDepth = true;
 
 	private Buffer? rendererDataBuffer;
 	private Buffer? materialDataBuffer;
 
 	private Shader? shader;
 	private InputLayout? layout;
+	private DepthStencilState? depthStencilState;
 
 	public InstanceRendererBase()
 	{
@@ -99,6 +104,22 @@ public abstract class InstanceRendererBase<TRendererData, TMaterialData> : Rende
 
 		if (this.layout != null)
 			deviceContext.InputAssembler.InputLayout = this.layout;
+
+		if (this.depthStencilState == null)
+		{
+			DepthStencilStateDescription desc = DepthStencilStateDescription.Default();
+			desc.DepthComparison = Comparison.GreaterEqual;
+			desc.DepthWriteMask = this.WriteDepth ? DepthWriteMask.All : DepthWriteMask.Zero;
+			desc.IsDepthEnabled = true;
+			desc.IsStencilEnabled = true;
+			desc.FrontFace.PassOperation = this.Stencil == int.MinValue ? StencilOperation.Keep : StencilOperation.Replace;
+			desc.FrontFace.Comparison = this.StencilMode;
+			desc.BackFace.PassOperation = this.Stencil == int.MinValue ? StencilOperation.Keep : StencilOperation.Replace;
+			desc.BackFace.Comparison = this.StencilMode;
+			this.depthStencilState = new(device, desc);
+		}
+
+		deviceContext.OutputMerger.SetDepthStencilState(this.depthStencilState, this.Stencil);
 
 		deviceContext.VertexShader.Set(this.shader.Vertex);
 		deviceContext.VertexShader.SetConstantBuffer(Registers.PerRendererData, this.rendererDataBuffer);

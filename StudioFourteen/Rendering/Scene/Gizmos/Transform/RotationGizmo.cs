@@ -29,6 +29,9 @@ public class RotationGizmo : SceneGroup
 
 	public RotationGizmo(GizmoBase gizmo)
 	{
+		this.orbHandle = new(gizmo);
+		this.Add(this.orbHandle);
+
 		this.xHandle = new(gizmo);
 		this.Add(this.xHandle);
 		this.xHandle.Transform = Transform.FromRotation(0, 0, -90) * Transform.FromScale(0.5f);
@@ -46,9 +49,6 @@ public class RotationGizmo : SceneGroup
 		this.zHandle.Transform = Transform.FromRotation(0, 90, 0) * Transform.FromScale(0.5f);
 		this.zHandle.Color = Axes.ZColor;
 		this.zHandle.AxisUnit = Vector3.UnitZ;
-
-		this.orbHandle = new(gizmo);
-		this.Add(this.orbHandle);
 	}
 
 	public bool IsBeingManipulated =>
@@ -73,6 +73,8 @@ public class RotationGizmo : SceneGroup
 			this.gizmo = gizmo;
 			this.circleRenderer = new(MeshContent.WireCircle);
 			this.circleRenderer.Material.EndCaps = 0;
+			this.circleRenderer.Material.OutlineColor = Axes.OutlineColor;
+			this.circleRenderer.Material.FadeOutDepth = 0.075f;
 			this.Add(this.circleRenderer);
 
 			this.fromLineRenderer = new();
@@ -114,12 +116,14 @@ public class RotationGizmo : SceneGroup
 				this.circleRenderer.Material.Color = Color.White;
 				this.fromLineRenderer.Material.Color = Color.White;
 				this.toLineRenderer.Material.Color = Color.White;
+				this.circleRenderer.Material.FadeOutDepth = 0;
 			}
 			else
 			{
 				this.circleRenderer.Material.Color = this.Color;
 				this.fromLineRenderer.Material.Color = this.Color;
 				this.toLineRenderer.Material.Color = this.Color;
+				this.circleRenderer.Material.FadeOutDepth = 0.075f;
 			}
 
 			if (this.IsHovered)
@@ -189,17 +193,14 @@ public class RotationGizmo : SceneGroup
 		public OrbHandle(GizmoBase gizmo)
 		{
 			this.gizmo = gizmo;
+
 			this.sphereRenderer = new(MeshContent.Sphere);
-			this.Add(this.sphereRenderer);
 			this.sphereRenderer.Transform = Transform.FromScale(0.48f);
 			this.sphereRenderer.HitTestBias = -0.5f;
-		}
-
-		protected override void OnDraw()
-		{
-			base.OnDraw();
-
-			this.sphereRenderer.Material.Color = new(0.0f, 0.0f, 0.0f, 0.75f);
+			this.sphereRenderer.Material.Color = Axes.OutlineColor;
+			this.sphereRenderer.Material.Color.A = 0.5f;
+			this.sphereRenderer.WriteDepth = false;
+			this.Add(this.sphereRenderer);
 		}
 	}
 }
