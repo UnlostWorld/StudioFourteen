@@ -55,49 +55,52 @@ public class TranslationGizmo : SceneGroup
 
 		this.xzPlaneHandle = new(gizmo);
 		this.Add(this.xzPlaneHandle);
-
 		this.xzPlaneHandle.Color = Axes.YColor;
-		this.xzPlaneHandle.AxisUnit = Vector3.UnitY;
+		this.xzPlaneHandle.Axis1Unit = Vector3.UnitX;
+		this.xzPlaneHandle.Axis2Unit = Vector3.UnitZ;
 
 		this.xyPlaneHandle = new(gizmo);
 		this.Add(this.xyPlaneHandle);
 		this.xyPlaneHandle.Color = Axes.ZColor;
-		this.xyPlaneHandle.AxisUnit = Vector3.UnitZ;
+		this.xyPlaneHandle.Axis1Unit = Vector3.UnitX;
+		this.xyPlaneHandle.Axis2Unit = Vector3.UnitY;
 
 		this.zyPlaneHandle = new(gizmo);
 		this.Add(this.zyPlaneHandle);
 		this.zyPlaneHandle.Color = Axes.XColor;
-		this.zyPlaneHandle.AxisUnit = Vector3.UnitX;
+		this.zyPlaneHandle.Axis1Unit = Vector3.UnitZ;
+		this.zyPlaneHandle.Axis2Unit = Vector3.UnitY;
 	}
 
 	public bool IsBeingManipulated =>
 		this.xHandle.IsHovered
 		|| this.yHandle.IsHovered
 		|| this.zHandle.IsHovered
-		|| this.xyPlaneHandle.IsHovered
+		|| this.xzPlaneHandle.IsHovered
 		|| this.xyPlaneHandle.IsHovered
 		|| this.zyPlaneHandle.IsHovered;
 
-	public override void Draw(Transform transform, Device device, DeviceContext deviceContext)
+	protected override void OnDraw()
 	{
-		base.Draw(transform, device, deviceContext);
+		base.OnDraw();
 
-		Transform thisTransform = this.Transform * transform;
+		if (this.IsBeingManipulated)
+			return;
 
 		Vector3 lookVector = this.WorldPosition - this.Services.Camera.CurrentPosition;
 		lookVector = Vector3.Normalize(lookVector);
 
-		float x = Vector3.Dot(Vector3.Transform(Vector3.UnitX, thisTransform.Rotation), lookVector);
-		float y = Vector3.Dot(Vector3.Transform(Vector3.UnitY, thisTransform.Rotation), lookVector);
-		float z = Vector3.Dot(Vector3.Transform(Vector3.UnitZ, thisTransform.Rotation), lookVector);
+		float x = Vector3.Dot(Vector3.Transform(Vector3.UnitX, this.WorldRotation), lookVector);
+		float y = Vector3.Dot(Vector3.Transform(Vector3.UnitY, this.WorldRotation), lookVector);
+		float z = Vector3.Dot(Vector3.Transform(Vector3.UnitZ, this.WorldRotation), lookVector);
 
 		Vector3 scale = new(
 			x > 0 ? -1 : 1,
 			y > 0 ? -1 : 1,
 			z > 0 ? -1 : 1);
 
-		this.zyPlaneHandle.Transform = Transform.FromRotation(90, 0, 90) * Transform.FromScale(scale);
-		this.xyPlaneHandle.Transform = Transform.FromRotation(180, 270, 90) * Transform.FromScale(scale);
+		this.zyPlaneHandle.Transform = Transform.FromRotation(180, 270, 90) * Transform.FromScale(scale);
+		this.xyPlaneHandle.Transform = Transform.FromRotation(90, 0, 90) * Transform.FromScale(scale);
 		this.xzPlaneHandle.Transform = Transform.FromRotation(0, 0, 0) * Transform.FromScale(scale);
 	}
 
@@ -108,7 +111,6 @@ public class TranslationGizmo : SceneGroup
 		private readonly LineRenderer<GizmoLineMaterial> lineRenderer;
 		private readonly GizmoBase gizmo;
 
-		private Vector2 dragStartScreenNormal;
 		private Vector3 totalTranslation;
 
 		public AxisHandle(GizmoBase gizmo)
@@ -180,7 +182,6 @@ public class TranslationGizmo : SceneGroup
 		protected override void OnStartDrag(HitTestResult hitTest)
 		{
 			this.totalTranslation = Vector3.Zero;
-			this.dragStartScreenNormal = hitTest.ScreenNormal;
 		}
 
 		protected override void OnDrag(Vector2 delta)
@@ -188,7 +189,7 @@ public class TranslationGizmo : SceneGroup
 			float mag = delta.Length();
 			delta = Vector2.Normalize(delta);
 
-			float dot = Vector2.Dot(delta, this.dragStartScreenNormal);
+			float dot = Vector2.Dot(delta, this.GetScreenVector(Vector3.UnitX));
 			float dragDelta = (float)(mag * dot);
 			float change = dragDelta / 50;
 			change *= this.Sensitivity;
@@ -215,7 +216,6 @@ public class TranslationGizmo : SceneGroup
 		private readonly MeshRenderer<GizmoFlatMaterial> planeRenderer;
 		private readonly GizmoBase gizmo;
 
-		private Vector2 dragStartScreenNormal;
 		private Vector3 totalTranslation;
 
 		public PlaneHandle(GizmoBase gizmo)
@@ -233,7 +233,8 @@ public class TranslationGizmo : SceneGroup
 
 		public Color Color { get; set; }
 		public float Sensitivity { get; set; } = 1.0f;
-		public Vector3 AxisUnit { get; set; }
+		public Vector3 Axis1Unit { get; set; }
+		public Vector3 Axis2Unit { get; set; }
 
 		public override bool GetToolTip(ref string content, ref Vector3 worldPosition)
 		{
@@ -268,7 +269,6 @@ public class TranslationGizmo : SceneGroup
 		protected override void OnStartDrag(HitTestResult hitTest)
 		{
 			this.totalTranslation = Vector3.Zero;
-			this.dragStartScreenNormal = hitTest.ScreenNormal;
 		}
 
 		protected override void OnDrag(Vector2 delta)
@@ -276,25 +276,27 @@ public class TranslationGizmo : SceneGroup
 			float mag = delta.Length();
 			delta = Vector2.Normalize(delta);
 
-			float dot = Vector2.Dot(delta, this.dragStartScreenNormal);
+			Vector2 a = this.GetScreenVector(Vector3.UnitX);
+			Vector2 b = this.GetScreenVector(Vector3.UnitZ);
+
+			float dot = Vector2.Dot(delta, a);
 			float dragDelta = (float)(mag * dot);
 			float change = dragDelta / 50;
 			change *= this.Sensitivity;
 
-			if (this.Services.Input.FastChange)
-				change *= 10;
+			Vector3 move = this.Axis1Unit * change;
 
-			if (this.Services.Input.SlowChange)
-				change /= 10;
+			float dot2 = Vector2.Dot(delta, b);
+			float drag2Delta = (float)(mag * dot2);
+			float change2 = drag2Delta / 50;
+			change2 *= this.Sensitivity;
 
-			if (this.Services.Tablet.PenPressure > 0)
-				change *= (float)this.Services.Tablet.PenPressure;
+			move += this.Axis2Unit * change2;
 
-			////Vector3 move = this.AxisUnit * change;
-			////this.gizmo.Transform = Transform.FromTranslation(-move) * this.gizmo.Transform;
+			this.gizmo.Transform = Transform.FromTranslation(-move) * this.gizmo.Transform;
 			base.OnDrag(delta);
 
-			////this.totalTranslation += move;
+			this.totalTranslation += move;
 		}
 	}
 }

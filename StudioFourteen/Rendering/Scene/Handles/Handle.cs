@@ -54,7 +54,7 @@ public abstract class Handle : SceneGroup
 		}
 
 		if (delta.Length() == 0)
-				return;
+			return;
 
 		this.OnDrag(delta);
 	}
@@ -84,5 +84,23 @@ public abstract class Handle : SceneGroup
 
 	protected virtual void OnEndDrag()
 	{
+	}
+
+	protected Vector2 GetScreenVector(Vector3 localVector)
+	{
+		Transform viewProj = this.Services.Camera.CurrentView * this.Services.Camera.CurrentProjection;
+
+		Vector4 screenPositionA = new(Vector3.Zero, 1);
+		screenPositionA = Vector4.Transform(screenPositionA, this.WorldTransform.ToMatrix());
+		screenPositionA = viewProj.TransformViewProjection(screenPositionA);
+
+		Vector4 screenPositionB = new(localVector, 1);
+		screenPositionB = Vector4.Transform(screenPositionB, this.WorldTransform.ToMatrix());
+		screenPositionB = viewProj.TransformViewProjection(screenPositionB);
+
+		Vector4 screenDir = screenPositionB - screenPositionA;
+		screenDir = Vector4.Normalize(screenDir);
+
+		return screenDir.AsVector2();
 	}
 }

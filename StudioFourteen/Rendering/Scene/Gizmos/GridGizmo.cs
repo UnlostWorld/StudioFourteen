@@ -54,7 +54,7 @@ public class GridGizmo : GizmoBase
 		set => this.SetPersistence(value);
 	}
 
-	public unsafe override void Draw(Transform transform, Device device, DeviceContext deviceContext)
+	protected unsafe override void OnDraw()
 	{
 		if (this.KeepAtTargetHeight)
 		{
@@ -65,7 +65,7 @@ public class GridGizmo : GizmoBase
 			}
 		}
 
-		base.Draw(transform, device, deviceContext);
+		base.OnDraw();
 	}
 
 	protected override void OnPersistenceChanged()

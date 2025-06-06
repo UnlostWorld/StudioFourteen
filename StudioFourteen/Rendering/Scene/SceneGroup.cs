@@ -24,8 +24,6 @@ public class SceneGroup : SceneObject
 {
 	public readonly List<SceneObject> Children = new();
 
-	protected Transform LocalTransform { get; set; } = Transform.Identity;
-
 	public void Add(SceneObject sceneObject)
 	{
 		sceneObject.Parent = this;
@@ -40,22 +38,18 @@ public class SceneGroup : SceneObject
 		this.Children.Remove(sceneObject);
 	}
 
-	public override void Draw(Transform transform, Device device, DeviceContext deviceContext)
+	public sealed override void Draw(Transform transform, Device device, DeviceContext deviceContext)
 	{
 		base.Draw(transform, device, deviceContext);
-		this.OnDraw();
 
 		if (!this.IsVisible)
 			return;
-
-		Transform thisTransform = this.LocalTransform * this.Transform * transform;
-		this.WorldPosition = Vector3.Transform(Vector3.Zero, thisTransform.ToMatrix());
 
 		foreach (SceneObject child in this.Children)
 		{
 			try
 			{
-				child.Draw(thisTransform, device, deviceContext);
+				child.Draw(this.WorldTransform, device, deviceContext);
 			}
 			catch (Exception ex)
 			{
@@ -99,9 +93,5 @@ public class SceneGroup : SceneObject
 		{
 			child.Dispose();
 		}
-	}
-
-	protected virtual void OnDraw()
-	{
 	}
 }

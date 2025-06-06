@@ -36,12 +36,25 @@ public abstract class SceneObject : IDisposable
 	public virtual bool IsHitTestVisible { get; set; } = true;
 	public virtual bool IsVisible { get; set; } = true;
 
-	public Vector3 WorldPosition { get; protected set; }
+	public Vector3 WorldPosition { get; private set; }
+	public Quaternion WorldRotation { get; private set; }
+	public Vector3 WorldScale { get; private set; }
+
+	protected Transform WorldTransform { get; private set; }
+	protected Transform LocalTransform { get; set; } = Transform.Identity;
 
 	public virtual void Draw(Transform transform, Device device, DeviceContext deviceContext)
 	{
-		Transform thisTransform = this.Transform * transform;
-		this.WorldPosition = Vector3.Transform(Vector3.Zero, thisTransform.ToMatrix());
+		this.WorldTransform = this.LocalTransform * this.Transform * transform;
+
+		if (Matrix4x4.Decompose(this.WorldTransform.ToMatrix(), out Vector3 scale, out Quaternion rotation, out Vector3 translation))
+		{
+			this.WorldPosition = translation;
+			this.WorldRotation = rotation;
+			this.WorldScale = scale;
+		}
+
+		this.OnDraw();
 	}
 
 	public abstract void Dispose();
@@ -61,5 +74,9 @@ public abstract class SceneObject : IDisposable
 			return this.Parent.GetParent<T>();
 
 		return default;
+	}
+
+	protected virtual void OnDraw()
+	{
 	}
 }
