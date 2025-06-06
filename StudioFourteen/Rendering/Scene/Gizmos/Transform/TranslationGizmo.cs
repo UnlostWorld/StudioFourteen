@@ -73,7 +73,10 @@ public class TranslationGizmo : SceneGroup
 	public bool IsBeingManipulated =>
 		this.xHandle.IsHovered
 		|| this.yHandle.IsHovered
-		|| this.zHandle.IsHovered;
+		|| this.zHandle.IsHovered
+		|| this.xyPlaneHandle.IsHovered
+		|| this.xyPlaneHandle.IsHovered
+		|| this.zyPlaneHandle.IsHovered;
 
 	public override void Draw(Transform transform, Device device, DeviceContext deviceContext)
 	{
@@ -131,6 +134,7 @@ public class TranslationGizmo : SceneGroup
 			this.lineRenderer.From = Vector3.UnitX * 0.05f;
 			this.lineRenderer.To = Vector3.UnitX * 0.95f;
 			this.lineRenderer.Material.OutlineColor = Axes.OutlineColor;
+			this.lineRenderer.IsHitTestVisible = false;
 			this.Add(this.lineRenderer);
 		}
 
@@ -224,7 +228,6 @@ public class TranslationGizmo : SceneGroup
 				Quaternion.Identity,
 				new(0.25f, 0.25f, 0.25f));
 			this.planeRenderer.CullMode = CullMode.None;
-			this.planeRenderer.HitTestBias = 10.0f;
 			this.Add(this.planeRenderer);
 		}
 
@@ -250,17 +253,15 @@ public class TranslationGizmo : SceneGroup
 			{
 				this.planeRenderer.Material.Color = Color.White;
 			}
+			else if (this.IsHovered)
+			{
+				this.planeRenderer.Material.Color = this.Color;
+				this.planeRenderer.Material.Color.A = 0.75f;
+			}
 			else
 			{
 				this.planeRenderer.Material.Color = this.Color;
 				this.planeRenderer.Material.Color.A = 0.5f;
-			}
-
-			if (this.IsHovered)
-			{
-			}
-			else
-			{
 			}
 		}
 
@@ -289,11 +290,11 @@ public class TranslationGizmo : SceneGroup
 			if (this.Services.Tablet.PenPressure > 0)
 				change *= (float)this.Services.Tablet.PenPressure;
 
-			Vector3 move = this.AxisUnit * change;
-			this.gizmo.Transform = Transform.FromTranslation(-move) * this.gizmo.Transform;
+			////Vector3 move = this.AxisUnit * change;
+			////this.gizmo.Transform = Transform.FromTranslation(-move) * this.gizmo.Transform;
 			base.OnDrag(delta);
 
-			this.totalTranslation += move;
+			////this.totalTranslation += move;
 		}
 	}
 }

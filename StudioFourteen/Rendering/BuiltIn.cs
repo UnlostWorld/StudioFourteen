@@ -25,7 +25,7 @@ public static class MeshContent
 	public static readonly IContent<Mesh> Cube = new JsonContentReference<Mesh>("Meshes/Cube.jsonc");
 	public static readonly IContent<Mesh> FlatCube = new JsonContentReference<Mesh>("Meshes/FlatCube.jsonc");
 	public static readonly IContent<Mesh> Quad = new JsonContentReference<Mesh>("Meshes/Quad.jsonc");
-	public static readonly IContent<Mesh> Plane = new JsonContentReference<Mesh>("Meshes/Plane.jsonc");
+	public static readonly IContent<Mesh> Plane = new PolygonMeshReference("Meshes/Plane.ply");
 	public static readonly IContent<Mesh> WireCube = new JsonContentReference<Mesh>("Meshes/WireCube.jsonc");
 	public static readonly IContent<Mesh> WireCircle = new WireCircle();
 	public static readonly IContent<Mesh> Bone = new JsonContentReference<Mesh>("Meshes/Bone.jsonc");
