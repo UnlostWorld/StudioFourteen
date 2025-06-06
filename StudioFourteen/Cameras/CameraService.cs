@@ -342,12 +342,11 @@ public class CameraService : ServiceBase
 				this.Log.Error(ex, "Error in camera update");
 			}
 		}
-
-		/*else
+		else
 		{
 			this.CurrentPosition = camera->Position;
-			this.CurrentForward = Vector3.UnitX;
-		}*/
+			this.CurrentForward = Vector3.Transform(Vector3.UnitX, camera->Rotation);
+		}
 
 		this.LastView = this.CurrentView;
 		this.LastProjection = this.CurrentProjection;

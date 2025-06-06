@@ -26,6 +26,8 @@ public class GridGizmo : GizmoBase
 
 	public GridGizmo()
 	{
+		this.gridRenderer.WriteDepth = false;
+		this.gridRenderer.CullMode = CullMode.None;
 		this.Add(this.gridRenderer);
 
 		// TODO:
