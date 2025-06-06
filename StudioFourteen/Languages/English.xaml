@@ -363,7 +363,7 @@
 	<sys:String x:Key="LOC_Reshade_NotSupportedBody">You have an unsupported version of ReShade installed. Only versions 6.5 or newer have essential changes to stop game crashes while using Studio 14.</sys:String>
 	<sys:String x:Key="LOC_Reshade_NotSupportedInfo">If you are using a version of Reshade that is older than 6.3 you will need to disable Studio Fourteen's mouse input to access the ReShade UI.</sys:String>
 	<sys:String x:Key="LOC_Reshade_NotSupportedDontNotify">Dont notify me again</sys:String>
-	<sys:String x:Key="LOC_Reshade_NotSupportedHelp">The overlay can be disabled with the  :MousePointer: icon in the task bar.</sys:String>
+	<sys:String x:Key="LOC_Reshade_NotSupportedHelp">The overlay can be disabled with the  :MousePointer: icon in the toolbar while in group pose.</sys:String>
 
 	<!--  Analytics  -->
 	<sys:String x:Key="LOC_Analytics_OptTitle">Analytics Options</sys:String>

@@ -10,16 +10,16 @@
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	Width="400"
-	MaxHeight="800"
+	Height="250"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	RememberWindowState="False"
 	ResizeMode="NoResize"
-	SizeToContent="Height"
+	SizeToContent="Manual"
 	VisibilityMode="Always"
 	mc:Ignorable="d">
 
-	<StackPanel>
+	<StackPanel VerticalAlignment="Bottom">
 		<TextBlock
 			Grid.Row="1"
 			Margin="12,12,12,3"
@@ -51,50 +51,8 @@
 				Foreground="{DynamicResource ForegroundLightBrush}"
 				Opacity="0.5"
 				Style="{DynamicResource Subscript}"
-				TextAlignment="Right" />
+				TextAlignment="Center" />
 
-
-			<Grid Grid.Column="1" HorizontalAlignment="Center">
-				<Border
-					x:Name="WindowShadow"
-					Background="Black"
-					CornerRadius="6"
-					Opacity="0.25">
-					<Border.BitmapEffect>
-						<DropShadowBitmapEffect ShadowDepth="0" Softness="0.75" />
-					</Border.BitmapEffect>
-				</Border>
-
-				<Border
-					Background="{DynamicResource BackgroundBrush}"
-					BorderBrush="{DynamicResource BackgroundLightBrush}"
-					BorderThickness="1"
-					CornerRadius="6">
-
-					<Border Margin="2" Style="{DynamicResource WpfUtilsControlBorder}">
-
-						<StackPanel Orientation="Horizontal">
-
-							<icons:IconView
-								Margin="12,6,6,6"
-								Foreground="{DynamicResource TrimBrush}"
-								Icon="{DynamicResource ICON_GlobalOverlay}" />
-
-							<icons:IconView
-								Margin="6,6,6,6"
-								Foreground="{DynamicResource ForegroundLightBrush}"
-								Icon="{DynamicResource ICON_VisibilityOn}"
-								Opacity="0.25" />
-
-							<icons:IconView
-								Margin="6,6,12,6"
-								Foreground="{DynamicResource ForegroundLightBrush}"
-								Icon="{DynamicResource ICON_OverlayLayers}"
-								Opacity="0.25" />
-						</StackPanel>
-					</Border>
-				</Border>
-			</Grid>
 		</Grid>
 
 		<Border
