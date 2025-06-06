@@ -37,12 +37,12 @@ public partial class OrbitCamera : StudioCameraBase
 		"Orbit Camera Move");
 
 	private readonly Input3DListener panListener = new(
-		InputAction.OrbitCamera_PanUp,
-		InputAction.OrbitCamera_PanDown,
 		InputAction.OrbitCamera_PanLeft,
 		InputAction.OrbitCamera_PanRight,
-		InputAction.OrbitCamera_RollLeft,
+		InputAction.OrbitCamera_PanUp,
+		InputAction.OrbitCamera_PanDown,
 		InputAction.OrbitCamera_RollRight,
+		InputAction.OrbitCamera_RollLeft,
 		"Orbit Camera Pan");
 
 	private readonly Input1DListener zoomListener = new(
