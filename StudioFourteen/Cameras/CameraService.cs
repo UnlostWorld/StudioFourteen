@@ -317,7 +317,7 @@ public class CameraService : ServiceBase
 
 				this.CameraMatrixLoad(camera->RenderCamera, (nint)(&camera->ViewMatrix));
 
-				// This does update the Fov, but the projection matrix we read does not inherrit it
+				// This does update the Fov, but the projection matrix we read does not inherit it
 				// for some reason, so lets just use the gpose FoV values.
 				////camera->RenderCamera->FoV = this.state.FieldOfView;
 
@@ -344,8 +344,12 @@ public class CameraService : ServiceBase
 		}
 		else
 		{
+			// For some reason depth doesn't work unless we set the View Matrix to a LookTo
+			// that we create, even though we use the same view matrix in the renderer service.
 			this.CurrentPosition = camera->Position;
 			this.CurrentForward = Vector3.Transform(Vector3.UnitX, camera->Rotation);
+			Vector3 up = Vector3.Transform(new(0, 1, 0), camera->Rotation);
+			camera->ViewMatrix = Matrix4x4.CreateLookTo(this.CurrentPosition, this.CurrentForward, up);
 		}
 
 		this.LastView = this.CurrentView;
