@@ -84,8 +84,8 @@ public partial class ReshadeService : ServiceBase
 		FileVersionInfo version = FileVersionInfo.GetVersionInfo(dxgiPath);
 		int versionPacked = (version.ProductMajorPart * 10000) + (version.ProductMinorPart * 100) + version.ProductBuildPart;
 
-		// 6.3.0 becomes 60300
-		if (versionPacked < 60300)
+		// 6.5.0 becomes 60500
+		if (versionPacked < 60500)
 		{
 			this.Log.Information($"Reshade {version.ProductMajorPart}.{version.ProductMinorPart}.{version.ProductBuildPart} found.");
 
