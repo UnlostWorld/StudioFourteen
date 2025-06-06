@@ -38,6 +38,7 @@ public abstract class InstanceRendererBase<TRendererData, TMaterialData> : Rende
 {
 	public int Stencil = int.MinValue;
 	public Comparison StencilMode = Comparison.Always;
+	public CullMode CullMode = CullMode.Back;
 
 	public TRendererData Instance;
 	public TMaterialData Material;
@@ -49,6 +50,7 @@ public abstract class InstanceRendererBase<TRendererData, TMaterialData> : Rende
 	private Shader? shader;
 	private InputLayout? layout;
 	private DepthStencilState? depthStencilState;
+	private RasterizerState? rasterizerState;
 
 	public InstanceRendererBase()
 	{
@@ -118,6 +120,15 @@ public abstract class InstanceRendererBase<TRendererData, TMaterialData> : Rende
 			desc.BackFace.Comparison = this.StencilMode;
 			this.depthStencilState = new(device, desc);
 		}
+
+		if (this.rasterizerState == null)
+		{
+			RasterizerStateDescription desc = RasterizerStateDescription.Default();
+			desc.CullMode = this.CullMode;
+			this.rasterizerState = new(device, desc);
+		}
+
+		deviceContext.Rasterizer.State = this.rasterizerState;
 
 		deviceContext.OutputMerger.SetDepthStencilState(this.depthStencilState, this.Stencil);
 

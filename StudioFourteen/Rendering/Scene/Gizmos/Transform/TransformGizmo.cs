@@ -28,8 +28,8 @@ public class TransformGizmo : GizmoBase
 		this.translation = new(this);
 		this.Add(this.translation);
 
-		this.rotation.IsVisible = true;
-		this.translation.IsVisible = false;
+		this.rotation.IsVisible = false;
+		this.translation.IsVisible = true;
 	}
 
 	public override string Name => "Transform";

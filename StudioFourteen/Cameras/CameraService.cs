@@ -103,6 +103,7 @@ public class CameraService : ServiceBase
 	public Matrix4x4 LastView { get; private set; }
 	public Matrix4x4 LastProjection { get; private set; }
 	public Vector3 CurrentPosition { get; private set; }
+	public Vector3 CurrentForward { get; private set; }
 
 	public override Task Start()
 	{
@@ -289,7 +290,7 @@ public class CameraService : ServiceBase
 
 				this.current.Calculate(ref this.state, this.last, 1 - blendValue);
 
-				foreach(CameraModifierBase modifier in this.current.Modifiers)
+				foreach (CameraModifierBase modifier in this.current.Modifiers)
 				{
 					modifier.Calculate(ref this.state, blendValue);
 				}
@@ -300,6 +301,7 @@ public class CameraService : ServiceBase
 				Vector3 up = Vector3.Transform(new(0, 1, 0), this.state.Rotation);
 
 				this.CurrentPosition = this.state.Position;
+				this.CurrentForward = forward;
 
 				Matrix4x4 newMatrix = Matrix4x4.CreateLookTo(this.state.Position, forward, up);
 
@@ -340,14 +342,12 @@ public class CameraService : ServiceBase
 				this.Log.Error(ex, "Error in camera update");
 			}
 		}
-		else
-		{
-			// For some reason depth doesn't work unless we set the VM here
-			// even though we don't appear to use it anwhere else.
-			camera->ViewMatrix = camera->RenderCamera->ViewMatrix;
 
+		/*else
+		{
 			this.CurrentPosition = camera->Position;
-		}
+			this.CurrentForward = Vector3.UnitX;
+		}*/
 
 		this.LastView = this.CurrentView;
 		this.LastProjection = this.CurrentProjection;

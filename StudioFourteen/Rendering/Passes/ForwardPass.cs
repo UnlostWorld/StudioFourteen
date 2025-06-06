@@ -17,6 +17,7 @@ namespace StudioFourteen.Rendering.Passes;
 
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using SharpDX.Direct3D11;
@@ -38,7 +39,7 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 
 	public void Add(SceneObject obj)
 	{
-		lock(this.sceneObjects)
+		lock (this.sceneObjects)
 		{
 			if (this.sceneObjects.Contains(obj))
 				return;
