@@ -29,6 +29,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using WpfUtils;
 using WpfUtils.Commands;
 using WpfUtils.Extensions;
 using WpfUtils.Windows;
@@ -211,6 +212,22 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 					this.Height = this.MinHeight;
 				}
 			}
+
+			// set the position after a delay to ensure it was set succesffuly,
+			// as setting it too early can get swallowed by the window positioning logic from windows api.
+			Task.Run(async () =>
+			{
+				await Task.Delay(250);
+				await this.MainThread();
+				if (this.SavedPosition != null && this.RememberState)
+				{
+					this.Position = this.SavedPosition ?? new Point(0, 0);
+				}
+				else if (this.panel != null)
+				{
+					this.Position = this.panel.DefaultPosition;
+				}
+			});
 		}
 	}
 

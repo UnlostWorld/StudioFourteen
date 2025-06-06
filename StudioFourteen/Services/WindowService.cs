@@ -316,6 +316,8 @@ public partial class WindowService : ServiceBase
 		}
 		else
 		{
+			this.Log.Information($">> {position} * {xivWindowSize.Width}, {xivWindowSize.Height} -- {wnd.ActualWidth} = {x}, {y}");
+
 			PInvoke.SetWindowPos((HWND)wndInterop.Handle, (HWND)IntPtr.Zero, x, y, w, h, SET_WINDOW_POS_FLAGS.SWP_SHOWWINDOW | SET_WINDOW_POS_FLAGS.SWP_NOSIZE | SET_WINDOW_POS_FLAGS.SWP_NOZORDER | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE);
 			PInvoke.SetWindowPos((HWND)wndInterop.Handle, (HWND)IntPtr.Zero, x, y, w, h, SET_WINDOW_POS_FLAGS.SWP_NOSIZE | SET_WINDOW_POS_FLAGS.SWP_NOZORDER | SET_WINDOW_POS_FLAGS.SWP_NOACTIVATE);
 		}
