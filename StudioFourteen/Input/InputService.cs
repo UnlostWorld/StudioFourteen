@@ -115,10 +115,10 @@ public class InputService : ServiceBase
 
 		// Orbit Camera
 		// Orbit Pan
-		this.AddBind(InputAction.OrbitCamera_PanUp, KeyboardDevice.GetAxisId(VirtualKey.W), KeyboardDevice.GetAxisId(VirtualKey.SHIFT));
-		this.AddBind(InputAction.OrbitCamera_PanDown, KeyboardDevice.GetAxisId(VirtualKey.S), KeyboardDevice.GetAxisId(VirtualKey.SHIFT));
-		this.AddBind(InputAction.OrbitCamera_PanLeft, KeyboardDevice.GetAxisId(VirtualKey.A), KeyboardDevice.GetAxisId(VirtualKey.SHIFT));
-		this.AddBind(InputAction.OrbitCamera_PanRight, KeyboardDevice.GetAxisId(VirtualKey.D), KeyboardDevice.GetAxisId(VirtualKey.SHIFT));
+		this.AddBind(InputAction.OrbitCamera_PanUp, KeyboardDevice.GetAxisId(VirtualKey.W));
+		this.AddBind(InputAction.OrbitCamera_PanDown, KeyboardDevice.GetAxisId(VirtualKey.S));
+		this.AddBind(InputAction.OrbitCamera_PanLeft, KeyboardDevice.GetAxisId(VirtualKey.A));
+		this.AddBind(InputAction.OrbitCamera_PanRight, KeyboardDevice.GetAxisId(VirtualKey.D));
 		this.AddBind(InputAction.OrbitCamera_PanRight, MouseDevice.GetDragAxisId(MouseButtons.Left, MouseDevice.DragDirections.Right), KeyboardDevice.GetAxisId(VirtualKey.SHIFT));
 		this.AddBind(InputAction.OrbitCamera_PanLeft, MouseDevice.GetDragAxisId(MouseButtons.Left, MouseDevice.DragDirections.Left), KeyboardDevice.GetAxisId(VirtualKey.SHIFT));
 		this.AddBind(InputAction.OrbitCamera_PanDown, MouseDevice.GetDragAxisId(MouseButtons.Left, MouseDevice.DragDirections.Down), KeyboardDevice.GetAxisId(VirtualKey.SHIFT));
