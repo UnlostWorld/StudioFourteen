@@ -303,7 +303,7 @@ public class MouseDevice : InputDeviceBase
 		{
 			foreach ((MouseButton button, Point dragStart) in this.dragStarts)
 			{
-				this.Services.Windows.SetCursorPosition(new((int)dragStart.X, (int)dragStart.Y));
+				this.Services.Windows.SetCursorPosition(new Point((int)dragStart.X, (int)dragStart.Y));
 			}
 
 			CursorUtility.SetCursorVisible(false);

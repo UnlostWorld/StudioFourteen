@@ -20,7 +20,7 @@ using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Scene.Handles;
 using StudioFourteen.Structs.Extensions;
 
-public class RotationGizmo : SceneGroup
+public class RotationGizmo : GizmoBase
 {
 	private readonly AxisHandle xHandle;
 	private readonly AxisHandle yHandle;
@@ -51,7 +51,9 @@ public class RotationGizmo : SceneGroup
 		this.zHandle.AxisUnit = Vector3.UnitZ;
 	}
 
-	public bool IsBeingManipulated =>
+	public override string Name => "Rotate";
+
+	public override bool IsBeingManipulated =>
 		this.xHandle.IsHovered
 		|| this.yHandle.IsHovered
 		|| this.zHandle.IsHovered

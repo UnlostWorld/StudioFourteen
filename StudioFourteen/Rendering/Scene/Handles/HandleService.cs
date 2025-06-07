@@ -166,6 +166,7 @@ public partial class HandleService : ServiceBase
 				string toolTipContent = string.Empty;
 				Vector3 toolTipPosition = Vector3.Zero;
 				bool show = this.currentHover.GetToolTip(ref toolTipContent, ref toolTipPosition);
+
 				this.handleTipWindow?.Update(show, toolTipContent, toolTipPosition);
 			}
 		}

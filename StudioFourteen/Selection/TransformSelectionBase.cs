@@ -21,7 +21,7 @@ using StudioFourteen.Rendering.Scene.Gizmos.Transforms;
 
 public abstract partial class TransformSelectionBase : SelectionBase
 {
-	private readonly TransformGizmo gizmo = new();
+	private readonly TranslationGizmo gizmo = new();
 
 	[Notify][PropertyAttribute("StudioFourteen.History.History")] private Transform worldTransform;
 	[Notify][PropertyAttribute("StudioFourteen.History.History")] private Transform localTransform;

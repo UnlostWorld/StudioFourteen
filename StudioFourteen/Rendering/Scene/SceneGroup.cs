@@ -24,6 +24,15 @@ public class SceneGroup : SceneObject
 {
 	public readonly List<SceneObject> Children = new();
 
+	public T Create<T>()
+		where T : SceneObject, new()
+	{
+		T sceneObject = new T();
+		sceneObject.Parent = this;
+		this.Children.Add(sceneObject);
+		return sceneObject;
+	}
+
 	public void Add(SceneObject sceneObject)
 	{
 		sceneObject.Parent = this;

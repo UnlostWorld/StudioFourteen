@@ -21,7 +21,7 @@ using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Scene.Handles;
 using StudioFourteen.Structs.Extensions;
 
-public class TranslationGizmo : SceneGroup
+public class TranslationGizmo : GizmoBase
 {
 	private readonly AxisHandle xHandle;
 	private readonly AxisHandle yHandle;
@@ -31,48 +31,56 @@ public class TranslationGizmo : SceneGroup
 	private readonly PlaneHandle xyPlaneHandle;
 	private readonly PlaneHandle zyPlaneHandle;
 
-	public TranslationGizmo(GizmoBase gizmo)
-	{
-		this.LocalTransform = Transform.FromScale(0.5f);
+	private readonly LineRenderer<GizmoLineMaterial> changeLineRenderer;
 
-		this.xHandle = new(gizmo);
+	public TranslationGizmo()
+	{
+		this.xHandle = new(this);
 		this.Add(this.xHandle);
 		this.xHandle.Transform = Transform.FromRotation(0, 0, 0);
 		this.xHandle.Color = Axes.XColor;
 		this.xHandle.AxisUnit = Vector3.UnitX;
 
-		this.yHandle = new(gizmo);
+		this.yHandle = new(this);
 		this.Add(this.yHandle);
 		this.yHandle.Transform = Transform.FromRotation(0, 0, 90);
 		this.yHandle.Color = Axes.YColor;
 		this.yHandle.AxisUnit = Vector3.UnitY;
 
-		this.zHandle = new(gizmo);
+		this.zHandle = new(this);
 		this.Add(this.zHandle);
 		this.zHandle.Transform = Transform.FromRotation(-90, 0, 0);
 		this.zHandle.Color = Axes.ZColor;
 		this.zHandle.AxisUnit = Vector3.UnitZ;
 
-		this.xzPlaneHandle = new(gizmo);
+		this.xzPlaneHandle = new(this);
 		this.Add(this.xzPlaneHandle);
 		this.xzPlaneHandle.Color = Axes.YColor;
 		this.xzPlaneHandle.Axis1Unit = Vector3.UnitX;
 		this.xzPlaneHandle.Axis2Unit = Vector3.UnitZ;
 
-		this.xyPlaneHandle = new(gizmo);
+		this.xyPlaneHandle = new(this);
 		this.Add(this.xyPlaneHandle);
 		this.xyPlaneHandle.Color = Axes.ZColor;
 		this.xyPlaneHandle.Axis1Unit = Vector3.UnitY;
 		this.xyPlaneHandle.Axis2Unit = Vector3.UnitX;
 
-		this.zyPlaneHandle = new(gizmo);
+		this.zyPlaneHandle = new(this);
 		this.Add(this.zyPlaneHandle);
 		this.zyPlaneHandle.Color = Axes.XColor;
 		this.zyPlaneHandle.Axis1Unit = Vector3.UnitY;
 		this.zyPlaneHandle.Axis2Unit = Vector3.UnitZ;
+
+		this.changeLineRenderer = new();
+		this.Services.Rendering.Forward.Add(this.changeLineRenderer);
+		this.changeLineRenderer.To = Vector3.Zero;
+		this.changeLineRenderer.IsVisible = false;
+		this.changeLineRenderer.IsHitTestVisible = false;
 	}
 
-	public bool IsBeingManipulated =>
+	public override string Name => "Translate";
+
+	public override bool IsBeingManipulated =>
 		this.xHandle.IsHovered
 		|| this.yHandle.IsHovered
 		|| this.zHandle.IsHovered
@@ -80,9 +88,40 @@ public class TranslationGizmo : SceneGroup
 		|| this.xyPlaneHandle.IsHovered
 		|| this.zyPlaneHandle.IsHovered;
 
+	public bool IsDragging =>
+		this.xHandle.IsDragging
+		|| this.yHandle.IsDragging
+		|| this.zHandle.IsDragging
+		|| this.xzPlaneHandle.IsDragging
+		|| this.xyPlaneHandle.IsDragging
+		|| this.zyPlaneHandle.IsDragging;
+
+	public Vector3 StartDragPosition { get; set; }
+
+	public void GetToolTip(ref string content, ref Vector3 worldPosition)
+	{
+		Vector3 change = this.WorldPosition - this.StartDragPosition;
+		content = $"{change.Length().ToString("F1")}m";
+		worldPosition = this.StartDragPosition + (change / 2);
+	}
+
+	public void StartManipulation()
+	{
+		this.StartDragPosition = this.WorldPosition;
+	}
+
+	public void EndManipulation()
+	{
+		this.StartDragPosition = Vector3.Zero;
+	}
+
 	protected override void OnDraw()
 	{
 		base.OnDraw();
+
+		this.changeLineRenderer.IsVisible = this.IsBeingManipulated && this.StartDragPosition != Vector3.Zero;
+		this.changeLineRenderer.From = this.StartDragPosition;
+		this.changeLineRenderer.To = this.WorldPosition;
 
 		if (this.IsBeingManipulated)
 			return;
@@ -117,32 +156,30 @@ public class TranslationGizmo : SceneGroup
 		private readonly MeshRenderer<GizmoFlatMaterial> coneRenderer;
 		private readonly MeshRenderer<GizmoFlatOutlineMaterial> coneOutlineRenderer;
 		private readonly LineRenderer<GizmoLineMaterial> lineRenderer;
-		private readonly GizmoBase gizmo;
+		private readonly TranslationGizmo gizmo;
 
-		private Vector3 totalTranslation;
-
-		public AxisHandle(GizmoBase gizmo)
+		public AxisHandle(TranslationGizmo gizmo)
 		{
 			this.gizmo = gizmo;
 
 			this.coneOutlineRenderer = new(MeshContent.Cone);
 			this.coneOutlineRenderer.Transform = Transform.FromTRS(
-				new(1, 0, 0),
+				new(0.5f, 0, 0),
 				Quaternion.CreateFromYawPitchRoll(0, 0, -90 * QuaternionExtensions.Deg2Rad),
-				new(0.25f, 0.25f, 0.25f));
+				new(0.15f, 0.15f, 0.15f));
 			this.coneOutlineRenderer.Material.OutlineColor = Axes.OutlineColor;
 			this.Add(this.coneOutlineRenderer);
 
 			this.coneRenderer = new(MeshContent.Cone);
 			this.coneRenderer.Transform = Transform.FromTRS(
-				new(1, 0, 0),
+				new(0.5f, 0, 0),
 				Quaternion.CreateFromYawPitchRoll(0, 0, -90 * QuaternionExtensions.Deg2Rad),
-				new(0.25f, 0.25f, 0.25f));
+				new(0.15f, 0.15f, 0.15f));
 			this.Add(this.coneRenderer);
 
 			this.lineRenderer = new();
 			this.lineRenderer.From = Vector3.UnitX * 0.05f;
-			this.lineRenderer.To = Vector3.UnitX * 0.95f;
+			this.lineRenderer.To = Vector3.UnitX * 0.45f;
 			this.lineRenderer.Material.OutlineColor = Axes.OutlineColor;
 			this.lineRenderer.IsHitTestVisible = false;
 			this.Add(this.lineRenderer);
@@ -157,8 +194,7 @@ public class TranslationGizmo : SceneGroup
 			if (!this.IsDragging)
 				return false;
 
-			content = $"{this.totalTranslation.Length().ToString("F1")}m";
-			worldPosition = this.gizmo.WorldPosition;
+			this.gizmo.GetToolTip(ref content, ref worldPosition);
 			return true;
 		}
 
@@ -189,7 +225,7 @@ public class TranslationGizmo : SceneGroup
 
 		protected override void OnStartDrag(HitTestResult hitTest)
 		{
-			this.totalTranslation = Vector3.Zero;
+			this.gizmo.StartManipulation();
 		}
 
 		protected override void OnDrag(Vector2 delta)
@@ -214,27 +250,33 @@ public class TranslationGizmo : SceneGroup
 			Vector3 move = this.AxisUnit * change;
 			this.gizmo.Transform = Transform.FromTranslation(-move) * this.gizmo.Transform;
 			base.OnDrag(delta);
+		}
 
-			this.totalTranslation += move;
+		protected override void OnEndDrag()
+		{
+			Vector2 pos = this.GetScreenPosition(Vector3.UnitX);
+			this.Services.Windows.SetCursorPosition(pos);
+
+			this.gizmo.EndManipulation();
+
+			base.OnEndDrag();
 		}
 	}
 
 	public class PlaneHandle : Handle
 	{
 		private readonly MeshRenderer<GizmoFlatMaterial> planeRenderer;
-		private readonly GizmoBase gizmo;
+		private readonly TranslationGizmo gizmo;
 
-		private Vector3 totalTranslation;
-
-		public PlaneHandle(GizmoBase gizmo)
+		public PlaneHandle(TranslationGizmo gizmo)
 		{
 			this.gizmo = gizmo;
 
 			this.planeRenderer = new(MeshContent.Plane);
 			this.planeRenderer.Transform = Transform.FromTRS(
-				new(0.25f, 0, 0.25f),
+				new(0.1f, 0, 0.1f),
 				Quaternion.Identity,
-				new(0.25f, 0.25f, 0.25f));
+				new(0.1f, 0.1f, 0.1f));
 			this.planeRenderer.CullMode = CullMode.None;
 			this.Add(this.planeRenderer);
 		}
@@ -251,8 +293,7 @@ public class TranslationGizmo : SceneGroup
 			if (!this.IsDragging)
 				return false;
 
-			content = $"{this.totalTranslation.Length().ToString("F1")}m";
-			worldPosition = this.gizmo.WorldPosition;
+			this.gizmo.GetToolTip(ref content, ref worldPosition);
 			return true;
 		}
 
@@ -278,7 +319,7 @@ public class TranslationGizmo : SceneGroup
 
 		protected override void OnStartDrag(HitTestResult hitTest)
 		{
-			this.totalTranslation = Vector3.Zero;
+			this.gizmo.StartManipulation();
 		}
 
 		protected override void OnDrag(Vector2 delta)
@@ -314,8 +355,16 @@ public class TranslationGizmo : SceneGroup
 
 			this.gizmo.Transform = Transform.FromTranslation(-move) * this.gizmo.Transform;
 			base.OnDrag(delta);
+		}
 
-			this.totalTranslation += move;
+		protected override void OnEndDrag()
+		{
+			Vector2 pos = this.GetScreenPosition(new(0.25f, 0, 0.25f));
+			this.Services.Windows.SetCursorPosition(pos);
+
+			this.gizmo.EndManipulation();
+
+			base.OnEndDrag();
 		}
 	}
 }

@@ -28,6 +28,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Windows;
@@ -370,9 +371,19 @@ public partial class WindowService : ServiceBase
 		CursorUtility.SetPosition(p.ToPoint());
 	}
 
-	public void DiscardCursor()
+	public void SetCursorPosition(Vector2 position)
 	{
-		CursorUtility.SetPosition(new(-1, -1));
+		if (this.XivWindowHwnd == null)
+			return;
+
+		Rect xivSize = this.GetXivWindowClientSize();
+
+		position.X *= (float)xivSize.Width;
+		position.Y *= (float)xivSize.Height;
+
+		DrawingPoint p = new((int)position.X, (int)position.Y);
+		PInvoke.ClientToScreen((HWND)this.XivWindowHwnd.Value, ref p);
+		CursorUtility.SetPosition(p.ToPoint());
 	}
 
 	public Point? GetCursorPosition()
