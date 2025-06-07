@@ -105,7 +105,7 @@
 	<sys:String x:Key="LOC_SearchWeaponSlot">Select a weapon to equip to {0}'s {1}:</sys:String>
 
 	<sys:String x:Key="LOC_Translate">Translate</sys:String>
-	<sys:String x:Key="LOC_Rotation">Rotate</sys:String>
+	<sys:String x:Key="LOC_Rotate">Rotate</sys:String>
 	<sys:String x:Key="LOC_Scale">Scale</sys:String>
 
 	<sys:String x:Key="LOC_Target_Change">Select a target:</sys:String>

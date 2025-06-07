@@ -93,9 +93,10 @@
 	<icons:Fa x:Key="ICON_CaptureImage" Icon="Camera" Font="Solid" />
 	<icons:Svg x:Key="ICON_ShowUi" Source="ShowUi" />
 	<icons:Svg x:Key="ICON_HideUi" Source="HideUi" />
+
 	<icons:Fa x:Key="ICON_Transform_Translate" Icon="Arrows" Font="Solid" />
 	<icons:Fa x:Key="ICON_Transform_Rotate" Icon="Rotate" Font="Solid" />
-	<icons:Fa x:Key="ICON_Transform_Scale" Icon="Maximize" Font="Solid" />
+	<icons:Svg x:Key="ICON_Transform_Scale" Source="TransformScale"/>
 
 	<icons:Fa x:Key="ICON_CameraModifier" Icon="Plus" />
 

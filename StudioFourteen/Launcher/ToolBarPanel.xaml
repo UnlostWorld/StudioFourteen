@@ -10,7 +10,9 @@
 	xmlns:sys="clr-namespace:System;assembly=mscorlib"
 	xmlns:windows="clr-namespace:StudioFourteen.Panels"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
-	Width="350"
+	xmlns:controls="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	xmlns:icons="clr-namespace:StudioFourteen.Icons"
+	Width="600"
 	HorizontalAlignment="Right"
 	Height="58"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
@@ -20,7 +22,20 @@
 	mc:Ignorable="d">
 
 	<Grid x:Name="MainBorder">
-		<Border Style="{DynamicResource WpfUtilsControlBorder}">
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto"/>
+			<ColumnDefinition Width="Auto"/>
+		</Grid.ColumnDefinitions>
+
+		<controls:SwitchSelector Grid.Column="0" ItemsSource="{Binding Gizmos}" SelectedValue="{Binding SelectedGizmo}">
+			<wpfUtils:SwitchSelector.ItemTemplate>
+				<DataTemplate>
+					<icons:IconView Icon="{Binding Icon}" Width="24"/>
+				</DataTemplate>
+			</wpfUtils:SwitchSelector.ItemTemplate>
+		</controls:SwitchSelector>
+
+		<Border Grid.Column="1" Style="{DynamicResource WpfUtilsControlBorder}">
 			<StackPanel Orientation="Horizontal">
 				<ToggleButton
 					Width="32"
@@ -76,5 +91,6 @@
 
 			</StackPanel>
 		</Border>
+
 	</Grid>
 </windows:Panel>

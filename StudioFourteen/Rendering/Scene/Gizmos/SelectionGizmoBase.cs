@@ -21,6 +21,8 @@ public abstract class SelectionGizmoBase : GizmoBase
 {
 	protected SelectionBase? selection;
 
+	public virtual object? Icon => null;
+
 	public void Enable(SelectionBase selection)
 	{
 		this.selection = selection;

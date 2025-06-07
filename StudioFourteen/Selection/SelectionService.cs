@@ -76,9 +76,11 @@ public partial class SelectionService : ServiceBase
 	private string lastSelectionName = "Nothing";
 
 	public delegate void SelectionChangedDelegate(SelectionBase? oldSelection, SelectionBase? newSelection);
+	public delegate void GizmoChangedDelegate(SelectionGizmoBase? oldGizmo, SelectionGizmoBase? newGizmo);
 
 	public event SelectionChangedDelegate? SelectionChanged;
 	public event SelectionChangedDelegate? HoverChanged;
+	public event GizmoChangedDelegate? GizmoChanged;
 
 	public override string Name => "Selection";
 	public override IconChar Icon => IconChar.MousePointer;
@@ -147,6 +149,8 @@ public partial class SelectionService : ServiceBase
 		get => this.gizmo;
 		set
 		{
+			SelectionGizmoBase? oldGizmo = this.gizmo;
+
 			if (this.gizmo != null)
 				this.gizmo.Disable();
 
@@ -161,6 +165,7 @@ public partial class SelectionService : ServiceBase
 			}
 
 			this.RaisePropertyChanged();
+			this.GizmoChanged?.Invoke(oldGizmo, this.gizmo);
 		}
 	}
 

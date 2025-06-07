@@ -50,7 +50,8 @@ public class ScaleGizmo : TransformGizmoBase
 		this.Add(this.uniformHandle);
 	}
 
-	public override string Name => "Scale";
+	public override string Name => Resources.Find("LOC_Scale", "Scale");
+	public override object? Icon => Resources.Find("ICON_Transform_Scale");
 
 	public override bool IsBeingManipulated =>
 		this.xHandle.IsHovered
