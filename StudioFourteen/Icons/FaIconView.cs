@@ -14,12 +14,22 @@
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
 namespace StudioFourteen.Icons;
+
+using System;
+using System.Windows;
 using System.Windows.Controls;
 using DependencyPropertyGenerator;
 using FontAwesome.Sharp;
 
-[DependencyProperty<IconChar>("Icon")]
-[DependencyProperty<IconFont>("IconFont")]
-public partial class FaIconView : Control
+////[DependencyProperty<IconChar>("Icon")]
+////[DependencyProperty<IconFont>("IconFont")]
+public partial class FaIconView : IconBlock
 {
+	protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+	{
+		int nextFontSize = (int)this.ActualHeight;
+		nextFontSize -= 1;
+		this.FontSize = int.Clamp(nextFontSize, 6, 100);
+		base.OnRenderSizeChanged(sizeInfo);
+	}
 }

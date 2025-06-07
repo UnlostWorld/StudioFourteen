@@ -34,19 +34,6 @@
 		<icons:FaIconView Focusable="False" Icon="{Binding Icon}" IconFont="{Binding Font}" />
 	</DataTemplate>
 
-	<ControlTemplate x:Key="FaIconViewTemplate" TargetType="{x:Type icons:FaIconView}">
-		<fa:IconImage
-			Margin="2"
-			Foreground="{TemplateBinding Foreground}"
-			Icon="{TemplateBinding Icon}"
-			IconFont="{TemplateBinding IconFont}" />
-	</ControlTemplate>
-
-	<Style TargetType="{x:Type icons:FaIconView}">
-		<Setter Property="Focusable" Value="False" />
-		<Setter Property="Template" Value="{StaticResource FaIconViewTemplate}" />
-	</Style>
-
 	<!-- Thumbnails -->
 	<DataTemplate DataType="{x:Type icons:ThumbnailIcon}">
 		<Grid>
