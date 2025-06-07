@@ -20,31 +20,31 @@ using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Scene.Handles;
 using StudioFourteen.Structs.Extensions;
 
-public class RotationGizmo : GizmoBase
+public class RotationGizmo : TransformGizmoBase
 {
 	private readonly AxisHandle xHandle;
 	private readonly AxisHandle yHandle;
 	private readonly AxisHandle zHandle;
 	private readonly OrbHandle orbHandle;
 
-	public RotationGizmo(GizmoBase gizmo)
+	public RotationGizmo()
 	{
-		this.orbHandle = new(gizmo);
+		this.orbHandle = new(this);
 		this.Add(this.orbHandle);
 
-		this.xHandle = new(gizmo);
+		this.xHandle = new(this);
 		this.Add(this.xHandle);
 		this.xHandle.Transform = Transform.FromRotation(0, 0, -90) * Transform.FromScale(0.5f);
 		this.xHandle.Color = Axes.XColor;
 		this.xHandle.AxisUnit = Vector3.UnitX;
 
-		this.yHandle = new(gizmo);
+		this.yHandle = new(this);
 		this.Add(this.yHandle);
 		this.yHandle.Transform = Transform.FromRotation(0, 0, 0) * Transform.FromScale(0.5f);
 		this.yHandle.Color = Axes.YColor;
 		this.yHandle.AxisUnit = Vector3.UnitY;
 
-		this.zHandle = new(gizmo);
+		this.zHandle = new(this);
 		this.Add(this.zHandle);
 		this.zHandle.Transform = Transform.FromRotation(0, 90, 0) * Transform.FromScale(0.5f);
 		this.zHandle.Color = Axes.ZColor;
@@ -64,13 +64,13 @@ public class RotationGizmo : GizmoBase
 		private readonly MeshRenderer<GizmoLineMaterial> circleRenderer;
 		private readonly LineRenderer<GizmoLineMaterial> fromLineRenderer;
 		private readonly LineRenderer<GizmoLineMaterial> toLineRenderer;
-		private readonly GizmoBase gizmo;
+		private readonly RotationGizmo gizmo;
 
 		private Vector2 dragStartScreenNormal;
 		private Vector4 dragStartVertPos;
 		private Quaternion totalRotation;
 
-		public AxisHandle(GizmoBase gizmo)
+		public AxisHandle(RotationGizmo gizmo)
 		{
 			this.gizmo = gizmo;
 			this.circleRenderer = new(MeshContent.WireCircle);
@@ -165,7 +165,7 @@ public class RotationGizmo : GizmoBase
 			float mag = delta.Length();
 			delta = Vector2.Normalize(delta);
 
-			float dot = Vector2.Dot(delta, this.dragStartScreenNormal);
+			float dot = Vector2.Dot(delta, -this.dragStartScreenNormal);
 			float dragDelta = (float)(mag * dot);
 			float angleChange = dragDelta / 50;
 			angleChange *= this.Sensitivity;
@@ -180,7 +180,7 @@ public class RotationGizmo : GizmoBase
 				angleChange *= (float)this.Services.Tablet.PenPressure;
 
 			Quaternion rot = Quaternion.CreateFromAxisAngle(this.AxisUnit, angleChange);
-			this.gizmo.Transform = Transform.FromRotation(rot) * this.gizmo.Transform;
+			this.gizmo.TargetTransform = Transform.FromRotation(rot) * this.gizmo.TargetTransform;
 			base.OnDrag(delta);
 
 			this.totalRotation *= Quaternion.CreateFromAxisAngle(Vector3.UnitY, angleChange);
@@ -190,9 +190,9 @@ public class RotationGizmo : GizmoBase
 	public class OrbHandle : Handle
 	{
 		private readonly MeshRenderer<GizmoFlatMaterial> sphereRenderer;
-		private readonly GizmoBase gizmo;
+		private readonly RotationGizmo gizmo;
 
-		public OrbHandle(GizmoBase gizmo)
+		public OrbHandle(RotationGizmo gizmo)
 		{
 			this.gizmo = gizmo;
 

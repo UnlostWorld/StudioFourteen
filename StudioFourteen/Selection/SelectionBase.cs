@@ -20,6 +20,7 @@ using PropertyChanged.SourceGenerator;
 using StudioFourteen.History;
 using StudioFourteen.Mvm;
 using StudioFourteen.Posing;
+using StudioFourteen.Rendering.Scene.Gizmos;
 using StudioFourteen.Utilities;
 using System;
 

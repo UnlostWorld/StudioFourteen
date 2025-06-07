@@ -26,7 +26,7 @@ using StudioFourteen.Settings;
 [DependencyProperty<Persistence>("Persistence")]
 public partial class TransformInspector : View
 {
-	public TransformHandleTypes Gizmo => this.Services.Selection.Gizmo;
+	public TransformHandleTypes Gizmo = TransformHandleTypes.Rotation;
 
 	public TransformSelectionBase? TransformSelection => this.Selection as TransformSelectionBase;
 

@@ -21,7 +21,7 @@ using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Scene.Handles;
 using StudioFourteen.Structs.Extensions;
 
-public class TranslationGizmo : GizmoBase
+public class TranslationGizmo : TransformGizmoBase
 {
 	private readonly AxisHandle xHandle;
 	private readonly AxisHandle yHandle;

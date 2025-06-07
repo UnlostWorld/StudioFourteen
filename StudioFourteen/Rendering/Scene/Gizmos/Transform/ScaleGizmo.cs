@@ -16,12 +16,10 @@
 namespace StudioFourteen.Rendering.Scene.Gizmos.Transforms;
 
 using System.Numerics;
-using SharpDX.Direct3D11;
 using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Scene.Handles;
-using StudioFourteen.Structs.Extensions;
 
-public class ScaleGizmo : GizmoBase
+public class ScaleGizmo : TransformGizmoBase
 {
 	private readonly AxisHandle xHandle;
 	private readonly AxisHandle yHandle;

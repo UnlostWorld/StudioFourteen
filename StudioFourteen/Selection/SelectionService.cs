@@ -20,6 +20,8 @@ using PropertyChanged.SourceGenerator;
 using StudioFourteen.Gizmos.Handles.TransformHandle;
 using StudioFourteen.History;
 using StudioFourteen.Posing;
+using StudioFourteen.Rendering.Scene.Gizmos;
+using StudioFourteen.Rendering.Scene.Gizmos.Transforms;
 using StudioFourteen.Services;
 using StudioFourteen.Utilities;
 using System;
@@ -66,13 +68,12 @@ public abstract class IAsyncSelectionId : ISelectionId
 
 public partial class SelectionService : ServiceBase
 {
+	private readonly List<SelectionGizmoBase> selectionGizmos = new();
+
 	private SelectionBase? selection;
 	private SelectionBase? hover;
+	private SelectionGizmoBase? gizmo;
 	private string lastSelectionName = "Nothing";
-
-	[Notify]
-	[AlsoNotify(nameof(SelectionService.GizmoIndex))]
-	private TransformHandleTypes gizmo = TransformHandleTypes.Rotation;
 
 	public delegate void SelectionChangedDelegate(SelectionBase? oldSelection, SelectionBase? newSelection);
 
@@ -95,10 +96,15 @@ public partial class SelectionService : ServiceBase
 			this.lastSelectionName = this.selection?.Name ?? "Nothing";
 			this.Services.History.RecordChange(this, $"Change");
 
-			if (this.selection != null && this.selection.IsActive)
-				this.selection.Deactivate();
+			if (this.selection != null)
+			{
+				if (this.selection.IsActive)
+					this.selection.Deactivate();
 
-			this.selection?.OnSelected(false);
+				this.selection.OnSelected(false);
+			}
+
+			this.Gizmo = null;
 			this.selection = value;
 			this.selection?.OnSelected(true);
 
@@ -107,6 +113,8 @@ public partial class SelectionService : ServiceBase
 
 			this.SelectionChanged?.Invoke(oldSelection, value);
 			this.RaisePropertyChanged();
+
+			this.DefaultGizmo();
 		}
 	}
 
@@ -134,13 +142,29 @@ public partial class SelectionService : ServiceBase
 		}
 	}
 
-	public object? HoverSource { get; set; }
-
-	public int GizmoIndex
+	public SelectionGizmoBase? Gizmo
 	{
-		get => (int)this.Gizmo;
-		set => this.Gizmo = (TransformHandleTypes)value;
+		get => this.gizmo;
+		set
+		{
+			if (this.gizmo != null)
+				this.gizmo.Disable();
+
+			if (this.selection == null)
+			{
+				this.gizmo = null;
+			}
+			else
+			{
+				this.gizmo = value;
+				this.gizmo?.Enable(this.selection);
+			}
+
+			this.RaisePropertyChanged();
+		}
 	}
+
+	public object? HoverSource { get; set; }
 
 	[History]
 	public ISelectionId? GetSelectionId()
@@ -175,6 +199,10 @@ public partial class SelectionService : ServiceBase
 
 	public override Task Start()
 	{
+		this.selectionGizmos.Add(new RotationGizmo());
+		this.selectionGizmos.Add(new TranslationGizmo());
+		this.selectionGizmos.Add(new ScaleGizmo());
+
 		this.Services.Target.TargetChanged += this.OnTargetChanged;
 		return base.Start();
 	}
@@ -197,9 +225,38 @@ public partial class SelectionService : ServiceBase
 		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
 	}
 
+	public List<SelectionGizmoBase> GetValidGizmos()
+	{
+		List<SelectionGizmoBase> results = new();
+
+		if (this.selection == null)
+			return results;
+
+		foreach (SelectionGizmoBase gizmo in this.selectionGizmos)
+		{
+			if (!gizmo.SupportsSelection(this.selection))
+				continue;
+
+			results.Add(gizmo);
+		}
+
+		return results;
+	}
+
+	protected void DefaultGizmo()
+	{
+		// TODO: Get the default gizmo from the selection actually.
+		List<SelectionGizmoBase> results = this.GetValidGizmos();
+		if (results.Count > 0)
+		{
+			this.Gizmo = results[0];
+		}
+	}
+
 	protected void OnGameTick()
 	{
 		this.Current?.OnGameTick();
+		this.Gizmo?.OnGameTick();
 
 		/*if (!this.Services.Windows.IsCursorOverStudio)
 		{
