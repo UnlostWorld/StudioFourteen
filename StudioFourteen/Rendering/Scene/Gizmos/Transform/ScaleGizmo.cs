@@ -56,12 +56,8 @@ public class ScaleGizmo : TransformGizmoBase
 	public override bool IsBeingManipulated =>
 		this.xHandle.IsHovered
 		|| this.yHandle.IsHovered
-		|| this.zHandle.IsHovered;
-
-	public bool IsDragging =>
-		this.xHandle.IsDragging
-		|| this.yHandle.IsDragging
-		|| this.zHandle.IsDragging;
+		|| this.zHandle.IsHovered
+		|| this.uniformHandle.IsHovered;
 
 	public class AxisHandle : Handle
 	{
@@ -109,15 +105,15 @@ public class ScaleGizmo : TransformGizmoBase
 			float scale = 1.0f;
 			if (this.AxisUnit.X > 0)
 			{
-				scale = this.gizmo.Transform.Scale.X;
+				scale = this.gizmo.TargetTransform.Scale.X;
 			}
 			else if (this.AxisUnit.Y > 0)
 			{
-				scale = this.gizmo.Transform.Scale.Y;
+				scale = this.gizmo.TargetTransform.Scale.Y;
 			}
 			else if (this.AxisUnit.Z > 0)
 			{
-				scale = this.gizmo.Transform.Scale.Z;
+				scale = this.gizmo.TargetTransform.Scale.Z;
 			}
 
 			scale *= 100;
@@ -201,7 +197,7 @@ public class ScaleGizmo : TransformGizmoBase
 				|| float.IsNaN(move.Z))
 				return;
 
-			this.gizmo.Transform = Transform.FromScale(Vector3.One - move) * this.gizmo.Transform;
+			this.gizmo.TargetTransform = Transform.FromScale(Vector3.One - move) * this.gizmo.TargetTransform;
 			base.OnDrag(delta);
 		}
 
@@ -241,7 +237,7 @@ public class ScaleGizmo : TransformGizmoBase
 			if (!this.IsDragging)
 				return false;
 
-			float scale = this.gizmo.Transform.Scale.X;
+			float scale = this.gizmo.TargetTransform.Scale.X;
 			scale *= 100;
 
 			worldPosition = this.gizmo.WorldPosition;
@@ -281,7 +277,7 @@ public class ScaleGizmo : TransformGizmoBase
 
 		protected override void OnDrag(Vector2 delta)
 		{
-			float mag = delta.Length();
+			float mag = delta.X + delta.Y;
 
 			float change = mag / 500;
 			change *= this.Sensitivity;
@@ -302,7 +298,7 @@ public class ScaleGizmo : TransformGizmoBase
 				|| float.IsNaN(move.Z))
 				return;
 
-			this.gizmo.Transform = Transform.FromScale(Vector3.One - move) * this.gizmo.Transform;
+			this.gizmo.TargetTransform = Transform.FromScale(Vector3.One - move) * this.gizmo.TargetTransform;
 			base.OnDrag(delta);
 		}
 

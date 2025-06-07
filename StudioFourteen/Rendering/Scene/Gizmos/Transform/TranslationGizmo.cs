@@ -249,7 +249,7 @@ public class TranslationGizmo : TransformGizmoBase
 				change *= (float)this.Services.Tablet.PenPressure;
 
 			Vector3 move = this.AxisUnit * change;
-			this.gizmo.Transform = Transform.FromTranslation(-move) * this.gizmo.Transform;
+			this.gizmo.TargetTransform = Transform.FromTranslation(-move) * this.gizmo.TargetTransform;
 			base.OnDrag(delta);
 		}
 
@@ -354,7 +354,7 @@ public class TranslationGizmo : TransformGizmoBase
 
 			move += this.Axis2Unit * change2 * multiplier;
 
-			this.gizmo.Transform = Transform.FromTranslation(-move) * this.gizmo.Transform;
+			this.gizmo.TargetTransform = Transform.FromTranslation(-move) * this.gizmo.TargetTransform;
 			base.OnDrag(delta);
 		}
 
