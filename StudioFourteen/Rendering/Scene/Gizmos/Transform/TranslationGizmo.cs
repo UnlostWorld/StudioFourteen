@@ -99,11 +99,16 @@ public class TranslationGizmo : SceneGroup
 			y > 0 ? -1 : 1,
 			z > 0 ? -1 : 1);
 
-		this.zyPlaneHandle.InputScale = scale;
+		this.zyPlaneHandle.Axis1Flipped = y < 0;
+		this.zyPlaneHandle.Axis2Flipped = z < 0;
 		this.zyPlaneHandle.Transform = Transform.FromRotation(0, 0, 90) * Transform.FromScale(scale);
-		this.xyPlaneHandle.InputScale = scale;
+
+		this.xyPlaneHandle.Axis1Flipped = y < 0;
+		this.xyPlaneHandle.Axis2Flipped = x < 0;
 		this.xyPlaneHandle.Transform = Transform.FromRotation(90, 0, 90) * Transform.FromScale(scale);
-		this.xzPlaneHandle.InputScale = scale;
+
+		this.xzPlaneHandle.Axis1Flipped = x < 0;
+		this.xzPlaneHandle.Axis2Flipped = z < 0;
 		this.xzPlaneHandle.Transform = Transform.FromRotation(0, 0, 0) * Transform.FromScale(scale);
 	}
 
@@ -238,7 +243,8 @@ public class TranslationGizmo : SceneGroup
 		public float Sensitivity { get; set; } = 1.0f;
 		public Vector3 Axis1Unit { get; set; }
 		public Vector3 Axis2Unit { get; set; }
-		public Vector3 InputScale { get; set; } = Vector3.One;
+		public bool Axis1Flipped { get; set; } = false;
+		public bool Axis2Flipped { get; set; } = false;
 
 		public override bool GetToolTip(ref string content, ref Vector3 worldPosition)
 		{
@@ -291,8 +297,8 @@ public class TranslationGizmo : SceneGroup
 			if (this.Services.Tablet.PenPressure > 0)
 				multiplier *= (float)this.Services.Tablet.PenPressure;
 
-			Vector2 a = this.GetScreenVector(Vector3.UnitX * this.InputScale);
-			Vector2 b = this.GetScreenVector(Vector3.UnitZ * this.InputScale);
+			Vector2 a = this.GetScreenVector(this.Axis1Flipped ? Vector3.UnitX : -Vector3.UnitX);
+			Vector2 b = this.GetScreenVector(this.Axis2Flipped ? Vector3.UnitZ : -Vector3.UnitZ);
 
 			float dot = Vector2.Dot(delta, a);
 			float dragDelta = (float)(mag * dot);
