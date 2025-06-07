@@ -23,17 +23,21 @@ public abstract class InputDeviceBase
 {
 	public List<InputAxis> Axes { get; init; } = new();
 
+	public bool IsAttached { get; private set; }
+
 	protected ILogger Log => Logging.ForContext(this.GetType());
 	protected ServiceManager Services => ServiceManager.Instance;
 
 	// Called when Studio attaches to XIV.
 	public virtual void Attach()
 	{
+		this.IsAttached = true;
 	}
 
 	// Called when Studio detaches from XIV.
 	public virtual void Detach()
 	{
+		this.IsAttached = false;
 	}
 
 	// Called when this device becomes primary, by being the most recent

@@ -62,14 +62,14 @@ public class TranslationGizmo : SceneGroup
 		this.xyPlaneHandle = new(gizmo);
 		this.Add(this.xyPlaneHandle);
 		this.xyPlaneHandle.Color = Axes.ZColor;
-		this.xyPlaneHandle.Axis1Unit = Vector3.UnitX;
-		this.xyPlaneHandle.Axis2Unit = Vector3.UnitY;
+		this.xyPlaneHandle.Axis1Unit = Vector3.UnitY;
+		this.xyPlaneHandle.Axis2Unit = Vector3.UnitX;
 
 		this.zyPlaneHandle = new(gizmo);
 		this.Add(this.zyPlaneHandle);
 		this.zyPlaneHandle.Color = Axes.XColor;
-		this.zyPlaneHandle.Axis1Unit = Vector3.UnitZ;
-		this.zyPlaneHandle.Axis2Unit = Vector3.UnitY;
+		this.zyPlaneHandle.Axis1Unit = Vector3.UnitY;
+		this.zyPlaneHandle.Axis2Unit = Vector3.UnitZ;
 	}
 
 	public bool IsBeingManipulated =>
@@ -99,8 +99,11 @@ public class TranslationGizmo : SceneGroup
 			y > 0 ? -1 : 1,
 			z > 0 ? -1 : 1);
 
-		this.zyPlaneHandle.Transform = Transform.FromRotation(180, 270, 90) * Transform.FromScale(scale);
+		this.zyPlaneHandle.InputScale = scale;
+		this.zyPlaneHandle.Transform = Transform.FromRotation(0, 0, 90) * Transform.FromScale(scale);
+		this.xyPlaneHandle.InputScale = scale;
 		this.xyPlaneHandle.Transform = Transform.FromRotation(90, 0, 90) * Transform.FromScale(scale);
+		this.xzPlaneHandle.InputScale = scale;
 		this.xzPlaneHandle.Transform = Transform.FromRotation(0, 0, 0) * Transform.FromScale(scale);
 	}
 
@@ -235,6 +238,7 @@ public class TranslationGizmo : SceneGroup
 		public float Sensitivity { get; set; } = 1.0f;
 		public Vector3 Axis1Unit { get; set; }
 		public Vector3 Axis2Unit { get; set; }
+		public Vector3 InputScale { get; set; } = Vector3.One;
 
 		public override bool GetToolTip(ref string content, ref Vector3 worldPosition)
 		{
@@ -276,22 +280,31 @@ public class TranslationGizmo : SceneGroup
 			float mag = delta.Length();
 			delta = Vector2.Normalize(delta);
 
-			Vector2 a = this.GetScreenVector(Vector3.UnitX);
-			Vector2 b = this.GetScreenVector(Vector3.UnitZ);
+			float multiplier = this.Sensitivity;
+
+			if (this.Services.Input.FastChange)
+				multiplier *= 10;
+
+			if (this.Services.Input.SlowChange)
+				multiplier /= 10;
+
+			if (this.Services.Tablet.PenPressure > 0)
+				multiplier *= (float)this.Services.Tablet.PenPressure;
+
+			Vector2 a = this.GetScreenVector(Vector3.UnitX * this.InputScale);
+			Vector2 b = this.GetScreenVector(Vector3.UnitZ * this.InputScale);
 
 			float dot = Vector2.Dot(delta, a);
 			float dragDelta = (float)(mag * dot);
 			float change = dragDelta / 50;
-			change *= this.Sensitivity;
 
-			Vector3 move = this.Axis1Unit * change;
+			Vector3 move = this.Axis1Unit * change * multiplier;
 
 			float dot2 = Vector2.Dot(delta, b);
 			float drag2Delta = (float)(mag * dot2);
 			float change2 = drag2Delta / 50;
-			change2 *= this.Sensitivity;
 
-			move += this.Axis2Unit * change2;
+			move += this.Axis2Unit * change2 * multiplier;
 
 			this.gizmo.Transform = Transform.FromTranslation(-move) * this.gizmo.Transform;
 			base.OnDrag(delta);

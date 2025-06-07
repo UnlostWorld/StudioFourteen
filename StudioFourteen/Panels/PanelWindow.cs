@@ -525,6 +525,16 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		return this.Services.Studio.IsOpen;
 	}
 
+	protected override void OnPreviewMouseMove(MouseEventArgs e)
+	{
+		if (this.Services.Input.Mouse?.IsAnyDragging == true)
+		{
+			e.Handled = true;
+		}
+
+		base.OnPreviewMouseMove(e);
+	}
+
 	protected override void OnMouseEnter(MouseEventArgs e)
 	{
 		this.Services.Windows.SetMouseOver(this, true);

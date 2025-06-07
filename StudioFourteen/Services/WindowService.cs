@@ -370,6 +370,11 @@ public partial class WindowService : ServiceBase
 		CursorUtility.SetPosition(p.ToPoint());
 	}
 
+	public void DiscardCursor()
+	{
+		CursorUtility.SetPosition(new(-1, -1));
+	}
+
 	public Point? GetCursorPosition()
 	{
 		if (this.XivWindowHwnd == null)

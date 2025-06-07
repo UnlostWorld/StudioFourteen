@@ -33,7 +33,7 @@ public static unsafe class Hooks
 
 	// Brio Signatures:
 	// 		https://github.com/Etheirys/Brio
-	// 		Special thanks to @Minmoose, @AsgardXIV
+	// 		Special thanks to @Minmoose @AsgardXIV
 
 	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Actor/ActorAppearanceService.cs#L58
 	internal delegate byte EnforceKindRestrictionsDelegate(nint a1, nint a2);
@@ -106,7 +106,7 @@ public static unsafe class Hooks
 
 	// Ktisis Signatures:
 	// 		https://github.com/ktisis-tools/Ktisis/
-	// 		Special thanks to @chirp
+	// 		Special thanks to @chirpxiv
 
 	// https://github.com/ktisis-tools/Ktisis/blob/v0.3/main/Ktisis/Scene/Modules/EnvModule.cs#L97
 	internal unsafe delegate nint EnvStateCopyDelegate(EnvState* dest, EnvState* src);

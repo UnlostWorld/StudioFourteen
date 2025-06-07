@@ -112,12 +112,17 @@ public partial class HandleService : ServiceBase
 
 	private void OnGameTick()
 	{
-		if (this.Services.Windows.IsCursorOverAtkUnit
-		|| this.Services.Windows.IsCursorOverImGui
-		|| this.Services.Windows.IsCursorOverStudio
-		|| this.Services.Reshade.IsReshadeOverlayOpen
-		|| !this.Services.Windows.IsCursorOverXiv
-		|| this.Services.Input.Mouse == null)
+		if (this.Services.Input.Mouse == null)
+		{
+			this.CurrentPress = null;
+			this.CurrentHover = null;
+		}
+		else if (this.CurrentPress == null &&
+			(this.Services.Windows.IsCursorOverAtkUnit
+			|| this.Services.Windows.IsCursorOverImGui
+			|| this.Services.Windows.IsCursorOverStudio
+			|| this.Services.Reshade.IsReshadeOverlayOpen
+			|| !this.Services.Windows.IsCursorOverXiv))
 		{
 			this.CurrentHover = null;
 		}
