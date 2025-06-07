@@ -104,7 +104,7 @@ public class ObjectTableSelection : TransformSelectionBase
 				gameObject->DrawObject->Rotation = rotation;
 
 				// do not allow objects to scale below 0, it will break the game.
-				gameObject->DrawObject->Scale = Vector3.Max(scale, new Vector3(0.1f, 0.1f, 0.1f));
+				gameObject->DrawObject->Scale = Vector3.Clamp(scale, new Vector3(0.1f, 0.1f, 0.1f), new Vector3(1000, 1000, 1000));
 
 				this.nextTransform = null;
 			}

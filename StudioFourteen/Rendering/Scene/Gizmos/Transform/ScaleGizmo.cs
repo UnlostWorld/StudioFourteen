@@ -1,0 +1,318 @@
+// .                    @@             _____ _______ _    _ _____ _____ ____
+//          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
+//         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
+//         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
+//        @@@@       @@@@@@@          ____) |  | |  | |__| | |__| || || |__| |
+//    @@@@@             @@@          |_____/   |_|   \____/|_____/_____\____/
+//     @@@      @@@      @@        ___     _    _   _  __   _____  ___  ___  _  _
+//      @@    @@@@@@@    @@       |  _|  / _ \ | | | || _ \|_   _|| __|| __|| \| |
+//      @@    @@@@@@@    @   @    | __| | (_) || |_| ||   /  | |  | _| | _| | .` |
+//    @@@@      @@@      @@@@     |_|    \___/  \___/ |_|_\  |_|  |___||___||_|\_|
+//     @@@@             @@@        https://github.com/UnlostWorld/StudioFourteen
+//       @@@@@      @@@@@
+//        @@@@@@@@@@@@@@                This software is licensed under the
+//            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
+
+namespace StudioFourteen.Rendering.Scene.Gizmos.Transforms;
+
+using System.Numerics;
+using SharpDX.Direct3D11;
+using StudioFourteen.Rendering.Materials;
+using StudioFourteen.Rendering.Scene.Handles;
+using StudioFourteen.Structs.Extensions;
+
+public class ScaleGizmo : GizmoBase
+{
+	private readonly AxisHandle xHandle;
+	private readonly AxisHandle yHandle;
+	private readonly AxisHandle zHandle;
+	private readonly UniformHandle uniformHandle;
+
+	public ScaleGizmo()
+	{
+		this.xHandle = new(this);
+		this.Add(this.xHandle);
+		this.xHandle.Transform = Transform.FromRotation(0, 0, 0);
+		this.xHandle.Color = Axes.XColor;
+		this.xHandle.AxisUnit = Vector3.UnitX;
+
+		this.yHandle = new(this);
+		this.Add(this.yHandle);
+		this.yHandle.Transform = Transform.FromRotation(0, 0, 90);
+		this.yHandle.Color = Axes.YColor;
+		this.yHandle.AxisUnit = Vector3.UnitY;
+
+		this.zHandle = new(this);
+		this.Add(this.zHandle);
+		this.zHandle.Transform = Transform.FromRotation(-90, 0, 0);
+		this.zHandle.Color = Axes.ZColor;
+		this.zHandle.AxisUnit = Vector3.UnitZ;
+
+		this.uniformHandle = new(this);
+		this.Add(this.uniformHandle);
+	}
+
+	public override string Name => "Scale";
+
+	public override bool IsBeingManipulated =>
+		this.xHandle.IsHovered
+		|| this.yHandle.IsHovered
+		|| this.zHandle.IsHovered;
+
+	public bool IsDragging =>
+		this.xHandle.IsDragging
+		|| this.yHandle.IsDragging
+		|| this.zHandle.IsDragging;
+
+	public class AxisHandle : Handle
+	{
+		private readonly MeshRenderer<GizmoFlatMaterial> cubeRenderer;
+		private readonly MeshRenderer<GizmoFlatOutlineMaterial> cubeOutlineRenderer;
+		private readonly LineRenderer<GizmoLineMaterial> lineRenderer;
+		private readonly ScaleGizmo gizmo;
+
+		public AxisHandle(ScaleGizmo gizmo)
+		{
+			this.gizmo = gizmo;
+
+			this.cubeOutlineRenderer = new(MeshContent.Cube);
+			this.cubeOutlineRenderer.Transform = Transform.FromTRS(
+				new(0.5f, 0, 0),
+				Quaternion.Identity,
+				new(0.1f, 0.1f, 0.1f));
+			this.cubeOutlineRenderer.Material.OutlineColor = Axes.OutlineColor;
+			this.Add(this.cubeOutlineRenderer);
+
+			this.cubeRenderer = new(MeshContent.Cube);
+			this.cubeRenderer.Transform = Transform.FromTRS(
+				new(0.5f, 0, 0),
+				Quaternion.Identity,
+				new(0.1f, 0.1f, 0.1f));
+			this.Add(this.cubeRenderer);
+
+			this.lineRenderer = new();
+			this.lineRenderer.From = Vector3.UnitX * 0.05f;
+			this.lineRenderer.To = Vector3.UnitX * 0.45f;
+			this.lineRenderer.Material.OutlineColor = Axes.OutlineColor;
+			this.lineRenderer.IsHitTestVisible = false;
+			this.Add(this.lineRenderer);
+		}
+
+		public Color Color { get; set; }
+		public float Sensitivity { get; set; } = 1.0f;
+		public Vector3 AxisUnit { get; set; }
+
+		public override bool GetToolTip(ref string content, ref Vector3 worldPosition)
+		{
+			if (!this.IsDragging)
+				return false;
+
+			float scale = 1.0f;
+			if (this.AxisUnit.X > 0)
+			{
+				scale = this.gizmo.Transform.Scale.X;
+			}
+			else if (this.AxisUnit.Y > 0)
+			{
+				scale = this.gizmo.Transform.Scale.Y;
+			}
+			else if (this.AxisUnit.Z > 0)
+			{
+				scale = this.gizmo.Transform.Scale.Z;
+			}
+
+			scale *= 100;
+
+			worldPosition = this.gizmo.WorldPosition;
+			content = $"{scale.ToString("F1")}%";
+			return true;
+		}
+
+		protected override void OnDraw()
+		{
+			base.OnDraw();
+
+			if (this.IsPressed)
+			{
+				this.lineRenderer.Material.Color = Color.White;
+				this.cubeRenderer.Material.Color = Color.White;
+			}
+			else
+			{
+				this.lineRenderer.Material.Color = this.Color;
+				this.cubeRenderer.Material.Color = this.Color;
+			}
+
+			if (this.IsHovered)
+			{
+				this.lineRenderer.Material.Thickness = 1.5f;
+				this.cubeOutlineRenderer.Transform = Transform.FromTRS(
+					new(0.5f, 0, 0),
+					Quaternion.Identity,
+					new(0.12f, 0.12f, 0.12f));
+
+				this.cubeRenderer.Transform = Transform.FromTRS(
+					new(0.5f, 0, 0),
+					Quaternion.Identity,
+					new(0.12f, 0.12f, 0.12f));
+			}
+			else
+			{
+				this.lineRenderer.Material.Thickness = 1.0f;
+				this.cubeOutlineRenderer.Transform = Transform.FromTRS(
+					new(0.5f, 0, 0),
+					Quaternion.Identity,
+					new(0.1f, 0.1f, 0.1f));
+
+				this.cubeRenderer.Transform = Transform.FromTRS(
+					new(0.5f, 0, 0),
+					Quaternion.Identity,
+					new(0.1f, 0.1f, 0.1f));
+			}
+		}
+
+		protected override void OnStartDrag(HitTestResult hitTest)
+		{
+			base.OnStartDrag(hitTest);
+		}
+
+		protected override void OnDrag(Vector2 delta)
+		{
+			float mag = delta.Length();
+			delta = Vector2.Normalize(delta);
+
+			float dot = Vector2.Dot(delta, this.GetScreenVector(Vector3.UnitX));
+			float dragDelta = (float)(mag * dot);
+			float change = dragDelta / 500;
+			change *= this.Sensitivity;
+
+			if (this.Services.Input.FastChange)
+				change *= 10;
+
+			if (this.Services.Input.SlowChange)
+				change /= 10;
+
+			if (this.Services.Tablet.PenPressure > 0)
+				change *= (float)this.Services.Tablet.PenPressure;
+
+			Vector3 move = this.AxisUnit * change;
+
+			if (float.IsNaN(move.X)
+				|| float.IsNaN(move.Y)
+				|| float.IsNaN(move.Z))
+				return;
+
+			this.gizmo.Transform = Transform.FromScale(Vector3.One - move) * this.gizmo.Transform;
+			base.OnDrag(delta);
+		}
+
+		protected override void OnEndDrag()
+		{
+			Vector2 pos = this.GetScreenPosition(Vector3.UnitX);
+			this.Services.Windows.SetCursorPosition(pos);
+
+			base.OnEndDrag();
+		}
+	}
+
+	public class UniformHandle : Handle
+	{
+		private readonly MeshRenderer<GizmoFlatMaterial> cubeRenderer;
+		private readonly MeshRenderer<GizmoFlatOutlineMaterial> cubeOutlineRenderer;
+		private readonly ScaleGizmo gizmo;
+
+		public UniformHandle(ScaleGizmo gizmo)
+		{
+			this.gizmo = gizmo;
+
+			this.cubeOutlineRenderer = new(MeshContent.Cube);
+			this.cubeOutlineRenderer.Transform = Transform.FromScale(0.18f);
+			this.cubeOutlineRenderer.Material.OutlineColor = Axes.OutlineColor;
+			this.Add(this.cubeOutlineRenderer);
+
+			this.cubeRenderer = new(MeshContent.Cube);
+			this.cubeRenderer.Transform = Transform.FromScale(0.2f);
+			this.Add(this.cubeRenderer);
+		}
+
+		public float Sensitivity { get; set; } = 1.0f;
+
+		public override bool GetToolTip(ref string content, ref Vector3 worldPosition)
+		{
+			if (!this.IsDragging)
+				return false;
+
+			float scale = this.gizmo.Transform.Scale.X;
+			scale *= 100;
+
+			worldPosition = this.gizmo.WorldPosition;
+			content = $"{scale.ToString("F1")}%";
+			return true;
+		}
+
+		protected override void OnDraw()
+		{
+			base.OnDraw();
+
+			if (this.IsPressed)
+			{
+				this.cubeRenderer.Material.Color = Color.White;
+			}
+			else
+			{
+				this.cubeRenderer.Material.Color = new(0.25f, 0.25f, 0.25f, 1.0f);
+			}
+
+			if (this.IsHovered)
+			{
+				this.cubeRenderer.Transform = Transform.FromScale(0.21f);
+				this.cubeOutlineRenderer.Transform = Transform.FromScale(0.19f);
+			}
+			else
+			{
+				this.cubeRenderer.Transform = Transform.FromScale(0.2f);
+				this.cubeOutlineRenderer.Transform = Transform.FromScale(0.18f);
+			}
+		}
+
+		protected override void OnStartDrag(HitTestResult hitTest)
+		{
+			base.OnStartDrag(hitTest);
+		}
+
+		protected override void OnDrag(Vector2 delta)
+		{
+			float mag = delta.Length();
+
+			float change = mag / 500;
+			change *= this.Sensitivity;
+
+			if (this.Services.Input.FastChange)
+				change *= 10;
+
+			if (this.Services.Input.SlowChange)
+				change /= 10;
+
+			if (this.Services.Tablet.PenPressure > 0)
+				change *= (float)this.Services.Tablet.PenPressure;
+
+			Vector3 move = Vector3.One * change;
+
+			if (float.IsNaN(move.X)
+				|| float.IsNaN(move.Y)
+				|| float.IsNaN(move.Z))
+				return;
+
+			this.gizmo.Transform = Transform.FromScale(Vector3.One - move) * this.gizmo.Transform;
+			base.OnDrag(delta);
+		}
+
+		protected override void OnEndDrag()
+		{
+			Vector2 pos = this.GetScreenPosition(Vector3.Zero);
+			this.Services.Windows.SetCursorPosition(pos);
+
+			base.OnEndDrag();
+		}
+	}
+}
