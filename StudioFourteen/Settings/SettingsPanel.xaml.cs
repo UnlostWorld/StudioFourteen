@@ -76,7 +76,7 @@ public partial class SettingsPanel : Panel
 	private async void OnBrosePhotoDirectoryClicked(object sender, RoutedEventArgs e)
 	{
 		DirectoryInfo? dir = null;
-		if (this.Settings.PhotoDirectory != null)
+		if (!string.IsNullOrEmpty(this.Settings.PhotoDirectory))
 			dir = new DirectoryInfo(this.Settings.PhotoDirectory);
 
 		DirectoryInfo? newDir = await this.Services.Files.ShowDirectoryDialog(dir);
