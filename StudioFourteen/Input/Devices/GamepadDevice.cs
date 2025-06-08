@@ -27,6 +27,7 @@ public class GamepadDevice : InputDeviceBase
 {
 	private readonly Dictionary<Buttons, InputAxis> buttonAxes = new();
 	private readonly Queue<Buttons> sendButtons = new();
+	private readonly Dictionary<Sticks, (InputAxisSigned X, InputAxisSigned Y)> stickAxes = new();
 
 	public GamepadDevice()
 	{
@@ -35,6 +36,27 @@ public class GamepadDevice : InputDeviceBase
 			InputAxis axis = new(GetAxisId(button), this, true);
 			this.buttonAxes.Add(button, axis);
 			this.Axes.Add(axis);
+		}
+
+		foreach (Sticks stick in Enum.GetValues<Sticks>())
+		{
+			InputAxisSigned xAxis = new(
+				GetStickAxis(stick, StickDirections.Right),
+				GetStickAxis(stick, StickDirections.Left),
+				this,
+				false);
+
+			InputAxisSigned yAxis = new(
+				GetStickAxis(stick, StickDirections.Up),
+				GetStickAxis(stick, StickDirections.Down),
+				this,
+				false);
+
+			this.Axes.Add(xAxis.Positive);
+			this.Axes.Add(xAxis.Negative);
+			this.Axes.Add(yAxis.Positive);
+			this.Axes.Add(yAxis.Negative);
+			this.stickAxes.Add(stick, (xAxis, yAxis));
 		}
 	}
 
@@ -59,7 +81,22 @@ public class GamepadDevice : InputDeviceBase
 		Select = ClientButtons.Select,
 	}
 
+	public enum Sticks
+	{
+		Left,
+		Right,
+	}
+
+	public enum StickDirections
+	{
+		Up,
+		Down,
+		Left,
+		Right,
+	}
+
 	public static string GetAxisId(Buttons button) => $"Gamepad:{button}";
+	public static string GetStickAxis(Sticks stick, StickDirections direction) => $"Gamepad:{stick}:{direction}";
 
 	public void SendButton(Buttons button)
 	{
@@ -97,6 +134,36 @@ public class GamepadDevice : InputDeviceBase
 	private unsafe nint GamepadPollDetour(PadDevice* pPadDevice)
 	{
 		nint ret = Hooks.PadDevicePoll.Original(pPadDevice);
+
+		// TODO: Consume stick inputs.
+		this.stickAxes[Sticks.Left].X.Value = pPadDevice->GamepadInputData.LeftStickX / 100.0f;
+		this.stickAxes[Sticks.Left].Y.Value = pPadDevice->GamepadInputData.LeftStickY / 100.0f;
+		this.stickAxes[Sticks.Right].X.Value = pPadDevice->GamepadInputData.RightStickX / 100.0f;
+		this.stickAxes[Sticks.Right].Y.Value = pPadDevice->GamepadInputData.RightStickY / 100.0f;
+
+		if (this.stickAxes[Sticks.Left].X.ConsumedBy != null)
+		{
+			pPadDevice->GamepadInputData.LeftStickX = 0;
+			this.stickAxes[Sticks.Left].X.ConsumedBy = null;
+		}
+
+		if (this.stickAxes[Sticks.Left].Y.ConsumedBy != null)
+		{
+			pPadDevice->GamepadInputData.LeftStickY = 0;
+			this.stickAxes[Sticks.Left].Y.ConsumedBy = null;
+		}
+
+		if (this.stickAxes[Sticks.Right].X.ConsumedBy != null)
+		{
+			pPadDevice->GamepadInputData.RightStickX = 0;
+			this.stickAxes[Sticks.Right].X.ConsumedBy = null;
+		}
+
+		if (this.stickAxes[Sticks.Right].Y.ConsumedBy != null)
+		{
+			pPadDevice->GamepadInputData.RightStickY = 0;
+			this.stickAxes[Sticks.Right].Y.ConsumedBy = null;
+		}
 
 		Buttons buttonValues = (Buttons)pPadDevice->GamepadInputData.Buttons;
 
