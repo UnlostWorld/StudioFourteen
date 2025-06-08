@@ -123,6 +123,10 @@ public class InputService : ServiceBase
 		this.AddBind(InputAction.OrbitCamera_PanLeft, MouseDevice.GetDragAxisId(MouseButtons.Left, MouseDevice.DragDirections.Left), KeyboardDevice.GetAxisId(VirtualKey.SHIFT));
 		this.AddBind(InputAction.OrbitCamera_PanDown, MouseDevice.GetDragAxisId(MouseButtons.Left, MouseDevice.DragDirections.Down), KeyboardDevice.GetAxisId(VirtualKey.SHIFT));
 		this.AddBind(InputAction.OrbitCamera_PanUp, MouseDevice.GetDragAxisId(MouseButtons.Left, MouseDevice.DragDirections.Up), KeyboardDevice.GetAxisId(VirtualKey.SHIFT));
+		this.AddBind(InputAction.OrbitCamera_PanUp, GamepadDevice.GetStickAxis(GamepadDevice.Sticks.Left, GamepadDevice.StickDirections.Up));
+		this.AddBind(InputAction.OrbitCamera_PanDown, GamepadDevice.GetStickAxis(GamepadDevice.Sticks.Left, GamepadDevice.StickDirections.Down));
+		this.AddBind(InputAction.OrbitCamera_PanLeft, GamepadDevice.GetStickAxis(GamepadDevice.Sticks.Left, GamepadDevice.StickDirections.Left));
+		this.AddBind(InputAction.OrbitCamera_PanRight, GamepadDevice.GetStickAxis(GamepadDevice.Sticks.Left, GamepadDevice.StickDirections.Right));
 
 		// Orbit Roll
 		this.AddBind(InputAction.OrbitCamera_RollLeft, KeyboardDevice.GetAxisId(VirtualKey.Q));
@@ -153,6 +157,10 @@ public class InputService : ServiceBase
 		this.AddBind(InputAction.OrbitCamera_RotateLeft, MouseDevice.GetDragAxisId(MouseButtons.Right, MouseDevice.DragDirections.Left));
 		this.AddBind(InputAction.OrbitCamera_RotateDown, MouseDevice.GetDragAxisId(MouseButtons.Right, MouseDevice.DragDirections.Down));
 		this.AddBind(InputAction.OrbitCamera_RotateUp, MouseDevice.GetDragAxisId(MouseButtons.Right, MouseDevice.DragDirections.Up));
+		this.AddBind(InputAction.OrbitCamera_RotateUp, GamepadDevice.GetStickAxis(GamepadDevice.Sticks.Right, GamepadDevice.StickDirections.Up));
+		this.AddBind(InputAction.OrbitCamera_RotateDown, GamepadDevice.GetStickAxis(GamepadDevice.Sticks.Right, GamepadDevice.StickDirections.Down));
+		this.AddBind(InputAction.OrbitCamera_RotateLeft, GamepadDevice.GetStickAxis(GamepadDevice.Sticks.Right, GamepadDevice.StickDirections.Left));
+		this.AddBind(InputAction.OrbitCamera_RotateRight, GamepadDevice.GetStickAxis(GamepadDevice.Sticks.Right, GamepadDevice.StickDirections.Right));
 
 		// General
 		this.AddBind(InputAction.SlowChange, KeyboardDevice.GetAxisId(VirtualKey.CONTROL));
