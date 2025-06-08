@@ -25,8 +25,6 @@ using WpfUtils.Extensions;
 
 public partial class ToolBarPanel : Panel
 {
-	[Notify] private bool isInGPose = false;
-	[Notify] private bool isGPoseSettingsOpen = false;
 	[Notify] private bool allowMouseCapture = true;
 	[Notify] private SelectionGizmoBase? selectedGizmo = null;
 
@@ -36,14 +34,9 @@ public partial class ToolBarPanel : Panel
 	{
 		base.OnOpened();
 
-		this.Services.GroupPose.StateChanged += this.OnGroupPoseStateChanged;
-		this.Services.GroupPose.SettingsStateChanged += this.OnGroupPoseSettingsStateChanged;
 		this.Services.Settings.SettingChanged += this.OnSettingsOpenChanged;
 		this.Services.Selection.SelectionChanged += this.OnSelectionChanged;
 		this.Services.Selection.GizmoChanged += this.OnSelectionGizmoChanged;
-
-		this.IsInGPose = this.Services.GroupPose.IsGroupPosing;
-		this.IsGPoseSettingsOpen = this.Services.GroupPose.IsGroupPoseSettingsWindowVisible;
 		this.AllowMouseCapture = this.Settings.AllowMouseCapture;
 
 		this.OnSelectionChanged(null, this.Services.Selection.Current);
@@ -54,8 +47,6 @@ public partial class ToolBarPanel : Panel
 	{
 		base.OnClosed();
 
-		this.Services.GroupPose.StateChanged -= this.OnGroupPoseStateChanged;
-		this.Services.GroupPose.SettingsStateChanged -= this.OnGroupPoseSettingsStateChanged;
 		this.Services.Settings.SettingChanged -= this.OnSettingsOpenChanged;
 		this.Services.Selection.SelectionChanged -= this.OnSelectionChanged;
 		this.Services.Selection.GizmoChanged -= this.OnSelectionGizmoChanged;
@@ -79,26 +70,6 @@ public partial class ToolBarPanel : Panel
 	private void OnSelectedGizmoChanged(SelectionGizmoBase? oldGizmo, SelectionGizmoBase? newGizmo)
 	{
 		this.Services.Selection.Gizmo = newGizmo;
-	}
-
-	private void OnGroupPoseSettingsStateChanged(bool settingsState)
-	{
-		this.Dispatcher.Invoke(() => this.IsGPoseSettingsOpen = settingsState);
-	}
-
-	private void OnGroupPoseStateChanged(bool newState)
-	{
-		this.Dispatcher.Invoke(() => this.IsInGPose = newState);
-	}
-
-	private void OnIsInGPoseChanged(bool oldValue, bool newValue)
-	{
-		this.Services.GroupPose.SetGroupPose(newValue);
-	}
-
-	private void OnIsGPoseSettingsOpenChanged(bool oldValue, bool newValue)
-	{
-		this.Services.GroupPose.SetGroupPoseSettingsWindowVisible(newValue);
 	}
 
 	private void OnAllowMouseCaptureChanged(bool oldValue, bool newValue)

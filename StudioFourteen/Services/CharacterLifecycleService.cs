@@ -200,7 +200,7 @@ public class CharacterLifecycleService : ServiceBase
 
 	public unsafe void DestroyAllCreated()
 	{
-		TickService.VerifyGameTickThread();
+		////TickService.VerifyGameTickThread();
 
 		List<ushort> indexes = CreatedIndexes.ToList();
 		ClientObjectManager* com = ClientObjectManager.Instance();

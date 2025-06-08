@@ -39,26 +39,10 @@
 			<StackPanel Orientation="Horizontal">
 				<ToggleButton
 					Width="32"
-					Content="{DynamicResource ICON_GroupPose}"
-					IsChecked="{Binding IsInGPose}"
-					Style="{DynamicResource WpfUtilsIconToggleButton}"
-					ToolTip="{DynamicResource LOC_ToggleGPose}" />
-
-				<ToggleButton
-					Width="32"
-					Content="{DynamicResource ICON_GroupPoseSettings}"
-					IsChecked="{Binding IsGPoseSettingsOpen}"
-					Style="{DynamicResource WpfUtilsIconToggleButton}"
-					ToolTip="{DynamicResource LOC_GPoseSettings}"
-					Visibility="{Binding IsInGPose, Converter={StaticResource B2V}}" />
-
-				<ToggleButton
-					Width="32"
 					Content="{DynamicResource ICON_MouseInput}"
 					IsChecked="{Binding AllowMouseCapture}"
 					Style="{DynamicResource WpfUtilsIconToggleButton}"
-					ToolTip="{DynamicResource LOC_Settings_Input_Mouse}"
-					Visibility="{Binding IsInGPose, Converter={StaticResource B2V}}" />
+					ToolTip="{DynamicResource LOC_Settings_Input_Mouse}"/>
 
 				<ToggleButton
 					x:Name="GizmoToggle"

@@ -9,7 +9,6 @@
 	<icons:Fa x:Key="ICON_Window_Close" Icon="Times"/>
 	<icons:Fa x:Key="ICON_Window_PopOut" Icon="ArrowRightFromBracket"/>
 	<icons:Fa x:Key="ICON_Window_Zoom" Icon="SearchPlus"/>
-	<icons:Fa x:Key="ICON_CloseStudio" Icon="PowerOff"/>
 
 	<icons:Fa x:Key="ICON_GripVertical" Icon="GripLines"/>
 	<icons:Fa x:Key="ICON_GripAll" Icon="GripHorizontal"/>
