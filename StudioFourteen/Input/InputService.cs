@@ -241,7 +241,7 @@ public class InputService : ServiceBase
 		this.binds.Add(bind);
 
 		// the order of binds controls the priority of execution,
-		// binds earlier in teh list will activate instead of ones lower
+		// binds earlier in the list will activate instead of ones lower
 		// in the list.
 		// sort the list so binds with more modifiers are on top
 		// (so 'Shift+S' activates instead of 'S' when holding both)
