@@ -13,7 +13,7 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-// Thanks Javier Salcedo!
+// Thanks @Javier Salcedo!
 // https://dev.to/javiersalcedopuyo/simple-infinite-grid-shader-5fah
 
 #include "Common.hlsl"
@@ -33,6 +33,8 @@ cbuffer RendererInstanceData : register(RendererDataRegister)
 cbuffer MaterialInstanceData : register(MaterialDataRegister)
 {
 	float4 Color;
+	float4 XColor;
+	float4 ZColor;
 	float GridSize;
 	float LineThickness;
 	float Height;
@@ -117,8 +119,14 @@ float4 pixel(Fragment frag) : SV_TARGET
 		color.a = 0.25;
 	}
 
-	if(any(distance_to_cell < (LineThickness / 100) * (frag.Position.w * 2)))
+	if(distance_to_cell.y < (LineThickness / 100) * (frag.Position.w * 2))
 	{
+		color = XColor;
+		color.a = 1;
+	}
+	if(distance_to_cell.x < (LineThickness / 100) * (frag.Position.w * 2))
+	{
+		color = ZColor;
 		color.a = 1;
 	}
 

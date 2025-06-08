@@ -45,7 +45,16 @@ public partial class GizmoControlPanel : UserControl
 			if (this.Services.Gizmos.GizmoControlPanelOpen)
 				return;
 
-			this.Gizmos.Replace(this.Services.Gizmos.Gizmos);
+			this.Gizmos.Clear();
+
+			foreach (GizmoBase gizmo in this.Services.Gizmos.Gizmos)
+			{
+				// Ignore selection gizmos as they get their own area in the toolbar.
+				if (gizmo is SelectionGizmoBase)
+					continue;
+
+				this.Gizmos.Add(gizmo);
+			}
 		});
 	}
 }

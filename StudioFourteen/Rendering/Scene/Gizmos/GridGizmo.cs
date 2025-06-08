@@ -65,6 +65,9 @@ public class GridGizmo : GizmoBase
 			}
 		}
 
+		this.gridRenderer.Material.XColor = Axes.XColor;
+		this.gridRenderer.Material.ZColor = Axes.ZColor;
+
 		base.OnDraw();
 	}
 
