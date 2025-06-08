@@ -144,24 +144,21 @@ public class ObjectTableSelection : TransformSelectionBase
 		return this.ObjectTableId == otherGameObject.ObjectTableId;
 	}
 
-	public override void Reset()
-	{
-		// hmm...
-		throw new NotImplementedException();
-	}
-
 	protected override void OnLocalTransformChanged(Transform oldValue, Transform newValue)
 	{
+		base.OnLocalTransformChanged(oldValue, newValue);
 		this.nextTransform = newValue;
 	}
 
 	protected override void OnWorldTransformChanged(Transform oldValue, Transform newValue)
 	{
+		base.OnWorldTransformChanged(oldValue, newValue);
 		this.nextTransform = newValue;
 	}
 
 	protected override void OnLockTransformChanged(bool oldValue, bool newValue)
 	{
+		base.OnLockTransformChanged(oldValue, newValue);
 		this.Services.Pose.SetAllBoneReferencesLocked(this.ObjectTableId, newValue);
 	}
 }

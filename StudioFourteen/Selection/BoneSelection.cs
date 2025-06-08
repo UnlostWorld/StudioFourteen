@@ -287,6 +287,8 @@ public class BoneSelection : TransformSelectionBase
 
 	protected override void OnLockTransformChanged(bool oldValue, bool newValue)
 	{
+		base.OnLockTransformChanged(oldValue, newValue);
+
 		if (this.bone == null)
 			return;
 
@@ -295,6 +297,8 @@ public class BoneSelection : TransformSelectionBase
 
 	protected override void OnWorldTransformChanged(StudioTransform oldValue, StudioTransform newValue)
 	{
+		base.OnWorldTransformChanged(oldValue, newValue);
+
 		if (this.isReading || this.bone == null || this.bone.ModelTransform == null)
 			return;
 
@@ -312,6 +316,8 @@ public class BoneSelection : TransformSelectionBase
 
 	protected override void OnLocalTransformChanged(StudioTransform oldValue, StudioTransform newValue)
 	{
+		base.OnLocalTransformChanged(oldValue, newValue);
+
 		if (this.isReading)
 			return;
 
