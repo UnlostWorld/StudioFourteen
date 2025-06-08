@@ -106,7 +106,6 @@ public partial class SelectionService : ServiceBase
 				this.selection.OnSelected(false);
 			}
 
-			this.Gizmo = null;
 			this.selection = value;
 			this.selection?.OnSelected(true);
 
@@ -205,8 +204,8 @@ public partial class SelectionService : ServiceBase
 	public override Task Start()
 	{
 		this.selectionGizmos.Add(new SelectionGizmo());
-		this.selectionGizmos.Add(new RotationGizmo());
 		this.selectionGizmos.Add(new TranslationGizmo());
+		this.selectionGizmos.Add(new RotationGizmo());
 		this.selectionGizmos.Add(new ScaleGizmo());
 
 		this.Services.Target.TargetChanged += this.OnTargetChanged;
@@ -251,12 +250,21 @@ public partial class SelectionService : ServiceBase
 
 	protected void DefaultGizmo()
 	{
+		SelectionGizmoBase? nextGizmo = this.Gizmo;
+
 		// TODO: Get the default gizmo from the selection actually.
 		List<SelectionGizmoBase> results = this.GetValidGizmos();
 		if (results.Count > 0)
 		{
-			this.Gizmo = results[0];
+			if (nextGizmo == null || !results.Contains(nextGizmo))
+			{
+				nextGizmo = results[0];
+				return;
+			}
 		}
+
+		this.Gizmo = null;
+		this.Gizmo = nextGizmo;
 	}
 
 	protected void OnGameTick()
