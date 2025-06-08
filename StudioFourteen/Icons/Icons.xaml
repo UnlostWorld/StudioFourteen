@@ -89,9 +89,6 @@
 	<icons:Svg x:Key="ICON_DeleteCharacter" Source="CharacterDelete"/>
 	<icons:Fa x:Key="ICON_Info" Icon="InfoCircle" Font="Solid" />
 	<icons:Fa x:Key="ICON_Warning" Icon="Warning" Font="Solid" />
-	<icons:Fa x:Key="ICON_CaptureImage" Icon="Camera" Font="Solid" />
-	<icons:Svg x:Key="ICON_ShowUi" Source="ShowUi" />
-	<icons:Svg x:Key="ICON_HideUi" Source="HideUi" />
 
 	<icons:Svg x:Key="ICON_Selection" Source="SelectionBounds" />
 	<icons:Fa x:Key="ICON_Transform_Translate" Icon="Arrows" Font="Solid" />
@@ -131,4 +128,9 @@
 	<icons:Fa x:Key="ICON_Pose_LockTransform" Icon="CirclePause" />
 	<icons:Fa x:Key="ICON_Pose_Reset" Icon="RotateBack" />
 	<icons:Fa x:Key="ICON_Pose_Reference" Icon="Person" />
+
+	<icons:Fa x:Key="ICON_Photo_Settings" Icon="Gear" Font="Solid" />
+	<icons:Svg x:Key="ICON_Photo_Capture" Source="Capture"/>
+	<icons:Svg x:Key="ICON_Photo_ShowUi" Source="ShowUi" />
+	<icons:Svg x:Key="ICON_Photo_HideUi" Source="HideUi" />
 </ResourceDictionary>
