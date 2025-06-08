@@ -427,16 +427,16 @@
 				<Border Background="{DynamicResource BackgroundBrush}"
 					CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
 
-				<ContentPresenter
-					Margin="3"
-					Content="{TemplateBinding Content}"
-					ContentTemplate="{TemplateBinding ContentTemplate}" />
-
 				<Border
 					x:Name="WindowBorder"
 					BorderBrush="{DynamicResource BackgroundBrush}"
 					BorderThickness="1"
 					CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
+
+				<ContentPresenter
+					Margin="3"
+					Content="{TemplateBinding Content}"
+					ContentTemplate="{TemplateBinding ContentTemplate}" />
 			</Grid>
 		</AdornerDecorator>
 

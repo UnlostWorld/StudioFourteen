@@ -24,6 +24,8 @@ public abstract partial class TransformSelectionBase : SelectionBase
 	[Notify][PropertyAttribute("StudioFourteen.History.History")] private Transform localTransform;
 	[Notify][PropertyAttribute("StudioFourteen.History.History")] private bool lockTransform;
 
+	private Transform? initialWorldTransform = null;
+
 	public virtual bool CanLockTransform => true;
 
 	public virtual double TranslationChange => 0.1;
@@ -31,8 +33,20 @@ public abstract partial class TransformSelectionBase : SelectionBase
 	public virtual TransformHandleTypes DefaultGizmo => TransformHandleTypes.Translation;
 	public virtual double GizmoSensitivity => 1.0;
 
+	public override void Reset()
+	{
+		if (this.initialWorldTransform != null)
+			this.WorldTransform = (Transform)this.initialWorldTransform;
+
+		base.Reset();
+	}
+
 	protected virtual void OnWorldTransformChanged(Transform oldValue, Transform newValue)
 	{
+		if (this.initialWorldTransform == null && oldValue != Transform.Identity && oldValue != default)
+		{
+			this.initialWorldTransform = oldValue;
+		}
 	}
 
 	protected virtual void OnLocalTransformChanged(Transform oldValue, Transform newValue)

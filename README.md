@@ -2,7 +2,8 @@
 A [Dalamud](https://github.com/goatcorp/Dalamud) / [XIVLauncher](https://github.com/goatcorp/FFXIVQuickLauncher) plugin for enhancing GPose functionality.
 
 ## Studio Fourteen is proudly Free Open Source Software
-"If I have seen further it is by standing on the shoulders of Giants."
+_"If I have seen further it is by standing on the shoulders of Giants."_ Isaac Newton, 1675
+
 Studio Fourteen would not exist without the incredible work done by creators around the community.
 Special thanks to the creators, maintainers, and contributors of these amazing projects:
 * [Brio](https://github.com/Etheirys/Brio)

@@ -126,6 +126,9 @@ public partial class PosePanel : CharacterPanelBase
 
 			if (newSelection != null && this.Services.Selection.HoverSource is PoseSelectionControl target)
 			{
+				if (target.Dispatcher != this.Dispatcher)
+					return;
+
 				if (target.FindParent<PosePanel>() == this)
 				{
 					this.nextHover = newSelection;

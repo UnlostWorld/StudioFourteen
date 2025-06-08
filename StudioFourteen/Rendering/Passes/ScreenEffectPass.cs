@@ -42,6 +42,8 @@ public class ScreenEffectPass<TMaterialData>() : InstanceRenderPassBase<ScreenEf
 	private RenderTargetView? backBufferTargetView;
 	private BlendState? blend;
 
+	public ref TMaterialData Material => ref this.quad.Material;
+
 	public override void OnResolutionChanged()
 	{
 		this.backBufferResourceView?.Dispose();

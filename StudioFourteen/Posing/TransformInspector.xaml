@@ -28,14 +28,14 @@
 						<Grid Grid.Row="0" Height="168">
 
 							<transform:TransformHandleControl
-								GizmoType="{Binding Services.Selection.Gizmo}"
+								GizmoType="{Binding Gizmo}"
 								Sensitivity="{Binding Selection.GizmoSensitivity}"
 								Transform="{Binding WorldTransform}" />
 						</Grid>
 
 						<wpfUtils:SwitchSelector
 							Grid.Row="1"
-							SelectedIndex="{Binding Services.Selection.GizmoIndex}"
+							SelectedIndex="{Binding GizmoIndex}"
 							Style="{DynamicResource WpfUtilsSwitchSelectorNoBorder}">
 
 							<ListBoxItem

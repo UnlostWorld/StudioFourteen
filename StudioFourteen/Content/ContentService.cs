@@ -30,8 +30,10 @@ public class ContentService : ServiceBase
 	private readonly JsonContentReference<HashSet<string>> genitalBones = new("GenitalBones.jsonc");
 	private readonly Dictionary<string, HashSet<ContentReference>> references = new();
 
+	#if DEBUG
 	private bool isRunningFromProject = false;
 	private FileSystemWatcher? watcher;
+	#endif
 
 	public Dictionary<string, SimpleViewLayout>? SimplePoseLayouts => this.simplePoseLayoutsContent.Get();
 	public Dictionary<string, BlendTarget>? ExpressionBlends => this.expressionBlends.Get();

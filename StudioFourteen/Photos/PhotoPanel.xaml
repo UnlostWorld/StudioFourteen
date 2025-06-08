@@ -4,212 +4,314 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:local="clr-namespace:StudioFourteen.Photos"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
-	Width="800"
+	Width="650"
 	Height="58"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	DefaultPosition="0.5,1"
 	HostStyle="{DynamicResource PanelToolbarStyle}"
-	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	ResizeMode="NoResize"
 	VisibilityMode="PhotoMode"
 	mc:Ignorable="d">
 
-	<Border
-		HorizontalAlignment="Center"
-		VerticalAlignment="Bottom"
-		Style="{DynamicResource WpfUtilsControlBorder}">
-		<Grid>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition />
-				<ColumnDefinition Width="Auto" />
-			</Grid.ColumnDefinitions>
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition />
+			<ColumnDefinition />
+			<ColumnDefinition Width="Auto" />
+		</Grid.ColumnDefinitions>
 
-			<StackPanel Orientation="Horizontal">
-				<ToggleButton
-					x:Name="ResolutionToggle"
-					Grid.Column="0"
-					Width="250"
-					Style="{DynamicResource WpfUtilsComboBoxButton}"
-					ToolTip="{DynamicResource LOC_Photo_AspectToolTip}">
-					<Grid Margin="2">
-						<TextBlock TextTrimming="CharacterEllipsis">
-							<Run Text="{Binding SelectedAspectRatio.GroupName}" />
-							<Run Text=" - " />
-							<Run Text="{Binding SelectedAspectRatio.Name}" />
-						</TextBlock>
-					</Grid>
-				</ToggleButton>
+		<Button
+			Grid.Column="0"
+			Width="48"
+			Height="48"
+			Margin="2,-20"
+			Click="OnSaveClicked"
+			Content="{DynamicResource ICON_Photo_Capture}"
+			ToolTip="{DynamicResource LOC_Photo_CaptureToolTip}">
 
-				<wpfUtils:PopOut
-					Width="250"
-					Height="350"
-					IsOpen="{Binding ElementName=ResolutionToggle, Path=IsChecked}"
-					PlacementTarget="{Binding ElementName=ResolutionToggle}"
-					StaysOpen="False">
+			<Button.Style>
+				<Style TargetType="{x:Type Button}">
+					<Setter Property="Template">
+						<Setter.Value>
+							<ControlTemplate TargetType="Button">
 
-					<wpfUtils:PopOut.Header>
-						<TextBlock
-							Margin="6"
-							Foreground="{DynamicResource ForegroundLightBrush}"
-							Text="{DynamicResource LOC_Photo_AspectPopOut}"
-							TextWrapping="Wrap" />
-					</wpfUtils:PopOut.Header>
+								<Grid TextBlock.Foreground="{DynamicResource ForegroundLightBrush}">
 
-					<wpfUtils:PopOut.Resources>
-						<CollectionViewSource x:Key="ListBoxItems"
-							Source="{Binding Services.Photos.AspectRatios}">
-							<CollectionViewSource.GroupDescriptions>
-								<PropertyGroupDescription PropertyName="GroupName" />
-							</CollectionViewSource.GroupDescriptions>
-						</CollectionViewSource>
-					</wpfUtils:PopOut.Resources>
+									<Ellipse Fill="{DynamicResource ControlBackgroundBrush}"/>
 
-					<ListBox
-						x:Name="AspectsList"
-						ItemsSource="{Binding Source={StaticResource ListBoxItems}}"
-						SelectedItem="{Binding SelectedAspectRatio}">
-						<ListBox.GroupStyle>
-							<GroupStyle>
-								<GroupStyle.Panel>
-									<ItemsPanelTemplate>
-										<VirtualizingStackPanel Orientation="Vertical" />
-									</ItemsPanelTemplate>
-								</GroupStyle.Panel>
-								<GroupStyle.ContainerStyle>
-									<Style TargetType="{x:Type GroupItem}">
-										<Setter Property="Template">
-											<Setter.Value>
-												<ControlTemplate>
-													<Expander Expanded="OnAspectsExpanderExpanded"
-														Style="{DynamicResource WpfUtilsClickableExpander}">
-														<Expander.Header>
-															<TextBlock
-																Foreground="{DynamicResource ForegroundLightBrush}"
-																Text="{Binding Items[0].GroupName}" />
-														</Expander.Header>
-														<ItemsPresenter />
-													</Expander>
-												</ControlTemplate>
-											</Setter.Value>
-										</Setter>
-									</Style>
-								</GroupStyle.ContainerStyle>
-							</GroupStyle>
-						</ListBox.GroupStyle>
+									<Ellipse
+										x:Name="HoverBorder"
+										Opacity="0"
+										Margin="2"
+										Fill="{DynamicResource ControlHighlightBrush}" />
 
-						<ListBox.ItemTemplate>
-							<DataTemplate DataType="{x:Type local:AspectRatioEntry}">
-								<Grid Margin="2">
-									<Grid.ColumnDefinitions>
-										<ColumnDefinition />
-										<ColumnDefinition Width="Auto" />
-									</Grid.ColumnDefinitions>
+									<Ellipse
+										x:Name="PressedBorder"
+										Opacity="0"
+										Margin="2"
+										Fill="{DynamicResource TrimBrush}" />
 
-									<TextBlock Text="{Binding Name}" />
+									<ContentPresenter
+										x:Name="Content"
+										Margin="6"
+										HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+										VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+										Content="{TemplateBinding Content}"
+										ContentStringFormat="{TemplateBinding ContentStringFormat}"
+										ContentTemplate="{TemplateBinding ContentTemplate}"
+										Focusable="False"
+										SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
 
-									<TextBlock
-										Grid.Column="1"
-										HorizontalAlignment="Right"
-										Foreground="{DynamicResource ForegroundLightBrush}"
-										Visibility="{Binding Height, Converter={StaticResource NotZeroToVisibility}}">
-										<Run Text="{Binding Width}" />
-										<Run Text="x" />
-										<Run Text="{Binding Height}" />
-									</TextBlock>
 								</Grid>
-							</DataTemplate>
-						</ListBox.ItemTemplate>
 
-					</ListBox>
-				</wpfUtils:PopOut>
+								<ControlTemplate.Triggers>
 
-				<ComboBox
-					Grid.Column="1"
-					Width="100"
-					SelectedIndex="{Binding GuideIndex}"
-					ToolTip="{DynamicResource LOC_Photo_GuidesToolTip}">
+									<Trigger Property="IsMouseOver" Value="true">
 
-					<wpfUtils:PopOut.Header>
-						<TextBlock Margin="12" Text="{DynamicResource LOC_Photo_GuidesPopOut}" />
-					</wpfUtils:PopOut.Header>
+										<Setter Property="TextBlock.Foreground" Value="{DynamicResource ControlForegroundHighlightBrush}" />
 
-					<ComboBoxItem Content="{DynamicResource LOC_Photo_Guides_None}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Photo_Guides_Thirds}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Photo_Guides_Crosshair}" />
-				</ComboBox>
+										<Trigger.EnterActions>
+											<BeginStoryboard>
+												<Storyboard>
+													<DoubleAnimation
+														Storyboard.TargetName="HoverBorder"
+														Storyboard.TargetProperty="Opacity"
+														To="1"
+														Duration="0:0:0.150">
+														<DoubleAnimation.EasingFunction>
+															<SineEase EasingMode="EaseOut" />
+														</DoubleAnimation.EasingFunction>
+													</DoubleAnimation>
+												</Storyboard>
+											</BeginStoryboard>
+										</Trigger.EnterActions>
+										<Trigger.ExitActions>
+											<BeginStoryboard>
+												<Storyboard>
+													<DoubleAnimation
+														Storyboard.TargetName="HoverBorder"
+														Storyboard.TargetProperty="Opacity"
+														To="0"
+														Duration="0:0:0.250">
+														<DoubleAnimation.EasingFunction>
+															<SineEase EasingMode="EaseIn" />
+														</DoubleAnimation.EasingFunction>
+													</DoubleAnimation>
+												</Storyboard>
+											</BeginStoryboard>
+										</Trigger.ExitActions>
+									</Trigger>
 
-				<Button
-					Grid.Column="2"
-					Width="64"
-					Margin="2,0"
-					Background="Transparent"
-					Click="OnSaveClicked"
-					ToolTip="{DynamicResource LOC_Photo_CaptureToolTip}">
-					<icons:IconView Icon="{DynamicResource ICON_CaptureImage}" />
-				</Button>
+									<Trigger Property="IsEnabled" Value="false">
+										<Setter TargetName="Content" Property="Opacity" Value="0.25" />
+									</Trigger>
 
-				<ToggleButton
-					Grid.Column="3"
-					Width="28"
-					Margin="0"
-					Padding="6,0"
-					IsChecked="{Binding HideUI}"
-					Style="{DynamicResource WpfUtilsIconToggleButton}"
-					ToolTip="{DynamicResource LOC_Photo_ToggleUIToolTip}">
-					<Grid>
-						<icons:IconView
-							Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"
-							Icon="{DynamicResource ICON_ShowUi}"
-							Visibility="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}, Converter={StaticResource !B2V}}" />
+									<Trigger Property="IsPressed" Value="True">
+										<Trigger.EnterActions>
+											<BeginStoryboard>
+												<Storyboard>
+													<DoubleAnimation
+														Storyboard.TargetName="PressedBorder"
+														Storyboard.TargetProperty="Opacity"
+														To="1"
+														Duration="0:0:0.150">
+														<DoubleAnimation.EasingFunction>
+															<SineEase EasingMode="EaseOut" />
+														</DoubleAnimation.EasingFunction>
+													</DoubleAnimation>
+												</Storyboard>
+											</BeginStoryboard>
+										</Trigger.EnterActions>
+										<Trigger.ExitActions>
+											<BeginStoryboard>
+												<Storyboard>
+													<DoubleAnimation
+														Storyboard.TargetName="PressedBorder"
+														Storyboard.TargetProperty="Opacity"
+														To="0"
+														Duration="0:0:0.250">
+														<DoubleAnimation.EasingFunction>
+															<SineEase EasingMode="EaseIn" />
+														</DoubleAnimation.EasingFunction>
+													</DoubleAnimation>
+												</Storyboard>
+											</BeginStoryboard>
+										</Trigger.ExitActions>
+									</Trigger>
+								</ControlTemplate.Triggers>
+							</ControlTemplate>
+						</Setter.Value>
+					</Setter>
+				</Style>
+			</Button.Style>
 
-						<icons:IconView
-							Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"
-							Icon="{DynamicResource ICON_HideUi}"
-							Visibility="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}, Converter={StaticResource B2V}}" />
-					</Grid>
-				</ToggleButton>
+		</Button>
 
-				<ToggleButton
-					Grid.Column="4"
-					Width="28"
-					Margin="0"
-					Padding="6,0"
-					IsChecked="{Binding Services.Reshade.IsReshadeEnabled}"
-					IsEnabled="{Binding Services.Reshade.IsReshade}"
-					Style="{DynamicResource WpfUtilsIconToggleButton}"
-					ToolTip="{DynamicResource LOC_Photo_ToggleReshade}">
-					<TextBlock Text="R" />
-				</ToggleButton>
 
-				<Button
-					Grid.Column="6"
-					Width="28"
-					Margin="0"
-					Click="OnSettingsClicked"
-					ToolTip="{DynamicResource LOC_Photo_Settings}">
-					<icons:IconView Icon="{DynamicResource ICON_Title_Settings}" />
-				</Button>
 
-				<Button
-					Grid.Column="7"
-					Width="28"
-					Margin="0"
-					Click="OnCloseClicked"
-					ToolTip="{DynamicResource LOC_ClosePanelTooltip}">
-					<icons:IconView Icon="{DynamicResource ICON_Close}" />
-				</Button>
+		<ToggleButton
+			x:Name="ResolutionToggle"
+			Grid.Column="1"
+			Style="{DynamicResource WpfUtilsComboBoxButton}"
+			ToolTip="{DynamicResource LOC_Photo_AspectToolTip}">
+			<Grid Margin="2">
+				<TextBlock TextTrimming="CharacterEllipsis">
+					<Run Text="{Binding SelectedAspectRatio.GroupName}" />
+					<Run Text=" - " />
+					<Run Text="{Binding SelectedAspectRatio.Name}" />
+				</TextBlock>
+			</Grid>
+		</ToggleButton>
 
-				<!--
-				<Slider Minimum="0" Maximum="1" Value="{Binding Services.GameCapture.Min}" Width="128"/>
-				<Slider Minimum="0" Maximum="1" Value="{Binding Services.GameCapture.Max}" Width="128"/>
-				-->
+		<wpfUtils:PopOut
+			Width="250"
+			Height="350"
+			IsOpen="{Binding ElementName=ResolutionToggle, Path=IsChecked}"
+			PlacementTarget="{Binding ElementName=ResolutionToggle}"
+			StaysOpen="False">
 
-			</StackPanel>
-		</Grid>
-	</Border>
+			<wpfUtils:PopOut.Header>
+				<TextBlock
+					Margin="6"
+					Foreground="{DynamicResource ForegroundLightBrush}"
+					Text="{DynamicResource LOC_Photo_AspectPopOut}"
+					TextWrapping="Wrap" />
+			</wpfUtils:PopOut.Header>
+
+			<wpfUtils:PopOut.Resources>
+				<CollectionViewSource x:Key="ListBoxItems" Source="{Binding Services.Photos.AspectRatios}">
+					<CollectionViewSource.GroupDescriptions>
+						<PropertyGroupDescription PropertyName="GroupName" />
+					</CollectionViewSource.GroupDescriptions>
+				</CollectionViewSource>
+			</wpfUtils:PopOut.Resources>
+
+			<ListBox
+				x:Name="AspectsList"
+				ItemsSource="{Binding Source={StaticResource ListBoxItems}}"
+				SelectedItem="{Binding SelectedAspectRatio}">
+				<ListBox.GroupStyle>
+					<GroupStyle>
+						<GroupStyle.Panel>
+							<ItemsPanelTemplate>
+								<VirtualizingStackPanel Orientation="Vertical" />
+							</ItemsPanelTemplate>
+						</GroupStyle.Panel>
+						<GroupStyle.ContainerStyle>
+							<Style TargetType="{x:Type GroupItem}">
+								<Setter Property="Template">
+									<Setter.Value>
+										<ControlTemplate>
+											<Expander Expanded="OnAspectsExpanderExpanded" Style="{DynamicResource WpfUtilsClickableExpander}">
+												<Expander.Header>
+													<TextBlock Foreground="{DynamicResource ForegroundLightBrush}" Text="{Binding Items[0].GroupName}" />
+												</Expander.Header>
+												<ItemsPresenter />
+											</Expander>
+										</ControlTemplate>
+									</Setter.Value>
+								</Setter>
+							</Style>
+						</GroupStyle.ContainerStyle>
+					</GroupStyle>
+				</ListBox.GroupStyle>
+
+				<ListBox.ItemTemplate>
+					<DataTemplate DataType="{x:Type local:AspectRatioEntry}">
+						<Grid Margin="2">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition />
+								<ColumnDefinition Width="Auto" />
+							</Grid.ColumnDefinitions>
+
+							<TextBlock Text="{Binding Name}" />
+
+							<TextBlock
+								Grid.Column="1"
+								HorizontalAlignment="Right"
+								Foreground="{DynamicResource ForegroundLightBrush}"
+								Visibility="{Binding Height, Converter={StaticResource NotZeroToVisibility}}">
+								<Run Text="{Binding Width}" />
+								<Run Text="x" />
+								<Run Text="{Binding Height}" />
+							</TextBlock>
+						</Grid>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+
+			</ListBox>
+		</wpfUtils:PopOut>
+
+		<ComboBox
+			Grid.Column="2"
+			SelectedIndex="{Binding GuideIndex}"
+			ToolTip="{DynamicResource LOC_Photo_GuidesToolTip}">
+
+			<wpfUtils:PopOut.Header>
+				<TextBlock Margin="12" Text="{DynamicResource LOC_Photo_GuidesPopOut}" />
+			</wpfUtils:PopOut.Header>
+
+			<ComboBoxItem Content="{DynamicResource LOC_Photo_Guides_None}" />
+			<ComboBoxItem Content="{DynamicResource LOC_Photo_Guides_Thirds}" />
+			<ComboBoxItem Content="{DynamicResource LOC_Photo_Guides_Crosshair}" />
+		</ComboBox>
+
+		<StackPanel Grid.Column="3" Orientation="Horizontal">
+			<ToggleButton
+				Width="28"
+				Padding="6,0"
+				IsChecked="{Binding HideUI}"
+				Style="{DynamicResource WpfUtilsIconToggleButton}"
+				ToolTip="{DynamicResource LOC_Photo_ToggleUIToolTip}">
+				<Grid>
+					<icons:IconView
+						Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"
+						Icon="{DynamicResource ICON_Photo_ShowUi}"
+						Visibility="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}, Converter={StaticResource !B2V}}" />
+
+					<icons:IconView
+						Foreground="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}}"
+						Icon="{DynamicResource ICON_Photo_HideUi}"
+						Visibility="{Binding Path=IsChecked, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}, Converter={StaticResource B2V}}" />
+				</Grid>
+			</ToggleButton>
+
+			<ToggleButton
+				Width="28"
+				Padding="6,0"
+				IsChecked="{Binding Services.Reshade.IsReshadeEnabled}"
+				IsEnabled="{Binding Services.Reshade.IsReshade}"
+				Style="{DynamicResource WpfUtilsIconToggleButton}"
+				ToolTip="{DynamicResource LOC_Photo_ToggleReshade}">
+				<TextBlock Text="R" />
+			</ToggleButton>
+
+			<Button
+				Width="28"
+				Click="OnSettingsClicked"
+				Content="{DynamicResource ICON_Photo_Settings}"
+				ToolTip="{DynamicResource LOC_Photo_Settings}" />
+
+			<Button
+				Width="28"
+				Click="OnCloseClicked"
+				ToolTip="{DynamicResource LOC_ClosePanelTooltip}">
+				<icons:IconView Icon="{DynamicResource ICON_Close}" />
+			</Button>
+
+			<!--
+			<Slider Minimum="0" Maximum="1" Value="{Binding Services.GameCapture.Min}" Width="128"/>
+			<Slider Minimum="0" Maximum="1" Value="{Binding Services.GameCapture.Max}" Width="128"/>
+			-->
+
+		</StackPanel>
+	</Grid>
+
 </panels:Panel>

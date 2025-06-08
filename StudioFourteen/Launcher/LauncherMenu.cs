@@ -24,6 +24,7 @@ using StudioFourteen.Panels;
 using StudioFourteen.AIO;
 using WpfUtils.Extensions;
 using StudioFourteen.Environment;
+using PropertyChanged.SourceGenerator;
 
 using Panel = StudioFourteen.Panels.Panel;
 
@@ -31,9 +32,15 @@ using Panel = StudioFourteen.Panels.Panel;
 [DependencyProperty<PanelContextBase>("Context")]
 public partial class LauncherMenu : Control
 {
-	private Button? userButton;
-	private Button? powerButton;
-	private TextBox? searchBox;
+	[Notify] private bool isStudioOpen;
+	[Notify] private bool isInGPose = false;
+	[Notify] private bool isGPoseSettingsOpen = false;
+
+	public LauncherMenu()
+	{
+		this.Loaded += this.OnLoaded;
+		this.Unloaded += this.OnUnloaded;
+	}
 
 	public FastObservableCollection<LauncherEntry> Entries { get; init; } = new();
 	protected ServiceManager Services => ServiceManager.Instance;
@@ -41,15 +48,6 @@ public partial class LauncherMenu : Control
 	public override void OnApplyTemplate()
 	{
 		base.OnApplyTemplate();
-
-		this.userButton = this.GetTemplateChild("PART_UserButton") as Button;
-		this.powerButton = this.GetTemplateChild("PART_PowerButton") as Button;
-		this.searchBox = this.GetTemplateChild("PART_SearchBox") as TextBox;
-
-		if (this.powerButton != null)
-		{
-			this.powerButton.Click += this.OnPowerClicked;
-		}
 	}
 
 	public PanelContextBase GetContext()
@@ -112,6 +110,64 @@ public partial class LauncherMenu : Control
 
 		entry.IsEnabled = enabled;
 		this.Entries.Add(entry);
+	}
+
+	private void OnLoaded(object sender, RoutedEventArgs e)
+	{
+		this.Services.Studio.Opening += this.OnStudioStateChanged;
+		this.Services.Studio.Closing += this.OnStudioStateChanged;
+		this.Services.GroupPose.StateChanged += this.OnGroupPoseStateChanged;
+		this.Services.GroupPose.SettingsStateChanged += this.OnGroupPoseSettingsStateChanged;
+
+		this.IsInGPose = this.Services.GroupPose.IsGroupPosing;
+		this.IsGPoseSettingsOpen = this.Services.GroupPose.IsGroupPoseSettingsWindowVisible;
+
+		this.OnStudioStateChanged();
+	}
+
+	private void OnUnloaded(object sender, RoutedEventArgs e)
+	{
+		this.Services.Studio.Opening -= this.OnStudioStateChanged;
+		this.Services.Studio.Closing -= this.OnStudioStateChanged;
+		this.Services.GroupPose.StateChanged -= this.OnGroupPoseStateChanged;
+		this.Services.GroupPose.SettingsStateChanged -= this.OnGroupPoseSettingsStateChanged;
+	}
+
+	private void OnStudioStateChanged()
+	{
+		this.Dispatcher.Invoke(() => this.IsStudioOpen = this.Services.Studio.IsOpen);
+	}
+
+	private void OnIsStudioOpenChanged(bool oldValue, bool newValue)
+	{
+		if (newValue)
+		{
+			this.Services.Studio.OpenStudio();
+		}
+		else
+		{
+			this.Services.Studio.CloseStudio();
+		}
+	}
+
+	private void OnGroupPoseSettingsStateChanged(bool settingsState)
+	{
+		this.Dispatcher.Invoke(() => this.IsGPoseSettingsOpen = settingsState);
+	}
+
+	private void OnGroupPoseStateChanged(bool newState)
+	{
+		this.Dispatcher.Invoke(() => this.IsInGPose = newState);
+	}
+
+	private void OnIsInGPoseChanged(bool oldValue, bool newValue)
+	{
+		this.Services.GroupPose.SetGroupPose(newValue);
+	}
+
+	private void OnIsGPoseSettingsOpenChanged(bool oldValue, bool newValue)
+	{
+		this.Services.GroupPose.SetGroupPoseSettingsWindowVisible(newValue);
 	}
 }
 

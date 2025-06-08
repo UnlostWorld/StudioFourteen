@@ -251,6 +251,14 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		return panelWindow;
 	}
 
+	public override string ToString()
+	{
+		if (this.Panel == null)
+			return "Panel Window";
+
+		return this.Panel.ToString();
+	}
+
 	public PanelContextBase GetContext()
 	{
 		if (this.Context == null)

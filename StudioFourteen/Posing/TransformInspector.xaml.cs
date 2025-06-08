@@ -16,6 +16,7 @@
 namespace StudioFourteen.Posing;
 
 using DependencyPropertyGenerator;
+using PropertyChanged.SourceGenerator;
 using StudioFourteen.Gizmos.Handles.TransformHandle;
 using StudioFourteen.History;
 using StudioFourteen.Mvm;
@@ -26,7 +27,8 @@ using StudioFourteen.Settings;
 [DependencyProperty<Persistence>("Persistence")]
 public partial class TransformInspector : View
 {
-	public TransformHandleTypes Gizmo = TransformHandleTypes.Rotation;
+	[Notify] private int gizmoIndex = 0;
+	[Notify] private TransformHandleTypes gizmo = TransformHandleTypes.Translation;
 
 	public TransformSelectionBase? TransformSelection => this.Selection as TransformSelectionBase;
 
@@ -98,5 +100,10 @@ public partial class TransformInspector : View
 			HistoryService.Record(this.TransformSelection, "Change Local Transform");
 			this.TransformSelection.LocalTransform = value;
 		}
+	}
+
+	protected void OnGizmoIndexChanged(int oldIndex, int newIndex)
+	{
+		this.Gizmo = (TransformHandleTypes)newIndex;
 	}
 }

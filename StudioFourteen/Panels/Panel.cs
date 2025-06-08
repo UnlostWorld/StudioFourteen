@@ -89,6 +89,11 @@ public partial class Panel : ContentControl, IAutoNotify
 
 	public T? GetPersistence<T>([CallerMemberName] string id = "", T? defaultValue = default) => this.Persistence.GetPersistence<T>(id, defaultValue);
 
+	public override string ToString()
+	{
+		return this.GetType().Name;
+	}
+
 	public void SetPersistence(object? value, [CallerMemberName] string id = "")
 	{
 		this.Persistence.SetPersistence(value, id);

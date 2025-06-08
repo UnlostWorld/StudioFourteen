@@ -27,6 +27,7 @@ using System;
 [DependencyProperty<bool>("IsRightSide")]
 [DependencyProperty<bool>("IsBottomSide")]
 [DependencyProperty<bool>("IsButtonVisible", DefaultValue = true)]
+[DependencyProperty<bool>("IsStudioOpen")]
 public partial class LauncherWindow : PanelWindow
 {
 	public static LauncherWindow? Instance;
@@ -72,9 +73,6 @@ public partial class LauncherWindow : PanelWindow
 
 	private void OnLaunchClicked(object sender, RoutedEventArgs e)
 	{
-		if (!this.Services.Studio.IsOpen)
-			this.Services.Studio.OpenStudio();
-
 		if (!this.IsMenuOpen)
 		{
 			this.IsMenuOpen = true;
@@ -90,6 +88,7 @@ public partial class LauncherWindow : PanelWindow
 	{
 		this.Dispatcher.Invoke(() =>
 		{
+			this.IsStudioOpen = this.Services.Studio.IsOpen;
 			this.IsButtonVisible = !this.Services.Settings.Current.HideLauncherButton || this.Services.Studio.IsOpen;
 		});
 	}

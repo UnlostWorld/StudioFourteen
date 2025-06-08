@@ -94,6 +94,10 @@
 					<Setter TargetName="WindowBorder" Property="BorderBrush" Value="{DynamicResource TrimBrush}" />
 				</Trigger>
 
+				<Trigger Property="IsStudioOpen" Value="False">
+					<Setter TargetName="WindowBorder" Property="BorderBrush" Value="Transparent" />
+				</Trigger>
+
 				<Trigger Property="IsButtonVisible" Value="False">
 					<Setter TargetName="LaunchButton" Property="Visibility" Value="Collapsed" />
 				</Trigger>
