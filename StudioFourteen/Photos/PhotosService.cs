@@ -128,7 +128,7 @@ public partial class PhotosService : ServiceBase
 
 	public async Task CaptureAsync(string? name = null, bool animate = true)
 	{
-		if (this.Settings.PhotoDirectory == null)
+		if (string.IsNullOrEmpty(this.Settings.PhotoDirectory))
 			return;
 
 		if (this.IsCapturing)
