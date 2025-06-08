@@ -94,6 +94,7 @@
 	<icons:Svg x:Key="ICON_ShowUi" Source="ShowUi" />
 	<icons:Svg x:Key="ICON_HideUi" Source="HideUi" />
 
+	<icons:Svg x:Key="ICON_Selection" Source="SelectionBounds" />
 	<icons:Fa x:Key="ICON_Transform_Translate" Icon="Arrows" Font="Solid" />
 	<icons:Fa x:Key="ICON_Transform_Rotate" Icon="Rotate" Font="Solid" />
 	<icons:Svg x:Key="ICON_Transform_Scale" Source="TransformScale"/>

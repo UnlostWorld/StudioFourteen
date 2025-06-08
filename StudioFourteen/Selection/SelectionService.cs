@@ -204,6 +204,7 @@ public partial class SelectionService : ServiceBase
 
 	public override Task Start()
 	{
+		this.selectionGizmos.Add(new SelectionGizmo());
 		this.selectionGizmos.Add(new RotationGizmo());
 		this.selectionGizmos.Add(new TranslationGizmo());
 		this.selectionGizmos.Add(new ScaleGizmo());
