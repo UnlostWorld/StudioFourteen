@@ -30,6 +30,7 @@ public class GenerateUiMaskPass : RenderPassBase
 	private Texture2D? backBufferCopyTexture;
 	private ShaderResourceView? backBufferResourceView;
 	private Texture2D? depthStencilTexture;
+	private Texture2D? depthStencilCopyTexture;
 	private ShaderResourceView? depthResourceView;
 	private Texture2D? maskTexture;
 	private RenderTargetView? maskRenderTargetView;
@@ -40,7 +41,11 @@ public class GenerateUiMaskPass : RenderPassBase
 		this.maskTexture?.Dispose();
 		this.maskTexture = null;
 
-		this.depthStencilTexture = null;
+		this.depthStencilCopyTexture?.Dispose();
+		this.depthStencilCopyTexture = null;
+
+		this.depthResourceView?.Dispose();
+		this.depthResourceView = null;
 
 		this.backBufferResourceView?.Dispose();
 		this.backBufferResourceView = null;
@@ -68,17 +73,25 @@ public class GenerateUiMaskPass : RenderPassBase
 
 			Texture2DDescription desc = service.BackBuffer.Description;
 			desc.BindFlags = BindFlags.ShaderResource;
-			this.backBufferCopyTexture = new Texture2D(device, desc);
 
+			this.backBufferCopyTexture = new Texture2D(device, desc);
 			this.backBufferResourceView = new(device, this.backBufferCopyTexture);
 		}
 
+		this.depthStencilTexture = (Texture2D)(nint)pRenderTargetManager->DepthStencil->D3D11Texture2D;
+
 		// Create a handle to the depth stencil
-		if (this.depthStencilTexture == null && pRenderTargetManager->DepthStencil != null)
+		if (this.depthStencilCopyTexture == null)
 		{
-			this.depthStencilTexture = new((nint)pRenderTargetManager->DepthStencil->D3D11Texture2D);
-			////this.depthStencilTexture = new(service.Services.Reshade.DepthBufferAddress);
-			this.depthResourceView = new(device, this.depthStencilTexture);
+			this.depthStencilCopyTexture?.Dispose();
+			this.depthStencilCopyTexture?.Dispose();
+
+			Texture2DDescription desc = this.depthStencilTexture.Description;
+			desc.BindFlags = BindFlags.ShaderResource;
+			desc.Format = Format.R24_UNorm_X8_Typeless;
+
+			this.depthStencilCopyTexture = new Texture2D(device, desc);
+			this.depthResourceView = new(device, this.depthStencilCopyTexture);
 		}
 
 		// Create an output texture
@@ -101,8 +114,11 @@ public class GenerateUiMaskPass : RenderPassBase
 			this.maskResourceView = new(device, this.maskTexture);
 		}
 
-		// Copy the back buffer into the copy
+		// Copy the back buffer
 		deviceContext.CopyResource(service.BackBuffer, this.backBufferCopyTexture);
+
+		// Copy the depth stencil
+		deviceContext.CopyResource(this.depthStencilTexture, this.depthStencilCopyTexture);
 
 		// Set the output target to the new buffer
 		deviceContext.OutputMerger.SetTargets(this.maskRenderTargetView);
