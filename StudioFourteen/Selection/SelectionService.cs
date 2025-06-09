@@ -259,7 +259,6 @@ public partial class SelectionService : ServiceBase
 			if (nextGizmo == null || !results.Contains(nextGizmo))
 			{
 				nextGizmo = results[0];
-				return;
 			}
 		}
 

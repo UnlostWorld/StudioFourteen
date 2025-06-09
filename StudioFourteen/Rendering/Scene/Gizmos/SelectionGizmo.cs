@@ -18,11 +18,14 @@ namespace StudioFourteen.Rendering.Scene.Gizmos;
 using System.Diagnostics;
 using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Scene.Gizmos.Transforms;
+using WpfUtils.Animation;
 
 public class SelectionGizmo : TransformGizmoBase
 {
+	private const float DurationMs = 500;
 	private readonly MeshRenderer<GizmoFlatMaterial> circleRenderer;
 	private readonly Stopwatch flashTimer = new();
+	private readonly EasingFunctionBase easing = new SineEase();
 
 	public SelectionGizmo()
 	{
@@ -44,9 +47,11 @@ public class SelectionGizmo : TransformGizmoBase
 	{
 		base.OnDraw();
 
-		float p = this.flashTimer.ElapsedMilliseconds / 1000.0f;
-		p = 1 - float.Clamp(p, 0, 1);
-		this.circleRenderer.Material.Color.A = p;
+		float p = this.flashTimer.ElapsedMilliseconds / DurationMs;
+		p = float.Clamp(p, 0, 1);
+		p = this.easing.Ease(p, EasingFunctionBase.EasingModes.EaseOut);
+		this.circleRenderer.Material.Color.A = 1 - p;
+		this.circleRenderer.Transform = Transform.FromScale(p * 0.5f);
 
 		if (p <= 0)
 		{
