@@ -63,4 +63,5 @@ public class ServiceManager : ServiceManagerBase
 	public Rendering.Scene.Handles.HandleService Handles { get; init; } = new();
 	public Content.ContentService Content { get; init; } = new();
 	public ResourcePacks.ResourcePackService ResourcePacks { get; init; } = new();
+	public AfkService Afk { get; init; } = new();
 }
