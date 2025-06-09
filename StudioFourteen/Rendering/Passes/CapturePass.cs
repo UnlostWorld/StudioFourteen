@@ -17,16 +17,11 @@ namespace StudioFourteen.Rendering.Passes;
 
 using System;
 using System.IO;
-using System.Numerics;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
-using Lumina.Excel.Sheets;
 using SharpDX;
 using SharpDX.Direct3D11;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
-using StudioFourteen.Utilities;
 
 #pragma warning disable
 
@@ -91,6 +86,27 @@ public class CapturePass : RenderPassBase
 			stream.CopyTo(ms);
 			byte[] pixels = ms.ToArray();
 			return Image.LoadPixelData<Rgba32>(pixels, texture.Description.Width, texture.Description.Height);
+		}
+		else if (texture.Description.Format == SharpDX.DXGI.Format.R16G16B16A16_Float)
+		{
+			using MemoryStream ms = new();
+			stream.CopyTo(ms);
+			byte[] pixels = ms.ToArray();
+			return Image.LoadPixelData<Rgba64>(pixels, texture.Description.Width, texture.Description.Height);
+		}
+		else if (texture.Description.Format == SharpDX.DXGI.Format.B8G8R8A8_UNorm)
+		{
+			using MemoryStream ms = new();
+			stream.CopyTo(ms);
+			byte[] pixels = ms.ToArray();
+			return Image.LoadPixelData<Bgra32>(pixels, texture.Description.Width, texture.Description.Height);
+		}
+		else if (texture.Description.Format == SharpDX.DXGI.Format.R16G16_Float)
+		{
+			using MemoryStream ms = new();
+			stream.CopyTo(ms);
+			byte[] pixels = ms.ToArray();
+			return Image.LoadPixelData<Rg32>(pixels, texture.Description.Width, texture.Description.Height);
 		}
 
 		throw new NotImplementedException($"No support for {texture.Description.Format} buffers");

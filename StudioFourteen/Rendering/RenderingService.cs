@@ -42,7 +42,7 @@ public class RenderingService : ServiceBase
 	private readonly List<RenderPassBase> afterEffectsPasses = new();
 	private Device? device;
 	private DeviceContext? deviceContext;
-	private int resolutionChangeCooldown = 15;
+	private int resolutionChangeCoolDown = 15;
 	private bool needsImGuiRequeue = false;
 	private bool canRender = false;
 
@@ -201,50 +201,6 @@ public class RenderingService : ServiceBase
 			if (xivDevice == null)
 				return false;
 
-			if (this.Width != xivDevice->Width || this.Height != xivDevice->Height)
-			{
-				this.Width = xivDevice->Width;
-				this.Height = xivDevice->Height;
-				this.Log.Information($"Resolution Changed: {this.Width}x{this.Height}");
-				this.resolutionChangeCooldown = 15;
-
-				foreach(RenderPassBase pass in this.beforeEffectsPasses)
-				{
-					pass.OnResolutionChanged();
-				}
-
-				foreach(RenderPassBase pass in this.afterEffectsPasses)
-				{
-					pass.OnResolutionChanged();
-				}
-
-				return false;
-			}
-
-			if (this.Width != xivDevice->NewWidth || this.Height != xivDevice->NewHeight)
-			{
-				this.Log.Information($"Resolution Changing: {xivDevice->Width}x{xivDevice->Height} -> {xivDevice->NewWidth}x{xivDevice->NewHeight}");
-
-				foreach(RenderPassBase pass in this.beforeEffectsPasses)
-				{
-					pass.OnResolutionChanging();
-				}
-
-				foreach(RenderPassBase pass in this.afterEffectsPasses)
-				{
-					pass.OnResolutionChanging();
-				}
-
-				this.resolutionChangeCooldown = 15;
-				return false;
-			}
-
-			if (this.resolutionChangeCooldown > 0)
-			{
-				this.resolutionChangeCooldown--;
-				return false;
-			}
-
 			SwapChain* swapChain = xivDevice->SwapChain;
 			if (swapChain == null)
 				return false;
@@ -267,6 +223,50 @@ public class RenderingService : ServiceBase
 
 			if (this.deviceContext == null)
 				this.deviceContext = new(this.device);
+
+			if (this.Width != xivDevice->Width || this.Height != xivDevice->Height)
+			{
+				this.Width = xivDevice->Width;
+				this.Height = xivDevice->Height;
+				this.Log.Information($"Resolution Changed: {this.Width}x{this.Height}");
+				this.resolutionChangeCoolDown = 15;
+
+				foreach (RenderPassBase pass in this.beforeEffectsPasses)
+				{
+					pass.OnResolutionChanged();
+				}
+
+				foreach (RenderPassBase pass in this.afterEffectsPasses)
+				{
+					pass.OnResolutionChanged();
+				}
+
+				return false;
+			}
+
+			if (this.Width != xivDevice->NewWidth || this.Height != xivDevice->NewHeight)
+			{
+				this.Log.Information($"Resolution Changing: {xivDevice->Width}x{xivDevice->Height} -> {xivDevice->NewWidth}x{xivDevice->NewHeight}");
+
+				foreach(RenderPassBase pass in this.beforeEffectsPasses)
+				{
+					pass.OnResolutionChanging();
+				}
+
+				foreach(RenderPassBase pass in this.afterEffectsPasses)
+				{
+					pass.OnResolutionChanging();
+				}
+
+				this.resolutionChangeCoolDown = 15;
+				return false;
+			}
+
+			if (this.resolutionChangeCoolDown > 0)
+			{
+				this.resolutionChangeCoolDown--;
+				return false;
+			}
 
 			return true;
 		}

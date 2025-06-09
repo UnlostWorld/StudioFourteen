@@ -48,6 +48,8 @@ public partial class PhotosService : ServiceBase
 	[Notify] private CapturePhases capturePhase;
 	[Notify] private string? lastSavedImagePath;
 
+	private CaptureAnimationWindow? animationWindow;
+
 	public delegate Task CapturePhaseChangeDelegate(CapturePhases fromPhase, CapturePhases toPhase, CancellationToken cancellationToken, bool animate);
 
 	public event CapturePhaseChangeDelegate? PhaseChanged;
@@ -77,6 +79,24 @@ public partial class PhotosService : ServiceBase
 
 	public FastObservableCollection<AspectRatioEntry> AspectRatios { get; init; } = new()
 	{
+		new("Native Resolution", "Monitor", 0, 0, 0),
+		new("Native Resolution", "Instagram (1:1)", 1.0, 0, 0),
+		new("Native Resolution", "Surface (3:2)", 3.0 / 2.0, 0, 0),
+		new("Native Resolution", "Widescreen (16:9)", 16.0 / 9.0, 0, 0),
+		new("Native Resolution", "Widescreen (16:10)", 16.0 / 10.0, 0, 0),
+		new("Native Resolution", "Cinematic (21:9)", 21.0 / 9.0, 0, 0),
+		new("Native Resolution", "Ultrawide (21:9~)", 43 / 18.0, 0, 0),
+		new("Native Resolution", "Super-Ultrawide (32:9)", 32.0 / 9.0, 0, 0),
+	};
+
+	// 7.2's implementation of an HDR renderer has broken super resolution screenshots
+	// Thanks to the back buffers and all SDR buffers I can find to be at screen resolution
+	// instead of renderer resolution. We could get the HDR renderer buffer, but then we'd
+	// need to tone map it and pass it to reshade somehow.
+	// However XIV itself will still save out screenshots at the renderer resolution, so the
+	// necessary buffer must exist somewhere, however it doesn't get sent to reshade, so we'd
+	// still need to do that part.
+	/*{
 		new("Native", "Monitor", 0, 0, 0),
 		new("Native", "Instagram (1:1)", 1.0, 0, 0),
 		new("Native", "Surface (3:2)", 3.0 / 2.0, 0, 0),
@@ -115,9 +135,17 @@ public partial class PhotosService : ServiceBase
 		new("Super-Ultrawide (32:9)", "1080p", 32.0 / 9, 3840, 1080),
 		new("Super-Ultrawide (32:9)", "1440p", 32.0 / 9, 5120, 1440),
 		new("Super-Ultrawide (32:9)", "2160p", 32.0 / 9, 7680, 2160),
-	};
+	};*/
 
 	public int GuideThickness => 2;
+
+	public override async Task Shutdown()
+	{
+		if (this.animationWindow != null)
+			await this.animationWindow.Dispatcher.InvokeAsync(() => this.animationWindow.Close());
+
+		await base.Shutdown();
+	}
 
 	public void Capture(string? name = null, bool animate = true)
 	{
@@ -152,12 +180,13 @@ public partial class PhotosService : ServiceBase
 		uint originalWidth = 0;
 		uint originalHeight = 0;
 		bool success = false;
-		CaptureAnimationWindow? animationWindow = null;
 
 		try
 		{
-			animationWindow = await PanelWindow.CreatePanelWindow<CaptureAnimationWindow>(this.Services.Panels.GamePanels);
-			animationWindow?.Dispatcher.InvokeAsync(() => animationWindow.Show());
+			this.animationWindow = await PanelWindow.CreatePanelWindow<CaptureAnimationWindow>(this.Services.Panels.GamePanels);
+
+			if (this.animationWindow != null)
+				await this.animationWindow.Dispatcher.InvokeAsync(() => this.animationWindow.Show());
 
 			await this.DispatchCapturePhaseChange(CapturePhases.Starting, animate);
 
@@ -328,7 +357,9 @@ public partial class PhotosService : ServiceBase
 
 		await this.DispatchCapturePhaseChange(CapturePhases.Done, animate);
 
-		animationWindow?.Dispatcher.InvokeAsync(() => animationWindow.Close());
+		if (this.animationWindow != null)
+			await this.animationWindow.Dispatcher.InvokeAsync(() => this.animationWindow.Close());
+
 		this.IsCapturing = false;
 	}
 
