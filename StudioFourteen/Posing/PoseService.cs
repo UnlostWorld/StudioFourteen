@@ -530,6 +530,8 @@ public partial class PoseService : ServiceBase
 
 	public async Task ExportPose(int objectTableIndex)
 	{
+		await TickService.GameTick();
+
 		string name = $"#{objectTableIndex}";
 		unsafe
 		{
