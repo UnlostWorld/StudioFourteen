@@ -17,7 +17,6 @@ namespace StudioFourteen.Icons;
 
 using System.Windows.Controls;
 using DependencyPropertyGenerator;
-using FontAwesome.Sharp;
 
 [DependencyProperty<object>("Icon")]
 public partial class IconView : ContentControl

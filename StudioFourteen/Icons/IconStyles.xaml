@@ -6,48 +6,57 @@
 	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:svg="https://github.com/dotnetprojects/SVGImage">
 
-	<!-- SVG Icons -->
+	<!--  SVG Icons  -->
 	<DataTemplate DataType="{x:Type icons:Svg}">
 		<icons:SvgIconView
 			Margin="2"
-			Focusable="False"
 			HorizontalContentAlignment="Center"
 			VerticalContentAlignment="Center"
+			Focusable="False"
 			Midground="{DynamicResource BackgroundLightBrush}"
 			SizeType="SizeToContent"
 			UriSource="{Binding UriSource}" />
 	</DataTemplate>
 
-	<!-- ImageReference (Xiv embedded images)-->
+	<!--  ImageReference (Xiv embedded images)  -->
 	<DataTemplate DataType="{x:Type gameData:ImageReference}">
 		<Border
+			Background="{DynamicResource BackgroundBrush}"
 			BorderBrush="{DynamicResource BackgroundLightBrush}"
 			BorderThickness="1"
-			CornerRadius="6"
-			Background="{DynamicResource BackgroundBrush}">
+			CornerRadius="6">
 			<Image Source="{Binding Source}" />
 		</Border>
 	</DataTemplate>
 
-	<!-- FA Icons -->
+	<!--  FA Icons  -->
 	<DataTemplate DataType="{x:Type icons:Fa}">
-		<icons:FaIconView Focusable="False" Icon="{Binding Icon}" IconFont="{Binding Font}" />
+		<Viewbox Margin="2" Stretch="Uniform">
+			<icons:FaIconView
+				VerticalAlignment="Stretch"
+				Focusable="False"
+				Icon="{Binding Icon}"
+				IconFont="{Binding Font}" />
+		</Viewbox>
 	</DataTemplate>
 
-	<!-- Thumbnails -->
+	<!--  Thumbnails  -->
 	<DataTemplate DataType="{x:Type icons:ThumbnailIcon}">
 		<Grid>
-			<Image x:Name="Image" Source="{Binding Path}" Visibility="Collapsed"/>
-			<ContentPresenter x:Name="Fallback" Content="{Binding Fallback}"/>
+			<Image
+				x:Name="Image"
+				Source="{Binding Path}"
+				Visibility="Collapsed" />
+			<ContentPresenter x:Name="Fallback" Content="{Binding Fallback}" />
 		</Grid>
 
 		<DataTemplate.Triggers>
 			<DataTrigger Binding="{Binding HasImage}" Value="True">
-				<Setter TargetName="Fallback" Property="Width" Value="32"/>
-				<Setter TargetName="Fallback" Property="Height" Value="32"/>
-				<Setter TargetName="Fallback" Property="HorizontalAlignment" Value="Left"/>
-				<Setter TargetName="Fallback" Property="VerticalAlignment" Value="Bottom"/>
-				<Setter TargetName="Image" Property="Visibility" Value="Visible"/>
+				<Setter TargetName="Fallback" Property="Height" Value="32" />
+				<Setter TargetName="Fallback" Property="HorizontalAlignment" Value="Left" />
+				<Setter TargetName="Fallback" Property="VerticalAlignment" Value="Bottom" />
+				<Setter TargetName="Fallback" Property="Width" Value="32" />
+				<Setter TargetName="Image" Property="Visibility" Value="Visible" />
 			</DataTrigger>
 		</DataTemplate.Triggers>
 

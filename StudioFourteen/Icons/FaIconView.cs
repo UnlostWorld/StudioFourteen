@@ -15,21 +15,18 @@
 
 namespace StudioFourteen.Icons;
 
-using System;
-using System.Windows;
-using System.Windows.Controls;
+using System.Windows.Media;
 using DependencyPropertyGenerator;
 using FontAwesome.Sharp;
 
-////[DependencyProperty<IconChar>("Icon")]
-////[DependencyProperty<IconFont>("IconFont")]
 public partial class FaIconView : IconBlock
 {
-	protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+	protected override FontFamily FontFor(IconChar icon)
 	{
-		int nextFontSize = (int)this.ActualHeight;
-		nextFontSize -= 1;
-		this.FontSize = int.Clamp(nextFontSize, 6, 100);
-		base.OnRenderSizeChanged(sizeInfo);
+		FontFamily? font = base.FontFor(icon);
+		if (font == null)
+			return base.FontFor(IconChar.Exclamation);
+
+		return font;
 	}
 }
