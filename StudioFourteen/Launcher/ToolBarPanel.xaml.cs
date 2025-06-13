@@ -17,10 +17,12 @@ namespace StudioFourteen.Launcher;
 
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Panels;
 using StudioFourteen.Rendering.Scene.Gizmos;
 using StudioFourteen.Selection;
+using StudioFourteen.Utilities;
 using WpfUtils.Extensions;
 
 public partial class ToolBarPanel : Panel

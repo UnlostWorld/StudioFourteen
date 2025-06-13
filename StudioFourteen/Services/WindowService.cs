@@ -180,11 +180,14 @@ public partial class WindowService : ServiceBase
 		PanelWindow? newTopMost = window;
 		this.topMostPanelWindow = window;
 
-		if (this.lastTopMostPanelWindow != null)
+		if (this.lastTopMostPanelWindow != null && this.lastTopMostPanelWindow != window)
 		{
 			this.lastTopMostPanelWindow.Dispatcher.Invoke(() =>
 			{
-				this.lastTopMostPanelWindow.IsForeground = false;
+				if (this.lastTopMostPanelWindow != null)
+				{
+					this.lastTopMostPanelWindow.IsForeground = false;
+				}
 			});
 		}
 

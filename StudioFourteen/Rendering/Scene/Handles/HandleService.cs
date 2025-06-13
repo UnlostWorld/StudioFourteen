@@ -22,9 +22,11 @@ using StudioFourteen.Rendering.Scene;
 using StudioFourteen.Input;
 using System.Windows.Input;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 public partial class HandleService : ServiceBase
 {
+	private readonly Stopwatch timeoutTimer = new();
 	private readonly ConditionalWeakTable<SceneObject, Handle?> parentHandles = new();
 	private readonly Input2DListener dragListener = new(
 		InputAction.Handle_Right,
@@ -110,6 +112,11 @@ public partial class HandleService : ServiceBase
 		base.Detach();
 	}
 
+	public void Timeout()
+	{
+		this.timeoutTimer.Restart();
+	}
+
 	private void OnGameTick()
 	{
 		if (this.Services.Input.Mouse == null)
@@ -128,8 +135,15 @@ public partial class HandleService : ServiceBase
 		}
 		else
 		{
+			bool isTimedout = true;
+			if (this.timeoutTimer.ElapsedMilliseconds > 250)
+			{
+				this.timeoutTimer.Stop();
+				isTimedout = false;
+			}
+
 			// Check hover
-			if (this.CurrentPress == null)
+			if (this.CurrentPress == null && !isTimedout)
 			{
 				Vector2? mousePosition = this.Services.Input.Mouse.GetPosition();
 				if (mousePosition != null)

@@ -95,6 +95,13 @@
 	<icons:Fa x:Key="ICON_Transform_Rotate" Icon="Rotate" Font="Solid" />
 	<icons:Svg x:Key="ICON_Transform_Scale" Source="TransformScale"/>
 
+	<icons:Fa x:Key="ICON_Selection_Character" Icon="User" Font="Solid" />
+	<icons:Fa x:Key="ICON_Selection_Bone" Icon="Bone" Font="Solid" />
+	<icons:Fa x:Key="ICON_Selection_Eye" Icon="Eye" Font="Solid" />
+	<icons:Fa x:Key="ICON_Selection_Blend" Icon="BezierCurve" Font="Solid" />
+	<icons:Fa x:Key="ICON_Selection_Service" Icon="Computer" Font="Solid" />
+	<icons:Fa x:Key="ICON_Selection_SelectionService" Icon="MousePointer" Font="Solid" />
+
 	<icons:Fa x:Key="ICON_CameraModifier" Icon="Plus" />
 
 	<icons:Svg x:Key="ICON_Environment_Night" Source="Night" />

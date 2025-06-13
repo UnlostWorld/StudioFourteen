@@ -55,7 +55,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<Content Include="Content\Base\**" CopyToOutputDirectory="Always"/>
+		<Content Include="Content\Base\**" CopyToOutputDirectory="Always" />
 	</ItemGroup>
 
 	<ItemGroup>

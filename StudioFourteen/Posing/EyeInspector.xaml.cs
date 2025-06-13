@@ -151,7 +151,7 @@ public class EyeSelection : SelectionBase
 		this.Name = "Eye";
 	}
 
-	public override IconChar Icon => IconChar.Eye;
+	public override object? Icon => Resources.Find("ICON_Selection_Eye");
 	public override string TypeName => Resources.Find("LOC_Selection_Eye", "Blend");
 
 	public override bool CanMirror => true;

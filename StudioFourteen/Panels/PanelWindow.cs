@@ -337,12 +337,22 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 	protected override void OnActivated(EventArgs e)
 	{
+		if (this.panel != null)
+		{
+			this.panel.OnActivated();
+		}
+
 		this.IsForeground = true;
 		base.OnActivated(e);
 	}
 
 	protected override void OnDeactivated(EventArgs e)
 	{
+		if (this.panel != null)
+		{
+			this.panel.OnDeactivated();
+		}
+
 		this.IsForeground = false;
 		base.OnDeactivated(e);
 	}

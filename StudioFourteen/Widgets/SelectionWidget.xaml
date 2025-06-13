@@ -1,0 +1,186 @@
+﻿<panels:Panel
+	x:Class="StudioFourteen.Widgets.SelectionWidget"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:StudioFourteen.Controls"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:icons="clr-namespace:StudioFourteen.Icons"
+	xmlns:local="clr-namespace:StudioFourteen.Widgets"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:panels="clr-namespace:StudioFourteen.Panels"
+	xmlns:silk="clr-namespace:WpfUtils.Silk;assembly=WpfUtils"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	HostStyle="{DynamicResource PanelWidgetStyle}"
+	RememberWindowState="False"
+	SizeToContent="WidthAndHeight"
+	mc:Ignorable="d">
+
+	<Grid
+		Width="256"
+		Height="450"
+		Opacity="0.25">
+
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition />
+		</Grid.ColumnDefinitions>
+
+		<silk:DoubleAnimation
+			Key="Opening"
+			Easing="SineIn"
+			Property="Opacity"
+			From="0"
+			To="1"
+			Duration="100" />
+
+		<silk:DoubleAnimation
+			Key="Closing"
+			Easing="SineIn"
+			Property="Opacity"
+			From="1"
+			To="0"
+			Duration="100" />
+
+		<Grid
+			Grid.Column="0"
+			HorizontalAlignment="Right"
+			VerticalAlignment="Top">
+
+			<silk:AnimationState Binding="{Binding Hide}">
+				<silk:AnimationState.Enter>
+					<silk:DoubleAnimation
+						Easing="SineIn"
+						Property="Opacity"
+						From="1"
+						To="0"
+						Delay="200"
+						Duration="150" />
+				</silk:AnimationState.Enter>
+
+				<silk:AnimationState.Exit>
+					<silk:DoubleAnimation
+						Easing="SineOut"
+						Property="Opacity"
+						From="0"
+						To="1"
+						Delay="200"
+						Duration="150" />
+				</silk:AnimationState.Exit>
+
+			</silk:AnimationState>
+
+
+			<Border
+				Margin="3"
+				Background="Black"
+				CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}"
+				Opacity="0.5">
+				<Border.Effect>
+					<DropShadowEffect
+						BlurRadius="10"
+						Opacity="0.25"
+						ShadowDepth="0" />
+				</Border.Effect>
+			</Border>
+
+			<wpfUtils:SwitchSelector
+				Width="28"
+				ItemsSource="{Binding Gizmos}"
+				SelectedValue="{Binding SelectedGizmo}"
+				Style="{DynamicResource WpfUtilsSwitchSelectorVertical}">
+
+				<wpfUtils:SwitchSelector.ItemTemplate>
+					<DataTemplate>
+						<icons:IconView
+							Height="20"
+							Margin="4"
+							Icon="{Binding Icon}" />
+					</DataTemplate>
+				</wpfUtils:SwitchSelector.ItemTemplate>
+			</wpfUtils:SwitchSelector>
+		</Grid>
+
+		<Grid
+			Grid.Column="1"
+			VerticalAlignment="Top">
+
+			<silk:AnimationState Binding="{Binding Expanded}">
+				<silk:AnimationState.Enter>
+					<silk:DoubleAnimation
+						Easing="SineIn"
+						Property="Opacity"
+						From="0"
+						To="1"
+						Duration="150" />
+				</silk:AnimationState.Enter>
+
+				<silk:AnimationState.Exit>
+					<silk:DoubleAnimation
+						Easing="SineOut"
+						Property="Opacity"
+						From="1"
+						To="0"
+						Duration="150" />
+				</silk:AnimationState.Exit>
+
+			</silk:AnimationState>
+
+			<Border
+				Margin="3"
+				Background="Black"
+				CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}">
+				<Border.Effect>
+					<DropShadowEffect
+						BlurRadius="10"
+						Opacity="0.25"
+						ShadowDepth="0" />
+				</Border.Effect>
+			</Border>
+
+			<Border
+				Margin="3"
+				Style="{DynamicResource WpfUtilsControlBorder}">
+
+				<Grid>
+					<Grid.RowDefinitions>
+						<RowDefinition Height="Auto" />
+						<RowDefinition />
+					</Grid.RowDefinitions>
+
+					<Border
+						Margin="2,2,2,0"
+						Background="{DynamicResource BackgroundBrush}"
+						CornerRadius="{DynamicResource WpfUtilsBorderInnerCornerRadius}">
+						<Grid Grid.Column="1" Margin="3">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition />
+							</Grid.ColumnDefinitions>
+
+							<icons:IconView
+								Width="22"
+								Height="22"
+								Foreground="{DynamicResource ForegroundLightBrush}"
+								Icon="{Binding Current.Icon}" />
+
+							<TextBlock
+								Grid.Column="1"
+								VerticalAlignment="Center"
+								Foreground="{DynamicResource ForegroundLightBrush}"
+								Text="{Binding Current.Name}" />
+
+						</Grid>
+					</Border>
+
+					<Border
+						Grid.Row="1"
+						Margin="2"
+						Background="{DynamicResource BackgroundBrush}"
+						CornerRadius="{DynamicResource WpfUtilsBorderInnerCornerRadius}">
+						<!--  Inspector  -->
+					</Border>
+				</Grid>
+			</Border>
+		</Grid>
+	</Grid>
+</panels:Panel>

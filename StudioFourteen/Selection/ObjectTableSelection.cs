@@ -52,7 +52,7 @@ public class ObjectTableSelection : TransformSelectionBase
 		this.Name = $"{objectTableId}";
 	}
 
-	public override IconChar Icon => IconChar.User;
+	public override object? Icon => Resources.Find("ICON_Selection_Character");
 	public override string TypeName => Resources.Find("LOC_Selection_ObjectTable", "Object Table");
 	public override bool CanReset => false;
 

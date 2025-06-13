@@ -38,6 +38,8 @@ public partial class PanelHost : ContentControl, Panel.IHost
 		this.IsVisibleChanged += this.OnIsVisibleChanged;
 	}
 
+	public Point Position { get; set; }
+
 	public Panel? SetPanel(Type? panelType)
 	{
 		this.panel?.SetIsOpen(this, false, false);
@@ -64,6 +66,10 @@ public partial class PanelHost : ContentControl, Panel.IHost
 		}
 
 		return this.panel;
+	}
+
+	public void Activate()
+	{
 	}
 
 	Task Panel.IHost.CloseAsync(bool minimize)

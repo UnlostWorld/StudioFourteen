@@ -15,7 +15,6 @@
 
 namespace StudioFourteen.Rendering.Scene.Handles;
 
-using System;
 using StudioFourteen.Selection;
 
 public class SelectionHandle : Handle
@@ -51,9 +50,17 @@ public class SelectionHandle : Handle
 	{
 		base.OnIsPressedChanged(isPressed);
 
-		if (isPressed)
+		if (!isPressed)
 		{
-			this.Services.Selection.Current = this.selection;
+			if (this.Services.Selection.Current == this.selection)
+			{
+				this.Services.Selection.ExpandedSelection = true;
+			}
+			else
+			{
+				this.Services.Selection.ExpandedSelection = false;
+				this.Services.Selection.Current = this.selection;
+			}
 		}
 	}
 

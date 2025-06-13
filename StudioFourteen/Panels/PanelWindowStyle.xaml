@@ -40,7 +40,9 @@
 		<Setter Property="VerticalAlignment" Value="Stretch" />
 	</Style>
 
-	<ControlTemplate x:Key="PanelWindowTemplate" TargetType="{x:Type local:PanelWindow}">
+	<ControlTemplate
+		x:Key="PanelWindowTemplate"
+		TargetType="{x:Type local:PanelWindow}">
 
 		<AdornerDecorator x:Name="MainGrid">
 
@@ -50,11 +52,12 @@
 				RenderTransformOrigin="0.5,0.5">
 
 				<Grid.RenderTransform>
-					<ScaleTransform x:Name="WindowScale" ScaleX="0.01"
-						ScaleY="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ScaleX}" />
+					<ScaleTransform x:Name="WindowScale" ScaleX="0.01" ScaleY="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ScaleX}" />
 				</Grid.RenderTransform>
 
-				<Grid Background="Transparent" Margin="-12"/>
+				<Grid
+					Margin="-12"
+					Background="Transparent" />
 
 				<Border
 					x:Name="WindowShadow"
@@ -62,11 +65,14 @@
 					CornerRadius="6"
 					Opacity="0.25">
 					<Border.BitmapEffect>
-						<DropShadowBitmapEffect ShadowDepth="0" Softness="0.75" />
+						<DropShadowBitmapEffect
+							ShadowDepth="0"
+							Softness="0.75" />
 					</Border.BitmapEffect>
 				</Border>
 
-				<Border Background="{DynamicResource BackgroundBrush}"
+				<Border
+					Background="{DynamicResource BackgroundBrush}"
 					CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
 
 
@@ -77,8 +83,7 @@
 					</Grid.RowDefinitions>
 
 					<Grid.LayoutTransform>
-						<ScaleTransform ScaleX="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Scale}"
-							ScaleY="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Scale}"/>
+						<ScaleTransform ScaleX="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Scale}" ScaleY="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Scale}" />
 					</Grid.LayoutTransform>
 
 					<Grid
@@ -86,24 +91,40 @@
 						Height="28"
 						Margin="0,0,0,1">
 
-						<Grid Background="Transparent" MouseDown="OnTitleMouseDown">
+						<Grid
+							Background="Transparent"
+							MouseDown="OnTitleMouseDown">
 							<Grid.ContextMenu>
-								<ContextMenu
-									DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:PanelWindow}}}">
-									<MenuItem IsEnabled="{TemplateBinding IsEmbedded}"
-										Header="Pop out" Icon="{DynamicResource ICON_Window_PopOut}"
-										Command="{TemplateBinding PopOutCommand}" />
+								<ContextMenu DataContext="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:PanelWindow}}}">
 									<MenuItem
-										IsEnabled="{Binding IsEmbedded, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource !B}}"
-										Header="Pop in" Icon="{DynamicResource ICON_Window_PopOut}"
-										Command="{TemplateBinding PopInCommand}" />
-									<MenuItem Header="Zoom"
+										Command="{TemplateBinding PopOutCommand}"
+										Header="Pop out"
+										Icon="{DynamicResource ICON_Window_PopOut}"
+										IsEnabled="{TemplateBinding IsEmbedded}" />
+									<MenuItem
+										Command="{TemplateBinding PopInCommand}"
+										Header="Pop in"
+										Icon="{DynamicResource ICON_Window_PopOut}"
+										IsEnabled="{Binding IsEmbedded, RelativeSource={RelativeSource TemplatedParent}, Converter={StaticResource !B}}" />
+									<MenuItem
+										Header="Zoom"
 										Icon="{DynamicResource ICON_Window_Zoom}">
-										<MenuItem Header="75%" Command="{TemplateBinding SetZoom75Command}"/>
-										<MenuItem Header="100%" Command="{TemplateBinding SetZoom100Command}" IsChecked="true"/>
-										<MenuItem Header="125%" Command="{TemplateBinding SetZoom125Command}"/>
-										<MenuItem Header="150%" Command="{TemplateBinding SetZoom150Command}" />
-										<MenuItem Header="200%" Command="{TemplateBinding SetZoom200Command}"/>
+										<MenuItem
+											Command="{TemplateBinding SetZoom75Command}"
+											Header="75%" />
+										<MenuItem
+											Command="{TemplateBinding SetZoom100Command}"
+											Header="100%"
+											IsChecked="true" />
+										<MenuItem
+											Command="{TemplateBinding SetZoom125Command}"
+											Header="125%" />
+										<MenuItem
+											Command="{TemplateBinding SetZoom150Command}"
+											Header="150%" />
+										<MenuItem
+											Command="{TemplateBinding SetZoom200Command}"
+											Header="200%" />
 									</MenuItem>
 								</ContextMenu>
 							</Grid.ContextMenu>
@@ -156,8 +177,8 @@
 								Width="32"
 								Padding="8"
 								Command="{TemplateBinding MinimizeCommand}"
-								Style="{StaticResource TitleBarButton}"
-								Content="{DynamicResource ICON_Window_Minimze}" />
+								Content="{DynamicResource ICON_Window_Minimze}"
+								Style="{StaticResource TitleBarButton}" />
 
 							<!--  Maximize button  -->
 							<ToggleButton
@@ -172,12 +193,12 @@
 									<icons:IconView
 										Icon="{DynamicResource ICON_Window_Restore}"
 										Visibility="{TemplateBinding IsMaximized,
-																	 Converter={StaticResource B2V}}" />
+										                             Converter={StaticResource B2V}}" />
 
 									<icons:IconView
 										Icon="{DynamicResource ICON_Window_Maximize}"
 										Visibility="{TemplateBinding IsMaximized,
-																	 Converter={StaticResource !B2V}}" />
+										                             Converter={StaticResource !B2V}}" />
 								</Grid>
 							</ToggleButton>
 
@@ -191,10 +212,12 @@
 								Style="{StaticResource TitleBarButton}"
 								ToolTip="{DynamicResource LOC_ClosePanelTooltip}"
 								Visibility="{TemplateBinding CanClose,
-															 Converter={StaticResource B2V}}">
+								                             Converter={StaticResource B2V}}">
 
 								<Button.Resources>
-									<SolidColorBrush x:Key="ControlHighlightBrush" Color="#883434" />
+									<SolidColorBrush
+										x:Key="ControlHighlightBrush"
+										Color="#883434" />
 								</Button.Resources>
 							</Button>
 
@@ -220,7 +243,8 @@
 					Grid.Row="1"
 					Margin="-10"
 					Visibility="Collapsed">
-					<Thumb DragDelta="OnResizeThumbDragDelta"
+					<Thumb
+						DragDelta="OnResizeThumbDragDelta"
 						Style="{DynamicResource WpfUtilsResizeThumbCorner}" />
 				</Grid>
 			</Grid>
@@ -233,8 +257,7 @@
 			</Trigger>
 
 			<Trigger Property="IsForeground" Value="True">
-				<Setter TargetName="WindowBorder" Property="BorderBrush"
-					Value="{DynamicResource TrimBrush}" />
+				<Setter TargetName="WindowBorder" Property="BorderBrush" Value="{DynamicResource TrimBrush}" />
 				<Setter TargetName="WindowShadow" Property="Opacity" Value="1" />
 			</Trigger>
 
@@ -242,15 +265,20 @@
 				<Trigger.ExitActions>
 					<BeginStoryboard>
 						<Storyboard>
-							<DoubleAnimationUsingKeyFrames Storyboard.TargetName="WindowScale"
+							<DoubleAnimationUsingKeyFrames
+								Storyboard.TargetName="WindowScale"
 								Storyboard.TargetProperty="ScaleX">
-								<EasingDoubleKeyFrame KeyTime="0:00:00.200" Value="0.98">
+								<EasingDoubleKeyFrame
+									KeyTime="0:00:00.200"
+									Value="0.98">
 									<EasingDoubleKeyFrame.EasingFunction>
 										<SineEase EasingMode="EaseOut" />
 									</EasingDoubleKeyFrame.EasingFunction>
 								</EasingDoubleKeyFrame>
 
-								<EasingDoubleKeyFrame KeyTime="0:00:00.300" Value="1">
+								<EasingDoubleKeyFrame
+									KeyTime="0:00:00.300"
+									Value="1">
 									<EasingDoubleKeyFrame.EasingFunction>
 										<SineEase EasingMode="EaseIn" />
 									</EasingDoubleKeyFrame.EasingFunction>
@@ -262,15 +290,20 @@
 				<Trigger.EnterActions>
 					<BeginStoryboard>
 						<Storyboard>
-							<DoubleAnimationUsingKeyFrames Storyboard.TargetName="WindowScale"
+							<DoubleAnimationUsingKeyFrames
+								Storyboard.TargetName="WindowScale"
 								Storyboard.TargetProperty="ScaleX">
-								<EasingDoubleKeyFrame KeyTime="0:00:00.200" Value="1.02">
+								<EasingDoubleKeyFrame
+									KeyTime="0:00:00.200"
+									Value="1.02">
 									<EasingDoubleKeyFrame.EasingFunction>
 										<SineEase EasingMode="EaseOut" />
 									</EasingDoubleKeyFrame.EasingFunction>
 								</EasingDoubleKeyFrame>
 
-								<EasingDoubleKeyFrame KeyTime="0:00:00.300" Value="1">
+								<EasingDoubleKeyFrame
+									KeyTime="0:00:00.300"
+									Value="1">
 									<EasingDoubleKeyFrame.EasingFunction>
 										<SineEase EasingMode="EaseIn" />
 									</EasingDoubleKeyFrame.EasingFunction>
@@ -281,7 +314,9 @@
 				</Trigger.EnterActions>
 			</Trigger>
 
-			<DataTrigger Binding="{Binding IsOpen}" Value="True">
+			<DataTrigger
+				Binding="{Binding IsOpen}"
+				Value="True">
 
 				<Setter Property="Opacity" Value="1" />
 
@@ -341,7 +376,9 @@
 			</DataTrigger>
 
 
-			<DataTrigger Binding="{Binding IsUiVisibleAndOpen}" Value="False">
+			<DataTrigger
+				Binding="{Binding IsUiVisibleAndOpen}"
+				Value="False">
 				<DataTrigger.EnterActions>
 					<StopStoryboard BeginStoryboardName="FadeIn" />
 					<BeginStoryboard x:Name="FadeOut">
@@ -387,7 +424,9 @@
 
 	</ControlTemplate>
 
-	<Style x:Key="PanelWindowStyle" TargetType="{x:Type local:PanelWindow}">
+	<Style
+		x:Key="PanelWindowStyle"
+		TargetType="{x:Type local:PanelWindow}">
 		<Setter Property="AllowsTransparency" Value="True" />
 		<Setter Property="Background" Value="Transparent" />
 		<Setter Property="Icon" Value="../Assets/icon.ico" />
@@ -400,7 +439,9 @@
 	</Style>
 
 
-	<ControlTemplate x:Key="PanelToolbarTemplate" TargetType="{x:Type local:PanelWindow}">
+	<ControlTemplate
+		x:Key="PanelToolbarTemplate"
+		TargetType="{x:Type local:PanelWindow}">
 
 		<AdornerDecorator x:Name="MainGrid">
 
@@ -410,8 +451,7 @@
 				RenderTransformOrigin="0.5,0.5">
 
 				<Grid.RenderTransform>
-					<ScaleTransform x:Name="WindowScale" ScaleX="0.01"
-						ScaleY="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ScaleX}" />
+					<ScaleTransform x:Name="WindowScale" ScaleX="0.01" ScaleY="{Binding RelativeSource={RelativeSource Mode=Self}, Path=ScaleX}" />
 				</Grid.RenderTransform>
 
 				<Border
@@ -420,11 +460,14 @@
 					CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}"
 					Opacity="0.25">
 					<Border.BitmapEffect>
-						<DropShadowBitmapEffect ShadowDepth="0" Softness="0.75" />
+						<DropShadowBitmapEffect
+							ShadowDepth="0"
+							Softness="0.75" />
 					</Border.BitmapEffect>
 				</Border>
 
-				<Border Background="{DynamicResource BackgroundBrush}"
+				<Border
+					Background="{DynamicResource BackgroundBrush}"
 					CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
 
 				<Border
@@ -442,12 +485,13 @@
 
 		<ControlTemplate.Triggers>
 			<Trigger Property="IsForeground" Value="True">
-				<Setter TargetName="WindowBorder" Property="BorderBrush"
-					Value="{DynamicResource TrimBrush}" />
+				<Setter TargetName="WindowBorder" Property="BorderBrush" Value="{DynamicResource TrimBrush}" />
 				<Setter TargetName="WindowShadow" Property="Opacity" Value="1" />
 			</Trigger>
 
-			<DataTrigger Binding="{Binding IsOpen}" Value="True">
+			<DataTrigger
+				Binding="{Binding IsOpen}"
+				Value="True">
 
 				<Setter Property="Opacity" Value="1" />
 
@@ -507,7 +551,9 @@
 			</DataTrigger>
 
 
-			<DataTrigger Binding="{Binding IsUiVisibleAndOpen}" Value="False">
+			<DataTrigger
+				Binding="{Binding IsUiVisibleAndOpen}"
+				Value="False">
 				<DataTrigger.EnterActions>
 					<StopStoryboard BeginStoryboardName="FadeIn" />
 					<BeginStoryboard x:Name="FadeOut">
@@ -554,8 +600,75 @@
 		<Setter Property="MinHeight" Value="32" />
 		<Setter Property="MinWidth" Value="32" />
 		<Setter Property="ShowInTaskbar" Value="False" />
-		<Setter Property="HorizontalAlignment" Value="Center"/>
+		<Setter Property="HorizontalAlignment" Value="Center" />
 		<Setter Property="Template" Value="{DynamicResource PanelToolbarTemplate}" />
+	</Style>
+
+	<ControlTemplate
+		x:Key="PanelWidgetTemplate"
+		TargetType="{x:Type local:PanelWindow}">
+
+		<AdornerDecorator x:Name="MainGrid">
+
+			<ContentPresenter
+				Margin="3"
+				Content="{TemplateBinding Content}"
+				ContentTemplate="{TemplateBinding ContentTemplate}" />
+		</AdornerDecorator>
+
+		<ControlTemplate.Triggers>
+			<DataTrigger
+				Binding="{Binding IsUiVisibleAndOpen}"
+				Value="False">
+				<DataTrigger.EnterActions>
+					<StopStoryboard BeginStoryboardName="FadeIn" />
+					<BeginStoryboard x:Name="FadeOut">
+						<Storyboard FillBehavior="HoldEnd">
+							<DoubleAnimation
+								Storyboard.TargetName="MainGrid"
+								Storyboard.TargetProperty="Opacity"
+								To="0"
+								Duration="0:00:00.100">
+								<DoubleAnimation.EasingFunction>
+									<SineEase EasingMode="EaseIn" />
+								</DoubleAnimation.EasingFunction>
+							</DoubleAnimation>
+						</Storyboard>
+					</BeginStoryboard>
+				</DataTrigger.EnterActions>
+
+				<DataTrigger.ExitActions>
+					<StopStoryboard BeginStoryboardName="FadeOut" />
+					<BeginStoryboard x:Name="FadeIn">
+						<Storyboard FillBehavior="Stop">
+							<DoubleAnimation
+								Storyboard.TargetName="MainGrid"
+								Storyboard.TargetProperty="Opacity"
+								To="1"
+								Duration="0:00:00.200">
+								<DoubleAnimation.EasingFunction>
+									<SineEase EasingMode="EaseOut" />
+								</DoubleAnimation.EasingFunction>
+							</DoubleAnimation>
+						</Storyboard>
+					</BeginStoryboard>
+				</DataTrigger.ExitActions>
+			</DataTrigger>
+
+		</ControlTemplate.Triggers>
+
+	</ControlTemplate>
+
+
+	<Style
+		x:Key="PanelWidgetStyle"
+		BasedOn="{StaticResource PanelWindowStyle}"
+		TargetType="{x:Type local:PanelWindow}">
+		<Setter Property="MinHeight" Value="32" />
+		<Setter Property="MinWidth" Value="32" />
+		<Setter Property="ShowInTaskbar" Value="False" />
+		<Setter Property="HorizontalAlignment" Value="Center" />
+		<Setter Property="Template" Value="{DynamicResource PanelWidgetTemplate}" />
 	</Style>
 
 </ResourceDictionary>

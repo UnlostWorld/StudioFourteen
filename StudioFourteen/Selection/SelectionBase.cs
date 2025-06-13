@@ -35,7 +35,7 @@ public abstract partial class SelectionBase : ViewModel, IHistoryTarget
 
 	public bool IsActive { get; private set; }
 
-	public abstract IconChar Icon { get; }
+	public abstract object? Icon { get; }
 	public abstract string TypeName { get; }
 
 	public virtual bool CanMirror => false;

@@ -77,8 +77,10 @@ public partial class Panel : ContentControl, IAutoNotify
 
 	public interface IHost
 	{
+		Point Position { get; set; }
 		Task CloseAsync(bool minimize);
 		PanelContextBase GetContext();
+		void Activate();
 	}
 
 	public ServiceManager Services => ServiceManager.Instance;
@@ -86,6 +88,18 @@ public partial class Panel : ContentControl, IAutoNotify
 
 	public bool RememberWindowState { get; set; } = true;
 	public Persistence Persistence { get; init; }
+
+	public Point Position
+	{
+		get => this.host != null ? this.host.Position : default;
+		set
+		{
+			if (this.host == null)
+				return;
+
+			this.host.Position = value;
+		}
+	}
 
 	public T? GetPersistence<T>([CallerMemberName] string id = "", T? defaultValue = default) => this.Persistence.GetPersistence<T>(id, defaultValue);
 
@@ -157,6 +171,19 @@ public partial class Panel : ContentControl, IAutoNotify
 			this.isMinimized = isMinimized;
 			this.OnClosed();
 		}
+	}
+
+	public void Activate()
+	{
+		this.host?.Activate();
+	}
+
+	public virtual void OnActivated()
+	{
+	}
+
+	public virtual void OnDeactivated()
+	{
 	}
 
 	protected virtual void OnOpened()

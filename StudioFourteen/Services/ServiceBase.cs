@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 public abstract class ServiceBase : ViewModel, IHistoryTarget
 {
 	public virtual string Name => this.GetType().Name;
-	public virtual IconChar Icon => IconChar.Computer;
+	public virtual object? Icon => Resources.Find("ICON_Selection_Service");
 	public bool IsReady => this.IsAlive;
 
 	public bool IsAlive { get; private set; }

@@ -28,7 +28,7 @@ using WpfUtils.Utils;
 public interface IHistoryTarget
 {
 	string Name { get; }
-	IconChar Icon { get; }
+	object? Icon { get; }
 	bool IsReady { get; }
 
 	Operation CreateHistoryOperation();
@@ -231,7 +231,7 @@ public abstract class Operation
 {
 	protected readonly ILogger Log = Logging.ForContext<Operation>();
 
-	public IconChar Icon { get; set; }
+	public object? Icon { get; set; }
 	public string? TargetName { get; set; }
 	public string? Description { get; set; }
 

@@ -60,19 +60,22 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 	{
 		Matrix4x4 viewProj = this.Services.Camera.CurrentView * this.Services.Camera.CurrentProjection;
 
-		foreach(SceneObject draw in this.sceneObjects)
+		lock (this.sceneObjects)
 		{
-			if (!draw.IsHitTestVisible)
-				continue;
+			foreach (SceneObject draw in this.sceneObjects)
+			{
+				if (!draw.IsHitTestVisible)
+					continue;
 
-			try
-			{
-				draw.HitTest(screenPosition, Transform.Identity, viewProj, result);
-			}
-			catch (Exception ex)
-			{
-				draw.IsHitTestVisible = false;
-				this.Log.Error(ex, $"Error hit testing forward object: {draw}. This object will be disabled.");
+				try
+				{
+					draw.HitTest(screenPosition, Transform.Identity, viewProj, result);
+				}
+				catch (Exception ex)
+				{
+					draw.IsHitTestVisible = false;
+					this.Log.Error(ex, $"Error hit testing forward object: {draw}. This object will be disabled.");
+				}
 			}
 		}
 	}

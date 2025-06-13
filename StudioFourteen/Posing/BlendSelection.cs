@@ -68,7 +68,7 @@ public class BlendSelection : SelectionBase
 	}
 
 	public override string TypeName => Resources.Find("LOC_Selection_Blend", "Blend");
-	public override IconChar Icon => IconChar.BezierCurve;
+	public override object? Icon => Resources.Find("ICON_Selection_Blend");
 	public override bool CanMirror => true;
 	public override bool CanReset => true;
 
