@@ -20,9 +20,9 @@ using StudioFourteen.Gizmos.Handles.TransformHandle;
 
 public abstract partial class TransformSceneObjectBase : SceneObjectBase
 {
-	[Notify][PropertyAttribute("StudioFourteen.History.History")] private Transform worldTransform;
-	[Notify][PropertyAttribute("StudioFourteen.History.History")] private Transform localTransform;
-	[Notify][PropertyAttribute("StudioFourteen.History.History")] private bool lockTransform;
+	[Notify] private Transform worldTransform;
+	[Notify] private Transform localTransform;
+	[Notify] private bool lockTransform;
 
 	private Transform? initialWorldTransform = null;
 

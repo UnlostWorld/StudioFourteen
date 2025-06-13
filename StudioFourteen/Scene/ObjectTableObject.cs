@@ -17,7 +17,6 @@ namespace StudioFourteen.Selection;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
-using FontAwesome.Sharp;
 using StudioFourteen.Scene;
 using StudioFourteen.Services;
 using StudioFourteen.Structs.Extensions;
@@ -25,20 +24,7 @@ using StudioFourteen.Utilities;
 using System;
 using System.Numerics;
 
-public class ObjectTableSelectionId(int objectTableIndex)
-	: ISceneObjectId
-{
-	public int ObjectTableIndex { get; init; } = objectTableIndex;
-
-	public override SceneObjectBase Create() => new ObjectTableSelection(this.ObjectTableIndex);
-
-	public override int GetHashCode()
-	{
-		return HashCode.Combine(this.ObjectTableIndex);
-	}
-}
-
-public class ObjectTableSelection : TransformSceneObjectBase
+public class ObjectTableObject : TransformSceneObjectBase
 {
 	public readonly int ObjectTableId;
 
@@ -47,19 +33,17 @@ public class ObjectTableSelection : TransformSceneObjectBase
 	private Quaternion lastRotation = Quaternion.Identity;
 	private Vector3 lastScale = Vector3.Zero;
 
-	public ObjectTableSelection(int objectTableId)
+	public ObjectTableObject(int objectTableId)
 	{
 		this.ObjectTableId = objectTableId;
 		this.Name = $"{objectTableId}";
 	}
 
+	public override string Id => $"ObjectTable:{this.ObjectTableId}";
 	public override object? Icon => Resources.Find("ICON_Selection_Character");
 	public override string TypeName => Resources.Find("LOC_Selection_ObjectTable", "Object Table");
-	public override bool CanReset => false;
 
 	public override double TranslationChange => 0.1f;
-
-	public override ISceneObjectId Id => new ObjectTableSelectionId(this.ObjectTableId);
 
 	public override bool IsHit(HitInfo hitInfo)
 	{
@@ -135,14 +119,6 @@ public class ObjectTableSelection : TransformSceneObjectBase
 		this.LockTransform = this.Services.Pose.AreAllBoneReferencesLocked(this.ObjectTableId);
 
 		this.IsReady = true;
-	}
-
-	public override bool Equals(SceneObjectBase? other)
-	{
-		if (other is not ObjectTableSelection otherGameObject)
-			return false;
-
-		return this.ObjectTableId == otherGameObject.ObjectTableId;
 	}
 
 	protected override void OnLocalTransformChanged(Transform oldValue, Transform newValue)

@@ -60,7 +60,7 @@ public partial class PoseSelectionControl : Control
 		this.IsSelected = newSelection.Id == this.Selection.Id;
 
 		this.IsParentSelected = false;
-		if (this.Selection is BoneSelection boneSelection && newSelection is BoneSelection newBoneSelection)
+		if (this.Selection is Bone boneSelection && newSelection is Bone newBoneSelection)
 		{
 			foreach((BoneId selectedBoneId, _) in newBoneSelection.BonePaths)
 			{

@@ -1,4 +1,4 @@
-﻿// .                    @@             _____ _______ _    _ _____ _____ ____
+// .                    @@             _____ _______ _    _ _____ _____ ____
 //          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
 //         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
 //         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
@@ -15,77 +15,16 @@
 
 namespace StudioFourteen.Selection;
 
-using Dalamud.Plugin.Services;
-using FontAwesome.Sharp;
-using StudioFourteen.Gizmos.Handles.TransformHandle;
 using StudioFourteen.Posing;
 using StudioFourteen.Scene;
-using StudioFourteen.Services;
-using StudioFourteen.Structs.Extensions;
-using StudioFourteen.Utilities;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using System.Threading.Tasks;
 
 using StudioTransform = StudioFourteen.Transform;
 
-public class BoneSelectionId(string boneName, int objectTableIndex)
-	: IAsyncSceneObjectId
+public class Bone : TransformSceneObjectBase
 {
-	public string BoneName { get; init; } = boneName;
-	public int ObjectTableIndex { get; init; } = objectTableIndex;
-
-	public override async Task<SceneObjectBase?> CreateAsync()
-	{
-		await TickService.GameTick();
-		return ServiceManager.Instance.Pose.FindBone(this.ObjectTableIndex, this.BoneName);
-	}
-
-	public override int GetHashCode()
-	{
-		return HashCode.Combine(this.BoneName, this.ObjectTableIndex);
-	}
-}
-
-public class BoneSelection : TransformSceneObjectBase
-{
-	// Bones default to rotation, so just set any translation or scale modes here.
-	private static readonly Dictionary<string, TransformHandleTypes> DefaultBoneGizmos = new()
-	{
-		// Face
-		{ "j_f_mmayu_l", TransformHandleTypes.Translation },
-		{ "j_f_mayu_l", TransformHandleTypes.Translation },
-		{ "j_f_miken_01_l", TransformHandleTypes.Translation },
-		{ "j_f_miken_02_l", TransformHandleTypes.Translation },
-		{ "j_f_dmiken_02_l", TransformHandleTypes.Translation },
-		{ "j_f_uhana", TransformHandleTypes.Translation },
-		{ "j_f_hana_l", TransformHandleTypes.Translation },
-		{ "j_f_dmemoto_l", TransformHandleTypes.Translation },
-		{ "j_f_hoho_l", TransformHandleTypes.Translation },
-		{ "j_f_dhoho_l", TransformHandleTypes.Translation },
-		{ "j_f_shoho_l", TransformHandleTypes.Translation },
-
-		// Mouth
-		{ "j_f_ulip_01_l", TransformHandleTypes.Translation },
-		{ "j_f_ulip_02_l", TransformHandleTypes.Translation },
-		{ "j_f_umlip_01_l", TransformHandleTypes.Translation },
-		{ "j_f_umlip_02_l", TransformHandleTypes.Translation },
-		{ "j_f_uslip_l", TransformHandleTypes.Translation },
-		{ "j_f_dlip_01_l", TransformHandleTypes.Translation },
-		{ "j_f_dlip_02_l", TransformHandleTypes.Translation },
-		{ "j_f_dmlip_01_l", TransformHandleTypes.Translation },
-		{ "j_f_dmlip_02_l", TransformHandleTypes.Translation },
-		{ "j_f_dslip_l", TransformHandleTypes.Translation },
-
-		// Eyes
-		{ "j_f_mabup_03in_l", TransformHandleTypes.Translation },
-		{ "j_f_mabup_02out_l", TransformHandleTypes.Translation },
-		{ "j_f_mabdn_03in_l", TransformHandleTypes.Translation },
-		{ "j_f_mabdn_02out_l", TransformHandleTypes.Translation },
-	};
-
 	private static readonly Dictionary<string, MirrorModes> DefaultMirrorModes = new()
 	{
 		{ "j_f_eye_l", MirrorModes.MirrorTCopyRS },
@@ -95,7 +34,7 @@ public class BoneSelection : TransformSceneObjectBase
 	private BoneReference? bone;
 	private bool isReading = false;
 
-	public BoneSelection(Dictionary<BoneId, List<BoneId>> bonePaths, string name)
+	public Bone(Dictionary<BoneId, List<BoneId>> bonePaths, string name)
 	{
 		this.BoneName = name;
 		this.BonePaths = bonePaths;
@@ -108,41 +47,20 @@ public class BoneSelection : TransformSceneObjectBase
 	}
 
 	public Dictionary<BoneId, List<BoneId>> BonePaths { get; private set; }
+
+	public override string Id => new($"Bone:{this.BoneName}:{this.BonePaths.Keys.First().ObjectTableIndex}");
 	public override object? Icon => Resources.Find("ICON_Selection_Bone");
 	public override string TypeName => Resources.Find("LOC_Selection_Bone", "Bone");
+
 	public string BoneName { get; init; }
 
 	public bool IsFaceBone { get; private set; }
 	public override double TranslationChange => this.IsFaceBone ? 0.01 : 0.1;
 	public override int DecimalPlacesToDisplay => this.IsFaceBone ? 4 : 2;
-	public override bool CanReset => true;
 	public override double GizmoSensitivity => this.IsFaceBone ? 0.05 : 0.5;
 
-	public override TransformHandleTypes DefaultGizmo
-	{
-		get
-		{
-			TransformHandleTypes gizmo;
-			if (DefaultBoneGizmos.TryGetValue(this.BoneName, out gizmo))
-			{
-				return gizmo;
-			}
-
-			string? mirrorName = PoseService.GetMirrorBoneName(this.BoneName);
-			if (mirrorName != null)
-			{
-				if (DefaultBoneGizmos.TryGetValue(mirrorName, out gizmo))
-				{
-					return gizmo;
-				}
-			}
-
-			return TransformHandleTypes.Rotation;
-		}
-	}
-
-	public override bool CanMirror => true;
-	public override MirrorModes MirrorMode
+	public bool CanMirror => true;
+	public MirrorModes MirrorMode
 	{
 		get
 		{
@@ -170,8 +88,6 @@ public class BoneSelection : TransformSceneObjectBase
 		get => this.bone?.ReferenceRelativeTransform ?? default;
 		set => this.SetReferenceTransform(value);
 	}
-
-	public override ISceneObjectId Id => new BoneSelectionId(this.BoneName, this.BonePaths.Keys.First().ObjectTableIndex);
 
 	public override void Activate()
 	{
@@ -204,25 +120,6 @@ public class BoneSelection : TransformSceneObjectBase
 
 			bone.Reset(false);
 		}
-	}
-
-	public override bool Equals(SceneObjectBase? other)
-	{
-		if (other is not BoneSelection otherBone)
-			return false;
-
-		if (this.BonePaths.Count != otherBone.BonePaths.Count)
-			return false;
-
-		foreach (BoneId id in this.BonePaths.Keys)
-		{
-			if (!otherBone.BonePaths.ContainsKey(id))
-			{
-				return false;
-			}
-		}
-
-		return true;
 	}
 
 	public void SetReferenceTransform(Transform referenceTransform)

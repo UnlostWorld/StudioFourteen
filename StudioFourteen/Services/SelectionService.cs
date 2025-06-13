@@ -15,23 +15,16 @@
 
 namespace StudioFourteen.Selection;
 
-using FontAwesome.Sharp;
-using PropertyChanged.SourceGenerator;
-using StudioFourteen.Gizmos.Handles.TransformHandle;
 using StudioFourteen.History;
-using StudioFourteen.Posing;
 using StudioFourteen.Rendering.Draw.Gizmos;
 using StudioFourteen.Rendering.Draw.Gizmos.Transforms;
 using StudioFourteen.Scene;
 using StudioFourteen.Services;
-using StudioFourteen.Utilities;
 using StudioFourteen.Widgets;
-using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows;
-using WpfUtils.Windows;
 
 public partial class SelectionService : ServiceBase
 {
@@ -177,29 +170,6 @@ public partial class SelectionService : ServiceBase
 	// An offset from where the cursor was and the transform root of the selected object (if it has one)
 	public Vector2 SelectionCursorOffset { get; set; }
 
-	[History]
-	public ISceneObjectId? GetSelectionId()
-	{
-		return this.Current?.Id;
-	}
-
-	[History]
-	public async Task SetSelectionId(ISceneObjectId? value)
-	{
-		if (value == null)
-		{
-			this.Current = null;
-		}
-		else if (value is IAsyncSceneObjectId asyncSelectionId)
-		{
-			this.Current = await asyncSelectionId.CreateAsync();
-		}
-		else
-		{
-			this.Current = value.Create();
-		}
-	}
-
 	public override void FinalizeHistoryOperation(ref Operation operation)
 	{
 		base.FinalizeHistoryOperation(ref operation);
@@ -316,6 +286,6 @@ public partial class SelectionService : ServiceBase
 	private void OnTargetChanged(int objectTableIndex)
 	{
 		// TODO: consider caching the previous selection this target had and restoring it?
-		this.Current = new ObjectTableSelection(this.Services.Target.TargetObjectIndex);
+		this.Current = new ObjectTableObject(this.Services.Target.TargetObjectIndex);
 	}
 }

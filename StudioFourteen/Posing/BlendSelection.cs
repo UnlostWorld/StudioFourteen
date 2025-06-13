@@ -28,29 +28,6 @@ using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
 using WpfUtils.Extensions;
 
-public class BlendSelectionId(string blendTargetName, int objectTableIndex)
-	: ISceneObjectId
-{
-	public string BlendTargetName { get; init; } = blendTargetName;
-	public int ObjectTableIndex { get; init; } = objectTableIndex;
-
-	public override SceneObjectBase? Create()
-	{
-		BlendTarget? target = null;
-		ServiceManager.Instance.Content.ExpressionBlends?.TryGetValue(this.BlendTargetName, out target);
-
-		if (target == null)
-			return null;
-
-		return new BlendSelection(this.BlendTargetName, target, this.ObjectTableIndex);
-	}
-
-	public override int GetHashCode()
-	{
-		return HashCode.Combine(this.BlendTargetName, this.ObjectTableIndex);
-	}
-}
-
 public class BlendSelection : SceneObjectBase
 {
 	private readonly int objectTableIndex;
@@ -68,10 +45,9 @@ public class BlendSelection : SceneObjectBase
 		this.mirrorMode = target.MirrorMode;
 	}
 
+	public override string Id => $"Blend:{this.blendTargetName}:{this.objectTableIndex}";
 	public override string TypeName => Resources.Find("LOC_Selection_Blend", "Blend");
 	public override object? Icon => Resources.Find("ICON_Selection_Blend");
-	public override bool CanMirror => true;
-	public override bool CanReset => true;
 
 	public BlendTarget Target { get; private set; }
 	public bool Flip { get; set; }
@@ -93,7 +69,7 @@ public class BlendSelection : SceneObjectBase
 		}
 	}
 
-	public override MirrorModes MirrorMode
+	public MirrorModes MirrorMode
 	{
 		get => this.mirrorMode;
 		set
@@ -106,8 +82,6 @@ public class BlendSelection : SceneObjectBase
 			}
 		}
 	}
-
-	public override ISceneObjectId Id => new BlendSelectionId(this.blendTargetName, this.objectTableIndex);
 
 	public void SetValue(double value)
 	{
@@ -134,11 +108,11 @@ public class BlendSelection : SceneObjectBase
 	{
 		await TickService.GameTick();
 
-		List<BoneSelection>? boneSelections = this.Target.GetBones(this.objectTableIndex, flipSides);
+		List<Bone>? boneSelections = this.Target.GetBones(this.objectTableIndex, flipSides);
 		if (boneSelections == null)
 			return;
 
-		foreach (BoneSelection selection in boneSelections)
+		foreach (Bone selection in boneSelections)
 		{
 			selection.Activate();
 		}
@@ -146,7 +120,7 @@ public class BlendSelection : SceneObjectBase
 		await Task.Delay(50);
 		await TickService.GameTick();
 
-		foreach (BoneSelection boneSelection in boneSelections)
+		foreach (Bone boneSelection in boneSelections)
 		{
 			if (boneSelection.BoneName == null)
 				continue;
@@ -188,11 +162,11 @@ public class BlendSelection : SceneObjectBase
 		}
 	}
 
-	public struct BoneBlend(BoneSelection selection, Transform initial, BoneTransform right, BoneTransform? left = null)
+	public struct BoneBlend(Bone selection, Transform initial, BoneTransform right, BoneTransform? left = null)
 	{
 		public BoneTransform Value = new();
 
-		public BoneSelection Selection = selection;
+		public Bone Selection = selection;
 		public Transform Initial = initial;
 		public BoneTransform Right = right;
 		public BoneTransform? Left = left;
@@ -272,11 +246,11 @@ public class BlendTarget
 		}
 	}
 
-	public List<BoneSelection>? GetBones(int objectTableIndex, bool flipBones)
+	public List<Bone>? GetBones(int objectTableIndex, bool flipBones)
 	{
 		TickService.VerifyGameTickThread();
 
-		List<BoneSelection> selections = new();
+		List<Bone> selections = new();
 
 		if (this.RightBones == null)
 			return null;
@@ -287,7 +261,7 @@ public class BlendTarget
 			if (flipBones)
 				getBoneName = PoseService.GetMirrorBoneName(boneName) ?? boneName;
 
-			BoneSelection? selection = ServiceManager.Instance.Pose.FindBone(objectTableIndex, getBoneName);
+			Bone? selection = ServiceManager.Instance.Pose.FindBone(objectTableIndex, getBoneName);
 
 			if (selection == null)
 				continue;

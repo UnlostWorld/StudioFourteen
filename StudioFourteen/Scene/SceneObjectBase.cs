@@ -16,13 +16,10 @@
 namespace StudioFourteen.Scene;
 
 using PropertyChanged.SourceGenerator;
-using StudioFourteen.History;
 using StudioFourteen.Mvm;
-using StudioFourteen.Posing;
 using StudioFourteen.Utilities;
-using System;
 
-public abstract partial class SceneObjectBase : ViewModel, IHistoryTarget
+public abstract partial class SceneObjectBase : ViewModel
 {
 	[Notify(Setter.Protected)] private string name = string.Empty;
 	[Notify(Setter.Protected)] private string? subtitle;
@@ -33,14 +30,9 @@ public abstract partial class SceneObjectBase : ViewModel, IHistoryTarget
 
 	public bool IsActive { get; private set; }
 
+	public abstract string Id { get; }
 	public abstract object? Icon { get; }
 	public abstract string TypeName { get; }
-
-	public virtual bool CanMirror => false;
-	[History] public virtual MirrorModes MirrorMode { get; set; }
-
-	public abstract bool CanReset { get; }
-	public abstract ISceneObjectId Id { get; }
 
 	public virtual void Reset()
 	{
@@ -70,35 +62,10 @@ public abstract partial class SceneObjectBase : ViewModel, IHistoryTarget
 	{
 	}
 
-	public virtual bool Equals(SceneObjectBase? other)
+	public bool Equals(SceneObjectBase? other)
 	{
-		return this == other;
-	}
-
-	public Operation CreateHistoryOperation()
-	{
-		return new SelectionObjectOperation();
-	}
-
-	public virtual void FinalizeHistoryOperation(ref Operation operation)
-	{
+		return this.Id == other?.Id;
 	}
 
 	public virtual bool IsHit(HitInfo hitInfo) => false;
-
-	public class SelectionObjectOperation : Operation
-	{
-		public override IHistoryTarget GetTarget()
-		{
-			if (ServiceManager.Instance.Selection.Current == null)
-				throw new Exception("No selection");
-
-			return ServiceManager.Instance.Selection.Current;
-		}
-
-		public override bool IsTarget(IHistoryTarget target)
-		{
-			return ServiceManager.Instance.Selection.Current == target;
-		}
-	}
 }

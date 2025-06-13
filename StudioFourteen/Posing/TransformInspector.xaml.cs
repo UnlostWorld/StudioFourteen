@@ -18,10 +18,8 @@ namespace StudioFourteen.Posing;
 using DependencyPropertyGenerator;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Gizmos.Handles.TransformHandle;
-using StudioFourteen.History;
 using StudioFourteen.Mvm;
 using StudioFourteen.Scene;
-using StudioFourteen.Selection;
 using StudioFourteen.Settings;
 
 [DependencyProperty<SceneObjectBase>("Selection")]
@@ -37,45 +35,6 @@ public partial class TransformInspector : View
 	public int DecimalPlacesDisplay => this.TransformSelection?.DecimalPlacesToDisplay ?? 2;
 
 	[AutoNotify]
-	public bool ExpandTranslationSliders
-	{
-		get
-		{
-			return this.Persistence?.GetPersistence<bool>(
-				$"ExpandTranslationSliders_{this.Gizmo}",
-				this.Gizmo == TransformHandleTypes.Translation) ?? false;
-		}
-
-		set => this.Persistence?.SetPersistence(value, $"ExpandTranslationSliders_{this.Gizmo}");
-	}
-
-	[AutoNotify]
-	public bool ExpandRotationSliders
-	{
-		get
-		{
-			return this.Persistence?.GetPersistence<bool>(
-				$"ExpandRotationSliders_{this.Gizmo}",
-				this.Gizmo == TransformHandleTypes.Rotation) ?? false;
-		}
-
-		set => this.Persistence?.SetPersistence(value, $"ExpandRotationSliders_{this.Gizmo}");
-	}
-
-	[AutoNotify]
-	public bool ExpandScaleSliders
-	{
-		get
-		{
-			return this.Persistence?.GetPersistence<bool>(
-				$"ExpandScaleSliders_{this.Gizmo}",
-				this.Gizmo == TransformHandleTypes.Scale) ?? false;
-		}
-
-		set => this.Persistence?.SetPersistence(value, $"ExpandScaleSliders_{this.Gizmo}");
-	}
-
-	[AutoNotify]
 	public Transform WorldTransform
 	{
 		get => this.TransformSelection?.WorldTransform ?? default;
@@ -84,7 +43,6 @@ public partial class TransformInspector : View
 			if (this.TransformSelection == null)
 				return;
 
-			HistoryService.Record(this.TransformSelection, "Change World Transform");
 			this.TransformSelection.WorldTransform = value;
 		}
 	}
@@ -98,7 +56,6 @@ public partial class TransformInspector : View
 			if (this.TransformSelection == null)
 				return;
 
-			HistoryService.Record(this.TransformSelection, "Change Local Transform");
 			this.TransformSelection.LocalTransform = value;
 		}
 	}

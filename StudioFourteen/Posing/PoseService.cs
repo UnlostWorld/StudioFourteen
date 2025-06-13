@@ -310,7 +310,7 @@ public partial class PoseService : ServiceBase
 		return results;
 	}
 
-	public unsafe BoneSelection? FindBone(int objectTableIndex, string name)
+	public unsafe Bone? FindBone(int objectTableIndex, string name)
 	{
 		TickService.VerifyGameTickThread();
 
@@ -321,7 +321,7 @@ public partial class PoseService : ServiceBase
 		return this.FindBone(pCharacter, name);
 	}
 
-	public unsafe BoneSelection? FindBone(Character* character, string name)
+	public unsafe Bone? FindBone(Character* character, string name)
 	{
 		TickService.VerifyGameTickThread();
 
@@ -378,7 +378,7 @@ public partial class PoseService : ServiceBase
 		if (bones.Count <= 0)
 			return null;
 
-		return new BoneSelection(bones, name);
+		return new Bone(bones, name);
 	}
 
 	public void FlushBoneReferences()
@@ -440,7 +440,7 @@ public partial class PoseService : ServiceBase
 		}
 
 		// if we are flushing a bone we have selected, clear the selection
-		if (this.Services.Selection.Current is BoneSelection boneSelection)
+		if (this.Services.Selection.Current is Bone boneSelection)
 		{
 			foreach (BoneId usedId in boneSelection.BonePaths.Keys)
 			{

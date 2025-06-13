@@ -38,7 +38,7 @@ public partial class PoseViewBase : View
 
 	private readonly Dictionary<string, List<PoseSelectionControl>> controlNameLookup = new();
 	private readonly Dictionary<BoneId, List<PoseSelectionControl>> controlIdLookup = new();
-	private readonly Dictionary<ISceneObjectId, List<PoseSelectionControl>> controlSelectionLookup = new();
+	private readonly Dictionary<string, List<PoseSelectionControl>> controlSelectionLookup = new();
 
 	private List<PoseSelectionControl>? controls;
 	private PoseTabItem? parent;
@@ -129,7 +129,7 @@ public partial class PoseViewBase : View
 		}
 		else
 		{
-			ServiceManager.Instance.Selection.Current = new ObjectTableSelection(this.Services.Target.TargetObjectIndex);
+			ServiceManager.Instance.Selection.Current = new ObjectTableObject(this.Services.Target.TargetObjectIndex);
 		}
 
 		e.Handled = true;
@@ -381,11 +381,11 @@ public partial class PoseViewBase : View
 
 			if (control.SafeName == "character")
 			{
-				control.Selection = new ObjectTableSelection(pCharacter->ObjectIndex);
+				control.Selection = new ObjectTableObject(pCharacter->ObjectIndex);
 			}
 			else
 			{
-				BoneSelection? selection = ServiceManager.Instance.Pose.FindBone(pCharacter, control.SafeName);
+				Bone? selection = ServiceManager.Instance.Pose.FindBone(pCharacter, control.SafeName);
 				if (selection != null)
 				{
 					foreach (BoneId boneId in selection.BonePaths.Keys)
@@ -408,7 +408,7 @@ public partial class PoseViewBase : View
 			{
 				control.IsSafeValid = true;
 
-				ISceneObjectId selectionId = control.Selection.Id;
+				string selectionId = control.Selection.Id;
 				if (!this.controlSelectionLookup.ContainsKey(selectionId))
 					this.controlSelectionLookup.Add(selectionId, new());
 

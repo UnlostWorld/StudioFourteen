@@ -28,18 +28,6 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using WpfUtils.Extensions;
 
-public class EyeSelectionId(int objectTableIndex) : ISceneObjectId
-{
-	public int ObjectTableIndex { get; init; } = objectTableIndex;
-
-	public override SceneObjectBase Create() => new EyeSelection(this.ObjectTableIndex);
-
-	public override int GetHashCode()
-	{
-		return HashCode.Combine(this.GetType(), this.ObjectTableIndex);
-	}
-}
-
 [DependencyProperty<SceneObjectBase>("Selection")]
 public partial class EyeInspector : View
 {
@@ -152,11 +140,11 @@ public class EyeSelection : SceneObjectBase
 		this.Name = "Eye";
 	}
 
+	public override string Id => $"Eye:{this.ObjectTableIndex}";
 	public override object? Icon => Resources.Find("ICON_Selection_Eye");
 	public override string TypeName => Resources.Find("LOC_Selection_Eye", "Blend");
 
-	public override bool CanMirror => true;
-	public override MirrorModes MirrorMode
+	public MirrorModes MirrorMode
 	{
 		get => this.mirrorMode;
 		set
@@ -172,12 +160,8 @@ public class EyeSelection : SceneObjectBase
 
 	public int ObjectTableIndex { get; init; }
 
-	public BoneSelection? EyeBone { get; private set; }
-	public BoneSelection? IrisBone { get; private set; }
-
-	public override bool CanReset => true;
-
-	public override ISceneObjectId Id => new EyeSelectionId(this.ObjectTableIndex);
+	public Bone? EyeBone { get; private set; }
+	public Bone? IrisBone { get; private set; }
 
 	public override void Reset()
 	{
