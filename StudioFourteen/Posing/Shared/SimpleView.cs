@@ -111,7 +111,7 @@ public partial class SimpleView : PoseViewBase
 
 			foreach (PoseSelectionControl target in allTargets)
 			{
-				if (target.Selection is Bone boneSelection)
+				if (target.Selection is BoneSceneObject boneSelection)
 				{
 					foreach ((BoneId boneId, List<BoneId> pathToRoot) in boneSelection.BonePaths)
 					{

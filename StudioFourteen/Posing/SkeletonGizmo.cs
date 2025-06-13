@@ -42,7 +42,7 @@ public class SkeletonGizmo : DrawGroup
 				&& this.Services.Content.GenitalBones?.Contains(boneName) == true)
 				continue;
 
-			Bone? selection = this.Services.Pose.FindBone(this.ObjectTableIndex, boneName);
+			BoneSceneObject? selection = this.Services.Pose.FindBone(this.ObjectTableIndex, boneName);
 
 			if (selection == null)
 				continue;

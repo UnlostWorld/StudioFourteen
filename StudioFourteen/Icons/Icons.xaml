@@ -6,15 +6,15 @@
 	<icons:Fa x:Key="ICON_Window_Minimze" Icon="Minus" Font="Solid" />
 	<icons:Fa x:Key="ICON_Window_Maximize" Icon="Square"/>
 	<icons:Fa x:Key="ICON_Window_Restore" Icon="WindowRestore"/>
-	<icons:Fa x:Key="ICON_Window_Close" Icon="Times"/>
+	<icons:Fa x:Key="ICON_Window_Close" Icon="Times" Font="Solid"/>
 	<icons:Fa x:Key="ICON_Window_PopOut" Icon="ArrowRightFromBracket"/>
 	<icons:Fa x:Key="ICON_Window_Zoom" Icon="SearchPlus"/>
 
 	<icons:Fa x:Key="ICON_GripVertical" Icon="GripLines"/>
 	<icons:Fa x:Key="ICON_GripAll" Icon="GripHorizontal"/>
 
-	<icons:Fa x:Key="ICON_NumberBoxDown" Icon="ChevronLeft"/>
-	<icons:Fa x:Key="ICON_NumberBoxUp" Icon="ChevronRight"/>
+	<icons:Fa x:Key="ICON_NumberBoxDown" Icon="ChevronLeft" Font="Solid"/>
+	<icons:Fa x:Key="ICON_NumberBoxUp" Icon="ChevronRight" Font="Solid"/>
 
 	<icons:Fa x:Key="ICON_Drag_No" Icon="Times"/>
 	<icons:Fa x:Key="ICON_Drag_Assign" Icon="Share"/>
@@ -125,16 +125,16 @@
 	<icons:Fa x:Key="ICON_Animation_Play" Icon="Play" />
 	<icons:Fa x:Key="ICON_Animation_Stop" Icon="Stop" />
 
-	<icons:Fa x:Key="ICON_Pose_Body" Icon="Person" />
+	<icons:Fa x:Key="ICON_Pose_Body" Icon="Person" Font="Solid"/>
 	<icons:Fa x:Key="ICON_Pose_Hands" Icon="Hand" Font="Solid" />
 	<icons:Fa x:Key="ICON_Pose_Face" Icon="FaceGrin" Font="Solid" />
-	<icons:Svg x:Key="ICON_Pose_Wings" Source="Wing"/>
-	<icons:Fa x:Key="ICON_Pose_Mirror_None" Icon="Minus" />
-	<icons:Fa x:Key="ICON_Pose_Mirror_Copy" Icon="LeftLong" />
-	<icons:Fa x:Key="ICON_Pose_Mirror_Flip" Icon="LeftRight" />
+	<icons:Svg x:Key="ICON_Pose_Wings" Source="Wing" />
+	<icons:Fa x:Key="ICON_Pose_Mirror_None" Icon="Minus"  Font="Solid"/>
+	<icons:Fa x:Key="ICON_Pose_Mirror_Copy" Icon="LeftLong"  Font="Solid"/>
+	<icons:Fa x:Key="ICON_Pose_Mirror_Flip" Icon="LeftRight"  Font="Solid"/>
 	<icons:Fa x:Key="ICON_Pose_LockTransform" Icon="CirclePause" />
-	<icons:Fa x:Key="ICON_Pose_Reset" Icon="RotateBack" />
-	<icons:Fa x:Key="ICON_Pose_Reference" Icon="Person" />
+	<icons:Fa x:Key="ICON_Pose_Reset" Icon="RotateBack" Font="Solid"/>
+	<icons:Fa x:Key="ICON_Pose_Reference" Icon="Person"  Font="Solid"/>
 
 	<icons:Fa x:Key="ICON_Photo_Settings" Icon="Gear" Font="Solid" />
 	<icons:Svg x:Key="ICON_Photo_Capture" Source="Capture"/>

@@ -108,11 +108,11 @@ public class BlendSelection : SceneObjectBase
 	{
 		await TickService.GameTick();
 
-		List<Bone>? boneSelections = this.Target.GetBones(this.objectTableIndex, flipSides);
+		List<BoneSceneObject>? boneSelections = this.Target.GetBones(this.objectTableIndex, flipSides);
 		if (boneSelections == null)
 			return;
 
-		foreach (Bone selection in boneSelections)
+		foreach (BoneSceneObject selection in boneSelections)
 		{
 			selection.Activate();
 		}
@@ -120,7 +120,7 @@ public class BlendSelection : SceneObjectBase
 		await Task.Delay(50);
 		await TickService.GameTick();
 
-		foreach (Bone boneSelection in boneSelections)
+		foreach (BoneSceneObject boneSelection in boneSelections)
 		{
 			if (boneSelection.BoneName == null)
 				continue;
@@ -162,11 +162,11 @@ public class BlendSelection : SceneObjectBase
 		}
 	}
 
-	public struct BoneBlend(Bone selection, Transform initial, BoneTransform right, BoneTransform? left = null)
+	public struct BoneBlend(BoneSceneObject selection, Transform initial, BoneTransform right, BoneTransform? left = null)
 	{
 		public BoneTransform Value = new();
 
-		public Bone Selection = selection;
+		public BoneSceneObject Selection = selection;
 		public Transform Initial = initial;
 		public BoneTransform Right = right;
 		public BoneTransform? Left = left;
@@ -246,11 +246,11 @@ public class BlendTarget
 		}
 	}
 
-	public List<Bone>? GetBones(int objectTableIndex, bool flipBones)
+	public List<BoneSceneObject>? GetBones(int objectTableIndex, bool flipBones)
 	{
 		TickService.VerifyGameTickThread();
 
-		List<Bone> selections = new();
+		List<BoneSceneObject> selections = new();
 
 		if (this.RightBones == null)
 			return null;
@@ -261,7 +261,7 @@ public class BlendTarget
 			if (flipBones)
 				getBoneName = PoseService.GetMirrorBoneName(boneName) ?? boneName;
 
-			Bone? selection = ServiceManager.Instance.Pose.FindBone(objectTableIndex, getBoneName);
+			BoneSceneObject? selection = ServiceManager.Instance.Pose.FindBone(objectTableIndex, getBoneName);
 
 			if (selection == null)
 				continue;

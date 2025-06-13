@@ -26,8 +26,6 @@ public abstract partial class TransformSceneObjectBase : SceneObjectBase
 
 	private Transform? initialWorldTransform = null;
 
-	public virtual bool CanLockTransform => true;
-
 	public virtual double TranslationChange => 0.1;
 	public virtual int DecimalPlacesToDisplay => 2;
 	public virtual TransformHandleTypes DefaultGizmo => TransformHandleTypes.Translation;

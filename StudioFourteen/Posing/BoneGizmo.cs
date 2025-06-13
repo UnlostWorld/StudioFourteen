@@ -29,13 +29,13 @@ using StudioFourteen.Selection;
 
 public class BoneGizmo : SelectionHandle
 {
-	private readonly Bone boneSelection;
+	private readonly BoneSceneObject boneSelection;
 	private readonly BoneId boneId;
 	private readonly BoneId? parentBoneId;
 	private readonly MeshRenderer<BoneCapMaterial> capRenderer;
 	private readonly LineRenderer<BoneMaterial>? connectionRenderer;
 
-	public BoneGizmo(Bone selection)
+	public BoneGizmo(BoneSceneObject selection)
 		: base(selection)
 	{
 		this.boneSelection = selection;

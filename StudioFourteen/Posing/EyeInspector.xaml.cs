@@ -160,8 +160,8 @@ public class EyeSelection : SceneObjectBase
 
 	public int ObjectTableIndex { get; init; }
 
-	public Bone? EyeBone { get; private set; }
-	public Bone? IrisBone { get; private set; }
+	public BoneSceneObject? EyeBone { get; private set; }
+	public BoneSceneObject? IrisBone { get; private set; }
 
 	public override void Reset()
 	{

@@ -20,7 +20,7 @@ using StudioFourteen.Rendering.Draw.Gizmos;
 using StudioFourteen.Rendering.Draw.Gizmos.Transforms;
 using StudioFourteen.Scene;
 using StudioFourteen.Services;
-using StudioFourteen.Widgets;
+using StudioFourteen.Widget;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;

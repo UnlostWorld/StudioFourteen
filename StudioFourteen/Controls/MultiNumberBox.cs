@@ -290,7 +290,10 @@ public partial class Color4Box : MultiNumberBox
 [DependencyProperty<double>("Maximum", DefaultValue = double.MaxValue)]
 [DependencyProperty<int>("DecimalPlaces", DefaultValue = 3)]
 [DependencyProperty<Style>("NumberSliderStyle")]
+[DependencyProperty<bool>("SingleLine", DefaultValue = false)]
 [DependencyProperty<ObservableCollection<MultiNumberBoxChannel>>("Channels")]
+[DependencyProperty<int>("Rows", DefaultValue = 0)]
+[DependencyProperty<int>("Columns", DefaultValue = 0)]
 public abstract partial class MultiNumberBox
 	: Control
 {
@@ -318,6 +321,12 @@ public abstract partial class MultiNumberBox
 	partial void OnDecimalPlacesChanged() => this.OnPropertiesChanged(nameof(this.DecimalPlaces));
 	partial void OnNumberSliderStyleChanged() => this.OnPropertiesChanged(nameof(this.NumberSliderStyle));
 	partial void OnChangeChanged() => this.OnPropertiesChanged(nameof(this.Change));
+
+	partial void OnSingleLineChanged(bool newValue)
+	{
+		this.Rows = newValue ? 0 : this.Channels?.Count ?? 0;
+		this.Columns = newValue ? this.Channels?.Count ?? 0 : 0;
+	}
 
 	private void OnPropertiesChanged(string name)
 	{

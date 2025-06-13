@@ -5,8 +5,7 @@
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
 
-	<ControlTemplate TargetType="{x:Type local:MultiNumberBox}"
-		x:Key="MultiNumberBoxTemplate">
+	<ControlTemplate x:Key="MultiNumberBoxTemplate" TargetType="{x:Type local:MultiNumberBox}">
 		<Grid>
 			<ItemsControl ItemsSource="{TemplateBinding Channels}">
 				<ItemsControl.ItemTemplate>
@@ -27,9 +26,9 @@
 								Grid.Row="0"
 								Grid.Column="1"
 								Change="{Binding Change}"
-								Wrap="{Binding Wrap}"
 								Maximum="{Binding Maximum}"
 								Minimum="{Binding Minimum}"
+								Wrap="{Binding Wrap}"
 								Value="{Binding Value}" />
 						</Grid>
 					</DataTemplate>
@@ -38,41 +37,66 @@
 		</Grid>
 	</ControlTemplate>
 
-	<Style x:Key="StudioMultiNumberBox"
-		TargetType="{x:Type local:MultiNumberBox}">
+	<ControlTemplate x:Key="MultiNumberBoxSingleLineTemplate" TargetType="{x:Type local:MultiNumberBox}">
+		<Grid>
+			<ItemsControl ItemsSource="{TemplateBinding Channels}">
+
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<UniformGrid Rows="1"/>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+
+				<ItemsControl.ItemTemplate>
+					<DataTemplate>
+						<local:NumberBox
+							Grid.Row="0"
+							Grid.Column="1"
+							Change="{Binding Change}"
+							Maximum="{Binding Maximum}"
+							Minimum="{Binding Minimum}"
+							Wrap="{Binding Wrap}"
+							Value="{Binding Value}" />
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</Grid>
+	</ControlTemplate>
+
+	<Style x:Key="StudioMultiNumberBox" TargetType="{x:Type local:MultiNumberBox}">
 		<Setter Property="Template" Value="{StaticResource MultiNumberBoxTemplate}" />
+
+		<Style.Triggers>
+			<Trigger Property="SingleLine" Value="True">
+				<Setter Property="Template" Value="{StaticResource MultiNumberBoxSingleLineTemplate}" />
+			</Trigger>
+		</Style.Triggers>
 	</Style>
 
-	<Style BasedOn="{StaticResource StudioMultiNumberBox}"
-		TargetType="{x:Type local:Color4Box}" >
-		<Setter Property="Minimum" Value="0"/>
-		<Setter Property="Maximum" Value="1"/>
-		<Setter Property="Change" Value="0.1"/>
+	<Style BasedOn="{StaticResource StudioMultiNumberBox}" TargetType="{x:Type local:Color4Box}">
+		<Setter Property="Change" Value="0.1" />
+		<Setter Property="Maximum" Value="1" />
+		<Setter Property="Minimum" Value="0" />
 	</Style>
 
-	<Style BasedOn="{StaticResource StudioMultiNumberBox}"
-		TargetType="{x:Type local:Color3Box}" >
-		<Setter Property="Minimum" Value="0"/>
-		<Setter Property="Maximum" Value="1"/>
-		<Setter Property="Change" Value="0.1"/>
+	<Style BasedOn="{StaticResource StudioMultiNumberBox}" TargetType="{x:Type local:Color3Box}">
+		<Setter Property="Change" Value="0.1" />
+		<Setter Property="Maximum" Value="1" />
+		<Setter Property="Minimum" Value="0" />
 	</Style>
 
 
-	<Style BasedOn="{StaticResource StudioMultiNumberBox}"
-		TargetType="{x:Type local:Vector4Box}" />
+	<Style BasedOn="{StaticResource StudioMultiNumberBox}" TargetType="{x:Type local:Vector4Box}" />
 
-	<Style BasedOn="{StaticResource StudioMultiNumberBox}"
-		TargetType="{x:Type local:Vector3Box}" />
+	<Style BasedOn="{StaticResource StudioMultiNumberBox}" TargetType="{x:Type local:Vector3Box}" />
 
-	<Style BasedOn="{StaticResource StudioMultiNumberBox}"
-		TargetType="{x:Type local:Vector2Box}" />
+	<Style BasedOn="{StaticResource StudioMultiNumberBox}" TargetType="{x:Type local:Vector2Box}" />
 
-	<Style BasedOn="{StaticResource StudioMultiNumberBox}"
-		TargetType="{x:Type local:QuaternionBox}" >
-		<Setter Property="Minimum" Value="-180"/>
-		<Setter Property="Maximum" Value="180"/>
-		<Setter Property="Change" Value="5"/>
-		<Setter Property="Wrap" Value="True"/>
+	<Style BasedOn="{StaticResource StudioMultiNumberBox}" TargetType="{x:Type local:QuaternionBox}">
+		<Setter Property="Change" Value="5" />
+		<Setter Property="Maximum" Value="180" />
+		<Setter Property="Minimum" Value="-180" />
+		<Setter Property="Wrap" Value="True" />
 	</Style>
 
 </ResourceDictionary>

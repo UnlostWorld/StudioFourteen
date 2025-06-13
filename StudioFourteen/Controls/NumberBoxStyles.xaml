@@ -66,11 +66,11 @@
 				<TextBox
 					Background="Transparent"
 					Name="PART_TextBox"
-					Grid.Column="1"
+					Grid.ColumnSpan="3"
 					Focusable="False"
 					HorizontalContentAlignment="Center"/>
 
-				<Rectangle Fill="Transparent" Grid.Column="1" x:Name="PART_Clicker" Visibility="Visible"/>
+				<Rectangle Fill="Transparent" Grid.ColumnSpan="3" x:Name="PART_Clicker" Visibility="Visible"/>
 
 			</Grid>
 		</Grid>

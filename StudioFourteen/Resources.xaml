@@ -44,6 +44,11 @@
 
 		<!--  Templates  -->
 		<ResourceDictionary Source="./Library/LibraryBodyTemplates.xaml" />
+
+		<!-- Inspectors -->
+		<ResourceDictionary Source="./Scene/TransformObjectInspector.xaml"/>
+		<ResourceDictionary Source="./Posing/BoneInspector.xaml"/>
+
 	</ResourceDictionary.MergedDictionaries>
 
 	<!--  Custom converters  -->

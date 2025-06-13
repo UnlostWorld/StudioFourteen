@@ -1,23 +1,20 @@
-﻿<mvm:View
-	x:Class="StudioFourteen.Posing.TransformInspector"
+<ResourceDictionary
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:local="clr-namespace:StudioFourteen.Posing"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:mvm="clr-namespace:StudioFourteen.Mvm"
-	xmlns:pose="clr-namespace:StudioFourteen.Posing"
+	xmlns:icons="clr-namespace:StudioFourteen.Icons"
+	xmlns:scene="clr-namespace:StudioFourteen.Scene"
 	xmlns:transform="clr-namespace:StudioFourteen.Gizmos.Handles.TransformHandle"
-	xmlns:windows="clr-namespace:StudioFourteen.Panels"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
-	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
-	mc:Ignorable="d">
+	xmlns:widget="clr-namespace:StudioFourteen.Widget">
 
-	<Grid>
+	<BooleanToVisibilityConverter x:Key="B2V" />
+	<converters:BoolInversionConverter x:Key="!B" />
+
+	<DataTemplate x:Key="TransformSceneObjectBaseInspector" DataType="{x:Type scene:TransformSceneObjectBase}">
 		<StackPanel>
-			<Grid Margin="1,3,1,1">
+			<Grid Margin="1,3,1,1" widget:View.HideInWidget="True">
 				<Border Style="{DynamicResource WpfUtilsControlBorder}">
 					<Grid>
 						<Grid.RowDefinitions>
@@ -26,10 +23,9 @@
 						</Grid.RowDefinitions>
 
 						<Grid Grid.Row="0" Height="168">
-
 							<transform:TransformHandleControl
 								GizmoType="{Binding Gizmo}"
-								Sensitivity="{Binding Selection.GizmoSensitivity}"
+								Sensitivity="{Binding GizmoSensitivity}"
 								Transform="{Binding WorldTransform}" />
 						</Grid>
 
@@ -44,33 +40,34 @@
 								ToolTip="{DynamicResource LOC_Translate}" />
 
 							<ListBoxItem
-								Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
 								Content="{DynamicResource ICON_Transform_Rotate}"
+								Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
 								ToolTip="{DynamicResource LOC_Rotate}" />
 
 							<ListBoxItem
+								Content="{DynamicResource ICON_Transform_Scale}"
 								Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
-								ToolTip="{DynamicResource LOC_Scale}"
-								Content="{DynamicResource ICON_Transform_Scale}"/>
+								ToolTip="{DynamicResource LOC_Scale}" />
 						</wpfUtils:SwitchSelector>
 					</Grid>
 				</Border>
 			</Grid>
 
 			<controls:TransformControl
-				TranslationDecimalPlaces="{Binding DecimalPlacesDisplay}"
-				TranslationChange="{Binding Selection.TranslationChange}"
-				TranslationMinimum="-100000"
-				TranslationMaximum="100000"
-				RotationMinimum="-180"
-				RotationMaximum="180"
 				RotationChange="5"
-				ScaleMinimum="0.001"
-				ScaleMaximum="100"
+				RotationMaximum="180"
+				RotationMinimum="-180"
 				ScaleChange="0.1"
-				Value="{Binding LocalTransform}"/>
+				ScaleMaximum="100"
+				ScaleMinimum="0.001"
+				TranslationChange="{Binding TranslationChange}"
+				TranslationDecimalPlaces="{Binding DecimalPlacesDisplay}"
+				TranslationMaximum="100000"
+				TranslationMinimum="-100000"
+				Style="{DynamicResource TransformControlDense}"
+				Value="{Binding LocalTransform}" />
 
 		</StackPanel>
-	</Grid>
+	</DataTemplate>
 
-</mvm:View>
+</ResourceDictionary>

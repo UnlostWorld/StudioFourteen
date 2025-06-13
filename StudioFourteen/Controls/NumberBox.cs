@@ -138,6 +138,17 @@ public partial class NumberBox : Control
 		base.OnApplyTemplate();
 	}
 
+	protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
+	{
+		base.OnRenderSizeChanged(sizeInfo);
+
+		if (this.downButton != null)
+			this.downButton.Visibility = this.ActualWidth > 100 ? Visibility.Visible : Visibility.Collapsed;
+
+		if (this.upButton != null)
+			this.upButton.Visibility = this.ActualWidth > 100 ? Visibility.Visible : Visibility.Collapsed;
+	}
+
 	private void OnDoubleClick()
 	{
 		if (this.textBox == null)

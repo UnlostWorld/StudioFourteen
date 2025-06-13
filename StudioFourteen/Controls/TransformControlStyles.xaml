@@ -1,43 +1,123 @@
 ﻿<ResourceDictionary
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:local="clr-namespace:StudioFourteen.Controls"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
-	<ControlTemplate x:Key="StudioTransformControlTemplate"
-		TargetType="{x:Type local:TransformControl}">
+	<ControlTemplate x:Key="StudioTransformControlTemplate" TargetType="{x:Type local:TransformControl}">
 
 		<StackPanel>
 			<GroupBox Header="Position">
 				<local:Vector3Box
-					Value="{Binding Translation, RelativeSource={RelativeSource TemplatedParent}}"
+					Change="{Binding TranslationChange, RelativeSource={RelativeSource TemplatedParent}}"
+					DecimalPlaces="{TemplateBinding TranslationDecimalPlaces}"
 					Maximum="{TemplateBinding TranslationMaximum}"
 					Minimum="{TemplateBinding TranslationMinimum}"
-					Change="{Binding TranslationChange, RelativeSource={RelativeSource TemplatedParent}}"
-					DecimalPlaces="{TemplateBinding TranslationDecimalPlaces}" />
+					Value="{Binding Translation, RelativeSource={RelativeSource TemplatedParent}}" />
 			</GroupBox>
 			<GroupBox Header="Rotation">
 				<local:Vector3Box
-					Wrap="True"
-					Value="{Binding RotationEuler, RelativeSource={RelativeSource TemplatedParent}}"
+					Change="{Binding RotationChange, RelativeSource={RelativeSource TemplatedParent}}"
+					DecimalPlaces="{TemplateBinding RotationDecimalPlaces}"
 					Maximum="{TemplateBinding RotationMaximum}"
 					Minimum="{TemplateBinding RotationMinimum}"
-					Change="{Binding RotationChange, RelativeSource={RelativeSource TemplatedParent}}"
-					DecimalPlaces="{TemplateBinding RotationDecimalPlaces}" />
+					Wrap="True"
+					Value="{Binding RotationEuler, RelativeSource={RelativeSource TemplatedParent}}" />
 			</GroupBox>
 			<GroupBox Header="Scale">
 				<local:Vector3Box
-					Value="{Binding Scale, RelativeSource={RelativeSource TemplatedParent}}"
+					Change="{Binding ScaleChange, RelativeSource={RelativeSource TemplatedParent}}"
+					DecimalPlaces="{TemplateBinding ScaleDecimalPlaces}"
 					Maximum="{TemplateBinding ScaleMaximum}"
 					Minimum="{TemplateBinding ScaleMinimum}"
-					Change="{Binding ScaleChange, RelativeSource={RelativeSource TemplatedParent}}"
-					DecimalPlaces="{TemplateBinding ScaleDecimalPlaces}" />
+					Value="{Binding Scale, RelativeSource={RelativeSource TemplatedParent}}" />
 			</GroupBox>
 		</StackPanel>
 	</ControlTemplate>
 
 	<Style TargetType="{x:Type local:TransformControl}">
 		<Setter Property="Template" Value="{StaticResource StudioTransformControlTemplate}" />
+	</Style>
+
+
+	<ControlTemplate x:Key="StudioTransformControlDenseTemplate" TargetType="{x:Type local:TransformControl}">
+
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition />
+			</Grid.ColumnDefinitions>
+
+			<Grid.RowDefinitions>
+				<RowDefinition />
+				<RowDefinition />
+				<RowDefinition />
+			</Grid.RowDefinitions>
+
+			<icons:IconView
+				Width="16"
+				Height="16"
+				Margin="2"
+				Grid.Row="0"
+				Grid.Column="0"
+				Icon="{DynamicResource ICON_Transform_Translate}"
+				Foreground="{DynamicResource ForegroundLightBrush}"/>
+
+			<local:Vector3Box
+				Grid.Row="0"
+				Grid.Column="1"
+				Change="{Binding TranslationChange, RelativeSource={RelativeSource TemplatedParent}}"
+				DecimalPlaces="{TemplateBinding TranslationDecimalPlaces}"
+				Maximum="{TemplateBinding TranslationMaximum}"
+				Minimum="{TemplateBinding TranslationMinimum}"
+				SingleLine="True"
+				Value="{Binding Translation, RelativeSource={RelativeSource TemplatedParent}}" />
+
+			<icons:IconView
+				Width="16"
+				Height="16"
+				Margin="2"
+				Grid.Row="1"
+				Grid.Column="0"
+				Icon="{DynamicResource ICON_Transform_Rotate}"
+				Foreground="{DynamicResource ForegroundLightBrush}"/>
+
+			<local:Vector3Box
+				Grid.Row="1"
+				Grid.Column="1"
+				Change="{Binding RotationChange, RelativeSource={RelativeSource TemplatedParent}}"
+				DecimalPlaces="{TemplateBinding RotationDecimalPlaces}"
+				Maximum="{TemplateBinding RotationMaximum}"
+				Minimum="{TemplateBinding RotationMinimum}"
+				SingleLine="True"
+				Wrap="True"
+				Value="{Binding RotationEuler, RelativeSource={RelativeSource TemplatedParent}}" />
+
+			<icons:IconView
+				Width="16"
+				Height="16"
+				Margin="2"
+				Grid.Row="2"
+				Grid.Column="0"
+				Icon="{DynamicResource ICON_Transform_Scale}"
+				Foreground="{DynamicResource ForegroundLightBrush}"/>
+
+			<local:Vector3Box
+				Grid.Row="2"
+				Grid.Column="1"
+				Change="{Binding ScaleChange, RelativeSource={RelativeSource TemplatedParent}}"
+				DecimalPlaces="{TemplateBinding ScaleDecimalPlaces}"
+				Maximum="{TemplateBinding ScaleMaximum}"
+				Minimum="{TemplateBinding ScaleMinimum}"
+				SingleLine="True"
+				Value="{Binding Scale, RelativeSource={RelativeSource TemplatedParent}}" />
+
+		</Grid>
+	</ControlTemplate>
+
+	<Style x:Key="TransformControlDense" TargetType="{x:Type local:TransformControl}">
+		<Setter Property="Template" Value="{StaticResource StudioTransformControlDenseTemplate}" />
 	</Style>
 
 </ResourceDictionary>

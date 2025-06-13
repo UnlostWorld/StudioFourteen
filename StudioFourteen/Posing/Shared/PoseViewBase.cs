@@ -385,7 +385,7 @@ public partial class PoseViewBase : View
 			}
 			else
 			{
-				Bone? selection = ServiceManager.Instance.Pose.FindBone(pCharacter, control.SafeName);
+				BoneSceneObject? selection = ServiceManager.Instance.Pose.FindBone(pCharacter, control.SafeName);
 				if (selection != null)
 				{
 					foreach (BoneId boneId in selection.BonePaths.Keys)

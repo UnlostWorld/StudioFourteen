@@ -13,17 +13,16 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Selection;
+namespace StudioFourteen.Posing;
 
-using StudioFourteen.Posing;
 using StudioFourteen.Scene;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-
+using WpfUtils.Commands;
 using StudioTransform = StudioFourteen.Transform;
 
-public class Bone : TransformSceneObjectBase
+public class BoneSceneObject : TransformSceneObjectBase
 {
 	private static readonly Dictionary<string, MirrorModes> DefaultMirrorModes = new()
 	{
@@ -34,7 +33,7 @@ public class Bone : TransformSceneObjectBase
 	private BoneReference? bone;
 	private bool isReading = false;
 
-	public Bone(Dictionary<BoneId, List<BoneId>> bonePaths, string name)
+	public BoneSceneObject(Dictionary<BoneId, List<BoneId>> bonePaths, string name)
 	{
 		this.BoneName = name;
 		this.BonePaths = bonePaths;
@@ -44,6 +43,8 @@ public class Bone : TransformSceneObjectBase
 		this.Name = Resources.Find($"LOC_Bone_{this.BoneName}", this.BoneName);
 		this.Subtitle = name;
 		this.Description = Resources.Find($"LOC_Bone_{this.BoneName}_Tooltip", string.Empty);
+
+		this.ResetCommand = new(this.Reset);
 	}
 
 	public Dictionary<BoneId, List<BoneId>> BonePaths { get; private set; }
@@ -53,13 +54,13 @@ public class Bone : TransformSceneObjectBase
 	public override string TypeName => Resources.Find("LOC_Selection_Bone", "Bone");
 
 	public string BoneName { get; init; }
+	public SimpleCommand ResetCommand { get; init; }
 
 	public bool IsFaceBone { get; private set; }
 	public override double TranslationChange => this.IsFaceBone ? 0.01 : 0.1;
 	public override int DecimalPlacesToDisplay => this.IsFaceBone ? 4 : 2;
 	public override double GizmoSensitivity => this.IsFaceBone ? 0.05 : 0.5;
 
-	public bool CanMirror => true;
 	public MirrorModes MirrorMode
 	{
 		get
