@@ -18,11 +18,11 @@ namespace StudioFourteen.Posing;
 using System.Collections.Generic;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
-using StudioFourteen.Rendering.Scene;
+using StudioFourteen.Rendering.Draw;
 using StudioFourteen.Selection;
 using StudioFourteen.Services;
 
-public class SkeletonGizmo : SceneGroup
+public class SkeletonGizmo : DrawGroup
 {
 	public readonly int ObjectTableIndex;
 

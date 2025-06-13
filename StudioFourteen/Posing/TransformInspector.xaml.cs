@@ -20,17 +20,18 @@ using PropertyChanged.SourceGenerator;
 using StudioFourteen.Gizmos.Handles.TransformHandle;
 using StudioFourteen.History;
 using StudioFourteen.Mvm;
+using StudioFourteen.Scene;
 using StudioFourteen.Selection;
 using StudioFourteen.Settings;
 
-[DependencyProperty<SelectionBase>("Selection")]
+[DependencyProperty<SceneObjectBase>("Selection")]
 [DependencyProperty<Persistence>("Persistence")]
 public partial class TransformInspector : View
 {
 	[Notify] private int gizmoIndex = 0;
 	[Notify] private TransformHandleTypes gizmo = TransformHandleTypes.Translation;
 
-	public TransformSelectionBase? TransformSelection => this.Selection as TransformSelectionBase;
+	public TransformSceneObjectBase? TransformSelection => this.Selection as TransformSceneObjectBase;
 
 	[AutoNotify]
 	public int DecimalPlacesDisplay => this.TransformSelection?.DecimalPlacesToDisplay ?? 2;

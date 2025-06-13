@@ -17,7 +17,7 @@ namespace StudioFourteen.Posing;
 
 using System.Collections.Generic;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using StudioFourteen.Rendering.Scene.Gizmos;
+using StudioFourteen.Rendering.Draw.Gizmos;
 using StudioFourteen.Services;
 
 public class SkeletonsGizmo : GizmoBase

@@ -13,40 +13,8 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Scene.Gizmos.Transforms;
+namespace StudioFourteen.Rendering.Draw;
 
-using System.Numerics;
-using StudioFourteen.Rendering.Scene.Gizmos;
-using StudioFourteen.Selection;
-
-public abstract class TransformGizmoBase : SelectionGizmoBase<TransformSelectionBase>
+public abstract class RendererBase : DrawObject
 {
-	private Transform targetTransform;
-
-	public Transform TargetTransform
-	{
-		get => this.targetTransform;
-		set
-		{
-			this.targetTransform = value;
-			this.Transform = Transform.FromTRS(this.TargetTransform.Translation, this.TargetTransform.Rotation, Vector3.One);
-		}
-	}
-
-	public override void OnGameTick()
-	{
-		base.OnGameTick();
-
-		if (this.Selection == null)
-			return;
-
-		if (this.IsBeingManipulated)
-		{
-			this.Selection.WorldTransform = this.TargetTransform;
-		}
-		else
-		{
-			this.TargetTransform = this.Selection.WorldTransform;
-		}
-	}
 }

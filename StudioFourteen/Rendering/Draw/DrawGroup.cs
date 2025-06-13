@@ -13,19 +13,19 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Scene;
+namespace StudioFourteen.Rendering.Draw;
 
 using System;
 using System.Collections.Generic;
 using System.Numerics;
 using SharpDX.Direct3D11;
 
-public class SceneGroup : SceneObject
+public class DrawGroup : DrawObject
 {
-	public readonly List<SceneObject> Children = new();
+	public readonly List<DrawObject> Children = new();
 
 	public T Create<T>()
-		where T : SceneObject, new()
+		where T : DrawObject, new()
 	{
 		T sceneObject = new T();
 		sceneObject.Parent = this;
@@ -33,13 +33,13 @@ public class SceneGroup : SceneObject
 		return sceneObject;
 	}
 
-	public void Add(SceneObject sceneObject)
+	public void Add(DrawObject sceneObject)
 	{
 		sceneObject.Parent = this;
 		this.Children.Add(sceneObject);
 	}
 
-	public void Remove(SceneObject sceneObject)
+	public void Remove(DrawObject sceneObject)
 	{
 		if (sceneObject.Parent == this)
 			sceneObject.Parent = null;
@@ -54,7 +54,7 @@ public class SceneGroup : SceneObject
 		if (!this.IsVisible)
 			return;
 
-		foreach (SceneObject child in this.Children)
+		foreach (DrawObject child in this.Children)
 		{
 			try
 			{
@@ -79,7 +79,7 @@ public class SceneGroup : SceneObject
 
 		Transform thisTransform = (this.LocalTransform * this.Transform) * transform;
 
-		foreach (SceneObject child in this.Children)
+		foreach (DrawObject child in this.Children)
 		{
 			if (!child.IsHitTestVisible || !child.IsVisible)
 				continue;
@@ -98,7 +98,7 @@ public class SceneGroup : SceneObject
 
 	public override void Dispose()
 	{
-		foreach (SceneObject child in this.Children)
+		foreach (DrawObject child in this.Children)
 		{
 			child.Dispose();
 		}

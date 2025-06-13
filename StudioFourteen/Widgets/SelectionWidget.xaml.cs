@@ -23,8 +23,8 @@ using System.Windows;
 using System.Windows.Input;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Panels;
-using StudioFourteen.Rendering.Scene.Gizmos;
-using StudioFourteen.Selection;
+using StudioFourteen.Rendering.Draw.Gizmos;
+using StudioFourteen.Scene;
 using WpfUtils;
 using WpfUtils.Extensions;
 using WpfUtils.Silk;
@@ -32,8 +32,8 @@ using WpfUtils.Silk;
 public partial class SelectionWidget : Panel
 {
 	private bool isShowing = false;
-	[Notify] private SelectionBase? current;
-	[Notify] private SelectionGizmoBase? selectedGizmo = null;
+	[Notify] private SceneObjectBase? current;
+	[Notify] private ObjectGizmoBase? selectedGizmo = null;
 	[Notify] private bool hide;
 	[Notify] private bool expanded;
 
@@ -41,7 +41,7 @@ public partial class SelectionWidget : Panel
 	private Animator opening;
 	private Animator closing;
 
-	public FastObservableCollection<SelectionGizmoBase> Gizmos { get; init; } = new();
+	public FastObservableCollection<ObjectGizmoBase> Gizmos { get; init; } = new();
 
 	public override void OnDeactivated()
 	{
@@ -80,7 +80,7 @@ public partial class SelectionWidget : Panel
 			this.Hide = false;
 		}
 
-		if (this.Current is TransformSelectionBase transformSelection)
+		if (this.Current is TransformSceneObjectBase transformSelection)
 		{
 			Vector3 worldPos = Vector3.Transform(Vector3.Zero, transformSelection.WorldTransform.ToMatrix());
 			Vector3 cameraPos = this.Services.Camera.WorldToCamera(worldPos);
@@ -95,12 +95,12 @@ public partial class SelectionWidget : Panel
 		}
 	}
 
-	private void OnSelectionChanged(SelectionBase? oldSelection, SelectionBase? newSelection)
+	private void OnSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection)
 	{
 		Task.Run(() => this.ChangeSelection(newSelection));
 	}
 
-	private async Task ChangeSelection(SelectionBase? newSelection)
+	private async Task ChangeSelection(SceneObjectBase? newSelection)
 	{
 		if (newSelection == null)
 		{
@@ -120,7 +120,7 @@ public partial class SelectionWidget : Panel
 
 			await this.MainThread();
 
-			List<SelectionGizmoBase> gizmos = this.Services.Selection.GetValidGizmos();
+			List<ObjectGizmoBase> gizmos = this.Services.Selection.GetValidGizmos();
 			this.Gizmos.Replace(gizmos);
 			this.Current = newSelection;
 			this.Expanded = this.Services.Selection.ExpandedSelection;
@@ -132,12 +132,12 @@ public partial class SelectionWidget : Panel
 		}
 	}
 
-	private void OnSelectionGizmoChanged(SelectionGizmoBase? oldGizmo, SelectionGizmoBase? newGizmo)
+	private void OnSelectionGizmoChanged(ObjectGizmoBase? oldGizmo, ObjectGizmoBase? newGizmo)
 	{
 		this.SelectedGizmo = newGizmo;
 	}
 
-	private void OnSelectedGizmoChanged(SelectionGizmoBase? oldGizmo, SelectionGizmoBase? newGizmo)
+	private void OnSelectedGizmoChanged(ObjectGizmoBase? oldGizmo, ObjectGizmoBase? newGizmo)
 	{
 		this.Services.Selection.Gizmo = newGizmo;
 	}

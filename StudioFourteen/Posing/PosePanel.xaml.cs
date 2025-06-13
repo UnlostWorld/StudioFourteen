@@ -29,18 +29,19 @@ using WpfUtils.Utils;
 using System.Threading.Tasks;
 using System;
 using WpfUtils;
+using StudioFourteen.Scene;
 
 public partial class PosePanel : CharacterPanelBase
 {
 	private readonly FuncQueue showTooltipQueue;
-	private SelectionBase? nextHover;
+	private SceneObjectBase? nextHover;
 
 	[Notify] private string revertTooltip = string.Empty;
-	[Notify] private SelectionBase? selection;
+	[Notify] private SceneObjectBase? selection;
 	[Notify] private bool isSelectionTransform;
 	[Notify] private bool isSelectionBlend;
 	[Notify] private bool isSelectionEye;
-	[Notify] private SelectionBase? hover;
+	[Notify] private SceneObjectBase? hover;
 	[Notify] private bool isHoverTooltipOpen = false;
 	[Notify] private UIElement? hoverTarget;
 
@@ -117,7 +118,7 @@ public partial class PosePanel : CharacterPanelBase
 		this.RevertTooltip = StudioFourteen.Resources.Format("LOC_Pose_RevertPose", this.CharacterName);
 	}
 
-	private void OnHoverChanged(SelectionBase? oldSelection, SelectionBase? newSelection)
+	private void OnHoverChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection)
 	{
 		this.Dispatcher.Invoke(() =>
 		{
@@ -146,10 +147,10 @@ public partial class PosePanel : CharacterPanelBase
 		this.IsHoverTooltipOpen = true;
 	}
 
-	private void OnSelectionChanged(SelectionBase? oldSelection, SelectionBase? newSelection)
+	private void OnSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection)
 	{
 		this.Selection = newSelection;
-		this.IsSelectionTransform = this.Selection is TransformSelectionBase;
+		this.IsSelectionTransform = this.Selection is TransformSceneObjectBase;
 		this.IsSelectionBlend = this.Selection is BlendSelection;
 		this.IsSelectionEye = this.Selection is EyeSelection;
 	}

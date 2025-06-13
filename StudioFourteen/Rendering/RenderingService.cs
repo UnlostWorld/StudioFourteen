@@ -24,7 +24,7 @@ using SharpDX.Direct3D11;
 using SixLabors.ImageSharp;
 using StudioFourteen.Plugin;
 using StudioFourteen.Rendering.Passes;
-using StudioFourteen.Rendering.Scene;
+using StudioFourteen.Rendering.Draw;
 using StudioFourteen.Services;
 
 using Device = SharpDX.Direct3D11.Device;

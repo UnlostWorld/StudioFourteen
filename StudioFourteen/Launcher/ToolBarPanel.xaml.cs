@@ -20,7 +20,8 @@ using System.Collections.Generic;
 using System.Numerics;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Panels;
-using StudioFourteen.Rendering.Scene.Gizmos;
+using StudioFourteen.Rendering.Draw.Gizmos;
+using StudioFourteen.Scene;
 using StudioFourteen.Selection;
 using StudioFourteen.Utilities;
 using WpfUtils.Extensions;
@@ -28,9 +29,9 @@ using WpfUtils.Extensions;
 public partial class ToolBarPanel : Panel
 {
 	[Notify] private bool allowMouseCapture = true;
-	[Notify] private SelectionGizmoBase? selectedGizmo = null;
+	[Notify] private ObjectGizmoBase? selectedGizmo = null;
 
-	public FastObservableCollection<SelectionGizmoBase> Gizmos { get; init; } = new();
+	public FastObservableCollection<ObjectGizmoBase> Gizmos { get; init; } = new();
 
 	protected override void OnOpened()
 	{
@@ -54,9 +55,9 @@ public partial class ToolBarPanel : Panel
 		this.Services.Selection.GizmoChanged -= this.OnSelectionGizmoChanged;
 	}
 
-	private void OnSelectionChanged(SelectionBase? oldSelection, SelectionBase? newSelection)
+	private void OnSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection)
 	{
-		List<SelectionGizmoBase> gizmos = this.Services.Selection.GetValidGizmos();
+		List<ObjectGizmoBase> gizmos = this.Services.Selection.GetValidGizmos();
 
 		this.Dispatcher.Invoke(() =>
 		{
@@ -64,12 +65,12 @@ public partial class ToolBarPanel : Panel
 		});
 	}
 
-	private void OnSelectionGizmoChanged(SelectionGizmoBase? oldGizmo, SelectionGizmoBase? newGizmo)
+	private void OnSelectionGizmoChanged(ObjectGizmoBase? oldGizmo, ObjectGizmoBase? newGizmo)
 	{
 		this.SelectedGizmo = newGizmo;
 	}
 
-	private void OnSelectedGizmoChanged(SelectionGizmoBase? oldGizmo, SelectionGizmoBase? newGizmo)
+	private void OnSelectedGizmoChanged(ObjectGizmoBase? oldGizmo, ObjectGizmoBase? newGizmo)
 	{
 		this.Services.Selection.Gizmo = newGizmo;
 	}

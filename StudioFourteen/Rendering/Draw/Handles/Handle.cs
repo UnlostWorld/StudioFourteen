@@ -13,11 +13,11 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Scene.Handles;
+namespace StudioFourteen.Rendering.Draw.Handles;
 
 using System.Numerics;
 
-public abstract class Handle : SceneGroup
+public abstract class Handle : DrawGroup
 {
 	public bool IsHovered { get; private set; }
 	public bool IsPressed { get; private set; }

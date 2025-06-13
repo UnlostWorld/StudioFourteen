@@ -17,12 +17,13 @@ namespace StudioFourteen.Posing;
 
 using DependencyPropertyGenerator;
 using StudioFourteen.Mvm;
+using StudioFourteen.Scene;
 using StudioFourteen.Selection;
 using System.Threading.Tasks;
 using System.Windows;
 using WpfUtils;
 
-[DependencyProperty<SelectionBase>("Selection")]
+[DependencyProperty<SceneObjectBase>("Selection")]
 [DependencyProperty<BlendSelection>("BlendSelection")]
 public partial class BlendInspector : View
 {

@@ -17,6 +17,7 @@ namespace StudioFourteen.Posing;
 
 using DependencyPropertyGenerator;
 using StudioFourteen.Mvm;
+using StudioFourteen.Scene;
 using StudioFourteen.Selection;
 using System.Windows;
 
@@ -31,7 +32,7 @@ public partial class ExpressionsView : View
 
 	public double BackgroundOpacity => SimpleView.BackgroundOpacity;
 
-	private void OnPoseSelectionChanged(SelectionBase? oldSelection, SelectionBase? newSelection)
+	private void OnPoseSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection)
 	{
 		this.Dispatcher.Invoke(() =>
 		{

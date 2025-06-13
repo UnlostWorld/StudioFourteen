@@ -19,6 +19,7 @@ using Dalamud.Plugin.Services;
 using FontAwesome.Sharp;
 using StudioFourteen.Gizmos.Handles.TransformHandle;
 using StudioFourteen.Posing;
+using StudioFourteen.Scene;
 using StudioFourteen.Services;
 using StudioFourteen.Structs.Extensions;
 using StudioFourteen.Utilities;
@@ -31,12 +32,12 @@ using System.Threading.Tasks;
 using StudioTransform = StudioFourteen.Transform;
 
 public class BoneSelectionId(string boneName, int objectTableIndex)
-	: IAsyncSelectionId
+	: IAsyncSceneObjectId
 {
 	public string BoneName { get; init; } = boneName;
 	public int ObjectTableIndex { get; init; } = objectTableIndex;
 
-	public override async Task<SelectionBase?> CreateAsync()
+	public override async Task<SceneObjectBase?> CreateAsync()
 	{
 		await TickService.GameTick();
 		return ServiceManager.Instance.Pose.FindBone(this.ObjectTableIndex, this.BoneName);
@@ -48,7 +49,7 @@ public class BoneSelectionId(string boneName, int objectTableIndex)
 	}
 }
 
-public class BoneSelection : TransformSelectionBase
+public class BoneSelection : TransformSceneObjectBase
 {
 	// Bones default to rotation, so just set any translation or scale modes here.
 	private static readonly Dictionary<string, TransformHandleTypes> DefaultBoneGizmos = new()
@@ -170,7 +171,7 @@ public class BoneSelection : TransformSelectionBase
 		set => this.SetReferenceTransform(value);
 	}
 
-	public override ISelectionId Id => new BoneSelectionId(this.BoneName, this.BonePaths.Keys.First().ObjectTableIndex);
+	public override ISceneObjectId Id => new BoneSelectionId(this.BoneName, this.BonePaths.Keys.First().ObjectTableIndex);
 
 	public override void Activate()
 	{
@@ -205,7 +206,7 @@ public class BoneSelection : TransformSelectionBase
 		}
 	}
 
-	public override bool Equals(SelectionBase? other)
+	public override bool Equals(SceneObjectBase? other)
 	{
 		if (other is not BoneSelection otherBone)
 			return false;

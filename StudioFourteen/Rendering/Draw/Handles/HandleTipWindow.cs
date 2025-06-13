@@ -13,7 +13,7 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Scene.Handles;
+namespace StudioFourteen.Rendering.Draw.Handles;
 
 using Serilog;
 using System.Drawing;

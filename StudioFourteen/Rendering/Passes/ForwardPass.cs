@@ -22,13 +22,13 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
-using StudioFourteen.Rendering.Scene;
+using StudioFourteen.Rendering.Draw;
 
 using Device = SharpDX.Direct3D11.Device;
 
 public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 {
-	private readonly List<SceneObject> sceneObjects = new();
+	private readonly List<DrawObject> sceneObjects = new();
 
 	private RenderTargetView? backBufferTargetView;
 	private BlendState? blend;
@@ -37,7 +37,7 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 	private DepthStencilView? depthStencilView;
 	private DepthStencilState? depthStencilState;
 
-	public void Add(SceneObject obj)
+	public void Add(DrawObject obj)
 	{
 		lock (this.sceneObjects)
 		{
@@ -48,7 +48,7 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 		}
 	}
 
-	public void Remove(SceneObject obj)
+	public void Remove(DrawObject obj)
 	{
 		lock(this.sceneObjects)
 		{
@@ -62,7 +62,7 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 
 		lock (this.sceneObjects)
 		{
-			foreach (SceneObject draw in this.sceneObjects)
+			foreach (DrawObject draw in this.sceneObjects)
 			{
 				if (!draw.IsHitTestVisible)
 					continue;
@@ -180,7 +180,7 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 
 		lock(this.sceneObjects)
 		{
-			foreach(SceneObject renderable in this.sceneObjects)
+			foreach(DrawObject renderable in this.sceneObjects)
 			{
 				renderable.Draw(Transform.Identity, device, deviceContext);
 			}
@@ -205,7 +205,7 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 		this.depthStencilState?.Dispose();
 		this.depthStencilState = null;
 
-		foreach(SceneObject renderable in this.sceneObjects)
+		foreach(DrawObject renderable in this.sceneObjects)
 		{
 			renderable.Dispose();
 		}

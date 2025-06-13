@@ -13,8 +13,48 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Scene;
+namespace StudioFourteen.Rendering.Draw.Gizmos;
 
-public abstract class RendererBase : SceneObject
+using System;
+using System.Collections.ObjectModel;
+using System.Windows.Controls;
+using Serilog;
+using WpfUtils.Extensions;
+
+public partial class GizmoControlPanel : UserControl
 {
+	protected readonly ILogger Log;
+
+	public GizmoControlPanel()
+	{
+		this.InitializeComponent();
+		this.DataContext = this;
+		this.Log = Logging.ForContext<GizmoControlPanel>();
+
+		this.Services.Gizmos.GizmosChanged += this.OnGizmosChanged;
+		this.Gizmos.Replace(this.Services.Gizmos.Gizmos);
+	}
+
+	public FastObservableCollection<GizmoBase> Gizmos { get; init; } = new();
+	public ServiceManager Services => ServiceManager.Instance;
+
+	private void OnGizmosChanged()
+	{
+		this.Dispatcher.Invoke(() =>
+		{
+			if (this.Services.Gizmos.GizmoControlPanelOpen)
+				return;
+
+			this.Gizmos.Clear();
+
+			foreach (GizmoBase gizmo in this.Services.Gizmos.Gizmos)
+			{
+				// Ignore selection gizmos as they get their own area in the toolbar.
+				if (gizmo is ObjectGizmoBase)
+					continue;
+
+				this.Gizmos.Add(gizmo);
+			}
+		});
+	}
 }

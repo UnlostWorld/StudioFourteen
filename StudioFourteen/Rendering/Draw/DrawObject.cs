@@ -13,21 +13,21 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Scene;
+namespace StudioFourteen.Rendering.Draw;
 
 using System;
 using System.Numerics;
 using Serilog;
 using SharpDX.Direct3D11;
 
-public abstract class SceneObject : IDisposable
+public abstract class DrawObject : IDisposable
 {
 	public Transform Transform = Transform.Identity;
-	public SceneObject? Parent;
+	public DrawObject? Parent;
 
 	protected readonly ILogger Log;
 
-	public SceneObject()
+	public DrawObject()
 	{
 		this.Log = Logging.ForContext(this.GetType());
 	}

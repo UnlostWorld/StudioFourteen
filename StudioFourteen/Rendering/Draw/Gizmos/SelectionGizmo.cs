@@ -13,11 +13,11 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Scene.Gizmos;
+namespace StudioFourteen.Rendering.Draw.Gizmos;
 
 using System.Diagnostics;
 using StudioFourteen.Rendering.Materials;
-using StudioFourteen.Rendering.Scene.Gizmos.Transforms;
+using StudioFourteen.Rendering.Draw.Gizmos.Transforms;
 using WpfUtils.Animation;
 
 public class SelectionGizmo : TransformGizmoBase

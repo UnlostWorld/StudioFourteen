@@ -18,6 +18,7 @@ namespace StudioFourteen.Selection;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FontAwesome.Sharp;
+using StudioFourteen.Scene;
 using StudioFourteen.Services;
 using StudioFourteen.Structs.Extensions;
 using StudioFourteen.Utilities;
@@ -25,11 +26,11 @@ using System;
 using System.Numerics;
 
 public class ObjectTableSelectionId(int objectTableIndex)
-	: ISelectionId
+	: ISceneObjectId
 {
 	public int ObjectTableIndex { get; init; } = objectTableIndex;
 
-	public override SelectionBase Create() => new ObjectTableSelection(this.ObjectTableIndex);
+	public override SceneObjectBase Create() => new ObjectTableSelection(this.ObjectTableIndex);
 
 	public override int GetHashCode()
 	{
@@ -37,7 +38,7 @@ public class ObjectTableSelectionId(int objectTableIndex)
 	}
 }
 
-public class ObjectTableSelection : TransformSelectionBase
+public class ObjectTableSelection : TransformSceneObjectBase
 {
 	public readonly int ObjectTableId;
 
@@ -58,7 +59,7 @@ public class ObjectTableSelection : TransformSelectionBase
 
 	public override double TranslationChange => 0.1f;
 
-	public override ISelectionId Id => new ObjectTableSelectionId(this.ObjectTableId);
+	public override ISceneObjectId Id => new ObjectTableSelectionId(this.ObjectTableId);
 
 	public override bool IsHit(HitInfo hitInfo)
 	{
@@ -136,7 +137,7 @@ public class ObjectTableSelection : TransformSelectionBase
 		this.IsReady = true;
 	}
 
-	public override bool Equals(SelectionBase? other)
+	public override bool Equals(SceneObjectBase? other)
 	{
 		if (other is not ObjectTableSelection otherGameObject)
 			return false;

@@ -13,16 +13,16 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Scene.Gizmos;
+namespace StudioFourteen.Rendering.Draw.Gizmos;
 
 using System.ComponentModel;
 using System.Numerics;
 using System.Runtime.CompilerServices;
 using SharpDX.Direct3D11;
-using StudioFourteen.Rendering.Scene;
+using StudioFourteen.Rendering.Draw;
 using StudioFourteen.Settings;
 
-public abstract class GizmoBase : SceneGroup, INotifyPropertyChanged
+public abstract class GizmoBase : DrawGroup, INotifyPropertyChanged
 {
 	public GizmoBase()
 	{

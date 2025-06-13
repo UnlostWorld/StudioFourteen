@@ -13,12 +13,12 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Selection;
+namespace StudioFourteen.Scene;
 
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Gizmos.Handles.TransformHandle;
 
-public abstract partial class TransformSelectionBase : SelectionBase
+public abstract partial class TransformSceneObjectBase : SceneObjectBase
 {
 	[Notify][PropertyAttribute("StudioFourteen.History.History")] private Transform worldTransform;
 	[Notify][PropertyAttribute("StudioFourteen.History.History")] private Transform localTransform;

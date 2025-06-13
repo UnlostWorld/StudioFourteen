@@ -23,8 +23,8 @@ using FFXIVClientStructs.Havok.Animation.Rig;
 using Lumina.Excel.Sheets;
 using StudioFourteen.Rendering;
 using StudioFourteen.Rendering.Materials;
-using StudioFourteen.Rendering.Scene;
-using StudioFourteen.Rendering.Scene.Handles;
+using StudioFourteen.Rendering.Draw;
+using StudioFourteen.Rendering.Draw.Handles;
 using StudioFourteen.Selection;
 
 public class BoneGizmo : SelectionHandle

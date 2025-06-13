@@ -17,61 +17,57 @@
 
 	<Grid
 		Width="256"
-		Height="450"
-		Opacity="0.25">
+		Height="450">
 
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="Auto" />
 			<ColumnDefinition />
 		</Grid.ColumnDefinitions>
 
-		<silk:DoubleAnimation
-			Key="Opening"
-			Easing="SineIn"
-			Property="Opacity"
-			From="0"
-			To="1"
-			Duration="100" />
+		<silk:AnimationState Binding="{Binding Hide}">
+			<silk:AnimationState.Enter>
+				<silk:DoubleAnimation
+					Delay="200"
+					Easing="SineIn"
+					Property="Opacity"
+					From="1"
+					To="0"
+					Duration="150" />
+			</silk:AnimationState.Enter>
 
-		<silk:DoubleAnimation
-			Key="Closing"
-			Easing="SineIn"
-			Property="Opacity"
-			From="1"
-			To="0"
-			Duration="100" />
+			<silk:AnimationState.Exit>
+				<silk:DoubleAnimation
+					Delay="200"
+					Easing="SineOut"
+					Property="Opacity"
+					From="0"
+					To="1"
+					Duration="150" />
+			</silk:AnimationState.Exit>
+		</silk:AnimationState>
 
 		<Grid
 			Grid.Column="0"
 			HorizontalAlignment="Right"
 			VerticalAlignment="Top">
 
-			<silk:AnimationState Binding="{Binding Hide}">
-				<silk:AnimationState.Enter>
-					<silk:DoubleAnimation
-						Easing="SineIn"
-						Property="Opacity"
-						From="1"
-						To="0"
-						Delay="200"
-						Duration="150" />
-				</silk:AnimationState.Enter>
+			<silk:DoubleAnimation
+				Key="Opening"
+				Easing="SineIn"
+				Property="Opacity"
+				From="0"
+				To="1"
+				Duration="100" />
 
-				<silk:AnimationState.Exit>
-					<silk:DoubleAnimation
-						Easing="SineOut"
-						Property="Opacity"
-						From="0"
-						To="1"
-						Delay="200"
-						Duration="150" />
-				</silk:AnimationState.Exit>
-
-			</silk:AnimationState>
-
+			<silk:DoubleAnimation
+				Key="Closing"
+				Easing="SineIn"
+				Property="Opacity"
+				From="1"
+				To="0"
+				Duration="100" />
 
 			<Border
-				Margin="3"
 				Background="Black"
 				CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}"
 				Opacity="0.5">
@@ -87,7 +83,8 @@
 				Width="28"
 				ItemsSource="{Binding Gizmos}"
 				SelectedValue="{Binding SelectedGizmo}"
-				Style="{DynamicResource WpfUtilsSwitchSelectorVertical}">
+				Style="{DynamicResource WpfUtilsSwitchSelectorVertical}"
+				Margin="0">
 
 				<wpfUtils:SwitchSelector.ItemTemplate>
 					<DataTemplate>
@@ -100,9 +97,7 @@
 			</wpfUtils:SwitchSelector>
 		</Grid>
 
-		<Grid
-			Grid.Column="1"
-			VerticalAlignment="Top">
+		<Grid Grid.Column="1" VerticalAlignment="Top" Margin="3,0,0,0">
 
 			<silk:AnimationState Binding="{Binding Expanded}">
 				<silk:AnimationState.Enter>
@@ -126,7 +121,6 @@
 			</silk:AnimationState>
 
 			<Border
-				Margin="3"
 				Background="Black"
 				CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}">
 				<Border.Effect>
@@ -137,9 +131,7 @@
 				</Border.Effect>
 			</Border>
 
-			<Border
-				Margin="3"
-				Style="{DynamicResource WpfUtilsControlBorder}">
+			<Border Style="{DynamicResource WpfUtilsControlBorder}">
 
 				<Grid>
 					<Grid.RowDefinitions>
@@ -151,23 +143,51 @@
 						Margin="2,2,2,0"
 						Background="{DynamicResource BackgroundBrush}"
 						CornerRadius="{DynamicResource WpfUtilsBorderInnerCornerRadius}">
-						<Grid Grid.Column="1" Margin="3">
+						<Grid Grid.Column="1">
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition Width="Auto" />
 								<ColumnDefinition />
+								<ColumnDefinition Width="Auto" />
 							</Grid.ColumnDefinitions>
 
+							<Grid.RowDefinitions>
+								<RowDefinition Height="Auto"/>
+								<RowDefinition Height="Auto"/>
+							</Grid.RowDefinitions>
+
 							<icons:IconView
+								Margin="3"
+								Grid.RowSpan="2"
 								Width="22"
 								Height="22"
 								Foreground="{DynamicResource ForegroundLightBrush}"
 								Icon="{Binding Current.Icon}" />
 
 							<TextBlock
+								Margin="0,2,0,0"
+								Grid.Row="0"
 								Grid.Column="1"
-								VerticalAlignment="Center"
-								Foreground="{DynamicResource ForegroundLightBrush}"
+								Foreground="{DynamicResource ForegroundBrush}"
 								Text="{Binding Current.Name}" />
+
+							<TextBlock
+								Margin="0,0,0,0"
+								Grid.Row="1"
+								Grid.Column="1"
+								Style="{DynamicResource Subscript}"
+								Foreground="{DynamicResource ForegroundLightBrush}"
+								Text="{Binding Current.TypeName}" />
+
+							<ToggleButton
+								Grid.Column="2"
+								Grid.RowSpan="2"
+								Margin="3,0,0,0"
+								Width="30"
+								Height="30"
+								Background="Transparent"
+								Style="{DynamicResource WpfUtilsIconToggleButton}"
+								Content="{DynamicResource ICON_Window_Close}"
+								IsChecked="{Binding Expanded, Converter={StaticResource !B}}"/>
 
 						</Grid>
 					</Border>

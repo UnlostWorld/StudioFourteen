@@ -18,6 +18,7 @@ namespace StudioFourteen.Posing;
 using DependencyPropertyGenerator;
 using FontAwesome.Sharp;
 using StudioFourteen.Mvm;
+using StudioFourteen.Scene;
 using StudioFourteen.Selection;
 using StudioFourteen.Services;
 using StudioFourteen.Structs.Extensions;
@@ -27,11 +28,11 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using WpfUtils.Extensions;
 
-public class EyeSelectionId(int objectTableIndex) : ISelectionId
+public class EyeSelectionId(int objectTableIndex) : ISceneObjectId
 {
 	public int ObjectTableIndex { get; init; } = objectTableIndex;
 
-	public override SelectionBase Create() => new EyeSelection(this.ObjectTableIndex);
+	public override SceneObjectBase Create() => new EyeSelection(this.ObjectTableIndex);
 
 	public override int GetHashCode()
 	{
@@ -39,7 +40,7 @@ public class EyeSelectionId(int objectTableIndex) : ISelectionId
 	}
 }
 
-[DependencyProperty<SelectionBase>("Selection")]
+[DependencyProperty<SceneObjectBase>("Selection")]
 public partial class EyeInspector : View
 {
 	private Vector3? trackingEuler;
@@ -141,7 +142,7 @@ public partial class EyeInspector : View
 	}
 }
 
-public class EyeSelection : SelectionBase
+public class EyeSelection : SceneObjectBase
 {
 	private MirrorModes mirrorMode = MirrorModes.MirrorTCopyRS;
 
@@ -176,7 +177,7 @@ public class EyeSelection : SelectionBase
 
 	public override bool CanReset => true;
 
-	public override ISelectionId Id => new EyeSelectionId(this.ObjectTableIndex);
+	public override ISceneObjectId Id => new EyeSelectionId(this.ObjectTableIndex);
 
 	public override void Reset()
 	{

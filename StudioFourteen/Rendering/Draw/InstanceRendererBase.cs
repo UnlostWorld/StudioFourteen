@@ -13,7 +13,7 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Scene;
+namespace StudioFourteen.Rendering.Draw;
 
 using System;
 using SharpDX.D3DCompiler;

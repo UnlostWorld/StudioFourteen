@@ -20,8 +20,9 @@ using PropertyChanged.SourceGenerator;
 using StudioFourteen.Gizmos.Handles.TransformHandle;
 using StudioFourteen.History;
 using StudioFourteen.Posing;
-using StudioFourteen.Rendering.Scene.Gizmos;
-using StudioFourteen.Rendering.Scene.Gizmos.Transforms;
+using StudioFourteen.Rendering.Draw.Gizmos;
+using StudioFourteen.Rendering.Draw.Gizmos.Transforms;
+using StudioFourteen.Scene;
 using StudioFourteen.Services;
 using StudioFourteen.Utilities;
 using StudioFourteen.Widgets;
@@ -32,55 +33,18 @@ using System.Threading.Tasks;
 using System.Windows;
 using WpfUtils.Windows;
 
-public abstract class ISelectionId : IEquatable<ISelectionId?>
-{
-	public static bool operator ==(ISelectionId? left, ISelectionId? right)
-	{
-		return EqualityComparer<ISelectionId>.Default.Equals(left, right);
-	}
-
-	public static bool operator !=(ISelectionId? left, ISelectionId? right)
-	{
-		return !(left == right);
-	}
-
-	public abstract SelectionBase? Create();
-
-	public override bool Equals(object? obj)
-	{
-		return this.Equals(obj as ISelectionId);
-	}
-
-	public bool Equals(ISelectionId? other)
-	{
-		return other is not null && this.GetHashCode() == other.GetHashCode();
-	}
-
-	public override int GetHashCode()
-	{
-		throw new NotImplementedException();
-	}
-}
-
-public abstract class IAsyncSelectionId : ISelectionId
-{
-	public abstract Task<SelectionBase?> CreateAsync();
-
-	public sealed override SelectionBase? Create() => throw new NotSupportedException();
-}
-
 public partial class SelectionService : ServiceBase
 {
-	private readonly List<SelectionGizmoBase> selectionGizmos = new();
+	private readonly List<ObjectGizmoBase> selectionGizmos = new();
 
-	private SelectionBase? selection;
-	private SelectionBase? hover;
-	private SelectionGizmoBase? gizmo;
+	private SceneObjectBase? selection;
+	private SceneObjectBase? hover;
+	private ObjectGizmoBase? gizmo;
 	private string lastSelectionName = "Nothing";
 	private bool expandedSelection;
 
-	public delegate void SelectionChangedDelegate(SelectionBase? oldSelection, SelectionBase? newSelection);
-	public delegate void GizmoChangedDelegate(SelectionGizmoBase? oldGizmo, SelectionGizmoBase? newGizmo);
+	public delegate void SelectionChangedDelegate(SceneObjectBase? oldSelection, SceneObjectBase? newSelection);
+	public delegate void GizmoChangedDelegate(ObjectGizmoBase? oldGizmo, ObjectGizmoBase? newGizmo);
 	public delegate void SelectionExpandedDelegate(bool newValue);
 
 	public event SelectionChangedDelegate? SelectionChanged;
@@ -91,12 +55,12 @@ public partial class SelectionService : ServiceBase
 	public override string Name => "Selection";
 	public override object? Icon => Resources.Find("ICON_Selection_SelectionService");
 
-	public SelectionBase? Current
+	public SceneObjectBase? Current
 	{
 		get => this.selection;
 		set
 		{
-			SelectionBase? oldSelection = this.selection;
+			SceneObjectBase? oldSelection = this.selection;
 
 			if (oldSelection != null && value != null && oldSelection.Id == value.Id)
 				return;
@@ -125,7 +89,7 @@ public partial class SelectionService : ServiceBase
 					this.SelectionCursorPosition = this.Services.Input.Mouse.GetPosition();
 					this.SelectionCursorOffset = Vector2.Zero;
 
-					if (this.selection is TransformSelectionBase transformSelection)
+					if (this.selection is TransformSceneObjectBase transformSelection)
 					{
 						Vector3 worldPos = Vector3.Transform(Vector3.Zero, transformSelection.WorldTransform.ToMatrix());
 						Vector3 cameraPos = this.Services.Camera.WorldToCamera(worldPos);
@@ -142,7 +106,7 @@ public partial class SelectionService : ServiceBase
 		}
 	}
 
-	public SelectionBase? Hover
+	public SceneObjectBase? Hover
 	{
 		get => this.hover;
 		set
@@ -150,7 +114,7 @@ public partial class SelectionService : ServiceBase
 			if (this.hover == value)
 				return;
 
-			SelectionBase? oldHover = this.hover;
+			SceneObjectBase? oldHover = this.hover;
 			if (this.hover != null && this.hover != this.selection && this.hover.IsActive)
 				this.hover.Deactivate();
 
@@ -166,12 +130,12 @@ public partial class SelectionService : ServiceBase
 		}
 	}
 
-	public SelectionGizmoBase? Gizmo
+	public ObjectGizmoBase? Gizmo
 	{
 		get => this.gizmo;
 		set
 		{
-			SelectionGizmoBase? oldGizmo = this.gizmo;
+			ObjectGizmoBase? oldGizmo = this.gizmo;
 
 			if (this.gizmo != null)
 				this.gizmo.Disable();
@@ -214,19 +178,19 @@ public partial class SelectionService : ServiceBase
 	public Vector2 SelectionCursorOffset { get; set; }
 
 	[History]
-	public ISelectionId? GetSelectionId()
+	public ISceneObjectId? GetSelectionId()
 	{
 		return this.Current?.Id;
 	}
 
 	[History]
-	public async Task SetSelectionId(ISelectionId? value)
+	public async Task SetSelectionId(ISceneObjectId? value)
 	{
 		if (value == null)
 		{
 			this.Current = null;
 		}
-		else if (value is IAsyncSelectionId asyncSelectionId)
+		else if (value is IAsyncSceneObjectId asyncSelectionId)
 		{
 			this.Current = await asyncSelectionId.CreateAsync();
 		}
@@ -277,16 +241,16 @@ public partial class SelectionService : ServiceBase
 		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
 	}
 
-	public List<SelectionGizmoBase> GetValidGizmos()
+	public List<ObjectGizmoBase> GetValidGizmos()
 	{
-		List<SelectionGizmoBase> results = new();
+		List<ObjectGizmoBase> results = new();
 
 		if (this.selection == null)
 			return results;
 
-		foreach (SelectionGizmoBase gizmo in this.selectionGizmos)
+		foreach (ObjectGizmoBase gizmo in this.selectionGizmos)
 		{
-			if (!gizmo.SupportsSelection(this.selection))
+			if (!gizmo.SupportsObject(this.selection))
 				continue;
 
 			results.Add(gizmo);
@@ -297,10 +261,10 @@ public partial class SelectionService : ServiceBase
 
 	protected void DefaultGizmo()
 	{
-		SelectionGizmoBase? nextGizmo = this.Gizmo;
+		ObjectGizmoBase? nextGizmo = this.Gizmo;
 
 		// TODO: Get the default gizmo from the selection actually.
-		List<SelectionGizmoBase> results = this.GetValidGizmos();
+		List<ObjectGizmoBase> results = this.GetValidGizmos();
 		if (results.Count > 0)
 		{
 			if (nextGizmo == null || !results.Contains(nextGizmo))

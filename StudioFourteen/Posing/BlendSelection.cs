@@ -17,6 +17,7 @@ namespace StudioFourteen.Posing;
 
 using FontAwesome.Sharp;
 using StudioFourteen.Plugin;
+using StudioFourteen.Scene;
 using StudioFourteen.Selection;
 using StudioFourteen.Services;
 using StudioFourteen.Utilities;
@@ -28,12 +29,12 @@ using System.Windows.Media.Imaging;
 using WpfUtils.Extensions;
 
 public class BlendSelectionId(string blendTargetName, int objectTableIndex)
-	: ISelectionId
+	: ISceneObjectId
 {
 	public string BlendTargetName { get; init; } = blendTargetName;
 	public int ObjectTableIndex { get; init; } = objectTableIndex;
 
-	public override SelectionBase? Create()
+	public override SceneObjectBase? Create()
 	{
 		BlendTarget? target = null;
 		ServiceManager.Instance.Content.ExpressionBlends?.TryGetValue(this.BlendTargetName, out target);
@@ -50,7 +51,7 @@ public class BlendSelectionId(string blendTargetName, int objectTableIndex)
 	}
 }
 
-public class BlendSelection : SelectionBase
+public class BlendSelection : SceneObjectBase
 {
 	private readonly int objectTableIndex;
 	private readonly string blendTargetName;
@@ -106,7 +107,7 @@ public class BlendSelection : SelectionBase
 		}
 	}
 
-	public override ISelectionId Id => new BlendSelectionId(this.blendTargetName, this.objectTableIndex);
+	public override ISceneObjectId Id => new BlendSelectionId(this.blendTargetName, this.objectTableIndex);
 
 	public void SetValue(double value)
 	{

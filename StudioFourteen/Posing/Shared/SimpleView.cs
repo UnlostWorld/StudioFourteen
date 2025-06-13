@@ -27,6 +27,7 @@ using StudioFourteen.Posing.Shared;
 using System.Threading.Tasks;
 using StudioFourteen.Selection;
 using WpfUtils;
+using StudioFourteen.Scene;
 
 [DependencyProperty<string>("LayoutName")]
 [DependencyProperty<bool>("FlipSides", DefaultValue = false)]
@@ -208,7 +209,7 @@ public partial class SimpleView : PoseViewBase
 		}
 	}
 
-	protected override void OnSelectionChanged(SelectionBase? oldSelection, SelectionBase? newSelection)
+	protected override void OnSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection)
 	{
 		base.OnSelectionChanged(oldSelection, newSelection);
 

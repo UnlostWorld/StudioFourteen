@@ -13,12 +13,12 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Scene.Handles;
+namespace StudioFourteen.Rendering.Draw.Handles;
 
 using StudioFourteen.Services;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using StudioFourteen.Rendering.Scene;
+using StudioFourteen.Rendering.Draw;
 using StudioFourteen.Input;
 using System.Windows.Input;
 using System.Threading.Tasks;
@@ -27,7 +27,7 @@ using System.Diagnostics;
 public partial class HandleService : ServiceBase
 {
 	private readonly Stopwatch timeoutTimer = new();
-	private readonly ConditionalWeakTable<SceneObject, Handle?> parentHandles = new();
+	private readonly ConditionalWeakTable<DrawObject, Handle?> parentHandles = new();
 	private readonly Input2DListener dragListener = new(
 		InputAction.Handle_Right,
 		InputAction.Handle_Left,
@@ -186,7 +186,7 @@ public partial class HandleService : ServiceBase
 		}
 	}
 
-	private Handle? GetHandle(SceneObject? obj)
+	private Handle? GetHandle(DrawObject? obj)
 	{
 		if (obj == null)
 			return null;

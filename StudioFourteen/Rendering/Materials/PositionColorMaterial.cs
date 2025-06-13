@@ -19,7 +19,7 @@ using System.Numerics;
 using System.Runtime.InteropServices;
 using SharpDX.D3DCompiler;
 using StudioFourteen.Content;
-using StudioFourteen.Rendering.Scene;
+using StudioFourteen.Rendering.Draw;
 
 [StructLayout(LayoutKind.Sequential)]
 public struct PositionColorMaterial : IMaterial

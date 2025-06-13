@@ -59,8 +59,8 @@ public class ServiceManager : ServiceManagerBase
 	public Environment.TerritoryService Territory { get; init; } = new();
 	public Environment.TimeService Time { get; init; } = new();
 	public Rendering.RenderingService Rendering { get; init; } = new();
-	public Rendering.Scene.Gizmos.GizmoService Gizmos { get; init; } = new();
-	public Rendering.Scene.Handles.HandleService Handles { get; init; } = new();
+	public Rendering.Draw.Gizmos.GizmoService Gizmos { get; init; } = new();
+	public Rendering.Draw.Handles.HandleService Handles { get; init; } = new();
 	public Content.ContentService Content { get; init; } = new();
 	public ResourcePacks.ResourcePackService ResourcePacks { get; init; } = new();
 	public AfkService Afk { get; init; } = new();

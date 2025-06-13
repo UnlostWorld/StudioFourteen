@@ -13,48 +13,45 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Scene.Gizmos;
+namespace StudioFourteen.Scene;
 
 using System;
-using System.Collections.ObjectModel;
-using System.Windows.Controls;
-using Serilog;
-using WpfUtils.Extensions;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
-public partial class GizmoControlPanel : UserControl
+public abstract class ISceneObjectId : IEquatable<ISceneObjectId?>
 {
-	protected readonly ILogger Log;
-
-	public GizmoControlPanel()
+	public static bool operator ==(ISceneObjectId? left, ISceneObjectId? right)
 	{
-		this.InitializeComponent();
-		this.DataContext = this;
-		this.Log = Logging.ForContext<GizmoControlPanel>();
-
-		this.Services.Gizmos.GizmosChanged += this.OnGizmosChanged;
-		this.Gizmos.Replace(this.Services.Gizmos.Gizmos);
+		return EqualityComparer<ISceneObjectId>.Default.Equals(left, right);
 	}
 
-	public FastObservableCollection<GizmoBase> Gizmos { get; init; } = new();
-	public ServiceManager Services => ServiceManager.Instance;
-
-	private void OnGizmosChanged()
+	public static bool operator !=(ISceneObjectId? left, ISceneObjectId? right)
 	{
-		this.Dispatcher.Invoke(() =>
-		{
-			if (this.Services.Gizmos.GizmoControlPanelOpen)
-				return;
-
-			this.Gizmos.Clear();
-
-			foreach (GizmoBase gizmo in this.Services.Gizmos.Gizmos)
-			{
-				// Ignore selection gizmos as they get their own area in the toolbar.
-				if (gizmo is SelectionGizmoBase)
-					continue;
-
-				this.Gizmos.Add(gizmo);
-			}
-		});
+		return !(left == right);
 	}
+
+	public abstract SceneObjectBase? Create();
+
+	public override bool Equals(object? obj)
+	{
+		return this.Equals(obj as ISceneObjectId);
+	}
+
+	public bool Equals(ISceneObjectId? other)
+	{
+		return other is not null && this.GetHashCode() == other.GetHashCode();
+	}
+
+	public override int GetHashCode()
+	{
+		throw new NotImplementedException();
+	}
+}
+
+public abstract class IAsyncSceneObjectId : ISceneObjectId
+{
+	public abstract Task<SceneObjectBase?> CreateAsync();
+
+	public sealed override SceneObjectBase? Create() => throw new NotSupportedException();
 }

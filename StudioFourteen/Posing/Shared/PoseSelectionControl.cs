@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using DependencyPropertyGenerator;
+using StudioFourteen.Scene;
 using StudioFourteen.Selection;
 using WpfUtils;
 using WpfUtils.Utils;
@@ -32,11 +33,11 @@ using WpfUtils.Utils;
 [DependencyProperty<bool>("IsValid")]
 public partial class PoseSelectionControl : Control
 {
-	public SelectionBase? Selection { get; set; }
+	public SceneObjectBase? Selection { get; set; }
 	public string? SafeName { get; private set; }
 	public bool IsSafeValid { get; set; }
 
-	public void OnHoverChanged(SelectionBase? oldSelection, SelectionBase? newSelection)
+	public void OnHoverChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection)
 	{
 		if (newSelection == null || this.Selection == null)
 		{
@@ -48,7 +49,7 @@ public partial class PoseSelectionControl : Control
 		this.IsMouseHover = isHover;
 	}
 
-	public void OnSelectionChanged(SelectionBase? oldSelection, SelectionBase? newSelection)
+	public void OnSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection)
 	{
 		if (newSelection == null || this.Selection == null)
 		{

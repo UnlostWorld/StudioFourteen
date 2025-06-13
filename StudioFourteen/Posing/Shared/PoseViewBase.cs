@@ -28,6 +28,7 @@ using System.Windows.Media;
 using StudioFourteen.Selection;
 using DependencyPropertyGenerator;
 using StudioFourteen.Services;
+using StudioFourteen.Scene;
 
 [DependencyProperty<bool>("Hide", DefaultValue = false)]
 [DependencyProperty<bool>("UpdateWithAppearance", DefaultValue = false)]
@@ -37,7 +38,7 @@ public partial class PoseViewBase : View
 
 	private readonly Dictionary<string, List<PoseSelectionControl>> controlNameLookup = new();
 	private readonly Dictionary<BoneId, List<PoseSelectionControl>> controlIdLookup = new();
-	private readonly Dictionary<ISelectionId, List<PoseSelectionControl>> controlSelectionLookup = new();
+	private readonly Dictionary<ISceneObjectId, List<PoseSelectionControl>> controlSelectionLookup = new();
 
 	private List<PoseSelectionControl>? controls;
 	private PoseTabItem? parent;
@@ -314,7 +315,7 @@ public partial class PoseViewBase : View
 		return validCount > 0;
 	}
 
-	protected virtual void OnSelectionChanged(SelectionBase? oldSelection, SelectionBase? newSelection)
+	protected virtual void OnSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection)
 	{
 		this.Dispatcher.Invoke(() =>
 		{
@@ -328,7 +329,7 @@ public partial class PoseViewBase : View
 		});
 	}
 
-	protected virtual void OnHoverChanged(SelectionBase? oldSelection, SelectionBase? newSelection)
+	protected virtual void OnHoverChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection)
 	{
 		this.Dispatcher.Invoke(() =>
 		{
@@ -407,7 +408,7 @@ public partial class PoseViewBase : View
 			{
 				control.IsSafeValid = true;
 
-				ISelectionId selectionId = control.Selection.Id;
+				ISceneObjectId selectionId = control.Selection.Id;
 				if (!this.controlSelectionLookup.ContainsKey(selectionId))
 					this.controlSelectionLookup.Add(selectionId, new());
 

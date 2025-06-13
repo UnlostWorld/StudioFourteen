@@ -1,4 +1,4 @@
-﻿// .                    @@             _____ _______ _    _ _____ _____ ____
+// .                    @@             _____ _______ _    _ _____ _____ ____
 //          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
 //         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
 //         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
@@ -13,18 +13,16 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Selection;
+namespace StudioFourteen.Scene;
 
-using FontAwesome.Sharp;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.History;
 using StudioFourteen.Mvm;
 using StudioFourteen.Posing;
-using StudioFourteen.Rendering.Scene.Gizmos;
 using StudioFourteen.Utilities;
 using System;
 
-public abstract partial class SelectionBase : ViewModel, IHistoryTarget
+public abstract partial class SceneObjectBase : ViewModel, IHistoryTarget
 {
 	[Notify(Setter.Protected)] private string name = string.Empty;
 	[Notify(Setter.Protected)] private string? subtitle;
@@ -42,7 +40,7 @@ public abstract partial class SelectionBase : ViewModel, IHistoryTarget
 	[History] public virtual MirrorModes MirrorMode { get; set; }
 
 	public abstract bool CanReset { get; }
-	public abstract ISelectionId Id { get; }
+	public abstract ISceneObjectId Id { get; }
 
 	public virtual void Reset()
 	{
@@ -72,7 +70,7 @@ public abstract partial class SelectionBase : ViewModel, IHistoryTarget
 	{
 	}
 
-	public virtual bool Equals(SelectionBase? other)
+	public virtual bool Equals(SceneObjectBase? other)
 	{
 		return this == other;
 	}

@@ -13,12 +13,12 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Scene.Gizmos;
+namespace StudioFourteen.Rendering.Draw.Gizmos;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using SharpDX.Direct3D11;
 using StudioFourteen.Rendering.Materials;
-using StudioFourteen.Rendering.Scene;
+using StudioFourteen.Rendering.Draw;
 
 public class GridGizmo : GizmoBase
 {

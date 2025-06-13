@@ -13,11 +13,11 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Scene.Gizmos.Transforms;
+namespace StudioFourteen.Rendering.Draw.Gizmos.Transforms;
 
 using System.Numerics;
 using StudioFourteen.Rendering.Materials;
-using StudioFourteen.Rendering.Scene.Handles;
+using StudioFourteen.Rendering.Draw.Handles;
 
 public class ScaleGizmo : TransformGizmoBase
 {

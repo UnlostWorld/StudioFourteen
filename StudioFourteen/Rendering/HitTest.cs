@@ -18,14 +18,14 @@ namespace StudioFourteen.Rendering;
 using System.Collections;
 using System.Collections.Generic;
 using System.Numerics;
-using StudioFourteen.Rendering.Scene;
+using StudioFourteen.Rendering.Draw;
 
 public class HitTestResult
 {
 	public float Distance = float.MaxValue;
 	public float MaxDistance = float.MaxValue;
 	public Vertex? MeshVertex;
-	public SceneObject? SceneObject;
+	public DrawObject? SceneObject;
 	public bool Handled = false;
 	public float Depth = -1;
 	public Vector2 ScreenNormal = Vector2.Zero;

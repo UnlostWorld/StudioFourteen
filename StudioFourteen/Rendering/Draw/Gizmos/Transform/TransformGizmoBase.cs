@@ -13,45 +13,40 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Scene.Gizmos;
+namespace StudioFourteen.Rendering.Draw.Gizmos.Transforms;
 
-using StudioFourteen.Selection;
+using System.Numerics;
+using StudioFourteen.Rendering.Draw.Gizmos;
+using StudioFourteen.Scene;
 
-public abstract class SelectionGizmoBase : GizmoBase
+public abstract class TransformGizmoBase : ObjectGizmoBase<TransformSceneObjectBase>
 {
-	protected SelectionBase? selection;
+	private Transform targetTransform;
 
-	public virtual object? Icon => null;
-
-	public void Enable(SelectionBase selection)
+	public Transform TargetTransform
 	{
-		this.selection = selection;
-		this.Enable();
-	}
-
-	public abstract bool SupportsSelection(SelectionBase selection);
-
-	public virtual void OnGameTick()
-	{
-	}
-}
-
-public abstract class SelectionGizmoBase<TSelectionType> : SelectionGizmoBase
-	where TSelectionType : SelectionBase
-{
-	public TSelectionType? Selection
-	{
-		get
+		get => this.targetTransform;
+		set
 		{
-			if (this.selection is TSelectionType tSelection)
-				return tSelection;
-
-			return null;
+			this.targetTransform = value;
+			this.Transform = Transform.FromTRS(this.TargetTransform.Translation, this.TargetTransform.Rotation, Vector3.One);
 		}
 	}
 
-	public override bool SupportsSelection(SelectionBase selection)
+	public override void OnGameTick()
 	{
-		return typeof(TSelectionType).IsAssignableFrom(selection.GetType());
+		base.OnGameTick();
+
+		if (this.SceneObject == null)
+			return;
+
+		if (this.IsBeingManipulated)
+		{
+			this.SceneObject.WorldTransform = this.TargetTransform;
+		}
+		else
+		{
+			this.TargetTransform = this.SceneObject.WorldTransform;
+		}
 	}
 }

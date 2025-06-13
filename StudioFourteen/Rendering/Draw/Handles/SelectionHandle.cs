@@ -13,15 +13,16 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Scene.Handles;
+namespace StudioFourteen.Rendering.Draw.Handles;
 
+using StudioFourteen.Scene;
 using StudioFourteen.Selection;
 
 public class SelectionHandle : Handle
 {
-	private readonly SelectionBase selection;
+	private readonly SceneObjectBase selection;
 
-	public SelectionHandle(SelectionBase selection)
+	public SelectionHandle(SceneObjectBase selection)
 	{
 		this.selection = selection;
 
@@ -69,7 +70,7 @@ public class SelectionHandle : Handle
 		base.OnIsHoveredChanged(isHovered);
 	}
 
-	private void OnSelectionHoverChanged(SelectionBase? oldSelection, SelectionBase? newSelection)
+	private void OnSelectionHoverChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection)
 	{
 		if (oldSelection?.Id == this.selection.Id)
 		{
@@ -81,7 +82,7 @@ public class SelectionHandle : Handle
 		}
 	}
 
-	private void OnSelectionChanged(SelectionBase? oldSelection, SelectionBase? newSelection)
+	private void OnSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection)
 	{
 		this.IsSelected = newSelection?.Id == this.selection.Id;
 	}

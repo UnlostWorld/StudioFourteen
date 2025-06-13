@@ -13,24 +13,45 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Materials;
+namespace StudioFourteen.Rendering.Draw.Gizmos;
 
-using System.Runtime.InteropServices;
-using SharpDX.D3DCompiler;
-using StudioFourteen.Content;
-using StudioFourteen.Rendering.Draw;
+using StudioFourteen.Scene;
 
-[StructLayout(LayoutKind.Sequential)]
-public struct GizmoFlatMaterial : IMaterial
+public abstract class ObjectGizmoBase : GizmoBase
 {
-	public Color Color;
+	protected SceneObjectBase? sceneObject;
 
-	public IContent<ShaderBytecode>? GetVertexShader() => new ShaderReference("Shaders/GizmoFlat.hlsl", "vs_4_0", "vert");
-	public IContent<ShaderBytecode>? GetPixelShader() => new ShaderReference("Shaders/GizmoFlat.hlsl", "ps_4_0", "pixel");
-	public IContent<ShaderBytecode>? GetGeometryShader() => null;
+	public virtual object? Icon => null;
 
-	public void Initialize()
+	public void Enable(SceneObjectBase sceneObject)
 	{
-		this.Color = Color.White;
+		this.sceneObject = sceneObject;
+		this.Enable();
+	}
+
+	public abstract bool SupportsObject(SceneObjectBase sceneObject);
+
+	public virtual void OnGameTick()
+	{
+	}
+}
+
+public abstract class ObjectGizmoBase<TObjectType> : ObjectGizmoBase
+	where TObjectType : SceneObjectBase
+{
+	public TObjectType? SceneObject
+	{
+		get
+		{
+			if (this.sceneObject is TObjectType tSelection)
+				return tSelection;
+
+			return null;
+		}
+	}
+
+	public override bool SupportsObject(SceneObjectBase sceneObject)
+	{
+		return typeof(TObjectType).IsAssignableFrom(sceneObject.GetType());
 	}
 }
