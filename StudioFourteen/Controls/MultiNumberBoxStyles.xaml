@@ -43,20 +43,31 @@
 
 				<ItemsControl.ItemsPanel>
 					<ItemsPanelTemplate>
-						<UniformGrid Rows="1"/>
+						<UniformGrid Rows="1" />
 					</ItemsPanelTemplate>
 				</ItemsControl.ItemsPanel>
 
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
-						<local:NumberBox
-							Grid.Row="0"
-							Grid.Column="1"
-							Change="{Binding Change}"
-							Maximum="{Binding Maximum}"
-							Minimum="{Binding Minimum}"
-							Wrap="{Binding Wrap}"
-							Value="{Binding Value}" />
+						<Grid>
+							<local:NumberBox
+								Grid.Row="0"
+								Grid.Column="1"
+								Change="{Binding Change}"
+								Maximum="{Binding Maximum}"
+								Minimum="{Binding Minimum}"
+								Margin="4,1,1,1"
+								Wrap="{Binding Wrap}"
+								Value="{Binding Value}" />
+
+							<Ellipse
+								Margin="2"
+								Width="4"
+								Height="4"
+								HorizontalAlignment="Left"
+								Fill="{Binding Color}" />
+
+						</Grid>
 					</DataTemplate>
 				</ItemsControl.ItemTemplate>
 			</ItemsControl>

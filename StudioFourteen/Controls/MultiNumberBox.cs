@@ -24,6 +24,7 @@ using System.ComponentModel;
 using System.Numerics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 [DependencyProperty<Quaternion>("Value", DefaultBindingMode = DefaultBindingMode.TwoWay)]
 public partial class QuaternionBox : MultiNumberBox
@@ -121,7 +122,8 @@ public partial class Vector3Box : MultiNumberBox
 				Vector3 val = this.Value;
 				val.X = (float)v;
 				this.Value = val;
-			});
+			},
+			(Brush)Axes.XColor);
 
 		this.AddChannel(
 			() => "Y:",
@@ -131,7 +133,8 @@ public partial class Vector3Box : MultiNumberBox
 				Vector3 val = this.Value;
 				val.Y = (float)v;
 				this.Value = val;
-			});
+			},
+			(Brush)Axes.YColor);
 
 		this.AddChannel(
 			() => "Z:",
@@ -141,7 +144,8 @@ public partial class Vector3Box : MultiNumberBox
 				Vector3 val = this.Value;
 				val.Z = (float)v;
 				this.Value = val;
-			});
+			},
+			(Brush)Axes.ZColor);
 	}
 
 	partial void OnValueChanged() => this.OnControlValueChanged();
@@ -297,12 +301,12 @@ public partial class Color4Box : MultiNumberBox
 public abstract partial class MultiNumberBox
 	: Control
 {
-	public void AddChannel(Func<string> getLabel, Func<double> getValue, Action<double> setValue)
+	public void AddChannel(Func<string> getLabel, Func<double> getValue, Action<double> setValue, Brush? color = null)
 	{
 		if (this.Channels == null)
 			this.Channels = new();
 
-		this.Channels.Add(new MultiNumberBoxChannel(this, getLabel, getValue, setValue));
+		this.Channels.Add(new MultiNumberBoxChannel(this, getLabel, getValue, setValue, color));
 	}
 
 	public void OnControlValueChanged()
@@ -340,7 +344,7 @@ public abstract partial class MultiNumberBox
 	}
 }
 
-public partial class MultiNumberBoxChannel(MultiNumberBox control, Func<string> getLabel, Func<double> getValue, Action<double> setValue)
+public partial class MultiNumberBoxChannel(MultiNumberBox control, Func<string> getLabel, Func<double> getValue, Action<double> setValue, Brush? color = null)
 	: INotifyPropertyChanged
 {
 	public event PropertyChangedEventHandler? PropertyChanged;
@@ -353,6 +357,7 @@ public partial class MultiNumberBoxChannel(MultiNumberBox control, Func<string> 
 		set => setValue.Invoke(value);
 	}
 
+	public Brush Color => color ?? new SolidColorBrush(Colors.Transparent);
 	public double Change => control.Change;
 	public bool Wrap => control.Wrap;
 	public double Minimum => control.Minimum;

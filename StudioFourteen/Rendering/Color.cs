@@ -18,6 +18,9 @@ namespace StudioFourteen.Rendering;
 using System;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using System.Windows.Media;
+
+using MediaColor = System.Windows.Media.Color;
 
 [StructLayout(LayoutKind.Sequential)]
 public struct Color
@@ -50,5 +53,20 @@ public struct Color
 	public static implicit operator Vector4(Color color)
 	{
 		return new(color.R, color.G, color.B, color.A);
+	}
+
+	public static implicit operator MediaColor(Color color)
+	{
+		MediaColor c = default;
+		c.ScR = color.R;
+		c.ScG = color.G;
+		c.ScB = color.B;
+		c.ScA = color.A;
+		return c;
+	}
+
+	public static implicit operator Brush(Color color)
+	{
+		return new SolidColorBrush((MediaColor)color);
 	}
 }
