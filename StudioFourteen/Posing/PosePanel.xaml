@@ -328,14 +328,6 @@
 							</ComboBoxItem>
 						</ComboBox>
 
-						<Button
-							Grid.Column="1"
-							Width="28"
-							Background="Transparent"
-							Click="OnResetSelectionClicked">
-							<icons:IconView Icon="{DynamicResource ICON_Pose_Reset}" />
-						</Button>
-
 						<ToggleButton
 							Grid.Column="2"
 							Width="28"

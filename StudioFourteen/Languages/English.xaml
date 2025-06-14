@@ -264,9 +264,9 @@
 	<sys:String x:Key="LOC_PoseMatrix_WeaponCategory">Weapon</sys:String>
 
 	<sys:String x:Key="LOC_Pose_Mirror_Header">Transfer values</sys:String>
-	<sys:String x:Key="LOC_Pose_Mirror_None">None</sys:String>
-	<sys:String x:Key="LOC_Pose_Mirror_Copy">Copy</sys:String>
-	<sys:String x:Key="LOC_Pose_Mirror_Flip">Mirror</sys:String>
+	<sys:String x:Key="LOC_Pose_Mirror_None">No Mirroring</sys:String>
+	<sys:String x:Key="LOC_Pose_Mirror_Copy">Copy to opposite bone</sys:String>
+	<sys:String x:Key="LOC_Pose_Mirror_Flip">Mirror to opposite bone</sys:String>
 
 	<!--  Gizmos  -->
 	<sys:String x:Key="LOC_Gizmos">View Gizmo options</sys:String>

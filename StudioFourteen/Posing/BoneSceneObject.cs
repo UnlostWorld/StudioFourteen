@@ -43,8 +43,6 @@ public class BoneSceneObject : TransformSceneObjectBase
 		this.Name = Resources.Find($"LOC_Bone_{this.BoneName}", this.BoneName);
 		this.Subtitle = name;
 		this.Description = Resources.Find($"LOC_Bone_{this.BoneName}_Tooltip", string.Empty);
-
-		this.ResetCommand = new(this.Reset);
 	}
 
 	public Dictionary<BoneId, List<BoneId>> BonePaths { get; private set; }
@@ -54,7 +52,6 @@ public class BoneSceneObject : TransformSceneObjectBase
 	public override string TypeName => Resources.Find("LOC_Selection_Bone", "Bone");
 
 	public string BoneName { get; init; }
-	public SimpleCommand ResetCommand { get; init; }
 
 	public bool IsFaceBone { get; private set; }
 	public override double TranslationChange => this.IsFaceBone ? 0.01 : 0.1;

@@ -15,99 +15,47 @@
 	<DataTemplate DataType="{x:Type posing:BoneSceneObject}">
 		<StackPanel>
 
-			<TextBlock Text="Mirroring" Style="{DynamicResource LabelLeft}" Foreground="{DynamicResource ForegroundLightBrush}"/>
-			<Border
-				Grid.Row="1"
-				Margin="1"
-				Style="{DynamicResource WpfUtilsControlBorder}">
-				<Grid>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition />
-						<ColumnDefinition Width="Auto" />
-						<ColumnDefinition Width="Auto" />
-					</Grid.ColumnDefinitions>
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
 
-					<ComboBox
-						Grid.Column="0"
-						SelectedValue="{Binding MirrorMode}"
-						SelectedValuePath="Tag"
-						Visibility="{Binding CanMirror, Converter={StaticResource B2V}}">
+				<wpfUtils:SwitchSelector
+					Grid.Column="0"
+					SelectedValue="{Binding MirrorMode}"
+					SelectedValuePath="Tag"
+					Visibility="{Binding CanMirror, Converter={StaticResource B2V}}">
 
-						<wpfUtils:PopOut.Header>
-							<TextBlock Margin="10" Text="{DynamicResource LOC_Pose_Mirror_Header}" />
-						</wpfUtils:PopOut.Header>
+					<ComboBoxItem Content="{DynamicResource ICON_Pose_Mirror_None}" Tag="{x:Static pose:MirrorModes.None}" ToolTip="{DynamicResource LOC_Pose_Mirror_None}"/>
 
-						<ComboBoxItem Tag="{x:Static pose:MirrorModes.None}">
-							<Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="Auto" />
-									<ColumnDefinition />
-								</Grid.ColumnDefinitions>
+					<ComboBoxItem Content="{DynamicResource ICON_Pose_Mirror_Copy}" Tag="{x:Static pose:MirrorModes.MirrorTCopyRS}" ToolTip="{DynamicResource LOC_Pose_Mirror_Copy}"/>
 
-								<icons:IconView
-									Grid.Column="0"
-									Width="18"
-									Height="18"
-									Icon="{DynamicResource ICON_Pose_Mirror_None}" />
-								<TextBlock Grid.Column="1" Text="{DynamicResource LOC_Pose_Mirror_None}" />
-							</Grid>
-						</ComboBoxItem>
+					<ComboBoxItem Content="{DynamicResource ICON_Pose_Mirror_Flip}" Tag="{x:Static pose:MirrorModes.MirrorTRCopyS}" ToolTip="{DynamicResource LOC_Pose_Mirror_Flip}"/>
 
-						<ComboBoxItem Tag="{x:Static pose:MirrorModes.MirrorTCopyRS}">
-							<Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="Auto" />
-									<ColumnDefinition />
-								</Grid.ColumnDefinitions>
+				</wpfUtils:SwitchSelector>
 
-								<icons:IconView
-									Grid.Column="0"
-									Width="18"
-									Height="18"
-									Icon="{DynamicResource ICON_Pose_Mirror_Copy}" />
-								<TextBlock Grid.Column="1" Text="{DynamicResource LOC_Pose_Mirror_Copy}" />
-							</Grid>
-						</ComboBoxItem>
+				<Button
+					Grid.Column="1"
+					Width="28"
+					Command="{Binding ResetCommand}"
+					Content="{DynamicResource ICON_Pose_Reset}" />
 
-						<ComboBoxItem Tag="{x:Static pose:MirrorModes.MirrorTRCopyS}">
-							<Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="Auto" />
-									<ColumnDefinition />
-								</Grid.ColumnDefinitions>
+				<ToggleButton
+					Grid.Column="2"
+					Width="28"
+					Content="{DynamicResource ICON_Pose_LockTransform}"
+					IsChecked="{Binding LockTransform, FallbackValue=false}"
+					Style="{DynamicResource WpfUtilsIconToggleButton}"
+					ToolTip="{DynamicResource LOC_Pose_LockTransform}" />
 
-								<icons:IconView
-									Grid.Column="0"
-									Width="18"
-									Height="18"
-									Icon="{DynamicResource ICON_Pose_Mirror_Flip}" />
-								<TextBlock Grid.Column="1" Text="{DynamicResource LOC_Pose_Mirror_Flip}" />
-							</Grid>
-						</ComboBoxItem>
-					</ComboBox>
+			</Grid>
 
-					<Button
-						Grid.Column="1"
-						Width="28"
-						Background="Transparent"
-						Command="{Binding ResetCommand}">
-						<icons:IconView Icon="{DynamicResource ICON_Pose_Reset}" />
-					</Button>
-
-					<ToggleButton
-						Grid.Column="2"
-						Width="28"
-						Background="Transparent"
-						IsChecked="{Binding LockTransform, FallbackValue=false}"
-						IsEnabled="{Binding CanLockTransform, FallbackValue=false}"
-						Style="{DynamicResource WpfUtilsIconToggleButton}"
-						ToolTip="{DynamicResource LOC_Pose_LockTransform}">
-						<icons:IconView Grid.Column="0" Icon="{DynamicResource ICON_Pose_LockTransform}" />
-					</ToggleButton>
-				</Grid>
-			</Border>
-
-			<TextBlock Text="Transform" Style="{DynamicResource LabelLeft}" Foreground="{DynamicResource ForegroundLightBrush}"/>
+			<TextBlock
+				Foreground="{DynamicResource ForegroundLightBrush}"
+				Style="{DynamicResource LabelLeft}"
+				Text="Transform" />
 			<ContentPresenter Content="{Binding .}" ContentTemplate="{DynamicResource TransformSceneObjectBaseInspector}" />
 
 		</StackPanel>

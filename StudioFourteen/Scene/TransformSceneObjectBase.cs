@@ -17,14 +17,15 @@ namespace StudioFourteen.Scene;
 
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Gizmos.Handles.TransformHandle;
+using WpfUtils.Commands;
 
 public abstract partial class TransformSceneObjectBase : SceneObjectBase
 {
+	private Transform? initialWorldTransform = null;
+
 	[Notify] private Transform worldTransform;
 	[Notify] private Transform localTransform;
 	[Notify] private bool lockTransform;
-
-	private Transform? initialWorldTransform = null;
 
 	public virtual double TranslationChange => 0.1;
 	public virtual int DecimalPlacesToDisplay => 2;
@@ -34,7 +35,9 @@ public abstract partial class TransformSceneObjectBase : SceneObjectBase
 	public override void Reset()
 	{
 		if (this.initialWorldTransform != null)
+		{
 			this.WorldTransform = (Transform)this.initialWorldTransform;
+		}
 
 		base.Reset();
 	}

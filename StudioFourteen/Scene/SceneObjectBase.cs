@@ -18,6 +18,7 @@ namespace StudioFourteen.Scene;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Mvm;
 using StudioFourteen.Utilities;
+using WpfUtils.Commands;
 
 public abstract partial class SceneObjectBase : ViewModel
 {
@@ -28,11 +29,18 @@ public abstract partial class SceneObjectBase : ViewModel
 	[Notify(Setter.Private)] private bool isHovered;
 	[Notify(Setter.Private)] private bool isSelected;
 
+	public SceneObjectBase()
+	{
+		this.ResetCommand = new(this.Reset);
+	}
+
 	public bool IsActive { get; private set; }
 
 	public abstract string Id { get; }
 	public abstract object? Icon { get; }
 	public abstract string TypeName { get; }
+
+	public SimpleCommand ResetCommand { get; init; }
 
 	public virtual void Reset()
 	{
