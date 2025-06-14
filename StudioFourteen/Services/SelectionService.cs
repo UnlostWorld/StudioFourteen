@@ -36,7 +36,7 @@ public partial class SelectionService : ServiceBase
 	private string lastSelectionName = "Nothing";
 	private bool expandedSelection;
 
-	public delegate void SelectionChangedDelegate(SceneObjectBase? oldSelection, SceneObjectBase? newSelection);
+	public delegate void SelectionChangedDelegate(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? selectionSource);
 	public delegate void GizmoChangedDelegate(ObjectGizmoBase? oldGizmo, ObjectGizmoBase? newGizmo);
 	public delegate void SelectionExpandedDelegate(bool newValue);
 
@@ -48,80 +48,8 @@ public partial class SelectionService : ServiceBase
 	public override string Name => "Selection";
 	public override object? Icon => Resources.Find("ICON_Selection_SelectionService");
 
-	public SceneObjectBase? Current
-	{
-		get => this.selection;
-		set
-		{
-			SceneObjectBase? oldSelection = this.selection;
-
-			if (oldSelection != null && value != null && oldSelection.Id == value.Id)
-				return;
-
-			this.lastSelectionName = this.selection?.Name ?? "Nothing";
-			this.Services.History.RecordChange(this, $"Change");
-
-			if (this.selection != null)
-			{
-				if (this.selection.IsActive)
-					this.selection.Deactivate();
-
-				this.selection.OnSelected(false);
-			}
-
-			this.selection = value;
-			this.selection?.OnSelected(true);
-
-			if (this.selection != null && !this.selection.IsActive)
-				this.selection.Activate();
-
-			if (this.selection != null)
-			{
-				if (this.Services.Input.Mouse != null)
-				{
-					this.SelectionCursorPosition = this.Services.Input.Mouse.GetPosition();
-					this.SelectionCursorOffset = Vector2.Zero;
-
-					if (this.selection is TransformSceneObjectBase transformSelection)
-					{
-						Vector3 worldPos = Vector3.Transform(Vector3.Zero, transformSelection.WorldTransform.ToMatrix());
-						Vector3 cameraPos = this.Services.Camera.WorldToCamera(worldPos);
-
-						this.SelectionCursorOffset = this.SelectionCursorPosition - cameraPos.ToVector2();
-					}
-				}
-			}
-
-			this.SelectionChanged?.Invoke(oldSelection, value);
-			this.RaisePropertyChanged();
-
-			this.DefaultGizmo();
-		}
-	}
-
-	public SceneObjectBase? Hover
-	{
-		get => this.hover;
-		set
-		{
-			if (this.hover == value)
-				return;
-
-			SceneObjectBase? oldHover = this.hover;
-			if (this.hover != null && this.hover != this.selection && this.hover.IsActive)
-				this.hover.Deactivate();
-
-			this.Hover?.OnHovered(false);
-			this.hover = value;
-			this.Hover?.OnHovered(true);
-
-			if (this.hover != null && !this.hover.IsActive)
-				this.hover.Activate();
-
-			this.HoverChanged?.Invoke(oldHover, value);
-			this.RaisePropertyChanged();
-		}
-	}
+	public SceneObjectBase? Current => this.selection;
+	public SceneObjectBase? Hover => this.hover;
 
 	public ObjectGizmoBase? Gizmo
 	{
@@ -169,6 +97,83 @@ public partial class SelectionService : ServiceBase
 
 	// An offset from where the cursor was and the transform root of the selected object (if it has one)
 	public Vector2 SelectionCursorOffset { get; set; }
+
+	public void Select(SceneObjectBase? newSelection, object? source)
+	{
+		SceneObjectBase? oldSelection = this.selection;
+
+		if (oldSelection != null && newSelection != null && oldSelection.Id == newSelection.Id)
+			return;
+
+		this.lastSelectionName = this.selection?.Name ?? "Nothing";
+		this.Services.History.RecordChange(this, $"Change");
+
+		if (this.selection != null)
+		{
+			if (this.selection.IsActive)
+				this.selection.Deactivate();
+
+			this.selection.OnSelected(false);
+		}
+
+		this.selection = newSelection;
+		this.selection?.OnSelected(true);
+
+		if (this.selection != null && !this.selection.IsActive)
+			this.selection.Activate();
+
+		if (this.selection != null)
+		{
+			if (this.Services.Input.Mouse != null)
+			{
+				this.SelectionCursorPosition = this.Services.Input.Mouse.GetPosition();
+				this.SelectionCursorOffset = Vector2.Zero;
+
+				if (this.selection is TransformSceneObjectBase transformSelection)
+				{
+					Vector3 worldPos = Vector3.Transform(Vector3.Zero, transformSelection.WorldTransform.ToMatrix());
+					Vector3 cameraPos = this.Services.Camera.WorldToCamera(worldPos);
+
+					this.SelectionCursorOffset = this.SelectionCursorPosition - cameraPos.ToVector2();
+				}
+			}
+		}
+
+		this.SelectionChanged?.Invoke(oldSelection, newSelection, source);
+		this.RaisePropertyChanged();
+
+		this.DefaultGizmo();
+	}
+
+	public void Clear()
+	{
+		this.Select(null, null);
+	}
+
+	public void HoverSelection(SceneObjectBase? newHover, object? source)
+	{
+		if (this.hover == newHover)
+			return;
+
+		SceneObjectBase? oldHover = this.hover;
+		if (this.hover != null && this.hover != this.selection && this.hover.IsActive)
+			this.hover.Deactivate();
+
+		this.Hover?.OnHovered(false);
+		this.hover = newHover;
+		this.Hover?.OnHovered(true);
+
+		if (this.hover != null && !this.hover.IsActive)
+			this.hover.Activate();
+
+		this.HoverChanged?.Invoke(oldHover, newHover, source);
+		this.RaisePropertyChanged();
+	}
+
+	public void ClearHover()
+	{
+		this.HoverSelection(null, null);
+	}
 
 	public override void FinalizeHistoryOperation(ref Operation operation)
 	{
@@ -286,6 +291,6 @@ public partial class SelectionService : ServiceBase
 	private void OnTargetChanged(int objectTableIndex)
 	{
 		// TODO: consider caching the previous selection this target had and restoring it?
-		this.Current = new ObjectTableObject(this.Services.Target.TargetObjectIndex);
+		this.Select(new ObjectTableObject(this.Services.Target.TargetObjectIndex), this);
 	}
 }

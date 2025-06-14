@@ -209,13 +209,13 @@ public partial class SimpleView : PoseViewBase
 		}
 	}
 
-	protected override void OnSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection)
+	protected override void OnSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? source)
 	{
-		base.OnSelectionChanged(oldSelection, newSelection);
+		base.OnSelectionChanged(oldSelection, newSelection, source);
 
 		this.Dispatcher.Invoke(() =>
 		{
-			foreach(BoneConnection connection in this.boneConnections)
+			foreach (BoneConnection connection in this.boneConnections)
 			{
 				connection.OnSelectionChanged();
 			}

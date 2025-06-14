@@ -24,6 +24,7 @@ using System.Windows.Input;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Panels;
 using StudioFourteen.Rendering.Draw.Gizmos;
+using StudioFourteen.Rendering.Draw.Handles;
 using StudioFourteen.Scene;
 using WpfUtils;
 using WpfUtils.Extensions;
@@ -95,17 +96,18 @@ public partial class SelectionWidget : Panel
 		}
 	}
 
-	private void OnSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection)
+	private void OnSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? source)
 	{
-		Task.Run(() => this.ChangeSelection(newSelection));
+		Task.Run(() => this.ChangeSelection(newSelection, source));
 	}
 
-	private async Task ChangeSelection(SceneObjectBase? newSelection)
+	private async Task ChangeSelection(SceneObjectBase? newSelection, object? source)
 	{
-		if (newSelection == null)
+		if (newSelection == null || source is not SelectionHandle)
 		{
 			this.closing.Play();
 			this.isShowing = false;
+			this.Expanded = false;
 			return;
 		}
 		else

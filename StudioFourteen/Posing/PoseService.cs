@@ -446,7 +446,7 @@ public partial class PoseService : ServiceBase
 			{
 				if (toRemove.Contains(usedId))
 				{
-					this.Services.Selection.Current = null;
+					this.Services.Selection.Clear();
 					break;
 				}
 			}

@@ -36,12 +36,12 @@ public class SelectionHandle : Handle
 	{
 		if (hover)
 		{
-			this.Services.Selection.Hover = this.selection;
+			this.Services.Selection.HoverSelection(this.selection, this);
 			this.Services.Selection.HoverSource = this;
 		}
 		else if (this.Services.Selection.Hover?.Id == this.selection.Id)
 		{
-			this.Services.Selection.Hover = null;
+			this.Services.Selection.ClearHover();
 		}
 
 		base.SetIsHandleHovered(hover);
@@ -60,7 +60,7 @@ public class SelectionHandle : Handle
 			else
 			{
 				this.Services.Selection.ExpandedSelection = false;
-				this.Services.Selection.Current = this.selection;
+				this.Services.Selection.Select(this.selection, this);
 			}
 		}
 	}
@@ -70,7 +70,7 @@ public class SelectionHandle : Handle
 		base.OnIsHoveredChanged(isHovered);
 	}
 
-	private void OnSelectionHoverChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection)
+	private void OnSelectionHoverChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? source)
 	{
 		if (oldSelection?.Id == this.selection.Id)
 		{
@@ -82,7 +82,7 @@ public class SelectionHandle : Handle
 		}
 	}
 
-	private void OnSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection)
+	private void OnSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? source)
 	{
 		this.IsSelected = newSelection?.Id == this.selection.Id;
 	}

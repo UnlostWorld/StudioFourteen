@@ -42,7 +42,7 @@ public partial class ToolBarPanel : Panel
 		this.Services.Selection.GizmoChanged += this.OnSelectionGizmoChanged;
 		this.AllowMouseCapture = this.Settings.AllowMouseCapture;
 
-		this.OnSelectionChanged(null, this.Services.Selection.Current);
+		this.OnSelectionChanged(null, this.Services.Selection.Current, null);
 		this.OnSelectionGizmoChanged(null, this.Services.Selection.Gizmo);
 	}
 
@@ -55,7 +55,7 @@ public partial class ToolBarPanel : Panel
 		this.Services.Selection.GizmoChanged -= this.OnSelectionGizmoChanged;
 	}
 
-	private void OnSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection)
+	private void OnSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? source)
 	{
 		List<ObjectGizmoBase> gizmos = this.Services.Selection.GetValidGizmos();
 

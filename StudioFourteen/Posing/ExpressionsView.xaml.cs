@@ -32,7 +32,7 @@ public partial class ExpressionsView : View
 
 	public double BackgroundOpacity => SimpleView.BackgroundOpacity;
 
-	private void OnPoseSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection)
+	private void OnPoseSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? source)
 	{
 		this.Dispatcher.Invoke(() =>
 		{
@@ -48,6 +48,6 @@ public partial class ExpressionsView : View
 
 	private void OnEyeClicked(object sender, RoutedEventArgs e)
 	{
-		this.Services.Selection.Current = new EyeSelection(this.ObjectTableIndex);
+		this.Services.Selection.Select(new EyeSelection(this.ObjectTableIndex), this);
 	}
 }

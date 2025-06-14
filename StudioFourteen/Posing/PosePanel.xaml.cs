@@ -89,12 +89,12 @@ public partial class PosePanel : CharacterPanelBase
 	{
 		base.OnOpened();
 
-		this.Services.Selection.SelectionChanged += this.OnSelectionChanged;
-		this.Services.Selection.HoverChanged += this.OnHoverChanged;
+		this.Services.Selection.SelectionChanged += this.OnSceneSelectionChanged;
+		this.Services.Selection.HoverChanged += this.OnSelectionHoverChanged;
 
 		if (this.Services.Selection.Current == null && this.TargetObjectIndex >= 0)
 		{
-			this.Services.Selection.Current = new ObjectTableObject((ushort)this.TargetObjectIndex);
+			this.Services.Selection.Select(new ObjectTableObject((ushort)this.TargetObjectIndex), this);
 		}
 
 		this.Selection = this.Services.Selection.Current;
@@ -105,8 +105,8 @@ public partial class PosePanel : CharacterPanelBase
 		base.OnClosed();
 
 		this.IsHoverTooltipOpen = false;
-		this.Services.Selection.SelectionChanged -= this.OnSelectionChanged;
-		this.Services.Selection.HoverChanged -= this.OnHoverChanged;
+		this.Services.Selection.SelectionChanged -= this.OnSceneSelectionChanged;
+		this.Services.Selection.HoverChanged -= this.OnSelectionHoverChanged;
 	}
 
 	protected override void OnTargetChanged(int objectTableIndex)
@@ -115,7 +115,7 @@ public partial class PosePanel : CharacterPanelBase
 		this.RevertTooltip = StudioFourteen.Resources.Format("LOC_Pose_RevertPose", this.CharacterName);
 	}
 
-	private void OnHoverChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection)
+	private void OnSelectionHoverChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? source)
 	{
 		this.Dispatcher.Invoke(() =>
 		{
@@ -144,7 +144,7 @@ public partial class PosePanel : CharacterPanelBase
 		this.IsHoverTooltipOpen = true;
 	}
 
-	private void OnSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection)
+	private void OnSceneSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? source)
 	{
 		this.Selection = newSelection;
 	}
@@ -155,7 +155,7 @@ public partial class PosePanel : CharacterPanelBase
 			return;
 
 		this.Services.Pose.FlushBoneReferences((ushort)this.TargetObjectIndex);
-		this.Services.Selection.Current = new ObjectTableObject((ushort)this.TargetObjectIndex);
+		this.Services.Selection.Select(new ObjectTableObject((ushort)this.TargetObjectIndex), this);
 	}
 
 	private void OnBackgroundMouseDown(object sender, MouseButtonEventArgs e)
@@ -163,12 +163,12 @@ public partial class PosePanel : CharacterPanelBase
 		if (this.TargetObjectIndex < 0)
 			return;
 
-		this.Services.Selection.Current = new ObjectTableObject((ushort)this.TargetObjectIndex);
+		this.Services.Selection.Select(new ObjectTableObject((ushort)this.TargetObjectIndex), this);
 	}
 
 	private void OnClearClicked(object sender, RoutedEventArgs e)
 	{
-		this.Services.Selection.Current = new ObjectTableObject((ushort)this.TargetObjectIndex);
+		this.Services.Selection.Select(new ObjectTableObject((ushort)this.TargetObjectIndex), this);
 	}
 
 	private async void OnReferenceClicked(object sender, RoutedEventArgs e)

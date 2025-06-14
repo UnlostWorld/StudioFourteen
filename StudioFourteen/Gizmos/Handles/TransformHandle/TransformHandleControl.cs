@@ -27,6 +27,7 @@ using Transform = StudioFourteen.Transform;
 [DependencyProperty<Transform>("Transform", DefaultBindingMode = DefaultBindingMode.TwoWay)]
 [DependencyProperty<double>("Sensitivity")]
 [DependencyProperty<TransformHandleTypes>("GizmoType")]
+[DependencyProperty<int>("GizmoIndex")]
 public partial class TransformHandleControl : GizmoRenderer
 {
 	private readonly TranslationHandle translation;
@@ -100,5 +101,10 @@ public partial class TransformHandleControl : GizmoRenderer
 		this.translation.IsVisible = newValue == TransformHandleTypes.Translation;
 		this.rotation.IsVisible = newValue == TransformHandleTypes.Rotation;
 		this.scale.IsVisible = newValue == TransformHandleTypes.Scale;
+	}
+
+	partial void OnGizmoIndexChanged(int newValue)
+	{
+		this.GizmoType = (TransformHandleTypes)newValue;
 	}
 }

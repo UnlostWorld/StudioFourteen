@@ -37,7 +37,7 @@ public partial class PoseSelectionControl : Control
 	public string? SafeName { get; private set; }
 	public bool IsSafeValid { get; set; }
 
-	public void OnHoverChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection)
+	public void OnHoverChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? source)
 	{
 		if (newSelection == null || this.Selection == null)
 		{
@@ -49,7 +49,7 @@ public partial class PoseSelectionControl : Control
 		this.IsMouseHover = isHover;
 	}
 
-	public void OnSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection)
+	public void OnSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? source)
 	{
 		if (newSelection == null || this.Selection == null)
 		{

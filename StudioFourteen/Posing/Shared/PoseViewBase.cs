@@ -101,18 +101,18 @@ public partial class PoseViewBase : View
 		if (closestLink != null && closestDist < MouseOverDistance)
 		{
 			this.Services.Selection.HoverSource = closestLink;
-			this.Services.Selection.Hover = closestLink.Selection;
+			this.Services.Selection.HoverSelection(closestLink.Selection, this);
 		}
 		else
 		{
-			this.Services.Selection.Hover = null;
+			this.Services.Selection.ClearHover();
 		}
 	}
 
 	protected override void OnMouseLeave(MouseEventArgs e)
 	{
 		base.OnMouseLeave(e);
-		this.Services.Selection.Hover = null;
+		this.Services.Selection.ClearHover();
 	}
 
 	protected override void OnMouseUp(MouseButtonEventArgs e)
@@ -124,12 +124,12 @@ public partial class PoseViewBase : View
 
 		if (this.Services.Selection.Hover != null)
 		{
-			ServiceManager.Instance.Selection.Current = this.Services.Selection.Hover;
+			ServiceManager.Instance.Selection.Select(this.Services.Selection.Hover, this);
 			return;
 		}
 		else
 		{
-			ServiceManager.Instance.Selection.Current = new ObjectTableObject(this.Services.Target.TargetObjectIndex);
+			ServiceManager.Instance.Selection.Select(new ObjectTableObject(this.Services.Target.TargetObjectIndex), this);
 		}
 
 		e.Handled = true;
@@ -266,8 +266,8 @@ public partial class PoseViewBase : View
 			else
 			{
 				this.Visibility = Visibility.Visible;
-				this.OnHoverChanged(null, this.Services.Selection.Hover);
-				this.OnSelectionChanged(null, this.Services.Selection.Current);
+				this.OnHoverChanged(null, this.Services.Selection.Hover, null);
+				this.OnSelectionChanged(null, this.Services.Selection.Current, null);
 				this.IsValid = true;
 				this.parent?.OnViewIsValidChanged(this, this.IsValid);
 			}
@@ -315,7 +315,7 @@ public partial class PoseViewBase : View
 		return validCount > 0;
 	}
 
-	protected virtual void OnSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection)
+	protected virtual void OnSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? source)
 	{
 		this.Dispatcher.Invoke(() =>
 		{
@@ -323,13 +323,13 @@ public partial class PoseViewBase : View
 			{
 				foreach(PoseSelectionControl control in this.controls)
 				{
-					control.OnSelectionChanged(oldSelection, newSelection);
+					control.OnSelectionChanged(oldSelection, newSelection, source);
 				}
 			}
 		});
 	}
 
-	protected virtual void OnHoverChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection)
+	protected virtual void OnHoverChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? source)
 	{
 		this.Dispatcher.Invoke(() =>
 		{
@@ -337,7 +337,7 @@ public partial class PoseViewBase : View
 			{
 				foreach(PoseSelectionControl control in this.controls)
 				{
-					control.OnHoverChanged(oldSelection, newSelection);
+					control.OnHoverChanged(oldSelection, newSelection, source);
 				}
 			}
 		});
