@@ -15,9 +15,7 @@
 	SizeToContent="WidthAndHeight"
 	mc:Ignorable="d">
 
-	<Grid
-		Width="256"
-		Height="450">
+	<Grid Width="256" Height="450">
 
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="Auto" />
@@ -81,10 +79,10 @@
 
 			<wpfUtils:SwitchSelector
 				Width="28"
+				Margin="0"
 				ItemsSource="{Binding Gizmos}"
 				SelectedValue="{Binding SelectedGizmo}"
-				Style="{DynamicResource WpfUtilsSwitchSelectorVertical}"
-				Margin="0">
+				Style="{DynamicResource WpfUtilsSwitchSelectorVertical}">
 
 				<wpfUtils:SwitchSelector.ItemTemplate>
 					<DataTemplate>
@@ -97,7 +95,10 @@
 			</wpfUtils:SwitchSelector>
 		</Grid>
 
-		<Grid Grid.Column="1" VerticalAlignment="Top" Margin="3,0,0,0">
+		<Grid
+			Grid.Column="1"
+			Margin="3,0,0,0"
+			VerticalAlignment="Top">
 
 			<silk:AnimationState Binding="{Binding Expanded}">
 				<silk:AnimationState.Enter>
@@ -120,9 +121,7 @@
 
 			</silk:AnimationState>
 
-			<Border
-				Background="Black"
-				CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}">
+			<Border Background="Black" CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}">
 				<Border.Effect>
 					<DropShadowEffect
 						BlurRadius="10"
@@ -143,52 +142,27 @@
 						Margin="2"
 						Background="{DynamicResource BackgroundBrush}"
 						CornerRadius="{DynamicResource WpfUtilsBorderInnerCornerRadius}">
-						<Grid Grid.Column="1">
+
+						<Grid>
 							<Grid.ColumnDefinitions>
-								<ColumnDefinition Width="Auto" />
 								<ColumnDefinition />
 								<ColumnDefinition Width="Auto" />
 							</Grid.ColumnDefinitions>
 
-							<Grid.RowDefinitions>
-								<RowDefinition Height="Auto"/>
-								<RowDefinition Height="Auto"/>
-							</Grid.RowDefinitions>
-
-							<icons:IconView
-								Margin="3"
-								Grid.RowSpan="2"
-								Width="22"
-								Height="22"
-								Foreground="{DynamicResource ForegroundLightBrush}"
-								Icon="{Binding Current.Icon}" />
-
-							<TextBlock
-								Margin="0,2,0,0"
-								Grid.Row="0"
-								Grid.Column="1"
-								Foreground="{DynamicResource ForegroundBrush}"
-								Text="{Binding Current.Name}" />
-
-							<TextBlock
-								Margin="0,-1,0,1"
-								Grid.Row="1"
-								Grid.Column="1"
-								Style="{DynamicResource Subscript}"
-								Foreground="{DynamicResource ForegroundLightBrush}"
-								Text="{Binding Current.TypeName}" />
+							<ContentPresenter
+								Grid.Column="0"
+								Content="{Binding Current}"
+								ContentTemplate="{DynamicResource InspectorHeader}" />
 
 							<ToggleButton
-								Grid.Column="2"
-								Grid.RowSpan="2"
-								Margin="3,0,0,0"
+								Grid.Column="1"
 								Width="30"
 								Height="30"
+								Margin="3,0,0,0"
 								Background="Transparent"
-								Style="{DynamicResource WpfUtilsIconToggleButton}"
 								Content="{DynamicResource ICON_Window_Close}"
-								IsChecked="{Binding Expanded, Converter={StaticResource !B}}"/>
-
+								IsChecked="{Binding Expanded, Converter={StaticResource !B}}"
+								Style="{DynamicResource WpfUtilsIconToggleButton}" />
 						</Grid>
 					</Border>
 
@@ -198,7 +172,7 @@
 						Background="{DynamicResource BackgroundBrush}"
 						CornerRadius="{DynamicResource WpfUtilsBorderInnerCornerRadius}">
 						<ScrollViewer HorizontalScrollBarVisibility="Disabled">
-							<ContentPresenter Content="{Binding Current}" Margin="2"/>
+							<ContentPresenter Margin="2" Content="{Binding Current}" />
 						</ScrollViewer>
 					</Border>
 				</Grid>

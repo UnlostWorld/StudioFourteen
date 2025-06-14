@@ -38,9 +38,6 @@ public partial class PosePanel : CharacterPanelBase
 
 	[Notify] private string revertTooltip = string.Empty;
 	[Notify] private SceneObjectBase? selection;
-	[Notify] private bool isSelectionTransform;
-	[Notify] private bool isSelectionBlend;
-	[Notify] private bool isSelectionEye;
 	[Notify] private SceneObjectBase? hover;
 	[Notify] private bool isHoverTooltipOpen = false;
 	[Notify] private UIElement? hoverTarget;
@@ -150,9 +147,6 @@ public partial class PosePanel : CharacterPanelBase
 	private void OnSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection)
 	{
 		this.Selection = newSelection;
-		this.IsSelectionTransform = this.Selection is TransformSceneObjectBase;
-		this.IsSelectionBlend = this.Selection is BlendSelection;
-		this.IsSelectionEye = this.Selection is EyeSelection;
 	}
 
 	private void OnRevertClicked(object sender, RoutedEventArgs e)

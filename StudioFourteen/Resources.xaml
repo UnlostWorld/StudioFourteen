@@ -46,6 +46,7 @@
 		<ResourceDictionary Source="./Library/LibraryBodyTemplates.xaml" />
 
 		<!-- Inspectors -->
+		<ResourceDictionary Source="./Scene/InspectorHeader.xaml"/>
 		<ResourceDictionary Source="./Scene/TransformObjectInspector.xaml"/>
 		<ResourceDictionary Source="./Posing/BoneInspector.xaml"/>
 

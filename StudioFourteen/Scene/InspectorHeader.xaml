@@ -1,0 +1,69 @@
+<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:StudioFourteen.Controls"
+	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
+	xmlns:icons="clr-namespace:StudioFourteen.Icons"
+	xmlns:pose="clr-namespace:StudioFourteen.Posing"
+	xmlns:posing="clr-namespace:StudioFourteen.Posing"
+	xmlns:scene="clr-namespace:StudioFourteen.Scene"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
+
+	<BooleanToVisibilityConverter x:Key="B2V" />
+	<converters:BoolInversionConverter x:Key="!B" />
+
+	<DataTemplate x:Key="InspectorHeader" DataType="{x:Type scene:SceneObjectBase}">
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition />
+			</Grid.ColumnDefinitions>
+
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition Height="Auto" />
+			</Grid.RowDefinitions>
+
+			<icons:IconView
+				Grid.RowSpan="2"
+				Width="22"
+				Height="22"
+				Margin="3"
+				Foreground="{DynamicResource ForegroundLightBrush}"
+				Icon="{Binding Icon}" />
+
+			<TextBlock
+				Grid.Row="0"
+				Grid.Column="1"
+				Margin="3,2,0,0"
+				Foreground="{DynamicResource ForegroundBrush}"
+				Text="{Binding Name}" />
+
+			<StackPanel
+				Grid.Row="1"
+				Grid.Column="1"
+				Margin="0,-1,0,1"
+				Orientation="Horizontal">
+				<TextBlock
+					Foreground="{DynamicResource ForegroundLightBrush}"
+					Style="{DynamicResource Subscript}"
+					Text="{Binding TypeName}"
+					Margin="3,0"/>
+
+				<TextBlock
+					Foreground="{DynamicResource ForegroundLightBrush}"
+					Style="{DynamicResource Subscript}"
+					Text="-"
+					Margin="3,0"/>
+
+				<TextBlock
+					Foreground="{DynamicResource ForegroundLightBrush}"
+					Style="{DynamicResource Subscript}"
+					Text="{Binding Subtitle}"
+					Margin="3,0"/>
+
+			</StackPanel>
+
+		</Grid>
+	</DataTemplate>
+</ResourceDictionary>
