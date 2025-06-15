@@ -13,39 +13,40 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Posing;
+namespace StudioFourteen.Scene.GameObjects.Characters;
 
 using System.Collections.Generic;
 using System.Numerics;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.Havok.Animation.Rig;
-using Lumina.Excel.Sheets;
+using StudioFourteen.Posing;
 using StudioFourteen.Rendering;
-using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Draw;
 using StudioFourteen.Rendering.Draw.Handles;
-using StudioFourteen.Selection;
+using StudioFourteen.Rendering.Materials;
 
-public class BoneGizmo : SelectionHandle
+using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
+using XivSkeleton = FFXIVClientStructs.FFXIV.Client.Graphics.Render.Skeleton;
+
+public class SkeletonBoneGizmo : SelectionHandle
 {
-	private readonly BoneSceneObject boneSelection;
+	private readonly SkeletonBone boneSelection;
 	private readonly BoneId boneId;
 	private readonly BoneId? parentBoneId;
 	private readonly MeshRenderer<BoneCapMaterial> capRenderer;
 	private readonly LineRenderer<BoneMaterial>? connectionRenderer;
 
-	public BoneGizmo(BoneSceneObject selection)
+	public SkeletonBoneGizmo(SkeletonBone selection)
 		: base(selection)
 	{
+		this.boneId = selection.PrimaryBoneId;
 		this.boneSelection = selection;
 		this.capRenderer = new(MeshContent.Bone);
 		this.Add(this.capRenderer);
 
 		foreach ((BoneId boneId, List<BoneId> path) in selection.BonePaths)
 		{
-			this.boneId = boneId;
-
 			if (path.Count > 0)
 			{
 				if (path[0].BoneIndex == 0)
@@ -66,8 +67,8 @@ public class BoneGizmo : SelectionHandle
 		base.OnDraw();
 
 		if (!this.boneId.Resolve(
-			out Character* pCharacter,
-			out Skeleton* pSkeleton,
+			out XivCharacter* pCharacter,
+			out XivSkeleton* pSkeleton,
 			out PartialSkeleton* pPartialSkeleton,
 			out hkaPose* pPose))
 			return;

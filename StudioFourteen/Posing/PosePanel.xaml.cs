@@ -27,6 +27,7 @@ using StudioFourteen.Library;
 using StudioFourteen.Posing.Shared;
 using StudioFourteen.Scene;
 using StudioFourteen.Scene.GameObjects;
+using StudioFourteen.Scene.GameObjects.Characters;
 using WpfUtils;
 using WpfUtils.Utils;
 
@@ -48,6 +49,8 @@ public partial class PosePanel : Panel
 	{
 		this.showTooltipQueue = new(this.ShowTooltip, 500);
 	}
+
+	public Skeleton? Skeleton => this.GameObject as Skeleton;
 
 	public int SelectedTab
 	{
@@ -149,10 +152,10 @@ public partial class PosePanel : Panel
 
 	private void OnRevertClicked(object sender, RoutedEventArgs e)
 	{
-		if (this.GameObject == null)
+		if (this.Skeleton == null)
 			return;
 
-		this.Services.Pose.FlushBoneReferences(this.GameObject.ObjectIndex);
+		this.Skeleton.Reset();
 	}
 
 	private void OnBackgroundMouseDown(object sender, MouseButtonEventArgs e)
@@ -171,12 +174,12 @@ public partial class PosePanel : Panel
 		this.Services.Selection.Select(this.GameObject, this);
 	}
 
-	private async void OnReferenceClicked(object sender, RoutedEventArgs e)
+	private void OnReferenceClicked(object sender, RoutedEventArgs e)
 	{
-		if (this.GameObject == null)
+		if (this.Skeleton == null)
 			return;
 
-		await this.Services.Pose.SetToReferencePose(this.GameObject.ObjectIndex);
+		this.Skeleton.SetToReferencePose();
 	}
 
 	private void OnImportClicked(object sender, RoutedEventArgs e)
@@ -184,20 +187,20 @@ public partial class PosePanel : Panel
 		LibraryPanel.Open(this.GetContext());
 	}
 
-	private async void OnExportClicked(object sender, RoutedEventArgs e)
+	private void OnExportClicked(object sender, RoutedEventArgs e)
 	{
-		if (this.GameObject == null)
+		if (this.Skeleton == null)
 			return;
 
-		await this.Services.Pose.ExportPose(this.GameObject.ObjectIndex);
+		this.Skeleton.Export();
 	}
 
 	private void OnFlipPoseClicked(object sender, RoutedEventArgs e)
 	{
-		if (this.GameObject == null)
+		if (this.Skeleton == null)
 			return;
 
-		this.Services.Pose.Flip(this.GameObject.ObjectIndex);
+		this.Skeleton.Flip();
 	}
 }
 

@@ -5,14 +5,14 @@
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
 	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:pose="clr-namespace:StudioFourteen.Posing"
-	xmlns:posing="clr-namespace:StudioFourteen.Posing"
+	xmlns:characters="clr-namespace:StudioFourteen.Scene.GameObjects.Characters"
 	xmlns:scene="clr-namespace:StudioFourteen.Scene"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
 	<BooleanToVisibilityConverter x:Key="B2V" />
 	<converters:BoolInversionConverter x:Key="!B" />
 
-	<DataTemplate DataType="{x:Type posing:BoneSceneObject}">
+	<DataTemplate DataType="{x:Type characters:SkeletonBone}">
 		<StackPanel>
 
 			<Grid>

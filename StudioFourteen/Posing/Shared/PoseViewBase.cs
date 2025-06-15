@@ -30,6 +30,7 @@ using DependencyPropertyGenerator;
 using StudioFourteen.Services;
 using StudioFourteen.Scene;
 using StudioFourteen.Scene.GameObjects;
+using StudioFourteen.Scene.GameObjects.Characters;
 
 [DependencyProperty<bool>("Hide", DefaultValue = false)]
 [DependencyProperty<bool>("UpdateWithAppearance", DefaultValue = false)]
@@ -382,9 +383,9 @@ public partial class PoseViewBase : View
 			{
 				control.Selection = gameObject;
 			}
-			else
+			else if (gameObject is Skeleton skeleton)
 			{
-				BoneSceneObject? selection = ServiceManager.Instance.Pose.FindBone((Character*)gameObject.GetXivGameObject(), control.SafeName);
+				SkeletonBone? selection = skeleton.FindBone(control.SafeName);
 				if (selection != null)
 				{
 					foreach (BoneId boneId in selection.BonePaths.Keys)

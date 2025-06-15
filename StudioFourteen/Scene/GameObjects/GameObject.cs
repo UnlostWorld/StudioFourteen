@@ -107,8 +107,6 @@ public class GameObject : TransformSceneObjectBase
 			this.WorldTransform = newTransform;
 		}
 
-		this.LockTransform = this.Services.Pose.AreAllBoneReferencesLocked(this.ObjectIndex);
-
 		this.IsReady = true;
 	}
 
@@ -132,6 +130,5 @@ public class GameObject : TransformSceneObjectBase
 	protected override void OnLockTransformChanged(bool oldValue, bool newValue)
 	{
 		base.OnLockTransformChanged(oldValue, newValue);
-		this.Services.Pose.SetAllBoneReferencesLocked(this.ObjectIndex, newValue);
 	}
 }

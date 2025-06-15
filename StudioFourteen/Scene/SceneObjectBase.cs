@@ -44,7 +44,7 @@ public abstract partial class SceneObjectBase : ViewModel, IDisposable
 	public SimpleCommand ResetCommand { get; init; }
 	public List<GizmoBase> Gizmos { get; init; } = new();
 
-	public void Dispose()
+	public virtual void Dispose()
 	{
 	}
 

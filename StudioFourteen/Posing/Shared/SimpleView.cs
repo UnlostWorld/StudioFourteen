@@ -28,6 +28,7 @@ using System.Threading.Tasks;
 using StudioFourteen.Selection;
 using WpfUtils;
 using StudioFourteen.Scene;
+using StudioFourteen.Scene.GameObjects.Characters;
 
 [DependencyProperty<string>("LayoutName")]
 [DependencyProperty<bool>("FlipSides", DefaultValue = false)]
@@ -89,7 +90,7 @@ public partial class SimpleView : PoseViewBase
 				this.canvas.Children.Add(target);
 				Canvas.SetZIndex(target, -100);
 
-				string? mirrorName = PoseService.GetMirrorBoneName(name);
+				string? mirrorName = SkeletonService.GetMirrorBoneName(name);
 				if (mirrorName != null)
 				{
 					PoseSelectionControl mirrorTarget = new();
@@ -111,7 +112,7 @@ public partial class SimpleView : PoseViewBase
 
 			foreach (PoseSelectionControl target in allTargets)
 			{
-				if (target.Selection is BoneSceneObject boneSelection)
+				if (target.Selection is SkeletonBone boneSelection)
 				{
 					foreach ((BoneId boneId, List<BoneId> pathToRoot) in boneSelection.BonePaths)
 					{

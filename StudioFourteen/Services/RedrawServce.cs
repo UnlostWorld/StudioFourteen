@@ -187,7 +187,8 @@ public class RedrawService : ServiceBase
 			}
 
 			// Clear bone references
-			ServiceManager.Instance.Pose.FlushBoneReferences(objectTableIndex);
+			// TODO!
+			////ServiceManager.Instance.Pose.FlushBoneReferences(objectTableIndex);
 
 			// Perform redraw
 			await TickService.GameTick();

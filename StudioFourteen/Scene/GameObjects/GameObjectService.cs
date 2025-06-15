@@ -18,6 +18,7 @@ namespace StudioFourteen.Scene.GameObjects;
 using System;
 using System.Collections.Generic;
 using FFXIVClientStructs.Interop;
+using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Services;
 
 using XivGameObject = FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject;
@@ -92,7 +93,10 @@ public class GameObjectService : ServiceBase
 				if (this.gameObjectLookup.ContainsKey(index))
 					continue;
 
-				GameObject obj = new(index);
+				GameObject? obj = this.Create(gameObject);
+				if (obj == null)
+					continue;
+
 				this.Services.Scene.AddObject(obj);
 				this.gameObjectLookup.Add(index, obj);
 			}
@@ -103,5 +107,27 @@ public class GameObjectService : ServiceBase
 				this.gameObjectLookup.Remove(index);
 			}
 		}
+	}
+
+	private unsafe GameObject? Create(XivGameObject* pGameObject)
+	{
+		int objectIndex = pGameObject->ObjectIndex;
+
+		switch (pGameObject->GetObjectKind())
+		{
+			case FFXIVClientStructs.FFXIV.Client.Game.Object.ObjectKind.Pc:
+			case FFXIVClientStructs.FFXIV.Client.Game.Object.ObjectKind.BattleNpc:
+			case FFXIVClientStructs.FFXIV.Client.Game.Object.ObjectKind.EventNpc:
+			case FFXIVClientStructs.FFXIV.Client.Game.Object.ObjectKind.Retainer:
+				return new Character(objectIndex);
+
+			// TODO:
+			case FFXIVClientStructs.FFXIV.Client.Game.Object.ObjectKind.Mount:
+			case FFXIVClientStructs.FFXIV.Client.Game.Object.ObjectKind.Companion:
+			case FFXIVClientStructs.FFXIV.Client.Game.Object.ObjectKind.Ornament:
+				return null;
+		}
+
+		return null;
 	}
 }

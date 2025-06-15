@@ -19,7 +19,10 @@ using System.Collections.Generic;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using StudioFourteen.Rendering.Draw.Gizmos;
 using StudioFourteen.Scene.GameObjects;
+using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Services;
+
+using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
 
 public class SkeletonGizmo : SceneObjectGizmoBase
 {
@@ -42,20 +45,13 @@ public class SkeletonGizmo : SceneObjectGizmoBase
 
 	public unsafe void Initialize()
 	{
-		HashSet<string> boneNames = this.Services.Pose.GetAllBoneNames(this.ObjectTableIndex);
-		foreach (string boneName in boneNames)
+		if (this.sceneObject is Skeleton skeleton)
 		{
-			if (this.Services.Settings.Current.HideGenitals
-				&& this.Services.Content.GenitalBones?.Contains(boneName) == true)
-				continue;
-
-			BoneSceneObject? selection = this.Services.Pose.FindBone(this.ObjectTableIndex, boneName);
-
-			if (selection == null)
-				continue;
-
-			BoneGizmo gizmo = new(selection);
-			this.Add(gizmo);
+			foreach (SkeletonBone bone in skeleton.Bones)
+			{
+				SkeletonBoneGizmo gizmo = new(bone);
+				this.Add(gizmo);
+			}
 		}
 
 		this.isInitialized = this.Children.Count > 0;
@@ -66,35 +62,24 @@ public class SkeletonGizmo : SceneObjectGizmoBase
 		if (!this.IsVisible)
 			return;
 
-		if (ServiceManager.Instance.GroupPose.IsGroupPosing
-				&& (this.ObjectTableIndex < GroupPoseService.GPoseFirstCharacter
-				|| this.ObjectTableIndex > GroupPoseService.GPoseFirstCharacter + GroupPoseService.GPoseCharacterCount))
-			{
-				return;
-			}
-
-		Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(this.ObjectTableIndex);
-		if (pCharacter == null || pCharacter->DrawObject == null)
-			return;
-
-		if (!pCharacter->CanDraw())
-			return;
-
-		if (pCharacter->ObjectKind != FFXIVClientStructs.FFXIV.Client.Game.Object.ObjectKind.Pc
-			&& pCharacter->ObjectKind != FFXIVClientStructs.FFXIV.Client.Game.Object.ObjectKind.BattleNpc
-			&& pCharacter->ObjectKind != FFXIVClientStructs.FFXIV.Client.Game.Object.ObjectKind.EventNpc)
-			return;
-
 		if (!this.isInitialized)
 			this.Initialize();
 
-		float scale = pCharacter->GetCharacterScale();
-		Transform modelTransform = StudioFourteen.Transform.FromTRS(
-			pCharacter->DrawObject->Position,
-			pCharacter->DrawObject->Rotation,
-			pCharacter->DrawObject->Scale * scale);
+		if (this.sceneObject is Skeleton skeleton)
+		{
+			XivCharacter* pCharacter = (XivCharacter*)skeleton.GetXivGameObject();
+			if (pCharacter == null || pCharacter->DrawObject == null)
+				return;
 
-		this.Transform = modelTransform;
+			float scale = pCharacter->GetCharacterScale();
+			Transform modelTransform = StudioFourteen.Transform.FromTRS(
+				pCharacter->DrawObject->Position,
+				pCharacter->DrawObject->Rotation,
+				pCharacter->DrawObject->Scale * scale);
+
+			this.Transform = modelTransform;
+		}
+
 		base.OnDraw();
 	}
 }

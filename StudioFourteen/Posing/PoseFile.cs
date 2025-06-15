@@ -58,9 +58,10 @@ public class PoseFile : FileBase
 		}
 	}
 
-	public async Task Save(int objectTableIndex, bool includeLegacyBones = true, HashSet<string>? includeBones = null, bool onlyEdits = false)
+	public Task Save(int objectTableIndex, bool includeLegacyBones = true, HashSet<string>? includeBones = null, bool onlyEdits = false)
 	{
-		await TickService.GameTick();
+		throw new NotImplementedException();
+		/*await TickService.GameTick();
 
 		this.Bones = new();
 		this.ReferenceRelativeBones = new();
@@ -136,7 +137,7 @@ public class PoseFile : FileBase
 					this.ReferenceRelativeBones.Add(boneReference.Name, boneTransform);
 				}
 			}
-		}
+		}*/
 	}
 
 	public override Task Execute()
@@ -149,9 +150,10 @@ public class PoseFile : FileBase
 		return Task.CompletedTask;
 	}
 
-	public async Task Apply(int objectTableIndex, UpdateSource source, bool immediate = false)
+	public Task Apply(int objectTableIndex, UpdateSource source, bool immediate = false)
 	{
-		await TickService.GameTick();
+		throw new NotImplementedException();
+		/*await TickService.GameTick();
 
 		bool useReferenceRelativeBones = this.ReferenceRelativeBones != null;
 
@@ -220,7 +222,7 @@ public class PoseFile : FileBase
 			{
 				await Task.Delay(10);
 			}
-		}
+		}*/
 	}
 
 	public override LibraryPreviewBase GetPreview()

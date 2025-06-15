@@ -15,21 +15,24 @@
 
 namespace StudioFourteen.Posing;
 
+using System;
+using System.Diagnostics;
+using System.Numerics;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.Havok.Animation.Rig;
 using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
-using FontAwesome.Sharp;
 using StudioFourteen.History;
+using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Services;
 using StudioFourteen.Structs;
 using StudioFourteen.Structs.Extensions;
-using StudioFourteen.Utilities;
-using System;
-using System.Diagnostics;
-using System.Numerics;
-using System.Threading.Tasks;
 using WpfUtils.Animation;
+
+using Skeleton = StudioFourteen.Scene.GameObjects.Characters.Skeleton;
+
+using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
+using XivSkeleton = FFXIVClientStructs.FFXIV.Client.Graphics.Render.Skeleton;
 
 public class BoneReference
 {
@@ -45,6 +48,7 @@ public class BoneReference
 	private static readonly Vector3 MinTranslate = new Vector3(-10, -10, -10);
 	private static readonly Vector3 MaxTranslate = new Vector3(10, 10, 10);
 
+	private readonly Skeleton skeleton;
 	private readonly Stopwatch blendTime = new();
 	private readonly EasingFunctionBase blendEase = new SineEase();
 	private bool blendOnLoad = false;
@@ -63,10 +67,11 @@ public class BoneReference
 	private bool hasCheckedMirror = false;
 	private bool isDecomposeError = false;
 
-	public BoneReference(BoneId id, string? name = null)
+	public BoneReference(Skeleton skeleton, BoneId id, string? name = null)
 	{
 		this.Id = id;
 		this.boneName = name;
+		this.skeleton = skeleton;
 	}
 
 	[History] public Transform? Transform { get; set; }
@@ -177,7 +182,7 @@ public class BoneReference
 		if (!this.IsValid)
 			return;
 
-		if (!this.Id.Resolve(out Character* pCharacter, out Skeleton* pSkeleton, out PartialSkeleton* pPartialSkeleton, out hkaPose* pPose))
+		if (!this.Id.Resolve(out XivCharacter* pCharacter, out XivSkeleton* pSkeleton, out PartialSkeleton* pPartialSkeleton, out hkaPose* pPose))
 			return;
 
 		this.ReferenceTransform = pPose->Skeleton->ReferencePose[this.Id.BoneIndex];
@@ -197,14 +202,14 @@ public class BoneReference
 		}
 	}
 
-	public unsafe Skeleton* Tick()
+	public unsafe XivSkeleton* Tick()
 	{
 		TickService.VerifyGameTickThread();
 
 		if (!this.IsValid)
 			return null;
 
-		if (!this.Id.Resolve(out Character* pCharacter, out Skeleton* pSkeleton, out PartialSkeleton* pPartialSkeleton, out hkaPose* pPose))
+		if (!this.Id.Resolve(out XivCharacter* pCharacter, out XivSkeleton* pSkeleton, out PartialSkeleton* pPartialSkeleton, out hkaPose* pPose))
 			return null;
 
 		if (this.Id.BoneIndex >= pPose->Skeleton->Bones.Length)
@@ -230,7 +235,7 @@ public class BoneReference
 		if (!this.hasCheckedMirror)
 		{
 			if (this.boneName != null && this.mirrorBoneName == null)
-				this.mirrorBoneName = PoseService.GetMirrorBoneName(this.boneName);
+				this.mirrorBoneName = SkeletonService.GetMirrorBoneName(this.boneName);
 
 			if (this.Mirror == null && this.mirrorBoneName != null)
 			{
@@ -242,7 +247,7 @@ public class BoneReference
 					if (boneName == this.mirrorBoneName)
 					{
 						BoneId mirrorBoneId = new(this.Id.ObjectTableIndex, this.Id.PartialSkeletonIndex, this.Id.PoseIndex, boneIdx);
-						this.Mirror = ServiceManager.Instance.Pose.GetOrCreateBoneReference(mirrorBoneId);
+						this.Mirror = this.skeleton.FindBoneReference(mirrorBoneId);
 
 						/*if (this.Mirror.MirrorMode != MirrorModes.None && this.MirrorMode == MirrorModes.None)
 						{

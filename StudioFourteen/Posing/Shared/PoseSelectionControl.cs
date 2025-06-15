@@ -15,15 +15,11 @@
 
 namespace StudioFourteen.Posing.Shared;
 
-using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using DependencyPropertyGenerator;
 using StudioFourteen.Scene;
-using StudioFourteen.Selection;
-using WpfUtils;
-using WpfUtils.Utils;
+using StudioFourteen.Scene.GameObjects.Characters;
 
 [DependencyProperty<string>("SelectionName")]
 [DependencyProperty<string>("Label")]
@@ -60,7 +56,7 @@ public partial class PoseSelectionControl : Control
 		this.IsSelected = newSelection.Id == this.Selection.Id;
 
 		this.IsParentSelected = false;
-		if (this.Selection is BoneSceneObject boneSelection && newSelection is BoneSceneObject newBoneSelection)
+		if (this.Selection is SkeletonBone boneSelection && newSelection is SkeletonBone newBoneSelection)
 		{
 			foreach((BoneId selectedBoneId, _) in newBoneSelection.BonePaths)
 			{

@@ -19,6 +19,7 @@ using DependencyPropertyGenerator;
 using FontAwesome.Sharp;
 using StudioFourteen.Mvm;
 using StudioFourteen.Scene;
+using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Selection;
 using StudioFourteen.Services;
 using StudioFourteen.Structs.Extensions;
@@ -160,8 +161,8 @@ public class EyeSelection : SceneObjectBase
 
 	public int ObjectTableIndex { get; init; }
 
-	public BoneSceneObject? EyeBone { get; private set; }
-	public BoneSceneObject? IrisBone { get; private set; }
+	public SkeletonBone? EyeBone { get; private set; }
+	public SkeletonBone? IrisBone { get; private set; }
 
 	public override void Reset()
 	{
@@ -181,7 +182,7 @@ public class EyeSelection : SceneObjectBase
 	{
 		await TickService.GameTick();
 
-		this.EyeBone = this.Services.Pose.FindBone(this.ObjectTableIndex, "j_f_eye_r");
+		/*this.EyeBone = this.Services.Pose.FindBone(this.ObjectTableIndex, "j_f_eye_r");
 		if (this.EyeBone != null)
 		{
 			this.EyeBone.MirrorMode = this.mirrorMode;
@@ -199,6 +200,6 @@ public class EyeSelection : SceneObjectBase
 		else
 		{
 			this.Log.Warning("No Iris bone found");
-		}
+		}*/
 	}
 }

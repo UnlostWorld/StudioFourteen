@@ -13,59 +13,12 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Scene;
+namespace StudioFourteen.Scene.GameObjects.Characters;
 
-using System;
-using System.Collections.Generic;
-using StudioFourteen.Services;
-
-public class SceneService : ServiceBase
+public class Character : Skeleton
 {
-	private readonly List<SceneObjectBase> objects = new();
-
-	public override void Attach()
+	public Character(int objectIndex)
+		: base(objectIndex)
 	{
-		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
-		base.Attach();
-	}
-
-	public override void Detach()
-	{
-		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
-		base.Detach();
-	}
-
-	public void AddObject(SceneObjectBase obj)
-	{
-		lock (this.objects)
-		{
-			this.objects.Add(obj);
-		}
-	}
-
-	public void RemoveObject(SceneObjectBase obj)
-	{
-		lock (this.objects)
-		{
-			this.objects.Remove(obj);
-		}
-
-		obj.Dispose();
-	}
-
-	public SceneObjectBase? GetObject(string id)
-	{
-		throw new NotImplementedException();
-	}
-
-	private void OnGameTick()
-	{
-		lock (this.objects)
-		{
-			foreach (SceneObjectBase obj in this.objects.ToArray())
-			{
-				obj.OnGameTick();
-			}
-		}
 	}
 }

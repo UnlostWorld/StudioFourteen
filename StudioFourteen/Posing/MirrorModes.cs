@@ -13,59 +13,27 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Scene;
+namespace StudioFourteen.Posing;
 
-using System;
-using System.Collections.Generic;
-using StudioFourteen.Services;
-
-public class SceneService : ServiceBase
+public enum MirrorModes
 {
-	private readonly List<SceneObjectBase> objects = new();
+	/// <summary>
+	/// Do not perform any mirroring action.
+	/// </summary>
+	None,
 
-	public override void Attach()
-	{
-		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
-		base.Attach();
-	}
+	/// <summary>
+	/// (Mirror) Mirror the Translation and Rotation, and copy the scale.
+	/// </summary>
+	MirrorTRCopyS,
 
-	public override void Detach()
-	{
-		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
-		base.Detach();
-	}
+	/// <summary>
+	/// (Copy) Mirror the bone Translation and copy the Rotation and Scale.
+	/// </summary>
+	MirrorTCopyRS,
 
-	public void AddObject(SceneObjectBase obj)
-	{
-		lock (this.objects)
-		{
-			this.objects.Add(obj);
-		}
-	}
-
-	public void RemoveObject(SceneObjectBase obj)
-	{
-		lock (this.objects)
-		{
-			this.objects.Remove(obj);
-		}
-
-		obj.Dispose();
-	}
-
-	public SceneObjectBase? GetObject(string id)
-	{
-		throw new NotImplementedException();
-	}
-
-	private void OnGameTick()
-	{
-		lock (this.objects)
-		{
-			foreach (SceneObjectBase obj in this.objects.ToArray())
-			{
-				obj.OnGameTick();
-			}
-		}
-	}
+	/// <summary>
+	/// This object is receiving mirrors from its opposite.
+	/// </summary>
+	Receiving,
 }

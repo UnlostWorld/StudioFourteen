@@ -13,42 +13,41 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Posing;
+namespace StudioFourteen.Scene.GameObjects.Characters;
 
+using StudioFourteen.Posing;
 using StudioFourteen.Scene;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 
 using StudioTransform = StudioFourteen.Transform;
+using XivSkeleton = FFXIVClientStructs.FFXIV.Client.Graphics.Render.Skeleton;
 
-public class BoneSceneObject : TransformSceneObjectBase
+public class SkeletonBone : TransformSceneObjectBase
 {
 	private static readonly Dictionary<string, MirrorModes> DefaultMirrorModes = new()
 	{
 		{ "j_f_eye_l", MirrorModes.MirrorTCopyRS },
 	};
 
+	private readonly Skeleton skeleton;
 	private readonly List<BoneReference> bones = new();
-	private readonly BoneReference? bone;
+	private readonly BoneReference bone;
 	private bool isReading = false;
 
-	public BoneSceneObject(Dictionary<BoneId, List<BoneId>> bonePaths, string name)
+	public SkeletonBone(Skeleton skeleton, string boneName, List<BoneReference> references)
 	{
-		this.BoneName = name;
-		this.BonePaths = bonePaths;
+		this.skeleton = skeleton;
+		this.BoneName = boneName;
 
-		this.IsFaceBone = name.StartsWith("j_f_");
+		this.IsFaceBone = boneName.StartsWith("j_f_");
 
 		this.Name = Resources.Find($"LOC_Bone_{this.BoneName}", this.BoneName);
-		this.Subtitle = name;
+		this.Subtitle = boneName;
 		this.Description = Resources.Find($"LOC_Bone_{this.BoneName}_Tooltip", string.Empty);
 
-		this.bones.Clear();
-		foreach (BoneId boneId in this.BonePaths.Keys)
-		{
-			this.bones.Add(ServiceManager.Instance.Pose.GetOrCreateBoneReference(boneId));
-		}
+		this.bones = references;
 
 		this.bone = this.bones[0];
 		this.RaisePropertyChanged(nameof(this.IsReady));
@@ -56,13 +55,15 @@ public class BoneSceneObject : TransformSceneObjectBase
 		this.MirrorMode = this.GetDefaultMirrorMode();
 	}
 
-	public Dictionary<BoneId, List<BoneId>> BonePaths { get; private set; }
-
-	public override string Id => new($"Bone:{this.BoneName}:{this.BonePaths.Keys.First().ObjectTableIndex}");
+	public override string Id => new($"Bone:{this.BoneName}:{this.skeleton.ObjectIndex}");
 	public override object? Icon => Resources.Find("ICON_Selection_Bone");
 	public override string TypeName => Resources.Find("LOC_Selection_Bone", "Bone");
 
 	public string BoneName { get; init; }
+	public BoneId PrimaryBoneId => this.bone.Id;
+
+	// TODO
+	public Dictionary<BoneId, List<BoneId>> BonePaths { get; init; } = new();
 
 	public bool IsFaceBone { get; private set; }
 	public override double TranslationChange => this.IsFaceBone ? 0.01 : 0.1;
@@ -136,7 +137,7 @@ public class BoneSceneObject : TransformSceneObjectBase
 			return mirror;
 		}
 
-		string? mirrorName = PoseService.GetMirrorBoneName(this.BoneName);
+		string? mirrorName = SkeletonService.GetMirrorBoneName(this.BoneName);
 		if (mirrorName != null)
 		{
 			if (DefaultMirrorModes.TryGetValue(mirrorName, out mirror))
@@ -170,6 +171,26 @@ public class BoneSceneObject : TransformSceneObjectBase
 		this.WorldTransform = this.bone.ModelSpaceTransform.Value * this.bone.ModelTransform.Value;
 		this.LocalTransform = (Transform)this.bone.LocalSpaceTransform;
 		this.isReading = false;
+	}
+
+	public unsafe void OnUpdateBonePhysics(ref HashSet<nint> modifiedSkeletonPointers)
+	{
+		foreach (BoneReference reference in this.bones)
+		{
+			XivSkeleton* skeleton = reference.Tick();
+			if (skeleton == null)
+				continue;
+
+			modifiedSkeletonPointers.Add((nint)skeleton);
+		}
+	}
+
+	public unsafe void OnFinalizeSkeleton()
+	{
+		foreach (BoneReference reference in this.bones)
+		{
+			reference.FinalizeBones();
+		}
 	}
 
 	protected override void OnLockTransformChanged(bool oldValue, bool newValue)

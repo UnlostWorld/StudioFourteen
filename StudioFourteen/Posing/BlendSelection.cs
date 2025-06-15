@@ -18,6 +18,7 @@ namespace StudioFourteen.Posing;
 using FontAwesome.Sharp;
 using StudioFourteen.Plugin;
 using StudioFourteen.Scene;
+using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Selection;
 using StudioFourteen.Services;
 using StudioFourteen.Utilities;
@@ -99,21 +100,21 @@ public class BlendSelection : SceneObjectBase
 	{
 		await TickService.GameTick();
 
-		List<BoneSceneObject>? boneSelections = this.Target.GetBones(this.objectTableIndex, flipSides);
+		List<SkeletonBone>? boneSelections = this.Target.GetBones(this.objectTableIndex, flipSides);
 		if (boneSelections == null)
 			return;
 
 		await Task.Delay(50);
 		await TickService.GameTick();
 
-		foreach (BoneSceneObject boneSelection in boneSelections)
+		foreach (SkeletonBone boneSelection in boneSelections)
 		{
 			if (boneSelection.BoneName == null)
 				continue;
 
 			string boneName = boneSelection.BoneName;
 			if (flipSides)
-				boneName = PoseService.GetMirrorBoneName(boneName) ?? boneName;
+				boneName = SkeletonService.GetMirrorBoneName(boneName) ?? boneName;
 
 			boneSelection.MirrorMode = this.mirrorMode;
 
@@ -148,11 +149,11 @@ public class BlendSelection : SceneObjectBase
 		}
 	}
 
-	public struct BoneBlend(BoneSceneObject selection, Transform initial, BoneTransform right, BoneTransform? left = null)
+	public struct BoneBlend(SkeletonBone selection, Transform initial, BoneTransform right, BoneTransform? left = null)
 	{
 		public BoneTransform Value = new();
 
-		public BoneSceneObject Selection = selection;
+		public SkeletonBone Selection = selection;
 		public Transform Initial = initial;
 		public BoneTransform Right = right;
 		public BoneTransform? Left = left;
@@ -232,11 +233,12 @@ public class BlendTarget
 		}
 	}
 
-	public List<BoneSceneObject>? GetBones(int objectTableIndex, bool flipBones)
+	public List<SkeletonBone>? GetBones(int objectTableIndex, bool flipBones)
 	{
 		TickService.VerifyGameTickThread();
 
-		List<BoneSceneObject> selections = new();
+		throw new NotImplementedException();
+		/*List<SkeletonBone> selections = new();
 
 		if (this.RightBones == null)
 			return null;
@@ -245,9 +247,9 @@ public class BlendTarget
 		{
 			string getBoneName = boneName;
 			if (flipBones)
-				getBoneName = PoseService.GetMirrorBoneName(boneName) ?? boneName;
+				getBoneName = SkeletonService.GetMirrorBoneName(boneName) ?? boneName;
 
-			BoneSceneObject? selection = ServiceManager.Instance.Pose.FindBone(objectTableIndex, getBoneName);
+			SkeletonBone? selection = ServiceManager.Instance.Skeletons.FindBone(objectTableIndex, getBoneName);
 
 			if (selection == null)
 				continue;
@@ -255,6 +257,6 @@ public class BlendTarget
 			selections.Add(selection);
 		}
 
-		return selections;
+		return selections;*/
 	}
 }
