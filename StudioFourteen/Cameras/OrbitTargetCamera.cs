@@ -15,9 +15,7 @@
 
 namespace StudioFourteen.Cameras;
 
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using PropertyChanged.SourceGenerator;
-using System;
 using System.Numerics;
 using WpfUtils.Animation;
 
@@ -25,11 +23,9 @@ public partial class OrbitTargetCamera : OrbitCamera
 {
 	public const float TargetBlendDuration = 0.250f;
 
-	private readonly EasingFunctionBase targetEase = new SineEase();
-	private int currentTargetIndex = -1;
+	/*private readonly EasingFunctionBase targetEase = new SineEase();
 	private Vector3 oldTargetPosition;
-	private Vector3 currentTargetPosition;
-	private float targetBlend = -1;
+	private Vector3 currentTargetPosition;*/
 
 	[Notify] private Vector3 targetOffset = new(0, 0, 0);
 
@@ -49,7 +45,8 @@ public partial class OrbitTargetCamera : OrbitCamera
 		this.TargetOffset = targetOffset;
 		this.desiredMove = Vector3.Zero;
 
-		if (this.currentTargetIndex != this.Services.Target.TargetObjectIndex && this.currentTargetIndex != -1)
+		// TODO: Orbit selection
+		/*if (this.currentTargetIndex != this.Services.Target.TargetObjectIndex && this.currentTargetIndex != -1)
 		{
 			this.oldTargetPosition = this.currentTargetPosition;
 			this.targetBlend = TargetBlendDuration;
@@ -79,7 +76,7 @@ public partial class OrbitTargetCamera : OrbitCamera
 
 			targetPosition += this.TargetOffset;
 			this.Target = targetPosition;
-		}
+		}*/
 
 		base.Tick(deltaTime);
 	}

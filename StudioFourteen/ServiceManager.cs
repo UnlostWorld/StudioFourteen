@@ -51,7 +51,6 @@ public class ServiceManager : ServiceManagerBase
 	public Cursors.CursorService Cursor { get; init; } = new();
 	public Analytics.ErrorReportingService Errors { get; init; } = new();
 	public TickService Tick { get; init; } = new();
-	public GameObjectsService GameObjects { get; init; } = new();
 	public Animation.AnimationService Animations { get; init; } = new();
 	public DragAndDrop.DragAndDropService DragAndDrop { get; init; } = new();
 	public Context.ContextMenuService Context { get; init; } = new();
@@ -64,4 +63,7 @@ public class ServiceManager : ServiceManagerBase
 	public Content.ContentService Content { get; init; } = new();
 	public ResourcePacks.ResourcePackService ResourcePacks { get; init; } = new();
 	public AfkService Afk { get; init; } = new();
+
+	public Scene.SceneService Scene { get; init; } = new();
+	public Scene.GameObjects.GameObjectService GameObjects { get; init; } = new();
 }

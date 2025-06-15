@@ -92,11 +92,6 @@ public partial class PosePanel : CharacterPanelBase
 		this.Services.Selection.SelectionChanged += this.OnSceneSelectionChanged;
 		this.Services.Selection.HoverChanged += this.OnSelectionHoverChanged;
 
-		if (this.Services.Selection.Current == null && this.TargetObjectIndex >= 0)
-		{
-			this.Services.Selection.Select(new ObjectTableObject((ushort)this.TargetObjectIndex), this);
-		}
-
 		this.Selection = this.Services.Selection.Current;
 	}
 
@@ -155,7 +150,6 @@ public partial class PosePanel : CharacterPanelBase
 			return;
 
 		this.Services.Pose.FlushBoneReferences((ushort)this.TargetObjectIndex);
-		this.Services.Selection.Select(new ObjectTableObject((ushort)this.TargetObjectIndex), this);
 	}
 
 	private void OnBackgroundMouseDown(object sender, MouseButtonEventArgs e)
@@ -163,12 +157,12 @@ public partial class PosePanel : CharacterPanelBase
 		if (this.TargetObjectIndex < 0)
 			return;
 
-		this.Services.Selection.Select(new ObjectTableObject((ushort)this.TargetObjectIndex), this);
+		this.Services.Selection.Select(this.GameObject, this);
 	}
 
 	private void OnClearClicked(object sender, RoutedEventArgs e)
 	{
-		this.Services.Selection.Select(new ObjectTableObject((ushort)this.TargetObjectIndex), this);
+		this.Services.Selection.Select(this.GameObject, this);
 	}
 
 	private async void OnReferenceClicked(object sender, RoutedEventArgs e)

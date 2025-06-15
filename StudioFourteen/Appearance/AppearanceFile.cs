@@ -21,6 +21,7 @@ using Lumina.Excel.Sheets;
 using StudioFourteen.DragAndDrop;
 using StudioFourteen.Files;
 using StudioFourteen.GameData;
+using StudioFourteen.Scene.GameObjects;
 using StudioFourteen.Services;
 using StudioFourteen.Tags;
 using System;
@@ -154,7 +155,12 @@ public class AppearanceFile : FileBase, ICharacterAppearance
 
 	public override Task Execute()
 	{
-		return this.Apply(ServiceManager.Instance.Target.TargetObjectIndex, UpdateSource.Interface);
+		if (ServiceManager.Instance.Selection.Current is GameObject obj)
+		{
+			return this.Apply(obj.ObjectIndex, UpdateSource.Interface);
+		}
+
+		return Task.CompletedTask;
 	}
 
 	public async Task Apply(int objectTableIndex, UpdateSource source)
@@ -210,7 +216,10 @@ public class AppearanceFile : FileBase, ICharacterAppearance
 
 		unsafe
 		{
-			Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(objectTableIndex);
+			Character* pCharacter = (Character*)ServiceManager.Instance.GameObjects.GetXivGameObject(objectTableIndex);
+			if (pCharacter == null)
+				return;
+
 			this.ModelType = (uint)pCharacter->ModelContainer.ModelCharaId;
 			this.Race = (Races)pCharacter->GetCustomizeValue(CustomizeIndex.Race);
 			this.Gender = (Genders)pCharacter->GetCustomizeValue(CustomizeIndex.Gender);

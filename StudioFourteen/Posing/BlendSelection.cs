@@ -43,6 +43,8 @@ public class BlendSelection : SceneObjectBase
 		this.Name = blendTargetName;
 		this.Target = target;
 		this.mirrorMode = target.MirrorMode;
+
+		this.Initialize(this.Flip).Run();
 	}
 
 	public override string Id => $"Blend:{this.blendTargetName}:{this.objectTableIndex}";
@@ -91,17 +93,6 @@ public class BlendSelection : SceneObjectBase
 		{
 			bone.Blend((float)value);
 		}
-	}
-
-	public override void Activate()
-	{
-		base.Activate();
-		this.Initialize(this.Flip).Run();
-	}
-
-	public override void Deactivate()
-	{
-		base.Deactivate();
 	}
 
 	public async Task Initialize(bool flipSides)

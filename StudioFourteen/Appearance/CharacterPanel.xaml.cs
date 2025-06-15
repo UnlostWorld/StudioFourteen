@@ -62,7 +62,10 @@ public partial class CharacterPanel : CharacterPanelBase
 	{
 		base.OnGameTick();
 
-		Character* pTarget = this.Services.Target.GetTarget();
+		if (this.GameObject == null)
+			return;
+
+		Character* pTarget = (Character*)this.GameObject.GetXivGameObject();
 		if (pTarget == null)
 			return;
 

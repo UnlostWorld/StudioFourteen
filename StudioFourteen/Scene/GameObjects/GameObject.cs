@@ -13,10 +13,9 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Selection;
+namespace StudioFourteen.Scene.GameObjects;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using StudioFourteen.Scene;
 using StudioFourteen.Services;
 using StudioFourteen.Structs.Extensions;
@@ -24,24 +23,26 @@ using StudioFourteen.Utilities;
 using System;
 using System.Numerics;
 
-public class ObjectTableObject : TransformSceneObjectBase
+using XivGameObject = FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject;
+
+public class GameObject : TransformSceneObjectBase
 {
-	public readonly int ObjectTableId;
+	public readonly int ObjectIndex;
 
 	private Transform? nextTransform;
 	private Vector3 lastPosition = Vector3.Zero;
 	private Quaternion lastRotation = Quaternion.Identity;
 	private Vector3 lastScale = Vector3.Zero;
 
-	public ObjectTableObject(int objectTableId)
+	public GameObject(int objectIndex)
 	{
-		this.ObjectTableId = objectTableId;
-		this.Name = $"{objectTableId}";
+		this.ObjectIndex = objectIndex;
+		this.Name = $"{objectIndex}";
 
-		this.Gizmos.Add(new ObjectTableGizmo(this));
+		this.Gizmos.Add(new GameObjectGizmo(this));
 	}
 
-	public override string Id => $"ObjectTable:{this.ObjectTableId}";
+	public override string Id => $"GameObject:{this.ObjectIndex}";
 	public override object? Icon => Resources.Find("ICON_Selection_Character");
 	public override string TypeName => Resources.Find("LOC_Selection_ObjectTable", "Object Table");
 
@@ -49,7 +50,7 @@ public class ObjectTableObject : TransformSceneObjectBase
 
 	public override bool IsHit(HitInfo hitInfo)
 	{
-		return hitInfo.ObjectTableIndex == this.ObjectTableId;
+		return hitInfo.ObjectTableIndex == this.ObjectIndex;
 	}
 
 	public override void OnHovered(bool value)
@@ -57,29 +58,17 @@ public class ObjectTableObject : TransformSceneObjectBase
 		base.OnHovered(value);
 
 		bool highlight = value && !this.IsSelected;
-
-		this.Services.Tick.Dispatch(TickService.Channels.GameTick, () =>
-		{
-			unsafe
-			{
-				GameObject* gameObject = this.Services.GameObjects.Get(this.ObjectTableId);
-				if (gameObject == null || gameObject->DrawObject == null)
-					return;
-
-				gameObject->Highlight(highlight ? ObjectHighlightColor.Magenta : ObjectHighlightColor.None);
-			}
-		});
 	}
 
 	public unsafe override void OnGameTick()
 	{
 		base.OnGameTick();
 
-		GameObject* gameObject = this.Services.GameObjects.Get(this.ObjectTableId);
-		if (gameObject == null || gameObject->DrawObject == null)
+		XivGameObject* pGameObject = this.GetXivGameObject();
+		if (pGameObject == null || pGameObject->DrawObject == null)
 			return;
 
-		this.Name = gameObject->GetDisplayName();
+		this.Name = pGameObject->NameString;
 
 		if (this.nextTransform != null)
 		{
@@ -87,11 +76,11 @@ public class ObjectTableObject : TransformSceneObjectBase
 
 			if (success)
 			{
-				gameObject->DrawObject->Position = translation;
-				gameObject->DrawObject->Rotation = rotation;
+				pGameObject->DrawObject->Position = translation;
+				pGameObject->DrawObject->Rotation = rotation;
 
 				// do not allow objects to scale below 0, it will break the game.
-				gameObject->DrawObject->Scale = Vector3.Clamp(scale, new Vector3(0.1f, 0.1f, 0.1f), new Vector3(1000, 1000, 1000));
+				pGameObject->DrawObject->Scale = Vector3.Clamp(scale, new Vector3(0.1f, 0.1f, 0.1f), new Vector3(1000, 1000, 1000));
 
 				this.nextTransform = null;
 			}
@@ -101,9 +90,9 @@ public class ObjectTableObject : TransformSceneObjectBase
 			}
 		}
 
-		Vector3 newPosition = gameObject->DrawObject->Position;
-		Quaternion newRotation = gameObject->DrawObject->Rotation;
-		Vector3 newScale = gameObject->DrawObject->Scale;
+		Vector3 newPosition = pGameObject->DrawObject->Position;
+		Quaternion newRotation = pGameObject->DrawObject->Rotation;
+		Vector3 newScale = pGameObject->DrawObject->Scale;
 
 		if (!newPosition.IsApproximately(this.lastPosition, 0.001f)
 			|| !newRotation.IsApproximately(this.lastRotation, 0.001f)
@@ -118,9 +107,14 @@ public class ObjectTableObject : TransformSceneObjectBase
 			this.WorldTransform = newTransform;
 		}
 
-		this.LockTransform = this.Services.Pose.AreAllBoneReferencesLocked(this.ObjectTableId);
+		this.LockTransform = this.Services.Pose.AreAllBoneReferencesLocked(this.ObjectIndex);
 
 		this.IsReady = true;
+	}
+
+	public unsafe XivGameObject* GetXivGameObject()
+	{
+		return this.Services.GameObjects.GetXivGameObject(this.ObjectIndex);
 	}
 
 	protected override void OnLocalTransformChanged(Transform oldValue, Transform newValue)
@@ -138,6 +132,6 @@ public class ObjectTableObject : TransformSceneObjectBase
 	protected override void OnLockTransformChanged(bool oldValue, bool newValue)
 	{
 		base.OnLockTransformChanged(oldValue, newValue);
-		this.Services.Pose.SetAllBoneReferencesLocked(this.ObjectTableId, newValue);
+		this.Services.Pose.SetAllBoneReferencesLocked(this.ObjectIndex, newValue);
 	}
 }

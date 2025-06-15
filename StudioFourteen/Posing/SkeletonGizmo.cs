@@ -17,9 +17,8 @@ namespace StudioFourteen.Posing;
 
 using System.Collections.Generic;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using StudioFourteen.Rendering.Draw.Gizmos;
-using StudioFourteen.Selection;
+using StudioFourteen.Scene.GameObjects;
 using StudioFourteen.Services;
 
 public class SkeletonGizmo : SceneObjectGizmoBase
@@ -34,8 +33,8 @@ public class SkeletonGizmo : SceneObjectGizmoBase
 	{
 		get
 		{
-			if (this.sceneObject is ObjectTableObject obj)
-				return obj.ObjectTableId;
+			if (this.sceneObject is GameObject obj)
+				return obj.ObjectIndex;
 
 			return 0;
 		}
@@ -81,9 +80,9 @@ public class SkeletonGizmo : SceneObjectGizmoBase
 		if (!pCharacter->CanDraw())
 			return;
 
-		if (pCharacter->ObjectKind != ObjectKind.Pc
-			&& pCharacter->ObjectKind != ObjectKind.BattleNpc
-			&& pCharacter->ObjectKind != ObjectKind.EventNpc)
+		if (pCharacter->ObjectKind != FFXIVClientStructs.FFXIV.Client.Game.Object.ObjectKind.Pc
+			&& pCharacter->ObjectKind != FFXIVClientStructs.FFXIV.Client.Game.Object.ObjectKind.BattleNpc
+			&& pCharacter->ObjectKind != FFXIVClientStructs.FFXIV.Client.Game.Object.ObjectKind.EventNpc)
 			return;
 
 		if (!this.isInitialized)

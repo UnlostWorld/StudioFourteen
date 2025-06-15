@@ -61,7 +61,7 @@ public partial class WorldContextMenu : PopOut
 
 			if (this.currentHitInfo.ObjectTableIndex != -1)
 			{
-				name = this.currentHitInfo.GameObject->GetDisplayName();
+				name = this.currentHitInfo.GameObject->NameString;
 			}
 			else
 			{

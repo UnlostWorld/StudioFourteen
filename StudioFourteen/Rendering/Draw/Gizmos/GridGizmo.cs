@@ -58,7 +58,7 @@ public class GridGizmo : GizmoBase
 	{
 		if (this.KeepAtTargetHeight)
 		{
-			Character* target = this.Services.Target.GetTarget();
+			Character* target = (Character*)this.Services.Target.GetTarget();
 			if (target != null && target->DrawObject != null)
 			{
 				this.gridRenderer.Material.Height = target->DrawObject->Position.Y;

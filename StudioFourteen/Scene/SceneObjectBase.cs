@@ -23,7 +23,7 @@ using StudioFourteen.Rendering.Draw.Gizmos;
 using StudioFourteen.Utilities;
 using WpfUtils.Commands;
 
-public abstract partial class SceneObjectBase : ViewModel
+public abstract partial class SceneObjectBase : ViewModel, IDisposable
 {
 	[Notify(Setter.Protected)] private string name = string.Empty;
 	[Notify(Setter.Protected)] private string? subtitle;
@@ -37,8 +37,6 @@ public abstract partial class SceneObjectBase : ViewModel
 		this.ResetCommand = new(this.Reset);
 	}
 
-	public bool IsActive { get; private set; }
-
 	public abstract string Id { get; }
 	public abstract object? Icon { get; }
 	public abstract string TypeName { get; }
@@ -46,18 +44,12 @@ public abstract partial class SceneObjectBase : ViewModel
 	public SimpleCommand ResetCommand { get; init; }
 	public List<GizmoBase> Gizmos { get; init; } = new();
 
+	public void Dispose()
+	{
+	}
+
 	public virtual void Reset()
 	{
-	}
-
-	public virtual void Activate()
-	{
-		this.IsActive = true;
-	}
-
-	public virtual void Deactivate()
-	{
-		this.IsActive = false;
 	}
 
 	public virtual void OnSelected(bool value)

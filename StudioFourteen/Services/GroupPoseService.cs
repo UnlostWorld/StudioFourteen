@@ -43,8 +43,6 @@ public partial class GroupPoseService : ServiceBase
 	public event OnStateChangedDelegate? StateChanged;
 	public event OnStateChangedDelegate? SettingsStateChanged;
 
-	public Vector3 EnterPosition { get; private set; }
-
 	public unsafe void SetGroupPose(bool state)
 	{
 		if (DalamudServices.GameGui == null)
@@ -147,12 +145,6 @@ public partial class GroupPoseService : ServiceBase
 	private unsafe bool EnterDetour(UIModule* uiModule)
 	{
 		bool didEnter = Hooks.EnterGroupPose.Original.Invoke(uiModule);
-
-		GameObject* pObject = this.Services.GameObjects.Get(0);
-		if (pObject != null && pObject->DrawObject != null)
-		{
-			this.EnterPosition = pObject->DrawObject->Position;
-		}
 
 		if (didEnter)
 			this.SetState(true);

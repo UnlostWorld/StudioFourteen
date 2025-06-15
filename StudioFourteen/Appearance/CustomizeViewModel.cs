@@ -37,15 +37,13 @@ using CharaMakeType = StudioFourteen.GameData.Sheets.CharaMakeType;
 
 public partial class CustomizeViewModel : ViewModel
 {
-	private readonly DispatcherObject dispatcher;
+	private readonly CharacterPanel panel;
 	private bool isUpdatingMenus = false;
 
-	public CustomizeViewModel(DispatcherObject dispatcher)
+	public CustomizeViewModel(CharacterPanel panel)
 	{
-		this.dispatcher = dispatcher;
+		this.panel = panel;
 	}
-
-	public bool HasValidTarget => this.Services.Target.HasValidTarget;
 
 	public FastObservableCollection<MenuViewModel?> BodyMenus { get; init; } = new();
 	public FastObservableCollection<MenuViewModel?> HeadMenus { get; init; } = new();
@@ -98,7 +96,7 @@ public partial class CustomizeViewModel : ViewModel
 		{
 			this.isUpdatingMenus = true;
 
-			await this.dispatcher.MainThread();
+			await this.panel.MainThread();
 
 			this.BodyMenus.Clear();
 			this.HeadMenus.Clear();
@@ -112,9 +110,12 @@ public partial class CustomizeViewModel : ViewModel
 				await Task.Delay(100);
 				await TickService.GameTick();
 
+				if (this.panel.GameObject == null)
+					return;
+
 				unsafe
 				{
-					Character* pCharacter = this.Services.GameObjects.Get<Character>(this.Services.Target.TargetObjectIndex);
+					Character* pCharacter = (Character*)this.panel.GameObject.GetXivGameObject();
 					if (pCharacter == null)
 						continue;
 
@@ -127,10 +128,13 @@ public partial class CustomizeViewModel : ViewModel
 
 			await TickService.GameTick();
 
+			if (this.panel.GameObject == null)
+				return;
+
 			CharaMakeType? makeType = null;
 			unsafe
 			{
-				Character* pCharacter = this.Services.GameObjects.Get<Character>(this.Services.Target.TargetObjectIndex);
+				Character* pCharacter = (Character*)this.panel.GameObject.GetXivGameObject();
 				if (pCharacter == null)
 					return;
 
@@ -218,7 +222,7 @@ public partial class CustomizeViewModel : ViewModel
 		makeupMenus.Add(this.GetMenu(makeType, CustomizeIndex.HairColor));
 		makeupMenus.Add(new ToggleMenu(CustomizeIndex.HasHighlights, this.GetMenu(makeType, CustomizeIndex.HairColor2)));
 
-		await this.dispatcher.MainThread();
+		await this.panel.MainThread();
 
 		this.BodyMenus.Replace(bodyMenus);
 		this.HeadMenus.Replace(headMenus);

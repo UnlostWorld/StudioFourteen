@@ -116,7 +116,12 @@ public class MareFile
 
 	public override Task Execute()
 	{
-		return this.Apply(ServiceManager.Instance.Target.TargetObjectIndex, UpdateSource.Interface);
+		if (ServiceManager.Instance.Selection.Current is Scene.GameObjects.GameObject obj)
+		{
+			return this.Apply(obj.ObjectIndex, UpdateSource.Interface);
+		}
+
+		return Task.CompletedTask;
 	}
 
 	public async Task Apply(int objectTableIndex, UpdateSource source)

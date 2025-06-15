@@ -74,32 +74,6 @@ public class CharacterLifecycleService : ServiceBase
 		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnTick);
 	}
 
-	public unsafe Character*[] GetAllCharacters()
-	{
-		TickService.VerifyGameTickThread();
-
-		GameObject*[] pObjects = this.Services.GameObjects.GetAll();
-		Character*[] pBufferCharacters = new Character*[pObjects.Length];
-		int characterCount = 0;
-		for (int i = 0; i < pObjects.Length; i++)
-		{
-			Character* pCharacter = (Character*)pObjects[i];
-			if (pCharacter == null)
-				continue;
-
-			pBufferCharacters[characterCount] = pCharacter;
-			characterCount++;
-		}
-
-		Character*[] pCharacters = new Character*[characterCount];
-		for (int i = 0; i < characterCount; i++)
-		{
-			pCharacters[i] = pBufferCharacters[i];
-		}
-
-		return pCharacters;
-	}
-
 	public async Task<int> CreateAsync(ICharacterAppearance? appearance, UpdateSource updateSource)
 	{
 		return await this.CreateAsync(Vector3.Zero, appearance, updateSource);
@@ -153,8 +127,8 @@ public class CharacterLifecycleService : ServiceBase
 			Character* pCharacter = this.Services.GameObjects.Get<Character>(index);
 			pCharacter->SetDisplayName(name);
 
-			// Move the spawned characters draw object to teh current targets location.
-			Character* pTarget = this.Services.Target.GetTarget();
+			// Move the spawned characters draw object to the current targets location.
+			Character* pTarget = (Character*)this.Services.Target.GetTarget();
 			if (pCharacter->DrawObject != null && pTarget != null && pTarget->DrawObject != null)
 			{
 				pCharacter->DrawObject->Position = pTarget->DrawObject->Position;
@@ -174,17 +148,20 @@ public class CharacterLifecycleService : ServiceBase
 	{
 		await TickService.GameTick();
 
-		// change to a new target before deleting the actor as Mare assumes no target = left gpose
-		// and will crash.
-		bool success = await this.Services.Target.MoveTarget(objectTableIndex);
-		if (!success)
-			return false;
+		unsafe
+		{
+			// Mare assumes no target = left gpose and will crash.
+			if (this.Services.Target.GetTarget()->ObjectIndex == objectTableIndex)
+			{
+				return false;
+			}
+		}
 
 		await TickService.GameTick();
 
 		unsafe
 		{
-			GameObject* character = this.Services.GameObjects.Get(objectTableIndex);
+			GameObject* character = this.Services.GameObjects.GetXivGameObject(objectTableIndex);
 
 			ClientObjectManager* com = ClientObjectManager.Instance();
 			uint idx = com->GetIndexByObject(character);

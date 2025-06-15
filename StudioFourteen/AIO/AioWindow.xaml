@@ -34,11 +34,11 @@
 			<ColumnDefinition />
 		</Grid.ColumnDefinitions>
 
-		<panels:PanelHost
+		<!--<panels:PanelHost
 			Grid.Row="0"
 			Grid.Column="1"
 			Context="{Binding Context}"
-			PanelType="{x:Type targets:TargetsPanel}" />
+			PanelType="{x:Type targets:TargetsPanel}" />-->
 
 		<launcher:TaskBarControl
 			x:Name="TaskBar"

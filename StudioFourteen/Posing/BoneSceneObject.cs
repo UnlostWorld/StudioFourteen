@@ -19,7 +19,7 @@ using StudioFourteen.Scene;
 using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
-using WpfUtils.Commands;
+
 using StudioTransform = StudioFourteen.Transform;
 
 public class BoneSceneObject : TransformSceneObjectBase
@@ -87,7 +87,7 @@ public class BoneSceneObject : TransformSceneObjectBase
 		set => this.SetReferenceTransform(value);
 	}
 
-	public override void Activate()
+	public void Activate()
 	{
 		this.bones.Clear();
 		foreach (BoneId boneId in this.BonePaths.Keys)
@@ -99,12 +99,6 @@ public class BoneSceneObject : TransformSceneObjectBase
 		this.RaisePropertyChanged(nameof(this.IsReady));
 
 		this.MirrorMode = this.GetDefaultMirrorMode();
-	}
-
-	public override void Deactivate()
-	{
-		this.bones.Clear();
-		this.bone = null;
 	}
 
 	public override void Reset()

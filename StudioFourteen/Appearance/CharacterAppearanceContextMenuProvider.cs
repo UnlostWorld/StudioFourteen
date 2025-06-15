@@ -18,35 +18,13 @@ namespace StudioFourteen.Appearance;
 using System.Threading.Tasks;
 using StudioFourteen.Context;
 using System.Collections.Generic;
-using StudioFourteen.Services;
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using FFXIVClientStructs.FFXIV.Client.Game.Object;
 
 public class CharacterAppearanceContextMenuProvider : ContextProvider<ICharacterAppearance>
 {
-	protected override async Task GetMenus(ICharacterAppearance target, List<MenuEntry> menus)
+	protected override Task GetMenus(ICharacterAppearance target, List<MenuEntry> menus)
 	{
 		menus.Add(new("ICON_AddCharacter", "LOC_Context_Spawn", () => this.Spawn(target)));
-
-		await TickService.GameTick();
-
-		MenuEntry applyParent = new(null, "LOC_Context_ApplyTo");
-
-		unsafe
-		{
-			Character*[] pCharacters = this.Services.CharacterLifecycle.GetAllCharacters();
-			foreach(Character* pCharacter in pCharacters)
-			{
-				int index = pCharacter->ObjectIndex;
-				MenuEntry subEntry = new(null, pCharacter->GetDisplayName(), () => this.Apply(target, index));
-				applyParent.AddChild(subEntry);
-			}
-		}
-
-		if (applyParent.Children.Count > 0)
-		{
-			menus.Add(applyParent);
-		}
+		return Task.CompletedTask;
 	}
 
 	private Task<int> Spawn(ICharacterAppearance target)

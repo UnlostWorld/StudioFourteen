@@ -79,19 +79,9 @@ public partial class SelectionService : ServiceBase
 		this.lastSelectionName = this.selection?.Name ?? "Nothing";
 		this.Services.History.RecordChange(this, $"Change");
 
-		if (this.selection != null)
-		{
-			if (this.selection.IsActive)
-				this.selection.Deactivate();
-
-			this.selection.OnSelected(false);
-		}
-
+		this.selection?.OnSelected(false);
 		this.selection = newSelection;
 		this.selection?.OnSelected(true);
-
-		if (this.selection != null && !this.selection.IsActive)
-			this.selection.Activate();
 
 		if (this.selection != null)
 		{
@@ -126,15 +116,9 @@ public partial class SelectionService : ServiceBase
 			return;
 
 		SceneObjectBase? oldHover = this.hover;
-		if (this.hover != null && this.hover != this.selection && this.hover.IsActive)
-			this.hover.Deactivate();
-
 		this.Hover?.OnHovered(false);
 		this.hover = newHover;
 		this.Hover?.OnHovered(true);
-
-		if (this.hover != null && !this.hover.IsActive)
-			this.hover.Activate();
 
 		this.HoverChanged?.Invoke(oldHover, newHover, source);
 		this.RaisePropertyChanged();
@@ -161,16 +145,12 @@ public partial class SelectionService : ServiceBase
 		this.selectionGizmos.Add(new TranslationGizmo());
 		this.selectionGizmos.Add(new RotationGizmo());
 		this.selectionGizmos.Add(new ScaleGizmo());
-
-		this.Services.Target.TargetChanged += this.OnTargetChanged;
 		await base.Start();
 	}
 
 	public override async Task Stop()
 	{
 		await this.Services.Panels.GamePanels.SetIsOpenAsync<SelectionWidget>(false, false);
-
-		this.Services.Target.TargetChanged -= this.OnTargetChanged;
 		await base.Stop();
 	}
 
@@ -219,11 +199,5 @@ public partial class SelectionService : ServiceBase
 		{
 			this.Hover?.OnGameTick();
 		}
-	}
-
-	private void OnTargetChanged(int objectTableIndex)
-	{
-		// TODO: consider caching the previous selection this target had and restoring it?
-		this.Select(new ObjectTableObject(this.Services.Target.TargetObjectIndex), this);
 	}
 }

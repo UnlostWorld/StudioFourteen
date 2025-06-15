@@ -63,12 +63,12 @@ public static partial class CharacterExtensions
 
 	public static unsafe void SetDisplayName(ref this Character self, string displayName)
 	{
-		self.GameObject.SetDisplayName(displayName);
+		// NOPE
 	}
 
 	public static unsafe string GetDisplayName(ref this Character self)
 	{
-		string selfName = self.GameObject.GetDisplayName();
+		string selfName = self.GameObject.NameString;
 
 		if (self.CompanionOwnerId > 0)
 		{

@@ -141,7 +141,12 @@ public class PoseFile : FileBase
 
 	public override Task Execute()
 	{
-		return this.Apply(ServiceManager.Instance.Target.TargetObjectIndex, UpdateSource.Interface);
+		if (ServiceManager.Instance.Selection.Current is Scene.GameObjects.GameObject obj)
+		{
+			return this.Apply(obj.ObjectIndex, UpdateSource.Interface);
+		}
+
+		return Task.CompletedTask;
 	}
 
 	public async Task Apply(int objectTableIndex, UpdateSource source, bool immediate = false)
@@ -240,13 +245,14 @@ public class PoseFile : FileBase
 		}
 	}
 
+	#pragma warning disable
 	public class PosePreview(PoseFile file) : LibraryPreviewBase
 	{
 		private PoseFile? backupPose;
 
 		protected override async Task Start(LibraryPreviewBase? other)
 		{
-			if (other is PosePreview otherPosePreview && otherPosePreview.backupPose != null)
+			/*if (other is PosePreview otherPosePreview && otherPosePreview.backupPose != null)
 			{
 				this.backupPose = otherPosePreview.backupPose;
 			}
@@ -257,15 +263,15 @@ public class PoseFile : FileBase
 				await Task.Delay(33);
 			}
 
-			await file.Apply(this.Services.Target.TargetObjectIndex, UpdateSource.Preview);
+			await file.Apply(this.Services.Target.TargetObjectIndex, UpdateSource.Preview);*/
 		}
 
 		protected override async Task Stop()
 		{
-			if (this.backupPose == null)
+			/*if (this.backupPose == null)
 				throw new Exception("No backup pose in pose preview");
 
-			await this.backupPose.Apply(this.Services.Target.TargetObjectIndex, UpdateSource.Restore);
+			await this.backupPose.Apply(this.Services.Target.TargetObjectIndex, UpdateSource.Restore);*/
 		}
 	}
 }

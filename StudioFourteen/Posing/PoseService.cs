@@ -602,42 +602,6 @@ public partial class PoseService : ServiceBase
 		Hooks.SetPosition.Original(self, x, y, z);
 	}
 
-	private async Task MoveTarget(Vector3 toPosition)
-	{
-		await TickService.GameTick();
-
-		int objectTargetIndex = this.Services.Target.TargetObjectIndex;
-		EasingFunctionBase ease = new SineEase();
-
-		Vector3 fromPosition;
-		unsafe
-		{
-			Character* pCharacter = this.Services.GameObjects.Get<Character>(objectTargetIndex);
-			fromPosition = pCharacter->DrawObject->Position;
-		}
-
-		// Extremely simple and wonky lerp.
-		float duration = 500;
-		float time = 0;
-		while (time < duration)
-		{
-			await Task.Delay(33);
-			time += 33;
-			float p = Math.Clamp(time / duration, 0, 1);
-			p = ease.Ease(p, EasingFunctionBase.EasingModes.EaseInOut);
-
-			Vector3 newPosition = Vector3.Lerp(fromPosition, toPosition, p);
-
-			await TickService.GameTick();
-
-			unsafe
-			{
-				Character* pCharacter = this.Services.GameObjects.Get<Character>(objectTargetIndex);
-				pCharacter->DrawObject->Position = newPosition;
-			}
-		}
-	}
-
 	private unsafe nint UpdateBonePhysicsDetour(nint a1)
 	{
 		nint result = Hooks.UpdateBonePhysics.Original(a1);

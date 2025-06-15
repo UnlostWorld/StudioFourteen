@@ -13,17 +13,16 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Scene;
+namespace StudioFourteen.Scene.GameObjects;
 
 using StudioFourteen.Posing;
 using StudioFourteen.Rendering.Draw.Gizmos;
-using StudioFourteen.Selection;
 
-public class ObjectTableGizmo : GizmoGroup
+public class GameObjectGizmo : GizmoGroup
 {
-	private readonly ObjectTableObject objectTableObject;
+	private readonly GameObject objectTableObject;
 
-	public ObjectTableGizmo(ObjectTableObject objectTableObject)
+	public GameObjectGizmo(GameObject objectTableObject)
 	{
 		this.objectTableObject = objectTableObject;
 

@@ -29,6 +29,7 @@ using StudioFourteen.Selection;
 using DependencyPropertyGenerator;
 using StudioFourteen.Services;
 using StudioFourteen.Scene;
+using StudioFourteen.Scene.GameObjects;
 
 [DependencyProperty<bool>("Hide", DefaultValue = false)]
 [DependencyProperty<bool>("UpdateWithAppearance", DefaultValue = false)]
@@ -51,7 +52,8 @@ public partial class PoseViewBase : View
 
 	public bool IsValid { get; private set; }
 
-	public int ObjectTableIndex => this.Services.Target.TargetObjectIndex;
+	public int ObjectTableIndex => 0;
+	public GameObject? GameObject => null;
 
 	public List<PoseSelectionControl>? GetTargets()
 	{
@@ -129,7 +131,7 @@ public partial class PoseViewBase : View
 		}
 		else
 		{
-			ServiceManager.Instance.Selection.Select(new ObjectTableObject(this.Services.Target.TargetObjectIndex), this);
+			ServiceManager.Instance.Selection.Select(this.GameObject, this);
 		}
 
 		e.Handled = true;
@@ -169,7 +171,6 @@ public partial class PoseViewBase : View
 
 		this.parent = this.FindLogicalParent<PoseTabItem>();
 
-		this.Services.Target.TargetChanged += this.OnTargetChanged;
 		this.Services.Selection.SelectionChanged += this.OnSelectionChanged;
 		this.Services.Selection.HoverChanged += this.OnHoverChanged;
 		this.Services.CharacterAppearance.OnAppearanceChanged += this.OnAppearanceChanged;
@@ -184,7 +185,6 @@ public partial class PoseViewBase : View
 		if (ServiceManager.ShutdownRequested)
 			return;
 
-		this.Services.Target.TargetChanged -= this.OnTargetChanged;
 		this.Services.Selection.SelectionChanged -= this.OnSelectionChanged;
 		this.Services.Selection.HoverChanged -= this.OnHoverChanged;
 		this.Services.CharacterAppearance.OnAppearanceChanged -= this.OnAppearanceChanged;
@@ -226,11 +226,14 @@ public partial class PoseViewBase : View
 
 			this.controls = this.FindLogicalChildren<PoseSelectionControl>();
 
+			if (this.GameObject == null)
+				return;
+
 			// Try character
-			bool isValid = await this.PopulateControl(this.ObjectTableIndex);
+			bool isValid = await this.PopulateControl(this.GameObject);
 
 			// Try ornaments
-			if (!isValid)
+			/*if (!isValid)
 			{
 				await TickService.GameTick();
 				int ornamentTableIndex = -1;
@@ -253,7 +256,7 @@ public partial class PoseViewBase : View
 			// TODO: Mounts
 			if (!isValid)
 			{
-			}
+			}*/
 
 			await this.MainThread();
 
@@ -282,7 +285,7 @@ public partial class PoseViewBase : View
 		}
 	}
 
-	protected async Task<bool> PopulateControl(int objectTableIndex)
+	protected async Task<bool> PopulateControl(GameObject gameObject)
 	{
 		if (this.controls == null)
 			return false;
@@ -291,13 +294,9 @@ public partial class PoseViewBase : View
 
 		unsafe
 		{
-			Character* pCharacter = this.Services.GameObjects.Get<Character>(objectTableIndex);
-			if (pCharacter == null)
-				return false;
-
 			foreach (PoseSelectionControl control in this.controls)
 			{
-				this.PopulateControl(control, pCharacter);
+				this.PopulateControl(control, gameObject);
 			}
 		}
 
@@ -348,11 +347,6 @@ public partial class PoseViewBase : View
 		this.UpdateTargets();
 	}
 
-	private void OnTargetChanged(int objectTableIndex)
-	{
-		this.UpdateTargets();
-	}
-
 	private void OnAppearanceChanged(int objectTableIndex)
 	{
 		this.Dispatcher.Invoke(() =>
@@ -364,7 +358,7 @@ public partial class PoseViewBase : View
 		});
 	}
 
-	private unsafe void PopulateControl(PoseSelectionControl control, Character* pCharacter)
+	private unsafe void PopulateControl(PoseSelectionControl control, GameObject gameObject)
 	{
 		if (control.SafeName == null)
 			return;
@@ -381,11 +375,11 @@ public partial class PoseViewBase : View
 
 			if (control.SafeName == "character")
 			{
-				control.Selection = new ObjectTableObject(pCharacter->ObjectIndex);
+				control.Selection = gameObject;
 			}
 			else
 			{
-				BoneSceneObject? selection = ServiceManager.Instance.Pose.FindBone(pCharacter, control.SafeName);
+				BoneSceneObject? selection = ServiceManager.Instance.Pose.FindBone((Character*)gameObject.GetXivGameObject(), control.SafeName);
 				if (selection != null)
 				{
 					foreach (BoneId boneId in selection.BonePaths.Keys)

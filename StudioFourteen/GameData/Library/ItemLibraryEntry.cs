@@ -130,7 +130,7 @@ public class ItemLibraryEntry : ExcelLibraryEntry
 		await TickService.GameTick();
 
 		this.Services.CharacterAppearance.SetEquipment(
-			this.Services.Target.TargetObjectIndex,
+			objectTableId,
 			slot,
 			this.GetModelId(slot),
 			UpdateSource.Interface);
@@ -183,17 +183,18 @@ public class ItemLibraryEntry : ExcelLibraryEntry
 	}
 }
 
+#pragma warning disable
 public class ItemLibraryPreview(ItemLibraryEntry item)
 	: LibraryPreviewBase
 {
-	private WeaponSlot backupWeaponSlot;
+	/*private WeaponSlot backupWeaponSlot;
 	private WeaponModelId? backupWeapon;
 	private EquipmentSlot backupEquipmentSlot;
-	private EquipmentModelId? backupEquipment;
+	private EquipmentModelId? backupEquipment;*/
 
 	protected override async Task Start(LibraryPreviewBase? other)
 	{
-		if (other != null)
+		/*if (other != null)
 		{
 			await other.StopPreviewAsync();
 		}
@@ -221,12 +222,12 @@ public class ItemLibraryPreview(ItemLibraryEntry item)
 				await this.Start(slot);
 				return;
 			}
-		}
+		}*/
 	}
 
 	protected virtual async Task Start(EquipmentSlot slot)
 	{
-		await TickService.GameTick();
+		/*await TickService.GameTick();
 
 		this.backupEquipmentSlot = slot;
 
@@ -240,12 +241,12 @@ public class ItemLibraryPreview(ItemLibraryEntry item)
 			this.Services.Target.TargetObjectIndex,
 			slot,
 			item.GetModelId(slot),
-			UpdateSource.Preview);
+			UpdateSource.Preview);*/
 	}
 
 	protected virtual async Task Start(WeaponSlot slot)
 	{
-		await TickService.GameTick();
+		/*await TickService.GameTick();
 
 		this.backupWeaponSlot = slot;
 
@@ -259,12 +260,12 @@ public class ItemLibraryPreview(ItemLibraryEntry item)
 			this.Services.Target.TargetObjectIndex,
 			slot,
 			item.GetModelId(slot),
-			UpdateSource.Preview);
+			UpdateSource.Preview);*/
 	}
 
 	protected override async Task Stop()
 	{
-		await TickService.GameTick();
+		/*await TickService.GameTick();
 
 		if (this.backupEquipment != null)
 		{
@@ -282,7 +283,7 @@ public class ItemLibraryPreview(ItemLibraryEntry item)
 				this.backupWeaponSlot,
 				this.backupWeapon.Value,
 				UpdateSource.Preview);
-		}
+		}*/
 	}
 }
 

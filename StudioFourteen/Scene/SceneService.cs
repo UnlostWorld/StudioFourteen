@@ -13,36 +13,24 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Animation;
+namespace StudioFourteen.Scene;
 
-using System.Collections.ObjectModel;
-using System.Windows;
-using PropertyChanged.SourceGenerator;
-using StudioFourteen.Panels;
-using StudioFourteen.Tags;
-using WpfUtils.Extensions;
+using System;
+using StudioFourteen.Selection;
+using StudioFourteen.Services;
 
-public partial class AnimationPanel : CharacterPanelBase
+public class SceneService : ServiceBase
 {
-	[Notify] private AnimationService.AnimationController? controller;
-	[Notify] private ITimelineAnimation? animation;
-	[Notify] private TagCollection defaultTags = new("Player Animation");
-
-	public void OnPlayClicked(object sender, RoutedEventArgs args)
+	public void AddObject(SceneObjectBase obj)
 	{
-		if (this.animation != null)
-		{
-			this.Controller?.PlayAnimationAsync(this.animation).Run();
-		}
 	}
 
-	public void OnStopClicked(object sender, RoutedEventArgs args)
+	public void RemoveObject(SceneObjectBase obj)
 	{
-		this.Controller?.ResetAsync().Run();
 	}
 
-	protected override void OnTargetChanged(int objectTableIndex)
+	public SceneObjectBase? GetObject(string id)
 	{
-		this.Controller = this.Services.Animations.GetController(objectTableIndex);
+		throw new NotImplementedException();
 	}
 }

@@ -15,14 +15,19 @@
 
 namespace StudioFourteen.Panels;
 
+using PropertyChanged.SourceGenerator;
 using StudioFourteen.Mvm;
+using StudioFourteen.Scene;
+using StudioFourteen.Scene.GameObjects;
 
-public abstract class CharacterPanelBase : Panel
+public abstract partial class CharacterPanelBase : Panel
 {
-	[AlwaysNotify] public bool IsTargetLoading => this.Services.Target.IsTargetLoading;
-	[AlwaysNotify] public string? CharacterName => this.Services.Target.CharacterName;
-	[AlwaysNotify] public bool HasValidTarget => this.Services.Target.HasValidTarget;
-	[AlwaysNotify] public int TargetObjectIndex => this.Services.Target.TargetObjectIndex;
+	[Notify] private GameObject? gameObject;
+
+	[AlwaysNotify] public bool IsTargetLoading => !this.gameObject?.IsReady == true;
+	[AlwaysNotify] public string? CharacterName => this.gameObject?.Name;
+	[AlwaysNotify] public bool HasValidTarget => this.gameObject != null;
+	[AlwaysNotify] public int TargetObjectIndex => this.gameObject?.ObjectIndex ?? 0;
 
 	public override bool ShouldTickAutoProperties()
 	{
@@ -34,19 +39,26 @@ public abstract class CharacterPanelBase : Panel
 
 	protected override void OnOpened()
 	{
-		this.Services.Target.TargetChanged += this.OnTargetChanged;
+		this.Services.Selection.SelectionChanged += this.OnSelectionChanged;
 		base.OnOpened();
-
-		this.OnTargetChanged(this.Services.Target.TargetObjectIndex);
 	}
 
 	protected override void OnClosed()
 	{
-		this.Services.Target.TargetChanged -= this.OnTargetChanged;
+		this.Services.Selection.SelectionChanged -= this.OnSelectionChanged;
 		base.OnClosed();
 	}
 
 	protected virtual void OnTargetChanged(int objectTableIndex)
 	{
+	}
+
+	private void OnSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? selectionSource)
+	{
+		if (newSelection is GameObject gameObject)
+		{
+			this.GameObject = gameObject;
+			this.OnTargetChanged(gameObject.ObjectIndex);
+		}
 	}
 }

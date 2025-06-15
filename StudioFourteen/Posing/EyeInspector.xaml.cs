@@ -169,24 +169,6 @@ public class EyeSelection : SceneObjectBase
 		this.IrisBone?.Reset();
 	}
 
-	public override void Activate()
-	{
-		base.Activate();
-
-		this.EyeBone?.Activate();
-		this.IrisBone?.Activate();
-
-		this.Init().Run();
-	}
-
-	public override void Deactivate()
-	{
-		base.Deactivate();
-
-		this.EyeBone?.Deactivate();
-		this.IrisBone?.Deactivate();
-	}
-
 	public override void OnGameTick()
 	{
 		base.OnGameTick();

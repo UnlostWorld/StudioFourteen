@@ -81,8 +81,6 @@ public class InputService : ServiceBase
 		this.AddBind(InputAction.Navigate_Back, GamepadDevice.GetAxisId(GamepadDevice.Buttons.FaceRight));
 
 		// General
-		this.AddBind(InputAction.NextTarget, KeyboardDevice.GetAxisId(VirtualKey.TAB));
-		this.AddBind(InputAction.PreviousTarget, KeyboardDevice.GetAxisId(VirtualKey.TAB), KeyboardDevice.GetAxisId(VirtualKey.SHIFT));
 		this.AddBind(InputAction.Save, KeyboardDevice.GetAxisId(VirtualKey.S), KeyboardDevice.GetAxisId(VirtualKey.CONTROL));
 		this.AddBind(InputAction.SaveAs, KeyboardDevice.GetAxisId(VirtualKey.S), KeyboardDevice.GetAxisId(VirtualKey.CONTROL), KeyboardDevice.GetAxisId(VirtualKey.SHIFT));
 
