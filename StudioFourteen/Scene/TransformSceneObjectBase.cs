@@ -17,6 +17,7 @@ namespace StudioFourteen.Scene;
 
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Gizmos.Handles.TransformHandle;
+using StudioFourteen.Rendering.Draw.Gizmos.Transforms;
 using WpfUtils.Commands;
 
 public abstract partial class TransformSceneObjectBase : SceneObjectBase

@@ -50,7 +50,7 @@ public partial class GizmoControlPanel : UserControl
 			foreach (GizmoBase gizmo in this.Services.Gizmos.Gizmos)
 			{
 				// Ignore selection gizmos as they get their own area in the toolbar.
-				if (gizmo is ObjectGizmoBase)
+				if (gizmo is SceneObjectGizmoBase)
 					continue;
 
 				this.Gizmos.Add(gizmo);

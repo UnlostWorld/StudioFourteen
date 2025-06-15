@@ -37,6 +37,8 @@ public class ObjectTableObject : TransformSceneObjectBase
 	{
 		this.ObjectTableId = objectTableId;
 		this.Name = $"{objectTableId}";
+
+		this.Gizmos.Add(new ObjectTableGizmo(this));
 	}
 
 	public override string Id => $"ObjectTable:{this.ObjectTableId}";

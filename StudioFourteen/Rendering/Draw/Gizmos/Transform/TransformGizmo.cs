@@ -15,38 +15,26 @@
 
 namespace StudioFourteen.Rendering.Draw.Gizmos.Transforms;
 
-using System.Numerics;
-using StudioFourteen.Rendering.Draw.Gizmos;
 using StudioFourteen.Scene;
 
-public abstract class TransformGizmoBase : SceneObjectGizmoBase<TransformSceneObjectBase>
+public class TransformGizmo : GizmoGroup
 {
-	private Transform targetTransform;
-
-	public Transform TargetTransform
+	public TransformGizmo()
 	{
-		get => this.targetTransform;
-		set
-		{
-			this.targetTransform = value;
-			this.Transform = Transform.FromTRS(this.TargetTransform.Translation, this.TargetTransform.Rotation, Vector3.One);
-		}
+		this.AddGizmo<TranslationGizmo>();
+		this.AddGizmo<RotationGizmo>();
+		this.AddGizmo<ScaleGizmo>();
 	}
 
-	public override void OnGameTick()
+	public override string Name => "Transform";
+
+	public void Enable(SceneObjectBase sceneObject)
 	{
-		base.OnGameTick();
-
-		if (this.SceneObject == null)
-			return;
-
-		if (this.IsBeingManipulated)
+		foreach (SceneObjectGizmoBase gizmo in this.Gizmos)
 		{
-			this.SceneObject.WorldTransform = this.TargetTransform;
+			gizmo.SetTarget(sceneObject);
 		}
-		else
-		{
-			this.TargetTransform = this.SceneObject.WorldTransform;
-		}
+
+		this.Enable();
 	}
 }

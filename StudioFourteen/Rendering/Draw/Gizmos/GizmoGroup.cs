@@ -13,40 +13,69 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Draw.Gizmos.Transforms;
+namespace StudioFourteen.Rendering.Draw.Gizmos;
 
-using System.Numerics;
-using StudioFourteen.Rendering.Draw.Gizmos;
-using StudioFourteen.Scene;
+using System.Collections.Generic;
 
-public abstract class TransformGizmoBase : SceneObjectGizmoBase<TransformSceneObjectBase>
+public abstract class GizmoGroup : GizmoBase
 {
-	private Transform targetTransform;
+	private GizmoBase? current;
 
-	public Transform TargetTransform
+	public List<GizmoBase> Gizmos { get; set; } = new();
+
+	public GizmoBase? Current
 	{
-		get => this.targetTransform;
+		get => this.current;
 		set
 		{
-			this.targetTransform = value;
-			this.Transform = Transform.FromTRS(this.TargetTransform.Translation, this.TargetTransform.Rotation, Vector3.One);
+			this.current?.Disable();
+			this.current = value;
+			this.current?.Enable();
 		}
 	}
 
-	public override void OnGameTick()
+	public override bool IsVisible
 	{
-		base.OnGameTick();
-
-		if (this.SceneObject == null)
-			return;
-
-		if (this.IsBeingManipulated)
+		get => base.IsVisible;
+		set
 		{
-			this.SceneObject.WorldTransform = this.TargetTransform;
+			foreach (GizmoBase gizmo in this.Gizmos)
+			{
+				gizmo.IsVisible = value;
+			}
+
+			base.IsVisible = value;
 		}
-		else
+	}
+
+	public override void Enable()
+	{
+		if (this.current == null && this.Gizmos.Count > 0)
+			this.current = this.Gizmos[0];
+
+		this.current?.Enable();
+
+		foreach (GizmoBase gizmo in this.Gizmos)
 		{
-			this.TargetTransform = this.SceneObject.WorldTransform;
+			gizmo.IsVisible = this.IsVisible;
 		}
+
+		base.Enable();
+	}
+
+	public override void Disable()
+	{
+		foreach (SceneObjectGizmoBase gizmo in this.Gizmos)
+		{
+			gizmo.Disable();
+		}
+
+		base.Disable();
+	}
+
+	protected void AddGizmo<T>()
+		where T : GizmoBase, new()
+	{
+		this.Gizmos.Add(new T());
 	}
 }

@@ -74,6 +74,10 @@ public abstract class GizmoBase : DrawGroup, INotifyPropertyChanged
 		this.PropertyChanged?.Invoke(this, new(id));
 	}
 
+	public virtual void OnGameTick()
+	{
+	}
+
 	protected virtual void OnPersistenceChanged()
 	{
 	}

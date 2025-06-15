@@ -18,19 +18,27 @@ namespace StudioFourteen.Posing;
 using System.Collections.Generic;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
-using StudioFourteen.Rendering.Draw;
+using StudioFourteen.Rendering.Draw.Gizmos;
 using StudioFourteen.Selection;
 using StudioFourteen.Services;
 
-public class SkeletonGizmo : DrawGroup
+public class SkeletonGizmo : SceneObjectGizmoBase
 {
-	public readonly int ObjectTableIndex;
-
 	private bool isInitialized = false;
 
-	public SkeletonGizmo(int objectTableIndex)
+	public override string Name => "Skeleton";
+	public override object? Icon => Resources.Find("ICON_Gizmo_CharacterSkeleton");
+	public override bool KeepScreenSize => false;
+
+	public int ObjectTableIndex
 	{
-		this.ObjectTableIndex = objectTableIndex;
+		get
+		{
+			if (this.sceneObject is ObjectTableObject obj)
+				return obj.ObjectTableId;
+
+			return 0;
+		}
 	}
 
 	public unsafe void Initialize()
@@ -56,18 +64,15 @@ public class SkeletonGizmo : DrawGroup
 
 	protected unsafe override void OnDraw()
 	{
-		this.IsVisible = false;
+		if (!this.IsVisible)
+			return;
 
 		if (ServiceManager.Instance.GroupPose.IsGroupPosing
-			&& (this.ObjectTableIndex < GroupPoseService.GPoseFirstCharacter
-			|| this.ObjectTableIndex > GroupPoseService.GPoseFirstCharacter + GroupPoseService.GPoseCharacterCount))
-		{
-			return;
-		}
-
-		// Add this as a gizmo option.
-		if (this.Services.Target.TargetObjectIndex != this.ObjectTableIndex)
-			return;
+				&& (this.ObjectTableIndex < GroupPoseService.GPoseFirstCharacter
+				|| this.ObjectTableIndex > GroupPoseService.GPoseFirstCharacter + GroupPoseService.GPoseCharacterCount))
+			{
+				return;
+			}
 
 		Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(this.ObjectTableIndex);
 		if (pCharacter == null || pCharacter->DrawObject == null)
@@ -91,8 +96,6 @@ public class SkeletonGizmo : DrawGroup
 			pCharacter->DrawObject->Scale * scale);
 
 		this.Transform = modelTransform;
-
-		this.IsVisible = true;
 		base.OnDraw();
 	}
 }

@@ -15,8 +15,11 @@
 
 namespace StudioFourteen.Scene;
 
+using System;
+using System.Collections.Generic;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Mvm;
+using StudioFourteen.Rendering.Draw.Gizmos;
 using StudioFourteen.Utilities;
 using WpfUtils.Commands;
 
@@ -41,6 +44,7 @@ public abstract partial class SceneObjectBase : ViewModel
 	public abstract string TypeName { get; }
 
 	public SimpleCommand ResetCommand { get; init; }
+	public List<GizmoBase> Gizmos { get; init; } = new();
 
 	public virtual void Reset()
 	{

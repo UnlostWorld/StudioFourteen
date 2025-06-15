@@ -60,7 +60,6 @@ public partial class PoseService : ServiceBase
 {
 	private readonly List<BoneId> boneIds = new();
 	private readonly Dictionary<BoneId, BoneReference> boneReferences = new();
-	private readonly SkeletonsGizmo gizmo = new();
 
 	public static string? GetMirrorBoneName(string name)
 	{
@@ -95,8 +94,6 @@ public partial class PoseService : ServiceBase
 	{
 		base.Attach();
 
-		this.gizmo.Enable();
-
 		Hooks.UpdateBonePhysics.Enable(this.UpdateBonePhysicsDetour);
 		Hooks.FinalizeSkeletons.Enable(this.FinalizeSkeletonDetour);
 		Hooks.SetPosition.Enable(this.SetPosition);
@@ -105,8 +102,6 @@ public partial class PoseService : ServiceBase
 	public override void Detach()
 	{
 		base.Detach();
-
-		this.gizmo.Disable();
 
 		Hooks.UpdateBonePhysics.Disable();
 		Hooks.FinalizeSkeletons.Disable();

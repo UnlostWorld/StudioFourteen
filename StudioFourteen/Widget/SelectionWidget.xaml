@@ -77,22 +77,36 @@
 				</Border.Effect>
 			</Border>
 
-			<wpfUtils:SwitchSelector
-				Width="28"
-				Margin="0"
-				ItemsSource="{Binding Gizmos}"
-				SelectedValue="{Binding SelectedGizmo}"
-				Style="{DynamicResource WpfUtilsSwitchSelectorVertical}">
+			<ItemsControl ItemsSource="{Binding Gizmos}" Width="28"
+				Margin="0">
 
-				<wpfUtils:SwitchSelector.ItemTemplate>
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<StackPanel/>
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
+
+				<ItemsControl.ItemTemplate>
 					<DataTemplate>
-						<icons:IconView
-							Height="20"
-							Margin="4"
-							Icon="{Binding Icon}" />
+						<wpfUtils:SwitchSelector
+							Grid.Column="0"
+							ItemsSource="{Binding Gizmos}"
+							SelectedValue="{Binding Current}"
+							Visibility="{Binding IsVisible, Converter={StaticResource B2V}}"
+							Style="{DynamicResource WpfUtilsSwitchSelectorVertical}">
+							<wpfUtils:SwitchSelector.ItemTemplate>
+								<DataTemplate>
+									<icons:IconView
+										Height="24"
+										Width="24"
+										Icon="{Binding Icon}"
+										ToolTip="{Binding Name}" />
+								</DataTemplate>
+							</wpfUtils:SwitchSelector.ItemTemplate>
+						</wpfUtils:SwitchSelector>
 					</DataTemplate>
-				</wpfUtils:SwitchSelector.ItemTemplate>
-			</wpfUtils:SwitchSelector>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
 		</Grid>
 
 		<Grid

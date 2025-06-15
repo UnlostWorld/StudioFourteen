@@ -27,13 +27,26 @@
 			<ColumnDefinition Width="Auto"/>
 		</Grid.ColumnDefinitions>
 
-		<controls:SwitchSelector Grid.Column="0" ItemsSource="{Binding Gizmos}" SelectedValue="{Binding SelectedGizmo}">
-			<wpfUtils:SwitchSelector.ItemTemplate>
+		<ItemsControl ItemsSource="{Binding Gizmos}">
+
+			<ItemsControl.ItemsPanel>
+				<ItemsPanelTemplate>
+					<StackPanel Orientation="Horizontal" />
+				</ItemsPanelTemplate>
+			</ItemsControl.ItemsPanel>
+
+			<ItemsControl.ItemTemplate>
 				<DataTemplate>
-					<icons:IconView Icon="{Binding Icon}" Width="24"/>
+					<controls:SwitchSelector Grid.Column="0" ItemsSource="{Binding Gizmos}" SelectedValue="{Binding Current}" Visibility="{Binding IsVisible, Converter={StaticResource B2V}}">
+						<wpfUtils:SwitchSelector.ItemTemplate>
+							<DataTemplate>
+								<icons:IconView Icon="{Binding Icon}" Width="24" ToolTip="{Binding Name}"/>
+							</DataTemplate>
+						</wpfUtils:SwitchSelector.ItemTemplate>
+					</controls:SwitchSelector>
 				</DataTemplate>
-			</wpfUtils:SwitchSelector.ItemTemplate>
-		</controls:SwitchSelector>
+			</ItemsControl.ItemTemplate>
+		</ItemsControl>
 
 		<Border Grid.Column="1" Style="{DynamicResource WpfUtilsControlBorder}">
 			<StackPanel Orientation="Horizontal">

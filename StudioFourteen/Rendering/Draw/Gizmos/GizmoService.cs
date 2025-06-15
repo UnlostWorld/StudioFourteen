@@ -15,17 +15,20 @@
 
 namespace StudioFourteen.Rendering.Draw.Gizmos;
 
-using System;
 using System.Collections.Generic;
 using StudioFourteen.Services;
 using PropertyChanged.SourceGenerator;
-using StudioFourteen.Posing;
-using System.Linq;
+using StudioFourteen.Rendering.Draw.Gizmos.Transforms;
+using StudioFourteen.Scene;
+using System;
 
 public partial class GizmoService : ServiceBase
 {
 	public readonly List<GizmoBase> Gizmos = new();
+
+	public readonly TransformGizmo Transform = new();
 	private readonly GridGizmo grid = new();
+	private readonly SelectionGizmo selection = new();
 
 	[Notify] private bool gizmoControlPanelOpen;
 
@@ -34,6 +37,9 @@ public partial class GizmoService : ServiceBase
 
 	public override void Attach()
 	{
+		this.Services.Selection.SelectionChanged += this.OnSelectionChanged;
+		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
+
 		foreach (GizmoBase gizmo in this.Gizmos)
 		{
 			this.Services.Rendering.Forward.Add(gizmo);
@@ -45,12 +51,17 @@ public partial class GizmoService : ServiceBase
 
 	public override void Detach()
 	{
+		this.Services.Selection.SelectionChanged -= this.OnSelectionChanged;
+		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
+
 		foreach (GizmoBase gizmo in this.Gizmos)
 		{
 			this.Services.Rendering.Forward.Remove(gizmo);
 		}
 
 		this.grid.Disable();
+		this.Transform.Disable();
+		this.selection.Disable();
 		base.Detach();
 	}
 
@@ -73,5 +84,28 @@ public partial class GizmoService : ServiceBase
 		this.GizmosChanged?.Invoke();
 
 		this.Services.Rendering.Forward.Remove(gizmo);
+	}
+
+	private void OnSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? selectionSource)
+	{
+		if (oldSelection != null)
+		{
+			this.Transform.Disable();
+			this.selection.Disable();
+		}
+
+		if (newSelection != null)
+		{
+			this.Transform.Enable(newSelection);
+			this.selection.Enable(newSelection);
+		}
+	}
+
+	private void OnGameTick()
+	{
+		foreach (GizmoBase gizmo in this.Gizmos)
+		{
+			gizmo.OnGameTick();
+		}
 	}
 }

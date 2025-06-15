@@ -72,7 +72,7 @@ public class TranslationGizmo : TransformGizmoBase
 		this.zyPlaneHandle.Axis2Unit = Vector3.UnitZ;
 
 		this.changeLineRenderer = new();
-		this.Services.Rendering.Forward.Add(this.changeLineRenderer);
+		////this.Services.Rendering.Forward.Add(this.changeLineRenderer);
 		this.changeLineRenderer.To = Vector3.Zero;
 		this.changeLineRenderer.IsVisible = false;
 		this.changeLineRenderer.IsHitTestVisible = false;

@@ -17,7 +17,7 @@ namespace StudioFourteen.Rendering.Draw.Gizmos;
 
 using StudioFourteen.Scene;
 
-public abstract class ObjectGizmoBase : GizmoBase
+public abstract class SceneObjectGizmoBase : GizmoBase
 {
 	protected SceneObjectBase? sceneObject;
 
@@ -29,14 +29,13 @@ public abstract class ObjectGizmoBase : GizmoBase
 		this.Enable();
 	}
 
-	public abstract bool SupportsObject(SceneObjectBase sceneObject);
-
-	public virtual void OnGameTick()
+	public void SetTarget(SceneObjectBase sceneObject)
 	{
+		this.sceneObject = sceneObject;
 	}
 }
 
-public abstract class ObjectGizmoBase<TObjectType> : ObjectGizmoBase
+public abstract class SceneObjectGizmoBase<TObjectType> : SceneObjectGizmoBase
 	where TObjectType : SceneObjectBase
 {
 	public TObjectType? SceneObject
@@ -48,10 +47,5 @@ public abstract class ObjectGizmoBase<TObjectType> : ObjectGizmoBase
 
 			return null;
 		}
-	}
-
-	public override bool SupportsObject(SceneObjectBase sceneObject)
-	{
-		return typeof(TObjectType).IsAssignableFrom(sceneObject.GetType());
 	}
 }

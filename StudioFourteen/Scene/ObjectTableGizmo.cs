@@ -13,40 +13,33 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Draw.Gizmos.Transforms;
+namespace StudioFourteen.Scene;
 
-using System.Numerics;
+using StudioFourteen.Posing;
 using StudioFourteen.Rendering.Draw.Gizmos;
-using StudioFourteen.Scene;
+using StudioFourteen.Selection;
 
-public abstract class TransformGizmoBase : SceneObjectGizmoBase<TransformSceneObjectBase>
+public class ObjectTableGizmo : GizmoGroup
 {
-	private Transform targetTransform;
+	private readonly ObjectTableObject objectTableObject;
 
-	public Transform TargetTransform
+	public ObjectTableGizmo(ObjectTableObject objectTableObject)
 	{
-		get => this.targetTransform;
-		set
-		{
-			this.targetTransform = value;
-			this.Transform = Transform.FromTRS(this.TargetTransform.Translation, this.TargetTransform.Rotation, Vector3.One);
-		}
+		this.objectTableObject = objectTableObject;
+
+		SkeletonGizmo skeleton = new();
+		skeleton.SetTarget(objectTableObject);
+		this.Gizmos.Add(skeleton);
+
+		this.Gizmos.Add(new BlankGizmo());
+
+		this.Enable();
 	}
 
-	public override void OnGameTick()
-	{
-		base.OnGameTick();
+	public override string Name => "Character";
+}
 
-		if (this.SceneObject == null)
-			return;
-
-		if (this.IsBeingManipulated)
-		{
-			this.SceneObject.WorldTransform = this.TargetTransform;
-		}
-		else
-		{
-			this.TargetTransform = this.SceneObject.WorldTransform;
-		}
-	}
+public class BlankGizmo : GizmoBase
+{
+	public override string Name => "Blank";
 }

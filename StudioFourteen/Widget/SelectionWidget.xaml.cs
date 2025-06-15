@@ -34,7 +34,6 @@ public partial class SelectionWidget : Panel
 {
 	private bool isShowing = false;
 	[Notify] private SceneObjectBase? current;
-	[Notify] private ObjectGizmoBase? selectedGizmo = null;
 	[Notify] private bool hide;
 	[Notify] private bool expanded;
 
@@ -42,7 +41,7 @@ public partial class SelectionWidget : Panel
 	private Animator opening;
 	private Animator closing;
 
-	public FastObservableCollection<ObjectGizmoBase> Gizmos { get; init; } = new();
+	public FastObservableCollection<GizmoGroup> Gizmos { get; init; } = new();
 
 	public override void OnDeactivated()
 	{
@@ -55,7 +54,6 @@ public partial class SelectionWidget : Panel
 		this.closing = this.GetAnimator("Closing");
 
 		this.Services.Selection.SelectionChanged += this.OnSelectionChanged;
-		this.Services.Selection.GizmoChanged += this.OnSelectionGizmoChanged;
 		this.Services.Selection.SelectionExpanded += this.OnSelectionExpanded;
 		base.OnOpened();
 	}
@@ -63,7 +61,6 @@ public partial class SelectionWidget : Panel
 	protected override void OnClosed()
 	{
 		this.Services.Selection.SelectionChanged -= this.OnSelectionChanged;
-		this.Services.Selection.GizmoChanged -= this.OnSelectionGizmoChanged;
 		this.Services.Selection.SelectionExpanded -= this.OnSelectionExpanded;
 		base.OnClosed();
 	}
@@ -122,8 +119,20 @@ public partial class SelectionWidget : Panel
 
 			await this.MainThread();
 
-			List<ObjectGizmoBase> gizmos = this.Services.Selection.GetValidGizmos();
-			this.Gizmos.Replace(gizmos);
+			this.Gizmos.Clear();
+			this.Gizmos.Add(this.Services.Gizmos.Transform);
+
+			if (newSelection != null)
+			{
+				foreach (GizmoBase gizmo in newSelection.Gizmos)
+				{
+					if (gizmo is GizmoGroup group)
+					{
+						this.Gizmos.Add(group);
+					}
+				}
+			}
+
 			this.Current = newSelection;
 			this.Expanded = this.Services.Selection.ExpandedSelection;
 			this.selectionCursorOffset = this.Services.Selection.SelectionCursorOffset;
@@ -132,16 +141,6 @@ public partial class SelectionWidget : Panel
 
 			this.opening.Play();
 		}
-	}
-
-	private void OnSelectionGizmoChanged(ObjectGizmoBase? oldGizmo, ObjectGizmoBase? newGizmo)
-	{
-		this.SelectedGizmo = newGizmo;
-	}
-
-	private void OnSelectedGizmoChanged(ObjectGizmoBase? oldGizmo, ObjectGizmoBase? newGizmo)
-	{
-		this.Services.Selection.Gizmo = newGizmo;
 	}
 
 	private void OnSelectionExpanded(bool newValue)

@@ -28,21 +28,18 @@ using System.Windows;
 
 public partial class SelectionService : ServiceBase
 {
-	private readonly List<ObjectGizmoBase> selectionGizmos = new();
+	private readonly List<SceneObjectGizmoBase> selectionGizmos = new();
 
 	private SceneObjectBase? selection;
 	private SceneObjectBase? hover;
-	private ObjectGizmoBase? gizmo;
 	private string lastSelectionName = "Nothing";
 	private bool expandedSelection;
 
 	public delegate void SelectionChangedDelegate(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? selectionSource);
-	public delegate void GizmoChangedDelegate(ObjectGizmoBase? oldGizmo, ObjectGizmoBase? newGizmo);
 	public delegate void SelectionExpandedDelegate(bool newValue);
 
 	public event SelectionChangedDelegate? SelectionChanged;
 	public event SelectionChangedDelegate? HoverChanged;
-	public event GizmoChangedDelegate? GizmoChanged;
 	public event SelectionExpandedDelegate? SelectionExpanded;
 
 	public override string Name => "Selection";
@@ -50,32 +47,6 @@ public partial class SelectionService : ServiceBase
 
 	public SceneObjectBase? Current => this.selection;
 	public SceneObjectBase? Hover => this.hover;
-
-	public ObjectGizmoBase? Gizmo
-	{
-		get => this.gizmo;
-		set
-		{
-			ObjectGizmoBase? oldGizmo = this.gizmo;
-
-			if (this.gizmo != null)
-				this.gizmo.Disable();
-
-			if (this.selection == null)
-			{
-				this.gizmo = null;
-			}
-			else
-			{
-				this.gizmo = value;
-				this.gizmo?.Enable(this.selection);
-			}
-
-			this.RaisePropertyChanged();
-			this.GizmoChanged?.Invoke(oldGizmo, this.gizmo);
-			this.Services.Handles.Timeout();
-		}
-	}
 
 	public bool ExpandedSelection
 	{
@@ -139,10 +110,9 @@ public partial class SelectionService : ServiceBase
 			}
 		}
 
+		this.Services.Handles.Timeout();
 		this.SelectionChanged?.Invoke(oldSelection, newSelection, source);
 		this.RaisePropertyChanged();
-
-		this.DefaultGizmo();
 	}
 
 	public void Clear()
@@ -216,46 +186,9 @@ public partial class SelectionService : ServiceBase
 		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
 	}
 
-	public List<ObjectGizmoBase> GetValidGizmos()
-	{
-		List<ObjectGizmoBase> results = new();
-
-		if (this.selection == null)
-			return results;
-
-		foreach (ObjectGizmoBase gizmo in this.selectionGizmos)
-		{
-			if (!gizmo.SupportsObject(this.selection))
-				continue;
-
-			results.Add(gizmo);
-		}
-
-		return results;
-	}
-
-	protected void DefaultGizmo()
-	{
-		ObjectGizmoBase? nextGizmo = this.Gizmo;
-
-		// TODO: Get the default gizmo from the selection actually.
-		List<ObjectGizmoBase> results = this.GetValidGizmos();
-		if (results.Count > 0)
-		{
-			if (nextGizmo == null || !results.Contains(nextGizmo))
-			{
-				nextGizmo = results[0];
-			}
-		}
-
-		this.Gizmo = null;
-		this.Gizmo = nextGizmo;
-	}
-
 	protected void OnGameTick()
 	{
 		this.Current?.OnGameTick();
-		this.Gizmo?.OnGameTick();
 
 		/*if (!this.Services.Windows.IsCursorOverStudio)
 		{
