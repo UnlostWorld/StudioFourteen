@@ -16,9 +16,9 @@
 namespace StudioFourteen.Selection;
 
 using StudioFourteen.History;
-using StudioFourteen.Rendering.Draw.Gizmos;
-using StudioFourteen.Rendering.Draw.Gizmos.Transforms;
+using StudioFourteen.Posing;
 using StudioFourteen.Scene;
+using StudioFourteen.Scene.GameObjects;
 using StudioFourteen.Services;
 using StudioFourteen.Widget;
 using System;
@@ -29,10 +29,17 @@ using System.Windows;
 
 public partial class SelectionService : ServiceBase
 {
+	private readonly Dictionary<Type, SelectionScope> selectionScopes = new();
 	private SceneObjectBase? selection;
 	private SceneObjectBase? hover;
 	private string lastSelectionName = "Nothing";
 	private bool expandedSelection;
+
+	public SelectionService()
+	{
+		// pre-create the GameObject scope as its what selection defaults to.
+		this.GetScope<GameObject>();
+	}
 
 	public delegate void SelectionChangedDelegate(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? selectionSource);
 	public delegate void SelectionExpandedDelegate(bool newValue);
@@ -68,6 +75,22 @@ public partial class SelectionService : ServiceBase
 	// An offset from where the cursor was and the transform root of the selected object (if it has one)
 	public Vector2 SelectionCursorOffset { get; set; }
 
+	public SelectionScope<T> GetScope<T>()
+		where T : SceneObjectBase
+	{
+		lock (this.selectionScopes)
+		{
+			Type type = typeof(T);
+			SelectionScope? scope;
+			if (this.selectionScopes.TryGetValue(type, out scope) && scope != null)
+				return (SelectionScope<T>)scope;
+
+			scope = new SelectionScope<T>();
+			this.selectionScopes.Add(type, scope);
+			return (SelectionScope<T>)scope;
+		}
+	}
+
 	public void Select(SceneObjectBase? newSelection, object? source)
 	{
 		SceneObjectBase? oldSelection = this.selection;
@@ -102,6 +125,11 @@ public partial class SelectionService : ServiceBase
 		this.Services.Handles.Timeout();
 		this.SelectionChanged?.Invoke(oldSelection, newSelection, source);
 		this.RaisePropertyChanged();
+
+		foreach ((Type type, SelectionScope scope) in this.selectionScopes)
+		{
+			scope.OnSelectionChanged(newSelection, source);
+		}
 	}
 
 	public void Clear()
@@ -166,6 +194,49 @@ public partial class SelectionService : ServiceBase
 		if (this.selection == null)
 		{
 			this.Select(this.Services.GameObjects.GetGameObject(0), this);
+		}
+	}
+
+	public class SelectionScope(Type selectionType)
+	{
+		public Type SelectionType => selectionType;
+
+		public virtual void OnSelectionChanged(SceneObjectBase? selection, object? source)
+		{
+		}
+	}
+
+	public class SelectionScope<T>() : SelectionScope(typeof(T))
+	{
+		private readonly List<Action<T, object?>> callbacks = new();
+		public T? Selection { get; private set; }
+
+		public void Attach(Action<T, object?> callback)
+		{
+			this.callbacks.Add(callback);
+
+			if (this.Selection != null)
+			{
+				callback.Invoke(this.Selection, null);
+			}
+		}
+
+		public void Detach(Action<T, object?> callback)
+		{
+			this.callbacks.Remove(callback);
+		}
+
+		public override void OnSelectionChanged(SceneObjectBase? selection, object? source)
+		{
+			if (selection is T tSelection)
+			{
+				this.Selection = tSelection;
+
+				foreach (Action<T, object?> callback in this.callbacks)
+				{
+					callback.Invoke(tSelection, source);
+				}
+			}
 		}
 	}
 }

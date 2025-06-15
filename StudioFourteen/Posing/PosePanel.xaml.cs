@@ -15,27 +15,29 @@
 
 namespace StudioFourteen.Posing;
 
-using StudioFourteen.Library;
-using StudioFourteen.Panels;
-using StudioFourteen.Posing.Shared;
-using StudioFourteen.Selection;
+using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using DependencyPropertyGenerator;
 using PropertyChanged.SourceGenerator;
-using WpfUtils.Utils;
-using System.Threading.Tasks;
-using System;
-using WpfUtils;
+using StudioFourteen.Library;
+using StudioFourteen.Posing.Shared;
 using StudioFourteen.Scene;
+using StudioFourteen.Scene.GameObjects;
+using WpfUtils;
+using WpfUtils.Utils;
 
-public partial class PosePanel : CharacterPanelBase
+using Panel = StudioFourteen.Panels.Panel;
+
+public partial class PosePanel : Panel
 {
 	private readonly FuncQueue showTooltipQueue;
 	private SceneObjectBase? nextHover;
 
+	[Notify] private GameObject? gameObject;
 	[Notify] private string revertTooltip = string.Empty;
 	[Notify] private SceneObjectBase? selection;
 	[Notify] private SceneObjectBase? hover;
@@ -89,6 +91,7 @@ public partial class PosePanel : CharacterPanelBase
 	{
 		base.OnOpened();
 
+		this.Services.Selection.GetScope<GameObject>().Attach(this.OnGameObjectSelectionChanged);
 		this.Services.Selection.SelectionChanged += this.OnSceneSelectionChanged;
 		this.Services.Selection.HoverChanged += this.OnSelectionHoverChanged;
 
@@ -100,14 +103,14 @@ public partial class PosePanel : CharacterPanelBase
 		base.OnClosed();
 
 		this.IsHoverTooltipOpen = false;
+		this.Services.Selection.GetScope<GameObject>().Detach(this.OnGameObjectSelectionChanged);
 		this.Services.Selection.SelectionChanged -= this.OnSceneSelectionChanged;
 		this.Services.Selection.HoverChanged -= this.OnSelectionHoverChanged;
 	}
 
-	protected override void OnTargetChanged(int objectTableIndex)
+	protected virtual void OnGameObjectSelectionChanged(GameObject newSelection, object? source)
 	{
-		base.OnTargetChanged(objectTableIndex);
-		this.RevertTooltip = StudioFourteen.Resources.Format("LOC_Pose_RevertPose", this.CharacterName);
+		this.GameObject = newSelection;
 	}
 
 	private void OnSelectionHoverChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? source)
@@ -146,15 +149,15 @@ public partial class PosePanel : CharacterPanelBase
 
 	private void OnRevertClicked(object sender, RoutedEventArgs e)
 	{
-		if (this.TargetObjectIndex < 0)
+		if (this.GameObject == null)
 			return;
 
-		this.Services.Pose.FlushBoneReferences((ushort)this.TargetObjectIndex);
+		this.Services.Pose.FlushBoneReferences(this.GameObject.ObjectIndex);
 	}
 
 	private void OnBackgroundMouseDown(object sender, MouseButtonEventArgs e)
 	{
-		if (this.TargetObjectIndex < 0)
+		if (this.GameObject == null)
 			return;
 
 		this.Services.Selection.Select(this.GameObject, this);
@@ -162,12 +165,18 @@ public partial class PosePanel : CharacterPanelBase
 
 	private void OnClearClicked(object sender, RoutedEventArgs e)
 	{
+		if (this.GameObject == null)
+			return;
+
 		this.Services.Selection.Select(this.GameObject, this);
 	}
 
 	private async void OnReferenceClicked(object sender, RoutedEventArgs e)
 	{
-		await this.Services.Pose.SetToReferencePose(this.TargetObjectIndex);
+		if (this.GameObject == null)
+			return;
+
+		await this.Services.Pose.SetToReferencePose(this.GameObject.ObjectIndex);
 	}
 
 	private void OnImportClicked(object sender, RoutedEventArgs e)
@@ -177,12 +186,18 @@ public partial class PosePanel : CharacterPanelBase
 
 	private async void OnExportClicked(object sender, RoutedEventArgs e)
 	{
-		await this.Services.Pose.ExportPose(this.TargetObjectIndex);
+		if (this.GameObject == null)
+			return;
+
+		await this.Services.Pose.ExportPose(this.GameObject.ObjectIndex);
 	}
 
 	private void OnFlipPoseClicked(object sender, RoutedEventArgs e)
 	{
-		this.Services.Pose.Flip(this.TargetObjectIndex);
+		if (this.GameObject == null)
+			return;
+
+		this.Services.Pose.Flip(this.GameObject.ObjectIndex);
 	}
 }
 

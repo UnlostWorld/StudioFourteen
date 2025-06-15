@@ -17,6 +17,7 @@ namespace StudioFourteen.Cameras;
 
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Scene;
+using StudioFourteen.Scene.GameObjects;
 using System.Numerics;
 
 public partial class OrbitTargetCamera : OrbitCamera
@@ -49,9 +50,10 @@ public partial class OrbitTargetCamera : OrbitCamera
 		this.TargetOffset = targetOffset;
 		this.desiredMove = Vector3.Zero;
 
-		if (this.Services.Selection.Current is TransformSceneObjectBase transformObject)
+		GameObject? target = this.Services.Selection.GetScope<GameObject>().Selection;
+		if (target != null)
 		{
-			this.currentTargetPosition = Vector3.Transform(Vector3.Zero, transformObject.WorldTransform.ToMatrix());
+			this.currentTargetPosition = Vector3.Transform(Vector3.Zero, target.WorldTransform.ToMatrix());
 		}
 
 		this.Target = Vector3.Lerp(this.Target, this.currentTargetPosition + this.TargetOffset, deltaTime * this.lerpSpeed);

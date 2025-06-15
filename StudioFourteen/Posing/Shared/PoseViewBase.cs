@@ -33,6 +33,7 @@ using StudioFourteen.Scene.GameObjects;
 
 [DependencyProperty<bool>("Hide", DefaultValue = false)]
 [DependencyProperty<bool>("UpdateWithAppearance", DefaultValue = false)]
+[DependencyProperty<GameObject>("GameObject")]
 public partial class PoseViewBase : View
 {
 	public const double MouseOverDistance = 20;
@@ -53,7 +54,6 @@ public partial class PoseViewBase : View
 	public bool IsValid { get; private set; }
 
 	public int ObjectTableIndex => 0;
-	public GameObject? GameObject => null;
 
 	public List<PoseSelectionControl>? GetTargets()
 	{
@@ -343,6 +343,11 @@ public partial class PoseViewBase : View
 	}
 
 	partial void OnHideChanged()
+	{
+		this.UpdateTargets();
+	}
+
+	partial void OnGameObjectChanged(GameObject? newValue)
 	{
 		this.UpdateTargets();
 	}

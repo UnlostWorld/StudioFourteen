@@ -1,17 +1,17 @@
-﻿<windows:CharacterPanelBase
+﻿<panels:Panel
 	x:Class="StudioFourteen.Posing.PosePanel"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:body="clr-namespace:StudioFourteen.Posing.Body"
+	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:hands="clr-namespace:StudioFourteen.Posing.Hands"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:pose="clr-namespace:StudioFourteen.Posing"
-	xmlns:windows="clr-namespace:StudioFourteen.Panels"
-	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	xmlns:icons="clr-namespace:StudioFourteen.Icons"
-	xmlns:controls="clr-namespace:StudioFourteen.Controls"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:panels="clr-namespace:StudioFourteen.Panels"
+	xmlns:pose="clr-namespace:StudioFourteen.Posing"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Width="700"
 	Height="550"
 	MinWidth="500"
@@ -59,12 +59,13 @@
 								</Grid.ColumnDefinitions>
 
 								<body:BodySimpleView
-									UpdateWithAppearance="True"
 									x:Name="BodyView"
 									Grid.RowSpan="3"
 									Grid.Column="0"
 									Margin="10"
-									FlipSides="{Binding FlipSides}" />
+									FlipSides="{Binding FlipSides}"
+									GameObject="{Binding GameObject}"
+									UpdateWithAppearance="True" />
 
 								<pose:SimpleView
 									x:Name="ClothesView"
@@ -72,6 +73,7 @@
 									Grid.Column="1"
 									Margin="10"
 									FlipSides="{Binding FlipSides}"
+									GameObject="{Binding GameObject}"
 									LayoutName="Clothes" />
 
 								<TextBlock
@@ -137,18 +139,21 @@
 										x:Name="TailView"
 										Grid.Row="0"
 										FlipSides="{Binding FlipSides}"
+										GameObject="{Binding GameObject}"
 										LayoutName="Tail" />
 
 									<pose:SimpleView
 										x:Name="PenisView"
 										Grid.Row="1"
 										FlipSides="{Binding FlipSides}"
+										GameObject="{Binding GameObject}"
 										LayoutName="Penis" />
 
 									<pose:SimpleView
 										x:Name="VaginaView"
 										Grid.Row="2"
 										FlipSides="{Binding FlipSides}"
+										GameObject="{Binding GameObject}"
 										LayoutName="Vagina" />
 								</Grid>
 							</Grid>
@@ -156,7 +161,7 @@
 
 						<pose:PoseTabItem Header="{DynamicResource LOC_Pose_Matrix}">
 							<ScrollViewer>
-								<body:MatrixView />
+								<body:MatrixView 	GameObject="{Binding GameObject}"/>
 							</ScrollViewer>
 						</pose:PoseTabItem>
 
@@ -173,6 +178,7 @@
 									MouseDown="OnBackgroundMouseDown" />
 
 								<pose:SimpleView
+									GameObject="{Binding GameObject}"
 									x:Name="HandsView"
 									Grid.Row="0"
 									FlipSides="{Binding FlipSides}"
@@ -180,7 +186,7 @@
 							</Grid>
 						</pose:PoseTabItem>
 						<pose:PoseTabItem Header="{DynamicResource LOC_Pose_Matrix}">
-							<hands:MatrixView />
+							<hands:MatrixView 	GameObject="{Binding GameObject}"/>
 						</pose:PoseTabItem>
 					</TabControl>
 
@@ -194,8 +200,7 @@
 						SelectedIndex="{Binding SelectedFaceTab}">
 
 						<pose:PoseTabItem Header="Expression">
-							<pose:ExpressionsView FlipSides="{Binding FlipSides}"
-								ObjectTableIndex="{Binding TargetObjectIndex}" />
+							<pose:ExpressionsView FlipSides="{Binding FlipSides}" ObjectTableIndex="{Binding TargetObjectIndex}" />
 						</pose:PoseTabItem>
 
 						<pose:PoseTabItem Header="{DynamicResource LOC_Pose_Simple}">
@@ -214,6 +219,7 @@
 								</Grid.RowDefinitions>
 
 								<pose:SimpleView
+									GameObject="{Binding GameObject}"
 									x:Name="FaceView"
 									Grid.RowSpan="3"
 									Grid.ColumnSpan="3"
@@ -221,6 +227,7 @@
 									LayoutName="Face" />
 
 								<pose:SimpleView
+									GameObject="{Binding GameObject}"
 									x:Name="TongueView"
 									Grid.Row="2"
 									Grid.Column="2"
@@ -234,6 +241,7 @@
 
 				<pose:PoseTabItem Header="{DynamicResource ICON_Pose_Wings}">
 					<pose:SimpleView
+						GameObject="{Binding GameObject}"
 						x:Name="DiabolosView"
 						FlipSides="{Binding FlipSides}"
 						LayoutName="DiabolosWings" />
@@ -246,21 +254,21 @@
 		<Grid Grid.Column="1">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="Auto" />
-				<RowDefinition/>
+				<RowDefinition />
 			</Grid.RowDefinitions>
 
 			<ContentPresenter
 				Grid.Row="0"
+				Margin="3,3,3,6"
 				Content="{Binding Selection}"
-				ContentTemplate="{DynamicResource InspectorHeader}"
-				Margin="3,3,3,6"/>
+				ContentTemplate="{DynamicResource InspectorHeader}" />
 
 			<ScrollViewer
 				Grid.Row="1"
 				HorizontalScrollBarVisibility="Disabled"
 				PanningMode="VerticalOnly">
 
-				<ContentPresenter Content="{Binding Selection}"/>
+				<ContentPresenter Content="{Binding Selection}" />
 			</ScrollViewer>
 		</Grid>
 
@@ -329,9 +337,9 @@
 		<wpfUtils:PopOut
 			x:Name="SelectionHoverPopOut"
 			Width="200"
+			Margin="0,6,0,0"
 			HorizontalAlignment="Center"
 			IsHitTestVisible="False"
-			Margin="0,6,0,0"
 			IsOpen="{Binding IsHoverTooltipOpen}"
 			PlacementTarget="{Binding HoverTarget}"
 			Style="{DynamicResource WpfUtilsPopOut}">
@@ -367,4 +375,4 @@
 
 		</wpfUtils:PopOut>
 	</Grid>
-</windows:CharacterPanelBase>
+</panels:Panel>
