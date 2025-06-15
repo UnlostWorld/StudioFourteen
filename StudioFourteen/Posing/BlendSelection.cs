@@ -103,11 +103,6 @@ public class BlendSelection : SceneObjectBase
 		if (boneSelections == null)
 			return;
 
-		foreach (BoneSceneObject selection in boneSelections)
-		{
-			selection.Activate();
-		}
-
 		await Task.Delay(50);
 		await TickService.GameTick();
 

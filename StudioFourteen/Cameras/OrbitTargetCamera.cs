@@ -16,20 +16,24 @@
 namespace StudioFourteen.Cameras;
 
 using PropertyChanged.SourceGenerator;
+using StudioFourteen.Scene;
 using System.Numerics;
-using WpfUtils.Animation;
 
 public partial class OrbitTargetCamera : OrbitCamera
 {
-	public const float TargetBlendDuration = 0.250f;
-
-	/*private readonly EasingFunctionBase targetEase = new SineEase();
-	private Vector3 oldTargetPosition;
-	private Vector3 currentTargetPosition;*/
+	private Vector3 currentTargetPosition;
 
 	[Notify] private Vector3 targetOffset = new(0, 0, 0);
+	[Notify] private float lerpSpeed = 2;
 
 	public override string TypeDisplayName => Resources.Find("LOC_OrbitTargetCamera", "Orbit Target");
+
+	public override void Initialize(CameraState currentState, StudioCameraBase? previousCamera)
+	{
+		base.Initialize(currentState, previousCamera);
+
+		this.TargetOffset = new(0, 1.0f, 0);
+	}
 
 	public unsafe override void Tick(float deltaTime)
 	{
@@ -45,38 +49,12 @@ public partial class OrbitTargetCamera : OrbitCamera
 		this.TargetOffset = targetOffset;
 		this.desiredMove = Vector3.Zero;
 
-		// TODO: Orbit selection
-		/*if (this.currentTargetIndex != this.Services.Target.TargetObjectIndex && this.currentTargetIndex != -1)
+		if (this.Services.Selection.Current is TransformSceneObjectBase transformObject)
 		{
-			this.oldTargetPosition = this.currentTargetPosition;
-			this.targetBlend = TargetBlendDuration;
+			this.currentTargetPosition = Vector3.Transform(Vector3.Zero, transformObject.WorldTransform.ToMatrix());
 		}
 
-		if (this.Services.Target.HasValidTarget && !this.Services.Redraw.IsRedrawing(this.currentTargetIndex))
-		{
-			Vector3 targetPosition = this.oldTargetPosition;
-			Character* pTarget = this.Services.Target.GetTarget();
-			if (pTarget != null && pTarget->DrawObject != null)
-			{
-				targetPosition = pTarget->DrawObject->Position;
-				targetPosition.Y = targetPosition.Y + (pTarget->Height * 1.5f);
-				this.currentTargetPosition = targetPosition;
-			}
-
-			this.currentTargetIndex = this.Services.Target.TargetObjectIndex;
-
-			if (this.targetBlend > 0)
-			{
-				this.targetBlend -= deltaTime;
-				float blendValue = this.targetBlend / TargetBlendDuration;
-				blendValue = Math.Clamp(blendValue, 0.0f, 1.0f);
-				blendValue = this.targetEase.Ease(blendValue, EasingFunctionBase.EasingModes.EaseInOut);
-				targetPosition = Vector3.Lerp(targetPosition, this.oldTargetPosition, blendValue);
-			}
-
-			targetPosition += this.TargetOffset;
-			this.Target = targetPosition;
-		}*/
+		this.Target = Vector3.Lerp(this.Target, this.currentTargetPosition + this.TargetOffset, deltaTime * this.lerpSpeed);
 
 		base.Tick(deltaTime);
 	}

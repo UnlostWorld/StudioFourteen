@@ -30,7 +30,7 @@ public class BoneSceneObject : TransformSceneObjectBase
 	};
 
 	private readonly List<BoneReference> bones = new();
-	private BoneReference? bone;
+	private readonly BoneReference? bone;
 	private bool isReading = false;
 
 	public BoneSceneObject(Dictionary<BoneId, List<BoneId>> bonePaths, string name)
@@ -43,6 +43,17 @@ public class BoneSceneObject : TransformSceneObjectBase
 		this.Name = Resources.Find($"LOC_Bone_{this.BoneName}", this.BoneName);
 		this.Subtitle = name;
 		this.Description = Resources.Find($"LOC_Bone_{this.BoneName}_Tooltip", string.Empty);
+
+		this.bones.Clear();
+		foreach (BoneId boneId in this.BonePaths.Keys)
+		{
+			this.bones.Add(ServiceManager.Instance.Pose.GetOrCreateBoneReference(boneId));
+		}
+
+		this.bone = this.bones[0];
+		this.RaisePropertyChanged(nameof(this.IsReady));
+
+		this.MirrorMode = this.GetDefaultMirrorMode();
 	}
 
 	public Dictionary<BoneId, List<BoneId>> BonePaths { get; private set; }
@@ -85,20 +96,6 @@ public class BoneSceneObject : TransformSceneObjectBase
 	{
 		get => this.bone?.ReferenceRelativeTransform ?? default;
 		set => this.SetReferenceTransform(value);
-	}
-
-	public void Activate()
-	{
-		this.bones.Clear();
-		foreach (BoneId boneId in this.BonePaths.Keys)
-		{
-			this.bones.Add(ServiceManager.Instance.Pose.GetOrCreateBoneReference(boneId));
-		}
-
-		this.bone = this.bones[0];
-		this.RaisePropertyChanged(nameof(this.IsReady));
-
-		this.MirrorMode = this.GetDefaultMirrorMode();
 	}
 
 	public override void Reset()

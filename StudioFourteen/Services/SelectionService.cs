@@ -21,6 +21,7 @@ using StudioFourteen.Rendering.Draw.Gizmos.Transforms;
 using StudioFourteen.Scene;
 using StudioFourteen.Services;
 using StudioFourteen.Widget;
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
@@ -28,8 +29,6 @@ using System.Windows;
 
 public partial class SelectionService : ServiceBase
 {
-	private readonly List<SceneObjectGizmoBase> selectionGizmos = new();
-
 	private SceneObjectBase? selection;
 	private SceneObjectBase? hover;
 	private string lastSelectionName = "Nothing";
@@ -141,10 +140,6 @@ public partial class SelectionService : ServiceBase
 	{
 		await this.Services.Panels.GamePanels.SetIsOpenAsync<SelectionWidget>(true, false);
 
-		this.selectionGizmos.Add(new SelectionGizmo());
-		this.selectionGizmos.Add(new TranslationGizmo());
-		this.selectionGizmos.Add(new RotationGizmo());
-		this.selectionGizmos.Add(new ScaleGizmo());
 		await base.Start();
 	}
 
@@ -166,38 +161,11 @@ public partial class SelectionService : ServiceBase
 		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
 	}
 
-	protected void OnGameTick()
+	private void OnGameTick()
 	{
-		this.Current?.OnGameTick();
-
-		/*if (!this.Services.Windows.IsCursorOverStudio)
+		if (this.selection == null)
 		{
-			HitInfo? hit = RayCast.CastFromCursor();
-			if (hit != null)
-			{
-				if (this.Hover?.IsHit(hit) != true)
-				{
-					this.Hover = null;
-
-					if (this.Current?.IsHit(hit) == true)
-					{
-						this.Hover = this.Current;
-					}
-					else
-					{
-						// TODO: somewhere else?
-						if (hit.ObjectTableIndex != -1)
-						{
-							this.Hover = new ObjectTableSelection(hit.ObjectTableIndex);
-						}
-					}
-				}
-			}
-		}*/
-
-		if (this.Hover != this.Current)
-		{
-			this.Hover?.OnGameTick();
+			this.Select(this.Services.GameObjects.GetGameObject(0), this);
 		}
 	}
 }

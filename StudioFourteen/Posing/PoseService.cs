@@ -373,7 +373,9 @@ public partial class PoseService : ServiceBase
 		if (bones.Count <= 0)
 			return null;
 
-		return new BoneSceneObject(bones, name);
+		BoneSceneObject obj = new(bones, name);
+		this.Services.Scene.AddObject(obj);
+		return obj;
 	}
 
 	public void FlushBoneReferences()

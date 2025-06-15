@@ -184,7 +184,6 @@ public class EyeSelection : SceneObjectBase
 		this.EyeBone = this.Services.Pose.FindBone(this.ObjectTableIndex, "j_f_eye_r");
 		if (this.EyeBone != null)
 		{
-			this.EyeBone.Activate();
 			this.EyeBone.MirrorMode = this.mirrorMode;
 		}
 		else
@@ -195,7 +194,6 @@ public class EyeSelection : SceneObjectBase
 		this.IrisBone = this.Services.Pose.FindBone(this.ObjectTableIndex, "j_f_irisprm_r");
 		if (this.IrisBone != null)
 		{
-			this.IrisBone.Activate();
 			this.IrisBone.MirrorMode = this.mirrorMode;
 		}
 		else
