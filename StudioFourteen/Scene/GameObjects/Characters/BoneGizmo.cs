@@ -66,6 +66,10 @@ public class SkeletonBoneGizmo : SelectionHandle
 		if (this.boneId.BoneIndex >= pPose->Skeleton->Bones.Length)
 			return;
 
+		// If this is genital and hide genitals!
+		if (this.Services.Settings.Current.HideGenitals && this.Services.Content.GenitalBones?.Contains(this.skeletonBone.BoneName) == true)
+			return;
+
 		Transform boneTransform = *pPose->AccessBoneModelSpace(this.boneId.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
 		this.capRenderer.Transform = boneTransform;
 
