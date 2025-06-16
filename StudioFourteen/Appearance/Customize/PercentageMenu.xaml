@@ -9,8 +9,6 @@
 		<StackPanel>
 			<TextBlock Style="{DynamicResource LeftLabel}" Text="{Binding Name}" />
 
-			<TextBlock Text="Hello"/>
-
 			<controls:NumberBox
 				Maximum="{Binding Maximum}"
 				Minimum="{Binding Minimum}"

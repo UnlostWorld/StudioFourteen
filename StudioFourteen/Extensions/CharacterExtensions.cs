@@ -102,11 +102,6 @@ public static partial class CharacterExtensions
 		return pscale->ScaleFactor;
 	}
 
-	public static CharaMakeType? GetCharaMakeType(ref readonly this Character self)
-	{
-		return self.DrawData.CustomizeData.GetMakeType();
-	}
-
 	public static byte GetCustomizeValue(ref readonly this Character self, CustomizeIndex option)
 	{
 		return self.DrawData.CustomizeData.GetValue(option);

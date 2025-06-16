@@ -33,20 +33,6 @@
 					Opacity="{TemplateBinding ChangePosIntensity}"
 					Icon="{DynamicResource ICON_NumberBoxUp}"/>
 
-				<Button
-					x:Name="PART_DownButton"
-					Grid.Column="0"
-					Content="{DynamicResource ICON_NumberBoxDown}"
-					Focusable="False"
-					Opacity="0"/>
-
-				<Button
-					x:Name="PART_UpButton"
-					Grid.Column="2"
-					Content="{DynamicResource ICON_NumberBoxUp}"
-					Focusable="False"
-					Opacity="0"/>
-
 				<ProgressBar
 					x:Name="PART_Progress"
 					Margin="10, 2"
@@ -71,6 +57,20 @@
 					HorizontalContentAlignment="Center"/>
 
 				<Rectangle Fill="Transparent" Grid.ColumnSpan="3" x:Name="PART_Clicker" Visibility="Visible"/>
+
+				<Button
+					x:Name="PART_DownButton"
+					Grid.Column="0"
+					Content="{DynamicResource ICON_NumberBoxDown}"
+					Focusable="False"
+					Opacity="0"/>
+
+				<Button
+					x:Name="PART_UpButton"
+					Grid.Column="2"
+					Content="{DynamicResource ICON_NumberBoxUp}"
+					Focusable="False"
+					Opacity="0"/>
 
 			</Grid>
 		</Grid>

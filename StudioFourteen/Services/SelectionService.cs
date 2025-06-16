@@ -16,9 +16,9 @@
 namespace StudioFourteen.Selection;
 
 using StudioFourteen.History;
-using StudioFourteen.Posing;
 using StudioFourteen.Scene;
 using StudioFourteen.Scene.GameObjects;
+using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Services;
 using StudioFourteen.Widget;
 using System;
@@ -39,6 +39,7 @@ public partial class SelectionService : ServiceBase
 	{
 		// pre-create the GameObject scope as its what selection defaults to.
 		this.GetScope<GameObject>();
+		this.GetScope<Character>();
 	}
 
 	public delegate void SelectionChangedDelegate(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? selectionSource);

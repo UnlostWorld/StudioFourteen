@@ -15,50 +15,34 @@
 
 namespace StudioFourteen.Appearance;
 
-using Dalamud.Plugin.Services;
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using StudioFourteen.Appearance.Customize;
-using StudioFourteen.Appearance.Equipment;
-using StudioFourteen.Files;
-using StudioFourteen.Library;
-using StudioFourteen.Mvm;
 using StudioFourteen.Panels;
-using System.Windows;
-using WpfUtils.Extensions;
+using PropertyChanged.SourceGenerator;
+using StudioFourteen.Scene.GameObjects.Characters;
 
-public partial class CharacterPanel : CharacterPanelBase
+public partial class CharacterPanel : Panel
 {
-	public CharacterPanel()
+	//// public EquipmentViewModel Equipment { get; init; }
+
+	[Notify] private Character? character;
+
+	protected override void OnOpened()
 	{
-		this.Customize = new(this);
-		this.Equipment = new();
+		this.Services.Selection.GetScope<Character>().Attach(this.OnSelectionChanged);
+		base.OnOpened();
 	}
 
-	public CustomizeViewModel Customize { get; init; }
-	public EquipmentViewModel Equipment { get; init; }
-
-	[AutoNotify] public bool UseTwoColumns => this.ActualWidth > 650;
-
-	[AutoNotify] public unsafe bool CanRevert => this.Services.CharacterAppearance.CanRestore(this.TargetObjectIndex);
-	[AutoNotify] public string ExportAppearanceToolTipText => string.Format(StudioFourteen.Resources.Find("LOC_Save_ExportAppearanceToolTip", string.Empty), this.CharacterName);
-
-	[AutoNotify]
-	public int SelectedTab
+	protected override void OnClosed()
 	{
-		get
-		{
-			int tabIndex = this.GetPersistence<int>();
-			if (tabIndex == 3 && this.UseTwoColumns)
-			{
-				tabIndex = 0;
-			}
-
-			return tabIndex;
-		}
-		set => this.SetPersistence(value);
+		this.Services.Selection.GetScope<Character>().Detach(this.OnSelectionChanged);
+		base.OnClosed();
 	}
 
-	protected unsafe override void OnGameTick()
+	private void OnSelectionChanged(Character? newSelection, object? selectionSource)
+	{
+		this.Character = newSelection;
+	}
+
+	/*protected unsafe override void OnGameTick()
 	{
 		base.OnGameTick();
 
@@ -69,7 +53,6 @@ public partial class CharacterPanel : CharacterPanelBase
 		if (pTarget == null)
 			return;
 
-		this.Customize.OnGameTick(pTarget);
 		this.Equipment.OnGameTick(pTarget);
 	}
 
@@ -77,7 +60,6 @@ public partial class CharacterPanel : CharacterPanelBase
 	{
 		base.OnTargetChanged(objectTableIndex);
 
-		this.Customize.OnTargetChanged();
 		this.Equipment.OnTargetChanged();
 	}
 
@@ -96,5 +78,5 @@ public partial class CharacterPanel : CharacterPanelBase
 		AppearanceFile file = new();
 		await file.Read(this.TargetObjectIndex);
 		this.Services.Files.SaveFile(file, $"{this.CharacterName}'s Appearance");
-	}
+	}*/
 }

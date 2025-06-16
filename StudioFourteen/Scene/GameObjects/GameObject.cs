@@ -43,8 +43,8 @@ public class GameObject : TransformSceneObjectBase
 	}
 
 	public override string Id => $"GameObject:{this.ObjectIndex}";
-	public override object? Icon => Resources.Find("ICON_Selection_Character");
-	public override string TypeName => Resources.Find("LOC_Selection_ObjectTable", "Object Table");
+	public override object? Icon => Resources.Find("ICON_Type_GameObject");
+	public override string TypeName => Resources.Find("LOC_Type_GameObject", "Game Object");
 
 	public override double TranslationChange => 0.1f;
 
@@ -113,6 +113,17 @@ public class GameObject : TransformSceneObjectBase
 	public unsafe XivGameObject* GetXivGameObject()
 	{
 		return this.Services.GameObjects.GetXivGameObject(this.ObjectIndex);
+	}
+
+	public unsafe bool CanDraw()
+	{
+		TickService.VerifyGameTickThread();
+
+		XivGameObject* pGameObject = this.GetXivGameObject();
+		if (!pGameObject->IsReadyToDraw())
+			return false;
+
+		return pGameObject->RenderFlags == (int)RenderMode.Draw;
 	}
 
 	protected override void OnLocalTransformChanged(Transform oldValue, Transform newValue)

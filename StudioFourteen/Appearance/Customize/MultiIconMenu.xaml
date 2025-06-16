@@ -35,16 +35,16 @@
 										Visibility="{Binding IsChecked, Converter={StaticResource B2V}}" />
 
 									<Image
-										Width="48"
-										Height="48"
-										Margin="2"
+										Width="42"
+										Height="42"
+										Margin="0,2"
 										Source="{Binding Image.Source}"
 										Visibility="{Binding Index, Converter={StaticResource EnumToVisibility}, ConverterParameter='!LegacyTattoo'}" />
 
 									<Image
-										Width="48"
-										Height="48"
-										Margin="2"
+										Width="42"
+										Height="42"
+										Margin="0,2"
 										Source="pack://application:,,,/StudioFourteen;component/Assets/LegacyTattoo.png"
 										Visibility="{Binding Index, Converter={StaticResource EnumToVisibility}, ConverterParameter='LegacyTattoo'}" />
 

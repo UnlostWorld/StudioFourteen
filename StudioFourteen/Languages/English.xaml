@@ -450,7 +450,9 @@
 	<sys:String x:Key="LOC_Selection_Blend">Blend</sys:String>
 	<sys:String x:Key="LOC_Selection_Bone">Bone</sys:String>
 	<sys:String x:Key="LOC_Selection_Eye">Eye Controls</sys:String>
-	<sys:String x:Key="LOC_Selection_ObjectTable">Game Object</sys:String>
+	<sys:String x:Key="LOC_Type_GameObject">Game Object</sys:String>
+	<sys:String x:Key="LOC_Type_Character">Character</sys:String>
+	<sys:String x:Key="LOC_Type_Bone">Bone</sys:String>
 
 	<!--  AIO  -->
 	<sys:String x:Key="LOC_AIO_Title">Studio Fourteen</sys:String>

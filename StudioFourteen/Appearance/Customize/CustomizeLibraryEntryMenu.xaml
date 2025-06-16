@@ -41,6 +41,7 @@
 				Grid.Row="2"
 				Grid.Column="0"
 				Width="42"
+				Height="24"
 				IsChecked="{Binding ToggleMenu.IsChecked}"
 				Style="{DynamicResource WpfUtilsIconToggleButton}"
 				Visibility="{Binding ToggleMenu, Converter={StaticResource NotNullToVisibilityConverter}}"

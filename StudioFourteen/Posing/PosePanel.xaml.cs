@@ -95,7 +95,7 @@ public partial class PosePanel : Panel
 		base.OnOpened();
 
 		this.Services.Selection.GetScope<GameObject>().Attach(this.OnGameObjectSelectionChanged);
-		this.Services.Selection.SelectionChanged += this.OnSceneSelectionChanged;
+		this.Services.Selection.GetScope<TransformSceneObjectBase>().Attach(this.OnSceneSelectionChanged);
 		this.Services.Selection.HoverChanged += this.OnSelectionHoverChanged;
 
 		this.Selection = this.Services.Selection.Current;
@@ -107,7 +107,7 @@ public partial class PosePanel : Panel
 
 		this.IsHoverTooltipOpen = false;
 		this.Services.Selection.GetScope<GameObject>().Detach(this.OnGameObjectSelectionChanged);
-		this.Services.Selection.SelectionChanged -= this.OnSceneSelectionChanged;
+		this.Services.Selection.GetScope<TransformSceneObjectBase>().Detach(this.OnSceneSelectionChanged);
 		this.Services.Selection.HoverChanged -= this.OnSelectionHoverChanged;
 	}
 
@@ -145,7 +145,7 @@ public partial class PosePanel : Panel
 		this.IsHoverTooltipOpen = true;
 	}
 
-	private void OnSceneSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? source)
+	private void OnSceneSelectionChanged(TransformSceneObjectBase? newSelection, object? source)
 	{
 		this.Selection = newSelection;
 	}

@@ -22,9 +22,9 @@
 				<ListBox.ItemTemplate>
 					<DataTemplate>
 						<Image
-							Width="48"
-							Height="48"
-							Margin="3,6"
+							Width="42"
+							Height="42"
+							Margin="0,2"
 							Source="{Binding Image.Source}" />
 					</DataTemplate>
 				</ListBox.ItemTemplate>

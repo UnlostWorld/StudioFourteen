@@ -15,10 +15,31 @@
 
 namespace StudioFourteen.Scene.GameObjects.Characters;
 
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using StudioFourteen.Services;
+
+using CharaMakeType = StudioFourteen.GameData.Sheets.CharaMakeType;
+using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
+
 public class Character : Skeleton
 {
 	public Character(int objectIndex)
 		: base(objectIndex)
 	{
+	}
+
+	public override object? Icon => Resources.Find("ICON_Type_Character");
+	public override string TypeName => Resources.Find("LOC_Type_Character", "Character");
+
+	public unsafe XivCharacter* GetXivCharacter()
+	{
+		return (XivCharacter*)this.Services.GameObjects.GetXivGameObject(this.ObjectIndex);
+	}
+
+	public unsafe CharaMakeType? GetCharaMakeType()
+	{
+		TickService.VerifyGameTickThread();
+		XivCharacter* pCharacter = this.GetXivCharacter();
+		return pCharacter->DrawData.CustomizeData.GetMakeType();
 	}
 }

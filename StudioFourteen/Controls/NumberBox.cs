@@ -28,7 +28,7 @@ using StudioFourteen.Utilities;
 [DependencyProperty<double>("Minimum", DefaultValue = double.MinValue)]
 [DependencyProperty<double>("Maximum", DefaultValue = double.MaxValue)]
 [DependencyProperty<double>("Value", DefaultBindingMode = DefaultBindingMode.TwoWay)]
-[DependencyProperty<double>("Change")]
+[DependencyProperty<double>("Change", DefaultValue = 1)]
 [DependencyProperty<double>("ChangeProgress", DefaultValue = 0)]
 [DependencyProperty<double>("ChangePosIntensity", DefaultValue = 0)]
 [DependencyProperty<double>("ChangeNegIntensity", DefaultValue = 0)]
@@ -294,10 +294,7 @@ public partial class NumberBox : Control
 		if (change == 0)
 			change = 1;
 
-		double rate = change / 10;
-		rate = (rate * delta) * modifier;
-
-		return rate;
+		return (change * delta) * modifier;
 	}
 
 	private void OnDownClicked(object sender, RoutedEventArgs e)

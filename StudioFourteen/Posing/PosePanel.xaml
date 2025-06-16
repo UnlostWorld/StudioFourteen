@@ -12,6 +12,7 @@
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
 	xmlns:pose="clr-namespace:StudioFourteen.Posing"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	xmlns:characters="clr-namespace:StudioFourteen.Scene.GameObjects.Characters"
 	Width="700"
 	Height="550"
 	MinWidth="500"
@@ -32,7 +33,7 @@
 
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition />
-			<ColumnDefinition Width="180" />
+			<ColumnDefinition Width="200" />
 		</Grid.ColumnDefinitions>
 
 		<Grid.RowDefinitions>
@@ -267,6 +268,14 @@
 				Grid.Row="1"
 				HorizontalScrollBarVisibility="Disabled"
 				PanningMode="VerticalOnly">
+
+				<ScrollViewer.Resources>
+
+					<!-- Override the character inspector for basic transforms only -->
+					<DataTemplate DataType="{x:Type characters:Character}">
+						<ContentPresenter Content="{Binding .}" ContentTemplate="{DynamicResource TransformSceneObjectBaseInspector}" />
+					</DataTemplate>
+				</ScrollViewer.Resources>
 
 				<ContentPresenter Content="{Binding Selection}" />
 			</ScrollViewer>

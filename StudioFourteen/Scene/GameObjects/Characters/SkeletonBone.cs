@@ -57,8 +57,8 @@ public class SkeletonBone : TransformSceneObjectBase
 	}
 
 	public override string Id => new($"Bone:{this.BoneName}:{this.skeleton.ObjectIndex}");
-	public override object? Icon => Resources.Find("ICON_Selection_Bone");
-	public override string TypeName => Resources.Find("LOC_Selection_Bone", "Bone");
+	public override object? Icon => Resources.Find("ICON_Type_Bone");
+	public override string TypeName => Resources.Find("LOC_Type_Bone", "Bone");
 
 	public string BoneName { get; init; }
 	public SkeletonBone? Parent { get; private set; }

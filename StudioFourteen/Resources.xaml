@@ -38,6 +38,21 @@
 		<ResourceDictionary Source="./Controls/GripStyles.xaml"/>
 		<ResourceDictionary Source="./Controls/OrderableItemsControlStyles.xaml"/>
 
+		<ResourceDictionary Source="./Appearance/Customize/ExcelLibraryEntryMenu.xaml" />
+		<ResourceDictionary Source="./Appearance/Customize/ColorMenu.xaml" />
+		<ResourceDictionary Source="./Appearance/Customize/SelectorMenu.xaml" />
+		<ResourceDictionary Source="./Appearance/Customize/IconMenu.xaml" />
+		<ResourceDictionary Source="./Appearance/Customize/DoubleColorMenu.xaml" />
+		<ResourceDictionary Source="./Appearance/Customize/MultiIconMenu.xaml" />
+		<ResourceDictionary Source="./Appearance/Customize/PercentageMenu.xaml" />
+		<ResourceDictionary Source="./Appearance/Customize/ListMenu.xaml" />
+		<ResourceDictionary Source="./Appearance/Customize/CustomizeLibraryEntryMenu.xaml" />
+		<ResourceDictionary Source="./Appearance/Customize/ToggleMenu.xaml" />
+		<ResourceDictionary Source="./Appearance/Customize/GenderMenu.xaml" />
+
+		<ResourceDictionary Source="./Appearance/Equipment/WeaponSlot.xaml" />
+		<ResourceDictionary Source="./Appearance/Equipment/EquipmentSlot.xaml" />
+
 		<!--  Default Language  -->
 		<ResourceDictionary Source="./Icons/Icons.xaml"/>
 		<ResourceDictionary Source="./Languages/English.xaml" />
@@ -48,7 +63,8 @@
 		<!-- Inspectors -->
 		<ResourceDictionary Source="./Scene/InspectorHeader.xaml"/>
 		<ResourceDictionary Source="./Scene/TransformObjectInspector.xaml"/>
-		<ResourceDictionary Source="./Posing/BoneInspector.xaml"/>
+		<ResourceDictionary Source="./Scene/GameObjects/Characters/SkeletonBoneInspector.xaml"/>
+		<ResourceDictionary Source="./Scene/GameObjects/Characters/CharacterInspector.xaml"/>
 
 	</ResourceDictionary.MergedDictionaries>
 
