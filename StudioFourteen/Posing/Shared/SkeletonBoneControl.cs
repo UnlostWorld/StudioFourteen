@@ -27,7 +27,7 @@ using StudioFourteen.Scene.GameObjects.Characters;
 [DependencyProperty<bool>("IsSelected")]
 [DependencyProperty<bool>("IsParentSelected")]
 [DependencyProperty<bool>("IsValid")]
-public partial class PoseSelectionControl : Control
+public partial class SkeletonBoneControl : Control
 {
 	public SceneObjectBase? Selection { get; set; }
 	public string? SafeName { get; private set; }
@@ -56,7 +56,9 @@ public partial class PoseSelectionControl : Control
 		this.IsSelected = newSelection.Id == this.Selection.Id;
 
 		this.IsParentSelected = false;
-		if (this.Selection is SkeletonBone boneSelection && newSelection is SkeletonBone newBoneSelection)
+
+		// TODO
+		/*if (this.Selection is SkeletonBone boneSelection && newSelection is SkeletonBone newBoneSelection)
 		{
 			foreach((BoneId selectedBoneId, _) in newBoneSelection.BonePaths)
 			{
@@ -69,7 +71,7 @@ public partial class PoseSelectionControl : Control
 					}
 				}
 			}
-		}
+		}*/
 	}
 
 	partial void OnSelectionNameChanged(string? newValue)

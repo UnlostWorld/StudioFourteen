@@ -26,13 +26,14 @@ using XivSkeleton = FFXIVClientStructs.FFXIV.Client.Graphics.Render.Skeleton;
 
 public class SkeletonBone : TransformSceneObjectBase
 {
+	public readonly List<BoneReference> BoneReferences = new();
+
 	private static readonly Dictionary<string, MirrorModes> DefaultMirrorModes = new()
 	{
 		{ "j_f_eye_l", MirrorModes.MirrorTCopyRS },
 	};
 
 	private readonly Skeleton skeleton;
-	private readonly List<BoneReference> bones = new();
 	private readonly BoneReference bone;
 	private bool isReading = false;
 
@@ -47,9 +48,9 @@ public class SkeletonBone : TransformSceneObjectBase
 		this.Subtitle = boneName;
 		this.Description = Resources.Find($"LOC_Bone_{this.BoneName}_Tooltip", string.Empty);
 
-		this.bones = references;
+		this.BoneReferences = references;
 
-		this.bone = this.bones[0];
+		this.bone = this.BoneReferences[0];
 		this.RaisePropertyChanged(nameof(this.IsReady));
 
 		this.MirrorMode = this.GetDefaultMirrorMode();
@@ -60,10 +61,8 @@ public class SkeletonBone : TransformSceneObjectBase
 	public override string TypeName => Resources.Find("LOC_Selection_Bone", "Bone");
 
 	public string BoneName { get; init; }
+	public SkeletonBone? Parent { get; private set; }
 	public BoneId PrimaryBoneId => this.bone.Id;
-
-	// TODO
-	public Dictionary<BoneId, List<BoneId>> BonePaths { get; init; } = new();
 
 	public bool IsFaceBone { get; private set; }
 	public override double TranslationChange => this.IsFaceBone ? 0.01 : 0.1;
@@ -86,7 +85,7 @@ public class SkeletonBone : TransformSceneObjectBase
 		}
 		set
 		{
-			foreach (BoneReference bone in this.bones)
+			foreach (BoneReference bone in this.BoneReferences)
 			{
 				bone.MirrorMode = value;
 			}
@@ -99,9 +98,26 @@ public class SkeletonBone : TransformSceneObjectBase
 		set => this.SetReferenceTransform(value);
 	}
 
+	public void SetParent(SkeletonBone bone)
+	{
+		if (bone == this)
+		{
+			this.Log.Warning($"Attempted to set bone as its own parent!");
+			return;
+		}
+
+		if (this.Parent != null && this.Parent != bone)
+		{
+			this.Log.Warning($"Attempted to change bone parent from {this.Parent} to {bone}");
+			return;
+		}
+
+		this.Parent = bone;
+	}
+
 	public override void Reset()
 	{
-		foreach (BoneReference bone in this.bones)
+		foreach (BoneReference bone in this.BoneReferences)
 		{
 			if (this.MirrorMode != MirrorModes.None && bone.Mirror != null)
 			{
@@ -123,7 +139,7 @@ public class SkeletonBone : TransformSceneObjectBase
 
 	public void SetReferenceTransform(BoneTransform referenceTransform)
 	{
-		foreach (BoneReference bone in this.bones)
+		foreach (BoneReference bone in this.BoneReferences)
 		{
 			bone.SetReferenceRelativeTransform(referenceTransform, false);
 		}
@@ -175,7 +191,7 @@ public class SkeletonBone : TransformSceneObjectBase
 
 	public unsafe void OnUpdateBonePhysics(ref HashSet<nint> modifiedSkeletonPointers)
 	{
-		foreach (BoneReference reference in this.bones)
+		foreach (BoneReference reference in this.BoneReferences)
 		{
 			XivSkeleton* skeleton = reference.Tick();
 			if (skeleton == null)
@@ -187,7 +203,7 @@ public class SkeletonBone : TransformSceneObjectBase
 
 	public unsafe void OnFinalizeSkeleton()
 	{
-		foreach (BoneReference reference in this.bones)
+		foreach (BoneReference reference in this.BoneReferences)
 		{
 			reference.FinalizeBones();
 		}
@@ -215,7 +231,7 @@ public class SkeletonBone : TransformSceneObjectBase
 
 		if (success && modelSpaceTransform != null)
 		{
-			foreach (BoneReference bone in this.bones)
+			foreach (BoneReference bone in this.BoneReferences)
 			{
 				bone.SetModelSpaceTransform((Transform)modelSpaceTransform);
 			}
@@ -232,7 +248,7 @@ public class SkeletonBone : TransformSceneObjectBase
 		Quaternion from = oldValue.Rotation;
 		Quaternion to = newValue.Rotation;
 
-		foreach (BoneReference bone in this.bones)
+		foreach (BoneReference bone in this.BoneReferences)
 		{
 			bone.SetLocalSpaceTransform(newValue);
 		}

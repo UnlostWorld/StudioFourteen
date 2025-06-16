@@ -39,11 +39,11 @@ public partial class PoseViewBase : View
 {
 	public const double MouseOverDistance = 20;
 
-	private readonly Dictionary<string, List<PoseSelectionControl>> controlNameLookup = new();
-	private readonly Dictionary<BoneId, List<PoseSelectionControl>> controlIdLookup = new();
-	private readonly Dictionary<string, List<PoseSelectionControl>> controlSelectionLookup = new();
+	private readonly Dictionary<string, List<SkeletonBoneControl>> controlNameLookup = new();
+	private readonly Dictionary<BoneId, List<SkeletonBoneControl>> controlIdLookup = new();
+	private readonly Dictionary<string, List<SkeletonBoneControl>> controlSelectionLookup = new();
 
-	private List<PoseSelectionControl>? controls;
+	private List<SkeletonBoneControl>? controls;
 	private PoseTabItem? parent;
 	private bool isUpdatingTargets = false;
 
@@ -56,20 +56,20 @@ public partial class PoseViewBase : View
 
 	public int ObjectTableIndex => 0;
 
-	public List<PoseSelectionControl>? GetTargets()
+	public List<SkeletonBoneControl>? GetTargets()
 	{
 		return this.controls;
 	}
 
-	public List<PoseSelectionControl>? GetTargets(BoneId boneId)
+	public List<SkeletonBoneControl>? GetTargets(BoneId boneId)
 	{
-		this.controlIdLookup.TryGetValue(boneId, out List<PoseSelectionControl>? views);
+		this.controlIdLookup.TryGetValue(boneId, out List<SkeletonBoneControl>? views);
 		return views;
 	}
 
-	public List<PoseSelectionControl>? GetTargets(string name)
+	public List<SkeletonBoneControl>? GetTargets(string name)
 	{
-		this.controlNameLookup.TryGetValue(name, out List<PoseSelectionControl>? views);
+		this.controlNameLookup.TryGetValue(name, out List<SkeletonBoneControl>? views);
 		return views;
 	}
 
@@ -83,8 +83,8 @@ public partial class PoseViewBase : View
 		Point mousePos = Mouse.GetPosition(this);
 
 		double closestDist = double.MaxValue;
-		PoseSelectionControl? closestLink = null;
-		foreach (PoseSelectionControl target in this.controls)
+		SkeletonBoneControl? closestLink = null;
+		foreach (SkeletonBoneControl target in this.controls)
 		{
 			try
 			{
@@ -144,8 +144,8 @@ public partial class PoseViewBase : View
 			return base.HitTestCore(hitTestParameters);
 
 		double closestDist = double.MaxValue;
-		PoseSelectionControl? closestLink = null;
-		foreach (PoseSelectionControl link in this.controls)
+		SkeletonBoneControl? closestLink = null;
+		foreach (SkeletonBoneControl link in this.controls)
 		{
 			Point targetPos = link.TransformToAncestor(this).Transform(new Point(link.ActualWidth / 2, link.ActualHeight));
 			double distance = Point.Subtract(hitTestParameters.HitPoint, targetPos).Length;
@@ -225,7 +225,7 @@ public partial class PoseViewBase : View
 				return;
 			}
 
-			this.controls = this.FindLogicalChildren<PoseSelectionControl>();
+			this.controls = this.FindLogicalChildren<SkeletonBoneControl>();
 
 			if (this.GameObject == null)
 				return;
@@ -295,7 +295,7 @@ public partial class PoseViewBase : View
 
 		unsafe
 		{
-			foreach (PoseSelectionControl control in this.controls)
+			foreach (SkeletonBoneControl control in this.controls)
 			{
 				this.PopulateControl(control, gameObject);
 			}
@@ -304,7 +304,7 @@ public partial class PoseViewBase : View
 		await this.MainThread();
 
 		int validCount = 0;
-		foreach (PoseSelectionControl control in this.controls)
+		foreach (SkeletonBoneControl control in this.controls)
 		{
 			if (control.IsSafeValid)
 				validCount++;
@@ -321,7 +321,7 @@ public partial class PoseViewBase : View
 		{
 			if (this.controls != null)
 			{
-				foreach(PoseSelectionControl control in this.controls)
+				foreach(SkeletonBoneControl control in this.controls)
 				{
 					control.OnSelectionChanged(oldSelection, newSelection, source);
 				}
@@ -335,7 +335,7 @@ public partial class PoseViewBase : View
 		{
 			if (this.controls != null)
 			{
-				foreach(PoseSelectionControl control in this.controls)
+				foreach(SkeletonBoneControl control in this.controls)
 				{
 					control.OnHoverChanged(oldSelection, newSelection, source);
 				}
@@ -364,7 +364,7 @@ public partial class PoseViewBase : View
 		});
 	}
 
-	private unsafe void PopulateControl(PoseSelectionControl control, GameObject gameObject)
+	private unsafe void PopulateControl(SkeletonBoneControl control, GameObject gameObject)
 	{
 		if (control.SafeName == null)
 			return;
@@ -388,12 +388,12 @@ public partial class PoseViewBase : View
 				SkeletonBone? selection = skeleton.FindBone(control.SafeName);
 				if (selection != null)
 				{
-					foreach (BoneId boneId in selection.BonePaths.Keys)
+					foreach (BoneReference reference in selection.BoneReferences)
 					{
-						if (!this.controlIdLookup.ContainsKey(boneId))
-							this.controlIdLookup.Add(boneId, new());
+						if (!this.controlIdLookup.ContainsKey(reference.Id))
+							this.controlIdLookup.Add(reference.Id, new());
 
-						this.controlIdLookup[boneId].Add(control);
+						this.controlIdLookup[reference.Id].Add(control);
 					}
 
 					control.Selection = selection;

@@ -155,9 +155,17 @@ public class Skeleton : GameObject
 					if (!boneLookup.ContainsKey(boneName))
 						boneLookup.Add(boneName, new());
 
+					BoneId? parentId = null;
+					int parentIndex = pPose->Skeleton->ParentIndices[boneIdx];
+					if (parentIndex != -1)
+						parentId = new(pGameObject->ObjectIndex, partialIdx, poseIdx, (short)parentIndex);
+
 					BoneReference? reference = this.FindBoneReference(id);
 					if (reference == null)
-						reference = new(this, id, boneName);
+					{
+						reference = new(this, id, parentId, boneName);
+						this.boneReferenceLookup.Add(id, reference);
+					}
 
 					boneLookup[boneName].Add(reference);
 				}
@@ -180,6 +188,25 @@ public class Skeleton : GameObject
 				this.boneNameLookup.Add(boneName, bone);
 				this.Services.Scene.AddObject(bone);
 				this.Bones.Add(bone);
+			}
+
+			foreach (SkeletonBone bone in this.Bones)
+			{
+				foreach (BoneReference reference in bone.BoneReferences)
+				{
+					if (reference.ParentId == null)
+						continue;
+
+					BoneReference? parentReference = this.FindBoneReference(reference.ParentId.Value);
+					if (parentReference == null)
+						continue;
+
+					if (this.boneNameLookup.TryGetValue(parentReference.BoneName, out SkeletonBone? newParent)
+							&& newParent != null)
+					{
+						bone.SetParent(newParent);
+					}
+				}
 			}
 		}
 	}

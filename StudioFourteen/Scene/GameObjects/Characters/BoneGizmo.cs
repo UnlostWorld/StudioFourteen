@@ -31,35 +31,22 @@ using XivSkeleton = FFXIVClientStructs.FFXIV.Client.Graphics.Render.Skeleton;
 
 public class SkeletonBoneGizmo : SelectionHandle
 {
-	private readonly SkeletonBone boneSelection;
+	private readonly SkeletonBone skeletonBone;
 	private readonly BoneId boneId;
-	private readonly BoneId? parentBoneId;
 	private readonly MeshRenderer<BoneCapMaterial> capRenderer;
-	private readonly LineRenderer<BoneMaterial>? connectionRenderer;
+	private readonly LineRenderer<BoneMaterial> connectionRenderer;
 
 	public SkeletonBoneGizmo(SkeletonBone selection)
 		: base(selection)
 	{
 		this.boneId = selection.PrimaryBoneId;
-		this.boneSelection = selection;
+		this.skeletonBone = selection;
 		this.capRenderer = new(MeshContent.Bone);
 		this.Add(this.capRenderer);
 
-		foreach ((BoneId boneId, List<BoneId> path) in selection.BonePaths)
-		{
-			if (path.Count > 0)
-			{
-				if (path[0].BoneIndex == 0)
-					continue;
-
-				this.connectionRenderer = new();
-				this.connectionRenderer.IsHitTestVisible = false;
-				this.Add(this.connectionRenderer);
-				this.parentBoneId = path[0];
-			}
-
-			break;
-		}
+		this.connectionRenderer = new();
+		this.connectionRenderer.IsHitTestVisible = false;
+		this.Add(this.connectionRenderer);
 	}
 
 	protected unsafe override void OnDraw()
@@ -90,12 +77,13 @@ public class SkeletonBoneGizmo : SelectionHandle
 
 		Vector3 bonePos = Vector3.Transform(Vector3.Zero, boneTransform.ToMatrix());
 
-		if (this.connectionRenderer != null && this.parentBoneId != null)
+		if (this.skeletonBone.Parent != null)
 		{
-			if (this.parentBoneId.Value.BoneIndex >= pPose->Skeleton->Bones.Length)
+			BoneId boneId = this.skeletonBone.Parent.PrimaryBoneId;
+			if (boneId.BoneIndex >= pPose->Skeleton->Bones.Length)
 				return;
 
-			Transform childModelSpaceTransform = *pPose->AccessBoneModelSpace(this.parentBoneId.Value.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
+			Transform childModelSpaceTransform = *pPose->AccessBoneModelSpace(boneId.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
 			Vector3 childPos = Vector3.Transform(Vector3.Zero, childModelSpaceTransform.ToMatrix());
 			this.connectionRenderer.To = bonePos;
 			this.connectionRenderer.From = childPos;

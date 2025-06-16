@@ -37,6 +37,8 @@ using XivSkeleton = FFXIVClientStructs.FFXIV.Client.Graphics.Render.Skeleton;
 public class BoneReference
 {
 	public readonly BoneId Id;
+	public readonly BoneId? ParentId;
+	public readonly string BoneName;
 
 	public BoneReference? Mirror;
 	public bool IsValid = true;
@@ -62,15 +64,15 @@ public class BoneReference
 	private BoneTransform? loadModelSpaceBoneTransform;
 	private Transform? loadModelSpaceTransform;
 	private Transform? loadReferenceRelativeTransform;
-	private string? boneName;
 	private string? mirrorBoneName;
 	private bool hasCheckedMirror = false;
 	private bool isDecomposeError = false;
 
-	public BoneReference(Skeleton skeleton, BoneId id, string? name = null)
+	public BoneReference(Skeleton skeleton, BoneId id, BoneId? parentId, string name)
 	{
 		this.Id = id;
-		this.boneName = name;
+		this.ParentId = parentId;
+		this.BoneName = name;
 		this.skeleton = skeleton;
 	}
 
@@ -84,12 +86,6 @@ public class BoneReference
 	public bool Locked { get; set; } = false;
 	public bool ForceRef { get; set; } = false;
 	public MirrorModes MirrorMode { get; set; }
-
-	public string? Name
-	{
-		get => this.boneName;
-		set => this.boneName = value;
-	}
 
 	public bool IsBlending => this.blendOnLoad || this.blendOnUnload;
 	public bool IsBlendingOut => this.blendOnUnload;
@@ -217,25 +213,14 @@ public class BoneReference
 
 		// Update or sanity check bone name, useful if the skeleton has changed during posing.
 		hkaBone bone = pPose->Skeleton->Bones[this.Id.BoneIndex];
-
-		if (this.boneName == null)
-		{
-			this.boneName = bone.Name.String;
-			this.hasCheckedMirror = false;
-		}
-		else
-		{
-			if (bone.Name.String != this.Name)
-			{
-				return null;
-			}
-		}
+		if (bone.Name.String != this.BoneName)
+			return null;
 
 		// Get our Mirror bone
 		if (!this.hasCheckedMirror)
 		{
-			if (this.boneName != null && this.mirrorBoneName == null)
-				this.mirrorBoneName = SkeletonService.GetMirrorBoneName(this.boneName);
+			if (this.BoneName != null && this.mirrorBoneName == null)
+				this.mirrorBoneName = SkeletonService.GetMirrorBoneName(this.BoneName);
 
 			if (this.Mirror == null && this.mirrorBoneName != null)
 			{
@@ -393,7 +378,7 @@ public class BoneReference
 			else
 			{
 				if (!this.isDecomposeError)
-					Logging.Shared.Warning($"Failed to decompose transform for bone {this.boneName}");
+					Logging.Shared.Warning($"Failed to decompose transform for bone {this.BoneName}");
 
 				this.isDecomposeError = true;
 			}

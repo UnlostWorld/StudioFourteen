@@ -123,7 +123,7 @@ public partial class PosePanel : Panel
 			this.IsHoverTooltipOpen = false;
 			this.showTooltipQueue.Cancel();
 
-			if (newSelection != null && this.Services.Selection.HoverSource is PoseSelectionControl target)
+			if (newSelection != null && this.Services.Selection.HoverSource is SkeletonBoneControl target)
 			{
 				if (target.Dispatcher != this.Dispatcher)
 					return;

@@ -85,7 +85,7 @@ public partial class SimpleView : PoseViewBase
 			// populate bones
 			foreach ((string name, Point pos) in this.layout.Bones)
 			{
-				PoseSelectionControl target = new();
+				SkeletonBoneControl target = new();
 				target.SelectionName = name;
 				this.canvas.Children.Add(target);
 				Canvas.SetZIndex(target, -100);
@@ -93,7 +93,7 @@ public partial class SimpleView : PoseViewBase
 				string? mirrorName = SkeletonService.GetMirrorBoneName(name);
 				if (mirrorName != null)
 				{
-					PoseSelectionControl mirrorTarget = new();
+					SkeletonBoneControl mirrorTarget = new();
 					mirrorTarget.SelectionName = mirrorName;
 					this.canvas.Children.Add(mirrorTarget);
 					Canvas.SetZIndex(target, -100);
@@ -104,30 +104,24 @@ public partial class SimpleView : PoseViewBase
 
 			await base.UpdateTargetsAsync();
 
-			List<PoseSelectionControl>? allTargets = this.GetTargets();
+			List<SkeletonBoneControl>? allTargets = this.GetTargets();
 			if (allTargets == null)
 				return;
 
 			await this.MainThread();
 
-			foreach (PoseSelectionControl target in allTargets)
+			foreach (SkeletonBoneControl target in allTargets)
 			{
-				if (target.Selection is SkeletonBone boneSelection)
+				if (target.Selection is SkeletonBone boneSelection && boneSelection.Parent != null)
 				{
-					foreach ((BoneId boneId, List<BoneId> pathToRoot) in boneSelection.BonePaths)
+					List<SkeletonBoneControl>? parentControls = this.GetTargets(boneSelection.Parent.BoneName);
+					if (parentControls == null)
+						continue;
+
+					foreach(SkeletonBoneControl parentControl in parentControls)
 					{
-						if (pathToRoot.Count <= 0)
-							continue;
-
-						List<PoseSelectionControl>? parents = this.GetTargets(pathToRoot[0]);
-						if (parents == null)
-							continue;
-
-						foreach(PoseSelectionControl parent in parents)
-						{
-							BoneConnection connection = new(target, parent, this.canvas);
-							this.boneConnections.Add(connection);
-						}
+						BoneConnection connection = new(target, parentControl, this.canvas);
+						this.boneConnections.Add(connection);
 					}
 				}
 			}
@@ -172,11 +166,11 @@ public partial class SimpleView : PoseViewBase
 		if (sizeInfo != null)
 			base.OnRenderSizeChanged(sizeInfo);
 
-		List<PoseSelectionControl>? targets = this.GetTargets();
+		List<SkeletonBoneControl>? targets = this.GetTargets();
 		if (targets == null)
 			return;
 
-		foreach (PoseSelectionControl target in targets)
+		foreach (SkeletonBoneControl target in targets)
 		{
 			if (target.SafeName == null)
 				continue;
@@ -275,12 +269,12 @@ public partial class SimpleView : PoseViewBase
 
 	public class BoneConnection
 	{
-		public readonly PoseSelectionControl FromBone;
-		public readonly PoseSelectionControl ToBone;
+		public readonly SkeletonBoneControl FromBone;
+		public readonly SkeletonBoneControl ToBone;
 
 		private readonly Line line;
 
-		public BoneConnection(PoseSelectionControl fromBone, PoseSelectionControl toBone, Canvas parent)
+		public BoneConnection(SkeletonBoneControl fromBone, SkeletonBoneControl toBone, Canvas parent)
 		{
 			this.FromBone = fromBone;
 			this.ToBone = toBone;

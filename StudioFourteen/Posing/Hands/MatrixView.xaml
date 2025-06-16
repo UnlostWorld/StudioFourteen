@@ -36,7 +36,7 @@
 						Style="{DynamicResource Label}"
 						Text="{DynamicResource LOC_Pose_Wrist}" />
 					<StackPanel Grid.Row="0" Grid.Column="1">
-						<shared:PoseSelectionControl SelectionName="n_hte_l" />
+						<shared:SkeletonBoneControl SelectionName="n_hte_l" />
 					</StackPanel>
 
 					<TextBlock
@@ -48,7 +48,7 @@
 						Grid.Row="0"
 						Grid.Column="3"
 						Orientation="Horizontal">
-						<shared:PoseSelectionControl SelectionName="j_te_l" />
+						<shared:SkeletonBoneControl SelectionName="j_te_l" />
 					</StackPanel>
 
 					<TextBlock
@@ -60,7 +60,7 @@
 						Grid.Row="0"
 						Grid.Column="5"
 						Orientation="Horizontal">
-						<shared:PoseSelectionControl SelectionName="n_buki_l" />
+						<shared:SkeletonBoneControl SelectionName="n_buki_l" />
 					</StackPanel>
 
 					<TextBlock
@@ -73,8 +73,8 @@
 						Grid.Row="1"
 						Grid.Column="1"
 						Orientation="Horizontal">
-						<shared:PoseSelectionControl Label="1" SelectionName="j_oya_a_l" />
-						<shared:PoseSelectionControl Label="2" SelectionName="j_oya_b_l" />
+						<shared:SkeletonBoneControl Label="1" SelectionName="j_oya_a_l" />
+						<shared:SkeletonBoneControl Label="2" SelectionName="j_oya_b_l" />
 					</StackPanel>
 
 					<TextBlock
@@ -87,9 +87,9 @@
 						Grid.Row="1"
 						Grid.Column="3"
 						Orientation="Horizontal">
-						<shared:PoseSelectionControl Label="1" SelectionName="j_hito_a_l" />
-						<shared:PoseSelectionControl Label="2" SelectionName="j_hito_b_l" />
-						<shared:PoseSelectionControl Label="3" SelectionName="iv_hito_c_l" />
+						<shared:SkeletonBoneControl Label="1" SelectionName="j_hito_a_l" />
+						<shared:SkeletonBoneControl Label="2" SelectionName="j_hito_b_l" />
+						<shared:SkeletonBoneControl Label="3" SelectionName="iv_hito_c_l" />
 					</StackPanel>
 
 					<TextBlock
@@ -102,9 +102,9 @@
 						Grid.Row="1"
 						Grid.Column="5"
 						Orientation="Horizontal">
-						<shared:PoseSelectionControl Label="1" SelectionName="j_naka_a_l" />
-						<shared:PoseSelectionControl Label="2" SelectionName="j_naka_b_l" />
-						<shared:PoseSelectionControl Label="3" SelectionName="iv_naka_c_l" />
+						<shared:SkeletonBoneControl Label="1" SelectionName="j_naka_a_l" />
+						<shared:SkeletonBoneControl Label="2" SelectionName="j_naka_b_l" />
+						<shared:SkeletonBoneControl Label="3" SelectionName="iv_naka_c_l" />
 					</StackPanel>
 
 					<TextBlock
@@ -117,9 +117,9 @@
 						Grid.Row="2"
 						Grid.Column="1"
 						Orientation="Horizontal">
-						<shared:PoseSelectionControl Label="1" SelectionName="j_kusu_a_l" />
-						<shared:PoseSelectionControl Label="2" SelectionName="j_kusu_b_l" />
-						<shared:PoseSelectionControl Label="3" SelectionName="iv_kusu_c_l" />
+						<shared:SkeletonBoneControl Label="1" SelectionName="j_kusu_a_l" />
+						<shared:SkeletonBoneControl Label="2" SelectionName="j_kusu_b_l" />
+						<shared:SkeletonBoneControl Label="3" SelectionName="iv_kusu_c_l" />
 					</StackPanel>
 
 					<TextBlock
@@ -132,9 +132,9 @@
 						Grid.Row="2"
 						Grid.Column="3"
 						Orientation="Horizontal">
-						<shared:PoseSelectionControl Label="1" SelectionName="j_ko_a_l" />
-						<shared:PoseSelectionControl Label="2" SelectionName="j_ko_b_l" />
-						<shared:PoseSelectionControl Label="3" SelectionName="iv_ko_c_l" />
+						<shared:SkeletonBoneControl Label="1" SelectionName="j_ko_a_l" />
+						<shared:SkeletonBoneControl Label="2" SelectionName="j_ko_b_l" />
+						<shared:SkeletonBoneControl Label="3" SelectionName="iv_ko_c_l" />
 					</StackPanel>
 
 				</Grid>
@@ -164,7 +164,7 @@
 						Style="{DynamicResource Label}"
 						Text="{DynamicResource LOC_Pose_Wrist}" />
 					<StackPanel Grid.Row="0" Grid.Column="1">
-						<shared:PoseSelectionControl SelectionName="n_hte_r" />
+						<shared:SkeletonBoneControl SelectionName="n_hte_r" />
 					</StackPanel>
 
 					<TextBlock
@@ -176,7 +176,7 @@
 						Grid.Row="0"
 						Grid.Column="3"
 						Orientation="Horizontal">
-						<shared:PoseSelectionControl SelectionName="j_te_r" />
+						<shared:SkeletonBoneControl SelectionName="j_te_r" />
 					</StackPanel>
 
 					<TextBlock
@@ -188,7 +188,7 @@
 						Grid.Row="0"
 						Grid.Column="5"
 						Orientation="Horizontal">
-						<shared:PoseSelectionControl SelectionName="n_buki_r" />
+						<shared:SkeletonBoneControl SelectionName="n_buki_r" />
 					</StackPanel>
 
 					<TextBlock
@@ -201,8 +201,8 @@
 						Grid.Row="1"
 						Grid.Column="1"
 						Orientation="Horizontal">
-						<shared:PoseSelectionControl Label="1" SelectionName="j_oya_a_r" />
-						<shared:PoseSelectionControl Label="2" SelectionName="j_oya_b_r" />
+						<shared:SkeletonBoneControl Label="1" SelectionName="j_oya_a_r" />
+						<shared:SkeletonBoneControl Label="2" SelectionName="j_oya_b_r" />
 					</StackPanel>
 
 					<TextBlock
@@ -215,9 +215,9 @@
 						Grid.Row="1"
 						Grid.Column="3"
 						Orientation="Horizontal">
-						<shared:PoseSelectionControl Label="1" SelectionName="j_hito_a_r" />
-						<shared:PoseSelectionControl Label="2" SelectionName="j_hito_b_r" />
-						<shared:PoseSelectionControl Label="3" SelectionName="iv_hito_c_r" />
+						<shared:SkeletonBoneControl Label="1" SelectionName="j_hito_a_r" />
+						<shared:SkeletonBoneControl Label="2" SelectionName="j_hito_b_r" />
+						<shared:SkeletonBoneControl Label="3" SelectionName="iv_hito_c_r" />
 					</StackPanel>
 
 					<TextBlock
@@ -230,9 +230,9 @@
 						Grid.Row="1"
 						Grid.Column="5"
 						Orientation="Horizontal">
-						<shared:PoseSelectionControl Label="1" SelectionName="j_naka_a_r" />
-						<shared:PoseSelectionControl Label="2" SelectionName="j_naka_b_r" />
-						<shared:PoseSelectionControl Label="3" SelectionName="iv_naka_c_r" />
+						<shared:SkeletonBoneControl Label="1" SelectionName="j_naka_a_r" />
+						<shared:SkeletonBoneControl Label="2" SelectionName="j_naka_b_r" />
+						<shared:SkeletonBoneControl Label="3" SelectionName="iv_naka_c_r" />
 					</StackPanel>
 
 					<TextBlock
@@ -245,9 +245,9 @@
 						Grid.Row="2"
 						Grid.Column="1"
 						Orientation="Horizontal">
-						<shared:PoseSelectionControl Label="1" SelectionName="j_kusu_a_r" />
-						<shared:PoseSelectionControl Label="2" SelectionName="j_kusu_b_r" />
-						<shared:PoseSelectionControl Label="3" SelectionName="iv_kusu_c_r" />
+						<shared:SkeletonBoneControl Label="1" SelectionName="j_kusu_a_r" />
+						<shared:SkeletonBoneControl Label="2" SelectionName="j_kusu_b_r" />
+						<shared:SkeletonBoneControl Label="3" SelectionName="iv_kusu_c_r" />
 					</StackPanel>
 
 					<TextBlock
@@ -260,9 +260,9 @@
 						Grid.Row="2"
 						Grid.Column="3"
 						Orientation="Horizontal">
-						<shared:PoseSelectionControl Label="1" SelectionName="j_ko_a_r" />
-						<shared:PoseSelectionControl Label="2" SelectionName="j_ko_b_r" />
-						<shared:PoseSelectionControl Label="3" SelectionName="iv_ko_c_r" />
+						<shared:SkeletonBoneControl Label="1" SelectionName="j_ko_a_r" />
+						<shared:SkeletonBoneControl Label="2" SelectionName="j_ko_b_r" />
+						<shared:SkeletonBoneControl Label="3" SelectionName="iv_ko_c_r" />
 					</StackPanel>
 
 				</Grid>
