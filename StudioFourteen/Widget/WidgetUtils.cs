@@ -18,10 +18,11 @@ namespace StudioFourteen.Widget;
 using System.Windows;
 using DependencyPropertyGenerator;
 
-[AttachedDependencyProperty<bool>("HideInWidget")]
+[AttachedDependencyProperty<bool>("HideInsideWidget")]
+[AttachedDependencyProperty<bool>("HideOutsideWidget")]
 public partial class View
 {
-	static partial void OnHideInWidgetChanged(DependencyObject dependencyObject, bool newValue)
+	static partial void OnHideInsideWidgetChanged(DependencyObject dependencyObject, bool newValue)
 	{
 		if (dependencyObject is FrameworkElement fe)
 		{
@@ -33,6 +34,22 @@ public partial class View
 			else
 			{
 				fe.Visibility = Visibility.Visible;
+			}
+		}
+	}
+
+	static partial void OnHideOutsideWidgetChanged(DependencyObject dependencyObject, bool newValue)
+	{
+		if (dependencyObject is FrameworkElement fe)
+		{
+			SelectionWidget? widget = fe.FindParent<SelectionWidget>();
+			if (widget != null && newValue)
+			{
+				fe.Visibility = Visibility.Visible;
+			}
+			else
+			{
+				fe.Visibility = Visibility.Collapsed;
 			}
 		}
 	}

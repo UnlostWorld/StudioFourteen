@@ -13,7 +13,7 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Scene.GameObjects.Characters;
+namespace StudioFourteen.Scene.GameObjects.Characters.Skeletons;
 
 using StudioFourteen.Posing;
 using StudioFourteen.Scene;

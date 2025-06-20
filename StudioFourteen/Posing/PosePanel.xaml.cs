@@ -28,6 +28,7 @@ using StudioFourteen.Posing.Shared;
 using StudioFourteen.Scene;
 using StudioFourteen.Scene.GameObjects;
 using StudioFourteen.Scene.GameObjects.Characters;
+using StudioFourteen.Scene.GameObjects.Characters.Skeletons;
 using WpfUtils;
 using WpfUtils.Utils;
 

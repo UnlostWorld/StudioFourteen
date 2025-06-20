@@ -13,14 +13,12 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Scene.GameObjects.Characters;
+namespace StudioFourteen.Scene.GameObjects.Characters.Skeletons;
 
-using System.Collections.Generic;
 using System.Numerics;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.Havok.Animation.Rig;
-using StudioFourteen.Posing;
 using StudioFourteen.Rendering;
 using StudioFourteen.Rendering.Draw;
 using StudioFourteen.Rendering.Draw.Handles;

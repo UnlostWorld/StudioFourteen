@@ -10,13 +10,11 @@
 	MinWidth="250"
 	MinHeight="250"
 	ResizeMode="CanResizeWithGrip"
-	Subtitle="{Binding CharacterName}"
+	Subtitle="{Binding Character.Name}"
 	mc:Ignorable="d">
 
 	<Grid x:Name="ContentArea">
-		<TextBlock Text="{Binding .}"/>
 		<ContentPresenter Content="{Binding Character}"/>
-
 
 			<!--  Equipment
 			<TabItem Header="{DynamicResource ICON_Character_Gear}"

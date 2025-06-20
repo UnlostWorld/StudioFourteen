@@ -29,6 +29,7 @@ using StudioFourteen.Selection;
 using WpfUtils;
 using StudioFourteen.Scene;
 using StudioFourteen.Scene.GameObjects.Characters;
+using StudioFourteen.Scene.GameObjects.Characters.Skeletons;
 
 [DependencyProperty<string>("LayoutName")]
 [DependencyProperty<bool>("FlipSides", DefaultValue = false)]

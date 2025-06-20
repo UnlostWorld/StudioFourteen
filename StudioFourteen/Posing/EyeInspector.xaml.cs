@@ -20,6 +20,7 @@ using FontAwesome.Sharp;
 using StudioFourteen.Mvm;
 using StudioFourteen.Scene;
 using StudioFourteen.Scene.GameObjects.Characters;
+using StudioFourteen.Scene.GameObjects.Characters.Skeletons;
 using StudioFourteen.Selection;
 using StudioFourteen.Services;
 using StudioFourteen.Structs.Extensions;

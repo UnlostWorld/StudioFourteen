@@ -13,32 +13,31 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Appearance.Equipment;
+namespace StudioFourteen.Scene.GameObjects.Characters.DrawData;
 
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using StudioFourteen.Mvm;
 using WpfUtils.Extensions;
 
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 
-public class EquipmentViewModel : ViewModel
+public class DrawDataContainer : ViewModel
 {
-	public EquipmentViewModel()
+	public DrawDataContainer()
 	{
-		this.Weapons.Add(new WeaponSlotViewModel(WeaponSlot.MainHand));
-		this.Weapons.Add(new WeaponSlotViewModel(WeaponSlot.OffHand));
+		this.Weapons.Add(new Weapon(WeaponSlot.MainHand));
+		this.Weapons.Add(new Weapon(WeaponSlot.OffHand));
 
-		this.Equipment.Add(new EquipmentSlotViewModel(EquipmentSlot.Head));
-		this.Equipment.Add(new EquipmentSlotViewModel(EquipmentSlot.Body));
-		this.Equipment.Add(new EquipmentSlotViewModel(EquipmentSlot.Hands));
-		this.Equipment.Add(new EquipmentSlotViewModel(EquipmentSlot.Legs));
-		this.Equipment.Add(new EquipmentSlotViewModel(EquipmentSlot.Feet));
+		this.Equipment.Add(new Equipment(EquipmentSlot.Head));
+		this.Equipment.Add(new Equipment(EquipmentSlot.Body));
+		this.Equipment.Add(new Equipment(EquipmentSlot.Hands));
+		this.Equipment.Add(new Equipment(EquipmentSlot.Legs));
+		this.Equipment.Add(new Equipment(EquipmentSlot.Feet));
 
-		this.Accessories.Add(new EquipmentSlotViewModel(EquipmentSlot.Ears));
-		this.Accessories.Add(new EquipmentSlotViewModel(EquipmentSlot.Neck));
-		this.Accessories.Add(new EquipmentSlotViewModel(EquipmentSlot.Wrists));
-		this.Accessories.Add(new EquipmentSlotViewModel(EquipmentSlot.RFinger));
-		this.Accessories.Add(new EquipmentSlotViewModel(EquipmentSlot.LFinger));
+		this.Accessories.Add(new Equipment(EquipmentSlot.Ears));
+		this.Accessories.Add(new Equipment(EquipmentSlot.Neck));
+		this.Accessories.Add(new Equipment(EquipmentSlot.Wrists));
+		this.Accessories.Add(new Equipment(EquipmentSlot.RFinger));
+		this.Accessories.Add(new Equipment(EquipmentSlot.LFinger));
 	}
 
 	public FastObservableCollection<GearViewModelBase> Weapons { get; init; } = new();
@@ -46,30 +45,26 @@ public class EquipmentViewModel : ViewModel
 	public FastObservableCollection<GearViewModelBase> Accessories { get; init; } = new();
 	public FastObservableCollection<GearViewModelBase> Fashion { get; init; } = new();
 
-	public void OnTargetChanged()
+	public unsafe void OnGameTick(Character character)
 	{
-	}
-
-	public unsafe void OnGameTick(Character* pCharacter)
-	{
-		foreach (GearViewModelBase gearViewModel in this.Weapons)
+		foreach (GearViewModelBase gear in this.Weapons)
 		{
-			gearViewModel.OnFrameworkUpdate(pCharacter);
+			gear.OnGameTick(character);
 		}
 
-		foreach (GearViewModelBase gearViewModel in this.Equipment)
+		foreach (GearViewModelBase gear in this.Equipment)
 		{
-			gearViewModel.OnFrameworkUpdate(pCharacter);
+			gear.OnGameTick(character);
 		}
 
-		foreach (GearViewModelBase gearViewModel in this.Accessories)
+		foreach (GearViewModelBase gear in this.Accessories)
 		{
-			gearViewModel.OnFrameworkUpdate(pCharacter);
+			gear.OnGameTick(character);
 		}
 
-		foreach (GearViewModelBase gearViewModel in this.Fashion)
+		foreach (GearViewModelBase gear in this.Fashion)
 		{
-			gearViewModel.OnFrameworkUpdate(pCharacter);
+			gear.OnGameTick(character);
 		}
 	}
 }

@@ -5,9 +5,9 @@
 	xmlns:library="clr-namespace:StudioFourteen.Library"
 	xmlns:libraryData="clr-namespace:StudioFourteen.GameData.Library"
 	xmlns:librarySelector="clr-namespace:StudioFourteen.Library.Selector"
-	xmlns:local="clr-namespace:StudioFourteen.Appearance.Equipment">
+	xmlns:drawData="clr-namespace:StudioFourteen.Scene.GameObjects.Characters.DrawData">
 
-	<DataTemplate DataType="{x:Type local:WeaponSlotViewModel}">
+	<DataTemplate DataType="{x:Type drawData:Weapon}">
 		<Border Margin="0,1" Style="{DynamicResource WpfUtilsControlBorder}">
 			<Grid>
 				<Grid.ColumnDefinitions>

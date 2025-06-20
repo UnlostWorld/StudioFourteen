@@ -13,7 +13,7 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Appearance.Equipment;
+namespace StudioFourteen.Scene.GameObjects.Characters.DrawData;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using StudioFourteen.GameData.Library;
@@ -21,19 +21,24 @@ using StudioFourteen.Tags;
 using System.Windows;
 
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
+using Character = StudioFourteen.Scene.GameObjects.Characters.Character;
+using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
 
-public class EquipmentSlotViewModel : GearViewModelBase<ItemLibraryEntry>
+public class Weapon
+	: GearViewModelBase<ItemLibraryEntry>
 {
-	protected readonly EquipmentSlot Slot;
+	protected readonly WeaponSlot Slot;
 
 	private ushort? nextWriteId;
 	private ushort lastReadId;
-	private byte? nextWriteVariant;
-	private byte lastReadVariant;
+	private ushort? nextWriteVariant;
+	private ushort lastReadVariant;
+	private ushort? nextWriteTypeId;
+	private ushort lastReadTypeId;
 
-	public EquipmentSlotViewModel(EquipmentSlot equipmentSlot)
+	public Weapon(WeaponSlot weaponSlot)
 	{
-		this.Slot = equipmentSlot;
+		this.Slot = weaponSlot;
 	}
 
 	public ushort Id
@@ -49,7 +54,20 @@ public class EquipmentSlotViewModel : GearViewModelBase<ItemLibraryEntry>
 		}
 	}
 
-	public byte Variant
+	public ushort TypeId
+	{
+		get => this.nextWriteTypeId ?? this.lastReadTypeId;
+		set
+		{
+			if (value == this.TypeId)
+				return;
+
+			this.nextWriteTypeId = value;
+			this.RaisePropertyChanged(nameof(this.TypeId));
+		}
+	}
+
+	public ushort Variant
 	{
 		get => this.nextWriteVariant ?? this.lastReadVariant;
 		set
@@ -68,35 +86,35 @@ public class EquipmentSlotViewModel : GearViewModelBase<ItemLibraryEntry>
 		{
 			switch (this.Slot)
 			{
-				case EquipmentSlot.Head: return new(128, 144, 64, 64);
-				case EquipmentSlot.Body: return new(192, 144, 64, 64);
-				case EquipmentSlot.Hands: return new(256, 144, 64, 64);
-				case EquipmentSlot.Legs: return new(384, 144, 64, 64);
-				case EquipmentSlot.Feet: return new(0, 208, 64, 64);
-				case EquipmentSlot.Ears: return new(64, 208, 64, 64);
-				case EquipmentSlot.Neck: return new(128, 208, 64, 64);
-				case EquipmentSlot.Wrists: return new(192, 208, 64, 64);
-				case EquipmentSlot.RFinger: return new(256, 208, 64, 64);
-				case EquipmentSlot.LFinger: return new(256, 208, 64, 64);
+				case WeaponSlot.MainHand:
+				case WeaponSlot.OffHand: return new(0, 144, 64, 64);
 			}
 
 			return default;
 		}
 	}
 
-	public string SlotName => this.Slot.GetDisplayName();
 	public override string SearchTitle => $"Select an item to equip to {this.CharacterName}'s {this.Slot.GetDisplayName()}:";
 	public override string DyeSearchTitle => $"Select a dye to apply to {this.CharacterName}'s {this.Slot.GetDisplayName()}:";
 
-	public override unsafe void OnFrameworkUpdate(Character* pCharacter)
+	public override unsafe void OnGameTick(Character character)
 	{
-		base.OnFrameworkUpdate(pCharacter);
+		base.OnGameTick(character);
 
-		EquipmentModelId modelId = pCharacter->DrawData.Equipment(this.Slot);
+		XivCharacter* pCharacter = character.GetXivCharacter();
+
+		DrawObjectData weapon = pCharacter->DrawData.Weapon(this.Slot);
+		WeaponModelId modelId = weapon.ModelId;
 		bool changed = false;
 		if (this.nextWriteId != null && modelId.Id != this.nextWriteId.Value)
 		{
 			modelId.Id = this.nextWriteId.Value;
+			changed = true;
+		}
+
+		if (this.nextWriteTypeId != null && modelId.Type != this.nextWriteTypeId.Value)
+		{
+			modelId.Type = this.nextWriteTypeId.Value;
 			changed = true;
 		}
 
@@ -119,7 +137,7 @@ public class EquipmentSlotViewModel : GearViewModelBase<ItemLibraryEntry>
 		}
 
 		if (changed)
-			this.Services.CharacterAppearance.SetEquipment(pCharacter->ObjectIndex, this.Slot, modelId, UpdateSource.Interface);
+			this.Services.CharacterAppearance.SetWeapon(pCharacter->ObjectIndex, this.Slot, modelId, UpdateSource.Interface);
 
 		if (this.lastReadId != modelId.Id || this.lastReadId != modelId.Id)
 		{
@@ -129,6 +147,7 @@ public class EquipmentSlotViewModel : GearViewModelBase<ItemLibraryEntry>
 
 		this.lastReadId = modelId.Id;
 		this.lastReadVariant = modelId.Variant;
+		this.lastReadTypeId = modelId.Type;
 
 		if (this.lastReadStain0 != modelId.Stain0)
 		{
@@ -146,6 +165,7 @@ public class EquipmentSlotViewModel : GearViewModelBase<ItemLibraryEntry>
 
 		this.nextWriteId = null;
 		this.nextWriteVariant = null;
+		this.nextWriteTypeId = null;
 		this.nextWriteStain0 = null;
 		this.nextWriteStain1 = null;
 	}
@@ -159,12 +179,13 @@ public class EquipmentSlotViewModel : GearViewModelBase<ItemLibraryEntry>
 			return;
 		}
 
-		EquipmentModelId modelId = item.GetModelId(this.Slot);
+		WeaponModelId modelId = item.GetModelId(this.Slot);
 		this.Id = modelId.Id;
+		this.TypeId = modelId.Type;
 		this.Variant = modelId.Variant;
 	}
 
-	protected unsafe override void GetSearchTags(ref TagCollection tags, Character* pCharacter)
+	protected unsafe override void GetSearchTags(ref TagCollection tags, XivCharacter* pCharacter)
 	{
 		base.GetSearchTags(ref tags, pCharacter);
 		tags.Add(this.Slot.ToTag());

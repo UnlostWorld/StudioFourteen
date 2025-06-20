@@ -13,7 +13,7 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Posing;
+namespace StudioFourteen.Scene.GameObjects.Characters.Skeletons;
 
 using System;
 using System.Diagnostics;
@@ -23,13 +23,11 @@ using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.Havok.Animation.Rig;
 using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
 using StudioFourteen.History;
-using StudioFourteen.Scene.GameObjects.Characters;
+using StudioFourteen.Posing;
 using StudioFourteen.Services;
 using StudioFourteen.Structs;
 using StudioFourteen.Structs.Extensions;
 using WpfUtils.Animation;
-
-using Skeleton = StudioFourteen.Scene.GameObjects.Characters.Skeleton;
 
 using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
 using XivSkeleton = FFXIVClientStructs.FFXIV.Client.Graphics.Render.Skeleton;

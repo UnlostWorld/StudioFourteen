@@ -8,7 +8,8 @@
 	xmlns:characters="clr-namespace:StudioFourteen.Scene.GameObjects.Characters"
 	xmlns:customize="clr-namespace:StudioFourteen.Appearance.Customize"
 	xmlns:scene="clr-namespace:StudioFourteen.Scene"
-	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	xmlns:widget="clr-namespace:StudioFourteen.Widget">
 
 	<BooleanToVisibilityConverter x:Key="B2V" />
 	<converters:BoolInversionConverter x:Key="!B" />
@@ -16,7 +17,7 @@
 	<DataTemplate DataType="{x:Type characters:Character}">
 		<TabControl>
 
-			<TabItem Header="{DynamicResource ICON_Transform_Translate}">
+			<TabItem Header="{DynamicResource ICON_Transform_Translate}" widget:View.HideOutsideWidget="True">
 				<StackPanel>
 					<TextBlock
 						Foreground="{DynamicResource ForegroundLightBrush}"
@@ -27,15 +28,21 @@
 			</TabItem>
 
 			<TabItem Header="{DynamicResource ICON_Pose_Body}">
-				<customize:CustomizeControl Category="Body" Character="{Binding .}"/>
+				<ScrollViewer HorizontalScrollBarVisibility="Disabled">
+					<customize:CustomizeControl Category="Body" Character="{Binding .}"/>
+				</ScrollViewer>
 			</TabItem>
 
 			<TabItem Header="{DynamicResource ICON_Pose_Face}">
-				<customize:CustomizeControl Category="Face" Character="{Binding .}"/>
+				<ScrollViewer HorizontalScrollBarVisibility="Disabled">
+					<customize:CustomizeControl Category="Face" Character="{Binding .}"/>
+				</ScrollViewer>
 			</TabItem>
 
 			<TabItem Header="{DynamicResource ICON_Character_Makeup}">
-				<customize:CustomizeControl Category="Makeup" Character="{Binding .}"/>
+				<ScrollViewer HorizontalScrollBarVisibility="Disabled">
+					<customize:CustomizeControl Category="Makeup" Character="{Binding .}"/>
+				</ScrollViewer>
 			</TabItem>
 
 			<TabItem Header="{DynamicResource ICON_Character_Gear}"/>

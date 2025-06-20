@@ -50,9 +50,6 @@
 		<ResourceDictionary Source="./Appearance/Customize/ToggleMenu.xaml" />
 		<ResourceDictionary Source="./Appearance/Customize/GenderMenu.xaml" />
 
-		<ResourceDictionary Source="./Appearance/Equipment/WeaponSlot.xaml" />
-		<ResourceDictionary Source="./Appearance/Equipment/EquipmentSlot.xaml" />
-
 		<!--  Default Language  -->
 		<ResourceDictionary Source="./Icons/Icons.xaml"/>
 		<ResourceDictionary Source="./Languages/English.xaml" />
@@ -63,8 +60,10 @@
 		<!-- Inspectors -->
 		<ResourceDictionary Source="./Scene/InspectorHeader.xaml"/>
 		<ResourceDictionary Source="./Scene/TransformObjectInspector.xaml"/>
-		<ResourceDictionary Source="./Scene/GameObjects/Characters/SkeletonBoneInspector.xaml"/>
 		<ResourceDictionary Source="./Scene/GameObjects/Characters/CharacterInspector.xaml"/>
+		<ResourceDictionary Source="./Scene/GameObjects/Characters/Skeletons/SkeletonBoneInspector.xaml"/>
+		<ResourceDictionary Source="./Scene/GameObjects/Characters/DrawData/Weapon.xaml" />
+		<ResourceDictionary Source="./Scene/GameObjects/Characters/DrawData/Equipment.xaml" />
 
 	</ResourceDictionary.MergedDictionaries>
 

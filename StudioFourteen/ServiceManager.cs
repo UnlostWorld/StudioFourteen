@@ -65,5 +65,5 @@ public class ServiceManager : ServiceManagerBase
 
 	public Scene.SceneService Scene { get; init; } = new();
 	public Scene.GameObjects.GameObjectService GameObjects { get; init; } = new();
-	public Scene.GameObjects.Characters.SkeletonService Skeletons { get; init; } = new();
+	public Scene.GameObjects.Characters.Skeletons.SkeletonService Skeletons { get; init; } = new();
 }

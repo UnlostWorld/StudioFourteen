@@ -31,6 +31,7 @@ using StudioFourteen.Services;
 using StudioFourteen.Scene;
 using StudioFourteen.Scene.GameObjects;
 using StudioFourteen.Scene.GameObjects.Characters;
+using StudioFourteen.Scene.GameObjects.Characters.Skeletons;
 
 [DependencyProperty<bool>("Hide", DefaultValue = false)]
 [DependencyProperty<bool>("UpdateWithAppearance", DefaultValue = false)]

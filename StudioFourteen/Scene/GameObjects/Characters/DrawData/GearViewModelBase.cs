@@ -13,18 +13,22 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Appearance.Equipment;
+namespace StudioFourteen.Scene.GameObjects.Characters.DrawData;
 
+using System;
+using System.Windows;
 using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Lumina.Excel.Sheets;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.GameData.Library;
 using StudioFourteen.Mvm;
+using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Tags;
-using System;
-using System.Windows;
+
+using Character = StudioFourteen.Scene.GameObjects.Characters.Character;
 using Setter = PropertyChanged.SourceGenerator.Setter;
+using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
 
 public abstract partial class GearViewModelBase : ViewModel
 {
@@ -37,8 +41,10 @@ public abstract partial class GearViewModelBase : ViewModel
 	public abstract string DyeSearchTitle { get; }
 	public TagCollection SearchTags { get; init; } = new();
 
-	public virtual unsafe void OnFrameworkUpdate(Character* pCharacter)
+	public virtual unsafe void OnGameTick(Character character)
 	{
+		XivCharacter* pCharacter = character.GetXivCharacter();
+
 		this.CharacterName = pCharacter->GetDisplayName();
 		this.RaisePropertyChanged(nameof(this.SearchTitle));
 		this.RaisePropertyChanged(nameof(this.DyeSearchTitle));
@@ -60,7 +66,7 @@ public abstract partial class GearViewModelBase : ViewModel
 		}
 	}
 
-	protected unsafe virtual void GetSearchTags(ref TagCollection tags, Character* pCharacter)
+	protected unsafe virtual void GetSearchTags(ref TagCollection tags, XivCharacter* pCharacter)
 	{
 		Race? race = pCharacter->DrawData.CustomizeData.GetRace();
 		if (race != null)

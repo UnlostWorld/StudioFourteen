@@ -16,9 +16,12 @@
 namespace StudioFourteen.Scene.GameObjects.Characters;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using StudioFourteen.Scene.GameObjects.Characters.DrawData;
+using StudioFourteen.Scene.GameObjects.Characters.Skeletons;
 using StudioFourteen.Services;
 
 using CharaMakeType = StudioFourteen.GameData.Sheets.CharaMakeType;
+using DrawDataContainer = StudioFourteen.Scene.GameObjects.Characters.DrawData.DrawDataContainer;
 using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
 
 public class Character : Skeleton
@@ -28,6 +31,7 @@ public class Character : Skeleton
 	{
 	}
 
+	public DrawDataContainer DrawData { get; init; } = new();
 	public override object? Icon => Resources.Find("ICON_Type_Character");
 	public override string TypeName => Resources.Find("LOC_Type_Character", "Character");
 
@@ -41,5 +45,11 @@ public class Character : Skeleton
 		TickService.VerifyGameTickThread();
 		XivCharacter* pCharacter = this.GetXivCharacter();
 		return pCharacter->DrawData.CustomizeData.GetMakeType();
+	}
+
+	public override void OnGameTick()
+	{
+		base.OnGameTick();
+		this.DrawData.OnGameTick(this);
 	}
 }

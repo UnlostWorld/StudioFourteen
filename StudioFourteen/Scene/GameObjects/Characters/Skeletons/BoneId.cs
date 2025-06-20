@@ -13,7 +13,7 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Posing;
+namespace StudioFourteen.Scene.GameObjects.Characters.Skeletons;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
@@ -24,6 +24,8 @@ using StudioFourteen.Plugin;
 using StudioFourteen.Services;
 using StudioFourteen.Utilities;
 using System;
+
+using XivSkeleton = FFXIVClientStructs.FFXIV.Client.Graphics.Render.Skeleton;
 
 public readonly struct BoneId(int objectTableIndex, int partialSkeletonIndex, byte poseIndex, short boneIndex)
 	: IEquatable<BoneId>, IComparable<BoneId>
@@ -81,7 +83,7 @@ public readonly struct BoneId(int objectTableIndex, int partialSkeletonIndex, by
 		return val;
 	}
 
-	public unsafe bool Resolve(out Character* character, out Skeleton* skeleton, out PartialSkeleton* partialSkeleton, out hkaPose* pose)
+	public unsafe bool Resolve(out Character* character, out XivSkeleton* skeleton, out PartialSkeleton* partialSkeleton, out hkaPose* pose)
 	{
 		character = null;
 		skeleton = null;

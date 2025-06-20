@@ -17,6 +17,7 @@ namespace StudioFourteen.Scene.GameObjects;
 
 using StudioFourteen.Posing;
 using StudioFourteen.Rendering.Draw.Gizmos;
+using StudioFourteen.Scene.GameObjects.Characters.Skeletons;
 
 public class GameObjectGizmo : GizmoGroup
 {
