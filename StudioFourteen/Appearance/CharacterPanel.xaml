@@ -16,23 +16,7 @@
 	<Grid x:Name="ContentArea">
 		<ContentPresenter Content="{Binding Character}"/>
 
-			<!--  Equipment
-			<TabItem Header="{DynamicResource ICON_Character_Gear}"
-				Visibility="{Binding UseTwoColumns, Converter={StaticResource !B2V}}">
-				<ScrollViewer HorizontalScrollBarVisibility="Disabled">
-					<StackPanel>
-						<TextBlock Style="{DynamicResource LeftLabel}" Text="Weapons" />
-						<ItemsControl ItemsSource="{Binding Equipment.Weapons}" />
-
-						<TextBlock Style="{DynamicResource LeftLabel}" Text="Equipment" />
-						<ItemsControl ItemsSource="{Binding Equipment.Equipment}" />
-
-						<TextBlock Style="{DynamicResource LeftLabel}" Text="Accessories" />
-						<ItemsControl ItemsSource="{Binding Equipment.Accessories}" />
-					</StackPanel>
-				</ScrollViewer>
-			</TabItem>
-
+		<!--
 		<Border
 			Grid.Row="1"
 			Grid.ColumnSpan="2"

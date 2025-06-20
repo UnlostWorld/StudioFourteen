@@ -45,7 +45,20 @@
 				</ScrollViewer>
 			</TabItem>
 
-			<TabItem Header="{DynamicResource ICON_Character_Gear}"/>
+			<TabItem Header="{DynamicResource ICON_Character_Gear}">
+				<ScrollViewer HorizontalScrollBarVisibility="Disabled">
+					<StackPanel>
+						<TextBlock Style="{DynamicResource LeftLabel}" Text="Weapons" />
+						<ItemsControl ItemsSource="{Binding DrawData.Weapons}" />
+
+						<TextBlock Style="{DynamicResource LeftLabel}" Text="Equipment" />
+						<ItemsControl ItemsSource="{Binding DrawData.Equipment}" />
+
+						<TextBlock Style="{DynamicResource LeftLabel}" Text="Accessories" />
+						<ItemsControl ItemsSource="{Binding DrawData.Accessories}" />
+					</StackPanel>
+				</ScrollViewer>
+			</TabItem>
 
 		</TabControl>
 
