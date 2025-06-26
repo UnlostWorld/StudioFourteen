@@ -144,4 +144,6 @@
 	<icons:Svg x:Key="ICON_Photo_Capture" Source="Capture"/>
 	<icons:Svg x:Key="ICON_Photo_ShowUi" Source="ShowUi" />
 	<icons:Svg x:Key="ICON_Photo_HideUi" Source="HideUi" />
+
+	<icons:Fa x:Key="ICON_Widget_Expand" Icon="ChevronRight" Font="Solid" />
 </ResourceDictionary>

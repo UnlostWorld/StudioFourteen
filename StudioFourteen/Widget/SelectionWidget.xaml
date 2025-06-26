@@ -77,36 +77,49 @@
 				</Border.Effect>
 			</Border>
 
-			<ItemsControl ItemsSource="{Binding Gizmos}" Width="28"
-				Margin="0">
+			<Border Style="{DynamicResource WpfUtilsControlBorder}" Background="{DynamicResource BackgroundBrush}"/>
 
-				<ItemsControl.ItemsPanel>
-					<ItemsPanelTemplate>
-						<StackPanel/>
-					</ItemsPanelTemplate>
-				</ItemsControl.ItemsPanel>
+			<StackPanel>
+				<ToggleButton
+					Width="28"
+					Height="28"
+					Content="{DynamicResource ICON_Widget_Expand}"
+					IsChecked="{Binding Expanded}"
+					Style="{DynamicResource WpfUtilsIconToggleButton}" />
 
-				<ItemsControl.ItemTemplate>
-					<DataTemplate>
-						<wpfUtils:SwitchSelector
-							Grid.Column="0"
-							ItemsSource="{Binding Gizmos}"
-							SelectedValue="{Binding Current}"
-							Visibility="{Binding IsVisible, Converter={StaticResource B2V}}"
-							Style="{DynamicResource WpfUtilsSwitchSelectorVertical}">
-							<wpfUtils:SwitchSelector.ItemTemplate>
-								<DataTemplate>
-									<icons:IconView
-										Height="24"
-										Width="24"
-										Icon="{Binding Icon}"
-										ToolTip="{Binding Name}" />
-								</DataTemplate>
-							</wpfUtils:SwitchSelector.ItemTemplate>
-						</wpfUtils:SwitchSelector>
-					</DataTemplate>
-				</ItemsControl.ItemTemplate>
-			</ItemsControl>
+				<ItemsControl
+					Width="28"
+					Margin="0"
+					ItemsSource="{Binding Gizmos}">
+
+					<ItemsControl.ItemsPanel>
+						<ItemsPanelTemplate>
+							<StackPanel />
+						</ItemsPanelTemplate>
+					</ItemsControl.ItemsPanel>
+
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
+							<wpfUtils:SwitchSelector
+								Grid.Column="0"
+								ItemsSource="{Binding Gizmos}"
+								SelectedValue="{Binding Current}"
+								Style="{DynamicResource WpfUtilsSwitchSelectorVertical}"
+								Visibility="{Binding IsVisible, Converter={StaticResource B2V}}">
+								<wpfUtils:SwitchSelector.ItemTemplate>
+									<DataTemplate>
+										<icons:IconView
+											Width="24"
+											Height="24"
+											Icon="{Binding Icon}"
+											ToolTip="{Binding Name}" />
+									</DataTemplate>
+								</wpfUtils:SwitchSelector.ItemTemplate>
+							</wpfUtils:SwitchSelector>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+			</StackPanel>
 		</Grid>
 
 		<Grid
