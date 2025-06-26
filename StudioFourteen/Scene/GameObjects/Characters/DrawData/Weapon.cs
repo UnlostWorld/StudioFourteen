@@ -102,6 +102,8 @@ public class Weapon
 		base.OnGameTick(character);
 
 		XivCharacter* pCharacter = character.GetXivCharacter();
+		if (pCharacter == null)
+			return;
 
 		DrawObjectData weapon = pCharacter->DrawData.Weapon(this.Slot);
 		WeaponModelId modelId = weapon.ModelId;

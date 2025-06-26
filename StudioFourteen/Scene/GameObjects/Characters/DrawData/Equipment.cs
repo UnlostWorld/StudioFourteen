@@ -95,6 +95,8 @@ public class Equipment : GearViewModelBase<ItemLibraryEntry>
 		base.OnGameTick(character);
 
 		XivCharacter* pCharacter = character.GetXivCharacter();
+		if (pCharacter == null)
+			return;
 
 		EquipmentModelId modelId = pCharacter->DrawData.Equipment(this.Slot);
 		bool changed = false;

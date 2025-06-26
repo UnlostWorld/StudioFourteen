@@ -194,7 +194,14 @@ public partial class SelectionService : ServiceBase
 	{
 		if (this.selection == null)
 		{
-			this.Select(this.Services.GameObjects.GetGameObject(0), this);
+			if (this.Services.GroupPose.IsGroupPosing)
+			{
+				this.Select(this.Services.GameObjects.GetGameObject(GroupPoseService.GPoseFirstCharacter), this);
+			}
+			else
+			{
+				this.Select(this.Services.GameObjects.GetGameObject(0), this);
+			}
 		}
 	}
 

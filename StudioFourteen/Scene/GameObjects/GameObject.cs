@@ -16,6 +16,7 @@
 namespace StudioFourteen.Scene.GameObjects;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using StudioFourteen.Rendering.Draw.Gizmos;
 using StudioFourteen.Scene;
 using StudioFourteen.Services;
 using StudioFourteen.Structs.Extensions;

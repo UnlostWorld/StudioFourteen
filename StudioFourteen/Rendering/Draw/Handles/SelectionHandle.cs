@@ -32,6 +32,8 @@ public class SelectionHandle : Handle
 
 	public bool IsSelected { get; private set; }
 
+	protected SceneObjectBase Selection => this.selection;
+
 	public sealed override void SetIsHandleHovered(bool hover)
 	{
 		if (hover)

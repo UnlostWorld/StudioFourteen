@@ -15,20 +15,25 @@
 
 namespace StudioFourteen.Scene.GameObjects;
 
-using StudioFourteen.Posing;
+using StudioFourteen.Rendering;
+using StudioFourteen.Rendering.Draw;
 using StudioFourteen.Rendering.Draw.Gizmos;
+using StudioFourteen.Rendering.Draw.Handles;
+using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Scene.GameObjects.Characters.Skeletons;
 
 public class GameObjectGizmo : GizmoGroup
 {
-	private readonly GameObject objectTableObject;
+	private readonly GameObject gameObject;
 
-	public GameObjectGizmo(GameObject objectTableObject)
+	public GameObjectGizmo(GameObject gameObject)
 	{
-		this.objectTableObject = objectTableObject;
+		this.gameObject = gameObject;
+
+		this.Add(new GameObjectHandle(gameObject));
 
 		SkeletonGizmo skeleton = new();
-		skeleton.SetTarget(objectTableObject);
+		skeleton.SetTarget(gameObject);
 		this.Gizmos.Add(skeleton);
 
 		this.Gizmos.Add(new BlankGizmo());
@@ -42,4 +47,31 @@ public class GameObjectGizmo : GizmoGroup
 public class BlankGizmo : GizmoBase
 {
 	public override string Name => "Blank";
+}
+
+public class GameObjectHandle : SelectionHandle
+{
+	private readonly MeshRenderer<GizmoLineMaterial> circleRenderer;
+
+	public GameObjectHandle(SceneObjectBase selection)
+		: base(selection)
+	{
+		this.circleRenderer = new(MeshContent.WireCircle);
+		this.circleRenderer.Transform = Transform.FromScale(0.25f);
+		this.circleRenderer.Material.EndCaps = 0;
+		this.circleRenderer.Material.OutlineColor = Color.Transparent;
+		this.Add(this.circleRenderer);
+	}
+
+	protected override void OnDraw()
+	{
+		if (this.IsSelected)
+			return;
+
+		if (this.Selection is GameObject go)
+			this.Transform = go.WorldTransform;
+
+		base.OnDraw();
+		this.circleRenderer.Material.Thickness = this.IsHovered ? 1.5f : 1.0f;
+	}
 }

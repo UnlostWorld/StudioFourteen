@@ -56,6 +56,8 @@ public partial class SelectionWidget : Panel
 		this.Services.Selection.SelectionChanged += this.OnSelectionChanged;
 		this.Services.Selection.SelectionExpanded += this.OnSelectionExpanded;
 		base.OnOpened();
+
+		this.OnSelectionChanged(null, this.Services.Selection.Current, this);
 	}
 
 	protected override void OnClosed()
@@ -146,5 +148,10 @@ public partial class SelectionWidget : Panel
 	private void OnSelectionExpanded(bool newValue)
 	{
 		this.Expanded = newValue;
+	}
+
+	private void OnExpandedChanged(bool oldValue, bool newValue)
+	{
+		this.Services.Selection.ExpandedSelection = newValue;
 	}
 }

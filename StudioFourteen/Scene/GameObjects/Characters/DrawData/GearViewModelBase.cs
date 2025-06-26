@@ -45,6 +45,9 @@ public abstract partial class GearViewModelBase : ViewModel
 	{
 		XivCharacter* pCharacter = character.GetXivCharacter();
 
+		if (pCharacter == null)
+			return;
+
 		this.CharacterName = pCharacter->GetDisplayName();
 		this.RaisePropertyChanged(nameof(this.SearchTitle));
 		this.RaisePropertyChanged(nameof(this.DyeSearchTitle));
