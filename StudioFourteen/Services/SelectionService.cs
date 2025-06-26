@@ -96,7 +96,7 @@ public partial class SelectionService : ServiceBase
 	{
 		SceneObjectBase? oldSelection = this.selection;
 
-		if (oldSelection != null && newSelection != null && oldSelection.Id == newSelection.Id)
+		if (oldSelection?.Id == newSelection?.Id)
 			return;
 
 		this.lastSelectionName = this.selection?.Name ?? "Nothing";

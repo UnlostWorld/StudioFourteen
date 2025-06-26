@@ -102,7 +102,7 @@ public partial class SelectionWidget : Panel
 
 	private async Task ChangeSelection(SceneObjectBase? newSelection, object? source)
 	{
-		if (newSelection == null || source is not SelectionHandle)
+		if (newSelection == null)
 		{
 			this.closing.Play();
 			this.isShowing = false;
@@ -137,7 +137,10 @@ public partial class SelectionWidget : Panel
 
 			this.Current = newSelection;
 			this.Expanded = this.Services.Selection.ExpandedSelection;
-			this.selectionCursorOffset = this.Services.Selection.SelectionCursorOffset;
+
+			if(source is SelectionHandle)
+				this.selectionCursorOffset = this.Services.Selection.SelectionCursorOffset;
+
 			this.Focus();
 			this.Activate();
 
