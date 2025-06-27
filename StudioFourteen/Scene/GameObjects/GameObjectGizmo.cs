@@ -42,6 +42,7 @@ public class GameObjectGizmo : GizmoGroup
 	}
 
 	public override string Name => "Character";
+	public override bool KeepScreenSize => false;
 }
 
 public class BlankGizmo : GizmoBase
@@ -65,8 +66,7 @@ public class GameObjectHandle : SelectionHandle
 
 	protected override void OnDraw()
 	{
-		if (this.IsSelected)
-			return;
+		this.IsVisible = !this.IsSelected;
 
 		if (this.Selection is GameObject go)
 			this.Transform = go.WorldTransform;
