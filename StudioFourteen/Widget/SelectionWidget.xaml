@@ -15,7 +15,7 @@
 	SizeToContent="WidthAndHeight"
 	mc:Ignorable="d">
 
-	<Grid Width="256" Height="450">
+	<Grid Width="300" Height="350">
 
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="Auto" />
@@ -198,9 +198,7 @@
 						Margin="2"
 						Background="{DynamicResource BackgroundBrush}"
 						CornerRadius="{DynamicResource WpfUtilsBorderInnerCornerRadius}">
-						<ScrollViewer HorizontalScrollBarVisibility="Disabled">
-							<ContentPresenter Margin="2" Content="{Binding Current}" />
-						</ScrollViewer>
+						<ContentPresenter Margin="2" Content="{Binding Current}" />
 					</Border>
 				</Grid>
 			</Border>

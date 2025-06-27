@@ -82,14 +82,28 @@ public partial class SelectionWidget : Panel
 
 		if (this.Current is TransformSceneObjectBase transformSelection)
 		{
+			double thisHeight = 380;
+
 			Vector3 worldPos = Vector3.Transform(Vector3.Zero, transformSelection.WorldTransform.ToMatrix());
 			Vector3 cameraPos = this.Services.Camera.WorldToCamera(worldPos);
 
 			this.Dispatcher.Invoke(() =>
 			{
-				var pos = (cameraPos.ToVector2() + this.selectionCursorOffset).ToPoint();
-				pos.X += 0.04;
-				pos.Y -= 0.06;
+				Point pos = (cameraPos.ToVector2() + this.selectionCursorOffset).ToPoint();
+
+				Rect clientRect = this.Services.Windows.GetXivWindowClientSize();
+				double xPos = pos.X * clientRect.Width;
+				double yPos = pos.Y * clientRect.Height;
+
+				xPos += 75;
+				yPos -= 50;
+
+				if (yPos + thisHeight > clientRect.Height)
+					yPos = clientRect.Height - thisHeight;
+
+				pos.X = xPos / clientRect.Width;
+				pos.Y = yPos / clientRect.Height;
+
 				this.Position = pos;
 			});
 		}
