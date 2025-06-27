@@ -28,7 +28,7 @@ public struct GizmoLineMaterial : IMaterial
 	public float Thickness;
 	public float EndCaps;
 	public float FadeOutDepth;
-	public float Unused2;
+	public float MinAlpha;
 
 	public IContent<ShaderBytecode>? GetVertexShader() => new ShaderReference("Shaders/GizmoLine.hlsl", "vs_4_0", "vert");
 	public IContent<ShaderBytecode>? GetPixelShader() => new ShaderReference("Shaders/GizmoLine.hlsl", "ps_4_0", "pixel");
@@ -41,5 +41,6 @@ public struct GizmoLineMaterial : IMaterial
 		this.EndCaps = 1.0f;
 		this.OutlineColor = Color.Black;
 		this.FadeOutDepth = 0;
+		this.MinAlpha = 1;
 	}
 }

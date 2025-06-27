@@ -25,6 +25,7 @@ cbuffer MaterialInstanceData : register(MaterialDataRegister)
 	float Thickness;
 	float EndCaps;
 	float FadeOutDepth;
+	float MinAlpha;
 };
 
 static float zOffset = 0.0f;
@@ -250,7 +251,15 @@ float4 pixel(Fragment frag) : SV_TARGET
 		color.a *= d;
 	}
 
-	color.a *= GetUiClippingAlpha(frag);
+	if (MinAlpha >= 1)
+	{
+		color.a *= GetUiClippingAlpha(frag);
+	}
+	else
+	{
+		color.a *= GetClippingAlpha(frag, MinAlpha);
+	}
+
 	if (color.a <= 0)
 		discard;
 

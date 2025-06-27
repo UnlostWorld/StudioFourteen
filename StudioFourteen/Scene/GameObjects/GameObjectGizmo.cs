@@ -61,6 +61,7 @@ public class GameObjectHandle : SelectionHandle
 		this.circleRenderer.Transform = Transform.FromScale(0.25f);
 		this.circleRenderer.Material.EndCaps = 0;
 		this.circleRenderer.Material.OutlineColor = Color.Transparent;
+		this.circleRenderer.Material.MinAlpha = 0.15f;
 		this.Add(this.circleRenderer);
 	}
 
