@@ -147,6 +147,7 @@ public class Skeleton : GameObject
 				{
 					hkaBone bone = pPose->Skeleton->Bones[boneIdx];
 					string? boneName = bone.Name.String;
+
 					BoneId id = new(pGameObject->ObjectIndex, partialIdx, poseIdx, boneIdx);
 
 					if (boneName == null)

@@ -64,9 +64,12 @@ public class SkeletonBoneGizmo : SelectionHandle
 		if (this.boneId.BoneIndex >= pPose->Skeleton->Bones.Length)
 			return;
 
+		if (this.skeletonBone.BoneName == "n_root" || this.skeletonBone.BoneName == "n_throw")
+			this.IsVisible = false;
+
 		// If this is genital and hide genitals!
 		if (this.Services.Settings.Current.HideGenitals && this.Services.Content.GenitalBones?.Contains(this.skeletonBone.BoneName) == true)
-			return;
+			this.IsVisible = false;
 
 		Transform boneTransform = *pPose->AccessBoneModelSpace(this.boneId.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
 		this.capRenderer.Transform = boneTransform;
@@ -83,6 +86,13 @@ public class SkeletonBoneGizmo : SelectionHandle
 		{
 			BoneId boneId = this.skeletonBone.Parent.PrimaryBoneId;
 			if (boneId.BoneIndex >= pPose->Skeleton->Bones.Length)
+				return;
+
+			if (this.skeletonBone.Parent.BoneName == "n_root" || this.skeletonBone.Parent.BoneName == "n_throw")
+				return;
+
+			// If this is genital and hide genitals!
+			if (this.Services.Settings.Current.HideGenitals && this.Services.Content.GenitalBones?.Contains(this.skeletonBone.Parent.BoneName) == true)
 				return;
 
 			Transform childModelSpaceTransform = *pPose->AccessBoneModelSpace(boneId.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
