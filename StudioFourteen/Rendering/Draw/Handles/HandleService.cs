@@ -38,7 +38,7 @@ public partial class HandleService : ServiceBase
 	private readonly HitTestResult pressHitTestResult = new();
 	private Handle? currentHover;
 	private Handle? currentPress;
-	private HandleTipWindow? handleTipWindow;
+	////private HandleTipWindow? handleTipWindow;
 
 	public bool IsCursorOverHandle => this.CurrentHover != null;
 
@@ -57,7 +57,7 @@ public partial class HandleService : ServiceBase
 			if (this.currentHover != null)
 			{
 				this.currentHover.SetIsHandleHovered(false);
-				this.handleTipWindow?.Hide(this.currentHover);
+				////this.handleTipWindow?.Hide(this.currentHover);
 			}
 
 			this.currentHover = value;
@@ -65,7 +65,7 @@ public partial class HandleService : ServiceBase
 			if (this.currentHover != null)
 			{
 				this.currentHover.SetIsHandleHovered(true);
-				this.handleTipWindow?.Show(this.currentHover);
+				////this.handleTipWindow?.Show(this.currentHover);
 			}
 		}
 	}
@@ -95,7 +95,7 @@ public partial class HandleService : ServiceBase
 
 	public override async Task Start()
 	{
-		this.handleTipWindow = await HandleTipWindow.CreateInstanceAsync<HandleTipWindow>();
+		////this.handleTipWindow = await HandleTipWindow.CreateInstanceAsync<HandleTipWindow>();
 		await base.Start();
 	}
 
@@ -108,7 +108,7 @@ public partial class HandleService : ServiceBase
 	public override void Detach()
 	{
 		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
-		this.handleTipWindow?.Hide(null);
+		////this.handleTipWindow?.Hide(null);
 		base.Detach();
 	}
 
@@ -181,7 +181,7 @@ public partial class HandleService : ServiceBase
 				Vector3 toolTipPosition = Vector3.Zero;
 				bool show = this.currentHover.GetToolTip(ref toolTipContent, ref toolTipPosition);
 
-				this.handleTipWindow?.Update(show, toolTipContent, toolTipPosition);
+				////this.handleTipWindow?.Update(show, toolTipContent, toolTipPosition);
 			}
 		}
 	}
