@@ -180,27 +180,27 @@ public class MouseDevice : InputDeviceBase
 		if (!this.Services.Windows.IsCursorOverStudio)
 			this.Services.Windows.Activate(null);
 
+		if (!down)
+		{
+			this.draggingButtons.Remove(button);
+			this.dragStarts.Remove(button);
+			CursorUtility.SetCursorVisible(true);
+			this.buttonAxes[button].Value = 0.0f;
+		}
+
 		if (!this.ShouldHandleMouse())
 			return false;
 
 		Point? mousePoint = this.Services.Windows.GetCursorPosition();
-
 		if (mousePoint == null)
 			return false;
-
-		this.buttonAxes[button].Value = down ? 1.0f : 0.0f;
 
 		if (down)
 		{
 			this.dragAxis[button].X.Value = 0;
 			this.dragAxis[button].Y.Value = 0;
 			this.dragStarts[button] = mousePoint.Value;
-		}
-		else
-		{
-			this.draggingButtons.Remove(button);
-			this.dragStarts.Remove(button);
-			CursorUtility.SetCursorVisible(true);
+			this.buttonAxes[button].Value = 1.0f;
 		}
 
 		return true;
