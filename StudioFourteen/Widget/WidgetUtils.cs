@@ -26,6 +26,12 @@ public partial class View
 	{
 		if (dependencyObject is FrameworkElement fe)
 		{
+			if (!fe.IsLoaded)
+			{
+				fe.Loaded += (s, e) => OnHideInsideWidgetChanged(dependencyObject, newValue);
+				return;
+			}
+
 			SelectionWidget? widget = fe.FindParent<SelectionWidget>();
 			if (widget != null && newValue)
 			{
@@ -42,8 +48,14 @@ public partial class View
 	{
 		if (dependencyObject is FrameworkElement fe)
 		{
+			if (!fe.IsLoaded)
+			{
+				fe.Loaded += (s, e) => OnHideOutsideWidgetChanged(dependencyObject, newValue);
+				return;
+			}
+
 			SelectionWidget? widget = fe.FindParent<SelectionWidget>();
-			if (widget != null && newValue)
+			if (widget != null || !newValue)
 			{
 				fe.Visibility = Visibility.Visible;
 			}
