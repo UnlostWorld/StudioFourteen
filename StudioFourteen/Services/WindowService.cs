@@ -52,6 +52,11 @@ public partial class WindowService : ServiceBase
 	{
 		"GroupPoseStampImage",
 		"CursorAddon",
+		"_ActionDoubleCrossL",
+		"_ActionDoubleCrossR",
+		"_ActionContents",
+		"_LimitBreak",
+		"_ContentGauge",
 	};
 
 	[Notify(Setter.Private)] private bool isCursorOverAtkUnit;
@@ -484,6 +489,10 @@ public partial class WindowService : ServiceBase
 		if (loadedUnits == null)
 			return null;
 
+		AtkStage* atkStage = AtkStage.Instance();
+		if (atkStage == null)
+			return null;
+
 		for (int i = 0; i < loadedUnits.Value.Count; i++)
 		{
 			AtkUnitBase* unit = loadedUnits.Value.Entries[i];
@@ -516,6 +525,7 @@ public partial class WindowService : ServiceBase
 				&& cursorPos.Value.Y > windowBounds.Top
 				&& cursorPos.Value.Y < windowBounds.Bottom)
 			{
+				this.Log.Information($">> {unit->NameString} {unit->ShowHideFlags}");
 				return unit;
 			}
 		}
