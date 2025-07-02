@@ -259,20 +259,25 @@ public partial class WindowService : ServiceBase
 
 		wnd.ShowInTaskbar = false;
 
-		PInvoke.SetWindowLong(
-			(HWND)wndInterop.Handle,
-			WINDOW_LONG_PTR_INDEX.GWL_STYLE,
-			(int)WINDOW_STYLE.WS_CHILD);
+		if (!DalamudServices.IsWine)
+		{
+			PInvoke.SetWindowLong(
+				(HWND)wndInterop.Handle,
+				WINDOW_LONG_PTR_INDEX.GWL_STYLE,
+				(int)WINDOW_STYLE.WS_CHILD);
 
-		PInvoke.SetWindowLong(
-			(HWND)wndInterop.Handle,
-			WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE,
-			(int)WINDOW_EX_STYLE.WS_EX_TOOLWINDOW);
+			PInvoke.SetWindowLong(
+				(HWND)wndInterop.Handle,
+				WINDOW_LONG_PTR_INDEX.GWL_EXSTYLE,
+				(int)WINDOW_EX_STYLE.WS_EX_TOOLWINDOW);
 
-		PInvoke.SetParent((HWND)wndInterop.Handle, (HWND)this.XivProcess.MainWindowHandle);
+			PInvoke.SetParent((HWND)wndInterop.Handle, (HWND)this.XivProcess.MainWindowHandle);
+		}
+		else
+		{
+			wnd.Topmost = true;
+		}
 
-		// TODO: This GetPosition only works for embedded windows, we should add a function to do the ClintRect
-		// conversion to find its relative position even while not embedded.
 		System.Windows.Point p = this.GetPosition(wnd);
 		this.SetPosition(wnd, p, true);
 	}
@@ -286,12 +291,19 @@ public partial class WindowService : ServiceBase
 
 		wnd.ShowInTaskbar = true;
 
-		PInvoke.SetParent((HWND)wndInterop.Handle, (HWND)0u);
+		if (!DalamudServices.IsWine)
+		{
+			PInvoke.SetParent((HWND)wndInterop.Handle, (HWND)0u);
 
-		PInvoke.SetWindowLong(
-			(HWND)wndInterop.Handle,
-			WINDOW_LONG_PTR_INDEX.GWL_STYLE,
-			unchecked((int)WINDOW_STYLE.WS_POPUP));
+			PInvoke.SetWindowLong(
+				(HWND)wndInterop.Handle,
+				WINDOW_LONG_PTR_INDEX.GWL_STYLE,
+				unchecked((int)WINDOW_STYLE.WS_POPUP));
+		}
+		else
+		{
+			wnd.Topmost = false;
+		}
 	}
 
 	public void SetPosition(Window wnd, System.Windows.Point position, bool setZ)
@@ -313,6 +325,13 @@ public partial class WindowService : ServiceBase
 		{
 			x = (int)((xivWindowSize.Width * position.X) - (wnd.ActualWidth * position.X));
 			y = (int)((xivWindowSize.Height * position.Y) - (wnd.ActualHeight * position.Y));
+		}
+
+		// TODO: || !wnd.IsEmbedded
+		if (DalamudServices.IsWine)
+		{
+			x += (int)xivWindowSize.Left;
+			y += (int)xivWindowSize.Top;
 		}
 
 		int w = 0;
@@ -339,8 +358,18 @@ public partial class WindowService : ServiceBase
 	{
 		Rect xivSize = this.GetXivWindowClientSize();
 
-		double l = (wnd.Left - xivSize.Left) / xivSize.Width;
-		double t = (wnd.Top - xivSize.Top) / xivSize.Height;
+		double al = 0;
+		double at = 0;
+
+		// TODO: || !wnd.IsEmbedded
+		if (DalamudServices.IsWine)
+		{
+			al = (int)xivSize.Left;
+			at = (int)xivSize.Top;
+		}
+
+		double l = (wnd.Left - xivSize.Left - al) / xivSize.Width;
+		double t = (wnd.Top - xivSize.Top - at) / xivSize.Height;
 
 		if (wnd.SizeToContent == SizeToContent.Manual)
 		{

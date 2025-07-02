@@ -19,10 +19,12 @@ using Dalamud.Game;
 using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
+using Dalamud.Utility;
 
 public class DalamudServices
 {
 	public static bool IsAlive => Log != null;
+	public static bool IsWine => Util.IsWine();
 
 	[PluginService] public static IPluginLog? Log { get; private set; }
 	[PluginService] public static IDalamudPluginInterface? PluginInterface { get; private set; }

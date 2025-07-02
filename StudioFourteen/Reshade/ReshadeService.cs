@@ -72,6 +72,9 @@ public partial class ReshadeService : ServiceBase
 		if (!DalamudServices.IsAlive)
 			return;
 
+		if (DalamudServices.IsWine)
+			return;
+
 		string? dxgiPath = this.Services.Windows.XivProcess?.MainModule?.FileName;
 		if (dxgiPath == null)
 			throw new Exception("Failed to get xiv process path");

@@ -17,6 +17,7 @@ namespace StudioFourteen.Plugin;
 
 using Dalamud.Game.Command;
 using Dalamud.Plugin;
+using Dalamud.Utility;
 using Serilog;
 using StudioFourteen.Settings;
 using System;
@@ -44,6 +45,8 @@ public sealed class DalamudPlugin : IDalamudPlugin
 		this.Log.Information($"Ensure Pack URI {System.IO.Packaging.PackUriHelper.UriSchemePack}");
 
 		pluginInterface.Create<DalamudServices>();
+
+		this.Log.Information("$IsWine: {DalamudServices.IsWine}");
 
 		if (DalamudServices.CommandManager != null)
 		{

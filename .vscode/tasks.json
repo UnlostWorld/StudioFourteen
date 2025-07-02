@@ -16,9 +16,14 @@
 			],
 			"problemMatcher": "$msCompile",
 			"group": {
-			  "kind": "build",
-			  "isDefault": true
+				"kind": "build",
+				"isDefault": true
 			},
+			"options": {
+				"statusbar": {
+					"label": "$(beaker)"
+				}
+			}
 		},
 	]
 }
