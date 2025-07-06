@@ -20,7 +20,6 @@ using StudioFourteen.Scene;
 using StudioFourteen.Scene.GameObjects;
 using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Services;
-using StudioFourteen.Widget;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -167,14 +166,14 @@ public partial class SelectionService : ServiceBase
 
 	public override async Task Start()
 	{
-		await this.Services.Panels.GamePanels.SetIsOpenAsync<SelectionWidget>(true, false);
+		await this.Services.Panels.GamePanels.SetIsOpenAsync<Widget>(true, false);
 
 		await base.Start();
 	}
 
 	public override async Task Stop()
 	{
-		await this.Services.Panels.GamePanels.SetIsOpenAsync<SelectionWidget>(false, false);
+		await this.Services.Panels.GamePanels.SetIsOpenAsync<Widget>(false, false);
 		await base.Stop();
 	}
 

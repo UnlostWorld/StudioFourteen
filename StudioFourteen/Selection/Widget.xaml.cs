@@ -13,10 +13,8 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Widget;
+namespace StudioFourteen.Selection;
 
-using System;
-using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows;
@@ -30,7 +28,7 @@ using WpfUtils;
 using WpfUtils.Extensions;
 using WpfUtils.Silk;
 
-public partial class SelectionWidget : Panel
+public partial class Widget : Panel
 {
 	private bool isShowing = false;
 	[Notify] private SceneObjectBase? current;

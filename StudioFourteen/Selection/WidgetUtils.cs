@@ -13,14 +13,14 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Widget;
+namespace StudioFourteen.Selection;
 
 using System.Windows;
 using DependencyPropertyGenerator;
 
 [AttachedDependencyProperty<bool>("HideInsideWidget")]
 [AttachedDependencyProperty<bool>("HideOutsideWidget")]
-public partial class View
+public partial class WidgetUtils
 {
 	static partial void OnHideInsideWidgetChanged(DependencyObject dependencyObject, bool newValue)
 	{
@@ -32,7 +32,7 @@ public partial class View
 				return;
 			}
 
-			SelectionWidget? widget = fe.FindParent<SelectionWidget>();
+			Widget? widget = fe.FindParent<Widget>();
 			if (widget != null && newValue)
 			{
 				fe.Visibility = Visibility.Collapsed;
@@ -54,7 +54,7 @@ public partial class View
 				return;
 			}
 
-			SelectionWidget? widget = fe.FindParent<SelectionWidget>();
+			Widget? widget = fe.FindParent<Widget>();
 			if (widget != null || !newValue)
 			{
 				fe.Visibility = Visibility.Visible;

@@ -8,7 +8,7 @@
 	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:pose="clr-namespace:StudioFourteen.Posing"
 	xmlns:scene="clr-namespace:StudioFourteen.Scene"
-	xmlns:widget="clr-namespace:StudioFourteen.Widget"
+	xmlns:selection="clr-namespace:StudioFourteen.Selection"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
 	<BooleanToVisibilityConverter x:Key="B2V" />
@@ -23,7 +23,7 @@
 
 			<TabControl Grid.Row="0" Margin="-2">
 
-				<TabItem widget:View.HideOutsideWidget="True" Header="{DynamicResource ICON_Transform_Translate}">
+				<TabItem selection:WidgetUtils.HideOutsideWidget="True" Header="{DynamicResource ICON_Transform_Translate}">
 					<StackPanel>
 						<TextBlock
 							Foreground="{DynamicResource ForegroundLightBrush}"
