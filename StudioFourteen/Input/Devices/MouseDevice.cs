@@ -20,15 +20,10 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Windows;
 using System.Windows.Input;
-using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.System.Input;
-using FFXIVClientStructs.FFXIV.Client.UI;
-using ImGuiScene;
-using StudioFourteen.Plugin;
 using StudioFourteen.Utilities;
 
 using Vector = System.Windows.Vector;
-using XivInputManager = FFXIVClientStructs.FFXIV.Client.Game.Control.InputManager;
 
 public class MouseDevice : InputDeviceBase
 {
@@ -98,7 +93,7 @@ public class MouseDevice : InputDeviceBase
 	public bool IsAnyDragging => this.draggingButtons.Count > 0;
 
 	public static string GetAxisId(MouseButton button) => $"Mouse:{button}";
-	public static string GetDragAxisId(MouseButton button, DragDirections direction) => $"Mouse:{button}Drag{direction}";
+	public static string GetDragAxisId(MouseButton button, DragDirections direction) => $"Mouse:{button}Drag:{direction}";
 
 	public static MouseButtonFlags GetEngineFlags(MouseButton button)
 	{
@@ -182,14 +177,16 @@ public class MouseDevice : InputDeviceBase
 
 		if (!down)
 		{
+			/*if (this.dragStarts.ContainsKey(button) && !this.draggingButtons.Contains(button))
+			{
+				this.Log.Information($"Click {button}");
+			}*/
+
 			this.draggingButtons.Remove(button);
 			this.dragStarts.Remove(button);
 			CursorUtility.SetCursorVisible(true);
 			this.buttonAxes[button].Value = 0.0f;
 		}
-
-		if (!this.ShouldHandleMouse())
-			return false;
 
 		Point? mousePoint = this.Services.Windows.GetCursorPosition();
 		if (mousePoint == null)
@@ -203,7 +200,7 @@ public class MouseDevice : InputDeviceBase
 			this.buttonAxes[button].Value = 1.0f;
 		}
 
-		return true;
+		return this.ShouldHandleMouse();
 	}
 
 	public bool HandleMouseWheel(float delta)

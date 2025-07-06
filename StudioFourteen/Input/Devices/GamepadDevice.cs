@@ -83,8 +83,8 @@ public class GamepadDevice : InputDeviceBase
 
 	public enum Sticks
 	{
-		Left,
-		Right,
+		LeftStick,
+		RightStick,
 	}
 
 	public enum StickDirections
@@ -136,33 +136,33 @@ public class GamepadDevice : InputDeviceBase
 		nint ret = Hooks.PadDevicePoll.Original(pPadDevice);
 
 		// TODO: Consume stick inputs.
-		this.stickAxes[Sticks.Left].X.Value = pPadDevice->GamepadInputData.LeftStickX / 100.0f;
-		this.stickAxes[Sticks.Left].Y.Value = pPadDevice->GamepadInputData.LeftStickY / 100.0f;
-		this.stickAxes[Sticks.Right].X.Value = pPadDevice->GamepadInputData.RightStickX / 100.0f;
-		this.stickAxes[Sticks.Right].Y.Value = pPadDevice->GamepadInputData.RightStickY / 100.0f;
+		this.stickAxes[Sticks.LeftStick].X.Value = pPadDevice->GamepadInputData.LeftStickX / 100.0f;
+		this.stickAxes[Sticks.LeftStick].Y.Value = pPadDevice->GamepadInputData.LeftStickY / 100.0f;
+		this.stickAxes[Sticks.RightStick].X.Value = pPadDevice->GamepadInputData.RightStickX / 100.0f;
+		this.stickAxes[Sticks.RightStick].Y.Value = pPadDevice->GamepadInputData.RightStickY / 100.0f;
 
-		if (this.stickAxes[Sticks.Left].X.ConsumedBy != null)
+		if (this.stickAxes[Sticks.LeftStick].X.ConsumedBy != null)
 		{
 			pPadDevice->GamepadInputData.LeftStickX = 0;
-			this.stickAxes[Sticks.Left].X.ConsumedBy = null;
+			this.stickAxes[Sticks.LeftStick].X.ConsumedBy = null;
 		}
 
-		if (this.stickAxes[Sticks.Left].Y.ConsumedBy != null)
+		if (this.stickAxes[Sticks.LeftStick].Y.ConsumedBy != null)
 		{
 			pPadDevice->GamepadInputData.LeftStickY = 0;
-			this.stickAxes[Sticks.Left].Y.ConsumedBy = null;
+			this.stickAxes[Sticks.LeftStick].Y.ConsumedBy = null;
 		}
 
-		if (this.stickAxes[Sticks.Right].X.ConsumedBy != null)
+		if (this.stickAxes[Sticks.RightStick].X.ConsumedBy != null)
 		{
 			pPadDevice->GamepadInputData.RightStickX = 0;
-			this.stickAxes[Sticks.Right].X.ConsumedBy = null;
+			this.stickAxes[Sticks.RightStick].X.ConsumedBy = null;
 		}
 
-		if (this.stickAxes[Sticks.Right].Y.ConsumedBy != null)
+		if (this.stickAxes[Sticks.RightStick].Y.ConsumedBy != null)
 		{
 			pPadDevice->GamepadInputData.RightStickY = 0;
-			this.stickAxes[Sticks.Right].Y.ConsumedBy = null;
+			this.stickAxes[Sticks.RightStick].Y.ConsumedBy = null;
 		}
 
 		Buttons buttonValues = (Buttons)pPadDevice->GamepadInputData.Buttons;

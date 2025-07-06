@@ -1,0 +1,194 @@
+{
+	"SaveAs": [
+		"Keyboard:S + Keyboard:CONTROL + Keyboard:SHIFT"
+	],
+	"Focus_Game": [
+		"Keyboard:G + Keyboard:SHIFT"
+	],
+	"Save": [
+		"Keyboard:S + Keyboard:CONTROL"
+	],
+	"FreeCamera_YawLeft": [
+		"Keyboard:A + Keyboard:SHIFT"
+	],
+	"FreeCamera_YawRight": [
+		"Keyboard:D + Keyboard:SHIFT"
+	],
+	"FreeCamera_PitchUp": [
+		"Keyboard:W + Keyboard:SHIFT"
+	],
+	"FreeCamera_PitchDown": [
+		"Keyboard:S + Keyboard:SHIFT"
+	],
+	"FreeCamera_RollLeft": [
+		"Keyboard:Q + Keyboard:SHIFT"
+	],
+	"FreeCamera_RollRight": [
+		"Keyboard:E + Keyboard:SHIFT"
+	],
+	"OrbitCamera_PanLeft": [
+		"Mouse:LeftDrag:Left + Keyboard:SHIFT",
+		"Keyboard:A",
+		"Gamepad:LeftStick:Left"
+	],
+	"OrbitCamera_PanRight": [
+		"Mouse:LeftDrag:Right + Keyboard:SHIFT",
+		"Gamepad:LeftStick:Right",
+		"Keyboard:D"
+	],
+	"OrbitCamera_PanUp": [
+		"Mouse:LeftDrag:Up + Keyboard:SHIFT",
+		"Gamepad:LeftStick:Up",
+		"Keyboard:W"
+	],
+	"OrbitCamera_PanDown": [
+		"Mouse:LeftDrag:Down + Keyboard:SHIFT",
+		"Gamepad:LeftStick:Down",
+		"Keyboard:S"
+	],
+	"OrbitCamera_MoveUp": [
+		"Mouse:LeftDrag:Up + Keyboard:CONTROL",
+		"Keyboard:W + Keyboard:CONTROL"
+	],
+	"OrbitCamera_MoveDown": [
+		"Mouse:LeftDrag:Down + Keyboard:CONTROL",
+		"Keyboard:S + Keyboard:CONTROL"
+	],
+	"OrbitCamera_MoveLeft": [
+		"Mouse:LeftDrag:Left + Keyboard:CONTROL",
+		"Keyboard:A + Keyboard:CONTROL"
+	],
+	"OrbitCamera_MoveRight": [
+		"Mouse:LeftDrag:Right + Keyboard:CONTROL",
+		"Keyboard:D + Keyboard:CONTROL"
+	],
+	"OrbitCamera_MoveForward": [
+		"Keyboard:Q + Keyboard:CONTROL"
+	],
+	"OrbitCamera_MoveBackward": [
+		"Keyboard:E + Keyboard:CONTROL"
+	],
+	"OrbitCamera_ZoomIn": [
+		"Gamepad:LeftShoulder + Gamepad:RightStick:Up",
+		"Mouse:Wheel+"
+	],
+	"OrbitCamera_ZoomOut": [
+		"Gamepad:LeftShoulder + Gamepad:RightStick:Down",
+		"Mouse:Wheel-"
+	],
+	"Handle_Select": [
+		"Mouse:Left"
+	],
+	"Handle_Up": [
+		"Mouse:LeftDrag:Up"
+	],
+	"Handle_Down": [
+		"Mouse:LeftDrag:Down"
+	],
+	"Handle_Left": [
+		"Mouse:LeftDrag:Left"
+	],
+	"Handle_Right": [
+		"Mouse:LeftDrag:Right"
+	],
+	"Navigate_Up": [
+		"Gamepad:DpadUp",
+		"Keyboard:UP",
+		"Keyboard:W"
+	],
+	"Navigate_Down": [
+		"Keyboard:S",
+		"Gamepad:DpadDown",
+		"Keyboard:DOWN"
+	],
+	"Navigate_Left": [
+		"Gamepad:DpadLeft",
+		"Keyboard:LEFT",
+		"Keyboard:A"
+	],
+	"Navigate_Right": [
+		"Gamepad:DpadRight",
+		"Keyboard:D",
+		"Keyboard:RIGHT"
+	],
+	"Navigate_Enter": [
+		"Keyboard:SPACE",
+		"Gamepad:FaceDown",
+		"Keyboard:RETURN"
+	],
+	"Navigate_Back": [
+		"Gamepad:FaceRight",
+		"Keyboard:BACK",
+		"Keyboard:ESCAPE"
+	],
+	"Navigate_TabRight": [
+		"Keyboard:E",
+		"Gamepad:RightShoulder"
+	],
+	"Navigate_TabLeft": [
+		"Keyboard:Q",
+		"Gamepad:LeftShoulder"
+	],
+	"FreeCamera_MoveLeft": [
+		"Keyboard:A"
+	],
+	"FreeCamera_MoveRight": [
+		"Keyboard:D"
+	],
+	"FreeCamera_MoveUp": [
+		"Keyboard:Q"
+	],
+	"FreeCamera_MoveDown": [
+		"Keyboard:E"
+	],
+	"FreeCamera_MoveForwards": [
+		"Keyboard:W"
+	],
+	"FreeCamera_MoveBack": [
+		"Keyboard:S"
+	],
+	"FreeCamera_RotateLeft": [
+		"Mouse:LeftDrag:Left"
+	],
+	"FreeCamera_RotateRight": [
+		"Mouse:LeftDrag:Right"
+	],
+	"FreeCamera_RotateUp": [
+		"Mouse:LeftDrag:Up"
+	],
+	"FreeCamera_RotateDown": [
+		"Mouse:LeftDrag:Down"
+	],
+	"OrbitCamera_RollLeft": [
+		"Keyboard:Q"
+	],
+	"OrbitCamera_RollRight": [
+		"Keyboard:E"
+	],
+	"OrbitCamera_RotateLeft": [
+		"Mouse:LeftDrag:Left",
+		"Mouse:RightDrag:Left",
+		"Gamepad:RightStick:Right"
+	],
+	"OrbitCamera_RotateRight": [
+		"Mouse:LeftDrag:Right",
+		"Gamepad:RightStick:Left",
+		"Mouse:RightDrag:Right"
+	],
+	"OrbitCamera_RotateUp": [
+		"Mouse:RightDrag:Up",
+		"Gamepad:RightStick:Down",
+		"Mouse:LeftDrag:Up"
+	],
+	"OrbitCamera_RotateDown": [
+		"Mouse:LeftDrag:Down",
+		"Gamepad:RightStick:Up",
+		"Mouse:RightDrag:Down"
+	],
+	"FastChange": [
+		"Keyboard:SHIFT"
+	],
+	"SlowChange": [
+		"Keyboard:CONTROL"
+	]
+}

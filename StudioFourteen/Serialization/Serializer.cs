@@ -41,6 +41,7 @@ public static class Serializer
 		Settings.Converters.Add(new QuaternionConverter());
 		Settings.Converters.Add(new QuaternionNullableConverter());
 		Settings.Converters.Add(new ColorConverter());
+		Settings.Converters.Add(new BindConverter());
 	}
 
 	public static string Serialize(object obj)
