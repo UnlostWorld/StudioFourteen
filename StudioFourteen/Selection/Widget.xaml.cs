@@ -85,7 +85,7 @@ public partial class Widget : Panel
 			Vector3 worldPos = Vector3.Transform(Vector3.Zero, transformSelection.WorldTransform.ToMatrix());
 			Vector3 cameraPos = this.Services.Camera.WorldToCamera(worldPos);
 
-			this.Dispatcher.Invoke(() =>
+			this.Dispatcher.BeginInvoke(() =>
 			{
 				Point pos = (cameraPos.ToVector2() + this.selectionCursorOffset).ToPoint();
 

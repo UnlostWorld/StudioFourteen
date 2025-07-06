@@ -3,17 +3,95 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
-	Width="250"
+	Width="450"
 	Height="600"
-	MinWidth="250"
+	MinWidth="360"
 	MinHeight="250"
 	ResizeMode="CanResizeWithGrip"
-	Subtitle="{Binding Character.Name}"
 	mc:Ignorable="d">
 
 	<Grid x:Name="ContentArea">
-		<ContentPresenter Content="{Binding Character}"/>
+
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="140"/>
+			<ColumnDefinition />
+		</Grid.ColumnDefinitions>
+
+		<Grid Grid.Column="0" Margin="1">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition />
+			</Grid.RowDefinitions>
+
+			<ComboBox
+				Grid.Row="0"
+				ItemsSource="{Binding Types}"
+				SelectedValue="{Binding CurrentType}">
+				<ComboBox.ItemTemplate>
+					<DataTemplate>
+						<Grid Margin="4">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition />
+							</Grid.ColumnDefinitions>
+
+							<icons:IconView
+								Grid.Column="0"
+								Width="18"
+								Height="18"
+								VerticalAlignment="Center"
+								HorizontalAlignment="Center"
+								Icon="{Binding Icon}" />
+							<TextBlock
+								Margin="3,0,0,0"
+								Grid.Column="1"
+								VerticalAlignment="Center"
+								Text="{Binding Name}" />
+						</Grid>
+					</DataTemplate>
+				</ComboBox.ItemTemplate>
+			</ComboBox>
+
+			<ListBox
+				Grid.Row="1"
+				HorizontalContentAlignment="Center"
+				ItemsSource="{Binding CurrentType.Objects}"
+				SelectedItem="{Binding CurrentType.Selection}">
+
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<TextBlock Text="{Binding Name}" Margin="3"/>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+		</Grid>
+
+		<Border
+			Grid.Column="1"
+			Margin="3,1,1,1"
+			Style="{DynamicResource WpfUtilsControlBorder}">
+
+			<Grid>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition />
+				</Grid.RowDefinitions>
+
+				<Border
+					Margin="2"
+					Background="{DynamicResource BackgroundBrush}"
+					CornerRadius="{DynamicResource WpfUtilsBorderInnerCornerRadius}">
+					<ContentPresenter Content="{Binding CurrentType.Selection}" ContentTemplate="{DynamicResource InspectorHeader}" />
+				</Border>
+
+				<ContentPresenter
+					Grid.Row="1"
+					Margin="2"
+					Content="{Binding CurrentType.Selection}" />
+			</Grid>
+		</Border>
 	</Grid>
 </panels:Panel>

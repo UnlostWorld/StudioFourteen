@@ -16,21 +16,18 @@
 namespace StudioFourteen.Selection;
 
 using System;
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Panels;
 using StudioFourteen.Scene;
 using StudioFourteen.Scene.GameObjects.Characters;
 using WpfUtils.Extensions;
 
-using static StudioFourteen.Selection.SelectionService;
-
 public partial class SelectionPanel : Panel
 {
-	private SelectionType? currentType;
+	private SelectionTypeBase? currentType;
 
-	public FastObservableCollection<SelectionType> Types { get; init; } = new();
+	public FastObservableCollection<SelectionTypeBase> Types { get; init; } = new();
 
-	public SelectionType? CurrentType
+	public SelectionTypeBase? CurrentType
 	{
 		get => this.currentType;
 		set
@@ -44,7 +41,7 @@ public partial class SelectionPanel : Panel
 	{
 		base.OnOpened();
 
-		this.Types.Add(new SelectionType<Character>(StudioFourteen.Resources.Find("ICON_Type_Character")));
+		this.Types.Add(new SelectionType<Character>());
 		this.CurrentType = this.Types[0];
 
 		this.Services.Selection.SelectionChanged += this.OnServiceSelectionChanged;
@@ -65,7 +62,7 @@ public partial class SelectionPanel : Panel
 	{
 		this.Dispatcher.Invoke(() =>
 		{
-			foreach (SelectionType type in this.Types)
+			foreach (SelectionTypeBase type in this.Types)
 			{
 				type.OnObjectRemovedFromScene(obj);
 			}
@@ -76,7 +73,7 @@ public partial class SelectionPanel : Panel
 	{
 		this.Dispatcher.Invoke(() =>
 		{
-			foreach (SelectionType type in this.Types)
+			foreach (SelectionTypeBase type in this.Types)
 			{
 				type.OnObjectAddedToScene(obj);
 			}
@@ -87,73 +84,10 @@ public partial class SelectionPanel : Panel
 	{
 		this.Dispatcher.Invoke(() =>
 		{
-			foreach (SelectionType type in this.Types)
+			foreach (SelectionTypeBase type in this.Types)
 			{
 				type.OnServiceSelectionChanged(oldSelection, newSelection, selectionSource);
 			}
 		});
-	}
-}
-
-public abstract class SelectionType
-{
-	public SelectionType(object? icon)
-	{
-		this.Icon = icon;
-	}
-
-	public object? Icon { get; init; }
-
-	public abstract void OnServiceSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? selectionSource);
-	public abstract void OnObjectRemovedFromScene(SceneObjectBase obj);
-	public abstract void OnObjectAddedToScene(SceneObjectBase obj);
-}
-
-public partial class SelectionType<T> : SelectionType
-	where T : SceneObjectBase
-{
-	private readonly SelectionScope scope;
-	[Notify] private T? selection;
-
-	public SelectionType(object? icon)
-		: base(icon)
-	{
-		this.scope = ServiceManager.Instance.Selection.GetScope<T>();
-		this.Objects.Replace(ServiceManager.Instance.Scene.FindObjects<T>());
-	}
-
-	public FastObservableCollection<T> Objects { get; init; } = new();
-
-	public override void OnServiceSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? selectionSource)
-	{
-		if (newSelection is T tObj)
-		{
-			this.Selection = tObj;
-		}
-		else
-		{
-			this.Selection = null;
-		}
-	}
-
-	public override void OnObjectRemovedFromScene(SceneObjectBase obj)
-	{
-		if (obj is T tObj)
-		{
-			this.Objects.Add(tObj);
-		}
-	}
-
-	public override void OnObjectAddedToScene(SceneObjectBase obj)
-	{
-		if (obj is T tObj)
-		{
-			this.Objects.Remove(tObj);
-		}
-	}
-
-	private void OnSelectionChanged(T? oldValue, T? newValue)
-	{
-		ServiceManager.Instance.Selection.Select(newValue, this);
 	}
 }

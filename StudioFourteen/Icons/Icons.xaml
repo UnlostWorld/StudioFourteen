@@ -98,6 +98,7 @@
 
 	<icons:Fa x:Key="ICON_Gizmo_CharacterSkeleton" Icon="Bone" Font="Solid" />
 
+	<icons:Fa x:Key="ICON_Type_SceneObjectBase" Icon="ObjectGroup" Font="Solid" />
 	<icons:Fa x:Key="ICON_Type_Character" Icon="User" Font="Solid" />
 	<icons:Fa x:Key="ICON_Type_Bone" Icon="Bone" Font="Solid" />
 	<icons:Fa x:Key="ICON_Type_GameObject" Icon="Question" Font="Solid" />
