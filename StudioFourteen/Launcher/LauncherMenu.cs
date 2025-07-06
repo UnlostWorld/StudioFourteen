@@ -73,6 +73,8 @@ public partial class LauncherMenu : Control
 		this.AddPanel<Marketplace.MarketplacePanel>(false);
 		this.AddPanel<Library.LibraryPanel>();
 
+		this.AddPanel<Selection.InspectorPanel>();
+
 		this.AddPanel<Cameras.CameraPanel>();
 		this.AddPanel<EnvironmentPanel>();
 		this.AddPanel<Appearance.CharacterPanel>();

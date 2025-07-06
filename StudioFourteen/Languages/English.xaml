@@ -55,6 +55,8 @@
 	<sys:String x:Key="LOC_SettingsPanelDesc">Change theme, alter shortcut keys, and tweak the behavior of Studio Fourteen.</sys:String>
 	<sys:String x:Key="LOC_SavePanel">Save</sys:String>
 	<sys:String x:Key="LOC_SavePanelDesc">Save and export your scene, containing all characters, poses, cameras, and everything else.</sys:String>
+	<sys:String x:Key="LOC_InspectorPanel">Inspector</sys:String>
+	<sys:String x:Key="LOC_InspectorPanelDesc">Select and Edit any object in the Scene.</sys:String>
 
 	<sys:String x:Key="LOC_Script_Warning">We strive to keep Studio Fourteen safe for our users. Script files have limited access and are heavily restricted, however the possibility remains for malicious code to be contained within script files.</sys:String>
 	<sys:String x:Key="LOC_Script_File">File:</sys:String>

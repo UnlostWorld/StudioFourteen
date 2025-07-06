@@ -67,6 +67,7 @@
 	<icons:Fa x:Key="ICON_Title_AnimationPanel" Icon="Person" Font="Solid" />
 	<icons:Fa x:Key="ICON_Title_SequencerPanel" Icon="GripLines" Font="Solid" />
 	<icons:Fa x:Key="ICON_Title_AIO" Icon="ObjectGroup" Font="Solid" />
+	<icons:Svg x:Key="ICON_Title_InspectorPanel" Source="Inspector" />
 	<icons:Fa x:Key="ICON_Discord" Icon="Discord" />
 	<icons:Fa x:Key="ICON_GitHub" Icon="Github"/>
 	<icons:Fa x:Key="ICON_FavoriteOn" Icon="Heart" Font="Solid" />
