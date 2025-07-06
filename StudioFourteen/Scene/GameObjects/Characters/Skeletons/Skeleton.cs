@@ -57,7 +57,7 @@ public class Skeleton : GameObject
 		}
 	}
 
-	public void Export()
+	public void ExportPose()
 	{
 	}
 

@@ -1,66 +1,100 @@
 <ResourceDictionary
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:characters="clr-namespace:StudioFourteen.Scene.GameObjects.Characters"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
+	xmlns:customize="clr-namespace:StudioFourteen.Appearance.Customize"
 	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:pose="clr-namespace:StudioFourteen.Posing"
-	xmlns:characters="clr-namespace:StudioFourteen.Scene.GameObjects.Characters"
-	xmlns:customize="clr-namespace:StudioFourteen.Appearance.Customize"
 	xmlns:scene="clr-namespace:StudioFourteen.Scene"
-	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
-	xmlns:widget="clr-namespace:StudioFourteen.Widget">
+	xmlns:widget="clr-namespace:StudioFourteen.Widget"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
 	<BooleanToVisibilityConverter x:Key="B2V" />
 	<converters:BoolInversionConverter x:Key="!B" />
 
 	<DataTemplate DataType="{x:Type characters:Character}">
-		<TabControl>
+		<Grid>
+			<Grid.RowDefinitions>
+				<RowDefinition />
+				<RowDefinition Height="Auto" />
+			</Grid.RowDefinitions>
 
-			<TabItem Header="{DynamicResource ICON_Transform_Translate}" widget:View.HideOutsideWidget="True">
-				<StackPanel>
-					<TextBlock
-						Foreground="{DynamicResource ForegroundLightBrush}"
-						Style="{DynamicResource LabelLeft}"
-						Text="Transform" />
-					<ContentPresenter Content="{Binding .}" ContentTemplate="{DynamicResource TransformSceneObjectBaseInspector}" />
-				</StackPanel>
-			</TabItem>
+			<TabControl Grid.Row="0" Margin="-2">
 
-			<TabItem Header="{DynamicResource ICON_Pose_Body}">
-				<ScrollViewer HorizontalScrollBarVisibility="Disabled">
-					<customize:CustomizeControl Category="Body" Character="{Binding .}"/>
-				</ScrollViewer>
-			</TabItem>
-
-			<TabItem Header="{DynamicResource ICON_Pose_Face}">
-				<ScrollViewer HorizontalScrollBarVisibility="Disabled">
-					<customize:CustomizeControl Category="Face" Character="{Binding .}"/>
-				</ScrollViewer>
-			</TabItem>
-
-			<TabItem Header="{DynamicResource ICON_Character_Makeup}">
-				<ScrollViewer HorizontalScrollBarVisibility="Disabled">
-					<customize:CustomizeControl Category="Makeup" Character="{Binding .}"/>
-				</ScrollViewer>
-			</TabItem>
-
-			<TabItem Header="{DynamicResource ICON_Character_Gear}">
-				<ScrollViewer HorizontalScrollBarVisibility="Disabled">
+				<TabItem widget:View.HideOutsideWidget="True" Header="{DynamicResource ICON_Transform_Translate}">
 					<StackPanel>
-						<TextBlock Style="{DynamicResource LeftLabel}" Text="Weapons" />
-						<ItemsControl ItemsSource="{Binding DrawData.Weapons}" />
-
-						<TextBlock Style="{DynamicResource LeftLabel}" Text="Equipment" />
-						<ItemsControl ItemsSource="{Binding DrawData.Equipment}" />
-
-						<TextBlock Style="{DynamicResource LeftLabel}" Text="Accessories" />
-						<ItemsControl ItemsSource="{Binding DrawData.Accessories}" />
+						<TextBlock
+							Foreground="{DynamicResource ForegroundLightBrush}"
+							Style="{DynamicResource LabelLeft}"
+							Text="Transform" />
+						<ContentPresenter Content="{Binding .}" ContentTemplate="{DynamicResource TransformSceneObjectBaseInspector}" />
 					</StackPanel>
-				</ScrollViewer>
-			</TabItem>
+				</TabItem>
 
-		</TabControl>
+				<TabItem Header="{DynamicResource ICON_Pose_Body}">
+					<ScrollViewer HorizontalScrollBarVisibility="Disabled">
+						<customize:CustomizeControl Category="Body" Character="{Binding .}" />
+					</ScrollViewer>
+				</TabItem>
+
+				<TabItem Header="{DynamicResource ICON_Pose_Face}">
+					<ScrollViewer HorizontalScrollBarVisibility="Disabled">
+						<customize:CustomizeControl Category="Face" Character="{Binding .}" />
+					</ScrollViewer>
+				</TabItem>
+
+				<TabItem Header="{DynamicResource ICON_Character_Makeup}">
+					<ScrollViewer HorizontalScrollBarVisibility="Disabled">
+						<customize:CustomizeControl Category="Makeup" Character="{Binding .}" />
+					</ScrollViewer>
+				</TabItem>
+
+				<TabItem Header="{DynamicResource ICON_Character_Gear}">
+					<ScrollViewer HorizontalScrollBarVisibility="Disabled">
+						<StackPanel>
+							<TextBlock Style="{DynamicResource LeftLabel}" Text="Weapons" />
+							<ItemsControl ItemsSource="{Binding DrawData.Weapons}" />
+
+							<TextBlock Style="{DynamicResource LeftLabel}" Text="Equipment" />
+							<ItemsControl ItemsSource="{Binding DrawData.Equipment}" />
+
+							<TextBlock Style="{DynamicResource LeftLabel}" Text="Accessories" />
+							<ItemsControl ItemsSource="{Binding DrawData.Accessories}" />
+						</StackPanel>
+					</ScrollViewer>
+				</TabItem>
+			</TabControl>
+
+
+			<StackPanel
+				Grid.Row="1"
+				HorizontalAlignment="Right"
+				Orientation="Horizontal">
+				<Button
+					Background="Transparent"
+					Command="{Binding RevertAppearanceCommand}"
+					Content="{DynamicResource ICON_Reset}"
+					IsEnabled="{Binding CanRevert}"
+					ToolTip="{DynamicResource LOC_Revert}" />
+
+				<Button
+					Width="75"
+					Background="Transparent"
+					Command="{Binding ImportAppearanceCommand}"
+					Content="Import" />
+
+				<Button
+					Width="75"
+					Background="Transparent"
+					Command="{Binding ExportAppearanceCommand}"
+					Content="Export"
+					ToolTip="{Binding ExportAppearanceToolTipText}" />
+
+			</StackPanel>
+
+		</Grid>
 
 	</DataTemplate>
 </ResourceDictionary>

@@ -15,38 +15,5 @@
 
 	<Grid x:Name="ContentArea">
 		<ContentPresenter Content="{Binding Character}"/>
-
-		<!--
-		<Border
-			Grid.Row="1"
-			Grid.ColumnSpan="2"
-			Margin="0,2,0,0"
-			Style="{DynamicResource WpfUtilsControlBorder}">
-			<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
-
-				<Button
-					Background="Transparent"
-					Click="OnRevertClicked"
-					Content="{DynamicResource ICON_Reset}"
-					IsEnabled="{Binding CanRevert}"
-					ToolTip="{DynamicResource LOC_Revert}" />
-
-				<Button
-					Width="75"
-					Background="Transparent"
-					Click="OnImportClicked">
-					<TextBlock Text="Import" />
-				</Button>
-
-				<Button
-					Width="75"
-					Background="Transparent"
-					Click="OnExportClicked"
-					ToolTip="{Binding ExportAppearanceToolTipText}">
-					<TextBlock Text="Export" />
-				</Button>
-
-			</StackPanel>
-		</Border>-->
 	</Grid>
 </panels:Panel>

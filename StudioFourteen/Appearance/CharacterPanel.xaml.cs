@@ -21,8 +21,6 @@ using StudioFourteen.Scene.GameObjects.Characters;
 
 public partial class CharacterPanel : Panel
 {
-	//// public EquipmentViewModel Equipment { get; init; }
-
 	[Notify] private Character? character;
 
 	protected override void OnOpened()
@@ -41,42 +39,4 @@ public partial class CharacterPanel : Panel
 	{
 		this.Character = newSelection;
 	}
-
-	/*protected unsafe override void OnGameTick()
-	{
-		base.OnGameTick();
-
-		if (this.GameObject == null)
-			return;
-
-		Character* pTarget = (Character*)this.GameObject.GetXivGameObject();
-		if (pTarget == null)
-			return;
-
-		this.Equipment.OnGameTick(pTarget);
-	}
-
-	protected override void OnTargetChanged(int objectTableIndex)
-	{
-		base.OnTargetChanged(objectTableIndex);
-
-		this.Equipment.OnTargetChanged();
-	}
-
-	private unsafe void OnRevertClicked(object sender, RoutedEventArgs e)
-	{
-		this.Services.CharacterAppearance.Restore(this.TargetObjectIndex).Run();
-	}
-
-	private void OnImportClicked(object sender, RoutedEventArgs e)
-	{
-		LibraryPanel.Open(this.GetContext());
-	}
-
-	private async void OnExportClicked(object sender, RoutedEventArgs e)
-	{
-		AppearanceFile file = new();
-		await file.Read(this.TargetObjectIndex);
-		this.Services.Files.SaveFile(file, $"{this.CharacterName}'s Appearance");
-	}*/
 }

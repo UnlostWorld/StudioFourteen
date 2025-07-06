@@ -16,9 +16,11 @@
 namespace StudioFourteen.Scene.GameObjects.Characters;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using StudioFourteen.Scene.GameObjects.Characters.DrawData;
+using StudioFourteen.Appearance;
+using StudioFourteen.Library;
 using StudioFourteen.Scene.GameObjects.Characters.Skeletons;
 using StudioFourteen.Services;
+using WpfUtils.Commands;
 
 using CharaMakeType = StudioFourteen.GameData.Sheets.CharaMakeType;
 using DrawDataContainer = StudioFourteen.Scene.GameObjects.Characters.DrawData.DrawDataContainer;
@@ -29,11 +31,18 @@ public class Character : Skeleton
 	public Character(int objectIndex)
 		: base(objectIndex)
 	{
+		this.RevertAppearanceCommand = new(this.RevertAppearance);
+		this.ImportAppearanceCommand = new(this.ImportAppearance);
+		this.ExportAppearanceCommand = new(this.ExportAppearance);
 	}
 
 	public DrawDataContainer DrawData { get; init; } = new();
 	public override object? Icon => Resources.Find("ICON_Type_Character");
 	public override string TypeName => Resources.Find("LOC_Type_Character", "Character");
+
+	public SimpleCommand RevertAppearanceCommand { get; init; }
+	public SimpleCommand ImportAppearanceCommand { get; init; }
+	public SimpleCommand ExportAppearanceCommand { get; init; }
 
 	public unsafe XivCharacter* GetXivCharacter()
 	{
@@ -51,5 +60,22 @@ public class Character : Skeleton
 	{
 		base.OnGameTick();
 		this.DrawData.OnGameTick(this);
+	}
+
+	public async void RevertAppearance()
+	{
+		await this.Services.CharacterAppearance.Restore(this.ObjectIndex);
+	}
+
+	public void ImportAppearance()
+	{
+		LibraryPanel.Open(this.Services.Panels.GamePanels);
+	}
+
+	public async void ExportAppearance()
+	{
+		AppearanceFile file = new();
+		await file.Read(this.ObjectIndex);
+		this.Services.Files.SaveFile(file, $"{this.Name}'s Appearance");
 	}
 }

@@ -193,7 +193,7 @@ public partial class PosePanel : Panel
 		if (this.Skeleton == null)
 			return;
 
-		this.Skeleton.Export();
+		this.Skeleton.ExportPose();
 	}
 
 	private void OnFlipPoseClicked(object sender, RoutedEventArgs e)
