@@ -15,10 +15,10 @@
 
 namespace StudioFourteen.Rendering.Draw.Gizmos;
 
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using SharpDX.Direct3D11;
 using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Draw;
+using StudioFourteen.Scene.GameObjects.Characters;
 
 public class GridGizmo : GizmoBase
 {
@@ -58,10 +58,10 @@ public class GridGizmo : GizmoBase
 	{
 		if (this.KeepAtTargetHeight)
 		{
-			Character* target = (Character*)this.Services.Target.GetTarget();
-			if (target != null && target->DrawObject != null)
+			Character? target = this.Services.Selection.GetScope<Character>().Selection;
+			if (target != null && target.GetXivCharacter()->DrawObject != null)
 			{
-				this.gridRenderer.Material.Height = target->DrawObject->Position.Y;
+				this.gridRenderer.Material.Height = target.GetXivCharacter()->DrawObject->Position.Y;
 			}
 		}
 

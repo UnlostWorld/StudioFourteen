@@ -16,6 +16,7 @@
 namespace StudioFourteen.Services;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using FFXIVClientStructs.FFXIV.Client.Game.Event;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using StudioFourteen.Appearance;
@@ -23,6 +24,7 @@ using StudioFourteen.Context;
 using StudioFourteen.Interop;
 using StudioFourteen.Mvm;
 using StudioFourteen.Plugin;
+using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
@@ -31,6 +33,10 @@ using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
 using WpfUtils.Extensions;
+
+using Character = StudioFourteen.Scene.GameObjects.Characters.Character;
+using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
+using XivSetupContainter = FFXIVClientStructs.FFXIV.Client.Game.Character.CharacterSetupContainer;
 
 public class CharacterLifecycleService : ServiceBase
 {
@@ -100,7 +106,7 @@ public class CharacterLifecycleService : ServiceBase
 			await Threads.NextFrame();
 			unsafe
 			{
-				Character* pCharacter = this.Services.GameObjects.Get<Character>(index);
+				XivCharacter* pCharacter = this.Services.GameObjects.Get<XivCharacter>(index);
 				pCharacter->Alpha = 1.0f;
 				canDraw = pCharacter->CanDraw();
 			}
@@ -124,15 +130,23 @@ public class CharacterLifecycleService : ServiceBase
 		await TickService.GameTick();
 		unsafe
 		{
-			Character* pCharacter = this.Services.GameObjects.Get<Character>(index);
+			XivCharacter* pCharacter = this.Services.GameObjects.Get<XivCharacter>(index);
 			pCharacter->SetDisplayName(name);
 
-			// Move the spawned characters draw object to the current targets location.
-			Character* pTarget = (Character*)this.Services.Target.GetTarget();
-			if (pCharacter->DrawObject != null && pTarget != null && pTarget->DrawObject != null)
+			Character? character = this.Services.Selection.GetScope<Character>().Selection;
+			if (character != null)
 			{
-				pCharacter->DrawObject->Position = pTarget->DrawObject->Position;
-				pCharacter->DrawObject->Rotation = pTarget->DrawObject->Rotation;
+				// Move the spawned characters draw object to the current targets location.
+				XivCharacter* pTarget = character.GetXivCharacter();
+				if (pCharacter->DrawObject != null && pTarget != null && pTarget->DrawObject != null)
+				{
+					pCharacter->DrawObject->Position = pTarget->DrawObject->Position;
+					pCharacter->DrawObject->Rotation = pTarget->DrawObject->Rotation;
+				}
+			}
+			else
+			{
+				// TODO: Raycast from camera?
 			}
 		}
 
@@ -148,10 +162,15 @@ public class CharacterLifecycleService : ServiceBase
 	{
 		await TickService.GameTick();
 
+		if (!this.Services.GroupPose.IsGroupPosing)
+			return false;
+
 		unsafe
 		{
-			// Mare assumes no target = left gpose and will crash.
-			if (this.Services.Target.GetTarget()->ObjectIndex == objectTableIndex)
+			// Mare assumes no target = left gpose and will unload all mods, so don't
+			// let us delete the target object (should be 0 (the player character) but users
+			// might change targets with other tools or outside of Studio, so check to make sure.)
+			if (TargetSystem.Instance()->GPoseTarget->ObjectIndex == objectTableIndex)
 			{
 				return false;
 			}
@@ -183,14 +202,14 @@ public class CharacterLifecycleService : ServiceBase
 		ClientObjectManager* com = ClientObjectManager.Instance();
 		foreach (ushort idx in indexes)
 		{
-			Character* deletingCharacter = (Character*)com->GetObjectByIndex(idx);
+			XivCharacter* deletingCharacter = (XivCharacter*)com->GetObjectByIndex(idx);
 			if (deletingCharacter == null)
 			{
 				this.Log.Error($"Attempt to delete object by index {idx} was not a character");
 				continue;
 			}
 
-			this.Log.Information($"Deleting object: {idx} - {deletingCharacter->GetDisplayName()}");
+			this.Log.Information($"Deleting object: {idx} - {deletingCharacter->NameString}");
 			com->DeleteObjectByIndex((ushort)idx, 0);
 		}
 
@@ -213,14 +232,14 @@ public class CharacterLifecycleService : ServiceBase
 		}
 	}
 
-	private unsafe nint CharacterInitializeDetour(Character* character)
+	private unsafe nint CharacterInitializeDetour(XivCharacter* character)
 	{
 		nint result = Hooks.CharacterInitialize.Original.Invoke(character);
 		this.CharacterCreated?.Invoke(character->ObjectIndex);
 		return result;
 	}
 
-	private unsafe nint CharacterFinalizeDetour(Character* character)
+	private unsafe nint CharacterFinalizeDetour(XivCharacter* character)
 	{
 		ushort objectTableIndex = character->ObjectIndex;
 
@@ -240,7 +259,7 @@ public class CharacterLifecycleService : ServiceBase
 	{
 		TickService.VerifyGameTickThread();
 
-		Character* player = this.Services.GameObjects.Get<Character>(0);
+		XivCharacter* player = this.Services.GameObjects.Get<XivCharacter>(0);
 
 		if (player == null)
 			return -1;
@@ -252,7 +271,7 @@ public class CharacterLifecycleService : ServiceBase
 
 		ushort spawnedCharacterId = (ushort)idCheck;
 
-		Character* pSpawned = (Character*)com->GetObjectByIndex(spawnedCharacterId);
+		XivCharacter* pSpawned = (XivCharacter*)com->GetObjectByIndex(spawnedCharacterId);
 		if (pSpawned == null)
 			return -1;
 
@@ -261,7 +280,7 @@ public class CharacterLifecycleService : ServiceBase
 		EventGPoseController* gposeController = &EventFramework.Instance()->EventSceneModule.EventGPoseController;
 		gposeController->AddCharacterToGPose(pSpawned); // This is safe even if the list is full. The game will also cleanup for us.
 
-		CharacterSetupContainer.CopyFlags flags = CharacterSetupContainer.CopyFlags.WeaponHiding | CharacterSetupContainer.CopyFlags.Position;
+		XivSetupContainter.CopyFlags flags = XivSetupContainter.CopyFlags.WeaponHiding | XivSetupContainter.CopyFlags.Position;
 		pSpawned->CharacterSetup.CopyFromCharacter(player, flags);
 
 		*((sbyte*)pSpawned + 0x95) &= ~2; // Disable selection just incase this somehow leaks out of GPose
@@ -293,7 +312,7 @@ public class CharacterLifecycleService : ServiceBase
 		pSpawned->GameObject.Name[name.Length] = 0;
 
 		pSpawned->GameObject.DisableDraw();
-		pSpawned->CharacterSetup.CopyFromCharacter(pSpawned, CharacterSetupContainer.CopyFlags.None);
+		pSpawned->CharacterSetup.CopyFromCharacter(pSpawned, XivSetupContainter.CopyFlags.None);
 		pSpawned->GameObject.EnableDraw();
 
 		pSpawned->Alpha = 0.01f;

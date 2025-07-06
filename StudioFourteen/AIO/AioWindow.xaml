@@ -2,7 +2,6 @@
 	x:Class="StudioFourteen.AIO.AioWindow"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:targets="clr-namespace:StudioFourteen.Targets"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:launcher="clr-namespace:StudioFourteen.Launcher"
 	xmlns:local="clr-namespace:StudioFourteen.AIO"

@@ -33,7 +33,6 @@ public class ServiceManager : ServiceManagerBase
 	public Library.LibraryService Library { get; init; } = new();
 	public Input.InputService Input { get; init; } = new();
 	public Files.FileThumbnailService Thumbnails { get; init; } = new();
-	public Targets.TargetService Target { get; init; } = new();
 	public Tablet.TabletService Tablet { get; init; } = new();
 	public ActorRoleService Roles { get; init; } = new();
 	public Files.FileService Files { get; init; } = new();
