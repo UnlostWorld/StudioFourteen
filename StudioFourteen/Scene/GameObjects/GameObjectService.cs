@@ -87,6 +87,9 @@ public class GameObjectService : ServiceBase
 				if (gameObject == null)
 					continue;
 
+				if (!gameObject->IsReadyToDraw() || gameObject->DrawObject == null)
+					continue;
+
 				ushort index = gameObject->ObjectIndex;
 				toRemove.Remove(index);
 

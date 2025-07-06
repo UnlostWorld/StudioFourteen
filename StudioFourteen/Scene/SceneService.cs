@@ -23,6 +23,11 @@ public class SceneService : ServiceBase
 {
 	private readonly List<SceneObjectBase> objects = new();
 
+	public delegate void SceneChanged(SceneObjectBase obj);
+
+	public event SceneChanged? ObjectAdded;
+	public event SceneChanged? ObjectRemoved;
+
 	public override void Attach()
 	{
 		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
@@ -41,6 +46,8 @@ public class SceneService : ServiceBase
 		{
 			this.objects.Add(obj);
 		}
+
+		this.ObjectAdded?.Invoke(obj);
 	}
 
 	public void RemoveObject(SceneObjectBase obj)
@@ -50,12 +57,31 @@ public class SceneService : ServiceBase
 			this.objects.Remove(obj);
 		}
 
+		this.ObjectRemoved?.Invoke(obj);
 		obj.Dispose();
 	}
 
 	public SceneObjectBase? GetObject(string id)
 	{
 		throw new NotImplementedException();
+	}
+
+	public List<T> FindObjects<T>()
+		where T : SceneObjectBase
+	{
+		lock (this.objects)
+		{
+			List<T> results = new();
+			foreach (SceneObjectBase obj in this.objects)
+			{
+				if (obj is T tObj)
+				{
+					results.Add(tObj);
+				}
+			}
+
+			return results;
+		}
 	}
 
 	private void OnGameTick()

@@ -18,6 +18,7 @@ namespace StudioFourteen.Services;
 using StudioFourteen.AIO;
 using StudioFourteen.Launcher;
 using StudioFourteen.Panels;
+using StudioFourteen.Selection;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -144,6 +145,7 @@ public class PanelService : ServiceBase
 	private void OnOpening()
 	{
 		this.GamePanels.CreatePanel<ToolBarPanel>();
+		this.GamePanels.CreatePanel<SelectionPanel>();
 
 		if (!this.hasRestoredPanels && this.Services.Studio.IsOpen)
 		{
