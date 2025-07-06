@@ -27,6 +27,8 @@ using Vector = System.Windows.Vector;
 
 public class MouseDevice : InputDeviceBase
 {
+	private const float MinDragDistance = 1.0f;
+
 	private readonly Dictionary<MouseButton, Point> dragStarts = new();
 	private readonly HashSet<MouseButton> draggingButtons = new();
 	private readonly Dictionary<MouseButton, InputAxis> buttonAxes = new();
@@ -283,7 +285,7 @@ public class MouseDevice : InputDeviceBase
 				continue;
 
 			Vector totalDelta = mousePoint.Value - dragStart;
-			if (Math.Abs(totalDelta.X) > 5.0f || Math.Abs(totalDelta.Y) > 5.0f)
+			if (Math.Abs(totalDelta.X) > MinDragDistance || Math.Abs(totalDelta.Y) > MinDragDistance)
 			{
 				this.draggingButtons.Add(button);
 			}

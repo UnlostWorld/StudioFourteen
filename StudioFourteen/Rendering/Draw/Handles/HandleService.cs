@@ -35,9 +35,15 @@ public partial class HandleService : ServiceBase
 		InputAction.Handle_Up,
 		"Handle Service Move");
 
+	private readonly Input0DListener selectListener = new(
+		InputAction.Handle_Select,
+		"Handle Service Select");
+
 	private readonly HitTestResult pressHitTestResult = new();
 	private Handle? currentHover;
 	private Handle? currentPress;
+	private bool isSelectDown = false;
+	private bool didDrag = false;
 	////private HandleTipWindow? handleTipWindow;
 
 	public bool IsCursorOverHandle => this.CurrentHover != null;
@@ -102,6 +108,8 @@ public partial class HandleService : ServiceBase
 	public override void Attach()
 	{
 		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
+		this.selectListener.Enable();
+		this.Timeout();
 		base.Attach();
 	}
 
@@ -109,6 +117,8 @@ public partial class HandleService : ServiceBase
 	{
 		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
 		////this.handleTipWindow?.Hide(null);
+
+		this.selectListener.Disable();
 		base.Detach();
 	}
 
@@ -158,15 +168,24 @@ public partial class HandleService : ServiceBase
 			}
 
 			// Check mouse down
-			bool mouseDown = this.Services.Input.Mouse.GetButton(MouseButton.Left);
+			////bool mouseDown = this.Services.Input.Mouse.GetButton(MouseButton.Left);
+			bool mouseDown = this.selectListener.Value > 0;
 			if (this.CurrentHover != null && mouseDown)
 			{
 				this.CurrentPress = this.CurrentHover;
 			}
-			else
+			else if (this.CurrentPress != null && !mouseDown)
 			{
 				this.CurrentPress = null;
 			}
+			else if (this.isSelectDown && !mouseDown && !this.didDrag)
+			{
+				this.Services.Selection.Clear();
+			}
+
+			this.isSelectDown = mouseDown;
+			if (this.isSelectDown)
+				this.didDrag = this.Services.Input.Mouse.IsAnyDragging;
 
 			// Check drag
 			if (this.CurrentPress != null)

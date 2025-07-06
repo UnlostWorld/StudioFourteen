@@ -178,33 +178,6 @@ public partial class SelectionService : ServiceBase
 		await base.Stop();
 	}
 
-	public override void Attach()
-	{
-		base.Attach();
-		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
-	}
-
-	public override void Detach()
-	{
-		base.Detach();
-		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
-	}
-
-	private void OnGameTick()
-	{
-		if (this.selection == null)
-		{
-			if (this.Services.GroupPose.IsGroupPosing)
-			{
-				this.Select(this.Services.GameObjects.GetGameObject(GroupPoseService.GPoseFirstCharacter), this);
-			}
-			else
-			{
-				this.Select(this.Services.GameObjects.GetGameObject(0), this);
-			}
-		}
-	}
-
 	public class SelectionScope(Type selectionType)
 	{
 		public Type SelectionType => selectionType;
