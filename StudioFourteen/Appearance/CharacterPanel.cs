@@ -15,28 +15,9 @@
 
 namespace StudioFourteen.Appearance;
 
-using StudioFourteen.Panels;
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Scene.GameObjects.Characters;
+using StudioFourteen.Selection;
 
-public partial class CharacterPanel : Panel
+public partial class CharacterPanel : InspectorPanel<Character>
 {
-	[Notify] private Character? character;
-
-	protected override void OnOpened()
-	{
-		this.Services.Selection.GetScope<Character>().Attach(this.OnSelectionChanged);
-		base.OnOpened();
-	}
-
-	protected override void OnClosed()
-	{
-		this.Services.Selection.GetScope<Character>().Detach(this.OnSelectionChanged);
-		base.OnClosed();
-	}
-
-	private void OnSelectionChanged(Character? newSelection, object? selectionSource)
-	{
-		this.Character = newSelection;
-	}
 }

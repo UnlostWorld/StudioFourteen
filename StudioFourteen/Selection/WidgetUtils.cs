@@ -15,7 +15,9 @@
 
 namespace StudioFourteen.Selection;
 
+using System.Collections.Generic;
 using System.Windows;
+using System.Windows.Controls;
 using DependencyPropertyGenerator;
 
 [AttachedDependencyProperty<bool>("HideInsideWidget")]
@@ -33,14 +35,7 @@ public partial class WidgetUtils
 			}
 
 			Widget? widget = fe.FindParent<Widget>();
-			if (widget != null && newValue)
-			{
-				fe.Visibility = Visibility.Collapsed;
-			}
-			else
-			{
-				fe.Visibility = Visibility.Visible;
-			}
+			SetItemVisibility(fe, (widget == null || !newValue));
 		}
 	}
 
@@ -55,13 +50,32 @@ public partial class WidgetUtils
 			}
 
 			Widget? widget = fe.FindParent<Widget>();
-			if (widget != null || !newValue)
+			SetItemVisibility(fe, (widget != null || !newValue));
+		}
+	}
+
+	private static void SetItemVisibility(FrameworkElement el, bool visible)
+	{
+		el.Visibility = visible ? Visibility.Visible : Visibility.Collapsed;
+		el.IsEnabled = visible;
+
+		if (!visible && el is TabItem ti && ti.IsSelected)
+		{
+			ti.IsSelected = false;
+
+			// Ensure the tab control has a tab selected
+			TabControl? tc = ti.FindParent<TabControl>();
+			List<TabItem>? tabItems = tc?.FindChildren<TabItem>();
+			if (tabItems != null)
 			{
-				fe.Visibility = Visibility.Visible;
-			}
-			else
-			{
-				fe.Visibility = Visibility.Collapsed;
+				foreach (TabItem item in tabItems)
+				{
+					if (item == ti)
+						continue;
+
+					item.IsSelected = true;
+					break;
+				}
 			}
 		}
 	}

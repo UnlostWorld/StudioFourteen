@@ -16,6 +16,7 @@
 namespace StudioFourteen.Selection;
 
 using System;
+using System.Collections.Generic;
 using StudioFourteen.Panels;
 using StudioFourteen.Scene;
 using StudioFourteen.Scene.GameObjects.Characters;
@@ -41,8 +42,7 @@ public partial class InspectorPanel : Panel
 	{
 		base.OnOpened();
 
-		this.Types.Add(new SelectionType<SceneObjectBase>());
-		this.Types.Add(new SelectionType<Character>());
+		this.Types.Replace(this.GetSelectionTypes());
 		this.CurrentType = this.Types[0];
 
 		this.Services.Selection.SelectionChanged += this.OnServiceSelectionChanged;
@@ -57,6 +57,14 @@ public partial class InspectorPanel : Panel
 		this.Services.Selection.SelectionChanged -= this.OnServiceSelectionChanged;
 		this.Services.Scene.ObjectAdded -= this.OnObjectAddedToScene;
 		this.Services.Scene.ObjectRemoved -= this.OnObjectRemovedFromScene;
+	}
+
+	protected virtual List<SelectionTypeBase> GetSelectionTypes()
+	{
+		List<SelectionTypeBase> selectionTypes = new();
+		selectionTypes.Add(new SelectionType<SceneObjectBase>());
+		selectionTypes.Add(new SelectionType<Character>());
+		return selectionTypes;
 	}
 
 	private void OnObjectRemovedFromScene(SceneObjectBase obj)
@@ -90,5 +98,16 @@ public partial class InspectorPanel : Panel
 				type.OnServiceSelectionChanged(oldSelection, newSelection, selectionSource);
 			}
 		});
+	}
+}
+
+public class InspectorPanel<T> : InspectorPanel
+	where T : SceneObjectBase
+{
+	protected override List<SelectionTypeBase> GetSelectionTypes()
+	{
+		List<SelectionTypeBase> selectionTypes = new();
+		selectionTypes.Add(new SelectionType<T>());
+		return selectionTypes;
 	}
 }

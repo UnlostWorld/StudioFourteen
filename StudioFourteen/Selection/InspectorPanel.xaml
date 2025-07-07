@@ -29,7 +29,8 @@
 			<ComboBox
 				Grid.Row="0"
 				ItemsSource="{Binding Types}"
-				SelectedValue="{Binding CurrentType}">
+				SelectedValue="{Binding CurrentType}"
+				Visibility="{Binding Types.Count, Converter={StaticResource GreaterThanToVisibility}, ConverterParameter=1}">
 				<ComboBox.ItemTemplate>
 					<DataTemplate>
 						<Grid Margin="4">
