@@ -19,6 +19,7 @@
 			<Grid
 				x:Name="MainGrid"
 				Height="32"
+				Width="32"
 				TextBlock.Foreground="{DynamicResource ForegroundLightBrush}">
 
 				<Border
@@ -37,7 +38,8 @@
 					<icons:IconView
 						Margin="{TemplateBinding Padding}"
 						Foreground="{DynamicResource ForegroundLightBrush}"
-						Icon="{TemplateBinding Icon}" />
+						Icon="{TemplateBinding Icon}"
+						Width="22"/>
 				</Grid>
 
 				<Grid
