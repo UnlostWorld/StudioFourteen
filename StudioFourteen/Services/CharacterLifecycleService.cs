@@ -80,23 +80,27 @@ public class CharacterLifecycleService : ServiceBase
 		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnTick);
 	}
 
-	public async Task<int> CreateAsync(ICharacterAppearance? appearance, UpdateSource updateSource)
+	public async Task<Character?> CreateAsync(ICharacterAppearance? appearance, UpdateSource updateSource)
 	{
 		return await this.CreateAsync(Vector3.Zero, appearance, updateSource);
 	}
 
-	public async Task<int> CreateAsync(Vector3 position, ICharacterAppearance? appearance, UpdateSource updateSource)
+	public async Task<Character?> CreateAsync(Vector3 position, ICharacterAppearance? appearance, UpdateSource updateSource)
 	{
 		await TickService.GameTick();
 
 		if (!this.CanSpawn)
-			return -1;
+			return null;
 
 		await TickService.GameTick();
 		int index = this.Spawn(position);
+		if (index < 0)
+			return null;
 
-		if (index == -1)
-			return index;
+		await TickService.NextGameTick();
+		Character? character = this.Services.GameObjects.Get<Character>(index);
+		if (character == null)
+			return null;
 
 		Stopwatch sw = new Stopwatch();
 		sw.Start();
@@ -106,7 +110,7 @@ public class CharacterLifecycleService : ServiceBase
 			await Threads.NextFrame();
 			unsafe
 			{
-				XivCharacter* pCharacter = this.Services.GameObjects.Get<XivCharacter>(index);
+				XivCharacter* pCharacter = character.GetXivCharacter();
 				pCharacter->Alpha = 1.0f;
 				canDraw = pCharacter->CanDraw();
 			}
@@ -118,32 +122,29 @@ public class CharacterLifecycleService : ServiceBase
 
 		await Threads.NextFrame();
 
-		// TODO: Get a Character for the newly created object
-		throw new NotImplementedException();
-
-		/*string name = $"Studio {index}";
+		string name = $"Studio {character}";
 		if (appearance != null)
 		{
 			if (appearance.Name != null)
 				name = appearance.Name;
 
-			await appearance.Apply(index, updateSource);
+			await appearance.Apply(character, updateSource);
 		}
 
 		await TickService.GameTick();
 		unsafe
 		{
-			XivCharacter* pCharacter = this.Services.GameObjects.Get<XivCharacter>(index);
+			XivCharacter* pCharacter = character.GetXivCharacter();
 
-			Character? character = this.Services.Selection.GetScope<Character>().Selection;
-			if (character != null)
+			Character? selectedCharacter = this.Services.Selection.GetScope<Character>().Selection;
+			if (selectedCharacter != null)
 			{
 				// Move the spawned characters draw object to the current targets location.
-				XivCharacter* pTarget = character.GetXivCharacter();
-				if (pCharacter->DrawObject != null && pTarget != null && pTarget->DrawObject != null)
+				XivCharacter* pSelectedCharacter = selectedCharacter.GetXivCharacter();
+				if (pCharacter->DrawObject != null && pSelectedCharacter != null && pSelectedCharacter->DrawObject != null)
 				{
-					pCharacter->DrawObject->Position = pTarget->DrawObject->Position;
-					pCharacter->DrawObject->Rotation = pTarget->DrawObject->Rotation;
+					pCharacter->DrawObject->Position = pSelectedCharacter->DrawObject->Position;
+					pCharacter->DrawObject->Rotation = pSelectedCharacter->DrawObject->Rotation;
 				}
 			}
 			else
@@ -152,7 +153,7 @@ public class CharacterLifecycleService : ServiceBase
 			}
 		}
 
-		return index;*/
+		return character;
 	}
 
 	public void Destroy(int objectTableIndex)
@@ -182,7 +183,7 @@ public class CharacterLifecycleService : ServiceBase
 
 		unsafe
 		{
-			GameObject* character = this.Services.GameObjects.GetXivGameObject(objectTableIndex);
+			GameObject* character = this.Services.GameObjects.GetXivObject(objectTableIndex);
 
 			ClientObjectManager* com = ClientObjectManager.Instance();
 			uint idx = com->GetIndexByObject(character);
@@ -261,7 +262,7 @@ public class CharacterLifecycleService : ServiceBase
 	{
 		TickService.VerifyGameTickThread();
 
-		XivCharacter* player = this.Services.GameObjects.Get<XivCharacter>(0);
+		XivCharacter* player = this.Services.GameObjects.GetXivObject<XivCharacter>(0);
 
 		if (player == null)
 			return -1;

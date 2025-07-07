@@ -17,23 +17,25 @@ namespace StudioFourteen.Appearance;
 
 using System.Numerics;
 using System.Threading.Tasks;
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using StudioFourteen.DragAndDrop;
+using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Services;
 using StudioFourteen.Utilities;
 
+using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
+
 public class CharacterAppearanceDragSceneInstance(ICharacterAppearance appearance) : IDragSceneInstance
 {
-	private int spawnedObjectId = -1;
+	private Character? spawnedCharacter = null;
 
 	public object? GetOperationIcon() => Resources.Find("ICON_Drag_AddCharacter");
 
 	public async Task EnterScene()
 	{
-		if (this.spawnedObjectId != -1)
+		if (this.spawnedCharacter != null)
 			return;
 
-		this.spawnedObjectId = await ServiceManager.Instance.CharacterLifecycle.CreateAsync(appearance, UpdateSource.Preview);
+		this.spawnedCharacter = await ServiceManager.Instance.CharacterLifecycle.CreateAsync(appearance, UpdateSource.Preview);
 	}
 
 	public async Task Drop(HitInfo hit)
@@ -44,18 +46,20 @@ public class CharacterAppearanceDragSceneInstance(ICharacterAppearance appearanc
 
 	public async Task LeaveScene()
 	{
-		await ServiceManager.Instance.CharacterLifecycle.DestroyAsync(this.spawnedObjectId);
-		this.spawnedObjectId = -1;
+		if (this.spawnedCharacter != null)
+			await ServiceManager.Instance.CharacterLifecycle.DestroyAsync(this.spawnedCharacter.ObjectIndex);
+
+		this.spawnedCharacter = null;
 	}
 
 	public unsafe void UpdatePosition(HitInfo hit)
 	{
 		TickService.VerifyGameTickThread();
 
-		if (this.spawnedObjectId == -1)
+		if (this.spawnedCharacter == null)
 			return;
 
-		Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(this.spawnedObjectId);
+		XivCharacter* pCharacter = this.spawnedCharacter.GetXivCharacter();
 		if (pCharacter == null || pCharacter->DrawObject == null)
 			return;
 

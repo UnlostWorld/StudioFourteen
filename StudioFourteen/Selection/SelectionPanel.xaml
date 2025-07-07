@@ -7,6 +7,7 @@
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:gizmos="clr-namespace:StudioFourteen.Rendering.Draw.Gizmos"
 	xmlns:icons="clr-namespace:StudioFourteen.Icons"
+	xmlns:librarySelector="clr-namespace:StudioFourteen.Library.Selector"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:mvm="clr-namespace:StudioFourteen.Mvm"
 	xmlns:sys="clr-namespace:System;assembly=mscorlib"
@@ -26,6 +27,7 @@
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="Auto" />
 			<ColumnDefinition />
+			<ColumnDefinition Width="Auto" />
 		</Grid.ColumnDefinitions>
 
 		<ComboBox
@@ -51,6 +53,120 @@
 				</DataTemplate>
 			</ListBox.ItemTemplate>
 		</wpfUtils:SwitchSelector>
+
+		<ToggleButton
+			x:Name="AddButton"
+			Grid.Column="2"
+			Width="32"
+			Content="{DynamicResource ICON_AddObject}"
+			Style="{DynamicResource WpfUtilsIconToggleButton}" />
+
+		<librarySelector:LibrarySelector
+			HorizontalAlignment="Center"
+			IsOpen="{Binding ElementName=AddButton, Path=IsChecked}"
+			PlacementTarget="{Binding ElementName=AddButton}"
+			StaysOpen="False"
+			Favorites="True"
+			Header="Create an Object"
+			CloseOnSelection="True"
+			SelectedItem="{Binding SelectedAdd}">
+
+			<librarySelector:LibrarySelector.Footer>
+				<Border Margin="2" Style="{DynamicResource WpfUtilsControlBorder}">
+					<UniformGrid Columns="3">
+						<Button Height="48">
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition />
+									<RowDefinition Height="Auto" />
+								</Grid.RowDefinitions>
+
+								<icons:IconView Grid.Row="0" Icon="{DynamicResource ICON_Type_Character}" />
+								<TextBlock
+									Grid.Row="1"
+									HorizontalAlignment="Center"
+									Text="Character" />
+							</Grid>
+						</Button>
+
+						<Button Height="48">
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition />
+									<RowDefinition Height="Auto" />
+								</Grid.RowDefinitions>
+
+								<icons:IconView Grid.Row="0" Icon="{DynamicResource ICON_Type_Camera}" />
+								<TextBlock
+									Grid.Row="1"
+									HorizontalAlignment="Center"
+									Text="Camera" />
+							</Grid>
+						</Button>
+
+						<Button Height="48">
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition />
+									<RowDefinition Height="Auto" />
+								</Grid.RowDefinitions>
+
+								<icons:IconView Grid.Row="0" Icon="{DynamicResource ICON_Type_Light}" />
+								<TextBlock
+									Grid.Row="1"
+									HorizontalAlignment="Center"
+									Text="Light" />
+							</Grid>
+						</Button>
+
+						<Button Height="48">
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition />
+									<RowDefinition Height="Auto" />
+								</Grid.RowDefinitions>
+
+								<icons:IconView Grid.Row="0" Icon="{DynamicResource ICON_Type_StageMark}" />
+								<TextBlock
+									Grid.Row="1"
+									HorizontalAlignment="Center"
+									Text="Marker" />
+							</Grid>
+						</Button>
+
+						<Button Height="48">
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition />
+									<RowDefinition Height="Auto" />
+								</Grid.RowDefinitions>
+
+								<icons:IconView Grid.Row="0" Icon="{DynamicResource ICON_Type_Effect}" />
+								<TextBlock
+									Grid.Row="1"
+									HorizontalAlignment="Center"
+									Text="Effect" />
+							</Grid>
+						</Button>
+
+						<Button Height="48">
+							<Grid>
+								<Grid.RowDefinitions>
+									<RowDefinition />
+									<RowDefinition Height="Auto" />
+								</Grid.RowDefinitions>
+
+								<icons:IconView Grid.Row="0" Icon="{DynamicResource ICON_Type_Furnature}" />
+								<TextBlock
+									Grid.Row="1"
+									HorizontalAlignment="Center"
+									Text="Furniture" />
+							</Grid>
+						</Button>
+					</UniformGrid>
+				</Border>
+			</librarySelector:LibrarySelector.Footer>
+		</librarySelector:LibrarySelector>
 
 	</Grid>
 </windows:Panel>

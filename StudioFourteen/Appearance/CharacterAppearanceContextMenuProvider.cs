@@ -28,7 +28,7 @@ public class CharacterAppearanceContextMenuProvider : ContextProvider<ICharacter
 		return Task.CompletedTask;
 	}
 
-	private Task<int> Spawn(ICharacterAppearance target)
+	private Task<Character?> Spawn(ICharacterAppearance target)
 	{
 		return this.Services.CharacterLifecycle.CreateAsync(target, UpdateSource.Interface);
 	}

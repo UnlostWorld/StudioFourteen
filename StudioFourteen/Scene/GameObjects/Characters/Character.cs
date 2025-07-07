@@ -22,7 +22,6 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using Lumina.Excel.Sheets;
 using StudioFourteen.Appearance;
-using StudioFourteen.GameData;
 using StudioFourteen.GameData.Library;
 using StudioFourteen.Library;
 using StudioFourteen.Scene.GameObjects.Characters.Skeletons;
@@ -30,10 +29,8 @@ using StudioFourteen.Services;
 using WpfUtils.Commands;
 
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
-using static StudioFourteen.Appearance.AppearanceFile;
 
 using CharaMakeType = StudioFourteen.GameData.Sheets.CharaMakeType;
-using CustomizeFacialFeatures = FFXIVClientStructs.FFXIV.Client.Game.Character.CustomizeDataExtensions.FacialFeatures;
 using DrawDataContainer = StudioFourteen.Scene.GameObjects.Characters.DrawData.DrawDataContainer;
 using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
 
@@ -59,7 +56,7 @@ public class Character : Skeleton
 
 	public unsafe XivCharacter* GetXivCharacter()
 	{
-		return (XivCharacter*)this.Services.GameObjects.GetXivGameObject(this.ObjectIndex);
+		return (XivCharacter*)this.Services.GameObjects.GetXivObject(this.ObjectIndex);
 	}
 
 	public unsafe CharaMakeType? GetCharaMakeType()
@@ -191,6 +188,9 @@ public class Character : Skeleton
 	{
 		TickService.VerifyGameTickThread();
 		XivCharacter* pCharacter = this.GetXivCharacter();
+		if (pCharacter == null)
+			return default;
+
 		return pCharacter->DrawData.Weapon(slot);
 	}
 

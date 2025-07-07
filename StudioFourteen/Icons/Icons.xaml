@@ -86,10 +86,11 @@
 	<icons:Fa x:Key="ICON_VisibilityOn" Icon="Eye" Font="Solid" />
 	<icons:Fa x:Key="ICON_VisibilityOff" Icon="EyeSlash" Font="Solid" />
 	<icons:Fa x:Key="ICON_Gizmos" Icon="LayerGroup" Font="Solid" />
-	<icons:Fa x:Key="ICON_AddCharacter" Icon="UserPlus" Font="Solid" />
 	<icons:Svg x:Key="ICON_DeleteCharacter" Source="CharacterDelete"/>
 	<icons:Fa x:Key="ICON_Info" Icon="InfoCircle" Font="Solid" />
 	<icons:Fa x:Key="ICON_Warning" Icon="Warning" Font="Solid" />
+
+	<icons:Fa x:Key="ICON_AddObject" Icon="Plus" Font="Solid" />
 
 	<icons:Svg x:Key="ICON_Selection" Source="SelectionBounds" />
 	<icons:Fa x:Key="ICON_Transform_Translate" Icon="Arrows" Font="Solid" />
@@ -102,6 +103,11 @@
 	<icons:Fa x:Key="ICON_Type_Character" Icon="User" Font="Solid" />
 	<icons:Fa x:Key="ICON_Type_Bone" Icon="Bone" Font="Solid" />
 	<icons:Fa x:Key="ICON_Type_GameObject" Icon="Question" Font="Solid" />
+	<icons:Fa x:Key="ICON_Type_Camera" Icon="Video" Font="Solid" />
+	<icons:Fa x:Key="ICON_Type_Light" Icon="LightBulb" Font="Solid" />
+	<icons:Fa x:Key="ICON_Type_StageMark" Icon="MapMarker" Font="Solid" />
+	<icons:Fa x:Key="ICON_Type_Effect" Icon="Fire" Font="Solid" />
+	<icons:Fa x:Key="ICON_Type_Furnature" Icon="Chair" Font="Solid" />
 
 	<icons:Fa x:Key="ICON_Selection_Eye" Icon="Eye" Font="Solid" />
 	<icons:Fa x:Key="ICON_Selection_Blend" Icon="BezierCurve" Font="Solid" />

@@ -139,7 +139,7 @@ public partial class AnimationService : ServiceBase
 		{
 			TickService.VerifyGameTickThread();
 
-			Character* pCharacter = (Character*)ServiceManager.Instance.GameObjects.GetXivGameObject(this.ObjectIndex);
+			Character* pCharacter = (Character*)ServiceManager.Instance.GameObjects.GetXivObject(this.ObjectIndex);
 			if (pCharacter == null)
 				return;
 
@@ -172,7 +172,7 @@ public partial class AnimationService : ServiceBase
 		public unsafe void ResetLoop()
 		{
 			TickService.VerifyGameTickThread();
-			Character* pCharacter = (Character*)ServiceManager.Instance.GameObjects.GetXivGameObject(this.ObjectIndex);
+			Character* pCharacter = (Character*)ServiceManager.Instance.GameObjects.GetXivObject(this.ObjectIndex);
 
 			if (this.initialBaseOverride != null)
 			{
@@ -196,7 +196,7 @@ public partial class AnimationService : ServiceBase
 			TickService.VerifyGameTickThread();
 			this.ResetLoop();
 
-			Character* pCharacter = (Character*)ServiceManager.Instance.GameObjects.GetXivGameObject(this.ObjectIndex);
+			Character* pCharacter = (Character*)ServiceManager.Instance.GameObjects.GetXivObject(this.ObjectIndex);
 			this.PlayTimeline(pCharacter, 368);
 		}
 
@@ -204,7 +204,7 @@ public partial class AnimationService : ServiceBase
 		{
 			TickService.VerifyGameTickThread();
 
-			Character* pCharacter = (Character*)ServiceManager.Instance.GameObjects.GetXivGameObject(this.ObjectIndex);
+			Character* pCharacter = (Character*)ServiceManager.Instance.GameObjects.GetXivObject(this.ObjectIndex);
 			if (pCharacter == null)
 				return;
 

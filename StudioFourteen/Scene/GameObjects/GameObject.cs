@@ -113,7 +113,7 @@ public class GameObject : TransformSceneObjectBase
 
 	public unsafe XivGameObject* GetXivGameObject()
 	{
-		return this.Services.GameObjects.GetXivGameObject(this.ObjectIndex);
+		return this.Services.GameObjects.GetXivObject(this.ObjectIndex);
 	}
 
 	public unsafe bool CanDraw()

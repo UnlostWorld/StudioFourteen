@@ -16,6 +16,7 @@
 namespace StudioFourteen.Selection;
 
 using System;
+using StudioFourteen.Appearance;
 using StudioFourteen.Panels;
 using StudioFourteen.Scene;
 using StudioFourteen.Scene.GameObjects.Characters;
@@ -35,6 +36,12 @@ public partial class SelectionPanel : Panel
 			this.currentType = value;
 			this.NotifyPropertyChanged();
 		}
+	}
+
+	public object? SelectedAdd
+	{
+		get => null;
+		set => this.CreateObject(value);
 	}
 
 	protected override void OnOpened()
@@ -89,5 +96,16 @@ public partial class SelectionPanel : Panel
 				type.OnServiceSelectionChanged(oldSelection, newSelection, selectionSource);
 			}
 		});
+	}
+
+	private void CreateObject(object? obj)
+	{
+		if (obj == null)
+			return;
+
+		if (obj is ICharacterAppearance appearance)
+		{
+			this.Services.CharacterLifecycle.CreateAsync(appearance, UpdateSource.Interface).Run();
+		}
 	}
 }

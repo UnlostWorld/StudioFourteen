@@ -40,7 +40,16 @@ public class GameObjectService : ServiceBase
 		base.Detach();
 	}
 
-	public GameObject? GetGameObject(int index)
+	public T? Get<T>(int index)
+	{
+		GameObject? obj = this.Get(index);
+		if (obj is T tObj)
+			return tObj;
+
+		return default;
+	}
+
+	public GameObject? Get(int index)
 	{
 		if (index < 0)
 			return null;
@@ -55,13 +64,13 @@ public class GameObjectService : ServiceBase
 		}
 	}
 
-	public unsafe T* Get<T>(int objectTableIndex)
+	public unsafe T* GetXivObject<T>(int objectTableIndex)
 		where T : unmanaged
 	{
-		return (T*)this.GetXivGameObject(objectTableIndex);
+		return (T*)this.GetXivObject(objectTableIndex);
 	}
 
-	public unsafe XivGameObject* GetXivGameObject(int index)
+	public unsafe XivGameObject* GetXivObject(int index)
 	{
 		TickService.VerifyGameTickThread();
 

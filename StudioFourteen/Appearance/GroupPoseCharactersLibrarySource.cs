@@ -48,7 +48,7 @@ public class GroupPoseCharactersLibrarySource : SourceBase
 		// back up the appearance of every character in gpose
 		for (int i = GroupPoseService.GPoseFirstCharacter; i < GroupPoseService.GPoseFirstCharacter + GroupPoseService.GPoseCharacterCount; ++i)
 		{
-			Character* pCharacter = this.Services.GameObjects.Get<Character>(i);
+			Character* pCharacter = this.Services.GameObjects.GetXivObject<Character>(i);
 
 			if (pCharacter == null)
 				continue;

@@ -92,7 +92,7 @@ public readonly struct BoneId(int objectTableIndex, int partialSkeletonIndex, by
 
 		TickService.VerifyGameTickThread();
 
-		character = ServiceManager.Instance.GameObjects.Get<Character>(this.ObjectTableIndex);
+		character = ServiceManager.Instance.GameObjects.GetXivObject<Character>(this.ObjectTableIndex);
 		if (character == null)
 			return false;
 
