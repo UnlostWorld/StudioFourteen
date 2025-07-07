@@ -16,8 +16,8 @@
 namespace StudioFourteen.Appearance.Customize;
 
 using Dalamud.Game.ClientState.Objects.Enums;
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using StudioFourteen.Mvm;
+using StudioFourteen.Scene.GameObjects.Characters;
 
 public abstract class MenuViewModel
 	: ViewModel
@@ -111,15 +111,15 @@ public abstract class MenuViewModel
 		}
 	}
 
-	public unsafe virtual void OnGameTick(Character* pCharacter)
+	public unsafe virtual void OnGameTick(Character character)
 	{
 		byte oldValue = this.Value;
-		this.lastReadValue = pCharacter->GetCustomizeValue(this.CustomizeIndex);
+		this.lastReadValue = character.GetCustomizeValue(this.CustomizeIndex);
 
 		if (this.nextWriteValue != null)
 		{
 			if (this.nextWriteValue.Value != this.lastReadValue)
-				this.Services.CharacterAppearance.SetCustomizeValue(pCharacter->ObjectIndex, this.CustomizeIndex, this.nextWriteValue.Value, UpdateSource.Interface);
+				character.SetCustomizeValue(this.CustomizeIndex, this.nextWriteValue.Value, UpdateSource.Interface);
 
 			this.lastReadValue = this.nextWriteValue.Value;
 			this.nextWriteValue = null;

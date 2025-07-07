@@ -53,7 +53,7 @@ public abstract partial class GearViewModelBase : ViewModel
 		this.RaisePropertyChanged(nameof(this.DyeSearchTitle));
 
 		bool generateTags = false;
-		byte currentRace = pCharacter->GetCustomizeValue(CustomizeIndex.Race);
+		byte currentRace = character.GetCustomizeValue(CustomizeIndex.Race);
 		if (currentRace != this.lastRace)
 		{
 			this.lastRace = currentRace;
@@ -64,14 +64,14 @@ public abstract partial class GearViewModelBase : ViewModel
 		{
 			this.SearchTags.Clear();
 			TagCollection tags = new();
-			this.GetSearchTags(ref tags, pCharacter);
+			this.GetSearchTags(ref tags, character);
 			this.SearchTags.Add(tags);
 		}
 	}
 
-	protected unsafe virtual void GetSearchTags(ref TagCollection tags, XivCharacter* pCharacter)
+	protected unsafe virtual void GetSearchTags(ref TagCollection tags, Character character)
 	{
-		Race? race = pCharacter->DrawData.CustomizeData.GetRace();
+		Race? race = character.GetRace();
 		if (race != null)
 		{
 			this.SearchTags.Add(race.Value.ToTags());

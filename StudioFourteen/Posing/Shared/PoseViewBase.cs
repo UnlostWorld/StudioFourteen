@@ -20,18 +20,17 @@ using System.Threading.Tasks;
 using StudioFourteen.Mvm;
 using System.Windows;
 using WpfUtils;
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using System;
 using WpfUtils.Extensions;
 using System.Windows.Input;
 using System.Windows.Media;
-using StudioFourteen.Selection;
 using DependencyPropertyGenerator;
 using StudioFourteen.Services;
 using StudioFourteen.Scene;
 using StudioFourteen.Scene.GameObjects;
-using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Scene.GameObjects.Characters.Skeletons;
+
+using Character = StudioFourteen.Scene.GameObjects.Characters.Character;
 
 [DependencyProperty<bool>("Hide", DefaultValue = false)]
 [DependencyProperty<bool>("UpdateWithAppearance", DefaultValue = false)]
@@ -55,7 +54,7 @@ public partial class PoseViewBase : View
 
 	public bool IsValid { get; private set; }
 
-	public int ObjectTableIndex => 0;
+	public Character? Character => null;
 
 	public List<SkeletonBoneControl>? GetTargets()
 	{

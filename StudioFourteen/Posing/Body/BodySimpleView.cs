@@ -18,9 +18,7 @@ namespace StudioFourteen.Posing.Body;
 using System;
 using System.Threading.Tasks;
 using Dalamud.Game.ClientState.Objects.Enums;
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using StudioFourteen.Services;
-using StudioFourteen.Utilities;
 using WpfUtils;
 
 public class BodySimpleView : SimpleView
@@ -29,24 +27,18 @@ public class BodySimpleView : SimpleView
 	{
 		await TickService.GameTick();
 
-		string key;
+		if (this.Character == null)
+			return;
 
-		unsafe
+		byte tribe = this.Character.GetCustomizeValue(CustomizeIndex.Tribe);
+		byte gender = this.Character.GetCustomizeValue(CustomizeIndex.Gender);
+		byte vieraEars = this.Character.GetCustomizeValue(CustomizeIndex.RaceFeatureType);
+
+		string key = $"Body_{tribe}_{gender}";
+		if (tribe == 15 || tribe == 16)
 		{
-			Character* pCharacter = this.Services.GameObjects.Get<Character>(this.ObjectTableIndex);
-			if (pCharacter == null)
-				return;
-
-			byte tribe = pCharacter->GetCustomizeValue(CustomizeIndex.Tribe);
-			byte gender = pCharacter->GetCustomizeValue(CustomizeIndex.Gender);
-			byte vieraEars = pCharacter->GetCustomizeValue(CustomizeIndex.RaceFeatureType);
-
-			key = $"Body_{tribe}_{gender}";
-			if (tribe == 15 || tribe == 16)
-			{
-				vieraEars = Math.Clamp(vieraEars, (byte)1, (byte)4);
-				key = $"Body_{tribe}_{gender}_{vieraEars}";
-			}
+			vieraEars = Math.Clamp(vieraEars, (byte)1, (byte)4);
+			key = $"Body_{tribe}_{gender}_{vieraEars}";
 		}
 
 		await this.MainThread();

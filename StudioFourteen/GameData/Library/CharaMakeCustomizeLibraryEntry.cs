@@ -16,19 +16,15 @@
 namespace StudioFourteen.GameData.Library;
 
 using Dalamud.Game.ClientState.Objects.Enums;
-using Dalamud.Game.ClientState.Objects.Types;
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Lumina.Excel;
 using Lumina.Excel.Sheets;
 using Lumina.Text.ReadOnly;
 using StudioFourteen.Extensions;
 using StudioFourteen.GameData.Extensions;
 using StudioFourteen.Library;
-using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Sources;
-using StudioFourteen.Plugin;
+using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Services;
-using StudioFourteen.Utilities;
 using System;
 using System.Threading.Tasks;
 
@@ -80,10 +76,10 @@ public class CharaMakeCustomizeLibraryEntry : LibraryEntryBase
 
 	public override string ToString() => $"#{this.MakeCustomize.RowId}";
 
-	public async Task Apply(int objectTableIndex)
+	public async Task Apply(Character character)
 	{
 		await TickService.GameTick();
-		this.Services.CharacterAppearance.SetCustomizeValue(objectTableIndex, this.CustomizeIndex, this.MakeCustomize.Value.FeatureID, UpdateSource.Interface);
+		character.SetCustomizeValue(this.CustomizeIndex, this.MakeCustomize.Value.FeatureID, UpdateSource.Interface);
 	}
 
 	protected override string GetInternalId() => $"{this.MakeCustomize.RowId}";

@@ -17,10 +17,11 @@ namespace StudioFourteen.Appearance;
 
 using System.Threading.Tasks;
 using StudioFourteen.DragAndDrop;
+using StudioFourteen.Scene.GameObjects.Characters;
 
 public interface ICharacterAppearance : IDraggable
 {
 	string? Name { get; }
 
-	public Task Apply(int objectTableIndex, UpdateSource source);
+	public Task Apply(Character character, UpdateSource source);
 }

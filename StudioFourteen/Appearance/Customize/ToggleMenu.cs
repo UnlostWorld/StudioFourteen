@@ -16,7 +16,7 @@
 namespace StudioFourteen.Appearance.Customize;
 
 using Dalamud.Game.ClientState.Objects.Enums;
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using StudioFourteen.Scene.GameObjects.Characters;
 
 public class ToggleMenu : MenuViewModel
 {
@@ -39,10 +39,10 @@ public class ToggleMenu : MenuViewModel
 
 	public MenuViewModel? InnerMenu { get; private set; }
 
-	public override unsafe void OnGameTick(Character* pCharacter)
+	public override unsafe void OnGameTick(Character character)
 	{
-		base.OnGameTick(pCharacter);
-		this.InnerMenu?.OnGameTick(pCharacter);
+		base.OnGameTick(character);
+		this.InnerMenu?.OnGameTick(character);
 	}
 
 	protected override void OnValueChanged(byte oldValue, byte newValue)

@@ -19,16 +19,16 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
 using System.Threading.Tasks;
-using Dalamud.Plugin.Services;
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using StudioFourteen.Files;
 using StudioFourteen.Posing;
+using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Utilities;
 using WpfUtils.Extensions;
 
+using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
+
 public class RedrawService : ServiceBase
 {
-	private readonly Dictionary<int, Request> redraws = new();
+	private readonly Dictionary<Character, Request> redraws = new();
 
 	public override void Attach()
 	{
@@ -42,7 +42,7 @@ public class RedrawService : ServiceBase
 		base.Detach();
 	}
 
-	public Request Redraw(int objectTableIndex, bool animate = true)
+	public Request Redraw(Character objectTableIndex, bool animate = true)
 	{
 		lock (this.redraws)
 		{
@@ -74,18 +74,18 @@ public class RedrawService : ServiceBase
 		}
 	}
 
-	public async Task RedrawAsync(int objectTableIndex, bool animate = true)
+	public async Task RedrawAsync(Character character, bool animate = true)
 	{
-		Request request = this.Redraw(objectTableIndex, animate);
+		Request request = this.Redraw(character, animate);
 		while (!request.IsDone)
 		{
 			await Task.Delay(10);
 		}
 	}
 
-	public bool IsRedrawing(int objectTableIndex)
+	public bool IsRedrawing(Character character)
 	{
-		if (this.redraws.TryGetValue(objectTableIndex, out Request? otherRequest))
+		if (this.redraws.TryGetValue(character, out Request? otherRequest))
 			return !otherRequest.IsDone;
 
 		return false;
@@ -95,7 +95,7 @@ public class RedrawService : ServiceBase
 	{
 		lock (this.redraws)
 		{
-			foreach ((int objectTableIndex, Request request) in this.redraws)
+			foreach ((Character character, Request request) in this.redraws)
 			{
 				if (!request.IsRunning && !request.IsDone)
 				{
@@ -105,7 +105,7 @@ public class RedrawService : ServiceBase
 		}
 	}
 
-	public class Request(int objectTableIndex)
+	public class Request(Character character)
 	{
 		private const float FadeOutTimeMs = 150;
 		private const float FadeInTimeMs = 250;
@@ -143,8 +143,7 @@ public class RedrawService : ServiceBase
 			this.IsDone = false;
 
 			// Backup pose
-			PoseFile file = new();
-			await file.Save(objectTableIndex, false, null, true);
+			PoseFile file = await character.ExportPoseAsync(false, null, true);
 
 			// Backup position
 			Vector3 position;
@@ -153,7 +152,7 @@ public class RedrawService : ServiceBase
 			bool doFadeOut;
 			unsafe
 			{
-				Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(objectTableIndex);
+				XivCharacter* pCharacter = character.GetXivCharacter();
 				position = pCharacter->DrawObject->Position;
 				rotation = pCharacter->DrawObject->Rotation;
 				scale = pCharacter->DrawObject->Scale;
@@ -174,14 +173,14 @@ public class RedrawService : ServiceBase
 
 					unsafe
 					{
-						Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(objectTableIndex);
+						XivCharacter* pCharacter = character.GetXivCharacter();
 						pCharacter->Alpha = p;
 					}
 				}
 
 				unsafe
 				{
-					Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(objectTableIndex);
+					XivCharacter* pCharacter = character.GetXivCharacter();
 					pCharacter->Alpha = 0;
 				}
 			}
@@ -194,7 +193,7 @@ public class RedrawService : ServiceBase
 			await TickService.GameTick();
 			unsafe
 			{
-				Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(objectTableIndex);
+				XivCharacter* pCharacter = character.GetXivCharacter();
 				pCharacter->DisableDraw();
 				pCharacter->EnableDraw();
 			}
@@ -204,27 +203,20 @@ public class RedrawService : ServiceBase
 			{
 				await Threads.NextFrame();
 
-				unsafe
-				{
-					Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(objectTableIndex);
-					if (pCharacter == null)
-						return;
-
-					if (!pCharacter->CanDraw())
-						continue;
-				}
+				if (!character.CanDraw())
+					continue;
 
 				isReady = true;
 			}
 
 			// Restore pose
-			await file.Apply(objectTableIndex, UpdateSource.Restore, false);
+			await character.ImportPose(file, UpdateSource.Restore, false);
 
 			// Restore position
 			await TickService.GameTick();
 			unsafe
 			{
-				Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(objectTableIndex);
+				XivCharacter* pCharacter = character.GetXivCharacter();
 				pCharacter->DrawObject->Position = position;
 				pCharacter->DrawObject->Rotation = rotation;
 				pCharacter->DrawObject->Scale = scale;
@@ -241,7 +233,7 @@ public class RedrawService : ServiceBase
 
 				unsafe
 				{
-					Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(objectTableIndex);
+					XivCharacter* pCharacter = character.GetXivCharacter();
 					pCharacter->Alpha = p;
 				}
 			}
@@ -250,7 +242,7 @@ public class RedrawService : ServiceBase
 
 			unsafe
 			{
-				Character* pCharacter = ServiceManager.Instance.GameObjects.Get<Character>(objectTableIndex);
+				XivCharacter* pCharacter = character.GetXivCharacter();
 				pCharacter->Alpha = 1.0f;
 			}
 

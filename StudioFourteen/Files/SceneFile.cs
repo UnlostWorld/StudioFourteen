@@ -52,17 +52,9 @@ public class SceneFile : FileBase
 		public PoseFile? Pose { get; set; }
 		public AppearanceFile? Appearance { get; set; }
 
-		public async Task Apply(int objectTableIndex, UpdateSource source)
+		public Task Apply(int objectTableIndex, UpdateSource source)
 		{
-			if (this.Pose != null)
-			{
-				await this.Pose.Apply(objectTableIndex, source);
-			}
-
-			if (this.Appearance != null)
-			{
-				await this.Appearance.Apply(objectTableIndex, source);
-			}
+			throw new NotImplementedException();
 		}
 	}
 }

@@ -24,6 +24,8 @@ using StudioFourteen.DragAndDrop;
 using StudioFourteen.Library.Sources;
 using StudioFourteen.Services;
 
+using Character = StudioFourteen.Scene.GameObjects.Characters.Character;
+
 public class MountLibraryEntry : ExcelLibraryEntry, ICharacterAppearance
 {
 	public readonly Mount Mount;
@@ -38,34 +40,30 @@ public class MountLibraryEntry : ExcelLibraryEntry, ICharacterAppearance
 	public override object? Icon => new ImageReference(this.Mount.Icon);
 	public override bool IsValid => base.IsValid && this.Mount.ModelChara.RowId != 0;
 
-	public async Task Apply(int objectTableIndex, UpdateSource source)
+	public async Task Apply(Character character, UpdateSource source)
 	{
 		await TickService.GameTick();
 
-		this.Services.CharacterAppearance.SetModelCharaId(objectTableIndex, this.Mount.ModelChara.Value, source);
-		this.Services.CharacterAppearance.SetWeapon(objectTableIndex, DrawDataContainer.WeaponSlot.MainHand, default, source);
-		this.Services.CharacterAppearance.SetWeapon(objectTableIndex, DrawDataContainer.WeaponSlot.OffHand, default, source);
+		character.SetModelCharaId(this.Mount.ModelChara.Value, source);
+		character.SetWeapon(DrawDataContainer.WeaponSlot.MainHand, default, source);
+		character.SetWeapon(DrawDataContainer.WeaponSlot.OffHand, default, source);
 
-		this.Services.CharacterAppearance.SetEquipment(
-			objectTableIndex,
+		character.SetEquipment(
 			DrawDataContainer.EquipmentSlot.Head,
 			this.GetModelId(DrawDataContainer.EquipmentSlot.Head),
 			source);
 
-		this.Services.CharacterAppearance.SetEquipment(
-			objectTableIndex,
+		character.SetEquipment(
 			DrawDataContainer.EquipmentSlot.Body,
 			this.GetModelId(DrawDataContainer.EquipmentSlot.Body),
 			source);
 
-		this.Services.CharacterAppearance.SetEquipment(
-			objectTableIndex,
+		character.SetEquipment(
 			DrawDataContainer.EquipmentSlot.Legs,
 			this.GetModelId(DrawDataContainer.EquipmentSlot.Legs),
 			source);
 
-		this.Services.CharacterAppearance.SetEquipment(
-			objectTableIndex,
+		character.SetEquipment(
 			DrawDataContainer.EquipmentSlot.Feet,
 			this.GetModelId(DrawDataContainer.EquipmentSlot.Feet),
 			source);

@@ -15,24 +15,23 @@
 
 namespace StudioFourteen.GameData.Library;
 
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using FontAwesome.Sharp;
 using Lumina.Excel;
 using Lumina.Excel.Sheets;
 using Lumina.Text.ReadOnly;
 using StudioFourteen.Appearance;
 using StudioFourteen.DragAndDrop;
-using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Sources;
 using StudioFourteen.Services;
 using StudioFourteen.Tags;
-using StudioFourteen.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using static FFXIVClientStructs.FFXIV.Client.Game.Character.CharacterExtensions;
+
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
+
+using Character = StudioFourteen.Scene.GameObjects.Characters.Character;
 using ENpcBase = StudioFourteen.GameData.Sheets.ENpcBase;
 
 public class ENpcResidentLibraryEntry : ExcelLibraryEntry, ICharacterAppearance
@@ -85,28 +84,28 @@ public class ENpcResidentLibraryEntry : ExcelLibraryEntry, ICharacterAppearance
 
 	public override IDragSceneInstance CreateSceneInstance() => new CharacterAppearanceDragSceneInstance(this);
 
-	public async Task Apply(int objectTableIndex, UpdateSource source)
+	public async Task Apply(Character character, UpdateSource source)
 	{
 		await TickService.GameTick();
 
 		if (this.ENpcBase == null)
 			return;
 
-		this.Services.CharacterAppearance.SetModelCharaId(objectTableIndex, this.ENpcBase.Value.ModelChara.Value, source);
-		this.Services.CharacterAppearance.SetCustomize(objectTableIndex, this.ENpcBase.Value.CustomizeData, source);
+		character.SetModelCharaId(this.ENpcBase.Value.ModelChara.Value, source);
+		character.SetCustomize(this.ENpcBase.Value.CustomizeData, source);
 
 		if (this.ENpcBase.Value.NpcEquip.IsValid)
 		{
 			foreach (WeaponSlot slot in Enum.GetValues<WeaponSlot>())
 			{
 				WeaponModelId modelId = this.ENpcBase.Value.GetModelId(slot);
-				this.Services.CharacterAppearance.SetWeapon(objectTableIndex, slot, modelId, source);
+				character.SetWeapon(slot, modelId, source);
 			}
 
 			foreach (EquipmentSlot slot in Enum.GetValues<EquipmentSlot>())
 			{
 				EquipmentModelId modelId = this.ENpcBase.Value.GetModelId(slot);
-				this.Services.CharacterAppearance.SetEquipment(objectTableIndex, slot, modelId, source);
+				character.SetEquipment(slot, modelId, source);
 			}
 		}
 	}

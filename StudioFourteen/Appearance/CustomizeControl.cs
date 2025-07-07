@@ -43,7 +43,7 @@ public partial class CustomizeControl : ItemsControl
 	private readonly List<MenuViewModel?> menus = new();
 
 	private bool isUpdatingMenus = false;
-	private int characterObjectTableIndex = -1;
+	private Character? character = null;
 
 	public CustomizeControl()
 	{
@@ -71,7 +71,7 @@ public partial class CustomizeControl : ItemsControl
 	partial void OnCharacterChanged(Character? newValue)
 	{
 		this.UpdateMenus();
-		this.characterObjectTableIndex = newValue?.ObjectIndex ?? -1;
+		this.character = newValue;
 	}
 
 	private void OnLoaded(object sender, RoutedEventArgs e)
@@ -89,19 +89,18 @@ public partial class CustomizeControl : ItemsControl
 		this.OnUnloaded(null, null);
 	}
 
-	private unsafe void OnGameTick()
+	private void OnGameTick()
 	{
-		if (this.isUpdatingMenus || this.characterObjectTableIndex == -1)
+		if (this.isUpdatingMenus || this.character == null)
 			return;
 
-		XivCharacter* pCharacter = this.Services.GameObjects.Get<XivCharacter>(this.characterObjectTableIndex);
-		if (!pCharacter->IsReadyToDraw())
+		if (!this.character.CanDraw())
 			return;
 
 		// TODO: Ensure race, tribe, and gender have not changed.
 		foreach (MenuViewModel? menu in this.menus)
 		{
-			menu?.OnGameTick(pCharacter);
+			menu?.OnGameTick(this.character);
 		}
 	}
 

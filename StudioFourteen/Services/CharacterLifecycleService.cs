@@ -118,7 +118,10 @@ public class CharacterLifecycleService : ServiceBase
 
 		await Threads.NextFrame();
 
-		string name = $"Studio {index}";
+		// TODO: Get a Character for the newly created object
+		throw new NotImplementedException();
+
+		/*string name = $"Studio {index}";
 		if (appearance != null)
 		{
 			if (appearance.Name != null)
@@ -131,7 +134,6 @@ public class CharacterLifecycleService : ServiceBase
 		unsafe
 		{
 			XivCharacter* pCharacter = this.Services.GameObjects.Get<XivCharacter>(index);
-			pCharacter->SetDisplayName(name);
 
 			Character? character = this.Services.Selection.GetScope<Character>().Selection;
 			if (character != null)
@@ -150,7 +152,7 @@ public class CharacterLifecycleService : ServiceBase
 			}
 		}
 
-		return index;
+		return index;*/
 	}
 
 	public void Destroy(int objectTableIndex)

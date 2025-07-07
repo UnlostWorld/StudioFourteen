@@ -15,6 +15,8 @@
 
 namespace StudioFourteen.GameData.Library;
 
+using System;
+using System.Threading.Tasks;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FontAwesome.Sharp;
 using Lumina.Excel.Sheets;
@@ -23,12 +25,13 @@ using StudioFourteen.GameData.Extensions;
 using StudioFourteen.Library;
 using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Sources;
+using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Services;
 using StudioFourteen.Utilities;
-using System;
-using System.Threading.Tasks;
+
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 
+using Character = StudioFourteen.Scene.GameObjects.Characters.Character;
 using ClassJobCategory = StudioFourteen.GameData.Sheets.ClassJobCategory;
 
 public class ItemLibraryEntry : ExcelLibraryEntry
@@ -108,7 +111,7 @@ public class ItemLibraryEntry : ExcelLibraryEntry
 		return id;
 	}
 
-	public async Task EquipTo(int objectTableId)
+	public async Task EquipTo(Character character)
 	{
 		if (this.EquipSlot == null)
 			return;
@@ -119,18 +122,17 @@ public class ItemLibraryEntry : ExcelLibraryEntry
 		{
 			if (equipSlot.Contains(slot))
 			{
-				await this.EquipTo(objectTableId, slot);
+				await this.EquipTo(character, slot);
 				return;
 			}
 		}
 	}
 
-	public async Task EquipTo(int objectTableId, EquipmentSlot slot)
+	public async Task EquipTo(Character character, EquipmentSlot slot)
 	{
 		await TickService.GameTick();
 
-		this.Services.CharacterAppearance.SetEquipment(
-			objectTableId,
+		character.SetEquipment(
 			slot,
 			this.GetModelId(slot),
 			UpdateSource.Interface);

@@ -16,13 +16,13 @@
 namespace StudioFourteen.Appearance.Customize;
 
 using Dalamud.Game.ClientState.Objects.Enums;
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Lumina.Excel;
 using Lumina.Excel.Sheets;
 using Lumina.Text.ReadOnly;
 using StudioFourteen.Extensions;
 using StudioFourteen.GameData;
 using StudioFourteen.GameData.Library;
+using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Tags;
 using System.Collections.Generic;
 
@@ -77,10 +77,10 @@ public class CustomizeLibraryEntryMenu : MenuViewModel
 
 	public ToggleMenu? ToggleMenu { get; init; }
 
-	public override unsafe void OnGameTick(Character* pCharacter)
+	public override void OnGameTick(Character character)
 	{
-		base.OnGameTick(pCharacter);
-		this.ToggleMenu?.OnGameTick(pCharacter);
+		base.OnGameTick(character);
+		this.ToggleMenu?.OnGameTick(character);
 	}
 
 	protected override void OnValueChanged(byte oldValue, byte newValue)

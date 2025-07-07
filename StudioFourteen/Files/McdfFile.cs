@@ -38,6 +38,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
+using Character = StudioFourteen.Scene.GameObjects.Characters.Character;
+using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
+
 public class MareFileTypeInfo : FileTypeInfoBase
 {
 	public override string Extension => ".mcdf";
@@ -116,15 +119,15 @@ public class MareFile
 
 	public override Task Execute()
 	{
-		if (ServiceManager.Instance.Selection.Current is Scene.GameObjects.GameObject obj)
+		if (ServiceManager.Instance.Selection.Current is Character character)
 		{
-			return this.Apply(obj.ObjectIndex, UpdateSource.Interface);
+			return this.Apply(character, UpdateSource.Interface);
 		}
 
 		return Task.CompletedTask;
 	}
 
-	public async Task Apply(int objectTableIndex, UpdateSource source)
+	public async Task Apply(Character character, UpdateSource source)
 	{
 		await TickService.GameTick();
 
@@ -133,18 +136,9 @@ public class MareFile
 
 		await DalamudServices.Framework.RunOnFrameworkThread(() =>
 		{
-			IGameObject? target = DalamudServices.ObjectTable[objectTableIndex];
+			IGameObject? target = DalamudServices.ObjectTable[character.ObjectIndex];
 			if (target == null)
 				return;
-
-			if (this.Name != null)
-			{
-				unsafe
-				{
-					Character* character = (Character*)DalamudServices.ObjectTable.GetObjectAddress(objectTableIndex);
-					character->SetDisplayName(this.Name);
-				}
-			}
 
 			// The async version of LoadMcdf has some issues, but if we try to load two mcdf's
 			// too close together it doesn't work, so just delay for a while.

@@ -52,20 +52,6 @@ public static partial class CharacterExtensions
 		return self.RenderFlags == (int)RenderMode.Draw;
 	}
 
-	public static unsafe string? GetRoleOrDisplayName(ref this Character self)
-	{
-		string? nickname = ServiceManager.Instance.Roles.GetRole(self.ObjectIndex);
-		if (nickname != null)
-			return nickname;
-
-		return self.GetDisplayName();
-	}
-
-	public static unsafe void SetDisplayName(ref this Character self, string displayName)
-	{
-		// NOPE
-	}
-
 	public static unsafe string GetDisplayName(ref this Character self)
 	{
 		string selfName = self.GameObject.NameString;
@@ -100,11 +86,6 @@ public static partial class CharacterExtensions
 			return 1.0f;
 
 		return pscale->ScaleFactor;
-	}
-
-	public static byte GetCustomizeValue(ref readonly this Character self, CustomizeIndex option)
-	{
-		return self.DrawData.CustomizeData.GetValue(option);
 	}
 
 	public static ObjectKind GetKind(ref this Character self)

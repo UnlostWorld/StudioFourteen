@@ -15,6 +15,9 @@
 
 namespace StudioFourteen.Appearance;
 
+using System;
+using System.Numerics;
+using System.Threading.Tasks;
 using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Lumina.Excel.Sheets;
@@ -22,13 +25,13 @@ using StudioFourteen.DragAndDrop;
 using StudioFourteen.Files;
 using StudioFourteen.GameData;
 using StudioFourteen.Scene.GameObjects;
+using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Services;
 using StudioFourteen.Tags;
-using System;
-using System.Numerics;
-using System.Threading.Tasks;
 
+using Character = StudioFourteen.Scene.GameObjects.Characters.Character;
 using CustomizeFacialFeatures = FFXIVClientStructs.FFXIV.Client.Game.Character.CustomizeDataExtensions.FacialFeatures;
+using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
 
 public class AppearanceFileTypeInfo : JsonFileTypeInfoBase<AppearanceFile>
 {
@@ -155,118 +158,113 @@ public class AppearanceFile : FileBase, ICharacterAppearance
 
 	public override Task Execute()
 	{
-		if (ServiceManager.Instance.Selection.Current is GameObject obj)
+		if (ServiceManager.Instance.Selection.Current is Character character)
 		{
-			return this.Apply(obj.ObjectIndex, UpdateSource.Interface);
+			return this.Apply(character, UpdateSource.Interface);
 		}
 
 		return Task.CompletedTask;
 	}
 
-	public async Task Apply(int objectTableIndex, UpdateSource source)
+	public async Task Apply(Character character, UpdateSource source)
 	{
 		await TickService.GameTick();
 
-		CharacterAppearanceService appearanceService = ServiceManager.Instance.CharacterAppearance;
-		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.Race, (byte)(this.Race ?? 0), source);
-		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.Gender, (byte)(this.Gender ?? 0), source);
-		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.ModelType, (byte)(this.ModelType ?? 0), source);
-		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.Tribe, (byte)(this.Tribe ?? 0), source);
-		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.Height, (byte)(this.Height ?? 0), source);
-		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.FaceType, (byte)(this.Head ?? 0), source);
-		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.HairStyle, (byte)(this.Hair ?? 0), source);
-		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.HasHighlights, (byte)(this.EnableHighlights == true ? 1 : 0), source);
-		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.SkinColor, (byte)(this.Skintone ?? 0), source);
-		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.EyeColor, (byte)(this.LEyeColor ?? 0), source);
-		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.HairColor, (byte)(this.HairTone ?? 0), source);
-		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.HairColor2, (byte)(this.Highlights ?? 0), source);
-		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.FaceFeatures, (byte)(this.FacialFeatures ?? 0), source);
-		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.FaceFeaturesColor, (byte)(this.LimbalEyes ?? 0), source);
-		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.Eyebrows, (byte)(this.Eyebrows ?? 0), source);
-		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.EyeColor2, (byte)(this.REyeColor ?? 0), source);
-		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.EyeShape, (byte)(this.Eyes ?? 0), source);
-		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.NoseShape, (byte)(this.Nose ?? 0), source);
-		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.JawShape, (byte)(this.Jaw ?? 0), source);
-		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.LipStyle, (byte)(this.Mouth ?? 0), source);
-		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.LipColor, (byte)(this.LipsToneFurPattern ?? 0), source);
-		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.RaceFeatureSize, (byte)(this.EarMuscleTailSize ?? 0), source);
-		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.RaceFeatureType, (byte)(this.TailEarsType ?? 0), source);
-		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.BustSize, (byte)(this.Bust ?? 0), source);
-		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.Facepaint, (byte)(this.FacePaint ?? 0), source);
-		appearanceService.SetCustomizeValue(objectTableIndex, CustomizeIndex.FacepaintColor, (byte)(this.FacePaintColor ?? 0), source);
+		character.SetCustomizeValue(CustomizeIndex.Race, (byte)(this.Race ?? 0), source);
+		character.SetCustomizeValue(CustomizeIndex.Gender, (byte)(this.Gender ?? 0), source);
+		character.SetCustomizeValue(CustomizeIndex.ModelType, (byte)(this.ModelType ?? 0), source);
+		character.SetCustomizeValue(CustomizeIndex.Tribe, (byte)(this.Tribe ?? 0), source);
+		character.SetCustomizeValue(CustomizeIndex.Height, (byte)(this.Height ?? 0), source);
+		character.SetCustomizeValue(CustomizeIndex.FaceType, (byte)(this.Head ?? 0), source);
+		character.SetCustomizeValue(CustomizeIndex.HairStyle, (byte)(this.Hair ?? 0), source);
+		character.SetCustomizeValue(CustomizeIndex.HasHighlights, (byte)(this.EnableHighlights == true ? 1 : 0), source);
+		character.SetCustomizeValue(CustomizeIndex.SkinColor, (byte)(this.Skintone ?? 0), source);
+		character.SetCustomizeValue(CustomizeIndex.EyeColor, (byte)(this.LEyeColor ?? 0), source);
+		character.SetCustomizeValue(CustomizeIndex.HairColor, (byte)(this.HairTone ?? 0), source);
+		character.SetCustomizeValue(CustomizeIndex.HairColor2, (byte)(this.Highlights ?? 0), source);
+		character.SetCustomizeValue(CustomizeIndex.FaceFeatures, (byte)(this.FacialFeatures ?? 0), source);
+		character.SetCustomizeValue(CustomizeIndex.FaceFeaturesColor, (byte)(this.LimbalEyes ?? 0), source);
+		character.SetCustomizeValue(CustomizeIndex.Eyebrows, (byte)(this.Eyebrows ?? 0), source);
+		character.SetCustomizeValue(CustomizeIndex.EyeColor2, (byte)(this.REyeColor ?? 0), source);
+		character.SetCustomizeValue(CustomizeIndex.EyeShape, (byte)(this.Eyes ?? 0), source);
+		character.SetCustomizeValue(CustomizeIndex.NoseShape, (byte)(this.Nose ?? 0), source);
+		character.SetCustomizeValue(CustomizeIndex.JawShape, (byte)(this.Jaw ?? 0), source);
+		character.SetCustomizeValue(CustomizeIndex.LipStyle, (byte)(this.Mouth ?? 0), source);
+		character.SetCustomizeValue(CustomizeIndex.LipColor, (byte)(this.LipsToneFurPattern ?? 0), source);
+		character.SetCustomizeValue(CustomizeIndex.RaceFeatureSize, (byte)(this.EarMuscleTailSize ?? 0), source);
+		character.SetCustomizeValue(CustomizeIndex.RaceFeatureType, (byte)(this.TailEarsType ?? 0), source);
+		character.SetCustomizeValue(CustomizeIndex.BustSize, (byte)(this.Bust ?? 0), source);
+		character.SetCustomizeValue(CustomizeIndex.Facepaint, (byte)(this.FacePaint ?? 0), source);
+		character.SetCustomizeValue(CustomizeIndex.FacepaintColor, (byte)(this.FacePaintColor ?? 0), source);
 
-		appearanceService.SetEquipment(objectTableIndex, DrawDataContainer.EquipmentSlot.Head, this.HeadGear, source);
-		appearanceService.SetEquipment(objectTableIndex, DrawDataContainer.EquipmentSlot.Body, this.Body, source);
-		appearanceService.SetEquipment(objectTableIndex, DrawDataContainer.EquipmentSlot.Hands, this.Hands, source);
-		appearanceService.SetEquipment(objectTableIndex, DrawDataContainer.EquipmentSlot.Legs, this.Legs, source);
-		appearanceService.SetEquipment(objectTableIndex, DrawDataContainer.EquipmentSlot.Feet, this.Feet, source);
-		appearanceService.SetEquipment(objectTableIndex, DrawDataContainer.EquipmentSlot.Ears, this.Ears, source);
-		appearanceService.SetEquipment(objectTableIndex, DrawDataContainer.EquipmentSlot.Neck, this.Neck, source);
-		appearanceService.SetEquipment(objectTableIndex, DrawDataContainer.EquipmentSlot.Wrists, this.Wrists, source);
-		appearanceService.SetEquipment(objectTableIndex, DrawDataContainer.EquipmentSlot.LFinger, this.LeftRing, source);
-		appearanceService.SetEquipment(objectTableIndex, DrawDataContainer.EquipmentSlot.RFinger, this.RightRing, source);
+		character.SetEquipment(DrawDataContainer.EquipmentSlot.Head, this.HeadGear, source);
+		character.SetEquipment(DrawDataContainer.EquipmentSlot.Body, this.Body, source);
+		character.SetEquipment(DrawDataContainer.EquipmentSlot.Hands, this.Hands, source);
+		character.SetEquipment(DrawDataContainer.EquipmentSlot.Legs, this.Legs, source);
+		character.SetEquipment(DrawDataContainer.EquipmentSlot.Feet, this.Feet, source);
+		character.SetEquipment(DrawDataContainer.EquipmentSlot.Ears, this.Ears, source);
+		character.SetEquipment(DrawDataContainer.EquipmentSlot.Neck, this.Neck, source);
+		character.SetEquipment(DrawDataContainer.EquipmentSlot.Wrists, this.Wrists, source);
+		character.SetEquipment(DrawDataContainer.EquipmentSlot.LFinger, this.LeftRing, source);
+		character.SetEquipment(DrawDataContainer.EquipmentSlot.RFinger, this.RightRing, source);
 
-		appearanceService.SetWeapon(objectTableIndex, DrawDataContainer.WeaponSlot.MainHand, this.MainHand, source);
-		appearanceService.SetWeapon(objectTableIndex, DrawDataContainer.WeaponSlot.OffHand, this.OffHand, source);
+		character.SetWeapon(DrawDataContainer.WeaponSlot.MainHand, this.MainHand, source);
+		character.SetWeapon(DrawDataContainer.WeaponSlot.OffHand, this.OffHand, source);
 	}
 
-	public async Task Read(int objectTableIndex)
+	public async Task ReadAsync(Character character)
 	{
 		await TickService.GameTick();
+		this.Read(character);
+	}
 
-		unsafe
-		{
-			Character* pCharacter = (Character*)ServiceManager.Instance.GameObjects.GetXivGameObject(objectTableIndex);
-			if (pCharacter == null)
-				return;
+	public void Read(Character character)
+	{
+		TickService.VerifyGameTickThread();
 
-			this.ModelType = (uint)pCharacter->ModelContainer.ModelCharaId;
-			this.Race = (Races)pCharacter->GetCustomizeValue(CustomizeIndex.Race);
-			this.Gender = (Genders)pCharacter->GetCustomizeValue(CustomizeIndex.Gender);
-			this.Age = (BodyTypes)pCharacter->GetCustomizeValue(CustomizeIndex.ModelType);
-			this.Tribe = (Tribes)pCharacter->GetCustomizeValue(CustomizeIndex.Tribe);
-			this.Height = pCharacter->GetCustomizeValue(CustomizeIndex.Height);
-			this.Head = pCharacter->GetCustomizeValue(CustomizeIndex.FaceType);
-			this.Hair = pCharacter->GetCustomizeValue(CustomizeIndex.HairStyle);
-			this.EnableHighlights = pCharacter->GetCustomizeValue(CustomizeIndex.HasHighlights) != 0;
-			this.Skintone = pCharacter->GetCustomizeValue(CustomizeIndex.SkinColor);
-			this.REyeColor = pCharacter->GetCustomizeValue(CustomizeIndex.EyeColor);
-			this.HairTone = pCharacter->GetCustomizeValue(CustomizeIndex.HairColor);
-			this.Highlights = pCharacter->GetCustomizeValue(CustomizeIndex.HairColor2);
-			this.FacialFeatures = (CustomizeFacialFeatures)pCharacter->GetCustomizeValue(CustomizeIndex.FaceFeatures);
-			this.LimbalEyes = pCharacter->GetCustomizeValue(CustomizeIndex.FaceFeaturesColor);
-			this.Eyebrows = pCharacter->GetCustomizeValue(CustomizeIndex.Eyebrows);
-			this.LEyeColor = pCharacter->GetCustomizeValue(CustomizeIndex.EyeColor2);
-			this.Eyes = pCharacter->GetCustomizeValue(CustomizeIndex.EyeShape);
-			this.Nose = pCharacter->GetCustomizeValue(CustomizeIndex.NoseShape);
-			this.Jaw = pCharacter->GetCustomizeValue(CustomizeIndex.JawShape);
-			this.Mouth = pCharacter->GetCustomizeValue(CustomizeIndex.LipStyle);
-			this.LipsToneFurPattern = pCharacter->GetCustomizeValue(CustomizeIndex.LipColor);
-			this.EarMuscleTailSize = pCharacter->GetCustomizeValue(CustomizeIndex.RaceFeatureSize);
-			this.TailEarsType = pCharacter->GetCustomizeValue(CustomizeIndex.RaceFeatureType);
-			this.Bust = pCharacter->GetCustomizeValue(CustomizeIndex.BustSize);
-			this.FacePaint = pCharacter->GetCustomizeValue(CustomizeIndex.Facepaint);
-			this.FacePaintColor = pCharacter->GetCustomizeValue(CustomizeIndex.FacepaintColor);
+		this.ModelType = character.GetModelCharaId();
+		this.Race = (Races)character.GetCustomizeValue(CustomizeIndex.Race);
+		this.Gender = (Genders)character.GetCustomizeValue(CustomizeIndex.Gender);
+		this.Age = (BodyTypes)character.GetCustomizeValue(CustomizeIndex.ModelType);
+		this.Tribe = (Tribes)character.GetCustomizeValue(CustomizeIndex.Tribe);
+		this.Height = character.GetCustomizeValue(CustomizeIndex.Height);
+		this.Head = character.GetCustomizeValue(CustomizeIndex.FaceType);
+		this.Hair = character.GetCustomizeValue(CustomizeIndex.HairStyle);
+		this.EnableHighlights = character.GetCustomizeValue(CustomizeIndex.HasHighlights) != 0;
+		this.Skintone = character.GetCustomizeValue(CustomizeIndex.SkinColor);
+		this.REyeColor = character.GetCustomizeValue(CustomizeIndex.EyeColor);
+		this.HairTone = character.GetCustomizeValue(CustomizeIndex.HairColor);
+		this.Highlights = character.GetCustomizeValue(CustomizeIndex.HairColor2);
+		this.FacialFeatures = (CustomizeFacialFeatures)character.GetCustomizeValue(CustomizeIndex.FaceFeatures);
+		this.LimbalEyes = character.GetCustomizeValue(CustomizeIndex.FaceFeaturesColor);
+		this.Eyebrows = character.GetCustomizeValue(CustomizeIndex.Eyebrows);
+		this.LEyeColor = character.GetCustomizeValue(CustomizeIndex.EyeColor2);
+		this.Eyes = character.GetCustomizeValue(CustomizeIndex.EyeShape);
+		this.Nose = character.GetCustomizeValue(CustomizeIndex.NoseShape);
+		this.Jaw = character.GetCustomizeValue(CustomizeIndex.JawShape);
+		this.Mouth = character.GetCustomizeValue(CustomizeIndex.LipStyle);
+		this.LipsToneFurPattern = character.GetCustomizeValue(CustomizeIndex.LipColor);
+		this.EarMuscleTailSize = character.GetCustomizeValue(CustomizeIndex.RaceFeatureSize);
+		this.TailEarsType = character.GetCustomizeValue(CustomizeIndex.RaceFeatureType);
+		this.Bust = character.GetCustomizeValue(CustomizeIndex.BustSize);
+		this.FacePaint = character.GetCustomizeValue(CustomizeIndex.Facepaint);
+		this.FacePaintColor = character.GetCustomizeValue(CustomizeIndex.FacepaintColor);
 
-			////this.HeightMultiplier = pCharacter->Height;
+		////this.HeightMultiplier = pCharacter->Height;
 
-			DrawObjectData mainHand = pCharacter->DrawData.Weapon(DrawDataContainer.WeaponSlot.MainHand);
-			this.MainHand = WeaponSave.FromDrawData(mainHand);
+		this.MainHand = character.GetWeapon(DrawDataContainer.WeaponSlot.MainHand);
+		this.OffHand = character.GetWeapon(DrawDataContainer.WeaponSlot.OffHand);
 
-			DrawObjectData offHand = pCharacter->DrawData.Weapon(DrawDataContainer.WeaponSlot.OffHand);
-			this.OffHand = WeaponSave.FromDrawData(offHand);
-
-			this.HeadGear = pCharacter->DrawData.Equipment(DrawDataContainer.EquipmentSlot.Head);
-			this.Body = pCharacter->DrawData.Equipment(DrawDataContainer.EquipmentSlot.Body);
-			this.Hands = pCharacter->DrawData.Equipment(DrawDataContainer.EquipmentSlot.Hands);
-			this.Legs = pCharacter->DrawData.Equipment(DrawDataContainer.EquipmentSlot.Legs);
-			this.Feet = pCharacter->DrawData.Equipment(DrawDataContainer.EquipmentSlot.Feet);
-			this.Ears = pCharacter->DrawData.Equipment(DrawDataContainer.EquipmentSlot.Ears);
-			this.Neck = pCharacter->DrawData.Equipment(DrawDataContainer.EquipmentSlot.Neck);
-			this.Wrists = pCharacter->DrawData.Equipment(DrawDataContainer.EquipmentSlot.Wrists);
-			this.LeftRing = pCharacter->DrawData.Equipment(DrawDataContainer.EquipmentSlot.LFinger);
-			this.RightRing = pCharacter->DrawData.Equipment(DrawDataContainer.EquipmentSlot.RFinger);
-		}
+		this.HeadGear = character.GetEquipment(DrawDataContainer.EquipmentSlot.Head);
+		this.Body = character.GetEquipment(DrawDataContainer.EquipmentSlot.Body);
+		this.Hands = character.GetEquipment(DrawDataContainer.EquipmentSlot.Hands);
+		this.Legs = character.GetEquipment(DrawDataContainer.EquipmentSlot.Legs);
+		this.Feet = character.GetEquipment(DrawDataContainer.EquipmentSlot.Feet);
+		this.Ears = character.GetEquipment(DrawDataContainer.EquipmentSlot.Ears);
+		this.Neck = character.GetEquipment(DrawDataContainer.EquipmentSlot.Neck);
+		this.Wrists = character.GetEquipment(DrawDataContainer.EquipmentSlot.Wrists);
+		this.LeftRing = character.GetEquipment(DrawDataContainer.EquipmentSlot.LFinger);
+		this.RightRing = character.GetEquipment(DrawDataContainer.EquipmentSlot.RFinger);
 	}
 
 	public struct ItemSave
@@ -318,7 +316,7 @@ public class AppearanceFile : FileBase, ICharacterAppearance
 			Stain1 = save?.DyeId2 ?? 0,
 		};
 
-		public static unsafe WeaponSave? FromDrawData(DrawObjectData drawData)
+		public static unsafe implicit operator WeaponSave?(DrawObjectData drawData)
 		{
 			if (drawData.ModelId.Value == 0)
 				return null;

@@ -15,26 +15,23 @@
 
 namespace StudioFourteen.Library.Sources;
 
-using Dalamud.Game.ClientState.Objects.Enums;
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using FontAwesome.Sharp;
-using Lumina.Excel;
-using Lumina.Excel.Sheets;
-using Serilog;
-using StudioFourteen.Appearance;
-using StudioFourteen.DragAndDrop;
-using StudioFourteen.GameData;
-using StudioFourteen.Library.LibraryMenu;
-using StudioFourteen.Plugin;
-using StudioFourteen.Services;
-using StudioFourteen.Tags;
-using StudioFourteen.Utilities;
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using System.Windows.Input;
+using Dalamud.Game.ClientState.Objects.Enums;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using Lumina.Excel;
+using Lumina.Excel.Sheets;
+using StudioFourteen.Appearance;
+using StudioFourteen.DragAndDrop;
+using StudioFourteen.GameData;
+using StudioFourteen.Plugin;
+using StudioFourteen.Services;
+using StudioFourteen.Tags;
+
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 
+using Character = StudioFourteen.Scene.GameObjects.Characters.Character;
 using CustomizeFacialFeatures = FFXIVClientStructs.FFXIV.Client.Game.Character.CustomizeDataExtensions.FacialFeatures;
 
 public class GlamourerSource : SourceBase
@@ -90,7 +87,7 @@ public class GlamourerEntry
 
 	public override IDragSceneInstance CreateSceneInstance() => new CharacterAppearanceDragSceneInstance(this);
 
-	public async Task Apply(int objectTableIndex, UpdateSource updateSource)
+	public async Task Apply(Character character, UpdateSource updateSource)
 	{
 		await TickService.GameTick();
 
@@ -102,7 +99,7 @@ public class GlamourerEntry
 				if (value == null)
 					continue;
 
-				this.Services.CharacterAppearance.SetCustomizeValue(objectTableIndex, index, (byte)value, updateSource);
+				character.SetCustomizeValue(index, (byte)value, updateSource);
 			}
 		}
 
@@ -114,7 +111,7 @@ public class GlamourerEntry
 				if (id == null)
 					continue;
 
-				this.Services.CharacterAppearance.SetEquipment(objectTableIndex, index, (EquipmentModelId)id, updateSource);
+				character.SetEquipment(index, (EquipmentModelId)id, updateSource);
 			}
 
 			foreach (WeaponSlot index in Enum.GetValues<WeaponSlot>())
@@ -123,7 +120,7 @@ public class GlamourerEntry
 				if (id == null)
 					continue;
 
-				this.Services.CharacterAppearance.SetWeapon(objectTableIndex, index, (WeaponModelId)id, updateSource);
+				character.SetWeapon(index, (WeaponModelId)id, updateSource);
 			}
 		}
 

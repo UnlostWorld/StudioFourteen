@@ -30,6 +30,7 @@ using StudioFourteen.Scene.GameObjects;
 using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Scene.GameObjects.Characters.Skeletons;
 using WpfUtils;
+using WpfUtils.Extensions;
 using WpfUtils.Utils;
 
 using Panel = StudioFourteen.Panels.Panel;
@@ -193,7 +194,7 @@ public partial class PosePanel : Panel
 		if (this.Skeleton == null)
 			return;
 
-		this.Skeleton.ExportPose();
+		this.Skeleton.SavePose().Run();
 	}
 
 	private void OnFlipPoseClicked(object sender, RoutedEventArgs e)

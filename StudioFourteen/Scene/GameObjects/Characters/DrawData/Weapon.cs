@@ -97,15 +97,11 @@ public class Weapon
 	public override string SearchTitle => $"Select an item to equip to {this.CharacterName}'s {this.Slot.GetDisplayName()}:";
 	public override string DyeSearchTitle => $"Select a dye to apply to {this.CharacterName}'s {this.Slot.GetDisplayName()}:";
 
-	public override unsafe void OnGameTick(Character character)
+	public override void OnGameTick(Character character)
 	{
 		base.OnGameTick(character);
 
-		XivCharacter* pCharacter = character.GetXivCharacter();
-		if (pCharacter == null)
-			return;
-
-		DrawObjectData weapon = pCharacter->DrawData.Weapon(this.Slot);
+		DrawObjectData weapon =	character.GetWeapon(this.Slot);
 		WeaponModelId modelId = weapon.ModelId;
 		bool changed = false;
 		if (this.nextWriteId != null && modelId.Id != this.nextWriteId.Value)
@@ -139,7 +135,7 @@ public class Weapon
 		}
 
 		if (changed)
-			this.Services.CharacterAppearance.SetWeapon(pCharacter->ObjectIndex, this.Slot, modelId, UpdateSource.Interface);
+			character.SetWeapon(this.Slot, modelId, UpdateSource.Interface);
 
 		if (this.lastReadId != modelId.Id || this.lastReadId != modelId.Id)
 		{
@@ -187,9 +183,9 @@ public class Weapon
 		this.Variant = modelId.Variant;
 	}
 
-	protected unsafe override void GetSearchTags(ref TagCollection tags, XivCharacter* pCharacter)
+	protected unsafe override void GetSearchTags(ref TagCollection tags, Character character)
 	{
-		base.GetSearchTags(ref tags, pCharacter);
+		base.GetSearchTags(ref tags, character);
 		tags.Add(this.Slot.ToTag());
 	}
 }

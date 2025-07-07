@@ -16,7 +16,7 @@
 namespace StudioFourteen.Appearance.Customize;
 
 using Dalamud.Game.ClientState.Objects.Enums;
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.GameData;
 using System;
 using System.Collections.Generic;
@@ -52,11 +52,11 @@ public class MultiIconMenu : MakeMenuViewModel
 
 	public List<Option>? Options { get; set; }
 
-	public override unsafe void OnGameTick(Character* pCharacter)
+	public override unsafe void OnGameTick(Character character)
 	{
-		base.OnGameTick(pCharacter);
+		base.OnGameTick(character);
 
-		byte faceType = pCharacter->GetCustomizeValue(CustomizeIndex.FaceType);
+		byte faceType = character.GetCustomizeValue(CustomizeIndex.FaceType);
 		if (faceType != this.faceType)
 		{
 			this.faceType = faceType;

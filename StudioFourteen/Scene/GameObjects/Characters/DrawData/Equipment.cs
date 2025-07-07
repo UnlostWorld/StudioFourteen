@@ -125,7 +125,7 @@ public class Equipment : GearViewModelBase<ItemLibraryEntry>
 		}
 
 		if (changed)
-			this.Services.CharacterAppearance.SetEquipment(pCharacter->ObjectIndex, this.Slot, modelId, UpdateSource.Interface);
+			character.SetEquipment(this.Slot, modelId, UpdateSource.Interface);
 
 		if (this.lastReadId != modelId.Id || this.lastReadId != modelId.Id)
 		{
@@ -170,9 +170,9 @@ public class Equipment : GearViewModelBase<ItemLibraryEntry>
 		this.Variant = modelId.Variant;
 	}
 
-	protected unsafe override void GetSearchTags(ref TagCollection tags, XivCharacter* pCharacter)
+	protected unsafe override void GetSearchTags(ref TagCollection tags, Character character)
 	{
-		base.GetSearchTags(ref tags, pCharacter);
+		base.GetSearchTags(ref tags, character);
 		tags.Add(this.Slot.ToTag());
 	}
 }

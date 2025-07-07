@@ -18,6 +18,7 @@ namespace StudioFourteen.Appearance;
 using System.Threading.Tasks;
 using StudioFourteen.Context;
 using System.Collections.Generic;
+using StudioFourteen.Scene.GameObjects.Characters;
 
 public class CharacterAppearanceContextMenuProvider : ContextProvider<ICharacterAppearance>
 {
@@ -32,8 +33,8 @@ public class CharacterAppearanceContextMenuProvider : ContextProvider<ICharacter
 		return this.Services.CharacterLifecycle.CreateAsync(target, UpdateSource.Interface);
 	}
 
-	private Task Apply(ICharacterAppearance target, int index)
+	private Task Apply(ICharacterAppearance target, Character character)
 	{
-		return target.Apply(index, UpdateSource.Interface);
+		return character.ImportAppearance(target, UpdateSource.Interface);
 	}
 }

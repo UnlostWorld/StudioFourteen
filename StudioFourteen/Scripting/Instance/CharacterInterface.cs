@@ -19,6 +19,7 @@ using System.Threading.Tasks;
 using Dalamud.Game.ClientState.Objects.Enums;
 using StudioFourteen.GameData;
 using StudioFourteen.GameData.Library;
+using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Services;
 using StudioFourteen.Utilities;
 
@@ -31,9 +32,9 @@ public class CharacterInterface : ScriptServiceBase
 	////public CharacterReference GetCurrentTarget() => new(this.Services.Target.TargetObjectIndex);
 }
 
-public class CharacterReference(int objectTableIndex)
+public class CharacterReference(Character character)
 {
-	public readonly int ObjectTableIndex = objectTableIndex;
+	public readonly Character Character = character;
 
 	private ServiceManager Services => ServiceManager.Instance;
 
@@ -42,16 +43,16 @@ public class CharacterReference(int objectTableIndex)
 		await TickService.GameTick();
 
 		if (race != null)
-			this.Services.CharacterAppearance.SetCustomizeValue(this.ObjectTableIndex, CustomizeIndex.Race, (byte)race.RowId, UpdateSource.Script);
+			this.Character.SetCustomizeValue(CustomizeIndex.Race, (byte)race.RowId, UpdateSource.Script);
 
 		if (tribe != null)
-			this.Services.CharacterAppearance.SetCustomizeValue(this.ObjectTableIndex, CustomizeIndex.Tribe, (byte)tribe.RowId, UpdateSource.Script);
+			this.Character.SetCustomizeValue(CustomizeIndex.Tribe, (byte)tribe.RowId, UpdateSource.Script);
 
 		if (gender != null)
-			this.Services.CharacterAppearance.SetCustomizeValue(this.ObjectTableIndex, CustomizeIndex.Gender, (byte)gender, UpdateSource.Script);
+			this.Character.SetCustomizeValue(CustomizeIndex.Gender, (byte)gender, UpdateSource.Script);
 
-		await this.Services.Redraw.RedrawAsync(this.ObjectTableIndex, true);
+		await this.Services.Redraw.RedrawAsync(this.Character, true);
 	}
 
-	public Task RestoreAsync() => this.Services.CharacterAppearance.Restore(this.ObjectTableIndex);
+	public Task RestoreAsync() => this.Character.RevertAppearance();
 }

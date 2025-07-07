@@ -13,6 +13,7 @@
 				"-p:configuration=Debug",
 				"-Restore",
 				"/consoleloggerparameters:'ForceNoAlign;NoSummary'",
+				"/verbosity:quiet"
 			],
 			"problemMatcher": "$msCompile",
 			"group": {
@@ -23,7 +24,12 @@
 				"statusbar": {
 					"label": "$(beaker)"
 				}
-			}
+			},
+			"presentation": {
+				// Hey did you know VSCode will just keep expanding the terminal until it
+				// runs out of memory if you do lots of builds? 🙃
+                "clear": true
+            }
 		},
 	]
 }

@@ -34,7 +34,6 @@ public class ServiceManager : ServiceManagerBase
 	public Input.InputService Input { get; init; } = new();
 	public Files.FileThumbnailService Thumbnails { get; init; } = new();
 	public Tablet.TabletService Tablet { get; init; } = new();
-	public ActorRoleService Roles { get; init; } = new();
 	public Files.FileService Files { get; init; } = new();
 	public PanelService Panels { get; init; } = new();
 	public Cameras.CameraService Camera { get; init; } = new();

@@ -16,7 +16,7 @@
 namespace StudioFourteen.Appearance.Customize;
 
 using Dalamud.Game.ClientState.Objects.Enums;
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using StudioFourteen.Scene.GameObjects.Characters;
 
 using CharaMakeType = StudioFourteen.GameData.Sheets.CharaMakeType;
 
@@ -41,10 +41,11 @@ public class DoubleColorMenu : MakeMenuViewModel
 	public ColorMenu Left { get; set; }
 	public ColorMenu Right { get; set; }
 
-	public override unsafe void OnGameTick(Character* pCharacter)
+	public override unsafe void OnGameTick(Character character)
 	{
-		base.OnGameTick(pCharacter);
-		this.Left.OnGameTick(pCharacter);
-		this.Right.OnGameTick(pCharacter);
+		base.OnGameTick(character);
+
+		this.Left.OnGameTick(character);
+		this.Right.OnGameTick(character);
 	}
 }

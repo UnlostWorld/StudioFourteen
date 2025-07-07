@@ -22,13 +22,16 @@ using StudioFourteen.Library;
 using StudioFourteen.Services;
 using System.Threading.Tasks;
 
+using Character = StudioFourteen.Scene.GameObjects.Characters.Character;
+using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
+
 public class CharacterBackupAppearance
 	: LibraryEntryBase, ICharacterAppearance
 {
 	private readonly string? name;
 	private readonly ImageReference? icon;
 
-	public unsafe CharacterBackupAppearance(Character* character)
+	public unsafe CharacterBackupAppearance(XivCharacter* character)
 		: base(null)
 	{
 		this.name = character->GetDisplayName();
@@ -41,7 +44,7 @@ public class CharacterBackupAppearance
 		this.icon = customize.GetIcon();
 	}
 
-	public CharacterBackupAppearance(Character character)
+	public CharacterBackupAppearance(XivCharacter character)
 		: base(null)
 	{
 		this.name = character.GetDisplayName();
@@ -62,13 +65,13 @@ public class CharacterBackupAppearance
 
 	public override IDragSceneInstance CreateSceneInstance() => new CharacterAppearanceDragSceneInstance(this);
 
-	public async Task Apply(int objectTableIndex, UpdateSource source)
+	public async Task Apply(Character character, UpdateSource source)
 	{
 		await TickService.GameTick();
 
-		this.Services.CharacterAppearance.SetModelCharaId(objectTableIndex, this.ModelId, source);
-		this.Services.CharacterAppearance.SetEquipment(objectTableIndex, this.DrawData.EquipmentModelIds, source);
-		this.Services.CharacterAppearance.SetCustomize(objectTableIndex, this.DrawData.CustomizeData, source);
+		character.SetModelCharaId(this.ModelId, source);
+		character.SetEquipment(this.DrawData.EquipmentModelIds, source);
+		character.SetCustomize(this.DrawData.CustomizeData, source);
 	}
 
 	protected override string GetInternalId() => this.Name;
