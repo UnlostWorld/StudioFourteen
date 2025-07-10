@@ -36,7 +36,7 @@ public class ServiceManager : ServiceManagerBase
 	public Tablet.TabletService Tablet { get; init; } = new();
 	public Files.FileService Files { get; init; } = new();
 	public PanelService Panels { get; init; } = new();
-	public Cameras.CameraService Camera { get; init; } = new();
+	public Scene.Cameras.CameraService Camera { get; init; } = new();
 	public IPC.IPCService IPC { get; init; } = new();
 	public Reshade.ReshadeService Reshade { get; init; } = new();
 	public Analytics.AnalyticsService Analytics { get; init; } = new();

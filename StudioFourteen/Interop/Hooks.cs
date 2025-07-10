@@ -48,7 +48,7 @@ public static unsafe class Hooks
 	internal static readonly SignatureHook<CameraMatrixLoadDelegate> CameraMatrixLoad = new("E8 ?? ?? ?? ?? 48 8B 93 90 02 ?? ?? 48 8D 4C 24 40");
 
 	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Camera/CameraService.cs#L56
-	internal delegate nint GPoseCameraUpdateDelegate(StudioFourteen.Cameras.GroupPoseCamera* camera);
+	internal delegate nint GPoseCameraUpdateDelegate(StudioFourteen.Scene.Cameras.GroupPoseCamera* camera);
 	internal static readonly SignatureHook<GPoseCameraUpdateDelegate> GPoseCameraUpdate = new("40 55 53 57 48 8D 6C 24 A0 48 81 EC ?? ?? ?? ?? 48 8B 1D");
 
 	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Posing/SkeletonService.cs#L59

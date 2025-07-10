@@ -23,7 +23,6 @@ using StudioFourteen.Library.Sources;
 using StudioFourteen.Posing;
 using StudioFourteen.Scripting;
 using StudioFourteen.Services;
-using StudioFourteen.Studio;
 using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
@@ -38,7 +37,6 @@ public class FileService : ServiceBase
 	{
 		new AppearanceFileTypeInfo(),
 		new PoseFileTypeInfo(),
-		new SceneFileTypeInfo(),
 		new MareFileTypeInfo(),
 		new ScriptFileTypeInfo(),
 		new EnvironmentFileTypeInfo(),

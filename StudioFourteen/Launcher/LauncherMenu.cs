@@ -75,7 +75,7 @@ public partial class LauncherMenu : Control
 
 		this.AddPanel<Selection.InspectorPanel>();
 
-		this.AddPanel<Cameras.CameraPanel>();
+		////this.AddPanel<Cameras.CameraPanel>();
 		this.AddPanel<EnvironmentPanel>();
 		this.AddPanel<Appearance.CharacterPanel>();
 		this.AddPanel<Posing.PosePanel>();

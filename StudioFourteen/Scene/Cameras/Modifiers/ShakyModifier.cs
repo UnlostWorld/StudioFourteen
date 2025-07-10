@@ -13,7 +13,7 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Cameras.Modifiers;
+namespace StudioFourteen.Scene.Cameras.Modifiers;
 
 using System;
 using System.Numerics;
@@ -28,8 +28,6 @@ public class ShakyModifier : CameraModifierBase
 	public float PositionIntensity { get; set; } = 0.01f;
 	public float RotationIntensity { get; set; } = 0.5f;
 	public float Speed { get; set; } = 1.0f;
-
-	public override string TypeDisplayName => Resources.Find("LOC_ShakyModifierCamera", "Shaky");
 
 	public override void Tick(float deltaTime)
 	{

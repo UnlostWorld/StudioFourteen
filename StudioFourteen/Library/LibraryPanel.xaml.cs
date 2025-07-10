@@ -311,7 +311,6 @@ public partial class LibraryPanel : Panel
 	{
 		FileInfo? file = await this.Services.Files.ShowOpenDialog(
 			null,
-			typeof(SceneFile),
 			typeof(PoseFile),
 			typeof(AppearanceFile),
 			typeof(ScriptFile),

@@ -25,7 +25,7 @@ using WpfUtils.Commands;
 
 public abstract partial class SceneObjectBase : ViewModel, IDisposable
 {
-	[Notify(Setter.Protected)] private string name = string.Empty;
+	[Notify] private string name = string.Empty;
 	[Notify(Setter.Protected)] private string? subtitle;
 	[Notify(Setter.Protected)] private string? description;
 	[Notify(Setter.Protected)] private bool isReady = false;

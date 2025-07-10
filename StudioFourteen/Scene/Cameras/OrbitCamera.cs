@@ -13,7 +13,7 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Cameras;
+namespace StudioFourteen.Scene.Cameras;
 
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Input;
@@ -67,7 +67,7 @@ public partial class OrbitCamera : StudioCameraBase
 	[Notify(Setter.Private)]
 	private float groupPoseRollAdjust;
 
-	public override string TypeDisplayName => Resources.Find("LOC_OrbitCamera", "Orbit");
+	public override string TypeName => Resources.Find("LOC_OrbitCamera", "Orbit");
 
 	public override void Initialize(CameraState currentState, StudioCameraBase? previousCamera)
 	{

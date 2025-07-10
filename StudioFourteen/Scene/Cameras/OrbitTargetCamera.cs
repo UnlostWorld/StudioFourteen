@@ -13,10 +13,9 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Cameras;
+namespace StudioFourteen.Scene.Cameras;
 
 using PropertyChanged.SourceGenerator;
-using StudioFourteen.Scene;
 using StudioFourteen.Scene.GameObjects;
 using System.Numerics;
 
@@ -27,7 +26,7 @@ public partial class OrbitTargetCamera : OrbitCamera
 	[Notify] private Vector3 targetOffset = new(0, 0, 0);
 	[Notify] private float lerpSpeed = 2;
 
-	public override string TypeDisplayName => Resources.Find("LOC_OrbitTargetCamera", "Orbit Target");
+	public override string TypeName => Resources.Find("LOC_OrbitTargetCamera", "Orbit Target");
 
 	public override void Initialize(CameraState currentState, StudioCameraBase? previousCamera)
 	{

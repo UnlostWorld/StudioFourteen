@@ -40,6 +40,18 @@ public class SceneService : ServiceBase
 		base.Detach();
 	}
 
+	public T AddObject<T>(string? name = null)
+		where T : SceneObjectBase, new()
+	{
+		T obj = new();
+		if (string.IsNullOrEmpty(name))
+			name = $"New {obj.TypeName}";
+
+		obj.Name = name;
+		this.AddObject(obj);
+		return obj;
+	}
+
 	public void AddObject(SceneObjectBase obj)
 	{
 		lock (this.objects)

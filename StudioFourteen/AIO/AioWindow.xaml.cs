@@ -98,7 +98,7 @@ public partial class AioWindow : PanelWindow
 
 			////this.TaskBar.AddEntry<Marketplace.MarketplacePanel>("Marketplace");
 			this.TaskBar.AddEntry<Library.LibraryPanel>();
-			this.TaskBar.AddEntry<Cameras.CameraPanel>();
+			////this.TaskBar.AddEntry<Cameras.CameraPanel>();
 			this.TaskBar.AddEntry<EnvironmentPanel>();
 			this.TaskBar.AddEntry<Appearance.CharacterPanel>();
 			this.TaskBar.AddEntry<Posing.PosePanel>();

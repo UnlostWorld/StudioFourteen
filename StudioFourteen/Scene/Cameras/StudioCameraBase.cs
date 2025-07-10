@@ -13,42 +13,48 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Cameras;
+namespace StudioFourteen.Scene.Cameras;
 
-using Dalamud.Plugin.Services;
-using JsonSubTypes;
-using Newtonsoft.Json;
 using PropertyChanged.SourceGenerator;
-using StudioFourteen.Cameras.Modifiers;
-using StudioFourteen.Mvm;
+using StudioFourteen.Scene.Cameras.Modifiers;
+using StudioFourteen.Scene;
 using System;
 using System.Collections.ObjectModel;
 
-[JsonConverter(typeof(JsonSubtypes), "TypeName")]
-[JsonSubtypes.KnownSubType(typeof(OrbitCamera), "OrbitCamera")]
-[JsonSubtypes.KnownSubType(typeof(OrbitTargetCamera), "OrbitTargetCamera")]
-[JsonSubtypes.KnownSubType(typeof(FreeCamera), "FreeCamera")]
-public abstract partial class StudioCameraBase : ViewModel, IDisposable
+public abstract partial class StudioCameraBase : SceneObjectBase, IDisposable
 {
 	// a distance of 0 hides the character, so a default of 3 seems good.
 	private const float DefaultCameraDistance = 3;
 
-	[Notify] private string name = "Default";
+	private readonly int cameraIndex = -1;
+
 	[Notify] private float fieldOfView;
 
-	[PropertyAttribute("[Newtonsoft.Json.JsonIgnore]")]
 	[Notify(Setter.Private)]
 	private float groupPoseFovAdjust;
 
-	[JsonIgnore] public abstract string TypeDisplayName { get; }
-	[JsonIgnore] public bool IsInitialized { get; set; } = false;
+	public StudioCameraBase()
+	{
+		this.cameraIndex = this.Services.Camera.RegisterCamera(this);
+	}
+
+	public override string Id => $"{this.GetType().Name}:{this.cameraIndex}";
+	public override object? Icon => Resources.Find("ICON_Type_Character");
+
+	public bool IsInitialized { get; set; } = false;
 
 	public ObservableCollection<CameraModifierBase> Modifiers { get; init; } = new();
 
-	public string TypeName => this.GetType().Name;
-
-	public void Reset()
+	public override void Dispose()
 	{
+		base.Dispose();
+
+		this.Services.Camera.RemoveCamera(this);
+	}
+
+	public override void Reset()
+	{
+		base.Reset();
 		this.IsInitialized = false;
 	}
 
@@ -89,19 +95,11 @@ public abstract partial class StudioCameraBase : ViewModel, IDisposable
 	{
 	}
 
-	public virtual void OnGameTick()
-	{
-	}
-
 	public virtual void OnRender(ref CameraState state)
 	{
 	}
 
 	public virtual void Deactivate()
-	{
-	}
-
-	public void Dispose()
 	{
 	}
 }

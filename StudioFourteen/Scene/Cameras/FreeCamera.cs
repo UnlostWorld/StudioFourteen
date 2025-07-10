@@ -13,7 +13,7 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Cameras;
+namespace StudioFourteen.Scene.Cameras;
 
 using Dalamud.Plugin.Services;
 using PropertyChanged.SourceGenerator;
@@ -54,7 +54,7 @@ public partial class FreeCamera : StudioCameraBase
 	private Vector3 desiredRot = Vector3.Zero;
 	private float moveSpeed = 2.0f;
 
-	public override string TypeDisplayName => Resources.Find("LOC_FreeCamera", "Free Target");
+	public override string TypeName => Resources.Find("LOC_FreeCamera", "Free Camera");
 
 	public override void Initialize(CameraState currentState, StudioCameraBase? previousCamera)
 	{

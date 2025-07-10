@@ -13,15 +13,11 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Cameras;
+namespace StudioFourteen.Scene.Cameras;
 
-using Dalamud.Hooking;
-using Dalamud.Plugin.Services;
-using StudioFourteen.Cameras.Modifiers;
+using StudioFourteen.Scene.Cameras.Modifiers;
 using StudioFourteen.Interop;
-using StudioFourteen.Plugin;
 using StudioFourteen.Services;
-using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -59,11 +55,13 @@ public class CameraService : ServiceBase
 {
 	private const float CameraBlendTimeMs = 1000;
 	private readonly Stopwatch blendWatch = new();
+	private readonly List<StudioCameraBase> cameras = new();
 
 	private StudioCameraBase? current;
 	private StudioCameraBase? last;
 	private CameraState state = default;
 	private bool doAttachBlend = false;
+	private int cameraIdCount = 0;
 
 	public delegate void CamerasChangedDelegate();
 	public delegate void CameraChangedDelegate(StudioCameraBase? oldCamera, StudioCameraBase? newCamera);
@@ -94,8 +92,6 @@ public class CameraService : ServiceBase
 
 	public EasingFunctionBase BlendEase { get; set; } = new SineEase();
 
-	public List<StudioCameraBase> Cameras { get; init; } = new();
-
 	public float NearPlane { get; private set; }
 	public float FarPlane { get; private set; }
 	public Matrix4x4 CurrentView { get; private set; }
@@ -107,8 +103,6 @@ public class CameraService : ServiceBase
 
 	public override Task Start()
 	{
-		this.Cameras.Add(new OrbitTargetCamera());
-
 		this.Services.GroupPose.StateChanged += this.OnGroupPoseStateChanged;
 		this.OnGroupPoseStateChanged(this.Services.GroupPose.IsGroupPosing);
 
@@ -162,59 +156,28 @@ public class CameraService : ServiceBase
 		this.blendWatch.Stop();
 	}
 
-	public void CreateCamera<T>(bool activate = true)
-		where T : StudioCameraBase
-	{
-		StudioCameraBase? cam = Activator.CreateInstance<T>();
-		this.Cameras.Add(cam);
-		this.CamerasChanged?.Invoke();
-
-		this.Current = cam;
-	}
-
-	public void DeleteCamera(StudioCameraBase camera)
-	{
-		bool wasCurrent = this.current == camera;
-
-		this.Cameras.Remove(camera);
-
-		if (this.Cameras.Count <= 0)
-			this.Cameras.Add(new OrbitTargetCamera());
-
-		this.CamerasChanged?.Invoke();
-
-		if (wasCurrent)
-		{
-			this.Current = this.Cameras[0];
-		}
-
-		camera.Dispose();
-	}
-
-	public void LoadCameras(IEnumerable<StudioCameraBase> cameras)
-	{
-		List<StudioCameraBase> oldCameras = new(this.Cameras);
-
-		this.Cameras.Clear();
-		foreach (StudioCameraBase newCamera in cameras)
-		{
-			newCamera.IsInitialized = true;
-			this.Cameras.Add(newCamera);
-		}
-
-		this.CamerasChanged?.Invoke();
-		this.Current = this.Cameras[0];
-
-		foreach (StudioCameraBase camera in oldCameras)
-		{
-			camera.Dispose();
-		}
-	}
-
 	public Vector3 WorldToCamera(Vector3 worldPos)
 	{
 		Matrix4x4 viewProj = this.CurrentView * this.CurrentProjection;
 		return viewProj.TransformViewProjection(worldPos);
+	}
+
+	public int RegisterCamera(StudioCameraBase studioCameraBase)
+	{
+		lock (this.cameras)
+		{
+			this.cameras.Add(studioCameraBase);
+			this.cameraIdCount++;
+			return this.cameraIdCount;
+		}
+	}
+
+	public void RemoveCamera(StudioCameraBase studioCameraBase)
+	{
+		lock (this.cameras)
+		{
+			this.cameras.Remove(studioCameraBase);
+		}
 	}
 
 	protected void OnGameTick()
@@ -227,9 +190,13 @@ public class CameraService : ServiceBase
 
 	private void OnGroupPoseStateChanged(bool newState)
 	{
-		if (newState && this.Cameras.Count > 0)
+		if (newState && this.cameras.Count <= 0)
 		{
-			this.Current = this.Cameras[0];
+			this.Current = this.Services.Scene.AddObject<OrbitTargetCamera>("Editor Camera");
+		}
+		else if (newState && this.cameras.Count > 0)
+		{
+			this.Current = this.cameras[0];
 		}
 		else
 		{
@@ -323,17 +290,20 @@ public class CameraService : ServiceBase
 				// Update all cameras in the background.
 				// TODO: we could move this to another thread to ensure
 				// the camera detour is fast.
-				CameraState temp = default;
-				foreach (StudioCameraBase otherCamera in this.Cameras)
+				lock (this.cameras)
 				{
-					if (otherCamera == this.current)
-						continue;
+					CameraState temp = default;
+					foreach (StudioCameraBase otherCamera in this.cameras)
+					{
+						if (otherCamera == this.current)
+							continue;
 
-					if (!this.Services.Photos.IsCapturing)
-						otherCamera.Tick(deltaTime);
+						if (!this.Services.Photos.IsCapturing)
+							otherCamera.Tick(deltaTime);
 
-					otherCamera.Calculate(ref temp);
-					otherCamera.OnRender(ref temp);
+						otherCamera.Calculate(ref temp);
+						otherCamera.OnRender(ref temp);
+					}
 				}
 			}
 			catch (Exception ex)
