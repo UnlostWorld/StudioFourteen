@@ -24,6 +24,8 @@ using System;
 using WpfUtils;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Environment;
+using StudioFourteen.Scene.GameObjects.Characters;
+using StudioFourteen.Scene.Cameras;
 
 [DependencyProperty<bool>("IsMenuOpen")]
 public partial class AioWindow : PanelWindow
@@ -98,9 +100,9 @@ public partial class AioWindow : PanelWindow
 
 			////this.TaskBar.AddEntry<Marketplace.MarketplacePanel>("Marketplace");
 			this.TaskBar.AddEntry<Library.LibraryPanel>();
-			////this.TaskBar.AddEntry<Cameras.CameraPanel>();
+			this.TaskBar.AddEntry<CameraPanel>();
 			this.TaskBar.AddEntry<EnvironmentPanel>();
-			this.TaskBar.AddEntry<Appearance.CharacterPanel>();
+			this.TaskBar.AddEntry<CharacterPanel>();
 			this.TaskBar.AddEntry<Posing.PosePanel>();
 			////this.TaskBar.AddEntry<Library.LibraryWindow>("Lighting");
 			////this.TaskBar.AddEntry<Library.LibraryWindow>("Furniture");

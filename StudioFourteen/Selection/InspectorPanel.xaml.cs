@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using StudioFourteen.Panels;
 using StudioFourteen.Scene;
+using StudioFourteen.Scene.Cameras;
 using StudioFourteen.Scene.GameObjects.Characters;
 using WpfUtils.Extensions;
 
@@ -45,7 +46,6 @@ public partial class InspectorPanel : Panel
 		this.Types.Replace(this.GetSelectionTypes());
 		this.CurrentType = this.Types[0];
 
-		this.Services.Selection.SelectionChanged += this.OnServiceSelectionChanged;
 		this.Services.Scene.ObjectAdded += this.OnObjectAddedToScene;
 		this.Services.Scene.ObjectRemoved += this.OnObjectRemovedFromScene;
 	}
@@ -54,7 +54,6 @@ public partial class InspectorPanel : Panel
 	{
 		base.OnClosed();
 
-		this.Services.Selection.SelectionChanged -= this.OnServiceSelectionChanged;
 		this.Services.Scene.ObjectAdded -= this.OnObjectAddedToScene;
 		this.Services.Scene.ObjectRemoved -= this.OnObjectRemovedFromScene;
 	}
@@ -64,12 +63,13 @@ public partial class InspectorPanel : Panel
 		List<SelectionTypeBase> selectionTypes = new();
 		selectionTypes.Add(new SelectionType<SceneObjectBase>());
 		selectionTypes.Add(new SelectionType<Character>());
+		selectionTypes.Add(new SelectionType<StudioCameraBase>());
 		return selectionTypes;
 	}
 
 	private void OnObjectRemovedFromScene(SceneObjectBase obj)
 	{
-		this.Dispatcher.Invoke(() =>
+		this.Dispatcher.BeginInvoke(() =>
 		{
 			foreach (SelectionTypeBase type in this.Types)
 			{
@@ -80,22 +80,11 @@ public partial class InspectorPanel : Panel
 
 	private void OnObjectAddedToScene(SceneObjectBase obj)
 	{
-		this.Dispatcher.Invoke(() =>
+		this.Dispatcher.BeginInvoke(() =>
 		{
 			foreach (SelectionTypeBase type in this.Types)
 			{
 				type.OnObjectAddedToScene(obj);
-			}
-		});
-	}
-
-	private void OnServiceSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? selectionSource)
-	{
-		this.Dispatcher.Invoke(() =>
-		{
-			foreach (SelectionTypeBase type in this.Types)
-			{
-				type.OnServiceSelectionChanged(oldSelection, newSelection, selectionSource);
 			}
 		});
 	}

@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Selection;
 
+using System;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Scene;
 using WpfUtils.Extensions;
@@ -24,31 +25,22 @@ using static StudioFourteen.Selection.SelectionService;
 public partial class SelectionType<T> : SelectionTypeBase
 	where T : SceneObjectBase
 {
-	private readonly SelectionScope scope;
+	private readonly SelectionScope<T> scope;
 	[Notify] private T? selection;
 
 	public SelectionType()
 	{
 		this.scope = ServiceManager.Instance.Selection.GetScope<T>();
 		this.Objects.Replace(ServiceManager.Instance.Scene.FindObjects<T>());
+
+		this.scope.Attach(this.OnScopeSelectionChanged);
+		this.Selection = this.scope.Selection;
 	}
 
 	public FastObservableCollection<T> Objects { get; init; } = new();
 
 	public override string? Name => StudioFourteen.Resources.Find($"LOC_Type_{typeof(T).Name}s", typeof(T).Name);
 	public override object? Icon => StudioFourteen.Resources.Find($"ICON_Type_{typeof(T).Name}");
-
-	public override void OnServiceSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? selectionSource)
-	{
-		if (newSelection is T tObj)
-		{
-			this.Selection = tObj;
-		}
-		else
-		{
-			this.Selection = null;
-		}
-	}
 
 	public override void OnObjectRemovedFromScene(SceneObjectBase obj)
 	{
@@ -69,5 +61,10 @@ public partial class SelectionType<T> : SelectionTypeBase
 	private void OnSelectionChanged(T? oldValue, T? newValue)
 	{
 		ServiceManager.Instance.Selection.Select(newValue, this);
+	}
+
+	private void OnScopeSelectionChanged(T selection, object? source)
+	{
+		this.Selection = selection;
 	}
 }

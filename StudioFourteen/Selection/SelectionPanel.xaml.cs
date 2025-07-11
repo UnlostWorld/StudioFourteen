@@ -51,7 +51,6 @@ public partial class SelectionPanel : Panel
 		this.Types.Add(new SelectionType<Character>());
 		this.CurrentType = this.Types[0];
 
-		this.Services.Selection.SelectionChanged += this.OnServiceSelectionChanged;
 		this.Services.Scene.ObjectAdded += this.OnObjectAddedToScene;
 		this.Services.Scene.ObjectRemoved += this.OnObjectRemovedFromScene;
 	}
@@ -60,14 +59,13 @@ public partial class SelectionPanel : Panel
 	{
 		base.OnClosed();
 
-		this.Services.Selection.SelectionChanged -= this.OnServiceSelectionChanged;
 		this.Services.Scene.ObjectAdded -= this.OnObjectAddedToScene;
 		this.Services.Scene.ObjectRemoved -= this.OnObjectRemovedFromScene;
 	}
 
 	private void OnObjectRemovedFromScene(SceneObjectBase obj)
 	{
-		this.Dispatcher.Invoke(() =>
+		this.Dispatcher.BeginInvoke(() =>
 		{
 			foreach (SelectionTypeBase type in this.Types)
 			{
@@ -78,22 +76,11 @@ public partial class SelectionPanel : Panel
 
 	private void OnObjectAddedToScene(SceneObjectBase obj)
 	{
-		this.Dispatcher.Invoke(() =>
+		this.Dispatcher.BeginInvoke(() =>
 		{
 			foreach (SelectionTypeBase type in this.Types)
 			{
 				type.OnObjectAddedToScene(obj);
-			}
-		});
-	}
-
-	private void OnServiceSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? selectionSource)
-	{
-		this.Dispatcher.Invoke(() =>
-		{
-			foreach (SelectionTypeBase type in this.Types)
-			{
-				type.OnServiceSelectionChanged(oldSelection, newSelection, selectionSource);
 			}
 		});
 	}

@@ -13,9 +13,8 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Appearance;
+namespace StudioFourteen.Scene.GameObjects.Characters;
 
-using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Selection;
 
 public partial class CharacterPanel : InspectorPanel<Character>

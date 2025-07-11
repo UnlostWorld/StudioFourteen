@@ -6,15 +6,19 @@
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
 	<DataTemplate DataType="{x:Type cameras:FreeCamera}">
-		<StackPanel>
-			<TextBlock Style="{DynamicResource LeftLabel}"
-				Text="{DynamicResource LOC_FreeCamera_Position}" />
-			<controls:Vector3Box Change="0.1" Value="{Binding Position}" />
+		<Border Background="{DynamicResource BackgroundBrush}">
+			<ScrollViewer VerticalScrollBarVisibility="Disabled">
+				<StackPanel>
+					<TextBlock Style="{DynamicResource LeftLabel}"
+						Text="{DynamicResource LOC_FreeCamera_Position}" />
+					<controls:Vector3Box Change="0.1" Value="{Binding Position}" />
 
-			<TextBlock Style="{DynamicResource LeftLabel}"
-				Text="{DynamicResource LOC_Camera_Rotation}" />
-			<controls:QuaternionBox Value="{Binding Rotation}" Change="1" />
-		</StackPanel>
+					<TextBlock Style="{DynamicResource LeftLabel}"
+						Text="{DynamicResource LOC_Camera_Rotation}" />
+					<controls:QuaternionBox Value="{Binding Rotation}" Change="1" />
+				</StackPanel>
+			</ScrollViewer>
+		</Border>
 	</DataTemplate>
 
 </ResourceDictionary>

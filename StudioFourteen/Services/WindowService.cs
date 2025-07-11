@@ -187,7 +187,7 @@ public partial class WindowService : ServiceBase
 
 		if (this.lastTopMostPanelWindow != null && this.lastTopMostPanelWindow != window)
 		{
-			this.lastTopMostPanelWindow.Dispatcher.Invoke(() =>
+			this.lastTopMostPanelWindow.Dispatcher.BeginInvoke(() =>
 			{
 				if (this.lastTopMostPanelWindow != null)
 				{
@@ -198,7 +198,7 @@ public partial class WindowService : ServiceBase
 
 		if (newTopMost != null)
 		{
-			newTopMost.Dispatcher.Invoke(() =>
+			newTopMost.Dispatcher.BeginInvoke(() =>
 			{
 				WindowInteropHelper wndInterop = new(newTopMost);
 				PInvoke.BringWindowToTop((HWND)wndInterop.Handle);

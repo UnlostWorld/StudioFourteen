@@ -13,15 +13,10 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Selection;
+namespace StudioFourteen.Scene.Cameras;
 
-using StudioFourteen.Scene;
+using StudioFourteen.Selection;
 
-public abstract class SelectionTypeBase
+public partial class CameraPanel : InspectorPanel<StudioCameraBase>
 {
-	public abstract object? Icon { get; }
-	public abstract string? Name { get; }
-
-	public abstract void OnObjectRemovedFromScene(SceneObjectBase obj);
-	public abstract void OnObjectAddedToScene(SceneObjectBase obj);
 }

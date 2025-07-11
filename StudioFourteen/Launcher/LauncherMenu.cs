@@ -19,12 +19,14 @@ using System;
 using System.Windows;
 using System.Windows.Controls;
 using DependencyPropertyGenerator;
+using PropertyChanged.SourceGenerator;
+using StudioFourteen.AIO;
+using StudioFourteen.Environment;
 using StudioFourteen.Mvm;
 using StudioFourteen.Panels;
-using StudioFourteen.AIO;
+using StudioFourteen.Scene.Cameras;
+using StudioFourteen.Scene.GameObjects.Characters;
 using WpfUtils.Extensions;
-using StudioFourteen.Environment;
-using PropertyChanged.SourceGenerator;
 
 using Panel = StudioFourteen.Panels.Panel;
 
@@ -75,9 +77,9 @@ public partial class LauncherMenu : Control
 
 		this.AddPanel<Selection.InspectorPanel>();
 
-		////this.AddPanel<Cameras.CameraPanel>();
+		this.AddPanel<CameraPanel>();
 		this.AddPanel<EnvironmentPanel>();
-		this.AddPanel<Appearance.CharacterPanel>();
+		this.AddPanel<CharacterPanel>();
 		this.AddPanel<Posing.PosePanel>();
 
 		this.AddPanel<Animation.AnimationPanel>();
