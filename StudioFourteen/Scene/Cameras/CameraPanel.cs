@@ -17,6 +17,6 @@ namespace StudioFourteen.Scene.Cameras;
 
 using StudioFourteen.Selection;
 
-public partial class CameraPanel : InspectorPanel<StudioCameraBase>
+public partial class CameraPanel : InspectorPanel<Camera>
 {
 }

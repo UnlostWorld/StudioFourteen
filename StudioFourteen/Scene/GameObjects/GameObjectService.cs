@@ -96,6 +96,12 @@ public class GameObjectService : ServiceBase
 				if (gameObject == null)
 					continue;
 
+				if (this.Services.GroupPose.IsGroupPosing && gameObject->ObjectIndex < GroupPoseService.GPoseFirstCharacter)
+					continue;
+
+				if (!this.Services.GroupPose.IsGroupPosing && gameObject->ObjectIndex >= GroupPoseService.GPoseFirstCharacter)
+					continue;
+
 				if (!gameObject->IsReadyToDraw() || gameObject->DrawObject == null)
 					continue;
 

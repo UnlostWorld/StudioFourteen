@@ -63,7 +63,7 @@ public partial class InspectorPanel : Panel
 		List<SelectionTypeBase> selectionTypes = new();
 		selectionTypes.Add(new SelectionType<SceneObjectBase>());
 		selectionTypes.Add(new SelectionType<Character>());
-		selectionTypes.Add(new SelectionType<StudioCameraBase>());
+		selectionTypes.Add(new SelectionType<Camera>());
 		return selectionTypes;
 	}
 

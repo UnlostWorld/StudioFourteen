@@ -22,7 +22,7 @@ using StudioFourteen.Utilities;
 using System;
 using System.Numerics;
 
-public partial class OrbitCamera : StudioCameraBase
+public partial class OrbitCamera : Camera
 {
 	protected Vector3 desiredRot = Vector3.Zero;
 	protected Vector3 desiredMove = Vector3.Zero;
@@ -69,7 +69,7 @@ public partial class OrbitCamera : StudioCameraBase
 
 	public override string TypeName => Resources.Find("LOC_OrbitCamera", "Orbit");
 
-	public override void Initialize(CameraState currentState, StudioCameraBase? previousCamera)
+	public override void Initialize(CameraState currentState, Camera? previousCamera)
 	{
 		base.Initialize(currentState, previousCamera);
 
@@ -152,7 +152,7 @@ public partial class OrbitCamera : StudioCameraBase
 		camera->Camera.Distance = this.distance;
 	}
 
-	public override void Calculate(ref CameraState state, StudioCameraBase? blend, float blendWeight)
+	public override void Calculate(ref CameraState state, Camera? blend, float blendWeight)
 	{
 		base.Calculate(ref state, blend, blendWeight);
 

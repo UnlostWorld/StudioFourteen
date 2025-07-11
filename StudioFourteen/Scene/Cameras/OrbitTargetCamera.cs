@@ -28,7 +28,7 @@ public partial class OrbitTargetCamera : OrbitCamera
 
 	public override string TypeName => Resources.Find("LOC_OrbitTargetCamera", "Orbit Target");
 
-	public override void Initialize(CameraState currentState, StudioCameraBase? previousCamera)
+	public override void Initialize(CameraState currentState, Camera? previousCamera)
 	{
 		base.Initialize(currentState, previousCamera);
 

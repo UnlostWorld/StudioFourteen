@@ -63,109 +63,29 @@
 
 		<librarySelector:LibrarySelector
 			HorizontalAlignment="Center"
+			CloseOnSelection="True"
+			Favorites="True"
 			IsOpen="{Binding ElementName=AddButton, Path=IsChecked}"
 			PlacementTarget="{Binding ElementName=AddButton}"
-			StaysOpen="False"
-			Favorites="True"
-			Header="Create an Object"
-			CloseOnSelection="True"
-			SelectedItem="{Binding SelectedAdd}">
+			SelectedItem="{Binding SelectedAdd}"
+			Types="{Binding CurrentCreateType.Types}"
+			StaysOpen="False">
 
-			<librarySelector:LibrarySelector.Footer>
-				<Border Margin="2" Style="{DynamicResource WpfUtilsControlBorder}">
-					<UniformGrid Columns="3">
-						<Button Height="48">
-							<Grid>
-								<Grid.RowDefinitions>
-									<RowDefinition />
-									<RowDefinition Height="Auto" />
-								</Grid.RowDefinitions>
-
-								<icons:IconView Grid.Row="0" Icon="{DynamicResource ICON_Type_Character}" />
-								<TextBlock
-									Grid.Row="1"
-									HorizontalAlignment="Center"
-									Text="Character" />
-							</Grid>
-						</Button>
-
-						<Button Height="48">
-							<Grid>
-								<Grid.RowDefinitions>
-									<RowDefinition />
-									<RowDefinition Height="Auto" />
-								</Grid.RowDefinitions>
-
-								<icons:IconView Grid.Row="0" Icon="{DynamicResource ICON_Type_Camera}" />
-								<TextBlock
-									Grid.Row="1"
-									HorizontalAlignment="Center"
-									Text="Camera" />
-							</Grid>
-						</Button>
-
-						<Button Height="48">
-							<Grid>
-								<Grid.RowDefinitions>
-									<RowDefinition />
-									<RowDefinition Height="Auto" />
-								</Grid.RowDefinitions>
-
-								<icons:IconView Grid.Row="0" Icon="{DynamicResource ICON_Type_Light}" />
-								<TextBlock
-									Grid.Row="1"
-									HorizontalAlignment="Center"
-									Text="Light" />
-							</Grid>
-						</Button>
-
-						<Button Height="48">
-							<Grid>
-								<Grid.RowDefinitions>
-									<RowDefinition />
-									<RowDefinition Height="Auto" />
-								</Grid.RowDefinitions>
-
-								<icons:IconView Grid.Row="0" Icon="{DynamicResource ICON_Type_StageMark}" />
-								<TextBlock
-									Grid.Row="1"
-									HorizontalAlignment="Center"
-									Text="Marker" />
-							</Grid>
-						</Button>
-
-						<Button Height="48">
-							<Grid>
-								<Grid.RowDefinitions>
-									<RowDefinition />
-									<RowDefinition Height="Auto" />
-								</Grid.RowDefinitions>
-
-								<icons:IconView Grid.Row="0" Icon="{DynamicResource ICON_Type_Effect}" />
-								<TextBlock
-									Grid.Row="1"
-									HorizontalAlignment="Center"
-									Text="Effect" />
-							</Grid>
-						</Button>
-
-						<Button Height="48">
-							<Grid>
-								<Grid.RowDefinitions>
-									<RowDefinition />
-									<RowDefinition Height="Auto" />
-								</Grid.RowDefinitions>
-
-								<icons:IconView Grid.Row="0" Icon="{DynamicResource ICON_Type_Furnature}" />
-								<TextBlock
-									Grid.Row="1"
-									HorizontalAlignment="Center"
-									Text="Furniture" />
-							</Grid>
-						</Button>
-					</UniformGrid>
-				</Border>
-			</librarySelector:LibrarySelector.Footer>
+			<librarySelector:LibrarySelector.Header>
+				<wpfUtils:SwitchSelector
+					Grid.Column="0"
+					ItemsSource="{Binding CreateTypes}"
+					SelectedValue="{Binding CurrentCreateType}">
+					<wpfUtils:SwitchSelector.ItemTemplate>
+						<DataTemplate>
+							<icons:IconView
+								Width="24"
+								Icon="{Binding Icon}"
+								ToolTip="{Binding Name}" />
+						</DataTemplate>
+					</wpfUtils:SwitchSelector.ItemTemplate>
+				</wpfUtils:SwitchSelector>
+			</librarySelector:LibrarySelector.Header>
 		</librarySelector:LibrarySelector>
 
 	</Grid>

@@ -55,23 +55,23 @@ public class CameraService : ServiceBase
 {
 	private const float CameraBlendTimeMs = 1000;
 	private readonly Stopwatch blendWatch = new();
-	private readonly List<StudioCameraBase> cameras = new();
+	private readonly List<Camera> cameras = new();
 
-	private StudioCameraBase? current;
-	private StudioCameraBase? last;
+	private Camera? current;
+	private Camera? last;
 	private CameraState state = default;
 	private bool doAttachBlend = false;
 	private int cameraIdCount = 0;
 
 	public delegate void CamerasChangedDelegate();
-	public delegate void CameraChangedDelegate(StudioCameraBase? oldCamera, StudioCameraBase? newCamera);
+	public delegate void CameraChangedDelegate(Camera? oldCamera, Camera? newCamera);
 
 	public event CamerasChangedDelegate? CamerasChanged;
 	public event CameraChangedDelegate? CurrentCameraChanged;
 
 	public GroupPoseCamera? InitialCamera { get; private set; }
 
-	public StudioCameraBase? Current
+	public Camera? Current
 	{
 		get => this.current;
 		set
@@ -162,7 +162,7 @@ public class CameraService : ServiceBase
 		return viewProj.TransformViewProjection(worldPos);
 	}
 
-	public int RegisterCamera(StudioCameraBase studioCameraBase)
+	public int RegisterCamera(Camera studioCameraBase)
 	{
 		lock (this.cameras)
 		{
@@ -172,7 +172,7 @@ public class CameraService : ServiceBase
 		}
 	}
 
-	public void RemoveCamera(StudioCameraBase studioCameraBase)
+	public void RemoveCamera(Camera studioCameraBase)
 	{
 		lock (this.cameras)
 		{
@@ -293,7 +293,7 @@ public class CameraService : ServiceBase
 				lock (this.cameras)
 				{
 					CameraState temp = default;
-					foreach (StudioCameraBase otherCamera in this.cameras)
+					foreach (Camera otherCamera in this.cameras)
 					{
 						if (otherCamera == this.current)
 							continue;

@@ -21,7 +21,7 @@ using StudioFourteen.Scene;
 using System;
 using System.Collections.ObjectModel;
 
-public abstract partial class StudioCameraBase : SceneObjectBase, IDisposable
+public abstract partial class Camera : SceneObjectBase, IDisposable
 {
 	// a distance of 0 hides the character, so a default of 3 seems good.
 	private const float DefaultCameraDistance = 3;
@@ -33,7 +33,7 @@ public abstract partial class StudioCameraBase : SceneObjectBase, IDisposable
 	[Notify(Setter.Private)]
 	private float groupPoseFovAdjust;
 
-	public StudioCameraBase()
+	public Camera()
 	{
 		this.cameraIndex = this.Services.Camera.RegisterCamera(this);
 	}
@@ -58,7 +58,7 @@ public abstract partial class StudioCameraBase : SceneObjectBase, IDisposable
 		this.IsInitialized = false;
 	}
 
-	public virtual void Initialize(CameraState currentState, StudioCameraBase? previousCamera)
+	public virtual void Initialize(CameraState currentState, Camera? previousCamera)
 	{
 		this.IsInitialized = true;
 
@@ -73,7 +73,7 @@ public abstract partial class StudioCameraBase : SceneObjectBase, IDisposable
 		}
 	}
 
-	public unsafe virtual void Calculate(ref CameraState state, StudioCameraBase? blend = null, float blendWeight = 0)
+	public unsafe virtual void Calculate(ref CameraState state, Camera? blend = null, float blendWeight = 0)
 	{
 		state.FieldOfView = (this.FieldOfView + this.GroupPoseFovAdjust) / 100.0f;
 

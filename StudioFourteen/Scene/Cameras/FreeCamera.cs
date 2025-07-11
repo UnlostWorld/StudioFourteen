@@ -24,7 +24,7 @@ using System;
 using System.Numerics;
 using System.Windows.Input;
 
-public partial class FreeCamera : StudioCameraBase
+public partial class FreeCamera : Camera
 {
 	private const float MoveSpeedMultiplier = 1.01f;
 	private const float MoveSpeed = 2.0f;
@@ -56,7 +56,7 @@ public partial class FreeCamera : StudioCameraBase
 
 	public override string TypeName => Resources.Find("LOC_FreeCamera", "Free Camera");
 
-	public override void Initialize(CameraState currentState, StudioCameraBase? previousCamera)
+	public override void Initialize(CameraState currentState, Camera? previousCamera)
 	{
 		base.Initialize(currentState, previousCamera);
 
@@ -175,7 +175,7 @@ public partial class FreeCamera : StudioCameraBase
 		this.desiredRot = Vector3.Zero;
 	}
 
-	public override void Calculate(ref CameraState state, StudioCameraBase? blend = null, float blendWeight = 0)
+	public override void Calculate(ref CameraState state, Camera? blend = null, float blendWeight = 0)
 	{
 		base.Calculate(ref state, blend, blendWeight);
 

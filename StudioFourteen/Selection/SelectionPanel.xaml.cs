@@ -16,17 +16,21 @@
 namespace StudioFourteen.Selection;
 
 using System;
+using System.Collections.Generic;
 using StudioFourteen.Appearance;
 using StudioFourteen.Panels;
 using StudioFourteen.Scene;
+using StudioFourteen.Scene.Cameras;
 using StudioFourteen.Scene.GameObjects.Characters;
 using WpfUtils.Extensions;
 
 public partial class SelectionPanel : Panel
 {
 	private SelectionTypeBase? currentType;
+	private CreateType? createType;
 
 	public FastObservableCollection<SelectionTypeBase> Types { get; init; } = new();
+	public FastObservableCollection<CreateType> CreateTypes { get; init; } = new();
 
 	public SelectionTypeBase? CurrentType
 	{
@@ -34,6 +38,16 @@ public partial class SelectionPanel : Panel
 		set
 		{
 			this.currentType = value;
+			this.NotifyPropertyChanged();
+		}
+	}
+
+	public CreateType? CurrentCreateType
+	{
+		get => this.createType;
+		set
+		{
+			this.createType = value;
 			this.NotifyPropertyChanged();
 		}
 	}
@@ -48,8 +62,15 @@ public partial class SelectionPanel : Panel
 	{
 		base.OnOpened();
 
+		this.Types.Clear();
 		this.Types.Add(new SelectionType<Character>());
+		this.Types.Add(new SelectionType<Camera>());
 		this.CurrentType = this.Types[0];
+
+		this.CreateTypes.Clear();
+		this.CreateTypes.Add(new CreateType<Character>());
+		this.CreateTypes.Add(new CreateType<Camera>());
+		this.CurrentCreateType = this.CreateTypes[0];
 
 		this.Services.Scene.ObjectAdded += this.OnObjectAddedToScene;
 		this.Services.Scene.ObjectRemoved += this.OnObjectRemovedFromScene;
@@ -94,5 +115,19 @@ public partial class SelectionPanel : Panel
 		{
 			this.Services.CharacterLifecycle.CreateAsync(appearance, UpdateSource.Interface).Run();
 		}
+	}
+
+	public abstract class CreateType
+	{
+		public abstract object? Icon { get; }
+		public abstract string Name { get; }
+	}
+
+	public class CreateType<T> : CreateType
+	{
+		public override object? Icon => StudioFourteen.Resources.Find($"ICON_Type_{typeof(T).Name}");
+		public override string Name => StudioFourteen.Resources.Find($"LOC_Type_{typeof(T).Name}", typeof(T).Name);
+
+		public List<Type> Types { get; init; } = new(); // ??
 	}
 }
