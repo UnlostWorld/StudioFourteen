@@ -81,7 +81,7 @@
 				<icons:IconView
 					Height="18"
 					Foreground="{DynamicResource TrimBrush}"
-					Icon="{DynamicResource ICON_FavoriteOff}" />
+					Icon="{DynamicResource ICON_FavoriteOn}" />
 
 			</Grid>
 
@@ -171,31 +171,10 @@
 						SelectedTags="{Binding RelativeSource={RelativeSource AncestorType={x:Type selector:LibrarySelector}}, Path=CurrentTags}"
 						Tags="{Binding RelativeSource={RelativeSource AncestorType={x:Type selector:LibrarySelector}}, Path=AvailableTags}" />
 
-					<wpfUtils:SwitchSelector
-						Grid.Row="2"
-						Grid.Column="0"
-						Width="64"
-						Height="28"
-						Margin="3,0,1,1">
-						<ListBoxItem
-							IsSelected="{Binding RelativeSource={RelativeSource AncestorType={x:Type selector:LibrarySelector}}, Path=Favorites, Converter={StaticResource !B}}"
-							Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
-							ToolTip="{DynamicResource LOC_LibrarySelector_All}">
-							<icons:IconView Icon="{DynamicResource ICON_Library_FilterAll}" />
-						</ListBoxItem>
-						<ListBoxItem
-							IsSelected="{Binding RelativeSource={RelativeSource AncestorType={x:Type selector:LibrarySelector}}, Path=Favorites}"
-							Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
-							ToolTip="{DynamicResource LOC_LibrarySelector_Favorites}">
-							<icons:IconView Icon="{DynamicResource ICON_Library_FilterFavorites}" />
-						</ListBoxItem>
-					</wpfUtils:SwitchSelector>
-
 					<TextBox
 						x:Name="PART_SearchBox"
 						Grid.Row="2"
-						Grid.Column="1"
-						Grid.ColumnSpan="2"
+						Grid.ColumnSpan="3"
 						Height="28"
 						Margin="1,1,3,2"
 						Padding="28,0,0,0"

@@ -15,21 +15,25 @@
 
 namespace StudioFourteen.Scene.Cameras;
 
-using StudioFourteen.Scene.Cameras.Modifiers;
-using StudioFourteen.Interop;
-using StudioFourteen.Services;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using StudioFourteen.Interop;
+using StudioFourteen.Scene.Cameras.Modifiers;
+using StudioFourteen.Services;
 using WpfUtils.Animation;
 
 using CameraManager = FFXIVClientStructs.FFXIV.Client.Game.Control.CameraManager;
 using GameCamera = FFXIVClientStructs.FFXIV.Client.Game.Camera;
 using RenderCamera = FFXIVClientStructs.FFXIV.Client.Graphics.Render.Camera;
 using SceneCamera = FFXIVClientStructs.FFXIV.Client.Graphics.Scene.Camera;
+
+public interface ICameraSave : ICreatableSceneObject
+{
+}
 
 public struct CameraState
 {
@@ -100,6 +104,12 @@ public class CameraService : ServiceBase
 	public Matrix4x4 LastProjection { get; private set; }
 	public Vector3 CurrentPosition { get; private set; }
 	public Vector3 CurrentForward { get; private set; }
+
+	public override Task Initialize()
+	{
+		this.Services.Library.AddSource(new EmptyCamerasLibrarySource());
+		return base.Initialize();
+	}
 
 	public override Task Start()
 	{

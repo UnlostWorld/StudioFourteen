@@ -18,10 +18,15 @@ namespace StudioFourteen.Scene;
 using System;
 using System.Collections.Generic;
 using PropertyChanged.SourceGenerator;
+using StudioFourteen.DragAndDrop;
 using StudioFourteen.Mvm;
 using StudioFourteen.Rendering.Draw.Gizmos;
 using StudioFourteen.Utilities;
 using WpfUtils.Commands;
+
+public interface ICreatableSceneObject : IDraggable
+{
+}
 
 public abstract partial class SceneObjectBase : ViewModel, IDisposable
 {

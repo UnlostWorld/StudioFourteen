@@ -43,7 +43,6 @@ using WpfUtils.Utils;
 [DependencyProperty<Type>("Type")]
 [DependencyProperty<List<Type>>("Types")]
 [DependencyProperty<bool>("IsLoading", DefaultBindingMode = DefaultBindingMode.OneWay)]
-[DependencyProperty<bool>("Favorites", DefaultBindingMode = DefaultBindingMode.TwoWay)]
 [DependencyProperty<bool>("CloseOnSelection")]
 public partial class LibrarySelector : PopOut
 {
@@ -158,9 +157,6 @@ public partial class LibrarySelector : PopOut
 
 		List<FilterBase> filters = new List<FilterBase>();
 
-		if (this.Favorites)
-			filters.Add(new LibraryFavoritesFilter());
-
 		if (this.Types != null && this.Types.Count > 0)
 			filters.Add(new TypeFilter(this.Types));
 
@@ -200,11 +196,6 @@ public partial class LibrarySelector : PopOut
 		this.searchQueue.Invoke();
 	}
 
-	partial void OnFavoritesChanged()
-	{
-		this.searchQueue.Invoke();
-	}
-
 	partial void OnCurrentTagsChanged(TagCollection? oldValue, TagCollection? newValue)
 	{
 		if (oldValue != null)
@@ -227,6 +218,16 @@ public partial class LibrarySelector : PopOut
 
 		Result? selectedResult = this.currentResults?.Find(newValue as LibraryEntryBase);
 		this.resultsBox.SelectedItem = selectedResult;
+	}
+
+	partial void OnTypeChanged(Type? oldValue, Type? newValue)
+	{
+		this.searchQueue.Invoke();
+	}
+
+	partial void OnTypesChanged(List<Type>? oldValue, List<Type>? newValue)
+	{
+		this.searchQueue.Invoke();
 	}
 
 	private void OnTagsCollectionChanged(object? sender, NotifyCollectionChangedEventArgs e)

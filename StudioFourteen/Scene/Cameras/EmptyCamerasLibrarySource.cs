@@ -1,4 +1,4 @@
-﻿// .                    @@             _____ _______ _    _ _____ _____ ____
+// .                    @@             _____ _______ _    _ _____ _____ ____
 //          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
 //         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
 //         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
@@ -13,15 +13,32 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Appearance;
+namespace StudioFourteen.Scene.Cameras;
 
-using System.Threading.Tasks;
-using StudioFourteen.Scene;
-using StudioFourteen.Scene.GameObjects.Characters;
+using System;
+using StudioFourteen.Library;
+using StudioFourteen.Library.Sources;
 
-public interface ICharacterAppearance : ICreatableSceneObject
+public class EmptyCamerasLibrarySource : SourceBase
 {
-	string? Name { get; }
+	public override string? Name => "Cameras";
+	protected override string GetInternalId() => "Cameras";
 
-	public Task Apply(Character character, UpdateSource source);
+	protected override void Scan()
+	{
+		this.Add(new EmptyCamera<OrbitTargetCamera>(this));
+		this.Add(new EmptyCamera<OrbitCamera>(this));
+		this.Add(new EmptyCamera<FreeCamera>(this));
+	}
+}
+
+public class EmptyCamera<T>(SourceBase? source)
+	: LibraryEntryBase(source), ICameraSave
+{
+	public Type? CameraType => typeof(T);
+	public override string? Name => StudioFourteen.Resources.Find($"LOC_{typeof(T).Name}", typeof(T).Name);
+	public override string? SubTitle => null;
+	public override object? Icon => StudioFourteen.Resources.Find("ICON_Type_Camera");
+
+	protected override string GetInternalId() => $"EmptyCamera_{typeof(T).Name}";
 }

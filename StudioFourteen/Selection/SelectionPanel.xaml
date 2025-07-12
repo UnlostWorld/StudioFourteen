@@ -64,7 +64,6 @@
 		<librarySelector:LibrarySelector
 			HorizontalAlignment="Center"
 			CloseOnSelection="True"
-			Favorites="True"
 			IsOpen="{Binding ElementName=AddButton, Path=IsChecked}"
 			PlacementTarget="{Binding ElementName=AddButton}"
 			SelectedItem="{Binding SelectedAdd}"
@@ -74,12 +73,14 @@
 			<librarySelector:LibrarySelector.Header>
 				<wpfUtils:SwitchSelector
 					Grid.Column="0"
+					Height="32"
 					ItemsSource="{Binding CreateTypes}"
 					SelectedValue="{Binding CurrentCreateType}">
 					<wpfUtils:SwitchSelector.ItemTemplate>
 						<DataTemplate>
 							<icons:IconView
 								Width="24"
+								Height="24"
 								Icon="{Binding Icon}"
 								ToolTip="{Binding Name}" />
 						</DataTemplate>

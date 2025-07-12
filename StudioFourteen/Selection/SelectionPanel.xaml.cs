@@ -68,8 +68,13 @@ public partial class SelectionPanel : Panel
 		this.CurrentType = this.Types[0];
 
 		this.CreateTypes.Clear();
-		this.CreateTypes.Add(new CreateType<Character>());
-		this.CreateTypes.Add(new CreateType<Camera>());
+		this.CreateTypes.Add(new CreateType<SceneObjectBase>(typeof(ICreatableSceneObject)));
+		this.CreateTypes.Add(new CreateType<Character>(typeof(ICharacterAppearance)));
+		this.CreateTypes.Add(new CreateType<Camera>(typeof(ICameraSave)));
+		this.CreateTypes.Add(new CreateType<Light>(typeof(Light)));
+		this.CreateTypes.Add(new CreateType<StageMark>(typeof(StageMark)));
+		this.CreateTypes.Add(new CreateType<Effect>(typeof(Effect)));
+		this.CreateTypes.Add(new CreateType<Furnature>(typeof(Furnature)));
 		this.CurrentCreateType = this.CreateTypes[0];
 
 		this.Services.Scene.ObjectAdded += this.OnObjectAddedToScene;
@@ -123,11 +128,27 @@ public partial class SelectionPanel : Panel
 		public abstract string Name { get; }
 	}
 
-	public class CreateType<T> : CreateType
+	public class CreateType<T>(params Type[] types) : CreateType
 	{
 		public override object? Icon => StudioFourteen.Resources.Find($"ICON_Type_{typeof(T).Name}");
 		public override string Name => StudioFourteen.Resources.Find($"LOC_Type_{typeof(T).Name}", typeof(T).Name);
 
-		public List<Type> Types { get; init; } = new(); // ??
+		public List<Type> Types { get; init; } = new(types);
 	}
+}
+
+public class Light
+{
+}
+
+public class StageMark
+{
+}
+
+public class Effect
+{
+}
+
+public class Furnature
+{
 }

@@ -125,12 +125,21 @@ public class GroupResult : Result
 
 				this.results.Sort((a, b) =>
 				{
+					// Favorites to top
+					if (a.Entry.IsFavorite && !b.Entry.IsFavorite)
+						return -1;
+
+					if (!a.Entry.IsFavorite && b.Entry.IsFavorite)
+						return 1;
+
+					// Groups next
 					if (a.Entry is GroupEntryBase && b.Entry is not GroupEntryBase)
 						return -1;
 
 					if (a.Entry is not GroupEntryBase && b.Entry is GroupEntryBase)
 						return 1;
 
+					// then everything else
 					return a.Entry.DefaultSortValue.CompareTo(b.Entry.DefaultSortValue);
 				});
 
@@ -151,6 +160,19 @@ public class GroupResult : Result
 		{
 			List<Result> flattenResults = new();
 			this.Flatten(ref flattenResults);
+
+			flattenResults.Sort((a, b) =>
+			{
+				// Favorites to top
+				if (a.Entry.IsFavorite && !b.Entry.IsFavorite)
+					return -1;
+
+				if (!a.Entry.IsFavorite && b.Entry.IsFavorite)
+					return 1;
+
+				return 0;
+			});
+
 			return flattenResults;
 		}
 		else
