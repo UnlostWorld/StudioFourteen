@@ -39,6 +39,7 @@ public partial class SelectionType<T> : SelectionTypeBase
 
 	public FastObservableCollection<T> Objects { get; init; } = new();
 
+	public override Type Type => typeof(T);
 	public override string? Name => StudioFourteen.Resources.Find($"LOC_Type_{typeof(T).Name}s", typeof(T).Name);
 	public override object? Icon => StudioFourteen.Resources.Find($"ICON_Type_{typeof(T).Name}");
 

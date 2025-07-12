@@ -15,12 +15,14 @@
 
 namespace StudioFourteen.Selection;
 
+using System;
 using StudioFourteen.Scene;
 
 public abstract class SelectionTypeBase
 {
 	public abstract object? Icon { get; }
 	public abstract string? Name { get; }
+	public abstract Type Type { get; }
 
 	public abstract void OnObjectRemovedFromScene(SceneObjectBase obj);
 	public abstract void OnObjectAddedToScene(SceneObjectBase obj);

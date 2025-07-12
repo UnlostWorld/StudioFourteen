@@ -39,6 +39,14 @@ public partial class SelectionPanel : Panel
 		{
 			this.currentType = value;
 			this.NotifyPropertyChanged();
+
+			foreach (CreateType createType in this.CreateTypes)
+			{
+				if (createType?.Type == value?.Type)
+				{
+					this.CurrentCreateType = createType;
+				}
+			}
 		}
 	}
 
@@ -126,6 +134,7 @@ public partial class SelectionPanel : Panel
 	{
 		public abstract object? Icon { get; }
 		public abstract string Name { get; }
+		public abstract Type Type { get; }
 	}
 
 	public class CreateType<T>(params Type[] types) : CreateType
@@ -134,6 +143,7 @@ public partial class SelectionPanel : Panel
 		public override string Name => StudioFourteen.Resources.Find($"LOC_Type_{typeof(T).Name}", typeof(T).Name);
 
 		public List<Type> Types { get; init; } = new(types);
+		public override Type Type => typeof(T);
 	}
 }
 
