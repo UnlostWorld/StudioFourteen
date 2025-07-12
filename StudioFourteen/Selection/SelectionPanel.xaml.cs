@@ -116,9 +116,9 @@ public partial class SelectionPanel : Panel
 		if (obj == null)
 			return;
 
-		if (obj is ICharacterAppearance appearance)
+		if (obj is ICreatableSceneObject creatable)
 		{
-			this.Services.CharacterLifecycle.CreateAsync(appearance, UpdateSource.Interface).Run();
+			creatable.Create().Run();
 		}
 	}
 

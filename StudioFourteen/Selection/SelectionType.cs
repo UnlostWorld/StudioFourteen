@@ -42,7 +42,7 @@ public partial class SelectionType<T> : SelectionTypeBase
 	public override string? Name => StudioFourteen.Resources.Find($"LOC_Type_{typeof(T).Name}s", typeof(T).Name);
 	public override object? Icon => StudioFourteen.Resources.Find($"ICON_Type_{typeof(T).Name}");
 
-	public override void OnObjectRemovedFromScene(SceneObjectBase obj)
+	public override void OnObjectAddedToScene(SceneObjectBase obj)
 	{
 		if (obj is T tObj)
 		{
@@ -50,7 +50,7 @@ public partial class SelectionType<T> : SelectionTypeBase
 		}
 	}
 
-	public override void OnObjectAddedToScene(SceneObjectBase obj)
+	public override void OnObjectRemovedFromScene(SceneObjectBase obj)
 	{
 		if (obj is T tObj)
 		{

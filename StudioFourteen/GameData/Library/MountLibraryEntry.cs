@@ -40,6 +40,11 @@ public class MountLibraryEntry : ExcelLibraryEntry, ICharacterAppearance
 	public override object? Icon => new ImageReference(this.Mount.Icon);
 	public override bool IsValid => base.IsValid && this.Mount.ModelChara.RowId != 0;
 
+	public Task Create()
+	{
+		return ServiceManager.Instance.CharacterLifecycle.CreateAsync(this, UpdateSource.Interface);
+	}
+
 	public async Task Apply(Character character, UpdateSource source)
 	{
 		await TickService.GameTick();

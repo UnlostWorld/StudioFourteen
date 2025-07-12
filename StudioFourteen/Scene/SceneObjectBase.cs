@@ -17,6 +17,7 @@ namespace StudioFourteen.Scene;
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.DragAndDrop;
 using StudioFourteen.Mvm;
@@ -26,6 +27,7 @@ using WpfUtils.Commands;
 
 public interface ICreatableSceneObject : IDraggable
 {
+	Task Create();
 }
 
 public abstract partial class SceneObjectBase : ViewModel, IDisposable

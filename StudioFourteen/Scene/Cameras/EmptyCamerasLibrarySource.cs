@@ -16,6 +16,7 @@
 namespace StudioFourteen.Scene.Cameras;
 
 using System;
+using System.Threading.Tasks;
 using StudioFourteen.Library;
 using StudioFourteen.Library.Sources;
 
@@ -34,11 +35,18 @@ public class EmptyCamerasLibrarySource : SourceBase
 
 public class EmptyCamera<T>(SourceBase? source)
 	: LibraryEntryBase(source), ICameraSave
+	where T : Camera, new()
 {
 	public Type? CameraType => typeof(T);
 	public override string? Name => StudioFourteen.Resources.Find($"LOC_{typeof(T).Name}", typeof(T).Name);
 	public override string? SubTitle => null;
 	public override object? Icon => StudioFourteen.Resources.Find("ICON_Type_Camera");
+
+	public Task Create()
+	{
+		this.Services.Scene.AddObject<T>($"New {this.Name}");
+		return Task.CompletedTask;
+	}
 
 	protected override string GetInternalId() => $"EmptyCamera_{typeof(T).Name}";
 }

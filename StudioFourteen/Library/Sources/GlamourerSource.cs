@@ -87,6 +87,11 @@ public class GlamourerEntry
 
 	public override IDragSceneInstance CreateSceneInstance() => new CharacterAppearanceDragSceneInstance(this);
 
+	public Task Create()
+	{
+		return ServiceManager.Instance.CharacterLifecycle.CreateAsync(this, UpdateSource.Interface);
+	}
+
 	public async Task Apply(Character character, UpdateSource updateSource)
 	{
 		await TickService.GameTick();

@@ -282,17 +282,17 @@
 	<sys:String x:Key="LOC_Camera_Fov">Field of View</sys:String>
 	<sys:String x:Key="LOC_Camera_Rotation">Camera Rotation</sys:String>
 
-	<sys:String x:Key="LOC_OrbitCamera">Orbit</sys:String>
+	<sys:String x:Key="LOC_OrbitCamera">Orbit Camera</sys:String>
 	<sys:String x:Key="LOC_OrbitCamera_ToolTip">A Camera that rotates around a specified point in the world</sys:String>
 	<sys:String x:Key="LOC_OrbitCamera_Target">Target Position</sys:String>
 	<sys:String x:Key="LOC_OrbitCamera_Distance">Distance</sys:String>
 	<sys:String x:Key="LOC_OrbitCamera_Angle">Angle</sys:String>
 	<sys:String x:Key="LOC_OrbitCamera_GroupPoseFov_Tooltip">The additional field of view from the 'Angle of View' Settings in the Group Pose Settings window.</sys:String>
 	<sys:String x:Key="LOC_OrbitCamera_GroupPoseRoll_Tooltip">The additional Z angle from the 'Roll Angle Settings' in the Group Pose Settings window.</sys:String>
-	<sys:String x:Key="LOC_OrbitTargetCamera">Orbit Target</sys:String>
+	<sys:String x:Key="LOC_OrbitTargetCamera">Orbit Target Camera</sys:String>
 	<sys:String x:Key="LOC_OrbitTargetCamera_ToolTip">A Camera that rotates around your current target. The default Group Pose camera type.</sys:String>
 	<sys:String x:Key="LOC_OrbitTargetCamera_Offset">Target Offset</sys:String>
-	<sys:String x:Key="LOC_FreeCamera">Free</sys:String>
+	<sys:String x:Key="LOC_FreeCamera">Free Camera</sys:String>
 	<sys:String x:Key="LOC_FreeCamera_ToolTip">A Camera that can be freely moved and rotated through the world</sys:String>
 	<sys:String x:Key="LOC_FreeCamera_Position">Camera Position</sys:String>
 

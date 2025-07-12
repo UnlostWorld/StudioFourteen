@@ -166,6 +166,11 @@ public class AppearanceFile : FileBase, ICharacterAppearance
 		return Task.CompletedTask;
 	}
 
+	public Task Create()
+	{
+		return ServiceManager.Instance.CharacterLifecycle.CreateAsync(this, UpdateSource.Interface);
+	}
+
 	public async Task Apply(Character character, UpdateSource source)
 	{
 		await TickService.GameTick();
