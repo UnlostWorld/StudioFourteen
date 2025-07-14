@@ -86,6 +86,7 @@ public abstract class Shader : IDisposable
 public class Shader<TMaterialData> : Shader
 	where TMaterialData : unmanaged, IMaterial
 {
+	private bool isLoaded = false;
 	private IContent<ShaderBytecode>? vertexShaderContent;
 	private IContent<ShaderBytecode>? pixelShaderContent;
 	private IContent<ShaderBytecode>? geometryShaderContent;
@@ -93,15 +94,16 @@ public class Shader<TMaterialData> : Shader
 	public override void Load(Device device)
 	{
 		#if DEBUG
+		if (this.isLoaded)
 		{
 			bool shouldLoad = false;
-			if (this.vertexShaderContent == null || !this.vertexShaderContent.IsLoaded)
+			if (this.vertexShaderContent != null && !this.vertexShaderContent.IsLoaded)
 				shouldLoad = true;
 
-			if (this.pixelShaderContent == null || !this.pixelShaderContent.IsLoaded)
+			if (this.pixelShaderContent != null && !this.pixelShaderContent.IsLoaded)
 				shouldLoad = true;
 
-			if (this.geometryShaderContent == null || !this.geometryShaderContent.IsLoaded)
+			if (this.geometryShaderContent != null && !this.geometryShaderContent.IsLoaded)
 				shouldLoad = true;
 
 			if (!shouldLoad)
@@ -135,5 +137,6 @@ public class Shader<TMaterialData> : Shader
 			this.Geometry = new GeometryShader(device, geometryByteCode);
 
 		this.VertexSignature = ShaderSignature.GetInputSignature(vertexByteCode);
+		this.isLoaded = true;
 	}
 }
