@@ -23,10 +23,10 @@
 						</Grid.RowDefinitions>
 
 						<Grid Grid.Row="0" Height="168">
-							<transform:TransformHandleControl
+							<!--<transform:TransformHandleControl
 								x:Name="GizmoControl"
 								Sensitivity="{Binding GizmoSensitivity}"
-								Transform="{Binding WorldTransform}" />
+								Transform="{Binding WorldTransform}" />-->
 						</Grid>
 
 						<wpfUtils:SwitchSelector

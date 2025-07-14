@@ -1,4 +1,4 @@
-﻿// .                    @@             _____ _______ _    _ _____ _____ ____
+// .                    @@             _____ _______ _    _ _____ _____ ____
 //          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
 //         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
 //         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
@@ -13,14 +13,11 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Gizmos.Handles;
+namespace StudioFourteen.Rendering.Draw.Gizmos.Transforms;
 
-public struct HandleHitResult
+public enum TransformHandleTypes
 {
-	public HandleBase? Handle = null;
-	public int Depth = int.MinValue;
-
-	public HandleHitResult()
-	{
-	}
+	Translation,
+	Rotation,
+	Scale,
 }
