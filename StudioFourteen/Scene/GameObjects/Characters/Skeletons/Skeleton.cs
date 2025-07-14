@@ -269,9 +269,6 @@ public class Skeleton : GameObject
 
 	private unsafe void GenerateBones()
 	{
-		if (this.ObjectIndex != 0)
-			return;
-
 		TickService.VerifyGameTickThread();
 
 		XivGameObject* pGameObject = this.GetXivGameObject();
