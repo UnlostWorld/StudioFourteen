@@ -63,6 +63,12 @@ public class MeshRenderer<TMaterialData> : InstanceRendererBase<MeshRendererInst
 		if (this.Mesh == null)
 			return;
 
+		if (!this.Mesh.IsLoaded)
+		{
+			this.vertices?.Dispose();
+			this.vertices = null;
+		}
+
 		Mesh mesh = this.Mesh.Get();
 
 		if (this.vertices == null)

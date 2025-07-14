@@ -1,24 +1,23 @@
 <ResourceDictionary
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:cameras="clr-namespace:StudioFourteen.Scene.Cameras"
-	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
-	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=WpfUtils">
+	xmlns:controls="clr-namespace:StudioFourteen.Controls"
+	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=WpfUtils"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
 	<converters:NotZeroToVisibilityConverter x:Key="NotZeroToVisibility" />
 
 	<DataTemplate DataType="{x:Type cameras:OrbitCamera}">
-		<Border Background="{DynamicResource BackgroundBrush}">
+		<Border Style="{DynamicResource WpfUtilsBackgroundBorder}">
 			<ScrollViewer VerticalScrollBarVisibility="Disabled">
 				<StackPanel>
-					<TextBlock Style="{DynamicResource LeftLabel}"
-						Text="{DynamicResource LOC_OrbitCamera_Target}" />
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_OrbitCamera_Target}" />
 					<controls:Vector3Box
+						Change="0.1"
 						DecimalPlaces="3"
 						Maximum="100000"
 						Minimum="-100000"
-						Change="0.1"
 						Value="{Binding Target}" />
 
 					<Grid>
@@ -42,19 +41,18 @@
 
 						<controls:NumberBox
 							Grid.Row="1"
+							Change="0.01"
 							Maximum="220"
 							Minimum="0"
-							Change="0.01"
 							Value="{Binding FieldOfView}" />
 					</Grid>
 
 
-					<TextBlock Style="{DynamicResource LeftLabel}"
-						Text="{DynamicResource LOC_OrbitCamera_Distance}" />
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_OrbitCamera_Distance}" />
 					<controls:NumberBox
+						Change="1"
 						Maximum="300"
 						Minimum="0.1"
-						Change="1"
 						Value="{Binding Distance}" />
 
 					<TextBlock
@@ -72,15 +70,14 @@
 
 					<controls:Vector3Box
 						Grid.Row="1"
+						Change="1"
 						Maximum="180"
 						Minimum="-180"
-						Change="1"
 						Wrap="True"
 						Value="{Binding Angle}" />
 
-					<TextBlock Style="{DynamicResource LeftLabel}"
-						Text="{DynamicResource LOC_Camera_Rotation}" />
-					<controls:QuaternionBox Value="{Binding Rotation}" Change="1" />
+					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Camera_Rotation}" />
+					<controls:QuaternionBox Change="1" Value="{Binding Rotation}" />
 
 				</StackPanel>
 			</ScrollViewer>

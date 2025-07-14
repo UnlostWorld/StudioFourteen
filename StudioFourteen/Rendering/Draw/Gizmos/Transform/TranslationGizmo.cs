@@ -80,6 +80,7 @@ public class TranslationGizmo : TransformGizmoBase
 
 	public override string Name => Resources.Find("LOC_Translate", "Translate");
 	public override object? Icon => Resources.Find("ICON_Transform_Translate");
+	public override bool KeepScreenSize => true;
 
 	public override bool IsBeingManipulated =>
 		this.xHandle.IsHovered

@@ -27,6 +27,7 @@ public abstract partial class Camera : SceneObjectBase, IDisposable
 	private const float DefaultCameraDistance = 3;
 
 	private readonly int cameraIndex = -1;
+	private CameraState lastState;
 
 	[Notify] private float fieldOfView;
 
@@ -36,6 +37,8 @@ public abstract partial class Camera : SceneObjectBase, IDisposable
 	public Camera()
 	{
 		this.cameraIndex = this.Services.Camera.RegisterCamera(this);
+
+		this.Gizmos.Add(new CameraGizmo(this));
 	}
 
 	public override string Id => $"{this.GetType().Name}:{this.cameraIndex}";
@@ -44,6 +47,13 @@ public abstract partial class Camera : SceneObjectBase, IDisposable
 	public bool IsInitialized { get; set; } = false;
 
 	public ObservableCollection<CameraModifierBase> Modifiers { get; init; } = new();
+	public CameraState LastState => this.lastState;
+
+	public bool IsActive
+	{
+		get => this.Services.Camera.Current == this;
+		set => this.Services.Camera.Current = this;
+	}
 
 	public override void Dispose()
 	{
@@ -97,6 +107,7 @@ public abstract partial class Camera : SceneObjectBase, IDisposable
 
 	public virtual void OnRender(ref CameraState state)
 	{
+		this.lastState = state;
 	}
 
 	public virtual void Deactivate()

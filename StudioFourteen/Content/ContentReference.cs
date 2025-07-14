@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Content;
 
+using System;
 using System.IO;
 
 public abstract class ContentReference(string path)
@@ -28,10 +29,12 @@ public abstract class ContentReference<T>(string path)
 	: ContentReference(path), IContent<T>
 {
 	private T? instance;
+	private T? lastInstance;
 	public bool IsLoaded => this.instance != null;
 
 	public sealed override void Reload()
 	{
+		this.lastInstance = this.instance;
 		this.instance = default;
 	}
 
@@ -39,8 +42,23 @@ public abstract class ContentReference<T>(string path)
 	{
 		if (this.instance == null)
 		{
-			using Stream stream = ServiceManager.Instance.Content.GetContent(this);
-			this.instance = this.Load(stream);
+			try
+			{
+				using Stream stream = ServiceManager.Instance.Content.GetContent(this);
+				this.instance = this.Load(stream);
+			}
+			catch (Exception ex)
+			{
+				if (this.lastInstance != null)
+				{
+					this.instance = this.lastInstance;
+					Logging.Shared.Warning(ex, "Error reloading content");
+				}
+				else
+				{
+					throw;
+				}
+			}
 		}
 
 		return this.instance;

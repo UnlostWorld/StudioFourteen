@@ -27,6 +27,7 @@ public class TransformGizmo : GizmoGroup
 	}
 
 	public override string Name => "Transform";
+	public override bool KeepScreenSize => true;
 
 	public void Enable(SceneObjectBase sceneObject)
 	{

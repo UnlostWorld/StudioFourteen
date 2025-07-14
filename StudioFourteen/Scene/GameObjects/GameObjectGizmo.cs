@@ -48,6 +48,7 @@ public class GameObjectGizmo : GizmoGroup
 public class BlankGizmo : GizmoBase
 {
 	public override string Name => "Blank";
+	public override bool KeepScreenSize => false;
 }
 
 public class GameObjectHandle : SelectionHandle

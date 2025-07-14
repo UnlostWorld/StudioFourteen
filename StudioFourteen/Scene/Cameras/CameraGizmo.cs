@@ -13,50 +13,47 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Draw.Gizmos;
+namespace StudioFourteen.Scene.Cameras;
 
-using System.Diagnostics;
+using System.Numerics;
+using StudioFourteen.Content;
+using StudioFourteen.Rendering;
+using StudioFourteen.Rendering.Draw;
+using StudioFourteen.Rendering.Draw.Gizmos;
 using StudioFourteen.Rendering.Materials;
-using StudioFourteen.Rendering.Draw.Gizmos.Transforms;
-using WpfUtils.Animation;
 
-public class SelectionGizmo : TransformGizmoBase
+public class CameraGizmo : SceneObjectGizmoBase<Camera>
 {
-	private const float DurationMs = 500;
-	private readonly MeshRenderer<GizmoFlatMaterial> circleRenderer;
-	private readonly Stopwatch flashTimer = new();
-	private readonly EasingFunctionBase easing = new SineEase();
+	public static readonly IContent<Mesh> CameraMesh = new JsonContentReference<Mesh>("Meshes/Camera.jsonc");
 
-	public SelectionGizmo()
+	private readonly MeshRenderer<GizmoLineMaterial> cameraRenderer;
+
+	public CameraGizmo(Camera camera)
 	{
-		this.circleRenderer = new(MeshContent.WireCircle);
-		this.circleRenderer.WriteDepth = false;
-		this.Add(this.circleRenderer);
+		this.SetTarget(camera);
+
+		this.cameraRenderer = new(CameraMesh);
+		this.cameraRenderer.Material.EndCaps = 0;
+		this.Add(this.cameraRenderer);
+
+		this.Enable();
 	}
 
-	public override string Name => "Selection";
-	public override object? Icon => Resources.Find("ICON_Selection");
+	public override string Name => "Camera";
 	public override bool KeepScreenSize => false;
-
-	public override void Enable()
-	{
-		base.Enable();
-		this.flashTimer.Restart();
-	}
 
 	protected override void OnDraw()
 	{
+		if (this.SceneObject == null)
+			return;
+
+		// Don't draw the gizmo for the active camera since its going to clip
+		// the view.
+		this.IsVisible = !this.SceneObject.IsActive;
+
+		CameraState state = this.SceneObject.LastState;
+		this.Transform = Transform.FromTRS(state.Position, state.Rotation, new Vector3(0.3f));
+
 		base.OnDraw();
-
-		float p = this.flashTimer.ElapsedMilliseconds / DurationMs;
-		p = float.Clamp(p, 0, 1);
-		p = this.easing.Ease(p, EasingFunctionBase.EasingModes.EaseOut);
-		this.circleRenderer.Material.Color.A = 1 - p;
-		this.circleRenderer.Transform = Transform.FromScale(p * 0.5f);
-
-		if (p <= 0)
-		{
-			this.flashTimer.Stop();
-		}
 	}
 }

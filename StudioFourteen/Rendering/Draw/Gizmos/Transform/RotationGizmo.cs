@@ -53,6 +53,7 @@ public class RotationGizmo : TransformGizmoBase
 
 	public override string Name => Resources.Find("LOC_Rotate", "Rotate");
 	public override object? Icon => Resources.Find("ICON_Transform_Rotate");
+	public override bool KeepScreenSize => true;
 
 	public override bool IsBeingManipulated =>
 		this.xHandle.IsHovered

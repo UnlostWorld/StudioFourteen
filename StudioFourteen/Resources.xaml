@@ -64,9 +64,10 @@
 		<ResourceDictionary Source="./Scene/GameObjects/Characters/Skeletons/SkeletonBoneInspector.xaml"/>
 		<ResourceDictionary Source="./Scene/GameObjects/Characters/DrawData/Weapon.xaml" />
 		<ResourceDictionary Source="./Scene/GameObjects/Characters/DrawData/Equipment.xaml" />
-		<ResourceDictionary Source="./Scene/Cameras/OrbitCameraTemplates.xaml"/>
-		<ResourceDictionary Source="./Scene/Cameras/OrbitTargetCameraTemplates.xaml"/>
-		<ResourceDictionary Source="./Scene/Cameras/FreeCameraTemplates.xaml"/>
+		<ResourceDictionary Source="./Scene/Cameras/CameraInspector.xaml"/>
+		<ResourceDictionary Source="./Scene/Cameras/OrbitCameraInspector.xaml"/>
+		<ResourceDictionary Source="./Scene/Cameras/OrbitTargetCameraInspector.xaml"/>
+		<ResourceDictionary Source="./Scene/Cameras/FreeCameraInspector.xaml"/>
 
 	</ResourceDictionary.MergedDictionaries>
 

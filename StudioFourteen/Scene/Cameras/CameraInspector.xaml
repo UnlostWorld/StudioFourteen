@@ -1,0 +1,17 @@
+<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:cameras="clr-namespace:StudioFourteen.Scene.Cameras"
+	xmlns:controls="clr-namespace:StudioFourteen.Controls"
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
+
+	<DataTemplate x:Key="CameraInspector" DataType="{x:Type cameras:Camera}">
+		<UniformGrid Rows="1">
+			<ToggleButton
+				Background="Transparent"
+				Content="Activate"
+				IsChecked="{Binding IsActive}" />
+		</UniformGrid>
+	</DataTemplate>
+
+</ResourceDictionary>

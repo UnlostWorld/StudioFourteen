@@ -35,6 +35,7 @@ public class GridGizmo : GizmoBase
 	}
 
 	public override string Name => "Grid";
+	public override bool KeepScreenSize => false;
 
 	public float Opacity
 	{
