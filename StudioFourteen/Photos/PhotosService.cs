@@ -217,7 +217,7 @@ public partial class PhotosService : ServiceBase
 
 			await this.DispatchCapturePhaseChange(CapturePhases.Capturing, animate);
 
-			this.Services.Rendering.AddAfterEffectsPass(this.renderPass);
+			this.Services.Rendering.OverlayRenderer.AddAfterEffectsPass(this.renderPass);
 			this.renderPass.DoCapture();
 
 			while(this.renderPass.Capture == null)
@@ -226,7 +226,7 @@ public partial class PhotosService : ServiceBase
 			Image? backBuffer = this.renderPass.Capture;
 			Image? depthBuffer = this.renderPass.DepthCapture;
 
-			this.Services.Rendering.RemoveAfterEffectsPass(this.renderPass);
+			this.Services.Rendering.OverlayRenderer.RemoveAfterEffectsPass(this.renderPass);
 
 			// Add Metadata
 			if (backBuffer != null && this.Settings.PhotoIncludeMetaData)

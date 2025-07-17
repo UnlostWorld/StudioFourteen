@@ -42,7 +42,7 @@ public partial class GizmoService : ServiceBase
 
 		foreach (GizmoBase gizmo in this.Gizmos)
 		{
-			this.Services.Rendering.Forward.Add(gizmo);
+			this.Services.Rendering.OverlayRenderer.Forward.Add(gizmo);
 		}
 
 		this.grid.Enable();
@@ -56,7 +56,7 @@ public partial class GizmoService : ServiceBase
 
 		foreach (GizmoBase gizmo in this.Gizmos)
 		{
-			this.Services.Rendering.Forward.Remove(gizmo);
+			this.Services.Rendering.OverlayRenderer.Forward.Remove(gizmo);
 		}
 
 		this.grid.Disable();
@@ -75,7 +75,7 @@ public partial class GizmoService : ServiceBase
 		this.Gizmos.Add(gizmo);
 		this.GizmosChanged?.Invoke();
 
-		this.Services.Rendering.Forward.Add(gizmo);
+		this.Services.Rendering.OverlayRenderer.Forward.Add(gizmo);
 	}
 
 	public void Disable(GizmoBase gizmo)
@@ -83,7 +83,7 @@ public partial class GizmoService : ServiceBase
 		this.Gizmos.Remove(gizmo);
 		this.GizmosChanged?.Invoke();
 
-		this.Services.Rendering.Forward.Remove(gizmo);
+		this.Services.Rendering.OverlayRenderer.Forward.Remove(gizmo);
 	}
 
 	private void OnSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? selectionSource)

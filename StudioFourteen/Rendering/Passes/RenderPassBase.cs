@@ -32,21 +32,13 @@ public abstract class RenderPassBase : IDisposable
 	public ServiceManager Services => ServiceManager.Instance;
 	public bool IncludeInScreenshots { get; set; } = false;
 
-	public abstract void Render(RenderingService service, Device device, DeviceContext deviceContext);
+	public abstract void Render(Renderer renderer, Device device, DeviceContext deviceContext);
 
 	public virtual void OnResolutionChanging()
 	{
 	}
 
 	public virtual void OnResolutionChanged()
-	{
-	}
-
-	public virtual void Attach()
-	{
-	}
-
-	public virtual void Detach()
 	{
 	}
 
@@ -61,7 +53,7 @@ public abstract class InstanceRenderPassBase<T> : RenderPassBase
 	public T PassData;
 	private Buffer? constantsBuffer;
 
-	public override void Render(RenderingService service, Device device, DeviceContext deviceContext)
+	public override void Render(Renderer renderer, Device device, DeviceContext deviceContext)
 	{
 		if (this.constantsBuffer == null)
 		{

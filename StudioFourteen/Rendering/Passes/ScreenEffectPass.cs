@@ -58,14 +58,14 @@ public class ScreenEffectPass<TMaterialData>() : InstanceRenderPassBase<ScreenEf
 		base.OnResolutionChanged();
 	}
 
-	public override void Render(RenderingService service, Device device, DeviceContext deviceContext)
+	public override void Render(Renderer renderer, Device device, DeviceContext deviceContext)
 	{
-		if (service.BackBuffer == null)
+		if (renderer.BackBuffer == null)
 			return;
 
-		this.PassData.ScreenSize = new(service.Width, service.Height);
+		this.PassData.ScreenSize = new(renderer.Width, renderer.Height);
 
-		base.Render(service, device, deviceContext);
+		base.Render(renderer, device, deviceContext);
 
 		// Create a shader resource copy of the back buffer so it can be accessed in the shader
 		if (this.backBufferCopyTexture == null)
@@ -73,7 +73,7 @@ public class ScreenEffectPass<TMaterialData>() : InstanceRenderPassBase<ScreenEf
 			this.backBufferCopyTexture?.Dispose();
 			this.backBufferResourceView?.Dispose();
 
-			Texture2DDescription desc = service.BackBuffer.Description;
+			Texture2DDescription desc = renderer.BackBuffer.Description;
 			desc.BindFlags = BindFlags.ShaderResource;
 			this.backBufferCopyTexture = new Texture2D(device, desc);
 
@@ -89,7 +89,7 @@ public class ScreenEffectPass<TMaterialData>() : InstanceRenderPassBase<ScreenEf
 			desc.Dimension = RenderTargetViewDimension.Texture2D;
 			desc.Texture2D = new() { };
 
-			this.backBufferTargetView = new(device, service.BackBuffer, desc);
+			this.backBufferTargetView = new(device, renderer.BackBuffer, desc);
 		}
 
 		if (this.blend == null)
@@ -109,13 +109,13 @@ public class ScreenEffectPass<TMaterialData>() : InstanceRenderPassBase<ScreenEf
 		}
 
 		// Copy the back buffer into the copy
-		deviceContext.CopyResource(service.BackBuffer, this.backBufferCopyTexture);
+		deviceContext.CopyResource(renderer.BackBuffer, this.backBufferCopyTexture);
 
 		// Pass the buffers into the shader
 		deviceContext.PixelShader.SetShaderResource(2, this.backBufferResourceView);
 
 		// Set the output
-		deviceContext.Rasterizer.SetViewport(0, 0, service.Width, service.Height);
+		deviceContext.Rasterizer.SetViewport(0, 0, renderer.Width, renderer.Height);
 		deviceContext.OutputMerger.SetBlendState(this.blend, null, -1);
 		deviceContext.OutputMerger.SetTargets(this.backBufferTargetView);
 

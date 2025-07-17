@@ -100,7 +100,7 @@ public partial class PhotoPanel : Panel
 		this.Services.Photos.Width = this.SelectedAspectRatio.Width;
 		this.Services.Photos.Height = this.SelectedAspectRatio.Height;
 
-		this.Services.Rendering.AddAfterEffectsPass(this.guidesPass);
+		this.Services.Rendering.OverlayRenderer.AddAfterEffectsPass(this.guidesPass);
 
 		this.SetAspectRatio(this.SelectedAspectRatio.Aspect);
 		this.guidesPass.Material.GuidesMode = (uint)this.Guide;
@@ -153,7 +153,7 @@ public partial class PhotoPanel : Panel
 		this.SetAspectRatio(0);
 		await Task.Delay(250);
 
-		this.Services.Rendering.RemoveAfterEffectsPass(this.guidesPass);
+		this.Services.Rendering.OverlayRenderer.RemoveAfterEffectsPass(this.guidesPass);
 	}
 
 	private void OnAspectsExpanderExpanded(object sender, RoutedEventArgs e)
@@ -184,8 +184,8 @@ public partial class PhotoPanel : Panel
 			return;
 		}
 
-		double height = ServiceManager.Instance.Rendering.Width;
-		double width = ServiceManager.Instance.Rendering.Height;
+		double height = ServiceManager.Instance.Rendering.OverlayRenderer.Width;
+		double width = ServiceManager.Instance.Rendering.OverlayRenderer.Height;
 
 		double currentAspect = height / width;
 

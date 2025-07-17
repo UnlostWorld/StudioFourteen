@@ -162,7 +162,7 @@ public partial class HandleService : ServiceBase
 
 					// TODO: Scale this with resolution and aspect?
 					this.pressHitTestResult.MaxDistance = 20f / 1920f; // 20px on a 1920 monitor.
-					this.Services.Rendering.Forward.HitTest(mousePosition.Value, this.pressHitTestResult);
+					this.Services.Rendering.OverlayRenderer.Forward.HitTest(mousePosition.Value, this.pressHitTestResult);
 					this.CurrentHover = this.GetHandle(this.pressHitTestResult.SceneObject);
 				}
 			}

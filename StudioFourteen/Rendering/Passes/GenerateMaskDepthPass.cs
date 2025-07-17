@@ -56,9 +56,9 @@ public class GenerateUiMaskPass : RenderPassBase
 		base.OnResolutionChanged();
 	}
 
-	public unsafe override void Render(RenderingService service, Device device, DeviceContext deviceContext)
+	public unsafe override void Render(Renderer renderer, Device device, DeviceContext deviceContext)
 	{
-		if (service.BackBuffer == null)
+		if (renderer.BackBuffer == null)
 			return;
 
 		RenderTargetManagerEx* pRenderTargetManager = RenderTargetManagerEx.Instance();
@@ -71,7 +71,7 @@ public class GenerateUiMaskPass : RenderPassBase
 			this.backBufferCopyTexture?.Dispose();
 			this.backBufferResourceView?.Dispose();
 
-			Texture2DDescription desc = service.BackBuffer.Description;
+			Texture2DDescription desc = renderer.BackBuffer.Description;
 			desc.BindFlags = BindFlags.ShaderResource;
 
 			this.backBufferCopyTexture = new Texture2D(device, desc);
@@ -101,7 +101,7 @@ public class GenerateUiMaskPass : RenderPassBase
 			this.maskRenderTargetView?.Dispose();
 			this.maskResourceView?.Dispose();
 
-			Texture2DDescription desc = service.BackBuffer.Description;
+			Texture2DDescription desc = renderer.BackBuffer.Description;
 			desc.BindFlags = BindFlags.ShaderResource | BindFlags.RenderTarget;
 			this.maskTexture = new(device, desc);
 
@@ -115,7 +115,7 @@ public class GenerateUiMaskPass : RenderPassBase
 		}
 
 		// Copy the back buffer
-		deviceContext.CopyResource(service.BackBuffer, this.backBufferCopyTexture);
+		deviceContext.CopyResource(renderer.BackBuffer, this.backBufferCopyTexture);
 
 		// Copy the depth stencil
 		deviceContext.CopyResource(this.depthStencilTexture, this.depthStencilCopyTexture);
@@ -126,7 +126,7 @@ public class GenerateUiMaskPass : RenderPassBase
 		// Pass the buffers into the shader
 		deviceContext.PixelShader.SetShaderResource(2, this.backBufferResourceView);
 
-		deviceContext.Rasterizer.SetViewport(0, 0, service.Width, service.Height);
+		deviceContext.Rasterizer.SetViewport(0, 0, renderer.Width, renderer.Height);
 
 		this.quad.Draw(Transform.Identity, device, deviceContext);
 

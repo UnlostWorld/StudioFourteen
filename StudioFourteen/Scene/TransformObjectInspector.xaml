@@ -6,6 +6,7 @@
 	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:scene="clr-namespace:StudioFourteen.Scene"
 	xmlns:transform="clr-namespace:StudioFourteen.Gizmos.Handles.TransformHandle"
+	xmlns:wpfRendering="clr-namespace:StudioFourteen.Rendering.WPF"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	xmlns:selection="clr-namespace:StudioFourteen.Selection">
 
@@ -23,10 +24,10 @@
 						</Grid.RowDefinitions>
 
 						<Grid Grid.Row="0" Height="168">
-							<!--<transform:TransformHandleControl
+							<wpfRendering:TransformHandleControl
 								x:Name="GizmoControl"
 								Sensitivity="{Binding GizmoSensitivity}"
-								Transform="{Binding WorldTransform}" />-->
+								Transform="{Binding WorldTransform}" />
 						</Grid>
 
 						<wpfUtils:SwitchSelector

@@ -33,23 +33,6 @@ public class ShaderCache : IDisposable
 		}
 	}
 
-	public void OnTick(Device device)
-	{
-		#if DEBUG
-		foreach ((Type type, Shader shader) in this.shaders)
-		{
-			try
-			{
-				shader.Load(device);
-			}
-			catch (Exception ex)
-			{
-				Logging.Shared.Error(ex, "Error in shader compiler");
-			}
-		}
-		#endif
-	}
-
 	public Shader? GetShader<TMaterialData>(Device device)
 		where TMaterialData : unmanaged, IMaterial
 	{
@@ -60,6 +43,15 @@ public class ShaderCache : IDisposable
 			shader.Load(device);
 			this.shaders.Add(typeof(TMaterialData), shader);
 		}
+
+		// In debug builds, shaders can be reloaded when their content changes
+		// so ask for a load every time the shader is accessed to ensure it is
+		// up to date. In release builds shaders will only load once.
+		#if DEBUG
+		{
+			shader.Load(device);
+		}
+		#endif
 
 		return shader;
 	}

@@ -17,9 +17,10 @@ namespace StudioFourteen.Rendering.WPF;
 
 using System.Windows;
 using System.Windows.Media;
-using SharpDX.DXGI;
-using SharpDX.Direct3D11;
+using DependencyPropertyGenerator;
 using SharpDX.Direct3D;
+using SharpDX.Direct3D11;
+using SharpDX.DXGI;
 
 using Device = SharpDX.Direct3D11.Device;
 
@@ -44,34 +45,47 @@ public class D3D11Surface : FrameworkElement
     }
 }
 
-public class RendererControl : D3D11Surface
+public class WpfRenderer(D3D11Surface surface) : Renderer
 {
-	public int RenderingWidth = 1920;
-	public int RenderingHeight = 1080;
-
-	public RendererControl()
+	protected override Texture2D? GetBackBuffer()
 	{
-		ModeDescription backBufferDesc = new ModeDescription(this.RenderingWidth, this.RenderingHeight, new Rational(60, 1), Format.R8G8B8A8_UNorm);
+		if (surface.ActualWidth <= 0 || surface.ActualHeight <= 0)
+			return null;
+
+		if (!surface.IsVisible)
+			return null;
+
+		ModeDescription backBufferDesc = new ModeDescription((int)surface.ActualWidth, (int)surface.ActualHeight, new Rational(60, 1), Format.R8G8B8A8_UNorm);
 
 		SwapChainDescription swapChainDesc = new SwapChainDescription()
 		{
-		    ModeDescription = backBufferDesc,
-		    SampleDescription = new SampleDescription(1, 0),
-		    Usage = Usage.RenderTargetOutput,
-		    BufferCount = 1,
-		    ////OutputHandle = renderForm.Handle,
-		    IsWindowed = true,
+			ModeDescription = backBufferDesc,
+			SampleDescription = new SampleDescription(1, 0),
+			Usage = Usage.RenderTargetOutput,
+			BufferCount = 2,
+			IsWindowed = true,
 		};
 
 		Device.CreateWithSwapChain(DriverType.Hardware, DeviceCreationFlags.None, swapChainDesc, out var d3dDevice, out var swapChain);
 		var d3dDeviceContext = d3dDevice.ImmediateContext;
 
-		Texture2D backBuffer = swapChain.GetBackBuffer<Texture2D>(0);
-		var renderTargetView = new RenderTargetView(d3dDevice, backBuffer);
+		return swapChain.GetBackBuffer<Texture2D>(0);
+	}
 
-		// Draw
-		d3dDeviceContext.OutputMerger.SetRenderTargets(renderTargetView);
-		d3dDeviceContext.ClearRenderTargetView(renderTargetView, new SharpDX.Mathematics.Interop.RawColor4(0.0f, 0.0f, 0.0f, 1.0f));
-		swapChain.Present(1, PresentFlags.None);
+	protected override uint GetDeviceHeight() => (uint)surface.ActualHeight;
+	protected override uint GetDeviceWidth() => (uint)surface.ActualWidth;
+	protected override uint GetPendingDeviceHeight() => (uint)surface.ActualHeight;
+	protected override uint GetPendingDeviceWidth() => (uint)surface.ActualWidth;
+}
+
+[DependencyProperty<double>("Sensitivity")]
+[DependencyProperty<StudioFourteen.Transform>("Transform")]
+public partial class TransformHandleControl : D3D11Surface
+{
+	private readonly WpfRenderer renderer;
+
+	public TransformHandleControl()
+	{
+		this.renderer = new(this);
 	}
 }

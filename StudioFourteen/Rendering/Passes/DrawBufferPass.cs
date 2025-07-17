@@ -63,9 +63,9 @@ public class DrawBufferPass : RenderPassBase
 		Logging.Shared.Information($"     Usage: {this.buffer.Description.Usage}");
 	}
 
-	public override void Render(RenderingService service, Device device, DeviceContext deviceContext)
+	public override void Render(Renderer renderer, Device device, DeviceContext deviceContext)
 	{
-		if (service.BackBuffer == null || this.buffer == null)
+		if (renderer.BackBuffer == null || this.buffer == null)
 			return;
 
 		// Create a shader resource copy of the buffer so it can be accessed in the shader
@@ -89,7 +89,7 @@ public class DrawBufferPass : RenderPassBase
 			RenderTargetViewDescription desc = default;
 			desc.Format = Format.R8G8B8A8_UNorm;
 			desc.Dimension = RenderTargetViewDimension.Texture2D;
-			this.backBufferTargetView = new(device, service.BackBuffer, desc);
+			this.backBufferTargetView = new(device, renderer.BackBuffer, desc);
 		}
 
 		// Copy the buffer
@@ -98,7 +98,7 @@ public class DrawBufferPass : RenderPassBase
 		// Pass the buffer into the shader
 		deviceContext.PixelShader.SetShaderResource(0, this.bufferResourceView);
 		deviceContext.OutputMerger.SetTargets(this.backBufferTargetView);
-		deviceContext.Rasterizer.SetViewport(0, 0, service.Width, service.Height);
+		deviceContext.Rasterizer.SetViewport(0, 0, renderer.Width, renderer.Height);
 
 		this.quad.Draw(Transform.Identity, device, deviceContext);
 

@@ -88,7 +88,7 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 		base.OnResolutionChanging();
 	}
 
-	public override void Detach()
+	public override void Dispose()
 	{
 		this.backBufferTargetView?.Dispose();
 		this.backBufferTargetView = null;
@@ -99,16 +99,24 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 		this.depthStencilView?.Dispose();
 		this.depthStencilView = null;
 
-		base.Detach();
+		this.depthStencilState?.Dispose();
+		this.depthStencilState = null;
+
+		foreach(DrawObject renderable in this.sceneObjects)
+		{
+			renderable.Dispose();
+		}
+
+		base.Dispose();
 	}
 
-	public override void Render(RenderingService service, Device device, DeviceContext deviceContext)
+	public override void Render(Renderer renderer, Device device, DeviceContext deviceContext)
 	{
-		this.PassData.ViewMatrix = Matrix4x4.Transpose(service.Services.Camera.LastView);
-		this.PassData.ProjectionMatrix = Matrix4x4.Transpose(service.Services.Camera.LastProjection);
-		this.PassData.CameraPosition = new Vector4(service.Services.Camera.CurrentPosition, 1);
+		this.PassData.ViewMatrix = Matrix4x4.Transpose(this.Services.Camera.LastView);
+		this.PassData.ProjectionMatrix = Matrix4x4.Transpose(this.Services.Camera.LastProjection);
+		this.PassData.CameraPosition = new Vector4(this.Services.Camera.CurrentPosition, 1);
 
-		base.Render(service, device, deviceContext);
+		base.Render(renderer, device, deviceContext);
 
 		if (this.backBufferTargetView == null)
 		{
@@ -119,7 +127,7 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 			desc.Dimension = RenderTargetViewDimension.Texture2D;
 			desc.Texture2D = new() { };
 
-			this.backBufferTargetView = new(device, service.BackBuffer, desc);
+			this.backBufferTargetView = new(device, renderer.BackBuffer, desc);
 		}
 
 		if (this.blend == null)
@@ -144,8 +152,8 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 			desc.Format = Format.D24_UNorm_S8_UInt;
 			desc.ArraySize = 1;
 			desc.MipLevels = 1;
-			desc.Width = (int)service.Width;
-			desc.Height = (int)service.Height;
+			desc.Width = (int)renderer.Width;
+			desc.Height = (int)renderer.Height;
 			desc.SampleDescription = new SampleDescription(1, 0);
 			desc.Usage = ResourceUsage.Default;
 			desc.BindFlags = BindFlags.DepthStencil;
@@ -171,7 +179,7 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 			this.depthStencilState = new(device, desc);
 		}
 
-		deviceContext.Rasterizer.SetViewport(0, 0, service.Width, service.Height);
+		deviceContext.Rasterizer.SetViewport(0, 0, renderer.Width, renderer.Height);
 		deviceContext.OutputMerger.SetBlendState(this.blend, null, -1);
 		deviceContext.OutputMerger.SetTargets(this.depthStencilView, this.backBufferTargetView);
 		deviceContext.OutputMerger.SetDepthStencilState(this.depthStencilState, int.MinValue);
@@ -189,28 +197,6 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 		using CommandList cmds = deviceContext.FinishCommandList(false);
 		device.ImmediateContext.ExecuteCommandList(cmds, true);
 		deviceContext.ClearState();
-	}
-
-	public override void Dispose()
-	{
-		this.backBufferTargetView?.Dispose();
-		this.backBufferTargetView = null;
-
-		this.depthStencilTexture?.Dispose();
-		this.depthStencilTexture = null;
-
-		this.depthStencilView?.Dispose();
-		this.depthStencilView = null;
-
-		this.depthStencilState?.Dispose();
-		this.depthStencilState = null;
-
-		foreach(DrawObject renderable in this.sceneObjects)
-		{
-			renderable.Dispose();
-		}
-
-		base.Dispose();
 	}
 
 	[StructLayout(LayoutKind.Sequential)]

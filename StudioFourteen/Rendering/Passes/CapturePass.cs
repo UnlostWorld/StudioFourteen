@@ -41,14 +41,14 @@ public class CapturePass : RenderPassBase
 		this.DepthCapture = null;
 	}
 
-	public unsafe override void Render(RenderingService service, Device device, DeviceContext deviceContext)
+	public unsafe override void Render(Renderer renderer, Device device, DeviceContext deviceContext)
 	{
-		if (service.BackBuffer == null)
+		if (renderer.BackBuffer == null)
 			return;
 
 		if (this.Capture == null)
 		{
-			this.Capture = this.CaptureTexture(device, service.BackBuffer);
+			this.Capture = this.CaptureTexture(device, renderer.BackBuffer);
 		}
 
 		// TODO: Use a BLIt to unpack the depth into something we can actually save.
