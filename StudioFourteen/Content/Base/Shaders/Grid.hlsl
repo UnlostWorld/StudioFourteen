@@ -23,6 +23,10 @@ cbuffer GeometryPassData : register(PassDataRegister)
     float4x4 ViewMatrix;
 	float4x4 ProjectionMatrix;
 	float4 CameraPosition;
+	float UseGameDepth;
+	float UseGameUiMask;
+	float Unused1;
+	float Unused2;
 };
 
 cbuffer RendererInstanceData : register(RendererDataRegister)
@@ -73,7 +77,12 @@ float GetClippingAlpha(Fragment pixel, float depthClipAlpha = 0)
 {
 	float2 screenPos = GetScreenPosition(pixel);
 	float mask = mask_texture.Sample(mask_sampler, screenPos).r;
+
 	float depth = depth_texture.Sample(depth_sampler, screenPos).r;
+
+	if (depth == 0)
+		return 1;
+
 	float thisDepth = GetDepth(pixel);
 
 	if (thisDepth < depth)

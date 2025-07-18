@@ -13,10 +13,24 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-#include "Blit.hlsl"
+namespace StudioFourteen.Rendering;
 
-float4 pixel(Pixel pixel) : SV_TARGET
+using System.Runtime.CompilerServices;
+using SharpDX.Direct3D11;
+using StudioFourteen.Rendering.Draw;
+
+public static class DeviceExtensions
 {
-	////return float4(pixel.TexCoord.x, pixel.TexCoord.y, 0, 1);
-	return buffer_texture.Sample(buffer_sampler, pixel.TexCoord);
+	private static readonly ConditionalWeakTable<Device, ShaderCache> ShaderCaches = new();
+
+	public static ShaderCache GetShadeCache(this Device device)
+	{
+		if (!ShaderCaches.TryGetValue(device, out var cache) || cache == null)
+		{
+			cache = new();
+			ShaderCaches.Add(device, cache);
+		}
+
+		return cache;
+	}
 }

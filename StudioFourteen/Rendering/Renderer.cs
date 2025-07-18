@@ -54,8 +54,10 @@ public abstract class Renderer : IDisposable
 	protected DeviceContext? DeviceContext => this.deviceContext;
 	protected bool CanRender => this.canRender;
 
-	public void Dispose()
+	public virtual void Dispose()
 	{
+		this.device?.GetShadeCache().Dispose();
+
 		this.deviceContext?.Dispose();
 		this.deviceContext = null;
 
@@ -70,10 +72,12 @@ public abstract class Renderer : IDisposable
 		this.Log.Error(ex, message);
 	}
 
-	public void Render()
+	public virtual void Render()
 	{
 		this.SetUpRender();
 		this.RenderPasses(this.allPasses);
+
+		this.device?.ImmediateContext.Flush();
 	}
 
 	protected void SetUpRender()
@@ -122,7 +126,7 @@ public abstract class Renderer : IDisposable
 
 	protected unsafe abstract Texture2D? GetBackBuffer();
 
-	private unsafe bool TrySetUpRender()
+	protected virtual unsafe bool TrySetUpRender()
 	{
 		if (this.isError)
 			return false;
@@ -132,9 +136,6 @@ public abstract class Renderer : IDisposable
 			this.BackBuffer = this.GetBackBuffer();
 			if (this.BackBuffer == null)
 				return false;
-
-			if (this.BackBuffer.Description.Format != SharpDX.DXGI.Format.R8G8B8A8_UNorm)
-				throw new Exception($"wrong format in back buffer texture {this.BackBuffer.Description.Format}");
 
 			this.device = this.BackBuffer.Device;
 			if (this.device == null)

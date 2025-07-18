@@ -116,7 +116,12 @@ public class GameOverlayRenderer : Renderer
 		if (swapChain->BackBuffer == null)
 			return null;
 
-		return (Texture2D)(nint)swapChain->BackBuffer->D3D11Texture2D;
+		Texture2D backBuffer = new((nint)swapChain->BackBuffer->D3D11Texture2D);
+
+		if (backBuffer.Description.Format != SharpDX.DXGI.Format.R8G8B8A8_UNorm)
+			throw new Exception($"wrong format in back buffer texture {backBuffer.Description.Format}");
+
+		return backBuffer;
 	}
 
 	private void OnBeforeImGuiRender()

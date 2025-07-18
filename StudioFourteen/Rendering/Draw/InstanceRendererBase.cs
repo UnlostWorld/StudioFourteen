@@ -93,7 +93,7 @@ public abstract class InstanceRendererBase<TRendererData, TMaterialData> : Rende
 
 		if (this.shader == null)
 		{
-			this.shader = this.Services.Rendering.ShaderCache.GetShader<TMaterialData>(device);
+			this.shader = device.GetShadeCache().GetShader<TMaterialData>(device);
 
 			if (this.shader == null)
 				return;

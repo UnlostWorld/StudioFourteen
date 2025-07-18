@@ -22,8 +22,6 @@ public class RenderingService : ServiceBase
 {
 	public readonly GameOverlayRenderer OverlayRenderer = new();
 
-	public readonly ShaderCache ShaderCache = new();
-
 	public override void Attach()
 	{
 		this.OverlayRenderer.Attach();
@@ -38,7 +36,6 @@ public class RenderingService : ServiceBase
 
 	public override void Dispose()
 	{
-		this.ShaderCache.Dispose();
 		this.OverlayRenderer.Dispose();
 		base.Dispose();
 	}

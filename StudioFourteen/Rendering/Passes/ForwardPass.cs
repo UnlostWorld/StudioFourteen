@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using FFXIVClientStructs.FFXIV.Common.Lua;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using StudioFourteen.Rendering.Draw;
@@ -186,9 +187,9 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 
 		deviceContext.ClearDepthStencilView(this.depthStencilView, DepthStencilClearFlags.Depth, 0f, byte.MaxValue);
 
-		lock(this.sceneObjects)
+		lock (this.sceneObjects)
 		{
-			foreach(DrawObject renderable in this.sceneObjects)
+			foreach (DrawObject renderable in this.sceneObjects)
 			{
 				renderable.Draw(Transform.Identity, device, deviceContext);
 			}
@@ -197,6 +198,8 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 		using CommandList cmds = deviceContext.FinishCommandList(false);
 		device.ImmediateContext.ExecuteCommandList(cmds, true);
 		deviceContext.ClearState();
+
+		////device.ImmediateContext.ClearRenderTargetView(this.backBufferTargetView, new(1, 1, 0, 1));
 	}
 
 	[StructLayout(LayoutKind.Sequential)]

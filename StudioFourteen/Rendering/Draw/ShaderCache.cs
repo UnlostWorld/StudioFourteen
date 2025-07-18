@@ -31,6 +31,8 @@ public class ShaderCache : IDisposable
 		{
 			shader.Dispose();
 		}
+
+		this.shaders.Clear();
 	}
 
 	public Shader? GetShader<TMaterialData>(Device device)
