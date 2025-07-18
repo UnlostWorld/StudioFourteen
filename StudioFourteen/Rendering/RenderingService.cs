@@ -39,6 +39,7 @@ public class RenderingService : ServiceBase
 	public override void Dispose()
 	{
 		this.ShaderCache.Dispose();
+		this.OverlayRenderer.Dispose();
 		base.Dispose();
 	}
 }

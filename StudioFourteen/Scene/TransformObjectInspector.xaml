@@ -24,10 +24,7 @@
 						</Grid.RowDefinitions>
 
 						<Grid Grid.Row="0" Height="168">
-							<wpfRendering:TransformHandleControl
-								x:Name="GizmoControl"
-								Sensitivity="{Binding GizmoSensitivity}"
-								Transform="{Binding WorldTransform}" />
+							<wpfRendering:RendererElement/>
 						</Grid>
 
 						<wpfUtils:SwitchSelector

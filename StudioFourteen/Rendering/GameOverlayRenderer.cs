@@ -119,42 +119,6 @@ public class GameOverlayRenderer : Renderer
 		return (Texture2D)(nint)swapChain->BackBuffer->D3D11Texture2D;
 	}
 
-	protected unsafe override uint GetDeviceWidth()
-	{
-		XivDevice* xivDevice = XivDevice.Instance();
-		if (xivDevice == null)
-			return 0;
-
-		return xivDevice->Width;
-	}
-
-	protected unsafe override uint GetDeviceHeight()
-	{
-		XivDevice* xivDevice = XivDevice.Instance();
-		if (xivDevice == null)
-			return 0;
-
-		return xivDevice->Height;
-	}
-
-	protected unsafe override uint GetPendingDeviceWidth()
-	{
-		XivDevice* xivDevice = XivDevice.Instance();
-		if (xivDevice == null)
-			return 0;
-
-		return xivDevice->NewWidth;
-	}
-
-	protected unsafe override uint GetPendingDeviceHeight()
-	{
-		XivDevice* xivDevice = XivDevice.Instance();
-		if (xivDevice == null)
-			return 0;
-
-		return xivDevice->NewHeight;
-	}
-
 	private void OnBeforeImGuiRender()
 	{
 		if (this.IsAttached)
@@ -183,13 +147,20 @@ public class GameOverlayRenderer : Renderer
 		this.RenderAfterEffectsPasses();
 	}
 
-	private void OnGameTick()
+	private unsafe void OnGameTick()
 	{
 		if (this.needsImGuiRequeue)
 		{
 			InterfaceManager.RunBeforeImGuiRender(this.OnBeforeImGuiRender);
 			this.needsImGuiRequeue = false;
 		}
+
+		XivDevice* xivDevice = XivDevice.Instance();
+		if (xivDevice == null)
+			return;
+
+		this.NewWidth = (int)xivDevice->NewWidth;
+		this.NewHeight = (int)xivDevice->NewHeight;
 	}
 
 	private void RenderUiMask()

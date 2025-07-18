@@ -43,8 +43,10 @@ public abstract class Renderer : IDisposable
 	}
 
 	public Texture2D? BackBuffer { get; private set; }
-	public uint Width { get; private set; }
-	public uint Height { get; private set; }
+	public int Width { get; private set; } = 255;
+	public int Height { get; private set; } = 255;
+	public int NewWidth { get; set; } = 255;
+	public int NewHeight { get; set; } = 255;
 
 	public ServiceManager Services => ServiceManager.Instance;
 
@@ -66,6 +68,12 @@ public abstract class Renderer : IDisposable
 	public void LogInternalError(string message, Exception ex)
 	{
 		this.Log.Error(ex, message);
+	}
+
+	public void Render()
+	{
+		this.SetUpRender();
+		this.RenderPasses(this.allPasses);
 	}
 
 	protected void SetUpRender()
@@ -113,15 +121,6 @@ public abstract class Renderer : IDisposable
 	}
 
 	protected unsafe abstract Texture2D? GetBackBuffer();
-	protected abstract uint GetDeviceWidth();
-	protected abstract uint GetDeviceHeight();
-	protected abstract uint GetPendingDeviceWidth();
-	protected abstract uint GetPendingDeviceHeight();
-
-	protected void RenderAllPasses()
-	{
-		this.RenderPasses(this.allPasses);
-	}
 
 	private unsafe bool TrySetUpRender()
 	{
@@ -144,33 +143,30 @@ public abstract class Renderer : IDisposable
 			if (this.deviceContext == null)
 				this.deviceContext = new(this.device);
 
-			uint deviceWidth = this.GetDeviceWidth();
-			uint deviceHeight = this.GetDeviceHeight();
-			if (this.Width != deviceWidth || this.Height != deviceHeight)
+			if (this.Width != this.NewWidth || this.Height != this.NewHeight)
 			{
-				this.Width = deviceWidth;
-				this.Height = deviceHeight;
-				this.resolutionChangeCoolDown = 15;
-
-				foreach (RenderPassBase pass in this.allPasses)
+				if (this.resolutionChangeCoolDown == 0)
 				{
-					pass.OnResolutionChanged();
+					foreach (RenderPassBase pass in this.allPasses)
+					{
+						pass.OnResolutionChanging();
+					}
+
+					this.resolutionChangeCoolDown = 15;
+					return false;
 				}
-
-				return false;
-			}
-
-			uint newDeviceWidth = this.GetPendingDeviceWidth();
-			uint newDeviceHeight = this.GetPendingDeviceHeight();
-			if (this.Width != newDeviceWidth || this.Height != newDeviceHeight)
-			{
-				foreach (RenderPassBase pass in this.allPasses)
+				else if (this.resolutionChangeCoolDown == 15)
 				{
-					pass.OnResolutionChanging();
-				}
+					this.Width = this.NewWidth;
+					this.Height = this.NewHeight;
 
-				this.resolutionChangeCoolDown = 15;
-				return false;
+					foreach (RenderPassBase pass in this.allPasses)
+					{
+						pass.OnResolutionChanged();
+					}
+
+					return false;
+				}
 			}
 
 			if (this.resolutionChangeCoolDown > 0)
