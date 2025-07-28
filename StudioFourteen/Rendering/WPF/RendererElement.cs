@@ -16,21 +16,16 @@
 namespace StudioFourteen.Rendering.WPF;
 
 using System;
-using System.Numerics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
-using DependencyPropertyGenerator;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using SharpDX.Direct3D9;
 using SharpDX.DXGI;
 using StudioFourteen.Rendering.Draw;
-using StudioFourteen.Rendering.Draw.Gizmos;
-using StudioFourteen.Rendering.Draw.Gizmos.Transforms;
 using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Passes;
-using StudioFourteen.Scene;
 using StudioFourteen.Services;
 
 using D3D11Device = SharpDX.Direct3D11.Device;
@@ -40,12 +35,10 @@ using D3D9Device = SharpDX.Direct3D9.DeviceEx;
 using D3D9Format = SharpDX.Direct3D9.Format;
 using D3D9Pool = SharpDX.Direct3D9.Pool;
 using D3D9PresentParameters = SharpDX.Direct3D9.PresentParameters;
-using D3D9Resource = SharpDX.Direct3D9.Resource;
 using D3D9Surface = SharpDX.Direct3D9.Surface;
 using D3D9Texture = SharpDX.Direct3D9.Texture;
 using D3D9Usage = SharpDX.Direct3D9.Usage;
 using DXGIFormat = SharpDX.DXGI.Format;
-using DXGIResource = SharpDX.DXGI.Resource;
 using DXGISwapChain = SharpDX.DXGI.SwapChain;
 using DXGISwapEffect = SharpDX.DXGI.SwapEffect;
 using DXGIUsage = SharpDX.DXGI.Usage;
@@ -276,105 +269,5 @@ public class WpfRenderer : Renderer
 	private void OnGameTick()
 	{
 		this.Render();
-	}
-}
-
-public class GizmoOrbitCamera : RendererCamera
-{
-	public override Matrix4x4 ViewMatrix => Matrix4x4.CreateLookAt(this.CameraPosition, this.TargetPosition, Vector3.UnitY);
-	public override Vector3 CameraPosition => this.TargetPosition - Vector3.Transform(Vector3.UnitX * 3, this.Rotation);
-
-	public TransformSceneObjectBase? Target { get; set; }
-	private Quaternion Rotation => ServiceManager.Instance.Camera.CurrentRotation;
-
-	private Vector3 TargetPosition
-	{
-		get
-		{
-			if (this.Target == null)
-				return Vector3.Zero;
-
-			return Vector3.Transform(Vector3.Zero, this.Target.WorldTransform.ToMatrix());
-		}
-	}
-
-	public override Matrix4x4 GetProjectionMatrix(Renderer renderer)
-	{
-		Matrix4x4 projection = Matrix4x4.CreatePerspectiveFieldOfView(0.52f, 1.0f, 0.1f, 10.0f);
-
-		// Flip z? unsure why this is needed, but it is.
-		projection.M33 = 0;
-		projection.M43 = 0.1f;
-
-		return projection;
-	}
-}
-
-[DependencyProperty<SceneObjectBase>("Target")]
-public partial class GizmoControl : RendererElement
-{
-	private readonly GizmoOrbitCamera camera = new();
-	private readonly TransformGizmo transform = new();
-	private readonly Grid grid = new();
-	protected override RendererCamera Camera => this.camera;
-
-	protected override void Initialize()
-	{
-		if (this.Renderer == null)
-			return;
-
-		this.Renderer.Forward.Add(this.grid);
-
-		this.OnTargetChanged(this.Target);
-	}
-
-	partial void OnTargetChanged(SceneObjectBase? newValue)
-	{
-		this.camera.Target = newValue as TransformSceneObjectBase;
-		this.grid.Target = newValue as TransformSceneObjectBase;
-
-		if (this.Renderer == null)
-			return;
-
-		if (newValue != null)
-		{
-			this.transform.Enable(newValue, this.Renderer.Forward);
-		}
-		else
-		{
-			this.transform.Disable();
-		}
-	}
-
-	public class Grid : DrawGroup
-	{
-		private readonly MeshRenderer<GridMaterial> gridRenderer = new(MeshContent.Plane);
-
-		public Grid()
-		{
-			this.gridRenderer.WriteDepth = false;
-			this.gridRenderer.CullMode = CullMode.None;
-			this.Add(this.gridRenderer);
-			this.IsHitTestVisible = false;
-		}
-
-		public TransformSceneObjectBase? Target { get; set; }
-
-		protected unsafe override void OnDraw()
-		{
-			this.gridRenderer.Material.Height = 0;
-			this.gridRenderer.Material.Color.A = 0.5f;
-			this.gridRenderer.Material.LineThickness = 0.05f;
-			this.gridRenderer.Material.XColor = Axes.XColor;
-			this.gridRenderer.Material.ZColor = Axes.ZColor;
-
-			if (this.Target != null)
-			{
-				Vector3 targetPos = Vector3.Transform(Vector3.Zero, this.Target.WorldTransform.ToMatrix());
-				this.gridRenderer.Material.Height = targetPos.Y;
-			}
-
-			base.OnDraw();
-		}
 	}
 }

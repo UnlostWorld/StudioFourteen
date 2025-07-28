@@ -24,30 +24,24 @@
 						</Grid.RowDefinitions>
 
 						<wpfRendering:GizmoControl
+							x:Name="GizmoControl"
 							Grid.Row="0"
-							Height="168"
+							Height="180"
 							Margin="4"
 							Target="{Binding .}" />
 
 						<wpfUtils:SwitchSelector
 							Grid.Row="1"
-							SelectedIndex="{Binding GizmoIndex, ElementName=GizmoControl}"
-							Style="{DynamicResource WpfUtilsSwitchSelectorNoBorder}">
-
-							<ListBoxItem
-								Content="{DynamicResource ICON_Transform_Translate}"
-								Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
-								ToolTip="{DynamicResource LOC_Translate}" />
-
-							<ListBoxItem
-								Content="{DynamicResource ICON_Transform_Rotate}"
-								Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
-								ToolTip="{DynamicResource LOC_Rotate}" />
-
-							<ListBoxItem
-								Content="{DynamicResource ICON_Transform_Scale}"
-								Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
-								ToolTip="{DynamicResource LOC_Scale}" />
+							ItemsSource="{Binding Gizmos, ElementName=GizmoControl}"
+							SelectedValue="{Binding Current, ElementName=GizmoControl}">
+							<wpfUtils:SwitchSelector.ItemTemplate>
+								<DataTemplate>
+									<icons:IconView
+										Width="24"
+										Icon="{Binding Icon}"
+										ToolTip="{Binding Name}" />
+								</DataTemplate>
+							</wpfUtils:SwitchSelector.ItemTemplate>
 						</wpfUtils:SwitchSelector>
 					</Grid>
 				</Border>
