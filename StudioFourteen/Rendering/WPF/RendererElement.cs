@@ -280,11 +280,8 @@ public class WpfRenderer : Renderer
 
 public class GizmoOrbitCamera : RendererCamera
 {
-	private Matrix4x4 projectionMatrix = Matrix4x4.CreatePerspectiveFieldOfView(0.52f, 1.0f, 0.01f, 1000);
-
 	public override Matrix4x4 ViewMatrix => Matrix4x4.CreateLookAt(this.CameraPosition, this.TargetPosition, Vector3.UnitY);
-	public override Matrix4x4 ProjectionMatrix => this.projectionMatrix;
-	public override Vector3 CameraPosition => this.TargetPosition - Vector3.Transform(Vector3.UnitX * 3, this.Rotation);
+	public override Vector3 CameraPosition => this.TargetPosition - Vector3.Transform(Vector3.UnitX * 2, this.Rotation);
 
 	public TransformSceneObjectBase? Target { get; set; }
 	private Quaternion Rotation => ServiceManager.Instance.Camera.CurrentRotation;
@@ -298,6 +295,25 @@ public class GizmoOrbitCamera : RendererCamera
 
 			return Vector3.Transform(Vector3.Zero, this.Target.WorldTransform.ToMatrix());
 		}
+	}
+
+	public override Matrix4x4 GetProjectionMatrix(Renderer renderer)
+	{
+		// HACK: For reasons beyond me, creating a projection matrix this way causes the Z depth to be flipped(?)
+		// so for now, lets just copy the current game projection and modify it to our aspect ratio.
+		////Matrix4x4 projection = Matrix4x4.CreatePerspectiveFieldOfView(0.52f, 1.0f, 0.1f, 10.0f);
+
+		Vector3 scale = Vector3.One;
+		int gameWidth = ServiceManager.Instance.Rendering.OverlayRenderer.Width;
+		int gameHeight = ServiceManager.Instance.Rendering.OverlayRenderer.Height;
+
+		float gameAspect = gameWidth / (float)gameHeight;
+		float rendererAspect = renderer.Width / (float)renderer.Height;
+		scale.X = gameAspect / rendererAspect;
+
+		Matrix4x4 projection = ServiceManager.Instance.Camera.LastProjection;
+		projection *= Matrix4x4.CreateScale(scale);
+		return projection;
 	}
 }
 
@@ -354,7 +370,8 @@ public partial class GizmoControl : RendererElement
 		protected unsafe override void OnDraw()
 		{
 			this.gridRenderer.Material.Height = 0;
-			this.gridRenderer.Material.Color.A = 1.0f;
+			this.gridRenderer.Material.Color.A = 0.5f;
+			this.gridRenderer.Material.LineThickness = 0.05f;
 			this.gridRenderer.Material.XColor = Axes.XColor;
 			this.gridRenderer.Material.ZColor = Axes.ZColor;
 

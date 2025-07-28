@@ -114,7 +114,7 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 	public override void Render(Renderer renderer, Device device, DeviceContext deviceContext)
 	{
 		this.PassData.ViewMatrix = Matrix4x4.Transpose(renderer.Camera.ViewMatrix);
-		this.PassData.ProjectionMatrix = Matrix4x4.Transpose(renderer.Camera.ProjectionMatrix);
+		this.PassData.ProjectionMatrix = Matrix4x4.Transpose(renderer.Camera.GetProjectionMatrix(renderer));
 		this.PassData.CameraPosition = new Vector4(renderer.Camera.CameraPosition, 1);
 		this.PassData.ViewportScale = (1 + (1 - (renderer.Width / 1024))) * this.ViewportScale;
 

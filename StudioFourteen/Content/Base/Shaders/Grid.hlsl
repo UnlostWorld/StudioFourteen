@@ -119,19 +119,21 @@ float4 pixel(Fragment frag) : SV_TARGET
 	float r = smoothstep(0, quadScale, frag.Position.w);
 	r = 1 - r;
 
+	float lineThickness = LineThickness * ViewportScale;
+
 	float4 color = Color;
 	color.a = 0;
-	if (any(distance_to_subcell < (LineThickness / 100) * (frag.Position.w * 2)))
+	if (any(distance_to_subcell < (lineThickness / 100) * (frag.Position.w * 2)))
 	{
 		color.a = 0.25;
 	}
 
-	if(distance_to_cell.y < (LineThickness / 100) * (frag.Position.w * 2))
+	if(distance_to_cell.y < (lineThickness / 100) * (frag.Position.w * 2))
 	{
 		color = XColor;
 		color.a = 1;
 	}
-	if(distance_to_cell.x < (LineThickness / 100) * (frag.Position.w * 2))
+	if(distance_to_cell.x < (lineThickness / 100) * (frag.Position.w * 2))
 	{
 		color = ZColor;
 		color.a = 1;

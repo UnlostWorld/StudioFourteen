@@ -22,17 +22,15 @@ using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
 using SharpDX.Direct3D11;
 using StudioFourteen.Plugin;
 using StudioFourteen.Rendering.Passes;
-using StudioFourteen.Scene.Cameras;
 using StudioFourteen.Services;
+
 using XivDevice = FFXIVClientStructs.FFXIV.Client.Graphics.Kernel.Device;
 
 public class RendererStudioCamera : RendererCamera
 {
-	public override Matrix4x4 ProjectionMatrix => this.CameraService.LastProjection;
-	public override Vector3 CameraPosition => this.CameraService.CurrentPosition;
-	public override Matrix4x4 ViewMatrix => this.CameraService.LastView;
-
-	private CameraService CameraService => ServiceManager.Instance.Camera;
+	public override Vector3 CameraPosition => ServiceManager.Instance.Camera.CurrentPosition;
+	public override Matrix4x4 ViewMatrix => ServiceManager.Instance.Camera.LastView;
+	public override Matrix4x4 GetProjectionMatrix(Renderer renderer) => ServiceManager.Instance.Camera.LastProjection;
 }
 
 // Thanks to Pictomancy for much of the initial DX11 Setup logic.
