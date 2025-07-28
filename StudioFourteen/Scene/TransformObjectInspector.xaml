@@ -5,10 +5,10 @@
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
 	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:scene="clr-namespace:StudioFourteen.Scene"
+	xmlns:selection="clr-namespace:StudioFourteen.Selection"
 	xmlns:transform="clr-namespace:StudioFourteen.Gizmos.Handles.TransformHandle"
 	xmlns:wpfRendering="clr-namespace:StudioFourteen.Rendering.WPF"
-	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
-	xmlns:selection="clr-namespace:StudioFourteen.Selection">
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
 
 	<BooleanToVisibilityConverter x:Key="B2V" />
 	<converters:BoolInversionConverter x:Key="!B" />
@@ -23,9 +23,11 @@
 							<RowDefinition />
 						</Grid.RowDefinitions>
 
-						<Grid Grid.Row="0" Height="168">
-							<wpfRendering:GizmoControl Target="{Binding .}"/>
-						</Grid>
+						<wpfRendering:GizmoControl
+							Grid.Row="0"
+							Height="168"
+							Margin="4"
+							Target="{Binding .}" />
 
 						<wpfUtils:SwitchSelector
 							Grid.Row="1"
@@ -58,11 +60,11 @@
 				ScaleChange="0.1"
 				ScaleMaximum="100"
 				ScaleMinimum="0.001"
+				Style="{DynamicResource TransformControlDense}"
 				TranslationChange="{Binding TranslationChange}"
 				TranslationDecimalPlaces="{Binding DecimalPlacesDisplay}"
 				TranslationMaximum="100000"
 				TranslationMinimum="-100000"
-				Style="{DynamicResource TransformControlDense}"
 				Value="{Binding LocalTransform}" />
 
 		</StackPanel>

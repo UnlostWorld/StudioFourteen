@@ -54,6 +54,7 @@ public abstract partial class RendererElement : Image
 {
 	public RendererElement()
 	{
+		this.Stretch = System.Windows.Media.Stretch.Fill;
 		this.Loaded += this.OnLoaded;
 	}
 
