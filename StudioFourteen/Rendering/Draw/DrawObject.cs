@@ -40,11 +40,14 @@ public abstract class DrawObject : IDisposable
 	public Quaternion WorldRotation { get; private set; }
 	public Vector3 WorldScale { get; private set; }
 
+	public Vector3 CameraPosition { get; set; }
+
 	protected Transform WorldTransform { get; private set; }
 	protected Transform LocalTransform { get; set; } = Transform.Identity;
 
-	public virtual void Draw(Transform transform, Device device, DeviceContext deviceContext)
+	public virtual void Draw(Renderer renderer, Transform transform, Device device, DeviceContext deviceContext)
 	{
+		this.CameraPosition = renderer.Camera.CameraPosition;
 		this.WorldTransform = this.LocalTransform * this.Transform * transform;
 
 		if (Matrix4x4.Decompose(this.WorldTransform.ToMatrix(), out Vector3 scale, out Quaternion rotation, out Vector3 translation))

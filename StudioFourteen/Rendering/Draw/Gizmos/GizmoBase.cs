@@ -20,10 +20,13 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using SharpDX.Direct3D11;
 using StudioFourteen.Rendering.Draw;
+using StudioFourteen.Rendering.Passes;
 using StudioFourteen.Settings;
 
 public abstract class GizmoBase : DrawGroup, INotifyPropertyChanged
 {
+	protected ForwardPass? renderPass;
+
 	public GizmoBase()
 	{
 		this.Persistence = Persistence.GetPersistence($"Gizmo_{this.GetType().Name}");
@@ -49,14 +52,21 @@ public abstract class GizmoBase : DrawGroup, INotifyPropertyChanged
 
 	protected Persistence Persistence { get; init; }
 
-	public virtual void Enable()
+	public virtual void Enable(ForwardPass? pass = null)
 	{
+		if (pass == null)
+			pass = this.Services.Rendering.OverlayRenderer.Forward;
+
+		this.renderPass = pass;
+		this.renderPass.Add(this);
+
 		this.Services.Gizmos.Enable(this);
 		this.OnPersistenceChanged();
 	}
 
 	public virtual void Disable()
 	{
+		this.renderPass?.Remove(this);
 		this.Services.Gizmos.Disable(this);
 	}
 
@@ -78,18 +88,18 @@ public abstract class GizmoBase : DrawGroup, INotifyPropertyChanged
 	{
 	}
 
-	protected virtual void OnPersistenceChanged()
+	public override void Draw(Renderer renderer, Transform transform, Device device, DeviceContext deviceContext)
 	{
-	}
+		base.Draw(renderer, transform, device, deviceContext);
 
-	protected override void OnDraw()
-	{
-		if (this.KeepScreenSize)
+		if (this.KeepScreenSize && renderer is GameOverlayRenderer)
 		{
 			this.LocalTransform = this.GetCameraScaleTransform();
 		}
+	}
 
-		base.OnDraw();
+	protected virtual void OnPersistenceChanged()
+	{
 	}
 
 	private void OnPersistenceChanged(Persistence persistence)
@@ -100,8 +110,8 @@ public abstract class GizmoBase : DrawGroup, INotifyPropertyChanged
 	private Transform GetCameraScaleTransform()
 	{
 		Vector4 gizmoPos = Vector4.Transform(new Vector4(0, 0, 0, 1), this.Transform.ToMatrix());
-		Vector4 vector = gizmoPos - new Vector4(this.Services.Camera.CurrentPosition, 1.0f);
-		float distance = vector.Length() * 0.1f;
-		return Transform.FromScale(distance);
+		Vector4 vector = gizmoPos - new Vector4(this.CameraPosition, 1.0f);
+		float scale = vector.Length() * 0.1f;
+		return Transform.FromScale(scale);
 	}
 }

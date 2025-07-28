@@ -17,18 +17,31 @@ namespace StudioFourteen.Rendering;
 
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
 using SharpDX.Direct3D11;
 using StudioFourteen.Plugin;
 using StudioFourteen.Rendering.Passes;
+using StudioFourteen.Scene.Cameras;
 using StudioFourteen.Services;
 using XivDevice = FFXIVClientStructs.FFXIV.Client.Graphics.Kernel.Device;
+
+public class RendererStudioCamera : RendererCamera
+{
+	public override Matrix4x4 ProjectionMatrix => this.CameraService.LastProjection;
+	public override Vector3 CameraPosition => this.CameraService.CurrentPosition;
+	public override Matrix4x4 ViewMatrix => this.CameraService.LastView;
+
+	private CameraService CameraService => ServiceManager.Instance.Camera;
+}
 
 // Thanks to Pictomancy for much of the initial DX11 Setup logic.
 // https://github.com/sourpuh/ffxiv_pictomancy/tree/master
 public class GameOverlayRenderer : Renderer
 {
 	public readonly ForwardPass Forward = new();
+
+	private readonly RendererStudioCamera camera = new();
 	private readonly GenerateUiMaskPass generateUiMaskPass = new();
 	private readonly List<RenderPassBase> beforeEffectsPasses = new();
 	private readonly List<RenderPassBase> afterEffectsPasses = new();
@@ -42,6 +55,7 @@ public class GameOverlayRenderer : Renderer
 	}
 
 	public bool IsAttached { get; private set; }
+	public override RendererCamera Camera => this.camera;
 
 	public void AddBeforeEffectsPass(RenderPassBase pass)
 	{

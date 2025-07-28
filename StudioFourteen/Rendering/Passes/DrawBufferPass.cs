@@ -100,7 +100,7 @@ public class DrawBufferPass : RenderPassBase
 		deviceContext.OutputMerger.SetTargets(this.backBufferTargetView);
 		deviceContext.Rasterizer.SetViewport(0, 0, renderer.Width, renderer.Height);
 
-		this.quad.Draw(Transform.Identity, device, deviceContext);
+		this.quad.Draw(renderer, Transform.Identity, device, deviceContext);
 
 		using CommandList cmds = deviceContext.FinishCommandList(false);
 		device.ImmediateContext.ExecuteCommandList(cmds, true);

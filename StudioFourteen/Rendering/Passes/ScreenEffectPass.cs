@@ -119,7 +119,7 @@ public class ScreenEffectPass<TMaterialData>() : InstanceRenderPassBase<ScreenEf
 		deviceContext.OutputMerger.SetBlendState(this.blend, null, -1);
 		deviceContext.OutputMerger.SetTargets(this.backBufferTargetView);
 
-		this.quad.Draw(Transform.Identity, device, deviceContext);
+		this.quad.Draw(renderer, Transform.Identity, device, deviceContext);
 
 		using CommandList cmds = deviceContext.FinishCommandList(false);
 		device.ImmediateContext.ExecuteCommandList(cmds, true);

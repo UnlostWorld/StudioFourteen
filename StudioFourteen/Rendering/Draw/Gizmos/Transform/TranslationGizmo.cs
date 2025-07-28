@@ -128,7 +128,7 @@ public class TranslationGizmo : TransformGizmoBase
 		if (this.IsBeingManipulated)
 			return;
 
-		Vector3 lookVector = this.WorldPosition - this.Services.Camera.CurrentPosition;
+		Vector3 lookVector = this.WorldPosition - this.CameraPosition;
 		lookVector = Vector3.Normalize(lookVector);
 
 		float x = Vector3.Dot(Vector3.Transform(Vector3.UnitX, this.WorldRotation), lookVector);

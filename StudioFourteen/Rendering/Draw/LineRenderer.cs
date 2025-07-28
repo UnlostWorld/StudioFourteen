@@ -48,14 +48,14 @@ public class LineRenderer<TMaterialData> : InstanceRendererBase<MeshRendererInst
 		set => this.vertArray[1].Position = new(value, 1.0f);
 	}
 
-	public override void Draw(Transform transform, Device device, DeviceContext deviceContext)
+	public override void Draw(Renderer renderer, Transform transform, Device device, DeviceContext deviceContext)
 	{
 		if (!this.IsVisible)
 			return;
 
 		Transform thisTransform = transform * this.Transform;
 		this.Instance.Transform = Matrix4x4.Transpose(thisTransform.ToMatrix());
-		base.Draw(thisTransform, device, deviceContext);
+		base.Draw(renderer, thisTransform, device, deviceContext);
 
 		if (this.vertices == null)
 		{

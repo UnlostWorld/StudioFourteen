@@ -20,7 +20,6 @@ using StudioFourteen.Services;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Rendering.Draw.Gizmos.Transforms;
 using StudioFourteen.Scene;
-using System;
 
 public partial class GizmoService : ServiceBase
 {
@@ -45,7 +44,7 @@ public partial class GizmoService : ServiceBase
 			this.Services.Rendering.OverlayRenderer.Forward.Add(gizmo);
 		}
 
-		this.grid.Enable();
+		this.grid.Enable(this.Services.Rendering.OverlayRenderer.Forward);
 		base.Attach();
 	}
 
@@ -74,16 +73,12 @@ public partial class GizmoService : ServiceBase
 	{
 		this.Gizmos.Add(gizmo);
 		this.GizmosChanged?.Invoke();
-
-		this.Services.Rendering.OverlayRenderer.Forward.Add(gizmo);
 	}
 
 	public void Disable(GizmoBase gizmo)
 	{
 		this.Gizmos.Remove(gizmo);
 		this.GizmosChanged?.Invoke();
-
-		this.Services.Rendering.OverlayRenderer.Forward.Remove(gizmo);
 	}
 
 	private void OnSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? selectionSource)
@@ -96,8 +91,8 @@ public partial class GizmoService : ServiceBase
 
 		if (newSelection != null)
 		{
-			this.Transform.Enable(newSelection);
-			this.selection.Enable(newSelection);
+			this.Transform.Enable(newSelection, this.Services.Rendering.OverlayRenderer.Forward);
+			this.selection.Enable(newSelection, this.Services.Rendering.OverlayRenderer.Forward);
 		}
 	}
 

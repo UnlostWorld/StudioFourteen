@@ -57,7 +57,7 @@ public abstract class InstanceRendererBase<TRendererData, TMaterialData> : Rende
 		this.Material.Initialize();
 	}
 
-	public override void Draw(Transform transform, Device device, DeviceContext deviceContext)
+	public override void Draw(Renderer renderer, Transform transform, Device device, DeviceContext deviceContext)
 	{
 		if (this.rendererDataBuffer == null)
 		{

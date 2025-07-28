@@ -16,17 +16,21 @@
 namespace StudioFourteen.Rendering.WPF;
 
 using System;
+using System.Numerics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
+using DependencyPropertyGenerator;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using SharpDX.Direct3D9;
 using SharpDX.DXGI;
 using StudioFourteen.Rendering.Draw;
 using StudioFourteen.Rendering.Draw.Gizmos;
+using StudioFourteen.Rendering.Draw.Gizmos.Transforms;
 using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Passes;
+using StudioFourteen.Scene;
 using StudioFourteen.Services;
 
 using D3D11Device = SharpDX.Direct3D11.Device;
@@ -46,25 +50,28 @@ using DXGISwapChain = SharpDX.DXGI.SwapChain;
 using DXGISwapEffect = SharpDX.DXGI.SwapEffect;
 using DXGIUsage = SharpDX.DXGI.Usage;
 
-public partial class RendererElement : Image
+public abstract partial class RendererElement : Image
 {
-	private WpfRenderer? renderer;
-
 	public RendererElement()
 	{
 		this.Loaded += this.OnLoaded;
 	}
 
+	protected WpfRenderer? Renderer { get; private set; }
+	protected abstract RendererCamera Camera { get; }
+
 	protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
 	{
 		base.OnRenderSizeChanged(sizeInfo);
 
-		if (this.renderer == null || this.ActualWidth <= 0 || this.ActualHeight <= 0)
+		if (this.Renderer == null || this.ActualWidth <= 0 || this.ActualHeight <= 0)
 			return;
 
-	////	this.renderer.NewWidth = (int)this.ActualWidth;
-	////	this.renderer.NewHeight = (int)this.ActualHeight;
+		////this.Renderer.NewWidth = (int)this.ActualWidth;
+		////this.Renderer.NewHeight = (int)this.ActualHeight;
 	}
+
+	protected abstract void Initialize();
 
 	private void OnLoaded(object sender, RoutedEventArgs e)
 	{
@@ -74,8 +81,10 @@ public partial class RendererElement : Image
 
 		WindowInteropHelper interop = new(wnd);
 
-		this.renderer = new(interop.Handle);
-		this.Source = this.renderer.Source;
+		this.Renderer = new(interop.Handle, this.Camera);
+		this.Source = this.Renderer.Source;
+
+		this.Initialize();
 	}
 }
 
@@ -84,6 +93,7 @@ public class WpfRenderer : Renderer
 	public readonly ForwardPass Forward = new();
 	private readonly MeshRenderer<BlitMaterial> quad = new(MeshContent.Quad);
 	private readonly nint windowHandle;
+	private readonly RendererCamera camera;
 	private D3D11Texture? backBuffer;
 
 	private D3D9Texture? d3d9SharedTexture;
@@ -99,18 +109,18 @@ public class WpfRenderer : Renderer
 	private ShaderResourceView? maskResourceView;
 	private ShaderResourceView? depthResourceView;
 
-	public WpfRenderer(nint windowHandle)
+	public WpfRenderer(nint windowHandle, RendererCamera camera)
 	{
+		this.camera = camera;
 		this.windowHandle = windowHandle;
+		this.Forward.ViewportScale = 2;
 		this.AddPass(this.Forward);
 
 		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
-
-		GridGizmo gg = new();
-		this.Forward.Add(gg);
 	}
 
 	public D3DImage Source { get; init; } = new();
+	public override RendererCamera Camera => this.camera;
 
 	public override void Dispose()
 	{
@@ -161,7 +171,7 @@ public class WpfRenderer : Renderer
 		this.d3d11Device.ImmediateContext.OutputMerger.SetTargets(this.outputRtv);
 		this.d3d11Device.ImmediateContext.Rasterizer.SetViewport(0, 0, this.Width, this.Height);
 
-		this.quad.Draw(Transform.Identity, this.d3d11Device, this.d3d11Device.ImmediateContext);
+		this.quad.Draw(this, Transform.Identity, this.d3d11Device, this.d3d11Device.ImmediateContext);
 
 		this.Source.Dispatcher.Invoke(() =>
 		{
@@ -265,5 +275,96 @@ public class WpfRenderer : Renderer
 	private void OnGameTick()
 	{
 		this.Render();
+	}
+}
+
+public class GizmoOrbitCamera : RendererCamera
+{
+	private Matrix4x4 projectionMatrix = Matrix4x4.CreatePerspectiveFieldOfView(0.52f, 1.0f, 0.01f, 1000);
+
+	public override Matrix4x4 ViewMatrix => Matrix4x4.CreateLookAt(this.CameraPosition, this.TargetPosition, Vector3.UnitY);
+	public override Matrix4x4 ProjectionMatrix => this.projectionMatrix;
+	public override Vector3 CameraPosition => this.TargetPosition - Vector3.Transform(Vector3.UnitX * 3, this.Rotation);
+
+	public TransformSceneObjectBase? Target { get; set; }
+	private Quaternion Rotation => ServiceManager.Instance.Camera.CurrentRotation;
+
+	private Vector3 TargetPosition
+	{
+		get
+		{
+			if (this.Target == null)
+				return Vector3.Zero;
+
+			return Vector3.Transform(Vector3.Zero, this.Target.WorldTransform.ToMatrix());
+		}
+	}
+}
+
+[DependencyProperty<SceneObjectBase>("Target")]
+public partial class GizmoControl : RendererElement
+{
+	private readonly GizmoOrbitCamera camera = new();
+	private readonly TransformGizmo transform = new();
+	private readonly Grid grid = new();
+	protected override RendererCamera Camera => this.camera;
+
+	protected override void Initialize()
+	{
+		if (this.Renderer == null)
+			return;
+
+		this.Renderer.Forward.Add(this.grid);
+
+		this.OnTargetChanged(this.Target);
+	}
+
+	partial void OnTargetChanged(SceneObjectBase? newValue)
+	{
+		this.camera.Target = newValue as TransformSceneObjectBase;
+		this.grid.Target = newValue as TransformSceneObjectBase;
+
+		if (this.Renderer == null)
+			return;
+
+		if (newValue != null)
+		{
+			this.transform.Enable(newValue, this.Renderer.Forward);
+		}
+		else
+		{
+			this.transform.Disable();
+		}
+	}
+
+	public class Grid : DrawGroup
+	{
+		private readonly MeshRenderer<GridMaterial> gridRenderer = new(MeshContent.Plane);
+
+		public Grid()
+		{
+			this.gridRenderer.WriteDepth = false;
+			this.gridRenderer.CullMode = CullMode.None;
+			this.Add(this.gridRenderer);
+			this.IsHitTestVisible = false;
+		}
+
+		public TransformSceneObjectBase? Target { get; set; }
+
+		protected unsafe override void OnDraw()
+		{
+			this.gridRenderer.Material.Height = 0;
+			this.gridRenderer.Material.Color.A = 1.0f;
+			this.gridRenderer.Material.XColor = Axes.XColor;
+			this.gridRenderer.Material.ZColor = Axes.ZColor;
+
+			if (this.Target != null)
+			{
+				Vector3 targetPos = Vector3.Transform(Vector3.Zero, this.Target.WorldTransform.ToMatrix());
+				this.gridRenderer.Material.Height = targetPos.Y;
+			}
+
+			base.OnDraw();
+		}
 	}
 }

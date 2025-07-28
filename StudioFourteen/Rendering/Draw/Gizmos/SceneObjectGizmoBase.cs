@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Rendering.Draw.Gizmos;
 
+using StudioFourteen.Rendering.Passes;
 using StudioFourteen.Scene;
 
 public abstract class SceneObjectGizmoBase : GizmoBase
@@ -23,10 +24,13 @@ public abstract class SceneObjectGizmoBase : GizmoBase
 
 	public virtual object? Icon => null;
 
-	public void Enable(SceneObjectBase sceneObject)
+	public void Enable(SceneObjectBase sceneObject, ForwardPass? pass = null)
 	{
+		if (pass == null)
+			pass = this.Services.Rendering.OverlayRenderer.Forward;
+
 		this.sceneObject = sceneObject;
-		this.Enable();
+		this.Enable(pass);
 	}
 
 	public void SetTarget(SceneObjectBase sceneObject)

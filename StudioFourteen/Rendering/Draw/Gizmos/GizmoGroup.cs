@@ -16,6 +16,7 @@
 namespace StudioFourteen.Rendering.Draw.Gizmos;
 
 using System.Collections.Generic;
+using StudioFourteen.Rendering.Passes;
 
 public abstract class GizmoGroup : GizmoBase
 {
@@ -30,7 +31,11 @@ public abstract class GizmoGroup : GizmoBase
 		{
 			this.current?.Disable();
 			this.current = value;
-			this.current?.Enable();
+
+			if (this.renderPass == null)
+				return;
+
+			this.current?.Enable(this.renderPass);
 		}
 	}
 
@@ -48,19 +53,19 @@ public abstract class GizmoGroup : GizmoBase
 		}
 	}
 
-	public override void Enable()
+	public override void Enable(ForwardPass? pass = null)
 	{
 		if (this.current == null && this.Gizmos.Count > 0)
 			this.current = this.Gizmos[0];
 
-		this.current?.Enable();
+		this.current?.Enable(pass);
 
 		foreach (GizmoBase gizmo in this.Gizmos)
 		{
 			gizmo.IsVisible = this.IsVisible;
 		}
 
-		base.Enable();
+		base.Enable(pass);
 	}
 
 	public override void Disable()

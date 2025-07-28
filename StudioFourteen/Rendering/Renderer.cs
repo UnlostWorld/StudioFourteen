@@ -18,12 +18,19 @@ namespace StudioFourteen.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using Serilog;
 using SharpDX.Direct3D11;
-using StudioFourteen.Rendering.Draw;
 using StudioFourteen.Rendering.Passes;
-
+using StudioFourteen.Scene.Cameras;
 using Device = SharpDX.Direct3D11.Device;
+
+public abstract class RendererCamera
+{
+	public abstract Matrix4x4 ViewMatrix { get; }
+	public abstract Matrix4x4 ProjectionMatrix { get; }
+	public abstract Vector3 CameraPosition { get; }
+}
 
 public abstract class Renderer : IDisposable
 {
@@ -43,10 +50,11 @@ public abstract class Renderer : IDisposable
 	}
 
 	public Texture2D? BackBuffer { get; private set; }
-	public int Width { get; private set; } = 255;
-	public int Height { get; private set; } = 255;
-	public int NewWidth { get; set; } = 255;
-	public int NewHeight { get; set; } = 255;
+	public int Width { get; private set; } = 256;
+	public int Height { get; private set; } = 256;
+	public int NewWidth { get; set; } = 256;
+	public int NewHeight { get; set; } = 256;
+	public abstract RendererCamera Camera { get; }
 
 	public ServiceManager Services => ServiceManager.Instance;
 
@@ -143,6 +151,9 @@ public abstract class Renderer : IDisposable
 
 			if (this.deviceContext == null)
 				this.deviceContext = new(this.device);
+
+			this.NewWidth = int.Clamp(this.NewWidth, 128, 4096);
+			this.NewHeight = int.Clamp(this.NewHeight, 128, 4096);
 
 			if (this.Width != this.NewWidth || this.Height != this.NewHeight)
 			{

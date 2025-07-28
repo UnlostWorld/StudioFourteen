@@ -17,10 +17,8 @@ namespace StudioFourteen.Rendering.Passes;
 
 using System;
 using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using FFXIVClientStructs.FFXIV.Common.Lua;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using StudioFourteen.Rendering.Draw;
@@ -37,6 +35,8 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 	private Texture2D? depthStencilTexture;
 	private DepthStencilView? depthStencilView;
 	private DepthStencilState? depthStencilState;
+
+	public float ViewportScale { get; set; } = 1;
 
 	public void Add(DrawObject obj)
 	{
@@ -113,9 +113,10 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 
 	public override void Render(Renderer renderer, Device device, DeviceContext deviceContext)
 	{
-		this.PassData.ViewMatrix = Matrix4x4.Transpose(this.Services.Camera.LastView);
-		this.PassData.ProjectionMatrix = Matrix4x4.Transpose(this.Services.Camera.LastProjection);
-		this.PassData.CameraPosition = new Vector4(this.Services.Camera.CurrentPosition, 1);
+		this.PassData.ViewMatrix = Matrix4x4.Transpose(renderer.Camera.ViewMatrix);
+		this.PassData.ProjectionMatrix = Matrix4x4.Transpose(renderer.Camera.ProjectionMatrix);
+		this.PassData.CameraPosition = new Vector4(renderer.Camera.CameraPosition, 1);
+		this.PassData.ViewportScale = (1 + (1 - (renderer.Width / 1024))) * this.ViewportScale;
 
 		base.Render(renderer, device, deviceContext);
 
@@ -189,9 +190,9 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 
 		lock (this.sceneObjects)
 		{
-			foreach (DrawObject renderable in this.sceneObjects)
+			foreach (DrawObject drawObject in this.sceneObjects)
 			{
-				renderable.Draw(Transform.Identity, device, deviceContext);
+				drawObject.Draw(renderer, Transform.Identity, device, deviceContext);
 			}
 		}
 
@@ -208,5 +209,9 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 		public Matrix4x4 ViewMatrix;
 		public Matrix4x4 ProjectionMatrix;
 		public Vector4 CameraPosition;
+		public float ViewportScale;
+		public float Unused1;
+		public float Unused2;
+		public float Unused3;
 	}
 }

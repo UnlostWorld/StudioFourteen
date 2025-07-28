@@ -51,14 +51,14 @@ public class MeshRenderer<TMaterialData> : InstanceRendererBase<MeshRendererInst
 		this.Mesh = mesh;
 	}
 
-	public override void Draw(Transform transform, Device device, DeviceContext deviceContext)
+	public override void Draw(Renderer renderer, Transform transform, Device device, DeviceContext deviceContext)
 	{
 		if (!this.IsVisible)
 			return;
 
 		Transform thisTransform = this.Transform * transform;
 		this.Instance.Transform = Matrix4x4.Transpose(thisTransform.ToMatrix());
-		base.Draw(thisTransform, device, deviceContext);
+		base.Draw(renderer, thisTransform, device, deviceContext);
 
 		if (this.Mesh == null)
 			return;

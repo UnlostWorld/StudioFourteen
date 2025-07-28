@@ -32,7 +32,7 @@ static float zOffset = 0.0f;
 static const float PI = 3.1415926f;
 static const float fRatio = 2.0f;
 static float fShadowSize = 0.75f;
-static float fThickness = 0.0075f;
+static float fThickness = 0.01f;
 
 Fragment vert(in Vertex vertex)
 {
@@ -41,7 +41,7 @@ Fragment vert(in Vertex vertex)
 
 void addHalfCircle(inout TriangleStream<Fragment> triangleStream, int nCountTriangles, float4 linePointToConnect, float fPointWComponent, float fAngle, float4 color)
 {
-	float thickness = fThickness * Thickness;
+	float thickness = fThickness * Thickness * ViewportScale;
 
     Fragment output = (Fragment)0;
 	output.Color = color;
@@ -112,7 +112,7 @@ void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStr
     fAngle *= -1.0f;
     fAngle -= PI * 0.5f;
 
-	float thickness = fThickness * Thickness;
+	float thickness = fThickness * Thickness * ViewportScale;
     float3 extend = 0;
 
     //first half circle of the line

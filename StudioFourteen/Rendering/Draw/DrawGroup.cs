@@ -47,9 +47,9 @@ public class DrawGroup : DrawObject
 		this.Children.Remove(sceneObject);
 	}
 
-	public sealed override void Draw(Transform transform, Device device, DeviceContext deviceContext)
+	public override void Draw(Renderer renderer, Transform transform, Device device, DeviceContext deviceContext)
 	{
-		base.Draw(transform, device, deviceContext);
+		base.Draw(renderer, transform, device, deviceContext);
 
 		if (!this.IsVisible)
 			return;
@@ -58,7 +58,7 @@ public class DrawGroup : DrawObject
 		{
 			try
 			{
-				child.Draw(this.WorldTransform, device, deviceContext);
+				child.Draw(renderer, this.WorldTransform, device, deviceContext);
 			}
 			catch (Exception ex)
 			{

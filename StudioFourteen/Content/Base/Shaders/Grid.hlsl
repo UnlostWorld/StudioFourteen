@@ -23,10 +23,7 @@ cbuffer GeometryPassData : register(PassDataRegister)
     float4x4 ViewMatrix;
 	float4x4 ProjectionMatrix;
 	float4 CameraPosition;
-	float UseGameDepth;
-	float UseGameUiMask;
-	float Unused1;
-	float Unused2;
+	float ViewportScale;
 };
 
 cbuffer RendererInstanceData : register(RendererDataRegister)
@@ -42,6 +39,7 @@ cbuffer MaterialInstanceData : register(MaterialDataRegister)
 	float GridSize;
 	float LineThickness;
 	float Height;
+	float UseCameraPosition;
 };
 
 struct Fragment
@@ -96,7 +94,7 @@ Fragment vert(in Vertex vertex)
 	Fragment result;
 
 	float4 position = vertex.Position;
-	position.xyz *= quadScale;
+	position.xz *= quadScale;
 	position.xz += CameraPosition.xz;
 	position.y += Height;
 	result.WorldPosition = position;

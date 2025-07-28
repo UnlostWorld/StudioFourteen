@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Rendering.Draw.Gizmos.Transforms;
 
+using StudioFourteen.Rendering.Passes;
 using StudioFourteen.Scene;
 
 public class TransformGizmo : GizmoGroup
@@ -29,13 +30,13 @@ public class TransformGizmo : GizmoGroup
 	public override string Name => "Transform";
 	public override bool KeepScreenSize => true;
 
-	public void Enable(SceneObjectBase sceneObject)
+	public void Enable(SceneObjectBase sceneObject, ForwardPass pass)
 	{
 		foreach (SceneObjectGizmoBase gizmo in this.Gizmos)
 		{
 			gizmo.SetTarget(sceneObject);
 		}
 
-		this.Enable();
+		this.Enable(pass);
 	}
 }

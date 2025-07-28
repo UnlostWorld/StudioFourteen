@@ -19,6 +19,7 @@ using System.Diagnostics;
 using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Draw.Gizmos.Transforms;
 using WpfUtils.Animation;
+using StudioFourteen.Rendering.Passes;
 
 public class SelectionGizmo : TransformGizmoBase
 {
@@ -38,9 +39,9 @@ public class SelectionGizmo : TransformGizmoBase
 	public override object? Icon => Resources.Find("ICON_Selection");
 	public override bool KeepScreenSize => false;
 
-	public override void Enable()
+	public override void Enable(ForwardPass? pass = null)
 	{
-		base.Enable();
+		base.Enable(pass);
 		this.flashTimer.Restart();
 	}
 

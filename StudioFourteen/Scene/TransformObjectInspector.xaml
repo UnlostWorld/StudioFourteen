@@ -24,7 +24,7 @@
 						</Grid.RowDefinitions>
 
 						<Grid Grid.Row="0" Height="168">
-							<wpfRendering:RendererElement/>
+							<wpfRendering:GizmoControl Target="{Binding .}"/>
 						</Grid>
 
 						<wpfUtils:SwitchSelector
