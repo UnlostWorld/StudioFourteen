@@ -282,7 +282,7 @@ public class WpfRenderer : Renderer
 public class GizmoOrbitCamera : RendererCamera
 {
 	public override Matrix4x4 ViewMatrix => Matrix4x4.CreateLookAt(this.CameraPosition, this.TargetPosition, Vector3.UnitY);
-	public override Vector3 CameraPosition => this.TargetPosition - Vector3.Transform(Vector3.UnitX * 2, this.Rotation);
+	public override Vector3 CameraPosition => this.TargetPosition - Vector3.Transform(Vector3.UnitX * 3, this.Rotation);
 
 	public TransformSceneObjectBase? Target { get; set; }
 	private Quaternion Rotation => ServiceManager.Instance.Camera.CurrentRotation;
@@ -300,20 +300,12 @@ public class GizmoOrbitCamera : RendererCamera
 
 	public override Matrix4x4 GetProjectionMatrix(Renderer renderer)
 	{
-		// HACK: For reasons beyond me, creating a projection matrix this way causes the Z depth to be flipped(?)
-		// so for now, lets just copy the current game projection and modify it to our aspect ratio.
-		////Matrix4x4 projection = Matrix4x4.CreatePerspectiveFieldOfView(0.52f, 1.0f, 0.1f, 10.0f);
+		Matrix4x4 projection = Matrix4x4.CreatePerspectiveFieldOfView(0.52f, 1.0f, 0.1f, 10.0f);
 
-		Vector3 scale = Vector3.One;
-		int gameWidth = ServiceManager.Instance.Rendering.OverlayRenderer.Width;
-		int gameHeight = ServiceManager.Instance.Rendering.OverlayRenderer.Height;
+		// Flip z? unsure why this is needed, but it is.
+		projection.M33 = 0;
+		projection.M43 = 0.1f;
 
-		float gameAspect = gameWidth / (float)gameHeight;
-		float rendererAspect = renderer.Width / (float)renderer.Height;
-		scale.X = gameAspect / rendererAspect;
-
-		Matrix4x4 projection = ServiceManager.Instance.Camera.LastProjection;
-		projection *= Matrix4x4.CreateScale(scale);
 		return projection;
 	}
 }
