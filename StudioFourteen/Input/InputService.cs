@@ -26,6 +26,14 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Controls.Primitives;
 
+public enum InputStates
+{
+	None,
+	Activated,
+	Held,
+	Deactivated,
+}
+
 public class InputService : ServiceBase
 {
 	private readonly JsonContentReference<Dictionary<InputAction, List<Bind>>> defaultBinds = new("DefaultBinds.jsonc");
@@ -139,7 +147,7 @@ public class InputService : ServiceBase
 
 	public bool HasListener(InputAction evt)
 	{
-		lock(this.listeners)
+		lock (this.listeners)
 		{
 			if (!this.listeners.ContainsKey(evt))
 				return false;
@@ -150,7 +158,7 @@ public class InputService : ServiceBase
 
 	public void AddListener(InputAction evt, Input0DListener listener)
 	{
-		lock(this.listeners)
+		lock (this.listeners)
 		{
 			if (!this.listeners.ContainsKey(evt))
 				this.listeners.Add(evt, new());
@@ -161,7 +169,7 @@ public class InputService : ServiceBase
 
 	public void RemoveListener(InputAction evt, Input0DListener listener)
 	{
-		lock(this.listeners)
+		lock (this.listeners)
 		{
 			if (!this.listeners.ContainsKey(evt))
 				return;

@@ -23,6 +23,7 @@ public class Input0DListener
 	public readonly ILogger Log = Logging.ForContext<Input0DListener>();
 
 	private readonly InputAction keyBindEvent;
+	private float lastValue = 0;
 
 	public Input0DListener(InputAction evt, string? name = null)
 	{
@@ -68,5 +69,26 @@ public class Input0DListener
 		{
 			this.Log.Error(ex, $"Error invoking key bind callback for event {this.keyBindEvent}");
 		}
+	}
+
+	public InputStates GetState()
+	{
+		float oldValue = this.lastValue;
+		this.lastValue = this.Value;
+
+		if (oldValue < 0.001f && this.Value > 0.001f)
+		{
+			return InputStates.Activated;
+		}
+		else if (oldValue > 0.001f && this.Value < 0.001f)
+		{
+			return InputStates.Deactivated;
+		}
+		else if (oldValue > 0.001 && this.Value > 0.001f)
+		{
+			return InputStates.Held;
+		}
+
+		return InputStates.None;
 	}
 }

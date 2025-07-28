@@ -42,7 +42,7 @@ public partial class HandleService : ServiceBase
 	private readonly HitTestResult pressHitTestResult = new();
 	private Handle? currentHover;
 	private Handle? currentPress;
-	private bool isSelectDown = false;
+
 	private bool didDrag = false;
 	////private HandleTipWindow? handleTipWindow;
 
@@ -152,8 +152,10 @@ public partial class HandleService : ServiceBase
 				isTimedout = false;
 			}
 
+			InputStates state = this.selectListener.GetState();
+
 			// Check hover
-			if (this.CurrentPress == null && !isTimedout)
+			if (this.CurrentPress == null && !isTimedout && state != InputStates.Held)
 			{
 				Vector2? mousePosition = this.Services.Input.Mouse.GetPosition();
 				if (mousePosition != null)
@@ -167,25 +169,25 @@ public partial class HandleService : ServiceBase
 				}
 			}
 
-			// Check mouse down
-			////bool mouseDown = this.Services.Input.Mouse.GetButton(MouseButton.Left);
-			bool mouseDown = this.selectListener.Value > 0;
-			if (this.CurrentHover != null && mouseDown)
+			if (state == InputStates.Activated)
 			{
 				this.CurrentPress = this.CurrentHover;
 			}
-			else if (this.CurrentPress != null && !mouseDown)
+
+			if (state == InputStates.None)
 			{
 				this.CurrentPress = null;
 			}
-			else if (this.isSelectDown && !mouseDown && !this.didDrag)
+
+			if (state == InputStates.Deactivated && !this.didDrag)
 			{
 				this.Services.Selection.Clear();
 			}
 
-			this.isSelectDown = mouseDown;
-			if (this.isSelectDown)
+			if (state == InputStates.Held)
+			{
 				this.didDrag = this.Services.Input.Mouse.IsAnyDragging;
+			}
 
 			// Check drag
 			if (this.CurrentPress != null)
