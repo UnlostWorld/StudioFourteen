@@ -23,6 +23,7 @@ using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using StudioFourteen.Interop;
 using StudioFourteen.Scene.Cameras.Modifiers;
+using StudioFourteen.Scene.GameObjects;
 using StudioFourteen.Services;
 using WpfUtils.Animation;
 
@@ -229,6 +230,10 @@ public class CameraService : ServiceBase
 	private unsafe nint SceneCameraUpdateDetour(SceneCamera* camera)
 	{
 		nint result = Hooks.SceneCameraUpdate.Original(camera);
+
+		// Wait until our first selection before engaging the camera system.
+		if (this.Services.Selection.GetScope<GameObject>().Selection == null)
+			return result;
 
 		float deltaTime = 60 / 1000.0f;
 

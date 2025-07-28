@@ -55,6 +55,9 @@ public partial class OrbitTargetCamera : OrbitCamera
 			this.currentTargetPosition = Vector3.Transform(Vector3.Zero, target.WorldTransform.ToMatrix());
 		}
 
+		if (this.Target == Vector3.Zero)
+			this.Target = this.currentTargetPosition;
+
 		this.Target = Vector3.Lerp(this.Target, this.currentTargetPosition + this.TargetOffset, deltaTime * this.lerpSpeed);
 
 		base.Tick(deltaTime);

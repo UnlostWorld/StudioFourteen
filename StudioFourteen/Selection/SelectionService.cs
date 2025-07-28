@@ -167,7 +167,6 @@ public partial class SelectionService : ServiceBase
 	public override async Task Start()
 	{
 		await this.Services.Panels.GamePanels.SetIsOpenAsync<Widget>(true, false);
-
 		await base.Start();
 	}
 
@@ -175,6 +174,32 @@ public partial class SelectionService : ServiceBase
 	{
 		await this.Services.Panels.GamePanels.SetIsOpenAsync<Widget>(false, false);
 		await base.Stop();
+	}
+
+	public override void Attach()
+	{
+		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnTick);
+		base.Attach();
+	}
+
+	private void OnTick()
+	{
+		// Ensure we have selected something when starting up.
+		if (this.GetScope<GameObject>().Selection == null)
+		{
+			if (this.Services.GroupPose.IsGroupPosing)
+			{
+				this.Select(this.Services.GameObjects.Get(GroupPoseService.GPoseFirstCharacter), this);
+			}
+			else
+			{
+				this.Select(this.Services.GameObjects.Get(0), this);
+			}
+		}
+		else
+		{
+			this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnTick);
+		}
 	}
 
 	public class SelectionScope(Type selectionType)
