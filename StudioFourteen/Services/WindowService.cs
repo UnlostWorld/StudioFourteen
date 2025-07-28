@@ -189,9 +189,16 @@ public partial class WindowService : ServiceBase
 		{
 			this.lastTopMostPanelWindow.Dispatcher.BeginInvoke(() =>
 			{
-				if (this.lastTopMostPanelWindow != null)
+				try
 				{
-					this.lastTopMostPanelWindow.IsForeground = false;
+					if (this.lastTopMostPanelWindow != null)
+					{
+						this.lastTopMostPanelWindow.IsForeground = false;
+					}
+				}
+				catch (Exception)
+				{
+					// Sometimes we get threading issues here due to stale dispatchers, just ignore them.
 				}
 			});
 		}
