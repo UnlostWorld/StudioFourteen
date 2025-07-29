@@ -144,8 +144,8 @@ public class PanelService : ServiceBase
 
 	private void OnOpening()
 	{
-		this.GamePanels.CreatePanel<ToolBarPanel>();
-		this.GamePanels.CreatePanel<SelectionPanel>();
+		this.GamePanels.SetIsOpen<ToolBarPanel>(true, false);
+		this.GamePanels.SetIsOpen<SelectionPanel>(true, false);
 
 		if (!this.hasRestoredPanels && this.Services.Studio.IsOpen)
 		{

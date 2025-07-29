@@ -37,6 +37,14 @@ public class SceneService : ServiceBase
 	public override void Detach()
 	{
 		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
+
+		foreach (SceneObjectBase obj in this.objects)
+		{
+			this.ObjectRemoved?.Invoke(obj);
+			obj.Dispose();
+		}
+
+		this.objects.Clear();
 		base.Detach();
 	}
 

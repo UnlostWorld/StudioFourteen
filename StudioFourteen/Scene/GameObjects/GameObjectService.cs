@@ -26,7 +26,7 @@ using XivGameObjectManager = FFXIVClientStructs.FFXIV.Client.Game.Object.GameObj
 
 public class GameObjectService : ServiceBase
 {
-	private readonly Dictionary<ushort, GameObject> gameObjectLookup = new();
+	private readonly Dictionary<ushort, GameObject?> gameObjectLookup = new();
 
 	public override void Attach()
 	{
@@ -37,6 +37,9 @@ public class GameObjectService : ServiceBase
 	public override void Detach()
 	{
 		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
+
+		this.gameObjectLookup.Clear();
+
 		base.Detach();
 	}
 
@@ -121,7 +124,10 @@ public class GameObjectService : ServiceBase
 
 			foreach (ushort index in toRemove)
 			{
-				this.Services.Scene.RemoveObject(this.gameObjectLookup[index]);
+				GameObject? obj = this.gameObjectLookup[index];
+				if (obj != null)
+					this.Services.Scene.RemoveObject(obj);
+
 				this.gameObjectLookup.Remove(index);
 			}
 		}

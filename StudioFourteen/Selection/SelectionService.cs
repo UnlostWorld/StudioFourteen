@@ -182,6 +182,12 @@ public partial class SelectionService : ServiceBase
 		base.Attach();
 	}
 
+	public override void Detach()
+	{
+		this.selectionScopes.Clear();
+		base.Detach();
+	}
+
 	private void OnTick()
 	{
 		// Ensure we have selected something when starting up.
