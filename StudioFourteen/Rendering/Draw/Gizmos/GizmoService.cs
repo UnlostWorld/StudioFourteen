@@ -39,11 +39,6 @@ public partial class GizmoService : ServiceBase
 		this.Services.Selection.SelectionChanged += this.OnSelectionChanged;
 		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
 
-		foreach (GizmoBase gizmo in this.Gizmos)
-		{
-			this.Services.Rendering.OverlayRenderer.Forward.Add(gizmo);
-		}
-
 		this.grid.Enable(this.Services.Rendering.OverlayRenderer.Forward);
 		base.Attach();
 	}
