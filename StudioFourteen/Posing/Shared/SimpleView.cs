@@ -121,8 +121,21 @@ public partial class SimpleView : PoseViewBase
 
 					foreach(SkeletonBoneControl parentControl in parentControls)
 					{
-						BoneConnection connection = new(target, parentControl, this.canvas);
-						this.boneConnections.Add(connection);
+						bool exists = false;
+						foreach (BoneConnection otherConnection in this.boneConnections)
+						{
+							exists |= otherConnection.FromBone == target && otherConnection.ToBone == parentControl;
+							exists |= otherConnection.ToBone == target && otherConnection.FromBone == parentControl;
+
+							if (exists)
+								break;
+						}
+
+						if (!exists)
+						{
+							BoneConnection connection = new(target, parentControl, this.canvas);
+							this.boneConnections.Add(connection);
+						}
 					}
 				}
 			}
