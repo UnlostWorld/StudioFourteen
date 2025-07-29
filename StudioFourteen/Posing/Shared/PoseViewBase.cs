@@ -54,7 +54,7 @@ public partial class PoseViewBase : View
 
 	public bool IsValid { get; private set; }
 
-	public Character? Character => null;
+	public Character? Character { get; private set; }
 
 	public List<SkeletonBoneControl>? GetTargets()
 	{
@@ -350,6 +350,7 @@ public partial class PoseViewBase : View
 
 	partial void OnGameObjectChanged(GameObject? newValue)
 	{
+		this.Character = newValue as Character;
 		this.UpdateTargets();
 	}
 
