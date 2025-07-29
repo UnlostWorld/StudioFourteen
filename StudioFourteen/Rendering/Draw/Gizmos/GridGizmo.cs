@@ -19,6 +19,7 @@ using SharpDX.Direct3D11;
 using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Draw;
 using StudioFourteen.Scene.GameObjects.Characters;
+using System.Numerics;
 
 public class GridGizmo : GizmoBase
 {
@@ -61,9 +62,9 @@ public class GridGizmo : GizmoBase
 		if (this.KeepAtTargetHeight)
 		{
 			Character? target = this.Services.Selection.GetScope<Character>().Selection;
-			if (target != null && target.GetXivCharacter()->DrawObject != null)
+			if (target != null)
 			{
-				this.gridRenderer.Material.Height = target.GetXivCharacter()->DrawObject->Position.Y;
+				this.gridRenderer.Material.Height = Vector3.Transform(Vector3.Zero, target.WorldTransform.ToMatrix()).Y;
 			}
 		}
 

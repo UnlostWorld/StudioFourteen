@@ -91,21 +91,16 @@ public abstract class InstanceRendererBase<TRendererData, TMaterialData> : Rende
 				0);
 		}
 
+		this.shader = renderer.Shaders.GetShader<TMaterialData>(device);
+
 		if (this.shader == null)
-		{
-			this.shader = device.GetShadeCache().GetShader<TMaterialData>(device);
+			return;
 
-			if (this.shader == null)
-				return;
-
-			if (this.shader.VertexSignature != null)
-			{
-				this.layout = new InputLayout(device, this.shader.VertexSignature, default(Vertex).GetInputElements());
-			}
-		}
+		if (this.shader.VertexSignature != null && this.layout == null)
+			this.layout = new InputLayout(device, this.shader.VertexSignature, default(Vertex).GetInputElements());
 
 		if (this.layout != null)
-			deviceContext.InputAssembler.InputLayout = this.layout;
+				deviceContext.InputAssembler.InputLayout = this.layout;
 
 		if (this.depthStencilState == null)
 		{

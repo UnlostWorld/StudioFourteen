@@ -285,6 +285,7 @@ public class CameraService : ServiceBase
 				this.CurrentRotation = this.state.Rotation;
 
 				Matrix4x4 newMatrix = Matrix4x4.CreateLookTo(this.state.Position, forward, up);
+				newMatrix.M44 = 0;
 
 				if (this.doAttachBlend && this.InitialCamera != null)
 				{
@@ -333,21 +334,16 @@ public class CameraService : ServiceBase
 
 			if (Matrix4x4.Decompose(camera->ViewMatrix, out Vector3 scale, out Quaternion rotation, out Vector3 translation))
 			{
-				this.CurrentPosition = translation;
 				this.CurrentRotation = rotation;
 			}
-
-			// For some reason depth doesn't work unless we set the View Matrix to a LookTo
-			// that we create, even though we use the same view matrix in the renderer service.
-			/*Vector3 forward = Vector3.Transform(Vector3.UnitX, this.CurrentRotation);
-			Vector3 up = Vector3.Transform(new(0, 1, 0), this.CurrentRotation);
-			camera->ViewMatrix = Matrix4x4.CreateLookTo(this.CurrentPosition, forward, up);*/
 		}
 
 		this.LastView = this.CurrentView;
 		this.LastProjection = this.CurrentProjection;
 
-		this.CurrentView = camera->RenderCamera->ViewMatrix;
+		var view = camera->ViewMatrix;
+		view.M44 = 1;
+		this.CurrentView = view;
 		this.CurrentProjection = camera->RenderCamera->ProjectionMatrix;
 
 		return result;

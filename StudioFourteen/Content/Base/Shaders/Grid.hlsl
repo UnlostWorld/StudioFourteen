@@ -59,21 +59,21 @@ SamplerState mask_sampler : register(s0);
 Texture2D depth_texture : register(t1);
 SamplerState depth_sampler : register(s1);
 
-float GetDepth(Fragment pixel)
+float GetDepth(Fragment frag)
 {
-	float3 pos = pixel.Position2.xyz / pixel.Position2.w;
+	float3 pos = frag.Position2.xyz / frag.Position2.w;
 	return pos.z;
 }
 
-float2 GetScreenPosition(Fragment pixel)
+float2 GetScreenPosition(Fragment frag)
 {
-	float3 pos = pixel.Position2.xyz / pixel.Position2.w;
+	float3 pos = frag.Position2.xyz / frag.Position2.w;
 	return 0.5f * float2(pos.x, -pos.y) + 0.5f;
 }
 
-float GetClippingAlpha(Fragment pixel, float depthClipAlpha = 0)
+float GetClippingAlpha(Fragment frag, float depthClipAlpha = 0)
 {
-	float2 screenPos = GetScreenPosition(pixel);
+	float2 screenPos = GetScreenPosition(frag);
 	float mask = mask_texture.Sample(mask_sampler, screenPos).r;
 
 	float depth = depth_texture.Sample(depth_sampler, screenPos).r;
@@ -81,7 +81,7 @@ float GetClippingAlpha(Fragment pixel, float depthClipAlpha = 0)
 	if (depth == 0)
 		return 1;
 
-	float thisDepth = GetDepth(pixel);
+	float thisDepth = GetDepth(frag);
 
 	if (thisDepth < depth)
 		mask = mask * depthClipAlpha;

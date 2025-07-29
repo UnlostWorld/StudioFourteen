@@ -21,8 +21,9 @@ using System.Linq;
 using System.Numerics;
 using Serilog;
 using SharpDX.Direct3D11;
+using StudioFourteen.Rendering.Draw;
 using StudioFourteen.Rendering.Passes;
-using StudioFourteen.Scene.Cameras;
+
 using Device = SharpDX.Direct3D11.Device;
 
 public abstract class RendererCamera
@@ -37,6 +38,7 @@ public abstract class Renderer : IDisposable
 {
 	protected readonly ILogger Log;
 	private readonly List<RenderPassBase> allPasses = new();
+	private readonly ShaderCache shaderCache = new();
 
 	private Device? device;
 	private DeviceContext? deviceContext;
@@ -56,6 +58,7 @@ public abstract class Renderer : IDisposable
 	public int NewWidth { get; set; } = 256;
 	public int NewHeight { get; set; } = 256;
 	public abstract RendererCamera Camera { get; }
+	public ShaderCache Shaders => this.shaderCache;
 
 	public ServiceManager Services => ServiceManager.Instance;
 
@@ -65,7 +68,7 @@ public abstract class Renderer : IDisposable
 
 	public virtual void Dispose()
 	{
-		this.device?.GetShadeCache().Dispose();
+		this.shaderCache.Dispose();
 
 		this.deviceContext?.Dispose();
 		this.deviceContext = null;

@@ -34,7 +34,7 @@ public class RendererStudioCamera : RendererCamera
 }
 
 // Thanks to Pictomancy for much of the initial DX11 Setup logic.
-// https://github.com/sourpuh/ffxiv_pictomancy/tree/master
+// https://github.com/sourpuh/ffxiv_pictomancy
 public class GameOverlayRenderer : Renderer
 {
 	public readonly ForwardPass Forward = new();

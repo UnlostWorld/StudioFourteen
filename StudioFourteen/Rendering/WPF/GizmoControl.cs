@@ -124,10 +124,8 @@ public partial class GizmoControl : RendererElement
 		public override Matrix4x4 GetProjectionMatrix(Renderer renderer)
 		{
 			Matrix4x4 projection = Matrix4x4.CreatePerspectiveFieldOfView(0.52f, 1.0f, 0.1f, 10.0f);
-
-			// Flip z? unsure why this is needed, but it is.
-			projection.M33 = 0;
-			projection.M43 = 0.1f;
+			////projection.M33 = 0;
+			////projection.M43 = 0.1f;
 
 			return projection;
 		}
