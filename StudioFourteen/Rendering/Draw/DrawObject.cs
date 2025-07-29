@@ -47,7 +47,7 @@ public abstract class DrawObject : IDisposable
 
 	public virtual void Draw(Renderer renderer, Transform transform, Device device, DeviceContext deviceContext)
 	{
-		this.CameraPosition = renderer.Camera.CameraPosition;
+		this.CameraPosition = renderer.Camera.GetCameraPosition(renderer);
 		this.WorldTransform = this.LocalTransform * this.Transform * transform;
 
 		if (Matrix4x4.Decompose(this.WorldTransform.ToMatrix(), out Vector3 scale, out Quaternion rotation, out Vector3 translation))

@@ -104,30 +104,37 @@ public partial class GizmoControl : RendererElement
 
 	public class GizmoOrbitCamera : RendererCamera
 	{
-		public override Matrix4x4 ViewMatrix => Matrix4x4.CreateLookAt(this.CameraPosition, this.TargetPosition, Vector3.UnitY);
-		public override Vector3 CameraPosition => this.TargetPosition - Vector3.Transform(Vector3.UnitX * 3, this.Rotation);
-
 		public TransformSceneObjectBase? Target { get; set; }
-		private Quaternion Rotation => ServiceManager.Instance.Camera.CurrentRotation;
-
-		private Vector3 TargetPosition
-		{
-			get
-			{
-				if (this.Target == null)
-					return Vector3.Zero;
-
-				return Vector3.Transform(Vector3.Zero, this.Target.WorldTransform.ToMatrix());
-			}
-		}
 
 		public override Matrix4x4 GetProjectionMatrix(Renderer renderer)
 		{
 			Matrix4x4 projection = Matrix4x4.CreatePerspectiveFieldOfView(0.52f, 1.0f, 0.1f, 10.0f);
-			////projection.M33 = 0;
-			////projection.M43 = 0.1f;
-
+			projection.M33 = 0;
+			projection.M43 = 0.1f;
 			return projection;
+		}
+
+		public override Matrix4x4 GetViewMatrix(Renderer renderer)
+		{
+			Vector3 forward = ServiceManager.Instance.Camera.CurrentForward;
+			Vector3 cameraPosition = this.GetCameraPosition(renderer);
+			Matrix4x4 view = Matrix4x4.CreateLookTo(cameraPosition, forward, Vector3.UnitY);
+			view.M44 = 1;
+			return view;
+		}
+
+		public override Vector3 GetCameraPosition(Renderer renderer)
+		{
+			Vector3 forward = ServiceManager.Instance.Camera.CurrentForward;
+			return this.GetTargetPosition() - (forward * 3);
+		}
+
+		protected Vector3 GetTargetPosition()
+		{
+			if (this.Target == null)
+				return Vector3.Zero;
+
+			return Vector3.Transform(Vector3.Zero, this.Target.WorldTransform.ToMatrix());
 		}
 	}
 }

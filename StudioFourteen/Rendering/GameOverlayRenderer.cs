@@ -28,8 +28,8 @@ using XivDevice = FFXIVClientStructs.FFXIV.Client.Graphics.Kernel.Device;
 
 public class RendererStudioCamera : RendererCamera
 {
-	public override Vector3 CameraPosition => ServiceManager.Instance.Camera.CurrentPosition;
-	public override Matrix4x4 ViewMatrix => ServiceManager.Instance.Camera.LastView;
+	public override Vector3 GetCameraPosition(Renderer renderer) => ServiceManager.Instance.Camera.CurrentPosition;
+	public override Matrix4x4 GetViewMatrix(Renderer renderer) => ServiceManager.Instance.Camera.LastView;
 	public override Matrix4x4 GetProjectionMatrix(Renderer renderer) => ServiceManager.Instance.Camera.LastProjection;
 }
 

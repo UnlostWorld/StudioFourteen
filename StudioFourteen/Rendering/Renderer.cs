@@ -28,10 +28,9 @@ using Device = SharpDX.Direct3D11.Device;
 
 public abstract class RendererCamera
 {
-	public abstract Matrix4x4 ViewMatrix { get; }
-	public abstract Vector3 CameraPosition { get; }
-
 	public abstract Matrix4x4 GetProjectionMatrix(Renderer renderer);
+	public abstract Matrix4x4 GetViewMatrix(Renderer renderer);
+	public abstract Vector3 GetCameraPosition(Renderer renderer);
 }
 
 public abstract class Renderer : IDisposable
