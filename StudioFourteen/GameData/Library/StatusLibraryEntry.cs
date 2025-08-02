@@ -48,8 +48,6 @@ public class StatusLibraryEntry : ExcelLibraryEntry
 		{
 			this.Tags.Add("PVP Action");
 		}
-
-		this.Tags.Add($"U0: {this.Status.Unknown0}");
 	}
 
 // Unknown0: Represents type of status Effect / Mechanic
@@ -62,9 +60,5 @@ public class StatusLibraryEntry : ExcelLibraryEntry
 // Unknown_70_2: True for 3 skills
 	public override string? Name => this.Status.Name.ToString();
 	public override object? Icon => new ImageReference(this.Status.Icon);
-	public object? Description => $"{this.Status.Description} \n {this.Status.StatusCategory}\n" +
-	$"Unknown0 {this.Status.Unknown0}\n Unknown2 {this.Status.Unknown2}\n Unknown3 {this.Status.Unknown3}\n" +
-	$"Unknown5 {this.Status.Unknown5}\n Unknown6 {this.Status.Unknown6}\n Unknown7 {this.Status.Unknown7}\n" +
-	$"Unknown_70_1 {this.Status.Unknown_70_1}\n Unknown_70_2 {this.Status.Unknown_70_2}\n" +
-	$"Esuna {this.Status.CanDispel}\n";
+	public object? Description => $"{this.Status.Description}";
 }
