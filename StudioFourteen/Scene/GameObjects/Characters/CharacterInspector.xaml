@@ -17,7 +17,8 @@
 	<DataTemplate DataType="{x:Type characters:Character}">
 		<Grid>
 			<Grid.RowDefinitions>
-				<RowDefinition />
+				<RowDefinition  />
+				<RowDefinition Height="Auto"/>
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
 
@@ -67,9 +68,17 @@
 				</TabItem>
 			</TabControl>
 
+			<Border
+				Grid.Row="1"
+				Margin="2"
+				Background="{DynamicResource BackgroundBrush}"
+				CornerRadius="{DynamicResource WpfUtilsBorderInnerCornerRadius}">
+				<ToggleButton IsChecked="{Binding EnablePosing}" Content="{DynamicResource LOC_Pose_Enable}"/>
+			</Border>
+
 
 			<StackPanel
-				Grid.Row="1"
+				Grid.Row="2"
 				HorizontalAlignment="Right"
 				Orientation="Horizontal">
 				<Button

@@ -23,18 +23,22 @@ using System.Numerics;
 using System.Threading.Tasks;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.Havok.Animation.Rig;
+using PropertyChanged.SourceGenerator;
 using StudioFourteen.Posing;
 using StudioFourteen.Services;
 using WpfUtils.Extensions;
+
 using XivDrawCharacter = FFXIVClientStructs.FFXIV.Client.Graphics.Scene.CharacterBase;
 using XivGameObject = FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject;
 
-public class Skeleton : GameObject
+public partial class Skeleton : GameObject
 {
 	private readonly Dictionary<string, SkeletonBone> boneNameLookup = new();
 	private readonly Dictionary<BoneId, BoneReference> boneReferenceLookup = new();
 
 	private bool hasGenerated = false;
+
+	[Notify] private bool enablePosing = false;
 
 	public Skeleton(int objectIndex)
 		: base(objectIndex)
@@ -46,10 +50,10 @@ public class Skeleton : GameObject
 	}
 
 	public List<SkeletonBone> Bones { get; init; } = new();
-	public bool EnablePosing { get; set; } = false;
 
 	public override void Dispose()
 	{
+		this.ClearBones();
 		this.Services.Skeletons.RemoveSkeleton(this);
 		base.Dispose();
 	}
@@ -58,7 +62,12 @@ public class Skeleton : GameObject
 	{
 		base.OnGameTick();
 
-		if (!this.hasGenerated && this.EnablePosing)
+		if (this.hasGenerated && !this.EnablePosing)
+		{
+			this.hasGenerated = false;
+			this.ClearBones();
+		}
+		else if (!this.hasGenerated && this.EnablePosing)
 		{
 			this.hasGenerated = true;
 			this.GenerateBones();
@@ -272,6 +281,17 @@ public class Skeleton : GameObject
 		}*/
 	}
 
+	private void ClearBones()
+	{
+		foreach (SkeletonBone bone in this.Bones)
+		{
+			this.Services.Scene.RemoveObject(bone);
+		}
+
+		this.Bones.Clear();
+		this.boneNameLookup.Clear();
+	}
+
 	private unsafe void GenerateBones()
 	{
 		TickService.VerifyGameTickThread();
@@ -333,13 +353,7 @@ public class Skeleton : GameObject
 
 		lock (this.Bones)
 		{
-			foreach (SkeletonBone bone in this.Bones)
-			{
-				this.Services.Scene.RemoveObject(bone);
-			}
-
-			this.Bones.Clear();
-			this.boneNameLookup.Clear();
+			this.ClearBones();
 
 			foreach ((string boneName, List<BoneReference> references) in boneLookup)
 			{

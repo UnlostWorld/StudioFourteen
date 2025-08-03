@@ -253,6 +253,8 @@
 	<sys:String x:Key="LOC_Pose_Simple">Simple</sys:String>
 	<sys:String x:Key="LOC_Pose_Matrix">Matrix</sys:String>
 
+	<sys:String x:Key="LOC_Pose_Enable">Enable Posing</sys:String>
+
 	<sys:String x:Key="LOC_PoseMatrix_HeadCategory">Head</sys:String>
 	<sys:String x:Key="LOC_PoseMatrix_BodyCategory">Body</sys:String>
 	<sys:String x:Key="LOC_PoseMatrix_GenitalCategory">Genitals</sys:String>

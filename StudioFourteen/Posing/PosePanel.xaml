@@ -3,6 +3,7 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:body="clr-namespace:StudioFourteen.Posing.Body"
+	xmlns:characters="clr-namespace:StudioFourteen.Scene.GameObjects.Characters"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -12,7 +13,6 @@
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
 	xmlns:pose="clr-namespace:StudioFourteen.Posing"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
-	xmlns:characters="clr-namespace:StudioFourteen.Scene.GameObjects.Characters"
 	Width="700"
 	Height="550"
 	MinWidth="500"
@@ -162,7 +162,7 @@
 
 						<pose:PoseTabItem Header="{DynamicResource LOC_Pose_Matrix}">
 							<ScrollViewer>
-								<body:MatrixView 	GameObject="{Binding GameObject}"/>
+								<body:MatrixView GameObject="{Binding GameObject}" />
 							</ScrollViewer>
 						</pose:PoseTabItem>
 
@@ -179,15 +179,15 @@
 									MouseDown="OnBackgroundMouseDown" />
 
 								<pose:SimpleView
-									GameObject="{Binding GameObject}"
 									x:Name="HandsView"
 									Grid.Row="0"
 									FlipSides="{Binding FlipSides}"
+									GameObject="{Binding GameObject}"
 									LayoutName="Hands" />
 							</Grid>
 						</pose:PoseTabItem>
 						<pose:PoseTabItem Header="{DynamicResource LOC_Pose_Matrix}">
-							<hands:MatrixView 	GameObject="{Binding GameObject}"/>
+							<hands:MatrixView GameObject="{Binding GameObject}" />
 						</pose:PoseTabItem>
 					</TabControl>
 
@@ -220,19 +220,19 @@
 								</Grid.RowDefinitions>
 
 								<pose:SimpleView
-									GameObject="{Binding GameObject}"
 									x:Name="FaceView"
 									Grid.RowSpan="3"
 									Grid.ColumnSpan="3"
 									FlipSides="{Binding FlipSides}"
+									GameObject="{Binding GameObject}"
 									LayoutName="Face" />
 
 								<pose:SimpleView
-									GameObject="{Binding GameObject}"
 									x:Name="TongueView"
 									Grid.Row="2"
 									Grid.Column="2"
 									FlipSides="{Binding FlipSides}"
+									GameObject="{Binding GameObject}"
 									LayoutName="Tongue" />
 							</Grid>
 						</pose:PoseTabItem>
@@ -242,9 +242,9 @@
 
 				<pose:PoseTabItem Header="{DynamicResource ICON_Pose_Wings}">
 					<pose:SimpleView
-						GameObject="{Binding GameObject}"
 						x:Name="DiabolosView"
 						FlipSides="{Binding FlipSides}"
+						GameObject="{Binding GameObject}"
 						LayoutName="DiabolosWings" />
 
 				</pose:PoseTabItem>
@@ -271,7 +271,7 @@
 
 				<ScrollViewer.Resources>
 
-					<!-- Override the character inspector for basic transforms only -->
+					<!--  Override the character inspector for basic transforms only  -->
 					<DataTemplate DataType="{x:Type characters:Character}">
 						<ContentPresenter Content="{Binding .}" ContentTemplate="{DynamicResource TransformSceneObjectBaseInspector}" />
 					</DataTemplate>
@@ -290,6 +290,9 @@
 			<Grid>
 
 				<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
+
+					<ToggleButton Content="{DynamicResource LOC_Pose_Enable}" IsChecked="{Binding GameObject.EnablePosing}" />
+
 					<ToggleButton
 						Width="100"
 						Background="Transparent"
