@@ -19,14 +19,12 @@ using System.Collections.Generic;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using StudioFourteen.Rendering.Draw.Gizmos;
 using StudioFourteen.Scene.GameObjects;
-using StudioFourteen.Scene.GameObjects.Characters;
-using StudioFourteen.Services;
 
 using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
 
-public class SkeletonGizmo : SceneObjectGizmoBase
+public class SkeletonGizmo : SceneObjectGizmoBase<Skeleton>
 {
-	private bool isInitialized = false;
+	private readonly Dictionary<SkeletonBone, SkeletonBoneGizmo> boneGizmos = new();
 
 	public override string Name => "Skeleton";
 	public override object? Icon => Resources.Find("ICON_Gizmo_CharacterSkeleton");
@@ -43,42 +41,47 @@ public class SkeletonGizmo : SceneObjectGizmoBase
 		}
 	}
 
-	public unsafe void Initialize()
+	protected unsafe override void OnDraw()
 	{
-		if (this.sceneObject is Skeleton skeleton)
+		if (this.SceneObject == null || !this.IsVisible)
+			return;
+
+		if (this.boneGizmos.Count != this.SceneObject.Bones.Count)
 		{
-			foreach (SkeletonBone bone in skeleton.Bones)
+			HashSet<SkeletonBone> toRemove = new(this.boneGizmos.Keys);
+			foreach (SkeletonBone bone in this.SceneObject.Bones)
 			{
-				SkeletonBoneGizmo gizmo = new(bone);
-				this.Add(gizmo);
+				if (this.boneGizmos.ContainsKey(bone))
+				{
+					toRemove.Remove(bone);
+				}
+				else
+				{
+					SkeletonBoneGizmo gizmo = new(bone);
+					this.boneGizmos.Add(bone, gizmo);
+					this.Add(gizmo);
+				}
+			}
+
+			foreach (SkeletonBone boneId in toRemove)
+			{
+				SkeletonBoneGizmo gizmo = this.boneGizmos[boneId];
+				this.Remove(gizmo);
+				this.boneGizmos.Remove(boneId);
 			}
 		}
 
-		this.isInitialized = this.Children.Count > 0;
-	}
-
-	protected unsafe override void OnDraw()
-	{
-		if (!this.IsVisible)
+		XivCharacter* pCharacter = (XivCharacter*)this.SceneObject.GetXivGameObject();
+		if (pCharacter == null || pCharacter->DrawObject == null)
 			return;
 
-		if (!this.isInitialized)
-			this.Initialize();
+		float scale = pCharacter->GetCharacterScale();
+		Transform modelTransform = StudioFourteen.Transform.FromTRS(
+			pCharacter->DrawObject->Position,
+			pCharacter->DrawObject->Rotation,
+			pCharacter->DrawObject->Scale * scale);
 
-		if (this.sceneObject is Skeleton skeleton)
-		{
-			XivCharacter* pCharacter = (XivCharacter*)skeleton.GetXivGameObject();
-			if (pCharacter == null || pCharacter->DrawObject == null)
-				return;
-
-			float scale = pCharacter->GetCharacterScale();
-			Transform modelTransform = StudioFourteen.Transform.FromTRS(
-				pCharacter->DrawObject->Position,
-				pCharacter->DrawObject->Rotation,
-				pCharacter->DrawObject->Scale * scale);
-
-			this.Transform = modelTransform;
-		}
+		this.Transform = modelTransform;
 
 		base.OnDraw();
 	}

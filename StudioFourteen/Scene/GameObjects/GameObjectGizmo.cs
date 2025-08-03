@@ -20,35 +20,34 @@ using StudioFourteen.Rendering.Draw;
 using StudioFourteen.Rendering.Draw.Gizmos;
 using StudioFourteen.Rendering.Draw.Handles;
 using StudioFourteen.Rendering.Materials;
+using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Scene.GameObjects.Characters.Skeletons;
 
-public class GameObjectGizmo : GizmoGroup
+public class GameObjectGizmo : SceneObjectGizmoBase<Character>
 {
-	private readonly GameObject gameObject;
+	private readonly GameObjectHandle handle;
+	private readonly SkeletonGizmo skeleton;
 
 	public GameObjectGizmo(GameObject gameObject)
 	{
-		this.gameObject = gameObject;
+		this.handle = new GameObjectHandle(gameObject);
+		this.Add(this.handle);
 
-		this.Add(new GameObjectHandle(gameObject));
+		this.skeleton = new SkeletonGizmo();
+		this.Add(this.skeleton);
 
-		SkeletonGizmo skeleton = new();
-		skeleton.SetTarget(gameObject);
-		this.Gizmos.Add(skeleton);
-
-		this.Gizmos.Add(new BlankGizmo());
-
-		this.Enable();
+		this.Enable(gameObject);
+		this.skeleton.Enable(gameObject);
 	}
 
 	public override string Name => "Character";
 	public override bool KeepScreenSize => false;
-}
 
-public class BlankGizmo : GizmoBase
-{
-	public override string Name => "Blank";
-	public override bool KeepScreenSize => false;
+	protected override void OnDraw()
+	{
+		this.handle.IsVisible = this.SceneObject?.IsSelected == false;
+		base.OnDraw();
+	}
 }
 
 public class GameObjectHandle : SelectionHandle
@@ -62,18 +61,17 @@ public class GameObjectHandle : SelectionHandle
 		this.circleRenderer.Transform = Transform.FromScale(0.25f);
 		this.circleRenderer.Material.EndCaps = 0;
 		this.circleRenderer.Material.OutlineColor = Color.Transparent;
-		this.circleRenderer.Material.MinAlpha = 0.15f;
+		this.circleRenderer.Material.MinAlpha = 0.1f;
 		this.Add(this.circleRenderer);
 	}
 
 	protected override void OnDraw()
 	{
-		this.IsVisible = !this.IsSelected;
-
 		if (this.Selection is GameObject go)
 			this.Transform = go.WorldTransform;
 
-		base.OnDraw();
 		this.circleRenderer.Material.Thickness = this.IsHovered ? 1.5f : 1.0f;
+
+		base.OnDraw();
 	}
 }

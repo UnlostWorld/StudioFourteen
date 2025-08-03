@@ -15,6 +15,8 @@
 
 namespace StudioFourteen.Scene.GameObjects.Characters.Skeletons;
 
+#pragma warning disable
+
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -31,17 +33,20 @@ public class Skeleton : GameObject
 {
 	private readonly Dictionary<string, SkeletonBone> boneNameLookup = new();
 	private readonly Dictionary<BoneId, BoneReference> boneReferenceLookup = new();
-	private bool doGenerate = false;
+
+	private bool hasGenerated = false;
 
 	public Skeleton(int objectIndex)
 		: base(objectIndex)
 	{
-		this.doGenerate = true;
-
+		this.hasGenerated = false;
 		this.Services.Skeletons.AddSkeleton(this);
+
+		this.EnablePosing = this.ObjectIndex == 0 || this.ObjectIndex == GroupPoseService.GPoseFirstCharacter;
 	}
 
 	public List<SkeletonBone> Bones { get; init; } = new();
+	public bool EnablePosing { get; set; } = false;
 
 	public override void Dispose()
 	{
@@ -53,9 +58,9 @@ public class Skeleton : GameObject
 	{
 		base.OnGameTick();
 
-		if (this.doGenerate)
+		if (!this.hasGenerated && this.EnablePosing)
 		{
-			this.doGenerate = false;
+			this.hasGenerated = true;
 			this.GenerateBones();
 		}
 	}

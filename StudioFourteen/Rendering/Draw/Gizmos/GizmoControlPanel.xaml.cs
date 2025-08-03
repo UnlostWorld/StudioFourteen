@@ -16,6 +16,7 @@
 namespace StudioFourteen.Rendering.Draw.Gizmos;
 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Windows.Controls;
 using Serilog;
@@ -47,16 +48,14 @@ public partial class GizmoControlPanel : UserControl
 
 			this.Gizmos.Clear();
 
-			lock (this.Services.Gizmos.Gizmos)
+			List<GizmoBase> gizmos = new(this.Services.Gizmos.Gizmos);
+			foreach (GizmoBase gizmo in gizmos)
 			{
-				foreach (GizmoBase gizmo in this.Services.Gizmos.Gizmos)
-				{
-					// Ignore selection gizmos as they get their own area in the toolbar.
-					if (gizmo is SceneObjectGizmoBase)
-						continue;
+				// Ignore selection gizmos as they get their own area in the toolbar.
+				if (gizmo is SceneObjectGizmoBase)
+					continue;
 
-					this.Gizmos.Add(gizmo);
-				}
+				this.Gizmos.Add(gizmo);
 			}
 		});
 	}
