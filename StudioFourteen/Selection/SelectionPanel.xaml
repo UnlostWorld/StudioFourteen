@@ -45,7 +45,8 @@
 			Grid.Column="1"
 			HorizontalContentAlignment="Center"
 			ItemsSource="{Binding CurrentType.Objects}"
-			SelectedItem="{Binding CurrentType.Selection}">
+			SelectedItem="{Binding CurrentType.Selection}"
+			Visibility="{Binding CurrentType.Objects.Count, Converter={StaticResource LessThanToVisibility}, ConverterParameter=9}">
 
 			<ListBox.ItemTemplate>
 				<DataTemplate>
@@ -53,6 +54,18 @@
 				</DataTemplate>
 			</ListBox.ItemTemplate>
 		</wpfUtils:SwitchSelector>
+
+		<ComboBox Grid.Column="1"
+			HorizontalContentAlignment="Center"
+			ItemsSource="{Binding CurrentType.Objects}"
+			SelectedItem="{Binding CurrentType.Selection}"
+			Visibility="{Binding CurrentType.Objects.Count, Converter={StaticResource GreaterThanToVisibility}, ConverterParameter=8}">
+			<ComboBox.ItemTemplate>
+				<DataTemplate>
+					<TextBlock Text="{Binding Name}" />
+				</DataTemplate>
+			</ComboBox.ItemTemplate>
+		</ComboBox>
 
 		<ToggleButton
 			x:Name="AddButton"
