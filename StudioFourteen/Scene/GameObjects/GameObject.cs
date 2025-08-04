@@ -106,21 +106,11 @@ public class GameObject : TransformSceneObjectBase
 			Transform newTransform = Transform.FromTRS(newPosition, newRotation, newScale);
 			this.LocalTransform = newTransform;
 			this.WorldTransform = newTransform;
+
+			this.nextTransform = null;
 		}
 
 		this.IsReady = true;
-	}
-
-	public override unsafe Transform GetLiveWorldTransform()
-	{
-		XivGameObject* pGameObject = this.GetXivGameObject();
-		if (pGameObject == null || pGameObject->DrawObject == null)
-			return Transform.Identity;
-
-		Vector3 newPosition = pGameObject->DrawObject->Position;
-		Quaternion newRotation = pGameObject->DrawObject->Rotation;
-		Vector3 newScale = pGameObject->DrawObject->Scale;
-		return Transform.FromTRS(newPosition, newRotation, newScale);
 	}
 
 	public unsafe XivGameObject* GetXivGameObject()

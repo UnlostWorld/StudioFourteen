@@ -41,8 +41,6 @@ public abstract partial class TransformSceneObjectBase : SceneObjectBase
 		base.Reset();
 	}
 
-	public virtual unsafe Transform GetLiveWorldTransform() => this.worldTransform;
-
 	protected virtual void OnWorldTransformChanged(Transform oldValue, Transform newValue)
 	{
 		if (this.initialWorldTransform == null && oldValue != Transform.Identity && oldValue != default)

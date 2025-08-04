@@ -63,7 +63,7 @@ public class GameObjectHandle : SelectionHandle
 	protected override void OnDraw()
 	{
 		if (this.Selection is GameObject go)
-			this.Transform = go.GetLiveWorldTransform();
+			this.Transform = go.WorldTransform;
 
 		this.circleRenderer.Material.Thickness = this.IsHovered ? 1.5f : 1.0f;
 
