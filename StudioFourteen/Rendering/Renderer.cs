@@ -162,6 +162,7 @@ public abstract class Renderer : IDisposable
 			{
 				if (this.resolutionChangeCoolDown == 0)
 				{
+					this.Log.Information("Resolution changing");
 					foreach (RenderPassBase pass in this.allPasses)
 					{
 						pass.OnResolutionChanging();
@@ -172,6 +173,7 @@ public abstract class Renderer : IDisposable
 				}
 				else if (this.resolutionChangeCoolDown == 15)
 				{
+					this.Log.Information("Resolution changed");
 					this.Width = this.NewWidth;
 					this.Height = this.NewHeight;
 
