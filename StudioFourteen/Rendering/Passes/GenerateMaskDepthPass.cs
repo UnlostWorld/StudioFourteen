@@ -84,7 +84,7 @@ public class GenerateUiMaskPass : RenderPassBase
 		if (this.depthStencilCopyTexture == null)
 		{
 			this.depthStencilCopyTexture?.Dispose();
-			this.depthStencilCopyTexture?.Dispose();
+			this.depthResourceView?.Dispose();
 
 			Texture2DDescription desc = this.depthStencilTexture.Description;
 			desc.BindFlags = BindFlags.ShaderResource;

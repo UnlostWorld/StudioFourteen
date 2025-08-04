@@ -34,10 +34,6 @@ public abstract class RenderPassBase : IDisposable
 
 	public abstract void Render(Renderer renderer, Device device, DeviceContext deviceContext);
 
-	public virtual void OnResolutionChanging()
-	{
-	}
-
 	public virtual void OnResolutionChanged()
 	{
 	}

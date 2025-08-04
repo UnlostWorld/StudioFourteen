@@ -160,33 +160,21 @@ public abstract class Renderer : IDisposable
 
 			if (this.Width != this.NewWidth || this.Height != this.NewHeight)
 			{
-				if (this.resolutionChangeCoolDown == 0)
+				this.Width = this.NewWidth;
+				this.Height = this.NewHeight;
+
+				this.Log.Information($"Resolution changed: {this.Width}x{this.Height}");
+
+				foreach (RenderPassBase pass in this.allPasses)
 				{
-					this.Log.Information("Resolution changing");
-					foreach (RenderPassBase pass in this.allPasses)
-					{
-						pass.OnResolutionChanging();
-					}
-
-					this.resolutionChangeCoolDown = 15;
-					return false;
+					pass.OnResolutionChanged();
 				}
-				else if (this.resolutionChangeCoolDown == 15)
-				{
-					this.Log.Information("Resolution changed");
-					this.Width = this.NewWidth;
-					this.Height = this.NewHeight;
 
-					foreach (RenderPassBase pass in this.allPasses)
-					{
-						pass.OnResolutionChanged();
-					}
-
-					return false;
-				}
+				this.resolutionChangeCoolDown = 15;
+				return false;
 			}
 
-			if (this.resolutionChangeCoolDown > 0)
+			if(this.resolutionChangeCoolDown > 0)
 			{
 				this.resolutionChangeCoolDown--;
 				return false;

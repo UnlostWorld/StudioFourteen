@@ -50,6 +50,7 @@ public class GameOverlayRenderer : Renderer
 	{
 		this.afterEffectsPasses.Add(this.Forward);
 		this.AddPass(this.Forward);
+		this.AddPass(this.generateUiMaskPass);
 	}
 
 	public bool IsAttached { get; private set; }

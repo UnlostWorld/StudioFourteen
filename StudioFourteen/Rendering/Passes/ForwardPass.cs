@@ -15,6 +15,8 @@
 
 namespace StudioFourteen.Rendering.Passes;
 
+#pragma warning disable
+
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -81,12 +83,21 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 		}
 	}
 
-	public override void OnResolutionChanging()
+	public override void OnResolutionChanged()
 	{
 		this.backBufferTargetView?.Dispose();
 		this.backBufferTargetView = null;
 
-		base.OnResolutionChanging();
+		this.depthStencilTexture?.Dispose();
+		this.depthStencilTexture = null;
+
+		this.depthStencilView?.Dispose();
+		this.depthStencilView = null;
+
+		this.depthStencilState?.Dispose();
+		this.depthStencilState = null;
+
+		base.OnResolutionChanged();
 	}
 
 	public override void Dispose()
@@ -103,7 +114,7 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 		this.depthStencilState?.Dispose();
 		this.depthStencilState = null;
 
-		foreach(DrawObject renderable in this.sceneObjects)
+		foreach (DrawObject renderable in this.sceneObjects)
 		{
 			renderable.Dispose();
 		}
@@ -122,8 +133,6 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 
 		if (this.backBufferTargetView == null)
 		{
-			this.backBufferTargetView?.Dispose();
-
 			RenderTargetViewDescription desc = default;
 			desc.Format = Format.R8G8B8A8_UNorm;
 			desc.Dimension = RenderTargetViewDimension.Texture2D;
@@ -200,7 +209,8 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 		device.ImmediateContext.ExecuteCommandList(cmds, true);
 		deviceContext.ClearState();
 
-		////device.ImmediateContext.ClearRenderTargetView(this.backBufferTargetView, new(1, 1, 0, 1));
+		this.backBufferTargetView.Dispose();
+		this.backBufferTargetView = null;
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
