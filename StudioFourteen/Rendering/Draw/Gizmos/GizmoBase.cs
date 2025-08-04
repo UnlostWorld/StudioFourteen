@@ -38,6 +38,7 @@ public abstract class GizmoBase : DrawGroup, INotifyPropertyChanged
 
 	public abstract string Name { get; }
 	public abstract bool KeepScreenSize { get; }
+	public virtual bool ShowInControlPanel => true;
 
 	public override bool IsVisible
 	{

@@ -37,6 +37,7 @@ public class SelectionGizmo : TransformGizmoBase
 
 	public override string Name => "Selection";
 	public override object? Icon => Resources.Find("ICON_Selection");
+	public override bool ShowInControlPanel => false;
 	public override bool KeepScreenSize => false;
 
 	public override void Enable(ForwardPass? pass = null)

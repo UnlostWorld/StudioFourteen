@@ -17,7 +17,6 @@ namespace StudioFourteen.Rendering.Draw.Gizmos;
 
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.Windows.Controls;
 using Serilog;
 using WpfUtils.Extensions;
@@ -26,37 +25,61 @@ public partial class GizmoControlPanel : UserControl
 {
 	protected readonly ILogger Log;
 
+	private readonly Dictionary<Type, List<GizmoBase>> gizmoLookup = new();
+
 	public GizmoControlPanel()
 	{
 		this.InitializeComponent();
 		this.DataContext = this;
 		this.Log = Logging.ForContext<GizmoControlPanel>();
 
-		this.Services.Gizmos.GizmosChanged += this.OnGizmosChanged;
-		this.Gizmos.Replace(this.Services.Gizmos.Gizmos);
+		List<GizmoBase> currentGizmos = new(this.Services.Gizmos.Gizmos);
+		this.Services.Gizmos.GizmoAdded += this.AddGizmo;
+		this.Services.Gizmos.GizmoRemoved += this.RemoveGizmo;
+
+		foreach (GizmoBase gizmo in currentGizmos)
+		{
+			this.AddGizmo(gizmo);
+		}
 	}
 
 	public FastObservableCollection<GizmoBase> Gizmos { get; init; } = new();
 	public ServiceManager Services => ServiceManager.Instance;
 
-	private void OnGizmosChanged()
+	private void AddGizmo(GizmoBase gizmo)
 	{
-		this.Dispatcher.Invoke(() =>
+		if (!gizmo.ShowInControlPanel)
+			return;
+
+		Type gizmoType = gizmo.GetType();
+
+		if (!this.gizmoLookup.ContainsKey(gizmoType))
 		{
-			if (this.Services.Gizmos.GizmoControlPanelOpen)
-				return;
+			this.gizmoLookup.Add(gizmoType, new());
+			this.Dispatcher.Invoke(() => this.Gizmos.Add(gizmo));
+		}
+		else
+		{
+			this.gizmoLookup[gizmoType].Add(gizmo);
+		}
+	}
 
-			this.Gizmos.Clear();
+	private void RemoveGizmo(GizmoBase gizmo)
+	{
+		Type gizmoType = gizmo.GetType();
+		if (!this.gizmoLookup.ContainsKey(gizmoType))
+			return;
 
-			List<GizmoBase> gizmos = new(this.Services.Gizmos.Gizmos);
-			foreach (GizmoBase gizmo in gizmos)
+		this.gizmoLookup[gizmoType].Remove(gizmo);
+
+		if (this.Gizmos.Contains(gizmo))
+		{
+			this.Dispatcher.Invoke(() => this.Gizmos.Remove(gizmo));
+
+			if (this.gizmoLookup[gizmoType].Count > 0)
 			{
-				// Ignore selection gizmos as they get their own area in the toolbar.
-				if (gizmo is SceneObjectGizmoBase)
-					continue;
-
-				this.Gizmos.Add(gizmo);
+				this.Dispatcher.Invoke(() => this.Gizmos.Add(this.gizmoLookup[gizmoType][0]));
 			}
-		});
+		}
 	}
 }

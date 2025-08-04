@@ -31,8 +31,9 @@ public partial class GizmoService : ServiceBase
 
 	[Notify] private bool gizmoControlPanelOpen;
 
-	public delegate void GizmosChangedDelegate();
-	public event GizmosChangedDelegate? GizmosChanged;
+	public delegate void GizmoChangedDelegate(GizmoBase gizmo);
+	public event GizmoChangedDelegate? GizmoAdded;
+	public event GizmoChangedDelegate? GizmoRemoved;
 
 	public override void Attach()
 	{
@@ -48,11 +49,6 @@ public partial class GizmoService : ServiceBase
 		this.Services.Selection.SelectionChanged -= this.OnSelectionChanged;
 		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
 
-		foreach (GizmoBase gizmo in this.Gizmos)
-		{
-			this.Services.Rendering.OverlayRenderer.Forward.Remove(gizmo);
-		}
-
 		this.grid.Disable();
 		this.Transform.Disable();
 		this.selection.Disable();
@@ -67,13 +63,13 @@ public partial class GizmoService : ServiceBase
 	public void Enable(GizmoBase gizmo)
 	{
 		this.Gizmos.Add(gizmo);
-		this.GizmosChanged?.Invoke();
+		this.GizmoAdded?.Invoke(gizmo);
 	}
 
 	public void Disable(GizmoBase gizmo)
 	{
 		this.Gizmos.Remove(gizmo);
-		this.GizmosChanged?.Invoke();
+		this.GizmoRemoved?.Invoke(gizmo);
 	}
 
 	private void OnSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? selectionSource)

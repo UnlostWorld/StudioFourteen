@@ -8,6 +8,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=WpfUtils"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	mc:Ignorable="d"
 	Width="200"
 	Height="350">
@@ -27,6 +28,7 @@
 							<Grid>
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="Auto"/>
+									<ColumnDefinition Width="Auto"/>
 									<ColumnDefinition />
 								</Grid.ColumnDefinitions>
 
@@ -37,11 +39,17 @@
 									Style="{DynamicResource VisibilityToggle}"
 									ToolTip="{DynamicResource LOC_GizmosVisibility_ToolTip}"/>
 
+								<icons:IconView
+								Grid.Column="1"
+									Width="14"
+									Height="14"
+									Icon="{Binding Icon}" />
+
 								<TextBlock
 									VerticalAlignment="Center"
 									Margin="6,0,0,0"
 									Text="{Binding Name}"
-									Grid.Column="1"/>
+									Grid.Column="2"/>
 
 							</Grid>
 						</Expander.Header>

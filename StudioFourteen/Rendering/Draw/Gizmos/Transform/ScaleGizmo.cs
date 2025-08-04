@@ -52,6 +52,7 @@ public class ScaleGizmo : TransformGizmoBase
 
 	public override string Name => Resources.Find("LOC_Scale", "Scale");
 	public override object? Icon => Resources.Find("ICON_Transform_Scale");
+	public override bool ShowInControlPanel => false;
 	public override bool KeepScreenSize => true;
 
 	public override bool IsBeingManipulated =>
