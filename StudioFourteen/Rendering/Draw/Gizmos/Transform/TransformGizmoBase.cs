@@ -44,9 +44,18 @@ public abstract class TransformGizmoBase : SceneObjectGizmoBase<TransformSceneOb
 		{
 			this.SceneObject.WorldTransform = this.TargetTransform;
 		}
-		else
+	}
+
+	protected override void OnDraw()
+	{
+		base.OnDraw();
+
+		if (this.SceneObject == null)
+			return;
+
+		if (!this.IsBeingManipulated)
 		{
-			this.TargetTransform = this.SceneObject.WorldTransform;
+			this.TargetTransform = this.SceneObject.GetLiveWorldTransform();
 		}
 	}
 }

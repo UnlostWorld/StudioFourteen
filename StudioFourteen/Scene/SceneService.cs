@@ -30,15 +30,16 @@ public class SceneService : ServiceBase
 
 	public override void Attach()
 	{
-		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
+		this.Services.Tick.Add(TickService.Channels.EarlyGameTick, this.OnGameTick);
 		base.Attach();
 	}
 
 	public override void Detach()
 	{
-		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
+		this.Services.Tick.Remove(TickService.Channels.EarlyGameTick, this.OnGameTick);
 
-		foreach (SceneObjectBase obj in this.objects)
+		List<SceneObjectBase> objects = new(this.objects);
+		foreach (SceneObjectBase obj in objects)
 		{
 			this.ObjectRemoved?.Invoke(obj);
 			obj.Dispose();

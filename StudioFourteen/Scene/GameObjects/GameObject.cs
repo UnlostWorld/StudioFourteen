@@ -111,6 +111,18 @@ public class GameObject : TransformSceneObjectBase
 		this.IsReady = true;
 	}
 
+	public override unsafe Transform GetLiveWorldTransform()
+	{
+		XivGameObject* pGameObject = this.GetXivGameObject();
+		if (pGameObject == null || pGameObject->DrawObject == null)
+			return Transform.Identity;
+
+		Vector3 newPosition = pGameObject->DrawObject->Position;
+		Quaternion newRotation = pGameObject->DrawObject->Rotation;
+		Vector3 newScale = pGameObject->DrawObject->Scale;
+		return Transform.FromTRS(newPosition, newRotation, newScale);
+	}
+
 	public unsafe XivGameObject* GetXivGameObject()
 	{
 		return this.Services.GameObjects.GetXivObject(this.ObjectIndex);

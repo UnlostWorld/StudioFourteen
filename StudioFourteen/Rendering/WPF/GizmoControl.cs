@@ -94,7 +94,7 @@ public partial class GizmoControl : RendererElement
 
 			if (this.Target != null)
 			{
-				Vector3 targetPos = Vector3.Transform(Vector3.Zero, this.Target.WorldTransform.ToMatrix());
+				Vector3 targetPos = Vector3.Transform(Vector3.Zero, this.Target.GetLiveWorldTransform().ToMatrix());
 				this.gridRenderer.Material.Height = targetPos.Y;
 			}
 
@@ -134,7 +134,7 @@ public partial class GizmoControl : RendererElement
 			if (this.Target == null)
 				return Vector3.Zero;
 
-			return Vector3.Transform(Vector3.Zero, this.Target.WorldTransform.ToMatrix());
+			return Vector3.Transform(Vector3.Zero, this.Target.GetLiveWorldTransform().ToMatrix());
 		}
 	}
 }
