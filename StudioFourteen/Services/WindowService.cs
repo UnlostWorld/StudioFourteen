@@ -536,6 +536,11 @@ public partial class WindowService : ServiceBase
 			if (!unit->IsVisible)
 				continue;
 
+			// HACK: yes/no box is always considered under the mouse, while changing resolution
+			// the X/Y pos of the box is wrong, so we can't test it.
+			if (unit->NameString == "SelectYesno")
+				return unit;
+
 			if (unit->Alpha < 32)
 				continue;
 
@@ -561,7 +566,7 @@ public partial class WindowService : ServiceBase
 				&& cursorPos.Value.Y > windowBounds.Top
 				&& cursorPos.Value.Y < windowBounds.Bottom)
 			{
-				////this.Log.Information($">> {unit->NameString} {unit->ShowHideFlags}");
+				////this.Log.Information($">> {unit->NameString}");
 				return unit;
 			}
 		}

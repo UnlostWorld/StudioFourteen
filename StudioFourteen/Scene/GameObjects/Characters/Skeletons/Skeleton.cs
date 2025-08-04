@@ -15,8 +15,6 @@
 
 namespace StudioFourteen.Scene.GameObjects.Characters.Skeletons;
 
-#pragma warning disable
-
 using System;
 using System.Collections.Generic;
 using System.Numerics;
