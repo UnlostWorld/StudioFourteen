@@ -18,6 +18,7 @@ namespace StudioFourteen.Rendering.Draw;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using SharpDX.Direct3D11;
 
 public class DrawGroup : DrawObject
@@ -59,6 +60,11 @@ public class DrawGroup : DrawObject
 			try
 			{
 				child.Draw(renderer, this.WorldTransform, device, deviceContext);
+			}
+			catch (ExternalException ex)
+			{
+				child.IsVisible = false;
+				this.Log.Error(ex, $"External Error: {ex.ErrorCode} while drawing scene object: {child}. This object will be disabled.");
 			}
 			catch (Exception ex)
 			{

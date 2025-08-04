@@ -100,7 +100,7 @@ public abstract class InstanceRendererBase<TRendererData, TMaterialData> : Rende
 			this.layout = new InputLayout(device, this.shader.VertexSignature, default(Vertex).GetInputElements());
 
 		if (this.layout != null)
-				deviceContext.InputAssembler.InputLayout = this.layout;
+			deviceContext.InputAssembler.InputLayout = this.layout;
 
 		if (this.depthStencilState == null)
 		{
