@@ -53,6 +53,10 @@ public abstract partial class SceneObjectBase : ViewModel, IDisposable
 
 	public virtual void Dispose()
 	{
+		foreach (GizmoBase gizmo in this.Gizmos)
+		{
+			gizmo.Disable();
+		}
 	}
 
 	public virtual void Reset()
