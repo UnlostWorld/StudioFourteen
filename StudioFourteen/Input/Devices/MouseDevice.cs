@@ -150,6 +150,9 @@ public class MouseDevice : InputDeviceBase
 			yAxis.ConsumedBy = null;
 		}
 
+		if (!this.ShouldHandleMouse())
+			return;
+
 		this.UpdateMousePosition();
 	}
 
@@ -252,7 +255,7 @@ public class MouseDevice : InputDeviceBase
 			|| this.Services.Handles.IsCursorOverHandle)
 			return true;
 
-		// Don't process mouse if the cursor is over a in-game UI element
+		// Don't process mouse if the cursor is over an in-game UI element
 		if (this.Services.Windows.IsCursorOverAtkUnit)
 			return false;
 
