@@ -48,6 +48,8 @@ public class GameOverlayRenderer : Renderer
 
 	public GameOverlayRenderer()
 	{
+		this.Forward.ViewportScale = 0.8f;
+
 		this.afterEffectsPasses.Add(this.Forward);
 		this.AddPass(this.Forward);
 		this.AddPass(this.generateUiMaskPass);

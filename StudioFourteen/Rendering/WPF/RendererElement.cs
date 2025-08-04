@@ -107,7 +107,7 @@ public class WpfRenderer : Renderer
 	{
 		this.camera = camera;
 		this.windowHandle = windowHandle;
-		this.Forward.ViewportScale = 2;
+		this.Forward.ViewportScale = 4;
 		this.AddPass(this.Forward);
 
 		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
