@@ -26,18 +26,13 @@ using StudioFourteen.Scene.GameObjects.Characters.Skeletons;
 public class GameObjectGizmo : SceneObjectGizmoBase<Character>
 {
 	private readonly GameObjectHandle handle;
-	private readonly SkeletonGizmo skeleton;
 
 	public GameObjectGizmo(GameObject gameObject)
 	{
 		this.handle = new GameObjectHandle(gameObject);
 		this.Add(this.handle);
 
-		this.skeleton = new SkeletonGizmo();
-		this.Add(this.skeleton);
-
 		this.Enable(gameObject);
-		this.skeleton.Enable(gameObject);
 	}
 
 	public override string Name => "Character";

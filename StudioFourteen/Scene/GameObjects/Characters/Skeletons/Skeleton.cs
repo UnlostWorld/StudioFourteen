@@ -46,6 +46,8 @@ public partial class Skeleton : GameObject
 		this.hasGenerated = false;
 		this.Services.Skeletons.AddSkeleton(this);
 
+		this.Gizmos.Add(new SkeletonGizmo(this));
+
 		this.EnablePosing = this.ObjectIndex == 0 || this.ObjectIndex == GroupPoseService.GPoseFirstCharacter;
 	}
 

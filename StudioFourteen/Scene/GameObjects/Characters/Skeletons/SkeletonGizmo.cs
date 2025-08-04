@@ -26,6 +26,11 @@ public class SkeletonGizmo : SceneObjectGizmoBase<Skeleton>
 {
 	private readonly Dictionary<SkeletonBone, SkeletonBoneGizmo> boneGizmos = new();
 
+	public SkeletonGizmo(GameObject gameObject)
+	{
+		this.Enable(gameObject);
+	}
+
 	public override string Name => "Skeleton";
 	public override object? Icon => Resources.Find("ICON_Gizmo_CharacterSkeleton");
 	public override bool KeepScreenSize => false;
