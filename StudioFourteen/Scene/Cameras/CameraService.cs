@@ -112,14 +112,6 @@ public class CameraService : ServiceBase
 		return base.Initialize();
 	}
 
-	public override Task Start()
-	{
-		this.Services.GroupPose.StateChanged += this.OnGroupPoseStateChanged;
-		this.OnGroupPoseStateChanged(this.Services.GroupPose.IsGroupPosing);
-
-		return base.Start();
-	}
-
 	public unsafe override void Attach()
 	{
 		base.Attach();
@@ -135,12 +127,15 @@ public class CameraService : ServiceBase
 		Hooks.CameraMatrixLoad.Enable(this.CameraMatrixLoad);
 		Hooks.GPoseCameraUpdate.Enable(this.GroupPoseCameraUpdateDetour);
 
-		// Special case to reinitialize the orbit target camera each time
-		// the camera service attaches so that any changes to the group pose camera
-		// outside of studio gets kept.
-		if (this.current is OrbitTargetCamera)
+		if (this.cameras.Count <= 0)
 		{
-			this.current.IsInitialized = false;
+			this.Current = this.Services.Scene.AddObject<OrbitTargetCamera>("Default Camera");
+			this.Current.IsInitialized = false;
+		}
+		else if (this.cameras.Count > 0)
+		{
+			this.Current = this.cameras[0];
+			this.Current.IsInitialized = false;
 		}
 	}
 
@@ -165,6 +160,8 @@ public class CameraService : ServiceBase
 		Hooks.GPoseCameraUpdate.Disable();
 
 		this.blendWatch.Stop();
+
+		this.Current = null;
 	}
 
 	public Vector3 WorldToCamera(Vector3 worldPos)
@@ -193,25 +190,9 @@ public class CameraService : ServiceBase
 
 	protected void OnGameTick()
 	{
-		if (this.Services.GroupPose.IsGroupPosing && this.current != null)
+		if (this.current != null)
 		{
 			this.current.OnGameTick();
-		}
-	}
-
-	private void OnGroupPoseStateChanged(bool newState)
-	{
-		if (newState && this.cameras.Count <= 0)
-		{
-			this.Current = this.Services.Scene.AddObject<OrbitTargetCamera>("Editor Camera");
-		}
-		else if (newState && this.cameras.Count > 0)
-		{
-			this.Current = this.cameras[0];
-		}
-		else
-		{
-			this.Current = null;
 		}
 	}
 
@@ -240,7 +221,7 @@ public class CameraService : ServiceBase
 		this.NearPlane = camera->RenderCamera->NearPlane;
 		this.FarPlane = camera->RenderCamera->FarPlane;
 
-		if (this.Services.GroupPose.IsGroupPosing && this.current != null)
+		if (this.current != null)
 		{
 			try
 			{

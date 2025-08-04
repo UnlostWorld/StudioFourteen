@@ -264,8 +264,7 @@ public class MouseDevice : InputDeviceBase
 		if (this.Services.Reshade.IsReshadeOverlayOpen)
 			return false;
 
-		// in group pose, capture all scene mouse inputs.
-		return this.Services.GroupPose.IsGroupPosing;
+		return true;
 	}
 
 	private void UpdateMousePosition()

@@ -104,10 +104,7 @@ public class CursorService : ServiceBase
 
 	private IntPtr SetCursorDetour(HCURSOR hCursor)
 	{
-		if (this.Services.Windows.IsMouseOverWindow() || this.Services.DragAndDrop.IsDragging)
-			return IntPtr.Zero;
-
-		return Hooks.SetCursor.Original(hCursor);
+		return IntPtr.Zero;
 	}
 
 	private Cursor LoadCursor(string name)
