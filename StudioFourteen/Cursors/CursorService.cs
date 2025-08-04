@@ -21,9 +21,8 @@ using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using StudioFourteen.Controls;
 using System.Windows.Input;
-using FFXIVClientStructs.FFXIV.Client.UI;
+using StudioFourteen.Controls;
 using StudioFourteen.Interop;
 using StudioFourteen.Launcher;
 using StudioFourteen.Panels;
@@ -37,6 +36,7 @@ public class CursorService : ServiceBase
 	private readonly Cursor xivLink;
 	private readonly Cursor xivGrab;
 	private readonly Cursor xivHand;
+	private readonly Cursor xivArrowHoriz;
 
 	public CursorService()
 	{
@@ -44,6 +44,7 @@ public class CursorService : ServiceBase
 		this.xivLink = this.LoadCursor("link.cur");
 		this.xivGrab = this.LoadCursor("grab.cur");
 		this.xivHand = this.LoadCursor("hand.cur");
+		this.xivArrowHoriz = this.LoadCursor("arrow-horiz.cur");
 
 		this.SetCursor<PanelWindow>(CursorType.Pointer);
 		this.SetCursor<PopOut>(CursorType.Pointer);
@@ -53,6 +54,7 @@ public class CursorService : ServiceBase
 		this.SetCursor<ListBoxItem>(CursorType.Link);
 		this.SetCursor<Button>(CursorType.Link);
 		this.SetCursor<Grip>(CursorType.Hand);
+		this.SetCursor<NumberBox>(CursorType.ResizeHorizontal);
 	}
 
 	public enum CursorType
@@ -61,20 +63,18 @@ public class CursorService : ServiceBase
 		Link,
 		Hand,
 		Grab,
+		ResizeHorizontal,
 	}
 
 	public unsafe override void Attach()
 	{
 		base.Attach();
-
-		Hooks.UpdateGameCursor.Enable(this.UpdateCursorDetour);
 		Hooks.SetCursor.Enable(this.SetCursorDetour);
 	}
 
 	public override void Detach()
 	{
 		base.Detach();
-		Hooks.UpdateGameCursor.Disable();
 		Hooks.SetCursor.Disable();
 	}
 
@@ -92,19 +92,18 @@ public class CursorService : ServiceBase
 			case CursorType.Link: return useSystem ? Cursors.Hand : this.xivLink;
 			case CursorType.Grab: return useSystem ? Cursors.Hand : this.xivGrab;
 			case CursorType.Hand: return useSystem ? Cursors.Arrow : this.xivHand;
+			case CursorType.ResizeHorizontal: return useSystem ? Cursors.SizeWE : this.xivArrowHoriz;
 		}
 
 		throw new NotSupportedException();
 	}
 
-	private unsafe nint UpdateCursorDetour(RaptureAtkModule* module)
-    {
-		return Hooks.UpdateGameCursor.Original(module);
-    }
-
 	private IntPtr SetCursorDetour(HCURSOR hCursor)
 	{
-		return IntPtr.Zero;
+		if (this.Services.Windows.IsCursorOverStudio)
+			return IntPtr.Zero;
+
+		return Hooks.SetCursor.Original(hCursor);
 	}
 
 	private Cursor LoadCursor(string name)

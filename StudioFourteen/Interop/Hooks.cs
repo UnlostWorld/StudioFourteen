@@ -91,11 +91,6 @@ public static unsafe class Hooks
 	// Dalamud Signatures:
 	//  	https://github.com/goatcorp/Dalamud
 	// 		Special thanks to @goaaats
-
-	// https://github.com/goatcorp/Dalamud/blob/master/Dalamud/Game/Addon/Events/AddonEventManagerAddressResolver.cs
-	internal delegate nint UpdateGameCursorDelegate(RaptureAtkModule* module);
-	internal static readonly SignatureHook<UpdateGameCursorDelegate> UpdateGameCursor = new("48 89 74 24 ?? 48 89 7C 24 ?? 41 56 48 83 EC 20 4C 8B F1 E8 ?? ?? ?? ?? 49 8B CE");
-
 	[UnmanagedFunctionPointer(CallingConvention.ThisCall)]
 	internal delegate int DxgiSwapChainPresentDelegate(nint* swapChain, uint syncInterval, uint flags);
 

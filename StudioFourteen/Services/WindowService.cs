@@ -561,7 +561,7 @@ public partial class WindowService : ServiceBase
 				&& cursorPos.Value.Y > windowBounds.Top
 				&& cursorPos.Value.Y < windowBounds.Bottom)
 			{
-				this.Log.Information($">> {unit->NameString} {unit->ShowHideFlags}");
+				////this.Log.Information($">> {unit->NameString} {unit->ShowHideFlags}");
 				return unit;
 			}
 		}
