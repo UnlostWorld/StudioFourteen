@@ -21,7 +21,7 @@ using Lumina.Text.ReadOnly;
 using StudioFourteen.GameData.Extensions;
 using StudioFourteen.Tags;
 
-[Sheet("ClassJobCategory", 0x65BBDB12)]
+[Sheet("ClassJobCategory", 0x6733E334)]
 public readonly struct ClassJobCategory(ExcelPage page, uint offset, uint row)
 	: IExcelRow<ClassJobCategory>
 {

@@ -16,7 +16,6 @@
 namespace StudioFourteen.History;
 
 using FFXIVClientStructs;
-using ImGuizmoNET;
 using StudioFourteen.Services;
 using System.Collections.Generic;
 using System.Windows;

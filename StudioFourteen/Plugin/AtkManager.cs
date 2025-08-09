@@ -52,7 +52,7 @@ public static class AtkManager
 		if (DalamudServices.GameGui == null)
 			return;
 
-		AtkUnitBase* addon = (AtkUnitBase*)DalamudServices.GameGui.GetAddonByName(name);
+		AtkUnitBase* addon = (AtkUnitBase*)DalamudServices.GameGui.GetAddonByName(name).Address;
 		if (addon == null)
 			return;
 

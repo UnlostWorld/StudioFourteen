@@ -15,9 +15,9 @@
 
 namespace StudioFourteen.Services;
 
+using Dalamud.Bindings.ImGui;
 using Dalamud.Game.ClientState.Keys;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using ImGuiNET;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Input;
 using StudioFourteen.Panels;

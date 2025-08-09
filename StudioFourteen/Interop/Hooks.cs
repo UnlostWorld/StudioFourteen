@@ -41,7 +41,7 @@ public static unsafe class Hooks
 
 	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Camera/CameraService.cs#L60
 	internal delegate nint SceneCameraUpdateDelegate(FFXIVClientStructs.FFXIV.Client.Graphics.Scene.Camera* sceneCamera);
-	internal static readonly SignatureHook<SceneCameraUpdateDelegate> SceneCameraUpdate = new("48 ?? ?? ?? ?? ?? 48 81 EC ?? ?? ?? ?? F6 81 EC ?? ?? ?? ?? 48 8B ?? 48 ?? ?? ??");
+	internal static readonly SignatureHook<SceneCameraUpdateDelegate> SceneCameraUpdate = new("48 ?? ?? ?? ?? ?? 48 81 EC ?? ?? ?? ?? F6 81 F0 ?? ?? ?? ?? 48 8B ??");
 
 	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Camera/CameraService.cs#L64
 	internal delegate void CameraMatrixLoadDelegate(FFXIVClientStructs.FFXIV.Client.Graphics.Render.Camera* camera, nint a1);
@@ -53,7 +53,7 @@ public static unsafe class Hooks
 
 	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Posing/SkeletonService.cs#L59
 	internal delegate nint UpdateBonePhysicsDelegate(nint a1);
-	internal static readonly SignatureHook<UpdateBonePhysicsDelegate> UpdateBonePhysics = new("48 89 5C 24 ?? 48 89 6C 24 ?? 48 89 74 24 ?? 57 41 56 41 57 48 83 EC ?? 48 8B 79 ?? 45 33 FF");
+	internal static readonly SignatureHook<UpdateBonePhysicsDelegate> UpdateBonePhysics = new("48 89 5C 24 ?? 48 89 6C 24 ?? 48 89 74 24 ?? 57 41 54 41 56 48 83 EC ?? 48 8B 59 ?? 45 33 E4");
 
 	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Posing/SkeletonService.cs#L63
 	internal delegate void FinalizeSkeletonsDelegate(nint a1);

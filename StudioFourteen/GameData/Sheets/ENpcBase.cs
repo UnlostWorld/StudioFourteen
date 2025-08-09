@@ -23,7 +23,7 @@ using System;
 using System.Text;
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 
-[Sheet("ENpcBase", 0x464052CD)]
+[Sheet("ENpcBase", 0x5BA9E1A6)]
 public readonly unsafe struct ENpcBase(ExcelPage page, uint offset, uint row)
 	: IExcelRow<ENpcBase>
 {

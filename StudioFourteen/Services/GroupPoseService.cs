@@ -50,7 +50,7 @@ public partial class GroupPoseService : ServiceBase
 
 		DalamudServices.Framework?.RunOnFrameworkThread(() =>
 		{
-			UIModule* pModule = (UIModule*)DalamudServices.GameGui.GetUIModule();
+			UIModule* pModule = (UIModule*)DalamudServices.GameGui.GetUIModule().Address;
 			if (pModule != null)
 			{
 				if (state == pModule->IsInGPose())
