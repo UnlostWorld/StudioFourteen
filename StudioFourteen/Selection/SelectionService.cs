@@ -122,7 +122,6 @@ public partial class SelectionService : ServiceBase
 			}
 		}
 
-		this.Services.Handles.Timeout();
 		this.SelectionChanged?.Invoke(oldSelection, newSelection, source);
 		this.RaisePropertyChanged();
 

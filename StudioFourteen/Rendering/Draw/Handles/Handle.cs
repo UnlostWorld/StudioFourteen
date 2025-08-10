@@ -64,6 +64,17 @@ public abstract class Handle : DrawGroup
 		return false;
 	}
 
+	public Vector2 GetScreenPosition(Vector3 localPosition)
+	{
+		Transform viewProj = this.Services.Camera.CurrentView * this.Services.Camera.CurrentProjection;
+
+		Vector4 screenPosition = new(localPosition, 1);
+		screenPosition = Vector4.Transform(screenPosition, this.WorldTransform.ToMatrix());
+		screenPosition = viewProj.TransformViewProjection(screenPosition);
+
+		return screenPosition.AsVector2();
+	}
+
 	protected virtual void OnIsHoveredChanged(bool isHovered)
 	{
 		this.IsHovered = isHovered;
@@ -93,16 +104,5 @@ public abstract class Handle : DrawGroup
 
 		Vector2 screenDir = screenPositionB - screenPositionA;
 		return Vector2.Normalize(screenDir);
-	}
-
-	protected Vector2 GetScreenPosition(Vector3 localPosition)
-	{
-		Transform viewProj = this.Services.Camera.CurrentView * this.Services.Camera.CurrentProjection;
-
-		Vector4 screenPosition = new(localPosition, 1);
-		screenPosition = Vector4.Transform(screenPosition, this.WorldTransform.ToMatrix());
-		screenPosition = viewProj.TransformViewProjection(screenPosition);
-
-		return screenPosition.AsVector2();
 	}
 }

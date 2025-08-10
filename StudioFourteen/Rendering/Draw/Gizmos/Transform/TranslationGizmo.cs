@@ -257,11 +257,7 @@ public class TranslationGizmo : TransformGizmoBase
 
 		protected override void OnEndDrag()
 		{
-			Vector2 pos = this.GetScreenPosition(Vector3.UnitX);
-			this.Services.Windows.SetCursorPosition(pos);
-
 			this.gizmo.EndManipulation();
-
 			base.OnEndDrag();
 		}
 	}

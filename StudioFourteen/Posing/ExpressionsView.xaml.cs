@@ -34,12 +34,12 @@ public partial class ExpressionsView : View
 
 	private void OnPoseSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? source)
 	{
-		this.Dispatcher.Invoke(() =>
+		/*this.Dispatcher.Invoke(() =>
 		{
 			this.MouthToggle.IsChecked = false;
 			this.LeftEyeToggle.IsChecked = false;
 			this.RightEyeToggle.IsChecked = false;
-		});
+		});*/
 	}
 
 	partial void OnObjectTableIndexChanged(int newValue)

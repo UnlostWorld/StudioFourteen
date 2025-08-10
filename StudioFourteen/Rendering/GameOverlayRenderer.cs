@@ -20,7 +20,9 @@ using System.Collections.Generic;
 using System.Numerics;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
 using SharpDX.Direct3D11;
+using StudioFourteen.Input;
 using StudioFourteen.Plugin;
+using StudioFourteen.Rendering.Draw.Handles;
 using StudioFourteen.Rendering.Passes;
 using StudioFourteen.Services;
 
@@ -33,11 +35,79 @@ public class RendererStudioCamera : RendererCamera
 	public override Matrix4x4 GetProjectionMatrix(Renderer renderer) => ServiceManager.Instance.Camera.LastProjection;
 }
 
+public class OverlayRendererInput : RendererInput
+{
+	private readonly Input2DListener dragListener = new(
+		InputAction.Handle_Right,
+		InputAction.Handle_Left,
+		InputAction.Handle_Down,
+		InputAction.Handle_Up,
+		"Handle Service Move");
+
+	private readonly Input0DListener selectListener = new(
+		InputAction.Handle_Select,
+		"Handle Service Select");
+
+	private bool didDrag = false;
+
+	public void Attach()
+	{
+		this.selectListener.Enable();
+		this.Timeout();
+	}
+
+	public void Detach()
+	{
+		this.selectListener.Disable();
+	}
+
+	public override void OnHandlePress(Handle? handle)
+	{
+		base.OnHandlePress(handle);
+
+		if (handle != null)
+		{
+			this.dragListener.Enable();
+		}
+		else
+		{
+			this.dragListener.Disable();
+		}
+	}
+
+	protected override void ProcessInput(
+		out InputStates inputState,
+		out Vector2? cursorPosition,
+		out Vector2 dragDelta)
+	{
+		inputState = this.selectListener.GetState();
+		cursorPosition = this.Services.Input.Mouse?.GetPosition();
+		dragDelta = this.dragListener.Value;
+
+		if (inputState == InputStates.Deactivated && !this.didDrag)
+		{
+			this.Services.Selection.Clear();
+		}
+
+		if (inputState == InputStates.Held)
+		{
+			this.didDrag = this.Services.Input.Mouse?.IsAnyDragging == true;
+		}
+
+		if (inputState == InputStates.Deactivated && this.didDrag && this.CurrentPress != null)
+		{
+			Vector2 pos = this.CurrentPress.GetScreenPosition(Vector3.Zero);
+			this.Services.Windows.SetCursorPosition(pos);
+		}
+	}
+}
+
 public class GameOverlayRenderer : Renderer
 {
 	public readonly ForwardPass Forward = new();
 
 	private readonly RendererStudioCamera camera = new();
+	private readonly OverlayRendererInput input = new();
 	private readonly GenerateUiMaskPass generateUiMaskPass = new();
 	private readonly List<RenderPassBase> beforeEffectsPasses = new();
 	private readonly List<RenderPassBase> afterEffectsPasses = new();
@@ -55,6 +125,7 @@ public class GameOverlayRenderer : Renderer
 
 	public bool IsAttached { get; private set; }
 	public override RendererCamera Camera => this.camera;
+	public override RendererInput Input => this.input;
 
 	public void AddBeforeEffectsPass(RenderPassBase pass)
 	{
@@ -82,6 +153,8 @@ public class GameOverlayRenderer : Renderer
 
 	public unsafe void Attach()
 	{
+		this.input.Attach();
+
 		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
 		this.Services.Reshade.ReshadeBeforeEffects += this.OnBeforeReshadeRender;
 		this.Services.Reshade.ReshadeAfterEffects += this.OnAfterReshadeRender;
@@ -92,6 +165,8 @@ public class GameOverlayRenderer : Renderer
 
 	public void Detach()
 	{
+		this.input.Detach();
+
 		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
 		this.Services.Reshade.ReshadeBeforeEffects -= this.OnBeforeReshadeRender;
 		this.Services.Reshade.ReshadeAfterEffects -= this.OnAfterReshadeRender;
@@ -147,6 +222,7 @@ public class GameOverlayRenderer : Renderer
 				return;
 
 			this.SetUpRender();
+			this.Input.Process(this);
 			this.RenderUiMask();
 			this.RenderBeforeEffectsPasses();
 			this.RenderAfterEffectsPasses();
@@ -156,6 +232,7 @@ public class GameOverlayRenderer : Renderer
 	private void OnBeforeReshadeRender()
 	{
 		this.SetUpRender();
+		this.Input.Process(this);
 		this.RenderUiMask();
 		this.RenderBeforeEffectsPasses();
 	}

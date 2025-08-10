@@ -21,6 +21,7 @@ using System.Numerics;
 using System.Windows;
 using System.Windows.Input;
 using FFXIVClientStructs.FFXIV.Client.System.Input;
+using StudioFourteen.Rendering;
 using StudioFourteen.Utilities;
 
 using Vector = System.Windows.Vector;
@@ -252,7 +253,7 @@ public class MouseDevice : InputDeviceBase
 		// Capture the mouse if a studio window or gizmo handle is under
 		// ths cursor.
 		if (this.Services.Windows.IsCursorOverStudio
-			|| this.Services.Handles.IsCursorOverHandle)
+			|| RendererInput.IsCursorOverHandle)
 			return true;
 
 		// Don't process mouse if the cursor is over an in-game UI element

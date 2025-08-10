@@ -202,14 +202,6 @@ public class ScaleGizmo : TransformGizmoBase
 			this.gizmo.TargetTransform = Transform.FromScale(Vector3.One - move) * this.gizmo.TargetTransform;
 			base.OnDrag(delta);
 		}
-
-		protected override void OnEndDrag()
-		{
-			Vector2 pos = this.GetScreenPosition(Vector3.UnitX);
-			this.Services.Windows.SetCursorPosition(pos);
-
-			base.OnEndDrag();
-		}
 	}
 
 	public class UniformHandle : Handle

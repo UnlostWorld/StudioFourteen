@@ -27,11 +27,13 @@ using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using SharpDX.Direct3D9;
 using SharpDX.DXGI;
+using StudioFourteen.Cursors;
+using StudioFourteen.Input;
 using StudioFourteen.Rendering.Draw;
 using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Passes;
 using StudioFourteen.Services;
-
+using StudioFourteen.Utilities;
 using D3D11Device = SharpDX.Direct3D11.Device;
 using D3D11Resource = SharpDX.Direct3D11.Resource;
 using D3D11Texture = SharpDX.Direct3D11.Texture2D;
@@ -64,22 +66,6 @@ public abstract partial class RendererElement : Image
 
 	protected abstract void Initialize();
 
-	protected override void OnMouseMove(MouseEventArgs e)
-	{
-		base.OnMouseMove(e);
-
-		this.pressHitTestResult.Clear();
-
-		if (this.Renderer == null)
-			return;
-
-		this.pressHitTestResult.MaxDistance = 20.0f / (float)this.ActualWidth;
-
-		Vector2 mousePosition = e.GetPosition(this).ToVector2() / new Vector2((float)this.ActualWidth, (float)this.ActualHeight);
-		this.Renderer.HitTest(mousePosition, this.pressHitTestResult);
-		ServiceManager.Instance.Handles.CurrentHoverOverride = this.pressHitTestResult.SceneObject;
-	}
-
 	private void OnLoaded(object sender, RoutedEventArgs e)
 	{
 		Window? wnd = this.FindParent<Window>();
@@ -87,8 +73,9 @@ public abstract partial class RendererElement : Image
 			return;
 
 		WindowInteropHelper interop = new(wnd);
+		WpfInput input = new(this);
 
-		this.Renderer = new(interop.Handle, this.Camera);
+		this.Renderer = new(interop.Handle, this.Camera, input);
 		this.Source = this.Renderer.Source;
 		this.Renderer.NewWidth = this.RenderWidth;
 		this.Renderer.NewHeight = this.RenderHeight;
@@ -106,10 +93,105 @@ public abstract partial class RendererElement : Image
 
 	partial void OnRenderWidthChanged(int newValue)
 	{
-			if (this.Renderer == null)
+		if (this.Renderer == null)
 			return;
 
 		this.Renderer.NewWidth = newValue;
+	}
+}
+
+public class WpfInput : RendererInput
+{
+	private InputStates mouseState = InputStates.None;
+	private Vector2 mousePosition = Vector2.Zero;
+	private Vector2 dragDelta = Vector2.Zero;
+	private Point startPosition;
+
+	public WpfInput(UIElement element)
+	{
+		element.MouseDown += this.OnMouseDown;
+		element.MouseUp += this.OnMouseUp;
+		element.MouseLeave += this.OnMouseLeave;
+		element.MouseMove += this.OnMouseMove;
+	}
+
+	protected void OnMouseDown(object sender, MouseButtonEventArgs e)
+	{
+		this.startPosition = CursorUtility.GetPosition();
+		this.mouseState = Input.InputStates.Activated;
+		this.dragDelta = Vector2.Zero;
+
+		FrameworkElement? element = sender as FrameworkElement;
+		if (element == null)
+			return;
+
+		element.CaptureMouse();
+		CursorUtility.SetCursorVisible(false);
+	}
+
+	protected void OnMouseUp(object sender, MouseButtonEventArgs e)
+	{
+		this.mouseState = Input.InputStates.Deactivated;
+		this.dragDelta = Vector2.Zero;
+
+		FrameworkElement? element = sender as FrameworkElement;
+		if (element == null)
+			return;
+
+		element.ReleaseMouseCapture();
+		CursorUtility.SetCursorVisible(true);
+	}
+
+	protected void OnMouseLeave(object sender, MouseEventArgs e)
+	{
+		this.mouseState = Input.InputStates.None;
+		this.mousePosition = Vector2.Zero;
+		this.dragDelta = Vector2.Zero;
+	}
+
+	protected void OnMouseMove(object sender, MouseEventArgs e)
+	{
+		FrameworkElement? element = sender as FrameworkElement;
+		if (element == null)
+			return;
+
+		this.mousePosition = e.GetPosition(element).ToVector2() / new Vector2((float)element.ActualWidth, (float)element.ActualHeight);
+
+		if (this.mouseState == InputStates.Held)
+		{
+			Point newPos = CursorUtility.GetPosition();
+
+			if (newPos != this.startPosition)
+			{
+				this.dragDelta = (this.startPosition.ToVector2() - newPos.ToVector2()) / 2.0f;
+				CursorUtility.SetPosition(this.startPosition);
+			}
+		}
+		else
+		{
+			this.dragDelta = Vector2.Zero;
+		}
+	}
+
+	protected override void ProcessInput(
+		out InputStates inputState,
+		out Vector2? cursorPosition,
+		out Vector2 dragDelta)
+	{
+		inputState = this.mouseState;
+		cursorPosition = this.mousePosition;
+		dragDelta = this.dragDelta;
+
+		this.dragDelta = Vector2.Zero;
+
+		if (this.mouseState == InputStates.Activated)
+		{
+			this.mouseState = InputStates.Held;
+		}
+		else if (this.mouseState == InputStates.Deactivated)
+		{
+			this.mouseState = InputStates.None;
+		}
 	}
 }
 
@@ -119,6 +201,7 @@ public class WpfRenderer : Renderer
 	private readonly MeshRenderer<BlitMaterial> quad = new(MeshContent.Quad);
 	private readonly nint windowHandle;
 	private readonly RendererCamera camera;
+	private readonly RendererInput input;
 	private D3D11Texture? backBuffer;
 
 	private D3D9Texture? d3d9SharedTexture;
@@ -134,9 +217,10 @@ public class WpfRenderer : Renderer
 	private ShaderResourceView? maskResourceView;
 	private ShaderResourceView? depthResourceView;
 
-	public WpfRenderer(nint windowHandle, RendererCamera camera)
+	public WpfRenderer(nint windowHandle, RendererCamera camera, RendererInput input)
 	{
 		this.camera = camera;
+		this.input = input;
 		this.windowHandle = windowHandle;
 		this.Forward.ViewportScale = 4;
 		this.AddPass(this.Forward);
@@ -146,6 +230,7 @@ public class WpfRenderer : Renderer
 
 	public D3DImage Source { get; init; } = new();
 	public override RendererCamera Camera => this.camera;
+	public override RendererInput Input => this.input;
 
 	public override void Dispose()
 	{

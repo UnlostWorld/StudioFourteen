@@ -13,40 +13,26 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Rendering.Draw.Handles;
+namespace StudioFourteen.Rendering;
 
-using StudioFourteen.Services;
+using System.Diagnostics;
 using System.Numerics;
 using System.Runtime.CompilerServices;
-using StudioFourteen.Rendering.Draw;
 using StudioFourteen.Input;
-using System.Threading.Tasks;
-using System.Diagnostics;
+using StudioFourteen.Rendering.Draw;
+using StudioFourteen.Rendering.Draw.Handles;
 
-public partial class HandleService : ServiceBase
+public abstract class RendererInput
 {
 	private readonly Stopwatch timeoutTimer = new();
 	private readonly ConditionalWeakTable<DrawObject, Handle?> parentHandles = new();
-	private readonly Input2DListener dragListener = new(
-		InputAction.Handle_Right,
-		InputAction.Handle_Left,
-		InputAction.Handle_Down,
-		InputAction.Handle_Up,
-		"Handle Service Move");
-
-	private readonly Input0DListener selectListener = new(
-		InputAction.Handle_Select,
-		"Handle Service Select");
-
 	private readonly HitTestResult pressHitTestResult = new();
+
 	private Handle? currentHover;
 	private Handle? currentPress;
 
-	private bool didDrag = false;
-
-	public bool IsCursorOverHandle => this.CurrentHover != null;
-
-	public DrawObject? CurrentHoverOverride { get; set; }
+	public static bool IsCursorOverHandle => GlobalHover != null;
+	public static Handle? GlobalHover { get; private set; }
 
 	public Handle? CurrentHover
 	{
@@ -66,6 +52,7 @@ public partial class HandleService : ServiceBase
 			}
 
 			this.currentHover = value;
+			GlobalHover = value;
 
 			if (this.currentHover != null)
 			{
@@ -86,31 +73,14 @@ public partial class HandleService : ServiceBase
 			this.currentPress = value;
 			this.currentPress?.SetIsHandlePressed(true);
 
-			if (this.currentPress != null)
-			{
-				this.dragListener.Enable();
-			}
-			else
-			{
-				this.dragListener.Disable();
-			}
+			this.OnHandlePress(this.CurrentPress);
 		}
 	}
 
-	public override void Attach()
-	{
-		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
-		this.selectListener.Enable();
-		this.Timeout();
-		base.Attach();
-	}
+	protected ServiceManager Services => ServiceManager.Instance;
 
-	public override void Detach()
+	public virtual void OnHandlePress(Handle? handle)
 	{
-		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
-
-		this.selectListener.Disable();
-		base.Detach();
 	}
 
 	public void Timeout()
@@ -118,14 +88,15 @@ public partial class HandleService : ServiceBase
 		this.timeoutTimer.Restart();
 	}
 
-	private void OnGameTick()
+	public void Process(Renderer renderer)
 	{
-		if (this.Services.Input.Mouse == null)
-		{
-			this.CurrentPress = null;
-			this.CurrentHover = null;
-		}
-		else if (this.CurrentPress == null &&
+		InputStates inputState;
+		Vector2? mousePosition;
+		Vector2 dragDelta;
+
+		this.ProcessInput(out inputState, out mousePosition, out dragDelta);
+
+		if (this.CurrentPress == null &&
 			(this.Services.Windows.IsCursorOverAtkUnit
 			|| this.Services.Windows.IsCursorOverImGui
 			|| this.Services.Reshade.IsReshadeOverlayOpen
@@ -135,62 +106,40 @@ public partial class HandleService : ServiceBase
 		}
 		else
 		{
-			bool isTimedout = true;
-			if (this.timeoutTimer.ElapsedMilliseconds > 250)
+			bool isTimeout = true;
+			if (this.timeoutTimer.ElapsedMilliseconds <= 0 || this.timeoutTimer.ElapsedMilliseconds > 250)
 			{
 				this.timeoutTimer.Stop();
-				isTimedout = false;
+				isTimeout = false;
 			}
-
-			InputStates state = this.selectListener.GetState();
 
 			// Check hover
-			if (this.CurrentPress == null && !isTimedout && state != InputStates.Held)
+			if (this.CurrentPress == null && !isTimeout && inputState != InputStates.Held)
 			{
-				if (this.Services.Windows.IsCursorOverStudio && this.CurrentHoverOverride != null)
+				if (mousePosition != null)
 				{
-					this.CurrentHover = this.GetHandle(this.CurrentHoverOverride);
-				}
-				else
-				{
-					Vector2? mousePosition = this.Services.Input.Mouse.GetPosition();
-					if (mousePosition != null)
-					{
-						this.pressHitTestResult.Clear();
+					this.pressHitTestResult.Clear();
 
-						// TODO: Scale this with resolution and aspect?
-						this.pressHitTestResult.MaxDistance = 20f / 1920f; // 20px on a 1920 monitor.
-						this.Services.Rendering.OverlayRenderer.HitTest(mousePosition.Value, this.pressHitTestResult);
-						this.CurrentHover = this.GetHandle(this.pressHitTestResult.SceneObject);
-					}
+					this.pressHitTestResult.MaxDistance = 20f / renderer.Width;
+					renderer.HitTest(mousePosition.Value, this.pressHitTestResult);
+					this.CurrentHover = this.GetHandle(this.pressHitTestResult.SceneObject);
 				}
 			}
 
-			if (state == InputStates.Activated)
+			if (inputState == InputStates.Activated)
 			{
 				this.CurrentPress = this.CurrentHover;
 			}
 
-			if (state == InputStates.None)
+			if (inputState == InputStates.None)
 			{
 				this.CurrentPress = null;
-			}
-
-			if (state == InputStates.Deactivated && !this.didDrag)
-			{
-				this.Services.Selection.Clear();
-			}
-
-			if (state == InputStates.Held)
-			{
-				this.didDrag = this.Services.Input.Mouse.IsAnyDragging;
 			}
 
 			// Check drag
 			if (this.CurrentPress != null)
 			{
-				Vector2 drag = this.dragListener.Value;
-				this.CurrentPress.HandleDrag(this.pressHitTestResult, drag);
+				this.CurrentPress.HandleDrag(this.pressHitTestResult, dragDelta);
 			}
 
 			if (this.currentHover != null)
@@ -198,11 +147,11 @@ public partial class HandleService : ServiceBase
 				string toolTipContent = string.Empty;
 				Vector3 toolTipPosition = Vector3.Zero;
 				bool show = this.currentHover.GetToolTip(ref toolTipContent, ref toolTipPosition);
-
-				////this.handleTipWindow?.Update(show, toolTipContent, toolTipPosition);
 			}
 		}
 	}
+
+	protected abstract void ProcessInput(out InputStates inputState, out Vector2? cursorPosition, out Vector2 dragDelta);
 
 	private Handle? GetHandle(DrawObject? obj)
 	{

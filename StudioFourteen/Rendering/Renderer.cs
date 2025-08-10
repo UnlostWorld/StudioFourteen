@@ -59,6 +59,7 @@ public abstract class Renderer : IDisposable
 	public int NewWidth { get; set; } = 0;
 	public int NewHeight { get; set; } = 0;
 	public abstract RendererCamera Camera { get; }
+	public abstract RendererInput Input { get; }
 	public ShaderCache Shaders => this.shaderCache;
 
 	public ServiceManager Services => ServiceManager.Instance;
@@ -96,6 +97,7 @@ public abstract class Renderer : IDisposable
 	public virtual void Render()
 	{
 		this.SetUpRender();
+		this.Input.Process(this);
 		this.RenderPasses(this.allPasses);
 
 		this.device?.ImmediateContext.Flush();
