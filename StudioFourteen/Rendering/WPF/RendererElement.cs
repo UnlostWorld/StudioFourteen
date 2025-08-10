@@ -17,10 +17,12 @@ namespace StudioFourteen.Rendering.WPF;
 
 using System;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
+using DependencyPropertyGenerator;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using SharpDX.Direct3D9;
@@ -45,29 +47,20 @@ using DXGISwapChain = SharpDX.DXGI.SwapChain;
 using DXGISwapEffect = SharpDX.DXGI.SwapEffect;
 using DXGIUsage = SharpDX.DXGI.Usage;
 
+[DependencyProperty<int>("RenderWidth", DefaultValue = 256)]
+[DependencyProperty<int>("RenderHeight", DefaultValue = 256)]
 public abstract partial class RendererElement : Image
 {
 	private readonly HitTestResult pressHitTestResult = new();
 
 	public RendererElement()
 	{
-		this.Stretch = System.Windows.Media.Stretch.Fill;
+		this.Stretch = System.Windows.Media.Stretch.Uniform;
 		this.Loaded += this.OnLoaded;
 	}
 
 	protected WpfRenderer? Renderer { get; private set; }
 	protected abstract RendererCamera Camera { get; }
-
-	protected override void OnRenderSizeChanged(SizeChangedInfo sizeInfo)
-	{
-		base.OnRenderSizeChanged(sizeInfo);
-
-		if (this.Renderer == null || this.ActualWidth <= 0 || this.ActualHeight <= 0)
-			return;
-
-		////this.Renderer.NewWidth = (int)this.ActualWidth;
-		////this.Renderer.NewHeight = (int)this.ActualHeight;
-	}
 
 	protected abstract void Initialize();
 
@@ -97,8 +90,26 @@ public abstract partial class RendererElement : Image
 
 		this.Renderer = new(interop.Handle, this.Camera);
 		this.Source = this.Renderer.Source;
+		this.Renderer.NewWidth = this.RenderWidth;
+		this.Renderer.NewHeight = this.RenderHeight;
 
 		this.Initialize();
+	}
+
+	partial void OnRenderHeightChanged(int newValue)
+	{
+		if (this.Renderer == null)
+			return;
+
+		this.Renderer.NewHeight = newValue;
+	}
+
+	partial void OnRenderWidthChanged(int newValue)
+	{
+			if (this.Renderer == null)
+			return;
+
+		this.Renderer.NewWidth = newValue;
 	}
 }
 
@@ -178,7 +189,7 @@ public class WpfRenderer : Renderer
 
 		base.Render();
 
-		if (this.d3d9Surface == null || this.outputRtv == null || this.d3d11Device == null)
+		if (!this.CanRender || this.d3d9Surface == null || this.outputRtv == null || this.d3d11Device == null)
 			return;
 
 		this.d3d11Device.ImmediateContext.PixelShader.SetShaderResource(2, this.backSrv);
@@ -197,14 +208,60 @@ public class WpfRenderer : Renderer
 
 	protected override void RenderPass(RenderPassBase pass)
 	{
+		if (!this.CanRender)
+			return;
+
 		this.DeviceContext?.PixelShader.SetShaderResource(0, this.maskResourceView);
 		this.DeviceContext?.PixelShader.SetShaderResource(1, this.depthResourceView);
 
 		base.RenderPass(pass);
 	}
 
+	protected override void OnResolutionChanged()
+	{
+		this.backBuffer?.Dispose();
+		this.backBuffer = null;
+
+		this.swapChain?.Dispose();
+		this.swapChain = null;
+
+		this.d3d9SharedTexture?.Dispose();
+		this.d3d9SharedTexture = null;
+
+		this.d3d9Surface?.Dispose();
+		this.d3d9Surface = null;
+
+		this.d3d11SharedTexture?.Dispose();
+		this.d3d11SharedTexture = null;
+
+		this.backSrv?.Dispose();
+		this.backSrv = null;
+
+		this.backRtv?.Dispose();
+		this.backRtv = null;
+
+		base.OnResolutionChanged();
+	}
+
 	protected override D3D11Texture? GetBackBuffer()
 	{
+		if (this.d3d9Device == null)
+		{
+			const CreateFlags deviceFlags = CreateFlags.HardwareVertexProcessing | CreateFlags.FpuPreserve;
+
+			// D3D9 output
+			D3D9PresentParameters presentParameters = new()
+			{
+				Windowed = true,
+				SwapEffect = SharpDX.Direct3D9.SwapEffect.Discard,
+				DeviceWindowHandle = this.windowHandle,
+				PresentationInterval = PresentInterval.Default,
+			};
+
+			Direct3DEx direct3d = new();
+			this.d3d9Device = new(direct3d, 0, DeviceType.Hardware, IntPtr.Zero, deviceFlags, presentParameters);
+		}
+
 		if (this.backBuffer == null)
 		{
 			// Create a D3D11 device and swapchain to handle the rendering.
@@ -226,6 +283,9 @@ public class WpfRenderer : Renderer
 				OutputHandle = this.windowHandle,
 			};
 
+			this.d3d11Device?.Dispose();
+			this.swapChain?.Dispose();
+
 			D3D11Device.CreateWithSwapChain(
 				DriverType.Hardware,
 				DeviceCreationFlags.BgraSupport | DeviceCreationFlags.Debug,
@@ -243,20 +303,6 @@ public class WpfRenderer : Renderer
 
 			this.backSrv = new(this.d3d11Device, this.backBuffer);
 			this.backRtv = new(this.d3d11Device, this.backBuffer);
-
-			// D3D9 output
-			D3D9PresentParameters presentparams = new()
-			{
-				Windowed = true,
-				SwapEffect = SharpDX.Direct3D9.SwapEffect.Discard,
-				DeviceWindowHandle = this.windowHandle,
-				PresentationInterval = PresentInterval.Default,
-			};
-
-			const CreateFlags deviceFlags = CreateFlags.HardwareVertexProcessing | CreateFlags.FpuPreserve;
-
-			Direct3DEx direct3d = new();
-			this.d3d9Device = new(direct3d, 0, DeviceType.Hardware, IntPtr.Zero, deviceFlags, presentparams);
 
 			nint sharedHandle = 0;
 			this.d3d9SharedTexture = new(

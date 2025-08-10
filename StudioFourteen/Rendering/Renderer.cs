@@ -54,10 +54,10 @@ public abstract class Renderer : IDisposable
 	}
 
 	public Texture2D? BackBuffer { get; private set; }
-	public int Width { get; private set; } = 256;
-	public int Height { get; private set; } = 256;
-	public int NewWidth { get; set; } = 256;
-	public int NewHeight { get; set; } = 256;
+	public int Width { get; private set; } = 0;
+	public int Height { get; private set; } = 0;
+	public int NewWidth { get; set; } = 0;
+	public int NewHeight { get; set; } = 0;
 	public abstract RendererCamera Camera { get; }
 	public ShaderCache Shaders => this.shaderCache;
 
@@ -118,7 +118,7 @@ public abstract class Renderer : IDisposable
 
 	protected virtual void RenderPass(RenderPassBase pass)
 	{
-		if (this.device == null || this.deviceContext == null)
+		if (!this.canRender || this.device == null || this.deviceContext == null)
 			return;
 
 		pass.Render(this, this.device, this.deviceContext);
@@ -145,6 +145,16 @@ public abstract class Renderer : IDisposable
 		}
 	}
 
+	protected virtual void OnResolutionChanged()
+	{
+		this.Log.Information($"Resolution changed: {this.Width}x{this.Height}");
+
+		foreach (RenderPassBase pass in this.allPasses)
+		{
+			pass.OnResolutionChanged();
+		}
+	}
+
 	protected unsafe abstract Texture2D? GetBackBuffer();
 
 	protected virtual unsafe bool TrySetUpRender()
@@ -154,31 +164,15 @@ public abstract class Renderer : IDisposable
 
 		try
 		{
-			this.BackBuffer = this.GetBackBuffer();
-			if (this.BackBuffer == null)
+			if (this.NewWidth <= 0 || this.NewHeight <= 0)
 				return false;
-
-			this.device = this.BackBuffer.Device;
-			if (this.device == null)
-				return false;
-
-			if (this.deviceContext == null)
-				this.deviceContext = new(this.device);
-
-			this.NewWidth = int.Clamp(this.NewWidth, 128, 4096);
-			this.NewHeight = int.Clamp(this.NewHeight, 128, 4096);
 
 			if (this.Width != this.NewWidth || this.Height != this.NewHeight)
 			{
 				this.Width = this.NewWidth;
 				this.Height = this.NewHeight;
 
-				this.Log.Information($"Resolution changed: {this.Width}x{this.Height}");
-
-				foreach (RenderPassBase pass in this.allPasses)
-				{
-					pass.OnResolutionChanged();
-				}
+				this.OnResolutionChanged();
 
 				this.resolutionChangeCoolDown = 15;
 				return false;
@@ -189,6 +183,20 @@ public abstract class Renderer : IDisposable
 				this.resolutionChangeCoolDown--;
 				return false;
 			}
+
+			if (this.Width <= 0 || this.Height <= 0)
+				return false;
+
+			this.BackBuffer = this.GetBackBuffer();
+			if (this.BackBuffer == null)
+				return false;
+
+			this.device = this.BackBuffer.Device;
+			if (this.device == null)
+				return false;
+
+			if (this.deviceContext == null)
+				this.deviceContext = new(this.device);
 
 			return true;
 		}
