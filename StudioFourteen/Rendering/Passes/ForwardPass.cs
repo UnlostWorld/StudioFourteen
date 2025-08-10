@@ -59,9 +59,9 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 		}
 	}
 
-	public void HitTest(Vector2 screenPosition, HitTestResult result)
+	public override void HitTest(Renderer renderer, Vector2 screenPosition, HitTestResult result)
 	{
-		Matrix4x4 viewProj = this.Services.Camera.CurrentView * this.Services.Camera.CurrentProjection;
+		Matrix4x4 viewProj = renderer.Camera.GetViewMatrix(renderer) * renderer.Camera.GetProjectionMatrix(renderer);
 
 		lock (this.sceneObjects)
 		{

@@ -33,6 +33,8 @@ public abstract class RendererCamera
 	public abstract Vector3 GetCameraPosition(Renderer renderer);
 }
 
+// Thanks to Pictomancy for much of the initial DX11 Setup logic.
+// https://github.com/sourpuh/ffxiv_pictomancy
 public abstract class Renderer : IDisposable
 {
 	protected readonly ILogger Log;
@@ -75,6 +77,14 @@ public abstract class Renderer : IDisposable
 		foreach (RenderPassBase pass in this.allPasses)
 		{
 			pass.Dispose();
+		}
+	}
+
+	public void HitTest(Vector2 screenPosition, HitTestResult result)
+	{
+		foreach (RenderPassBase pass in this.allPasses)
+		{
+			pass.HitTest(this, screenPosition, result);
 		}
 	}
 
@@ -174,7 +184,7 @@ public abstract class Renderer : IDisposable
 				return false;
 			}
 
-			if(this.resolutionChangeCoolDown > 0)
+			if (this.resolutionChangeCoolDown > 0)
 			{
 				this.resolutionChangeCoolDown--;
 				return false;

@@ -16,8 +16,10 @@
 namespace StudioFourteen.Rendering.WPF;
 
 using System;
+using System.Numerics;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Interop;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
@@ -45,6 +47,8 @@ using DXGIUsage = SharpDX.DXGI.Usage;
 
 public abstract partial class RendererElement : Image
 {
+	private readonly HitTestResult pressHitTestResult = new();
+
 	public RendererElement()
 	{
 		this.Stretch = System.Windows.Media.Stretch.Fill;
@@ -66,6 +70,22 @@ public abstract partial class RendererElement : Image
 	}
 
 	protected abstract void Initialize();
+
+	protected override void OnMouseMove(MouseEventArgs e)
+	{
+		base.OnMouseMove(e);
+
+		this.pressHitTestResult.Clear();
+
+		if (this.Renderer == null)
+			return;
+
+		this.pressHitTestResult.MaxDistance = 20.0f / (float)this.ActualWidth;
+
+		Vector2 mousePosition = e.GetPosition(this).ToVector2() / new Vector2((float)this.ActualWidth, (float)this.ActualHeight);
+		this.Renderer.HitTest(mousePosition, this.pressHitTestResult);
+		ServiceManager.Instance.Handles.CurrentHoverOverride = this.pressHitTestResult.SceneObject;
+	}
 
 	private void OnLoaded(object sender, RoutedEventArgs e)
 	{

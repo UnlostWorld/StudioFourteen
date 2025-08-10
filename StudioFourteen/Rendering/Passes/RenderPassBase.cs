@@ -16,6 +16,7 @@
 namespace StudioFourteen.Rendering.Passes;
 
 using System;
+using System.Numerics;
 using Serilog;
 using SharpDX.Direct3D11;
 using Buffer = SharpDX.Direct3D11.Buffer;
@@ -33,6 +34,9 @@ public abstract class RenderPassBase : IDisposable
 	public bool IncludeInScreenshots { get; set; } = false;
 
 	public abstract void Render(Renderer renderer, Device device, DeviceContext deviceContext);
+	public virtual void HitTest(Renderer renderer, Vector2 position, HitTestResult result)
+	{
+	}
 
 	public virtual void OnResolutionChanged()
 	{

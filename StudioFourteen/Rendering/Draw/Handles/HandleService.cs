@@ -20,7 +20,6 @@ using System.Numerics;
 using System.Runtime.CompilerServices;
 using StudioFourteen.Rendering.Draw;
 using StudioFourteen.Input;
-using System.Windows.Input;
 using System.Threading.Tasks;
 using System.Diagnostics;
 
@@ -44,9 +43,10 @@ public partial class HandleService : ServiceBase
 	private Handle? currentPress;
 
 	private bool didDrag = false;
-	////private HandleTipWindow? handleTipWindow;
 
 	public bool IsCursorOverHandle => this.CurrentHover != null;
+
+	public DrawObject? CurrentHoverOverride { get; set; }
 
 	public Handle? CurrentHover
 	{
@@ -63,7 +63,6 @@ public partial class HandleService : ServiceBase
 			if (this.currentHover != null)
 			{
 				this.currentHover.SetIsHandleHovered(false);
-				////this.handleTipWindow?.Hide(this.currentHover);
 			}
 
 			this.currentHover = value;
@@ -71,7 +70,6 @@ public partial class HandleService : ServiceBase
 			if (this.currentHover != null)
 			{
 				this.currentHover.SetIsHandleHovered(true);
-				////this.handleTipWindow?.Show(this.currentHover);
 			}
 		}
 	}
@@ -99,12 +97,6 @@ public partial class HandleService : ServiceBase
 		}
 	}
 
-	public override async Task Start()
-	{
-		////this.handleTipWindow = await HandleTipWindow.CreateInstanceAsync<HandleTipWindow>();
-		await base.Start();
-	}
-
 	public override void Attach()
 	{
 		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
@@ -116,7 +108,6 @@ public partial class HandleService : ServiceBase
 	public override void Detach()
 	{
 		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
-		////this.handleTipWindow?.Hide(null);
 
 		this.selectListener.Disable();
 		base.Detach();
@@ -137,9 +128,8 @@ public partial class HandleService : ServiceBase
 		else if (this.CurrentPress == null &&
 			(this.Services.Windows.IsCursorOverAtkUnit
 			|| this.Services.Windows.IsCursorOverImGui
-			|| this.Services.Windows.IsCursorOverStudio
 			|| this.Services.Reshade.IsReshadeOverlayOpen
-			|| !this.Services.Windows.IsCursorOverXiv))
+			|| (!this.Services.Windows.IsCursorOverXiv && !this.Services.Windows.IsCursorOverStudio)))
 		{
 			this.CurrentHover = null;
 		}
@@ -157,15 +147,22 @@ public partial class HandleService : ServiceBase
 			// Check hover
 			if (this.CurrentPress == null && !isTimedout && state != InputStates.Held)
 			{
-				Vector2? mousePosition = this.Services.Input.Mouse.GetPosition();
-				if (mousePosition != null)
+				if (this.Services.Windows.IsCursorOverStudio && this.CurrentHoverOverride != null)
 				{
-					this.pressHitTestResult.Clear();
+					this.CurrentHover = this.GetHandle(this.CurrentHoverOverride);
+				}
+				else
+				{
+					Vector2? mousePosition = this.Services.Input.Mouse.GetPosition();
+					if (mousePosition != null)
+					{
+						this.pressHitTestResult.Clear();
 
-					// TODO: Scale this with resolution and aspect?
-					this.pressHitTestResult.MaxDistance = 20f / 1920f; // 20px on a 1920 monitor.
-					this.Services.Rendering.OverlayRenderer.Forward.HitTest(mousePosition.Value, this.pressHitTestResult);
-					this.CurrentHover = this.GetHandle(this.pressHitTestResult.SceneObject);
+						// TODO: Scale this with resolution and aspect?
+						this.pressHitTestResult.MaxDistance = 20f / 1920f; // 20px on a 1920 monitor.
+						this.Services.Rendering.OverlayRenderer.HitTest(mousePosition.Value, this.pressHitTestResult);
+						this.CurrentHover = this.GetHandle(this.pressHitTestResult.SceneObject);
+					}
 				}
 			}
 

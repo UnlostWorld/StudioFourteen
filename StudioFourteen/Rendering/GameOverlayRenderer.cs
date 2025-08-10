@@ -33,8 +33,6 @@ public class RendererStudioCamera : RendererCamera
 	public override Matrix4x4 GetProjectionMatrix(Renderer renderer) => ServiceManager.Instance.Camera.LastProjection;
 }
 
-// Thanks to Pictomancy for much of the initial DX11 Setup logic.
-// https://github.com/sourpuh/ffxiv_pictomancy
 public class GameOverlayRenderer : Renderer
 {
 	public readonly ForwardPass Forward = new();
