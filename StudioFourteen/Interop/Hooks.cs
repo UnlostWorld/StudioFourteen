@@ -108,10 +108,10 @@ public static unsafe class Hooks
 	internal static readonly SignatureHook<EnvStateCopyDelegate> EnvStateCopy = new("E8 ?? ?? ?? ?? 49 3B F5 75 0D");
 
 	// Title Edit Signatures:
-	// 		https://github.com/Caraxi/TitleEditPlugin
-	// 		Special thanks to @Caraxi
+	// 		https://github.com/RokasKil/TitleEdit
+	// 		Special thanks to @RokasKil
 
-	// https://github.com/Caraxi/TitleEditPlugin/blob/master/TitleEdit/TitleEditAddressResolver.cs#L40
+	// https://github.com/RokasKil/TitleEdit/blob/master/TitleEdit/PluginServices/Lobby/LobbyService.cs#L103
 	internal delegate int CreateSceneDelegate(string p1, uint p2, IntPtr p3, uint p4, IntPtr p5, int p6, uint p7);
-	internal static readonly SignatureHook<CreateSceneDelegate> CreateScene = new("E8 ?? ?? ?? ?? 66 89 1D ?? ?? ?? ?? E9 ?? ?? ?? ??");
+	internal static readonly SignatureHook<CreateSceneDelegate> CreateScene = new("E8 ?? ?? ?? ?? 66 89 3D ?? ?? ?? ?? E9");
 }
