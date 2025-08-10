@@ -127,6 +127,8 @@ public class Formatter(bool includeLevel, bool includeContext = true) : ITextFor
 		while (ex != null)
 		{
 			output.Write("----> ");
+			output.Write(ex.GetType().Name);
+			output.Write(": ");
 			output.WriteLine(ex.Message);
 			output.WriteLine(CleanStackTrace(ex.StackTrace));
 			ex = ex.InnerException;
