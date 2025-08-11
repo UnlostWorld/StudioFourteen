@@ -160,10 +160,13 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 			if (this.panel != null)
 			{
 				this.panel.PropertyChanged -= this.OnPanelPropertyChanged;
+				this.panel.SetIsOpen(this, false, false);
 			}
 
 			this.Content = value;
 			this.panel = value;
+
+			this.panel?.SetHost(this);
 
 			if (this.IsOpen)
 			{
@@ -256,8 +259,19 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	public void SetPanelPath(string str)
 	{
 		this.panelContent = new(str);
+
+		this.panelContent.OnReloaded += () =>
+		{
+			this.Dispatcher.BeginInvoke(() =>
+			{
+				if (ServiceManager.ShutdownRequested)
+					return;
+
+				this.Panel = this.panelContent.Get();
+			});
+		};
+
 		this.Panel = this.panelContent.Get();
-		this.Panel.SetHost(this);
 	}
 
 	public override string ToString()

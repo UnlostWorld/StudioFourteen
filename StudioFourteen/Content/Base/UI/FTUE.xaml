@@ -1,0 +1,11 @@
+<s14:Panel
+	Width="800"
+	Height="600"
+	DefaultPosition="0.5,0.5"
+	RememberWindowState="False"
+	ResizeMode="NoResize"
+	SizeToContent="Manual"
+	VisibilityMode="Always">
+
+	<TextBlock Text="Hello World!" Foreground="{DynamicResource ForegroundBrush}"/>
+</s14:Panel>

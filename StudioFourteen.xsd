@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xs:schema id="StudioFourteenSchema"
+	targetNamespace="s14"
+	elementFormDefault="qualified"
+	xmlns="s14"
+	xmlns:xs="http://www.w3.org/2001/XMLSchema"
+	xmlns:noNamespaceSchemaLocation="https://www.w3.org/2001/XMLSchema.xsd"
+	xmlns:wpf="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+
+	<xs:import namespace="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+		schemaLocation="Wpf.xsd" />
+
+	<xs:simpleType name="text">
+		<xs:restriction base="xs:string" />
+	</xs:simpleType>
+
+	<xs:element name="Panel">
+
+		<xs:complexType mixed="true">
+			<xs:complexContent>
+				<xs:extension base="wpf:FrameworkElement">
+					<xs:attribute name="DefaultPosition" type="text" />
+					<xs:attribute name="RememberWindowState" type="text" />
+					<xs:attribute name="ResizeMode" type="text" />
+					<xs:attribute name="SizeToContent" type="text" />
+					<xs:attribute name="VisibilityMode" type="text" />
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+
+
+</xs:schema>

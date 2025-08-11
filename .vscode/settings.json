@@ -45,4 +45,13 @@
 	"github-actions.workflows.pinned.workflows": [
 		".github/workflows/release.yml"
 	],
+	"xml.fileAssociations": [
+		{
+			"pattern": "**/*.xaml",
+			"systemId": "StudioFourteen.xsd"
+		}
+	],
+	"xml.format.emptyElements": "collapse",
+	"xml.format.enforceQuoteStyle": "preferred",
+	"xml.validation.enabled": false,
 }

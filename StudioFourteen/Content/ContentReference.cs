@@ -22,7 +22,14 @@ public abstract class ContentReference(string path)
 {
 	public readonly string Path = path;
 
-	public abstract void Reload();
+	public delegate void ReloadDelegate();
+
+	public event ReloadDelegate? OnReloaded;
+
+	public virtual void Reload()
+	{
+		this.OnReloaded?.Invoke();
+	}
 }
 
 public abstract class ContentReference<T>(string path)
@@ -36,6 +43,7 @@ public abstract class ContentReference<T>(string path)
 	{
 		this.lastInstance = this.instance;
 		this.instance = default;
+		base.Reload();
 	}
 
 	public T Get()

@@ -18,6 +18,7 @@ namespace StudioFourteen.Content;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using StudioFourteen.Input;
 using StudioFourteen.Plugin;
@@ -65,6 +66,20 @@ public class ContentService : ServiceBase
 		return base.Initialize();
 	}
 
+	public override Task Shutdown()
+	{
+		#if DEBUG
+		if (this.watcher != null)
+		{
+			this.watcher.Changed -= this.OnDirectoryChanged;
+			this.watcher.EnableRaisingEvents = false;
+			this.watcher.Dispose();
+		}
+		#endif
+
+		return base.Shutdown();
+	}
+
 	public List<string> GetContents(string directoryPath)
 	{
 		string resolvedPath = this.ResolvePath(directoryPath);
@@ -93,7 +108,19 @@ public class ContentService : ServiceBase
 	{
 		string resolvedPath = this.ResolvePath(path);
 
-		FileStream stream = new(resolvedPath, FileMode.Open, FileAccess.Read);
+		FileStream? stream = null;
+		for (int i = 0; i < 10; i++)
+		{
+			try
+			{
+				stream = new(resolvedPath, FileMode.Open, FileAccess.Read);
+			}
+			catch (IOException)
+			{
+				Thread.Sleep(10);
+			}
+		}
+
 		if (stream == null)
 			throw new Exception($"Content \"{resolvedPath}\" not found");
 

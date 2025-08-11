@@ -52,6 +52,14 @@ public class XamlContentReference<T>(string path)
 			dict?.Clear();
 		}
 
+		Context.XmlnsDictionary.Add(string.Empty, "http://schemas.microsoft.com/winfx/2006/xaml/presentation");
+		Context.XmlnsDictionary.Add("x", "http://schemas.microsoft.com/winfx/2006/xaml");
+		Context.XmlnsDictionary.Add("d", "http://schemas.microsoft.com/expression/blend/2008");
+		Context.XmlnsDictionary.Add("mc", "http://schemas.openxmlformats.org/markup-compatibility/2006");
+
+		Context.XmlnsDictionary.Add("s14", "clr-namespace:StudioFourteen.Panels;assembly=StudioFourteen");
+		Context.XmlnsDictionary.Add("wpfUtils", "clr-namespace:WpfUtils.Controls;assembly=WpfUtils");
+
 		T? rootElement = (T)XamlReader.Load(stream, Context);
 		if (rootElement == null)
 			throw new Exception($"Content \"{this.Path}\" failed to load xaml");
