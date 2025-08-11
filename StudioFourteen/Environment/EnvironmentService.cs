@@ -22,6 +22,7 @@ using StudioFourteen.Interop;
 using StudioFourteen.Services;
 using System.Threading.Tasks;
 using StudioFourteen.GameData.Library;
+using System;
 
 public partial class EnvironmentService
 	: ServiceBase
@@ -116,8 +117,16 @@ public partial class EnvironmentService
 	private unsafe nint EnvStateCopy(EnvState* dest, EnvState* src)
 	{
 		nint result = Hooks.EnvStateCopy.Original(dest, src);
-		this.CurrentState.ReadFrom(dest);
-		this.CurrentState.WriteTo(dest);
+
+		try
+		{
+			this.CurrentState.ReadFrom(dest);
+			this.CurrentState.WriteTo(dest);
+		}
+		catch (Exception ex)
+		{
+			this.Log.Error(ex, "Error processing environment state");
+		}
 
 		return result;
 	}
