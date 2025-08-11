@@ -44,6 +44,21 @@ public partial class SettingsService : ServiceBase
 
 	public event SettingChangedDelegate? SettingChanged;
 
+	public enum InterfacePresets
+	{
+		// Use the widget, show the target bar.
+		FloatingInspector,
+
+		// Use the inspector window, hide the target bar.
+		SingleInspectorWindow,
+
+		// Use the independent inspectors, show the target bar.
+		DedicatedInspectorWindows,
+
+		// Disable all windows, use the AIO window.
+		AllInOne,
+	}
+
 	public Configuration Current
 	{
 		get => this.current;
@@ -111,6 +126,52 @@ public partial class SettingsService : ServiceBase
 		}
 	}
 
+	public void SetPreset(InterfacePresets preset)
+	{
+		switch (preset)
+		{
+			case InterfacePresets.FloatingInspector:
+			{
+				this.current.WidgetMode = Configuration.WidgetModes.Inspector;
+				this.current.EnableInspector = false;
+				this.current.EnableDedicatedInspectors = false;
+				this.current.AllInOne = Configuration.AioModes.Disabled;
+				this.current.EnableTargetBar = true;
+				break;
+			}
+
+			case InterfacePresets.SingleInspectorWindow:
+			{
+				this.current.WidgetMode = Configuration.WidgetModes.Disabled;
+				this.current.EnableInspector = true;
+				this.current.EnableDedicatedInspectors = false;
+				this.current.AllInOne = Configuration.AioModes.Disabled;
+				this.current.EnableTargetBar = false;
+				break;
+			}
+
+			case InterfacePresets.DedicatedInspectorWindows:
+			{
+				this.current.WidgetMode = Configuration.WidgetModes.Disabled;
+				this.current.EnableInspector = false;
+				this.current.EnableDedicatedInspectors = true;
+				this.current.AllInOne = Configuration.AioModes.Disabled;
+				this.current.EnableTargetBar = true;
+				break;
+			}
+
+			case InterfacePresets.AllInOne:
+			{
+				this.current.WidgetMode = Configuration.WidgetModes.Disabled;
+				this.current.EnableInspector = false;
+				this.current.EnableDedicatedInspectors = false;
+				this.current.AllInOne = Configuration.AioModes.Always;
+				this.current.EnableTargetBar = true;
+				break;
+			}
+		}
+	}
+
 	private void OnCurrentConfigPropertyChanged(object? sender, PropertyChangedEventArgs e)
 	{
 		if (e.PropertyName == null)
@@ -156,6 +217,12 @@ public partial class SettingsService : ServiceBase
 		[Notify] private bool useSystemCursors = false;
 		[Notify] private List<string> resourcePacks = new();
 
+		[Notify] private WidgetModes widgetMode = WidgetModes.Inspector;
+		[Notify] private bool enableInspector = true;
+		[Notify] private bool enableDedicatedInspectors = true;
+		[Notify] private AioModes allInOne = AioModes.Optional;
+		[Notify] private bool enableTargetBar = true;
+
 		// Input
 		[Notify] private bool allowKeyboardCapture = true;
 		[Notify] private bool allowMouseCapture = true;
@@ -167,6 +234,20 @@ public partial class SettingsService : ServiceBase
 
 		// Scripts
 		[Notify] private Dictionary<string, string> trustedScripts = new();
+
+		public enum WidgetModes
+		{
+			Disabled,
+			GizmoControls,
+			Inspector,
+		}
+
+		public enum AioModes
+		{
+			Disabled,
+			Optional,
+			Always,
+		}
 
 		public int Version { get; set; } = 0;
 

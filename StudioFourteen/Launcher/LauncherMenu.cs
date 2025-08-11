@@ -26,6 +26,7 @@ using StudioFourteen.Mvm;
 using StudioFourteen.Panels;
 using StudioFourteen.Scene.Cameras;
 using StudioFourteen.Scene.GameObjects.Characters;
+using StudioFourteen.Settings;
 using WpfUtils.Extensions;
 
 using Panel = StudioFourteen.Panels.Panel;
@@ -45,7 +46,9 @@ public partial class LauncherMenu : Control
 	}
 
 	public FastObservableCollection<LauncherEntry> Entries { get; init; } = new();
+
 	protected ServiceManager Services => ServiceManager.Instance;
+	protected SettingsService.Configuration Configuration => this.Services.Settings.Current;
 
 	public override void OnApplyTemplate()
 	{
@@ -75,18 +78,22 @@ public partial class LauncherMenu : Control
 		this.AddPanel<Marketplace.MarketplacePanel>(false);
 		this.AddPanel<Library.LibraryPanel>();
 
-		this.AddPanel<Selection.InspectorPanel>();
+		if (this.Configuration.EnableInspector)
+			this.AddPanel<Selection.InspectorPanel>();
 
-		this.AddPanel<CameraPanel>();
+		if (this.Configuration.EnableDedicatedInspectors)
+		{
+			this.AddPanel<CameraPanel>();
+			this.AddPanel<CharacterPanel>();
+		}
+
 		this.AddPanel<EnvironmentPanel>();
-		this.AddPanel<CharacterPanel>();
 		this.AddPanel<Posing.PosePanel>();
-
 		this.AddPanel<Animation.AnimationPanel>();
-
 		this.AddPanel<Photos.PhotoPanel>();
 
-		if (this.Context is not AioPanelContext)
+		if (this.Configuration.AllInOne != SettingsService.Configuration.AioModes.Disabled
+			&& this.Context is not AioPanelContext)
 			this.AddEntry<AioLauncherEntry>();
 
 		this.AddPanel<History.HistoryPanel>();
