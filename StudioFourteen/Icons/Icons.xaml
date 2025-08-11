@@ -154,4 +154,7 @@
 	<icons:Svg x:Key="ICON_Photo_HideUi" Source="HideUi" />
 
 	<icons:Fa x:Key="ICON_Widget_Expand" Icon="ChevronRight" Font="Solid" />
+
+	<icons:Svg x:Key="ICON_FTUE_AIO" Source="InterfacePresets/AllInOne" />
+	<icons:Svg x:Key="ICON_FTUE_SingleInspector" Source="InterfacePresets/SingleInspector" />
 </ResourceDictionary>

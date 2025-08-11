@@ -14,6 +14,7 @@
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
 namespace StudioFourteen.Icons;
+
 using System.Windows.Media;
 using DependencyPropertyGenerator;
 using SVGImage.SVG;

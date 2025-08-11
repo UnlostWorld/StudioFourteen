@@ -7,5 +7,9 @@
 	SizeToContent="Manual"
 	VisibilityMode="Always">
 
-	<TextBlock Text="Hello World!" Foreground="{DynamicResource ForegroundBrush}"/>
+	<Grid>
+		<s14:SwitchSelector Height="256">
+			<ListBoxItem Content="{DynamicResource ICON_FTUE_AIO}"/>
+		</s14:SwitchSelector>
+	</Grid>
 </s14:Panel>
