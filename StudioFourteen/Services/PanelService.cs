@@ -78,8 +78,6 @@ public class PanelService : ServiceBase
 	{
 		await base.Start();
 		await this.StartPanels();
-
-		await this.GamePanels.OpenPanelAsync("UI/FTUE.xaml");
 	}
 
 	public override async Task Stop()
