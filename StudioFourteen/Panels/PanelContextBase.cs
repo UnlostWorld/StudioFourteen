@@ -108,6 +108,8 @@ public abstract class PanelContextBase
 	public abstract Task RestorePanels();
 	public abstract Task TogglePanel(Type panelType);
 
+	public abstract Task<PanelWindow?> OpenPanelAsync(string panelPath, bool activate);
+
 	public void SetIsOpen<T>(bool open, bool activate)
 		where T : Panel
 	{

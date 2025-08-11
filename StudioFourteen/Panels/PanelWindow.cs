@@ -18,6 +18,7 @@ namespace StudioFourteen.Panels;
 using DependencyPropertyGenerator;
 using PropertyChanged.SourceGenerator;
 using Serilog;
+using StudioFourteen.Content;
 using StudioFourteen.Input;
 using StudioFourteen.Mvm;
 using StudioFourteen.Plugin;
@@ -61,6 +62,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	private double preScaleHeight;
 	private double preScaleWidth;
 	private Panel? panel;
+	private XamlContentReference<Panel>? panelContent;
 	private bool isDragMoving = false;
 	private bool isMinimizing = false;
 
@@ -213,7 +215,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 				}
 			}
 
-			// set the position after a delay to ensure it was set succesffuly,
+			// set the position after a delay to ensure it was set successfully,
 			// as setting it too early can get swallowed by the window positioning logic from windows api.
 			Task.Run(async () =>
 			{
@@ -249,6 +251,13 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		}
 
 		return panelWindow;
+	}
+
+	public void SetPanelPath(string str)
+	{
+		this.panelContent = new(str);
+		this.Panel = this.panelContent.Get();
+		this.Panel.SetHost(this);
 	}
 
 	public override string ToString()

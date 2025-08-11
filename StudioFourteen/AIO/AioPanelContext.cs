@@ -60,4 +60,9 @@ public class AioPanelContext : PanelContextBase
 	{
 		base.OnPanelClosed(panel, true);
 	}
+
+	public override Task<PanelWindow?> OpenPanelAsync(string panelPath, bool activate)
+	{
+		throw new NotImplementedException();
+	}
 }

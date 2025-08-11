@@ -50,6 +50,25 @@ public class GamePanelContext : PanelContextBase
 		return null;
 	}
 
+	public override async Task<PanelWindow?> OpenPanelAsync(string panelPath, bool activate = true)
+	{
+		PanelWindow? wnd = await PanelWindow.CreatePanelWindow<PanelWindow>(this);
+		if (wnd == null)
+			return null;
+
+		await wnd.Dispatcher.InvokeAsync(() =>
+		{
+			wnd.SetPanelPath(panelPath);
+			wnd.Show();
+			if (activate)
+			{
+				wnd.Activate();
+			}
+		});
+
+		return wnd;
+	}
+
 	public override async Task RestorePanels()
 	{
 		foreach (string panelTypeName in this.Settings.OpenPanels)
