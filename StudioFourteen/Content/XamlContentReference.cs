@@ -16,7 +16,7 @@
 namespace StudioFourteen.Content;
 
 using System;
-using System.Collections;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.Reflection;
@@ -27,8 +27,24 @@ public class XamlContentReference<T>(string path)
 {
 	private static readonly ParserContext Context = new();
 
+	static XamlContentReference()
+	{
+		Context.XmlnsDictionary.Add(string.Empty, "http://schemas.microsoft.com/winfx/2006/xaml/presentation");
+		Context.XmlnsDictionary.Add("x", "http://schemas.microsoft.com/winfx/2006/xaml");
+		Context.XmlnsDictionary.Add("d", "http://schemas.microsoft.com/expression/blend/2008");
+		Context.XmlnsDictionary.Add("mc", "http://schemas.openxmlformats.org/markup-compatibility/2006");
+		Context.XmlnsDictionary.Add("s14", "http://fourteen.studio");
+	}
+
 	protected override T Load(Stream stream)
 	{
+		List<NamespaceMapEntry> maps = new();
+		maps.Add(new NamespaceMapEntry("http://fourteen.studio", "StudioFourteen", "StudioFourteen.Panels"));
+		maps.Add(new NamespaceMapEntry("http://fourteen.studio", "StudioFourteen", "StudioFourteen.Controls"));
+		maps.Add(new NamespaceMapEntry("http://fourteen.studio", "StudioFourteen", "WpfUtils.Controls"));
+
+		Context.XamlTypeMapper = new(["StudioFourteen"], maps.ToArray());
+
 		// HACK:
 		// WPF Internally caches dynamic assembly lookups in the XamlTypeMapper / ReflectionHelper classes
 		// however these caches are static, and will persist after StudioFourteen is reloaded by Dalamud, causing the
@@ -41,24 +57,18 @@ public class XamlContentReference<T>(string path)
 		// So we set the path to something that passes validation, then get the internal path field and clear it so
 		// the cache gets cleared, but no path is set, allowing the internal assembly resolution flow to happen.
 		{
-			Context.XamlTypeMapper = new([]);
 			Context.XamlTypeMapper.SetAssemblyPath("StudioFourteen", "C:/FakePath.dll");
 
 			FieldInfo? field = typeof(XamlTypeMapper).GetField(
 				"_assemblyPathTable",
 				BindingFlags.Instance | BindingFlags.NonPublic);
 
-			HybridDictionary? dict = field?.GetValue(Context.XamlTypeMapper) as HybridDictionary;
+			if (field == null)
+				throw new Exception("Failed to find _assemblyPathTable field");
+
+			HybridDictionary? dict = field.GetValue(Context.XamlTypeMapper) as HybridDictionary;
 			dict?.Clear();
 		}
-
-		Context.XmlnsDictionary.Add(string.Empty, "http://schemas.microsoft.com/winfx/2006/xaml/presentation");
-		Context.XmlnsDictionary.Add("x", "http://schemas.microsoft.com/winfx/2006/xaml");
-		Context.XmlnsDictionary.Add("d", "http://schemas.microsoft.com/expression/blend/2008");
-		Context.XmlnsDictionary.Add("mc", "http://schemas.openxmlformats.org/markup-compatibility/2006");
-
-		Context.XmlnsDictionary.Add("s14", "clr-namespace:StudioFourteen.Panels;assembly=StudioFourteen");
-		Context.XmlnsDictionary.Add("wpfUtils", "clr-namespace:WpfUtils.Controls;assembly=WpfUtils");
 
 		T? rootElement = (T)XamlReader.Load(stream, Context);
 		if (rootElement == null)
