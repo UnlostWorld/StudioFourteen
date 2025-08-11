@@ -114,6 +114,9 @@ public class FileSource : SourceBase
 		FileInfo[] files = directory.GetFiles();
 		foreach (FileInfo file in files)
 		{
+			if (ServiceManager.ShutdownRequested)
+				return;
+
 			FileTypeInfoBase? typeInfo = this.Services.Files.GetTypeInfo(file);
 			if (typeInfo == null)
 				continue;

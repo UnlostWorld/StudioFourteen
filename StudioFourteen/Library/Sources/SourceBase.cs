@@ -40,6 +40,9 @@ public abstract class SourceBase : GroupEntryBase
 			this.Log.Error(ex, "Error scanning library source");
 		}
 
+		if (ServiceManager.ShutdownRequested)
+			return;
+
 		this.IsScanning = false;
 		this.Services.Library.NotifyScanComplete();
 	}
