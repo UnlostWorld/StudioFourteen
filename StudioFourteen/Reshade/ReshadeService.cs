@@ -184,11 +184,25 @@ public partial class ReshadeService : ServiceBase
 
 	private void OnBeginRenderingEffects()
 	{
-		this.ReshadeBeforeEffects?.Invoke();
+		try
+		{
+			this.ReshadeBeforeEffects?.Invoke();
+		}
+		catch (Exception ex)
+		{
+			this.Log.Error(ex, "Error in Reshade before effects");
+		}
 	}
 
 	private void OnFinishRenderingEffects()
 	{
-		this.ReshadeAfterEffects?.Invoke();
+		try
+		{
+			this.ReshadeAfterEffects?.Invoke();
+		}
+		catch (Exception ex)
+		{
+			this.Log.Error(ex, "Error in Reshade finish effects");
+		}
 	}
 }
