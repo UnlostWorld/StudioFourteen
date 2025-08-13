@@ -19,6 +19,7 @@ using StudioFourteen.AIO;
 using StudioFourteen.Launcher;
 using StudioFourteen.Panels;
 using StudioFourteen.Selection;
+using StudioFourteen.Settings;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -56,6 +57,7 @@ public class PanelService : ServiceBase
 	{
 		EventManager.RegisterClassHandler(typeof(FrameworkElement), FrameworkElement.LoadedEvent, new RoutedEventHandler((s, e) => this.OnLoaded(s, e)));
 		this.Services.Studio.Opening += this.OnOpening;
+		this.Services.Settings.SettingChanged += this.OnSettingChanged;
 
 		return base.Initialize();
 	}
@@ -142,14 +144,40 @@ public class PanelService : ServiceBase
 		ToolTipService.SetShowOnDisabled((DependencyObject)e.OriginalSource, true);
 	}
 
+	private void OnSettingChanged(string settingName, object? newValue)
+	{
+		if (settingName == nameof(this.Settings.EnableTargetBar))
+		{
+			this.CheckTargetBar();
+		}
+		else if (settingName == nameof(this.Settings.AllInOne))
+		{
+			this.CheckTargetBar();
+			this.CheckToolBar();
+		}
+	}
+
 	private void OnOpening()
 	{
-		this.GamePanels.SetIsOpen<ToolBarPanel>(true, false);
-		this.GamePanels.SetIsOpen<SelectionPanel>(true, false);
+		this.CheckToolBar();
+		this.CheckTargetBar();
 
 		if (!this.hasRestoredPanels && this.Services.Studio.IsOpen)
 		{
 			this.RestorePanels().Run();
 		}
+	}
+
+	private void CheckTargetBar()
+	{
+		bool enableTargetBar = this.Settings.EnableTargetBar;
+		enableTargetBar &= this.Settings.AllInOne != SettingsService.Configuration.AioModes.Always;
+		this.GamePanels.SetIsOpen<SelectionPanel>(enableTargetBar, false);
+	}
+
+	private void CheckToolBar()
+	{
+		bool enableToolbar = this.Settings.AllInOne != SettingsService.Configuration.AioModes.Always;
+		this.GamePanels.SetIsOpen<ToolBarPanel>(enableToolbar, false);
 	}
 }
