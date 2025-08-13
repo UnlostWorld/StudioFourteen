@@ -20,6 +20,7 @@ using StudioFourteen.Scene;
 using StudioFourteen.Scene.GameObjects;
 using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Services;
+using StudioFourteen.Settings;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -165,12 +166,14 @@ public partial class SelectionService : ServiceBase
 
 	public override async Task Start()
 	{
-		await this.Services.Panels.GamePanels.SetIsOpenAsync<Widget>(true, false);
+		this.Services.Settings.SettingChanged += this.OnSettingChanged;
+		this.CheckWidget();
 		await base.Start();
 	}
 
 	public override async Task Stop()
 	{
+		this.Services.Settings.SettingChanged -= this.OnSettingChanged;
 		await this.Services.Panels.GamePanels.SetIsOpenAsync<Widget>(false, false);
 		await base.Stop();
 	}
@@ -205,6 +208,20 @@ public partial class SelectionService : ServiceBase
 		{
 			this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnTick);
 		}
+	}
+
+	private void OnSettingChanged(string settingName, object? newValue)
+	{
+		if (settingName == nameof(this.Settings.WidgetMode))
+		{
+			this.CheckWidget();
+		}
+	}
+
+	private void CheckWidget()
+	{
+		bool showWidget = this.Settings.WidgetMode != SettingsService.Configuration.WidgetModes.Disabled;
+		this.Services.Panels.GamePanels.SetIsOpen<Widget>(showWidget, false);
 	}
 
 	public class SelectionScope(Type selectionType)

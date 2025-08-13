@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Selection;
 
+using System;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows;
@@ -24,6 +25,7 @@ using StudioFourteen.Panels;
 using StudioFourteen.Rendering.Draw.Gizmos;
 using StudioFourteen.Rendering.Draw.Handles;
 using StudioFourteen.Scene;
+using StudioFourteen.Settings;
 using WpfUtils;
 using WpfUtils.Extensions;
 using WpfUtils.Silk;
@@ -34,6 +36,7 @@ public partial class Widget : Panel
 	[Notify] private SceneObjectBase? current;
 	[Notify] private bool hide;
 	[Notify] private bool expanded;
+	[Notify] private bool canExpand;
 
 	private Vector2 selectionCursorOffset;
 	private Animator opening;
@@ -48,11 +51,14 @@ public partial class Widget : Panel
 
 	protected override void OnOpened()
 	{
+		this.CanExpand = this.Settings.WidgetMode == SettingsService.Configuration.WidgetModes.Inspector;
+
 		this.opening = this.GetAnimator("Opening");
 		this.closing = this.GetAnimator("Closing");
 
 		this.Services.Selection.SelectionChanged += this.OnSelectionChanged;
 		this.Services.Selection.SelectionExpanded += this.OnSelectionExpanded;
+		this.Services.Settings.SettingChanged += this.OnSettingChanged;
 		base.OnOpened();
 
 		this.OnSelectionChanged(null, this.Services.Selection.Current, this);
@@ -62,6 +68,7 @@ public partial class Widget : Panel
 	{
 		this.Services.Selection.SelectionChanged -= this.OnSelectionChanged;
 		this.Services.Selection.SelectionExpanded -= this.OnSelectionExpanded;
+		this.Services.Settings.SettingChanged -= this.OnSettingChanged;
 		base.OnClosed();
 	}
 
@@ -148,9 +155,11 @@ public partial class Widget : Panel
 			}
 
 			this.Current = newSelection;
-			this.Expanded = this.Services.Selection.ExpandedSelection;
 
-			if(source is SelectionHandle)
+			if (this.Settings.WidgetMode == SettingsService.Configuration.WidgetModes.Inspector)
+				this.Expanded = this.Services.Selection.ExpandedSelection;
+
+			if (source is SelectionHandle)
 				this.selectionCursorOffset = this.Services.Selection.SelectionCursorOffset;
 
 			this.Focus();
@@ -165,8 +174,23 @@ public partial class Widget : Panel
 		this.Expanded = newValue;
 	}
 
+	private void OnSettingChanged(string settingName, object? newValue)
+	{
+		if (settingName == nameof(this.Settings.WidgetMode))
+		{
+			this.CanExpand = this.Settings.WidgetMode == SettingsService.Configuration.WidgetModes.Inspector;
+		}
+	}
+
 	private void OnExpandedChanged(bool oldValue, bool newValue)
 	{
+		if (newValue && this.Settings.WidgetMode != SettingsService.Configuration.WidgetModes.Inspector)
+		{
+			this.Services.Selection.ExpandedSelection = false;
+			this.Expanded = false;
+			return;
+		}
+
 		this.Services.Selection.ExpandedSelection = newValue;
 	}
 }

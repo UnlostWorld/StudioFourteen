@@ -84,7 +84,8 @@
 					Height="28"
 					Content="{DynamicResource ICON_Widget_Expand}"
 					IsChecked="{Binding Expanded}"
-					Style="{DynamicResource WpfUtilsIconToggleButton}" />
+					Style="{DynamicResource WpfUtilsIconToggleButton}"
+					Visibility="{Binding CanExpand, Converter={StaticResource B2V}}"/>
 
 				<ItemsControl
 					Width="28"
@@ -124,7 +125,8 @@
 		<Grid
 			Grid.Column="1"
 			Margin="3,0,0,0"
-			VerticalAlignment="Top">
+			VerticalAlignment="Top"
+			Visibility="{Binding CanExpand, Converter={StaticResource B2V}}">
 
 			<silk:AnimationState Binding="{Binding Expanded}">
 				<silk:AnimationState.Enter>
