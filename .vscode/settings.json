@@ -48,7 +48,7 @@
 	"xml.fileAssociations": [
 		{
 			"pattern": "**/*.xaml",
-			"systemId": "StudioFourteen.xsd"
+			"systemId": "Wpf.xsd"
 		}
 	],
 	"xml.format.emptyElements": "collapse",

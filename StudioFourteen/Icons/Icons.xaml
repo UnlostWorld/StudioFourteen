@@ -155,6 +155,9 @@
 
 	<icons:Fa x:Key="ICON_Widget_Expand" Icon="ChevronRight" Font="Solid" />
 
-	<icons:Svg x:Key="ICON_FTUE_AIO" Source="InterfacePresets/AllInOne" />
-	<icons:Svg x:Key="ICON_FTUE_SingleInspector" Source="InterfacePresets/SingleInspector" />
+	<icons:FontIcon x:Key="ICON_FTUE_AIO" Icon="&#xe90c;" />
+	<icons:FontIcon x:Key="ICON_FTUE_FloatingInspector" Icon="&#xe911;" />
+	<icons:FontIcon x:Key="ICON_FTUE_DedicatedInspectors" Icon="&#xe910;" />
+	<icons:FontIcon x:Key="ICON_FTUE_SingleInspector" Icon="&#xe91e;" />
+
 </ResourceDictionary>

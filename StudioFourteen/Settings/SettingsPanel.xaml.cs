@@ -30,12 +30,30 @@ using Panel = StudioFourteen.Panels.Panel;
 
 public partial class SettingsPanel : Panel
 {
+	private int currentPreset = 0;
+
 	public SettingsPanel()
 	{
 		this.ResourcePacks.CollectionChanged += this.OnPacksCollectionChanged;
 	}
 
 	public FastObservableCollection<ResourcePackReference> ResourcePacks { get; init; } = new();
+
+	public int InspectorPresetIndex
+	{
+		get => this.currentPreset;
+		set
+		{
+			this.currentPreset = value;
+			this.Services.Settings.SetPreset((SettingsService.InterfacePresets)value);
+			this.NotifyPropertyChanged();
+			this.NotifyPropertyChanged(nameof(SettingsPanel.InspectorPresetTitle));
+			this.NotifyPropertyChanged(nameof(SettingsPanel.InspectorPresetBody));
+		}
+	}
+
+	public string InspectorPresetTitle => StudioFourteen.Resources.Find($"LOC_Settings_Inspectors_Preset_{(SettingsService.InterfacePresets)this.currentPreset}", string.Empty);
+	public string InspectorPresetBody => StudioFourteen.Resources.Find($"LOC_Settings_Inspectors_Preset_{(SettingsService.InterfacePresets)this.currentPreset}_Description", string.Empty);
 
 	public static void Show(PanelContextBase context, string? elementName = null)
 	{

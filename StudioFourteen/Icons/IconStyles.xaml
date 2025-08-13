@@ -18,6 +18,17 @@
 			UriSource="{Binding UriSource}" />
 	</DataTemplate>
 
+	<!-- Icon Font Icons -->
+	<DataTemplate DataType="{x:Type icons:FontIcon}">
+		<Viewbox Margin="2" Stretch="Uniform">
+			<TextBlock
+				VerticalAlignment="Stretch"
+				Focusable="False"
+				Text="{Binding Icon}"
+				FontFamily=".././Assets/#icons" />
+		</Viewbox>
+	</DataTemplate>
+
 	<!--  ImageReference (Xiv embedded images)  -->
 	<DataTemplate DataType="{x:Type gameData:ImageReference}">
 		<Border

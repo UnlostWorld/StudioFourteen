@@ -166,7 +166,7 @@ public partial class SettingsService : ServiceBase
 				this.current.EnableInspector = false;
 				this.current.EnableDedicatedInspectors = false;
 				this.current.AllInOne = Configuration.AioModes.Always;
-				this.current.EnableTargetBar = true;
+				this.current.EnableTargetBar = false;
 				break;
 			}
 		}

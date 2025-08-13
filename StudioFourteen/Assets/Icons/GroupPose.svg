@@ -1,10 +1,7 @@
-<svg viewBox="0 0 256 256" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
-    <path d="M89.645,89.864C89.645,80.844 96.969,73.52 105.989,73.52L223.613,73.52C232.633,73.52 239.957,80.844 239.957,89.864L239.957,166.136C239.957,175.156 232.633,182.479 223.613,182.479L105.989,182.479C96.969,182.479 89.645,175.156 89.645,166.136L89.645,89.864Z" style="fill:url(#foreground);"/>
-     <path d="M70.529,115.605C65.484,111.57 50.954,98.763 46.607,94.339C42.418,90.076 39.116,85.994 33.139,85.994C27.163,85.994 22.311,90.846 22.311,96.822L22.311,159.177C22.311,165.154 27.163,170.005 33.139,170.005C39.116,170.005 43.274,166.003 47.539,161.816C51.885,157.547 66.106,145.489 70.218,141.608C74.565,137.507 80.115,134.428 80.115,128.451C80.115,122.475 75.195,119.34 70.529,115.605Z" style="fill:url(#foreground);"/>
-
-   <defs>
-        <linearGradient id="foreground">
-			<stop stop-color="#FF1493"/>
-		</linearGradient>
-    </defs>
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="513px" height="512px" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <rect id="GroupPose" x="0.793" y="0" width="512" height="512" style="fill:none;"/>
+    <path d="M164.564,171.806c0,-19.899 16.156,-36.055 36.056,-36.055l259.486,-0c19.9,-0 36.056,16.156 36.056,36.055l-0,168.26c-0,19.9 -16.156,36.056 -36.056,36.056l-259.486,-0c-19.9,-0 -36.056,-16.156 -36.056,-36.056l0,-168.26Z"/>
+    <path d="M122.394,228.594c-11.129,-8.904 -43.185,-37.157 -52.774,-46.916c-9.24,-9.404 -16.526,-18.408 -29.709,-18.408c-13.184,0 -23.887,10.704 -23.887,23.888l-0,137.557c-0,13.184 10.703,23.887 23.887,23.887c13.183,0 22.357,-8.828 31.764,-18.065c9.589,-9.417 40.96,-36.018 50.034,-44.58c9.589,-9.047 21.832,-15.84 21.832,-29.024c0,-13.184 -10.853,-20.103 -21.147,-28.339Z"/>
 </svg>

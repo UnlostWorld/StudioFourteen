@@ -203,7 +203,27 @@
 	<sys:String x:Key="LOC_Ornament">Fashion Accessories</sys:String>
 
 	<sys:String x:Key="LOC_Settings_Interface">Interface</sys:String>
-	<sys:String x:Key="LOC_Settings_Interface_Theme">Theme</sys:String>
+
+	<sys:String x:Key="LOC_Settings_Inspectors">Inspectors</sys:String>
+	<sys:String x:Key="LOC_Settings_Inspectors_Widget">Widget</sys:String>
+	<sys:String x:Key="LOC_Settings_Inspectors_InspectorWindow">Enable Inspector Window</sys:String>
+	<sys:String x:Key="LOC_Settings_Inspectors_DedicatedWindows">Enable Dedicated Inspector Windows</sys:String>
+	<sys:String x:Key="LOC_Settings_Inspectors_AllInOne">All In One Window</sys:String>
+	<sys:String x:Key="LOC_Settings_Inspectors_TargetBar">Enable Target Bar</sys:String>
+
+	<sys:String x:Key="LOC_Settings_Inspectors_Preset_FloatingInspector">Floating Inspector</sys:String>
+	<sys:String x:Key="LOC_Settings_Inspectors_Preset_FloatingInspector_Description">The inspector floats next to the selected object, providing quick access to properties.</sys:String>
+
+	<sys:String x:Key="LOC_Settings_Inspectors_Preset_SingleInspectorWindow">Combined Inspector</sys:String>
+	<sys:String x:Key="LOC_Settings_Inspectors_Preset_SingleInspectorWindow_Description">The inspector and scene hierarchy are combined into a single window, similar to Brio and Ktisis.</sys:String>
+
+	<sys:String x:Key="LOC_Settings_Inspectors_Preset_DedicatedInspectorWindows">Dedicated Inspectors</sys:String>
+	<sys:String x:Key="LOC_Settings_Inspectors_Preset_DedicatedInspectorWindows_Description">Each type of object has its own inspector window which can be opened from the launcher.</sys:String>
+
+	<sys:String x:Key="LOC_Settings_Inspectors_Preset_AllInOne">All In One</sys:String>
+	<sys:String x:Key="LOC_Settings_Inspectors_Preset_AllInOne_Description">All inspectors are combined into a single external window. Similar to Anamnesis.</sys:String>
+
+	<sys:String x:Key="LOC_Settings_ResourcePacks">Resource Packs</sys:String>
 	<sys:String x:Key="LOC_Settings_Interface_ThemeToolTip">Select a theme:</sys:String>
 	<sys:String x:Key="LOC_Settings_Interface_HideLauncherButton">Hide the Launcher button</sys:String>
 	<sys:String x:Key="LOC_Settings_Interface_HideLauncherButton_ToolTip">Hides the Launcher button when Studio is closed. You can still access the Studio interface by using the chat command /s14 or from the dalamud plugin installer.</sys:String>

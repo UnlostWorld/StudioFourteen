@@ -12,120 +12,186 @@
 	xmlns:services="clr-namespace:StudioFourteen.Services"
 	xmlns:settings="clr-namespace:StudioFourteen.Settings"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
-	Width="300"
-	Height="450"
-	MinWidth="300"
+	Width="650"
+	Height="550"
+	ResizeMode="NoResize"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	mc:Ignorable="d">
 
-	<TabControl>
+	<TabControl Style="{DynamicResource WpfUtilsSideTabs}">
 
-		<TabItem Header="{DynamicResource LOC_Settings_Interface}">
+		<TabItem Header="{DynamicResource LOC_Settings_ResourcePacks}">
 			<Grid>
 				<Grid.RowDefinitions>
 					<RowDefinition />
 					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
 
-				<Grid>
-					<Grid.RowDefinitions>
-						<RowDefinition />
-						<RowDefinition Height="Auto" />
-					</Grid.RowDefinitions>
+				<Border
+					Grid.Row="0" Style="{DynamicResource WpfUtilsControlBorder}">
+					<controls:OrderableItemsControl
+						ItemsSource="{Binding ResourcePacks, Mode=TwoWay}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate>
+								<CheckBox Height="Auto" IsChecked="{Binding Enabled}">
 
-					<Border Grid.Row="0" Style="{DynamicResource WpfUtilsControlBorder}">
-						<controls:OrderableItemsControl ItemsSource="{Binding ResourcePacks, Mode=TwoWay}">
-							<ItemsControl.ItemTemplate>
-								<DataTemplate>
-									<CheckBox Height="Auto" IsChecked="{Binding Enabled}">
+									<Grid Margin="3">
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition Width="Auto" />
+											<ColumnDefinition />
+										</Grid.ColumnDefinitions>
 
-										<Grid Margin="3">
-											<Grid.ColumnDefinitions>
-												<ColumnDefinition Width="Auto" />
-												<ColumnDefinition />
-											</Grid.ColumnDefinitions>
+										<Grid.RowDefinitions>
+											<RowDefinition />
+											<RowDefinition />
+										</Grid.RowDefinitions>
 
-											<Grid.RowDefinitions>
-												<RowDefinition />
-												<RowDefinition />
-											</Grid.RowDefinitions>
+										<Image
+											Grid.RowSpan="2"
+											Grid.Column="0"
+											Width="48"
+											Height="32"
+											Margin="0,0,12,0"
+											Source="{Binding IconPath}" />
 
-											<Image
-												Grid.RowSpan="2"
-												Grid.Column="0"
-												Width="48"
-												Height="32"
-												Margin="0,0,12,0"
-												Source="{Binding IconPath}" />
+										<TextBlock
+											Grid.Row="0"
+											Grid.Column="1"
+											Text="{Binding Name}" />
+										<TextBlock
+											Grid.Row="1"
+											Grid.Column="1"
+											Style="{DynamicResource Subscript}"
+											Text="{Binding Author}" />
+									</Grid>
 
-											<TextBlock
-												Grid.Row="0"
-												Grid.Column="1"
-												Text="{Binding Name}" />
-											<TextBlock
-												Grid.Row="1"
-												Grid.Column="1"
-												Style="{DynamicResource Subscript}"
-												Text="{Binding Author}" />
-										</Grid>
+								</CheckBox>
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</controls:OrderableItemsControl>
+				</Border>
 
-									</CheckBox>
-								</DataTemplate>
-							</ItemsControl.ItemTemplate>
-						</controls:OrderableItemsControl>
-					</Border>
+				<Button
+					Grid.Row="1"
+					MinWidth="75"
+					HorizontalAlignment="Right"
+					Click="OnApplyResourcePacksClicked"
+					Content="Apply" />
 
-					<Button
-						Grid.Row="1"
-						MinWidth="75"
-						HorizontalAlignment="Right"
-						Click="OnApplyResourcePacksClicked"
-						Content="Apply" />
-
-				</Grid>
-
-				<StackPanel Grid.Row="1" Margin="0,6,0,0">
-
-					<ToggleButton
-						Margin="1"
-						Content="{DynamicResource LOC_Settings_Interface_HideLauncherButton}"
-						IsChecked="{Binding Settings.HideLauncherButton}"
-						ToolTip="{DynamicResource LOC_Settings_Interface_HideLauncherButton_ToolTip}" />
-
-					<ToggleButton
-						Margin="1"
-						Content="{DynamicResource LOC_Settings_Interface_OpenGroupPose}"
-						IsChecked="{Binding Settings.OpenGroupPose}" />
-
-					<ToggleButton
-						Margin="1"
-						Content="{DynamicResource LOC_Settings_Interface_HideGenitals}"
-						IsChecked="{Binding Settings.HideGenitals}" />
-
-					<TextBlock Style="{DynamicResource LeftLabel}" Text="Library preview mode" />
-					<ComboBox SelectedIndex="{Binding Settings.LibraryPreviewMode, Converter={StaticResource EnumToIndex}}">
-
-						<wpfUtils:PopOut.Header>
-							<TextBlock Margin="12" Text="{DynamicResource LOC_Settings_Interface_LibraryPreviewMode_Description}" />
-						</wpfUtils:PopOut.Header>
-
-						<ComboBoxItem Content="{DynamicResource LOC_Settings_Interface_LibraryPreviewMode_Temporary}" />
-						<ComboBoxItem Content="{DynamicResource LOC_Settings_Interface_LibraryPreviewMode_Permanent}" />
-						<ComboBoxItem Content="{DynamicResource LOC_Settings_Interface_LibraryPreviewMode_Disabled}" />
-					</ComboBox>
-
-
-					<ToggleButton
-						Margin="1"
-						Content="Use system cursors"
-						IsChecked="{Binding Settings.UseSystemCursors}" />
-
-				</StackPanel>
 			</Grid>
 		</TabItem>
 
-		<TabItem Header="{DynamicResource LOC_Settings_Files}">
+		<TabItem
+			Header="{DynamicResource LOC_Settings_Inspectors}">
+			<StackPanel Grid.Row="1" Margin="0,6,0,0">
+				<wpfUtils:SwitchSelector Height="100" SelectedIndex="{Binding InspectorPresetIndex}">
+					<ListBoxItem Padding="0" Content="{DynamicResource ICON_FTUE_FloatingInspector}" />
+					<ListBoxItem Padding="0" Content="{DynamicResource ICON_FTUE_SingleInspector}" />
+					<ListBoxItem Padding="0"
+						Content="{DynamicResource ICON_FTUE_DedicatedInspectors}" />
+					<ListBoxItem Padding="0" Content="{DynamicResource ICON_FTUE_AIO}" />
+				</wpfUtils:SwitchSelector>
+
+				<TextBlock
+					Margin="1,6,1,1"
+					Text="{Binding InspectorPresetTitle}" FontWeight="Bold"
+					HorizontalAlignment="Center"
+					Style="{DynamicResource Header}" />
+				<TextBlock
+					Text="{Binding InspectorPresetBody}"
+					HorizontalAlignment="Center" Style="{DynamicResource Body}" />
+
+				<ScrollViewer>
+					<StackPanel HorizontalAlignment="Center" Margin="20" VerticalAlignment="Center">
+						<TextBlock Text="{DynamicResource LOC_Settings_Inspectors_Widget}" />
+						<ComboBox
+							Margin="1"
+							SelectedIndex="{Binding Settings.WidgetMode, Converter={StaticResource EnumToIndex}}">
+							<ComboBoxItem Content="Disabled" />
+							<ComboBoxItem
+								Content="Gizmo Controls" />
+							<ComboBoxItem Content="Inspector" />
+						</ComboBox>
+
+						<ToggleButton
+							Margin="1"
+							Content="{DynamicResource LOC_Settings_Inspectors_InspectorWindow}"
+							IsChecked="{Binding Settings.EnableInspector}" />
+
+						<ToggleButton
+							Margin="1"
+							Content="{DynamicResource LOC_Settings_Inspectors_DedicatedWindows}"
+							IsChecked="{Binding Settings.EnableDedicatedInspectors}" />
+
+						<TextBlock
+							Text="{DynamicResource LOC_Settings_Inspectors_AllInOne}" />
+						<ComboBox
+							Margin="1"
+							SelectedIndex="{Binding Settings.AllInOne, Converter={StaticResource EnumToIndex}}">
+							<ComboBoxItem Content="Disabled" />
+							<ComboBoxItem Content="Optional" />
+							<ComboBoxItem
+								Content="Always" />
+						</ComboBox>
+
+						<ToggleButton
+							Margin="1"
+							Content="{DynamicResource LOC_Settings_Inspectors_TargetBar}"
+							IsChecked="{Binding Settings.EnableTargetBar}" />
+					</StackPanel>
+				</ScrollViewer>
+
+			</StackPanel>
+
+		</TabItem>
+
+		<TabItem
+			Header="{DynamicResource LOC_Settings_Interface}">
+			<StackPanel>
+				<ToggleButton
+					Margin="1,20,1,1"
+					Content="{DynamicResource LOC_Settings_Interface_HideLauncherButton}"
+					IsChecked="{Binding Settings.HideLauncherButton}"
+					ToolTip="{DynamicResource LOC_Settings_Interface_HideLauncherButton_ToolTip}" />
+
+				<ToggleButton
+					Margin="1"
+					Content="{DynamicResource LOC_Settings_Interface_OpenGroupPose}"
+					IsChecked="{Binding Settings.OpenGroupPose}" />
+
+				<ToggleButton
+					Margin="1"
+					Content="{DynamicResource LOC_Settings_Interface_HideGenitals}"
+					IsChecked="{Binding Settings.HideGenitals}" />
+
+				<TextBlock
+					Style="{DynamicResource LeftLabel}" Text="Library preview mode" />
+				<ComboBox
+					SelectedIndex="{Binding Settings.LibraryPreviewMode, Converter={StaticResource EnumToIndex}}">
+
+					<wpfUtils:PopOut.Header>
+						<TextBlock Margin="12"
+							Text="{DynamicResource LOC_Settings_Interface_LibraryPreviewMode_Description}" />
+					</wpfUtils:PopOut.Header>
+
+					<ComboBoxItem
+						Content="{DynamicResource LOC_Settings_Interface_LibraryPreviewMode_Temporary}" />
+					<ComboBoxItem
+						Content="{DynamicResource LOC_Settings_Interface_LibraryPreviewMode_Permanent}" />
+					<ComboBoxItem
+						Content="{DynamicResource LOC_Settings_Interface_LibraryPreviewMode_Disabled}" />
+				</ComboBox>
+
+				<ToggleButton
+					Margin="1"
+					Content="Use system cursors"
+					IsChecked="{Binding Settings.UseSystemCursors}" />
+			</StackPanel>
+		</TabItem>
+
+		<TabItem
+			Header="{DynamicResource LOC_Settings_Files}">
 			<StackPanel>
 				<GroupBox Header="{DynamicResource LOC_Settings_Files_DefaultMetadata}">
 					<StackPanel>
@@ -155,7 +221,8 @@
 			</StackPanel>
 		</TabItem>
 
-		<TabItem Header="{DynamicResource LOC_Settings_Input}">
+		<TabItem
+			Header="{DynamicResource LOC_Settings_Input}">
 
 			<Grid>
 				<Grid.RowDefinitions>
@@ -210,10 +277,12 @@
 			</Grid>
 		</TabItem>
 
-		<TabItem x:Name="PhotosSection" Header="{DynamicResource LOC_Settings_Photos}">
+		<TabItem
+			x:Name="PhotosSection" Header="{DynamicResource LOC_Settings_Photos}">
 			<StackPanel>
 
-				<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Settings_Photos_Directory}" />
+				<TextBlock Style="{DynamicResource LeftLabel}"
+					Text="{DynamicResource LOC_Settings_Photos_Directory}" />
 
 				<Grid>
 					<Grid.ColumnDefinitions>
@@ -221,7 +290,8 @@
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 
-					<TextBox Grid.Column="0" Text="{Binding Settings.PhotoDirectory}" />
+					<TextBox
+						Grid.Column="0" Text="{Binding Settings.PhotoDirectory}" />
 
 					<Button
 						Grid.Column="1"
@@ -230,32 +300,49 @@
 				</Grid>
 
 
-				<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Settings_Photos_Format}" />
-				<ComboBox SelectedIndex="{Binding Settings.PhotoFormat, Converter={StaticResource EnumToIndex}}">
+				<TextBlock
+					Style="{DynamicResource LeftLabel}"
+					Text="{DynamicResource LOC_Settings_Photos_Format}" />
+				<ComboBox
+					SelectedIndex="{Binding Settings.PhotoFormat, Converter={StaticResource EnumToIndex}}">
 					<ComboBoxItem Content="{DynamicResource LOC_Settings_Photos_Format_JPG}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Settings_Photos_Format_BMP}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Settings_Photos_Format_PNG}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Settings_Photos_Format_TGA}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Settings_Photos_Format_TIFF}" />
-					<ComboBoxItem Content="{DynamicResource LOC_Settings_Photos_Format_WEBP}" />
+					<ComboBoxItem
+						Content="{DynamicResource LOC_Settings_Photos_Format_BMP}" />
+					<ComboBoxItem
+						Content="{DynamicResource LOC_Settings_Photos_Format_PNG}" />
+					<ComboBoxItem
+						Content="{DynamicResource LOC_Settings_Photos_Format_TGA}" />
+					<ComboBoxItem
+						Content="{DynamicResource LOC_Settings_Photos_Format_TIFF}" />
+					<ComboBoxItem
+						Content="{DynamicResource LOC_Settings_Photos_Format_WEBP}" />
 				</ComboBox>
 
-				<ToggleButton Content="{DynamicResource LOC_Settings_Photos_IncludeMetadata}" IsChecked="{Binding Settings.PhotoIncludeMetaData}" />
+				<ToggleButton
+					Content="{DynamicResource LOC_Settings_Photos_IncludeMetadata}"
+					IsChecked="{Binding Settings.PhotoIncludeMetaData}" />
 
-				<ToggleButton Content="{DynamicResource LOC_Settings_Photos_CaptureDepth}" IsChecked="{Binding Settings.PhotoCaptureDepth}" />
+				<ToggleButton
+					Content="{DynamicResource LOC_Settings_Photos_CaptureDepth}"
+					IsChecked="{Binding Settings.PhotoCaptureDepth}" />
 
-				<GroupBox Header="{DynamicResource LOC_Settings_Photos_Animations}">
+				<GroupBox
+					Header="{DynamicResource LOC_Settings_Photos_Animations}">
 					<StackPanel>
-						<ToggleButton Content="{DynamicResource LOC_Settings_Photos_Flash}" IsChecked="{Binding Settings.PhotoAnimationFlash}" />
+						<ToggleButton Content="{DynamicResource LOC_Settings_Photos_Flash}"
+							IsChecked="{Binding Settings.PhotoAnimationFlash}" />
 
-						<ToggleButton Content="{DynamicResource LOC_Settings_Photos_Review}" IsChecked="{Binding Settings.PhotoAnimationPreview}" />
+						<ToggleButton
+							Content="{DynamicResource LOC_Settings_Photos_Review}"
+							IsChecked="{Binding Settings.PhotoAnimationPreview}" />
 					</StackPanel>
 				</GroupBox>
 
 			</StackPanel>
 		</TabItem>
 
-		<TabItem x:Name="AnalyticsSection" Header="{DynamicResource LOC_Settings_Analytics}">
+		<TabItem
+			x:Name="AnalyticsSection" Header="{DynamicResource LOC_Settings_Analytics}">
 			<StackPanel>
 				<ToggleButton
 					Content="{DynamicResource LOC_Analytics_Errors}"
