@@ -85,6 +85,8 @@ public class Shader<TMaterialData> : Shader
 	private IContent<ShaderBytecode>? pixelShaderContent;
 	private IContent<ShaderBytecode>? geometryShaderContent;
 
+	public bool IsLoaded => this.isLoaded;
+
 	public override void Load(Device device)
 	{
 		#if DEBUG
