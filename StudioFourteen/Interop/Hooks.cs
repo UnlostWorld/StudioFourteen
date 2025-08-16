@@ -20,9 +20,8 @@ using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.System.Input;
 using FFXIVClientStructs.FFXIV.Client.UI;
-using SharpDX.Direct3D9;
 using StudioFourteen.Interop.Structs.Environment;
-using StudioFourteen.Plugin;
+using StudioFourteen.Scene.Cameras;
 using System;
 using System.Runtime.InteropServices;
 using Windows.Win32.UI.WindowsAndMessaging;
@@ -48,8 +47,8 @@ public static unsafe class Hooks
 	internal static readonly SignatureHook<CameraMatrixLoadDelegate> CameraMatrixLoad = new("E8 ?? ?? ?? ?? 48 8B 93 90 02 ?? ?? 48 8D 4C 24 40");
 
 	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Camera/CameraService.cs#L56
-	internal delegate nint GPoseCameraUpdateDelegate(StudioFourteen.Scene.Cameras.GroupPoseCamera* camera);
-	internal static readonly SignatureHook<GPoseCameraUpdateDelegate> GPoseCameraUpdate = new("40 55 53 57 48 8D 6C 24 A0 48 81 EC ?? ?? ?? ?? 48 8B 1D");
+	internal delegate nint CameraUpdateDelegate(GameCameraEx* camera);
+	internal static readonly SignatureHook<CameraUpdateDelegate> CameraUpdate = new("40 55 53 57 48 8D 6C 24 A0 48 81 EC ?? ?? ?? ?? 48 8B 1D");
 
 	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Posing/SkeletonService.cs#L59
 	internal delegate nint UpdateBonePhysicsDelegate(nint a1);

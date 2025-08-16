@@ -143,9 +143,9 @@ public partial class OrbitCamera : Camera
 		this.actualDistance = float.Lerp(this.actualDistance, this.distance, deltaTime * 8);
 	}
 
-	public unsafe override void UpdateGroupPoseCamera(GroupPoseCamera* camera)
+	public unsafe override void UpdateGameCamera(GameCameraEx* camera)
 	{
-		base.UpdateGroupPoseCamera(camera);
+		base.UpdateGameCamera(camera);
 		this.GroupPoseRollAdjust = camera->Rotation * QuaternionExtensions.Rad2Deg;
 
 		camera->Angle = this.Angle * QuaternionExtensions.Deg2Rad;

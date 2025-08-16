@@ -108,9 +108,9 @@ public partial class FreeCamera : Camera
 		this.rotateDownListener.Disable();
 	}
 
-	public override unsafe void UpdateGroupPoseCamera(GroupPoseCamera* camera)
+	public override unsafe void UpdateGameCamera(GameCameraEx* camera)
 	{
-		base.UpdateGroupPoseCamera(camera);
+		base.UpdateGameCamera(camera);
 
 		camera->Camera.Distance = float.MaxValue;
 	}

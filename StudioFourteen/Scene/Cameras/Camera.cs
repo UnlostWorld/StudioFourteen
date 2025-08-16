@@ -96,7 +96,7 @@ public abstract partial class Camera : SceneObjectBase, IDisposable
 		}
 	}
 
-	public unsafe virtual void UpdateGroupPoseCamera(GroupPoseCamera* camera)
+	public unsafe virtual void UpdateGameCamera(GameCameraEx* camera)
 	{
 		this.GroupPoseFovAdjust = camera->FoV * 100;
 	}

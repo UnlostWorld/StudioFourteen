@@ -43,17 +43,18 @@ public struct CameraState
 	public float FieldOfView;
 }
 
+// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Camera/BrioCamera.cs
 [StructLayout(LayoutKind.Explicit, Size = 0x2B0)]
-public struct GroupPoseCamera
+public struct GameCameraEx
 {
 	[FieldOffset(0x0)]
 	public GameCamera Camera;
 
-	[FieldOffset(0x12C)] public float FoV;
-	[FieldOffset(0x130)] public Vector2 Angle;
-	[FieldOffset(0x150)] public Vector2 Pan;
-	[FieldOffset(0x160)] public float Rotation;
-	[FieldOffset(0x208)] public Vector2 Collide;
+	[FieldOffset(0x13C)] public float FoV;
+	[FieldOffset(0x140)] public Vector2 Angle;
+	[FieldOffset(0x160)] public Vector2 Pan;
+	[FieldOffset(0x170)] public float Rotation;
+	[FieldOffset(0x218)] public Vector2 Collide;
 }
 
 public class CameraService : ServiceBase
@@ -74,7 +75,7 @@ public class CameraService : ServiceBase
 	public event CamerasChangedDelegate? CamerasChanged;
 	public event CameraChangedDelegate? CurrentCameraChanged;
 
-	public GroupPoseCamera? InitialCamera { get; private set; }
+	public GameCameraEx? InitialCamera { get; private set; }
 
 	public Camera? Current
 	{
@@ -119,13 +120,13 @@ public class CameraService : ServiceBase
 		this.doAttachBlend = true;
 		this.blendWatch.Restart();
 
-		this.InitialCamera = *(GroupPoseCamera*)CameraManager.Instance()->Camera;
+		this.InitialCamera = *(GameCameraEx*)CameraManager.Instance()->Camera;
 
 		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
 
 		Hooks.SceneCameraUpdate.Enable(this.SceneCameraUpdateDetour);
 		Hooks.CameraMatrixLoad.Enable(this.CameraMatrixLoad);
-		Hooks.GPoseCameraUpdate.Enable(this.GroupPoseCameraUpdateDetour);
+		Hooks.CameraUpdate.Enable(this.CameraUpdateDetour);
 
 		if (this.cameras.Count <= 0)
 		{
@@ -143,7 +144,7 @@ public class CameraService : ServiceBase
 	{
 		base.Detach();
 
-		GroupPoseCamera* camera = (GroupPoseCamera*)CameraManager.Instance()->Camera;
+		GameCameraEx* camera = (GameCameraEx*)CameraManager.Instance()->Camera;
 
 		// Restore camera settings
 		if (camera != null && this.InitialCamera != null && this.Services.GroupPose.IsGroupPosing)
@@ -157,7 +158,7 @@ public class CameraService : ServiceBase
 
 		Hooks.SceneCameraUpdate.Disable();
 		Hooks.CameraMatrixLoad.Disable();
-		Hooks.GPoseCameraUpdate.Disable();
+		Hooks.CameraUpdate.Disable();
 
 		this.blendWatch.Stop();
 
@@ -196,16 +197,14 @@ public class CameraService : ServiceBase
 		}
 	}
 
-	private unsafe nint GroupPoseCameraUpdateDetour(GroupPoseCamera* camera)
+	private unsafe nint CameraUpdateDetour(GameCameraEx* camera)
 	{
-		if (this.Services.GroupPose.IsGroupPosing
-			&& !this.doAttachBlend
-			&& this.current != null)
+		if (!this.doAttachBlend && this.current != null)
 		{
-			this.current?.UpdateGroupPoseCamera(camera);
+			this.current?.UpdateGameCamera(camera);
 		}
 
-		return Hooks.GPoseCameraUpdate.Original(camera);
+		return Hooks.CameraUpdate.Original(camera);
 	}
 
 	private unsafe nint SceneCameraUpdateDetour(SceneCamera* camera)
