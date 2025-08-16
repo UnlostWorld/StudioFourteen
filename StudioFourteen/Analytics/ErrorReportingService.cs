@@ -85,10 +85,13 @@ public class ErrorReportingService : ServiceBase
 
 		this.Log.Information($"Sent log. Got shortcode: {shortCode}");
 
+		if (shortCode.Length > 10)
+			shortCode = "INVALID";
+
 		if (panel != null)
-		{
-			panel.IsSending = false;
-			panel.ShortCode = shortCode;
-		}
+			{
+				panel.IsSending = false;
+				panel.ShortCode = shortCode;
+			}
 	}
 }
