@@ -89,7 +89,8 @@ public partial class GizmoService : ServiceBase
 
 	private void OnGameTick()
 	{
-		foreach (GizmoBase gizmo in this.Gizmos)
+		List<GizmoBase> gizmos = new(this.Gizmos);
+		foreach (GizmoBase gizmo in gizmos)
 		{
 			gizmo.OnGameTick();
 		}

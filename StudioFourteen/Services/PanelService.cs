@@ -57,6 +57,7 @@ public class PanelService : ServiceBase
 	{
 		EventManager.RegisterClassHandler(typeof(FrameworkElement), FrameworkElement.LoadedEvent, new RoutedEventHandler((s, e) => this.OnLoaded(s, e)));
 		this.Services.Studio.Opening += this.OnOpening;
+		this.Services.Studio.Closing += this.OnClosing;
 		this.Services.Settings.SettingChanged += this.OnSettingChanged;
 
 		return base.Initialize();
@@ -65,6 +66,7 @@ public class PanelService : ServiceBase
 	public override Task Shutdown()
 	{
 		this.Services.Studio.Opening -= this.OnOpening;
+		this.Services.Studio.Closing -= this.OnClosing;
 		return base.Shutdown();
 	}
 
@@ -166,6 +168,12 @@ public class PanelService : ServiceBase
 		{
 			this.RestorePanels().Run();
 		}
+	}
+
+	private void OnClosing()
+	{
+		this.GamePanels.SetIsOpen<SelectionPanel>(false, false);
+		this.GamePanels.SetIsOpen<ToolBarPanel>(false, false);
 	}
 
 	private void CheckTargetBar()

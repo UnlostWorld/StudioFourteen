@@ -187,6 +187,7 @@ public partial class SelectionService : ServiceBase
 	public override void Detach()
 	{
 		this.selectionScopes.Clear();
+		this.selection = null;
 		base.Detach();
 	}
 
