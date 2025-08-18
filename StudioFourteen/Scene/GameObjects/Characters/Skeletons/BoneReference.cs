@@ -256,13 +256,20 @@ public class BoneReference
 		{
 			hkQsTransformf* boneModelTransform = pPose->AccessBoneModelSpace(this.Id.BoneIndex, hkaPose.PropagateOrNot.Propagate);
 
-			Vector3 translation = Vector3.Clamp(this.loadModelSpaceTransform.Value.Translation, MinTranslate, MaxTranslate);
-			boneModelTransform->Translation.Set(translation);
+			if (Matrix4x4.Decompose(
+				this.loadModelSpaceTransform.Value.ToMatrix(),
+				out Vector3 scale,
+				out Quaternion rotation,
+				out Vector3 translation))
+			{
+				translation = Vector3.Clamp(translation, MinTranslate, MaxTranslate);
+				boneModelTransform->Translation.Set(translation);
 
-			boneModelTransform->Rotation.Set(this.loadModelSpaceTransform.Value.Rotation.ToHkQuaternion());
+				boneModelTransform->Rotation.Set(rotation.ToHkQuaternion());
 
-			Vector3 scale = Vector3.Clamp(this.loadModelSpaceTransform.Value.Scale, MinScale, MaxScale);
-			boneModelTransform->Scale.Set(scale);
+				scale = Vector3.Clamp(scale, MinScale, MaxScale);
+				boneModelTransform->Scale.Set(scale);
+			}
 
 			this.loadLocalSpaceTransform = *pPose->AccessBoneLocalSpace(this.Id.BoneIndex);
 			this.loadModelSpaceTransform = null;

@@ -54,10 +54,6 @@ public static unsafe class Hooks
 	internal delegate nint UpdateBonePhysicsDelegate(nint a1);
 	internal static readonly SignatureHook<UpdateBonePhysicsDelegate> UpdateBonePhysics = new("48 89 5C 24 ?? 48 89 6C 24 ?? 48 89 74 24 ?? 57 41 54 41 56 48 83 EC ?? 48 8B 59 ?? 45 33 E4");
 
-	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Posing/SkeletonService.cs#L63
-	internal delegate void FinalizeSkeletonsDelegate(nint a1);
-	internal static readonly SignatureHook<FinalizeSkeletonsDelegate> FinalizeSkeletons = new("40 53 55 57 41 55 48 83 EC 68");
-
 	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Core/ObjectMonitorService.cs#L40
 	internal delegate nint CharacterEventDelegate(Character* character);
 	internal static readonly SignatureHook<CharacterEventDelegate> CharacterInitialize = new("E8 ?? ?? ?? ?? 8D 57 ?? C6 83");

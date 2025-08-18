@@ -49,7 +49,6 @@ public partial class SkeletonService : ServiceBase
 		base.Attach();
 
 		Hooks.UpdateBonePhysics.Enable(this.UpdateBonePhysicsDetour);
-		Hooks.FinalizeSkeletons.Enable(this.FinalizeSkeletonDetour);
 		Hooks.SetPosition.Enable(this.SetPosition);
 	}
 
@@ -58,7 +57,6 @@ public partial class SkeletonService : ServiceBase
 		base.Detach();
 
 		Hooks.UpdateBonePhysics.Disable();
-		Hooks.FinalizeSkeletons.Disable();
 		Hooks.SetPosition.Disable();
 	}
 
@@ -196,23 +194,6 @@ public partial class SkeletonService : ServiceBase
 		return result;
 	}
 
-	private void FinalizeSkeletonDetour(nint a1)
-	{
-		Hooks.FinalizeSkeletons.Original(a1);
-
-		try
-		{
-			if (this.Services.Studio.IsOpen)
-			{
-				this.FinalizeSkeletons();
-			}
-		}
-		catch (Exception ex)
-		{
-			this.Log.Error(ex, "Error during skeleton update");
-		}
-	}
-
 	// This is a very hot path, be careful how much you do here.
 	// All the main skeleton stuff like positions, IK and physics is done at this point.
 	private unsafe void UpdateBonePhysics()
@@ -224,6 +205,11 @@ public partial class SkeletonService : ServiceBase
 			foreach (Skeleton skeleton in this.skeletons)
 			{
 				skeleton.OnUpdateBonePhysics(ref modifiedSkeletonPointers);
+			}
+
+			foreach (Skeleton skeleton in this.skeletons)
+			{
+				skeleton.OnFinalizeSkeleton();
 			}
 		}
 
@@ -257,17 +243,6 @@ public partial class SkeletonService : ServiceBase
 					transform->Rotation = parentTransform->Rotation;
 					transform->Scale = parentTransform->Scale;
 				}
-			}
-		}
-	}
-
-	private unsafe void FinalizeSkeletons()
-	{
-		lock (this.skeletons)
-		{
-			foreach (Skeleton skeleton in this.skeletons)
-			{
-				skeleton.OnFinalizeSkeleton();
 			}
 		}
 	}
