@@ -19,6 +19,7 @@ using System.Numerics;
 using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Draw.Handles;
 using StudioFourteen.Structs.Extensions;
+using StudioFourteen.Rendering.Passes;
 
 public class RotationGizmo : TransformGizmoBase
 {
@@ -70,13 +71,21 @@ public class RotationGizmo : TransformGizmoBase
 		|| this.zHandle.IsDragging
 		|| this.orbHandle.IsDragging;
 
+	public override void Enable(ForwardPass? pass = null)
+	{
+		base.Enable(pass);
+		this.xHandle.Alpha = 0;
+		this.yHandle.Alpha = 0;
+		this.zHandle.Alpha = 0;
+		this.orbHandle.Alpha = 0;
+	}
+
 	public class AxisHandle : Handle
 	{
 		private readonly MeshRenderer<GizmoLineMaterial> circleRenderer;
 		private readonly LineRenderer<GizmoLineMaterial> fromLineRenderer;
 		private readonly LineRenderer<GizmoLineMaterial> toLineRenderer;
 		private readonly RotationGizmo gizmo;
-		private float alpha = 0;
 
 		private Vector2 dragStartScreenNormal;
 		private Vector4 dragStartVertPos;
@@ -109,6 +118,7 @@ public class RotationGizmo : TransformGizmoBase
 		public Color Color { get; set; }
 		public float Sensitivity { get; set; } = 1.0f;
 		public Vector3 AxisUnit { get; set; }
+		public float Alpha { get; set; } = 0;
 
 		public override bool GetToolTip(ref string content, ref Vector3 worldPosition)
 		{
@@ -164,10 +174,10 @@ public class RotationGizmo : TransformGizmoBase
 				this.circleRenderer.Material.Thickness = 1.0f;
 			}
 
-			this.alpha = float.Lerp(this.alpha, desiredAlpha, 0.25f);
-			this.circleRenderer.Material.Color.A = this.alpha;
-			this.fromLineRenderer.Material.Color.A = this.alpha;
-			this.toLineRenderer.Material.Color.A = this.alpha;
+			this.Alpha = float.Lerp(this.Alpha, desiredAlpha, 0.25f);
+			this.circleRenderer.Material.Color.A = this.Alpha;
+			this.fromLineRenderer.Material.Color.A = this.Alpha;
+			this.toLineRenderer.Material.Color.A = this.Alpha;
 
 			if (this.IsDragging)
 			{
@@ -224,8 +234,6 @@ public class RotationGizmo : TransformGizmoBase
 		private readonly MeshRenderer<GizmoFlatMaterial> sphereRenderer;
 		private readonly RotationGizmo gizmo;
 
-		private float alpha;
-
 		public OrbHandle(RotationGizmo gizmo)
 		{
 			this.gizmo = gizmo;
@@ -240,13 +248,15 @@ public class RotationGizmo : TransformGizmoBase
 			this.Add(this.sphereRenderer);
 		}
 
+		public float Alpha { get; set; } = 0;
+
 		protected override void OnDraw()
 		{
 			base.OnDraw();
 
 			float desiredAlpha = this.gizmo.IsDragging ? 0 : 0.5f;
-			this.alpha = float.Lerp(this.alpha, desiredAlpha, 0.25f);
-			this.sphereRenderer.Material.Color.A = this.alpha;
+			this.Alpha = float.Lerp(this.Alpha, desiredAlpha, 0.25f);
+			this.sphereRenderer.Material.Color.A = this.Alpha;
 		}
 	}
 }

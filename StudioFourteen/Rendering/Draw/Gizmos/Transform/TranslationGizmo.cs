@@ -20,6 +20,7 @@ using SharpDX.Direct3D11;
 using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Draw.Handles;
 using StudioFourteen.Structs.Extensions;
+using StudioFourteen.Rendering.Passes;
 
 public class TranslationGizmo : TransformGizmoBase
 {
@@ -103,6 +104,18 @@ public class TranslationGizmo : TransformGizmoBase
 
 	public Vector3 StartDragPosition { get; set; }
 
+	public override void Enable(ForwardPass? pass = null)
+	{
+		base.Enable(pass);
+
+		this.xHandle.Alpha = 0;
+		this.yHandle.Alpha = 0;
+		this.zHandle.Alpha = 0;
+		this.xzPlaneHandle.Alpha = 0;
+		this.xyPlaneHandle.Alpha = 0;
+		this.zyPlaneHandle.Alpha = 0;
+	}
+
 	public void GetToolTip(ref string content, ref Vector3 worldPosition)
 	{
 		Vector3 change = this.WorldPosition - this.StartDragPosition;
@@ -162,7 +175,6 @@ public class TranslationGizmo : TransformGizmoBase
 		private readonly MeshRenderer<GizmoFlatOutlineMaterial> coneOutlineRenderer;
 		private readonly LineRenderer<GizmoLineMaterial> lineRenderer;
 		private readonly TranslationGizmo gizmo;
-		private float alpha = 0;
 
 		public AxisHandle(TranslationGizmo gizmo)
 		{
@@ -199,6 +211,7 @@ public class TranslationGizmo : TransformGizmoBase
 		public Color Color { get; set; }
 		public float Sensitivity { get; set; } = 1.0f;
 		public Vector3 AxisUnit { get; set; }
+		public float Alpha { get; set; } = 0;
 
 		public override bool GetToolTip(ref string content, ref Vector3 worldPosition)
 		{
@@ -242,10 +255,10 @@ public class TranslationGizmo : TransformGizmoBase
 				this.lineRenderer.Material.Thickness = 1.0f;
 			}
 
-			this.alpha = float.Lerp(this.alpha, desiredAlpha, 0.25f);
-			this.lineRenderer.Material.Color.A = this.alpha;
-			this.coneRenderer.Material.Color.A = this.alpha;
-			this.coneOutlineRenderer.Material.OutlineColor.A = this.alpha;
+			this.Alpha = float.Lerp(this.Alpha, desiredAlpha, 0.25f);
+			this.lineRenderer.Material.Color.A = this.Alpha;
+			this.coneRenderer.Material.Color.A = this.Alpha;
+			this.coneOutlineRenderer.Material.OutlineColor.A = this.Alpha;
 		}
 
 		protected override void OnStartDrag(HitTestResult hitTest)
@@ -288,7 +301,6 @@ public class TranslationGizmo : TransformGizmoBase
 	{
 		private readonly MeshRenderer<GizmoFlatMaterial> planeRenderer;
 		private readonly TranslationGizmo gizmo;
-		private float alpha;
 
 		public PlaneHandle(TranslationGizmo gizmo)
 		{
@@ -311,6 +323,8 @@ public class TranslationGizmo : TransformGizmoBase
 		public Vector3 Axis2Unit { get; set; }
 		public bool Axis1Flipped { get; set; } = false;
 		public bool Axis2Flipped { get; set; } = false;
+
+		public float Alpha { get; set; } = 0;
 
 		public override bool GetToolTip(ref string content, ref Vector3 worldPosition)
 		{
@@ -344,8 +358,8 @@ public class TranslationGizmo : TransformGizmoBase
 				this.planeRenderer.Material.Color = this.Color;
 			}
 
-			this.alpha = float.Lerp(this.alpha, desiredAlpha, 0.25f);
-			this.planeRenderer.Material.Color.A = this.alpha;
+			this.Alpha = float.Lerp(this.Alpha, desiredAlpha, 0.25f);
+			this.planeRenderer.Material.Color.A = this.Alpha;
 		}
 
 		protected override void OnStartDrag(HitTestResult hitTest)

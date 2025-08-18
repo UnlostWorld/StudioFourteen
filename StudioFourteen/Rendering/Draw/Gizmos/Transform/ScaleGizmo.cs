@@ -18,6 +18,7 @@ namespace StudioFourteen.Rendering.Draw.Gizmos.Transforms;
 using System.Numerics;
 using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Draw.Handles;
+using StudioFourteen.Rendering.Passes;
 
 public class ScaleGizmo : TransformGizmoBase
 {
@@ -69,13 +70,21 @@ public class ScaleGizmo : TransformGizmoBase
 		|| this.zHandle.IsDragging
 		|| this.uniformHandle.IsDragging;
 
+	public override void Enable(ForwardPass? pass = null)
+	{
+		this.xHandle.Alpha = 0;
+		this.yHandle.Alpha = 0;
+		this.zHandle.Alpha = 0;
+		this.uniformHandle.Alpha = 0;
+		base.Enable(pass);
+	}
+
 	public class AxisHandle : Handle
 	{
 		private readonly MeshRenderer<GizmoFlatMaterial> cubeRenderer;
 		private readonly MeshRenderer<GizmoFlatOutlineMaterial> cubeOutlineRenderer;
 		private readonly LineRenderer<GizmoLineMaterial> lineRenderer;
 		private readonly ScaleGizmo gizmo;
-		private float alpha = 0;
 
 		public AxisHandle(ScaleGizmo gizmo)
 		{
@@ -111,6 +120,7 @@ public class ScaleGizmo : TransformGizmoBase
 		public Color Color { get; set; }
 		public float Sensitivity { get; set; } = 1.0f;
 		public Vector3 AxisUnit { get; set; }
+		public float Alpha { get; set; } = 0;
 
 		public override bool GetToolTip(ref string content, ref Vector3 worldPosition)
 		{
@@ -185,10 +195,10 @@ public class ScaleGizmo : TransformGizmoBase
 					new(0.1f, 0.1f, 0.1f));
 			}
 
-			this.alpha = float.Lerp(this.alpha, desiredAlpha, 0.25f);
-			this.lineRenderer.Material.Color.A = this.alpha;
-			this.cubeRenderer.Material.Color.A = this.alpha;
-			this.cubeOutlineRenderer.Material.OutlineColor.A = this.alpha;
+			this.Alpha = float.Lerp(this.Alpha, desiredAlpha, 0.25f);
+			this.lineRenderer.Material.Color.A = this.Alpha;
+			this.cubeRenderer.Material.Color.A = this.Alpha;
+			this.cubeOutlineRenderer.Material.OutlineColor.A = this.Alpha;
 		}
 
 		protected override void OnStartDrag(HitTestResult hitTest)
@@ -232,7 +242,6 @@ public class ScaleGizmo : TransformGizmoBase
 		private readonly MeshRenderer<GizmoFlatMaterial> cubeRenderer;
 		private readonly MeshRenderer<GizmoFlatOutlineMaterial> cubeOutlineRenderer;
 		private readonly ScaleGizmo gizmo;
-		private float alpha = 0;
 
 		public UniformHandle(ScaleGizmo gizmo)
 		{
@@ -252,6 +261,7 @@ public class ScaleGizmo : TransformGizmoBase
 		}
 
 		public float Sensitivity { get; set; } = 1.0f;
+		public float Alpha { get; set; } = 0;
 
 		public override bool GetToolTip(ref string content, ref Vector3 worldPosition)
 		{
@@ -295,9 +305,9 @@ public class ScaleGizmo : TransformGizmoBase
 				this.cubeOutlineRenderer.Transform = Transform.FromScale(0.18f);
 			}
 
-			this.alpha = float.Lerp(this.alpha, desiredAlpha, 0.25f);
-			this.cubeRenderer.Material.Color.A = this.alpha;
-			this.cubeOutlineRenderer.Material.OutlineColor.A = this.alpha;
+			this.Alpha = float.Lerp(this.Alpha, desiredAlpha, 0.25f);
+			this.cubeRenderer.Material.Color.A = this.Alpha;
+			this.cubeOutlineRenderer.Material.OutlineColor.A = this.Alpha;
 		}
 
 		protected override void OnStartDrag(HitTestResult hitTest)
