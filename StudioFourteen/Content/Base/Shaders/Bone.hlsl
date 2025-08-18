@@ -21,6 +21,7 @@
 cbuffer MaterialInstanceData : register(MaterialDataRegister)
 {
 	float4 Color;
+	float Thickness;
 };
 
 static const float PI = 3.1415926f;
@@ -69,13 +70,15 @@ void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStr
     fAngle *= -1.0f;
     fAngle -= PI * 0.5f;
 
+	float thickness = fThickness * Thickness * ViewportScale;
+
     //connection between the two circles
     //triangle1
 	output.Color = input[0].Color;
 	output.Color.a = 1;
 	output.TexCoord = float2(0,-1);
-    output.Position.x = cos(fAngle) * fThickness / fRatio;
-    output.Position.y = sin(fAngle) * fThickness;
+    output.Position.x = cos(fAngle) * thickness / fRatio;
+    output.Position.y = sin(fAngle) * thickness;
     output.Position.z = 0.0f;
     output.Position.w = 0.0f;
     output.Position += positionPoint0Transformed;
@@ -85,8 +88,8 @@ void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStr
 
 	output.TexCoord = float2(1,-1);
 	output.Color.a = 1;
-    output.Position.x = cos(fAngle + (PI / nCountTriangles * (nCountTriangles))) * fThickness / fRatio;
-    output.Position.y = sin(fAngle + (PI / nCountTriangles * (nCountTriangles))) * fThickness;
+    output.Position.x = cos(fAngle + (PI / nCountTriangles * (nCountTriangles))) * thickness / fRatio;
+    output.Position.y = sin(fAngle + (PI / nCountTriangles * (nCountTriangles))) * thickness;
     output.Position.z = 0.0f;
     output.Position.w = 0.0f;
     output.Position += positionPoint0Transformed;
@@ -96,8 +99,8 @@ void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStr
 
 	output.TexCoord = float2(1,-1);
 	output.Color.a = 0;
-    output.Position.x = cos(fAngle + (PI / nCountTriangles * (nCountTriangles))) * fThickness / fRatio;
-    output.Position.y = sin(fAngle + (PI / nCountTriangles * (nCountTriangles))) * fThickness;
+    output.Position.x = cos(fAngle + (PI / nCountTriangles * (nCountTriangles))) * thickness / fRatio;
+    output.Position.y = sin(fAngle + (PI / nCountTriangles * (nCountTriangles))) * thickness;
     output.Position.z = 0.0f;
     output.Position.w = 0.0f;
     output.Position += positionPoint1Transformed;
@@ -109,8 +112,8 @@ void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStr
 	output.Color = input[1].Color;
 	output.TexCoord = float2(0,-1);
 	output.Color.a = 1;
-    output.Position.x = cos(fAngle) * fThickness / fRatio;
-    output.Position.y = sin(fAngle) * fThickness;
+    output.Position.x = cos(fAngle) * thickness / fRatio;
+    output.Position.y = sin(fAngle) * thickness;
     output.Position.z = 0.0f;
     output.Position.w = 0.0f;
     output.Position += positionPoint0Transformed;
@@ -120,8 +123,8 @@ void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStr
 
 	output.TexCoord = float2(0,-1);
 	output.Color.a = 0;
-    output.Position.x = cos(fAngle) * fThickness / fRatio;
-    output.Position.y = sin(fAngle) * fThickness;
+    output.Position.x = cos(fAngle) * thickness / fRatio;
+    output.Position.y = sin(fAngle) * thickness;
     output.Position.z = 0.0f;
     output.Position.w = 0.0f;
     output.Position += positionPoint1Transformed;
@@ -131,8 +134,8 @@ void geometry(line Fragment input[2], inout TriangleStream<Fragment> triangleStr
 
 	output.TexCoord = float2(1,-1);
 	output.Color.a = 0;
-    output.Position.x = cos(fAngle + (PI / nCountTriangles * (nCountTriangles))) * fThickness / fRatio;
-    output.Position.y = sin(fAngle + (PI / nCountTriangles * (nCountTriangles))) * fThickness;
+    output.Position.x = cos(fAngle + (PI / nCountTriangles * (nCountTriangles))) * thickness / fRatio;
+    output.Position.y = sin(fAngle + (PI / nCountTriangles * (nCountTriangles))) * thickness;
     output.Position.z = 0.0f;
     output.Position.w = 0.0f;
     output.Position += positionPoint1Transformed;
@@ -175,7 +178,7 @@ float4 pixel(Fragment frag) : SV_TARGET
 		}
 	}
 
-	color.rgb *= smoothstep(-0.25, 1, l);
+	////color.rgb *= smoothstep(-0.25, 1, l);
 
 	color.a *= GetUiClippingAlpha(frag);
 	return color;

@@ -24,6 +24,10 @@ using StudioFourteen.Rendering.Draw;
 public struct BoneMaterial : IMaterial
 {
 	public Color Color;
+	public float Thickness;
+	public float Unused1;
+	public float Unused2;
+	public float Unused3;
 
 	public IContent<ShaderBytecode>? GetVertexShader() => new ShaderReference("Shaders/Bone.hlsl", "vs_4_0", "vert");
 	public IContent<ShaderBytecode>? GetPixelShader() => new ShaderReference("Shaders/Bone.hlsl", "ps_4_0", "pixel");
@@ -31,6 +35,7 @@ public struct BoneMaterial : IMaterial
 
 	public void Initialize()
 	{
-		this.Color = Color.White;
+		this.Color = new Color(0.5f, 0.5f, 0.5f, 1.0f);
+		this.Thickness = 1.0f;
 	}
 }

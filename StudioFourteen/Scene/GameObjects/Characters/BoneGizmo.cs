@@ -33,6 +33,7 @@ public class SkeletonBoneGizmo : SelectionHandle
 	private readonly BoneId boneId;
 	private readonly MeshRenderer<BoneCapMaterial> capRenderer;
 	private readonly LineRenderer<BoneMaterial> connectionRenderer;
+	private float alpha = 0;
 
 	public SkeletonBoneGizmo(SkeletonBone selection)
 		: base(selection)
@@ -74,11 +75,46 @@ public class SkeletonBoneGizmo : SelectionHandle
 		Transform boneTransform = *pPose->AccessBoneModelSpace(this.boneId.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
 		this.capRenderer.Transform = boneTransform;
 
+		bool isAnyParentSelected = false;
+		bool isAnyParentHovered = false;
+		SkeletonBone? parent = this.skeletonBone.Parent;
+		while (parent != null)
+		{
+			isAnyParentSelected |= parent.IsSelected;
+			isAnyParentHovered |= parent.IsHovered;
+			parent = parent.Parent;
+		}
+
+		bool isAnyBoneSelected = this.Services.Selection.Current is SkeletonBone;
+		bool isAnyBoneHovered = this.Services.Selection.Hover is SkeletonBone;
 		bool isHoveredOrSelected = this.IsHovered | this.IsSelected;
 
 		this.capRenderer.Material.Size = isHoveredOrSelected ? 2.0f : 1.0f;
 		this.capRenderer.Material.DepthOffset = isHoveredOrSelected ? 0.001f : 0f;
-		////this.capRenderer.Material.Color = this.IsSelected ? Color.White : new(1, 0, 0, 1);
+
+		float desiredAlpha = 0.1f;
+		if (this.IsSelected || isAnyParentSelected)
+		{
+			desiredAlpha = 1.0f;
+			this.capRenderer.Material.Color = new(1.0f, 0.08f, 0.58f, 1.0f);
+		}
+		else if (this.IsHovered || isAnyParentHovered)
+		{
+			desiredAlpha = 1.0f;
+			this.capRenderer.Material.Color = Color.White;
+		}
+		else if (isAnyBoneSelected || isAnyBoneHovered)
+		{
+			this.capRenderer.Material.Color = new(1, 1, 1, 0.1f);
+		}
+		else
+		{
+			desiredAlpha = 1.0f;
+			this.capRenderer.Material.Color = Color.White;
+		}
+
+		this.alpha = float.Lerp(this.alpha, desiredAlpha, 0.25f);
+		this.capRenderer.Material.Color.A = this.alpha;
 
 		Vector3 bonePos = Vector3.Transform(Vector3.Zero, boneTransform.ToMatrix());
 
@@ -99,6 +135,27 @@ public class SkeletonBoneGizmo : SelectionHandle
 			Vector3 childPos = Vector3.Transform(Vector3.Zero, childModelSpaceTransform.ToMatrix());
 			this.connectionRenderer.To = bonePos;
 			this.connectionRenderer.From = childPos;
+
+			if (isAnyParentSelected)
+			{
+				this.connectionRenderer.Material.Color = new(1.0f, 0.08f, 0.58f, 1.0f);
+				this.connectionRenderer.Material.Thickness = 1.25f;
+			}
+			else if (isAnyParentHovered)
+			{
+				this.connectionRenderer.Material.Color = Color.White;
+				this.connectionRenderer.Material.Thickness = 1.25f;
+			}
+			else if (isAnyBoneSelected)
+			{
+				this.connectionRenderer.Material.Color = new(0.5f, 0.5f, 0.5f, 0.1f);
+			}
+			else
+			{
+				this.connectionRenderer.Material.Color = new(0.5f, 0.5f, 0.5f, 1.0f);
+			}
+
+			this.connectionRenderer.Material.Color.A = this.alpha;
 		}
 	}
 }
