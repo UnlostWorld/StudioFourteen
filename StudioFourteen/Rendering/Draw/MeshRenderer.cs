@@ -56,6 +56,9 @@ public class MeshRenderer<TMaterialData> : InstanceRendererBase<MeshRendererInst
 		if (!this.IsVisible)
 			return;
 
+		if (!this.Material.ShouldDraw)
+			return;
+
 		Transform thisTransform = this.Transform * transform;
 		this.Instance.Transform = Matrix4x4.Transpose(thisTransform.ToMatrix());
 		base.Draw(renderer, thisTransform, device, deviceContext);

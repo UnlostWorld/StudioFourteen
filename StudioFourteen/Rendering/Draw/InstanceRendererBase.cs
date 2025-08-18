@@ -25,6 +25,8 @@ using Buffer = SharpDX.Direct3D11.Buffer;
 
 public interface IMaterial
 {
+	bool ShouldDraw => true;
+
 	IContent<ShaderBytecode>? GetVertexShader();
 	IContent<ShaderBytecode>? GetPixelShader();
 	IContent<ShaderBytecode>? GetGeometryShader();

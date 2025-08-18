@@ -50,6 +50,8 @@ public class ScaleGizmo : TransformGizmoBase
 		this.Add(this.uniformHandle);
 	}
 
+	public float DepthOffset => 0.5f;
+
 	public override string Name => Resources.Find("LOC_Scale", "Scale");
 	public override object? Icon => Resources.Find("ICON_Transform_Scale");
 	public override bool ShowInControlPanel => false;
@@ -61,18 +63,26 @@ public class ScaleGizmo : TransformGizmoBase
 		|| this.zHandle.IsHovered
 		|| this.uniformHandle.IsHovered;
 
+	public bool IsDragging =>
+		this.xHandle.IsDragging
+		|| this.yHandle.IsDragging
+		|| this.zHandle.IsDragging
+		|| this.uniformHandle.IsDragging;
+
 	public class AxisHandle : Handle
 	{
 		private readonly MeshRenderer<GizmoFlatMaterial> cubeRenderer;
 		private readonly MeshRenderer<GizmoFlatOutlineMaterial> cubeOutlineRenderer;
 		private readonly LineRenderer<GizmoLineMaterial> lineRenderer;
 		private readonly ScaleGizmo gizmo;
+		private float alpha = 0;
 
 		public AxisHandle(ScaleGizmo gizmo)
 		{
 			this.gizmo = gizmo;
 
 			this.cubeOutlineRenderer = new(MeshContent.Cube);
+			this.cubeOutlineRenderer.Material.DepthOffset = this.gizmo.DepthOffset;
 			this.cubeOutlineRenderer.Transform = Transform.FromTRS(
 				new(0.5f, 0, 0),
 				Quaternion.Identity,
@@ -81,6 +91,8 @@ public class ScaleGizmo : TransformGizmoBase
 			this.Add(this.cubeOutlineRenderer);
 
 			this.cubeRenderer = new(MeshContent.Cube);
+			this.cubeRenderer.Material.DepthOffset = this.gizmo.DepthOffset;
+			this.cubeRenderer.HitTestBias = 10;
 			this.cubeRenderer.Transform = Transform.FromTRS(
 				new(0.5f, 0, 0),
 				Quaternion.Identity,
@@ -88,9 +100,10 @@ public class ScaleGizmo : TransformGizmoBase
 			this.Add(this.cubeRenderer);
 
 			this.lineRenderer = new();
-			this.lineRenderer.From = Vector3.UnitX * 0.05f;
+			this.lineRenderer.From = Vector3.UnitX * 0.1f;
 			this.lineRenderer.To = Vector3.UnitX * 0.45f;
 			this.lineRenderer.Material.OutlineColor = Axes.OutlineColor;
+			this.lineRenderer.Material.DepthOffset = this.gizmo.DepthOffset;
 			this.lineRenderer.IsHitTestVisible = false;
 			this.Add(this.lineRenderer);
 		}
@@ -129,10 +142,15 @@ public class ScaleGizmo : TransformGizmoBase
 		{
 			base.OnDraw();
 
+			float desiredAlpha = 1.0f;
+			if (this.gizmo.IsDragging)
+				desiredAlpha = 0;
+
 			if (this.IsPressed)
 			{
 				this.lineRenderer.Material.Color = Color.White;
 				this.cubeRenderer.Material.Color = Color.White;
+				desiredAlpha = 0.5f;
 			}
 			else
 			{
@@ -166,6 +184,11 @@ public class ScaleGizmo : TransformGizmoBase
 					Quaternion.Identity,
 					new(0.1f, 0.1f, 0.1f));
 			}
+
+			this.alpha = float.Lerp(this.alpha, desiredAlpha, 0.25f);
+			this.lineRenderer.Material.Color.A = this.alpha;
+			this.cubeRenderer.Material.Color.A = this.alpha;
+			this.cubeOutlineRenderer.Material.OutlineColor.A = this.alpha;
 		}
 
 		protected override void OnStartDrag(HitTestResult hitTest)
@@ -209,6 +232,7 @@ public class ScaleGizmo : TransformGizmoBase
 		private readonly MeshRenderer<GizmoFlatMaterial> cubeRenderer;
 		private readonly MeshRenderer<GizmoFlatOutlineMaterial> cubeOutlineRenderer;
 		private readonly ScaleGizmo gizmo;
+		private float alpha = 0;
 
 		public UniformHandle(ScaleGizmo gizmo)
 		{
@@ -217,10 +241,13 @@ public class ScaleGizmo : TransformGizmoBase
 			this.cubeOutlineRenderer = new(MeshContent.Cube);
 			this.cubeOutlineRenderer.Transform = Transform.FromScale(0.18f);
 			this.cubeOutlineRenderer.Material.OutlineColor = Axes.OutlineColor;
+			this.cubeOutlineRenderer.Material.DepthOffset = this.gizmo.DepthOffset;
 			this.Add(this.cubeOutlineRenderer);
 
 			this.cubeRenderer = new(MeshContent.Cube);
 			this.cubeRenderer.Transform = Transform.FromScale(0.2f);
+			this.cubeRenderer.Material.DepthOffset = this.gizmo.DepthOffset;
+			this.cubeRenderer.HitTestBias = 10;
 			this.Add(this.cubeRenderer);
 		}
 
@@ -243,9 +270,14 @@ public class ScaleGizmo : TransformGizmoBase
 		{
 			base.OnDraw();
 
+			float desiredAlpha = 1.0f;
+			if (this.gizmo.IsDragging)
+				desiredAlpha = 0;
+
 			if (this.IsPressed)
 			{
 				this.cubeRenderer.Material.Color = Color.White;
+				desiredAlpha = 0.5f;
 			}
 			else
 			{
@@ -254,14 +286,18 @@ public class ScaleGizmo : TransformGizmoBase
 
 			if (this.IsHovered)
 			{
-				this.cubeRenderer.Transform = Transform.FromScale(0.21f);
-				this.cubeOutlineRenderer.Transform = Transform.FromScale(0.19f);
+				this.cubeRenderer.Transform = Transform.FromScale(0.22f);
+				this.cubeOutlineRenderer.Transform = Transform.FromScale(0.20f);
 			}
 			else
 			{
 				this.cubeRenderer.Transform = Transform.FromScale(0.2f);
 				this.cubeOutlineRenderer.Transform = Transform.FromScale(0.18f);
 			}
+
+			this.alpha = float.Lerp(this.alpha, desiredAlpha, 0.25f);
+			this.cubeRenderer.Material.Color.A = this.alpha;
+			this.cubeOutlineRenderer.Material.OutlineColor.A = this.alpha;
 		}
 
 		protected override void OnStartDrag(HitTestResult hitTest)

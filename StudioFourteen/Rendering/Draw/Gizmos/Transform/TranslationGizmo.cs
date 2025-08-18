@@ -83,6 +83,8 @@ public class TranslationGizmo : TransformGizmoBase
 	public override bool ShowInControlPanel => false;
 	public override bool KeepScreenSize => true;
 
+	public float DepthOffset => 0.5f;
+
 	public override bool IsBeingManipulated =>
 		this.xHandle.IsHovered
 		|| this.yHandle.IsHovered
@@ -160,6 +162,7 @@ public class TranslationGizmo : TransformGizmoBase
 		private readonly MeshRenderer<GizmoFlatOutlineMaterial> coneOutlineRenderer;
 		private readonly LineRenderer<GizmoLineMaterial> lineRenderer;
 		private readonly TranslationGizmo gizmo;
+		private float alpha = 0;
 
 		public AxisHandle(TranslationGizmo gizmo)
 		{
@@ -180,11 +183,16 @@ public class TranslationGizmo : TransformGizmoBase
 				new(0.15f, 0.15f, 0.15f));
 			this.Add(this.coneRenderer);
 
+			this.coneRenderer.Material.DepthOffset = this.gizmo.DepthOffset;
+			this.coneRenderer.HitTestBias = 10;
+
 			this.lineRenderer = new();
 			this.lineRenderer.From = Vector3.UnitX * 0.05f;
 			this.lineRenderer.To = Vector3.UnitX * 0.45f;
 			this.lineRenderer.Material.OutlineColor = Axes.OutlineColor;
 			this.lineRenderer.IsHitTestVisible = false;
+			this.lineRenderer.Material.DepthOffset = this.gizmo.DepthOffset;
+			this.lineRenderer.HitTestBias = 10;
 			this.Add(this.lineRenderer);
 		}
 
@@ -205,10 +213,15 @@ public class TranslationGizmo : TransformGizmoBase
 		{
 			base.OnDraw();
 
+			float desiredAlpha = 1.0f;
+			if (this.gizmo.IsDragging)
+				desiredAlpha = 0;
+
 			if (this.IsPressed)
 			{
 				this.lineRenderer.Material.Color = Color.White;
 				this.coneRenderer.Material.Color = Color.White;
+				desiredAlpha = 0.5f;
 			}
 			else
 			{
@@ -216,7 +229,11 @@ public class TranslationGizmo : TransformGizmoBase
 				this.coneRenderer.Material.Color = this.Color;
 			}
 
-			if (this.IsHovered)
+			if (this.IsPressed)
+			{
+				this.lineRenderer.Material.Thickness = 1.0f;
+			}
+			else if (this.IsHovered)
 			{
 				this.lineRenderer.Material.Thickness = 1.5f;
 			}
@@ -224,6 +241,11 @@ public class TranslationGizmo : TransformGizmoBase
 			{
 				this.lineRenderer.Material.Thickness = 1.0f;
 			}
+
+			this.alpha = float.Lerp(this.alpha, desiredAlpha, 0.25f);
+			this.lineRenderer.Material.Color.A = this.alpha;
+			this.coneRenderer.Material.Color.A = this.alpha;
+			this.coneOutlineRenderer.Material.OutlineColor.A = this.alpha;
 		}
 
 		protected override void OnStartDrag(HitTestResult hitTest)
@@ -266,6 +288,7 @@ public class TranslationGizmo : TransformGizmoBase
 	{
 		private readonly MeshRenderer<GizmoFlatMaterial> planeRenderer;
 		private readonly TranslationGizmo gizmo;
+		private float alpha;
 
 		public PlaneHandle(TranslationGizmo gizmo)
 		{
@@ -277,6 +300,8 @@ public class TranslationGizmo : TransformGizmoBase
 				Quaternion.Identity,
 				new(0.1f, 0.1f, 0.1f));
 			this.planeRenderer.CullMode = CullMode.None;
+			this.planeRenderer.Material.DepthOffset = this.gizmo.DepthOffset;
+			this.planeRenderer.HitTestBias = 10;
 			this.Add(this.planeRenderer);
 		}
 
@@ -300,20 +325,27 @@ public class TranslationGizmo : TransformGizmoBase
 		{
 			base.OnDraw();
 
+			float desiredAlpha = 0.5f;
+			if (this.gizmo.IsDragging)
+				desiredAlpha = 0;
+
 			if (this.IsPressed)
 			{
 				this.planeRenderer.Material.Color = Color.White;
+				desiredAlpha = 0.5f;
 			}
 			else if (this.IsHovered)
 			{
 				this.planeRenderer.Material.Color = this.Color;
-				this.planeRenderer.Material.Color.A = 0.75f;
+				desiredAlpha = 0.75f;
 			}
 			else
 			{
 				this.planeRenderer.Material.Color = this.Color;
-				this.planeRenderer.Material.Color.A = 0.5f;
 			}
+
+			this.alpha = float.Lerp(this.alpha, desiredAlpha, 0.25f);
+			this.planeRenderer.Material.Color.A = this.alpha;
 		}
 
 		protected override void OnStartDrag(HitTestResult hitTest)

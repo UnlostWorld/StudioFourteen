@@ -24,6 +24,12 @@ using StudioFourteen.Rendering.Draw;
 public struct GizmoFlatMaterial : IMaterial
 {
 	public Color Color;
+	public float DepthOffset;
+	public float Unused1;
+	public float Unused2;
+	public float Unused3;
+
+	public bool ShouldDraw => this.Color.A > 0.1f;
 
 	public IContent<ShaderBytecode>? GetVertexShader() => new ShaderReference("Shaders/GizmoFlat.hlsl", "vs_4_0", "vert");
 	public IContent<ShaderBytecode>? GetPixelShader() => new ShaderReference("Shaders/GizmoFlat.hlsl", "ps_4_0", "pixel");
@@ -32,5 +38,6 @@ public struct GizmoFlatMaterial : IMaterial
 	public void Initialize()
 	{
 		this.Color = Color.White;
+		this.DepthOffset = 0;
 	}
 }

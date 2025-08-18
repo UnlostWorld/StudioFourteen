@@ -56,11 +56,19 @@ public class RotationGizmo : TransformGizmoBase
 	public override bool ShowInControlPanel => false;
 	public override bool KeepScreenSize => true;
 
+	public float DepthOffset => 0.5f;
+
 	public override bool IsBeingManipulated =>
 		this.xHandle.IsHovered
 		|| this.yHandle.IsHovered
 		|| this.zHandle.IsHovered
 		|| this.orbHandle.IsHovered;
+
+	public bool IsDragging =>
+		this.xHandle.IsDragging
+		|| this.yHandle.IsDragging
+		|| this.zHandle.IsDragging
+		|| this.orbHandle.IsDragging;
 
 	public class AxisHandle : Handle
 	{
@@ -68,6 +76,7 @@ public class RotationGizmo : TransformGizmoBase
 		private readonly LineRenderer<GizmoLineMaterial> fromLineRenderer;
 		private readonly LineRenderer<GizmoLineMaterial> toLineRenderer;
 		private readonly RotationGizmo gizmo;
+		private float alpha = 0;
 
 		private Vector2 dragStartScreenNormal;
 		private Vector4 dragStartVertPos;
@@ -80,16 +89,20 @@ public class RotationGizmo : TransformGizmoBase
 			this.circleRenderer.Material.EndCaps = 0;
 			this.circleRenderer.Material.OutlineColor = Axes.OutlineColor;
 			this.circleRenderer.Material.FadeOutDepth = 0.075f;
+			this.circleRenderer.Material.DepthOffset = this.gizmo.DepthOffset;
+			this.circleRenderer.HitTestBias = 10;
 			this.Add(this.circleRenderer);
 
 			this.fromLineRenderer = new();
 			this.fromLineRenderer.IsHitTestVisible = false;
 			this.fromLineRenderer.IsVisible = false;
+			this.fromLineRenderer.Material.DepthOffset = this.gizmo.DepthOffset;
 			this.Add(this.fromLineRenderer);
 
 			this.toLineRenderer = new();
 			this.toLineRenderer.IsHitTestVisible = false;
 			this.toLineRenderer.IsVisible = false;
+			this.toLineRenderer.Material.DepthOffset = this.gizmo.DepthOffset;
 			this.Add(this.toLineRenderer);
 		}
 
@@ -116,8 +129,14 @@ public class RotationGizmo : TransformGizmoBase
 
 			base.OnDraw();
 
+			float desiredAlpha = 1.0f;
+
+			if (this.gizmo.IsDragging)
+				desiredAlpha = 0;
+
 			if (this.IsPressed)
 			{
+				desiredAlpha = 0.5f;
 				this.circleRenderer.Material.Color = Color.White;
 				this.fromLineRenderer.Material.Color = Color.White;
 				this.toLineRenderer.Material.Color = Color.White;
@@ -131,7 +150,12 @@ public class RotationGizmo : TransformGizmoBase
 				this.circleRenderer.Material.FadeOutDepth = 0.075f;
 			}
 
-			if (this.IsHovered)
+			if (this.IsDragging)
+			{
+				desiredAlpha = 0.25f;
+				this.circleRenderer.Material.Thickness = 1.0f;
+			}
+			else if (this.IsHovered)
 			{
 				this.circleRenderer.Material.Thickness = 1.5f;
 			}
@@ -139,6 +163,11 @@ public class RotationGizmo : TransformGizmoBase
 			{
 				this.circleRenderer.Material.Thickness = 1.0f;
 			}
+
+			this.alpha = float.Lerp(this.alpha, desiredAlpha, 0.25f);
+			this.circleRenderer.Material.Color.A = this.alpha;
+			this.fromLineRenderer.Material.Color.A = this.alpha;
+			this.toLineRenderer.Material.Color.A = this.alpha;
 
 			if (this.IsDragging)
 			{
@@ -195,6 +224,8 @@ public class RotationGizmo : TransformGizmoBase
 		private readonly MeshRenderer<GizmoFlatMaterial> sphereRenderer;
 		private readonly RotationGizmo gizmo;
 
+		private float alpha;
+
 		public OrbHandle(RotationGizmo gizmo)
 		{
 			this.gizmo = gizmo;
@@ -205,7 +236,17 @@ public class RotationGizmo : TransformGizmoBase
 			this.sphereRenderer.Material.Color = Axes.OutlineColor;
 			this.sphereRenderer.Material.Color.A = 0.5f;
 			this.sphereRenderer.WriteDepth = false;
+			this.sphereRenderer.Material.DepthOffset = this.gizmo.DepthOffset;
 			this.Add(this.sphereRenderer);
+		}
+
+		protected override void OnDraw()
+		{
+			base.OnDraw();
+
+			float desiredAlpha = this.gizmo.IsDragging ? 0 : 0.5f;
+			this.alpha = float.Lerp(this.alpha, desiredAlpha, 0.25f);
+			this.sphereRenderer.Material.Color.A = this.alpha;
 		}
 	}
 }

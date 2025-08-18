@@ -18,6 +18,7 @@
 cbuffer MaterialInstanceData : register(MaterialDataRegister)
 {
 	float4 OutlineColor;
+	float DepthOffset;
 };
 
 Fragment vert(in Vertex vertex)
@@ -29,7 +30,7 @@ Fragment vert(in Vertex vertex)
 	position = mul(position, Transform);
 	position = mul(position, ViewMatrix);
 	position = mul(position, ProjectionMatrix);
-	position.z -= 0.005;
+	position.z +=  DepthOffset - 0.005;
 	result.Position = position;
 
 	return result;

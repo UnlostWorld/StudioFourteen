@@ -26,6 +26,7 @@ cbuffer MaterialInstanceData : register(MaterialDataRegister)
 	float EndCaps;
 	float FadeOutDepth;
 	float MinAlpha;
+	float DepthOffset;
 };
 
 static float zOffset = 0.0f;
@@ -36,7 +37,9 @@ static float fThickness = 0.01f;
 
 Fragment vert(in Vertex vertex)
 {
-	return DefaultVert(vertex);
+	Fragment frag = DefaultVert(vertex);
+	frag.Position.z += DepthOffset;
+	return frag;
 }
 
 void addHalfCircle(inout TriangleStream<Fragment> triangleStream, int nCountTriangles, float4 linePointToConnect, float fPointWComponent, float fAngle, float4 color)
@@ -58,6 +61,7 @@ void addHalfCircle(inout TriangleStream<Fragment> triangleStream, int nCountTria
         triangleStream.Append(output);
 
         output.Position = linePointToConnect * fPointWComponent;
+		output.Position.z += zOffset;
 		output.ScreenPosition = output.Position;
         output.TexCoord = float2(-1, 1);
         triangleStream.Append(output);

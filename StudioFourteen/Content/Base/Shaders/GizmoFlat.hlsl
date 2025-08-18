@@ -18,11 +18,15 @@
 cbuffer MaterialInstanceData : register(MaterialDataRegister)
 {
 	float4 Color;
+	float DepthOffset;
 };
 
 Fragment vert(in Vertex vertex)
 {
-	return DefaultVert(vertex);
+	Fragment frag = DefaultVert(vertex);
+	frag.Position.z += DepthOffset;
+	frag.ScreenPosition.z += DepthOffset;
+	return frag;
 }
 
 float4 pixel(Fragment frag) : SV_TARGET

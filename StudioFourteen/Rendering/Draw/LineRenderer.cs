@@ -24,6 +24,7 @@ using Device = SharpDX.Direct3D11.Device;
 public class LineRenderer<TMaterialData> : InstanceRendererBase<MeshRendererInstanceData, TMaterialData>
 	where TMaterialData : unmanaged, IMaterial
 {
+	public float HitTestDepthOffset = 0;
 	public float HitTestBias = 0;
 
 	private readonly Vertex[] vertArray = new Vertex[2]
@@ -51,6 +52,9 @@ public class LineRenderer<TMaterialData> : InstanceRendererBase<MeshRendererInst
 	public override void Draw(Renderer renderer, Transform transform, Device device, DeviceContext deviceContext)
 	{
 		if (!this.IsVisible)
+			return;
+
+		if (!this.Material.ShouldDraw)
 			return;
 
 		Transform thisTransform = transform * this.Transform;

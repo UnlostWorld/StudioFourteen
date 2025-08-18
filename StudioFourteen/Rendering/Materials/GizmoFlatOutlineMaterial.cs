@@ -24,7 +24,13 @@ using StudioFourteen.Rendering.Draw;
 [StructLayout(LayoutKind.Sequential)]
 public struct GizmoFlatOutlineMaterial : IMaterial
 {
-	public Vector4 OutlineColor;
+	public Color OutlineColor;
+	public float DepthOffset;
+	public float Unused1;
+	public float Unused2;
+	public float Unused3;
+
+	public bool ShouldDraw => this.OutlineColor.A > 0.1f;
 
 	public IContent<ShaderBytecode>? GetVertexShader() => new ShaderReference("Shaders/GizmoFlatOutline.hlsl", "vs_4_0", "vert");
 	public IContent<ShaderBytecode>? GetPixelShader() => new ShaderReference("Shaders/GizmoFlatOutline.hlsl", "ps_4_0", "pixel");
@@ -32,5 +38,7 @@ public struct GizmoFlatOutlineMaterial : IMaterial
 
 	public void Initialize()
 	{
+		this.OutlineColor = new(0, 0, 0, 1.0f);
+		this.DepthOffset = 0;
 	}
 }
