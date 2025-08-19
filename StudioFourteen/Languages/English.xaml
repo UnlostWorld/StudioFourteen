@@ -15,6 +15,11 @@
 	<sys:String x:Key="LOC_GitHub">GitHub</sys:String>
 	<sys:String x:Key="LOC_Console">Console</sys:String>
 
+	<sys:String x:Key="LOC_Launcher_Start">Start Studio Fourteen</sys:String>
+	<sys:String x:Key="LOC_Launcher_StartSubtitle">Begin creating</sys:String>
+	<sys:String x:Key="LOC_Launcher_Stop">Stop Studio Fourteen</sys:String>
+	<sys:String x:Key="LOC_Launcher_StopSubtitle">Get back to the game</sys:String>
+
 	<sys:String x:Key="LOC_ClosePanelTooltip">Close</sys:String>
 	<sys:String x:Key="LOC_EmbedPanelTooltip">Pop this window in or out of the FFXIV window</sys:String>
 

@@ -96,6 +96,11 @@ public abstract class PanelContextBase
 		this.CreatePanelAsync<T>(activate).Run();
 	}
 
+	public void CreatePanel(Type panelType, bool activate)
+	{
+		this.CreatePanelAsync(panelType, activate).Run();
+	}
+
 	public async Task<T?> CreatePanelAsync<T>(bool activate = true)
 		where T : Panel
 	{

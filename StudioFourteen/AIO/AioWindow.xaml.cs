@@ -26,6 +26,7 @@ using PropertyChanged.SourceGenerator;
 using StudioFourteen.Environment;
 using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Scene.Cameras;
+using StudioFourteen.Selection;
 
 [DependencyProperty<bool>("IsMenuOpen")]
 public partial class AioWindow : PanelWindow

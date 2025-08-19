@@ -5,10 +5,96 @@
 	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
 	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:local="clr-namespace:StudioFourteen.Launcher"
-	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
+	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	xmlns:marketplace="clr-namespace:StudioFourteen.Marketplace"
+	xmlns:library="clr-namespace:StudioFourteen.Library"
+	xmlns:selection="clr-namespace:StudioFourteen.Selection"
+	xmlns:panels="clr-namespace:StudioFourteen.Panel"
+	xmlns:settings="clr-namespace:StudioFourteen.Settings"
+	xmlns:history="clr-namespace:StudioFourteen.History"
+	xmlns:photos="clr-namespace:StudioFourteen.Photos"
+	xmlns:animation="clr-namespace:StudioFourteen.Animation"
+	xmlns:posing="clr-namespace:StudioFourteen.Posing"
+	xmlns:environment="clr-namespace:StudioFourteen.Environment">
 
 	<BooleanToVisibilityConverter x:Key="B2V" />
+	<converters:InvertedBoolToVisibilityConverter x:Key="!B2V" />
 	<converters:BoolInversionConverter x:Key="!B" />
+
+	<ControlTemplate TargetType="{x:Type local:LauncherEntry}" x:Key="LauncherEntryTemplate">
+		<ToggleButton
+			Height="Auto"
+			HorizontalContentAlignment="Stretch"
+			VerticalContentAlignment="Stretch"
+			IsChecked="{Binding IsPanelOpen, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+			Style="{DynamicResource WpfUtilsIconToggleButtonNoChecked}">
+			<Grid Margin="3,6">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition />
+				</Grid.ColumnDefinitions>
+
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition />
+				</Grid.RowDefinitions>
+
+				<Border
+					Grid.RowSpan="2"
+					Width="2"
+					Margin="2"
+					HorizontalAlignment="Left"
+					Background="{DynamicResource TrimBrush}"
+					CornerRadius="1"
+					Opacity="1"
+					Visibility="{Binding IsChecked, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}, Converter={StaticResource B2V}}" />
+
+				<ContentPresenter
+					Grid.Row="0"
+					Grid.Column="1"
+					Width="18"
+					Height="18"
+					Margin="6,2,0,0"
+					Content="{TemplateBinding Icon}" />
+
+				<TextBlock
+					Grid.Row="0"
+					Grid.Column="2"
+					Margin="10,0,0,0"
+					VerticalAlignment="Center"
+					Text="{TemplateBinding DisplayName}" />
+
+				<TextBlock
+					Grid.Row="1"
+					Grid.Column="1"
+					Grid.ColumnSpan="2"
+					Margin="6,3,0,0"
+					Style="{DynamicResource Subscript}"
+					Text="{TemplateBinding Description}"
+					TextWrapping="Wrap" />
+			</Grid>
+		</ToggleButton>
+	</ControlTemplate>
+
+	<Style TargetType="{x:Type local:LauncherEntry}">
+		<Setter Property="Template" Value="{DynamicResource LauncherEntryTemplate}" />
+	</Style>
+
+	<ControlTemplate TargetType="{x:Type local:LauncherEntry}" x:Key="IconLauncherEntryTemplate">
+		<ToggleButton
+			Height="Auto"
+			HorizontalContentAlignment="Stretch"
+			VerticalContentAlignment="Stretch"
+			IsChecked="{Binding IsPanelOpen, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+			Style="{DynamicResource WpfUtilsIconToggleButton}"
+			ToolTip="{TemplateBinding Description}"
+			Content="{TemplateBinding Icon}" />
+	</ControlTemplate>
+
+	<Style TargetType="{x:Type local:LauncherEntry}" x:Key="IconLauncher">
+		<Setter Property="Template" Value="{DynamicResource IconLauncherEntryTemplate}" />
+	</Style>
 
 	<ControlTemplate x:Key="LauncherMenuTemplate" TargetType="{x:Type local:LauncherMenu}">
 		<Grid Margin="12">
@@ -34,103 +120,152 @@
 				BorderThickness="1"
 				CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
 
-			<Grid Margin="{TemplateBinding Padding}">
+			<Grid
+				Margin="{TemplateBinding Padding}"
+				Width="450">
 
 				<Grid.RowDefinitions>
 					<RowDefinition Height="Auto" />
 					<RowDefinition Height="Auto" />
 					<RowDefinition />
+					<RowDefinition Height="Auto" />
 				</Grid.RowDefinitions>
 
-				<Grid Grid.Row="0">
+				<Grid Grid.Row="0" Margin="3,3,3,0">
 					<Grid.ColumnDefinitions>
 						<ColumnDefinition />
+						<ColumnDefinition Width="128" />
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 
-					<wpfUtils:SwitchSelector
-						Grid.Column="0"
+					<ToggleButton
 						Height="42"
-						Margin="10"
-						Padding="6">
-
-						<ListBoxItem HorizontalContentAlignment="Stretch" IsSelected="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsStudioOpen, Converter={StaticResource !B}}">
+						Grid.Column="0"
+						Style="{DynamicResource WpfUtilsIconToggleButton}"
+						IsChecked="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsStudioOpen}"
+						HorizontalContentAlignment="Stretch"
+						Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsStudioOpen, Converter={StaticResource !B2V}}">
+						<ToggleButton.Content>
 							<Grid>
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="Auto" />
 									<ColumnDefinition />
 								</Grid.ColumnDefinitions>
 
-								<controls:XivIconImage
+								<Grid.RowDefinitions>
+									<RowDefinition />
+									<RowDefinition />
+								</Grid.RowDefinitions>
+
+								<icons:IconView
+									Margin="-3,-3,8,0"
+									Icon="{DynamicResource ICON_Launcher_Start}"
 									Grid.RowSpan="2"
-									Grid.Column="0"
-									Id="061396" />
+									Grid.Column="0" />
 
 								<TextBlock
+									Margin="0"
 									Grid.Row="0"
 									Grid.Column="1"
-									Margin="6,0,0,0"
-									VerticalAlignment="Center"
-									FontSize="14"
-									Text="Gameplay Mode" />
-							</Grid>
-						</ListBoxItem>
+									Text="{DynamicResource LOC_Launcher_Start}" />
 
-						<ListBoxItem HorizontalContentAlignment="Stretch" IsSelected="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsStudioOpen}">
+								<TextBlock
+									Margin="0"
+									Grid.Row="1"
+									Grid.Column="1"
+									Style="{DynamicResource Subscript}"
+									Text="{DynamicResource LOC_Launcher_StartSubtitle}" />
+
+							</Grid>
+						</ToggleButton.Content>
+					</ToggleButton>
+
+					<ToggleButton
+						Height="42"
+						Grid.Column="0"
+						Style="{DynamicResource WpfUtilsIconToggleButton}"
+						IsChecked="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsStudioOpen, Converter={StaticResource !B}}"
+						HorizontalContentAlignment="Stretch"
+						Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsStudioOpen, Converter={StaticResource B2V}}">
+						<ToggleButton.Content>
 							<Grid>
 								<Grid.ColumnDefinitions>
 									<ColumnDefinition Width="Auto" />
 									<ColumnDefinition />
 								</Grid.ColumnDefinitions>
 
+								<Grid.RowDefinitions>
+									<RowDefinition />
+									<RowDefinition />
+								</Grid.RowDefinitions>
 
-								<Image
+								<icons:IconView
+									Margin="-3,-3,8,0"
+									Icon="{DynamicResource ICON_Launcher_Start}"
 									Grid.RowSpan="2"
-									Grid.Column="0"
-									Source="{DynamicResource LauncherButtonBackground}" />
+									Grid.Column="0" />
 
 								<TextBlock
+									Margin="0"
 									Grid.Row="0"
 									Grid.Column="1"
-									Margin="6,0,0,0"
-									VerticalAlignment="Center"
-									FontSize="14"
-									Text="Studio Mode" />
-							</Grid>
-						</ListBoxItem>
-					</wpfUtils:SwitchSelector>
+									Text="{DynamicResource LOC_Launcher_Stop}" />
 
-					<Border
-						IsEnabled="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsStudioOpen}"
+								<TextBlock
+									Margin="0"
+									Grid.Row="1"
+									Grid.Column="1"
+									Style="{DynamicResource Subscript}"
+									Text="{DynamicResource LOC_Launcher_StopSubtitle}" />
+
+							</Grid>
+						</ToggleButton.Content>
+					</ToggleButton>
+
+					<ToggleButton
+						Height="42"
 						Grid.Column="1"
-						Margin="0,10,10,10"
-						Style="{DynamicResource WpfUtilsControlBorder}">
-						<StackPanel Orientation="Horizontal">
-							<ToggleButton
-								Width="42"
-								Height="42"
-								Padding="12"
-								Background="Transparent"
-								Content="{DynamicResource ICON_GroupPose}"
-								IsChecked="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsInGPose}"
-								Style="{DynamicResource WpfUtilsIconToggleButton}"
-								ToolTip="{DynamicResource LOC_ToggleGPose}" />
+						Style="{DynamicResource WpfUtilsIconToggleButton}"
+						HorizontalContentAlignment="Stretch"
+						IsEnabled="False"
+						ToolTip="Remember our promise">
+						<ToggleButton.Content>
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition />
+								</Grid.ColumnDefinitions>
 
-							<ToggleButton
-								Width="42"
-								Height="42"
-								Padding="12"
-								Background="Transparent"
-								Content="{DynamicResource ICON_GroupPoseSettings}"
-								IsChecked="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsGPoseSettingsOpen}"
-								Style="{DynamicResource WpfUtilsIconToggleButton}"
-								ToolTip="{DynamicResource LOC_GPoseSettings}" />
-						</StackPanel>
-					</Border>
+								<Ellipse
+									Width="28"
+									Height="28"
+									Margin="0,0,6,0"
+									Fill="{DynamicResource ForegroundLightBrush}"
+									Grid.RowSpan="2"
+									Grid.Column="0" />
 
+								<TextBlock
+									Margin="0"
+									Grid.Row="0"
+									Grid.Column="1"
+									VerticalAlignment="Center"
+									Text="Some User" />
+							</Grid>
+						</ToggleButton.Content>
+					</ToggleButton>
+
+					<local:LauncherEntry
+						Grid.Column="2"
+						Width="42"
+						Height="42"
+						Style="{DynamicResource IconLauncher}"
+						Context="{Binding Context}"
+						PanelType="{x:Type settings:SettingsPanel}" />
 				</Grid>
 
-				<Grid Grid.Row="1" Margin="2,2,2,0">
+				<Grid Grid.Row="1" Margin="2,2,2,0"
+					Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsStudioOpen, Converter={StaticResource B2V}}"
+					IsEnabled="False">
 					<TextBox
 						x:Name="PART_SearchBox"
 						Grid.Row="1"
@@ -149,74 +284,108 @@
 				<Border
 					Grid.Row="2"
 					Margin="3"
+					Style="{DynamicResource WpfUtilsControlBorder}">
+
+					<StackPanel>
+						<UniformGrid
+							Columns="2">
+							<local:LauncherEntry
+								Context="{Binding Context}"
+								PanelType="{x:Type marketplace:MarketplacePanel}" />
+
+							<local:LauncherEntry
+								Context="{Binding Context}"
+								PanelType="{x:Type library:LibraryPanel}" />
+
+						</UniformGrid>
+
+						<StackPanel
+							Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsStudioOpen, Converter={StaticResource B2V}}">
+
+							<UniformGrid
+								Columns="2"
+								Visibility="{Binding Configuration.EnableInspector, Converter={StaticResource B2V}}">
+								<local:LauncherEntry
+									Context="{Binding Context}"
+									PanelType="{x:Type selection:InspectorPanel}" />
+
+							</UniformGrid>
+
+							<UniformGrid
+								Columns="2"
+								Visibility="{Binding Configuration.EnableDedicatedInspectors, Converter={StaticResource B2V}}">
+
+								<local:LauncherEntry
+									Context="{Binding Context}"
+									PanelType="{x:Type selection:CameraPanel}" />
+
+								<local:LauncherEntry
+									Context="{Binding Context}"
+									PanelType="{x:Type selection:CharacterPanel}" />
+
+							</UniformGrid>
+
+							<UniformGrid
+								Columns="2">
+
+								<local:LauncherEntry
+									Context="{Binding Context}"
+									PanelType="{x:Type environment:EnvironmentPanel}" />
+
+								<local:LauncherEntry
+									Context="{Binding Context}"
+									PanelType="{x:Type posing:PosePanel}" />
+
+								<local:LauncherEntry
+									Context="{Binding Context}"
+									PanelType="{x:Type animation:AnimationPanel}" />
+
+								<local:LauncherEntry
+									Context="{Binding Context}"
+									PanelType="{x:Type photos:PhotoPanel}" />
+
+							</UniformGrid>
+						</StackPanel>
+					</StackPanel>
+				</Border>
+
+				<Border
+					Grid.Row="3"
 					Style="{DynamicResource WpfUtilsControlBorder}"
-					IsEnabled="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsStudioOpen}">
+					Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsStudioOpen, Converter={StaticResource B2V}}">
 
-					<ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Entries}">
-						<ItemsControl.ItemsPanel>
-							<ItemsPanelTemplate>
-								<UniformGrid Columns="3" />
-							</ItemsPanelTemplate>
-						</ItemsControl.ItemsPanel>
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition />
+							<ColumnDefinition Width="Auto" />
+							<ColumnDefinition Width="Auto" />
+						</Grid.ColumnDefinitions>
 
-						<ItemsControl.ItemTemplate>
-							<DataTemplate DataType="{x:Type local:LauncherEntry}">
-								<ToggleButton
-									Height="Auto"
-									HorizontalContentAlignment="Stretch"
-									VerticalContentAlignment="Stretch"
-									IsChecked="{Binding IsOpen}"
-									IsEnabled="{Binding IsEnabled}"
-									Style="{DynamicResource WpfUtilsIconToggleButtonNoChecked}">
-									<Grid Margin="3,6">
-										<Grid.ColumnDefinitions>
-											<ColumnDefinition Width="Auto" />
-											<ColumnDefinition Width="Auto" />
-											<ColumnDefinition />
-										</Grid.ColumnDefinitions>
+						<ToggleButton
+							Grid.Column="2"
+							Width="42"
+							Height="42"
+							Padding="12"
+							Background="Transparent"
+							Content="{DynamicResource ICON_GroupPose}"
+							IsChecked="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsInGPose}"
+							Style="{DynamicResource WpfUtilsIconToggleButton}"
+							ToolTip="{DynamicResource LOC_ToggleGPose}" />
 
-										<Grid.RowDefinitions>
-											<RowDefinition Height="Auto" />
-											<RowDefinition />
-										</Grid.RowDefinitions>
+						<ToggleButton
+							Grid.Column="3"
+							Width="42"
+							Height="42"
+							Padding="12"
+							Background="Transparent"
+							IsEnabled="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsInGPose}"
+							Content="{DynamicResource ICON_GroupPoseSettings}"
+							IsChecked="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsGPoseSettingsOpen}"
+							Style="{DynamicResource WpfUtilsIconToggleButton}"
+							ToolTip="{DynamicResource LOC_GPoseSettings}" />
 
-										<Border
-											Grid.RowSpan="2"
-											Width="2"
-											Margin="2"
-											HorizontalAlignment="Left"
-											Background="{DynamicResource TrimBrush}"
-											CornerRadius="1"
-											Opacity="1"
-											Visibility="{Binding IsChecked, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}, Converter={StaticResource B2V}}" />
-
-										<ContentPresenter
-											Grid.Row="0"
-											Grid.Column="1"
-											Width="18"
-											Height="18"
-											Margin="6,2,0,0"
-											Content="{Binding Icon}" />
-										<TextBlock
-											Grid.Row="0"
-											Grid.Column="2"
-											Margin="10,0,0,0"
-											VerticalAlignment="Center"
-											Text="{Binding DisplayName}" />
-
-										<TextBlock
-											Grid.Row="1"
-											Grid.Column="1"
-											Grid.ColumnSpan="2"
-											Margin="6,3,0,0"
-											Style="{DynamicResource Subscript}"
-											Text="{Binding Description}"
-											TextWrapping="Wrap" />
-									</Grid>
-								</ToggleButton>
-							</DataTemplate>
-						</ItemsControl.ItemTemplate>
-					</ItemsControl>
+					</Grid>
 				</Border>
 			</Grid>
 		</Grid>
@@ -224,7 +393,6 @@
 
 	<Style TargetType="{x:Type local:LauncherMenu}">
 		<Setter Property="Template" Value="{StaticResource LauncherMenuTemplate}" />
-		<Setter Property="Width" Value="600" />
 	</Style>
 
 

@@ -41,6 +41,7 @@ public partial class LauncherWindow : PanelWindow
 	}
 
 	public Persistence Persistence { get; init; } = Persistence.GetPersistence($"Panel_Launcher");
+	public SettingsService.Configuration Configuration => this.Services.Settings.Current;
 
 	public override T? GetPersistence<T>([CallerMemberName] string id = "")
 		where T : default

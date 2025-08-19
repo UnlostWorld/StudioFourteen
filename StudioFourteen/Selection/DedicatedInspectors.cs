@@ -1,4 +1,4 @@
-﻿// .                    @@             _____ _______ _    _ _____ _____ ____
+// .                    @@             _____ _______ _    _ _____ _____ ____
 //          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
 //         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
 //         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
@@ -13,9 +13,14 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Scene.GameObjects.Characters;
+namespace StudioFourteen.Selection;
 
-using StudioFourteen.Selection;
+using StudioFourteen.Scene.Cameras;
+using StudioFourteen.Scene.GameObjects.Characters;
+
+public partial class CameraPanel : InspectorPanel<Camera>
+{
+}
 
 public partial class CharacterPanel : InspectorPanel<Character>
 {

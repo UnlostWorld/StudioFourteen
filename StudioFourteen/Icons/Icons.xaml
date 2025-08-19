@@ -160,4 +160,6 @@
 	<icons:FontIcon x:Key="ICON_FTUE_DedicatedInspectors" Icon="&#xe910;" />
 	<icons:FontIcon x:Key="ICON_FTUE_SingleInspector" Icon="&#xe91e;" />
 
+	<icons:FontIcon x:Key="ICON_Launcher_Start" Icon="&#xe924;" />
+
 </ResourceDictionary>

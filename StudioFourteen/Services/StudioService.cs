@@ -52,7 +52,7 @@ public partial class StudioService : ServiceBase
 
 	public override Task Start()
 	{
-		if (Debugger.IsAttached)
+		/*if (Debugger.IsAttached)
 		{
 			Task.Run(async () =>
 			{
@@ -61,7 +61,7 @@ public partial class StudioService : ServiceBase
 
 				this.OpenStudio();
 			});
-		}
+		}*/
 
 		return base.Start();
 	}
