@@ -374,7 +374,7 @@ public class WpfRenderer : Renderer
 			D3D11Device.CreateWithSwapChain(
 				DriverType.Hardware,
 				DeviceCreationFlags.BgraSupport | DeviceCreationFlags.Debug,
-				[FeatureLevel.Level_11_1, FeatureLevel.Level_9_3],
+				[],
 				swapChainDesc,
 				out var d3d11Device,
 				out var swapChain);
