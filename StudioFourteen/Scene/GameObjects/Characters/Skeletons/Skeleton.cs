@@ -162,6 +162,70 @@ public partial class Skeleton : GameObject
 
 	public void Flip()
 	{
+		this.FlipAsync().Run();
+	}
+
+	public async Task FlipAsync()
+	{
+		await TickService.GameTick();
+
+		foreach ((BoneId id, BoneReference boneReference) in this.boneReferenceLookup)
+		{
+			while (boneReference.IsBlending)
+			{
+				await Task.Delay(33);
+			}
+		}
+
+		HashSet<BoneReference> processed = new();
+		foreach ((BoneId id, BoneReference boneReference) in this.boneReferenceLookup)
+		{
+			if (boneReference.BoneName == null)
+				continue;
+
+			if (boneReference.BoneName == "n_root")
+			{
+				if (boneReference.Transform == null)
+					boneReference.Transform = Transform.Identity;
+				boneReference.Transform *= Transform.FromRotation(180, 0, 0);
+			}
+			else
+			{
+				if (processed.Contains(boneReference))
+					continue;
+
+				if (boneReference.Mirror != null)
+				{
+					processed.Add(boneReference);
+					processed.Add(boneReference.Mirror);
+
+					Transform? a = boneReference.LocalSpaceTransform;
+					if (a == null)
+						a = Transform.Identity;
+
+					Transform? b = boneReference.Mirror.LocalSpaceTransform;
+					if (b == null)
+						b = Transform.Identity;
+
+					a = FlipUtility.Flip(a.Value, MirrorModes.MirrorTRCopyS);
+					b = FlipUtility.Flip(b.Value, MirrorModes.MirrorTRCopyS);
+					boneReference.SetLocalSpaceTransform(b.Value);
+					boneReference.Mirror.SetLocalSpaceTransform(a.Value);
+				}
+				else
+				{
+					processed.Add(boneReference);
+
+					Transform? a = boneReference.LocalSpaceTransform;
+					if (a == null)
+						a = Transform.Identity;
+
+					a = FlipUtility.Flip(a.Value, MirrorModes.MirrorTRCopyS);
+
+					boneReference.SetLocalSpaceTransform(a.Value);
+				}
+			}
+		}
 	}
 
 	public async Task ImportPose(PoseFile file, UpdateSource source, bool immediate = false)
@@ -268,6 +332,14 @@ public partial class Skeleton : GameObject
 		foreach (SkeletonBone bone in this.Bones)
 		{
 			bone.OnFinalizeSkeleton();
+		}
+	}
+
+	public void ResetPose()
+	{
+		foreach (SkeletonBone bone in this.Bones)
+		{
+			bone.Reset();
 		}
 	}
 

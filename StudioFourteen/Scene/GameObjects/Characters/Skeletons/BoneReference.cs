@@ -106,10 +106,11 @@ public class BoneReference
 		this.IsValid = false;
 	}
 
-	public void SetLocalSpaceTransform(Transform localSpaceTransform)
+	public void SetLocalSpaceTransform(Transform localSpaceTransform, bool blend = false)
 	{
 		this.ReverseMirror();
 		this.loadLocalSpaceTransform = localSpaceTransform;
+		this.blendOnLoad = blend;
 	}
 
 	public void SetModelSpaceTransform(Transform modelSpaceTransform)
