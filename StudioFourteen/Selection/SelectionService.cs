@@ -126,9 +126,12 @@ public partial class SelectionService : ServiceBase
 		this.SelectionChanged?.Invoke(oldSelection, newSelection, source);
 		this.RaisePropertyChanged();
 
-		foreach ((Type type, SelectionScope scope) in this.selectionScopes)
+		lock (this.selectionScopes)
 		{
-			scope.OnSelectionChanged(newSelection, source);
+			foreach ((Type type, SelectionScope scope) in this.selectionScopes)
+			{
+				scope.OnSelectionChanged(newSelection, source);
+			}
 		}
 	}
 
@@ -186,7 +189,11 @@ public partial class SelectionService : ServiceBase
 
 	public override void Detach()
 	{
-		this.selectionScopes.Clear();
+		lock (this.selectionScopes)
+		{
+			this.selectionScopes.Clear();
+		}
+
 		this.selection = null;
 		base.Detach();
 	}
