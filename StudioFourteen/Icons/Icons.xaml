@@ -140,7 +140,7 @@
 	<icons:Fa x:Key="ICON_Pose_Body" Icon="Person" Font="Solid"/>
 	<icons:Fa x:Key="ICON_Pose_Hands" Icon="Hand" Font="Solid" />
 	<icons:Fa x:Key="ICON_Pose_Face" Icon="FaceGrin" Font="Solid" />
-	<icons:Svg x:Key="ICON_Pose_Wings" Source="Wing" />
+	<icons:FontIcon x:Key="ICON_Pose_Wings" Icon="&#xe923;" />
 	<icons:Fa x:Key="ICON_Pose_Mirror_None" Icon="Minus"  Font="Solid"/>
 	<icons:Fa x:Key="ICON_Pose_Mirror_Copy" Icon="LeftLong"  Font="Solid"/>
 	<icons:Fa x:Key="ICON_Pose_Mirror_Flip" Icon="LeftRight"  Font="Solid"/>
