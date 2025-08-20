@@ -211,6 +211,8 @@ public partial class TickService : ServiceBase
 
 	private unsafe bool OnGameTick(Framework* pFramework)
 	{
+		Thread.CurrentThread.Name = "Game Tick";
+
 		this.PerformTick(Channels.EarlyGameTick);
 		this.PerformTick(Channels.GameTick);
 		this.PerformTick(Channels.LateGameTick);
@@ -219,7 +221,9 @@ public partial class TickService : ServiceBase
 
 	private void TickThread()
 	{
-		while(this.shouldTick && !ServiceManager.ShutdownRequested)
+		Thread.CurrentThread.Name = "Studio Tick";
+
+		while (this.shouldTick && !ServiceManager.ShutdownRequested)
 		{
 			Thread.Sleep(TickDelay);
 			this.PerformTick(Channels.StudioTick);
