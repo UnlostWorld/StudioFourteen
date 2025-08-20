@@ -283,7 +283,7 @@ public class WpfRenderer : Renderer
 
 		this.quad.Draw(this, Transform.Identity, this.d3d11Device, this.d3d11Device.ImmediateContext);
 
-		this.Source.Dispatcher.Invoke(() =>
+		this.Source.Dispatcher.BeginInvoke(() =>
 		{
 			this.Source.Lock();
 			this.Source.AddDirtyRect(new Int32Rect(0, 0, this.Source.PixelWidth, this.Source.PixelHeight));

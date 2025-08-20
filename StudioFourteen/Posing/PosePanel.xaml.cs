@@ -120,7 +120,7 @@ public partial class PosePanel : Panel
 
 	private void OnSelectionHoverChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? source)
 	{
-		this.Dispatcher.Invoke(() =>
+		this.Dispatcher.BeginInvoke(() =>
 		{
 			this.IsHoverTooltipOpen = false;
 			this.showTooltipQueue.Cancel();
@@ -157,7 +157,7 @@ public partial class PosePanel : Panel
 		if (this.Skeleton == null)
 			return;
 
-		this.Skeleton.Reset();
+		this.Skeleton.ResetPose();
 	}
 
 	private void OnBackgroundMouseDown(object sender, MouseButtonEventArgs e)
