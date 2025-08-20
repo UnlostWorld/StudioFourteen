@@ -113,16 +113,18 @@ public class BoneReference
 		this.blendOnLoad = blend;
 	}
 
-	public void SetModelSpaceTransform(Transform modelSpaceTransform)
+	public void SetModelSpaceTransform(Transform modelSpaceTransform, bool blend = false)
 	{
 		this.ReverseMirror();
 		this.loadModelSpaceTransform = modelSpaceTransform;
+		this.blendOnLoad = blend;
 	}
 
-	public void SetModelSpaceTransform(BoneTransform modelSpaceTransform)
+	public void SetModelSpaceTransform(BoneTransform modelSpaceTransform, bool blend = false)
 	{
 		this.ReverseMirror();
 		this.loadModelSpaceBoneTransform = modelSpaceTransform;
+		this.blendOnLoad = blend;
 	}
 
 	public void SetReferenceRelativeTransform(Transform referenceRelativeTransform, bool blend)

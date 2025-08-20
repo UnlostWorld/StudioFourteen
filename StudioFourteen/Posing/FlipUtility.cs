@@ -15,15 +15,12 @@
 
 namespace StudioFourteen.Posing;
 
-using System;
 using System.Numerics;
 
 public static class FlipUtility
 {
 	public static Transform Flip(Transform transform, MirrorModes mirrorMode = MirrorModes.MirrorTRCopyS)
 	{
-		Transform mirrorTransform = new();
-
 		if (transform.ToTRS(out Vector3 translation, out Quaternion rotation, out Vector3 scale))
 		{
 			Vector3 mirrorTranslation = new(
