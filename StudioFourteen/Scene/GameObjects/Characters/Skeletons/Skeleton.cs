@@ -23,7 +23,9 @@ using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.Havok.Animation.Rig;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Posing;
+using StudioFourteen.Scene.Characters.Skeletons;
 using StudioFourteen.Services;
+using StudioFourteen.Structs.Extensions;
 using WpfUtils.Extensions;
 
 using XivDrawCharacter = FFXIVClientStructs.FFXIV.Client.Graphics.Scene.CharacterBase;
@@ -177,54 +179,16 @@ public partial class Skeleton : GameObject
 			}
 		}
 
-		HashSet<BoneReference> processed = new();
+		FlipBoneOperation op = new();
 		foreach ((BoneId id, BoneReference boneReference) in this.boneReferenceLookup)
 		{
 			if (boneReference.BoneName == null)
 				continue;
 
 			if (boneReference.BoneName == "n_root")
-			{
-				if (boneReference.Transform == null)
-					boneReference.Transform = Transform.Identity;
-				boneReference.Transform *= Transform.FromRotation(180, 0, 0);
-			}
-			else
-			{
-				if (processed.Contains(boneReference))
-					continue;
+				continue;
 
-				if (boneReference.Mirror != null)
-				{
-					processed.Add(boneReference);
-					processed.Add(boneReference.Mirror);
-
-					Transform? a = boneReference.LocalSpaceTransform;
-					if (a == null)
-						a = Transform.Identity;
-
-					Transform? b = boneReference.Mirror.LocalSpaceTransform;
-					if (b == null)
-						b = Transform.Identity;
-
-					a = FlipUtility.Flip(a.Value, MirrorModes.MirrorTRCopyS);
-					b = FlipUtility.Flip(b.Value, MirrorModes.MirrorTRCopyS);
-					boneReference.SetLocalSpaceTransform(b.Value);
-					boneReference.Mirror.SetLocalSpaceTransform(a.Value);
-				}
-				else
-				{
-					processed.Add(boneReference);
-
-					Transform? a = boneReference.LocalSpaceTransform;
-					if (a == null)
-						a = Transform.Identity;
-
-					a = FlipUtility.Flip(a.Value, MirrorModes.MirrorTRCopyS);
-
-					boneReference.SetLocalSpaceTransform(a.Value);
-				}
-			}
+			boneReference.Perform(op);
 		}
 	}
 
@@ -247,7 +211,7 @@ public partial class Skeleton : GameObject
 				BoneTransform? val = null;
 				if (file.ReferenceRelativeBones.TryGetValue(boneReference.BoneName, out val))
 				{
-					boneReference.SetReferenceRelativeTransform(val, !immediate);
+					boneReference.Perform(new LoadReferenceRelativeTransform(val, !immediate));
 					boneReference.Locked = val.Locked;
 				}
 				else
@@ -282,7 +246,7 @@ public partial class Skeleton : GameObject
 					val.Position = null;
 					val.Scale = null;
 
-					boneReference.SetModelSpaceTransform(val.ToBoneTransform());
+					boneReference.Perform(new LoadModelSpaceBoneTransform(val.ToBoneTransform()));
 					boneReference.Locked = true;
 					continue;
 				}

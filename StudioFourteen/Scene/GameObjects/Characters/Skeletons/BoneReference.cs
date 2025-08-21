@@ -16,6 +16,7 @@
 namespace StudioFourteen.Scene.GameObjects.Characters.Skeletons;
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Numerics;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
@@ -34,6 +35,11 @@ using XivSkeleton = FFXIVClientStructs.FFXIV.Client.Graphics.Render.Skeleton;
 
 public class BoneReference
 {
+	public static readonly Vector3 MinScale = new Vector3(0.1f, 0.1f, 0.1f);
+	public static readonly Vector3 MaxScale = new Vector3(1000, 1000, 1000);
+	public static readonly Vector3 MinTranslate = new Vector3(-10, -10, -10);
+	public static readonly Vector3 MaxTranslate = new Vector3(10, 10, 10);
+
 	public readonly BoneId Id;
 	public readonly BoneId? ParentId;
 	public readonly string BoneName;
@@ -43,25 +49,18 @@ public class BoneReference
 
 	private const float PoseBlendTimeMs = 250;
 
-	private static readonly Vector3 MinScale = new Vector3(0.1f, 0.1f, 0.1f);
-	private static readonly Vector3 MaxScale = new Vector3(1000, 1000, 1000);
-	private static readonly Vector3 MinTranslate = new Vector3(-10, -10, -10);
-	private static readonly Vector3 MaxTranslate = new Vector3(10, 10, 10);
+	private readonly Queue<BoneOperationBase> operations = new();
 
 	private readonly Skeleton skeleton;
 	private readonly Stopwatch blendTime = new();
 	private readonly EasingFunctionBase blendEase = new SineEase();
 	private bool blendOnLoad = false;
 	private bool blendOnUnload = false;
-	private bool shouldBlendNext = false;
 	private Transform? fromTransform;
 	private Transform? toTransform;
 
 	private Transform? baseLocalTransform;
-	private Transform? loadLocalSpaceTransform;
-	private BoneTransform? loadModelSpaceBoneTransform;
-	private Transform? loadModelSpaceTransform;
-	private Transform? loadReferenceRelativeTransform;
+
 	private string? mirrorBoneName;
 	private bool hasCheckedMirror = false;
 	private bool isDecomposeError = false;
@@ -88,6 +87,11 @@ public class BoneReference
 	public bool IsBlending => this.blendOnLoad || this.blendOnUnload;
 	public bool IsBlendingOut => this.blendOnUnload;
 
+	public void Perform(BoneOperationBase operation)
+	{
+		this.operations.Enqueue(operation);
+	}
+
 	public void SetToReference()
 	{
 		this.Locked = true;
@@ -104,52 +108,6 @@ public class BoneReference
 	{
 		this.Mirror = null;
 		this.IsValid = false;
-	}
-
-	public void SetLocalSpaceTransform(Transform localSpaceTransform, bool blend = false)
-	{
-		this.ReverseMirror();
-		this.loadLocalSpaceTransform = localSpaceTransform;
-		this.blendOnLoad = blend;
-	}
-
-	public void SetModelSpaceTransform(Transform modelSpaceTransform, bool blend = false)
-	{
-		this.ReverseMirror();
-		this.loadModelSpaceTransform = modelSpaceTransform;
-		this.blendOnLoad = blend;
-	}
-
-	public void SetModelSpaceTransform(BoneTransform modelSpaceTransform, bool blend = false)
-	{
-		this.ReverseMirror();
-		this.loadModelSpaceBoneTransform = modelSpaceTransform;
-		this.blendOnLoad = blend;
-	}
-
-	public void SetReferenceRelativeTransform(Transform referenceRelativeTransform, bool blend)
-	{
-		this.ReverseMirror();
-		this.loadReferenceRelativeTransform = referenceRelativeTransform;
-		this.shouldBlendNext = blend;
-	}
-
-	public void SetReferenceRelativeTransform(BoneTransform? referenceRelativeTransform, bool blend)
-	{
-		this.ReverseMirror();
-
-		if (referenceRelativeTransform == null)
-		{
-			this.SetToReference();
-			return;
-		}
-
-		this.loadReferenceRelativeTransform = StudioFourteen.Transform.FromTRS(
-			referenceRelativeTransform.Translation ?? Vector3.Zero,
-			referenceRelativeTransform.Rotation ?? Quaternion.Identity,
-			referenceRelativeTransform.Scale ?? Vector3.One);
-
-		this.shouldBlendNext = blend;
 	}
 
 	public void Reset(bool immediate)
@@ -254,79 +212,23 @@ public class BoneReference
 		if (this.baseLocalTransform == null || !this.Locked)
 			this.baseLocalTransform = *pPose->AccessBoneLocalSpace(this.Id.BoneIndex);
 
-		// apply model space changes
-		if (this.loadModelSpaceTransform != null)
+		while (this.operations.Count > 0)
 		{
-			hkQsTransformf* boneModelTransform = pPose->AccessBoneModelSpace(this.Id.BoneIndex, hkaPose.PropagateOrNot.Propagate);
+			this.ReverseMirror();
 
-			if (Matrix4x4.Decompose(
-				this.loadModelSpaceTransform.Value.ToMatrix(),
-				out Vector3 scale,
-				out Quaternion rotation,
-				out Vector3 translation))
-			{
-				translation = Vector3.Clamp(translation, MinTranslate, MaxTranslate);
-				boneModelTransform->Translation.Set(translation);
+			BoneOperationBase operation = this.operations.Dequeue();
 
-				boneModelTransform->Rotation.Set(rotation.ToHkQuaternion());
-
-				scale = Vector3.Clamp(scale, MinScale, MaxScale);
-				boneModelTransform->Scale.Set(scale);
-			}
-
-			this.loadLocalSpaceTransform = *pPose->AccessBoneLocalSpace(this.Id.BoneIndex);
-			this.loadModelSpaceTransform = null;
-			this.blendOnLoad = false;
-		}
-
-		// apply model space bone changes (legacy pose file format)
-		if (this.loadModelSpaceBoneTransform != null)
-		{
-			hkQsTransformf* boneModelTransform = pPose->AccessBoneModelSpace(this.Id.BoneIndex, hkaPose.PropagateOrNot.Propagate);
-
-			if (this.loadModelSpaceBoneTransform.Translation != null)
-				boneModelTransform->Translation.Set((Vector3)this.loadModelSpaceBoneTransform.Translation);
-
-			if (this.loadModelSpaceBoneTransform.Rotation != null)
-				boneModelTransform->Rotation.Set((Quaternion)this.loadModelSpaceBoneTransform.Rotation);
-
-			if (this.loadModelSpaceBoneTransform.Scale != null)
-				boneModelTransform->Scale.Set((Vector3)this.loadModelSpaceBoneTransform.Scale);
-
-			this.loadLocalSpaceTransform = *pPose->AccessBoneLocalSpace(this.Id.BoneIndex);
-			this.loadModelSpaceBoneTransform = null;
-			this.blendOnLoad = false;
-		}
-
-		// Apply reference relative changes.
-		if (this.loadReferenceRelativeTransform != null && this.ReferenceTransform != null)
-		{
-			this.blendOnLoad = this.shouldBlendNext;
-			this.shouldBlendNext = false;
-
-			this.loadLocalSpaceTransform = (Transform)this.loadReferenceRelativeTransform * (Transform)this.ReferenceTransform;
-			this.loadReferenceRelativeTransform = null;
-		}
-
-		// apply local space changes.
-		// and set up blend if desired.
-		if (this.loadLocalSpaceTransform != null)
-		{
-			if (this.blendOnLoad)
+			if (operation.Blend)
 			{
 				if (this.Transform == null)
 					this.Transform = new StudioFourteen.Transform();
 
 				this.fromTransform = this.Transform;
 				this.blendTime.Restart();
-			}
-			else
-			{
-				this.fromTransform = null;
+				this.blendOnLoad = true;
 			}
 
-			bool success = this.loadLocalSpaceTransform.Value.DivideBy((Transform)this.baseLocalTransform, out this.toTransform);
-			this.loadLocalSpaceTransform = null;
+			this.toTransform = operation.Apply(this, (Transform)this.baseLocalTransform, pPose, this.Id.BoneIndex);
 		}
 
 		// Apply blend to the Transform.
@@ -404,11 +306,12 @@ public class BoneReference
 		}
 
 		// Apply mirroring
-		if (this.Mirror != null && (this.MirrorMode != MirrorModes.None && this.MirrorMode != MirrorModes.Receiving))
+		if (this.Mirror != null && this.MirrorMode != MirrorModes.None && this.MirrorMode != MirrorModes.Receiving)
 		{
 			Transform localTransform = *pPose->AccessBoneLocalSpace(this.Id.BoneIndex);
 			Transform mirrorTransform = FlipUtility.Flip(localTransform, this.MirrorMode);
-			this.Mirror.loadLocalSpaceTransform = mirrorTransform;
+
+			this.Mirror.Perform(new LoadLocalSpaceTransformOperation(mirrorTransform));
 			this.Mirror.MirrorMode = MirrorModes.Receiving;
 		}
 

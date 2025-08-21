@@ -139,9 +139,10 @@ public class SkeletonBone : TransformSceneObjectBase
 
 	public void SetReferenceTransform(BoneTransform referenceTransform)
 	{
+		BoneOperationBase op = new LoadReferenceRelativeTransform(referenceTransform);
 		foreach (BoneReference bone in this.BoneReferences)
 		{
-			bone.SetReferenceRelativeTransform(referenceTransform, false);
+			bone.Perform(op);
 		}
 	}
 
@@ -231,9 +232,10 @@ public class SkeletonBone : TransformSceneObjectBase
 
 		if (success && modelSpaceTransform != null)
 		{
+			BoneOperationBase op = new LoadModelSpaceTransform((Transform)modelSpaceTransform);
 			foreach (BoneReference bone in this.BoneReferences)
 			{
-				bone.SetModelSpaceTransform((Transform)modelSpaceTransform);
+				bone.Perform(op);
 			}
 		}
 	}
@@ -248,9 +250,10 @@ public class SkeletonBone : TransformSceneObjectBase
 		Quaternion from = oldValue.Rotation;
 		Quaternion to = newValue.Rotation;
 
+		BoneOperationBase op = new LoadLocalSpaceTransformOperation(newValue);
 		foreach (BoneReference bone in this.BoneReferences)
 		{
-			bone.SetLocalSpaceTransform(newValue);
+			bone.Perform(op);
 		}
 	}
 }
