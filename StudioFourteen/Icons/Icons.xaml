@@ -125,17 +125,17 @@
 	<icons:Svg x:Key="ICON_Environment_MoonWaxing" Source="MoonWaxing" />
 	<icons:Svg x:Key="ICON_Environment_MoonWaning" Source="MoonWaning" />
 
-	<icons:Fa x:Key="ICON_Environment_Home" Icon="Home" />
+	<icons:Fa x:Key="ICON_Environment_Home" Icon="Home" Font="Solid" />
 	<icons:Fa x:Key="ICON_Environment_Lighting" Icon="Lightbulb" Font="Solid"/>
 	<icons:Fa x:Key="ICON_Environment_Stars" Icon="Star" Font="Solid"/>
-	<icons:Fa x:Key="ICON_Environment_Fog" Icon="Smog" />
-	<icons:Fa x:Key="ICON_Environment_Clouds" Icon="Cloud" />
-	<icons:Fa x:Key="ICON_Environment_Rain" Icon="CloudShowersHeavy" />
-	<icons:Fa x:Key="ICON_Environment_Dust" Icon="Braille" />
-	<icons:Fa x:Key="ICON_Environment_Wind" Icon="Wind" />
+	<icons:Fa x:Key="ICON_Environment_Fog" Icon="Smog" Font="Solid" />
+	<icons:Fa x:Key="ICON_Environment_Clouds" Icon="Cloud" Font="Solid" />
+	<icons:Fa x:Key="ICON_Environment_Rain" Icon="CloudShowersHeavy" Font="Solid" />
+	<icons:Fa x:Key="ICON_Environment_Dust" Icon="Braille" Font="Solid" />
+	<icons:Fa x:Key="ICON_Environment_Wind" Icon="Wind" Font="Solid" />
 
-	<icons:Fa x:Key="ICON_Animation_Play" Icon="Play" />
-	<icons:Fa x:Key="ICON_Animation_Stop" Icon="Stop" />
+	<icons:Fa x:Key="ICON_Animation_Play" Icon="Play" Font="Solid" />
+	<icons:Fa x:Key="ICON_Animation_Stop" Icon="Stop" Font="Solid" />
 
 	<icons:Fa x:Key="ICON_Pose_Body" Icon="Person" Font="Solid"/>
 	<icons:Fa x:Key="ICON_Pose_Hands" Icon="Hand" Font="Solid" />
