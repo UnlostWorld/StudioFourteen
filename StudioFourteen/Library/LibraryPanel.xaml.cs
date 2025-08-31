@@ -21,6 +21,7 @@ using StudioFourteen.Environment;
 using StudioFourteen.Files;
 using StudioFourteen.Input;
 using StudioFourteen.Library.Filters;
+using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Results;
 using StudioFourteen.Library.Sources;
 using StudioFourteen.Mvm;
@@ -386,10 +387,12 @@ public partial class LibraryPanel : Panel
 		}
 	}
 
-	private void OnResultToolTipClosing(object sender, ToolTipEventArgs? e)
+	private void OnResultToolTipClosing(object? sender, ToolTipEventArgs? e)
 	{
 		if (Mouse.RightButton == MouseButtonState.Pressed)
 			return;
+
+		this.Log.Information("Close tooltip");
 
 		if (this.currentHover == null)
 			return;
@@ -485,6 +488,11 @@ public partial class LibraryPanel : Panel
 			this.LibraryContextMenu.Enter(entries, senderElement);
 			this.LibraryContextMenu.Expand();
 		}
+	}
+
+	private void OnContextMenuClosed(object sender, EventArgs? e)
+	{
+		this.OnResultToolTipClosing(sender, null);
 	}
 
 	private void OnListEnter(object sender, RoutedEventArgs e)

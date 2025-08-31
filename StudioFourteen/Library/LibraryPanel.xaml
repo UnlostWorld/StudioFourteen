@@ -641,7 +641,7 @@
 			</Border>
 		</Grid>
 
-		<menu:LibraryContextMenu x:Name="LibraryContextMenu" />
+		<menu:LibraryContextMenu x:Name="LibraryContextMenu" Closed="OnContextMenuClosed" />
 
 	</Grid>
 </panels:Panel>
