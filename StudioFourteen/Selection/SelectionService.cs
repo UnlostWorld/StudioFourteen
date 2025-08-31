@@ -18,7 +18,6 @@ namespace StudioFourteen.Selection;
 using StudioFourteen.History;
 using StudioFourteen.Scene;
 using StudioFourteen.Scene.GameObjects;
-using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Services;
 using StudioFourteen.Settings;
 using System;
@@ -29,18 +28,12 @@ using System.Windows;
 
 public partial class SelectionService : ServiceBase
 {
-	private readonly Dictionary<Type, SelectionScope> selectionScopes = new();
+	private readonly Dictionary<Type, WeakReference<object>?> selections = new();
+	private readonly Dictionary<Type, List<Action<object, object>>> selectionChangedListeners = new();
 	private SceneObjectBase? selection;
 	private SceneObjectBase? hover;
 	private string lastSelectionName = "Nothing";
 	private bool expandedSelection;
-
-	public SelectionService()
-	{
-		// pre-create the GameObject scope as its what selection defaults to.
-		this.GetScope<GameObject>();
-		this.GetScope<Character>();
-	}
 
 	public delegate void SelectionChangedDelegate(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? selectionSource);
 	public delegate void SelectionExpandedDelegate(bool newValue);
@@ -76,22 +69,6 @@ public partial class SelectionService : ServiceBase
 	// An offset from where the cursor was and the transform root of the selected object (if it has one)
 	public Vector2 SelectionCursorOffset { get; set; }
 
-	public SelectionScope<T> GetScope<T>()
-		where T : SceneObjectBase
-	{
-		lock (this.selectionScopes)
-		{
-			Type type = typeof(T);
-			SelectionScope? scope;
-			if (this.selectionScopes.TryGetValue(type, out scope) && scope != null)
-				return (SelectionScope<T>)scope;
-
-			scope = new SelectionScope<T>();
-			this.selectionScopes.Add(type, scope);
-			return (SelectionScope<T>)scope;
-		}
-	}
-
 	public void Select(SceneObjectBase? newSelection, object? source)
 	{
 		SceneObjectBase? oldSelection = this.selection;
@@ -126,11 +103,21 @@ public partial class SelectionService : ServiceBase
 		this.SelectionChanged?.Invoke(oldSelection, newSelection, source);
 		this.RaisePropertyChanged();
 
-		lock (this.selectionScopes)
+		lock (this.selections)
 		{
-			foreach ((Type type, SelectionScope scope) in this.selectionScopes)
+			if (newSelection != null)
 			{
-				scope.OnSelectionChanged(newSelection, source);
+				Type? objType = newSelection.GetType();
+
+				while (objType != null)
+				{
+					if (!this.selections.ContainsKey(objType))
+						this.selections.Add(objType, null);
+
+					this.selections[objType] = new WeakReference<object>(newSelection);
+
+					objType = objType.BaseType;
+				}
 			}
 		}
 	}
@@ -189,19 +176,30 @@ public partial class SelectionService : ServiceBase
 
 	public override void Detach()
 	{
-		lock (this.selectionScopes)
-		{
-			this.selectionScopes.Clear();
-		}
-
+		this.selections.Clear();
 		this.selection = null;
 		base.Detach();
+	}
+
+	public T? GetLast<T>()
+		where T : SceneObjectBase
+	{
+		if (this.selections.TryGetValue(typeof(T), out WeakReference<object>? selection))
+		{
+			if (selection != null
+				&& selection.TryGetTarget(out object? target)
+				&& target is T tTarget)
+				return tTarget;
+		}
+
+		return null;
 	}
 
 	private void OnTick()
 	{
 		// Ensure we have selected something when starting up.
-		if (this.GetScope<GameObject>().Selection == null)
+		if (!this.selections.ContainsKey(typeof(GameObject))
+			|| this.selections[typeof(GameObject)] == null)
 		{
 			if (this.Services.GroupPose.IsGroupPosing)
 			{
@@ -231,47 +229,42 @@ public partial class SelectionService : ServiceBase
 		bool showWidget = this.Settings.WidgetMode != SettingsService.Configuration.WidgetModes.Disabled;
 		this.Services.Panels.GamePanels.SetIsOpen<Widget>(showWidget, false);
 	}
+}
 
-	public class SelectionScope(Type selectionType)
+public abstract class SelectionListenerBase
+{
+	public void Enable()
 	{
-		public Type SelectionType => selectionType;
-
-		public virtual void OnSelectionChanged(SceneObjectBase? selection, object? source)
-		{
-		}
+		ServiceManager.Instance.Selection.SelectionChanged += this.OnSelectionChanged;
 	}
 
-	public class SelectionScope<T>() : SelectionScope(typeof(T))
+	public void Disable()
 	{
-		private readonly List<Action<T, object?>> callbacks = new();
-		public T? Selection { get; private set; }
+		ServiceManager.Instance.Selection.SelectionChanged -= this.OnSelectionChanged;
+	}
 
-		public void Attach(Action<T, object?> callback)
+	protected abstract void OnSelectionChanged(
+		SceneObjectBase? oldSelection,
+		SceneObjectBase? newSelection,
+		object? selectionSource);
+}
+
+public class SelectionListener<T>(Action<T?, T?, object?> callback) : SelectionListenerBase
+	where T : SceneObjectBase
+{
+	public T? Current => ServiceManager.Instance.Selection.GetLast<T>();
+
+	protected override void OnSelectionChanged(
+		SceneObjectBase? oldSelection,
+		SceneObjectBase? newSelection,
+		object? selectionSource)
+	{
+		T? oldT = oldSelection as T;
+		T? newT = newSelection as T;
+
+		if (oldT != null || newT != null)
 		{
-			this.callbacks.Add(callback);
-
-			if (this.Selection != null)
-			{
-				callback.Invoke(this.Selection, null);
-			}
-		}
-
-		public void Detach(Action<T, object?> callback)
-		{
-			this.callbacks.Remove(callback);
-		}
-
-		public override void OnSelectionChanged(SceneObjectBase? selection, object? source)
-		{
-			if (selection is T tSelection)
-			{
-				this.Selection = tSelection;
-
-				foreach (Action<T, object?> callback in this.callbacks)
-				{
-					callback.Invoke(tSelection, source);
-				}
-			}
+			callback.Invoke(oldT, newT, selectionSource);
 		}
 	}
 }

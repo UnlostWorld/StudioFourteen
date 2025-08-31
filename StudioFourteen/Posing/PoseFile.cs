@@ -17,6 +17,8 @@ namespace StudioFourteen.Posing;
 
 using StudioFourteen.Files;
 using StudioFourteen.Library;
+using StudioFourteen.Scene.GameObjects.Characters.Skeletons;
+using StudioFourteen.Selection;
 using StudioFourteen.Services;
 using StudioFourteen.Structs.Extensions;
 using StudioFourteen.Tags;
@@ -60,9 +62,9 @@ public class PoseFile : FileBase
 
 	public override Task Execute()
 	{
-		if (ServiceManager.Instance.Selection.Current is Scene.GameObjects.GameObject obj)
+		if (ServiceManager.Instance.Selection.Current is Skeleton skeleton)
 		{
-			////return this.Apply(obj.ObjectIndex, UpdateSource.Interface);
+			return skeleton.ImportPose(this, UpdateSource.Interface);
 		}
 
 		return Task.CompletedTask;
@@ -97,26 +99,33 @@ public class PoseFile : FileBase
 
 		protected override async Task Start(LibraryPreviewBase? other)
 		{
-			/*if (other is PosePreview otherPosePreview && otherPosePreview.backupPose != null)
+			Skeleton? current = ServiceManager.Instance.Selection.GetLast<Skeleton>();
+			if (current == null)
+				return;
+
+			if (other is PosePreview otherPosePreview && otherPosePreview.backupPose != null)
 			{
 				this.backupPose = otherPosePreview.backupPose;
 			}
 			else
 			{
-				this.backupPose = new();
-				await this.backupPose.Save(this.Services.Target.TargetObjectIndex, false, null, true);
+				this.backupPose = await current.ExportPoseAsync(false, null, true);
 				await Task.Delay(33);
 			}
 
-			await file.Apply(this.Services.Target.TargetObjectIndex, UpdateSource.Preview);*/
+			await current.ImportPose(file, UpdateSource.Preview);
 		}
 
 		protected override async Task Stop()
 		{
-			/*if (this.backupPose == null)
-				throw new Exception("No backup pose in pose preview");
+			if (this.backupPose == null)
+				return;
 
-			await this.backupPose.Apply(this.Services.Target.TargetObjectIndex, UpdateSource.Restore);*/
+			Skeleton? current = ServiceManager.Instance.Selection.GetLast<Skeleton>();
+			if (current == null)
+				return;
+
+			await current.ImportPose(this.backupPose, UpdateSource.Restore);
 		}
 	}
 }

@@ -136,7 +136,7 @@ public class CharacterLifecycleService : ServiceBase
 		{
 			XivCharacter* pCharacter = character.GetXivCharacter();
 
-			Character? selectedCharacter = this.Services.Selection.GetScope<Character>().Selection;
+			Character? selectedCharacter = this.Services.Selection.GetLast<Character>();
 			if (selectedCharacter != null)
 			{
 				// Move the spawned characters draw object to the current targets location.

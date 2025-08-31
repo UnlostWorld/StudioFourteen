@@ -17,20 +17,28 @@ namespace StudioFourteen.Panels;
 
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Scene.GameObjects.Characters;
+using StudioFourteen.Selection;
 
 public abstract partial class CharacterPanelBase : Panel
 {
+	private readonly SelectionListener<Character> characterSelectionListener;
+
 	[Notify] private Character? character;
+
+	public CharacterPanelBase()
+	{
+		this.characterSelectionListener = new(this.OnSelectionChanged);
+	}
 
 	protected override void OnOpened()
 	{
-		this.Services.Selection.GetScope<Character>().Attach(this.OnSelectionChanged);
+		this.characterSelectionListener.Enable();
 		base.OnOpened();
 	}
 
 	protected override void OnClosed()
 	{
-		this.Services.Selection.GetScope<Character>().Detach(this.OnSelectionChanged);
+		this.characterSelectionListener.Disable();
 		base.OnClosed();
 	}
 
@@ -38,7 +46,7 @@ public abstract partial class CharacterPanelBase : Panel
 	{
 	}
 
-	private void OnSelectionChanged(Character? newSelection, object? selectionSource)
+	private void OnSelectionChanged(Character? oldSelection, Character? newSelection, object? selectionSource)
 	{
 		this.Character = newSelection;
 	}

@@ -29,6 +29,7 @@ using StudioFourteen.Scene;
 using StudioFourteen.Scene.GameObjects;
 using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Scene.GameObjects.Characters.Skeletons;
+using StudioFourteen.Selection;
 using WpfUtils;
 using WpfUtils.Extensions;
 using WpfUtils.Utils;
@@ -37,6 +38,9 @@ using Panel = StudioFourteen.Panels.Panel;
 
 public partial class PosePanel : Panel
 {
+	private readonly SelectionListener<GameObject> gameObjectSelectionListener;
+	private readonly SelectionListener<TransformSceneObjectBase> sceneObjectSelectionListener;
+
 	private readonly FuncQueue showTooltipQueue;
 	private SceneObjectBase? nextHover;
 
@@ -49,6 +53,8 @@ public partial class PosePanel : Panel
 
 	public PosePanel()
 	{
+		this.gameObjectSelectionListener = new(this.OnGameObjectSelectionChanged);
+		this.sceneObjectSelectionListener = new(this.OnSceneSelectionChanged);
 		this.showTooltipQueue = new(this.ShowTooltip, 500);
 	}
 
@@ -96,8 +102,8 @@ public partial class PosePanel : Panel
 	{
 		base.OnOpened();
 
-		this.Services.Selection.GetScope<GameObject>().Attach(this.OnGameObjectSelectionChanged);
-		this.Services.Selection.GetScope<TransformSceneObjectBase>().Attach(this.OnSceneSelectionChanged);
+		this.gameObjectSelectionListener.Enable();
+		this.sceneObjectSelectionListener.Enable();
 		this.Services.Selection.HoverChanged += this.OnSelectionHoverChanged;
 
 		this.Selection = this.Services.Selection.Current;
@@ -108,14 +114,25 @@ public partial class PosePanel : Panel
 		base.OnClosed();
 
 		this.IsHoverTooltipOpen = false;
-		this.Services.Selection.GetScope<GameObject>().Detach(this.OnGameObjectSelectionChanged);
-		this.Services.Selection.GetScope<TransformSceneObjectBase>().Detach(this.OnSceneSelectionChanged);
+		this.gameObjectSelectionListener.Disable();
+		this.sceneObjectSelectionListener.Disable();
 		this.Services.Selection.HoverChanged -= this.OnSelectionHoverChanged;
 	}
 
-	protected virtual void OnGameObjectSelectionChanged(GameObject newSelection, object? source)
+	protected virtual void OnGameObjectSelectionChanged(
+		GameObject? oldSelection,
+		GameObject? newSelection,
+		object? source)
 	{
 		this.GameObject = newSelection;
+	}
+
+	private void OnSceneSelectionChanged(
+		TransformSceneObjectBase? oldSelection,
+		TransformSceneObjectBase? newSelection,
+		object? source)
+	{
+		this.Selection = newSelection;
 	}
 
 	private void OnSelectionHoverChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? source)
@@ -145,11 +162,6 @@ public partial class PosePanel : Panel
 		await this.MainThread();
 		this.Hover = this.nextHover;
 		this.IsHoverTooltipOpen = true;
-	}
-
-	private void OnSceneSelectionChanged(TransformSceneObjectBase? newSelection, object? source)
-	{
-		this.Selection = newSelection;
 	}
 
 	private void OnRevertClicked(object sender, RoutedEventArgs e)

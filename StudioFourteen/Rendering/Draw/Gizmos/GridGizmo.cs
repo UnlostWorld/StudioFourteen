@@ -61,7 +61,7 @@ public class GridGizmo : GizmoBase
 	{
 		if (this.KeepAtTargetHeight)
 		{
-			Character? target = this.Services.Selection.GetScope<Character>().Selection;
+			Character? target = this.Services.Selection.GetLast<Character>();
 			if (target != null)
 			{
 				this.gridRenderer.Material.Height = Vector3.Transform(Vector3.Zero, target.WorldTransform.ToMatrix()).Y;

@@ -20,21 +20,19 @@ using PropertyChanged.SourceGenerator;
 using StudioFourteen.Scene;
 using WpfUtils.Extensions;
 
-using static StudioFourteen.Selection.SelectionService;
-
 public partial class SelectionType<T> : SelectionTypeBase
 	where T : SceneObjectBase
 {
-	private readonly SelectionScope<T> scope;
+	private readonly SelectionListener<T> scope;
 	[Notify] private T? selection;
 
 	public SelectionType()
 	{
-		this.scope = ServiceManager.Instance.Selection.GetScope<T>();
+		this.scope = new(this.OnScopeSelectionChanged);
 		this.Objects.Replace(ServiceManager.Instance.Scene.FindObjects<T>());
 
-		this.scope.Attach(this.OnScopeSelectionChanged);
-		this.Selection = this.scope.Selection;
+		this.scope.Enable();
+		this.Selection = this.scope.Current;
 	}
 
 	public FastObservableCollection<T> Objects { get; init; } = new();
@@ -64,7 +62,7 @@ public partial class SelectionType<T> : SelectionTypeBase
 		ServiceManager.Instance.Selection.Select(newValue, this);
 	}
 
-	private void OnScopeSelectionChanged(T selection, object? source)
+	private void OnScopeSelectionChanged(T? oldSelection, T? selection, object? source)
 	{
 		this.Selection = selection;
 	}

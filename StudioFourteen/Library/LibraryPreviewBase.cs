@@ -16,6 +16,7 @@
 namespace StudioFourteen.Library;
 using Serilog;
 using StudioFourteen;
+using System;
 using System.Threading.Tasks;
 using WpfUtils.Extensions;
 
@@ -82,10 +83,20 @@ public abstract class LibraryPreviewBase
 		while (this.isStarting)
 			await Task.Delay(33);
 
-		await this.Stop();
-		this.isStopping = false;
-		this.HasStopped = true;
-		this.HasStarted = false;
+		try
+		{
+			await this.Stop();
+		}
+		catch (Exception ex)
+		{
+			this.Log.Error(ex, "Error stopping library preview");
+		}
+		finally
+		{
+			this.isStopping = false;
+			this.HasStopped = true;
+			this.HasStarted = false;
+		}
 	}
 
 	protected abstract Task Start(LibraryPreviewBase? other);

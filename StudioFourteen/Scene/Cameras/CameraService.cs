@@ -212,7 +212,7 @@ public class CameraService : ServiceBase
 		nint result = Hooks.SceneCameraUpdate.Original(camera);
 
 		// Wait until our first selection before engaging the camera system.
-		if (this.Services.Selection.GetScope<GameObject>().Selection == null)
+		if (this.Services.Selection.GetLast<GameObject>() == null)
 			return result;
 
 		float deltaTime = 60 / 1000.0f;
