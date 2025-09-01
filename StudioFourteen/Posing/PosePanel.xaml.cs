@@ -106,7 +106,8 @@ public partial class PosePanel : Panel
 		this.sceneObjectSelectionListener.Enable();
 		this.Services.Selection.HoverChanged += this.OnSelectionHoverChanged;
 
-		this.Selection = this.Services.Selection.Current;
+		this.GameObject = this.gameObjectSelectionListener.Current;
+		this.Selection = this.sceneObjectSelectionListener.Current;
 	}
 
 	protected override void OnClosed()
