@@ -17,6 +17,7 @@ namespace StudioFourteen.Posing;
 
 using DependencyPropertyGenerator;
 using StudioFourteen.Mvm;
+using System;
 using System.Windows;
 
 [DependencyProperty<string>("TargetName")]
@@ -28,16 +29,10 @@ public partial class BlendTargetView : View
 
 	partial void OnTargetNameChanged()
 	{
-		if (this.Services.Content.ExpressionBlends == null)
-			return;
-
 		if (this.TargetName == null)
 			return;
 
-		BlendTarget? target;
-		this.Services.Content.ExpressionBlends.TryGetValue(this.TargetName, out target);
-
-		this.Target = target;
+		throw new NotImplementedException();
 	}
 
 	private void OnClick(object sender, RoutedEventArgs e)

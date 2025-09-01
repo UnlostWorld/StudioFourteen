@@ -49,195 +49,160 @@
 				SelectedIndex="{Binding SelectedTab}"
 				Style="{DynamicResource WpfUtilsSideTabs}">
 				<pose:PoseTabItem Header="{DynamicResource ICON_Pose_Body}">
-					<TabControl Margin="-3" SelectedIndex="{Binding SelectedBodyTab}">
-						<pose:PoseTabItem Header="{DynamicResource LOC_Pose_Simple}">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="2*" />
+							<ColumnDefinition Width="2.7*" />
+							<ColumnDefinition Width="1*" />
+						</Grid.ColumnDefinitions>
 
-							<Grid>
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition Width="2*" />
-									<ColumnDefinition Width="2.7*" />
-									<ColumnDefinition Width="1*" />
-								</Grid.ColumnDefinitions>
+						<body:BodySimpleView
+							x:Name="BodyView"
+							Grid.RowSpan="3"
+							Grid.Column="0"
+							Margin="10"
+							FlipSides="{Binding FlipSides}"
+							GameObject="{Binding GameObject}"
+							UpdateWithAppearance="True" />
 
-								<body:BodySimpleView
-									x:Name="BodyView"
-									Grid.RowSpan="3"
-									Grid.Column="0"
-									Margin="10"
-									FlipSides="{Binding FlipSides}"
-									GameObject="{Binding GameObject}"
-									UpdateWithAppearance="True" />
+						<pose:SimpleView
+							x:Name="ClothesView"
+							Grid.RowSpan="3"
+							Grid.Column="1"
+							Margin="10"
+							FlipSides="{Binding FlipSides}"
+							GameObject="{Binding GameObject}"
+							LayoutName="Clothes" />
 
-								<pose:SimpleView
-									x:Name="ClothesView"
-									Grid.RowSpan="3"
-									Grid.Column="1"
-									Margin="10"
-									FlipSides="{Binding FlipSides}"
-									GameObject="{Binding GameObject}"
-									LayoutName="Clothes" />
+						<TextBlock
+							Grid.RowSpan="3"
+							Grid.Column="0"
+							Margin="10,0,0,0"
+							HorizontalAlignment="Left"
+							VerticalAlignment="Top"
+							FontSize="48"
+							FontWeight="Bold"
+							Foreground="{DynamicResource ControlBackgroundBrush}"
+							IsHitTestVisible="False"
+							Text="L"
+							Visibility="{Binding FlipSides, Converter={StaticResource B2V}}" />
 
-								<TextBlock
-									Grid.RowSpan="3"
-									Grid.Column="0"
-									Margin="10,0,0,0"
-									HorizontalAlignment="Left"
-									VerticalAlignment="Top"
-									FontSize="48"
-									FontWeight="Bold"
-									Foreground="{DynamicResource ControlBackgroundBrush}"
-									IsHitTestVisible="False"
-									Text="L"
-									Visibility="{Binding FlipSides, Converter={StaticResource B2V}}" />
+						<TextBlock
+							Grid.RowSpan="3"
+							Grid.Column="0"
+							Margin="0,0,0,0"
+							HorizontalAlignment="Left"
+							VerticalAlignment="Top"
+							FontSize="48"
+							FontWeight="Bold"
+							Foreground="{DynamicResource ControlBackgroundBrush}"
+							IsHitTestVisible="False"
+							Text="R"
+							Visibility="{Binding FlipSides, Converter={StaticResource !B2V}}" />
 
-								<TextBlock
-									Grid.RowSpan="3"
-									Grid.Column="0"
-									Margin="0,0,0,0"
-									HorizontalAlignment="Left"
-									VerticalAlignment="Top"
-									FontSize="48"
-									FontWeight="Bold"
-									Foreground="{DynamicResource ControlBackgroundBrush}"
-									IsHitTestVisible="False"
-									Text="R"
-									Visibility="{Binding FlipSides, Converter={StaticResource !B2V}}" />
+						<TextBlock
+							Grid.RowSpan="3"
+							Grid.Column="1"
+							Margin="0,0,40,0"
+							HorizontalAlignment="Right"
+							VerticalAlignment="Top"
+							FontSize="48"
+							FontWeight="Bold"
+							Foreground="{DynamicResource ControlBackgroundBrush}"
+							IsHitTestVisible="False"
+							Text="R"
+							Visibility="{Binding FlipSides, Converter={StaticResource B2V}}" />
 
-								<TextBlock
-									Grid.RowSpan="3"
-									Grid.Column="1"
-									Margin="0,0,40,0"
-									HorizontalAlignment="Right"
-									VerticalAlignment="Top"
-									FontSize="48"
-									FontWeight="Bold"
-									Foreground="{DynamicResource ControlBackgroundBrush}"
-									IsHitTestVisible="False"
-									Text="R"
-									Visibility="{Binding FlipSides, Converter={StaticResource B2V}}" />
+						<TextBlock
+							Grid.RowSpan="3"
+							Grid.Column="1"
+							Margin="0,0,40,0"
+							HorizontalAlignment="Right"
+							VerticalAlignment="Top"
+							FontSize="48"
+							FontWeight="Bold"
+							Foreground="{DynamicResource ControlBackgroundBrush}"
+							IsHitTestVisible="False"
+							Text="L"
+							Visibility="{Binding FlipSides, Converter={StaticResource !B2V}}" />
 
-								<TextBlock
-									Grid.RowSpan="3"
-									Grid.Column="1"
-									Margin="0,0,40,0"
-									HorizontalAlignment="Right"
-									VerticalAlignment="Top"
-									FontSize="48"
-									FontWeight="Bold"
-									Foreground="{DynamicResource ControlBackgroundBrush}"
-									IsHitTestVisible="False"
-									Text="L"
-									Visibility="{Binding FlipSides, Converter={StaticResource !B2V}}" />
+						<Grid Grid.Column="2" Margin="0,10">
+							<Grid.RowDefinitions>
+								<RowDefinition />
+								<RowDefinition />
+								<RowDefinition />
+							</Grid.RowDefinitions>
 
-								<Grid Grid.Column="2" Margin="0,10">
-									<Grid.RowDefinitions>
-										<RowDefinition />
-										<RowDefinition />
-										<RowDefinition />
-									</Grid.RowDefinitions>
+							<pose:SimpleView
+								x:Name="TailView"
+								Grid.Row="0"
+								FlipSides="{Binding FlipSides}"
+								GameObject="{Binding GameObject}"
+								LayoutName="Tail" />
 
-									<pose:SimpleView
-										x:Name="TailView"
-										Grid.Row="0"
-										FlipSides="{Binding FlipSides}"
-										GameObject="{Binding GameObject}"
-										LayoutName="Tail" />
+							<pose:SimpleView
+								x:Name="PenisView"
+								Grid.Row="1"
+								FlipSides="{Binding FlipSides}"
+								GameObject="{Binding GameObject}"
+								LayoutName="Penis" />
 
-									<pose:SimpleView
-										x:Name="PenisView"
-										Grid.Row="1"
-										FlipSides="{Binding FlipSides}"
-										GameObject="{Binding GameObject}"
-										LayoutName="Penis" />
-
-									<pose:SimpleView
-										x:Name="VaginaView"
-										Grid.Row="2"
-										FlipSides="{Binding FlipSides}"
-										GameObject="{Binding GameObject}"
-										LayoutName="Vagina" />
-								</Grid>
-							</Grid>
-						</pose:PoseTabItem>
-
-						<pose:PoseTabItem Header="{DynamicResource LOC_Pose_Matrix}">
-							<ScrollViewer>
-								<body:MatrixView GameObject="{Binding GameObject}" />
-							</ScrollViewer>
-						</pose:PoseTabItem>
-
-					</TabControl>
+							<pose:SimpleView
+								x:Name="VaginaView"
+								Grid.Row="2"
+								FlipSides="{Binding FlipSides}"
+								GameObject="{Binding GameObject}"
+								LayoutName="Vagina" />
+						</Grid>
+					</Grid>
 				</pose:PoseTabItem>
 
 				<pose:PoseTabItem Header="{DynamicResource ICON_Pose_Hands}">
-					<TabControl Margin="-3" SelectedIndex="{Binding SelectedHandsTab}">
-						<pose:PoseTabItem Header="{DynamicResource LOC_Pose_Simple}">
-							<Grid>
-								<Rectangle
-									Grid.RowSpan="3"
-									Fill="Transparent"
-									MouseDown="OnBackgroundMouseDown" />
+					<Grid>
+						<Rectangle
+							Grid.RowSpan="3"
+							Fill="Transparent"
+							MouseDown="OnBackgroundMouseDown" />
 
-								<pose:SimpleView
-									x:Name="HandsView"
-									Grid.Row="0"
-									FlipSides="{Binding FlipSides}"
-									GameObject="{Binding GameObject}"
-									LayoutName="Hands" />
-							</Grid>
-						</pose:PoseTabItem>
-						<pose:PoseTabItem Header="{DynamicResource LOC_Pose_Matrix}">
-							<hands:MatrixView GameObject="{Binding GameObject}" />
-						</pose:PoseTabItem>
-					</TabControl>
-
+						<pose:SimpleView
+							x:Name="HandsView"
+							Grid.Row="0"
+							FlipSides="{Binding FlipSides}"
+							GameObject="{Binding GameObject}"
+							LayoutName="Hands" />
+					</Grid>
 				</pose:PoseTabItem>
 
 				<pose:PoseTabItem Header="{DynamicResource ICON_Pose_Face}">
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition />
+							<ColumnDefinition />
+							<ColumnDefinition />
+						</Grid.ColumnDefinitions>
 
-					<TabControl
-						Margin="-3"
-						Padding="0"
-						SelectedIndex="{Binding SelectedFaceTab}">
+						<Grid.RowDefinitions>
+							<RowDefinition />
+							<RowDefinition />
+							<RowDefinition />
+						</Grid.RowDefinitions>
 
-						<pose:PoseTabItem Header="Expression">
-							<pose:ExpressionsView FlipSides="{Binding FlipSides}" ObjectTableIndex="{Binding TargetObjectIndex}" />
-						</pose:PoseTabItem>
+						<pose:SimpleView
+							x:Name="FaceView"
+							Grid.RowSpan="3"
+							Grid.ColumnSpan="3"
+							FlipSides="{Binding FlipSides}"
+							GameObject="{Binding GameObject}"
+							LayoutName="Face" />
 
-						<pose:PoseTabItem Header="{DynamicResource LOC_Pose_Simple}">
-							<Grid>
-
-								<Grid.ColumnDefinitions>
-									<ColumnDefinition />
-									<ColumnDefinition />
-									<ColumnDefinition />
-								</Grid.ColumnDefinitions>
-
-								<Grid.RowDefinitions>
-									<RowDefinition />
-									<RowDefinition />
-									<RowDefinition />
-								</Grid.RowDefinitions>
-
-								<pose:SimpleView
-									x:Name="FaceView"
-									Grid.RowSpan="3"
-									Grid.ColumnSpan="3"
-									FlipSides="{Binding FlipSides}"
-									GameObject="{Binding GameObject}"
-									LayoutName="Face" />
-
-								<pose:SimpleView
-									x:Name="TongueView"
-									Grid.Row="2"
-									Grid.Column="2"
-									FlipSides="{Binding FlipSides}"
-									GameObject="{Binding GameObject}"
-									LayoutName="Tongue" />
-							</Grid>
-						</pose:PoseTabItem>
-					</TabControl>
-
+						<pose:SimpleView
+							x:Name="TongueView"
+							Grid.Row="2"
+							Grid.Column="2"
+							FlipSides="{Binding FlipSides}"
+							GameObject="{Binding GameObject}"
+							LayoutName="Tongue" />
+					</Grid>
 				</pose:PoseTabItem>
 
 				<pose:PoseTabItem Header="{DynamicResource ICON_Pose_Wings}">
@@ -246,7 +211,17 @@
 						FlipSides="{Binding FlipSides}"
 						GameObject="{Binding GameObject}"
 						LayoutName="DiabolosWings" />
+				</pose:PoseTabItem>
 
+				<pose:PoseTabItem Header="{DynamicResource ICON_Pose_Matrix}">
+					<ScrollViewer>
+						<StackPanel>
+							<body:MatrixView
+								GameObject="{Binding GameObject}" />
+							<hands:MatrixView
+								GameObject="{Binding GameObject}" />
+						</StackPanel>
+					</ScrollViewer>
 				</pose:PoseTabItem>
 			</TabControl>
 		</Grid>

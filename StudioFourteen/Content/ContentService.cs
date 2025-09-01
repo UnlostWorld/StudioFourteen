@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
-using StudioFourteen.Input;
 using StudioFourteen.Plugin;
 using StudioFourteen.Posing;
 using StudioFourteen.Services;
@@ -28,17 +27,15 @@ using StudioFourteen.Services;
 public class ContentService : ServiceBase
 {
 	private readonly JsonContentReference<Dictionary<string, SimpleViewLayout>> simplePoseLayoutsContent = new("SimplePoseLayouts.jsonc");
-	private readonly JsonContentReference<Dictionary<string, BlendTarget>> expressionBlends = new("ExpressionBlends.jsonc");
 	private readonly JsonContentReference<HashSet<string>> genitalBones = new("GenitalBones.jsonc");
 	private readonly Dictionary<string, HashSet<ContentReference>> references = new();
 
 	#if DEBUG
 	private bool isRunningFromProject = false;
 	private FileSystemWatcher? watcher;
-	#endif
+#endif
 
 	public Dictionary<string, SimpleViewLayout>? SimplePoseLayouts => this.simplePoseLayoutsContent.Get();
-	public Dictionary<string, BlendTarget>? ExpressionBlends => this.expressionBlends.Get();
 	public HashSet<string>? GenitalBones => this.genitalBones.Get();
 
 	public override Task Initialize()

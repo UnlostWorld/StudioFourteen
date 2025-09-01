@@ -66,24 +66,6 @@ public partial class PosePanel : Panel
 		set => this.SetPersistence(value);
 	}
 
-	public int SelectedBodyTab
-	{
-		get => this.GetPersistence<int>();
-		set => this.SetPersistence(value);
-	}
-
-	public int SelectedHandsTab
-	{
-		get => this.GetPersistence<int>();
-		set => this.SetPersistence(value);
-	}
-
-	public int SelectedFaceTab
-	{
-		get => this.GetPersistence<int>();
-		set => this.SetPersistence(value);
-	}
-
 	public bool FlipSides
 	{
 		get => this.GetPersistence<bool>();
