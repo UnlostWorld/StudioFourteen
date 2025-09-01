@@ -167,6 +167,8 @@ public partial class LauncherEntry : Control
 				panel.Dispatcher.BeginInvoke(() => panel.Close());
 			}
 		}
+
+		this.CloseMenu();
 	}
 
 	private void OnPanelChanged(Panel panel)
@@ -178,5 +180,14 @@ public partial class LauncherEntry : Control
 
 			this.IsPanelOpen = this.Context?.GetOpenPanel(this.PanelType) != null;
 		});
+	}
+
+	private void CloseMenu()
+	{
+		LauncherMenu? menu = this.FindParent<LauncherMenu>();
+		if (menu != null)
+		{
+			menu.IsOpen = false;
+		}
 	}
 }
