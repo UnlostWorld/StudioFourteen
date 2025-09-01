@@ -20,6 +20,7 @@ cbuffer GeometryPassData : register(PassDataRegister)
     float4x4 ViewMatrix;
 	float4x4 ProjectionMatrix;
 	float4 CameraPosition;
+	float2 RendererScale;
 	float ViewportScale;
 };
 
@@ -60,7 +61,7 @@ float GetUiClippingAlpha(Fragment frag)
 {
 	float2 screenPos = GetScreenPosition(frag);
 
-	float depth = depth_texture.Sample(depth_sampler, screenPos).r;
+	float depth = depth_texture.Sample(depth_sampler, screenPos / RendererScale).r;
 	if (depth == 0)
 		return 1;
 
@@ -71,7 +72,7 @@ float GetClippingAlpha(Fragment frag, float depthClipAlpha = 0)
 {
 	float2 screenPos = GetScreenPosition(frag);
 	float mask = mask_texture.Sample(mask_sampler, screenPos).r;
-	float depth = depth_texture.Sample(depth_sampler, screenPos).r;
+	float depth = depth_texture.Sample(depth_sampler, screenPos / RendererScale).r;
 
 	if (depth == 0)
 		return 1;

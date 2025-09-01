@@ -21,6 +21,8 @@ using global::System.Runtime.InteropServices;
 [StructLayout(LayoutKind.Explicit)]
 public unsafe partial struct RenderTargetManagerEx
 {
+	[FieldOffset(0x0)] internal RenderTargetManager Base;
+
 	[FieldOffset(0x4D8)] internal Texture* BeforeUIBuffer;
 	[FieldOffset(0x570)] internal Texture* BackBuffer;
 	[FieldOffset(0x578)] internal Texture* DepthStencil;

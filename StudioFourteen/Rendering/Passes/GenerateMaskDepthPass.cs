@@ -114,7 +114,7 @@ public class GenerateUiMaskPass : RenderPassBase
 			this.maskResourceView = new(device, this.maskTexture);
 		}
 
-		// Copy the back buffer
+		// Copy the back buffers
 		deviceContext.CopyResource(renderer.BackBuffer, this.backBufferCopyTexture);
 
 		// Copy the depth stencil

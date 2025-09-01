@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Runtime.InteropServices;
+using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 using StudioFourteen.Rendering.Draw;
@@ -122,8 +123,14 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 		base.Dispose();
 	}
 
-	public override void Render(Renderer renderer, Device device, DeviceContext deviceContext)
+	public override unsafe void Render(Renderer renderer, Device device, DeviceContext deviceContext)
 	{
+		RenderTargetManagerEx* pRenderTargetManager = RenderTargetManagerEx.Instance();
+		if (pRenderTargetManager == null)
+			return;
+
+		this.PassData.RendererScale.X = (float)renderer.Width / (float)pRenderTargetManager->Base.Resolution_Width;
+		this.PassData.RendererScale.Y = (float)renderer.Height / (float)pRenderTargetManager->Base.Resolution_Height;
 		this.PassData.ViewMatrix = Matrix4x4.Transpose(renderer.Camera.GetViewMatrix(renderer));
 		this.PassData.ProjectionMatrix = Matrix4x4.Transpose(renderer.Camera.GetProjectionMatrix(renderer));
 		this.PassData.CameraPosition = new Vector4(renderer.Camera.GetCameraPosition(renderer), 1);
@@ -219,9 +226,8 @@ public class ForwardPass : InstanceRenderPassBase<ForwardPass.ForwardPassData>
 		public Matrix4x4 ViewMatrix;
 		public Matrix4x4 ProjectionMatrix;
 		public Vector4 CameraPosition;
+		public Vector2 RendererScale;
 		public float ViewportScale;
 		public float Unused1;
-		public float Unused2;
-		public float Unused3;
 	}
 }
