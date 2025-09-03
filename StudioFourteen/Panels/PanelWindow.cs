@@ -30,6 +30,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Threading;
 using WpfUtils;
 using WpfUtils.Commands;
 using WpfUtils.Extensions;
@@ -89,8 +90,8 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		this.Services.Reshade.ReshadeOverlayChanged += this.OnReshadeOverlayChanged;
 		this.Services.Photos.PropertyChanged += this.OnPhotosPropertyChanged;
 
-		this.CloseCommand = new SimpleCommand(async () => await this.CloseAsync(false));
-		this.MinimizeCommand = new SimpleCommand(async () => await this.CloseAsync(true));
+		this.CloseCommand = new SimpleCommand(() => this.Close(false));
+		this.MinimizeCommand = new SimpleCommand(() => this.Close(true));
 		this.PopOutCommand = new SimpleCommand(() => this.IsEmbedded = false);
 		this.PopInCommand = new SimpleCommand(() => this.IsEmbedded = true);
 
@@ -334,14 +335,21 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		}
 	}
 
-	public virtual async Task CloseAsync(bool minimize = false)
+	public virtual void Close(bool minimize = false)
 	{
 		this.IsOpen = false;
 		this.NotifyPropertyChanged(nameof(this.IsOpen));
 		this.isMinimizing = minimize;
 
-		await Task.Delay(250);
-		this.Dispatcher.Invoke(this.Close);
+		try
+		{
+			this.Dispatcher.Invoke(this.Close);
+		}
+		catch (TaskCanceledException)
+		{
+		}
+
+		this.Dispatcher.BeginInvokeShutdown(DispatcherPriority.Send);
 	}
 
 	public new void DragMove()
@@ -498,14 +506,16 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 	protected virtual void OnClosed()
 	{
+		if (DalamudServices.GameGui != null)
+			DalamudServices.GameGui.UiHideToggled -= this.OnGameUiToggled;
+
+		this.panel?.SetIsOpen(this, false, this.isMinimizing);
+
 		if (ServiceManager.ShutdownRequested)
 			return;
 
 		this.IsOpen = false;
 		this.NotifyPropertyChanged(nameof(this.IsOpen));
-
-		if (DalamudServices.GameGui != null)
-			DalamudServices.GameGui.UiHideToggled -= this.OnGameUiToggled;
 
 		this.SavedPosition = this.Position;
 
@@ -513,7 +523,6 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 			this.SavedSize = new Point(this.Width, this.Height);
 
 		AutoPropertyNotifyService.Remove(this);
-		this.panel?.SetIsOpen(this, false, this.isMinimizing);
 	}
 
 	protected override void OnStateChanged(EventArgs e)

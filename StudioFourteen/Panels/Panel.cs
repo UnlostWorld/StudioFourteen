@@ -77,7 +77,7 @@ public partial class Panel : ContentControl, IAutoNotify
 	public interface IHost
 	{
 		Point Position { get; set; }
-		Task CloseAsync(bool minimize);
+		void Close(bool minimize);
 		PanelContextBase GetContext();
 		void Activate();
 
@@ -148,15 +148,10 @@ public partial class Panel : ContentControl, IAutoNotify
 
 	public void Close(bool minimize = false)
 	{
-		this.CloseAsync(minimize).Run();
-	}
-
-	public Task CloseAsync(bool minimize = false)
-	{
 		if (this.Host == null)
-			return Task.CompletedTask;
+			return;
 
-		return this.Host.CloseAsync(minimize);
+		this.Host.Close(minimize);
 	}
 
 	public void SetIsOpen(IHost sender, bool isOpen, bool isMinimized)

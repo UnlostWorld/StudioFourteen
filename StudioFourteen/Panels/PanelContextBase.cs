@@ -129,7 +129,7 @@ public abstract class PanelContextBase
 		}
 		else if (!open && panel != null)
 		{
-			await panel.CloseAsync();
+			panel.Close(false);
 		}
 
 		return panel;

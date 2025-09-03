@@ -109,7 +109,7 @@ public class GamePanelContext : PanelContextBase
 			{
 				if (this.Services.Windows.IsActive(wnd) || this.Services.Windows.WasLastActive(wnd))
 				{
-					await wnd.CloseAsync(true);
+					wnd.Close(true);
 				}
 				else
 				{

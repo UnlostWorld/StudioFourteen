@@ -72,10 +72,9 @@ public partial class PanelHost : ContentControl, Panel.IHost
 	{
 	}
 
-	Task Panel.IHost.CloseAsync(bool minimize)
+	void Panel.IHost.Close(bool minimize)
 	{
 		this.panel?.SetIsOpen(this, false, minimize);
-		return Task.CompletedTask;
 	}
 
 	PanelContextBase Panel.IHost.GetContext()
