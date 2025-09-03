@@ -326,12 +326,12 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 		if (newWidth >= this.MinWidth && newWidth <= this.MaxWidth)
 		{
-			////this.Width = newWidth;
+			this.Width = newWidth;
 		}
 
 		if (newHeight >= this.MinHeight && newHeight <= this.MaxHeight)
 		{
-			////this.Height = newHeight;
+			this.Height = newHeight;
 		}
 	}
 
@@ -369,9 +369,9 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	public void Resize(double deltaX, double deltaY)
 	{
 		double newWidth = this.Width + deltaX;
-		////this.Width = double.Clamp(newWidth, this.MinWidth, 10000);
+		this.Width = double.Clamp(newWidth, this.MinWidth, 10000);
 		double newHeight = this.Height + deltaY;
-		////this.Height = double.Clamp(newHeight, this.MinHeight, 10000);
+		this.Height = double.Clamp(newHeight, this.MinHeight, 10000);
 	}
 
 	protected override void OnActivated(EventArgs e)
@@ -456,7 +456,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 			this.Position = this.panel.DefaultPosition;
 		}
 
-		/*if (this.SavedSize != null)
+		if (this.SavedSize != null)
 		{
 			bool canResize = this.ResizeMode > ResizeMode.CanMinimize;
 			if (canResize)
@@ -485,7 +485,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 					this.Width = this.MinWidth;
 				}
 			}
-		}*/
+		}
 
 		if (this.Services.Windows.XivProcess == null)
 		{
