@@ -86,6 +86,11 @@ public partial class PanelHost : ContentControl, Panel.IHost
 		return this.context;
 	}
 
+	public void Resize(double deltaX, double deltaY)
+	{
+		// not supported
+	}
+
 	partial void OnPanelTypeChanged(Type? newValue)
 	{
 		if (DesignerProperties.GetIsInDesignMode(this))

@@ -101,7 +101,7 @@ public class PanelService : ServiceBase
 
 	private async Task StartPanels()
 	{
-		this.launcher = await PanelWindow.CreatePanelWindow<LauncherWindow>(this.GamePanels);
+		this.launcher = await PanelWindow.CreatePanelWindow<LauncherWindow>(this.GamePanels, "Launcher window");
 		this.launcher?.Dispatcher.InvokeAsync(() => this.launcher.Show());
 
 		if (!this.hasRestoredPanels && this.Services.Studio.IsOpen)

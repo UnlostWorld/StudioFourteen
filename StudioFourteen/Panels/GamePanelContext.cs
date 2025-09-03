@@ -25,7 +25,8 @@ public class GamePanelContext : PanelContextBase
 {
 	public override async Task<Panel?> CreatePanelAsync(Type panelType, bool activate)
 	{
-		PanelWindow? wnd = await PanelWindow.CreatePanelWindow<PanelWindow>(this);
+		string name = panelType.Name;
+		PanelWindow? wnd = await PanelWindow.CreatePanelWindow<PanelWindow>(this, name);
 		if (wnd != null)
 		{
 			await wnd.Dispatcher.InvokeAsync(() =>

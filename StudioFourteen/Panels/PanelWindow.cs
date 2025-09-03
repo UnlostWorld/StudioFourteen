@@ -236,13 +236,13 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		}
 	}
 
-	public static async Task<T?> CreatePanelWindow<T>(PanelContextBase context)
+	public static async Task<T?> CreatePanelWindow<T>(PanelContextBase context, string name)
 		where T : PanelWindow
 	{
 		if (ServiceManager.Instance.CurrentState > ServiceManagerBase.States.Started)
 			return null;
 
-		T? panelWindow = await MultithreadedWindow.CreateInstanceAsync<T>();
+		T? panelWindow = await MultithreadedWindow.CreateInstanceAsync<T>(name);
 
 		if (panelWindow != null)
 		{
@@ -356,6 +356,14 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		this.Services.Windows.Activate(this);
 		this.SetFocusToWindow();
 		this.IsForeground = true;
+	}
+
+	public void Resize(double deltaX, double deltaY)
+	{
+		double newWidth = this.Width + deltaX;
+		this.Width = double.Clamp(newWidth, this.MinWidth, 10000);
+		double newHeight = this.Height + deltaY;
+		this.Height = double.Clamp(newHeight, this.MinHeight, 10000);
 	}
 
 	protected override void OnActivated(EventArgs e)

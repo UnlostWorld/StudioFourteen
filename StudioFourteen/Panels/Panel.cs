@@ -52,7 +52,6 @@ public partial class Panel : ContentControl, IAutoNotify
 	private readonly string panelId;
 
 	private Exception? frameworkException;
-	private IHost? host;
 
 	private bool isVisible;
 	private bool isMinimized;
@@ -81,6 +80,8 @@ public partial class Panel : ContentControl, IAutoNotify
 		Task CloseAsync(bool minimize);
 		PanelContextBase GetContext();
 		void Activate();
+
+		void Resize(double deltaX, double deltaY);
 	}
 
 	public ServiceManager Services => ServiceManager.Instance;
@@ -91,15 +92,17 @@ public partial class Panel : ContentControl, IAutoNotify
 
 	public Point Position
 	{
-		get => this.host != null ? this.host.Position : default;
+		get => this.Host != null ? this.Host.Position : default;
 		set
 		{
-			if (this.host == null)
+			if (this.Host == null)
 				return;
 
-			this.host.Position = value;
+			this.Host.Position = value;
 		}
 	}
+
+	protected IHost? Host { get; private set; }
 
 	public T? GetPersistence<T>([CallerMemberName] string id = "", T? defaultValue = default) => this.Persistence.GetPersistence<T>(id, defaultValue);
 
@@ -132,15 +135,15 @@ public partial class Panel : ContentControl, IAutoNotify
 
 	public void SetHost(IHost host)
 	{
-		this.host = host;
+		this.Host = host;
 	}
 
 	public PanelContextBase GetContext()
 	{
-		if (this.host == null)
+		if (this.Host == null)
 			throw new InvalidOperationException();
 
-		return this.host.GetContext();
+		return this.Host.GetContext();
 	}
 
 	public void Close(bool minimize = false)
@@ -150,15 +153,15 @@ public partial class Panel : ContentControl, IAutoNotify
 
 	public Task CloseAsync(bool minimize = false)
 	{
-		if (this.host == null)
+		if (this.Host == null)
 			return Task.CompletedTask;
 
-		return this.host.CloseAsync(minimize);
+		return this.Host.CloseAsync(minimize);
 	}
 
 	public void SetIsOpen(IHost sender, bool isOpen, bool isMinimized)
 	{
-		if (this.host != sender)
+		if (this.Host != sender)
 			throw new InvalidOperationException();
 
 		if (isOpen)
@@ -175,7 +178,7 @@ public partial class Panel : ContentControl, IAutoNotify
 
 	public void Activate()
 	{
-		this.host?.Activate();
+		this.Host?.Activate();
 	}
 
 	public virtual void OnActivated()

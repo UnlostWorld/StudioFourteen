@@ -183,7 +183,7 @@ public partial class PhotosService : ServiceBase
 
 		try
 		{
-			this.animationWindow = await PanelWindow.CreatePanelWindow<CaptureAnimationWindow>(this.Services.Panels.GamePanels);
+			this.animationWindow = await PanelWindow.CreatePanelWindow<CaptureAnimationWindow>(this.Services.Panels.GamePanels, "Photo capture animation window");
 
 			if (this.animationWindow != null)
 				await this.animationWindow.Dispatcher.InvokeAsync(() => this.animationWindow.Show());

@@ -43,7 +43,7 @@ public partial class AioWindow : PanelWindow
 
 		Task.Run(async () =>
 		{
-			AioWindow? aio = await PanelWindow.CreatePanelWindow<AioWindow>(ServiceManager.Instance.Panels.AioPanels);
+			AioWindow? aio = await PanelWindow.CreatePanelWindow<AioWindow>(ServiceManager.Instance.Panels.AioPanels, "Aio Window");
 			if (aio != null)
 			{
 				ServiceManager.Instance.Panels.AioPanels.Window = aio;
