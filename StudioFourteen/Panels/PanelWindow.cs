@@ -321,7 +321,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 	public virtual void OnResizeDelta(DragDeltaEventArgs e)
 	{
-		double newWidth = this.ActualWidth + e.HorizontalChange;
+		/*double newWidth = this.ActualWidth + e.HorizontalChange;
 		double newHeight = this.ActualHeight + e.VerticalChange;
 
 		if (newWidth >= this.MinWidth && newWidth <= this.MaxWidth)
@@ -332,7 +332,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		if (newHeight >= this.MinHeight && newHeight <= this.MaxHeight)
 		{
 			this.Height = newHeight;
-		}
+		}*/
 	}
 
 	public virtual void Close(bool minimize = false)
@@ -456,7 +456,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 			this.Position = this.panel.DefaultPosition;
 		}
 
-		if (this.SavedSize != null)
+		/*if (this.SavedSize != null)
 		{
 			bool canResize = this.ResizeMode > ResizeMode.CanMinimize;
 			if (canResize)
@@ -485,7 +485,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 					this.Width = this.MinWidth;
 				}
 			}
-		}
+		}*/
 
 		if (this.Services.Windows.XivProcess == null)
 		{
