@@ -72,6 +72,16 @@ public partial class PosePanel : Panel
 		set => this.SetPersistence(value);
 	}
 
+	public bool CollapseInspector
+	{
+		get => this.GetPersistence<bool>();
+		set
+		{
+			this.SetPersistence(value);
+			////this.Host?.Resize(value ? -200 : 200, 0);
+		}
+	}
+
 	public void RegisterTabGroup(PoseTabItem tab)
 	{
 	}

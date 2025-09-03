@@ -20,6 +20,9 @@
 	<icons:Fa x:Key="ICON_Drag_Assign" Icon="Share"/>
 	<icons:Fa x:Key="ICON_Drag_AddCharacter" Icon="UserPlus"/>
 
+	<icons:FontIcon x:Key="ICON_SidebarRight_Expand" Icon="&#xe901;" />
+	<icons:FontIcon x:Key="ICON_SidebarRight_Collapse" Icon="&#xe900;" />
+
 	<icons:Svg x:Key="ICON_GroupPose" Source="GroupPose" />
 	<icons:Svg x:Key="ICON_GroupPoseSettings" Source="GroupPoseSettings" />
 	<icons:Svg x:Key="ICON_TagsAdd" Source="TagsAdd" />
