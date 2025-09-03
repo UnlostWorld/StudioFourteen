@@ -711,13 +711,19 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 	private void UpdateUiVisible()
 	{
-		this.Dispatcher.Invoke(() =>
+		try
 		{
-			if (ServiceManager.ShutdownRequested)
-				return;
+			this.Dispatcher.Invoke(() =>
+			{
+				if (ServiceManager.ShutdownRequested)
+					return;
 
-			this.IsUiVisible = this.GetIsUiVisible();
-			this.IsUiVisibleAndOpen = this.GetIsUiVisibleAndOpen();
-		});
+				this.IsUiVisible = this.GetIsUiVisible();
+				this.IsUiVisibleAndOpen = this.GetIsUiVisibleAndOpen();
+			});
+		}
+		catch (TaskCanceledException)
+		{
+		}
 	}
 }
