@@ -41,26 +41,6 @@
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 
-		<ToggleButton
-			IsChecked="{Binding CollapseInspector}"
-			Width="28"
-			Height="28"
-			Grid.ColumnSpan="2"
-			VerticalAlignment="Top"
-			HorizontalAlignment="Right"
-			Margin="0,-29,120,0"
-			Background="Transparent"
-			Style="{DynamicResource WpfUtilsIconToggleButton}">
-			<ToggleButton.Content>
-				<Grid>
-					<icons:IconView Icon="{DynamicResource ICON_SidebarRight_Collapse}"
-						Visibility="{Binding IsChecked, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}, Converter={StaticResource !B2V}}" />
-					<icons:IconView Icon="{DynamicResource ICON_SidebarRight_Expand}"
-						Visibility="{Binding IsChecked, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}, Converter={StaticResource B2V}}" />
-				</Grid>
-			</ToggleButton.Content>
-		</ToggleButton>
-
 		<Grid Grid.Column="0" Margin="1,0,2,1">
 
 			<TabControl
@@ -307,6 +287,26 @@
 						Click="OnFlipPoseClicked">
 						<TextBlock Text="Flip Pose" />
 					</Button>
+
+					<ToggleButton
+						IsChecked="{Binding CollapseInspector}"
+						Width="28"
+						Height="28"
+						Grid.ColumnSpan="2"
+						VerticalAlignment="Top"
+						HorizontalAlignment="Right"
+						Background="Transparent"
+						Style="{DynamicResource WpfUtilsIconToggleButton}">
+						<ToggleButton.Content>
+							<Grid>
+								<icons:IconView Icon="{DynamicResource ICON_SidebarRight_Collapse}"
+									Visibility="{Binding IsChecked, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}, Converter={StaticResource !B2V}}" />
+								<icons:IconView Icon="{DynamicResource ICON_SidebarRight_Expand}"
+									Visibility="{Binding IsChecked, RelativeSource={RelativeSource AncestorType={x:Type ToggleButton}}, Converter={StaticResource B2V}}" />
+							</Grid>
+						</ToggleButton.Content>
+					</ToggleButton>
+
 				</StackPanel>
 
 				<StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
@@ -385,5 +385,6 @@
 			</StackPanel>
 
 		</wpfUtils:PopOut>
+
 	</Grid>
 </panels:Panel>
