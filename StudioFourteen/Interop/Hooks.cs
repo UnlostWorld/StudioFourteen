@@ -40,7 +40,7 @@ public static unsafe class Hooks
 
 	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Camera/CameraService.cs#L60
 	internal delegate nint SceneCameraUpdateDelegate(FFXIVClientStructs.FFXIV.Client.Graphics.Scene.Camera* sceneCamera);
-	internal static readonly SignatureHook<SceneCameraUpdateDelegate> SceneCameraUpdate = new("48 ?? ?? ?? ?? ?? 48 81 EC ?? ?? ?? ?? F6 81 F0 ?? ?? ?? ?? 48 8B ??");
+	////internal static readonly SignatureHook<SceneCameraUpdateDelegate> SceneCameraUpdate = new("48 ?? ?? ?? ?? ?? 48 81 EC ?? ?? ?? ?? F6 81 F0 ?? ?? ?? ?? 48 8B ??");
 
 	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Camera/CameraService.cs#L64
 	internal delegate void CameraMatrixLoadDelegate(FFXIVClientStructs.FFXIV.Client.Graphics.Render.Camera* camera, nint a1);
@@ -63,7 +63,7 @@ public static unsafe class Hooks
 
 	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/World/TimeService.cs#L98
 	internal delegate void UpdateEorzeaTimeDelegate(IntPtr a1, IntPtr a2);
-	internal static readonly SignatureHook<UpdateEorzeaTimeDelegate> UpdateEorzeaTime = new("48 89 5C 24 ?? 57 48 83 EC ?? 48 8B F9 48 8B DA 48 81 C1 ?? ?? ?? ?? E8 ?? ?? ?? ?? 4C");
+	////internal static readonly SignatureHook<UpdateEorzeaTimeDelegate> UpdateEorzeaTime = new("48 89 5C 24 ?? 57 48 83 EC ?? 48 8B F9 48 8B DA 48 81 C1 ?? ?? ?? ?? E8 ?? ?? ?? ?? 4C");
 
 	// https://github.com/Etheirys/Brio/blob/main/Brio/Game/Actor/ActionTimelineService.cs#L41
 	internal static readonly SignatureHook<TimelineContainer.Delegates.CalculateAndApplyOverallSpeed> CalculateAndApplyOverallSpeedHook = new ("E8 ?? ?? ?? ?? 48 8D 8B ?? ?? ?? ?? 48 8B 01 FF 50 ?? 48 8D 8B ?? ?? ?? ?? 48 8B 01 FF 50 ?? F6 83");

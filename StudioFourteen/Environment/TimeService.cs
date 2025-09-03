@@ -58,13 +58,13 @@ public partial class TimeService
 	public override void Attach()
 	{
 		base.Attach();
-		Hooks.UpdateEorzeaTime.Enable(this.UpdateEorzeaTime);
+		////Hooks.UpdateEorzeaTime.Enable(this.UpdateEorzeaTime);
 		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
 	}
 
 	public override void Detach()
 	{
-		Hooks.UpdateEorzeaTime.Disable();
+		////Hooks.UpdateEorzeaTime.Disable();
 		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
 		base.Detach();
 	}
@@ -142,11 +142,11 @@ public partial class TimeService
 		this.EorzeaTime = (newValue * 60) + (86400 * (byte)this.DayOfMonth);
 	}
 
-	private void UpdateEorzeaTime(IntPtr a1, IntPtr a2)
+	/*private void UpdateEorzeaTime(IntPtr a1, IntPtr a2)
 	{
 		if (this.freezeTime)
 			return;
 
 		Hooks.UpdateEorzeaTime.Original(a1, a2);
-	}
+	}*/
 }

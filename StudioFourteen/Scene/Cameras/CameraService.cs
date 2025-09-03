@@ -57,6 +57,8 @@ public struct GameCameraEx
 	[FieldOffset(0x218)] public Vector2 Collide;
 }
 
+#pragma warning disable
+
 public class CameraService : ServiceBase
 {
 	private const float CameraBlendTimeMs = 1000;
@@ -124,7 +126,7 @@ public class CameraService : ServiceBase
 
 		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
 
-		Hooks.SceneCameraUpdate.Enable(this.SceneCameraUpdateDetour);
+		////Hooks.SceneCameraUpdate.Enable(this.SceneCameraUpdateDetour);
 		Hooks.CameraMatrixLoad.Enable(this.CameraMatrixLoad);
 		Hooks.CameraUpdate.Enable(this.CameraUpdateDetour);
 
@@ -156,7 +158,7 @@ public class CameraService : ServiceBase
 
 		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
 
-		Hooks.SceneCameraUpdate.Disable();
+		////Hooks.SceneCameraUpdate.Disable();
 		Hooks.CameraMatrixLoad.Disable();
 		Hooks.CameraUpdate.Disable();
 
@@ -207,7 +209,7 @@ public class CameraService : ServiceBase
 		return Hooks.CameraUpdate.Original(camera);
 	}
 
-	private unsafe nint SceneCameraUpdateDetour(SceneCamera* camera)
+	/*private unsafe nint SceneCameraUpdateDetour(SceneCamera* camera)
 	{
 		nint result = Hooks.SceneCameraUpdate.Original(camera);
 
@@ -323,7 +325,7 @@ public class CameraService : ServiceBase
 		this.CurrentProjection = camera->RenderCamera->ProjectionMatrix;
 
 		return result;
-	}
+	}*/
 
 	private unsafe void CameraMatrixLoad(RenderCamera* camera, nint a1)
 	{
