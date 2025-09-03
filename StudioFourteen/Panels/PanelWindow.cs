@@ -369,9 +369,9 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	public void Resize(double deltaX, double deltaY)
 	{
 		double newWidth = this.Width + deltaX;
-		this.Width = double.Clamp(newWidth, this.MinWidth, 10000);
+		////this.Width = double.Clamp(newWidth, this.MinWidth, 10000);
 		double newHeight = this.Height + deltaY;
-		this.Height = double.Clamp(newHeight, this.MinHeight, 10000);
+		////this.Height = double.Clamp(newHeight, this.MinHeight, 10000);
 	}
 
 	protected override void OnActivated(EventArgs e)

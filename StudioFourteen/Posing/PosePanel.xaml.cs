@@ -78,7 +78,7 @@ public partial class PosePanel : Panel
 		set
 		{
 			this.SetPersistence(value);
-			////this.Host?.Resize(value ? -200 : 200, 0);
+			this.Host?.Resize(value ? -200 : 200, 0);
 		}
 	}
 
