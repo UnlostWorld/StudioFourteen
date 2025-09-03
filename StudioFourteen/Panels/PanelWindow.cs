@@ -321,18 +321,18 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 	public virtual void OnResizeDelta(DragDeltaEventArgs e)
 	{
-		/*double newWidth = this.ActualWidth + e.HorizontalChange;
+		double newWidth = this.ActualWidth + e.HorizontalChange;
 		double newHeight = this.ActualHeight + e.VerticalChange;
 
 		if (newWidth >= this.MinWidth && newWidth <= this.MaxWidth)
 		{
-			this.Width = newWidth;
+			////this.Width = newWidth;
 		}
 
 		if (newHeight >= this.MinHeight && newHeight <= this.MaxHeight)
 		{
-			this.Height = newHeight;
-		}*/
+			////this.Height = newHeight;
+		}
 	}
 
 	public virtual void Close(bool minimize = false)
