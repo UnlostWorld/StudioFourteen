@@ -18,11 +18,12 @@ namespace StudioFourteen.Launcher;
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using DependencyPropertyGenerator;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Panels;
 using StudioFourteen.Settings;
-
+using WpfUtils.Commands;
 using Panel = StudioFourteen.Panels.Panel;
 
 [DependencyProperty<bool>("IsOpen")]
@@ -112,8 +113,14 @@ public partial class LauncherMenu : Control
 [DependencyProperty<string>("Description")]
 [DependencyProperty<object>("Icon")]
 [DependencyProperty<bool>("IsPanelOpen")]
+[DependencyProperty<ICommand>("OpenPanel")]
 public partial class LauncherEntry : Control
 {
+	public LauncherEntry()
+	{
+		this.OpenPanel = new SimpleCommand(this.OpenPanelCallback);
+	}
+
 	public ServiceManager Services => ServiceManager.Instance;
 
 	protected override void OnTemplateChanged(ControlTemplate oldTemplate, ControlTemplate newTemplate)
@@ -150,27 +157,6 @@ public partial class LauncherEntry : Control
 		this.IsPanelOpen = this.Context?.GetOpenPanel(newValue) != null;
 	}
 
-	partial void OnIsPanelOpenChanged(bool newValue)
-	{
-		if (this.Context == null || this.PanelType == null)
-			return;
-
-		if (newValue)
-		{
-			this.Context.CreatePanel(this.PanelType, true);
-		}
-		else
-		{
-			Panel? panel = this.Context.GetOpenPanel(this.PanelType);
-			if (panel != null)
-			{
-				panel.Dispatcher.BeginInvoke(() => panel.Close());
-			}
-		}
-
-		this.CloseMenu();
-	}
-
 	private void OnPanelChanged(Panel panel)
 	{
 		this.Dispatcher.BeginInvoke(() =>
@@ -180,6 +166,15 @@ public partial class LauncherEntry : Control
 
 			this.IsPanelOpen = this.Context?.GetOpenPanel(this.PanelType) != null;
 		});
+	}
+
+	private void OpenPanelCallback()
+	{
+		if (this.Context == null || this.PanelType == null)
+			return;
+
+		this.Context.SetIsOpen(this.PanelType, true, true);
+		this.CloseMenu();
 	}
 
 	private void CloseMenu()

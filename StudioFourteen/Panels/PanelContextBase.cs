@@ -119,6 +119,11 @@ public abstract class PanelContextBase
 		this.SetIsOpenAsync<T>(open, activate).Run();
 	}
 
+	public void SetIsOpen(Type panelType, bool open, bool activate)
+	{
+		this.SetIsOpenAsync(panelType, open, activate).Run();
+	}
+
 	public async Task<T?> SetIsOpenAsync<T>(bool open, bool activate)
 		where T : Panel
 	{
@@ -133,6 +138,23 @@ public abstract class PanelContextBase
 		}
 
 		return panel;
+	}
+
+	public async Task SetIsOpenAsync(Type panelType, bool open, bool activate)
+	{
+		Panel? panel = this.GetOpenPanel(panelType);
+		if (open && panel == null)
+		{
+			panel = await this.CreatePanelAsync(panelType, activate);
+		}
+		else if (open && panel != null)
+		{
+			await panel.Dispatcher.BeginInvoke(panel.Activate);
+		}
+		else if (!open && panel != null)
+		{
+			panel.Close(false);
+		}
 	}
 
 	public void OnPanelActivated(Panel panel, bool active)
