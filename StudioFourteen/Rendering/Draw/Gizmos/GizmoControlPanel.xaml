@@ -35,9 +35,9 @@
 								<ToggleButton
 									Margin="-12,-5,0,-5"
 									Grid.Column="0"
-									IsChecked="{Binding IsVisible}"
+									IsChecked="{Binding IsVisibleInOverlay}"
 									Style="{DynamicResource VisibilityToggle}"
-									ToolTip="{DynamicResource LOC_GizmosVisibility_ToolTip}"/>
+									ToolTip="{DynamicResource LOC_GizmosVisibility_ToolTip}" />
 
 								<icons:IconView
 								Grid.Column="1"

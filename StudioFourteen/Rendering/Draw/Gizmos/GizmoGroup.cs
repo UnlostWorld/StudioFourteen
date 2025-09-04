@@ -53,6 +53,20 @@ public abstract class GizmoGroup : GizmoBase
 		}
 	}
 
+	public override bool IsVisibleInOverlay
+	{
+		get => base.IsVisibleInOverlay;
+		set
+		{
+			foreach (GizmoBase gizmo in this.Gizmos)
+			{
+				gizmo.IsVisibleInOverlay = value;
+			}
+
+			base.IsVisibleInOverlay = value;
+		}
+	}
+
 	public override void Enable(ForwardPass? pass = null)
 	{
 		if (this.current == null && this.Gizmos.Count > 0)

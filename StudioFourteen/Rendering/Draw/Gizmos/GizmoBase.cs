@@ -40,9 +40,9 @@ public abstract class GizmoBase : DrawGroup, INotifyPropertyChanged
 	public abstract bool KeepScreenSize { get; }
 	public virtual bool ShowInControlPanel => true;
 
-	public override bool IsVisible
+	public virtual bool IsVisibleInOverlay
 	{
-		get => this.GetPersistence<bool>(defaultValue: true);
+		get => this.GetPersistence(defaultValue: true);
 		set => this.SetPersistence(value);
 	}
 
@@ -91,6 +91,9 @@ public abstract class GizmoBase : DrawGroup, INotifyPropertyChanged
 
 	public override void Draw(Renderer renderer, Transform transform, Device device, DeviceContext deviceContext)
 	{
+		if (!this.IsVisibleInOverlay && renderer is GameOverlayRenderer)
+			return;
+
 		base.Draw(renderer, transform, device, deviceContext);
 
 		if (this.KeepScreenSize && renderer is GameOverlayRenderer)
