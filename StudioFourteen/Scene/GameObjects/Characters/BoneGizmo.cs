@@ -48,6 +48,8 @@ public class SkeletonBoneGizmo : SelectionHandle
 		this.Add(this.connectionRenderer);
 	}
 
+	public override bool CanDrag => false;
+
 	protected unsafe override void OnDraw()
 	{
 		base.OnDraw();

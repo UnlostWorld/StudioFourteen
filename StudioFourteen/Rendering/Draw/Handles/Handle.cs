@@ -23,6 +23,8 @@ public abstract class Handle : DrawGroup
 	public bool IsPressed { get; private set; }
 	public bool IsDragging { get; private set; }
 
+	public virtual bool CanDrag => true;
+
 	public virtual void SetIsHandleHovered(bool isHovered)
 	{
 		if (this.IsHovered == isHovered)
@@ -47,6 +49,9 @@ public abstract class Handle : DrawGroup
 
 	public virtual void HandleDrag(HitTestResult initiatingHitResult, Vector2 delta)
 	{
+		if (!this.CanDrag)
+			return;
+
 		if (!this.IsDragging)
 		{
 			this.IsDragging = true;

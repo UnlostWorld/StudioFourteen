@@ -94,7 +94,7 @@ public class OverlayRendererInput : RendererInput
 			this.didDrag = this.Services.Input.Mouse?.IsAnyDragging == true;
 		}
 
-		if (inputState == InputStates.Deactivated && this.didDrag && this.CurrentPress != null)
+		if (inputState == InputStates.Deactivated && this.didDrag && this.CurrentPress != null && this.CurrentPress.CanDrag)
 		{
 			Vector2 pos = this.CurrentPress.GetScreenPosition(Vector3.Zero);
 			this.Services.Windows.SetCursorPosition(pos);
