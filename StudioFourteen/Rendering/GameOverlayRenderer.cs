@@ -174,6 +174,14 @@ public class GameOverlayRenderer : Renderer
 		this.IsAttached = false;
 	}
 
+	protected override bool TrySetUpRender()
+	{
+		if (this.Services.Studio.HideUi)
+			return false;
+
+		return base.TrySetUpRender();
+	}
+
 	protected override void RenderPass(RenderPassBase pass)
 	{
 		if (this.DeviceContext == null)
