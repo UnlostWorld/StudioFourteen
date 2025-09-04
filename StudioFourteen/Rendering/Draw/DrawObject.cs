@@ -45,6 +45,8 @@ public abstract class DrawObject : IDisposable
 	protected Transform WorldTransform { get; private set; }
 	protected Transform LocalTransform { get; set; } = Transform.Identity;
 
+	protected Renderer? CurrentRenderer { get; private set; }
+
 	public virtual void Draw(Renderer renderer, Transform transform, Device device, DeviceContext deviceContext)
 	{
 		this.CameraPosition = renderer.Camera.GetCameraPosition(renderer);
@@ -57,6 +59,7 @@ public abstract class DrawObject : IDisposable
 			this.WorldScale = scale;
 		}
 
+		this.CurrentRenderer = renderer;
 		this.OnDraw();
 	}
 

@@ -88,12 +88,17 @@ public class SkeletonBoneGizmo : SelectionHandle
 		bool isAnyBoneSelected = this.Services.Selection.Current is SkeletonBone;
 		bool isAnyBoneHovered = this.Services.Selection.Hover is SkeletonBone;
 		bool isHoveredOrSelected = this.IsHovered | this.IsSelected;
+		bool isAnyHandleDragging = this.CurrentRenderer?.Input.CurrentPress?.IsDragging == true;
 
 		this.capRenderer.Material.Size = isHoveredOrSelected ? 2.0f : 1.0f;
 		this.capRenderer.Material.DepthOffset = isHoveredOrSelected ? 0.001f : 0f;
 
 		float desiredAlpha = 0.1f;
-		if (this.IsSelected || isAnyParentSelected)
+		if (isAnyHandleDragging)
+		{
+			desiredAlpha = 0.0f;
+		}
+		else if (this.IsSelected || isAnyParentSelected)
 		{
 			desiredAlpha = 1.0f;
 			this.capRenderer.Material.Color = new(1.0f, 0.08f, 0.58f, 1.0f);
