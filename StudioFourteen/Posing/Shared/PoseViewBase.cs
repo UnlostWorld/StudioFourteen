@@ -331,7 +331,7 @@ public partial class PoseViewBase : View
 
 	protected virtual void OnHoverChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? source)
 	{
-		this.Dispatcher.Invoke(() =>
+		this.Dispatcher.BeginInvoke(() =>
 		{
 			if (this.controls != null)
 			{
