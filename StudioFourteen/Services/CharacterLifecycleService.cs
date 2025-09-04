@@ -36,7 +36,7 @@ using WpfUtils.Extensions;
 
 using Character = StudioFourteen.Scene.GameObjects.Characters.Character;
 using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
-using XivSetupContainter = FFXIVClientStructs.FFXIV.Client.Game.Character.CharacterSetupContainer;
+using XivSetupContainer = FFXIVClientStructs.FFXIV.Client.Game.Character.CharacterSetupContainer;
 
 public class CharacterLifecycleService : ServiceBase
 {
@@ -48,7 +48,7 @@ public class CharacterLifecycleService : ServiceBase
 	public event CharacterDelegate? CharacterDestroyed;
 
 	[AutoNotify]
-	public bool CanSpawn => this.Services.GroupPose.IsGroupPosing;
+	public bool CanSpawn => this.Services.GroupPose.IsGroupPosing || this.Services.Territory.IsInTitleScreen;
 
 	public override async Task Initialize()
 	{
@@ -97,6 +97,7 @@ public class CharacterLifecycleService : ServiceBase
 		if (index < 0)
 			return null;
 
+		await Task.Delay(100);
 		await TickService.NextGameTick();
 		Character? character = this.Services.GameObjects.Get<Character>(index);
 		if (character == null)
@@ -223,7 +224,9 @@ public class CharacterLifecycleService : ServiceBase
 	{
 		try
 		{
-			if (!this.Services.GroupPose.IsGroupPosing && CreatedIndexes.Count > 0)
+			if (!this.Services.Territory.IsInTitleScreen
+				&& !this.Services.GroupPose.IsGroupPosing
+				&& CreatedIndexes.Count > 0)
 			{
 				this.DestroyAllCreated();
 				this.Log.Warning("Left GPose with spawned characters. deleting...");
@@ -262,11 +265,6 @@ public class CharacterLifecycleService : ServiceBase
 	{
 		TickService.VerifyGameTickThread();
 
-		XivCharacter* player = this.Services.GameObjects.GetXivObject<XivCharacter>(0);
-
-		if (player == null)
-			return -1;
-
 		ClientObjectManager* com = ClientObjectManager.Instance();
 		uint idCheck = com->CreateBattleCharacter();
 		if (idCheck == 0xffffffff)
@@ -283,21 +281,15 @@ public class CharacterLifecycleService : ServiceBase
 		EventGPoseController* gposeController = &EventFramework.Instance()->EventSceneModule.EventGPoseController;
 		gposeController->AddCharacterToGPose(pSpawned); // This is safe even if the list is full. The game will also cleanup for us.
 
-		XivSetupContainter.CopyFlags flags = XivSetupContainter.CopyFlags.WeaponHiding | XivSetupContainter.CopyFlags.Position;
-		pSpawned->CharacterSetup.CopyFromCharacter(player, flags);
+		pSpawned->CharacterSetup.SetupBNpc(1);
 
-		*((sbyte*)pSpawned + 0x95) &= ~2; // Disable selection just incase this somehow leaks out of GPose
-
-		if (position == Vector3.Zero)
-			position = player->GameObject.Position;
+		*((sbyte*)pSpawned + 0x95) &= ~2; // Disable selection just in case this somehow leaks out of GPose
 
 		pSpawned->GameObject.Position = position;
 		pSpawned->GameObject.DefaultPosition = position;
-		pSpawned->GameObject.Rotation = player->GameObject.Rotation;
-		pSpawned->GameObject.DefaultRotation = player->GameObject.Rotation;
 
 		// Generate a unique name.
-		// This name must pass penumbra's naming validation to allow mcdf loading to work.
+		// This name must pass penumbra's naming validation.
 		// Generate the name "Studio S" + the object table index as letters a = 0, b = 1, etc.
 		char[] str = pSpawned->ObjectIndex.ToString("D3").ToArray();
 		for (int j = 0; j < str.Length; j++)
@@ -315,7 +307,7 @@ public class CharacterLifecycleService : ServiceBase
 		pSpawned->GameObject.Name[name.Length] = 0;
 
 		pSpawned->GameObject.DisableDraw();
-		pSpawned->CharacterSetup.CopyFromCharacter(pSpawned, XivSetupContainter.CopyFlags.None);
+		pSpawned->CharacterSetup.CopyFromCharacter(pSpawned, XivSetupContainer.CopyFlags.None);
 		pSpawned->GameObject.EnableDraw();
 
 		pSpawned->Alpha = 0.01f;

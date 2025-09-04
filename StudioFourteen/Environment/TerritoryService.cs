@@ -60,6 +60,11 @@ public partial class TerritoryService
 		this.ChangeTerritory(territory.Territory);
 	}
 
+	public void ChangeTerritory(string background)
+	{
+		Hooks.CreateScene.Original(background, 0, 0, 0, 0, -1, 0);
+	}
+
 	public void ChangeTerritory(TerritoryType territory)
 	{
 		TickService.VerifyGameTickThread();
@@ -72,6 +77,14 @@ public partial class TerritoryService
 			return;
 
 		Hooks.CreateScene.Original(background, territory.RowId, 0, 0, 0, -1, 0);
+	}
+
+	public unsafe bool GetIsInTitleScreen()
+	{
+		TickService.VerifyGameTickThread();
+
+		nint? titleMenu = DalamudServices.GameGui?.GetAddonByName("_TitleMenu");
+		return titleMenu != null && titleMenu != nint.Zero;
 	}
 
 	protected unsafe void OnGameTick()
@@ -99,6 +112,8 @@ public partial class TerritoryService
 
 	private int HandleCreateScene(string backgroundPath, uint territoryId, IntPtr p3, uint layerFilterKey, IntPtr p5, int p6, uint contentFinderConditionId)
 	{
+		this.Log.Information($">> {backgroundPath} - {territoryId} - {layerFilterKey}");
+
 		this.isReadingTerritory = true;
 		this.CurrentTerritory = this.Services.GameData.GetLibraryEntry<TerritoryTypeLibraryEntry>(territoryId);
 		this.isReadingTerritory = false;
@@ -140,13 +155,5 @@ public partial class TerritoryService
 			return;
 
 		this.Services.Tick.Dispatch(TickService.Channels.GameTick, () => this.ChangeTerritory(newValue.Territory));
-	}
-
-	private unsafe bool GetIsInTitleScreen()
-	{
-		TickService.VerifyGameTickThread();
-
-		nint? titleMenu = DalamudServices.GameGui?.GetAddonByName("_TitleMenu");
-		return titleMenu != null && titleMenu != nint.Zero;
 	}
 }

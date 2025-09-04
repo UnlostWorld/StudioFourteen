@@ -201,7 +201,7 @@ public partial class SelectionService : ServiceBase
 		if (!this.selections.ContainsKey(typeof(GameObject))
 			|| this.selections[typeof(GameObject)] == null)
 		{
-			if (this.Services.GroupPose.IsGroupPosing)
+			if (this.Services.GroupPose.IsGroupPosing || this.Services.Territory.IsInTitleScreen)
 			{
 				this.Select(this.Services.GameObjects.Get(GroupPoseService.GPoseFirstCharacter), this);
 			}

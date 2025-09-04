@@ -22,6 +22,10 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using StudioFourteen.Input;
+using WpfUtils.Extensions;
+using StudioFourteen.GameData.Library;
+using StudioFourteen.Appearance;
+using StudioFourteen.Scene.GameObjects.Characters;
 
 public partial class StudioService : ServiceBase
 {
@@ -142,6 +146,8 @@ public partial class StudioService : ServiceBase
 		AtkManager.SetUnitVisibility("_TitleLogo", false);
 		AtkManager.SetUnitVisibility("_TitleRevision", false);
 		AtkManager.SetUnitVisibility("_TitleRights", false);
+
+		this.SetupInitialScene().Run();
 	}
 
 	public unsafe override void Detach()
@@ -173,5 +179,27 @@ public partial class StudioService : ServiceBase
 			return;
 
 		this.HideUi = this.hideUiListener.Value > 0.5f || DalamudServices.GameGui.GameUiHidden;
+	}
+
+	private async Task SetupInitialScene()
+	{
+		while (!this.Services.Territory.IsAttached)
+			await Task.Delay(250);
+
+		await TickService.GameTick();
+		if (!this.Services.Territory.GetIsInTitleScreen())
+			return;
+
+		await TickService.GameTick();
+		this.Services.Territory.ChangeTerritory("ffxiv/zon_z1/chr/z1c1/level/z1c1");
+		await Task.Delay(100);
+
+		// grab a random npc to spawn
+		ICharacterAppearance? appearance = this.Services.GameData.GetLibraryEntry<ENpcResidentLibraryEntry>(1039305);
+		if (appearance == null)
+			return;
+
+		Character? character = await this.Services.CharacterLifecycle.CreateAsync(appearance, UpdateSource.Script);
+		this.Services.Selection.Select(character, this);
 	}
 }
