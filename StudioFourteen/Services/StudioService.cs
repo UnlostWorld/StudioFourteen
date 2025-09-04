@@ -21,11 +21,15 @@ using StudioFourteen.AIO;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using StudioFourteen.Input;
 
 public partial class StudioService : ServiceBase
 {
+	private readonly Input0DListener hideUiListener = new(InputAction.HideUi);
+
 	[Notify] private bool isOpen;
 	[Notify] private bool isOpenAndInGPose;
+	[Notify] private bool hideUi;
 
 	public delegate void OnStateChangedDelegate();
 
@@ -56,7 +60,7 @@ public partial class StudioService : ServiceBase
 		{
 			Task.Run(async () =>
 			{
-				while(ServiceManager.Instance.CurrentState <= ServiceManagerBase.States.Starting)
+				while (ServiceManager.Instance.CurrentState <= ServiceManagerBase.States.Starting)
 					await Task.Delay(10);
 
 				this.OpenStudio();
@@ -128,6 +132,9 @@ public partial class StudioService : ServiceBase
 	{
 		base.Attach();
 
+		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
+		this.hideUiListener.Enable();
+
 		if (DalamudServices.GameGui == null)
 			return;
 
@@ -140,6 +147,9 @@ public partial class StudioService : ServiceBase
 	public unsafe override void Detach()
 	{
 		base.Detach();
+
+		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
+		this.hideUiListener.Disable();
 
 		AtkManager.SetUnitVisibility("_TitleMenu", true);
 		AtkManager.SetUnitVisibility("_TitleLogo", true);
@@ -155,5 +165,13 @@ public partial class StudioService : ServiceBase
 		{
 			this.OpenStudio();
 		}
+	}
+
+	private void OnGameTick()
+	{
+		if (DalamudServices.GameGui == null)
+			return;
+
+		this.HideUi = this.hideUiListener.Value > 0.5f || DalamudServices.GameGui.GameUiHidden;
 	}
 }

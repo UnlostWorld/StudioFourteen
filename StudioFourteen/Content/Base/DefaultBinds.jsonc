@@ -190,5 +190,8 @@
 	],
 	"SlowChange": [
 		"Keyboard:CONTROL"
+	],
+	"HideUi": [
+		"Keyboard:SPACE"
 	]
 }

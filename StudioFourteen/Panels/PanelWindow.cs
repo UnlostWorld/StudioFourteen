@@ -560,7 +560,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		if (this.Services.Photos.IsPhotoMode)
 			return this.panel?.VisibilityMode == PanelVisibility.PhotoMode;
 
-		if (DalamudServices.GameGui?.GameUiHidden == true)
+		if (this.Services.Studio.HideUi)
 			return false;
 
 		if (this.Services.Reshade.IsReshadeOverlayOpen)

@@ -79,4 +79,6 @@ public enum InputAction
 
 	FastChange,
 	SlowChange,
+
+	HideUi,
 }
