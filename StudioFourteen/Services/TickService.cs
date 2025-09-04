@@ -27,6 +27,8 @@ using Task = System.Threading.Tasks.Task;
 
 public partial class TickService : ServiceBase
 {
+	public static float DeltaTime = 0.0f;
+
 	private const int TickDelay = 100;
 
 	[ThreadStatic] private static TickService.Channels currentChannel = Channels.None;
@@ -213,6 +215,8 @@ public partial class TickService : ServiceBase
 	{
 		Thread.CurrentThread.Name = "Game Tick";
 
+		DeltaTime = pFramework->FrameDeltaTime;
+
 		this.PerformTick(Channels.EarlyGameTick);
 		this.PerformTick(Channels.GameTick);
 		this.PerformTick(Channels.LateGameTick);
@@ -226,6 +230,7 @@ public partial class TickService : ServiceBase
 		while (this.shouldTick && !ServiceManager.ShutdownRequested)
 		{
 			Thread.Sleep(TickDelay);
+			DeltaTime = TickDelay / 1000.0f;
 			this.PerformTick(Channels.StudioTick);
 		}
 	}

@@ -40,6 +40,11 @@ public enum InputAction
 	SaveAs,
 	InvokeQuickSearch,
 
+	CharacterController_Forwards,
+	CharacterController_Backwards,
+	CharacterController_Left,
+	CharacterController_Right,
+
 	FreeCamera_MoveLeft,
 	FreeCamera_MoveRight,
 	FreeCamera_MoveUp,

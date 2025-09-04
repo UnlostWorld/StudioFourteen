@@ -8,6 +8,19 @@
 	"Save": [
 		"Keyboard:S + Keyboard:CONTROL"
 	],
+	// Character Controller
+	"CharacterController_Forwards": [
+		"Keyboard:W"
+	],
+	"CharacterController_Backwards": [
+		"Keyboard:S"
+	],
+	"CharacterController_Left": [
+		"Keyboard:A"
+	],
+	"CharacterController_Right": [
+		"Keyboard:D"
+	],
 	"FreeCamera_YawLeft": [
 		"Keyboard:A + Keyboard:SHIFT"
 	],

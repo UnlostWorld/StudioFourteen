@@ -26,6 +26,7 @@ using WpfUtils.Extensions;
 using StudioFourteen.GameData.Library;
 using StudioFourteen.Appearance;
 using StudioFourteen.Scene.GameObjects.Characters;
+using StudioFourteen.Controllers;
 
 public partial class StudioService : ServiceBase
 {
@@ -200,6 +201,12 @@ public partial class StudioService : ServiceBase
 			return;
 
 		Character? character = await this.Services.CharacterLifecycle.CreateAsync(appearance, UpdateSource.Script);
+
+		if (character == null)
+			return;
+
 		this.Services.Selection.Select(character, this);
+		CharacterController controller = character.SetController<CharacterController>();
+		controller.Activate();
 	}
 }

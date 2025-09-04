@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using PropertyChanged.SourceGenerator;
+using StudioFourteen.Controllers;
 using StudioFourteen.DragAndDrop;
 using StudioFourteen.Mvm;
 using StudioFourteen.Rendering.Draw.Gizmos;
@@ -39,6 +40,8 @@ public abstract partial class SceneObjectBase : ViewModel, IDisposable
 	[Notify(Setter.Private)] private bool isHovered;
 	[Notify(Setter.Private)] private bool isSelected;
 
+	private SceneObjectControllerBase? controller;
+
 	public SceneObjectBase()
 	{
 		this.ResetCommand = new(this.Reset);
@@ -57,6 +60,8 @@ public abstract partial class SceneObjectBase : ViewModel, IDisposable
 		{
 			gizmo.Disable();
 		}
+
+		this.controller?.Dispose();
 	}
 
 	public virtual void Reset()
@@ -83,4 +88,15 @@ public abstract partial class SceneObjectBase : ViewModel, IDisposable
 	}
 
 	public virtual bool IsHit(HitInfo hitInfo) => false;
+
+	public T SetController<T>()
+		where T : SceneObjectControllerBase
+	{
+		this.controller = Activator.CreateInstance(typeof(T), [this]) as SceneObjectControllerBase;
+
+		if (this.controller == null || this.controller is not T tController)
+			throw new Exception("Failed to set object controller");
+
+		return tController;
+	}
 }
