@@ -207,7 +207,8 @@ public class RotationGizmo : TransformGizmoBase
 			float mag = delta.Length();
 			delta = Vector2.Normalize(delta);
 
-			float dot = Vector2.Dot(delta, -this.dragStartScreenNormal);
+			float dot = Vector2.Dot(delta, this.dragStartScreenNormal);
+
 			float dragDelta = (float)(mag * dot);
 			float angleChange = dragDelta / 50;
 			angleChange *= this.Sensitivity;

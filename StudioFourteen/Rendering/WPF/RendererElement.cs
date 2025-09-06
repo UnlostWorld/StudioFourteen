@@ -106,6 +106,7 @@ public class WpfInput : RendererInput
 	private Vector2 mousePosition = Vector2.Zero;
 	private Vector2 dragDelta = Vector2.Zero;
 	private Point startPosition;
+	private Point lastPosition;
 
 	public WpfInput(UIElement element)
 	{
@@ -118,6 +119,7 @@ public class WpfInput : RendererInput
 	protected void OnMouseDown(object sender, MouseButtonEventArgs e)
 	{
 		this.startPosition = CursorUtility.GetPosition();
+		this.lastPosition = this.startPosition;
 		this.mouseState = Input.InputStates.Activated;
 		this.dragDelta = Vector2.Zero;
 
@@ -135,6 +137,8 @@ public class WpfInput : RendererInput
 
 		this.mouseState = Input.InputStates.Deactivated;
 		this.dragDelta = Vector2.Zero;
+
+		CursorUtility.SetPosition(this.startPosition);
 
 		FrameworkElement? element = sender as FrameworkElement;
 		if (element == null)
@@ -162,14 +166,20 @@ public class WpfInput : RendererInput
 		{
 			Point newPos = CursorUtility.GetPosition();
 
-			if (newPos != this.startPosition)
+			if (newPos != this.lastPosition)
 			{
-				this.dragDelta = (this.startPosition.ToVector2() - newPos.ToVector2()) / 2.0f;
+				this.dragDelta = (this.lastPosition.ToVector2() - newPos.ToVector2()) / 2.0f;
 
-				this.startPosition = newPos;
-
-				// ONLY IF MOUSE!
-				////CursorUtility.SetPosition(this.startPosition);
+				// With a tablet stylus, don't try to move the mouse cursor back,
+				// let the user keep moving it further away.
+				if (this.Services.Tablet.PenPressure > 0)
+				{
+					this.lastPosition = newPos;
+				}
+				else
+				{
+					CursorUtility.SetPosition(this.startPosition);
+				}
 			}
 		}
 		else
