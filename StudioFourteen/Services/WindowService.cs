@@ -439,15 +439,6 @@ public partial class WindowService : ServiceBase
 
 		PInvoke.ScreenToClient((HWND)this.XivWindowHwnd.Value, ref position);
 
-		// don't process mouse if its outside the xiv window.
-		Rect xivSize = this.GetXivWindowClientSize();
-
-		if (position.X < 0 || position.X > xivSize.Width)
-			return null;
-
-		if (position.Y < 0 || position.Y > xivSize.Height)
-			return null;
-
 		return new(position.X, position.Y);
 	}
 

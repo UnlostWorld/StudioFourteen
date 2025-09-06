@@ -28,14 +28,6 @@ using StudioFourteen.Launcher;
 using StudioFourteen.Posing;
 using StudioFourteen.Animation;
 
-#if !BUILD
-public partial class AioWindow : PanelWindow
-{
-	public TaskBarControl TaskBar = null!;
-	public PanelHost PanelArea = null!;
-}
-#endif
-
 public partial class AioWindow : PanelWindow
 {
 	private static AioWindow? instance;

@@ -131,6 +131,8 @@ public class WpfInput : RendererInput
 
 	protected void OnMouseUp(object sender, MouseButtonEventArgs e)
 	{
+		CursorUtility.SetCursorVisible(true);
+
 		this.mouseState = Input.InputStates.Deactivated;
 		this.dragDelta = Vector2.Zero;
 
@@ -139,7 +141,6 @@ public class WpfInput : RendererInput
 			return;
 
 		element.ReleaseMouseCapture();
-		CursorUtility.SetCursorVisible(true);
 	}
 
 	protected void OnMouseLeave(object sender, MouseEventArgs e)
@@ -164,7 +165,11 @@ public class WpfInput : RendererInput
 			if (newPos != this.startPosition)
 			{
 				this.dragDelta = (this.startPosition.ToVector2() - newPos.ToVector2()) / 2.0f;
-				CursorUtility.SetPosition(this.startPosition);
+
+				this.startPosition = newPos;
+
+				// ONLY IF MOUSE!
+				////CursorUtility.SetPosition(this.startPosition);
 			}
 		}
 		else
