@@ -57,7 +57,8 @@
 							<ColumnDefinition Width="1*" />
 						</Grid.ColumnDefinitions>
 
-						<Border Grid.Column="0" Width="128" Style="{DynamicResource WpfUtilsControlBorder}" />
+						<!--<Border Grid.Column="0" Width="128"
+							Style="{DynamicResource WpfUtilsControlBorder}" />-->
 
 						<body:BodySimpleView
 							x:Name="BodyView"
@@ -191,8 +192,8 @@
 							<RowDefinition />
 						</Grid.RowDefinitions>
 
-						<Border Grid.RowSpan="3" Grid.Column="0" Width="128"
-							Style="{DynamicResource WpfUtilsControlBorder}" />
+						<!--<Border Grid.RowSpan="3" Grid.Column="0" Width="128"
+							Style="{DynamicResource WpfUtilsControlBorder}" />-->
 
 						<pose:SimpleView
 							x:Name="FaceView"
