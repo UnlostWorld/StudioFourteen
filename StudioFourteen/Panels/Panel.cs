@@ -194,7 +194,8 @@ public partial class Panel : ContentControl, IAutoNotify
 
 	protected virtual void OnClosed()
 	{
-		this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTickSafe);
+		if (!ServiceManager.ShutdownRequested)
+			this.Services.Tick.Remove(TickService.Channels.GameTick, this.OnGameTickSafe);
 
 		AutoPropertyNotifyService.Remove(this);
 		this.GetContext().OnPanelClosed(this, this.isMinimized);
