@@ -15,10 +15,10 @@
 
 namespace StudioFourteen.Animation;
 
-using System.Collections.ObjectModel;
 using System.Windows;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Panels;
+using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Tags;
 using WpfUtils.Extensions;
 
@@ -41,8 +41,15 @@ public partial class AnimationPanel : CharacterPanelBase
 		this.Controller?.ResetAsync().Run();
 	}
 
-	protected override void OnTargetChanged(int objectTableIndex)
+	protected override void OnTargetChanged(Character? character)
 	{
-		this.Controller = this.Services.Animations.GetController(objectTableIndex);
+		if (character == null)
+		{
+			this.controller = null;
+		}
+		else
+		{
+			this.Controller = this.Services.Animations.GetController(character.ObjectIndex);
+		}
 	}
 }

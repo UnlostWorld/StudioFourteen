@@ -33,6 +33,7 @@ public abstract partial class CharacterPanelBase : Panel
 	protected override void OnOpened()
 	{
 		this.characterSelectionListener.Enable();
+		this.OnSelectionChanged(null, this.characterSelectionListener.Current, this);
 		base.OnOpened();
 	}
 
@@ -42,12 +43,13 @@ public abstract partial class CharacterPanelBase : Panel
 		base.OnClosed();
 	}
 
-	protected virtual void OnTargetChanged(int objectTableIndex)
+	protected virtual void OnTargetChanged(Character? newTarget)
 	{
 	}
 
 	private void OnSelectionChanged(Character? oldSelection, Character? newSelection, object? selectionSource)
 	{
 		this.Character = newSelection;
+		this.OnTargetChanged(newSelection);
 	}
 }

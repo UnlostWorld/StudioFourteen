@@ -220,7 +220,7 @@ public partial class AnimationService : ServiceBase
 			}
 			else
 			{
-				 this.CurrentBaseTimelineKey = string.Empty;
+				this.CurrentBaseTimelineKey = string.Empty;
 			}
 
 			if (this.currentAnimation != null)
@@ -232,6 +232,10 @@ public partial class AnimationService : ServiceBase
 				{
 					this.currentAnimation = null;
 				}
+			}
+			else
+			{
+				this.IsPlayingAnimation = false;
 			}
 		}
 
