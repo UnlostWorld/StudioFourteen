@@ -27,7 +27,6 @@ using StudioFourteen.Library;
 using StudioFourteen.Posing.Shared;
 using StudioFourteen.Scene;
 using StudioFourteen.Scene.GameObjects;
-using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Scene.GameObjects.Characters.Skeletons;
 using StudioFourteen.Selection;
 using WpfUtils;
@@ -38,13 +37,13 @@ using Panel = StudioFourteen.Panels.Panel;
 
 public partial class PosePanel : Panel
 {
-	private readonly SelectionListener<GameObject> gameObjectSelectionListener;
+	private readonly SelectionListener<Skeleton> skeletonSelectionListener;
 	private readonly SelectionListener<TransformSceneObjectBase> sceneObjectSelectionListener;
 
 	private readonly FuncQueue showTooltipQueue;
 	private SceneObjectBase? nextHover;
 
-	[Notify] private GameObject? gameObject;
+	[Notify] private Skeleton? skeleton;
 	[Notify] private string revertTooltip = string.Empty;
 	[Notify] private SceneObjectBase? selection;
 	[Notify] private SceneObjectBase? hover;
@@ -53,12 +52,10 @@ public partial class PosePanel : Panel
 
 	public PosePanel()
 	{
-		this.gameObjectSelectionListener = new(this.OnGameObjectSelectionChanged);
+		this.skeletonSelectionListener = new(this.OnSkeletonSelectionChanged);
 		this.sceneObjectSelectionListener = new(this.OnSceneSelectionChanged);
 		this.showTooltipQueue = new(this.ShowTooltip, 500);
 	}
-
-	public Skeleton? Skeleton => this.GameObject as Skeleton;
 
 	public int SelectedTab
 	{
@@ -94,11 +91,11 @@ public partial class PosePanel : Panel
 	{
 		base.OnOpened();
 
-		this.gameObjectSelectionListener.Enable();
+		this.skeletonSelectionListener.Enable();
 		this.sceneObjectSelectionListener.Enable();
 		this.Services.Selection.HoverChanged += this.OnSelectionHoverChanged;
 
-		this.GameObject = this.gameObjectSelectionListener.Current;
+		this.Skeleton = this.skeletonSelectionListener.Current;
 		this.Selection = this.sceneObjectSelectionListener.Current;
 	}
 
@@ -106,18 +103,20 @@ public partial class PosePanel : Panel
 	{
 		base.OnClosed();
 
+		if (!ServiceManager.ShutdownRequested)
+			this.Services.Selection.HoverChanged -= this.OnSelectionHoverChanged;
+
 		this.IsHoverTooltipOpen = false;
-		this.gameObjectSelectionListener.Disable();
+		this.skeletonSelectionListener.Disable();
 		this.sceneObjectSelectionListener.Disable();
-		this.Services.Selection.HoverChanged -= this.OnSelectionHoverChanged;
 	}
 
-	protected virtual void OnGameObjectSelectionChanged(
-		GameObject? oldSelection,
-		GameObject? newSelection,
+	protected virtual void OnSkeletonSelectionChanged(
+		Skeleton? oldSelection,
+		Skeleton? newSelection,
 		object? source)
 	{
-		this.GameObject = newSelection;
+		this.Skeleton = newSelection;
 	}
 
 	private void OnSceneSelectionChanged(
@@ -167,18 +166,18 @@ public partial class PosePanel : Panel
 
 	private void OnBackgroundMouseDown(object sender, MouseButtonEventArgs e)
 	{
-		if (this.GameObject == null)
+		if (this.Skeleton == null)
 			return;
 
-		this.Services.Selection.Select(this.GameObject, this);
+		this.Services.Selection.Select(this.Skeleton, this);
 	}
 
 	private void OnClearClicked(object sender, RoutedEventArgs e)
 	{
-		if (this.GameObject == null)
+		if (this.Skeleton == null)
 			return;
 
-		this.Services.Selection.Select(this.GameObject, this);
+		this.Services.Selection.Select(this.Skeleton, this);
 	}
 
 	private void OnReferenceClicked(object sender, RoutedEventArgs e)

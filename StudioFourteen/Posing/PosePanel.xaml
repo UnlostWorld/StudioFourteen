@@ -66,7 +66,7 @@
 							Grid.Column="1"
 							Margin="10"
 							FlipSides="{Binding FlipSides}"
-							GameObject="{Binding GameObject}"
+							GameObject="{Binding Skeleton}"
 							UpdateWithAppearance="True" />
 
 						<pose:SimpleView
@@ -75,7 +75,7 @@
 							Grid.Column="2"
 							Margin="10"
 							FlipSides="{Binding FlipSides}"
-							GameObject="{Binding GameObject}"
+							GameObject="{Binding Skeleton}"
 							LayoutName="Clothes" />
 
 						<TextBlock
@@ -141,21 +141,21 @@
 								x:Name="TailView"
 								Grid.Row="0"
 								FlipSides="{Binding FlipSides}"
-								GameObject="{Binding GameObject}"
+								GameObject="{Binding Skeleton}"
 								LayoutName="Tail" />
 
 							<pose:SimpleView
 								x:Name="PenisView"
 								Grid.Row="1"
 								FlipSides="{Binding FlipSides}"
-								GameObject="{Binding GameObject}"
+								GameObject="{Binding Skeleton}"
 								LayoutName="Penis" />
 
 							<pose:SimpleView
 								x:Name="VaginaView"
 								Grid.Row="2"
 								FlipSides="{Binding FlipSides}"
-								GameObject="{Binding GameObject}"
+								GameObject="{Binding Skeleton}"
 								LayoutName="Vagina" />
 						</Grid>
 					</Grid>
@@ -172,7 +172,7 @@
 							x:Name="HandsView"
 							Grid.Row="0"
 							FlipSides="{Binding FlipSides}"
-							GameObject="{Binding GameObject}"
+							GameObject="{Binding GSkeletonameObject}"
 							LayoutName="Hands" />
 					</Grid>
 				</pose:PoseTabItem>
@@ -201,7 +201,7 @@
 							Grid.Column="1"
 							Grid.ColumnSpan="3"
 							FlipSides="{Binding FlipSides}"
-							GameObject="{Binding GameObject}"
+							GameObject="{Binding Skeleton}"
 							LayoutName="Face" />
 
 						<pose:SimpleView
@@ -209,7 +209,7 @@
 							Grid.Row="2"
 							Grid.Column="3"
 							FlipSides="{Binding FlipSides}"
-							GameObject="{Binding GameObject}"
+							GameObject="{Binding Skeleton}"
 							LayoutName="Tongue" />
 					</Grid>
 				</pose:PoseTabItem>
@@ -218,7 +218,7 @@
 					<pose:SimpleView
 						x:Name="DiabolosView"
 						FlipSides="{Binding FlipSides}"
-						GameObject="{Binding GameObject}"
+						GameObject="{Binding Skeleton}"
 						LayoutName="DiabolosWings" />
 				</pose:PoseTabItem>
 
@@ -226,9 +226,9 @@
 					<ScrollViewer>
 						<StackPanel>
 							<body:MatrixView
-								GameObject="{Binding GameObject}" />
+								GameObject="{Binding Skeleton}" />
 							<hands:MatrixView
-								GameObject="{Binding GameObject}" />
+								GameObject="{Binding Skeleton}" />
 						</StackPanel>
 					</ScrollViewer>
 				</pose:PoseTabItem>
@@ -276,7 +276,8 @@
 
 				<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
 
-					<ToggleButton Content="{DynamicResource LOC_Pose_Enable}" IsChecked="{Binding GameObject.EnablePosing}" />
+					<ToggleButton Content="{DynamicResource LOC_Pose_Enable}"
+						IsChecked="{Binding Skeleton.EnablePosing}" />
 
 					<ToggleButton
 						Width="100"

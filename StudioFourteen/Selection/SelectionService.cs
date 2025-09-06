@@ -240,6 +240,9 @@ public abstract class SelectionListenerBase
 
 	public void Disable()
 	{
+		if (ServiceManager.ShutdownRequested)
+			return;
+
 		ServiceManager.Instance.Selection.SelectionChanged -= this.OnSelectionChanged;
 	}
 
@@ -262,7 +265,7 @@ public class SelectionListener<T>(Action<T?, T?, object?> callback) : SelectionL
 		T? oldT = oldSelection as T;
 		T? newT = newSelection as T;
 
-		if (oldT != null || newT != null)
+		if (newT != null)
 		{
 			callback.Invoke(oldT, newT, selectionSource);
 		}
