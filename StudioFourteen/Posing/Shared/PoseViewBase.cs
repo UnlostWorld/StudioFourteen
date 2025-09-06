@@ -317,16 +317,22 @@ public partial class PoseViewBase : View
 
 	protected virtual void OnSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? source)
 	{
-		this.Dispatcher.Invoke(() =>
+		try
 		{
-			if (this.controls != null)
+			this.Dispatcher.BeginInvoke(() =>
 			{
-				foreach(SkeletonBoneControl control in this.controls)
+				if (this.controls != null)
 				{
-					control.OnSelectionChanged(oldSelection, newSelection, source);
+					foreach (SkeletonBoneControl control in this.controls)
+					{
+						control.OnSelectionChanged(oldSelection, newSelection, source);
+					}
 				}
-			}
-		});
+			});
+		}
+		catch (TaskCanceledException)
+		{
+		}
 	}
 
 	protected virtual void OnHoverChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? source)
