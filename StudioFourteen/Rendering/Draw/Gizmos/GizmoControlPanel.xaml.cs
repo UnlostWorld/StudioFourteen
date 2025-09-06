@@ -74,12 +74,15 @@ public partial class GizmoControlPanel : UserControl
 
 		if (this.Gizmos.Contains(gizmo))
 		{
-			this.Dispatcher.Invoke(() => this.Gizmos.Remove(gizmo));
-
-			if (this.gizmoLookup[gizmoType].Count > 0)
+			this.Dispatcher.BeginInvoke(() =>
 			{
-				this.Dispatcher.Invoke(() => this.Gizmos.Add(this.gizmoLookup[gizmoType][0]));
-			}
+				this.Gizmos.Remove(gizmo);
+
+				if (this.gizmoLookup[gizmoType].Count > 0)
+				{
+					this.Gizmos.Add(this.gizmoLookup[gizmoType][0]);
+				}
+			});
 		}
 	}
 }
