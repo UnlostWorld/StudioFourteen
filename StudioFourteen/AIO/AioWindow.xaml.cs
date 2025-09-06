@@ -18,15 +18,23 @@ namespace StudioFourteen.AIO;
 using StudioFourteen.Panels;
 using System.Threading.Tasks;
 using System.Windows;
-using WpfUtils.Windows;
 using DependencyPropertyGenerator;
 using System;
 using WpfUtils;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Environment;
-using StudioFourteen.Scene.GameObjects.Characters;
-using StudioFourteen.Scene.Cameras;
 using StudioFourteen.Selection;
+using StudioFourteen.Launcher;
+using StudioFourteen.Posing;
+using StudioFourteen.Animation;
+
+#if !BUILD
+public partial class AioWindow : PanelWindow
+{
+	public TaskBarControl TaskBar = null!;
+	public PanelHost PanelArea = null!;
+}
+#endif
 
 [DependencyProperty<bool>("IsMenuOpen")]
 public partial class AioWindow : PanelWindow
@@ -35,11 +43,15 @@ public partial class AioWindow : PanelWindow
 
 	[Notify] private Panel? currentPanel;
 	[Notify] private string? currentTitle;
+	[Notify] private bool showTargetBar = false;
 
 	public static void OpenAio()
 	{
 		if (instance != null)
+		{
+			instance.Dispatcher?.Invoke(instance.Activate);
 			return;
+		}
 
 		Task.Run(async () =>
 		{
@@ -62,7 +74,7 @@ public partial class AioWindow : PanelWindow
 		if (instance == null)
 			return;
 
-		instance.Dispatcher?.Invoke(instance.Close);
+		instance.Dispatcher?.BeginInvoke(() => instance.Close());
 	}
 
 	public static bool GetIsOpen()
@@ -82,6 +94,7 @@ public partial class AioWindow : PanelWindow
 		if (this.CurrentPanel != null)
 			currentTitle += " - " + this.Services.Panels.GetPanelTitle(this.CurrentPanel.GetType());
 
+		this.ShowTargetBar = this.currentPanel is PosePanel || this.currentPanel is AnimationPanel;
 		this.CurrentTitle = currentTitle;
 
 		return this.CurrentPanel;
@@ -99,20 +112,13 @@ public partial class AioWindow : PanelWindow
 			await Task.Delay(250);
 			await this.MainThread();
 
-			////this.TaskBar.AddEntry<Marketplace.MarketplacePanel>("Marketplace");
+			this.TaskBar.AddEntry<Marketplace.MarketplacePanel>();
 			this.TaskBar.AddEntry<Library.LibraryPanel>();
-			this.TaskBar.AddEntry<CameraPanel>();
+			this.TaskBar.AddEntry<InspectorPanel>();
 			this.TaskBar.AddEntry<EnvironmentPanel>();
-			this.TaskBar.AddEntry<CharacterPanel>();
 			this.TaskBar.AddEntry<Posing.PosePanel>();
-			////this.TaskBar.AddEntry<Library.LibraryWindow>("Lighting");
-			////this.TaskBar.AddEntry<Library.LibraryWindow>("Furniture");
-			////this.TaskBar.AddEntry<Library.LibraryWindow>("Crowds");
-			////this.TaskBar.AddEntry<Library.LibraryWindow>("Effects");
 			this.TaskBar.AddEntry<Animation.AnimationPanel>();
-			////this.TaskBar.AddEntry<Library.LibraryWindow>("Sequencer");
 			this.TaskBar.AddEntry<Photos.PhotoPanel>();
-			this.TaskBar.AddEntry<History.HistoryPanel>();
 			this.TaskBar.AddEntry<Settings.SettingsPanel>();
 		});
 	}

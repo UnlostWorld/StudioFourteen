@@ -22,6 +22,7 @@ using System.Windows.Input;
 using StudioFourteen.Settings;
 using System.Runtime.CompilerServices;
 using System;
+using StudioFourteen.AIO;
 
 [DependencyProperty<bool>("IsMenuOpen")]
 [DependencyProperty<bool>("IsRightSide")]
@@ -74,9 +75,16 @@ public partial class LauncherWindow : PanelWindow
 
 	private void OnLaunchClicked(object sender, RoutedEventArgs e)
 	{
-		if (!this.IsMenuOpen)
+		if (this.Services.Settings.Current.AllInOne == SettingsService.Configuration.AioModes.Always)
 		{
-			this.IsMenuOpen = true;
+			AioWindow.OpenAio();
+		}
+		else
+		{
+			if (!this.IsMenuOpen)
+			{
+				this.IsMenuOpen = true;
+			}
 		}
 	}
 
@@ -87,7 +95,7 @@ public partial class LauncherWindow : PanelWindow
 
 	private void OnStudioStateChanged()
 	{
-		this.Dispatcher.Invoke(() =>
+		this.Dispatcher.BeginInvoke(() =>
 		{
 			this.IsStudioOpen = this.Services.Studio.IsOpen;
 			this.IsButtonVisible = !this.Services.Settings.Current.HideLauncherButton || this.Services.Studio.IsOpen;

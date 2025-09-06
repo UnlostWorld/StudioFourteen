@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Launcher;
 
+using System.Threading.Tasks;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Panels;
 using StudioFourteen.Rendering.Draw.Gizmos;
@@ -73,9 +74,15 @@ public partial class ToolBarPanel : Panel
 
 	private void OnSettingsOpenChanged(string settingName, object? newValue)
 	{
-		this.Dispatcher.Invoke(() =>
+		try
 		{
-			this.AllowMouseCapture = this.Settings.AllowMouseCapture;
-		});
+			this.Dispatcher.Invoke(() =>
+			{
+				this.AllowMouseCapture = this.Settings.AllowMouseCapture;
+			});
+		}
+		catch (TaskCanceledException)
+		{
+		}
 	}
 }

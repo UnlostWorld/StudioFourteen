@@ -185,7 +185,6 @@ public class PanelService : ServiceBase
 
 	private void CheckToolBar()
 	{
-		bool enableToolbar = this.Settings.AllInOne != SettingsService.Configuration.AioModes.Always;
-		this.GamePanels.SetIsOpen<ToolBarPanel>(enableToolbar, false);
+		this.GamePanels.SetIsOpen<ToolBarPanel>(true, false);
 	}
 }

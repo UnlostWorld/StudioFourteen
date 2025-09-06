@@ -91,16 +91,35 @@ public partial class TaskBarControl : Control
 		{
 			this.OnStudioOpening();
 		}
+
+		if (this.Context == this.Services.Panels.AioPanels)
+		{
+			this.IsOpen = true;
+		}
 	}
 
 	private void OnStudioOpening()
 	{
-		this.Dispatcher.Invoke(() => this.IsOpen = true);
+		this.Dispatcher.BeginInvoke(() =>
+		{
+			if (this.Context == this.Services.Panels.GamePanels
+				&& this.Settings.AllInOne != SettingsService.Configuration.AioModes.Always)
+			{
+				this.IsOpen = true;
+			}
+		});
 	}
 
 	private void OnStudioClosing()
 	{
-		this.Dispatcher.Invoke(() => this.IsOpen = false);
+		this.Dispatcher.BeginInvoke(() =>
+		{
+			if (this.Context == this.Services.Panels.GamePanels
+				&& this.Settings.AllInOne != SettingsService.Configuration.AioModes.Always)
+			{
+				this.IsOpen = false;
+			}
+		});
 	}
 
 	private void OnPanelOpened(Panel panel)

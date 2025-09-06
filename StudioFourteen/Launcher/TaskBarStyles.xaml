@@ -15,11 +15,16 @@
 	<BooleanToVisibilityConverter x:Key="B2V" />
 
 	<ControlTemplate x:Key="TaskBarButtonTemplate" TargetType="{x:Type local:TaskBarButtonControl}">
-		<Grid x:Name="OuterGrid" Height="32">
+		<Grid x:Name="OuterGrid">
+
+			<Grid.RenderTransform>
+				<ScaleTransform ScaleX="1" ScaleY="1" x:Name="OuterGridScale" />
+			</Grid.RenderTransform>
+
 			<Grid
 				x:Name="MainGrid"
-				Height="32"
-				Width="32"
+				Height="{Binding ActualWidth, ElementName=OuterGrid}"
+				Width="{Binding ActualWidth, ElementName=OuterGrid}"
 				TextBlock.Foreground="{DynamicResource ForegroundLightBrush}">
 
 				<Border
@@ -100,10 +105,10 @@
 					<BeginStoryboard>
 						<Storyboard>
 							<DoubleAnimation
-								Storyboard.TargetName="OuterGrid"
-								Storyboard.TargetProperty="Height"
+								Storyboard.TargetName="OuterGridScale"
+								Storyboard.TargetProperty="ScaleY"
 								From="0"
-								To="32"
+								To="1"
 								Duration="00:00:00.150">
 								<DoubleAnimation.EasingFunction>
 									<SineEase EasingMode="EaseOut" />
@@ -123,9 +128,9 @@
 					<BeginStoryboard>
 						<Storyboard>
 							<DoubleAnimation
-								Storyboard.TargetName="OuterGrid"
-								Storyboard.TargetProperty="Height"
-								From="32"
+								Storyboard.TargetName="OuterGridScale"
+								Storyboard.TargetProperty="ScaleY"
+								From="1"
 								To="0"
 								Duration="00:00:00.250">
 								<DoubleAnimation.EasingFunction>

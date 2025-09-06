@@ -81,12 +81,12 @@
 	</Style>
 
 	<ControlTemplate TargetType="{x:Type local:LauncherEntry}" x:Key="IconLauncherEntryTemplate">
-		<ToggleButton
+		<Button
 			Height="Auto"
 			HorizontalContentAlignment="Stretch"
 			VerticalContentAlignment="Stretch"
-			IsChecked="{Binding IsPanelOpen, RelativeSource={RelativeSource Mode=TemplatedParent}}"
-			Style="{DynamicResource WpfUtilsIconToggleButton}"
+			Command="{Binding OpenPanel, RelativeSource={RelativeSource Mode=TemplatedParent}}"
+			Style="{DynamicResource WpfUtilsIconButton}"
 			ToolTip="{TemplateBinding Description}"
 			Content="{TemplateBinding Icon}" />
 	</ControlTemplate>

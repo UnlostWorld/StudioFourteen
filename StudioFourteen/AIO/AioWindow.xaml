@@ -8,6 +8,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
 	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	xmlns:selection="clr-namespace:StudioFourteen.Selection"
 	Title="{Binding CurrentTitle}"
 	Width="900"
 	Height="700"
@@ -16,7 +17,7 @@
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	IsEmbedded="False"
-	Topmost="False"
+	Topmost="True"
 	mc:Ignorable="d"
 	RememberState="False"
 	x:Name="AioWindowMain">
@@ -29,15 +30,9 @@
 		</Grid.RowDefinitions>
 
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="50" />
+			<ColumnDefinition Width="64" />
 			<ColumnDefinition />
 		</Grid.ColumnDefinitions>
-
-		<!--<panels:PanelHost
-			Grid.Row="0"
-			Grid.Column="1"
-			Context="{Binding Context}"
-			PanelType="{x:Type targets:TargetsPanel}" />-->
 
 		<launcher:TaskBarControl
 			x:Name="TaskBar"
@@ -46,6 +41,13 @@
 			Grid.Column="0"
 			HideBackground="True"
 			Context="{Binding Context}" />
+
+		<panels:PanelHost
+			Visibility="{Binding ShowTargetBar, Converter={StaticResource B2V}}"
+			Grid.Row="0"
+			Grid.Column="1"
+			Context="{Binding Context}"
+			PanelType="{x:Type selection:SelectionPanel}" />
 
 		<panels:PanelHost
 			x:Name="PanelArea"
