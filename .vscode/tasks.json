@@ -12,7 +12,6 @@
 				"-p:platform=x64",
 				"-p:configuration=Debug",
 				"-Restore",
-				"/p:DefineConstants='BUILD DALAMUD'",
 				"/consoleloggerparameters:'ForceNoAlign;NoSummary'",
 				"/verbosity:quiet"
 			],
