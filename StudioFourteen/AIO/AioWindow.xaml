@@ -23,38 +23,53 @@
 	x:Name="AioWindowMain">
 
 	<Grid Margin="1">
-
-		<Grid.RowDefinitions>
-			<RowDefinition Height="Auto" />
-			<RowDefinition />
-		</Grid.RowDefinitions>
-
 		<Grid.ColumnDefinitions>
-			<ColumnDefinition Width="64" />
+			<ColumnDefinition Width="48" />
 			<ColumnDefinition />
 		</Grid.ColumnDefinitions>
 
-		<launcher:TaskBarControl
-			x:Name="TaskBar"
-			Grid.Row="0"
-			Grid.RowSpan="2"
-			Grid.Column="0"
-			HideBackground="True"
-			Context="{Binding Context}" />
+		<Grid Grid.Column="0">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition />
+			</Grid.RowDefinitions>
 
-		<panels:PanelHost
-			Visibility="{Binding ShowTargetBar, Converter={StaticResource B2V}}"
-			Grid.Row="0"
-			Grid.Column="1"
-			Context="{Binding Context}"
-			PanelType="{x:Type selection:SelectionPanel}" />
+			<ToggleButton
+				Height="42"
+				Margin="3,0,3,3"
+				Style="{DynamicResource WpfUtilsIconToggleButton}"
+				IsChecked="{Binding IsStudioAttached}"
+				HorizontalContentAlignment="Stretch"
+				Content="{DynamicResource ICON_Launcher_Start}" />
 
-		<panels:PanelHost
-			x:Name="PanelArea"
-			Context="{Binding Context}"
-			Grid.Row="1"
-			Grid.Column="1"
-			Margin="0,4,0,0" />
+			<launcher:TaskBarControl
+				IsEnabled="{Binding IsStudioAttached}"
+				x:Name="TaskBar"
+				Grid.Row="1"
+				HideBackground="True"
+				Context="{Binding Context}" />
+		</Grid>
+
+		<Grid Grid.Column="1">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="Auto" />
+				<RowDefinition />
+			</Grid.RowDefinitions>
+
+			<panels:PanelHost
+				Visibility="{Binding ShowTargetBar, Converter={StaticResource B2V}}"
+				Grid.Row="0"
+				Grid.Column="1"
+				Context="{Binding Context}"
+				PanelType="{x:Type selection:SelectionPanel}" />
+
+			<panels:PanelHost
+				x:Name="PanelArea"
+				Context="{Binding Context}"
+				Grid.Row="1"
+				Grid.Column="1"
+				Margin="0,4,0,0" />
+		</Grid>
 
 	</Grid>
 </panels:PanelWindow>

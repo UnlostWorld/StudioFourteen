@@ -36,7 +36,6 @@ public partial class AioWindow : PanelWindow
 }
 #endif
 
-[DependencyProperty<bool>("IsMenuOpen")]
 public partial class AioWindow : PanelWindow
 {
 	private static AioWindow? instance;
@@ -44,6 +43,7 @@ public partial class AioWindow : PanelWindow
 	[Notify] private Panel? currentPanel;
 	[Notify] private string? currentTitle;
 	[Notify] private bool showTargetBar = false;
+	[Notify] private bool isStudioAttached = false;
 
 	public static void OpenAio()
 	{
@@ -100,11 +100,17 @@ public partial class AioWindow : PanelWindow
 		return this.CurrentPanel;
 	}
 
+	protected override bool GetIsUiVisibleAndOpen() => true;
 	protected override bool GetIsUiVisible() => true;
 
 	protected override void OnOpened()
 	{
 		this.CurrentTitle = StudioFourteen.Resources.Find("LOC_AIO_Title", "Studio Fourteen");
+		this.IsStudioAttached = this.Services.Studio.IsAttached;
+
+		this.Services.Studio.Opening += this.OnStudioOpening;
+		this.Services.Studio.Closing += this.OnStudioClosing;
+
 		base.OnOpened();
 
 		Task.Run(async () =>
@@ -125,15 +131,34 @@ public partial class AioWindow : PanelWindow
 
 	protected override void OnClosed()
 	{
+		this.Services.Studio.Opening -= this.OnStudioOpening;
+		this.Services.Studio.Closing -= this.OnStudioClosing;
+
 		base.OnClosed();
 		instance = null;
 	}
 
-	private void OnLaunchClicked(object sender, RoutedEventArgs e)
+	private void OnStudioOpening()
 	{
-		if (!this.IsMenuOpen)
+		this.IsStudioAttached = true;
+	}
+
+	private void OnStudioClosing()
+	{
+		this.IsStudioAttached = false;
+	}
+
+	private void OnIsStudioAttachedChanged(bool oldValue, bool newValue)
+	{
+		if (newValue)
 		{
-			this.IsMenuOpen = true;
+			this.Services.Studio.OpenStudio();
+		}
+		else
+		{
+			this.Services.Studio.CloseStudio();
+			this.CurrentPanel = this.PanelArea.SetPanel(null);
+			this.CurrentTitle = StudioFourteen.Resources.Find("LOC_AIO_Title", "Studio Fourteen");
 		}
 	}
 }

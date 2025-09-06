@@ -96,8 +96,11 @@ public partial class SelectionPanel : Panel
 		this.Types.Clear();
 		this.CreateTypes.Clear();
 
-		this.Services.Scene.ObjectAdded -= this.OnObjectAddedToScene;
-		this.Services.Scene.ObjectRemoved -= this.OnObjectRemovedFromScene;
+		if (!ServiceManager.ShutdownRequested)
+		{
+			this.Services.Scene.ObjectAdded -= this.OnObjectAddedToScene;
+			this.Services.Scene.ObjectRemoved -= this.OnObjectRemovedFromScene;
+		}
 	}
 
 	private void OnObjectRemovedFromScene(SceneObjectBase obj)
