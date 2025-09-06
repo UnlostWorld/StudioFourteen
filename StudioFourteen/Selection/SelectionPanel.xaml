@@ -22,7 +22,7 @@
 	RememberWindowState="False"
 	mc:Ignorable="d">
 
-	<Grid x:Name="MainBorder">
+	<Grid x:Name="MainBorder" Height="28">
 
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="Auto" />
