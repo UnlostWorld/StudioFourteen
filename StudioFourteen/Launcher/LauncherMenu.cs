@@ -21,6 +21,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using DependencyPropertyGenerator;
 using PropertyChanged.SourceGenerator;
+using StudioFourteen.AIO;
 using StudioFourteen.Panels;
 using StudioFourteen.Settings;
 using WpfUtils.Commands;
@@ -33,12 +34,17 @@ public partial class LauncherMenu : Control
 	[Notify] private bool isStudioOpen;
 	[Notify] private bool isInGPose = false;
 	[Notify] private bool isGPoseSettingsOpen = false;
+	[Notify] private bool showAioButton = true;
 
 	public LauncherMenu()
 	{
 		this.Loaded += this.OnLoaded;
 		this.Unloaded += this.OnUnloaded;
+
+		this.OpenAioCommand = new SimpleCommand(this.OpenAio);
 	}
+
+	public ICommand OpenAioCommand { get; init; }
 
 	protected ServiceManager Services => ServiceManager.Instance;
 	protected SettingsService.Configuration Configuration => this.Services.Settings.Current;
@@ -57,6 +63,7 @@ public partial class LauncherMenu : Control
 
 		this.IsInGPose = this.Services.GroupPose.IsGroupPosing;
 		this.IsGPoseSettingsOpen = this.Services.GroupPose.IsGroupPoseSettingsWindowVisible;
+		this.ShowAioButton = this.Services.Settings.Current.AllInOne == SettingsService.Configuration.AioModes.Optional;
 
 		this.OnStudioStateChanged();
 	}
@@ -104,6 +111,11 @@ public partial class LauncherMenu : Control
 	private void OnIsGPoseSettingsOpenChanged(bool oldValue, bool newValue)
 	{
 		this.Services.GroupPose.SetGroupPoseSettingsWindowVisible(newValue);
+	}
+
+	private void OpenAio()
+	{
+		AioWindow.OpenAio();
 	}
 }
 

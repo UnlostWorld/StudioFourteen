@@ -351,7 +351,13 @@
 				<Border
 					Grid.Row="3"
 					Style="{DynamicResource WpfUtilsControlBorder}"
-					Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsStudioOpen, Converter={StaticResource B2V}}">
+					Visibility="{Binding
+						RelativeSource={RelativeSource
+							Mode=TemplatedParent
+						},
+						Path=IsStudioOpen,
+						Converter={StaticResource B2V}
+					}">
 
 					<Grid>
 						<Grid.ColumnDefinitions>
@@ -360,6 +366,43 @@
 							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition Width="Auto" />
 						</Grid.ColumnDefinitions>
+
+						<Button
+							Grid.Column="0"
+							Height="42"
+							Padding="6"
+							Command="{Binding
+								RelativeSource={RelativeSource
+									Mode=TemplatedParent
+								},
+								Path=OpenAioCommand
+							}"
+							Visibility="{Binding
+								RelativeSource={RelativeSource
+									Mode=TemplatedParent
+								},
+								Path=ShowAioButton,
+								Converter={StaticResource B2V}
+							}">
+							<Grid>
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="Auto" />
+									<ColumnDefinition />
+								</Grid.ColumnDefinitions>
+
+								<icons:IconView
+									Grid.Column="0"
+									Icon="{DynamicResource ICON_Title_AIO}" />
+
+								<TextBlock
+									Grid.Column="1"
+									Grid.Row="0"
+									Margin="6,0,0,0"
+									VerticalAlignment="Center"
+									Text="{DynamicResource LOC_AIO}" />
+							</Grid>
+						</Button>
+
 
 						<ToggleButton
 							Grid.Column="2"
