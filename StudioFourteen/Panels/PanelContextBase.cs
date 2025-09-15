@@ -43,7 +43,7 @@ public abstract class PanelContextBase
 	public event PanelDelegate? PanelDeactivated;
 
 	protected ServiceManager Services => ServiceManager.Instance;
-	protected SettingsService.Configuration Settings => this.Services.Settings.Current;
+	protected Configuration Settings => this.Services.Settings.Current;
 
 	public virtual void OnPanelOpened(Panel panel)
 	{

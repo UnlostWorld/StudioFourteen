@@ -18,7 +18,6 @@ namespace StudioFourteen.Environment;
 using System;
 using System.Collections.Generic;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Interop;
 using StudioFourteen.Services;
 
@@ -30,15 +29,20 @@ public partial class TimeService
 	private readonly Dictionary<int, string> dayNameLookup = new();
 	private readonly Dictionary<int, string> monthNameLookup = new();
 
-	[Notify] private long eorzeaTime;
-	[Notify] private int dayOfMonth;
-	[Notify] private int minuteOfDay;
-	[Notify] private bool freezeTime = false;
-
-	[Notify] private string displayTime = string.Empty;
-	[Notify] private string displayMonth = string.Empty;
-
 	private bool isUpdatingEorzeaTime = false;
+
+	public TimeService()
+	{
+		this.DisplayTime = string.Empty;
+		this.DisplayMonth = string.Empty;
+	}
+
+	[Bind] public partial long EorzeaTime { get; set; }
+	[Bind] public partial int DayOfMonth { get; set; }
+	[Bind] public partial int MinuteOfDay { get; set; }
+	[Bind] public partial bool FreezeTime { get; set; }
+	[Bind] public partial string DisplayTime { get; set; }
+	[Bind] public partial string DisplayMonth { get; set; }
 
 	public override async Task Start()
 	{
@@ -71,7 +75,7 @@ public partial class TimeService
 
 	public void Reset()
 	{
-		this.freezeTime = false;
+		this.FreezeTime = false;
 	}
 
 	protected unsafe void OnGameTick()
@@ -82,18 +86,18 @@ public partial class TimeService
 
 		// Time
 		long newEorzeaTime = pFramework->ClientTime.IsEorzeaTimeOverridden ? pFramework->ClientTime.EorzeaTimeOverride : pFramework->ClientTime.EorzeaTime;
-		if (this.freezeTime)
+		if (this.FreezeTime)
 		{
 			if (pFramework->ClientTime.IsEorzeaTimeOverridden)
 			{
-				pFramework->ClientTime.EorzeaTimeOverride = (long)this.eorzeaTime;
+				pFramework->ClientTime.EorzeaTimeOverride = (long)this.EorzeaTime;
 			}
 			else
 			{
-				pFramework->ClientTime.EorzeaTime = (long)this.eorzeaTime;
+				pFramework->ClientTime.EorzeaTime = (long)this.EorzeaTime;
 			}
 
-			newEorzeaTime = (long)this.eorzeaTime;
+			newEorzeaTime = (long)this.EorzeaTime;
 		}
 
 		this.EorzeaTime = newEorzeaTime;
@@ -121,7 +125,7 @@ public partial class TimeService
 		this.DisplayTime = $"{hours}:{displayTime.Minutes.ToString("D2")}{(isPm ? "pm" : "am")}";
 
 		if (this.monthNameLookup.ContainsKey(month))
-			this.displayMonth = $"{this.monthNameLookup[month]}, 1577";
+			this.DisplayMonth = $"{this.monthNameLookup[month]}, 1577";
 
 		this.isUpdatingEorzeaTime = false;
 	}
@@ -144,7 +148,7 @@ public partial class TimeService
 
 	private void UpdateEorzeaTime(IntPtr a1, IntPtr a2)
 	{
-		if (this.freezeTime)
+		if (this.FreezeTime)
 			return;
 
 		Hooks.UpdateEorzeaTime.Original(a1, a2);

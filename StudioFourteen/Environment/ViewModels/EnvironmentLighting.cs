@@ -16,16 +16,15 @@
 namespace StudioFourteen.Environment;
 
 using System.Numerics;
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Interop.Structs.Environment;
 
 public partial class EnvironmentLighting : EnvironmentComponentBase
 {
-	[Notify] private Vector3 sunLightColor;
-	[Notify] private Vector3 moonLightColor;
-	[Notify] private Vector3 ambient;
-	[Notify] private float ambientSaturation;
-	[Notify] private float temperature;
+	[Bind] public partial Vector3 SunLightColor { get; set; }
+	[Bind] public partial Vector3 MoonLightColor { get; set; }
+	[Bind] public partial Vector3 Ambient { get; set; }
+	[Bind] public partial float AmbientSaturation { get; set; }
+	[Bind] public partial float Temperature { get; set; }
 
 	public unsafe override void ReadFrom(EnvState* pModel)
 	{

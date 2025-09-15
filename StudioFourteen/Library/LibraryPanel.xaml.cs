@@ -52,11 +52,7 @@ public partial class LibraryPanel : Panel
 	private readonly Stopwatch searchStopwatch = new();
 	private LibraryPreviewBase? currentPreview;
 	private bool flatten = false;
-	[Notify] private Result? selectedResult = null;
 	private Navigations navigation = Navigations.None;
-	[Notify] private NavigationAnimations navigationAnimation = NavigationAnimations.None;
-	[Notify] private bool viewList;
-	[Notify] private bool narrowMode;
 	private FrameworkElement? currentHover;
 	private int lastEntryClick = 0;
 	private double? waitingForPosition;
@@ -86,6 +82,11 @@ public partial class LibraryPanel : Panel
 		Back_In,
 		Back_Out,
 	}
+
+	[Bind] public partial Result? SelectedResult { get; set; }
+	[Bind] public partial NavigationAnimations NavigationAnimation { get; set; }
+	[Bind] public partial bool ViewList { get; set; }
+	[Bind] public partial bool NarrowMode { get; set; }
 
 	public FastObservableCollection<Result> Results { get; init; } = new();
 	public FastObservableCollection<GroupEntryBase> Path { get; init; } = new();
@@ -452,7 +453,7 @@ public partial class LibraryPanel : Panel
 		if (senderElement.DataContext is not Result result)
 			return;
 
-		if (result != this.selectedResult)
+		if (result != this.SelectedResult)
 			return;
 
 		this.OnResultEnter(sender, e);

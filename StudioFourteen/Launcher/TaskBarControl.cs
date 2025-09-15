@@ -50,7 +50,7 @@ public partial class TaskBarControl : Control
 	public FastObservableCollection<TaskBarEntry> Entries { get; init; } = new();
 
 	protected ServiceManager Services => ServiceManager.Instance;
-	protected SettingsService.Configuration Settings => this.Services.Settings.Current;
+	protected Configuration Settings => this.Services.Settings.Current;
 
 	public void AddEntry<T>()
 	{
@@ -187,18 +187,21 @@ public partial class TaskBarControl : Control
 	}
 }
 
-public partial class TaskBarEntry : ViewModel
+[NotifyPropertyChanged]
+public partial class TaskBarEntry
 {
 	private readonly Type panelType;
-
-	[Notify] private bool isMinimized = false;
-	[Notify] private bool isActive = true;
-	[Notify] private bool isVisible = true;
 
 	public TaskBarEntry(Type panelType)
 	{
 		this.panelType = panelType;
+		this.IsActive = true;
+		this.IsVisible = true;
 	}
+
+	[Bind] public partial bool IsMinimized { get; set; }
+	[Bind] public partial bool IsActive { get; set; }
+	[Bind] public partial bool IsVisible { get; set; }
 
 	public Type? Type => this.panelType;
 	public string Title => ServiceManager.Instance.Panels.GetPanelTitle(this.panelType);

@@ -22,10 +22,15 @@ using PropertyChanged.SourceGenerator;
 
 public partial class ErrorReportPanel : Panel
 {
-	[Notify] private string? errorMessage;
-	[Notify] private bool isSending = false;
-	[Notify] private string? shortCode;
-	[Notify] private bool reportingEnabled = true;
+	public ErrorReportPanel()
+	{
+		this.ReportingEnabled = true;
+	}
+
+	[Bind] public partial string? ErrorMessage { get; set; }
+	[Bind] public partial bool IsSending { get; set; }
+	[Bind] public partial string? ShortCode { get; set; }
+	[Bind] public partial bool ReportingEnabled { get; set; }
 
 	public bool IsDebug
 	{

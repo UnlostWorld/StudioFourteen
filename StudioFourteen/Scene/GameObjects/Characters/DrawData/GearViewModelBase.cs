@@ -20,26 +20,25 @@ using System.Windows;
 using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Lumina.Excel.Sheets;
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.GameData.Library;
-using StudioFourteen.Mvm;
-using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Tags;
 
 using Character = StudioFourteen.Scene.GameObjects.Characters.Character;
-using Setter = PropertyChanged.SourceGenerator.Setter;
 using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
 
-public abstract partial class GearViewModelBase : ViewModel
+[NotifyPropertyChanged]
+[Services]
+[Logger]
+public abstract partial class GearViewModelBase
 {
-	[Notify(Setter.Private)] private string? characterName;
-
 	private byte lastRace = 255;
 
 	public abstract Rect SlotBackgroundRect { get; }
 	public abstract string SearchTitle { get; }
 	public abstract string DyeSearchTitle { get; }
 	public TagCollection SearchTags { get; init; } = new();
+
+	[Bind] public partial string? CharacterName { get; private set; }
 
 	public virtual unsafe void OnGameTick(Character character)
 	{
@@ -49,8 +48,8 @@ public abstract partial class GearViewModelBase : ViewModel
 			return;
 
 		this.CharacterName = pCharacter->GetDisplayName();
-		this.RaisePropertyChanged(nameof(this.SearchTitle));
-		this.RaisePropertyChanged(nameof(this.DyeSearchTitle));
+		this.NotifyPropertyChanged(nameof(this.SearchTitle));
+		this.NotifyPropertyChanged(nameof(this.DyeSearchTitle));
 
 		bool generateTags = false;
 		byte currentRace = character.GetCustomizeValue(CustomizeIndex.Race);
@@ -97,8 +96,8 @@ public abstract class GearViewModelBase<TLibraryType> : GearViewModelBase
 		set
 		{
 			this.item = value;
-			this.RaisePropertyChanged(nameof(this.Item));
-			this.RaisePropertyChanged(nameof(this.IsNone));
+			this.NotifyPropertyChanged(nameof(this.Item));
+			this.NotifyPropertyChanged(nameof(this.IsNone));
 			this.OnItemChanged(value);
 		}
 	}
@@ -130,7 +129,7 @@ public abstract class GearViewModelBase<TLibraryType> : GearViewModelBase
 				this.nextWriteStain0 = (byte)value.RowId;
 			}
 
-			this.RaisePropertyChanged(nameof(this.Stain0));
+			this.NotifyPropertyChanged(nameof(this.Stain0));
 		}
 	}
 
@@ -149,10 +148,10 @@ public abstract class GearViewModelBase<TLibraryType> : GearViewModelBase
 				return;
 
 			this.nextWriteStain0 = value;
-			this.RaisePropertyChanged(nameof(this.Stain0Id));
+			this.NotifyPropertyChanged(nameof(this.Stain0Id));
 
 			this.stain0 = this.Services.GameData.GetLibraryEntry<StainLibraryEntry>(this.Stain0Id);
-			this.RaisePropertyChanged(nameof(this.Stain0));
+			this.NotifyPropertyChanged(nameof(this.Stain0));
 		}
 	}
 
@@ -175,7 +174,7 @@ public abstract class GearViewModelBase<TLibraryType> : GearViewModelBase
 				this.nextWriteStain1 = (byte)value.RowId;
 			}
 
-			this.RaisePropertyChanged(nameof(this.Stain1));
+			this.NotifyPropertyChanged(nameof(this.Stain1));
 		}
 	}
 
@@ -194,10 +193,10 @@ public abstract class GearViewModelBase<TLibraryType> : GearViewModelBase
 				return;
 
 			this.nextWriteStain1 = value;
-			this.RaisePropertyChanged(nameof(this.Stain1Id));
+			this.NotifyPropertyChanged(nameof(this.Stain1Id));
 
 			this.stain1 = this.Services.GameData.GetLibraryEntry<StainLibraryEntry>(this.Stain1Id);
-			this.RaisePropertyChanged(nameof(this.Stain1));
+			this.NotifyPropertyChanged(nameof(this.Stain1));
 		}
 	}
 

@@ -18,7 +18,8 @@ namespace StudioFourteen.Selection;
 using System;
 using StudioFourteen.Scene;
 
-public abstract class SelectionTypeBase
+[NotifyPropertyChanged]
+public abstract partial class SelectionTypeBase
 {
 	public abstract object? Icon { get; }
 	public abstract string? Name { get; }

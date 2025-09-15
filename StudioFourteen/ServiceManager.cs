@@ -40,7 +40,6 @@ public class ServiceManager : ServiceManagerBase
 	public IPC.IPCService IPC { get; init; } = new();
 	public Reshade.ReshadeService Reshade { get; init; } = new();
 	public Analytics.AnalyticsService Analytics { get; init; } = new();
-	public History.HistoryService History { get; init; } = new();
 	public Selection.SelectionService Selection { get; init; } = new();
 	public Photos.PhotosService Photos { get; init; } = new();
 	public RedrawService Redraw { get; init; } = new();

@@ -42,7 +42,7 @@ public partial class LauncherWindow : PanelWindow
 	}
 
 	public Persistence Persistence { get; init; } = Persistence.GetPersistence($"Panel_Launcher");
-	public SettingsService.Configuration Configuration => this.Services.Settings.Current;
+	public Configuration Configuration => this.Services.Settings.Current;
 
 	public override T? GetPersistence<T>([CallerMemberName] string id = "")
 		where T : default
@@ -75,7 +75,7 @@ public partial class LauncherWindow : PanelWindow
 
 	private void OnLaunchClicked(object sender, RoutedEventArgs e)
 	{
-		if (this.Services.Settings.Current.AllInOne == SettingsService.Configuration.AioModes.Always)
+		if (this.Services.Settings.Current.AllInOne == Configuration.AioModes.Always)
 		{
 			AioWindow.OpenAio();
 		}

@@ -93,7 +93,7 @@ public class CameraService : ServiceBase
 			this.current?.Activate();
 			this.blendWatch.Restart();
 
-			this.RaisePropertyChanged();
+			this.NotifyPropertyChanged();
 			this.CurrentCameraChanged?.Invoke(this.last, this.current);
 		}
 	}

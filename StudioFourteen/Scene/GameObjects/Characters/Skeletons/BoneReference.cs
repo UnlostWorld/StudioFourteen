@@ -23,7 +23,6 @@ using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.Havok.Animation.Rig;
 using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
-using StudioFourteen.History;
 using StudioFourteen.Posing;
 using StudioFourteen.Services;
 using StudioFourteen.Structs;
@@ -73,7 +72,7 @@ public class BoneReference
 		this.skeleton = skeleton;
 	}
 
-	[History] public Transform? Transform { get; set; }
+	public Transform? Transform { get; set; }
 	public Transform? LocalSpaceTransform { get; private set; }
 	public Transform? ModelSpaceTransform { get; private set; }
 	public Transform? ModelTransform { get; private set; }

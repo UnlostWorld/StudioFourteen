@@ -16,7 +16,6 @@
 namespace StudioFourteen.Launcher;
 
 using System.Threading.Tasks;
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Panels;
 using StudioFourteen.Rendering.Draw.Gizmos;
 using StudioFourteen.Scene;
@@ -24,7 +23,12 @@ using WpfUtils.Extensions;
 
 public partial class ToolBarPanel : Panel
 {
-	[Notify] private bool allowMouseCapture = true;
+	public ToolBarPanel()
+	{
+		this.AllowMouseCapture = true;
+	}
+
+	[Bind] public partial bool AllowMouseCapture { get; set; }
 
 	public FastObservableCollection<GizmoGroup> Gizmos { get; init; } = new();
 

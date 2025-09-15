@@ -15,18 +15,13 @@
 
 namespace StudioFourteen.Services;
 
-using System.Numerics;
-using Dalamud.Hooking;
-using Dalamud.Plugin.Services;
-using FFXIVClientStructs.FFXIV.Client.Game.Object;
-using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Input.Devices;
 using StudioFourteen.Interop;
 using StudioFourteen.Plugin;
 using WpfUtils.Extensions;
+
 using Task = System.Threading.Tasks.Task;
 
 public partial class GroupPoseService : ServiceBase
@@ -34,14 +29,14 @@ public partial class GroupPoseService : ServiceBase
 	public const int GPoseCharacterCount = 39;
 	public const int GPoseFirstCharacter = 201;
 
-	[Notify(Setter.Private)] private bool isGroupPosing;
-	[Notify(Setter.Private)] private bool isGroupPoseSettingsWindowVisible;
-	[Notify(Setter.Private)] private bool isGroupPoseLoaded;
-
 	public delegate void OnStateChangedDelegate(bool newState);
 
 	public event OnStateChangedDelegate? StateChanged;
 	public event OnStateChangedDelegate? SettingsStateChanged;
+
+	[Bind] public partial bool IsGroupPosing { get; private set; }
+	[Bind] public partial bool IsGroupPoseSettingsWindowVisible { get; private set; }
+	[Bind] public partial bool IsGroupPoseLoaded { get; private set; }
 
 	public unsafe void SetGroupPose(bool state)
 	{
@@ -71,7 +66,7 @@ public partial class GroupPoseService : ServiceBase
 	public override Task Initialize()
 	{
 		this.IsGroupPosing = DalamudServices.ClientState?.IsGPosing == true || this.Services.Territory.IsInTitleScreen;
-		this.IsGroupPoseLoaded = this.isGroupPosing;
+		this.IsGroupPoseLoaded = this.IsGroupPosing;
 		return base.Initialize();
 	}
 
@@ -84,7 +79,7 @@ public partial class GroupPoseService : ServiceBase
 		Hooks.ExitGroupPose.Enable(this.ExitDetour);
 
 		this.IsGroupPosing = DalamudServices.ClientState?.IsGPosing == true || this.Services.Territory.IsInTitleScreen;
-		this.IsGroupPoseLoaded = this.isGroupPosing;
+		this.IsGroupPoseLoaded = this.IsGroupPosing;
 	}
 
 	public override void Detach()
@@ -135,7 +130,7 @@ public partial class GroupPoseService : ServiceBase
 	protected void OnGameTick()
 	{
 		bool isWindowVisible = this.GetIsGroupPoseSettingsWindowVisible();
-		if (isWindowVisible != this.isGroupPoseSettingsWindowVisible)
+		if (isWindowVisible != this.IsGroupPoseSettingsWindowVisible)
 		{
 			this.IsGroupPoseSettingsWindowVisible = isWindowVisible;
 			this.SettingsStateChanged?.Invoke(isWindowVisible);
@@ -170,11 +165,11 @@ public partial class GroupPoseService : ServiceBase
 	{
 		this.IsGroupPoseLoaded = false;
 
-		if (!this.isGroupPosing)
+		if (!this.IsGroupPosing)
 			return;
 
 		await Task.Delay(2000);
-		this.IsGroupPoseLoaded = this.isGroupPosing;
+		this.IsGroupPoseLoaded = this.IsGroupPosing;
 		this.Log.Information($"Group Pose Loaded");
 	}
 }

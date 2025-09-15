@@ -44,10 +44,6 @@ public partial class ReshadeService : ServiceBase
 	private readonly LogDelegate onLog;
 	private readonly EmptyDelegate onBeginRenderingEffects;
 	private readonly EmptyDelegate onFinishRenderingEffects;
-
-	[Notify] private bool isReshadeOverlayOpen;
-	[Notify] private bool isReshadeEnabled;
-
 	public ReshadeService()
 	{
 		this.onLog = new LogDelegate(this.OnLog);
@@ -63,7 +59,9 @@ public partial class ReshadeService : ServiceBase
 	public event EmptyDelegate? ReshadeBeforeEffects;
 	public event EmptyDelegate? ReshadeAfterEffects;
 
-	public bool IsReshade { get; private set; }
+	[Bind] public partial bool IsReshade { get; private set; }
+	[Bind] public partial bool IsReshadeOverlayOpen { get; set; }
+	[Bind] public partial bool IsReshadeEnabled { get; set; }
 
 	public override async Task Start()
 	{

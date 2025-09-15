@@ -15,14 +15,13 @@
 
 namespace StudioFourteen.Environment;
 
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Interop.Structs.Environment;
 
 public partial class EnvironmentWind : EnvironmentComponentBase
 {
-	[Notify] private float direction;
-	[Notify] private float angle;
-	[Notify] private float speed;
+	[Bind] public partial float Direction { get; set; }
+	[Bind] public partial float Angle { get; set; }
+	[Bind] public partial float Speed { get; set; }
 
 	public unsafe override void ReadFrom(EnvState* pModel)
 	{

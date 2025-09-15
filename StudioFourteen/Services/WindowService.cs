@@ -40,7 +40,6 @@ using Windows.Win32.UI.WindowsAndMessaging;
 
 using DrawingPoint = System.Drawing.Point;
 using Point = System.Windows.Point;
-using Setter = PropertyChanged.SourceGenerator.Setter;
 
 public partial class WindowService : ServiceBase
 {
@@ -59,11 +58,6 @@ public partial class WindowService : ServiceBase
 		"_ContentGauge",
 	};
 
-	[Notify(Setter.Private)] private bool isCursorOverAtkUnit;
-	[Notify(Setter.Private)] private bool isCursorOverImGui;
-	[Notify(Setter.Private)] private bool isCursorOverXiv;
-	[Notify(Setter.Private)] private bool isCursorOverStudio;
-
 	private Rect xivClientSize;
 	private unsafe AtkUnitBase* atkUnitUnderCursor;
 	private PanelWindow? topMostPanelWindow;
@@ -81,6 +75,11 @@ public partial class WindowService : ServiceBase
 	private delegate long WndProcDelegate(IntPtr hWnd, uint msg, ulong wParam, long lParam);
 
 	public event OnXivClientSizeChanged? XivClientSizeChanged;
+
+	[Bind] public partial bool IsCursorOverAtkUnit { get; private set; }
+	[Bind] public partial bool IsCursorOverImGui { get; private set; }
+	[Bind] public partial bool IsCursorOverXiv { get; private set; }
+	[Bind] public partial bool IsCursorOverStudio { get; private set; }
 
 	public Process? XivProcess { get; set; }
 	public nint? XivWindowHwnd => this.XivProcess?.MainWindowHandle;

@@ -1,4 +1,4 @@
-﻿// .                    @@             _____ _______ _    _ _____ _____ ____
+// .                    @@             _____ _______ _    _ _____ _____ ____
 //          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
 //         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
 //         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
@@ -13,21 +13,13 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Test;
+namespace StufioFourteen.Test;
 
 using StudioFourteen;
-using System.Windows;
 
-public partial class App : Application
+[NotifyPropertyChanged]
+public partial class TestThing
 {
-	private readonly ServiceManager services = new();
-	private readonly Window window = new();
-
-	protected override void OnStartup(StartupEventArgs e)
-	{
-		base.OnStartup(e);
-		this.window.Show();
-
-		Task.Run(this.services.Start);
-	}
+	[Bind] public partial long TestTime { get; set; }
+	[Bind] public partial long TestTime2 { get; set; }
 }

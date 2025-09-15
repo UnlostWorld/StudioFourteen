@@ -15,15 +15,20 @@
 
 namespace StudioFourteen.Services;
 
-using FontAwesome.Sharp;
-using StudioFourteen.History;
-using StudioFourteen.Mvm;
+using Serilog;
 using StudioFourteen.Settings;
-using System;
 using System.Threading.Tasks;
 
-public abstract class ServiceBase : ViewModel, IHistoryTarget
+[NotifyPropertyChanged]
+public abstract partial class ServiceBase
 {
+	protected readonly ILogger Log;
+
+	public ServiceBase()
+	{
+		this.Log = Logging.ForContext(this.GetType());
+	}
+
 	public virtual string Name => this.GetType().Name;
 	public virtual object? Icon => Resources.Find("ICON_Selection_Service");
 	public bool IsReady => this.IsAlive;
@@ -31,13 +36,9 @@ public abstract class ServiceBase : ViewModel, IHistoryTarget
 	public bool IsAlive { get; private set; }
 	public bool IsAttached { get; private set; }
 
-	protected SettingsService.Configuration Settings => this.Services.Settings.Current;
+	protected ServiceManager Services => ServiceManager.Instance;
 
-	public Operation CreateHistoryOperation() => new ServiceOperation(this.GetType());
-
-	public virtual void FinalizeHistoryOperation(ref Operation operation)
-	{
-	}
+	protected Configuration Settings => this.Services.Settings.Current;
 
 	public virtual Task Initialize()
 	{
@@ -75,21 +76,5 @@ public abstract class ServiceBase : ViewModel, IHistoryTarget
 	{
 		if (this.IsAttached)
 			this.Detach();
-	}
-}
-
-public class ServiceOperation(Type type)
-	: Operation
-{
-	public Type ServiceType { get; init; } = type;
-
-	public override IHistoryTarget GetTarget()
-	{
-		return ServiceManager.Instance.GetService(this.ServiceType);
-	}
-
-	public override bool IsTarget(IHistoryTarget target)
-	{
-		return ServiceManager.Instance.Selection.Current == target;
 	}
 }

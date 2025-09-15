@@ -15,7 +15,6 @@
 
 namespace StudioFourteen.Scripting;
 
-using PropertyChanged.SourceGenerator;
 using Serilog.Events;
 using StudioFourteen.Panels;
 using System;
@@ -29,15 +28,27 @@ public partial class ScriptPanel : Panel
 	private bool trust = false;
 	private bool run = false;
 
-	[Notify] private ScriptFile? script;
-	[Notify] private string status = string.Empty;
-	[Notify] private double progress = 0;
-	[Notify] private bool isIndeterminate = true;
-	[Notify] private bool isInfo = true;
-	[Notify] private bool isTrustPrompt = false;
-	[Notify] private bool isConfigurePrompt = false;
-	[Notify] private bool alwaysTrust = false;
-	[Notify] private bool isRunning = false;
+	public ScriptPanel()
+	{
+		this.Status = string.Empty;
+		this.Progress = 0;
+		this.IsIndeterminate = true;
+		this.IsInfo = true;
+		this.IsTrustPrompt = false;
+		this.IsConfigurePrompt = false;
+		this.AlwaysTrust = false;
+		this.IsRunning = false;
+	}
+
+	[Bind] public partial ScriptFile? Script { get; set; }
+	[Bind] public partial string Status { get; set; }
+	[Bind] public partial double Progress { get; set; }
+	[Bind] public partial bool IsIndeterminate { get; set; }
+	[Bind] public partial bool IsInfo { get; set; }
+	[Bind] public partial bool IsTrustPrompt { get; set; }
+	[Bind] public partial bool IsConfigurePrompt { get; set; }
+	[Bind] public partial bool AlwaysTrust { get; set; }
+	[Bind] public partial bool IsRunning { get; set; }
 
 	public FastObservableCollection<LogEntry> ScriptLog { get; init; } = new();
 	public FastObservableCollection<OptionBase> Options { get; init; } = new();

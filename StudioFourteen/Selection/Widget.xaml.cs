@@ -20,7 +20,6 @@ using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Panels;
 using StudioFourteen.Rendering.Draw.Gizmos;
 using StudioFourteen.Rendering.Draw.Handles;
@@ -33,15 +32,15 @@ using WpfUtils.Silk;
 public partial class Widget : Panel
 {
 	private bool isShowing = false;
-	[Notify] private SceneObjectBase? current;
-	[Notify] private bool hide;
-	[Notify] private bool expanded;
-	[Notify] private bool canExpand;
 
 	private Vector2 selectionCursorOffset;
 	private Animator opening;
 	private Animator closing;
 
+	[Bind] public partial SceneObjectBase? Current { get; set; }
+	[Bind] public partial bool Hide { get; set; }
+	[Bind] public partial bool Expanded { get; set; }
+	[Bind] public partial bool CanExpand { get; set; }
 	public FastObservableCollection<GizmoGroup> Gizmos { get; init; } = new();
 
 	public override void OnDeactivated()
@@ -51,7 +50,7 @@ public partial class Widget : Panel
 
 	protected override void OnOpened()
 	{
-		this.CanExpand = this.Settings.WidgetMode == SettingsService.Configuration.WidgetModes.Inspector;
+		this.CanExpand = this.Settings.WidgetMode == Configuration.WidgetModes.Inspector;
 
 		this.opening = this.GetAnimator("Opening");
 		this.closing = this.GetAnimator("Closing");
@@ -156,7 +155,7 @@ public partial class Widget : Panel
 
 			this.Current = newSelection;
 
-			if (this.Settings.WidgetMode == SettingsService.Configuration.WidgetModes.Inspector)
+			if (this.Settings.WidgetMode == Configuration.WidgetModes.Inspector)
 				this.Expanded = this.Services.Selection.ExpandedSelection;
 
 			if (source is SelectionHandle)
@@ -178,13 +177,13 @@ public partial class Widget : Panel
 	{
 		if (settingName == nameof(this.Settings.WidgetMode))
 		{
-			this.CanExpand = this.Settings.WidgetMode == SettingsService.Configuration.WidgetModes.Inspector;
+			this.CanExpand = this.Settings.WidgetMode == Configuration.WidgetModes.Inspector;
 		}
 	}
 
 	private void OnExpandedChanged(bool oldValue, bool newValue)
 	{
-		if (newValue && this.Settings.WidgetMode != SettingsService.Configuration.WidgetModes.Inspector)
+		if (newValue && this.Settings.WidgetMode != Configuration.WidgetModes.Inspector)
 		{
 			this.Services.Selection.ExpandedSelection = false;
 			this.Expanded = false;

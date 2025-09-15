@@ -16,7 +16,6 @@
 namespace StudioFourteen.Animation;
 
 using System.Windows;
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Panels;
 using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Tags;
@@ -24,15 +23,20 @@ using WpfUtils.Extensions;
 
 public partial class AnimationPanel : CharacterPanelBase
 {
-	[Notify] private AnimationService.AnimationController? controller;
-	[Notify] private ITimelineAnimation? animation;
-	[Notify] private TagCollection defaultTags = new("Player Animation");
+	public AnimationPanel()
+	{
+		this.DefaultTags = new("Player Animation");
+	}
+
+	[Bind] public partial AnimationController? Controller { get; set; }
+	[Bind] public partial ITimelineAnimation? Animation { get; set; }
+	[Bind] public partial TagCollection DefaultTags { get; set; }
 
 	public void OnPlayClicked(object sender, RoutedEventArgs args)
 	{
-		if (this.animation != null)
+		if (this.Animation != null)
 		{
-			this.Controller?.PlayAnimationAsync(this.animation).Run();
+			this.Controller?.PlayAnimationAsync(this.Animation).Run();
 		}
 	}
 
@@ -45,7 +49,7 @@ public partial class AnimationPanel : CharacterPanelBase
 	{
 		if (character == null)
 		{
-			this.controller = null;
+			this.Controller = null;
 		}
 		else
 		{

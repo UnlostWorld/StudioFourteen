@@ -16,7 +16,6 @@
 namespace StudioFourteen.Selection;
 
 using System;
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Scene;
 using WpfUtils.Extensions;
 
@@ -24,7 +23,6 @@ public partial class SelectionType<T> : SelectionTypeBase
 	where T : SceneObjectBase
 {
 	private readonly SelectionListener<T> scope;
-	[Notify] private T? selection;
 
 	public SelectionType()
 	{
@@ -35,6 +33,7 @@ public partial class SelectionType<T> : SelectionTypeBase
 		this.Selection = this.scope.Current;
 	}
 
+	[Bind] public partial T? Selection { get; set; }
 	public FastObservableCollection<T> Objects { get; init; } = new();
 
 	public override Type Type => typeof(T);

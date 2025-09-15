@@ -16,18 +16,17 @@
 namespace StudioFourteen.Environment;
 
 using System.Numerics;
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Interop.Structs.Environment;
 
 public partial class EnvironmentStars : EnvironmentComponentBase
 {
-	[Notify] private float constellationIntensity;
-	[Notify] private float constellations;
-	[Notify] private float stars;
-	[Notify] private float galaxyIntensity;
-	[Notify] private float starIntensity;
-	[Notify] private Vector4 moonColor;
-	[Notify] private float moonBrightness;
+	[Bind] public partial float ConstellationIntensity { get; set; }
+	[Bind] public partial float Constellations { get; set; }
+	[Bind] public partial float Stars { get; set; }
+	[Bind] public partial float GalaxyIntensity { get; set; }
+	[Bind] public partial float StarIntensity { get; set; }
+	[Bind] public partial Vector4 MoonColor { get; set; }
+	[Bind] public partial float MoonBrightness { get; set; }
 
 	public unsafe override void ReadFrom(EnvState* pModel)
 	{

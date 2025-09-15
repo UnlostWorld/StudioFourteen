@@ -15,16 +15,16 @@
 
 namespace StudioFourteen.Environment;
 
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Interop.Structs.Environment;
 
+[NotifyPropertyChanged]
 public abstract partial class EnvironmentComponentBase
 {
-	[Notify] private bool freeze;
+	[Bind] public partial bool Freeze { get; set; }
 
 	public unsafe void CheckAndReadFrom(EnvState* pModel)
 	{
-		if (this.freeze)
+		if (this.Freeze)
 			return;
 
 		this.ReadFrom(pModel);
@@ -32,7 +32,7 @@ public abstract partial class EnvironmentComponentBase
 
 	public unsafe void CheckAndWriteTo(EnvState* pModel)
 	{
-		if (!this.freeze)
+		if (!this.Freeze)
 			return;
 
 		this.WriteTo(pModel);

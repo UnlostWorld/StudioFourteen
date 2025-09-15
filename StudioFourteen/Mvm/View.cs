@@ -89,7 +89,7 @@ public class View : UserControl, IAutoNotify
 	public event PropertyChangedEventHandler? PropertyChanged;
 
 	public ServiceManager Services => ServiceManager.Instance;
-	public SettingsService.Configuration Settings => this.Services.Settings.Current;
+	public Configuration Settings => this.Services.Settings.Current;
 
 	public virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
 	{

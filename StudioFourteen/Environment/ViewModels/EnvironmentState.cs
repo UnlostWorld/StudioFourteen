@@ -15,14 +15,14 @@
 
 namespace StudioFourteen.Environment;
 
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Interop.Structs.Environment;
 using StudioFourteen.Services;
 
+[NotifyPropertyChanged]
 public partial class EnvironmentState
 {
-	[Notify] private bool freezeSkyTexture = false;
-	[Notify] private SkyTextureLibraryEntry? skyTexture;
+	[Bind] public partial bool FreezeSkyTexture { get; set; }
+	[Bind] public partial SkyTextureLibraryEntry? SkyTexture { get; set; }
 
 	public EnvironmentLighting Lighting { get; init; } = new();
 	public EnvironmentStars Stars { get; init; } = new();

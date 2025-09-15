@@ -67,10 +67,6 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	private bool isDragMoving = false;
 	private bool isMinimizing = false;
 
-	[Notify] private bool isUiVisible = true;
-	[Notify] private bool isUiVisibleAndOpen = true;
-	[Notify] private PanelContextBase? context;
-
 	public PanelWindow()
 	{
 		this.Log = Logging.ForContext(this.GetType());
@@ -83,6 +79,8 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 		this.GetType().GetMethod("InitializeComponent")?.Invoke(this, null);
 		this.DataContext = this;
+		this.IsUiVisible = true;
+		this.IsUiVisibleAndOpen = true;
 
 		this.Loaded += this.OnLoaded;
 		this.PreviewMouseDown += this.OnPreviewMouseDown;
@@ -115,6 +113,10 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 	public bool HasSubtitle => this.Panel != null && !string.IsNullOrEmpty(this.Panel.Subtitle);
 	public bool IsOpen { get; private set; }
 	public virtual bool CanNavigate => true;
+
+	[Bind] public partial bool IsUiVisible { get; set; }
+	[Bind] public partial bool IsUiVisibleAndOpen { get; set; }
+	[Bind] public partial PanelContextBase? Context { get; set; }
 
 	public Style DefaultStyle => (Style)this.FindResource("PanelWindowStyle");
 

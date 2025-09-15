@@ -15,7 +15,6 @@
 
 namespace StudioFourteen.Environment;
 
-using PropertyChanged.SourceGenerator;
 using Lumina.Excel.Sheets;
 using StudioFourteen.Interop.Structs.Environment;
 using StudioFourteen.Interop;
@@ -29,10 +28,15 @@ public partial class EnvironmentService
 {
 	public readonly SkyTextureSource SkyTextureSource = new();
 
-	[Notify] private WeatherLibraryEntry? currentWeather;
-	[Notify] private EnvironmentState currentState = new();
-
 	private bool isReadingWeather;
+
+	public EnvironmentService()
+	{
+		this.CurrentState = new();
+	}
+
+	[Bind] public partial WeatherLibraryEntry? CurrentWeather { get; set; }
+	[Bind] public partial EnvironmentState CurrentState { get; set; }
 
 	public override Task Initialize()
 	{
@@ -98,7 +102,7 @@ public partial class EnvironmentService
 
 		// Weather
 		byte weatherId = pEnvironmentManager->ActiveWeather;
-		if (weatherId != this.currentWeather?.RowId)
+		if (weatherId != this.CurrentWeather?.RowId)
 		{
 			this.isReadingWeather = true;
 			this.CurrentWeather = this.Services.GameData.GetLibraryEntry<WeatherLibraryEntry>(weatherId);

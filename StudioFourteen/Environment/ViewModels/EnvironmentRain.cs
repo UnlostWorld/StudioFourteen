@@ -16,17 +16,16 @@
 namespace StudioFourteen.Environment;
 
 using System.Numerics;
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Interop.Structs.Environment;
 
 public partial class EnvironmentRain : EnvironmentComponentBase
 {
-	[Notify] private float raindrops;
-	[Notify] private float intensity;
-	[Notify] private float weight;
-	[Notify] private float scatter;
-	[Notify] private float size;
-	[Notify] private Vector4 color;
+	[Bind] public partial float Raindrops { get; set; }
+	[Bind] public partial float Intensity { get; set; }
+	[Bind] public partial float Weight { get; set; }
+	[Bind] public partial float Scatter { get; set; }
+	[Bind] public partial float Size { get; set; }
+	[Bind] public partial Vector4 Color { get; set; }
 
 	public unsafe override void ReadFrom(EnvState* pModel)
 	{

@@ -15,16 +15,10 @@
 
 namespace StudioFourteen.Settings;
 
-using Dalamud.Configuration;
 using PropertyChanged.SourceGenerator;
-using StudioFourteen.Input;
-using StudioFourteen.Library;
-using StudioFourteen.Photos;
 using StudioFourteen.Plugin;
 using StudioFourteen.Serialization;
 using StudioFourteen.Services;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
@@ -180,83 +174,5 @@ public partial class SettingsService : ServiceBase
 		object? value = typeof(Configuration).GetProperty(e.PropertyName)?.GetValue(this.Current);
 		this.SettingChanged?.Invoke(e.PropertyName, value);
 		this.Save();
-	}
-
-	public partial class Configuration : IPluginConfiguration
-	{
-		[Notify] private Dictionary<string, string> persistence = new();
-		[Notify] private int hasConfirmedReShadeVersion = -1;
-
-		// Files
-		[Notify] private string? lastSaveDirectory;
-		[Notify] private string? defaultAuthor;
-		[Notify] private string? defaultVersion = "1.0";
-
-		// Photos
-		[Notify] private string? photoDirectory;
-		[Notify] private PhotosService.Formats photoFormat = PhotosService.Formats.Jpeg;
-		[Notify] private bool photoIncludeMetaData = true;
-		[Notify] private bool photoCaptureDepth = false;
-
-		[Notify] private bool photoAnimationFlash = true;
-		[Notify] private bool photoAnimationPreview = true;
-
-		// Analytics
-		[Notify] private bool hasConfirmedAnalyticOptions = false;
-		[Notify] private bool sendOptionalAnalytics = false;
-		[Notify] private bool sendErrorReports = true;
-
-		// Interface
-		[Notify] private bool hideLauncherButton = false;
-		[Notify] private bool openGroupPose = false;
-		[Notify] private bool hideGenitals = true;
-		[Notify] private bool showOverlays = true;
-		[Notify] private Dictionary<string, int> overlays = new();
-		[Notify] private List<string> openPanels = new();
-		[Notify] private bool isAioWindowOpen = false;
-		[Notify] private bool useSystemCursors = false;
-		[Notify] private List<string> resourcePacks = new();
-
-		[Notify] private WidgetModes widgetMode = WidgetModes.Inspector;
-		[Notify] private bool enableInspector = true;
-		[Notify] private bool enableDedicatedInspectors = true;
-		[Notify] private AioModes allInOne = AioModes.Optional;
-		[Notify] private bool enableTargetBar = true;
-
-		// Input
-		[Notify] private bool allowKeyboardCapture = true;
-		[Notify] private bool allowMouseCapture = true;
-		[Notify] private Dictionary<InputAction, List<Bind>> customBinds = new();
-
-		// Library
-		[Notify] private HashSet<string> favorites = new();
-		[Notify] private PreviewModes libraryPreviewMode = PreviewModes.Permanent;
-
-		// Scripts
-		[Notify] private Dictionary<string, string> trustedScripts = new();
-
-		public enum WidgetModes
-		{
-			Disabled,
-			GizmoControls,
-			Inspector,
-		}
-
-		public enum AioModes
-		{
-			Disabled,
-			Optional,
-			Always,
-		}
-
-		public int Version { get; set; } = 0;
-
-		public void Validate()
-		{
-			if (this.PhotoDirectory == null)
-			{
-				this.PhotoDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyPictures), "Studio Fourteen");
-			}
-		}
 	}
 }

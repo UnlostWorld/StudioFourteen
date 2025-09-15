@@ -47,7 +47,7 @@ public class Equipment : GearViewModelBase<ItemLibraryEntry>
 				return;
 
 			this.nextWriteId = value;
-			this.RaisePropertyChanged(nameof(this.Id));
+			this.NotifyPropertyChanged(nameof(this.Id));
 		}
 	}
 
@@ -60,7 +60,7 @@ public class Equipment : GearViewModelBase<ItemLibraryEntry>
 				return;
 
 			this.nextWriteVariant = value;
-			this.RaisePropertyChanged(nameof(this.Variant));
+			this.NotifyPropertyChanged(nameof(this.Variant));
 		}
 	}
 
@@ -130,7 +130,7 @@ public class Equipment : GearViewModelBase<ItemLibraryEntry>
 		if (this.lastReadId != modelId.Id || this.lastReadId != modelId.Id)
 		{
 			this.Item = this.Services.GameData.Items?.Find(this.Slot, modelId);
-			this.RaisePropertyChanged(nameof(this.Item));
+			this.NotifyPropertyChanged(nameof(this.Item));
 		}
 
 		this.lastReadId = modelId.Id;
@@ -140,14 +140,14 @@ public class Equipment : GearViewModelBase<ItemLibraryEntry>
 		{
 			this.lastReadStain0 = modelId.Stain0;
 			this.stain0 = this.Services.GameData.GetLibraryEntry<StainLibraryEntry>(this.Stain0Id);
-			this.RaisePropertyChanged(nameof(this.Stain0));
+			this.NotifyPropertyChanged(nameof(this.Stain0));
 		}
 
 		if (this.lastReadStain1 != modelId.Stain1)
 		{
 			this.lastReadStain1 = modelId.Stain1;
 			this.stain1 = this.Services.GameData.GetLibraryEntry<StainLibraryEntry>(this.Stain1Id);
-			this.RaisePropertyChanged(nameof(this.Stain1));
+			this.NotifyPropertyChanged(nameof(this.Stain1));
 		}
 
 		this.nextWriteId = null;

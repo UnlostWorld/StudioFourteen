@@ -15,16 +15,15 @@
 
 namespace StudioFourteen.Scene;
 
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Rendering.Draw.Gizmos.Transforms;
 
 public abstract partial class TransformSceneObjectBase : SceneObjectBase
 {
 	private Transform? initialWorldTransform = null;
 
-	[Notify] private Transform worldTransform;
-	[Notify] private Transform localTransform;
-	[Notify] private bool lockTransform;
+	[Bind] public partial Transform WorldTransform { get; set; }
+	[Bind] public partial Transform LocalTransform { get; set; }
+	[Bind] public partial bool LockTransform { get; set; }
 
 	public virtual double TranslationChange => 0.1;
 	public virtual int DecimalPlacesToDisplay => 2;

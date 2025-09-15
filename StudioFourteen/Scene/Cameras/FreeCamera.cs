@@ -15,14 +15,10 @@
 
 namespace StudioFourteen.Scene.Cameras;
 
-using Dalamud.Plugin.Services;
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Input;
 using StudioFourteen.Structs.Extensions;
-using StudioFourteen.Utilities;
 using System;
 using System.Numerics;
-using System.Windows.Input;
 
 public partial class FreeCamera : Camera
 {
@@ -47,14 +43,14 @@ public partial class FreeCamera : Camera
 	private readonly Input0DListener rotateUpListener = new(InputAction.FreeCamera_RotateUp);
 	private readonly Input0DListener rotateDownListener = new(InputAction.FreeCamera_RotateDown);
 
-	[Notify] private Vector3 position;
-	[Notify] private Quaternion rotation;
-
 	private Vector3 desiredMove = Vector3.Zero;
 	private Vector3 desiredRot = Vector3.Zero;
 	private float moveSpeed = 2.0f;
 
 	public override string TypeName => Resources.Find("LOC_FreeCamera", "Free Camera");
+
+	[Bind] public partial Vector3 Position { get; set; }
+	[Bind] public partial Quaternion Rotation { get; set; }
 
 	public override void Initialize(CameraState currentState, Camera? previousCamera)
 	{

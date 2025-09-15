@@ -15,7 +15,6 @@
 
 namespace StudioFourteen.Scene.Cameras;
 
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Scene.Cameras.Modifiers;
 using StudioFourteen.Scene;
 using System;
@@ -29,11 +28,6 @@ public abstract partial class Camera : SceneObjectBase, IDisposable
 	private readonly int cameraIndex = -1;
 	private CameraState lastState;
 
-	[Notify] private float fieldOfView;
-
-	[Notify(Setter.Private)]
-	private float groupPoseFovAdjust;
-
 	public Camera()
 	{
 		this.cameraIndex = this.Services.Camera.RegisterCamera(this);
@@ -45,6 +39,8 @@ public abstract partial class Camera : SceneObjectBase, IDisposable
 	public override object? Icon => Resources.Find("ICON_Type_Character");
 
 	public bool IsInitialized { get; set; } = false;
+	[Bind] public partial float FieldOfView { get; set; }
+	[Bind] public partial float GroupPoseFovAdjust { get; set; }
 
 	public ObservableCollection<CameraModifierBase> Modifiers { get; init; } = new();
 	public CameraState LastState => this.lastState;

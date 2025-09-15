@@ -3,7 +3,6 @@
 	<PropertyGroup>
 		<OutputType>Library</OutputType>
 		<TargetFramework>net9.0-windows</TargetFramework>
-		<Nullable>enable</Nullable>
 		<UseWPF>true</UseWPF>
 		<AppendTargetFramework>False</AppendTargetFramework>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
@@ -51,7 +50,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Content Include="Assets\icon.ico" />
+		<Content Include="Assets\icon.ico" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -60,7 +59,7 @@
 
 	<ItemGroup>
 		<None Include="..\StudioFourteen.Reshade\bin\StudioFourteen.Reshade.dll" Link="StudioFourteen.Reshade.dll">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
 	</ItemGroup>
 
@@ -68,8 +67,8 @@
 		<PackageReference Include="Apos.WintabDN" Version="0.0.1" />
 		<PackageReference Include="Crayon" Version="2.0.69" />
 		<PackageReference Include="DependencyPropertyGenerator" Version="1.5.0">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="DotNetProjects.SVGImage" Version="5.2.9" />
 		<PackageReference Include="FontAwesome.Sharp" Version="6.6.0" />
@@ -78,12 +77,8 @@
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.13.0" />
 		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3124.44" />
 		<PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.183">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="PropertyChanged.SourceGenerator" Version="1.1.1">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="Serilog.Sinks.Debug" Version="3.0.0" />
 		<PackageReference Include="SharpDX" Version="4.2.0" />
@@ -94,8 +89,8 @@
 		<PackageReference Include="SixLabors.ImageSharp" Version="3.1.11" />
 		<PackageReference Include="SixLabors.ImageSharp.Drawing" Version="2.1.7" />
 		<PackageReference Include="StyleCop.Analyzers.Unstable" Version="1.2.0.556">
-		  <PrivateAssets>all</PrivateAssets>
-		  <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+			<PrivateAssets>all</PrivateAssets>
+			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
 		<PackageReference Include="System.Net.Http" Version="4.3.4" />
 		<PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
@@ -103,7 +98,7 @@
 	</ItemGroup>
 
 	<PropertyGroup>
-   		<DefineConstants>DALAMUD</DefineConstants>
+		<DefineConstants>DALAMUD</DefineConstants>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -152,7 +147,9 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <ProjectReference Include="..\Lib\WpfUtils\WpfUtils.csproj" />
+		<ProjectReference Include="..\Lib\WpfUtils\WpfUtils.csproj" />
+
+		<ProjectReference Include="..\StudioFourteen.Generators\StudioFourteen.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 
 </Project>

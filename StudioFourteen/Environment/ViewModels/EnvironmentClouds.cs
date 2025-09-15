@@ -16,17 +16,16 @@
 namespace StudioFourteen.Environment;
 
 using System.Numerics;
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Interop.Structs.Environment;
 
 public partial class EnvironmentClouds : EnvironmentComponentBase
 {
-	[Notify] private Vector3 cloudColor;
-	[Notify] private Vector3 color2;
-	[Notify] private float gradient;
-	[Notify] private float sideHeight;
-	[Notify] private uint cloudTexture;
-	[Notify] private uint cloudSideTexture;
+	[Bind] public partial Vector3 CloudColor { get; set; }
+	[Bind] public partial Vector3 Color2 { get; set; }
+	[Bind] public partial float Gradient { get; set; }
+	[Bind] public partial float SideHeight { get; set; }
+	[Bind] public partial uint CloudTexture { get; set; }
+	[Bind] public partial uint CloudSideTexture { get; set; }
 
 	public unsafe override void ReadFrom(EnvState* pModel)
 	{

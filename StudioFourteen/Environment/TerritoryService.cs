@@ -15,7 +15,6 @@
 
 namespace StudioFourteen.Environment;
 
-using PropertyChanged.SourceGenerator;
 using FFXIVClientStructs.FFXIV.Client.UI.Agent;
 using StudioFourteen.Plugin;
 using System;
@@ -27,14 +26,14 @@ using StudioFourteen.GameData.Library;
 public partial class TerritoryService
 	: ServiceBase
 {
-	[Notify] private bool isInTitleScreen;
-	[Notify] private bool canChangeTerritory;
-	[Notify] private TerritoryTypeLibraryEntry? currentTerritory;
-
 	private bool isReadingTerritory = false;
 
 	public delegate void TerritoryChangedDelegate(TerritoryTypeLibraryEntry? newTerritory);
 	public event TerritoryChangedDelegate? TerritoryChanged;
+
+	[Bind] public partial bool IsInTitleScreen { get; set; }
+	[Bind] public partial bool CanChangeTerritory { get; set; }
+	[Bind] public partial TerritoryTypeLibraryEntry? CurrentTerritory { get; set; }
 
 	public override void Attach()
 	{

@@ -16,16 +16,15 @@
 namespace StudioFourteen.Environment;
 
 using System.Numerics;
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Interop.Structs.Environment;
 
 public partial class EnvironmentFog : EnvironmentComponentBase
 {
-	[Notify] private Vector4 color;
-	[Notify] private float distance;
-	[Notify] private float thickness;
-	[Notify] private float opacity;
-	[Notify] private float skyVisibility;
+	[Bind] public partial Vector4 Color { get; set; }
+	[Bind] public partial float Distance { get; set; }
+	[Bind] public partial float Thickness { get; set; }
+	[Bind] public partial float Opacity { get; set; }
+	[Bind] public partial float SkyVisibility { get; set; }
 
 	public unsafe override void ReadFrom(EnvState* pModel)
 	{

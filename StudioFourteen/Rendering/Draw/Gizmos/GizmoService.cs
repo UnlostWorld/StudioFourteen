@@ -17,7 +17,6 @@ namespace StudioFourteen.Rendering.Draw.Gizmos;
 
 using System.Collections.Generic;
 using StudioFourteen.Services;
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Rendering.Draw.Gizmos.Transforms;
 using StudioFourteen.Scene;
 
@@ -29,11 +28,11 @@ public partial class GizmoService : ServiceBase
 	private readonly GridGizmo grid = new();
 	private readonly SelectionGizmo selection = new();
 
-	[Notify] private bool gizmoControlPanelOpen;
-
 	public delegate void GizmoChangedDelegate(GizmoBase gizmo);
 	public event GizmoChangedDelegate? GizmoAdded;
 	public event GizmoChangedDelegate? GizmoRemoved;
+
+	[Bind] public partial bool GizmoControlPanelOpen { get; set; }
 
 	public override void Attach()
 	{

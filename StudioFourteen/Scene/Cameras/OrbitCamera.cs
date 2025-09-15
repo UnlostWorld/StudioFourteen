@@ -58,14 +58,11 @@ public partial class OrbitCamera : Camera
 
 	private float actualDistance;
 
-	[Notify] private Vector3 target;
-	[Notify] private float distance;
-	[Notify] private Vector2 angle;
-	[Notify] private Quaternion rotation;
-
-	[PropertyAttribute("[Newtonsoft.Json.JsonIgnore]")]
-	[Notify(Setter.Private)]
-	private float groupPoseRollAdjust;
+	[Bind] public partial Vector3 Target { get; set; }
+	[Bind] public partial float Distance { get; set; }
+	[Bind] public partial Vector2 Angle { get; set; }
+	[Bind] public partial Quaternion Rotation { get; set; }
+	[Bind] public partial float GroupPoseRollAdjust { get; set; }
 
 	public override string TypeName => Resources.Find("LOC_OrbitCamera", "Orbit");
 
@@ -82,8 +79,8 @@ public partial class OrbitCamera : Camera
 		}
 		else
 		{
-			Vector3 targetPos = currentState.Position + Vector3.Transform(new Vector3(this.distance, 0, 0), currentState.Rotation);
-			this.target = targetPos;
+			Vector3 targetPos = currentState.Position + Vector3.Transform(new Vector3(this.Distance, 0, 0), currentState.Rotation);
+			this.Target = targetPos;
 
 			if (this.Services.Camera.InitialCamera != null)
 			{
@@ -121,7 +118,7 @@ public partial class OrbitCamera : Camera
 
 		this.desiredMove = this.moveListener.Value;
 		this.desiredRot = this.panListener.Value / 2;
-		this.Distance = Math.Max(this.distance + this.zoomListener.Value, 0.1f);
+		this.Distance = Math.Max(this.Distance + this.zoomListener.Value, 0.1f);
 		this.Angle = MathUtility.Wrap(this.Angle + this.rotateListener.Value);
 	}
 
@@ -140,7 +137,7 @@ public partial class OrbitCamera : Camera
 		this.Rotation = Quaternion.Multiply(this.Rotation, y);
 		this.desiredRot = Vector3.Zero;
 
-		this.actualDistance = float.Lerp(this.actualDistance, this.distance, deltaTime * 8);
+		this.actualDistance = float.Lerp(this.actualDistance, this.Distance, deltaTime * 8);
 	}
 
 	public unsafe override void UpdateGameCamera(GameCameraEx* camera)
@@ -149,23 +146,23 @@ public partial class OrbitCamera : Camera
 		this.GroupPoseRollAdjust = camera->Rotation * QuaternionExtensions.Rad2Deg;
 
 		camera->Angle = this.Angle * QuaternionExtensions.Deg2Rad;
-		camera->Camera.Distance = this.distance;
+		camera->Camera.Distance = this.Distance;
 	}
 
 	public override void Calculate(ref CameraState state, Camera? blend, float blendWeight)
 	{
 		base.Calculate(ref state, blend, blendWeight);
 
-		Vector3 targetPos = this.target;
+		Vector3 targetPos = this.Target;
 		Quaternion lookRot = this.GetLookRotation();
 		Quaternion rotation = this.Rotation;
 		float distance = this.actualDistance;
 
 		if (blend is OrbitCamera blendOrbit)
 		{
-			targetPos = Vector3.Lerp(targetPos, blendOrbit.target, blendWeight);
+			targetPos = Vector3.Lerp(targetPos, blendOrbit.Target, blendWeight);
 			lookRot = Quaternion.Lerp(lookRot, blendOrbit.GetLookRotation(), blendWeight);
-			distance = float.Lerp(distance, blendOrbit.distance, blendWeight);
+			distance = float.Lerp(distance, blendOrbit.Distance, blendWeight);
 			rotation = Quaternion.Lerp(rotation, blendOrbit.Rotation, blendWeight);
 		}
 
@@ -185,7 +182,7 @@ public partial class OrbitCamera : Camera
 
 	public Vector3 GetCameraPosition()
 	{
-		Vector3 targetPos = this.target;
+		Vector3 targetPos = this.Target;
 		Quaternion rot = this.GetLookRotation();
 		Vector3 forward = Vector3.Transform(new(1, 0, 0), rot);
 		Vector3 position = targetPos + (forward * -this.actualDistance);
@@ -196,9 +193,9 @@ public partial class OrbitCamera : Camera
 	public Quaternion GetLookRotation()
 	{
 		return Quaternion.CreateFromYawPitchRoll(
-			(this.angle.X + 90) * QuaternionExtensions.Deg2Rad,
+			(this.Angle.X + 90) * QuaternionExtensions.Deg2Rad,
 			this.GroupPoseRollAdjust * QuaternionExtensions.Deg2Rad,
-			this.angle.Y * QuaternionExtensions.Deg2Rad);
+			this.Angle.Y * QuaternionExtensions.Deg2Rad);
 	}
 
 	public Quaternion GetCameraRotation()

@@ -20,22 +20,18 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using DependencyPropertyGenerator;
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.AIO;
 using StudioFourteen.Panels;
 using StudioFourteen.Settings;
 using WpfUtils.Commands;
+
 using Panel = StudioFourteen.Panels.Panel;
 
 [DependencyProperty<bool>("IsOpen")]
 [DependencyProperty<PanelContextBase>("Context")]
+[NotifyPropertyChanged]
 public partial class LauncherMenu : Control
 {
-	[Notify] private bool isStudioOpen;
-	[Notify] private bool isInGPose = false;
-	[Notify] private bool isGPoseSettingsOpen = false;
-	[Notify] private bool showAioButton = true;
-
 	public LauncherMenu()
 	{
 		this.Loaded += this.OnLoaded;
@@ -44,10 +40,15 @@ public partial class LauncherMenu : Control
 		this.OpenAioCommand = new SimpleCommand(this.OpenAio);
 	}
 
+	[Bind] public partial bool IsStudioOpen { get; set; }
+	[Bind] public partial bool IsInGPose { get; set; }
+	[Bind] public partial bool IsGPoseSettingsOpen { get; set; }
+	[Bind] public partial bool ShowAioButton { get; set; }
+
 	public ICommand OpenAioCommand { get; init; }
 
 	protected ServiceManager Services => ServiceManager.Instance;
-	protected SettingsService.Configuration Configuration => this.Services.Settings.Current;
+	protected Configuration Configuration => this.Services.Settings.Current;
 
 	public override void OnApplyTemplate()
 	{
@@ -63,7 +64,7 @@ public partial class LauncherMenu : Control
 
 		this.IsInGPose = this.Services.GroupPose.IsGroupPosing;
 		this.IsGPoseSettingsOpen = this.Services.GroupPose.IsGroupPoseSettingsWindowVisible;
-		this.ShowAioButton = this.Services.Settings.Current.AllInOne == SettingsService.Configuration.AioModes.Optional;
+		this.ShowAioButton = this.Services.Settings.Current.AllInOne == Configuration.AioModes.Optional;
 
 		this.OnStudioStateChanged();
 	}

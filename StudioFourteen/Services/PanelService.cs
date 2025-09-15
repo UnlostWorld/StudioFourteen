@@ -179,7 +179,7 @@ public class PanelService : ServiceBase
 	private void CheckTargetBar()
 	{
 		bool enableTargetBar = this.Settings.EnableTargetBar;
-		enableTargetBar &= this.Settings.AllInOne != SettingsService.Configuration.AioModes.Always;
+		enableTargetBar &= this.Settings.AllInOne != Configuration.AioModes.Always;
 		this.GamePanels.SetIsOpen<SelectionPanel>(enableTargetBar, false);
 	}
 

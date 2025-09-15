@@ -43,14 +43,14 @@ public interface IDragSceneInstance
 
 public partial class DragAndDropService : ServiceBase
 {
-	[Notify] private bool isDragging;
-	[Notify] private IDraggable? currentDragObject;
-
 	private DragAndDropOperation? currentOperation;
 	private DragObjectVisual? currentVisual;
 
 	private object? dragOperationIconNo;
 	private object? dragOperationIconAssign;
+
+	[Bind] public partial bool IsDragging { get; set; }
+	[Bind] public partial IDraggable? CurrentDragObject { get; set; }
 
 	public override Task Start()
 	{

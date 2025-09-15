@@ -21,7 +21,6 @@ using System.Numerics;
 using System.Threading.Tasks;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.Havok.Animation.Rig;
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Posing;
 using StudioFourteen.Scene.Characters.Skeletons;
 using StudioFourteen.Services;
@@ -38,8 +37,6 @@ public partial class Skeleton : GameObject
 
 	private bool hasGenerated = false;
 
-	[Notify] private bool enablePosing = false;
-
 	public Skeleton(int objectIndex)
 		: base(objectIndex)
 	{
@@ -47,11 +44,13 @@ public partial class Skeleton : GameObject
 		this.Services.Skeletons.AddSkeleton(this);
 
 		this.Gizmos.Add(new SkeletonGizmo(this));
+		this.Bones = new();
 
 		this.EnablePosing = this.ObjectIndex == 0 || this.ObjectIndex == GroupPoseService.GPoseFirstCharacter;
 	}
 
-	public List<SkeletonBone> Bones { get; init; } = new();
+	[Bind] public partial bool EnablePosing { get; set; }
+	public List<SkeletonBone> Bones { get; init; }
 
 	public override void Dispose()
 	{

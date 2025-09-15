@@ -21,8 +21,13 @@ using System.Threading.Tasks;
 
 public partial class LongTaskWindow : Panel
 {
-	[Notify] private string status = string.Empty;
-	[Notify] private double? progress = null;
+	public LongTaskWindow()
+	{
+		this.Status = string.Empty;
+	}
+
+	[Bind] public partial string Status { get; set; }
+	[Bind] public partial double? Progress { get; set; }
 
 	public static async Task<LongTaskWindow?> Show()
 	{

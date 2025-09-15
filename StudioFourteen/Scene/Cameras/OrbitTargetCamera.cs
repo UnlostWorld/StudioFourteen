@@ -15,7 +15,6 @@
 
 namespace StudioFourteen.Scene.Cameras;
 
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Scene.GameObjects;
 using System.Numerics;
 
@@ -23,8 +22,14 @@ public partial class OrbitTargetCamera : OrbitCamera
 {
 	private Vector3 currentTargetPosition;
 
-	[Notify] private Vector3 targetOffset = new(0, 0, 0);
-	[Notify] private float lerpSpeed = 2;
+	public OrbitTargetCamera()
+	{
+		this.TargetOffset = Vector3.Zero;
+		this.LerpSpeed = 2;
+	}
+
+	[Bind] public partial Vector3 TargetOffset { get; set; }
+	[Bind] public partial float LerpSpeed { get; set; }
 
 	public override string TypeName => Resources.Find("LOC_OrbitTargetCamera", "Orbit Target");
 
@@ -58,7 +63,7 @@ public partial class OrbitTargetCamera : OrbitCamera
 		if (this.Target == Vector3.Zero)
 			this.Target = this.currentTargetPosition;
 
-		this.Target = Vector3.Lerp(this.Target, this.currentTargetPosition + this.TargetOffset, deltaTime * this.lerpSpeed);
+		this.Target = Vector3.Lerp(this.Target, this.currentTargetPosition + this.TargetOffset, deltaTime * this.LerpSpeed);
 
 		base.Tick(deltaTime);
 	}

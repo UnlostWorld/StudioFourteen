@@ -15,7 +15,6 @@
 
 namespace StudioFourteen.Selection;
 
-using StudioFourteen.History;
 using StudioFourteen.Scene;
 using StudioFourteen.Scene.GameObjects;
 using StudioFourteen.Services;
@@ -77,7 +76,6 @@ public partial class SelectionService : ServiceBase
 			return;
 
 		this.lastSelectionName = this.selection?.Name ?? "Nothing";
-		this.Services.History.RecordChange(this, $"Change");
 
 		this.selection?.OnSelected(false);
 		this.selection = newSelection;
@@ -101,7 +99,6 @@ public partial class SelectionService : ServiceBase
 		}
 
 		this.SelectionChanged?.Invoke(oldSelection, newSelection, source);
-		this.RaisePropertyChanged();
 
 		lock (this.selections)
 		{
@@ -138,20 +135,12 @@ public partial class SelectionService : ServiceBase
 		this.Hover?.OnHovered(true);
 
 		this.HoverChanged?.Invoke(oldHover, newHover, source);
-		this.RaisePropertyChanged();
+		this.NotifyPropertyChanged(nameof(this.Hover));
 	}
 
 	public void ClearHover()
 	{
 		this.HoverSelection(null, null);
-	}
-
-	public override void FinalizeHistoryOperation(ref Operation operation)
-	{
-		base.FinalizeHistoryOperation(ref operation);
-
-		string? newSelectionName = this.selection?.Name;
-		operation.Description = $"{this.lastSelectionName} > {newSelectionName}";
 	}
 
 	public override async Task Start()
@@ -226,7 +215,7 @@ public partial class SelectionService : ServiceBase
 
 	private void CheckWidget()
 	{
-		bool showWidget = this.Settings.WidgetMode != SettingsService.Configuration.WidgetModes.Disabled;
+		bool showWidget = this.Settings.WidgetMode != Configuration.WidgetModes.Disabled;
 		this.Services.Panels.GamePanels.SetIsOpen<Widget>(showWidget, false);
 	}
 }

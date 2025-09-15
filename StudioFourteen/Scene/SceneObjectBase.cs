@@ -18,10 +18,8 @@ namespace StudioFourteen.Scene;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Controllers;
 using StudioFourteen.DragAndDrop;
-using StudioFourteen.Mvm;
 using StudioFourteen.Rendering.Draw.Gizmos;
 using StudioFourteen.Utilities;
 using WpfUtils.Commands;
@@ -31,21 +29,25 @@ public interface ICreatableSceneObject : IDraggable
 	Task Create();
 }
 
-public abstract partial class SceneObjectBase : ViewModel, IDisposable
+[NotifyPropertyChanged]
+[Services]
+[Logger]
+public abstract partial class SceneObjectBase : IDisposable
 {
-	[Notify] private string name = string.Empty;
-	[Notify(Setter.Protected)] private string? subtitle;
-	[Notify(Setter.Protected)] private string? description;
-	[Notify(Setter.Protected)] private bool isReady = false;
-	[Notify(Setter.Private)] private bool isHovered;
-	[Notify(Setter.Private)] private bool isSelected;
-
 	private SceneObjectControllerBase? controller;
 
 	public SceneObjectBase()
 	{
+		this.Name = string.Empty;
 		this.ResetCommand = new(this.Reset);
 	}
+
+	[Bind] public partial string Name { get; set; }
+	[Bind] public partial string? Subtitle { get; set; }
+	[Bind] public partial string? Description { get; set; }
+	[Bind] public partial bool IsReady { get; set; }
+	[Bind] public partial bool IsHovered { get; set; }
+	[Bind] public partial bool IsSelected { get; set; }
 
 	public abstract string Id { get; }
 	public abstract object? Icon { get; }

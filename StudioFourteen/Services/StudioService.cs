@@ -32,14 +32,14 @@ public partial class StudioService : ServiceBase
 {
 	private readonly Input0DListener hideUiListener = new(InputAction.HideUi);
 
-	[Notify] private bool isOpen;
-	[Notify] private bool isOpenAndInGPose;
-	[Notify] private bool hideUi;
-
 	public delegate void OnStateChangedDelegate();
 
 	public event OnStateChangedDelegate? Opening;
 	public event OnStateChangedDelegate? Closing;
+
+	[Bind] public partial bool IsOpen { get; set; }
+	[Bind] public partial bool IsOpenAndInGPose { get; set; }
+	[Bind] public partial bool HideUi { get; set; }
 
 	public override async Task Initialize()
 	{
@@ -85,8 +85,8 @@ public partial class StudioService : ServiceBase
 			this.Services.Attach();
 
 			this.IsOpen = true;
-			this.RaisePropertyChanged(nameof(StudioService.IsOpen));
-			this.RaisePropertyChanged(nameof(StudioService.IsOpenAndInGPose));
+			this.NotifyPropertyChanged(nameof(StudioService.IsOpen));
+			this.NotifyPropertyChanged(nameof(StudioService.IsOpenAndInGPose));
 
 			this.Opening?.Invoke();
 
@@ -114,8 +114,8 @@ public partial class StudioService : ServiceBase
 			this.IsOpen = false;
 
 			this.Services.Detach();
-			this.RaisePropertyChanged(nameof(StudioService.IsOpen));
-			this.RaisePropertyChanged(nameof(StudioService.IsOpenAndInGPose));
+			this.NotifyPropertyChanged(nameof(StudioService.IsOpen));
+			this.NotifyPropertyChanged(nameof(StudioService.IsOpenAndInGPose));
 
 			this.Closing?.Invoke();
 
@@ -166,7 +166,7 @@ public partial class StudioService : ServiceBase
 
 	private void OnGroupPoseStateChanged(bool newState)
 	{
-		this.IsOpenAndInGPose = this.isOpen && newState;
+		this.IsOpenAndInGPose = this.IsOpen && newState;
 
 		if (!this.IsOpen && this.Services.Settings.Current.OpenGroupPose)
 		{

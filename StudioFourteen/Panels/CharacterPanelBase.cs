@@ -15,7 +15,6 @@
 
 namespace StudioFourteen.Panels;
 
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Selection;
 
@@ -23,12 +22,12 @@ public abstract partial class CharacterPanelBase : Panel
 {
 	private readonly SelectionListener<Character> characterSelectionListener;
 
-	[Notify] private Character? character;
-
 	public CharacterPanelBase()
 	{
 		this.characterSelectionListener = new(this.OnSelectionChanged);
 	}
+
+	[Bind] public partial Character? Character { get; set; }
 
 	protected override void OnOpened()
 	{

@@ -16,20 +16,19 @@
 namespace StudioFourteen.Environment;
 
 using System.Numerics;
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Interop.Structs.Environment;
 
 public partial class EnvironmentDust : EnvironmentComponentBase
 {
-	[Notify] private float intensity;
-	[Notify] private float weight;
-	[Notify] private float spread;
-	[Notify] private float speed;
-	[Notify] private float size;
-	[Notify] private Vector4 color;
-	[Notify] private float glow;
-	[Notify] private float spin;
-	[Notify] private uint textureId;
+	[Bind] public partial float Intensity { get; set; }
+	[Bind] public partial float Weight { get; set; }
+	[Bind] public partial float Spread { get; set; }
+	[Bind] public partial float Speed { get; set; }
+	[Bind] public partial float Size { get; set; }
+	[Bind] public partial Vector4 Color { get; set; }
+	[Bind] public partial float Glow { get; set; }
+	[Bind] public partial float Spin { get; set; }
+	[Bind] public partial uint TextureId { get; set; }
 
 	public unsafe override void ReadFrom(EnvState* pModel)
 	{

@@ -40,14 +40,6 @@ public partial class PhotosService : ServiceBase
 	private readonly CapturePass renderPass = new();
 	private CancellationTokenSource captureCancellation = new();
 
-	[Notify] private bool isPhotoMode;
-	[Notify] private double aspectRatio = 0;
-	[Notify] private uint width = 0;
-	[Notify] private uint height = 0;
-	[Notify] private bool isCapturing = false;
-	[Notify] private CapturePhases capturePhase;
-	[Notify] private string? lastSavedImagePath;
-
 	private CaptureAnimationWindow? animationWindow;
 
 	public delegate Task CapturePhaseChangeDelegate(CapturePhases fromPhase, CapturePhases toPhase, CancellationToken cancellationToken, bool animate);
@@ -139,6 +131,14 @@ public partial class PhotosService : ServiceBase
 
 	public int GuideThickness => 2;
 
+	[Bind] public partial bool IsPhotoMode { get; set; }
+	[Bind] public partial double AspectRatio { get; set; }
+	[Bind] public partial uint Width { get; set; }
+	[Bind] public partial uint Height { get; set; }
+	[Bind] public partial bool IsCapturing { get; set; }
+	[Bind] public partial CapturePhases CapturePhase { get; set; }
+	[Bind] public partial string? LastSavedImagePath { get; set; }
+
 	public override async Task Shutdown()
 	{
 		if (this.animationWindow != null)
@@ -176,7 +176,7 @@ public partial class PhotosService : ServiceBase
 		this.IsCapturing = true;
 		this.captureCancellation = new();
 
-		bool customResolution = this.width > 0 && this.height > 0;
+		bool customResolution = this.Width > 0 && this.Height > 0;
 		uint originalWidth = 0;
 		uint originalHeight = 0;
 		bool success = false;
@@ -195,7 +195,7 @@ public partial class PhotosService : ServiceBase
 				await this.DispatchCapturePhaseChange(CapturePhases.ChangingResolution, animate);
 				await TickService.GameTick();
 
-				success = this.SetResolution(this.width, this.height, out originalWidth, out originalHeight);
+				success = this.SetResolution(this.Width, this.Height, out originalWidth, out originalHeight);
 				if (!success)
 				{
 					this.IsCapturing = false;

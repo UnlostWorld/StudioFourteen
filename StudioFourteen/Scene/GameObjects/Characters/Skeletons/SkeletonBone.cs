@@ -51,7 +51,7 @@ public class SkeletonBone : TransformSceneObjectBase
 		this.BoneReferences = references;
 
 		this.bone = this.BoneReferences[0];
-		this.RaisePropertyChanged(nameof(this.IsReady));
+		this.NotifyPropertyChanged(nameof(this.IsReady));
 
 		this.MirrorMode = this.GetDefaultMirrorMode();
 	}

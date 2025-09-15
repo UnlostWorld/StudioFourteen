@@ -32,10 +32,16 @@ public partial class AioWindow : PanelWindow
 {
 	private static AioWindow? instance;
 
-	[Notify] private Panel? currentPanel;
-	[Notify] private string? currentTitle;
-	[Notify] private bool showTargetBar = false;
-	[Notify] private bool isStudioAttached = false;
+	public AioWindow()
+	{
+		this.ShowTargetBar = false;
+		this.IsStudioAttached = false;
+	}
+
+	[Bind] public partial Panel? CurrentPanel { get; set; }
+	[Bind] public partial string? CurrentTitle { get; set; }
+	[Bind] public partial bool ShowTargetBar { get; set; }
+	[Bind] public partial bool IsStudioAttached { get; set; }
 
 	public static void OpenAio()
 	{
@@ -86,7 +92,7 @@ public partial class AioWindow : PanelWindow
 		if (this.CurrentPanel != null)
 			currentTitle += " - " + this.Services.Panels.GetPanelTitle(this.CurrentPanel.GetType());
 
-		this.ShowTargetBar = this.currentPanel is PosePanel || this.currentPanel is AnimationPanel;
+		this.ShowTargetBar = this.CurrentPanel is PosePanel || this.CurrentPanel is AnimationPanel;
 		this.CurrentTitle = currentTitle;
 
 		return this.CurrentPanel;

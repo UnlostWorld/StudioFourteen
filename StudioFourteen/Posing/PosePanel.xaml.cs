@@ -22,7 +22,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using DependencyPropertyGenerator;
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Library;
 using StudioFourteen.Posing.Shared;
 using StudioFourteen.Scene;
@@ -43,19 +42,20 @@ public partial class PosePanel : Panel
 	private readonly FuncQueue showTooltipQueue;
 	private SceneObjectBase? nextHover;
 
-	[Notify] private Skeleton? skeleton;
-	[Notify] private string revertTooltip = string.Empty;
-	[Notify] private SceneObjectBase? selection;
-	[Notify] private SceneObjectBase? hover;
-	[Notify] private bool isHoverTooltipOpen = false;
-	[Notify] private UIElement? hoverTarget;
-
 	public PosePanel()
 	{
 		this.skeletonSelectionListener = new(this.OnSkeletonSelectionChanged);
 		this.sceneObjectSelectionListener = new(this.OnSceneSelectionChanged);
 		this.showTooltipQueue = new(this.ShowTooltip, 500);
+		this.RevertTooltip = string.Empty;
 	}
+
+	[Bind] public partial Skeleton? Skeleton { get; set; }
+	[Bind] public partial string RevertTooltip { get; set; }
+	[Bind] public partial SceneObjectBase? Selection { get; set; }
+	[Bind] public partial SceneObjectBase? Hover { get; set; }
+	[Bind] public partial bool IsHoverTooltipOpen { get; set; }
+	[Bind] public partial UIElement? HoverTarget { get; set; }
 
 	public int SelectedTab
 	{

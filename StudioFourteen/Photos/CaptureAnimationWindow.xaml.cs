@@ -51,10 +51,6 @@ public partial class CaptureAnimationWindow : PanelWindow
 
 	private readonly MemoryStream previewImageStream = new();
 
-	[Notify] private int captureAngle = 0;
-	[Notify] private bool showCapture = false;
-	[Notify] private BitmapImage? lastImage;
-
 	public CaptureAnimationWindow()
 	{
 		// Capture
@@ -72,6 +68,9 @@ public partial class CaptureAnimationWindow : PanelWindow
 		this.Services.Photos.PhaseChanged += this.OnPhaseChanged;
 	}
 
+	[Bind] public partial int CaptureAngle { get; set; }
+	[Bind] public partial bool ShowCapture { get; set; }
+	[Bind] public partial BitmapImage? LastImage { get; set; }
 	public override bool CanNavigate => false;
 
 	protected override void OnOpened()
