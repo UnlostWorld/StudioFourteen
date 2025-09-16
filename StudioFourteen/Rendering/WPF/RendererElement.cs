@@ -23,6 +23,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Interop;
 using DependencyPropertyGenerator;
+using SharpDX;
 using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using SharpDX.Direct3D9;
@@ -359,7 +360,15 @@ public class WpfRenderer : Renderer
 			};
 
 			Direct3DEx direct3d = new();
-			this.d3d9Device = new(direct3d, 0, DeviceType.Hardware, IntPtr.Zero, deviceFlags, presentParameters);
+			try
+			{
+				this.d3d9Device = new(direct3d, 0, DeviceType.Hardware, IntPtr.Zero, deviceFlags, presentParameters);
+			}
+			catch (SharpDXException dxException)
+			{
+				this.Log.Warning($"Failed to create d3d9 device: {dxException.Message}");
+				return null;
+			}
 		}
 
 		if (this.backBuffer == null)
