@@ -101,14 +101,6 @@ public partial class TickService : ServiceBase
 		if (Plugin.DalamudServices.PluginInterface != null)
 			Plugin.DalamudServices.PluginInterface.UiBuilder.Draw -= this.OnImGuiDraw;
 
-		foreach((Channels chanel, List<Action?> callbacks) in this.tickListeners)
-		{
-			foreach(Action? action in callbacks)
-			{
-				this.Log.Warning($"Tick listener: {action?.Method} on {action?.Target} not removed before shutdown.");
-			}
-		}
-
 		return base.Shutdown();
 	}
 
