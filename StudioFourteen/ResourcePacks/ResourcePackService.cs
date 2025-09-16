@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.ResourcePacks;
 
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
@@ -64,14 +65,24 @@ public partial class ResourcePackService : ServiceBase
 
 	public void Apply()
 	{
-		foreach (ResourcePackReference pack in this.Packs)
+		try
 		{
-			Resources.UnMergeDictionary(new(pack.Path));
-
-			if (pack.Enabled)
+			foreach (ResourcePackReference pack in this.Packs)
 			{
-				Resources.MergeDictionary(new(pack.Path));
+				Resources.UnMergeDictionary(new(pack.Path));
+
+				if (pack.Enabled)
+				{
+					Resources.MergeDictionary(new(pack.Path));
+				}
 			}
+		}
+		catch (TaskCanceledException)
+		{
+		}
+		catch (Exception ex)
+		{
+			this.Log.Error(ex, "Error applying resource packs");
 		}
 
 		this.Services.Panels.RestartPanels().Run();

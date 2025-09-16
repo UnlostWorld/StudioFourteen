@@ -18,6 +18,7 @@ namespace StudioFourteen;
 using FFXIVClientStructs.FFXIV.Common.Lua;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -96,17 +97,23 @@ public partial class Resources : ResourceDictionary
 		{
 			if (resourceReference.TryGetTarget(out Resources? resource) && resource != null)
 			{
-				resource.ownerDispatcher?.Invoke(() =>
+				try
 				{
-					foreach (ResourceDictionary dict in resource.MergedDictionaries)
+					resource.ownerDispatcher?.Invoke(() =>
 					{
-						if (dict.Source == uri)
+						foreach (ResourceDictionary dict in resource.MergedDictionaries)
 						{
-							resource.MergedDictionaries.Remove(dict);
-							break;
+							if (dict.Source == uri)
+							{
+								resource.MergedDictionaries.Remove(dict);
+								break;
+							}
 						}
-					}
-				});
+					});
+				}
+				catch (TaskCanceledException)
+				{
+				}
 			}
 		}
 	}
@@ -119,12 +126,18 @@ public partial class Resources : ResourceDictionary
 		{
 			if (resourceReference.TryGetTarget(out Resources? resource) && resource != null)
 			{
-				resource.ownerDispatcher?.Invoke(() =>
+				try
 				{
-					ResourceDictionary merged = new();
-					merged.Source = uri;
-					resource.MergedDictionaries.Add(merged);
-				});
+					resource.ownerDispatcher?.Invoke(() =>
+					{
+						ResourceDictionary merged = new();
+						merged.Source = uri;
+						resource.MergedDictionaries.Add(merged);
+					});
+				}
+				catch (TaskCanceledException)
+				{
+				}
 			}
 		}
 	}
