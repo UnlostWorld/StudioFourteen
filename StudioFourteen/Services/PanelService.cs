@@ -112,7 +112,14 @@ public class PanelService : ServiceBase
 
 	private async Task StopPanels()
 	{
-		this.launcher?.Dispatcher.Invoke(this.launcher.Close);
+		try
+		{
+			this.launcher?.Dispatcher.Invoke(this.launcher.Close);
+		}
+		catch (Exception ex)
+		{
+			this.Log.Error(ex, "Error closing launcher");
+		}
 
 		foreach (PanelContextBase context in this.contexts)
 		{
