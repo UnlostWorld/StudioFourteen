@@ -17,6 +17,7 @@ namespace StudioFourteen.Rendering.Draw.Gizmos;
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using Serilog;
 using WpfUtils.Extensions;
@@ -74,15 +75,21 @@ public partial class GizmoControlPanel : UserControl
 
 		if (this.Gizmos.Contains(gizmo))
 		{
-			this.Dispatcher.BeginInvoke(() =>
+			try
 			{
-				this.Gizmos.Remove(gizmo);
-
-				if (this.gizmoLookup[gizmoType].Count > 0)
+				this.Dispatcher.BeginInvoke(() =>
 				{
-					this.Gizmos.Add(this.gizmoLookup[gizmoType][0]);
-				}
-			});
+					this.Gizmos.Remove(gizmo);
+
+					if (this.gizmoLookup[gizmoType].Count > 0)
+					{
+						this.Gizmos.Add(this.gizmoLookup[gizmoType][0]);
+					}
+				});
+			}
+			catch (TaskCanceledException)
+			{
+			}
 		}
 	}
 }
