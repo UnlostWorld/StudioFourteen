@@ -56,7 +56,10 @@ public partial class Resources : ResourceDictionary
 			resources[key] = value.Invoke();
 		}
 
-		ResourceInstances.Add(new(resources));
+		lock (ResourceInstances)
+		{
+			ResourceInstances.Add(new(resources));
+		}
 
 		return resources;
 	}
@@ -93,7 +96,7 @@ public partial class Resources : ResourceDictionary
 	{
 		PendingMergedDictionaries.Remove(uri);
 
-		foreach (WeakReference<Resources> resourceReference in ResourceInstances)
+		foreach (WeakReference<Resources> resourceReference in ResourceInstances.AsReadOnly())
 		{
 			if (resourceReference.TryGetTarget(out Resources? resource) && resource != null)
 			{
@@ -122,7 +125,7 @@ public partial class Resources : ResourceDictionary
 	{
 		PendingMergedDictionaries.Add(uri);
 
-		foreach (WeakReference<Resources> resourceReference in ResourceInstances)
+		foreach (WeakReference<Resources> resourceReference in ResourceInstances.AsReadOnly())
 		{
 			if (resourceReference.TryGetTarget(out Resources? resource) && resource != null)
 			{
@@ -146,7 +149,7 @@ public partial class Resources : ResourceDictionary
 	{
 		AddResource[key] = value;
 
-		foreach (WeakReference<Resources> resourceReference in ResourceInstances)
+		foreach (WeakReference<Resources> resourceReference in ResourceInstances.AsReadOnly())
 		{
 			if (resourceReference.TryGetTarget(out Resources? resource) && resource != null)
 			{
@@ -162,7 +165,7 @@ public partial class Resources : ResourceDictionary
 	{
 		AddResource.Remove(key);
 
-		foreach (WeakReference<Resources> resourceReference in ResourceInstances)
+		foreach (WeakReference<Resources> resourceReference in ResourceInstances.AsReadOnly())
 		{
 			if (resourceReference.TryGetTarget(out Resources? resource) && resource != null)
 			{
