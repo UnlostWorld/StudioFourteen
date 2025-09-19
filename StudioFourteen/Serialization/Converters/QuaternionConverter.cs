@@ -17,7 +17,6 @@ namespace StudioFourteen.Serialization.Converters;
 
 using Newtonsoft.Json;
 using System;
-using System.Globalization;
 using System.Numerics;
 
 public class QuaternionConverter : JsonConverter<Quaternion>

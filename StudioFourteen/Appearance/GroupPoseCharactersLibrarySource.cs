@@ -14,16 +14,16 @@
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
 namespace StudioFourteen.Appearance;
+
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using StudioFourteen;
 using StudioFourteen.Library.Sources;
-using StudioFourteen.Plugin;
 using StudioFourteen.Services;
+using StudioFourteen.Xaml;
 using System.Threading.Tasks;
 
 public class GroupPoseCharactersLibrarySource : SourceBase
 {
-	public override string Name => Resources.Find("LOC_Library_GroupPoseCharactersLibrarySource", "GPose Characters");
+	public override string Name => XamlResources.Find("LOC_Library_GroupPoseCharactersLibrarySource", "GPose Characters");
 
 	public void OnEnterGroupPose()
 	{

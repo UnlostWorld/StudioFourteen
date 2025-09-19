@@ -16,7 +16,6 @@
 namespace StudioFourteen.Rendering;
 
 using StudioFourteen.Content;
-using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Meshes.Polygon;
 using StudioFourteen.Rendering.MeshGenerators;
 

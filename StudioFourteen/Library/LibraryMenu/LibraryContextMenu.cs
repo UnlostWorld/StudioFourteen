@@ -18,15 +18,13 @@ namespace StudioFourteen.Library.LibraryMenu;
 using DependencyPropertyGenerator;
 using Serilog;
 using StudioFourteen.Context;
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using StudioFourteen;
-using StudioFourteen.Controls;
+using StudioFourteen.Xaml;
 using StudioFourteen.Extensions;
-using StudioFourteen.Utils;
 
 [DependencyProperty<LibraryEntryBase>("Entry")]
 [DependencyProperty<string>("MultiSelectLabel")]

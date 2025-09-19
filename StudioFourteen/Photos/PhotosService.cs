@@ -16,7 +16,6 @@
 namespace StudioFourteen.Photos;
 
 using StudioFourteen.Services;
-using PropertyChanged.SourceGenerator;
 using FFXIVClientStructs.FFXIV.Client.UI;
 using StudioFourteen.Extensions;
 using StudioFourteen.Mvm;

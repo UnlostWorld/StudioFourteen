@@ -21,7 +21,6 @@ using StudioFourteen.Mvm;
 using System.Windows;
 using StudioFourteen;
 using System;
-using StudioFourteen.Extensions;
 using System.Windows.Input;
 using System.Windows.Media;
 using DependencyPropertyGenerator;

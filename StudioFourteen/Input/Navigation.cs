@@ -14,6 +14,7 @@
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
 namespace StudioFourteen.Input;
+
 using Serilog;
 using StudioFourteen.Panels;
 using System;
@@ -24,7 +25,6 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using StudioFourteen;
-using StudioFourteen.Extensions;
 
 public partial class Navigation
 {

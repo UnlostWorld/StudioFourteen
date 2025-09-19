@@ -16,7 +16,6 @@
 namespace StudioFourteen.Appearance.Customize;
 
 using Dalamud.Game.ClientState.Objects.Enums;
-using Lumina.Excel.Sheets;
 
 public class GenderMenu : MenuViewModel
 {

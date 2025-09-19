@@ -15,14 +15,12 @@
 
 namespace StudioFourteen.Services;
 
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Plugin;
 using StudioFourteen.AIO;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using StudioFourteen.Input;
-using StudioFourteen.Extensions;
 using StudioFourteen.GameData.Library;
 using StudioFourteen.Appearance;
 using StudioFourteen.Scene.GameObjects.Characters;

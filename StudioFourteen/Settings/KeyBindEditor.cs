@@ -18,7 +18,6 @@ namespace StudioFourteen.Settings;
 using DependencyPropertyGenerator;
 using StudioFourteen.Input;
 using System.Windows.Controls;
-using System.Windows.Input;
 
 [DependencyProperty<Bind>("Bind")]
 public partial class KeyBindEditor : TextBox

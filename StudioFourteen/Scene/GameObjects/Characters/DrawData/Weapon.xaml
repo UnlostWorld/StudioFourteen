@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:controls="clr-namespace:StudioFourteen.Controls"
+	xmlns:s14="clr-namespace:StudioFourteen.Xaml"
 	xmlns:library="clr-namespace:StudioFourteen.Library"
 	xmlns:libraryData="clr-namespace:StudioFourteen.GameData.Library"
 	xmlns:librarySelector="clr-namespace:StudioFourteen.Library.Selector"
@@ -25,13 +25,13 @@
 					Value="{Binding Item}">
 					<librarySelector:LibrarySelectorButton.IconBackground>
 						<Grid>
-							<controls:XivTexImage
+							<s14:XivTexImage
 								Margin="0"
 								Opacity="0.5"
 								Path="ui/uld/icona_frame_hr1.tex"
 								Rect="0, 192, 96, 96" />
 
-							<controls:XivTexImage
+							<s14:XivTexImage
 								Margin="6"
 								Path="ui/uld/character_hr1.tex"
 								Rect="{Binding SlotBackgroundRect}" />
@@ -50,7 +50,7 @@
 
 					<librarySelector:LibrarySelectorButton.IconBackground>
 						<Grid>
-							<controls:XivTexImage
+							<s14:XivTexImage
 								Margin="0"
 								Opacity="0.5"
 								Path="ui/uld/icona_frame_hr1.tex"
@@ -70,7 +70,7 @@
 					Value="{Binding Stain1}">
 					<librarySelector:LibrarySelectorButton.IconBackground>
 						<Grid>
-							<controls:XivTexImage
+							<s14:XivTexImage
 								Margin="0"
 								Opacity="0.5"
 								Path="ui/uld/icona_frame_hr1.tex"

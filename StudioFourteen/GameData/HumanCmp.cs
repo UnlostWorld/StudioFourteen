@@ -21,7 +21,6 @@ using Dalamud.Game.ClientState.Objects.Enums;
 using Lumina.Data;
 using Serilog;
 using System.Windows.Media;
-using Lumina.Excel.Sheets;
 
 using CharaMakeType = StudioFourteen.GameData.Sheets.CharaMakeType;
 

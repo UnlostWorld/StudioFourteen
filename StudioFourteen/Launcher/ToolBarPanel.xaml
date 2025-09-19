@@ -2,14 +2,14 @@
 	x:Class="StudioFourteen.Launcher.ToolBarPanel"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:converters="clr-namespace:StudioFourteen.Converters"
+	xmlns:converters="clr-namespace:StudioFourteen.Xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:gizmos="clr-namespace:StudioFourteen.Rendering.Draw.Gizmos"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:mvm="clr-namespace:StudioFourteen.Mvm"
 	xmlns:sys="clr-namespace:System;assembly=mscorlib"
 	xmlns:windows="clr-namespace:StudioFourteen.Panels"
-	xmlns:controls="clr-namespace:StudioFourteen.Controls"
+	xmlns:s14="clr-namespace:StudioFourteen.Xaml"
 	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	Width="600"
 	HorizontalAlignment="Right"
@@ -36,13 +36,15 @@
 
 			<ItemsControl.ItemTemplate>
 				<DataTemplate>
-					<controls:SwitchSelector Grid.Column="0" ItemsSource="{Binding Gizmos}" SelectedValue="{Binding Current}" Visibility="{Binding IsVisible, Converter={StaticResource B2V}}">
-						<controls:SwitchSelector.ItemTemplate>
+					<s14:SwitchSelector Grid.Column="0" ItemsSource="{Binding Gizmos}"
+						SelectedValue="{Binding Current}"
+						Visibility="{Binding IsVisible, Converter={StaticResource B2V}}">
+						<s14:SwitchSelector.ItemTemplate>
 							<DataTemplate>
 								<icons:IconView Icon="{Binding Icon}" Width="24" ToolTip="{Binding Name}"/>
 							</DataTemplate>
-						</controls:SwitchSelector.ItemTemplate>
-					</controls:SwitchSelector>
+						</s14:SwitchSelector.ItemTemplate>
+					</s14:SwitchSelector>
 				</DataTemplate>
 			</ItemsControl.ItemTemplate>
 		</ItemsControl>
@@ -64,18 +66,18 @@
 					Style="{DynamicResource IconToggleButton}"
 					ToolTip="{DynamicResource LOC_Gizmos}" />
 
-				<controls:PopOut
+				<s14:PopOut
 					IsOpen="{Binding IsChecked, ElementName=GizmoToggle}"
 					PlacementTarget="{Binding ElementName=GizmoToggle}"
 					StaysOpen="False"
 					Style="{DynamicResource PopOut}">
 
-					<controls:PopOut.Header>
+					<s14:PopOut.Header>
 						<TextBlock Foreground="{DynamicResource ForegroundLightBrush}" Text="{DynamicResource LOC_GizmosHeader}" />
-					</controls:PopOut.Header>
+					</s14:PopOut.Header>
 
 					<gizmos:GizmoControlPanel />
-				</controls:PopOut>
+				</s14:PopOut>
 
 				<!--<Button
 					Width="32"

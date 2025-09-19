@@ -7,7 +7,7 @@
 	xmlns:local="clr-namespace:StudioFourteen.Studio"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
-	xmlns:controls="clr-namespace:StudioFourteen.Controls"
+	xmlns:s14="clr-namespace:StudioFourteen.Xaml"
 	Width="400"
 	MaxHeight="800"
 	d:Background="{DynamicResource BackgroundBrush}"

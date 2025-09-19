@@ -1,0 +1,166 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:converters="clr-namespace:StudioFourteen.Xaml"
+	xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
+	xmlns:s14="clr-namespace:StudioFourteen.Xaml">
+
+	<converters:StringHasContentToVisibilityConverter x:Key="StringHasContentToVisibility" />
+	<converters:InvertedBoolToVisibilityConverter x:Key="!B2V" />
+
+	<ControlTemplate x:Key="MenuItemTemplate" TargetType="{x:Type MenuItem}">
+		<Grid ClipToBounds="True">
+			<Border
+				x:Name="HoverBorder"
+				Opacity="0"
+				SnapsToDevicePixels="True"
+				Style="{DynamicResource ControlHoverBorder}" />
+
+			<Grid x:Name="Content" Background="Transparent">
+				<Grid Margin="{TemplateBinding Padding}"
+					VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="22" />
+						<ColumnDefinition />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+
+					<ContentPresenter Grid.Column="0" Content="{TemplateBinding Icon}" Margin="2" />
+
+					<ContentPresenter
+						Grid.Column="1"
+						HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+						Content="{TemplateBinding Header}"
+						ContentTemplate="{Binding HeaderTemplate}" />
+
+					<Grid
+						x:Name="ExpandIcon"
+						Grid.Column="2"
+						VerticalAlignment="Center"
+						Visibility="Collapsed">
+
+						<Path
+							Data="M 1,1.5 L 4.5,5 L 8,1.5"
+							HorizontalAlignment="Center"
+							Stroke="{TemplateBinding Foreground}"
+							SnapsToDevicePixels="false"
+							StrokeThickness="2"
+							VerticalAlignment="Center" />
+
+					</Grid>
+
+
+				</Grid>
+			</Grid>
+
+			<s14:PopOut
+				x:Name="PART_Popup"
+				Width="{Binding ActualWidth, ElementName=Content}"
+				Background="{DynamicResource ControlBackgroundBrush}"
+				IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
+				PlacementTarget="{Binding ElementName=Content}"
+				Style="{DynamicResource PopOut}">
+
+				<!--<s14:PopOut.Header>
+					<ContentPresenter
+						Margin="10"
+						HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+						Content="{TemplateBinding Header}"
+						ContentTemplate="{Binding HeaderTemplate}" />
+				</s14:PopOut.Header>-->
+
+				<ItemsPresenter
+					Margin="0"
+					Grid.IsSharedSizeScope="True"
+					KeyboardNavigation.DirectionalNavigation="Cycle"
+					KeyboardNavigation.TabNavigation="Cycle" />
+
+			</s14:PopOut>
+		</Grid>
+
+		<ControlTemplate.Triggers>
+
+			<Trigger Property="Role" Value="TopLevelHeader">
+				<Setter TargetName="ExpandIcon" Property="Visibility" Value="Visible" />
+			</Trigger>
+
+			<Trigger Property="Role" Value="SubMenuHeader">
+				<Setter TargetName="ExpandIcon" Property="Visibility" Value="Visible" />
+			</Trigger>
+
+			<Trigger Property="IsMouseOver" Value="true">
+				<Setter Property="TextBlock.Foreground"
+					Value="{DynamicResource ControlForegroundHighlightBrush}" />
+
+				<Trigger.EnterActions>
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="HoverBorder"
+								Storyboard.TargetProperty="Opacity"
+								To="1"
+								Duration="0:0:0.150">
+								<DoubleAnimation.EasingFunction>
+									<SineEase EasingMode="EaseOut" />
+								</DoubleAnimation.EasingFunction>
+							</DoubleAnimation>
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.EnterActions>
+				<Trigger.ExitActions>
+					<BeginStoryboard>
+						<Storyboard>
+							<DoubleAnimation
+								Storyboard.TargetName="HoverBorder"
+								Storyboard.TargetProperty="Opacity"
+								To="0"
+								Duration="0:0:0.250">
+								<DoubleAnimation.EasingFunction>
+									<SineEase EasingMode="EaseIn" />
+								</DoubleAnimation.EasingFunction>
+							</DoubleAnimation>
+						</Storyboard>
+					</BeginStoryboard>
+				</Trigger.ExitActions>
+			</Trigger>
+			<Trigger Property="IsEnabled" Value="false">
+				<Setter TargetName="Content" Property="Opacity" Value="0.25" />
+			</Trigger>
+		</ControlTemplate.Triggers>
+	</ControlTemplate>
+
+	<Style x:Key="MenuItem" TargetType="{x:Type MenuItem}">
+		<Setter Property="Height" Value="26" />
+		<Setter Property="HorizontalContentAlignment" Value="Left" />
+		<Setter Property="MinWidth" Value="45" />
+		<Setter Property="Padding" Value="6,3,6,3" />
+		<Setter Property="Template" Value="{StaticResource MenuItemTemplate}" />
+		<Setter Property="TextBlock.Foreground" Value="{DynamicResource ForegroundLightBrush}" />
+		<Setter Property="VerticalContentAlignment" Value="Center" />
+	</Style>
+
+	<ControlTemplate x:Key="MenuTemplate" TargetType="{x:Type Menu}">
+		<ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
+			<ItemsPresenter.Resources>
+				<Style TargetType="{x:Type MenuItem}">
+					<Setter Property="Background" Value="Pink" />
+				</Style>
+			</ItemsPresenter.Resources>
+		</ItemsPresenter>
+	</ControlTemplate>
+
+	<Style x:Key="Menu" TargetType="{x:Type Menu}">
+		<Setter Property="Background" Value="Transparent" />
+
+		<Setter Property="ItemsPanel">
+			<Setter.Value>
+				<ItemsPanelTemplate>
+					<StackPanel />
+				</ItemsPanelTemplate>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="Template" Value="{StaticResource MenuTemplate}" />
+	</Style>
+
+</ResourceDictionary>

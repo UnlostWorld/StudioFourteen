@@ -20,9 +20,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Services;
-using StudioFourteen.Extensions;
+using StudioFourteen.Xaml;
 
 public partial class ResourcePackService : ServiceBase
 {
@@ -56,7 +55,7 @@ public partial class ResourcePackService : ServiceBase
 		{
 			if (pack.Enabled)
 			{
-				Resources.MergeDictionary(new(pack.Path));
+				XamlResources.MergeDictionary(new(pack.Path));
 			}
 		}
 
@@ -69,11 +68,11 @@ public partial class ResourcePackService : ServiceBase
 		{
 			foreach (ResourcePackReference pack in this.Packs)
 			{
-				Resources.UnMergeDictionary(new(pack.Path));
+				XamlResources.UnMergeDictionary(new(pack.Path));
 
 				if (pack.Enabled)
 				{
-					Resources.MergeDictionary(new(pack.Path));
+					XamlResources.MergeDictionary(new(pack.Path));
 				}
 			}
 		}

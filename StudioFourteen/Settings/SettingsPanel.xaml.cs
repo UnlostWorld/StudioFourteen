@@ -15,9 +15,6 @@
 
 namespace StudioFourteen.Settings;
 
-using StudioFourteen.Panels;
-using StudioFourteen.ResourcePacks;
-using System;
 using System.Collections.Specialized;
 using System.IO;
 using System.Threading.Tasks;
@@ -25,7 +22,9 @@ using System.Windows;
 using System.Windows.Controls;
 using StudioFourteen;
 using StudioFourteen.Extensions;
-
+using StudioFourteen.Panels;
+using StudioFourteen.ResourcePacks;
+using StudioFourteen.Xaml;
 using Panel = StudioFourteen.Panels.Panel;
 
 public partial class SettingsPanel : Panel
@@ -52,8 +51,8 @@ public partial class SettingsPanel : Panel
 		}
 	}
 
-	public string InspectorPresetTitle => StudioFourteen.Resources.Find($"LOC_Settings_Inspectors_Preset_{(SettingsService.InterfacePresets)this.currentPreset}", string.Empty);
-	public string InspectorPresetBody => StudioFourteen.Resources.Find($"LOC_Settings_Inspectors_Preset_{(SettingsService.InterfacePresets)this.currentPreset}_Description", string.Empty);
+	public string InspectorPresetTitle => XamlResources.Find($"LOC_Settings_Inspectors_Preset_{(SettingsService.InterfacePresets)this.currentPreset}", string.Empty);
+	public string InspectorPresetBody => XamlResources.Find($"LOC_Settings_Inspectors_Preset_{(SettingsService.InterfacePresets)this.currentPreset}_Description", string.Empty);
 
 	public static void Show(PanelContextBase context, string? elementName = null)
 	{

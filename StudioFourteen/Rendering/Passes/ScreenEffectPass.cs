@@ -18,7 +18,6 @@ namespace StudioFourteen.Rendering.Passes;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using SharpDX.Direct3D11;
-using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Draw;
 
 using Device = SharpDX.Direct3D11.Device;

@@ -14,14 +14,13 @@
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
 namespace StudioFourteen.Library;
-using PropertyChanged.SourceGenerator;
+
 using StudioFourteen.Appearance;
 using StudioFourteen.DragAndDrop;
 using StudioFourteen.Environment;
 using StudioFourteen.Files;
 using StudioFourteen.Input;
 using StudioFourteen.Library.Filters;
-using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Results;
 using StudioFourteen.Library.Sources;
 using StudioFourteen.Mvm;
@@ -41,7 +40,6 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using StudioFourteen;
 using StudioFourteen.Extensions;
-using StudioFourteen.Utils;
 
 using Panel = StudioFourteen.Panels.Panel;
 

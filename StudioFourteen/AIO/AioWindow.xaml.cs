@@ -17,16 +17,13 @@ namespace StudioFourteen.AIO;
 
 using StudioFourteen.Panels;
 using System.Threading.Tasks;
-using System.Windows;
-using DependencyPropertyGenerator;
 using System;
 using StudioFourteen;
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Environment;
 using StudioFourteen.Selection;
-using StudioFourteen.Launcher;
 using StudioFourteen.Posing;
 using StudioFourteen.Animation;
+using StudioFourteen.Xaml;
 
 public partial class AioWindow : PanelWindow
 {
@@ -88,7 +85,7 @@ public partial class AioWindow : PanelWindow
 		await this.MainThread();
 		this.CurrentPanel = this.PanelArea.SetPanel(panelType);
 
-		string currentTitle = StudioFourteen.Resources.Find("LOC_AIO_Title", "Studio Fourteen");
+		string currentTitle = XamlResources.Find("LOC_AIO_Title", "Studio Fourteen");
 		if (this.CurrentPanel != null)
 			currentTitle += " - " + this.Services.Panels.GetPanelTitle(this.CurrentPanel.GetType());
 
@@ -103,7 +100,7 @@ public partial class AioWindow : PanelWindow
 
 	protected override void OnOpened()
 	{
-		this.CurrentTitle = StudioFourteen.Resources.Find("LOC_AIO_Title", "Studio Fourteen");
+		this.CurrentTitle = XamlResources.Find("LOC_AIO_Title", "Studio Fourteen");
 		this.IsStudioAttached = this.Services.Studio.IsAttached;
 
 		this.Services.Studio.Opening += this.OnStudioOpening;
@@ -156,7 +153,7 @@ public partial class AioWindow : PanelWindow
 		{
 			this.Services.Studio.CloseStudio();
 			this.CurrentPanel = this.PanelArea.SetPanel(null);
-			this.CurrentTitle = StudioFourteen.Resources.Find("LOC_AIO_Title", "Studio Fourteen");
+			this.CurrentTitle = XamlResources.Find("LOC_AIO_Title", "Studio Fourteen");
 		}
 	}
 }

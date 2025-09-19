@@ -16,7 +16,6 @@
 namespace StudioFourteen.Rendering;
 
 using System.Collections.Generic;
-using System.Numerics;
 using SharpDX.Direct3D;
 
 public class Mesh

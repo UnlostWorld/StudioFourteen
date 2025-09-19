@@ -24,20 +24,18 @@ using Lumina.Excel.Sheets;
 using StudioFourteen.DragAndDrop;
 using StudioFourteen.Files;
 using StudioFourteen.GameData;
-using StudioFourteen.Scene.GameObjects;
-using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Services;
 using StudioFourteen.Tags;
+using StudioFourteen.Xaml;
 
 using Character = StudioFourteen.Scene.GameObjects.Characters.Character;
 using CustomizeFacialFeatures = FFXIVClientStructs.FFXIV.Client.Game.Character.CustomizeDataExtensions.FacialFeatures;
-using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
 
 public class AppearanceFileTypeInfo : JsonFileTypeInfoBase<AppearanceFile>
 {
 	public override string Extension => ".chara";
 	public override string TypeName => "Appearance File";
-	public override object? Icon => Resources.Find("ICON_Library_Entry_Appearance");
+	public override object? Icon => XamlResources.Find("ICON_Library_Entry_Appearance");
 }
 
 [Serializable]

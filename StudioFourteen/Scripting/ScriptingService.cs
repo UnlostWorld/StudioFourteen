@@ -18,11 +18,9 @@ namespace StudioFourteen.Scripting;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Reflection;
 using System.Runtime.Loader;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -30,12 +28,9 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Emit;
 using Microsoft.CodeAnalysis.Text;
 using Serilog.Events;
-using StudioFourteen.Panels;
 using StudioFourteen.Plugin;
 using StudioFourteen.Scripting.Instance;
 using StudioFourteen.Services;
-using StudioFourteen.Utils;
-using StudioFourteen.Extensions;
 
 public class ScriptingService : ServiceBase
 {

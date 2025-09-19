@@ -15,19 +15,17 @@
 
 namespace StudioFourteen.Services;
 
-using StudioFourteen.AIO;
-using StudioFourteen.Launcher;
-using StudioFourteen.Panels;
-using StudioFourteen.Selection;
-using StudioFourteen.Settings;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using StudioFourteen.Extensions;
-
-using Panel = StudioFourteen.Panels.Panel;
+using StudioFourteen.AIO;
+using StudioFourteen.Launcher;
+using StudioFourteen.Panels;
+using StudioFourteen.Selection;
+using StudioFourteen.Settings;
+using StudioFourteen.Xaml;
 using PanelWindow = StudioFourteen.Panels.PanelWindow;
 
 public class PanelService : ServiceBase
@@ -49,9 +47,9 @@ public class PanelService : ServiceBase
 
 	public event PanelServiceDelegate? PanelsRestarted;
 
-	public string GetPanelTitle(Type type) => Resources.Find($"LOC_{type.Name}", string.Empty);
-	public string GetPanelDescription(Type type) => Resources.Find($"LOC_{type.Name}Desc", string.Empty);
-	public object? GetPanelIcon(Type type) => Resources.Find($"ICON_Title_{type.Name}");
+	public string GetPanelTitle(Type type) => XamlResources.Find($"LOC_{type.Name}", string.Empty);
+	public string GetPanelDescription(Type type) => XamlResources.Find($"LOC_{type.Name}Desc", string.Empty);
+	public object? GetPanelIcon(Type type) => XamlResources.Find($"ICON_Title_{type.Name}");
 
 	public override Task Initialize()
 	{

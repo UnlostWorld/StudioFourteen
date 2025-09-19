@@ -17,12 +17,13 @@ namespace StudioFourteen.GameData.Library;
 
 using Lumina.Excel;
 using StudioFourteen.Library.Sources;
+using StudioFourteen.Xaml;
 using System;
 using System.Collections.Generic;
 
 public abstract class ExcelSheetLibrarySource : SourceBase
 {
-	public override object? Icon => Resources.Find("ICON_Library_Group_XIV");
+	public override object? Icon => XamlResources.Find("ICON_Library_Group_XIV");
 
 	public abstract object? GetRowObject(uint rowId);
 }
@@ -46,7 +47,7 @@ public class ExcelSheetLibrarySource<TExcel, TEntry> : ExcelSheetLibrarySource<T
 		this.Sheet = this.Services.GameData.GetSheet<TExcel>();
 	}
 
-	public override string Name => Resources.Find($"LOC_Sheet{this.RowType.Name}", this.RowType.Name);
+	public override string Name => XamlResources.Find($"LOC_Sheet{this.RowType.Name}", this.RowType.Name);
 
 	public override TEntry? GetRow(uint rowId)
 	{

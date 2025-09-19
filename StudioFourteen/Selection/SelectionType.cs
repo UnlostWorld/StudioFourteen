@@ -18,6 +18,7 @@ namespace StudioFourteen.Selection;
 using System;
 using StudioFourteen.Scene;
 using StudioFourteen.Extensions;
+using StudioFourteen.Xaml;
 
 public partial class SelectionType<T> : SelectionTypeBase
 	where T : SceneObjectBase
@@ -37,8 +38,8 @@ public partial class SelectionType<T> : SelectionTypeBase
 	public FastObservableCollection<T> Objects { get; init; } = new();
 
 	public override Type Type => typeof(T);
-	public override string? Name => StudioFourteen.Resources.Find($"LOC_Type_{typeof(T).Name}s", typeof(T).Name);
-	public override object? Icon => StudioFourteen.Resources.Find($"ICON_Type_{typeof(T).Name}");
+	public override string? Name => XamlResources.Find($"LOC_Type_{typeof(T).Name}s", typeof(T).Name);
+	public override object? Icon => XamlResources.Find($"ICON_Type_{typeof(T).Name}");
 
 	public override void OnObjectAddedToScene(SceneObjectBase obj)
 	{

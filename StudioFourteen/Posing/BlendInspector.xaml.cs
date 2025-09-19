@@ -18,7 +18,6 @@ namespace StudioFourteen.Posing;
 using DependencyPropertyGenerator;
 using StudioFourteen.Mvm;
 using StudioFourteen.Scene;
-using StudioFourteen.Selection;
 using System.Threading.Tasks;
 using System.Windows;
 using StudioFourteen;

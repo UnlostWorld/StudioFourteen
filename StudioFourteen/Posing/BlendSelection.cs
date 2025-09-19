@@ -15,20 +15,15 @@
 
 namespace StudioFourteen.Posing;
 
-using FontAwesome.Sharp;
-using StudioFourteen.Plugin;
 using StudioFourteen.Scene;
-using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Scene.GameObjects.Characters.Skeletons;
-using StudioFourteen.Selection;
 using StudioFourteen.Services;
-using StudioFourteen.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using StudioFourteen.Extensions;
+using StudioFourteen.Xaml;
 
 public class BlendSelection : SceneObjectBase
 {
@@ -50,8 +45,8 @@ public class BlendSelection : SceneObjectBase
 	}
 
 	public override string Id => $"Blend:{this.blendTargetName}:{this.objectTableIndex}";
-	public override string TypeName => Resources.Find("LOC_Selection_Blend", "Blend");
-	public override object? Icon => Resources.Find("ICON_Selection_Blend");
+	public override string TypeName => XamlResources.Find("LOC_Selection_Blend", "Blend");
+	public override object? Icon => XamlResources.Find("ICON_Selection_Blend");
 
 	public BlendTarget Target { get; private set; }
 	public bool Flip { get; set; }

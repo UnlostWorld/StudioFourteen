@@ -15,9 +15,9 @@
 
 namespace StudioFourteen.Library;
 
-using FontAwesome.Sharp;
 using StudioFourteen.Library.Sources;
 using StudioFourteen.Tags;
+using StudioFourteen.Xaml;
 using System.Collections.Generic;
 
 /// <summary>
@@ -40,7 +40,7 @@ public abstract class GroupEntryBase : LibraryEntryBase
 	public int GroupCount => this.groupEntries.Count;
 
 	public override string? SubTitle => $"{this.AllCount} items";
-	public override object? Icon => Resources.Find("ICON_Library_Group");
+	public override object? Icon => XamlResources.Find("ICON_Library_Group");
 
 	public GroupEntryBase? Parent { get; private set; }
 

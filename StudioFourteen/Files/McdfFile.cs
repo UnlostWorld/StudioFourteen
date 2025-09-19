@@ -18,28 +18,22 @@
 namespace StudioFourteen.Files;
 
 using Dalamud.Game.ClientState.Objects.Types;
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using FontAwesome.Sharp;
 using LZ4;
 using Newtonsoft.Json;
 using StudioFourteen.Appearance;
 using StudioFourteen.DragAndDrop;
-using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Sources;
 using StudioFourteen.Plugin;
 using StudioFourteen.Serialization;
 using StudioFourteen.Services;
 using StudioFourteen.Tags;
-using StudioFourteen.Utilities;
 using System;
 using System.IO;
 using System.IO.Compression;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Input;
 
 using Character = StudioFourteen.Scene.GameObjects.Characters.Character;
-using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
 
 public class MareFileTypeInfo : FileTypeInfoBase
 {

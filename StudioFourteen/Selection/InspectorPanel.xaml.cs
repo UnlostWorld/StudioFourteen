@@ -15,7 +15,6 @@
 
 namespace StudioFourteen.Selection;
 
-using System;
 using System.Collections.Generic;
 using StudioFourteen.Panels;
 using StudioFourteen.Scene;

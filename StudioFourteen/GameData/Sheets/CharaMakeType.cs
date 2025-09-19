@@ -15,10 +15,8 @@
 
 namespace StudioFourteen.GameData.Sheets;
 
-using Dalamud.Game.ClientState.Objects.Enums;
 using Lumina.Excel;
 using Lumina.Excel.Sheets;
-using static Lumina.Excel.Sheets.CharaMakeType;
 
 [Sheet("CharaMakeType", 0x80D7DB6D)]
 public readonly unsafe struct CharaMakeType(ExcelPage page, uint offset, uint row) : IExcelRow<CharaMakeType>

@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using StudioFourteen.Rendering.Draw.Gizmos;
 using StudioFourteen.Scene.GameObjects;
-
+using StudioFourteen.Xaml;
 using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
 
 public class SkeletonGizmo : SceneObjectGizmoBase<Skeleton>
@@ -32,7 +32,7 @@ public class SkeletonGizmo : SceneObjectGizmoBase<Skeleton>
 	}
 
 	public override string Name => "Skeleton";
-	public override object? Icon => Resources.Find("ICON_Gizmo_CharacterSkeleton");
+	public override object? Icon => XamlResources.Find("ICON_Gizmo_CharacterSkeleton");
 	public override bool KeepScreenSize => false;
 
 	public int ObjectTableIndex

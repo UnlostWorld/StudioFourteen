@@ -19,11 +19,10 @@ using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Cursors;
 using StudioFourteen.Services;
 using StudioFourteen.Utilities;
-using StudioFourteen.Extensions;
+using StudioFourteen.Xaml;
 
 public interface IDraggable
 {
@@ -54,8 +53,8 @@ public partial class DragAndDropService : ServiceBase
 
 	public override Task Start()
 	{
-		this.dragOperationIconNo = Resources.Find("ICON_Drag_No");
-		this.dragOperationIconAssign = Resources.Find("ICON_Drag_Assign");
+		this.dragOperationIconNo = XamlResources.Find("ICON_Drag_No");
+		this.dragOperationIconAssign = XamlResources.Find("ICON_Drag_Assign");
 		return base.Start();
 	}
 

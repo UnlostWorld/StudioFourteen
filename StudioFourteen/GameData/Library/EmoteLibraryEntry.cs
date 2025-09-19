@@ -15,14 +15,10 @@
 
 namespace StudioFourteen.GameData.Library;
 
-using System.Threading.Tasks;
-using FFXIVClientStructs.FFXIV.Client.Game.Control;
 using Lumina.Excel.Sheets;
 using Lumina.Text.ReadOnly;
 using StudioFourteen.Animation;
-using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Sources;
-using StudioFourteen.Services;
 
 public class EmoteLibraryEntry : ExcelLibraryEntry, ITimelineAnimation
 {

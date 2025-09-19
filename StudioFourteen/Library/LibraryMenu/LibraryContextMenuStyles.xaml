@@ -1,8 +1,8 @@
 ﻿<ResourceDictionary
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:controls="clr-namespace:StudioFourteen.Controls"
-	xmlns:converters="clr-namespace:StudioFourteen.Converters"
+	xmlns:s14="clr-namespace:StudioFourteen.Xaml"
+	xmlns:converters="clr-namespace:StudioFourteen.Xaml"
 	xmlns:menu="clr-namespace:StudioFourteen.Library.LibraryMenu"
 	xmlns:context="clr-namespace:StudioFourteen.Context"
 	xmlns:tags="clr-namespace:StudioFourteen.Tags"
@@ -10,7 +10,7 @@
 
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary
-			Source="pack://application:,,,/StudioFourteen;component/Controls/PopOutStyles.xaml" />
+			Source="pack://application:,,,/StudioFourteen;component/Xaml/Controls/PopOutStyles.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 
 	<converters:IsEmptyToVisibilityConverter x:Key="IsEmptyToVisibility" />

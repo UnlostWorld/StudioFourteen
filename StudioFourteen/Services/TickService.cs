@@ -22,7 +22,6 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using StudioFourteen.Interop;
-using global::Windows.Win32;
 using Task = System.Threading.Tasks.Task;
 
 public partial class TickService : ServiceBase

@@ -18,16 +18,12 @@ namespace StudioFourteen.GameData.Library;
 using System;
 using System.Threading.Tasks;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using FontAwesome.Sharp;
 using Lumina.Excel.Sheets;
 using Lumina.Text.ReadOnly;
 using StudioFourteen.GameData.Extensions;
 using StudioFourteen.Library;
-using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Sources;
-using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Services;
-using StudioFourteen.Utilities;
 
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 
@@ -150,11 +146,11 @@ public class ItemLibraryEntry : ExcelLibraryEntry
 	{
 		MenuEntry webSearchMenu = menu.AddMenu(
 			IconChar.Search,
-			Resources.Find("LOC_SheetItem_WebSearch", "Search"));
+			XamlResources.Find("LOC_SheetItem_WebSearch", "Search"));
 
 		webSearchMenu.AddChild(
 			IconChar.Globe,
-			Resources.Find("LOC_SheetItem_EorzeaDatabase", "Lodestone"),
+			XamlResources.Find("LOC_SheetItem_EorzeaDatabase", "Lodestone"),
 			() =>
 			{
 				UrlUtility.Open($"https://na.finalfantasyxiv.com/lodestone/playguide/db/search/?patch=&db_search_category=&q={this.Name}");
@@ -162,7 +158,7 @@ public class ItemLibraryEntry : ExcelLibraryEntry
 
 		webSearchMenu.AddChild(
 			IconChar.Globe,
-			Resources.Find("LOC_SheetItem_GarlandData", "Garland Data"),
+			XamlResources.Find("LOC_SheetItem_GarlandData", "Garland Data"),
 			() =>
 			{
 				UrlUtility.Open($"https://garlandtools.org/db/#item/{this.RowId}");
@@ -170,7 +166,7 @@ public class ItemLibraryEntry : ExcelLibraryEntry
 
 		webSearchMenu.AddChild(
 			IconChar.Globe,
-			Resources.Find("LOC_SheetItem_GamerEscape", "Gamer Escape"),
+			XamlResources.Find("LOC_SheetItem_GamerEscape", "Gamer Escape"),
 			() =>
 			{
 				UrlUtility.Open($"https://ffxiv.gamerescape.com/?search={this.Name}");

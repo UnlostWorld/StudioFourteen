@@ -15,7 +15,6 @@
 
 namespace StudioFourteen.Posing;
 
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
@@ -25,12 +24,9 @@ using DependencyPropertyGenerator;
 using StudioFourteen.Library;
 using StudioFourteen.Posing.Shared;
 using StudioFourteen.Scene;
-using StudioFourteen.Scene.GameObjects;
 using StudioFourteen.Scene.GameObjects.Characters.Skeletons;
 using StudioFourteen.Selection;
 using StudioFourteen;
-using StudioFourteen.Extensions;
-using StudioFourteen.Utils;
 
 using Panel = StudioFourteen.Panels.Panel;
 

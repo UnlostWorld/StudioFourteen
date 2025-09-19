@@ -2,7 +2,7 @@
 	x:Class="StudioFourteen.Animation.AnimationPanel"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:controls="clr-namespace:StudioFourteen.Controls"
+	xmlns:s14="clr-namespace:StudioFourteen.Xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:gameData="clr-namespace:StudioFourteen.GameData.Library"
@@ -66,7 +66,7 @@
 			Margin="4"/>
 
 		<TextBlock Text="Speed" Style="{DynamicResource LeftLabel}"/>
-		<controls:NumberBox
+		<s14:NumberBox
 			Change="0.01"
 			Maximum="2"
 			Minimum="0"

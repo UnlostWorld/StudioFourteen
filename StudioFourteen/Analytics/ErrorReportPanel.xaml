@@ -2,7 +2,7 @@
 	x:Class="StudioFourteen.Analytics.ErrorReportPanel"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:controls="clr-namespace:StudioFourteen.Controls"
+	xmlns:s14="clr-namespace:StudioFourteen.Xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:local="clr-namespace:StudioFourteen.Studio"

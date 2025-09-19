@@ -15,25 +15,23 @@
 
 namespace StudioFourteen.Appearance.Customize;
 
-using Dalamud.Game.ClientState.Objects.Enums;
-using DependencyPropertyGenerator;
-
-using Serilog;
-using StudioFourteen.GameData;
-using StudioFourteen.GameData.Library;
-using StudioFourteen.GameData.Sheets;
-using StudioFourteen.Scene.GameObjects.Characters;
-using StudioFourteen.Services;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using Dalamud.Game.ClientState.Objects.Enums;
+using DependencyPropertyGenerator;
+using Serilog;
 using StudioFourteen;
-using StudioFourteen.Extensions;
+using StudioFourteen.GameData;
+using StudioFourteen.GameData.Library;
+using StudioFourteen.GameData.Sheets;
+using StudioFourteen.Scene.GameObjects.Characters;
+using StudioFourteen.Services;
+using StudioFourteen.Xaml;
 
 using CharaMakeType = StudioFourteen.GameData.Sheets.CharaMakeType;
-using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
 
 [DependencyProperty<Character>("Character")]
 [DependencyProperty<Categories>("Category")]
@@ -210,7 +208,7 @@ public partial class CustomizeControl : ItemsControl
 			}
 
 			this.menus.Add(this.GetMenu(makeType, CustomizeIndex.Facepaint));
-			////makeupMenus.Add(new ToggleMenu(CustomizeIndex.Facepaint, Resources.Find("LOC_Character_FacePaintToggle", "Flip face paint")));
+			////makeupMenus.Add(new ToggleMenu(CustomizeIndex.Facepaint, XamlResources.Find("LOC_Character_FacePaintToggle", "Flip face paint")));
 			this.menus.Add(this.GetMenu(makeType, CustomizeIndex.FacepaintColor));
 			this.menus.Add(this.GetMenu(makeType, CustomizeIndex.FaceFeatures));
 			this.menus.Add(this.GetMenu(makeType, CustomizeIndex.FaceFeaturesColor));
@@ -230,16 +228,16 @@ public partial class CustomizeControl : ItemsControl
 	private MenuViewModel? GetMenu(CharaMakeType makeType, CustomizeIndex index)
 	{
 		if (index == CustomizeIndex.Race)
-			return new ExcelLibraryEntryMenu<RaceLibraryEntry>(index, StudioFourteen.Resources.Find("LOC_Character_Race", "Race"));
+			return new ExcelLibraryEntryMenu<RaceLibraryEntry>(index, XamlResources.Find("LOC_Character_Race", "Race"));
 
 		if (index == CustomizeIndex.Tribe)
-			return new TribeMenu(makeType.Race.Value, StudioFourteen.Resources.Find("LOC_Character_Tribe", "Tribe"));
+			return new TribeMenu(makeType.Race.Value, XamlResources.Find("LOC_Character_Tribe", "Tribe"));
 
 		if (index == CustomizeIndex.ModelType)
-			return new ModelTypeMenu(makeType.Tribe.Value, StudioFourteen.Resources.Find("LOC_Character_ModelType", "Model Type"));
+			return new ModelTypeMenu(makeType.Tribe.Value, XamlResources.Find("LOC_Character_ModelType", "Model Type"));
 
 		if (index == CustomizeIndex.Gender)
-			return new GenderMenu(StudioFourteen.Resources.Find("LOC_Character_BodyShape", "Body Shape"));
+			return new GenderMenu(XamlResources.Find("LOC_Character_BodyShape", "Body Shape"));
 
 		if (index == CustomizeIndex.HairColor2)
 		{

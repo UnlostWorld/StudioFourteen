@@ -17,8 +17,8 @@ namespace StudioFourteen.Scene.GameObjects.Characters.Skeletons;
 
 using StudioFourteen.Posing;
 using StudioFourteen.Scene;
+using StudioFourteen.Xaml;
 using System.Collections.Generic;
-using System.Linq;
 using System.Numerics;
 
 using StudioTransform = StudioFourteen.Transform;
@@ -44,9 +44,9 @@ public class SkeletonBone : TransformSceneObjectBase
 
 		this.IsFaceBone = boneName.StartsWith("j_f_");
 
-		this.Name = Resources.Find($"LOC_Bone_{this.BoneName}", this.BoneName);
+		this.Name = XamlResources.Find($"LOC_Bone_{this.BoneName}", this.BoneName);
 		this.Subtitle = boneName;
-		this.Description = Resources.Find($"LOC_Bone_{this.BoneName}_Tooltip", string.Empty);
+		this.Description = XamlResources.Find($"LOC_Bone_{this.BoneName}_Tooltip", string.Empty);
 
 		this.BoneReferences = references;
 
@@ -57,8 +57,8 @@ public class SkeletonBone : TransformSceneObjectBase
 	}
 
 	public override string Id => new($"Bone:{this.BoneName}:{this.skeleton.ObjectIndex}");
-	public override object? Icon => Resources.Find("ICON_Type_Bone");
-	public override string TypeName => Resources.Find("LOC_Type_Bone", "Bone");
+	public override object? Icon => XamlResources.Find("ICON_Type_Bone");
+	public override string TypeName => XamlResources.Find("LOC_Type_Bone", "Bone");
 
 	public string BoneName { get; init; }
 	public SkeletonBone? Parent { get; private set; }

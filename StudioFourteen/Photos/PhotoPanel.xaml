@@ -2,7 +2,7 @@
 	x:Class="StudioFourteen.Photos.PhotoPanel"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:controls="clr-namespace:StudioFourteen.Controls"
+	xmlns:s14="clr-namespace:StudioFourteen.Xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:local="clr-namespace:StudioFourteen.Photos"
@@ -171,29 +171,29 @@
 			</Grid>
 		</ToggleButton>
 
-		<controls:PopOut
+		<s14:PopOut
 			Width="250"
 			Height="350"
 			IsOpen="{Binding ElementName=ResolutionToggle, Path=IsChecked}"
 			PlacementTarget="{Binding ElementName=ResolutionToggle}"
 			StaysOpen="False">
 
-			<controls:PopOut.Header>
+			<s14:PopOut.Header>
 				<TextBlock
 					Margin="6"
 					Foreground="{DynamicResource ForegroundLightBrush}"
 					Text="{DynamicResource LOC_Photo_AspectPopOut}"
 					TextWrapping="Wrap" />
-			</controls:PopOut.Header>
+			</s14:PopOut.Header>
 
-			<controls:PopOut.Resources>
+			<s14:PopOut.Resources>
 				<CollectionViewSource x:Key="ListBoxItems"
 					Source="{Binding Services.Photos.AspectRatios}">
 					<CollectionViewSource.GroupDescriptions>
 						<PropertyGroupDescription PropertyName="GroupName" />
 					</CollectionViewSource.GroupDescriptions>
 				</CollectionViewSource>
-			</controls:PopOut.Resources>
+			</s14:PopOut.Resources>
 
 			<ListBox
 				x:Name="AspectsList"
@@ -252,16 +252,16 @@
 				</ListBox.ItemTemplate>
 
 			</ListBox>
-		</controls:PopOut>
+		</s14:PopOut>
 
 		<ComboBox
 			Grid.Column="2"
 			SelectedIndex="{Binding GuideIndex}"
 			ToolTip="{DynamicResource LOC_Photo_GuidesToolTip}">
 
-			<controls:PopOut.Header>
+			<s14:PopOut.Header>
 				<TextBlock Margin="12" Text="{DynamicResource LOC_Photo_GuidesPopOut}" />
-			</controls:PopOut.Header>
+			</s14:PopOut.Header>
 
 			<ComboBoxItem
 				Content="{DynamicResource LOC_Photo_Guides_None}" />

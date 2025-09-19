@@ -1,14 +1,14 @@
 ﻿<ResourceDictionary
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:controls="clr-namespace:StudioFourteen.Controls"
+	xmlns:s14="clr-namespace:StudioFourteen.Xaml"
 	xmlns:local="clr-namespace:StudioFourteen.Appearance.Customize">
 
 	<DataTemplate DataType="{x:Type local:IconMenu}">
 		<StackPanel>
 			<TextBlock Style="{DynamicResource LeftLabel}" Text="{Binding Name}" />
 
-			<controls:SwitchSelector
+			<s14:SwitchSelector
 				Height="Auto"
 				HorizontalContentAlignment="Center"
 				ItemsSource="{Binding Options}"
@@ -27,9 +27,9 @@
 							Source="{Binding Image.Source}" />
 					</DataTemplate>
 				</ListBox.ItemTemplate>
-			</controls:SwitchSelector>
+			</s14:SwitchSelector>
 
-			<controls:NumberBox
+			<s14:NumberBox
 				Maximum="{Binding Maximum}"
 				Minimum="{Binding Minimum}"
 				Value="{Binding Value}" />

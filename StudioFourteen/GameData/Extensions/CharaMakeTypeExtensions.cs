@@ -18,7 +18,6 @@ namespace StudioFourteen.GameData.Sheets;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Lumina.Excel;
 using Lumina.Excel.Sheets;
-using Lumina.Text.ReadOnly;
 
 public static class CharaMakeTypeExtensions
 {

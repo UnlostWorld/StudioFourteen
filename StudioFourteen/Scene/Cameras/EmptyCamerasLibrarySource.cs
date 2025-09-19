@@ -19,6 +19,7 @@ using System;
 using System.Threading.Tasks;
 using StudioFourteen.Library;
 using StudioFourteen.Library.Sources;
+using StudioFourteen.Xaml;
 
 public class EmptyCamerasLibrarySource : SourceBase
 {
@@ -38,9 +39,9 @@ public class EmptyCamera<T>(SourceBase? source)
 	where T : Camera, new()
 {
 	public Type? CameraType => typeof(T);
-	public override string? Name => StudioFourteen.Resources.Find($"LOC_{typeof(T).Name}", typeof(T).Name);
+	public override string? Name => XamlResources.Find($"LOC_{typeof(T).Name}", typeof(T).Name);
 	public override string? SubTitle => null;
-	public override object? Icon => StudioFourteen.Resources.Find("ICON_Type_Camera");
+	public override object? Icon => XamlResources.Find("ICON_Type_Camera");
 
 	public Task Create()
 	{

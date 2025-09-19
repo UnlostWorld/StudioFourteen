@@ -3,7 +3,7 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:behaviors="clr-namespace:StudioFourteen.Behaviors"
-	xmlns:controls="clr-namespace:StudioFourteen.Controls"
+	xmlns:s14="clr-namespace:StudioFourteen.Xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:input="clr-namespace:StudioFourteen.Input"
@@ -174,7 +174,7 @@
 										</ToggleButton>
 									</StackPanel>
 
-									<controls:PopOut
+									<s14:PopOut
 										MinWidth="150"
 										MaxHeight="400"
 										Padding="0"
@@ -184,12 +184,12 @@
 										StaysOpen="False"
 										Style="{DynamicResource PopOut}">
 
-										<controls:PopOut.Header>
+										<s14:PopOut.Header>
 											<TextBlock Margin="10" Foreground="{DynamicResource ForegroundLightBrush}">
 												<Run Text="{Binding Name, Mode=OneTime}" />
 												<Run Text="/" />
 											</TextBlock>
-										</controls:PopOut.Header>
+										</s14:PopOut.Header>
 
 										<ScrollViewer Margin="0" HorizontalScrollBarVisibility="Disabled">
 											<ItemsControl ItemsSource="{Binding GroupEntries}">
@@ -205,7 +205,7 @@
 												</ItemsControl.ItemTemplate>
 											</ItemsControl>
 										</ScrollViewer>
-									</controls:PopOut>
+									</s14:PopOut>
 
 
 								</Grid>
@@ -223,7 +223,7 @@
 				</Border>
 
 
-				<controls:SwitchSelector
+				<s14:SwitchSelector
 					x:Name="ViewModeArea"
 					Width="64"
 					Height="28"
@@ -241,9 +241,9 @@
 						<icons:IconView Height="14" Icon="{DynamicResource ICON_Library_ViewList}" />
 					</ListBoxItem>
 
-					<controls:SwitchSelector.Style>
+					<s14:SwitchSelector.Style>
 						<Style BasedOn="{StaticResource SwitchSelector}"
-							TargetType="{x:Type controls:SwitchSelector}">
+							TargetType="{x:Type s14:SwitchSelector}">
 
 							<Setter Property="Grid.Column" Value="2" />
 							<Style.Triggers>
@@ -253,11 +253,11 @@
 								</DataTrigger>
 							</Style.Triggers>
 						</Style>
-					</controls:SwitchSelector.Style>
-				</controls:SwitchSelector>
+					</s14:SwitchSelector.Style>
+				</s14:SwitchSelector>
 
 
-				<controls:SwitchSelector
+				<s14:SwitchSelector
 					x:Name="FlattenModeArea"
 					Width="64"
 					Height="28"
@@ -275,9 +275,9 @@
 						<icons:IconView Height="14" Icon="{DynamicResource ICON_Library_FlattenOn}" />
 					</ListBoxItem>
 
-					<controls:SwitchSelector.Style>
+					<s14:SwitchSelector.Style>
 						<Style BasedOn="{StaticResource SwitchSelector}"
-							TargetType="{x:Type controls:SwitchSelector}">
+							TargetType="{x:Type s14:SwitchSelector}">
 
 							<Setter Property="Grid.Column" Value="3" />
 
@@ -288,8 +288,8 @@
 								</DataTrigger>
 							</Style.Triggers>
 						</Style>
-					</controls:SwitchSelector.Style>
-				</controls:SwitchSelector>
+					</s14:SwitchSelector.Style>
+				</s14:SwitchSelector>
 
 				<Button
 					x:Name="BrowseArea"
@@ -512,7 +512,7 @@
 
 
 					<!--  Icon Grid  -->
-					<controls:ListBoxEx
+					<s14:ListBoxEx
 						x:Name="ResultsGrid"
 						Grid.Row="2"
 						Margin="3"
@@ -530,7 +530,7 @@
 
 						<ListBox.ItemsPanel>
 							<ItemsPanelTemplate>
-								<controls:SmoothScrollingVirtualizingWrapPanel
+								<s14:SmoothScrollingVirtualizingWrapPanel
 									IsItemsHost="True"
 									VirtualizingPanel.ScrollUnit="Item"
 									VirtualizingPanel.VirtualizationMode="Recycling" />
@@ -593,7 +593,7 @@
 							</DataTemplate>
 						</ListBox.ItemTemplate>
 
-					</controls:ListBoxEx>
+					</s14:ListBoxEx>
 
 					<!--  List  -->
 					<ListBox

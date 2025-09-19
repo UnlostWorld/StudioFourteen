@@ -1,20 +1,20 @@
 ﻿<ResourceDictionary
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:controls="clr-namespace:StudioFourteen.Controls"
+	xmlns:s14="clr-namespace:StudioFourteen.Xaml"
 	xmlns:local="clr-namespace:StudioFourteen.Appearance.Customize">
 
 	<DataTemplate DataType="{x:Type local:ListMenu}">
 		<StackPanel>
 			<TextBlock Style="{DynamicResource LeftLabel}" Text="{Binding Name}" />
 
-			<controls:SwitchSelector ItemsSource="{Binding Options}" SelectedItem="{Binding Selected}">
+			<s14:SwitchSelector ItemsSource="{Binding Options}" SelectedItem="{Binding Selected}">
 				<ListBox.ItemTemplate>
 					<DataTemplate>
 						<TextBlock Text="{Binding Label}" />
 					</DataTemplate>
 				</ListBox.ItemTemplate>
-			</controls:SwitchSelector>
+			</s14:SwitchSelector>
 		</StackPanel>
 	</DataTemplate>
 </ResourceDictionary>

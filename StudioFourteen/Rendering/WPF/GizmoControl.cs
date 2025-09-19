@@ -24,7 +24,6 @@ using StudioFourteen.Rendering.Draw.Gizmos;
 using StudioFourteen.Rendering.Draw.Gizmos.Transforms;
 using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Scene;
-using StudioFourteen.Extensions;
 
 [DependencyProperty<SceneObjectBase>("Target")]
 public partial class GizmoControl : RendererElement

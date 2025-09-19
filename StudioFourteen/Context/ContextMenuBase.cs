@@ -18,9 +18,9 @@ namespace StudioFourteen.Context;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Windows.Controls;
 using System.Windows.Input;
 using StudioFourteen.Extensions;
+using StudioFourteen.Xaml;
 
 public interface IContextMenu
 {
@@ -39,10 +39,10 @@ public class MenuEntry
 	public MenuEntry(object? icon, string label, Func<Task>? invoke = null)
 	{
 		if (icon is string str)
-			icon = Resources.Find(str);
+			icon = XamlResources.Find(str);
 
 		this.Icon = icon;
-		this.Label = Resources.Find(label, label);
+		this.Label = XamlResources.Find(label, label);
 		this.invoke = invoke;
 		this.OnClicked = new SimpleCommand(this.Invoke);
 	}

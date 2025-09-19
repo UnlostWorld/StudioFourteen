@@ -15,7 +15,6 @@
 
 namespace StudioFourteen.Structs.Extensions;
 
-using FFXIVClientStructs.Havok.Common.Base.Math.Quaternion;
 using System;
 using System.Numerics;
 

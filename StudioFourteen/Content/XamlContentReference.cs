@@ -21,8 +21,8 @@ using System.Collections.Specialized;
 using System.IO;
 using System.Reflection;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Markup;
+using StudioFourteen.Xaml;
 
 public class XamlContentReference<T>(string path)
 	: ContentReference<T>(path)
@@ -42,7 +42,7 @@ public class XamlContentReference<T>(string path)
 	{
 		List<NamespaceMapEntry> maps = new();
 		maps.Add(new NamespaceMapEntry("http://fourteen.studio", "StudioFourteen", "StudioFourteen.Panels"));
-		maps.Add(new NamespaceMapEntry("http://fourteen.studio", "StudioFourteen", "StudioFourteen.Controls"));
+		maps.Add(new NamespaceMapEntry("http://fourteen.studio", "StudioFourteen", "StudioFourteen.Xaml"));
 		maps.Add(new NamespaceMapEntry("http://fourteen.studio", "StudioFourteen", "StudioFourteen.Icons"));
 
 		Context.XamlTypeMapper = new(["StudioFourteen"], maps.ToArray());
@@ -78,7 +78,7 @@ public class XamlContentReference<T>(string path)
 
 		if (rootElement is FrameworkElement element)
 		{
-			element.Resources = StudioFourteen.Resources.Load();
+			element.Resources = XamlResources.Load();
 		}
 
 		return rootElement;

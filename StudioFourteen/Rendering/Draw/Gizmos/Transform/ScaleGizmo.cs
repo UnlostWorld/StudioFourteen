@@ -19,6 +19,7 @@ using System.Numerics;
 using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Draw.Handles;
 using StudioFourteen.Rendering.Passes;
+using StudioFourteen.Xaml;
 
 public class ScaleGizmo : TransformGizmoBase
 {
@@ -53,8 +54,8 @@ public class ScaleGizmo : TransformGizmoBase
 
 	public float DepthOffset => 0.5f;
 
-	public override string Name => Resources.Find("LOC_Scale", "Scale");
-	public override object? Icon => Resources.Find("ICON_Transform_Scale");
+	public override string Name => XamlResources.Find("LOC_Scale", "Scale");
+	public override object? Icon => XamlResources.Find("ICON_Transform_Scale");
 	public override bool ShowInControlPanel => false;
 	public override bool KeepScreenSize => true;
 

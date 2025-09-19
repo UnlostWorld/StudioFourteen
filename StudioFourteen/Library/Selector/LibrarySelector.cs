@@ -14,12 +14,12 @@
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
 namespace StudioFourteen.Library.Selector;
+
 using DependencyPropertyGenerator;
 using Serilog;
 using StudioFourteen.Library.Filters;
 using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Results;
-using StudioFourteen.Mvm;
 using StudioFourteen.Tags;
 using System;
 using System.Collections.Generic;
@@ -29,8 +29,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using StudioFourteen;
-using StudioFourteen.Controls;
-using StudioFourteen.Utils;
+using StudioFourteen.Xaml;
 
 [DependencyProperty<LibraryEntryBase>("SelectedItem", DefaultBindingMode = DefaultBindingMode.TwoWay)]
 [DependencyProperty<object>("Footer")]

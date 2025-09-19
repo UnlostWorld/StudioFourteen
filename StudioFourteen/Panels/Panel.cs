@@ -15,22 +15,17 @@
 
 namespace StudioFourteen.Panels;
 
-using Dalamud.Plugin.Services;
 using DependencyPropertyGenerator;
-using FontAwesome.Sharp;
 using Serilog;
-using StudioFourteen.Icons;
 using StudioFourteen.Mvm;
-using StudioFourteen.Plugin;
 using StudioFourteen.Services;
 using StudioFourteen.Settings;
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using StudioFourteen.Extensions;
+using StudioFourteen.Xaml;
 
 public enum PanelVisibility
 {
@@ -63,7 +58,7 @@ public partial class Panel : ContentControl, IAutoNotify
 		this.Persistence = Persistence.GetPersistence($"Panel_{this.panelId}");
 
 		// Load a new copy of the resources. Each panel needs its own instance for threading reasons.
-		this.Resources = StudioFourteen.Resources.Load();
+		this.Resources = XamlResources.Load();
 
 		this.GetType().GetMethod("InitializeComponent")?.Invoke(this, null);
 		this.DataContext = this;

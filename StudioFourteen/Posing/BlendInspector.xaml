@@ -8,7 +8,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:mvm="clr-namespace:StudioFourteen.Mvm"
 	xmlns:pose="clr-namespace:StudioFourteen.Posing"
-	xmlns:controls="clr-namespace:StudioFourteen.Controls"
+	xmlns:s14="clr-namespace:StudioFourteen.Xaml"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	d:DesignWidth="200"
@@ -24,17 +24,17 @@
 			Source="{Binding BlendSelection.Target.Icon}"
 			Stretch="Uniform" />
 
-		<controls:Slider
+		<s14:Slider
 			Maximum="{Binding BlendMaximum}"
 			Minimum="{Binding BlendMinimum}"
 			Change="1"
 			Style="{DynamicResource FlatSlider}"
-			Value="{Binding BlendValue}"/>
+			Value="{Binding BlendValue}" />
 
-		<controls:NumberBox
+		<s14:NumberBox
 			Maximum="{Binding BlendMaximum}"
 			Minimum="{Binding BlendMinimum}"
-			Value="{Binding BlendValue}"/>
+			Value="{Binding BlendValue}" />
 
 		<ToggleButton
 			Content="Delimit"

@@ -15,10 +15,10 @@
 
 namespace StudioFourteen.Scene.Cameras;
 
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Input;
 using StudioFourteen.Structs.Extensions;
 using StudioFourteen.Utilities;
+using StudioFourteen.Xaml;
 using System;
 using System.Numerics;
 
@@ -64,7 +64,7 @@ public partial class OrbitCamera : Camera
 	[Bind] public partial Quaternion Rotation { get; set; }
 	[Bind] public partial float GroupPoseRollAdjust { get; set; }
 
-	public override string TypeName => Resources.Find("LOC_OrbitCamera", "Orbit");
+	public override string TypeName => XamlResources.Find("LOC_OrbitCamera", "Orbit");
 
 	public override void Initialize(CameraState currentState, Camera? previousCamera)
 	{

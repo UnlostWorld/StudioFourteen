@@ -26,7 +26,6 @@ using System.Windows.Media;
 using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using DependencyPropertyGenerator;
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Panels;
 using StudioFourteen;
 

@@ -25,10 +25,8 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using StudioFourteen.Posing.Shared;
 using System.Threading.Tasks;
-using StudioFourteen.Selection;
 using StudioFourteen;
 using StudioFourteen.Scene;
-using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Scene.GameObjects.Characters.Skeletons;
 
 [DependencyProperty<string>("LayoutName")]

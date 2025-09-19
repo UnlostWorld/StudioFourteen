@@ -20,6 +20,7 @@ using System.Windows.Interop;
 using global::Windows.Win32;
 using global::Windows.Win32.Foundation;
 using global::Windows.Win32.UI.WindowsAndMessaging;
+using StudioFourteen.Xaml;
 
 public partial class DragObjectVisual : Window
 {
@@ -31,7 +32,7 @@ public partial class DragObjectVisual : Window
 
 		this.InitializeComponent();
 
-		this.Resources = StudioFourteen.Resources.Load();
+		this.Resources = XamlResources.Load();
 		this.Loaded += this.OnLoaded;
 	}
 

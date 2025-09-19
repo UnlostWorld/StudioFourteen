@@ -15,7 +15,6 @@
 
 namespace StudioFourteen.Studio;
 
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Panels;
 using System.Threading.Tasks;
 

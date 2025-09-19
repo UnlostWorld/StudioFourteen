@@ -16,19 +16,15 @@
 namespace StudioFourteen.Posing;
 
 using DependencyPropertyGenerator;
-using FontAwesome.Sharp;
 using StudioFourteen.Mvm;
 using StudioFourteen.Scene;
-using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Scene.GameObjects.Characters.Skeletons;
-using StudioFourteen.Selection;
 using StudioFourteen.Services;
 using StudioFourteen.Structs.Extensions;
-using System;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using StudioFourteen.Extensions;
+using StudioFourteen.Xaml;
 
 [DependencyProperty<SceneObjectBase>("Selection")]
 public partial class EyeInspector : View
@@ -143,8 +139,8 @@ public class EyeSelection : SceneObjectBase
 	}
 
 	public override string Id => $"Eye:{this.ObjectTableIndex}";
-	public override object? Icon => Resources.Find("ICON_Selection_Eye");
-	public override string TypeName => Resources.Find("LOC_Selection_Eye", "Blend");
+	public override object? Icon => XamlResources.Find("ICON_Selection_Eye");
+	public override string TypeName => XamlResources.Find("LOC_Selection_Eye", "Blend");
 
 	public MirrorModes MirrorMode
 	{

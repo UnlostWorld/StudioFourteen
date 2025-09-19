@@ -15,15 +15,9 @@
 
 namespace FFXIVClientStructs.FFXIV.Client.Game.Character;
 
-using Dalamud.Game.ClientState.Objects.Enums;
-using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Scene;
 using global::System;
-using StudioFourteen;
 using StudioFourteen.Interop.Structs;
-using StudioFourteen.Rendering;
-
-using CharaMakeType = StudioFourteen.GameData.Sheets.CharaMakeType;
 using ObjectKind = Dalamud.Game.ClientState.Objects.Enums.ObjectKind;
 
 public enum RenderMode : uint

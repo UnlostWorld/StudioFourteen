@@ -15,8 +15,6 @@
 
 namespace StudioFourteen.Scripting.Instance;
 
-using System.Threading.Tasks;
-
 public class StatusInterface : ScriptServiceBase
 {
 	public void Progress(int progress, int total) => this.Panel.SetProgress(progress / (double)total);

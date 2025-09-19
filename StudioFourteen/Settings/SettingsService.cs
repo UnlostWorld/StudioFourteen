@@ -15,14 +15,12 @@
 
 namespace StudioFourteen.Settings;
 
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Plugin;
 using StudioFourteen.Serialization;
 using StudioFourteen.Services;
 using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
-using StudioFourteen.Utils;
 
 public partial class SettingsService : ServiceBase
 {

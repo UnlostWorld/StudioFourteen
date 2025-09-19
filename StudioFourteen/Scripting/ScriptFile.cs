@@ -15,10 +15,8 @@
 
 namespace StudioFourteen.Scripting;
 
-using FontAwesome.Sharp;
 using Serilog.Events;
 using StudioFourteen.Files;
-using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Tags;
 using System;
 using System.Collections.Generic;

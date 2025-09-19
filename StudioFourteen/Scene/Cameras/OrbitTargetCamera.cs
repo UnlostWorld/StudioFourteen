@@ -16,6 +16,7 @@
 namespace StudioFourteen.Scene.Cameras;
 
 using StudioFourteen.Scene.GameObjects;
+using StudioFourteen.Xaml;
 using System.Numerics;
 
 public partial class OrbitTargetCamera : OrbitCamera
@@ -31,7 +32,7 @@ public partial class OrbitTargetCamera : OrbitCamera
 	[Bind] public partial Vector3 TargetOffset { get; set; }
 	[Bind] public partial float LerpSpeed { get; set; }
 
-	public override string TypeName => Resources.Find("LOC_OrbitTargetCamera", "Orbit Target");
+	public override string TypeName => XamlResources.Find("LOC_OrbitTargetCamera", "Orbit Target");
 
 	public override void Initialize(CameraState currentState, Camera? previousCamera)
 	{

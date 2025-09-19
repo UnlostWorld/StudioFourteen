@@ -15,11 +15,9 @@
 
 namespace StudioFourteen.Posing.Shared;
 
-using System.Collections.Generic;
 using System.Windows.Controls;
 using DependencyPropertyGenerator;
 using StudioFourteen.Scene;
-using StudioFourteen.Scene.GameObjects.Characters;
 
 [DependencyProperty<string>("SelectionName")]
 [DependencyProperty<string>("Label")]

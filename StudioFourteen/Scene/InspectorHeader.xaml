@@ -1,8 +1,8 @@
 <ResourceDictionary
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:controls="clr-namespace:StudioFourteen.Controls"
-	xmlns:converters="clr-namespace:StudioFourteen.Converters"
+	xmlns:s14="clr-namespace:StudioFourteen.Xaml"
+	xmlns:converters="clr-namespace:StudioFourteen.Xaml"
 	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:pose="clr-namespace:StudioFourteen.Posing"
 	xmlns:posing="clr-namespace:StudioFourteen.Posing"

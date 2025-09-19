@@ -16,11 +16,11 @@
 namespace StudioFourteen.Scene.GameObjects;
 
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using StudioFourteen.Rendering.Draw.Gizmos;
 using StudioFourteen.Scene;
 using StudioFourteen.Services;
 using StudioFourteen.Structs.Extensions;
 using StudioFourteen.Utilities;
+using StudioFourteen.Xaml;
 using System;
 using System.Numerics;
 
@@ -44,8 +44,8 @@ public class GameObject : TransformSceneObjectBase
 	}
 
 	public override string Id => $"GameObject:{this.ObjectIndex}";
-	public override object? Icon => Resources.Find("ICON_Type_GameObject");
-	public override string TypeName => Resources.Find("LOC_Type_GameObject", "Game Object");
+	public override object? Icon => XamlResources.Find("ICON_Type_GameObject");
+	public override string TypeName => XamlResources.Find("LOC_Type_GameObject", "Game Object");
 
 	public override double TranslationChange => 0.1f;
 

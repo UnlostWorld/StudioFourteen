@@ -15,18 +15,11 @@
 
 namespace StudioFourteen.GameData.Library;
 
-using System.Threading.Tasks;
-using FFXIVClientStructs.FFXIV.Client.Game;
-using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using Lumina.Excel.Sheets;
 using Lumina.Text.ReadOnly;
 using StudioFourteen.Animation;
 using StudioFourteen.GameData.Extensions;
-using StudioFourteen.Icons;
-using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Library.Sources;
-using StudioFourteen.Services;
 
 public class ActionLibraryEntry : ExcelLibraryEntry, ITimelineAnimation
 {

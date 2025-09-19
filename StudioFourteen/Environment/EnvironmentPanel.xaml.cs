@@ -20,7 +20,6 @@ using StudioFourteen.GameData.Library;
 using StudioFourteen.Library;
 using StudioFourteen.Panels;
 using StudioFourteen.Tags;
-using StudioFourteen.Extensions;
 
 public partial class EnvironmentPanel : Panel
 {

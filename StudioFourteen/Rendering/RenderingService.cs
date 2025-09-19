@@ -15,7 +15,6 @@
 
 namespace StudioFourteen.Rendering;
 
-using StudioFourteen.Rendering.Draw;
 using StudioFourteen.Services;
 
 public class RenderingService : ServiceBase

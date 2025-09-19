@@ -17,9 +17,8 @@ namespace FFXIVClientStructs.FFXIV.Client.Game.Character;
 
 using global::System;
 using global::System.Collections.Generic;
-using StudioFourteen;
 using StudioFourteen.Tags;
-
+using StudioFourteen.Xaml;
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 
 public static class DrawDataContainerExtensions
@@ -34,7 +33,7 @@ public static class DrawDataContainerExtensions
 		if (!EquipmentSlotDisplayNameCache.TryGetValue(self, out name))
 		{
 			string id = $"LOC_EquipmentSlot_{self.ToString()}";
-			name = Resources.Find(id, self.ToString());
+			name = XamlResources.Find(id, self.ToString());
 			EquipmentSlotDisplayNameCache.Add(self, name);
 		}
 
@@ -67,7 +66,7 @@ public static class DrawDataContainerExtensions
 		if (!WeaponSlotDisplayNameCache.TryGetValue(self, out name))
 		{
 			string id = $"LOC_WeaponSlot_{self.ToString()}";
-			name = Resources.Find(id, self.ToString());
+			name = XamlResources.Find(id, self.ToString());
 			WeaponSlotDisplayNameCache.Add(self, name);
 		}
 

@@ -23,6 +23,7 @@ using StudioFourteen.Scene;
 using StudioFourteen.Scene.Cameras;
 using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Extensions;
+using StudioFourteen.Xaml;
 
 public partial class SelectionPanel : Panel
 {
@@ -145,8 +146,8 @@ public partial class SelectionPanel : Panel
 
 	public class CreateType<T>(params Type[] types) : CreateType
 	{
-		public override object? Icon => StudioFourteen.Resources.Find($"ICON_Type_{typeof(T).Name}");
-		public override string Name => StudioFourteen.Resources.Find($"LOC_Type_{typeof(T).Name}", typeof(T).Name);
+		public override object? Icon => XamlResources.Find($"ICON_Type_{typeof(T).Name}");
+		public override string Name => XamlResources.Find($"LOC_Type_{typeof(T).Name}", typeof(T).Name);
 
 		public List<Type> Types { get; init; } = new(types);
 		public override Type Type => typeof(T);

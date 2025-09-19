@@ -20,7 +20,6 @@ using FFXIVClientStructs.FFXIV.Component.GUI;
 using StudioFourteen.Input.Devices;
 using StudioFourteen.Interop;
 using StudioFourteen.Plugin;
-using StudioFourteen.Extensions;
 
 using Task = System.Threading.Tasks.Task;
 

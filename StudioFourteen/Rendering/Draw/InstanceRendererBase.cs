@@ -19,7 +19,6 @@ using System;
 using SharpDX.D3DCompiler;
 using SharpDX.Direct3D11;
 using StudioFourteen.Content;
-using System.Collections.Generic;
 
 using Buffer = SharpDX.Direct3D11.Buffer;
 

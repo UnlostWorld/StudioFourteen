@@ -26,7 +26,7 @@ using StudioFourteen.GameData.Library;
 using StudioFourteen.Library;
 using StudioFourteen.Scene.GameObjects.Characters.Skeletons;
 using StudioFourteen.Services;
-
+using StudioFourteen.Xaml;
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 
 using CharaMakeType = StudioFourteen.GameData.Sheets.CharaMakeType;
@@ -46,8 +46,8 @@ public class Character : Skeleton
 	}
 
 	public DrawDataContainer DrawData { get; init; } = new();
-	public override object? Icon => Resources.Find("ICON_Type_Character");
-	public override string TypeName => Resources.Find("LOC_Type_Character", "Character");
+	public override object? Icon => XamlResources.Find("ICON_Type_Character");
+	public override string TypeName => XamlResources.Find("LOC_Type_Character", "Character");
 
 	public SimpleCommand RevertAppearanceCommand { get; init; }
 	public SimpleCommand ImportAppearanceCommand { get; init; }

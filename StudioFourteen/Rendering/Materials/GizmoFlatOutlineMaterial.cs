@@ -15,7 +15,6 @@
 
 namespace StudioFourteen.Rendering.Materials;
 
-using System.Numerics;
 using System.Runtime.InteropServices;
 using SharpDX.D3DCompiler;
 using StudioFourteen.Content;

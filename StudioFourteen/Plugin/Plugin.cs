@@ -17,12 +17,9 @@ namespace StudioFourteen.Plugin;
 
 using Dalamud.Game.Command;
 using Dalamud.Plugin;
-using Dalamud.Utility;
 using Serilog;
 using StudioFourteen.Settings;
-using System;
 using System.Threading.Tasks;
-using StudioFourteen.Extensions;
 
 #if DALAMUD
 

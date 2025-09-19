@@ -17,7 +17,6 @@ namespace StudioFourteen.Rendering.WPF;
 
 using System;
 using System.Numerics;
-using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -28,7 +27,6 @@ using SharpDX.Direct3D;
 using SharpDX.Direct3D11;
 using SharpDX.Direct3D9;
 using SharpDX.DXGI;
-using StudioFourteen.Cursors;
 using StudioFourteen.Input;
 using StudioFourteen.Rendering.Draw;
 using StudioFourteen.Rendering.Materials;

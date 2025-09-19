@@ -16,7 +16,6 @@
 namespace StudioFourteen.Mvm;
 
 using Dalamud.Plugin.Services;
-using StudioFourteen.Mvm;
 using StudioFourteen.Plugin;
 using Serilog;
 using System;
@@ -25,6 +24,7 @@ using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using StudioFourteen.Settings;
+using StudioFourteen.Xaml;
 
 public class View : UserControl, IAutoNotify
 {
@@ -32,7 +32,7 @@ public class View : UserControl, IAutoNotify
 
 	public View()
 	{
-		this.Resources = StudioFourteen.Resources.Load();
+		this.Resources = XamlResources.Load();
 
 		this.GetType().GetMethod("InitializeComponent")?.Invoke(this, null);
 

@@ -18,7 +18,6 @@ namespace StudioFourteen.Analytics;
 using StudioFourteen.Panels;
 using System.Windows;
 using StudioFourteen.Plugin;
-using PropertyChanged.SourceGenerator;
 
 public partial class ErrorReportPanel : Panel
 {

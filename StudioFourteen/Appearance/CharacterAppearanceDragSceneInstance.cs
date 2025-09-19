@@ -21,6 +21,7 @@ using StudioFourteen.DragAndDrop;
 using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Services;
 using StudioFourteen.Utilities;
+using StudioFourteen.Xaml;
 
 using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
 
@@ -28,7 +29,7 @@ public class CharacterAppearanceDragSceneInstance(ICharacterAppearance appearanc
 {
 	private Character? spawnedCharacter = null;
 
-	public object? GetOperationIcon() => Resources.Find("ICON_Drag_AddCharacter");
+	public object? GetOperationIcon() => XamlResources.Find("ICON_Drag_AddCharacter");
 
 	public async Task EnterScene()
 	{

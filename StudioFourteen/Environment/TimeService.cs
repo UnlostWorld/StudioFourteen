@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using StudioFourteen.Interop;
 using StudioFourteen.Services;
-
+using StudioFourteen.Xaml;
 using Task = System.Threading.Tasks.Task;
 
 public partial class TimeService
@@ -48,12 +48,12 @@ public partial class TimeService
 	{
 		for (int i = 0; i < 12; i++)
 		{
-			this.monthNameLookup[i] = Resources.Find($"LOC_Time_Month_{i}", i.ToString());
+			this.monthNameLookup[i] = XamlResources.Find($"LOC_Time_Month_{i}", i.ToString());
 		}
 
 		for (int i = 0; i < 32; i++)
 		{
-			this.dayNameLookup[i] = Resources.Find($"LOC_Time_Day_{i}", i.ToString());
+			this.dayNameLookup[i] = XamlResources.Find($"LOC_Time_Day_{i}", i.ToString());
 		}
 
 		await base.Start();

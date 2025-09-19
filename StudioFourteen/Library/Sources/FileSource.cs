@@ -15,18 +15,13 @@
 
 namespace StudioFourteen.Library.Sources;
 
-using StudioFourteen.Files;
-using StudioFourteen.Icons;
-using StudioFourteen.Library.Filters;
-using StudioFourteen.Library.LibraryMenu;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
 using System.Windows.Media;
-using StudioFourteen.Utils;
-
+using StudioFourteen.Files;
+using StudioFourteen.Icons;
+using StudioFourteen.Xaml;
 using static System.Environment;
 
 public class FileSource : SourceBase
@@ -165,7 +160,7 @@ public class FileEntry : LibraryEntryBase
 			if (typeIcon != null)
 				return new ThumbnailIcon(this.fileInfo, typeIcon);
 
-			return new ThumbnailIcon(this.fileInfo, Resources.Find("ICON_Library_Entry"));
+			return new ThumbnailIcon(this.fileInfo, XamlResources.Find("ICON_Library_Entry"));
 		}
 	}
 

@@ -19,6 +19,7 @@ using StudioFourteen.Scene.Cameras.Modifiers;
 using StudioFourteen.Scene;
 using System;
 using System.Collections.ObjectModel;
+using StudioFourteen.Xaml;
 
 public abstract partial class Camera : SceneObjectBase, IDisposable
 {
@@ -36,7 +37,7 @@ public abstract partial class Camera : SceneObjectBase, IDisposable
 	}
 
 	public override string Id => $"{this.GetType().Name}:{this.cameraIndex}";
-	public override object? Icon => Resources.Find("ICON_Type_Character");
+	public override object? Icon => XamlResources.Find("ICON_Type_Character");
 
 	public bool IsInitialized { get; set; } = false;
 	[Bind] public partial float FieldOfView { get; set; }

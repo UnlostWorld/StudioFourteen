@@ -1,0 +1,38 @@
+<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:s14="clr-namespace:StudioFourteen.Xaml"
+	xmlns:icons="clr-namespace:StudioFourteen.Icons"
+	xmlns:shapes="clr-namespace:StudioFourteen.Shapes">
+
+	<ControlTemplate x:Key="StudioOrderbleItemTemplate"
+		TargetType="{x:Type s14:OrderableItemControl}">
+		<Border Style="{DynamicResource ControlBorder}">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="24" />
+					<ColumnDefinition />
+				</Grid.ColumnDefinitions>
+
+				<s14:Grip
+					x:Name="PART_Grip"
+					Grid.Column="0"
+					Direction="Vertical" />
+
+				<ContentPresenter
+					Grid.Column="1"
+					Content="{TemplateBinding Content}"
+					ContentTemplate="{TemplateBinding ContentTemplate}" />
+			</Grid>
+		</Border>
+	</ControlTemplate>
+
+	<Style x:Key="StudioOrderableItem" TargetType="{x:Type s14:OrderableItemControl}">
+		<Setter Property="Template" Value="{StaticResource StudioOrderbleItemTemplate}" />
+	</Style>
+
+	<Style TargetType="{x:Type s14:OrderableItemsControl}">
+		<Setter Property="ItemContainerStyle" Value="{StaticResource StudioOrderableItem}" />
+	</Style>
+
+</ResourceDictionary>

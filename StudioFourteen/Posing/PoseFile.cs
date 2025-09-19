@@ -18,11 +18,8 @@ namespace StudioFourteen.Posing;
 using StudioFourteen.Files;
 using StudioFourteen.Library;
 using StudioFourteen.Scene.GameObjects.Characters.Skeletons;
-using StudioFourteen.Selection;
-using StudioFourteen.Services;
-using StudioFourteen.Structs.Extensions;
 using StudioFourteen.Tags;
-using StudioFourteen.Utilities;
+using StudioFourteen.Xaml;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -32,7 +29,7 @@ public class PoseFileTypeInfo : JsonFileTypeInfoBase<PoseFile>
 {
 	public override string Extension => ".pose";
 	public override string TypeName => "Pose";
-	public override object? Icon => Resources.Find("ICON_Library_Entry_Pose");
+	public override object? Icon => XamlResources.Find("ICON_Library_Entry_Pose");
 }
 
 [Serializable]

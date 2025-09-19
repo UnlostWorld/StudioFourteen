@@ -17,7 +17,6 @@ namespace StudioFourteen.Rendering.Passes;
 
 using System;
 using System.IO;
-using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using SharpDX;
 using SharpDX.Direct3D11;
 using SixLabors.ImageSharp;

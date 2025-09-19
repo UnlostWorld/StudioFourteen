@@ -17,7 +17,6 @@ namespace StudioFourteen.Tablet;
 
 using Apos.WintabDN;
 using StudioFourteen.Services;
-using StudioFourteen.Utilities;
 using System;
 using System.Threading;
 using System.Threading.Tasks;

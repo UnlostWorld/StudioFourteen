@@ -17,17 +17,16 @@ namespace StudioFourteen.Scripting;
 
 using System;
 using System.IO;
-using System.Text;
 using Serilog.Events;
 using StudioFourteen.Files;
 using StudioFourteen.Utils;
-using StudioFourteen.Controls;
+using StudioFourteen.Xaml;
 
 public class ScriptFileTypeInfo : FileTypeInfoBase
 {
 	public override string Extension => ".s14script";
 	public override string TypeName => "Script";
-	public override object? Icon => Resources.Find("ICON_Library_Entry_Script");
+	public override object? Icon => XamlResources.Find("ICON_Library_Entry_Script");
 
 	public override Type LoadsType => typeof(ScriptFile);
 

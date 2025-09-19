@@ -1,8 +1,8 @@
 ﻿<ResourceDictionary
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:controls="clr-namespace:StudioFourteen.Controls"
-	xmlns:converters="clr-namespace:StudioFourteen.Converters"
+	xmlns:s14="clr-namespace:StudioFourteen.Xaml"
+	xmlns:converters="clr-namespace:StudioFourteen.Xaml"
 	xmlns:local="clr-namespace:StudioFourteen.Appearance.Customize">
 
 	<converters:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter" />
@@ -42,14 +42,14 @@
 					</Border>
 				</ToggleButton>
 
-				<controls:PopOut
+				<s14:PopOut
 					Background="{DynamicResource ControlBackgroundBrush}"
 					IsOpen="{Binding IsChecked, Mode=TwoWay, ElementName=ToggleButton}"
 					PlacementTarget="{Binding ElementName=ToggleButton}"
 					StaysOpen="False"
 					Style="{DynamicResource PopOut}">
 
-					<controls:PopOut.Header>
+					<s14:PopOut.Header>
 						<Grid>
 							<Grid.ColumnDefinitions>
 								<ColumnDefinition />
@@ -68,7 +68,7 @@
 								Foreground="{DynamicResource ForegroundLightBrush}"
 								Text="{Binding Name}" />
 
-							<controls:NumberBox
+							<s14:NumberBox
 								Grid.Row="1"
 								Grid.Column="0"
 								Value="{Binding Value}" />
@@ -80,7 +80,7 @@
 								IsReadOnly="True"
 								Text="{Binding Selected.Hex}" />
 						</Grid>
-					</controls:PopOut.Header>
+					</s14:PopOut.Header>
 
 
 					<Grid>
@@ -106,9 +106,9 @@
 						</ListBox>
 					</Grid>
 
-				</controls:PopOut>
+				</s14:PopOut>
 
-				<controls:NumberBox
+				<s14:NumberBox
 					Grid.Column="1"
 					Margin="0"
 					Maximum="255"

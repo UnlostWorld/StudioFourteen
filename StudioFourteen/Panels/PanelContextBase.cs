@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Serilog;
 using StudioFourteen.Settings;
-using StudioFourteen.Extensions;
 
 public abstract class PanelContextBase
 {

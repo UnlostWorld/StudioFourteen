@@ -16,7 +16,6 @@
 namespace StudioFourteen.Mvm;
 
 using Newtonsoft.Json;
-using StudioFourteen.Mvm;
 using Serilog;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;

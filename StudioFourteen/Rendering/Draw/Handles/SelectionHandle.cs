@@ -16,7 +16,6 @@
 namespace StudioFourteen.Rendering.Draw.Handles;
 
 using StudioFourteen.Scene;
-using StudioFourteen.Selection;
 
 public class SelectionHandle : Handle
 {

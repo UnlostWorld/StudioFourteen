@@ -2,8 +2,8 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:cameras="clr-namespace:StudioFourteen.Scene.Cameras"
-	xmlns:controls="clr-namespace:StudioFourteen.Controls"
-	xmlns:converters="clr-namespace:StudioFourteen.Converters">
+	xmlns:s14="clr-namespace:StudioFourteen.Xaml"
+	xmlns:converters="clr-namespace:StudioFourteen.Xaml">
 
 	<converters:NotZeroToVisibilityConverter x:Key="NotZeroToVisibility" />
 
@@ -12,7 +12,7 @@
 			<ScrollViewer VerticalScrollBarVisibility="Disabled">
 				<StackPanel>
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_OrbitCamera_Target}" />
-					<controls:Vector3Box
+					<s14:Vector3Box
 						Change="0.1"
 						DecimalPlaces="3"
 						Maximum="100000"
@@ -38,7 +38,7 @@
 							ToolTip="{DynamicResource LOC_OrbitCamera_GroupPoseFov_Tooltip}"
 							Visibility="{Binding GroupPoseFovAdjust, Converter={StaticResource NotZeroToVisibility}}" />
 
-						<controls:NumberBox
+						<s14:NumberBox
 							Grid.Row="1"
 							Change="0.01"
 							Maximum="220"
@@ -48,7 +48,7 @@
 
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_OrbitCamera_Distance}" />
-					<controls:NumberBox
+					<s14:NumberBox
 						Change="1"
 						Maximum="300"
 						Minimum="0.1"
@@ -67,7 +67,7 @@
 						ToolTip="{DynamicResource LOC_OrbitCamera_GroupPoseRoll_Tooltip}"
 						Visibility="{Binding GroupPoseRollAdjust, Converter={StaticResource NotZeroToVisibility}}" />
 
-					<controls:Vector3Box
+					<s14:Vector3Box
 						Grid.Row="1"
 						Change="1"
 						Maximum="180"
@@ -76,7 +76,7 @@
 						Value="{Binding Angle}" />
 
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Camera_Rotation}" />
-					<controls:QuaternionBox Change="1" Value="{Binding Rotation}" />
+					<s14:QuaternionBox Change="1" Value="{Binding Rotation}" />
 
 				</StackPanel>
 			</ScrollViewer>

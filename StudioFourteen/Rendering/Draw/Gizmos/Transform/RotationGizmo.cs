@@ -20,6 +20,7 @@ using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Draw.Handles;
 using StudioFourteen.Structs.Extensions;
 using StudioFourteen.Rendering.Passes;
+using StudioFourteen.Xaml;
 
 public class RotationGizmo : TransformGizmoBase
 {
@@ -52,8 +53,8 @@ public class RotationGizmo : TransformGizmoBase
 		this.zHandle.AxisUnit = Vector3.UnitZ;
 	}
 
-	public override string Name => Resources.Find("LOC_Rotate", "Rotate");
-	public override object? Icon => Resources.Find("ICON_Transform_Rotate");
+	public override string Name => XamlResources.Find("LOC_Rotate", "Rotate");
+	public override object? Icon => XamlResources.Find("ICON_Transform_Rotate");
 	public override bool ShowInControlPanel => false;
 	public override bool KeepScreenSize => true;
 

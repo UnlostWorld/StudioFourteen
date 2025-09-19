@@ -22,7 +22,6 @@ using System.Windows;
 
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 using Character = StudioFourteen.Scene.GameObjects.Characters.Character;
-using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
 
 public class Weapon
 	: GearViewModelBase<ItemLibraryEntry>

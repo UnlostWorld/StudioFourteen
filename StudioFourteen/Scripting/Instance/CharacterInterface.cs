@@ -21,9 +21,6 @@ using StudioFourteen.GameData;
 using StudioFourteen.GameData.Library;
 using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Services;
-using StudioFourteen.Utilities;
-
-using static FFXIVClientStructs.FFXIV.Client.Game.Character.CharacterExtensions;
 
 public class CharacterInterface : ScriptServiceBase
 {

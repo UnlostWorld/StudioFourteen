@@ -19,6 +19,7 @@ using StudioFourteen.Scene;
 using StudioFourteen.Scene.GameObjects;
 using StudioFourteen.Services;
 using StudioFourteen.Settings;
+using StudioFourteen.Xaml;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
@@ -42,7 +43,7 @@ public partial class SelectionService : ServiceBase
 	public event SelectionExpandedDelegate? SelectionExpanded;
 
 	public override string Name => "Selection";
-	public override object? Icon => Resources.Find("ICON_Selection_SelectionService");
+	public override object? Icon => XamlResources.Find("ICON_Selection_SelectionService");
 
 	public SceneObjectBase? Current => this.selection;
 	public SceneObjectBase? Hover => this.hover;

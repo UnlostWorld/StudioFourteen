@@ -17,14 +17,12 @@ namespace FFXIVClientStructs.FFXIV.Client.Game.Character;
 
 using Dalamud.Game.ClientState.Objects.Enums;
 using global::System;
-using global::System.Security.Cryptography;
 using global::System.Text;
 using Lumina.Excel;
 using Lumina.Excel.Sheets;
 using StudioFourteen;
 using StudioFourteen.GameData;
 using StudioFourteen.GameData.Sheets;
-using StudioFourteen.Utils;
 using CharaMakeType = StudioFourteen.GameData.Sheets.CharaMakeType;
 using HairMakeType = StudioFourteen.GameData.Sheets.HairMakeType;
 

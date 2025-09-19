@@ -16,7 +16,6 @@
 namespace StudioFourteen;
 
 using StudioFourteen.Plugin;
-using StudioFourteen.Studio;
 using Serilog;
 using Serilog.Core;
 using Serilog.Events;

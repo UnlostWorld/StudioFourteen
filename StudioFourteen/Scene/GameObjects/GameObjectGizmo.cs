@@ -21,7 +21,6 @@ using StudioFourteen.Rendering.Draw.Gizmos;
 using StudioFourteen.Rendering.Draw.Handles;
 using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Scene.GameObjects.Characters;
-using StudioFourteen.Scene.GameObjects.Characters.Skeletons;
 
 public class GameObjectGizmo : SceneObjectGizmoBase<Character>
 {

@@ -14,11 +14,11 @@
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
 namespace StudioFourteen.Library;
+
 using Serilog;
 using StudioFourteen;
 using System;
 using System.Threading.Tasks;
-using StudioFourteen.Extensions;
 
 public abstract class LibraryPreviewBase
 {

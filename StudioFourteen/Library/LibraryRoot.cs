@@ -15,12 +15,12 @@
 
 namespace StudioFourteen.Library;
 
-using FontAwesome.Sharp;
+using StudioFourteen.Xaml;
 
 internal class LibraryRoot()
 	: GroupEntryBase(null)
 {
-	public override object? Icon => Resources.Find("ICON_Library_Root");
+	public override object? Icon => XamlResources.Find("ICON_Library_Root");
 	public override string Name => "Library";
 	protected override string GetInternalId() => "Root";
 }

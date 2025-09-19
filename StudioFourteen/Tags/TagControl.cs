@@ -14,8 +14,8 @@
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
 namespace StudioFourteen.Tags;
+
 using DependencyPropertyGenerator;
-using SixLabors.Fonts.Tables.AdvancedTypographic;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;

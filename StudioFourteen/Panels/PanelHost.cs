@@ -21,8 +21,6 @@ using System;
 using System.ComponentModel;
 using System.Windows.Controls;
 using System.Windows;
-using System.Threading.Tasks;
-using Lumina.Excel.Sheets;
 
 [DependencyProperty<Type>("PanelType")]
 [DependencyProperty<PanelContextBase>("Context")]

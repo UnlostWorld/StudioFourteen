@@ -17,8 +17,8 @@ namespace StudioFourteen.Tags;
 
 using System;
 using System.Collections.Generic;
-using System.Windows.Media;
 using StudioFourteen;
+using StudioFourteen.Xaml;
 
 public class Tag : IEquatable<Tag?>
 {
@@ -43,7 +43,7 @@ public class Tag : IEquatable<Tag?>
 		get
 		{
 			if (this.displayName == null)
-				this.displayName = StudioFourteen.Resources.Find($"LOC_Tag_{this.name}", this.name);
+				this.displayName = XamlResources.Find($"LOC_Tag_{this.name}", this.name);
 
 			return this.displayName;
 		}
@@ -54,7 +54,7 @@ public class Tag : IEquatable<Tag?>
 		get
 		{
 			if (this.toolTip == null)
-				this.toolTip = StudioFourteen.Resources.Find($"LOC_Tag_{this.name}_ToolTip", this.name);
+				this.toolTip = XamlResources.Find($"LOC_Tag_{this.name}_ToolTip", this.name);
 
 			return this.toolTip;
 		}

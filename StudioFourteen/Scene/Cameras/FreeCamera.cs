@@ -17,6 +17,7 @@ namespace StudioFourteen.Scene.Cameras;
 
 using StudioFourteen.Input;
 using StudioFourteen.Structs.Extensions;
+using StudioFourteen.Xaml;
 using System;
 using System.Numerics;
 
@@ -47,7 +48,7 @@ public partial class FreeCamera : Camera
 	private Vector3 desiredRot = Vector3.Zero;
 	private float moveSpeed = 2.0f;
 
-	public override string TypeName => Resources.Find("LOC_FreeCamera", "Free Camera");
+	public override string TypeName => XamlResources.Find("LOC_FreeCamera", "Free Camera");
 
 	[Bind] public partial Vector3 Position { get; set; }
 	[Bind] public partial Quaternion Rotation { get; set; }

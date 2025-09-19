@@ -19,15 +19,15 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using StudioFourteen.Context;
-using StudioFourteen.Environment;
 using StudioFourteen.Files;
 using StudioFourteen.Services;
+using StudioFourteen.Xaml;
 
 public class EnvironmentFileTypeInfo : JsonFileTypeInfoBase<EnvironmentFile>
 {
 	public override string Extension => ".s14env";
 	public override string TypeName => "Environment";
-	public override object? Icon => Resources.Find("ICON_Library_Entry_Environment");
+	public override object? Icon => XamlResources.Find("ICON_Library_Entry_Environment");
 }
 
 [Serializable]

@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:controls="clr-namespace:StudioFourteen.Controls"
+	xmlns:s14="clr-namespace:StudioFourteen.Xaml"
 	xmlns:local="clr-namespace:StudioFourteen.Appearance.Customize">
 
 	<DataTemplate DataType="{x:Type local:GenderMenu}">
@@ -9,10 +9,10 @@
 		<StackPanel>
 			<TextBlock Style="{DynamicResource LeftLabel}" Text="{Binding Name}" />
 
-			<controls:SwitchSelector SelectedIndex="{Binding Value}">
+			<s14:SwitchSelector SelectedIndex="{Binding Value}">
 				<ListBoxItem>Masculine</ListBoxItem>
 				<ListBoxItem>Feminine</ListBoxItem>
-			</controls:SwitchSelector>
+			</s14:SwitchSelector>
 		</StackPanel>
 	</DataTemplate>
 </ResourceDictionary>

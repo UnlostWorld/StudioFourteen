@@ -16,7 +16,6 @@
 namespace StudioFourteen.GameData.Library;
 
 using System.Threading.Tasks;
-using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using Lumina.Excel.Sheets;
 using StudioFourteen.Appearance;

@@ -16,7 +16,6 @@
 namespace StudioFourteen.Context;
 
 using DependencyPropertyGenerator;
-using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using Serilog;
 using StudioFourteen.Library.LibraryMenu;
 using StudioFourteen.Services;
@@ -25,7 +24,7 @@ using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows;
 using StudioFourteen;
-using StudioFourteen.Controls;
+using StudioFourteen.Xaml;
 using StudioFourteen.Extensions;
 
 [DependencyProperty<string>("ObjectName")]

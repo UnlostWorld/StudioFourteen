@@ -15,8 +15,6 @@
 
 namespace StudioFourteen.Photos;
 
-using PropertyChanged.SourceGenerator;
-using StudioFourteen.Panels;
 using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Passes;
 using StudioFourteen.Settings;
@@ -26,7 +24,6 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using StudioFourteen.Animation;
-using StudioFourteen.Extensions;
 
 using Panel = StudioFourteen.Panels.Panel;
 

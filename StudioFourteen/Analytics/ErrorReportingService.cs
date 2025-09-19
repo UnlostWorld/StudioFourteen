@@ -21,7 +21,6 @@ using System.Threading.Tasks;
 using Serilog.Events;
 using StudioFourteen.Services;
 using StudioOnline.Analytics;
-using StudioFourteen.Utils;
 
 public class ErrorReportingService : ServiceBase
 {

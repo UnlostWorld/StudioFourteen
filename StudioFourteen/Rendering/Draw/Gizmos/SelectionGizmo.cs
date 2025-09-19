@@ -20,6 +20,7 @@ using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Draw.Gizmos.Transforms;
 using StudioFourteen.Animation;
 using StudioFourteen.Rendering.Passes;
+using StudioFourteen.Xaml;
 
 public class SelectionGizmo : TransformGizmoBase
 {
@@ -36,7 +37,7 @@ public class SelectionGizmo : TransformGizmoBase
 	}
 
 	public override string Name => "Selection";
-	public override object? Icon => Resources.Find("ICON_Selection");
+	public override object? Icon => XamlResources.Find("ICON_Selection");
 	public override bool ShowInControlPanel => false;
 	public override bool KeepScreenSize => false;
 

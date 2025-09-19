@@ -22,7 +22,6 @@ using System.Threading.Tasks;
 using StudioFourteen.Posing;
 using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Utilities;
-using StudioFourteen.Extensions;
 
 using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
 

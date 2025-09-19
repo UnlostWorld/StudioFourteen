@@ -2,7 +2,7 @@
 	x:Class="StudioFourteen.Posing.EyeInspector"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:controls="clr-namespace:StudioFourteen.Controls"
+	xmlns:s14="clr-namespace:StudioFourteen.Xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:local="clr-namespace:StudioFourteen.Posing"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -19,7 +19,7 @@
 				Text="Look"
 				ToolTip="Look with your special eyes" />
 
-			<controls:AreaSlider
+			<s14:AreaSlider
 				Height="{Binding ActualWidth, RelativeSource={RelativeSource Mode=Self}}"
 				Margin="3"
 				IsCircular="True"
@@ -34,7 +34,7 @@
 
 
 			<TextBlock Style="{DynamicResource LeftLabel}" Text="Iris Size" />
-			<controls:NumberBox
+			<s14:NumberBox
 				Maximum="2"
 				Minimum="0.75"
 				Change="0.01"

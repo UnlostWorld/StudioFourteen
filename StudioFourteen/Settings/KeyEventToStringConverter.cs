@@ -16,14 +16,12 @@
 namespace StudioFourteen.Settings;
 
 using StudioFourteen.Input;
-
-using System;
-using StudioFourteen.Converters;
+using StudioFourteen.Xaml;
 
 public class KeyBindEventsToStringConverter : ConverterBase<InputAction, string>
 {
 	protected override string Convert(InputAction value)
 	{
-		return Resources.Find($"LOC_Settings_Input_{value.ToString()}", value.ToString());
+		return XamlResources.Find($"LOC_Settings_Input_{value.ToString()}", value.ToString());
 	}
 }

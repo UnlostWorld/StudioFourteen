@@ -13,13 +13,10 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-using System;
 using System.Diagnostics;
-using System.Threading.Tasks;
 using Dalamud.Game.ClientState.Keys;
 using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.System.Input;
-using StudioFourteen.Input.Devices;
 using StudioFourteen.Services;
 
 public class AfkService : ServiceBase

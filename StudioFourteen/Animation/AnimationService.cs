@@ -17,9 +17,7 @@ namespace StudioFourteen.Animation;
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Interop;
 using StudioFourteen.Services;
 

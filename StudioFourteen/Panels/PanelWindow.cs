@@ -16,8 +16,6 @@
 namespace StudioFourteen.Panels;
 
 using DependencyPropertyGenerator;
-using PropertyChanged.SourceGenerator;
-using Serilog;
 using StudioFourteen.Content;
 using StudioFourteen.Input;
 using StudioFourteen.Mvm;
@@ -31,9 +29,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using System.Windows.Threading;
 using StudioFourteen;
 using StudioFourteen.Extensions;
+using StudioFourteen.Xaml;
 
 [DependencyProperty<bool>("IsEmbedded", DefaultValue = true)]
 [DependencyProperty<bool>("IsForeground", DefaultValue = false)]
@@ -70,7 +68,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		this.WindowStartupLocation = WindowStartupLocation.Manual;
 
 		// Load a new copy of the resources. Each window needs its own instance for threading reasons.
-		this.Resources = StudioFourteen.Resources.Load();
+		this.Resources = XamlResources.Load();
 		this.Style = this.DefaultStyle;
 
 		this.GetType().GetMethod("InitializeComponent")?.Invoke(this, null);

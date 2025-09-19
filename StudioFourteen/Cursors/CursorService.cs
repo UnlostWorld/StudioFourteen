@@ -22,7 +22,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using StudioFourteen.Controls;
+using StudioFourteen.Xaml;
 using StudioFourteen.Interop;
 using StudioFourteen.Launcher;
 using StudioFourteen.Panels;

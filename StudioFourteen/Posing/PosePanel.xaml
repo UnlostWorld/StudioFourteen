@@ -4,8 +4,8 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:body="clr-namespace:StudioFourteen.Posing.Body"
 	xmlns:characters="clr-namespace:StudioFourteen.Scene.GameObjects.Characters"
-	xmlns:controls="clr-namespace:StudioFourteen.Controls"
-	xmlns:converters="clr-namespace:StudioFourteen.Converters"
+	xmlns:s14="clr-namespace:StudioFourteen.Xaml"
+	xmlns:converters="clr-namespace:StudioFourteen.Xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:hands="clr-namespace:StudioFourteen.Posing.Hands"
 	xmlns:icons="clr-namespace:StudioFourteen.Icons"
@@ -351,7 +351,7 @@
 			</Grid>
 		</Border>
 
-		<controls:PopOut
+		<s14:PopOut
 			x:Name="SelectionHoverPopOut"
 			Width="200"
 			Margin="0,6,0,0"
@@ -361,7 +361,7 @@
 			PlacementTarget="{Binding HoverTarget}"
 			Style="{DynamicResource PopOut}">
 
-			<controls:PopOut.Header>
+			<s14:PopOut.Header>
 				<StackPanel Margin="0,6,0,0">
 					<TextBlock
 						HorizontalAlignment="Center"
@@ -373,7 +373,7 @@
 						Style="{DynamicResource Subscript}"
 						Text="{Binding Hover.TypeName}" />
 				</StackPanel>
-			</controls:PopOut.Header>
+			</s14:PopOut.Header>
 
 			<StackPanel>
 				<TextBlock
@@ -390,7 +390,7 @@
 					Visibility="{Binding Hover.Description, Converter={StaticResource NotEmptyToVisibility}}" />
 			</StackPanel>
 
-		</controls:PopOut>
+		</s14:PopOut>
 
 	</Grid>
 </panels:Panel>

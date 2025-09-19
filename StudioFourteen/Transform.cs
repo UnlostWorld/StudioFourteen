@@ -19,7 +19,6 @@ using FFXIVClientStructs.Havok.Common.Base.Math.QsTransform;
 using StudioFourteen.Structs;
 using StudioFourteen.Structs.Extensions;
 using System;
-using System.Drawing.Drawing2D;
 using System.Numerics;
 
 public struct Transform : IEquatable<Transform>

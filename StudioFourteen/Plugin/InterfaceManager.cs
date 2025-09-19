@@ -15,7 +15,6 @@
 
 namespace StudioFourteen.Plugin;
 
-using Dalamud.Hooking;
 using System;
 using System.Reflection;
 using System.Runtime.InteropServices;

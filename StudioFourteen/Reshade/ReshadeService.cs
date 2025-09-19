@@ -15,8 +15,6 @@
 
 namespace StudioFourteen.Reshade;
 
-using Dalamud.Plugin.Services;
-using PropertyChanged.SourceGenerator;
 using Serilog.Events;
 using StudioFourteen.Plugin;
 using StudioFourteen.Services;
