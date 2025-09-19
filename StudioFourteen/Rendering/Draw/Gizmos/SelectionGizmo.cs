@@ -18,7 +18,7 @@ namespace StudioFourteen.Rendering.Draw.Gizmos;
 using System.Diagnostics;
 using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Draw.Gizmos.Transforms;
-using WpfUtils.Animation;
+using StudioFourteen.Animation;
 using StudioFourteen.Rendering.Passes;
 
 public class SelectionGizmo : TransformGizmoBase

@@ -21,7 +21,7 @@ using System.Text;
 using Serilog.Events;
 using StudioFourteen.Files;
 using StudioFourteen.Utils;
-using WpfUtils.Controls;
+using StudioFourteen.Controls;
 
 public class ScriptFileTypeInfo : FileTypeInfoBase
 {

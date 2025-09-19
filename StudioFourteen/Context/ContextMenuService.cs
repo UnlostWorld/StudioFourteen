@@ -23,7 +23,7 @@ using StudioFourteen.Appearance;
 using StudioFourteen.Environment;
 using StudioFourteen.Library.Sources;
 using StudioFourteen.Services;
-using WpfUtils.Extensions;
+using StudioFourteen.Extensions;
 
 public interface IContextProvider
 {

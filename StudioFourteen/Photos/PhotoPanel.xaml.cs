@@ -25,8 +25,8 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using WpfUtils.Animation;
-using WpfUtils.Extensions;
+using StudioFourteen.Animation;
+using StudioFourteen.Extensions;
 
 using Panel = StudioFourteen.Panels.Panel;
 

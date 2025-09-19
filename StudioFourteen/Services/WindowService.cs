@@ -18,7 +18,6 @@ namespace StudioFourteen.Services;
 using Dalamud.Bindings.ImGui;
 using Dalamud.Game.ClientState.Keys;
 using FFXIVClientStructs.FFXIV.Component.GUI;
-using PropertyChanged.SourceGenerator;
 using StudioFourteen.Input;
 using StudioFourteen.Panels;
 using StudioFourteen.Plugin;
@@ -34,9 +33,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Interop;
-using Windows.Win32;
-using Windows.Win32.Foundation;
-using Windows.Win32.UI.WindowsAndMessaging;
+using global::Windows.Win32;
+using global::Windows.Win32.Foundation;
+using global::Windows.Win32.UI.WindowsAndMessaging;
 
 using DrawingPoint = System.Drawing.Point;
 using Point = System.Windows.Point;
@@ -160,7 +159,7 @@ public partial class WindowService : ServiceBase
 
 	public bool IsAnyWindowActive()
 	{
-		return Windows.Win32.PInvoke.GetForegroundWindow() != 0;
+		return PInvoke.GetForegroundWindow() != 0;
 	}
 
 	public bool IsAnyStudioWindowActive()

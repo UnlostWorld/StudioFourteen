@@ -30,7 +30,7 @@ using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using WpfUtils.Extensions;
+using StudioFourteen.Extensions;
 
 public enum PanelVisibility
 {

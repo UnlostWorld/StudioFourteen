@@ -22,7 +22,7 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media.Animation;
 using WpfToolkit.Controls;
-using WpfUtils.Behaviors;
+using StudioFourteen.Behaviors;
 
 [DependencyProperty<double>("VerticalScrollActual")]
 [DependencyProperty<double>("HorizontalScrollActual")]

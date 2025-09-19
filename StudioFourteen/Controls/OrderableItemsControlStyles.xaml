@@ -3,7 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:icons="clr-namespace:StudioFourteen.Icons"
-	xmlns:shapes="clr-namespace:WpfUtils.Shapes;assembly=WpfUtils">
+	xmlns:shapes="clr-namespace:StudioFourteen.Shapes">
 
 	<ControlTemplate x:Key="StudioOrderbleItemTemplate" TargetType="{x:Type controls:OrderableItemControl}">
 		<Border Style="{DynamicResource WpfUtilsControlBorder}">

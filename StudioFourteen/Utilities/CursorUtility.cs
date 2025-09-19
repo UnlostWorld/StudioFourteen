@@ -18,7 +18,7 @@ namespace StudioFourteen.Utilities;
 using System;
 using System.Drawing;
 using System.Numerics;
-using Windows.Win32;
+using global::Windows.Win32;
 
 using DrawingPoint = System.Drawing.Point;
 using Point = System.Windows.Point;

@@ -11,7 +11,6 @@
 	xmlns:librarySelector="clr-namespace:StudioFourteen.Library.Selector"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
-	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Width="350"
 	Height="550"
 	MinHeight="510"

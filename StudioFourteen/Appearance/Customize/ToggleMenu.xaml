@@ -1,8 +1,8 @@
 ﻿<ResourceDictionary
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:controls="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
-	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=WpfUtils"
+	xmlns:controls="clr-namespace:StudioFourteen.Controls"
+	xmlns:converters="clr-namespace:StudioFourteen.Converters"
 	xmlns:local="clr-namespace:StudioFourteen.Appearance.Customize">
 
 	<converters:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter" />

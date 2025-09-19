@@ -2,12 +2,11 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
-	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
+	xmlns:converters="clr-namespace:StudioFourteen.Converters"
 	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:pose="clr-namespace:StudioFourteen.Posing"
 	xmlns:posing="clr-namespace:StudioFourteen.Posing"
-	xmlns:scene="clr-namespace:StudioFourteen.Scene"
-	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
+	xmlns:scene="clr-namespace:StudioFourteen.Scene">
 
 	<BooleanToVisibilityConverter x:Key="B2V" />
 	<converters:BoolInversionConverter x:Key="!B" />

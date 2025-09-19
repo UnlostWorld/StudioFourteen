@@ -25,7 +25,7 @@ using StudioFourteen.Posing;
 using StudioFourteen.Scene.Characters.Skeletons;
 using StudioFourteen.Services;
 using StudioFourteen.Structs.Extensions;
-using WpfUtils.Extensions;
+using StudioFourteen.Extensions;
 
 using XivDrawCharacter = FFXIVClientStructs.FFXIV.Client.Graphics.Scene.CharacterBase;
 using XivGameObject = FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject;

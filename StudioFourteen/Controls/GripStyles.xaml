@@ -3,7 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:local="clr-namespace:StudioFourteen.Controls"
-	xmlns:shapes="clr-namespace:WpfUtils.Shapes;assembly=WpfUtils">
+	xmlns:shapes="clr-namespace:StudioFourteen.Shapes">
 
 	<ControlTemplate x:Key="StudioGripTemplate" TargetType="{x:Type local:Grip}">
 		<Grid Background="Transparent">

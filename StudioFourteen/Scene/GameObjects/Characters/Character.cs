@@ -26,7 +26,6 @@ using StudioFourteen.GameData.Library;
 using StudioFourteen.Library;
 using StudioFourteen.Scene.GameObjects.Characters.Skeletons;
 using StudioFourteen.Services;
-using WpfUtils.Commands;
 
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 

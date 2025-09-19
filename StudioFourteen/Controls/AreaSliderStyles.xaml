@@ -1,0 +1,77 @@
+﻿<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:controls="clr-namespace:StudioFourteen.Controls">
+
+	<ControlTemplate x:Key="WpfUtilsAreaSliderThumbTemplate" TargetType="{x:Type Thumb}">
+
+		<Grid>
+			<Ellipse
+				x:Name="BackgroundEllipse"
+				Fill="{DynamicResource ControlHighlightBrush}"
+				Opacity="0" />
+			<Ellipse
+				x:Name="ForegroundEllipse"
+				Margin="3"
+				Fill="{DynamicResource ForegroundLightBrush}" />
+		</Grid>
+
+		<ControlTemplate.Triggers>
+			<Trigger Property="IsMouseOver" Value="True">
+				<Setter TargetName="BackgroundEllipse" Property="Opacity" Value="1" />
+			</Trigger>
+			<Trigger Property="IsDragging" Value="True">
+				<Setter TargetName="ForegroundEllipse" Property="Fill"
+					Value="{DynamicResource TrimBrush}" />
+			</Trigger>
+		</ControlTemplate.Triggers>
+	</ControlTemplate>
+
+	<Style x:Key="WpfUtilsAreaSliderThumb" TargetType="{x:Type Thumb}">
+		<Setter Property="Height" Value="20" />
+		<Setter Property="Template" Value="{StaticResource WpfUtilsAreaSliderThumbTemplate}" />
+		<Setter Property="Width" Value="20" />
+	</Style>
+
+	<ControlTemplate x:Key="WpfUtilsAreaSliderTemplate" TargetType="{x:Type controls:AreaSlider}">
+		<Grid>
+			<Border Style="{DynamicResource WpfUtilsControlBorder}">
+				<Canvas>
+					<Thumb
+						x:Name="PART_Thumb"
+						Canvas.Left="0"
+						Canvas.Top="0"
+						Style="{StaticResource WpfUtilsAreaSliderThumb}" />
+				</Canvas>
+			</Border>
+		</Grid>
+	</ControlTemplate>
+
+	<ControlTemplate x:Key="WpfUtilsCircularAreaSliderTemplate"
+		TargetType="{x:Type controls:AreaSlider}">
+		<Grid>
+			<Ellipse
+				HorizontalAlignment="Stretch"
+				VerticalAlignment="Stretch"
+				Fill="{DynamicResource ControlBackgroundBrush}" />
+			<Canvas>
+				<Thumb
+					x:Name="PART_Thumb"
+					Canvas.Left="0"
+					Canvas.Top="0"
+					Style="{StaticResource WpfUtilsAreaSliderThumb}" />
+			</Canvas>
+		</Grid>
+	</ControlTemplate>
+
+	<Style x:Key="WpfUtilsAreaSlider" TargetType="{x:Type controls:AreaSlider}">
+		<Setter Property="CircularTemplate"
+			Value="{StaticResource WpfUtilsCircularAreaSliderTemplate}" />
+		<Setter Property="IsCircular" Value="False" />
+		<Setter Property="Margin" Value="1" />
+		<Setter Property="MinHeight" Value="100" />
+		<Setter Property="MinWidth" Value="100" />
+		<Setter Property="SquareTemplate" Value="{StaticResource WpfUtilsAreaSliderTemplate}" />
+	</Style>
+
+</ResourceDictionary>

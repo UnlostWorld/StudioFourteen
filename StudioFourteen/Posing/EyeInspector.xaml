@@ -7,7 +7,6 @@
 	xmlns:local="clr-namespace:StudioFourteen.Posing"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:mvm="clr-namespace:StudioFourteen.Mvm"
-	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	d:DesignWidth="200"
@@ -20,7 +19,7 @@
 				Text="Look"
 				ToolTip="Look with your special eyes" />
 
-			<wpfUtils:AreaSlider
+			<controls:AreaSlider
 				Height="{Binding ActualWidth, RelativeSource={RelativeSource Mode=Self}}"
 				Margin="3"
 				IsCircular="True"

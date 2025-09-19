@@ -21,7 +21,7 @@ using StudioFourteen.Panels;
 using StudioFourteen.Scene;
 using StudioFourteen.Scene.Cameras;
 using StudioFourteen.Scene.GameObjects.Characters;
-using WpfUtils.Extensions;
+using StudioFourteen.Extensions;
 
 public partial class InspectorPanel : Panel
 {

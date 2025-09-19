@@ -3,7 +3,7 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
-	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
+	xmlns:converters="clr-namespace:StudioFourteen.Converters"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:gizmos="clr-namespace:StudioFourteen.Rendering.Draw.Gizmos"
 	xmlns:icons="clr-namespace:StudioFourteen.Icons"
@@ -12,7 +12,6 @@
 	xmlns:mvm="clr-namespace:StudioFourteen.Mvm"
 	xmlns:sys="clr-namespace:System;assembly=mscorlib"
 	xmlns:windows="clr-namespace:StudioFourteen.Panels"
-	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Width="600"
 	Height="58"
 	HorizontalAlignment="Center"
@@ -41,7 +40,7 @@
 			</ComboBox.ItemTemplate>
 		</ComboBox>
 
-		<wpfUtils:SwitchSelector
+		<controls:SwitchSelector
 			Grid.Column="1"
 			HorizontalContentAlignment="Center"
 			ItemsSource="{Binding CurrentType.Objects}"
@@ -53,7 +52,7 @@
 					<TextBlock Text="{Binding Name}" />
 				</DataTemplate>
 			</ListBox.ItemTemplate>
-		</wpfUtils:SwitchSelector>
+		</controls:SwitchSelector>
 
 		<ComboBox Grid.Column="1"
 			HorizontalContentAlignment="Center"
@@ -84,12 +83,12 @@
 			StaysOpen="False">
 
 			<librarySelector:LibrarySelector.Header>
-				<wpfUtils:SwitchSelector
+				<controls:SwitchSelector
 					Grid.Column="0"
 					Height="32"
 					ItemsSource="{Binding CreateTypes}"
 					SelectedValue="{Binding CurrentCreateType}">
-					<wpfUtils:SwitchSelector.ItemTemplate>
+					<controls:SwitchSelector.ItemTemplate>
 						<DataTemplate>
 							<icons:IconView
 								Width="24"
@@ -97,8 +96,8 @@
 								Icon="{Binding Icon}"
 								ToolTip="{Binding Name}" />
 						</DataTemplate>
-					</wpfUtils:SwitchSelector.ItemTemplate>
-				</wpfUtils:SwitchSelector>
+					</controls:SwitchSelector.ItemTemplate>
+				</controls:SwitchSelector>
 			</librarySelector:LibrarySelector.Header>
 		</librarySelector:LibrarySelector>
 

@@ -18,7 +18,7 @@ using Serilog;
 using StudioFourteen;
 using System;
 using System.Threading.Tasks;
-using WpfUtils.Extensions;
+using StudioFourteen.Extensions;
 
 public abstract class LibraryPreviewBase
 {

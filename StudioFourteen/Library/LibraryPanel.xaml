@@ -2,7 +2,7 @@
 	x:Class="StudioFourteen.Library.LibraryPanel"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:behaviors="clr-namespace:WpfUtils.Behaviors;assembly=WpfUtils"
+	xmlns:behaviors="clr-namespace:StudioFourteen.Behaviors"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:icons="clr-namespace:StudioFourteen.Icons"
@@ -14,9 +14,7 @@
 	xmlns:results="clr-namespace:StudioFourteen.Library.Results"
 	xmlns:structs="clr-namespace:StudioFourteen.Structs"
 	xmlns:tags="clr-namespace:StudioFourteen.Tags"
-	xmlns:triggers="clr-namespace:WpfUtils.Triggers;assembly=WpfUtils"
 	xmlns:vwp="clr-namespace:WpfToolkit.Controls;assembly=VirtualizingWrapPanel"
-	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Width="800"
 	Height="600"
 	MinWidth="280"
@@ -176,7 +174,7 @@
 										</ToggleButton>
 									</StackPanel>
 
-									<wpfUtils:PopOut
+									<controls:PopOut
 										MinWidth="150"
 										MaxHeight="400"
 										Padding="0"
@@ -186,12 +184,12 @@
 										StaysOpen="False"
 										Style="{DynamicResource WpfUtilsPopOut}">
 
-										<wpfUtils:PopOut.Header>
+										<controls:PopOut.Header>
 											<TextBlock Margin="10" Foreground="{DynamicResource ForegroundLightBrush}">
 												<Run Text="{Binding Name, Mode=OneTime}" />
 												<Run Text="/" />
 											</TextBlock>
-										</wpfUtils:PopOut.Header>
+										</controls:PopOut.Header>
 
 										<ScrollViewer Margin="0" HorizontalScrollBarVisibility="Disabled">
 											<ItemsControl ItemsSource="{Binding GroupEntries}">
@@ -207,7 +205,7 @@
 												</ItemsControl.ItemTemplate>
 											</ItemsControl>
 										</ScrollViewer>
-									</wpfUtils:PopOut>
+									</controls:PopOut>
 
 
 								</Grid>
@@ -225,7 +223,7 @@
 				</Border>
 
 
-				<wpfUtils:SwitchSelector
+				<controls:SwitchSelector
 					x:Name="ViewModeArea"
 					Width="64"
 					Height="28"
@@ -243,8 +241,9 @@
 						<icons:IconView Height="14" Icon="{DynamicResource ICON_Library_ViewList}" />
 					</ListBoxItem>
 
-					<wpfUtils:SwitchSelector.Style>
-						<Style BasedOn="{StaticResource WpfUtilsSwitchSelector}" TargetType="{x:Type wpfUtils:SwitchSelector}">
+					<controls:SwitchSelector.Style>
+						<Style BasedOn="{StaticResource WpfUtilsSwitchSelector}"
+							TargetType="{x:Type controls:SwitchSelector}">
 
 							<Setter Property="Grid.Column" Value="2" />
 							<Style.Triggers>
@@ -254,11 +253,11 @@
 								</DataTrigger>
 							</Style.Triggers>
 						</Style>
-					</wpfUtils:SwitchSelector.Style>
-				</wpfUtils:SwitchSelector>
+					</controls:SwitchSelector.Style>
+				</controls:SwitchSelector>
 
 
-				<wpfUtils:SwitchSelector
+				<controls:SwitchSelector
 					x:Name="FlattenModeArea"
 					Width="64"
 					Height="28"
@@ -276,8 +275,9 @@
 						<icons:IconView Height="14" Icon="{DynamicResource ICON_Library_FlattenOn}" />
 					</ListBoxItem>
 
-					<wpfUtils:SwitchSelector.Style>
-						<Style BasedOn="{StaticResource WpfUtilsSwitchSelector}" TargetType="{x:Type wpfUtils:SwitchSelector}">
+					<controls:SwitchSelector.Style>
+						<Style BasedOn="{StaticResource WpfUtilsSwitchSelector}"
+							TargetType="{x:Type controls:SwitchSelector}">
 
 							<Setter Property="Grid.Column" Value="3" />
 
@@ -288,8 +288,8 @@
 								</DataTrigger>
 							</Style.Triggers>
 						</Style>
-					</wpfUtils:SwitchSelector.Style>
-				</wpfUtils:SwitchSelector>
+					</controls:SwitchSelector.Style>
+				</controls:SwitchSelector>
 
 				<Button
 					x:Name="BrowseArea"
@@ -405,7 +405,7 @@
 
 								<ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
 
-								<ScrollViewer.Triggers>
+								<!--<ScrollViewer.Triggers>
 									<triggers:StoryboardEnumTrigger Binding="{Binding NavigationAnimation, Mode=TwoWay}" Target="{Binding RelativeSource={RelativeSource AncestorType={x:Type ScrollViewer}}}">
 										<triggers:StoryboardEnumTrigger.Storyboards>
 
@@ -503,7 +503,7 @@
 
 									</triggers:StoryboardEnumTrigger>
 
-								</ScrollViewer.Triggers>
+								</ScrollViewer.Triggers>-->
 							</ScrollViewer>
 
 
@@ -512,7 +512,7 @@
 
 
 					<!--  Icon Grid  -->
-					<wpfUtils:ListBoxEx
+					<controls:ListBoxEx
 						x:Name="ResultsGrid"
 						Grid.Row="2"
 						Margin="3"
@@ -593,7 +593,7 @@
 							</DataTemplate>
 						</ListBox.ItemTemplate>
 
-					</wpfUtils:ListBoxEx>
+					</controls:ListBoxEx>
 
 					<!--  List  -->
 					<ListBox

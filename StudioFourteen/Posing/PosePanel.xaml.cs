@@ -28,9 +28,9 @@ using StudioFourteen.Scene;
 using StudioFourteen.Scene.GameObjects;
 using StudioFourteen.Scene.GameObjects.Characters.Skeletons;
 using StudioFourteen.Selection;
-using WpfUtils;
-using WpfUtils.Extensions;
-using WpfUtils.Utils;
+using StudioFourteen;
+using StudioFourteen.Extensions;
+using StudioFourteen.Utils;
 
 using Panel = StudioFourteen.Panels.Panel;
 

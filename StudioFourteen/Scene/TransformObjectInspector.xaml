@@ -2,13 +2,12 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
-	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
+	xmlns:converters="clr-namespace:StudioFourteen.Converters"
 	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:scene="clr-namespace:StudioFourteen.Scene"
 	xmlns:selection="clr-namespace:StudioFourteen.Selection"
 	xmlns:transform="clr-namespace:StudioFourteen.Gizmos.Handles.TransformHandle"
-	xmlns:wpfRendering="clr-namespace:StudioFourteen.Rendering.WPF"
-	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
+	xmlns:wpfRendering="clr-namespace:StudioFourteen.Rendering.WPF">
 
 	<BooleanToVisibilityConverter x:Key="B2V" />
 	<converters:BoolInversionConverter x:Key="!B" />
@@ -30,19 +29,19 @@
 							Margin="4"
 							Target="{Binding .}" />
 
-						<wpfUtils:SwitchSelector
+						<controls:SwitchSelector
 							Grid.Row="1"
 							ItemsSource="{Binding Gizmos, ElementName=GizmoControl}"
 							SelectedValue="{Binding Current, ElementName=GizmoControl}">
-							<wpfUtils:SwitchSelector.ItemTemplate>
+							<controls:SwitchSelector.ItemTemplate>
 								<DataTemplate>
 									<icons:IconView
 										Width="24"
 										Icon="{Binding Icon}"
 										ToolTip="{Binding Name}" />
 								</DataTemplate>
-							</wpfUtils:SwitchSelector.ItemTemplate>
-						</wpfUtils:SwitchSelector>
+							</controls:SwitchSelector.ItemTemplate>
+						</controls:SwitchSelector>
 					</Grid>
 				</Border>
 			</Grid>

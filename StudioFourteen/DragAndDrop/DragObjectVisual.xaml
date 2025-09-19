@@ -6,7 +6,7 @@
 	xmlns:local="clr-namespace:StudioFourteen.DragAndDrop"
 	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
+	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	Title="{DynamicResource LOC_Environment}"
 	Width="112"
 	Height="112"

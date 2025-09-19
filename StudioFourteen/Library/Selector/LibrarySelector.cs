@@ -28,9 +28,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using WpfUtils;
-using WpfUtils.Controls;
-using WpfUtils.Utils;
+using StudioFourteen;
+using StudioFourteen.Controls;
+using StudioFourteen.Utils;
 
 [DependencyProperty<LibraryEntryBase>("SelectedItem", DefaultBindingMode = DefaultBindingMode.TwoWay)]
 [DependencyProperty<object>("Footer")]

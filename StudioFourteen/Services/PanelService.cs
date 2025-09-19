@@ -25,7 +25,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using WpfUtils.Extensions;
+using StudioFourteen.Extensions;
 
 using Panel = StudioFourteen.Panels.Panel;
 using PanelWindow = StudioFourteen.Panels.PanelWindow;

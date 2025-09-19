@@ -17,7 +17,7 @@ namespace StudioFourteen.Selection;
 
 using System;
 using StudioFourteen.Scene;
-using WpfUtils.Extensions;
+using StudioFourteen.Extensions;
 
 public partial class SelectionType<T> : SelectionTypeBase
 	where T : SceneObjectBase

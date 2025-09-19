@@ -24,7 +24,7 @@ using StudioFourteen.Interop.Structs.Environment;
 using StudioFourteen.Scene.Cameras;
 using System;
 using System.Runtime.InteropServices;
-using Windows.Win32.UI.WindowsAndMessaging;
+using global::Windows.Win32.UI.WindowsAndMessaging;
 
 public static unsafe class Hooks
 {

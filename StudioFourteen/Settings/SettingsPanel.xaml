@@ -11,7 +11,6 @@
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
 	xmlns:services="clr-namespace:StudioFourteen.Services"
 	xmlns:settings="clr-namespace:StudioFourteen.Settings"
-	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Width="650"
 	Height="550"
 	ResizeMode="NoResize"
@@ -85,13 +84,13 @@
 		<TabItem
 			Header="{DynamicResource LOC_Settings_Inspectors}">
 			<StackPanel Grid.Row="1" Margin="0,6,0,0">
-				<wpfUtils:SwitchSelector Height="100" SelectedIndex="{Binding InspectorPresetIndex}">
+				<controls:SwitchSelector Height="100" SelectedIndex="{Binding InspectorPresetIndex}">
 					<ListBoxItem Padding="0" Content="{DynamicResource ICON_FTUE_FloatingInspector}" />
 					<ListBoxItem Padding="0" Content="{DynamicResource ICON_FTUE_SingleInspector}" />
 					<ListBoxItem Padding="0"
 						Content="{DynamicResource ICON_FTUE_DedicatedInspectors}" />
 					<ListBoxItem Padding="0" Content="{DynamicResource ICON_FTUE_AIO}" />
-				</wpfUtils:SwitchSelector>
+				</controls:SwitchSelector>
 
 				<TextBlock
 					Margin="1,6,1,1"
@@ -170,10 +169,10 @@
 				<ComboBox
 					SelectedIndex="{Binding Settings.LibraryPreviewMode, Converter={StaticResource EnumToIndex}}">
 
-					<wpfUtils:PopOut.Header>
+					<controls:PopOut.Header>
 						<TextBlock Margin="12"
 							Text="{DynamicResource LOC_Settings_Interface_LibraryPreviewMode_Description}" />
-					</wpfUtils:PopOut.Header>
+					</controls:PopOut.Header>
 
 					<ComboBoxItem
 						Content="{DynamicResource LOC_Settings_Interface_LibraryPreviewMode_Temporary}" />

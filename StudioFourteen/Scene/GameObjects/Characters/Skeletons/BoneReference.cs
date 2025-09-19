@@ -27,7 +27,7 @@ using StudioFourteen.Posing;
 using StudioFourteen.Services;
 using StudioFourteen.Structs;
 using StudioFourteen.Structs.Extensions;
-using WpfUtils.Animation;
+using StudioFourteen.Animation;
 
 using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
 using XivSkeleton = FFXIVClientStructs.FFXIV.Client.Graphics.Render.Skeleton;

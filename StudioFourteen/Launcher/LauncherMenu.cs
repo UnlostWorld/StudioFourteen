@@ -23,7 +23,6 @@ using DependencyPropertyGenerator;
 using StudioFourteen.AIO;
 using StudioFourteen.Panels;
 using StudioFourteen.Settings;
-using WpfUtils.Commands;
 
 using Panel = StudioFourteen.Panels.Panel;
 

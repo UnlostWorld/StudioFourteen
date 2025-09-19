@@ -18,7 +18,7 @@ namespace StudioFourteen.Photos;
 using StudioFourteen.Services;
 using PropertyChanged.SourceGenerator;
 using FFXIVClientStructs.FFXIV.Client.UI;
-using WpfUtils.Extensions;
+using StudioFourteen.Extensions;
 using StudioFourteen.Mvm;
 using SixLabors.ImageSharp;
 using System.Threading.Tasks;
@@ -33,7 +33,7 @@ using StudioFourteen.Utilities;
 using System.Threading;
 using StudioFourteen.Rendering.Passes;
 using StudioFourteen.Panels;
-using WpfUtils;
+using StudioFourteen;
 
 public partial class PhotosService : ServiceBase
 {

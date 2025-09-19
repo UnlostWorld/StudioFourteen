@@ -22,7 +22,7 @@ using StudioFourteen.Services;
 using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
-using WpfUtils.Utils;
+using StudioFourteen.Utils;
 
 public partial class SettingsService : ServiceBase
 {

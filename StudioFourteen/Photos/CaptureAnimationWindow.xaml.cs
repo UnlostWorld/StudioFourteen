@@ -28,7 +28,7 @@ using System.Windows.Media.Imaging;
 using DependencyPropertyGenerator;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Panels;
-using WpfUtils;
+using StudioFourteen;
 
 using static StudioFourteen.Photos.PhotosService;
 

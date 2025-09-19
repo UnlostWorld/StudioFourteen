@@ -25,7 +25,7 @@ using StudioFourteen.Interop;
 using StudioFourteen.Scene.Cameras.Modifiers;
 using StudioFourteen.Scene.GameObjects;
 using StudioFourteen.Services;
-using WpfUtils.Animation;
+using StudioFourteen.Animation;
 
 using CameraManager = FFXIVClientStructs.FFXIV.Client.Game.Control.CameraManager;
 using GameCamera = FFXIVClientStructs.FFXIV.Client.Game.Camera;

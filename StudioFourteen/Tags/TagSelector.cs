@@ -23,8 +23,8 @@ using System.Collections.Specialized;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using WpfUtils;
-using WpfUtils.Utils;
+using StudioFourteen;
+using StudioFourteen.Utils;
 
 [DependencyProperty<TagCollection>("Tags")]
 [DependencyProperty<TagCollection>("SelectedTags")]

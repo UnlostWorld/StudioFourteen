@@ -21,7 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
-using WpfUtils.Extensions;
+using StudioFourteen.Extensions;
 
 public partial class ScriptPanel : Panel
 {

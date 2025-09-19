@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using PropertyChanged.SourceGenerator;
 using StudioFourteen.Services;
-using WpfUtils.Extensions;
+using StudioFourteen.Extensions;
 
 public partial class ResourcePackService : ServiceBase
 {

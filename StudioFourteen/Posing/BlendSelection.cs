@@ -28,7 +28,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows.Media.Imaging;
-using WpfUtils.Extensions;
+using StudioFourteen.Extensions;
 
 public class BlendSelection : SceneObjectBase
 {

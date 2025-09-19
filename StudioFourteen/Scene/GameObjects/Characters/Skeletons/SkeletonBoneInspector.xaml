@@ -2,12 +2,11 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
-	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
+	xmlns:converters="clr-namespace:StudioFourteen.Converters"
 	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:pose="clr-namespace:StudioFourteen.Posing"
 	xmlns:scene="clr-namespace:StudioFourteen.Scene"
-	xmlns:skeletons="clr-namespace:StudioFourteen.Scene.GameObjects.Characters.Skeletons"
-	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
+	xmlns:skeletons="clr-namespace:StudioFourteen.Scene.GameObjects.Characters.Skeletons">
 
 	<BooleanToVisibilityConverter x:Key="B2V" />
 	<converters:BoolInversionConverter x:Key="!B" />
@@ -25,7 +24,7 @@
 						<ColumnDefinition Width="Auto" />
 					</Grid.ColumnDefinitions>
 
-					<wpfUtils:SwitchSelector
+					<controls:SwitchSelector
 						Grid.Column="0"
 						SelectedValue="{Binding MirrorMode}"
 						SelectedValuePath="Tag"
@@ -46,7 +45,7 @@
 							Tag="{x:Static pose:MirrorModes.MirrorTRCopyS}"
 							ToolTip="{DynamicResource LOC_Pose_Mirror_Flip}" />
 
-					</wpfUtils:SwitchSelector>
+					</controls:SwitchSelector>
 
 					<Button
 						Grid.Column="1"

@@ -20,8 +20,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
-using WpfUtils.Commands;
-using WpfUtils.Extensions;
+using StudioFourteen.Extensions;
 
 public interface IContextMenu
 {

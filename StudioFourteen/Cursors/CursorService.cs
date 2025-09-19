@@ -27,8 +27,7 @@ using StudioFourteen.Interop;
 using StudioFourteen.Launcher;
 using StudioFourteen.Panels;
 using StudioFourteen.Services;
-using Windows.Win32.UI.WindowsAndMessaging;
-using WpfUtils.Controls;
+using global::Windows.Win32.UI.WindowsAndMessaging;
 
 public class CursorService : ServiceBase
 {

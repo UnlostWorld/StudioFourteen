@@ -18,7 +18,7 @@ namespace StudioFourteen.GameData.Library;
 using System;
 using StudioFourteen.Library;
 using StudioFourteen.Library.Sources;
-using WpfUtils;
+using StudioFourteen;
 
 public abstract class ExcelLibraryEntry(SourceBase source, uint rowId)
 	: LibraryEntryBase(source)

@@ -25,9 +25,9 @@ using StudioFourteen.Rendering.Draw.Gizmos;
 using StudioFourteen.Rendering.Draw.Handles;
 using StudioFourteen.Scene;
 using StudioFourteen.Settings;
-using WpfUtils;
-using WpfUtils.Extensions;
-using WpfUtils.Silk;
+using StudioFourteen;
+using StudioFourteen.Extensions;
+using StudioFourteen.Silk;
 
 public partial class Widget : Panel
 {

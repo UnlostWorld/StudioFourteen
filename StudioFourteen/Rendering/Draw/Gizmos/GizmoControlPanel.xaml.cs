@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using Serilog;
-using WpfUtils.Extensions;
+using StudioFourteen.Extensions;
 
 public partial class GizmoControlPanel : UserControl
 {

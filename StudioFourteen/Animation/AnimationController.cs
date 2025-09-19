@@ -24,7 +24,7 @@ using FFXIVClientStructs.Havok.Animation.Playback;
 using FFXIVClientStructs.Havok.Animation.Playback.Control.Default;
 using Serilog;
 using StudioFourteen.Services;
-using WpfUtils.Extensions;
+using StudioFourteen.Extensions;
 
 [NotifyPropertyChanged]
 public partial class AnimationController

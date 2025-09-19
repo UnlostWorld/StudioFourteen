@@ -15,7 +15,7 @@
 
 namespace StudioFourteen.Library.Filters;
 
-using WpfUtils;
+using StudioFourteen;
 
 public class SearchQueryFilter : FilterBase
 {

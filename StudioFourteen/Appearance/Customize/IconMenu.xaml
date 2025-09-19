@@ -2,14 +2,13 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
-	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	xmlns:local="clr-namespace:StudioFourteen.Appearance.Customize">
 
 	<DataTemplate DataType="{x:Type local:IconMenu}">
 		<StackPanel>
 			<TextBlock Style="{DynamicResource LeftLabel}" Text="{Binding Name}" />
 
-			<wpfUtils:SwitchSelector
+			<controls:SwitchSelector
 				Height="Auto"
 				HorizontalContentAlignment="Center"
 				ItemsSource="{Binding Options}"
@@ -28,7 +27,7 @@
 							Source="{Binding Image.Source}" />
 					</DataTemplate>
 				</ListBox.ItemTemplate>
-			</wpfUtils:SwitchSelector>
+			</controls:SwitchSelector>
 
 			<controls:NumberBox
 				Maximum="{Binding Maximum}"

@@ -7,8 +7,6 @@
 	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
-	xmlns:silk="clr-namespace:WpfUtils.Silk;assembly=WpfUtils"
-	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	HostStyle="{DynamicResource PanelWidgetStyle}"
 	RememberWindowState="False"
 	SizeToContent="WidthAndHeight"
@@ -21,7 +19,7 @@
 			<ColumnDefinition />
 		</Grid.ColumnDefinitions>
 
-		<silk:AnimationState Binding="{Binding Hide}">
+		<!--<silk:AnimationState Binding="{Binding Hide}">
 			<silk:AnimationState.Enter>
 				<silk:DoubleAnimation
 					Delay="200"
@@ -41,14 +39,14 @@
 					To="1"
 					Duration="150" />
 			</silk:AnimationState.Exit>
-		</silk:AnimationState>
+		</silk:AnimationState>-->
 
 		<Grid
 			Grid.Column="0"
 			HorizontalAlignment="Right"
 			VerticalAlignment="Top">
 
-			<silk:DoubleAnimation
+			<!--<silk:DoubleAnimation
 				Key="Opening"
 				Easing="SineIn"
 				Property="Opacity"
@@ -62,7 +60,7 @@
 				Property="Opacity"
 				From="1"
 				To="0"
-				Duration="100" />
+				Duration="100" />-->
 
 			<Border
 				Background="Black"
@@ -100,13 +98,13 @@
 
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
-							<wpfUtils:SwitchSelector
+							<controls:SwitchSelector
 								Grid.Column="0"
 								ItemsSource="{Binding Gizmos}"
 								SelectedValue="{Binding Current}"
 								Style="{DynamicResource WpfUtilsSwitchSelectorVertical}"
 								Visibility="{Binding IsVisible, Converter={StaticResource B2V}}">
-								<wpfUtils:SwitchSelector.ItemTemplate>
+								<controls:SwitchSelector.ItemTemplate>
 									<DataTemplate>
 										<icons:IconView
 											Width="24"
@@ -114,8 +112,8 @@
 											Icon="{Binding Icon}"
 											ToolTip="{Binding Name}" />
 									</DataTemplate>
-								</wpfUtils:SwitchSelector.ItemTemplate>
-							</wpfUtils:SwitchSelector>
+								</controls:SwitchSelector.ItemTemplate>
+							</controls:SwitchSelector>
 						</DataTemplate>
 					</ItemsControl.ItemTemplate>
 				</ItemsControl>
@@ -128,7 +126,7 @@
 			VerticalAlignment="Top"
 			Visibility="{Binding CanExpand, Converter={StaticResource B2V}}">
 
-			<silk:AnimationState Binding="{Binding Expanded}">
+			<!--<silk:AnimationState Binding="{Binding Expanded}">
 				<silk:AnimationState.Enter>
 					<silk:DoubleAnimation
 						Easing="SineIn"
@@ -147,7 +145,7 @@
 						Duration="150" />
 				</silk:AnimationState.Exit>
 
-			</silk:AnimationState>
+			</silk:AnimationState>-->
 
 			<Border Background="Black" CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}">
 				<Border.Effect>

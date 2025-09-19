@@ -39,9 +39,9 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using WpfUtils;
-using WpfUtils.Extensions;
-using WpfUtils.Utils;
+using StudioFourteen;
+using StudioFourteen.Extensions;
+using StudioFourteen.Utils;
 
 using Panel = StudioFourteen.Panels.Panel;
 

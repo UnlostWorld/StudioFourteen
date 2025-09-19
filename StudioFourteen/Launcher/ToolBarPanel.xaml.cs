@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 using StudioFourteen.Panels;
 using StudioFourteen.Rendering.Draw.Gizmos;
 using StudioFourteen.Scene;
-using WpfUtils.Extensions;
+using StudioFourteen.Extensions;
 
 public partial class ToolBarPanel : Panel
 {

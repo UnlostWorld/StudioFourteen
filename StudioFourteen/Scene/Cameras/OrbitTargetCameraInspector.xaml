@@ -3,8 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:cameras="clr-namespace:StudioFourteen.Scene.Cameras"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
-	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=WpfUtils"
-	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
+	xmlns:converters="clr-namespace:StudioFourteen.Converters">
 
 	<converters:NotZeroToVisibilityConverter x:Key="NotZeroToVisibility" />
 

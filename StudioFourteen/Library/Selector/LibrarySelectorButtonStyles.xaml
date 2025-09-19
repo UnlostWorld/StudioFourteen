@@ -2,10 +2,9 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
-	xmlns:converters="clr-namespace:WpfUtils.Converters;assembly=wpfUtils"
+	xmlns:converters="clr-namespace:StudioFourteen.Converters"
 	xmlns:librarySelector="clr-namespace:StudioFourteen.Library.Selector"
-	xmlns:menu="clr-namespace:StudioFourteen.Library.LibraryMenu"
-	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
+	xmlns:menu="clr-namespace:StudioFourteen.Library.LibraryMenu">
 
 	<converters:StringHasContentToVisibilityConverter x:Key="StringHasContentToVisibility" />
 	<converters:NotNullToVisibilityConverter x:Key="NotNullToVisibilityConverter" />

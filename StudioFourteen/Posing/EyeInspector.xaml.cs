@@ -28,7 +28,7 @@ using System;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows.Input;
-using WpfUtils.Extensions;
+using StudioFourteen.Extensions;
 
 [DependencyProperty<SceneObjectBase>("Selection")]
 public partial class EyeInspector : View

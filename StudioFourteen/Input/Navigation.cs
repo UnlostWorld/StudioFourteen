@@ -23,8 +23,8 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
-using WpfUtils;
-using WpfUtils.Extensions;
+using StudioFourteen;
+using StudioFourteen.Extensions;
 
 public partial class Navigation
 {

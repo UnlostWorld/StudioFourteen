@@ -21,7 +21,7 @@ using StudioFourteen.Scene;
 using StudioFourteen.Selection;
 using System.Threading.Tasks;
 using System.Windows;
-using WpfUtils;
+using StudioFourteen;
 
 [DependencyProperty<SceneObjectBase>("Selection")]
 [DependencyProperty<BlendSelection>("BlendSelection")]

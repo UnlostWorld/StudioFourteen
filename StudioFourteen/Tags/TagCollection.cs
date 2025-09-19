@@ -16,7 +16,7 @@
 namespace StudioFourteen.Tags;
 
 using System.Text;
-using WpfUtils.Extensions;
+using StudioFourteen.Extensions;
 
 public class TagCollection : FastObservableCollection<Tag>
 {

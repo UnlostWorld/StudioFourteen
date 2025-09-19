@@ -27,8 +27,8 @@ using StudioFourteen.Icons;
 using StudioFourteen.Mvm;
 using StudioFourteen.Panels;
 using StudioFourteen.Settings;
-using WpfUtils;
-using WpfUtils.Extensions;
+using StudioFourteen;
+using StudioFourteen.Extensions;
 
 using Panel = StudioFourteen.Panels.Panel;
 

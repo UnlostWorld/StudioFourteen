@@ -19,7 +19,7 @@ using Lumina.Excel.Sheets;
 using Lumina.Text.ReadOnly;
 using StudioFourteen.Library.Sources;
 using System;
-using WpfUtils;
+using StudioFourteen;
 using MediaColor = System.Windows.Media.Color;
 
 public class StainLibraryEntry : ExcelLibraryEntry

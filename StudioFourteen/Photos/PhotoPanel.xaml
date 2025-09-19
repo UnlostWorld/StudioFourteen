@@ -8,7 +8,6 @@
 	xmlns:local="clr-namespace:StudioFourteen.Photos"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
-	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Width="650"
 	Height="58"
 	d:Background="{DynamicResource BackgroundBrush}"
@@ -44,7 +43,7 @@
 
 								<Grid TextBlock.Foreground="{DynamicResource ForegroundLightBrush}">
 
-									<Ellipse Fill="{DynamicResource ControlBackgroundBrush}"/>
+									<Ellipse Fill="{DynamicResource ControlBackgroundBrush}" />
 
 									<Ellipse
 										x:Name="HoverBorder"
@@ -75,7 +74,8 @@
 
 									<Trigger Property="IsMouseOver" Value="true">
 
-										<Setter Property="TextBlock.Foreground" Value="{DynamicResource ControlForegroundHighlightBrush}" />
+										<Setter Property="TextBlock.Foreground"
+											Value="{DynamicResource ControlForegroundHighlightBrush}" />
 
 										<Trigger.EnterActions>
 											<BeginStoryboard>
@@ -165,33 +165,35 @@
 				<TextBlock TextTrimming="CharacterEllipsis">
 					<Run Text="{Binding SelectedAspectRatio.GroupName}" />
 					<Run Text=" - " />
-					<Run Text="{Binding SelectedAspectRatio.Name}" />
+					<Run
+						Text="{Binding SelectedAspectRatio.Name}" />
 				</TextBlock>
 			</Grid>
 		</ToggleButton>
 
-		<wpfUtils:PopOut
+		<controls:PopOut
 			Width="250"
 			Height="350"
 			IsOpen="{Binding ElementName=ResolutionToggle, Path=IsChecked}"
 			PlacementTarget="{Binding ElementName=ResolutionToggle}"
 			StaysOpen="False">
 
-			<wpfUtils:PopOut.Header>
+			<controls:PopOut.Header>
 				<TextBlock
 					Margin="6"
 					Foreground="{DynamicResource ForegroundLightBrush}"
 					Text="{DynamicResource LOC_Photo_AspectPopOut}"
 					TextWrapping="Wrap" />
-			</wpfUtils:PopOut.Header>
+			</controls:PopOut.Header>
 
-			<wpfUtils:PopOut.Resources>
-				<CollectionViewSource x:Key="ListBoxItems" Source="{Binding Services.Photos.AspectRatios}">
+			<controls:PopOut.Resources>
+				<CollectionViewSource x:Key="ListBoxItems"
+					Source="{Binding Services.Photos.AspectRatios}">
 					<CollectionViewSource.GroupDescriptions>
 						<PropertyGroupDescription PropertyName="GroupName" />
 					</CollectionViewSource.GroupDescriptions>
 				</CollectionViewSource>
-			</wpfUtils:PopOut.Resources>
+			</controls:PopOut.Resources>
 
 			<ListBox
 				x:Name="AspectsList"
@@ -209,9 +211,12 @@
 								<Setter Property="Template">
 									<Setter.Value>
 										<ControlTemplate>
-											<Expander Expanded="OnAspectsExpanderExpanded" Style="{DynamicResource WpfUtilsClickableExpander}">
+											<Expander Expanded="OnAspectsExpanderExpanded"
+												Style="{DynamicResource WpfUtilsClickableExpander}">
 												<Expander.Header>
-													<TextBlock Foreground="{DynamicResource ForegroundLightBrush}" Text="{Binding Items[0].GroupName}" />
+													<TextBlock
+														Foreground="{DynamicResource ForegroundLightBrush}"
+														Text="{Binding Items[0].GroupName}" />
 												</Expander.Header>
 												<ItemsPresenter />
 											</Expander>
@@ -247,23 +252,27 @@
 				</ListBox.ItemTemplate>
 
 			</ListBox>
-		</wpfUtils:PopOut>
+		</controls:PopOut>
 
 		<ComboBox
 			Grid.Column="2"
 			SelectedIndex="{Binding GuideIndex}"
 			ToolTip="{DynamicResource LOC_Photo_GuidesToolTip}">
 
-			<wpfUtils:PopOut.Header>
+			<controls:PopOut.Header>
 				<TextBlock Margin="12" Text="{DynamicResource LOC_Photo_GuidesPopOut}" />
-			</wpfUtils:PopOut.Header>
+			</controls:PopOut.Header>
 
-			<ComboBoxItem Content="{DynamicResource LOC_Photo_Guides_None}" />
-			<ComboBoxItem Content="{DynamicResource LOC_Photo_Guides_Thirds}" />
-			<ComboBoxItem Content="{DynamicResource LOC_Photo_Guides_Crosshair}" />
+			<ComboBoxItem
+				Content="{DynamicResource LOC_Photo_Guides_None}" />
+			<ComboBoxItem
+				Content="{DynamicResource LOC_Photo_Guides_Thirds}" />
+			<ComboBoxItem
+				Content="{DynamicResource LOC_Photo_Guides_Crosshair}" />
 		</ComboBox>
 
-		<StackPanel Grid.Column="3" Orientation="Horizontal">
+		<StackPanel
+			Grid.Column="3" Orientation="Horizontal">
 			<ToggleButton
 				Width="28"
 				Padding="6,0"

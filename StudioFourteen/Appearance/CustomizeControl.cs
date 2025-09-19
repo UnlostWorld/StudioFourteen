@@ -29,8 +29,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using WpfUtils;
-using WpfUtils.Extensions;
+using StudioFourteen;
+using StudioFourteen.Extensions;
 
 using CharaMakeType = StudioFourteen.GameData.Sheets.CharaMakeType;
 using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;

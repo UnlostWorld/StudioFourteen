@@ -25,7 +25,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using DependencyPropertyGenerator;
-using WpfUtils;
+using StudioFourteen;
 
 public class OrderableItemsControl : ItemsControl
 {

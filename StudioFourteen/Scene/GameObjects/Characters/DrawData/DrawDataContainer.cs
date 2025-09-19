@@ -16,7 +16,7 @@
 namespace StudioFourteen.Scene.GameObjects.Characters.DrawData;
 
 using StudioFourteen.Mvm;
-using WpfUtils.Extensions;
+using StudioFourteen.Extensions;
 
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 

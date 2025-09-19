@@ -35,7 +35,7 @@ using StudioFourteen.Plugin;
 using StudioFourteen.Scripting.Instance;
 using StudioFourteen.Services;
 using StudioFourteen.Utils;
-using WpfUtils.Extensions;
+using StudioFourteen.Extensions;
 
 public class ScriptingService : ServiceBase
 {

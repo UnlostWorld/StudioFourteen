@@ -19,7 +19,7 @@ using System;
 using System.Threading.Tasks;
 using Dalamud.Game.ClientState.Objects.Enums;
 using StudioFourteen.Services;
-using WpfUtils;
+using StudioFourteen;
 
 public class BodySimpleView : SimpleView
 {

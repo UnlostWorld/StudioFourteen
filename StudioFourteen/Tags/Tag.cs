@@ -18,7 +18,7 @@ namespace StudioFourteen.Tags;
 using System;
 using System.Collections.Generic;
 using System.Windows.Media;
-using WpfUtils;
+using StudioFourteen;
 
 public class Tag : IEquatable<Tag?>
 {

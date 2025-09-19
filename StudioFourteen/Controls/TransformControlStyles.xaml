@@ -3,7 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:local="clr-namespace:StudioFourteen.Controls"
-	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils">
+	xmlns:controls="clr-namespace:StudioFourteen.Controls">
 
 	<ControlTemplate x:Key="StudioTransformControlTemplate" TargetType="{x:Type local:TransformControl}">
 

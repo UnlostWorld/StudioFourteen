@@ -18,7 +18,7 @@ namespace StudioFourteen.Settings;
 using StudioFourteen.Input;
 
 using System;
-using WpfUtils.Converters;
+using StudioFourteen.Converters;
 
 public class KeyBindEventsToStringConverter : ConverterBase<InputAction, string>
 {

@@ -23,8 +23,8 @@ using System.IO;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using WpfUtils;
-using WpfUtils.Extensions;
+using StudioFourteen;
+using StudioFourteen.Extensions;
 
 using Panel = StudioFourteen.Panels.Panel;
 

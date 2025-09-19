@@ -46,9 +46,6 @@ public static class Logging
 
 		Logger = Configuration.CreateLogger();
 
-		WpfUtils.Logging.Log.HandleMessage = WpfLog;
-		WpfUtils.Logging.Log.HandleError = WpfError;
-
 		StudioTraceListener listener = new();
 		PresentationTraceSources.AnimationSource.Listeners.Add(listener);
 		PresentationTraceSources.DataBindingSource.Listeners.Add(listener);
@@ -72,9 +69,6 @@ public static class Logging
 	{
 		return Logger.ForContext("Context", context);
 	}
-
-	public static void WpfLog(string message) => Shared.Information(message);
-	public static void WpfError(Exception? ex, string message) => Shared.Error(ex, message);
 
 	public static void Information(string message) => Shared.Information(message);
 

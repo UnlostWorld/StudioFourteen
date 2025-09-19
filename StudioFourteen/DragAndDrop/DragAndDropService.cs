@@ -23,7 +23,7 @@ using PropertyChanged.SourceGenerator;
 using StudioFourteen.Cursors;
 using StudioFourteen.Services;
 using StudioFourteen.Utilities;
-using WpfUtils.Extensions;
+using StudioFourteen.Extensions;
 
 public interface IDraggable
 {

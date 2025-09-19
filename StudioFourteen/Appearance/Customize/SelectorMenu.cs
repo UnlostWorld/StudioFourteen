@@ -16,7 +16,7 @@
 namespace StudioFourteen.Appearance.Customize;
 
 using Dalamud.Game.ClientState.Objects.Enums;
-using WpfUtils.Extensions;
+using StudioFourteen.Extensions;
 
 public abstract class SelectorMenu : MenuViewModel
 {

@@ -32,7 +32,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Numerics;
 using System.Threading.Tasks;
-using WpfUtils.Extensions;
+using StudioFourteen.Extensions;
 
 using Character = StudioFourteen.Scene.GameObjects.Characters.Character;
 using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;

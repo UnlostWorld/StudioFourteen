@@ -19,7 +19,7 @@ using System.Windows;
 using StudioFourteen.Panels;
 using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Tags;
-using WpfUtils.Extensions;
+using StudioFourteen.Extensions;
 
 public partial class AnimationPanel : CharacterPanelBase
 {

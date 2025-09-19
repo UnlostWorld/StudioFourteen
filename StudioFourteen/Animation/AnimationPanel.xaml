@@ -9,7 +9,6 @@
 	xmlns:librarySelector="clr-namespace:StudioFourteen.Library.Selector"
 	xmlns:panels="clr-namespace:StudioFourteen.Panels"
 	xmlns:animation="clr-namespace:StudioFourteen.Animation"
-	xmlns:wpfUtils="clr-namespace:WpfUtils.Controls;assembly=WpfUtils"
 	Width="300"
 	Height="450"
 	MinWidth="300"

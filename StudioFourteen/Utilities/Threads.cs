@@ -18,7 +18,7 @@ namespace StudioFourteen.Utilities;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using StudioFourteen.Services;
-using WpfUtils;
+using StudioFourteen;
 
 public static class Threads
 {

@@ -23,6 +23,7 @@ using StudioFourteen.Input;
 using StudioFourteen.Mvm;
 using StudioFourteen.Plugin;
 using StudioFourteen.Services;
+using StudioFourteen.Windows;
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -31,10 +32,8 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Threading;
-using WpfUtils;
-using WpfUtils.Commands;
-using WpfUtils.Extensions;
-using WpfUtils.Windows;
+using StudioFourteen;
+using StudioFourteen.Extensions;
 
 [DependencyProperty<bool>("IsEmbedded", DefaultValue = true)]
 [DependencyProperty<bool>("IsForeground", DefaultValue = false)]
@@ -58,7 +57,6 @@ using WpfUtils.Windows;
 public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 {
 	public readonly Navigation? Navigation;
-	protected readonly ILogger Log;
 
 	private double preScaleHeight;
 	private double preScaleWidth;
@@ -69,8 +67,6 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 	public PanelWindow()
 	{
-		this.Log = Logging.ForContext(this.GetType());
-
 		this.WindowStartupLocation = WindowStartupLocation.Manual;
 
 		// Load a new copy of the resources. Each window needs its own instance for threading reasons.

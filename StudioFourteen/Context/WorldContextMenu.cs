@@ -24,9 +24,9 @@ using StudioFourteen.Utilities;
 using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows;
-using WpfUtils;
-using WpfUtils.Controls;
-using WpfUtils.Extensions;
+using StudioFourteen;
+using StudioFourteen.Controls;
+using StudioFourteen.Extensions;
 
 [DependencyProperty<string>("ObjectName")]
 public partial class WorldContextMenu : PopOut

@@ -19,7 +19,7 @@ using Dalamud.Game.ClientState.Objects.Enums;
 using Lumina.Excel;
 using Lumina.Excel.Sheets;
 using Lumina.Text.ReadOnly;
-using WpfUtils.Extensions;
+using StudioFourteen.Extensions;
 using CharaMakeType = StudioFourteen.GameData.Sheets.CharaMakeType;
 
 public class ListMenu : MakeMenuViewModel

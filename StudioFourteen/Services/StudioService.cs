@@ -22,7 +22,7 @@ using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using StudioFourteen.Input;
-using WpfUtils.Extensions;
+using StudioFourteen.Extensions;
 using StudioFourteen.GameData.Library;
 using StudioFourteen.Appearance;
 using StudioFourteen.Scene.GameObjects.Characters;
