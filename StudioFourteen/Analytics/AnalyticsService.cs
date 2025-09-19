@@ -19,6 +19,7 @@ using StudioFourteen.Services;
 using StudioOnline.Analytics;
 using System.Threading.Tasks;
 
+[Service]
 public class AnalyticsService : ServiceBase
 {
 	public override async Task Start()

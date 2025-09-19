@@ -31,6 +31,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using static StudioFourteen.Files.FileThumbnailService.ThumbnailRequest;
 
+[Service]
 public class FileThumbnailService : ServiceBase
 {
 	private readonly ConcurrentQueue<ThumbnailRequest> requests = new();

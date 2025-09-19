@@ -55,7 +55,7 @@ public partial class OrbitTargetCamera : OrbitCamera
 		this.TargetOffset = targetOffset;
 		this.desiredMove = Vector3.Zero;
 
-		GameObject? target = this.Services.Selection.GetLast<GameObject>();
+		GameObject? target = SelectionService.GetLast<GameObject>();
 		if (target != null)
 		{
 			this.currentTargetPosition = Vector3.Transform(Vector3.Zero, target.WorldTransform.ToMatrix());

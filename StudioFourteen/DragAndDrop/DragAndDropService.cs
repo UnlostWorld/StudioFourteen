@@ -40,6 +40,7 @@ public interface IDragSceneInstance
 	object? GetOperationIcon();
 }
 
+[Service]
 public partial class DragAndDropService : ServiceBase
 {
 	private DragAndDropOperation? currentOperation;

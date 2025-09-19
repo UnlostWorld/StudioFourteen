@@ -25,6 +25,7 @@ using StudioFourteen.Utilities;
 
 using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
 
+[Service]
 public class RedrawService : ServiceBase
 {
 	private readonly Dictionary<Character, Request> redraws = new();

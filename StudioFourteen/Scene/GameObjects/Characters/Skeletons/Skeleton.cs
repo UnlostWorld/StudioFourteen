@@ -40,7 +40,7 @@ public partial class Skeleton : GameObject
 		: base(objectIndex)
 	{
 		this.hasGenerated = false;
-		this.Services.Skeletons.AddSkeleton(this);
+		SkeletonService.AddSkeleton(this);
 
 		this.Gizmos.Add(new SkeletonGizmo(this));
 		this.Bones = new();
@@ -54,7 +54,7 @@ public partial class Skeleton : GameObject
 	public override void Dispose()
 	{
 		this.ClearBones();
-		this.Services.Skeletons.RemoveSkeleton(this);
+		SkeletonService.RemoveSkeleton(this);
 		base.Dispose();
 	}
 
@@ -77,7 +77,7 @@ public partial class Skeleton : GameObject
 	public async Task SavePose(bool includeLegacyBones = true, HashSet<string>? includeBones = null, bool onlyEdits = false)
 	{
 		PoseFile file = await this.ExportPoseAsync(includeLegacyBones, includeBones, onlyEdits);
-		await this.Services.Files.SaveFileAsync(file, $"{this.Name}'s Pose");
+		await FileService.SaveFileAsync(file, $"{this.Name}'s Pose");
 	}
 
 	public async Task<PoseFile> ExportPoseAsync(bool includeLegacyBones = true, HashSet<string>? includeBones = null, bool onlyEdits = false)
@@ -319,7 +319,7 @@ public partial class Skeleton : GameObject
 	{
 		foreach (SkeletonBone bone in this.Bones)
 		{
-			this.Services.Scene.RemoveObject(bone);
+			SceneService.RemoveObject(bone);
 		}
 
 		this.Bones.Clear();
@@ -393,7 +393,7 @@ public partial class Skeleton : GameObject
 			{
 				SkeletonBone bone = new(this, boneName, references);
 				this.boneNameLookup.Add(boneName, bone);
-				this.Services.Scene.AddObject(bone);
+				SceneService.AddObject(bone);
 				this.Bones.Add(bone);
 			}
 

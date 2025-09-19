@@ -138,7 +138,7 @@ public class Weapon
 
 		if (this.lastReadId != modelId.Id || this.lastReadId != modelId.Id)
 		{
-			this.Item = this.Services.GameData.Items?.Find(this.Slot, modelId);
+			this.Item = GameDataService.Items?.Find(this.Slot, modelId);
 			this.NotifyPropertyChanged(nameof(this.Item));
 		}
 
@@ -149,14 +149,14 @@ public class Weapon
 		if (this.lastReadStain0 != modelId.Stain0)
 		{
 			this.lastReadStain0 = modelId.Stain0;
-			this.stain0 = this.Services.GameData.GetLibraryEntry<StainLibraryEntry>(this.Stain0Id);
+			this.stain0 = GameDataService.GetLibraryEntry<StainLibraryEntry>(this.Stain0Id);
 			this.NotifyPropertyChanged(nameof(this.Stain0));
 		}
 
 		if (this.lastReadStain1 != modelId.Stain1)
 		{
 			this.lastReadStain1 = modelId.Stain1;
-			this.stain1 = this.Services.GameData.GetLibraryEntry<StainLibraryEntry>(this.Stain1Id);
+			this.stain1 = GameDataService.GetLibraryEntry<StainLibraryEntry>(this.Stain1Id);
 			this.NotifyPropertyChanged(nameof(this.Stain1));
 		}
 

@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using StudioFourteen.GameData.Library;
 using System;
 
+[Service]
 public partial class EnvironmentService
 	: ServiceBase
 {

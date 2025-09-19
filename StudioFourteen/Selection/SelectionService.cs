@@ -26,6 +26,7 @@ using System.Numerics;
 using System.Threading.Tasks;
 using System.Windows;
 
+[Service]
 public partial class SelectionService : ServiceBase
 {
 	private readonly Dictionary<Type, WeakReference<object>?> selections = new();

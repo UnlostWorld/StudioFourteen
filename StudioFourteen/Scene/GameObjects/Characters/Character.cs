@@ -55,7 +55,7 @@ public class Character : Skeleton
 
 	public unsafe XivCharacter* GetXivCharacter()
 	{
-		return (XivCharacter*)this.Services.GameObjects.GetXivObject(this.ObjectIndex);
+		return (XivCharacter*)GameObjectService.GetXivObject(this.ObjectIndex);
 	}
 
 	public unsafe CharaMakeType? GetCharaMakeType()
@@ -88,7 +88,7 @@ public class Character : Skeleton
 
 	public void ImportAppearance()
 	{
-		LibraryPanel.Open(this.Services.Panels.GamePanels);
+		LibraryPanel.Open(PanelService.GamePanels);
 	}
 
 	public async Task ImportAppearance(ICharacterAppearance appearance, UpdateSource source)
@@ -99,7 +99,7 @@ public class Character : Skeleton
 	public async Task SaveAppearance()
 	{
 		AppearanceFile file = await this.ExportAppearance();
-		await this.Services.Files.SaveFileAsync(file, $"{this.Name}'s Appearance");
+		await FileService.SaveFileAsync(file, $"{this.Name}'s Appearance");
 	}
 
 	public async Task<AppearanceFile> ExportAppearance()
@@ -137,15 +137,15 @@ public class Character : Skeleton
 
 		pCharacter->ModelContainer.ModelCharaId = modelCharaId;
 
-		this.Services.Redraw.Redraw(this);
-		this.Services.CharacterAppearance.RaiseAppearanceChanged(this.ObjectIndex);
+		RedrawService.Redraw(this);
+		CharacterAppearanceService.RaiseAppearanceChanged(this.ObjectIndex);
 	}
 
 	// ----------------------------------------------------------------------
 	// Customize Value
 	// ----------------------------------------------------------------------
-	public unsafe Race? GetRace() => this.Services.GameData.GetRow<Race>(this.GetCustomizeValue(CustomizeIndex.Race));
-	public unsafe Tribe? GetTribe() => this.Services.GameData.GetRow<Tribe>(this.GetCustomizeValue(CustomizeIndex.Tribe));
+	public unsafe Race? GetRace() => GameDataService.GetRow<Race>(this.GetCustomizeValue(CustomizeIndex.Race));
+	public unsafe Tribe? GetTribe() => GameDataService.GetRow<Tribe>(this.GetCustomizeValue(CustomizeIndex.Tribe));
 
 	public unsafe byte GetCustomizeValue(CustomizeIndex index)
 	{
@@ -174,7 +174,7 @@ public class Character : Skeleton
 			|| index == CustomizeIndex.ModelType
 			|| index == CustomizeIndex.Gender)
 		{
-			this.Services.Redraw.Redraw(this);
+			RedrawService.Redraw(this);
 		}
 
 		this.UpdateCustomize(null, source);
@@ -204,7 +204,7 @@ public class Character : Skeleton
 		// Verify that the weapon is valid, or else the character will just vanish.
 		if (modelId.Value != 0)
 		{
-			ItemLibraryEntry? item = this.Services.GameData.Items?.Find(slot, modelId);
+			ItemLibraryEntry? item = GameDataService.Items?.Find(slot, modelId);
 			if (item == null)
 			{
 				this.Log.Warning($"Attempt to set invalid {slot} model: {modelId.Id}, {modelId.Type}, {modelId.Variant} to character {this}");
@@ -218,7 +218,7 @@ public class Character : Skeleton
 			this.BackupAppearance();
 
 		pCharacter->DrawData.LoadWeapon(slot, modelId, 1, 1, 0, 0);
-		this.Services.CharacterAppearance.RaiseAppearanceChanged(this.ObjectIndex);
+		CharacterAppearanceService.RaiseAppearanceChanged(this.ObjectIndex);
 	}
 
 	// ----------------------------------------------------------------------
@@ -249,7 +249,7 @@ public class Character : Skeleton
 			this.BackupAppearance();
 
 		pCharacter->DrawData.LoadEquipment(slot, &item, true);
-		this.Services.CharacterAppearance.RaiseAppearanceChanged(this.ObjectIndex);
+		CharacterAppearanceService.RaiseAppearanceChanged(this.ObjectIndex);
 	}
 
 	// ----------------------------------------------------------------------
@@ -263,7 +263,7 @@ public class Character : Skeleton
 			|| pCharacter->DrawData.CustomizeData[(int)CustomizeIndex.Tribe] != customize[(int)CustomizeIndex.Tribe]
 			|| pCharacter->DrawData.CustomizeData[(int)CustomizeIndex.ModelType] != customize[(int)CustomizeIndex.ModelType])
 		{
-			this.Services.Redraw.Redraw(this);
+			RedrawService.Redraw(this);
 		}
 
 		this.UpdateCustomize(customize, source);
@@ -286,9 +286,9 @@ public class Character : Skeleton
 		bool didLoad = ((Human*)pCharacter->DrawObject)->UpdateDrawData((byte*)custom, true);
 		if (!didLoad)
 		{
-			this.Services.Redraw.Redraw(this);
+			RedrawService.Redraw(this);
 		}
 
-		this.Services.CharacterAppearance.RaiseAppearanceChanged(this.ObjectIndex);
+		CharacterAppearanceService.RaiseAppearanceChanged(this.ObjectIndex);
 	}
 }

@@ -70,6 +70,15 @@ public class ServiceManagerBase
 	public States CurrentState => this.state;
 	public ILogger Log { get; private set; }
 
+	public static T GetService<T>()
+		where T : ServiceBase
+	{
+		if (instance == null)
+			throw new Exception("No Service Manager");
+
+		return (T)instance.GetService(typeof(T));
+	}
+
 	/// <summary>
 	/// Initialize and Start all services.
 	/// </summary>

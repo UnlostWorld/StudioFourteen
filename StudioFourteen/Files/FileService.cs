@@ -30,6 +30,7 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
+[Service]
 public class FileService : ServiceBase
 {
 	private static readonly List<FileTypeInfoBase> FileTypeInfos = new()

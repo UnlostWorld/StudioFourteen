@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using StudioFourteen.Services;
 
+[Service]
 public class SceneService : ServiceBase
 {
 	private readonly List<SceneObjectBase> objects = new();

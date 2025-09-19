@@ -40,6 +40,7 @@ using global::Windows.Win32.UI.WindowsAndMessaging;
 using DrawingPoint = System.Drawing.Point;
 using Point = System.Windows.Point;
 
+[Service]
 public partial class WindowService : ServiceBase
 {
 	private readonly Guid propertyGuid = Guid.NewGuid();
@@ -101,14 +102,14 @@ public partial class WindowService : ServiceBase
 		base.Attach();
 		this.clickActionListener.Enable();
 
-  		// hook wndproc
+		// hook wndproc
 		// https://github.com/ff-meli/ImGuiScene/blob/master/ImGuiScene/ImGui_Impl/Input/ImGui_Input_Impl_Direct.cs
 		if (this.XivWindowHwnd != null)
-	   	{
+		{
 			this.wndProc = this.WndProcDetour;
 			nint wndProcPtr = Marshal.GetFunctionPointerForDelegate(this.wndProc);
 			this.oldWndProcPtr = PInvoke.SetWindowLongPtr((HWND)this.XivWindowHwnd, WINDOW_LONG_PTR_INDEX.GWL_WNDPROC, wndProcPtr);
-	   	}
+		}
 
 		this.Services.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
 		this.Services.Tick.Add(TickService.Channels.StudioTick, this.OnTick);
@@ -442,7 +443,7 @@ public partial class WindowService : ServiceBase
 
 	public void OnWindowOpening(Window window)
 	{
-		lock(this.studioWindowHwnds)
+		lock (this.studioWindowHwnds)
 		{
 			WindowInteropHelper windowInteropHelper = new(window);
 			this.studioWindowHwnds.Add(windowInteropHelper.Handle);
@@ -451,7 +452,7 @@ public partial class WindowService : ServiceBase
 
 	public void OnWindowClosing(Window window)
 	{
-		lock(this.studioWindowHwnds)
+		lock (this.studioWindowHwnds)
 		{
 			WindowInteropHelper windowInteropHelper = new(window);
 			this.studioWindowHwnds.Remove(windowInteropHelper.Handle);
@@ -492,7 +493,7 @@ public partial class WindowService : ServiceBase
 
 	private bool GetIsCursorOverStudio()
 	{
-		lock(this.studioWindowHwnds)
+		lock (this.studioWindowHwnds)
 		{
 			IntPtr hwnd = CursorUtility.GetWindowUnderCursor();
 			return this.studioWindowHwnds.Contains(hwnd);
@@ -621,31 +622,31 @@ public partial class WindowService : ServiceBase
 
 #pragma warning disable
 	[DllImport("user32.dll")]
-    private static extern long CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, uint Msg, ulong wParam, long lParam);
+	private static extern long CallWindowProc(IntPtr lpPrevWndFunc, IntPtr hWnd, uint Msg, ulong wParam, long lParam);
 
 	public enum WindowMessages
 	{
-        ////WM_MOUSEMOVE = 0x0200,
-        WM_LBUTTONDOWN = 0x0201,
-        WM_LBUTTONUP = 0x0202,
-       //// WM_LBUTTONDBLCLK = 0x0203,
-        WM_RBUTTONDOWN = 0x0204,
-        WM_RBUTTONUP = 0x0205,
-       //// WM_RBUTTONDBLCLK = 0x0206,
-        WM_MBUTTONDOWN = 0x0207,
-        WM_MBUTTONUP = 0x0208,
-        ////WM_MBUTTONDBLCLK = 0x0209,
-        WM_MOUSEWHEEL = 0x020A,
-        WM_XBUTTONDOWN = 0x020B,
-        WM_XBUTTONUP = 0x020C,
-        ////WM_XBUTTONDBLCLK = 0x020D,
-        ////WM_MOUSEHWHEEL = 0x020E,
+		////WM_MOUSEMOVE = 0x0200,
+		WM_LBUTTONDOWN = 0x0201,
+		WM_LBUTTONUP = 0x0202,
+		//// WM_LBUTTONDBLCLK = 0x0203,
+		WM_RBUTTONDOWN = 0x0204,
+		WM_RBUTTONUP = 0x0205,
+		//// WM_RBUTTONDBLCLK = 0x0206,
+		WM_MBUTTONDOWN = 0x0207,
+		WM_MBUTTONUP = 0x0208,
+		////WM_MBUTTONDBLCLK = 0x0209,
+		WM_MOUSEWHEEL = 0x020A,
+		WM_XBUTTONDOWN = 0x020B,
+		WM_XBUTTONUP = 0x020C,
+		////WM_XBUTTONDBLCLK = 0x020D,
+		////WM_MOUSEHWHEEL = 0x020E,
 
 
 		WM_KEYDOWN = 0x0100,
-        WM_KEYUP = 0x0101,
+		WM_KEYUP = 0x0101,
 		WM_CHAR = 0x0102,
 		WM_SYSKEYDOWN = 0x0104,
-        WM_SYSKEYUP = 0x0105,
+		WM_SYSKEYUP = 0x0105,
 	}
 }

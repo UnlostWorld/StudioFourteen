@@ -37,6 +37,7 @@ public static class ReshadeAddon
 	[DllImport("StudioFourteen.Reshade.dll")] public static extern bool SetFinishRenderingEffectsCallback(IntPtr callback);
 }
 
+[Service]
 public partial class ReshadeService : ServiceBase
 {
 	private readonly LogDelegate onLog;
@@ -144,7 +145,7 @@ public partial class ReshadeService : ServiceBase
 
 		ReshadeAddon.ResetRenderedFrames();
 
-		while(ReshadeAddon.GetRenderedFrames() < 60 * 2
+		while (ReshadeAddon.GetRenderedFrames() < 60 * 2
 			&& sw.ElapsedMilliseconds < timeout)
 		{
 			await Task.Delay(500);

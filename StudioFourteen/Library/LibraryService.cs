@@ -32,6 +32,7 @@ public enum PreviewModes
 	Disabled,
 }
 
+[Service]
 public class LibraryService : ServiceBase
 {
 	private readonly LibraryRoot rootItem = new();

@@ -23,6 +23,7 @@ using StudioFourteen.Plugin;
 
 using Task = System.Threading.Tasks.Task;
 
+[Service]
 public partial class GroupPoseService : ServiceBase
 {
 	public const int GPoseCharacterCount = 39;

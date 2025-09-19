@@ -31,7 +31,7 @@ public abstract partial class Camera : SceneObjectBase, IDisposable
 
 	public Camera()
 	{
-		this.cameraIndex = this.Services.Camera.RegisterCamera(this);
+		this.cameraIndex = CameraService.RegisterCamera(this);
 
 		this.Gizmos.Add(new CameraGizmo(this));
 	}
@@ -48,15 +48,15 @@ public abstract partial class Camera : SceneObjectBase, IDisposable
 
 	public bool IsActive
 	{
-		get => this.Services.Camera.Current == this;
-		set => this.Services.Camera.Current = this;
+		get => CameraService.Current == this;
+		set => CameraService.Current = this;
 	}
 
 	public override void Dispose()
 	{
 		base.Dispose();
 
-		this.Services.Camera.RemoveCamera(this);
+		CameraService.RemoveCamera(this);
 	}
 
 	public override void Reset()

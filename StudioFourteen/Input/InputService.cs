@@ -34,6 +34,7 @@ public enum InputStates
 	Deactivated,
 }
 
+[Service]
 public class InputService : ServiceBase
 {
 	private readonly JsonContentReference<Dictionary<InputAction, List<Bind>>> defaultBinds = new("DefaultBinds.jsonc");

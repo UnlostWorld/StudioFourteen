@@ -82,9 +82,9 @@ public partial class OrbitCamera : Camera
 			Vector3 targetPos = currentState.Position + Vector3.Transform(new Vector3(this.Distance, 0, 0), currentState.Rotation);
 			this.Target = targetPos;
 
-			if (this.Services.Camera.InitialCamera != null)
+			if (CameraService.InitialCamera != null)
 			{
-				this.Angle = this.Services.Camera.InitialCamera.Value.Angle * QuaternionExtensions.Rad2Deg;
+				this.Angle = CameraService.InitialCamera.Value.Angle * QuaternionExtensions.Rad2Deg;
 			}
 
 			this.Rotation = Quaternion.Identity;

@@ -23,6 +23,7 @@ using System.Windows;
 using StudioFourteen.Services;
 using StudioFourteen.Xaml;
 
+[Service]
 public partial class ResourcePackService : ServiceBase
 {
 	public List<ResourcePackReference> Packs = new();

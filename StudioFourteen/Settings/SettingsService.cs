@@ -22,6 +22,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
 
+[Service]
 public partial class SettingsService : ServiceBase
 {
 	private readonly FuncQueue saveQueue;

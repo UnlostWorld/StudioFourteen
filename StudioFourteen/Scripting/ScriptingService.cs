@@ -32,6 +32,7 @@ using StudioFourteen.Plugin;
 using StudioFourteen.Scripting.Instance;
 using StudioFourteen.Services;
 
+[Service]
 public class ScriptingService : ServiceBase
 {
 	private readonly HashSet<string> allowedNamespaces = new()

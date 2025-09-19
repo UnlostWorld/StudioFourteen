@@ -22,6 +22,7 @@ using Serilog.Events;
 using StudioFourteen.Services;
 using StudioOnline.Analytics;
 
+[Service]
 public class ErrorReportingService : ServiceBase
 {
 	private readonly FuncQueue reportQueue;
@@ -72,15 +73,15 @@ public class ErrorReportingService : ServiceBase
 		}
 
 		string shortCode;
-		#if DEBUG
+#if DEBUG
 		{
 			shortCode = "DEBUG";
 		}
-		#else
+#else
 		{
 			shortCode = await report.Send();
 		}
-		#endif
+#endif
 
 		this.Log.Information($"Sent log. Got shortcode: {shortCode}");
 
@@ -88,9 +89,9 @@ public class ErrorReportingService : ServiceBase
 			shortCode = "INVALID";
 
 		if (panel != null)
-			{
-				panel.IsSending = false;
-				panel.ShortCode = shortCode;
-			}
+		{
+			panel.IsSending = false;
+			panel.ShortCode = shortCode;
+		}
 	}
 }

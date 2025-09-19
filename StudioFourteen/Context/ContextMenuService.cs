@@ -54,6 +54,7 @@ public abstract class ContextProvider<T> : IContextProvider
 	protected abstract Task GetMenus(T target, List<MenuEntry> menus);
 }
 
+[Service]
 public class ContextMenuService : ServiceBase
 {
 	private readonly List<IContextProvider> providers = new();
@@ -86,7 +87,7 @@ public class ContextMenuService : ServiceBase
 	public async Task GetContextAsync(IContextMenu menu, params object[] targets)
 	{
 		List<MenuEntry> menus = new();
-		foreach(object target in targets)
+		foreach (object target in targets)
 		{
 			object? targetActual = target;
 			if (targetActual is FileEntry fileEntry)
@@ -97,7 +98,7 @@ public class ContextMenuService : ServiceBase
 
 			Type objectType = targetActual.GetType();
 
-			foreach(IContextProvider provider in this.providers)
+			foreach (IContextProvider provider in this.providers)
 			{
 				if (!objectType.IsAssignableTo(provider.GetTargetType()))
 					continue;
@@ -106,7 +107,7 @@ public class ContextMenuService : ServiceBase
 			}
 		}
 
-		foreach(MenuEntry entry in menus)
+		foreach (MenuEntry entry in menus)
 		{
 			entry.ContextMenu = menu;
 		}

@@ -35,6 +35,7 @@ using Character = StudioFourteen.Scene.GameObjects.Characters.Character;
 using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
 using XivSetupContainer = FFXIVClientStructs.FFXIV.Client.Game.Character.CharacterSetupContainer;
 
+[Service]
 public class CharacterLifecycleService : ServiceBase
 {
 	private static readonly List<ushort> CreatedIndexes = new();

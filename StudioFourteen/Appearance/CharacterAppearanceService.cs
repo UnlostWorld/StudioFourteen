@@ -19,6 +19,7 @@ using StudioFourteen.Interop;
 using StudioFourteen.Services;
 using System.Threading.Tasks;
 
+[Service]
 public class CharacterAppearanceService : ServiceBase
 {
 	private readonly GroupPoseCharactersLibrarySource provider = new();

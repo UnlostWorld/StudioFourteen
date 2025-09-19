@@ -27,6 +27,7 @@ public interface ITimelineAnimation
 	public ushort IntroTimelineId { get; }
 }
 
+[Service]
 public partial class AnimationService : ServiceBase
 {
 	private readonly Dictionary<int, AnimationController> controllers = new();

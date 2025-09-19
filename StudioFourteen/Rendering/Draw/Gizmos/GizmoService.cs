@@ -20,6 +20,7 @@ using StudioFourteen.Services;
 using StudioFourteen.Rendering.Draw.Gizmos.Transforms;
 using StudioFourteen.Scene;
 
+[Service]
 public partial class GizmoService : ServiceBase
 {
 	public readonly List<GizmoBase> Gizmos = new();

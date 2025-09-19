@@ -24,13 +24,14 @@ using StudioFourteen.Plugin;
 using StudioFourteen.Posing;
 using StudioFourteen.Services;
 
+[Service]
 public class ContentService : ServiceBase
 {
 	private readonly JsonContentReference<Dictionary<string, SimpleViewLayout>> simplePoseLayoutsContent = new("SimplePoseLayouts.jsonc");
 	private readonly JsonContentReference<HashSet<string>> genitalBones = new("GenitalBones.jsonc");
 	private readonly Dictionary<string, HashSet<ContentReference>> references = new();
 
-	#if DEBUG
+#if DEBUG
 	private bool isRunningFromProject = false;
 	private FileSystemWatcher? watcher;
 #endif
@@ -40,7 +41,7 @@ public class ContentService : ServiceBase
 
 	public override Task Initialize()
 	{
-		#if DEBUG
+#if DEBUG
 		{
 			FileInfo? assembly = DalamudServices.PluginInterface?.AssemblyLocation;
 			if (assembly != null)
@@ -58,21 +59,21 @@ public class ContentService : ServiceBase
 				}
 			}
 		}
-		#endif
+#endif
 
 		return base.Initialize();
 	}
 
 	public override Task Shutdown()
 	{
-		#if DEBUG
+#if DEBUG
 		if (this.watcher != null)
 		{
 			this.watcher.Changed -= this.OnDirectoryChanged;
 			this.watcher.EnableRaisingEvents = false;
 			this.watcher.Dispose();
 		}
-		#endif
+#endif
 
 		return base.Shutdown();
 	}
@@ -86,7 +87,7 @@ public class ContentService : ServiceBase
 
 	public Stream GetContent(ContentReference reference)
 	{
-		#if DEBUG
+#if DEBUG
 		lock (this.references)
 		{
 			string resolvedPath = this.ResolvePath(reference.Path);
@@ -96,7 +97,7 @@ public class ContentService : ServiceBase
 
 			this.references[resolvedPath].Add(reference);
 		}
-		#endif
+#endif
 
 		return this.GetContent(reference.Path);
 	}
@@ -130,25 +131,25 @@ public class ContentService : ServiceBase
 		if (assembly == null)
 			return path;
 
-		#if DEBUG
+#if DEBUG
 		if (this.isRunningFromProject && assembly.DirectoryName != null)
 		{
 			return Path.GetFullPath($"{assembly.DirectoryName}/../Content/Base/{path}");
 		}
-		#endif
+#endif
 
 		return Path.GetFullPath($"{assembly.DirectoryName}/Content/Base/{path}");
 	}
 
 	private void OnDirectoryChanged(object sender, FileSystemEventArgs e)
 	{
-		lock(this.references)
+		lock (this.references)
 		{
 			if (this.references.TryGetValue(e.FullPath, out var references))
 			{
 				this.Log.Information($"Reloading file: {e.FullPath}");
 
-				foreach(ContentReference reference in references)
+				foreach (ContentReference reference in references)
 				{
 					reference.Reload();
 				}

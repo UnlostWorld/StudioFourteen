@@ -24,6 +24,7 @@ using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using StudioFourteen.Interop;
 using Task = System.Threading.Tasks.Task;
 
+[Service]
 public partial class TickService : ServiceBase
 {
 	public static float DeltaTime = 0.0f;
@@ -148,7 +149,7 @@ public partial class TickService : ServiceBase
 		currentChannel = channel;
 
 		Dictionary<Channels, List<Action?>> tickListeners;
-		lock(this.tickListeners)
+		lock (this.tickListeners)
 		{
 			tickListeners = new(this.tickListeners);
 		}
@@ -156,7 +157,7 @@ public partial class TickService : ServiceBase
 		this.tickListeners.TryGetValue(channel, out var callbacks);
 		if (callbacks != null)
 		{
-			foreach(Action? callback in this.tickListeners[channel].ToArray())
+			foreach (Action? callback in this.tickListeners[channel].ToArray())
 			{
 				if (callback?.Target == null)
 				{
@@ -168,7 +169,7 @@ public partial class TickService : ServiceBase
 				{
 					callback?.Invoke();
 				}
-				catch(Exception ex)
+				catch (Exception ex)
 				{
 					this.Log.Error(ex, $"Error ticking {callback?.Method} on {callback?.Target}. This callback will be disabled.");
 					this.tickListeners[channel].Remove(callback);
@@ -186,14 +187,14 @@ public partial class TickService : ServiceBase
 		this.tickDispatchers.TryGetValue(channel, out var dispatches);
 		if (dispatches != null)
 		{
-			while(dispatches.Count > 0)
+			while (dispatches.Count > 0)
 			{
 				Action? dispatch = dispatches.Dequeue();
 				try
 				{
 					dispatch?.Invoke();
 				}
-				catch(Exception ex)
+				catch (Exception ex)
 				{
 					this.Log.Error(ex, $"Error dispatching {dispatch?.Method} on {dispatch?.Target}.");
 					break;

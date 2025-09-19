@@ -23,6 +23,7 @@ using StudioFourteen.Services;
 using StudioFourteen.Xaml;
 using Task = System.Threading.Tasks.Task;
 
+[Service]
 public partial class TimeService
 	: ServiceBase
 {

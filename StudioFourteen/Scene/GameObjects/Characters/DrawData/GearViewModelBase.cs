@@ -150,7 +150,7 @@ public abstract class GearViewModelBase<TLibraryType> : GearViewModelBase
 			this.nextWriteStain0 = value;
 			this.NotifyPropertyChanged(nameof(this.Stain0Id));
 
-			this.stain0 = this.Services.GameData.GetLibraryEntry<StainLibraryEntry>(this.Stain0Id);
+			this.stain0 = GameDataService.GetLibraryEntry<StainLibraryEntry>(this.Stain0Id);
 			this.NotifyPropertyChanged(nameof(this.Stain0));
 		}
 	}
@@ -195,7 +195,7 @@ public abstract class GearViewModelBase<TLibraryType> : GearViewModelBase
 			this.nextWriteStain1 = value;
 			this.NotifyPropertyChanged(nameof(this.Stain1Id));
 
-			this.stain1 = this.Services.GameData.GetLibraryEntry<StainLibraryEntry>(this.Stain1Id);
+			this.stain1 = GameDataService.GetLibraryEntry<StainLibraryEntry>(this.Stain1Id);
 			this.NotifyPropertyChanged(nameof(this.Stain1));
 		}
 	}

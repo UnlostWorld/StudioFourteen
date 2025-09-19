@@ -34,6 +34,7 @@ using StudioFourteen.Rendering.Passes;
 using StudioFourteen.Panels;
 using StudioFourteen;
 
+[Service]
 public partial class PhotosService : ServiceBase
 {
 	private readonly CapturePass renderPass = new();
@@ -219,7 +220,7 @@ public partial class PhotosService : ServiceBase
 			this.Services.Rendering.OverlayRenderer.AddAfterEffectsPass(this.renderPass);
 			this.renderPass.DoCapture();
 
-			while(this.renderPass.Capture == null)
+			while (this.renderPass.Capture == null)
 				await Task.Delay(10);
 
 			Image? backBuffer = this.renderPass.Capture;

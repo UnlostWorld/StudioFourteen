@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 
+[Service]
 public class GameDataService : ServiceBase
 {
 	public static Dictionary<string, int> BattleNpcNameIndex = new();

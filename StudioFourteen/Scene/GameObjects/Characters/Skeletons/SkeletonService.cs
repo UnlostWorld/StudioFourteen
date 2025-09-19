@@ -26,6 +26,7 @@ using System.Collections.Generic;
 
 using XivSkeleton = FFXIVClientStructs.FFXIV.Client.Graphics.Render.Skeleton;
 
+[Service]
 public partial class SkeletonService : ServiceBase
 {
 	private readonly List<Skeleton> skeletons = new();

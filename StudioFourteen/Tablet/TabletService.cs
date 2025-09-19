@@ -21,6 +21,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
+[Service]
 public class TabletService : ServiceBase
 {
 	private CWintabContext? context = null;

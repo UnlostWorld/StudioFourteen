@@ -19,6 +19,7 @@ using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using FFXIVClientStructs.FFXIV.Client.System.Input;
 using StudioFourteen.Services;
 
+////[Service]
 public class AfkService : ServiceBase
 {
 	private readonly Stopwatch stopwatch = new();

@@ -21,6 +21,7 @@ using Dalamud.Plugin.Ipc;
 using StudioFourteen.Plugin;
 using StudioFourteen.Services;
 
+[Service]
 public class IPCService
 	: ServiceBase
 {

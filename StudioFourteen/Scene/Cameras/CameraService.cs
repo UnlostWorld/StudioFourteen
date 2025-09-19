@@ -59,6 +59,7 @@ public struct GameCameraEx
 
 #pragma warning disable
 
+[Service]
 public class CameraService : ServiceBase
 {
 	private const float CameraBlendTimeMs = 1000;

@@ -23,6 +23,7 @@ using StudioFourteen.Interop;
 using StudioFourteen.Services;
 using StudioFourteen.GameData.Library;
 
+[Service]
 public partial class TerritoryService
 	: ServiceBase
 {

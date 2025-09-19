@@ -29,6 +29,7 @@ using StudioFourteen.Panels;
 using StudioFourteen.Services;
 using global::Windows.Win32.UI.WindowsAndMessaging;
 
+[Service]
 public class CursorService : ServiceBase
 {
 	private readonly Cursor xivPointer;

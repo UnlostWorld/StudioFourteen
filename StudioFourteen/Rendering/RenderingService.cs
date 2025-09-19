@@ -17,6 +17,7 @@ namespace StudioFourteen.Rendering;
 
 using StudioFourteen.Services;
 
+[Service]
 public class RenderingService : ServiceBase
 {
 	public readonly GameOverlayRenderer OverlayRenderer = new();

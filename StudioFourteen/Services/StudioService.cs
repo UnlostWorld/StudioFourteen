@@ -26,6 +26,7 @@ using StudioFourteen.Appearance;
 using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Controllers;
 
+[Service]
 public partial class StudioService : ServiceBase
 {
 	private readonly Input0DListener hideUiListener = new(InputAction.HideUi);

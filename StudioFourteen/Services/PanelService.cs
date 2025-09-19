@@ -28,6 +28,7 @@ using StudioFourteen.Settings;
 using StudioFourteen.Xaml;
 using PanelWindow = StudioFourteen.Panels.PanelWindow;
 
+[Service]
 public class PanelService : ServiceBase
 {
 	public readonly GamePanelContext GamePanels;

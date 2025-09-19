@@ -24,6 +24,7 @@ using StudioFourteen.Services;
 using XivGameObject = FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject;
 using XivGameObjectManager = FFXIVClientStructs.FFXIV.Client.Game.Object.GameObjectManager;
 
+[Service]
 public class GameObjectService : ServiceBase
 {
 	private readonly Dictionary<ushort, GameObject?> gameObjectLookup = new();

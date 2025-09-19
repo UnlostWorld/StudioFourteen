@@ -19,6 +19,7 @@ using StudioFourteen.Services;
 using System.IO;
 using System.Threading.Tasks;
 
+[Service]
 public class OnlineService : ServiceBase
 {
 	public DirectoryInfo? FileCache { get; private set; }
