@@ -30,17 +30,6 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Compile Remove="Lib\**" />
-		<Compile Remove="publish\**" />
-		<EmbeddedResource Remove="Lib\**" />
-		<EmbeddedResource Remove="publish\**" />
-		<None Remove="Lib\**" />
-		<None Remove="publish\**" />
-		<Page Remove="Lib\**" />
-		<Page Remove="publish\**" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<Resource Include="Assets\**" />
 	</ItemGroup>
 
@@ -147,8 +136,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\Lib\WpfUtils\WpfUtils.csproj" />
-
 		<ProjectReference Include="..\StudioFourteen.Generators\StudioFourteen.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 

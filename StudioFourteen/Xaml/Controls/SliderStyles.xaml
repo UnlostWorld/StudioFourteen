@@ -1,10 +1,9 @@
 <ResourceDictionary
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:local="clr-namespace:StudioFourteen.Xaml"
-	xmlns:shapes="clr-namespace:StudioFourteen.Shapes">
+	xmlns:s14="clr-namespace:StudioFourteen.Xaml">
 
-	<ControlTemplate x:Key="SliderTemplate" TargetType="{x:Type local:Slider}">
+	<ControlTemplate x:Key="SliderTemplate" TargetType="{x:Type s14:Slider}">
 
 		<Grid Background="Transparent">
 			<Grid.ColumnDefinitions>
@@ -26,7 +25,7 @@
 					Stroke="{DynamicResource ControlHighlightBrush}"
 					StrokeThickness="6" />
 
-				<shapes:FillArc
+				<s14:FillArc
 					x:Name="Content"
 					Margin="3"
 					Maximum="{TemplateBinding Maximum}"
@@ -104,7 +103,7 @@
 
 	</ControlTemplate>
 
-	<Style TargetType="{x:Type local:Slider}" x:Key="StudioSlider">
+	<Style TargetType="{x:Type s14:Slider}" x:Key="StudioSlider">
 		<Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
 		<Setter Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
 		<Setter Property="FrameworkElement.FocusVisualStyle" Value="{x:Null}" />
@@ -116,7 +115,7 @@
 	</Style>
 
 
-	<ControlTemplate x:Key="WrapSliderTemplate" TargetType="{x:Type local:Slider}">
+	<ControlTemplate x:Key="WrapSliderTemplate" TargetType="{x:Type s14:Slider}">
 
 		<Grid Background="Transparent">
 			<Grid.ColumnDefinitions>
@@ -138,7 +137,7 @@
 					Stroke="{DynamicResource ControlHighlightBrush}"
 					StrokeThickness="6" />
 
-				<shapes:PointArc
+				<s14:PointArc
 					x:Name="Content"
 					Margin="3"
 					Spread="23"
@@ -217,19 +216,19 @@
 
 	</ControlTemplate>
 
-	<Style TargetType="{x:Type local:Slider}" x:Key="WrapSlider"
+	<Style TargetType="{x:Type s14:Slider}" x:Key="WrapSlider"
 		BasedOn="{StaticResource StudioSlider}">
 		<Setter Property="WrapMouseDrag" Value="True" />
 		<Setter Property="Template" Value="{StaticResource WrapSliderTemplate}" />
 	</Style>
 
-	<Style TargetType="{x:Type local:Slider}" x:Key="PointSlider"
+	<Style TargetType="{x:Type s14:Slider}" x:Key="PointSlider"
 		BasedOn="{StaticResource StudioSlider}">
 		<Setter Property="WrapMouseDrag" Value="False" />
 		<Setter Property="Template" Value="{StaticResource WrapSliderTemplate}" />
 	</Style>
 
-	<ControlTemplate x:Key="RelativeSliderTemplate" TargetType="{x:Type local:Slider}">
+	<ControlTemplate x:Key="RelativeSliderTemplate" TargetType="{x:Type s14:Slider}">
 
 		<Grid Background="Transparent">
 			<Grid.ColumnDefinitions>
@@ -252,7 +251,7 @@
 					StrokeThickness="6" />
 
 				<Grid x:Name="Content">
-					<shapes:PointArc
+					<s14:PointArc
 						Margin="2"
 						Spread="23"
 						Maximum="1"
@@ -262,7 +261,7 @@
 						StrokeThickness="6"
 						Value="{TemplateBinding ChangeProgress}" />
 
-					<shapes:PointArc
+					<s14:PointArc
 						Margin="2"
 						Spread="23"
 						Maximum="1"
@@ -341,16 +340,16 @@
 
 	</ControlTemplate>
 
-	<Style TargetType="{x:Type local:Slider}" x:Key="RelativeSlider"
+	<Style TargetType="{x:Type s14:Slider}" x:Key="RelativeSlider"
 		BasedOn="{StaticResource StudioSlider}">
 		<Setter Property="WrapMouseDrag" Value="False" />
 		<Setter Property="Template" Value="{StaticResource RelativeSliderTemplate}" />
 	</Style>
 
-	<Style TargetType="{x:Type local:Slider}" BasedOn="{StaticResource StudioSlider}" />
+	<Style TargetType="{x:Type s14:Slider}" BasedOn="{StaticResource StudioSlider}" />
 
 
-	<ControlTemplate x:Key="FlatSliderTemplate" TargetType="{x:Type local:Slider}">
+	<ControlTemplate x:Key="FlatSliderTemplate" TargetType="{x:Type s14:Slider}">
 
 		<Grid Background="Transparent">
 			<Grid Margin="1">
@@ -453,7 +452,7 @@
 	</ControlTemplate>
 
 
-	<Style TargetType="{x:Type local:Slider}" x:Key="FlatSlider"
+	<Style TargetType="{x:Type s14:Slider}" x:Key="FlatSlider"
 		BasedOn="{StaticResource StudioSlider}">
 		<Setter Property="WrapMouseDrag" Value="False" />
 		<Setter Property="Template" Value="{StaticResource FlatSliderTemplate}" />

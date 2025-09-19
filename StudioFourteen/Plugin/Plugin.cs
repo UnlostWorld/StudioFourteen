@@ -32,7 +32,6 @@ public sealed class DalamudPlugin : IDalamudPlugin
 		Instance = this;
 
 		// Hard reference our required satellite assemblies to make sure dalamud's plugin loader picks them up.
-		this.Log.Information($"Ensure assembly  {typeof(StudioFourteen.Dispatch).Assembly}");
 		this.Log.Information($"Ensure assembly FontAwesome {typeof(FontAwesome.Sharp.Icon).Assembly}");
 		this.Log.Information($"Ensure assembly VirtualizingWrapPanel Pro {typeof(WpfToolkit.Controls.VirtualizingWrapPanel).Assembly}");
 		this.Log.Information($"Ensure assembly SVGImage {typeof(SVGImage.SVG.SVGImage).Assembly}");

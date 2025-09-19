@@ -13,7 +13,7 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Shapes;
+namespace StudioFourteen.Xaml;
 
 using System;
 using System.Windows;

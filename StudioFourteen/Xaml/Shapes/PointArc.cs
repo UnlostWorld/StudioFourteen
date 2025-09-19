@@ -1,4 +1,4 @@
-﻿// .                    @@             _____ _______ _    _ _____ _____ ____
+// .                    @@             _____ _______ _    _ _____ _____ ____
 //          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
 //         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
 //         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
@@ -13,27 +13,33 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Shapes;
+namespace StudioFourteen.Xaml;
 
 using DependencyPropertyGenerator;
 
 [DependencyProperty<double>("Minimum")]
 [DependencyProperty<double>("Maximum")]
 [DependencyProperty<double>("Value")]
-public partial class FillArc : Arc
+[DependencyProperty<double>("Spread", DefaultValue = 12)]
+[DependencyProperty<double>("AngleOffset", DefaultValue = 0)]
+public partial class PointArc : Arc
 {
-	public override void OnApplyTemplate()
-	{
-		base.OnApplyTemplate();
-		this.UpdateArc();
-	}
-
 	partial void OnMinimumChanged() => this.UpdateArc();
 	partial void OnMaximumChanged() => this.UpdateArc();
 	partial void OnValueChanged() => this.UpdateArc();
+	partial void OnAngleOffsetChanged() => this.UpdateArc();
+	partial void OnSpreadChanged() => this.UpdateArc();
 
 	private void UpdateArc()
 	{
-		this.EndAngle = this.StartAngle + (359.999 * (this.Value / (this.Maximum - this.Minimum)));
+		double range = this.Maximum - this.Minimum;
+		if (range == 0)
+			return;
+
+		double p = this.Value / range;
+		double angle = this.AngleOffset + (359.999 * p);
+
+		this.EndAngle = angle - (this.Spread / 2);
+		this.StartAngle = angle + (this.Spread / 2);
 	}
 }

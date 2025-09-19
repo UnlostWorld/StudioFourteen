@@ -16,8 +16,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		repo.json = repo.json
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WpfUtils", "Lib\WpfUtils\WpfUtils.csproj", "{A352245F-6975-45D7-A4DC-A46718ED6FE3}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudioFourteen.Generators", "StudioFourteen.Generators\StudioFourteen.Generators.csproj", "{32FDA6F4-88C6-43B9-A9E8-7E586BF19F7D}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StudioFourteen.Reshade", "StudioFourteen.Reshade\StudioFourteen.Reshade.vcxproj", "{46E9967C-C061-41B2-A56B-96B624F32278}"
@@ -44,18 +42,6 @@ Global
 		{E1CB7F41-E129-4A9C-A321-0CF6A17DB857}.Release|x64.Build.0 = Release|x64
 		{E1CB7F41-E129-4A9C-A321-0CF6A17DB857}.Release|x86.ActiveCfg = Release|x64
 		{E1CB7F41-E129-4A9C-A321-0CF6A17DB857}.Release|x86.Build.0 = Release|x64
-		{A352245F-6975-45D7-A4DC-A46718ED6FE3}.Debug|Any CPU.ActiveCfg = Debug|x64
-		{A352245F-6975-45D7-A4DC-A46718ED6FE3}.Debug|Any CPU.Build.0 = Debug|x64
-		{A352245F-6975-45D7-A4DC-A46718ED6FE3}.Debug|x64.ActiveCfg = Debug|x64
-		{A352245F-6975-45D7-A4DC-A46718ED6FE3}.Debug|x64.Build.0 = Debug|x64
-		{A352245F-6975-45D7-A4DC-A46718ED6FE3}.Debug|x86.ActiveCfg = Debug|x64
-		{A352245F-6975-45D7-A4DC-A46718ED6FE3}.Debug|x86.Build.0 = Debug|x64
-		{A352245F-6975-45D7-A4DC-A46718ED6FE3}.Release|Any CPU.ActiveCfg = Release|x64
-		{A352245F-6975-45D7-A4DC-A46718ED6FE3}.Release|Any CPU.Build.0 = Release|x64
-		{A352245F-6975-45D7-A4DC-A46718ED6FE3}.Release|x64.ActiveCfg = Release|x64
-		{A352245F-6975-45D7-A4DC-A46718ED6FE3}.Release|x64.Build.0 = Release|x64
-		{A352245F-6975-45D7-A4DC-A46718ED6FE3}.Release|x86.ActiveCfg = Release|x64
-		{A352245F-6975-45D7-A4DC-A46718ED6FE3}.Release|x86.Build.0 = Release|x64
 		{32FDA6F4-88C6-43B9-A9E8-7E586BF19F7D}.Debug|Any CPU.ActiveCfg = Debug|x64
 		{32FDA6F4-88C6-43B9-A9E8-7E586BF19F7D}.Debug|Any CPU.Build.0 = Debug|x64
 		{32FDA6F4-88C6-43B9-A9E8-7E586BF19F7D}.Debug|x64.ActiveCfg = Debug|x64
@@ -83,9 +69,6 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{A352245F-6975-45D7-A4DC-A46718ED6FE3} = {8DB40DF5-7E4D-4ACF-81BC-6D8B3290C3BE}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C1E3BDD6-B182-4692-A407-317E885D5181}
