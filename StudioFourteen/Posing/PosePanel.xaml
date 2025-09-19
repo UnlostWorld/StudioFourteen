@@ -46,7 +46,7 @@
 				x:Name="GuiTabs"
 				Padding="1"
 				SelectedIndex="{Binding SelectedTab}"
-				Style="{DynamicResource WpfUtilsSideTabs}">
+				Style="{DynamicResource SideTabs}">
 				<pose:PoseTabItem Header="{DynamicResource ICON_Pose_Body}">
 					<Grid>
 						<Grid.ColumnDefinitions>
@@ -57,7 +57,7 @@
 						</Grid.ColumnDefinitions>
 
 						<!--<Border Grid.Column="0" Width="128"
-							Style="{DynamicResource WpfUtilsControlBorder}" />-->
+							Style="{DynamicResource ControlBorder}" />-->
 
 						<body:BodySimpleView
 							x:Name="BodyView"
@@ -192,7 +192,7 @@
 						</Grid.RowDefinitions>
 
 						<!--<Border Grid.RowSpan="3" Grid.Column="0" Width="128"
-							Style="{DynamicResource WpfUtilsControlBorder}" />-->
+							Style="{DynamicResource ControlBorder}" />-->
 
 						<pose:SimpleView
 							x:Name="FaceView"
@@ -269,7 +269,7 @@
 			Grid.Row="1"
 			Grid.ColumnSpan="2"
 			Margin="1"
-			Style="{DynamicResource WpfUtilsControlBorder}">
+			Style="{DynamicResource ControlBorder}">
 
 			<Grid>
 
@@ -282,7 +282,7 @@
 						Width="100"
 						Background="Transparent"
 						IsChecked="{Binding FlipSides}"
-						Style="{DynamicResource WpfUtilsIconToggleButton}"
+						Style="{DynamicResource IconToggleButton}"
 						ToolTip="{DynamicResource LOC_Pose_FlipSides}">
 						<TextBlock Text="Flip UI" />
 					</ToggleButton>
@@ -302,7 +302,7 @@
 						VerticalAlignment="Top"
 						HorizontalAlignment="Right"
 						Background="Transparent"
-						Style="{DynamicResource WpfUtilsIconToggleButton}">
+						Style="{DynamicResource IconToggleButton}">
 						<ToggleButton.Content>
 							<Grid>
 								<icons:IconView Icon="{DynamicResource ICON_SidebarRight_Collapse}"
@@ -359,7 +359,7 @@
 			IsHitTestVisible="False"
 			IsOpen="{Binding IsHoverTooltipOpen}"
 			PlacementTarget="{Binding HoverTarget}"
-			Style="{DynamicResource WpfUtilsPopOut}">
+			Style="{DynamicResource PopOut}">
 
 			<controls:PopOut.Header>
 				<StackPanel Margin="0,6,0,0">

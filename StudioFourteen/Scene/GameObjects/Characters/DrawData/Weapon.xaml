@@ -8,7 +8,7 @@
 	xmlns:drawData="clr-namespace:StudioFourteen.Scene.GameObjects.Characters.DrawData">
 
 	<DataTemplate DataType="{x:Type drawData:Weapon}">
-		<Border Margin="0,1" Style="{DynamicResource WpfUtilsControlBorder}">
+		<Border Margin="0,1" Style="{DynamicResource ControlBorder}">
 			<Grid>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition />

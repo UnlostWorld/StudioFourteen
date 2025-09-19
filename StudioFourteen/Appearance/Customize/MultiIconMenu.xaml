@@ -12,7 +12,7 @@
 		<StackPanel>
 			<TextBlock Style="{DynamicResource LeftLabel}" Text="{Binding Name}" />
 
-			<Border Style="{DynamicResource WpfUtilsControlBorder}">
+			<Border Style="{DynamicResource ControlBorder}">
 
 				<ItemsControl
 					Height="Auto"
@@ -25,7 +25,8 @@
 					</ItemsControl.ItemsPanel>
 					<ItemsControl.ItemTemplate>
 						<DataTemplate>
-							<ToggleButton IsChecked="{Binding IsChecked}" Style="{DynamicResource WpfUtilsIconToggleButton}">
+							<ToggleButton IsChecked="{Binding IsChecked}"
+								Style="{DynamicResource IconToggleButton}">
 								<Grid>
 									<Border
 										Background="{DynamicResource BackgroundBrush}"

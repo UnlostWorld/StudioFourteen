@@ -159,7 +159,8 @@
 						Content="{Binding RelativeSource={RelativeSource AncestorType={x:Type controls:PopOut}}, Path=Header}"
 						ContentTemplate="{Binding RelativeSource={RelativeSource AncestorType={x:Type controls:PopOut}}, Path=HeaderTemplate}">
 						<ContentPresenter.Resources>
-							<Style BasedOn="{StaticResource WpfUtilsTextBlock}" TargetType="{x:Type TextBlock}">
+							<Style BasedOn="{StaticResource TextBlock}"
+								TargetType="{x:Type TextBlock}">
 								<Setter Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
 								<Setter Property="TextWrapping" Value="Wrap" />
 							</Style>
@@ -217,7 +218,7 @@
 
 	<Style
 		x:Key="LibrarySelector"
-		BasedOn="{StaticResource WpfUtilsPopOut}"
+		BasedOn="{StaticResource PopOut}"
 		TargetType="{x:Type selector:LibrarySelector}">
 		<Setter Property="Background" Value="{DynamicResource BackgroundBrush}" />
 		<Setter Property="Height" Value="500" />

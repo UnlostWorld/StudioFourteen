@@ -71,7 +71,7 @@
 				Grid.Row="1"
 				Margin="2"
 				Background="{DynamicResource BackgroundBrush}"
-				CornerRadius="{DynamicResource WpfUtilsBorderInnerCornerRadius}">
+				CornerRadius="{DynamicResource BorderInnerCornerRadius}">
 				<ToggleButton IsChecked="{Binding EnablePosing}" Content="{DynamicResource LOC_Pose_Enable}"/>
 			</Border>
 

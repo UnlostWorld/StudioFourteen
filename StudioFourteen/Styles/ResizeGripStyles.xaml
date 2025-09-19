@@ -3,7 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
 	<ControlTemplate
-		x:Key="WpfUtilsResizeThumbCornerTemplate"
+		x:Key="ResizeThumbCornerTemplate"
 		TargetType="{x:Type Thumb}">
 
 		<Grid Background="Transparent">
@@ -38,13 +38,13 @@
 	</ControlTemplate>
 
 	<Style
-		x:Key="WpfUtilsResizeThumbCorner"
+		x:Key="ResizeThumbCorner"
 		TargetType="{x:Type Thumb}">
 		<Setter Property="OverridesDefaultStyle" Value="True" />
 		<Setter Property="Foreground" Value="{DynamicResource TrimBrush}" />
 		<Setter Property="Background" Value="Transparent" />
 		<Setter Property="Padding" Value="0,0,11,11" />
-		<Setter Property="Template" Value="{StaticResource WpfUtilsResizeThumbCornerTemplate}" />
+		<Setter Property="Template" Value="{StaticResource ResizeThumbCornerTemplate}" />
 		<Setter Property="HorizontalAlignment" Value="Right"/>
 		<Setter Property="VerticalAlignment" Value="Bottom"/>
 		<Setter Property="Margin" Value="0,0,0,0" />

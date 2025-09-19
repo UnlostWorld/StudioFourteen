@@ -44,7 +44,7 @@
 				Foreground="{DynamicResource ForegroundLightBrush}"
 				Text="{Binding Status}" />
 
-			<Border Grid.Row="2" Style="{DynamicResource WpfUtilsGroupBorder}">
+			<Border Grid.Row="2" Style="{DynamicResource GroupBorder}">
 
 				<ScrollViewer x:Name="Scroller" HorizontalScrollBarVisibility="Disabled">
 					<ItemsControl ItemsSource="{Binding ScriptLog}">
@@ -103,7 +103,7 @@
 				</ScrollViewer>
 			</Border>
 
-			<Border Grid.Row="3" Style="{DynamicResource WpfUtilsControlBorder}">
+			<Border Grid.Row="3" Style="{DynamicResource ControlBorder}">
 
 				<Grid>
 					<Button
@@ -288,7 +288,7 @@
 			</ScrollViewer>
 
 
-			<Border Grid.Row="1" Style="{DynamicResource WpfUtilsControlBorder}">
+			<Border Grid.Row="1" Style="{DynamicResource ControlBorder}">
 
 				<Grid>
 					<Button

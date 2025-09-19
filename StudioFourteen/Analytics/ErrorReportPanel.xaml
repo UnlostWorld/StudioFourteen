@@ -87,7 +87,7 @@
 			Grid.Row="3"
 			Grid.ColumnSpan="2"
 			Margin="1"
-			Style="{DynamicResource WpfUtilsControlBorder}">
+			Style="{DynamicResource ControlBorder}">
 			<Grid>
 				<StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
 

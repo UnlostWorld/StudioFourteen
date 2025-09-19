@@ -3,16 +3,16 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls">
 
-	<ControlTemplate x:Key="WpfUtilsTextBoxTemplate" TargetType="{x:Type TextBox}">
+	<ControlTemplate x:Key="TextBoxTemplate" TargetType="{x:Type TextBox}">
 
 		<Grid>
 			<Border Background="{TemplateBinding Background}"
-				Style="{DynamicResource WpfUtilsControlBorder}" />
+				Style="{DynamicResource ControlBorder}" />
 
 			<Border
 				x:Name="HoverHighlight"
 				Opacity="0"
-				Style="{DynamicResource WpfUtilsControlHoverBorder}" />
+				Style="{DynamicResource ControlHoverBorder}" />
 
 			<ScrollViewer
 				Name="PART_ContentHost"
@@ -130,7 +130,7 @@
 
 	</ControlTemplate>
 
-	<Style x:Key="WpfUtilsTextBox" TargetType="{x:Type TextBox}">
+	<Style x:Key="TextBox" TargetType="{x:Type TextBox}">
 		<Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
 		<Setter Property="BorderBrush" Value="{DynamicResource TrimBrush}" />
 		<Setter Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
@@ -143,7 +143,7 @@
 		<Setter Property="Padding" Value="3,2" />
 		<Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst" />
 		<Setter Property="Stylus.IsFlicksEnabled" Value="False" />
-		<Setter Property="Template" Value="{StaticResource WpfUtilsTextBoxTemplate}" />
+		<Setter Property="Template" Value="{StaticResource TextBoxTemplate}" />
 		<Setter Property="TextBoxBase.CaretBrush" Value="{DynamicResource TrimBrush}" />
 		<Setter Property="UIElement.AllowDrop" Value="true" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />

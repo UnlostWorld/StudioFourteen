@@ -20,7 +20,7 @@
 			<Border
 				Margin="1"
 				Background="{TemplateBinding Background}"
-				Style="{DynamicResource WpfUtilsControlBorder}">
+				Style="{DynamicResource ControlBorder}">
 
 				<Grid>
 					<Grid.ColumnDefinitions>

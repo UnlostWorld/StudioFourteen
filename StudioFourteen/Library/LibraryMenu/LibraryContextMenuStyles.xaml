@@ -114,7 +114,7 @@
 					Foreground="{DynamicResource ForegroundLightBrush}"
 					Text="{Binding MultiSelectLabel, RelativeSource={RelativeSource AncestorType={x:Type menu:LibraryContextMenu}}}" />
 
-				<Border x:Name="MenuArea" Style="{DynamicResource WpfUtilsControlBorder}">
+				<Border x:Name="MenuArea" Style="{DynamicResource ControlBorder}">
 
 					<Border.LayoutTransform>
 						<ScaleTransform x:Name="MenuAreaScale" ScaleY="0" />
@@ -127,7 +127,7 @@
 								Margin="0"
 								Background="Transparent"
 								IsChecked="{Binding Entry.IsFavorite, RelativeSource={RelativeSource AncestorType={x:Type menu:LibraryContextMenu}}}"
-								Style="{DynamicResource WpfUtilsIconToggleButton}">
+								Style="{DynamicResource IconToggleButton}">
 
 								<Grid>
 									<icons:IconView Icon="{DynamicResource ICON_FavoriteOn}" Visibility="{Binding ElementName=FavoritesToggle, Path=IsChecked, Converter={StaticResource B2V}}" />
@@ -143,7 +143,8 @@
 							</Menu.ItemTemplate>
 
 							<Menu.ItemContainerStyle>
-								<Style BasedOn="{StaticResource WpfUtilsMenuItem}" TargetType="{x:Type MenuItem}">
+								<Style BasedOn="{StaticResource MenuItem}"
+									TargetType="{x:Type MenuItem}">
 									<Setter Property="MenuItem.Command" Value="{Binding OnClicked}" />
 									<Setter Property="MenuItem.Header" Value="{Binding Label}" />
 									<Setter Property="MenuItem.Icon" Value="{Binding Icon}" />
@@ -215,7 +216,7 @@
 
 	<Style
 		x:Key="LibraryContextMenuStyle"
-		BasedOn="{StaticResource WpfUtilsPopOut}"
+		BasedOn="{StaticResource PopOut}"
 		TargetType="{x:Type menu:LibraryContextMenu}">
 		<Setter Property="Height" Value="600" />
 		<Setter Property="Template" Value="{StaticResource LibraryContextMenuTemplate}" />

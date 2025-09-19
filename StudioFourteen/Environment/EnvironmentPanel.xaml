@@ -23,7 +23,7 @@
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
 
-		<TabControl Grid.Row="0" Style="{DynamicResource WpfUtilsSideTabs}">
+		<TabControl Grid.Row="0" Style="{DynamicResource SideTabs}">
 			<TabItem Header="{DynamicResource ICON_Environment_Home}">
 				<StackPanel>
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_Environment_Territory}" />
@@ -444,7 +444,7 @@
 			</TabItem>
 		</TabControl>
 
-		<Border Grid.Row="1" Style="{DynamicResource WpfUtilsControlBorder}" Margin="0,2,0,0">
+		<Border Grid.Row="1" Style="{DynamicResource ControlBorder}" Margin="0,2,0,0">
 			<Grid>
 				<StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
 					<Button Content="{DynamicResource ICON_Reset}" Click="OnResetClicked"/>

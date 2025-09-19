@@ -3,7 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls">
 
-	<ControlTemplate x:Key="WpfUtilsTextBoxExTemplate" TargetType="{x:Type controls:TextBoxEx}">
+	<ControlTemplate x:Key="TextBoxExTemplate" TargetType="{x:Type controls:TextBoxEx}">
 		<ControlTemplate.Triggers>
 			<Trigger Property="IsKeyboardFocused" Value="True">
 				<Trigger.EnterActions>
@@ -81,7 +81,7 @@
 		<Grid>
 
 			<Border Background="{TemplateBinding Background}"
-				Style="{DynamicResource WpfUtilsControlBorder}" />
+				Style="{DynamicResource ControlBorder}" />
 
 			<Border
 				x:Name="HoverHighlight"
@@ -90,9 +90,9 @@
 				Background="Transparent"
 				BorderBrush="{DynamicResource ControlHighlightBrush}"
 				BorderThickness="1"
-				CornerRadius="{DynamicResource WpfUtilsBorderInnerCornerRadius}"
+				CornerRadius="{DynamicResource BorderInnerCornerRadius}"
 				Opacity="0"
-				Style="{DynamicResource WpfUtilsControlBorder}" />
+				Style="{DynamicResource ControlBorder}" />
 
 			<Border
 				x:Name="SelectedHighlight"
@@ -101,9 +101,9 @@
 				Background="Transparent"
 				BorderBrush="{DynamicResource TrimBrush}"
 				BorderThickness="1"
-				CornerRadius="{DynamicResource WpfUtilsBorderInnerCornerRadius}"
+				CornerRadius="{DynamicResource BorderInnerCornerRadius}"
 				Opacity="0"
-				Style="{DynamicResource WpfUtilsControlBorder}" />
+				Style="{DynamicResource ControlBorder}" />
 
 			<ScrollViewer
 				Name="PART_ContentHost"
@@ -124,7 +124,7 @@
 	</ControlTemplate>
 
 
-	<Style x:Key="WpfUtilsTextBoxEx" TargetType="{x:Type controls:TextBoxEx}">
+	<Style x:Key="TextBoxEx" TargetType="{x:Type controls:TextBoxEx}">
 		<Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
 		<Setter Property="BorderBrush" Value="{DynamicResource TrimBrush}" />
 		<Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
@@ -137,7 +137,7 @@
 		<Setter Property="Padding" Value="3,2" />
 		<Setter Property="ScrollViewer.PanningMode" Value="VerticalFirst" />
 		<Setter Property="Stylus.IsFlicksEnabled" Value="False" />
-		<Setter Property="Template" Value="{StaticResource WpfUtilsTextBoxExTemplate}" />
+		<Setter Property="Template" Value="{StaticResource TextBoxExTemplate}" />
 		<Setter Property="TextBoxBase.CaretBrush" Value="{DynamicResource TrimBrush}" />
 		<Setter Property="UIElement.AllowDrop" Value="true" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />

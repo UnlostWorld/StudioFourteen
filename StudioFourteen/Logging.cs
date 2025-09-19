@@ -74,8 +74,6 @@ public static class Logging
 
 	public static void Dispose()
 	{
-		////WpfUtils.Logging.Log.HandleMessage = null;
-		////WpfUtils.Logging.Log.HandleError = null;
 		PresentationTraceSources.AnimationSource.Listeners.Clear();
 		PresentationTraceSources.DataBindingSource.Listeners.Clear();
 		PresentationTraceSources.DependencyPropertySource.Listeners.Clear();

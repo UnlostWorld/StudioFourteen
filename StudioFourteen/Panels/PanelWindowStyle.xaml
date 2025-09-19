@@ -22,7 +22,7 @@
 
 	<Style
 		x:Key="TitleBarToggleButton"
-		BasedOn="{StaticResource WpfUtilsIconToggleButton}"
+		BasedOn="{StaticResource IconToggleButton}"
 		TargetType="{x:Type ToggleButton}">
 		<Setter Property="Background" Value="Transparent" />
 		<Setter Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
@@ -33,7 +33,7 @@
 
 	<Style
 		x:Key="TitleBarButton"
-		BasedOn="{StaticResource WpfUtilsButton}"
+		BasedOn="{StaticResource Button}"
 		TargetType="{x:Type Button}">
 		<Setter Property="Background" Value="Transparent" />
 		<Setter Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
@@ -75,7 +75,7 @@
 
 				<Border
 					Background="{DynamicResource BackgroundBrush}"
-					CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
+					CornerRadius="{DynamicResource BorderOuterCornerRadius}" />
 
 
 				<Grid ClipToBounds="True">
@@ -238,7 +238,7 @@
 					x:Name="WindowBorder"
 					BorderBrush="{DynamicResource BackgroundBrush}"
 					BorderThickness="1"
-					CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
+					CornerRadius="{DynamicResource BorderOuterCornerRadius}" />
 
 				<Grid
 					x:Name="ResizeGrip"
@@ -247,7 +247,7 @@
 					Visibility="Collapsed">
 					<Thumb
 						DragDelta="OnResizeThumbDragDelta"
-						Style="{DynamicResource WpfUtilsResizeThumbCorner}" />
+						Style="{DynamicResource ResizeThumbCorner}" />
 				</Grid>
 			</Grid>
 		</AdornerDecorator>
@@ -459,7 +459,7 @@
 				<Border
 					x:Name="WindowShadow"
 					Background="Black"
-					CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}"
+					CornerRadius="{DynamicResource BorderOuterCornerRadius}"
 					Opacity="0.25">
 					<Border.BitmapEffect>
 						<DropShadowBitmapEffect
@@ -470,13 +470,13 @@
 
 				<Border
 					Background="{DynamicResource BackgroundBrush}"
-					CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
+					CornerRadius="{DynamicResource BorderOuterCornerRadius}" />
 
 				<Border
 					x:Name="WindowBorder"
 					BorderBrush="{DynamicResource BackgroundBrush}"
 					BorderThickness="1"
-					CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
+					CornerRadius="{DynamicResource BorderOuterCornerRadius}" />
 
 				<ContentPresenter
 					Margin="3"

@@ -7,7 +7,8 @@
 
 	<ControlTemplate x:Key="NumberBoxTemplate" TargetType="{x:Type local:NumberBox}">
 		<Grid>
-			<Border Background="{TemplateBinding Background}" Style="{DynamicResource WpfUtilsControlBorder}" />
+			<Border Background="{TemplateBinding Background}"
+				Style="{DynamicResource ControlBorder}" />
 
 			<Grid>
 
@@ -47,7 +48,7 @@
 					x:Name="HoverHighlight"
 					Grid.Column="1"
 					Opacity="0"
-					Style="{DynamicResource WpfUtilsControlHoverBorder}" />
+					Style="{DynamicResource ControlHoverBorder}" />
 
 				<TextBox
 					Background="Transparent"

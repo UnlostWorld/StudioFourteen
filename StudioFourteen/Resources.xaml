@@ -135,34 +135,34 @@
 	<converters:MultiOrVisibilityConverter x:Key="MultiOrVisibility" />
 
 	<Style BasedOn="{StaticResource ScrollViewerStyle}" TargetType="{x:Type ScrollViewer}" />
-	<Style BasedOn="{StaticResource WpfUtilsAreaSlider}" TargetType="{x:Type controls:AreaSlider}" />
-	<Style BasedOn="{StaticResource WpfUtilsButton}" TargetType="{x:Type Button}" />
-	<Style BasedOn="{StaticResource WpfUtilsCheckBox}" TargetType="{x:Type CheckBox}" />
-	<Style BasedOn="{StaticResource WpfUtilsComboBox}" TargetType="{x:Type ComboBox}" />
-	<Style BasedOn="{StaticResource WpfUtilsContextMenu}" TargetType="{x:Type ContextMenu}" />
-	<Style BasedOn="{StaticResource WpfUtilsExpander}" TargetType="{x:Type Expander}" />
-	<Style BasedOn="{StaticResource WpfUtilsGroupBox}" TargetType="{x:Type GroupBox}" />
-	<Style BasedOn="{StaticResource WpfUtilsListBox}" TargetType="{x:Type controls:ListBoxEx}" />
-	<Style BasedOn="{StaticResource WpfUtilsListBox}" TargetType="{x:Type ListBox}" />
-	<Style BasedOn="{StaticResource WpfUtilsListBoxItem}"
+	<Style BasedOn="{StaticResource AreaSlider}" TargetType="{x:Type controls:AreaSlider}" />
+	<Style BasedOn="{StaticResource Button}" TargetType="{x:Type Button}" />
+	<Style BasedOn="{StaticResource CheckBox}" TargetType="{x:Type CheckBox}" />
+	<Style BasedOn="{StaticResource ComboBox}" TargetType="{x:Type ComboBox}" />
+	<Style BasedOn="{StaticResource ContextMenu}" TargetType="{x:Type ContextMenu}" />
+	<Style BasedOn="{StaticResource Expander}" TargetType="{x:Type Expander}" />
+	<Style BasedOn="{StaticResource GroupBox}" TargetType="{x:Type GroupBox}" />
+	<Style BasedOn="{StaticResource ListBox}" TargetType="{x:Type controls:ListBoxEx}" />
+	<Style BasedOn="{StaticResource ListBox}" TargetType="{x:Type ListBox}" />
+	<Style BasedOn="{StaticResource ListBoxItem}"
 		TargetType="{x:Type controls:ListBoxItemEx}" />
-	<Style BasedOn="{StaticResource WpfUtilsListBoxItem}" TargetType="{x:Type ListBoxItem}" />
-	<Style BasedOn="{StaticResource WpfUtilsMenu}" TargetType="{x:Type Menu}" />
-	<Style BasedOn="{StaticResource WpfUtilsMenuItem}" TargetType="{x:Type MenuItem}" />
-	<Style BasedOn="{StaticResource WpfUtilsPopOut}" TargetType="{x:Type controls:PopOut}" />
-	<Style BasedOn="{StaticResource WpfUtilsPopup}" TargetType="{x:Type Popup}" />
-	<Style BasedOn="{StaticResource WpfUtilsProgressBar}" TargetType="{x:Type ProgressBar}" />
-	<Style BasedOn="{StaticResource WpfUtilsRadioButton}" TargetType="{x:Type RadioButton}" />
-	<Style BasedOn="{StaticResource WpfUtilsRadioButtonHighlighter}"
+	<Style BasedOn="{StaticResource ListBoxItem}" TargetType="{x:Type ListBoxItem}" />
+	<Style BasedOn="{StaticResource Menu}" TargetType="{x:Type Menu}" />
+	<Style BasedOn="{StaticResource MenuItem}" TargetType="{x:Type MenuItem}" />
+	<Style BasedOn="{StaticResource PopOut}" TargetType="{x:Type controls:PopOut}" />
+	<Style BasedOn="{StaticResource Popup}" TargetType="{x:Type Popup}" />
+	<Style BasedOn="{StaticResource ProgressBar}" TargetType="{x:Type ProgressBar}" />
+	<Style BasedOn="{StaticResource RadioButton}" TargetType="{x:Type RadioButton}" />
+	<Style BasedOn="{StaticResource RadioButtonHighlighter}"
 		TargetType="{x:Type controls:RadioButtonHighlighter}" />
-	<Style BasedOn="{StaticResource WpfUtilsSeparator}" TargetType="{x:Type Separator}" />
-	<Style BasedOn="{StaticResource WpfUtilsTabControl}" TargetType="{x:Type TabControl}" />
-	<Style BasedOn="{StaticResource WpfUtilsTextBlock}" TargetType="{x:Type TextBlock}" />
-	<Style BasedOn="{StaticResource WpfUtilsTextBox}" TargetType="{x:Type TextBox}" />
-	<Style BasedOn="{StaticResource WpfUtilsTextBoxEx}" TargetType="{x:Type controls:TextBoxEx}" />
-	<Style BasedOn="{StaticResource WpfUtilsToggleButton}" TargetType="{x:Type ToggleButton}" />
-	<Style BasedOn="{StaticResource WpfUtilsToolTip}" TargetType="{x:Type ToolTip}" />
+	<Style BasedOn="{StaticResource Separator}" TargetType="{x:Type Separator}" />
+	<Style BasedOn="{StaticResource TabControl}" TargetType="{x:Type TabControl}" />
+	<Style BasedOn="{StaticResource TextBlock}" TargetType="{x:Type TextBlock}" />
+	<Style BasedOn="{StaticResource TextBox}" TargetType="{x:Type TextBox}" />
+	<Style BasedOn="{StaticResource TextBoxEx}" TargetType="{x:Type controls:TextBoxEx}" />
+	<Style BasedOn="{StaticResource ToggleButton}" TargetType="{x:Type ToggleButton}" />
+	<Style BasedOn="{StaticResource ToolTip}" TargetType="{x:Type ToolTip}" />
 	<Style x:Key="{x:Static SystemParameters.FocusVisualStyleKey}"
-		BasedOn="{StaticResource WpfUtilsFocusVisualStyle}" />
+		BasedOn="{StaticResource FocusVisualStyle}" />
 
 </local:Resources>

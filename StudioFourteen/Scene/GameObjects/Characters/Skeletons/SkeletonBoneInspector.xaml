@@ -13,7 +13,8 @@
 
 	<DataTemplate DataType="{x:Type skeletons:SkeletonBone}">
 
-		<Border Background="{DynamicResource BackgroundBrush}" CornerRadius="{DynamicResource WpfUtilsBorderInnerCornerRadius}">
+		<Border Background="{DynamicResource BackgroundBrush}"
+			CornerRadius="{DynamicResource BorderInnerCornerRadius}">
 
 			<StackPanel Margin="2">
 
@@ -58,7 +59,7 @@
 						Width="28"
 						Content="{DynamicResource ICON_Pose_LockTransform}"
 						IsChecked="{Binding LockTransform, FallbackValue=false}"
-						Style="{DynamicResource WpfUtilsIconToggleButton}"
+						Style="{DynamicResource IconToggleButton}"
 						ToolTip="{DynamicResource LOC_Pose_LockTransform}" />
 
 				</Grid>

@@ -6,7 +6,7 @@
 	xmlns:controls="clr-namespace:StudioFourteen.Controls">
 
 	<ControlTemplate
-		x:Key="WpfUtilsTabHighlightTemplate"
+		x:Key="TabHighlightTemplate"
 		TargetType="{x:Type controls:RadioButtonHighlighter}">
 		<Grid>
 
@@ -19,7 +19,7 @@
 					VerticalAlignment="Stretch"
 					extensions:BorderExtensions.FlattenedCorners="Bottom"
 					Background="{DynamicResource BackgroundBrush}"
-					CornerRadius="{DynamicResource WpfUtilsBorderInnerCornerRadius}"
+					CornerRadius="{DynamicResource BorderInnerCornerRadius}"
 					SnapsToDevicePixels="True" />
 			</Grid>
 			<ContentPresenter />
@@ -27,7 +27,7 @@
 	</ControlTemplate>
 
 	<ControlTemplate
-		x:Key="WpfUtilsVerticalTabHighlightTemplate"
+		x:Key="VerticalTabHighlightTemplate"
 		TargetType="{x:Type controls:RadioButtonHighlighter}">
 		<Grid>
 
@@ -40,7 +40,7 @@
 					VerticalAlignment="Stretch"
 					extensions:BorderExtensions.FlattenedCorners="Right"
 					Background="{DynamicResource BackgroundBrush}"
-					CornerRadius="{DynamicResource WpfUtilsBorderInnerCornerRadius}"
+					CornerRadius="{DynamicResource BorderInnerCornerRadius}"
 					SnapsToDevicePixels="True" />
 			</Grid>
 			<ContentPresenter />
@@ -48,7 +48,7 @@
 	</ControlTemplate>
 
 	<Style
-		x:Key="WpfUtilsTabControl"
+		x:Key="TabControl"
 		TargetType="{x:Type TabControl}">
 		<Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
 		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
@@ -70,7 +70,7 @@
 									ContentTemplate="{TemplateBinding HeaderTemplate}"
 									IsChecked="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=TabItem}}"
 									IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=TabItem}}"
-									Style="{DynamicResource WpfUtilsRadioButtonNoHighlight}" />
+									Style="{DynamicResource RadioButtonNoHighlight}" />
 
 								<ControlTemplate.Triggers>
 									<Trigger Property="IsSelected" Value="True">
@@ -95,7 +95,7 @@
 				<ControlTemplate TargetType="{x:Type TabControl}">
 					<Border
 						Background="{TemplateBinding Background}"
-						Style="{DynamicResource WpfUtilsControlBorder}">
+						Style="{DynamicResource ControlBorder}">
 						<Grid
 							ClipToBounds="True"
 							KeyboardNavigation.TabNavigation="Local"
@@ -107,7 +107,7 @@
 							</Grid.RowDefinitions>
 
 							<controls:RadioButtonHighlighter
-								Template="{StaticResource WpfUtilsTabHighlightTemplate}">
+								Template="{StaticResource TabHighlightTemplate}">
 								<UniformGrid
 									HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
 									VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
@@ -120,7 +120,7 @@
 								Grid.Row="1"
 								Margin="2,0,2,2"
 								Background="{DynamicResource BackgroundBrush}"
-								CornerRadius="{DynamicResource WpfUtilsBorderInnerCornerRadius}">
+								CornerRadius="{DynamicResource BorderInnerCornerRadius}">
 
 								<Grid
 									Name="ContentPanel"
@@ -151,7 +151,7 @@
 
 
 	<Style
-		x:Key="WpfUtilsSideTabs"
+		x:Key="SideTabs"
 		TargetType="TabControl">
 		<Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
 		<Setter Property="BorderBrush" Value="Transparent" />
@@ -180,7 +180,7 @@
 									ContentTemplate="{TemplateBinding HeaderTemplate}"
 									IsChecked="{Binding IsSelected, RelativeSource={RelativeSource AncestorType=TabItem}}"
 									IsEnabled="{Binding IsEnabled, RelativeSource={RelativeSource AncestorType=TabItem}}"
-									Style="{DynamicResource WpfUtilsRadioButtonNoHighlight}" />
+									Style="{DynamicResource RadioButtonNoHighlight}" />
 
 								<ControlTemplate.Triggers>
 									<Trigger Property="IsSelected" Value="True">
@@ -202,7 +202,7 @@
 					<Border
 						Grid.Column="0"
 						Background="{TemplateBinding Background}"
-						Style="{DynamicResource WpfUtilsControlBorder}">
+						Style="{DynamicResource ControlBorder}">
 						<Grid
 							ClipToBounds="False"
 							KeyboardNavigation.TabNavigation="Local"
@@ -215,7 +215,7 @@
 
 							<controls:RadioButtonHighlighter
 								Orientation="Vertical"
-								Template="{StaticResource WpfUtilsVerticalTabHighlightTemplate}">
+								Template="{StaticResource VerticalTabHighlightTemplate}">
 								<UniformGrid
 									Margin="0"
 									HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
@@ -237,7 +237,7 @@
 									Grid.Row="1"
 									Margin="0,2,2,2"
 									Background="{DynamicResource BackgroundBrush}"
-									CornerRadius="{DynamicResource WpfUtilsBorderInnerCornerRadius}">
+									CornerRadius="{DynamicResource BorderInnerCornerRadius}">
 
 									<ContentPresenter
 										Name="PART_SelectedContentHost"

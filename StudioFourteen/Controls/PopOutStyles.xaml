@@ -3,7 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls">
 
-	<ControlTemplate x:Key="WpfUtilsPopOutTemplate" TargetType="{x:Type ContentControl}">
+	<ControlTemplate x:Key="PopOutTemplate" TargetType="{x:Type ContentControl}">
 
 		<Grid Margin="12">
 			<Grid>
@@ -71,7 +71,7 @@
 
 	</ControlTemplate>
 
-	<Style x:Key="WpfUtilsPopOut" TargetType="{x:Type controls:PopOut}">
+	<Style x:Key="PopOut" TargetType="{x:Type controls:PopOut}">
 		<Setter Property="AllowsTransparency" Value="True" />
 		<Setter Property="Background" Value="{DynamicResource BackgroundBrush}" />
 		<Setter Property="Focusable" Value="True" />
@@ -81,7 +81,7 @@
 		<Setter Property="Placement" Value="Bottom" />
 		<Setter Property="PopupAnimation" Value="Fade" />
 		<Setter Property="SnapsToDevicePixels" Value="True" />
-		<Setter Property="Template" Value="{StaticResource WpfUtilsPopOutTemplate}" />
+		<Setter Property="Template" Value="{StaticResource PopOutTemplate}" />
 		<Setter Property="UseLayoutRounding" Value="True" />
 
 	</Style>

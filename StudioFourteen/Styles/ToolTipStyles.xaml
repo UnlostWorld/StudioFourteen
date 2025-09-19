@@ -5,7 +5,7 @@
 	xmlns:converters="clr-namespace:StudioFourteen.Converters"
 	xmlns:sys="clr-namespace:System;assembly=netstandard">
 
-	<sys:Double x:Key="WpfUtilsMaxTooltipWidth">250</sys:Double>
+	<sys:Double x:Key="MaxTooltipWidth">250</sys:Double>
 
 	<converters:NotEmptyToVisibilityConverter x:Key="NotEmptyToVisibility" />
 
@@ -42,11 +42,11 @@
 		</Grid>
 	</ControlTemplate>
 
-	<Style x:Key="WpfUtilsToolTip" TargetType="{x:Type ToolTip}">
+	<Style x:Key="ToolTip" TargetType="{x:Type ToolTip}">
 		<Setter Property="Background" Value="{DynamicResource BackgroundBrush}" />
 		<Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}" />
 		<Setter Property="HasDropShadow" Value="True" />
-		<Setter Property="MaxWidth" Value="{DynamicResource WpfUtilsMaxTooltipWidth}" />
+		<Setter Property="MaxWidth" Value="{DynamicResource MaxTooltipWidth}" />
 		<Setter Property="MinHeight" Value="10" />
 		<Setter Property="MinWidth" Value="10" />
 

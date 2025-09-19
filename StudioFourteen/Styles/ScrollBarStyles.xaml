@@ -9,7 +9,7 @@
 	<sys:Double x:Key="{x:Static SystemParameters.VerticalScrollBarButtonHeightKey}">100</sys:Double>
 	<sys:Double x:Key="{x:Static SystemParameters.HorizontalScrollBarButtonWidthKey}">100</sys:Double>
 
-	<CornerRadius x:Key="WpfUtilsScrollBarCornerRadius">2</CornerRadius>
+	<CornerRadius x:Key="ScrollBarCornerRadius">2</CornerRadius>
 
 	<Style x:Key="VerticalScrollbarThumb" TargetType="Thumb">
 
@@ -21,7 +21,7 @@
 							x:Name="HoverBorder"
 							Width="4"
 							Background="{DynamicResource ForegroundLightBrush}"
-							CornerRadius="{DynamicResource WpfUtilsScrollBarCornerRadius}"
+							CornerRadius="{DynamicResource ScrollBarCornerRadius}"
 							SnapsToDevicePixels="False"
 							UseLayoutRounding="False" />
 					</Grid>
@@ -71,7 +71,7 @@
 							x:Name="HoverBorder"
 							Height="4"
 							Background="{DynamicResource ForegroundLightBrush}"
-							CornerRadius="{DynamicResource WpfUtilsScrollBarCornerRadius}"
+							CornerRadius="{DynamicResource ScrollBarCornerRadius}"
 							SnapsToDevicePixels="False"
 							UseLayoutRounding="False" />
 					</Grid>
@@ -135,7 +135,7 @@
 						<Border
 							Width="4"
 							Background="{TemplateBinding Background}"
-							CornerRadius="{DynamicResource WpfUtilsScrollBarCornerRadius}" />
+							CornerRadius="{DynamicResource ScrollBarCornerRadius}" />
 
 						<Track x:Name="PART_Track" IsDirectionReversed="true">
 							<Track.DecreaseRepeatButton>
@@ -171,7 +171,7 @@
 						<Border
 							Height="4"
 							Background="{TemplateBinding Background}"
-							CornerRadius="{DynamicResource WpfUtilsScrollBarCornerRadius}" />
+							CornerRadius="{DynamicResource ScrollBarCornerRadius}" />
 
 						<Track x:Name="PART_Track" IsDirectionReversed="false">
 							<Track.Thumb>

@@ -3,14 +3,13 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:converters="clr-namespace:StudioFourteen.Converters"
 	xmlns:fa="http://schemas.awesome.incremented/wpf/xaml/fontawesome.sharp"
-	xmlns:local="clr-namespace:WpfUtils"
-	xmlns:wpfUtils="clr-namespace:StudioFourteen.Controls">
+	xmlns:s14="clr-namespace:StudioFourteen.Controls">
 
 	<converters:StringHasContentToVisibilityConverter x:Key="StringHasContentToVisibility" />
 	<converters:InvertedBoolToVisibilityConverter x:Key="!B2V" />
 
 
-	<ControlTemplate x:Key="WpfUtilsContextMenuTemplate" TargetType="{x:Type ContextMenu}">
+	<ControlTemplate x:Key="ContextMenuTemplate" TargetType="{x:Type ContextMenu}">
 		<Grid Margin="12">
 			<Grid>
 				<Grid.Effect>
@@ -45,7 +44,7 @@
 
 	</ControlTemplate>
 
-	<Style x:Key="WpfUtilsContextMenu" TargetType="{x:Type ContextMenu}">
+	<Style x:Key="ContextMenu" TargetType="{x:Type ContextMenu}">
 		<Setter Property="ItemsPanel">
 			<Setter.Value>
 				<ItemsPanelTemplate>
@@ -53,7 +52,7 @@
 				</ItemsPanelTemplate>
 			</Setter.Value>
 		</Setter>
-		<Setter Property="Template" Value="{StaticResource WpfUtilsContextMenuTemplate}" />
+		<Setter Property="Template" Value="{StaticResource ContextMenuTemplate}" />
 		<Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
 		<Setter Property="MinWidth" Value="128" />
 	</Style>

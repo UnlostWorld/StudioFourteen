@@ -1,72 +1,72 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-	<CornerRadius x:Key="WpfUtilsBorderInnerCornerRadius">4</CornerRadius>
-	<CornerRadius x:Key="WpfUtilsBorderOuterCornerRadius">6</CornerRadius>
+	<CornerRadius x:Key="BorderInnerCornerRadius">4</CornerRadius>
+	<CornerRadius x:Key="BorderOuterCornerRadius">6</CornerRadius>
 
-	<Style x:Key="WpfUtilsControlHoverBorder" TargetType="{x:Type Border}">
+	<Style x:Key="ControlHoverBorder" TargetType="{x:Type Border}">
 		<Setter Property="Background" Value="{DynamicResource ControlHighlightBrush}" />
 		<Setter Property="BorderBrush" Value="{DynamicResource ControlBackgroundBrush}" />
 		<Setter Property="BorderThickness" Value="0" />
 		<Setter Property="ClipToBounds" Value="True" />
-		<Setter Property="CornerRadius" Value="{DynamicResource WpfUtilsBorderInnerCornerRadius}" />
+		<Setter Property="CornerRadius" Value="{DynamicResource BorderInnerCornerRadius}" />
 		<Setter Property="Margin" Value="2" />
 		<Setter Property="SnapsToDevicePixels" Value="True" />
 		<Setter Property="UseLayoutRounding" Value="True" />
 	</Style>
 
-	<Style x:Key="WpfUtilsGroupBorder" TargetType="{x:Type Border}">
+	<Style x:Key="GroupBorder" TargetType="{x:Type Border}">
 		<Setter Property="Background" Value="{DynamicResource BackgroundBrush}" />
 		<Setter Property="BorderBrush" Value="{DynamicResource ControlBackgroundBrush}" />
 		<Setter Property="BorderThickness" Value="2" />
 		<Setter Property="ClipToBounds" Value="True" />
-		<Setter Property="CornerRadius" Value="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
+		<Setter Property="CornerRadius" Value="{DynamicResource BorderOuterCornerRadius}" />
 		<Setter Property="Margin" Value="1" />
 		<Setter Property="SnapsToDevicePixels" Value="True" />
 		<Setter Property="UseLayoutRounding" Value="True" />
 	</Style>
 
-	<Style x:Key="WpfUtilsControlBorder" TargetType="{x:Type Border}">
+	<Style x:Key="ControlBorder" TargetType="{x:Type Border}">
 		<Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
 		<Setter Property="BorderBrush" Value="{DynamicResource ControlBackgroundBrush}" />
 		<Setter Property="BorderThickness" Value="0" />
 		<Setter Property="ClipToBounds" Value="True" />
-		<Setter Property="CornerRadius" Value="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
+		<Setter Property="CornerRadius" Value="{DynamicResource BorderOuterCornerRadius}" />
 		<Setter Property="Padding" Value="0" />
 		<Setter Property="SnapsToDevicePixels" Value="True" />
 		<Setter Property="UseLayoutRounding" Value="True" />
 	</Style>
 
 	<Style
-		x:Key="WpfUtilsControlPressedBorder"
-		BasedOn="{StaticResource WpfUtilsControlHoverBorder}"
+		x:Key="ControlPressedBorder"
+		BasedOn="{StaticResource ControlHoverBorder}"
 		TargetType="{x:Type Border}">
 		<Setter Property="Background" Value="{DynamicResource TrimBrush}" />
 		<Setter Property="BorderBrush" Value="{DynamicResource TrimBrush}" />
 	</Style>
 
-	<Style x:Key="WpfUtilsSelectedBorder" TargetType="{x:Type Border}">
+	<Style x:Key="SelectedBorder" TargetType="{x:Type Border}">
 		<Setter Property="Background" Value="{DynamicResource ControlBackgroundSelectedBrush}" />
 		<Setter Property="BorderThickness" Value="0" />
-		<Setter Property="CornerRadius" Value="{DynamicResource WpfUtilsBorderInnerCornerRadius}" />
+		<Setter Property="CornerRadius" Value="{DynamicResource BorderInnerCornerRadius}" />
 		<Setter Property="Margin" Value="2" />
 		<Setter Property="Padding" Value="0" />
 		<Setter Property="SnapsToDevicePixels" Value="True" />
 		<Setter Property="UseLayoutRounding" Value="True" />
 	</Style>
 
-	<Style x:Key="WpfUtilsKeyboardFocusBorder" TargetType="{x:Type Border}">
+	<Style x:Key="KeyboardFocusBorder" TargetType="{x:Type Border}">
 		<Setter Property="BorderBrush" Value="{DynamicResource TrimBrush}" />
 		<Setter Property="BorderThickness" Value="1" />
-		<Setter Property="CornerRadius" Value="{DynamicResource WpfUtilsBorderInnerCornerRadius}" />
+		<Setter Property="CornerRadius" Value="{DynamicResource BorderInnerCornerRadius}" />
 		<Setter Property="Margin" Value="2" />
 		<Setter Property="Padding" Value="0" />
 		<Setter Property="SnapsToDevicePixels" Value="True" />
 		<Setter Property="UseLayoutRounding" Value="True" />
 	</Style>
 
-	<Style x:Key="WpfUtilsBackgroundBorder" TargetType="{x:Type Border}">
+	<Style x:Key="BackgroundBorder" TargetType="{x:Type Border}">
 		<Setter Property="Background" Value="{DynamicResource BackgroundBrush}" />
-		<Setter Property="CornerRadius" Value="{DynamicResource WpfUtilsBorderInnerCornerRadius}" />
+		<Setter Property="CornerRadius" Value="{DynamicResource BorderInnerCornerRadius}" />
 		<Setter Property="Margin" Value="0" />
 		<Setter Property="Padding" Value="3" />
 		<Setter Property="SnapsToDevicePixels" Value="True" />

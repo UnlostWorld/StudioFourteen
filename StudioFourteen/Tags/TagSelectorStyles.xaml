@@ -22,7 +22,7 @@
 				Padding="2,1,2,1"
 				HorizontalContentAlignment="Stretch"
 				IsChecked="{Binding PopOutOpen, RelativeSource={RelativeSource AncestorType={x:Type tags:TagSelector}}}"
-				Style="{DynamicResource WpfUtilsIconToggleButton}">
+				Style="{DynamicResource IconToggleButton}">
 
 				<Grid VerticalAlignment="Center">
 					<Grid.ColumnDefinitions>
@@ -53,7 +53,7 @@
 				IsOpen="{Binding PopOutOpen, RelativeSource={RelativeSource AncestorType={x:Type tags:TagSelector}}}"
 				PlacementTarget="{Binding ElementName=TagSearchToggle}"
 				StaysOpen="False"
-				Style="{StaticResource WpfUtilsPopOut}">
+				Style="{StaticResource PopOut}">
 
 				<StackPanel>
 					<TextBlock

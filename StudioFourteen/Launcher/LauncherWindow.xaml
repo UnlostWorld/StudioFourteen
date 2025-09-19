@@ -34,7 +34,7 @@
 							x:Name="WindowBorder"
 							BorderBrush="Transparent"
 							BorderThickness="1"
-							CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
+							CornerRadius="{DynamicResource BorderOuterCornerRadius}" />
 					</Grid>
 
 					<Grid

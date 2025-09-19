@@ -37,7 +37,7 @@
 			<ToggleButton
 				Height="42"
 				Margin="3,0,3,3"
-				Style="{DynamicResource WpfUtilsIconToggleButton}"
+				Style="{DynamicResource IconToggleButton}"
 				IsChecked="{Binding IsStudioAttached}"
 				HorizontalContentAlignment="Stretch"
 				Content="{DynamicResource ICON_Launcher_Start}" />

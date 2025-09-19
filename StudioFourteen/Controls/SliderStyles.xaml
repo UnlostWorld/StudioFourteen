@@ -355,11 +355,11 @@
 		<Grid Background="Transparent">
 			<Grid Margin="1">
 
-				<Border Style="{DynamicResource WpfUtilsControlBorder}" />
+				<Border Style="{DynamicResource ControlBorder}" />
 
 				<Border
 					x:Name="HoverEllipse"
-					Style="{DynamicResource WpfUtilsControlHoverBorder}"
+					Style="{DynamicResource ControlHoverBorder}"
 					Opacity="0" />
 
 				<Track IsHitTestVisible="false"

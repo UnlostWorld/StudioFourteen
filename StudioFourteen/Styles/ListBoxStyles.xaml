@@ -4,7 +4,7 @@
 	xmlns:controls="clr-namespace:StudioFourteen.Controls"
 	xmlns:wpf="http://materialdesigninxaml.net/winfx/xaml/themes">
 
-	<ControlTemplate x:Key="WpfUtilsListBoxItemTemplate" TargetType="{x:Type ListBoxItem}">
+	<ControlTemplate x:Key="ListBoxItemTemplate" TargetType="{x:Type ListBoxItem}">
 
 		<Border
 			Margin="{TemplateBinding Margin}"
@@ -17,13 +17,13 @@
 					x:Name="HoverBorder"
 					Margin="1"
 					Opacity="0"
-					Style="{DynamicResource WpfUtilsControlHoverBorder}" />
+					Style="{DynamicResource ControlHoverBorder}" />
 
 				<Border
 					x:Name="SelectionBorder"
 					Margin="1"
 					Opacity="0"
-					Style="{DynamicResource WpfUtilsSelectedBorder}" />
+					Style="{DynamicResource SelectedBorder}" />
 
 				<ContentPresenter
 					Margin="{TemplateBinding Padding}"
@@ -109,23 +109,23 @@
 	</ControlTemplate>
 
 
-	<Style x:Key="WpfUtilsListBoxItem" TargetType="{x:Type ListBoxItem}">
+	<Style x:Key="ListBoxItem" TargetType="{x:Type ListBoxItem}">
 		<Setter Property="Background" Value="Transparent" />
-		<Setter Property="FocusVisualStyle" Value="{DynamicResource WpfUtilsFocusVisualStyle}" />
+		<Setter Property="FocusVisualStyle" Value="{DynamicResource FocusVisualStyle}" />
 		<Setter Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
 
 		<Setter Property="HorizontalAlignment" Value="Stretch" />
 		<Setter Property="HorizontalContentAlignment" Value="Stretch" />
 		<Setter Property="Padding" Value="2" />
-		<Setter Property="Template" Value="{StaticResource WpfUtilsListBoxItemTemplate}" />
+		<Setter Property="Template" Value="{StaticResource ListBoxItemTemplate}" />
 	</Style>
 
-	<Style x:Key="WpfUtilsListBox" TargetType="{x:Type ListBox}">
+	<Style x:Key="ListBox" TargetType="{x:Type ListBox}">
 		<Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
 		<Setter Property="BorderBrush" Value="Transparent" />
 		<Setter Property="BorderThickness" Value="0" />
 		<Setter Property="Focusable" Value="False" />
-		<Setter Property="ItemContainerStyle" Value="{DynamicResource WpfUtilsListBoxItem}" />
+		<Setter Property="ItemContainerStyle" Value="{DynamicResource ListBoxItem}" />
 		<Setter Property="Padding" Value="2" />
 
 		<Setter Property="ItemsPanel">
@@ -150,7 +150,7 @@
 						BorderBrush="{TemplateBinding BorderBrush}"
 						BorderThickness="{TemplateBinding BorderThickness}"
 						SnapsToDevicePixels="true"
-						Style="{DynamicResource WpfUtilsControlBorder}">
+						Style="{DynamicResource ControlBorder}">
 						<ScrollViewer
 							Padding="{TemplateBinding Padding}"
 							Background="{DynamicResource BackgroundBrush}"

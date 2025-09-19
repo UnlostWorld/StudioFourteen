@@ -43,9 +43,9 @@
 				Width="42"
 				Height="24"
 				IsChecked="{Binding ToggleMenu.IsChecked}"
-				Style="{DynamicResource WpfUtilsIconToggleButton}"
+				Style="{DynamicResource IconToggleButton}"
 				Visibility="{Binding ToggleMenu, Converter={StaticResource NotNullToVisibilityConverter}}"
-				Content="{DynamicResource ICON_Character_FlipLR}"/>
+				Content="{DynamicResource ICON_Character_FlipLR}" />
 
 			<controls:NumberBox
 				Grid.Row="2"

@@ -159,7 +159,7 @@
 		<ToggleButton
 			x:Name="ResolutionToggle"
 			Grid.Column="1"
-			Style="{DynamicResource WpfUtilsComboBoxButton}"
+			Style="{DynamicResource ComboBoxButton}"
 			ToolTip="{DynamicResource LOC_Photo_AspectToolTip}">
 			<Grid Margin="2">
 				<TextBlock TextTrimming="CharacterEllipsis">
@@ -212,7 +212,7 @@
 									<Setter.Value>
 										<ControlTemplate>
 											<Expander Expanded="OnAspectsExpanderExpanded"
-												Style="{DynamicResource WpfUtilsClickableExpander}">
+												Style="{DynamicResource ClickableExpander}">
 												<Expander.Header>
 													<TextBlock
 														Foreground="{DynamicResource ForegroundLightBrush}"
@@ -277,7 +277,7 @@
 				Width="28"
 				Padding="6,0"
 				IsChecked="{Binding HideUI}"
-				Style="{DynamicResource WpfUtilsIconToggleButton}"
+				Style="{DynamicResource IconToggleButton}"
 				ToolTip="{DynamicResource LOC_Photo_ToggleUIToolTip}">
 				<Grid>
 					<icons:IconView
@@ -297,7 +297,7 @@
 				Padding="6,0"
 				IsChecked="{Binding Services.Reshade.IsReshadeEnabled}"
 				IsEnabled="{Binding Services.Reshade.IsReshade}"
-				Style="{DynamicResource WpfUtilsIconToggleButton}"
+				Style="{DynamicResource IconToggleButton}"
 				ToolTip="{DynamicResource LOC_Photo_ToggleReshade}">
 				<TextBlock Text="R" />
 			</ToggleButton>

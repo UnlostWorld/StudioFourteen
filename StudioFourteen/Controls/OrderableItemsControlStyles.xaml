@@ -6,7 +6,7 @@
 	xmlns:shapes="clr-namespace:StudioFourteen.Shapes">
 
 	<ControlTemplate x:Key="StudioOrderbleItemTemplate" TargetType="{x:Type controls:OrderableItemControl}">
-		<Border Style="{DynamicResource WpfUtilsControlBorder}">
+		<Border Style="{DynamicResource ControlBorder}">
 			<Grid>
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="24" />

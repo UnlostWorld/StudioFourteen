@@ -3,20 +3,20 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls">
 
-	<ControlTemplate x:Key="WpfUtilsIconToggleButtonTemplate" TargetType="{x:Type ToggleButton}">
+	<ControlTemplate x:Key="IconToggleButtonTemplate" TargetType="{x:Type ToggleButton}">
 
 		<Grid TextBlock.Foreground="{DynamicResource ForegroundLightBrush}">
 
 			<Border
 				x:Name="BackgroundBorder"
 				Background="{TemplateBinding Background}"
-				Style="{DynamicResource WpfUtilsControlBorder}" />
+				Style="{DynamicResource ControlBorder}" />
 
 			<Border
 				x:Name="HoverBorder"
 				Opacity="0"
 				SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-				Style="{DynamicResource WpfUtilsControlHoverBorder}" />
+				Style="{DynamicResource ControlHoverBorder}" />
 
 			<ContentControl
 				x:Name="Content"
@@ -97,11 +97,11 @@
 		</ControlTemplate.Triggers>
 	</ControlTemplate>
 
-	<Style x:Key="WpfUtilsIconToggleButtonNoChecked" TargetType="{x:Type ToggleButton}">
+	<Style x:Key="IconToggleButtonNoChecked" TargetType="{x:Type ToggleButton}">
 		<Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
 		<Setter Property="BorderBrush" Value="{DynamicResource TrimBrush}" />
 		<Setter Property="BorderThickness" Value="1" />
-		<Setter Property="FocusVisualStyle" Value="{DynamicResource WpfUtilsFocusVisualStyle}" />
+		<Setter Property="FocusVisualStyle" Value="{DynamicResource FocusVisualStyle}" />
 		<Setter Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
 		<Setter Property="HorizontalContentAlignment" Value="Center" />
 		<Setter Property="Margin" Value="1" />
@@ -110,13 +110,13 @@
 		<Setter Property="MinWidth" Value="18" />
 		<Setter Property="Padding" Value="6, 4" />
 		<Setter Property="SnapsToDevicePixels" Value="True" />
-		<Setter Property="Template" Value="{StaticResource WpfUtilsIconToggleButtonTemplate}" />
+		<Setter Property="Template" Value="{StaticResource IconToggleButtonTemplate}" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
 	</Style>
 
 	<Style
-		x:Key="WpfUtilsIconToggleButton"
-		BasedOn="{StaticResource WpfUtilsIconToggleButtonNoChecked}"
+		x:Key="IconToggleButton"
+		BasedOn="{StaticResource IconToggleButtonNoChecked}"
 		TargetType="{x:Type ToggleButton}">
 
 		<Style.Triggers>
@@ -126,7 +126,7 @@
 		</Style.Triggers>
 	</Style>
 
-	<ControlTemplate x:Key="WpfUtilsToggleButtonTemplate" TargetType="{x:Type ToggleButton}">
+	<ControlTemplate x:Key="ToggleButtonTemplate" TargetType="{x:Type ToggleButton}">
 
 		<Grid Background="Transparent"
 			TextBlock.Foreground="{DynamicResource ForegroundLightBrush}">
@@ -141,14 +141,14 @@
 				<Border
 					x:Name="BackgroundBorder"
 					Background="{TemplateBinding Background}"
-					Style="{DynamicResource WpfUtilsControlBorder}" />
+					Style="{DynamicResource ControlBorder}" />
 
 				<Grid VerticalAlignment="Center" Height="26">
 					<Border
 						x:Name="HoverBorder"
 						Opacity="0"
 						SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-						Style="{DynamicResource WpfUtilsControlHoverBorder}" />
+						Style="{DynamicResource ControlHoverBorder}" />
 
 					<Border
 						x:Name="Indicator"
@@ -156,7 +156,7 @@
 						Margin="2"
 						HorizontalAlignment="Left"
 						Background="{DynamicResource BackgroundBrush}"
-						CornerRadius="{DynamicResource WpfUtilsBorderInnerCornerRadius}">
+						CornerRadius="{DynamicResource BorderInnerCornerRadius}">
 
 						<Ellipse
 							x:Name="IndicatorCheck"
@@ -295,11 +295,11 @@
 		</ControlTemplate.Triggers>
 	</ControlTemplate>
 
-	<Style x:Key="WpfUtilsToggleButton" TargetType="{x:Type ToggleButton}">
+	<Style x:Key="ToggleButton" TargetType="{x:Type ToggleButton}">
 		<Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
 		<Setter Property="BorderBrush" Value="{DynamicResource TrimBrush}" />
 		<Setter Property="BorderThickness" Value="1" />
-		<Setter Property="FocusVisualStyle" Value="{DynamicResource WpfUtilsFocusVisualStyle}" />
+		<Setter Property="FocusVisualStyle" Value="{DynamicResource FocusVisualStyle}" />
 		<Setter Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
 		<Setter Property="HorizontalContentAlignment" Value="Left" />
 		<Setter Property="Margin" Value="1" />
@@ -308,7 +308,7 @@
 		<Setter Property="MinWidth" Value="18" />
 		<Setter Property="Padding" Value="6,1,1,1" />
 		<Setter Property="SnapsToDevicePixels" Value="True" />
-		<Setter Property="Template" Value="{StaticResource WpfUtilsToggleButtonTemplate}" />
+		<Setter Property="Template" Value="{StaticResource ToggleButtonTemplate}" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
 	</Style>
 
@@ -316,7 +316,7 @@
 	<Style
 		x:Key="VisibilityToggle"
 		TargetType="{x:Type ToggleButton}"
-		BasedOn="{StaticResource WpfUtilsIconToggleButton}">
+		BasedOn="{StaticResource IconToggleButton}">
 		<Setter Property="Content" Value="{DynamicResource ICON_VisibilityOff}" />
 		<Setter
 			Property="Height" Value="24" />

@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-	<ControlTemplate x:Key="WpfUtilsRadioButtonTemplate" TargetType="{x:Type RadioButton}">
+	<ControlTemplate x:Key="RadioButtonTemplate" TargetType="{x:Type RadioButton}">
 
 		<Grid TextBlock.Foreground="{DynamicResource ForegroundLightBrush}">
 
@@ -8,7 +8,7 @@
 				x:Name="HoverBorder"
 				Opacity="0"
 				SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-				Style="{DynamicResource WpfUtilsControlHoverBorder}" />
+				Style="{DynamicResource ControlHoverBorder}" />
 
 			<Rectangle
 				x:Name="Border"
@@ -136,7 +136,7 @@
 		</ControlTemplate.Triggers>
 	</ControlTemplate>
 
-	<ControlTemplate x:Key="WpfUtilsRadioButtonNoHighlightTemplate" TargetType="{x:Type RadioButton}">
+	<ControlTemplate x:Key="RadioButtonNoHighlightTemplate" TargetType="{x:Type RadioButton}">
 
 		<Grid>
 
@@ -144,7 +144,7 @@
 				x:Name="HoverBorder"
 				Opacity="0"
 				SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-				Style="{DynamicResource WpfUtilsControlHoverBorder}" />
+				Style="{DynamicResource ControlHoverBorder}" />
 
 			<ContentControl
 				x:Name="Content"
@@ -225,11 +225,11 @@
 		</ControlTemplate.Triggers>
 	</ControlTemplate>
 
-	<Style x:Key="WpfUtilsRadioButton" TargetType="{x:Type RadioButton}">
+	<Style x:Key="RadioButton" TargetType="{x:Type RadioButton}">
 		<Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
 		<Setter Property="BorderBrush" Value="{DynamicResource TrimBrush}" />
 		<Setter Property="BorderThickness" Value="1" />
-		<Setter Property="FocusVisualStyle" Value="{DynamicResource WpfUtilsFocusVisualStyle}" />
+		<Setter Property="FocusVisualStyle" Value="{DynamicResource FocusVisualStyle}" />
 		<Setter Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
 		<Setter Property="Height" Value="26" />
 		<Setter Property="HorizontalContentAlignment" Value="Center" />
@@ -238,15 +238,15 @@
 		<Setter Property="MinWidth" Value="18" />
 		<Setter Property="Padding" Value="1,0,1,2" />
 		<Setter Property="SnapsToDevicePixels" Value="True" />
-		<Setter Property="Template" Value="{DynamicResource WpfUtilsRadioButtonTemplate}" />
+		<Setter Property="Template" Value="{DynamicResource RadioButtonTemplate}" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
 	</Style>
 
 	<Style
-		x:Key="WpfUtilsRadioButtonNoHighlight"
-		BasedOn="{StaticResource WpfUtilsRadioButton}"
+		x:Key="RadioButtonNoHighlight"
+		BasedOn="{StaticResource RadioButton}"
 		TargetType="{x:Type RadioButton}">
-		<Setter Property="Template" Value="{DynamicResource WpfUtilsRadioButtonNoHighlightTemplate}" />
+		<Setter Property="Template" Value="{DynamicResource RadioButtonNoHighlightTemplate}" />
 	</Style>
 
 

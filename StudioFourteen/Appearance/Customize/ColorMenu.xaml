@@ -22,7 +22,7 @@
 					<ColumnDefinition />
 				</Grid.ColumnDefinitions>
 
-				<Border Grid.ColumnSpan="2" Style="{DynamicResource WpfUtilsControlBorder}" />
+				<Border Grid.ColumnSpan="2" Style="{DynamicResource ControlBorder}" />
 
 				<ToggleButton
 					Name="ToggleButton"
@@ -30,7 +30,7 @@
 					HorizontalContentAlignment="Stretch"
 					VerticalContentAlignment="Stretch"
 					Background="Transparent"
-					Style="{DynamicResource WpfUtilsIconToggleButton}">
+					Style="{DynamicResource IconToggleButton}">
 					<Border
 						Margin="5,6,5,5"
 						HorizontalAlignment="Stretch"
@@ -47,7 +47,7 @@
 					IsOpen="{Binding IsChecked, Mode=TwoWay, ElementName=ToggleButton}"
 					PlacementTarget="{Binding ElementName=ToggleButton}"
 					StaysOpen="False"
-					Style="{DynamicResource WpfUtilsPopOut}">
+					Style="{DynamicResource PopOut}">
 
 					<controls:PopOut.Header>
 						<Grid>

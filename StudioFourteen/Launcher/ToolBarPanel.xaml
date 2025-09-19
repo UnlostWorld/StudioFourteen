@@ -47,28 +47,28 @@
 			</ItemsControl.ItemTemplate>
 		</ItemsControl>
 
-		<Border Grid.Column="1" Style="{DynamicResource WpfUtilsControlBorder}">
+		<Border Grid.Column="1" Style="{DynamicResource ControlBorder}">
 			<StackPanel Orientation="Horizontal">
 				<ToggleButton
 					Width="32"
 					Content="{DynamicResource ICON_MouseInput}"
 					IsChecked="{Binding AllowMouseCapture}"
-					Style="{DynamicResource WpfUtilsIconToggleButton}"
-					ToolTip="{DynamicResource LOC_Settings_Input_Mouse}"/>
+					Style="{DynamicResource IconToggleButton}"
+					ToolTip="{DynamicResource LOC_Settings_Input_Mouse}" />
 
 				<ToggleButton
 					x:Name="GizmoToggle"
 					Width="32"
 					Content="{DynamicResource ICON_Gizmos}"
 					IsChecked="{Binding Services.Gizmos.GizmoControlPanelOpen}"
-					Style="{DynamicResource WpfUtilsIconToggleButton}"
+					Style="{DynamicResource IconToggleButton}"
 					ToolTip="{DynamicResource LOC_Gizmos}" />
 
 				<controls:PopOut
 					IsOpen="{Binding IsChecked, ElementName=GizmoToggle}"
 					PlacementTarget="{Binding ElementName=GizmoToggle}"
 					StaysOpen="False"
-					Style="{DynamicResource WpfUtilsPopOut}">
+					Style="{DynamicResource PopOut}">
 
 					<controls:PopOut.Header>
 						<TextBlock Foreground="{DynamicResource ForegroundLightBrush}" Text="{DynamicResource LOC_GizmosHeader}" />

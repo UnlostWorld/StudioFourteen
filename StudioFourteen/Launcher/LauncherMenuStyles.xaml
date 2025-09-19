@@ -85,7 +85,7 @@
 			HorizontalContentAlignment="Stretch"
 			VerticalContentAlignment="Stretch"
 			Command="{Binding OpenPanel, RelativeSource={RelativeSource Mode=TemplatedParent}}"
-			Style="{DynamicResource WpfUtilsIconButton}"
+			Style="{DynamicResource IconButton}"
 			ToolTip="{TemplateBinding Description}"
 			Content="{TemplateBinding Icon}" />
 	</ControlTemplate>
@@ -100,7 +100,7 @@
 			<Border
 				x:Name="WindowShadow"
 				Background="Black"
-				CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}"
+				CornerRadius="{DynamicResource BorderOuterCornerRadius}"
 				Opacity="0.25">
 				<Border.BitmapEffect>
 					<DropShadowBitmapEffect ShadowDepth="0" Softness="0.75" />
@@ -110,13 +110,13 @@
 			<Border
 				x:Name="WindowBackground"
 				Background="{DynamicResource BackgroundBrush}"
-				CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
+				CornerRadius="{DynamicResource BorderOuterCornerRadius}" />
 
 			<Border
 				x:Name="WindowBorder"
 				BorderBrush="{DynamicResource BackgroundBrush}"
 				BorderThickness="1"
-				CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
+				CornerRadius="{DynamicResource BorderOuterCornerRadius}" />
 
 			<Grid
 				Margin="{TemplateBinding Padding}"
@@ -139,7 +139,7 @@
 					<ToggleButton
 						Height="42"
 						Grid.Column="0"
-						Style="{DynamicResource WpfUtilsIconToggleButton}"
+						Style="{DynamicResource IconToggleButton}"
 						IsChecked="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsStudioOpen}"
 						HorizontalContentAlignment="Stretch"
 						Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsStudioOpen, Converter={StaticResource !B2V}}">
@@ -181,7 +181,7 @@
 					<ToggleButton
 						Height="42"
 						Grid.Column="0"
-						Style="{DynamicResource WpfUtilsIconToggleButton}"
+						Style="{DynamicResource IconToggleButton}"
 						IsChecked="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsStudioOpen, Converter={StaticResource !B}}"
 						HorizontalContentAlignment="Stretch"
 						Visibility="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsStudioOpen, Converter={StaticResource B2V}}">
@@ -223,7 +223,7 @@
 					<ToggleButton
 						Height="42"
 						Grid.Column="1"
-						Style="{DynamicResource WpfUtilsIconToggleButton}"
+						Style="{DynamicResource IconToggleButton}"
 						HorizontalContentAlignment="Stretch"
 						IsEnabled="False"
 						ToolTip="Remember our promise">
@@ -282,7 +282,7 @@
 				<Border
 					Grid.Row="2"
 					Margin="3"
-					Style="{DynamicResource WpfUtilsControlBorder}">
+					Style="{DynamicResource ControlBorder}">
 
 					<StackPanel>
 						<UniformGrid
@@ -349,7 +349,7 @@
 
 				<Border
 					Grid.Row="3"
-					Style="{DynamicResource WpfUtilsControlBorder}"
+					Style="{DynamicResource ControlBorder}"
 					Visibility="{Binding
 						RelativeSource={RelativeSource
 							Mode=TemplatedParent
@@ -411,7 +411,7 @@
 							Background="Transparent"
 							Content="{DynamicResource ICON_GroupPose}"
 							IsChecked="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsInGPose}"
-							Style="{DynamicResource WpfUtilsIconToggleButton}"
+							Style="{DynamicResource IconToggleButton}"
 							ToolTip="{DynamicResource LOC_ToggleGPose}" />
 
 						<ToggleButton
@@ -423,7 +423,7 @@
 							IsEnabled="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsInGPose}"
 							Content="{DynamicResource ICON_GroupPoseSettings}"
 							IsChecked="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=IsGPoseSettingsOpen}"
-							Style="{DynamicResource WpfUtilsIconToggleButton}"
+							Style="{DynamicResource IconToggleButton}"
 							ToolTip="{DynamicResource LOC_GPoseSettings}" />
 
 					</Grid>

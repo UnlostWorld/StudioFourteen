@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-	<Style x:Key="WpfUtilsFocusVisualStyle">
+	<Style x:Key="FocusVisualStyle">
 		<Setter Property="Control.Template">
 			<Setter.Value>
 				<ControlTemplate>
@@ -9,7 +9,7 @@
 						Background="Transparent"
 						BorderBrush="{DynamicResource TrimBrush}"
 						BorderThickness="1"
-						Style="{DynamicResource WpfUtilsControlBorder}" />
+						Style="{DynamicResource ControlBorder}" />
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>

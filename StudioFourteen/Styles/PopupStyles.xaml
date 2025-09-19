@@ -1,6 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
-	<Style x:Key="WpfUtilsPopup" TargetType="{x:Type Popup}">
+	<Style x:Key="Popup" TargetType="{x:Type Popup}">
 		<Setter Property="AllowsTransparency" Value="True" />
 		<Setter Property="Focusable" Value="False" />
 		<Setter Property="HorizontalOffset" Value="-12" />
@@ -11,7 +11,7 @@
 		<Setter Property="VerticalOffset" Value="-12" />
 	</Style>
 
-	<ControlTemplate x:Key="WpfUtilsPopupContentTemplate" TargetType="{x:Type ContentControl}">
+	<ControlTemplate x:Key="PopupContentTemplate" TargetType="{x:Type ContentControl}">
 		<Grid>
 			<Grid Margin="12">
 				<Border Background="Black" CornerRadius="6">
@@ -30,9 +30,9 @@
 		</Grid>
 	</ControlTemplate>
 
-	<Style x:Key="WpfUtilsPopupContent" TargetType="{x:Type ContentControl}">
+	<Style x:Key="PopupContent" TargetType="{x:Type ContentControl}">
 		<Setter Property="Padding" Value="3" />
-		<Setter Property="Template" Value="{StaticResource WpfUtilsPopupContentTemplate}" />
+		<Setter Property="Template" Value="{StaticResource PopupContentTemplate}" />
 	</Style>
 
 </ResourceDictionary>

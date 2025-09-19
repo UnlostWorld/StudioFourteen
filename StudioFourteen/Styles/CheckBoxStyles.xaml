@@ -3,10 +3,10 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:controls="clr-namespace:StudioFourteen.Controls">
 
-	<ControlTemplate x:Key="WpfUtilsCheckBoxTemplate" TargetType="{x:Type CheckBox}">
+	<ControlTemplate x:Key="CheckBoxTemplate" TargetType="{x:Type CheckBox}">
 
 		<Border Background="{TemplateBinding Background}"
-			Style="{DynamicResource WpfUtilsControlBorder}">
+			Style="{DynamicResource ControlBorder}">
 			<Grid x:Name="Content">
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto" />
@@ -18,7 +18,7 @@
 					Grid.Column="0"
 					Grid.ColumnSpan="2"
 					Opacity="0"
-					Style="{DynamicResource WpfUtilsControlHoverBorder}" />
+					Style="{DynamicResource ControlHoverBorder}" />
 
 				<Ellipse
 					x:Name="CheckMark"
@@ -126,15 +126,15 @@
 
 	</ControlTemplate>
 
-	<Style x:Key="WpfUtilsCheckBox" TargetType="{x:Type CheckBox}">
+	<Style x:Key="CheckBox" TargetType="{x:Type CheckBox}">
 		<Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
-		<Setter Property="FocusVisualStyle" Value="{DynamicResource WpfUtilsFocusVisualStyle}" />
+		<Setter Property="FocusVisualStyle" Value="{DynamicResource FocusVisualStyle}" />
 		<Setter Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
 
 		<Setter Property="Height" Value="26" />
 		<Setter Property="OverridesDefaultStyle" Value="true" />
 		<Setter Property="Padding" Value="2,0,6,0" />
 		<Setter Property="SnapsToDevicePixels" Value="true" />
-		<Setter Property="Template" Value="{StaticResource WpfUtilsCheckBoxTemplate}" />
+		<Setter Property="Template" Value="{StaticResource CheckBoxTemplate}" />
 	</Style>
 </ResourceDictionary>

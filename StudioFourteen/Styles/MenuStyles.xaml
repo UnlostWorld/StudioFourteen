@@ -8,13 +8,13 @@
 	<converters:StringHasContentToVisibilityConverter x:Key="StringHasContentToVisibility" />
 	<converters:InvertedBoolToVisibilityConverter x:Key="!B2V" />
 
-	<ControlTemplate x:Key="WpfUtilsMenuItemTemplate" TargetType="{x:Type MenuItem}">
+	<ControlTemplate x:Key="MenuItemTemplate" TargetType="{x:Type MenuItem}">
 		<Grid ClipToBounds="True">
 			<Border
 				x:Name="HoverBorder"
 				Opacity="0"
 				SnapsToDevicePixels="True"
-				Style="{DynamicResource WpfUtilsControlHoverBorder}" />
+				Style="{DynamicResource ControlHoverBorder}" />
 
 			<Grid x:Name="Content" Background="Transparent">
 				<Grid Margin="{TemplateBinding Padding}"
@@ -60,7 +60,7 @@
 				Background="{DynamicResource ControlBackgroundBrush}"
 				IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
 				PlacementTarget="{Binding ElementName=Content}"
-				Style="{DynamicResource WpfUtilsPopOut}">
+				Style="{DynamicResource PopOut}">
 
 				<!--<controls:PopOut.Header>
 					<ContentPresenter
@@ -130,17 +130,17 @@
 		</ControlTemplate.Triggers>
 	</ControlTemplate>
 
-	<Style x:Key="WpfUtilsMenuItem" TargetType="{x:Type MenuItem}">
+	<Style x:Key="MenuItem" TargetType="{x:Type MenuItem}">
 		<Setter Property="Height" Value="26" />
 		<Setter Property="HorizontalContentAlignment" Value="Left" />
 		<Setter Property="MinWidth" Value="45" />
 		<Setter Property="Padding" Value="6,3,6,3" />
-		<Setter Property="Template" Value="{StaticResource WpfUtilsMenuItemTemplate}" />
+		<Setter Property="Template" Value="{StaticResource MenuItemTemplate}" />
 		<Setter Property="TextBlock.Foreground" Value="{DynamicResource ForegroundLightBrush}" />
 		<Setter Property="VerticalContentAlignment" Value="Center" />
 	</Style>
 
-	<ControlTemplate x:Key="WpfUtilsMenuTemplate" TargetType="{x:Type Menu}">
+	<ControlTemplate x:Key="MenuTemplate" TargetType="{x:Type Menu}">
 		<ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}">
 			<ItemsPresenter.Resources>
 				<Style TargetType="{x:Type MenuItem}">
@@ -150,7 +150,7 @@
 		</ItemsPresenter>
 	</ControlTemplate>
 
-	<Style x:Key="WpfUtilsMenu" TargetType="{x:Type Menu}">
+	<Style x:Key="Menu" TargetType="{x:Type Menu}">
 		<Setter Property="Background" Value="Transparent" />
 
 		<Setter Property="ItemsPanel">
@@ -160,7 +160,7 @@
 				</ItemsPanelTemplate>
 			</Setter.Value>
 		</Setter>
-		<Setter Property="Template" Value="{StaticResource WpfUtilsMenuTemplate}" />
+		<Setter Property="Template" Value="{StaticResource MenuTemplate}" />
 	</Style>
 
 </ResourceDictionary>

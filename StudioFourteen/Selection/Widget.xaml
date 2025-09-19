@@ -64,7 +64,7 @@
 
 			<Border
 				Background="Black"
-				CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}"
+				CornerRadius="{DynamicResource BorderOuterCornerRadius}"
 				Opacity="0.5">
 				<Border.Effect>
 					<DropShadowEffect
@@ -74,7 +74,7 @@
 				</Border.Effect>
 			</Border>
 
-			<Border Style="{DynamicResource WpfUtilsControlBorder}" Background="{DynamicResource BackgroundBrush}"/>
+			<Border Style="{DynamicResource ControlBorder}" Background="{DynamicResource BackgroundBrush}" />
 
 			<StackPanel>
 				<ToggleButton
@@ -82,8 +82,8 @@
 					Height="28"
 					Content="{DynamicResource ICON_Widget_Expand}"
 					IsChecked="{Binding Expanded}"
-					Style="{DynamicResource WpfUtilsIconToggleButton}"
-					Visibility="{Binding CanExpand, Converter={StaticResource B2V}}"/>
+					Style="{DynamicResource IconToggleButton}"
+					Visibility="{Binding CanExpand, Converter={StaticResource B2V}}" />
 
 				<ItemsControl
 					Width="28"
@@ -102,7 +102,7 @@
 								Grid.Column="0"
 								ItemsSource="{Binding Gizmos}"
 								SelectedValue="{Binding Current}"
-								Style="{DynamicResource WpfUtilsSwitchSelectorVertical}"
+								Style="{DynamicResource SwitchSelectorVertical}"
 								Visibility="{Binding IsVisible, Converter={StaticResource B2V}}">
 								<controls:SwitchSelector.ItemTemplate>
 									<DataTemplate>
@@ -147,7 +147,7 @@
 
 			</silk:AnimationState>-->
 
-			<Border Background="Black" CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}">
+			<Border Background="Black" CornerRadius="{DynamicResource BorderOuterCornerRadius}">
 				<Border.Effect>
 					<DropShadowEffect
 						BlurRadius="10"
@@ -156,7 +156,7 @@
 				</Border.Effect>
 			</Border>
 
-			<Border Style="{DynamicResource WpfUtilsControlBorder}">
+			<Border Style="{DynamicResource ControlBorder}">
 
 				<Grid>
 					<Grid.RowDefinitions>
@@ -167,7 +167,7 @@
 					<Border
 						Margin="2"
 						Background="{DynamicResource BackgroundBrush}"
-						CornerRadius="{DynamicResource WpfUtilsBorderInnerCornerRadius}">
+						CornerRadius="{DynamicResource BorderInnerCornerRadius}">
 
 						<Grid>
 							<Grid.ColumnDefinitions>
@@ -188,7 +188,7 @@
 								Background="Transparent"
 								Content="{DynamicResource ICON_Window_Close}"
 								IsChecked="{Binding Expanded, Converter={StaticResource !B}}"
-								Style="{DynamicResource WpfUtilsIconToggleButton}" />
+								Style="{DynamicResource IconToggleButton}" />
 						</Grid>
 					</Border>
 

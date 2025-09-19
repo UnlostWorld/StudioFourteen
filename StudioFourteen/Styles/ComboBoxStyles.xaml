@@ -10,8 +10,8 @@
 	</ResourceDictionary.MergedDictionaries>
 
 	<Style
-		x:Key="WpfUtilsComboBoxButton"
-		BasedOn="{StaticResource WpfUtilsIconToggleButton}"
+		x:Key="ComboBoxButton"
+		BasedOn="{StaticResource IconToggleButton}"
 		TargetType="{x:Type ToggleButton}">
 		<Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
 
@@ -53,7 +53,7 @@
 	</Style>
 
 
-	<ControlTemplate x:Key="wpfUtilsComboBoxTemplate" TargetType="{x:Type ComboBox}">
+	<ControlTemplate x:Key="ComboBoxTemplate" TargetType="{x:Type ComboBox}">
 
 		<Grid>
 			<ToggleButton
@@ -61,7 +61,7 @@
 				HorizontalContentAlignment="Stretch"
 				Background="{TemplateBinding Background}"
 				IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-				Style="{StaticResource WpfUtilsComboBoxButton}">
+				Style="{StaticResource ComboBoxButton}">
 
 				<ContentPresenter
 					Name="contentPresenter"
@@ -85,7 +85,7 @@
 				HeaderTemplate="{TemplateBinding controls:PopOut.HeaderTemplate}"
 				IsOpen="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
 				PlacementTarget="{Binding ElementName=toggleButton}"
-				Style="{DynamicResource WpfUtilsPopOut}">
+				Style="{DynamicResource PopOut}">
 
 				<ScrollViewer behaviors:SmoothScrollBehavior.SmoothScroll="True">
 					<ItemsPresenter Name="ItemsPresenter"
@@ -102,9 +102,9 @@
 
 	</ControlTemplate>
 
-	<Style x:Key="WpfUtilsComboBoxItem" TargetType="{x:Type ComboBoxItem}">
+	<Style x:Key="ComboBoxItem" TargetType="{x:Type ComboBoxItem}">
 
-		<Setter Property="FocusVisualStyle" Value="{DynamicResource WpfUtilsFocusVisualStyle}" />
+		<Setter Property="FocusVisualStyle" Value="{DynamicResource FocusVisualStyle}" />
 		<Setter Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
 
 		<Setter Property="Template">
@@ -117,12 +117,12 @@
 							Margin="1"
 							Opacity="0"
 							SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-							Style="{DynamicResource WpfUtilsControlHoverBorder}" />
+							Style="{DynamicResource ControlHoverBorder}" />
 
 						<Border
 							x:Name="SelectionBorder"
 							Opacity="0"
-							Style="{DynamicResource WpfUtilsSelectedBorder}" />
+							Style="{DynamicResource SelectedBorder}" />
 
 						<ContentPresenter
 							Margin="10,4,4,4"
@@ -183,19 +183,19 @@
 		<Setter Property="TextBlock.Foreground" Value="{DynamicResource ForegroundLightBrush}" />
 	</Style>
 
-	<Style x:Key="WpfUtilsComboBox" TargetType="{x:Type ComboBox}">
+	<Style x:Key="ComboBox" TargetType="{x:Type ComboBox}">
 		<Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
-		<Setter Property="FocusVisualStyle" Value="{DynamicResource WpfUtilsFocusVisualStyle}" />
+		<Setter Property="FocusVisualStyle" Value="{DynamicResource FocusVisualStyle}" />
 		<Setter Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
-		<Setter Property="ItemContainerStyle" Value="{StaticResource WpfUtilsComboBoxItem}" />
+		<Setter Property="ItemContainerStyle" Value="{StaticResource ComboBoxItem}" />
 		<Setter Property="Margin" Value="1" />
 		<Setter Property="Padding" Value="3,0" />
-		<Setter Property="Template" Value="{StaticResource wpfUtilsComboBoxTemplate}" />
+		<Setter Property="Template" Value="{StaticResource ComboBoxTemplate}" />
 	</Style>
 
 	<Style
-		x:Key="WpfUtilsComboBoxNoBorder"
-		BasedOn="{StaticResource WpfUtilsComboBox}"
+		x:Key="ComboBoxNoBorder"
+		BasedOn="{StaticResource ComboBox}"
 		TargetType="{x:Type ComboBox}">
 		<Setter Property="Background" Value="Transparent" />
 	</Style>

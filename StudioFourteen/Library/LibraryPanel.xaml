@@ -51,7 +51,7 @@
 
 				<StackPanel Grid.Column="0" Orientation="Horizontal">
 
-					<Border Margin="1" Style="{DynamicResource WpfUtilsControlBorder}">
+					<Border Margin="1" Style="{DynamicResource ControlBorder}">
 						<StackPanel Orientation="Horizontal">
 							<Button
 								Width="28"
@@ -76,7 +76,7 @@
 
 					</Border>
 
-					<Border Margin="1" Style="{DynamicResource WpfUtilsControlBorder}">
+					<Border Margin="1" Style="{DynamicResource ControlBorder}">
 						<Button
 							Width="28"
 							Height="Auto"
@@ -104,7 +104,7 @@
 
 				<Border Margin="1">
 					<Border.Style>
-						<Style BasedOn="{StaticResource WpfUtilsControlBorder}" TargetType="{x:Type Border}">
+						<Style BasedOn="{StaticResource ControlBorder}" TargetType="{x:Type Border}">
 
 							<Setter Property="Grid.Column" Value="1" />
 							<Style.Triggers>
@@ -161,7 +161,7 @@
 											Margin="0"
 											Padding="6,0"
 											Background="Transparent"
-											Style="{DynamicResource WpfUtilsIconToggleButton}"
+											Style="{DynamicResource IconToggleButton}"
 											Visibility="{Binding HasSubGroups, Converter={StaticResource B2V}}">
 											<Path
 												Grid.Column="1"
@@ -182,7 +182,7 @@
 										IsOpen="{Binding ElementName=SubDirButton, Path=IsChecked}"
 										PlacementTarget="{Binding ElementName=SubDirButton}"
 										StaysOpen="False"
-										Style="{DynamicResource WpfUtilsPopOut}">
+										Style="{DynamicResource PopOut}">
 
 										<controls:PopOut.Header>
 											<TextBlock Margin="10" Foreground="{DynamicResource ForegroundLightBrush}">
@@ -230,19 +230,19 @@
 					Margin="1">
 					<ListBoxItem
 						IsSelected="{Binding ViewList, Converter={StaticResource !B}}"
-						Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
+						Style="{DynamicResource SwitchSelectorItemStyle}"
 						ToolTip="{DynamicResource LOC_Library_IconViewTooltip}">
 						<icons:IconView Height="14" Icon="{DynamicResource ICON_Library_ViewIcons}" />
 					</ListBoxItem>
 					<ListBoxItem
 						IsSelected="{Binding ViewList}"
-						Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
+						Style="{DynamicResource SwitchSelectorItemStyle}"
 						ToolTip="{DynamicResource LOC_Library_ListViewTooltip}">
 						<icons:IconView Height="14" Icon="{DynamicResource ICON_Library_ViewList}" />
 					</ListBoxItem>
 
 					<controls:SwitchSelector.Style>
-						<Style BasedOn="{StaticResource WpfUtilsSwitchSelector}"
+						<Style BasedOn="{StaticResource SwitchSelector}"
 							TargetType="{x:Type controls:SwitchSelector}">
 
 							<Setter Property="Grid.Column" Value="2" />
@@ -264,19 +264,19 @@
 					Margin="1">
 					<ListBoxItem
 						IsSelected="{Binding Flatten, Converter={StaticResource !B}}"
-						Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
+						Style="{DynamicResource SwitchSelectorItemStyle}"
 						ToolTip="{DynamicResource LOC_Library_DirectoryViewTooltip}">
 						<icons:IconView Height="14" Icon="{DynamicResource ICON_Library_FlattenOff}" />
 					</ListBoxItem>
 					<ListBoxItem
 						IsSelected="{Binding Flatten}"
-						Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
+						Style="{DynamicResource SwitchSelectorItemStyle}"
 						ToolTip="{DynamicResource LOC_Library_FlattenViewTooltip}">
 						<icons:IconView Height="14" Icon="{DynamicResource ICON_Library_FlattenOn}" />
 					</ListBoxItem>
 
 					<controls:SwitchSelector.Style>
-						<Style BasedOn="{StaticResource WpfUtilsSwitchSelector}"
+						<Style BasedOn="{StaticResource SwitchSelector}"
 							TargetType="{x:Type controls:SwitchSelector}">
 
 							<Setter Property="Grid.Column" Value="3" />
@@ -298,7 +298,7 @@
 					Click="OnBrowseClicked">
 
 					<Button.Style>
-						<Style BasedOn="{StaticResource WpfUtilsButton}" TargetType="{x:Type Button}">
+						<Style BasedOn="{StaticResource Button}" TargetType="{x:Type Button}">
 							<Setter Property="Content">
 								<Setter.Value>
 									<StackPanel Orientation="Horizontal">
@@ -383,7 +383,7 @@
 			<Border
 				Grid.Row="2"
 				Margin="1"
-				Style="{DynamicResource WpfUtilsControlBorder}">
+				Style="{DynamicResource ControlBorder}">
 
 				<Grid>
 

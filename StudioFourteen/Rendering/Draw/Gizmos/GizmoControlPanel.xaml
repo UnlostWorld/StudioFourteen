@@ -21,7 +21,7 @@
 					<Expander
 						Background="{DynamicResource ControlBackgroundBrush}"
 						Foreground="{DynamicResource ForegroundLightBrush}"
-						Style="{DynamicResource WpfUtilsClickableExpander}">
+						Style="{DynamicResource ClickableExpander}">
 
 						<Expander.Header>
 							<Grid>
@@ -71,13 +71,13 @@
 											<controls:SwitchSelector>
 												<ListBoxItem
 													IsSelected="{Binding KeepAtTargetHeight, Converter={StaticResource !B}}"
-													Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
+													Style="{DynamicResource SwitchSelectorItemStyle}"
 													Content="Manual">
 												</ListBoxItem>
 												<ListBoxItem
 													IsSelected="{Binding KeepAtTargetHeight}"
-													Style="{DynamicResource WpfUtilsSwitchSelectorItemStyle}"
-													Content="Automatic"/>
+													Style="{DynamicResource SwitchSelectorItemStyle}"
+													Content="Automatic" />
 											</controls:SwitchSelector>
 
 											<controls:NumberBox IsEnabled="{Binding KeepAtTargetHeight, Converter={StaticResource !B}}" Value="{Binding Height}" Minimum="-2000" Maximum="2000" Style="{DynamicResource NumberRelativeSlider}"/>

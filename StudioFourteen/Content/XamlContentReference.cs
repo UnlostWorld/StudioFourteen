@@ -44,7 +44,6 @@ public class XamlContentReference<T>(string path)
 		maps.Add(new NamespaceMapEntry("http://fourteen.studio", "StudioFourteen", "StudioFourteen.Panels"));
 		maps.Add(new NamespaceMapEntry("http://fourteen.studio", "StudioFourteen", "StudioFourteen.Controls"));
 		maps.Add(new NamespaceMapEntry("http://fourteen.studio", "StudioFourteen", "StudioFourteen.Icons"));
-		maps.Add(new NamespaceMapEntry("http://fourteen.studio", "WpfUtils", "WpfUtils.Controls"));
 
 		Context.XamlTypeMapper = new(["StudioFourteen"], maps.ToArray());
 

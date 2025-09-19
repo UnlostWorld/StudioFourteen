@@ -73,7 +73,7 @@
 		<Border
 			Grid.Column="1"
 			Margin="3,1,1,1"
-			Style="{DynamicResource WpfUtilsControlBorder}">
+			Style="{DynamicResource ControlBorder}">
 
 			<Grid>
 				<Grid.RowDefinitions>
@@ -84,7 +84,7 @@
 				<Border
 					Margin="2"
 					Background="{DynamicResource BackgroundBrush}"
-					CornerRadius="{DynamicResource WpfUtilsBorderInnerCornerRadius}">
+					CornerRadius="{DynamicResource BorderInnerCornerRadius}">
 					<ContentPresenter Content="{Binding CurrentType.Selection}" ContentTemplate="{DynamicResource InspectorHeader}" />
 				</Border>
 

@@ -3,7 +3,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
 
-	<ControlTemplate x:Key="WpfUtilsExpanderTemplate" TargetType="{x:Type Expander}">
+	<ControlTemplate x:Key="ExpanderTemplate" TargetType="{x:Type Expander}">
 
 		<Grid KeyboardNavigation.TabNavigation="Local">
 			<Grid.RowDefinitions>
@@ -40,7 +40,7 @@
 				Margin="2,0,0,0"
 				Foreground="{TemplateBinding Foreground}"
 				IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-				Style="{DynamicResource WpfUtilsIconToggleButton}">
+				Style="{DynamicResource IconToggleButton}">
 				<Path
 					Margin="3"
 					HorizontalAlignment="Center"
@@ -114,14 +114,13 @@
 		</ControlTemplate.Triggers>
 	</ControlTemplate>
 
-	<Style x:Key="WpfUtilsExpander" TargetType="{x:Type Expander}">
+	<Style x:Key="Expander" TargetType="{x:Type Expander}">
 		<Setter Property="Margin" Value="1" />
-		<Setter Property="Template" Value="{StaticResource WpfUtilsExpanderTemplate}" />
+		<Setter Property="Template" Value="{StaticResource ExpanderTemplate}" />
 	</Style>
 
 
-
-	<ControlTemplate x:Key="WpfUtilsInvisibleExpanderTemplate" TargetType="{x:Type Expander}">
+	<ControlTemplate x:Key="InvisibleExpanderTemplate" TargetType="{x:Type Expander}">
 
 		<Grid KeyboardNavigation.TabNavigation="Local">
 			<Grid.RowDefinitions>
@@ -186,15 +185,14 @@
 		</ControlTemplate.Triggers>
 	</ControlTemplate>
 
-	<Style x:Key="WpfUtilsInvisibleExpander" TargetType="{x:Type Expander}">
+	<Style x:Key="InvisibleExpander" TargetType="{x:Type Expander}">
 		<Setter Property="Margin" Value="1" />
 		<Setter Property="Padding" Value="12,0,0,0" />
-		<Setter Property="Template" Value="{StaticResource WpfUtilsInvisibleExpanderTemplate}" />
+		<Setter Property="Template" Value="{StaticResource InvisibleExpanderTemplate}" />
 	</Style>
 
 
-
-	<ControlTemplate x:Key="WpfUtilsClickableExpanderTemplate" TargetType="{x:Type Expander}">
+	<ControlTemplate x:Key="ClickableExpanderTemplate" TargetType="{x:Type Expander}">
 
 		<Grid KeyboardNavigation.TabNavigation="Local">
 			<Grid.RowDefinitions>
@@ -210,7 +208,7 @@
 				Background="{TemplateBinding Background}"
 				Foreground="{TemplateBinding Foreground}"
 				IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-				Style="{DynamicResource WpfUtilsIconToggleButton}">
+				Style="{DynamicResource IconToggleButton}">
 				<Grid>
 
 					<Grid.ColumnDefinitions>
@@ -288,11 +286,11 @@
 		</ControlTemplate.Triggers>
 	</ControlTemplate>
 
-	<Style x:Key="WpfUtilsClickableExpander" TargetType="{x:Type Expander}">
+	<Style x:Key="ClickableExpander" TargetType="{x:Type Expander}">
 		<Setter Property="Background" Value="Transparent" />
 		<Setter Property="Margin" Value="1" />
 		<Setter Property="Padding" Value="1" />
-		<Setter Property="Template" Value="{StaticResource WpfUtilsClickableExpanderTemplate}" />
+		<Setter Property="Template" Value="{StaticResource ClickableExpanderTemplate}" />
 	</Style>
 
 </ResourceDictionary>

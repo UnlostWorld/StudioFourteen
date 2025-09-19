@@ -8,7 +8,7 @@
 	<converters:NotZeroToVisibilityConverter x:Key="NotZeroToVisibility" />
 
 	<DataTemplate DataType="{x:Type cameras:OrbitCamera}">
-		<Border Style="{DynamicResource WpfUtilsBackgroundBorder}">
+		<Border Style="{DynamicResource BackgroundBorder}">
 			<ScrollViewer VerticalScrollBarVisibility="Disabled">
 				<StackPanel>
 					<TextBlock Style="{DynamicResource LeftLabel}" Text="{DynamicResource LOC_OrbitCamera_Target}" />

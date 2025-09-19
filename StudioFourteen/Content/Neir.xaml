@@ -52,9 +52,9 @@
 	<SolidColorBrush x:Key="ControlBackgroundSelectedBrush" Color="#585438" />
 	<SolidColorBrush x:Key="ControlForegroundHighlightBrush" Color="#CCC8AF" />
 
-	<CornerRadius x:Key="WpfUtilsBorderInnerCornerRadius">0</CornerRadius>
-	<CornerRadius x:Key="WpfUtilsBorderOuterCornerRadius">0</CornerRadius>
-    <CornerRadius x:Key="WpfUtilsScrollBarCornerRadius">0</CornerRadius>
+	<CornerRadius x:Key="BorderInnerCornerRadius">0</CornerRadius>
+	<CornerRadius x:Key="BorderOuterCornerRadius">0</CornerRadius>
+	<CornerRadius x:Key="ScrollBarCornerRadius">0</CornerRadius>
 
 
 </ResourceDictionary>

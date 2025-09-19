@@ -18,7 +18,7 @@
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	mc:Ignorable="d">
 
-	<TabControl Style="{DynamicResource WpfUtilsSideTabs}">
+	<TabControl Style="{DynamicResource SideTabs}">
 
 		<TabItem Header="{DynamicResource LOC_Settings_ResourcePacks}">
 			<Grid>
@@ -28,7 +28,7 @@
 				</Grid.RowDefinitions>
 
 				<Border
-					Grid.Row="0" Style="{DynamicResource WpfUtilsControlBorder}">
+					Grid.Row="0" Style="{DynamicResource ControlBorder}">
 					<controls:OrderableItemsControl
 						ItemsSource="{Binding ResourcePacks, Mode=TwoWay}">
 						<ItemsControl.ItemTemplate>
@@ -256,7 +256,7 @@
 										HorizontalContentAlignment="Center"
 										KeyBind="{Binding Value}"
 										KeyBindChanged="OnKeyBindChanged"
-										Style="{DynamicResource WpfUtilsTextBox}"
+										Style="{DynamicResource TextBox}"
 										Tag="{Binding Key}" />
 
 									<TextBlock

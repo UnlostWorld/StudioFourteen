@@ -28,13 +28,13 @@
 				<Border
 					x:Name="BackgroundBorder"
 					Background="{TemplateBinding Background}"
-					Style="{DynamicResource WpfUtilsControlBorder}" />
+					Style="{DynamicResource ControlBorder}" />
 
 				<Border
 					x:Name="HoverBorder"
 					Opacity="0"
 					SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-					Style="{DynamicResource WpfUtilsControlHoverBorder}" />
+					Style="{DynamicResource ControlHoverBorder}" />
 
 				<Grid x:Name="ContentArea" Margin="4,0,0,0">
 
@@ -239,7 +239,7 @@
 		<Setter Property="Background" Value="{DynamicResource ControlBackgroundBrush}" />
 		<Setter Property="BorderBrush" Value="{DynamicResource TrimBrush}" />
 		<Setter Property="BorderThickness" Value="1" />
-		<Setter Property="FocusVisualStyle" Value="{DynamicResource WpfUtilsFocusVisualStyle}" />
+		<Setter Property="FocusVisualStyle" Value="{DynamicResource FocusVisualStyle}" />
 		<Setter Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
 		<Setter Property="HorizontalContentAlignment" Value="Center" />
 		<Setter Property="Margin" Value="1" />
@@ -256,7 +256,7 @@
 			<Border
 				x:Name="WindowShadow"
 				Background="Black"
-				CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}"
+				CornerRadius="{DynamicResource BorderOuterCornerRadius}"
 				Opacity="0.25">
 				<Border.BitmapEffect>
 					<DropShadowBitmapEffect ShadowDepth="0" Softness="0.75" />
@@ -266,13 +266,13 @@
 			<Border
 				x:Name="WindowBackground"
 				Background="{DynamicResource BackgroundBrush}"
-				CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
+				CornerRadius="{DynamicResource BorderOuterCornerRadius}" />
 
 			<Border
 				x:Name="WindowBorder"
 				BorderBrush="{DynamicResource BackgroundBrush}"
 				BorderThickness="1"
-				CornerRadius="{DynamicResource WpfUtilsBorderOuterCornerRadius}" />
+				CornerRadius="{DynamicResource BorderOuterCornerRadius}" />
 
 			<Grid x:Name="ContentArea" Margin="{TemplateBinding Padding}" MinWidth="38">
 
@@ -284,7 +284,7 @@
 					</LinearGradientBrush>
 				</Grid.OpacityMask>
 
-				<Border Margin="3,1,3,3" Style="{DynamicResource WpfUtilsControlBorder}">
+				<Border Margin="3,1,3,3" Style="{DynamicResource ControlBorder}">
 					<ItemsControl ItemsSource="{Binding RelativeSource={RelativeSource Mode=TemplatedParent}, Path=Entries}">
 						<ItemsControl.ItemsPanel>
 							<ItemsPanelTemplate>

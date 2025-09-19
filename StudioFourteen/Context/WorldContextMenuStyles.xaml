@@ -40,7 +40,7 @@
 						Text="{Binding ObjectName, RelativeSource={RelativeSource AncestorType={x:Type local:WorldContextMenu}}}"
 						TextWrapping="Wrap" />
 
-					<Border Style="{DynamicResource WpfUtilsControlBorder}">
+					<Border Style="{DynamicResource ControlBorder}">
 						<StackPanel>
 
 							<ItemsControl ItemsSource="{Binding IconMenus, RelativeSource={RelativeSource AncestorType={x:Type local:WorldContextMenu}}}">
@@ -71,7 +71,8 @@
 								</Menu.ItemTemplate>
 
 								<Menu.ItemContainerStyle>
-									<Style BasedOn="{StaticResource WpfUtilsMenuItem}" TargetType="{x:Type MenuItem}">
+									<Style BasedOn="{StaticResource MenuItem}"
+										TargetType="{x:Type MenuItem}">
 										<Setter Property="MenuItem.Command" Value="{Binding OnClicked}" />
 										<Setter Property="MenuItem.Header" Value="{Binding Label}" />
 										<Setter Property="MenuItem.Icon" Value="{Binding Icon}" />
@@ -88,7 +89,7 @@
 
 	</ControlTemplate>
 
-	<Style BasedOn="{StaticResource WpfUtilsPopOut}" TargetType="{x:Type local:WorldContextMenu}">
+	<Style BasedOn="{StaticResource PopOut}" TargetType="{x:Type local:WorldContextMenu}">
 		<Setter Property="StaysOpen" Value="False" />
 		<Setter Property="Template" Value="{StaticResource WorldContextMenuTemplate}" />
 		<Setter Property="Width" Value="250" />

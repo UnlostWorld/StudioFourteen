@@ -17,7 +17,7 @@
 				Padding="0"
 				HorizontalContentAlignment="Stretch"
 				Background="{TemplateBinding Background}"
-				Style="{DynamicResource WpfUtilsIconToggleButton}"
+				Style="{DynamicResource IconToggleButton}"
 				ToolTip="!">
 				<Grid>
 					<Grid.ColumnDefinitions>
@@ -97,7 +97,7 @@
 				Padding="0"
 				HorizontalContentAlignment="Stretch"
 				Background="{TemplateBinding Background}"
-				Style="{DynamicResource WpfUtilsIconToggleButton}"
+				Style="{DynamicResource IconToggleButton}"
 				ToolTip="!">
 
 				<Grid Margin="3,3,3,2">
