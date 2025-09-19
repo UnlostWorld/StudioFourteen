@@ -81,7 +81,7 @@ public class ContextMenuService : ServiceBase
 
 	public void GetContext(IContextMenu menu, params object[] targets)
 	{
-		this.GetContextAsync(menu, targets).Run();
+		this.GetContextAsync(menu, targets).RunAsynchronously();
 	}
 
 	public async Task GetContextAsync(IContextMenu menu, params object[] targets)

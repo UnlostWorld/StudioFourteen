@@ -63,7 +63,7 @@ public partial class ResourcePackService : ServiceBase
 		return base.Start();
 	}
 
-	public void Apply()
+	public async Task Apply()
 	{
 		try
 		{
@@ -85,7 +85,7 @@ public partial class ResourcePackService : ServiceBase
 			this.Log.Error(ex, "Error applying resource packs");
 		}
 
-		this.Services.Panels.RestartPanels().Run();
+		await this.Services.Panels.RestartPanels();
 	}
 }
 

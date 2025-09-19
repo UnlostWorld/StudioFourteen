@@ -120,7 +120,7 @@ public partial class DragAndDropService : ServiceBase
 		{
 			this.currentOperation = new(instance);
 			e.Effects = DragDropEffects.Copy;
-			this.currentOperation.EnterScene().Run();
+			this.currentOperation.EnterScene().RunAsynchronously();
 		}
 		else
 		{
@@ -148,7 +148,7 @@ public partial class DragAndDropService : ServiceBase
 	{
 		if (this.currentOperation != null)
 		{
-			this.currentOperation.LeaveScene().Run();
+			this.currentOperation.LeaveScene().RunAsynchronously();
 			this.currentOperation = null;
 		}
 	}
@@ -157,7 +157,7 @@ public partial class DragAndDropService : ServiceBase
 	{
 		if (this.currentOperation != null)
 		{
-			this.currentOperation.Drop().Run();
+			this.currentOperation.Drop().RunAsynchronously();
 			this.currentOperation = null;
 		}
 	}

@@ -125,7 +125,7 @@ public class RedrawService : ServiceBase
 		public void Begin()
 		{
 			this.IsRunning = true;
-			this.Run().Run();
+			this.Run().RunAsynchronously();
 		}
 
 		public void Reset()

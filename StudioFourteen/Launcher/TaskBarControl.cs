@@ -111,7 +111,7 @@ public partial class TaskBarControl : Control
 
 	private void OnPanelOpened(Panel panel)
 	{
-		this.OnPanelOpenedAsync(panel).Run();
+		this.OnPanelOpenedAsync(panel).RunAsynchronously();
 	}
 
 	private async Task OnPanelOpenedAsync(Panel panel)
@@ -148,7 +148,7 @@ public partial class TaskBarControl : Control
 			return;
 
 		this.panelEntries.Remove(panel.GetType());
-		this.RemoveEntry(entry).Run();
+		this.RemoveEntry(entry).RunAsynchronously();
 	}
 
 	private void OnPanelMinimized(Panel panel)
@@ -224,7 +224,7 @@ public partial class TaskBarButtonControl : Control
 
 		if (e.ChangedButton == MouseButton.Left)
 		{
-			this.HandleClickAsync().Run();
+			this.HandleClickAsync().RunAsynchronously();
 		}
 	}
 

@@ -148,7 +148,7 @@ public partial class StudioService : ServiceBase
 		AtkManager.SetUnitVisibility("_TitleRevision", false);
 		AtkManager.SetUnitVisibility("_TitleRights", false);
 
-		this.SetupInitialScene().Run();
+		this.SetupInitialScene().RunAsynchronously();
 	}
 
 	public unsafe override void Detach()

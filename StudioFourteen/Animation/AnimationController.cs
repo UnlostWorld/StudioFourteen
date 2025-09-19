@@ -178,7 +178,7 @@ public partial class AnimationController
 	{
 		if (newValue == false)
 		{
-			this.ResetLoopAsync().Run();
+			this.ResetLoopAsync().RunAsynchronously();
 		}
 	}
 

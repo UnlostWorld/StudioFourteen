@@ -132,7 +132,7 @@ public partial class SelectionPanel : Panel
 
 		if (obj is ICreatableSceneObject creatable)
 		{
-			creatable.Create().Run();
+			creatable.Create().RunAsynchronously();
 		}
 	}
 

@@ -17,6 +17,7 @@ namespace StudioFourteen;
 
 using FFXIVClientStructs.FFXIV.Common.Lua;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
@@ -26,7 +27,7 @@ public partial class Resources : ResourceDictionary
 {
 	private static readonly List<Uri> PendingMergedDictionaries = new();
 	private static readonly Dictionary<object, Func<object>> AddResource = new();
-	private static readonly List<WeakReference<Resources>> ResourceInstances = new();
+	private static readonly ConcurrentBag<WeakReference<Resources>> ResourceInstances = new();
 
 	private readonly Dispatcher? ownerDispatcher;
 
@@ -56,10 +57,7 @@ public partial class Resources : ResourceDictionary
 			resources[key] = value.Invoke();
 		}
 
-		lock (ResourceInstances)
-		{
-			ResourceInstances.Add(new(resources));
-		}
+		ResourceInstances.Add(new(resources));
 
 		return resources;
 	}
@@ -96,7 +94,7 @@ public partial class Resources : ResourceDictionary
 	{
 		PendingMergedDictionaries.Remove(uri);
 
-		foreach (WeakReference<Resources> resourceReference in ResourceInstances.AsReadOnly())
+		foreach (WeakReference<Resources> resourceReference in ResourceInstances)
 		{
 			if (resourceReference.TryGetTarget(out Resources? resource) && resource != null)
 			{
@@ -125,7 +123,7 @@ public partial class Resources : ResourceDictionary
 	{
 		PendingMergedDictionaries.Add(uri);
 
-		foreach (WeakReference<Resources> resourceReference in ResourceInstances.AsReadOnly())
+		foreach (WeakReference<Resources> resourceReference in ResourceInstances)
 		{
 			if (resourceReference.TryGetTarget(out Resources? resource) && resource != null)
 			{
@@ -149,7 +147,7 @@ public partial class Resources : ResourceDictionary
 	{
 		AddResource[key] = value;
 
-		foreach (WeakReference<Resources> resourceReference in ResourceInstances.AsReadOnly())
+		foreach (WeakReference<Resources> resourceReference in ResourceInstances)
 		{
 			if (resourceReference.TryGetTarget(out Resources? resource) && resource != null)
 			{
@@ -165,7 +163,7 @@ public partial class Resources : ResourceDictionary
 	{
 		AddResource.Remove(key);
 
-		foreach (WeakReference<Resources> resourceReference in ResourceInstances.AsReadOnly())
+		foreach (WeakReference<Resources> resourceReference in ResourceInstances)
 		{
 			if (resourceReference.TryGetTarget(out Resources? resource) && resource != null)
 			{

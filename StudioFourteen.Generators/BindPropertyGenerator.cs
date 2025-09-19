@@ -72,6 +72,9 @@ public class BindPropertyGenerator : IIncrementalGenerator
 			setMethod = $$"""
 				{{property.SetMethod.DeclaredAccessibility.ToSource(Accessibility.Public)}} set
 				{
+					if (_{{property.Name}} == value)
+						return;
+
 					_{{property.Name}} = value;
 					this.NotifyPropertyChanged("{{property.Name}}");
 				}

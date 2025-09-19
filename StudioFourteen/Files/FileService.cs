@@ -125,17 +125,17 @@ public class FileService : ServiceBase
 
 	public void SaveFile(FileBase file)
 	{
-		this.SaveFileAsync(file).Run();
+		this.SaveFileAsync(file).RunAsynchronously();
 	}
 
 	public void SaveFile(FileBase file, FileSystemInfo defaultFileInfo)
 	{
-		this.SaveFileAsync(file, defaultFileInfo).Run();
+		this.SaveFileAsync(file, defaultFileInfo).RunAsynchronously();
 	}
 
 	public void SaveFile(FileBase file, string defaultFileName)
 	{
-		this.SaveFileAsync(file, defaultFileName).Run();
+		this.SaveFileAsync(file, defaultFileName).RunAsynchronously();
 	}
 
 	public async Task SaveFileAsync(FileBase file)

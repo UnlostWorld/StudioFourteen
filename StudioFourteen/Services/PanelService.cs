@@ -92,9 +92,17 @@ public class PanelService : ServiceBase
 
 	public async Task RestartPanels()
 	{
-		await this.StopPanels();
-		await Task.Delay(1000);
-		await this.StartPanels();
+		try
+		{
+			await this.StopPanels();
+			await Task.Delay(1000);
+			await this.StartPanels();
+		}
+		catch (Exception ex)
+		{
+			this.Log.Error(ex, "Error restarting panels");
+			await this.StartPanels();
+		}
 
 		this.PanelsRestarted?.Invoke(this);
 	}
@@ -106,7 +114,7 @@ public class PanelService : ServiceBase
 
 		if (!this.hasRestoredPanels && this.Services.Studio.IsOpen)
 		{
-			this.RestorePanels().Run();
+			this.RestorePanels().RunAsynchronously();
 		}
 	}
 
@@ -114,7 +122,7 @@ public class PanelService : ServiceBase
 	{
 		try
 		{
-			this.launcher?.Dispatcher.Invoke(this.launcher.Close);
+			this.launcher?.Close();
 		}
 		catch (Exception ex)
 		{
@@ -173,7 +181,7 @@ public class PanelService : ServiceBase
 
 		if (!this.hasRestoredPanels && this.Services.Studio.IsOpen)
 		{
-			this.RestorePanels().Run();
+			this.RestorePanels().RunAsynchronously();
 		}
 	}
 

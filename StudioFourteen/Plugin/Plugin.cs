@@ -79,7 +79,7 @@ public sealed class DalamudPlugin : IDalamudPlugin
 		this.Services.Dispose();
 		Logging.Dispose();
 
-		this.Services.Stop().Run();
+		this.Services.Stop().RunAsynchronously();
 	}
 
 	private void OnDalamudOpenMainUi()

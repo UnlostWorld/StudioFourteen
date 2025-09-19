@@ -93,12 +93,12 @@ public abstract class PanelContextBase
 	public void CreatePanel<T>(bool activate = true)
 		where T : Panel
 	{
-		this.CreatePanelAsync<T>(activate).Run();
+		this.CreatePanelAsync<T>(activate).RunAsynchronously();
 	}
 
 	public void CreatePanel(Type panelType, bool activate)
 	{
-		this.CreatePanelAsync(panelType, activate).Run();
+		this.CreatePanelAsync(panelType, activate).RunAsynchronously();
 	}
 
 	public async Task<T?> CreatePanelAsync<T>(bool activate = true)
@@ -116,12 +116,12 @@ public abstract class PanelContextBase
 	public void SetIsOpen<T>(bool open, bool activate)
 		where T : Panel
 	{
-		this.SetIsOpenAsync<T>(open, activate).Run();
+		this.SetIsOpenAsync<T>(open, activate).RunAsynchronously();
 	}
 
 	public void SetIsOpen(Type panelType, bool open, bool activate)
 	{
-		this.SetIsOpenAsync(panelType, open, activate).Run();
+		this.SetIsOpenAsync(panelType, open, activate).RunAsynchronously();
 	}
 
 	public async Task<T?> SetIsOpenAsync<T>(bool open, bool activate)

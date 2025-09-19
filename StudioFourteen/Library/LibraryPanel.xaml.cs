@@ -139,7 +139,7 @@ public partial class LibraryPanel : Panel
 
 	public static void Open(PanelContextBase context)
 	{
-		OpenAsync(context).Run();
+		OpenAsync(context).RunAsynchronously();
 	}
 
 	public static async Task OpenAsync(PanelContextBase context)
@@ -384,7 +384,7 @@ public partial class LibraryPanel : Panel
 
 		if (this.Settings.LibraryPreviewMode != PreviewModes.Disabled)
 		{
-			this.StartPreview().Run();
+			this.StartPreview().RunAsynchronously();
 		}
 	}
 

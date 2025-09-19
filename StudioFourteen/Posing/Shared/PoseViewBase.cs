@@ -203,7 +203,7 @@ public partial class PoseViewBase : View
 
 	protected void UpdateTargets()
 	{
-		this.UpdateTargetsAsync().Run();
+		this.UpdateTargetsAsync().RunAsynchronously();
 	}
 
 	protected virtual async Task UpdateTargetsAsync()

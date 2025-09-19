@@ -62,6 +62,6 @@ public partial class EnvironmentPanel : Panel
 
 	private void OnExportClicked(object sender, RoutedEventArgs e)
 	{
-		this.Services.Environment.Export().Run();
+		this.Services.Environment.Export().RunAsynchronously();
 	}
 }

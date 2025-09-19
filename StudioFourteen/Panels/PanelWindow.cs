@@ -339,19 +339,14 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 	public virtual void Close(bool minimize = false)
 	{
+		if (!this.IsOpen)
+			return;
+
 		this.IsOpen = false;
 		this.NotifyPropertyChanged(nameof(this.IsOpen));
 		this.isMinimizing = minimize;
 
-		try
-		{
-			this.Dispatcher.Invoke(this.Close);
-		}
-		catch (TaskCanceledException)
-		{
-		}
-
-		this.Dispatcher.BeginInvokeShutdown(DispatcherPriority.Send);
+		this.Dispatcher.Invoke(this.Close);
 	}
 
 	public new void DragMove()
@@ -438,6 +433,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 
 		this.IsOpen = true;
 		this.NotifyPropertyChanged(nameof(this.IsOpen));
+		this.UpdateUiVisible();
 
 		if (DalamudServices.GameGui != null)
 			DalamudServices.GameGui.UiHideToggled += this.OnGameUiToggled;

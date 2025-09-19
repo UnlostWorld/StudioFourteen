@@ -77,7 +77,7 @@ public class ScriptingService : ServiceBase
 		if (this.isRunningScript)
 			return;
 
-		this.RunScriptAsync(script).Run();
+		this.RunScriptAsync(script).RunAsynchronously();
 	}
 
 	public bool GetIsScriptTrusted(ScriptFile file)

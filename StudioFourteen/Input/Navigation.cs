@@ -60,28 +60,28 @@ public partial class Navigation
 		string scopeName = scope.GetType().ToString();
 
 		this.upListener = new(InputAction.Navigate_Up, scopeName);
-		this.upListener.Activate = () => this.OnNavigate(FocusNavigationDirection.Up, this.upListener).Run();
+		this.upListener.Activate = () => this.OnNavigate(FocusNavigationDirection.Up, this.upListener).RunAsynchronously();
 
 		this.downListener = new(InputAction.Navigate_Down, scopeName);
-		this.downListener.Activate = () => this.OnNavigate(FocusNavigationDirection.Down, this.downListener).Run();
+		this.downListener.Activate = () => this.OnNavigate(FocusNavigationDirection.Down, this.downListener).RunAsynchronously();
 
 		this.leftListener = new(InputAction.Navigate_Left, scopeName);
-		this.leftListener.Activate = () => this.OnNavigate(FocusNavigationDirection.Left, this.leftListener).Run();
+		this.leftListener.Activate = () => this.OnNavigate(FocusNavigationDirection.Left, this.leftListener).RunAsynchronously();
 
 		this.rightListener = new(InputAction.Navigate_Right, scopeName);
-		this.rightListener.Activate = () => this.OnNavigate(FocusNavigationDirection.Right, this.rightListener).Run();
+		this.rightListener.Activate = () => this.OnNavigate(FocusNavigationDirection.Right, this.rightListener).RunAsynchronously();
 
 		this.tabLeftListener = new(InputAction.Navigate_TabLeft, scopeName);
-		this.tabLeftListener.Activate = () => this.OnTab(false).Run();
+		this.tabLeftListener.Activate = () => this.OnTab(false).RunAsynchronously();
 
 		this.tabRightListener = new(InputAction.Navigate_TabRight, scopeName);
-		this.tabRightListener.Activate = () => this.OnTab(true).Run();
+		this.tabRightListener.Activate = () => this.OnTab(true).RunAsynchronously();
 
 		this.enterListener = new(InputAction.Navigate_Enter, scopeName);
-		this.enterListener.Activate = () => this.OnEnter().Run();
+		this.enterListener.Activate = () => this.OnEnter().RunAsynchronously();
 
 		this.backListener = new(InputAction.Navigate_Back, scopeName);
-		this.backListener.Activate = () => this.OnBack().Run();
+		this.backListener.Activate = () => this.OnBack().RunAsynchronously();
 	}
 
 	public static void AddEnterHandler(DependencyObject dependencyObject, RoutedEventHandler handler)

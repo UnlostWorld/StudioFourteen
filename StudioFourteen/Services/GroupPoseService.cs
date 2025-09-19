@@ -158,7 +158,7 @@ public partial class GroupPoseService : ServiceBase
 		this.Log.Information($"Group Pose State changed {newState}");
 		this.StateChanged?.Invoke(newState);
 		this.IsGroupPosing = newState;
-		this.CheckLoaded().Run();
+		this.CheckLoaded().RunAsynchronously();
 	}
 
 	private async Task CheckLoaded()

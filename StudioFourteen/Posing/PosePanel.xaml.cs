@@ -198,7 +198,7 @@ public partial class PosePanel : Panel
 		if (this.Skeleton == null)
 			return;
 
-		this.Skeleton.SavePose().Run();
+		this.Skeleton.SavePose().RunAsynchronously();
 	}
 
 	private void OnFlipPoseClicked(object sender, RoutedEventArgs e)

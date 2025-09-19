@@ -112,7 +112,7 @@ public partial class PhotoPanel : Panel
 		this.Services.Photos.IsPhotoMode = false;
 		this.Services.Photos.AspectRatio = 0;
 
-		this.RemoveGuidesAsync().Run();
+		this.RemoveGuidesAsync().RunAsynchronously();
 	}
 
 	protected override void OnGameTick()

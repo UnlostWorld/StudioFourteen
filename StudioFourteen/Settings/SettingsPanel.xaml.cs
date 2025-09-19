@@ -57,7 +57,7 @@ public partial class SettingsPanel : Panel
 
 	public static void Show(PanelContextBase context, string? elementName = null)
 	{
-		ShowAsync(context, elementName).Run();
+		ShowAsync(context, elementName).RunAsynchronously();
 	}
 
 	public static async Task ShowAsync(PanelContextBase context, string? elementName = null)
@@ -112,6 +112,6 @@ public partial class SettingsPanel : Panel
 
 	private void OnApplyResourcePacksClicked(object sender, RoutedEventArgs e)
 	{
-		this.Services.ResourcePacks.Apply();
+		Task.Run(this.Services.ResourcePacks.Apply);
 	}
 }

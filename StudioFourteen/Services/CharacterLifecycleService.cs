@@ -159,7 +159,7 @@ public class CharacterLifecycleService : ServiceBase
 
 	public void Destroy(int objectTableIndex)
 	{
-		this.DestroyAsync(objectTableIndex).Run();
+		this.DestroyAsync(objectTableIndex).RunAsynchronously();
 	}
 
 	public async Task<bool> DestroyAsync(int objectTableIndex)

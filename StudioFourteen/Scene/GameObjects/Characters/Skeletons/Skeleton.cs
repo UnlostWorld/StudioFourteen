@@ -163,7 +163,7 @@ public partial class Skeleton : GameObject
 
 	public void Flip()
 	{
-		this.FlipAsync().Run();
+		this.FlipAsync().RunAsynchronously();
 	}
 
 	public async Task FlipAsync()

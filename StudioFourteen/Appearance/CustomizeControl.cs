@@ -106,7 +106,7 @@ public partial class CustomizeControl : ItemsControl
 
 	private void UpdateMenus()
 	{
-		this.UpdateMenusAsync().Run();
+		this.UpdateMenusAsync().RunAsynchronously();
 	}
 
 	private async Task UpdateMenusAsync()

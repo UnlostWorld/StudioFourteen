@@ -149,7 +149,7 @@ public partial class PhotosService : ServiceBase
 
 	public void Capture(string? name = null, bool animate = true)
 	{
-		this.CaptureAsync(name, animate).Run();
+		this.CaptureAsync(name, animate).RunAsynchronously();
 	}
 
 	public string GetDefaultFileName() => DateTime.Now.ToString("yyyy-MM-dd HH-mm");

@@ -46,7 +46,7 @@ public class BlendSelection : SceneObjectBase
 		this.Target = target;
 		this.mirrorMode = target.MirrorMode;
 
-		this.Initialize(this.Flip).Run();
+		this.Initialize(this.Flip).RunAsynchronously();
 	}
 
 	public override string Id => $"Blend:{this.blendTargetName}:{this.objectTableIndex}";

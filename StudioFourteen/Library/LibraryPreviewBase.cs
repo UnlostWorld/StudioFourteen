@@ -43,7 +43,7 @@ public abstract class LibraryPreviewBase
 			return;
 
 		this.entry = entry;
-		this.StartPreviewAsync(other).Run();
+		this.StartPreviewAsync(other).RunAsynchronously();
 	}
 
 	public async Task StartPreviewAsync(LibraryPreviewBase? other)
@@ -73,7 +73,7 @@ public abstract class LibraryPreviewBase
 
 	public void StopPreview()
 	{
-		this.StopPreviewAsync().Run();
+		this.StopPreviewAsync().RunAsynchronously();
 	}
 
 	public async Task StopPreviewAsync()
