@@ -27,7 +27,7 @@
 	<icons:Svg x:Key="ICON_GroupPose" Source="GroupPose" />
 	<icons:Svg x:Key="ICON_GroupPoseSettings" Source="GroupPoseSettings" />
 	<icons:Svg x:Key="ICON_TagsAdd" Source="TagsAdd" />
-	<icons:Fa x:Key="ICON_Tag" Icon="Tag" />
+	<icons:Fa x:Key="ICON_Tag" Icon="Tag" Font="Solid" />
 	<icons:Svg x:Key="ICON_MoonWaxing" Source="MoonWaxing" />
 	<icons:Svg x:Key="ICON_MoonFull" Source="MoonFull" />
 	<icons:Svg x:Key="ICON_MoonWaning" Source="MoonWaning" />

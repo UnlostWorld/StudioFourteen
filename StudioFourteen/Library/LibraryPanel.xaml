@@ -353,8 +353,6 @@
 				Style="{DynamicResource ControlBorder}">
 
 				<Grid>
-					<TextBlock Text="{Binding Results.Count}" />
-
 					<!--  Icon Grid  -->
 					<s14:ListBoxEx
 						x:Name="ResultsGrid"
