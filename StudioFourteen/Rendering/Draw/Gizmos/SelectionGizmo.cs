@@ -16,11 +16,11 @@
 namespace StudioFourteen.Rendering.Draw.Gizmos;
 
 using System.Diagnostics;
-using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Draw.Gizmos.Transforms;
-using StudioFourteen.Animation;
+using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Passes;
 using StudioFourteen.Xaml;
+using StudioFourteen.Animation;
 
 public class SelectionGizmo : TransformGizmoBase
 {

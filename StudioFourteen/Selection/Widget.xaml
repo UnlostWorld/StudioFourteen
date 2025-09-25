@@ -3,6 +3,7 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:s14="clr-namespace:StudioFourteen.Xaml"
+	xmlns:silk="clr-namespace:StudioFourteen.Xaml.Silk"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:icons="clr-namespace:StudioFourteen.Icons"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -19,7 +20,7 @@
 			<ColumnDefinition />
 		</Grid.ColumnDefinitions>
 
-		<!--<silk:AnimationState Binding="{Binding Hide}">
+		<silk:AnimationState Binding="{Binding Hide}">
 			<silk:AnimationState.Enter>
 				<silk:DoubleAnimation
 					Delay="200"
@@ -39,14 +40,14 @@
 					To="1"
 					Duration="150" />
 			</silk:AnimationState.Exit>
-		</silk:AnimationState>-->
+		</silk:AnimationState>
 
 		<Grid
 			Grid.Column="0"
 			HorizontalAlignment="Right"
 			VerticalAlignment="Top">
 
-			<!--<silk:DoubleAnimation
+			<silk:DoubleAnimation
 				Key="Opening"
 				Easing="SineIn"
 				Property="Opacity"
@@ -60,7 +61,7 @@
 				Property="Opacity"
 				From="1"
 				To="0"
-				Duration="100" />-->
+				Duration="100" />
 
 			<Border
 				Background="Black"
@@ -126,7 +127,7 @@
 			VerticalAlignment="Top"
 			Visibility="{Binding CanExpand, Converter={StaticResource B2V}}">
 
-			<!--<silk:AnimationState Binding="{Binding Expanded}">
+			<silk:AnimationState Binding="{Binding Expanded}">
 				<silk:AnimationState.Enter>
 					<silk:DoubleAnimation
 						Easing="SineIn"
@@ -145,7 +146,7 @@
 						Duration="150" />
 				</silk:AnimationState.Exit>
 
-			</silk:AnimationState>-->
+			</silk:AnimationState>
 
 			<Border Background="Black" CornerRadius="{DynamicResource BorderOuterCornerRadius}">
 				<Border.Effect>

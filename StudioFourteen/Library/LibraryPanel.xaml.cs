@@ -50,7 +50,6 @@ public partial class LibraryPanel : Panel
 	private readonly Stopwatch searchStopwatch = new();
 	private LibraryPreviewBase? currentPreview;
 	private bool flatten = false;
-	private Navigations navigation = Navigations.None;
 	private FrameworkElement? currentHover;
 	private int lastEntryClick = 0;
 	private double? waitingForPosition;
@@ -65,25 +64,7 @@ public partial class LibraryPanel : Panel
 		this.SizeChanged += this.OnSizeChanged;
 	}
 
-	public enum Navigations
-	{
-		None,
-		OpenDir,
-		Back,
-	}
-
-	public enum NavigationAnimations
-	{
-		None,
-		OpenDir_Out,
-		OpenDir_In,
-		Back_In,
-		Back_Out,
-	}
-
 	[Bind] public partial Result? SelectedResult { get; set; }
-	[Bind] public partial NavigationAnimations NavigationAnimation { get; set; }
-	[Bind] public partial bool ViewList { get; set; }
 	[Bind] public partial bool NarrowMode { get; set; }
 
 	public FastObservableCollection<Result> Results { get; init; } = new();
@@ -162,7 +143,6 @@ public partial class LibraryPanel : Panel
 
 		this.waitingForPosition = this.PersistentScrollPosition;
 
-		this.navigation = Navigations.OpenDir;
 		this.searchQueue.InvokeImmediate();
 	}
 
@@ -188,13 +168,6 @@ public partial class LibraryPanel : Panel
 		this.searchStopwatch.Restart();
 		await this.Dispatcher.MainThread();
 
-		this.NavigationAnimation = this.navigation switch
-		{
-			Navigations.OpenDir => NavigationAnimations.OpenDir_Out,
-			Navigations.Back => NavigationAnimations.Back_Out,
-			_ => NavigationAnimations.None,
-		};
-
 		bool flattenResults = this.flatten;
 		flattenResults |= !this.SearchQueryFilter.IsEmpty;
 
@@ -209,9 +182,6 @@ public partial class LibraryPanel : Panel
 		IEnumerable<Result>? results = result.Get(flattenResults);
 
 		await this.Dispatcher.MainThread();
-
-		while (this.NavigationAnimation != NavigationAnimations.None)
-			await Task.Delay(10);
 
 		await this.Dispatcher.MainThread();
 
@@ -231,15 +201,6 @@ public partial class LibraryPanel : Panel
 		this.AvailableTags.Replace(tags);
 
 		await Task.Delay(33);
-
-		this.NavigationAnimation = this.navigation switch
-		{
-			Navigations.OpenDir => NavigationAnimations.OpenDir_In,
-			Navigations.Back => NavigationAnimations.Back_In,
-			_ => NavigationAnimations.None,
-		};
-
-		this.navigation = Navigations.None;
 
 		if (this.SelectedResult == null && this.Results.Count > 0)
 			this.SelectedResult = this.Results[0];
@@ -277,21 +238,18 @@ public partial class LibraryPanel : Panel
 
 			this.SavePath();
 
-			this.navigation = Navigations.Back;
 			this.searchQueue.InvokeImmediate();
 		}
 	}
 
 	private void OnBackClicked(object sender, RoutedEventArgs e)
 	{
-		this.navigation = Navigations.Back;
 		this.Path.RemoveAt(this.Path.Count - 1);
 		this.searchQueue.InvokeImmediate();
 	}
 
 	private void OnUpClicked(object sender, RoutedEventArgs e)
 	{
-		this.navigation = Navigations.Back;
 		this.Path.RemoveAt(this.Path.Count - 1);
 		this.searchQueue.InvokeImmediate();
 	}
@@ -358,7 +316,6 @@ public partial class LibraryPanel : Panel
 
 			newPath.Add(subGroup);
 
-			this.navigation = Navigations.Back;
 			this.Path.Replace(newPath);
 			this.SavePath();
 			this.searchQueue.InvokeImmediate();
@@ -390,8 +347,6 @@ public partial class LibraryPanel : Panel
 	{
 		if (Mouse.RightButton == MouseButtonState.Pressed)
 			return;
-
-		this.Log.Information("Close tooltip");
 
 		if (this.currentHover == null)
 			return;
@@ -522,7 +477,6 @@ public partial class LibraryPanel : Panel
 
 			this.Path.Add(groupResult.Group);
 			this.SavePath();
-			this.navigation = Navigations.OpenDir;
 			this.searchQueue.InvokeImmediate();
 		}
 		else if (this.SelectedResult is Result result)

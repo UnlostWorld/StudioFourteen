@@ -11,6 +11,8 @@
 	<ResourceDictionary.MergedDictionaries>
 		<ResourceDictionary
 			Source="pack://application:,,,/StudioFourteen;component/Xaml/Controls/PopOutStyles.xaml" />
+		<ResourceDictionary
+			Source="pack://application:,,,/StudioFourteen;component/Xaml/Styles/MenuStyles.xaml" />
 	</ResourceDictionary.MergedDictionaries>
 
 	<converters:IsEmptyToVisibilityConverter x:Key="IsEmptyToVisibility" />

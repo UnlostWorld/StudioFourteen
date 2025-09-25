@@ -26,7 +26,7 @@ using StudioFourteen.Scene;
 using StudioFourteen.Settings;
 using StudioFourteen;
 using StudioFourteen.Extensions;
-using StudioFourteen.Silk;
+using StudioFourteen.Xaml.Silk;
 
 public partial class Widget : Panel
 {

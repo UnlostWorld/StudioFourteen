@@ -47,8 +47,6 @@
 	<icons:Fa x:Key="ICON_Library_Up" Icon="ArrowUp" Font="Solid"  />
 	<icons:Fa x:Key="ICON_Library_FilterFavorites" Icon="Heart" Font="Solid" />
 	<icons:Fa x:Key="ICON_Library_FilterAll" Icon="FileAlt" Font="Solid" />
-	<icons:Fa x:Key="ICON_Library_ViewIcons" Icon="BorderAll" Font="Solid" />
-	<icons:Fa x:Key="ICON_Library_ViewList" Icon="List" Font="Solid" />
 	<icons:Fa x:Key="ICON_Library_FlattenOff" Icon="Folder" Font="Solid" />
 	<icons:Fa x:Key="ICON_Library_FlattenOn" Icon="FileAlt" Font="Solid" />
 	<icons:Fa x:Key="ICON_Title_WarningPanel" Icon="ExclamationCircle" Font="Solid" />
