@@ -16,6 +16,7 @@
 namespace StudioFourteen.Xaml.Silk;
 
 using System.Collections.Generic;
+using System.Threading.Tasks;
 
 public readonly struct Animator
 {
@@ -55,6 +56,20 @@ public readonly struct Animator
 		foreach (Animation anim in this.animations)
 		{
 			anim.Play();
+		}
+	}
+
+	public async Task PlayAsync()
+	{
+		List<Task> animTasks = new();
+		foreach (Animation anim in this.animations)
+		{
+			animTasks.Add(anim.PlayAsync());
+		}
+
+		foreach (Task task in animTasks)
+		{
+			await task;
 		}
 	}
 }

@@ -352,7 +352,25 @@
 				Margin="1"
 				Style="{DynamicResource ControlBorder}">
 
-				<Grid>
+				<Grid x:Name="IconsArea">
+
+					<silk:DoubleAnimation
+						Key="IconsIn"
+						Easing="SineIn"
+						Property="Opacity"
+						From="0"
+						To="1"
+						Duration="100" />
+
+					<silk:DoubleAnimation
+						Key="IconsOut"
+						Easing="SineIn"
+						Property="Opacity"
+						From="1"
+						To="0"
+						Duration="50" />
+
+
 					<!--  Icon Grid  -->
 					<s14:ListBoxEx
 						x:Name="ResultsGrid"

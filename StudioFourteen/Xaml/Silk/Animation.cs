@@ -16,6 +16,7 @@
 namespace StudioFourteen.Xaml.Silk;
 
 using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media.Animation;
 
@@ -50,6 +51,25 @@ public abstract class Animation : UIElement
 
 			this.storyboard.Begin();
 		});
+	}
+
+	public async Task PlayAsync(DependencyObject? target = null)
+	{
+		this.Play(target);
+
+		if (this.storyboard != null)
+		{
+			bool completed = false;
+			this.storyboard.Completed += (s, e) =>
+			{
+				completed = true;
+			};
+
+			while (!completed)
+			{
+				await Task.Delay(10);
+			}
+		}
 	}
 
 	public void Stop()

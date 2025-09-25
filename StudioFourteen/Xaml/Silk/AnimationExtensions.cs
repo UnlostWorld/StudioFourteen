@@ -16,7 +16,7 @@
 namespace StudioFourteen.Xaml.Silk;
 
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
+using System.Threading.Tasks;
 using System.Windows;
 
 public static class AnimationExtensions
@@ -31,6 +31,12 @@ public static class AnimationExtensions
 		self.GetAnimator(key).Stop();
 	}
 
+	public static async Task PlayAnimationAsync(this UIElement self, string key)
+	{
+		await self.MainThread();
+		await self.GetAnimator(key).PlayAsync();
+	}
+
 	public static Animator GetAnimator(this UIElement self, string key)
 	{
 		List<Animation> allAnimations = self.FindChildren<Animation>();
@@ -43,6 +49,9 @@ public static class AnimationExtensions
 				animations.Add(anim);
 			}
 		}
+
+		if (animations.Count <= 0)
+			Logging.Shared.Error($"No animations found with key: \"{key}\"");
 
 		return new Animator(animations);
 	}

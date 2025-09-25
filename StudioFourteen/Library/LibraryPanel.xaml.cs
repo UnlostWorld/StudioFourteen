@@ -15,19 +15,6 @@
 
 namespace StudioFourteen.Library;
 
-using StudioFourteen.Appearance;
-using StudioFourteen.DragAndDrop;
-using StudioFourteen.Environment;
-using StudioFourteen.Files;
-using StudioFourteen.Input;
-using StudioFourteen.Library.Filters;
-using StudioFourteen.Library.Results;
-using StudioFourteen.Library.Sources;
-using StudioFourteen.Mvm;
-using StudioFourteen.Panels;
-using StudioFourteen.Posing;
-using StudioFourteen.Scripting;
-using StudioFourteen.Tags;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -39,7 +26,21 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using StudioFourteen;
+using StudioFourteen.Appearance;
+using StudioFourteen.DragAndDrop;
+using StudioFourteen.Environment;
 using StudioFourteen.Extensions;
+using StudioFourteen.Files;
+using StudioFourteen.Input;
+using StudioFourteen.Library.Filters;
+using StudioFourteen.Library.Results;
+using StudioFourteen.Library.Sources;
+using StudioFourteen.Mvm;
+using StudioFourteen.Panels;
+using StudioFourteen.Posing;
+using StudioFourteen.Scripting;
+using StudioFourteen.Tags;
+using StudioFourteen.Xaml.Silk;
 
 using Panel = StudioFourteen.Panels.Panel;
 
@@ -47,7 +48,6 @@ public partial class LibraryPanel : Panel
 {
 	private readonly FuncQueue searchQueue;
 	private readonly FuncQueue stopPreviewQueue;
-	private readonly Stopwatch searchStopwatch = new();
 	private LibraryPreviewBase? currentPreview;
 	private bool flatten = false;
 	private FrameworkElement? currentHover;
@@ -165,7 +165,8 @@ public partial class LibraryPanel : Panel
 		if (this.CurrentGroup == null)
 			return;
 
-		this.searchStopwatch.Restart();
+		await this.IconsArea.PlayAnimationAsync("IconsOut");
+
 		await this.Dispatcher.MainThread();
 
 		bool flattenResults = this.flatten;
@@ -180,8 +181,6 @@ public partial class LibraryPanel : Panel
 		GroupResult result = new(this.CurrentGroup);
 		result.FilterEntries(filters.ToArray());
 		IEnumerable<Result>? results = result.Get(flattenResults);
-
-		await this.Dispatcher.MainThread();
 
 		await this.Dispatcher.MainThread();
 
@@ -201,6 +200,8 @@ public partial class LibraryPanel : Panel
 		this.AvailableTags.Replace(tags);
 
 		await Task.Delay(33);
+
+		await this.IconsArea.PlayAnimationAsync("IconsIn");
 
 		if (this.SelectedResult == null && this.Results.Count > 0)
 			this.SelectedResult = this.Results[0];
