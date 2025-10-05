@@ -14,9 +14,9 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Compile Remove=".\Lib\**" />
+		<Compile Remove=".\XivLauncher\**" />
 		<ProjectReference
-			Include=".\Lib\src\XIVLauncher.Common.Windows\XIVLauncher.Common.Windows.csproj" />
+			Include=".\XivLauncher\src\XIVLauncher.Common.Windows\XIVLauncher.Common.Windows.csproj" />
 		<PackageReference
 			Include="System.Resources.Extensions" Version="9.0.9" />
 		<PackageReference Include="StyleCop.Analyzers.Unstable" Version="1.2.0.556">
