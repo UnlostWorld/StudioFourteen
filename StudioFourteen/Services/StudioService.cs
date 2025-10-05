@@ -25,6 +25,7 @@ using StudioFourteen.GameData.Library;
 using StudioFourteen.Appearance;
 using StudioFourteen.Scene.GameObjects.Characters;
 using StudioFourteen.Controllers;
+using System.Linq;
 
 [Service]
 public partial class StudioService : ServiceBase
@@ -60,7 +61,9 @@ public partial class StudioService : ServiceBase
 
 	public override Task Start()
 	{
-		if (Debugger.IsAttached)
+		string[] args = System.Environment.GetCommandLineArgs();
+
+		if (Debugger.IsAttached || args.Contains("--S14"))
 		{
 			Task.Run(async () =>
 			{

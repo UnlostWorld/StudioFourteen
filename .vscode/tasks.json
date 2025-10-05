@@ -31,5 +31,13 @@
                 "clear": true
             }
 		},
+		{
+			"type": "shell",
+			"label": "Launch",
+			"command": "dotnet run --project StudioFourteen.Launcher/StudioFourteen.Launcher.csproj",
+			"dependsOn": [
+				"Build"
+			]
+		},
 	]
 }
