@@ -1,39 +1,31 @@
 {
     "version": "0.2.0",
     "configurations": [
-        {
-            "name": "Run",
-            "type": "coreclr",
-            "request": "attach",
-			"justMyCode": true,
-            "preLaunchTask": "Build",
-			"processName": "ffxiv_dx11",
-			"requireExactSource": false,
-			"internalConsoleOptions": "openOnSessionStart",
-
-			"logging": {
-				"moduleLoad": false
-			}
-        },
 		{
-            "name": "Attach",
+			"name": "Attach",
             "type": "coreclr",
-            "request": "attach",
+			"request": "attach",
 			"processName": "ffxiv_dx11",
-			"requireExactSource": false,
-			"internalConsoleOptions": "openOnSessionStart",
-
-			"logging": {
-				"moduleLoad": false
-			}
-        },
-		{
-            "name": "Test",
-            "type": "coreclr",
-			"request": "launch",
-			"program": "${workspaceFolder}/Test/bin/Test.dll",
 			"preLaunchTask": "Build",
+			"requireExactSource": false,
 			"internalConsoleOptions": "openOnSessionStart",
-        }
+
+			"logging": {
+				"moduleLoad": false
+			}
+        },
+		{
+			"type": "coreclr",
+			"request": "attach",
+			"name": "Launch",
+			"processName": "ffxiv_dx11",
+			"preLaunchTask": "Launch",
+			"requireExactSource": false,
+			"internalConsoleOptions": "openOnSessionStart",
+
+			"logging": {
+				"moduleLoad": false
+			}
+		},
     ]
 }
