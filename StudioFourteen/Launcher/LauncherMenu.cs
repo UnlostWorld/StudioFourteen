@@ -81,7 +81,7 @@ public partial class LauncherMenu : Control
 		this.Dispatcher.Invoke(() => this.IsStudioOpen = this.Services.Studio.IsOpen);
 	}
 
-	private void OnIsStudioOpenChanged(bool oldValue, bool newValue)
+	partial void OnIsStudioOpenPropertyChanged(bool oldValue, bool newValue)
 	{
 		if (newValue)
 		{

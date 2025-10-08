@@ -111,7 +111,7 @@ public partial class EnvironmentService
 		}
 	}
 
-	private void OnCurrentWeatherChanged(WeatherLibraryEntry? oldValue, WeatherLibraryEntry? newValue)
+	partial void OnCurrentWeatherPropertyChanged(WeatherLibraryEntry oldValue, WeatherLibraryEntry newValue)
 	{
 		if (this.isReadingWeather || newValue == null)
 			return;

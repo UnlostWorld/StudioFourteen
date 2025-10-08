@@ -143,7 +143,7 @@ public partial class AioWindow : PanelWindow
 		this.IsStudioAttached = false;
 	}
 
-	private void OnIsStudioAttachedChanged(bool oldValue, bool newValue)
+	partial void OnIsStudioAttachedPropertyChanged(bool oldValue, bool newValue)
 	{
 		if (newValue)
 		{

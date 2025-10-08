@@ -104,7 +104,7 @@ public partial class TimeService
 		this.EorzeaTime = newEorzeaTime;
 	}
 
-	protected void OnEorzeaTimeChanged()
+	partial void OnEorzeaTimePropertyChanged(long oldValue, long newValue)
 	{
 		this.isUpdatingEorzeaTime = true;
 
@@ -131,7 +131,7 @@ public partial class TimeService
 		this.isUpdatingEorzeaTime = false;
 	}
 
-	protected void OnDayOfMonthChanged(int oldValue, int newValue)
+	partial void OnDayOfMonthPropertyChanged(int oldValue, int newValue)
 	{
 		if (this.isUpdatingEorzeaTime)
 			return;
@@ -139,7 +139,7 @@ public partial class TimeService
 		this.EorzeaTime = (this.MinuteOfDay * 60) + (86400 * (byte)newValue);
 	}
 
-	protected void OnMinuteOfDayChanged(int oldValue, int newValue)
+	partial void OnMinuteOfDayPropertyChanged(int oldValue, int newValue)
 	{
 		if (this.isUpdatingEorzeaTime)
 			return;

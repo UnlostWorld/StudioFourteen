@@ -173,7 +173,7 @@ public partial class AnimationController
 		return false;
 	}
 
-	protected void OnEnableLoopChanged(bool oldValue, bool newValue)
+	partial void OnEnableLoopPropertyChanged(bool oldValue, bool newValue)
 	{
 		if (newValue == false)
 		{
