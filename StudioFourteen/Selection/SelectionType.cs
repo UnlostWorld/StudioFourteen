@@ -57,7 +57,12 @@ public partial class SelectionType<T> : SelectionTypeBase
 		}
 	}
 
-	private void OnSelectionChanged(T? oldValue, T? newValue)
+	public override void OnSelectionTypeActivated()
+	{
+		ServiceManager.Instance.Selection.Select(this.Selection, this);
+	}
+
+	partial void OnSelectionPropertyChanged(T oldValue, T newValue)
 	{
 		ServiceManager.Instance.Selection.Select(newValue, this);
 	}

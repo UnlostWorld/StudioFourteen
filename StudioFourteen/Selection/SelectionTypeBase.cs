@@ -27,4 +27,6 @@ public abstract partial class SelectionTypeBase
 
 	public abstract void OnObjectRemovedFromScene(SceneObjectBase obj);
 	public abstract void OnObjectAddedToScene(SceneObjectBase obj);
+
+	public abstract void OnSelectionTypeActivated();
 }

@@ -41,6 +41,8 @@ public partial class SelectionPanel : Panel
 			this.currentType = value;
 			this.NotifyPropertyChanged();
 
+			this.currentType?.OnSelectionTypeActivated();
+
 			foreach (CreateType createType in this.CreateTypes)
 			{
 				if (createType?.Type == value?.Type)
