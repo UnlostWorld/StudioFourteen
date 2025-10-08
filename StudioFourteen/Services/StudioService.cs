@@ -70,6 +70,20 @@ public partial class StudioService : ServiceBase
 				while (ServiceManager.Instance.CurrentState <= ServiceManagerBase.States.Starting)
 					await Task.Delay(10);
 
+				if (args.Contains("--S14"))
+				{
+					bool titleLoaded = false;
+					while (!titleLoaded)
+					{
+						await Task.Delay(10);
+						await TickService.GameTick();
+						nint? titleMenu = DalamudServices.GameGui?.GetAddonByName("_TitleMenu");
+						titleLoaded = titleMenu != null && titleMenu != 0;
+					}
+
+					await Task.Delay(500);
+				}
+
 				this.OpenStudio();
 			});
 		}
