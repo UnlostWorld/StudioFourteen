@@ -55,4 +55,19 @@ public abstract partial class TransformSceneObjectBase : SceneObjectBase
 	protected virtual void OnLockTransformChanged(bool oldValue, bool newValue)
 	{
 	}
+
+	partial void OnWorldTransformPropertyChanged(Transform oldValue, Transform newValue)
+	{
+		this.OnWorldTransformChanged(oldValue, newValue);
+	}
+
+	partial void OnLocalTransformPropertyChanged(Transform oldValue, Transform newValue)
+	{
+		this.OnLocalTransformChanged(oldValue, newValue);
+	}
+
+	partial void OnLockTransformPropertyChanged(bool oldValue, bool newValue)
+	{
+		this.OnLockTransformChanged(oldValue, newValue);
+	}
 }
