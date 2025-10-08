@@ -147,7 +147,7 @@ public partial class TerritoryService
 		}
 	}
 
-	private void OnCurrentTerritoryChanged(TerritoryTypeLibraryEntry? oldValue, TerritoryTypeLibraryEntry? newValue)
+	partial void OnCurrentTerritoryPropertyChanged(TerritoryTypeLibraryEntry oldValue, TerritoryTypeLibraryEntry newValue)
 	{
 		this.TerritoryChanged?.Invoke(newValue);
 

@@ -79,7 +79,7 @@ internal class Program
 			if (size == null || progress == null)
 				return;
 
-			Console.WriteLine($"Downloading {size} / {downloaded} bytes. {progress * 100}%");
+			Console.WriteLine($"Downloading {size} / {downloaded} bytes. {progress}%");
 		}
 
 		public void SetStep(IDalamudLoadingOverlay.DalamudUpdateStep step)

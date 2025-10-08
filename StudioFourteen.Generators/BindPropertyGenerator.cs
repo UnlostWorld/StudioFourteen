@@ -75,8 +75,11 @@ public class BindPropertyGenerator : IIncrementalGenerator
 					if (_{{property.Name}} == value)
 						return;
 
+					{{typeStr}} oldValue = _{{property.Name}};
 					_{{property.Name}} = value;
 					this.NotifyPropertyChanged("{{property.Name}}");
+
+					this.On{{property.Name}}PropertyChanged(oldValue, value);
 				}
 				""";
 		}
