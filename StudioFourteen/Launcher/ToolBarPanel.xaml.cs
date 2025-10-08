@@ -71,7 +71,7 @@ public partial class ToolBarPanel : Panel
 		});
 	}
 
-	private void OnAllowMouseCaptureChanged(bool oldValue, bool newValue)
+	partial void OnAllowMouseCapturePropertyChanged(bool oldValue, bool newValue)
 	{
 		this.Settings.AllowMouseCapture = newValue;
 	}
