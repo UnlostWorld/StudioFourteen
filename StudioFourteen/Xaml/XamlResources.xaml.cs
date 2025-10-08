@@ -193,8 +193,11 @@ public partial class XamlResources : ResourceDictionary
 			return fallback;
 		}
 
-		if (Shared.Contains(key))
-			return Shared[key];
+		lock (Shared)
+		{
+			if (Shared.Contains(key))
+				return Shared[key];
+		}
 
 		return fallback;
 	}
