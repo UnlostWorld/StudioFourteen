@@ -361,7 +361,7 @@ public partial class PoseViewBase : View
 
 	private void OnAppearanceChanged(int objectTableIndex)
 	{
-		this.Dispatcher.Invoke(() =>
+		this.Dispatcher.BeginInvoke(() =>
 		{
 			if (this.UpdateWithAppearance)
 			{
