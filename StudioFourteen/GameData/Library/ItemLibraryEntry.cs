@@ -195,20 +195,18 @@ public class ItemLibraryEntry : ExcelLibraryEntry
 public class ItemLibraryPreview(ItemLibraryEntry item)
 	: LibraryPreviewBase
 {
-	/*private WeaponSlot backupWeaponSlot;
+	private Character? backupCharacter;
+	private WeaponSlot backupWeaponSlot;
 	private WeaponModelId? backupWeapon;
 	private EquipmentSlot backupEquipmentSlot;
-	private EquipmentModelId? backupEquipment;*/
+	private EquipmentModelId? backupEquipment;
 
 	protected override async Task Start(LibraryPreviewBase? other)
 	{
-		/*if (other != null)
+		if (other != null)
 		{
 			await other.StopPreviewAsync();
 		}
-
-		if (this.Services.Target.TargetObjectIndex == -1)
-			return;
 
 		if (item.EquipSlot == null)
 			return;
@@ -230,68 +228,75 @@ public class ItemLibraryPreview(ItemLibraryEntry item)
 				await this.Start(slot);
 				return;
 			}
-		}*/
+		}
 	}
 
 	protected virtual async Task Start(EquipmentSlot slot)
 	{
-		/*await TickService.GameTick();
+		await TickService.GameTick();
+
+		Character? character = this.Services.Selection.GetLast<Character>();
 
 		this.backupEquipmentSlot = slot;
+		this.backupCharacter = character;
 
-		unsafe
-		{
-			Character* pCharacter = this.Services.Target.GetTarget();
-			this.backupEquipment = pCharacter->DrawData.Equipment(slot);
-		}
+		if (character == null)
+			return;
 
-		this.Services.CharacterAppearance.SetEquipment(
-			this.Services.Target.TargetObjectIndex,
+		this.backupEquipment = character.GetEquipment(slot);
+
+		character.SetEquipment(
 			slot,
 			item.GetModelId(slot),
-			UpdateSource.Preview);*/
+			UpdateSource.Preview);
 	}
 
 	protected virtual async Task Start(WeaponSlot slot)
 	{
-		/*await TickService.GameTick();
+		await TickService.GameTick();
+
+		Character? character = this.Services.Selection.GetLast<Character>();
 
 		this.backupWeaponSlot = slot;
+		this.backupCharacter = character;
 
-		unsafe
-		{
-			Character* pCharacter = this.Services.Target.GetTarget();
-			this.backupWeapon = pCharacter->DrawData.Weapon(slot).ModelId;
-		}
+		if (character == null)
+			return;
 
-		this.Services.CharacterAppearance.SetWeapon(
-			this.Services.Target.TargetObjectIndex,
+		this.backupWeapon = character.GetWeapon(slot).ModelId;
+
+		character.SetWeapon(
 			slot,
 			item.GetModelId(slot),
-			UpdateSource.Preview);*/
+			UpdateSource.Preview);
 	}
 
 	protected override async Task Stop()
 	{
-		/*await TickService.GameTick();
+		await TickService.GameTick();
 
-		if (this.backupEquipment != null)
+		if (this.backupCharacter != null)
 		{
-			this.Services.CharacterAppearance.SetEquipment(
-				this.Services.Target.TargetObjectIndex,
-				this.backupEquipmentSlot,
-				this.backupEquipment.Value,
-				UpdateSource.Preview);
+			if (this.backupEquipment != null)
+			{
+				this.backupCharacter.SetEquipment(
+					this.backupEquipmentSlot,
+					this.backupEquipment.Value,
+					UpdateSource.Preview);
+			}
+
+			if (this.backupWeapon != null)
+			{
+				this.backupCharacter.SetWeapon(
+					this.backupWeaponSlot,
+					this.backupWeapon.Value,
+					UpdateSource.Preview);
+			}
 		}
 
-		if (this.backupWeapon != null)
-		{
-			this.Services.CharacterAppearance.SetWeapon(
-				this.Services.Target.TargetObjectIndex,
-				this.backupWeaponSlot,
-				this.backupWeapon.Value,
-				UpdateSource.Preview);
-		}*/
+		this.backupCharacter = null;
+		this.backupEquipment = null;
+		this.backupWeapon = null;
 	}
 }
 
