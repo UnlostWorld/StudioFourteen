@@ -299,6 +299,9 @@ public class WpfRenderer : Renderer
 
 		this.Source.Dispatcher.BeginInvoke(() =>
 		{
+			if (ServiceManager.ShutdownRequested)
+				return;
+
 			this.Source.Lock();
 			this.Source.AddDirtyRect(new Int32Rect(0, 0, this.Source.PixelWidth, this.Source.PixelHeight));
 			this.Source.Unlock();
