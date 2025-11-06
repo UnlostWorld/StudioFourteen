@@ -72,4 +72,37 @@
 		<Setter Property="Width" Value="15" />
 	</Style>
 
+	<ControlTemplate x:Key="SkeletonBoneGroupControlTemplate"
+		TargetType="{x:Type local:SkeletonBoneGroupControl}">
+		<Grid>
+			<Border
+				Style="{DynamicResource GroupBorder}"
+				Background="Transparent"
+				BorderThickness="1"
+				Opacity="0.5"
+				BorderBrush="{TemplateBinding Foreground}" />
+
+			<!--<Border
+				Style="{DynamicResource ControlBorder}"
+				VerticalAlignment="Top"
+				HorizontalAlignment="Left"
+				Width="15"
+				Height="15"
+				Margin="6">
+				<Rectangle
+					Margin="5"
+					Fill="{TemplateBinding Foreground}" />
+			</Border>-->
+		</Grid>
+
+	</ControlTemplate>
+
+	<Style TargetType="{x:Type local:SkeletonBoneGroupControl}">
+		<Setter Property="Foreground" Value="{DynamicResource ForegroundLightBrush}" />
+		<Setter Property="MinHeight" Value="15" />
+		<Setter Property="MinWidth" Value="15" />
+		<Setter Property="Margin" Value="0" />
+		<Setter Property="Template" Value="{StaticResource SkeletonBoneGroupControlTemplate}" />
+	</Style>
+
 </ResourceDictionary>

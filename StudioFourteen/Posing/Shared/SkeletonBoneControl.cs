@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Posing.Shared;
 
+using System.Collections.Generic;
 using System.Windows.Controls;
 using DependencyPropertyGenerator;
 using StudioFourteen.Scene;
@@ -75,5 +76,57 @@ public partial class SkeletonBoneControl : Control
 	partial void OnSelectionNameChanged(string? newValue)
 	{
 		this.SafeName = newValue;
+	}
+}
+
+[DependencyProperty<bool>("IsSelected")]
+public partial class SkeletonBoneGroupControl : Control
+{
+	public BoneGroup? Group { get; set; }
+	public List<SkeletonBoneControl>? Bones { get; set; }
+
+	public void UpdatePositions()
+	{
+		if (this.Bones == null || this.Bones.Count <= 0)
+			return;
+
+		double l = double.MaxValue;
+		double t = double.MaxValue;
+		double r = double.MinValue;
+		double b = double.MinValue;
+
+		foreach (SkeletonBoneControl bone in this.Bones)
+		{
+			double boneL = Canvas.GetLeft(bone);
+			double boneT = Canvas.GetTop(bone);
+			double boneR = boneL + bone.Width + bone.Margin.Left + bone.Margin.Right;
+			double boneB = boneT + bone.Height + bone.Margin.Top + bone.Margin.Bottom;
+
+			if (boneL == double.NaN ||
+				boneT == double.NaN ||
+				boneR == double.NaN ||
+				boneB == double.NaN)
+				continue;
+
+			l = double.Min(boneL, l);
+			t = double.Min(boneT, t);
+			r = double.Max(boneR, r);
+			b = double.Max(boneB, b);
+		}
+
+		l -= 6;
+		t -= 6;
+		r += 6;
+		b += 6;
+
+		Canvas.SetLeft(this, l);
+		Canvas.SetTop(this, t);
+
+		this.Width = r - l;
+		this.Height = b - t;
+	}
+
+	public void OnSelectionChanged()
+	{
 	}
 }

@@ -36,6 +36,7 @@ public partial class SimpleView : PoseViewBase
 	public const double BackgroundOpacity = 0.25;
 
 	private readonly List<BoneConnection> boneConnections = new();
+	private readonly Dictionary<string, SkeletonBoneGroupControl> groups = new();
 	private readonly Canvas canvas;
 	private SimpleViewLayout? layout;
 	private double backgroundAspect;
@@ -54,6 +55,7 @@ public partial class SimpleView : PoseViewBase
 			await this.MainThread();
 
 			this.boneConnections.Clear();
+			this.groups.Clear();
 			this.canvas.Children.Clear();
 
 			if (this.LayoutName == null)
@@ -117,7 +119,7 @@ public partial class SimpleView : PoseViewBase
 					if (parentControls == null)
 						continue;
 
-					foreach(SkeletonBoneControl parentControl in parentControls)
+					foreach (SkeletonBoneControl parentControl in parentControls)
 					{
 						bool exists = false;
 						foreach (BoneConnection otherConnection in this.boneConnections)
@@ -134,6 +136,37 @@ public partial class SimpleView : PoseViewBase
 							BoneConnection connection = new(target, parentControl, this.canvas);
 							this.boneConnections.Add(connection);
 						}
+					}
+				}
+			}
+
+			if (this.Services.Content.BoneGroups != null)
+			{
+				foreach (BoneGroup group in this.Services.Content.BoneGroups)
+				{
+					List<SkeletonBoneControl> bones = new();
+					foreach (SkeletonBoneControl target in allTargets)
+					{
+						if (target.Selection is SkeletonBone boneSelection && group.Bones.Contains(boneSelection.BoneName))
+						{
+							bones.Add(target);
+						}
+					}
+
+					if (bones.Count >= 2)
+					{
+						SkeletonBoneGroupControl? border = null;
+						if (!this.groups.TryGetValue(group.Name, out border))
+						{
+							border = new();
+							border.Bones = bones;
+							border.Group = group;
+							Canvas.SetZIndex(border, 0);
+							this.canvas.Children.Add(border);
+						}
+
+						this.groups[group.Name] = border;
+						this.Log.Information($"Found group: {group.Name}");
 					}
 				}
 			}
@@ -214,6 +247,12 @@ public partial class SimpleView : PoseViewBase
 			connection.UpdatePositions();
 			connection.OnSelectionChanged();
 		}
+
+		foreach (SkeletonBoneGroupControl border in this.groups.Values)
+		{
+			border.UpdatePositions();
+			border.OnSelectionChanged();
+		}
 	}
 
 	protected override void OnSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? source)
@@ -225,6 +264,11 @@ public partial class SimpleView : PoseViewBase
 			foreach (BoneConnection connection in this.boneConnections)
 			{
 				connection.OnSelectionChanged();
+			}
+
+			foreach (SkeletonBoneGroupControl group in this.groups.Values)
+			{
+				group.OnSelectionChanged();
 			}
 		});
 	}
@@ -363,7 +407,7 @@ public class SimpleViewLayout
 		if (this.Background == null)
 			this.Background = parent.Background;
 
-		foreach((string key, Point pos) in parent.Bones)
+		foreach ((string key, Point pos) in parent.Bones)
 		{
 			if (this.Bones.ContainsKey(key))
 				continue;
@@ -371,4 +415,10 @@ public class SimpleViewLayout
 			this.Bones.Add(key, pos);
 		}
 	}
+}
+
+public class BoneGroup
+{
+	public string Name { get; set; } = "Unknown";
+	public HashSet<string> Bones { get; set; } = new();
 }
