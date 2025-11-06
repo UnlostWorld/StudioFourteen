@@ -11,6 +11,7 @@
 	xmlns:s14="clr-namespace:StudioFourteen.Xaml"
 	Width="400"
 	Height="600"
+	VisibilityMode="Always"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
 	mc:Ignorable="d">

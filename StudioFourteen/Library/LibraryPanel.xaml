@@ -19,6 +19,7 @@
 	Width="800"
 	Height="600"
 	MinWidth="280"
+	VisibilityMode="Always"
 	MinHeight="300"
 	d:Background="{DynamicResource BackgroundBrush}"
 	d:DataContext="{Binding Path=., RelativeSource={RelativeSource Mode=Self}}"
