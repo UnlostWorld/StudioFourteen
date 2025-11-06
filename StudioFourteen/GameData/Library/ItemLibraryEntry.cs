@@ -179,6 +179,16 @@ public class ItemLibraryEntry : ExcelLibraryEntry
 	{
 		return new ItemLibraryPreview(this);
 	}
+
+	public override async Task Execute()
+	{
+		Character? character = this.Services.Selection.GetLast<Character>();
+
+		if (character == null)
+			return;
+
+		await this.EquipTo(character);
+	}
 }
 
 #pragma warning disable
