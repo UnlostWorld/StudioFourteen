@@ -76,38 +76,44 @@ public partial class PoseViewBase : View
 	{
 		base.OnMouseMove(e);
 
+		Point mousePos = Mouse.GetPosition(this);
+
+		SkeletonBoneControl? control = null;
+		double minDistance = double.MaxValue;
+
+		this.HitTest(mousePos, ref control, ref minDistance);
+
+		if (control != null && minDistance < MouseOverDistance)
+		{
+			this.Services.Selection.HoverSource = control;
+			this.Services.Selection.HoverSelection(control.Selection, this);
+		}
+		else
+		{
+			this.Services.Selection.ClearHover();
+		}
+	}
+
+	protected virtual void HitTest(Point mousePos, ref SkeletonBoneControl? control, ref double minDistance)
+	{
 		if (this.controls == null)
 			return;
 
-		Point mousePos = Mouse.GetPosition(this);
-
-		double closestDist = double.MaxValue;
-		SkeletonBoneControl? closestLink = null;
 		foreach (SkeletonBoneControl target in this.controls)
 		{
 			try
 			{
 				Point targetPos = target.TransformToAncestor(this).Transform(new Point(target.Width / 2, target.Height / 2));
 				double distance = Point.Subtract(mousePos, targetPos).Length;
-				if (distance < closestDist)
+				if (distance < minDistance)
 				{
-					closestDist = distance;
-					closestLink = target;
+					minDistance = distance;
+					control = target;
 				}
 			}
 			catch (Exception)
 			{
 			}
-		}
-
-		if (closestLink != null && closestDist < MouseOverDistance)
-		{
-			this.Services.Selection.HoverSource = closestLink;
-			this.Services.Selection.HoverSelection(closestLink.Selection, this);
-		}
-		else
-		{
-			this.Services.Selection.ClearHover();
 		}
 	}
 

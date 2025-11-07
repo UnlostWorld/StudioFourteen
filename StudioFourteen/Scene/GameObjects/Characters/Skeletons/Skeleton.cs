@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.Havok.Animation.Rig;
 using StudioFourteen.Posing;
+using StudioFourteen.Posing.Shared;
 using StudioFourteen.Scene.Characters.Skeletons;
 using StudioFourteen.Services;
 using StudioFourteen.Structs.Extensions;
@@ -33,6 +34,7 @@ public partial class Skeleton : GameObject
 {
 	private readonly Dictionary<string, SkeletonBone> boneNameLookup = new();
 	private readonly Dictionary<BoneId, BoneReference> boneReferenceLookup = new();
+	private readonly Dictionary<string, SkeletonBoneGroup> boneGroupLookup = new();
 
 	private bool hasGenerated = false;
 
@@ -44,12 +46,14 @@ public partial class Skeleton : GameObject
 
 		this.Gizmos.Add(new SkeletonGizmo(this));
 		this.Bones = new();
+		this.BoneGroups = new();
 
 		this.EnablePosing = this.ObjectIndex == 0 || this.ObjectIndex == GroupPoseService.GPoseFirstCharacter;
 	}
 
 	[Bind] public partial bool EnablePosing { get; set; }
 	public List<SkeletonBone> Bones { get; init; }
+	public List<SkeletonBoneGroup> BoneGroups { get; init; }
 
 	public override void Dispose()
 	{
@@ -281,6 +285,12 @@ public partial class Skeleton : GameObject
 		return bone;
 	}
 
+	public SkeletonBoneGroup? GetGroup(BoneGroup group)
+	{
+		this.boneGroupLookup.TryGetValue(group.Name, out SkeletonBoneGroup? boneGroup);
+		return boneGroup;
+	}
+
 	public void OnUpdateBonePhysics(ref HashSet<nint> modifiedSkeletonPointers)
 	{
 		foreach (SkeletonBone bone in this.Bones)
@@ -324,6 +334,14 @@ public partial class Skeleton : GameObject
 
 		this.Bones.Clear();
 		this.boneNameLookup.Clear();
+
+		foreach (SkeletonBoneGroup group in this.BoneGroups)
+		{
+			SceneService.RemoveObject(group);
+		}
+
+		this.BoneGroups.Clear();
+		this.boneGroupLookup.Clear();
 	}
 
 	private unsafe void GenerateBones()
@@ -413,6 +431,29 @@ public partial class Skeleton : GameObject
 					{
 						bone.SetParent(newParent);
 					}
+				}
+			}
+		}
+
+		if (ContentService.BoneGroups != null)
+		{
+			foreach (BoneGroup group in ContentService.BoneGroups)
+			{
+				List<string> bones = new();
+				foreach ((string boneName, List<BoneReference> references) in boneLookup)
+				{
+					if (group.Bones.Contains(boneName))
+					{
+						bones.Add(boneName);
+					}
+				}
+
+				if (bones.Count >= 2)
+				{
+					SkeletonBoneGroup boneGroup = new(this, group);
+					this.boneGroupLookup.Add(group.Name, boneGroup);
+					SceneService.AddObject(boneGroup);
+					this.BoneGroups.Add(boneGroup);
 				}
 			}
 		}

@@ -74,26 +74,31 @@
 
 	<ControlTemplate x:Key="SkeletonBoneGroupControlTemplate"
 		TargetType="{x:Type local:SkeletonBoneGroupControl}">
-		<Grid>
-			<Border
-				Style="{DynamicResource GroupBorder}"
-				Background="Transparent"
-				BorderThickness="1"
-				Opacity="0.5"
-				BorderBrush="{TemplateBinding Foreground}" />
 
-			<!--<Border
-				Style="{DynamicResource ControlBorder}"
-				VerticalAlignment="Top"
-				HorizontalAlignment="Left"
-				Width="15"
-				Height="15"
-				Margin="6">
-				<Rectangle
-					Margin="5"
-					Fill="{TemplateBinding Foreground}" />
-			</Border>-->
-		</Grid>
+		<Border
+			x:Name="Base"
+			Style="{DynamicResource GroupBorder}"
+			Background="Transparent"
+			BorderThickness="1"
+			Opacity="0.5"
+			BorderBrush="{TemplateBinding Foreground}" />
+
+		<ControlTemplate.Triggers>
+			<Trigger Property="IsMouseHover" Value="true">
+				<Setter TargetName="Base" Property="BorderBrush"
+					Value="{DynamicResource ControlForegroundHighlightBrush}" />
+			</Trigger>
+
+			<Trigger Property="IsSelected" Value="true">
+				<Setter TargetName="Base" Property="BorderBrush" Value="{DynamicResource TrimBrush}" />
+			</Trigger>
+
+			<Trigger Property="IsParentSelected" Value="true">
+				<Setter TargetName="Base" Property="BorderBrush"
+					Value="{DynamicResource ControlForegroundHighlightBrush}" />
+			</Trigger>
+
+		</ControlTemplate.Triggers>
 
 	</ControlTemplate>
 

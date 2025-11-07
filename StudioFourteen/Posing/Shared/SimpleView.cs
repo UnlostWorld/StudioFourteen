@@ -97,7 +97,7 @@ public partial class SimpleView : PoseViewBase
 					SkeletonBoneControl mirrorTarget = new();
 					mirrorTarget.SelectionName = mirrorName;
 					this.canvas.Children.Add(mirrorTarget);
-					Canvas.SetZIndex(target, -100);
+					Canvas.SetZIndex(mirrorTarget, -100);
 				}
 			}
 
@@ -159,8 +159,12 @@ public partial class SimpleView : PoseViewBase
 						if (!this.groups.TryGetValue(group.Name, out border))
 						{
 							border = new();
+							if (this.GameObject is Skeleton skeleton)
+							{
+								border.Selection = skeleton.GetGroup(group);
+							}
+
 							border.Bones = bones;
-							border.Group = group;
 							Canvas.SetZIndex(border, 0);
 							this.canvas.Children.Add(border);
 						}
@@ -170,6 +174,8 @@ public partial class SimpleView : PoseViewBase
 					}
 				}
 			}
+
+			await base.UpdateTargetsAsync();
 
 			this.OnRenderSizeChanged(null);
 		}
@@ -181,6 +187,8 @@ public partial class SimpleView : PoseViewBase
 
 	protected override void ClearTargets()
 	{
+		this.boneConnections.Clear();
+		this.groups.Clear();
 		this.canvas.Children.Clear();
 		base.ClearTargets();
 	}
@@ -251,7 +259,6 @@ public partial class SimpleView : PoseViewBase
 		foreach (SkeletonBoneGroupControl border in this.groups.Values)
 		{
 			border.UpdatePositions();
-			border.OnSelectionChanged();
 		}
 	}
 
@@ -265,12 +272,47 @@ public partial class SimpleView : PoseViewBase
 			{
 				connection.OnSelectionChanged();
 			}
-
-			foreach (SkeletonBoneGroupControl group in this.groups.Values)
-			{
-				group.OnSelectionChanged();
-			}
 		});
+	}
+
+	protected override void HitTest(Point mousePos, ref SkeletonBoneControl? control, ref double minDistance)
+	{
+		foreach (SkeletonBoneGroupControl boneGroupControl in this.groups.Values)
+		{
+			Point tl = boneGroupControl.TransformToAncestor(this).Transform(new Point(0, 0));
+			Point br = boneGroupControl.TransformToAncestor(this).Transform(new Point(boneGroupControl.Width, boneGroupControl.Height));
+
+			double tDist = mousePos.Y - tl.Y;
+			double lDist = mousePos.X - tl.X;
+			double bDist = mousePos.Y - br.Y;
+			double rDist = mousePos.X - br.X;
+
+			if (Math.Abs(tDist) < minDistance && lDist > 0 && rDist < 0)
+			{
+				minDistance = Math.Abs(tDist);
+				control = boneGroupControl;
+			}
+
+			if (Math.Abs(bDist) < minDistance && lDist > 0 && rDist < 0)
+			{
+				minDistance = Math.Abs(bDist);
+				control = boneGroupControl;
+			}
+
+			if (Math.Abs(lDist) < minDistance && tDist > 0 && bDist < 0)
+			{
+				minDistance = Math.Abs(lDist);
+				control = boneGroupControl;
+			}
+
+			if (Math.Abs(rDist) < minDistance && tDist > 0 && bDist < 0)
+			{
+				minDistance = Math.Abs(rDist);
+				control = boneGroupControl;
+			}
+		}
+
+		base.HitTest(mousePos, ref control, ref minDistance);
 	}
 
 	partial void OnLayoutNameChanged()

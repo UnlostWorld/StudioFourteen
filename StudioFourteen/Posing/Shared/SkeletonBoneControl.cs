@@ -20,6 +20,7 @@ using System.Windows.Controls;
 using DependencyPropertyGenerator;
 using StudioFourteen.Scene;
 
+[Logger]
 [DependencyProperty<string>("SelectionName")]
 [DependencyProperty<string>("Label")]
 [DependencyProperty<bool>("IsMouseHover")]
@@ -32,7 +33,7 @@ public partial class SkeletonBoneControl : Control
 	public string? SafeName { get; private set; }
 	public bool IsSafeValid { get; set; }
 
-	public void OnHoverChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? source)
+	public virtual void OnHoverChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? source)
 	{
 		if (newSelection == null || this.Selection == null)
 		{
@@ -44,7 +45,7 @@ public partial class SkeletonBoneControl : Control
 		this.IsMouseHover = isHover;
 	}
 
-	public void OnSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? source)
+	public virtual void OnSelectionChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? source)
 	{
 		if (newSelection == null || this.Selection == null)
 		{
@@ -79,10 +80,8 @@ public partial class SkeletonBoneControl : Control
 	}
 }
 
-[DependencyProperty<bool>("IsSelected")]
-public partial class SkeletonBoneGroupControl : Control
+public partial class SkeletonBoneGroupControl : SkeletonBoneControl
 {
-	public BoneGroup? Group { get; set; }
 	public List<SkeletonBoneControl>? Bones { get; set; }
 
 	public void UpdatePositions()
@@ -126,7 +125,9 @@ public partial class SkeletonBoneGroupControl : Control
 		this.Height = b - t;
 	}
 
-	public void OnSelectionChanged()
+	public override void OnHoverChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? source)
 	{
+		this.Log.Information($">> {newSelection?.Id} == {this.Selection?.Id}");
+		base.OnHoverChanged(oldSelection, newSelection, source);
 	}
 }
