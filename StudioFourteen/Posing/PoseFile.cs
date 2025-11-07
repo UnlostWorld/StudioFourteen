@@ -59,7 +59,8 @@ public class PoseFile : FileBase
 
 	public override Task Execute()
 	{
-		if (ServiceManager.Instance.Selection.Current is Skeleton skeleton)
+		Skeleton? skeleton = ServiceManager.Instance.Selection.GetLast<Skeleton>();
+		if (skeleton != null)
 		{
 			return skeleton.ImportPose(this, UpdateSource.Interface);
 		}

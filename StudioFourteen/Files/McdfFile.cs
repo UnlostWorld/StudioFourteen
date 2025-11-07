@@ -113,7 +113,8 @@ public class MareFile
 
 	public override Task Execute()
 	{
-		if (ServiceManager.Instance.Selection.Current is Character character)
+		Character? character = ServiceManager.Instance.Selection.GetLast<Character>();
+		if (character != null)
 		{
 			return this.Apply(character, UpdateSource.Interface);
 		}
