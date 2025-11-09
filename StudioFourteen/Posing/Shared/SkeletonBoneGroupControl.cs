@@ -66,7 +66,6 @@ public partial class SkeletonBoneGroupControl : SkeletonBoneControl
 
 	public override void OnHoverChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? source)
 	{
-		this.Log.Information($">> {newSelection?.Id} == {this.Selection?.Id}");
 		base.OnHoverChanged(oldSelection, newSelection, source);
 	}
 }

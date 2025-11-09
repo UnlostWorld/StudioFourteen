@@ -95,7 +95,7 @@
 	<icons:Fa x:Key="ICON_AddObject" Icon="Plus" Font="Solid" />
 
 	<icons:Svg x:Key="ICON_Selection" Source="SelectionBounds" />
-	<icons:Fa x:Key="ICON_TransformLOC_Type_Bones_Translate" Icon="Arrows" Font="Solid" />
+	<icons:Fa x:Key="ICON_Transform_Translate" Icon="Arrows" Font="Solid" />
 	<icons:Fa x:Key="ICON_Transform_Rotate" Icon="Rotate" Font="Solid" />
 	<icons:Svg x:Key="ICON_Transform_Scale" Source="TransformScale"/>
 
