@@ -15,10 +15,10 @@
 
 namespace StudioFourteen.Posing.Shared;
 
-using System.Collections.Generic;
 using System.Windows.Controls;
 using DependencyPropertyGenerator;
 using StudioFourteen.Scene;
+using StudioFourteen.Scene.GameObjects.Characters.Skeletons;
 
 [Logger]
 [DependencyProperty<string>("SelectionName")]
@@ -57,6 +57,14 @@ public partial class SkeletonBoneControl : Control
 
 		this.IsParentSelected = false;
 
+		if (newSelection is SkeletonBoneGroup boneGroup && this.Selection is SkeletonBone bone)
+		{
+			if (boneGroup.Contains(bone))
+			{
+				this.IsParentSelected = true;
+			}
+		}
+
 		// TODO
 		/*if (this.Selection is SkeletonBone boneSelection && newSelection is SkeletonBone newBoneSelection)
 		{
@@ -77,57 +85,5 @@ public partial class SkeletonBoneControl : Control
 	partial void OnSelectionNameChanged(string? newValue)
 	{
 		this.SafeName = newValue;
-	}
-}
-
-public partial class SkeletonBoneGroupControl : SkeletonBoneControl
-{
-	public List<SkeletonBoneControl>? Bones { get; set; }
-
-	public void UpdatePositions()
-	{
-		if (this.Bones == null || this.Bones.Count <= 0)
-			return;
-
-		double l = double.MaxValue;
-		double t = double.MaxValue;
-		double r = double.MinValue;
-		double b = double.MinValue;
-
-		foreach (SkeletonBoneControl bone in this.Bones)
-		{
-			double boneL = Canvas.GetLeft(bone);
-			double boneT = Canvas.GetTop(bone);
-			double boneR = boneL + bone.Width + bone.Margin.Left + bone.Margin.Right;
-			double boneB = boneT + bone.Height + bone.Margin.Top + bone.Margin.Bottom;
-
-			if (boneL == double.NaN ||
-				boneT == double.NaN ||
-				boneR == double.NaN ||
-				boneB == double.NaN)
-				continue;
-
-			l = double.Min(boneL, l);
-			t = double.Min(boneT, t);
-			r = double.Max(boneR, r);
-			b = double.Max(boneB, b);
-		}
-
-		l -= 6;
-		t -= 6;
-		r += 6;
-		b += 6;
-
-		Canvas.SetLeft(this, l);
-		Canvas.SetTop(this, t);
-
-		this.Width = r - l;
-		this.Height = b - t;
-	}
-
-	public override void OnHoverChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? source)
-	{
-		this.Log.Information($">> {newSelection?.Id} == {this.Selection?.Id}");
-		base.OnHoverChanged(oldSelection, newSelection, source);
 	}
 }

@@ -484,7 +484,7 @@
 	<sys:String x:Key="LOC_Type_Character">Character</sys:String>
 	<sys:String x:Key="LOC_Type_Characters">Characters</sys:String>
 	<sys:String x:Key="LOC_Type_Bone">Bone</sys:String>
-	<sys:String x:Key="LOC_Type_Bones">Bones</sys:String>
+	<sys:String x:Key="LOC_Type_Bones">Bone Group</sys:String>
 
 	<!--  AIO  -->
 	<sys:String x:Key="LOC_AIO_Title">Studio Fourteen</sys:String>

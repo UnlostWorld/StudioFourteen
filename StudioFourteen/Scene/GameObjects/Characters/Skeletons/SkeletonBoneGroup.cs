@@ -28,6 +28,7 @@ public class SkeletonBoneGroup : SceneObjectBase
 	{
 		this.skeleton = skeleton;
 		this.group = group;
+		this.Name = group.Name;
 	}
 
 	public BoneGroup? BoneGroup => this.group;
@@ -35,4 +36,9 @@ public class SkeletonBoneGroup : SceneObjectBase
 	public override string Id => new($"BoneGroup:{this.group.Name}:{this.skeleton.ObjectIndex}");
 	public override object? Icon => XamlResources.Find("ICON_Type_Bones");
 	public override string TypeName => XamlResources.Find("LOC_Type_Bones", "Bones");
+
+	public bool Contains(SkeletonBone bone)
+	{
+		return this.BoneGroup?.Bones.Contains(bone.BoneName) == true;
+	}
 }

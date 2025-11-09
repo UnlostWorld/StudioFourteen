@@ -85,6 +85,8 @@
 		<ResourceDictionary Source="../Scene/GameObjects/Characters/CharacterInspector.xaml" />
 		<ResourceDictionary
 			Source="../Scene/GameObjects/Characters/Skeletons/SkeletonBoneInspector.xaml" />
+		<ResourceDictionary
+			Source="../Scene/GameObjects/Characters/Skeletons/SkeletonBoneGroupInspector.xaml" />
 		<ResourceDictionary Source="../Scene/GameObjects/Characters/DrawData/Weapon.xaml" />
 		<ResourceDictionary Source="../Scene/GameObjects/Characters/DrawData/Equipment.xaml" />
 		<ResourceDictionary Source="../Scene/Cameras/CameraInspector.xaml" />

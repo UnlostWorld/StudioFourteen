@@ -33,7 +33,7 @@ using Panel = StudioFourteen.Panels.Panel;
 public partial class PosePanel : Panel
 {
 	private readonly SelectionListener<Skeleton> skeletonSelectionListener;
-	private readonly SelectionListener<TransformSceneObjectBase> sceneObjectSelectionListener;
+	private readonly SelectionListener<SceneObjectBase> sceneObjectSelectionListener;
 
 	private readonly FuncQueue showTooltipQueue;
 	private SceneObjectBase? nextHover;
@@ -116,8 +116,8 @@ public partial class PosePanel : Panel
 	}
 
 	private void OnSceneSelectionChanged(
-		TransformSceneObjectBase? oldSelection,
-		TransformSceneObjectBase? newSelection,
+		SceneObjectBase? oldSelection,
+		SceneObjectBase? newSelection,
 		object? source)
 	{
 		this.Selection = newSelection;
