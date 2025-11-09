@@ -340,7 +340,7 @@ public partial class PanelWindow : MultithreadedWindow, IAutoNotify, Panel.IHost
 		this.NotifyPropertyChanged(nameof(this.IsOpen));
 		this.isMinimizing = minimize;
 
-		this.Dispatcher.Invoke(this.Close);
+		this.Dispatcher.BeginInvoke(() => base.Close());
 	}
 
 	public new void DragMove()
