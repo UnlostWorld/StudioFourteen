@@ -139,7 +139,9 @@ public partial class Widget : Panel
 			await this.MainThread();
 
 			this.Gizmos.Clear();
-			this.Gizmos.Add(this.Services.Gizmos.Transform);
+
+			if (newSelection is TransformSceneObjectBase)
+				this.Gizmos.Add(this.Services.Gizmos.Transform);
 
 			if (newSelection != null)
 			{

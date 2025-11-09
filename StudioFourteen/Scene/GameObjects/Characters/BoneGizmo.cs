@@ -71,7 +71,7 @@ public class SkeletonBoneGizmo : SelectionHandle
 			this.IsVisible = false;
 
 		// If this is genital and hide genitals!
-		if (this.Services.Settings.Current.HideGenitals && this.Services.Content.GenitalBones?.Contains(this.skeletonBone.BoneName) == true)
+		if (SettingsService.Current.HideGenitals && ContentService.GenitalBones?.Contains(this.skeletonBone.BoneName) == true)
 			this.IsVisible = false;
 
 		Transform boneTransform = *pPose->AccessBoneModelSpace(this.boneId.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
@@ -87,10 +87,22 @@ public class SkeletonBoneGizmo : SelectionHandle
 			parent = parent.Parent;
 		}
 
-		bool isAnyBoneSelected = this.Services.Selection.Current is SkeletonBone;
-		bool isAnyBoneHovered = this.Services.Selection.Hover is SkeletonBone;
+		bool isAnyBoneSelected = SelectionService.Current is SkeletonBone || SelectionService.Current is SkeletonBoneGroup;
+		bool isAnyBoneHovered = SelectionService.Hover is SkeletonBone || SelectionService.Hover is SkeletonBoneGroup;
 		bool isHoveredOrSelected = this.IsHovered | this.IsSelected;
 		bool isAnyHandleDragging = this.CurrentRenderer?.Input.CurrentPress?.IsDragging == true;
+
+		bool isGroupHovered = false;
+		if (SelectionService.Hover is SkeletonBoneGroup hoverGroup)
+		{
+			isGroupHovered = hoverGroup.Contains(this.Selection);
+		}
+
+		bool isGroupSelected = false;
+		if (SelectionService.Current is SkeletonBoneGroup currentGroup)
+		{
+			isGroupSelected = currentGroup.Contains(this.Selection);
+		}
 
 		this.capRenderer.Material.Size = isHoveredOrSelected ? 2.0f : 1.0f;
 		this.capRenderer.Material.DepthOffset = isHoveredOrSelected ? 0.001f : 0f;
@@ -100,12 +112,12 @@ public class SkeletonBoneGizmo : SelectionHandle
 		{
 			desiredAlpha = 0.0f;
 		}
-		else if (this.IsSelected || isAnyParentSelected)
+		else if (this.IsSelected || isAnyParentSelected || isGroupSelected)
 		{
 			desiredAlpha = 1.0f;
 			this.capRenderer.Material.Color = new(1.0f, 0.08f, 0.58f, 1.0f);
 		}
-		else if (this.IsHovered || isAnyParentHovered)
+		else if (this.IsHovered || isAnyParentHovered || isGroupHovered)
 		{
 			desiredAlpha = 1.0f;
 			this.capRenderer.Material.Color = Color.White;
@@ -135,7 +147,7 @@ public class SkeletonBoneGizmo : SelectionHandle
 				return;
 
 			// If this is genital and hide genitals!
-			if (this.Services.Settings.Current.HideGenitals && this.Services.Content.GenitalBones?.Contains(this.skeletonBone.Parent.BoneName) == true)
+			if (SettingsService.Current.HideGenitals && ContentService.GenitalBones?.Contains(this.skeletonBone.Parent.BoneName) == true)
 				return;
 
 			Transform childModelSpaceTransform = *pPose->AccessBoneModelSpace(boneId.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);

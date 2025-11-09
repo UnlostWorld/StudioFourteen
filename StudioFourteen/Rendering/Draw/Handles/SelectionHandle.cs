@@ -25,8 +25,8 @@ public class SelectionHandle : Handle
 	{
 		this.selection = selection;
 
-		this.Services.Selection.HoverChanged += this.OnSelectionHoverChanged;
-		this.Services.Selection.SelectionChanged += this.OnSelectionChanged;
+		SelectionService.HoverChanged += this.OnSelectionHoverChanged;
+		SelectionService.SelectionChanged += this.OnSelectionChanged;
 	}
 
 	public bool IsSelected { get; private set; }
@@ -37,12 +37,12 @@ public class SelectionHandle : Handle
 	{
 		if (hover)
 		{
-			this.Services.Selection.HoverSelection(this.selection, this);
-			this.Services.Selection.HoverSource = this;
+			SelectionService.HoverSelection(this.selection, this);
+			SelectionService.HoverSource = this;
 		}
-		else if (this.Services.Selection.Hover?.Id == this.selection.Id)
+		else if (SelectionService.Hover?.Id == this.selection.Id)
 		{
-			this.Services.Selection.ClearHover();
+			SelectionService.ClearHover();
 		}
 
 		base.SetIsHandleHovered(hover);
@@ -54,14 +54,14 @@ public class SelectionHandle : Handle
 
 		if (!isPressed)
 		{
-			if (this.Services.Selection.Current == this.selection)
+			if (SelectionService.Current == this.selection)
 			{
-				this.Services.Selection.ExpandedSelection = true;
+				SelectionService.ExpandedSelection = true;
 			}
 			else
 			{
-				this.Services.Selection.ExpandedSelection = false;
-				this.Services.Selection.Select(this.selection, this);
+				SelectionService.ExpandedSelection = false;
+				SelectionService.Select(this.selection, this);
 			}
 		}
 	}

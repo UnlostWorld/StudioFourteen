@@ -27,7 +27,7 @@ public abstract class SceneObjectGizmoBase : GizmoBase
 	public void Enable(SceneObjectBase sceneObject, ForwardPass? pass = null)
 	{
 		if (pass == null)
-			pass = this.Services.Rendering.OverlayRenderer.Forward;
+			pass = RenderingService.OverlayRenderer.Forward;
 
 		this.sceneObject = sceneObject;
 		this.Enable(pass);

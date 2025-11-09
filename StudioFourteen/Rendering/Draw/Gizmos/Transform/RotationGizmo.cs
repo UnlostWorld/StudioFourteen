@@ -214,14 +214,14 @@ public class RotationGizmo : TransformGizmoBase
 			float angleChange = dragDelta / 50;
 			angleChange *= this.Sensitivity;
 
-			if (this.Services.Input.FastChange)
+			if (InputService.FastChange)
 				angleChange *= 10;
 
-			if (this.Services.Input.SlowChange)
+			if (InputService.SlowChange)
 				angleChange /= 10;
 
-			if (this.Services.Tablet.PenPressure > 0)
-				angleChange *= (float)this.Services.Tablet.PenPressure;
+			if (TabletService.PenPressure > 0)
+				angleChange *= (float)TabletService.PenPressure;
 
 			Quaternion rot = Quaternion.CreateFromAxisAngle(this.AxisUnit, angleChange);
 			this.gizmo.TargetTransform = Transform.FromRotation(rot) * this.gizmo.TargetTransform;

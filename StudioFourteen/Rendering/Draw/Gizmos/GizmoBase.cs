@@ -56,19 +56,19 @@ public abstract class GizmoBase : DrawGroup, INotifyPropertyChanged
 	public virtual void Enable(ForwardPass? pass = null)
 	{
 		if (pass == null)
-			pass = this.Services.Rendering.OverlayRenderer.Forward;
+			pass = RenderingService.OverlayRenderer.Forward;
 
 		this.renderPass = pass;
 		this.renderPass.Add(this);
 
-		this.Services.Gizmos.Enable(this);
+		GizmoService.Enable(this);
 		this.OnPersistenceChanged();
 	}
 
 	public virtual void Disable()
 	{
 		this.renderPass?.Remove(this);
-		this.Services.Gizmos.Disable(this);
+		GizmoService.Disable(this);
 	}
 
 	public T? GetPersistence<T>([CallerMemberName] string id = "", T? defaultValue = default) => this.Persistence.GetPersistence<T>(id, defaultValue);

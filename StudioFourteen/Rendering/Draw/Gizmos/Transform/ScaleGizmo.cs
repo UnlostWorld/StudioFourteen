@@ -217,14 +217,14 @@ public class ScaleGizmo : TransformGizmoBase
 			float change = dragDelta / 500;
 			change *= this.Sensitivity;
 
-			if (this.Services.Input.FastChange)
+			if (InputService.FastChange)
 				change *= 10;
 
-			if (this.Services.Input.SlowChange)
+			if (InputService.SlowChange)
 				change /= 10;
 
-			if (this.Services.Tablet.PenPressure > 0)
-				change *= (float)this.Services.Tablet.PenPressure;
+			if (TabletService.PenPressure > 0)
+				change *= (float)TabletService.PenPressure;
 
 			Vector3 move = this.AxisUnit * change;
 
@@ -323,14 +323,14 @@ public class ScaleGizmo : TransformGizmoBase
 			float change = mag / 500;
 			change *= this.Sensitivity;
 
-			if (this.Services.Input.FastChange)
+			if (InputService.FastChange)
 				change *= 10;
 
-			if (this.Services.Input.SlowChange)
+			if (InputService.SlowChange)
 				change /= 10;
 
-			if (this.Services.Tablet.PenPressure > 0)
-				change *= (float)this.Services.Tablet.PenPressure;
+			if (TabletService.PenPressure > 0)
+				change *= (float)TabletService.PenPressure;
 
 			Vector3 move = Vector3.One * change;
 
@@ -346,7 +346,7 @@ public class ScaleGizmo : TransformGizmoBase
 		protected override void OnEndDrag()
 		{
 			Vector2 pos = this.GetScreenPosition(Vector3.Zero);
-			this.Services.Windows.SetCursorPosition(pos);
+			WindowService.SetCursorPosition(pos);
 
 			base.OnEndDrag();
 		}

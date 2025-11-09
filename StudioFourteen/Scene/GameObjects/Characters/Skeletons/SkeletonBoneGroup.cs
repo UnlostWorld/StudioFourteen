@@ -37,6 +37,14 @@ public class SkeletonBoneGroup : SceneObjectBase
 	public override object? Icon => XamlResources.Find("ICON_Type_Bones");
 	public override string TypeName => XamlResources.Find("LOC_Type_Bones", "Bones");
 
+	public bool Contains(SceneObjectBase sceneObject)
+	{
+		if (sceneObject is SkeletonBone bone)
+			return this.Contains(bone);
+
+		return false;
+	}
+
 	public bool Contains(SkeletonBone bone)
 	{
 		return this.BoneGroup?.Bones.Contains(bone.BoneName) == true;

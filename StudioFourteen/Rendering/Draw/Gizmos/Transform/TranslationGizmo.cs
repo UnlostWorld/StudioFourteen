@@ -277,14 +277,14 @@ public class TranslationGizmo : TransformGizmoBase
 			float change = dragDelta / 50;
 			change *= this.Sensitivity;
 
-			if (this.Services.Input.FastChange)
+			if (InputService.FastChange)
 				change *= 10;
 
-			if (this.Services.Input.SlowChange)
+			if (InputService.SlowChange)
 				change /= 10;
 
-			if (this.Services.Tablet.PenPressure > 0)
-				change *= (float)this.Services.Tablet.PenPressure;
+			if (TabletService.PenPressure > 0)
+				change *= (float)TabletService.PenPressure;
 
 			Vector3 move = this.AxisUnit * change;
 			this.gizmo.TargetTransform = Transform.FromTranslation(-move) * this.gizmo.TargetTransform;
@@ -375,14 +375,14 @@ public class TranslationGizmo : TransformGizmoBase
 
 			float multiplier = this.Sensitivity;
 
-			if (this.Services.Input.FastChange)
+			if (InputService.FastChange)
 				multiplier *= 10;
 
-			if (this.Services.Input.SlowChange)
+			if (InputService.SlowChange)
 				multiplier /= 10;
 
-			if (this.Services.Tablet.PenPressure > 0)
-				multiplier *= (float)this.Services.Tablet.PenPressure;
+			if (TabletService.PenPressure > 0)
+				multiplier *= (float)TabletService.PenPressure;
 
 			Vector2 a = this.GetScreenVector(this.Axis1Flipped ? Vector3.UnitX : -Vector3.UnitX);
 			Vector2 b = this.GetScreenVector(this.Axis2Flipped ? Vector3.UnitZ : -Vector3.UnitZ);
@@ -406,7 +406,7 @@ public class TranslationGizmo : TransformGizmoBase
 		protected override void OnEndDrag()
 		{
 			Vector2 pos = this.GetScreenPosition(new(0.25f, 0, 0.25f));
-			this.Services.Windows.SetCursorPosition(pos);
+			WindowService.SetCursorPosition(pos);
 
 			this.gizmo.EndManipulation();
 

@@ -20,19 +20,13 @@ using System.Numerics;
 using Serilog;
 using SharpDX.Direct3D11;
 
-public abstract class DrawObject : IDisposable
+[Services]
+[Logger]
+public abstract partial class DrawObject : IDisposable
 {
 	public Transform Transform = Transform.Identity;
 	public DrawObject? Parent;
 
-	protected readonly ILogger Log;
-
-	public DrawObject()
-	{
-		this.Log = Logging.ForContext(this.GetType());
-	}
-
-	public ServiceManager Services => ServiceManager.Instance;
 	public virtual bool IsHitTestVisible { get; set; } = true;
 	public virtual bool IsVisible { get; set; } = true;
 

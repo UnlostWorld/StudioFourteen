@@ -71,7 +71,7 @@ public abstract class Handle : DrawGroup
 
 	public Vector2 GetScreenPosition(Vector3 localPosition)
 	{
-		Transform viewProj = this.Services.Camera.CurrentView * this.Services.Camera.CurrentProjection;
+		Transform viewProj = CameraService.CurrentView * CameraService.CurrentProjection;
 
 		Vector4 screenPosition = new(localPosition, 1);
 		screenPosition = Vector4.Transform(screenPosition, this.WorldTransform.ToMatrix());

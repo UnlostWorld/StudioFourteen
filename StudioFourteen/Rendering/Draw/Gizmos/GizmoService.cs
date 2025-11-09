@@ -80,7 +80,7 @@ public partial class GizmoService : ServiceBase
 			this.selection.Disable();
 		}
 
-		if (newSelection != null)
+		if (newSelection != null && newSelection is TransformSceneObjectBase)
 		{
 			this.Transform.Enable(newSelection, this.Services.Rendering.OverlayRenderer.Forward);
 			this.selection.Enable(newSelection, this.Services.Rendering.OverlayRenderer.Forward);

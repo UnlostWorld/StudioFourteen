@@ -56,7 +56,9 @@ public partial class ToolBarPanel : Panel
 		this.Dispatcher.Invoke(() =>
 		{
 			this.Gizmos.Clear();
-			this.Gizmos.Add(this.Services.Gizmos.Transform);
+
+			if (newSelection is TransformSceneObjectBase)
+				this.Gizmos.Add(this.Services.Gizmos.Transform);
 
 			if (newSelection != null)
 			{

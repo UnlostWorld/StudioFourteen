@@ -60,8 +60,17 @@ public partial class SkeletonBoneGroupControl : SkeletonBoneControl
 		Canvas.SetLeft(this, l);
 		Canvas.SetTop(this, t);
 
-		this.Width = r - l;
-		this.Height = b - t;
+		double width = r - l;
+		double height = b - t;
+
+		if (double.IsInfinity(width))
+			return;
+
+		if (double.IsInfinity(height))
+			return;
+
+		this.Width = width;
+		this.Height = height;
 	}
 
 	public override void OnHoverChanged(SceneObjectBase? oldSelection, SceneObjectBase? newSelection, object? source)
