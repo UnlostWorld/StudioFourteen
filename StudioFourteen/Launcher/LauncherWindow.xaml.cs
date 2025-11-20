@@ -53,6 +53,9 @@ public partial class LauncherWindow : PanelWindow
 
 	protected override void OnLocationChanged(EventArgs e)
 	{
+		if (ServiceManager.ShutdownRequested)
+			return;
+
 		base.OnLocationChanged(e);
 		this.IsRightSide = this.Position.X > 0.5;
 		this.IsBottomSide = this.Position.Y > 0.5;
