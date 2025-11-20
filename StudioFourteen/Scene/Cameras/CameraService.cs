@@ -110,6 +110,9 @@ public class CameraService : ServiceBase
 	public Vector3 CurrentPosition { get; private set; }
 	public Vector3 CurrentForward { get; private set; }
 
+	// Only valid while using studio cameras
+	public Quaternion LastRotationState => this.state.Rotation;
+
 	public override Task Initialize()
 	{
 		this.Services.Library.AddSource(new EmptyCamerasLibrarySource());

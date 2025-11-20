@@ -29,8 +29,9 @@ using XivSkeleton = FFXIVClientStructs.FFXIV.Client.Graphics.Render.Skeleton;
 
 public class SkeletonBoneGizmo : SelectionHandle
 {
-	public float GroupAlphaMultiplier = 1;
+	public float GroupAlpha = 1;
 	public float GroupDepthOffset = 0;
+	public Vector3? GroupOverridePosition = null;
 
 	private readonly SkeletonBone skeletonBone;
 	private readonly BoneId boneId;
@@ -52,6 +53,7 @@ public class SkeletonBoneGizmo : SelectionHandle
 	}
 
 	public override bool CanDrag => false;
+	public string BoneName => this.skeletonBone.BoneName;
 
 	protected unsafe override void OnDraw()
 	{
@@ -77,8 +79,18 @@ public class SkeletonBoneGizmo : SelectionHandle
 		if (SettingsService.Current.HideGenitals && ContentService.GenitalBones?.Contains(this.skeletonBone.BoneName) == true)
 			this.IsVisible = false;
 
-		Transform boneTransform = *pPose->AccessBoneModelSpace(this.boneId.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
-		this.capRenderer.Transform = boneTransform;
+		Vector3 bonePos = Vector3.Zero;
+		if (this.GroupOverridePosition == null)
+		{
+			Transform boneTransform = *pPose->AccessBoneModelSpace(this.boneId.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
+			this.capRenderer.Transform = boneTransform;
+			bonePos = Vector3.Transform(Vector3.Zero, boneTransform.ToMatrix());
+		}
+		else
+		{
+			bonePos = (Vector3)this.GroupOverridePosition;
+			this.capRenderer.Transform = Transform.FromTranslation(bonePos);
+		}
 
 		bool isAnyParentSelected = false;
 		bool isAnyParentHovered = false;
@@ -136,10 +148,13 @@ public class SkeletonBoneGizmo : SelectionHandle
 		}
 
 		this.alpha = float.Lerp(this.alpha, desiredAlpha, 0.25f);
-		this.capRenderer.Material.Color.A = this.alpha * this.GroupAlphaMultiplier;
-		this.IsVisible = this.GroupAlphaMultiplier > 0;
+		this.capRenderer.Material.Color.A = this.alpha;
 
-		Vector3 bonePos = Vector3.Transform(Vector3.Zero, boneTransform.ToMatrix());
+		if (this.GroupOverridePosition != null)
+		{
+			this.capRenderer.Material.Color.A = this.GroupAlpha;
+			this.IsVisible = this.GroupAlpha > 0.01f;
+		}
 
 		if (this.skeletonBone.Parent != null)
 		{
@@ -178,7 +193,12 @@ public class SkeletonBoneGizmo : SelectionHandle
 				this.connectionRenderer.Material.Color = new(0.5f, 0.5f, 0.5f, 1.0f);
 			}
 
-			this.connectionRenderer.Material.Color.A = this.alpha * this.GroupAlphaMultiplier;
+			this.connectionRenderer.Material.Color.A = this.alpha * this.GroupAlpha;
+
+			if (this.GroupOverridePosition != null)
+			{
+				this.connectionRenderer.Material.Color.A = 0;
+			}
 		}
 	}
 }

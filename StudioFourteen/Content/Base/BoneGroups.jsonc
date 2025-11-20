@@ -1,6 +1,7 @@
 [
 	{
 		"Name": "Mouth",
+		"SimpleLayout": "Face",
 		"Bones": [
 			"j_f_umlip_01_l",
 			"j_f_umlip_01_r",
@@ -40,6 +41,7 @@
 	},
 	{
 		"Name": "EyeLeft",
+		"SimpleLayout": "Face",
 		"Bones": [
 			// Eyeball
 			"j_f_eyepuru_l",
@@ -65,6 +67,7 @@
 	},
 	{
 		"Name": "EyeRight",
+		"SimpleLayout": "Face",
 		"Bones": [
 			// Eyeball
 			"j_f_eyepuru_r",

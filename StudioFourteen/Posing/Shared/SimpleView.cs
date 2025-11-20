@@ -461,6 +461,20 @@ public class SimpleViewLayout
 
 public class BoneGroup
 {
+	private SimpleViewLayout? layout;
+
 	public string Name { get; set; } = "Unknown";
 	public HashSet<string> Bones { get; set; } = new();
+	public string? SimpleLayout { get; set; }
+
+	public SimpleViewLayout? GetSimpleViewLayout()
+	{
+		if (this.SimpleLayout == null)
+			return null;
+
+		if (this.layout == null)
+			ServiceManager.Instance.Content.SimplePoseLayouts?.TryGetValue(this.SimpleLayout, out this.layout);
+
+		return this.layout;
+	}
 }
