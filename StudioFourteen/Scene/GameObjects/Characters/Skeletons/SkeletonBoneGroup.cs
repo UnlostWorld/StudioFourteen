@@ -15,12 +15,15 @@
 
 namespace StudioFourteen.Scene.GameObjects.Characters.Skeletons;
 
+using System.Collections.Generic;
 using StudioFourteen.Posing;
 using StudioFourteen.Scene;
 using StudioFourteen.Xaml;
 
 public class SkeletonBoneGroup : SceneObjectBase
 {
+	public List<SkeletonBone>? Bones;
+
 	private readonly Skeleton skeleton;
 	private readonly BoneGroup group;
 

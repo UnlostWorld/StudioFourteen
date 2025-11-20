@@ -29,6 +29,9 @@ using XivSkeleton = FFXIVClientStructs.FFXIV.Client.Graphics.Render.Skeleton;
 
 public class SkeletonBoneGizmo : SelectionHandle
 {
+	public float GroupAlphaMultiplier = 1;
+	public float GroupDepthOffset = 0;
+
 	private readonly SkeletonBone skeletonBone;
 	private readonly BoneId boneId;
 	private readonly MeshRenderer<BoneCapMaterial> capRenderer;
@@ -105,7 +108,7 @@ public class SkeletonBoneGizmo : SelectionHandle
 		}
 
 		this.capRenderer.Material.Size = isHoveredOrSelected ? 2.0f : 1.0f;
-		this.capRenderer.Material.DepthOffset = isHoveredOrSelected ? 0.001f : 0f;
+		this.capRenderer.Material.DepthOffset = (isHoveredOrSelected ? 0.001f : 0f) + this.GroupDepthOffset;
 
 		float desiredAlpha = 0.1f;
 		if (isAnyHandleDragging)
@@ -133,7 +136,8 @@ public class SkeletonBoneGizmo : SelectionHandle
 		}
 
 		this.alpha = float.Lerp(this.alpha, desiredAlpha, 0.25f);
-		this.capRenderer.Material.Color.A = this.alpha;
+		this.capRenderer.Material.Color.A = this.alpha * this.GroupAlphaMultiplier;
+		this.IsVisible = this.GroupAlphaMultiplier > 0;
 
 		Vector3 bonePos = Vector3.Transform(Vector3.Zero, boneTransform.ToMatrix());
 
@@ -174,7 +178,7 @@ public class SkeletonBoneGizmo : SelectionHandle
 				this.connectionRenderer.Material.Color = new(0.5f, 0.5f, 0.5f, 1.0f);
 			}
 
-			this.connectionRenderer.Material.Color.A = this.alpha;
+			this.connectionRenderer.Material.Color.A = this.alpha * this.GroupAlphaMultiplier;
 		}
 	}
 }

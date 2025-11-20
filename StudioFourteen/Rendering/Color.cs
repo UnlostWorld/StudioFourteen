@@ -68,4 +68,13 @@ public struct Color
 	{
 		return new SolidColorBrush((MediaColor)color);
 	}
+
+	public static Color Lerp(Color from, Color to, float p)
+	{
+		return new Color(
+			float.Lerp(from.R, to.R, p),
+			float.Lerp(from.G, to.G, p),
+			float.Lerp(from.B, to.B, p),
+			float.Lerp(from.A, to.A, p));
+	}
 }

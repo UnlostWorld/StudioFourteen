@@ -439,12 +439,12 @@ public partial class Skeleton : GameObject
 		{
 			foreach (BoneGroup group in ContentService.BoneGroups)
 			{
-				List<string> bones = new();
-				foreach ((string boneName, List<BoneReference> references) in boneLookup)
+				List<SkeletonBone> bones = new();
+				foreach (SkeletonBone bone in this.Bones)
 				{
-					if (group.Bones.Contains(boneName))
+					if (group.Bones.Contains(bone.BoneName))
 					{
-						bones.Add(boneName);
+						bones.Add(bone);
 					}
 				}
 
@@ -454,6 +454,12 @@ public partial class Skeleton : GameObject
 					this.boneGroupLookup.Add(group.Name, boneGroup);
 					SceneService.AddObject(boneGroup);
 					this.BoneGroups.Add(boneGroup);
+
+					boneGroup.Bones = bones;
+					foreach (SkeletonBone bone in bones)
+					{
+						bone.BoneGroups.Add(boneGroup);
+					}
 				}
 			}
 		}

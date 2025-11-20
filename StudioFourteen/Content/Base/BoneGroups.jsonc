@@ -6,6 +6,8 @@
 			"j_f_umlip_01_r",
 			"j_f_umlip_02_l",
 			"j_f_umlip_02_r",
+			"j_f_ulip_01_l",
+			"j_f_ulip_01_r",
 			"j_f_ulip_02_l",
 			"j_f_ulip_02_r",
 			"j_f_dlip_01_l",
@@ -20,6 +22,9 @@
 			"j_f_dslip_r",
 			"j_f_uslip_l",
 			"j_f_uslip_r",
+			// Teeth
+			"j_f_hagukiup",
+			"j_f_hagukidn",
 			// Jaw
 			"j_f_ago",
 			// Tongue
@@ -37,13 +42,16 @@
 		"Name": "EyeLeft",
 		"Bones": [
 			// Eyeball
+			"j_f_eyepuru_l",
 			"j_f_eye_l",
 			// Eyelids
+			"j_f_mabdn_01_l",
 			"j_f_mabdn_02out_l",
 			"j_f_mabdn_03in_l",
 			"j_f_mab_l",
 			"j_f_mabup_03in_l",
 			"j_f_mabup_02out_l",
+			"j_f_mabup_01_l",
 			// Brow
 			"j_f_dmiken_l",
 			"j_f_miken_02_l",
@@ -59,13 +67,16 @@
 		"Name": "EyeRight",
 		"Bones": [
 			// Eyeball
+			"j_f_eyepuru_r",
 			"j_f_eye_r",
 			// Eyelids
+			"j_f_mabdn_01_r",
 			"j_f_mabdn_02out_r",
 			"j_f_mabdn_03in_r",
 			"j_f_mab_r",
 			"j_f_mabup_03in_r",
 			"j_f_mabup_02out_r",
+			"j_f_mabup_01_r",
 			// Brow
 			"j_f_dmiken_r",
 			"j_f_miken_02_r",

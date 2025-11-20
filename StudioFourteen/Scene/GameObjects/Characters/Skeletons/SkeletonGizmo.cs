@@ -25,6 +25,7 @@ using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
 public class SkeletonGizmo : SceneObjectGizmoBase<Skeleton>
 {
 	private readonly Dictionary<SkeletonBone, SkeletonBoneGizmo> boneGizmos = new();
+	private readonly Dictionary<SkeletonBoneGroup, SkeletonBoneGroupGizmo> groupGizmos = new();
 
 	public SkeletonGizmo(GameObject gameObject)
 	{
@@ -59,12 +60,26 @@ public class SkeletonGizmo : SceneObjectGizmoBase<Skeleton>
 				if (this.boneGizmos.ContainsKey(bone))
 				{
 					toRemove.Remove(bone);
+					continue;
 				}
-				else
+
+				SkeletonBoneGizmo gizmo = new(bone);
+				this.boneGizmos.Add(bone, gizmo);
+				this.Add(gizmo);
+
+				if (bone.BoneGroups.Count > 0)
 				{
-					SkeletonBoneGizmo gizmo = new(bone);
-					this.boneGizmos.Add(bone, gizmo);
-					this.Add(gizmo);
+					foreach (SkeletonBoneGroup group in bone.BoneGroups)
+					{
+						if (!this.groupGizmos.ContainsKey(group))
+						{
+							SkeletonBoneGroupGizmo groupGizmo = new(group);
+							this.groupGizmos.Add(group, groupGizmo);
+							this.Add(groupGizmo);
+						}
+
+						this.groupGizmos[group].AddBone(gizmo);
+					}
 				}
 			}
 

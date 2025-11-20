@@ -69,6 +69,8 @@ public class SkeletonBone : TransformSceneObjectBase
 	public override int DecimalPlacesToDisplay => this.IsFaceBone ? 4 : 2;
 	public override double GizmoSensitivity => this.IsFaceBone ? 0.05 : 0.5;
 
+	public HashSet<SkeletonBoneGroup> BoneGroups { get; init; } = new();
+
 	public MirrorModes MirrorMode
 	{
 		get
