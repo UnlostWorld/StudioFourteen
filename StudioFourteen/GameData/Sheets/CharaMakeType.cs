@@ -71,7 +71,7 @@ public readonly unsafe struct CharaMakeType(ExcelPage page, uint offset, uint ro
 		private static int FacialFeatureOptionCtor(ExcelPage page, uint parentOffset, uint offset, uint i) => page.ReadInt32(offset + (i * 4));
 	}
 
-	public readonly struct EquipmentStruct(ExcelPage page, uint offset)
+	public readonly struct EquipmentStruct(ExcelPage page, uint parentOffset, uint offset)
 	{
 		public readonly ulong Helmet => page.ReadUInt64(offset);
 		public readonly ulong Top => page.ReadUInt64(offset + 8);
