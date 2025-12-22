@@ -27,6 +27,8 @@ using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 public readonly unsafe struct ENpcBase(ExcelPage page, uint offset, uint row)
 	: IExcelRow<ENpcBase>
 {
+	public ExcelPage ExcelPage => page;
+	public uint RowOffset => offset;
 	public uint RowId => row;
 
 	public readonly float Scale => page.ReadFloat32(offset + 144);

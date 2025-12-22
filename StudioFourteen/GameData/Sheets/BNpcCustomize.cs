@@ -23,6 +23,8 @@ using Lumina.Excel;
 public readonly struct BNpcCustomize(ExcelPage page, uint offset, uint row)
 	: IExcelRow<BNpcCustomize>
 {
+	public ExcelPage ExcelPage => page;
+	public uint RowOffset => offset;
 	public uint RowId => row;
 
 	public readonly CustomizeData Data

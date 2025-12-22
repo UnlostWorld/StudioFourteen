@@ -25,6 +25,8 @@ using StudioFourteen.Tags;
 public readonly struct ClassJobCategory(ExcelPage page, uint offset, uint row)
 	: IExcelRow<ClassJobCategory>
 {
+	public ExcelPage ExcelPage => page;
+	public uint RowOffset => offset;
 	public uint RowId => row;
 
 	public readonly ReadOnlySeString Name => page.ReadString(offset, offset);
