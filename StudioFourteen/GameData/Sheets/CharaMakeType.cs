@@ -56,7 +56,7 @@ public readonly unsafe struct CharaMakeType(ExcelPage page, uint offset, uint ro
 		private static byte SubMenuGraphicCtor(ExcelPage page, uint parentOffset, uint offset, uint i) => page.ReadUInt8(offset + 416 + i);
 	}
 
-	public readonly struct FaceTypeOptions(ExcelPage page, uint offset)
+	public readonly struct FaceTypeOptions(ExcelPage page, uint parentOffset, uint offset)
 	{
 		public readonly int Option1 => page.ReadInt32(offset);
 		public readonly int Option2 => page.ReadInt32(offset + 4);
