@@ -26,9 +26,9 @@ public readonly struct HairMakeType(ExcelPage page, uint offset, uint row)
 
 	public uint RowId => row;
 
-	public readonly RowRef<Race> Race => new(page.Module, (uint)page.ReadInt32(offset + 4076), page.Language);
-	public readonly RowRef<Tribe> Tribe => new(page.Module, (uint)page.ReadInt32(offset + 4080), page.Language);
-	public readonly sbyte Gender => page.ReadInt8(offset + 4084);
+	public readonly RowRef<Race> Race => new(page.Module, (uint)page.ReadInt32(offset + 4292), page.Language);
+	public readonly RowRef<Tribe> Tribe => new(page.Module, (uint)page.ReadInt32(offset + 4296), page.Language);
+	public readonly sbyte Gender => page.ReadInt8(offset + 4300);
 
 	public RowRef<CharaMakeCustomize>[] HairStyles
 	{
