@@ -25,9 +25,9 @@ public readonly unsafe struct CharaMakeType(ExcelPage page, uint offset, uint ro
 	public uint RowOffset => offset;
 	public uint RowId => row;
 
-	public readonly Collection<CharaMakeMenu> CharaMakeStruct => new(page, offset, offset, &CharaMakeStructCtor, 28);
+	public readonly Collection<CharaMakeMenu> CharaMakeStruct => new(page, offset, offset, &CharaMakeMenuCtor, 28);
 	public readonly Collection<byte> VoiceStruct => new(page, offset, offset, &VoiceStructCtor, 12);
-	public readonly Collection<FaceTypeOptions> FacialFeatureOption => new(page, offset, offset, &FacialFeatureOptionCtor, 8);
+	public readonly Collection<FaceTypeOptions> FacialFeatureOption => new(page, offset, offset, &FaceTypeOptionsCtor, 8);
 	public readonly Collection<EquipmentStruct> Equipment => new(page, offset, offset, &EquipmentCtor, 3);
 	public readonly RowRef<Race> Race => new(page.Module, (uint)page.ReadInt32(offset + 13064), page.Language);
 	public readonly RowRef<Tribe> Tribe => new(page.Module, (uint)page.ReadInt32(offset + 13068), page.Language);
@@ -35,9 +35,9 @@ public readonly unsafe struct CharaMakeType(ExcelPage page, uint offset, uint ro
 
 	static CharaMakeType IExcelRow<CharaMakeType>.Create(ExcelPage page, uint offset, uint row) => new(page, offset, row);
 
-	private static CharaMakeMenu CharaMakeStructCtor(ExcelPage page, uint parentOffset, uint offset, uint i) => new(page, parentOffset, offset + (i * 452));
+	private static CharaMakeMenu CharaMakeMenuCtor(ExcelPage page, uint parentOffset, uint offset, uint i) => new(page, parentOffset, offset + (i * 452));
 	private static byte VoiceStructCtor(ExcelPage page, uint parentOffset, uint offset, uint i) => page.ReadUInt8(offset + 12656 + i);
-	private static FacialFeatureOptionStruct FacialFeatureOptionCtor(ExcelPage page, uint parentOffset, uint offset, uint i) => new(page, parentOffset, offset + 12668 + (i * 28));
+	private static FaceTypeOptions FaceTypeOptionsCtor(ExcelPage page, uint parentOffset, uint offset, uint i) => new(page, parentOffset, offset + 12668 + (i * 28));
 	private static EquipmentStruct EquipmentCtor(ExcelPage page, uint parentOffset, uint offset, uint i) => new(page, parentOffset, offset + 12896 + (i * 56));
 
 	public readonly struct CharaMakeMenu(ExcelPage page, uint parentOffset, uint offset)
