@@ -38,7 +38,7 @@ public class StainLibraryEntry : ExcelLibraryEntry
 	}
 
 	public override string? Name => this.Stain.Name.GetString();
-	public string? Description => this.Stain.Name2.GetString();
+	public string? Description => null;
 	public override object? Icon => this.Item?.Icon;
 	public ItemLibraryEntry? Item => this.Services.GameData.GetLibraryEntry<ItemLibraryEntry>(StainToItemRow(this.RowId));
 

@@ -21,6 +21,8 @@ using Lumina.Excel.Sheets;
 [Sheet("CharaMakeType", 0x80D7DB6D)]
 public readonly unsafe struct CharaMakeType(ExcelPage page, uint offset, uint row) : IExcelRow<CharaMakeType>
 {
+	public ExcelPage ExcelPage => page;
+	public uint RowOffset => offset;
 	public uint RowId => row;
 
 	public readonly Collection<CharaMakeMenu> CharaMakeStruct => new(page, offset, offset, &CharaMakeStructCtor, 28);

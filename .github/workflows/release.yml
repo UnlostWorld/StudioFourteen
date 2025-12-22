@@ -20,13 +20,7 @@ jobs:
   Release:
     if: github.event.pull_request.draft == false # Ignore draft PRs
     runs-on: windows-latest
-    defaults:
-      run:
-        working-directory: .
-        shell: bash
-    env:
-      DALAMUD_HOME: ${{ github.workspace }}
-      IsCI: true
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
@@ -34,11 +28,9 @@ jobs:
           submodules: true # Grab any submodules that may be required
 
       - name: Download Dalamud
-        uses: gamedev-thingy/Download-Extract@v2
-        with:
-          url: "https://goatcorp.github.io/dalamud-distrib/latest.zip"
-          destination: ${{ env.DALAMUD_HOME }}
-          ZIPname: latest
+        run: |
+          Invoke-WebRequest -Uri https://goatcorp.github.io/dalamud-distrib/stg/latest.zip -OutFile latest.zip
+          Expand-Archive -Force latest.zip "$env:AppData\XIVLauncher\addon\Hooks\dev"
 
       #- name: Setup .NET
       #  uses: actions/setup-dotnet@v3
