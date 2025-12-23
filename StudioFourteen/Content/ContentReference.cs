@@ -26,6 +26,8 @@ public abstract class ContentReference(string path)
 
 	public event ReloadDelegate? OnReloaded;
 
+	public DateTime LastLoadTimeUtc { get; set; }
+
 	public virtual void Reload()
 	{
 		this.OnReloaded?.Invoke();

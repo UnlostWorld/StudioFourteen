@@ -29,33 +29,25 @@ public class ContentService : ServiceBase
 {
 	private readonly Dictionary<string, HashSet<ContentReference>> references = new();
 
-#if DEBUG
-	private bool isRunningFromProject = false;
-	private FileSystemWatcher? watcher;
-#endif
+	private string? contentDirectory;
 
 	public override Task Initialize()
 	{
-#if DEBUG
+		FileInfo? assembly = DalamudServices.PluginInterface?.AssemblyLocation;
+		if (assembly != null)
 		{
-			FileInfo? assembly = DalamudServices.PluginInterface?.AssemblyLocation;
-			if (assembly != null)
+			// Check to see if the content directory is up one for when we are running
+			// from editor
+			this.contentDirectory = Path.GetFullPath($"{assembly.DirectoryName}/../Content/");
+
+			if (!Path.Exists(this.contentDirectory))
 			{
-				string dir = Path.GetFullPath($"{assembly.DirectoryName}/../Content/Base/");
-				this.isRunningFromProject = Directory.Exists(dir);
-
-				if (this.isRunningFromProject)
-				{
-					this.Log.Information($"watching content for changes in {dir}");
-
-					this.watcher = new(dir);
-					this.watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.Attributes;
-					this.watcher.IncludeSubdirectories = true;
-					this.watcher.Changed += this.OnDirectoryChanged;
-					this.watcher.EnableRaisingEvents = true;
-				}
+				this.contentDirectory = Path.GetFullPath($"{assembly.DirectoryName}/Content/");
 			}
 		}
+
+#if DEBUG
+		this.Services.Tick.Add(TickService.Channels.StudioTick, this.OnTick);
 #endif
 
 		return base.Initialize();
@@ -63,15 +55,7 @@ public class ContentService : ServiceBase
 
 	public override Task Shutdown()
 	{
-#if DEBUG
-		if (this.watcher != null)
-		{
-			this.watcher.Changed -= this.OnDirectoryChanged;
-			this.watcher.EnableRaisingEvents = false;
-			this.watcher.Dispose();
-		}
-#endif
-
+		this.Services.Tick.Remove(TickService.Channels.StudioTick, this.OnTick);
 		return base.Shutdown();
 	}
 
@@ -84,7 +68,6 @@ public class ContentService : ServiceBase
 
 	public Stream GetContent(ContentReference reference)
 	{
-#if DEBUG
 		lock (this.references)
 		{
 			string resolvedPath = this.ResolvePath(reference.Path);
@@ -94,8 +77,8 @@ public class ContentService : ServiceBase
 
 			this.references[resolvedPath].Add(reference);
 		}
-#endif
 
+		reference.LastLoadTimeUtc = DateTime.UtcNow;
 		return this.GetContent(reference.Path);
 	}
 
@@ -124,31 +107,26 @@ public class ContentService : ServiceBase
 
 	public string ResolvePath(string path)
 	{
-		FileInfo? assembly = DalamudServices.PluginInterface?.AssemblyLocation;
-		if (assembly == null)
-			return path;
-
-#if DEBUG
-		if (this.isRunningFromProject && assembly.DirectoryName != null)
-		{
-			return Path.GetFullPath($"{assembly.DirectoryName}/../Content/Base/{path}");
-		}
-#endif
-
-		return Path.GetFullPath($"{assembly.DirectoryName}/Content/Base/{path}");
+		// TODO: Support overload packs in directories other than Base.
+		return Path.GetFullPath($"{this.contentDirectory}/Base/{path}");
 	}
 
-	private void OnDirectoryChanged(object sender, FileSystemEventArgs e)
+	private void OnTick()
 	{
 		lock (this.references)
 		{
-			if (this.references.TryGetValue(e.FullPath, out var references))
+			foreach ((string path, HashSet<ContentReference> references) in this.references)
 			{
-				this.Log.Information($"Reloading file: {e.FullPath}");
+				FileInfo info = new FileInfo(path);
 
 				foreach (ContentReference reference in references)
 				{
-					reference.Reload();
+					if (info.LastAccessTimeUtc > reference.LastLoadTimeUtc)
+					{
+						this.Log.Information($"Reloading file: {path}");
+						reference.LastLoadTimeUtc = info.LastAccessTimeUtc;
+						reference.Reload();
+					}
 				}
 			}
 		}
