@@ -40,7 +40,6 @@ public partial class Configuration : IPluginConfiguration
 		this.ShowOverlays = true;
 		this.Overlays = new();
 		this.OpenPanels = new();
-		this.ResourcePacks = new();
 		this.WidgetMode = WidgetModes.Inspector;
 		this.EnableInspector = true;
 		this.EnableDedicatedInspectors = true;
@@ -73,12 +72,12 @@ public partial class Configuration : IPluginConfiguration
 	[Bind] public partial Dictionary<string, string> Persistence { get; set; }
 	[Bind] public partial int HasConfirmedReShadeVersion { get; set; }
 
-	// Filepublic partial
+	// Files
 	[Bind] public partial string? LastSaveDirectory { get; set; }
 	[Bind] public partial string? DefaultAuthor { get; set; }
 	[Bind] public partial string? DefaultVersion { get; set; }
 
-	// Photpublic partial
+	// Photos
 	[Bind] public partial string? PhotoDirectory { get; set; }
 	[Bind] public partial PhotosService.Formats PhotoFormat { get; set; }
 	[Bind] public partial bool PhotoIncludeMetaData { get; set; }
@@ -87,12 +86,12 @@ public partial class Configuration : IPluginConfiguration
 	[Bind] public partial bool PhotoAnimationFlash { get; set; }
 	[Bind] public partial bool PhotoAnimationPreview { get; set; }
 
-	// Analpublic partial
+	// Analytics
 	[Bind] public partial bool HasConfirmedAnalyticOptions { get; set; }
 	[Bind] public partial bool SendOptionalAnalytics { get; set; }
 	[Bind] public partial bool SendErrorReports { get; set; }
 
-	// Intepublic partial
+	// Interface
 	[Bind] public partial bool HideLauncherButton { get; set; }
 	[Bind] public partial bool OpenGroupPose { get; set; }
 	[Bind] public partial bool HideGenitals { get; set; }
@@ -101,7 +100,6 @@ public partial class Configuration : IPluginConfiguration
 	[Bind] public partial List<string> OpenPanels { get; set; }
 	[Bind] public partial bool IsAioWindowOpen { get; set; }
 	[Bind] public partial bool UseSystemCursors { get; set; }
-	[Bind] public partial List<string> ResourcePacks { get; set; }
 
 	[Bind] public partial WidgetModes WidgetMode { get; set; }
 	[Bind] public partial bool EnableInspector { get; set; }
@@ -109,16 +107,16 @@ public partial class Configuration : IPluginConfiguration
 	[Bind] public partial AioModes AllInOne { get; set; }
 	[Bind] public partial bool EnableTargetBar { get; set; }
 
-	// Inpupublic partial
+	// Input
 	[Bind] public partial bool AllowKeyboardCapture { get; set; }
 	[Bind] public partial bool AllowMouseCapture { get; set; }
 	[Bind] public partial Dictionary<InputAction, List<Bind>> CustomBinds { get; set; }
 
-	// Librpublic partial
+	// Library
 	[Bind] public partial HashSet<string> Favorites { get; set; }
 	[Bind] public partial PreviewModes LibraryPreviewMode { get; set; }
 
-	// Scripublic partial
+	// Scripts
 	[Bind] public partial Dictionary<string, string> TrustedScripts { get; set; }
 
 	public void Validate()
