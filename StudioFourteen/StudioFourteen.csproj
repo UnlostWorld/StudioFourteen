@@ -18,15 +18,9 @@
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<Deterministic>false</Deterministic>
 		<AssemblyVersion>1.0.0.*</AssemblyVersion>
-		<DalamudLibPath>$(appdata)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
 		<ApplicationIcon>Assets\icon.ico</ApplicationIcon>
 		<PackageIcon>light-pride-textless.png</PackageIcon>
 		<Platforms>x64</Platforms>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(CI)' == 'true' OR '$(IsCI)' == 'true'">
-		<DalamudLibPath>$(DALAMUD_HOME)/</DalamudLibPath>
-		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -90,31 +84,31 @@
 
 	<ItemGroup>
 		<Reference Include="FFXIVClientStructs">
-			<HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>
+			<HintPath>$(DALAMUD_HOME)\FFXIVClientStructs.dll</HintPath>
 			<Private>false</Private>
 		</Reference>
 		<Reference Include="FFXIVClientStructs">
-			<HintPath>$(DalamudLibPath)InteropGenerator.Runtime.dll</HintPath>
+			<HintPath>$(DALAMUD_HOME)\InteropGenerator.Runtime.dll</HintPath>
 			<Private>false</Private>
 		</Reference>
 		<Reference Include="Newtonsoft.Json">
-			<HintPath>$(DalamudLibPath)Newtonsoft.Json.dll</HintPath>
+			<HintPath>$(DALAMUD_HOME)\Newtonsoft.Json.dll</HintPath>
 			<Private>false</Private>
 		</Reference>
 		<Reference Include="Dalamud">
-			<HintPath>$(DalamudLibPath)Dalamud.dll</HintPath>
+			<HintPath>$(DALAMUD_HOME)\Dalamud.dll</HintPath>
 			<Private>false</Private>
 		</Reference>
 		<Reference Include="Lumina">
-			<HintPath>$(DalamudLibPath)Lumina.dll</HintPath>
+			<HintPath>$(DALAMUD_HOME)\Lumina.dll</HintPath>
 			<Private>false</Private>
 		</Reference>
 		<Reference Include="Lumina.Excel">
-			<HintPath>$(DalamudLibPath)Lumina.Excel.dll</HintPath>
+			<HintPath>$(DALAMUD_HOME)\Lumina.Excel.dll</HintPath>
 			<Private>false</Private>
 		</Reference>
 		<Reference Include="Lumina.Excel">
-			<HintPath>$(DalamudLibPath)Dalamud.Bindings.ImGui.dll</HintPath>
+			<HintPath>$(DALAMUD_HOME)\Dalamud.Bindings.ImGui.dll</HintPath>
 			<Private>false</Private>
 		</Reference>
 	</ItemGroup>
