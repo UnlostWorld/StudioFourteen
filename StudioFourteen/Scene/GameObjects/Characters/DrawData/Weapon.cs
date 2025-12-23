@@ -18,6 +18,7 @@ namespace StudioFourteen.Scene.GameObjects.Characters.DrawData;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using StudioFourteen.GameData.Library;
 using StudioFourteen.Tags;
+using System.Numerics;
 using System.Windows;
 
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
@@ -79,7 +80,7 @@ public class Weapon
 		}
 	}
 
-	public override Rect SlotBackgroundRect
+	public override Vector4 SlotBackgroundRect
 	{
 		get
 		{

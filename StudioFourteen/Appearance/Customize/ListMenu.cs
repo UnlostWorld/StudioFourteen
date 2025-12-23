@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Appearance.Customize;
 
+using System.Collections.Generic;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Lumina.Excel;
 using Lumina.Excel.Sheets;
@@ -65,7 +66,7 @@ public class ListMenu : MakeMenuViewModel
 		}
 	}
 
-	public FastObservableCollection<Option> Options { get; init; } = new();
+	public List<Option> Options { get; init; } = new();
 
 	protected override void OnValueChanged(byte oldValue, byte newValue)
 	{

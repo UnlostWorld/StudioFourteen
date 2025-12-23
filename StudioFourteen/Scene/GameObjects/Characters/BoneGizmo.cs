@@ -76,8 +76,8 @@ public class SkeletonBoneGizmo : SelectionHandle
 			this.IsVisible = false;
 
 		// If this is genital and hide genitals!
-		if (SettingsService.Current.HideGenitals && ContentService.GenitalBones?.Contains(this.skeletonBone.BoneName) == true)
-			this.IsVisible = false;
+		////if (SettingsService.Current.HideGenitals && ContentService.GenitalBones?.Contains(this.skeletonBone.BoneName) == true)
+		////	this.IsVisible = false;
 
 		Vector3 bonePos = Vector3.Zero;
 		if (this.GroupOverridePosition == null)
@@ -166,8 +166,8 @@ public class SkeletonBoneGizmo : SelectionHandle
 				return;
 
 			// If this is genital and hide genitals!
-			if (SettingsService.Current.HideGenitals && ContentService.GenitalBones?.Contains(this.skeletonBone.Parent.BoneName) == true)
-				return;
+			////if (SettingsService.Current.HideGenitals && ContentService.GenitalBones?.Contains(this.skeletonBone.Parent.BoneName) == true)
+			////	return;
 
 			Transform childModelSpaceTransform = *pPose->AccessBoneModelSpace(boneId.BoneIndex, hkaPose.PropagateOrNot.DontPropagate);
 			Vector3 childPos = Vector3.Transform(Vector3.Zero, childModelSpaceTransform.ToMatrix());

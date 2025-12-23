@@ -1,4 +1,4 @@
-﻿// .                    @@             _____ _______ _    _ _____ _____ ____
+// .                    @@             _____ _______ _    _ _____ _____ ____
 //          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
 //         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
 //         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
@@ -16,20 +16,16 @@
 namespace StudioFourteen.Xaml;
 
 using System;
-using System.Windows;
-using System.Windows.Data;
 
-[ValueConversion(typeof(string), typeof(Visibility))]
-public class StringHasContentToVisibilityConverter : IValueConverter
+public class XamlResources
 {
-	public object Convert(object? value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+	public static object? Find(string key)
 	{
-		string? val = value as string;
-		return string.IsNullOrEmpty(val) ? Visibility.Collapsed : Visibility.Visible;
+		throw new NotSupportedException();
 	}
 
-	public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+	public static T Find<T>(string key, T value)
 	{
-		throw new NotImplementedException();
+		throw new NotSupportedException();
 	}
 }

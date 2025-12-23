@@ -15,10 +15,10 @@
 
 namespace StudioFourteen.Tags;
 
+using System.Collections.Generic;
 using System.Text;
-using StudioFourteen.Extensions;
 
-public class TagCollection : FastObservableCollection<Tag>
+public class TagCollection : List<Tag>
 {
 	public static readonly TagCollection Empty = new();
 
@@ -88,21 +88,5 @@ public class TagCollection : FastObservableCollection<Tag>
 		}
 
 		return builder.ToString();
-	}
-
-	protected override void InsertItem(int index, Tag item)
-	{
-		if (this.Contains(item))
-			return;
-
-		base.InsertItem(index, item);
-	}
-
-	protected override void SetItem(int index, Tag item)
-	{
-		if (this.Contains(item))
-			return;
-
-		base.SetItem(index, item);
 	}
 }

@@ -15,28 +15,16 @@
 
 namespace StudioFourteen.GameData;
 
-using Lumina.Data.Files;
-using Microsoft.Win32;
 using Serilog;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.Formats.Png;
-using SixLabors.ImageSharp.PixelFormats;
-using System;
-using System.IO;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 public class ImageReference
 {
 	protected readonly ILogger Log = Logging.ForContext<ImageReference>();
 
 	private readonly string path;
-	private WeakReference<ImageSource>? cachedImage;
 
 	public ImageReference(string path)
 	{
-		this.ExportCommand = new SimpleCommand(this.Export);
 		this.path = path;
 	}
 
@@ -55,7 +43,7 @@ public class ImageReference
 	{
 	}
 
-	public ImageSource? Source
+	/*public ImageSource? Source
 	{
 		get
 		{
@@ -117,5 +105,5 @@ public class ImageReference
 			return;
 
 		image.SaveAsPng(dlg.FileName, encoder);
-	}
+	}*/
 }

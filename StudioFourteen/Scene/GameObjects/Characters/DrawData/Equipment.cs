@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Scene.GameObjects.Characters.DrawData;
 
+using System.Numerics;
 using System.Windows;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using StudioFourteen.GameData.Library;
@@ -64,7 +65,7 @@ public class Equipment : GearViewModelBase<ItemLibraryEntry>
 		}
 	}
 
-	public override Rect SlotBackgroundRect
+	public override Vector4 SlotBackgroundRect
 	{
 		get
 		{

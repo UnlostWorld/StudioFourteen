@@ -3,7 +3,6 @@
 	<PropertyGroup>
 		<OutputType>Library</OutputType>
 		<TargetFramework>net10.0-windows</TargetFramework>
-		<UseWPF>true</UseWPF>
 		<AppendTargetFramework>False</AppendTargetFramework>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 		<OutputPath>.\bin\</OutputPath>
@@ -16,17 +15,8 @@
 		<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
 		<PublishTrimmed>false</PublishTrimmed>
 		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
-		<Deterministic>false</Deterministic>
-		<AssemblyVersion>1.0.0.*</AssemblyVersion>
-		<DalamudLibPath>$(appdata)\XIVLauncher\addon\Hooks\dev\</DalamudLibPath>
-		<ApplicationIcon>Assets\icon.ico</ApplicationIcon>
-		<PackageIcon>light-pride-textless.png</PackageIcon>
+		<AssemblyVersion>2.0.0.0</AssemblyVersion>
 		<Platforms>x64</Platforms>
-	</PropertyGroup>
-
-	<PropertyGroup Condition="'$(CI)' == 'true' OR '$(IsCI)' == 'true'">
-		<DalamudLibPath>$(DALAMUD_HOME)/</DalamudLibPath>
-		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -47,29 +37,19 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<None Include="..\StudioFourteen.Reshade\bin\StudioFourteen.Reshade.dll" Link="StudioFourteen.Reshade.dll">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
+		<ProjectReference Include="..\StudioFourteen.Generators\StudioFourteen.Generators.csproj"
+			OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Serilog.Sinks.Debug" Version="3.0.0" />
 		<PackageReference Include="Apos.WintabDN" Version="0.0.1" />
-		<PackageReference Include="Crayon" Version="2.0.69" />
-		<PackageReference Include="DependencyPropertyGenerator" Version="1.5.0">
-			<PrivateAssets>all</PrivateAssets>
-			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-		</PackageReference>
-		<PackageReference Include="DotNetProjects.SVGImage" Version="5.2.9" />
-		<PackageReference Include="FontAwesome.Sharp" Version="6.6.0" />
-		<PackageReference Include="JsonSubTypes" Version="2.0.1" />
 		<PackageReference Include="lz4net" Version="1.0.15.93" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.13.0" />
-		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.3124.44" />
 		<PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.183">
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Serilog.Sinks.Debug" Version="3.0.0" />
 		<PackageReference Include="SharpDX" Version="4.2.0" />
 		<PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0" />
 		<PackageReference Include="SharpDX.Direct3D11" Version="4.2.0" />
@@ -81,7 +61,6 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="VirtualizingWrapPanel" Version="2.1.1" />
 	</ItemGroup>
 
 	<PropertyGroup>
@@ -90,31 +69,31 @@
 
 	<ItemGroup>
 		<Reference Include="FFXIVClientStructs">
-			<HintPath>$(DalamudLibPath)FFXIVClientStructs.dll</HintPath>
+			<HintPath>$(DALAMUD_HOME)/FFXIVClientStructs.dll</HintPath>
 			<Private>false</Private>
 		</Reference>
 		<Reference Include="FFXIVClientStructs">
-			<HintPath>$(DalamudLibPath)InteropGenerator.Runtime.dll</HintPath>
-			<Private>false</Private>
-		</Reference>
-		<Reference Include="Newtonsoft.Json">
-			<HintPath>$(DalamudLibPath)Newtonsoft.Json.dll</HintPath>
+			<HintPath>$(DALAMUD_HOME)/InteropGenerator.Runtime.dll</HintPath>
 			<Private>false</Private>
 		</Reference>
 		<Reference Include="Dalamud">
-			<HintPath>$(DalamudLibPath)Dalamud.dll</HintPath>
+			<HintPath>$(DALAMUD_HOME)/Dalamud.dll</HintPath>
 			<Private>false</Private>
 		</Reference>
 		<Reference Include="Lumina">
-			<HintPath>$(DalamudLibPath)Lumina.dll</HintPath>
+			<HintPath>$(DALAMUD_HOME)/Lumina.dll</HintPath>
 			<Private>false</Private>
 		</Reference>
 		<Reference Include="Lumina.Excel">
-			<HintPath>$(DalamudLibPath)Lumina.Excel.dll</HintPath>
+			<HintPath>$(DALAMUD_HOME)/Lumina.Excel.dll</HintPath>
 			<Private>false</Private>
 		</Reference>
-		<Reference Include="Lumina.Excel">
-			<HintPath>$(DalamudLibPath)Dalamud.Bindings.ImGui.dll</HintPath>
+		<Reference Include="Dalamud.Bindings.ImGui">
+			<HintPath>$(DALAMUD_HOME)/Dalamud.Bindings.ImGui.dll</HintPath>
+			<Private>false</Private>
+		</Reference>
+		<Reference Include="Newtonsoft.Json">
+			<HintPath>$(DALAMUD_HOME)/Newtonsoft.Json.dll</HintPath>
 			<Private>false</Private>
 		</Reference>
 	</ItemGroup>
@@ -123,18 +102,6 @@
 		<None Update="StudioFourteen.json">
 			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
 		</None>
-	</ItemGroup>
-
-	<ItemGroup>
-		<Page Include="Properties\DesignTimeResources.xaml" Condition="'$(DesignTime)'=='true'">
-			<Generator>MSBuild:Compile</Generator>
-			<SubType>Designer</SubType>
-			<ContainsDesignTimeResources>true</ContainsDesignTimeResources>
-		</Page>
-	</ItemGroup>
-
-	<ItemGroup>
-		<ProjectReference Include="..\StudioFourteen.Generators\StudioFourteen.Generators.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
 	</ItemGroup>
 
 </Project>

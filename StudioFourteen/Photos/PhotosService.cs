@@ -31,16 +31,14 @@ using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
 using StudioFourteen.Utilities;
 using System.Threading;
 using StudioFourteen.Rendering.Passes;
-using StudioFourteen.Panels;
 using StudioFourteen;
+using System.Collections.Generic;
 
 [Service]
 public partial class PhotosService : ServiceBase
 {
 	private readonly CapturePass renderPass = new();
 	private CancellationTokenSource captureCancellation = new();
-
-	private CaptureAnimationWindow? animationWindow;
 
 	public delegate Task CapturePhaseChangeDelegate(CapturePhases fromPhase, CapturePhases toPhase, CancellationToken cancellationToken, bool animate);
 
@@ -69,7 +67,7 @@ public partial class PhotosService : ServiceBase
 		Done,
 	}
 
-	public FastObservableCollection<AspectRatioEntry> AspectRatios { get; init; } = new()
+	public List<AspectRatioEntry> AspectRatios { get; init; } = new()
 	{
 		new("Native Resolution", "Monitor", 0, 0, 0),
 		new("Native Resolution", "Instagram (1:1)", 1.0, 0, 0),
@@ -141,9 +139,6 @@ public partial class PhotosService : ServiceBase
 
 	public override async Task Shutdown()
 	{
-		if (this.animationWindow != null)
-			await this.animationWindow.Dispatcher.InvokeAsync(() => this.animationWindow.Close());
-
 		await base.Shutdown();
 	}
 
@@ -183,11 +178,6 @@ public partial class PhotosService : ServiceBase
 
 		try
 		{
-			this.animationWindow = await PanelWindow.CreatePanelWindow<CaptureAnimationWindow>(this.Services.Panels.GamePanels, "Photo capture animation window");
-
-			if (this.animationWindow != null)
-				await this.animationWindow.Dispatcher.InvokeAsync(() => this.animationWindow.Show());
-
 			await this.DispatchCapturePhaseChange(CapturePhases.Starting, animate);
 
 			if (customResolution)
@@ -212,8 +202,6 @@ public partial class PhotosService : ServiceBase
 					return;
 				}
 			}
-
-			await Threads.NonUiThread();
 
 			await this.DispatchCapturePhaseChange(CapturePhases.Capturing, animate);
 
@@ -357,9 +345,6 @@ public partial class PhotosService : ServiceBase
 
 		await this.DispatchCapturePhaseChange(CapturePhases.Done, animate);
 
-		if (this.animationWindow != null)
-			await this.animationWindow.Dispatcher.InvokeAsync(() => this.animationWindow.Close());
-
 		this.IsCapturing = false;
 	}
 
@@ -405,9 +390,9 @@ public partial class PhotosService : ServiceBase
 		return true;
 	}
 
-	public class ImageMetadata : AutoViewModel
+	public class ImageMetadata : ViewModel
 	{
-		[AutoNotify] public uint MapId { get; set; } = 0;
+		public uint MapId { get; set; } = 0;
 	}
 }
 

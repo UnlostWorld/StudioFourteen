@@ -24,7 +24,6 @@ using StudioFourteen.Services;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Windows.Controls.Primitives;
 
 public enum InputStates
 {
@@ -54,18 +53,7 @@ public class InputService : ServiceBase
 	public MouseDevice? Mouse => this.GetDevice<MouseDevice>();
 
 	public bool IsXivTextInputActive { get; private set; }
-	public bool IsStudioTextInputActive
-	{
-		get
-		{
-			if (KeyboardDevice.FocusedElement is TextBoxBase tb)
-			{
-				return tb.IsFocused && (tb.IsKeyboardFocused || tb.IsKeyboardFocusWithin);
-			}
-
-			return false;
-		}
-	}
+	public bool IsStudioTextInputActive => false;
 
 	public bool SlowChange => this.slowChangeListener.Value > 0.05f;
 	public bool FastChange => this.fastChangeListener.Value > 0.05f;

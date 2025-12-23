@@ -15,8 +15,8 @@
 
 namespace StudioFourteen.Scene.GameObjects.Characters.DrawData;
 
+using System.Collections.Generic;
 using StudioFourteen.Mvm;
-using StudioFourteen.Extensions;
 
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 
@@ -40,10 +40,10 @@ public class DrawDataContainer : ViewModel
 		this.Accessories.Add(new Equipment(EquipmentSlot.LFinger));
 	}
 
-	public FastObservableCollection<GearViewModelBase> Weapons { get; init; } = new();
-	public FastObservableCollection<GearViewModelBase> Equipment { get; init; } = new();
-	public FastObservableCollection<GearViewModelBase> Accessories { get; init; } = new();
-	public FastObservableCollection<GearViewModelBase> Fashion { get; init; } = new();
+	public List<GearViewModelBase> Weapons { get; init; } = new();
+	public List<GearViewModelBase> Equipment { get; init; } = new();
+	public List<GearViewModelBase> Accessories { get; init; } = new();
+	public List<GearViewModelBase> Fashion { get; init; } = new();
 
 	public unsafe void OnGameTick(Character character)
 	{

@@ -137,7 +137,7 @@ public class SkeletonBoneGroupGizmo : SelectionHandle
 				bone.GroupAlpha = this.transitionProgress;
 				bone.GroupDepthOffset = 0.002f * this.transitionProgress;
 
-				Point simpleOffset;
+				Vector2 simpleOffset = default;
 				if (bone.BoneName.EndsWith("_r"))
 				{
 					string lookupName = bone.BoneName.Substring(0, bone.BoneName.Length - 2) + "_l";

@@ -13,15 +13,30 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Scripting.Instance;
+namespace StudioFourteen.Mvm;
 
-using Serilog.Events;
-using System;
+using Newtonsoft.Json;
+using Serilog;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
-public class ScriptLogger : ScriptServiceBase
+public abstract class ViewModel : INotifyPropertyChanged
 {
-	public void Information(string message) => this.Panel.AppendLog(LogEventLevel.Information, message);
-	public void Warning(string message) => this.Panel.AppendLog(LogEventLevel.Warning, message);
-	public void Error(string message) => this.Panel.AppendLog(LogEventLevel.Error, message);
-	public void Error(Exception ex, string message) => this.Panel.AppendLog(LogEventLevel.Error, message);
+	protected readonly ILogger Log;
+
+	public ViewModel()
+		: base()
+	{
+		this.Log = Logging.ForContext(this.GetType());
+	}
+
+	public event PropertyChangedEventHandler? PropertyChanged;
+
+	[JsonIgnore]
+	public ServiceManager Services => ServiceManager.Instance;
+
+	protected virtual void RaisePropertyChanged([CallerMemberName] string propertyName = "")
+	{
+		this.PropertyChanged?.Invoke(this, new(propertyName));
+	}
 }

@@ -24,23 +24,21 @@ using FFXIVClientStructs.FFXIV.Client.System.Input;
 using StudioFourteen.Rendering;
 using StudioFourteen.Utilities;
 
-using Vector = System.Windows.Vector;
-
 public class MouseDevice : InputDeviceBase
 {
 	private const float MinDragDistance = 1.0f;
 
-	private readonly Dictionary<MouseButton, Point> dragStarts = new();
-	private readonly HashSet<MouseButton> draggingButtons = new();
-	private readonly Dictionary<MouseButton, InputAxis> buttonAxes = new();
-	private readonly Dictionary<MouseButton, (InputAxisSigned X, InputAxisSigned Y)> dragAxis = new();
+	private readonly Dictionary<MouseButtonFlags, Vector2> dragStarts = new();
+	private readonly HashSet<MouseButtonFlags> draggingButtons = new();
+	private readonly Dictionary<MouseButtonFlags, InputAxis> buttonAxes = new();
+	private readonly Dictionary<MouseButtonFlags, (InputAxisSigned X, InputAxisSigned Y)> dragAxis = new();
 
 	private readonly InputAxis positionX;
 	private readonly InputAxis positionY;
 
 	private readonly InputAxisSigned wheel;
 
-	private Point lastMousePosition;
+	private Vector2 lastMousePosition;
 
 	public MouseDevice()
 	{
@@ -53,7 +51,7 @@ public class MouseDevice : InputDeviceBase
 		this.positionY = new(MouseDevice.PositionY, this, false);
 		this.AddAxis(this.positionY);
 
-		foreach (MouseButton button in Enum.GetValues<MouseButton>())
+		foreach (MouseButtonFlags button in Enum.GetValues<MouseButtonFlags>())
 		{
 			this.buttonAxes.Add(button, new(MouseDevice.GetAxisId(button), this, true));
 
@@ -74,7 +72,7 @@ public class MouseDevice : InputDeviceBase
 			this.AddAxis(y);
 		}
 
-		foreach ((MouseButton button, InputAxis axis) in this.buttonAxes)
+		foreach ((MouseButtonFlags button, InputAxis axis) in this.buttonAxes)
 		{
 			this.AddAxis(axis);
 		}
@@ -95,57 +93,29 @@ public class MouseDevice : InputDeviceBase
 
 	public bool IsAnyDragging => this.draggingButtons.Count > 0;
 
-	public static string GetAxisId(MouseButton button) => $"Mouse:{button}";
-	public static string GetDragAxisId(MouseButton button, DragDirections direction) => $"Mouse:{button}Drag:{direction}";
-
-	public static MouseButtonFlags GetEngineFlags(MouseButton button)
-	{
-		switch (button)
-		{
-			case MouseButton.Left: return MouseButtonFlags.LBUTTON;
-			case MouseButton.Middle: return MouseButtonFlags.MBUTTON;
-			case MouseButton.Right: return MouseButtonFlags.RBUTTON;
-			case MouseButton.XButton1: return MouseButtonFlags.XBUTTON1;
-			case MouseButton.XButton2: return MouseButtonFlags.XBUTTON2;
-		}
-
-		throw new NotImplementedException();
-	}
+	public static string GetAxisId(MouseButtonFlags button) => $"Mouse:{button}";
+	public static string GetDragAxisId(MouseButtonFlags button, DragDirections direction) => $"Mouse:{button}Drag:{direction}";
 
 	public Vector2 GetPosition() => new(this.positionX.Value, this.positionY.Value);
-	public bool GetButton(MouseButton button) => this.buttonAxes[button].Value > 0.05f;
+	public bool GetButton(MouseButtonFlags button) => this.buttonAxes[button].Value > 0.05f;
 
 	public override void Attach()
 	{
 		base.Attach();
 
-		// Listen for mouse down on any UI element
-		// and update the last input time to force focus mode to switch
-		// correctly, even when we're not capturing mouse inputs.
-		EventManager.RegisterClassHandler(
-			typeof(UIElement),
-			FrameworkElement.MouseDownEvent,
-			new RoutedEventHandler((s, e) =>
-			{
-				if (ServiceManager.ShutdownRequested)
-					return;
-
-				this.buttonAxes[MouseButton.Left].UtcLastInput = DateTime.UtcNow;
-			}));
-
-		this.buttonAxes[MouseButton.Left].UtcLastInput = DateTime.UtcNow;
+		this.buttonAxes[MouseButtonFlags.LBUTTON].UtcLastInput = DateTime.UtcNow;
 	}
 
 	public unsafe override void PreUpdate()
 	{
 		this.wheel.ConsumedBy = null;
 
-		foreach ((MouseButton button, InputAxis axis) in this.buttonAxes)
+		foreach ((MouseButtonFlags button, InputAxis axis) in this.buttonAxes)
 		{
 			axis.ConsumedBy = null;
 		}
 
-		foreach ((MouseButton button, (InputAxisSigned xAxis, InputAxisSigned yAxis)) in this.dragAxis)
+		foreach ((MouseButtonFlags button, (InputAxisSigned xAxis, InputAxisSigned yAxis)) in this.dragAxis)
 		{
 			xAxis.ConsumedBy = null;
 			yAxis.ConsumedBy = null;
@@ -163,7 +133,7 @@ public class MouseDevice : InputDeviceBase
 
 		this.wheel.Value = 0;
 
-		foreach ((MouseButton button, (InputAxisSigned xAxis, InputAxisSigned yAxis)) in this.dragAxis)
+		foreach ((MouseButtonFlags button, (InputAxisSigned xAxis, InputAxisSigned yAxis)) in this.dragAxis)
 		{
 			xAxis.Value = 0;
 			yAxis.Value = 0;
@@ -175,12 +145,8 @@ public class MouseDevice : InputDeviceBase
 		}*/
 	}
 
-	public bool HandleMouseButton(MouseButton button, bool down)
+	public bool HandleMouseButton(MouseButtonFlags button, bool down)
 	{
-		// If we are clicking into xiv, ensure any studio windows have lost focus correctly.
-		if (!this.Services.Windows.IsCursorOverStudio)
-			this.Services.Windows.Activate(null);
-
 		if (!down)
 		{
 			/*if (this.dragStarts.ContainsKey(button) && !this.draggingButtons.Contains(button))
@@ -194,7 +160,7 @@ public class MouseDevice : InputDeviceBase
 			this.buttonAxes[button].Value = 0.0f;
 		}
 
-		Point? mousePoint = this.Services.Windows.GetCursorPosition();
+		Vector2? mousePoint = CursorUtility.GetPosition();
 		if (mousePoint == null)
 			return false;
 
@@ -220,18 +186,18 @@ public class MouseDevice : InputDeviceBase
 
 	public void HandleMouseLeave()
 	{
-		foreach ((MouseButton button, (InputAxisSigned xAxis, InputAxisSigned yAxis)) in this.dragAxis)
+		foreach ((MouseButtonFlags button, (InputAxisSigned xAxis, InputAxisSigned yAxis)) in this.dragAxis)
 		{
 			xAxis.Value = 0;
 			yAxis.Value = 0;
 		}
 
-		foreach ((MouseButton button, InputAxis axis) in this.buttonAxes)
+		foreach ((MouseButtonFlags button, InputAxis axis) in this.buttonAxes)
 		{
 			axis.Value = 0.0f;
 		}
 
-		foreach (MouseButton button in this.draggingButtons)
+		foreach (MouseButtonFlags button in this.draggingButtons)
 		{
 			this.dragAxis[button].X.Value = 0;
 			this.dragAxis[button].Y.Value = 0;
@@ -252,17 +218,8 @@ public class MouseDevice : InputDeviceBase
 
 		// Capture the mouse if a studio window or gizmo handle is under
 		// ths cursor.
-		if (this.Services.Windows.IsCursorOverStudio
-			|| RendererInput.IsCursorOverHandle)
+		if (RendererInput.IsCursorOverHandle)
 			return true;
-
-		// Don't process mouse if the cursor is over an in-game UI element
-		if (this.Services.Windows.IsCursorOverAtkUnit)
-			return false;
-
-		// Don't process mouse if the cursor is over a Dalamud ImGUI element.
-		if (this.Services.Windows.IsCursorOverImGui)
-			return false;
 
 		// If the reshade overlay is open, let it do its cursor things.
 		if (this.Services.Reshade.IsReshadeOverlayOpen)
@@ -273,8 +230,8 @@ public class MouseDevice : InputDeviceBase
 
 	private void UpdateMousePosition()
 	{
-		Point? mousePoint = this.Services.Windows.GetCursorPosition();
-		Rect clientSize = this.Services.Windows.GetXivWindowClientSize();
+		Vector2? mousePoint = null; ////this.Services.Windows.GetCursorPosition();
+		Vector2 clientSize = Vector2.Zero; ////this.Services.Windows.GetXivWindowClientSize();
 
 		if (mousePoint == null)
 		{
@@ -282,41 +239,41 @@ public class MouseDevice : InputDeviceBase
 			return;
 		}
 
-		foreach ((MouseButton button, Point dragStart) in this.dragStarts)
+		foreach ((MouseButtonFlags button, Vector2 dragStart) in this.dragStarts)
 		{
 			if (this.draggingButtons.Contains(button))
 				continue;
 
-			Vector totalDelta = mousePoint.Value - dragStart;
+			Vector2 totalDelta = mousePoint.Value - dragStart;
 			if (Math.Abs(totalDelta.X) > MinDragDistance || Math.Abs(totalDelta.Y) > MinDragDistance)
 			{
 				this.draggingButtons.Add(button);
 			}
 		}
 
-		foreach (MouseButton button in this.draggingButtons)
+		foreach (MouseButtonFlags button in this.draggingButtons)
 		{
-			Vector delta = mousePoint.Value - this.lastMousePosition;
+			Vector2 delta = mousePoint.Value - this.lastMousePosition;
 			this.dragAxis[button].X.Value += (float)delta.X / 8; // Sensitivity
 			this.dragAxis[button].Y.Value += (float)delta.Y / 8;
 		}
 
 		if (this.IsAnyDragging)
 		{
-			foreach ((MouseButton button, Point dragStart) in this.dragStarts)
+			foreach ((MouseButtonFlags button, Vector2 dragStart) in this.dragStarts)
 			{
-				this.Services.Windows.SetCursorPosition(new Point((int)dragStart.X, (int)dragStart.Y));
+				CursorUtility.SetPosition(dragStart);
 			}
 
 			CursorUtility.SetCursorVisible(false);
 		}
 		else
 		{
-			this.positionX.Value = (float)(mousePoint.Value.X / clientSize.Width);
-			this.positionY.Value = (float)(mousePoint.Value.Y / clientSize.Height);
+			this.positionX.Value = (float)(mousePoint.Value.X / clientSize.X);
+			this.positionY.Value = (float)(mousePoint.Value.Y / clientSize.Y);
 		}
 
-		mousePoint = this.Services.Windows.GetCursorPosition();
+		mousePoint = CursorUtility.GetPosition();
 		if (mousePoint == null)
 			return;
 

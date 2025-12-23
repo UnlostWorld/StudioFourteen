@@ -22,7 +22,6 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
 using StudioFourteen.Xaml;
 
 public class BlendSelection : SceneObjectBase
@@ -205,27 +204,11 @@ public class BlendTarget
 	public Dictionary<string, BoneTransform>? RightBones { get; set; }
 	public Dictionary<string, BoneTransform>? LeftBones { get; set; }
 
-	public BitmapSource? Icon
+	public object? Icon
 	{
 		get
 		{
-			if (string.IsNullOrEmpty(this.IconPath))
-				return null;
-
-			try
-			{
-				BitmapImage bmp = new();
-				bmp.BeginInit();
-				bmp.UriSource = new($"pack://application:,,,/StudioFourteen;component/{this.IconPath}");
-				bmp.EndInit();
-				return bmp;
-			}
-			catch (Exception ex)
-			{
-				Logging.Shared.Error(ex, "Failed to load Blend Target Icon");
-			}
-
-			return null;
+			throw new NotImplementedException();
 		}
 	}
 

@@ -115,19 +115,11 @@ public class GamepadDevice : InputDeviceBase
 
 	public override void Activate()
 	{
-		Type type = typeof(System.Windows.Input.KeyboardNavigation);
-		PropertyInfo? showFocusVisual = type.GetProperty("AlwaysShowFocusVisual", BindingFlags.NonPublic | BindingFlags.Static);
-		showFocusVisual?.SetValue(null, true);
-
 		base.Activate();
 	}
 
 	public override void Deactivate()
 	{
-		Type type = typeof(System.Windows.Input.KeyboardNavigation);
-		PropertyInfo? showFocusVisual = type.GetProperty("AlwaysShowFocusVisual", BindingFlags.NonPublic | BindingFlags.Static);
-		showFocusVisual?.SetValue(null, false);
-
 		base.Deactivate();
 	}
 

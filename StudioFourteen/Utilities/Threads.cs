@@ -16,15 +16,10 @@
 namespace StudioFourteen.Utilities;
 
 using System.Threading.Tasks;
-using System.Windows.Threading;
 using StudioFourteen.Services;
-using StudioFourteen;
 
 public static class Threads
 {
-	public static Dispatch.SwitchFromUiAwaitable NonUiThread() => Dispatch.NonUiThread();
-	public static Dispatch.SwitchToMainThreadAwaitable UiThread(DispatcherObject obj) => Dispatch.MainThread(obj);
-
 	public static async Task NextFrame()
 	{
 		await Task.Delay(5);

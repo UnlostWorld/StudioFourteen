@@ -19,7 +19,6 @@ using System;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
-using StudioFourteen.Cursors;
 using StudioFourteen.Services;
 using StudioFourteen.Utilities;
 using StudioFourteen.Xaml;
@@ -44,24 +43,17 @@ public interface IDragSceneInstance
 public partial class DragAndDropService : ServiceBase
 {
 	private DragAndDropOperation? currentOperation;
-	private DragObjectVisual? currentVisual;
-
-	private object? dragOperationIconNo;
-	private object? dragOperationIconAssign;
 
 	[Bind] public partial bool IsDragging { get; set; }
 	[Bind] public partial IDraggable? CurrentDragObject { get; set; }
 
 	public override Task Start()
 	{
-		this.dragOperationIconNo = XamlResources.Find("ICON_Drag_No");
-		this.dragOperationIconAssign = XamlResources.Find("ICON_Drag_Assign");
 		return base.Start();
 	}
 
 	public override Task Shutdown()
 	{
-		this.currentVisual?.Close();
 		return base.Shutdown();
 	}
 
@@ -77,37 +69,7 @@ public partial class DragAndDropService : ServiceBase
 		base.Detach();
 	}
 
-	public void Drag(FrameworkElement owner, IDraggable obj, IDraggable? previewParent = null)
-	{
-		this.currentVisual?.Close();
-
-		this.IsDragging = true;
-		this.CurrentDragObject = obj;
-
-		object? dragPreview = obj.GetDragPreviewContent();
-		if (dragPreview == null)
-			dragPreview = previewParent?.GetDragPreviewContent();
-
-		if (dragPreview != null)
-		{
-			this.currentVisual = new(dragPreview);
-			this.currentVisual.Show();
-		}
-
-		owner.GiveFeedback += this.GiveFeedback;
-		owner.QueryContinueDrag += this.QueryContinueDrag;
-
-		string msg = "Hey, dont drag that over here.";
-		DragDrop.DoDragDrop(owner, msg, DragDropEffects.All);
-
-		this.currentVisual?.Close();
-		this.currentVisual = null;
-		owner.GiveFeedback -= this.GiveFeedback;
-		owner.QueryContinueDrag -= this.QueryContinueDrag;
-		this.IsDragging = false;
-	}
-
-	public void HandleDragEnterScene(DragEventArgs e)
+	public void HandleDragEnterScene()
 	{
 		if (this.CurrentDragObject == null)
 			return;
@@ -119,32 +81,24 @@ public partial class DragAndDropService : ServiceBase
 		if (instance != null)
 		{
 			this.currentOperation = new(instance);
-			e.Effects = DragDropEffects.Copy;
 			this.currentOperation.EnterScene().RunAsynchronously();
 		}
 		else
 		{
-			e.Effects = DragDropEffects.None;
 		}
-
-		e.Handled = true;
 	}
 
-	public void HandleDragOverScene(DragEventArgs e)
+	public void HandleDragOverScene()
 	{
 		if (this.currentOperation != null)
 		{
-			e.Effects = DragDropEffects.Copy;
 		}
 		else
 		{
-			e.Effects = DragDropEffects.None;
 		}
-
-		e.Handled = true;
 	}
 
-	public void HandleDragLeaveScene(DragEventArgs e)
+	public void HandleDragLeaveScene()
 	{
 		if (this.currentOperation != null)
 		{
@@ -153,7 +107,7 @@ public partial class DragAndDropService : ServiceBase
 		}
 	}
 
-	public void HandleDropScene(DragEventArgs e)
+	public void HandleDropScene()
 	{
 		if (this.currentOperation != null)
 		{
@@ -172,41 +126,6 @@ public partial class DragAndDropService : ServiceBase
 			return;
 
 		this.currentOperation.UpdatePosition(hit);
-	}
-
-	private void GiveFeedback(object sender, GiveFeedbackEventArgs e)
-	{
-		if (this.currentVisual != null)
-		{
-			object? opIcon = this.currentOperation?.GetOperationIcon();
-
-			if (opIcon == null)
-			{
-				if (e.Effects == DragDropEffects.Move)
-				{
-					opIcon = this.dragOperationIconAssign;
-				}
-				else
-				{
-					opIcon = this.dragOperationIconNo;
-				}
-			}
-
-			this.currentVisual.SetOperation(opIcon);
-		}
-
-		Mouse.SetCursor(this.Services.Cursor.GetCursor(CursorService.CursorType.Grab));
-		e.Handled = true;
-	}
-
-	private void QueryContinueDrag(object sender, QueryContinueDragEventArgs e)
-	{
-		if (this.currentVisual == null)
-			return;
-
-		Point cursorPos = CursorUtility.GetPosition();
-		this.currentVisual.Left = cursorPos.X - (this.currentVisual.Width / 2);
-		this.currentVisual.Top = cursorPos.Y - (this.currentVisual.Height / 2);
 	}
 }
 

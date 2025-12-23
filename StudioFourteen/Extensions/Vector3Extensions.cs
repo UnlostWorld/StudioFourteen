@@ -15,6 +15,7 @@
 
 namespace System.Numerics;
 
+using System.Drawing;
 using FFXIVClientStructs.Havok.Common.Base.Math.Vector;
 
 public static class Vector3Extensions
@@ -40,13 +41,8 @@ public static class Vector3Extensions
 		return val;
 	}
 
-	public static Windows.Point ToPoint(this Vector3 self)
+	public static Point ToDrawingPoint(this Vector3 self)
 	{
-		return new Windows.Point(self.X, self.Y);
-	}
-
-	public static System.Drawing.Point ToDrawingPoint(this Vector3 self)
-	{
-		return new System.Drawing.Point((int)self.X, (int)self.Y);
+		return new Point((int)self.X, (int)self.Y);
 	}
 }

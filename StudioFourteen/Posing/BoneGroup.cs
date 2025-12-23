@@ -13,28 +13,54 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Appearance;
+namespace StudioFourteen.Posing;
 
-using System.Threading.Tasks;
-using StudioFourteen.Context;
+using System;
 using System.Collections.Generic;
-using StudioFourteen.Scene.GameObjects.Characters;
+using System.Numerics;
 
-public class CharacterAppearanceContextMenuProvider : ContextProvider<ICharacterAppearance>
+public class SimpleViewLayout
 {
-	protected override Task GetMenus(ICharacterAppearance target, List<MenuEntry> menus)
-	{
-		menus.Add(new("ICON_AddCharacter", "LOC_Context_Spawn", () => this.Spawn(target)));
-		return Task.CompletedTask;
-	}
+	public string? Background { get; set; }
+	public Dictionary<string, Vector2> Bones { get; set; } = new();
+	public string? BasedOn { get; set; }
 
-	private Task<Character?> Spawn(ICharacterAppearance target)
+	public void MergeBasedOn(SimpleViewLayout? parent)
 	{
-		return this.Services.CharacterLifecycle.CreateAsync(target, UpdateSource.Interface);
-	}
+		if (parent == null)
+			return;
 
-	private Task Apply(ICharacterAppearance target, Character character)
+		if (this.Background == null)
+			this.Background = parent.Background;
+
+		foreach ((string key, Vector2 pos) in parent.Bones)
+		{
+			if (this.Bones.ContainsKey(key))
+				continue;
+
+			this.Bones.Add(key, pos);
+		}
+	}
+}
+
+#pragma warning disable
+public class BoneGroup
+{
+	private readonly SimpleViewLayout? layout;
+
+	public string Name { get; set; } = "Unknown";
+	public HashSet<string> Bones { get; set; } = new();
+	public string? SimpleLayout { get; set; }
+
+	public SimpleViewLayout? GetSimpleViewLayout()
 	{
-		return character.ImportAppearance(target, UpdateSource.Interface);
+		if (this.SimpleLayout == null)
+			return null;
+
+		if (this.layout == null)
+			throw new NotImplementedException();
+		////ServiceManager.Instance.Content.SimplePoseLayouts?.TryGetValue(this.SimpleLayout, out this.layout);
+
+		return this.layout;
 	}
 }

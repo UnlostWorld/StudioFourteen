@@ -27,9 +27,6 @@ using Task = System.Threading.Tasks.Task;
 public partial class TimeService
 	: ServiceBase
 {
-	private readonly Dictionary<int, string> dayNameLookup = new();
-	private readonly Dictionary<int, string> monthNameLookup = new();
-
 	private bool isUpdatingEorzeaTime = false;
 
 	public TimeService()
@@ -44,21 +41,6 @@ public partial class TimeService
 	[Bind] public partial bool FreezeTime { get; set; }
 	[Bind] public partial string DisplayTime { get; set; }
 	[Bind] public partial string DisplayMonth { get; set; }
-
-	public override async Task Start()
-	{
-		for (int i = 0; i < 12; i++)
-		{
-			this.monthNameLookup[i] = XamlResources.Find($"LOC_Time_Month_{i}", i.ToString());
-		}
-
-		for (int i = 0; i < 32; i++)
-		{
-			this.dayNameLookup[i] = XamlResources.Find($"LOC_Time_Day_{i}", i.ToString());
-		}
-
-		await base.Start();
-	}
 
 	public override void Attach()
 	{
@@ -124,9 +106,6 @@ public partial class TimeService
 		int month = DateTime.UtcNow.Month - 1;
 
 		this.DisplayTime = $"{hours}:{displayTime.Minutes.ToString("D2")}{(isPm ? "pm" : "am")}";
-
-		if (this.monthNameLookup.ContainsKey(month))
-			this.DisplayMonth = $"{this.monthNameLookup[month]}, 1577";
 
 		this.isUpdatingEorzeaTime = false;
 	}

@@ -19,6 +19,7 @@ using System;
 using StudioFourteen.Scene;
 using StudioFourteen.Extensions;
 using StudioFourteen.Xaml;
+using System.Collections.Generic;
 
 public partial class SelectionType<T> : SelectionTypeBase
 	where T : SceneObjectBase
@@ -28,14 +29,14 @@ public partial class SelectionType<T> : SelectionTypeBase
 	public SelectionType()
 	{
 		this.scope = new(this.OnScopeSelectionChanged);
-		this.Objects.Replace(ServiceManager.Instance.Scene.FindObjects<T>());
+		this.Objects = new(ServiceManager.Instance.Scene.FindObjects<T>());
 
 		this.scope.Enable();
 		this.Selection = this.scope.Current;
 	}
 
 	[Bind] public partial T? Selection { get; set; }
-	public FastObservableCollection<T> Objects { get; init; } = new();
+	public List<T> Objects { get; init; } = new();
 
 	public override Type Type => typeof(T);
 	public override string? Name => XamlResources.Find($"LOC_Type_{typeof(T).Name}s", typeof(T).Name);

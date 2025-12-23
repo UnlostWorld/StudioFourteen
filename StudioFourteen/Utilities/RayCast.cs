@@ -29,11 +29,8 @@ public static class RayCast
 {
 	public static unsafe HitInfo? CastFromCursor()
 	{
-		Point? p = ServiceManager.Instance.Windows.GetCursorPosition();
-		if (p == null)
-			return null;
-
-		return RayCast.Cast(new Vector2((float)p.Value.X, (float)p.Value.Y));
+		Vector2 p = CursorUtility.GetPosition();
+		return RayCast.Cast(p);
 	}
 
 	public static unsafe HitInfo Cast(Vector2 screenPosition)

@@ -45,7 +45,6 @@ public class CharacterLifecycleService : ServiceBase
 	public event CharacterDelegate? CharacterCreated;
 	public event CharacterDelegate? CharacterDestroyed;
 
-	[AutoNotify]
 	public bool CanSpawn => this.Services.GroupPose.IsGroupPosing || this.Services.Territory.IsInTitleScreen;
 
 	public override async Task Initialize()

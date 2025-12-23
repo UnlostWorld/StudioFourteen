@@ -88,7 +88,7 @@ public class TabletService : ServiceBase
 		}
 		catch (Exception ex)
 		{
-			System.Windows.Forms.MessageBox.Show(ex.Message);
+			this.Log.Error(ex, "Error opening system context");
 		}
 	}
 
@@ -105,7 +105,7 @@ public class TabletService : ServiceBase
 		}
 		catch (Exception ex)
 		{
-			System.Windows.Forms.MessageBox.Show(ex.ToString());
+			this.Log.Error(ex, "Error closing system context");
 		}
 	}
 

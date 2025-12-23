@@ -46,17 +46,6 @@ public static class Logging
 		Logger = Configuration.CreateLogger();
 
 		StudioTraceListener listener = new();
-		PresentationTraceSources.AnimationSource.Listeners.Add(listener);
-		PresentationTraceSources.DataBindingSource.Listeners.Add(listener);
-		PresentationTraceSources.DependencyPropertySource.Listeners.Add(listener);
-		PresentationTraceSources.DocumentsSource.Listeners.Add(listener);
-		PresentationTraceSources.FreezableSource.Listeners.Add(listener);
-		PresentationTraceSources.HwndHostSource.Listeners.Add(listener);
-		PresentationTraceSources.MarkupSource.Listeners.Add(listener);
-		PresentationTraceSources.NameScopeSource.Listeners.Add(listener);
-		PresentationTraceSources.ResourceDictionarySource.Listeners.Add(listener);
-		PresentationTraceSources.RoutedEventSource.Listeners.Add(listener);
-		PresentationTraceSources.ShellSource.Listeners.Add(listener);
 	}
 
 	public static ILogger Shared => Logger;
@@ -73,17 +62,6 @@ public static class Logging
 
 	public static void Dispose()
 	{
-		PresentationTraceSources.AnimationSource.Listeners.Clear();
-		PresentationTraceSources.DataBindingSource.Listeners.Clear();
-		PresentationTraceSources.DependencyPropertySource.Listeners.Clear();
-		PresentationTraceSources.DocumentsSource.Listeners.Clear();
-		PresentationTraceSources.FreezableSource.Listeners.Clear();
-		PresentationTraceSources.HwndHostSource.Listeners.Clear();
-		PresentationTraceSources.MarkupSource.Listeners.Clear();
-		PresentationTraceSources.NameScopeSource.Listeners.Clear();
-		PresentationTraceSources.ResourceDictionarySource.Listeners.Clear();
-		PresentationTraceSources.RoutedEventSource.Listeners.Clear();
-		PresentationTraceSources.ShellSource.Listeners.Clear();
 	}
 }
 
@@ -158,12 +136,12 @@ public class Formatter(bool includeLevel, bool includeContext = true) : ITextFor
 	{
 		switch (level)
 		{
-			case LogEventLevel.Verbose: return Crayon.Output.Dim().Text("[VRB] ");
-			case LogEventLevel.Debug: return Crayon.Output.White().Text("[DBG] ");
-			case LogEventLevel.Information: return Crayon.Output.White().Text("[INF] ");
-			case LogEventLevel.Warning: return Crayon.Output.Yellow().Text("[WRN] ");
-			case LogEventLevel.Error: return Crayon.Output.Red().Text("[ERR] ");
-			case LogEventLevel.Fatal: return Crayon.Output.Black().Background.Red().Text("[FAT] ");
+			case LogEventLevel.Verbose: return "[VRB] ";
+			case LogEventLevel.Debug: return "[DBG] ";
+			case LogEventLevel.Information: return "[INF] ";
+			case LogEventLevel.Warning: return "[WRN] ";
+			case LogEventLevel.Error: return "[ERR] ";
+			case LogEventLevel.Fatal: return "[FAT] ";
 		}
 
 		throw new NotSupportedException();
@@ -253,7 +231,6 @@ public class DebugSink : ILogEventSink
 	public DebugSink(ITextFormatter formatter)
 	{
 		this.formatter = formatter;
-		SayHello();
 	}
 
 	public void Emit(LogEvent logEvent)
@@ -265,27 +242,6 @@ public class DebugSink : ILogEventSink
 
 		IsWriting = true;
 		Debug.WriteLine(message);
-		IsWriting = false;
-	}
-
-	private static void SayHello()
-	{
-		IsWriting = true;
-		var rainbow = new Crayon.Rainbow(0.5);
-		Debug.WriteLine(rainbow.Next().Text(@"                      @@             _____ _______ _    _ _____ _____ ____		"));
-		Debug.WriteLine(rainbow.Next().Text(@"          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \		"));
-		Debug.WriteLine(rainbow.Next().Text(@"         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |		"));
-		Debug.WriteLine(rainbow.Next().Text(@"         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |		"));
-		Debug.WriteLine(rainbow.Next().Text(@"        @@@@       @@@@@@@          ____) |  | |  | |__| | |__| || || |__| |		"));
-		Debug.WriteLine(rainbow.Next().Text(@"    @@@@@             @@@          |_____/   |_|   \____/|_____/_____\____/		"));
-		Debug.WriteLine(rainbow.Next().Text(@"     @@@      @@@      @@        ___     _    _   _  __   _____  ___  ___  _  _	"));
-		Debug.WriteLine(rainbow.Next().Text(@"      @@    @@@@@@@    @@       |  _|  / _ \ | | | || _ \|_   _|| __|| __|| \| |	"));
-		Debug.WriteLine(rainbow.Next().Text(@"      @@    @@@@@@@    @   @    | __| | (_) || |_| ||   /  | |  | _| | _| | .` |	"));
-		Debug.WriteLine(rainbow.Next().Text(@"    @@@@      @@@      @@@@     |_|    \___/  \___/ |_|_\  |_|  |___||___||_|\_|	"));
-		Debug.WriteLine(rainbow.Next().Text(@"     @@@@             @@@        https://github.com/UnlostWorld/StudioFourteen	"));
-		Debug.WriteLine(rainbow.Next().Text(@"       @@@@@      @@@@@															"));
-		Debug.WriteLine(rainbow.Next().Text(@"        @@@@@@@@@@@@@@                This software is licensed under the			"));
-		Debug.WriteLine(rainbow.Next().Text(@"            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3			"));
 		IsWriting = false;
 	}
 }

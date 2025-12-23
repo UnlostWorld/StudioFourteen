@@ -28,7 +28,7 @@ using StudioFourteen.Scene.GameObjects.Characters.Skeletons;
 using StudioFourteen.Services;
 using StudioFourteen.Xaml;
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
-
+using Action = System.Action;
 using CharaMakeType = StudioFourteen.GameData.Sheets.CharaMakeType;
 using DrawDataContainer = StudioFourteen.Scene.GameObjects.Characters.DrawData.DrawDataContainer;
 using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
@@ -40,18 +40,11 @@ public class Character : Skeleton
 	public Character(int objectIndex)
 		: base(objectIndex)
 	{
-		this.RevertAppearanceCommand = new(this.RevertAppearance);
-		this.ImportAppearanceCommand = new(this.ImportAppearance);
-		this.ExportAppearanceCommand = new(this.ExportAppearance);
 	}
 
 	public DrawDataContainer DrawData { get; init; } = new();
 	public override object? Icon => XamlResources.Find("ICON_Type_Character");
 	public override string TypeName => XamlResources.Find("LOC_Type_Character", "Character");
-
-	public SimpleCommand RevertAppearanceCommand { get; init; }
-	public SimpleCommand ImportAppearanceCommand { get; init; }
-	public SimpleCommand ExportAppearanceCommand { get; init; }
 
 	public unsafe XivCharacter* GetXivCharacter()
 	{
@@ -88,7 +81,8 @@ public class Character : Skeleton
 
 	public void ImportAppearance()
 	{
-		LibraryPanel.Open(PanelService.GamePanels);
+		throw new NotImplementedException();
+		////LibraryPanel.Open(PanelService.GamePanels);
 	}
 
 	public async Task ImportAppearance(ICharacterAppearance appearance, UpdateSource source)

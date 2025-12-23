@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using Dalamud.Game.ClientState.Objects.Enums;
 using Lumina.Data;
 using Serilog;
-using System.Windows.Media;
+using StudioFourteen.Rendering;
 
 using CharaMakeType = StudioFourteen.GameData.Sheets.CharaMakeType;
 

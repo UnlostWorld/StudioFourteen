@@ -18,9 +18,6 @@ namespace StudioFourteen.Input.Devices;
 using Dalamud.Game.ClientState.Keys;
 using StudioFourteen.Plugin;
 using System.Collections.Generic;
-using System.Windows;
-using System.Windows.Controls.Primitives;
-using System.Windows.Input;
 
 public class KeyboardDevice : InputDeviceBase
 {
@@ -43,7 +40,7 @@ public class KeyboardDevice : InputDeviceBase
 		}
 	}
 
-	public static IInputElement FocusedElement => System.Windows.Input.Keyboard.FocusedElement;
+	public static object? FocusedElement => null;
 
 	public static string GetAxisId(VirtualKey key) => $"Keyboard:{key}";
 
@@ -83,19 +80,6 @@ public class KeyboardDevice : InputDeviceBase
 			{
 				DalamudServices.KeyState[key] = false;
 			}
-			else
-			{
-				if (axis.Value > 0.001f && !this.keysSentToXiv.Contains(key))
-				{
-					this.Services.Windows.SendKeyToXiv(key, true);
-					this.keysSentToXiv.Add(key);
-				}
-				else if (axis.Value < 0.001f && this.keysSentToXiv.Contains(key))
-				{
-					this.Services.Windows.SendKeyToXiv(key, false);
-					this.keysSentToXiv.Remove(key);
-				}
-			}
 		}
 	}
 
@@ -115,15 +99,6 @@ public class KeyboardDevice : InputDeviceBase
 	public bool HandleKey(int keyId, bool down)
 	{
 		VirtualKey vKey = (VirtualKey)keyId;
-		if (vKey == VirtualKey.NO_KEY)
-			return false;
-
-		return this.HandleKey(vKey, down);
-	}
-
-	public bool HandleKey(Key key, bool down)
-	{
-		VirtualKey vKey = (VirtualKey)KeyInterop.VirtualKeyFromKey(key);
 		if (vKey == VirtualKey.NO_KEY)
 			return false;
 
@@ -151,22 +126,6 @@ public class KeyboardDevice : InputDeviceBase
 			return false;
 
 		this.axisLookup[vKey].Value = down ? 1.0f : 0.0f;
-
-		if (down)
-		{
-			if (KeyboardDevice.FocusedElement is TextBoxBase tb)
-			{
-				if (tb.IsFocused && (tb.IsKeyboardFocused || tb.IsKeyboardFocusWithin))
-				{
-					if (vKey == VirtualKey.ESCAPE)
-					{
-						tb.SetFocusToWindow();
-					}
-
-					return true;
-				}
-			}
-		}
 
 		return false;
 	}

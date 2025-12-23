@@ -22,6 +22,7 @@ using StudioFourteen.Rendering.Draw.Handles;
 using StudioFourteen.Structs.Extensions;
 using StudioFourteen.Rendering.Passes;
 using StudioFourteen.Xaml;
+using StudioFourteen.Utilities;
 
 public class TranslationGizmo : TransformGizmoBase
 {
@@ -406,7 +407,7 @@ public class TranslationGizmo : TransformGizmoBase
 		protected override void OnEndDrag()
 		{
 			Vector2 pos = this.GetScreenPosition(new(0.25f, 0, 0.25f));
-			WindowService.SetCursorPosition(pos);
+			CursorUtility.SetPosition(pos);
 
 			this.gizmo.EndManipulation();
 

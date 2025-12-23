@@ -18,15 +18,9 @@ namespace System.Drawing;
 using System.Numerics;
 
 using DrawingPoint = System.Drawing.Point;
-using WindowsPoint = System.Windows.Point;
 
 public static class DrawingPointExtensions
 {
-	public static WindowsPoint ToPoint(this DrawingPoint self)
-	{
-		return new WindowsPoint(self.X, self.Y);
-	}
-
 	public static Vector2 ToVector2(this DrawingPoint self)
 	{
 		return new Vector2(self.X, self.Y);

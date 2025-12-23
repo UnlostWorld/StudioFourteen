@@ -20,9 +20,6 @@ using System.Drawing;
 using System.Numerics;
 using global::Windows.Win32;
 
-using DrawingPoint = System.Drawing.Point;
-using Point = System.Windows.Point;
-
 public static class CursorUtility
 {
 	private static bool cursorVisible = true;
@@ -36,24 +33,18 @@ public static class CursorUtility
 		PInvoke.ShowCursor(visible);
 	}
 
-	public static Point GetPosition()
+	public static Vector2 GetPosition()
 	{
-		PInvoke.GetCursorPos(out DrawingPoint point);
-		return point.ToPoint();
+		PInvoke.GetCursorPos(out Point point);
+		return point.ToVector2();
 	}
 
-	public static void SetPosition(Point position)
+	public static void SetPosition(Vector2 position)
 	{
 		// Do not attempt to move the mouse cursor if its actually a tablet pen.
 		if (ServiceManager.Instance.Tablet.PenPressure > 0)
 			return;
 
 		PInvoke.SetCursorPos((int)position.X, (int)position.Y);
-	}
-
-	public static IntPtr GetWindowUnderCursor()
-	{
-		PInvoke.GetCursorPos(out DrawingPoint point);
-		return PInvoke.WindowFromPoint(point);
 	}
 }

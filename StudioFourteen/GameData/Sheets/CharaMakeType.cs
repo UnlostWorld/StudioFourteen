@@ -37,8 +37,8 @@ public readonly unsafe struct CharaMakeType(ExcelPage page, uint offset, uint ro
 
 	private static CharaMakeMenu CharaMakeMenuCtor(ExcelPage page, uint parentOffset, uint offset, uint i) => new(page, parentOffset, offset + (i * 452));
 	private static byte VoiceStructCtor(ExcelPage page, uint parentOffset, uint offset, uint i) => page.ReadUInt8(offset + 12656 + i);
-	private static FaceTypeOptions FaceTypeOptionsCtor(ExcelPage page, uint parentOffset, uint offset, uint i) => new(page, parentOffset, offset + 12668 + (i * 28));
-	private static EquipmentStruct EquipmentCtor(ExcelPage page, uint parentOffset, uint offset, uint i) => new(page, parentOffset, offset + 12896 + (i * 56));
+	private static FaceTypeOptions FaceTypeOptionsCtor(ExcelPage page, uint parentOffset, uint offset, uint i) => new(page, offset + 12668 + (i * 28));
+	private static EquipmentStruct EquipmentCtor(ExcelPage page, uint parentOffset, uint offset, uint i) => new(page, offset + 12896 + (i * 56));
 
 	public readonly struct CharaMakeMenu(ExcelPage page, uint parentOffset, uint offset)
 	{
@@ -56,7 +56,7 @@ public readonly unsafe struct CharaMakeType(ExcelPage page, uint offset, uint ro
 		private static byte SubMenuGraphicCtor(ExcelPage page, uint parentOffset, uint offset, uint i) => page.ReadUInt8(offset + 416 + i);
 	}
 
-	public readonly struct FaceTypeOptions(ExcelPage page, uint parentOffset, uint offset)
+	public readonly struct FaceTypeOptions(ExcelPage page, uint offset)
 	{
 		public readonly int Option1 => page.ReadInt32(offset);
 		public readonly int Option2 => page.ReadInt32(offset + 4);
@@ -71,7 +71,7 @@ public readonly unsafe struct CharaMakeType(ExcelPage page, uint offset, uint ro
 		private static int FacialFeatureOptionCtor(ExcelPage page, uint parentOffset, uint offset, uint i) => page.ReadInt32(offset + (i * 4));
 	}
 
-	public readonly struct EquipmentStruct(ExcelPage page, uint parentOffset, uint offset)
+	public readonly struct EquipmentStruct(ExcelPage page, uint offset)
 	{
 		public readonly ulong Helmet => page.ReadUInt64(offset);
 		public readonly ulong Top => page.ReadUInt64(offset + 8);

@@ -17,8 +17,8 @@ namespace StudioFourteen.Appearance.Customize;
 
 using Dalamud.Game.ClientState.Objects.Enums;
 using StudioFourteen.GameData;
+using StudioFourteen.Rendering;
 using System.Collections.Generic;
-using System.Windows.Media;
 
 using CharaMakeType = StudioFourteen.GameData.Sheets.CharaMakeType;
 

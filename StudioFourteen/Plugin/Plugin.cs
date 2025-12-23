@@ -31,15 +31,6 @@ public sealed class DalamudPlugin : IDalamudPlugin
 	{
 		Instance = this;
 
-		// Hard reference our required satellite assemblies to make sure dalamud's plugin loader picks them up.
-		this.Log.Information($"Ensure assembly FontAwesome {typeof(FontAwesome.Sharp.Icon).Assembly}");
-		this.Log.Information($"Ensure assembly VirtualizingWrapPanel Pro {typeof(WpfToolkit.Controls.VirtualizingWrapPanel).Assembly}");
-		this.Log.Information($"Ensure assembly SVGImage {typeof(SVGImage.SVG.SVGImage).Assembly}");
-		this.Log.Information($"Ensure assembly WebView2 {typeof(Microsoft.Web.WebView2.Wpf.WebView2).Assembly}");
-
-		// Ensure the pack URI scheme got registered
-		this.Log.Information($"Ensure Pack URI {System.IO.Packaging.PackUriHelper.UriSchemePack}");
-
 		pluginInterface.Create<DalamudServices>();
 
 		this.Log.Information("$IsWine: {DalamudServices.IsWine}");
@@ -85,7 +76,6 @@ public sealed class DalamudPlugin : IDalamudPlugin
 
 	private void OnDalamudOpenConfigUi()
 	{
-		this.Services.Panels.GamePanels.SetIsOpen<SettingsPanel>(true, true);
 	}
 
 	private void OnS14Command(string command, string arguments)

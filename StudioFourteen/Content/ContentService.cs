@@ -27,20 +27,12 @@ using StudioFourteen.Services;
 [Service]
 public class ContentService : ServiceBase
 {
-	private readonly JsonContentReference<Dictionary<string, SimpleViewLayout>> simplePoseLayoutsContent = new("SimplePoseLayouts.jsonc");
-	private readonly JsonContentReference<List<BoneGroup>> boneGroupsContent = new("BoneGroups.jsonc");
-	private readonly JsonContentReference<HashSet<string>> genitalBones = new("GenitalBones.jsonc");
 	private readonly Dictionary<string, HashSet<ContentReference>> references = new();
 
 #if DEBUG
 	private bool isRunningFromProject = false;
 	private FileSystemWatcher? watcher;
 #endif
-
-	public Dictionary<string, SimpleViewLayout>? SimplePoseLayouts => this.simplePoseLayoutsContent.Get();
-	public List<BoneGroup>? BoneGroups => this.boneGroupsContent.Get();
-
-	public HashSet<string>? GenitalBones => this.genitalBones.Get();
 
 	public override Task Initialize()
 	{

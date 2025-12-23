@@ -22,8 +22,6 @@ public class ServiceManager : ServiceManagerBase
 	public static new ServiceManager Instance => (ServiceManager)ServiceManagerBase.Instance;
 
 	public Online.OnlineService Online { get; init; } = new();
-	public Mvm.AutoPropertyNotifyService AutoNotify { get; init; } = new();
-	public WindowService Windows { get; init; } = new();
 	public Settings.SettingsService Settings { get; init; } = new();
 	public StudioService Studio { get; init; } = new();
 	public GameData.GameDataService GameData { get; init; } = new();
@@ -35,29 +33,24 @@ public class ServiceManager : ServiceManagerBase
 	public Files.FileThumbnailService Thumbnails { get; init; } = new();
 	public Tablet.TabletService Tablet { get; init; } = new();
 	public Files.FileService Files { get; init; } = new();
-	public PanelService Panels { get; init; } = new();
 	public Scene.Cameras.CameraService Camera { get; init; } = new();
 	public IPC.IPCService IPC { get; init; } = new();
 	public Reshade.ReshadeService Reshade { get; init; } = new();
-	public Analytics.AnalyticsService Analytics { get; init; } = new();
 	public Selection.SelectionService Selection { get; init; } = new();
 	public Photos.PhotosService Photos { get; init; } = new();
 	public RedrawService Redraw { get; init; } = new();
-	public Scripting.ScriptingService Scripting { get; init; } = new();
-	public Cursors.CursorService Cursor { get; init; } = new();
 	public Analytics.ErrorReportingService Errors { get; init; } = new();
 	public TickService Tick { get; init; } = new();
 	public Animation.AnimationService Animations { get; init; } = new();
 	public DragAndDrop.DragAndDropService DragAndDrop { get; init; } = new();
-	public Context.ContextMenuService Context { get; init; } = new();
 	public Environment.EnvironmentService Environment { get; init; } = new();
 	public Environment.TerritoryService Territory { get; init; } = new();
 	public Environment.TimeService Time { get; init; } = new();
 	public Rendering.RenderingService Rendering { get; init; } = new();
 	public Rendering.Draw.Gizmos.GizmoService Gizmos { get; init; } = new();
 	public Content.ContentService Content { get; init; } = new();
-	public ResourcePacks.ResourcePackService ResourcePacks { get; init; } = new();
 	public AfkService Afk { get; init; } = new();
+	public WindowService Windows { get; init; } = new();
 
 	public Scene.SceneService Scene { get; init; } = new();
 	public Scene.GameObjects.GameObjectService GameObjects { get; init; } = new();

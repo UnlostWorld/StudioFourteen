@@ -16,6 +16,7 @@
 namespace StudioFourteen.Scene.GameObjects.Characters.DrawData;
 
 using System;
+using System.Numerics;
 using System.Windows;
 using Dalamud.Game.ClientState.Objects.Enums;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
@@ -33,7 +34,7 @@ public abstract partial class GearViewModelBase
 {
 	private byte lastRace = 255;
 
-	public abstract Rect SlotBackgroundRect { get; }
+	public abstract Vector4 SlotBackgroundRect { get; }
 	public abstract string SearchTitle { get; }
 	public abstract string DyeSearchTitle { get; }
 	public TagCollection SearchTags { get; init; } = new();

@@ -16,7 +16,6 @@
 namespace StudioFourteen.Services;
 
 using StudioFourteen.Plugin;
-using StudioFourteen.AIO;
 using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -55,7 +54,6 @@ public partial class StudioService : ServiceBase
 
 	public override Task Stop()
 	{
-		AioWindow.CloseAio();
 		return base.Stop();
 	}
 

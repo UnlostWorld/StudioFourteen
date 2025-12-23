@@ -22,7 +22,6 @@ using System.Threading.Tasks;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using FFXIVClientStructs.Havok.Animation.Rig;
 using StudioFourteen.Posing;
-using StudioFourteen.Posing.Shared;
 using StudioFourteen.Scene.Characters.Skeletons;
 using StudioFourteen.Services;
 using StudioFourteen.Structs.Extensions;
@@ -435,7 +434,7 @@ public partial class Skeleton : GameObject
 			}
 		}
 
-		if (ContentService.BoneGroups != null)
+		/*if (ContentService.BoneGroups != null)
 		{
 			foreach (BoneGroup group in ContentService.BoneGroups)
 			{
@@ -462,6 +461,6 @@ public partial class Skeleton : GameObject
 					}
 				}
 			}
-		}
+		}*/
 	}
 }

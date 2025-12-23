@@ -18,7 +18,6 @@ namespace StudioFourteen.Environment;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using StudioFourteen.Context;
 using StudioFourteen.Files;
 using StudioFourteen.Services;
 using StudioFourteen.Xaml;
@@ -78,14 +77,5 @@ public class EnvironmentFile : FileBase
 		{
 			ServiceManager.Instance.Territory.ChangeTerritory((uint)this.TerritoryId);
 		}
-	}
-}
-
-public class EnvironmentFileContextMenuProvider : ContextProvider<EnvironmentFile>
-{
-	protected override Task GetMenus(EnvironmentFile target, List<MenuEntry> menus)
-	{
-		menus.Add(new(null, "LOC_Environment_Context_Apply", () => target.Apply()));
-		return Task.CompletedTask;
 	}
 }

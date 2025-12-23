@@ -18,7 +18,7 @@ namespace StudioFourteen.GameData.Sheets;
 using Lumina.Excel;
 using Lumina.Excel.Sheets;
 
-[Sheet("HairMakeType", 0x12B0D41A)]
+[Sheet("HairMakeType")]
 public readonly struct HairMakeType(ExcelPage page, uint offset, uint row)
 	: IExcelRow<HairMakeType>
 {
@@ -39,7 +39,7 @@ public readonly struct HairMakeType(ExcelPage page, uint offset, uint row)
 			RowRef<CharaMakeCustomize>[] results = new RowRef<CharaMakeCustomize>[EntryCount];
 			for (int i = 0; i < EntryCount; i++)
 			{
-				uint id = page.ReadUInt32((nuint)(offset + 12 + (4 * i)));
+				uint id = page.ReadUInt32((nuint)(offset + 0xC + (4 * i)));
 				if (id == 0)
 					break;
 
@@ -57,7 +57,7 @@ public readonly struct HairMakeType(ExcelPage page, uint offset, uint row)
 			RowRef<CharaMakeCustomize>[] results = new RowRef<CharaMakeCustomize>[EntryCount];
 			for (int i = 0; i < EntryCount; i++)
 			{
-				uint id = page.ReadUInt32((nuint)(offset + 3008 + (4 * i)));
+				uint id = page.ReadUInt32((nuint)(offset + 0xBC0 + (4 * i)));
 				if (id == 0)
 					break;
 

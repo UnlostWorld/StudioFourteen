@@ -20,7 +20,6 @@ using Lumina.Text.ReadOnly;
 using StudioFourteen.Library.Sources;
 using System;
 using StudioFourteen;
-using MediaColor = System.Windows.Media.Color;
 
 public class StainLibraryEntry : ExcelLibraryEntry
 {
@@ -41,15 +40,6 @@ public class StainLibraryEntry : ExcelLibraryEntry
 	public string? Description => null;
 	public override object? Icon => this.Item?.Icon;
 	public ItemLibraryEntry? Item => this.Services.GameData.GetLibraryEntry<ItemLibraryEntry>(StainToItemRow(this.RowId));
-
-	public MediaColor? Color
-	{
-		get
-		{
-			byte[] colorBytes = BitConverter.GetBytes(this.Stain.Color);
-			return MediaColor.FromRgb(colorBytes[2], colorBytes[1], colorBytes[0]);
-		}
-	}
 
 	public override bool Search(string[] query)
 	{

@@ -18,9 +18,7 @@ namespace StudioFourteen.Library.Sources;
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using System.Windows.Media;
 using StudioFourteen.Files;
-using StudioFourteen.Icons;
 using StudioFourteen.Xaml;
 using static System.Environment;
 
@@ -156,11 +154,7 @@ public class FileEntry : LibraryEntryBase
 	{
 		get
 		{
-			object? typeIcon = this.TypeInfo.Icon;
-			if (typeIcon != null)
-				return new ThumbnailIcon(this.fileInfo, typeIcon);
-
-			return new ThumbnailIcon(this.fileInfo, XamlResources.Find("ICON_Library_Entry"));
+			throw new NotImplementedException();
 		}
 	}
 
@@ -184,7 +178,7 @@ public class FileEntry : LibraryEntryBase
 	public string? Author => this.File?.Author;
 	public string? Description => this.File?.Description;
 	public string? Version => this.File?.Version;
-	public ImageSource? Image => this.File?.GetImage();
+	public object? Image => this.File?.GetImage();
 
 	public override bool IsType(Type type)
 	{

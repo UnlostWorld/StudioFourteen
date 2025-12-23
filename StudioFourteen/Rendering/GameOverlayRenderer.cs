@@ -25,7 +25,7 @@ using StudioFourteen.Plugin;
 using StudioFourteen.Rendering.Draw.Handles;
 using StudioFourteen.Rendering.Passes;
 using StudioFourteen.Services;
-
+using StudioFourteen.Utilities;
 using XivDevice = FFXIVClientStructs.FFXIV.Client.Graphics.Kernel.Device;
 
 public class RendererStudioCamera : RendererCamera
@@ -97,7 +97,7 @@ public class OverlayRendererInput : RendererInput
 		if (inputState == InputStates.Deactivated && this.didDrag && this.CurrentPress != null && this.CurrentPress.CanDrag)
 		{
 			Vector2 pos = this.CurrentPress.GetScreenPosition(Vector3.Zero);
-			this.Services.Windows.SetCursorPosition(pos);
+			CursorUtility.SetPosition(pos);
 		}
 	}
 }

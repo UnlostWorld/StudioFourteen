@@ -51,14 +51,14 @@ public class ErrorReportingService : ServiceBase
 
 	private async Task SendReport()
 	{
-		ErrorReportPanel? panel = await this.Services.Panels.GamePanels.SetIsOpenAsync<ErrorReportPanel>(true, true);
+		/*ErrorReportPanel? panel = await this.Services.Panels.GamePanels.SetIsOpenAsync<ErrorReportPanel>(true, true);
 		if (panel != null)
 		{
 			panel.ShortCode = null;
 			panel.ErrorMessage = this.lastMessage;
 			panel.IsSending = true;
 			panel.ReportingEnabled = this.Settings.SendErrorReports;
-		}
+		}*/
 
 		ErrorReport report = new ErrorReport();
 		report.Message = $"x{this.errorCount} - {this.lastMessage}";
@@ -88,10 +88,10 @@ public class ErrorReportingService : ServiceBase
 		if (shortCode.Length > 10)
 			shortCode = "INVALID";
 
-		if (panel != null)
+		/*if (panel != null)
 		{
 			panel.IsSending = false;
 			panel.ShortCode = shortCode;
-		}
+		}*/
 	}
 }

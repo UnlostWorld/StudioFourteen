@@ -20,6 +20,7 @@ using StudioFourteen.Rendering.Materials;
 using StudioFourteen.Rendering.Draw.Handles;
 using StudioFourteen.Rendering.Passes;
 using StudioFourteen.Xaml;
+using StudioFourteen.Utilities;
 
 public class ScaleGizmo : TransformGizmoBase
 {
@@ -346,7 +347,7 @@ public class ScaleGizmo : TransformGizmoBase
 		protected override void OnEndDrag()
 		{
 			Vector2 pos = this.GetScreenPosition(Vector3.Zero);
-			WindowService.SetCursorPosition(pos);
+			CursorUtility.SetPosition(pos);
 
 			base.OnEndDrag();
 		}

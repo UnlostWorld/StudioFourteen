@@ -38,7 +38,6 @@ public abstract partial class SceneObjectBase : IDisposable
 	public SceneObjectBase()
 	{
 		this.Name = string.Empty;
-		this.ResetCommand = new(this.Reset);
 	}
 
 	[Bind] public partial string Name { get; set; }
@@ -52,7 +51,6 @@ public abstract partial class SceneObjectBase : IDisposable
 	public abstract object? Icon { get; }
 	public abstract string TypeName { get; }
 
-	public SimpleCommand ResetCommand { get; init; }
 	public List<GizmoBase> Gizmos { get; init; } = new();
 
 	public virtual void Dispose()

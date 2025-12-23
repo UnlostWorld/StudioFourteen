@@ -20,8 +20,6 @@ using StudioFourteen.Tags;
 using System;
 using System.IO;
 using System.Threading.Tasks;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
 
 [Serializable]
 public abstract class FileBase
@@ -43,22 +41,9 @@ public abstract class FileBase
 		}
 	}
 
-	public ImageSource? GetImage()
+	public object? GetImage()
 	{
-		if (this.Base64Image == null)
-			return null;
-
-		byte[] binaryData = Convert.FromBase64String(this.Base64Image);
-
-		BitmapImage bi = new BitmapImage();
-		bi.BeginInit();
-		bi.CreateOptions = BitmapCreateOptions.IgnoreColorProfile;
-		bi.StreamSource = new MemoryStream(binaryData);
-		bi.EndInit();
-		bi.CacheOption = BitmapCacheOption.OnDemand;
-		bi.Freeze();
-
-		return bi;
+		throw new NotImplementedException();
 	}
 
 	public void SetImage(byte[] binaryData)

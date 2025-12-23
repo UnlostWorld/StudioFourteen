@@ -155,7 +155,7 @@ public partial class SelectionService : ServiceBase
 	public override async Task Stop()
 	{
 		this.Services.Settings.SettingChanged -= this.OnSettingChanged;
-		await this.Services.Panels.GamePanels.SetIsOpenAsync<Widget>(false, false);
+		////await this.Services.Panels.GamePanels.SetIsOpenAsync<Widget>(false, false);
 		await base.Stop();
 	}
 
@@ -218,7 +218,7 @@ public partial class SelectionService : ServiceBase
 	private void CheckWidget()
 	{
 		bool showWidget = this.Settings.WidgetMode != Configuration.WidgetModes.Disabled;
-		this.Services.Panels.GamePanels.SetIsOpen<Widget>(showWidget, false);
+		////this.Services.Panels.GamePanels.SetIsOpen<Widget>(showWidget, false);
 	}
 }
 

@@ -18,10 +18,8 @@ namespace StudioFourteen.Files;
 using Microsoft.Win32;
 using StudioFourteen.Appearance;
 using StudioFourteen.Environment;
-using StudioFourteen.Launcher;
 using StudioFourteen.Library.Sources;
 using StudioFourteen.Posing;
-using StudioFourteen.Scripting;
 using StudioFourteen.Services;
 using StudioFourteen.Utilities;
 using System;
@@ -38,7 +36,6 @@ public class FileService : ServiceBase
 		new AppearanceFileTypeInfo(),
 		new PoseFileTypeInfo(),
 		new MareFileTypeInfo(),
-		new ScriptFileTypeInfo(),
 		new EnvironmentFileTypeInfo(),
 	};
 
@@ -102,25 +99,8 @@ public class FileService : ServiceBase
 
 	public async Task<DirectoryInfo?> ShowDirectoryDialog(DirectoryInfo? defaultInfo = null)
 	{
-		LauncherWindow? bgWindow = LauncherWindow.Instance;
-		if (bgWindow == null)
-		{
-			this.Log.Error("No launcher window found");
-			return null;
-		}
-
-		await Threads.UiThread(bgWindow);
-
-		OpenFolderDialog dialog = new OpenFolderDialog();
-		dialog.DefaultDirectory = defaultInfo?.FullName.TrimEnd('/', '\\');
-		this.PopulateCustomPlaces(dialog);
-
-		bool? result = dialog.ShowDialog(bgWindow);
-
-		if (result != true)
-			return null;
-
-		return new DirectoryInfo(dialog.FolderName);
+		throw new NotImplementedException();
+		////return new DirectoryInfo(dialog.FolderName);
 	}
 
 	public void SaveFile(FileBase file)
@@ -182,7 +162,7 @@ public class FileService : ServiceBase
 
 	public Task<FileInfo?> ShowSaveDialog(FileSystemInfo? defaultInfo, params Type[] fileType)
 	{
-		return this.ShowDialog<SaveFileDialog>(defaultInfo, fileType);
+		throw new NotImplementedException();
 	}
 
 	public Task<FileInfo?> ShowOpenDialog<TFile>(FileSystemInfo? defaultInfo = null)
@@ -193,107 +173,6 @@ public class FileService : ServiceBase
 
 	public Task<FileInfo?> ShowOpenDialog(FileSystemInfo? defaultInfo, params Type[] fileType)
 	{
-		return this.ShowDialog<OpenFileDialog>(defaultInfo, fileType);
-	}
-
-	private void PopulateCustomPlaces(CommonItemDialog self)
-	{
-		foreach (SourceBase src in ServiceManager.Instance.Library.Sources)
-		{
-			if (src is FileSource fileSource)
-			{
-				if (fileSource.Directory?.Exists == true)
-				{
-					FileDialogCustomPlace place = new(fileSource.Directory.FullName);
-					self.CustomPlaces.Add(place);
-				}
-			}
-		}
-	}
-
-	private Task<FileInfo?> ShowDialog<TDialogType, TFile>(FileSystemInfo? defaultInfo = null)
-		where TDialogType : FileDialog, new()
-		where TFile : FileBase, new()
-	{
-		return this.ShowDialog<TDialogType>(defaultInfo, typeof(TFile));
-	}
-
-	private Task<FileInfo?> ShowDialog<TDialogType>(FileSystemInfo? defaultInfo, params Type[] fileTypes)
-		where TDialogType : FileDialog, new()
-	{
-		List<FileTypeInfoBase> fileTypeInfos = new();
-		foreach (Type fileType in fileTypes)
-		{
-			FileTypeInfoBase? fileTypeInfo = this.GetTypeInfo(fileType);
-			if (fileTypeInfo == null)
-				continue;
-
-			fileTypeInfos.Add(fileTypeInfo);
-		}
-
-		return this.ShowDialog<TDialogType>(defaultInfo, fileTypeInfos.ToArray());
-	}
-
-	private async Task<FileInfo?> ShowDialog<TDialogType>(FileSystemInfo? defaultInfo, params FileTypeInfoBase[] fileTypeInfos)
-		where TDialogType : FileDialog, new()
-	{
-		LauncherWindow? bgWindow = LauncherWindow.Instance;
-		if (bgWindow == null)
-		{
-			this.Log.Error("No launcher window found");
-			return null;
-		}
-
-		await Threads.UiThread(bgWindow);
-
-		FileDialog dialog = new TDialogType();
-		dialog.AddExtension = false;
-
-		StringBuilder filterBuilder = new();
-
-		// All
-		if (fileTypeInfos.Length > 1 && dialog is OpenFileDialog)
-		{
-			filterBuilder.Append("Studio Files|");
-
-			for (int i = 0; i < fileTypeInfos.Length; i++)
-			{
-				if (i != 0)
-					filterBuilder.Append(";");
-
-				filterBuilder.Append($"*{fileTypeInfos[i].Extension}");
-			}
-
-			filterBuilder.Append("|");
-		}
-
-		// Individual formats
-		for (int i = 0; i < fileTypeInfos.Length; i++)
-		{
-			if (i != 0)
-				filterBuilder.Append("|");
-
-			filterBuilder.Append($"{fileTypeInfos[i].TypeName}|*{fileTypeInfos[i].Extension}");
-		}
-
-		if (defaultInfo is FileInfo defaultFileInfo)
-		{
-			dialog.FileName = Path.GetFileNameWithoutExtension(defaultFileInfo.Name);
-			dialog.DefaultDirectory = defaultFileInfo.Directory?.FullName.TrimEnd('/', '\\');
-		}
-		else if (defaultInfo is DirectoryInfo defaultDirectoryInfo)
-		{
-			dialog.DefaultDirectory = defaultDirectoryInfo.FullName.TrimEnd('/', '\\');
-		}
-
-		dialog.Filter = filterBuilder.ToString();
-		this.PopulateCustomPlaces(dialog);
-
-		bool? result = dialog.ShowDialog(bgWindow);
-
-		if (result != true)
-			return null;
-
-		return new FileInfo(dialog.FileName);
+		throw new NotImplementedException();
 	}
 }
