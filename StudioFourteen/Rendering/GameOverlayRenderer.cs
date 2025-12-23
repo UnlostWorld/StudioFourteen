@@ -105,6 +105,7 @@ public class OverlayRendererInput : RendererInput
 public class GameOverlayRenderer : Renderer
 {
 	public readonly ForwardPass Forward = new();
+	public readonly ForwardPass Interface = new();
 
 	private readonly RendererStudioCamera camera = new();
 	private readonly OverlayRendererInput input = new();
@@ -121,6 +122,8 @@ public class GameOverlayRenderer : Renderer
 		this.afterEffectsPasses.Add(this.Forward);
 		this.AddPass(this.Forward);
 		this.AddPass(this.generateUiMaskPass);
+		this.afterEffectsPasses.Add(this.Interface);
+		this.AddPass(this.Interface);
 	}
 
 	public bool IsAttached { get; private set; }

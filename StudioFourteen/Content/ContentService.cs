@@ -46,6 +46,8 @@ public class ContentService : ServiceBase
 
 				if (this.isRunningFromProject)
 				{
+					this.Log.Information($"watching content for changes in {dir}");
+
 					this.watcher = new(dir);
 					this.watcher.NotifyFilter = NotifyFilters.LastWrite | NotifyFilters.Attributes;
 					this.watcher.IncludeSubdirectories = true;

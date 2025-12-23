@@ -33,7 +33,7 @@ public sealed class DalamudPlugin : IDalamudPlugin
 
 		pluginInterface.Create<DalamudServices>();
 
-		this.Log.Information("$IsWine: {DalamudServices.IsWine}");
+		this.Log.Information($"IsWine: {DalamudServices.IsWine}");
 
 		if (DalamudServices.CommandManager != null)
 		{

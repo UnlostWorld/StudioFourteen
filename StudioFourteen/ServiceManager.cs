@@ -15,6 +15,7 @@
 
 namespace StudioFourteen;
 
+using StudioFourteen.Avalonia;
 using StudioFourteen.Services;
 
 public class ServiceManager : ServiceManagerBase
@@ -51,6 +52,7 @@ public class ServiceManager : ServiceManagerBase
 	public Content.ContentService Content { get; init; } = new();
 	public AfkService Afk { get; init; } = new();
 	public WindowService Windows { get; init; } = new();
+	public AvaloniaService Avalonia { get; init; } = new();
 
 	public Scene.SceneService Scene { get; init; } = new();
 	public Scene.GameObjects.GameObjectService GameObjects { get; init; } = new();

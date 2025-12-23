@@ -61,30 +61,27 @@ public partial class StudioService : ServiceBase
 	{
 		string[] args = System.Environment.GetCommandLineArgs();
 
-		if (Debugger.IsAttached || args.Contains("--S14"))
+		////if (Debugger.IsAttached || args.Contains("--S14"))
+		////{
+		Task.Run(async () =>
 		{
-			Task.Run(async () =>
+			while (ServiceManager.Instance.CurrentState <= ServiceManagerBase.States.Starting)
+				await Task.Delay(10);
+
+			bool titleLoaded = false;
+			while (!titleLoaded)
 			{
-				while (ServiceManager.Instance.CurrentState <= ServiceManagerBase.States.Starting)
-					await Task.Delay(10);
+				await Task.Delay(10);
+				await TickService.GameTick();
+				nint? titleMenu = DalamudServices.GameGui?.GetAddonByName("_TitleMenu");
+				titleLoaded = titleMenu != null && titleMenu != 0;
+			}
 
-				if (args.Contains("--S14"))
-				{
-					bool titleLoaded = false;
-					while (!titleLoaded)
-					{
-						await Task.Delay(10);
-						await TickService.GameTick();
-						nint? titleMenu = DalamudServices.GameGui?.GetAddonByName("_TitleMenu");
-						titleLoaded = titleMenu != null && titleMenu != 0;
-					}
+			await Task.Delay(500);
 
-					await Task.Delay(500);
-				}
-
-				this.OpenStudio();
-			});
-		}
+			this.OpenStudio();
+		});
+		////}
 
 		return base.Start();
 	}
