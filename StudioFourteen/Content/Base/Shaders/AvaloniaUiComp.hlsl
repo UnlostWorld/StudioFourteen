@@ -15,6 +15,9 @@
 
 #include "Geometry.hlsl"
 
+Texture2D buffer_texture : register(t3);
+SamplerState buffer_sampler : register(s3);
+
 Fragment vert(in Vertex vertex)
 {
 	Fragment result;
@@ -30,9 +33,9 @@ Fragment vert(in Vertex vertex)
 	return result;
 }
 
-float4 pixel(Fragment frag) : SV_TARGET
+float4 pixel(Fragment pixel) : SV_TARGET
 {
-	float4 color = frag.Color;
-	//color.a *= GetUiClippingAlpha(frag);
+	float4 color = buffer_texture.Sample(buffer_sampler, pixel.TexCoord);
+	//color.a *= GetUiClippingAlpha(pixel);
 	return color;
 }

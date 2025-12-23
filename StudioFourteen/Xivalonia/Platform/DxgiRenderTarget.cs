@@ -16,21 +16,17 @@
 namespace StudioFourteen.Xivalonia.Platform;
 
 using System;
-using System.Diagnostics;
 using Avalonia;
-using Avalonia.Media.TextFormatting.Unicode;
 using Avalonia.OpenGL.Egl;
 using Avalonia.OpenGL.Surfaces;
-using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
 using SharpDX.Direct3D11;
-using SharpDX.DXGI;
 
 [Logger]
 [Services]
 public partial class DxgiRenderTarget(WindowImpl window, EglContext context)
 	 : EglPlatformSurfaceRenderTargetBase(context)
 {
-	private Texture2D? renderTexture;
+	public Texture2D? Texture;
 	private Exception? lastException;
 
 	public unsafe override IGlPlatformSurfaceRenderingSession BeginDrawCore()
@@ -48,7 +44,7 @@ public partial class DxgiRenderTarget(WindowImpl window, EglContext context)
 
 			PixelSize size = new((int)(window.FrameSize?.Width ?? 256), (int)(window.FrameSize?.Height ?? 256));
 
-			if (this.renderTexture == null)
+			if (this.Texture == null)
 			{
 				Texture2DDescription desc = RenderingService.OverlayRenderer.BackBuffer.Description;
 				desc.Width = size.Width;
@@ -61,10 +57,10 @@ public partial class DxgiRenderTarget(WindowImpl window, EglContext context)
 				desc.CpuAccessFlags = CpuAccessFlags.None;
 				desc.OptionFlags = ResourceOptionFlags.Shared;
 
-				this.renderTexture = new(RenderingService.OverlayRenderer.BackBuffer.Device, desc);
+				this.Texture = new(RenderingService.OverlayRenderer.BackBuffer.Device, desc);
 			}
 
-			var resource = this.renderTexture.QueryInterface<SharpDX.DXGI.Resource1>();
+			var resource = this.Texture.QueryInterface<SharpDX.DXGI.Resource1>();
 			nint handle = resource.SharedHandle;
 			if (handle == 0)
 				throw new Exception("Failed tp get shared handle to render texture");

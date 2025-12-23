@@ -17,6 +17,7 @@ namespace StudioFourteen.Xivalonia.Platform;
 
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Reflection;
 using Avalonia;
 using Avalonia.Controls;
@@ -24,9 +25,14 @@ using Avalonia.Input;
 using Avalonia.Input.Raw;
 using Avalonia.Platform;
 using Avalonia.Rendering.Composition;
+using StudioFourteen.Rendering;
+using StudioFourteen.Rendering.Draw;
 
-public class WindowImpl : IWindowImpl
+[Logger]
+[Services]
+public partial class WindowImpl : IWindowImpl
 {
+	private readonly WindowRenderer windowRenderer;
 	private readonly DxgiSurface glSurface;
 	private readonly ScreenImpl screen;
 
@@ -34,6 +40,7 @@ public class WindowImpl : IWindowImpl
 	{
 		this.glSurface = new DxgiSurface(this);
 		this.screen = new ScreenImpl();
+		this.windowRenderer = new(this, this.glSurface);
 	}
 
 	public WindowState WindowState { get; set; }
@@ -97,14 +104,24 @@ public class WindowImpl : IWindowImpl
 	public void Dispose()
 	{
 		this.IsDisposed = true;
+
+		RenderingService.OverlayRenderer.Interface.Remove(this.windowRenderer);
+
+		this.windowRenderer.Dispose();
 	}
 
 	public void GetWindowsZOrder(Span<Avalonia.Controls.Window> windows, Span<long> zOrder)
 	{
 	}
 
+	public void Show(bool activate, bool isDialog)
+	{
+		RenderingService.OverlayRenderer.Interface.Add(this.windowRenderer);
+	}
+
 	public void Hide()
 	{
+		RenderingService.OverlayRenderer.Interface.Remove(this.windowRenderer);
 	}
 
 	public void Move(PixelPoint point)
@@ -186,10 +203,6 @@ public class WindowImpl : IWindowImpl
 	}
 
 	public void SetTransparencyLevelHint(IReadOnlyList<WindowTransparencyLevel> transparencyLevels)
-	{
-	}
-
-	public void Show(bool activate, bool isDialog)
 	{
 	}
 

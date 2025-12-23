@@ -15,20 +15,24 @@
 
 namespace StudioFourteen.Xivalonia.Platform;
 
-using System;
 using Avalonia.OpenGL;
 using Avalonia.OpenGL.Egl;
 using Avalonia.OpenGL.Surfaces;
 
-internal class DxgiSurface(WindowImpl window)
+public class DxgiSurface(WindowImpl window)
 	: EglGlPlatformSurfaceBase
 {
+	public DxgiRenderTarget? DxgiRenderTarget;
+
 	public override IGlPlatformSurfaceRenderTarget CreateGlRenderTarget(IGlContext context)
 	{
 		var eglContext = (EglContext)context;
 		using (eglContext.EnsureCurrent())
 		{
-			return new DxgiRenderTarget(window, eglContext);
+			if (this.DxgiRenderTarget == null)
+				this.DxgiRenderTarget = new DxgiRenderTarget(window, eglContext);
+
+			return this.DxgiRenderTarget;
 		}
 	}
 }
