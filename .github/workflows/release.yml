@@ -24,7 +24,6 @@ jobs:
     defaults:
       run:
         working-directory: .
-        shell: bash
     env:
       IsCI: true
 
