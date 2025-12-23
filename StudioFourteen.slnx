@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="StudioFourteen.Generators/StudioFourteen.Generators.csproj" />
+  <Project Path="StudioFourteen/StudioFourteen.csproj" />
+</Solution>

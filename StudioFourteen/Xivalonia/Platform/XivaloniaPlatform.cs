@@ -20,6 +20,7 @@ using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Platform;
 using Avalonia.Rendering;
@@ -48,6 +49,7 @@ public partial class XivaloniaPlatform : IWindowingPlatform, IPlatformLifetimeEv
 		AvaloniaLocator.CurrentMutable.Bind<IRenderTimer>().ToConstant(new DefaultRenderTimer(60));
 		AvaloniaLocator.CurrentMutable.Bind<IWindowingPlatform>().ToConstant(Instance);
 		AvaloniaLocator.CurrentMutable.Bind<IPlatformLifetimeEventsImpl>().ToConstant(Instance);
+		AvaloniaLocator.CurrentMutable.Bind<ICursorFactory>().ToConstant(new CursorFactory());
 
 		IPlatformGraphics? platformGraphics = GlManager.Initialize();
 		compositor = new Compositor(platformGraphics);
