@@ -21,6 +21,13 @@ jobs:
     if: github.event.pull_request.draft == false # Ignore draft PRs
     runs-on: windows-latest
 
+    defaults:
+      run:
+        working-directory: .
+        shell: bash
+    env:
+      IsCI: true
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
