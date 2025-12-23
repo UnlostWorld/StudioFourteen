@@ -55,5 +55,6 @@
 	"xml.format.emptyElements": "collapse",
 	"xml.format.enforceQuoteStyle": "preferred",
 	"xml.validation.enabled": false,
-	"workspaceInStatusBar.textInStatusBar": "Studio Fourteen"
+	"workspaceInStatusBar.textInStatusBar": "Studio Fourteen",
+	"axaml.selectedSolution": "/home/yuki/Projects/StudioFourteen/StudioFourteen.sln"
 }
