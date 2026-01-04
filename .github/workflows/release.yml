@@ -59,7 +59,7 @@ jobs:
         with:
           filename: '${{ github.workspace }}/latest.zip'
           directory: './StudioFourteen/bin/'
-          exclusions: '*.pdb* *.xml*'
+          recursive_exclusions: '*.pdb* *.xml*'
 
       - name: Create GitHub Release
         uses: ncipollo/release-action@v1
