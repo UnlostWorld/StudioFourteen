@@ -36,8 +36,8 @@ jobs:
 
       - name: Download Dalamud
         run: |
-          Invoke-WebRequest -Uri https://goatcorp.github.io/dalamud-distrib/stg/latest.zip -OutFile latest.zip
-          Expand-Archive -Force latest.zip '${{ github.workspace }}/../Dalamud/'
+          Invoke-WebRequest -Uri https://goatcorp.github.io/dalamud-distrib/stg/latest.zip -OutFile dalamud-latest.zip
+          Expand-Archive -Force dalamud-latest.zip '${{ github.workspace }}/../Dalamud/'
 
       #- name: Setup .NET
       #  uses: actions/setup-dotnet@v3
@@ -59,7 +59,7 @@ jobs:
         with:
           filename: '${{ github.workspace }}/latest.zip'
           directory: './StudioFourteen/bin/'
-          recursive_exclusions: '*.pdb* *.xml*'
+          exclusions: '*.pdb* *.xml*'
 
       - name: Create GitHub Release
         uses: ncipollo/release-action@v1
