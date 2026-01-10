@@ -146,12 +146,11 @@ public class GenerateUiMaskPass : RenderPassBase
 	{
 		this.quad.Dispose();
 		this.backBufferCopyTexture?.Dispose();
-		this.depthStencilTexture?.Dispose();
+		this.depthStencilCopyTexture?.Dispose();
 		this.maskTexture?.Dispose();
 		this.maskRenderTargetView?.Dispose();
 		this.maskResourceView?.Dispose();
 		this.depthResourceView?.Dispose();
-		this.depthStencilTexture?.Dispose();
 		base.Dispose();
 	}
 }
