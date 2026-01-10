@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg width="513px" height="512px" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
-    <rect id="PortraitPreview" x="0.793" y="0" width="512" height="512" style="fill:none;"/>
-    <path d="M46.404,315.373l-36.606,28.476l115.283,47.659l-3.005,-126.897l-35.784,24.249c-15.088,-26.652 -15.415,-34.367 -15.495,-67.098c-0.021,-8.68 -13.481,-15.711 -22.162,-15.689c-8.68,0.021 -21.466,7.725 -21.444,16.405c0.096,39.443 0.579,61.064 19.213,92.895Z"/>
-    <path d="M462.557,192.166l37.292,-27.571l-114.081,-50.468l-0.103,126.932l36.367,-23.365c14.431,27.013 14.569,34.734 13.848,67.457c-0.192,8.678 13.092,16.036 21.77,16.227c8.678,0.192 21.649,-7.197 21.84,-15.876c0.869,-39.432 0.916,-61.059 -16.933,-93.336Z"/>
-    <path d="M352.976,137.526c0,-13.798 -11.202,-25 -25,-25l-145.729,0c-13.797,0 -25,11.202 -25,25l0,233.581c0,13.798 11.203,25 25,25l145.729,0c13.798,0 25,-11.202 25,-25l0,-233.581Z"/>
-</svg>

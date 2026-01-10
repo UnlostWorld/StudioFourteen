@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Dalamud.NET.SDK/13.0.0">
 
 	<PropertyGroup>
 		<OutputType>Library</OutputType>
@@ -22,29 +22,16 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Resource Include="Assets\**" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<EmbeddedResource Include="Data\Documents\**" />
-		<EmbeddedResource Include="Cursors\**" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<Content Include="Assets\icon.ico" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<Content Include="Content\Base\**" CopyToOutputDirectory="Always" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\StudioFourteen.Generators\StudioFourteen.Generators.csproj"
-			OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+		<None Update="StudioFourteen.json">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</None>
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Serilog.Sinks.Debug" Version="3.0.0" />
 		<PackageReference Include="Apos.WintabDN" Version="0.0.1" />
 		<PackageReference Include="lz4net" Version="1.0.15.93" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.13.0" />
@@ -74,47 +61,6 @@
 			<IncludeAssets Condition="'$(Configuration)' != 'Debug'">None</IncludeAssets>
 			<PrivateAssets Condition="'$(Configuration)' != 'Debug'">All</PrivateAssets>
 		</PackageReference>
-	</ItemGroup>
-
-	<PropertyGroup>
-		<DefineConstants>DALAMUD</DefineConstants>
-	</PropertyGroup>
-
-	<ItemGroup>
-		<Reference Include="FFXIVClientStructs">
-			<HintPath>$(DALAMUD_HOME)/FFXIVClientStructs.dll</HintPath>
-			<Private>false</Private>
-		</Reference>
-		<Reference Include="FFXIVClientStructs">
-			<HintPath>$(DALAMUD_HOME)/InteropGenerator.Runtime.dll</HintPath>
-			<Private>false</Private>
-		</Reference>
-		<Reference Include="Dalamud">
-			<HintPath>$(DALAMUD_HOME)/Dalamud.dll</HintPath>
-			<Private>false</Private>
-		</Reference>
-		<Reference Include="Lumina">
-			<HintPath>$(DALAMUD_HOME)/Lumina.dll</HintPath>
-			<Private>false</Private>
-		</Reference>
-		<Reference Include="Lumina.Excel">
-			<HintPath>$(DALAMUD_HOME)/Lumina.Excel.dll</HintPath>
-			<Private>false</Private>
-		</Reference>
-		<Reference Include="Dalamud.Bindings.ImGui">
-			<HintPath>$(DALAMUD_HOME)/Dalamud.Bindings.ImGui.dll</HintPath>
-			<Private>false</Private>
-		</Reference>
-		<Reference Include="Newtonsoft.Json">
-			<HintPath>$(DALAMUD_HOME)/Newtonsoft.Json.dll</HintPath>
-			<Private>false</Private>
-		</Reference>
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Update="StudioFourteen.json">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</None>
 	</ItemGroup>
 
 </Project>
