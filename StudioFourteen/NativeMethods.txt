@@ -1,0 +1,11 @@
+PostMessage
+ScreenToClient
+ClientToScreen
+ShowCursor
+GetCursorPos
+SetCursorPos
+GetProcAddress
+GetModuleFileNameW
+LoadLibrary
+SetCursor
+CallWindowProc

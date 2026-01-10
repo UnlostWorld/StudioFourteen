@@ -1,0 +1,247 @@
+// .                    @@             _____ _______ _    _ _____ _____ ____
+//          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
+//         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
+//         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
+//        @@@@       @@@@@@@          ____) |  | |  | |__| | |__| || || |__| |
+//    @@@@@             @@@          |_____/   |_|   \____/|_____/_____\____/
+//     @@@      @@@      @@        ___     _    _   _  __   _____  ___  ___  _  _
+//      @@    @@@@@@@    @@       |  _|  / _ \ | | | || _ \|_   _|| __|| __|| \| |
+//      @@    @@@@@@@    @   @    | __| | (_) || |_| ||   /  | |  | _| | _| | .` |
+//    @@@@      @@@      @@@@     |_|    \___/  \___/ |_|_\  |_|  |___||___||_|\_|
+//     @@@@             @@@        https://github.com/UnlostWorld/StudioFourteen
+//       @@@@@      @@@@@
+//        @@@@@@@@@@@@@@                This software is licensed under the
+//            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
+
+namespace StudioFourteen.Services.Tick;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.CompilerServices;
+using System.Threading;
+using FFXIVClientStructs.FFXIV.Client.System.Framework;
+using StudioFourteen.Services.Interop;
+using Task = System.Threading.Tasks.Task;
+
+public partial class TickService : IService
+{
+	public static float DeltaTime = 0.0f;
+
+	private const int TickDelay = 100;
+
+	[ThreadStatic] private static TickService.Channels currentChannel = Channels.None;
+
+	private readonly Dictionary<Channels, List<Action?>> tickListeners = new();
+	private readonly Dictionary<Channels, Queue<Action?>> tickDispatchers = new();
+	private bool shouldTick = true;
+
+	public TickService()
+	{
+		unsafe
+		{
+			Hooks.Tick.Enable(this.OnGameTick);
+		}
+
+		Thread panelMainThread = new Thread(this.TickThread);
+		panelMainThread.Start();
+
+		Studio.PluginInterface.UiBuilder.Draw += this.OnImGuiDraw;
+	}
+
+	public delegate void TickDelegate();
+
+	public event TickDelegate? Tick;
+
+	public enum Channels
+	{
+		None,
+
+		EarlyGameTick,
+		GameTick,
+		LateGameTick,
+		StudioTick,
+		ImGuiDraw,
+	}
+
+	public static SwitchToTickChannel EarlyGameTick() => new(TickService.Channels.EarlyGameTick);
+	public static SwitchToTickChannel GameTick() => new(TickService.Channels.GameTick);
+	public static SwitchToTickChannel LateGameTick() => new(TickService.Channels.LateGameTick);
+	public static SwitchToTickChannel NextGameTick() => new(TickService.Channels.GameTick);
+	public static SwitchToTickChannel StudioTick() => new(TickService.Channels.StudioTick);
+	public static SwitchToTickChannel NextStudioTick() => new(TickService.Channels.StudioTick);
+
+	public static void VerifyGameTickThread() => VerifyTickChannelThread(TickService.Channels.EarlyGameTick, TickService.Channels.GameTick, TickService.Channels.LateGameTick);
+	public static void VerifyStudioTickThread() => VerifyTickChannelThread(TickService.Channels.StudioTick);
+
+	public static void VerifyTickChannelThread(params TickService.Channels[] channels)
+	{
+		if (!channels.Contains(currentChannel))
+		{
+			throw new InvalidThreadException();
+		}
+	}
+
+	public void Dispose()
+	{
+		this.shouldTick = false;
+
+		Hooks.Tick.Disable();
+		Studio.PluginInterface.UiBuilder.Draw -= this.OnImGuiDraw;
+	}
+
+	public void Dispatch(Channels channel, Action callback, bool canImmediate = true)
+	{
+		if (currentChannel == channel && canImmediate)
+		{
+			callback.Invoke();
+		}
+		else
+		{
+			lock (this.tickDispatchers)
+			{
+				if (!this.tickDispatchers.ContainsKey(channel))
+					this.tickDispatchers.Add(channel, new());
+
+				this.tickDispatchers[channel].Enqueue(callback);
+			}
+		}
+	}
+
+	public void Add(Channels channel, Action callback)
+	{
+		lock (this.tickListeners)
+		{
+			if (!this.tickListeners.ContainsKey(channel))
+				this.tickListeners.Add(channel, new());
+
+			this.tickListeners[channel].Add(callback);
+		}
+	}
+
+	public void Remove(Channels channel, Action callback)
+	{
+		lock (this.tickListeners)
+		{
+			if (!this.tickListeners.ContainsKey(channel))
+				return;
+
+			this.tickListeners[channel].Remove(callback);
+		}
+	}
+
+	private void PerformTick(Channels channel)
+	{
+		currentChannel = channel;
+
+		Dictionary<Channels, List<Action?>> tickListeners;
+		lock (this.tickListeners)
+		{
+			tickListeners = new(this.tickListeners);
+		}
+
+		this.tickListeners.TryGetValue(channel, out var callbacks);
+		if (callbacks != null)
+		{
+			foreach (Action? callback in this.tickListeners[channel].ToArray())
+			{
+				if (callback?.Target == null)
+				{
+					this.tickListeners[channel].Remove(callback);
+					break;
+				}
+
+				try
+				{
+					callback?.Invoke();
+				}
+				catch (Exception ex)
+				{
+					Studio.Log.Error(ex, $"Error ticking {callback?.Method} on {callback?.Target}. This callback will be disabled.");
+					this.tickListeners[channel].Remove(callback);
+					break;
+				}
+			}
+		}
+
+		Dictionary<Channels, Queue<Action?>> tickDispatchers;
+		lock (this.tickDispatchers)
+		{
+			tickDispatchers = new(this.tickDispatchers);
+		}
+
+		this.tickDispatchers.TryGetValue(channel, out var dispatches);
+		if (dispatches != null)
+		{
+			while (dispatches.Count > 0)
+			{
+				Action? dispatch = dispatches.Dequeue();
+				try
+				{
+					dispatch?.Invoke();
+				}
+				catch (Exception ex)
+				{
+					Studio.Log.Error(ex, $"Error dispatching {dispatch?.Method} on {dispatch?.Target}.");
+					break;
+				}
+			}
+		}
+	}
+
+	private unsafe bool OnGameTick(Framework* pFramework)
+	{
+		Thread.CurrentThread.Name = "Game Tick";
+
+		DeltaTime = pFramework->FrameDeltaTime;
+
+		this.PerformTick(Channels.EarlyGameTick);
+		this.PerformTick(Channels.GameTick);
+		this.PerformTick(Channels.LateGameTick);
+		return Hooks.Tick.Original(pFramework);
+	}
+
+	private void TickThread()
+	{
+		Thread.CurrentThread.Name = "Studio Tick";
+
+		while (this.shouldTick && !Studio.IsDisposed)
+		{
+			Thread.Sleep(TickDelay);
+			DeltaTime = TickDelay / 1000.0f;
+			this.PerformTick(Channels.StudioTick);
+		}
+	}
+
+	private void OnImGuiDraw()
+	{
+		this.PerformTick(Channels.ImGuiDraw);
+	}
+
+	public struct SwitchToTickChannel(TickService.Channels channel)
+		: INotifyCompletion
+	{
+		public bool IsCompleted => currentChannel == channel;
+
+		public SwitchToTickChannel GetAwaiter() => this;
+		public readonly void GetResult()
+		{
+		}
+
+		public readonly void OnCompleted(Action continuation)
+		{
+			if (Studio.IsDisposed)
+				return;
+
+			Studio.Tick.Dispatch(channel, continuation);
+		}
+	}
+}
+
+public class InvalidThreadException : Exception
+{
+	public InvalidThreadException()
+		: base("Invalid Thread")
+	{
+	}
+}

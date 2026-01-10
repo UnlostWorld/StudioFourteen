@@ -1,0 +1,29 @@
+{
+	"Topology": "TriangleList",
+	"Vertices": [
+		{
+			"Position": "-1, -1, 0, 1",
+			"Color": "1, 1, 0, 1",
+			"TexCoord": "0, 1"
+		},
+		{
+			"Position": "1, -1, 0, 1",
+			"Color": "0, 1, 0, 1",
+			"TexCoord": "1, 1"
+		},
+		{
+			"Position": "1, 1, 0, 1",
+			"Color": "0, 1, 1, 1",
+			"TexCoord": "1, 0"
+		},
+		{
+			"Position": "-1, 1, 0, 1",
+			"Color": "0, 0, 1, 1",
+			"TexCoord": "0, 0"
+		}
+	],
+	"Indices": [
+		0, 2, 1,
+		0, 3, 2
+	]
+}

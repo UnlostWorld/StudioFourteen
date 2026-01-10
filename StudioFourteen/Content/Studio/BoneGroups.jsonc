@@ -1,0 +1,94 @@
+[
+	{
+		"Name": "Mouth",
+		"SimpleLayout": "Face",
+		"Bones": [
+			"j_f_umlip_01_l",
+			"j_f_umlip_01_r",
+			"j_f_umlip_02_l",
+			"j_f_umlip_02_r",
+			"j_f_ulip_01_l",
+			"j_f_ulip_01_r",
+			"j_f_ulip_02_l",
+			"j_f_ulip_02_r",
+			"j_f_dlip_01_l",
+			"j_f_dlip_01_r",
+			"j_f_dlip_02_l",
+			"j_f_dlip_02_r",
+			"j_f_dmlip_01_l",
+			"j_f_dmlip_01_r",
+			"j_f_dmlip_02_l",
+			"j_f_dmlip_02_r",
+			"j_f_dslip_l",
+			"j_f_dslip_r",
+			"j_f_uslip_l",
+			"j_f_uslip_r",
+			// Teeth
+			"j_f_hagukiup",
+			"j_f_hagukidn",
+			// Jaw
+			"j_f_ago",
+			// Tongue
+			"j_f_bero_01",
+			"j_f_bero_02",
+			"j_f_bero_03",
+			// Cheeks
+			"j_f_shoho_l",
+			"j_f_shoho_r",
+			"j_f_dhoho_l",
+			"j_f_dhoho_r"
+		]
+	},
+	{
+		"Name": "EyeLeft",
+		"SimpleLayout": "Face",
+		"Bones": [
+			// Eyeball
+			"j_f_eyepuru_l",
+			"j_f_eye_l",
+			// Eyelids
+			"j_f_mabdn_01_l",
+			"j_f_mabdn_02out_l",
+			"j_f_mabdn_03in_l",
+			"j_f_mab_l",
+			"j_f_mabup_03in_l",
+			"j_f_mabup_02out_l",
+			"j_f_mabup_01_l",
+			// Brow
+			"j_f_dmiken_l",
+			"j_f_miken_02_l",
+			"j_f_miken_01_l",
+			"j_f_mmayu_l",
+			"j_f_mayu_l",
+			// Cheeks
+			"j_f_hoho_l",
+			"j_f_dmemoto_l"
+		]
+	},
+	{
+		"Name": "EyeRight",
+		"SimpleLayout": "Face",
+		"Bones": [
+			// Eyeball
+			"j_f_eyepuru_r",
+			"j_f_eye_r",
+			// Eyelids
+			"j_f_mabdn_01_r",
+			"j_f_mabdn_02out_r",
+			"j_f_mabdn_03in_r",
+			"j_f_mab_r",
+			"j_f_mabup_03in_r",
+			"j_f_mabup_02out_r",
+			"j_f_mabup_01_r",
+			// Brow
+			"j_f_dmiken_r",
+			"j_f_miken_02_r",
+			"j_f_miken_01_r",
+			"j_f_mmayu_r",
+			"j_f_mayu_r",
+			// Cheeks
+			"j_f_hoho_r",
+			"j_f_dmemoto_r"
+		]
+	}
+]

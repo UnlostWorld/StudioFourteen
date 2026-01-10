@@ -1,0 +1,118 @@
+// .                    @@             _____ _______ _    _ _____ _____ ____
+//          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
+//         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
+//         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
+//        @@@@       @@@@@@@          ____) |  | |  | |__| | |__| || || |__| |
+//    @@@@@             @@@          |_____/   |_|   \____/|_____/_____\____/
+//     @@@      @@@      @@        ___     _    _   _  __   _____  ___  ___  _  _
+//      @@    @@@@@@@    @@       |  _|  / _ \ | | | || _ \|_   _|| __|| __|| \| |
+//      @@    @@@@@@@    @   @    | __| | (_) || |_| ||   /  | |  | _| | _| | .` |
+//    @@@@      @@@      @@@@     |_|    \___/  \___/ |_|_\  |_|  |___||___||_|\_|
+//     @@@@             @@@        https://github.com/UnlostWorld/StudioFourteen
+//       @@@@@      @@@@@
+//        @@@@@@@@@@@@@@                This software is licensed under the
+//            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
+
+namespace StudioFourteen.Services.Rendering.Passes;
+
+using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
+using SharpDX.Direct3D11;
+using StudioFourteen.Services.Rendering.Materials;
+using StudioFourteen.Services.Rendering.Draw;
+using StudioFourteen.Services.Numerics;
+
+using Device = SharpDX.Direct3D11.Device;
+using Format = SharpDX.DXGI.Format;
+
+public class DrawBufferPass : RenderPassBase
+{
+	private readonly MeshRenderer<BlitMaterial> quad = new(MeshContent.Quad);
+
+	private Texture2D? buffer;
+	private Texture2D? bufferCopyTexture;
+	private ShaderResourceView? bufferResourceView;
+	private RenderTargetView? backBufferTargetView;
+
+	public unsafe void Set(Texture* pTexture)
+	{
+		nint address = (nint)pTexture->D3D11Texture2D;
+		if (address == 0)
+			return;
+
+		this.Set(address);
+	}
+
+	public void Set(nint address)
+	{
+		if (this.buffer != null && this.buffer.NativePointer == address)
+			return;
+
+		this.buffer?.Dispose();
+		this.buffer = null;
+
+		if (address == 0)
+			return;
+
+		this.buffer = new(address);
+
+		Studio.Log.Information($"Got Buffer: {this.buffer}");
+		Studio.Log.Information($"    Format: {this.buffer.Description.Format}");
+		Studio.Log.Information($"      Size: {this.buffer.Description.Width}x{this.buffer.Description.Height}");
+		Studio.Log.Information($"      Bind: {this.buffer.Description.BindFlags}");
+		Studio.Log.Information($"       CPU: {this.buffer.Description.CpuAccessFlags}");
+		Studio.Log.Information($"   Options: {this.buffer.Description.OptionFlags}");
+		Studio.Log.Information($"     Usage: {this.buffer.Description.Usage}");
+	}
+
+	public override void Render(Renderer renderer, Device device, DeviceContext deviceContext)
+	{
+		if (renderer.BackBuffer == null || this.buffer == null)
+			return;
+
+		// Create a shader resource copy of the buffer so it can be accessed in the shader
+		if (this.bufferCopyTexture == null
+			|| this.bufferCopyTexture.Description.Width != this.buffer.Description.Width
+			|| this.bufferCopyTexture.Description.Height != this.buffer.Description.Height)
+		{
+			this.bufferCopyTexture?.Dispose();
+			this.bufferResourceView?.Dispose();
+
+			Texture2DDescription desc = this.buffer.Description;
+			desc.BindFlags |= BindFlags.ShaderResource;
+			////desc.Format = Format.R24_UNorm_X8_Typeless;
+			this.bufferCopyTexture = new Texture2D(device, desc);
+
+			this.bufferResourceView = new(device, this.bufferCopyTexture);
+		}
+
+		if (this.backBufferTargetView == null)
+		{
+			RenderTargetViewDescription desc = default;
+			desc.Format = Format.R8G8B8A8_UNorm;
+			desc.Dimension = RenderTargetViewDimension.Texture2D;
+			this.backBufferTargetView = new(device, renderer.BackBuffer, desc);
+		}
+
+		// Copy the buffer
+		deviceContext.CopyResource(this.buffer, this.bufferCopyTexture);
+
+		// Pass the buffer into the shader
+		deviceContext.PixelShader.SetShaderResource(0, this.bufferResourceView);
+		deviceContext.OutputMerger.SetTargets(this.backBufferTargetView);
+		deviceContext.Rasterizer.SetViewport(0, 0, renderer.Width, renderer.Height);
+
+		this.quad.Draw(renderer, Transform.Identity, device, deviceContext);
+
+		using CommandList cmds = deviceContext.FinishCommandList(false);
+		device.ImmediateContext.ExecuteCommandList(cmds, true);
+		deviceContext.ClearState();
+	}
+
+	public override void Dispose()
+	{
+		this.quad.Dispose();
+		this.bufferCopyTexture?.Dispose();
+		this.backBufferTargetView?.Dispose();
+		base.Dispose();
+	}
+}
