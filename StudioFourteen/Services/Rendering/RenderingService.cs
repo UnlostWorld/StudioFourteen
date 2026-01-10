@@ -15,12 +15,7 @@
 
 namespace StudioFourteen.Services.Rendering;
 
-using System;
-using System.Collections.Generic;
-using System.Numerics;
-using SharpDX.Direct3D11;
 using StudioFourteen;
-using StudioFourteen.Services.Rendering.Passes;
 
 public class RenderingService : IService
 {

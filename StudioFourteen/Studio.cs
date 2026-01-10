@@ -28,6 +28,8 @@ public sealed class Studio : IDalamudPlugin
 {
 	public Studio(IDalamudPluginInterface pluginInterface)
 	{
+		IsDisposed = false;
+
 		Tick = new();
 		Content = new();
 		Camera = new();
