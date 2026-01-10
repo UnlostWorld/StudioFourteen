@@ -50,7 +50,7 @@ public class ShaderReference(string path, string profile, string entryPoint = "M
 		using Stream stream = Studio.Content.GetContent(file);
 
 		if (stream == null)
-			throw new Exception($"Shader \"{file}\" not found in manifest resources");
+			throw new Exception($"Shader \"{file}\" not found");
 
 		using StreamReader reader = new StreamReader(stream);
 		while (!reader.EndOfStream)

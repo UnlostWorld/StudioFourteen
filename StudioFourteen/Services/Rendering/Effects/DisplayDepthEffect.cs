@@ -13,36 +13,25 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Rendering.Materials;
+namespace StudioFourteen.Services.Rendering.Effects;
 
+using System.Numerics;
 using System.Runtime.InteropServices;
 using SharpDX.D3DCompiler;
 using StudioFourteen.Services.Content;
 using StudioFourteen.Services.Rendering.Draw;
+using StudioFourteen.Services.Rendering.Materials;
 
 [StructLayout(LayoutKind.Sequential)]
-public struct PhotoGuidesEffectMaterial : IMaterial
+public struct DisplayDepthEffect : IMaterial
 {
-	public float LeftRight;
-	public float TopBottom;
-	public uint GuidesMode;
-	public float Unused4;
+	public Vector4 Unused;
 
-	public enum GuideModes : uint
-	{
-		None,
-		Thirds,
-		Crosshair,
-	}
-
-	public IContent<ShaderBytecode>? GetVertexShader() => new ShaderReference("Shaders/Blit_PhotoGuides.hlsl", "vs_4_0", "vert");
-	public IContent<ShaderBytecode>? GetPixelShader() => new ShaderReference("Shaders/Blit_PhotoGuides.hlsl", "ps_4_0", "pixel");
+	public IContent<ShaderBytecode>? GetVertexShader() => new ShaderReference("Shaders/Effect_DisplayDepth.hlsl", "vs_4_0", "vert");
+	public IContent<ShaderBytecode>? GetPixelShader() => new ShaderReference("Shaders/Effect_DisplayDepth.hlsl", "ps_4_0", "pixel");
 	public IContent<ShaderBytecode>? GetGeometryShader() => null;
 
 	public void Initialize()
 	{
-		this.LeftRight = 0;
-		this.TopBottom = 0;
-		this.GuidesMode = 0;
 	}
 }

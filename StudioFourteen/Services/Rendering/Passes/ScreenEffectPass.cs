@@ -17,10 +17,12 @@ namespace StudioFourteen.Services.Rendering.Passes;
 
 using System.Numerics;
 using System.Runtime.InteropServices;
+using SharpDX.D3DCompiler;
 using SharpDX.Direct3D11;
+using StudioFourteen.Services.Content;
 using StudioFourteen.Services.Numerics;
 using StudioFourteen.Services.Rendering.Draw;
-
+using StudioFourteen.Services.Rendering.Materials;
 using Device = SharpDX.Direct3D11.Device;
 using Format = SharpDX.DXGI.Format;
 

@@ -13,26 +13,36 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Rendering;
+namespace StudioFourteen.Services.Rendering.Materials;
 
-using StudioFourteen;
-using StudioFourteen.Services.Rendering.Passes;
+using System.Runtime.InteropServices;
+using SharpDX.D3DCompiler;
+using StudioFourteen.Services.Content;
+using StudioFourteen.Services.Rendering.Draw;
 
-public class RenderingService : IService
+[StructLayout(LayoutKind.Sequential)]
+public struct PhotoGuidesEffect : IMaterial
 {
-	public readonly GameOverlayRenderer OverlayRenderer = new();
+	public float LeftRight;
+	public float TopBottom;
+	public uint GuidesMode;
+	public float Unused4;
 
-	private readonly ScreenEffectPass<Effects.DisplayDepthEffect> pass = new();
-
-	public RenderingService()
+	public enum GuideModes : uint
 	{
-		this.OverlayRenderer.Attach();
-		this.OverlayRenderer.AddAfterEffectsPass(this.pass);
+		None,
+		Thirds,
+		Crosshair,
 	}
 
-	public void Dispose()
+	public IContent<ShaderBytecode>? GetVertexShader() => new ShaderReference("Shaders/Blit_PhotoGuides.hlsl", "vs_4_0", "vert");
+	public IContent<ShaderBytecode>? GetPixelShader() => new ShaderReference("Shaders/Blit_PhotoGuides.hlsl", "ps_4_0", "pixel");
+	public IContent<ShaderBytecode>? GetGeometryShader() => null;
+
+	public void Initialize()
 	{
-		this.OverlayRenderer.Detach();
-		this.OverlayRenderer.Dispose();
+		this.LeftRight = 0;
+		this.TopBottom = 0;
+		this.GuidesMode = 0;
 	}
 }

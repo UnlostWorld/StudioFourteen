@@ -23,13 +23,13 @@ using StudioFourteen.Services.Content;
 
 public class ShaderCache : IDisposable
 {
-	private readonly Dictionary<Type, Shader> shaders = new();
+	private readonly Dictionary<Type, Shader?> shaders = new();
 
 	public void Dispose()
 	{
-		foreach ((Type type, Shader shader) in this.shaders)
+		foreach ((Type type, Shader? shader) in this.shaders)
 		{
-			shader.Dispose();
+			shader?.Dispose();
 		}
 
 		this.shaders.Clear();
@@ -38,23 +38,14 @@ public class ShaderCache : IDisposable
 	public Shader? GetShader<TMaterialData>(Device device)
 		where TMaterialData : unmanaged, IMaterial
 	{
-		Shader? shader;
+		Shader? shader = null;
 		if (!this.shaders.TryGetValue(typeof(TMaterialData), out shader) || shader == null)
 		{
 			shader = new Shader<TMaterialData>();
-			shader.Load(device);
 			this.shaders.Add(typeof(TMaterialData), shader);
 		}
 
-		// In debug builds, shaders can be reloaded when their content changes
-		// so ask for a load every time the shader is accessed to ensure it is
-		// up to date. In release builds shaders will only load once.
-#if DEBUG
-		{
-			shader.Load(device);
-		}
-#endif
-
+		shader.Load(device);
 		return shader;
 	}
 }
@@ -80,17 +71,15 @@ public abstract class Shader : IDisposable
 public class Shader<TMaterialData> : Shader
 	where TMaterialData : unmanaged, IMaterial
 {
-	private bool isLoaded = false;
+	private bool didAttemptLoad = false;
+
 	private IContent<ShaderBytecode>? vertexShaderContent;
 	private IContent<ShaderBytecode>? pixelShaderContent;
 	private IContent<ShaderBytecode>? geometryShaderContent;
 
-	public bool IsLoaded => this.isLoaded;
-
 	public override void Load(Device device)
 	{
-#if DEBUG
-		if (this.isLoaded)
+		if (this.didAttemptLoad)
 		{
 			bool shouldLoad = false;
 			if (this.vertexShaderContent != null && !this.vertexShaderContent.IsLoaded)
@@ -105,34 +94,50 @@ public class Shader<TMaterialData> : Shader
 			if (!shouldLoad)
 				return;
 		}
-#endif
 
-		TMaterialData material = default;
+		this.didAttemptLoad = true;
 
-		if (this.vertexShaderContent == null)
-			this.vertexShaderContent = material.GetVertexShader();
+		try
+		{
+			TMaterialData material = default;
 
-		if (this.pixelShaderContent == null)
-			this.pixelShaderContent = material.GetPixelShader();
+			if (this.vertexShaderContent == null)
+				this.vertexShaderContent = material.GetVertexShader();
 
-		if (this.geometryShaderContent == null)
-			this.geometryShaderContent = material.GetGeometryShader();
+			if (this.pixelShaderContent == null)
+				this.pixelShaderContent = material.GetPixelShader();
 
-		ShaderBytecode? vertexByteCode = this.vertexShaderContent?.Get();
-		ShaderBytecode? pixelByteCode = this.pixelShaderContent?.Get();
-		ShaderBytecode? geometryByteCode = this.geometryShaderContent?.Get();
+			if (this.geometryShaderContent == null)
+				this.geometryShaderContent = material.GetGeometryShader();
 
-		this.Vertex?.Dispose();
-		this.Pixel?.Dispose();
-		this.Geometry?.Dispose();
+			ShaderBytecode? vertexByteCode = this.vertexShaderContent?.Get();
+			ShaderBytecode? pixelByteCode = this.pixelShaderContent?.Get();
+			ShaderBytecode? geometryByteCode = this.geometryShaderContent?.Get();
 
-		this.Vertex = new VertexShader(device, vertexByteCode);
-		this.Pixel = new PixelShader(device, pixelByteCode);
+			this.Vertex?.Dispose();
+			this.Pixel?.Dispose();
+			this.Geometry?.Dispose();
 
-		if (geometryByteCode != null)
-			this.Geometry = new GeometryShader(device, geometryByteCode);
+			this.Vertex = new VertexShader(device, vertexByteCode);
+			this.Pixel = new PixelShader(device, pixelByteCode);
 
-		this.VertexSignature = ShaderSignature.GetInputSignature(vertexByteCode);
-		this.isLoaded = true;
+			if (geometryByteCode != null)
+				this.Geometry = new GeometryShader(device, geometryByteCode);
+
+			this.VertexSignature = ShaderSignature.GetInputSignature(vertexByteCode);
+		}
+		catch (Exception ex)
+		{
+			this.Vertex?.Dispose();
+			this.Vertex = null;
+
+			this.Pixel?.Dispose();
+			this.Pixel = null;
+
+			this.Geometry?.Dispose();
+			this.Geometry = null;
+
+			Studio.Log.Information(ex, "Failed to load shader");
+		}
 	}
 }

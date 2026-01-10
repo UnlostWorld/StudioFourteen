@@ -13,26 +13,31 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Rendering;
+#include "Blit.hlsl"
 
-using StudioFourteen;
-using StudioFourteen.Services.Rendering.Passes;
-
-public class RenderingService : IService
+cbuffer EffectPassData : register(b0)
 {
-	public readonly GameOverlayRenderer OverlayRenderer = new();
+    float2 ScreenSize;
+	float Unused1;
+	float Unused2;
+};
 
-	private readonly ScreenEffectPass<Effects.DisplayDepthEffect> pass = new();
+cbuffer MaterialInstanceData : register(b2)
+{
+	float4 Unused;
+};
 
-	public RenderingService()
-	{
-		this.OverlayRenderer.Attach();
-		this.OverlayRenderer.AddAfterEffectsPass(this.pass);
-	}
+float4 pixel(Pixel pixel) : SV_TARGET
+{
+	float4 color = buffer_texture.Sample(buffer_sampler, pixel.TexCoord);
+	float mask = mask_texture.Sample(mask_sampler, pixel.TexCoord).r;
 
-	public void Dispose()
-	{
-		this.OverlayRenderer.Detach();
-		this.OverlayRenderer.Dispose();
-	}
+	if(mask < 0.3)
+		mask = 0;
+
+	float bw = (color.r + color.g + color.b) / 3;
+	color.rgb = bw * 0.25;
+
+	color.a = mask;
+	return color;
 }
