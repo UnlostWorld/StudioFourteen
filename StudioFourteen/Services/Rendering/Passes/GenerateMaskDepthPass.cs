@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Services.Rendering.Passes;
 
+using System.Numerics;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
@@ -26,7 +27,7 @@ using Device = SharpDX.Direct3D11.Device;
 
 public class GenerateUiMaskPass : RenderPassBase
 {
-	private readonly MeshRenderer<BlitAlphaMaskMaterial> quad = new(MeshContent.Quad);
+	private readonly MeshRenderer<CopyUiMaskEffect> quad = new(MeshContent.Quad);
 
 	private Texture2D? backBufferCopyTexture;
 	private ShaderResourceView? backBufferResourceView;
@@ -94,6 +95,14 @@ public class GenerateUiMaskPass : RenderPassBase
 			this.depthStencilCopyTexture = new Texture2D(device, desc);
 			this.depthResourceView = new(device, this.depthStencilCopyTexture);
 		}
+
+		float renderWidth = pRenderTargetManager->Base.Resolution_Width;
+		float renderHeight = pRenderTargetManager->Base.Resolution_Height;
+		float bufferWidth = this.depthStencilTexture.Description.Width;
+		float bufferHeight = this.depthStencilTexture.Description.Height;
+		renderer.RenderScale = new Vector2(renderWidth / bufferWidth, renderHeight / bufferHeight);
+
+		this.quad.Material.Scale = renderer.RenderScale;
 
 		// Create an output texture
 		if (this.maskTexture == null)

@@ -13,15 +13,25 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-#include "Effect.hlsl"
+namespace StudioFourteen.Services.Rendering.Materials;
 
-cbuffer MaterialInstanceData : register(b2)
-{
-	float4 Unused;
-};
+using System.Numerics;
+using System.Runtime.InteropServices;
+using SharpDX.D3DCompiler;
+using StudioFourteen.Services.Content;
+using StudioFourteen.Services.Rendering.Draw;
 
-float4 pixel(Pixel pixel) : SV_TARGET
+[StructLayout(LayoutKind.Sequential)]
+public struct CopyUiMaskEffect : IMaterial
 {
-	float depth = depth_texture.Sample(depth_sampler, pixel.TexCoord * RenderScale).r;
-	return float4(depth, depth, depth, 1);
+	public Vector2 Scale;
+	public Vector2 Unused;
+
+	public IContent<ShaderBytecode>? GetVertexShader() => new ShaderReference("Shaders/Effect_CopyUiMask.hlsl", "vs_4_0", "vert");
+	public IContent<ShaderBytecode>? GetPixelShader() => new ShaderReference("Shaders/Effect_CopyUiMask.hlsl", "ps_4_0", "pixel");
+	public IContent<ShaderBytecode>? GetGeometryShader() => null;
+
+	public void Initialize()
+	{
+	}
 }

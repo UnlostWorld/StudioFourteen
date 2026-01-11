@@ -13,14 +13,7 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-#include "Blit.hlsl"
-
-cbuffer EffectPassData : register(b0)
-{
-    float2 ScreenSize;
-	float Unused1;
-	float Unused2;
-};
+#include "Effect.hlsl"
 
 cbuffer MaterialInstanceData : register(b2)
 {

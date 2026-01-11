@@ -13,10 +13,18 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-#include "Blit.hlsl"
+#include "Effect.hlsl"
 
 float4 pixel(Pixel pixel) : SV_TARGET
 {
-	////return float4(pixel.TexCoord.x, pixel.TexCoord.y, 0, 1);
-	return buffer_texture.Sample(buffer_sampler, pixel.TexCoord);
+	float mask = buffer_texture.Sample(buffer_sampler, pixel.TexCoord).a;
+
+	// Invert the mask
+	mask = 1 - mask;
+
+	// Filter out any low-transparency objects, such as the sky.
+	if (mask > 0.4)
+		mask = 1;
+
+	return mask;
 }

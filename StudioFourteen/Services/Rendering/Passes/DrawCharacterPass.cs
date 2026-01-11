@@ -13,71 +13,65 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Rendering.Passes;
-
 using System.Numerics;
 using System.Runtime.InteropServices;
+using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
+using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
+using FFXIVClientStructs.FFXIV.Client.UI.Agent;
+using FFXIVClientStructs.FFXIV.Client.UI.Misc;
+using SharpDX.D3DCompiler;
 using SharpDX.Direct3D11;
+using SharpDX.DXGI;
+using StudioFourteen;
+using StudioFourteen.Services.Content;
 using StudioFourteen.Services.Numerics;
+using StudioFourteen.Services.Rendering;
 using StudioFourteen.Services.Rendering.Draw;
+using StudioFourteen.Services.Rendering.Materials;
+using StudioFourteen.Services.Rendering.Passes;
 
 using Device = SharpDX.Direct3D11.Device;
 using Format = SharpDX.DXGI.Format;
 
-[StructLayout(LayoutKind.Sequential)]
-public struct ScreenEffectPassData
+public unsafe class DrawCharacterPass : InstanceRenderPassBase<DrawCharacterPass.PassDataStruct>
 {
-	public Vector2 ScreenSize;
-	public Vector2 RenderScale;
-}
+	private readonly MeshRenderer<Effect> quad = new(MeshContent.Quad);
 
-public class ScreenEffectPass<TMaterialData>() : InstanceRenderPassBase<ScreenEffectPassData>
-	where TMaterialData : unmanaged, IMaterial
-{
-	private readonly MeshRenderer<TMaterialData> quad = new(MeshContent.Quad);
-
-	private Texture2D? backBufferCopyTexture;
-	private ShaderResourceView? backBufferResourceView;
+	private Texture2D? characterTexture;
+	private ShaderResourceView? characterResourceView;
 	private RenderTargetView? backBufferTargetView;
 	private BlendState? blend;
+	private CharaView* pView;
 
-	public ref TMaterialData Material => ref this.quad.Material;
-
-	public override void OnResolutionChanged()
-	{
-		this.backBufferResourceView?.Dispose();
-		this.backBufferResourceView = null;
-
-		this.backBufferCopyTexture?.Dispose();
-		this.backBufferCopyTexture = null;
-
-		this.backBufferTargetView?.Dispose();
-		this.backBufferTargetView = null;
-
-		base.OnResolutionChanged();
-	}
-
-	public override void Render(Renderer renderer, Device device, DeviceContext deviceContext)
+	public unsafe override void Render(Renderer renderer, Device device, DeviceContext deviceContext)
 	{
 		if (renderer.BackBuffer == null)
 			return;
 
-		this.PassData.ScreenSize = new(renderer.Width, renderer.Height);
-		this.PassData.RenderScale = renderer.RenderScale;
+		RenderTargetManagerEx* pRenderTargetManager = RenderTargetManagerEx.Instance();
+		if (pRenderTargetManager == null)
+			return;
 
 		base.Render(renderer, device, deviceContext);
 
 		// Create a shader resource copy of the back buffer so it can be accessed in the shader
-		if (this.backBufferCopyTexture == null)
+		if (this.characterTexture == null)
 		{
-			this.backBufferCopyTexture?.Dispose();
-			this.backBufferResourceView?.Dispose();
+			////this.characterTexture?.Dispose();
+			this.characterResourceView?.Dispose();
 
-			Texture2DDescription desc = renderer.BackBuffer.Description;
-			desc.BindFlags = BindFlags.ShaderResource;
-			this.backBufferCopyTexture = new Texture2D(device, desc);
+			this.pView = CharaView.Create();
 
-			this.backBufferResourceView = new(device, this.backBufferCopyTexture);
+			// Set customization options to anything we want. =]
+			this.pView->ModelData.CustomizeData.Race = 0;
+			this.pView->ModelData.CustomizeData.Sex = 1;
+
+			// Use object Id 1 as its guaranteed to be the current characters minion/mount/whatever,
+			//  which wont ever have its own chara view, so we can safely use it for our purposes.
+			this.pView->Initialize(null, 1, 0);
+			Texture* pTexture = pRenderTargetManager->Base.GetCharaViewTexture(1);
+			this.characterTexture = new((nint)pTexture->D3D11Texture2D);
+			this.characterResourceView = new(device, this.characterTexture);
 		}
 
 		if (this.backBufferTargetView == null)
@@ -108,11 +102,10 @@ public class ScreenEffectPass<TMaterialData>() : InstanceRenderPassBase<ScreenEf
 			this.blend = new(device, blendDesc);
 		}
 
-		// Copy the back buffer into the copy
-		deviceContext.CopyResource(renderer.BackBuffer, this.backBufferCopyTexture);
+		this.pView->Render(1);
 
 		// Pass the buffers into the shader
-		deviceContext.PixelShader.SetShaderResource(2, this.backBufferResourceView);
+		deviceContext.PixelShader.SetShaderResource(2, this.characterResourceView);
 
 		// Set the output
 		deviceContext.Rasterizer.SetViewport(0, 0, renderer.Width, renderer.Height);
@@ -128,11 +121,33 @@ public class ScreenEffectPass<TMaterialData>() : InstanceRenderPassBase<ScreenEf
 
 	public override void Dispose()
 	{
+		////this.pView->Release();
+
 		this.quad.Dispose();
-		this.backBufferResourceView?.Dispose();
-		this.backBufferCopyTexture?.Dispose();
+		this.characterResourceView?.Dispose();
+		////this.characterTexture?.Dispose();
 		this.backBufferTargetView?.Dispose();
 
 		base.Dispose();
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	public struct PassDataStruct
+	{
+		public Vector4 Unused;
+	}
+
+	[StructLayout(LayoutKind.Sequential)]
+	public struct Effect : IMaterial
+	{
+		public Vector4 Unused;
+
+		public IContent<ShaderBytecode>? GetVertexShader() => new ShaderReference("Shaders/Effect_Copy.hlsl", "vs_4_0", "vert");
+		public IContent<ShaderBytecode>? GetPixelShader() => new ShaderReference("Shaders/Effect_Copy.hlsl", "ps_4_0", "pixel");
+		public IContent<ShaderBytecode>? GetGeometryShader() => null;
+
+		public void Initialize()
+		{
+		}
 	}
 }

@@ -13,14 +13,7 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-#include "Blit.hlsl"
-
-cbuffer EffectPassData : register(b0)
-{
-    float2 ScreenSize;
-	float Unused1;
-	float Unused2;
-};
+#include "Effect.hlsl"
 
 cbuffer MaterialInstanceData : register(b2)
 {
@@ -36,8 +29,8 @@ float4 pixel(Pixel pixel) : SV_TARGET
 		mask = 0;
 
 	float bw = (color.r + color.g + color.b) / 3;
-	color.rgb = bw * 0.25;
+	color.rgb = bw;
 
-	color.a = mask;
+	color.a = 1;
 	return color;
 }

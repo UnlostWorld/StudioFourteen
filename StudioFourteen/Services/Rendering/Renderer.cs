@@ -45,6 +45,7 @@ public abstract class Renderer : IDisposable
 	public int Height { get; private set; } = 0;
 	public int NewWidth { get; set; } = 0;
 	public int NewHeight { get; set; } = 0;
+	public Vector2 RenderScale { get; set; } = Vector2.One;
 	public ShaderCache Shaders => this.shaderCache;
 
 	protected Device? Device => this.device;

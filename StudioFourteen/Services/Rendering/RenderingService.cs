@@ -22,7 +22,7 @@ public class RenderingService : IService
 {
 	public readonly GameOverlayRenderer OverlayRenderer = new();
 
-	private readonly ScreenEffectPass<Effects.DisplayDepthEffect> pass = new();
+	private readonly DrawCharacterPass pass = new();
 
 	public RenderingService()
 	{

@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
+using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using SharpDX.Direct3D11;
 using StudioFourteen.Services.Dalamud;
 using StudioFourteen.Services.Rendering.Draw.Handles;
@@ -135,6 +136,10 @@ public class GameOverlayRenderer : Renderer
 	protected unsafe override Texture2D? GetBackBuffer()
 	{
 		if (Studio.IsDisposed)
+			return null;
+
+		RenderTargetManagerEx* pRenderTargetManager = RenderTargetManagerEx.Instance();
+		if (pRenderTargetManager == null)
 			return null;
 
 		XivDevice* xivDevice = XivDevice.Instance();

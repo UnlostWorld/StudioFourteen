@@ -22,6 +22,6 @@ cbuffer MaterialInstanceData : register(b2)
 
 float4 pixel(Pixel pixel) : SV_TARGET
 {
-	float depth = depth_texture.Sample(depth_sampler, pixel.TexCoord * RenderScale).r;
-	return float4(depth, depth, depth, 1);
+	float mask = mask_texture.Sample(mask_sampler, pixel.TexCoord).r;
+	return float4(mask, mask, mask, 1);
 }

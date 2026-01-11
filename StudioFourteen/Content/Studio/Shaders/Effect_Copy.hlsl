@@ -13,24 +13,10 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Rendering.Materials;
+#include "Effect.hlsl"
 
-using System.Numerics;
-using System.Runtime.InteropServices;
-using SharpDX.D3DCompiler;
-using StudioFourteen.Services.Content;
-using StudioFourteen.Services.Rendering.Draw;
-
-[StructLayout(LayoutKind.Sequential)]
-public struct BlitAlphaMaskMaterial : IMaterial
+float4 pixel(Pixel pixel) : SV_TARGET
 {
-	public Vector4 Unused;
-
-	public IContent<ShaderBytecode>? GetVertexShader() => new ShaderReference("Shaders/Blit_AlphaMask.hlsl", "vs_4_0", "vert");
-	public IContent<ShaderBytecode>? GetPixelShader() => new ShaderReference("Shaders/Blit_AlphaMask.hlsl", "ps_4_0", "pixel");
-	public IContent<ShaderBytecode>? GetGeometryShader() => null;
-
-	public void Initialize()
-	{
-	}
+	////return float4(pixel.TexCoord.x, pixel.TexCoord.y, 0, 1);
+	return buffer_texture.Sample(buffer_sampler, pixel.TexCoord);
 }

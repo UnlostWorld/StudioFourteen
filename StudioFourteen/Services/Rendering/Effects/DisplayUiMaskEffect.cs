@@ -13,27 +13,25 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-#include "Common.hlsl"
+namespace StudioFourteen.Services.Rendering.Effects;
 
-Texture2D mask_texture : register(t0);
-SamplerState mask_sampler : register(s0);
+using System.Numerics;
+using System.Runtime.InteropServices;
+using SharpDX.D3DCompiler;
+using StudioFourteen.Services.Content;
+using StudioFourteen.Services.Rendering.Draw;
+using StudioFourteen.Services.Rendering.Materials;
 
-Texture2D depth_texture : register(t1);
-SamplerState depth_sampler : register(s1);
-
-Texture2D buffer_texture : register(t2);
-SamplerState buffer_sampler : register(s2);
-
-struct Pixel
+[StructLayout(LayoutKind.Sequential)]
+public struct DisplayUiMaskEffect : IMaterial
 {
-	float4 Position:SV_POSITION;
-	float2 TexCoord:TEXCOORD;
-};
+	public Vector4 Unused;
 
-Pixel vert(in Vertex vertex)
-{
-	Pixel result;
-	result.TexCoord = vertex.TexCoord;
-	result.Position = vertex.Position;
-	return result;
+	public IContent<ShaderBytecode>? GetVertexShader() => new ShaderReference("Shaders/Effect_DisplayUiMask.hlsl", "vs_4_0", "vert");
+	public IContent<ShaderBytecode>? GetPixelShader() => new ShaderReference("Shaders/Effect_DisplayUiMask.hlsl", "ps_4_0", "pixel");
+	public IContent<ShaderBytecode>? GetGeometryShader() => null;
+
+	public void Initialize()
+	{
+	}
 }
