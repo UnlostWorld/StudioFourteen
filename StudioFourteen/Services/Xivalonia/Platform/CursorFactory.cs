@@ -13,22 +13,28 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Rendering;
+namespace StudioFourteen.Services.Xivalonia.Platform;
 
-using StudioFourteen;
+using Avalonia;
+using Avalonia.Input;
+using Avalonia.Platform;
 
-public class RenderingService : IService
+public class CursorFactory : ICursorFactory
 {
-	public readonly GameOverlayRenderer OverlayRenderer = new();
-
-	public RenderingService()
+	public ICursorImpl CreateCursor(IBitmapImpl cursor, PixelPoint hotSpot)
 	{
-		this.OverlayRenderer.Attach();
+		return new CursorImpl();
 	}
 
+	public ICursorImpl GetCursor(StandardCursorType cursorType)
+	{
+		return new CursorImpl();
+	}
+}
+
+public class CursorImpl : ICursorImpl
+{
 	public void Dispose()
 	{
-		this.OverlayRenderer.Detach();
-		this.OverlayRenderer.Dispose();
 	}
 }

@@ -18,6 +18,7 @@ namespace StudioFourteen.Services.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using SharpDX.Direct3D11;
@@ -161,6 +162,14 @@ public class GameOverlayRenderer : Renderer
 			throw new Exception($"wrong format in back buffer texture {backBuffer.Description.Format}");
 
 		return backBuffer;
+	}
+
+	protected override SharpDX.Direct3D11.Device? GetDevice()
+	{
+		if (this.BackBuffer == null)
+			return null;
+
+		return this.BackBuffer.Device;
 	}
 
 	private void OnBeforeImGuiRender()

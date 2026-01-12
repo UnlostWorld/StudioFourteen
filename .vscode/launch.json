@@ -5,21 +5,7 @@
 			"name": "Attach",
             "type": "coreclr",
 			"request": "attach",
-			"processName": "ffxiv_dx11",
-			"preLaunchTask": "Build",
-			"requireExactSource": false,
-			"internalConsoleOptions": "openOnSessionStart",
-
-			"logging": {
-				"moduleLoad": false
-			}
-        },
-		{
-			"type": "coreclr",
-			"request": "attach",
-			"name": "Launch",
-			"processName": "ffxiv_dx11",
-			"preLaunchTask": "Launch",
+			"preLaunchTask": "Build Studio Fourteen",
 			"requireExactSource": false,
 			"internalConsoleOptions": "openOnSessionStart",
 

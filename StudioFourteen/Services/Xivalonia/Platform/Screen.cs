@@ -13,22 +13,20 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Rendering;
+namespace StudioFourteen.Services.Xivalonia.Platform;
 
-using StudioFourteen;
+using Avalonia.Platform;
 
-public class RenderingService : IService
+public class Screen : PlatformScreen
 {
-	public readonly GameOverlayRenderer OverlayRenderer = new();
-
-	public RenderingService()
+	public Screen()
+		: base(new PlatformHandle(0, "Xiv Screen"))
 	{
-		this.OverlayRenderer.Attach();
-	}
-
-	public void Dispose()
-	{
-		this.OverlayRenderer.Detach();
-		this.OverlayRenderer.Dispose();
+		this.WorkingArea = new Avalonia.PixelRect(0, 0, 1920, 1080);
+		this.DisplayName = "Xiv Display";
+		this.CurrentOrientation = ScreenOrientation.Landscape;
+		this.Bounds = new Avalonia.PixelRect(0, 0, 1920, 1080);
+		this.IsPrimary = true;
+		this.Scaling = 1.0;
 	}
 }

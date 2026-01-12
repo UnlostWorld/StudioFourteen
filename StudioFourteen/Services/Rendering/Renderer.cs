@@ -48,9 +48,9 @@ public abstract class Renderer : IDisposable
 	public Vector2 RenderScale { get; set; } = Vector2.One;
 	public ShaderCache Shaders => this.shaderCache;
 
-	protected Device? Device => this.device;
-	protected DeviceContext? DeviceContext => this.deviceContext;
-	protected bool CanRender => this.canRender;
+	public Device? Device => this.device;
+	public DeviceContext? DeviceContext => this.deviceContext;
+	public bool CanRender => this.canRender;
 
 	public virtual void Dispose()
 	{
@@ -140,9 +140,10 @@ public abstract class Renderer : IDisposable
 		}
 	}
 
-	protected unsafe abstract Texture2D? GetBackBuffer();
+	protected abstract Texture2D? GetBackBuffer();
+	protected abstract Device? GetDevice();
 
-	protected virtual unsafe bool TrySetUpRender()
+	protected virtual bool TrySetUpRender()
 	{
 		if (this.isError)
 			return false;
@@ -176,7 +177,7 @@ public abstract class Renderer : IDisposable
 			if (this.BackBuffer == null)
 				return false;
 
-			this.device = this.BackBuffer.Device;
+			this.device = this.GetDevice();
 			if (this.device == null)
 				return false;
 

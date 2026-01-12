@@ -16,13 +16,14 @@
 namespace StudioFourteen;
 
 using System;
+using System.Runtime.InteropServices;
 using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
-using Dalamud.Utility;
 using StudioFourteen.Services.Content;
 using StudioFourteen.Services.Rendering;
 using StudioFourteen.Services.Tick;
+using StudioFourteen.Services.Xivalonia;
 
 public sealed class Studio : IDalamudPlugin
 {
@@ -34,6 +35,7 @@ public sealed class Studio : IDalamudPlugin
 		Content = new();
 		Camera = new();
 		Rendering = new();
+		Avalonia = new();
 	}
 
 	public static bool IsDisposed { get; private set; } = false;
@@ -42,6 +44,7 @@ public sealed class Studio : IDalamudPlugin
 	public static ContentService Content { get; private set; } = null!;
 	public static TickService Tick { get; private set; } = null!;
 	public static CameraService Camera { get; private set; } = null!;
+	public static XivaloniaService Avalonia { get; private set; } = null!;
 
 	[PluginService] public static IPluginLog Log { get; private set; } = null!;
 	[PluginService] public static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
@@ -57,6 +60,8 @@ public sealed class Studio : IDalamudPlugin
 	[PluginService] public static ITextureProvider TextureProvider { get; private set; } = null!;
 	[PluginService] public static IObjectTable ObjectTable { get; private set; } = null!;
 
+	public static OSPlatform Platform => global::Dalamud.Utility.Util.GetHostPlatform();
+
 	public void Dispose()
 	{
 		IsDisposed = true;
@@ -67,6 +72,7 @@ public sealed class Studio : IDalamudPlugin
 			Content.Dispose();
 			Tick.Dispose();
 			Camera.Dispose();
+			Avalonia.Dispose();
 		}
 		catch (Exception ex)
 		{

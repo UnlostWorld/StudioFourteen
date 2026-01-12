@@ -13,22 +13,26 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Rendering;
+namespace StudioFourteen.Services.Xivalonia.Platform;
 
-using StudioFourteen;
+using Avalonia.OpenGL;
+using Avalonia.OpenGL.Egl;
+using Avalonia.OpenGL.Surfaces;
 
-public class RenderingService : IService
+public class DxgiSurface(WindowImpl window)
+	: EglGlPlatformSurfaceBase
 {
-	public readonly GameOverlayRenderer OverlayRenderer = new();
+	public DxgiRenderTarget? DxgiRenderTarget;
 
-	public RenderingService()
+	public override IGlPlatformSurfaceRenderTarget CreateGlRenderTarget(IGlContext context)
 	{
-		this.OverlayRenderer.Attach();
-	}
+		var eglContext = (EglContext)context;
+		using (eglContext.EnsureCurrent())
+		{
+			if (this.DxgiRenderTarget == null)
+				this.DxgiRenderTarget = new DxgiRenderTarget(window, eglContext);
 
-	public void Dispose()
-	{
-		this.OverlayRenderer.Detach();
-		this.OverlayRenderer.Dispose();
+			return this.DxgiRenderTarget;
+		}
 	}
 }

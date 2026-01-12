@@ -13,22 +13,19 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Rendering;
+namespace StudioFourteen.Services.Xivalonia.Platform;
 
-using StudioFourteen;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using Avalonia;
+using Avalonia.Platform;
 
-public class RenderingService : IService
+public class ScreenImpl : ScreensBase<nint, Screen>
 {
-	public readonly GameOverlayRenderer OverlayRenderer = new();
+	private static readonly Screen Screen = new();
 
-	public RenderingService()
-	{
-		this.OverlayRenderer.Attach();
-	}
-
-	public void Dispose()
-	{
-		this.OverlayRenderer.Detach();
-		this.OverlayRenderer.Dispose();
-	}
+	protected override Screen CreateScreenFromKey(nint key) => Screen;
+	protected override IReadOnlyList<nint> GetAllScreenKeys() => [0];
+	protected override int GetScreenCount() => 1;
 }
