@@ -53,7 +53,7 @@ public partial class DxgiRenderTarget(WindowImpl window, EglContext context)
 			var resource = this.Texture.QueryInterface<SharpDX.DXGI.Resource1>();
 			nint handle = resource.SharedHandle;
 			if (handle == 0)
-				throw new Exception("Failed tp get shared handle to render texture");
+				throw new Exception("Failed to get shared handle to render texture");
 
 			int* attrs = stackalloc[]
 			{

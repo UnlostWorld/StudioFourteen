@@ -177,9 +177,14 @@ public abstract class Renderer : IDisposable
 			if (this.BackBuffer == null)
 				return false;
 
-			this.device = this.GetDevice();
 			if (this.device == null)
-				return false;
+			{
+				this.device = this.GetDevice();
+				if (this.device == null)
+				{
+					return false;
+				}
+			}
 
 			if (this.deviceContext == null)
 				this.deviceContext = new(this.device);
