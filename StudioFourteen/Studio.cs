@@ -21,6 +21,7 @@ using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using StudioFourteen.Services.Content;
+using StudioFourteen.Services.Platform;
 using StudioFourteen.Services.Rendering;
 using StudioFourteen.Services.Tick;
 using StudioFourteen.Services.Xivalonia;
@@ -31,6 +32,7 @@ public sealed class Studio : IDalamudPlugin
 	{
 		IsDisposed = false;
 
+		Platform = new();
 		Tick = new();
 		Content = new();
 		Camera = new();
@@ -45,6 +47,7 @@ public sealed class Studio : IDalamudPlugin
 	public static TickService Tick { get; private set; } = null!;
 	public static CameraService Camera { get; private set; } = null!;
 	public static XivaloniaService Avalonia { get; private set; } = null!;
+	public static PlatformService Platform { get; private set; } = null!;
 
 	[PluginService] public static IPluginLog Log { get; private set; } = null!;
 	[PluginService] public static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
@@ -60,14 +63,13 @@ public sealed class Studio : IDalamudPlugin
 	[PluginService] public static ITextureProvider TextureProvider { get; private set; } = null!;
 	[PluginService] public static IObjectTable ObjectTable { get; private set; } = null!;
 
-	public static OSPlatform Platform => global::Dalamud.Utility.Util.GetHostPlatform();
-
 	public void Dispose()
 	{
 		IsDisposed = true;
 
 		try
 		{
+			Platform.Dispose();
 			Rendering.Dispose();
 			Content.Dispose();
 			Tick.Dispose();
