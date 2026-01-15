@@ -20,11 +20,19 @@ using System.Threading;
 using Avalonia;
 using StudioFourteen.Services.Xivalonia.Platform;
 using Avalonia.Controls;
+using StudioFourteen.Services.Content;
+using System.Reflection;
+using Avalonia.Markup.Xaml;
+using System.Collections.Generic;
+using System.Collections;
+using System.Runtime.CompilerServices;
 
 public partial class XivaloniaService : IService
 {
 	private readonly CancellationTokenSource cts = new();
 	private readonly Thread? uiThread;
+
+	private readonly XamlContentReference<Window> testWindowReference = new("UI/TestWindow.axaml");
 
 	public XivaloniaService()
 	{
@@ -85,8 +93,17 @@ public partial class XivaloniaService : IService
 				(app2, args) =>
 				{
 					// Ready to run!
-					MainWindow mainWindow = new();
-					mainWindow.Show();
+					this.HookTypeResolver();
+
+					try
+					{
+						Window wnd = this.testWindowReference.Get();
+						wnd.Show();
+					}
+					catch (Exception ex)
+					{
+						Studio.Log.Error(ex, "Error test");
+					}
 
 					app2.Run(this.cts.Token);
 
@@ -98,5 +115,75 @@ public partial class XivaloniaService : IService
 		{
 			Studio.Log.Error(ex, "error in main");
 		}
+	}
+
+	private void HookTypeResolver()
+	{
+		try
+		{
+			RuntimeXamlLoaderDocument doc = new("<Window xmlns=\"https://github.com/avaloniaui\"></Window>");
+			AvaloniaRuntimeXamlLoader.Load(doc);
+		}
+		catch (Exception)
+		{
+		}
+
+		Type? type = typeof(AvaloniaRuntimeXamlLoader).Assembly.GetType("Avalonia.Markup.Xaml.XamlIl.AvaloniaXamlIlRuntimeCompiler");
+		if (type == null)
+			throw new Exception("Failed to locate AvaloniaXamlIlRuntimeCompiler");
+
+		// Redirect any xaml namespace assemblies to the current version, since we may have reloaded
+		// the plugin multiple times during testing, and we always want to be using the latest version.
+#if DEBUG
+		{
+			FieldInfo? xmlnsInfo = type.GetField("_sreXmlns", BindingFlags.NonPublic | BindingFlags.Static);
+			if (xmlnsInfo == null)
+				throw new Exception("Failed to locate _sreXmlns in AvaloniaXamlIlRuntimeCompiler");
+
+			object? xmlnsSystem = xmlnsInfo.GetValue(null);
+			if (xmlnsSystem == null)
+				throw new Exception("Failed to get XMLNS System from Avalonia Xaml Il Runtime Compiler");
+
+			PropertyInfo? namespacesPropertyInfo = xmlnsSystem.GetType().GetProperty("Namespaces");
+			if (namespacesPropertyInfo == null)
+				throw new Exception("Failed to locate Namespaces property on XamlXmlnsMappings");
+
+			IDictionary? namespaces = namespacesPropertyInfo.GetValue(xmlnsSystem) as IDictionary;
+			if (namespaces == null)
+				throw new Exception("Failed to get namespaces dictionary");
+
+			foreach (string xmlns in namespaces.Keys)
+			{
+				IList? values = namespaces[xmlns] as IList;
+				if (values == null)
+					continue;
+
+				foreach (ITuple? value in values)
+				{
+					if (value == null)
+						continue;
+
+					object? sreAssembly = value[0];
+					if (sreAssembly == null)
+						continue;
+
+					FieldInfo? assemblyFieldInfo = sreAssembly.GetType().GetField("<Assembly>k__BackingField", BindingFlags.NonPublic | BindingFlags.Instance);
+					if (assemblyFieldInfo == null)
+						throw new Exception("Failed to get assembly backing field");
+
+					Assembly? asm = assemblyFieldInfo.GetValue(sreAssembly) as Assembly;
+					if (asm == null)
+						continue;
+
+					Assembly asm2 = typeof(Window).Assembly;
+					if (asm.FullName == asm2.FullName && asm != asm2)
+					{
+						assemblyFieldInfo.SetValue(sreAssembly, asm2);
+						Studio.Log.Info($"Redirecting xaml assembly {asm}");
+					}
+				}
+			}
+		}
+#endif
 	}
 }

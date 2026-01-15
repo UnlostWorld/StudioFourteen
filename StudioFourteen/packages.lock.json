@@ -52,6 +52,15 @@
           "Avalonia": "11.3.9"
         }
       },
+      "Avalonia.Markup.Xaml.Loader": {
+        "type": "Direct",
+        "requested": "[11.3.9, )",
+        "resolved": "11.3.9",
+        "contentHash": "B0UnczjPXhJLPNRm1U4P10r9sB85hsjbdYIt5N+tBBxfSvvD9BSu0k4vVEK2UvD1biCJe6BkRhSdRtEhCcGGfA==",
+        "dependencies": {
+          "Avalonia": "11.3.9"
+        }
+      },
       "Avalonia.Themes.Fluent": {
         "type": "Direct",
         "requested": "[11.3.9, )",
