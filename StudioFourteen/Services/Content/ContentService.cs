@@ -113,7 +113,7 @@ public class ContentService : IService
 
 				foreach (ContentReference reference in references)
 				{
-					if (info.LastAccessTimeUtc > reference.LastLoadTimeUtc)
+					if (info.LastAccessTimeUtc > reference.LastLoadTimeUtc + TimeSpan.FromSeconds(1))
 					{
 						Studio.Log.Information($"Reloading file: {path}");
 						reference.LastLoadTimeUtc = info.LastAccessTimeUtc;
