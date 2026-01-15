@@ -45,6 +45,14 @@ public partial class DxgiRenderTarget(WindowImpl window, EglContext context)
 			if (this.Texture == null)
 			{
 				Texture2DDescription desc = Studio.Rendering.OverlayRenderer.BackBuffer!.Description;
+				desc.Width = size.Width;
+				desc.Height = size.Height;
+				desc.Format = SharpDX.DXGI.Format.B8G8R8A8_UNorm;
+				desc.MipLevels = 1;
+				desc.ArraySize = 1;
+				desc.Usage = ResourceUsage.Default;
+				desc.BindFlags = BindFlags.RenderTarget | BindFlags.ShaderResource;
+				desc.CpuAccessFlags = CpuAccessFlags.None;
 				desc.OptionFlags = ResourceOptionFlags.Shared;
 
 				this.Texture = new(Studio.Rendering.OverlayRenderer.Device, desc);
