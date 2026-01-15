@@ -21,6 +21,7 @@ using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
 using StudioFourteen.Services.Content;
+using StudioFourteen.Services.Logging;
 using StudioFourteen.Services.Platform;
 using StudioFourteen.Services.Rendering;
 using StudioFourteen.Services.Tick;
@@ -32,6 +33,7 @@ public sealed class Studio : IDalamudPlugin
 	{
 		IsDisposed = false;
 
+		Log = new();
 		Platform = new();
 		Tick = new();
 		Content = new();
@@ -49,7 +51,9 @@ public sealed class Studio : IDalamudPlugin
 	public static XivaloniaService Avalonia { get; private set; } = null!;
 	public static PlatformService Platform { get; private set; } = null!;
 
-	[PluginService] public static IPluginLog Log { get; private set; } = null!;
+	public static LoggingService Log { get; private set; } = null!;
+
+	[PluginService] public static IPluginLog DalamudLog { get; private set; } = null!;
 	[PluginService] public static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
 	[PluginService] public static ICommandManager CommandManager { get; private set; } = null!;
 	[PluginService] public static IDataManager DataManager { get; private set; } = null!;
@@ -69,6 +73,7 @@ public sealed class Studio : IDalamudPlugin
 
 		try
 		{
+			Log.Dispose();
 			Platform.Dispose();
 			Rendering.Dispose();
 			Content.Dispose();

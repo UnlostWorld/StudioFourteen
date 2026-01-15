@@ -33,6 +33,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Apos.WintabDN" Version="0.0.1" />
+		<PackageReference Include="Crayon" Version="2.0.69" />
 		<PackageReference Include="lz4net" Version="1.0.15.93" />
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Scripting" Version="4.13.0" />
 		<PackageReference Include="Microsoft.Windows.CsWin32" Version="0.3.183">
