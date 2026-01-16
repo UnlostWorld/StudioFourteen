@@ -13,30 +13,32 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Platform;
+namespace StudioFourteen.Services.Xivalonia;
 
 using System;
-using System.Runtime.InteropServices;
+using System.Threading;
+using Avalonia.Rendering;
 
-public class PlatformService : IService
+public class RenderTimer : IRenderTimer, IDisposable
 {
-	public PlatformService()
-	{
-		OperatingSystem = global::Dalamud.Utility.Util.GetHostPlatform();
-		if (OperatingSystem == OSPlatform.Linux)
-		{
-			if (Environment.GetEnvironmentVariable("DXMT_CONFIG") != null)
-			{
-				OperatingSystem = OSPlatform.OSX;
-			}
-		}
+	private readonly Timer timer;
 
-		Studio.Log.Information($"Platform OS: {OperatingSystem}");
+	public RenderTimer(TimeSpan frameTime)
+	{
+		this.timer = new Timer(this.DoTick, null, frameTime, frameTime);
 	}
 
-	public static OSPlatform OperatingSystem { get; private set; }
+	public event Action<TimeSpan>? Tick;
+	public bool RunsInBackground => true;
 
 	public void Dispose()
 	{
+		this.timer.Dispose();
+	}
+
+	private void DoTick(object? state)
+	{
+		TimeSpan tickCount = TimeSpan.FromMilliseconds(Environment.TickCount);
+		this.Tick?.Invoke(tickCount);
 	}
 }

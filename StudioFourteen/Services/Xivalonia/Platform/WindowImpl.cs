@@ -31,12 +31,14 @@ public partial class WindowImpl : IWindowImpl
 	private readonly WindowRenderer windowRenderer;
 	private readonly DxgiSurface glSurface;
 	private readonly ScreenImpl screen;
+	private readonly Compositor compositor;
 
-	public WindowImpl()
+	public WindowImpl(Compositor compositor)
 	{
 		this.glSurface = new DxgiSurface(this);
 		this.screen = new ScreenImpl();
 		this.windowRenderer = new(this, this.glSurface);
+		this.compositor = compositor;
 	}
 
 	public WindowState WindowState { get; set; }
@@ -69,12 +71,10 @@ public partial class WindowImpl : IWindowImpl
 	public Action<WindowTransparencyLevel>? TransparencyLevelChanged { get; set; }
 	public Action? Closed { get; set; }
 	public Action? LostFocus { get; set; }
-
-	public Compositor Compositor => XivaloniaPlatform.Compositor;
-
 	public bool IsDisposed { get; private set; }
 
 	public IEnumerable<object> Surfaces => [this.glSurface];
+	public Compositor Compositor => this.compositor;
 
 	public void Activate()
 	{

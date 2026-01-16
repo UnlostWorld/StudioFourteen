@@ -70,6 +70,12 @@
           "Avalonia": "11.3.9"
         }
       },
+      "Crayon": {
+        "type": "Direct",
+        "requested": "[2.0.69, )",
+        "resolved": "2.0.69",
+        "contentHash": "eJHxoMTfhZs1782YUIMafXIDTPcTwAV5I3MNsl2d4Mn61/h3ABPMSzHwzigL/NO7BrCKRoP4gHJuERpLHdSCvg=="
+      },
       "DalamudPackager": {
         "type": "Direct",
         "requested": "[13.0.0, )",

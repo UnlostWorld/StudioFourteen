@@ -41,6 +41,7 @@ public class LoggingService : IDisposable
 		this.logger = this.Configuration.CreateLogger();
 	}
 
+	public void Verbose(string message) => this.logger.Verbose(message);
 	public void Information(string message) => this.logger.Information(message);
 	public void Information(Exception ex, string message) => this.logger.Information(ex, message);
 	public void Warning(string message) => this.logger.Warning(message);

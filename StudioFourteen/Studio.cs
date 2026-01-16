@@ -16,7 +16,6 @@
 namespace StudioFourteen;
 
 using System;
-using System.Runtime.InteropServices;
 using Dalamud.IoC;
 using Dalamud.Plugin;
 using Dalamud.Plugin.Services;
@@ -31,6 +30,7 @@ public sealed class Studio : IDalamudPlugin
 {
 	public Studio(IDalamudPluginInterface pluginInterface)
 	{
+		Instance = this;
 		IsDisposed = false;
 
 		Log = new();
@@ -43,6 +43,7 @@ public sealed class Studio : IDalamudPlugin
 	}
 
 	public static bool IsDisposed { get; private set; } = false;
+	public static Studio Instance { get; private set; } = null!;
 
 	public static RenderingService Rendering { get; private set; } = null!;
 	public static ContentService Content { get; private set; } = null!;
@@ -69,6 +70,7 @@ public sealed class Studio : IDalamudPlugin
 
 	public void Dispose()
 	{
+		Instance = null!;
 		IsDisposed = true;
 
 		try

@@ -19,55 +19,29 @@ using System;
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Platform;
-using Avalonia.Rendering;
 using Avalonia.Rendering.Composition;
-using Avalonia.Threading;
 
-public partial class XivaloniaPlatform : IWindowingPlatform, IPlatformLifetimeEventsImpl
+public class WindowingPlatform : IWindowingPlatform, IDisposable
 {
-	public static DispatcherImpl Dispatcher = new();
-
-	private static readonly XivaloniaPlatform Instance = new();
 	private static readonly AvaloniaList<Window> Windows = new();
 	private static readonly AvaloniaList<WindowImpl> Implementations = new();
-	private static Compositor? compositor;
 
-	public event EventHandler<ShutdownRequestedEventArgs>? ShutdownRequested;
-
-	public static Compositor Compositor => compositor ?? throw new Exception("Platform not initialized");
-
-	public static void Initialize()
+	public WindowingPlatform()
 	{
-		AvaloniaLocator.CurrentMutable.Bind<IScreenImpl>().ToSingleton<ScreenImpl>();
-		AvaloniaLocator.CurrentMutable.Bind<IDispatcherImpl>().ToConstant(Dispatcher);
-
-		AvaloniaLocator.CurrentMutable.Bind<IRenderTimer>().ToConstant(new DefaultRenderTimer(60));
-		AvaloniaLocator.CurrentMutable.Bind<IWindowingPlatform>().ToConstant(Instance);
-		AvaloniaLocator.CurrentMutable.Bind<IPlatformLifetimeEventsImpl>().ToConstant(Instance);
-		AvaloniaLocator.CurrentMutable.Bind<ICursorFactory>().ToConstant(new CursorFactory());
-
-		IPlatformGraphics? platformGraphics = GlManager.Initialize();
-		compositor = new Compositor(platformGraphics);
-		AvaloniaLocator.CurrentMutable.Bind<Compositor>().ToConstant(compositor);
-
 		Window.WindowOpenedEvent.AddClassHandler(typeof(Window), OnWindowOpened);
 		Window.WindowClosedEvent.AddClassHandler(typeof(Window), OnWindowClosed);
 	}
 
-	public static void Stop()
+	public void Dispose()
 	{
-		Dispatcher.Signaled += () =>
+		Studio.Avalonia.Dispatcher.Signaled += () =>
 		{
 			foreach (Window wnd in Windows)
 			{
 				wnd.Close();
 			}
-
-			Instance.ShutdownRequested?.Invoke(Instance, new ShutdownRequestedEventArgs());
 
 			foreach (WindowImpl impl in Implementations)
 			{
@@ -79,7 +53,10 @@ public partial class XivaloniaPlatform : IWindowingPlatform, IPlatformLifetimeEv
 			}
 		};
 
-		Dispatcher.Signal();
+		Studio.Avalonia.Dispatcher.Signal();
+
+		////Window.WindowOpenedEvent.RemoveClassHandler(typeof(Window), OnWindowOpened);
+		////Window.WindowClosedEvent.RemoveClassHandler(typeof(Window), OnWindowClosed);
 	}
 
 	public ITopLevelImpl CreateEmbeddableTopLevel() => throw new NotSupportedException();
@@ -88,7 +65,8 @@ public partial class XivaloniaPlatform : IWindowingPlatform, IPlatformLifetimeEv
 
 	public IWindowImpl CreateWindow()
 	{
-		WindowImpl impl = new();
+		Compositor compositor = AvaloniaLocator.Current.GetRequiredService<Compositor>();
+		WindowImpl impl = new(compositor);
 		Implementations.Add(impl);
 		return impl;
 	}

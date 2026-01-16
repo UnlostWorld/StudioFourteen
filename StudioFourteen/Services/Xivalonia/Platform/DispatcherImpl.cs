@@ -17,39 +17,58 @@ namespace StudioFourteen.Services.Xivalonia.Platform;
 
 using System;
 using System.Diagnostics;
+using System.Reflection;
 using System.Threading;
 using Avalonia.Threading;
 
 public partial class DispatcherImpl : IControlledDispatcherImpl
 {
-	private static Thread? uiThread;
-	private static bool isSignal = false;
-	private static long? timerMs = null;
+	public readonly long DispatcherId;
 
 	private readonly Stopwatch clock = Stopwatch.StartNew();
 	private readonly Stopwatch timer = new Stopwatch();
 
+	private Thread? uiThread;
+	private bool isSignal = false;
+	private long? timerMs = null;
+
 	public DispatcherImpl()
 	{
-		uiThread = Thread.CurrentThread;
+		this.DispatcherId = Environment.TickCount64;
+		this.uiThread = Thread.CurrentThread;
+		Studio.Log.Information($"Created dispatcher {this.DispatcherId}");
 	}
 
 	public event Action? Signaled;
 	public event Action? Timer;
 
-	public bool CurrentThreadIsLoopThread => uiThread == Thread.CurrentThread;
+	public bool CurrentThreadIsLoopThread
+	{
+		get
+		{
+			if (this.uiThread == null)
+			{
+				Studio.Log.Error("!!");
+				return true;
+				////throw new Exception($"Attempt to check thread after dispatcher {this.DispatcherId} has been disposed.");
+			}
+
+			return this.uiThread == Thread.CurrentThread;
+		}
+	}
+
 	public long Now => this.clock.ElapsedMilliseconds;
 	public bool CanQueryPendingInput => true;
 	public bool HasPendingInput => false;
 
 	public void Signal()
 	{
-		isSignal = true;
+		this.isSignal = true;
 	}
 
 	public void UpdateTimer(long? dueTimeInMs)
 	{
-		timerMs = dueTimeInMs;
+		this.timerMs = dueTimeInMs;
 		this.timer.Start();
 	}
 
@@ -57,7 +76,7 @@ public partial class DispatcherImpl : IControlledDispatcherImpl
 	{
 		while (!token.IsCancellationRequested)
 		{
-			if (isSignal)
+			if (this.isSignal)
 			{
 				try
 				{
@@ -68,10 +87,10 @@ public partial class DispatcherImpl : IControlledDispatcherImpl
 					Studio.Log.Error(ex, "Error in dispatcher signal");
 				}
 
-				isSignal = false;
+				this.isSignal = false;
 			}
 
-			if (timerMs != null && this.timer.ElapsedMilliseconds > timerMs)
+			if (this.timerMs != null && this.timer.ElapsedMilliseconds > this.timerMs)
 			{
 				try
 				{
@@ -82,10 +101,23 @@ public partial class DispatcherImpl : IControlledDispatcherImpl
 					Studio.Log.Error(ex, "Error in dispatcher timer");
 				}
 
-				timerMs = null;
+				this.timerMs = null;
 			}
 
 			Thread.Sleep(1000 / 60);
+		}
+
+		this.uiThread = null;
+		this.timer.Stop();
+
+		FieldInfo? uiDispatcher = typeof(Dispatcher).GetField("s_uiThread", BindingFlags.NonPublic | BindingFlags.Static);
+		if (uiDispatcher == null)
+		{
+			Studio.Log.Error("Failed to find UI Thread dispatcher field");
+		}
+		else
+		{
+			uiDispatcher.SetValue(null, null);
 		}
 
 		Studio.Log.Information("Dispatcher terminated");

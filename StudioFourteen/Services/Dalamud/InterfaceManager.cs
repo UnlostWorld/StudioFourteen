@@ -19,6 +19,7 @@ using System;
 using System.Reflection;
 using System.Runtime.InteropServices;
 
+// ⚠️ WARNING: REFLECTION BASED CRIMES ⚠️
 public static class InterfaceManager
 {
 	private static readonly object? DalamudInterfaceManager;
