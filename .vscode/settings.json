@@ -4,6 +4,8 @@
 	],
 	"cSpell.words": [
 		"Aetherial",
+		"Avalonia",
+		"axaml",
 		"chara",
 		"cutscenes",
 		"Dunesfolk",
@@ -30,12 +32,14 @@
 		"Rava",
 		"Reshade",
 		"Roegadyn",
+		"Skia",
 		"smoothstep",
 		"Transformf",
 		"Veena",
 		"Viera",
 		"WORLDPOS",
-		"Xaela"
+		"Xaela",
+		"Xivalonia"
 	],
 	"cSpell.flagWords": [
         "teh"

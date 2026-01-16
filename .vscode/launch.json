@@ -6,8 +6,10 @@
             "type": "coreclr",
 			"request": "attach",
 			"preLaunchTask": "Build Studio Fourteen",
+			"processName": "ffxiv_dx11",
 			"requireExactSource": false,
 			"internalConsoleOptions": "openOnSessionStart",
+			"justMyCode": false,
 
 			"logging": {
 				"moduleLoad": false
