@@ -22,6 +22,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Platform;
 using Avalonia.Rendering.Composition;
+using StudioFourteen.Services.Tick;
 
 public class WindowingPlatform : IWindowingPlatform, IDisposable
 {
@@ -36,7 +37,7 @@ public class WindowingPlatform : IWindowingPlatform, IDisposable
 
 	public void Dispose()
 	{
-		Studio.Avalonia.Dispatcher.Signaled += () =>
+		Studio.Tick.Dispatch(TickChannels.Ui, () =>
 		{
 			foreach (Window wnd in Windows)
 			{
@@ -51,7 +52,7 @@ public class WindowingPlatform : IWindowingPlatform, IDisposable
 					impl.Dispose();
 				}
 			}
-		};
+		});
 
 		Studio.Avalonia.Dispatcher.Signal();
 

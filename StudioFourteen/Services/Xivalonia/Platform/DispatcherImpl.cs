@@ -23,8 +23,6 @@ using Avalonia.Threading;
 
 public partial class DispatcherImpl : IControlledDispatcherImpl
 {
-	public readonly long DispatcherId;
-
 	private readonly Stopwatch clock = Stopwatch.StartNew();
 	private readonly Stopwatch timer = new Stopwatch();
 
@@ -34,9 +32,7 @@ public partial class DispatcherImpl : IControlledDispatcherImpl
 
 	public DispatcherImpl()
 	{
-		this.DispatcherId = Environment.TickCount64;
 		this.uiThread = Thread.CurrentThread;
-		Studio.Log.Information($"Created dispatcher {this.DispatcherId}");
 	}
 
 	public event Action? Signaled;
@@ -47,11 +43,7 @@ public partial class DispatcherImpl : IControlledDispatcherImpl
 		get
 		{
 			if (this.uiThread == null)
-			{
-				Studio.Log.Error("!!");
-				return true;
-				////throw new Exception($"Attempt to check thread after dispatcher {this.DispatcherId} has been disposed.");
-			}
+				throw new Exception($"Attempt to check thread after dispatcher has been disposed.");
 
 			return this.uiThread == Thread.CurrentThread;
 		}
@@ -103,6 +95,8 @@ public partial class DispatcherImpl : IControlledDispatcherImpl
 
 				this.timerMs = null;
 			}
+
+			Studio.Tick.OnUiTick();
 
 			Thread.Sleep(1000 / 60);
 		}

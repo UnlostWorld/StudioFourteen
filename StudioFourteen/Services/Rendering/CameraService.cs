@@ -28,7 +28,7 @@ public class CameraService : IService
 {
 	public unsafe CameraService()
 	{
-		Studio.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
+		Studio.Tick.Add(TickChannels.Game, this.OnGameTick);
 
 		Hooks.SceneCameraUpdate.Enable(this.SceneCameraUpdateDetour);
 		Hooks.CameraMatrixLoad.Enable(this.CameraMatrixLoad);
@@ -46,7 +46,7 @@ public class CameraService : IService
 
 	public void Dispose()
 	{
-		Studio.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
+		Studio.Tick.Remove(TickChannels.Game, this.OnGameTick);
 
 		Hooks.SceneCameraUpdate.Disable();
 		Hooks.CameraMatrixLoad.Disable();

@@ -43,12 +43,12 @@ public class ContentService : IService
 			}
 		}
 
-		Studio.Tick.Add(TickService.Channels.StudioTick, this.OnTick);
+		Studio.Tick.Add(TickChannels.Studio, this.OnTick);
 	}
 
 	public void Dispose()
 	{
-		Studio.Tick.Remove(TickService.Channels.StudioTick, this.OnTick);
+		Studio.Tick.Remove(TickChannels.Studio, this.OnTick);
 	}
 
 	public List<string> GetContents(string directoryPath)

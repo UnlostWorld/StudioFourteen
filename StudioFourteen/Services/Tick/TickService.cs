@@ -24,16 +24,28 @@ using FFXIVClientStructs.FFXIV.Client.System.Framework;
 using StudioFourteen.Services.Interop;
 using Task = System.Threading.Tasks.Task;
 
+public enum TickChannels
+{
+	None,
+
+	EarlyGame,
+	Game,
+	LateGame,
+	Studio,
+	ImGuiDraw,
+	Ui,
+}
+
 public partial class TickService : IService
 {
 	public static float DeltaTime = 0.0f;
 
 	private const int TickDelay = 100;
 
-	[ThreadStatic] private static TickService.Channels currentChannel = Channels.None;
+	[ThreadStatic] private static TickChannels currentChannel = TickChannels.None;
 
-	private readonly Dictionary<Channels, List<Action?>> tickListeners = new();
-	private readonly Dictionary<Channels, Queue<Action?>> tickDispatchers = new();
+	private readonly Dictionary<TickChannels, List<Action?>> tickListeners = new();
+	private readonly Dictionary<TickChannels, Queue<Action?>> tickDispatchers = new();
 	private bool shouldTick = true;
 
 	public TickService()
@@ -53,28 +65,19 @@ public partial class TickService : IService
 
 	public event TickDelegate? Tick;
 
-	public enum Channels
-	{
-		None,
+	public static SwitchToTickChannel EarlyGameTick() => new(TickChannels.EarlyGame);
+	public static SwitchToTickChannel GameTick() => new(TickChannels.Game);
+	public static SwitchToTickChannel LateGameTick() => new(TickChannels.LateGame);
+	public static SwitchToTickChannel NextGameTick() => new(TickChannels.Game);
+	public static SwitchToTickChannel StudioTick() => new(TickChannels.Studio);
+	public static SwitchToTickChannel NextStudioTick() => new(TickChannels.Studio);
+	public static SwitchToTickChannel UiTick() => new(TickChannels.Ui);
 
-		EarlyGameTick,
-		GameTick,
-		LateGameTick,
-		StudioTick,
-		ImGuiDraw,
-	}
+	public static void VerifyGameTickThread() => VerifyTickChannelThread(TickChannels.EarlyGame, TickChannels.Game, TickChannels.LateGame);
+	public static void VerifyStudioTickThread() => VerifyTickChannelThread(TickChannels.Studio);
+	public static void VerifyUiTickThread() => VerifyTickChannelThread(TickChannels.Ui);
 
-	public static SwitchToTickChannel EarlyGameTick() => new(TickService.Channels.EarlyGameTick);
-	public static SwitchToTickChannel GameTick() => new(TickService.Channels.GameTick);
-	public static SwitchToTickChannel LateGameTick() => new(TickService.Channels.LateGameTick);
-	public static SwitchToTickChannel NextGameTick() => new(TickService.Channels.GameTick);
-	public static SwitchToTickChannel StudioTick() => new(TickService.Channels.StudioTick);
-	public static SwitchToTickChannel NextStudioTick() => new(TickService.Channels.StudioTick);
-
-	public static void VerifyGameTickThread() => VerifyTickChannelThread(TickService.Channels.EarlyGameTick, TickService.Channels.GameTick, TickService.Channels.LateGameTick);
-	public static void VerifyStudioTickThread() => VerifyTickChannelThread(TickService.Channels.StudioTick);
-
-	public static void VerifyTickChannelThread(params TickService.Channels[] channels)
+	public static void VerifyTickChannelThread(params TickChannels[] channels)
 	{
 		if (!channels.Contains(currentChannel))
 		{
@@ -90,7 +93,7 @@ public partial class TickService : IService
 		Studio.PluginInterface.UiBuilder.Draw -= this.OnImGuiDraw;
 	}
 
-	public void Dispatch(Channels channel, Action callback, bool canImmediate = true)
+	public void Dispatch(TickChannels channel, Action callback, bool canImmediate = true)
 	{
 		if (currentChannel == channel && canImmediate)
 		{
@@ -108,7 +111,7 @@ public partial class TickService : IService
 		}
 	}
 
-	public void Add(Channels channel, Action callback)
+	public void Add(TickChannels channel, Action callback)
 	{
 		lock (this.tickListeners)
 		{
@@ -119,7 +122,7 @@ public partial class TickService : IService
 		}
 	}
 
-	public void Remove(Channels channel, Action callback)
+	public void Remove(TickChannels channel, Action callback)
 	{
 		lock (this.tickListeners)
 		{
@@ -130,11 +133,16 @@ public partial class TickService : IService
 		}
 	}
 
-	private void PerformTick(Channels channel)
+	internal void OnUiTick()
+	{
+		this.PerformTick(TickChannels.Ui);
+	}
+
+	private void PerformTick(TickChannels channel)
 	{
 		currentChannel = channel;
 
-		Dictionary<Channels, List<Action?>> tickListeners;
+		Dictionary<TickChannels, List<Action?>> tickListeners;
 		lock (this.tickListeners)
 		{
 			tickListeners = new(this.tickListeners);
@@ -164,7 +172,7 @@ public partial class TickService : IService
 			}
 		}
 
-		Dictionary<Channels, Queue<Action?>> tickDispatchers;
+		Dictionary<TickChannels, Queue<Action?>> tickDispatchers;
 		lock (this.tickDispatchers)
 		{
 			tickDispatchers = new(this.tickDispatchers);
@@ -195,9 +203,9 @@ public partial class TickService : IService
 
 		DeltaTime = pFramework->FrameDeltaTime;
 
-		this.PerformTick(Channels.EarlyGameTick);
-		this.PerformTick(Channels.GameTick);
-		this.PerformTick(Channels.LateGameTick);
+		this.PerformTick(TickChannels.EarlyGame);
+		this.PerformTick(TickChannels.Game);
+		this.PerformTick(TickChannels.LateGame);
 		return Hooks.Tick.Original(pFramework);
 	}
 
@@ -209,16 +217,16 @@ public partial class TickService : IService
 		{
 			Thread.Sleep(TickDelay);
 			DeltaTime = TickDelay / 1000.0f;
-			this.PerformTick(Channels.StudioTick);
+			this.PerformTick(TickChannels.Studio);
 		}
 	}
 
 	private void OnImGuiDraw()
 	{
-		this.PerformTick(Channels.ImGuiDraw);
+		this.PerformTick(TickChannels.ImGuiDraw);
 	}
 
-	public struct SwitchToTickChannel(TickService.Channels channel)
+	public struct SwitchToTickChannel(TickChannels channel)
 		: INotifyCompletion
 	{
 		public bool IsCompleted => currentChannel == channel;

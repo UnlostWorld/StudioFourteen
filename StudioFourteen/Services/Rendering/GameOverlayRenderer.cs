@@ -80,7 +80,7 @@ public class GameOverlayRenderer : Renderer
 	{
 		////this.input.Attach();
 
-		Studio.Tick.Add(TickService.Channels.GameTick, this.OnGameTick);
+		Studio.Tick.Add(TickChannels.Game, this.OnGameTick);
 		////Studio.Reshade.ReshadeBeforeEffects += this.OnBeforeReshadeRender;
 		////Studio.Reshade.ReshadeAfterEffects += this.OnAfterReshadeRender;
 
@@ -92,7 +92,7 @@ public class GameOverlayRenderer : Renderer
 	{
 		////this.input.Detach();
 
-		Studio.Tick.Remove(TickService.Channels.GameTick, this.OnGameTick);
+		Studio.Tick.Remove(TickChannels.Game, this.OnGameTick);
 		////Studio.Reshade.ReshadeBeforeEffects -= this.OnBeforeReshadeRender;
 		////Studio.Reshade.ReshadeAfterEffects -= this.OnAfterReshadeRender;
 
