@@ -25,14 +25,16 @@ public partial class DispatcherImpl : IControlledDispatcherImpl
 {
 	private readonly Stopwatch clock = Stopwatch.StartNew();
 	private readonly Stopwatch timer = new Stopwatch();
+	private readonly TimeSpan frameTime;
 
 	private Thread? uiThread;
-	private bool isSignal = false;
+	private bool signaled = false;
 	private long? timerMs = null;
 
-	public DispatcherImpl()
+	public DispatcherImpl(TimeSpan frameTime)
 	{
 		this.uiThread = Thread.CurrentThread;
+		this.frameTime = frameTime;
 	}
 
 	public event Action? Signaled;
@@ -50,12 +52,12 @@ public partial class DispatcherImpl : IControlledDispatcherImpl
 	}
 
 	public long Now => this.clock.ElapsedMilliseconds;
-	public bool CanQueryPendingInput => true;
+	public bool CanQueryPendingInput => false;
 	public bool HasPendingInput => false;
 
 	public void Signal()
 	{
-		this.isSignal = true;
+		this.signaled = true;
 	}
 
 	public void UpdateTimer(long? dueTimeInMs)
@@ -75,8 +77,9 @@ public partial class DispatcherImpl : IControlledDispatcherImpl
 	{
 		while (!token.IsCancellationRequested)
 		{
-			if (this.isSignal)
+			if (this.signaled)
 			{
+				this.signaled = false;
 				try
 				{
 					this.Signaled?.Invoke();
@@ -85,8 +88,6 @@ public partial class DispatcherImpl : IControlledDispatcherImpl
 				{
 					Studio.Log.Error(ex, "Error in dispatcher signal");
 				}
-
-				this.isSignal = false;
 			}
 
 			if (this.timerMs != null && this.timer.ElapsedMilliseconds > this.timerMs)
@@ -104,7 +105,7 @@ public partial class DispatcherImpl : IControlledDispatcherImpl
 
 			Studio.Tick.OnUiTick();
 
-			Thread.Sleep(1000 / 60);
+			Thread.Sleep(this.frameTime.Milliseconds);
 		}
 
 		this.uiThread = null;

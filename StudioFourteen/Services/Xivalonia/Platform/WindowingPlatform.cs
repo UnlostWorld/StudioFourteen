@@ -70,7 +70,7 @@ public class WindowingPlatform : IWindowingPlatform, IDisposable
 	private static void OnWindowOpened(object? sender, RoutedEventArgs e)
 	{
 		Window window = (Window)sender!;
-		WindowImpl impl = (WindowImpl)window.PlatformImpl!;
-		impl.Window = window;
+		WindowImpl? impl = window.PlatformImpl as WindowImpl;
+		impl?.Window = window;
 	}
 }

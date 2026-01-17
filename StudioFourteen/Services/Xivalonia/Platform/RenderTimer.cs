@@ -16,16 +16,25 @@
 namespace StudioFourteen.Services.Xivalonia;
 
 using System;
+using System.Collections;
+using System.Diagnostics;
+using System.Reflection;
 using System.Threading;
+using Avalonia;
 using Avalonia.Rendering;
+using Avalonia.Rendering.Composition;
+using Avalonia.Threading;
 
 public class RenderTimer : IRenderTimer, IDisposable
 {
 	private readonly Timer timer;
+	private readonly Stopwatch stopwatch;
+	private bool isDisposed;
 
 	public RenderTimer(TimeSpan frameTime)
 	{
 		this.timer = new Timer(this.DoTick, null, frameTime, frameTime);
+		this.stopwatch = Stopwatch.StartNew();
 	}
 
 	public event Action<TimeSpan>? Tick;
@@ -33,15 +42,19 @@ public class RenderTimer : IRenderTimer, IDisposable
 
 	public void Dispose()
 	{
+		this.isDisposed = true;
 		this.timer.Dispose();
+		this.stopwatch.Stop();
 	}
 
 	private void DoTick(object? state)
 	{
 		try
 		{
-			TimeSpan tickCount = TimeSpan.FromMilliseconds(Environment.TickCount);
-			this.Tick?.Invoke(tickCount);
+			if (this.isDisposed)
+				return;
+
+			this.Tick?.Invoke(this.stopwatch.Elapsed);
 		}
 		catch (Exception ex)
 		{

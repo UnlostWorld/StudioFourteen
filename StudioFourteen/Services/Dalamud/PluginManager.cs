@@ -35,7 +35,7 @@ public static class PluginManager
 		foreach (object localPlugin in installedPlugins)
 		{
 			FileInfo location = localPlugin.Property<FileInfo>("DllFile");
-			IDalamudPlugin? instance = localPlugin.Field<IDalamudPlugin>("instance");
+			IDalamudPlugin? instance = localPlugin.Field("instance") as IDalamudPlugin;
 
 			if (instance == Studio.Instance)
 			{

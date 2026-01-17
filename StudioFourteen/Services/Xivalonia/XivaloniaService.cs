@@ -19,7 +19,6 @@ using System;
 using System.Threading;
 using Avalonia;
 using StudioFourteen.Services.Xivalonia.Platform;
-using StudioFourteen.Services.Content;
 using System.Reflection;
 using Avalonia.Markup.Xaml;
 using System.Collections;
@@ -33,6 +32,14 @@ using StudioFourteen.Services.Dalamud;
 
 public partial class XivaloniaService : IService, IPlatformLifetimeEventsImpl
 {
+	public long DispatcherFramerate = 60;
+	public long RenderFramerate = 60;
+
+	public bool UseWin32 = false;
+
+	// This will break plugin reloading.
+	public bool UseWin32Hybrid = false;
+
 	private readonly StudioWindow testWindow = new("UI/TestWindow.axaml");
 
 	private readonly CancellationTokenSource cts = new();
@@ -42,6 +49,7 @@ public partial class XivaloniaService : IService, IPlatformLifetimeEventsImpl
 	private RenderTimer? renderTimer;
 	private WindowingPlatform? windowing;
 	private RendererScreen? screen;
+	private Compositor? compositor;
 
 	public XivaloniaService()
 	{
@@ -81,9 +89,7 @@ public partial class XivaloniaService : IService, IPlatformLifetimeEventsImpl
 			app.WithInterFont();
 			app.LogToTrace();
 
-			bool useWin32 = false;
-
-			if (useWin32)
+			if (this.UseWin32)
 			{
 				app.With<Win32PlatformOptions>(() =>
 				{
@@ -109,6 +115,11 @@ public partial class XivaloniaService : IService, IPlatformLifetimeEventsImpl
 			app.Start(
 				(main, args) =>
 				{
+					if (this.UseWin32 && this.UseWin32Hybrid)
+					{
+						this.InitializeWindowing();
+					}
+
 					// Ready to run!
 					this.LoadTypes();
 
@@ -137,19 +148,20 @@ public partial class XivaloniaService : IService, IPlatformLifetimeEventsImpl
 	{
 		this.screen = new RendererScreen(Studio.Rendering.OverlayRenderer);
 
-		this.renderTimer = new(TimeSpan.FromSeconds(1.0 / 60));
-		this.dispatcher = new();
+		this.renderTimer = new(TimeSpan.FromSeconds(1.0 / this.RenderFramerate));
+		this.dispatcher = new(TimeSpan.FromSeconds(1.0 / this.DispatcherFramerate));
 		this.windowing = new(this.screen);
 
-		AvaloniaLocator.CurrentMutable.Bind<IScreenImpl>().ToFunc(() => this.screen);
-		AvaloniaLocator.CurrentMutable.Bind<IDispatcherImpl>().ToFunc(() => this.dispatcher);
-		AvaloniaLocator.CurrentMutable.Bind<IRenderTimer>().ToFunc(() => this.renderTimer);
-		AvaloniaLocator.CurrentMutable.Bind<IWindowingPlatform>().ToFunc(() => this.windowing);
-		AvaloniaLocator.CurrentMutable.Bind<IPlatformLifetimeEventsImpl>().ToFunc(() => this);
+		AvaloniaLocator.CurrentMutable.Bind<IScreenImpl>().ToConstant(this.screen);
+		AvaloniaLocator.CurrentMutable.Bind<IDispatcherImpl>().ToConstant(this.dispatcher);
+		AvaloniaLocator.CurrentMutable.Bind<IRenderTimer>().ToConstant(this.renderTimer);
+		AvaloniaLocator.CurrentMutable.Bind<IWindowingPlatform>().ToConstant(this.windowing);
+		AvaloniaLocator.CurrentMutable.Bind<IPlatformLifetimeEventsImpl>().ToConstant(this);
 		AvaloniaLocator.CurrentMutable.Bind<ICursorFactory>().ToConstant(new CursorFactory());
 
 		IPlatformGraphics? platformGraphics = GlManager.Initialize();
-		AvaloniaLocator.CurrentMutable.Bind<Compositor>().ToConstant(new Compositor(platformGraphics));
+		this.compositor = new Compositor(platformGraphics);
+		AvaloniaLocator.CurrentMutable.Bind<Compositor>().ToConstant(this.compositor);
 	}
 
 	// ⚠️ WARNING: REFLECTION BASED CRIMES ⚠️
@@ -172,14 +184,7 @@ public partial class XivaloniaService : IService, IPlatformLifetimeEventsImpl
 		object? sreTypeSystem = Activator.CreateInstance(sreTypeSystemType);
 		typeSystemField.SetValue(null, sreTypeSystem);
 
-		FieldInfo? assembliesField = sreTypeSystemType.GetField("_assemblies", BindingFlags.NonPublic | BindingFlags.Instance);
-		if (assembliesField == null)
-			throw new Exception("Failed to find _assemblies field on SreTypeSystem");
-
-		IList? assembliesList = assembliesField.GetValue(sreTypeSystem) as IList;
-		if (assembliesList == null)
-			throw new Exception("Failed to get assemblies list");
-
+		IList assembliesList = sreTypeSystem.Field<IList>("_assemblies");
 		assembliesList.Clear();
 
 		MethodInfo? method = sreTypeSystemType.GetMethod("ResolveAssembly", BindingFlags.NonPublic | BindingFlags.Instance);

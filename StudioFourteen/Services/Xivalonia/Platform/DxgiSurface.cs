@@ -29,9 +29,13 @@ public class DxgiSurface(WindowImpl window)
 		var eglContext = (EglContext)context;
 		using (eglContext.EnsureCurrent())
 		{
-			if (this.DxgiRenderTarget == null)
-				this.DxgiRenderTarget = new DxgiRenderTarget(window, eglContext);
+			if (this.DxgiRenderTarget != null)
+			{
+				this.DxgiRenderTarget.Dispose();
+			}
 
+			Studio.Log.Verbose("Creating new UI platform surface render target");
+			this.DxgiRenderTarget = new DxgiRenderTarget(window, eglContext);
 			return this.DxgiRenderTarget;
 		}
 	}

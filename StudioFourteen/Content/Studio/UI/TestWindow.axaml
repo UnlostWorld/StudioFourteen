@@ -1,11 +1,11 @@
 <StackPanel xmlns="https://github.com/avaloniaui">
 
-	<Button>Hello World</Button>
-	<TextBox Text="Hello???" />
+	<Button>Click Me!</Button>
+	<TextBox Text="I'd click that for a dollar!" />
 	<Slider
 		Maximum="100"
 		Minimum="0"
-		Value="50" />
-	<TextBlock Text="Hello World?" />
+		Value="10" />
+	<TextBlock Text="Live!" />
 
 </StackPanel>

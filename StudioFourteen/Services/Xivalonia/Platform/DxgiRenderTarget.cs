@@ -27,7 +27,14 @@ public partial class DxgiRenderTarget(WindowImpl window, EglContext context)
 {
 	public Texture2D? Texture;
 
-	public override bool IsCorrupted => true;
+	public override bool IsCorrupted => base.IsCorrupted;
+
+	public override void Dispose()
+	{
+		base.Dispose();
+		this.Texture?.Dispose();
+		this.Texture = null;
+	}
 
 	public unsafe override IGlPlatformSurfaceRenderingSession BeginDrawCore()
 	{
@@ -51,7 +58,7 @@ public partial class DxgiRenderTarget(WindowImpl window, EglContext context)
 
 			if (this.Texture == null)
 			{
-				Texture2DDescription desc = Studio.Rendering.OverlayRenderer.BackBuffer!.Description;
+				Texture2DDescription desc = default;
 				desc.Width = size.Width;
 				desc.Height = size.Height;
 				desc.Format = SharpDX.DXGI.Format.B8G8R8A8_UNorm;
@@ -61,6 +68,8 @@ public partial class DxgiRenderTarget(WindowImpl window, EglContext context)
 				desc.BindFlags = BindFlags.RenderTarget | BindFlags.ShaderResource;
 				desc.CpuAccessFlags = CpuAccessFlags.None;
 				desc.OptionFlags = ResourceOptionFlags.Shared;
+				desc.SampleDescription.Count = 1;
+				desc.SampleDescription.Quality = 0;
 
 				this.Texture = new(Studio.Rendering.OverlayRenderer.Device, desc);
 
@@ -71,6 +80,8 @@ public partial class DxgiRenderTarget(WindowImpl window, EglContext context)
 			nint handle = resource.SharedHandle;
 			if (handle == 0)
 				throw new Exception("Failed to get shared handle to render texture");
+
+			IDisposable contextLock = this.Context.EnsureCurrent();
 
 			int* attrs = stackalloc[]
 			{
@@ -89,10 +100,11 @@ public partial class DxgiRenderTarget(WindowImpl window, EglContext context)
 			return this.BeginDraw(
 				surface,
 				size,
-				1,
+				window.RenderScaling,
 				() =>
 				{
 					surface.Dispose();
+					contextLock.Dispose();
 				},
 				true);
 		}

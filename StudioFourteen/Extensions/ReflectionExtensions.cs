@@ -16,6 +16,7 @@
 namespace System.Reflection;
 
 using System;
+using StudioFourteen;
 
 public static class ReflectionExtensions
 {
@@ -25,7 +26,33 @@ public static class ReflectionExtensions
 		if (obj is T tObj)
 			return tObj;
 
-		throw new Exception("Property returned incorrect type");
+		if (obj == null && Nullable.GetUnderlyingType(typeof(T)) != null)
+		{
+			return default!;
+		}
+
+		throw new Exception($"Property: {propertyName} returned incorrect type: {obj?.GetType()}, expected {typeof(T)}");
+	}
+
+	public static object? Property(this Type? self, string name)
+	{
+		PropertyInfo? info = null;
+		while (self != null && info == null)
+		{
+			info = self.GetProperty(
+				name,
+				BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.DeclaredOnly);
+
+			if (info == null)
+			{
+				self = self.BaseType;
+			}
+		}
+
+		if (info == null)
+			throw new Exception($"Failed to locate property {name} on Type: {self}");
+
+		return info.GetValue(null);
 	}
 
 	public static object? Property(this object? self, string name)
@@ -60,7 +87,7 @@ public static class ReflectionExtensions
 		if (obj is T tObj)
 			return tObj;
 
-		throw new Exception("Field returned incorrect type");
+		throw new Exception($"Field: {fieldName} returned incorrect type: {obj?.GetType()}, expected {typeof(T)}");
 	}
 
 	public static object? Field(this object? self, string name)
@@ -87,5 +114,31 @@ public static class ReflectionExtensions
 			throw new Exception($"Failed to locate field {name} on Type: {self.GetType()}");
 
 		return info.GetValue(self);
+	}
+
+	public static void Invoke(this object? self, string name, params object[] parameters)
+	{
+		if (self == null)
+			throw new Exception("Object was null");
+
+		Type? type = self.GetType();
+		MethodInfo? info = null;
+
+		while (type != null && info == null)
+		{
+			info = type.GetMethod(
+				name,
+				BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance | BindingFlags.DeclaredOnly);
+
+			if (info == null)
+			{
+				type = type.BaseType;
+			}
+		}
+
+		if (info == null)
+			throw new Exception($"Failed to locate method {name} on Type: {self.GetType()}");
+
+		info.Invoke(self, parameters);
 	}
 }
