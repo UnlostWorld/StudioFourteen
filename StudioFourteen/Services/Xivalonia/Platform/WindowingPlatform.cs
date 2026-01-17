@@ -26,26 +26,24 @@ using StudioFourteen.Services.Tick;
 
 public class WindowingPlatform : IWindowingPlatform, IDisposable
 {
-	private static readonly AvaloniaList<Window> Windows = new();
-	private static readonly AvaloniaList<WindowImpl> Implementations = new();
+	private readonly AvaloniaList<WindowImpl> windows = new();
+	private readonly RendererScreen screen;
 
-	public WindowingPlatform()
+	public WindowingPlatform(RendererScreen screen)
 	{
+		this.screen = screen;
+
 		Window.WindowOpenedEvent.AddClassHandler(typeof(Window), OnWindowOpened);
-		Window.WindowClosedEvent.AddClassHandler(typeof(Window), OnWindowClosed);
 	}
 
 	public void Dispose()
 	{
 		Studio.Tick.Dispatch(TickChannels.Ui, () =>
 		{
-			foreach (Window wnd in Windows)
+			foreach (WindowImpl impl in this.windows)
 			{
-				wnd.Close();
-			}
+				impl.Window?.Close();
 
-			foreach (WindowImpl impl in Implementations)
-			{
 				if (!impl.IsDisposed)
 				{
 					Studio.Log.Warning($"Window did not dispose");
@@ -55,9 +53,6 @@ public class WindowingPlatform : IWindowingPlatform, IDisposable
 		});
 
 		Studio.Avalonia.Dispatcher.Signal();
-
-		////Window.WindowOpenedEvent.RemoveClassHandler(typeof(Window), OnWindowOpened);
-		////Window.WindowClosedEvent.RemoveClassHandler(typeof(Window), OnWindowClosed);
 	}
 
 	public ITopLevelImpl CreateEmbeddableTopLevel() => throw new NotSupportedException();
@@ -67,28 +62,15 @@ public class WindowingPlatform : IWindowingPlatform, IDisposable
 	public IWindowImpl CreateWindow()
 	{
 		Compositor compositor = AvaloniaLocator.Current.GetRequiredService<Compositor>();
-		WindowImpl impl = new(compositor);
-		Implementations.Add(impl);
+		WindowImpl impl = new(compositor, this.screen);
+		this.windows.Add(impl);
 		return impl;
-	}
-
-	private static void OnWindowClosed(object? sender, RoutedEventArgs e)
-	{
-		var window = (Window)sender!;
-		Windows.Remove(window);
-
-		if (window.PlatformImpl is WindowImpl impl)
-		{
-			Implementations.Remove(impl);
-		}
 	}
 
 	private static void OnWindowOpened(object? sender, RoutedEventArgs e)
 	{
-		var window = (Window)sender!;
-		if (!Windows.Contains(window))
-		{
-			Windows.Add(window);
-		}
+		Window window = (Window)sender!;
+		WindowImpl impl = (WindowImpl)window.PlatformImpl!;
+		impl.Window = window;
 	}
 }

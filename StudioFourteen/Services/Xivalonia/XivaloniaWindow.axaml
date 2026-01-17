@@ -8,8 +8,18 @@
 	Title="Xivalonia"
 	Height="200"
 	Width="200"
+	ExtendClientAreaChromeHints="NoChrome"
+    TransparencyLevelHint="Transparent"
+    Background="Transparent"
+    ExtendClientAreaToDecorationsHint="True"
 	mc:Ignorable="d">
 
-	<TextBox Text="You shouldn't see this!" />
+	<ProgressBar
+		Margin="10"
+		VerticalAlignment="Top"
+        Minimum="0"
+		Maximum="100"
+		Value="50"
+		IsIndeterminate="True"/>
 
 </Window>

@@ -15,17 +15,34 @@
 
 namespace StudioFourteen.Services.Xivalonia.Platform;
 
+using System;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading.Tasks;
-using Avalonia;
 using Avalonia.Platform;
+using StudioFourteen.Services.Rendering;
 
-public class ScreenImpl : ScreensBase<nint, Screen>
+public class RendererScreen : ScreensBase<nint, Screen>, IDisposable
 {
-	private static readonly Screen Screen = new();
+	// Only one screen in a renderer, so pre create it.
+	private readonly Screen screen = new();
+	private readonly Renderer renderer;
 
-	protected override Screen CreateScreenFromKey(nint key) => Screen;
+	public RendererScreen(Renderer renderer)
+	{
+		this.renderer = renderer;
+		renderer.ResolutionChanged += this.OnResolutionChanged;
+	}
+
+	public void Dispose()
+	{
+		this.renderer.ResolutionChanged -= this.OnResolutionChanged;
+	}
+
+	protected override Screen CreateScreenFromKey(nint key) => this.screen;
 	protected override IReadOnlyList<nint> GetAllScreenKeys() => [0];
 	protected override int GetScreenCount() => 1;
+
+	private void OnResolutionChanged(int width, int height)
+	{
+		this.screen.UpdateSize(width, height);
+	}
 }

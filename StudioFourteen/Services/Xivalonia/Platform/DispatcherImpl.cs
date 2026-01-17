@@ -61,7 +61,14 @@ public partial class DispatcherImpl : IControlledDispatcherImpl
 	public void UpdateTimer(long? dueTimeInMs)
 	{
 		this.timerMs = dueTimeInMs;
-		this.timer.Start();
+		if (this.timerMs == null)
+		{
+			this.timer.Stop();
+		}
+		else
+		{
+			this.timer.Start();
+		}
 	}
 
 	public void RunLoop(CancellationToken token)
@@ -87,13 +94,12 @@ public partial class DispatcherImpl : IControlledDispatcherImpl
 				try
 				{
 					this.Timer?.Invoke();
+					this.timer.Restart();
 				}
 				catch (Exception ex)
 				{
 					Studio.Log.Error(ex, "Error in dispatcher timer");
 				}
-
-				this.timerMs = null;
 			}
 
 			Studio.Tick.OnUiTick();

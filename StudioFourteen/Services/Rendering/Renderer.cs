@@ -40,6 +40,10 @@ public abstract class Renderer : IDisposable
 	private bool canRender = false;
 	private bool isError = false;
 
+	public delegate void ResolutionChangedDelegate(int width, int height);
+
+	public event ResolutionChangedDelegate? ResolutionChanged;
+
 	public Texture2D? BackBuffer { get; private set; }
 	public int Width { get; private set; } = 0;
 	public int Height { get; private set; } = 0;
@@ -138,6 +142,8 @@ public abstract class Renderer : IDisposable
 		{
 			pass.OnResolutionChanged();
 		}
+
+		this.ResolutionChanged?.Invoke(this.Width, this.Height);
 	}
 
 	protected abstract Texture2D? GetBackBuffer();

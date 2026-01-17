@@ -72,13 +72,11 @@ public partial class WindowRenderer : MeshRenderer<WindowRenderer.XivaloniaUiMat
 
 		deviceContext.PixelShader.SetShaderResource(3, this.bufferResourceView);
 
-		float screenWidth = 1920;
-		float screenHeight = 1080;
 		Size windowSize = this.window.FrameSize ?? new Size(256, 256);
 
 		Vector3 scale = new Vector3(
-			(float)windowSize.Width / screenWidth,
-			(float)windowSize.Height / screenHeight,
+			(float)windowSize.Width / renderer.Width,
+			(float)windowSize.Height / renderer.Height,
 			1);
 
 		this.Transform = Transform.FromTRS(

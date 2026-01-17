@@ -22,11 +22,17 @@ public class Screen : PlatformScreen
 	public Screen()
 		: base(new PlatformHandle(0, "Xiv Screen"))
 	{
-		this.WorkingArea = new Avalonia.PixelRect(0, 0, 1920, 1080);
 		this.DisplayName = "Xiv Display";
 		this.CurrentOrientation = ScreenOrientation.Landscape;
-		this.Bounds = new Avalonia.PixelRect(0, 0, 1920, 1080);
 		this.IsPrimary = true;
 		this.Scaling = 1.0;
+
+		this.UpdateSize(1920, 1080);
+	}
+
+	public void UpdateSize(int width, int height)
+	{
+		this.WorkingArea = new Avalonia.PixelRect(0, 0, width, height);
+		this.Bounds = new Avalonia.PixelRect(0, 0, width, height);
 	}
 }

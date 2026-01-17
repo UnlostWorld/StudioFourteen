@@ -41,6 +41,7 @@ public partial class XivaloniaService : IService, IPlatformLifetimeEventsImpl
 	private DispatcherImpl? dispatcher;
 	private RenderTimer? renderTimer;
 	private WindowingPlatform? windowing;
+	private RendererScreen? screen;
 
 	public XivaloniaService()
 	{
@@ -134,11 +135,13 @@ public partial class XivaloniaService : IService, IPlatformLifetimeEventsImpl
 
 	private void InitializeWindowing()
 	{
+		this.screen = new RendererScreen(Studio.Rendering.OverlayRenderer);
+
 		this.renderTimer = new(TimeSpan.FromSeconds(1.0 / 60));
 		this.dispatcher = new();
-		this.windowing = new();
+		this.windowing = new(this.screen);
 
-		AvaloniaLocator.CurrentMutable.Bind<IScreenImpl>().ToSingleton<ScreenImpl>();
+		AvaloniaLocator.CurrentMutable.Bind<IScreenImpl>().ToFunc(() => this.screen);
 		AvaloniaLocator.CurrentMutable.Bind<IDispatcherImpl>().ToFunc(() => this.dispatcher);
 		AvaloniaLocator.CurrentMutable.Bind<IRenderTimer>().ToFunc(() => this.renderTimer);
 		AvaloniaLocator.CurrentMutable.Bind<IWindowingPlatform>().ToFunc(() => this.windowing);

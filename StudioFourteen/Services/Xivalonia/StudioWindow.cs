@@ -37,7 +37,7 @@ public class StudioWindow
 		if (this.window == null)
 			this.window = new();
 
-		this.window.Content = this.contentReference.Get();
+		////this.window.Content = this.contentReference.Get();
 		this.window.Width = 600;
 		this.window.Height = 500;
 		this.window.Show();
@@ -56,9 +56,6 @@ public class StudioWindow
 				return;
 
 			this.window.Content = this.contentReference.Get();
-			this.window.Content = DateTime.Now.ToString();
-			this.window.Width -= 100;
-			this.window.Background = new SolidColorBrush(Colors.Pink);
 			this.window.UpdateLayout();
 		});
 	}

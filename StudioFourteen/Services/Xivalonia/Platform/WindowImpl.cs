@@ -26,15 +26,17 @@ using Avalonia.Rendering.Composition;
 
 public partial class WindowImpl : IWindowImpl
 {
+	public Window? Window;
+
 	private readonly WindowRenderer windowRenderer;
 	private readonly DxgiSurface glSurface;
-	private readonly ScreenImpl screen;
+	private readonly RendererScreen screen;
 	private readonly Compositor compositor;
 
-	public WindowImpl(Compositor compositor)
+	public WindowImpl(Compositor compositor, RendererScreen screen)
 	{
 		this.glSurface = new DxgiSurface(this);
-		this.screen = new ScreenImpl();
+		this.screen = screen;
 		this.windowRenderer = new(this, this.glSurface);
 		this.compositor = compositor;
 	}
