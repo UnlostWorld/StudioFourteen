@@ -33,6 +33,7 @@ public partial class WindowRenderer : MeshRenderer<WindowRenderer.XivaloniaUiMat
 	private readonly DxgiSurface surface;
 
 	private ShaderResourceView? bufferResourceView;
+	private Texture2D? texture;
 
 	public WindowRenderer(WindowImpl window, DxgiSurface surface)
 		: base(MeshContent.Quad)
@@ -56,8 +57,18 @@ public partial class WindowRenderer : MeshRenderer<WindowRenderer.XivaloniaUiMat
 		if (this.surface.DxgiRenderTarget?.Texture == null)
 			return;
 
+		if (this.texture != this.surface.DxgiRenderTarget.Texture)
+		{
+			this.bufferResourceView?.Dispose();
+			this.bufferResourceView = null;
+		}
+
 		if (this.bufferResourceView == null)
-			this.bufferResourceView = new(device, this.surface.DxgiRenderTarget.Texture);
+		{
+			this.texture = this.surface.DxgiRenderTarget.Texture;
+			this.bufferResourceView = new(device, this.texture);
+			Studio.Log.Verbose("Create new UI render texture resource view");
+		}
 
 		deviceContext.PixelShader.SetShaderResource(3, this.bufferResourceView);
 

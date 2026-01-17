@@ -15,6 +15,7 @@
 
 using System;
 using Avalonia.Layout;
+using Avalonia.Media;
 using StudioFourteen;
 using StudioFourteen.Services.Content;
 using StudioFourteen.Services.Tick;
@@ -55,7 +56,9 @@ public class StudioWindow
 				return;
 
 			this.window.Content = this.contentReference.Get();
-			this.window.Width -= 10;
+			this.window.Content = DateTime.Now.ToString();
+			this.window.Width -= 100;
+			this.window.Background = new SolidColorBrush(Colors.Pink);
 			this.window.UpdateLayout();
 		});
 	}

@@ -6,6 +6,6 @@
 		Maximum="100"
 		Minimum="0"
 		Value="50" />
-	<TextBlock Text="Hello World...??" />
+	<TextBlock Text="Hello World?" />
 
 </StackPanel>

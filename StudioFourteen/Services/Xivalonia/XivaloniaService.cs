@@ -134,7 +134,7 @@ public partial class XivaloniaService : IService, IPlatformLifetimeEventsImpl
 
 	private void InitializeWindowing()
 	{
-		this.renderTimer = new(TimeSpan.FromSeconds(1.0 / 60.0));
+		this.renderTimer = new(TimeSpan.FromSeconds(1.0 / 60));
 		this.dispatcher = new();
 		this.windowing = new();
 

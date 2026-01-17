@@ -20,6 +20,7 @@ using Avalonia;
 using Avalonia.OpenGL.Egl;
 using Avalonia.OpenGL.Surfaces;
 using SharpDX.Direct3D11;
+using SharpDX.DXGI;
 
 public partial class DxgiRenderTarget(WindowImpl window, EglContext context)
 	 : EglPlatformSurfaceRenderTargetBase(context)
@@ -62,9 +63,11 @@ public partial class DxgiRenderTarget(WindowImpl window, EglContext context)
 				desc.OptionFlags = ResourceOptionFlags.Shared;
 
 				this.Texture = new(Studio.Rendering.OverlayRenderer.Device, desc);
+
+				Studio.Log.Verbose($"Create new UI render target: {size}");
 			}
 
-			var resource = this.Texture.QueryInterface<SharpDX.DXGI.Resource1>();
+			Resource1 resource = this.Texture.QueryInterface<SharpDX.DXGI.Resource1>();
 			nint handle = resource.SharedHandle;
 			if (handle == 0)
 				throw new Exception("Failed to get shared handle to render texture");

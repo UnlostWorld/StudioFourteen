@@ -38,7 +38,14 @@ public class RenderTimer : IRenderTimer, IDisposable
 
 	private void DoTick(object? state)
 	{
-		TimeSpan tickCount = TimeSpan.FromMilliseconds(Environment.TickCount);
-		this.Tick?.Invoke(tickCount);
+		try
+		{
+			TimeSpan tickCount = TimeSpan.FromMilliseconds(Environment.TickCount);
+			this.Tick?.Invoke(tickCount);
+		}
+		catch (Exception ex)
+		{
+			Studio.Log.Error(ex, "Error in Avalonia Render");
+		}
 	}
 }
