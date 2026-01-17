@@ -35,6 +35,8 @@ public partial class WindowImpl : IWindowImpl
 
 	public WindowImpl(Compositor compositor)
 	{
+		Studio.Log.Information($"create?");
+
 		this.glSurface = new DxgiSurface(this);
 		this.screen = new ScreenImpl();
 		this.windowRenderer = new(this, this.glSurface);

@@ -1,0 +1,142 @@
+<ResourceDictionary
+	xmlns="https://github.com/avaloniaui"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:sys="clr-namespace:System;assembly=mscorlib">
+
+		<CornerRadius x:Key="CornerRadius_Inner">6</CornerRadius>
+
+		<Color x:Key="Background">#222222</Color>
+
+		<Color x:Key="ButtonBackground">#333333</Color>
+		<Color x:Key="ButtonHover">#444444</Color>
+
+		<Color x:Key="InputBackground">#151515</Color>
+
+		<Color x:Key="Foreground">#ECECEC</Color>
+
+		<Color x:Key="Trim">#FF1493</Color>
+
+		<sys:Double x:Key="ControlHeight">32</sys:Double>
+
+		<!-- Button -->
+		<ControlTheme x:Key="{x:Type Button}" TargetType="Button">
+			<Setter Property="Margin" Value="2" />
+			<Setter Property="Height" Value="{StaticResource ControlHeight}" />
+			<Setter Property="Background" Value="{StaticResource ButtonBackground}" />
+			<Setter Property="Foreground" Value="{StaticResource Foreground}" />
+			<Setter Property="Padding" Value="3" />
+			<Setter Property="ClipToBounds" Value="False"/>
+			<Setter Property="Cursor" Value="Hand"/>
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Panel>
+						<Border
+							x:Name="Border"
+							CornerRadius="{StaticResource CornerRadius_Inner}"
+							HorizontalAlignment="Stretch"
+							VerticalAlignment="Stretch"
+							Background="{TemplateBinding Background}"
+							BoxShadow="0 3 0 0 #33000000">
+							<Border.Transitions>
+								<Transitions>
+									<BrushTransition Property="Background" Duration="0:0:0.200"/>
+									<BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.200"/>
+									<BrushTransition Property="BorderBrush" Duration="0:0:0.200"/>
+								</Transitions>
+							</Border.Transitions>
+						</Border>
+
+						<ContentPresenter
+							x:Name="PART_ContentPresenter"
+							HorizontalAlignment="Center"
+							VerticalAlignment="Center"
+							Margin="{TemplateBinding Padding}"
+							Content="{TemplateBinding Content}" />
+					</Panel>
+				</ControlTemplate>
+			</Setter>
+
+			<Style Selector="^:pointerover">
+				<Style Selector="^ /template/ Border#Border">
+					<Setter Property="Background" Value="{StaticResource ButtonHover}" />
+					<Setter Property="BoxShadow" Value="0 6 0 0 #33000000" />
+				</Style>
+			</Style>
+
+			<Style Selector="^:pressed">
+				<Style Selector="^ /template/ Border#Border">
+					<Setter Property="Background" Value="{StaticResource ButtonBackground}" />
+					<Setter Property="BoxShadow" Value="0 0 0 0 #33000000" />
+				</Style>
+			</Style>
+
+		</ControlTheme>
+
+		<!-- TextBox -->
+		<ControlTheme x:Key="{x:Type TextBox}" TargetType="TextBox">
+			<Setter Property="Margin" Value="1,2" />
+			<Setter Property="CaretBrush" Value="{StaticResource Foreground}" />
+			<Setter Property="SelectionBrush" Value="{DynamicResource Background}" />
+			<Setter Property="TextAlignment" Value="Center" />
+			<Setter Property="Padding" Value="3" />
+			<Setter Property="Height" Value="{StaticResource ControlHeight}" />
+			<Setter Property="Background" Value="{StaticResource InputBackground}" />
+			<Setter Property="Foreground" Value="{StaticResource Foreground}" />
+			<Setter Property="Cursor" Value="Ibeam"/>
+			<Setter Property="Template">
+				<ControlTemplate>
+					<Panel>
+						<Border
+							x:Name="Border"
+							CornerRadius="{StaticResource CornerRadius_Inner}"
+							HorizontalAlignment="Stretch"
+							VerticalAlignment="Stretch"
+							Background="{TemplateBinding Background}"
+							BoxShadow="inset 0 3 0 0 #33000000"
+							BorderThickness="2"
+							BorderBrush="Transparent"/>
+
+						<ScrollViewer Name="PART_ScrollViewer"
+							Grid.Column="1"
+							Grid.ColumnSpan="1"
+							AllowAutoHide="{TemplateBinding (ScrollViewer.AllowAutoHide)}"
+							BringIntoViewOnFocusChange="{TemplateBinding (ScrollViewer.BringIntoViewOnFocusChange)}"
+							HorizontalScrollBarVisibility="{TemplateBinding (ScrollViewer.HorizontalScrollBarVisibility)}"
+							IsScrollChainingEnabled="{TemplateBinding (ScrollViewer.IsScrollChainingEnabled)}"
+							VerticalScrollBarVisibility="{TemplateBinding (ScrollViewer.VerticalScrollBarVisibility)}">
+
+							<Panel>
+								<TextPresenter
+									Name="PART_TextPresenter"
+									Margin="7"
+									HorizontalAlignment="Stretch"
+									CaretBlinkInterval="{TemplateBinding CaretBlinkInterval}"
+									CaretBrush="{TemplateBinding CaretBrush}"
+									CaretIndex="{TemplateBinding CaretIndex}"
+									LineHeight="{TemplateBinding LineHeight}"
+									LetterSpacing="{TemplateBinding LetterSpacing}"
+									PasswordChar="{TemplateBinding PasswordChar}"
+									RevealPassword="{TemplateBinding RevealPassword}"
+									SelectionBrush="{TemplateBinding SelectionBrush}"
+									SelectionEnd="{TemplateBinding SelectionEnd}"
+									SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+									SelectionStart="{TemplateBinding SelectionStart}"
+									Text="{TemplateBinding Text, Mode=TwoWay}"
+									TextAlignment="{TemplateBinding TextAlignment}"
+									TextWrapping="{TemplateBinding TextWrapping}" />
+							</Panel>
+						</ScrollViewer>
+					</Panel>
+				</ControlTemplate>
+			</Setter>
+
+			<Style Selector="^:focus /template/ Border#Border">
+				<Setter Property="BorderBrush" Value="{DynamicResource Trim}" />
+			</Style>
+
+		</ControlTheme>
+
+
+	</ResourceDictionary>

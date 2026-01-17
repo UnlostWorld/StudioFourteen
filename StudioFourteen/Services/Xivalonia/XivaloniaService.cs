@@ -33,7 +33,8 @@ using StudioFourteen.Services.Dalamud;
 
 public partial class XivaloniaService : IService, IPlatformLifetimeEventsImpl
 {
-	private readonly XivaloniaContent testWindow = new("UI/TestWindow.axaml");
+	private readonly StudioWindow testWindow = new("UI/TestWindow.axaml");
+
 	private readonly CancellationTokenSource cts = new();
 	private readonly Thread? uiThread;
 
@@ -109,12 +110,10 @@ public partial class XivaloniaService : IService, IPlatformLifetimeEventsImpl
 				{
 					// Ready to run!
 					this.LoadTypes();
-					MainWindow wnd = new MainWindow();
-					wnd.Show();
 
 					try
 					{
-						////this.testWindow.Show();
+						this.testWindow.Show();
 					}
 					catch (Exception ex)
 					{

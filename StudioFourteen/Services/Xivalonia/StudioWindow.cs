@@ -13,42 +13,46 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-using System;
-using Avalonia.Controls;
+using Avalonia.Layout;
 using StudioFourteen;
 using StudioFourteen.Services.Content;
 using StudioFourteen.Services.Tick;
+using StudioFourteen.Services.Xivalonia;
 
-public class XivaloniaContent
+public class StudioWindow
 {
-	private readonly XamlContentReference<Window> contentReference;
-	private Window? content;
+	private readonly XamlContentReference<Layoutable> contentReference;
+	private XivaloniaWindow? window;
 
-	public XivaloniaContent(string path)
+	public StudioWindow(string contentPath)
 	{
-		this.contentReference = new(path);
+		this.contentReference = new(contentPath);
 		this.contentReference.OnReloaded += this.OnContentReloaded;
 	}
 
 	public void Show()
 	{
-		this.content = this.contentReference.Get();
-		this.content.Show();
+		if (this.window == null)
+			this.window = new();
+
+		this.window.Show();
+		this.window.Content = this.contentReference.Get();
 	}
 
 	public void Close()
 	{
-		this.content?.Close();
-		this.content = null;
+		this.window?.Close();
 	}
 
 	private void OnContentReloaded()
 	{
 		Studio.Tick.Dispatch(TickChannels.Ui, () =>
 		{
-			this.content?.Close();
-			this.content = this.contentReference.Get();
-			this.content?.Show();
+			if (this.window == null)
+				return;
+
+			this.window.Content = null;
+			this.window.Content = this.contentReference.Get();
 		});
 	}
 }

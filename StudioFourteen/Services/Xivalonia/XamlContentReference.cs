@@ -17,13 +17,12 @@ namespace StudioFourteen.Services.Content;
 
 using System;
 using System.IO;
-using System.Reflection;
-using Avalonia.Controls;
+using Avalonia.Layout;
 using Avalonia.Markup.Xaml;
 
 public class XamlContentReference<T>(string path)
 	: ContentReference<T>(path)
-	where T : Window, new()
+	where T : Layoutable, new()
 {
 	protected override T Load(Stream stream)
 	{
