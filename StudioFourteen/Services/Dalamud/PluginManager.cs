@@ -30,53 +30,16 @@ public static class PluginManager
 {
 	public static LocalPlugin GetLocalPlugin()
 	{
-		object pluginManager = DalamudInternalServices.PluginManager;
-		Type pluginManagerType = pluginManager.GetType();
-
-		PropertyInfo? installedPluginsProperty = pluginManagerType.GetProperty("InstalledPlugins");
-		if (installedPluginsProperty == null)
-			throw new Exception("Failed to locate InstalledPlugins property");
-
-		IList? installedPlugins = installedPluginsProperty.GetValue(pluginManager) as IList;
-		if (installedPlugins == null)
-			throw new Exception("Failed to get installed plugins list");
+		IList installedPlugins = DalamudInternalServices.PluginManager.Property<IList>("InstalledPlugins");
 
 		foreach (object localPlugin in installedPlugins)
 		{
-			Type localPluginType = localPlugin.GetType();
-			if (localPluginType.Name == "LocalDevPlugin" && localPluginType.BaseType != null)
-				localPluginType = localPluginType.BaseType;
+			FileInfo location = localPlugin.Property<FileInfo>("DllFile");
+			IDalamudPlugin? instance = localPlugin.Field<IDalamudPlugin>("instance");
 
-			FieldInfo? instanceField = localPluginType.GetField("instance", BindingFlags.NonPublic | BindingFlags.Instance);
-			if (instanceField == null)
-				throw new Exception("Failed to locate instance field");
-
-			PropertyInfo? dllFileField = localPluginType.GetProperty("DllFile", BindingFlags.Public | BindingFlags.Instance);
-			if (dllFileField == null)
-				throw new Exception("Failed to locate dllFile property");
-
-			FileInfo? location = dllFileField.GetValue(localPlugin) as FileInfo;
-			if (location == null)
-				continue;
-
-			IDalamudPlugin? instance = instanceField.GetValue(localPlugin) as IDalamudPlugin;
-			if (instance != null && instance == Studio.Instance)
+			if (instance == Studio.Instance)
 			{
-				FieldInfo? loaderFieldInfo = localPluginType.GetField("loader", BindingFlags.NonPublic | BindingFlags.Instance);
-				if (loaderFieldInfo == null)
-					throw new Exception("Failed to get loader field");
-
-				object? pluginLoader = loaderFieldInfo.GetValue(localPlugin);
-				if (pluginLoader == null)
-					throw new Exception("Failed to get plugin loader");
-
-				PropertyInfo? loadContextPropertyInfo = pluginLoader.GetType().GetProperty("LoadContext", BindingFlags.Public | BindingFlags.Instance);
-				if (loadContextPropertyInfo == null)
-					throw new Exception("failed to locate load context property");
-
-				AssemblyLoadContext? loadContext = loadContextPropertyInfo.GetValue(pluginLoader) as AssemblyLoadContext;
-				if (loadContext == null)
-					throw new Exception("Failed to get load context");
+				AssemblyLoadContext loadContext = localPlugin.Field("loader").Property<AssemblyLoadContext>("LoadContext");
 
 				LocalPlugin result = default;
 				result.Interface = instance;
