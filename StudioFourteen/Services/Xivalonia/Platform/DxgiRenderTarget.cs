@@ -25,13 +25,11 @@ public partial class DxgiRenderTarget(WindowImpl window, EglContext context)
 	 : EglPlatformSurfaceRenderTargetBase(context)
 {
 	public Texture2D? Texture;
-	private Exception? lastException;
+
+	public override bool IsCorrupted => true;
 
 	public unsafe override IGlPlatformSurfaceRenderingSession BeginDrawCore()
 	{
-		if (this.lastException != null)
-			throw this.lastException;
-
 		try
 		{
 			if (window.IsDisposed)
@@ -41,6 +39,14 @@ public partial class DxgiRenderTarget(WindowImpl window, EglContext context)
 				throw new Exception("Attempt to draw before renderer is ready");
 
 			PixelSize size = new((int)(window.FrameSize?.Width ?? 256), (int)(window.FrameSize?.Height ?? 256));
+
+			if (this.Texture != null
+				&& (this.Texture.Description.Width != size.Width
+					|| this.Texture.Description.Height != size.Height))
+			{
+				this.Texture.Dispose();
+				this.Texture = null;
+			}
 
 			if (this.Texture == null)
 			{
@@ -83,14 +89,12 @@ public partial class DxgiRenderTarget(WindowImpl window, EglContext context)
 				1,
 				() =>
 				{
-					Studio.Log.Information($"drawn!");
 					surface.Dispose();
 				},
 				true);
 		}
 		catch (Exception ex)
 		{
-			this.lastException = ex;
 			Studio.Log.Error(ex, "Error in DxgiRenderTarget draw");
 			throw;
 		}

@@ -26,8 +26,6 @@ public class DxgiSurface(WindowImpl window)
 
 	public override IGlPlatformSurfaceRenderTarget CreateGlRenderTarget(IGlContext context)
 	{
-		Studio.Log.Information($"create target!");
-
 		var eglContext = (EglContext)context;
 		using (eglContext.EnsureCurrent())
 		{

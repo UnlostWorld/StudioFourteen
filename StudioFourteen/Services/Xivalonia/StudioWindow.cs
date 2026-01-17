@@ -13,6 +13,7 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
+using System;
 using Avalonia.Layout;
 using StudioFourteen;
 using StudioFourteen.Services.Content;
@@ -35,8 +36,10 @@ public class StudioWindow
 		if (this.window == null)
 			this.window = new();
 
-		this.window.Show();
 		this.window.Content = this.contentReference.Get();
+		this.window.Width = 600;
+		this.window.Height = 500;
+		this.window.Show();
 	}
 
 	public void Close()
@@ -51,8 +54,9 @@ public class StudioWindow
 			if (this.window == null)
 				return;
 
-			this.window.Content = null;
 			this.window.Content = this.contentReference.Get();
+			this.window.Width -= 10;
+			this.window.UpdateLayout();
 		});
 	}
 }

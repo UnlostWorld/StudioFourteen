@@ -17,6 +17,7 @@ namespace StudioFourteen.Services.Xivalonia;
 
 using System.Numerics;
 using System.Runtime.InteropServices;
+using Avalonia;
 using SharpDX.D3DCompiler;
 using SharpDX.Direct3D11;
 using StudioFourteen.Services.Content;
@@ -47,7 +48,7 @@ public partial class WindowRenderer : MeshRenderer<WindowRenderer.XivaloniaUiMat
 		this.Transform = Transform.FromTRS(
 			new Vector3(0, 0, 0),
 			Quaternion.Identity,
-			new Vector3(0.15f, 0.25f, 1));
+			Vector3.One);
 	}
 
 	public override void Draw(Renderer renderer, Transform transform, Device device, DeviceContext deviceContext)
@@ -59,6 +60,20 @@ public partial class WindowRenderer : MeshRenderer<WindowRenderer.XivaloniaUiMat
 			this.bufferResourceView = new(device, this.surface.DxgiRenderTarget.Texture);
 
 		deviceContext.PixelShader.SetShaderResource(3, this.bufferResourceView);
+
+		float screenWidth = 1920;
+		float screenHeight = 1080;
+		Size windowSize = this.window.FrameSize ?? new Size(256, 256);
+
+		Vector3 scale = new Vector3(
+			(float)windowSize.Width / screenWidth,
+			(float)windowSize.Height / screenHeight,
+			1);
+
+		this.Transform = Transform.FromTRS(
+			new Vector3(0, 0, 0),
+			Quaternion.Identity,
+			scale);
 
 		base.Draw(renderer, transform, device, deviceContext);
 	}

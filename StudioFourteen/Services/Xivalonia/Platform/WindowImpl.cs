@@ -17,8 +17,6 @@ namespace StudioFourteen.Services.Xivalonia.Platform;
 
 using System;
 using System.Collections.Generic;
-using System.Numerics;
-using System.Reflection;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Input;
@@ -35,8 +33,6 @@ public partial class WindowImpl : IWindowImpl
 
 	public WindowImpl(Compositor compositor)
 	{
-		Studio.Log.Information($"create?");
-
 		this.glSurface = new DxgiSurface(this);
 		this.screen = new ScreenImpl();
 		this.windowRenderer = new(this, this.glSurface);
@@ -56,7 +52,7 @@ public partial class WindowImpl : IWindowImpl
 	public WindowTransparencyLevel TransparencyLevel => WindowTransparencyLevel.None;
 	public AcrylicPlatformCompensationLevels AcrylicCompensationLevels { get; }
 
-	public Size? FrameSize { get; }
+	public Size? FrameSize { get; private set; }
 	public PixelPoint Position { get; }
 	public Action<PixelPoint>? PositionChanged { get; set; }
 	public Action? Deactivated { get; set; }
@@ -138,6 +134,7 @@ public partial class WindowImpl : IWindowImpl
 
 	public void Resize(Size clientSize, WindowResizeReason reason = WindowResizeReason.Application)
 	{
+		this.FrameSize = clientSize;
 	}
 
 	public void SetCanMaximize(bool value)
