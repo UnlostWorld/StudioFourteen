@@ -32,6 +32,7 @@ public class LoggingService : IDisposable
 	public LoggingService()
 	{
 		this.Configuration = new LoggerConfiguration();
+		this.Configuration.MinimumLevel.Verbose();
 		this.Configuration.Enrich.With<StackEnricher>();
 		this.Configuration.WriteTo.Sink(new DebugSink(new Formatter(true)));
 		////this.Configuration.WriteTo.Sink(new ErrorWindowSink());
