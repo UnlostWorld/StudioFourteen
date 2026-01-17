@@ -83,7 +83,7 @@ public class ContentService : IService
 		{
 			try
 			{
-				stream = new(resolvedPath, FileMode.Open, FileAccess.Read);
+				stream = new(resolvedPath, FileMode.Open, FileAccess.Read, FileShare.ReadWrite);
 			}
 			catch (IOException)
 			{
@@ -113,9 +113,8 @@ public class ContentService : IService
 
 				foreach (ContentReference reference in references)
 				{
-					if (info.LastAccessTimeUtc > reference.LastLoadTimeUtc + TimeSpan.FromSeconds(1))
+					if (info.LastAccessTimeUtc > reference.LastLoadTimeUtc + TimeSpan.FromMilliseconds(500))
 					{
-						Studio.Log.Information($"Reloading file: {path}");
 						reference.LastLoadTimeUtc = info.LastAccessTimeUtc;
 						reference.Reload();
 					}

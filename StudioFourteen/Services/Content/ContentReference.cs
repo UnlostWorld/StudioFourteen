@@ -17,6 +17,7 @@ namespace StudioFourteen.Services.Content;
 
 using System;
 using System.IO;
+using System.Security.Cryptography;
 
 public abstract class ContentReference(string path)
 {
@@ -37,12 +38,28 @@ public abstract class ContentReference(string path)
 public abstract class ContentReference<T>(string path)
 	: ContentReference(path), IContent<T>
 {
+	private byte[]? lastHash;
 	private T? instance;
 	private T? lastInstance;
 	public bool IsLoaded => this.instance != null;
 
 	public sealed override void Reload()
 	{
+		// Calculate file hash to verify its actually changed.
+		using Stream stream = Studio.Content.GetContent(this);
+		using (SHA256 sha256Hash = SHA256.Create())
+		{
+			byte[] hashBytes = sha256Hash.ComputeHash(stream);
+			if (this.lastHash != null && hashBytes.SequenceEqual(this.lastHash))
+			{
+				return;
+			}
+
+			this.lastHash = hashBytes;
+		}
+
+		Studio.Log.Information($"Reloading file: {this.Path}");
+
 		this.lastInstance = this.instance;
 		this.instance = default;
 		base.Reload();
