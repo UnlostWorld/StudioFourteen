@@ -13,14 +13,30 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Xivalonia;
+namespace StudioFourteen.Services.Avalonia.Platform;
 
-using Avalonia.Controls;
+using global::Avalonia.OpenGL;
+using global::Avalonia.OpenGL.Egl;
+using global::Avalonia.OpenGL.Surfaces;
 
-public partial class XivaloniaWindow : Window
+public class DxgiSurface(WindowImpl window)
+	: EglGlPlatformSurfaceBase
 {
-	public XivaloniaWindow()
+	public DxgiRenderTarget? DxgiRenderTarget;
+
+	public override IGlPlatformSurfaceRenderTarget CreateGlRenderTarget(IGlContext context)
 	{
-		this.InitializeComponent();
+		var eglContext = (EglContext)context;
+		using (eglContext.EnsureCurrent())
+		{
+			if (this.DxgiRenderTarget != null)
+			{
+				this.DxgiRenderTarget.Dispose();
+			}
+
+			Studio.Log.Verbose("Creating new UI platform surface render target");
+			this.DxgiRenderTarget = new DxgiRenderTarget(window, eglContext);
+			return this.DxgiRenderTarget;
+		}
 	}
 }

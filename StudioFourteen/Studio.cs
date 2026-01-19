@@ -24,7 +24,7 @@ using StudioFourteen.Services.Logging;
 using StudioFourteen.Services.Platform;
 using StudioFourteen.Services.Rendering;
 using StudioFourteen.Services.Tick;
-using StudioFourteen.Services.Xivalonia;
+using StudioFourteen.Services.Avalonia;
 
 public sealed class Studio : IDalamudPlugin
 {
@@ -49,7 +49,7 @@ public sealed class Studio : IDalamudPlugin
 	public static ContentService Content { get; private set; } = null!;
 	public static TickService Tick { get; private set; } = null!;
 	public static CameraService Camera { get; private set; } = null!;
-	public static XivaloniaService Avalonia { get; private set; } = null!;
+	public static AvaloniaService Avalonia { get; private set; } = null!;
 	public static PlatformService Platform { get; private set; } = null!;
 
 	public static LoggingService Log { get; private set; } = null!;

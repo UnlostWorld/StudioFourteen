@@ -13,15 +13,15 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Xivalonia.Platform;
+namespace StudioFourteen.Services.Avalonia.Platform;
 
 using System;
-using Avalonia;
-using Avalonia.Collections;
-using Avalonia.Controls;
-using Avalonia.Interactivity;
-using Avalonia.Platform;
-using Avalonia.Rendering.Composition;
+using global::Avalonia;
+using global::Avalonia.Collections;
+using global::Avalonia.Controls;
+using global::Avalonia.Interactivity;
+using global::Avalonia.Platform;
+using global::Avalonia.Rendering.Composition;
 using StudioFourteen.Services.Tick;
 
 public class WindowingPlatform : IWindowingPlatform, IDisposable

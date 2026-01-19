@@ -13,36 +13,26 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Xivalonia.Platform;
+namespace StudioFourteen.Services.Avalonia.Platform;
 
-using System;
-using System.Collections.Generic;
-using Avalonia.Platform;
-using StudioFourteen.Services.Rendering;
+using global::Avalonia.Platform;
 
-public class RendererScreen : ScreensBase<nint, Screen>, IDisposable
+public class Screen : PlatformScreen
 {
-	// Only one screen in a renderer, so pre create it.
-	private readonly Screen screen = new();
-	private readonly Renderer renderer;
-
-	public RendererScreen(Renderer renderer)
+	public Screen()
+		: base(new PlatformHandle(0, "Xiv Screen"))
 	{
-		this.renderer = renderer;
-		renderer.ResolutionChanged += this.OnResolutionChanged;
+		this.DisplayName = "Xiv Display";
+		this.CurrentOrientation = ScreenOrientation.Landscape;
+		this.IsPrimary = true;
+		this.Scaling = 1.0;
+
+		this.UpdateSize(1920, 1080);
 	}
 
-	public void Dispose()
+	public void UpdateSize(int width, int height)
 	{
-		this.renderer.ResolutionChanged -= this.OnResolutionChanged;
-	}
-
-	protected override Screen CreateScreenFromKey(nint key) => this.screen;
-	protected override IReadOnlyList<nint> GetAllScreenKeys() => [0];
-	protected override int GetScreenCount() => 1;
-
-	private void OnResolutionChanged(int width, int height)
-	{
-		this.screen.UpdateSize(width, height);
+		this.WorkingArea = new global::Avalonia.PixelRect(0, 0, width, height);
+		this.Bounds = new global::Avalonia.PixelRect(0, 0, width, height);
 	}
 }

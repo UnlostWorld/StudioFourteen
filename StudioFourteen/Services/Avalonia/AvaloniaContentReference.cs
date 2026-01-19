@@ -13,13 +13,13 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Content;
+namespace StudioFourteen.Services.Avalonia;
 
 using System;
-using System.Collections.Generic;
 using System.IO;
-using Avalonia;
-using Avalonia.Markup.Xaml;
+using global::Avalonia;
+using global::Avalonia.Markup.Xaml;
+using StudioFourteen.Services.Content;
 
 public class AvaloniaContentReference<T>(string path)
 	: ContentReference<T>(path)

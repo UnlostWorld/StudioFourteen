@@ -13,24 +13,24 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Xivalonia;
+namespace StudioFourteen.Services.Avalonia;
 
 using System;
-using System.Threading;
-using Avalonia;
-using StudioFourteen.Services.Xivalonia.Platform;
-using System.Reflection;
-using Avalonia.Markup.Xaml;
 using System.Collections;
-using Avalonia.Platform;
-using Avalonia.Threading;
-using Avalonia.Rendering;
-using Avalonia.Rendering.Composition;
-using Avalonia.Controls.ApplicationLifetimes;
-using Avalonia.Controls;
+using System.Reflection;
+using System.Threading;
+using global::Avalonia;
+using global::Avalonia.Controls;
+using global::Avalonia.Controls.ApplicationLifetimes;
+using global::Avalonia.Markup.Xaml;
+using global::Avalonia.Platform;
+using global::Avalonia.Rendering;
+using global::Avalonia.Rendering.Composition;
+using global::Avalonia.Threading;
 using StudioFourteen.Services.Dalamud;
+using StudioFourteen.Services.Avalonia.Platform;
 
-public partial class XivaloniaService : IService, IPlatformLifetimeEventsImpl
+public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 {
 	public long DispatcherFramerate = 60;
 	public long RenderFramerate = 60;
@@ -51,7 +51,7 @@ public partial class XivaloniaService : IService, IPlatformLifetimeEventsImpl
 	private RendererScreen? screen;
 	private Compositor? compositor;
 
-	public XivaloniaService()
+	public AvaloniaService()
 	{
 		ThreadStart ts = new(this.StartImpl);
 		this.uiThread = new Thread(ts);
@@ -60,7 +60,7 @@ public partial class XivaloniaService : IService, IPlatformLifetimeEventsImpl
 
 	public event EventHandler<ShutdownRequestedEventArgs>? ShutdownRequested;
 
-	public DispatcherImpl Dispatcher => this.dispatcher ?? throw new Exception("Xivalonia not initalized");
+	public DispatcherImpl Dispatcher => this.dispatcher ?? throw new Exception("Avalonia not initalized");
 
 	public void Dispose()
 	{
@@ -85,7 +85,7 @@ public partial class XivaloniaService : IService, IPlatformLifetimeEventsImpl
 
 			////Avalonia.Logging.Logger.Sink
 
-			AppBuilder app = AppBuilder.Configure<XivaloniaApplication>();
+			AppBuilder app = AppBuilder.Configure<StudioApplication>();
 			app.WithInterFont();
 			app.LogToTrace();
 
@@ -104,18 +104,18 @@ public partial class XivaloniaService : IService, IPlatformLifetimeEventsImpl
 			else
 			{
 				app.UseStandardRuntimePlatformSubsystem();
-				app.UseWindowingSubsystem(this.InitializeWindowing, "Xivalonia");
+				app.UseWindowingSubsystem(this.InitializeWindowing, "StudioFourteen");
 			}
 
 			app.UseSkia();
 
-			Studio.Log.Information($"Starting Xivalonia");
+			Studio.Log.Information($"Starting Avalonia");
 
 			string[] args = [];
 			app.Start(
 				(main, args) =>
 				{
-					XivaloniaApplication? application = Application.Current as XivaloniaApplication;
+					StudioApplication? application = Application.Current as StudioApplication;
 					if (application == null)
 						throw new Exception("Failed to create Application");
 
@@ -205,7 +205,7 @@ public partial class XivaloniaService : IService, IPlatformLifetimeEventsImpl
 		method.Invoke(sreTypeSystem, [typeof(System.Collections.Generic.IList<object>).Assembly]);
 		method.Invoke(sreTypeSystem, [typeof(System.Uri).Assembly]);
 
-		method.Invoke(sreTypeSystem, [typeof(Avalonia.Svg.Svg).Assembly]);
+		method.Invoke(sreTypeSystem, [typeof(global::Avalonia.Svg.Svg).Assembly]);
 
 		PluginManager.LocalPlugin localPlugin = PluginManager.GetLocalPlugin();
 		int count = 0;

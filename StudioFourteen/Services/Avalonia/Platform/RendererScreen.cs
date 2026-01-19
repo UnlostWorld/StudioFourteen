@@ -13,38 +13,36 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Xivalonia;
+namespace StudioFourteen.Services.Avalonia.Platform;
 
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Markup.Xaml;
-using StudioFourteen.Services.Content;
-using StudioFourteen.Services.Tick;
+using System;
+using System.Collections.Generic;
+using global::Avalonia.Platform;
+using StudioFourteen.Services.Rendering;
 
-public partial class XivaloniaApplication : Application
+public class RendererScreen : ScreensBase<nint, Screen>, IDisposable
 {
-	private readonly AvaloniaContentReference<ResourceDictionary> theme = new("UI/Theme.ui");
+	// Only one screen in a renderer, so pre create it.
+	private readonly Screen screen = new();
+	private readonly Renderer renderer;
 
-	public XivaloniaApplication()
+	public RendererScreen(Renderer renderer)
 	{
-		this.theme.OnReloaded += this.OnThemeChanged;
+		this.renderer = renderer;
+		renderer.ResolutionChanged += this.OnResolutionChanged;
 	}
 
-	public override void Initialize()
+	public void Dispose()
 	{
-		AvaloniaXamlLoader.Load(this);
+		this.renderer.ResolutionChanged -= this.OnResolutionChanged;
 	}
 
-	public void LoadTheme()
-	{
-		this.Resources = this.theme.Get();
-	}
+	protected override Screen CreateScreenFromKey(nint key) => this.screen;
+	protected override IReadOnlyList<nint> GetAllScreenKeys() => [0];
+	protected override int GetScreenCount() => 1;
 
-	private void OnThemeChanged()
+	private void OnResolutionChanged(int width, int height)
 	{
-		Studio.Tick.Dispatch(TickChannels.Ui, () =>
-		{
-			this.Resources = this.theme.Get();
-		});
+		this.screen.UpdateSize(width, height);
 	}
 }

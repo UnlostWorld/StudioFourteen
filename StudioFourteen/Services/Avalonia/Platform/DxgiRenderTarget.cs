@@ -13,12 +13,12 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Xivalonia.Platform;
+namespace StudioFourteen.Services.Avalonia.Platform;
 
 using System;
-using Avalonia;
-using Avalonia.OpenGL.Egl;
-using Avalonia.OpenGL.Surfaces;
+using global::Avalonia;
+using global::Avalonia.OpenGL.Egl;
+using global::Avalonia.OpenGL.Surfaces;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
 

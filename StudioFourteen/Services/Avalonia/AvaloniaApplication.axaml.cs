@@ -13,28 +13,38 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Xivalonia.Platform;
+namespace StudioFourteen.Services.Avalonia;
 
-using Avalonia;
-using Avalonia.Input;
-using Avalonia.Platform;
+using global::Avalonia;
+using global::Avalonia.Controls;
+using global::Avalonia.Markup.Xaml;
+using StudioFourteen.Services.Content;
+using StudioFourteen.Services.Tick;
 
-public class CursorFactory : ICursorFactory
+public partial class StudioApplication : Application
 {
-	public ICursorImpl CreateCursor(IBitmapImpl cursor, PixelPoint hotSpot)
+	private readonly AvaloniaContentReference<ResourceDictionary> theme = new("UI/Theme.ui");
+
+	public StudioApplication()
 	{
-		return new CursorImpl();
+		this.theme.OnReloaded += this.OnThemeChanged;
 	}
 
-	public ICursorImpl GetCursor(StandardCursorType cursorType)
+	public override void Initialize()
 	{
-		return new CursorImpl();
+		AvaloniaXamlLoader.Load(this);
 	}
-}
 
-public class CursorImpl : ICursorImpl
-{
-	public void Dispose()
+	public void LoadTheme()
 	{
+		this.Resources = this.theme.Get();
+	}
+
+	private void OnThemeChanged()
+	{
+		Studio.Tick.Dispatch(TickChannels.Ui, () =>
+		{
+			this.Resources = this.theme.Get();
+		});
 	}
 }

@@ -13,52 +13,28 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Xivalonia;
+namespace StudioFourteen.Services.Avalonia.Platform;
 
-using System;
-using System.Collections;
-using System.Diagnostics;
-using System.Reflection;
-using System.Threading;
-using Avalonia;
-using Avalonia.Rendering;
-using Avalonia.Rendering.Composition;
-using Avalonia.Threading;
+using global::Avalonia;
+using global::Avalonia.Input;
+using global::Avalonia.Platform;
 
-public class RenderTimer : IRenderTimer, IDisposable
+public class CursorFactory : ICursorFactory
 {
-	private readonly Timer timer;
-	private readonly Stopwatch stopwatch;
-	private bool isDisposed;
-
-	public RenderTimer(TimeSpan frameTime)
+	public ICursorImpl CreateCursor(IBitmapImpl cursor, PixelPoint hotSpot)
 	{
-		this.timer = new Timer(this.DoTick, null, frameTime, frameTime);
-		this.stopwatch = Stopwatch.StartNew();
+		return new CursorImpl();
 	}
 
-	public event Action<TimeSpan>? Tick;
-	public bool RunsInBackground => true;
+	public ICursorImpl GetCursor(StandardCursorType cursorType)
+	{
+		return new CursorImpl();
+	}
+}
 
+public class CursorImpl : ICursorImpl
+{
 	public void Dispose()
 	{
-		this.isDisposed = true;
-		this.timer.Dispose();
-		this.stopwatch.Stop();
-	}
-
-	private void DoTick(object? state)
-	{
-		try
-		{
-			if (this.isDisposed)
-				return;
-
-			this.Tick?.Invoke(this.stopwatch.Elapsed);
-		}
-		catch (Exception ex)
-		{
-			Studio.Log.Error(ex, "Error in Avalonia Render");
-		}
 	}
 }

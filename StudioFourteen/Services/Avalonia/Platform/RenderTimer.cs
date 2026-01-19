@@ -13,30 +13,52 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Xivalonia.Platform;
+namespace StudioFourteen.Services.Avalonia;
 
-using Avalonia.OpenGL;
-using Avalonia.OpenGL.Egl;
-using Avalonia.OpenGL.Surfaces;
+using System;
+using System.Collections;
+using System.Diagnostics;
+using System.Reflection;
+using System.Threading;
+using global::Avalonia;
+using global::Avalonia.Rendering;
+using global::Avalonia.Rendering.Composition;
+using global::Avalonia.Threading;
 
-public class DxgiSurface(WindowImpl window)
-	: EglGlPlatformSurfaceBase
+public class RenderTimer : IRenderTimer, IDisposable
 {
-	public DxgiRenderTarget? DxgiRenderTarget;
+	private readonly Timer timer;
+	private readonly Stopwatch stopwatch;
+	private bool isDisposed;
 
-	public override IGlPlatformSurfaceRenderTarget CreateGlRenderTarget(IGlContext context)
+	public RenderTimer(TimeSpan frameTime)
 	{
-		var eglContext = (EglContext)context;
-		using (eglContext.EnsureCurrent())
-		{
-			if (this.DxgiRenderTarget != null)
-			{
-				this.DxgiRenderTarget.Dispose();
-			}
+		this.timer = new Timer(this.DoTick, null, frameTime, frameTime);
+		this.stopwatch = Stopwatch.StartNew();
+	}
 
-			Studio.Log.Verbose("Creating new UI platform surface render target");
-			this.DxgiRenderTarget = new DxgiRenderTarget(window, eglContext);
-			return this.DxgiRenderTarget;
+	public event Action<TimeSpan>? Tick;
+	public bool RunsInBackground => true;
+
+	public void Dispose()
+	{
+		this.isDisposed = true;
+		this.timer.Dispose();
+		this.stopwatch.Stop();
+	}
+
+	private void DoTick(object? state)
+	{
+		try
+		{
+			if (this.isDisposed)
+				return;
+
+			this.Tick?.Invoke(this.stopwatch.Elapsed);
+		}
+		catch (Exception ex)
+		{
+			Studio.Log.Error(ex, "Error in Avalonia Render");
 		}
 	}
 }

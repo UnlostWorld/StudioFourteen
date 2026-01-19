@@ -13,16 +13,16 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Xivalonia.Platform;
+namespace StudioFourteen.Services.Avalonia.Platform;
 
 using System;
 using System.Collections.Generic;
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Input;
-using Avalonia.Input.Raw;
-using Avalonia.Platform;
-using Avalonia.Rendering.Composition;
+using global::Avalonia;
+using global::Avalonia.Controls;
+using global::Avalonia.Input;
+using global::Avalonia.Input.Raw;
+using global::Avalonia.Platform;
+using global::Avalonia.Rendering.Composition;
 
 public partial class WindowImpl : IWindowImpl
 {
@@ -106,7 +106,7 @@ public partial class WindowImpl : IWindowImpl
 		this.windowRenderer.Dispose();
 	}
 
-	public void GetWindowsZOrder(Span<Avalonia.Controls.Window> windows, Span<long> zOrder)
+	public void GetWindowsZOrder(Span<Window> windows, Span<long> zOrder)
 	{
 	}
 

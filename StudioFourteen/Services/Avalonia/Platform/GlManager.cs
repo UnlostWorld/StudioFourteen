@@ -13,14 +13,14 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Xivalonia.Platform;
+namespace StudioFourteen.Services.Avalonia.Platform;
 
 using System;
 using System.Reflection;
-using Avalonia;
-using Avalonia.OpenGL;
-using Avalonia.Platform;
-using Avalonia.Win32;
+using global::Avalonia;
+using global::Avalonia.OpenGL;
+using global::Avalonia.Platform;
+using global::Avalonia.Win32;
 
 public static class GlManager
 {

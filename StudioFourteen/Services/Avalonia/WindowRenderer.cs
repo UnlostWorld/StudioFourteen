@@ -13,11 +13,11 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Xivalonia;
+namespace StudioFourteen.Services.Avalonia;
 
 using System.Numerics;
 using System.Runtime.InteropServices;
-using Avalonia;
+using global::Avalonia;
 using SharpDX.D3DCompiler;
 using SharpDX.Direct3D11;
 using StudioFourteen.Services.Content;
@@ -25,9 +25,9 @@ using StudioFourteen.Services.Numerics;
 using StudioFourteen.Services.Rendering;
 using StudioFourteen.Services.Rendering.Draw;
 using StudioFourteen.Services.Rendering.Materials;
-using StudioFourteen.Services.Xivalonia.Platform;
+using StudioFourteen.Services.Avalonia.Platform;
 
-public partial class WindowRenderer : MeshRenderer<WindowRenderer.XivaloniaUiMaterial>
+public partial class WindowRenderer : MeshRenderer<WindowRenderer.AvaloniaUiMaterial>
 {
 	private readonly WindowImpl window;
 	private readonly DxgiSurface surface;
@@ -96,7 +96,7 @@ public partial class WindowRenderer : MeshRenderer<WindowRenderer.XivaloniaUiMat
 	}
 
 	[StructLayout(LayoutKind.Sequential)]
-	public struct XivaloniaUiMaterial : IMaterial
+	public struct AvaloniaUiMaterial : IMaterial
 	{
 		public Vector4 Unused;
 

@@ -13,13 +13,13 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Xivalonia.Platform;
+namespace StudioFourteen.Services.Avalonia.Platform;
 
 using System;
 using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
-using Avalonia.Threading;
+using global::Avalonia.Threading;
 
 public partial class DispatcherImpl : IControlledDispatcherImpl
 {

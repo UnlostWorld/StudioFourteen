@@ -13,21 +13,22 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-using Avalonia;
-using Avalonia.Controls;
-using Avalonia.Controls.Presenters;
-using Avalonia.Layout;
+namespace StudioFourteen.Services.Avalonia;
+
+using global::Avalonia;
+using global::Avalonia.Controls;
+using global::Avalonia.Controls.Presenters;
+using global::Avalonia.Layout;
 using StudioFourteen;
 using StudioFourteen.Services.Content;
 using StudioFourteen.Services.Tick;
-using StudioFourteen.Services.Xivalonia;
 
 public class StudioWindow
 {
 	private readonly AvaloniaContentReference<Visual> contentReference;
 	private readonly AvaloniaContentReference<Visual>? chromeReference;
 
-	private XivaloniaWindow? window;
+	private StudioWindowBase? window;
 	private ContentControl? presenter;
 
 	public StudioWindow(string contentPath, bool hasChrome = true)

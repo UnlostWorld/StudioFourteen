@@ -13,26 +13,14 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Xivalonia.Platform;
+namespace StudioFourteen.Services.Avalonia;
 
-using Avalonia.Platform;
+using global::Avalonia.Controls;
 
-public class Screen : PlatformScreen
+public partial class StudioWindowBase : Window
 {
-	public Screen()
-		: base(new PlatformHandle(0, "Xiv Screen"))
+	public StudioWindowBase()
 	{
-		this.DisplayName = "Xiv Display";
-		this.CurrentOrientation = ScreenOrientation.Landscape;
-		this.IsPrimary = true;
-		this.Scaling = 1.0;
-
-		this.UpdateSize(1920, 1080);
-	}
-
-	public void UpdateSize(int width, int height)
-	{
-		this.WorkingArea = new Avalonia.PixelRect(0, 0, width, height);
-		this.Bounds = new Avalonia.PixelRect(0, 0, width, height);
+		this.InitializeComponent();
 	}
 }

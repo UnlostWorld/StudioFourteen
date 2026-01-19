@@ -1,25 +1,25 @@
 <Window
-	x:Class="StudioFourteen.Services.Xivalonia.XivaloniaWindow"
+	x:Class="StudioFourteen.Services.Avalonia.StudioWindowBase"
 	xmlns="https://github.com/avaloniaui"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:sys="clr-namespace:System;assembly=mscorlib"
-	Title="Xivalonia"
+	Title="Studio Fourteen"
 	Height="200"
 	Width="200"
 	ExtendClientAreaChromeHints="NoChrome"
-    TransparencyLevelHint="Transparent"
-    Background="Transparent"
-    ExtendClientAreaToDecorationsHint="True"
+	TransparencyLevelHint="Transparent"
+	Background="Transparent"
+	ExtendClientAreaToDecorationsHint="True"
 	mc:Ignorable="d">
 
 	<ProgressBar
 		Margin="10"
 		VerticalAlignment="Top"
-        Minimum="0"
+		Minimum="0"
 		Maximum="100"
 		Value="50"
-		IsIndeterminate="True"/>
+		IsIndeterminate="True" />
 
 </Window>
