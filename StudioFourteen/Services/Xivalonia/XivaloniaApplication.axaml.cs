@@ -13,23 +13,38 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Content;
+namespace StudioFourteen.Services.Xivalonia;
 
-using System;
-using System.IO;
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using StudioFourteen.Services.Content;
+using StudioFourteen.Services.Tick;
 
-public class XamlContentReference<T>(string path)
-	: ContentReference<T>(path)
-	where T : AvaloniaObject, new()
+public partial class XivaloniaApplication : Application
 {
-	protected override T Load(Stream stream)
-	{
-		object obj = AvaloniaRuntimeXamlLoader.Load(stream);
-		if (obj is not T tObj)
-			throw new Exception("Failed to load xaml");
+	private readonly XamlContentReference<ResourceDictionary> theme = new("UI/Theme.axaml");
 
-		return tObj;
+	public XivaloniaApplication()
+	{
+		this.theme.OnReloaded += this.OnThemeChanged;
+	}
+
+	public override void Initialize()
+	{
+		AvaloniaXamlLoader.Load(this);
+	}
+
+	public void LoadTheme()
+	{
+		this.Resources = this.theme.Get();
+	}
+
+	private void OnThemeChanged()
+	{
+		Studio.Tick.Dispatch(TickChannels.Ui, () =>
+		{
+			this.Resources = this.theme.Get();
+		});
 	}
 }

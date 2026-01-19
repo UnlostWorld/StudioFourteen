@@ -85,7 +85,7 @@ public partial class XivaloniaService : IService, IPlatformLifetimeEventsImpl
 
 			////Avalonia.Logging.Logger.Sink
 
-			AppBuilder app = AppBuilder.Configure<App>();
+			AppBuilder app = AppBuilder.Configure<XivaloniaApplication>();
 			app.WithInterFont();
 			app.LogToTrace();
 
@@ -115,6 +115,10 @@ public partial class XivaloniaService : IService, IPlatformLifetimeEventsImpl
 			app.Start(
 				(main, args) =>
 				{
+					XivaloniaApplication? application = Application.Current as XivaloniaApplication;
+					if (application == null)
+						throw new Exception("Failed to create Application");
+
 					if (this.UseWin32 && this.UseWin32Hybrid)
 					{
 						this.InitializeWindowing();
@@ -122,6 +126,8 @@ public partial class XivaloniaService : IService, IPlatformLifetimeEventsImpl
 
 					// Ready to run!
 					this.LoadTypes();
+
+					application.LoadTheme();
 
 					try
 					{
