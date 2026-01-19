@@ -1,11 +1,13 @@
-<StackPanel xmlns="https://github.com/avaloniaui">
+<Grid xmlns="https://github.com/avaloniaui">
+	<StackPanel>
 
-	<Button>Click Me!</Button>
-	<TextBox Text="I'd click that for a dollar!" />
-	<Slider
-		Maximum="100"
-		Minimum="0"
-		Value="10" />
-	<TextBlock Text="Live!" />
+		<Button>Click Me!</Button>
+		<TextBox Text="I'd click that for a dollar!" />
+		<Slider
+			Maximum="100"
+			Minimum="0"
+			Value="10" />
+		<TextBlock Text="Live!" />
 
-</StackPanel>
+	</StackPanel>
+</Grid>

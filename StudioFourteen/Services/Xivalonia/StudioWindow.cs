@@ -13,9 +13,10 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-using System;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Layout;
-using Avalonia.Media;
 using StudioFourteen;
 using StudioFourteen.Services.Content;
 using StudioFourteen.Services.Tick;
@@ -23,13 +24,22 @@ using StudioFourteen.Services.Xivalonia;
 
 public class StudioWindow
 {
-	private readonly XamlContentReference<Layoutable> contentReference;
-	private XivaloniaWindow? window;
+	private readonly XamlContentReference<Visual> contentReference;
+	private readonly XamlContentReference<Visual>? chromeReference;
 
-	public StudioWindow(string contentPath)
+	private XivaloniaWindow? window;
+	private ContentControl? presenter;
+
+	public StudioWindow(string contentPath, bool hasChrome = true)
 	{
 		this.contentReference = new(contentPath);
 		this.contentReference.OnReloaded += this.OnContentReloaded;
+
+		if (hasChrome)
+		{
+			this.chromeReference = new("UI/WindowChrome.axaml");
+			this.chromeReference.OnReloaded += this.OnChromeReloaded;
+		}
 	}
 
 	public void Show()
@@ -37,7 +47,18 @@ public class StudioWindow
 		if (this.window == null)
 			this.window = new();
 
-		this.window.Content = this.contentReference.Get();
+		if (this.chromeReference != null)
+		{
+			Visual chromeVisual = this.chromeReference.Get();
+			this.window.Content = chromeVisual;
+			this.presenter = chromeVisual.Find<ContentControl>("WindowContents");
+		}
+		else
+		{
+			this.presenter = this.window;
+		}
+
+		this.presenter?.Content = this.contentReference.Get();
 		this.window.Show();
 	}
 
@@ -50,10 +71,27 @@ public class StudioWindow
 	{
 		Studio.Tick.Dispatch(TickChannels.Ui, () =>
 		{
-			if (this.window == null)
+			if (this.presenter == null)
 				return;
 
-			this.window.Content = this.contentReference.Get();
+			this.presenter.Content = this.contentReference.Get();
+		});
+	}
+
+	private void OnChromeReloaded()
+	{
+		Studio.Tick.Dispatch(TickChannels.Ui, () =>
+		{
+			if (this.window == null || this.chromeReference == null)
+				return;
+
+			this.presenter?.Content = null;
+
+			Visual chromeVisual = this.chromeReference.Get();
+			this.window.Content = chromeVisual;
+			this.presenter = chromeVisual.Find<ContentControl>("WindowContents");
+
+			this.presenter?.Content = this.contentReference.Get();
 		});
 	}
 }

@@ -51,7 +51,7 @@ public partial class WindowImpl : IWindowImpl
 	public bool NeedsManagedDecorations => false;
 	public Thickness ExtendedMargins => new Thickness(0);
 	public Thickness OffScreenMargin => new Thickness(0);
-	public WindowTransparencyLevel TransparencyLevel => WindowTransparencyLevel.None;
+	public WindowTransparencyLevel TransparencyLevel => WindowTransparencyLevel.Transparent;
 	public AcrylicPlatformCompensationLevels AcrylicCompensationLevels { get; }
 
 	public Size? FrameSize { get; private set; }
