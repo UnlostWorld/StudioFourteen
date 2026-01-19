@@ -19,7 +19,7 @@ using System;
 using System.IO;
 using System.Security.Cryptography;
 
-public abstract class ContentReference(string path)
+public abstract class ContentReference(string path) : IDisposable
 {
 	public readonly string Path = path;
 
@@ -32,6 +32,10 @@ public abstract class ContentReference(string path)
 	public virtual void Reload()
 	{
 		this.OnReloaded?.Invoke();
+	}
+
+	public virtual void Dispose()
+	{
 	}
 }
 
@@ -60,8 +64,17 @@ public abstract class ContentReference<T>(string path)
 
 		Studio.Log.Information($"Reloading file: {this.Path}");
 
-		this.lastInstance = this.instance;
+		if (this.instance is IDisposable disposable)
+		{
+			disposable.Dispose();
+		}
+		else
+		{
+			this.lastInstance = this.instance;
+		}
+
 		this.instance = default;
+
 		base.Reload();
 	}
 
@@ -89,6 +102,21 @@ public abstract class ContentReference<T>(string path)
 		}
 
 		return this.instance;
+	}
+
+	public override void Dispose()
+	{
+		base.Dispose();
+
+		if (this.instance is IDisposable disposable)
+		{
+			disposable.Dispose();
+		}
+
+		if (this.lastInstance is IDisposable lastDisposable)
+		{
+			lastDisposable.Dispose();
+		}
 	}
 
 	protected abstract T Load(Stream stream);

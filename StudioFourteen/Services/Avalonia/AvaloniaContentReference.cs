@@ -28,6 +28,7 @@ public class AvaloniaContentReference<T>(string path)
 	private const string XmlNamespaces = @"
 		xmlns=""https://github.com/avaloniaui""
 		xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""
+		xmlns:studio=""clr-namespace:StudioFourteen.Services.Avalonia.Controls;assembly=StudioFourteen""
 		xmlns:sys=""clr-namespace:System;assembly=mscorlib""
 	";
 

@@ -18,6 +18,8 @@
 				Text="Hello World"
 				VerticalAlignment="Center"
 				Margin="12,0,0,0" />
+
+			<studio:Svg Source="Icons/Camera.svg" Height="22" Foreground="White"/>
 		</Grid>
 
 		<ContentControl
