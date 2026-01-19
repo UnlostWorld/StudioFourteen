@@ -17,10 +17,12 @@ namespace StudioFourteen.Services.Avalonia.Controls;
 
 using System;
 using System.IO;
+using global::Avalonia.Controls.Converters;
 using global::Avalonia;
 using global::Avalonia.Controls;
 using global::Avalonia.Media;
 using global::Avalonia.Svg;
+using global::Svg.Model;
 using ShimSkiaSharp;
 using StudioFourteen.Services.Content;
 using StudioFourteen.Services.Tick;
@@ -31,7 +33,7 @@ public class Svg : Control
 	public static readonly StyledProperty<string> SourceProperty;
 	public static readonly StyledProperty<Stretch> StretchProperty;
 	public static readonly StyledProperty<StretchDirection> StretchDirectionProperty;
-	public static readonly StyledProperty<IBrush> ForegroundProperty;
+	public static readonly StyledProperty<Color> ForegroundProperty;
 
 	private SvgReference? reference;
 	private SKPicture? picture;
@@ -42,7 +44,7 @@ public class Svg : Control
 		SourceProperty = AvaloniaProperty.Register<Svg, string>(nameof(Source));
 		StretchProperty = AvaloniaProperty.Register<Svg, Stretch>(nameof(Stretch), Stretch.Uniform);
 		StretchDirectionProperty = AvaloniaProperty.Register<Svg, StretchDirection>(nameof(StretchDirection), StretchDirection.Both);
-		ForegroundProperty = AvaloniaProperty.Register<Svg, IBrush>(nameof(Foreground), new SolidColorBrush(Colors.Black));
+		ForegroundProperty = AvaloniaProperty.Register<Svg, Color>(nameof(Foreground), Colors.Black);
 
 		AffectsRender<Svg>(SourceProperty, StretchProperty, StretchDirectionProperty);
 		AffectsMeasure<Svg>(SourceProperty, StretchProperty, StretchDirectionProperty);
@@ -60,21 +62,26 @@ public class Svg : Control
 
 	public Stretch Stretch
 	{
-		get { return this.GetValue(StretchProperty); }
-		set { this.SetValue(StretchProperty, value); }
+		get => this.GetValue(StretchProperty);
+		set => this.SetValue(StretchProperty, value);
 	}
 
 	public StretchDirection StretchDirection
 	{
-		get { return this.GetValue(StretchDirectionProperty); }
-		set { this.SetValue(StretchDirectionProperty, value); }
+		get => this.GetValue(StretchDirectionProperty);
+		set => this.SetValue(StretchDirectionProperty, value);
 	}
 
 	// TODO: Hook foreground up to something...
-	public IBrush Foreground
+	public Color Foreground
 	{
-		get { return this.GetValue(ForegroundProperty); }
-		set { this.SetValue(ForegroundProperty, value); }
+		get => this.GetValue(ForegroundProperty);
+		set
+		{
+			this.SetValue(ForegroundProperty, value);
+			this.reference?.Foreground = this.Foreground;
+			this.reference?.Reload();
+		}
 	}
 
 	public SKPicture? Model => this.reference?.Get();
@@ -87,9 +94,7 @@ public class Svg : Control
 		var viewPort = new Rect(this.Bounds.Size);
 		var sourceSize = new Size(this.picture.CullRect.Width, this.picture.CullRect.Height);
 		if (sourceSize.Width <= 0 || sourceSize.Height <= 0)
-		{
 			return;
-		}
 
 		Vector scale = this.Stretch.CalculateScaling(this.Bounds.Size, sourceSize, this.StretchDirection);
 		Size scaledSize = sourceSize * scale;
@@ -147,6 +152,7 @@ public class Svg : Control
 		this.reference?.Dispose();
 
 		this.reference = new(newValue);
+		this.reference.Foreground = this.Foreground;
 		this.reference.Reloaded += this.OnSvgReloaded;
 
 		this.picture = this.reference.Get();
@@ -168,6 +174,9 @@ public class Svg : Control
 
 	public class SvgReference : ContentReference<SKPicture>
 	{
+		public Color Foreground = Colors.White;
+		public Color Background = Colors.Black;
+
 		public SvgReference(string path)
 			: base(path)
 		{
@@ -175,7 +184,11 @@ public class Svg : Control
 
 		protected override SKPicture Load(Stream stream)
 		{
-			SKPicture? picture = SvgSource.LoadPicture(stream, null);
+			string foregroundColor = ColorToHexConverter.ToHexString(this.Foreground, AlphaComponentPosition.Trailing, false, true);
+			string css = $".foreground {{ fill: {foregroundColor}; }}";
+			SvgParameters parameters = new(null, css);
+
+			SKPicture? picture = SvgSource.LoadPicture(stream, parameters);
 			if (picture == null)
 				throw new Exception("Failed to load svg");
 

@@ -13,13 +13,16 @@
 		</Grid.RowDefinitions>
 
 
-		<Grid Grid.Row="0">
-			<TextBlock
-				Text="Hello World"
-				VerticalAlignment="Center"
-				Margin="12,0,0,0" />
+		<Grid Grid.Row="0" Height="22">
+			<StackPanel Orientation="Horizontal" Margin="12,0,0,0">
+				<studio:Svg Source="Icons/Camera.svg" Height="18" Foreground="White" VerticalAlignment="Center"/>
 
-			<studio:Svg Source="Icons/Camera.svg" Height="22" Foreground="White"/>
+				<TextBlock
+					Text="Hello World"
+					VerticalAlignment="Center"
+					Margin="10,0,0,0" />
+
+			</StackPanel>
 		</Grid>
 
 		<ContentControl

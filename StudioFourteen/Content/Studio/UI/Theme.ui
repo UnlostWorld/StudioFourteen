@@ -16,11 +16,11 @@
 		<sys:Double x:Key="ControlHeight">32</sys:Double>
 
 		<!-- Button -->
-		<ControlTheme x:Key="{x:Type Button}" TargetType="Button">
+		<ControlTheme x:Key="{x:Type Button}" TargetType="{x:Type Button}">
 			<Setter Property="Margin" Value="2" />
-			<Setter Property="Height" Value="{StaticResource ControlHeight}" />
-			<Setter Property="Background" Value="{StaticResource ButtonBackground}" />
-			<Setter Property="Foreground" Value="{StaticResource Foreground}" />
+			<Setter Property="Height" Value="{DynamicResource ControlHeight}" />
+			<Setter Property="Background" Value="{DynamicResource ButtonBackground}" />
+			<Setter Property="Foreground" Value="{DynamicResource Foreground}" />
 			<Setter Property="Padding" Value="3" />
 			<Setter Property="ClipToBounds" Value="False"/>
 			<Setter Property="Cursor" Value="Hand"/>
@@ -29,7 +29,7 @@
 					<Panel>
 						<Border
 							Name="Border"
-							CornerRadius="{StaticResource CornerRadius_Inner}"
+							CornerRadius="{DynamicResource CornerRadius_Inner}"
 							HorizontalAlignment="Stretch"
 							VerticalAlignment="Stretch"
 							Background="{TemplateBinding Background}"
@@ -70,22 +70,22 @@
 		</ControlTheme>
 
 		<!-- TextBox -->
-		<ControlTheme x:Key="{x:Type TextBox}" TargetType="TextBox">
+		<ControlTheme x:Key="{x:Type TextBox}" TargetType="{x:Type TextBox}">
 			<Setter Property="Margin" Value="1,2" />
-			<Setter Property="CaretBrush" Value="{StaticResource Foreground}" />
+			<Setter Property="CaretBrush" Value="{DynamicResource Foreground}" />
 			<Setter Property="SelectionBrush" Value="{DynamicResource Background}" />
 			<Setter Property="TextAlignment" Value="Center" />
 			<Setter Property="Padding" Value="3" />
-			<Setter Property="Height" Value="{StaticResource ControlHeight}" />
-			<Setter Property="Background" Value="{StaticResource InputBackground}" />
-			<Setter Property="Foreground" Value="{StaticResource Foreground}" />
+			<Setter Property="Height" Value="{DynamicResource ControlHeight}" />
+			<Setter Property="Background" Value="{DynamicResource InputBackground}" />
+			<Setter Property="Foreground" Value="{DynamicResource Foreground}" />
 			<Setter Property="Cursor" Value="Ibeam"/>
 			<Setter Property="Template">
 				<ControlTemplate>
 					<Panel>
 						<Border
 							Name="Border"
-							CornerRadius="{StaticResource CornerRadius_Inner}"
+							CornerRadius="{DynamicResource CornerRadius_Inner}"
 							HorizontalAlignment="Stretch"
 							VerticalAlignment="Stretch"
 							Background="{TemplateBinding Background}"
@@ -134,8 +134,13 @@
 		</ControlTheme>
 
 		<!-- TextBox -->
-		<ControlTheme x:Key="{x:Type TextBlock}" TargetType="TextBlock">
-			<Setter Property="Foreground" Value="{StaticResource Foreground}" />
+		<ControlTheme x:Key="{x:Type TextBlock}" TargetType="{x:Type TextBlock}">
+			<Setter Property="Foreground" Value="{DynamicResource Foreground}" />
+		</ControlTheme>
+
+		<!-- Svg -->
+		<ControlTheme x:Key="{x:Type studio:Svg}" TargetType="{x:Type studio:Svg}">
+			<Setter Property="Foreground" Value="{DynamicResource Foreground}" />
 		</ControlTheme>
 
 
