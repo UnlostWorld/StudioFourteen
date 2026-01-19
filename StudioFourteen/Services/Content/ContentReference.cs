@@ -25,13 +25,13 @@ public abstract class ContentReference(string path) : IDisposable
 
 	public delegate void ReloadDelegate();
 
-	public event ReloadDelegate? OnReloaded;
+	public event ReloadDelegate? Reloaded;
 
 	public DateTime LastLoadTimeUtc { get; set; }
 
 	public virtual void Reload()
 	{
-		this.OnReloaded?.Invoke();
+		this.Reloaded?.Invoke();
 	}
 
 	public virtual void Dispose()

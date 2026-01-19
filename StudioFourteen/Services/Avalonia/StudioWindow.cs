@@ -34,12 +34,12 @@ public class StudioWindow
 	public StudioWindow(string contentPath, bool hasChrome = true)
 	{
 		this.contentReference = new(contentPath);
-		this.contentReference.OnReloaded += this.OnContentReloaded;
+		this.contentReference.Reloaded += this.OnContentReloaded;
 
 		if (hasChrome)
 		{
 			this.chromeReference = new("UI/WindowChrome.ui");
-			this.chromeReference.OnReloaded += this.OnChromeReloaded;
+			this.chromeReference.Reloaded += this.OnChromeReloaded;
 		}
 	}
 

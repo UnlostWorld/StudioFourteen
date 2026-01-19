@@ -23,6 +23,7 @@ using global::Avalonia.Media;
 using global::Avalonia.Svg;
 using ShimSkiaSharp;
 using StudioFourteen.Services.Content;
+using StudioFourteen.Services.Tick;
 
 // https://github.com/wieslawsoltes/Svg.Skia/blob/master/src/Svg.Controls.Avalonia/Svg.cs
 public class Svg : Control
@@ -142,11 +143,27 @@ public class Svg : Control
 
 	private void OnSourceChanged(string newValue)
 	{
+		this.reference?.Reloaded -= this.OnSvgReloaded;
 		this.reference?.Dispose();
+
 		this.reference = new(newValue);
+		this.reference.Reloaded += this.OnSvgReloaded;
 
 		this.picture = this.reference.Get();
 		this.avaloniaPicture = AvaloniaPicture.Record(this.picture);
+	}
+
+	private void OnSvgReloaded()
+	{
+		Studio.Tick.Dispatch(TickChannels.Ui, () =>
+		{
+			if (this.reference == null)
+				return;
+
+			this.picture = this.reference.Get();
+			this.avaloniaPicture = AvaloniaPicture.Record(this.picture);
+			this.InvalidateVisual();
+		});
 	}
 
 	public class SvgReference : ContentReference<SKPicture>

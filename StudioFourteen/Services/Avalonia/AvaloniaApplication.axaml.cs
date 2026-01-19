@@ -27,7 +27,7 @@ public partial class StudioApplication : Application
 
 	public StudioApplication()
 	{
-		this.theme.OnReloaded += this.OnThemeChanged;
+		this.theme.Reloaded += this.OnThemeChanged;
 	}
 
 	public override void Initialize()
