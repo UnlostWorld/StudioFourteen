@@ -1,6 +1,5 @@
-<Grid xmlns="https://github.com/avaloniaui">
+<Grid>
 	<StackPanel>
-
 		<Button>Click Me!</Button>
 		<TextBox Text="I'd click that for a dollar!" />
 		<Slider

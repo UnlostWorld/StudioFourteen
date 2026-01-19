@@ -22,7 +22,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Content Include="Content\Base\**" CopyToOutputDirectory="Always" />
+		<Compile Remove="Content\**" />
+		<Content Include="Content\**" CopyToOutputDirectory="Always" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -56,6 +57,7 @@
 		<PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.9" />
 		<PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.9" />
 		<PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="11.3.9" />
+		<PackageReference Include="Svg.Controls.Avalonia" Version="11.3.9.2" />
 		<!--Condition
 		below is needed to remove Avalonia.Diagnostics package from build output in Release
 		configuration.-->

@@ -40,7 +40,7 @@ public partial class XivaloniaService : IService, IPlatformLifetimeEventsImpl
 	// This will break plugin reloading.
 	public bool UseWin32Hybrid = false;
 
-	private readonly StudioWindow testWindow = new("UI/TestWindow.axaml");
+	private readonly StudioWindow testWindow = new("UI/TestWindow.ui");
 
 	private readonly CancellationTokenSource cts = new();
 	private readonly Thread? uiThread;
@@ -204,6 +204,8 @@ public partial class XivaloniaService : IService, IPlatformLifetimeEventsImpl
 		method.Invoke(sreTypeSystem, [typeof(System.ComponentModel.TypeConverterAttribute).Assembly]);
 		method.Invoke(sreTypeSystem, [typeof(System.Collections.Generic.IList<object>).Assembly]);
 		method.Invoke(sreTypeSystem, [typeof(System.Uri).Assembly]);
+
+		method.Invoke(sreTypeSystem, [typeof(Avalonia.Svg.Svg).Assembly]);
 
 		PluginManager.LocalPlugin localPlugin = PluginManager.GetLocalPlugin();
 		int count = 0;

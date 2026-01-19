@@ -24,8 +24,8 @@ using StudioFourteen.Services.Xivalonia;
 
 public class StudioWindow
 {
-	private readonly XamlContentReference<Visual> contentReference;
-	private readonly XamlContentReference<Visual>? chromeReference;
+	private readonly AvaloniaContentReference<Visual> contentReference;
+	private readonly AvaloniaContentReference<Visual>? chromeReference;
 
 	private XivaloniaWindow? window;
 	private ContentControl? presenter;
@@ -37,7 +37,7 @@ public class StudioWindow
 
 		if (hasChrome)
 		{
-			this.chromeReference = new("UI/WindowChrome.axaml");
+			this.chromeReference = new("UI/WindowChrome.ui");
 			this.chromeReference.OnReloaded += this.OnChromeReloaded;
 		}
 	}

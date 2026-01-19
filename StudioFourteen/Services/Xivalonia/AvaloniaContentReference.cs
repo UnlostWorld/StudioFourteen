@@ -16,19 +16,32 @@
 namespace StudioFourteen.Services.Content;
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using Avalonia;
 using Avalonia.Markup.Xaml;
 
-public class XamlContentReference<T>(string path)
+public class AvaloniaContentReference<T>(string path)
 	: ContentReference<T>(path)
 	where T : AvaloniaObject, new()
 {
+	private const string XmlNamespaces = @"
+		xmlns=""https://github.com/avaloniaui""
+		xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""
+		xmlns:sys=""clr-namespace:System;assembly=mscorlib""
+	";
+
 	protected override T Load(Stream stream)
 	{
-		object obj = AvaloniaRuntimeXamlLoader.Load(stream);
+		using StreamReader reader = new(stream);
+		string xaml = reader.ReadToEnd();
+
+		int endRootTag = xaml.IndexOf('>');
+		xaml = xaml.Insert(endRootTag, XmlNamespaces);
+
+		object obj = AvaloniaRuntimeXamlLoader.Load(xaml);
 		if (obj is not T tObj)
-			throw new Exception("Failed to load xaml");
+			throw new Exception("Failed to load ui resource");
 
 		return tObj;
 	}

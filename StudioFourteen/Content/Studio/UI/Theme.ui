@@ -1,10 +1,5 @@
-<ResourceDictionary
-	xmlns="https://github.com/avaloniaui"
-	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:sys="clr-namespace:System;assembly=mscorlib">
-
+<ResourceDictionary>
+		<CornerRadius x:Key="CornerRadius">12</CornerRadius>
 		<CornerRadius x:Key="CornerRadius_Inner">6</CornerRadius>
 
 		<Color x:Key="Background">#222222</Color>
@@ -33,7 +28,7 @@
 				<ControlTemplate>
 					<Panel>
 						<Border
-							x:Name="Border"
+							Name="Border"
 							CornerRadius="{StaticResource CornerRadius_Inner}"
 							HorizontalAlignment="Stretch"
 							VerticalAlignment="Stretch"
@@ -49,7 +44,7 @@
 						</Border>
 
 						<ContentPresenter
-							x:Name="PART_ContentPresenter"
+							Name="PART_ContentPresenter"
 							HorizontalAlignment="Center"
 							VerticalAlignment="Center"
 							Margin="{TemplateBinding Padding}"
@@ -89,7 +84,7 @@
 				<ControlTemplate>
 					<Panel>
 						<Border
-							x:Name="Border"
+							Name="Border"
 							CornerRadius="{StaticResource CornerRadius_Inner}"
 							HorizontalAlignment="Stretch"
 							VerticalAlignment="Stretch"
@@ -136,6 +131,11 @@
 				<Setter Property="BorderBrush" Value="{DynamicResource Trim}" />
 			</Style>
 
+		</ControlTheme>
+
+		<!-- TextBox -->
+		<ControlTheme x:Key="{x:Type TextBlock}" TargetType="TextBlock">
+			<Setter Property="Foreground" Value="{StaticResource Foreground}" />
 		</ControlTheme>
 
 

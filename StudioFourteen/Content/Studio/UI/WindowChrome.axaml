@@ -1,3 +1,0 @@
-<Border xmlns="https://github.com/avaloniaui" Background="White">
-	<ContentControl Name="WindowContents"/>
-</Border>

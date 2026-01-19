@@ -23,7 +23,7 @@ using StudioFourteen.Services.Tick;
 
 public partial class XivaloniaApplication : Application
 {
-	private readonly XamlContentReference<ResourceDictionary> theme = new("UI/Theme.axaml");
+	private readonly AvaloniaContentReference<ResourceDictionary> theme = new("UI/Theme.ui");
 
 	public XivaloniaApplication()
 	{
