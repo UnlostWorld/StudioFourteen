@@ -73,14 +73,19 @@ public partial class WindowRenderer : MeshRenderer<WindowRenderer.AvaloniaUiMate
 		deviceContext.PixelShader.SetShaderResource(3, this.bufferResourceView);
 
 		Size windowSize = this.window.FrameSize ?? new Size(256, 256);
-
 		Vector3 scale = new Vector3(
 			(float)windowSize.Width / renderer.Width,
 			(float)windowSize.Height / renderer.Height,
 			1);
 
+		PixelPoint windowPosition = this.window.Position;
+		float x = -1 + ((float)(windowPosition.X + (windowSize.Width / 2)) / renderer.Width * 2);
+		float y = 1 - ((float)(windowPosition.Y + (windowSize.Height / 2)) / renderer.Height * 2);
+
+		Vector3 position = new(x, y, 0);
+
 		this.Transform = Transform.FromTRS(
-			new Vector3(0, 0, 0),
+			position,
 			Quaternion.Identity,
 			scale);
 
