@@ -1,23 +1,15 @@
 <ResourceDictionary>
-		<CornerRadius x:Key="CornerRadius">12</CornerRadius>
-		<CornerRadius x:Key="CornerRadius_Inner">6</CornerRadius>
-
-		<Color x:Key="Background">#222222</Color>
-
 		<Color x:Key="ButtonBackground">#333333</Color>
 		<Color x:Key="ButtonHover">#444444</Color>
-
 		<Color x:Key="InputBackground">#151515</Color>
-
 		<Color x:Key="Foreground">#ECECEC</Color>
-
 		<Color x:Key="Trim">#FF1493</Color>
 
 		<sys:Double x:Key="ControlHeight">32</sys:Double>
 
 		<!-- Button -->
 		<ControlTheme x:Key="{x:Type Button}" TargetType="{x:Type Button}">
-			<Setter Property="Margin" Value="2" />
+			<Setter Property="Margin" Value="1,2" />
 			<Setter Property="Height" Value="{DynamicResource ControlHeight}" />
 			<Setter Property="Background" Value="{DynamicResource ButtonBackground}" />
 			<Setter Property="Foreground" Value="{DynamicResource Foreground}" />
@@ -29,43 +21,30 @@
 					<Panel>
 						<Border
 							Name="Border"
-							CornerRadius="{DynamicResource CornerRadius_Inner}"
+							CornerRadius="6"
 							HorizontalAlignment="Stretch"
 							VerticalAlignment="Stretch"
-							Background="{TemplateBinding Background}"
-							BoxShadow="0 3 0 0 #33000000">
-							<Border.Transitions>
-								<Transitions>
-									<BrushTransition Property="Background" Duration="0:0:0.200"/>
-									<BoxShadowsTransition Property="BoxShadow" Duration="0:0:0.200"/>
-									<BrushTransition Property="BorderBrush" Duration="0:0:0.200"/>
-								</Transitions>
-							</Border.Transitions>
-						</Border>
+							Background="#99666666"/>
 
-						<ContentPresenter
-							Name="PART_ContentPresenter"
-							HorizontalAlignment="Center"
-							VerticalAlignment="Center"
-							Margin="{TemplateBinding Padding}"
-							Content="{TemplateBinding Content}" />
+						<Grid>
+							<ContentPresenter
+								Name="PART_ContentPresenter"
+								HorizontalAlignment="Center"
+								VerticalAlignment="Center"
+								Margin="{TemplateBinding Padding}"
+								Content="{TemplateBinding Content}" />
+
+							<Grid.Effect>
+								<DropShadowEffect
+									Color="#FF000000"
+									BlurRadius="6"
+									OffsetX="0"
+									OffsetY="0"/>
+							</Grid.Effect>
+						</Grid>
 					</Panel>
 				</ControlTemplate>
 			</Setter>
-
-			<Style Selector="^:pointerover">
-				<Style Selector="^ /template/ Border#Border">
-					<Setter Property="Background" Value="{StaticResource ButtonHover}" />
-					<Setter Property="BoxShadow" Value="0 6 0 0 #33000000" />
-				</Style>
-			</Style>
-
-			<Style Selector="^:pressed">
-				<Style Selector="^ /template/ Border#Border">
-					<Setter Property="Background" Value="{StaticResource ButtonBackground}" />
-					<Setter Property="BoxShadow" Value="0 0 0 0 #33000000" />
-				</Style>
-			</Style>
 
 		</ControlTheme>
 
@@ -85,13 +64,10 @@
 					<Panel>
 						<Border
 							Name="Border"
-							CornerRadius="{DynamicResource CornerRadius_Inner}"
+							CornerRadius="6"
 							HorizontalAlignment="Stretch"
 							VerticalAlignment="Stretch"
-							Background="{TemplateBinding Background}"
-							BoxShadow="inset 0 3 0 0 #33000000"
-							BorderThickness="2"
-							BorderBrush="Transparent"/>
+							Background="#99000000"/>
 
 						<ScrollViewer Name="PART_ScrollViewer"
 							Grid.Column="1"

@@ -6,7 +6,7 @@
 			Maximum="100"
 			Minimum="0"
 			Value="10" />
-		<TextBlock Text="Live!" />
+		<TextBlock Text="Live!!!" />
 
 	</StackPanel>
 </Grid>
