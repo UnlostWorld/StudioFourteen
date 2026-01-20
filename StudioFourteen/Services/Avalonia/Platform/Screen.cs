@@ -17,11 +17,14 @@ namespace StudioFourteen.Services.Avalonia.Platform;
 
 using global::Avalonia.Platform;
 
-public class Screen : PlatformScreen
+public class ScreenImpl : PlatformScreen
 {
-	public Screen()
-		: base(new PlatformHandle(0, "Xiv Screen"))
+	public readonly nint Handle;
+
+	public ScreenImpl(nint handle)
+		: base(new PlatformHandle(handle, "Xiv Screen"))
 	{
+		this.Handle = handle;
 		this.DisplayName = "Xiv Display";
 		this.CurrentOrientation = ScreenOrientation.Landscape;
 		this.IsPrimary = true;

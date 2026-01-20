@@ -20,13 +20,13 @@ using System.Collections.Generic;
 using global::Avalonia.Platform;
 using StudioFourteen.Services.Rendering;
 
-public class RendererScreen : ScreensBase<nint, Screen>, IDisposable
+public class StudioScreens : ScreensBase<nint, ScreenImpl>, IDisposable
 {
-	// Only one screen in a renderer, so pre create it.
-	private readonly Screen screen = new();
+	public readonly ScreenImpl RendererScreen = new(9001);
+
 	private readonly Renderer renderer;
 
-	public RendererScreen(Renderer renderer)
+	public StudioScreens(Renderer renderer)
 	{
 		this.renderer = renderer;
 		renderer.ResolutionChanged += this.OnResolutionChanged;
@@ -37,12 +37,20 @@ public class RendererScreen : ScreensBase<nint, Screen>, IDisposable
 		this.renderer.ResolutionChanged -= this.OnResolutionChanged;
 	}
 
-	protected override Screen CreateScreenFromKey(nint key) => this.screen;
-	protected override IReadOnlyList<nint> GetAllScreenKeys() => [0];
-	protected override int GetScreenCount() => 1;
+	protected override ScreenImpl CreateScreenFromKey(nint key)
+	{
+		if (key == this.RendererScreen.Handle)
+		{
+			return this.RendererScreen;
+		}
+
+		throw new NotSupportedException();
+	}
+
+	protected override IReadOnlyList<nint> GetAllScreenKeys() => [this.RendererScreen.Handle];
 
 	private void OnResolutionChanged(int width, int height)
 	{
-		this.screen.UpdateSize(width, height);
+		this.RendererScreen?.UpdateSize(width, height);
 	}
 }

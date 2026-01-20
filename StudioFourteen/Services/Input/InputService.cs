@@ -203,6 +203,9 @@ public class InputService : IService
 
 	protected unsafe void OnGameTick()
 	{
+		if (Studio.IsDisposed)
+			return;
+
 		lock (this)
 		{
 			foreach (InputDeviceBase device in this.inputDevices)

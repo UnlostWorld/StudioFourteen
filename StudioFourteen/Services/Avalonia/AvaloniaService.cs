@@ -48,7 +48,7 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 	private DispatcherImpl? dispatcher;
 	private RenderTimer? renderTimer;
 	private WindowingPlatform? windowing;
-	private RendererScreen? screen;
+	private StudioScreens? screen;
 	private Compositor? compositor;
 
 	public AvaloniaService()
@@ -152,7 +152,7 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 
 	private void InitializeWindowing()
 	{
-		this.screen = new RendererScreen(Studio.Rendering.OverlayRenderer);
+		this.screen = new StudioScreens(Studio.Rendering.OverlayRenderer);
 
 		this.renderTimer = new(TimeSpan.FromSeconds(1.0 / this.RenderFramerate));
 		this.dispatcher = new(TimeSpan.FromSeconds(1.0 / this.DispatcherFramerate));

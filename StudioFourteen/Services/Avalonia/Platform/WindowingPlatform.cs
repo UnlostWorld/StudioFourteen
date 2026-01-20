@@ -16,6 +16,7 @@
 namespace StudioFourteen.Services.Avalonia.Platform;
 
 using System;
+using System.Numerics;
 using global::Avalonia;
 using global::Avalonia.Collections;
 using global::Avalonia.Controls;
@@ -27,17 +28,21 @@ using StudioFourteen.Services.Tick;
 public class WindowingPlatform : IWindowingPlatform, IDisposable
 {
 	private readonly AvaloniaList<WindowImpl> windows = new();
-	private readonly RendererScreen screen;
+	private readonly StudioScreens screens;
 
-	public WindowingPlatform(RendererScreen screen)
+	public WindowingPlatform(StudioScreens screen)
 	{
-		this.screen = screen;
+		this.screens = screen;
 
 		Window.WindowOpenedEvent.AddClassHandler(typeof(Window), OnWindowOpened);
+
+		Studio.Tick.Add(TickChannels.Ui, this.OnUiTick);
 	}
 
 	public void Dispose()
 	{
+		Studio.Tick.Remove(TickChannels.Ui, this.OnUiTick);
+
 		Studio.Tick.Dispatch(TickChannels.Ui, () =>
 		{
 			foreach (WindowImpl impl in this.windows)
@@ -51,8 +56,6 @@ public class WindowingPlatform : IWindowingPlatform, IDisposable
 				}
 			}
 		});
-
-		Studio.Avalonia.Dispatcher.Signal();
 	}
 
 	public ITopLevelImpl CreateEmbeddableTopLevel() => throw new NotSupportedException();
@@ -62,7 +65,7 @@ public class WindowingPlatform : IWindowingPlatform, IDisposable
 	public IWindowImpl CreateWindow()
 	{
 		Compositor compositor = AvaloniaLocator.Current.GetRequiredService<Compositor>();
-		WindowImpl impl = new(compositor, this.screen);
+		WindowImpl impl = new(compositor, this.screens);
 		this.windows.Add(impl);
 		return impl;
 	}
@@ -72,5 +75,32 @@ public class WindowingPlatform : IWindowingPlatform, IDisposable
 		Window window = (Window)sender!;
 		WindowImpl? impl = window.PlatformImpl as WindowImpl;
 		impl?.Window = window;
+	}
+
+	private void OnUiTick()
+	{
+		if (Studio.Input.Mouse == null)
+			return;
+
+		Vector2 mousePosition = Studio.Input.Mouse.GetPosition();
+
+		PixelPoint mousePoint = new(
+			(int)(mousePosition.X * this.screens.RendererScreen.Bounds.Width),
+			(int)(mousePosition.Y * this.screens.RendererScreen.Bounds.Height));
+
+		foreach (WindowImpl windowImpl in this.windows)
+		{
+			PixelPoint position = windowImpl.Position;
+			Size size = windowImpl.FrameSize ?? windowImpl.ClientSize;
+
+			if (mousePoint.X > position.X
+				&& mousePoint.Y > position.Y
+				&& mousePoint.X < position.X + size.Width
+				&& mousePoint.Y < position.Y + size.Height)
+			{
+				// TODO: Send input into the window.
+				Studio.Log.Information($">> {windowImpl}");
+			}
+		}
 	}
 }

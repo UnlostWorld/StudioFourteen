@@ -45,9 +45,6 @@ public class KeyboardDevice : InputDeviceBase
 
 	public override void PreUpdate()
 	{
-		if (Studio.KeyState == null)
-			return;
-
 		if (Studio.Input.IsXivTextInputActive)
 			return;
 

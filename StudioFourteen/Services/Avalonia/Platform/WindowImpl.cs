@@ -30,15 +30,17 @@ public partial class WindowImpl : IWindowImpl
 
 	private readonly WindowRenderer windowRenderer;
 	private readonly DxgiSurface glSurface;
-	private readonly RendererScreen screen;
+	private readonly StudioScreens screen;
 	private readonly Compositor compositor;
 
-	public WindowImpl(Compositor compositor, RendererScreen screen)
+	public WindowImpl(Compositor compositor, StudioScreens screen)
 	{
 		this.glSurface = new DxgiSurface(this);
 		this.screen = screen;
 		this.windowRenderer = new(this, this.glSurface);
 		this.compositor = compositor;
+
+		this.Position = new PixelPoint(1, 1);
 	}
 
 	public WindowState WindowState { get; set; }
@@ -54,16 +56,18 @@ public partial class WindowImpl : IWindowImpl
 	public WindowTransparencyLevel TransparencyLevel => WindowTransparencyLevel.Transparent;
 	public AcrylicPlatformCompensationLevels AcrylicCompensationLevels { get; }
 
+	public double DesktopScaling => 1;
+	public double RenderScaling => 1;
+
 	public Size? FrameSize { get; private set; }
-	public PixelPoint Position { get; }
+	public PixelPoint Position { get; private set; }
 	public Action<PixelPoint>? PositionChanged { get; set; }
 	public Action? Deactivated { get; set; }
 	public Action? Activated { get; set; }
 	public Size MaxAutoSizeHint { get; }
-	public double DesktopScaling { get; }
+
 	public IPlatformHandle? Handle { get; }
 	public Size ClientSize { get; }
-	public double RenderScaling => 1;
 	public Action<RawInputEventArgs>? Input { get; set; }
 	public Action<Rect>? Paint { get; set; }
 	public Action<Size, WindowResizeReason>? Resized { get; set; }
