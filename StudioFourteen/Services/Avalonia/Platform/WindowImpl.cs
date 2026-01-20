@@ -113,6 +113,10 @@ public partial class WindowImpl : IWindowImpl
 	public void Show(bool activate, bool isDialog)
 	{
 		Studio.Rendering.OverlayRenderer.Interface.Add(this.windowRenderer);
+
+		////MouseDevice md = new();
+		////var args = new RawPointerEventArgs(,);
+		////this.Input?.Invoke(args);
 	}
 
 	public void Hide()

@@ -25,6 +25,9 @@ using StudioFourteen.Services.Platform;
 using StudioFourteen.Services.Rendering;
 using StudioFourteen.Services.Tick;
 using StudioFourteen.Services.Avalonia;
+using StudioFourteen.Services.Input;
+using StudioFourteen.Services.Serialization;
+using StudioFourteen.Services;
 
 public sealed class Studio : IDalamudPlugin
 {
@@ -33,24 +36,30 @@ public sealed class Studio : IDalamudPlugin
 		Instance = this;
 		IsDisposed = false;
 
+		Json = new();
 		Log = new();
 		Platform = new();
 		Tick = new();
 		Content = new();
+		Input = new();
 		Camera = new();
 		Rendering = new();
 		Avalonia = new();
+		Window = new();
 	}
 
 	public static bool IsDisposed { get; private set; } = false;
 	public static Studio Instance { get; private set; } = null!;
 
+	public static JsonSerializer Json { get; private set; } = null!;
 	public static RenderingService Rendering { get; private set; } = null!;
 	public static ContentService Content { get; private set; } = null!;
 	public static TickService Tick { get; private set; } = null!;
 	public static CameraService Camera { get; private set; } = null!;
 	public static AvaloniaService Avalonia { get; private set; } = null!;
 	public static PlatformService Platform { get; private set; } = null!;
+	public static InputService Input { get; private set; } = null!;
+	public static WindowService Window { get; private set; } = null!;
 
 	public static LoggingService Log { get; private set; } = null!;
 
@@ -82,6 +91,8 @@ public sealed class Studio : IDalamudPlugin
 			Tick.Dispose();
 			Camera.Dispose();
 			Avalonia.Dispose();
+			Input.Dispose();
+			Window.Dispose();
 		}
 		catch (Exception ex)
 		{

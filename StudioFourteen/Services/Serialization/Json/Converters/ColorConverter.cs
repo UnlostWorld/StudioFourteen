@@ -13,7 +13,7 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Serialization.Converters;
+namespace StudioFourteen.Services.Serialization.Json.Converters;
 
 using Newtonsoft.Json;
 using StudioFourteen.Services.Rendering;

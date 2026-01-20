@@ -16,34 +16,40 @@
 namespace StudioFourteen.Services.Serialization;
 
 using Newtonsoft.Json;
-using StudioFourteen.Services.Serialization.Converters;
+using StudioFourteen.Services.Serialization.Json.Converters;
 using System.Globalization;
 using System.IO;
 
-public static class Serializer
+public class JsonSerializer
 {
-	private static readonly JsonSerializerSettings Settings = new();
+	private readonly JsonSerializerSettings settings = new();
 
-	static Serializer()
+	public JsonSerializer()
 	{
-		Settings.Culture = CultureInfo.InvariantCulture;
-		Settings.Formatting = Formatting.Indented;
-		Settings.NullValueHandling = NullValueHandling.Ignore;
+		this.settings.Culture = CultureInfo.InvariantCulture;
+		this.settings.Formatting = Formatting.Indented;
+		this.settings.NullValueHandling = NullValueHandling.Ignore;
 
-		Settings.Converters.Add(new Vector2Converter());
-		Settings.Converters.Add(new Vector2NullableConverter());
-		Settings.Converters.Add(new Vector3Converter());
-		Settings.Converters.Add(new Vector3NullableConverter());
-		Settings.Converters.Add(new Vector4Converter());
-		Settings.Converters.Add(new Vector4NullableConverter());
-		Settings.Converters.Add(new QuaternionConverter());
-		Settings.Converters.Add(new QuaternionNullableConverter());
-		Settings.Converters.Add(new ColorConverter());
+		this.settings.Converters.Add(new Vector2Converter());
+		this.settings.Converters.Add(new Vector2NullableConverter());
+		this.settings.Converters.Add(new Vector3Converter());
+		this.settings.Converters.Add(new Vector3NullableConverter());
+		this.settings.Converters.Add(new Vector4Converter());
+		this.settings.Converters.Add(new Vector4NullableConverter());
+		this.settings.Converters.Add(new QuaternionConverter());
+		this.settings.Converters.Add(new QuaternionNullableConverter());
+		this.settings.Converters.Add(new ColorConverter());
 	}
 
-	public static string Serialize(object obj)
+	public void AddConverter<T>()
+		where T : JsonConverter, new()
 	{
-		string json = JsonConvert.SerializeObject(obj, Settings);
+		this.settings.Converters.Add(new T());
+	}
+
+	public string Serialize(object obj)
+	{
+		string json = JsonConvert.SerializeObject(obj, this.settings);
 
 		if (json.StartsWith('"') && json.EndsWith('"'))
 			json = json.Trim('"');
@@ -51,14 +57,14 @@ public static class Serializer
 		return json;
 	}
 
-	public static T? Deserialize<T>(string json)
+	public T? Deserialize<T>(string json)
 	{
-		return JsonConvert.DeserializeObject<T>(json, Settings);
+		return JsonConvert.DeserializeObject<T>(json, this.settings);
 	}
 
-	public static T? Deserialize<T>(Stream stream)
+	public T? Deserialize<T>(Stream stream)
 	{
 		using StreamReader reader = new(stream);
-		return JsonConvert.DeserializeObject<T>(reader.ReadToEnd(), Settings);
+		return JsonConvert.DeserializeObject<T>(reader.ReadToEnd(), this.settings);
 	}
 }

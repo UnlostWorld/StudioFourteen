@@ -1,4 +1,4 @@
-// .                    @@             _____ _______ _    _ _____ _____ ____
+﻿// .                    @@             _____ _______ _    _ _____ _____ ____
 //          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
 //         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
 //         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
@@ -13,20 +13,10 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Content;
+namespace StudioFourteen.Services.Serialization.Json.Converters;
 
-using System;
-using System.IO;
-
-public class JsonContentReference<T>(string path)
-	: ContentReference<T>(path)
+public static class Formats
 {
-	protected override T Load(Stream stream)
-	{
-		T? mesh = Studio.Json.Deserialize<T>(stream);
-		if (mesh == null)
-			throw new Exception($"Content \"{this.Path}\" failed to deserialize");
-
-		return mesh;
-	}
+	// floats cap out at 6 decimal places. Don't use scientific notation.
+	public const string FloatFormat = "0.######";
 }

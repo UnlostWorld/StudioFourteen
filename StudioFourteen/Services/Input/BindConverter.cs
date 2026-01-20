@@ -13,20 +13,44 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Content;
+namespace StudioFourteen.Services.Input;
 
+using Newtonsoft.Json;
 using System;
-using System.IO;
+using System.Text;
 
-public class JsonContentReference<T>(string path)
-	: ContentReference<T>(path)
+public class BindConverter : JsonConverter<Bind>
 {
-	protected override T Load(Stream stream)
+	public override Bind? ReadJson(JsonReader reader, Type objectType, Bind? existingValue, bool hasExistingValue, JsonSerializer serializer)
 	{
-		T? mesh = Studio.Json.Deserialize<T>(stream);
-		if (mesh == null)
-			throw new Exception($"Content \"{this.Path}\" failed to deserialize");
+		string? str = reader.Value as string;
+		if (str == null)
+			return null;
 
-		return mesh;
+		string[] parts = str.Split([" + "], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+
+		if (parts.Length < 1)
+			throw new Exception($"Invalid bind string: {str}");
+
+		Bind b = new();
+		b.PrimaryAxis = parts[0];
+		b.ModifierAxes = new(parts[1..]);
+		return b;
+	}
+
+	public override void WriteJson(JsonWriter writer, Bind? value, JsonSerializer serializer)
+	{
+		if (value == null)
+			return;
+
+		StringBuilder b = new();
+		b.Append(value.PrimaryAxis);
+		foreach (string modifier in value.ModifierAxes)
+		{
+			b.Append(" + ");
+			b.Append(modifier);
+		}
+
+		writer.WriteValue(b.ToString());
 	}
 }

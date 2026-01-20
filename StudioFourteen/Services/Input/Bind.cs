@@ -13,20 +13,49 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Content;
+namespace StudioFourteen.Services.Input;
 
+using StudioFourteen.Services.Input.Devices;
 using System;
-using System.IO;
+using System.Collections.Generic;
 
-public class JsonContentReference<T>(string path)
-	: ContentReference<T>(path)
+public class Bind
 {
-	protected override T Load(Stream stream)
-	{
-		T? mesh = Studio.Json.Deserialize<T>(stream);
-		if (mesh == null)
-			throw new Exception($"Content \"{this.Path}\" failed to deserialize");
+	public InputAction Action { get; set; }
+	public string? PrimaryAxis { get; set; }
+	public List<string> ModifierAxes { get; set; } = new();
 
-		return mesh;
+	public float GetValue()
+	{
+		if (this.PrimaryAxis == null)
+			return 0.0f;
+
+		InputAxis? primaryAxis = Studio.Input.GetAxisId(this.PrimaryAxis);
+		if (primaryAxis == null || primaryAxis.IsConsumed)
+			return 0.0f;
+
+		float value = primaryAxis.Value;
+
+		foreach (string axisId in this.ModifierAxes)
+		{
+			InputAxis? modifierAxis = Studio.Input.GetAxisId(axisId);
+			if (modifierAxis == null || modifierAxis.IsConsumed)
+			{
+				value = 0;
+			}
+			else
+			{
+				value *= modifierAxis.Value;
+			}
+		}
+
+		value = Math.Max(value, 0);
+
+		if (value > 0.001f)
+		{
+			primaryAxis.ConsumedBy = this;
+		}
+
+		return value;
 	}
 }

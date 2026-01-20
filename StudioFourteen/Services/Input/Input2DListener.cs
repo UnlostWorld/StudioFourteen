@@ -13,20 +13,31 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Content;
+namespace StudioFourteen.Services.Input;
 
-using System;
-using System.IO;
+using System.Numerics;
 
-public class JsonContentReference<T>(string path)
-	: ContentReference<T>(path)
+public class Input2DListener(
+	InputAction xPos,
+	InputAction xNeg,
+	InputAction yPos,
+	InputAction yNeg,
+	string? name = null)
 {
-	protected override T Load(Stream stream)
-	{
-		T? mesh = Studio.Json.Deserialize<T>(stream);
-		if (mesh == null)
-			throw new Exception($"Content \"{this.Path}\" failed to deserialize");
+	public Input1DListener X = new(xPos, xNeg, name);
+	public Input1DListener Y = new(yPos, yNeg, name);
 
-		return mesh;
+	public Vector2 Value => new(this.X.Value, this.Y.Value);
+
+	public virtual void Enable()
+	{
+		this.X.Enable();
+		this.Y.Enable();
+	}
+
+	public virtual void Disable()
+	{
+		this.X.Disable();
+		this.Y.Disable();
 	}
 }

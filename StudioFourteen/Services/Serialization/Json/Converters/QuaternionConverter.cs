@@ -13,41 +13,47 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Serialization.Converters;
+namespace StudioFourteen.Services.Serialization.Json.Converters;
 
 using Newtonsoft.Json;
 using System;
 using System.Numerics;
 
-public class Vector2Converter : JsonConverter<Vector2>
+public class QuaternionConverter : JsonConverter<Quaternion>
 {
-	public override Vector2 ReadJson(JsonReader reader, Type objectType, Vector2 existingValue, bool hasExistingValue, JsonSerializer serializer)
+	public override Quaternion ReadJson(JsonReader reader, Type objectType, Quaternion existingValue, bool hasExistingValue, JsonSerializer serializer)
 	{
-		string? str = reader.Value as string ?? throw new Exception("Cannot convert null to Vector2");
+		string? str = reader.Value as string ?? throw new Exception("Cannot convert null to Quaternion");
 		string[] parts = str.Split([','], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-		if (parts.Length != 2)
+		if (parts.Length != 4)
 			throw new FormatException($"Expected 3 components, got {parts.Length} ({str})");
 
-		Vector2 v = default;
-		v.X = float.Parse(parts[0], serializer.Culture);
-		v.Y = float.Parse(parts[1], serializer.Culture);
-		return v;
+		Quaternion q = default;
+		q.X = float.Parse(parts[0], serializer.Culture);
+		q.Y = float.Parse(parts[1], serializer.Culture);
+		q.Z = float.Parse(parts[2], serializer.Culture);
+		q.W = float.Parse(parts[3], serializer.Culture);
+		return q;
 	}
 
-	public override void WriteJson(JsonWriter writer, Vector2 value, JsonSerializer serializer)
+	public override void WriteJson(JsonWriter writer, Quaternion value, JsonSerializer serializer)
 	{
-		var newString =
+		string newString =
 			value.X.ToString(Formats.FloatFormat, serializer.Culture)
 			+ ", "
-			+ value.Y.ToString(Formats.FloatFormat, serializer.Culture);
+			+ value.Y.ToString(Formats.FloatFormat, serializer.Culture)
+			+ ", "
+			+ value.Z.ToString(Formats.FloatFormat, serializer.Culture)
+			+ ", "
+			+ value.W.ToString(Formats.FloatFormat, serializer.Culture);
 		writer.WriteValue(newString);
 	}
 }
 
-public class Vector2NullableConverter : JsonConverter<Vector2?>
+public class QuaternionNullableConverter : JsonConverter<Quaternion?>
 {
-	public override Vector2? ReadJson(JsonReader reader, Type objectType, Vector2? existingValue, bool hasExistingValue, JsonSerializer serializer)
+	public override Quaternion? ReadJson(JsonReader reader, Type objectType, Quaternion? existingValue, bool hasExistingValue, JsonSerializer serializer)
 	{
 		string? str = reader.Value as string;
 		if (str == null)
@@ -55,16 +61,18 @@ public class Vector2NullableConverter : JsonConverter<Vector2?>
 
 		string[] parts = str.Split([','], StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
 
-		if (parts.Length != 2)
+		if (parts.Length != 4)
 			throw new FormatException($"Expected 3 components, got {parts.Length} ({str})");
 
-		Vector2 v = default;
-		v.X = float.Parse(parts[0], serializer.Culture);
-		v.Y = float.Parse(parts[1], serializer.Culture);
-		return v;
+		Quaternion q = default;
+		q.X = float.Parse(parts[0], serializer.Culture);
+		q.Y = float.Parse(parts[1], serializer.Culture);
+		q.Z = float.Parse(parts[2], serializer.Culture);
+		q.W = float.Parse(parts[3], serializer.Culture);
+		return q;
 	}
 
-	public override void WriteJson(JsonWriter writer, Vector2? value, JsonSerializer serializer)
+	public override void WriteJson(JsonWriter writer, Quaternion? value, JsonSerializer serializer)
 	{
 		if (value == null)
 			return;
@@ -72,7 +80,11 @@ public class Vector2NullableConverter : JsonConverter<Vector2?>
 		var newString =
 			value.Value.X.ToString(Formats.FloatFormat, serializer.Culture)
 			+ ", "
-			+ value.Value.Y.ToString(Formats.FloatFormat, serializer.Culture);
+			+ value.Value.Y.ToString(Formats.FloatFormat, serializer.Culture)
+			+ ", "
+			+ value.Value.Z.ToString(Formats.FloatFormat, serializer.Culture)
+			+ ", "
+			+ value.Value.W.ToString(Formats.FloatFormat, serializer.Culture);
 		writer.WriteValue(newString);
 	}
 }

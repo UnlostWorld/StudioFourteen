@@ -13,20 +13,45 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Content;
+namespace StudioFourteen.Services.Avalonia.Platform;
 
 using System;
-using System.IO;
+using global::Avalonia;
+using global::Avalonia.Controls;
+using global::Avalonia.Input;
 
-public class JsonContentReference<T>(string path)
-	: ContentReference<T>(path)
+public class WindowsMouseDevice : MouseDevice
 {
-	protected override T Load(Stream stream)
-	{
-		T? mesh = Studio.Json.Deserialize<T>(stream);
-		if (mesh == null)
-			throw new Exception($"Content \"{this.Path}\" failed to deserialize");
+	private readonly IPointer pointer;
 
-		return mesh;
+	public WindowsMouseDevice()
+		: base(WindowsMousePointer.CreatePointer(out var pointer))
+	{
+		this.pointer = pointer;
+	}
+
+	// Normally user should use IPointer.Capture instead of MouseDevice.Capture,
+	// But on Windows we need to handle WM_MOUSE capture manually without having access to the Pointer.
+	internal void Capture(IInputElement? control)
+	{
+		this.pointer.Capture(control);
+	}
+
+	internal class WindowsMousePointer : Pointer
+	{
+		private WindowsMousePointer()
+			: base(GetNextFreeId(), PointerType.Mouse, true)
+		{
+		}
+
+		public static WindowsMousePointer CreatePointer(out WindowsMousePointer pointer)
+		{
+			return pointer = new WindowsMousePointer();
+		}
+
+		protected override void PlatformCapture(IInputElement? element)
+		{
+			throw new NotSupportedException();
+		}
 	}
 }
