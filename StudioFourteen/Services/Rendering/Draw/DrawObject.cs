@@ -40,7 +40,7 @@ public abstract partial class DrawObject : IDisposable
 
 	protected Renderer? CurrentRenderer { get; private set; }
 
-	public virtual void Draw(Renderer renderer, Transform transform, Device device, DeviceContext deviceContext)
+	public virtual bool Draw(Renderer renderer, Transform transform, Device device, DeviceContext deviceContext)
 	{
 		this.CameraPosition = renderer.GetCameraPosition(renderer);
 		this.WorldTransform = this.LocalTransform * this.Transform * transform;
@@ -54,6 +54,7 @@ public abstract partial class DrawObject : IDisposable
 
 		this.CurrentRenderer = renderer;
 		this.OnDraw();
+		return true;
 	}
 
 	public abstract void Dispose();

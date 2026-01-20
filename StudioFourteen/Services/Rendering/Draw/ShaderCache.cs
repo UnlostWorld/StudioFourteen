@@ -52,6 +52,8 @@ public class ShaderCache : IDisposable
 
 public abstract class Shader : IDisposable
 {
+	public bool IsError { get; protected set; }
+
 	public VertexShader? Vertex { get; protected set; }
 	public ShaderSignature? VertexSignature { get; protected set; }
 	public PixelShader? Pixel { get; protected set; }
@@ -71,15 +73,13 @@ public abstract class Shader : IDisposable
 public class Shader<TMaterialData> : Shader
 	where TMaterialData : unmanaged, IMaterial
 {
-	private bool didAttemptLoad = false;
-
 	private IContent<ShaderBytecode>? vertexShaderContent;
 	private IContent<ShaderBytecode>? pixelShaderContent;
 	private IContent<ShaderBytecode>? geometryShaderContent;
 
 	public override void Load(Device device)
 	{
-		if (this.didAttemptLoad)
+		if (this.IsError)
 		{
 			bool shouldLoad = false;
 			if (this.vertexShaderContent != null && !this.vertexShaderContent.IsLoaded)
@@ -92,10 +92,10 @@ public class Shader<TMaterialData> : Shader
 				shouldLoad = true;
 
 			if (!shouldLoad)
+			{
 				return;
+			}
 		}
-
-		this.didAttemptLoad = true;
 
 		try
 		{
@@ -125,18 +125,11 @@ public class Shader<TMaterialData> : Shader
 				this.Geometry = new GeometryShader(device, geometryByteCode);
 
 			this.VertexSignature = ShaderSignature.GetInputSignature(vertexByteCode);
+			this.IsError = false;
 		}
 		catch (Exception ex)
 		{
-			this.Vertex?.Dispose();
-			this.Vertex = null;
-
-			this.Pixel?.Dispose();
-			this.Pixel = null;
-
-			this.Geometry?.Dispose();
-			this.Geometry = null;
-
+			this.IsError = true;
 			Studio.Log.Information(ex, "Failed to load shader");
 		}
 	}

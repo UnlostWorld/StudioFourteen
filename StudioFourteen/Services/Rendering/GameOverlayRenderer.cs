@@ -18,20 +18,18 @@ namespace StudioFourteen.Services.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using System.Runtime.InteropServices;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using SharpDX.Direct3D11;
 using StudioFourteen.Services.Dalamud;
-using StudioFourteen.Services.Rendering.Draw.Handles;
 using StudioFourteen.Services.Rendering.Passes;
 using StudioFourteen.Services.Tick;
+
 using XivDevice = FFXIVClientStructs.FFXIV.Client.Graphics.Kernel.Device;
 
 public class GameOverlayRenderer : Renderer
 {
 	public readonly ForwardPass Forward = new();
-	public readonly ForwardPass Interface = new();
 
 	private readonly GenerateUiMaskPass generateUiMaskPass = new();
 	private readonly List<RenderPassBase> beforeEffectsPasses = new();
@@ -46,8 +44,6 @@ public class GameOverlayRenderer : Renderer
 		this.afterEffectsPasses.Add(this.Forward);
 		this.AddPass(this.Forward);
 		this.AddPass(this.generateUiMaskPass);
-		this.afterEffectsPasses.Add(this.Interface);
-		this.AddPass(this.Interface);
 	}
 
 	public bool IsAttached { get; private set; }

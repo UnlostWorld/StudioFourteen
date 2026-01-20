@@ -49,12 +49,14 @@ public class DrawGroup : DrawObject
 		this.Children.Remove(sceneObject);
 	}
 
-	public override void Draw(Renderer renderer, Transform transform, Device device, DeviceContext deviceContext)
+	public override bool Draw(Renderer renderer, Transform transform, Device device, DeviceContext deviceContext)
 	{
-		base.Draw(renderer, transform, device, deviceContext);
+		bool success = base.Draw(renderer, transform, device, deviceContext);
+		if (!success)
+			return false;
 
 		if (!this.IsVisible)
-			return;
+			return false;
 
 		foreach (DrawObject child in this.Children)
 		{
@@ -73,6 +75,8 @@ public class DrawGroup : DrawObject
 				Studio.Log.Error(ex, $"Error drawing scene object: {child}. This object will be disabled.");
 			}
 		}
+
+		return true;
 	}
 
 	public override void HitTest(

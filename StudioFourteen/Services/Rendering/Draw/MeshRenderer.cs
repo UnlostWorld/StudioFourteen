@@ -53,20 +53,22 @@ public class MeshRenderer<TMaterialData> : InstanceRendererBase<MeshRendererInst
 		this.Mesh = mesh;
 	}
 
-	public override void Draw(Renderer renderer, Transform transform, Device device, DeviceContext deviceContext)
+	public override bool Draw(Renderer renderer, Transform transform, Device device, DeviceContext deviceContext)
 	{
 		if (!this.IsVisible)
-			return;
+			return false;
 
 		if (!this.Material.ShouldDraw)
-			return;
+			return false;
 
 		Transform thisTransform = this.Transform * transform;
 		this.Instance.Transform = Matrix4x4.Transpose(thisTransform.ToMatrix());
-		base.Draw(renderer, thisTransform, device, deviceContext);
+		bool success = base.Draw(renderer, thisTransform, device, deviceContext);
+		if (!success)
+			return false;
 
 		if (this.Mesh == null)
-			return;
+			return false;
 
 		if (!this.Mesh.IsLoaded)
 		{
@@ -103,6 +105,8 @@ public class MeshRenderer<TMaterialData> : InstanceRendererBase<MeshRendererInst
 		{
 			deviceContext.DrawIndexed(this.indexLength, 0, 0);
 		}
+
+		return true;
 	}
 
 	public override void HitTest(Vector2 screenPosition, Transform transform, Transform viewProjection, HitTestResult result)

@@ -52,10 +52,10 @@ public partial class WindowRenderer : MeshRenderer<WindowRenderer.AvaloniaUiMate
 			Vector3.One);
 	}
 
-	public override void Draw(Renderer renderer, Transform transform, Device device, DeviceContext deviceContext)
+	public override bool Draw(Renderer renderer, Transform transform, Device device, DeviceContext deviceContext)
 	{
 		if (this.surface.DxgiRenderTarget?.Texture == null)
-			return;
+			return false;
 
 		if (this.texture != this.surface.DxgiRenderTarget.Texture)
 		{
@@ -89,7 +89,7 @@ public partial class WindowRenderer : MeshRenderer<WindowRenderer.AvaloniaUiMate
 			Quaternion.Identity,
 			scale);
 
-		base.Draw(renderer, transform, device, deviceContext);
+		return base.Draw(renderer, transform, device, deviceContext);
 	}
 
 	public override void Dispose()

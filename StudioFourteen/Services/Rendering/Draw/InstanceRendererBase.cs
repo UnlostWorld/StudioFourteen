@@ -50,7 +50,6 @@ public abstract class InstanceRendererBase<TRendererData, TMaterialData> : Rende
 	private Buffer? rendererDataBuffer;
 	private Buffer? materialDataBuffer;
 
-	private Shader? shader;
 	private InputLayout? layout;
 	private DepthStencilState? depthStencilState;
 	private RasterizerState? rasterizerState;
@@ -60,8 +59,12 @@ public abstract class InstanceRendererBase<TRendererData, TMaterialData> : Rende
 		this.Material.Initialize();
 	}
 
-	public override void Draw(Renderer renderer, Transform transform, Device device, DeviceContext deviceContext)
+	public override bool Draw(Renderer renderer, Transform transform, Device device, DeviceContext deviceContext)
 	{
+		Shader? shader = renderer.Shaders.GetShader<TMaterialData>(device);
+		if (shader == null || shader.IsError)
+			return false;
+
 		if (this.rendererDataBuffer == null)
 		{
 			this.rendererDataBuffer = new(
@@ -94,13 +97,8 @@ public abstract class InstanceRendererBase<TRendererData, TMaterialData> : Rende
 				0);
 		}
 
-		this.shader = renderer.Shaders.GetShader<TMaterialData>(device);
-
-		if (this.shader == null)
-			return;
-
-		if (this.shader.VertexSignature != null && this.layout == null)
-			this.layout = new InputLayout(device, this.shader.VertexSignature, default(Vertex).GetInputElements());
+		if (shader.VertexSignature != null && this.layout == null)
+			this.layout = new InputLayout(device, shader.VertexSignature, default(Vertex).GetInputElements());
 
 		if (this.layout != null)
 			deviceContext.InputAssembler.InputLayout = this.layout;
@@ -130,21 +128,23 @@ public abstract class InstanceRendererBase<TRendererData, TMaterialData> : Rende
 
 		deviceContext.OutputMerger.SetDepthStencilState(this.depthStencilState, this.Stencil);
 
-		deviceContext.VertexShader.Set(this.shader.Vertex);
+		deviceContext.VertexShader.Set(shader.Vertex);
 		deviceContext.VertexShader.SetConstantBuffer(Registers.PerRendererData, this.rendererDataBuffer);
 		deviceContext.VertexShader.SetConstantBuffer(Registers.PerMaterialData, this.materialDataBuffer);
 
-		deviceContext.GeometryShader.Set(this.shader.Geometry);
+		deviceContext.GeometryShader.Set(shader.Geometry);
 		deviceContext.GeometryShader.SetConstantBuffer(Registers.PerRendererData, this.rendererDataBuffer);
 		deviceContext.GeometryShader.SetConstantBuffer(Registers.PerMaterialData, this.materialDataBuffer);
 
-		deviceContext.PixelShader.Set(this.shader.Pixel);
+		deviceContext.PixelShader.Set(shader.Pixel);
 		deviceContext.PixelShader.SetConstantBuffer(Registers.PerRendererData, this.rendererDataBuffer);
 		deviceContext.PixelShader.SetConstantBuffer(Registers.PerMaterialData, this.materialDataBuffer);
 
 		// TODO: Use a buffer array and an index instead of updating every draw call?
 		deviceContext.UpdateSubresource(ref this.Instance, this.rendererDataBuffer);
 		deviceContext.UpdateSubresource(ref this.Material, this.materialDataBuffer);
+
+		return true;
 	}
 
 	public override void Dispose()

@@ -41,7 +41,7 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 	public bool UseWin32Hybrid = false;
 
 	private readonly StudioWindow testWindow = new("UI/TestWindow.ui");
-
+	private readonly UiPass renderingPass = new();
 	private readonly CancellationTokenSource cts = new();
 	private readonly Thread? uiThread;
 
@@ -53,6 +53,8 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 
 	public AvaloniaService()
 	{
+		Studio.Rendering.OverlayRenderer.AddAfterEffectsPass(this.renderingPass);
+
 		ThreadStart ts = new(this.StartImpl);
 		this.uiThread = new Thread(ts);
 		this.uiThread.Start();
@@ -61,9 +63,13 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 	public event EventHandler<ShutdownRequestedEventArgs>? ShutdownRequested;
 
 	public DispatcherImpl Dispatcher => this.dispatcher ?? throw new Exception("Avalonia not initalized");
+	public UiPass RenderPass => this.renderingPass;
 
 	public void Dispose()
 	{
+		Studio.Rendering.OverlayRenderer.RemoveAfterEffectsPass(this.renderingPass);
+		this.renderingPass.Dispose();
+
 		this.ShutdownRequested?.Invoke(this, new ShutdownRequestedEventArgs());
 
 		this.windowing?.Dispose();

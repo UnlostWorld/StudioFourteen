@@ -105,8 +105,7 @@ public partial class WindowImpl : IWindowImpl
 	{
 		this.IsDisposed = true;
 
-		Studio.Rendering.OverlayRenderer.Interface.Remove(this.windowRenderer);
-
+		Studio.Avalonia.RenderPass.Remove(this.windowRenderer);
 		this.windowRenderer.Dispose();
 	}
 
@@ -116,7 +115,7 @@ public partial class WindowImpl : IWindowImpl
 
 	public void Show(bool activate, bool isDialog)
 	{
-		Studio.Rendering.OverlayRenderer.Interface.Add(this.windowRenderer);
+		Studio.Avalonia.RenderPass.Add(this.windowRenderer);
 
 		////MouseDevice md = new();
 		////var args = new RawPointerEventArgs(,);
@@ -125,7 +124,7 @@ public partial class WindowImpl : IWindowImpl
 
 	public void Hide()
 	{
-		Studio.Rendering.OverlayRenderer.Interface.Remove(this.windowRenderer);
+		Studio.Avalonia.RenderPass.Remove(this.windowRenderer);
 	}
 
 	public void Move(PixelPoint point)

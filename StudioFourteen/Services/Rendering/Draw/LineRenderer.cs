@@ -50,17 +50,19 @@ public class LineRenderer<TMaterialData> : InstanceRendererBase<MeshRendererInst
 		set => this.vertArray[1].Position = new(value, 1.0f);
 	}
 
-	public override void Draw(Renderer renderer, Transform transform, Device device, DeviceContext deviceContext)
+	public override bool Draw(Renderer renderer, Transform transform, Device device, DeviceContext deviceContext)
 	{
 		if (!this.IsVisible)
-			return;
+			return false;
 
 		if (!this.Material.ShouldDraw)
-			return;
+			return false;
 
 		Transform thisTransform = transform * this.Transform;
 		this.Instance.Transform = Matrix4x4.Transpose(thisTransform.ToMatrix());
-		base.Draw(renderer, thisTransform, device, deviceContext);
+		bool success = base.Draw(renderer, thisTransform, device, deviceContext);
+		if (!success)
+			return false;
 
 		if (this.vertices == null)
 		{
@@ -74,6 +76,7 @@ public class LineRenderer<TMaterialData> : InstanceRendererBase<MeshRendererInst
 		deviceContext.InputAssembler.PrimitiveTopology = SharpDX.Direct3D.PrimitiveTopology.LineList;
 		deviceContext.InputAssembler.SetVertexBuffers(0, this.vertexBufferBinding);
 		deviceContext.Draw(this.vertexLength, 0);
+		return true;
 	}
 
 	public override void Dispose()
