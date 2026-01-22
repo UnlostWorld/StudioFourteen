@@ -46,6 +46,18 @@
 				</ControlTemplate>
 			</Setter>
 
+			<Style Selector="^:pointerover">
+				<Style Selector="^ /template/ Border#Border">
+					<Setter Property="Background" Value="{StaticResource ButtonHover}" />
+				</Style>
+			</Style>
+
+			<Style Selector="^:pressed">
+				<Style Selector="^ /template/ Border#Border">
+					<Setter Property="Background" Value="{StaticResource ButtonBackground}" />
+				</Style>
+			</Style>
+
 		</ControlTheme>
 
 		<!-- TextBox -->

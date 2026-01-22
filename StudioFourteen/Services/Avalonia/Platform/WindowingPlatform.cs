@@ -20,6 +20,8 @@ using System.Numerics;
 using global::Avalonia;
 using global::Avalonia.Collections;
 using global::Avalonia.Controls;
+using global::Avalonia.Input;
+using global::Avalonia.Input.Raw;
 using global::Avalonia.Interactivity;
 using global::Avalonia.Platform;
 using global::Avalonia.Rendering.Composition;
@@ -29,6 +31,10 @@ public class WindowingPlatform : IWindowingPlatform, IDisposable
 {
 	private readonly AvaloniaList<WindowImpl> windows = new();
 	private readonly StudioScreens screens;
+
+	private readonly TouchDevice touchDevice = new();
+	private readonly MouseDevice mouseDevice = new();
+	private readonly PenDevice penDevice = new();
 
 	public WindowingPlatform(StudioScreens screen)
 	{
@@ -98,8 +104,23 @@ public class WindowingPlatform : IWindowingPlatform, IDisposable
 				&& mousePoint.X < position.X + size.Width
 				&& mousePoint.Y < position.Y + size.Height)
 			{
-				// TODO: Send input into the window.
-				Studio.Log.Information($">> {windowImpl}");
+				if (windowImpl.Window == null)
+					continue;
+
+				Point relativeMousePosition = new(mousePoint.X - position.X, mousePoint.Y - position.Y);
+
+				ulong ts = (ulong)DateTime.UtcNow.Ticks;
+
+				RawPointerEventType type = RawPointerEventType.Move;
+				RawInputModifiers modifiers = RawInputModifiers.None;
+				var args = new RawPointerEventArgs(
+					this.mouseDevice,
+					ts,
+					windowImpl.Window,
+					type,
+					relativeMousePosition,
+					modifiers);
+				windowImpl.HandleInput(args);
 			}
 		}
 	}

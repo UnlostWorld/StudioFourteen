@@ -44,7 +44,7 @@ public partial class StudioApplication : Application
 	{
 		Studio.Tick.Dispatch(TickChannels.Ui, () =>
 		{
-			this.Resources = this.theme.Get();
+			this.LoadTheme();
 		});
 	}
 }

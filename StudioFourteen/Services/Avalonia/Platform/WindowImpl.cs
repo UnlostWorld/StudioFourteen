@@ -60,14 +60,14 @@ public partial class WindowImpl : IWindowImpl
 	public double RenderScaling => 1;
 
 	public Size? FrameSize { get; private set; }
+	public Size ClientSize { get; private set; }
+
 	public PixelPoint Position { get; private set; }
 	public Action<PixelPoint>? PositionChanged { get; set; }
 	public Action? Deactivated { get; set; }
 	public Action? Activated { get; set; }
 	public Size MaxAutoSizeHint { get; }
-
 	public IPlatformHandle? Handle { get; }
-	public Size ClientSize { get; }
 	public Action<RawInputEventArgs>? Input { get; set; }
 	public Action<Rect>? Paint { get; set; }
 	public Action<Size, WindowResizeReason>? Resized { get; set; }
@@ -116,10 +116,6 @@ public partial class WindowImpl : IWindowImpl
 	public void Show(bool activate, bool isDialog)
 	{
 		Studio.Avalonia.RenderPass.Add(this.windowRenderer);
-
-		////MouseDevice md = new();
-		////var args = new RawPointerEventArgs(,);
-		////this.Input?.Invoke(args);
 	}
 
 	public void Hide()
@@ -131,18 +127,14 @@ public partial class WindowImpl : IWindowImpl
 	{
 	}
 
-	public Point PointToClient(PixelPoint point)
-	{
-		throw new NotImplementedException();
-	}
-
-	public PixelPoint PointToScreen(Point point)
-	{
-		throw new NotImplementedException();
-	}
+	public Point PointToClient(PixelPoint point) => new Point(point.X - this.Position.X, point.Y - this.Position.Y);
+	public PixelPoint PointToScreen(Point point) => this.Position + new PixelPoint((int)point.X, (int)point.Y);
 
 	public void Resize(Size clientSize, WindowResizeReason reason = WindowResizeReason.Application)
 	{
+		this.ClientSize = clientSize;
+
+		// No real window chrome, so one-to-one with client size.
 		this.FrameSize = clientSize;
 	}
 
@@ -252,5 +244,10 @@ public partial class WindowImpl : IWindowImpl
 		}*/
 
 		return null;
+	}
+
+	public void HandleInput(RawInputEventArgs args)
+	{
+		this.Input?.Invoke(args);
 	}
 }
