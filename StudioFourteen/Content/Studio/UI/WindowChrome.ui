@@ -1,8 +1,8 @@
 <Border
-	BoxShadow="0 3 0 0 #55000000"
+	BoxShadow="0 3 17 2 #FF000000"
 	CornerRadius="20"
 	BorderThickness="1"
-	Margin="0"
+	Margin="20"
 	BorderBrush="#FF000000"
 	Background="#99222222">
 
@@ -17,46 +17,14 @@
 				<RowDefinition />
 			</Grid.RowDefinitions>
 
-			<Grid Grid.Row="0" Height="34">
-				<Grid.ColumnDefinitions>
-					<ColumnDefinition />
-					<ColumnDefinition Width="Auto"/>
-				</Grid.ColumnDefinitions>
-
-				<StackPanel
-					Grid.Column="0"
-					Orientation="Horizontal"
-					Margin="20,0,0,0" >
-					<studio:Svg
-						Source="Icons/Camera.svg"
-						Height="14"
-						Margin="0,0,6,0"
-						Foreground="White"
-						VerticalAlignment="Center"/>
-
-					<TextBlock
-						Text="Hello World!"
-						VerticalAlignment="Center"
-						Margin="0,0,0,0" />
-
-					<StackPanel.Effect>
-						<DropShadowEffect
-							Color="#FF000000"
-							BlurRadius="6"
-							OffsetX="0"
-							OffsetY="0"/>
-					</StackPanel.Effect>
-				</StackPanel>
-
-				<StackPanel
-					Grid.Column="1"
-					Orientation="Horizontal"
-					Margin="0,0,10,0">
-
-					<Ellipse Fill="#FFFF5555" Width="12" Height="12"/>
-
-				</StackPanel>
-
+			<Grid
+				Grid.Row="0"
+				HorizontalAlignment="Right">
+				<Ellipse
+					Fill="#FFFF5555"
+					Width="12"
+					Height="12"
+					Margin="12"/>
 			</Grid>
 
 			<ContentControl

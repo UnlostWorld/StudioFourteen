@@ -40,7 +40,7 @@ public partial class WindowImpl : IWindowImpl
 		this.windowRenderer = new(this, this.glSurface);
 		this.compositor = compositor;
 
-		this.Position = new PixelPoint(1920 / 2, 1080 / 2);
+		this.Position = new PixelPoint(300, 100);
 	}
 
 	public WindowState WindowState { get; set; }
