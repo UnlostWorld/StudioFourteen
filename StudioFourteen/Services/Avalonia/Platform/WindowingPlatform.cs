@@ -45,6 +45,8 @@ public class WindowingPlatform : IWindowingPlatform, IDisposable
 		Studio.Tick.Add(TickChannels.Ui, this.OnUiTick);
 	}
 
+	public Window? WindowUnderCursor { get; private set; } = null;
+
 	public void Dispose()
 	{
 		Studio.Tick.Remove(TickChannels.Ui, this.OnUiTick);
@@ -76,6 +78,17 @@ public class WindowingPlatform : IWindowingPlatform, IDisposable
 		return impl;
 	}
 
+	public void ReloadAll()
+	{
+		foreach (WindowImpl windowImpl in this.windows)
+		{
+			if (windowImpl.Window is StudioWindowBase studioWindow)
+			{
+				studioWindow.WindowReference?.Reload();
+			}
+		}
+	}
+
 	private static void OnWindowOpened(object? sender, RoutedEventArgs e)
 	{
 		Window window = (Window)sender!;
@@ -94,11 +107,14 @@ public class WindowingPlatform : IWindowingPlatform, IDisposable
 			(int)(mousePosition.X * this.screens.RendererScreen.Bounds.Width),
 			(int)(mousePosition.Y * this.screens.RendererScreen.Bounds.Height));
 
+		this.WindowUnderCursor = null;
+
 		foreach (WindowImpl windowImpl in this.windows)
 		{
 			PixelPoint position = windowImpl.Position;
 			Size size = windowImpl.FrameSize ?? windowImpl.ClientSize;
 
+			// TODO: Z-SORT!
 			if (mousePoint.X > position.X
 				&& mousePoint.Y > position.Y
 				&& mousePoint.X < position.X + size.Width
@@ -106,6 +122,8 @@ public class WindowingPlatform : IWindowingPlatform, IDisposable
 			{
 				if (windowImpl.Window == null)
 					continue;
+
+				this.WindowUnderCursor = windowImpl.Window;
 
 				Point relativeMousePosition = new(mousePoint.X - position.X, mousePoint.Y - position.Y);
 
@@ -121,6 +139,7 @@ public class WindowingPlatform : IWindowingPlatform, IDisposable
 					relativeMousePosition,
 					modifiers);
 				windowImpl.HandleInput(args);
+				break;
 			}
 		}
 	}

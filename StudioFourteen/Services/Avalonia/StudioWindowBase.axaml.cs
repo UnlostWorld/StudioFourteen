@@ -19,6 +19,8 @@ using global::Avalonia.Controls;
 
 public partial class StudioWindowBase : Window
 {
+	public WindowReference? WindowReference;
+
 	public StudioWindowBase()
 	{
 		this.InitializeComponent();

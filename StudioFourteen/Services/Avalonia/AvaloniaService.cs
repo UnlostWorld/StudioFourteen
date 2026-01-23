@@ -40,7 +40,7 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 	// This will break plugin reloading.
 	public bool UseWin32Hybrid = false;
 
-	private readonly StudioWindow testWindow = new("UI/TestWindow.ui");
+	private readonly WindowReference testWindow = new("UI/TestWindow.ui");
 	private readonly UiPass renderingPass = new();
 	private readonly CancellationTokenSource cts = new();
 	private readonly Thread? uiThread;
@@ -65,6 +65,8 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 	public DispatcherImpl Dispatcher => this.dispatcher ?? throw new Exception("Avalonia not initalized");
 	public UiPass RenderPass => this.renderingPass;
 
+	public bool IsWindowUnderCursor => this.windowing?.WindowUnderCursor != null;
+
 	public void Dispose()
 	{
 		Studio.Rendering.OverlayRenderer.RemoveAfterEffectsPass(this.renderingPass);
@@ -78,6 +80,11 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 
 		AvaloniaLocator.Current = null!;
 		AvaloniaLocator.CurrentMutable = null!;
+	}
+
+	public void ReloadAll()
+	{
+		this.windowing?.ReloadAll();
 	}
 
 	private void StartImpl()

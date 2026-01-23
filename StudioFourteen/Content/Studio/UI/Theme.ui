@@ -1,85 +1,99 @@
 <ResourceDictionary>
-		<Color x:Key="ButtonBackground">#333333</Color>
-		<Color x:Key="ButtonHover">#444444</Color>
-		<Color x:Key="InputBackground">#151515</Color>
-		<Color x:Key="Foreground">#ECECEC</Color>
-		<Color x:Key="Trim">#FF1493</Color>
 
-		<sys:Double x:Key="ControlHeight">32</sys:Double>
+	<Color x:Key="InputBackground">#151515</Color>
+	<Color x:Key="Foreground">#ECECEC</Color>
+	<Color x:Key="Trim">#FF1493</Color>
 
-		<!-- Button -->
-		<ControlTheme x:Key="{x:Type Button}" TargetType="{x:Type Button}">
-			<Setter Property="Margin" Value="1,2" />
-			<Setter Property="Height" Value="{DynamicResource ControlHeight}" />
-			<Setter Property="Background" Value="{DynamicResource ButtonBackground}" />
-			<Setter Property="Foreground" Value="{DynamicResource Foreground}" />
-			<Setter Property="Padding" Value="3" />
-			<Setter Property="ClipToBounds" Value="False"/>
-			<Setter Property="Cursor" Value="Hand"/>
-			<Setter Property="Template">
-				<ControlTemplate>
-					<Panel>
+	<!-- Button -->
+	<ControlTheme x:Key="{x:Type Button}" TargetType="{x:Type Button}">
+		<Setter Property="Margin" Value="4" />
+		<Setter Property="Height" Value="32" />
+		<Setter Property="Background" Value="#666666" />
+		<Setter Property="Foreground" Value="{DynamicResource Foreground}" />
+		<Setter Property="Padding" Value="3" />
+		<Setter Property="ClipToBounds" Value="False" />
+		<Setter Property="Cursor" Value="Hand" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Panel>
+					<Border
+						CornerRadius="16"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Stretch"
+						BorderThickness="1"
+						BorderBrush="#99000000">
 						<Border
-							Name="Border"
-							CornerRadius="6"
+							CornerRadius="15"
 							HorizontalAlignment="Stretch"
 							VerticalAlignment="Stretch"
-							Background="#99666666"/>
+							BorderThickness="1"
+							BorderBrush="#99666666">
+							<Border
+								Name="Border"
+								CornerRadius="14"
+								Opacity="0.25"
+								HorizontalAlignment="Stretch"
+								VerticalAlignment="Stretch"
+								Background="{TemplateBinding Background}" />
+						</Border>
+					</Border>
 
-						<Grid>
-							<ContentPresenter
-								Name="PART_ContentPresenter"
-								HorizontalAlignment="Center"
-								VerticalAlignment="Center"
-								Margin="{TemplateBinding Padding}"
-								Content="{TemplateBinding Content}" />
+					<Grid>
+						<ContentPresenter
+							Name="PART_ContentPresenter"
+							HorizontalAlignment="Center"
+							VerticalAlignment="Center"
+							Margin="{TemplateBinding Padding}"
+							Content="{TemplateBinding Content}" />
+					</Grid>
+				</Panel>
+			</ControlTemplate>
+		</Setter>
 
-							<Grid.Effect>
-								<DropShadowEffect
-									Color="#FF000000"
-									BlurRadius="6"
-									OffsetX="0"
-									OffsetY="0"/>
-							</Grid.Effect>
-						</Grid>
-					</Panel>
-				</ControlTemplate>
-			</Setter>
-
-			<Style Selector="^:pointerover">
-				<Style Selector="^ /template/ Border#Border">
-					<Setter Property="Background" Value="{StaticResource ButtonHover}" />
-				</Style>
+		<Style Selector="^:pointerover">
+			<Style Selector="^ /template/ Border#Border">
+				<Setter Property="Opacity" Value="0.5" />
 			</Style>
+		</Style>
 
-			<Style Selector="^:pressed">
-				<Style Selector="^ /template/ Border#Border">
-					<Setter Property="Background" Value="{StaticResource ButtonBackground}" />
-				</Style>
+		<Style Selector="^:pressed">
+			<Style Selector="^ /template/ Border#Border">
+				<Setter Property="Opacity" Value="0.4" />
 			</Style>
+		</Style>
 
-		</ControlTheme>
+	</ControlTheme>
 
-		<!-- TextBox -->
-		<ControlTheme x:Key="{x:Type TextBox}" TargetType="{x:Type TextBox}">
-			<Setter Property="Margin" Value="1,2" />
-			<Setter Property="CaretBrush" Value="{DynamicResource Foreground}" />
-			<Setter Property="SelectionBrush" Value="{DynamicResource Background}" />
-			<Setter Property="TextAlignment" Value="Center" />
-			<Setter Property="Padding" Value="3" />
-			<Setter Property="Height" Value="{DynamicResource ControlHeight}" />
+	<!-- TextBox -->
+	<ControlTheme x:Key="{x:Type TextBox}" TargetType="{x:Type TextBox}">
+		<Setter Property="Margin" Value="4" />
+		<Setter Property="CaretBrush" Value="{DynamicResource Foreground}" />
+		<Setter Property="SelectionBrush" Value="{DynamicResource Background}" />
+		<Setter Property="TextAlignment" Value="Center" />
+		<Setter Property="Padding" Value="3" />
+		<Setter Property="MinHeight" Value="32" />
 			<Setter Property="Background" Value="{DynamicResource InputBackground}" />
 			<Setter Property="Foreground" Value="{DynamicResource Foreground}" />
 			<Setter Property="Cursor" Value="Ibeam"/>
 			<Setter Property="Template">
 				<ControlTemplate>
 					<Panel>
+					<Border
+						Margin="0"
+						CornerRadius="16"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Stretch"
+						BorderThickness="1"
+						BorderBrush="#99000000">
 						<Border
 							Name="Border"
-							CornerRadius="6"
+							CornerRadius="15"
 							HorizontalAlignment="Stretch"
 							VerticalAlignment="Stretch"
-							Background="#99000000"/>
+							Background="#99000000"
+							BorderThickness="1"
+							BorderBrush="#99666666" />
+					</Border>
 
 						<ScrollViewer Name="PART_ScrollViewer"
 							Grid.Column="1"
@@ -91,6 +105,14 @@
 							VerticalScrollBarVisibility="{TemplateBinding (ScrollViewer.VerticalScrollBarVisibility)}">
 
 							<Panel>
+
+							<TextBlock
+								Opacity="0.5"
+								Text="{TemplateBinding Watermark}"
+								HorizontalAlignment="Left"
+								VerticalAlignment="Center"
+								Margin="16,0,0,0" />
+
 								<TextPresenter
 									Name="PART_TextPresenter"
 									Margin="7"
@@ -121,12 +143,12 @@
 
 		</ControlTheme>
 
-		<!-- TextBox -->
+	<!-- TextBox -->
 		<ControlTheme x:Key="{x:Type TextBlock}" TargetType="{x:Type TextBlock}">
 			<Setter Property="Foreground" Value="{DynamicResource Foreground}" />
 		</ControlTheme>
 
-		<!-- Svg -->
+	<!-- Svg -->
 		<ControlTheme x:Key="{x:Type studio:Svg}" TargetType="{x:Type studio:Svg}">
 			<Setter Property="Foreground" Value="{DynamicResource Foreground}" />
 		</ControlTheme>

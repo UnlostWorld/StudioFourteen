@@ -17,13 +17,10 @@ namespace StudioFourteen.Services.Avalonia;
 
 using global::Avalonia;
 using global::Avalonia.Controls;
-using global::Avalonia.Controls.Presenters;
-using global::Avalonia.Layout;
 using StudioFourteen;
-using StudioFourteen.Services.Content;
 using StudioFourteen.Services.Tick;
 
-public class StudioWindow
+public class WindowReference
 {
 	private readonly AvaloniaContentReference<Visual> contentReference;
 	private readonly AvaloniaContentReference<Visual>? chromeReference;
@@ -31,7 +28,7 @@ public class StudioWindow
 	private StudioWindowBase? window;
 	private ContentControl? presenter;
 
-	public StudioWindow(string contentPath, bool hasChrome = true)
+	public WindowReference(string contentPath, bool hasChrome = true)
 	{
 		this.contentReference = new(contentPath);
 		this.contentReference.Reloaded += this.OnContentReloaded;
@@ -46,7 +43,10 @@ public class StudioWindow
 	public void Show()
 	{
 		if (this.window == null)
+		{
 			this.window = new();
+			this.window.WindowReference = this;
+		}
 
 		if (this.chromeReference != null)
 		{
@@ -66,6 +66,12 @@ public class StudioWindow
 	public void Close()
 	{
 		this.window?.Close();
+	}
+
+	public void Reload()
+	{
+		this.OnContentReloaded();
+		this.OnChromeReloaded();
 	}
 
 	private void OnContentReloaded()

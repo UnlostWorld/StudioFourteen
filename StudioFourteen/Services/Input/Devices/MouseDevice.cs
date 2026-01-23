@@ -269,7 +269,10 @@ public class MouseDevice : InputDeviceBase
 		////if (Studio.Reshade.IsReshadeOverlayOpen)
 		////	return false;
 
-		// TODO: Needs to be true when the cursor is over a Studio window or handle.
+		if (Studio.Avalonia.IsWindowUnderCursor)
+			return true;
+
+		// TODO: Needs to be true when the cursor is over a handle.
 		return false;
 	}
 }

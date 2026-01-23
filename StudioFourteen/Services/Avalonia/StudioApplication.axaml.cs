@@ -45,6 +45,7 @@ public partial class StudioApplication : Application
 		Studio.Tick.Dispatch(TickChannels.Ui, () =>
 		{
 			this.LoadTheme();
+			Studio.Avalonia.ReloadAll();
 		});
 	}
 }
