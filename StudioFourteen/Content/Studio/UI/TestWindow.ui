@@ -79,7 +79,8 @@
 		<!-- Normal button -->
 		<Button
 			Grid.Column="1"
-			Content="Continue" />
+			Content="{Binding ClickCount}"
+			Command="{Binding Next}" />
 
 	</Grid>
 

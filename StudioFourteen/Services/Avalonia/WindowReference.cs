@@ -15,12 +15,13 @@
 
 namespace StudioFourteen.Services.Avalonia;
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using global::Avalonia;
 using global::Avalonia.Controls;
 using StudioFourteen;
 using StudioFourteen.Services.Tick;
 
-public class WindowReference
+public class WindowReference : ObservableObject
 {
 	private readonly AvaloniaContentReference<Visual> contentReference;
 	private readonly AvaloniaContentReference<Visual>? chromeReference;
@@ -46,6 +47,7 @@ public class WindowReference
 		{
 			this.window = new();
 			this.window.WindowReference = this;
+			this.window.DataContext = this;
 		}
 
 		if (this.chromeReference != null)

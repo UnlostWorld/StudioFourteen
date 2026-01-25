@@ -29,6 +29,7 @@ using global::Avalonia.Rendering.Composition;
 using global::Avalonia.Threading;
 using StudioFourteen.Services.Dalamud;
 using StudioFourteen.Services.Avalonia.Platform;
+using StudioFourteen.Interface;
 
 public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 {
@@ -40,7 +41,7 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 	// This will break plugin reloading.
 	public bool UseWin32Hybrid = false;
 
-	private readonly WindowReference testWindow = new("UI/TestWindow.ui");
+	private readonly TestWindow testWindow = new();
 	private readonly UiPass renderingPass = new();
 	private readonly CancellationTokenSource cts = new();
 	private readonly Thread? uiThread;
