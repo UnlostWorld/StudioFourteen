@@ -11,6 +11,7 @@
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition />
 			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="Auto" />
 		</Grid.ColumnDefinitions>
 
 		<TextBlock
@@ -23,7 +24,31 @@
 			Grid.Column="1"
 			Width="200"
 			Watermark="Search"
-			Margin="4,4,42,4" />
+			Margin="4,4,4,4" />
+
+		<!-- Should react based on window chrome changes somehow...-->
+		<Grid
+			Grid.Column="2"
+			Classes.Expand="{Binding $parent[Window].IsPointerOver}">
+
+			<Grid.Styles>
+				<Style Selector="Grid">
+					<Setter Property="Width" Value="0" />
+					<Setter Property="Transitions">
+						<Transitions>
+							<DoubleTransition
+								Property="Width"
+								Duration="0:0:0.500"
+								Easing="CircularEaseInOut" />
+						</Transitions>
+					</Setter>
+				</Style>
+				<Style Selector="Grid.Expand">
+					<Setter Property="Width" Value="32" />
+				</Style>
+			</Grid.Styles>
+		</Grid>
+
 	</Grid>
 
 	<Border
@@ -32,7 +57,7 @@
 		CornerRadius="16"
 		HorizontalAlignment="Stretch"
 		VerticalAlignment="Stretch"
-		Background="#99000000">
+		Background="#66000000">
 		<TextBlock
 			Text="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
 			TextWrapping="Wrap"
@@ -45,11 +70,13 @@
 			<ColumnDefinition />
 		</Grid.ColumnDefinitions>
 
+		<!-- Red button -->
 		<Button
 			Grid.Column="0"
 			Content="Cancel"
 			Background="#FF6666" />
 
+		<!-- Normal button -->
 		<Button
 			Grid.Column="1"
 			Content="Continue" />

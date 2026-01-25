@@ -25,6 +25,7 @@ using global::Avalonia.Input.Raw;
 using global::Avalonia.Interactivity;
 using global::Avalonia.Platform;
 using global::Avalonia.Rendering.Composition;
+using StudioFourteen.Services.Input;
 using StudioFourteen.Services.Tick;
 
 public class WindowingPlatform : IWindowingPlatform, IDisposable
@@ -32,9 +33,14 @@ public class WindowingPlatform : IWindowingPlatform, IDisposable
 	private readonly AvaloniaList<WindowImpl> windows = new();
 	private readonly StudioScreens screens;
 
+	private readonly Input0DListener mousePrimaryClickListener = new(InputAction.UI_Primary_Click);
+	private readonly Input0DListener mouseSecondaryClickListener = new(InputAction.UI_Secondary_Click);
+	private readonly Input0DListener mouseMiddleClickListener = new(InputAction.UI_Middle_Click);
+
 	private readonly TouchDevice touchDevice = new();
 	private readonly MouseDevice mouseDevice = new();
 	private readonly PenDevice penDevice = new();
+	private Window? windowUnderCursor = null;
 
 	public WindowingPlatform(StudioScreens screen)
 	{
@@ -45,7 +51,45 @@ public class WindowingPlatform : IWindowingPlatform, IDisposable
 		Studio.Tick.Add(TickChannels.Ui, this.OnUiTick);
 	}
 
-	public Window? WindowUnderCursor { get; private set; } = null;
+	public Window? WindowUnderCursor
+	{
+		get => this.windowUnderCursor;
+		private set
+		{
+			if (this.windowUnderCursor == value)
+				return;
+
+			if (this.windowUnderCursor?.PlatformImpl is WindowImpl leftWindow)
+			{
+				ulong ts = (ulong)DateTime.UtcNow.Ticks;
+				RawPointerEventType type = RawPointerEventType.LeaveWindow;
+				RawInputModifiers modifiers = RawInputModifiers.None;
+				RawPointerEventArgs args = new(
+					this.mouseDevice,
+					ts,
+					this.windowUnderCursor,
+					type,
+					new Point(0, 0),
+					modifiers);
+				leftWindow.HandleInput(args);
+			}
+
+			this.windowUnderCursor = value;
+
+			if (this.windowUnderCursor == null)
+			{
+				this.mousePrimaryClickListener.Disable();
+				this.mouseSecondaryClickListener.Disable();
+				this.mouseMiddleClickListener.Disable();
+			}
+			else
+			{
+				this.mousePrimaryClickListener.Enable();
+				this.mouseSecondaryClickListener.Enable();
+				this.mouseMiddleClickListener.Enable();
+			}
+		}
+	}
 
 	public void Dispose()
 	{
@@ -107,8 +151,7 @@ public class WindowingPlatform : IWindowingPlatform, IDisposable
 			(int)(mousePosition.X * this.screens.RendererScreen.Bounds.Width),
 			(int)(mousePosition.Y * this.screens.RendererScreen.Bounds.Height));
 
-		this.WindowUnderCursor = null;
-
+		WindowImpl? bestWindow = null;
 		foreach (WindowImpl windowImpl in this.windows)
 		{
 			PixelPoint position = windowImpl.Position;
@@ -123,23 +166,106 @@ public class WindowingPlatform : IWindowingPlatform, IDisposable
 				if (windowImpl.Window == null)
 					continue;
 
-				this.WindowUnderCursor = windowImpl.Window;
-
-				Point relativeMousePosition = new(mousePoint.X - position.X, mousePoint.Y - position.Y);
-
-				ulong ts = (ulong)DateTime.UtcNow.Ticks;
-
-				RawPointerEventType type = RawPointerEventType.Move;
-				RawInputModifiers modifiers = RawInputModifiers.None;
-				var args = new RawPointerEventArgs(
-					this.mouseDevice,
-					ts,
-					windowImpl.Window,
-					type,
-					relativeMousePosition,
-					modifiers);
-				windowImpl.HandleInput(args);
+				bestWindow = windowImpl;
 				break;
+			}
+		}
+
+		this.WindowUnderCursor = bestWindow?.Window;
+
+		if (bestWindow != null && bestWindow.Window != null)
+		{
+			Point relativeMousePosition = new(
+				mousePoint.X - bestWindow.Position.X,
+				mousePoint.Y - bestWindow.Position.Y);
+
+			ulong timeStamp = (ulong)DateTime.UtcNow.Ticks;
+
+			// TODO:
+			RawInputModifiers modifiers = RawInputModifiers.None;
+
+			bestWindow.HandleInput(
+				new RawPointerEventArgs(
+					this.mouseDevice,
+					timeStamp,
+					bestWindow.Window,
+					RawPointerEventType.Move,
+					relativeMousePosition,
+					modifiers));
+
+			// Left Click
+			InputStates mousePrimaryState = this.mousePrimaryClickListener.GetState();
+			if (mousePrimaryState == InputStates.Activated)
+			{
+				bestWindow.HandleInput(
+				new RawPointerEventArgs(
+					this.mouseDevice,
+					timeStamp,
+					bestWindow.Window,
+					RawPointerEventType.LeftButtonDown,
+					relativeMousePosition,
+					modifiers));
+			}
+			else if (mousePrimaryState == InputStates.Deactivated)
+			{
+				bestWindow.HandleInput(
+				new RawPointerEventArgs(
+					this.mouseDevice,
+					timeStamp,
+					bestWindow.Window,
+					RawPointerEventType.LeftButtonUp,
+					relativeMousePosition,
+					modifiers));
+			}
+
+			// Right Click
+			InputStates mouseSecondaryState = this.mouseSecondaryClickListener.GetState();
+			if (mouseSecondaryState == InputStates.Activated)
+			{
+				bestWindow.HandleInput(
+				new RawPointerEventArgs(
+					this.mouseDevice,
+					timeStamp,
+					bestWindow.Window,
+					RawPointerEventType.RightButtonDown,
+					relativeMousePosition,
+					modifiers));
+			}
+			else if (mouseSecondaryState == InputStates.Deactivated)
+			{
+				bestWindow.HandleInput(
+				new RawPointerEventArgs(
+					this.mouseDevice,
+					timeStamp,
+					bestWindow.Window,
+					RawPointerEventType.RightButtonUp,
+					relativeMousePosition,
+					modifiers));
+			}
+
+			// Middle Click
+			InputStates mouseMiddleState = this.mouseMiddleClickListener.GetState();
+			if (mouseSecondaryState == InputStates.Activated)
+			{
+				bestWindow.HandleInput(
+				new RawPointerEventArgs(
+					this.mouseDevice,
+					timeStamp,
+					bestWindow.Window,
+					RawPointerEventType.MiddleButtonDown,
+					relativeMousePosition,
+					modifiers));
+			}
+			else if (mouseSecondaryState == InputStates.Deactivated)
+			{
+				bestWindow.HandleInput(
+				new RawPointerEventArgs(
+					this.mouseDevice,
+					timeStamp,
+					bestWindow.Window,
+					RawPointerEventType.MiddleButtonUp,
+					relativeMousePosition,
+					modifiers));
 			}
 		}
 	}

@@ -15,11 +15,32 @@
 			<Grid
 				HorizontalAlignment="Right"
 				VerticalAlignment="Top">
+
 				<Ellipse
 					Fill="#FFFF5555"
 					Width="14"
 					Height="14"
-					Margin="15" />
+					Margin="15"
+					Classes.Expand="{Binding $parent[Window].IsPointerOver}">
+
+					<Ellipse.Styles>
+						<Style Selector="Ellipse">
+							<Setter Property="Opacity" Value="0" />
+							<Setter Property="Transitions">
+								<Transitions>
+									<DoubleTransition
+										Property="Opacity"
+										Duration="0:0:0.500"
+										Easing="CircularEaseInOut" />
+								</Transitions>
+							</Setter>
+						</Style>
+						<Style Selector="Ellipse.Expand">
+							<Setter Property="Opacity" Value="1" />
+						</Style>
+					</Ellipse.Styles>
+				</Ellipse>
+
 			</Grid>
 
 			<ContentControl
