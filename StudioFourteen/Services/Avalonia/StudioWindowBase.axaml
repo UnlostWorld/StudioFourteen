@@ -12,7 +12,10 @@
 	TransparencyLevelHint="Transparent"
 	Background="Transparent"
 	ExtendClientAreaToDecorationsHint="True"
-	mc:Ignorable="d">
+	mc:Ignorable="d"
+	PointerMoved="OnPointerMoved"
+	PointerPressed="OnPointerPressed"
+	PointerReleased="OnPointerReleased">
 
 	<ProgressBar
 		Margin="10"

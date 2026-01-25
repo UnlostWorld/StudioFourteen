@@ -123,12 +123,14 @@ public partial class WindowImpl : IWindowImpl
 		Studio.Avalonia.RenderPass.Remove(this.windowRenderer);
 	}
 
-	public void Move(PixelPoint point)
-	{
-	}
-
 	public Point PointToClient(PixelPoint point) => new Point(point.X - this.Position.X, point.Y - this.Position.Y);
 	public PixelPoint PointToScreen(Point point) => this.Position + new PixelPoint((int)point.X, (int)point.Y);
+
+	public void Move(PixelPoint point)
+	{
+		this.Position = point;
+		this.PositionChanged?.Invoke(point);
+	}
 
 	public void Resize(Size clientSize, WindowResizeReason reason = WindowResizeReason.Application)
 	{
