@@ -34,9 +34,10 @@ cbuffer RendererInstanceData : register(RendererDataRegister)
 
 cbuffer MaterialInstanceData : register(MaterialDataRegister)
 {
+	float4 CornerRadius;
+	float4 Margin;
 	float2 WindowSize;
-	float CornerRadius;
-	float Margin;
+	float2 Unused;
 };
 
 struct Fragment
@@ -76,46 +77,64 @@ float4 pixel(Fragment fragment) : SV_TARGET
 	float2 pixelPos = fragment.TexCoord * WindowSize;
 
 	// Margin
-	if (Margin > 0)
+	if (pixelPos.x < Margin.x
+		|| pixelPos.y < Margin.y
+		|| pixelPos.x > (WindowSize.x - Margin.z)
+		|| pixelPos.y > WindowSize.y - Margin.w)
 	{
-		if (pixelPos.x < Margin
-			|| pixelPos.y < Margin
-			|| pixelPos.x > WindowSize.x - Margin
-			|| pixelPos.y > WindowSize.y - Margin)
-		{
-			bgIntensity = 0;
-		}
+		bgIntensity = 0;
 	}
 
 	// Round corners
-	if (bgIntensity > 0 && CornerRadius > 0)
+	if (bgIntensity > 0)
 	{
-		float CornerMargin = CornerRadius + Margin;
+		float2 cornerPos;
+		float2 radiusMargin;
+		float radius;
 
-		if(pixelPos.x < CornerMargin
-			&& pixelPos.y < CornerMargin
-			&& length(pixelPos - float2(CornerMargin, CornerMargin)) > CornerRadius)
+		cornerPos = Margin.xy;
+		radius = CornerRadius.x;
+		radiusMargin.x = radius;
+		radiusMargin.y = radius;
+		if(pixelPos.x < cornerPos.x + radiusMargin.x
+			&& pixelPos.y < cornerPos.y + radiusMargin.y
+			&& length(pixelPos - float2(cornerPos.x + radiusMargin.x, cornerPos.y + radiusMargin.y)) > radius)
 		{
 			bgIntensity = 0;
 		}
 
-		if(pixelPos.x > WindowSize.x - CornerMargin
-			&& pixelPos.y < CornerMargin
-			&& length(pixelPos - float2(WindowSize.x - CornerMargin, CornerMargin)) > CornerRadius)
+		cornerPos.x = WindowSize.x - Margin.z;
+		cornerPos.y = Margin.y;
+		radius = CornerRadius.y;
+		radiusMargin.x = -radius;
+		radiusMargin.y = radius;
+		if(pixelPos.x > cornerPos.x + radiusMargin.x
+			&& pixelPos.y < cornerPos.y + radiusMargin.y
+			&& length(pixelPos - float2(cornerPos.x + radiusMargin.x, cornerPos.y + radiusMargin.y)) > radius)
 		{
 			bgIntensity = 0;
 		}
 
-		if(pixelPos.x < CornerMargin
-			&& pixelPos.y > WindowSize.y - CornerMargin
-			&& length(pixelPos - float2(CornerMargin, WindowSize.y - CornerMargin)) > CornerRadius)
+		cornerPos.x = WindowSize.x - Margin.z;
+		cornerPos.y = WindowSize.y - Margin.y;
+		radius = CornerRadius.z;
+		radiusMargin.x = -radius;
+		radiusMargin.y = -radius;
+		if(pixelPos.x > cornerPos.x + radiusMargin.x
+			&& pixelPos.y > cornerPos.y + radiusMargin.y
+			&& length(pixelPos - float2(cornerPos.x + radiusMargin.x, cornerPos.y + radiusMargin.y)) > radius)
 		{
 			bgIntensity = 0;
 		}
 
-		if(pixelPos.x > WindowSize.x - CornerMargin
-			&& pixelPos.y > WindowSize.y - CornerMargin
-			&& length(pixelPos - float2(WindowSize.x - CornerMargin, WindowSize.y - CornerMargin)) > CornerRadius)
+		cornerPos.x = Margin.x;
+		cornerPos.y = WindowSize.y - Margin.z;
+		radius = CornerRadius.z;
+		radiusMargin.x = radius;
+		radiusMargin.y = -radius;
+		if(pixelPos.x < cornerPos.x + radiusMargin.x
+			&& pixelPos.y > cornerPos.y + radiusMargin.y
+			&& length(pixelPos - float2(cornerPos.x + radiusMargin.x, cornerPos.y + radiusMargin.y)) > radius)
 		{
 			bgIntensity = 0;
 		}

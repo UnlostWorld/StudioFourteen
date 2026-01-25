@@ -17,6 +17,7 @@ namespace StudioFourteen.Services.Avalonia.Platform;
 
 using System;
 using System.Collections.Generic;
+using System.Numerics;
 using global::Avalonia;
 using global::Avalonia.Controls;
 using global::Avalonia.Input;
@@ -27,6 +28,8 @@ using global::Avalonia.Rendering.Composition;
 public partial class WindowImpl : IWindowImpl
 {
 	public Window? Window;
+	public Vector4 CornerRadius;
+	public Vector4 Margin;
 
 	private readonly WindowRenderer windowRenderer;
 	private readonly DxgiSurface glSurface;

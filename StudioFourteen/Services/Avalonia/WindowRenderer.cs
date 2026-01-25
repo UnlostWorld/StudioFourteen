@@ -89,9 +89,9 @@ public partial class WindowRenderer : MeshRenderer<WindowRenderer.AvaloniaUiMate
 			Quaternion.Identity,
 			scale);
 
-		this.Material.CornerRadius = 20;
-		this.Material.Margin = 20;
 		this.Material.WindowSize = new Vector2((float)windowSize.Width, (float)windowSize.Height);
+		this.Material.CornerRadius = this.window.CornerRadius;
+		this.Material.Margin = this.window.Margin;
 
 		return base.Draw(renderer, transform, device, deviceContext);
 	}
@@ -107,9 +107,10 @@ public partial class WindowRenderer : MeshRenderer<WindowRenderer.AvaloniaUiMate
 	[StructLayout(LayoutKind.Sequential)]
 	public struct AvaloniaUiMaterial : IMaterial
 	{
+		public Vector4 CornerRadius;
+		public Vector4 Margin;
 		public Vector2 WindowSize;
-		public float CornerRadius;
-		public float Margin;
+		public Vector2 Unused;
 
 		public IContent<ShaderBytecode>? GetVertexShader()
 			=> new ShaderReference("Shaders/AvaloniaUiComp.hlsl", "vs_4_0", "vert");

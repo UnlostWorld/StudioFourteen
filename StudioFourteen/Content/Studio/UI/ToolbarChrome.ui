@@ -1,16 +1,17 @@
 <Border
 	BoxShadow="0 3 17 2 #FF000000"
-	CornerRadius="20"
+	CornerRadius="0, 0, 20, 20"
 	BorderThickness="1"
-	Margin="20"
+	Margin="20, 0, 20, 20"
 	BorderBrush="#99000000"
 	Background="#99222222"
 	Height="42"
-	Width="1024">
+	Width="1024"
+	x:Name="Chrome">
 
 	<Border
-		BorderThickness="1"
-		CornerRadius="19"
+		BorderThickness="1, 0, 1, 1"
+		CornerRadius="0, 0, 19, 19"
 		BorderBrush="#99666666">
 
 		<Grid>

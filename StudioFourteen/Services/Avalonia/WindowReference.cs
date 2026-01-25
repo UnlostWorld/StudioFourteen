@@ -21,6 +21,7 @@ using global::Avalonia;
 using global::Avalonia.Controls;
 using global::Avalonia.Layout;
 using StudioFourteen;
+using StudioFourteen.Services.Avalonia.Platform;
 using StudioFourteen.Services.Tick;
 
 public class WindowReference : ObservableObject
@@ -68,7 +69,7 @@ public class WindowReference : ObservableObject
 			this.presenter = this.window;
 		}
 
-		this.presenter?.Content = this.contentReference.Get();
+		this.Reload();
 		this.window.Show();
 	}
 
@@ -79,8 +80,8 @@ public class WindowReference : ObservableObject
 
 	public void Reload()
 	{
-		this.OnContentReloaded();
 		this.OnChromeReloaded();
+		this.OnContentReloaded();
 	}
 
 	private void OnContentReloaded()
@@ -106,8 +107,25 @@ public class WindowReference : ObservableObject
 			Visual chromeVisual = this.chromeReference.Get();
 			this.window.Content = chromeVisual;
 			this.presenter = chromeVisual.Find<ContentControl>("WindowContents");
-
 			this.presenter?.Content = this.contentReference.Get();
+
+			if (this.window.PlatformImpl is WindowImpl impl)
+			{
+				Border? chrome = chromeVisual.Find<Border>("Chrome");
+				if (chrome != null)
+				{
+					impl.CornerRadius.X = (float)chrome.CornerRadius.TopLeft;
+					impl.CornerRadius.Y = (float)chrome.CornerRadius.TopRight;
+					impl.CornerRadius.Z = (float)chrome.CornerRadius.BottomRight;
+					impl.CornerRadius.W = (float)chrome.CornerRadius.BottomLeft;
+					impl.Margin.X = (float)chrome.Margin.Left;
+					impl.Margin.Y = (float)chrome.Margin.Top;
+					impl.Margin.Z = (float)chrome.Margin.Right;
+					impl.Margin.W = (float)chrome.Margin.Bottom;
+
+					Studio.Log.Information($">> {impl.Margin}");
+				}
+			}
 		});
 	}
 }

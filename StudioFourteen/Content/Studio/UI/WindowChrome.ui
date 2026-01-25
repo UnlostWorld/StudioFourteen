@@ -4,7 +4,8 @@
 	BorderThickness="1"
 	Margin="20"
 	BorderBrush="#99000000"
-	Background="#99222222">
+	Background="#99222222"
+	x:Name="Chrome">
 
 	<Border
 		BorderThickness="1"
