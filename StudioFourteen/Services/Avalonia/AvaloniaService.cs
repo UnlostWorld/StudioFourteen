@@ -33,6 +33,8 @@ using StudioFourteen.Interface;
 
 public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 {
+	public readonly StudioMouseDevice MouseDevice;
+
 	public long DispatcherFramerate = 60;
 	public long RenderFramerate = 60;
 
@@ -59,14 +61,17 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 		ThreadStart ts = new(this.StartImpl);
 		this.uiThread = new Thread(ts);
 		this.uiThread.Start();
+
+		this.MouseDevice = new();
 	}
 
 	public event EventHandler<ShutdownRequestedEventArgs>? ShutdownRequested;
 
 	public DispatcherImpl Dispatcher => this.dispatcher ?? throw new Exception("Avalonia not initalized");
 	public UiPass RenderPass => this.renderingPass;
+	public WindowingPlatform Windowing => this.windowing ?? throw new Exception("Avalonia not initalized");
 
-	public bool IsWindowUnderCursor => this.windowing?.WindowUnderCursor != null;
+	public bool IsWindowUnderCursor => this.MouseDevice.WindowUnderCursor != null;
 
 	public void Dispose()
 	{
@@ -78,6 +83,7 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 		this.windowing?.Dispose();
 		this.cts.Cancel();
 		this.renderTimer?.Dispose();
+		this.MouseDevice.DisposeMouse();
 
 		AvaloniaLocator.Current = null!;
 		AvaloniaLocator.CurrentMutable = null!;
