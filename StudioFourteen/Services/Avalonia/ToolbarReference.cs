@@ -15,7 +15,31 @@
 
 namespace StudioFourteen.Services.Avalonia;
 
-public class ToolbarReference(string contentPath)
+using System;
+using System.Numerics;
+
+public enum ToolbarPosition
+{
+	Top,
+	Bottom,
+}
+
+public class ToolbarReference(string contentPath, ToolbarPosition position = ToolbarPosition.Top)
  : WindowReference(contentPath, "UI/ToolbarChrome.ui")
 {
+	public override bool CanDragMove => false;
+
+	public override Vector2 DefaultPosition
+	{
+		get
+		{
+			switch (position)
+			{
+				case ToolbarPosition.Top: return new(0.5f, 0);
+				case ToolbarPosition.Bottom: return new(0.5f, 1);
+			}
+
+			throw new NotImplementedException();
+		}
+	}
 }

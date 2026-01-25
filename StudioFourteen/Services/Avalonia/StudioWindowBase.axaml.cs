@@ -15,9 +15,13 @@
 
 namespace StudioFourteen.Services.Avalonia;
 
+using System;
+using System.Numerics;
 using global::Avalonia;
 using global::Avalonia.Controls;
 using global::Avalonia.Input;
+using global::Avalonia.Interactivity;
+using global::Avalonia.Platform;
 
 public partial class StudioWindowBase : Window
 {
@@ -28,10 +32,31 @@ public partial class StudioWindowBase : Window
 	public StudioWindowBase()
 	{
 		this.InitializeComponent();
+		this.Loaded += this.OnLoadComplete;
+	}
+
+	private void OnLoadComplete(object? sender, RoutedEventArgs e)
+	{
+		Screen? screen = this.Screens.ScreenFromWindow(this);
+		if (screen == null)
+			return;
+
+		Size size = this.FrameSize ?? this.ClientSize;
+		Vector2 pos = this.WindowReference?.DefaultPosition ?? new(0.5f, 0.5f);
+
+		Vector2 screenPos = new(screen.WorkingArea.Width * pos.X, screen.WorkingArea.Height * pos.Y);
+		Vector2 windowPos = new((float)size.Width * pos.X, (float)size.Height * pos.Y);
+
+		this.Position = new PixelPoint(
+			(int)(screenPos.X - windowPos.X),
+			(int)(screenPos.Y - windowPos.Y));
 	}
 
 	private void OnPointerMoved(object? sender, PointerEventArgs e)
 	{
+		if (this.WindowReference?.CanDragMove == false)
+			return;
+
 		if (this.mouseDragStart == null)
 			return;
 
@@ -43,11 +68,17 @@ public partial class StudioWindowBase : Window
 
 	private void OnPointerPressed(object? sender, PointerPressedEventArgs e)
 	{
+		if (this.WindowReference?.CanDragMove == false)
+			return;
+
 		this.mouseDragStart = e.GetCurrentPoint(this);
 	}
 
 	private void OnPointerReleased(object? sender, PointerReleasedEventArgs e)
 	{
+		if (this.WindowReference?.CanDragMove == false)
+			return;
+
 		this.mouseDragStart = null;
 	}
 }

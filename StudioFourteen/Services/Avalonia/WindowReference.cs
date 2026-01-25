@@ -45,6 +45,9 @@ public class WindowReference : ObservableObject
 		}
 	}
 
+	public virtual bool CanDragMove => true;
+	public virtual Vector2 DefaultPosition => new(0.5f, 0.5f);
+
 	public void Show()
 	{
 		if (this.window == null)
