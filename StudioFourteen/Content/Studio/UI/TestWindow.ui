@@ -1,4 +1,6 @@
-<Grid>
+<Grid
+	Height="350"
+	Width="600">
 
 	<Grid.RowDefinitions>
 		<RowDefinition Height="Auto" />

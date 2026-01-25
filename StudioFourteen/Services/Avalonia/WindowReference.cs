@@ -15,9 +15,11 @@
 
 namespace StudioFourteen.Services.Avalonia;
 
+using System.Numerics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using global::Avalonia;
 using global::Avalonia.Controls;
+using global::Avalonia.Layout;
 using StudioFourteen;
 using StudioFourteen.Services.Tick;
 
@@ -29,14 +31,16 @@ public class WindowReference : ObservableObject
 	private StudioWindowBase? window;
 	private ContentControl? presenter;
 
-	public WindowReference(string contentPath, bool hasChrome = true)
+	public WindowReference(
+		string contentPath,
+		string? chromePath = "UI/WindowChrome.ui")
 	{
 		this.contentReference = new(contentPath);
 		this.contentReference.Reloaded += this.OnContentReloaded;
 
-		if (hasChrome)
+		if (!string.IsNullOrEmpty(chromePath))
 		{
-			this.chromeReference = new("UI/WindowChrome.ui");
+			this.chromeReference = new(chromePath);
 			this.chromeReference.Reloaded += this.OnChromeReloaded;
 		}
 	}

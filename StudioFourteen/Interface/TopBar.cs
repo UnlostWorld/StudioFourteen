@@ -13,40 +13,11 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Avalonia;
+namespace StudioFourteen.Interface;
 
-using System;
-using System.IO;
-using global::Avalonia;
-using global::Avalonia.Markup.Xaml;
-using StudioFourteen.Services.Content;
+using StudioFourteen.Services.Avalonia;
 
-public class AvaloniaContentReference<T>(string path)
-	: ContentReference<T>(path)
-	where T : AvaloniaObject, new()
+public class TopBar()
+	: ToolbarReference("UI/TopBar.ui")
 {
-	private const string XmlNamespaces = @"
-		xmlns=""https://github.com/avaloniaui""
-		xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""
-		xmlns:studio=""clr-namespace:StudioFourteen.Services.Avalonia.Controls;assembly=StudioFourteen""
-		xmlns:sys=""clr-namespace:System;assembly=mscorlib""
-	";
-
-	protected override T Load(Stream stream)
-	{
-		using StreamReader reader = new(stream);
-		string xaml = reader.ReadToEnd();
-
-		if (string.IsNullOrEmpty(xaml))
-			xaml = "<Grid></Grid>";
-
-		int endRootTag = xaml.IndexOf('>');
-		xaml = xaml.Insert(endRootTag, XmlNamespaces);
-
-		object obj = AvaloniaRuntimeXamlLoader.Load(xaml);
-		if (obj is not T tObj)
-			throw new Exception("Failed to load ui resource");
-
-		return tObj;
-	}
 }

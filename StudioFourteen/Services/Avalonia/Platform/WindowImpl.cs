@@ -41,6 +41,7 @@ public partial class WindowImpl : IWindowImpl
 		this.compositor = compositor;
 
 		this.Position = new PixelPoint(300, 100);
+		this.ClientSize = new Size(256, 256);
 	}
 
 	public WindowState WindowState { get; set; }
@@ -58,6 +59,7 @@ public partial class WindowImpl : IWindowImpl
 
 	public double DesktopScaling => 1;
 	public double RenderScaling => 1;
+	public Size MaxAutoSizeHint => new Size(4096, 4096);
 
 	public Size? FrameSize { get; private set; }
 	public Size ClientSize { get; private set; }
@@ -66,7 +68,6 @@ public partial class WindowImpl : IWindowImpl
 	public Action<PixelPoint>? PositionChanged { get; set; }
 	public Action? Deactivated { get; set; }
 	public Action? Activated { get; set; }
-	public Size MaxAutoSizeHint { get; }
 	public IPlatformHandle? Handle { get; }
 	public Action<RawInputEventArgs>? Input { get; set; }
 	public Action<Rect>? Paint { get; set; }
@@ -134,10 +135,14 @@ public partial class WindowImpl : IWindowImpl
 
 	public void Resize(Size clientSize, WindowResizeReason reason = WindowResizeReason.Application)
 	{
-		this.ClientSize = clientSize;
+		Size finalClientSize = new(
+			Math.Clamp(clientSize.Width, 32, 4096),
+			Math.Clamp(clientSize.Height, 32, 4096));
 
-		// No real window chrome, so one-to-one with client size.
-		this.FrameSize = clientSize;
+		this.ClientSize = finalClientSize;
+		this.FrameSize = finalClientSize;
+
+		this.Resized?.Invoke(finalClientSize, reason);
 	}
 
 	public void SetCanMaximize(bool value)

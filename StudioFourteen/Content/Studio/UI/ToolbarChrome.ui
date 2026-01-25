@@ -4,7 +4,9 @@
 	BorderThickness="1"
 	Margin="20"
 	BorderBrush="#99000000"
-	Background="#99222222">
+	Background="#99222222"
+	Height="32"
+	Width="1024">
 
 	<Border
 		BorderThickness="1"

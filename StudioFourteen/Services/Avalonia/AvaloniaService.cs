@@ -44,6 +44,7 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 	public bool UseWin32Hybrid = false;
 
 	private readonly TestWindow testWindow = new();
+	private readonly TopBar topBar = new();
 	private readonly UiPass renderingPass = new();
 	private readonly CancellationTokenSource cts = new();
 	private readonly Thread? uiThread;
@@ -151,6 +152,7 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 
 					try
 					{
+						this.topBar.Show();
 						this.testWindow.Show();
 					}
 					catch (Exception ex)

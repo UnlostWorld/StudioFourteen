@@ -45,7 +45,7 @@ public class KeyboardDevice : InputDeviceBase
 
 	public override void PreUpdate()
 	{
-		if (Studio.Input.IsXivTextInputActive)
+		if (Studio.IsDisposed || Studio.Input.IsXivTextInputActive)
 			return;
 
 		foreach (InputAxis axis in this.Axes)
