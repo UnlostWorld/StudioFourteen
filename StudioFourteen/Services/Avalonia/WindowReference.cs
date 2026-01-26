@@ -122,8 +122,6 @@ public class WindowReference : ObservableObject
 					impl.Margin.Y = (float)chrome.Margin.Top;
 					impl.Margin.Z = (float)chrome.Margin.Right;
 					impl.Margin.W = (float)chrome.Margin.Bottom;
-
-					Studio.Log.Information($">> {impl.Margin}");
 				}
 			}
 		});
