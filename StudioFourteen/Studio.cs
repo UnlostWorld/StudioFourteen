@@ -30,6 +30,7 @@ using StudioFourteen.Services.Serialization;
 using StudioFourteen.Services;
 using StudioFourteen.Services.Library;
 using StudioFourteen.Services.Scene;
+using StudioFourteen.Services.Portraits;
 
 public sealed class Studio : IDalamudPlugin
 {
@@ -50,6 +51,7 @@ public sealed class Studio : IDalamudPlugin
 		Window = new();
 		Library = new();
 		Scene = new();
+		Portraits = new();
 	}
 
 	public static bool IsDisposed { get; private set; } = false;
@@ -67,6 +69,7 @@ public sealed class Studio : IDalamudPlugin
 	public static WindowService Window { get; private set; } = null!;
 	public static LibraryService Library { get; private set; } = null!;
 	public static SceneService Scene { get; private set; } = null!;
+	public static PortraitService Portraits { get; private set; } = null!;
 
 	[PluginService] public static IPluginLog DalamudLog { get; private set; } = null!;
 	[PluginService] public static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
@@ -100,6 +103,7 @@ public sealed class Studio : IDalamudPlugin
 			Window.Dispose();
 			Library.Dispose();
 			Scene.Dispose();
+			Portraits.Dispose();
 		}
 		catch (Exception ex)
 		{

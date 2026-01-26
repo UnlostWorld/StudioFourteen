@@ -13,122 +13,79 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
+using System;
+using System.IO;
 using System.Numerics;
 using System.Runtime.InteropServices;
-using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
-using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
-using FFXIVClientStructs.FFXIV.Client.UI.Agent;
-using FFXIVClientStructs.FFXIV.Client.UI.Misc;
+using SharpDX;
 using SharpDX.D3DCompiler;
 using SharpDX.Direct3D11;
-using SharpDX.DXGI;
-using StudioFourteen;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 using StudioFourteen.Services.Content;
-using StudioFourteen.Services.Numerics;
 using StudioFourteen.Services.Rendering;
 using StudioFourteen.Services.Rendering.Draw;
 using StudioFourteen.Services.Rendering.Materials;
 using StudioFourteen.Services.Rendering.Passes;
 
 using Device = SharpDX.Direct3D11.Device;
-using Format = SharpDX.DXGI.Format;
 
-public unsafe class DrawCharacterPass : InstanceRenderPassBase<DrawCharacterPass.PassDataStruct>
+public class SaveTexturePass(Texture2D texture)
+	: InstanceRenderPassBase<SaveTexturePass.PassDataStruct>
 {
-	private readonly MeshRenderer<Effect> quad = new(MeshContent.Quad);
-
-	private Texture2D? characterTexture;
-	private ShaderResourceView? characterResourceView;
-	private RenderTargetView? backBufferTargetView;
-	private BlendState? blend;
-	private CharaView* pView;
+	public Image? Image;
 
 	public unsafe override void Render(Renderer renderer, Device device, DeviceContext deviceContext)
 	{
-		if (renderer.BackBuffer == null)
-			return;
-
-		RenderTargetManagerEx* pRenderTargetManager = RenderTargetManagerEx.Instance();
-		if (pRenderTargetManager == null)
-			return;
-
 		base.Render(renderer, device, deviceContext);
-
-		// Create a shader resource copy of the back buffer so it can be accessed in the shader
-		if (this.characterTexture == null)
-		{
-			////this.characterTexture?.Dispose();
-			this.characterResourceView?.Dispose();
-
-			this.pView = CharaView.Create();
-
-			// Set customization options to anything we want. =]
-			this.pView->ModelData.CustomizeData.Race = 0;
-			this.pView->ModelData.CustomizeData.Sex = 1;
-
-			// Use object Id 1 as its guaranteed to be the current characters minion/mount/whatever,
-			//  which wont ever have its own chara view, so we can safely use it for our purposes.
-			this.pView->Initialize(null, 1, 0);
-			Texture* pTexture = pRenderTargetManager->Base.GetCharaViewTexture(1);
-			this.characterTexture = new((nint)pTexture->D3D11Texture2D);
-			this.characterResourceView = new(device, this.characterTexture);
-		}
-
-		if (this.backBufferTargetView == null)
-		{
-			this.backBufferTargetView?.Dispose();
-
-			RenderTargetViewDescription desc = default;
-			desc.Format = Format.R8G8B8A8_UNorm;
-			desc.Dimension = RenderTargetViewDimension.Texture2D;
-			desc.Texture2D = new() { };
-
-			this.backBufferTargetView = new(device, renderer.BackBuffer, desc);
-		}
-
-		if (this.blend == null)
-		{
-			BlendStateDescription blendDesc = default;
-			blendDesc.AlphaToCoverageEnable = false;
-			blendDesc.RenderTarget[0].IsBlendEnabled = true;
-			blendDesc.RenderTarget[0].SourceBlend = BlendOption.SourceAlpha;
-			blendDesc.RenderTarget[0].DestinationBlend = BlendOption.InverseSourceAlpha;
-			blendDesc.RenderTarget[0].BlendOperation = BlendOperation.Add;
-			blendDesc.RenderTarget[0].SourceAlphaBlend = BlendOption.Zero;
-			blendDesc.RenderTarget[0].DestinationAlphaBlend = BlendOption.Zero;
-			blendDesc.RenderTarget[0].AlphaBlendOperation = BlendOperation.Add;
-			blendDesc.RenderTarget[0].RenderTargetWriteMask = ColorWriteMaskFlags.Red | ColorWriteMaskFlags.Green | ColorWriteMaskFlags.Blue;
-
-			this.blend = new(device, blendDesc);
-		}
-
-		this.pView->Render(1);
-
-		// Pass the buffers into the shader
-		deviceContext.PixelShader.SetShaderResource(2, this.characterResourceView);
-
-		// Set the output
-		deviceContext.Rasterizer.SetViewport(0, 0, renderer.Width, renderer.Height);
-		deviceContext.OutputMerger.SetBlendState(this.blend, null, -1);
-		deviceContext.OutputMerger.SetTargets(this.backBufferTargetView);
-
-		this.quad.Draw(renderer, Transform.Identity, device, deviceContext);
-
-		using CommandList cmds = deviceContext.FinishCommandList(false);
-		device.ImmediateContext.ExecuteCommandList(cmds, true);
-		deviceContext.ClearState();
+		this.Image = this.Convert(device, texture);
 	}
 
-	public override void Dispose()
+	private Image Convert(Device device, Texture2D texture)
 	{
-		////this.pView->Release();
+		Texture2DDescription desc = texture.Description;
+		desc.BindFlags = 0;
+		desc.CpuAccessFlags = CpuAccessFlags.Read;
+		desc.Usage = ResourceUsage.Staging;
 
-		this.quad.Dispose();
-		this.characterResourceView?.Dispose();
-		////this.characterTexture?.Dispose();
-		this.backBufferTargetView?.Dispose();
+		using Texture2D bufferTexture = new(device, desc);
 
-		base.Dispose();
+		device.ImmediateContext.CopyResource(texture, bufferTexture);
+
+		DataStream stream;
+
+		DataBox data = device.ImmediateContext.MapSubresource(
+			bufferTexture,
+			0,
+			MapMode.Read,
+			SharpDX.Direct3D11.MapFlags.None,
+			out stream);
+
+		if (data.IsEmpty)
+			throw new Exception("Failed to map subresource for back buffer");
+
+		using MemoryStream ms = new();
+		stream.CopyTo(ms);
+		byte[] pixels = ms.ToArray();
+
+		if (texture.Description.Format == SharpDX.DXGI.Format.R8G8B8A8_UNorm)
+		{
+			return Image.LoadPixelData<Rgba32>(pixels, texture.Description.Width, texture.Description.Height);
+		}
+		else if (texture.Description.Format == SharpDX.DXGI.Format.R16G16B16A16_Float)
+		{
+			return Image.LoadPixelData<Rgba64>(pixels, texture.Description.Width, texture.Description.Height);
+		}
+		else if (texture.Description.Format == SharpDX.DXGI.Format.B8G8R8A8_UNorm)
+		{
+			return Image.LoadPixelData<Bgra32>(pixels, texture.Description.Width, texture.Description.Height);
+		}
+		else if (texture.Description.Format == SharpDX.DXGI.Format.R16G16_Float)
+		{
+			return Image.LoadPixelData<Rg32>(pixels, texture.Description.Width, texture.Description.Height);
+		}
+
+		throw new NotImplementedException($"No support for {texture.Description.Format} buffers");
 	}
 
 	[StructLayout(LayoutKind.Sequential)]

@@ -17,9 +17,14 @@ namespace StudioFourteen.Scene;
 
 using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
 
-public class Character(int objectIndex)
-	: Skeleton(objectIndex)
+public class Character : Skeleton
 {
+	public Character(int objectIndex)
+	: base(objectIndex)
+	{
+		Studio.Portraits.Generate(objectIndex);
+	}
+
 	public unsafe XivCharacter* GetXivCharacter()
 	{
 		return (XivCharacter*)Studio.Scene.GetXivObject(this.ObjectIndex);
