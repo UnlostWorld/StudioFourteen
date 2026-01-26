@@ -185,11 +185,15 @@ public class SceneService : IService
 				if (this.gameObjectLookup.ContainsKey(index))
 					continue;
 
+				string name = gameObject->NameString;
+				if (string.IsNullOrEmpty(name))
+					continue;
+
 				GameObject? obj = this.Create(gameObject);
 				if (obj == null)
 					continue;
 
-				obj.Name = gameObject->NameString;
+				obj.Name = name;
 
 				this.AddObject(obj);
 				this.gameObjectLookup.Add(index, obj);

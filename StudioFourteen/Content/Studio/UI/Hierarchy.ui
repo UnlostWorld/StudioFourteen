@@ -9,6 +9,7 @@
 					TargetType="{x:Type ListBoxItem}">
 
 					<Setter Property="Padding" Value="0" />
+					<Setter Property="Margin" Value="0,2" />
 
 					<Setter Property="Template">
 						<ControlTemplate>
@@ -132,7 +133,14 @@
 							Height="42"
 							Fill="#55000000"
 							Grid.Column="0"
-							Margin="6,6,10,6" />
+							Margin="6,6,10,6">
+							<Ellipse.Fill>
+								<ImageBrush
+									Source="{Binding Portrait}"
+									Stretch="UniformToFill"
+									AlignmentY="Top" />
+							</Ellipse.Fill>
+						</Ellipse>
 
 						<Grid Grid.Column="1" VerticalAlignment="Center">
 							<Grid.RowDefinitions>
