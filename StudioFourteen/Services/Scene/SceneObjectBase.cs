@@ -45,7 +45,7 @@ public abstract partial class SceneObjectBase : ObservableObject, IDisposable
 
 	public override string ToString()
 	{
-		return $"{this.Name} - {this.Id} ({base.ToString()})";
+		return $"{this.Id} ({base.ToString()})";
 	}
 
 	public virtual void Dispose()
