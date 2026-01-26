@@ -26,6 +26,7 @@
 		"Midlander",
 		"Miqote",
 		"mscorlib",
+		"Mvvm",
 		"Pictomancy",
 		"Plainsfolk",
 		"Raen",
@@ -38,7 +39,7 @@
 		"Veena",
 		"Viera",
 		"WORLDPOS",
-		"Xaela",
+		"Xaela"
 	],
 	"cSpell.flagWords": [
         "teh"

@@ -29,6 +29,7 @@ using StudioFourteen.Services.Input;
 using StudioFourteen.Services.Serialization;
 using StudioFourteen.Services;
 using StudioFourteen.Services.Library;
+using StudioFourteen.Services.Scene;
 
 public sealed class Studio : IDalamudPlugin
 {
@@ -48,11 +49,13 @@ public sealed class Studio : IDalamudPlugin
 		Avalonia = new();
 		Window = new();
 		Library = new();
+		Scene = new();
 	}
 
 	public static bool IsDisposed { get; private set; } = false;
 	public static Studio Instance { get; private set; } = null!;
 
+	public static LoggingService Log { get; private set; } = null!;
 	public static JsonSerializer Json { get; private set; } = null!;
 	public static RenderingService Rendering { get; private set; } = null!;
 	public static ContentService Content { get; private set; } = null!;
@@ -63,8 +66,7 @@ public sealed class Studio : IDalamudPlugin
 	public static InputService Input { get; private set; } = null!;
 	public static WindowService Window { get; private set; } = null!;
 	public static LibraryService Library { get; private set; } = null!;
-
-	public static LoggingService Log { get; private set; } = null!;
+	public static SceneService Scene { get; private set; } = null!;
 
 	[PluginService] public static IPluginLog DalamudLog { get; private set; } = null!;
 	[PluginService] public static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
@@ -97,6 +99,7 @@ public sealed class Studio : IDalamudPlugin
 			Input.Dispose();
 			Window.Dispose();
 			Library.Dispose();
+			Scene.Dispose();
 		}
 		catch (Exception ex)
 		{

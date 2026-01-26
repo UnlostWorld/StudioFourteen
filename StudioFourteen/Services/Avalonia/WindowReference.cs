@@ -88,7 +88,7 @@ public class WindowReference : ObservableObject
 	{
 		Studio.Tick.Dispatch(TickChannels.Ui, () =>
 		{
-			if (this.presenter == null)
+			if (this.presenter == null || Studio.IsDisposed)
 				return;
 
 			this.presenter.Content = this.contentReference.Get();
@@ -99,7 +99,7 @@ public class WindowReference : ObservableObject
 	{
 		Studio.Tick.Dispatch(TickChannels.Ui, () =>
 		{
-			if (this.window == null || this.chromeReference == null)
+			if (this.window == null || this.chromeReference == null || Studio.IsDisposed)
 				return;
 
 			this.presenter?.Content = null;
