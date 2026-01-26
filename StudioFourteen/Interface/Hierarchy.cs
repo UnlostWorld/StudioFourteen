@@ -15,9 +15,41 @@
 
 namespace StudioFourteen.Interface;
 
+using System.Collections.ObjectModel;
 using System.Numerics;
+using CommunityToolkit.Mvvm.ComponentModel;
+using StudioFourteen.Services.Scene;
+using StudioFourteen.Services.Tick;
 
-public class Hierarchy()
-	: OverlayReference("UI/Hierarchy.ui", new Vector2(0, 0))
+public partial class Hierarchy : OverlayReference
 {
+	[ObservableProperty] private ObservableCollection<SceneObjectBase> sceneObjects = new();
+
+	public Hierarchy()
+		: base("UI/Hierarchy.ui", new Vector2(0, 0))
+	{
+		Studio.Scene.ObjectAdded += this.OnSceneObjectAdded;
+		Studio.Scene.ObjectRemoved += this.OnSceneObjectRemoved;
+
+		Studio.Tick.Dispatch(TickChannels.Ui, () =>
+		{
+			lock (Studio.Scene.Objects)
+			{
+				foreach (SceneObjectBase obj in Studio.Scene.Objects)
+				{
+					this.SceneObjects.Add(obj);
+				}
+			}
+		});
+	}
+
+	private void OnSceneObjectAdded(SceneObjectBase obj)
+	{
+		Studio.Tick.Dispatch(TickChannels.Ui, () => this.SceneObjects.Add(obj));
+	}
+
+	private void OnSceneObjectRemoved(SceneObjectBase obj)
+	{
+		Studio.Tick.Dispatch(TickChannels.Ui, () => this.SceneObjects.Remove(obj));
+	}
 }

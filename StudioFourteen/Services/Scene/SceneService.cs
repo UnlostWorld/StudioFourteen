@@ -26,8 +26,9 @@ using XivGameObjectManager = FFXIVClientStructs.FFXIV.Client.Game.Object.GameObj
 
 public class SceneService : IService
 {
+	public readonly List<SceneObjectBase> Objects = new();
+
 	private readonly Dictionary<ushort, GameObject?> gameObjectLookup = new();
-	private readonly List<SceneObjectBase> objects = new();
 
 	public SceneService()
 	{
@@ -45,14 +46,14 @@ public class SceneService : IService
 		Studio.Tick.Remove(TickChannels.EarlyGame, this.OnEarlyGameTick);
 		Studio.Tick.Remove(TickChannels.Game, this.OnGameTick);
 
-		List<SceneObjectBase> objects = new(this.objects);
+		List<SceneObjectBase> objects = new(this.Objects);
 		foreach (SceneObjectBase obj in objects)
 		{
 			this.ObjectRemoved?.Invoke(obj);
 			obj.Dispose();
 		}
 
-		this.objects.Clear();
+		this.Objects.Clear();
 		this.gameObjectLookup.Clear();
 	}
 
@@ -70,9 +71,9 @@ public class SceneService : IService
 
 	public void AddObject(SceneObjectBase obj)
 	{
-		lock (this.objects)
+		lock (this.Objects)
 		{
-			this.objects.Add(obj);
+			this.Objects.Add(obj);
 		}
 
 		Studio.Log.Information($"Adding object to scene: {obj}");
@@ -81,9 +82,9 @@ public class SceneService : IService
 
 	public void RemoveObject(SceneObjectBase obj)
 	{
-		lock (this.objects)
+		lock (this.Objects)
 		{
-			this.objects.Remove(obj);
+			this.Objects.Remove(obj);
 		}
 
 		this.ObjectRemoved?.Invoke(obj);
@@ -98,10 +99,10 @@ public class SceneService : IService
 	public List<T> FindObjects<T>()
 		where T : SceneObjectBase
 	{
-		lock (this.objects)
+		lock (this.Objects)
 		{
 			List<T> results = new();
-			foreach (SceneObjectBase obj in this.objects)
+			foreach (SceneObjectBase obj in this.Objects)
 			{
 				if (obj is T tObj)
 				{
@@ -226,9 +227,9 @@ public class SceneService : IService
 
 	private void OnEarlyGameTick()
 	{
-		lock (this.objects)
+		lock (this.Objects)
 		{
-			foreach (SceneObjectBase obj in this.objects.ToArray())
+			foreach (SceneObjectBase obj in this.Objects.ToArray())
 			{
 				obj.OnGameTick();
 			}

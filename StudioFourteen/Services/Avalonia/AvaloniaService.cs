@@ -38,15 +38,6 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 	public long DispatcherFramerate = 60;
 	public long RenderFramerate = 60;
 
-	public bool UseWin32 = false;
-
-	// This will break plugin reloading.
-	public bool UseWin32Hybrid = false;
-
-	private readonly TestWindow testWindow = new();
-	private readonly TopBar topBar = new();
-	private readonly Hierarchy hierarchy = new();
-
 	private readonly UiPass renderingPass = new();
 	private readonly CancellationTokenSource cts = new();
 	private readonly Thread? uiThread;
@@ -56,6 +47,8 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 	private WindowingPlatform? windowing;
 	private StudioScreens? screen;
 	private Compositor? compositor;
+
+	private WindowReference? test;
 
 	public AvaloniaService()
 	{
@@ -111,25 +104,8 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 			AppBuilder app = AppBuilder.Configure<StudioApplication>();
 			app.WithInterFont();
 			app.LogToTrace();
-
-			if (this.UseWin32)
-			{
-				app.With<Win32PlatformOptions>(() =>
-				{
-					return new()
-					{
-						CompositionMode = [Win32CompositionMode.LowLatencyDxgiSwapChain],
-					};
-				});
-
-				app.UseWin32();
-			}
-			else
-			{
-				app.UseStandardRuntimePlatformSubsystem();
-				app.UseWindowingSubsystem(this.InitializeWindowing, "StudioFourteen");
-			}
-
+			app.UseStandardRuntimePlatformSubsystem();
+			app.UseWindowingSubsystem(this.InitializeWindowing, "StudioFourteen");
 			app.UseSkia();
 
 			Studio.Log.Information($"Starting Avalonia");
@@ -142,11 +118,6 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 					if (application == null)
 						throw new Exception("Failed to create Application");
 
-					if (this.UseWin32 && this.UseWin32Hybrid)
-					{
-						this.InitializeWindowing();
-					}
-
 					// Ready to run!
 					this.LoadTypes();
 
@@ -154,9 +125,8 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 
 					try
 					{
-						this.topBar.Show();
-						this.testWindow.Show();
-						this.hierarchy.Show();
+						this.test = new Hierarchy();
+						this.test.Show();
 					}
 					catch (Exception ex)
 					{

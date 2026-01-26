@@ -37,6 +37,8 @@ public abstract partial class SceneObjectBase : ObservableObject, IDisposable
 	public SceneObjectBase()
 	{
 		this.Name = string.Empty;
+
+		this.Subtitle = this.GetType().Name;
 	}
 
 	public abstract string Id { get; }

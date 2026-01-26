@@ -16,7 +16,9 @@
 namespace StudioFourteen.Services.Avalonia;
 
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using global::Avalonia;
 using global::Avalonia.Markup.Xaml;
 using StudioFourteen.Services.Content;
@@ -25,12 +27,37 @@ public class AvaloniaContentReference<T>(string path)
 	: ContentReference<T>(path)
 	where T : AvaloniaObject, new()
 {
-	private const string XmlNamespaces = @"
-		xmlns=""https://github.com/avaloniaui""
-		xmlns:x=""http://schemas.microsoft.com/winfx/2006/xaml""
-		xmlns:studio=""clr-namespace:StudioFourteen.Services.Avalonia.Controls;assembly=StudioFourteen""
-		xmlns:sys=""clr-namespace:System;assembly=mscorlib""
-	";
+	private static readonly string XmlNamespaces;
+
+	static AvaloniaContentReference()
+	{
+		HashSet<string> namespaces = new();
+		foreach (Type type in typeof(AvaloniaService).Assembly.GetTypes())
+		{
+			if (type.Namespace == null)
+				continue;
+
+			namespaces.Add(type.Namespace);
+		}
+
+		StringBuilder sb = new();
+		sb.AppendLine(" xmlns=\"https://github.com/avaloniaui\"");
+		sb.AppendLine("xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\"");
+		sb.AppendLine("xmlns:sys=\"clr-namespace:System;assembly=mscorlib\"");
+		sb.AppendLine("xmlns:studio=\"clr-namespace:StudioFourteen.Services.Avalonia.Controls;assembly=StudioFourteen\"");
+
+		foreach (string ns in namespaces)
+		{
+			sb.Append("xmlns:");
+			sb.Append(ns);
+			sb.Append("=\"clr-namespace:");
+			sb.Append(ns);
+			sb.AppendLine(";assembly=StudioFourteen\"");
+		}
+
+		XmlNamespaces = sb.ToString();
+		Studio.Log.Verbose(XmlNamespaces);
+	}
 
 	protected override T Load(Stream stream)
 	{
