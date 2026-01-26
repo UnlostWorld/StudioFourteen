@@ -71,8 +71,9 @@ float2 GetScreenPosition(Fragment frag)
 
 float4 pixel(Fragment fragment) : SV_TARGET
 {
+	float4 uiColor = buffer_texture.Sample(buffer_sampler, fragment.TexCoord);
 	float4 color = 0;
-	float bgIntensity = 1;
+	float bgIntensity = uiColor.a;
 
 	float2 pixelPos = fragment.TexCoord * WindowSize;
 
@@ -163,12 +164,12 @@ float4 pixel(Fragment fragment) : SV_TARGET
 		color /= count;
 
 		// Ignore the back buffer alpha
-		color.a = 1;
+		color.a = uiColor.a * 2;
 	}
 
 	// Actual Window
 	{
-		float4 uiColor = buffer_texture.Sample(buffer_sampler, fragment.TexCoord);
+
 		color.rgb = lerp(color.rgb, uiColor.rgb, uiColor.a);
 
 		// Let the window overlap the rounded corners

@@ -45,6 +45,8 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 
 	private readonly TestWindow testWindow = new();
 	private readonly TopBar topBar = new();
+	private readonly Hierarchy hierarchy = new();
+
 	private readonly UiPass renderingPass = new();
 	private readonly CancellationTokenSource cts = new();
 	private readonly Thread? uiThread;
@@ -154,6 +156,7 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 					{
 						this.topBar.Show();
 						this.testWindow.Show();
+						this.hierarchy.Show();
 					}
 					catch (Exception ex)
 					{

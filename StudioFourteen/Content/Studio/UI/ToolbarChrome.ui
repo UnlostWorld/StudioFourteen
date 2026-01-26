@@ -1,5 +1,5 @@
 <Border
-	BoxShadow="0 3 17 2 #FF000000"
+	BoxShadow="0 3 17 2 #88000000"
 	CornerRadius="0, 0, 20, 20"
 	BorderThickness="1"
 	Margin="20, 0, 20, 20"
