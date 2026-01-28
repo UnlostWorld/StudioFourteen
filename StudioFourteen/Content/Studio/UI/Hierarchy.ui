@@ -18,7 +18,8 @@
 
 					<Setter Property="Template">
 						<ControlTemplate>
-							<Panel>
+							<Panel
+								StudioFourteen.Interface.Behaviors:HoverCommand.Command="{Binding InterfaceHoverCommand}">
 								<Border
 									CornerRadius="32, 0, 0, 32"
 									HorizontalAlignment="Stretch"
@@ -70,8 +71,10 @@
 													<LinearGradientBrush
 														StartPoint="0%,0%"
 														EndPoint="100%,0%">
-														<GradientStop Color="#FF888888" Offset="0.0" />
-														<GradientStop Color="#00888888" Offset="1.0" />
+														<GradientStop Color="#FF888888"
+															Offset="0.0" />
+														<GradientStop Color="#00888888"
+															Offset="1.0" />
 													</LinearGradientBrush>
 												</Border.Background>
 
@@ -95,9 +98,11 @@
 													<LinearGradientBrush
 														StartPoint="0%,0%"
 														EndPoint="100%,0%">
-														<GradientStop Color="{DynamicResource Trim}"
+														<GradientStop
+															Color="{DynamicResource Trim}"
 															Offset="0.0" />
-														<GradientStop Color="#00888888" Offset="1.0" />
+														<GradientStop Color="#00888888"
+															Offset="1.0" />
 													</LinearGradientBrush>
 												</Border.BorderBrush>
 

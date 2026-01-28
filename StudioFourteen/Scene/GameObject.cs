@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Scene;
 
+using CommunityToolkit.Mvvm.Input;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using StudioFourteen.Services.Numerics;
 using StudioFourteen.Services.Scene;
@@ -52,8 +53,6 @@ public class GameObject : TransformObjectBase
 	public override void OnHovered(bool value)
 	{
 		base.OnHovered(value);
-
-		bool highlight = value && !this.IsSelected;
 	}
 
 	public unsafe override void OnGameTick()
@@ -63,6 +62,19 @@ public class GameObject : TransformObjectBase
 		XivGameObject* pGameObject = this.GetXivGameObject();
 		if (pGameObject == null || pGameObject->DrawObject == null)
 			return;
+
+		if (this.IsHovered)
+		{
+			pGameObject->Highlight(ObjectHighlightColor.Yellow);
+		}
+		else if (this.IsSelected)
+		{
+			pGameObject->Highlight(ObjectHighlightColor.Orange);
+		}
+		else
+		{
+			pGameObject->Highlight(ObjectHighlightColor.None);
+		}
 
 		this.Name = pGameObject->NameString;
 

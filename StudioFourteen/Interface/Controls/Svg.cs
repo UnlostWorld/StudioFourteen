@@ -13,7 +13,7 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Avalonia.Controls;
+namespace StudioFourteen.Interface.Controls;
 
 using System;
 using System.IO;

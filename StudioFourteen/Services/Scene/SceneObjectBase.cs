@@ -63,6 +63,12 @@ public abstract partial class SceneObjectBase : ObservableObject, IDisposable
 	{
 	}
 
+	[RelayCommand]
+	public void InterfaceHover(bool value)
+	{
+		this.IsHovered = value;
+	}
+
 	public virtual void OnSelected(bool value)
 	{
 		this.IsSelected = value;
