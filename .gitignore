@@ -20,3 +20,4 @@ Documentation/
 *.recipe
 *.ilk
 config.json
+.DS_Store
