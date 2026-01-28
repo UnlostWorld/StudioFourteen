@@ -13,15 +13,21 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Scene;
+namespace StudioFourteen;
 
-using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 
-[Inspect("Icons/Skeleton.svg")]
-public partial class Skeleton(int objectIndex)
-	: GameObject(objectIndex)
+[AttributeUsage(AttributeTargets.Property | AttributeTargets.Class)]
+public class InspectAttribute : Attribute
 {
-	[ObservableProperty]
-	[Inspect]
-	public partial bool Placeholder { get; set; }
+	public readonly string? IconPath;
+
+	public InspectAttribute()
+	{
+	}
+
+	public InspectAttribute(string icon)
+	{
+		this.IconPath = icon;
+	}
 }

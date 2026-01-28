@@ -19,15 +19,21 @@ using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
 
+[Inspect("Icons/Character.svg")]
 public partial class Character : Skeleton
 {
-	[ObservableProperty] private Bitmap? portrait;
-
 	public Character(int objectIndex)
 	: base(objectIndex)
 	{
 		Studio.Portraits.Generate(objectIndex, this.OnPortraitLoaded);
 	}
+
+	[ObservableProperty]
+	public partial Bitmap? Portrait { get; private set; }
+
+	[ObservableProperty]
+	[Inspect]
+	public partial bool Placeholder2 { get; set; }
 
 	public unsafe XivCharacter* GetXivCharacter()
 	{

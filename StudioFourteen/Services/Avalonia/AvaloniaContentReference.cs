@@ -55,7 +55,6 @@ public class AvaloniaContentReference<T>(string path)
 		}
 
 		XmlNamespaces = sb.ToString();
-		Studio.Log.Verbose(XmlNamespaces);
 	}
 
 	protected override T Load(Stream stream)

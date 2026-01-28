@@ -48,8 +48,6 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 	private StudioScreens? screen;
 	private Compositor? compositor;
 
-	private WindowReference? test;
-
 	public AvaloniaService()
 	{
 		Studio.Rendering.OverlayRenderer.AddAfterEffectsPass(this.renderingPass);
@@ -125,8 +123,14 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 
 					try
 					{
-						this.test = new Hierarchy();
-						this.test.Show();
+						TopBar topBar = new();
+						topBar.Show();
+
+						Hierarchy hierarchy = new();
+						hierarchy.Show();
+
+						Inspector inspector = new();
+						inspector.Show();
 					}
 					catch (Exception ex)
 					{

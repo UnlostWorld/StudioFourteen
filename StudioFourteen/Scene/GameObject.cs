@@ -15,7 +15,6 @@
 
 namespace StudioFourteen.Scene;
 
-using CommunityToolkit.Mvvm.Input;
 using FFXIVClientStructs.FFXIV.Client.Game.Object;
 using StudioFourteen.Services.Numerics;
 using StudioFourteen.Services.Scene;
@@ -24,10 +23,8 @@ using System.Numerics;
 
 using XivGameObject = FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject;
 
-public class GameObject : TransformObjectBase
+public partial class GameObject : TransformObjectBase
 {
-	public readonly int ObjectIndex;
-
 	private Transform? nextTransform;
 	private Vector3 lastPosition = Vector3.Zero;
 	private Quaternion lastRotation = Quaternion.Identity;
@@ -40,6 +37,8 @@ public class GameObject : TransformObjectBase
 
 		////this.Gizmos.Add(new GameObjectGizmo(this));
 	}
+
+	public int ObjectIndex { get; private set; }
 
 	public override string Id => $"GameObject:{this.ObjectIndex}";
 

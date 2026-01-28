@@ -19,6 +19,7 @@
 		<Platforms>x64</Platforms>
 		<AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
 		<AvaloniaAccessUnstablePrivateApis>true</AvaloniaAccessUnstablePrivateApis>
+		<LangVersion>preview</LangVersion>
 	</PropertyGroup>
 
 	<ItemGroup>

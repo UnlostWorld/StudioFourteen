@@ -1,0 +1,79 @@
+<Grid
+	Height="700"
+	Width="350">
+
+	<Grid.RowDefinitions>
+		<RowDefinition Height="Auto" />
+		<RowDefinition />
+	</Grid.RowDefinitions>
+
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition />
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="Auto" />
+		</Grid.ColumnDefinitions>
+
+		<TextBlock
+			Text="{Binding Target.Name}"
+			Margin="16,0,0,0"
+			FontSize="16"
+			VerticalAlignment="Center" />
+
+		<TextBox
+			Grid.Column="1"
+			Width="200"
+			Watermark="Search"
+			Margin="4,4,4,4" />
+
+		<!-- Should react based on window chrome changes somehow...-->
+		<Grid
+			Grid.Column="2"
+			Classes.Expand="{Binding $parent[Window].IsPointerOver}">
+
+			<Grid.Styles>
+				<Style Selector="Grid">
+					<Setter Property="Width" Value="0" />
+					<Setter Property="Transitions">
+						<Transitions>
+							<DoubleTransition
+								Property="Width"
+								Duration="0:0:0.500"
+								Easing="CircularEaseInOut" />
+						</Transitions>
+					</Setter>
+				</Style>
+				<Style Selector="Grid.Expand">
+					<Setter Property="Width" Value="32" />
+				</Style>
+			</Grid.Styles>
+		</Grid>
+	</Grid>
+
+	<TabControl Grid.Row="1" ItemsSource="{Binding Groups}">
+		<TabControl.ItemTemplate>
+			<DataTemplate>
+				<StudioFourteen.Interface.Controls:Svg
+					Source="{Binding Icon}"
+					Foreground="White"
+					Width="32"
+					Height="32" />
+			</DataTemplate>
+		</TabControl.ItemTemplate>
+
+		<TabControl.ContentTemplate>
+			<DataTemplate DataType="StudioFourteen.Interface:InspectorGroup">
+
+				<ItemsControl ItemsSource="{Binding Properties}">
+					<ItemsControl.ItemTemplate>
+						<DataTemplate DataType="StudioFourteen.Interface:InspectorProperty">
+							<TextBlock Text="{Binding Name}" />
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
+				</ItemsControl>
+
+			</DataTemplate>
+		</TabControl.ContentTemplate>
+	</TabControl>
+
+</Grid>

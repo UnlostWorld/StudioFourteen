@@ -26,11 +26,13 @@ using global::Svg.Model;
 using ShimSkiaSharp;
 using StudioFourteen.Services.Content;
 using StudioFourteen.Services.Tick;
+using Avalonia.Interactivity;
+using Avalonia.Data;
 
 // https://github.com/wieslawsoltes/Svg.Skia/blob/master/src/Svg.Controls.Avalonia/Svg.cs
 public class Svg : Control
 {
-	public static readonly StyledProperty<string> SourceProperty;
+	public static readonly StyledProperty<string?> SourceProperty;
 	public static readonly StyledProperty<Stretch> StretchProperty;
 	public static readonly StyledProperty<StretchDirection> StretchDirectionProperty;
 	public static readonly StyledProperty<Color> ForegroundProperty;
@@ -41,7 +43,7 @@ public class Svg : Control
 
 	static Svg()
 	{
-		SourceProperty = AvaloniaProperty.Register<Svg, string>(nameof(Source));
+		SourceProperty = AvaloniaProperty.Register<Svg, string?>(nameof(Source));
 		StretchProperty = AvaloniaProperty.Register<Svg, Stretch>(nameof(Stretch), Stretch.Uniform);
 		StretchDirectionProperty = AvaloniaProperty.Register<Svg, StretchDirection>(nameof(StretchDirection), StretchDirection.Both);
 		ForegroundProperty = AvaloniaProperty.Register<Svg, Color>(nameof(Foreground), Colors.Black);
@@ -50,14 +52,10 @@ public class Svg : Control
 		AffectsMeasure<Svg>(SourceProperty, StretchProperty, StretchDirectionProperty);
 	}
 
-	public string Source
+	public string? Source
 	{
 		get => this.GetValue(SourceProperty);
-		set
-		{
-			this.SetValue(SourceProperty, value);
-			this.OnSourceChanged(value);
-		}
+		set => this.SetValue(SourceProperty, value);
 	}
 
 	public Stretch Stretch
@@ -146,10 +144,22 @@ public class Svg : Control
 		return Stretch.Uniform.CalculateSize(finalSize, sourceSize);
 	}
 
-	private void OnSourceChanged(string newValue)
+	protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
 	{
+		if (change.Property == SourceProperty)
+			this.OnSourceChanged(this.Source);
+
+		base.OnPropertyChanged(change);
+	}
+
+	private void OnSourceChanged(string? newValue)
+	{
+		Studio.Log.Information($"! > {newValue}");
 		this.reference?.Reloaded -= this.OnSvgReloaded;
 		this.reference?.Dispose();
+
+		if (string.IsNullOrEmpty(newValue))
+			return;
 
 		this.reference = new(newValue);
 		this.reference.Foreground = this.Foreground;
@@ -157,6 +167,7 @@ public class Svg : Control
 
 		this.picture = this.reference.Get();
 		this.avaloniaPicture = AvaloniaPicture.Record(this.picture);
+		this.InvalidateVisual();
 	}
 
 	private void OnSvgReloaded()
@@ -185,7 +196,7 @@ public class Svg : Control
 		protected override SKPicture Load(Stream stream)
 		{
 			string foregroundColor = ColorToHexConverter.ToHexString(this.Foreground, AlphaComponentPosition.Trailing, false, true);
-			string css = $".foreground {{ fill: {foregroundColor}; }}";
+			string css = $".foreground {{ stroke: {foregroundColor}; }}";
 			SvgParameters parameters = new(null, css);
 
 			SKPicture? picture = SvgSource.LoadPicture(stream, parameters);

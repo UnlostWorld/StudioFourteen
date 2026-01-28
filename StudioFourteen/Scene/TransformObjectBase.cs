@@ -19,13 +19,22 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using StudioFourteen.Services.Numerics;
 using StudioFourteen.Services.Scene;
 
+[Inspect("Icons/SceneObject.svg")]
 public abstract partial class TransformObjectBase : SceneObjectBase
 {
 	private Transform? initialWorldTransform = null;
 
-	[ObservableProperty] private Transform worldTransform;
-	[ObservableProperty] private Transform localTransform;
-	[ObservableProperty] private bool lockTransform;
+	[ObservableProperty]
+	[Inspect]
+	public partial Transform WorldTransform { get; set; }
+
+	[ObservableProperty]
+	[Inspect]
+	public partial Transform LocalTransform { get; set; }
+
+	[ObservableProperty]
+	[Inspect]
+	public partial bool LockTransform { get; set; }
 
 	public virtual double TranslationChange => 0.1;
 	public virtual int DecimalPlacesToDisplay => 2;
