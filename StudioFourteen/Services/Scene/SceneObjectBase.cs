@@ -83,4 +83,16 @@ public abstract partial class SceneObjectBase : ObservableObject, IDisposable
 	}
 
 	public virtual bool IsHit(HitInfo hitInfo) => false;
+
+	partial void OnIsSelectedChanged(bool value)
+	{
+		if (value)
+		{
+			Studio.Scene.Select(this);
+		}
+		else
+		{
+			Studio.Scene.Deselect(this);
+		}
+	}
 }

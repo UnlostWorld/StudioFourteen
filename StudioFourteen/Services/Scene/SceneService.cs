@@ -27,6 +27,7 @@ using XivGameObjectManager = FFXIVClientStructs.FFXIV.Client.Game.Object.GameObj
 public class SceneService : IService
 {
 	public readonly List<SceneObjectBase> Objects = new();
+	public readonly List<SceneObjectBase> Selection = new();
 
 	private readonly Dictionary<ushort, GameObject?> gameObjectLookup = new();
 
@@ -40,11 +41,15 @@ public class SceneService : IService
 
 	public event SceneChanged? ObjectAdded;
 	public event SceneChanged? ObjectRemoved;
+	public event SceneChanged? ObjectSelected;
+	public event SceneChanged? ObjectDeselected;
 
 	public void Dispose()
 	{
 		Studio.Tick.Remove(TickChannels.EarlyGame, this.OnEarlyGameTick);
 		Studio.Tick.Remove(TickChannels.Game, this.OnGameTick);
+
+		this.Selection.Clear();
 
 		List<SceneObjectBase> objects = new(this.Objects);
 		foreach (SceneObjectBase obj in objects)
@@ -157,6 +162,35 @@ public class SceneService : IService
 			return null;
 
 		return indexSorted[index];
+	}
+
+	public void Select(SceneObjectBase obj, bool clearCurrent = true)
+	{
+		if (clearCurrent)
+		{
+			foreach (SceneObjectBase obj2 in this.Selection)
+			{
+				this.ObjectDeselected?.Invoke(obj2);
+				obj2.OnSelected(false);
+			}
+
+			this.Selection.Clear();
+		}
+
+		this.Selection.Add(obj);
+		obj.OnSelected(true);
+		this.ObjectSelected?.Invoke(obj);
+
+		Studio.Log.Information($"Select {obj}");
+	}
+
+	public void Deselect(SceneObjectBase obj)
+	{
+		this.Selection.Remove(obj);
+		obj.OnSelected(false);
+		this.ObjectDeselected?.Invoke(obj);
+
+		Studio.Log.Information($"Deselect {obj}");
 	}
 
 	private unsafe void OnGameTick()
