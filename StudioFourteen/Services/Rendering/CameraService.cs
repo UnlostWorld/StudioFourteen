@@ -72,19 +72,24 @@ public class CameraService : IService
 	{
 		nint result = Hooks.SceneCameraUpdate.Original(camera);
 
-		this.NearPlane = camera->RenderCamera->NearPlane;
-		this.FarPlane = camera->RenderCamera->FarPlane;
+		// Bit of a hack, but we need a way to tell the games live camera apart from the
+		// character preview cameras.
+		if (camera->RenderCamera->FarPlane > 100)
+		{
+			this.NearPlane = camera->RenderCamera->NearPlane;
+			this.FarPlane = camera->RenderCamera->FarPlane;
 
-		this.CurrentPosition = camera->Position;
-		Vector3 forward = (Vector3)camera->LookAtVector - this.CurrentPosition;
-		this.CurrentForward = Vector3.Normalize(forward);
-		this.LastView = this.CurrentView;
-		this.LastProjection = this.CurrentProjection;
+			this.CurrentPosition = camera->Position;
+			Vector3 forward = (Vector3)camera->LookAtVector - this.CurrentPosition;
+			this.CurrentForward = Vector3.Normalize(forward);
+			this.LastView = this.CurrentView;
+			this.LastProjection = this.CurrentProjection;
 
-		var view = camera->ViewMatrix;
-		view.M44 = 1;
-		this.CurrentView = view;
-		this.CurrentProjection = camera->RenderCamera->ProjectionMatrix;
+			var view = camera->ViewMatrix;
+			view.M44 = 1;
+			this.CurrentView = view;
+			this.CurrentProjection = camera->RenderCamera->ProjectionMatrix;
+		}
 
 		return result;
 	}

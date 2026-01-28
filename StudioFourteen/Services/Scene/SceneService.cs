@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using FFXIVClientStructs.Interop;
 using StudioFourteen.Scene;
+using StudioFourteen.Services.Rendering.Draw.Gizmos;
 using StudioFourteen.Services.Tick;
 
 using XivGameObject = FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject;
@@ -29,12 +30,16 @@ public class SceneService : IService
 	public readonly List<SceneObjectBase> Objects = new();
 	public readonly List<SceneObjectBase> Selection = new();
 
+	private readonly GridGizmo grid = new();
+
 	private readonly Dictionary<ushort, GameObject?> gameObjectLookup = new();
 
 	public SceneService()
 	{
 		Studio.Tick.Add(TickChannels.EarlyGame, this.OnEarlyGameTick);
 		Studio.Tick.Add(TickChannels.Game, this.OnGameTick);
+
+		this.grid.Enable();
 	}
 
 	public delegate void SceneChanged(SceneObjectBase obj);
@@ -44,12 +49,15 @@ public class SceneService : IService
 	public event SceneChanged? ObjectSelected;
 	public event SceneChanged? ObjectDeselected;
 
+	public SceneObjectBase? PrimarySelection => this.Selection.Count > 0 ? this.Selection[0] : null;
+
 	public void Dispose()
 	{
 		Studio.Tick.Remove(TickChannels.EarlyGame, this.OnEarlyGameTick);
 		Studio.Tick.Remove(TickChannels.Game, this.OnGameTick);
 
 		this.Selection.Clear();
+		this.grid.Disable();
 
 		List<SceneObjectBase> objects = new(this.Objects);
 		foreach (SceneObjectBase obj in objects)
