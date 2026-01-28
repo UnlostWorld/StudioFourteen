@@ -56,21 +56,25 @@
 				<StudioFourteen.Interface.Controls:Svg
 					Source="{Binding Icon}"
 					Foreground="White"
-					Width="32"
-					Height="32" />
+					Width="28"
+					Height="28" />
 			</DataTemplate>
 		</TabControl.ItemTemplate>
 
 		<TabControl.ContentTemplate>
 			<DataTemplate DataType="StudioFourteen.Interface:InspectorGroup">
 
-				<ItemsControl ItemsSource="{Binding Properties}">
-					<ItemsControl.ItemTemplate>
-						<DataTemplate DataType="StudioFourteen.Interface:InspectorProperty">
-							<TextBlock Text="{Binding Name}" />
-						</DataTemplate>
-					</ItemsControl.ItemTemplate>
-				</ItemsControl>
+				<StackPanel Margin="6">
+					<TextBlock Text="{Binding Name}" FontWeight="Bold" />
+
+					<ItemsControl ItemsSource="{Binding Properties}">
+						<ItemsControl.ItemTemplate>
+							<DataTemplate DataType="StudioFourteen.Interface:InspectorProperty">
+								<TextBlock Text="{Binding Name}" />
+							</DataTemplate>
+						</ItemsControl.ItemTemplate>
+					</ItemsControl>
+				</StackPanel>
 
 			</DataTemplate>
 		</TabControl.ContentTemplate>

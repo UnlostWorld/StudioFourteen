@@ -19,9 +19,6 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 [Inspect("Icons/Skeleton.svg")]
 public partial class Skeleton(int objectIndex)
-	: GameObject(objectIndex)
+	: Animator(objectIndex)
 {
-	[ObservableProperty]
-	[Inspect]
-	public partial bool Placeholder { get; set; }
 }

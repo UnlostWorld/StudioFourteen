@@ -15,29 +15,8 @@
 
 namespace StudioFourteen.Scene;
 
-using Avalonia.Media.Imaging;
-using CommunityToolkit.Mvvm.ComponentModel;
-using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
-
-[Inspect("Icons/Character.svg")]
-public partial class Character : Skeleton
+[Inspect("Icons/Animator.svg")]
+public partial class Animator(int objectIndex)
+	: GameObject(objectIndex)
 {
-	public Character(int objectIndex)
-	: base(objectIndex)
-	{
-		Studio.Portraits.Generate(objectIndex, this.OnPortraitLoaded);
-	}
-
-	[ObservableProperty]
-	public partial Bitmap? Portrait { get; private set; }
-
-	public unsafe XivCharacter* GetXivCharacter()
-	{
-		return (XivCharacter*)Studio.Scene.GetXivObject(this.ObjectIndex);
-	}
-
-	private void OnPortraitLoaded(string path)
-	{
-		this.Portrait = new Bitmap(path);
-	}
 }
