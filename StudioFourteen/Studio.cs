@@ -38,6 +38,7 @@ public sealed class Studio : IDalamudPlugin
 	{
 		Instance = this;
 		IsDisposed = false;
+		IsInitialized = false;
 
 		Json = new();
 		Log = new();
@@ -52,9 +53,13 @@ public sealed class Studio : IDalamudPlugin
 		Library = new();
 		Scene = new();
 		Portraits = new();
+
+		IsInitialized = true;
 	}
 
 	public static bool IsDisposed { get; private set; } = false;
+	public static bool IsInitialized { get; private set; } = false;
+
 	public static Studio Instance { get; private set; } = null!;
 
 	public static LoggingService Log { get; private set; } = null!;

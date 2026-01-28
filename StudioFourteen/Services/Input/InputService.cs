@@ -265,6 +265,9 @@ public class InputService : IService
 
 	protected unsafe void OnLateGameTick()
 	{
+		if (!Studio.IsInitialized)
+			return;
+
 		lock (this)
 		{
 			DateTime mostRecentInput = DateTime.MinValue;
