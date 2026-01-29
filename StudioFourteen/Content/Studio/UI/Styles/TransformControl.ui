@@ -1,0 +1,13 @@
+<ResourceDictionary>
+	<ControlTheme
+		x:Key="{x:Type StudioFourteen.Interface.Controls:TransformControl}"
+		TargetType="{x:Type StudioFourteen.Interface.Controls:TransformControl}">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate>
+					<Grid Background="Green" Height="32" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</ControlTheme>
+</ResourceDictionary>

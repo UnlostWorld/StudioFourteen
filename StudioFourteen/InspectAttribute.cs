@@ -20,14 +20,14 @@ using System;
 [AttributeUsage(AttributeTargets.Property | AttributeTargets.Class)]
 public class InspectAttribute : Attribute
 {
-	public readonly string? IconPath;
+	public readonly string? Path;
 
 	public InspectAttribute()
 	{
 	}
 
-	public InspectAttribute(string icon)
+	public InspectAttribute(string path)
 	{
-		this.IconPath = icon;
+		this.Path = path;
 	}
 }

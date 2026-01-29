@@ -1,0 +1,79 @@
+<ResourceDictionary>
+	<ControlTheme x:Key="{x:Type TextBox}" TargetType="{x:Type TextBox}">
+		<Setter Property="Margin" Value="4" />
+		<Setter Property="CaretBrush" Value="{DynamicResource Foreground}" />
+		<Setter Property="SelectionBrush" Value="{DynamicResource Background}" />
+		<Setter Property="TextAlignment" Value="Center" />
+		<Setter Property="Padding" Value="3" />
+		<Setter Property="MinHeight" Value="32" />
+		<Setter Property="Background" Value="#151515" />
+		<Setter Property="Foreground" Value="{DynamicResource Foreground}" />
+		<Setter Property="Cursor" Value="Ibeam" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Panel>
+					<Border
+						Margin="0"
+						CornerRadius="16"
+						HorizontalAlignment="Stretch"
+						VerticalAlignment="Stretch"
+						BorderThickness="1"
+						BorderBrush="#99000000">
+						<Border
+							Name="Border"
+							CornerRadius="15"
+							HorizontalAlignment="Stretch"
+							VerticalAlignment="Stretch"
+							Background="#99000000"
+							BorderThickness="1"
+							BorderBrush="#99666666" />
+					</Border>
+
+					<ScrollViewer Name="PART_ScrollViewer"
+						Grid.Column="1"
+						Grid.ColumnSpan="1"
+						AllowAutoHide="{TemplateBinding (ScrollViewer.AllowAutoHide)}"
+						BringIntoViewOnFocusChange="{TemplateBinding (ScrollViewer.BringIntoViewOnFocusChange)}"
+						HorizontalScrollBarVisibility="{TemplateBinding (ScrollViewer.HorizontalScrollBarVisibility)}"
+						IsScrollChainingEnabled="{TemplateBinding (ScrollViewer.IsScrollChainingEnabled)}"
+						VerticalScrollBarVisibility="{TemplateBinding (ScrollViewer.VerticalScrollBarVisibility)}">
+
+						<Panel>
+
+							<TextBlock
+								Opacity="0.5"
+								Text="{TemplateBinding Watermark}"
+								HorizontalAlignment="Left"
+								VerticalAlignment="Center"
+								Margin="16,0,0,0" />
+
+							<TextPresenter
+								Name="PART_TextPresenter"
+								Margin="7"
+								HorizontalAlignment="Stretch"
+								CaretBlinkInterval="{TemplateBinding CaretBlinkInterval}"
+								CaretBrush="{TemplateBinding CaretBrush}"
+								CaretIndex="{TemplateBinding CaretIndex}"
+								LineHeight="{TemplateBinding LineHeight}"
+								LetterSpacing="{TemplateBinding LetterSpacing}"
+								PasswordChar="{TemplateBinding PasswordChar}"
+								RevealPassword="{TemplateBinding RevealPassword}"
+								SelectionBrush="{TemplateBinding SelectionBrush}"
+								SelectionEnd="{TemplateBinding SelectionEnd}"
+								SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+								SelectionStart="{TemplateBinding SelectionStart}"
+								Text="{TemplateBinding Text, Mode=TwoWay}"
+								TextAlignment="{TemplateBinding TextAlignment}"
+								TextWrapping="{TemplateBinding TextWrapping}" />
+						</Panel>
+					</ScrollViewer>
+				</Panel>
+			</ControlTemplate>
+		</Setter>
+
+		<Style Selector="^:focus /template/ Border#Border">
+			<Setter Property="BorderBrush" Value="{DynamicResource Trim}" />
+		</Style>
+
+	</ControlTheme>
+</ResourceDictionary>

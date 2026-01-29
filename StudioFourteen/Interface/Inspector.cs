@@ -17,7 +17,9 @@ namespace StudioFourteen.Interface;
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Reflection;
+using Avalonia;
 using Avalonia.Collections;
 using CommunityToolkit.Mvvm.ComponentModel;
 using StudioFourteen.Services.Avalonia;
@@ -65,7 +67,7 @@ public partial class InspectorGroup
 		InspectAttribute? inspect = type.GetCustomAttribute<InspectAttribute>();
 
 		this.Name = type.Name;
-		this.Icon = inspect?.IconPath;
+		this.Icon = inspect?.Path;
 
 		PropertyInfo[] props = type.GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance);
 		foreach (PropertyInfo property in props)
@@ -73,7 +75,7 @@ public partial class InspectorGroup
 			if (!Attribute.IsDefined(property, typeof(InspectAttribute)))
 				continue;
 
-			this.Properties.Add(new(property));
+			this.Properties.Add(new(target, property));
 		}
 	}
 
@@ -87,7 +89,58 @@ public partial class InspectorGroup
 	public partial AvaloniaList<InspectorProperty> Properties { get; set; } = new();
 }
 
-public partial class InspectorProperty(PropertyInfo property)
+public partial class InspectorProperty : ObservableObject
 {
-	public string Name => property.Name;
+	private readonly PropertyInfo property;
+	private readonly INotifyPropertyChanged target;
+	private readonly AvaloniaContentReference<Visual>? inspectorReference;
+
+	public InspectorProperty(INotifyPropertyChanged target, PropertyInfo property)
+	{
+		this.target = target;
+		this.target.PropertyChanged += this.OnTargetPropertyChanged;
+
+		this.property = property;
+
+		InspectAttribute? attribute = property.GetCustomAttribute<InspectAttribute>();
+		if (attribute == null)
+			return;
+
+		if (string.IsNullOrEmpty(attribute.Path))
+			return;
+
+		this.inspectorReference = new(attribute.Path);
+		this.inspectorReference.Reloaded += this.OnInspectorReloaded;
+
+		this.Inspector = this.inspectorReference.Get();
+		this.Inspector.DataContext = this;
+	}
+
+	public string Name => this.property.Name;
+
+	[ObservableProperty]
+	public partial Visual? Inspector { get; private set; }
+
+	public object? Value
+	{
+		get => this.property.GetValue(this.target);
+		set => this.property.SetValue(this.target, value);
+	}
+
+	private void OnInspectorReloaded()
+	{
+		Studio.Tick.Dispatch(TickChannels.Ui, () =>
+		{
+			this.Inspector = this.inspectorReference?.Get();
+			this.Inspector?.DataContext = this;
+		});
+	}
+
+	private void OnTargetPropertyChanged(object? sender, PropertyChangedEventArgs e)
+	{
+		if (e.PropertyName == this.property.Name)
+		{
+			this.OnPropertyChanged(nameof(InspectorProperty.Value));
+		}
+	}
 }

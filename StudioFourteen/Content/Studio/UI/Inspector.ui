@@ -56,8 +56,8 @@
 				<StudioFourteen.Interface.Controls:Svg
 					Source="{Binding Icon}"
 					Foreground="White"
-					Width="28"
-					Height="28" />
+					Width="20"
+					Height="20" />
 			</DataTemplate>
 		</TabControl.ItemTemplate>
 
@@ -70,7 +70,10 @@
 					<ItemsControl ItemsSource="{Binding Properties}">
 						<ItemsControl.ItemTemplate>
 							<DataTemplate DataType="StudioFourteen.Interface:InspectorProperty">
-								<TextBlock Text="{Binding Name}" />
+								<StackPanel>
+									<TextBlock Text="{Binding Name}" />
+									<ContentPresenter Content="{Binding Inspector}" />
+								</StackPanel>
 							</DataTemplate>
 						</ItemsControl.ItemTemplate>
 					</ItemsControl>

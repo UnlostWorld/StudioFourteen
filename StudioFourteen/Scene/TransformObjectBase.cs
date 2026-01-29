@@ -25,11 +25,11 @@ public abstract partial class TransformObjectBase : SceneObjectBase
 	private Transform? initialWorldTransform = null;
 
 	[ObservableProperty]
-	[Inspect]
+	[Inspect("UI/Inspectors/Transform.ui")]
 	public partial Transform WorldTransform { get; set; }
 
 	[ObservableProperty]
-	[Inspect]
+	[Inspect("UI/Inspectors/Transform.ui")]
 	public partial Transform LocalTransform { get; set; }
 
 	[ObservableProperty]

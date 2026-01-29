@@ -15,20 +15,28 @@
 
 namespace StudioFourteen.Services.Avalonia;
 
+using System.Collections.Generic;
 using global::Avalonia;
 using global::Avalonia.Controls;
 using global::Avalonia.Markup.Xaml;
-using StudioFourteen.Services.Content;
 using StudioFourteen.Services.Tick;
 
 public partial class StudioApplication : Application
 {
-	private readonly AvaloniaContentReference<ResourceDictionary> theme = new("UI/Theme.ui");
-
-	public StudioApplication()
+	private static readonly HashSet<string> ResourceDictionaryPaths = new()
 	{
-		this.theme.Reloaded += this.OnThemeChanged;
-	}
+		"UI/Theme.ui",
+
+		"UI/Styles/Button.ui",
+		"UI/Styles/Svg.ui",
+		"UI/Styles/TabControl.ui",
+		"UI/Styles/TabItem.ui",
+		"UI/Styles/TextBlock.ui",
+		"UI/Styles/TextBox.ui",
+		"UI/Styles/TransformControl.ui",
+	};
+
+	private readonly List<AvaloniaContentReference<ResourceDictionary>> resourceDictionaries = new();
 
 	public override void Initialize()
 	{
@@ -37,14 +45,20 @@ public partial class StudioApplication : Application
 
 	public void LoadTheme()
 	{
-		this.Resources = this.theme.Get();
+		foreach (string resourceDictionaryPath in ResourceDictionaryPaths)
+		{
+			AvaloniaContentReference<ResourceDictionary> resourceDictionaryReference = new(resourceDictionaryPath);
+			resourceDictionaryReference.Reloaded += () => this.LoadDictionary(resourceDictionaryReference);
+			this.resourceDictionaries.Add(resourceDictionaryReference);
+			this.LoadDictionary(resourceDictionaryReference);
+		}
 	}
 
-	private void OnThemeChanged()
+	private void LoadDictionary(AvaloniaContentReference<ResourceDictionary> reference)
 	{
 		Studio.Tick.Dispatch(TickChannels.Ui, () =>
 		{
-			this.LoadTheme();
+			this.Resources.MergedDictionaries.Add(reference.Get());
 			Studio.Avalonia.ReloadAll();
 		});
 	}

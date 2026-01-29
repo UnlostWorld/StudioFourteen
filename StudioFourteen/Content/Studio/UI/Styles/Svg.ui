@@ -1,0 +1,6 @@
+<ResourceDictionary>
+	<ControlTheme x:Key="{x:Type StudioFourteen.Interface.Controls:Svg}"
+		TargetType="{x:Type StudioFourteen.Interface.Controls:Svg}">
+		<Setter Property="Foreground" Value="{DynamicResource Foreground}" />
+	</ControlTheme>
+</ResourceDictionary>
