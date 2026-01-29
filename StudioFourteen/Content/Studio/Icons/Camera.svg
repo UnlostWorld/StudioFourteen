@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg width="512px" height="512px" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:serif="http://www.serif.com/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
-    <rect id="Camera" class="background" x="0" y="0" width="512" height="512" style="fill:none;"/>
-    <path class="foreground" d="M348.303,288.251c0,-15.822 -12.845,-28.667 -28.666,-28.667l-277.109,0c-15.822,0 -28.667,12.845 -28.667,28.667l0,133.777c0,15.821 12.845,28.666 28.667,28.666l277.109,0c15.821,0 28.666,-12.845 28.666,-28.666l0,-133.777Z"/>
-    <path class="foreground" d="M390.835,330.573c11.224,-8.98 43.555,-37.475 53.227,-47.318c9.319,-9.484 16.667,-18.565 29.964,-18.565c13.296,-0 24.092,10.795 24.092,24.092l-0,138.737c-0,13.297 -10.796,24.092 -24.092,24.092c-13.297,0 -22.549,-8.904 -32.037,-18.22c-9.671,-9.497 -41.311,-36.327 -50.463,-44.962c-9.671,-9.125 -22.02,-15.976 -22.02,-29.273c0,-13.297 10.947,-20.275 21.329,-28.583Z"/>
-    <path class="foreground" d="M182.508,89.087c25.216,0 43.295,-26.071 75.649,-26.071c48.103,0 87.157,39.054 87.157,87.157c-0,48.103 -39.054,87.156 -87.157,87.156l-151.299,0c-48.103,0 -87.156,-39.053 -87.156,-87.156c0,-48.103 39.053,-87.157 87.156,-87.157c32.354,0 50.433,26.071 75.65,26.071Z"/>
+<svg width="100%" height="100%" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg"
+	xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve"
+	xmlns:serif="http://www.serif.com/"
+	style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round;">
+    <g transform="matrix(1,0,0,1,0,4)">
+        <path class="foreground" d="M15,8.6L15,15.4C15,15.731 14.731,16 14.4,16L3.6,16C3.269,16 3,15.731 3,15.4L3,8.6C3,8.269 3.269,8 3.6,8L14.4,8C14.731,8 15,8.269 15,8.6ZM15,12L20.016,7.82C20.407,7.494 21,7.772 21,8.281L21,15.719C21,16.228 20.407,16.506 20.016,16.18L15,12Z" style="fill:none;fill-rule:nonzero;stroke:black;stroke-width:1.5px;"/>
+    </g>
+    <g transform="matrix(0.038733,0,0,0.038733,1.938878,1.079386)">
+        <path class="foreground" d="M38.648,204.407C34.486,199.181 30.911,193.466 28.025,187.364C22.688,176.082 19.702,163.473 19.702,150.173C19.702,102.07 58.755,63.016 106.858,63.016C139.212,63.016 157.291,89.087 182.508,89.087C207.724,89.087 225.803,63.016 258.157,63.016C306.26,63.016 345.314,102.07 345.314,150.173C345.314,162.851 342.601,174.9 337.725,185.772C334.589,192.764 330.557,199.269 325.777,205.14" style="fill:none;stroke:black;stroke-width:38.73px;stroke-miterlimit:2;"/>
+    </g>
 </svg>
