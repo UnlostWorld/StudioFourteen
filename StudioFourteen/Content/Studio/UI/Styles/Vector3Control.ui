@@ -1,0 +1,24 @@
+<ResourceDictionary>
+	<ControlTheme
+		x:Key="{x:Type StudioFourteen.Interface.Controls:Vector3Control}"
+		TargetType="{x:Type StudioFourteen.Interface.Controls:Vector3Control}">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate>
+					<Grid>
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition />
+							<ColumnDefinition />
+							<ColumnDefinition />
+						</Grid.ColumnDefinitions>
+
+						<TextBox Grid.Column="0" Margin="0" Text="{TemplateBinding X}" />
+						<TextBox Grid.Column="1" Margin="0" Text="{TemplateBinding Y}" />
+						<TextBox Grid.Column="2" Margin="0" Text="{TemplateBinding Z}" />
+
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</ControlTheme>
+</ResourceDictionary>

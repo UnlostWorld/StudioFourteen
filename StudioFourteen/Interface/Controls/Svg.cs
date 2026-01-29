@@ -26,8 +26,7 @@ using global::Svg.Model;
 using ShimSkiaSharp;
 using StudioFourteen.Services.Content;
 using StudioFourteen.Services.Tick;
-using Avalonia.Interactivity;
-using Avalonia.Data;
+using Avalonia.Media.Immutable;
 
 // https://github.com/wieslawsoltes/Svg.Skia/blob/master/src/Svg.Controls.Avalonia/Svg.cs
 public class Svg : Control
@@ -35,7 +34,7 @@ public class Svg : Control
 	public static readonly StyledProperty<string?> SourceProperty;
 	public static readonly StyledProperty<Stretch> StretchProperty;
 	public static readonly StyledProperty<StretchDirection> StretchDirectionProperty;
-	public static readonly StyledProperty<Color> ForegroundProperty;
+	public static readonly StyledProperty<IBrush> ForegroundProperty;
 
 	private SvgReference? reference;
 	private SKPicture? picture;
@@ -46,7 +45,7 @@ public class Svg : Control
 		SourceProperty = AvaloniaProperty.Register<Svg, string?>(nameof(Source));
 		StretchProperty = AvaloniaProperty.Register<Svg, Stretch>(nameof(Stretch), Stretch.Uniform);
 		StretchDirectionProperty = AvaloniaProperty.Register<Svg, StretchDirection>(nameof(StretchDirection), StretchDirection.Both);
-		ForegroundProperty = AvaloniaProperty.Register<Svg, Color>(nameof(Foreground), Colors.Black);
+		ForegroundProperty = AvaloniaProperty.Register<Svg, IBrush>(nameof(Foreground), new SolidColorBrush(Colors.Black));
 
 		AffectsRender<Svg>(SourceProperty, StretchProperty, StretchDirectionProperty);
 		AffectsMeasure<Svg>(SourceProperty, StretchProperty, StretchDirectionProperty);
@@ -70,16 +69,10 @@ public class Svg : Control
 		set => this.SetValue(StretchDirectionProperty, value);
 	}
 
-	// TODO: Hook foreground up to something...
-	public Color Foreground
+	public IBrush Foreground
 	{
 		get => this.GetValue(ForegroundProperty);
-		set
-		{
-			this.SetValue(ForegroundProperty, value);
-			this.reference?.Foreground = this.Foreground;
-			this.reference?.Reload();
-		}
+		set => this.SetValue(ForegroundProperty, value);
 	}
 
 	public SKPicture? Model => this.reference?.Get();
@@ -149,25 +142,54 @@ public class Svg : Control
 		if (change.Property == SourceProperty)
 			this.OnSourceChanged(this.Source);
 
+		if (change.Property == ForegroundProperty)
+			this.OnForegroundChanged(this.Foreground);
+
 		base.OnPropertyChanged(change);
 	}
 
 	private void OnSourceChanged(string? newValue)
 	{
-		Studio.Log.Information($"! > {newValue}");
-		this.reference?.Reloaded -= this.OnSvgReloaded;
-		this.reference?.Dispose();
+		try
+		{
+			this.reference?.Reloaded -= this.OnSvgReloaded;
+			this.reference?.Dispose();
 
-		if (string.IsNullOrEmpty(newValue))
+			if (string.IsNullOrEmpty(newValue))
+				return;
+
+			this.reference = new(newValue);
+			this.reference.Reloaded += this.OnSvgReloaded;
+
+			this.picture = this.reference.Get();
+			this.avaloniaPicture = AvaloniaPicture.Record(this.picture);
+			this.InvalidateVisual();
+		}
+		catch (Exception ex)
+		{
+			Studio.Log.Error(ex, "Error loading SVG");
+		}
+	}
+
+	private void OnForegroundChanged(IBrush newValue)
+	{
+		if (this.reference == null)
 			return;
 
-		this.reference = new(newValue);
-		this.reference.Foreground = this.Foreground;
-		this.reference.Reloaded += this.OnSvgReloaded;
+		if (newValue is SolidColorBrush colorBrush)
+		{
+			this.reference.Foreground = colorBrush.Color;
+		}
+		else if (newValue is ImmutableSolidColorBrush immutableColorBrush)
+		{
+			this.reference.Foreground = immutableColorBrush.Color;
+		}
+		else
+		{
+			throw new NotSupportedException("Only SolidColorBrush is supported for SVG foreground property");
+		}
 
-		this.picture = this.reference.Get();
-		this.avaloniaPicture = AvaloniaPicture.Record(this.picture);
-		this.InvalidateVisual();
+		this.reference.Reload();
 	}
 
 	private void OnSvgReloaded()

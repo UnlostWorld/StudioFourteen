@@ -27,14 +27,16 @@ public class TransformControl : TemplatedControl
 
 	public static readonly StyledProperty<Vector3?> TranslationProperty;
 	public static readonly StyledProperty<Quaternion?> RotationProperty;
+	public static readonly StyledProperty<Vector3?> EulerProperty;
 	public static readonly StyledProperty<Vector3?> ScaleProperty;
 
 	static TransformControl()
 	{
 		ValueProperty = AvaloniaProperty.Register<TransformControl, Transform?>(nameof(TransformControl.Value));
-		TranslationProperty = AvaloniaProperty.Register<TransformControl, Vector3?>(nameof(TransformControl.Value));
-		RotationProperty = AvaloniaProperty.Register<TransformControl, Quaternion?>(nameof(TransformControl.Value));
-		ScaleProperty = AvaloniaProperty.Register<TransformControl, Vector3?>(nameof(TransformControl.Value));
+		TranslationProperty = AvaloniaProperty.Register<TransformControl, Vector3?>(nameof(TransformControl.Translation));
+		RotationProperty = AvaloniaProperty.Register<TransformControl, Quaternion?>(nameof(TransformControl.Rotation));
+		EulerProperty = AvaloniaProperty.Register<TransformControl, Vector3?>(nameof(TransformControl.Euler));
+		ScaleProperty = AvaloniaProperty.Register<TransformControl, Vector3?>(nameof(TransformControl.Scale));
 	}
 
 	public Transform? Value
@@ -53,6 +55,12 @@ public class TransformControl : TemplatedControl
 	{
 		get => this.GetValue(RotationProperty);
 		set => this.SetValue(RotationProperty, value);
+	}
+
+	public Vector3? Euler
+	{
+		get => this.GetValue(EulerProperty);
+		set => this.SetValue(EulerProperty, value);
 	}
 
 	public Vector3? Scale
@@ -81,6 +89,8 @@ public class TransformControl : TemplatedControl
 					this.Translation = translation;
 					this.Rotation = rotation;
 					this.Scale = scale;
+
+					this.Euler = rotation.ToEuler();
 				}
 			}
 		}

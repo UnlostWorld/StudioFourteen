@@ -50,7 +50,10 @@
 		</Grid>
 	</Grid>
 
-	<TabControl Grid.Row="1" ItemsSource="{Binding Groups}">
+	<TabControl
+		Grid.Row="1"
+		ItemsSource="{Binding Groups}"
+		SelectedItem="{Binding CurrentGroup}">
 		<TabControl.ItemTemplate>
 			<DataTemplate>
 				<StudioFourteen.Interface.Controls:Svg

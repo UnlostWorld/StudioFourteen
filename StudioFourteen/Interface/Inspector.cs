@@ -21,6 +21,7 @@ using System.ComponentModel;
 using System.Reflection;
 using Avalonia;
 using Avalonia.Collections;
+using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
 using StudioFourteen.Services.Avalonia;
 using StudioFourteen.Services.Scene;
@@ -36,6 +37,9 @@ public partial class Inspector : WindowReference
 	{
 		Studio.Scene.ObjectSelected += this.OnObjectSelected;
 	}
+
+	[ObservableProperty]
+	public partial InspectorGroup? CurrentGroup { get; set; }
 
 	private void OnObjectSelected(SceneObjectBase obj)
 	{

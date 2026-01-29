@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="24px" height="24px" stroke-width="1.5" viewBox="0 0 24 24" fill="none"
+	xmlns="http://www.w3.org/2000/svg" color="#000000">
+	<path class="foreground" d="M21.168,8C19.625,4.468 16.101,2 12,2C6.815,2 2.551,5.947 2.049,11"
+		stroke-width="1.5"
+		stroke-linecap="round"
+		stroke-linejoin="round" />
+	<path class="foreground" d="M18,8L21.4,8C21.731,8 22,7.731 22,7.4L22,4"
+		stroke-width="1.5"
+		stroke-linecap="round"
+		stroke-linejoin="round" />
+	<path class="foreground"
+		d="M2.881,16C4.425,19.532 7.949,22 12.049,22C17.235,22 21.498,18.053 22,13"
+		stroke-width="1.5"
+		stroke-linecap="round"
+		stroke-linejoin="round" />
+	<path class="foreground" d="M6.049,16L2.649,16C2.318,16 2.049,16.269 2.049,16.6L2.049,20"
+		stroke-width="1.5"
+		stroke-linecap="round"
+		stroke-linejoin="round" />
+</svg>
