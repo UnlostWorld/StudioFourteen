@@ -28,6 +28,7 @@ public partial class StudioApplication : Application
 		"UI/Theme.ui",
 
 		"UI/Styles/Button.ui",
+		"UI/Styles/NumberBox.ui",
 		"UI/Styles/Svg.ui",
 		"UI/Styles/TabControl.ui",
 		"UI/Styles/TabItem.ui",

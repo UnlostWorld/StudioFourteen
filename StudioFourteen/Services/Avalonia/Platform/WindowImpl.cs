@@ -22,6 +22,7 @@ using global::Avalonia;
 using global::Avalonia.Controls;
 using global::Avalonia.Input;
 using global::Avalonia.Input.Raw;
+using global::Avalonia.Input.TextInput;
 using global::Avalonia.Platform;
 using global::Avalonia.Rendering.Composition;
 
@@ -86,6 +87,7 @@ public partial class WindowImpl : IWindowImpl
 
 	public void Activate()
 	{
+		this.Activated?.Invoke();
 	}
 
 	public void BeginMoveDrag(PointerPressedEventArgs e)
@@ -186,6 +188,7 @@ public partial class WindowImpl : IWindowImpl
 
 	public void SetInputRoot(IInputRoot inputRoot)
 	{
+		Studio.Log.Information($"? {inputRoot}");
 	}
 
 	public void SetMinMaxSize(Size minSize, Size maxSize)
@@ -223,12 +226,12 @@ public partial class WindowImpl : IWindowImpl
 			return this.screen;
 		}
 
-		/*if (featureType == typeof(ITextInputMethodImpl))
+		if (featureType == typeof(ITextInputMethodImpl))
 		{
-			return Imm32InputMethod.Current;
+			return new TextInputImpl();
 		}
 
-		if (featureType == typeof(INativeControlHostImpl))
+		/*if (featureType == typeof(INativeControlHostImpl))
 		{
 			return _nativeControlHost;
 		}

@@ -18,6 +18,11 @@ namespace StudioFourteen.Interface.Controls;
 using System.Numerics;
 using Avalonia;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
+using Avalonia.Interactivity;
+using Avalonia.Media;
+using StudioFourteen.Services.Rendering;
+using Color = Avalonia.Media.Color;
 
 public class Vector3Control : TemplatedControl
 {
@@ -26,12 +31,20 @@ public class Vector3Control : TemplatedControl
 	public static readonly StyledProperty<float?> YProperty;
 	public static readonly StyledProperty<float?> ZProperty;
 
+	public static readonly StyledProperty<IBrush> XForegroundProperty;
+	public static readonly StyledProperty<IBrush> YForegroundProperty;
+	public static readonly StyledProperty<IBrush> ZForegroundProperty;
+
 	static Vector3Control()
 	{
-		ValueProperty = AvaloniaProperty.Register<Vector3Control, Vector3?>(nameof(Vector3Control.Value));
-		XProperty = AvaloniaProperty.Register<Vector3Control, float?>(nameof(Vector3Control.X));
-		YProperty = AvaloniaProperty.Register<Vector3Control, float?>(nameof(Vector3Control.Y));
-		ZProperty = AvaloniaProperty.Register<Vector3Control, float?>(nameof(Vector3Control.Z));
+		ValueProperty = AvaloniaProperty.Register<Vector3Control, Vector3?>(nameof(Vector3Control.Value), default, false, BindingMode.TwoWay);
+		XProperty = AvaloniaProperty.Register<Vector3Control, float?>(nameof(Vector3Control.X), default, false, BindingMode.TwoWay);
+		YProperty = AvaloniaProperty.Register<Vector3Control, float?>(nameof(Vector3Control.Y), default, false, BindingMode.TwoWay);
+		ZProperty = AvaloniaProperty.Register<Vector3Control, float?>(nameof(Vector3Control.Z), default, false, BindingMode.TwoWay);
+
+		XForegroundProperty = AvaloniaProperty.Register<Vector3Control, IBrush>(nameof(Vector3Control.XForeground));
+		YForegroundProperty = AvaloniaProperty.Register<Vector3Control, IBrush>(nameof(Vector3Control.YForeground));
+		ZForegroundProperty = AvaloniaProperty.Register<Vector3Control, IBrush>(nameof(Vector3Control.ZForeground));
 	}
 
 	public Vector3? Value
@@ -56,6 +69,33 @@ public class Vector3Control : TemplatedControl
 	{
 		get => this.GetValue(ZProperty);
 		set => this.SetValue(ZProperty, value);
+	}
+
+	public IBrush XForeground
+	{
+		get => this.GetValue(XForegroundProperty);
+		set => this.SetValue(XForegroundProperty, value);
+	}
+
+	public IBrush YForeground
+	{
+		get => this.GetValue(YForegroundProperty);
+		set => this.SetValue(YForegroundProperty, value);
+	}
+
+	public IBrush ZForeground
+	{
+		get => this.GetValue(ZForegroundProperty);
+		set => this.SetValue(ZForegroundProperty, value);
+	}
+
+	protected override void OnLoaded(RoutedEventArgs e)
+	{
+		base.OnLoaded(e);
+
+		this.XForeground = new SolidColorBrush(Axes.XColor.ToAvalonia());
+		this.YForeground = new SolidColorBrush(Axes.YColor.ToAvalonia());
+		this.ZForeground = new SolidColorBrush(Axes.ZColor.ToAvalonia());
 	}
 
 	protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

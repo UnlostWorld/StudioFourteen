@@ -22,18 +22,21 @@ using System.Threading;
 using global::Avalonia;
 using global::Avalonia.Controls;
 using global::Avalonia.Controls.ApplicationLifetimes;
+using global::Avalonia.Input;
+using global::Avalonia.Input.Platform;
 using global::Avalonia.Markup.Xaml;
 using global::Avalonia.Platform;
 using global::Avalonia.Rendering;
 using global::Avalonia.Rendering.Composition;
 using global::Avalonia.Threading;
-using StudioFourteen.Services.Dalamud;
-using StudioFourteen.Services.Avalonia.Platform;
 using StudioFourteen.Interface;
+using StudioFourteen.Services.Avalonia.Platform;
+using StudioFourteen.Services.Dalamud;
 
 public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 {
 	public readonly StudioMouseDevice MouseDevice;
+	public readonly StudioKeyboardDevice KeyboardDevice;
 
 	public long DispatcherFramerate = 60;
 	public long RenderFramerate = 60;
@@ -57,6 +60,7 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 		this.uiThread.Start();
 
 		this.MouseDevice = new();
+		this.KeyboardDevice = new();
 	}
 
 	public event EventHandler<ShutdownRequestedEventArgs>? ShutdownRequested;
@@ -78,6 +82,7 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 		this.cts.Cancel();
 		this.renderTimer?.Dispose();
 		this.MouseDevice.DisposeMouse();
+		this.KeyboardDevice.DisposeKeyboard();
 
 		AvaloniaLocator.Current = null!;
 		AvaloniaLocator.CurrentMutable = null!;
@@ -163,6 +168,9 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 		AvaloniaLocator.CurrentMutable.Bind<IWindowingPlatform>().ToConstant(this.windowing);
 		AvaloniaLocator.CurrentMutable.Bind<IPlatformLifetimeEventsImpl>().ToConstant(this);
 		AvaloniaLocator.CurrentMutable.Bind<ICursorFactory>().ToConstant(new CursorFactory());
+		AvaloniaLocator.CurrentMutable.Bind<IPlatformSettings>().ToSingleton<StudioPlatformSettings>();
+		AvaloniaLocator.CurrentMutable.Bind<PlatformHotkeyConfiguration>().ToConstant(new PlatformHotkeyConfiguration());
+		AvaloniaLocator.CurrentMutable.Bind<IKeyboardDevice>().ToConstant(this.KeyboardDevice);
 
 		IPlatformGraphics? platformGraphics = GlManager.Initialize();
 		this.compositor = new Compositor(platformGraphics);

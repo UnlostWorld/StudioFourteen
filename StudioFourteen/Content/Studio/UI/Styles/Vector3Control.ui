@@ -7,14 +7,49 @@
 				<ControlTemplate>
 					<Grid>
 						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition />
+							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition />
+							<ColumnDefinition Width="Auto" />
 							<ColumnDefinition />
 						</Grid.ColumnDefinitions>
 
-						<TextBox Grid.Column="0" Margin="0" Text="{TemplateBinding X}" />
-						<TextBox Grid.Column="1" Margin="0" Text="{TemplateBinding Y}" />
-						<TextBox Grid.Column="2" Margin="0" Text="{TemplateBinding Z}" />
+						<Ellipse
+							Grid.Column="0"
+							Width="10"
+							Height="10"
+							Margin="8,0,2,0"
+							Fill="{TemplateBinding XForeground}" />
+
+						<StudioFourteen.Interface.Controls:NumberBox
+							Grid.Column="1"
+							Margin="0"
+							Value="{TemplateBinding X}" />
+
+						<Ellipse
+							Grid.Column="2"
+							Width="10"
+							Height="10"
+							Margin="8,0,2,0"
+							Fill="{TemplateBinding YForeground}" />
+
+						<StudioFourteen.Interface.Controls:NumberBox
+							Grid.Column="3"
+							Margin="0"
+							Value="{TemplateBinding Y}" />
+
+						<Ellipse
+							Grid.Column="4"
+							Width="10"
+							Height="10"
+							Margin="8,0,2,0"
+							Fill="{TemplateBinding ZForeground}" />
+
+						<StudioFourteen.Interface.Controls:NumberBox
+							Grid.Column="5"
+							Margin="0"
+							Value="{TemplateBinding Z}" />
 
 					</Grid>
 				</ControlTemplate>

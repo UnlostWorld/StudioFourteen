@@ -1,0 +1,52 @@
+<ResourceDictionary>
+	<ControlTheme
+		x:Key="{x:Type StudioFourteen.Interface.Controls:NumberBox}"
+		TargetType="{x:Type StudioFourteen.Interface.Controls:NumberBox}">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate>
+					<Panel>
+						<Border
+							Margin="0"
+							CornerRadius="16"
+							HorizontalAlignment="Stretch"
+							VerticalAlignment="Stretch"
+							BorderThickness="1"
+							BorderBrush="#99000000">
+							<Border
+								Name="Border"
+								CornerRadius="15"
+								HorizontalAlignment="Stretch"
+								VerticalAlignment="Stretch"
+								Background="#99000000"
+								BorderThickness="1"
+								BorderBrush="#99666666" />
+						</Border>
+
+						<ScrollViewer Name="PART_ScrollViewer"
+							Grid.Column="1"
+							Grid.ColumnSpan="1"
+							AllowAutoHide="{TemplateBinding (ScrollViewer.AllowAutoHide)}"
+							BringIntoViewOnFocusChange="{TemplateBinding (ScrollViewer.BringIntoViewOnFocusChange)}"
+							HorizontalScrollBarVisibility="{TemplateBinding (ScrollViewer.HorizontalScrollBarVisibility)}"
+							IsScrollChainingEnabled="{TemplateBinding (ScrollViewer.IsScrollChainingEnabled)}"
+							VerticalScrollBarVisibility="{TemplateBinding (ScrollViewer.VerticalScrollBarVisibility)}">
+
+							<Panel>
+								<TextPresenter
+									Name="PART_TextPresenter"
+									Margin="7"
+									Text="{TemplateBinding Text, Mode=TwoWay}" />
+							</Panel>
+						</ScrollViewer>
+					</Panel>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+
+		<Style Selector="^:focus /template/ Border#Border">
+			<Setter Property="BorderBrush" Value="{DynamicResource Trim}" />
+		</Style>
+
+	</ControlTheme>
+</ResourceDictionary>

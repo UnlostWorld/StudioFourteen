@@ -59,4 +59,13 @@ public struct Color
 			float.Lerp(from.B, to.B, p),
 			float.Lerp(from.A, to.A, p));
 	}
+
+	public global::Avalonia.Media.Color ToAvalonia()
+	{
+		return new(
+			(byte)(this.A * 255),
+			(byte)(this.R * 255),
+			(byte)(this.G * 255),
+			(byte)(this.B * 255));
+	}
 }

@@ -19,6 +19,7 @@ using System.Numerics;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
 using StudioFourteen.Services.Numerics;
 
 public class TransformControl : TemplatedControl
@@ -32,11 +33,11 @@ public class TransformControl : TemplatedControl
 
 	static TransformControl()
 	{
-		ValueProperty = AvaloniaProperty.Register<TransformControl, Transform?>(nameof(TransformControl.Value));
-		TranslationProperty = AvaloniaProperty.Register<TransformControl, Vector3?>(nameof(TransformControl.Translation));
-		RotationProperty = AvaloniaProperty.Register<TransformControl, Quaternion?>(nameof(TransformControl.Rotation));
-		EulerProperty = AvaloniaProperty.Register<TransformControl, Vector3?>(nameof(TransformControl.Euler));
-		ScaleProperty = AvaloniaProperty.Register<TransformControl, Vector3?>(nameof(TransformControl.Scale));
+		ValueProperty = AvaloniaProperty.Register<TransformControl, Transform?>(nameof(TransformControl.Value), default, false, BindingMode.TwoWay);
+		TranslationProperty = AvaloniaProperty.Register<TransformControl, Vector3?>(nameof(TransformControl.Translation), default, false, BindingMode.TwoWay);
+		RotationProperty = AvaloniaProperty.Register<TransformControl, Quaternion?>(nameof(TransformControl.Rotation), default, false, BindingMode.TwoWay);
+		EulerProperty = AvaloniaProperty.Register<TransformControl, Vector3?>(nameof(TransformControl.Euler), default, false, BindingMode.TwoWay);
+		ScaleProperty = AvaloniaProperty.Register<TransformControl, Vector3?>(nameof(TransformControl.Scale), default, false, BindingMode.TwoWay);
 	}
 
 	public Transform? Value
