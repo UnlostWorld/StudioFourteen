@@ -27,6 +27,8 @@ public class NumberBox : TemplatedControl
 	public static readonly StyledProperty<float> ValueProperty;
 	public static readonly StyledProperty<string> TextProperty;
 
+	private PointerPoint? lastDragPosition;
+
 	static NumberBox()
 	{
 		ValueProperty = AvaloniaProperty.Register<NumberBox, float>(nameof(NumberBox.Value), default, false, BindingMode.TwoWay);
@@ -43,6 +45,40 @@ public class NumberBox : TemplatedControl
 	{
 		get => this.GetValue(TextProperty);
 		set => this.SetValue(TextProperty, value);
+	}
+
+	protected override void OnPointerPressed(PointerPressedEventArgs e)
+	{
+		e.Handled = true;
+
+		Studio.Input.Mouse?.LockCursor(true);
+
+		this.lastDragPosition = e.GetCurrentPoint(this);
+		base.OnPointerPressed(e);
+	}
+
+	protected override void OnPointerReleased(PointerReleasedEventArgs e)
+	{
+		e.Handled = true;
+
+		Studio.Input.Mouse?.LockCursor(false);
+
+		this.lastDragPosition = null;
+		base.OnPointerReleased(e);
+	}
+
+	protected override void OnPointerMoved(PointerEventArgs e)
+	{
+		if (this.lastDragPosition != null)
+		{
+			PointerPoint p = e.GetCurrentPoint(this);
+			Point delta = p.Position - this.lastDragPosition.Value.Position;
+			this.lastDragPosition = p;
+			////Studio.Log.Information($">> {delta}");
+			e.Handled = true;
+		}
+
+		base.OnPointerMoved(e);
 	}
 
 	protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)

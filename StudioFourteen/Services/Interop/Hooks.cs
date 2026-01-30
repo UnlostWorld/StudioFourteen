@@ -25,6 +25,7 @@ using System;
 using System.Runtime.InteropServices;
 using global::Windows.Win32.UI.WindowsAndMessaging;
 using StudioFourteen.Services.Interop.Structs;
+using Windows.Win32.Foundation;
 
 public static unsafe class Hooks
 {
@@ -88,11 +89,6 @@ public static unsafe class Hooks
 	// 		Special thanks to @goaaats
 	[UnmanagedFunctionPointer(CallingConvention.ThisCall)]
 	internal delegate int DxgiSwapChainPresentDelegate(nint* swapChain, uint syncInterval, uint flags);
-
-	// https://github.com/goatcorp/Dalamud/blob/master/Dalamud/Interface/Internal/InterfaceManager.cs#L1043
-	[UnmanagedFunctionPointer(CallingConvention.StdCall)]
-	internal delegate IntPtr SetUser32CursorDelegate(HCURSOR hCursor);
-	internal static readonly ImportHook<SetUser32CursorDelegate> SetCursor = new(null, "user32.dll", "SetCursor", 0);
 
 	// Ktisis Signatures:
 	// 		https://github.com/ktisis-tools/Ktisis/

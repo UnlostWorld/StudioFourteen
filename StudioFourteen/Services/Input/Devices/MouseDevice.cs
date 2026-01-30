@@ -19,6 +19,11 @@ using System;
 using System.Collections.Generic;
 using System.Numerics;
 using FFXIVClientStructs.FFXIV.Client.System.Input;
+using StudioFourteen.Services.Interop;
+using Windows.Win32;
+using Windows.Win32.Foundation;
+using Windows.Win32.UI.WindowsAndMessaging;
+using global::Dalamud.Game.Addon.Events;
 
 public enum MouseButtons
 {
@@ -27,6 +32,28 @@ public enum MouseButtons
 	Right = MouseButtonFlags.RBUTTON,
 	XButton1 = MouseButtonFlags.XBUTTON1,
 	XButton2 = MouseButtonFlags.XBUTTON2,
+}
+
+public enum Cursors
+{
+	Arrow = AddonCursorType.Arrow,
+	Boot = AddonCursorType.Boot,
+	Search = AddonCursorType.Search,
+	ChatPointer = AddonCursorType.ChatPointer,
+	Interact = AddonCursorType.Interact,
+	Attack = AddonCursorType.Attack,
+	Hand = AddonCursorType.Hand,
+	ResizeWE = AddonCursorType.ResizeWE,
+	ResizeNS = AddonCursorType.ResizeNS,
+	ResizeNWSE = AddonCursorType.ResizeNWSR,
+	ResizeNESW = AddonCursorType.ResizeNESW,
+	Clickable = AddonCursorType.Clickable,
+	TextInput = AddonCursorType.TextInput,
+	TextClick = AddonCursorType.TextClick,
+	Grab = AddonCursorType.Grab,
+	ChatBubble = AddonCursorType.ChatBubble,
+	NoAccess = AddonCursorType.NoAccess,
+	Hidden = AddonCursorType.Hidden,
 }
 
 #pragma warning disable
@@ -45,7 +72,10 @@ public class MouseDevice : InputDeviceBase
 
 	private readonly InputAxisSigned wheel;
 
+	private Cursors cursor = Cursors.Arrow;
+	private bool isOverridingCursor = false;
 	private Vector2 lastMousePosition;
+	private bool lockCursor = false;
 
 	public MouseDevice()
 	{
@@ -106,14 +136,26 @@ public class MouseDevice : InputDeviceBase
 	public Vector2 GetPosition() => new(this.positionX.Value, this.positionY.Value);
 	public bool GetButton(MouseButtons button) => this.buttonAxes[button].Value > 0.05f;
 
-	public void SetCursorVisible(bool visible)
+	public void LockCursor(bool enableLock)
 	{
+		if (enableLock && this.lockCursor)
+			throw new Exception("Attempt to lock mouse cursor that is already locked");
+
+		if (enableLock)
+		{
+			this.cursor = Cursors.Hidden;
+		}
+		else
+		{
+			this.cursor = Cursors.Arrow;
+		}
+
+		this.lockCursor = enableLock;
 	}
 
 	public override void Attach()
 	{
 		base.Attach();
-
 		this.buttonAxes[MouseButtons.Left].UtcLastInput = DateTime.UtcNow;
 	}
 
@@ -149,6 +191,27 @@ public class MouseDevice : InputDeviceBase
 		{
 			axis.Value = 0;
 		}*/
+
+		if (this.lockCursor)
+		{
+			// how to stop cursor from moving...
+		}
+
+		bool shouldConsume = this.ShouldConsumeMouse();
+		if (!this.isOverridingCursor && shouldConsume)
+		{
+			this.isOverridingCursor = true;
+		}
+		else if (this.isOverridingCursor && shouldConsume)
+		{
+			Studio.AddonEventManager.SetCursor((AddonCursorType)this.cursor);
+		}
+		else if (this.isOverridingCursor && !shouldConsume)
+		{
+			this.isOverridingCursor = false;
+			Studio.AddonEventManager.SetCursor(AddonCursorType.Arrow);
+			Studio.AddonEventManager.ResetCursor();
+		}
 	}
 
 	public bool HandleMouseMove(Vector2 position)
@@ -179,8 +242,6 @@ public class MouseDevice : InputDeviceBase
 				// 🤔
 				////this.SetPosition(dragStart);
 			}
-
-			this.SetCursorVisible(false);
 		}
 		else
 		{
@@ -199,7 +260,6 @@ public class MouseDevice : InputDeviceBase
 		{
 			this.draggingButtons.Remove(button);
 			this.dragStarts.Remove(button);
-			this.SetCursorVisible(true);
 			this.buttonAxes[button].Value = 0.0f;
 		}
 
@@ -249,12 +309,13 @@ public class MouseDevice : InputDeviceBase
 
 		this.draggingButtons.Clear();
 		this.dragStarts.Clear();
-
-		this.SetCursorVisible(true);
 	}
 
 	private bool ShouldConsumeMouse()
 	{
+		if (Studio.IsDisposed || !Studio.IsInitialized)
+			return false;
+
 		// If the user has disabled the overlay system globally,
 		// never capture mouse inputs.
 		////if (!Studio.Settings.Current.AllowMouseCapture)

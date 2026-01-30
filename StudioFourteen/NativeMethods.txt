@@ -1,4 +1,3 @@
-SetCursor
 CallWindowProc
 SetWindowLongPtr
 GetClientRect

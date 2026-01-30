@@ -89,6 +89,7 @@ public sealed class Studio : IDalamudPlugin
 	[PluginService] public static IGameInteropProvider InteropProvider { get; private set; } = null!;
 	[PluginService] public static ITextureProvider TextureProvider { get; private set; } = null!;
 	[PluginService] public static IObjectTable ObjectTable { get; private set; } = null!;
+	[PluginService] public static IAddonEventManager AddonEventManager { get; private set; } = null!;
 
 	public void Dispose()
 	{

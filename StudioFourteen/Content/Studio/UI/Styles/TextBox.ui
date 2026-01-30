@@ -3,7 +3,7 @@
 		<Setter Property="Margin" Value="4" />
 		<Setter Property="CaretBrush" Value="{DynamicResource Foreground}" />
 		<Setter Property="SelectionBrush" Value="{DynamicResource Background}" />
-		<Setter Property="TextAlignment" Value="Center" />
+		<Setter Property="TextAlignment" Value="Left" />
 		<Setter Property="Padding" Value="3" />
 		<Setter Property="MinHeight" Value="32" />
 		<Setter Property="Background" Value="#151515" />
@@ -43,14 +43,16 @@
 							<TextBlock
 								Opacity="0.5"
 								Text="{TemplateBinding Watermark}"
-								HorizontalAlignment="Left"
+								HorizontalAlignment="Stretch"
 								VerticalAlignment="Center"
-								Margin="16,0,0,0" />
+								TextAlignment="{TemplateBinding TextAlignment}"
+								Margin="16,0" />
 
 							<TextPresenter
 								Name="PART_TextPresenter"
-								Margin="7"
+								Margin="16,0"
 								HorizontalAlignment="Stretch"
+								VerticalAlignment="Center"
 								CaretBlinkInterval="{TemplateBinding CaretBlinkInterval}"
 								CaretBrush="{TemplateBinding CaretBrush}"
 								CaretIndex="{TemplateBinding CaretIndex}"
