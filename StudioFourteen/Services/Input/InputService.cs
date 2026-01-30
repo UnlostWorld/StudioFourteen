@@ -203,7 +203,7 @@ public class InputService : IService
 
 	protected unsafe void OnGameTick()
 	{
-		if (Studio.IsDisposed)
+		if (Studio.IsDisposed || !Studio.IsInitialized)
 			return;
 
 		lock (this)

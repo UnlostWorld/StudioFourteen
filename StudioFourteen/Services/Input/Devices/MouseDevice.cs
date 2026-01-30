@@ -24,6 +24,7 @@ using Windows.Win32;
 using Windows.Win32.Foundation;
 using Windows.Win32.UI.WindowsAndMessaging;
 using global::Dalamud.Game.Addon.Events;
+using System.Drawing;
 
 public enum MouseButtons
 {
@@ -60,7 +61,7 @@ public enum Cursors
 
 public class MouseDevice : InputDeviceBase
 {
-	private const float MinDragDistance = 1.0f;
+	private const float MinDragDistance = 3.0f / 1920.0f;   // 3px at 1920 res.
 
 	private readonly Dictionary<MouseButtons, Vector2> dragStarts = new();
 	private readonly HashSet<MouseButtons> draggingButtons = new();
@@ -76,6 +77,7 @@ public class MouseDevice : InputDeviceBase
 	private bool isOverridingCursor = false;
 	private Vector2 lastMousePosition;
 	private bool lockCursor = false;
+	private Point lockCursorPoint;
 
 	public MouseDevice()
 	{
@@ -143,10 +145,12 @@ public class MouseDevice : InputDeviceBase
 
 		if (enableLock)
 		{
+			PInvoke.GetCursorPos(out this.lockCursorPoint);
 			this.cursor = Cursors.Hidden;
 		}
 		else
 		{
+			PInvoke.ClipCursor(null);
 			this.cursor = Cursors.Arrow;
 		}
 
@@ -173,6 +177,41 @@ public class MouseDevice : InputDeviceBase
 			xAxis.ConsumedBy = null;
 			yAxis.ConsumedBy = null;
 		}
+
+		PInvoke.GetCursorPos(out Point p);
+		Vector2 clientSize = Studio.Window.GetClientSize();
+		Vector2 position = new(p.X / clientSize.X, p.Y / clientSize.Y);
+
+		foreach ((MouseButtons button, Vector2 dragStart) in this.dragStarts)
+		{
+			if (this.draggingButtons.Contains(button))
+				continue;
+
+			Vector2 totalDelta = position - dragStart;
+			if (Math.Abs(totalDelta.X) > MinDragDistance || Math.Abs(totalDelta.Y) > MinDragDistance)
+			{
+				this.draggingButtons.Add(button);
+			}
+		}
+
+		foreach (MouseButtons button in this.draggingButtons)
+		{
+			Vector2 delta = position - this.lastMousePosition;
+			this.dragAxis[button].X.Value += (float)delta.X;
+			this.dragAxis[button].Y.Value += (float)delta.Y;
+		}
+
+		if (this.lockCursor)
+		{
+			PInvoke.SetCursorPos(this.lockCursorPoint.X, this.lockCursorPoint.Y);
+
+			PInvoke.GetCursorPos(out Point p2);
+			position = new(p2.X / clientSize.X, p2.Y / clientSize.Y);
+		}
+
+		this.positionX.Value = position.X;
+		this.positionY.Value = position.Y;
+		this.lastMousePosition = position;
 	}
 
 	public unsafe override void PostUpdate()
@@ -192,11 +231,6 @@ public class MouseDevice : InputDeviceBase
 			axis.Value = 0;
 		}*/
 
-		if (this.lockCursor)
-		{
-			// how to stop cursor from moving...
-		}
-
 		bool shouldConsume = this.ShouldConsumeMouse();
 		if (!this.isOverridingCursor && shouldConsume)
 		{
@@ -214,46 +248,6 @@ public class MouseDevice : InputDeviceBase
 		}
 	}
 
-	public bool HandleMouseMove(Vector2 position)
-	{
-		foreach ((MouseButtons button, Vector2 dragStart) in this.dragStarts)
-		{
-			if (this.draggingButtons.Contains(button))
-				continue;
-
-			Vector2 totalDelta = position - dragStart;
-			if (Math.Abs(totalDelta.X) > MinDragDistance || Math.Abs(totalDelta.Y) > MinDragDistance)
-			{
-				this.draggingButtons.Add(button);
-			}
-		}
-
-		foreach (MouseButtons button in this.draggingButtons)
-		{
-			Vector2 delta = position - this.lastMousePosition;
-			this.dragAxis[button].X.Value += (float)delta.X / 8; // Sensitivity
-			this.dragAxis[button].Y.Value += (float)delta.Y / 8;
-		}
-
-		if (this.IsAnyDragging)
-		{
-			foreach ((MouseButtons button, Vector2 dragStart) in this.dragStarts)
-			{
-				// 🤔
-				////this.SetPosition(dragStart);
-			}
-		}
-		else
-		{
-			this.positionX.Value = position.X;
-			this.positionY.Value = position.Y;
-		}
-
-		this.lastMousePosition = position;
-
-		return this.ShouldConsumeMouse();
-	}
-
 	public bool HandleMouseButton(MouseButtons button, bool down)
 	{
 		if (!down)
@@ -263,15 +257,12 @@ public class MouseDevice : InputDeviceBase
 			this.buttonAxes[button].Value = 0.0f;
 		}
 
-		Vector2? mousePoint = this.GetPosition();
-		if (mousePoint == null)
-			return false;
-
+		Vector2 mousePoint = this.GetPosition();
 		if (down)
 		{
 			this.dragAxis[button].X.Value = 0;
 			this.dragAxis[button].Y.Value = 0;
-			this.dragStarts[button] = mousePoint.Value;
+			this.dragStarts[button] = mousePoint;
 			this.buttonAxes[button].Value = 1.0f;
 		}
 
@@ -311,7 +302,7 @@ public class MouseDevice : InputDeviceBase
 		this.dragStarts.Clear();
 	}
 
-	private bool ShouldConsumeMouse()
+	public bool ShouldConsumeMouse()
 	{
 		if (Studio.IsDisposed || !Studio.IsInitialized)
 			return false;

@@ -31,7 +31,7 @@
 						<StudioFourteen.Interface.Controls:Vector3Control
 							Grid.Row="0"
 							Grid.Column="1"
-							Value="{TemplateBinding Translation}" />
+							Value="{TemplateBinding Translation, Mode=TwoWay}" />
 
 						<StudioFourteen.Interface.Controls:Svg
 							Grid.Row="1"
@@ -44,7 +44,7 @@
 						<StudioFourteen.Interface.Controls:Vector3Control
 							Grid.Row="1"
 							Grid.Column="1"
-							Value="{TemplateBinding Euler}" />
+							Value="{TemplateBinding Euler, Mode=TwoWay}" />
 
 						<StudioFourteen.Interface.Controls:Svg
 							Grid.Row="2"
@@ -57,7 +57,7 @@
 						<StudioFourteen.Interface.Controls:Vector3Control
 							Grid.Row="2"
 							Grid.Column="1"
-							Value="{TemplateBinding Scale}" />
+							Value="{TemplateBinding Scale, Mode=TwoWay}" />
 					</Grid>
 				</ControlTemplate>
 			</Setter.Value>

@@ -20,6 +20,8 @@ using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
+using StudioFourteen.Services.Input;
+using StudioFourteen.Services.Input.Devices;
 using StudioFourteen.Services.Tick;
 
 public class NumberBox : TemplatedControl
@@ -27,12 +29,23 @@ public class NumberBox : TemplatedControl
 	public static readonly StyledProperty<float> ValueProperty;
 	public static readonly StyledProperty<string> TextProperty;
 
-	private PointerPoint? lastDragPosition;
+	private readonly Input2DListener dragListener;
+	private bool supressChanges = false;
+	private bool isDragging = false;
 
 	static NumberBox()
 	{
 		ValueProperty = AvaloniaProperty.Register<NumberBox, float>(nameof(NumberBox.Value), default, false, BindingMode.TwoWay);
 		TextProperty = AvaloniaProperty.Register<NumberBox, string>(nameof(NumberBox.Text), "0", false, BindingMode.TwoWay);
+	}
+
+	public NumberBox()
+	{
+		this.dragListener = new(
+			InputAction.Handle_Right,
+			InputAction.Handle_Left,
+			InputAction.Handle_Down,
+			InputAction.Handle_Up);
 	}
 
 	public float Value
@@ -51,9 +64,10 @@ public class NumberBox : TemplatedControl
 	{
 		e.Handled = true;
 
+		this.isDragging = true;
+		this.dragListener.Enable();
 		Studio.Input.Mouse?.LockCursor(true);
 
-		this.lastDragPosition = e.GetCurrentPoint(this);
 		base.OnPointerPressed(e);
 	}
 
@@ -61,20 +75,21 @@ public class NumberBox : TemplatedControl
 	{
 		e.Handled = true;
 
+		this.isDragging = false;
 		Studio.Input.Mouse?.LockCursor(false);
 
-		this.lastDragPosition = null;
+		this.dragListener.Disable();
 		base.OnPointerReleased(e);
 	}
 
 	protected override void OnPointerMoved(PointerEventArgs e)
 	{
-		if (this.lastDragPosition != null)
+		if (this.isDragging)
 		{
-			PointerPoint p = e.GetCurrentPoint(this);
-			Point delta = p.Position - this.lastDragPosition.Value.Position;
-			this.lastDragPosition = p;
-			////Studio.Log.Information($">> {delta}");
+			float delta = this.dragListener.Value.X;
+
+			float newValue = this.Value - delta;
+			this.SetCurrentValue(ValueProperty, newValue);
 			e.Handled = true;
 		}
 
@@ -83,11 +98,17 @@ public class NumberBox : TemplatedControl
 
 	protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
 	{
-		base.OnPropertyChanged(change);
-
-		if (change.Property == ValueProperty)
+		if (!this.supressChanges)
 		{
-			this.Text = this.Value.ToString("F3");
+			this.supressChanges = true;
+			if (change.Property == ValueProperty)
+			{
+				this.Text = this.Value.ToString("F3");
+			}
+
+			this.supressChanges = false;
 		}
+
+		base.OnPropertyChanged(change);
 	}
 }

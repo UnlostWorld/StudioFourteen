@@ -1,3 +1,6 @@
 CallWindowProc
 SetWindowLongPtr
 GetClientRect
+ClipCursor
+SetCursorPos
+GetCursorPos

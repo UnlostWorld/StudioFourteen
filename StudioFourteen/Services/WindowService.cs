@@ -53,6 +53,12 @@ public partial class WindowService : IService
 		}
 	}
 
+	public Vector2 GetClientSize()
+	{
+		PInvoke.GetClientRect(this.windowHandle, out RECT rect);
+		return new Vector2(rect.Width, rect.Height);
+	}
+
 	private long WndProcDetour(nint hWnd, uint msg, ulong wParam, long lParam)
 	{
 		if (this.oldWndProcPtr == 0)
@@ -81,16 +87,7 @@ public partial class WindowService : IService
 		{
 			switch (message)
 			{
-				case WindowMessages.WM_MOUSEMOVE:
-				{
-					int x = (int)lParam & 0xFFFF;
-					int y = ((int)lParam >> 16) & 0xFFFF;
-
-					PInvoke.GetClientRect(this.windowHandle, out RECT rect);
-					Vector2 pos = new((float)x / rect.Width, (float)y / rect.Height);
-					return mouseDevice.HandleMouseMove(pos);
-				}
-
+				case WindowMessages.WM_MOUSEMOVE: return mouseDevice.ShouldConsumeMouse();
 				case WindowMessages.WM_LBUTTONDOWN: return mouseDevice.HandleMouseButton(MouseButtons.Left, true);
 				case WindowMessages.WM_LBUTTONUP: return mouseDevice.HandleMouseButton(MouseButtons.Left, false);
 				case WindowMessages.WM_RBUTTONDOWN: return mouseDevice.HandleMouseButton(MouseButtons.Right, true);
