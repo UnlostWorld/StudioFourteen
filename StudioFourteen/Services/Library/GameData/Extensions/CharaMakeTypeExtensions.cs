@@ -13,39 +13,50 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Library.Files;
+namespace StudioFourteen.Services.Library.GameData.Sheets;
 
-using System;
+using global::Dalamud.Game.ClientState.Objects.Enums;
+using Lumina.Excel;
+using Lumina.Excel.Sheets;
 
-[Serializable]
-public abstract class FileBase
+public static class CharaMakeTypeExtensions
 {
-	public string? Title { get; set; }
-	public string? Author { get; set; }
-	public string? Description { get; set; }
-	public string? Version { get; set; }
-	public string? Base64Image { get; set; }
-
-	/*public ImageSource? GetImage()
+	public static CharaMakeType? GetMakeType(this ExcelSheet<CharaMakeType> self, Tribe tribe, Genders gender)
 	{
-		if (this.Base64Image == null)
-			return null;
+		foreach (CharaMakeType makeType in self)
+		{
+			if (!makeType.Tribe.IsRow(tribe.RowId) || makeType.Gender != (sbyte)gender)
+				continue;
 
-		byte[] binaryData = Convert.FromBase64String(this.Base64Image);
+			return makeType;
+		}
 
-		BitmapImage bi = new BitmapImage();
-		bi.BeginInit();
-		bi.CreateOptions = BitmapCreateOptions.IgnoreColorProfile;
-		bi.StreamSource = new MemoryStream(binaryData);
-		bi.EndInit();
-		bi.CacheOption = BitmapCacheOption.OnDemand;
-		bi.Freeze();
+		return null;
+	}
 
-		return bi;
-	}*/
-
-	public void SetImage(byte[] binaryData)
+	public static CharaMakeType? GetMakeType(this ExcelSheet<CharaMakeType> self, byte tribe, byte gender)
 	{
-		this.Base64Image = Convert.ToBase64String(binaryData);
+		foreach (CharaMakeType makeType in self)
+		{
+			if (!makeType.Tribe.IsRow(tribe) || makeType.Gender != (sbyte)gender)
+				continue;
+
+			return makeType;
+		}
+
+		return null;
+	}
+
+	public static CharaMakeType.CharaMakeMenu? GetMenu(this CharaMakeType self, CustomizeIndex index)
+	{
+		foreach (CharaMakeType.CharaMakeMenu menu in self.CharaMakeStruct)
+		{
+			if (menu.Customize == (uint)index)
+			{
+				return menu;
+			}
+		}
+
+		return null;
 	}
 }

@@ -13,39 +13,26 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Library.Files;
+namespace StudioFourteen.Services.Library.GameData.Extensions;
 
-using System;
+using Lumina.Excel.Sheets;
 
-[Serializable]
-public abstract class FileBase
+public static class ClassJobExtensions
 {
-	public string? Title { get; set; }
-	public string? Author { get; set; }
-	public string? Description { get; set; }
-	public string? Version { get; set; }
-	public string? Base64Image { get; set; }
-
-	/*public ImageSource? GetImage()
+	public enum Roles : byte
 	{
-		if (this.Base64Image == null)
-			return null;
-
-		byte[] binaryData = Convert.FromBase64String(this.Base64Image);
-
-		BitmapImage bi = new BitmapImage();
-		bi.BeginInit();
-		bi.CreateOptions = BitmapCreateOptions.IgnoreColorProfile;
-		bi.StreamSource = new MemoryStream(binaryData);
-		bi.EndInit();
-		bi.CacheOption = BitmapCacheOption.OnDemand;
-		bi.Freeze();
-
-		return bi;
-	}*/
-
-	public void SetImage(byte[] binaryData)
-	{
-		this.Base64Image = Convert.ToBase64String(binaryData);
+		None,
+		Tank,
+		MeleeDamage,
+		RangedDamage,
+		Healer,
 	}
+
+	public static Roles GetRole(this ClassJob self)
+	{
+		return (Roles)self.Role;
+	}
+
+	public static bool GetIsClass(this ClassJob self) => self.ClassJobParent.RowId == self.RowId;
+	public static bool GetIsJob(this ClassJob self) => !self.GetIsClass();
 }

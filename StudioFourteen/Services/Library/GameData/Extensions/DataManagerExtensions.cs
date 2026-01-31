@@ -1,4 +1,4 @@
-﻿// .                    @@             _____ _______ _    _ _____ _____ ____
+// .                    @@             _____ _______ _    _ _____ _____ ____
 //          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
 //         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
 //         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
@@ -13,39 +13,16 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Library.Files;
+namespace Dalamud.Plugin.Services;
 
-using System;
+using Lumina.Excel;
 
-[Serializable]
-public abstract class FileBase
+public static class DataManagerExtensions
 {
-	public string? Title { get; set; }
-	public string? Author { get; set; }
-	public string? Description { get; set; }
-	public string? Version { get; set; }
-	public string? Base64Image { get; set; }
-
-	/*public ImageSource? GetImage()
+	public static T GetRow<T>(this IDataManager self, uint rowId)
+		 where T : struct, IExcelRow<T>
 	{
-		if (this.Base64Image == null)
-			return null;
-
-		byte[] binaryData = Convert.FromBase64String(this.Base64Image);
-
-		BitmapImage bi = new BitmapImage();
-		bi.BeginInit();
-		bi.CreateOptions = BitmapCreateOptions.IgnoreColorProfile;
-		bi.StreamSource = new MemoryStream(binaryData);
-		bi.EndInit();
-		bi.CacheOption = BitmapCacheOption.OnDemand;
-		bi.Freeze();
-
-		return bi;
-	}*/
-
-	public void SetImage(byte[] binaryData)
-	{
-		this.Base64Image = Convert.ToBase64String(binaryData);
+		ExcelSheet<T> sheet = self.GetExcelSheet<T>();
+		return sheet.GetRow(rowId);
 	}
 }

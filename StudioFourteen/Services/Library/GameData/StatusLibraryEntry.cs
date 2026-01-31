@@ -1,4 +1,4 @@
-﻿// .                    @@             _____ _______ _    _ _____ _____ ____
+// .                    @@             _____ _______ _    _ _____ _____ ____
 //          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
 //         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
 //         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
@@ -13,39 +13,29 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Library.Files;
+namespace StudioFourteen.Services.Library.GameData.Library;
 
-using System;
+using Lumina.Excel.Sheets;
 
-[Serializable]
-public abstract class FileBase
+public class StatusLibraryEntry : ExcelLibraryEntry
 {
-	public string? Title { get; set; }
-	public string? Author { get; set; }
-	public string? Description { get; set; }
-	public string? Version { get; set; }
-	public string? Base64Image { get; set; }
+	public readonly Status Status;
 
-	/*public ImageSource? GetImage()
+	public StatusLibraryEntry(SourceBase source, Status status)
+		: base(source, status.RowId)
 	{
-		if (this.Base64Image == null)
-			return null;
-
-		byte[] binaryData = Convert.FromBase64String(this.Base64Image);
-
-		BitmapImage bi = new BitmapImage();
-		bi.BeginInit();
-		bi.CreateOptions = BitmapCreateOptions.IgnoreColorProfile;
-		bi.StreamSource = new MemoryStream(binaryData);
-		bi.EndInit();
-		bi.CacheOption = BitmapCacheOption.OnDemand;
-		bi.Freeze();
-
-		return bi;
-	}*/
-
-	public void SetImage(byte[] binaryData)
-	{
-		this.Base64Image = Convert.ToBase64String(binaryData);
+		this.Status = status;
 	}
+
+	// Unknown0: Represents type of status Effect / Mechanic
+	// Unknown2: Appears to categorise different types of DOT
+	// Unknown3: Appears to include statuses where movement is prevented or affected by another source
+	// Unknown5: hmm more dots?
+	// Unknown6: idk
+	// Unknown7: True for skill #3673
+	// Unknown_70_1: Appears unused
+	// Unknown_70_2: True for 3 skills
+	public override string? Name => this.Status.Name.ToString();
+	public override object? Icon => new ImageReference(this.Status.Icon);
+	public object? Description => $"{this.Status.Description}";
 }

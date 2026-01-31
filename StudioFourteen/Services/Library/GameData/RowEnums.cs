@@ -13,39 +13,51 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Library.Files;
+namespace StudioFourteen.Services.Library.GameData;
 
-using System;
-
-[Serializable]
-public abstract class FileBase
+public enum RaceRows : byte
 {
-	public string? Title { get; set; }
-	public string? Author { get; set; }
-	public string? Description { get; set; }
-	public string? Version { get; set; }
-	public string? Base64Image { get; set; }
+	Hyur = 1,
+	Elezen = 2,
+	Lalafell = 3,
+	Miqote = 4,
+	Roegadyn = 5,
+	AuRa = 6,
+	Hrothgar = 7,
+	Viera = 8,
 
-	/*public ImageSource? GetImage()
-	{
-		if (this.Base64Image == null)
-			return null;
+	Count,
+}
 
-		byte[] binaryData = Convert.FromBase64String(this.Base64Image);
+public enum Genders : sbyte
+{
+	Masculine,
+	Feminine,
+}
 
-		BitmapImage bi = new BitmapImage();
-		bi.BeginInit();
-		bi.CreateOptions = BitmapCreateOptions.IgnoreColorProfile;
-		bi.StreamSource = new MemoryStream(binaryData);
-		bi.EndInit();
-		bi.CacheOption = BitmapCacheOption.OnDemand;
-		bi.Freeze();
+public enum ModelTypes : byte
+{
+	Normal = 1,
+	Old = 3,
+	Young = 4,
+}
 
-		return bi;
-	}*/
-
-	public void SetImage(byte[] binaryData)
-	{
-		this.Base64Image = Convert.ToBase64String(binaryData);
-	}
+public enum TribeRows : byte
+{
+	Midlander = 1,
+	Highlander = 2,
+	Wildwood = 3,
+	Duskwight = 4,
+	Plainsfolk = 5,
+	Dunesfolk = 6,
+	SeekerOfTheSun = 7,
+	KeeperOfTheMoon = 8,
+	SeaWolf = 9,
+	Hellsguard = 10,
+	Raen = 11,
+	Xaela = 12,
+	Helions = 13,
+	TheLost = 14,
+	Rava = 15,
+	Veena = 16,
 }

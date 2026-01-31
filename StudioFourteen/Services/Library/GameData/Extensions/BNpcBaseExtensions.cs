@@ -13,39 +13,28 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Library.Files;
+namespace Lumina.Excel.Sheets;
 
-using System;
+using Dalamud.Plugin.Services;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using StudioFourteen;
+using System.Text;
 
-[Serializable]
-public abstract class FileBase
+using StudioBNpcCustomize = StudioFourteen.Services.Library.GameData.Sheets.BNpcCustomize;
+
+public static class BNpcBaseExtensions
 {
-	public string? Title { get; set; }
-	public string? Author { get; set; }
-	public string? Description { get; set; }
-	public string? Version { get; set; }
-	public string? Base64Image { get; set; }
-
-	/*public ImageSource? GetImage()
+	public static string GetAppearanceHash(this BNpcBase npc)
 	{
-		if (this.Base64Image == null)
-			return null;
+		StringBuilder sb = new();
+		StudioBNpcCustomize? customize = Studio.DataManager.GetRow<StudioBNpcCustomize>(npc.BNpcCustomize.RowId);
 
-		byte[] binaryData = Convert.FromBase64String(this.Base64Image);
+		if (customize != null)
+			customize.Value.Data.GetHash(ref sb);
 
-		BitmapImage bi = new BitmapImage();
-		bi.BeginInit();
-		bi.CreateOptions = BitmapCreateOptions.IgnoreColorProfile;
-		bi.StreamSource = new MemoryStream(binaryData);
-		bi.EndInit();
-		bi.CacheOption = BitmapCacheOption.OnDemand;
-		bi.Freeze();
+		if (npc.NpcEquip.IsValid)
+			npc.NpcEquip.Value.GetHash(ref sb);
 
-		return bi;
-	}*/
-
-	public void SetImage(byte[] binaryData)
-	{
-		this.Base64Image = Convert.ToBase64String(binaryData);
+		return sb.ToString();
 	}
 }

@@ -80,6 +80,9 @@ public partial class WindowService : IService
 
 	private bool HandleWindowMessage(uint msg, ulong wParam, long lParam)
 	{
+		if (Studio.IsDisposed || !Studio.IsInitialized)
+			return false;
+
 		WindowMessages message = (WindowMessages)msg;
 
 		MouseDevice? mouseDevice = Studio.Input.Mouse;

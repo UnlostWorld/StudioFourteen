@@ -13,39 +13,30 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Library.Files;
+namespace Lumina.Excel.Sheets;
 
-using System;
+using global::Dalamud.Plugin.Services;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using StudioFourteen;
+using System.Text;
 
-[Serializable]
-public abstract class FileBase
+using StudioENpcBase = StudioFourteen.Services.Library.GameData.Sheets.ENpcBase;
+
+public static class NpcResidentExtensions
 {
-	public string? Title { get; set; }
-	public string? Author { get; set; }
-	public string? Description { get; set; }
-	public string? Version { get; set; }
-	public string? Base64Image { get; set; }
-
-	/*public ImageSource? GetImage()
+	public static string GetAppearanceHash(this ENpcResident npc)
 	{
-		if (this.Base64Image == null)
-			return null;
+		StringBuilder sb = new();
 
-		byte[] binaryData = Convert.FromBase64String(this.Base64Image);
+		StudioENpcBase? eNpcBase = Studio.DataManager.GetRow<StudioENpcBase>(npc.RowId);
+		CustomizeData? customizeData = eNpcBase?.CustomizeData;
 
-		BitmapImage bi = new BitmapImage();
-		bi.BeginInit();
-		bi.CreateOptions = BitmapCreateOptions.IgnoreColorProfile;
-		bi.StreamSource = new MemoryStream(binaryData);
-		bi.EndInit();
-		bi.CacheOption = BitmapCacheOption.OnDemand;
-		bi.Freeze();
+		if (customizeData != null)
+			customizeData.Value.GetHash(ref sb);
 
-		return bi;
-	}*/
+		if (eNpcBase != null && eNpcBase.Value.NpcEquip.IsValid)
+			eNpcBase.Value.GetAppearanceHash(ref sb);
 
-	public void SetImage(byte[] binaryData)
-	{
-		this.Base64Image = Convert.ToBase64String(binaryData);
+		return sb.ToString();
 	}
 }

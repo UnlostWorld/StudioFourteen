@@ -16,7 +16,6 @@
 namespace StudioFourteen.Services.Library.Results;
 
 using StudioFourteen.Services.Library.Filters;
-using StudioFourteen.Services.Library.Tags;
 using System;
 using System.Collections.Generic;
 
@@ -178,25 +177,6 @@ public class GroupResult : Result
 		else
 		{
 			return this.results;
-		}
-	}
-
-	public void GetTags(ref TagCollection tags)
-	{
-		if (this.results == null)
-			return;
-
-		foreach (Result result in this.results)
-		{
-			if (result.Entry.Tags != null)
-			{
-				tags.AddRange(result.Entry.Tags);
-			}
-
-			if (result is GroupResult groupResult)
-			{
-				groupResult.GetTags(ref tags);
-			}
 		}
 	}
 

@@ -13,43 +13,15 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Library.Filters;
+namespace Lumina.Excel;
 
-using StudioFourteen.Services.Library.Tags;
+using System;
 
-public class TagFilter : FilterBase
+public static class ExcelSheetExtensions
 {
-	public TagFilter()
+	public static T GetRow<T>(this ExcelSheet<T> self, Enum v)
+	where T : struct, IExcelRow<T>
 	{
-	}
-
-	public TagFilter(TagCollection tags)
-	{
-		this.Tags = tags;
-	}
-
-	public TagCollection Tags { get; init; } = new();
-
-	public override bool IsEmpty => this.Tags.Count == 0;
-
-	public override void Clear()
-	{
-		this.Tags.Clear();
-	}
-
-	public void Add(Tag tag)
-	{
-		this.Tags.Add(tag);
-	}
-
-	public override bool Filter(LibraryEntryBase entry)
-	{
-		if (entry.Tags == null)
-			return false;
-
-		if (entry.Tags.Matches(this.Tags))
-			return true;
-
-		return false;
+		return self.GetRow(Convert.ToUInt32(v));
 	}
 }

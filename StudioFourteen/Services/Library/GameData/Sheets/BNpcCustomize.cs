@@ -13,39 +13,36 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Library.Files;
+namespace StudioFourteen.Services.Library.GameData.Sheets;
 
-using System;
+using global::Dalamud.Game.ClientState.Objects.Enums;
+using FFXIVClientStructs.FFXIV.Client.Game.Character;
+using Lumina.Excel;
 
-[Serializable]
-public abstract class FileBase
+[Sheet("BNpcCustomize", 0x18F060D4)]
+public readonly struct BNpcCustomize(ExcelPage page, uint offset, uint row)
+	: IExcelRow<BNpcCustomize>
 {
-	public string? Title { get; set; }
-	public string? Author { get; set; }
-	public string? Description { get; set; }
-	public string? Version { get; set; }
-	public string? Base64Image { get; set; }
+	public ExcelPage ExcelPage => page;
+	public uint RowOffset => offset;
+	public uint RowId => row;
 
-	/*public ImageSource? GetImage()
+	public readonly CustomizeData Data
 	{
-		if (this.Base64Image == null)
-			return null;
+		get
+		{
+			CustomizeData c = default;
 
-		byte[] binaryData = Convert.FromBase64String(this.Base64Image);
+			for (int i = 0; i < CustomizeDataExtensions.NumOptions; i++)
+			{
+				CustomizeIndex index = (CustomizeIndex)i;
+				byte val = page.ReadUInt8((nuint)(offset + i));
+				c.SetValue(index, val);
+			}
 
-		BitmapImage bi = new BitmapImage();
-		bi.BeginInit();
-		bi.CreateOptions = BitmapCreateOptions.IgnoreColorProfile;
-		bi.StreamSource = new MemoryStream(binaryData);
-		bi.EndInit();
-		bi.CacheOption = BitmapCacheOption.OnDemand;
-		bi.Freeze();
-
-		return bi;
-	}*/
-
-	public void SetImage(byte[] binaryData)
-	{
-		this.Base64Image = Convert.ToBase64String(binaryData);
+			return c;
+		}
 	}
+
+	static BNpcCustomize IExcelRow<BNpcCustomize>.Create(ExcelPage page, uint offset, uint row) => new(page, offset, row);
 }

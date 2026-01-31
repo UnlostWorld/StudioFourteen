@@ -107,21 +107,6 @@ public class FileEntry : LibraryEntryBase
 	{
 		this.fileInfo = file;
 		this.TypeInfo = typeInfo;
-
-		try
-		{
-			FileBase? fileBase = typeInfo.Load(file);
-			if (fileBase != null)
-			{
-				fileBase.GetAutoTags(this.Tags);
-				this.Tags.Add(fileBase.Tags);
-			}
-		}
-		catch (Exception ex)
-		{
-			// broken file!
-			Studio.Log.Warning(ex, $"Failed to load file: {file}");
-		}
 	}
 
 	public FileTypeInfoBase TypeInfo { get; init; }
@@ -169,25 +154,6 @@ public class FileEntry : LibraryEntryBase
 			return true;
 
 		return this.TypeInfo.LoadsType.IsAssignableTo(type);
-	}
-
-	public override LibraryPreviewBase? GetPreview()
-	{
-		FileBase? file = this.File;
-		if (file != null)
-			return file.GetPreview();
-
-		return base.GetPreview();
-	}
-
-	public override Task Execute()
-	{
-		FileBase? file = this.File;
-
-		if (file == null)
-			return Task.CompletedTask;
-
-		return file.Execute();
 	}
 
 	protected override string GetInternalId() => this.fileInfo.FullName;

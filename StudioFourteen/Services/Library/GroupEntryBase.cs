@@ -15,7 +15,6 @@
 
 namespace StudioFourteen.Services.Library;
 
-using StudioFourteen.Services.Library.Tags;
 using System.Collections.Generic;
 
 /// <summary>
@@ -83,25 +82,6 @@ public abstract class GroupEntryBase : LibraryEntryBase
 
 			this.NotifyPropertyChanged(nameof(GroupEntryBase.GroupEntries));
 			this.NotifyPropertyChanged(nameof(GroupEntryBase.AllEntries));
-		}
-	}
-
-	public void GetAllTags(ref TagCollection tags)
-	{
-		if (this.allEntries == null)
-			return;
-
-		foreach (LibraryEntryBase entry in this.allEntries)
-		{
-			if (entry.Tags != null)
-			{
-				tags.AddRange(entry.Tags);
-			}
-
-			if (entry is GroupEntryBase dir)
-			{
-				dir.GetAllTags(ref tags);
-			}
 		}
 	}
 

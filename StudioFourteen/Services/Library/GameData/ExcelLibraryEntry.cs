@@ -13,39 +13,36 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Library.Files;
+namespace StudioFourteen.Services.Library.GameData.Library;
 
 using System;
 
-[Serializable]
-public abstract class FileBase
+public abstract class ExcelLibraryEntry(SourceBase source, uint rowId)
+	: LibraryEntryBase(source)
 {
-	public string? Title { get; set; }
-	public string? Author { get; set; }
-	public string? Description { get; set; }
-	public string? Version { get; set; }
-	public string? Base64Image { get; set; }
+	public uint RowId => rowId;
 
-	/*public ImageSource? GetImage()
+	public override string? SubTitle => $"#{rowId}";
+	public override IComparable DefaultSortValue => this.RowId;
+
+	public override string ToString() => $"#{rowId}";
+
+	public override bool Search(string[] query)
 	{
-		if (this.Base64Image == null)
-			return null;
+		if (query.Length == 1 && query[0].StartsWith("#"))
+		{
+			string idStr = query[0].Substring(1);
+			return idStr == rowId.ToString();
+		}
 
-		byte[] binaryData = Convert.FromBase64String(this.Base64Image);
+		if (SearchUtility.Matches(rowId, query))
+			return true;
 
-		BitmapImage bi = new BitmapImage();
-		bi.BeginInit();
-		bi.CreateOptions = BitmapCreateOptions.IgnoreColorProfile;
-		bi.StreamSource = new MemoryStream(binaryData);
-		bi.EndInit();
-		bi.CacheOption = BitmapCacheOption.OnDemand;
-		bi.Freeze();
+		if (base.Search(query))
+			return true;
 
-		return bi;
-	}*/
-
-	public void SetImage(byte[] binaryData)
-	{
-		this.Base64Image = Convert.ToBase64String(binaryData);
+		return false;
 	}
+
+	protected override string GetInternalId() => $"{this.GetType().Name}_{rowId}";
 }

@@ -13,80 +13,33 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Library.Tags;
+namespace StudioFourteen.Services.Library.GameData.Library;
 
-using System.Text;
-using global::Avalonia.Collections;
+using Lumina.Excel.Sheets;
+using Lumina.Text.ReadOnly;
+using System.Collections.Generic;
 
-public class TagCollection : AvaloniaList<Tag>
+public class TribeLibraryEntry : ExcelLibraryEntry
 {
-	public static readonly TagCollection Empty = new();
+	public readonly Tribe Tribe;
 
-	public TagCollection()
+	public TribeLibraryEntry(SourceBase source, Tribe tribe)
+		: base(source, tribe.RowId)
 	{
-	}
+		this.Tribe = tribe;
 
-	public TagCollection(params string[] tags)
-	{
-		foreach (string tag in tags)
+		this.ModelTypes = new();
+
+		if (this.RowId > 0)
 		{
-			this.Add(tag);
-		}
-	}
-
-	public TagCollection(TagCollection other)
-		: this()
-	{
-		this.AddRange(other);
-	}
-
-	public bool IsReadOnly => true;
-
-	public void Add(TagCollection? tags)
-	{
-		if (tags == null)
-			return;
-
-		this.AddRange(tags);
-	}
-
-	public void AddSafe(string? name)
-	{
-		if (name == null)
-			return;
-
-		this.Add(name);
-	}
-
-	public Tag Add(string name)
-	{
-		Tag tag = Tag.Get(name);
-		this.Add(tag);
-		return tag;
-	}
-
-	public bool Matches(TagCollection other)
-	{
-		foreach (Tag tag in other)
-		{
-			if (!this.Contains(tag))
+			foreach (ModelTypes modelType in tribe.GetModelTypes())
 			{
-				return false;
+				this.ModelTypes.Add(modelType);
 			}
 		}
-
-		return true;
 	}
 
-	public override string ToString()
-	{
-		StringBuilder builder = new();
-		foreach (Tag tag in this)
-		{
-			builder.Append(tag.Name);
-			builder.Append(' ');
-		}
+	public override string? Name => this.Tribe.Feminine.GetString() ?? this.Tribe.Masculine.GetString();
 
-		return builder.ToString();
-	}
+	public List<ModelTypes> ModelTypes { get; init; }
 }

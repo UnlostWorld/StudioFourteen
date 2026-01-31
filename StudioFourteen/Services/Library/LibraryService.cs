@@ -17,25 +17,19 @@ namespace StudioFourteen.Services.Library;
 
 using StudioFourteen.Services.Library.Files;
 using StudioFourteen.Services.Library.Filters;
+using StudioFourteen.Services.Library.GameData;
 using StudioFourteen.Services.Library.Results;
-using StudioFourteen.Services.Library.Tags;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 
-public enum PreviewModes
-{
-	Temporary,
-	Permanent,
-	Disabled,
-}
-
 public class LibraryService : IService
 {
 	public readonly FileTypes FileTypes;
 	public readonly FileThumbnails Thumbnails;
+	public readonly GameDataLibrary GameData;
 
 	private readonly LibraryRoot rootItem = new();
 	private readonly List<SourceBase> sources = new();
@@ -44,6 +38,7 @@ public class LibraryService : IService
 	{
 		this.FileTypes = new();
 		this.Thumbnails = new();
+		this.GameData = new(this);
 
 		this.AddSource(new FileSource("Studio Fourteen", this.StudioFourteenDir));
 		this.AddSource(new FileSource("Brio", this.BrioDir));
@@ -86,8 +81,6 @@ public class LibraryService : IService
 
 	public void Dispose()
 	{
-		Tag.ClearTagCache();
-
 		foreach (SourceBase source in this.sources)
 		{
 			source.Dispose();

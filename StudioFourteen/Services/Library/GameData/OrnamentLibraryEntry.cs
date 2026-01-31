@@ -13,9 +13,14 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Library.Tags;
+namespace StudioFourteen.Services.Library.GameData.Library;
 
-public interface ITagged
+using Lumina.Excel.Sheets;
+using Lumina.Text.ReadOnly;
+
+public class OrnamentLibraryEntry(SourceBase source, Ornament ornament)
+	: ExcelLibraryEntry(source, ornament.RowId)
 {
-	TagCollection Tags { get; }
+	public override string? Name => ornament.Singular.GetString();
+	public override object? Icon => new ImageReference(ornament.Icon);
 }

@@ -13,39 +13,15 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Library.Files;
+namespace StudioFourteen.Services.Library.GameData.Library;
 
-using System;
+using Lumina.Excel.Sheets;
+using Lumina.Text.ReadOnly;
 
-[Serializable]
-public abstract class FileBase
+public class GlassesLibraryEntry(SourceBase source, Glasses glasses)
+	: ExcelLibraryEntry(source, glasses.RowId)
 {
-	public string? Title { get; set; }
-	public string? Author { get; set; }
-	public string? Description { get; set; }
-	public string? Version { get; set; }
-	public string? Base64Image { get; set; }
-
-	/*public ImageSource? GetImage()
-	{
-		if (this.Base64Image == null)
-			return null;
-
-		byte[] binaryData = Convert.FromBase64String(this.Base64Image);
-
-		BitmapImage bi = new BitmapImage();
-		bi.BeginInit();
-		bi.CreateOptions = BitmapCreateOptions.IgnoreColorProfile;
-		bi.StreamSource = new MemoryStream(binaryData);
-		bi.EndInit();
-		bi.CacheOption = BitmapCacheOption.OnDemand;
-		bi.Freeze();
-
-		return bi;
-	}*/
-
-	public void SetImage(byte[] binaryData)
-	{
-		this.Base64Image = Convert.ToBase64String(binaryData);
-	}
+	public override string? Name => glasses.Singular.GetString();
+	public string? Description => glasses.Description.GetString();
+	public override object? Icon => new ImageReference(glasses.Icon);
 }

@@ -15,7 +15,6 @@
 
 namespace StudioFourteen.Services.Library;
 
-using StudioFourteen.Services.Library.Tags;
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -26,7 +25,7 @@ public delegate void EntryEvent();
 /// <summary>
 /// An entry is a library object.
 /// </summary>
-public abstract class LibraryEntryBase : ITagged, INotifyPropertyChanged////, IDraggable
+public abstract class LibraryEntryBase : INotifyPropertyChanged
 {
 	private readonly SourceBase? source;
 
@@ -44,7 +43,6 @@ public abstract class LibraryEntryBase : ITagged, INotifyPropertyChanged////, ID
 	public virtual object? Icon => null; ////XamlResources.Find("ICON_Library_Entry");
 
 	public virtual bool IsVisible { get; set; }
-	public TagCollection Tags { get; init; } = new();
 	public SourceBase? Source => this.source;
 
 	public virtual bool IsValid => true;
@@ -79,11 +77,6 @@ public abstract class LibraryEntryBase : ITagged, INotifyPropertyChanged////, ID
 	public virtual void NotifyPropertyChanged([CallerMemberName] string propertyName = "")
 	{
 		this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-	}
-
-	public virtual LibraryPreviewBase? GetPreview()
-	{
-		return null;
 	}
 
 	protected abstract string GetInternalId();
