@@ -24,10 +24,9 @@ using StudioFourteen.Services.Input;
 using StudioFourteen.Services.Input.Devices;
 using StudioFourteen.Services.Tick;
 
-public class NumberBox : TemplatedControl
+public class NumberBox : TextBox
 {
 	public static readonly StyledProperty<float> ValueProperty;
-	public static readonly StyledProperty<string> TextProperty;
 
 	private readonly Input2DListener dragListener;
 	private bool supressChanges = false;
@@ -36,7 +35,6 @@ public class NumberBox : TemplatedControl
 	static NumberBox()
 	{
 		ValueProperty = AvaloniaProperty.Register<NumberBox, float>(nameof(NumberBox.Value), default, false, BindingMode.TwoWay);
-		TextProperty = AvaloniaProperty.Register<NumberBox, string>(nameof(NumberBox.Text), "0", false, BindingMode.TwoWay);
 	}
 
 	public NumberBox()
@@ -54,19 +52,19 @@ public class NumberBox : TemplatedControl
 		set => this.SetValue(ValueProperty, value);
 	}
 
-	public string Text
-	{
-		get => this.GetValue(TextProperty);
-		set => this.SetValue(TextProperty, value);
-	}
-
 	protected override void OnPointerPressed(PointerPressedEventArgs e)
 	{
 		e.Handled = true;
-
-		this.isDragging = true;
-		this.dragListener.Enable();
-		Studio.Input.Mouse?.LockCursor(true);
+		if (e.ClickCount >= 2)
+		{
+			this.Focus(NavigationMethod.Pointer);
+		}
+		else
+		{
+			this.isDragging = true;
+			this.dragListener.Enable();
+			Studio.Input.Mouse?.LockCursor(true);
+		}
 
 		base.OnPointerPressed(e);
 	}
@@ -103,7 +101,7 @@ public class NumberBox : TemplatedControl
 			this.supressChanges = true;
 			if (change.Property == ValueProperty)
 			{
-				this.Text = this.Value.ToString("F3");
+				this.SetCurrentValue(TextProperty, this.Value.ToString("F2"));
 			}
 
 			this.supressChanges = false;

@@ -16,10 +16,13 @@
 namespace StudioFourteen.Services.Input.Devices;
 
 using global::Dalamud.Game.ClientState.Keys;
+using System;
 using System.Collections.Generic;
 
 public class KeyboardDevice : InputDeviceBase
 {
+	public Func<VirtualKey, Bind?>? ConsumeKey = null;
+
 	private readonly Dictionary<VirtualKey, InputAxis> axisLookup = new();
 	private readonly HashSet<VirtualKey> keysSentToXiv = new();
 
@@ -92,6 +95,11 @@ public class KeyboardDevice : InputDeviceBase
 		return false;
 	}
 
+	public bool GetKeyState(VirtualKey key)
+	{
+		return this.axisLookup[key].Value > 0.5f;
+	}
+
 	public bool HandleKey(int keyId, bool down)
 	{
 		VirtualKey vKey = (VirtualKey)keyId;
@@ -120,6 +128,13 @@ public class KeyboardDevice : InputDeviceBase
 
 		if (!this.axisLookup.ContainsKey(vKey))
 			return false;
+
+		Bind? consumingBind = this.ConsumeKey?.Invoke(vKey);
+		if (consumingBind != null)
+		{
+			this.axisLookup[vKey].ConsumedBy = consumingBind;
+			return true;
+		}
 
 		this.axisLookup[vKey].Value = down ? 1.0f : 0.0f;
 
