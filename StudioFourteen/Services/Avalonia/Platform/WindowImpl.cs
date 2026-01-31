@@ -188,7 +188,6 @@ public partial class WindowImpl : IWindowImpl
 
 	public void SetInputRoot(IInputRoot inputRoot)
 	{
-		Studio.Log.Information($"? {inputRoot}");
 	}
 
 	public void SetMinMaxSize(Size minSize, Size maxSize)

@@ -15,9 +15,15 @@
 
 namespace StudioFourteen.Services.Avalonia.Platform;
 
+using global::Avalonia.Win32.Input;
 using global::Avalonia.Input;
 using global::Dalamud.Game.ClientState.Keys;
 using StudioFourteen.Services.Input;
+using System;
+using global::Avalonia.Input.Raw;
+using global::Avalonia;
+using System.Reflection;
+using global::Avalonia.Controls;
 
 public class StudioKeyboardDevice : KeyboardDevice
 {
@@ -33,19 +39,49 @@ public class StudioKeyboardDevice : KeyboardDevice
 		Studio.Input.Keyboard?.ConsumeKey = null;
 	}
 
-	private Bind? HandleKey(VirtualKey key)
+	private Bind? HandleKey(VirtualKey virtualKey, bool isDown, long keyData)
 	{
 		if (this.FocusedElement == null)
 			return null;
 
-		return this.bind;
-	}
+		IInputRoot? root = this.Field<IInputRoot?>("_focusedRoot");
+		if (root == null)
+			return null;
 
-	private void OnUiTick()
-	{
-		/*ulong timeStamp = (ulong)DateTime.UtcNow.Ticks;
-		RawKeyEventArgs args = new(this, timeStamp, null, RawKeyEventType.KeyDown, Key.A, RawInputModifiers.None, PhysicalKey.A, "a");
-		this.ProcessRawEvent(args);*/
+		WindowImpl? windowImplementation = null;
+		if (root is Window wnd && wnd.PlatformImpl is WindowImpl impl)
+			windowImplementation = impl;
+
+		PhysicalKey physicalKey = KeyInterop.PhysicalKeyFromVirtualKey((int)virtualKey, (int)keyData);
+		Key key = KeyInterop.KeyFromVirtualKey((int)virtualKey, (int)keyData);
+		string? symbol = KeyInterop.GetKeySymbol((int)virtualKey, (int)keyData);
+
+		ulong timeStamp = (ulong)DateTime.UtcNow.Ticks;
+		RawKeyEventArgs args = new(
+			this,
+			timeStamp,
+			root,
+			isDown ? RawKeyEventType.KeyDown : RawKeyEventType.KeyUp,
+			key,
+			RawInputModifiers.None,
+			physicalKey,
+			symbol);
+
+		windowImplementation?.HandleInput(args);
+
+		if (symbol != null && isDown)
+		{
+			if (key == Key.Space
+			|| ((int)key >= 33 && (int)key <= 69)
+			|| ((int)key >= 74 && (int)key <= 89)
+			|| ((int)key >= 140 && (int)key <= 154))
+			{
+				RawTextInputEventArgs textArgs = new(this, timeStamp, root, symbol);
+				windowImplementation?.HandleInput(textArgs);
+			}
+		}
+
+		return this.bind;
 	}
 
 	private class AvaloniaBind : Bind

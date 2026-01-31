@@ -21,7 +21,7 @@ using System.Collections.Generic;
 
 public class KeyboardDevice : InputDeviceBase
 {
-	public Func<VirtualKey, Bind?>? ConsumeKey = null;
+	public Func<VirtualKey, bool, long, Bind?>? ConsumeKey = null;
 
 	private readonly Dictionary<VirtualKey, InputAxis> axisLookup = new();
 	private readonly HashSet<VirtualKey> keysSentToXiv = new();
@@ -100,16 +100,16 @@ public class KeyboardDevice : InputDeviceBase
 		return this.axisLookup[key].Value > 0.5f;
 	}
 
-	public bool HandleKey(int keyId, bool down)
+	public bool HandleKey(int keyId, bool down, long keyData = 0)
 	{
 		VirtualKey vKey = (VirtualKey)keyId;
 		if (vKey == VirtualKey.NO_KEY)
 			return false;
 
-		return this.HandleKey(vKey, down);
+		return this.HandleKey(vKey, down, keyData);
 	}
 
-	public bool HandleKey(VirtualKey vKey, bool down)
+	public bool HandleKey(VirtualKey vKey, bool down, long keyData = 0)
 	{
 		if (Studio.KeyState == null)
 			return false;
@@ -129,7 +129,7 @@ public class KeyboardDevice : InputDeviceBase
 		if (!this.axisLookup.ContainsKey(vKey))
 			return false;
 
-		Bind? consumingBind = this.ConsumeKey?.Invoke(vKey);
+		Bind? consumingBind = this.ConsumeKey?.Invoke(vKey, down, keyData);
 		if (consumingBind != null)
 		{
 			this.axisLookup[vKey].ConsumedBy = consumingBind;

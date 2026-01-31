@@ -122,9 +122,9 @@ public partial class WindowService : IService
 			{
 				// Keyboard
 				case WindowMessages.WM_SYSKEYDOWN:
-				case WindowMessages.WM_KEYDOWN: return keyboardDevice.HandleKey((int)wParam, true);
+				case WindowMessages.WM_KEYDOWN: return keyboardDevice.HandleKey((int)wParam, true, lParam);
 				case WindowMessages.WM_SYSKEYUP:
-				case WindowMessages.WM_KEYUP: return keyboardDevice.HandleKey((int)wParam, false);
+				case WindowMessages.WM_KEYUP: return keyboardDevice.HandleKey((int)wParam, false, lParam);
 				case WindowMessages.WM_CHAR: return keyboardDevice.HandleChar((uint)wParam);
 			}
 		}

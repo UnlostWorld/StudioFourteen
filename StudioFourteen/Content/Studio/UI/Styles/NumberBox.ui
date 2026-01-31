@@ -2,6 +2,17 @@
 	<ControlTheme
 		x:Key="{x:Type StudioFourteen.Interface.Controls:NumberBox}"
 		TargetType="{x:Type StudioFourteen.Interface.Controls:NumberBox}">
+
+		<Setter Property="Margin" Value="4" />
+		<Setter Property="CaretBrush" Value="{DynamicResource Foreground}" />
+		<Setter Property="SelectionBrush" Value="{DynamicResource Background}" />
+		<Setter Property="TextAlignment" Value="Left" />
+		<Setter Property="Padding" Value="3" />
+		<Setter Property="MinHeight" Value="32" />
+		<Setter Property="Background" Value="#151515" />
+		<Setter Property="Foreground" Value="{DynamicResource Foreground}" />
+		<Setter Property="Cursor" Value="Ibeam" />
+
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate>
@@ -35,8 +46,23 @@
 							<Panel>
 								<TextPresenter
 									Name="PART_TextPresenter"
-									Margin="7"
-									Text="{TemplateBinding Text, Mode=TwoWay}" />
+									Margin="16,0"
+									HorizontalAlignment="Stretch"
+									VerticalAlignment="Center"
+									CaretBlinkInterval="{TemplateBinding CaretBlinkInterval}"
+									CaretBrush="{TemplateBinding CaretBrush}"
+									CaretIndex="{TemplateBinding CaretIndex}"
+									LineHeight="{TemplateBinding LineHeight}"
+									LetterSpacing="{TemplateBinding LetterSpacing}"
+									PasswordChar="{TemplateBinding PasswordChar}"
+									RevealPassword="{TemplateBinding RevealPassword}"
+									SelectionBrush="{TemplateBinding SelectionBrush}"
+									SelectionEnd="{TemplateBinding SelectionEnd}"
+									SelectionForegroundBrush="{TemplateBinding SelectionForegroundBrush}"
+									SelectionStart="{TemplateBinding SelectionStart}"
+									Text="{TemplateBinding Text, Mode=TwoWay}"
+									TextAlignment="{TemplateBinding TextAlignment}"
+									TextWrapping="{TemplateBinding TextWrapping}" />
 							</Panel>
 						</ScrollViewer>
 					</Panel>

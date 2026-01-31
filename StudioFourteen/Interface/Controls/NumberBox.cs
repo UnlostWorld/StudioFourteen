@@ -94,6 +94,12 @@ public class NumberBox : TextBox
 		base.OnPointerMoved(e);
 	}
 
+	protected override void OnKeyDown(KeyEventArgs e)
+	{
+		Studio.Log.Information($"!! {e.Key}");
+		base.OnKeyDown(e);
+	}
+
 	protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
 	{
 		if (!this.supressChanges)
