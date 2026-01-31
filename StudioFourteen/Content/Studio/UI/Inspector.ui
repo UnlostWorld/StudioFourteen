@@ -24,8 +24,7 @@
 			Grid.Column="1"
 			Width="200"
 			Watermark="Search"
-			Margin="4,4,4,4"
-			Text="Hello" />
+			Margin="4,4,4,4" />
 
 		<!-- Should react based on window chrome changes somehow...-->
 		<Grid

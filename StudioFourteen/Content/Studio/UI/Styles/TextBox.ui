@@ -9,6 +9,7 @@
 		<Setter Property="Background" Value="#151515" />
 		<Setter Property="Foreground" Value="{DynamicResource Foreground}" />
 		<Setter Property="Cursor" Value="Ibeam" />
+		<Setter Property="UseFloatingWatermark" Value="True" />
 		<Setter Property="Template">
 			<ControlTemplate>
 				<Panel>
@@ -46,7 +47,17 @@
 								HorizontalAlignment="Stretch"
 								VerticalAlignment="Center"
 								TextAlignment="{TemplateBinding TextAlignment}"
-								Margin="16,0" />
+								Margin="16,0">
+								<TextBlock.IsVisible>
+									<MultiBinding Converter="{x:Static BoolConverters.And}">
+										<Binding ElementName="PART_TextPresenter" Path="PreeditText"
+											Converter="{x:Static StringConverters.IsNullOrEmpty}" />
+										<Binding RelativeSource="{RelativeSource TemplatedParent}"
+											Path="Text"
+											Converter="{x:Static StringConverters.IsNullOrEmpty}" />
+									</MultiBinding>
+								</TextBlock.IsVisible>
+							</TextBlock>
 
 							<TextPresenter
 								Name="PART_TextPresenter"

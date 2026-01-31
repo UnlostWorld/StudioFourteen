@@ -15,14 +15,14 @@
 
 namespace StudioFourteen.Interface.Controls;
 
+using System;
+using System.Data;
 using Avalonia;
 using Avalonia.Controls;
-using Avalonia.Controls.Primitives;
 using Avalonia.Data;
 using Avalonia.Input;
+using Avalonia.Interactivity;
 using StudioFourteen.Services.Input;
-using StudioFourteen.Services.Input.Devices;
-using StudioFourteen.Services.Tick;
 
 public class NumberBox : TextBox
 {
@@ -96,8 +96,31 @@ public class NumberBox : TextBox
 
 	protected override void OnKeyDown(KeyEventArgs e)
 	{
-		Studio.Log.Information($"!! {e.Key}");
+		if (e.Key == Key.Return)
+		{
+			this.SetCurrentValue(TextProperty, this.Value.ToString("F2"));
+			e.Handled = true;
+		}
+		else if (e.Key == Key.Up)
+		{
+			this.SetCurrentValue(ValueProperty, this.Value + 1);
+			this.SetCurrentValue(TextProperty, this.Value.ToString("F2"));
+			e.Handled = true;
+		}
+		else if (e.Key == Key.Down)
+		{
+			this.SetCurrentValue(ValueProperty, this.Value - 1);
+			this.SetCurrentValue(TextProperty, this.Value.ToString("F2"));
+			e.Handled = true;
+		}
+
 		base.OnKeyDown(e);
+	}
+
+	protected override void OnLostFocus(RoutedEventArgs e)
+	{
+		base.OnLostFocus(e);
+		this.SetCurrentValue(TextProperty, this.Value.ToString("F2"));
 	}
 
 	protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -108,6 +131,24 @@ public class NumberBox : TextBox
 			if (change.Property == ValueProperty)
 			{
 				this.SetCurrentValue(TextProperty, this.Value.ToString("F2"));
+			}
+
+			if (change.Property == TextProperty)
+			{
+				string? text = this.Text;
+				float newValue = this.Value;
+				if (text == null)
+					newValue = 0;
+
+				try
+				{
+					newValue = Convert.ToSingle(new DataTable().Compute(text, null));
+				}
+				catch (Exception)
+				{
+				}
+
+				this.SetCurrentValue(ValueProperty, newValue);
 			}
 
 			this.supressChanges = false;
