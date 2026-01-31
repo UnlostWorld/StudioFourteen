@@ -240,6 +240,15 @@ public class StudioMouseDevice : MouseDevice
 					modifiers));
 			}
 		}
+		else
+		{
+			// Clicking outside of a studio window.
+			if (Studio.Input.Mouse?.GetButton(Input.Devices.MouseButtons.Left) == true)
+			{
+				IFocusManager? focusManager = AvaloniaLocator.Current.GetService<IFocusManager>();
+				focusManager?.ClearFocus();
+			}
+		}
 	}
 
 	internal class StudioPointer()
