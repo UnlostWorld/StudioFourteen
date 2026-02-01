@@ -35,7 +35,7 @@
 	<TabControl
 		Grid.Row="1"
 		ItemsSource="{Binding Groups}"
-		SelectedItem="{Binding CurrentGroup}">
+		SelectedIndex="{Binding TabIndex}">
 		<TabControl.ItemTemplate>
 			<DataTemplate>
 				<StudioFourteen.Interface.Controls:Svg

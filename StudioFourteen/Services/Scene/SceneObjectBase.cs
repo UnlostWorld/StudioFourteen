@@ -34,6 +34,8 @@ public abstract partial class SceneObjectBase : ObservableObject, IDisposable
 	[ObservableProperty] private bool isHovered;
 	[ObservableProperty] private bool isSelected;
 
+	[ObservableProperty] private int inspectorTab;
+
 	public SceneObjectBase()
 	{
 		this.Name = string.Empty;

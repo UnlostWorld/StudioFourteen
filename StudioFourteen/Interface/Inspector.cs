@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Reflection;
+using System.Threading.Tasks;
 using Avalonia;
 using Avalonia.Collections;
 using Avalonia.Controls;
@@ -29,8 +30,7 @@ using StudioFourteen.Services.Tick;
 
 public partial class Inspector : WindowReference
 {
-	[ObservableProperty] private AvaloniaList<InspectorGroup> groups = new();
-	[ObservableProperty] private SceneObjectBase? target;
+	private SceneObjectBase? lastTarget;
 
 	public Inspector()
 		: base("UI/Inspector.ui")
@@ -40,7 +40,13 @@ public partial class Inspector : WindowReference
 	}
 
 	[ObservableProperty]
-	public partial InspectorGroup? CurrentGroup { get; set; }
+	public partial AvaloniaList<InspectorGroup> Groups { get; private set; } = new();
+
+	[ObservableProperty]
+	public partial SceneObjectBase? Target { get; set; }
+
+	[ObservableProperty]
+	public partial int TabIndex { get; set; } = 0;
 
 	public override void Dispose()
 	{
@@ -57,32 +63,60 @@ public partial class Inspector : WindowReference
 
 	private void OnObjectSelected(SceneObjectBase obj)
 	{
-		Studio.Tick.Dispatch(TickChannels.Ui, () =>
+		if (obj == this.lastTarget)
 		{
-			this.Show();
-			this.Target = obj;
-			this.Groups.Clear();
-
-			Type? type = obj.GetType();
-			while (type != null)
+			Studio.Tick.Dispatch(TickChannels.Ui, () =>
 			{
-				InspectAttribute? inspect = type.GetCustomAttribute<InspectAttribute>(false);
-				if (inspect != null)
-				{
-					this.Groups.Add(new(obj, type));
-				}
+				this.Show();
+				this.Target = obj;
+			});
 
-				type = type.BaseType;
-			}
+			return;
+		}
+
+		int destinationTab = obj.InspectorTab;
+		Task.Run(async () =>
+		{
+			Studio.Tick.Dispatch(TickChannels.Ui, () =>
+			{
+				this.Show();
+				this.Target = obj;
+				this.Groups.Clear();
+
+				Type? type = obj.GetType();
+				while (type != null)
+				{
+					InspectAttribute? inspect = type.GetCustomAttribute<InspectAttribute>(false);
+					if (inspect != null)
+					{
+						this.Groups.Add(new(obj, type));
+					}
+
+					type = type.BaseType;
+				}
+			});
+
+			await Task.Delay(50);
+
+			Studio.Tick.Dispatch(TickChannels.Ui, () =>
+			{
+				this.TabIndex = destinationTab;
+			});
 		});
 	}
 
 	private void OnObjectDeselected(SceneObjectBase obj)
 	{
+		this.lastTarget = this.Target;
 		Studio.Tick.Dispatch(TickChannels.Ui, () =>
 		{
 			this.Hide();
 		});
+	}
+
+	partial void OnTabIndexChanged(int oldValue, int newValue)
+	{
+		this.Target?.InspectorTab = newValue;
 	}
 }
 
