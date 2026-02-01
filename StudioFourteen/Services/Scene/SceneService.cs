@@ -175,21 +175,11 @@ public class SceneService : IService
 	public void Select(SceneObjectBase obj, bool clearCurrent = true)
 	{
 		if (clearCurrent)
-		{
-			foreach (SceneObjectBase obj2 in this.Selection)
-			{
-				this.ObjectDeselected?.Invoke(obj2);
-				obj2.OnSelected(false);
-			}
-
-			this.Selection.Clear();
-		}
+			this.ClearSelection();
 
 		this.Selection.Add(obj);
 		obj.OnSelected(true);
 		this.ObjectSelected?.Invoke(obj);
-
-		Studio.Log.Information($"Select {obj}");
 	}
 
 	public void Deselect(SceneObjectBase obj)
@@ -197,8 +187,17 @@ public class SceneService : IService
 		this.Selection.Remove(obj);
 		obj.OnSelected(false);
 		this.ObjectDeselected?.Invoke(obj);
+	}
 
-		Studio.Log.Information($"Deselect {obj}");
+	public void ClearSelection()
+	{
+		foreach (SceneObjectBase obj in this.Selection.ToArray())
+		{
+			this.ObjectDeselected?.Invoke(obj);
+			obj.OnSelected(false);
+		}
+
+		this.Selection.Clear();
 	}
 
 	private unsafe void OnGameTick()

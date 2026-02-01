@@ -15,8 +15,10 @@
 
 namespace StudioFourteen.Services.Avalonia;
 
+using System;
 using System.Numerics;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using global::Avalonia;
 using global::Avalonia.Controls;
 using global::Avalonia.Layout;
@@ -24,7 +26,7 @@ using StudioFourteen;
 using StudioFourteen.Services.Avalonia.Platform;
 using StudioFourteen.Services.Tick;
 
-public class WindowReference : ObservableObject
+public partial class WindowReference : ObservableObject, IDisposable
 {
 	private readonly AvaloniaContentReference<Visual> contentReference;
 	private readonly AvaloniaContentReference<Visual>? chromeReference;
@@ -48,6 +50,16 @@ public class WindowReference : ObservableObject
 
 	public virtual bool CanDragMove => true;
 	public virtual Vector2 DefaultPosition => new(0.5f, 0.5f);
+
+	public virtual void Dispose()
+	{
+	}
+
+	[RelayCommand]
+	public virtual void CloseButtonClicked()
+	{
+		this.Hide();
+	}
 
 	public void Show()
 	{

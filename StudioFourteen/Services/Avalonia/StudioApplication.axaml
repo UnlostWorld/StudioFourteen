@@ -5,5 +5,23 @@
 	RequestedThemeVariant="Default">
 	<Application.Styles>
 		<SimpleTheme />
+
+
+		<Style Selector="Grid.ChromeExpander">
+			<Setter Property="Width" Value="0" />
+			<Setter Property="Transitions">
+				<Transitions>
+					<DoubleTransition
+						Property="Width"
+						Duration="0:0:0.500"
+						Easing="CircularEaseInOut" />
+				</Transitions>
+			</Setter>
+		</Style>
+		<Style Selector="Grid.ChromeExpander.Expand">
+			<Setter Property="Width" Value="32" />
+		</Style>
+
+
 	</Application.Styles>
 </Application>

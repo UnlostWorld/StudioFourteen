@@ -36,15 +36,30 @@ public partial class Inspector : WindowReference
 		: base("UI/Inspector.ui")
 	{
 		Studio.Scene.ObjectSelected += this.OnObjectSelected;
+		Studio.Scene.ObjectDeselected += this.OnObjectDeselected;
 	}
 
 	[ObservableProperty]
 	public partial InspectorGroup? CurrentGroup { get; set; }
 
+	public override void Dispose()
+	{
+		base.Dispose();
+
+		Studio.Scene.ObjectSelected -= this.OnObjectSelected;
+		Studio.Scene.ObjectDeselected -= this.OnObjectDeselected;
+	}
+
+	public override void CloseButtonClicked()
+	{
+		Studio.Scene.ClearSelection();
+	}
+
 	private void OnObjectSelected(SceneObjectBase obj)
 	{
 		Studio.Tick.Dispatch(TickChannels.Ui, () =>
 		{
+			this.Show();
 			this.Target = obj;
 			this.Groups.Clear();
 
@@ -59,6 +74,14 @@ public partial class Inspector : WindowReference
 
 				type = type.BaseType;
 			}
+		});
+	}
+
+	private void OnObjectDeselected(SceneObjectBase obj)
+	{
+		Studio.Tick.Dispatch(TickChannels.Ui, () =>
+		{
+			this.Hide();
 		});
 	}
 }

@@ -26,6 +26,7 @@ public partial class TopBar : ToolbarReference
 	public TopBar()
 	 : base("UI/TopBar.ui")
 	{
+		this.hierarchy.Show();
 	}
 
 	[ObservableProperty]
@@ -34,8 +35,13 @@ public partial class TopBar : ToolbarReference
 	[ObservableProperty]
 	public partial bool Library { get; set; }
 
-	[ObservableProperty]
-	public partial bool Inspector { get; set; }
+	public override void Dispose()
+	{
+		this.hierarchy.Dispose();
+		this.inspector.Dispose();
+
+		base.Dispose();
+	}
 
 	partial void OnHierarchyChanged(bool oldValue, bool newValue)
 	{
@@ -51,17 +57,5 @@ public partial class TopBar : ToolbarReference
 
 	partial void OnLibraryChanging(bool oldValue, bool newValue)
 	{
-	}
-
-	partial void OnInspectorChanged(bool oldValue, bool newValue)
-	{
-		if (newValue)
-		{
-			this.inspector.Show();
-		}
-		else
-		{
-			this.inspector.Hide();
-		}
 	}
 }

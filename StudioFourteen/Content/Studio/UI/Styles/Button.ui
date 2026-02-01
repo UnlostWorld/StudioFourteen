@@ -22,19 +22,22 @@
 							VerticalAlignment="Stretch"
 							BorderThickness="1"
 							BorderBrush="#99666666">
-							<Border
-								Name="Border"
-								CornerRadius="14"
-								Opacity="0.25"
-								HorizontalAlignment="Stretch"
-								VerticalAlignment="Stretch"
-								Background="{TemplateBinding Background}">
-								<Border.Transitions>
+
+							<Panel
+								Name="PART_HoverElement"
+								Opacity="0.25">
+								<Panel.Transitions>
 									<Transitions>
 										<DoubleTransition Property="Opacity" Duration="0:0:0.1" />
 									</Transitions>
-								</Border.Transitions>
-							</Border>
+								</Panel.Transitions>
+
+								<Border
+									CornerRadius="14"
+									HorizontalAlignment="Stretch"
+									VerticalAlignment="Stretch"
+									Background="{TemplateBinding Background}" />
+							</Panel>
 						</Border>
 					</Border>
 
@@ -51,13 +54,13 @@
 		</Setter>
 
 		<Style Selector="^:pointerover">
-			<Style Selector="^ /template/ Border#Border">
+			<Style Selector="^ /template/ Panel#PART_HoverElement">
 				<Setter Property="Opacity" Value="0.6" />
 			</Style>
 		</Style>
 
 		<Style Selector="^:pressed">
-			<Style Selector="^ /template/ Border#Border">
+			<Style Selector="^ /template/ Panel#PART_HoverElement">
 				<Setter Property="Opacity" Value="0.4" />
 			</Style>
 		</Style>

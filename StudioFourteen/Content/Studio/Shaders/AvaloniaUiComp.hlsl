@@ -117,7 +117,7 @@ float4 pixel(Fragment fragment) : SV_TARGET
 		}
 
 		cornerPos.x = WindowSize.x - Margin.z;
-		cornerPos.y = WindowSize.y - Margin.y;
+		cornerPos.y = WindowSize.y - Margin.w;
 		radius = CornerRadius.z;
 		radiusMargin.x = -radius;
 		radiusMargin.y = -radius;

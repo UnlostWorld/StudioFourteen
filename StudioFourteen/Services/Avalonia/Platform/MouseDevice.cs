@@ -121,6 +121,9 @@ public class StudioMouseDevice : MouseDevice
 		{
 			foreach (WindowImpl testWindowImpl in Studio.Avalonia.Windowing.Windows)
 			{
+				if (testWindowImpl.Window?.IsVisible != true)
+					continue;
+
 				PixelPoint position = testWindowImpl.Position;
 				Size size = testWindowImpl.FrameSize ?? testWindowImpl.ClientSize;
 

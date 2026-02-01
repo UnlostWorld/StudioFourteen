@@ -1,33 +1,9 @@
-<Grid>
-	<Grid.ColumnDefinitions>
-		<ColumnDefinition />
-		<ColumnDefinition />
-		<ColumnDefinition />
-	</Grid.ColumnDefinitions>
-
-	<StackPanel Grid.Column="0" Orientation="Horizontal">
-		<ToggleButton IsChecked="{Binding Hierarchy}">
-			<StudioFourteen.Interface.Controls:Svg
-				Height="22"
-				Source="Icons/Hierarchy.svg"
-				Foreground="{DynamicResource Foreground}" />
-		</ToggleButton>
-	</StackPanel>
-
-	<StackPanel Grid.Column="1" Orientation="Horizontal" Margin="20,0">
+<Grid Width="256">
+	<StackPanel Orientation="Horizontal">
 		<ToggleButton IsChecked="{Binding Library}">
 			<StudioFourteen.Interface.Controls:Svg
 				Height="22"
 				Source="Icons/Library.svg"
-				Foreground="{DynamicResource Foreground}" />
-		</ToggleButton>
-	</StackPanel>
-
-	<StackPanel Grid.Column="2" Orientation="Horizontal">
-		<ToggleButton IsChecked="{Binding Inspector}">
-			<StudioFourteen.Interface.Controls:Svg
-				Height="22"
-				Source="Icons/Inspector.svg"
 				Foreground="{DynamicResource Foreground}" />
 		</ToggleButton>
 	</StackPanel>

@@ -26,28 +26,10 @@
 			Watermark="Search"
 			Margin="4,4,4,4" />
 
-		<!-- Should react based on window chrome changes somehow...-->
 		<Grid
 			Grid.Column="2"
-			Classes.Expand="{Binding $parent[Window].IsPointerOver}">
-
-			<Grid.Styles>
-				<Style Selector="Grid">
-					<Setter Property="Width" Value="0" />
-					<Setter Property="Transitions">
-						<Transitions>
-							<DoubleTransition
-								Property="Width"
-								Duration="0:0:0.500"
-								Easing="CircularEaseInOut" />
-						</Transitions>
-					</Setter>
-				</Style>
-				<Style Selector="Grid.Expand">
-					<Setter Property="Width" Value="32" />
-				</Style>
-			</Grid.Styles>
-		</Grid>
+			Classes="ChromeExpander"
+			Classes.Expand="{Binding $parent[Window].IsPointerOver}" />
 	</Grid>
 
 	<TabControl

@@ -46,6 +46,7 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 	private readonly CancellationTokenSource cts = new();
 	private readonly Thread? uiThread;
 
+	private WindowReference? mainWindow;
 	private DispatcherImpl? dispatcher;
 	private RenderTimer? renderTimer;
 	private WindowingPlatform? windowing;
@@ -82,6 +83,7 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 
 		this.ShutdownRequested?.Invoke(this, new ShutdownRequestedEventArgs());
 
+		this.mainWindow?.Dispose();
 		this.windowing?.Dispose();
 		this.cts.Cancel();
 		this.renderTimer?.Dispose();
@@ -130,8 +132,8 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 
 					try
 					{
-						TopBar topBar = new();
-						topBar.Show();
+						this.mainWindow = new TopBar();
+						this.mainWindow.Show();
 					}
 					catch (Exception ex)
 					{
