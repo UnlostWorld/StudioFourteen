@@ -15,23 +15,12 @@
 
 namespace StudioFourteen.Interface;
 
-using CommunityToolkit.Mvvm.ComponentModel;
-using CommunityToolkit.Mvvm.Input;
 using StudioFourteen.Services.Avalonia;
 
-public partial class TestWindow : WindowReference
+public partial class Library : WindowReference
 {
-	[ObservableProperty] private int clickCount = 0;
-	[ObservableProperty] private RelayCommand next;
-
-	public TestWindow()
-		: base("UI/TestWindow.ui")
+	public Library()
+		: base("UI/Library.ui")
 	{
-		this.Next = new RelayCommand(this.OnNext);
-	}
-
-	private void OnNext()
-	{
-		this.ClickCount++;
 	}
 }

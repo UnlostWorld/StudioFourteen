@@ -1,0 +1,5 @@
+<Grid
+	Height="700"
+	Width="350">
+	<TextBlock Text="Hello world" />
+</Grid>

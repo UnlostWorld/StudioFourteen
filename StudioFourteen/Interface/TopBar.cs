@@ -15,9 +15,53 @@
 
 namespace StudioFourteen.Interface;
 
+using CommunityToolkit.Mvvm.ComponentModel;
 using StudioFourteen.Services.Avalonia;
 
-public class TopBar()
-	: ToolbarReference("UI/TopBar.ui")
+public partial class TopBar : ToolbarReference
 {
+	private readonly Hierarchy hierarchy = new();
+	private readonly Inspector inspector = new();
+
+	public TopBar()
+	 : base("UI/TopBar.ui")
+	{
+	}
+
+	[ObservableProperty]
+	public partial bool Hierarchy { get; set; }
+
+	[ObservableProperty]
+	public partial bool Library { get; set; }
+
+	[ObservableProperty]
+	public partial bool Inspector { get; set; }
+
+	partial void OnHierarchyChanged(bool oldValue, bool newValue)
+	{
+		if (newValue)
+		{
+			this.hierarchy.Show();
+		}
+		else
+		{
+			this.hierarchy.Close();
+		}
+	}
+
+	partial void OnLibraryChanging(bool oldValue, bool newValue)
+	{
+	}
+
+	partial void OnInspectorChanged(bool oldValue, bool newValue)
+	{
+		if (newValue)
+		{
+			this.inspector.Show();
+		}
+		else
+		{
+			this.inspector.Close();
+		}
+	}
 }

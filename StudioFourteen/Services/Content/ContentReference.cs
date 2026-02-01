@@ -92,11 +92,11 @@ public abstract class ContentReference<T>(string path)
 				if (this.lastInstance != null)
 				{
 					this.instance = this.lastInstance;
-					Studio.Log.Warning(ex, "Error reloading content");
+					Studio.Log.Warning(ex, $"Error reloading content: \"{this.Path}\"");
 				}
 				else
 				{
-					throw;
+					throw new Exception($"Failed to load content: \"{this.Path}\"", ex);
 				}
 			}
 		}

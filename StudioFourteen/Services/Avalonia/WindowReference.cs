@@ -76,6 +76,7 @@ public class WindowReference : ObservableObject
 	public void Close()
 	{
 		this.window?.Close();
+		this.window = null;
 	}
 
 	public void Reload()

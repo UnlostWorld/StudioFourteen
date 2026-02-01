@@ -5,8 +5,6 @@
 	Margin="20, 0, 20, 20"
 	BorderBrush="#99000000"
 	Background="#99222222"
-	Height="42"
-	Width="1024"
 	x:Name="Chrome">
 
 	<Border
@@ -15,8 +13,7 @@
 		BorderBrush="#99666666">
 
 		<ContentControl
-			Name="WindowContents"
-			Margin="2" />
+			Name="WindowContents" />
 
 	</Border>
 

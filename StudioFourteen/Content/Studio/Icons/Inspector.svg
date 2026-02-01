@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" stroke-width="1.5" viewBox="0 0 24 24" fill="none"
+	xmlns="http://www.w3.org/2000/svg" color="#000000">
+	<path class="foreground" d="M2,11L20,11"
+		stroke="#000000" stroke-width="1.5"
+		stroke-linecap="round"
+		stroke-linejoin="round" />
+	<path class="foreground" d="M2,17L13,17"
+		stroke="#000000" stroke-width="1.5"
+		stroke-linecap="round"
+		stroke-linejoin="round" />
+	<path class="foreground" d="M2,5L20,5"
+		stroke="#000000" stroke-width="1.5"
+		stroke-linecap="round"
+		stroke-linejoin="round" />
+	<path class="foreground" d="M20.5,20.5L22,22"
+		stroke="#000000" stroke-width="1.5"
+		stroke-linecap="round"
+		stroke-linejoin="round" />
+	<path
+		class="foreground"
+		d="M16,18.5C16,19.881 17.119,21 18.5,21C19.192,21 19.817,20.719 20.27,20.265C20.721,19.813 21,19.189 21,18.5C21,17.119 19.881,16 18.5,16C17.119,16 16,17.119 16,18.5Z"
+		stroke="#000000" stroke-width="1.5"
+		stroke-linecap="round"
+		stroke-linejoin="round" />
+</svg>

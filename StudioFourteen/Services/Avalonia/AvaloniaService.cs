@@ -63,7 +63,10 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 		this.KeyboardDevice = new();
 	}
 
+	public delegate void AvaloniaReady(AvaloniaService service);
+
 	public event EventHandler<ShutdownRequestedEventArgs>? ShutdownRequested;
+	public event AvaloniaReady? Ready;
 
 	public DispatcherImpl Dispatcher => this.dispatcher ?? throw new Exception("Avalonia not initalized");
 	public UiPass RenderPass => this.renderingPass;
@@ -121,27 +124,20 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 					if (application == null)
 						throw new Exception("Failed to create Application");
 
-					// Ready to run!
 					this.LoadTypes();
-
 					application.LoadTheme();
 
 					try
 					{
 						TopBar topBar = new();
 						topBar.Show();
-
-						Hierarchy hierarchy = new();
-						hierarchy.Show();
-
-						Inspector inspector = new();
-						inspector.Show();
 					}
 					catch (Exception ex)
 					{
-						Studio.Log.Error(ex, "Error test");
+						Studio.Log.Error(ex, "Error opening studio bar");
 					}
 
+					this.Ready?.Invoke(this);
 					main.Run(this.cts.Token);
 
 					Studio.Log.Information($"Bye!");
