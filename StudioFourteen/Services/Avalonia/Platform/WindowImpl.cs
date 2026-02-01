@@ -80,7 +80,7 @@ public partial class WindowImpl : IWindowImpl
 	public Action<WindowTransparencyLevel>? TransparencyLevelChanged { get; set; }
 	public Action? Closed { get; set; }
 	public Action? LostFocus { get; set; }
-	public bool IsDisposed { get; private set; }
+	public bool IsDisposed { get; private set; } = false;
 
 	public IEnumerable<object> Surfaces => [this.glSurface];
 	public Compositor Compositor => this.compositor;
@@ -110,6 +110,8 @@ public partial class WindowImpl : IWindowImpl
 	public void Dispose()
 	{
 		this.IsDisposed = true;
+
+		this.glSurface.Dispose();
 
 		Studio.Avalonia.RenderPass.Remove(this.windowRenderer);
 		this.windowRenderer.Dispose();

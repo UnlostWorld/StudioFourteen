@@ -26,6 +26,7 @@ using SharpDX.Direct3D11;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Formats.Png;
 using SixLabors.ImageSharp.Processing;
+using StudioFourteen.Services.Rendering;
 using Device = SharpDX.Direct3D11.Device;
 
 public partial class Portrait : IDisposable
@@ -99,7 +100,7 @@ public partial class Portrait : IDisposable
 			this.characterTexture = new((nint)pTexture->D3D11Texture2D);
 
 			this.pass = new(this.characterTexture);
-			Studio.Rendering.OverlayRenderer.AddAfterEffectsPass(this.pass);
+			Studio.Rendering.OverlayRenderer.AddPass(OverlayLayers.AfterEffects, this.pass);
 		}
 
 		this.pView->SetCameraDistance(-1.9f);
@@ -123,7 +124,7 @@ public partial class Portrait : IDisposable
 		if (this.pass == null)
 			return;
 
-		Studio.Rendering.OverlayRenderer.RemoveAfterEffectsPass(this.pass);
+		Studio.Rendering.OverlayRenderer.RemovePass(OverlayLayers.AfterEffects, this.pass);
 		this.pass.Dispose();
 		this.pass = null;
 

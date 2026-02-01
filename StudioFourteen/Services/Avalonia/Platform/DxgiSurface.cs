@@ -15,18 +15,19 @@
 
 namespace StudioFourteen.Services.Avalonia.Platform;
 
+using System;
 using global::Avalonia.OpenGL;
 using global::Avalonia.OpenGL.Egl;
 using global::Avalonia.OpenGL.Surfaces;
 
 public class DxgiSurface(WindowImpl window)
-	: EglGlPlatformSurfaceBase
+	: EglGlPlatformSurfaceBase, IDisposable
 {
 	public DxgiRenderTarget? DxgiRenderTarget;
 
 	public override IGlPlatformSurfaceRenderTarget CreateGlRenderTarget(IGlContext context)
 	{
-		var eglContext = (EglContext)context;
+		EglContext eglContext = (EglContext)context;
 		using (eglContext.EnsureCurrent())
 		{
 			if (this.DxgiRenderTarget != null)
@@ -38,5 +39,11 @@ public class DxgiSurface(WindowImpl window)
 			this.DxgiRenderTarget = new DxgiRenderTarget(window, eglContext);
 			return this.DxgiRenderTarget;
 		}
+	}
+
+	public void Dispose()
+	{
+		this.DxgiRenderTarget?.Dispose();
+		this.DxgiRenderTarget = null;
 	}
 }

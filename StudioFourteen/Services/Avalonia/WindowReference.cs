@@ -77,6 +77,12 @@ public class WindowReference : ObservableObject
 	{
 		this.window?.Close();
 		this.window = null;
+		this.presenter = null;
+	}
+
+	public void Hide()
+	{
+		this.window?.Hide();
 	}
 
 	public void Reload()

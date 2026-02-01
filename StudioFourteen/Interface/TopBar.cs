@@ -45,7 +45,7 @@ public partial class TopBar : ToolbarReference
 		}
 		else
 		{
-			this.hierarchy.Close();
+			this.hierarchy.Hide();
 		}
 	}
 
@@ -61,7 +61,7 @@ public partial class TopBar : ToolbarReference
 		}
 		else
 		{
-			this.inspector.Close();
+			this.inspector.Hide();
 		}
 	}
 }

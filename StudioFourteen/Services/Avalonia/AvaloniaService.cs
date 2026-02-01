@@ -32,6 +32,7 @@ using global::Avalonia.Threading;
 using StudioFourteen.Interface;
 using StudioFourteen.Services.Avalonia.Platform;
 using StudioFourteen.Services.Dalamud;
+using StudioFourteen.Services.Rendering;
 
 public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 {
@@ -53,7 +54,7 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 
 	public AvaloniaService()
 	{
-		Studio.Rendering.OverlayRenderer.AddAfterEffectsPass(this.renderingPass);
+		Studio.Rendering.OverlayRenderer.AddPass(OverlayLayers.AfterImGui, this.renderingPass);
 
 		ThreadStart ts = new(this.StartImpl);
 		this.uiThread = new Thread(ts);
@@ -76,7 +77,7 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 
 	public void Dispose()
 	{
-		Studio.Rendering.OverlayRenderer.RemoveAfterEffectsPass(this.renderingPass);
+		Studio.Rendering.OverlayRenderer.RemovePass(OverlayLayers.AfterImGui, this.renderingPass);
 		this.renderingPass.Dispose();
 
 		this.ShutdownRequested?.Invoke(this, new ShutdownRequestedEventArgs());

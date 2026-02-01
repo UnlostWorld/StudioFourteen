@@ -17,14 +17,11 @@ namespace StudioFourteen.Services.Input.Devices;
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Numerics;
 using FFXIVClientStructs.FFXIV.Client.System.Input;
-using StudioFourteen.Services.Interop;
-using Windows.Win32;
-using Windows.Win32.Foundation;
-using Windows.Win32.UI.WindowsAndMessaging;
 using global::Dalamud.Game.Addon.Events;
-using System.Drawing;
+using Windows.Win32;
 
 public enum MouseButtons
 {

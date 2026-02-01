@@ -27,13 +27,21 @@ using StudioFourteen.Services.Tick;
 
 using XivDevice = FFXIVClientStructs.FFXIV.Client.Graphics.Kernel.Device;
 
+public enum OverlayLayers
+{
+	BeforeEffects,
+	AfterEffects,
+
+	BeforeImGui,
+	AfterImGui,
+}
+
 public class GameOverlayRenderer : Renderer
 {
 	public readonly ForwardPass Forward = new();
 
 	private readonly GenerateUiMaskPass generateUiMaskPass = new();
-	private readonly List<RenderPassBase> beforeEffectsPasses = new();
-	private readonly List<RenderPassBase> afterEffectsPasses = new();
+	private readonly Dictionary<OverlayLayers, List<RenderPassBase>> layerPasses = new();
 
 	private bool needsImGuiRequeue = false;
 
@@ -41,34 +49,27 @@ public class GameOverlayRenderer : Renderer
 	{
 		this.Forward.ViewportScale = 0.8f;
 
-		this.afterEffectsPasses.Add(this.Forward);
-		this.AddPass(this.Forward);
 		this.AddPass(this.generateUiMaskPass);
+		this.AddPass(OverlayLayers.BeforeEffects, this.Forward);
 	}
 
 	public bool IsAttached { get; private set; }
 
-	public void AddBeforeEffectsPass(RenderPassBase pass)
+	public void AddPass(OverlayLayers layer, RenderPassBase pass)
 	{
-		this.beforeEffectsPasses.Add(pass);
+		if (!this.layerPasses.ContainsKey(layer))
+			this.layerPasses.Add(layer, new());
+
+		this.layerPasses[layer].Add(pass);
 		this.AddPass(pass);
 	}
 
-	public void RemoveBeforeEffectsPass(RenderPassBase pass)
+	public void RemovePass(OverlayLayers layer, RenderPassBase pass)
 	{
-		this.beforeEffectsPasses.Remove(pass);
-		this.RemovePass(pass);
-	}
+		if (!this.layerPasses.ContainsKey(layer))
+			this.layerPasses.Add(layer, new());
 
-	public void AddAfterEffectsPass(RenderPassBase pass)
-	{
-		this.afterEffectsPasses.Add(pass);
-		this.AddPass(pass);
-	}
-
-	public void RemoveAfterEffectsPass(RenderPassBase pass)
-	{
-		this.afterEffectsPasses.Remove(pass);
+		this.layerPasses[layer].Remove(pass);
 		this.RemovePass(pass);
 	}
 
@@ -81,6 +82,7 @@ public class GameOverlayRenderer : Renderer
 		////Studio.Reshade.ReshadeAfterEffects += this.OnAfterReshadeRender;
 
 		InterfaceManager.RunBeforeImGuiRender(this.OnBeforeImGuiRender);
+		InterfaceManager.RunAfterImGuiRender(this.OnAfterImGuiRender);
 		this.IsAttached = true;
 	}
 
@@ -174,14 +176,27 @@ public class GameOverlayRenderer : Renderer
 		{
 			this.needsImGuiRequeue = true;
 
-			////if (Studio.Reshade.IsReshadeEnabled)
-			////	return;
+			// If no reshade, this is the first layer to render.
+			////if (!Studio.Reshade.IsReshadeEnabled)
+			{
+				this.SetUpRender();
+				////this.Input.Process(this);
+				this.RenderUiMask();
 
-			this.SetUpRender();
-			////this.Input.Process(this);
-			this.RenderUiMask();
-			this.RenderBeforeEffectsPasses();
-			this.RenderAfterEffectsPasses();
+				this.RenderLayerPasses(OverlayLayers.BeforeEffects);
+				this.RenderLayerPasses(OverlayLayers.AfterEffects);
+			}
+
+			this.RenderLayerPasses(OverlayLayers.BeforeImGui);
+		}
+	}
+
+	private void OnAfterImGuiRender()
+	{
+		if (this.IsAttached)
+		{
+			this.needsImGuiRequeue = true;
+			this.RenderLayerPasses(OverlayLayers.AfterImGui);
 		}
 	}
 
@@ -190,12 +205,12 @@ public class GameOverlayRenderer : Renderer
 		this.SetUpRender();
 		////this.Input.Process(this);
 		this.RenderUiMask();
-		this.RenderBeforeEffectsPasses();
+		this.RenderLayerPasses(OverlayLayers.BeforeEffects);
 	}
 
 	private void OnAfterReshadeRender()
 	{
-		this.RenderAfterEffectsPasses();
+		this.RenderLayerPasses(OverlayLayers.AfterEffects);
 	}
 
 	private unsafe void OnGameTick()
@@ -203,6 +218,7 @@ public class GameOverlayRenderer : Renderer
 		if (this.needsImGuiRequeue)
 		{
 			InterfaceManager.RunBeforeImGuiRender(this.OnBeforeImGuiRender);
+			InterfaceManager.RunAfterImGuiRender(this.OnAfterImGuiRender);
 			this.needsImGuiRequeue = false;
 		}
 
@@ -230,6 +246,12 @@ public class GameOverlayRenderer : Renderer
 		}
 	}
 
-	private void RenderBeforeEffectsPasses() => this.RenderPasses(this.beforeEffectsPasses);
-	private void RenderAfterEffectsPasses() => this.RenderPasses(this.afterEffectsPasses);
+	private void RenderLayerPasses(OverlayLayers layer)
+	{
+		List<RenderPassBase>? passes;
+		if (this.layerPasses.TryGetValue(layer, out passes) && passes != null)
+		{
+			this.RenderPasses(passes);
+		}
+	}
 }
