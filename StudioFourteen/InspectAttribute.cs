@@ -31,3 +31,14 @@ public class InspectAttribute : Attribute
 		this.Path = path;
 	}
 }
+
+[AttributeUsage(AttributeTargets.Property)]
+public class InspectPageAttribute : Attribute
+{
+	public readonly string? Path;
+
+	public InspectPageAttribute(string path)
+	{
+		this.Path = path;
+	}
+}

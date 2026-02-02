@@ -2,79 +2,116 @@
 	Height="700"
 	Width="350">
 
-	<Grid.RowDefinitions>
-		<RowDefinition Height="Auto" />
-		<RowDefinition />
-	</Grid.RowDefinitions>
-
 	<Grid>
-		<Grid.ColumnDefinitions>
-			<ColumnDefinition />
-			<ColumnDefinition Width="Auto" />
-			<ColumnDefinition Width="Auto" />
-		</Grid.ColumnDefinitions>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition />
+		</Grid.RowDefinitions>
 
-		<TextBlock
-			Text="{Binding Target.Name}"
-			Margin="16,0,0,0"
-			FontSize="16"
-			VerticalAlignment="Center" />
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="Auto" />
+				<ColumnDefinition />
+				<ColumnDefinition Width="Auto" />
+			</Grid.ColumnDefinitions>
 
-		<TextBox
-			Grid.Column="1"
-			Width="200"
-			Watermark="Search"
-			Margin="4,4,4,4" />
+			<Button
+				Grid.Column="0"
+				Command="{Binding ClosePageCommand}"
+				Classes.Collapse="{Binding !IsPageOpen}"
+				Padding="0"
+				Width="32">
 
-		<Grid
-			Grid.Column="2"
-			Classes="ChromeExpander"
-			Classes.Expand="{Binding $parent[Window].IsPointerOver}" />
+				<Panel>
+					<StudioFourteen.Interface.Controls:Svg
+						Source="Icons/Back.svg"
+						Foreground="{DynamicResource Foreground}"
+						Height="20"
+						IsVisible="{Binding IsPageOpen}" />
+
+					<StudioFourteen.Interface.Controls:Svg
+						Source="Icons/Close.svg"
+						Foreground="{DynamicResource Foreground}"
+						Height="20"
+						IsVisible="{Binding !IsPageOpen}" />
+				</Panel>
+			</Button>
+
+			<TextBlock
+				Grid.Column="1"
+				Text="{Binding Target.Name}"
+				Margin="4,0,0,0"
+				FontSize="16"
+				VerticalAlignment="Center" />
+
+			<Panel
+				Grid.Column="2"
+				Classes.Collapse="{Binding IsPageOpen}">
+				<Panel.Styles>
+					<Style Selector="Panel">
+						<Setter Property="Width" Value="200" />
+						<Setter Property="Transitions">
+							<Transitions>
+								<DoubleTransition
+									Property="Width"
+									Duration="0:0:0.500"
+									Easing="CircularEaseInOut" />
+							</Transitions>
+						</Setter>
+					</Style>
+					<Style Selector="Panel.Collapse">
+						<Setter Property="Width" Value="0" />
+					</Style>
+				</Panel.Styles>
+
+				<Panel
+					Classes.Collapse="{Binding IsPageOpen}">
+					<Panel.Styles>
+						<Style Selector="Panel">
+							<Setter Property="Opacity" Value="1" />
+							<Setter Property="Transitions">
+								<Transitions>
+									<DoubleTransition
+										Property="Opacity"
+										Duration="0:0:0.500"
+										Easing="CircularEaseInOut" />
+								</Transitions>
+							</Setter>
+						</Style>
+						<Style Selector="Panel.Collapse">
+							<Setter Property="Opacity" Value="0" />
+						</Style>
+					</Panel.Styles>
+
+					<TextBox
+						Watermark="Search"
+						Width="200"
+						Margin="4,4,4,4" />
+
+				</Panel>
+			</Panel>
+		</Grid>
+
+		<!-- Inspector Area -->
+		<Panel
+			Grid.Row="1"
+			Classes="Page"
+			Classes.PageCollapse-Left="{Binding IsPageOpen}">
+
+			<StudioFourteen.Interface.Controls:ContentControl
+				Path="{Binding Path}"
+				ContentDataContext="{Binding Target}" />
+		</Panel>
+
+		<!-- Page Area -->
+		<Panel
+			Grid.Row="1"
+			Classes="Page"
+			Classes.PageCollapse-Right="{Binding !IsPageOpen}">
+
+			<StudioFourteen.Interface.Controls:ContentControl
+				Path="{Binding Page}" />
+		</Panel>
+
 	</Grid>
-
-	<TabControl
-		Grid.Row="1"
-		ItemsSource="{Binding Groups}"
-		SelectedIndex="{Binding TabIndex}">
-		<TabControl.ItemTemplate>
-			<DataTemplate>
-				<StudioFourteen.Interface.Controls:Svg
-					Source="{Binding Icon}"
-					Foreground="White"
-					Width="20"
-					Height="20" />
-			</DataTemplate>
-		</TabControl.ItemTemplate>
-
-		<TabControl.ContentTemplate>
-			<DataTemplate DataType="StudioFourteen.Interface:InspectorGroup">
-
-				<StackPanel Margin="6">
-					<TextBlock
-						Text="{Binding Name}"
-						FontWeight="Bold"
-						TextAlignment="Center" />
-
-					<ItemsControl ItemsSource="{Binding Properties}">
-						<ItemsControl.ItemTemplate>
-							<DataTemplate
-								DataType="StudioFourteen.Interface:InspectorProperty">
-								<StackPanel>
-									<TextBlock
-										Text="{Binding Name}"
-										Margin="0,6,0,3" />
-
-									<ContentPresenter
-										Content="{Binding Inspector}" />
-
-								</StackPanel>
-							</DataTemplate>
-						</ItemsControl.ItemTemplate>
-					</ItemsControl>
-				</StackPanel>
-
-			</DataTemplate>
-		</TabControl.ContentTemplate>
-	</TabControl>
-
 </Grid>

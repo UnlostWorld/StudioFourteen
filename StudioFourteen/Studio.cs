@@ -53,6 +53,7 @@ public sealed class Studio : IDalamudPlugin
 		Library = new();
 		Scene = new();
 		Portraits = new();
+		Redraw = new();
 
 		IsInitialized = true;
 	}
@@ -75,6 +76,7 @@ public sealed class Studio : IDalamudPlugin
 	public static LibraryService Library { get; private set; } = null!;
 	public static SceneService Scene { get; private set; } = null!;
 	public static PortraitService Portraits { get; private set; } = null!;
+	public static RedrawService Redraw { get; private set; } = null!;
 
 	[PluginService] public static IPluginLog DalamudLog { get; private set; } = null!;
 	[PluginService] public static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
@@ -110,6 +112,7 @@ public sealed class Studio : IDalamudPlugin
 			Library.Dispose();
 			Scene.Dispose();
 			Portraits.Dispose();
+			Redraw.Dispose();
 		}
 		catch (Exception ex)
 		{

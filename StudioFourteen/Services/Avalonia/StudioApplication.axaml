@@ -23,5 +23,39 @@
 		</Style>
 
 
+		<!-- page -->
+		<Style Selector="Panel.Page">
+			<Setter Property="Opacity" Value="1" />
+			<Setter Property="RenderTransform" Value="translateX(0px)" />
+			<Setter Property="IsHitTestVisible" Value="True" />
+
+			<Setter Property="Transitions">
+				<Transitions>
+					<DoubleTransition
+						Property="Opacity"
+						Duration="0:0:0.150"
+						Easing="CircularEaseInOut" />
+
+					<TransformOperationsTransition
+						Property="RenderTransform"
+						Duration="0:0:0.150" />
+				</Transitions>
+			</Setter>
+		</Style>
+
+		<Style Selector="Panel.PageCollapse-Left">
+			<Setter Property="Opacity" Value="0" />
+			<Setter Property="RenderTransform" Value="translateX(-30px)" />
+			<Setter Property="IsHitTestVisible" Value="False" />
+		</Style>
+
+		<Style Selector="Panel.PageCollapse-Right">
+			<Setter Property="Opacity" Value="0" />
+			<Setter Property="RenderTransform" Value="translateX(30px)" />
+			<Setter Property="IsHitTestVisible" Value="False" />
+		</Style>
+
+
+
 	</Application.Styles>
 </Application>

@@ -13,10 +13,12 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Scene;
+namespace StudioFourteen;
 
-[Inspect("UI/Inspectors/Character.ui")]
-public class Character(int objectIndex)
-	: CharacterEquipment(objectIndex)
+public enum UpdateSource
 {
+	Script,
+	Interface,
+	Restore,
+	Preview,
 }

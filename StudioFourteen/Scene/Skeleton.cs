@@ -15,9 +15,6 @@
 
 namespace StudioFourteen.Scene;
 
-using CommunityToolkit.Mvvm.ComponentModel;
-
-[Inspect("Icons/Skeleton.svg")]
 public partial class Skeleton(int objectIndex)
 	: Animator(objectIndex)
 {

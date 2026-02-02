@@ -85,6 +85,12 @@ public partial class TickService : IService
 		}
 	}
 
+	public static async Task NextFrame()
+	{
+		await Task.Delay(5);
+		await TickService.GameTick();
+	}
+
 	public void Dispose()
 	{
 		this.shouldTick = false;

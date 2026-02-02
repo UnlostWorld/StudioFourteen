@@ -15,7 +15,6 @@
 
 namespace StudioFourteen.Scene;
 
-[Inspect("Icons/Animator.svg")]
 public partial class Animator(int objectIndex)
 	: GameObject(objectIndex)
 {

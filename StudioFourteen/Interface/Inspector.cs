@@ -15,15 +15,10 @@
 
 namespace StudioFourteen.Interface;
 
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Reflection;
 using System.Threading.Tasks;
-using Avalonia;
-using Avalonia.Collections;
-using Avalonia.Controls;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using StudioFourteen.Services.Avalonia;
 using StudioFourteen.Services.Scene;
 using StudioFourteen.Services.Tick;
@@ -40,13 +35,19 @@ public partial class Inspector : WindowReference
 	}
 
 	[ObservableProperty]
-	public partial AvaloniaList<InspectorGroup> Groups { get; private set; } = new();
-
-	[ObservableProperty]
 	public partial SceneObjectBase? Target { get; set; }
 
 	[ObservableProperty]
 	public partial int TabIndex { get; set; } = 0;
+
+	[ObservableProperty]
+	public partial string? Path { get; private set; }
+
+	[ObservableProperty]
+	public partial string? Page { get; set; }
+
+	[ObservableProperty]
+	public partial bool IsPageOpen { get; set; }
 
 	public override void Dispose()
 	{
@@ -56,44 +57,40 @@ public partial class Inspector : WindowReference
 		Studio.Scene.ObjectDeselected -= this.OnObjectDeselected;
 	}
 
-	public override void CloseButtonClicked()
+	public void OpenPage(string path)
 	{
-		Studio.Scene.ClearSelection();
+		if (this.Target == null)
+			return;
+
+		this.Target.InspectorPage = path;
+		this.Page = path;
+		this.IsPageOpen = true;
+	}
+
+	[RelayCommand]
+	public void ClosePage()
+	{
+		if (this.IsPageOpen)
+		{
+			this.IsPageOpen = false;
+		}
+		else
+		{
+			Studio.Scene.ClearSelection();
+		}
 	}
 
 	private void OnObjectSelected(SceneObjectBase obj)
 	{
-		if (obj == this.lastTarget)
-		{
-			Studio.Tick.Dispatch(TickChannels.Ui, () =>
-			{
-				this.Show();
-				this.Target = obj;
-			});
-
-			return;
-		}
-
 		int destinationTab = obj.InspectorTab;
 		Task.Run(async () =>
 		{
 			Studio.Tick.Dispatch(TickChannels.Ui, () =>
 			{
-				this.Show();
 				this.Target = obj;
-				this.Groups.Clear();
-
-				Type? type = obj.GetType();
-				while (type != null)
-				{
-					InspectAttribute? inspect = type.GetCustomAttribute<InspectAttribute>(false);
-					if (inspect != null)
-					{
-						this.Groups.Add(new(obj, type));
-					}
-
-					type = type.BaseType;
-				}
+				InspectAttribute? inspect = this.Target.GetType().GetCustomAttribute<InspectAttribute>();
+				this.Path = inspect?.Path;
+				this.Show();
 			});
 
 			await Task.Delay(50);
@@ -117,91 +114,5 @@ public partial class Inspector : WindowReference
 	partial void OnTabIndexChanged(int oldValue, int newValue)
 	{
 		this.Target?.InspectorTab = newValue;
-	}
-}
-
-public partial class InspectorGroup
-		 : ObservableObject
-{
-	public InspectorGroup(SceneObjectBase target, Type type)
-	{
-		InspectAttribute? inspect = type.GetCustomAttribute<InspectAttribute>();
-
-		this.Name = type.Name;
-		this.Icon = inspect?.Path;
-
-		PropertyInfo[] props = type.GetProperties(BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance);
-		foreach (PropertyInfo property in props)
-		{
-			if (!Attribute.IsDefined(property, typeof(InspectAttribute)))
-				continue;
-
-			this.Properties.Add(new(target, property));
-		}
-	}
-
-	[ObservableProperty]
-	public partial string? Name { get; private set; }
-
-	[ObservableProperty]
-	public partial string? Icon { get; private set; }
-
-	[ObservableProperty]
-	public partial AvaloniaList<InspectorProperty> Properties { get; set; } = new();
-}
-
-public partial class InspectorProperty : ObservableObject
-{
-	private readonly PropertyInfo property;
-	private readonly INotifyPropertyChanged target;
-	private readonly AvaloniaContentReference<Visual>? inspectorReference;
-
-	public InspectorProperty(INotifyPropertyChanged target, PropertyInfo property)
-	{
-		this.target = target;
-		this.target.PropertyChanged += this.OnTargetPropertyChanged;
-
-		this.property = property;
-
-		InspectAttribute? attribute = property.GetCustomAttribute<InspectAttribute>();
-		if (attribute == null)
-			return;
-
-		if (string.IsNullOrEmpty(attribute.Path))
-			return;
-
-		this.inspectorReference = new(attribute.Path);
-		this.inspectorReference.Reloaded += this.OnInspectorReloaded;
-
-		this.Inspector = this.inspectorReference.Get();
-		this.Inspector.DataContext = this;
-	}
-
-	public string Name => this.property.Name;
-
-	[ObservableProperty]
-	public partial Visual? Inspector { get; private set; }
-
-	public object? Value
-	{
-		get => this.property.GetValue(this.target);
-		set => this.property.SetValue(this.target, value);
-	}
-
-	private void OnInspectorReloaded()
-	{
-		Studio.Tick.Dispatch(TickChannels.Ui, () =>
-		{
-			this.Inspector = this.inspectorReference?.Get();
-			this.Inspector?.DataContext = this;
-		});
-	}
-
-	private void OnTargetPropertyChanged(object? sender, PropertyChangedEventArgs e)
-	{
-		if (e.PropertyName == this.property.Name)
-		{
-			this.OnPropertyChanged(nameof(InspectorProperty.Value));
-		}
 	}
 }

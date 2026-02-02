@@ -1,0 +1,5 @@
+<Grid>
+	<TextBlock
+		Text="Expression editor"
+		VerticalAlignment="Top" />
+</Grid>

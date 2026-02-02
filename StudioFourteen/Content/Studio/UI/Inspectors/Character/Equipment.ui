@@ -1,0 +1,110 @@
+<ScrollViewer>
+	<StackPanel>
+		<StackPanel.Resources>
+			<DataTemplate
+				x:Key="Equipment"
+				DataType="{x:Type StudioFourteen.Scene.DrawData:Equipment}">
+				<Grid>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="Auto" />
+						<ColumnDefinition />
+						<ColumnDefinition Width="Auto" />
+					</Grid.ColumnDefinitions>
+
+					<Border
+						Grid.Column="0"
+						Background="Green"
+						CornerRadius="8"
+						Width="42"
+						Height="42"
+						Margin="10" />
+
+					<StackPanel Grid.Column="1" Margin="0,10,10,10">
+						<TextBlock Text="{Binding Slot}" Opacity="0.5" />
+						<TextBlock Text="{Binding Item.Name}" />
+					</StackPanel>
+
+					<StudioFourteen.Interface.Controls:Svg
+						Grid.Column="2"
+						Source="Icons/Forward.svg"
+						Margin="10" />
+
+				</Grid>
+			</DataTemplate>
+		</StackPanel.Resources>
+
+		<TextBlock Text="Equipment" Margin="8" />
+
+		<Button
+			Margin="4,2"
+			Padding="0"
+			HorizontalContentAlignment="Stretch"
+			ContentTemplate="{DynamicResource Equipment}"
+			Content="{Binding Head}" />
+
+		<Button
+			Margin="4,2"
+			Padding="0"
+			HorizontalContentAlignment="Stretch"
+			ContentTemplate="{DynamicResource Equipment}"
+			Content="{Binding Body}" />
+
+		<Button
+			Margin="4,2"
+			Padding="0"
+			HorizontalContentAlignment="Stretch"
+			ContentTemplate="{DynamicResource Equipment}"
+			Content="{Binding Hands}" />
+
+		<Button
+			Margin="4,2"
+			Padding="0"
+			HorizontalContentAlignment="Stretch"
+			ContentTemplate="{DynamicResource Equipment}"
+			Content="{Binding Legs}" />
+
+		<Button
+			Margin="4,2"
+			Padding="0"
+			HorizontalContentAlignment="Stretch"
+			ContentTemplate="{DynamicResource Equipment}"
+			Content="{Binding Feet}" />
+
+		<TextBlock Text="Accessories" Margin="8" />
+
+		<Button
+			Margin="4,2"
+			Padding="0"
+			HorizontalContentAlignment="Stretch"
+			ContentTemplate="{DynamicResource Equipment}"
+			Content="{Binding Ears}" />
+
+		<Button
+			Margin="4,2"
+			Padding="0"
+			HorizontalContentAlignment="Stretch"
+			ContentTemplate="{DynamicResource Equipment}"
+			Content="{Binding Neck}" />
+
+		<Button
+			Margin="4,2"
+			Padding="0"
+			HorizontalContentAlignment="Stretch"
+			ContentTemplate="{DynamicResource Equipment}"
+			Content="{Binding Wrists}" />
+
+		<Button
+			Margin="4,2"
+			Padding="0"
+			HorizontalContentAlignment="Stretch"
+			ContentTemplate="{DynamicResource Equipment}"
+			Content="{Binding RFinger}" />
+
+		<Button
+			Margin="4,2"
+			Padding="0"
+			HorizontalContentAlignment="Stretch"
+			ContentTemplate="{DynamicResource Equipment}"
+			Content="{Binding LFinger}" />
+	</StackPanel>
+</ScrollViewer>

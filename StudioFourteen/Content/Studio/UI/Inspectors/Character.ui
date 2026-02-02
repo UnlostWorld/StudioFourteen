@@ -1,0 +1,19 @@
+<Grid>
+	<TabControl
+		SelectedIndex="{Binding TabIndex}">
+
+		<TabItem>
+			<TabItem.Header>
+				<StudioFourteen.Interface.Controls:Svg
+					Source="Icons/CharacterEquipment.svg"
+					Foreground="White"
+					Width="20"
+					Height="20" />
+			</TabItem.Header>
+
+			<StudioFourteen.Interface.Controls:ContentControl
+				Path="UI/Inspectors/Character/Equipment.ui" />
+		</TabItem>
+
+	</TabControl>
+</Grid>
