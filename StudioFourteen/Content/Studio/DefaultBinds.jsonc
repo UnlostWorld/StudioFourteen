@@ -1,15 +1,21 @@
 {
 	// User Interface
-	"UI_Primary_Click": [
+	"UI_PrimaryClick": [
 		"Mouse:Left"
 	],
-	"UI_Secondary_Click": [
+	"UI_SecondaryClick": [
 		"Mouse:Right"
 	],
-	"UI_Middle_Click": [
+	"UI_MiddleClick": [
 		"Mouse:Middle"
 	],
-	
+	"UI_ScrollUp": [
+		"Mouse:Wheel-"
+	],
+	"UI_ScrollDown": [
+		"Mouse:Wheel+"
+	],
+
 	"SaveAs": [
 		"Keyboard:S + Keyboard:CONTROL + Keyboard:SHIFT"
 	],

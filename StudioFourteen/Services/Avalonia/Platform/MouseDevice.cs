@@ -28,9 +28,10 @@ public class StudioMouseDevice : MouseDevice
 {
 	private readonly StudioPointer pointer;
 
-	private readonly Input0DListener mousePrimaryClickListener = new(InputAction.UI_Primary_Click);
-	private readonly Input0DListener mouseSecondaryClickListener = new(InputAction.UI_Secondary_Click);
-	private readonly Input0DListener mouseMiddleClickListener = new(InputAction.UI_Middle_Click);
+	private readonly Input0DListener mousePrimaryClickListener = new(InputAction.UI_PrimaryClick);
+	private readonly Input0DListener mouseSecondaryClickListener = new(InputAction.UI_SecondaryClick);
+	private readonly Input0DListener mouseMiddleClickListener = new(InputAction.UI_MiddleClick);
+	private readonly Input1DListener mouseScrollListener = new(InputAction.UI_ScrollDown, InputAction.UI_ScrollUp);
 
 	private Window? windowUnderCursor = null;
 	private Window? capturedWindow = null;
@@ -72,12 +73,14 @@ public class StudioMouseDevice : MouseDevice
 				this.mousePrimaryClickListener.Disable();
 				this.mouseSecondaryClickListener.Disable();
 				this.mouseMiddleClickListener.Disable();
+				this.mouseScrollListener.Disable();
 			}
 			else
 			{
 				this.mousePrimaryClickListener.Enable();
 				this.mouseSecondaryClickListener.Enable();
 				this.mouseMiddleClickListener.Enable();
+				this.mouseScrollListener.Enable();
 			}
 		}
 	}
@@ -240,6 +243,19 @@ public class StudioMouseDevice : MouseDevice
 					this.WindowUnderCursor,
 					RawPointerEventType.MiddleButtonUp,
 					relativeMousePosition,
+					modifiers));
+			}
+
+			float scroll = this.mouseScrollListener.Value;
+			if (scroll != 0)
+			{
+				windowImpl.HandleInput(
+				new RawMouseWheelEventArgs(
+					this,
+					timeStamp,
+					this.WindowUnderCursor,
+					relativeMousePosition,
+					new global::Avalonia.Vector(0, scroll),
 					modifiers));
 			}
 		}

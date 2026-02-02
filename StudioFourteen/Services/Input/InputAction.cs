@@ -20,9 +20,11 @@ namespace StudioFourteen.Services.Input;
 public enum InputAction
 {
 	Focus_Game,
-	UI_Primary_Click,
-	UI_Secondary_Click,
-	UI_Middle_Click,
+	UI_PrimaryClick,
+	UI_SecondaryClick,
+	UI_MiddleClick,
+	UI_ScrollDown,
+	UI_ScrollUp,
 
 	Handle_Select,
 	Handle_Up,

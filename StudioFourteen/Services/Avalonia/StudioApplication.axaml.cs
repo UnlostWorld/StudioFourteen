@@ -30,6 +30,7 @@ public partial class StudioApplication : Application
 		"UI/Styles/Button.ui",
 		"UI/Styles/NumberBox.ui",
 		"UI/Styles/Svg.ui",
+		"UI/Styles/ScrollBar.ui",
 		"UI/Styles/TabControl.ui",
 		"UI/Styles/TabItem.ui",
 		"UI/Styles/TextBlock.ui",
