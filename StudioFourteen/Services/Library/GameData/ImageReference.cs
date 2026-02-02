@@ -15,13 +15,20 @@
 
 namespace StudioFourteen.Services.Library.GameData;
 
+using System;
+using System.Runtime.InteropServices;
+using global::Avalonia;
+using global::Avalonia.Media.Imaging;
+using global::Avalonia.Platform;
+using Lumina.Data.Files;
+
 public class ImageReference
 {
-	private readonly string path;
+	private WeakReference<Bitmap>? cachedImage;
 
 	public ImageReference(string path)
 	{
-		this.path = path;
+		this.Path = path;
 	}
 
 	public ImageReference(uint imageId)
@@ -39,40 +46,51 @@ public class ImageReference
 	{
 	}
 
-	/*public ImageSource? Source
+	public string Path { get; init; }
+
+	public Bitmap? Source
 	{
 		get
 		{
-			ImageSource? img;
-			if (this.cachedImage != null && this.cachedImage.TryGetTarget(out img))
+			if (this.cachedImage != null && this.cachedImage.TryGetTarget(out var img))
 			{
 				return img;
 			}
 
+			Studio.Log.Information($"load texture: {this.Path}");
+
 			try
 			{
-				this.Log.Verbose($"Loading image {this.path}");
-				TexFile? tex = Studio.DataManager.GetFile<TexFile>(this.path);
+				TexFile? tex = Studio.DataManager.GetFile<TexFile>(this.Path);
 
 				if (tex == null)
 					return null;
 
-				BitmapSource bmp = BitmapSource.Create(tex.Header.Width, tex.Header.Height, 96, 96, PixelFormats.Bgra32, null, tex.ImageData, tex.Header.Width * 4);
-				bmp.Freeze();
-				img = bmp;
+				Vector dpi = new Vector(96, 96);
+
+				WriteableBitmap bitmap = new WriteableBitmap(
+					new PixelSize(tex.Header.Width, tex.Header.Height),
+					dpi,
+					PixelFormat.Bgra8888,
+					AlphaFormat.Premul);
+
+				using (var frameBuffer = bitmap.Lock())
+				{
+					Marshal.Copy(tex.ImageData, 0, frameBuffer.Address, tex.ImageData.Length);
+				}
 
 				if (this.cachedImage == null)
-					this.cachedImage = new WeakReference<ImageSource>(img);
+					this.cachedImage = new WeakReference<Bitmap>(bitmap);
 
-				this.cachedImage.SetTarget(img);
-				return img;
+				this.cachedImage.SetTarget(bitmap);
+				return bitmap;
 			}
 			catch (Exception ex)
 			{
-				Studio.Log.Warning(ex, $"Failed to load Image: {this.path} ");
+				Studio.Log.Warning(ex, $"Failed to load Image: {this.Path}");
 			}
 
 			return null;
 		}
-	}*/
+	}
 }

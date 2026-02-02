@@ -2,6 +2,21 @@
 	Height="700"
 	Width="350">
 
+	<Ellipse
+		Width="32"
+		Height="32"
+		VerticalAlignment="Top"
+		HorizontalAlignment="Right"
+		Fill="#55000000"
+		Margin="6,6,6,6">
+		<Ellipse.Fill>
+			<ImageBrush
+				Source="{Binding Target.Portrait}"
+				Stretch="UniformToFill"
+				AlignmentY="Top" />
+		</Ellipse.Fill>
+	</Ellipse>
+
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
@@ -20,7 +35,8 @@
 				Command="{Binding ClosePageCommand}"
 				Classes.Collapse="{Binding !IsPageOpen}"
 				Padding="0"
-				Width="32">
+				Width="32"
+				Height="32">
 
 				<Panel>
 					<StudioFourteen.Interface.Controls:Svg
@@ -43,53 +59,6 @@
 				Margin="4,0,0,0"
 				FontSize="16"
 				VerticalAlignment="Center" />
-
-			<Panel
-				Grid.Column="2"
-				Classes.Collapse="{Binding IsPageOpen}">
-				<Panel.Styles>
-					<Style Selector="Panel">
-						<Setter Property="Width" Value="200" />
-						<Setter Property="Transitions">
-							<Transitions>
-								<DoubleTransition
-									Property="Width"
-									Duration="0:0:0.500"
-									Easing="CircularEaseInOut" />
-							</Transitions>
-						</Setter>
-					</Style>
-					<Style Selector="Panel.Collapse">
-						<Setter Property="Width" Value="0" />
-					</Style>
-				</Panel.Styles>
-
-				<Panel
-					Classes.Collapse="{Binding IsPageOpen}">
-					<Panel.Styles>
-						<Style Selector="Panel">
-							<Setter Property="Opacity" Value="1" />
-							<Setter Property="Transitions">
-								<Transitions>
-									<DoubleTransition
-										Property="Opacity"
-										Duration="0:0:0.500"
-										Easing="CircularEaseInOut" />
-								</Transitions>
-							</Setter>
-						</Style>
-						<Style Selector="Panel.Collapse">
-							<Setter Property="Opacity" Value="0" />
-						</Style>
-					</Panel.Styles>
-
-					<TextBox
-						Watermark="Search"
-						Width="200"
-						Margin="4,4,4,4" />
-
-				</Panel>
-			</Panel>
 		</Grid>
 
 		<!-- Inspector Area -->

@@ -1,6 +1,7 @@
 <ScrollViewer>
 	<StackPanel>
 		<StackPanel.Resources>
+
 			<DataTemplate
 				x:Key="Equipment"
 				DataType="{x:Type StudioFourteen.Scene.DrawData:Equipment}">
@@ -12,14 +13,19 @@
 					</Grid.ColumnDefinitions>
 
 					<Border
-						Grid.Column="0"
-						Background="Green"
-						CornerRadius="8"
-						Width="42"
-						Height="42"
-						Margin="10" />
+						CornerRadius="16, 4, 4, 16"
+						Height="48"
+						Width="48"
+						Margin="2">
+						<Border.Background>
+							<ImageBrush
+								Source="{Binding Item.Icon.Source}"
+								Stretch="Uniform"
+								AlignmentX="Left" />
+						</Border.Background>
+					</Border>
 
-					<StackPanel Grid.Column="1" Margin="0,10,10,10">
+					<StackPanel Grid.Column="1" Margin="6">
 						<TextBlock Text="{Binding Slot}" Opacity="0.5" />
 						<TextBlock Text="{Binding Item.Name}" />
 					</StackPanel>
@@ -27,7 +33,7 @@
 					<StudioFourteen.Interface.Controls:Svg
 						Grid.Column="2"
 						Source="Icons/Forward.svg"
-						Margin="10" />
+						Margin="6" />
 
 				</Grid>
 			</DataTemplate>
