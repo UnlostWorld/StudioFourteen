@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Scene.DrawData;
 
+using CommunityToolkit.Mvvm.Input;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using StudioFourteen.Scene.DrawData;
 using StudioFourteen.Services.Library.GameData.Library;

@@ -17,9 +17,10 @@ namespace StudioFourteen.Scene.DrawData;
 
 using System;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using StudioFourteen.Services.Library.GameData.Library;
 
-public abstract class DrawItemBase<TLibraryType> : ObservableObject
+public abstract partial class DrawItemBase<TLibraryType> : ObservableObject
 	where TLibraryType : ExcelLibraryEntry
 {
 	protected byte? nextWriteStain0;
@@ -141,10 +142,29 @@ public abstract class DrawItemBase<TLibraryType> : ObservableObject
 		}
 	}
 
-	public void Clear()
+	[RelayCommand]
+	public void ClearAll()
 	{
 		this.Item = null;
 		this.Stain0 = null;
+		this.Stain1 = null;
+	}
+
+	[RelayCommand]
+	public void ClearItem()
+	{
+		this.Item = null;
+	}
+
+	[RelayCommand]
+	public void ClearStain0()
+	{
+		this.Stain0 = null;
+	}
+
+	[RelayCommand]
+	public void ClearStain1()
+	{
 		this.Stain1 = null;
 	}
 

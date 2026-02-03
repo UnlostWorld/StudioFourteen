@@ -1,8 +1,20 @@
-<Grid>
-	<StackPanel>
-		<TextBlock
-			Text="Select Equipment?" />
-		<TextBlock
-			Text="{Binding Slot}" />
+<Grid ColumnDefinitions="*,*" RowDefinitions="Auto,*">
+
+	<NumericUpDown
+		Grid.Row="0"
+		Grid.Column="0"
+		Value="{Binding Id}" />
+
+	<NumericUpDown
+		Grid.Row="0"
+		Grid.Column="1"
+		Value="{Binding Variant}" />
+
+	<StackPanel
+		Grid.Row="1"
+		Grid.ColumnSpan="2">
+		<Button
+			Command="{Binding ClearItemCommand}"
+			Content="Clear" />
 	</StackPanel>
 </Grid>

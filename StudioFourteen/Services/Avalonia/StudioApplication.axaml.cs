@@ -28,7 +28,9 @@ public partial class StudioApplication : Application
 		"UI/Theme.ui",
 
 		"UI/Styles/Button.ui",
+		"UI/Styles/ButtonSpinner.ui",
 		"UI/Styles/NumberBox.ui",
+		"UI/Styles/NumericUpDown.ui",
 		"UI/Styles/Svg.ui",
 		"UI/Styles/ScrollBar.ui",
 		"UI/Styles/TabControl.ui",
