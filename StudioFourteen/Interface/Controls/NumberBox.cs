@@ -125,35 +125,42 @@ public class NumberBox : TextBox
 
 	protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
 	{
-		if (!this.supressChanges)
+		try
 		{
-			this.supressChanges = true;
-			if (change.Property == ValueProperty)
+			if (!this.supressChanges)
 			{
-				this.SetCurrentValue(TextProperty, this.Value.ToString("F2"));
-			}
-
-			if (change.Property == TextProperty)
-			{
-				string? text = this.Text;
-				float newValue = this.Value;
-				if (text == null)
-					newValue = 0;
-
-				try
+				this.supressChanges = true;
+				if (change.Property == ValueProperty)
 				{
-					newValue = Convert.ToSingle(new DataTable().Compute(text, null));
-				}
-				catch (Exception)
-				{
+					this.SetCurrentValue(TextProperty, this.Value.ToString("F2"));
 				}
 
-				this.SetCurrentValue(ValueProperty, newValue);
+				if (change.Property == TextProperty)
+				{
+					string? text = this.Text;
+					float newValue = this.Value;
+					if (text == null)
+						newValue = 0;
+
+					try
+					{
+						newValue = Convert.ToSingle(new DataTable().Compute(text, null));
+					}
+					catch (Exception)
+					{
+					}
+
+					this.SetCurrentValue(ValueProperty, newValue);
+				}
+
+				this.supressChanges = false;
 			}
 
-			this.supressChanges = false;
+			base.OnPropertyChanged(change);
 		}
-
-		base.OnPropertyChanged(change);
+		catch (Exception ex)
+		{
+			Studio.Log.Error(ex, "Error in property changed");
+		}
 	}
 }

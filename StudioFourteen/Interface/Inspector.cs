@@ -41,10 +41,13 @@ public partial class Inspector : WindowReference
 	public partial int TabIndex { get; set; } = 0;
 
 	[ObservableProperty]
-	public partial string? Path { get; private set; }
+	public partial string? InspectorPath { get; private set; }
 
 	[ObservableProperty]
 	public partial string? Page { get; set; }
+
+	[ObservableProperty]
+	public partial object? PageDataContext { get; set; }
 
 	[ObservableProperty]
 	public partial bool IsPageOpen { get; set; }
@@ -57,14 +60,18 @@ public partial class Inspector : WindowReference
 		Studio.Scene.ObjectDeselected -= this.OnObjectDeselected;
 	}
 
-	public void OpenPage(string path)
+	public void OpenPage(string path, object? dataContext)
 	{
 		if (this.Target == null)
 			return;
 
-		this.Target.InspectorPage = path;
+		Studio.Log.Information($"??? {this.Page} --> {path}");
+
 		this.Page = path;
+		this.PageDataContext = dataContext;
 		this.IsPageOpen = true;
+
+		this.OnPropertyChanged(nameof(Inspector.Page));
 	}
 
 	[RelayCommand]
@@ -73,6 +80,7 @@ public partial class Inspector : WindowReference
 		if (this.IsPageOpen)
 		{
 			this.IsPageOpen = false;
+			this.Page = null;
 		}
 		else
 		{
@@ -82,23 +90,12 @@ public partial class Inspector : WindowReference
 
 	private void OnObjectSelected(SceneObjectBase obj)
 	{
-		int destinationTab = obj.InspectorTab;
-		Task.Run(async () =>
+		Studio.Tick.Dispatch(TickChannels.Ui, () =>
 		{
-			Studio.Tick.Dispatch(TickChannels.Ui, () =>
-			{
-				this.Target = obj;
-				InspectAttribute? inspect = this.Target.GetType().GetCustomAttribute<InspectAttribute>();
-				this.Path = inspect?.Path;
-				this.Show();
-			});
-
-			await Task.Delay(50);
-
-			Studio.Tick.Dispatch(TickChannels.Ui, () =>
-			{
-				this.TabIndex = destinationTab;
-			});
+			this.Target = obj;
+			InspectAttribute? inspect = this.Target.GetType().GetCustomAttribute<InspectAttribute>();
+			this.InspectorPath = inspect?.Path;
+			this.Show();
 		});
 	}
 

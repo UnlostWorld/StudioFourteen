@@ -139,13 +139,20 @@ public class Svg : Control
 
 	protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
 	{
-		if (change.Property == SourceProperty)
-			this.OnSourceChanged(this.Source);
+		try
+		{
+			if (change.Property == SourceProperty)
+				this.OnSourceChanged(this.Source);
 
-		if (change.Property == ForegroundProperty)
-			this.OnForegroundChanged(this.Foreground);
+			if (change.Property == ForegroundProperty)
+				this.OnForegroundChanged(this.Foreground);
 
-		base.OnPropertyChanged(change);
+			base.OnPropertyChanged(change);
+		}
+		catch (Exception ex)
+		{
+			Studio.Log.Error(ex, "Error in property changed");
+		}
 	}
 
 	private void OnSourceChanged(string? newValue)

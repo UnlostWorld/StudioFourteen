@@ -1,5 +1,6 @@
 <ResourceDictionary>
-	<ControlTheme x:Key="{x:Type Button}" TargetType="{x:Type Button}">
+
+	<ControlTheme x:Key="ButtonTheme" TargetType="{x:Type Button}">
 		<Setter Property="Margin" Value="4" />
 		<!--<Setter Property="Height" Value="32" />-->
 		<Setter Property="Background" Value="#888888" />
@@ -69,4 +70,14 @@
 		</Style>
 
 	</ControlTheme>
+
+	<ControlTheme x:Key="{x:Type StudioFourteen.Interface.Controls:InspectorLink}"
+		TargetType="{x:Type StudioFourteen.Interface.Controls:InspectorLink}"
+		BasedOn="{StaticResource ButtonTheme}" />
+
+	<ControlTheme x:Key="{x:Type Button}"
+		TargetType="{x:Type Button}"
+		BasedOn="{StaticResource ButtonTheme}" />
+
+
 </ResourceDictionary>

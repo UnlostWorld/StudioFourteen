@@ -24,7 +24,7 @@
 			</TabItem.Header>
 
 			<StudioFourteen.Interface.Controls:ContentControl
-				Path="UI/Inspectors/Character/Equipment.ui" />
+				ContentPath="UI/Inspectors/Character/Equipment.ui" />
 		</TabItem>
 
 		<TabItem>

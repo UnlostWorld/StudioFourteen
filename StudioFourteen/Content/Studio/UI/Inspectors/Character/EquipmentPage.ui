@@ -1,4 +1,8 @@
-<Grid>
-	<TextBlock
-		Text="Select Equipment!" />
+<Grid Background="Green">
+	<StackPanel>
+		<TextBlock
+			Text="Select Equipment?" />
+		<TextBlock
+			Text="{Binding Slot}" />
+	</StackPanel>
 </Grid>

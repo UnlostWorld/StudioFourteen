@@ -15,28 +15,31 @@
 
 namespace StudioFourteen.Interface.Controls;
 
+using System;
 using Avalonia;
 using Avalonia.Controls.Presenters;
 using Avalonia.Interactivity;
+using Avalonia.Media;
+using Lumina.Data.Structs.Excel;
 using StudioFourteen.Services.Avalonia;
 
 public class ContentControl : ContentPresenter
 {
-	public static readonly StyledProperty<string> PathProperty;
+	public static readonly StyledProperty<string?> ContentPathProperty;
 	public static readonly StyledProperty<object?> ContentDataContextProperty;
 
 	private AvaloniaContentReference<Visual>? contentReference;
 
 	static ContentControl()
 	{
-		PathProperty = AvaloniaProperty.Register<ContentControl, string>(nameof(ContentControl.Path));
+		ContentPathProperty = AvaloniaProperty.Register<ContentControl, string?>(nameof(ContentControl.ContentPath));
 		ContentDataContextProperty = AvaloniaProperty.Register<ContentControl, object?>(nameof(ContentControl.ContentDataContext));
 	}
 
-	public string Path
+	public string? ContentPath
 	{
-		get => this.GetValue(PathProperty);
-		set => this.SetValue(PathProperty, value);
+		get => this.GetValue(ContentPathProperty);
+		set => this.SetValue(ContentPathProperty, value);
 	}
 
 	public object? ContentDataContext
@@ -48,6 +51,7 @@ public class ContentControl : ContentPresenter
 	protected override void OnLoaded(RoutedEventArgs e)
 	{
 		base.OnLoaded(e);
+
 		Visual? v = this.Content as Visual;
 		if (v != null)
 		{
@@ -66,15 +70,26 @@ public class ContentControl : ContentPresenter
 
 	protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
 	{
-		base.OnPropertyChanged(change);
+		try
+		{
+			if (change.Property == ContentPathProperty)
+			{
+				this.UpdateReference();
+			}
+			else if (change.Property == ContentDataContextProperty)
+			{
+			}
 
-		if (change.Property == PathProperty)
-		{
-			this.UpdateReference();
+			base.OnPropertyChanged(change);
 		}
-		else if (change.Property == ContentDataContextProperty)
+		catch (Exception ex)
 		{
-			this.OnReferenceReloaded();
+			Studio.Log.Error(ex, "Error in property changed");
+			this.Content = new Svg()
+			{
+				Source = "Icons/Warning.svg",
+				Foreground = new SolidColorBrush(Colors.DarkRed),
+			};
 		}
 	}
 
@@ -83,12 +98,18 @@ public class ContentControl : ContentPresenter
 		this.contentReference?.Reloaded -= this.OnReferenceReloaded;
 		this.contentReference?.Dispose();
 
-		if (string.IsNullOrEmpty(this.Path))
+		if (string.IsNullOrEmpty(this.ContentPath))
 			return;
 
-		this.contentReference = new(this.Path);
-		this.contentReference?.Reloaded += this.OnReferenceReloaded;
-		this.OnReferenceReloaded();
+		this.contentReference = new(this.ContentPath);
+		this.contentReference.Reloaded += this.OnReferenceReloaded;
+
+		Visual? content = this.contentReference.Get();
+		if (content == null)
+			throw new Exception("Failed to get content");
+
+		content.DataContext = this.ContentDataContext ?? this.DataContext;
+		this.Content = content;
 	}
 
 	private void OnReferenceReloaded()

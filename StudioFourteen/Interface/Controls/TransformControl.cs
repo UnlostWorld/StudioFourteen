@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Interface.Controls;
 
+using System;
 using System.Numerics;
 using Avalonia;
 using Avalonia.Controls;
@@ -74,34 +75,41 @@ public class TransformControl : TemplatedControl
 
 	protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
 	{
-		if (!this.supressChanges)
+		try
 		{
-			this.supressChanges = true;
-			if (change.Property == ValueProperty)
+			if (!this.supressChanges)
 			{
-				Vector3 translation;
-				Quaternion rotation;
-				Vector3 scale;
-				if (this.Value.ToTRS(out translation, out rotation, out scale))
+				this.supressChanges = true;
+				if (change.Property == ValueProperty)
 				{
-					this.SetCurrentValue(TranslationProperty, translation);
-					this.SetCurrentValue(RotationProperty, rotation);
-					this.SetCurrentValue(ScaleProperty, scale);
-					this.SetCurrentValue(EulerProperty, rotation.ToEuler());
+					Vector3 translation;
+					Quaternion rotation;
+					Vector3 scale;
+					if (this.Value.ToTRS(out translation, out rotation, out scale))
+					{
+						this.SetCurrentValue(TranslationProperty, translation);
+						this.SetCurrentValue(RotationProperty, rotation);
+						this.SetCurrentValue(ScaleProperty, scale);
+						this.SetCurrentValue(EulerProperty, rotation.ToEuler());
+					}
 				}
-			}
-			else if (change.Property == TranslationProperty
-				|| change.Property == RotationProperty
-				|| change.Property == ScaleProperty)
-			{
-				this.SetCurrentValue(
-					ValueProperty,
-					Transform.FromTRS(this.Translation, this.Rotation, this.Scale));
+				else if (change.Property == TranslationProperty
+					|| change.Property == RotationProperty
+					|| change.Property == ScaleProperty)
+				{
+					this.SetCurrentValue(
+						ValueProperty,
+						Transform.FromTRS(this.Translation, this.Rotation, this.Scale));
+				}
+
+				this.supressChanges = false;
 			}
 
-			this.supressChanges = false;
+			base.OnPropertyChanged(change);
 		}
-
-		base.OnPropertyChanged(change);
+		catch (Exception ex)
+		{
+			Studio.Log.Error(ex, "Error in property changed");
+		}
 	}
 }

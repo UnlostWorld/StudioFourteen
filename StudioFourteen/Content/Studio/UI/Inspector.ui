@@ -68,7 +68,8 @@
 			Classes.PageCollapse-Left="{Binding IsPageOpen}">
 
 			<StudioFourteen.Interface.Controls:ContentControl
-				Path="{Binding Path}"
+				x:Name="InspectorArea"
+				ContentPath="{Binding InspectorPath}"
 				ContentDataContext="{Binding Target}" />
 		</Panel>
 
@@ -78,8 +79,12 @@
 			Classes="Page"
 			Classes.PageCollapse-Right="{Binding !IsPageOpen}">
 
+			<TextBlock Text="{Binding Page}" />
+
 			<StudioFourteen.Interface.Controls:ContentControl
-				Path="{Binding Page}" />
+				x:Name="PageArea"
+				ContentPath="{Binding Page}"
+				ContentDataContext="{Binding PageDataContext}" />
 		</Panel>
 
 	</Grid>

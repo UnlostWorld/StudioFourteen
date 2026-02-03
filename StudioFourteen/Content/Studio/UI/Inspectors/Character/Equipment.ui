@@ -41,76 +41,96 @@
 
 		<TextBlock Text="Equipment" Margin="8" />
 
-		<Button
+		<StudioFourteen.Interface.Controls:InspectorLink
 			Margin="4,2"
 			Padding="0"
 			HorizontalContentAlignment="Stretch"
 			ContentTemplate="{DynamicResource Equipment}"
-			Content="{Binding Head}" />
+			Content="{Binding Head}"
+			PagePath="UI/Inspectors/Character/EquipmentPage.ui"
+			DestinationDataContext="{Binding Head}" />
 
-		<Button
+		<StudioFourteen.Interface.Controls:InspectorLink
 			Margin="4,2"
 			Padding="0"
 			HorizontalContentAlignment="Stretch"
 			ContentTemplate="{DynamicResource Equipment}"
-			Content="{Binding Body}" />
+			Content="{Binding Body}"
+			PagePath="UI/Inspectors/Character/EquipmentPage.ui"
+			DestinationDataContext="{Binding Body}" />
 
-		<Button
+		<StudioFourteen.Interface.Controls:InspectorLink
 			Margin="4,2"
 			Padding="0"
 			HorizontalContentAlignment="Stretch"
 			ContentTemplate="{DynamicResource Equipment}"
-			Content="{Binding Hands}" />
+			Content="{Binding Hands}"
+			PagePath="UI/Inspectors/Character/EquipmentPage.ui"
+			DestinationDataContext="{Binding Hands}" />
 
-		<Button
+		<StudioFourteen.Interface.Controls:InspectorLink
 			Margin="4,2"
 			Padding="0"
 			HorizontalContentAlignment="Stretch"
 			ContentTemplate="{DynamicResource Equipment}"
-			Content="{Binding Legs}" />
+			Content="{Binding Legs}"
+			PagePath="UI/Inspectors/Character/EquipmentPage.ui"
+			DestinationDataContext="{Binding Legs}" />
 
-		<Button
+		<StudioFourteen.Interface.Controls:InspectorLink
 			Margin="4,2"
 			Padding="0"
 			HorizontalContentAlignment="Stretch"
 			ContentTemplate="{DynamicResource Equipment}"
-			Content="{Binding Feet}" />
+			Content="{Binding Feet}"
+			PagePath="UI/Inspectors/Character/EquipmentPage.ui"
+			DestinationDataContext="{Binding Feet}" />
 
 		<TextBlock Text="Accessories" Margin="8" />
 
-		<Button
+		<StudioFourteen.Interface.Controls:InspectorLink
 			Margin="4,2"
 			Padding="0"
 			HorizontalContentAlignment="Stretch"
 			ContentTemplate="{DynamicResource Equipment}"
-			Content="{Binding Ears}" />
+			Content="{Binding Ears}"
+			PagePath="UI/Inspectors/Character/EquipmentPage.ui"
+			DestinationDataContext="{Binding HeEarsad}" />
 
-		<Button
+		<StudioFourteen.Interface.Controls:InspectorLink
 			Margin="4,2"
 			Padding="0"
 			HorizontalContentAlignment="Stretch"
 			ContentTemplate="{DynamicResource Equipment}"
-			Content="{Binding Neck}" />
+			Content="{Binding Neck}"
+			PagePath="UI/Inspectors/Character/EquipmentPage.ui"
+			DestinationDataContext="{Binding Neck}" />
 
-		<Button
+		<StudioFourteen.Interface.Controls:InspectorLink
 			Margin="4,2"
 			Padding="0"
 			HorizontalContentAlignment="Stretch"
 			ContentTemplate="{DynamicResource Equipment}"
-			Content="{Binding Wrists}" />
+			Content="{Binding Wrists}"
+			PagePath="UI/Inspectors/Character/EquipmentPage.ui"
+			DestinationDataContext="{Binding Wrists}" />
 
-		<Button
+		<StudioFourteen.Interface.Controls:InspectorLink
 			Margin="4,2"
 			Padding="0"
 			HorizontalContentAlignment="Stretch"
 			ContentTemplate="{DynamicResource Equipment}"
-			Content="{Binding RFinger}" />
+			Content="{Binding RFinger}"
+			PagePath="UI/Inspectors/Character/EquipmentPage.ui"
+			DestinationDataContext="{Binding RFinger}" />
 
-		<Button
+		<StudioFourteen.Interface.Controls:InspectorLink
 			Margin="4,2"
 			Padding="0"
 			HorizontalContentAlignment="Stretch"
 			ContentTemplate="{DynamicResource Equipment}"
-			Content="{Binding LFinger}" />
+			Content="{Binding LFinger}"
+			PagePath="UI/Inspectors/Character/EquipmentPage.ui"
+			DestinationDataContext="{Binding LFinger}" />
 	</StackPanel>
 </ScrollViewer>

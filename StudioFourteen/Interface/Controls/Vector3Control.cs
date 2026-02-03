@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Interface.Controls;
 
+using System;
 using System.Numerics;
 using Avalonia;
 using Avalonia.Controls.Primitives;
@@ -102,37 +103,44 @@ public class Vector3Control : TemplatedControl
 
 	protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
 	{
-		if (!this.supressChanges)
+		try
 		{
-			this.supressChanges = true;
-			if (change.Property == ValueProperty)
+			if (!this.supressChanges)
 			{
-				this.SetCurrentValue(XProperty, this.Value.X);
-				this.SetCurrentValue(YProperty, this.Value.Y);
-				this.SetCurrentValue(ZProperty, this.Value.Z);
-			}
-			else if (change.Property == XProperty)
-			{
-				Vector3 v = this.Value;
-				v.X = this.X;
-				this.SetCurrentValue(ValueProperty, v);
-			}
-			else if (change.Property == YProperty)
-			{
-				Vector3 v = this.Value;
-				v.Y = this.Y;
-				this.SetCurrentValue(ValueProperty, v);
-			}
-			else if (change.Property == ZProperty)
-			{
-				Vector3 v = this.Value;
-				v.Z = this.Z;
-				this.SetCurrentValue(ValueProperty, v);
+				this.supressChanges = true;
+				if (change.Property == ValueProperty)
+				{
+					this.SetCurrentValue(XProperty, this.Value.X);
+					this.SetCurrentValue(YProperty, this.Value.Y);
+					this.SetCurrentValue(ZProperty, this.Value.Z);
+				}
+				else if (change.Property == XProperty)
+				{
+					Vector3 v = this.Value;
+					v.X = this.X;
+					this.SetCurrentValue(ValueProperty, v);
+				}
+				else if (change.Property == YProperty)
+				{
+					Vector3 v = this.Value;
+					v.Y = this.Y;
+					this.SetCurrentValue(ValueProperty, v);
+				}
+				else if (change.Property == ZProperty)
+				{
+					Vector3 v = this.Value;
+					v.Z = this.Z;
+					this.SetCurrentValue(ValueProperty, v);
+				}
+
+				this.supressChanges = false;
 			}
 
-			this.supressChanges = false;
+			base.OnPropertyChanged(change);
 		}
-
-		base.OnPropertyChanged(change);
+		catch (Exception ex)
+		{
+			Studio.Log.Error(ex, "Error in property changed");
+		}
 	}
 }
