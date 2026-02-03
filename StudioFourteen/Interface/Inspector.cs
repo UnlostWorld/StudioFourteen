@@ -44,7 +44,7 @@ public partial class Inspector : WindowReference
 	public partial string? InspectorPath { get; private set; }
 
 	[ObservableProperty]
-	public partial string? Page { get; set; }
+	public partial string? Page { get; set; } = "UI/Inspectors/EmptyPage.ui";
 
 	[ObservableProperty]
 	public partial object? PageDataContext { get; set; }
@@ -64,8 +64,6 @@ public partial class Inspector : WindowReference
 	{
 		if (this.Target == null)
 			return;
-
-		Studio.Log.Information($"??? {this.Page} --> {path}");
 
 		this.Page = path;
 		this.PageDataContext = dataContext;

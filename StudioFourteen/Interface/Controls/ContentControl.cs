@@ -18,6 +18,7 @@ namespace StudioFourteen.Interface.Controls;
 using System;
 using Avalonia;
 using Avalonia.Controls.Presenters;
+using Avalonia.Input;
 using Avalonia.Interactivity;
 using Avalonia.Media;
 using Lumina.Data.Structs.Excel;
@@ -78,6 +79,11 @@ public class ContentControl : ContentPresenter
 			}
 			else if (change.Property == ContentDataContextProperty)
 			{
+				Visual? v = this.Content as Visual;
+				if (v != null)
+				{
+					v.DataContext = this.ContentDataContext ?? this.DataContext;
+				}
 			}
 
 			base.OnPropertyChanged(change);

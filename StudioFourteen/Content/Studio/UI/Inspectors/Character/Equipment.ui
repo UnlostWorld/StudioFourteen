@@ -95,7 +95,7 @@
 			ContentTemplate="{DynamicResource Equipment}"
 			Content="{Binding Ears}"
 			PagePath="UI/Inspectors/Character/EquipmentPage.ui"
-			DestinationDataContext="{Binding HeEarsad}" />
+			DestinationDataContext="{Binding Ears}" />
 
 		<StudioFourteen.Interface.Controls:InspectorLink
 			Margin="4,2"
