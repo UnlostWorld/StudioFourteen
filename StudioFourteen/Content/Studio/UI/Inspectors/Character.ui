@@ -5,7 +5,7 @@
 		<RowDefinition />
 	</Grid.RowDefinitions>
 
-	<StudioFourteen.Interface.Controls:TransformControl
+	<S14:TransformControl
 		Value="{Binding WorldTransform}"
 		Grid.Row="0"
 		Margin="6" />
@@ -16,20 +16,20 @@
 
 		<TabItem>
 			<TabItem.Header>
-				<StudioFourteen.Interface.Controls:Svg
+				<S14:Svg
 					Source="Icons/CharacterEquipment.svg"
 					Foreground="White"
 					Width="20"
 					Height="20" />
 			</TabItem.Header>
 
-			<StudioFourteen.Interface.Controls:ContentControl
+			<S14:ContentControl
 				ContentPath="UI/Inspectors/Character/Equipment.ui" />
 		</TabItem>
 
 		<TabItem>
 			<TabItem.Header>
-				<StudioFourteen.Interface.Controls:Svg
+				<S14:Svg
 					Source="Icons/CharacterCustomize.svg"
 					Foreground="White"
 					Width="20"
@@ -39,7 +39,7 @@
 
 		<TabItem>
 			<TabItem.Header>
-				<StudioFourteen.Interface.Controls:Svg
+				<S14:Svg
 					Source="Icons/Skeleton.svg"
 					Foreground="White"
 					Width="20"
@@ -49,7 +49,7 @@
 
 		<TabItem>
 			<TabItem.Header>
-				<StudioFourteen.Interface.Controls:Svg
+				<S14:Svg
 					Source="Icons/Animator.svg"
 					Foreground="White"
 					Width="20"

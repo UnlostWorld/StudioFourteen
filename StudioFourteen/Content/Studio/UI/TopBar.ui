@@ -1,7 +1,7 @@
 <Grid Width="256">
 	<StackPanel Orientation="Horizontal">
 		<ToggleButton IsChecked="{Binding Library}">
-			<StudioFourteen.Interface.Controls:Svg
+			<S14:Svg
 				Height="22"
 				Source="Icons/Library.svg"
 				Foreground="{DynamicResource Foreground}" />

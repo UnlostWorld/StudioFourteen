@@ -71,8 +71,8 @@
 
 	</ControlTheme>
 
-	<ControlTheme x:Key="{x:Type StudioFourteen.Interface.Controls:InspectorLink}"
-		TargetType="{x:Type StudioFourteen.Interface.Controls:InspectorLink}"
+	<ControlTheme x:Key="{x:Type S14:InspectorLink}"
+		TargetType="{x:Type S14:InspectorLink}"
 		BasedOn="{StaticResource ButtonTheme}" />
 
 	<ControlTheme x:Key="{x:Type Button}"

@@ -1,7 +1,7 @@
 <ResourceDictionary>
 	<ControlTheme
-		x:Key="{x:Type StudioFourteen.Interface.Controls:NumberBox}"
-		TargetType="{x:Type StudioFourteen.Interface.Controls:NumberBox}">
+		x:Key="{x:Type S14:NumberBox}"
+		TargetType="{x:Type S14:NumberBox}">
 
 		<Setter Property="Margin" Value="4" />
 		<Setter Property="CaretBrush" Value="{DynamicResource Foreground}" />

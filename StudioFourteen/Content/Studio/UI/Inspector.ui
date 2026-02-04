@@ -39,13 +39,13 @@
 				Height="32">
 
 				<Panel>
-					<StudioFourteen.Interface.Controls:Svg
+					<S14:Svg
 						Source="Icons/Back.svg"
 						Foreground="{DynamicResource Foreground}"
 						Height="20"
 						IsVisible="{Binding IsPageOpen}" />
 
-					<StudioFourteen.Interface.Controls:Svg
+					<S14:Svg
 						Source="Icons/Close.svg"
 						Foreground="{DynamicResource Foreground}"
 						Height="20"
@@ -67,7 +67,7 @@
 			Classes="Page"
 			Classes.PageCollapse-Left="{Binding IsPageOpen}">
 
-			<StudioFourteen.Interface.Controls:ContentControl
+			<S14:ContentControl
 				ContentPath="{Binding InspectorPath}"
 				ContentDataContext="{Binding Target}" />
 		</Panel>
@@ -78,7 +78,7 @@
 			Classes="Page"
 			Classes.PageCollapse-Right="{Binding !IsPageOpen}">
 
-			<StudioFourteen.Interface.Controls:ContentControl
+			<S14:ContentControl
 				ContentPath="{Binding Page}"
 				ContentDataContext="{Binding PageDataContext}" />
 		</Panel>

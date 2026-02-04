@@ -88,7 +88,7 @@
 								Theme="{StaticResource SimpleButtonSpinnerRepeatButton}"
 								Width="22"
 								Height="22">
-								<StudioFourteen.Interface.Controls:Svg
+								<S14:Svg
 									Source="Icons/Decrease.svg"
 									Foreground="{TemplateBinding Foreground}" />
 							</RepeatButton>
@@ -98,7 +98,7 @@
 								Theme="{StaticResource SimpleButtonSpinnerRepeatButton}"
 								Width="22"
 								Height="22">
-								<StudioFourteen.Interface.Controls:Svg
+								<S14:Svg
 									Source="Icons/Increase.svg"
 									Foreground="{TemplateBinding Foreground}" />
 							</RepeatButton>

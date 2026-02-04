@@ -39,7 +39,7 @@
 									</Transitions>
 								</Panel.Transitions>
 
-								<StudioFourteen.Interface.Controls:Svg
+								<S14:Svg
 									Source="Icons/Close.svg"
 									Width="18"
 									Height="18"

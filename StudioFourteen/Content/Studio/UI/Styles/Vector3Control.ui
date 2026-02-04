@@ -1,7 +1,7 @@
 <ResourceDictionary>
 	<ControlTheme
-		x:Key="{x:Type StudioFourteen.Interface.Controls:Vector3Control}"
-		TargetType="{x:Type StudioFourteen.Interface.Controls:Vector3Control}">
+		x:Key="{x:Type S14:Vector3Control}"
+		TargetType="{x:Type S14:Vector3Control}">
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate>
@@ -22,7 +22,7 @@
 							Margin="8,0,2,0"
 							Fill="{TemplateBinding XForeground}" />
 
-						<StudioFourteen.Interface.Controls:NumberBox
+						<S14:NumberBox
 							Grid.Column="1"
 							Margin="0"
 							Value="{TemplateBinding X, Mode=TwoWay}" />
@@ -34,7 +34,7 @@
 							Margin="8,0,2,0"
 							Fill="{TemplateBinding YForeground}" />
 
-						<StudioFourteen.Interface.Controls:NumberBox
+						<S14:NumberBox
 							Grid.Column="3"
 							Margin="0"
 							Value="{TemplateBinding Y, Mode=TwoWay}" />
@@ -46,7 +46,7 @@
 							Margin="8,0,2,0"
 							Fill="{TemplateBinding ZForeground}" />
 
-						<StudioFourteen.Interface.Controls:NumberBox
+						<S14:NumberBox
 							Grid.Column="5"
 							Margin="0"
 							Value="{TemplateBinding Z, Mode=TwoWay}" />

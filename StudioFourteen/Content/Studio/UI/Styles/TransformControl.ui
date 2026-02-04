@@ -1,7 +1,7 @@
 <ResourceDictionary>
 	<ControlTheme
-		x:Key="{x:Type StudioFourteen.Interface.Controls:TransformControl}"
-		TargetType="{x:Type StudioFourteen.Interface.Controls:TransformControl}">
+		x:Key="{x:Type S14:TransformControl}"
+		TargetType="{x:Type S14:TransformControl}">
 
 		<Setter Property="Foreground" Value="White" />
 
@@ -20,7 +20,7 @@
 							<RowDefinition />
 						</Grid.RowDefinitions>
 
-						<StudioFourteen.Interface.Controls:Svg
+						<S14:Svg
 							Grid.Row="0"
 							Grid.Column="0"
 							Margin="0,0,6,0"
@@ -28,12 +28,12 @@
 							Source="Icons/Translate.svg"
 							Width="16" />
 
-						<StudioFourteen.Interface.Controls:Vector3Control
+						<S14:Vector3Control
 							Grid.Row="0"
 							Grid.Column="1"
 							Value="{TemplateBinding Translation, Mode=TwoWay}" />
 
-						<StudioFourteen.Interface.Controls:Svg
+						<S14:Svg
 							Grid.Row="1"
 							Grid.Column="0"
 							Width="16"
@@ -41,12 +41,12 @@
 							Foreground="{TemplateBinding Foreground}"
 							Source="Icons/Rotate.svg" />
 
-						<StudioFourteen.Interface.Controls:Vector3Control
+						<S14:Vector3Control
 							Grid.Row="1"
 							Grid.Column="1"
 							Value="{TemplateBinding Euler, Mode=TwoWay}" />
 
-						<StudioFourteen.Interface.Controls:Svg
+						<S14:Svg
 							Grid.Row="2"
 							Grid.Column="0"
 							Width="16"
@@ -54,7 +54,7 @@
 							Foreground="{TemplateBinding Foreground}"
 							Source="Icons/Scale.svg" />
 
-						<StudioFourteen.Interface.Controls:Vector3Control
+						<S14:Vector3Control
 							Grid.Row="2"
 							Grid.Column="1"
 							Value="{TemplateBinding Scale, Mode=TwoWay}" />
