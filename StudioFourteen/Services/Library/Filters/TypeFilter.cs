@@ -15,55 +15,18 @@
 
 namespace StudioFourteen.Services.Library.Filters;
 
-using System;
-using System.Collections.Generic;
-
 public class TypeFilter : FilterBase
 {
-	private readonly HashSet<Type> types = new();
-
-	public TypeFilter(params Type[] loadTypes)
+	protected TypeFilter(string param)
+		: base(param)
 	{
-		this.SetTypes(loadTypes);
-	}
-
-	public TypeFilter(IEnumerable<Type> loadTypes)
-	{
-		this.SetTypes(loadTypes);
-	}
-
-	public IEnumerable<Type> Types => this.types;
-
-	public override bool IsEmpty => this.types.Count == 0;
-
-	public override void Clear()
-	{
-		this.types.Clear();
 	}
 
 	public override bool Filter(LibraryEntryBase entry)
 	{
-		if (this.types.Count <= 0)
+		if (entry.GetType().Name.EndsWith(this.Param))
 			return true;
 
-		foreach (Type type in this.types)
-		{
-			if (entry.IsType(type))
-			{
-				return true;
-			}
-		}
-
 		return false;
-	}
-
-	public void SetTypes(IEnumerable<Type> types)
-	{
-		this.types.Clear();
-
-		foreach (Type type in types)
-		{
-			this.types.Add(type);
-		}
 	}
 }

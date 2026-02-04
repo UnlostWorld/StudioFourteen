@@ -1,4 +1,4 @@
-﻿// .                    @@             _____ _______ _    _ _____ _____ ____
+// .                    @@             _____ _______ _    _ _____ _____ ____
 //          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
 //         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
 //         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
@@ -13,37 +13,34 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Library;
+namespace StudioFourteen.Services.Library.Filters;
 
-using StudioFourteen.Services.Library.Filters;
+using System;
+using StudioFourteen.Services.Library.GameData.Extensions;
+using StudioFourteen.Services.Library.GameData.Library;
 
-internal class LibraryFavoritesFilter : FilterBase
+using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
+
+public partial class EquipmentFilter : FilterBase
 {
-	public override bool IsEmpty => false;
-
-	public static bool GetIsFavorite(LibraryEntryBase entry)
+	public EquipmentFilter(string param)
+		: base(param)
 	{
-		return false; ////ServiceManager.Instance.Settings.Current.Favorites.Contains(entry.Identifier);
+		this.Slot = Enum.Parse<EquipmentSlot>(param);
 	}
 
-	public static void SetIsFavorite(LibraryEntryBase entry, bool favorite)
-	{
-		/*if (favorite)
-		{
-			ServiceManager.Instance.Settings.Current.Favorites.Add(entry.Identifier);
-		}
-		else
-		{
-			ServiceManager.Instance.Settings.Current.Favorites.Remove(entry.Identifier);
-		}*/
-	}
-
-	public override void Clear()
-	{
-	}
+	public EquipmentSlot Slot { get; set; }
 
 	public override bool Filter(LibraryEntryBase entry)
 	{
-		return entry.IsFavorite;
+		if (entry is ItemLibraryEntry itemEntry)
+		{
+			if (itemEntry.EquipSlot?.Contains(this.Slot) == true)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 }

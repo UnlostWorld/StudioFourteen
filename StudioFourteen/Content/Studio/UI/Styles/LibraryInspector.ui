@@ -1,0 +1,66 @@
+<ResourceDictionary>
+
+	<ControlTemplate
+		x:Key="LibraryInspectorTemplate"
+		TargetType="{x:Type S14:LibraryInspector}">
+		<Panel>
+			<ListBox
+				ItemsSource="{TemplateBinding Entries}"
+				SelectedItem="{TemplateBinding Value}"
+				Background="Transparent"
+				BorderBrush="Transparent">
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<Grid
+							ColumnDefinitions="auto, *"
+							RowDefinitions="Auto,Auto">
+
+							<!--<ContentPresenter
+								Grid.RowSpan="2"
+								Grid.Column="0"
+								Width="42"
+								Height="42"
+								Content="{Binding Icon}" />-->
+
+							<Border
+								CornerRadius="16, 4, 4, 16"
+								Height="48"
+								Width="48"
+								Grid.RowSpan="2"
+								Grid.Column="0"
+								Margin="2,2,10,2">
+								<Border.Background>
+									<ImageBrush
+										Source="{Binding Icon.Source}"
+										Stretch="Uniform"
+										AlignmentX="Left" />
+								</Border.Background>
+							</Border>
+
+							<TextBlock
+								Grid.Row="0"
+								Grid.Column="1"
+								Text="{Binding Name}"
+								VerticalAlignment="Bottom"
+								TextTrimming="PrefixCharacterEllipsis" />
+
+							<TextBlock
+								Grid.Row="1"
+								Grid.Column="1"
+								Text="{Binding SubTitle}"
+								Opacity="0.5"
+								VerticalAlignment="Top" />
+						</Grid>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+		</Panel>
+	</ControlTemplate>
+
+	<ControlTheme
+		x:Key="{x:Type S14:LibraryInspector}"
+		TargetType="{x:Type S14:LibraryInspector}">
+
+		<Setter Property="Template" Value="{StaticResource LibraryInspectorTemplate}" />
+	</ControlTheme>
+</ResourceDictionary>

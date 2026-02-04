@@ -34,6 +34,11 @@ public class LibraryService : IService
 	private readonly LibraryRoot rootItem = new();
 	private readonly List<SourceBase> sources = new();
 
+	private readonly Dictionary<string, Type> filterTypes = new()
+	{
+		{ "Equipment", typeof(EquipmentFilter) },
+	};
+
 	public LibraryService()
 	{
 		this.FileTypes = new();
@@ -180,11 +185,11 @@ public class LibraryService : IService
 		return null;
 	}
 
-	public List<T> GetAll<T>()
+	/*public List<T> GetAll<T>()
 		where T : LibraryEntryBase
 	{
 		List<FilterBase> filters = new List<FilterBase>();
-		filters.Add(new TypeFilter(typeof(T)));
+		filters.Add(new TypeFilter<T>());
 
 		GroupResult group = new(this.Root);
 		group.FilterEntries(filters.ToArray());
@@ -203,6 +208,46 @@ public class LibraryService : IService
 		}
 
 		return finalResults;
+	}*/
+
+	public List<FilterBase> GetFilters(string compositeFilterString)
+	{
+		List<FilterBase> filters = new();
+
+		if (string.IsNullOrEmpty(compositeFilterString))
+			return filters;
+
+		string[] filterStrings = compositeFilterString.Split(';', StringSplitOptions.RemoveEmptyEntries);
+		foreach (string filterString in filterStrings)
+		{
+			string[] parts = filterString.Split(':', StringSplitOptions.RemoveEmptyEntries);
+
+			string filterTypeName = parts[0];
+
+			if (!this.filterTypes.TryGetValue(filterTypeName, out var filterType))
+				throw new Exception($"Missing filter: {filterTypeName}");
+
+			object? filterObj;
+			if (parts.Length == 2)
+			{
+				filterObj = Activator.CreateInstance(filterType, [parts[1]]);
+			}
+			else
+			{
+				filterObj = Activator.CreateInstance(filterType);
+			}
+
+			if (filterObj is FilterBase filter)
+			{
+				filters.Add(filter);
+			}
+			else
+			{
+				throw new Exception($"Failed to create filter {filterType}");
+			}
+		}
+
+		return filters;
 	}
 
 	private void OnConfigurationChanged()

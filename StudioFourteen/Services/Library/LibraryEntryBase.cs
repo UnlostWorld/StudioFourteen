@@ -49,15 +49,7 @@ public abstract class LibraryEntryBase : INotifyPropertyChanged
 
 	public string Identifier => $"{this.Source?.GetInternalId()}||{this.GetInternalId()}";
 
-	public bool IsFavorite
-	{
-		get => LibraryFavoritesFilter.GetIsFavorite(this);
-		set
-		{
-			LibraryFavoritesFilter.SetIsFavorite(this, value);
-			this.NotifyPropertyChanged();
-		}
-	}
+	public bool IsFavorite { get; set; }
 
 	////public virtual object? GetDragPreviewContent() => this.Icon;
 	////public virtual IDragSceneInstance? CreateSceneInstance() => null;

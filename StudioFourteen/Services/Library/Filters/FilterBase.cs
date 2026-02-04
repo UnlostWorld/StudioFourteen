@@ -17,8 +17,12 @@ namespace StudioFourteen.Services.Library.Filters;
 
 public abstract class FilterBase
 {
-	public abstract bool IsEmpty { get; }
+	protected readonly string Param;
 
-	public abstract void Clear();
+	public FilterBase(string param)
+	{
+		this.Param = param;
+	}
+
 	public abstract bool Filter(LibraryEntryBase entry);
 }

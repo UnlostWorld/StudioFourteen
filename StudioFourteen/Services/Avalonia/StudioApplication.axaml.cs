@@ -29,6 +29,7 @@ public partial class StudioApplication : Application
 
 		"UI/Styles/Button.ui",
 		"UI/Styles/ButtonSpinner.ui",
+		"UI/Styles/LibraryInspector.ui",
 		"UI/Styles/NumberBox.ui",
 		"UI/Styles/NumericUpDown.ui",
 		"UI/Styles/Svg.ui",

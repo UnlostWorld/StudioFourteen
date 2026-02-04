@@ -160,7 +160,6 @@ public class Svg : Control
 		try
 		{
 			this.reference?.Reloaded -= this.OnSvgReloaded;
-			this.reference?.Dispose();
 
 			if (string.IsNullOrEmpty(newValue))
 				return;

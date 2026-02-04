@@ -10,11 +10,18 @@
 		Grid.Column="1"
 		Value="{Binding Variant}" />
 
-	<StackPanel
+	<!--<StackPanel
 		Grid.Row="1"
 		Grid.ColumnSpan="2">
 		<Button
 			Command="{Binding ClearItemCommand}"
 			Content="Clear" />
-	</StackPanel>
+	</StackPanel>-->
+
+	<S14:LibraryInspector
+		Grid.Row="1"
+		Grid.ColumnSpan="2"
+		Value="{Binding Item}"
+		Filters="{Binding Path=Slot, StringFormat='Equipment:{0}'}" />
+
 </Grid>

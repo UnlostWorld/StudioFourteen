@@ -15,47 +15,21 @@
 
 namespace StudioFourteen.Services.Library.Filters;
 
-using StudioFourteen;
-
 public class SearchQueryFilter : FilterBase
 {
 	public string[]? Query;
 
-	private string? search;
-
-	public SearchQueryFilter()
-	{
-	}
-
 	public SearchQueryFilter(string search)
+		: base(search)
 	{
-		this.Search = search;
-	}
-
-	public string? Search
-	{
-		get => this.search;
-		set
-		{
-			this.search = value;
-
-			if (string.IsNullOrWhiteSpace(value))
+		if (string.IsNullOrWhiteSpace(search))
 			{
 				this.Query = null;
 			}
 			else
 			{
-				this.Query = SearchUtility.ToQuery(value);
+				this.Query = SearchUtility.ToQuery(search);
 			}
-		}
-	}
-
-	public override bool IsEmpty => this.Query == null;
-
-	public override void Clear()
-	{
-		this.Query = null;
-		this.search = null;
 	}
 
 	public override bool Filter(LibraryEntryBase entry)
