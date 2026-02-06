@@ -13,34 +13,14 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Library.Filters;
+namespace StudioFourteen.Interface;
 
-using System;
-using StudioFourteen.Services.Library.GameData.Extensions;
-using StudioFourteen.Services.Library.GameData.Library;
+using StudioFourteen.Services.Avalonia;
 
-using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
-
-public partial class EquipmentFilter : FilterBase
+public partial class LibraryWindow : WindowReference
 {
-	public EquipmentFilter(string param)
-		: base(param)
+	public LibraryWindow()
+		: base("UI/Library.ui")
 	{
-		this.Slot = Enum.Parse<EquipmentSlot>(param);
-	}
-
-	public EquipmentSlot Slot { get; set; }
-
-	public override bool Filter(LibraryEntryBase entry)
-	{
-		if (entry is ItemLibraryEntry itemEntry)
-		{
-			if (itemEntry.EquipSlot?.Contains(this.Slot) == true)
-			{
-				return true;
-			}
-		}
-
-		return false;
 	}
 }

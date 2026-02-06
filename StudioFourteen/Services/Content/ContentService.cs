@@ -113,9 +113,9 @@ public class ContentService : IService
 
 				foreach (ContentReference reference in references)
 				{
-					if (info.LastAccessTimeUtc > reference.LastLoadTimeUtc + TimeSpan.FromMilliseconds(500))
+					if (info.LastWriteTimeUtc > reference.LastLoadTimeUtc + TimeSpan.FromMilliseconds(500))
 					{
-						reference.LastLoadTimeUtc = info.LastAccessTimeUtc;
+						reference.LastLoadTimeUtc = info.LastWriteTimeUtc;
 						reference.Reload();
 					}
 				}

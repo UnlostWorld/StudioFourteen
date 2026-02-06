@@ -16,9 +16,7 @@
 namespace StudioFourteen.Services.Library;
 
 using StudioFourteen.Services.Library.Files;
-using StudioFourteen.Services.Library.Filters;
 using StudioFourteen.Services.Library.GameData;
-using StudioFourteen.Services.Library.Results;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -33,11 +31,6 @@ public class LibraryService : IService
 
 	private readonly LibraryRoot rootItem = new();
 	private readonly List<SourceBase> sources = new();
-
-	private readonly Dictionary<string, Type> filterTypes = new()
-	{
-		{ "Equipment", typeof(EquipmentFilter) },
-	};
 
 	public LibraryService()
 	{
@@ -209,46 +202,6 @@ public class LibraryService : IService
 
 		return finalResults;
 	}*/
-
-	public List<FilterBase> GetFilters(string compositeFilterString)
-	{
-		List<FilterBase> filters = new();
-
-		if (string.IsNullOrEmpty(compositeFilterString))
-			return filters;
-
-		string[] filterStrings = compositeFilterString.Split(';', StringSplitOptions.RemoveEmptyEntries);
-		foreach (string filterString in filterStrings)
-		{
-			string[] parts = filterString.Split(':', StringSplitOptions.RemoveEmptyEntries);
-
-			string filterTypeName = parts[0];
-
-			if (!this.filterTypes.TryGetValue(filterTypeName, out var filterType))
-				throw new Exception($"Missing filter: {filterTypeName}");
-
-			object? filterObj;
-			if (parts.Length == 2)
-			{
-				filterObj = Activator.CreateInstance(filterType, [parts[1]]);
-			}
-			else
-			{
-				filterObj = Activator.CreateInstance(filterType);
-			}
-
-			if (filterObj is FilterBase filter)
-			{
-				filters.Add(filter);
-			}
-			else
-			{
-				throw new Exception($"Failed to create filter {filterType}");
-			}
-		}
-
-		return filters;
-	}
 
 	private void OnConfigurationChanged()
 	{

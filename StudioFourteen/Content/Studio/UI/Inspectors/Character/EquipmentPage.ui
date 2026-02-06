@@ -1,14 +1,12 @@
-<Grid ColumnDefinitions="*,*" RowDefinitions="Auto,*">
+<Grid
+	ColumnDefinitions="*,*"
+	RowDefinitions="Auto,*,Auto,Auto">
 
-	<NumericUpDown
+	<TextBox
+		Grid.ColumnSpan="2"
 		Grid.Row="0"
-		Grid.Column="0"
-		Value="{Binding Id}" />
-
-	<NumericUpDown
-		Grid.Row="0"
-		Grid.Column="1"
-		Value="{Binding Variant}" />
+		Watermark="Search"
+		Name="SearchBox" />
 
 	<!--<StackPanel
 		Grid.Row="1"
@@ -21,7 +19,33 @@
 	<S14:LibraryInspector
 		Grid.Row="1"
 		Grid.ColumnSpan="2"
-		Value="{Binding Item}"
-		Filters="{Binding Path=Slot, StringFormat='Equipment:{0}'}" />
+		Value="{Binding Item}">
+		<StudioFourteen.Interface.Library.Filters:EquipmentSlotFilter Slot="{Binding Slot}" />
+		<StudioFourteen.Interface.Library.Filters:SearchFilter
+			Search="{Binding ElementName=SearchBox, Path=Text}" />
+	</S14:LibraryInspector>
+
+	<TextBlock
+		Grid.Row="2"
+		Grid.Column="0"
+		HorizontalAlignment="Center"
+		Text="Model"
+		Margin="8,2" />
+
+	<NumericUpDown
+		Grid.Row="3"
+		Grid.Column="0"
+		Value="{Binding Id}" />
+
+	<TextBlock
+		Grid.Row="2"
+		Grid.Column="1"
+		HorizontalAlignment="Center"
+		Text="Variant" />
+
+	<NumericUpDown
+		Grid.Row="3"
+		Grid.Column="1"
+		Value="{Binding Variant}" />
 
 </Grid>

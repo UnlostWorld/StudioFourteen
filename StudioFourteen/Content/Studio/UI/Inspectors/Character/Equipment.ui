@@ -13,7 +13,7 @@
 					</Grid.ColumnDefinitions>
 
 					<Border
-						CornerRadius="16, 4, 4, 16"
+						CornerRadius="15, 4, 4, 15"
 						Height="48"
 						Width="48"
 						Margin="2">

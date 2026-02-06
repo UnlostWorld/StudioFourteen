@@ -17,13 +17,17 @@ namespace StudioFourteen.Interface.Controls;
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Threading.Tasks;
 using Avalonia.Collections;
+using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
+using Avalonia.Data;
+using Avalonia.Metadata;
 using CommunityToolkit.Mvvm.Input;
 using PropertyGenerator.Avalonia;
+using StudioFourteen.Interface.Library.Filters;
 using StudioFourteen.Services.Library;
-using StudioFourteen.Services.Library.Filters;
 using StudioFourteen.Services.Library.Results;
 using StudioFourteen.Services.Tick;
 
@@ -31,32 +35,42 @@ public partial class LibraryInspector : TemplatedControl
 {
 	private readonly List<LibraryEntryBase> entries = new();
 
-	[GeneratedStyledProperty]
+	public LibraryInspector()
+	{
+		this.Filters.CollectionChanged += this.OnFiltersChanged;
+	}
+
+	[GeneratedStyledProperty(DefaultBindingMode = BindingMode.TwoWay)]
 	public partial LibraryEntryBase? Value { get; set; }
 
 	[GeneratedStyledProperty]
 	public partial AvaloniaList<LibraryEntryBase> Entries { get; set; }
 
-	[GeneratedStyledProperty]
-	public partial string Filters { get; set; }
+	[Content]
+	public AvaloniaList<FilterBase> Filters { get; } = new();
 
 	[RelayCommand]
 	public void Search()
 	{
-		string filters = this.Filters;
-		Task.Run(async () => await this.SearchAsyncSafe(filters));
+		// TODO: Delay the search to wait for more changes
+		Task.Run(async () => await this.SearchAsyncSafe());
 	}
 
-	partial void OnFiltersPropertyChanged(string newValue)
+	private void OnFiltersChanged(object? sender, NotifyCollectionChangedEventArgs e)
 	{
 		this.Search();
+
+		foreach (FilterBase filter in this.Filters)
+		{
+			filter.PropertyChanged += (s, e) => this.Search();
+		}
 	}
 
-	private async Task SearchAsyncSafe(string filters)
+	private async Task SearchAsyncSafe()
 	{
 		try
 		{
-			await this.SearchAsync(filters);
+			await this.SearchAsync();
 		}
 		catch (Exception ex)
 		{
@@ -64,20 +78,32 @@ public partial class LibraryInspector : TemplatedControl
 		}
 	}
 
-	private async Task SearchAsync(string filterInputs)
+	private async Task SearchAsync()
 	{
-		List<FilterBase> filters = Studio.Library.GetFilters(filterInputs);
+		await TickService.UiTick();
+		IEnumerable<FilterBase> filters = this.Filters;
+		foreach (FilterBase filter in filters)
+		{
+			filter.Freeze();
+		}
 
 		GroupResult group = new(Studio.Library.Root);
-		group.FilterEntries(filters.ToArray());
-		IEnumerable<Result>? results = group.Get(true);
 
-		if (results == null)
-			return;
+		// Run the filtering in another thread.
+		await Task.Run(() =>
+		{
+			group.FilterEntries(filters);
+			IEnumerable<Result>? results = group.Get(true);
 
-		this.entries.Clear();
-		foreach (Result result in results)
-			this.entries.Add(result.Entry);
+			if (results == null)
+				return;
+
+			this.entries.Clear();
+			foreach (Result result in results)
+			{
+				this.entries.Add(result.Entry);
+			}
+		});
 
 		await TickService.UiTick();
 

@@ -13,20 +13,9 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Library.Filters;
+namespace StudioFourteen.Services.Library;
 
-public class TypeFilter : FilterBase
+public interface ILibraryFilter
 {
-	protected TypeFilter(string param)
-		: base(param)
-	{
-	}
-
-	public override bool Filter(LibraryEntryBase entry)
-	{
-		if (entry.GetType().Name.EndsWith(this.Param))
-			return true;
-
-		return false;
-	}
+	bool Filter(LibraryEntryBase entry);
 }

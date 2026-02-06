@@ -1,4 +1,4 @@
-﻿// .                    @@             _____ _______ _    _ _____ _____ ____
+// .                    @@             _____ _______ _    _ _____ _____ ____
 //          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
 //         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
 //         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
@@ -13,30 +13,35 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Library.Filters;
+namespace StudioFourteen.Interface.Library.Filters;
 
-public class SearchQueryFilter : FilterBase
+using PropertyGenerator.Avalonia;
+using StudioFourteen.Services.Library;
+
+public partial class SearchFilter : FilterBase
 {
-	public string[]? Query;
+	private string[]? query;
 
-	public SearchQueryFilter(string search)
-		: base(search)
+	[GeneratedStyledProperty]
+	public partial string Search { get; set; }
+
+	public override void Freeze()
 	{
-		if (string.IsNullOrWhiteSpace(search))
-			{
-				this.Query = null;
-			}
-			else
-			{
-				this.Query = SearchUtility.ToQuery(search);
-			}
+		if (string.IsNullOrEmpty(this.Search))
+		{
+			this.query = null;
+		}
+		else
+		{
+			this.query = SearchUtility.ToQuery(this.Search);
+		}
 	}
 
 	public override bool Filter(LibraryEntryBase entry)
 	{
-		if (this.Query == null)
+		if (this.query == null)
 			return true;
 
-		return entry.Search(this.Query);
+		return entry.Search(this.query);
 	}
 }

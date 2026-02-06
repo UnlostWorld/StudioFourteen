@@ -1,4 +1,4 @@
-﻿// .                    @@             _____ _______ _    _ _____ _____ ____
+// .                    @@             _____ _______ _    _ _____ _____ ____
 //          @       @@@@@             / ____|__   __| |  | |  __ \_   _/ __ \
 //         @@@  @@@@                 | (___    | |  | |  | | |  | || || |  | |
 //         @@@@@@@@@  @    @          \___ \   | |  | |  | | |  | || || |  | |
@@ -13,16 +13,38 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Library.Filters;
+namespace StudioFourteen.Interface.Library.Filters;
 
-public abstract class FilterBase
+using System;
+using PropertyGenerator.Avalonia;
+using StudioFourteen.Services.Library;
+using StudioFourteen.Services.Library.GameData.Library;
+using StudioFourteen.Services.Library.GameData.Extensions;
+
+using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
+
+public partial class EquipmentSlotFilter : FilterBase
 {
-	protected readonly string Param;
+	private EquipmentSlot slot;
 
-	public FilterBase(string param)
+	[GeneratedStyledProperty]
+	public partial EquipmentSlot Slot { get; set; }
+
+	public override void Freeze()
 	{
-		this.Param = param;
+		this.slot = this.Slot;
 	}
 
-	public abstract bool Filter(LibraryEntryBase entry);
+	public override bool Filter(LibraryEntryBase entry)
+	{
+		if (entry is ItemLibraryEntry itemEntry)
+		{
+			if (itemEntry.EquipSlot?.Contains(this.slot) == true)
+			{
+				return true;
+			}
+		}
+
+		return false;
+	}
 }

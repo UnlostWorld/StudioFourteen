@@ -18,6 +18,7 @@ namespace StudioFourteen.Scene.DrawData;
 using CommunityToolkit.Mvvm.Input;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using StudioFourteen.Scene.DrawData;
+using StudioFourteen.Services.Library.GameData.Extensions;
 using StudioFourteen.Services.Library.GameData.Library;
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
@@ -99,8 +100,32 @@ public class Equipment : DrawItemBase<ItemLibraryEntry>
 
 		if (this.lastReadId != modelId.Id || this.lastReadId != modelId.Id)
 		{
-			this.Item = Studio.Library.GameData.Items?.Find(this.Slot, modelId);
-			this.OnPropertyChanged(nameof(this.Item));
+			// Check to see if the current item is this model, and avoid doing a
+			// new item search.
+			bool needsNewItem = true;
+			if (this.Item != null)
+			{
+				if (this.Item.Item.EquipSlotCategory.Value.Contains(this.Slot))
+				{
+					if (modelId.Id == (ushort)this.Item.Item.ModelMain
+						&& modelId.Variant == (ushort)(this.Item.Item.ModelMain >> 16))
+					{
+						needsNewItem = false;
+					}
+
+					if (modelId.Id == (ushort)this.Item.Item.ModelSub
+						&& modelId.Variant == (ushort)(this.Item.Item.ModelSub >> 16))
+					{
+						needsNewItem = false;
+					}
+				}
+			}
+
+			if (needsNewItem)
+			{
+				this.Item = Studio.Library.GameData.Items?.Find(this.Slot, modelId);
+				this.OnPropertyChanged(nameof(this.Item));
+			}
 		}
 
 		this.lastReadId = modelId.Id;

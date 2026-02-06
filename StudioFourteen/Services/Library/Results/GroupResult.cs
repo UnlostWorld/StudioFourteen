@@ -15,7 +15,6 @@
 
 namespace StudioFourteen.Services.Library.Results;
 
-using StudioFourteen.Services.Library.Filters;
 using System;
 using System.Collections.Generic;
 
@@ -78,7 +77,7 @@ public class GroupResult : Result
 		return null;
 	}
 
-	public bool FilterEntries(params FilterBase[] filters)
+	public bool FilterEntries(IEnumerable<ILibraryFilter> filters)
 	{
 		this.Clear();
 
@@ -109,7 +108,7 @@ public class GroupResult : Result
 					else
 					{
 						bool passesFilters = true;
-						foreach (FilterBase filter in filters)
+						foreach (ILibraryFilter filter in filters)
 						{
 							passesFilters &= filter.Filter(entry);
 						}

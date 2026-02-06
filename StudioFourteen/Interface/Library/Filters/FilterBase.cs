@@ -13,14 +13,18 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Interface;
+namespace StudioFourteen.Interface.Library.Filters;
 
-using StudioFourteen.Services.Avalonia;
+using Avalonia;
+using StudioFourteen.Services.Library;
 
-public partial class Library : WindowReference
+public abstract class FilterBase : AvaloniaObject, ILibraryFilter
 {
-	public Library()
-		: base("UI/Library.ui")
+	public abstract void Freeze();
+	public abstract bool Filter(LibraryEntryBase entry);
+
+	protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
 	{
+		base.OnPropertyChanged(change);
 	}
 }
