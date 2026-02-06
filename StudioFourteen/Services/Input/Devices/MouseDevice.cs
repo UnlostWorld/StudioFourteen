@@ -176,9 +176,7 @@ public class MouseDevice : InputDeviceBase
 		}
 
 		PInvoke.GetCursorPos(out Point p);
-		Vector2 clientSize = Studio.Window.GetClientSize();
-		Vector2 position = new(p.X / clientSize.X, p.Y / clientSize.Y);
-
+		Vector2 position = Studio.Window.ScreenToClient(p);
 		foreach ((MouseButtons button, Vector2 dragStart) in this.dragStarts)
 		{
 			if (this.draggingButtons.Contains(button))
@@ -203,7 +201,7 @@ public class MouseDevice : InputDeviceBase
 			PInvoke.SetCursorPos(this.lockCursorPoint.X, this.lockCursorPoint.Y);
 
 			PInvoke.GetCursorPos(out Point p2);
-			position = new(p2.X / clientSize.X, p2.Y / clientSize.Y);
+			position = Studio.Window.ScreenToClient(p);
 		}
 
 		this.positionX.Value = position.X;

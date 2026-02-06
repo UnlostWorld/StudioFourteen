@@ -4,3 +4,4 @@ GetClientRect
 ClipCursor
 SetCursorPos
 GetCursorPos
+ScreenToClient

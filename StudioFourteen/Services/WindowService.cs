@@ -17,6 +17,7 @@ namespace StudioFourteen.Services;
 
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.Numerics;
 using System.Runtime.InteropServices;
 using global::Windows.Win32;
@@ -53,10 +54,12 @@ public partial class WindowService : IService
 		}
 	}
 
-	public Vector2 GetClientSize()
+	public Vector2 ScreenToClient(Point p)
 	{
+		PInvoke.ScreenToClient(this.windowHandle, ref p);
 		PInvoke.GetClientRect(this.windowHandle, out RECT rect);
-		return new Vector2(rect.Width, rect.Height);
+
+		return new((float)p.X / (float)rect.Width, (float)p.Y / (float)rect.Height);
 	}
 
 	private long WndProcDetour(nint hWnd, uint msg, ulong wParam, long lParam)
