@@ -3,8 +3,15 @@
 	<ControlTemplate
 		x:Key="LibraryInspectorTemplate"
 		TargetType="{x:Type S14:LibraryInspector}">
-		<Panel>
+		<Grid RowDefinitions="Auto,*">
+
+			<ContentPresenter
+				Name="PART_Header"
+				Grid.Row="0"
+				Content="{TemplateBinding Header}" />
+
 			<ListBox
+				Grid.Row="1"
 				ItemsSource="{TemplateBinding Entries}"
 				SelectedItem="{TemplateBinding Value, Mode=TwoWay}"
 				Background="Transparent"
@@ -154,7 +161,7 @@
 					</DataTemplate>
 				</ListBox.ItemTemplate>
 			</ListBox>
-		</Panel>
+		</Grid>
 	</ControlTemplate>
 
 	<ControlTheme

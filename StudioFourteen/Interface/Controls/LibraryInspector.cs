@@ -21,7 +21,9 @@ using System.Collections.Specialized;
 using System.Threading.Tasks;
 using Avalonia.Collections;
 using Avalonia.Controls;
+using Avalonia.Controls.Presenters;
 using Avalonia.Controls.Primitives;
+using Avalonia.Controls.Templates;
 using Avalonia.Data;
 using Avalonia.Metadata;
 using CommunityToolkit.Mvvm.Input;
@@ -33,11 +35,13 @@ using StudioFourteen.Services.Tick;
 
 public partial class LibraryInspector : TemplatedControl
 {
+	private readonly DelayedFunction search;
 	private readonly List<LibraryEntryBase> entries = new();
+	private readonly List<FilterBase> filters = new();
 
 	public LibraryInspector()
 	{
-		this.Filters.CollectionChanged += this.OnFiltersChanged;
+		this.search = new(this.SearchAsyncSafe, 250);
 	}
 
 	[GeneratedStyledProperty(DefaultBindingMode = BindingMode.TwoWay)]
@@ -47,23 +51,24 @@ public partial class LibraryInspector : TemplatedControl
 	public partial AvaloniaList<LibraryEntryBase> Entries { get; set; }
 
 	[Content]
-	public AvaloniaList<FilterBase> Filters { get; } = new();
+	[GeneratedStyledProperty]
+	public partial object? Header { get; set; }
 
 	[RelayCommand]
 	public void Search()
 	{
-		// TODO: Delay the search to wait for more changes
-		Task.Run(async () => await this.SearchAsyncSafe());
+		this.search.Invoke();
 	}
 
-	private void OnFiltersChanged(object? sender, NotifyCollectionChangedEventArgs e)
+	public void AddFilter(FilterBase filter)
 	{
+		this.filters.Add(filter);
 		this.Search();
+	}
 
-		foreach (FilterBase filter in this.Filters)
-		{
-			filter.PropertyChanged += (s, e) => this.Search();
-		}
+	public void RemoveFilter(FilterBase filter)
+	{
+		this.filters.Add(filter);
 	}
 
 	private async Task SearchAsyncSafe()
@@ -81,8 +86,9 @@ public partial class LibraryInspector : TemplatedControl
 	private async Task SearchAsync()
 	{
 		await TickService.UiTick();
-		IEnumerable<FilterBase> filters = this.Filters;
-		foreach (FilterBase filter in filters)
+
+		LibraryEntryBase? current = this.Value;
+		foreach (FilterBase filter in this.filters)
 		{
 			filter.Freeze();
 		}
@@ -92,7 +98,7 @@ public partial class LibraryInspector : TemplatedControl
 		// Run the filtering in another thread.
 		await Task.Run(() =>
 		{
-			group.FilterEntries(filters);
+			group.FilterEntries(this.filters);
 			IEnumerable<Result>? results = group.Get(true);
 
 			if (results == null)
@@ -112,5 +118,7 @@ public partial class LibraryInspector : TemplatedControl
 
 		this.Entries.Clear();
 		this.Entries.AddRange(this.entries);
+
+		this.Value = current;
 	}
 }

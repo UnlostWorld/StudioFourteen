@@ -41,6 +41,8 @@ public partial class StudioApplication : Application
 		"UI/Styles/ToggleButton.ui",
 		"UI/Styles/TransformControl.ui",
 		"UI/Styles/Vector3Control.ui",
+
+		"UI/Inspectors/Filters/SearchFilter.ui",
 	};
 
 	private readonly List<AvaloniaContentReference<ResourceDictionary>> resourceDictionaries = new();

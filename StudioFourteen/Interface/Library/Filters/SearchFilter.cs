@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Interface.Library.Filters;
 
+using Avalonia;
 using PropertyGenerator.Avalonia;
 using StudioFourteen.Services.Library;
 
@@ -43,5 +44,10 @@ public partial class SearchFilter : FilterBase
 			return true;
 
 		return entry.Search(this.query);
+	}
+
+	protected override bool IsFilterProperty(AvaloniaProperty property)
+	{
+		return property == SearchProperty;
 	}
 }

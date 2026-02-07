@@ -1,0 +1,17 @@
+<ResourceDictionary>
+	<ControlTemplate
+		x:Key="SearchFilterTemplate"
+		TargetType="{x:Type StudioFourteen.Interface.Library.Filters:SearchFilter}">
+		<Panel>
+			<TextBox
+				Text="{TemplateBinding Search, Mode=TwoWay}"
+				Watermark="Search" />
+		</Panel>
+	</ControlTemplate>
+
+	<ControlTheme
+		x:Key="{x:Type StudioFourteen.Interface.Library.Filters:SearchFilter}"
+		TargetType="{x:Type StudioFourteen.Interface.Library.Filters:SearchFilter}">
+		<Setter Property="Template" Value="{StaticResource SearchFilterTemplate}" />
+	</ControlTheme>
+</ResourceDictionary>

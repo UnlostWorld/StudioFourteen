@@ -2,11 +2,6 @@
 	ColumnDefinitions="*,*"
 	RowDefinitions="Auto,*,Auto,Auto">
 
-	<TextBox
-		Grid.ColumnSpan="2"
-		Grid.Row="0"
-		Watermark="Search"
-		Name="SearchBox" />
 
 	<!--<StackPanel
 		Grid.Row="1"
@@ -20,9 +15,10 @@
 		Grid.Row="1"
 		Grid.ColumnSpan="2"
 		Value="{Binding Item}">
-		<StudioFourteen.Interface.Library.Filters:EquipmentSlotFilter Slot="{Binding Slot}" />
-		<StudioFourteen.Interface.Library.Filters:SearchFilter
-			Search="{Binding ElementName=SearchBox, Path=Text}" />
+		<Grid>
+			<StudioFourteen.Interface.Library.Filters:EquipmentSlotFilter Slot="{Binding Slot}" />
+			<StudioFourteen.Interface.Library.Filters:SearchFilter />
+		</Grid>
 	</S14:LibraryInspector>
 
 	<TextBlock

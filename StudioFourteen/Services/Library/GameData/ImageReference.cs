@@ -57,8 +57,6 @@ public class ImageReference
 				return img;
 			}
 
-			Studio.Log.Information($"load texture: {this.Path}");
-
 			try
 			{
 				TexFile? tex = Studio.DataManager.GetFile<TexFile>(this.Path);

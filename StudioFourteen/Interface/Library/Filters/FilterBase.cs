@@ -16,15 +16,51 @@
 namespace StudioFourteen.Interface.Library.Filters;
 
 using Avalonia;
+using Avalonia.Controls.Primitives;
+using Avalonia.Interactivity;
+using Avalonia.VisualTree;
+using StudioFourteen.Interface.Controls;
 using StudioFourteen.Services.Library;
 
-public abstract class FilterBase : AvaloniaObject, ILibraryFilter
+public abstract class FilterBase : TemplatedControl, ILibraryFilter
 {
+	private LibraryInspector? library;
+
 	public abstract void Freeze();
 	public abstract bool Filter(LibraryEntryBase entry);
+
+	protected override void OnLoaded(RoutedEventArgs e)
+	{
+		base.OnLoaded(e);
+
+		this.library = this.FindAncestorOfType<LibraryInspector>();
+		this.library?.AddFilter(this);
+	}
+
+	protected override void OnUnloaded(RoutedEventArgs e)
+	{
+		base.OnUnloaded(e);
+
+		this.library?.RemoveFilter(this);
+	}
 
 	protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
 	{
 		base.OnPropertyChanged(change);
+
+		if (this.IsFilterProperty(change.Property))
+		{
+			this.ApplyFilters();
+		}
+	}
+
+	protected virtual bool IsFilterProperty(AvaloniaProperty property)
+	{
+		return false;
+	}
+
+	protected void ApplyFilters()
+	{
+		this.library?.Search();
 	}
 }
