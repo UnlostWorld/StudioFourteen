@@ -4,8 +4,30 @@
 		TargetType="{x:Type StudioFourteen.Interface.Library.Filters:SearchFilter}">
 		<Panel>
 			<TextBox
+				Padding="20,0,0,0"
 				Text="{TemplateBinding Search, Mode=TwoWay}"
 				Watermark="Search" />
+
+			<Button
+				HorizontalAlignment="Left"
+				Command="{TemplateBinding ClearCommand}"
+				Width="22"
+				Height="22"
+				Margin="10,0,0,0"
+				Theme="{StaticResource InnerButton}"
+				IsVisible="{TemplateBinding Search, Converter={x:Static StringConverters.IsNotNullOrEmpty}}}">
+				<S14:Svg Source="Icons/Clear.svg" />
+			</Button>
+
+			<S14:Svg
+				Source="Icons/Search.svg"
+				Width="16"
+				Height="16"
+				Margin="14,0,0,0"
+				Opacity="0.5"
+				HorizontalAlignment="Left"
+				IsVisible="{TemplateBinding Search, Converter={x:Static StringConverters.IsNullOrEmpty}}}" />
+
 		</Panel>
 	</ControlTemplate>
 

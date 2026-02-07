@@ -15,7 +15,9 @@
 
 namespace StudioFourteen.Interface.Library.Filters;
 
+using System.Windows.Input;
 using Avalonia;
+using CommunityToolkit.Mvvm.Input;
 using PropertyGenerator.Avalonia;
 using StudioFourteen.Services.Library;
 
@@ -23,8 +25,21 @@ public partial class SearchFilter : FilterBase
 {
 	private string[]? query;
 
+	public SearchFilter()
+	{
+		this.ClearCommand = new RelayCommand(this.Clear);
+	}
+
 	[GeneratedStyledProperty]
 	public partial string Search { get; set; }
+
+	[GeneratedStyledProperty]
+	public partial ICommand ClearCommand { get; set; }
+
+	public void Clear()
+	{
+		this.Search = string.Empty;
+	}
 
 	public override void Freeze()
 	{

@@ -1,56 +1,4 @@
 <ResourceDictionary>
-
-	<ControlTheme x:Key="SimpleButtonSpinnerRepeatButton"
-		BasedOn="{StaticResource {x:Type RepeatButton}}"
-		TargetType="RepeatButton">
-
-		<Setter Property="Margin" Value="2" />
-		<Setter Property="Padding" Value="0" />
-		<Setter Property="Background" Value="Transparent" />
-
-		<Setter Property="Template">
-			<ControlTemplate>
-				<Panel>
-					<Panel
-						Name="PART_HoverElement"
-						Opacity="0">
-						<Panel.Transitions>
-							<Transitions>
-								<DoubleTransition Property="Opacity" Duration="0:0:0.1" />
-							</Transitions>
-						</Panel.Transitions>
-
-						<Border
-							CornerRadius="999"
-							Background="#99FFFFFF" />
-					</Panel>
-
-					<ContentPresenter
-						Name="PART_ContentPresenter"
-						Padding="{TemplateBinding Padding}"
-						HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-						VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-						Content="{TemplateBinding Content}"
-						ContentTemplate="{TemplateBinding ContentTemplate}"
-						TextElement.Foreground="{TemplateBinding Foreground}" />
-				</Panel>
-			</ControlTemplate>
-		</Setter>
-
-		<Style Selector="^:pointerover">
-			<Style Selector="^ /template/ Panel#PART_HoverElement">
-				<Setter Property="Opacity" Value="0.6" />
-			</Style>
-		</Style>
-
-		<Style Selector="^:pressed">
-			<Style Selector="^ /template/ Panel#PART_HoverElement">
-				<Setter Property="Opacity" Value="0.4" />
-			</Style>
-		</Style>
-
-	</ControlTheme>
-
 	<ControlTheme x:Key="{x:Type ButtonSpinner}"
 		TargetType="{x:Type ButtonSpinner}">
 		<Setter Property="Background" Value="Transparent" />
@@ -85,7 +33,7 @@
 							<RepeatButton
 								Name="PART_DecreaseButton"
 								IsTabStop="{TemplateBinding IsTabStop}"
-								Theme="{StaticResource SimpleButtonSpinnerRepeatButton}"
+								Theme="{StaticResource InnerButton}"
 								Width="22"
 								Height="22">
 								<S14:Svg
@@ -95,7 +43,7 @@
 							<RepeatButton
 								Name="PART_IncreaseButton"
 								IsTabStop="{TemplateBinding IsTabStop}"
-								Theme="{StaticResource SimpleButtonSpinnerRepeatButton}"
+								Theme="{StaticResource InnerButton}"
 								Width="22"
 								Height="22">
 								<S14:Svg
