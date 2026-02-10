@@ -72,6 +72,7 @@ float2 GetScreenPosition(Fragment frag)
 float4 pixel(Fragment fragment) : SV_TARGET
 {
 	float4 uiColor = buffer_texture.Sample(buffer_sampler, fragment.TexCoord);
+
 	float4 color = 0;
 	float bgIntensity = uiColor.a;
 

@@ -29,7 +29,7 @@ using StudioFourteen.Services.Avalonia.Platform;
 
 public partial class WindowRenderer : MeshRenderer<WindowRenderer.AvaloniaUiMaterial>
 {
-	private readonly WindowImpl window;
+	public readonly WindowImpl Window;
 	private readonly DxgiSurface surface;
 
 	private ShaderResourceView? bufferResourceView;
@@ -38,7 +38,7 @@ public partial class WindowRenderer : MeshRenderer<WindowRenderer.AvaloniaUiMate
 	public WindowRenderer(WindowImpl window, DxgiSurface surface)
 		: base(MeshContent.Quad)
 	{
-		this.window = window;
+		this.Window = window;
 		this.surface = surface;
 
 		this.IsVisible = true;
@@ -72,13 +72,13 @@ public partial class WindowRenderer : MeshRenderer<WindowRenderer.AvaloniaUiMate
 
 		deviceContext.PixelShader.SetShaderResource(3, this.bufferResourceView);
 
-		Size windowSize = this.window.FrameSize ?? new Size(256, 256);
+		Size windowSize = this.Window.FrameSize ?? new Size(256, 256);
 		Vector3 scale = new Vector3(
 			(float)windowSize.Width / renderer.Width,
 			(float)windowSize.Height / renderer.Height,
 			1);
 
-		PixelPoint windowPosition = this.window.Position;
+		PixelPoint windowPosition = this.Window.Position;
 		float x = -1 + ((float)(windowPosition.X + (windowSize.Width / 2)) / renderer.Width * 2);
 		float y = 1 - ((float)(windowPosition.Y + (windowSize.Height / 2)) / renderer.Height * 2);
 
@@ -90,8 +90,8 @@ public partial class WindowRenderer : MeshRenderer<WindowRenderer.AvaloniaUiMate
 			scale);
 
 		this.Material.WindowSize = new Vector2((float)windowSize.Width, (float)windowSize.Height);
-		this.Material.CornerRadius = this.window.CornerRadius;
-		this.Material.Margin = this.window.Margin;
+		this.Material.CornerRadius = this.Window.CornerRadius;
+		this.Material.Margin = this.Window.Margin;
 
 		return base.Draw(renderer, transform, device, deviceContext);
 	}

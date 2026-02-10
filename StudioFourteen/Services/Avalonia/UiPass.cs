@@ -140,9 +140,18 @@ public class UiPass() : InstanceRenderPassBase<UiPassData>
 
 		lock (this.sceneObjects)
 		{
-			foreach (DrawObject drawObject in this.sceneObjects)
+			this.sceneObjects.Sort((WindowRenderer a, WindowRenderer b) =>
 			{
-				drawObject.Draw(renderer, Transform.Identity, device, deviceContext);
+				int sort = a.Window.IsTopMost.CompareTo(b.Window.IsTopMost);
+				if (sort != 0)
+					return sort;
+
+				return a.Window.ActivatedTime.CompareTo(b.Window.ActivatedTime);
+			});
+
+			foreach (WindowRenderer window in this.sceneObjects)
+			{
+				window.Draw(renderer, Transform.Identity, device, deviceContext);
 			}
 		}
 

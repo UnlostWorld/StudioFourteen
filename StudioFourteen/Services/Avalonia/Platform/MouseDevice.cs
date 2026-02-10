@@ -17,6 +17,7 @@ namespace StudioFourteen.Services.Avalonia.Platform;
 
 using System;
 using System.Numerics;
+using global::Avalonia.Platform;
 using global::Avalonia;
 using global::Avalonia.Controls;
 using global::Avalonia.Input;
@@ -33,8 +34,8 @@ public class StudioMouseDevice : MouseDevice
 	private readonly Input0DListener mouseMiddleClickListener = new(InputAction.UI_MiddleClick);
 	private readonly Input1DListener mouseScrollListener = new(InputAction.UI_ScrollDown, InputAction.UI_ScrollUp);
 
-	private Window? windowUnderCursor = null;
-	private Window? capturedWindow = null;
+	private WindowImpl? windowUnderCursor = null;
+	private WindowImpl? capturedWindow = null;
 
 	public StudioMouseDevice()
 		: base(StudioPointer.CreatePointer(out var pointer))
@@ -43,7 +44,7 @@ public class StudioMouseDevice : MouseDevice
 		Studio.Tick.Add(TickChannels.Ui, this.OnUiTick);
 	}
 
-	public Window? WindowUnderCursor
+	public WindowImpl? WindowUnderCursor
 	{
 		get => this.windowUnderCursor;
 		private set
@@ -51,7 +52,7 @@ public class StudioMouseDevice : MouseDevice
 			if (this.windowUnderCursor == value)
 				return;
 
-			if (this.windowUnderCursor?.PlatformImpl is WindowImpl leftWindow)
+			if (this.windowUnderCursor != null && this.windowUnderCursor.InputRoot != null)
 			{
 				ulong ts = (ulong)DateTime.UtcNow.Ticks;
 				RawPointerEventType type = RawPointerEventType.LeaveWindow;
@@ -59,11 +60,11 @@ public class StudioMouseDevice : MouseDevice
 				RawPointerEventArgs args = new(
 					this,
 					ts,
-					this.windowUnderCursor,
+					this.windowUnderCursor.InputRoot,
 					type,
 					new Point(0, 0),
 					modifiers);
-				leftWindow.HandleInput(args);
+				this.windowUnderCursor.HandleInput(args);
 			}
 
 			this.windowUnderCursor = value;
@@ -109,6 +110,11 @@ public class StudioMouseDevice : MouseDevice
 		}
 	}
 
+	internal void Capture(WindowImpl window)
+	{
+		this.capturedWindow = window;
+	}
+
 	private void OnUiTick()
 	{
 		if (Studio.Input.Mouse == null)
@@ -124,7 +130,7 @@ public class StudioMouseDevice : MouseDevice
 		{
 			foreach (WindowImpl testWindowImpl in Studio.Avalonia.Windowing.Windows)
 			{
-				if (testWindowImpl.Window?.IsVisible != true)
+				if (testWindowImpl.InputRoot is Visual vis && !vis.IsVisible)
 					continue;
 
 				PixelPoint position = testWindowImpl.Position;
@@ -136,22 +142,30 @@ public class StudioMouseDevice : MouseDevice
 					&& mousePoint.X < position.X + size.Width
 					&& mousePoint.Y < position.Y + size.Height)
 				{
-					if (testWindowImpl.Window == null)
+					if (testWindowImpl.InputRoot == null)
 						continue;
 
+					if (bestWindow != null)
+					{
+						if (!testWindowImpl.IsTopMost && bestWindow.IsTopMost)
+							continue;
+
+						if (testWindowImpl.ActivatedTime < bestWindow.ActivatedTime)
+							continue;
+					}
+
 					bestWindow = testWindowImpl;
-					break;
 				}
 			}
 
-			this.WindowUnderCursor = bestWindow?.Window;
+			this.WindowUnderCursor = bestWindow;
 		}
 		else
 		{
 			this.WindowUnderCursor = this.capturedWindow;
 		}
 
-		if (this.WindowUnderCursor != null && this.windowUnderCursor?.PlatformImpl is WindowImpl windowImpl)
+		if (this.WindowUnderCursor != null && this.WindowUnderCursor.InputRoot != null)
 		{
 			Point relativeMousePosition = new(
 				mousePoint.X - this.WindowUnderCursor.Position.X,
@@ -162,11 +176,11 @@ public class StudioMouseDevice : MouseDevice
 			// TODO:
 			RawInputModifiers modifiers = RawInputModifiers.None;
 
-			windowImpl.HandleInput(
+			this.WindowUnderCursor.HandleInput(
 				new RawPointerEventArgs(
 					this,
 					timeStamp,
-					this.WindowUnderCursor,
+					this.WindowUnderCursor.InputRoot,
 					RawPointerEventType.Move,
 					relativeMousePosition,
 					modifiers));
@@ -175,22 +189,22 @@ public class StudioMouseDevice : MouseDevice
 			InputStates mousePrimaryState = this.mousePrimaryClickListener.GetState();
 			if (mousePrimaryState == InputStates.Activated)
 			{
-				windowImpl.HandleInput(
+				this.WindowUnderCursor.HandleInput(
 				new RawPointerEventArgs(
 					this,
 					timeStamp,
-					this.WindowUnderCursor,
+					this.WindowUnderCursor.InputRoot,
 					RawPointerEventType.LeftButtonDown,
 					relativeMousePosition,
 					modifiers));
 			}
 			else if (mousePrimaryState == InputStates.Deactivated)
 			{
-				windowImpl.HandleInput(
+				this.WindowUnderCursor.HandleInput(
 				new RawPointerEventArgs(
 					this,
 					timeStamp,
-					this.WindowUnderCursor,
+					this.WindowUnderCursor.InputRoot,
 					RawPointerEventType.LeftButtonUp,
 					relativeMousePosition,
 					modifiers));
@@ -200,22 +214,22 @@ public class StudioMouseDevice : MouseDevice
 			InputStates mouseSecondaryState = this.mouseSecondaryClickListener.GetState();
 			if (mouseSecondaryState == InputStates.Activated)
 			{
-				windowImpl.HandleInput(
+				this.WindowUnderCursor.HandleInput(
 				new RawPointerEventArgs(
 					this,
 					timeStamp,
-					this.WindowUnderCursor,
+					this.WindowUnderCursor.InputRoot,
 					RawPointerEventType.RightButtonDown,
 					relativeMousePosition,
 					modifiers));
 			}
 			else if (mouseSecondaryState == InputStates.Deactivated)
 			{
-				windowImpl.HandleInput(
+				this.WindowUnderCursor.HandleInput(
 				new RawPointerEventArgs(
 					this,
 					timeStamp,
-					this.WindowUnderCursor,
+					this.WindowUnderCursor.InputRoot,
 					RawPointerEventType.RightButtonUp,
 					relativeMousePosition,
 					modifiers));
@@ -225,22 +239,22 @@ public class StudioMouseDevice : MouseDevice
 			InputStates mouseMiddleState = this.mouseMiddleClickListener.GetState();
 			if (mouseSecondaryState == InputStates.Activated)
 			{
-				windowImpl.HandleInput(
+				this.WindowUnderCursor.HandleInput(
 				new RawPointerEventArgs(
 					this,
 					timeStamp,
-					this.WindowUnderCursor,
+					this.WindowUnderCursor.InputRoot,
 					RawPointerEventType.MiddleButtonDown,
 					relativeMousePosition,
 					modifiers));
 			}
 			else if (mouseSecondaryState == InputStates.Deactivated)
 			{
-				windowImpl.HandleInput(
+				this.WindowUnderCursor.HandleInput(
 				new RawPointerEventArgs(
 					this,
 					timeStamp,
-					this.WindowUnderCursor,
+					this.WindowUnderCursor.InputRoot,
 					RawPointerEventType.MiddleButtonUp,
 					relativeMousePosition,
 					modifiers));
@@ -249,11 +263,11 @@ public class StudioMouseDevice : MouseDevice
 			float scroll = this.mouseScrollListener.Value;
 			if (scroll != 0)
 			{
-				windowImpl.HandleInput(
+				this.WindowUnderCursor.HandleInput(
 				new RawMouseWheelEventArgs(
 					this,
 					timeStamp,
-					this.WindowUnderCursor,
+					this.WindowUnderCursor.InputRoot,
 					relativeMousePosition,
 					new global::Avalonia.Vector(0, scroll),
 					modifiers));

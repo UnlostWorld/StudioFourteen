@@ -28,7 +28,6 @@ using global::Avalonia.Rendering.Composition;
 
 public partial class WindowImpl : IWindowImpl
 {
-	public Window? Window;
 	public Vector4 CornerRadius;
 	public Vector4 Margin;
 
@@ -48,6 +47,10 @@ public partial class WindowImpl : IWindowImpl
 		this.ClientSize = new Size(256, 256);
 	}
 
+	public IInputRoot? InputRoot { get; private set; }
+	public DateTime ActivatedTime { get; private set; } = DateTime.UtcNow;
+	public bool IsTopMost { get; private set; } = false;
+
 	public WindowState WindowState { get; set; }
 	public Action<WindowState>? WindowStateChanged { get; set; }
 	public Action? GotInputWhenDisabled { get; set; }
@@ -63,7 +66,7 @@ public partial class WindowImpl : IWindowImpl
 
 	public double DesktopScaling => 1;
 	public double RenderScaling => 1;
-	public Size MaxAutoSizeHint => new Size(4096, 4096);
+	public virtual Size MaxAutoSizeHint => new Size(4096, 4096);
 
 	public Size? FrameSize { get; private set; }
 	public Size ClientSize { get; private set; }
@@ -88,6 +91,7 @@ public partial class WindowImpl : IWindowImpl
 	public void Activate()
 	{
 		this.Activated?.Invoke();
+		this.ActivatedTime = DateTime.UtcNow;
 	}
 
 	public void BeginMoveDrag(PointerPressedEventArgs e)
@@ -104,7 +108,7 @@ public partial class WindowImpl : IWindowImpl
 
 	public IPopupImpl? CreatePopup()
 	{
-		throw new NotImplementedException();
+		return Studio.Avalonia.Windowing.CreatePopup(this);
 	}
 
 	public void Dispose()
@@ -134,13 +138,13 @@ public partial class WindowImpl : IWindowImpl
 	public Point PointToClient(PixelPoint point) => new Point(point.X - this.Position.X, point.Y - this.Position.Y);
 	public PixelPoint PointToScreen(Point point) => this.Position + new PixelPoint((int)point.X, (int)point.Y);
 
-	public void Move(PixelPoint point)
+	public virtual void Move(PixelPoint point)
 	{
 		this.Position = point;
 		this.PositionChanged?.Invoke(point);
 	}
 
-	public void Resize(Size clientSize, WindowResizeReason reason = WindowResizeReason.Application)
+	public virtual void Resize(Size clientSize, WindowResizeReason reason = WindowResizeReason.Application)
 	{
 		Size finalClientSize = new(
 			Math.Clamp(clientSize.Width, 32, 4096),
@@ -190,6 +194,12 @@ public partial class WindowImpl : IWindowImpl
 
 	public void SetInputRoot(IInputRoot inputRoot)
 	{
+		this.InputRoot = inputRoot;
+
+		if (this.InputRoot is Visual vis)
+		{
+			vis.InvalidateVisual();
+		}
 	}
 
 	public void SetMinMaxSize(Size minSize, Size maxSize)
@@ -210,6 +220,12 @@ public partial class WindowImpl : IWindowImpl
 
 	public void SetTopmost(bool value)
 	{
+		this.IsTopMost = value;
+
+		if (value)
+		{
+			this.ActivatedTime = DateTime.UtcNow;
+		}
 	}
 
 	public void SetTransparencyLevelHint(IReadOnlyList<WindowTransparencyLevel> transparencyLevels)

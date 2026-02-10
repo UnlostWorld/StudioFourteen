@@ -1,10 +1,15 @@
 <Grid Width="256">
 	<StackPanel Orientation="Horizontal">
-		<ToggleButton IsChecked="{Binding Library}">
+		<ToggleButton IsChecked="{Binding Library}" ToolTip.Tip="Hello!">
 			<S14:Svg
 				Height="22"
 				Source="Icons/Library.svg"
 				Foreground="{DynamicResource Foreground}" />
 		</ToggleButton>
+
+		<ComboBox>
+			<ComboBoxItem>Hello</ComboBoxItem>
+			<ComboBoxItem>World</ComboBoxItem>
+		</ComboBox>
 	</StackPanel>
 </Grid>

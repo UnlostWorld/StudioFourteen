@@ -18,8 +18,6 @@ namespace StudioFourteen.Services.Avalonia.Platform;
 using System;
 using System.Collections.Generic;
 using global::Avalonia;
-using global::Avalonia.Controls;
-using global::Avalonia.Interactivity;
 using global::Avalonia.Platform;
 using global::Avalonia.Rendering.Composition;
 using StudioFourteen.Services.Tick;
@@ -32,7 +30,6 @@ public class WindowingPlatform : IWindowingPlatform, IDisposable
 	public WindowingPlatform(StudioScreens screen)
 	{
 		this.Screens = screen;
-		Window.WindowOpenedEvent.AddClassHandler(typeof(Window), OnWindowOpened);
 	}
 
 	public void Dispose()
@@ -41,8 +38,6 @@ public class WindowingPlatform : IWindowingPlatform, IDisposable
 		{
 			foreach (WindowImpl impl in this.Windows)
 			{
-				impl.Window?.Close();
-
 				if (!impl.IsDisposed)
 				{
 					Studio.Log.Warning($"Window did not dispose");
@@ -64,21 +59,22 @@ public class WindowingPlatform : IWindowingPlatform, IDisposable
 		return impl;
 	}
 
+	public IPopupImpl CreatePopup(WindowImpl owner)
+	{
+		Compositor compositor = AvaloniaLocator.Current.GetRequiredService<Compositor>();
+		PopupImpl impl = new(owner, compositor, this.Screens);
+		this.Windows.Add(impl);
+		return impl;
+	}
+
 	public void ReloadAll()
 	{
-		foreach (WindowImpl windowImpl in this.Windows)
+		/*foreach (WindowImpl windowImpl in this.Windows)
 		{
-			if (windowImpl.Window is StudioWindowBase studioWindow)
+			if (windowImpl.InputRoot is StudioWindowBase studioWindow)
 			{
 				studioWindow.WindowReference?.Reload();
 			}
-		}
-	}
-
-	private static void OnWindowOpened(object? sender, RoutedEventArgs e)
-	{
-		Window window = (Window)sender!;
-		WindowImpl? impl = window.PlatformImpl as WindowImpl;
-		impl?.Window = window;
+		}*/
 	}
 }
