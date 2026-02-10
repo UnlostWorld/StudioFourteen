@@ -15,11 +15,18 @@
 
 namespace StudioFourteen.Services.Avalonia.Platform;
 
+using global::Avalonia.Controls.Primitives;
 using global::Avalonia;
 using global::Avalonia.Controls;
 using global::Avalonia.Controls.Primitives.PopupPositioning;
+using global::Avalonia.Input;
 using global::Avalonia.Platform;
 using global::Avalonia.Rendering.Composition;
+using global::Avalonia.Media;
+using System.Threading.Tasks;
+using StudioFourteen.Services.Tick;
+using System;
+using global::Avalonia.Input.Raw;
 
 public class PopupImpl : WindowImpl, IPopupImpl
 {
@@ -30,9 +37,12 @@ public class PopupImpl : WindowImpl, IPopupImpl
 			new ManagedPopupPositionerPopupImplHelper(owner, this.MoveResize));
 	}
 
-	public override Size MaxAutoSizeHint => new Size(256, 256);
-
 	public IPopupPositioner? PopupPositioner { get; init; }
+
+	public override void Show(bool activate, bool isDialog)
+	{
+		base.Show(false, isDialog);
+	}
 
 	public void SetWindowManagerAddShadowHint(bool enabled)
 	{
@@ -40,7 +50,12 @@ public class PopupImpl : WindowImpl, IPopupImpl
 
 	public void TakeFocus()
 	{
-		////Studio.Avalonia.MouseDevice.Capture(this);
+		this.InputRoot?.Focus();
+	}
+
+	public override void SetInputRoot(IInputRoot inputRoot)
+	{
+		base.SetInputRoot(inputRoot);
 	}
 
 	private void MoveResize(PixelPoint position, Size size, double scaling)

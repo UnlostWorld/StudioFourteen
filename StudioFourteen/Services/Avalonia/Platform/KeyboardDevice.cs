@@ -24,6 +24,7 @@ using global::Avalonia.Input.Raw;
 using global::Avalonia;
 using System.Reflection;
 using global::Avalonia.Controls;
+using global::Avalonia.Controls.Primitives;
 
 public class StudioKeyboardDevice : KeyboardDevice
 {
@@ -51,6 +52,9 @@ public class StudioKeyboardDevice : KeyboardDevice
 		WindowImpl? windowImplementation = null;
 		if (root is Window wnd && wnd.PlatformImpl is WindowImpl impl)
 			windowImplementation = impl;
+
+		if (root is PopupRoot popup && popup.PlatformImpl is WindowImpl impl2)
+			windowImplementation = impl2;
 
 		PhysicalKey physicalKey = KeyInterop.PhysicalKeyFromVirtualKey((int)virtualKey, (int)keyData);
 		Key key = KeyInterop.KeyFromVirtualKey((int)virtualKey, (int)keyData);

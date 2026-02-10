@@ -55,15 +55,13 @@ public class StudioMouseDevice : MouseDevice
 			if (this.windowUnderCursor != null && this.windowUnderCursor.InputRoot != null)
 			{
 				ulong ts = (ulong)DateTime.UtcNow.Ticks;
-				RawPointerEventType type = RawPointerEventType.LeaveWindow;
-				RawInputModifiers modifiers = RawInputModifiers.None;
 				RawPointerEventArgs args = new(
 					this,
 					ts,
 					this.windowUnderCursor.InputRoot,
-					type,
+					RawPointerEventType.LeaveWindow,
 					new Point(0, 0),
-					modifiers);
+					RawInputModifiers.None);
 				this.windowUnderCursor.HandleInput(args);
 			}
 

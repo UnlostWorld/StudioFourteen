@@ -18,6 +18,8 @@ namespace StudioFourteen.Services.Avalonia.Platform;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
+using System.Threading.Tasks;
+using global::Avalonia.Controls.Primitives;
 using global::Avalonia;
 using global::Avalonia.Controls;
 using global::Avalonia.Input;
@@ -25,6 +27,7 @@ using global::Avalonia.Input.Raw;
 using global::Avalonia.Input.TextInput;
 using global::Avalonia.Platform;
 using global::Avalonia.Rendering.Composition;
+using StudioFourteen.Services.Tick;
 
 public partial class WindowImpl : IWindowImpl
 {
@@ -58,7 +61,7 @@ public partial class WindowImpl : IWindowImpl
 
 	public bool IsClientAreaExtendedToDecorations => false;
 	public Action<bool>? ExtendClientAreaToDecorationsChanged { get; set; }
-	public bool NeedsManagedDecorations => false;
+	public bool NeedsManagedDecorations => true;
 	public Thickness ExtendedMargins => new Thickness(0);
 	public Thickness OffScreenMargin => new Thickness(0);
 	public WindowTransparencyLevel TransparencyLevel => WindowTransparencyLevel.Transparent;
@@ -125,9 +128,14 @@ public partial class WindowImpl : IWindowImpl
 	{
 	}
 
-	public void Show(bool activate, bool isDialog)
+	public virtual void Show(bool activate, bool isDialog)
 	{
 		Studio.Avalonia.RenderPass.Add(this.windowRenderer);
+
+		if (activate)
+		{
+			this.Activate();
+		}
 	}
 
 	public void Hide()
@@ -192,14 +200,9 @@ public partial class WindowImpl : IWindowImpl
 	{
 	}
 
-	public void SetInputRoot(IInputRoot inputRoot)
+	public virtual void SetInputRoot(IInputRoot inputRoot)
 	{
 		this.InputRoot = inputRoot;
-
-		if (this.InputRoot is Visual vis)
-		{
-			vis.InvalidateVisual();
-		}
 	}
 
 	public void SetMinMaxSize(Size minSize, Size maxSize)
