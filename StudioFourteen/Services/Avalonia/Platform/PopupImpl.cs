@@ -27,6 +27,7 @@ using System.Threading.Tasks;
 using StudioFourteen.Services.Tick;
 using System;
 using global::Avalonia.Input.Raw;
+using global::Avalonia.Rendering;
 
 public class PopupImpl : WindowImpl, IPopupImpl
 {
@@ -56,6 +57,31 @@ public class PopupImpl : WindowImpl, IPopupImpl
 	public override void SetInputRoot(IInputRoot inputRoot)
 	{
 		base.SetInputRoot(inputRoot);
+
+		if (inputRoot is PopupRoot vis)
+		{
+			// ⚠️ Hack: Wait for the root to load, then wait one more frame, then change the
+			// background color ro force a redraw.
+			// I have no idea why none of the invalidates seem to do this, and without this
+			// the content is invisible until it changes. 😠
+			Task.Run(async () =>
+			{
+				for (int i = 0; i < 10; i++)
+				{
+					do
+					{
+						await Task.Delay(10);
+						await TickService.UiTick();
+					}
+					while (!vis.IsVisible);
+
+					await Task.Delay(10);
+					await TickService.UiTick();
+					vis.Background = new SolidColorBrush(Colors.Pink);
+					vis.Background = new SolidColorBrush(Colors.Transparent);
+				}
+			});
+		}
 	}
 
 	private void MoveResize(PixelPoint position, Size size, double scaling)
