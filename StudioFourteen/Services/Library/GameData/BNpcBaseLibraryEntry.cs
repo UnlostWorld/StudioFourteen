@@ -30,7 +30,7 @@ public class BNpcBaseLibraryEntry : ExcelLibraryEntry
 {
 	private readonly BNpcBase bNpcBase;
 	private readonly string? name;
-	private readonly ImageReference? icon;
+	private readonly TextureIconReference? icon;
 
 	public BNpcBaseLibraryEntry(SourceBase source, BNpcBase npc)
 		: base(source, npc.RowId)

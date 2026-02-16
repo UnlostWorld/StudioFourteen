@@ -39,6 +39,7 @@ public partial class StudioApplication : Application
 		"UI/Styles/TextBlock.ui",
 		"UI/Styles/TextBox.ui",
 		"UI/Styles/ToggleButton.ui",
+		"UI/Styles/ToolTip.ui",
 		"UI/Styles/TransformControl.ui",
 		"UI/Styles/Vector3Control.ui",
 

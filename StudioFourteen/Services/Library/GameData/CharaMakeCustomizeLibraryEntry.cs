@@ -49,7 +49,7 @@ public class CharaMakeCustomizeLibraryEntry : LibraryEntryBase
 	}
 
 	public override string? SubTitle => $"#{this.MakeCustomize.Value.FeatureID}";
-	public override object? Icon => new ImageReference(this.MakeCustomize.Value.Icon);
+	public override object? Icon => new TextureIconReference(this.MakeCustomize.Value.Icon);
 	public override IComparable DefaultSortValue => this.MakeCustomize.Value.FeatureID;
 
 	public override string? Name

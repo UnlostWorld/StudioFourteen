@@ -23,5 +23,5 @@ public class GlassesLibraryEntry(SourceBase source, Glasses glasses)
 {
 	public override string? Name => glasses.Singular.GetString();
 	public string? Description => glasses.Description.GetString();
-	public override object? Icon => new ImageReference(glasses.Icon);
+	public override object? Icon => new TextureIconReference(glasses.Icon);
 }

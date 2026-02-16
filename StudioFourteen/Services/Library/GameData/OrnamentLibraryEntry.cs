@@ -22,5 +22,5 @@ public class OrnamentLibraryEntry(SourceBase source, Ornament ornament)
 	: ExcelLibraryEntry(source, ornament.RowId)
 {
 	public override string? Name => ornament.Singular.GetString();
-	public override object? Icon => new ImageReference(ornament.Icon);
+	public override object? Icon => new TextureIconReference(ornament.Icon);
 }

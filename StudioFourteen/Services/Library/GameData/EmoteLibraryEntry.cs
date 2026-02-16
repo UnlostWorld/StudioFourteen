@@ -40,7 +40,7 @@ public class EmoteLibraryEntry : ExcelLibraryEntry
 	}
 
 	public override string? Name => this.Emote.Name.GetString();
-	public override object? Icon => new ImageReference(this.Emote.Icon);
+	public override object? Icon => new TextureIconReference(this.Emote.Icon);
 
 	public override bool IsValid
 	{

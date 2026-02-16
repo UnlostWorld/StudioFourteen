@@ -22,26 +22,26 @@ using global::Avalonia.Media.Imaging;
 using global::Avalonia.Platform;
 using Lumina.Data.Files;
 
-public class ImageReference
+public class TextureIconReference
 {
 	private WeakReference<Bitmap>? cachedImage;
 
-	public ImageReference(string path)
+	public TextureIconReference(string path)
 	{
 		this.Path = path;
 	}
 
-	public ImageReference(uint imageId)
+	public TextureIconReference(uint imageId)
 		: this($"ui/icon/{imageId / 1000u * 1000:000000}/{imageId:000000}_hr1.tex")
 	{
 	}
 
-	public ImageReference(ushort imageId)
+	public TextureIconReference(ushort imageId)
 		: this((uint)imageId)
 	{
 	}
 
-	public ImageReference(int imageId)
+	public TextureIconReference(int imageId)
 		: this((uint)imageId)
 	{
 	}

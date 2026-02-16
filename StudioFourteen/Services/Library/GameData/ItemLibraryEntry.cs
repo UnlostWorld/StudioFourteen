@@ -25,8 +25,6 @@ using StudioFourteen.Services.Library.GameData.Extensions;
 
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
 
-using ClassJobCategory = StudioFourteen.Services.Library.GameData.Sheets.ClassJobCategory;
-
 public class ItemLibraryEntry : ExcelLibraryEntry
 {
 	public readonly Item Item;
@@ -39,7 +37,7 @@ public class ItemLibraryEntry : ExcelLibraryEntry
 
 	public override string? Name => this.Item.Name.GetString();
 	public string? Description => this.Item.Description.GetString();
-	public override object? Icon => new ImageReference(this.Item.Icon);
+	public override object? Icon => new TextureIconReference(this.Item.Icon);
 
 	public int EquipLevel => this.Item.LevelEquip;
 

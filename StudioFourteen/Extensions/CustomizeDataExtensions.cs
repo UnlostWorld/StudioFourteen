@@ -110,7 +110,7 @@ public static class CustomizeDataExtensions
 		return charaMakeTypeSheet.GetMakeType(tribe, gender);
 	}
 
-	public static ImageReference? GetIcon(this CustomizeData self)
+	public static TextureIconReference? GetIcon(this CustomizeData self)
 	{
 		ExcelSheet<HairMakeType>? hairMakeTypeSheet = Studio.DataManager.GetExcelSheet<HairMakeType>();
 		if (hairMakeTypeSheet == null)
@@ -139,7 +139,7 @@ public static class CustomizeDataExtensions
 
 				if (makeCustomize.FeatureID == hair)
 				{
-					return new ImageReference(makeCustomize.Icon);
+					return new TextureIconReference(makeCustomize.Icon);
 				}
 			}
 		}

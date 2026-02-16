@@ -25,5 +25,5 @@ public class WeatherLibraryEntry(SourceBase source, Weather weather)
 
 	public override string? Name => weather.Name.GetString();
 	public string? Description => null;
-	public override object? Icon => new ImageReference(weather.Icon);
+	public override object? Icon => new TextureIconReference(weather.Icon);
 }

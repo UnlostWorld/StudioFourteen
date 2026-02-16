@@ -35,4 +35,9 @@ public static class ClassJobExtensions
 
 	public static bool GetIsClass(this ClassJob self) => self.ClassJobParent.RowId == self.RowId;
 	public static bool GetIsJob(this ClassJob self) => !self.GetIsClass();
+
+	public static uint GetIconId(this ClassJob job)
+	{
+		return 062000 + job.RowId;
+	}
 }

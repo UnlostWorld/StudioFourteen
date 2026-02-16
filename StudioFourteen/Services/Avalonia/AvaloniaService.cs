@@ -20,6 +20,7 @@ using System.Collections;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using global::Avalonia.Logging;
 using global::Avalonia;
 using global::Avalonia.Controls;
 using global::Avalonia.Controls.ApplicationLifetimes;
@@ -36,7 +37,7 @@ using StudioFourteen.Services.Dalamud;
 using StudioFourteen.Services.Rendering;
 using StudioFourteen.Services.Tick;
 
-public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
+public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl, ILogSink
 {
 	public readonly StudioMouseDevice MouseDevice;
 	public readonly StudioKeyboardDevice KeyboardDevice;
@@ -100,6 +101,37 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 		this.windowing?.ReloadAll();
 	}
 
+	bool ILogSink.IsEnabled(LogEventLevel level, string area)
+	{
+		return true;
+	}
+
+	void ILogSink.Log(LogEventLevel level, string area, object? source, string messageTemplate)
+	{
+		switch (level)
+		{
+			case LogEventLevel.Verbose: Studio.Log.Verbose(messageTemplate); break;
+			case LogEventLevel.Debug: Studio.Log.Debug(messageTemplate); break;
+			case LogEventLevel.Information: Studio.Log.Information(messageTemplate); break;
+			case LogEventLevel.Warning: Studio.Log.Warning(messageTemplate); break;
+			case LogEventLevel.Error: Studio.Log.Error(messageTemplate); break;
+			case LogEventLevel.Fatal: Studio.Log.Error(messageTemplate); break;
+		}
+	}
+
+	void ILogSink.Log(LogEventLevel level, string area, object? source, string messageTemplate, params object?[] propertyValues)
+	{
+		switch (level)
+		{
+			case LogEventLevel.Verbose: Studio.Log.Verbose(messageTemplate); break;
+			case LogEventLevel.Debug: Studio.Log.Debug(messageTemplate); break;
+			case LogEventLevel.Information: Studio.Log.Information(messageTemplate); break;
+			case LogEventLevel.Warning: Studio.Log.Warning(messageTemplate); break;
+			case LogEventLevel.Error: Studio.Log.Error(messageTemplate); break;
+			case LogEventLevel.Fatal: Studio.Log.Error(messageTemplate); break;
+		}
+	}
+
 	private void StartImpl()
 	{
 		try
@@ -109,7 +141,7 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 				Thread.Sleep(10);
 			}
 
-			////Avalonia.Logging.Logger.Sink
+			global::Avalonia.Logging.Logger.Sink = this;
 
 			AppBuilder app = AppBuilder.Configure<StudioApplication>();
 			app.WithInterFont();

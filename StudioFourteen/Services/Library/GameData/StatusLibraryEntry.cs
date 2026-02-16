@@ -36,6 +36,6 @@ public class StatusLibraryEntry : ExcelLibraryEntry
 	// Unknown_70_1: Appears unused
 	// Unknown_70_2: True for 3 skills
 	public override string? Name => this.Status.Name.ToString();
-	public override object? Icon => new ImageReference(this.Status.Icon);
+	public override object? Icon => new TextureIconReference(this.Status.Icon);
 	public object? Description => $"{this.Status.Description}";
 }

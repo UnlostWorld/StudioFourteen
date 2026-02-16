@@ -120,7 +120,30 @@
 					<DataTemplate>
 						<Grid
 							ColumnDefinitions="auto, *"
-							RowDefinitions="Auto,Auto">
+							RowDefinitions="Auto,Auto"
+							Background="Transparent">
+
+							<ToolTip.Tip>
+								<StackPanel>
+									<TextBlock Text="{Binding Name}" />
+									<TextBlock Text="{Binding Description}"
+										IsVisible="{Binding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+
+									<TextBlock>
+										<Run Text="Lv." />
+										<Run Text="{Binding EquipLevel}" />
+									</TextBlock>
+									<TextBlock Text="{Binding UICategory.Name}" />
+
+									<UniformGrid>
+										<S14:TextureIcon Id="062001" Width="22" Height="22" />
+									</UniformGrid>
+
+									<TextBlock Text="{Binding ClassJobs.Name}" />
+									<!--<TextBlock Text="{Binding EquipRestriction.Name}" />
+									<TextBlock Text="{Binding EquipSlot.Name}" />-->
+								</StackPanel>
+							</ToolTip.Tip>
 
 							<!--<ContentPresenter
 								Grid.RowSpan="2"

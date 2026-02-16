@@ -30,7 +30,7 @@ public class MountLibraryEntry : ExcelLibraryEntry
 	}
 
 	public override string? Name => this.Mount.Singular.ToString();
-	public override object? Icon => new ImageReference(this.Mount.Icon);
+	public override object? Icon => new TextureIconReference(this.Mount.Icon);
 	public override bool IsValid => base.IsValid && this.Mount.ModelChara.RowId != 0;
 
 	/*public async Task Apply(Character character, UpdateSource source)

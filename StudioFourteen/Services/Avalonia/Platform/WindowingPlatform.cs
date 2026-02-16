@@ -69,12 +69,12 @@ public class WindowingPlatform : IWindowingPlatform, IDisposable
 
 	public void ReloadAll()
 	{
-		/*foreach (WindowImpl windowImpl in this.Windows)
+		foreach (WindowImpl windowImpl in this.Windows)
 		{
 			if (windowImpl.InputRoot is StudioWindowBase studioWindow)
 			{
 				studioWindow.WindowReference?.Reload();
 			}
-		}*/
+		}
 	}
 }
