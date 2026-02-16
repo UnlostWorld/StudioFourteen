@@ -23,7 +23,10 @@ using Lumina.Excel.Sheets;
 using Lumina.Text.ReadOnly;
 using StudioFourteen.Services.Library.GameData.Extensions;
 
+using StudioFourteen.Services.Library.GameData.Sheets;
+
 using static FFXIVClientStructs.FFXIV.Client.Game.Character.DrawDataContainer;
+using ClassJobCategory = StudioFourteen.Services.Library.GameData.Sheets.ClassJobCategory;
 
 public class ItemLibraryEntry : ExcelLibraryEntry
 {

@@ -124,7 +124,7 @@
 							Background="Transparent">
 
 							<ToolTip.Tip>
-								<StackPanel>
+								<StackPanel MaxWidth="256">
 									<TextBlock Text="{Binding Name}" />
 									<TextBlock Text="{Binding Description}"
 										IsVisible="{Binding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
@@ -132,15 +132,29 @@
 									<TextBlock>
 										<Run Text="Lv." />
 										<Run Text="{Binding EquipLevel}" />
+										<Run Text=" - " />
+										<Run Text="{Binding UICategory.Name}" />
 									</TextBlock>
-									<TextBlock Text="{Binding UICategory.Name}" />
 
-									<UniformGrid>
-										<S14:TextureIcon Id="062001" Width="22" Height="22" />
-									</UniformGrid>
+									<ItemsControl
+										Margin="0,6,0,0"
+										ItemsSource="{Binding ClassJobs.ClassJobs}">
+										<ItemsControl.ItemsPanel>
+											<ItemsPanelTemplate>
+												<WrapPanel />
+											</ItemsPanelTemplate>
+										</ItemsControl.ItemsPanel>
+										<ItemsControl.ItemTemplate>
+											<DataTemplate>
+												<S14:TextureIcon Id="062000"
+													Offset="{Binding RowId}" Width="22"
+													Height="22" />
+											</DataTemplate>
+										</ItemsControl.ItemTemplate>
+									</ItemsControl>
 
-									<TextBlock Text="{Binding ClassJobs.Name}" />
-									<!--<TextBlock Text="{Binding EquipRestriction.Name}" />
+									<!--<TextBlock Text="{Binding ClassJobs.Name}" />
+									<TextBlock Text="{Binding EquipRestriction.Name}" />
 									<TextBlock Text="{Binding EquipSlot.Name}" />-->
 								</StackPanel>
 							</ToolTip.Tip>

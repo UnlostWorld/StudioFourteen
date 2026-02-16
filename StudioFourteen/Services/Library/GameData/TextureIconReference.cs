@@ -70,7 +70,7 @@ public class TextureIconReference
 					new PixelSize(tex.Header.Width, tex.Header.Height),
 					dpi,
 					PixelFormat.Bgra8888,
-					AlphaFormat.Premul);
+					AlphaFormat.Unpremul);
 
 				using (var frameBuffer = bitmap.Lock())
 				{

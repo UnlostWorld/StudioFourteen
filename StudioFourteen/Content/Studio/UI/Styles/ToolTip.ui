@@ -9,7 +9,7 @@
 
 				<Border
 					BoxShadow="0 3 17 2 #88000000"
-					CornerRadius="20"
+					CornerRadius="10"
 					BorderThickness="1"
 					Margin="20"
 					BorderBrush="#99000000"

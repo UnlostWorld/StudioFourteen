@@ -19,25 +19,11 @@ using Lumina.Excel.Sheets;
 
 public static class ClassJobExtensions
 {
-	public enum Roles : byte
+#pragma warning disable
+	extension(ClassJob self)
 	{
-		None,
-		Tank,
-		MeleeDamage,
-		RangedDamage,
-		Healer,
-	}
-
-	public static Roles GetRole(this ClassJob self)
-	{
-		return (Roles)self.Role;
-	}
-
-	public static bool GetIsClass(this ClassJob self) => self.ClassJobParent.RowId == self.RowId;
-	public static bool GetIsJob(this ClassJob self) => !self.GetIsClass();
-
-	public static uint GetIconId(this ClassJob job)
-	{
-		return 062000 + job.RowId;
+		public uint IconId => 062000 + self.RowId;
+		public bool IsClass => self.ClassJobParent.RowId == self.RowId;
+		public bool IsJob => !self.IsClass;
 	}
 }

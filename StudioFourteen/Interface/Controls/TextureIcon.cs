@@ -27,12 +27,14 @@ using StudioFourteen.Services.Library.GameData;
 public class TextureIcon : Image
 {
 	public static readonly StyledProperty<uint> IdProperty;
+	public static readonly StyledProperty<uint> OffsetProperty;
 
 	private TextureIconReference? reference;
 
 	static TextureIcon()
 	{
 		IdProperty = AvaloniaProperty.Register<TextureIcon, uint>(nameof(TextureIcon.Id));
+		OffsetProperty = AvaloniaProperty.Register<TextureIcon, uint>(nameof(TextureIcon.Offset));
 	}
 
 	public uint Id
@@ -41,11 +43,17 @@ public class TextureIcon : Image
 		set => this.SetValue(IdProperty, value);
 	}
 
+	public uint Offset
+	{
+		get => this.GetValue(OffsetProperty);
+		set => this.SetValue(OffsetProperty, value);
+	}
+
 	protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
 	{
 		base.OnPropertyChanged(change);
 
-		if (change.Property == IdProperty)
+		if (change.Property == IdProperty || change.Property == OffsetProperty)
 		{
 			this.LoadTexture();
 		}
@@ -53,12 +61,12 @@ public class TextureIcon : Image
 
 	private void LoadTexture()
 	{
-		if (this.Id == 0)
+		if (this.Id + this.Offset == 0)
 			return;
 
 		try
 		{
-			this.reference = new(this.Id);
+			this.reference = new(this.Id + this.Offset);
 			Bitmap? src = this.reference.Source;
 			this.Source = src;
 
