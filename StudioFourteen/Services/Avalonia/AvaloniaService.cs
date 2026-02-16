@@ -19,6 +19,7 @@ using System;
 using System.Collections;
 using System.Reflection;
 using System.Threading;
+using System.Threading.Tasks;
 using global::Avalonia;
 using global::Avalonia.Controls;
 using global::Avalonia.Controls.ApplicationLifetimes;
@@ -33,13 +34,13 @@ using StudioFourteen.Interface;
 using StudioFourteen.Services.Avalonia.Platform;
 using StudioFourteen.Services.Dalamud;
 using StudioFourteen.Services.Rendering;
+using StudioFourteen.Services.Tick;
 
 public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 {
 	public readonly StudioMouseDevice MouseDevice;
 	public readonly StudioKeyboardDevice KeyboardDevice;
 
-	public long DispatcherFramerate = 60;
 	public long RenderFramerate = 60;
 
 	private readonly UiPass renderingPass = new();
@@ -158,7 +159,7 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 		this.screen = new StudioScreens(Studio.Rendering.OverlayRenderer);
 
 		this.renderTimer = new(TimeSpan.FromSeconds(1.0 / this.RenderFramerate));
-		this.dispatcher = new(TimeSpan.FromSeconds(1.0 / this.DispatcherFramerate));
+		this.dispatcher = new();
 		this.windowing = new(this.screen);
 
 		AvaloniaLocator.CurrentMutable.Bind<IScreenImpl>().ToConstant(this.screen);
@@ -174,6 +175,8 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 		IPlatformGraphics? platformGraphics = GlManager.Initialize();
 		this.compositor = new Compositor(platformGraphics);
 		AvaloniaLocator.CurrentMutable.Bind<Compositor>().ToConstant(this.compositor);
+
+		global::Avalonia.Threading.Dispatcher.UIThread.InvokeAsync(this.OnUiTick);
 	}
 
 	// ⚠️ WARNING: REFLECTION BASED CRIMES ⚠️
@@ -228,5 +231,13 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl
 		}
 
 		Studio.Log.Information($"Resolved {count} assemblies for the SreTypeSystem");
+	}
+
+	private async void OnUiTick()
+	{
+		Studio.Tick.OnUiTick();
+
+		await Task.Delay(16);
+		global::Avalonia.Threading.Dispatcher.UIThread.Invoke(this.OnUiTick);
 	}
 }

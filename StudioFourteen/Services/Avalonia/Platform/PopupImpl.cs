@@ -28,6 +28,7 @@ using StudioFourteen.Services.Tick;
 using System;
 using global::Avalonia.Input.Raw;
 using global::Avalonia.Rendering;
+using global::Avalonia.Threading;
 
 public class PopupImpl : WindowImpl, IPopupImpl
 {

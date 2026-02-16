@@ -20,107 +20,104 @@ using System.Diagnostics;
 using System.Reflection;
 using System.Threading;
 using global::Avalonia.Threading;
+using StudioFourteen.Services.Tick;
 
 public partial class DispatcherImpl : IControlledDispatcherImpl
 {
+	private readonly AutoResetEvent wakeup = new(false);
+	private readonly Lock @lock = new();
 	private readonly Stopwatch clock = Stopwatch.StartNew();
-	private readonly Stopwatch timer = new Stopwatch();
-	private readonly TimeSpan frameTime;
+	private readonly Thread loopThread = Thread.CurrentThread;
 
-	private Thread? uiThread;
-	private bool signaled = false;
-	private long? timerMs = null;
-
-	public DispatcherImpl(TimeSpan frameTime)
-	{
-		this.uiThread = Thread.CurrentThread;
-		this.frameTime = frameTime;
-	}
+	private bool signaled;
+	private TimeSpan? nextTimer;
 
 	public event Action? Signaled;
 	public event Action? Timer;
 
-	public bool CurrentThreadIsLoopThread
-	{
-		get
-		{
-			if (this.uiThread == null)
-				throw new Exception($"Attempt to check thread after dispatcher has been disposed.");
-
-			return this.uiThread == Thread.CurrentThread;
-		}
-	}
-
+	public bool CurrentThreadIsLoopThread => this.loopThread == Thread.CurrentThread;
 	public long Now => this.clock.ElapsedMilliseconds;
-	public bool CanQueryPendingInput => false;
+
+	public bool CanQueryPendingInput => true;
 	public bool HasPendingInput => false;
 
 	public void Signal()
 	{
-		this.signaled = true;
+		lock (this.@lock)
+		{
+			this.signaled = true;
+			this.wakeup.Set();
+		}
 	}
 
 	public void UpdateTimer(long? dueTimeInMs)
 	{
-		this.timerMs = dueTimeInMs;
-		if (this.timerMs == null)
+		lock (this.@lock)
 		{
-			this.timer.Stop();
-		}
-		else
-		{
-			this.timer.Start();
+			this.nextTimer = dueTimeInMs == null
+				? null
+				: TimeSpan.FromMilliseconds(dueTimeInMs.Value);
+			if (!this.CurrentThreadIsLoopThread)
+				this.wakeup.Set();
 		}
 	}
 
 	public void RunLoop(CancellationToken token)
 	{
+		CancellationTokenRegistration registration = default;
+		if (token.CanBeCanceled)
+			registration = token.Register(() => this.wakeup.Set());
+
 		while (!token.IsCancellationRequested)
 		{
-			if (this.signaled)
+			bool signaled;
+			lock (this.@lock)
 			{
+				signaled = this.signaled;
 				this.signaled = false;
-				try
-				{
-					this.Signaled?.Invoke();
-				}
-				catch (Exception ex)
-				{
-					Studio.Log.Error(ex, "Error in dispatcher signal");
-				}
 			}
 
-			if (this.timerMs != null && this.timer.ElapsedMilliseconds > this.timerMs)
+			if (signaled)
 			{
-				try
+				this.Signaled?.Invoke();
+				continue;
+			}
+
+			bool fireTimer = false;
+			lock (this.@lock)
+			{
+				if (this.nextTimer < this.clock.Elapsed)
 				{
-					this.Timer?.Invoke();
-					this.timer.Restart();
-				}
-				catch (Exception ex)
-				{
-					Studio.Log.Error(ex, "Error in dispatcher timer");
+					fireTimer = true;
+					this.nextTimer = null;
 				}
 			}
 
-			Studio.Tick.OnUiTick();
+			if (fireTimer)
+			{
+				this.Timer?.Invoke();
+				continue;
+			}
 
-			Thread.Sleep(this.frameTime.Milliseconds);
+			TimeSpan? nextTimer;
+			lock (this.@lock)
+			{
+				nextTimer = this.nextTimer;
+			}
+
+			if (nextTimer != null)
+			{
+				var waitFor = nextTimer.Value - this.clock.Elapsed;
+				if (waitFor.TotalMilliseconds < 1)
+					continue;
+				this.wakeup.WaitOne(waitFor);
+			}
+			else
+			{
+				this.wakeup.WaitOne();
+			}
 		}
 
-		this.uiThread = null;
-		this.timer.Stop();
-
-		FieldInfo? uiDispatcher = typeof(Dispatcher).GetField("s_uiThread", BindingFlags.NonPublic | BindingFlags.Static);
-		if (uiDispatcher == null)
-		{
-			Studio.Log.Error("Failed to find UI Thread dispatcher field");
-		}
-		else
-		{
-			uiDispatcher.SetValue(null, null);
-		}
-
-		Studio.Log.Information("Dispatcher terminated");
+		registration.Dispose();
 	}
 }

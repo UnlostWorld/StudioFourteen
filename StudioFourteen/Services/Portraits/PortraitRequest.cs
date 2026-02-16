@@ -20,6 +20,7 @@ using System.IO;
 using FFXIVClientStructs.FFXIV.Client.Game.Character;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Kernel;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
+using FFXIVClientStructs.FFXIV.Client.System.Memory;
 using FFXIVClientStructs.FFXIV.Client.UI.Misc;
 using global::Avalonia.Media.Imaging;
 using SharpDX.Direct3D11;
@@ -72,7 +73,7 @@ public partial class Portrait : IDisposable
 
 		if (this.pView == null)
 		{
-			this.pView = CharaView.Create();
+			this.pView = IMemorySpace.GetUISpace()->Create<CharaView>();
 
 			if (this.objectIndex != -1)
 			{
