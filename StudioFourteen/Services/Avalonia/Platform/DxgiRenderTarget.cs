@@ -26,7 +26,6 @@ public partial class DxgiRenderTarget(WindowImpl window, EglContext context)
 	 : EglPlatformSurfaceRenderTargetBase(context)
 {
 	public Texture2D? Texture;
-	private bool isDisposed = false;
 	public override bool IsCorrupted => base.IsCorrupted;
 
 	public override void Dispose()
@@ -34,19 +33,12 @@ public partial class DxgiRenderTarget(WindowImpl window, EglContext context)
 		base.Dispose();
 		this.Texture?.Dispose();
 		this.Texture = null;
-		this.isDisposed = true;
 	}
 
 	public unsafe override IGlPlatformSurfaceRenderingSession BeginDrawCore()
 	{
 		try
 		{
-			if (this.isDisposed)
-				throw new Exception("Attempt to draw disposed dxgi render target");
-
-			if (window.IsDisposed)
-				throw new Exception("Attempt to draw disposed window");
-
 			if (!Studio.Rendering.OverlayRenderer.CanRender)
 				throw new Exception("Attempt to draw before renderer is ready");
 
@@ -78,6 +70,11 @@ public partial class DxgiRenderTarget(WindowImpl window, EglContext context)
 				this.Texture = new(Studio.Rendering.OverlayRenderer.Device, desc);
 
 				Studio.Log.Verbose($"Create new UI render target: {size}");
+			}
+
+			if (this.Texture == null)
+			{
+				return null!;
 			}
 
 			Resource1 resource = this.Texture.QueryInterface<SharpDX.DXGI.Resource1>();

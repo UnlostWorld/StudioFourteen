@@ -214,16 +214,13 @@ public class PreviewControl : Panel, IDisposable
 
 			Dispatcher.UIThread.Invoke(() =>
 			{
-				this.Width = this.characterTexture.Description.Width;
-				this.Height = this.characterTexture.Description.Height;
+				this.Width = this.characterTexture?.Description.Width ?? 1;
+				this.Height = this.characterTexture?.Description.Height ?? 1;
 			});
 
 			ILayoutRoot? root = this.FindAncestorOfType<ILayoutRoot>();
 			if (root == null)
-			{
-				Studio.Log.Error("Error getting layout root from preview control!");
 				return;
-			}
 
 			if (root is WindowBase wnd && wnd.PlatformImpl is WindowImpl windowImpl)
 			{
