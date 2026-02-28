@@ -153,11 +153,11 @@
 										</ItemsControl.ItemTemplate>
 									</ItemsControl>
 
-									<S14:PreviewControl
-										Width="256"
-										Height="350"
-										Item="{Binding Item}"
-										Margin="0,4" />
+									<Viewbox>
+										<S14:PreviewControl
+											Item="{Binding Item}"
+											Margin="0,4" />
+									</Viewbox>
 
 									<!--<TextBlock Text="{Binding ClassJobs.Name}" />
 									<TextBlock Text="{Binding EquipRestriction.Name}" />

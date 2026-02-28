@@ -212,6 +212,12 @@ public class PreviewControl : Panel, IDisposable
 
 			this.characterTexture = new((nint)pTexture->D3D11Texture2D);
 
+			Dispatcher.UIThread.Invoke(() =>
+			{
+				this.Width = this.characterTexture.Description.Width;
+				this.Height = this.characterTexture.Description.Height;
+			});
+
 			ILayoutRoot? root = this.FindAncestorOfType<ILayoutRoot>();
 			if (root == null)
 			{
