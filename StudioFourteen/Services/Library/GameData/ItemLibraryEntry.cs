@@ -30,13 +30,13 @@ using ClassJobCategory = StudioFourteen.Services.Library.GameData.Sheets.ClassJo
 
 public class ItemLibraryEntry : ExcelLibraryEntry
 {
-	public readonly Item Item;
-
 	public ItemLibraryEntry(SourceBase source, Item item)
 		: base(source, item.RowId)
 	{
 		this.Item = item;
 	}
+
+	public Item Item { get; init; }
 
 	public override string? Name => this.Item.Name.GetString();
 	public string? Description => this.Item.Description.GetString();

@@ -31,6 +31,7 @@ using StudioFourteen.Services;
 using StudioFourteen.Services.Library;
 using StudioFourteen.Services.Scene;
 using StudioFourteen.Services.Portraits;
+using StudioFourteen.Services.Interop;
 
 public sealed class Studio : IDalamudPlugin
 {
@@ -56,6 +57,8 @@ public sealed class Studio : IDalamudPlugin
 		Redraw = new();
 
 		IsInitialized = true;
+
+		Hooks.EnforceKind.Enable(this.EnforceKindRestrictionsDetour);
 	}
 
 	public static bool IsDisposed { get; private set; } = false;
@@ -118,5 +121,14 @@ public sealed class Studio : IDalamudPlugin
 		{
 			Studio.Log.Error(ex, "Error disposing services");
 		}
+
+		Hooks.EnforceKind.Disable();
+	}
+
+	private byte EnforceKindRestrictionsDetour(nint a1, nint a2)
+	{
+		// always allow npc values.
+		////return this.enforceKindRestrictionsHook.Original(a1, a2);
+		return 0;
 	}
 }

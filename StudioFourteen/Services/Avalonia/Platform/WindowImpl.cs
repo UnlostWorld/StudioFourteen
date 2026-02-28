@@ -18,8 +18,6 @@ namespace StudioFourteen.Services.Avalonia.Platform;
 using System;
 using System.Collections.Generic;
 using System.Numerics;
-using System.Threading.Tasks;
-using global::Avalonia.Controls.Primitives;
 using global::Avalonia;
 using global::Avalonia.Controls;
 using global::Avalonia.Input;
@@ -27,14 +25,14 @@ using global::Avalonia.Input.Raw;
 using global::Avalonia.Input.TextInput;
 using global::Avalonia.Platform;
 using global::Avalonia.Rendering.Composition;
-using StudioFourteen.Services.Tick;
 
 public partial class WindowImpl : IWindowImpl
 {
+	public readonly WindowRenderer WindowRenderer;
+
 	public Vector4 CornerRadius;
 	public Vector4 Margin;
 
-	private readonly WindowRenderer windowRenderer;
 	private readonly DxgiSurface glSurface;
 	private readonly StudioScreens screen;
 	private readonly Compositor compositor;
@@ -43,7 +41,7 @@ public partial class WindowImpl : IWindowImpl
 	{
 		this.glSurface = new DxgiSurface(this);
 		this.screen = screen;
-		this.windowRenderer = new(this, this.glSurface);
+		this.WindowRenderer = new(this, this.glSurface);
 		this.compositor = compositor;
 
 		this.Position = new PixelPoint(100, 100);
@@ -120,8 +118,8 @@ public partial class WindowImpl : IWindowImpl
 
 		this.glSurface.Dispose();
 
-		Studio.Avalonia.RenderPass.Remove(this.windowRenderer);
-		this.windowRenderer.Dispose();
+		Studio.Avalonia.RenderPass.Remove(this.WindowRenderer);
+		this.WindowRenderer.Dispose();
 	}
 
 	public void GetWindowsZOrder(Span<Window> windows, Span<long> zOrder)
@@ -130,7 +128,7 @@ public partial class WindowImpl : IWindowImpl
 
 	public virtual void Show(bool activate, bool isDialog)
 	{
-		Studio.Avalonia.RenderPass.Add(this.windowRenderer);
+		Studio.Avalonia.RenderPass.Add(this.WindowRenderer);
 
 		if (activate)
 		{
@@ -140,7 +138,7 @@ public partial class WindowImpl : IWindowImpl
 
 	public void Hide()
 	{
-		Studio.Avalonia.RenderPass.Remove(this.windowRenderer);
+		Studio.Avalonia.RenderPass.Remove(this.WindowRenderer);
 	}
 
 	public Point PointToClient(PixelPoint point) => new Point(point.X - this.Position.X, point.Y - this.Position.Y);

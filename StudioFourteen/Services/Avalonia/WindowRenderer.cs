@@ -26,6 +26,7 @@ using StudioFourteen.Services.Rendering;
 using StudioFourteen.Services.Rendering.Draw;
 using StudioFourteen.Services.Rendering.Materials;
 using StudioFourteen.Services.Avalonia.Platform;
+using System.Collections.Generic;
 
 public partial class WindowRenderer : MeshRenderer<WindowRenderer.AvaloniaUiMaterial>
 {
@@ -34,6 +35,8 @@ public partial class WindowRenderer : MeshRenderer<WindowRenderer.AvaloniaUiMate
 
 	private ShaderResourceView? bufferResourceView;
 	private Texture2D? texture;
+
+	private ShaderResourceView? subWindowResourceView;
 
 	public WindowRenderer(WindowImpl window, DxgiSurface surface)
 		: base(MeshContent.Quad)
@@ -51,6 +54,9 @@ public partial class WindowRenderer : MeshRenderer<WindowRenderer.AvaloniaUiMate
 			Quaternion.Identity,
 			Vector3.One);
 	}
+
+	public Vector4 SubWindowPosition { get; set; }
+	public Texture2D? Subwindow { get; set; }
 
 	public override bool Draw(Renderer renderer, Transform transform, Device device, DeviceContext deviceContext)
 	{
@@ -93,6 +99,23 @@ public partial class WindowRenderer : MeshRenderer<WindowRenderer.AvaloniaUiMate
 		this.Material.CornerRadius = this.Window.CornerRadius;
 		this.Material.Margin = this.Window.Margin;
 
+		if (this.Subwindow == null)
+		{
+			this.Material.SubWindow = Vector4.Zero;
+		}
+		else
+		{
+			this.Material.SubWindow = this.SubWindowPosition;
+
+			if (this.subWindowResourceView == null)
+			{
+				this.subWindowResourceView = new(device, this.Subwindow);
+				Studio.Log.Verbose("Create sub window resource view");
+			}
+
+			deviceContext.PixelShader.SetShaderResource(4, this.subWindowResourceView);
+		}
+
 		return base.Draw(renderer, transform, device, deviceContext);
 	}
 
@@ -109,6 +132,7 @@ public partial class WindowRenderer : MeshRenderer<WindowRenderer.AvaloniaUiMate
 	{
 		public Vector4 CornerRadius;
 		public Vector4 Margin;
+		public Vector4 SubWindow;
 		public Vector2 WindowSize;
 		public Vector2 Unused;
 

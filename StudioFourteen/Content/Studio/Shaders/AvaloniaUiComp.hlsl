@@ -21,6 +21,9 @@ SamplerState back_sampler : register(s2);
 Texture2D buffer_texture : register(t3);
 SamplerState buffer_sampler : register(s3);
 
+Texture2D subwindow_texture : register(t4);
+SamplerState subWindow_sampler : register(s4);
+
 cbuffer UiPassData : register(PassDataRegister)
 {
     float2 ScreenSize;
@@ -36,6 +39,7 @@ cbuffer MaterialInstanceData : register(MaterialDataRegister)
 {
 	float4 CornerRadius;
 	float4 Margin;
+	float4 SubWindow;
 	float2 WindowSize;
 	float2 Unused;
 };
@@ -170,7 +174,6 @@ float4 pixel(Fragment fragment) : SV_TARGET
 
 	// Actual Window
 	{
-
 		color.rgb = lerp(color.rgb, uiColor.rgb, uiColor.a);
 
 		// Let the window overlap the rounded corners
@@ -179,6 +182,59 @@ float4 pixel(Fragment fragment) : SV_TARGET
 		{
 			color.a = uiColor.a;
 		}
+	}
+
+	// Sub Window
+	if (SubWindow.z > SubWindow.x && SubWindow.w > SubWindow.y)
+	{
+		float subX = invLerp(SubWindow.x, SubWindow.z, fragment.TexCoord.x);
+		float subY = invLerp(SubWindow.y, SubWindow.w, fragment.TexCoord.y);
+
+		float subWindowIntensity = 0;
+
+		if (subX > 0
+			&& subX < 1
+			&& subY > 0
+			&& subY < 1)
+		{
+			subWindowIntensity = 1;
+		}
+
+		float CornerRadius = 0.025;
+		if (subWindowIntensity > 0)
+		{
+			if(subX < CornerRadius
+				&& subY < CornerRadius
+				&& length(float2(subX, subY) - float2(CornerRadius, CornerRadius)) > CornerRadius)
+			{
+				subWindowIntensity = 0;
+			}
+
+			if(1 - subX < CornerRadius
+				&& subY < CornerRadius
+				&& length(float2(1 - subX, subY) - float2(CornerRadius, CornerRadius)) > CornerRadius)
+			{
+				subWindowIntensity = 0;
+			}
+
+			if(subX < CornerRadius
+				&& 1- subY < CornerRadius
+				&& length(float2(subX, 1 - subY) - float2(CornerRadius, CornerRadius)) > CornerRadius)
+			{
+				subWindowIntensity = 0;
+			}
+
+			if(1 - subX < CornerRadius
+				&& 1 - subY < CornerRadius
+				&& length(float2(1 - subX, 1 - subY) - float2(CornerRadius, CornerRadius)) > CornerRadius)
+			{
+				subWindowIntensity = 0;
+			}
+		}
+
+
+		float4 subColor = subwindow_texture.Sample(subWindow_sampler, float2(subX, subY));
+		color.rgb = lerp(color.rgb, subColor.rgb, subWindowIntensity);
 	}
 
 	//color.a *= GetUiClippingAlpha(fragment);
