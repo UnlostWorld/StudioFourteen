@@ -55,7 +55,16 @@ public class ContentService : IService
 	{
 		string resolvedPath = this.ResolvePath(directoryPath);
 		string[] paths = Directory.GetFiles(resolvedPath, "*.*", SearchOption.AllDirectories);
-		return new List<string>(paths);
+
+		List<string> results = new();
+		foreach (string path in paths)
+		{
+			string cleanPath = path.Replace(resolvedPath, string.Empty);
+			cleanPath = directoryPath + "/" + cleanPath;
+			results.Add(cleanPath);
+		}
+
+		return results;
 	}
 
 	public Stream GetContent(ContentReference reference)

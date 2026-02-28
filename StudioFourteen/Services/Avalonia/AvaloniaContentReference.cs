@@ -25,7 +25,7 @@ using StudioFourteen.Services.Content;
 
 public class AvaloniaContentReference<T>(string path)
 	: ContentReference<T>(path)
-	where T : AvaloniaObject, new()
+	where T : new()
 {
 	private static readonly string XmlNamespaces;
 
