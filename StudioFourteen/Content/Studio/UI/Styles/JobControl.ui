@@ -1,0 +1,22 @@
+<ResourceDictionary>
+	<ControlTheme x:Key="{x:Type S14:JobControl}" TargetType="{x:Type S14:JobControl}">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<ToggleButton
+					Padding="4,1,4,0"
+					Margin="0"
+					IsChecked="{TemplateBinding Include, Mode=TwoWay}">
+					<Panel
+						DataContext="{TemplateBinding ClassJob}"
+						ToolTip.Tip="{Binding Name}">
+						<S14:TextureIcon
+							Id="062000"
+							Offset="{Binding RowId}"
+							Width="22"
+							Height="22" />
+					</Panel>
+				</ToggleButton>
+			</ControlTemplate>
+		</Setter>
+	</ControlTheme>
+</ResourceDictionary>

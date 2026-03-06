@@ -19,33 +19,11 @@ using System.Collections.Generic;
 using global::Avalonia;
 using global::Avalonia.Controls;
 using global::Avalonia.Markup.Xaml;
+using StudioFourteen.Services.Content;
 using StudioFourteen.Services.Tick;
 
 public partial class StudioApplication : Application
 {
-	private static readonly HashSet<string> ResourceDictionaryPaths = new()
-	{
-		"UI/Theme.ui",
-
-		"UI/Styles/Button.ui",
-		"UI/Styles/ButtonSpinner.ui",
-		"UI/Styles/LibraryInspector.ui",
-		"UI/Styles/NumberBox.ui",
-		"UI/Styles/NumericUpDown.ui",
-		"UI/Styles/Svg.ui",
-		"UI/Styles/ScrollBar.ui",
-		"UI/Styles/TabControl.ui",
-		"UI/Styles/TabItem.ui",
-		"UI/Styles/TextBlock.ui",
-		"UI/Styles/TextBox.ui",
-		"UI/Styles/ToggleButton.ui",
-		"UI/Styles/ToolTip.ui",
-		"UI/Styles/TransformControl.ui",
-		"UI/Styles/Vector3Control.ui",
-
-		"UI/Inspectors/Filters/SearchFilter.ui",
-	};
-
 	private readonly List<AvaloniaContentReference<ResourceDictionary>> resourceDictionaries = new();
 
 	public override void Initialize()
@@ -55,7 +33,10 @@ public partial class StudioApplication : Application
 
 	public void LoadTheme()
 	{
-		foreach (string resourceDictionaryPath in ResourceDictionaryPaths)
+		List<string> resourceDictionaryPaths = Studio.Content.GetContents("UI/Styles/");
+		resourceDictionaryPaths.Add("UI/Theme.ui");
+
+		foreach (string resourceDictionaryPath in resourceDictionaryPaths)
 		{
 			AvaloniaContentReference<ResourceDictionary> resourceDictionaryReference = new(resourceDictionaryPath);
 			resourceDictionaryReference.Reloaded += () => this.LoadDictionary(resourceDictionaryReference);

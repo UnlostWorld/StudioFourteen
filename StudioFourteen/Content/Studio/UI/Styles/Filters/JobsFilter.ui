@@ -1,0 +1,140 @@
+<ResourceDictionary>
+	<ControlTemplate
+		x:Key="JobsFilterTemplate"
+		TargetType="{x:Type StudioFourteen.Interface.Library.Filters:JobsFilter}">
+		<Panel>
+			<Button
+				Content="All Jobs">
+				<Button.Flyout>
+					<Flyout>
+						<Grid
+							RowDefinitions="Auto, *">
+
+							<Button
+								Grid.Row="0"
+								Grid.Column="0"
+								Content="Clear" />
+
+							<Grid
+								Grid.Row="1"
+								RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto"
+								ColumnDefinitions="Auto, *">
+
+								<!-- Tanks -->
+								<S14:RoleControl
+									Grid.Row="0"
+									Grid.Column="0"
+									Id="1"
+									Jobs="{TemplateBinding Jobs}" />
+
+								<StackPanel
+									Grid.Row="0"
+									Grid.Column="1"
+									Orientation="Horizontal"
+									x:Name="TanksGroup">
+									<S14:JobControl Id="1" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="3" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="19" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="21" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="32" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="37" Jobs="{TemplateBinding Jobs}" />
+								</StackPanel>
+
+								<!-- Healers -->
+								<S14:RoleControl
+									Grid.Row="1"
+									Grid.Column="0"
+									Id="4"
+									Jobs="{TemplateBinding Jobs}" />
+								<StackPanel
+									Grid.Row="1"
+									Grid.Column="1"
+									Orientation="Horizontal">
+									<S14:JobControl Id="6" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="24" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="28" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="33" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="40" Jobs="{TemplateBinding Jobs}" />
+								</StackPanel>
+
+								<!-- Melee -->
+								<S14:RoleControl
+									Grid.Row="2"
+									Grid.Column="0"
+									Id="2"
+									Jobs="{TemplateBinding Jobs}" />
+								<StackPanel
+									Grid.Row="2"
+									Grid.Column="1"
+									Orientation="Horizontal">
+									<S14:JobControl Id="2" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="4" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="20" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="22" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="29" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="30" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="34" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="39" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="41" Jobs="{TemplateBinding Jobs}" />
+								</StackPanel>
+
+								<!-- Ranged -->
+								<S14:RoleControl
+									Grid.Row="3"
+									Grid.Column="0"
+									Id="3"
+									Jobs="{TemplateBinding Jobs}" />
+								<StackPanel
+									Grid.Row="3"
+									Grid.Column="1"
+									Orientation="Horizontal">
+									<S14:JobControl Id="5" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="7" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="23" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="25" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="26" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="27" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="31" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="35" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="36" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="38" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="42" Jobs="{TemplateBinding Jobs}" />
+								</StackPanel>
+
+								<!-- Crafters / Gatherers -->
+								<S14:RoleControl
+									Grid.Row="4"
+									Grid.Column="0"
+									Id="5"
+									Jobs="{TemplateBinding Jobs}" />
+								<StackPanel
+									Grid.Row="4"
+									Grid.Column="1"
+									Orientation="Horizontal">
+									<S14:JobControl Id="8" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="9" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="10" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="11" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="12" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="13" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="14" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="15" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="16" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="17" Jobs="{TemplateBinding Jobs}" />
+									<S14:JobControl Id="18" Jobs="{TemplateBinding Jobs}" />
+								</StackPanel>
+
+							</Grid>
+						</Grid>
+					</Flyout>
+				</Button.Flyout>
+			</Button>
+		</Panel>
+	</ControlTemplate>
+
+	<ControlTheme
+		x:Key="{x:Type StudioFourteen.Interface.Library.Filters:JobsFilter}"
+		TargetType="{x:Type StudioFourteen.Interface.Library.Filters:JobsFilter}">
+		<Setter Property="Template" Value="{StaticResource JobsFilterTemplate}" />
+	</ControlTheme>
+</ResourceDictionary>

@@ -15,9 +15,13 @@
 		Grid.Row="1"
 		Grid.ColumnSpan="2"
 		Value="{Binding Item}">
-		<Grid>
-			<StudioFourteen.Interface.Library.Filters:EquipmentSlotFilter Slot="{Binding Slot}" />
-			<StudioFourteen.Interface.Library.Filters:SearchFilter />
+		<Grid RowDefinitions="Auto, Auto">
+			<StudioFourteen.Interface.Library.Filters:EquipmentSlotFilter
+				Slot="{Binding Slot}" />
+			<StudioFourteen.Interface.Library.Filters:SearchFilter
+				Grid.Row="0" />
+			<StudioFourteen.Interface.Library.Filters:JobsFilter
+				Grid.Row="1" />
 		</Grid>
 	</S14:LibraryInspector>
 

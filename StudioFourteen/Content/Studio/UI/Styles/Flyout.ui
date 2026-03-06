@@ -1,0 +1,32 @@
+<ResourceDictionary>
+	<ControlTheme x:Key="{x:Type FlyoutPresenter}"
+		TargetType="{x:Type FlyoutPresenter}">
+
+		<Setter Property="Padding" Value="8,4" />
+
+		<Setter Property="Template">
+			<ControlTemplate>
+
+				<Border
+					BoxShadow="0 3 17 2 #88000000"
+					CornerRadius="10"
+					BorderThickness="1"
+					Margin="20"
+					BorderBrush="#99000000"
+					Background="#99222222"
+					Name="Chrome">
+
+					<ContentPresenter Name="PART_ContentPresenter"
+						Margin="{TemplateBinding Padding}"
+						Background="Transparent"
+						Content="{TemplateBinding Content}"
+						ContentTemplate="{TemplateBinding ContentTemplate}" />
+
+				</Border>
+
+
+			</ControlTemplate>
+		</Setter>
+
+	</ControlTheme>
+</ResourceDictionary>

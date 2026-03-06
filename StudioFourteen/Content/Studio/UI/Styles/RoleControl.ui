@@ -1,0 +1,19 @@
+<ResourceDictionary>
+	<ControlTheme x:Key="{x:Type S14:RoleControl}" TargetType="{x:Type S14:RoleControl}">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<ToggleButton
+					Padding="4,1,4,0"
+					Margin="0"
+					IsChecked="{TemplateBinding Include, Mode=TwoWay}">
+					<Panel>
+						<S14:TextureIcon
+							Id="{TemplateBinding IconId}"
+							Width="22"
+							Height="22" />
+					</Panel>
+				</ToggleButton>
+			</ControlTemplate>
+		</Setter>
+	</ControlTheme>
+</ResourceDictionary>

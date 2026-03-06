@@ -1,8 +1,10 @@
 <DataTemplate
 	DataType="{x:Type StudioFourteen.Services.Library.GameData.Library:ItemLibraryEntry}">
 
+
 	<StackPanel
 		MaxWidth="256">
+
 		<TextBlock Text="{Binding Name}" />
 		<TextBlock Text="{Binding Description}"
 			IsVisible="{Binding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
@@ -24,9 +26,14 @@
 			</ItemsControl.ItemsPanel>
 			<ItemsControl.ItemTemplate>
 				<DataTemplate>
-					<S14:TextureIcon Id="062000"
-						Offset="{Binding RowId}" Width="22"
-						Height="22" />
+					<Panel
+						Background="Transparent"
+						ToolTip.Tip="{Binding Name}">
+						<S14:TextureIcon Id="062000"
+							Offset="{Binding RowId}"
+							Width="22"
+							Height="22" />
+					</Panel>
 				</DataTemplate>
 			</ItemsControl.ItemTemplate>
 		</ItemsControl>
