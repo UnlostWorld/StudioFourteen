@@ -13,27 +13,15 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Rendering;
+#include "Effect.hlsl"
 
-using StudioFourteen;
-using StudioFourteen.Services.Rendering.Effects;
-using StudioFourteen.Services.Rendering.Passes;
-
-public class RenderingService : IService
+cbuffer MaterialInstanceData : register(b2)
 {
-	public readonly GameOverlayRenderer OverlayRenderer = new();
+	float4 Unused;
+};
 
-	public RenderingService()
-	{
-		this.OverlayRenderer.Attach();
-
-		////ScreenEffectPass<DisplayStencilEffect> pass = new();
-		////this.OverlayRenderer.AddPass(OverlayLayers.AfterEffects, pass);
-	}
-
-	public void Dispose()
-	{
-		this.OverlayRenderer.Detach();
-		this.OverlayRenderer.Dispose();
-	}
+float4 pixel(Pixel pixel) : SV_TARGET
+{
+	float stencil = depth_texture.Sample(depth_sampler, pixel.TexCoord * RenderScale).g;
+	return float4(stencil, stencil, stencil, 1);
 }

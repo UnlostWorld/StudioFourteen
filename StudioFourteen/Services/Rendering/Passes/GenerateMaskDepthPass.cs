@@ -24,6 +24,7 @@ using StudioFourteen.Services.Rendering.Draw;
 using StudioFourteen.Services.Rendering.Materials;
 
 using Device = SharpDX.Direct3D11.Device;
+using XivDevice = FFXIVClientStructs.FFXIV.Client.Graphics.Kernel.Device;
 
 public class GenerateUiMaskPass : RenderPassBase
 {
@@ -90,7 +91,7 @@ public class GenerateUiMaskPass : RenderPassBase
 
 			Texture2DDescription desc = this.depthStencilTexture.Description;
 			desc.BindFlags = BindFlags.ShaderResource;
-			desc.Format = Format.R24_UNorm_X8_Typeless;
+			desc.Format = Format.R24G8_Typeless;
 
 			this.depthStencilCopyTexture = new Texture2D(device, desc);
 			this.depthResourceView = new(device, this.depthStencilCopyTexture);

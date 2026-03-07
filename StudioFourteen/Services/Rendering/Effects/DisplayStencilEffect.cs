@@ -13,27 +13,25 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Rendering;
+namespace StudioFourteen.Services.Rendering.Effects;
 
-using StudioFourteen;
-using StudioFourteen.Services.Rendering.Effects;
-using StudioFourteen.Services.Rendering.Passes;
+using System.Numerics;
+using System.Runtime.InteropServices;
+using SharpDX.D3DCompiler;
+using StudioFourteen.Services.Content;
+using StudioFourteen.Services.Rendering.Draw;
+using StudioFourteen.Services.Rendering.Materials;
 
-public class RenderingService : IService
+[StructLayout(LayoutKind.Sequential)]
+public struct DisplayStencilEffect : IMaterial
 {
-	public readonly GameOverlayRenderer OverlayRenderer = new();
+	public Vector4 Unused;
 
-	public RenderingService()
+	public IContent<ShaderBytecode>? GetVertexShader() => new ShaderReference("Shaders/Effect_DisplayStencil.hlsl", "vs_4_0", "vert");
+	public IContent<ShaderBytecode>? GetPixelShader() => new ShaderReference("Shaders/Effect_DisplayStencil.hlsl", "ps_4_0", "pixel");
+	public IContent<ShaderBytecode>? GetGeometryShader() => null;
+
+	public void Initialize()
 	{
-		this.OverlayRenderer.Attach();
-
-		////ScreenEffectPass<DisplayStencilEffect> pass = new();
-		////this.OverlayRenderer.AddPass(OverlayLayers.AfterEffects, pass);
-	}
-
-	public void Dispose()
-	{
-		this.OverlayRenderer.Detach();
-		this.OverlayRenderer.Dispose();
 	}
 }
