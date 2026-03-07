@@ -18,8 +18,10 @@ namespace StudioFourteen.Interface.Library.Filters;
 using System;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Windows.Input;
 using Avalonia;
 using Avalonia.Collections;
+using CommunityToolkit.Mvvm.Input;
 using Lumina.Excel.Sheets;
 using PropertyGenerator.Avalonia;
 using StudioFourteen.Services.Library;
@@ -35,6 +37,8 @@ public partial class JobsFilter : FilterBase
 	{
 		this.Jobs = new();
 		this.Jobs.CollectionChanged += this.OnJobsChanged;
+
+		this.ClearCommand = new RelayCommand(this.Clear);
 	}
 
 	[GeneratedStyledProperty]
@@ -42,6 +46,14 @@ public partial class JobsFilter : FilterBase
 
 	[GeneratedStyledProperty]
 	public partial bool Healers { get; set; }
+
+	[GeneratedStyledProperty]
+	public partial ICommand? ClearCommand { get; set; }
+
+	public void Clear()
+	{
+		this.Jobs?.Clear();
+	}
 
 	public override void Freeze()
 	{

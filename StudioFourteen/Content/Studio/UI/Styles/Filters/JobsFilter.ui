@@ -13,7 +13,8 @@
 							<Button
 								Grid.Row="0"
 								Grid.Column="0"
-								Content="Clear" />
+								Content="Clear"
+								Command="{TemplateBinding ClearCommand}" />
 
 							<Grid
 								Grid.Row="1"
