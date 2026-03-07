@@ -32,6 +32,7 @@ using StudioFourteen.Services.Library;
 using StudioFourteen.Services.Scene;
 using StudioFourteen.Services.Portraits;
 using StudioFourteen.Services.Interop;
+using StudioFourteen.Interface;
 
 public sealed class Studio : IDalamudPlugin
 {
@@ -55,6 +56,7 @@ public sealed class Studio : IDalamudPlugin
 		Scene = new();
 		Portraits = new();
 		Redraw = new();
+		Interface = new();
 
 		IsInitialized = true;
 
@@ -80,6 +82,7 @@ public sealed class Studio : IDalamudPlugin
 	public static SceneService Scene { get; private set; } = null!;
 	public static PortraitService Portraits { get; private set; } = null!;
 	public static RedrawService Redraw { get; private set; } = null!;
+	public static InterfaceService Interface { get; private set; } = null!;
 
 	[PluginService] public static IPluginLog DalamudLog { get; private set; } = null!;
 	[PluginService] public static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
@@ -103,6 +106,7 @@ public sealed class Studio : IDalamudPlugin
 
 		try
 		{
+			Interface.Dispose();
 			Log.Dispose();
 			Platform.Dispose();
 			Rendering.Dispose();

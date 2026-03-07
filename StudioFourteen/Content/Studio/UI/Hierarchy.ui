@@ -1,5 +1,16 @@
 <Grid Margin="10, 100, 0, 0">
 	<StackPanel>
+
+		<StackPanel Orientation="Horizontal">
+			<Button Content="+" />
+			<Button>
+				<S14:Svg
+					Height="22"
+					Source="Icons/Library.svg"
+					Foreground="{DynamicResource Foreground}" />
+			</Button>
+		</StackPanel>
+
 		<ListBox
 			ItemsSource="{Binding SceneObjects}"
 			MinWidth="256"

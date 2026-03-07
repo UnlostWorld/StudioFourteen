@@ -42,12 +42,10 @@ public abstract class GizmoBase : DrawGroup
 		this.renderPass = pass;
 		this.renderPass.Add(this);
 		Studio.Tick.Add(TickChannels.Game, this.OnGameTick);
-		this.IsVisible = true;
 	}
 
 	public virtual void Disable()
 	{
-		this.IsVisible = false;
 		this.renderPass?.Remove(this);
 		Studio.Tick.Remove(TickChannels.Game, this.OnGameTick);
 	}

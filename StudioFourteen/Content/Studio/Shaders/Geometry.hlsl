@@ -91,6 +91,7 @@ Fragment DefaultVert(in Vertex vertex)
 
 	float4 position = vertex.Position;
 	position = mul(position, Transform);
+	result.WorldPosition = position;
 	position = mul(position, ViewMatrix);
 	position = mul(position, ProjectionMatrix);
 	result.Position = position;

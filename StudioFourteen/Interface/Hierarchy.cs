@@ -28,7 +28,6 @@ public partial class Hierarchy : OverlayReference
 	public Hierarchy()
 		: base("UI/Hierarchy.ui", new Vector2(0, 0))
 	{
-		Studio.Scene.ObjectAdded += this.OnSceneObjectAdded;
 		Studio.Scene.ObjectRemoved += this.OnSceneObjectRemoved;
 
 		Studio.Tick.Dispatch(TickChannels.Ui, () =>
@@ -40,6 +39,8 @@ public partial class Hierarchy : OverlayReference
 					this.SceneObjects.Add(obj);
 				}
 			}
+
+			Studio.Scene.ObjectAdded += this.OnSceneObjectAdded;
 		});
 	}
 

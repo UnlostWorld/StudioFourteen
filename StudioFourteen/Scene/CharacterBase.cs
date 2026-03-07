@@ -27,6 +27,8 @@ public partial class CharacterBase : Skeleton
 		: base(objectIndex)
 	{
 		Studio.Portraits.Generate(objectIndex, this.OnPortraitLoaded);
+
+		this.AddGizmo<CharacterGizmo>();
 	}
 
 	[ObservableProperty]

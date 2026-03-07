@@ -13,33 +13,29 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Avalonia;
+namespace StudioFourteen.Scene;
 
+using StudioFourteen.Services.Rendering.Draw.Gizmos;
 using System;
-using System.Numerics;
 
-public enum ToolbarPosition
+public class GameObjectGizmo : SceneObjectGizmoBase
 {
-	Top,
-	Bottom,
-}
+	public override bool KeepScreenSize => false;
 
-public class ToolbarReference(string contentPath, ToolbarPosition position = ToolbarPosition.Top)
- : WindowReference(contentPath, "UI/ToolbarChrome.ui")
-{
-	public override bool CanDragMove => false;
-
-	public override Vector2 DefaultPosition
+	public GameObject GameObject
 	{
 		get
 		{
-			switch (position)
-			{
-				case ToolbarPosition.Top: return new(0.5f, 0);
-				case ToolbarPosition.Bottom: return new(0.5f, 1);
-			}
+			if (this.sceneObject is GameObject go)
+				return go;
 
-			throw new NotImplementedException();
+			throw new Exception($"Invalid GameObject.Gizmo target: {this.sceneObject}");
 		}
+	}
+
+	protected override void OnDraw()
+	{
+		this.Transform = this.GameObject.WorldTransform;
+		base.OnDraw();
 	}
 }

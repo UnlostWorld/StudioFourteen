@@ -16,9 +16,11 @@
 namespace StudioFourteen.Services.Scene;
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using StudioFourteen.Services.Rendering.Draw.Gizmos;
 
 public interface ICreatableSceneObject ////: IDraggable
 {
@@ -27,6 +29,8 @@ public interface ICreatableSceneObject ////: IDraggable
 
 public abstract partial class SceneObjectBase : ObservableObject, IDisposable
 {
+	private readonly List<GizmoBase> gizmos = new();
+
 	[ObservableProperty] private string name;
 	[ObservableProperty] private string? subtitle;
 	[ObservableProperty] private string? description;
@@ -41,23 +45,42 @@ public abstract partial class SceneObjectBase : ObservableObject, IDisposable
 		this.Subtitle = this.GetType().Name;
 	}
 
+	public delegate void SceneObjectBaseBoolDelegate(SceneObjectBase sender, bool value);
+	public event SceneObjectBaseBoolDelegate? IsSelectedChanged;
+	public event SceneObjectBaseBoolDelegate? IsHoveredChanged;
+
 	public abstract string Id { get; }
 
 	public int InspectorTab { get; set; }
-
-	////public List<GizmoBase> Gizmos { get; init; } = new();
 
 	public override string ToString()
 	{
 		return $"{this.Id} ({base.ToString()})";
 	}
 
+	public void AddGizmo<T>()
+		where T : SceneObjectGizmoBase
+	{
+		SceneObjectGizmoBase? gizmo = Activator.CreateInstance<T>();
+		if (gizmo == null)
+			return;
+
+		this.AddGizmo(gizmo);
+	}
+
+	public void AddGizmo(SceneObjectGizmoBase gizmo)
+	{
+		this.gizmos.Add(gizmo);
+		gizmo.SetTarget(this);
+		gizmo.Enable();
+	}
+
 	public virtual void Dispose()
 	{
-		/*foreach (GizmoBase gizmo in this.Gizmos)
+		foreach (GizmoBase gizmo in this.gizmos)
 		{
 			gizmo.Disable();
-		}*/
+		}
 	}
 
 	[RelayCommand]
@@ -102,5 +125,12 @@ public abstract partial class SceneObjectBase : ObservableObject, IDisposable
 		{
 			Studio.Scene.Deselect(this);
 		}
+
+		this.IsSelectedChanged?.Invoke(this, value);
+	}
+
+	partial void OnIsHoveredChanged(bool value)
+	{
+		this.IsHoveredChanged?.Invoke(this, value);
 	}
 }

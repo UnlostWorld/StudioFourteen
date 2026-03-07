@@ -15,47 +15,34 @@
 
 namespace StudioFourteen.Interface;
 
-using CommunityToolkit.Mvvm.ComponentModel;
+using System;
 using StudioFourteen.Services.Avalonia;
 
-public partial class TopBar : ToolbarReference
+public class InterfaceService : IDisposable
 {
 	private readonly Hierarchy hierarchy = new();
 	private readonly Inspector inspector = new();
 
-	public TopBar()
-	 : base("UI/TopBar.ui")
+	public InterfaceService()
 	{
-		this.hierarchy.Show();
+		Studio.Avalonia.Ready += this.OnAvaloniaReady;
 	}
 
-	[ObservableProperty]
-	public partial bool Hierarchy { get; set; }
-
-	[ObservableProperty]
-	public partial bool Library { get; set; }
-
-	public override void Dispose()
+	public void Dispose()
 	{
 		this.hierarchy.Dispose();
 		this.inspector.Dispose();
-
-		base.Dispose();
 	}
 
-	partial void OnHierarchyChanged(bool oldValue, bool newValue)
+	private void OnAvaloniaReady(AvaloniaService service)
 	{
-		if (newValue)
+		try
 		{
 			this.hierarchy.Show();
 		}
-		else
+		catch (Exception ex)
 		{
-			this.hierarchy.Hide();
+			Studio.Log.Error(ex, "Error showing initial hierarchy window");
 		}
-	}
-
-	partial void OnLibraryChanging(bool oldValue, bool newValue)
-	{
 	}
 }

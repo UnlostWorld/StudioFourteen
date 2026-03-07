@@ -28,8 +28,8 @@ public struct GridMaterial : IMaterial
 	public Color ZColor;
 	public float GridSize;
 	public float LineThickness;
-	public float Height;
-	public float UseCameraPosition;
+	public float DepthOffset;
+	public float Unused1;
 	public IContent<ShaderBytecode>? GetVertexShader() => new ShaderReference("Shaders/Grid.hlsl", "vs_4_0", "vert");
 	public IContent<ShaderBytecode>? GetPixelShader() => new ShaderReference("Shaders/Grid.hlsl", "ps_4_0", "pixel");
 	public IContent<ShaderBytecode>? GetGeometryShader() => null;
@@ -39,9 +39,8 @@ public struct GridMaterial : IMaterial
 		this.Color = Color.White;
 		this.GridSize = 1.0f;
 		this.LineThickness = 0.1f;
-		this.Height = 0;
+		this.DepthOffset = 0.0025f;
 		this.XColor = Axes.XColor;
 		this.ZColor = Axes.ZColor;
-		this.UseCameraPosition = 0;
 	}
 }

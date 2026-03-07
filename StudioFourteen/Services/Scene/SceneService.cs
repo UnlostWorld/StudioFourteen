@@ -19,7 +19,6 @@ using System;
 using System.Collections.Generic;
 using FFXIVClientStructs.Interop;
 using StudioFourteen.Scene;
-using StudioFourteen.Services.Rendering.Draw.Gizmos;
 using StudioFourteen.Services.Tick;
 
 using XivGameObject = FFXIVClientStructs.FFXIV.Client.Game.Object.GameObject;
@@ -30,16 +29,12 @@ public class SceneService : IService
 	public readonly List<SceneObjectBase> Objects = new();
 	public readonly List<SceneObjectBase> Selection = new();
 
-	private readonly GridGizmo grid = new();
-
-	private readonly Dictionary<ushort, GameObject?> gameObjectLookup = new();
+	private bool needsDefaultObjects = true;
 
 	public SceneService()
 	{
 		Studio.Tick.Add(TickChannels.EarlyGame, this.OnEarlyGameTick);
 		Studio.Tick.Add(TickChannels.Game, this.OnGameTick);
-
-		this.grid.Enable();
 	}
 
 	public delegate void SceneChanged(SceneObjectBase obj);
@@ -57,7 +52,6 @@ public class SceneService : IService
 		Studio.Tick.Remove(TickChannels.Game, this.OnGameTick);
 
 		this.Selection.Clear();
-		this.grid.Disable();
 
 		List<SceneObjectBase> objects = new(this.Objects);
 		foreach (SceneObjectBase obj in objects)
@@ -67,7 +61,6 @@ public class SceneService : IService
 		}
 
 		this.Objects.Clear();
-		this.gameObjectLookup.Clear();
 	}
 
 	public T AddObject<T>(string? name = null)
@@ -144,10 +137,17 @@ public class SceneService : IService
 		if (index >= ushort.MaxValue)
 			return null;
 
-		lock (this.gameObjectLookup)
+		lock (this.Objects)
 		{
-			this.gameObjectLookup.TryGetValue((ushort)index, out GameObject? obj);
-			return obj;
+			foreach (SceneObjectBase obj in this.Objects)
+			{
+				if (obj is GameObject gameObject && gameObject.ObjectIndex == index)
+				{
+					return gameObject;
+				}
+			}
+
+			return null;
 		}
 	}
 
@@ -165,7 +165,6 @@ public class SceneService : IService
 			return null;
 
 		Span<Pointer<XivGameObject>> indexSorted = XivGameObjectManager.Instance()->Objects.IndexSorted;
-
 		if (index >= indexSorted.Length)
 			return null;
 
@@ -200,54 +199,89 @@ public class SceneService : IService
 		this.Selection.Clear();
 	}
 
+	public unsafe GameObject? GetOrAddGameObject(int objectIndex)
+	{
+		GameObject? gameObject = this.Get(objectIndex);
+		if (gameObject != null)
+			return gameObject;
+
+		TickService.VerifyGameTickThread();
+		var indexSorted = XivGameObjectManager.Instance()->Objects.IndexSorted;
+
+		if (objectIndex >= indexSorted.Length)
+			return null;
+
+		XivGameObject* pGameObject = indexSorted[objectIndex];
+		if (pGameObject == null)
+			return null;
+
+		string name = pGameObject->NameString;
+		if (string.IsNullOrEmpty(name))
+			return null;
+
+		gameObject = this.Create(pGameObject);
+		if (gameObject == null)
+			return null;
+
+		gameObject.Name = name;
+
+		this.AddObject(gameObject);
+		return gameObject;
+	}
+
+	private void VerifyDefaultSceneObjects()
+	{
+		GameObject? player = this.GetOrAddGameObject(0);
+		if (player != null)
+		{
+			player?.WasAddedAsDefaultObject = true;
+			this.needsDefaultObjects = false;
+		}
+	}
+
 	private unsafe void OnGameTick()
 	{
-		lock (this.gameObjectLookup)
+		lock (this.Objects)
 		{
-			HashSet<ushort> toRemove = new(this.gameObjectLookup.Keys);
-			XivGameObjectManager.ObjectArrays objs = XivGameObjectManager.Instance()->Objects;
-			foreach (XivGameObject* gameObject in objs.IndexSorted)
+			var indexSorted = XivGameObjectManager.Instance()->Objects.IndexSorted;
+
+			/*if (Studio.GroupPose.IsGroupPosing && gameObject->ObjectIndex < GroupPoseService.GPoseFirstCharacter)
+				continue;
+
+			if (!Studio.GroupPose.GroupPose.IsGroupPosing && gameObject->ObjectIndex >= GroupPoseService.GPoseFirstCharacter)
+				continue;*/
+
+			HashSet<GameObject> toRemove = new();
+			foreach (var obj in this.Objects)
 			{
-				if (gameObject == null)
-					continue;
+				if (obj is GameObject gameObject)
+				{
+					if (gameObject.ObjectIndex >= indexSorted.Length)
+					{
+						toRemove.Add(gameObject);
+						continue;
+					}
 
-				/*if (Studio.GroupPose.IsGroupPosing && gameObject->ObjectIndex < GroupPoseService.GPoseFirstCharacter)
-					continue;
-
-				if (!Studio.GroupPose.GroupPose.IsGroupPosing && gameObject->ObjectIndex >= GroupPoseService.GPoseFirstCharacter)
-					continue;*/
-
-				if (!gameObject->IsReadyToDraw() || gameObject->DrawObject == null)
-					continue;
-
-				ushort index = gameObject->ObjectIndex;
-				toRemove.Remove(index);
-
-				if (this.gameObjectLookup.ContainsKey(index))
-					continue;
-
-				string name = gameObject->NameString;
-				if (string.IsNullOrEmpty(name))
-					continue;
-
-				GameObject? obj = this.Create(gameObject);
-				if (obj == null)
-					continue;
-
-				obj.Name = name;
-
-				this.AddObject(obj);
-				this.gameObjectLookup.Add(index, obj);
+					// a bit sloppy, maybe pointers or some other internal Id would be better?
+					XivGameObject* xivObj = indexSorted[gameObject.ObjectIndex];
+					if (xivObj == null || xivObj->NameString != gameObject.Name)
+					{
+						toRemove.Add(gameObject);
+						continue;
+					}
+				}
 			}
 
-			foreach (ushort index in toRemove)
+			foreach (GameObject gameObject in toRemove)
 			{
-				GameObject? obj = this.gameObjectLookup[index];
-				if (obj != null)
-					this.RemoveObject(obj);
-
-				this.gameObjectLookup.Remove(index);
+				this.needsDefaultObjects = gameObject.WasAddedAsDefaultObject;
+				this.RemoveObject(gameObject);
 			}
+		}
+
+		if (this.needsDefaultObjects)
+		{
+			this.VerifyDefaultSceneObjects();
 		}
 	}
 

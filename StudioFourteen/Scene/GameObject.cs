@@ -34,11 +34,10 @@ public partial class GameObject : TransformObjectBase
 	{
 		this.ObjectIndex = objectIndex;
 		this.Name = $"{objectIndex}";
-
-		////this.Gizmos.Add(new GameObjectGizmo(this));
 	}
 
 	public int ObjectIndex { get; private set; }
+	public bool WasAddedAsDefaultObject { get; set; } = false;
 
 	public override string Id => $"GameObject:{this.ObjectIndex}";
 

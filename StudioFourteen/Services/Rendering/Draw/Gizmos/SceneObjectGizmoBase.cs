@@ -15,6 +15,7 @@
 
 namespace StudioFourteen.Services.Rendering.Draw.Gizmos;
 
+using System;
 using StudioFourteen.Services.Rendering.Passes;
 using StudioFourteen.Services.Scene;
 
@@ -33,7 +34,35 @@ public abstract class SceneObjectGizmoBase : GizmoBase
 
 	public void SetTarget(SceneObjectBase sceneObject)
 	{
+		this.sceneObject?.IsSelectedChanged -= this.OnSceneObjectSelected;
+		this.sceneObject?.IsHoveredChanged -= this.OnSceneObjectHovered;
 		this.sceneObject = sceneObject;
+		this.sceneObject?.IsSelectedChanged += this.OnSceneObjectSelected;
+		this.sceneObject?.IsHoveredChanged += this.OnSceneObjectHovered;
+	}
+
+	protected virtual void OnSelected(bool isSelected)
+	{
+	}
+
+	protected virtual void Onhovered(bool isHovered)
+	{
+	}
+
+	private void OnSceneObjectSelected(SceneObjectBase sender, bool value)
+	{
+		if (sender != this.sceneObject)
+			return;
+
+		this.OnSelected(value);
+	}
+
+	private void OnSceneObjectHovered(SceneObjectBase sender, bool value)
+	{
+		if (sender != this.sceneObject)
+			return;
+
+		this.Onhovered(value);
 	}
 }
 
