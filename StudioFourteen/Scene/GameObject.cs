@@ -43,6 +43,8 @@ public partial class GameObject : TransformObjectBase
 
 	public override double TranslationChange => 0.1f;
 
+	public Bounds Bounds { get; protected set; } = Bounds.Zero;
+
 	public override bool IsHit(HitInfo hitInfo)
 	{
 		return hitInfo.ObjectTableIndex == this.ObjectIndex;
@@ -61,7 +63,7 @@ public partial class GameObject : TransformObjectBase
 		if (pGameObject == null || pGameObject->DrawObject == null)
 			return;
 
-		if (this.IsHovered)
+		/*if (this.IsHovered)
 		{
 			pGameObject->Highlight(ObjectHighlightColor.Yellow);
 		}
@@ -72,7 +74,7 @@ public partial class GameObject : TransformObjectBase
 		else
 		{
 			pGameObject->Highlight(ObjectHighlightColor.None);
-		}
+		}*/
 
 		this.Name = pGameObject->NameString;
 

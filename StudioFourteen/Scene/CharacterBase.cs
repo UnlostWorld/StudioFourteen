@@ -15,10 +15,13 @@
 
 namespace StudioFourteen.Scene;
 
+using System.Numerics;
 using Avalonia.Media.Imaging;
 using CommunityToolkit.Mvvm.ComponentModel;
 using Lumina.Excel.Sheets;
 using StudioFourteen.Services.Tick;
+using StudioFourteen.Services.Numerics;
+
 using XivCharacter = FFXIVClientStructs.FFXIV.Client.Game.Character.Character;
 
 public partial class CharacterBase : Skeleton
@@ -73,6 +76,24 @@ public partial class CharacterBase : Skeleton
 		pCharacter->ModelContainer.ModelCharaId = modelCharaId;
 
 		Studio.Redraw.Redraw(this);
+	}
+
+	public unsafe override void OnGameTick()
+	{
+		base.OnGameTick();
+
+		XivCharacter* pCharacter = this.GetXivCharacter();
+		if (pCharacter == null || pCharacter->DrawObject == null)
+			return;
+
+		float radius = pCharacter->GetRadius(false);
+		float height = pCharacter->NameplateOffset.Y; // 😧
+
+		Vector3 center = pCharacter->DrawObject->Position;
+		center.Y += height / 2;
+
+		Vector3 extents = new Vector3(radius, height, radius);
+		this.Bounds = Bounds.FromExtents(center, extents);
 	}
 
 	private void OnPortraitLoaded(string path)

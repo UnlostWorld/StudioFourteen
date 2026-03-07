@@ -15,11 +15,29 @@
 
 namespace StudioFourteen.Scene;
 
+using SharpDX.Direct3D11;
+using StudioFourteen.Services.Rendering;
+using StudioFourteen.Services.Rendering.Draw;
 using StudioFourteen.Services.Rendering.Draw.Gizmos;
+using StudioFourteen.Services.Rendering.Materials;
+using StudioFourteen.Services.Numerics;
 using System;
+using System.Numerics;
 
 public class GameObjectGizmo : SceneObjectGizmoBase
 {
+	private readonly MeshRenderer<LineMaterial> boundsRenderer = new(MeshContent.WireCube);
+
+	public GameObjectGizmo()
+	{
+		this.boundsRenderer.WriteDepth = false;
+		this.boundsRenderer.CullMode = CullMode.None;
+		this.boundsRenderer.IsVisible = false;
+		this.boundsRenderer.IgnoreParentTransform = true;
+		this.boundsRenderer.Material.DepthOffset = 0;
+		this.Add(this.boundsRenderer);
+	}
+
 	public override bool KeepScreenSize => false;
 
 	public GameObject GameObject
@@ -36,6 +54,23 @@ public class GameObjectGizmo : SceneObjectGizmoBase
 	protected override void OnDraw()
 	{
 		this.Transform = this.GameObject.WorldTransform;
+
+		if (this.boundsRenderer.IsVisible)
+		{
+			Bounds bounds = this.GameObject.Bounds;
+
+			this.boundsRenderer.Transform = StudioFourteen.Services.Numerics.Transform.FromTRS(
+				bounds.Center,
+				Quaternion.Identity,
+				bounds.Extents);
+		}
+
 		base.OnDraw();
+	}
+
+	protected override void OnHovered(bool isHovered)
+	{
+		base.OnHovered(isHovered);
+		this.boundsRenderer.IsVisible = isHovered;
 	}
 }

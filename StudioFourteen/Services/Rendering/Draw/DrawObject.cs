@@ -34,6 +34,7 @@ public abstract partial class DrawObject : IDisposable
 	public Vector3 WorldScale { get; private set; }
 
 	public Vector3 CameraPosition { get; set; }
+	public bool IgnoreParentTransform { get; set; } = false;
 
 	protected Transform WorldTransform { get; private set; }
 	protected Transform LocalTransform { get; set; } = Transform.Identity;
@@ -43,7 +44,15 @@ public abstract partial class DrawObject : IDisposable
 	public virtual bool Draw(Renderer renderer, Transform transform, Device device, DeviceContext deviceContext)
 	{
 		this.CameraPosition = renderer.GetCameraPosition(renderer);
-		this.WorldTransform = this.LocalTransform * this.Transform * transform;
+
+		if (this.IgnoreParentTransform)
+		{
+			this.WorldTransform = this.Transform;
+		}
+		else
+		{
+			this.WorldTransform = this.LocalTransform * this.Transform * transform;
+		}
 
 		if (Matrix4x4.Decompose(this.WorldTransform.ToMatrix(), out Vector3 scale, out Quaternion rotation, out Vector3 translation))
 		{

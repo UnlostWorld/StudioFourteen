@@ -45,7 +45,7 @@ public abstract class SceneObjectGizmoBase : GizmoBase
 	{
 	}
 
-	protected virtual void Onhovered(bool isHovered)
+	protected virtual void OnHovered(bool isHovered)
 	{
 	}
 
@@ -62,7 +62,7 @@ public abstract class SceneObjectGizmoBase : GizmoBase
 		if (sender != this.sceneObject)
 			return;
 
-		this.Onhovered(value);
+		this.OnHovered(value);
 	}
 }
 

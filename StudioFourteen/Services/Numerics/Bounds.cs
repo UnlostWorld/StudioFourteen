@@ -13,34 +13,56 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Scene;
+namespace StudioFourteen.Services.Numerics;
 
-using SharpDX.Direct3D11;
-using StudioFourteen.Services.Rendering;
-using StudioFourteen.Services.Rendering.Draw;
-using StudioFourteen.Services.Rendering.Materials;
-using StudioFourteen.Services.Numerics;
+using System;
+using System.Numerics;
 
-public class CharacterGizmo : GameObjectGizmo
+public struct Bounds
 {
-	private readonly MeshRenderer<GridMaterial> gridRenderer = new(MeshContent.Plane);
+	public static Bounds Zero = default;
 
-	public CharacterGizmo()
+	public Vector3 Min = Vector3.Zero;
+	public Vector3 Max = Vector3.Zero;
+
+	public Bounds()
 	{
-		this.IsHitTestVisible = false;
-
-		this.gridRenderer.WriteDepth = false;
-		this.gridRenderer.CullMode = CullMode.None;
-		this.gridRenderer.Transform = Transform.FromScale(5);
-		this.gridRenderer.IsVisible = false;
-		this.Add(this.gridRenderer);
 	}
 
-	public override bool KeepScreenSize => false;
-
-	protected override void OnSelected(bool isSelected)
+	public Vector3 Center
 	{
-		base.OnSelected(isSelected);
-		this.gridRenderer.IsVisible = isSelected;
+		get
+		{
+			return (this.Min + this.Max) / 2;
+		}
+	}
+
+	public Vector3 Extents
+	{
+		get
+		{
+			return (this.Max - this.Min) / 2;
+		}
+	}
+
+	public static Bounds FromExtents(Vector3 center, Vector3 extents)
+	{
+		Bounds b = default;
+		b.Min = center;
+		b.Max = center;
+		b.Encompass(center + extents);
+		b.Encompass(center - extents);
+		return b;
+	}
+
+	public void Encompass(Vector3 pos)
+	{
+		this.Min.X = MathF.Min(pos.X, this.Min.X);
+		this.Min.Y = MathF.Min(pos.Y, this.Min.Y);
+		this.Min.Z = MathF.Min(pos.Z, this.Min.Z);
+
+		this.Max.X = MathF.Max(pos.X, this.Max.X);
+		this.Max.Y = MathF.Max(pos.Y, this.Max.Y);
+		this.Max.Z = MathF.Max(pos.Z, this.Max.Z);
 	}
 }

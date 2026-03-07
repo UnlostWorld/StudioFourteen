@@ -13,34 +13,31 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Scene;
+namespace StudioFourteen.Services.Rendering.Materials;
 
-using SharpDX.Direct3D11;
-using StudioFourteen.Services.Rendering;
+using System.Runtime.InteropServices;
+using SharpDX.D3DCompiler;
+using StudioFourteen.Services.Content;
 using StudioFourteen.Services.Rendering.Draw;
-using StudioFourteen.Services.Rendering.Materials;
-using StudioFourteen.Services.Numerics;
 
-public class CharacterGizmo : GameObjectGizmo
+[StructLayout(LayoutKind.Sequential)]
+public struct LineMaterial : IMaterial
 {
-	private readonly MeshRenderer<GridMaterial> gridRenderer = new(MeshContent.Plane);
+	public Color Color;
+	public float DepthOffset;
+	public float Unused1;
+	public float Unused2;
+	public float Unused3;
 
-	public CharacterGizmo()
+	public bool ShouldDraw => this.Color.A > 0.1f;
+
+	public IContent<ShaderBytecode>? GetVertexShader() => new ShaderReference("Shaders/Line.hlsl", "vs_4_0", "vert");
+	public IContent<ShaderBytecode>? GetPixelShader() => new ShaderReference("Shaders/Line.hlsl", "ps_4_0", "pixel");
+	public IContent<ShaderBytecode>? GetGeometryShader() => new ShaderReference("Shaders/Line.hlsl", "gs_4_0", "geometry");
+
+	public void Initialize()
 	{
-		this.IsHitTestVisible = false;
-
-		this.gridRenderer.WriteDepth = false;
-		this.gridRenderer.CullMode = CullMode.None;
-		this.gridRenderer.Transform = Transform.FromScale(5);
-		this.gridRenderer.IsVisible = false;
-		this.Add(this.gridRenderer);
-	}
-
-	public override bool KeepScreenSize => false;
-
-	protected override void OnSelected(bool isSelected)
-	{
-		base.OnSelected(isSelected);
-		this.gridRenderer.IsVisible = isSelected;
+		this.Color = Color.White;
+		this.DepthOffset = 0;
 	}
 }
