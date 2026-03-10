@@ -63,7 +63,7 @@ public partial class GameObject : TransformObjectBase
 		if (pGameObject == null || pGameObject->DrawObject == null)
 			return;
 
-		/*if (this.IsHovered)
+		if (this.IsHovered)
 		{
 			pGameObject->Highlight(ObjectHighlightColor.Yellow);
 		}
@@ -74,7 +74,7 @@ public partial class GameObject : TransformObjectBase
 		else
 		{
 			pGameObject->Highlight(ObjectHighlightColor.None);
-		}*/
+		}
 
 		this.Name = pGameObject->NameString;
 
