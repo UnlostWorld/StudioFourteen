@@ -18,6 +18,7 @@ namespace StudioFourteen.Interface;
 using System.Collections.ObjectModel;
 using System.Numerics;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using StudioFourteen.Services.Scene;
 using StudioFourteen.Services.Tick;
 
@@ -42,6 +43,12 @@ public partial class Hierarchy : OverlayReference
 
 			Studio.Scene.ObjectAdded += this.OnSceneObjectAdded;
 		});
+	}
+
+	[RelayCommand]
+	public void CloseStudio()
+	{
+		Studio.Close();
 	}
 
 	private void OnSceneObjectAdded(SceneObjectBase obj)

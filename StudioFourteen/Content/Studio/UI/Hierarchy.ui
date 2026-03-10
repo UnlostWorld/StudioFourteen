@@ -2,7 +2,19 @@
 	<StackPanel>
 
 		<StackPanel Orientation="Horizontal">
+			<Button
+				Padding="4"
+				Margin="4,4,12,4"
+				Background="{DynamicResource WarningRed}"
+				Command="{Binding CloseStudioCommand}">
+				<S14:Svg
+					Height="22"
+					Source="Icons/Close.svg"
+					Foreground="{DynamicResource Foreground}" />
+			</Button>
+
 			<Button Content="+" />
+
 			<Button>
 				<S14:Svg
 					Height="22"

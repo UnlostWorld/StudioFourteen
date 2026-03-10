@@ -70,6 +70,7 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl, IL
 
 	public event EventHandler<ShutdownRequestedEventArgs>? ShutdownRequested;
 	public event AvaloniaReady? Ready;
+	public bool IsReady { get; private set; } = false;
 
 	public DispatcherImpl Dispatcher => this.dispatcher ?? throw new Exception("Avalonia not initalized");
 	public UiPass RenderPass => this.renderingPass;
@@ -134,6 +135,8 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl, IL
 	{
 		try
 		{
+			this.IsReady = false;
+
 			while (Studio.Rendering.OverlayRenderer.BackBuffer == null)
 			{
 				Thread.Sleep(10);
@@ -154,6 +157,7 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl, IL
 			app.Start(
 				(main, args) =>
 				{
+					this.IsReady = false;
 					StudioApplication? application = Application.Current as StudioApplication;
 					if (application == null)
 						throw new Exception("Failed to create Application");
@@ -161,10 +165,13 @@ public partial class AvaloniaService : IService, IPlatformLifetimeEventsImpl, IL
 					this.LoadTypes();
 					application.LoadTheme();
 
+					this.IsReady = true;
 					this.Ready?.Invoke(this);
+
 					main.Run(this.cts.Token);
 
 					Studio.Log.Information($"Bye!");
+					this.IsReady = false;
 				},
 				args);
 		}

@@ -113,10 +113,14 @@ public abstract class ContentReference<T>(string path)
 			disposable.Dispose();
 		}
 
+		this.instance = default;
+
 		if (this.lastInstance is IDisposable lastDisposable)
 		{
 			lastDisposable.Dispose();
 		}
+
+		this.lastInstance = default;
 	}
 
 	protected abstract T Load(Stream stream);

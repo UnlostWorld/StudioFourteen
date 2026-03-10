@@ -1,4 +1,6 @@
 <ResourceDictionary>
 	<Color x:Key="Foreground">#ECECEC</Color>
 	<Color x:Key="Trim">#FF1493</Color>
+
+	<Color x:Key="WarningRed">#FF1414</Color>
 </ResourceDictionary>

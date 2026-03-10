@@ -57,10 +57,15 @@ public sealed class Studio : IDalamudPlugin
 		Portraits = new();
 		Redraw = new();
 		Interface = new();
+		Commands = new();
 
 		IsInitialized = true;
 
 		Hooks.EnforceKind.Enable(this.EnforceKindRestrictionsDetour);
+
+		Commands.AddCommand("s14", "Open Studio Fourteen", Open);
+		PluginInterface.UiBuilder.OpenMainUi += Open;
+		PluginInterface.UiBuilder.OpenConfigUi += Open;
 	}
 
 	public static bool IsDisposed { get; private set; } = false;
@@ -83,10 +88,11 @@ public sealed class Studio : IDalamudPlugin
 	public static PortraitService Portraits { get; private set; } = null!;
 	public static RedrawService Redraw { get; private set; } = null!;
 	public static InterfaceService Interface { get; private set; } = null!;
+	public static CommandService Commands { get; private set; } = null!;
 
 	[PluginService] public static IPluginLog DalamudLog { get; private set; } = null!;
 	[PluginService] public static IDalamudPluginInterface PluginInterface { get; private set; } = null!;
-	[PluginService] public static ICommandManager CommandManager { get; private set; } = null!;
+	[PluginService] public static ICommandManager DalamudCommandManager { get; private set; } = null!;
 	[PluginService] public static IDataManager DataManager { get; private set; } = null!;
 	[PluginService] public static IClientState ClientState { get; private set; } = null!;
 	[PluginService] public static ISigScanner SigScanner { get; private set; } = null!;
@@ -98,6 +104,16 @@ public sealed class Studio : IDalamudPlugin
 	[PluginService] public static ITextureProvider TextureProvider { get; private set; } = null!;
 	[PluginService] public static IObjectTable ObjectTable { get; private set; } = null!;
 	[PluginService] public static IAddonEventManager AddonEventManager { get; private set; } = null!;
+
+	public static void Open()
+	{
+		Interface.Open();
+	}
+
+	public static void Close()
+	{
+		Interface.Close();
+	}
 
 	public void Dispose()
 	{

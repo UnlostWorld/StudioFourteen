@@ -17,15 +17,39 @@ namespace StudioFourteen.Interface;
 
 using System;
 using StudioFourteen.Services.Avalonia;
+using StudioFourteen.Services.Tick;
 
 public class InterfaceService : IDisposable
 {
 	private readonly Hierarchy hierarchy = new();
 	private readonly Inspector inspector = new();
 
+	private bool isWaitingForReady = false;
+
 	public InterfaceService()
 	{
 		Studio.Avalonia.Ready += this.OnAvaloniaReady;
+	}
+
+	public void Open()
+	{
+		if (!Studio.Avalonia.IsReady)
+		{
+			this.isWaitingForReady = true;
+			return;
+		}
+
+		this.isWaitingForReady = false;
+
+		Studio.Tick.Dispatch(TickChannels.Ui, () =>
+		{
+			this.hierarchy.Show();
+		});
+	}
+
+	public void Close()
+	{
+		this.hierarchy.Close();
 	}
 
 	public void Dispose()
@@ -38,7 +62,10 @@ public class InterfaceService : IDisposable
 	{
 		try
 		{
-			this.hierarchy.Show();
+			if (this.isWaitingForReady)
+			{
+				this.Open();
+			}
 		}
 		catch (Exception ex)
 		{

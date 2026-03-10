@@ -90,6 +90,8 @@ public partial class WindowReference : ObservableObject, IDisposable
 		this.window?.Close();
 		this.window = null;
 		this.presenter = null;
+		this.contentReference.Dispose();
+		this.chromeReference?.Dispose();
 	}
 
 	public void Hide()

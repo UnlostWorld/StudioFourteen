@@ -13,42 +13,51 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Avalonia.Platform;
+namespace StudioFourteen.Services.Content;
 
-using global::Avalonia;
-using global::Avalonia.Controls;
-using global::Avalonia.Controls.Primitives.PopupPositioning;
-using global::Avalonia.Platform;
-using global::Avalonia.Rendering.Composition;
+using System;
+using System.Collections.Generic;
+using global::Dalamud.Game.Command;
 
-public class PopupImpl : WindowImpl, IPopupImpl
+public class CommandService : IService
 {
-	public PopupImpl(WindowImpl owner, Compositor compositor, StudioScreens screen)
-		: base(compositor, screen)
+	private readonly Dictionary<string, Action> callbacks = new();
+
+	public void Dispose()
 	{
-		this.PopupPositioner = new ManagedPopupPositioner(
-			new ManagedPopupPositionerPopupImplHelper(owner, this.MoveResize));
+		foreach ((string command, Action callback) in this.callbacks)
+		{
+			Studio.DalamudCommandManager.RemoveHandler(command);
+		}
 	}
 
-	public IPopupPositioner? PopupPositioner { get; init; }
-
-	public override void Show(bool activate, bool isDialog)
+	public void AddCommand(string command, string description, Action callback)
 	{
-		base.Show(false, isDialog);
+		if (!command.StartsWith('/'))
+			command = '/' + command;
+
+		if (this.callbacks.ContainsKey(command))
+			throw new Exception($"Command: {command} already registered");
+
+		this.callbacks[command] = callback;
+		Studio.DalamudCommandManager.AddHandler(command, new CommandInfo(this.HandleCommand)
+		{
+			HelpMessage = description,
+		});
 	}
 
-	public void SetWindowManagerAddShadowHint(bool enabled)
+	private void HandleCommand(string command, string arguments)
 	{
-	}
-
-	public void TakeFocus()
-	{
-		this.InputRoot?.Focus();
-	}
-
-	private void MoveResize(PixelPoint position, Size size, double scaling)
-	{
-		this.Move(position);
-		this.Resize(size, WindowResizeReason.Layout);
+		if (this.callbacks.ContainsKey(command))
+		{
+			try
+			{
+				this.callbacks[command].Invoke();
+			}
+			catch (Exception ex)
+			{
+				Studio.Log.Error(ex, "Error handling command");
+			}
+		}
 	}
 }
