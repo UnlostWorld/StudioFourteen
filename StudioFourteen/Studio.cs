@@ -66,6 +66,11 @@ public sealed class Studio : IDalamudPlugin
 		Commands.AddCommand("s14", "Open Studio Fourteen", Open);
 		PluginInterface.UiBuilder.OpenMainUi += Open;
 		PluginInterface.UiBuilder.OpenConfigUi += Open;
+
+		// Open the UI if this is a debug build.
+#if DEBUG
+		Open();
+#endif
 	}
 
 	public static bool IsDisposed { get; private set; } = false;

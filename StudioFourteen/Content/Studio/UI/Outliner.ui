@@ -101,7 +101,7 @@
 						<Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
 
 						<Setter Property="Padding" Value="1" />
-						<Setter Property="Margin" Value="0" />
+						<Setter Property="Margin" Value="0,2" />
 
 						<Setter Property="Template">
 							<ControlTemplate>
@@ -233,19 +233,81 @@
 			</ListBox>
 
 			<Button
-				IsEnabled="False"
 				HorizontalAlignment="Center"
 				Height="32"
 				Width="32"
 				Padding="0"
-				ToolTip.Tip="Add a new or existing object to the outliner.">
-				<StackPanel Orientation="Horizontal">
-					<S14:Svg
-						Height="22"
-						Source="Icons/Add.svg"
-						Foreground="{DynamicResource Foreground}" />
-				</StackPanel>
+				ToolTip.Tip="Add a new or existing object to the outliner."
+				Command="{Binding GetAvailableCharactersCommand}">
+
+				<S14:Svg
+					Height="22"
+					Source="Icons/Add.svg"
+					Foreground="{DynamicResource Foreground}" />
+
+				<Button.Flyout>
+					<Flyout>
+						<Grid
+							Margin="2"
+							RowDefinitions="Auto, Auto, Auto">
+
+							<ItemsControl
+								Margin="4"
+								Grid.Row="0"
+								ItemsSource="{Binding AvailableObjects}"
+								MaxHeight="256">
+
+								<ItemsControl.ItemsPanel>
+									<ItemsPanelTemplate>
+										<UniformGrid Rows="1" />
+									</ItemsPanelTemplate>
+								</ItemsControl.ItemsPanel>
+
+								<ItemsControl.ItemTemplate>
+									<DataTemplate>
+										<Button
+											IsEnabled="False"
+											Width="32"
+											Height="32"
+											Theme="{StaticResource ListButton}"
+											Padding="4"
+											StudioFourteen.Interface.Behaviors:CloseFlyout.OnClick="True"
+											ToolTip.Tip="{Binding Name}">
+											<S14:Svg
+												Source="{Binding IconPath}"
+												Foreground="{DynamicResource Foreground}" />
+										</Button>
+									</DataTemplate>
+								</ItemsControl.ItemTemplate>
+							</ItemsControl>
+
+							<Separator
+								Grid.Row="1"
+								IsVisible="{Binding AvailableCharacters.Count, Converter={x:Static Converters:Int.IsNotZero}}" />
+
+							<ItemsControl
+								Grid.Row="2"
+								Margin="0,2,0,0"
+								ItemsSource="{Binding AvailableCharacters}"
+								MaxHeight="256">
+								<ItemsControl.ItemTemplate>
+									<DataTemplate>
+										<Button
+											Theme="{StaticResource ListButton}"
+											StudioFourteen.Interface.Behaviors:CloseFlyout.OnClick="True"
+											Command="{Binding AddCommand}">
+											<TextBlock Text="{Binding Name}" />
+										</Button>
+									</DataTemplate>
+								</ItemsControl.ItemTemplate>
+							</ItemsControl>
+
+						</Grid>
+					</Flyout>
+				</Button.Flyout>
+
 			</Button>
+
 		</StackPanel>
 
 	</StackPanel>

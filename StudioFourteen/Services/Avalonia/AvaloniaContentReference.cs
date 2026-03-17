@@ -45,6 +45,7 @@ public class AvaloniaContentReference<T>(string path)
 		sb.AppendLine("xmlns:x=\"http://schemas.microsoft.com/winfx/2006/xaml\"");
 		sb.AppendLine("xmlns:sys=\"clr-namespace:System;assembly=mscorlib\"");
 		sb.AppendLine("xmlns:S14=\"clr-namespace:StudioFourteen.Interface.Controls;assembly=StudioFourteen\"");
+		sb.AppendLine("xmlns:Converters=\"clr-namespace:StudioFourteen.Interface.Converters;assembly=StudioFourteen\"");
 
 		foreach (string ns in namespaces)
 		{

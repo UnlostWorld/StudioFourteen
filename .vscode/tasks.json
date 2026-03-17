@@ -3,8 +3,21 @@
 	"tasks": [
 		{
 			"type": "shell",
-			"label": "Build Studio Fourteen",
+			"label": "Build Studio Fourteen - Debug",
 			"command": "dotnet build StudioFourteen.slnx --tl:off",
+			"problemMatcher": "$msCompile",
+			"presentation": {
+				"clear": true
+			},
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			},
+		},
+		{
+			"type": "shell",
+			"label": "Build Studio Fourteen - Release",
+			"command": "dotnet build StudioFourteen.slnx /p:Configuration=Release --tl:off",
 			"problemMatcher": "$msCompile",
 			"presentation": {
 				"clear": true

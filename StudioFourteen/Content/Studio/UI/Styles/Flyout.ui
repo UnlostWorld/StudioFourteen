@@ -1,9 +1,7 @@
 <ResourceDictionary>
 	<ControlTheme x:Key="{x:Type FlyoutPresenter}"
 		TargetType="{x:Type FlyoutPresenter}">
-
-		<Setter Property="Padding" Value="8,4" />
-
+		<Setter Property="Padding" Value="4" />
 		<Setter Property="Template">
 			<ControlTemplate>
 
@@ -29,4 +27,5 @@
 		</Setter>
 
 	</ControlTheme>
+
 </ResourceDictionary>
