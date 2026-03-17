@@ -67,6 +67,7 @@ public sealed class Studio : IDalamudPlugin
 		PluginInterface.UiBuilder.OpenMainUi += Open;
 		PluginInterface.UiBuilder.OpenConfigUi += Open;
 
+		// Open the UI if this is a debug build.
 #if DEBUG
 		Open();
 #endif
