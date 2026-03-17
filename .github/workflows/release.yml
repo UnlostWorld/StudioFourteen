@@ -28,7 +28,7 @@ jobs:
         Expand-Archive -Force latest.zip "$env:AppData\XIVLauncher\addon\Hooks\dev"
 
     - name: Build StudioFourteen
-      run: dotnet build StudioFourteen.sln /p:Configuration=Release /p:Version=${{ github.run_number }}
+      run: dotnet build StudioFourteen.slnx /p:Configuration=Release /p:Version=${{ github.run_number }}
 
     - name: Zip Release
       uses: TheDoctor0/zip-release@0.6.0
