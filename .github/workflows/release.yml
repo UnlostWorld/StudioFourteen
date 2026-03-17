@@ -34,14 +34,14 @@ jobs:
       uses: TheDoctor0/zip-release@0.6.0
       with:
         filename: '${{ github.workspace }}/StudioFourteen.zip'
-        directory: '${{ github.workspace }}/bin/'
+        directory: '${{ github.workspace }}/StudioFourteen/bin/'
         exclusions: '*.pdb* *.xml*'
 
     - name: Upload Release
       uses: ncipollo/release-action@v1
       with:
         allowUpdates: true
-        artifacts: '${{ github.workspace }}/StudioFourteen/StudioFourteen.zip'
+        artifacts: '${{ github.workspace }}/StudioFourteen.zip'
         name: PeerSync v${{ github.run_number }}
         tag: v${{ github.run_number }}
         draft: false
