@@ -61,11 +61,11 @@
           "Avalonia": "11.3.9"
         }
       },
-      "Avalonia.Themes.Fluent": {
+      "Avalonia.Themes.Simple": {
         "type": "Direct",
         "requested": "[11.3.9, )",
         "resolved": "11.3.9",
-        "contentHash": "XSgQxSRKgK/yNhkKa1rGuEUDISi+VNxwoj1pq4JUhFd1XXk/dqGsc4MfESItwTyGEYJH+HDbWfWEPVDDxAfUJg==",
+        "contentHash": "BicF6GQJJs6sI5+GcuTujnUdMijVyBpD3QD9O9ZpqkSSDE3vyZFbRZb5MyCBlPu/LxPANnKoTW95erlpYIICTw==",
         "dependencies": {
           "Avalonia": "11.3.9"
         }
@@ -291,14 +291,6 @@
           "SkiaSharp": "2.88.9",
           "SkiaSharp.NativeAssets.Linux": "2.88.9",
           "SkiaSharp.NativeAssets.WebAssembly": "2.88.9"
-        }
-      },
-      "Avalonia.Themes.Simple": {
-        "type": "Transitive",
-        "resolved": "11.3.9",
-        "contentHash": "BicF6GQJJs6sI5+GcuTujnUdMijVyBpD3QD9O9ZpqkSSDE3vyZFbRZb5MyCBlPu/LxPANnKoTW95erlpYIICTw==",
-        "dependencies": {
-          "Avalonia": "11.3.9"
         }
       },
       "Avalonia.Win32": {
