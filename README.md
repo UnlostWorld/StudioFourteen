@@ -12,13 +12,5 @@ Special thanks to the creators, maintainers, and contributors of these amazing p
 * [Dalamud](https://github.com/goatcorp/Dalamud)
 * [FFXIVClientStructs](https://github.com/aers/FFXIVClientStructs)
 
-studio Fourteen utilizes the following packages:
-* [DependencyPropertyGenerator](https://github.com/HavenDV/DependencyPropertyGenerator)
-* [PropertyChanged.SourceGenerator](https://github.com/canton7/PropertyChanged.SourceGenerator)
-* [StyleCopAnalyzers](https://github.com/DotNetAnalyzers/StyleCopAnalyzers)
-* [Serilog](https://github.com/serilog/serilog)
-* [ImageSharp](https://github.com/SixLabors/ImageSharp)
-* [Terrafx](https://github.com/terrafx/terrafx.interop.windows)
-* [VirtualizingWrapPanel](https://github.com/sbaeumlisberger/VirtualizingWrapPanel)
 
-Some iconography by [Font Awesome](https://fontawesome.com/)
+Some iconography by [iconoir](https://iconoir.com)
