@@ -118,6 +118,7 @@ public sealed class Studio : IDalamudPlugin
 	public static void Close()
 	{
 		Interface.Close();
+		Scene.ClearSelection();
 	}
 
 	public void Dispose()
