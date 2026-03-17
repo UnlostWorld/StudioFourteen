@@ -1,0 +1,67 @@
+<ResourceDictionary>
+
+	<ControlTheme x:Key="{x:Type ListBoxItem}"
+		TargetType="{x:Type ListBoxItem}">
+
+		<Setter Property="Background" Value="#888888" />
+		<Setter Property="Padding" Value="16 2" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Panel>
+					<Panel
+						Name="PART_HoverElement"
+						Opacity="0">
+						<Panel.Transitions>
+							<Transitions>
+								<DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+							</Transitions>
+						</Panel.Transitions>
+
+						<Border
+							CornerRadius="4"
+							HorizontalAlignment="Stretch"
+							VerticalAlignment="Stretch"
+							Background="{TemplateBinding Background}" />
+					</Panel>
+
+					<Panel
+						Name="PART_SelectedElement"
+						Opacity="0">
+						<Panel.Transitions>
+							<Transitions>
+								<DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+							</Transitions>
+						</Panel.Transitions>
+
+						<Border
+							CornerRadius="4"
+							HorizontalAlignment="Stretch"
+							VerticalAlignment="Stretch"
+							BorderThickness="2"
+							BorderBrush="{DynamicResource Trim}" />
+					</Panel>
+
+					<ContentPresenter
+						Name="PART_ContentPresenter"
+						Padding="{TemplateBinding Padding}"
+						HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+						VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+						Content="{TemplateBinding Content}"
+						ContentTemplate="{TemplateBinding ContentTemplate}" />
+				</Panel>
+			</ControlTemplate>
+		</Setter>
+
+		<Style Selector="^:pointerover">
+			<Style Selector="^ /template/ Panel#PART_HoverElement">
+				<Setter Property="Opacity" Value="0.6" />
+			</Style>
+		</Style>
+
+		<Style Selector="^:selected">
+			<Style Selector="^ /template/ Panel#PART_SelectedElement">
+				<Setter Property="Opacity" Value="1.0" />
+			</Style>
+		</Style>
+	</ControlTheme>
+</ResourceDictionary>

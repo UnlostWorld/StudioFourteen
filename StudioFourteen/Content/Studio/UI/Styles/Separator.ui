@@ -1,0 +1,16 @@
+<ResourceDictionary>
+	<ControlTheme x:Key="{x:Type Separator}"
+		TargetType="{x:Type Separator}">
+
+		<Setter Property="Focusable" Value="False" />
+		<Setter Property="Margin" Value="3" />
+		<Setter Property="Height" Value="1" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Border
+					Background="#99666666" />
+			</ControlTemplate>
+		</Setter>
+	</ControlTheme>
+
+</ResourceDictionary>

@@ -199,6 +199,12 @@ public class SceneService : IService
 		this.Selection.Clear();
 	}
 
+	public bool HasGameObject(int objectIndex)
+	{
+		GameObject? gameObject = this.Get(objectIndex);
+		return gameObject != null;
+	}
+
 	public unsafe GameObject? GetOrAddGameObject(int objectIndex)
 	{
 		GameObject? gameObject = this.Get(objectIndex);

@@ -126,6 +126,45 @@
 
 	</ControlTheme>
 
+	<ControlTheme x:Key="ListButton" TargetType="{x:Type Button}"
+		BasedOn="{StaticResource ButtonTheme}">
+
+		<Setter Property="Background" Value="#888888" />
+		<Setter Property="Padding" Value="4 2" />
+		<Setter Property="Margin" Value="0" />
+		<Setter Property="HorizontalContentAlignment" Value="Left" />
+		<Setter Property="Template">
+			<ControlTemplate>
+				<Panel>
+					<Panel
+						Name="PART_HoverElement"
+						Opacity="0">
+						<Panel.Transitions>
+							<Transitions>
+								<DoubleTransition Property="Opacity" Duration="0:0:0.1" />
+							</Transitions>
+						</Panel.Transitions>
+
+						<Border
+							CornerRadius="4"
+							HorizontalAlignment="Stretch"
+							VerticalAlignment="Stretch"
+							Background="{TemplateBinding Background}" />
+					</Panel>
+
+					<ContentPresenter
+						Name="PART_ContentPresenter"
+						Padding="{TemplateBinding Padding}"
+						HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+						VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+						Content="{TemplateBinding Content}"
+						ContentTemplate="{TemplateBinding ContentTemplate}" />
+				</Panel>
+			</ControlTemplate>
+		</Setter>
+
+	</ControlTheme>
+
 	<ControlTheme x:Key="{x:Type S14:InspectorLink}"
 		TargetType="{x:Type S14:InspectorLink}"
 		BasedOn="{StaticResource ButtonTheme}" />
