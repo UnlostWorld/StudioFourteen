@@ -54,7 +54,7 @@ jobs:
         git config --global user.email "actions@github.com"
         git fetch origin main && git checkout main
         $ver = '${{ github.run_number }}'
-        $path = './Resources/Templates/repo.tmpl'
+        $path = './Assets/repo.tmpl'
         $new_path = './repo.json'
         $content = get-content -path $path
         $content = $content -replace '{version}',$ver
