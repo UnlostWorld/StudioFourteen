@@ -4,7 +4,7 @@
 		{
 			"type": "shell",
 			"label": "Build Studio Fourteen",
-			"command": "dotnet build StudioFourteen/StudioFourteen.csproj --tl:off",
+			"command": "dotnet build StudioFourteen.slnx --tl:off",
 			"problemMatcher": "$msCompile",
 			"presentation": {
 				"clear": true

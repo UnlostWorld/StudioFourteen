@@ -223,7 +223,7 @@ public class Svg : Control
 
 		protected override SKPicture Load(Stream stream)
 		{
-			string foregroundColor = ColorToHexConverter.ToHexString(this.Foreground, AlphaComponentPosition.Trailing, false, true);
+			string foregroundColor = $"#{this.Foreground.R:X}{this.Foreground.G:X}{this.Foreground.B:X}";
 			string css = $".foreground {{ stroke: {foregroundColor}; }}";
 			SvgParameters parameters = new(null, css);
 
