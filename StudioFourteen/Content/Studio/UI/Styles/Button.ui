@@ -10,6 +10,7 @@
 		<Setter Property="Padding" Value="16, 3" />
 		<Setter Property="ClipToBounds" Value="False" />
 		<Setter Property="Cursor" Value="Hand" />
+		<Setter Property="ToolTip.ShowOnDisabled" Value="True" />
 		<Setter Property="Template">
 			<ControlTemplate>
 				<Panel>
@@ -18,7 +19,9 @@
 						HorizontalAlignment="Stretch"
 						VerticalAlignment="Stretch"
 						BorderThickness="1"
-						BorderBrush="#99000000">
+						BorderBrush="#99000000"
+						Name="PART_Borders"
+						Opacity="1">
 						<Border
 							CornerRadius="15"
 							HorizontalAlignment="Stretch"
@@ -44,15 +47,14 @@
 						</Border>
 					</Border>
 
-					<Grid>
-						<ContentPresenter
-							Name="PART_ContentPresenter"
-							HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
-							VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
-							Margin="{TemplateBinding Padding}"
-							ContentTemplate="{TemplateBinding ContentTemplate}"
-							Content="{TemplateBinding Content}" />
-					</Grid>
+					<ContentPresenter
+						Name="PART_ContentPresenter"
+						HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+						VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+						Margin="{TemplateBinding Padding}"
+						ContentTemplate="{TemplateBinding ContentTemplate}"
+						Content="{TemplateBinding Content}" />
+
 				</Panel>
 			</ControlTemplate>
 		</Setter>
@@ -67,6 +69,10 @@
 			<Style Selector="^ /template/ Panel#PART_HoverElement">
 				<Setter Property="Opacity" Value="0.4" />
 			</Style>
+		</Style>
+
+		<Style Selector="^:disabled">
+			<Setter Property="Opacity" Value="0.5" />
 		</Style>
 
 	</ControlTheme>
