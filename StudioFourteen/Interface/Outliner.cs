@@ -22,12 +22,12 @@ using CommunityToolkit.Mvvm.Input;
 using StudioFourteen.Services.Scene;
 using StudioFourteen.Services.Tick;
 
-public partial class Hierarchy : OverlayReference
+public partial class Outliner : OverlayReference
 {
 	[ObservableProperty] private ObservableCollection<SceneObjectBase> sceneObjects = new();
 
-	public Hierarchy()
-		: base("UI/Hierarchy.ui", new Vector2(0, 0))
+	public Outliner()
+		: base("UI/Outliner.ui", new Vector2(0, 0))
 	{
 		Studio.Scene.ObjectRemoved += this.OnSceneObjectRemoved;
 

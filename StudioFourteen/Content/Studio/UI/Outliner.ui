@@ -93,81 +93,77 @@
 
 						<Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
 
-						<Setter Property="Padding" Value="0" />
+						<Setter Property="Padding" Value="1" />
 						<Setter Property="Margin" Value="0" />
 
 						<Setter Property="Template">
 							<ControlTemplate>
 								<Panel
 									StudioFourteen.Interface.Behaviors:HoverCommand.Command="{Binding InterfaceHoverCommand}">
-									<Border
-										HorizontalAlignment="Left"
-										VerticalAlignment="Stretch"
-										BoxShadow="0 3 17 2 #88000000"
-										CornerRadius="999"
-										BorderThickness="1"
-										BorderBrush="#99000000"
-										Background="#99222222">
 
-										<Border
-											BorderThickness="1"
-											CornerRadius="999"
-											BorderBrush="#99666666">
+									<Ellipse
+										StrokeThickness="1"
+										Stroke="#99000000"
+										Fill="#99222222" />
 
-											<Panel>
-												<Border
-													Name="Border"
-													CornerRadius="30, 0, 0, 30"
-													Opacity="0.25"
-													HorizontalAlignment="Stretch"
-													VerticalAlignment="Stretch" />
+									<Ellipse
+										StrokeThickness="1"
+										Margin="1"
+										Stroke="#99666666" />
 
-												<Border
-													Name="SelectionBorder"
-													CornerRadius="999"
-													Opacity="0"
-													Margin="-1"
-													HorizontalAlignment="Stretch"
-													VerticalAlignment="Stretch"
-													BorderThickness="1"
-													BorderBrush="{DynamicResource Trim}">
+									<Ellipse
+										Name="SelectionBorder"
+										Opacity="0"
+										Margin="2"
+										StrokeThickness="1"
+										Stroke="{DynamicResource Trim}">
 
-													<Border.Transitions>
-														<Transitions>
-															<DoubleTransition Property="Opacity"
-																Duration="0:0:0.1" />
-														</Transitions>
-													</Border.Transitions>
-												</Border>
+										<Ellipse.Transitions>
+											<Transitions>
+												<DoubleTransition Property="Opacity"
+													Duration="0:0:0.1" />
+											</Transitions>
+										</Ellipse.Transitions>
+									</Ellipse>
 
-												<ContentPresenter
-													Name="PART_ContentPresenter"
-													HorizontalAlignment="Stretch"
-													VerticalAlignment="Center"
-													Margin="{TemplateBinding Padding}"
-													Content="{TemplateBinding Content}"
-													ContentTemplate="{TemplateBinding ContentTemplate}" />
-											</Panel>
-										</Border>
-									</Border>
+									<ContentPresenter
+										Name="PART_ContentPresenter"
+										Margin="{TemplateBinding Padding}"
+										Content="{TemplateBinding Content}"
+										ContentTemplate="{TemplateBinding ContentTemplate}" />
+
+									<Panel
+										Name="PART_HoverElement"
+										Opacity="0"
+										Margin="2">
+										<Panel.Transitions>
+											<Transitions>
+												<DoubleTransition Property="Opacity"
+													Duration="0:0:0.1" />
+											</Transitions>
+										</Panel.Transitions>
+
+										<Ellipse
+											Fill="#99FFFFFF" />
+									</Panel>
 								</Panel>
 							</ControlTemplate>
 						</Setter>
 
 						<Style Selector="^:pointerover">
-							<Style Selector="^ /template/ Border#Border">
-								<Setter Property="Opacity" Value="0.6" />
+							<Style Selector="^ /template/ Panel#PART_HoverElement">
+								<Setter Property="Opacity" Value="0.2" />
 							</Style>
 						</Style>
 
 						<Style Selector="^:pressed">
-							<Style Selector="^ /template/ Border#Border">
-								<Setter Property="Opacity" Value="0.4" />
+							<Style Selector="^ /template/ Panel#PART_HoverElement">
+								<Setter Property="Opacity" Value="0.2" />
 							</Style>
 						</Style>
 
 						<Style Selector="^:selected">
-							<Style Selector="^ /template/ Border#SelectionBorder">
+							<Style Selector="^ /template/ Ellipse#SelectionBorder">
 								<Setter Property="Opacity" Value="1.0" />
 							</Style>
 						</Style>
@@ -234,7 +230,7 @@
 				Height="32"
 				Width="32"
 				Padding="0"
-				ToolTip.Tip="Add a new or existing object to the hierarchy.">
+				ToolTip.Tip="Add a new or existing object to the outliner.">
 				<StackPanel Orientation="Horizontal">
 					<S14:Svg
 						Height="22"

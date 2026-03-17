@@ -21,7 +21,7 @@ using StudioFourteen.Services.Tick;
 
 public class InterfaceService : IDisposable
 {
-	private readonly Hierarchy hierarchy = new();
+	private readonly Outliner outliner = new();
 	private readonly Inspector inspector = new();
 
 	private bool isWaitingForReady = false;
@@ -43,18 +43,18 @@ public class InterfaceService : IDisposable
 
 		Studio.Tick.Dispatch(TickChannels.Ui, () =>
 		{
-			this.hierarchy.Show();
+			this.outliner.Show();
 		});
 	}
 
 	public void Close()
 	{
-		this.hierarchy.Close();
+		this.outliner.Close();
 	}
 
 	public void Dispose()
 	{
-		this.hierarchy.Dispose();
+		this.outliner.Dispose();
 		this.inspector.Dispose();
 	}
 

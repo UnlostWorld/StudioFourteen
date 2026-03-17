@@ -75,17 +75,12 @@ public partial class Portrait : IDisposable
 		{
 			this.pView = IMemorySpace.GetUISpace()->Create<CharaView>();
 
-			if (this.objectIndex != -1)
-			{
-				Character* pCharacter = (Character*)Studio.Scene.GetXivObject(this.objectIndex);
-				this.pView->ModelData.CopyFromCharacter(pCharacter);
-			}
-			else
-			{
-				// Set customization options to anything we want. =]
-				this.pView->ModelData.CustomizeData.Race = 0;
-				this.pView->ModelData.CustomizeData.Sex = 1;
-			}
+			Character* pCharacter = (Character*)Studio.Scene.GetXivObject(this.objectIndex);
+			this.pView->ModelData.CopyFromCharacter(pCharacter);
+
+			// Chnging the name of the preview character causes it to not appear...
+			// Unsure why, or how to get mods to work here otherwise. 🤔
+			////this.pView->GetCharacter()->NameString = pCharacter->NameString;
 
 			// Use object Id 1 as its guaranteed to be the current characters minion/mount/whatever,
 			//  which wont ever have its own chara view, so we can safely use it for our purposes.
@@ -104,10 +99,10 @@ public partial class Portrait : IDisposable
 			Studio.Rendering.OverlayRenderer.AddPass(OverlayLayers.AfterEffects, this.pass);
 		}
 
-		this.pView->SetCameraDistance(-1.9f);
-
-		// TODO: Change based on character height
-		this.pView->SetCameraXAndY(0.0f, -29.0f);
+		this.pView->ResetPositions();
+		float height = this.pView->GetCharacter()->NameplateOffset.Y;
+		this.pView->SetCameraDistance(-12f);
+		this.pView->SetCameraXAndY(0.0f, -(height * 250));
 
 		this.pView->Render(1);
 		this.framesToRender--;
@@ -149,7 +144,5 @@ public partial class Portrait : IDisposable
 
 		this.IsDone = true;
 		this.callback.Invoke(path);
-
-		Studio.Log.Information("generated portrait");
 	}
 }
