@@ -105,7 +105,7 @@
 
 						<Setter Property="ContextMenu">
 							<ContextMenu>
-								<MenuItem Header="Hello" />
+								<MenuItem Header="Remove" Command="{Binding RemoveFromSceneCommand}" />
 							</ContextMenu>
 						</Setter>
 
