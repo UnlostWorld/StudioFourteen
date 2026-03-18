@@ -51,15 +51,12 @@ public abstract class ContentReference<T>(string path)
 	{
 		// Calculate file hash to verify its actually changed.
 		using Stream stream = Studio.Content.GetContent(this);
-		using (SHA256 sha256Hash = SHA256.Create())
-		{
-			byte[] hashBytes = sha256Hash.ComputeHash(stream);
-			if (this.lastHash != null && hashBytes.SequenceEqual(this.lastHash))
-			{
-				return;
-			}
+		using SHA256 sha256Hash = SHA256.Create();
+		byte[] hashBytes = sha256Hash.ComputeHash(stream);
 
-			this.lastHash = hashBytes;
+		if (this.lastHash != null && hashBytes.SequenceEqual(this.lastHash))
+		{
+			return;
 		}
 
 		Studio.Log.Information($"Reloading file: {this.Path}");
@@ -85,6 +82,9 @@ public abstract class ContentReference<T>(string path)
 			try
 			{
 				using Stream stream = Studio.Content.GetContent(this);
+				using SHA256 sha256Hash = SHA256.Create();
+				this.lastHash = sha256Hash.ComputeHash(stream);
+				stream.Position = 0;
 				this.instance = this.Load(stream);
 			}
 			catch (Exception ex)
