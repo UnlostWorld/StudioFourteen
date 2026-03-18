@@ -145,7 +145,7 @@ public sealed class Studio : IDalamudPlugin
 		}
 		catch (Exception ex)
 		{
-			Studio.Log.Error(ex, "Error disposing services");
+			Studio.Log.Error(ex, "Error disposing services.");
 		}
 		finally
 		{

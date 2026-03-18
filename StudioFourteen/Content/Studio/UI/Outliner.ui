@@ -105,7 +105,27 @@
 
 						<Setter Property="ContextMenu">
 							<ContextMenu>
-								<MenuItem Header="Remove" Command="{Binding RemoveFromSceneCommand}" />
+								<MenuItem
+									Header="Remove"
+									Command="{Binding RemoveFromSceneCommand}"
+									ToolTip.Tip="Remove this item from the current scene.">
+									<MenuItem.Icon>
+										<S14:Svg
+											Source="Icons/Delete.svg"
+											Foreground="{DynamicResource Foreground}" />
+									</MenuItem.Icon>
+								</MenuItem>
+
+								<MenuItem
+									Header="Reset"
+									Command="{Binding ResetCommand}"
+									ToolTip.Tip="Reset this item to defaults.">
+									<MenuItem.Icon>
+										<S14:Svg
+											Source="Icons/Undo.svg"
+											Foreground="{DynamicResource Foreground}" />
+									</MenuItem.Icon>
+								</MenuItem>
 							</ContextMenu>
 						</Setter>
 
@@ -148,7 +168,8 @@
 									<Panel
 										Name="PART_HoverElement"
 										Opacity="0"
-										Margin="2">
+										Margin="2"
+										IsHitTestVisible="False">
 										<Panel.Transitions>
 											<Transitions>
 												<DoubleTransition Property="Opacity"
