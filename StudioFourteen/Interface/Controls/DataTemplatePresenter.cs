@@ -20,43 +20,24 @@ using Avalonia;
 using Avalonia.Controls.Primitives;
 using Avalonia.Markup.Xaml.Templates;
 using Avalonia.Threading;
+using PropertyGenerator.Avalonia;
 using StudioFourteen.Services.Avalonia;
 
-public class DataTemplatePresenter : TemplatedControl
+public partial class DataTemplatePresenter : TemplatedControl
 {
-	public static readonly StyledProperty<string?> TemplateDirectoryProperty;
-	public static readonly StyledProperty<object?> ContentProperty;
-
 	private readonly List<AvaloniaContentReference<DataTemplate>> templateReferences = new();
 
-	static DataTemplatePresenter()
+	[GeneratedStyledProperty]
+	public partial string? TemplateDirectory { get; set; }
+
+	[GeneratedStyledProperty]
+	public partial object? Content { get; set; }
+
+	partial void OnTemplateDirectoryPropertyChanged(string? newValue)
 	{
-		TemplateDirectoryProperty = AvaloniaProperty.Register<DataTemplatePresenter, string?>(
-			nameof(DataTemplatePresenter.TemplateDirectory));
-
-		ContentProperty = AvaloniaProperty.Register<DataTemplatePresenter, object?>(
-			nameof(DataTemplatePresenter.Content));
-	}
-
-	public string? TemplateDirectory
-	{
-		get => this.GetValue(TemplateDirectoryProperty);
-		set => this.SetValue(TemplateDirectoryProperty, value);
-	}
-
-	public object? Content
-	{
-		get => this.GetValue(ContentProperty);
-		set => this.SetValue(ContentProperty, value);
-	}
-
-	protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-	{
-		base.OnPropertyChanged(change);
-
-		if (change.Property == TemplateDirectoryProperty && this.TemplateDirectory != null)
+		if (newValue != null)
 		{
-			List<string> templatePaths = Studio.Content.GetContents(this.TemplateDirectory);
+			List<string> templatePaths = Studio.Content.GetContents(newValue);
 			this.templateReferences.Clear();
 			foreach (string templatePath in templatePaths)
 			{
@@ -81,8 +62,6 @@ public class DataTemplatePresenter : TemplatedControl
 
 			this.DataTemplates.Clear();
 			this.DataTemplates.AddRange(templates);
-
-			this.ApplyTemplate();
 		});
 	}
 }

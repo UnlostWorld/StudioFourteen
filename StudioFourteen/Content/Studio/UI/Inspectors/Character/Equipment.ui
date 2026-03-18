@@ -39,8 +39,6 @@
 			</DataTemplate>
 		</StackPanel.Resources>
 
-		<TextBlock Text="Equipment" Margin="8" />
-
 		<S14:InspectorLink
 			Margin="4,2"
 			Padding="0"
@@ -51,7 +49,7 @@
 			DestinationDataContext="{Binding Head}">
 			<ToolTip.Tip>
 				<S14:DataTemplatePresenter
-					Target="{Binding Head.Item}"
+					Content="{Binding Head.Item}"
 					TemplateDirectory="UI/ToolTips/Library/" />
 			</ToolTip.Tip>
 		</S14:InspectorLink>
@@ -66,7 +64,7 @@
 			DestinationDataContext="{Binding Body}">
 			<ToolTip.Tip>
 				<S14:DataTemplatePresenter
-					Target="{Binding Body.Item}"
+					Content="{Binding Body.Item}"
 					TemplateDirectory="UI/ToolTips/Library/" />
 			</ToolTip.Tip>
 		</S14:InspectorLink>
@@ -81,7 +79,7 @@
 			DestinationDataContext="{Binding Hands}">
 			<ToolTip.Tip>
 				<S14:DataTemplatePresenter
-					Target="{Binding Hands.Item}"
+					Content="{Binding Hands.Item}"
 					TemplateDirectory="UI/ToolTips/Library/" />
 			</ToolTip.Tip>
 		</S14:InspectorLink>
@@ -96,7 +94,7 @@
 			DestinationDataContext="{Binding Legs}">
 			<ToolTip.Tip>
 				<S14:DataTemplatePresenter
-					Target="{Binding Legs.Item}"
+					Content="{Binding Legs.Item}"
 					TemplateDirectory="UI/ToolTips/Library/" />
 			</ToolTip.Tip>
 		</S14:InspectorLink>
@@ -111,12 +109,10 @@
 			DestinationDataContext="{Binding Feet}">
 			<ToolTip.Tip>
 				<S14:DataTemplatePresenter
-					Target="{Binding Feet.Item}"
+					Content="{Binding Feet.Item}"
 					TemplateDirectory="UI/ToolTips/Library/" />
 			</ToolTip.Tip>
 		</S14:InspectorLink>
-
-		<TextBlock Text="Accessories" Margin="8" />
 
 		<S14:InspectorLink
 			Margin="4,2"
@@ -128,7 +124,7 @@
 			DestinationDataContext="{Binding Ears}">
 			<ToolTip.Tip>
 				<S14:DataTemplatePresenter
-					Target="{Binding Ears.Item}"
+					Content="{Binding Ears.Item}"
 					TemplateDirectory="UI/ToolTips/Library/" />
 			</ToolTip.Tip>
 		</S14:InspectorLink>
@@ -143,7 +139,7 @@
 			DestinationDataContext="{Binding Neck}">
 			<ToolTip.Tip>
 				<S14:DataTemplatePresenter
-					Target="{Binding Neck.Item}"
+					Content="{Binding Neck.Item}"
 					TemplateDirectory="UI/ToolTips/Library/" />
 			</ToolTip.Tip>
 		</S14:InspectorLink>
@@ -158,7 +154,7 @@
 			DestinationDataContext="{Binding Wrists}">
 			<ToolTip.Tip>
 				<S14:DataTemplatePresenter
-					Target="{Binding Wrists.Item}"
+					Content="{Binding Wrists.Item}"
 					TemplateDirectory="UI/ToolTips/Library/" />
 			</ToolTip.Tip>
 		</S14:InspectorLink>
@@ -173,7 +169,7 @@
 			DestinationDataContext="{Binding RFinger}">
 			<ToolTip.Tip>
 				<S14:DataTemplatePresenter
-					Target="{Binding RFinger.Item}"
+					Content="{Binding RFinger.Item}"
 					TemplateDirectory="UI/ToolTips/Library/" />
 			</ToolTip.Tip>
 		</S14:InspectorLink>
@@ -188,7 +184,7 @@
 			DestinationDataContext="{Binding LFinger}">
 			<ToolTip.Tip>
 				<S14:DataTemplatePresenter
-					Target="{Binding LFinger.Item}"
+					Content="{Binding LFinger.Item}"
 					TemplateDirectory="UI/ToolTips/Library/" />
 			</ToolTip.Tip>
 		</S14:InspectorLink>

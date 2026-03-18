@@ -35,6 +35,9 @@
 					Width="20"
 					Height="20" />
 			</TabItem.Header>
+
+			<S14:ContentControl
+				ContentPath="UI/Inspectors/Character/Customize.ui" />
 		</TabItem>
 
 		<TabItem>
