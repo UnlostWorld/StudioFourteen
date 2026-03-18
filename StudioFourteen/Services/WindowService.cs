@@ -29,7 +29,7 @@ public partial class WindowService : IService
 {
 	private readonly WndProcDelegate? wndProc;
 	private readonly HWND windowHandle;
-	private nint oldWndProcPtr;
+	private nint oldWndProcPtr = 0;
 
 	public WindowService()
 	{
@@ -41,6 +41,7 @@ public partial class WindowService : IService
 		this.wndProc = this.WndProcDetour;
 		nint wndProcPtr = Marshal.GetFunctionPointerForDelegate(this.wndProc);
 		this.oldWndProcPtr = PInvoke.SetWindowLongPtr(this.windowHandle, WINDOW_LONG_PTR_INDEX.GWL_WNDPROC, wndProcPtr);
+		Studio.Log.Information($"Replaced wndProc from {this.oldWndProcPtr} to {wndProcPtr}");
 	}
 
 	private delegate long WndProcDelegate(IntPtr hWnd, uint msg, ulong wParam, long lParam);
@@ -49,7 +50,8 @@ public partial class WindowService : IService
 	{
 		if (this.oldWndProcPtr != 0)
 		{
-			PInvoke.SetWindowLongPtr(this.windowHandle, WINDOW_LONG_PTR_INDEX.GWL_WNDPROC, this.oldWndProcPtr);
+			nint wndProcPtr = PInvoke.SetWindowLongPtr(this.windowHandle, WINDOW_LONG_PTR_INDEX.GWL_WNDPROC, this.oldWndProcPtr);
+			Studio.Log.Information($"Restored wndProc from {wndProcPtr} to {this.oldWndProcPtr}");
 			this.oldWndProcPtr = 0;
 		}
 	}

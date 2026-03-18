@@ -147,6 +147,10 @@ public sealed class Studio : IDalamudPlugin
 		{
 			Studio.Log.Error(ex, "Error disposing services");
 		}
+		finally
+		{
+			Window.Dispose();
+		}
 
 		Hooks.EnforceKind.Disable();
 	}
