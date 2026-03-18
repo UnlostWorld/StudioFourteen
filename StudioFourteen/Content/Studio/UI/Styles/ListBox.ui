@@ -1,6 +1,6 @@
 <ResourceDictionary>
 
-	<ControlTheme x:Key="{x:Type ListBox}"
+	<ControlTheme x:Key="ListBoxTheme"
 		TargetType="{x:Type ListBox}">
 
 		<Setter Property="Background" Value="Transparent" />
@@ -34,4 +34,13 @@
 		</Style>
 
 	</ControlTheme>
+
+	<ControlTheme x:Key="{x:Type ListBox}"
+		TargetType="{x:Type ListBox}"
+		BasedOn="{StaticResource ListBoxTheme}" />
+
+	<ControlTheme x:Key="{x:Type S14:ListBoxEx}"
+		TargetType="{x:Type S14:ListBoxEx}"
+		BasedOn="{StaticResource ListBoxTheme}" />
+
 </ResourceDictionary>

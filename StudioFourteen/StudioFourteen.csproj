@@ -55,11 +55,11 @@
 			<PrivateAssets>all</PrivateAssets>
 			<IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 		</PackageReference>
-		<PackageReference Include="Avalonia" Version="11.3.9" />
-		<PackageReference Include="Avalonia.Desktop" Version="11.3.9" />
-		<PackageReference Include="Avalonia.Themes.Simple" Version="11.3.9" />
-		<PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.9" />
-		<PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="11.3.9" />
+		<PackageReference Include="Avalonia" Version="11.3.12" />
+		<PackageReference Include="Avalonia.Desktop" Version="11.3.12" />
+		<PackageReference Include="Avalonia.Themes.Simple" Version="11.3.12" />
+		<PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.12" />
+		<PackageReference Include="Avalonia.Markup.Xaml.Loader" Version="11.3.12" />
 		<PackageReference Include="Svg.Controls.Avalonia" Version="11.3.9.2" />
 		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.0" />
 		<PackageReference Include="PropertyGenerator.Avalonia" Version="1.2.6" />

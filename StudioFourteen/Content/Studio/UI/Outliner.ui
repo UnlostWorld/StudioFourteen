@@ -88,20 +88,26 @@
 		<StackPanel
 			HorizontalAlignment="Left">
 
-			<ListBox
+			<S14:ListBoxEx
 				ItemsSource="{Binding SceneObjects}"
-				SelectionMode="Multiple">
+				SelectionMode="Single">
 
 				<ListBox.Resources>
 
 					<!-- List Box Item -->
-					<ControlTheme x:Key="{x:Type ListBoxItem}"
-						TargetType="{x:Type ListBoxItem}">
+					<ControlTheme x:Key="{x:Type S14:ListBoxItemEx}"
+						TargetType="{x:Type S14:ListBoxItemEx}">
 
 						<Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
 
 						<Setter Property="Padding" Value="1" />
 						<Setter Property="Margin" Value="0,2" />
+
+						<Setter Property="ContextMenu">
+							<ContextMenu>
+								<MenuItem Header="Hello" />
+							</ContextMenu>
+						</Setter>
 
 						<Setter Property="Template">
 							<ControlTemplate>
@@ -230,7 +236,7 @@
 						</Grid>
 					</DataTemplate>
 				</ListBox.ItemTemplate>
-			</ListBox>
+			</S14:ListBoxEx>
 
 			<Button
 				HorizontalAlignment="Center"
