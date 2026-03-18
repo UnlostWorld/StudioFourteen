@@ -235,7 +235,7 @@ public class StudioMouseDevice : MouseDevice
 
 			// Middle Click
 			InputStates mouseMiddleState = this.mouseMiddleClickListener.GetState();
-			if (mouseSecondaryState == InputStates.Activated)
+			if (mouseMiddleState == InputStates.Activated)
 			{
 				this.WindowUnderCursor.HandleInput(
 				new RawPointerEventArgs(
@@ -246,7 +246,7 @@ public class StudioMouseDevice : MouseDevice
 					relativeMousePosition,
 					modifiers));
 			}
-			else if (mouseSecondaryState == InputStates.Deactivated)
+			else if (mouseMiddleState == InputStates.Deactivated)
 			{
 				this.WindowUnderCursor.HandleInput(
 				new RawPointerEventArgs(
