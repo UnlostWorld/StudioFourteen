@@ -1,0 +1,14 @@
+<ResourceDictionary>
+
+	<ControlTheme
+		x:Key="{x:Type S14:DataTemplatePresenter}"
+		TargetType="{x:Type S14:DataTemplatePresenter}">
+		<Setter Property="Template">
+			<ControlTemplate>
+				<ContentPresenter
+					Content="{TemplateBinding Content}" />
+			</ControlTemplate>
+		</Setter>
+	</ControlTheme>
+
+</ResourceDictionary>

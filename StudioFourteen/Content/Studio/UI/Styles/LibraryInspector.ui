@@ -125,7 +125,7 @@
 
 							<ToolTip.Tip>
 								<S14:DataTemplatePresenter
-									Target="{Binding .}"
+									Content="{Binding .}"
 									TemplateDirectory="UI/ToolTips/Library/" />
 							</ToolTip.Tip>
 

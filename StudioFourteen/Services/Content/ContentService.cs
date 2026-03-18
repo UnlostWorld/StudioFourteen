@@ -114,6 +114,7 @@ public class ContentService : IService
 
 	private void OnTick()
 	{
+		List<ContentReference> changedReferences = new();
 		lock (this.references)
 		{
 			foreach ((string path, HashSet<ContentReference> references) in this.references)
@@ -125,10 +126,18 @@ public class ContentService : IService
 					if (info.LastWriteTimeUtc > reference.LastLoadTimeUtc + TimeSpan.FromMilliseconds(500))
 					{
 						reference.LastLoadTimeUtc = info.LastWriteTimeUtc;
-						reference.Reload();
+						if (reference.ClearIfChanged())
+						{
+							changedReferences.Add(reference);
+						}
 					}
 				}
 			}
+		}
+
+		foreach (ContentReference changedReference in changedReferences)
+		{
+			changedReference.NotifyChanged();
 		}
 	}
 }

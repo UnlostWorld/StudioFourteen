@@ -17,14 +17,15 @@ namespace StudioFourteen.Interface.Controls;
 
 using System.Collections.Generic;
 using Avalonia;
+using Avalonia.Controls.Primitives;
 using Avalonia.Markup.Xaml.Templates;
 using Avalonia.Threading;
 using StudioFourteen.Services.Avalonia;
 
-public class DataTemplatePresenter : ContentControl
+public class DataTemplatePresenter : TemplatedControl
 {
 	public static readonly StyledProperty<string?> TemplateDirectoryProperty;
-	public static readonly StyledProperty<object?> TargetProperty;
+	public static readonly StyledProperty<object?> ContentProperty;
 
 	private readonly List<AvaloniaContentReference<DataTemplate>> templateReferences = new();
 
@@ -33,8 +34,8 @@ public class DataTemplatePresenter : ContentControl
 		TemplateDirectoryProperty = AvaloniaProperty.Register<DataTemplatePresenter, string?>(
 			nameof(DataTemplatePresenter.TemplateDirectory));
 
-		TargetProperty = AvaloniaProperty.Register<DataTemplatePresenter, object?>(
-			nameof(DataTemplatePresenter.Target));
+		ContentProperty = AvaloniaProperty.Register<DataTemplatePresenter, object?>(
+			nameof(DataTemplatePresenter.Content));
 	}
 
 	public string? TemplateDirectory
@@ -43,10 +44,10 @@ public class DataTemplatePresenter : ContentControl
 		set => this.SetValue(TemplateDirectoryProperty, value);
 	}
 
-	public object? Target
+	public object? Content
 	{
-		get => this.GetValue(TargetProperty);
-		set => this.SetValue(TargetProperty, value);
+		get => this.GetValue(ContentProperty);
+		set => this.SetValue(ContentProperty, value);
 	}
 
 	protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
@@ -66,31 +67,22 @@ public class DataTemplatePresenter : ContentControl
 
 			this.ReloadTemplates();
 		}
-
-		if (change.Property == TargetProperty)
-		{
-			// Cant set target to null!
-			if (change.OldValue != null && change.NewValue == null)
-			{
-				this.Target = change.OldValue;
-			}
-		}
-
-		if (change.Property == TargetProperty)
-		{
-			this.Content = this.Target;
-		}
 	}
 
 	private void ReloadTemplates()
 	{
 		Dispatcher.UIThread.Invoke(() =>
 		{
-			this.DataTemplates.Clear();
+			List<DataTemplate> templates = new();
 			foreach (AvaloniaContentReference<DataTemplate> reference in this.templateReferences)
 			{
-				this.DataTemplates.Add(reference.Get());
+				templates.Add(reference.Get());
 			}
+
+			this.DataTemplates.Clear();
+			this.DataTemplates.AddRange(templates);
+
+			this.ApplyTemplate();
 		});
 	}
 }

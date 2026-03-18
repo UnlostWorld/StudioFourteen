@@ -29,7 +29,9 @@ public abstract class ContentReference(string path) : IDisposable
 
 	public DateTime LastLoadTimeUtc { get; set; }
 
-	public virtual void Reload()
+	public abstract bool ClearIfChanged();
+
+	public void NotifyChanged()
 	{
 		this.Reloaded?.Invoke();
 	}
@@ -47,7 +49,7 @@ public abstract class ContentReference<T>(string path)
 	private T? lastInstance;
 	public bool IsLoaded => this.instance != null;
 
-	public sealed override void Reload()
+	public sealed override bool ClearIfChanged()
 	{
 		// Calculate file hash to verify its actually changed.
 		using Stream stream = Studio.Content.GetContent(this);
@@ -56,10 +58,8 @@ public abstract class ContentReference<T>(string path)
 
 		if (this.lastHash != null && hashBytes.SequenceEqual(this.lastHash))
 		{
-			return;
+			return false;
 		}
-
-		Studio.Log.Information($"Reloading file: {this.Path}");
 
 		if (this.instance is IDisposable disposable)
 		{
@@ -71,8 +71,7 @@ public abstract class ContentReference<T>(string path)
 		}
 
 		this.instance = default;
-
-		base.Reload();
+		return true;
 	}
 
 	public T Get()
