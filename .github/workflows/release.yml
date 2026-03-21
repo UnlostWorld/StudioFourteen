@@ -52,7 +52,7 @@ jobs:
       run: |
         git config --global user.name "Actions User"
         git config --global user.email "actions@github.com"
-        git fetch origin main && git checkout Live
+        git fetch origin Live && git checkout Live
         $ver = '${{ github.run_number }}'
         $path = './Assets/repo.templ'
         $new_path = './repo.json'
