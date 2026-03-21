@@ -27,8 +27,8 @@ using StudioFourteen.Services.Input.Devices;
 
 public partial class WindowService : IService
 {
-	private readonly WndProcDelegate? wndProc;
 	private readonly HWND windowHandle;
+	private WndProcDelegate? wndProc;
 	private nint oldWndProcPtr = 0;
 
 	public WindowService()
@@ -36,12 +36,7 @@ public partial class WindowService : IService
 		Process process = Process.GetCurrentProcess();
 		this.windowHandle = (HWND)process.MainWindowHandle;
 
-		// hook wndproc
-		// https://github.com/ff-meli/ImGuiScene/blob/master/ImGuiScene/ImGui_Impl/Input/ImGui_Input_Impl_Direct.cs
-		this.wndProc = this.WndProcDetour;
-		nint wndProcPtr = Marshal.GetFunctionPointerForDelegate(this.wndProc);
-		this.oldWndProcPtr = PInvoke.SetWindowLongPtr(this.windowHandle, WINDOW_LONG_PTR_INDEX.GWL_WNDPROC, wndProcPtr);
-		Studio.Log.Information($"Replaced wndProc from {this.oldWndProcPtr} to {wndProcPtr}");
+		Studio.Tick.Add(Tick.TickChannels.LateGame, this.OnLateGameTick);
 	}
 
 	private delegate long WndProcDelegate(IntPtr hWnd, uint msg, ulong wParam, long lParam);
@@ -62,6 +57,25 @@ public partial class WindowService : IService
 		PInvoke.GetClientRect(this.windowHandle, out RECT rect);
 
 		return new((float)p.X / (float)rect.Width, (float)p.Y / (float)rect.Height);
+	}
+
+	private void OnLateGameTick()
+	{
+		if (this.oldWndProcPtr != 0)
+			return;
+
+		// hook wndproc once we're in-game to ensure dalamud got to it first, otherwise stopping studio
+		// will break dalamuds input. 😰
+		uint mapId = Studio.ClientState.MapId;
+		if (mapId > 0)
+		{
+			// https://github.com/ff-meli/ImGuiScene/blob/master/ImGuiScene/ImGui_Impl/Input/ImGui_Input_Impl_Direct.cs
+			this.wndProc = this.WndProcDetour;
+			nint wndProcPtr = Marshal.GetFunctionPointerForDelegate(this.wndProc);
+			this.oldWndProcPtr = PInvoke.SetWindowLongPtr(this.windowHandle, WINDOW_LONG_PTR_INDEX.GWL_WNDPROC, wndProcPtr);
+			Studio.Tick.Remove(Tick.TickChannels.LateGame, this.OnLateGameTick);
+			Studio.Log.Information($"Replaced wndProc from {this.oldWndProcPtr} to {wndProcPtr}");
+		}
 	}
 
 	private long WndProcDetour(nint hWnd, uint msg, ulong wParam, long lParam)
