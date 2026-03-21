@@ -5,16 +5,16 @@
         "Punchline": "Improved screenshots in and around GPose",
         "Description": "Alpha - please be careful!",
         "InternalName": "StudioFourteen",
-        "AssemblyVersion": "1.0.1.136",
-        "TestingAssemblyVersion": "1.0.1.136",
+        "AssemblyVersion": "1.0.1.137",
+        "TestingAssemblyVersion": "1.0.1.137",
         "RepoUrl": "https://github.com/UnlostWorld/StudioFourteen",
         "ApplicableVersion": "any",
         "DalamudApiLevel": 14,
         "TestingDalamudApiLevel": 14,
-        "DownloadLinkInstall": "https://github.com/UnlostWorld/StudioFourteen/releases/download/v136/StudioFourteen.zip",
-        "DownloadLinkTesting": "https://github.com/UnlostWorld/StudioFourteen/releases/download/v136/StudioFourteen.zip",
-        "DownloadLinkUpdate": "https://github.com/UnlostWorld/StudioFourteen/releases/download/v136/StudioFourteen.zip",
-		"IconUrl": "https://raw.githubusercontent.com/UnlostWorld/StudioFourteen/refs/heads/Live/Assets/Icon/icon.png",
+        "DownloadLinkInstall": "https://github.com/UnlostWorld/StudioFourteen/releases/download/v137/StudioFourteen.zip",
+        "DownloadLinkTesting": "https://github.com/UnlostWorld/StudioFourteen/releases/download/v137/StudioFourteen.zip",
+        "DownloadLinkUpdate": "https://github.com/UnlostWorld/StudioFourteen/releases/download/v137/StudioFourteen.zip",
+		"IconUrl": "https://github.com/UnlostWorld/StudioFourteen/blob/Live/Assets/Icon/Icon.png?raw=true",
         "Tags": []
     }
 ]
