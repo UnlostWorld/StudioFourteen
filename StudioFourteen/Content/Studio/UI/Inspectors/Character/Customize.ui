@@ -1,0 +1,98 @@
+<ScrollViewer>
+	<StackPanel>
+
+		<TextBlock Text="Customize" Margin="8" />
+
+		<!-- Body -->
+		<S14:DataTemplatePresenter
+			Content="{Binding Race}"
+			TemplateDirectory="UI/Inspectors/Character/CustomizeMenus/" />
+
+		<S14:DataTemplatePresenter
+			Content="{Binding Tribe}"
+			TemplateDirectory="UI/Inspectors/Character/CustomizeMenus/" />
+
+		<S14:DataTemplatePresenter
+			Content="{Binding Gender}"
+			TemplateDirectory="UI/Inspectors/Character/CustomizeMenus" />
+
+		<S14:DataTemplatePresenter
+			Content="{Binding ModelType}"
+			TemplateDirectory="UI/Inspectors/Character/CustomizeMenus" />
+
+		<S14:DataTemplatePresenter
+			Content="{Binding Height}"
+			TemplateDirectory="UI/Inspectors/Character/CustomizeMenus" />
+
+		<S14:DataTemplatePresenter
+			Content="{Binding MuscleTone}"
+			TemplateDirectory="UI/Inspectors/Character/CustomizeMenus" />
+
+		<S14:DataTemplatePresenter
+			Content="{Binding BustSize}"
+			TemplateDirectory="UI/Inspectors/Character/CustomizeMenus" />
+
+		<S14:DataTemplatePresenter
+			Content="{Binding TailType}"
+			TemplateDirectory="UI/Inspectors/Character/CustomizeMenus" />
+
+		<S14:DataTemplatePresenter
+			Content="{Binding TailLength}"
+			TemplateDirectory="UI/Inspectors/Character/CustomizeMenus" />
+
+		<S14:DataTemplatePresenter
+			Content="{Binding SkinColor}"
+			TemplateDirectory="UI/Inspectors/Character/CustomizeMenus" />
+
+		<S14:DataTemplatePresenter
+			Content="{Binding FurPattern}"
+			TemplateDirectory="UI/Inspectors/Character/CustomizeMenus" />
+
+		<S14:DataTemplatePresenter
+			Content="{Binding EarShape}"
+			TemplateDirectory="UI/Inspectors/Character/CustomizeMenus" />
+
+		<S14:DataTemplatePresenter
+			Content="{Binding EarLength}"
+			TemplateDirectory="UI/Inspectors/Character/CustomizeMenus" />
+
+	</StackPanel>
+</ScrollViewer>
+
+<!--
+	// Body
+	Race { get; set; }
+	Tribe { get; set; }
+	Gender { get; set; }
+	ModelType { get; set; }
+	Height { get; set; }
+	MuscleTone { get; set; }
+	BustSize { get; set; }
+	TailType { get; set; }
+	TailLength { get; set; }
+	SkinColor { get; set; }
+	FurPattern { get; set; }
+	EarShape { get; set; }
+	EarLength { get; set; }
+
+	// Face
+	FaceType { get; set; }
+	JawShape { get; set; }
+	EyeShape { get; set; }
+	EyeColor { get; set; }
+	EyeColor2 { get; set; }
+	LimbalRing { get; set; }
+	Eyebrows { get; set; }
+	NoseShape { get; set; }
+	LipStyle { get; set; }
+
+	// Makeup
+	LipColor { get; set; }
+	FacePaint { get; set; }
+	FacepaintColor { get; set; }
+	FaceFeatures { get; set; }
+	FaceFeaturesColor { get; set; }
+	HairStyle { get; set; }
+	HairColor { get; set; }
+	HairColor2 { get; set; }
+-->

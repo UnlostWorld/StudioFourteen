@@ -29,7 +29,9 @@ public abstract class ContentReference(string path) : IDisposable
 
 	public DateTime LastLoadTimeUtc { get; set; }
 
-	public virtual void Reload()
+	public abstract bool ClearIfChanged();
+
+	public void NotifyChanged()
 	{
 		this.Reloaded?.Invoke();
 	}
@@ -47,22 +49,17 @@ public abstract class ContentReference<T>(string path)
 	private T? lastInstance;
 	public bool IsLoaded => this.instance != null;
 
-	public sealed override void Reload()
+	public sealed override bool ClearIfChanged()
 	{
 		// Calculate file hash to verify its actually changed.
 		using Stream stream = Studio.Content.GetContent(this);
-		using (SHA256 sha256Hash = SHA256.Create())
+		using SHA256 sha256Hash = SHA256.Create();
+		byte[] hashBytes = sha256Hash.ComputeHash(stream);
+
+		if (this.lastHash != null && hashBytes.SequenceEqual(this.lastHash))
 		{
-			byte[] hashBytes = sha256Hash.ComputeHash(stream);
-			if (this.lastHash != null && hashBytes.SequenceEqual(this.lastHash))
-			{
-				return;
-			}
-
-			this.lastHash = hashBytes;
+			return false;
 		}
-
-		Studio.Log.Information($"Reloading file: {this.Path}");
 
 		if (this.instance is IDisposable disposable)
 		{
@@ -74,8 +71,7 @@ public abstract class ContentReference<T>(string path)
 		}
 
 		this.instance = default;
-
-		base.Reload();
+		return true;
 	}
 
 	public T Get()
@@ -85,6 +81,9 @@ public abstract class ContentReference<T>(string path)
 			try
 			{
 				using Stream stream = Studio.Content.GetContent(this);
+				using SHA256 sha256Hash = SHA256.Create();
+				this.lastHash = sha256Hash.ComputeHash(stream);
+				stream.Position = 0;
 				this.instance = this.Load(stream);
 			}
 			catch (Exception ex)

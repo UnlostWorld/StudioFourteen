@@ -17,45 +17,27 @@ namespace StudioFourteen.Interface.Controls;
 
 using System.Collections.Generic;
 using Avalonia;
+using Avalonia.Controls.Primitives;
 using Avalonia.Markup.Xaml.Templates;
 using Avalonia.Threading;
+using PropertyGenerator.Avalonia;
 using StudioFourteen.Services.Avalonia;
 
-public class DataTemplatePresenter : ContentControl
+public partial class DataTemplatePresenter : TemplatedControl
 {
-	public static readonly StyledProperty<string?> TemplateDirectoryProperty;
-	public static readonly StyledProperty<object?> TargetProperty;
-
 	private readonly List<AvaloniaContentReference<DataTemplate>> templateReferences = new();
 
-	static DataTemplatePresenter()
+	[GeneratedStyledProperty]
+	public partial string? TemplateDirectory { get; set; }
+
+	[GeneratedStyledProperty]
+	public partial object? Content { get; set; }
+
+	partial void OnTemplateDirectoryPropertyChanged(string? newValue)
 	{
-		TemplateDirectoryProperty = AvaloniaProperty.Register<DataTemplatePresenter, string?>(
-			nameof(DataTemplatePresenter.TemplateDirectory));
-
-		TargetProperty = AvaloniaProperty.Register<DataTemplatePresenter, object?>(
-			nameof(DataTemplatePresenter.Target));
-	}
-
-	public string? TemplateDirectory
-	{
-		get => this.GetValue(TemplateDirectoryProperty);
-		set => this.SetValue(TemplateDirectoryProperty, value);
-	}
-
-	public object? Target
-	{
-		get => this.GetValue(TargetProperty);
-		set => this.SetValue(TargetProperty, value);
-	}
-
-	protected override void OnPropertyChanged(AvaloniaPropertyChangedEventArgs change)
-	{
-		base.OnPropertyChanged(change);
-
-		if (change.Property == TemplateDirectoryProperty && this.TemplateDirectory != null)
+		if (newValue != null)
 		{
-			List<string> templatePaths = Studio.Content.GetContents(this.TemplateDirectory);
+			List<string> templatePaths = Studio.Content.GetContents(newValue);
 			this.templateReferences.Clear();
 			foreach (string templatePath in templatePaths)
 			{
@@ -66,31 +48,20 @@ public class DataTemplatePresenter : ContentControl
 
 			this.ReloadTemplates();
 		}
-
-		if (change.Property == TargetProperty)
-		{
-			// Cant set target to null!
-			if (change.OldValue != null && change.NewValue == null)
-			{
-				this.Target = change.OldValue;
-			}
-		}
-
-		if (change.Property == TargetProperty)
-		{
-			this.Content = this.Target;
-		}
 	}
 
 	private void ReloadTemplates()
 	{
 		Dispatcher.UIThread.Invoke(() =>
 		{
-			this.DataTemplates.Clear();
+			List<DataTemplate> templates = new();
 			foreach (AvaloniaContentReference<DataTemplate> reference in this.templateReferences)
 			{
-				this.DataTemplates.Add(reference.Get());
+				templates.Add(reference.Get());
 			}
+
+			this.DataTemplates.Clear();
+			this.DataTemplates.AddRange(templates);
 		});
 	}
 }

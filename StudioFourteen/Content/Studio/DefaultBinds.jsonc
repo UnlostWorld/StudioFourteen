@@ -214,14 +214,5 @@
 		"Mouse:LeftDrag:Down",
 		"Gamepad:RightStick:Up",
 		"Mouse:RightDrag:Down"
-	],
-	"FastChange": [
-		"Keyboard:SHIFT"
-	],
-	"SlowChange": [
-		"Keyboard:CONTROL"
-	],
-	"HideUi": [
-		"Keyboard:SPACE"
 	]
 }

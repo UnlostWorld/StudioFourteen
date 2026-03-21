@@ -31,13 +31,6 @@ public abstract partial class SceneObjectBase : ObservableObject, IDisposable
 {
 	private readonly List<GizmoBase> gizmos = new();
 
-	[ObservableProperty] private string name;
-	[ObservableProperty] private string? subtitle;
-	[ObservableProperty] private string? description;
-	[ObservableProperty] private bool isReady;
-	[ObservableProperty] private bool isHovered;
-	[ObservableProperty] private bool isSelected;
-
 	public SceneObjectBase()
 	{
 		this.Name = string.Empty;
@@ -51,7 +44,13 @@ public abstract partial class SceneObjectBase : ObservableObject, IDisposable
 
 	public abstract string Id { get; }
 
-	public int InspectorTab { get; set; }
+	[ObservableProperty] public partial string Name { get; set; }
+	[ObservableProperty] public partial string? Subtitle { get; set; }
+	[ObservableProperty] public partial string? Description { get; set; }
+	[ObservableProperty] public partial bool IsReady { get; set; }
+	[ObservableProperty] public partial bool IsHovered { get; set; }
+	[ObservableProperty] public partial bool IsSelected { get; set; }
+	[ObservableProperty] public partial int InspectorTab { get; set; }
 
 	public override string ToString()
 	{
@@ -92,6 +91,12 @@ public abstract partial class SceneObjectBase : ObservableObject, IDisposable
 	public void InterfaceHover(bool value)
 	{
 		this.IsHovered = value;
+	}
+
+	[RelayCommand]
+	public virtual void RemoveFromScene()
+	{
+		Studio.Scene.RemoveObject(this);
 	}
 
 	public virtual void OnSelected(bool value)

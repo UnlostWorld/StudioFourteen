@@ -195,7 +195,7 @@ public class Svg : Control
 			throw new NotSupportedException("Only SolidColorBrush is supported for SVG foreground property");
 		}
 
-		this.reference.Reload();
+		this.reference.ClearIfChanged();
 	}
 
 	private void OnSvgReloaded()

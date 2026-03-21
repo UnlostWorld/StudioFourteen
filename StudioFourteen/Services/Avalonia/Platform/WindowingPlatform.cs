@@ -36,7 +36,7 @@ public class WindowingPlatform : IWindowingPlatform, IDisposable
 	{
 		Studio.Tick.Dispatch(TickChannels.Ui, () =>
 		{
-			foreach (WindowImpl impl in this.Windows)
+			foreach (WindowImpl impl in this.Windows.ToArray())
 			{
 				if (!impl.IsDisposed)
 				{

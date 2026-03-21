@@ -118,6 +118,7 @@ public sealed class Studio : IDalamudPlugin
 	public static void Close()
 	{
 		Interface.Close();
+		Scene.ClearSelection();
 	}
 
 	public void Dispose()
@@ -144,7 +145,11 @@ public sealed class Studio : IDalamudPlugin
 		}
 		catch (Exception ex)
 		{
-			Studio.Log.Error(ex, "Error disposing services");
+			Studio.Log.Error(ex, "Error disposing services.");
+		}
+		finally
+		{
+			Window.Dispose();
 		}
 
 		Hooks.EnforceKind.Disable();

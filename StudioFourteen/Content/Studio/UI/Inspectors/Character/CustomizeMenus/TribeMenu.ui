@@ -1,0 +1,14 @@
+<DataTemplate
+	DataType="{x:Type StudioFourteen.Scene.CharacterCustomizeMenus:TribeMenu}">
+	<StackPanel>
+		<TextBlock
+			Text="{Binding Name}" />
+
+		<TextBlock
+			Text="{Binding Options.Count}" />
+
+		<ListBox
+			ItemsSource="{Binding Options}"
+			SelectedItem="{Binding SelectedOption}" />
+	</StackPanel>
+</DataTemplate>

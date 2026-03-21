@@ -130,7 +130,7 @@ public static class HumanCmp
 
 	public struct Entry
 	{
-		public string Hex => $"#{this.Color.R:X2}{this.Color.G:X2}{this.Color.B:X2}";
+		public string Hex => "#FFFFFF"; ////$"#{this.Color.R:X2}{this.Color.G:X2}{this.Color.B:X2}";
 		public Color Color { get; set; }
 		public bool Skip { get; set; }
 	}

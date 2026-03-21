@@ -13,45 +13,37 @@
 //        @@@@@@@@@@@@@@                This software is licensed under the
 //            @@@@  @                  GNU AFFERO GENERAL PUBLIC LICENSE v3
 
-namespace StudioFourteen.Services.Avalonia.Platform;
+namespace StudioFourteen.Interface.Controls;
 
-using System;
-using System.Collections.Generic;
-using global::Avalonia.Platform;
-using StudioFourteen.Services.Rendering;
+using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Input;
 
-public class StudioScreens : ScreensBase<nint, ScreenImpl>, IDisposable
+public class ListBoxEx : ListBox
 {
-	public readonly ScreenImpl RendererScreen = new(9001);
-
-	private readonly Renderer renderer;
-
-	public StudioScreens(Renderer renderer)
+	protected override Control CreateContainerForItemOverride(object? item, int index, object? recycleKey)
 	{
-		this.renderer = renderer;
-		renderer.ResolutionChanged += this.OnResolutionChanged;
-		this.RendererScreen?.UpdateSize(renderer.Width, renderer.Height);
+		return new ListBoxItemEx();
+	}
+}
+
+public class ListBoxItemEx : ListBoxItem
+{
+	protected override void OnPointerPressed(PointerPressedEventArgs e)
+	{
+		PointerPoint p = e.GetCurrentPoint(this);
+
+		if (p.Properties.PointerUpdateKind == PointerUpdateKind.RightButtonPressed)
+			return;
+
+		base.OnPointerPressed(e);
 	}
 
-	public void Dispose()
+	protected override void OnPointerReleased(PointerReleasedEventArgs e)
 	{
-		this.renderer.ResolutionChanged -= this.OnResolutionChanged;
-	}
+		if (e.InitialPressMouseButton == MouseButton.Right)
+			return;
 
-	protected override ScreenImpl CreateScreenFromKey(nint key)
-	{
-		if (key == this.RendererScreen.Handle)
-		{
-			return this.RendererScreen;
-		}
-
-		throw new NotSupportedException();
-	}
-
-	protected override IReadOnlyList<nint> GetAllScreenKeys() => [this.RendererScreen.Handle];
-
-	private void OnResolutionChanged(int width, int height)
-	{
-		this.RendererScreen?.UpdateSize(width, height);
+		base.OnPointerReleased(e);
 	}
 }
