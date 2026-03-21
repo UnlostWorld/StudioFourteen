@@ -41,9 +41,6 @@ public class InputService : IService
 	private readonly Dictionary<string, InputAxis> axisLookup = new();
 	private readonly List<Bind> binds = new();
 
-	private readonly Input0DListener fastChangeListener = new(InputAction.FastChange, "Input Service Fast Change");
-	private readonly Input0DListener slowChangeListener = new(InputAction.SlowChange, "Input Service Slow Change");
-
 	private InputDeviceBase? currentDevice = null;
 
 	public InputService()
@@ -95,12 +92,6 @@ public class InputService : IService
 		{
 			device.Attach();
 		}
-
-		Studio.Tick.Dispatch(TickChannels.Studio, () =>
-		{
-			this.slowChangeListener.Enable();
-			this.fastChangeListener.Enable();
-		});
 	}
 
 	public KeyboardDevice? Keyboard => this.GetDevice<KeyboardDevice>();
@@ -109,9 +100,6 @@ public class InputService : IService
 
 	public bool IsXivTextInputActive { get; private set; }
 	public bool IsStudioTextInputActive => false;
-
-	public bool SlowChange => this.slowChangeListener.Value > 0.05f;
-	public bool FastChange => this.fastChangeListener.Value > 0.05f;
 
 	public void Dispose()
 	{
@@ -122,9 +110,6 @@ public class InputService : IService
 		{
 			device.Detach();
 		}
-
-		this.slowChangeListener.Disable();
-		this.fastChangeListener.Disable();
 	}
 
 	public void AddDevice(InputDeviceBase device)
