@@ -93,6 +93,9 @@ public partial class CharacterCustomize(int objectIndex)
 	{
 		TickService.VerifyGameTickThread();
 		XivCharacter* pCharacter = this.GetXivCharacter();
+		if (pCharacter == null)
+			return 0;
+
 		return pCharacter->DrawData.CustomizeData.GetValue(index);
 	}
 
@@ -136,9 +139,13 @@ public partial class CharacterCustomize(int objectIndex)
 		this.UpdateCustomize(customize, source);
 	}
 
-	public override void OnGameTick()
+	public unsafe override void OnGameTick()
 	{
 		base.OnGameTick();
+
+		XivCharacter* pCharacter = this.GetXivCharacter();
+		if (pCharacter == null)
+			return;
 
 		byte race = this.GetCustomizeValue(CustomizeIndex.Race);
 		byte tribe = this.GetCustomizeValue(CustomizeIndex.Race);
