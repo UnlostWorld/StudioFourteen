@@ -30,6 +30,7 @@ public class StudioScreens : ScreensBase<nint, ScreenImpl>, IDisposable
 	{
 		this.renderer = renderer;
 		renderer.ResolutionChanged += this.OnResolutionChanged;
+		this.RendererScreen?.UpdateSize(renderer.Width, renderer.Height);
 	}
 
 	public void Dispose()
