@@ -22,19 +22,19 @@ public class PlatformService : IService
 {
 	public PlatformService()
 	{
-		OperatingSystem = global::Dalamud.Utility.Util.GetHostPlatform();
-		if (OperatingSystem == OSPlatform.Linux)
+		this.OperatingSystem = global::Dalamud.Utility.Util.GetHostPlatform();
+		if (this.OperatingSystem == OSPlatform.Linux)
 		{
 			if (Environment.GetEnvironmentVariable("DXMT_CONFIG") != null)
 			{
-				OperatingSystem = OSPlatform.OSX;
+				this.OperatingSystem = OSPlatform.OSX;
 			}
 		}
 
-		Studio.Log.Information($"Platform OS: {OperatingSystem}");
+		Studio.Log.Information($"Platform OS: {this.OperatingSystem}");
 	}
 
-	public static OSPlatform OperatingSystem { get; private set; }
+	public OSPlatform OperatingSystem { get; private set; }
 
 	public void Dispose()
 	{

@@ -27,6 +27,12 @@ public class RenderingService : IService
 	{
 		this.OverlayRenderer.Attach();
 
+		////ScreenEffectPass<DisplayUiMaskEffect> pass = new();
+		////this.OverlayRenderer.AddPass(OverlayLayers.AfterEffects, pass);
+
+		////ScreenEffectPass<DisplayDepthEffect> pass = new();
+		////this.OverlayRenderer.AddPass(OverlayLayers.AfterEffects, pass);
+
 		////ScreenEffectPass<DisplayStencilEffect> pass = new();
 		////this.OverlayRenderer.AddPass(OverlayLayers.AfterEffects, pass);
 	}

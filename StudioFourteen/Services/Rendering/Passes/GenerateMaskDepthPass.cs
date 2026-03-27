@@ -15,7 +15,9 @@
 
 namespace StudioFourteen.Services.Rendering.Passes;
 
+using System;
 using System.Numerics;
+using System.Runtime.InteropServices;
 using FFXIVClientStructs.FFXIV.Client.Graphics.Render;
 using SharpDX.Direct3D11;
 using SharpDX.DXGI;
@@ -71,14 +73,21 @@ public class GenerateUiMaskPass : RenderPassBase
 		// Create a shader resource copy of the back buffer so it can be accessed in the shader
 		if (this.backBufferCopyTexture == null)
 		{
-			this.backBufferCopyTexture?.Dispose();
-			this.backBufferResourceView?.Dispose();
+			try
+			{
+				this.backBufferCopyTexture?.Dispose();
+				this.backBufferResourceView?.Dispose();
 
-			Texture2DDescription desc = renderer.BackBuffer.Description;
-			desc.BindFlags = BindFlags.ShaderResource;
+				Texture2DDescription desc = renderer.BackBuffer.Description;
+				desc.BindFlags = BindFlags.ShaderResource;
 
-			this.backBufferCopyTexture = new Texture2D(device, desc);
-			this.backBufferResourceView = new(device, this.backBufferCopyTexture);
+				this.backBufferCopyTexture = new Texture2D(device, desc);
+				this.backBufferResourceView = new(device, this.backBufferCopyTexture);
+			}
+			catch (Exception ex)
+			{
+				throw new Exception("Failed to create back buffer resource", ex);
+			}
 		}
 
 		this.depthStencilTexture = (Texture2D)(nint)pRenderTargetManager->DepthStencil->D3D11Texture2D;
@@ -86,15 +95,30 @@ public class GenerateUiMaskPass : RenderPassBase
 		// Create a handle to the depth stencil
 		if (this.depthStencilCopyTexture == null)
 		{
-			this.depthStencilCopyTexture?.Dispose();
-			this.depthResourceView?.Dispose();
+			try
+			{
+				this.depthStencilCopyTexture?.Dispose();
+				this.depthResourceView?.Dispose();
 
-			Texture2DDescription desc = this.depthStencilTexture.Description;
-			desc.BindFlags = BindFlags.ShaderResource;
-			desc.Format = Format.R24G8_Typeless;
+				Texture2DDescription desc = this.depthStencilTexture.Description;
+				desc.BindFlags = BindFlags.ShaderResource;
 
-			this.depthStencilCopyTexture = new Texture2D(device, desc);
-			this.depthResourceView = new(device, this.depthStencilCopyTexture);
+				if (Studio.Platform.OperatingSystem == OSPlatform.Windows)
+				{
+					desc.Format = Format.R24_UNorm_X8_Typeless;
+				}
+				else
+				{
+					desc.Format = Format.R24G8_Typeless;
+				}
+
+				this.depthStencilCopyTexture = new Texture2D(device, desc);
+				this.depthResourceView = new(device, this.depthStencilCopyTexture);
+			}
+			catch (Exception ex)
+			{
+				throw new Exception("Failed to create depth resource", ex);
+			}
 		}
 
 		float renderWidth = pRenderTargetManager->Base.Resolution_Width;
@@ -116,13 +140,20 @@ public class GenerateUiMaskPass : RenderPassBase
 			desc.BindFlags = BindFlags.ShaderResource | BindFlags.RenderTarget;
 			this.maskTexture = new(device, desc);
 
-			RenderTargetViewDescription rtDesc = default;
-			rtDesc.Format = Format.R8G8B8A8_UNorm;
-			rtDesc.Dimension = RenderTargetViewDimension.Texture2D;
-			rtDesc.Texture2D = new() { };
-			this.maskRenderTargetView = new(device, this.maskTexture, rtDesc);
+			try
+			{
+				RenderTargetViewDescription rtDesc = default;
+				rtDesc.Format = Format.R8G8B8A8_UNorm;
+				rtDesc.Dimension = RenderTargetViewDimension.Texture2D;
+				rtDesc.Texture2D = new() { };
+				this.maskRenderTargetView = new(device, this.maskTexture, rtDesc);
 
-			this.maskResourceView = new(device, this.maskTexture);
+				this.maskResourceView = new(device, this.maskTexture);
+			}
+			catch (Exception ex)
+			{
+				throw new Exception("Failed to create mask resource", ex);
+			}
 		}
 
 		// Copy the back buffers
